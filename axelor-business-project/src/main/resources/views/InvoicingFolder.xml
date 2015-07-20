@@ -9,7 +9,7 @@
 	<form name="invoicing-folder-form" title="Invoicing Folder" model="com.axelor.apps.businessproject.db.InvoicingFolder" 
 		onNew="action-invoicing-folder-attrs-title-project-task" onLoad="action-invoicing-folder-attrs-title-project-task">
 		<panel>
-			<field name="projectTask" form-view="project-form" grid-view="project-grid" onChange="action-invoicing-folder-method-fill-in" colSpan="12" readonlyIf="invoice != null"/>
+			<field name="projectTask" form-view="project-task-form" grid-view="project-task-grid" onChange="action-invoicing-folder-method-fill-in" colSpan="12" readonlyIf="invoice != null"/>
 			<button name="automaticFillIn" title="Automatically Fill in" onClick="action-invoicing-folder-method-fill-in" readonlyIf="invoice != null"/>
 			<button name="generateInvoice" title="Generate Invoice" onClick="save,action-invoicing-folder-method-generate-invoice" readonlyIf="invoice != null"/>
 			<field name="invoice" readonly="true" form-view="invoice-form" grid-view="invoice-grid"/>

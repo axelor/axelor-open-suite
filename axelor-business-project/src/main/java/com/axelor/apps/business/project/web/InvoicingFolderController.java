@@ -39,9 +39,6 @@ public class InvoicingFolderController extends InvoicingFolderRepository{
 		if(folder.getProjectTask() == null){
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.INVOICING_FOLDER_PROJECT_TASK)), IException.CONFIGURATION_ERROR);
 		}
-		if(folder.getProjectTask().getClientPartner() == null){
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.INVOICING_FOLDER_CUSTOMER)), IException.CONFIGURATION_ERROR);
-		}
 
 		if(folder.getProjectTask().getAssignedTo() == null){
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.INVOICING_FOLDER_USER)), IException.CONFIGURATION_ERROR);

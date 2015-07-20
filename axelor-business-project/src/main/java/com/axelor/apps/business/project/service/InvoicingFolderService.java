@@ -29,6 +29,7 @@ import com.axelor.apps.hr.service.expense.ExpenseService;
 import com.axelor.apps.hr.service.timesheet.TimesheetServiceImp;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
+import com.axelor.apps.project.service.ProjectTaskService;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderLineRepository;
 import com.axelor.apps.sale.db.SaleOrderLine;
@@ -72,7 +73,7 @@ public class InvoicingFolderService extends InvoicingFolderRepository{
 	@Transactional
 	public Invoice generateInvoice(InvoicingFolder folder) throws AxelorException{
 		ProjectTask projectTask = folder.getProjectTask();
-		Partner customer = projectTask.getClientPartner();
+		Partner customer = Beans.get(ProjectTaskService.class).getClientPartnerFromProjectTask(projectTask);
 		Company company = this.getRootCompany(projectTask);
 		if(company == null){
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.INVOICING_FOLDER_PROJECT_TASK_COMPANY)), IException.CONFIGURATION_ERROR);
@@ -267,8 +268,8 @@ public class InvoicingFolderService extends InvoicingFolderRepository{
 	}
 
 
-	public List<InvoiceLine> customerChargeBackPurchases(List<InvoiceLine> invoiceLineList,InvoicingFolder folder){
-		Partner customer = folder.getProjectTask().getClientPartner();
+	public List<InvoiceLine> customerChargeBackPurchases(List<InvoiceLine> invoiceLineList,InvoicingFolder folder) throws AxelorException{
+		Partner customer = Beans.get(ProjectTaskService.class).getClientPartnerFromProjectTask(folder.getProjectTask());
 		if(!customer.getFlatFeePurchase()){
 			for (InvoiceLine invoiceLine : invoiceLineList) {
 				invoiceLine.setPrice(invoiceLine.getPrice().multiply(customer.getChargeBackPurchase().divide(new BigDecimal(100), generalService.getNbDecimalDigitForUnitPrice(), BigDecimal.ROUND_HALF_UP)).setScale(generalService.getNbDecimalDigitForUnitPrice(), BigDecimal.ROUND_HALF_UP));

@@ -113,8 +113,9 @@
 			</panel>
 			
 			<panel title="Human Resource configuration" if-module="axelor-human-resource">
-				<field name="allowNegativeLeaveEmployees" if-module="axelor-human-resources"/>
-				<field name="invoicingTypeLogTimesSelect" if-module="axelor-human-resources"/>  <!-- TODO jamais utilisé  -->
+				<field name="allowNegativeLeaveEmployees"/>
+				<field name="invoicingTypeLogTimesSelect"/>  <!-- TODO jamais utilisé  -->
+				<field name="consolidateTSLine"/>
 			</panel>
 			
 			<panel title="Project/Task configuration" if-module="axelor-project">

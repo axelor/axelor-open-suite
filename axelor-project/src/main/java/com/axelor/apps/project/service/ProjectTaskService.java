@@ -4,7 +4,11 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
+import com.axelor.apps.project.exception.IExceptionMessage;
 import com.axelor.auth.db.User;
+import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.IException;
+import com.axelor.i18n.I18n;
 import com.google.common.base.Strings;
 
 public class ProjectTaskService extends ProjectTaskRepository{
@@ -42,5 +46,18 @@ public class ProjectTaskService extends ProjectTaskRepository{
 		task.setProgress(0);
 
 		return task;
+	}
+
+	public Partner getClientPartnerFromProjectTask(ProjectTask projectTask) throws AxelorException{
+		if (projectTask.getProject() == null){
+			//it is a root project, can get the client partner
+			if(projectTask.getClientPartner() == null){
+				throw new AxelorException(String.format(I18n.get(IExceptionMessage.PROJECT_CUSTOMER_PARTNER)), IException.CONFIGURATION_ERROR);
+			}else{
+				return projectTask.getClientPartner();
+			}
+		}else{
+			return this.getClientPartnerFromProjectTask(projectTask.getProject());
+		}
 	}
 }

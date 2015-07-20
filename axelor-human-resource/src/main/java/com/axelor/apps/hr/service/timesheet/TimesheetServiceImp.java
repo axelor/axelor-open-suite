@@ -1,6 +1,8 @@
 package com.axelor.apps.hr.service.timesheet;
 
 import java.math.BigDecimal;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -32,6 +34,7 @@ import com.axelor.apps.hr.db.repo.TimesheetRepository;
 import com.axelor.apps.hr.exception.IExceptionMessage;
 import com.axelor.apps.hr.service.employee.EmployeeService;
 import com.axelor.auth.AuthUtils;
+import com.axelor.auth.db.User;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
@@ -146,11 +149,9 @@ public class TimesheetServiceImp extends TimesheetRepository implements Timeshee
 	}
 
 	@Override
-	@Transactional
 	public LocalDate getFromPeriodDate(){
 		Timesheet timesheet = Beans.get(TimesheetRepository.class).all().filter("self.user = ?1 ORDER BY self.toDate DESC", AuthUtils.getUser()).fetchOne();
 		if(timesheet != null){
-			save(timesheet);
 			return timesheet.getToDate();
 		}
 		else{
@@ -162,24 +163,75 @@ public class TimesheetServiceImp extends TimesheetRepository implements Timeshee
 
 		List<InvoiceLine> invoiceLineList = new ArrayList<InvoiceLine>();
 		int count = 0;
-		for(TimesheetLine timesheetLine : timesheetLineList)  {
+		DateFormat ddmmFormat = new SimpleDateFormat("dd/MM");
+		HashMap<String, Object[]> timeSheetInformationsMap = new HashMap<String, Object[]>();
+		//Check if a consolidation by product and user must be done
+		boolean consolidate = generalService.getGeneral().getConsolidateTSLine();
 
-			invoiceLineList.addAll(this.createInvoiceLine(invoice, timesheetLine, priority*100+count));
-			count++;
+		for (TimesheetLine timesheetLine : timesheetLineList) {
+			Object[] tabInformations = new Object[5];
+			tabInformations[0] = timesheetLine.getProduct();
+			tabInformations[1] = timesheetLine.getUser();
+			//Start date
+			tabInformations[2] = timesheetLine.getDate();
+			//End date, useful only for consolidation
+			tabInformations[3] = timesheetLine.getDate();
+			tabInformations[4] = timesheetLine.getVisibleDuration();
+
+			String key = null;
+			if(consolidate){
+				key = timesheetLine.getProduct().getId() + "|" + timesheetLine.getUser().getId();
+				if (timeSheetInformationsMap.containsKey(key)){
+					tabInformations = timeSheetInformationsMap.get(key);
+					//Update date
+					if (timesheetLine.getDate().compareTo((LocalDate)tabInformations[2]) < 0){
+						//If date is lower than start date then replace start date by this one
+						tabInformations[2] = timesheetLine.getDate();
+					}else if (timesheetLine.getDate().compareTo((LocalDate)tabInformations[3]) > 0){
+						//If date is upper than end date then replace end date by this one
+						tabInformations[3] = timesheetLine.getDate();
+					}
+					tabInformations[4] = ((BigDecimal)tabInformations[4]).add(timesheetLine.getVisibleDuration());
+				}else{
+					timeSheetInformationsMap.put(key, tabInformations);
+				}
+			}else{
+				key = String.valueOf(timesheetLine.getId());
+				timeSheetInformationsMap.put(key, tabInformations);
+			}
+
 			timesheetLine.setInvoiced(true);
+
+		}
+
+		for(Object[] timesheetInformations : timeSheetInformationsMap.values())  {
+
+			String strDate = null;
+			Product product = (Product)timesheetInformations[0];
+			User user = (User)timesheetInformations[1];
+			LocalDate startDate = (LocalDate)timesheetInformations[2];
+			LocalDate endDate = (LocalDate)timesheetInformations[3];
+			BigDecimal visibleDuration = (BigDecimal) timesheetInformations[4];
+
+			if (consolidate){
+				strDate = ddmmFormat.format(startDate.toDate()) + " - " + ddmmFormat.format(endDate.toDate());
+			}else{
+				strDate = ddmmFormat.format(startDate.toDate());
+			}
+
+			invoiceLineList.addAll(this.createInvoiceLine(invoice, product, user, strDate, visibleDuration, priority*100+count));
+			count++;
 		}
 
 		return invoiceLineList;
 
 	}
 
-	public List<InvoiceLine> createInvoiceLine(Invoice invoice, TimesheetLine timesheetLine, int priority) throws AxelorException  {
+	public List<InvoiceLine> createInvoiceLine(Invoice invoice, Product product, User user, String date, BigDecimal visibleDuration, int priority) throws AxelorException  {
 
-		Product product = null;
-		Employee employee = timesheetLine.getUser().getEmployee();
+		Employee employee = user.getEmployee();
 
 		int discountTypeSelect = 1;
-		product = timesheetLine.getProduct();
 		if(product == null){
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.TIMESHEET_PRODUCT)), IException.CONFIGURATION_ERROR);
 		}
@@ -187,16 +239,16 @@ public class TimesheetServiceImp extends TimesheetRepository implements Timeshee
 		BigDecimal discountAmount = product.getCostPrice();
 
 
-		BigDecimal qtyConverted = timesheetLine.getVisibleDuration();
-		qtyConverted = Beans.get(UnitConversionService.class).convert(generalService.getGeneral().getUnitHours(), product.getUnit(), timesheetLine.getVisibleDuration());
+		BigDecimal qtyConverted = visibleDuration;
+		qtyConverted = Beans.get(UnitConversionService.class).convert(generalService.getGeneral().getUnitHours(), product.getUnit(), visibleDuration);
 
 		if(employee != null){
 			if(employee.getTimeLoggingPreferenceSelect().equals(EmployeeRepository.TIME_PREFERENCE_DAYS)){
-				qtyConverted = Beans.get(UnitConversionService.class).convert(generalService.getGeneral().getUnitDays(), product.getUnit(), timesheetLine.getVisibleDuration());
+				qtyConverted = Beans.get(UnitConversionService.class).convert(generalService.getGeneral().getUnitDays(), product.getUnit(), visibleDuration);
 
 			}
 			else if(employee.getTimeLoggingPreferenceSelect().equals(EmployeeRepository.TIME_PREFERENCE_MINUTES)){
-				qtyConverted = Beans.get(UnitConversionService.class).convert(generalService.getGeneral().getUnitMinutes(), product.getUnit(), timesheetLine.getVisibleDuration());
+				qtyConverted = Beans.get(UnitConversionService.class).convert(generalService.getGeneral().getUnitMinutes(), product.getUnit(), visibleDuration);
 
 			}
 
@@ -225,8 +277,11 @@ public class TimesheetServiceImp extends TimesheetRepository implements Timeshee
 
 		}
 
-		InvoiceLineGenerator invoiceLineGenerator = new InvoiceLineGenerator (invoice, product, product.getName(), price,
-				null,qtyConverted,product.getUnit(),priority,discountAmount,discountTypeSelect,
+		String 	description = user.getFullName(),
+				productName = product.getName() + " " + "(" + date + ")";
+
+		InvoiceLineGenerator invoiceLineGenerator = new InvoiceLineGenerator (invoice, product, productName, price,
+				description,qtyConverted,product.getUnit(),priority,discountAmount,discountTypeSelect,
 				price.multiply(qtyConverted),null,false){
 
 			@Override

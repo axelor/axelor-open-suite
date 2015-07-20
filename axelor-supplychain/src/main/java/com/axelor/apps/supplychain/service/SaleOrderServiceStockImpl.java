@@ -22,10 +22,8 @@ import java.util.ArrayList;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductRepository;
-import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
-import com.axelor.apps.sale.exception.IExceptionMessage;
 import com.axelor.apps.sale.service.SaleOrderServiceImpl;
 import com.axelor.apps.stock.db.Location;
 import com.axelor.apps.stock.db.StockConfig;
@@ -37,8 +35,6 @@ import com.axelor.apps.stock.service.StockMoveLineService;
 import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.apps.stock.service.config.StockConfigService;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
-import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 
 public class SaleOrderServiceStockImpl extends SaleOrderServiceImpl {
@@ -73,8 +69,6 @@ public class SaleOrderServiceStockImpl extends SaleOrderServiceImpl {
 		Company company = saleOrder.getCompany();
 
 		if(saleOrder.getSaleOrderLineList() != null && company != null) {
-
-			this.checkStockMoveProduct(saleOrder);
 
 			StockMove stockMove = this.createStockMove(saleOrder, company);
 
@@ -146,25 +140,6 @@ public class SaleOrderServiceStockImpl extends SaleOrderServiceImpl {
 		return null;
 	}
 
-
-	public void checkStockMoveProduct(SaleOrder saleOrder) throws AxelorException  {
-
-		if(saleOrder.getSaleOrderLineList() != null
-				&& generalService.getGeneral().getCustomerStockMoveManagement())  {
-			for(SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList())  {
-
-				this.checkStockMoveProduct(saleOrderLine);
-
-			}
-		}
-	}
-
-
-	public void checkStockMoveProduct(SaleOrderLine saleOrderLine) throws AxelorException  {
-		if(!this.isStockMoveProduct(saleOrderLine))  {
-			throw new AxelorException(I18n.get(IExceptionMessage.SALES_ORDER_STOCK_MOVE_1), IException.CONFIGURATION_ERROR);
-		}
-	}
 
 
 	public boolean isStockMoveProduct(SaleOrderLine saleOrderLine) throws AxelorException  {
