@@ -10,14 +10,12 @@
 	</grid>
 	
 	<form name="import-history-form" cols="6" title="Historical" model="com.axelor.apps.base.db.ImportHistory">
-		
 		<panel>
 			<field name="user" form-view="user-form" grid-view="user-grid"/>
 			<field name="dataMetaFile" form-view="meta-file-form" grid-view="meta-file-grid"/>
 	        <field name="createdOn"/>
 	        <field name="log" colSpan="12" showTitle="false" />
 		</panel>
-        
 	</form>
 
 </object-views>

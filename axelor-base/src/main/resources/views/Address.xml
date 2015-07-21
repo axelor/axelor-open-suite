@@ -13,7 +13,7 @@
 	</grid>
 	
 	<form name="address-form" title="Address" model="com.axelor.apps.base.db.Address" 
-	onSave="action-group-base-address-onsave,save,action-base-address-method-check-lat-lang" onNew="default-address-record" >
+	onSave="action-group-base-address-onsave,save,action-base-address-method-check-lat-lang" onNew="default-address-record" width="large">
 		<panel name="main" title="Address details" colSpan="12">
 			<field name="addressL2"  placeholder="e.g. Financial department, CEO"/>
 			<field name="addressL3"  placeholder="e.g. Building A, Entry 2, 2nd Floor, Door 2E"/>

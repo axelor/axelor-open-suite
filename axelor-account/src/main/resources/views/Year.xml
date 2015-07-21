@@ -13,7 +13,7 @@
         <field name="statusSelect"/>
     </grid>
     
-    <form   onSave="action-year-check-date,action-fiscal-year-check-date" onNew="action-year-account-record-new" name="year-account-form" title="Fiscal year" model="com.axelor.apps.base.db.Year">
+    <form onSave="action-year-check-date,action-fiscal-year-check-date" onNew="action-year-account-record-new" name="year-account-form" title="Fiscal year" model="com.axelor.apps.base.db.Year">
 		<panel readonlyIf="statusSelect == 2">
 			<field name="name"/>
 			<field name="code" colSpan="3"/>

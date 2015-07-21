@@ -7,7 +7,7 @@
 		<field name="metaModel" form-view="meta-model-form" grid-view="meta-model-grid"/>
 	</grid>
 	
-	<form name="routing-action-create-form" title="Creation" model="com.axelor.apps.base.db.RoutingActionCreate">
+	<form name="routing-action-create-form" title="Creation" model="com.axelor.apps.base.db.RoutingActionCreate" width="large">
 		<panel>
 			<field name="metaModel" form-view="meta-model-form" grid-view="meta-model-grid"/>
 			<panel-related field="routingActionCreateLineList" colSpan="12" form-view="routing-action-create-line-form" grid-view="routing-action-create-line-grid"/>

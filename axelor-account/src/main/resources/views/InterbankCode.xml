@@ -16,7 +16,7 @@
 		<field name="technicalRejectOk"/>
 	</grid>
 	
-    <form name="interbank-code-form" title="Blocking reason/reject codes lists" model="com.axelor.apps.account.db.InterbankCode">
+    <form name="interbank-code-form" title="Blocking reason/reject codes lists" model="com.axelor.apps.account.db.InterbankCode" width="large">
 		<panel >
 			<field name="code"/>
 			<field name="name"/>

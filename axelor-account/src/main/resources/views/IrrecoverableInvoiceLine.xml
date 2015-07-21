@@ -6,7 +6,7 @@
         <field name="name"/>
         <field name="invoice" grid-view="invoice-grid" form-view="invoice-form"/>
     </grid>
-    <form name="irrecoverable-invoice-line-form" title="Invoice" model="com.axelor.apps.account.db.IrrecoverableInvoiceLine"  >
+    <form name="irrecoverable-invoice-line-form" title="Invoice" model="com.axelor.apps.account.db.IrrecoverableInvoiceLine" width="large">
        <panel >
 			<field name="name"/>
 			<field name="invoiceLineSeq"/>

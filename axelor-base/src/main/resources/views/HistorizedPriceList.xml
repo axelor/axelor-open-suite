@@ -8,7 +8,7 @@
     	<field name="date"/>
     </grid>
     
-   <form name="historized-price-list-form" title="Historized Price list" model="com.axelor.apps.base.db.HistorizedPriceList" onNew="action-price-list-record-default">
+   <form name="historized-price-list-form" title="Historized Price list" model="com.axelor.apps.base.db.HistorizedPriceList" onNew="action-price-list-record-default" width="large">
    		<panel>
 		    <field name="date"/>
     	</panel>

@@ -8,7 +8,7 @@
         <field name="metaModel" form-view="meta-model-form" grid-view="meta-model-grid"/>
     </grid>
     
-    <form name="template-rule-form" title="Template rule" model="com.axelor.apps.base.db.TemplateRule" onNew="action-template-rule-record-new">
+    <form name="template-rule-form" title="Template rule" model="com.axelor.apps.base.db.TemplateRule" onNew="action-template-rule-record-new" width="large">
     	<panel>
 	        <field name="name"/>
 	        <field name="metaModel" form-view="meta-model-form" grid-view="meta-model-grid"/>

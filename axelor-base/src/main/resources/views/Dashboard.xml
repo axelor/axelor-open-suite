@@ -5,7 +5,7 @@
 	
 	<!--  Partner Dashboard  -->
 	
-	<dashboard title="Partner Dashboard" name="base.partner.list.dashboard"  >
+	<dashboard title="Partner Dashboard" name="base.partner.list.dashboard" width="large">
 	    <dashlet action="dashlet.customers.by.country" height="350"   canSearch="true"/>
 	    <dashlet action="dashlet.customers.by.industrySector" height="350"   canSearch="true"/>
 	    <dashlet action="dashlet.suppliers.by.country"   height="350"/>

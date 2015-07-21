@@ -20,10 +20,10 @@
         <field name="externalOk"/>
     </grid>
 
-    <form   onLoad="action-alarm-engine-attrs-external" 
+    <form onLoad="action-alarm-engine-attrs-external" 
     	onSave="action-alarm-engine-method-validate-query" 
     	onNew="action-alarm-engine-attrs-external" 
-    	name="alarm-engine-form" title="Alarm engine" model="com.axelor.apps.base.db.AlarmEngine">
+    	name="alarm-engine-form" title="Alarm engine" model="com.axelor.apps.base.db.AlarmEngine" width="large">
 	    <panel>
 		    <field name="code" x-bind="{{code|uppercase}}"/>
 		    <field name="metaModel" form-view="meta-model-form" grid-view="meta-model-grid"/>

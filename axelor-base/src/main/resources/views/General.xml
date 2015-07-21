@@ -15,7 +15,7 @@
 		<field name="today" />
 	</grid>
 	
-	<form name="general-form" title="General admin" model="com.axelor.apps.base.db.General"  >
+	<form name="general-form" title="General admin" model="com.axelor.apps.base.db.General" width="large">
     	<toolbar>
 		    <button name="new" title="New" hidden="true"/>
 		    <button name="delete" title="Delete" hidden="true"/>
@@ -79,7 +79,7 @@
 		</panel-tabs>
 	</form>
 	
-	<form name="general-settings-form" title="General Settings" model="com.axelor.apps.base.db.General" >
+	<form name="general-settings-form" title="General Settings" model="com.axelor.apps.base.db.General" width="large">
 		<panel-tabs colSpan="12">
 	    	<panel title="Invoice configuration">
 				<field name="manageInvoicedAmountByLine" if-module="axelor-supplychain"/>
