@@ -19,23 +19,23 @@
 	</grid>
 
 	<form name="payment-schedule-line-form" title="Schedule line"
-		model="com.axelor.apps.account.db.PaymentScheduleLine"  >
-		<panel >
-		<field name="paymentSchedule" form-view="payment-schedule-form" grid-view="payment-schedule-grid" />
-		<field name="scheduleLineSeq" />
-		<field name="inTaxAmount" readonlyIf="fromReject"/>
-		<field name="inTaxAmountPaid" />
-		<field name="scheduleDate" />
-		<field name="debitBlockingOk" />
-		<field name="rejectDate" />
-		<field name="interbankCodeLine" form-view="interbank-code-line-form" grid-view="interbank-code-line-grid"/>
-		<field name="statusSelect" />
-		<field name="debitNumber" />
-		<field name="directDebitManagement" form-view="direct-debit-management-form-payment-schedule-line" grid-view="direct-debit-management-grid"/>
-		<field name="rejectMoveLine" form-view="move-line-form" grid-view="move-line-grid"/>
-		<field name="advanceOrPaymentMove" form-view="move-form" grid-view="move-grid"/>
-		<field name="advanceMoveLine" form-view="move-line-form" grid-view="move-line-grid"/>
-		<field name="fromReject" />
+		model="com.axelor.apps.account.db.PaymentScheduleLine" width="large">
+		<panel>
+			<field name="paymentSchedule" form-view="payment-schedule-form" grid-view="payment-schedule-grid" />
+			<field name="scheduleLineSeq" />
+			<field name="inTaxAmount" readonlyIf="fromReject"/>
+			<field name="inTaxAmountPaid" />
+			<field name="scheduleDate" />
+			<field name="debitBlockingOk" />
+			<field name="rejectDate" />
+			<field name="interbankCodeLine" form-view="interbank-code-line-form" grid-view="interbank-code-line-grid"/>
+			<field name="statusSelect" />
+			<field name="debitNumber" />
+			<field name="directDebitManagement" form-view="direct-debit-management-form-payment-schedule-line" grid-view="direct-debit-management-grid"/>
+			<field name="rejectMoveLine" form-view="move-line-form" grid-view="move-line-grid"/>
+			<field name="advanceOrPaymentMove" form-view="move-form" grid-view="move-grid"/>
+			<field name="advanceMoveLine" form-view="move-line-form" grid-view="move-line-grid"/>
+			<field name="fromReject" />
 		</panel>
 	</form>
 
@@ -52,23 +52,22 @@
 	</grid>
 
 	<form name="payment-schedule-line-payment-schedule-form" title="Schedule line"
-		model="com.axelor.apps.account.db.PaymentScheduleLine"  >
-		
-		<panel >
-		<field name="invoice" grid-view="invoice-grid" form-view="invoice-form"/>
-		<field name="scheduleLineSeq" />
-		<field name="inTaxAmount" readonlyIf="fromReject"/>
-		<field name="scheduleDate" />
-		<field name="debitBlockingOk" />
-		<field name="rejectDate" />
-		<field name="interbankCodeLine" form-view="interbank-code-line-form" grid-view="interbank-code-line-grid"/>
-		<field name="debitNumber" />
-		<field name="directDebitManagement" form-view="direct-debit-management-form-payment-schedule-line" grid-view="direct-debit-management-grid"/>
-		<field name="rejectMoveLine" form-view="move-line-form" grid-view="move-line-grid"/>
-		<field name="advanceOrPaymentMove" form-view="move-form" grid-view="move-grid"/>
-		<field name="advanceMoveLine" form-view="move-line-form" grid-view="move-line-grid"/>
-		<field name="fromReject" />
-		<field name="statusSelect" readonly="true" />
+		model="com.axelor.apps.account.db.PaymentScheduleLine" width="large">
+		<panel>
+			<field name="invoice" grid-view="invoice-grid" form-view="invoice-form"/>
+			<field name="scheduleLineSeq" />
+			<field name="inTaxAmount" readonlyIf="fromReject"/>
+			<field name="scheduleDate" />
+			<field name="debitBlockingOk" />
+			<field name="rejectDate" />
+			<field name="interbankCodeLine" form-view="interbank-code-line-form" grid-view="interbank-code-line-grid"/>
+			<field name="debitNumber" />
+			<field name="directDebitManagement" form-view="direct-debit-management-form-payment-schedule-line" grid-view="direct-debit-management-grid"/>
+			<field name="rejectMoveLine" form-view="move-line-form" grid-view="move-line-grid"/>
+			<field name="advanceOrPaymentMove" form-view="move-form" grid-view="move-grid"/>
+			<field name="advanceMoveLine" form-view="move-line-form" grid-view="move-line-grid"/>
+			<field name="fromReject" />
+			<field name="statusSelect" readonly="true" />
 		</panel>
 		
 	</form>

@@ -54,7 +54,7 @@
     
     <form name="move-line-form" title="Move line" model="com.axelor.apps.account.db.MoveLine" canDelete="false"
     onLoad="action-move-line-attrs-collapse-irrecoverable-group" 
-    onNew="action-account-move-line-onnew-group">
+    onNew="action-account-move-line-onnew-group" width="large">
     	
     	<panel title="Informations" readonly="true" >
    			<field name="name"/>
@@ -97,7 +97,7 @@
     </form>
     
     <form name="move-line-move-form" title="Move line" model="com.axelor.apps.account.db.MoveLine" 
-	onNew="action-account-move-line-onnew-group" onLoad="action-account-move-moveline-onload-group">
+	onNew="action-account-move-line-onnew-group" onLoad="action-account-move-moveline-onload-group" width="large">
 		<panel>
 			<field name="name" css="bold"/>
 			<field name="date" colSpan="3"/>
@@ -130,7 +130,7 @@
     
     <form name="move-line-accounting-situation-form" title="Move line" model="com.axelor.apps.account.db.MoveLine"   canDelete="false" canNew="false"
     onLoad="action-group-account-moveline-accounting-situation-onload" 
-    onNew="action-account-move-line-onnew-group">
+    onNew="action-account-move-line-onnew-group" width="large">
     	
     	<panel name="informations" title="Informations" readonly="true">
 	        <field name="name"/>

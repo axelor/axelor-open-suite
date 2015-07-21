@@ -8,7 +8,7 @@
         <field name="description"  />
     </grid>
     
-    <form name="partner-list-form" title="Partner list" model="com.axelor.apps.base.db.PartnerList">
+    <form name="partner-list-form" title="Partner list" model="com.axelor.apps.base.db.PartnerList" width="large">
     	<panel>
 	        <field name="code" x-bind="{{code|uppercase}}"/>
 	        <field name="description" colSpan="12"/>

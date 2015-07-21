@@ -8,7 +8,7 @@
         <field name="code"/>
     </grid>
     
-    <form name="product-family-form" title="Product family" model="com.axelor.apps.base.db.ProductFamily"  >
+    <form name="product-family-form" title="Product family" model="com.axelor.apps.base.db.ProductFamily" width="large">
 	    <toolbar>
 			<button name="viewProducts" title="View Products" onClick="action-view-product-by-family"/>
 		</toolbar>

@@ -8,7 +8,7 @@
     	<field name="name" />
     </grid>
     
-   <form name="geographical-area-form" title="Geographical area" model="com.axelor.apps.base.db.GeographicalArea">
+   <form name="geographical-area-form" title="Geographical area" model="com.axelor.apps.base.db.GeographicalArea" width="large">	
    	   <panel> 
 	   		<field name="name"/>
 	   </panel>

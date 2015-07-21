@@ -13,8 +13,8 @@
         <field name="amount"/>
     </grid>
   
-     <form   name="bank-statement-line-form" title="Bank Statement Line" model="com.axelor.apps.account.db.BankStatementLine">
-	  <panel >
+     <form name="bank-statement-line-form" title="Bank Statement Line" model="com.axelor.apps.account.db.BankStatementLine" width="large">
+	  <panel>
 	    <field name="name"/>
 	    <field name="reference"/>
 	    <field name="effectDate"/>

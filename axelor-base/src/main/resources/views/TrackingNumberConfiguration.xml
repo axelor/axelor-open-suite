@@ -18,7 +18,7 @@
     </grid>
     
     <form name="tracking-number-configuration-form" title="Tracking Number Configuration" model="com.axelor.apps.base.db.TrackingNumberConfiguration"
-    	onNew="action-tracking-number-config-record-default" onSave="action-tracking-number-validate-qty">
+    	onNew="action-tracking-number-config-record-default" onSave="action-tracking-number-validate-qty" width="large">
     	<panel>
 	        <field name="isPurchaseTrackingManaged" onChange="action-tracking-number-set-default-purchase-qty"/>
 		    <panel title="Purchase tracking management" showIf="isPurchaseTrackingManaged" colSpan="12">

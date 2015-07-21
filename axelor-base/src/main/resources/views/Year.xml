@@ -23,7 +23,6 @@
 	    </panel>
     </form>
     
-    
      <action-record name="action-year-record-new" model="com.axelor.apps.base.db.Year">
     	<field name="company"  expr="eval:__user__.activeCompany" if="__user__.activeCompany != null"/>
     	<field name="company"  expr="eval:__repo__.of(Company).all().fetchOne()" if="__user__.activeCompany == null &amp;&amp; __repo__.of(Company).all().fetch().size == 1"/>

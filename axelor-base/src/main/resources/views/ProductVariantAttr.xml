@@ -9,7 +9,7 @@
         <field name="productVariantValueList" form-view="product-variant-value-form" grid-view="product-variant-value-grid"/>
     </grid>
     
-    <form name="product-variant-attr-form" title="Product variant attribute" model="com.axelor.apps.base.db.ProductVariantAttr">
+    <form name="product-variant-attr-form" title="Product variant attribute" model="com.axelor.apps.base.db.ProductVariantAttr" width="large">
     	<panel>
         	<field name="name" />
         	<field name="code" x-bind="{{code|uppercase}}" />

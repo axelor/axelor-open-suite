@@ -8,7 +8,7 @@
         <field name="name"/>
     </grid>
     
-	<form name="tax-form" title="Tax" model="com.axelor.apps.account.db.Tax"  >
+	<form name="tax-form" title="Tax" model="com.axelor.apps.account.db.Tax" width="large">
 		<panel>
 			<field name="code" x-bind="{{code|uppercase}}"/>
 			<field name="name"/>

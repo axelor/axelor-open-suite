@@ -7,7 +7,7 @@
     </grid>
 	
 	<form name="scheduler-form" title="Scheduler" model="com.axelor.apps.base.db.Scheduler" 
-		onSave="scheduler-validate-infos" >
+		onSave="scheduler-validate-infos" width="large">
 		<panel>
 	    	<field name="name"/>
 	    	<spacer/>

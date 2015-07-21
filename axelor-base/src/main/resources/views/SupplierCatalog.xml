@@ -13,7 +13,7 @@
     </grid>
     
     <form name="supplier-catalog-form" title="Supplier Catalog" model="com.axelor.apps.base.db.SupplierCatalog" 
-    onNew="action-supplier-catalog-attrs-scale-and-precision" onLoad="action-supplier-catalog-attrs-scale-and-precision">
+    onNew="action-supplier-catalog-attrs-scale-and-precision" onLoad="action-supplier-catalog-attrs-scale-and-precision" width="large">
     	<panel colSpan="12">
 			<field name="supplierPartner" domain="self.isContact = false AND self.isSupplier = true" form-view="partner-form" grid-view="partner-grid"/>
 			<field name="updateDate"/>

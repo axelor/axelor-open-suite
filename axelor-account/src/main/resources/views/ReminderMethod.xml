@@ -6,8 +6,7 @@
     	<field name="name"/>
     	<field name="code"/>
     </grid>
-    <form name="reminder-method-form" title="Reminder method" model="com.axelor.apps.account.db.ReminderMethod"  >
-    	
+    <form name="reminder-method-form" title="Reminder method" model="com.axelor.apps.account.db.ReminderMethod" width="large">
     	<panel >
     		<field name="name"/>
     		<field name="code"/>

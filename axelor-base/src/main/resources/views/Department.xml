@@ -9,7 +9,7 @@
         <field name="name"/>
     </grid>
     
-    <form name="department-form" title="Departement" model="com.axelor.apps.base.db.Department" >
+    <form name="department-form" title="Departement" model="com.axelor.apps.base.db.Department" width="large">
     	<panel>
 	        <field name="code" x-bind="{{code|uppercase}}"/>
 	        <field name="name"/>

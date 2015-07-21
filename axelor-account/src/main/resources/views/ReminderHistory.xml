@@ -18,7 +18,7 @@
         <field name="reminderMethodLine" grid-view="reminder-method-line-grid" form-view="reminder-method-line-form"/>
     </grid>
     
-	<form name="reminder-history-form" title="Reminder history" model="com.axelor.apps.account.db.ReminderHistory">
+	<form name="reminder-history-form" title="Reminder history" model="com.axelor.apps.account.db.ReminderHistory" width="large">
 		<panel title="Reminder settings">
         	<field name="reminder" form-view="reminder-form" grid-view="reminder-grid"/>
         	<field name="reminderMethod" widget="SuggestBox" grid-view="reminder-method-grid" form-view="reminder-method-form"/>

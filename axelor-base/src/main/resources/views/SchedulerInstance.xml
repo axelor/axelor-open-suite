@@ -11,7 +11,7 @@
 	
 	<form name="scheduler-instance-form" title="Scheduler" model="com.axelor.apps.base.db.SchedulerInstance"
 		onNew="action-scheduler-instance-record-first-execution-date"
-		onSave="scheduler-instance-validate-infos">
+		onSave="scheduler-instance-validate-infos" width="large">
 		<panel>
 	    	<field name="name"/>
 	    	<spacer/>

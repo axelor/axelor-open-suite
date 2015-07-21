@@ -14,7 +14,7 @@
 
 	<form name="elements-to-invoice-form" title="Element To Invoice" model="com.axelor.apps.businessproject.db.ElementsToInvoice" 
 	onNew="action-element-to-invoice-record-default,action-elements-to-invoice-attrs-scale-and-precision"
-	onLoad="action-elements-to-invoice-attrs-scale-and-precision">
+	onLoad="action-elements-to-invoice-attrs-scale-and-precision" width="large">
 		<panel>
 			<field name="user" form-view="user-form" grid-view="user-grid"/>
 			<field name="date"/>
