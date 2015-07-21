@@ -47,7 +47,7 @@
     </form>
     
     <action-attrs name="action-base-attrs-domain-company">
-    	<attribute name="domain" for="company" expr="eval: &quot; self.id IN ${_parent?.companySet?.collect{it.id}.join(',')}&quot;"/>
+    	<attribute name="domain" for="company" expr="eval: &quot; self.id IN (${_parent?.companySet?.collect{it.id}.join(',')})&quot;"/>
     </action-attrs>
 
 </object-views>
