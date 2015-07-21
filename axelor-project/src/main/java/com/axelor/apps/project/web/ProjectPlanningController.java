@@ -192,7 +192,7 @@ public class ProjectPlanningController extends ProjectPlanningRepository{
 	@Transactional
 	public void saveLines(ActionRequest request, ActionResponse response) throws AxelorException{
 
-		List<ProjectPlanningLine> planningLineList =(List<ProjectPlanningLine>) request.getContext().get("$projectPlanningLineList");
+		List<ProjectPlanningLine> planningLineList =(List<ProjectPlanningLine>) request.getContext().get("projectPlanningLineList");
 		if(planningLineList != null){
 			for (ProjectPlanningLine projectPlanningLine : planningLineList) {
 				if(projectPlanningLine.getToSave()){
@@ -200,7 +200,6 @@ public class ProjectPlanningController extends ProjectPlanningRepository{
 				}
 			}
 		}
-
 
 	}
 }
