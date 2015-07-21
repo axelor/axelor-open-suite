@@ -7,12 +7,12 @@
 		<field name="user" />
 		<field name="projectTask" form-view="project-task-form" grid-view="project-task-grid" />
 		<field name="monday" aggregate="sum" onChange="action-project-planning-line-record-to-save"/>
-		<field name="tuesday" aggregate="sum"/>
-		<field name="wednesday" aggregate="sum"/>
-		<field name="thursday" aggregate="sum"/>
-		<field name="friday" aggregate="sum"/>
-		<field name="saturday" aggregate="sum"/>
-		<field name="sunday" aggregate="sum"/>
+		<field name="tuesday" aggregate="sum" onChange="action-project-planning-line-record-to-save"/>
+		<field name="wednesday" aggregate="sum" onChange="action-project-planning-line-record-to-save"/>
+		<field name="thursday" aggregate="sum" onChange="action-project-planning-line-record-to-save"/>
+		<field name="friday" aggregate="sum" onChange="action-project-planning-line-record-to-save"/>
+		<field name="saturday" aggregate="sum" onChange="action-project-planning-line-record-to-save"/>
+		<field name="sunday" aggregate="sum" onChange="action-project-planning-line-record-to-save"/>
 		<field name="toSave" hidden="true"/>
 	</grid>
 	
@@ -20,12 +20,12 @@
 		<field name="user" />
 		<field name="projectTask"  form-view="project-task-form" grid-view="project-task-grid" />
 		<field name="monday" aggregate="sum" onChange="action-project-planning-line-record-to-save"/>
-		<field name="tuesday" aggregate="sum"/>
-		<field name="wednesday" aggregate="sum"/>
-		<field name="thursday" aggregate="sum"/>
-		<field name="friday" aggregate="sum"/>
-		<field name="saturday" aggregate="sum"/>
-		<field name="sunday" aggregate="sum"/>
+		<field name="tuesday" aggregate="sum" onChange="action-project-planning-line-record-to-save"/>
+		<field name="wednesday" aggregate="sum" onChange="action-project-planning-line-record-to-save"/>
+		<field name="thursday" aggregate="sum" onChange="action-project-planning-line-record-to-save"/>
+		<field name="friday" aggregate="sum" onChange="action-project-planning-line-record-to-save"/>
+		<field name="saturday" aggregate="sum" onChange="action-project-planning-line-record-to-save"/>
+		<field name="sunday" aggregate="sum" onChange="action-project-planning-line-record-to-save"/>
 		<field name="toSave" hidden="true"/>
 	</grid>
 	
