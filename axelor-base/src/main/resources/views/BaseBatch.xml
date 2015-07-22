@@ -13,7 +13,7 @@
  
     <form name="base-batch-form" title="Base Batch" model="com.axelor.apps.base.db.BaseBatch"  
     onLoad="action-base-batch-attrs-action-select" 
-    onNew="action-group-base-basebatch-onnew">
+    onNew="action-group-base-basebatch-onnew" width="large">
     	<panel>
 		    <field name="actionSelect" onChange="action-base-batch-attrs-action-select"/>
 		    <field name="code" x-bind="{{code|uppercase}}"/>

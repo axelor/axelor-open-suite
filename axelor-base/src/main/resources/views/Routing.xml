@@ -10,7 +10,7 @@
 		<field name="isActive"/>
 	</grid>
 	
-	<form name="routing-form" title="Routing rule" model="com.axelor.apps.base.db.Routing" >
+	<form name="routing-form" title="Routing rule" model="com.axelor.apps.base.db.Routing" width="large">
 		<panel>
 			<field name="name"/>
 			<field name="code" x-bind="{{code|uppercase}}"/>

@@ -25,8 +25,8 @@
 		</panel>
 	    <panel>
 	    	<button name="seeMonth" title="See Month" colSpan="4"/>
-	    	<field name="fromDate" colSpan="4"/>
-	      	<field name="toDate" colSpan="4"/>
+	    	<field name="$fromDate" colSpan="4" type="date" title="From Date"/>
+	      	<field name="$toDate" colSpan="4" type="date" title="To Date"/>
 	    </panel>
 	</form>
 	
@@ -47,14 +47,14 @@
 		</panel>
 	    <panel>
 	    	<button name="seeMonth" title="See Month" colSpan="4"/>
-	    	<field name="fromDate" colSpan="4"/>
-	      	<field name="toDate" colSpan="4"/>
+	    	<field name="$fromDate" colSpan="4" type="date" title="From Date"/>
+	      	<field name="$toDate" colSpan="4" type="date" title="To Date"/>
 	    </panel>
 	</form>
 
 	<action-record name="action-project-planning-record-default" model="com.axelor.apps.project.db.ProjectPlanning">
-		<field name="fromDate" expr="eval: com.axelor.apps.project.service.ProjectPlanningService.getFromDate()"/>
-		<field name="toDate" expr="eval: com.axelor.apps.project.service.ProjectPlanningService.getToDate()"/>
+		<field name="$fromDate" expr="call: com.axelor.apps.project.service.ProjectPlanningService:getFromDate()"/>
+		<field name="$toDate" expr="call: com.axelor.apps.project.service.ProjectPlanningService:getToDate()"/>
 	</action-record>
 	
 	<action-method name="action-project-planning-method-previous-week">

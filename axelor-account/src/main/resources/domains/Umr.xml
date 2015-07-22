@@ -5,9 +5,9 @@
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
-  <entity name="Rum" lang="java" >
+  <entity name="Umr" lang="java" >
   
-    <string name="rumNumber" title="RUM N°" namecolumn="true" initParam="true"/>
+    <string name="umrNumber" title="UMR N°" namecolumn="true" initParam="true"/>
     <string name="debtorName" title="Debtor Name" initParam="true"/>
     <many-to-one name="debtorAddress" ref="com.axelor.apps.base.db.Address" title="Debtor address" initParam="true"/>
     <date name="creationDate" title="Creation date" initParam="true"/>

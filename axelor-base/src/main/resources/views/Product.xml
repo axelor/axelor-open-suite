@@ -27,7 +27,7 @@
 
    <form name="product-form" title="Product" model="com.axelor.apps.base.db.Product" 
    onNew="action-group-base-product-onnew" 
-   onLoad="action-product-attrs-scale-and-precision,action-product-attrs-title-sale-price">
+   onLoad="action-product-attrs-scale-and-precision,action-product-attrs-title-sale-price" width="large">
     <toolbar>
     		<button name="sendByEmail" title="Send Email" icon="fa-envelope" onClick="action-send-by-email-with-template"/>
 			<button name="showProductSheet" title="Product sheet" icon="fa-print" onClick="save,action-product-method-show-product-sheet"/>

@@ -20,7 +20,7 @@
 	    <field name="acquitOk"/>
 	</grid>
     
-    <form name="alarm-form" title="Alarm" model="com.axelor.apps.base.db.Alarm">
+    <form name="alarm-form" title="Alarm" model="com.axelor.apps.base.db.Alarm" width="large">
 	  <panel>
 	    <field name="date" colSpan="5"/>
 	    <field name="alarmEngine" colSpan="5" edit-window="self" form-view="alarm-message-form" summary-view="alarm-message-form" grid-view="alarm-engine-grid"/>

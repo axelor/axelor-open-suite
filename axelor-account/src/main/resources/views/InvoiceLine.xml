@@ -15,7 +15,7 @@
     
     <form name="invoice-line-form" title="Invoice line" model="com.axelor.apps.account.db.InvoiceLine"   
     onNew="action-account-invoice-line-onnew-group"
-    onLoad="action-account-invoice-line-onload-group">
+    onLoad="action-account-invoice-line-onload-group" width="large">
     	<panel-tabs>
     		<panel title="Informations">
     			<field name="sequence"/>
@@ -28,7 +28,7 @@
 		        <field name="price" required="true"  onChange="action-invoice-line-method-compute"/>
 		        <field name="priceDiscounted" hidden="true"/>
 		        <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
-		        <field name="analyticAccount" form-view="analytic-account-form" grid-view="analytic-account-grid" />
+		        <panel-related field="analyticAccountSet" colSpan="12" form-view="analytic-account-form" grid-view="analytic-account-grid" />
 		    	<field name="taxLine" onChange="action-invoice-line-method-convert-tax,action-invoice-line-method-compute" grid-view="tax-line-grid" form-view="tax-line-form"/>
 		    	<field name="exTaxTotal" readonly="true"/>
 	    		<field name="inTaxTotal" readonly="true"/>

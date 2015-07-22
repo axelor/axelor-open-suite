@@ -11,7 +11,7 @@
     </grid>
  
 	 <form name="account-management-payment-mode-form" title="Account Management" model="com.axelor.apps.account.db.AccountManagement"  
-	 onNew="action-account-management-record-payment">
+	 onNew="action-account-management-record-payment" width="large">
 	 	<panel >
 			<field name="company" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
 			<field name="cashAccount" domain="self.company = :company AND self.accountType.nameSelect = 'cash'" form-view="account-form" grid-view="account-grid"/>

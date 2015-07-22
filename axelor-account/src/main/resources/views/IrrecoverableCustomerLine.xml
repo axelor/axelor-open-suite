@@ -7,7 +7,7 @@
         <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
     </grid>
     
-    <form name="irrecoverable-customer-line-form" title="Customer" model="com.axelor.apps.account.db.IrrecoverableCustomerLine"   >
+    <form name="irrecoverable-customer-line-form" title="Customer" model="com.axelor.apps.account.db.IrrecoverableCustomerLine" width="large">
         <panel >
         	<field name="partner" form-view="partner-form" grid-view="partner-grid" domain="self.isContact = false" colSpan="12"/>
         </panel>

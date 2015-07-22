@@ -14,7 +14,7 @@
         <field name="invoiced"/>
     </grid>
     <form name="analytic-move-line-form" title="Analytic Move Line" model="com.axelor.apps.account.db.AnalyticMoveLine"  onNew="action-analytic-move-line-record-currency,action-analytic-move-line-attrs-title-project-task"
-    	onLoad="action-analytic-move-line-attrs-title-project-task">
+    	onLoad="action-analytic-move-line-attrs-title-project-task" width="large">
        <panel >
        		<field name="analyticJournal" form-view="analytic-journal-form" grid-view="analytic-journal-grid"/>
 	        <field name="analyticAccount" form-view="analytic-account-form" grid-view="analytic-account-grid"/>

@@ -47,18 +47,6 @@ public class ProjectPlanningService extends ProjectPlanningRepository{
 		return " " + Integer.toString(newDate.getDayOfMonth())+"/"+Integer.toString(newDate.getMonthOfYear());
 	}
 
-	public LocalDate getFromDate(){
-		LocalDate today = generalService.getTodayDate();
-		LocalDate newDate = new LocalDate().withYear(today.getYear()).withWeekOfWeekyear(today.getWeekOfWeekyear()).withDayOfMonth(1);
-		return newDate;
-	}
-
-	public LocalDate getToDate(){
-		LocalDate today = generalService.getTodayDate();
-		LocalDate newDate = new LocalDate().withYear(today.getYear()).withWeekOfWeekyear(today.getWeekOfWeekyear()).withDayOfMonth(today.dayOfMonth().withMaximumValue().getDayOfMonth());
-		return newDate;
-	}
-
 	@Transactional
 	public List<ProjectPlanningLine> populateMyPlanning(ProjectPlanning planning, User user) throws AxelorException{
 		List<ProjectPlanningLine> planningLineList = new ArrayList<ProjectPlanningLine>();
@@ -113,6 +101,16 @@ public class ProjectPlanningService extends ProjectPlanningRepository{
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.PROJECT_PLANNING_NO_TASK_TEAM)), IException.CONFIGURATION_ERROR);
 		}
 		return planningLineList;
+	}
+
+	public LocalDate getFromDate(){
+		LocalDate todayDate = generalService.getTodayDate();
+		return new LocalDate(todayDate.getYear(), todayDate.getMonthOfYear(), todayDate.dayOfMonth().getMinimumValue());
+	}
+
+	public LocalDate getToDate(){
+		LocalDate todayDate = generalService.getTodayDate();
+		return new LocalDate(todayDate.getYear(), todayDate.getMonthOfYear(), todayDate.dayOfMonth().getMaximumValue());
 	}
 
 }

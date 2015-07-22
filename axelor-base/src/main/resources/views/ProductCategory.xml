@@ -10,7 +10,7 @@
         <field name="parentProductCategory" form-view="product-category-form" grid-view="product-family-grid"/>
     </grid>
     
-    <form name="product-category-form" title="Product category" model="com.axelor.apps.base.db.ProductCategory"  >
+    <form name="product-category-form" title="Product category" model="com.axelor.apps.base.db.ProductCategory" width="large">
 	    <toolbar>
 			<button name="viewProducts" title="View Products" onClick="action-view-product-by-category"/>
 		</toolbar>

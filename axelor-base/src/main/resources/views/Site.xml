@@ -10,7 +10,7 @@
 	    <field name="geographicalArea" form-view="geographical-area-form" grid-view="geographical-area-grid"/>
 	</grid>
 	
-    <form name="site-form" title="Site" model="com.axelor.apps.consulting.db.Site">
+    <form name="site-form" title="Site" model="com.axelor.apps.consulting.db.Site" width="large">
     	<panel>
 		    <field name="name"/>
 		    <field name="partner" domain="self.isContact = false" form-view="partner-form" grid-view="partner-grid"/>

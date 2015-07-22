@@ -11,8 +11,8 @@
 	    </toolbar>
 	    <field name="fullName"/>
 	    <field name="mainInvoicingAddress" form-view="address-form" grid-view="address-grid"/>
-	    <field name="fixedPhone"/>
-		<field name="emailAddress.address"/>
+	    <field name="fixedPhone" placeholder="+33100000000" pattern="^\+?\d{8,11}$"/>
+		<field name="emailAddress.address" placeholder="whatever@example.com" pattern="^[a-z0-9A-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ!#$%&amp;'*+/=?^_`{|}~-]+(?:\.[a-z0-9A-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ!#$%&amp;'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+(?:[a-z]{2,})$"/>
 	    <field name="partnerCategory" grid-view="partner-category-grid" form-view="partner-category-form"/>
 		<button name="logCall" title="Log Call"   icon="fa-phone" help="Log Call" onClick="action-partner-view-create-call"  if-module="axelor-crm"/>
 		<button name="scheduleMeeting" title="Schedule Meeting"   help="Schedule Meeting" icon="fa-group" onClick="action-partner-view-create-meeting" if-module="axelor-crm"/>
@@ -21,9 +21,9 @@
     
     <grid name="partner-contact-grid" title="Contacts" model="com.axelor.apps.base.db.Partner">
 	    <field name="fullName"/>
-	    <field name="fixedPhone"/>
-	    <field name="mobilePhone"/>
-	    <field name="emailAddress.address"/>
+	    <field name="fixedPhone" placeholder="+33100000000" pattern="^\+?\d{8,11}$"/>
+	    <field name="mobilePhone" placeholder="+33100000000" pattern="^\+?\d{8,11}$"/>
+	    <field name="emailAddress.address" placeholder="whatever@example.com" pattern="^[a-z0-9A-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ!#$%&amp;'*+/=?^_`{|}~-]+(?:\.[a-z0-9A-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ!#$%&amp;'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+(?:[a-z]{2,})$"/>
 	    <button name="logCall" title="Log Call" icon="fa-phone" help="Log Call" onClick="action-partner-view-create-call" if-module="axelor-crm"/>
 		<button name="scheduleMeeting" title="Schedule Meeting"   help="Schedule Meeting" icon="fa-group" onClick="action-partner-view-create-meeting" if-module="axelor-crm"/>
 		<button name="sendByEmail" title="Send Email"   help="Send Email" icon="fa-envelope" onClick="action-send-by-email-with-template" if-module="axelor-crm"/>
@@ -32,9 +32,9 @@
      <grid name="partner-grid-group" title="Partner" model="com.axelor.apps.base.db.Partner" groupBy="user">
         <field name="fullName"/>
         <field name="mainInvoicingAddress" form-view="address-form" grid-view="address-grid"/>
-        <field name="fixedPhone"/>
-		<field name="mobilePhone"/>
-        <field name="emailAddress.address"/>
+        <field name="fixedPhone" placeholder="+33100000000" pattern="^\+?\d{8,11}$"/>
+		<field name="mobilePhone" placeholder="+33100000000" pattern="^\+?\d{8,11}$"/>
+        <field name="emailAddress.address" placeholder="whatever@example.com" pattern="^[a-z0-9A-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ!#$%&amp;'*+/=?^_`{|}~-]+(?:\.[a-z0-9A-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ!#$%&amp;'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+(?:[a-z]{2,})$"/>
         <field name="user" form-view="user-form" grid-view="user-grid"/>
     </grid>
     
@@ -86,12 +86,12 @@
 					<field name="deliveryDelay" showIf="isSupplier"/>
 				</panel>
 				<panel title="Contact details" colSpan="12">
-					<field name="fixedPhone" colSpan="3"/>
-					<field name="fax" colSpan="3"/>
-					<field name="mobilePhone" colSpan="3" hideIf="partnerTypeSelect == 1"/>
+					<field name="fixedPhone" colSpan="3" placeholder="+33100000000" pattern="^\+?\d{8,11}$"/>
+					<field name="fax" colSpan="3" pattern="^\+?\d{8,11}$" placeholder="+33000000000"/>
+					<field name="mobilePhone" colSpan="3" hideIf="partnerTypeSelect == 1" placeholder="+33100000000" pattern="^\+?\d{8,11}$"/>
 					<field name="emailAddress" canSelect="false" colSpan="6" form-view="email-address-simple-form" x-show-icons="false">
 						<editor x-show-titles="false">
-							<field name="address" colSpan="12"/>
+							<field name="address" colSpan="12" placeholder="whatever@example.com" pattern="^[a-z0-9A-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ!#$%&amp;'*+/=?^_`{|}~-]+(?:\.[a-z0-9A-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ!#$%&amp;'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+(?:[a-z]{2,})$"/>
 						</editor>
 					</field>
 					<field name="webSite"/>
@@ -137,10 +137,10 @@
 				<label title="OR" colSpan="4"/>
 				<field name="flatFeePurchase" colSpan="4"/>
 			</panel>
-			<panel title="Sale Order" if-module="axelor-sale">
+			<panel title="Sale Order" if-module="axelor-sale" showIf="isCustomer == true">
 				<field name="saleOrderInformation" colSpan="12"/>
 			</panel>
-			<panel title="Purchase Order" if-module="axelor-purchase">
+			<panel title="Purchase Order" if-module="axelor-purchase" showIf="isSupplier == true">
 				<field name="purchaseOrderInformation" colSpan="12"/>
 			</panel>
 		</panel-tabs>
@@ -162,15 +162,15 @@
 	<grid name="partner-light-grid" title="Contacts" model="com.axelor.apps.base.db.Partner">
         <field name="fullName"/>
         <field name="mainInvoicingAddress" form-view="address-form" grid-view="address-grid"/>
-        <field name="fixedPhone"/>
-		<field name="mobilePhone"/>
-        <field name="email"/>
+        <field name="fixedPhone" placeholder="+33100000000" pattern="^\+?\d{8,11}$"/>
+		<field name="mobilePhone" placeholder="+33100000000" pattern="^\+?\d{8,11}$"/>
+        <field name="email" placeholder="whatever@example.com" pattern="^[a-z0-9A-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ!#$%&amp;'*+/=?^_`{|}~-]+(?:\.[a-z0-9A-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ!#$%&amp;'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+(?:[a-z]{2,})$"/>
     </grid>
     
     <form name="partner-light-form" title="Partner" model="com.axelor.apps.base.db.Partner"
 	    onNew="action-partner-record-partner-type-select" 
 	    onLoad="action-partner-attrs-change-name" 
-	    onSave="save,action-set-partner-seq">
+	    onSave="save,action-set-partner-seq" width="large">
 	    <toolbar>
     		<button name="sendByEmail" title="Send email" onClick="save,action-send-by-email-with-template"   readonlyIf="id == null"/>
     	</toolbar>
@@ -200,14 +200,14 @@
 	                <field name="deliveryAddress" form-view="address-form" grid-view="address-grid"/>
 	            </panel>
 	            <panel title="Contact" colSpan="12">
-	                <field name="emailAddress" canSelect="false" form-view="email-address-simple-form" x-show-icons="false">
+	                <field name="emailAddress" canSelect="false" form-view="email-address-simple-form" x-show-icons="false" placeholder="whatever@example.com" pattern="^[a-z0-9A-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ!#$%&amp;'*+/=?^_`{|}~-]+(?:\.[a-z0-9A-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ!#$%&amp;'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+(?:[a-z]{2,})$">
 						<editor x-show-titles="false">
 							<field name="address"/>
 						</editor>
 					</field>
-	                <field name="fax"/>
-	                <field name="fixedPhone"/>
-					<field name="mobilePhone"/>
+	                <field name="fax" pattern="^\+?\d{8,11}$" placeholder="+33000000000"/>
+	                <field name="fixedPhone" placeholder="+33100000000" pattern="^\+?\d{8,11}$"/>
+					<field name="mobilePhone" placeholder="+33100000000" pattern="^\+?\d{8,11}$"/>
 	                <field name="webSite"/>
 	            </panel>
 	       </panel>
@@ -249,14 +249,14 @@
         <panel title="Contact details">
             <field name="jobTitle"/>
             <field name="reportsTo" domain="self.isContact = true"/>
-            <field name="fixedPhone"/>
-            <field name="mobilePhone"/>
+            <field name="fixedPhone" placeholder="+33100000000" pattern="^\+?\d{8,11}$"/>
+            <field name="mobilePhone" placeholder="+33100000000" pattern="^\+?\d{8,11}$"/>
             <field name="emailAddress" canSelect="false" form-view="email-address-simple-form" x-show-icons="false">
 				<editor x-show-titles="false">
-					<field name="address"/>
+					<field name="address" placeholder="whatever@example.com" pattern="^[a-z0-9A-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ!#$%&amp;'*+/=?^_`{|}~-]+(?:\.[a-z0-9A-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ!#$%&amp;'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+(?:[a-z]{2,})$"/>
 				</editor>
 			</field>
-            <field name="fax"/>
+            <field name="fax" pattern="^\+?\d{8,11}$" placeholder="+33000000000"/>
             <field name="mainInvoicingAddress" title="Address" canNew="true" form-view="address-form" grid-view="address-grid"/>     
         </panel>
         <panel sidebar="true" title="Settings">
@@ -282,12 +282,12 @@
 	    <panel>
 	        <field name="emailAddress" canSelect="false" form-view="email-address-simple-form" x-show-icons="false">
 				<editor>
-					<field name="address"/>
+					<field name="address" placeholder="whatever@example.com" pattern="^[a-z0-9A-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ!#$%&amp;'*+/=?^_`{|}~-]+(?:\.[a-z0-9A-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ!#$%&amp;'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+(?:[a-z]{2,})$"/>
 				</editor>
 			</field>
-			<field name="fax"/>
-			<field name="fixedPhone"/>
-			<field name="mobilePhone"/>
+			<field name="fax" pattern="^\+?\d{8,11}$" placeholder="+33000000000"/>
+			<field name="fixedPhone" placeholder="+33100000000" pattern="^\+?\d{8,11}$"/>
+			<field name="mobilePhone" placeholder="+33100000000" pattern="^\+?\d{8,11}$"/>
            <field name="webSite"/>
 	     </panel>
 	</form>
@@ -312,7 +312,7 @@
 	</action-group>
 	
 	<action-record name="action-partner-record-get-lead-converted-context" model="com.axelor.apps.base.db.Partner">
-		<field name="name" expr="eval:__repo__.of(Lead).find(_parent._lead).name"/>
+		<field name="name" expr="#{__repo__(Lead).find(_parent._lead).name}"/>
 	</action-record>
 	
     
@@ -328,7 +328,7 @@
 
 	<action-view name="action-partner-view-sn-profile" title="Profiles" model="com.axelor.apps.socialnetwork.db.SnProfile">
 		<view type="form" name="sn-profile-form"/>
-		<context name="id" expr="eval: id"/>
+		<context name="id" expr="#{id}"/>
 	</action-view>
     
 	<action-attrs name="action-partner-attrs-change-name">
@@ -338,51 +338,51 @@
 	</action-attrs>
 	
 	<action-attrs name="action-partner-attrs-hide-contact-partner">
-        <attribute name="hidden" for="contactPartner" expr="eval: clientPartner != null &amp;&amp; clientPartner.partnerTypeSelect == 2" />
+        <attribute name="hidden" for="contactPartner" expr="#{clientPartner != null &amp;&amp; clientPartner.partnerTypeSelect == 2}" />
     </action-attrs>
     
     <action-attrs name="action-partner-attrs-hide-customer-credit-lines">
-        <attribute name="hidden" for="customerCredit" expr="eval: isContact || !isCustomer || !__config__.general?.manageCustomerCredit" />
+        <attribute name="hidden" for="customerCredit" expr="#{isContact || !isCustomer || !__config__.general.manageCustomerCredit}" />
     </action-attrs>
     
     
 	<action-record name="action-partner-record-partner-type-select" model="com.axelor.apps.base.db.Partner" >
-    	<field name="partnerTypeSelect" expr="eval: __user__.activeCompany?.defaultPartnerTypeSelect"/>
+    	<field name="partnerTypeSelect" expr="#{__user__.activeCompany.defaultPartnerTypeSelect}"/>
     </action-record>
     
     <action-record name="action-partner-record-full-name" model="com.axelor.apps.base.db.Partner" >
-    	<field name="fullName" expr="eval: name + ' ' + firstName" if="name != null &amp;&amp; firstName != null"/>
-    	<field name="fullName" expr="eval: name" if="name != null &amp;&amp; firstName == null"/>
-    	<field name="fullName" expr="eval: firstName" if="firstName != null &amp;&amp; name == null"/>
-    	<field name="fullName" expr="eval: id" if="firstName == null &amp;&amp; name == null"/>
+    	<field name="fullName" expr="#{name + ' ' + firstName}" if="#{name != null &amp;&amp; firstName != null}"/>
+    	<field name="fullName" expr="#{name}" if="#{name != null &amp;&amp; firstName == null}"/>
+    	<field name="fullName" expr="#{firstName}" if="#{firstName != null &amp;&amp; name == null}"/>
+    	<field name="fullName" expr="#{id}" if="#{firstName == null &amp;&amp; name == null}"/>
     </action-record>
     
     
     <action-record name="action-partner-record-set-default" model="com.axelor.apps.base.db.Partner">
-    	<field name="currency" expr="eval:__user__.activeCompany?.currency" if="!isContact"/>
-    	<field name="invoiceSendingFormatSelect" expr="eval:'emailpaper'" if="!isContact" />
-    	<field name="user"  expr="eval:__user__"/>
-    	<field name="team"  expr="eval:__user__.activeTeam"/>
+    	<field name="currency" expr="#{__user__.activeCompany.currency}" if="#{!isContact}"/>
+    	<field name="invoiceSendingFormatSelect" expr="#{'emailpaper'}" if="#{!isContact}" />
+    	<field name="user"  expr="#{__user__}"/>
+    	<field name="team"  expr="#{__user__.activeTeam}"/>
     	<field name="companySet" expr="call:com.axelor.apps.base.web.PartnerController:getActiveCompany()"/>
-    	<field name="languageSelect" expr="eval:__config__.general.getDefaultPartnerLanguage()" />
+    	<field name="languageSelect" expr="#{__config__.general.getDefaultPartnerLanguage()}" />
     </action-record>
     
     <action-record name="action-partner-contact-record-default" model="com.axelor.apps.base.db.Partner">
-    	<field name="partnerTypeSelect" expr="2" />
-    	<field name="isContact" expr="true"/>
-    	<field name="companySet" expr="eval: _parent?.companySet"/>
-    	<field name="languageSelect" expr="eval: _parent != null ? _parent.languageSelect : __config__.general.getDefaultPartnerLanguage()"/>
-    	<field name="user"  expr="eval: _parent.user" if="_parent._model == 'com.axelor.apps.base.db.Partner'"/>
-    	<field name="team"  expr="eval: _parent.team" if="_parent._model == 'com.axelor.apps.base.db.Partner'"/>
-    	<field name="user"  expr="eval:__user__" if="_parent == null || _parent._model != 'com.axelor.apps.base.db.Partner'"/>
-    	<field name="team"  expr="eval:__user__.activeTeam" if="_parent == null || _parent._model != 'com.axelor.apps.base.db.Partner'"/>
-    	<field name="mainPartner" expr="eval:__repo__.of(Partner).find(_parent.id)" if="_parent.id != null &amp;&amp; _parent._model == 'com.axelor.apps.base.db.Partner'"/>
-    	<field name="mainInvoicingAddress" expr="eval:__repo__.of(Address).find(_parent.mainInvoicingAddress.id)" if="_parent.mainInvoicingAddress?.id != null &amp;&amp;_parent._model == 'com.axelor.apps.base.db.Partner'"/>
+    	<field name="partnerTypeSelect" expr="#{2}" />
+    	<field name="isContact" expr="#{true}"/>
+    	<field name="companySet" expr="#{_parent.companySet}"/>
+    	<field name="languageSelect" expr="#{_parent != null ? _parent.languageSelect : __config__.general.getDefaultPartnerLanguage()}"/>
+    	<field name="user"  expr="#{_parent.user}" if="#{_parent._model == 'com.axelor.apps.base.db.Partner'}"/>
+    	<field name="team"  expr="#{_parent.team}" if="#{_parent._model == 'com.axelor.apps.base.db.Partner'}"/>
+    	<field name="user"  expr="#{__user__}" if="#{_parent == null || _parent._model != 'com.axelor.apps.base.db.Partner'}"/>
+    	<field name="team"  expr="#{__user__.activeTeam}" if="#{_parent == null || _parent._model != 'com.axelor.apps.base.db.Partner'}"/>
+    	<field name="mainPartner" expr="#{__repo__(Partner).find(_parent.id)}" if="#{_parent.id != null &amp;&amp; _parent._model == 'com.axelor.apps.base.db.Partner'}"/>
+    	<field name="mainInvoicingAddress" expr="#{__repo__(Address).find(_parent.mainInvoicingAddress.id)}" if="#{_parent.mainInvoicingAddress.id != null &amp;&amp;_parent._model == 'com.axelor.apps.base.db.Partner'}"/>
     </action-record>
     
     <action-record name="action-partner-set-non-contact-fields" model="com.axelor.apps.base.db.Partner">
-    	<field name="currency" expr="eval:null" if="!isContact"/>
-    	<field name="invoiceSendingFormatSelect" expr="eval:null" if="!isContact"/>
+    	<field name="currency" expr="#{null}" if="#{!isContact}"/>
+    	<field name="invoiceSendingFormatSelect" expr="#{null}" if="#{!isContact}"/>
     </action-record>
 
     <action-method name="action-set-partner-seq" >

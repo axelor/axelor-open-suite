@@ -13,7 +13,7 @@
         <field name="statusSelect"/>
     </grid>
     
-    <form name="period-form" title="Period" model="com.axelor.apps.base.db.Period" onNew="action-period-record-default">
+    <form name="period-form" title="Period" model="com.axelor.apps.base.db.Period" onNew="action-period-record-default" width="large">
 	    <panel readonlyIf="statusSelect == 2">
 	        <field name="name"/>
 	    	<field name="code" x-bind="{{code|uppercase}}" colSpan="3"/>

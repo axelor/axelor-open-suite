@@ -63,8 +63,8 @@
 	
 	<form name="incl-sepa-direct-debit-partner-form" title="Partner" model="com.axelor.apps.base.db.Partner">
          <panel title="SEPA Direct Debit" colSpan="12" >
-		 	<field name="activeRum" colSpan="3" canNew="false" domain="self.partner.id = :id"/>
-         	<panel-related field="rumList" title="History" colSpan="12"/>
+		 	<field name="activeUmr" colSpan="3" canNew="false" domain="self.partner.id = :id"/>
+         	<panel-related field="umrList" title="History" colSpan="12"/>
          </panel>
 	</form>
 	
@@ -82,7 +82,7 @@
 	<action-view name="action-partner-view-show-unpaid-invoice" title="Unpaid invoices" model="com.axelor.apps.account.db.Invoice">
 		<view type="grid" name="invoice-grid"/>
 		<view type="form" name="invoice-form"/>
-		<domain>self.partner.id = :id AND self.inTaxTotalRemaining > 0</domain>
+		<domain>self.partner.id = :id AND self.companyInTaxTotalRemaining > 0</domain>
 		<context name="id" expr="eval: id"/>
 	</action-view>
 	

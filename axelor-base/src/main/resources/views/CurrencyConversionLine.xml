@@ -15,7 +15,7 @@
     </grid>
     
     <form name="currency-conversion-line-form" title="Currency conversion line" model="com.axelor.apps.base.db.CurrencyConversionLine"  
-    onNew="action-currency-conversion-line-default-record">
+    onNew="action-currency-conversion-line-default-record" width="large">
         <panel>
 		  <field name="startCurrency" widget="SuggestBox" form-view="currency-form" grid-view="currency-grid"/>
 		  <field name="endCurrency" widget="SuggestBox" form-view="currency-form" grid-view="currency-grid"/>

@@ -19,8 +19,8 @@
         <panel name="configPanel" title="Configurations" readonlyIf="isValid">
         	<field name="serverTypeSelect"/>
         	<field name="host"/>
+        	<field name="securitySelect" onChange="action-mail-account-onchange-security-select"/>
         	<field name="port"/>
-        	<field name="securitySelect"/>
         </panel>
         <panel name="loginPanel" title="Login" readonlyIf="isValid" >
        	 	<field name="login"/>
@@ -39,5 +39,10 @@
 	<action-validate name="action-mail-account-validate-is-default">
 		<error message="There is already a default mail account" if="call: com.axelor.apps.message.db.MailAccount.MailAccountService:checkDefaultMailAccount(__this__)"/>
 	</action-validate>
+	
+	<action-attrs name="action-mail-account-onchange-security-select" model="com.axelor.apps.message.db.MailAccount">
+		<attribute for="port" name="value" expr="#{securitySelect == 1 ? 465 : securitySelect == 2 ? 587 : 25}"/>
+	</action-attrs>
+	
     
 </object-views>

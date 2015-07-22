@@ -79,6 +79,7 @@ public class ProjectPlanningController extends ProjectPlanningRepository{
 		}
 
 		String type = request.getContext().get("_type").toString();
+		response.setCanClose(true);
 		if(type.contentEquals("user")){
 			response.setView(ActionView
 					.define("Week"+planningPreviousWeek.getWeek())
@@ -117,6 +118,7 @@ public class ProjectPlanningController extends ProjectPlanningRepository{
 			planningNextWeek = projectPlanningService.createPlanning(year,nextWeek);
 		}
 		String type = request.getContext().get("_type").toString();
+		response.setCanClose(true);
 		if(type.contentEquals("user")){
 			response.setView(ActionView
 					.define("Week"+planningNextWeek.getWeek())
@@ -152,6 +154,7 @@ public class ProjectPlanningController extends ProjectPlanningRepository{
 		}
 
 		String type = request.getContext().get("_type").toString();
+		response.setCanClose(true);
 		if(type.contentEquals("user")){
 			response.setView(ActionView
 					.define("Week"+planningCurrentWeek.getWeek())
@@ -189,7 +192,7 @@ public class ProjectPlanningController extends ProjectPlanningRepository{
 	@Transactional
 	public void saveLines(ActionRequest request, ActionResponse response) throws AxelorException{
 
-		List<ProjectPlanningLine> planningLineList =(List<ProjectPlanningLine>) request.getContext().get("$projectPlanningLineList");
+		List<ProjectPlanningLine> planningLineList =(List<ProjectPlanningLine>) request.getContext().get("projectPlanningLineList");
 		if(planningLineList != null){
 			for (ProjectPlanningLine projectPlanningLine : planningLineList) {
 				if(projectPlanningLine.getToSave()){
@@ -197,7 +200,6 @@ public class ProjectPlanningController extends ProjectPlanningRepository{
 				}
 			}
 		}
-
 
 	}
 }

@@ -15,7 +15,7 @@
     </grid>
     
     <form name="product-variant-config-form" title="Product variant configuration" model="com.axelor.apps.base.db.ProductVariantConfig"  
-    	onLoad="action-product-variant-config-attrs-domain" onNew="action-product-variant-config-attrs-domain">
+    	onLoad="action-product-variant-config-attrs-domain" onNew="action-product-variant-config-attrs-domain" width="large">
     	<panel>
         	<field name="productVariantAttr1" canNew="true" onChange="action-product-variant-config-attrs-domain" grid-view="product-variant-attr-grid" form-view="product-variant-attr-form"/>
         	<field name="productVariantValue1Set" widget="TagSelect" canNew="false" showIf="productVariantAttr1" colSpan="12" form-view="product-variant-value-form" grid-view="product-variant-value-grid"/>
