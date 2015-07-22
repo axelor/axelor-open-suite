@@ -170,7 +170,7 @@
     <form name="partner-light-form" title="Partner" model="com.axelor.apps.base.db.Partner"
 	    onNew="action-partner-record-partner-type-select" 
 	    onLoad="action-partner-attrs-change-name" 
-	    onSave="save,action-set-partner-seq">
+	    onSave="save,action-set-partner-seq" width="large">
 	    <toolbar>
     		<button name="sendByEmail" title="Send email" onClick="save,action-send-by-email-with-template"   readonlyIf="id == null"/>
     	</toolbar>
@@ -312,7 +312,7 @@
 	</action-group>
 	
 	<action-record name="action-partner-record-get-lead-converted-context" model="com.axelor.apps.base.db.Partner">
-		<field name="name" expr="eval:__repo__.of(Lead).find(_parent._lead).name"/>
+		<field name="name" expr="#{__repo__(Lead).find(_parent._lead).name}"/>
 	</action-record>
 	
     
@@ -328,7 +328,7 @@
 
 	<action-view name="action-partner-view-sn-profile" title="Profiles" model="com.axelor.apps.socialnetwork.db.SnProfile">
 		<view type="form" name="sn-profile-form"/>
-		<context name="id" expr="eval: id"/>
+		<context name="id" expr="#{id}"/>
 	</action-view>
     
 	<action-attrs name="action-partner-attrs-change-name">
@@ -338,51 +338,51 @@
 	</action-attrs>
 	
 	<action-attrs name="action-partner-attrs-hide-contact-partner">
-        <attribute name="hidden" for="contactPartner" expr="eval: clientPartner != null &amp;&amp; clientPartner.partnerTypeSelect == 2" />
+        <attribute name="hidden" for="contactPartner" expr="#{clientPartner != null &amp;&amp; clientPartner.partnerTypeSelect == 2}" />
     </action-attrs>
     
     <action-attrs name="action-partner-attrs-hide-customer-credit-lines">
-        <attribute name="hidden" for="customerCredit" expr="eval: isContact || !isCustomer || !__config__.general?.manageCustomerCredit" />
+        <attribute name="hidden" for="customerCredit" expr="#{isContact || !isCustomer || !__config__.general.manageCustomerCredit}" />
     </action-attrs>
     
     
 	<action-record name="action-partner-record-partner-type-select" model="com.axelor.apps.base.db.Partner" >
-    	<field name="partnerTypeSelect" expr="eval: __user__.activeCompany?.defaultPartnerTypeSelect"/>
+    	<field name="partnerTypeSelect" expr="#{__user__.activeCompany.defaultPartnerTypeSelect}"/>
     </action-record>
     
     <action-record name="action-partner-record-full-name" model="com.axelor.apps.base.db.Partner" >
-    	<field name="fullName" expr="eval: name + ' ' + firstName" if="name != null &amp;&amp; firstName != null"/>
-    	<field name="fullName" expr="eval: name" if="name != null &amp;&amp; firstName == null"/>
-    	<field name="fullName" expr="eval: firstName" if="firstName != null &amp;&amp; name == null"/>
-    	<field name="fullName" expr="eval: id" if="firstName == null &amp;&amp; name == null"/>
+    	<field name="fullName" expr="#{name + ' ' + firstName}" if="#{name != null &amp;&amp; firstName != null}"/>
+    	<field name="fullName" expr="#{name}" if="#{name != null &amp;&amp; firstName == null}"/>
+    	<field name="fullName" expr="#{firstName}" if="#{firstName != null &amp;&amp; name == null}"/>
+    	<field name="fullName" expr="#{id}" if="#{firstName == null &amp;&amp; name == null}"/>
     </action-record>
     
     
     <action-record name="action-partner-record-set-default" model="com.axelor.apps.base.db.Partner">
-    	<field name="currency" expr="eval:__user__.activeCompany?.currency" if="!isContact"/>
-    	<field name="invoiceSendingFormatSelect" expr="eval:'emailpaper'" if="!isContact" />
-    	<field name="user"  expr="eval:__user__"/>
-    	<field name="team"  expr="eval:__user__.activeTeam"/>
+    	<field name="currency" expr="#{__user__.activeCompany.currency}" if="#{!isContact}"/>
+    	<field name="invoiceSendingFormatSelect" expr="#{'emailpaper'}" if="#{!isContact}" />
+    	<field name="user"  expr="#{__user__}"/>
+    	<field name="team"  expr="#{__user__.activeTeam}"/>
     	<field name="companySet" expr="call:com.axelor.apps.base.web.PartnerController:getActiveCompany()"/>
-    	<field name="languageSelect" expr="eval:__config__.general.getDefaultPartnerLanguage()" />
+    	<field name="languageSelect" expr="#{__config__.general.getDefaultPartnerLanguage()}" />
     </action-record>
     
     <action-record name="action-partner-contact-record-default" model="com.axelor.apps.base.db.Partner">
-    	<field name="partnerTypeSelect" expr="2" />
-    	<field name="isContact" expr="true"/>
-    	<field name="companySet" expr="eval: _parent?.companySet"/>
-    	<field name="languageSelect" expr="eval: _parent != null ? _parent.languageSelect : __config__.general.getDefaultPartnerLanguage()"/>
-    	<field name="user"  expr="eval: _parent.user" if="_parent._model == 'com.axelor.apps.base.db.Partner'"/>
-    	<field name="team"  expr="eval: _parent.team" if="_parent._model == 'com.axelor.apps.base.db.Partner'"/>
-    	<field name="user"  expr="eval:__user__" if="_parent == null || _parent._model != 'com.axelor.apps.base.db.Partner'"/>
-    	<field name="team"  expr="eval:__user__.activeTeam" if="_parent == null || _parent._model != 'com.axelor.apps.base.db.Partner'"/>
-    	<field name="mainPartner" expr="eval:__repo__.of(Partner).find(_parent.id)" if="_parent.id != null &amp;&amp; _parent._model == 'com.axelor.apps.base.db.Partner'"/>
-    	<field name="mainInvoicingAddress" expr="eval:__repo__.of(Address).find(_parent.mainInvoicingAddress.id)" if="_parent.mainInvoicingAddress?.id != null &amp;&amp;_parent._model == 'com.axelor.apps.base.db.Partner'"/>
+    	<field name="partnerTypeSelect" expr="#{2}" />
+    	<field name="isContact" expr="#{true}"/>
+    	<field name="companySet" expr="#{_parent.companySet}"/>
+    	<field name="languageSelect" expr="#{_parent != null ? _parent.languageSelect : __config__.general.getDefaultPartnerLanguage()}"/>
+    	<field name="user"  expr="#{_parent.user}" if="#{_parent._model == 'com.axelor.apps.base.db.Partner'}"/>
+    	<field name="team"  expr="#{_parent.team}" if="#{_parent._model == 'com.axelor.apps.base.db.Partner'}"/>
+    	<field name="user"  expr="#{__user__}" if="#{_parent == null || _parent._model != 'com.axelor.apps.base.db.Partner'}"/>
+    	<field name="team"  expr="#{__user__.activeTeam}" if="#{_parent == null || _parent._model != 'com.axelor.apps.base.db.Partner'}"/>
+    	<field name="mainPartner" expr="#{__repo__(Partner).find(_parent.id)}" if="#{_parent.id != null &amp;&amp; _parent._model == 'com.axelor.apps.base.db.Partner'}"/>
+    	<field name="mainInvoicingAddress" expr="#{__repo__(Address).find(_parent.mainInvoicingAddress.id)}" if="#{_parent.mainInvoicingAddress.id != null &amp;&amp;_parent._model == 'com.axelor.apps.base.db.Partner'}"/>
     </action-record>
     
     <action-record name="action-partner-set-non-contact-fields" model="com.axelor.apps.base.db.Partner">
-    	<field name="currency" expr="eval:null" if="!isContact"/>
-    	<field name="invoiceSendingFormatSelect" expr="eval:null" if="!isContact"/>
+    	<field name="currency" expr="#{null}" if="#{!isContact}"/>
+    	<field name="invoiceSendingFormatSelect" expr="#{null}" if="#{!isContact}"/>
     </action-record>
 
     <action-method name="action-set-partner-seq" >
