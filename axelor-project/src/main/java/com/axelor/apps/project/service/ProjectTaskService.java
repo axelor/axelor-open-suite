@@ -1,5 +1,7 @@
 package com.axelor.apps.project.service;
 
+import java.math.BigDecimal;
+
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.project.db.ProjectTask;
@@ -28,7 +30,7 @@ public class ProjectTaskService extends ProjectTaskRepository{
 		project.setCompany(company);
 		project.setClientPartner(clientPartner);
 		project.setAssignedTo(assignedTo);
-		project.setProgressSelect(0);
+		project.setProgress(BigDecimal.ZERO);
 		project.addMembersUserSetItem(assignedTo);
 		return project;
 	}
@@ -45,7 +47,7 @@ public class ProjectTaskService extends ProjectTaskRepository{
 		}
 		task.setFullName(task.getName());
 		task.setAssignedTo(assignedTo);
-		task.setProgressSelect(0);
+		task.setProgress(BigDecimal.ZERO);
 
 		return task;
 	}

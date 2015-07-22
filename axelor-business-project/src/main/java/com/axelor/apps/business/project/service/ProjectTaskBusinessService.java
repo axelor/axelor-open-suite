@@ -41,7 +41,7 @@ public class ProjectTaskBusinessService extends ProjectTaskService{
 		project.setCompany(company);
 		project.setClientPartner(clientPartner);
 		project.setAssignedTo(assignedTo);
-		project.setProgressSelect(0);
+		project.setProgress(BigDecimal.ZERO);
 		project.addMembersUserSetItem(assignedTo);
 		project.setImputable(true);
 		project.setProjTaskInvTypeSelect(ProjectTaskRepository.INVOICING_TYPE_NONE);
@@ -80,7 +80,7 @@ public class ProjectTaskBusinessService extends ProjectTaskService{
 		}
 		task.setFullName(task.getName());
 		task.setAssignedTo(assignedTo);
-		task.setProgressSelect(0);
+		task.setProgress(BigDecimal.ZERO);
 		task.setImputable(true);
 		Product product = generalService.getGeneral().getProductInvoicingProjectTask();
 		task.setProduct(product);

@@ -16,22 +16,19 @@
 	  <integer name="statusSelect" selection="project.task.status.select" title="Status" default="1"/>
 	  
 	  <string name="code" title="Code" />
-	  <boolean name="businessProject" title="Business Project"/>
 	  <many-to-many name="membersUserSet" ref="com.axelor.auth.db.User" title="Membres"/>
 	  <many-to-one name="clientPartner" ref="com.axelor.apps.base.db.Partner" title="Customer"/>
 	  <string name="description" title="Description" large="true"/>
 	  
-	  <date name="fromDate" title="From Date"/>
-	  <date name="toDate" title="To Date"/>
-	  <date name="dueDate" title="Due Date"/>
+	  <datetime name="fromDate" title="From Date"/>
+	  <datetime name="toDate" title="To Date"/>
+	  <datetime name="dueDate" title="Due Date"/>
 	  
 	  <decimal name="duration" title="Duration"/>
 	  <decimal name="timeSpent" title="Time Spent"/>
 	  <decimal name="leadDelay" title="Lead/Delay"/>
 	  
-	  <integer name="progressSelect" title="Progress (%)" selection="grade.0.up.to.100.select"/>
-	  <datetime name="startDate" title="Start date" />
-	  <decimal name="ganttProgress" title="Progress"/>
+	  <decimal name="progress" title="Progress (%)"/>
 	  <decimal name="sequence" title="Sequence" />
 	  
 	  <many-to-many name="finishToStartTaskSet" ref="com.axelor.apps.project.db.ProjectTask" title="Finish tasks to start"/>

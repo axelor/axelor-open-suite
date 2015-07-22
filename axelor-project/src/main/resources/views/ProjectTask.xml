@@ -11,7 +11,7 @@
 		<field name="toDate" />
 		<field name="dueDate" />
 		<field name="statusSelect"/>
-		<field name="progressSelect" widget="SelectProgress"/>
+		<field name="progress" widget="Progress"/>
 	</grid>
 
 	<form name="project-form" title="Project" model="com.axelor.apps.project.db.ProjectTask" onNew="action-project-project-default,action-project-task-attrs-duration-title,action-project-attrs-scale-and-precision"
@@ -35,7 +35,7 @@
 			<field name="$visibleTimeSpent" colSpan="5" title="Time Spent" type="decimal" onChange="action-project-task-record-set-stored-time-spent"/>
 			<label name="timeSpentLabel" title="Hours" colSpan="1"/>
 			<field name="dueDate" />
-			<field name="progressSelect" widget="SelectProgress"/>
+			<field name="progress" widget="Progress"/>
 			<field name="$visibleLeadDelay" colSpan="5" title="Lead/Delay" type="decimal" onChange="action-project-task-record-set-stored-lead-delay"/>
 			<label name="leadDelayLabel" title="Hours" colSpan="1"/>
 			<field name="imputable" if-module="axelor-business-project"/>
@@ -105,9 +105,6 @@
 		</panel-tabs>
 		<panel title="Settings" sidebar="true">
 			<field name="membersUserSet" widget="TagSelect" form-view="user-form" grid-view="user-grid"/>
-			<field name="businessProject" colSpan="4"/>
-			<field name="startDate" />
-			<field name="duration" />
 			<field name="sequence" />
 			<field name="typeSelect"/>
 		</panel>
@@ -120,13 +117,13 @@
 		<field name="toDate" />
 		<field name="dueDate" />
 		<field name="statusSelect"/>
-		<field name="progressSelect" />
+		<field name="progress" />
 	</grid>
 	
-	<gantt name="project-gantt" title="Project gantt" model="com.axelor.apps.project.db.ProjectTask" taskStart="startDate" taskDuration="duration" taskParent="project" 
-		   taskProgress="ganttProgress" taskSequence="sequence" x-finish-to-start="finishToStartTaskSet" x-start-to-start="startToStartTaskSet"
+	<gantt name="project-gantt" title="Project gantt" model="com.axelor.apps.project.db.ProjectTask" taskStart="fromDate" taskDuration="duration" taskParent="project" 
+		   taskProgress="progress" taskSequence="sequence" x-finish-to-start="finishToStartTaskSet" x-start-to-start="startToStartTaskSet"
 		   x-finish-to-finish="finishToFinishTaskSet" x-start-to-finish="startToFinishTaskSet">
-		   <field name="name" />		   
+		   <field name="name" />
 		   <field name="assignedTo" />
     </gantt>   
 
@@ -148,14 +145,12 @@
 			<field name="$visibleTimeSpent" title="Time Spent" type="decimal" onChange="action-project-task-record-set-stored-time-spent"/>
 			<label name="timeSpentLabel" title="Hours" colSpan="1"/>
 			<field name="dueDate" />
-			<field name="progressSelect"/>
+			<field name="progress"/>
 			<field name="$visibleLeadDelay" title="Lead/Delay" type="decimal" onChange="action-project-task-record-set-stored-lead-delay"/>
 			<label name="leadDelayLabel" title="Hours" colSpan="1"/>
 			<field name="imputable" if-module="axelor-business-project"/>
 			<field name="projTaskInvTypeSelect" if-module="axelor-business-project"/>
 			<field name="invoiced" showIf="projTaskInvTypeSelect == 2 || projTaskInvTypeSelect == 3" if-module="axelor-business-project"/>
-			<field name="startDate" />
-			<field name="duration" />
 			<field name="sequence" />
 			<field name="typeSelect"/>
 		</panel>
@@ -189,7 +184,7 @@
 		<field name="toDate" />
 		<field name="dueDate" />
 		<field name="statusSelect"/>
-		<field name="progressSelect" widget="SelectProgress"/>
+		<field name="progress" widget="Progress"/>
 		<field name="typeSelect"/>
 	</grid>
 
@@ -213,7 +208,7 @@
 			<field name="$visibleTimeSpent" title="Time Spent" type="decimal" onChange="action-project-task-record-set-stored-time-spent"/>
 			<label name="timeSpentLabel" title="Hours" colSpan="1"/>
 			<field name="dueDate" />
-			<field name="progressSelect" widget="SelectProgress"/>
+			<field name="progress" widget="Progress"/>
 			<field name="$visibleLeadDelay" title="Lead/Delay" type="decimal" onChange="action-project-task-record-set-stored-lead-delay"/>
 			<label name="leadDelayLabel" title="Hours" colSpan="1"/>
 			<field name="imputable" if-module="axelor-business-project"/>
@@ -296,20 +291,20 @@
     	
     	<column name="name" type="string"/>
     	<column name="assignedTo" type="reference"/>
-    	<column name="progressSelect" type="integer"/>
+    	<column name="progress" type="decimal"/>
     	<column name="typeSelect" type="string"/>
 		
 		<node model="com.axelor.apps.project.db.ProjectTask" domain="self.project.id = :id" onClick="action-task-view">
 			<field name="name" as="name"/>
 			<field name="assignedTo" as="assignedTo"/>
-			<field name="progressSelect" as="progressSelect"/>
+			<field name="progress" as="progress"/>
 			<field name="typeSelect" as="typeSelect"/>
 		</node>    	
 		
 		<node model="com.axelor.apps.project.db.ProjectTask" parent="project" draggable="true" onClick="action-project-view">
 			<field name="name" as="name"/>
 			<field name="assignedTo" as="assignedTo"/>
-			<field name="progressSelect" as="progressSelect"/>
+			<field name="progress" as="progress"/>
 			<field name="typeSelect" as="typeSelect"/>
 		</node>
     
