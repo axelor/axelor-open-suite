@@ -149,7 +149,7 @@
 			<field name="$visibleLeadDelay" title="Lead/Delay" type="decimal" onChange="action-project-task-record-set-stored-lead-delay"/>
 			<label name="leadDelayLabel" title="Hours" colSpan="1"/>
 			<field name="imputable" if-module="axelor-business-project"/>
-			<field name="projTaskInvTypeSelect" if-module="axelor-business-project"/>
+			<field name="projTaskInvTypeSelect" onChange="action-project-task-attrs-hide-invoicing-panel" if-module="axelor-business-project"/>
 			<field name="invoiced" showIf="projTaskInvTypeSelect == 2 || projTaskInvTypeSelect == 3" if-module="axelor-business-project"/>
 			<field name="sequence" />
 			<field name="typeSelect"/>
@@ -212,7 +212,7 @@
 			<field name="$visibleLeadDelay" title="Lead/Delay" type="decimal" onChange="action-project-task-record-set-stored-lead-delay"/>
 			<label name="leadDelayLabel" title="Hours" colSpan="1"/>
 			<field name="imputable" if-module="axelor-business-project"/>
-			<field name="projTaskInvTypeSelect" if-module="axelor-business-project"/>
+			<field name="projTaskInvTypeSelect" onChange="action-project-task-attrs-hide-invoicing-panel" if-module="axelor-business-project"/>
 			<field name="invoiced" showIf="projTaskInvTypeSelect == 2 || projTaskInvTypeSelect == 3" if-module="axelor-business-project"/>
 		</panel>
 		<panel-tabs>
@@ -266,6 +266,9 @@
 		<attribute name="value" for="product" expr="eval: __config__.general.getProductInvoicingProjectTask()"/>
 		<attribute name="value" for="assignedTo" expr="eval: __user__"/>
 		<attribute name="value:add" for="membersUserSet" expr="eval: __user__"/>
+		<attribute name="value" for="price" expr="eval: __config__.general.getProductInvoicingProjectTask().salePrice"/>
+		<attribute name="value" for="unit" expr="eval: __config__.general.getProductInvoicingProjectTask().unit"/>
+		<attribute name="value" for="exTaxTotal" expr="eval: __config__.general.getProductInvoicingProjectTask().salePrice"/>
 	</action-attrs>
 	
 	<action-record name="action-project-task-default" model="com.axelor.apps.project.db.ProjectTask">
@@ -274,6 +277,9 @@
 		<field name="product" expr="eval: __config__.general.getProductInvoicingProjectTask()" if="projTaskInvTypeSelect != 3 &amp;&amp; project?.projTaskInvTypeSelect != 3"/>
 		<field name="fromDate" expr="eval: __date__"/>
 		<field name="assignedTo" expr="eval: __user__"/>
+		<field name="price" expr="eval: __config__.general.getProductInvoicingProjectTask().salePrice"/>
+		<field name="unit" expr="eval: __config__.general.getProductInvoicingProjectTask().unit"/>
+		<field name="exTaxTotal" expr="eval: __config__.general.getProductInvoicingProjectTask().salePrice"/>
 	</action-record>
 	
 	<action-attrs name="action-attrs-project-add-member" model="com.axelor.apps.project.db.ProjectTask">
@@ -371,6 +377,7 @@
 		<field name="unit" expr="eval: product?.unit"/>
 		<field name="price" expr="eval: product?.salePrice"/>
 		<field name="qty" expr="1"/>
+		<field name="exTaxTotal" expr="eval: product?.salePrice"/>
 	</action-record>
 		
   	<action-attrs name="action-project-attrs-scale-and-precision">
