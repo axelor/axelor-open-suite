@@ -20,6 +20,12 @@
 	<menuitem name="menu-dashboards-partner-1"  parent="menu-dashboards-partner"
     	title="Partner Db" icon="fa-bar-chart"  action="base.partner.list.dashboard.view"/>
 	
+	<menuitem name="menu-dashboards-contact" order="-90" parent="menu-dashboards-partner-contact"
+    	title="Contacts"  groups="admins,ERP"/>	
+    	    
+	<menuitem name="menu-dashboards-contact-1"  parent="menu-dashboards-contact"
+    	title="Contacts Db"  />		
+	
 	<action-view name="base.partner.list.dashboard.view" title="Partner Db">
 		<view type="dashboard" name="base.partner.list.dashboard" />
 	</action-view>
