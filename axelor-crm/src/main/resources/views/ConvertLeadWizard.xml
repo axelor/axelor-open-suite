@@ -38,7 +38,7 @@
 				<label title="Address"/>
 						<field name="$primaryAddress" showTitle="false" placeholder="Address" type="string" colSpan="12"/>
 						<field name="$primaryCity" showTitle="false" placeholder="City" type="string" colSpan="4"/>
-						<field name="$primaryState" showTitle="false" placeholder="State" type="string" colSpan="4"/>
+						<field name="$primaryState" showTitle="false" placeholder="Country State" type="string" colSpan="4"/>
 						<field name="$primaryPostalCode" showTitle="false" placeholder="Postal code" type="string" colSpan="4"/>
 						<field colSpan="12" name="$primaryCountry" showTitle="false" placeholder="Country" type="many-to-one" target="com.axelor.apps.base.db.Country" target-name="name"/>
 						
