@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.crm.web;
 
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -34,13 +35,13 @@ import com.axelor.apps.crm.db.Lead;
 import com.axelor.apps.crm.exception.IExceptionMessage;
 import com.axelor.apps.crm.service.EventService;
 import com.axelor.apps.crm.service.LeadService;
-import com.axelor.auth.AuthUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.axelor.auth.AuthUtils;
 
 public class EventController {
 
@@ -54,12 +55,12 @@ public class EventController {
 		LOG.debug("event : {}", event);
 		
 		if(event.getStartDateTime() != null) {
-			if(event.getDurationTime() != null) {
-				response.setValue("endDateTime", eventService.computeEndDateTime(event.getStartDateTime(), event.getDurationTime()));
+			if(event.getDuration() != null) {
+				response.setValue("endDateTime", eventService.computeEndDateTime(event.getStartDateTime(), event.getDuration().intValue()));
 			}
 			else if(event.getEndDateTime() != null && event.getEndDateTime().isAfter(event.getStartDateTime())) {
 				Duration duration =  eventService.computeDuration(event.getStartDateTime(), event.getEndDateTime());
-				response.setValue("durationTime", eventService.getDurationTime(duration));
+				response.setValue("duration", eventService.getDuration(duration));
 			}
 		}
 	}
@@ -74,10 +75,10 @@ public class EventController {
 		if(event.getEndDateTime() != null) {
 			if(event.getStartDateTime() != null && event.getStartDateTime().isBefore(event.getEndDateTime())) {
 				Duration duration =  eventService.computeDuration(event.getStartDateTime(), event.getEndDateTime());
-				response.setValue("durationTime", eventService.getDurationTime(duration));
+				response.setValue("duration", eventService.getDuration(duration));
 			}
-			else if(event.getDurationTime() != null)  {
-				response.setValue("startDateTime", eventService.computeStartDateTime(event.getDurationTime(), event.getEndDateTime()));
+			else if(event.getDuration() != null)  {
+				response.setValue("startDateTime", eventService.computeStartDateTime(event.getDuration().intValue(), event.getEndDateTime()));
 			}
 		}
 	}
@@ -89,12 +90,12 @@ public class EventController {
 		
 		LOG.debug("event : {}", event);
 		
-		if(event.getDurationTime() != null)  {
+		if(event.getDuration() != null)  {
 			if(event.getStartDateTime() != null)  {
-				response.setValue("endDateTime", eventService.computeEndDateTime(event.getStartDateTime(), event.getDurationTime()));
+				response.setValue("endDateTime", eventService.computeEndDateTime(event.getStartDateTime(), event.getDuration().intValue()));
 			}
 			else if(event.getEndDateTime() != null)  {
-				response.setValue("startDateTime", eventService.computeStartDateTime(event.getDurationTime(), event.getEndDateTime()));
+				response.setValue("startDateTime", eventService.computeStartDateTime(event.getDuration().intValue(), event.getEndDateTime()));
 			}
 		}
 	}
@@ -109,7 +110,7 @@ public class EventController {
 		
 		if(event.getStartDateTime() != null && event.getEndDateTime() != null) {
 			Duration duration =  eventService.computeDuration(event.getStartDateTime(), event.getEndDateTime());
-			response.setValue("durationTime", eventService.getDurationTime(duration));
+			response.setValue("duration", eventService.getDuration(duration));
 		}
 	}
 	
