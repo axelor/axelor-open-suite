@@ -20,6 +20,7 @@ package com.axelor.apps.crm.service;
 import org.joda.time.Duration;
 import org.joda.time.Interval;
 import org.joda.time.LocalDateTime;
+import org.joda.time.LocalTime;
 
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.crm.db.Event;
@@ -34,26 +35,28 @@ public class EventService extends EventRepository {
 	private EventAttendeeService eventAttendeeService;
 	
 	public Duration computeDuration(LocalDateTime startDateTime, LocalDateTime endDateTime)  {
-		
 		return new Interval(startDateTime.toDateTime(), endDateTime.toDateTime()).toDuration();
 		
 	}
 	
-	public int getDuration(Duration duration)  {
+	
+	public LocalTime getDurationTime(Duration duration)  {
 		
-		return duration.toStandardSeconds().getSeconds();
+		return new LocalTime(duration.toStandardHours().getHours(),duration.toStandardMinutes().getMinutes()%duration.toStandardHours().getHours());
 		
 	}
 	
-	public LocalDateTime computeStartDateTime(int duration, LocalDateTime endDateTime)  {
-			
-		return endDateTime.minusSeconds(duration);	
+	
+	public LocalDateTime computeStartDateTime(LocalTime duration, LocalDateTime endDateTime)  {
+		
+		return endDateTime.minusHours(duration.getHourOfDay()).minusMinutes(duration.getMinuteOfHour());	
 		
 	}
 	
-	public LocalDateTime computeEndDateTime(LocalDateTime startDateTime, int duration)  {
+	
+	public LocalDateTime computeEndDateTime(LocalDateTime startDateTime, LocalTime duration)  {
 		
-		return startDateTime.plusSeconds(duration);
+		return startDateTime.plusHours(duration.getHourOfDay()).plusMinutes(duration.getMinuteOfHour());
 		
 	}
 	
