@@ -163,7 +163,7 @@ public class PriceListService extends PriceListRepository {
 
 		}
 		else  {
-			discounts.put("discountAmount", priceList.getGeneralDiscount());
+			discounts.put("discountAmount", priceList.getGeneralDiscount().setScale(generalService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP));
 			discounts.put("discountTypeSelect", IPriceListLine.AMOUNT_TYPE_PERCENT);
 		}
 
