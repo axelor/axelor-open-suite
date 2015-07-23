@@ -6,11 +6,13 @@
 	<dashboard title="Dashboard" name="manufacturing.dashboard.sample"  >
 		<dashlet action="manufacturing.dashboard.upcoming.production.orders" height="350" canSearch="true" />
 		<dashlet action="manufacturing.dashboard.current.production.orders" canSearch="true" height="350" />
+		<dashlet action="manufacturing.dashboard.production.orders.plannings" canSearch="true" height="350" />
 	</dashboard>
 
 	<dashboard title="Dashboard" name="manufacturing.dashboard"  >
 		<dashlet action="manufacturing.dashboard.upcoming.production.orders" height="350" canSearch="true" />
 		<dashlet action="manufacturing.dashboard.current.production.orders" canSearch="true" height="350" />
+		<dashlet action="manufacturing.dashboard.production.orders.plannings" canSearch="true" height="350" />
 	</dashboard>
 
 	<action-view name="manufacturing.dashboard.upcoming.production.orders" title="All Upcoming Manufacturing Orders"
@@ -29,4 +31,13 @@
  		<context name="_today" expr="eval: __date__.toDateTimeAtStartOfDay()" />
 	</action-view>
 
+	<action-view name="manufacturing.dashboard.production.orders.plannings" title="All Manufacturing Order Plannings"
+		model="com.axelor.apps.production.db.ManufOrderPlanning">
+		<view type="grid" name="manuf-order-planning-grid" />
+		<view type="form" name="manuf-order-planning-form" />
+	</action-view>
+
+
+
 </object-views>
+
