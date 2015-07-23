@@ -12,7 +12,7 @@
     	<field name="subject"/>
         <field name="typeSelect"/>
         <field name="startDateTime"/>
-        <field name="duration" widget="duration" x-big="true"/>
+        <field name="durationTime"/>
         <field name="user"/>
         <field name="team"/>
     </grid>
@@ -33,7 +33,7 @@
 		<field name="subject"/>
 		<field name="typeSelect"/>
 		<field name="startDateTime"/>
-		<field name="duration" widget="duration" x-big="true"/>
+		<field name="durationTime"/>
 	</grid>
     
 	<form  onLoad="action-group-crm-event-onload" onNew="action-group-crm-event-onnew" name="event-form" title="Events" model="com.axelor.apps.crm.db.Event">
@@ -50,7 +50,7 @@
 			<field name="location" colSpan="5" css="highlight" showIf="typeSelect == 2"/>
 			<button name="viewOnMap" colSpan="1" icon="fa-map-marker" showIf="typeSelect == 2" onClick="com.axelor.apps.crm.web.EventController:viewMap"/>
 			<field name="startDateTime" colSpan="4" onChange="action-event-method-compute-from-start-date-time"/>
-			<field name="duration" widget="duration" colSpan="2" onChange="action-event-method-compute-from-duration" x-big="true"/>
+			<field name="durationTime" colSpan="2" onChange="action-event-method-compute-from-duration"/>
 			<field name="limitDateT" colSpan="4" showIf="typeSelect == 3"/>
 			<field name="endDateTime" colSpan="4" onChange="action-event-method-compute-from-end-date-time"/>
 			<spacer colSpan="8"/>
@@ -148,7 +148,7 @@
 			</panel>
 			<panel title="Dates" colSpan="12">
 				<field name="startDateTime" colSpan="3" onChange="action-event-method-compute-from-start-date-time"/>
-				<field name="duration" widget="duration" colSpan="3" onChange="action-event-method-compute-from-duration" x-big="true"/>
+				<field name="durationTime" colSpan="3" onChange="action-event-method-compute-from-duration"/>
 				<field name="endDateTime" colSpan="3" onChange="action-event-method-compute-from-end-date-time"/>
 			</panel>
 			<panel-related field="eventReminderList" colSpan="12" showTitle="false"/>
@@ -219,7 +219,7 @@
 			</panel>
 			<panel title="Dates" colSpan="12">
 				<field name="startDateTime" colSpan="3" onChange="action-event-method-compute-from-start-date-time"/>
-				<field name="duration" widget="duration" colSpan="3" onChange="action-event-method-compute-from-duration" x-big="true"/>
+				<field name="durationTime" colSpan="3" onChange="action-event-method-compute-from-duration"/>
 				<field name="endDateTime" colSpan="3" onChange="action-event-method-compute-from-end-date-time"/>
 			</panel>
 			<panel-related field="eventReminderList" colSpan="12" showTitle="false"/>
@@ -283,7 +283,7 @@
 			</panel>
 			<panel title="Dates" colSpan="12">
 				<field name="startDateTime" colSpan="3" onChange="action-event-method-compute-from-start-date-time"/>
-				<field name="duration" widget="duration" colSpan="3" onChange="action-event-method-compute-from-duration" x-big="true"/>
+				<field name="durationTime" colSpan="3" onChange="action-event-method-compute-from-duration"/>
 				<field name="endDateTime" colSpan="3" onChange="action-event-method-compute-from-end-date-time"/>
 				<panel-related field="eventReminderList" colSpan="12" showTitle="false" />
 			</panel>
@@ -360,7 +360,7 @@
 		</panel>
 		<panel title=" " colSpan="12">
 			<field name="startDateTime" colSpan="3" onChange="action-event-method-compute-from-start-date-time"/>
-			<field name="duration" colSpan="3" widget="duration" onChange="action-event-method-compute-from-duration" x-big="true"/>
+			<field name="durationTime" colSpan="3" onChange="action-event-method-compute-from-duration"/>
 			<field name="endDateTime" colSpan="3" onChange="action-event-method-compute-from-end-date-time"/>
 			<field name="limitDateT" colSpan="3"/>
 		</panel>
@@ -481,7 +481,7 @@
     </action-record>
     
     <action-record name="action-event-record-default-duration" model="com.axelor.apps.crm.db.Event">
-    	<field name="duration" expr="3600"/>
+    	<field name="durationTime" expr="eval: __time__"/>
     </action-record>
     
     <action-record name="action-event-default-record-user" model="com.axelor.apps.crm.db.Event">

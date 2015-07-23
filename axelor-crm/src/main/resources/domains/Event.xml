@@ -18,6 +18,8 @@
   	
   	<long name="duration" title="Duration"/>
   	
+  	<time name="durationTime" title="Duration"/>
+  	
   	<many-to-one name="eventCategory" ref="com.axelor.apps.crm.db.EventCategory" title="Category"/>
   	<integer name="prioritySelect" title="Priority" selection="crm.event.ticket.priority.select"/>
   	
