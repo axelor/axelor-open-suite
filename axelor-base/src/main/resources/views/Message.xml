@@ -4,7 +4,7 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
 	
     <form name="message-form" id="base-message-form" title="Email" model="com.axelor.apps.message.db.Message"
-    onNew="action-group-base-message-onnew" onSave="action-validate-message-content-onsave">
+    onNew="action-group-base-message-onnew">
 		<toolbar>
 	        <button name="print" title="Print" icon="fa-print" onClick="save,action-message-method-print-pdf-email" readonlyIf="id == null"/>
 	        <button name="send" title="Send" icon="fa-envelope" onClick="action-group-message-message-send-click" showIf="statusSelect == 1 " />
@@ -64,9 +64,5 @@
     	<field name="company"  expr="eval:__user__.activeCompany" if="__user__.activeCompany != null"/>
     	<field name="company"  expr="eval:__repo__.of(Company).all().fetchOne()" if="__user__.activeCompany == null &amp;&amp; __repo__.of(Company).all().fetch().size == 1"/>
     </action-record>
-
-	<action-validate name="action-validate-message-content-onsave">
-		<alert message="No Mail content entered." if="mediaTypeSelect == 1 &amp;&amp; content== null"/>
-	</action-validate>
     
 </object-views>
