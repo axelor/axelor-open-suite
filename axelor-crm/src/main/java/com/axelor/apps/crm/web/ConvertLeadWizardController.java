@@ -63,7 +63,7 @@ public class ConvertLeadWizardController {
 		Event taskEvent = null;
 		
 		if(context.get("hasConvertIntoContact") != null && (Boolean) context.get("hasConvertIntoContact")) {
-			contactPartner = convertLeadWizardService.createPartner((Map<String, Object>) context.get("contactPartner"));
+			contactPartner = convertLeadWizardService.createPartner((Map<String, Object>) context.get("contactPartner"),context);
 			//TODO check all required fields...
 		}
 		else  if(context.get("selectContact") != null) {
@@ -72,7 +72,7 @@ public class ConvertLeadWizardController {
 		}
 		
 		if(context.get("hasConvertIntoPartner") != null && (Boolean) context.get("hasConvertIntoPartner")) {
-			partner = convertLeadWizardService.createPartner((Map<String, Object>) context.get("partner"));
+			partner = convertLeadWizardService.createPartner((Map<String, Object>) context.get("partner"),context);
 			//TODO check all required fields...
 		}
 		else  if(context.get("selectPartner") != null) {

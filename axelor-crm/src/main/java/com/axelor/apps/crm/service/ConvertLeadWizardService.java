@@ -19,7 +19,6 @@ package com.axelor.apps.crm.service;
 
 import java.util.Map;
 
-
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.Country;
 import com.axelor.apps.base.db.Partner;
@@ -33,6 +32,7 @@ import com.axelor.apps.crm.db.Opportunity;
 import com.axelor.apps.message.db.EmailAddress;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.exception.AxelorException;
+import com.axelor.rpc.Context;
 import com.google.inject.Inject;
 
 public class ConvertLeadWizardService {
@@ -58,10 +58,12 @@ public class ConvertLeadWizardService {
 	 * @return
 	 * @throws AxelorException
 	 */
-	public Partner createPartner(Map<String, Object> context) throws AxelorException  {
+	public Partner createPartner(Map<String, Object> context, Context parentContext) throws AxelorException  {
 		
 		Mapper mapper = Mapper.of(Partner.class);
 		Partner partner = Mapper.toBean(Partner.class, null);
+		
+		this.setAddress(partner, parentContext);
 		
 		partner = (Partner) convertWizardService.createObject(context, partner, mapper);
 		
@@ -70,8 +72,6 @@ public class ConvertLeadWizardService {
 		partner.setPartnerSeq(leadService.getSequence());
 		
 		partnerService.setPartnerFullName(partner);
-		
-		this.setAddress(partner, context);
 		
 		return partner;
 	}
@@ -89,13 +89,16 @@ public class ConvertLeadWizardService {
 	
 	
 	public void setAddress(Partner partner, Map<String, Object> context)  {
-		
-		if(partner.getIsContact())  {
+		String primaryAddress = (String)context.get("primaryAddress");
+		String otherAddress = (String)context.get("otherAddress");
+		if(primaryAddress != null && !primaryAddress.isEmpty()){
 			partner.setMainInvoicingAddress(this.createPrimaryAddress(context));
 		}
-		else  {
-			partner.setMainInvoicingAddress(this.createPrimaryAddress(context));
+		if(!partner.getIsContact() && otherAddress != null && !otherAddress.isEmpty())  {
 			partner.setDeliveryAddress(this.createOtherAddress(context));
+		}
+		else if(!partner.getIsContact() && primaryAddress != null && !primaryAddress.isEmpty()){
+			partner.setDeliveryAddress(this.createPrimaryAddress(context));
 		}
 		
 	}
