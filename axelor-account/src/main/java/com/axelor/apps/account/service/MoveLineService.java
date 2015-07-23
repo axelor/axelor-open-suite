@@ -203,40 +203,41 @@ public class MoveLineService extends MoveLineRepository{
 		
 		// Traitement des lignes de facture
 		for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()){
-
-			analyticAccounts.clear();
-			
-			Product product = invoiceLine.getProduct();
-			
-			if(product == null)  {
-				throw new AxelorException(String.format(I18n.get(IExceptionMessage.MOVE_LINE_3), 
-						invoice.getInvoiceId(), company.getName()), IException.CONFIGURATION_ERROR);
-			}
-			
-			accountManagement = accountManagementService.getAccountManagement(product, company);
-			
-			account2 = accountManagementService.getProductAccount(accountManagement, isPurchase);
-			
-			if(account2 == null)  {
-				throw new AxelorException(String.format(I18n.get(IExceptionMessage.MOVE_LINE_4),  
-						invoiceLine.getName(), company.getName()), IException.CONFIGURATION_ERROR);
-			}
-			
-			for (AnalyticAccountManagement analyticAccountManagement : accountManagement.getAnalyticAccountManagementList()){
-				if(analyticAccountManagement.getAnalyticAccount() == null){
-					throw new AxelorException(String.format(I18n.get(IExceptionMessage.MOVE_LINE_5), 
-							analyticAccountManagement.getAnalyticAxis().getName(),invoiceLine.getProductName(), company.getName()), IException.CONFIGURATION_ERROR);
-				}
-				else{
-					analyticAccounts.add(analyticAccountManagement.getAnalyticAccount());
-				}
-			}
 			
 			exTaxTotal = invoiceLine.getAccountingExTaxTotal();
-			
-			LOG.debug("Traitement de la ligne de facture : compte comptable = {}, montant = {}", new Object[]{account2.getName(), exTaxTotal});
-			
+
 			if(exTaxTotal.compareTo(BigDecimal.ZERO) != 0)  {
+				
+				analyticAccounts.clear();
+				
+				Product product = invoiceLine.getProduct();
+				
+				if(product == null)  {
+					throw new AxelorException(String.format(I18n.get(IExceptionMessage.MOVE_LINE_3), 
+							invoice.getInvoiceId(), company.getName()), IException.CONFIGURATION_ERROR);
+				}
+				
+				accountManagement = accountManagementService.getAccountManagement(product, company);
+				
+				account2 = accountManagementService.getProductAccount(accountManagement, isPurchase);
+				
+				if(account2 == null)  {
+					throw new AxelorException(String.format(I18n.get(IExceptionMessage.MOVE_LINE_4),  
+							invoiceLine.getName(), company.getName()), IException.CONFIGURATION_ERROR);
+				}
+				
+				for (AnalyticAccountManagement analyticAccountManagement : accountManagement.getAnalyticAccountManagementList()){
+					if(analyticAccountManagement.getAnalyticAccount() == null){
+						throw new AxelorException(String.format(I18n.get(IExceptionMessage.MOVE_LINE_5), 
+								analyticAccountManagement.getAnalyticAxis().getName(),invoiceLine.getProductName(), company.getName()), IException.CONFIGURATION_ERROR);
+					}
+					else{
+						analyticAccounts.add(analyticAccountManagement.getAnalyticAccount());
+					}
+				}
+				
+				LOG.debug("Traitement de la ligne de facture : compte comptable = {}, montant = {}", new Object[]{account2.getName(), exTaxTotal});
+			
 				MoveLine moveLine = this.createMoveLine(move, partner, account2, exTaxTotal, !isDebitCustomer, isMinus, invoice.getInvoiceDate(), null, moveLineId++, invoice.getInvoiceId());
 				moveLine.setAnalyticAccountSet(analyticAccounts);
 				moveLine.setTaxLine(invoiceLine.getTaxLine());
@@ -248,19 +249,18 @@ public class MoveLineService extends MoveLineRepository{
 		// Traitement des lignes de tva
 		for (InvoiceLineTax invoiceLineTax : invoice.getInvoiceLineTaxList()){
 			
-			Tax tax = invoiceLineTax.getTaxLine().getTax();
-			
-			account2 = taxAccountService.getAccount(tax, company);
-			
 			exTaxTotal = invoiceLineTax.getAccountingTaxTotal();
 			
-			if (account2 == null)  {
-				throw new AxelorException(String.format(I18n.get(IExceptionMessage.MOVE_LINE_6), 
-						tax.getName(), company.getName()), IException.CONFIGURATION_ERROR);
-			}
-			
 			if(exTaxTotal.compareTo(BigDecimal.ZERO) != 0)  {
-			
+				Tax tax = invoiceLineTax.getTaxLine().getTax();
+				
+				account2 = taxAccountService.getAccount(tax, company);
+				
+				if (account2 == null)  {
+					throw new AxelorException(String.format(I18n.get(IExceptionMessage.MOVE_LINE_6), 
+							tax.getName(), company.getName()), IException.CONFIGURATION_ERROR);
+				}
+				
 				MoveLine moveLine = this.createMoveLine(move, partner, account2, exTaxTotal, !isDebitCustomer, isMinus, invoice.getInvoiceDate(), null, moveLineId++, invoice.getInvoiceId());
 				moveLine.setTaxLine(invoiceLineTax.getTaxLine()); 
 			
