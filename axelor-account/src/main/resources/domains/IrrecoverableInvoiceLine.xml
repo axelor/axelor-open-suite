@@ -7,7 +7,7 @@
 
   <entity name="IrrecoverableInvoiceLine" lang="java">
   
-  	<many-to-one name="irrecoverableCustomerLine" ref="com.axelor.apps.account.db.IrrecoverableCustomerLine" title="Customer"/>
+  	<many-to-one name="irrecoverableCustomerLine" ref="com.axelor.apps.account.db.IrrecoverableCustomerLine" title="Customer" index="idx_acc_irreco_inv_line_irreco_cust_line"/>
   	<integer name="invoiceLineSeq" title="Reference"/>
   	<many-to-one name="invoice" ref="com.axelor.apps.account.db.Invoice" title="Invoice"/>
   	<one-to-many name="irrecoverableReportLineList" ref="com.axelor.apps.account.db.IrrecoverableReportLine" mappedBy="irrecoverableInvoiceLine" title="Reportings"/>

@@ -423,7 +423,6 @@
     	<action name="action-sale-order-method-validate-customer"/>
     	<action name="action-sale-order-record-confirmed"/>
     	<action name="action-sale-order-attrs-confirmed-read-only"/>
-    	<action name="action-sale-order-set-sequence"/>
     	<action name="action-sale-order-method-generate-project" if="eval: __config__.general.getAutomaticProject()"/>
     </action-group>
     
@@ -561,10 +560,6 @@
     	<call class="com.axelor.apps.sale.web.SaleOrderController" method="validateCustomer"/>
     </action-method>
     
-	<action-method name="action-sale-order-set-sequence">
-		<call class="com.axelor.apps.sale.web.SaleOrderController" method="setSequence"/>
-	</action-method>	
-	
 	<action-method name="action-sale-method-update-customer-credit-line" if-module="axelor-supplychain">
 		<call class="com.axelor.apps.supplychain.web.CustomerCreditLineController" method="updateLinesFromSaleOrder" if="eval: __config__.general.getManageCustomerCredit()"/>
 	</action-method>

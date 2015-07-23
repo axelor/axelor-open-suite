@@ -140,7 +140,7 @@
 					    <label title="Dates" css="label-bold"/>
 					    <spacer/>
 					    <field name="startDateTime" onChange="action-event-method-compute-from-start-date-time" colSpan="4"/>
-					    <field name="duration" widget="duration[big=true]" onChange="action-event-method-compute-from-duration" colSpan="4"/>
+					    <field name="duration" widget="duration" onChange="action-event-method-compute-from-duration" colSpan="4" x-big="true"/>
 					    <field name="endDateTime" onChange="action-event-method-compute-from-end-date-time" colSpan="4"/>
 					    <label title="Assigned to" css="label-bold"/>
 					    <spacer/>
@@ -165,7 +165,7 @@
 					    <label title="Dates" css="label-bold"/>
 					    <spacer/>
 					    <field name="startDateTime" onChange="action-event-method-compute-from-start-date-time" colSpan="3"/>
-					    <field name="duration" widget="duration[big=true]" onChange="action-event-method-compute-from-duration" colSpan="3"/>
+					    <field name="duration" widget="duration" x-big="true" onChange="action-event-method-compute-from-duration" colSpan="3"/>
 					    <field name="endDateTime" onChange="action-event-method-compute-from-end-date-time" colSpan="3"/>
 					    <label title="Assigned to" css="label-bold"/>
 					    <spacer/>
@@ -188,7 +188,7 @@
 					    <label title="Dates" css="label-bold"/>
 					    <spacer/>
 					    <field name="startDateTime" onChange="action-event-method-compute-from-start-date-time" colSpan="3"/>
-					    <field name="duration" widget="duration[big=true]" onChange="action-event-method-compute-from-duration" colSpan="3"/>
+					    <field name="duration" widget="duration" x-big="true" onChange="action-event-method-compute-from-duration" colSpan="3"/>
 					    <field name="endDateTime" onChange="action-event-method-compute-from-end-date-time" colSpan="3"/>
 					    <label title="Assigned to" css="label-bold"/>
 					    <spacer/>
@@ -211,7 +211,7 @@
 					    <label title="Dates" css="label-bold"/>
 					    <spacer/>
 					    <field name="startDateTime" onChange="action-event-method-compute-from-start-date-time" colSpan="3"/>
-					    <field name="duration" widget="duration[big=true]" onChange="action-event-method-compute-from-duration" colSpan="3"/>
+					    <field name="duration" widget="duration" x-big="true" onChange="action-event-method-compute-from-duration" colSpan="3"/>
 					    <field name="endDateTime" onChange="action-event-method-compute-from-end-date-time" colSpan="3"/>
 					    <field name="limitDateT" colSpan="3"/>
 					    <label title="Assigned to" css="label-bold"/>

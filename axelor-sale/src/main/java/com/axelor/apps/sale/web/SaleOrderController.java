@@ -28,7 +28,6 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.report.IReport;
 import com.axelor.apps.sale.service.SaleOrderService;
 import com.axelor.apps.tool.net.URLService;
-import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.schema.actions.ActionView;
@@ -180,17 +179,6 @@ public class SaleOrderController {
 		}
 		else {
 			response.setFlash(urlNotExist);
-		}
-	}
-
-	public void setSequence(ActionRequest request, ActionResponse response) throws AxelorException {
-
-		SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
-
-		if(saleOrder != null &&  saleOrder.getCompany() != null) {
-
-			response.setValue("saleOrderSeq", saleOrderService.getSequence(saleOrder.getCompany()));
-
 		}
 	}
 

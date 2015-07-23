@@ -168,9 +168,8 @@
     </grid>
     
     <form name="partner-light-form" title="Partner" model="com.axelor.apps.base.db.Partner"
-	    onNew="action-partner-record-partner-type-select" 
-	    onLoad="action-partner-attrs-change-name" 
-	    onSave="save,action-set-partner-seq" width="large">
+	    onNew="action-group-base-partner-onnew" 
+    	onLoad="action-group-partner-onload" width="large">
 	    <toolbar>
     		<button name="sendByEmail" title="Send email" onClick="save,action-send-by-email-with-template"   readonlyIf="id == null"/>
     	</toolbar>
@@ -217,8 +216,7 @@
 
 	<form name="partner-contact-form" title="Contact" model="com.axelor.apps.base.db.Partner" 
 	onNew="action-partner-contact-record-default" 
-	onLoad="action-partner-attrs-change-name,action-partner-method-set-social-network-url" 
-	onSave="save,action-set-partner-seq">
+	onLoad="action-partner-attrs-change-name,action-partner-method-set-social-network-url">
 	    <toolbar>
 	        <button name="sendByEmail" title="Send email" icon="fa-envelope" onClick="save,action-send-by-email-with-template" readonlyIf="id == null"/>
 	        <button name="showPartnerInfo" title="Print Informations" icon="fa-print" onClick="save,action-partner-method-show-partner-info"  readonlyIf="id == null"/>
@@ -344,7 +342,6 @@
     <action-attrs name="action-partner-attrs-hide-customer-credit-lines">
         <attribute name="hidden" for="customerCredit" expr="#{isContact || !isCustomer || !__config__.general.manageCustomerCredit}" />
     </action-attrs>
-    
     
 	<action-record name="action-partner-record-partner-type-select" model="com.axelor.apps.base.db.Partner" >
     	<field name="partnerTypeSelect" expr="#{__user__.activeCompany.defaultPartnerTypeSelect}"/>
