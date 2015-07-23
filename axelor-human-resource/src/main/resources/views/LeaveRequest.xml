@@ -32,10 +32,10 @@
 	    onSave="action-leave-request-validate-dates-on-save">
 
 	    <panel sidebar="true" title="Actions" stacked="true">
-	    	<button name="sendLeave" colSpan="4" title="Send Leave Request" onClick="save, action-leave-request-method-manage-sent-leaves,action-leave-request-record-status-confirmed, save,action-leave-request-attrs-buttons,action-leave-request-method-send-mail-leave-request-sent" readonlyIf="statusSelect &gt; 1"/>
-	    	<button name="validButton" onClick="save,action-leave-request-method-manage-valid-leaves,action-leave-request-record-valid,save,action-leave-request-attrs-buttons,action-leave-request-method-send-mail-leave-request-validated" title="Valid"/>
-	    	<button name="refuseButton" onClick="save,action-leave-request-method-manage-refuse-leaves,action-leave-request-record-refuse,save,action-leave-request-attrs-buttons,action-leave-request-method-send-mail-leave-request-refused" title="Refuse"/>
-	    	<button name="cancelButton" onClick="save,action-leave-request-method-manage-cancel-leaves,action-leave-request-record-cancel,save,action-leave-request-attrs-buttons" hideIf="statusSelect == 5" title="Cancel" icon="fa-close"/>
+	    	<button name="sendLeave" colSpan="4" title="Send Leave Request" onClick="save, action-leave-request-method-manage-sent-leave-requests,action-leave-request-record-status-confirmed, save,action-leave-request-attrs-buttons,action-leave-request-method-send-mail-leave-request-sent" readonlyIf="statusSelect &gt; 1"/>
+	    	<button name="validButton" onClick="save,action-leave-request-method-manage-valid-leave-requests,action-leave-request-record-valid,save,action-leave-request-attrs-buttons,action-leave-request-method-send-mail-leave-request-validated" title="Valid"/>
+	    	<button name="refuseButton" onClick="save,action-leave-request-method-manage-refuse-leave-requests,action-leave-request-record-refuse,save,action-leave-request-attrs-buttons,action-leave-request-method-send-mail-leave-request-refused" title="Refuse"/>
+	    	<button name="cancelButton" onClick="save,action-leave-request-method-manage-cancel-leave-requests,action-leave-request-record-cancel,save,action-leave-request-attrs-buttons" hideIf="statusSelect == 5" title="Cancel" icon="fa-close"/>
 	    	<button name="draftButton" onClick="action-leave-request-record-draft,save,action-leave-request-attrs-buttons" title="Return to draft status" showIf="statusSelect &gt; 3 "/>
 	    </panel>
 		<panel>
@@ -125,19 +125,19 @@
 		<call class="com.axelor.apps.hr.web.leave.LeaveController" method="computeDuration"/>
 	</action-method>
 	
-	<action-method name="action-leave-request-method-manage-sent-leaves">
+	<action-method name="action-leave-request-method-manage-sent-leave-requests">
 		<call class="com.axelor.apps.hr.web.leave.LeaveController" method="manageSentLeaves" if="reason.manageAccumulation"/>
 	</action-method>
 	
-	<action-method name="action-leave-request-method-manage-valid-leaves">
+	<action-method name="action-leave-request-method-manage-valid-leave-requests">
 		<call class="com.axelor.apps.hr.web.leave.LeaveController" method="manageValidLeaves" if="reason.manageAccumulation"/>
 	</action-method>
 	
-	<action-method name="action-leave-request-method-manage-refuse-leaves">
+	<action-method name="action-leave-request-method-manage-refuse-leave-requests">
 		<call class="com.axelor.apps.hr.web.leave.LeaveController" method="manageRefuseLeaves" if="reason.manageAccumulation"/>
 	</action-method>
 	
-	<action-method name="action-leave-request-method-manage-cancel-leaves">
+	<action-method name="action-leave-request-method-manage-cancel-leave-requests">
 		<call class="com.axelor.apps.hr.web.leave.LeaveController" method="manageCancelLeaves" if="reason.manageAccumulation"/>
 	</action-method>
 	
