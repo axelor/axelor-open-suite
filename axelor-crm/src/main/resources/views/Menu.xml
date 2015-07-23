@@ -412,19 +412,7 @@
 	<action-view name="crm.opportunities.dashboard.3.view" title="Opportunities Db 3">
 		<view type="dashboard" name="crm.opportunities.dashboard.3" />
 	</action-view>
-	
-	<menuitem name="menu-tasks-dashboard" parent="menu-crm-dashboards"
-		title="Tasks" order="-30" />	
-	
-	<menuitem name="menu-tasks-dashboard-1"  parent="menu-tasks-dashboard"
-		title="Tasks Db" />
-		
-	<menuitem name="menu-meetings-dashboard" parent="menu-crm-dashboards"
-		title="Meetings" order="-40" />	
-	
-	<menuitem name="menu-meetings-dashboard-1"  parent="menu-meetings-dashboard"
-		title="Meetings Db"  />
-		
+
 	<menuitem name="menu-calls-dashboard" parent="menu-crm-dashboards"
 		title="Calls" order="-50" />	
 		
@@ -451,5 +439,6 @@
 	<action-view name="crm.tickets.dashboard.2.view" title="Tickets Db 2">
 		<view type="dashboard" name="crm.tickets.dashboard.2" />
 	</action-view>
+	
 	
 </object-views>
