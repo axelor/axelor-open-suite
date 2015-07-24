@@ -2,12 +2,15 @@ package com.axelor.apps.project.service;
 
 import java.math.BigDecimal;
 
+import javax.persistence.Query;
+
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
 import com.axelor.apps.project.exception.IExceptionMessage;
 import com.axelor.auth.db.User;
+import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
@@ -71,5 +74,22 @@ public class ProjectTaskService extends ProjectTaskRepository{
 				return this.getClientPartnerFromProjectTask(projectTask.getProject(), counter++);
 			}
 		}
+	}
+
+	public BigDecimal computeDurationFromChildren(Long projectTaskId){
+		Query q = null;
+		String query;
+		BigDecimal totalDuration = BigDecimal.ZERO;
+
+		query = "SELECT SUM(pt.duration)"
+				+ " FROM ProjectTask as pt"
+				+ " WHERE pt.project.id = :projectTaskId";
+
+		q = JPA.em().createQuery(query, BigDecimal.class);
+		q.setParameter("projectTaskId", projectTaskId);
+
+		totalDuration = (BigDecimal) q.getSingleResult();
+
+		return totalDuration;
 	}
 }
