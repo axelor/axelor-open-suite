@@ -31,13 +31,10 @@
 			<field name="fromDate" />
 			<field name="toDate" />
 			<field name="$visibleDuration" colSpan="5" title="Duration" type="decimal" onChange="action-project-task-record-set-stored-duration"/>
-			<label name="durationLabel" title="Hours" colSpan="1"/>
 			<field name="$visibleTimeSpent" colSpan="5" title="Time Spent" type="decimal" onChange="action-project-task-record-set-stored-time-spent"/>
-			<label name="timeSpentLabel" title="Hours" colSpan="1"/>
 			<field name="dueDate" />
 			<field name="progress" widget="Progress"/>
 			<field name="$visibleLeadDelay" colSpan="5" title="Lead/Delay" type="decimal" onChange="action-project-task-record-set-stored-lead-delay"/>
-			<label name="leadDelayLabel" title="Hours" colSpan="1"/>
 			<field name="imputable" if-module="axelor-business-project"/>
 			<field name="projTaskInvTypeSelect" if-module="axelor-business-project"/>
 			<field name="invoiced" showIf="projTaskInvTypeSelect == 2 || projTaskInvTypeSelect == 3" if-module="axelor-business-project"/>
@@ -141,13 +138,10 @@
 			<field name="fromDate" />
 			<field name="toDate" />
 			<field name="$visibleDuration" title="Duration" type="decimal" onChange="action-project-task-record-set-stored-duration"/>
-			<label name="durationLabel" title="Hours" colSpan="1"/>
 			<field name="$visibleTimeSpent" title="Time Spent" type="decimal" onChange="action-project-task-record-set-stored-time-spent"/>
-			<label name="timeSpentLabel" title="Hours" colSpan="1"/>
 			<field name="dueDate" />
 			<field name="progress"/>
 			<field name="$visibleLeadDelay" title="Lead/Delay" type="decimal" onChange="action-project-task-record-set-stored-lead-delay"/>
-			<label name="leadDelayLabel" title="Hours" colSpan="1"/>
 			<field name="imputable" if-module="axelor-business-project"/>
 			<field name="projTaskInvTypeSelect" onChange="action-project-task-attrs-hide-invoicing-panel" if-module="axelor-business-project"/>
 			<field name="invoiced" showIf="projTaskInvTypeSelect == 2 || projTaskInvTypeSelect == 3" if-module="axelor-business-project"/>
@@ -204,13 +198,10 @@
 			<field name="fromDate" />
 			<field name="toDate" />
 			<field name="$visibleDuration" title="Duration" type="decimal" onChange="action-project-task-record-set-stored-duration"/>
-			<label name="durationLabel" title="Hours" colSpan="1"/>
 			<field name="$visibleTimeSpent" title="Time Spent" type="decimal" onChange="action-project-task-record-set-stored-time-spent"/>
-			<label name="timeSpentLabel" title="Hours" colSpan="1"/>
 			<field name="dueDate" />
 			<field name="progress" widget="Progress"/>
 			<field name="$visibleLeadDelay" title="Lead/Delay" type="decimal" onChange="action-project-task-record-set-stored-lead-delay"/>
-			<label name="leadDelayLabel" title="Hours" colSpan="1"/>
 			<field name="imputable" if-module="axelor-business-project"/>
 			<field name="projTaskInvTypeSelect" onChange="action-project-task-attrs-hide-invoicing-panel" if-module="axelor-business-project"/>
 			<field name="invoiced" showIf="projTaskInvTypeSelect == 2 || projTaskInvTypeSelect == 3" if-module="axelor-business-project"/>
@@ -334,9 +325,9 @@
     
     <action-attrs name="action-project-task-attrs-duration-title">
 	    <attribute name="title" for="timesheetLineList.visibleDuration" expr="eval:__user__.employee?.timeLoggingPreferenceSelect == 'days' ? com.axelor.i18n.I18n.get('Days') : __user__.employee?.timeLoggingPreferenceSelect == 'minutes' ? com.axelor.i18n.I18n.get('Minutes') : com.axelor.i18n.I18n.get('Hours')"/>
-		<attribute name="title" for="durationLabel" expr="eval:__user__.employee?.timeLoggingPreferenceSelect == 'days' ? com.axelor.i18n.I18n.get('Days') : __user__.employee?.timeLoggingPreferenceSelect == 'minutes' ? com.axelor.i18n.I18n.get('Minutes') : com.axelor.i18n.I18n.get('Hours')"/>
-		<attribute name="title" for="timeSpentLabel" expr="eval:__user__.employee?.timeLoggingPreferenceSelect == 'days' ? com.axelor.i18n.I18n.get('Days') : __user__.employee?.timeLoggingPreferenceSelect == 'minutes' ? com.axelor.i18n.I18n.get('Minutes') : com.axelor.i18n.I18n.get('Hours')"/>
-		<attribute name="title" for="leadDelayLabel" expr="eval:__user__.employee?.timeLoggingPreferenceSelect == 'days' ? com.axelor.i18n.I18n.get('Days') : __user__.employee?.timeLoggingPreferenceSelect == 'minutes' ? com.axelor.i18n.I18n.get('Minutes') : com.axelor.i18n.I18n.get('Hours')"/>
+		<attribute name="title" for="$visibleDuration" expr="eval:__user__.employee?.timeLoggingPreferenceSelect == 'days' ? com.axelor.i18n.I18n.get('Duration(Days)') : __user__.employee?.timeLoggingPreferenceSelect == 'minutes' ? com.axelor.i18n.I18n.get('Duration(Minutes)') : com.axelor.i18n.I18n.get('Duration(Hours)')"/>
+		<attribute name="title" for="$visibleTimeSpent" expr="eval:__user__.employee?.timeLoggingPreferenceSelect == 'days' ? com.axelor.i18n.I18n.get('Time Spent(Days)') : __user__.employee?.timeLoggingPreferenceSelect == 'minutes' ? com.axelor.i18n.I18n.get('Time Spent(Minutes)') : com.axelor.i18n.I18n.get('Time Spent(Hours)')"/>
+		<attribute name="title" for="$visibleLeadDelay" expr="eval:__user__.employee?.timeLoggingPreferenceSelect == 'days' ? com.axelor.i18n.I18n.get('Lead/Delay(Days)') : __user__.employee?.timeLoggingPreferenceSelect == 'minutes' ? com.axelor.i18n.I18n.get('Lead/Delay(Minutes)') : com.axelor.i18n.I18n.get('Lead/Delay(Hours)')"/>
 	</action-attrs>
 	
 	<action-view name="action-project-task-view-show-project" title="Related Projects" model="com.axelor.apps.project.db.ProjectTask">
