@@ -21,7 +21,7 @@
 			<button name="createAction" title="Create menu entrie" onClick="save,action-calendar-configuration-method-create-Action" />
 			<button name="deleteAction" title="Delete menu entrie" onClick="save,action-calendar-configuration-method-delete-Action" />
 		</panel>
-		<panel-related field="calendarSet" form-view="calendar-form" grid-view="calendar-grid"/>
+		<panel-related field="calendarSet" form-view="crm-calendar-form" grid-view="crm-calendar-grid"/>
 	</form>
 
 	<action-method name="action-calendar-configuration-method-create-Action">
