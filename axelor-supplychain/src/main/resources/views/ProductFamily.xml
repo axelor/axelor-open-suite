@@ -3,7 +3,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
 
-	<form name="product-family-form" title="Product family" model="com.axelor.apps.base.db.ProductFamily" id="product-faimly-form">
+	<form name="product-family-form" title="Product family" model="com.axelor.apps.base.db.ProductFamily" id="product-faimly-form"  width="large">
 	  <panel-include view="product-family-form" from="axelor-base"/>
 	  <panel title="Sales Turnover" hideIf="fromMenu == null" >    
 		<panel-dashlet height="350" action="dashlet.family.sales.turnover.per.month" colSpan="12"/>

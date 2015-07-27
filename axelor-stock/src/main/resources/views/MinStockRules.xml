@@ -16,7 +16,7 @@
     </grid>
     
     <form name="min-stock-rules-form" title="Minimum stock rule" model="com.axelor.apps.stock.db.MinStockRules"
-    	onNew="action-min-stock-rules-record-new">
+    	onNew="action-min-stock-rules-record-new" width="large">
     	<panel>
 	        <field name="location" form-view="location-form" grid-view="location-grid"/>
 			<field name="typeSelect"/>

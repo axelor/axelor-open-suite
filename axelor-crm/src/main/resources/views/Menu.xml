@@ -238,8 +238,8 @@
 
 	<action-view name="crm.conf.calendar" title="Calendars"
 		model="com.axelor.apps.crm.db.Calendar" >
-		<view type="grid" name="calendar-grid"/>
-		<view type="form" name="calendar-form"/>
+		<view type="grid" name="crm-calendar-grid"/>
+		<view type="form" name="crm-calendar-form"/>
 	</action-view>
 	
 	<menuitem name="crm-conf-calendar-configuration" parent="crm-conf"

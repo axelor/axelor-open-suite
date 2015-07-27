@@ -10,7 +10,7 @@
         <field name="resourceTypeSelect"/>
     </grid>
     
-	<form name="prod-resource-form" title="Resource" model="com.axelor.apps.production.db.ProdResource">
+	<form name="prod-resource-form" title="Resource" model="com.axelor.apps.production.db.ProdResource" width="large">
 	  <panel>
 	    <field name="name"/>
 	    <field name="code" colSpan="3"/>
@@ -45,7 +45,7 @@
         <field name="machine"/>
     </grid>
     
-    <form name="prod-resource-machine-form" title="Machine" model="com.axelor.apps.production.db.ProdResource">
+    <form name="prod-resource-machine-form" title="Machine" model="com.axelor.apps.production.db.ProdResource" width="large">
     	<panel>
 	        <field name="name"/>
 	        <field name="code"/>

@@ -324,7 +324,7 @@
 	<form name="sale-order-form-client" title="Sale order"
 		model="com.axelor.apps.sale.db.SaleOrder" id="sale-order-form-client"
 		onLoad="action-group-sale-saleorder-onload" onSave="save,action-sale-order-method-compute,save"
-		onNew="action-group-sale-saleorder-onnew">
+		onNew="action-group-sale-saleorder-onnew" width="large">
 	  <toolbar>
 	    <button name="print" title="Print" icon="fa-print" onClick="save,action-sale-order-method-show-sale-order"/>
 	  </toolbar>

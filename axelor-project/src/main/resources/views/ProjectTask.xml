@@ -131,7 +131,7 @@
 
 	<form name="task-form" title="Task" model="com.axelor.apps.project.db.ProjectTask" 
 	onNew="action-project-task-attrs-hide-invoicing-panel,action-project-task-default,action-project-task-attrs-duration-title,action-project-attrs-scale-and-precision"
-	onLoad="action-project-task-attrs-hide-invoicing-panel,action-project-task-record-set-visible-duration,action-project-task-attrs-duration-title,action-project-attrs-scale-and-precision">
+	onLoad="action-project-task-attrs-hide-invoicing-panel,action-project-task-record-set-visible-duration,action-project-task-attrs-duration-title,action-project-attrs-scale-and-precision" width="large">
 		<toolbar>
 			<button name="printProjectTask" title="Print" onClick="save,action-project-task-method-print-project-task" if-module="axelor-business-project"/>
 		</toolbar>

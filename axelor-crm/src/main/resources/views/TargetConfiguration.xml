@@ -52,32 +52,32 @@
 <!--         </group> -->
 <!-- 	    </group> -->
 <!-- 	</form> -->
-    <form   name="target-configuration-form" title="Target configuration" model="com.axelor.apps.crm.db.TargetConfiguration">
-  <panel >
-    <field name="name"/>
-    <field name="code"/>
-  </panel>
-  <panel title="Concerns">
-    <field name="user" showIf="team == null" form-view="user-form" grid-view="user-grid" />
-    <field name="team" showIf="user == null" form-view="team-form" grid-view="team-grid"/>
-  </panel>
-  <panel title="Period">
-    <field name="periodTypeSelect"/>
-    <field name="fromDate"/>
-    <field name="toDate"/>
-  </panel>
-  <panel title="Targets">
-      <panel title="Opportunities" colSpan="4">
-        <field name="opportunityAmountWon" colSpan="12"/>
-        <field name="opportunityCreatedNumber" colSpan="12"/>
-        <field name="opportunityCreatedWon" colSpan="12"/>
-      </panel>
-      <panel title="Calls" colSpan="4">
-        <field name="callEmittedNumber"/>
-     </panel>
-     <panel title="Meetings" colSpan="4">
-      <field name="meetingNumber"/>
-    </panel>
-  </panel>
-</form>
+    <form name="target-configuration-form" title="Target configuration" model="com.axelor.apps.crm.db.TargetConfiguration" width="large">
+	  <panel>
+	    <field name="name"/>
+	    <field name="code"/>
+	  </panel>
+	  <panel title="Concerns">
+	    <field name="user" showIf="team == null" form-view="user-form" grid-view="user-grid" />
+	    <field name="team" showIf="user == null" form-view="team-form" grid-view="team-grid"/>
+	  </panel>
+	  <panel title="Period">
+	    <field name="periodTypeSelect"/>
+	    <field name="fromDate"/>
+	    <field name="toDate"/>
+	  </panel>
+	  <panel title="Targets">
+	      <panel title="Opportunities" colSpan="4">
+	        <field name="opportunityAmountWon" colSpan="12"/>
+	        <field name="opportunityCreatedNumber" colSpan="12"/>
+	        <field name="opportunityCreatedWon" colSpan="12"/>
+	      </panel>
+	      <panel title="Calls" colSpan="4">
+	        <field name="callEmittedNumber"/>
+	     </panel>
+	     <panel title="Meetings" colSpan="4">
+	      <field name="meetingNumber"/>
+	    </panel>
+	  </panel>
+	</form>
 </object-views>

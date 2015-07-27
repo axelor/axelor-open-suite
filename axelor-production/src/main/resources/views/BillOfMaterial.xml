@@ -13,7 +13,7 @@
 
 	<form name="bill-of-material-form" title="Bill of material"
 		model="com.axelor.apps.production.db.BillOfMaterial" onSave="action-bill-of-material-record-name"
-		onNew="action-bill-of-material-default-record">
+		onNew="action-bill-of-material-default-record" width="large">
 		<panel>
 			<field name="name"/>
 			<field name="company" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
@@ -50,7 +50,7 @@
 
 	<form name="bill-of-material-line-form" title="Bill of material"
 		model="com.axelor.apps.production.db.BillOfMaterial" onSave="action-bill-of-material-record-name"
-		onNew="action-bill-of-material-line-default-record">
+		onNew="action-bill-of-material-line-default-record" width="large">
 		<panel>
 			<field name="product" onChange="action-bill-of-material-record-product" domain="self.productTypeSelect = 'storable'"  form-view="product-form" grid-view="product-grid"/>
 			<field name="isRawMaterial" colSpan="3"/>

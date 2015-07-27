@@ -8,7 +8,7 @@
     	<field name="observation"/>
     </grid>
     
-	<form name="manuf-order-sheet-form" title="Manufacturing order" model="com.axelor.apps.production.db.OperationOrder">
+	<form name="manuf-order-sheet-form" title="Manufacturing order" model="com.axelor.apps.production.db.OperationOrder" width="large">
 	  <panel colSpan="12">
 	    <field name="picture" showTitle="false" widget="Image"/>
 	  </panel>  

@@ -8,8 +8,9 @@
 	</grid>
 
 	
-	<form name="project-my-planning-form" title="Project Planning" model="com.axelor.apps.project.db.ProjectPlanning"
-		onLoad="action-project-planning-record-default,action-project-planning-attrs-title-columns,action-project-planning-method-populate" canNew="false" canCopy="false">
+	<form name="project-my-planning-form" title="Project Planning" model="com.axelor.apps.project.db.ProjectPlanning" 
+		onLoad="action-project-planning-record-default,action-project-planning-attrs-title-columns,action-project-planning-method-populate" 
+		canNew="false" canCopy="false" width="large">
 		<panel>
 			<field name="year"/>
 			<field name="week"/>
@@ -31,7 +32,8 @@
 	</form>
 	
 	<form name="project-my-team-planning-form" title="Project Planning" model="com.axelor.apps.project.db.ProjectPlanning"
-		onLoad="action-project-planning-record-default,action-project-planning-attrs-title-columns,action-project-planning-method-populate" canNew="false" canCopy="false">
+		onLoad="action-project-planning-record-default,action-project-planning-attrs-title-columns,action-project-planning-method-populate" 
+		canNew="false" canCopy="false" width="large">
 		<panel>
 			<field name="year"/>
 			<field name="week"/>

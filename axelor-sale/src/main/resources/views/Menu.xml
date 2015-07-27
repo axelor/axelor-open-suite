@@ -78,10 +78,10 @@
 		<context name="_template" expr="eval:false" />
 	</action-view>	
 	
-	<menuitem name="sc-root-sale-templates" parent="sc-root-sale-template" order="-1"
-		groups="admins,ERP" title="See SalesOrder templates" action="sc.root.sale.templates" />
+	<menuitem name="sc-root-sale-order-templates" parent="sc-root-sale-templates" order="-1"
+		groups="admins,ERP" title="See SalesOrder templates" action="sc.root.sale.order.templates" />
 	
-	<action-view name="sc.root.sale.templates" title="See SalesOrder templates"
+	<action-view name="sc.root.sale.order.templates" title="See SalesOrder templates"
 		model="com.axelor.apps.sale.db.SaleOrder" >
 		<view type="grid" name="sale-order-grid" />
 		<view type="form" name="sale-order-form" />

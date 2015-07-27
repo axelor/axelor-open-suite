@@ -16,7 +16,7 @@
         <field name="isDefaultLocation"/>
     </grid>
     
-	<form name="location-form" title="Stock Location" model="com.axelor.apps.stock.db.Location" onNew="action-location-record-new">
+	<form name="location-form" title="Stock Location" model="com.axelor.apps.stock.db.Location" onNew="action-location-record-new" width="large">
 		<toolbar>
 			<button name="createInventory" title="Create inventory"   onClick="action-location-view-create-inventory"/>
 			<button name="print" title="Print" icon="fa-print" onClick="action-stock-location-method-print"/>

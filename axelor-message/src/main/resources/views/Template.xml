@@ -11,7 +11,7 @@
     </grid>
     
 	<form name="template-form" title="Template" model="com.axelor.apps.message.db.Template" 
-		onNew="action-template-record-new">
+		onNew="action-template-record-new" width="large">
 		<panel colSpan="12">
 			<field name="name" colSpan="4"/>
 			<field name="mediaTypeSelect" colSpan="4"/>

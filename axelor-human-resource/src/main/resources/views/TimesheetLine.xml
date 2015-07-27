@@ -27,7 +27,7 @@
 
 	<form name="timesheet-line-project-form" title="Log Time" model="com.axelor.apps.hr.db.TimesheetLine" 
 	onNew="action-hr-default-timesheet-line-project,action-timesheet-line-attrs-set-duration-label,action-timesheet-line-record-to-invoice-parent"
-	onLoad="action-timesheet-line-attrs-set-duration-label,action-timesheet-line-record-set-visible-duration">
+	onLoad="action-timesheet-line-attrs-set-duration-label,action-timesheet-line-record-set-visible-duration" width="large">
 		<panel title="Overview">
 			<field name="user" form-view="user-form" grid-view="user-grid"/>
 			<field name="date" />
@@ -43,7 +43,7 @@
 	
 	<form name="timesheet-line-timesheet-form" title="Timesheet Line" model="com.axelor.apps.hr.db.TimesheetLine" 
 	onNew="action-hr-default-timesheet-line-timesheet,action-timesheet-line-attrs-set-duration-label,action-timesheet-line-attrs-title-project-task"
-	onLoad="action-timesheet-line-attrs-set-duration-label,action-timesheet-line-record-set-visible-duration,action-timesheet-line-attrs-title-project-task">
+	onLoad="action-timesheet-line-attrs-set-duration-label,action-timesheet-line-record-set-visible-duration,action-timesheet-line-attrs-title-project-task" width="large">
 		<panel title="Overview">
 			<field name="projectTask" onChange="action-timesheet-line-record-to-invoice" onSelect="action-timesheet-line-attrs-domain-project-task" form-view="project-task-form" grid-view="project-task-grid"/>
 			<field name="date" />
