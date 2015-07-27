@@ -10,7 +10,7 @@
 				coalesce(SUM(_invoice._total),0.00) AS _amount,
 				_meta._type AS _invoice_type
 			FROM
-				(SELECT in_tax_total_remaining AS _total, operation_type_select FROM account_invoice) AS _invoice
+				(SELECT company_in_tax_total_remaining AS _total, operation_type_select FROM account_invoice) AS _invoice
 			RIGHT JOIN
 				(SELECT cast(value as int) AS _select_item, title AS _type 
 				FROM meta_select_item 
@@ -708,7 +708,7 @@
 	    UNION ALL
 	      (SELECT 
 	        'Inv. Unpaid' as _label,
-	        self.in_tax_total_remaining as _sum
+	        self.company_in_tax_total_remaining as _sum
 	      FROM
 	        account_invoice AS self
 	      JOIN
@@ -742,7 +742,7 @@
 	    UNION ALL
 	      (SELECT
 	        'Ref. Unpaid' AS _label,
-	        self.in_tax_total_remaining AS _sum		
+	        self.company_in_tax_total_remaining AS _sum		
 	      FROM
 	        account_invoice AS self
 	      JOIN
@@ -800,7 +800,7 @@
 	    UNION ALL
 	      (SELECT 
 	        'Unpaid Inv.' as _label,
-	        self.in_tax_total_remaining as _sum
+	        self.company_in_tax_total_remaining as _sum
 	      FROM
 	        account_invoice AS self
 	      JOIN
@@ -817,7 +817,7 @@
 	    UNION ALL
 	      (SELECT
 	        'Unpaid Inv. due' AS _label,
-	        self.in_tax_total_remaining AS _sum		
+	        self.company_in_tax_total_remaining AS _sum		
 	      FROM
 	        account_invoice AS self
 	      JOIN
@@ -876,7 +876,7 @@
 	    UNION ALL
 	      (SELECT 
 	        'Unpaid Inv.' as _label,
-	        self.in_tax_total_remaining as _sum
+	        self.company_in_tax_total_remaining as _sum
 	      FROM
 	        account_invoice AS self
 	      JOIN
@@ -893,7 +893,7 @@
 	    UNION ALL
 	      (SELECT
 	        'Unpaid Inv. due' AS _label,
-	        self.in_tax_total_remaining AS _sum		
+	        self.company_in_tax_total_remaining AS _sum		
 	      FROM
 	        account_invoice AS self
 	      JOIN

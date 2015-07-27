@@ -461,10 +461,5 @@
 		<view type="dashboard" name="crm.tickets.dashboard.2" />
 	</action-view>
 	
-	<menuitem name="menu-holidays-dashboard" parent="menu-crm-dashboards"
-		title="Holidays" order="-70" />
-
-	<menuitem name="menu-holidays-dashboard-1"  parent="menu-holidays-dashboard"
-		title="Holidays Db" />	
 	
 </object-views>

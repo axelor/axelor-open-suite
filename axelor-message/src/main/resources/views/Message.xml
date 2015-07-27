@@ -60,6 +60,7 @@
     </action-group>
     
     <action-group name="action-group-message-message-send-click">
+	<action name="action-validate-message-content-onsave"/>
     	<action name="save"/>
     	<action name="action-message-method-send-by-email"/>
     	<action name="save"/>
@@ -106,5 +107,9 @@
 	<action-method name="action-send-by-email-with-template">
 		<call class="com.axelor.apps.message.web.GenerateMessageController" method="callMessageWizard"/>
 	</action-method>
+	
+	<action-validate name="action-validate-message-content-onsave">
+		<alert message="No Mail content entered." if="mediaTypeSelect == 1 &amp;&amp; content== null"/>
+	</action-validate>
 	
 </object-views>
