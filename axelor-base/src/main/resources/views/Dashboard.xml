@@ -17,6 +17,27 @@
 		<dashlet height="350" action="dashlet.prospects.by.industrySector" canSearch="true"/>
 		<dashlet height="350" action="dashlet.my.prospects" canSearch="true"/>
   	</dashboard>
+  	
+  	<dashboard title="Contact Dashboard" name="base.contact.dashboard"  >
+		<dashlet action="dashlet.my.recent.contacts" height="350"  colSpan="12" canSearch="true"/> 
+		<dashlet action="dashlet.base.recent.contacts" height="350" colSpan="12"  canSearch="true"/>	
+  	</dashboard>
+  	
+  	
+  	
+  	<action-view name="dashlet.my.recent.contacts" title="My Recent Contacts" model="com.axelor.apps.base.db.Partner">
+		<view type="grid" name="partner-grid"/>
+		<view type="form" name="partner-form"/>
+		<domain>self.updatedOn &gt;= date(now())-30 AND self.user=:__user__ AND self.isContact = true</domain>
+	</action-view>
+	
+	<action-view name="dashlet.base.recent.contacts" title="Recently created contacts" model="com.axelor.apps.base.db.Partner" >
+    	<view type="grid" name="partner-grid"/>
+    	<view type="form" name="partner-form"/>
+    	<domain>self.createdOn &gt;= date(now())-15 AND self.isContact = true</domain>
+	</action-view>
+	
+	
 			
 	<action-view name="dashlet.my.recent.customers" title="My Recent Customers" model="com.axelor.apps.base.db.Partner">
 		<view type="grid" name="partner-grid"/>
