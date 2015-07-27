@@ -156,6 +156,7 @@
 "To Date",,,
 "To invoice",,,
 "Unit price",,,
+"Unit prices in A.T.I and in W.T. can't be mix",,,
 "Veuillez choisir un fournisseur pour la ligne %s",,,
 "Veuillez selectionner une devise pour la commande %s",,,
 "Veuillez selectionner une devise pour le devis %s",,,
