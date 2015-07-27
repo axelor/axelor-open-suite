@@ -11,7 +11,7 @@
     </grid>
     
 	<form name="production-order-form" title="Production order" model="com.axelor.apps.production.db.ProductionOrder" onNew="action-production-order-attrs-title-project-task"
-		onLoad="action-production-order-attrs-title-project-task">
+		onLoad="action-production-order-attrs-title-project-task" width="large">
 	  <panel>
 	    <field name="productionOrderSeq"/>
 	    <field name="projectTask" if-module="axelor-business-production" form-view="project-task-form" grid-view="project-task-grid"/>

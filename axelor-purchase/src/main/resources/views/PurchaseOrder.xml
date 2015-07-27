@@ -29,7 +29,7 @@
 		  <button name="sendByEmail" title="Send Email" icon="fa-envelope" onClick="action-send-by-email-with-template"/>
 	</grid>
 	
-	<form name="purchase-order-merge-form" model="com.axelor.apps.base.db.Wizard" title="Merge purchase orders" >
+	<form name="purchase-order-merge-form" model="com.axelor.apps.base.db.Wizard" title="Merge purchase orders" width="large">
 		<panel-related field="$purchaseOrderToMerge" form-view="purchase-order-form" title="Purchase orders to merge" colSpan="12" type="many-to-many" target="com.axelor.apps.purchase.db.PurchaseOrder" domain="self.statusSelect = 1" canNew="false" canEdit="false" grid-view="purchase-order-grid"/>
 		<panel sidebar="true" title="Actions">
 			<button name="generateMergedPurchaseOrder" title="Merge into single purchase order" onClick="action-validate-purchase-order-check-selection,action-purchase-order-method-merge"/>			

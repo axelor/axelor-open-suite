@@ -11,7 +11,7 @@
 		<field name="createdBy" form-view="user-form" grid-view="user-grid"/>
     </grid>
  
-	<form onLoad="action-group-supplychain-salebatch-onload" onNew="action-group-supplychain-salebatch-onnew" name="sale-batch-form" title="Sale Batch" model="com.axelor.apps.sale.db.SaleBatch">
+	<form onLoad="action-group-supplychain-salebatch-onload" onNew="action-group-supplychain-salebatch-onnew" name="sale-batch-form" title="Sale Batch" model="com.axelor.apps.sale.db.SaleBatch" width="large">
 	  <panel>
 	    <field name="actionSelect" onChange="action-sale-batch-attrs-action-select"/>
 	    <field name="code"/>

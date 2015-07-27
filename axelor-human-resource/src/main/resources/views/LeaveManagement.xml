@@ -15,7 +15,7 @@
 	</grid>
 
 	<form name="leave-management-form" title="Leave Management" model="com.axelor.apps.hr.db.LeaveManagement"
-		onNew="action-leave-management-record-default">
+		onNew="action-leave-management-record-default" width="large">
 		<panel>
 			<field name="value" onChange="action-leave-management-record-counted"/>
 		    <field name="date"/>

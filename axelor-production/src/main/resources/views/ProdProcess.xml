@@ -11,7 +11,7 @@
     </grid>
     
     <form name="prod-process-form" title="Production process" model="com.axelor.apps.production.db.ProdProcess"
-    	onSave="action-prod-process-record-name">
+    	onSave="action-prod-process-record-name" width="large">
 		<panel>
 	    	<field name="name"/>
 	    	<field name="code"/>

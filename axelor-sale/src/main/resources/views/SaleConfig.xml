@@ -7,7 +7,7 @@
         <field name="company" form-view="sale-config-form" grid-view="sale-config-grid"/>
     </grid>
 
-	<form name="sale-config-form" title="Sale configuration" model="com.axelor.apps.sale.db.SaleConfig" onNew="action-sale-config-record-default">
+	<form name="sale-config-form" title="Sale configuration" model="com.axelor.apps.sale.db.SaleConfig" onNew="action-sale-config-record-default" width="large">
 	  	<panel>
 	    	<field name="company" form-view="company-form" colSpan="4" grid-view="company-grid"/>
 	    	<field name="saleOrderInAti"/>

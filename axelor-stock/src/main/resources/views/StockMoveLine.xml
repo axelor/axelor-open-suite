@@ -25,7 +25,7 @@
     </grid>
     
     <form name="stock-move-line-form" title="Stock move line" model="com.axelor.apps.stock.db.StockMoveLine"
-    	onNew="action-stock-move-line-record-new" onLoad="action-inventory-line-attrs-tracking-number">
+    	onNew="action-stock-move-line-record-new" onLoad="action-inventory-line-attrs-tracking-number" width="large">
         <panel>
             <field name="productName" />
 	        <field name="product" domain="self.expense = false" onChange="action-group-stock-stockmoveline-product-onchange" onSelect="action-stock-move-line-product-domain" form-view="product-form" grid-view="product-grid"/>
@@ -54,7 +54,7 @@
     </grid>
     
     <form name="stock-move-line-all-form" title="Stock move line" model="com.axelor.apps.stock.db.StockMoveLine"
-    	onNew="action-stock-move-line-record-new" onLoad="action-stock-move-line-attrs-scale-and-precision,action-inventory-line-attrs-tracking-number" readonlyIf="stockMove.statusSelect == 3">
+    	onNew="action-stock-move-line-record-new" onLoad="action-stock-move-line-attrs-scale-and-precision,action-inventory-line-attrs-tracking-number" readonlyIf="stockMove.statusSelect == 3" width="large">
         <panel title="Stock Move">
 	    	<field name="stockMove.stockMoveSeq"/>
 	    	<field name="stockMove" form-view="stock-move-form" grid-view="stock-move-grid"/>
@@ -85,7 +85,7 @@
     </grid>
     
     <form name="stock-move-line-production-form" title="Stock move line" model="com.axelor.apps.stock.db.StockMoveLine"
-    	onNew="action-group-stock-stockmoveline-production-onnew" onLoad="action-stock-move-line-attrs-scale-and-precision">
+    	onNew="action-group-stock-stockmoveline-production-onnew" onLoad="action-stock-move-line-attrs-scale-and-precision" width="large">
 		<panel>
 		    <field name="productName" required="true" />
 	        <field name="product" domain="self.expense = false" onChange="action-stock-move-line-set-product-info" onSelect="action-stock-move-line-product-domain" form-view="product-form" grid-view="product-grid"/>

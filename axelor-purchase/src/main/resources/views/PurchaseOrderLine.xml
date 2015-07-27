@@ -39,7 +39,7 @@
 	<form name="purchase-order-line-form" title="PO line" 
 		model="com.axelor.apps.purchase.db.PurchaseOrderLine" 
 		onNew="action-group-purchase-purchase-orderline-onnew"
-		onLoad="action-group-purchase-purchase-orderline-onload">
+		onLoad="action-group-purchase-purchase-orderline-onload" width="large">
 	  <panel>
 		<field name="product"
 			onChange="action-group-purchase-purchase-orderline-product-onchange"

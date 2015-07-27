@@ -132,7 +132,7 @@
 	    <context name="stockMoveLineList" expr="eval:stockMoveLineList" if="stockMoveLineList != null" />
 	</action-view>
 	
-	<form name="stock-move-split-into-2-form" title="Split into 2" model="com.axelor.apps.stock.db.StockMove">
+	<form name="stock-move-split-into-2-form" title="Split into 2" model="com.axelor.apps.stock.db.StockMove" width="large">
     	<panel>
 	        <panel-related field="stockMoveLineList" colSpan="12" grid-view="stock-move-line-split-grid" canEdit="true" form-view="stock-move-line-form"/>
 	        <button name="split" title="Split" onClick="action-stock-move-method-split-into-2"/>

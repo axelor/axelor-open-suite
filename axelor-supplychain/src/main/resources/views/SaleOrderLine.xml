@@ -3,7 +3,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
 	
-	<form name="subscription-sale-order-line-form" title="Subscription" model="com.axelor.apps.sale.db.SaleOrderLine">
+	<form name="subscription-sale-order-line-form" title="Subscription" model="com.axelor.apps.sale.db.SaleOrderLine" width="large">
 		<panel colSpan="12">
 			<field name="periodicity" colSpan="3" onChange="action-supplychain-record-set-dateSubTo"/>
 			<field name="fromSubDate" colSpan="3" onChange="action-supplychain-record-set-dateSubTo"/>

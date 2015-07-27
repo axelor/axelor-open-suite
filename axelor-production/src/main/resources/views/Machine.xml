@@ -9,7 +9,7 @@
         <field name="location" grid-view="location-grid" form-view="location-form"/>
     </grid>
     
-	<form name="machine-form" title="Machine" model="com.axelor.apps.production.db.Machine">
+	<form name="machine-form" title="Machine" model="com.axelor.apps.production.db.Machine" width="large">
 	  <panel>
 	    <field name="name"/>
 	    <field name="serialNumber"/>

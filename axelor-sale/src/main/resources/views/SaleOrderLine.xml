@@ -15,7 +15,7 @@
 	</grid>
     
 	<form name="sale-order-line-form" title="SO line" model="com.axelor.apps.sale.db.SaleOrderLine" 
-	onLoad="action-group-sale-saleorderline-onload" onNew="action-group-sale-saleorderline-onnew">
+	onLoad="action-group-sale-saleorderline-onload" onNew="action-group-sale-saleorderline-onnew" width="large">
 		<panel>
 			<field name="sequence"/>
 		   	<field name="isToPrintLineSubTotal"/>

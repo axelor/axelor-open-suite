@@ -19,7 +19,7 @@
 
 	<form name="sale-order-form-client" id="supplychain-sale-order-form-client" title="Sale order" model="com.axelor.apps.sale.db.SaleOrder" cols="4" 
 		  onNew="action-group-supplychain-saleorder-onnew"
-		  onSave="save,action-sale-order-method-compute,save" onLoad="action-group-supplychain-saleorder-onload">
+		  onSave="save,action-sale-order-method-compute,save" onLoad="action-group-supplychain-saleorder-onload" width="large">
 		<panel-include view="sale-order-form-client" from="axelor-sale"/>
 	</form>
 	
