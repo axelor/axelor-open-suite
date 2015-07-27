@@ -2,13 +2,16 @@ package com.axelor.apps.hr.service.weeklyplanning;
 
 import java.util.List;
 
+import org.joda.time.LocalDate;
+
 import com.axelor.apps.hr.db.DayPlanning;
 import com.axelor.apps.hr.db.WeeklyPlanning;
 import com.axelor.exception.AxelorException;
 import com.google.inject.persist.Transactional;
 
 public class WeeklyPlanningServiceImp implements WeeklyPlanningService{
-	
+
+	@Override
 	@Transactional(rollbackOn={Exception.class})
 	public WeeklyPlanning initPlanning(WeeklyPlanning planning){
 		String[] dayTab= new String[]{"monday","tuesday","wednesday","thursday","friday","saturday","sunday"};
@@ -19,13 +22,14 @@ public class WeeklyPlanningServiceImp implements WeeklyPlanningService{
 		}
 		return planning;
 	}
-	
+
+	@Override
 	@Transactional(rollbackOn={Exception.class})
 	public WeeklyPlanning checkPlanning(WeeklyPlanning planning) throws AxelorException{
-		
+
 		List<DayPlanning> listDay = planning.getWeekDays();
 		for (DayPlanning dayPlanning : listDay) {
-			
+
 			if(dayPlanning.getMorningFrom() != null && dayPlanning.getMorningTo() != null){
 				if(dayPlanning.getMorningFrom().isAfter(dayPlanning.getMorningTo()))
 				{
@@ -33,7 +37,7 @@ public class WeeklyPlanningServiceImp implements WeeklyPlanningService{
 					throw new AxelorException(message, 5);
 				}
 			}
-			
+
 			if(dayPlanning.getMorningTo() != null && dayPlanning.getAfternoonFrom() != null){
 				if(dayPlanning.getMorningTo().isAfter(dayPlanning.getAfternoonFrom()))
 				{
@@ -41,7 +45,7 @@ public class WeeklyPlanningServiceImp implements WeeklyPlanningService{
 					throw new AxelorException(message, 5);
 				}
 			}
-			
+
 			if(dayPlanning.getAfternoonFrom() != null && dayPlanning.getAfternoonTo() != null){
 				if(dayPlanning.getAfternoonFrom().isAfter(dayPlanning.getAfternoonTo()))
 				{
@@ -49,10 +53,10 @@ public class WeeklyPlanningServiceImp implements WeeklyPlanningService{
 					throw new AxelorException(message, 5);
 				}
 			}
-			
-			if((dayPlanning.getMorningFrom() == null && dayPlanning.getMorningTo() != null) 
+
+			if((dayPlanning.getMorningFrom() == null && dayPlanning.getMorningTo() != null)
 				|| (dayPlanning.getMorningTo() == null && dayPlanning.getMorningFrom() != null)
-				|| (dayPlanning.getAfternoonFrom() == null && dayPlanning.getAfternoonTo() != null) 
+				|| (dayPlanning.getAfternoonFrom() == null && dayPlanning.getAfternoonTo() != null)
 				|| (dayPlanning.getAfternoonTo() == null && dayPlanning.getAfternoonFrom() != null))
 			{
 				String message = "Some times are null and should not on "+dayPlanning.getName();
@@ -61,4 +65,18 @@ public class WeeklyPlanningServiceImp implements WeeklyPlanningService{
 		}
 		return planning;
 	}
+
+	@Override
+	public double workingDayValue(WeeklyPlanning planning, LocalDate date){
+		double value = 0;
+		DayPlanning dayPlanning = planning.getWeekDays().get(date.getDayOfWeek()-1);
+		if(dayPlanning.getMorningFrom()!= null && dayPlanning.getMorningTo()!= null){
+			value+=0.5;
+		}
+		if(dayPlanning.getAfternoonFrom()!= null && dayPlanning.getAfternoonTo()!= null){
+			value+=0.5;
+		}
+		return value;
+	}
+
 }

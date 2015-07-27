@@ -7,7 +7,7 @@
 
   <entity name="Company" lang="java" cachable="true">
   
-	<one-to-one name="hRConfig" ref="com.axelor.apps.hr.db.HRConfig" title="Sale config" mappedBy="company"/>
+	<one-to-one name="hrConfig" ref="com.axelor.apps.hr.db.HRConfig" title="HR config" mappedBy="company"/>
   </entity>
   
 </domain-models>

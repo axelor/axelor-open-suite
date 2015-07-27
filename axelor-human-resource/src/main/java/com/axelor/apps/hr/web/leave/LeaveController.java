@@ -32,7 +32,7 @@ public class LeaveController {
 									.define("LeaveRequest")
 									.model(LeaveRequest.class.getName())
 									.add("form", "leave-request-form")
-									.context("","").map());
+									.map());
 		}
 		else if(leaveList.size() == 1){
 			response.setView(ActionView
@@ -169,7 +169,7 @@ public class LeaveController {
 		}
 	}
 
-	public void computeDuration(ActionRequest request, ActionResponse response){
+	public void computeDuration(ActionRequest request, ActionResponse response) throws AxelorException{
 		LeaveRequest leave = request.getContext().asType(LeaveRequest.class);
 		response.setValue("duration", leaveService.computeDuration(leave));
 	}

@@ -11,6 +11,9 @@
 	  	<panel>
 	    	<field name="company" form-view="company-form" colSpan="4" grid-view="company-grid"/>
 	  	</panel>
+	  	<panel title="General">
+	  		<field name="publicHolidayPlanning" canNew="true"/>
+	  	</panel>
 	  	<panel title="Leaves Templates">
 	    	<field name="sentLeaveTemplate" canNew="true" form-view="template-form" grid-view="template-grid"/>
 	    	<field name="validatedLeaveTemplate" canNew="true" form-view="template-form" grid-view="template-grid"/>
@@ -18,7 +21,7 @@
 	  	</panel>
 	</form>
 	
-	<action-record name="action-hr-config-record-default" model="com.axelor.apps.sale.db.SaleConfig">
+	<action-record name="action-hr-config-record-default" model="com.axelor.apps.hr.db.HRConfig">
 		<field name="company" expr="eval: _company" if="_company != null"/>
 		<field name="company"  expr="eval:__user__.activeCompany" if="_company == null &amp;&amp; __user__.activeCompany != null"/>
     	<field name="company"  expr="eval:__repo__.of(Company).all().fetchOne()" if="_company == null &amp;&amp; __user__.activeCompany == null &amp;&amp; __repo__.of(Company).all().fetch().size == 1"/>

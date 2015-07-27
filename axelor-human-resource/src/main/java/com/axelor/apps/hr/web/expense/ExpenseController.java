@@ -39,7 +39,7 @@ public class ExpenseController {
 									.define("Expense")
 									.model(Expense.class.getName())
 									.add("form", "expense-form")
-									.context("","").map());
+									.map());
 		}
 		else if(expenseList.size() == 1){
 			response.setView(ActionView

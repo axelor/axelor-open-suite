@@ -106,7 +106,7 @@
 	</action-attrs>
 	
 	<action-validate name="action-leave-request-validate-dates">
-		<error message="Invalide dates" if="((!(__user__ == user?.employee?.manager || (__user__ == user &amp;&amp; user?.employee?.manager == null) || __user__ == user?.employee?.manager?.employee?.manager) &amp;&amp; dateFrom &lt; __date__) || (dateTo &lt; dateFrom) || (dateTo == dateFrom &amp;&amp; startOnSelect &gt; endOnSelect)) &amp;&amp; dateFrom != null || dateTo != null)"/>
+		<error message="Invalide dates" if="((!(__user__ == user?.employee?.manager || (__user__ == user &amp;&amp; user?.employee?.manager == null) || __user__ == user?.employee?.manager?.employee?.manager) &amp;&amp; dateFrom &lt; __date__) || (dateTo &lt; dateFrom) || (dateTo == dateFrom &amp;&amp; startOnSelect &gt; endOnSelect)) &amp;&amp; dateFrom != null || dateTo != null"/>
 	</action-validate>
 	
 	<action-validate name="action-leave-request-validate-dates-on-save">

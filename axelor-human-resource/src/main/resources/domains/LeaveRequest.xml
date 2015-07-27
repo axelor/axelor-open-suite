@@ -33,7 +33,8 @@
    			public static final Integer STATUS_SELECT_VALIDATED = 3;
    			public static final Integer STATUS_SELECT_REFUSED = 4;
    			public static final Integer STATUS_SELECT_CANCELED = 5;
-
+			public static final Integer SELECT_MORNING = 1;
+   			public static final Integer SELECT_AFTERNOON = 2;
    		]]>
    	</extra-code>
   </entity>

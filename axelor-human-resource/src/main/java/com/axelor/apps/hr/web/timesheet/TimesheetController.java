@@ -51,7 +51,7 @@ public class TimesheetController {
 									.define("Timesheet")
 									.model(Timesheet.class.getName())
 									.add("form", "timesheet-form")
-									.context("","").map());
+									.map());
 		}
 		else if(timesheetList.size() == 1){
 			response.setView(ActionView

@@ -2,14 +2,20 @@ package com.axelor.apps.hr.service.leave;
 
 import java.math.BigDecimal;
 
+import org.joda.time.LocalDate;
+
 import com.axelor.apps.base.service.DurationServiceImpl;
+import com.axelor.apps.hr.db.DayPlanning;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.LeaveLine;
 import com.axelor.apps.hr.db.LeaveRequest;
+import com.axelor.apps.hr.db.WeeklyPlanning;
 import com.axelor.apps.hr.db.repo.LeaveLineRepository;
 import com.axelor.apps.hr.db.repo.LeaveRequestRepository;
 import com.axelor.apps.hr.exception.IExceptionMessage;
 import com.axelor.apps.hr.service.config.HRConfigService;
+import com.axelor.apps.hr.service.publicHoliday.PublicHolidayService;
+import com.axelor.apps.hr.service.weeklyplanning.WeeklyPlanningService;
 import com.axelor.apps.message.db.Message;
 import com.axelor.apps.message.db.Template;
 import com.axelor.apps.message.service.MessageServiceImpl;
@@ -18,6 +24,7 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -37,12 +44,38 @@ public class LeaveService extends LeaveRequestRepository{
 	@Inject
 	protected HRConfigService hRConfigService;
 
-	public BigDecimal computeDuration(LeaveRequest leave){
+	@Inject
+	protected WeeklyPlanningService weeklyPlanningService;
+
+	public BigDecimal computeDuration(LeaveRequest leave) throws AxelorException{
 		if(leave.getDateFrom()!=null && leave.getDateTo()!=null){
-			BigDecimal duration = durationService.computeDurationInDays(leave.getDateFrom().toDateTimeAtCurrentTime().toDateTime(),leave.getDateTo().toDateTimeAtCurrentTime().toDateTime());
-			if(leave.getStartOnSelect() == leave.getEndOnSelect()){
-				duration = duration.add(new BigDecimal(0.5));
+			Employee employee = leave.getUser().getEmployee();
+			if(employee == null){
+				throw new AxelorException(String.format(I18n.get(IExceptionMessage.LEAVE_USER_EMPLOYEE),leave.getUser().getName()), IException.CONFIGURATION_ERROR);
 			}
+
+			WeeklyPlanning weeklyPlanning = employee.getPlanning();
+
+			if(weeklyPlanning == null){
+				throw new AxelorException(String.format(I18n.get(IExceptionMessage.EMPLOYEE_PLANNING),employee.getName()), IException.CONFIGURATION_ERROR);
+			}
+
+			if(employee.getPublicHolidayPlanning() == null){
+				throw new AxelorException(String.format(I18n.get(IExceptionMessage.EMPLOYEE_PUBLIC_HOLIDAY),employee.getName()), IException.CONFIGURATION_ERROR);
+			}
+
+			BigDecimal duration = BigDecimal.ZERO;
+			duration = duration.add(new BigDecimal(this.computeStartDateWithSelect(leave.getDateFrom(), leave.getStartOnSelect(), weeklyPlanning)));
+			LocalDate itDate = new LocalDate(leave.getDateFrom().plusDays(1));
+
+			while(!itDate.isEqual(leave.getDateTo())){
+				duration = duration.add(new BigDecimal(weeklyPlanningService.workingDayValue(weeklyPlanning, itDate)));
+				itDate = itDate.plusDays(1);
+			}
+
+			duration = duration.add(new BigDecimal(this.computeEndDateWithSelect(leave.getDateTo(), leave.getEndOnSelect(), weeklyPlanning)));
+
+			duration = duration.subtract(Beans.get(PublicHolidayService.class).computePublicHolidayDays(leave.getDateFrom(),leave.getDateTo(), weeklyPlanning, employee));
 			return duration;
 		}
 		else{
@@ -180,5 +213,33 @@ public class LeaveService extends LeaveRequestRepository{
 		catch(Exception e){
 			TraceBackService.trace(new Exception(e));
 		}
+	}
+
+	public double computeStartDateWithSelect(LocalDate date, int select, WeeklyPlanning weeklyPlanning){
+		double value = 0;
+		if(select == SELECT_MORNING){
+			value = weeklyPlanningService.workingDayValue(weeklyPlanning, date);
+		}
+		else {
+			DayPlanning dayPlanning = weeklyPlanning.getWeekDays().get(date.getDayOfWeek()-1);
+			if(dayPlanning.getAfternoonFrom()!= null && dayPlanning.getAfternoonTo()!= null){
+				value = 0.5;
+			}
+		}
+		return value;
+	}
+
+	public double computeEndDateWithSelect(LocalDate date, int select, WeeklyPlanning weeklyPlanning){
+		double value = 0;
+		if(select == SELECT_AFTERNOON){
+			value = weeklyPlanningService.workingDayValue(weeklyPlanning, date);
+		}
+		else {
+			DayPlanning dayPlanning = weeklyPlanning.getWeekDays().get(date.getDayOfWeek()-1);
+			if(dayPlanning.getMorningFrom()!= null && dayPlanning.getMorningTo()!= null){
+				value = 0.5;
+			}
+		}
+		return value;
 	}
 }
