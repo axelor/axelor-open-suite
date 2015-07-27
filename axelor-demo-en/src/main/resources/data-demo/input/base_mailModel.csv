@@ -1,9 +1,0 @@
-"importId";"code";"name";"typeSelect";"objectConcernedSelect";"reminderTypeSelect";"subject";"content";"pdfModelPath"
-1;"EM01";"Reminder Email";2;1;"standard";"Contenu Email relance";"Contenu Email relance";
-2;"LS01";"Standard letter reminder";1;1;"standard";"Object Standard letter reminder";"Content Standard letter reminder";"LS01.rptdesign"
-3;"LRAR01";"Registered letter AR 1";1;1;"standard";"Object Registered letter AR 1";"Content Registered letter AR 1";"LRAR01.rptdesign"
-4;"LRAR02";"Registered letter AR 2";1;1;"standard";"Object Registered letter AR 2";"Content Registered letter AR 2";"LRAR02.rptdesign"
-5;"LSH01";"Usher Threatening Standard Letter";1;1;"standard";"Object Usher Threatening Standard Letter";"Content Usher Threatening Standard Letter";"LSH01.rptdesign"
-6;"LRARH01";"Usher Threatening Registered Letter AR";1;1;"standard";"Object Usher Threatening Registered Letter AR";"Content Usher Threatening Registered Letter AR";"LRARH01.rptdesign"
-7;"LHUISS";"Information letter of Usher";1;1;"standard";"Object Information letter of Usher";"Content Information letter of Usher";"LHUISS.rptdesign"
-8;"EC01";"Cashier Email";2;4;"standard";"Cashier Validation";"The %date, the amount cashed in for the agency %agence is %montant euros for the company %société.";

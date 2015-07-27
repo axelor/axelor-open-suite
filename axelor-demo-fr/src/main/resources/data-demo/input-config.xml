@@ -174,9 +174,6 @@
 		<bind column="importId" to="importId"/>
 	</input>
 	
-	
-	
-	
 	<input file="account_interBankCode.csv" separator=";" type="com.axelor.apps.account.db.InterbankCodeLine">
         <bind column="code_rejet" to="code" />
         <bind column="libelle_rejet" to="name" />
@@ -302,7 +299,7 @@
  		
  	<input file="project_project_task.csv" type="com.axelor.apps.project.db.ProjectTask" separator=";" search="self.importId = :importId"/>
  	
- 	<input file="hr_timeActivity.csv" type="com.axelor.apps.hr.db.TimeActivity" separator=";" search="self.importId = :importId"/>
+<!--  	<input file="hr_timeActivity.csv" type="com.axelor.apps.hr.db.TimeActivity" separator=";" search="self.importId = :importId"/> -->
  	
  	<input file="hr_timesheet.csv" type="com.axelor.apps.hr.db.Timesheet" separator=";" search="self.importId = :importId"/>
  	
@@ -467,7 +464,9 @@
 <!--  		<bind to="paymentDateTime" eval="call:com.axelor.csv.script.ImportDateTime:importDateTime(paymentDateTime)" column="paymentDateTime"/> -->
 <!--  	</input> -->
  	
-	<input file="stock_stockMove.csv" separator=";" type="com.axelor.apps.stock.db.StockMove"/>
+	<input file="stock_stockMove.csv" separator=";" type="com.axelor.apps.stock.db.StockMove">
+		<bind to="stockMoveSeq" eval="call:com.axelor.apps.base.service.administration.SequenceService:getSequenceNumber(com.axelor.apps.base.db.IAdministration.OUTGOING)" />
+	</input>
 	
 	<input file="stock_stockMoveLine.csv" separator=";" type="com.axelor.apps.stock.db.StockMoveLine"/>
 	
@@ -507,7 +506,7 @@
 	
 	<input file="base_template.csv" separator=";" type="com.axelor.apps.message.db.Template" update="true" search="self.name = :name"/>
 	
-	<input file="base_general.csv" separator=";" type="com.axelor.apps.base.db.General"  search="self.importId = :importId" update="true" call="com.axelor.csv.scrip.ClearMessage:clearAllMailMessages">
+	<input file="base_general.csv" separator=";" type="com.axelor.apps.base.db.General"  search="self.importId = :importId" update="true" call="com.axelor.csv.script.ClearMessage:clearAllMailMessages">
       	<bind to="defaultExemptionTax" search="self.code = :defaultExemptionTax_code" update="true">
           	<bind column="defaultExemptionTax_code" to="code"/>
       	</bind>

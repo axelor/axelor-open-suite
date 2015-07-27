@@ -137,10 +137,10 @@
 				<label title="OR" colSpan="4"/>
 				<field name="flatFeePurchase" colSpan="4"/>
 			</panel>
-			<panel title="Sale Order" if-module="axelor-sale" showIf="isCustomer == true">
+			<panel title="Sale Order" if-module="axelor-sale" showIf="isCustomer">
 				<field name="saleOrderInformation" colSpan="12"/>
 			</panel>
-			<panel title="Purchase Order" if-module="axelor-purchase" showIf="isSupplier == true">
+			<panel title="Purchase Order" if-module="axelor-purchase" showIf="isSupplier">
 				<field name="purchaseOrderInformation" colSpan="12"/>
 			</panel>
 		</panel-tabs>

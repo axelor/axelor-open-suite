@@ -103,7 +103,7 @@
 			</panel>
 		</panel-tabs>
 		<panel sidebar="true" title="Actions" stacked="true">
-	    	<button name="computeDurationFromChildren" title="Compute duration" showIf="childProjectTaskList.length > 0" colSpan="12" onClick="save,action-method-project-task-compute-duration-fromchildren"/>
+	    	<button name="computeDurationFromChildren" title="Compute duration" showIf="childProjectTaskList.length > 0" colSpan="12" onClick="save,action-method-project-task-compute-duration-fromchildren,save"/>
 	  	</panel>
 		<panel title="Settings" sidebar="true">
 			<field name="membersUserSet" widget="TagSelect" form-view="user-form" grid-view="user-grid"/>
@@ -241,7 +241,7 @@
 			</panel>
 		</panel-tabs>
 		<panel sidebar="true" title="Actions" stacked="true" hideIf="typeSelect == 'task'">
-	    	<button name="computeDurationFromChildren" title="Compute duration" showIf="childProjectTaskList.length > 0" colSpan="12" onClick="save,action-method-project-task-compute-duration-fromchildren"/>
+	    	<button name="computeDurationFromChildren" title="Compute duration" showIf="childProjectTaskList.length > 0" colSpan="12" onClick="save,action-method-project-task-compute-duration-fromchildren,save"/>
 	  	</panel>
 		<panel title="Settings" sidebar="true" hideIf="typeSelect == 'task'">
 			<field name="membersUserSet" widget="TagSelect" form-view="user-form" grid-view="user-grid"/>
@@ -385,20 +385,16 @@
 	    <field name="duration" expr="call:com.axelor.apps.hr.service.employee.EmployeeService:getDurationHours($visibleDuration)"/>
 	</action-record>
 	
-	<action-record name="action-record-project-task-compute-duration-fromchildren" model="com.axelor.apps.project.db.ProjectTask">
-	    <field name="duration" expr="call:com.axelor.apps.project.service.ProjectTaskService:computeDurationFromChildren(__id__)"/>
-	</action-record>
-	
-	<action-method name="action-method-project-task-compute-duration-fromchildren">
-		<call class="com.axelor.apps.business.project.web.ProjectTaskController" method="computeDurationFromChildren"/>
-	</action-method>
-	
 	<action-record name="action-record-project-task-compute-progress" model="com.axelor.apps.project.db.ProjectTask">
 	    <field name="progress" expr="call:com.axelor.apps.project.service.ProjectTaskService:computeProgress(__this__)"/>
 	</action-record>
 	
 	<action-method name="action-method-project-task-compute-progress">
 		<call class="com.axelor.apps.business.project.web.ProjectTaskController" method="computeProgress"/>
+	</action-method>
+	
+	<action-method name="action-method-project-task-compute-duration-fromchildren">
+		<call class="com.axelor.apps.business.project.web.ProjectTaskController" method="computeDurationFromChildren"/>
 	</action-method>
 	
   	<action-attrs name="action-project-attrs-scale-and-precision">

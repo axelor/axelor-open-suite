@@ -238,8 +238,8 @@
 
 	<action-view name="crm.conf.calendar" title="Calendars"
 		model="com.axelor.apps.crm.db.Calendar" >
-		<view type="grid" name="calendar-grid"/>
-		<view type="form" name="calendar-form"/>
+		<view type="grid" name="crm-calendar-grid"/>
+		<view type="form" name="crm-calendar-form"/>
 	</action-view>
 	
 	<menuitem name="crm-conf-calendar-configuration" parent="crm-conf"
@@ -267,6 +267,15 @@
 		model="com.axelor.apps.crm.db.Target" >
 		<view type="grid" name="target-grid"/>
 		<view type="form" name="target-form"/>
+	</action-view>
+	
+	<menuitem name="admin-root-conf-crm-config" parent="admin-root-conf"
+		title="CRM configurations" action="admin.root.conf.crm.config" />
+		
+	<action-view name="admin.root.conf.crm.config" title="CRM configurations"
+		model="com.axelor.apps.crm.db.CrmConfig" >
+		<view type="grid" name="crm-config-grid" />
+		<view type="form" name="crm-config-form"/>
 	</action-view>
 	
 	
@@ -452,10 +461,5 @@
 		<view type="dashboard" name="crm.tickets.dashboard.2" />
 	</action-view>
 	
-	<menuitem name="menu-holidays-dashboard" parent="menu-crm-dashboards"
-		title="Holidays" order="-70" />
-
-	<menuitem name="menu-holidays-dashboard-1"  parent="menu-holidays-dashboard"
-		title="Holidays Db" />	
 	
 </object-views>

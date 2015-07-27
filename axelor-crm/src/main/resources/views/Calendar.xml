@@ -3,11 +3,11 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
     
-    <grid name="calendar-grid" title="Calendars" model="com.axelor.apps.crm.db.Calendar">
+    <grid name="crm-calendar-grid" title="Calendars" model="com.axelor.apps.crm.db.Calendar">
         <field name="name"/>
     </grid>
     
-    <form name="calendar-form" title="Calendar" model="com.axelor.apps.crm.db.Calendar" width="large">
+    <form name="crm-calendar-form" title="Calendar" model="com.axelor.apps.crm.db.Calendar" width="large">
 		<panel>
 		  <field name="title"/>
 		</panel>
