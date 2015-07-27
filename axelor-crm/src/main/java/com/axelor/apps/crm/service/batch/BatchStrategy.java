@@ -17,7 +17,6 @@
  */
 package com.axelor.apps.crm.service.batch;
 
-import com.axelor.apps.base.db.Batch;
 import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.apps.crm.db.EventReminder;
 import com.axelor.apps.crm.db.TargetConfiguration;
@@ -33,43 +32,40 @@ public abstract class BatchStrategy extends AbstractBatch {
 	protected MailAccountService mailAccountService;
 	protected TargetService targetService;
 
-	
-	
-	protected BatchStrategy(EventReminderService eventReminderService) {
+
+
+	protected BatchStrategy(EventReminderService eventReminderService, MessageServiceCrmImpl messageServiceCrmImpl, MailAccountService mailAccountService) {
 		super();
 		this.eventReminderService = eventReminderService;
-	}
-	
-	protected BatchStrategy(MessageServiceCrmImpl messageServiceCrmImpl, MailAccountService mailAccountService) {
-		super();
 		this.messageServiceCrmImpl = messageServiceCrmImpl;
 		this.mailAccountService = mailAccountService;
 	}
-	
+
 	protected BatchStrategy(TargetService targetService) {
 		super();
 		this.targetService = targetService;
 	}
-	
+
 	protected void updateEventReminder( EventReminder eventReminder ){
-		
+
 		eventReminder.addBatchSetItem( batchRepo.find( batch.getId() ) );
-			
+
 		incrementDone();
+//		eventReminderService.save(eventReminder);
 	}
-	
+
 //	protected void updateEvent( Event event ){
-//		
+//
 //		event.addBatchSetItem( batchRepo.find( batch.getId() ) );
-//			
+//
 //		incrementDone();
 //	}
-	
+
 	protected void updateTargetConfiguration( TargetConfiguration targetConfiguration ){
-		
+
 		targetConfiguration.addBatchSetItem( batchRepo.find( batch.getId() ) );
-			
+
 		incrementDone();
 	}
-	
+
 }

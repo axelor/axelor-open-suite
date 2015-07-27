@@ -269,6 +269,15 @@
 		<view type="form" name="target-form"/>
 	</action-view>
 	
+	<menuitem name="admin-root-conf-crm-config" parent="admin-root-conf"
+		title="CRM configurations" action="admin.root.conf.crm.config" />
+		
+	<action-view name="admin.root.conf.crm.config" title="CRM configurations"
+		model="com.axelor.apps.crm.db.CrmConfig" >
+		<view type="grid" name="crm-config-grid" />
+		<view type="form" name="crm-config-form"/>
+	</action-view>
+	
 	
 	<menuitem name="admin-root-batch-crm" parent="admin-root-batch"
 		title="CRM batches" action="admin.root.batch.crm" />
