@@ -19,8 +19,8 @@
   	</dashboard>
   	
   	<dashboard title="Contact Dashboard" name="base.contact.dashboard"  >
-		<dashlet action="dashlet.my.recent.contacts" height="350"   canSearch="true"/> 
-		<dashlet action="dashlet.base.recent.contacts" height="350"   canSearch="true"/>	
+		<dashlet action="dashlet.my.recent.contacts" height="350"  colSpan="12" canSearch="true"/> 
+		<dashlet action="dashlet.base.recent.contacts" height="350" colSpan="12"  canSearch="true"/>	
   	</dashboard>
   	
   	
