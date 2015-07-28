@@ -227,4 +227,9 @@ public class LeaveController {
 			response.setFlash(I18n.get(message)+" "+leave.getUser().getFullName());
 		}
 	}
+
+	public void createEvents(ActionRequest request, ActionResponse response) throws AxelorException{
+		LeaveRequest leave = request.getContext().asType(LeaveRequest.class);
+		leaveService.createEvents(leave);
+	}
 }

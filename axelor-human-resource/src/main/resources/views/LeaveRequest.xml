@@ -32,8 +32,8 @@
 	    onSave="action-leave-request-validate-dates-on-save">
 
 	    <panel sidebar="true" title="Actions" stacked="true">
-	    	<button name="sendLeave" colSpan="4" title="Send Leave Request" onClick="save, action-leave-request-method-manage-sent-leave-requests,action-leave-request-record-status-confirmed, save,action-leave-request-attrs-buttons,action-leave-request-method-send-mail-leave-request-sent" readonlyIf="statusSelect &gt; 1"/>
-	    	<button name="validButton" onClick="save,action-leave-request-method-manage-valid-leave-requests,action-leave-request-record-valid,save,action-leave-request-attrs-buttons,action-leave-request-method-send-mail-leave-request-validated" title="Valid"/>
+	    	<button name="sendLeave" colSpan="4" title="Send Leave Request" onClick="action-leave-request-validate-dates-on-save,save, action-leave-request-method-manage-sent-leave-requests,action-leave-request-record-status-confirmed, save,action-leave-request-attrs-buttons,action-leave-request-method-send-mail-leave-request-sent" readonlyIf="statusSelect &gt; 1"/>
+	    	<button name="validButton" onClick="action-leave-request-group-validate" title="Valid"/>
 	    	<button name="refuseButton" onClick="save,action-leave-request-method-manage-refuse-leave-requests,action-leave-request-record-refuse,save,action-leave-request-attrs-buttons,action-leave-request-method-send-mail-leave-request-refused" title="Refuse"/>
 	    	<button name="cancelButton" onClick="save,action-leave-request-method-manage-cancel-leave-requests,action-leave-request-record-cancel,save,action-leave-request-attrs-buttons" hideIf="statusSelect == 5" title="Cancel" icon="fa-close"/>
 	    	<button name="draftButton" onClick="action-leave-request-record-draft,save,action-leave-request-attrs-buttons" title="Return to draft status" showIf="statusSelect &gt; 3 "/>
@@ -42,7 +42,7 @@
 			<field name="statusSelect" colSpan="12" widget="NavSelect" />
 			<field name="company" form-view="company-form" grid-view="company-grid"/>
 			<field name="user" form-view="user-form" grid-view="user-grid"/>
-			<field name="requestDate" />
+			<field name="requestDate" colSpan="12" width="50%"/>
 			<field name="dateFrom" onChange="action-leave-request-validate-dates,action-leave-request-methode-compute-duration"/>
 			<field name="startOnSelect" onChange="action-leave-request-validate-dates,action-leave-request-methode-compute-duration"/>
 			<field name="dateTo" onChange="action-leave-request-validate-dates,action-leave-request-methode-compute-duration"/>
@@ -59,6 +59,17 @@
 			<field name="refusalDate"/>
 		</panel>
 	</form>
+	
+	<action-group name="action-leave-request-group-validate">
+		<action name="action-leave-request-validate-dates-on-save"/>
+		<action name="save"/>
+		<action name="action-leave-request-method-manage-valid-leave-requests"/>
+		<action name="action-leave-request-record-valid"/>
+		<action name="save"/>
+		<action name="action-leave-request-attrs-buttons"/>
+		<action name="action-leave-request-method-create-events"/>
+		<action name="action-leave-request-method-send-mail-leave-request-validated"/>
+	</action-group>
 	
 	<action-record name="action-leave-request-record-default" model="com.axelor.apps.hr.db.LeaveRequest">
 	    <field name="requestDate" expr="eval:__date__"/>
@@ -106,11 +117,11 @@
 	</action-attrs>
 	
 	<action-validate name="action-leave-request-validate-dates">
-		<error message="Invalide dates" if="((!(__user__ == user?.employee?.manager || (__user__ == user &amp;&amp; user?.employee?.manager == null) || __user__ == user?.employee?.manager?.employee?.manager) &amp;&amp; dateFrom &lt; __date__) || (dateTo &lt; dateFrom) || (dateTo == dateFrom &amp;&amp; startOnSelect &gt; endOnSelect)) &amp;&amp; dateFrom != null || dateTo != null"/>
+		<error message="Invalide dates" if="((!(__user__ == user?.employee?.manager || (__user__ == user &amp;&amp; user?.employee?.manager == null) || __user__ == user?.employee?.manager?.employee?.manager) &amp;&amp; dateFrom &lt; __date__) || (dateTo &lt; dateFrom) || (dateTo == dateFrom &amp;&amp; startOnSelect &gt; endOnSelect)) &amp;&amp; (dateFrom != null &amp;&amp; dateTo != null)"/>
 	</action-validate>
 	
 	<action-validate name="action-leave-request-validate-dates-on-save">
-		<error message="Invalide dates" if="(!(__user__ == user?.employee?.manager || (__user__ == user &amp;&amp; user?.employee?.manager == null) || __user__ == user?.employee?.manager?.employee?.manager) &amp;&amp; dateFrom &lt; __date__) || (dateTo &lt; dateFrom) || (dateTo == dateFrom &amp;&amp; startOnSelect &gt; endOnSelect))"/>
+		<error message="Invalide dates" if="((!(__user__ == user?.employee?.manager || (__user__ == user &amp;&amp; user?.employee?.manager == null) || __user__ == user?.employee?.manager?.employee?.manager) &amp;&amp; dateFrom &lt; __date__) || (dateTo &lt; dateFrom) || (dateTo == dateFrom &amp;&amp; startOnSelect &gt; endOnSelect))"/>
 	</action-validate>
 	
 	<action-validate name="action-leave-request-validate-duration">
@@ -151,6 +162,10 @@
 	
 	<action-method name="action-leave-request-method-send-mail-leave-request-refused">
 		<call class="com.axelor.apps.hr.web.leave.LeaveController" method="sendEmailRefusalToApplicant"/>
+	</action-method>
+	
+	<action-method name="action-leave-request-method-create-events">
+		<call class="com.axelor.apps.hr.web.leave.LeaveController" method="createEvents"/>
 	</action-method>
 	
 </object-views>

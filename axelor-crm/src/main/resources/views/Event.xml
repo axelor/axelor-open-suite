@@ -409,6 +409,25 @@
         </form>-->
     </panel>
 </form>
+
+	<grid name="leave-grid" title="Leaves" model="com.axelor.apps.crm.db.Event" orderBy="-startDateTime" canNew="false" canEdit="false">
+    	<field name="subject"/>
+	    <field name="startDateTime"/>
+	    <field name="endDateTime"/>
+	    <field name="user" form-view="user-form" grid-view="user-grid"/>
+	    <field name="description"/>
+	</grid>
+    
+    <form name="leave-form" title="Leave" model="com.axelor.apps.crm.db.Event" onNew="action-event-new-leave" canNew="false" canEdit="false">
+		<panel colSpan="12">
+			<field name="user" title="Leave for" form-view="user-form" grid-view="user-grid"/>
+			<panel title="Dates" colSpan="12">
+				<field name="startDateTime" colSpan="3"/>
+				<field name="endDateTime" colSpan="3"/>
+			</panel>
+			<field name="description" colSpan="12"/>
+		</panel>
+	</form>
     
 
    
@@ -568,6 +587,12 @@
 	</action-record>
 	<action-record name="action-set-ticket-status-select-5" model="com.axelor.apps.crm.db.Event">
 		<field name="ticketStatusSelect" expr="eval:5"/>
+	</action-record>
+	
+	<action-record name="action-event-new-leave" model="com.axelor.apps.crm.db.Event">
+		<field name="typeSelect" expr="4"/>
+		<field name="user" expr="eval: __user__"/>
+		<field name="startDateTime" expr="eval: __datetime__" if="startDateTime == null"/>
 	</action-record>
 	
 <!-- 	ACTION METHOD -->

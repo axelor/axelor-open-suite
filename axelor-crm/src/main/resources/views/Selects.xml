@@ -19,7 +19,7 @@
 		<option value="1">Call</option>
 		<option value="2">Meeting</option>
 		<option value="3">Task</option>
-		<option value="4">Holiday</option>
+		<option value="4">Leave</option>
 		<option value="5">Ticket</option>
 		<option value="6">Event</option>
 	</selection>

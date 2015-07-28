@@ -7,5 +7,6 @@ module {
 	//module dependencies
 	module "modules:axelor-account"
 	module "modules:axelor-project"
+	module "modules:axelor-crm"
 	
 }

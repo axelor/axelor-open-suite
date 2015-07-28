@@ -3,8 +3,11 @@ package com.axelor.apps.hr.service.leave;
 import java.math.BigDecimal;
 
 import org.joda.time.LocalDate;
+import org.joda.time.LocalDateTime;
 
 import com.axelor.apps.base.service.DurationServiceImpl;
+import com.axelor.apps.crm.db.Event;
+import com.axelor.apps.crm.service.EventService;
 import com.axelor.apps.hr.db.DayPlanning;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.LeaveLine;
@@ -47,6 +50,9 @@ public class LeaveService extends LeaveRequestRepository{
 	@Inject
 	protected WeeklyPlanningService weeklyPlanningService;
 
+	@Inject
+	protected EventService eventService;
+
 	public BigDecimal computeDuration(LeaveRequest leave) throws AxelorException{
 		if(leave.getDateFrom()!=null && leave.getDateTo()!=null){
 			Employee employee = leave.getUser().getEmployee();
@@ -65,15 +71,18 @@ public class LeaveService extends LeaveRequestRepository{
 			}
 
 			BigDecimal duration = BigDecimal.ZERO;
+
 			duration = duration.add(new BigDecimal(this.computeStartDateWithSelect(leave.getDateFrom(), leave.getStartOnSelect(), weeklyPlanning)));
 			LocalDate itDate = new LocalDate(leave.getDateFrom().plusDays(1));
 
-			while(!itDate.isEqual(leave.getDateTo())){
+			while(!itDate.isEqual(leave.getDateTo()) && !itDate.isAfter(leave.getDateTo())){
 				duration = duration.add(new BigDecimal(weeklyPlanningService.workingDayValue(weeklyPlanning, itDate)));
 				itDate = itDate.plusDays(1);
 			}
 
-			duration = duration.add(new BigDecimal(this.computeEndDateWithSelect(leave.getDateTo(), leave.getEndOnSelect(), weeklyPlanning)));
+			if(!leave.getDateFrom().isEqual(leave.getDateTo())){
+				duration = duration.add(new BigDecimal(this.computeEndDateWithSelect(leave.getDateTo(), leave.getEndOnSelect(), weeklyPlanning)));
+			}
 
 			duration = duration.subtract(Beans.get(PublicHolidayService.class).computePublicHolidayDays(leave.getDateFrom(),leave.getDateTo(), weeklyPlanning, employee));
 			return duration;
@@ -241,5 +250,47 @@ public class LeaveService extends LeaveRequestRepository{
 			}
 		}
 		return value;
+	}
+
+	@Transactional
+	public void createEvents(LeaveRequest leave) throws AxelorException{
+		Employee employee = leave.getUser().getEmployee();
+		if(employee == null){
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.LEAVE_USER_EMPLOYEE),leave.getUser().getName()), IException.CONFIGURATION_ERROR);
+		}
+
+		WeeklyPlanning weeklyPlanning = employee.getPlanning();
+
+		if(weeklyPlanning == null){
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.EMPLOYEE_PLANNING),employee.getName()), IException.CONFIGURATION_ERROR);
+		}
+
+
+		int startTimeHour = 0;
+		int startTimeMin = 0;
+		if(leave.getStartOnSelect() == SELECT_MORNING){
+			startTimeHour = weeklyPlanning.getWeekDays().get(leave.getDateFrom().getDayOfWeek()).getMorningFrom().getHourOfDay();
+			startTimeMin = weeklyPlanning.getWeekDays().get(leave.getDateFrom().getDayOfWeek()).getMorningFrom().getMinuteOfHour();
+		}
+		else{
+			startTimeHour = weeklyPlanning.getWeekDays().get(leave.getDateFrom().getDayOfWeek()).getAfternoonFrom().getHourOfDay();
+			startTimeMin = weeklyPlanning.getWeekDays().get(leave.getDateFrom().getDayOfWeek()).getAfternoonFrom().getMinuteOfHour();
+		}
+		LocalDateTime fromDateTime = new LocalDateTime(leave.getDateFrom().getYear(),leave.getDateFrom().getMonthOfYear(),leave.getDateFrom().getDayOfMonth(),startTimeHour,startTimeMin);
+
+		int endTimeHour = 0;
+		int endTimeMin = 0;
+		if(leave.getStartOnSelect() == SELECT_MORNING){
+			endTimeHour = weeklyPlanning.getWeekDays().get(leave.getDateTo().getDayOfWeek()).getMorningTo().getHourOfDay();
+			endTimeMin = weeklyPlanning.getWeekDays().get(leave.getDateTo().getDayOfWeek()).getMorningTo().getMinuteOfHour();
+		}
+		else{
+			endTimeHour = weeklyPlanning.getWeekDays().get(leave.getDateTo().getDayOfWeek()).getAfternoonTo().getHourOfDay();
+			endTimeMin = weeklyPlanning.getWeekDays().get(leave.getDateTo().getDayOfWeek()).getAfternoonTo().getMinuteOfHour();
+		}
+		LocalDateTime toDateTime = new LocalDateTime(leave.getDateTo().getYear(),leave.getDateTo().getMonthOfYear(),leave.getDateTo().getDayOfMonth(),endTimeHour,endTimeMin);
+
+		Event event = eventService.createEvent(fromDateTime, toDateTime, leave.getUser(), leave.getComments(), EventService.TYPE_LEAVE, leave.getReason().getLeaveReason()+" "+leave.getUser().getFullName());
+		eventService.save(event);
 	}
 }

@@ -57,7 +57,17 @@
     <many-to-many name="userSet" ref="com.axelor.auth.db.User" title="Watchers"/>
     <many-to-one name="responsibleUser" ref="com.axelor.auth.db.User" title="User in charge of the issue"/>
 <!--   	<one-to-many name="messageList" ref="com.axelor.apps.message.db.Message" mappedBy="event" title="Comments"/> -->
-  
+  	
+  	<extra-code>
+      	<![CDATA[
+	  		public static final Integer TYPE_CALL = 1;
+	  		public static final Integer TYPE_MEETING = 2;
+	  		public static final Integer TYPE_TASK = 3;
+	  		public static final Integer TYPE_LEAVE = 4;
+	  		public static final Integer TYPE_TICKET = 5;
+	  		public static final Integer TYPE_EVENT = 6;
+	  ]]>
+      </extra-code>
   </entity>
 
 </domain-models>
