@@ -55,7 +55,7 @@
 					</editor>
 				</field>
 			</panel>
-			<panel title="Convert into Partner" showIf="hasConvertIntoPartner">
+			<panel title="Convert into Partner" showIf="hasConvertIntoPartner" onTabSelect="action-convert-lead-wizard-record-default-partner-address,action-partner-attrs-change-name">
 				<field name="partner" showTitle="false" colSpan="12" canSelect="false" x-show-icons="false" form-view="partner-lead-converted-form" target="com.axelor.apps.base.db.Partner" type="many-to-one">
 					<editor x-show-titles="false">
 						<label title="Personal" colSpan="12"/>
@@ -80,23 +80,20 @@
 				        <field name="taxNbr" hideIf="partnerTypeSelect == 2"/>
 				        <field name="parentPartner" hideIf="partnerTypeSelect != 1" domain="self.iscontact = false AND self.partnerTypeSelect = 1" form-view="partner-form" grid-view="partner-grid"/>
 
-<!-- 		    <panel title="Postal addresses" colSpan="12"> -->
-<!-- 		      <panel title="Invoicing address"> -->
-<!-- 		        <field name="primaryAddress" title="Address" colSpan="6"/> -->
-<!-- 		        <field name="primaryCity" title="City"/> -->
-<!-- 		        <field name="primaryState" title="State"/> -->
-<!-- 		        <field name="primaryPostalCode" title="Postal code"/> -->
-<!-- 		        <field name="primaryCountry" title="Country" widget="ManyToOne" target="com.axelor.apps.base.db.Country" target-name="name"/> -->
-<!-- 		      </panel> -->
-<!-- 		      <panel colSpan="6" title="Delivery address"> -->
-<!-- 		        <field name="otherAddress" title="Address"/> -->
-<!-- 		        <field name="otherCity" title="City"/> -->
-<!-- 		        <field name="otherState" title="State"/> -->
-<!-- 		        <field name="otherPostalCode" title="Postal code"/> -->
-<!-- 		        <field name="otherCountry" title="Country" widget="ManyToOne" target="com.axelor.apps.base.db.Country" target-name="name"/> -->
-<!-- 		      </panel> -->
-<!-- 		    </panel> -->
-		   				<label title="Contact" colSpan="12"/>
+					    
+					    <label title="Invoicing Address" colSpan="12"/>
+					    <field name="primaryAddress" title="Address" colSpan="6"/>
+					    <field name="primaryCity" title="City"/>
+					    <field name="primaryState" title="State"/>
+					    <field name="primaryPostalCode" title="Postal code"/>
+					    <field name="primaryCountry" title="Country" widget="ManyToOne" target="com.axelor.apps.base.db.Country" target-name="name"/>
+					    <label title="Delivery Address" colSpan="12"/>
+				        <field name="otherAddress" title="Address"/>
+				        <field name="otherCity" title="City"/>
+				        <field name="otherState" title="State"/>
+				        <field name="otherPostalCode" title="Postal code"/>
+				        <field name="otherCountry" title="Country" widget="ManyToOne" target="com.axelor.apps.base.db.Country" target-name="name"/>
+	   					<label title="Contact" colSpan="12"/>
 						<field name="fixedPhone"/>
 						<field name="mobilePhone" hideIf="partnerTypeSelect == 1"/>
 		      			<field name="emailAddress" canSelect="false" form-view="email-address-simple-form"/>
@@ -142,9 +139,9 @@
 						<field name="description" showTitle="false" colSpan="12" widget="TEXT" />
 					    <label title="Dates" css="label-bold"/>
 					    <spacer/>
-					    <field name="startDateTime" onChange="action-event-method-compute-from-start-date-time" colSpan="4"/>
+					    <field name="startDate" onChange="action-event-method-compute-from-start-date-time" colSpan="4"/>
 					    <field name="duration" widget="duration[big=true]" onChange="action-event-method-compute-from-duration" colSpan="4"/>
-					    <field name="endDateTime" onChange="action-event-method-compute-from-end-date-time" colSpan="4"/>
+					    <field name="endDate" onChange="action-event-method-compute-from-end-date-time" colSpan="4"/>
 					    <label title="Assigned to" css="label-bold"/>
 					    <spacer/>
 					    <field name="user" colSpan="4"/>
@@ -167,9 +164,9 @@
 						<field name="description" showTitle="false" colSpan="12" widget="TEXT" />
 					    <label title="Dates" css="label-bold"/>
 					    <spacer/>
-					    <field name="startDateTime" onChange="action-event-method-compute-from-start-date-time" colSpan="3"/>
+					    <field name="startDate" onChange="action-event-method-compute-from-start-date-time" colSpan="3"/>
 					    <field name="duration" widget="duration[big=true]" onChange="action-event-method-compute-from-duration" colSpan="3"/>
-					    <field name="endDateTime" onChange="action-event-method-compute-from-end-date-time" colSpan="3"/>
+					    <field name="endDate" onChange="action-event-method-compute-from-end-date-time" colSpan="3"/>
 					    <label title="Assigned to" css="label-bold"/>
 					    <spacer/>
 					    <field name="user"/>
@@ -190,9 +187,9 @@
 						<field name="description" showTitle="false" colSpan="12" widget="TEXT" />
 					    <label title="Dates" css="label-bold"/>
 					    <spacer/>
-					    <field name="startDateTime" onChange="action-event-method-compute-from-start-date-time" colSpan="3"/>
+					    <field name="startDate" onChange="action-event-method-compute-from-start-date-time" colSpan="3"/>
 					    <field name="duration" widget="duration[big=true]" onChange="action-event-method-compute-from-duration" colSpan="3"/>
-					    <field name="endDateTime" onChange="action-event-method-compute-from-end-date-time" colSpan="3"/>
+					    <field name="endDate" onChange="action-event-method-compute-from-end-date-time" colSpan="3"/>
 					    <label title="Assigned to" css="label-bold"/>
 					    <spacer/>
 					    <field name="user"/>
@@ -213,9 +210,9 @@
 						<field name="description" showTitle="false" colSpan="12" widget="TEXT" />
 					    <label title="Dates" css="label-bold"/>
 					    <spacer/>
-					    <field name="startDateTime" onChange="action-event-method-compute-from-start-date-time" colSpan="3"/>
+					    <field name="startDate" onChange="action-event-method-compute-from-start-date-time" colSpan="3"/>
 					    <field name="duration" widget="duration[big=true]" onChange="action-event-method-compute-from-duration" colSpan="3"/>
-					    <field name="endDateTime" onChange="action-event-method-compute-from-end-date-time" colSpan="3"/>
+					    <field name="endDate" onChange="action-event-method-compute-from-end-date-time" colSpan="3"/>
 					    <field name="limitDateT" colSpan="3"/>
 					    <label title="Assigned to" css="label-bold"/>
 					    <spacer/>
@@ -232,6 +229,14 @@
 		<action name="action-convert-lead-wizard-default"/>
 		<action name="action-convert-lead-wizard-address"/>
 	</action-group>
+	
+	<action-record name="action-convert-lead-wizard-address" model="com.axelor.apps.base.db.Wizard">
+		<field name="primaryAddress" expr="_lead.primaryAddress"/>
+		<field name="primaryCity" expr="_lead.primaryCity"/>
+		<field name="primaryState" expr="_lead.primaryState"/>
+		<field name="primaryPostalCode" expr="_lead.primaryPostalCode"/>
+		<field name="primaryCountry" expr="_lead.primaryCountry"/>
+	</action-record>
 	
 	<action-record name="action-convert-lead-wizard-default" model="com.axelor.apps.base.db.Wizard">
     	<field name="partner" expr="action: action-convert-lead-wizard-record-default-partner"/>
@@ -403,15 +408,15 @@
     </action-record>
     
     <action-record name="action-convert-lead-wizard-record-default-partner-address" model="com.axelor.apps.base.db.Partner">
-		<field name="primaryAddress" expr="eval: _parent._lead.primaryAddress"/>
-		<field name="primaryCity" expr="eval: _parent._lead.primaryCity"/>
-		<field name="primaryState" expr="eval: _parent._lead.primaryState"/>
-		<field name="primaryPostalCode" expr="eval: _parent._lead.primaryPostalCode"/>
+		<field name="primaryAddress" expr="eval: _lead.primaryAddress"/>
+		<field name="primaryCity" expr="eval: _lead.primaryCity"/>
+		<field name="primaryState" expr="eval: _lead.primaryState"/>
+		<field name="primaryPostalCode" expr="eval: _lead.primaryPostalCode"/>
     	<field name="primaryCountry" expr="action:action-country-record-find-primary-country-by-id" if="_lead.primaryCountry"/>
-    	<field name="otherAddress" expr="eval: _parent._lead.otherAddress"/>
-		<field name="otherCity" expr="eval: _parent._lead.otherCity"/>
-		<field name="otherState" expr="eval: _parent._lead.otherState"/>
-		<field name="otherPostalCode" expr="eval: _parent._lead.otherPostalCode"/>
+    	<field name="otherAddress" expr="eval: _lead.otherAddress"/>
+		<field name="otherCity" expr="eval: _lead.otherCity"/>
+		<field name="otherState" expr="eval: _lead.otherState"/>
+		<field name="otherPostalCode" expr="eval: _lead.otherPostalCode"/>
     	<field name="otherCountry" expr="action:action-country-record-find-other-country-by-id" if="_lead.otherCountry"/>
     </action-record>
     
@@ -449,10 +454,10 @@
     </action-record>
     
     <action-record name="action-convert-lead-wizard-attrs-default-contact-address" model="com.axelor.apps.base.db.Partner">
-		<field name="primaryAddress" expr="eval: _parent._lead.primaryAddress"/>
-		<field name="primaryCity" expr="eval: _parent._lead.primaryCity"/>
-		<field name="primaryState" expr="eval: _parent._lead.primaryState"/>
-		<field name="primaryPostalCode" expr="eval: _parent._lead.primaryPostalCode"/>
+		<field name="primaryAddress" expr="eval: _lead.primaryAddress"/>
+		<field name="primaryCity" expr="eval: _lead.primaryCity"/>
+		<field name="primaryState" expr="eval: _lead.primaryState"/>
+		<field name="primaryPostalCode" expr="eval: _lead.primaryPostalCode"/>
     	<field name="primaryCountry" expr="action:action-country-record-find-primary-country-by-id" if="_lead.primaryCountry"/>
     </action-record>
     
@@ -466,14 +471,14 @@
 
     <action-record name="action-country-record-find-primary-country-by-id"
     	model="com.axelor.apps.base.db.Country"
-    	search="('self.id = ?1', _parent._lead.primaryCountry.id)">
-    	<field name="id" expr="eval: _parent._lead.primaryCountry.id"/>
+    	search="('self.id = ?1', _lead.primaryCountry.id)">
+    	<field name="id" expr="eval: _lead.primaryCountry.id"/>
     </action-record>
     
     <action-record name="action-country-record-find-other-country-by-id"
     	model="com.axelor.apps.base.db.Country"
-    	search="('self.id = ?1', _parent._lead.otherCountry.id)">
-    	<field name="id" expr="eval: _parent._lead.otherCountry.id"/>
+    	search="('self.id = ?1', _lead.otherCountry.id)">
+    	<field name="id" expr="eval: _lead.otherCountry.id"/>
     </action-record>
 	
 	<form   name="opportunity-lead-converted-form" title="Opportunity" model="com.axelor.apps.crm.db.Opportunity">
@@ -520,9 +525,9 @@
 	      <field name="description" showTitle="false"  widget="TEXT" height="4" colSpan="12"/>
 	    </panel>
 	    <panel title="Dates"  css="groupTitle">
-	      <field name="startDateTime" onChange="action-event-method-compute-from-start-date-time"/>
+	      <field name="startDate" onChange="action-event-method-compute-from-start-date-time"/>
 	      
-	      <field name="endDateTime" onChange="action-event-method-compute-from-end-date-time"/>
+	      <field name="endDate" onChange="action-event-method-compute-from-end-date-time"/>
 	      <field name="duration" widget="duration[big=true]" onChange="action-event-method-compute-from-duration"/>
 	    </panel>
 	  <panel title="Assignment">
@@ -537,10 +542,10 @@
     	<field name="typeSelect" expr="eval: 1"/>
     	<field name="lead" expr="eval: _lead"/>
     	<field name="description" expr="eval: _lead.description"/>
-    	<field name="user" expr="eval: __repo__.of(User).find(_lead.user.id)"/>
+    	<field name="user" expr="eval: __repo__.of(User).find(_lead.user?.id)"/>
     	<field name="team" expr="eval: _lead.team"/>
     	<field name="statusSelect" expr="1"/>
-    	<field name="startDateTime" expr="eval: __time__"/>
+    	<field name="startDate" expr="eval: __time__"/>
     	<field name="duration" expr="0"/>
     	<field name="callTypeSelect" expr="2"/>
     </action-record>
@@ -556,8 +561,8 @@
 	      <field name="description" showTitle="false" colSpan="12" widget="TEXT" height="4"/>
 	    </panel>
 	    <panel title="Dates"  css="groupTitle">
-	      <field name="startDateTime" onChange="action-event-method-compute-from-start-date-time"/>
-	      <field name="endDateTime" onChange="action-event-method-compute-from-end-date-time"/>
+	      <field name="startDate" onChange="action-event-method-compute-from-start-date-time"/>
+	      <field name="endDate" onChange="action-event-method-compute-from-end-date-time"/>
 	      <field name="duration" widget="duration[big=true]" onChange="action-event-method-compute-from-duration"/>
 	    </panel>
 	  <panel title="Assignment">
@@ -571,10 +576,10 @@
     	<field name="typeSelect" expr="eval: 2"/>
     	<field name="lead" expr="eval: _lead"/>
     	<field name="description" expr="eval: _lead.description"/>
-    	<field name="user" expr="eval: __repo__.of(User).find(_lead.user.id)"/>
+    	<field name="user" expr="eval: __repo__.of(User).find(_lead.user?.id)"/>
     	<field name="team" expr="eval: _lead.team"/>
     	<field name="statusSelect" expr="1"/>
-    	<field name="startDateTime" expr="eval: __time__"/>
+    	<field name="startDate" expr="eval: __time__"/>
     	<field name="duration" expr="0"/>
     </action-record>
     
@@ -588,9 +593,9 @@
 	      <field name="description" showTitle="false" colSpan="12" widget="TEXT" height="4"/>
 	    </panel>
 	    <panel title="Dates"  css="groupTitle">
-	      <field name="startDateTime" onChange="action-event-method-compute-from-start-date-time"/>
+	      <field name="startDate" onChange="action-event-method-compute-from-start-date-time"/>
 	      <field name="duration" widget="duration[big=true]" onChange="action-event-method-compute-from-duration"/>
-	      <field name="endDateTime" onChange="action-event-method-compute-from-end-date-time"/>
+	      <field name="endDate" onChange="action-event-method-compute-from-end-date-time"/>
 	      <field name="limitDateT"/>
 	    </panel>
 	  <panel title="Assigned to">
@@ -603,10 +608,10 @@
     	<field name="typeSelect" expr="eval: 3"/>
     	<field name="lead" expr="eval: _lead"/>
     	<field name="description" expr="eval: _lead.description"/>
-    	<field name="user" expr="eval: __repo__.of(User).find(_lead.user.id)"/>
+    	<field name="user" expr="eval: __repo__.of(User).find(_lead.user?.id)"/>
     	<field name="team" expr="eval: _lead.team"/>
     	<field name="taskStatusSelect" expr="1"/>
-    	<field name="startDateTime" expr="eval: __time__"/>
+    	<field name="startDate" expr="eval: __time__"/>
     	<field name="progressSelect" expr="0"/>
     	<field name="duration" expr="0"/>
     </action-record>

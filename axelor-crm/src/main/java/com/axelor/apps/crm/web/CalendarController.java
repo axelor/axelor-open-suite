@@ -23,11 +23,14 @@ import java.net.SocketException;
 
 import net.fortuna.ical4j.connector.ObjectNotFoundException;
 import net.fortuna.ical4j.connector.ObjectStoreException;
+import net.fortuna.ical4j.connector.dav.CalDavCalendarCollection;
 import net.fortuna.ical4j.data.ParserException;
 import net.fortuna.ical4j.model.ConstraintViolationException;
 import net.fortuna.ical4j.model.ValidationException;
 
 import com.axelor.apps.crm.service.CalendarService;
+import com.axelor.ical.ICalendarService;
+import com.axelor.ical.db.ICalendar;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
@@ -36,19 +39,26 @@ public class CalendarController {
 
 	@Inject
 	private CalendarService calendarService;
+	//private ICalendarService icalendar;
 	
 	public void exportCalendar(ActionRequest request, ActionResponse response) throws IOException, ParserException, ValidationException, ObjectStoreException, ObjectNotFoundException {
 		
 		calendarService.exportCalendar();
+		//icalendar.export(this, );
+		
 	}
 	
 	public void importCalendar(ActionRequest request, ActionResponse response) throws IOException, ParserException {
 		
 		calendarService.importCalendar();
+		//icalendar.load(this, "text");
+		
+		
 	}
 	
 	public void synchronizeCalendars(ActionRequest request, ActionResponse response) throws MalformedURLException, SocketException, ObjectStoreException, ObjectNotFoundException, ConstraintViolationException {
 		
 		calendarService.synchronizeCalendars(null);
+
 	}
 }

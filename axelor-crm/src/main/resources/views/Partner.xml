@@ -55,7 +55,7 @@
     <action-view name="action-partner-view-upcoming-events" title="Upcoming events" model="com.axelor.apps.crm.db.Event">
 		<view type="grid" name="event-grid"/>
 		<view type="form" name="event-form"/>
-		<domain>(self.clientPartner.id = :id OR self.contactPartner.id = :id) and self.startDateTime > :_todayTime and self.typeSelect != 5</domain>
+		<domain>(self.clientPartner.id = :id OR self.contactPartner.id = :id) and self.startDate > :_todayTime and self.typeSelect != 5</domain>
 		<context name="id" expr="eval: id"/>
 		<context name="_todayTime" expr="eval: __datetime__"/>
 	</action-view>
@@ -63,7 +63,7 @@
 	<action-view name="action-partner-view-historical-events-completed" title="Historical events completed" model="com.axelor.apps.crm.db.Event">
 		<view type="grid" name="event-grid"/>
 		<view type="form" name="event-form"/>
-		<domain>(self.clientPartner.id = :id OR self.contactPartner.id = :id) and self.endDateTime &lt; :_todayTime and self.typeSelect != 5</domain>
+		<domain>(self.clientPartner.id = :id OR self.contactPartner.id = :id) and self.endDate &lt; :_todayTime and self.typeSelect != 5</domain>
 		<context name="id" expr="eval: id"/>
 		<context name="_todayTime" expr="eval: __datetime__"/>
 	</action-view>

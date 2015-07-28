@@ -464,20 +464,20 @@
 		name="dashlet.my.late.tickets">
 		<view type="grid" name="my-event-grid" />
 		<view type="form" name="event-form" />
-		<domain>self.typeSelect = 5 AND self.ticketStatusSelect != 5 AND self.user =:__user__ AND self.endDateTime &lt; date(now())</domain>
+		<domain>self.typeSelect = 5 AND self.ticketStatusSelect != 5 AND self.user =:__user__ AND self.endDate &lt; date(now())</domain>
 	</action-view>
 
 	<action-view title="Late Tickets" model="com.axelor.apps.crm.db.Event"
 		name="dashlet.late.tickets">
 		<view type="grid" name="event-grid" />
 		<view type="form" name="event-form" />
-		<domain>self.typeSelect = 5 AND self.ticketStatusSelect != 5 AND self.endDateTime &lt; date(now())</domain>
+		<domain>self.typeSelect = 5 AND self.ticketStatusSelect != 5 AND self.endDate &lt; date(now())</domain>
 	</action-view>
 	<action-view name="dashlet.human.resources.dashboard.upcoming.holidays"
 		title="All Upcoming Holidays" model="com.axelor.apps.crm.db.Event">
 		<view type="grid" name="crm-task-grid" />
 		<view type="form" name="crm-task-form" />
-		<domain>self.endDateTime &gt;= :_today and self.typeSelect = 4</domain>
+		<domain>self.endDate &gt;= :_today and self.typeSelect = 4</domain>
 		<context name="_today" expr="eval: __date__.toDateTimeAtStartOfDay()" />
 	</action-view>
 

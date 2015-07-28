@@ -357,18 +357,18 @@ public class CalendarService extends CalendarRepository {
 
 		java.util.Calendar startDate = new GregorianCalendar();
 		startDate.setTimeZone(timezone);
-		if(event.getStartDateTime() != null)  {
-			startDate.setTime(event.getStartDateTime().toDate());
+		if(event.getStartDate() != null)  {
+			startDate.setTime(event.getStartDate().toDate());
 		}
 
 		java.util.Calendar endDate = new GregorianCalendar();
 		endDate.setTimeZone(timezone);
-		if(event.getEndDateTime() != null)  {
-			endDate.setTime(event.getEndDateTime().toDate());
+		if(event.getEndDate() != null)  {
+			endDate.setTime(event.getEndDate().toDate());
 		}
 		
 		// Create the event
-		String eventName = event.getSubject();
+		String eventName = event.getSummary();
 		DateTime start = new DateTime(startDate.getTime());
 		DateTime end = new DateTime(endDate.getTime());
 		VEvent vEvent = new VEvent(start, end, eventName);
@@ -560,12 +560,12 @@ public class CalendarService extends CalendarRepository {
 	@Transactional
 	public Event updateEvent(Event event, VEvent vEvent)  {
 
-		event.setSubject(vEvent.getSummary().getValue());
+		event.setSummary(vEvent.getSummary().getValue());
 		if(vEvent.getDescription()!=null)  {
 			event.setDescription(vEvent.getDescription().getValue());
 		}
-		event.setStartDateTime(new LocalDateTime(vEvent.getStartDate().getDate()));
-		event.setEndDateTime(new LocalDateTime(vEvent.getEndDate().getDate()));
+		event.setStartDate(new LocalDateTime(vEvent.getStartDate().getDate()));
+		event.setEndDate(new LocalDateTime(vEvent.getEndDate().getDate()));
 		eventService.save(event);
 		
 		return event;

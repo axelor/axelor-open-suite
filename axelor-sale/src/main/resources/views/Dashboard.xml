@@ -22,6 +22,7 @@
 	
 	<action-view title="My Turnover per month" name="dashlet.my.turnover.per.month">
 	  <view type="chart" name="chart.my.turnover.per.month"/>
+	  <domain> </domain>
 	  <context name="todayDate" expr="eval:__config__.generalService.getTodayDate()" />
 	  <context name="_user_id" expr="eval:__user__.id" />
 	</action-view>
@@ -38,7 +39,7 @@
 		model="com.axelor.apps.crm.db.Event">
 		<view type="grid" name="my-event-grid"/>
 		<view type="form" />
-	    <domain>self.startDateTime between :_today and :_tomorrow and self.user =:__user__</domain>
+	    <domain>self.startDate between :_today and :_tomorrow and self.user =:__user__</domain>
 	    <context name="_tomorrow" expr="eval: __date__.plusDays(1).toDateTimeAtStartOfDay()"/>
 	    <context name="_today" expr="eval: __date__.toDateTimeAtStartOfDay()"/>
 	</action-view>

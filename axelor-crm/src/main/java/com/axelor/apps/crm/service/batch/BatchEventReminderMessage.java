@@ -79,11 +79,11 @@ public class BatchEventReminderMessage extends BatchStrategy {
 				} catch (Exception e) {
 					
 					TraceBackService.trace(new Exception(String.format(I18n.get("Event")+" %s", 
-							eventService.find(event.getId()).getSubject()), e), IException.CRM, batch.getId());
+							eventService.find(event.getId()).getSummary()), e), IException.CRM, batch.getId());
 					
 					incrementAnomaly();
 					
-					LOG.error("Bug(Anomalie) généré(e) pour l'évènement {}", eventService.find(event.getId()).getSubject());
+					LOG.error("Bug(Anomalie) généré(e) pour l'évènement {}", eventService.find(event.getId()).getSummary());
 					
 				} finally {
 					

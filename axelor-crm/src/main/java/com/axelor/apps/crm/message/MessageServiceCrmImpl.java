@@ -66,7 +66,7 @@ public class MessageServiceCrmImpl extends MessageServiceBaseImpl {
 				getTodayLocalTime(), 
 				false, 
 				STATUS_SENT, 
-				"Remind : " + event.getSubject(), 
+				"Remind : " + event.getSummary(), 
 				TYPE_RECEIVED, 
 				null,
 				toEmailAddressList, 
