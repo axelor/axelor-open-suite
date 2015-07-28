@@ -21,6 +21,7 @@ public class PartnerBaseRepository extends PartnerRepository {
 				if (seq == null)
 					throw new AxelorException(I18n.get(IExceptionMessage.PARTNER_1),
 							IException.CONFIGURATION_ERROR);
+				partner.setPartnerSeq(seq);
 			}
 
 			return super.save(partner);
