@@ -43,9 +43,10 @@ public class CalendarController {
 		calendarService.exportCalendar();
 	}
 	
-	public void importCalendar(ActionRequest request, ActionResponse response) throws IOException, ParserException {
-		
-		calendarService.importCalendar();
+	public void importCalendar(ActionRequest request, ActionResponse response) throws IOException, ParserException 
+	{
+		Calendar cal = request.getContext().asType(Calendar.class);
+		calendarService.importCalendar(cal);
 	}
 	
 	public void synchronizeCalendars(ActionRequest request, ActionResponse response) throws MalformedURLException, SocketException, ObjectStoreException, ObjectNotFoundException, ConstraintViolationException {

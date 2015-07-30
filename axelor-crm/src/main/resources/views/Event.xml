@@ -8,7 +8,6 @@
     		<button name="exportCalendar" title="Export calendar" onClick="com.axelor.apps.crm.web.CalendarController:exportCalendar"  />
     		<button name="importCalendar" title="Import calendar" onClick="com.axelor.apps.crm.web.CalendarController:importCalendar"  />
     		<button name="synchronizeCalendars" title="Synchronize calendar" onClick="com.axelor.apps.crm.web.CalendarController:synchronizeCalendars"  />
-    		<button name="testConnect" title="connect" onClick="com.axelor.apps.crm.web.CalendarController:testConnect"/>
     	</toolbar>
     	<field name="summary"/>
         <field name="typeSelect"/>

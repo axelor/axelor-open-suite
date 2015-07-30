@@ -63,12 +63,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.auth.db.User;
-import com.axelor.ical.db.ICalendarEvent;
+
 import com.axelor.apps.crm.db.Calendar;
 import com.axelor.apps.crm.db.Event;
 import com.axelor.apps.crm.db.EventAttendee;
-import com.axelor.ical.ICalendarException;
-import com.axelor.ical.ICalendarService;
+
 import com.axelor.ical.ICalendarStore;
 import com.axelor.apps.crm.db.ICalendar;
 //import com.axelor.ical.db.ICalendar;
@@ -471,8 +470,9 @@ public class CalendarService extends CalendarRepository {
 	
 	
 	
-	public void importCalendar() throws IOException, ParserException  {
+	public void importCalendar(Calendar cal) throws IOException, ParserException  {
 		
+		/*
 		List<VEvent> vEventList = this.getVEvent(this.getCalendar());
 		
 		this.getEvent(vEventList, null);
@@ -480,6 +480,25 @@ public class CalendarService extends CalendarRepository {
 		this.removeEvent(vEventList, null);
 		
 		this.getInfo(this.getCalendar());
+		*/
+		
+		PathResolver RESOLVER = getPathResolver(cal.getTypeSelect());
+		URL url = new URL(cal.getUrl());
+		ICalendarStore store = new ICalendarStore(url, RESOLVER);
+		CalDavCalendarCollection coll = null;
+		try 
+		{
+			store.connect(cal.getLogin(), cal.getPassword());
+			store.getEvents(coll);
+			
+		}
+		finally 
+		{
+			store.disconenct();
+		}
+
+
+		
 	}
 	
 	
@@ -693,7 +712,8 @@ public class CalendarService extends CalendarRepository {
 		{
 			connected = store.connect(cal.getLogin(), cal.getPassword());
 		}
-		finally {
+		finally 
+		{
 			store.disconenct();
 		}
 
