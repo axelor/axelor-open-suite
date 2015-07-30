@@ -5,12 +5,17 @@
 
   <module name="crm" package="com.axelor.apps.crm.db"/>
 
-  <entity name="Calendar" lang="java" extends="com.axelor.ical.db.ICalendar">
+  <entity name="Calendar" lang="java">
   
-  
-  
-  <!-- 
-  <string name="name" search="title,url">
+    <string name="title" title="Title"/>
+	<string name="url" title="Url"/>
+	<string name="login" title="Login"/>
+	<string name="password" title="Password"/>
+	<integer name="typeSelect" title="Type" selection="crm.calendar.type.select"/>
+	<boolean name="isSslConnection" title="SSL ?"/>
+	<integer name="port" title="Port"/>
+    
+    <string name="name" search="title,url">
 	    <![CDATA[
 	    String name = "";
 	    if(title != null)  {
@@ -22,20 +27,6 @@
 		return name;
 	    ]]>
     </string>
-
-        <string name="title" title="Title"/>  
-
-   -->
-
-	<string name="url" title="Url"/>
-	<string name="login" title="Login"/>
-	<string name="password" title="Password"/>
-	<integer name="typeSelect" title="Type" selection="crm.calendar.type.select"/>
-	<boolean name="isSslConnection" title="SSL ?"/>
-	<integer name="port" title="Port"/>
-	<boolean name="isValid" title="Is Valid ?"/>
-    
-    
     
   </entity>
 

@@ -55,12 +55,12 @@ public class EventController {
 		
 		LOG.debug("event : {}", event);
 		
-		if(event.getStartDate() != null) {
+		if(event.getStartDateTime() != null) {
 			if(event.getDuration() != null) {
-				response.setValue("endDateTime", eventService.computeEndDateTime(event.getStartDate(), event.getDuration().intValue()));
+				response.setValue("endDateTime", eventService.computeEndDateTime(event.getStartDateTime(), event.getDuration().intValue()));
 			}
-			else if(event.getEndDate() != null && event.getEndDate().isAfter(event.getStartDate())) {
-				Duration duration =  eventService.computeDuration(event.getStartDate(), event.getEndDate());
+			else if(event.getEndDateTime() != null && event.getEndDateTime().isAfter(event.getStartDateTime())) {
+				Duration duration =  eventService.computeDuration(event.getStartDateTime(), event.getEndDateTime());
 				response.setValue("duration", eventService.getDuration(duration));
 			}
 		}
@@ -73,13 +73,13 @@ public class EventController {
 		
 		LOG.debug("event : {}", event);
 		
-		if(event.getEndDate() != null) {
-			if(event.getStartDate() != null && event.getStartDate().isBefore(event.getEndDate())) {
-				Duration duration =  eventService.computeDuration(event.getStartDate(), event.getEndDate());
+		if(event.getEndDateTime() != null) {
+			if(event.getStartDateTime() != null && event.getStartDateTime().isBefore(event.getEndDateTime())) {
+				Duration duration =  eventService.computeDuration(event.getStartDateTime(), event.getEndDateTime());
 				response.setValue("duration", eventService.getDuration(duration));
 			}
 			else if(event.getDuration() != null)  {
-				response.setValue("startDateTime", eventService.computeStartDateTime(event.getDuration().intValue(), event.getEndDate()));
+				response.setValue("startDateTime", eventService.computeStartDateTime(event.getDuration().intValue(), event.getEndDateTime()));
 			}
 		}
 	}
@@ -92,11 +92,11 @@ public class EventController {
 		LOG.debug("event : {}", event);
 		
 		if(event.getDuration() != null)  {
-			if(event.getStartDate() != null)  {
-				response.setValue("endDateTime", eventService.computeEndDateTime(event.getStartDate(), event.getDuration().intValue()));
+			if(event.getStartDateTime() != null)  {
+				response.setValue("endDateTime", eventService.computeEndDateTime(event.getStartDateTime(), event.getDuration().intValue()));
 			}
-			else if(event.getEndDate() != null)  {
-				response.setValue("startDateTime", eventService.computeStartDateTime(event.getDuration().intValue(), event.getEndDate()));
+			else if(event.getEndDateTime() != null)  {
+				response.setValue("startDateTime", eventService.computeStartDateTime(event.getDuration().intValue(), event.getEndDateTime()));
 			}
 		}
 	}
@@ -109,8 +109,8 @@ public class EventController {
 		
 		LOG.debug("event : {}", event);
 		
-		if(event.getStartDate() != null && event.getEndDate() != null) {
-			Duration duration =  eventService.computeDuration(event.getStartDate(), event.getEndDate());
+		if(event.getStartDateTime() != null && event.getEndDateTime() != null) {
+			Duration duration =  eventService.computeDuration(event.getStartDateTime(), event.getEndDateTime());
 			response.setValue("duration", eventService.getDuration(duration));
 		}
 	}
@@ -245,13 +245,13 @@ public class EventController {
 		
 		Event eventPopup = request.getContext().asType(Event.class);
 		Event event = eventService.find((Long)request.getContext().get("id"));
-		event.setStartDate(eventPopup.getStartDate());
-		if(event.getStartDate() != null) {
+		event.setStartDateTime(eventPopup.getStartDateTime());
+		if(event.getStartDateTime() != null) {
 			if(event.getDuration() != null) {
-				event.setEndDate(eventService.computeEndDateTime(event.getStartDate(), event.getDuration().intValue()));
+				event.setEndDateTime(eventService.computeEndDateTime(event.getStartDateTime(), event.getDuration().intValue()));
 			}
-			else if(event.getEndDate() != null && event.getEndDate().isAfter(event.getStartDate())) {
-				Duration duration =  eventService.computeDuration(event.getStartDate(), event.getEndDate());
+			else if(event.getEndDateTime() != null && event.getEndDateTime().isAfter(event.getStartDateTime())) {
+				Duration duration =  eventService.computeDuration(event.getStartDateTime(), event.getEndDateTime());
 				event.setDuration(new Long(eventService.getDuration(duration)));
 			}
 		}
