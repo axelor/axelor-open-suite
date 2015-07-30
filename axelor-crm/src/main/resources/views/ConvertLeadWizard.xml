@@ -139,9 +139,9 @@
 						<field name="description" showTitle="false" colSpan="12" widget="TEXT" />
 					    <label title="Dates" css="label-bold"/>
 					    <spacer/>
-					    <field name="startDateTime" onChange="action-event-method-compute-from-start-date-time" colSpan="4"/>
+					    <field name="startDate" onChange="action-event-method-compute-from-start-date-time" colSpan="4"/>
 					    <field name="duration" widget="duration" onChange="action-event-method-compute-from-duration" colSpan="4" x-big="true"/>
-					    <field name="endDateTime" onChange="action-event-method-compute-from-end-date-time" colSpan="4"/>
+					    <field name="endDate" onChange="action-event-method-compute-from-end-date-time" colSpan="4"/>
 					    <label title="Assigned to" css="label-bold"/>
 					    <spacer/>
 					    <field name="user" colSpan="4"/>
@@ -155,7 +155,7 @@
 					<editor x-show-titles="false">
 					  	<label title="Informations" css="label-bold"/>
 					  	<spacer/>
-					    <field name="subject" colSpan="12" css="bold"/>
+					    <field name="summary" colSpan="12" css="bold"/>
 					    <label title="Status" colSpan="4"/>
 					    <field name="callTypeSelect" colSpan="4" showTitle="false"/>
 					    <field name="statusSelect" colSpan="4" showTitle="false"/>
@@ -164,9 +164,9 @@
 						<field name="description" showTitle="false" colSpan="12" widget="TEXT" />
 					    <label title="Dates" css="label-bold"/>
 					    <spacer/>
-					    <field name="startDateTime" onChange="action-event-method-compute-from-start-date-time" colSpan="3"/>
+					    <field name="startDate" onChange="action-event-method-compute-from-start-date-time" colSpan="3"/>
 					    <field name="duration" widget="duration" x-big="true" onChange="action-event-method-compute-from-duration" colSpan="3"/>
-					    <field name="endDateTime" onChange="action-event-method-compute-from-end-date-time" colSpan="3"/>
+					    <field name="endDate" onChange="action-event-method-compute-from-end-date-time" colSpan="3"/>
 					    <label title="Assigned to" css="label-bold"/>
 					    <spacer/>
 					    <field name="user"/>
@@ -179,7 +179,7 @@
 					<editor x-show-titles="false">
 					  	<label title="Informations" css="label-bold"/>
 					  	<spacer/>
-					    <field name="subject" colSpan="12" css="bold"/>
+					    <field name="summary" colSpan="12" css="bold"/>
 					    <field name="statusSelect"/>
 					    <field name="meetingType" widget="SuggestBox"/>
 					    <spacer/>
@@ -187,9 +187,9 @@
 						<field name="description" showTitle="false" colSpan="12" widget="TEXT" />
 					    <label title="Dates" css="label-bold"/>
 					    <spacer/>
-					    <field name="startDateTime" onChange="action-event-method-compute-from-start-date-time" colSpan="3"/>
+					    <field name="startDate" onChange="action-event-method-compute-from-start-date-time" colSpan="3"/>
 					    <field name="duration" widget="duration" x-big="true" onChange="action-event-method-compute-from-duration" colSpan="3"/>
-					    <field name="endDateTime" onChange="action-event-method-compute-from-end-date-time" colSpan="3"/>
+					    <field name="endDate" onChange="action-event-method-compute-from-end-date-time" colSpan="3"/>
 					    <label title="Assigned to" css="label-bold"/>
 					    <spacer/>
 					    <field name="user"/>
@@ -202,7 +202,7 @@
 					<editor x-show-titles="false">
 					  	<label title="Informations" css="label-bold"/>
 					  	<spacer/>
-					    <field name="subject" colSpan="12" css="bold"/>
+					    <field name="summary" colSpan="12" css="bold"/>
 					    <field name="taskStatusSelect"/>
 					    <field name="prioritySelect"/>
 					    <spacer/>
@@ -210,9 +210,9 @@
 						<field name="description" showTitle="false" colSpan="12" widget="TEXT" />
 					    <label title="Dates" css="label-bold"/>
 					    <spacer/>
-					    <field name="startDateTime" onChange="action-event-method-compute-from-start-date-time" colSpan="3"/>
+					    <field name="startDate" onChange="action-event-method-compute-from-start-date-time" colSpan="3"/>
 					    <field name="duration" widget="duration" x-big="true" onChange="action-event-method-compute-from-duration" colSpan="3"/>
-					    <field name="endDateTime" onChange="action-event-method-compute-from-end-date-time" colSpan="3"/>
+					    <field name="endDate" onChange="action-event-method-compute-from-end-date-time" colSpan="3"/>
 					    <field name="limitDateT" colSpan="3"/>
 					    <label title="Assigned to" css="label-bold"/>
 					    <spacer/>
@@ -517,7 +517,7 @@
 	
 	<form   name="call-lead-converted-form" title="Call" model="com.axelor.apps.crm.db.Event">
 	  <panel title="Informations">
-	    <field name="subject"/>
+	    <field name="summary"/>
 	    <field name="callTypeSelect"/>
 	    <field name="statusSelect" showTitle="false"/>
 	  </panel>
@@ -525,9 +525,9 @@
 	      <field name="description" showTitle="false"  widget="TEXT" height="4" colSpan="12"/>
 	    </panel>
 	    <panel title="Dates"  css="groupTitle">
-	      <field name="startDateTime" onChange="action-event-method-compute-from-start-date-time"/>
+	      <field name="startDate" onChange="action-event-method-compute-from-start-date-time"/>
 	      
-	      <field name="endDateTime" onChange="action-event-method-compute-from-end-date-time"/>
+	      <field name="endDate" onChange="action-event-method-compute-from-end-date-time"/>
 	      <field name="duration" widget="duration[big=true]" onChange="action-event-method-compute-from-duration"/>
 	    </panel>
 	  <panel title="Assignment">
@@ -545,14 +545,14 @@
     	<field name="user" expr="eval: __repo__.of(User).find(_lead.user?.id)"/>
     	<field name="team" expr="eval: _lead.team"/>
     	<field name="statusSelect" expr="1"/>
-    	<field name="startDateTime" expr="eval: __time__"/>
+    	<field name="startDate" expr="eval: __time__"/>
     	<field name="duration" expr="0"/>
     	<field name="callTypeSelect" expr="2"/>
     </action-record>
 	
 	<form   name="meeting-lead-converted-form" title="Meeting" model="com.axelor.apps.crm.db.Event">
 	  <panel title="Informations">
-	    <field name="subject"  />
+	    <field name="summary"  />
 	    <field name="statusSelect"/>
 	    <field name="meetingType" widget="SuggestBox"/>
 	  </panel>
@@ -561,8 +561,8 @@
 	      <field name="description" showTitle="false" colSpan="12" widget="TEXT" height="4"/>
 	    </panel>
 	    <panel title="Dates"  css="groupTitle">
-	      <field name="startDateTime" onChange="action-event-method-compute-from-start-date-time"/>
-	      <field name="endDateTime" onChange="action-event-method-compute-from-end-date-time"/>
+	      <field name="startDate" onChange="action-event-method-compute-from-start-date-time"/>
+	      <field name="endDate" onChange="action-event-method-compute-from-end-date-time"/>
 	      <field name="duration" widget="duration[big=true]" onChange="action-event-method-compute-from-duration"/>
 	    </panel>
 	  <panel title="Assignment">
@@ -579,13 +579,13 @@
     	<field name="user" expr="eval: __repo__.of(User).find(_lead.user?.id)"/>
     	<field name="team" expr="eval: _lead.team"/>
     	<field name="statusSelect" expr="1"/>
-    	<field name="startDateTime" expr="eval: __time__"/>
+    	<field name="startDate" expr="eval: __time__"/>
     	<field name="duration" expr="0"/>
     </action-record>
     
 	<form   name="crm-task-lead-converted-form" title="Task" model="com.axelor.apps.crm.db.Event">
 	  <panel title="Informations">
-	    <field name="subject" />
+	    <field name="summary" />
 	    <field name="taskStatusSelect"/>
 	    <field name="prioritySelect"/>
 	  </panel>
@@ -593,9 +593,9 @@
 	      <field name="description" showTitle="false" colSpan="12" widget="TEXT" height="4"/>
 	    </panel>
 	    <panel title="Dates"  css="groupTitle">
-	      <field name="startDateTime" onChange="action-event-method-compute-from-start-date-time"/>
+	      <field name="startDate" onChange="action-event-method-compute-from-start-date-time"/>
 	      <field name="duration" widget="duration[big=true]" onChange="action-event-method-compute-from-duration"/>
-	      <field name="endDateTime" onChange="action-event-method-compute-from-end-date-time"/>
+	      <field name="endDate" onChange="action-event-method-compute-from-end-date-time"/>
 	      <field name="limitDateT"/>
 	    </panel>
 	  <panel title="Assigned to">
@@ -611,7 +611,7 @@
     	<field name="user" expr="eval: __repo__.of(User).find(_lead.user?.id)"/>
     	<field name="team" expr="eval: _lead.team"/>
     	<field name="taskStatusSelect" expr="1"/>
-    	<field name="startDateTime" expr="eval: __time__"/>
+    	<field name="startDate" expr="eval: __time__"/>
     	<field name="progressSelect" expr="0"/>
     	<field name="duration" expr="0"/>
     </action-record>

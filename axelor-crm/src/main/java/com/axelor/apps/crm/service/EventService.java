@@ -75,9 +75,9 @@ public class EventService extends EventRepository {
 
 	public Event createEvent(LocalDateTime fromDateTime, LocalDateTime toDateTime, User user, String description, int type, String subject){
 		Event event = new Event();
-		event.setSubject(subject);
-		event.setStartDateTime(fromDateTime);
-		event.setEndDateTime(toDateTime);
+		event.setSummary(subject);
+		event.setStartDate(fromDateTime);
+		event.setEndDate(toDateTime);
 		event.setUser(user);
 		event.setTypeSelect(type);
 		if(!Strings.isNullOrEmpty(description)){

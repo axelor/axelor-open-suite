@@ -63,10 +63,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.auth.db.User;
+import com.axelor.ical.db.ICalendarEvent;
 import com.axelor.apps.crm.db.Calendar;
 import com.axelor.apps.crm.db.Event;
 import com.axelor.apps.crm.db.EventAttendee;
+import com.axelor.ical.ICalendarException;
+import com.axelor.ical.ICalendarService;
+import com.axelor.ical.ICalendarStore;
 import com.axelor.apps.crm.db.ICalendar;
+//import com.axelor.ical.db.ICalendar;
 import com.axelor.apps.crm.db.repo.CalendarRepository;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -357,18 +362,18 @@ public class CalendarService extends CalendarRepository {
 
 		java.util.Calendar startDate = new GregorianCalendar();
 		startDate.setTimeZone(timezone);
-		if(event.getStartDateTime() != null)  {
-			startDate.setTime(event.getStartDateTime().toDate());
+		if(event.getStartDate() != null)  {
+			startDate.setTime(event.getStartDate().toDate());
 		}
 
 		java.util.Calendar endDate = new GregorianCalendar();
 		endDate.setTimeZone(timezone);
-		if(event.getEndDateTime() != null)  {
-			endDate.setTime(event.getEndDateTime().toDate());
+		if(event.getEndDate() != null)  {
+			endDate.setTime(event.getEndDate().toDate());
 		}
 		
 		// Create the event
-		String eventName = event.getSubject();
+		String eventName = event.getSummary();
 		DateTime start = new DateTime(startDate.getTime());
 		DateTime end = new DateTime(endDate.getTime());
 		VEvent vEvent = new VEvent(start, end, eventName);
@@ -560,12 +565,12 @@ public class CalendarService extends CalendarRepository {
 	@Transactional
 	public Event updateEvent(Event event, VEvent vEvent)  {
 
-		event.setSubject(vEvent.getSummary().getValue());
+		event.setSummary(vEvent.getSummary().getValue());
 		if(vEvent.getDescription()!=null)  {
 			event.setDescription(vEvent.getDescription().getValue());
 		}
-		event.setStartDateTime(new LocalDateTime(vEvent.getStartDate().getDate()));
-		event.setEndDateTime(new LocalDateTime(vEvent.getEndDate().getDate()));
+		event.setStartDate(new LocalDateTime(vEvent.getStartDate().getDate()));
+		event.setEndDate(new LocalDateTime(vEvent.getEndDate().getDate()));
 		eventService.save(event);
 		
 		return event;
@@ -674,4 +679,27 @@ public class CalendarService extends CalendarRepository {
 		return meeting;
 		
 	}
+	
+
+	
+	public boolean testConnect(Calendar cal) throws MalformedURLException, ObjectStoreException
+	{
+		boolean connected = false;
+		PathResolver RESOLVER = getPathResolver(cal.getTypeSelect());
+		URL url = new URL(cal.getUrl());
+		ICalendarStore store = new ICalendarStore(url, RESOLVER);
+		
+		try 
+		{
+			connected = store.connect(cal.getLogin(), cal.getPassword());
+		}
+		finally {
+			store.disconenct();
+		}
+
+		cal.setIsValid(connected);
+		return connected;
+	}
+	
+	
 }

@@ -248,8 +248,8 @@
 	<input file="hr_publicHolidayDay.csv" type="com.axelor.apps.hr.db.PublicHolidayDay" separator=";" search="self.importId = :importId"/>
  	    
 	<input file="crm_event.csv" separator=";" type="com.axelor.apps.crm.db.Event" search="self.importId = :importId">
-		<bind to="startDateTime" eval="call:com.axelor.csv.script.ImportDateTime:importDateTime(startDateTime)" column="startDateTime"/>
-		<bind to="endDateTime" eval="call:com.axelor.csv.script.ImportDateTime:importDateTime(endDateTime)" column="endDateTime" />
+		<bind to="startDate" eval="call:com.axelor.csv.script.ImportDateTime:importDateTime(startDate)" column="startDate"/>
+		<bind to="endDate" eval="call:com.axelor.csv.script.ImportDateTime:importDateTime(endDate)" column="endDate" />
 		<bind to="ticketNumberSeq" if="typeSelect.equals('5')" eval="call:com.axelor.apps.base.service.administration.SequenceService:getSequenceNumber(com.axelor.apps.base.db.IAdministration.EVENT_TICKET)" />
 	</input>
 	
@@ -362,8 +362,8 @@
 	<input file="production_productionConfig.csv" separator=";" type="com.axelor.apps.production.db.ProductionConfig" search="self.importId = :importId"/>
 	
 	<input file="crm_event.csv" separator=";" type="com.axelor.apps.crm.db.Event" search="self.importId = :importId" update="true">
-		<bind to="startDateTime" eval="call:com.axelor.csv.script.ImportDateTime:importDateTime(startDateTime)" column="startDateTime"/>
-		<bind to="endDateTime" eval="call:com.axelor.csv.script.ImportDateTime:importDateTime(endDateTime)" column="endDateTime"/>
+		<bind to="startDate" eval="call:com.axelor.csv.script.ImportDateTime:importDateTime(startDate)" column="startDate"/>
+		<bind to="endDate" eval="call:com.axelor.csv.script.ImportDateTime:importDateTime(endDate)" column="endDate"/>
 	</input>
 	
 <!-- 	Update default BOM -->

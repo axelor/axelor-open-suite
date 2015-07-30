@@ -505,7 +505,7 @@
 			      self.typeSelect = 1 AND
 			      self.user = saleMan AND
 			      self.team = :team AND
-			      self.startDateTime BETWEEN DATE(:fromDateT) AND DATE(:todayDate)
+			      self.startDate BETWEEN DATE(:fromDateT) AND DATE(:todayDate)
 			    GROUP BY        
 			        saleMan.fullName
 			    ORDER BY         
@@ -533,7 +533,7 @@
 	self.typeSelect = 1 AND
 	self.user = salesMan AND
 	self.team = :activeTeam AND
-	DATE(self.startDateTime) = DATE(:toDateT) AND
+	DATE(self.startDate) = DATE(:toDateT) AND
 	_item.select.name = 'crm.event.status.select' AND
 	cast(_item.value as int) = self.statusSelect    
 	GROUP BY        
