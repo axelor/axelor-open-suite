@@ -14,9 +14,7 @@
     	  <button name="importCalendar" title="Import calendar" onClick="com.axelor.apps.crm.web.CalendarController:importCalendar"  />
     	  <button name="synchronizeCalendars" title="Synchronize calendar" onClick="com.axelor.apps.crm.web.CalendarController:synchronizeCalendars"  />
     </toolbar>
-		<panel>
-		  <field name="name"/>
-		</panel>
+		<panel-include view="calendar-form" />
 		<panel title="Connection settings">
 		  <field name="url"/>
 		  <field name="typeSelect"/>

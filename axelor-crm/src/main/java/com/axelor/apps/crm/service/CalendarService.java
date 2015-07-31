@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.crm.service;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -67,8 +68,9 @@ import com.axelor.auth.db.User;
 import com.axelor.apps.crm.db.Calendar;
 import com.axelor.apps.crm.db.Event;
 import com.axelor.apps.crm.db.EventAttendee;
-
+import com.axelor.ical.ICalendarService;
 import com.axelor.ical.ICalendarStore;
+import com.axelor.meta.db.MetaFile;
 import com.axelor.apps.crm.db.ICalendar;
 //import com.axelor.ical.db.ICalendar;
 import com.axelor.apps.crm.db.repo.CalendarRepository;
@@ -77,7 +79,7 @@ import com.google.inject.persist.Transactional;
 
 public class CalendarService extends CalendarRepository {
 
-	private static final Logger LOG = LoggerFactory.getLogger(CalendarService.class);
+	private final Logger log = LoggerFactory.getLogger(CalendarService.class);
 	
 	@Inject
 	private EventService eventService;
@@ -352,7 +354,7 @@ public class CalendarService extends CalendarRepository {
 	
 	
 	public VEvent createVEvent(Event event) throws SocketException  {
-		LOG.debug("Create VEvent from "+event);
+		log.debug("Create VEvent from "+event);
 		
 		// Create a TimeZone
 		TimeZoneRegistry registry = TimeZoneRegistryFactory.getInstance().createRegistry();
@@ -468,35 +470,15 @@ public class CalendarService extends CalendarRepository {
 		
 	}
 	
+	@Inject
+	ICalendarService icalserv;
 	
-	
-	public void importCalendar(Calendar cal) throws IOException, ParserException  {
+	@Transactional
+	public void importCalendar(Calendar cal, File file) throws IOException, ParserException  {
 		
-		/*
-		List<VEvent> vEventList = this.getVEvent(this.getCalendar());
-		
-		this.getEvent(vEventList, null);
-		
-		this.removeEvent(vEventList, null);
-		
-		this.getInfo(this.getCalendar());
-		*/
-		
-		PathResolver RESOLVER = getPathResolver(cal.getTypeSelect());
-		URL url = new URL(cal.getUrl());
-		ICalendarStore store = new ICalendarStore(url, RESOLVER);
-		CalDavCalendarCollection coll = null;
-		try 
-		{
-			store.connect(cal.getLogin(), cal.getPassword());
-			store.getEvents(coll);
-			
-		}
-		finally 
-		{
-			store.disconenct();
-		}
-
+		log.debug("Import calendar {} ::: {}", cal.getName(), file.getName());
+		icalserv.load(cal, file);
+		save(cal);
 
 		
 	}
@@ -608,11 +590,11 @@ public class CalendarService extends CalendarRepository {
 		
 		for (Iterator i = calendar.getComponents().iterator(); i.hasNext();) {
 		    Component component = (Component) i.next();
-		    LOG.debug("Component [" + component.getName() + "]");
+		    log.debug("Component [" + component.getName() + "]");
 			
 		    for (Iterator j = component.getProperties().iterator(); j.hasNext();) {
 		        Property property = (Property) j.next();
-		        LOG.debug("Property [" + property.getName() + ", " + property.getValue() + "]");
+		        log.debug("Property [" + property.getName() + ", " + property.getValue() + "]");
 		        
 		    }
 		}
