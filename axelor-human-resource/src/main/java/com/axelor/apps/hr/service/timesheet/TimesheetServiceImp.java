@@ -157,7 +157,7 @@ public class TimesheetServiceImp extends TimesheetRepository implements Timeshee
 			return timesheet.getToDate();
 		}
 		else{
-			return new LocalDate();
+			return null;
 		}
 	}
 

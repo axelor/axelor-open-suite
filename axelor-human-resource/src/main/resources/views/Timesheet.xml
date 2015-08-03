@@ -20,7 +20,7 @@
 	</grid>
 
 	<form name="timesheet-form" title="Timesheet" model="com.axelor.apps.hr.db.Timesheet" cols="12" width="large"
-	    onNew="action-timesheet-record-default,action-timesheet-attrs-buttons,action-timesheet-line-attrs-set-visible-duration-title,action-timesheet-record-from-period-date,action-timesheet-attrs-title-project-task"
+	    onNew="action-group-timesheet-onnew"
 	    onLoad="action-timesheet-attrs-buttons,action-timesheet-line-attrs-set-visible-duration-title,action-timesheet-attrs-title-project-task" canNew="false"
 	    onSave="action-timesheet-validate-toDate,action-timesheet-method-valid-to-date">
 
@@ -38,7 +38,7 @@
 			<field name="sentDate" colSpan="4"/>
 			<field name="company" colSpan="3" form-view="company-form" grid-view="company-grid"/>
 			<field name="user" colSpan="4" form-view="user-form" grid-view="user-grid"/>
-			<field name="fromDate" readonlyIf="fromDate!=null"/>
+			<field name="fromDate" readonlyIf="id!=null &amp;&amp; fromDate!=null"/>
 			<field name="toDate" onChange="action-timesheet-validate-toDate,action-timesheet-method-valid-to-date"/>
 		</panel>
 		<panel name="generateLinesPanel" title="Generate Lines automatically" hidden="true">
@@ -154,5 +154,13 @@
 	<action-method name="action-timesheet-method-compute-timespent-project-task">
 		<call class="com.axelor.apps.hr.web.timesheet.TimesheetController" method="computeTimeSpent"/>
 	</action-method>
+	
+	<action-group name="action-group-timesheet-onnew">
+		<action name="action-timesheet-record-default"/>
+		<action name="action-timesheet-attrs-buttons"/>
+		<action name="action-timesheet-line-attrs-set-visible-duration-title"/>
+		<action name="action-timesheet-record-from-period-date"/>
+		<action name="action-timesheet-attrs-title-project-task"/>
+	</action-group>
 
 </object-views>
