@@ -30,7 +30,6 @@
   	
   	<track>
       <field name="name" />
-      <field name="statusSelect" on="UPDATE"/>
       <message if="true" on="CREATE">Opportunity created</message>
       <message if="salesStageSelect == 3" tag="important">Needs analysis</message>
       <message if="salesStageSelect == 9" tag="success">Opportunity won</message>
