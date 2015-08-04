@@ -64,12 +64,173 @@
 	        </panel>
 	  	</panel-tabs>
 	</form>    
+	
+	<grid name="product-activity-grid" title="Product Activities" model="com.axelor.apps.base.db.Product" orderBy="name">
+   		<toolbar>
+        	<button name="catalog" title="Catalog" onClick="action-print-product-catalog" icon="fa-book"/>
+	    </toolbar>
+	    <field name="code"/>
+	    <field name="name" width="400"/>
+	    <field name="productCategory" form-view="product-category-form" grid-view="product-category-grid"/>
+	    <field name="productFamily" form-view="product-family-form" grid-view="product-family-grid"/>
+	    <field name="productTypeSelect" width="100"/>
+	    <field name="saleSupplySelect"/>
+	    <field name="unit" width="70" form-view="unit-form" grid-view="unit-grid"/>
+	    <button name="sendByEmail" title="Send Email" icon="fa-envelope" onClick="action-send-by-email-with-template"/>
+    </grid>
+
+   <form name="product-activity-form" title="Product Activity" model="com.axelor.apps.base.db.Product" 
+   onNew="action-group-base-product-onnew, action-product-activity-record-default-activity" 
+   onLoad="action-product-attrs-scale-and-precision,action-product-attrs-title-sale-price" width="large">
+    <toolbar>
+    		<button name="sendByEmail" title="Send Email" icon="fa-envelope" onClick="action-send-by-email-with-template"/>
+			<button name="showProductSheet" title="Product sheet" icon="fa-print" onClick="save,action-product-method-show-product-sheet"/>
+    	</toolbar>
+	    <panel>
+	    	<panel colSpan="4">
+	        	<field name="picture" showTitle="false" widget="Image" colSpan="12"/>
+	        	<field name="versionSelect" colSpan="12"/>
+	        </panel>
+            <panel colSpan="8">
+				<field name="name" showTitle="false" css="label-bold bold" placeholder="Name"	colSpan="8"/>
+				<field name="code" x-bind="{{code|uppercase}}" showTitle="false" css="label-bold bold" placeholder="Code" colSpan="4"/>
+				<panel title="Product typology" colSpan="6" colWidths="30%,70%">
+					<field name="productTypeSelect" onChange="action-group-base-product-producttype-onchange" colSpan="12" readonly="true"/>
+					<field name="isActivity" showIf="productTypeSelect == 'service'" readonly="true"/>
+					<field name="periodicitySelect" if-module="axelor-supplychain" showIf="productTypeSelect == 'subscriptable'"/>
+					<field name="saleSupplySelect" onChange="action-product-validate-sale-supply-select" colSpan="12"/>
+					<field name="inAti"/>
+					<field name="isAnalyticCapture" if-module="axelor-account"/>
+					<field name="expense" hidden="true"/>
+				</panel>
+				<panel title="Categorization" colSpan="6" colWidths="30%,70%">
+					<field name="productFamily" colSpan="12" form-view="product-family-form" grid-view="product-family-grid"/>
+					<field name="productCategory" domain="self.productFamily = :productFamily" colSpan="12" form-view="product-category-form" grid-view="product-category-grid"/>
+				</panel>
+			</panel>
+	    </panel>
+	    <panel-tabs title="Product specific attributes">
+			<panel title="Sale" showTitle="false">
+				<panel colSpan="6" title="Sales">
+				    <field name="sellable" colSpan="12"/>
+					<field name="salePrice" colSpan="12" hideIf="!sellable"/>
+					<field name="saleCurrency" colSpan="12" hideIf="!sellable" form-view="currency-form" grid-view="currency-grid"/>
+					<field name="unit" colSpan="12" hideIf="!sellable" form-view="unit-form" grid-view="unit-grid"/>
+				</panel>
+				<panel colSpan="6" title="Product dates">
+					<field name="startDate" colSpan="12"/>
+					<field name="endDate" onChange="action-group-base-product-enddate-onchange" colSpan="12"/>
+				</panel>
+				<panel colSpan="6" title="Description">
+					<field name="description" showTitle="false" colSpan="12" widget="html"/>
+				</panel>
+				<panel colSpan="6" title="Internal description" >
+					<field name="internalDescription" showTitle="false" colSpan="12" widget="html"/>
+				</panel>
+			</panel>
+			<panel title="Purchase/Costs" showTitle="false">
+				<panel title="Purchases" colSpan="6">
+				    <field name="purchasable" colSpan="12"/>
+					<field name="purchasePrice" colSpan="12" showIf="purchasable"/>
+					<field name="purchaseCurrency" colSpan="12" showIf="purchasable" form-view="currency-form" grid-view="currency-grid"/>
+					<field name="defaultSupplierPartner" domain="self.isContact = false AND self.isSupplier = true" colSpan="12" showIf="purchasable" form-view="partner-form" grid-view="partner-grid"/>
+				</panel>
+				<panel title="Costs" colSpan="6">
+					<field name="costPrice" onChange="action-product-record-compute-sale-price" colSpan="12"/>
+					<field name="managPriceCoef" onChange="action-product-record-compute-sale-price" colSpan="12"/>
+				</panel>
+				<panel-related title="Suppliers catalog" field="supplierCatalogList" colSpan="12" showIf="purchasable" form-view="supplier-catalog-form" grid-view="supplier-catalog-grid"/>        
+			</panel>
+	        <panel-related title="Accounting" field="accountManagementList" colSpan="12" domain="self.typeSelect = 1" showTitle="false" form-view="account-management-product-form" grid-view="account-management-product-grid"/>
+	        <panel title="Stock" showIf="productTypeSelect == 'storable'" showTitle="false" if-module="axelor-stock">
+            	<panel title="Procurement settings" colSpan="12">
+					<field name="procurementMethodSelect" requiredIf="productTypeSelect == 'storable'" colSpan="6"/>
+					<field name="isRawMaterial" showIf="productTypeSelect != 'service'" colSpan="6"/>
+				</panel>
+				<panel colSpan="12" if-module="axelor-supplychain">
+					<button name="showAllStockMoveLine" title="Show all stock move" colSpan="6" onClick="action-product-view-stock-move-line"/>
+					<spacer/>
+					<panel-dashlet action="action-product-view-stock" colSpan="12"/>
+					<panel-dashlet action="action-stock-report-for-product" colSpan="12"/>
+					<panel-dashlet action="action-stock-history-report-for-product" colSpan="12"/>
+				</panel>
+			</panel>
+			<panel title="Production informations" showIf="productTypeSelect != 'service'" showTitle="false" if-module="axelor-production">
+				<field name="defaultBillOfMaterial" domain="self.product.id = :id" onSelect="action-product-attrs-bill-of-material-domain" form-view="bill-of-material-form" grid-view="bill-of-material-grid"/>
+				<field name="lastProductionPrice" readonly="true"/>
+				<panel if-module="axelor-production" colSpan="12">
+					<button name="createProductionOrder" title="Create production order"  onClick="save,action-product-view-create-production-order"/>
+					<panel-dashlet action="action-product-view-show-bill-of-material" colSpan="12"/>
+				</panel>
+			</panel>
+	        <panel title="Tracking number" showIf="productTypeSelect != 'service'" showTitle="false">
+        		<panel colSpan="12">
+        			<field name="hasWarranty" />
+	            	<field name="warrantyNbrOfMonths"  showIf="hasWarranty"/>
+        	 		<field name="isPerishable" />
+	            	<field name="perishableNbrOfMonths" showIf="isPerishable"/>
+        	 	</panel>
+        	 	<panel colSpan="12" if-module="axelor-stock">
+		            <field name="trackingNumberConfiguration" canNew="true" grid-view="tracking-number-configuration-grid" form-view="tracking-number-configuration-form"/>
+	            </panel>
+	        </panel>
+	        <panel title="Variants" showTitle="false">
+	        	<panel name="parentVariant" showIf="!parentProduct" colSpan="12">
+	        		<field name="productVariantConfig" canSelect="false" canNew="true" colSpan="12">
+	        			<editor x-show-titles="false">
+				        	<field name="productVariantAttr1" canNew="true" onChange="action-product-variant-config-attrs-domain" grid-view="product-variant-attr-grid" form-view="product-variant-attr-form"/>
+				        	<field name="productVariantValue1Set" onSelect="action-product-nested-product-variant-config-attrs-domain" widget="TagSelect" canNew="false" showIf="productVariantAttr1" colSpan="6" form-view="product-variant-value-form" grid-view="product-variant-value-grid"/>
+					        <field name="productVariantAttr2" canNew="true" onChange="action-product-variant-config-attrs-domain" showIf="productVariantAttr1" grid-view="product-variant-attr-grid" form-view="product-variant-attr-form"/>
+				    	    <field name="productVariantValue2Set" onSelect="action-product-nested-product-variant-config-attrs-domain" widget="TagSelect" canNew="false" showIf="productVariantAttr2" colSpan="6" form-view="product-variant-value-form" grid-view="product-variant-value-grid"/>
+					        <field name="productVariantAttr3" canNew="true" onChange="action-product-variant-config-attrs-domain" showIf="productVariantAttr2" grid-view="product-variant-attr-grid" form-view="product-variant-attr-form"/>
+				    	    <field name="productVariantValue3Set" onSelect="action-product-nested-product-variant-config-attrs-domain" widget="TagSelect" canNew="false" showIf="productVariantAttr3" colSpan="6" form-view="product-variant-value-form" grid-view="product-variant-value-grid"/>
+					        <field name="productVariantAttr4" canNew="true" onChange="action-product-variant-config-attrs-domain" showIf="productVariantAttr3" grid-view="product-variant-attr-grid" form-view="product-variant-attr-form"/>
+				    	    <field name="productVariantValue4Set" onSelect="action-product-nested-product-variant-config-attrs-domain" widget="TagSelect" canNew="false" showIf="productVariantAttr4" colSpan="6" form-view="product-variant-value-form" grid-view="product-variant-value-grid"/>
+				        </editor>
+	        		</field>
+	            	<button name="generateProductVariant" title="Generate product variants" onClick="save,action-product-method-generate-product-variant"/>
+	        		<panel-dashlet action="action-product-view-product-variant" colSpan="12"/>
+	        	</panel>
+	            <panel name="childVariant" showIf="parentProduct" colSpan="12">
+	            <field name="productVariant" showTitle="false" canSelect="false" >
+            		<editor x-show-titles="false">
+	            		<field name="productVariantAttr1" showTitle="false" readonly="true" grid-view="product-variant-attr-grid" form-view="product-variant-attr-form"/>
+			        	<field name="productVariantValue1" showTitle="false" widget="SuggestBox" showIf="productVariantAttr1" form-view="product-variant-value-form" grid-view="product-variant-value-grid"/>
+				        <field name="productVariantAttr2" showTitle="false" readonly="true" showIf="productVariantAttr1" grid-view="product-variant-attr-grid" form-view="product-variant-attr-form"/>
+			        	<field name="productVariantValue2" showTitle="false" widget="SuggestBox" showIf="productVariantAttr2" form-view="product-variant-value-form" grid-view="product-variant-value-grid"/>
+				        <field name="productVariantAttr3" showTitle="false" readonly="true" showIf="productVariantAttr2" grid-view="product-variant-attr-grid" form-view="product-variant-attr-form"/>
+			    	    <field name="productVariantValue3" showTitle="false" widget="SuggestBox" showIf="productVariantAttr3" form-view="product-variant-value-form" grid-view="product-variant-value-grid"/>
+				        <field name="productVariantAttr4" showTitle="false" readonly="true" showIf="productVariantAttr3" grid-view="product-variant-attr-grid" form-view="product-variant-attr-form"/>
+			    	    <field name="productVariantValue4" showTitle="false" widget="SuggestBox" showIf="productVariantAttr4" form-view="product-variant-value-form" grid-view="product-variant-value-grid"/>
+		    	    </editor>
+	            </field>
+	        		<field name="parentProduct" form-view="product-form" grid-view="product-grid"/>
+	        		<panel-dashlet action="action-product-view-other-product-variant" />
+	            </panel>
+            	<button name="updateProductsPrices" title="Update products prices"  onClick="save,action-product-method-update-products-prices" help="Update current product prices and variants"/>
+	        </panel>
+ 			<panel title="Links" if-module="axelor-stock">
+ 				<panel-dashlet action="action-product-view-stock-move-line-incoming-planned" colSpan="12"/>
+ 				<panel-dashlet action="action-product-view-stock-move-line-consumption-planned" colSpan="12"/>
+ 				<panel-dashlet action="action-product-view-stock-move-line" colSpan="12"/>
+<!--  				<panel-dashlet action="action-product-view-supplier-requests-historical" colSpan="12" if-module="axelor-supplier-management"/> -->
+<!--  				<panel-dashlet action="action-product-view-purchase-order-line-in-progress" colSpan="12" if-module="axelor-purchase"/> -->
+<!--  				<panel-dashlet action="action-product-view-purchase-order-line-historical" colSpan="12" if-module="axelor-purchase"/> -->
+ 				<panel-dashlet action="action-product-view-stock-move-line-consumption-historical" colSpan="12"/>
+	        </panel>
+	  	</panel-tabs>
+	</form>    
     
     <action-group name="action-group-base-product-expense-onnew">
     	<action name="action-product-record-default-new-expense"/>
     	<action name="action-product-record-sale-supply-select"/>
     	<action name="action-product-record-in-ati"/>
     </action-group>
+    
+    <action-record name="action-product-activity-record-default-activity" model="com.axelor.apps.base.db.Product">
+    	<field name="isActivity" expr="true"/>
+    	<field name="productTypeSelect" expr="service"/>
+    </action-record>
     
     <action-record name="action-product-record-default-new-expense" model="com.axelor.apps.base.db.Product">
     	<field name="productTypeSelect" expr="storable"/>
