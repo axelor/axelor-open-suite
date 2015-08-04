@@ -19,7 +19,7 @@
 	        <field name="activeCashRegister" form-view="cash-register-form" grid-view="cash-register-grid"/>
 <!-- 	        <field name="timesheetPeriodConfig"/> -->
 	        <field name="employee" if-module="axelor-human-resource" form-view="employee-form" grid-view="employee-grid"/>
-	        <button name="createEmployee" onClick="action-user-create-employee,save,action-hr-user-show-employee" title="Create employee" if-module="axelor-human-resource" showIf="employee == null"/>
+	        <button name="createEmployee" onClick="action-user-group-employee" title="Create employee" if-module="axelor-human-resource" showIf="employee == null"/>
         </panel>
 		<panel title="Testing" sidebar="true">
 			<field name="today"/>
@@ -56,8 +56,21 @@
         <notify message="Please select active company"  if="__repo__.of(Company).all().fetch().size != 1"/>
     </action-validate>
     
+    <action-validate name="action-user-validate-check-contact">
+    	<error message="Please select a contact" if="partner == null"/>
+    </action-validate>
+    
     <action-record name="action-user-create-employee" model="com.axelor.auth.db.User">
         <field name="employee" expr="action:action-hr-create-user-employee" />
     </action-record>
+    
+    <action-group name="action-user-group-employee">
+    	<action name="action-user-validate-check-contact"/>
+    	<action name="com.axelor.auth.AuthService:validate"/>
+    	<action name="save"/>
+    	<action name="action-user-create-employee"/>
+    	<action name="save"/>
+    	<action name="action-hr-user-show-employee"/>
+    </action-group>
         
 </object-views>
