@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.joda.time.LocalDate;
+
 import com.axelor.apps.base.db.Wizard;
 import com.axelor.apps.hr.db.Expense;
 import com.axelor.apps.hr.db.Timesheet;
@@ -184,7 +186,10 @@ public class TimesheetController {
 		List<TimesheetLine> timesheetLineList = timesheet.getTimesheetLineList();
 		List<Integer> listId = new ArrayList<Integer>();
 		int count = 0;
-		if(timesheet.getToDate() != null){
+		if(timesheet.getFromDate() == null){
+			response.setError(I18n.get("From date can't be empty"));
+		}
+		else if(timesheet.getToDate() != null){
 			if(timesheetLineList != null && !timesheetLineList.isEmpty()){
 				for (TimesheetLine timesheetLine : timesheetLineList) {
 					count++;
