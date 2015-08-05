@@ -36,14 +36,14 @@ public class ExpenseController {
 		List<Expense> expenseList = Beans.get(ExpenseRepository.class).all().filter("self.user = ?1 AND self.company = ?2 AND self.statusSelect = 1",AuthUtils.getUser(),AuthUtils.getUser().getActiveCompany()).fetch();
 		if(expenseList.isEmpty()){
 			response.setView(ActionView
-									.define("Expense")
+									.define(I18n.get("Expense"))
 									.model(Expense.class.getName())
 									.add("form", "expense-form")
 									.map());
 		}
 		else if(expenseList.size() == 1){
 			response.setView(ActionView
-					.define("Expense")
+					.define(I18n.get("Expense"))
 					.model(Expense.class.getName())
 					.add("form", "expense-form")
 					.param("forceEdit", "true")
@@ -51,7 +51,7 @@ public class ExpenseController {
 		}
 		else{
 			response.setView(ActionView
-					.define("Expense")
+					.define(I18n.get("Expense"))
 					.model(Wizard.class.getName())
 					.add("form", "popup-expense-form")
 					.param("forceEdit", "true")
@@ -67,7 +67,7 @@ public class ExpenseController {
 		Map expenseMap = (Map)request.getContext().get("expenseSelect");
 		Expense expense = Beans.get(ExpenseRepository.class).find(new Long((Integer)expenseMap.get("id")));
 		response.setView(ActionView
-				.define("Expense")
+				.define(I18n.get("Expense"))
 				.model(Expense.class.getName())
 				.add("form", "expense-form")
 				.param("forceEdit", "true")
@@ -87,7 +87,7 @@ public class ExpenseController {
 			expenseListIdStr = Joiner.on(",").join(expenseListId);
 		}
 
-		response.setView(ActionView.define("My Expenses")
+		response.setView(ActionView.define(I18n.get("My Expenses"))
 				   .model(Expense.class.getName())
 				   .add("grid","expense-grid")
 				   .add("form","expense-form")
@@ -112,7 +112,7 @@ public class ExpenseController {
 			expenseListIdStr = Joiner.on(",").join(expenseListId);
 		}
 
-		response.setView(ActionView.define("Expenses to Validate")
+		response.setView(ActionView.define(I18n.get("Expenses to Validate"))
 			   .model(Expense.class.getName())
 			   .add("grid","expense-validate-grid")
 			   .add("form","expense-form")
@@ -132,7 +132,7 @@ public class ExpenseController {
 			expenseListIdStr = Joiner.on(",").join(expenseListId);
 		}
 
-		response.setView(ActionView.define("Colleague Expenses")
+		response.setView(ActionView.define(I18n.get("Historic colleague Expenses"))
 				.model(Expense.class.getName())
 				   .add("grid","expense-grid")
 				   .add("form","expense-form")
@@ -159,7 +159,7 @@ public class ExpenseController {
 				expenseListIdStr = Joiner.on(",").join(expenseListId);
 			}
 
-			response.setView(ActionView.define("Expenses to be Validated by your subordinates")
+			response.setView(ActionView.define(I18n.get("Expenses to be Validated by your subordinates"))
 				   .model(Expense.class.getName())
 				   .add("grid","expense-grid")
 				   .add("form","expense-form")
@@ -179,7 +179,7 @@ public class ExpenseController {
 		expense = Beans.get(ExpenseRepository.class).find(expense.getId());
 		Move move = expenseService.ventilate(expense);
 		response.setReload(true);
-		response.setView(ActionView.define("Move")
+		response.setView(ActionView.define(I18n.get("Move"))
 				   .model(Move.class.getName())
 				   .add("grid","move-grid")
 				   .add("form","move-form")

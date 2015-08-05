@@ -2,17 +2,18 @@ package com.axelor.apps.account.db.repo;
 
 import java.math.BigDecimal;
 
+import javax.persistence.PersistenceException;
+
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.service.invoice.InvoiceService;
-import com.axelor.db.JPA;
 import com.axelor.inject.Beans;
 
 public class InvoiceManagementRepository extends InvoiceRepository {
 	@Override
 	public Invoice copy(Invoice entity, boolean deep) {
-		
+
 		Invoice copy = super.copy(entity, deep);
-		
+
 		copy.setStatusSelect(STATUS_DRAFT);
 		copy.setInvoiceId(null);
 		copy.setInvoiceDate(null);
@@ -39,11 +40,11 @@ public class InvoiceManagementRepository extends InvoiceRepository {
 		copy.setCanceledPaymentSchedule(null);
 		copy.setDirectDebitAmount(BigDecimal.ZERO);
 		copy.setImportId(null);
-		
+
 		return copy;
 	}
-	
-	
+
+
 	@Override
 	public Invoice save(Invoice invoice) {
 		try {
@@ -52,10 +53,8 @@ public class InvoiceManagementRepository extends InvoiceRepository {
 
 			return invoice;
 		} catch (Exception e) {
-			JPA.em().getTransaction().rollback();
-			e.printStackTrace();
+			throw new PersistenceException(e.getLocalizedMessage());
 		}
-		return null;
 	}
-	
+
 }

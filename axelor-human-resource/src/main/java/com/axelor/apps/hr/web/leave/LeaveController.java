@@ -29,14 +29,14 @@ public class LeaveController {
 		List<LeaveRequest> leaveList = Beans.get(LeaveRequestRepository.class).all().filter("self.user = ?1 AND self.company = ?2 AND self.statusSelect = 1",AuthUtils.getUser(),AuthUtils.getUser().getActiveCompany()).fetch();
 		if(leaveList.isEmpty()){
 			response.setView(ActionView
-									.define("LeaveRequest")
+									.define(I18n.get("LeaveRequest"))
 									.model(LeaveRequest.class.getName())
 									.add("form", "leave-request-form")
 									.map());
 		}
 		else if(leaveList.size() == 1){
 			response.setView(ActionView
-					.define("LeaveRequest")
+					.define(I18n.get("LeaveRequest"))
 					.model(LeaveRequest.class.getName())
 					.add("form", "leave-request-form")
 					.param("forceEdit", "true")
@@ -44,7 +44,7 @@ public class LeaveController {
 		}
 		else{
 			response.setView(ActionView
-					.define("LeaveRequest")
+					.define(I18n.get("LeaveRequest"))
 					.model(Wizard.class.getName())
 					.add("form", "popup-leave-request-form")
 					.param("forceEdit", "true")
@@ -60,7 +60,7 @@ public class LeaveController {
 		Map leaveMap = (Map)request.getContext().get("leaveSelect");
 		LeaveRequest leave = Beans.get(LeaveRequestRepository.class).find(new Long((Integer)leaveMap.get("id")));
 		response.setView(ActionView
-				.define("LeaveRequest")
+				.define(I18n.get("LeaveRequest"))
 				.model(LeaveRequest.class.getName())
 				.add("form", "leave-request-form")
 				.param("forceEdit", "true")
@@ -80,7 +80,7 @@ public class LeaveController {
 			leaveListIdStr = Joiner.on(",").join(leaveListId);
 		}
 
-		response.setView(ActionView.define("My Leave Requests")
+		response.setView(ActionView.define(I18n.get("All my Leave Requests"))
 				   .model(LeaveRequest.class.getName())
 				   .add("grid","leave-request-grid")
 				   .add("form","leave-request-form")
@@ -105,7 +105,7 @@ public class LeaveController {
 			leaveListIdStr = Joiner.on(",").join(leaveListId);
 		}
 
-		response.setView(ActionView.define("Leave Requests to Validate")
+		response.setView(ActionView.define(I18n.get("Leave Requests to Validate"))
 			   .model(LeaveRequest.class.getName())
 			   .add("grid","leave-request-validate-grid")
 			   .add("form","leave-request-form")
@@ -125,7 +125,7 @@ public class LeaveController {
 			leaveListIdStr = Joiner.on(",").join(leaveListId);
 		}
 
-		response.setView(ActionView.define("Colleague Leave Requests")
+		response.setView(ActionView.define(I18n.get("Colleague Leave Requests"))
 				.model(LeaveRequest.class.getName())
 				   .add("grid","leave-request-grid")
 				   .add("form","leave-request-form")
@@ -152,7 +152,7 @@ public class LeaveController {
 				leaveListIdStr = Joiner.on(",").join(leaveListId);
 			}
 
-			response.setView(ActionView.define("Leaves to be Validated by your subordinates")
+			response.setView(ActionView.define(I18n.get("Leaves to be Validated by your subordinates"))
 				   .model(LeaveRequest.class.getName())
 				   .add("grid","leave-request-grid")
 				   .add("form","leave-request-form")
