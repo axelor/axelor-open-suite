@@ -2,8 +2,6 @@
 "${supplierPartner.purchaseOrderInformation}",,,
 "%s :\n Veuillez configurer le module Achat pour la société %s",,,
 "50 Latest Supplier Orders",,,
-"A contact partner must be selected",,,
-"A price list must be selected",,,
 "Account",,,
 "Actions",,,
 "Amount",,,
