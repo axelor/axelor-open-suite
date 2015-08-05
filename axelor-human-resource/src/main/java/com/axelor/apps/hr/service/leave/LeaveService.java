@@ -280,7 +280,7 @@ public class LeaveService extends LeaveRequestRepository{
 
 		int endTimeHour = 0;
 		int endTimeMin = 0;
-		if(leave.getStartOnSelect() == SELECT_MORNING){
+		if(leave.getEndOnSelect() == SELECT_MORNING){
 			endTimeHour = weeklyPlanning.getWeekDays().get(leave.getDateTo().getDayOfWeek()).getMorningTo().getHourOfDay();
 			endTimeMin = weeklyPlanning.getWeekDays().get(leave.getDateTo().getDayOfWeek()).getMorningTo().getMinuteOfHour();
 		}
