@@ -181,6 +181,7 @@
 "SaleOrder.deliveryCondition",,,
 "SaleOrder.deliveryDate",,,
 "SaleOrder.description",,,
+"SaleOrder.discountAmount",,,
 "SaleOrder.invoicingAddrs",,,
 "SaleOrder.law",,,
 "SaleOrder.no",,,
