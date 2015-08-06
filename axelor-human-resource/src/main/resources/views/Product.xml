@@ -95,7 +95,6 @@
 				<field name="name" showTitle="false" css="label-bold bold" placeholder="Name"	colSpan="8"/>
 				<field name="code" x-bind="{{code|uppercase}}" showTitle="false" css="label-bold bold" placeholder="Code" colSpan="4"/>
 				<panel title="Product typology" colSpan="6" colWidths="30%,70%">
-					<field name="periodicitySelect" if-module="axelor-supplychain" showIf="productTypeSelect == 'subscriptable'"/>
 					<field name="inAti"/>
 					<field name="isAnalyticCapture" if-module="axelor-account"/>
 					<field name="expense" hidden="true"/>

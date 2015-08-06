@@ -136,15 +136,15 @@ public class InvoiceLineService {
 	public BigDecimal convertDiscountAmount(InvoiceLine invoiceLine, Invoice invoice){
 		BigDecimal discountAmount = BigDecimal.ZERO;
 		if(invoiceLine.getDiscountTypeSelect() == IPriceListLine.AMOUNT_TYPE_FIXED){
-			discountAmount = invoiceLine.getProduct().getSalePrice().subtract(this.computeDiscount(invoiceLine,invoice));
+			discountAmount = invoiceLine.getPrice().subtract(this.computeDiscount(invoiceLine,invoice));
 			if(invoice.getOperationTypeSelect()<2){
-				discountAmount = invoiceLine.getProduct().getPurchasePrice().subtract(this.computeDiscount(invoiceLine,invoice));
+				discountAmount = invoiceLine.getPrice().subtract(this.computeDiscount(invoiceLine,invoice));
 			}
 		}
 		else{
-			discountAmount = (invoiceLine.getProduct().getSalePrice().subtract(this.computeDiscount(invoiceLine,invoice))).multiply(new BigDecimal(100)).divide(invoiceLine.getProduct().getSalePrice());
+			discountAmount = (invoiceLine.getPrice().subtract(this.computeDiscount(invoiceLine,invoice))).multiply(new BigDecimal(100)).divide(invoiceLine.getProduct().getSalePrice());
 			if(invoice.getOperationTypeSelect()<2){
-				discountAmount = (invoiceLine.getProduct().getPurchasePrice().subtract(this.computeDiscount(invoiceLine,invoice))).multiply(new BigDecimal(100)).divide(invoiceLine.getProduct().getPurchasePrice());
+				discountAmount = (invoiceLine.getPrice().subtract(this.computeDiscount(invoiceLine,invoice))).multiply(new BigDecimal(100)).divide(invoiceLine.getProduct().getPurchasePrice());
 			}
 		}
 
