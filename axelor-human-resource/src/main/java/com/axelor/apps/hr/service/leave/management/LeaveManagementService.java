@@ -1,5 +1,6 @@
 package com.axelor.apps.hr.service.leave.management;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import com.axelor.apps.hr.db.LeaveLine;
@@ -9,15 +10,12 @@ public class LeaveManagementService {
 	
 	public LeaveLine computeQuantityAvailable (LeaveLine leaveLine){
 		List<LeaveManagement> leaveManagementList = leaveLine.getLeaveManagementList();
-		for (LeaveManagement leaveManagement : leaveManagementList) {
-			if(!leaveManagement.getCounted()){
-				leaveLine.setQuantity(leaveLine.getQuantity().subtract(leaveManagement.getOldValue()));
+		leaveLine.setQuantity(BigDecimal.ZERO);
+		if(leaveManagementList != null && !leaveManagementList.isEmpty()){
+			for (LeaveManagement leaveManagement : leaveManagementList) {
 				leaveLine.setQuantity(leaveLine.getQuantity().add(leaveManagement.getValue()));
-				leaveManagement.setOldValue(leaveManagement.getValue());
-				leaveManagement.setCounted(true);
 			}
 		}
-		
 		return leaveLine;
 	}
 

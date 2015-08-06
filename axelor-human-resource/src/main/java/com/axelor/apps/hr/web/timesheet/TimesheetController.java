@@ -48,14 +48,14 @@ public class TimesheetController {
 		List<Timesheet> timesheetList = Beans.get(TimesheetRepository.class).all().filter("self.user = ?1 AND self.company = ?2 AND self.statusSelect = 1",AuthUtils.getUser(),AuthUtils.getUser().getActiveCompany()).fetch();
 		if(timesheetList.isEmpty()){
 			response.setView(ActionView
-									.define("Timesheet")
+									.define(I18n.get("Timesheet"))
 									.model(Timesheet.class.getName())
 									.add("form", "timesheet-form")
 									.map());
 		}
 		else if(timesheetList.size() == 1){
 			response.setView(ActionView
-					.define("Timesheet")
+					.define(I18n.get("Timesheet"))
 					.model(Timesheet.class.getName())
 					.add("form", "timesheet-form")
 					.param("forceEdit", "true")
@@ -63,7 +63,7 @@ public class TimesheetController {
 		}
 		else{
 			response.setView(ActionView
-					.define("Timesheet")
+					.define(I18n.get("Timesheet"))
 					.model(Wizard.class.getName())
 					.add("form", "popup-timesheet-form")
 					.param("forceEdit", "true")
@@ -87,7 +87,7 @@ public class TimesheetController {
 			timesheetListIdStr = Joiner.on(",").join(timesheetListId);
 		}
 
-		response.setView(ActionView.define("My Timesheets")
+		response.setView(ActionView.define(I18n.get("My Timesheets"))
 				   .model(Timesheet.class.getName())
 				   .add("grid","timesheet-grid")
 				   .add("form","timesheet-form")
@@ -112,7 +112,7 @@ public class TimesheetController {
 			timesheetListIdStr = Joiner.on(",").join(timesheetListId);
 		}
 
-		response.setView(ActionView.define("Timesheets to Validate")
+		response.setView(ActionView.define(I18n.get("Timesheets to Validate"))
 			   .model(Timesheet.class.getName())
 			   .add("grid","timesheet-validate-grid")
 			   .add("form","timesheet-form")
@@ -144,7 +144,7 @@ public class TimesheetController {
 			timesheetListIdStr = Joiner.on(",").join(timesheetListId);
 		}
 
-		response.setView(ActionView.define("Colleague Timesheets")
+		response.setView(ActionView.define(I18n.get("Historic colleague Timesheets"))
 				   .model(Timesheet.class.getName())
 				   .add("grid","timesheet-grid")
 				   .add("form","timesheet-form")
@@ -153,7 +153,7 @@ public class TimesheetController {
 	}
 
 	public void showSubordinateTimesheets(ActionRequest request, ActionResponse response){
-		List<User> userList = Query.of(User.class).filter("self.employee.manager = ?1 AND self.company = ?2",AuthUtils.getUser(),AuthUtils.getUser().getActiveCompany()).fetch();
+		List<User> userList = Query.of(User.class).filter("self.employee.manager = ?1 AND self.activeCompany = ?2",AuthUtils.getUser(),AuthUtils.getUser().getActiveCompany()).fetch();
 		List<Long> timesheetListId = new ArrayList<Long>();
 		for (User user : userList) {
 			List<Timesheet> timesheetList = Query.of(Timesheet.class).filter("self.user.employee.manager = ?1 AND self.company = ?2 AND self.statusSelect = 2",user,AuthUtils.getUser().getActiveCompany()).fetch();
@@ -170,7 +170,7 @@ public class TimesheetController {
 				timesheetListIdStr = Joiner.on(",").join(timesheetListId);
 			}
 
-			response.setView(ActionView.define("Timesheets to be Validated by your subordinates")
+			response.setView(ActionView.define(I18n.get("Timesheets to be Validated by your subordinates"))
 				   .model(Expense.class.getName())
 				   .add("grid","timesheet-grid")
 				   .add("form","timesheet-form")
@@ -184,7 +184,10 @@ public class TimesheetController {
 		List<TimesheetLine> timesheetLineList = timesheet.getTimesheetLineList();
 		List<Integer> listId = new ArrayList<Integer>();
 		int count = 0;
-		if(timesheet.getToDate() != null){
+		if(timesheet.getFromDate() == null){
+			response.setError(I18n.get("From date can't be empty"));
+		}
+		else if(timesheet.getToDate() != null){
 			if(timesheetLineList != null && !timesheetLineList.isEmpty()){
 				for (TimesheetLine timesheetLine : timesheetLineList) {
 					count++;

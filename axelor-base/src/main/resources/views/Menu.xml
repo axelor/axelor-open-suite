@@ -3,8 +3,6 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
 	
-	<menuitem name="menu-mail-abs" title="Messaging" icon="fa-share-alt" order="-220" id="menu-mail-abs"/>
-
 	<menuitem name="menu-dashboards" order="-200"
     	title="Dashboards" icon="fa-tachometer" groups="admins,ERP"/> 	
     	

@@ -7,8 +7,6 @@
 	<menuitem name="sc-root-sale" title="Sales" order="-155"
 		icon="fa-line-chart" groups="admins,ERP,CRM"/>
 		
-	<menuitem name="sc-root-sale-templates" title="Templates" parent="sc-root-sale" groups="admins,ERP"/>
-	
 	<menuitem name="sale-templates-new-template" title="Create a template"  groups="admins,ERP"
 		 action="sale.templates.new.template" parent="sc-root-sale-templates"/>
 		 
@@ -50,7 +48,7 @@
 		<context name="_template" expr="eval:true" />
 	</action-view>
 			
-	<menuitem name="sc-root-sale-new-so" title="New Sale order" order="-3" 
+	<menuitem name="sc-root-sale-new-so" title="New Sale order" order="-100" 
 		 groups="admins,ERP" action="sc.root.sale.new.so" parent="sc-root-sale"/>
 		
 	<action-view name="sc.root.sale.new.so" title="New Sale order"
@@ -64,7 +62,7 @@
 		<context name="_template" expr="eval:false" />
 	</action-view>	
 	
-	<menuitem name="sc-root-sale-orders" parent="sc-root-sale" order="-2"
+	<menuitem name="sc-root-sale-orders" parent="sc-root-sale" order="-75"
 		groups="admins,ERP" title="Sale orders" action="sc.root.sale.orders" />
 	
 	<action-view name="sc.root.sale.orders" title="Sale orders"
@@ -78,7 +76,9 @@
 		<context name="_template" expr="eval:false" />
 	</action-view>	
 	
-	<menuitem name="sc-root-sale-order-templates" parent="sc-root-sale-templates" order="-1"
+	<menuitem name="sc-root-sale-templates" title="Templates" parent="sc-root-sale" order="-50" groups="admins,ERP"/>
+	
+	<menuitem name="sc-root-sale-order-templates" parent="sc-root-sale-templates"
 		groups="admins,ERP" title="See SalesOrder templates" action="sc.root.sale.order.templates" />
 	
 	<action-view name="sc.root.sale.order.templates" title="See SalesOrder templates"
@@ -93,7 +93,7 @@
 	</action-view>
 	
 	<menuitem name="sc-root-sale-conf" parent="sc-root-sale"
-		title="Configuration"  />
+		title="Configuration"  order="-25"/>
 
 	<menuitem name="sale-conf-cancelreason" parent="sc-root-sale-conf"
 		title="Cancel Reasons" action="sale.conf.cancelreason" />

@@ -171,6 +171,7 @@ public class PurchaseOrderController {
 	public void mergePurchaseOrder(ActionRequest request, ActionResponse response)  {
 		List<PurchaseOrder> purchaseOrderList = new ArrayList<PurchaseOrder>();
 		List<Long> purchaseOrderIdList = new ArrayList<Long>();
+		boolean fromPopup = false;
 
 		if (request.getContext().get("purchaseOrderToMerge") != null){
 
@@ -186,6 +187,7 @@ public class PurchaseOrderController {
 				for (String purchaseOrderId : purchaseOrderIdListStr.split(",")) {
 					purchaseOrderIdList.add(new Long(purchaseOrderId));
 				}
+				fromPopup = true;
 			}
 		}
 
@@ -194,7 +196,11 @@ public class PurchaseOrderController {
 		Partner commonSupplierPartner = null;
 		Company commonCompany = null;
 		Partner commonContactPartner = null;
+		//Useful to determine if a difference exists between contact partners of all purchase orders
+		boolean existContactPartnerDiff = false;
 		PriceList commonPriceList = null;
+		//Useful to determine if a difference exists between price lists of all purchase orders
+		boolean existPriceListDiff = false;
 		PurchaseOrder purchaseOrderTemp;
 		int count = 1;
 		for (Long purchaseOrderId : purchaseOrderIdList) {
@@ -222,10 +228,12 @@ public class PurchaseOrderController {
 				if (commonContactPartner != null
 						&& !commonContactPartner.equals(purchaseOrderTemp.getContactPartner())){
 					commonContactPartner = null;
+					existContactPartnerDiff = true;
 				}
 				if (commonPriceList != null
 						&& !commonPriceList.equals(purchaseOrderTemp.getPriceList())){
 					commonPriceList = null;
+					existPriceListDiff = true;
 				}
 			}
 			count++;
@@ -261,8 +269,8 @@ public class PurchaseOrderController {
 			commonContactPartner = JPA.em().find(Partner.class, new Long((Integer)((Map)request.getContext().get("contactPartner")).get("id")));
 		}
 
-		if (commonContactPartner == null
-				|| commonPriceList == null){
+		if (!fromPopup
+				&& (existContactPartnerDiff || existPriceListDiff)){
 			//Need to display intermediate screen to select some values
 			ActionViewBuilder confirmView = ActionView
 										.define("Confirm merge purchase order")
@@ -273,10 +281,10 @@ public class PurchaseOrderController {
 										.param("show-confirm", "false")
 										.param("forceEdit", "true");
 
-			if (commonPriceList == null){
+			if (existPriceListDiff){
 				confirmView.context("contextPriceListToCheck", "true");
 			}
-			if (commonContactPartner == null){
+			if (existContactPartnerDiff){
 				confirmView.context("contextContactPartnerToCheck", "true");
 				confirmView.context("contextPartnerId", commonSupplierPartner.getId().toString());
 			}

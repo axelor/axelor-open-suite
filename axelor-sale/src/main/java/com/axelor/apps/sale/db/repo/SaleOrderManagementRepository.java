@@ -1,5 +1,7 @@
 package com.axelor.apps.sale.db.repo;
 
+import javax.persistence.PersistenceException;
+
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.sale.db.ISaleOrder;
 import com.axelor.apps.sale.db.SaleOrder;
@@ -40,9 +42,7 @@ public class SaleOrderManagementRepository extends SaleOrderRepository {
 
 			return JPA.save(saleOrder);
 		} catch (Exception e) {
-			JPA.em().getTransaction().rollback();
-			e.printStackTrace();
+			throw new PersistenceException(e.getLocalizedMessage());
 		}
-		return null;
 	}
 }

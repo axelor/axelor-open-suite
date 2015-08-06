@@ -11,7 +11,7 @@
 			<field name="toSubDate" readonly="true" colSpan="3"/>
 			<field name="subscripInvTypeSelect"/>
 			<button colSpan="3" name="generateSubscriptions" title="Generate Subscriptions" onClick="action-supplychain-group-button-generate-subscriptions"/>
-			<button name="invoiceSubscription" title="Generate invoice for subscriptions" onClick="save,com.axelor.apps.supplychain.web.SubscriptionController:generateInvoice" readonlyIf="id == null" colSpan="3"/>
+			<button name="invoiceSubscription" title="Generate invoice for subscriptions" onClick="save,com.axelor.apps.supplychain.web.SubscriptionController:generateInvoice" readonlyIf="id == null || id &lt;= 0" colSpan="3"/>
 			<field name="subscriptionList" colSpan="12" form-view="subscription-form" grid-view="subscription-grid"/>
 		</panel>
 	</form>

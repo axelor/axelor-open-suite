@@ -1,10 +1,11 @@
 package com.axelor.apps.base.db.repo;
 
+import javax.persistence.PersistenceException;
+
 import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.service.administration.SequenceService;
-import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
@@ -26,9 +27,7 @@ public class PartnerBaseRepository extends PartnerRepository {
 
 			return super.save(partner);
 		} catch (Exception e) {
-			JPA.em().getTransaction().rollback();
-			e.printStackTrace();
+			throw new PersistenceException(e.getLocalizedMessage());
 		}
-		return null;
 	}
 }

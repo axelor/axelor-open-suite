@@ -27,7 +27,6 @@ import net.fortuna.ical4j.data.ParserException;
 import net.fortuna.ical4j.model.ConstraintViolationException;
 import net.fortuna.ical4j.model.ValidationException;
 
-import com.axelor.apps.crm.db.Calendar;
 import com.axelor.apps.crm.service.CalendarService;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -51,16 +50,5 @@ public class CalendarController {
 	public void synchronizeCalendars(ActionRequest request, ActionResponse response) throws MalformedURLException, SocketException, ObjectStoreException, ObjectNotFoundException, ConstraintViolationException {
 		
 		calendarService.synchronizeCalendars(null);
-	}
-	
-	
-	public void testConnect(ActionRequest request, ActionResponse response) throws Exception
-	{
-		Calendar cal = request.getContext().asType(Calendar.class);
-		if (calendarService.testConnect(cal))
-			response.setValues(cal);
-		else
-			response.setAlert("Login and password do not match.");
-		
 	}
 }

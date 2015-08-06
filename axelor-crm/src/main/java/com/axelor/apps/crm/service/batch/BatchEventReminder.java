@@ -107,11 +107,11 @@ public class BatchEventReminder extends BatchStrategy {
 				} catch (Exception e) {
 
 					TraceBackService.trace(new Exception(String.format(I18n.get(IExceptionMessage.BATCH_EVENT_REMINDER_1),
-							eventReminderService.find(eventReminder.getId()).getEvent().getSummary()), e), IException.CRM, batch.getId());
+							eventReminderService.find(eventReminder.getId()).getEvent().getSubject()), e), IException.CRM, batch.getId());
 
 					incrementAnomaly();
 
-					LOG.error("Bug(Anomalie) généré(e) pour le rappel de l'évènement {}", eventReminderService.find(eventReminder.getId()).getEvent().getSummary());
+					LOG.error("Bug(Anomalie) généré(e) pour le rappel de l'évènement {}", eventReminderService.find(eventReminder.getId()).getEvent().getSubject());
 
 				} finally {
 
@@ -125,7 +125,7 @@ public class BatchEventReminder extends BatchStrategy {
 
 	private boolean isExpired(EventReminder eventReminder, int durationTypeSelect)  {
 
-		LocalDateTime startDateTime = eventReminder.getEvent().getStartDate();
+		LocalDateTime startDateTime = eventReminder.getEvent().getStartDateTime();
 
 		switch (durationTypeSelect) {
 		case IEventReminder.DURATION_MINUTES:
@@ -182,11 +182,11 @@ public class BatchEventReminder extends BatchStrategy {
 				} catch (Exception e) {
 
 					TraceBackService.trace(new Exception(String.format(I18n.get("Event")+" %s",
-							eventService.find(event.getId()).getSummary()), e), IException.CRM, batch.getId());
+							eventService.find(event.getId()).getSubject()), e), IException.CRM, batch.getId());
 
 					incrementAnomaly();
 
-					LOG.error("Bug(Anomalie) généré(e) pour l'évènement {}", eventService.find(event.getId()).getSummary());
+					LOG.error("Bug(Anomalie) généré(e) pour l'évènement {}", eventService.find(event.getId()).getSubject());
 
 				} finally {
 

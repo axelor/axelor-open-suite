@@ -13,11 +13,11 @@
 	 </grid>
 	
 	<form model="com.axelor.apps.supplychain.db.Subscription" title="Subscription" name="subscription-form">
-		<field name="invoicingDate"/>
-	    <field name="fromPeriodDate"/>
-	    <field name="toPeriodDate"/>
-	    <field name="quantity"/>
-	    <field name="unitPrice"/>
+		<field name="invoicingDate" readonlyIf="invoiced"/>
+	    <field name="fromPeriodDate" readonlyIf="invoiced"/>
+	    <field name="toPeriodDate" readonlyIf="invoiced"/>
+	    <field name="quantity" readonlyIf="invoiced"/>
+	    <field name="unitPrice" readonlyIf="invoiced"/>
 	    <field name="invoiced" readonly="true"/>
 	 </form>
 	
