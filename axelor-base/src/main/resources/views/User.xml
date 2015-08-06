@@ -19,7 +19,7 @@
 	        <field name="activeCashRegister" form-view="cash-register-form" grid-view="cash-register-grid"/>
 <!-- 	        <field name="timesheetPeriodConfig"/> -->
 	        <field name="employee" if-module="axelor-human-resource" form-view="employee-form" grid-view="employee-grid"/>
-	        <button name="createEmployee" onClick="action-user-group-employee" title="Create employee" if-module="axelor-human-resource" showIf="employee == null"/>
+	        <button name="createEmployee" onClick="action-user-group-employee" title="Create employee" if-module="axelor-human-resource" showIf="employee == null &amp;&amp; id != null &amp;&amp; id>0"/>
         </panel>
 		<panel title="Testing" sidebar="true">
 			<field name="today"/>
@@ -66,7 +66,6 @@
     
     <action-group name="action-user-group-employee">
     	<action name="action-user-validate-check-contact"/>
-    	<action name="com.axelor.auth.AuthService:validate"/>
     	<action name="save"/>
     	<action name="action-user-create-employee"/>
     	<action name="save"/>

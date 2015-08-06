@@ -47,7 +47,7 @@
 			<field name="startOnSelect" onChange="action-leave-request-validate-dates,action-leave-request-methode-compute-duration"/>
 			<field name="dateTo" onChange="action-leave-request-validate-dates,action-leave-request-methode-compute-duration"/>
 			<field name="endOnSelect" onChange="action-leave-request-validate-dates,action-leave-request-methode-compute-duration"/>
-			<field name="duration" onChange="action-leave-request-methode-duration"/>
+			<field name="duration" readonly="true" onChange="action-leave-request-methode-duration"/>
 			<field name="reason" canNew="true" required="true" onChange="action-leave-request-attrs-select" form-view="leave-request-reason-form" grid-view="leave-request-reason-grid"/>
 			<field name="injectConsumeSelect" hidden="true"/>
 			<field name="comments" colSpan="12" />

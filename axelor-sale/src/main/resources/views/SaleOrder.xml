@@ -142,7 +142,7 @@
 			<field name="toSubDate" readonly="true" colSpan="3"/>
 			<field name="subscripInvTypeSelect"/>
 			<button colSpan="3" name="generateAllSubscriptions" title="Generate Subscriptions" onClick="action-supplychain-validate-generate-all-subscriptions,save,com.axelor.apps.supplychain.web.SubscriptionController:generateAllSubscriptions"/>
-			<button name="generateInvoiceSubscriptions" title="Generate invoice for subscriptions" colSpan="3" hideIf="subcription" onClick="save,action-sale-order-method-invoice-subscriptions-sale-order" if-module="axelor-supplychain"/>
+			<button name="generateInvoiceSubscriptions" title="Generate invoice for subscriptions" colSpan="3" onClick="save,action-sale-order-method-invoice-subscriptions-sale-order" showIf="id != null &amp;&amp; id > 0"/>
 		</panel>
 
 	  </panel-tabs>
