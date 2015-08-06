@@ -72,10 +72,12 @@ public class InvoiceLineController {
 		if(invoiceLine.getTaxLine()==null){
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.INVOICE_LINE_TAX_LINE)), IException.CONFIGURATION_ERROR);
 		}
-		Invoice invoice = invoiceLine.getInvoice();
-		if(invoice == null){
-			invoice = request.getContext().getParentContext().asType(Invoice.class);
+
+		Invoice invoice = request.getContext().getParentContext().asType(Invoice.class);
+		if(!request.getContext().getParentContext().getContextClass().toString().equals(Invoice.class.toString())){
+			invoice = invoiceLine.getInvoice();
 		}
+		
 		if(!request.getContext().getParentContext().asType(Invoice.class).getInAti()){
 			if(invoiceLine.getPrice() != null && invoiceLine.getQty() != null) {
 
@@ -125,10 +127,9 @@ public class InvoiceLineController {
 
 		InvoiceLine invoiceLine = request.getContext().asType(InvoiceLine.class);
 
-		Invoice invoice = invoiceLine.getInvoice();
-
-		if(invoice == null)  {
-			invoice = request.getContext().getParentContext().asType(Invoice.class);
+		Invoice invoice = request.getContext().getParentContext().asType(Invoice.class);
+		if(!request.getContext().getParentContext().getContextClass().toString().equals(Invoice.class.toString())){
+			invoice = invoiceLine.getInvoice();
 		}
 
 		if(invoice != null && invoiceLine.getProduct() != null)  {
@@ -217,10 +218,9 @@ public class InvoiceLineController {
 
 		InvoiceLine invoiceLine = request.getContext().asType(InvoiceLine.class);
 
-		Invoice invoice = invoiceLine.getInvoice();
-
-		if(invoice == null)  {
-			invoice = request.getContext().getParentContext().asType(Invoice.class);
+		Invoice invoice = request.getContext().getParentContext().asType(Invoice.class);
+		if(!request.getContext().getParentContext().getContextClass().toString().equals(Invoice.class.toString())){
+			invoice = invoiceLine.getInvoice();
 		}
 
 		if(invoice != null && invoiceLine.getProduct() != null)  {
@@ -288,9 +288,9 @@ public class InvoiceLineController {
 
 		InvoiceLine invoiceLine = request.getContext().asType(InvoiceLine.class);
 
-		Invoice invoice = invoiceLine.getInvoice();
-		if(invoice == null)  {
-			invoice = request.getContext().getParentContext().asType(Invoice.class);
+		Invoice invoice = request.getContext().getParentContext().asType(Invoice.class);
+		if(!request.getContext().getParentContext().getContextClass().toString().equals(Invoice.class.toString())){
+			invoice = invoiceLine.getInvoice();
 		}
 
 		if(invoice != null) {
