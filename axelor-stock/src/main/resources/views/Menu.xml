@@ -192,7 +192,7 @@
 
 	<menuitem name="top-stock" title="Stock" groups="admins,ERP" top="true" left="false" order="-140"/>
 	
-	<menuitem name="top-stock-create-stock-move" title="Create Stock Move" order="-100" parent="top-stock" action="top.stock.move.new"/>
+	<menuitem name="top-stock-create-stock-move" title="Create Stock Move" order="-100" top="true" parent="top-stock" action="top.stock.move.new"/>
 	<action-view name="top.stock.move.new" title="Stock Move" model="com.axelor.apps.stock.db.StockMove">
 		<view type="form"/>
 	</action-view>

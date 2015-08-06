@@ -130,7 +130,7 @@
 
 <!-- TOP MENU -->
 
-	<menuitem name="top-menu-create-so" order="-60" parent="top-menu-utility" title="Create SO" action="supply.chain.root.sale.order" />
+	<menuitem name="top-menu-create-so" order="-60" parent="top-menu-utility" top="true" title="Create SO" action="supply.chain.root.sale.order" />
 	
 	<action-view name="supply.chain.root.sale.order" title="Sales order"
 		model="com.axelor.apps.sale.db.SaleOrder" >
@@ -141,7 +141,7 @@
 
 	<menuitem name="top-sale" title="Sales" groups="admins,ERP,CRM" top="true" left="false" order="-160"/>
 	
-	<menuitem name="top-sale-create-quote" order="-100" title="Create Quote" parent="top-sale" action="sc.root.sale.new.so"/>
+	<menuitem name="top-sale-create-quote" order="-100" title="Create Quote" parent="top-sale" top="true" action="sc.root.sale.new.so"/>
 	<menuitem name="top-sale-orders-all" title="Quotes &amp; Orders" order="-70" action="sc.root.sale.orders" parent="top-sale" groups="admins,ERP" top="true" left="false"/>
 	
 	
