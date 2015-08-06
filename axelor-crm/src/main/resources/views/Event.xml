@@ -390,25 +390,10 @@
 		<field name="eventCategory" colSpan="6" widget="SuggestBox" readonlyIf="ticketStatusSelect == 5" domain="self.typeSelect = :typeSelect" form-view="event-category-form" grid-view="event-category-grid"/>
 		<field name="progressSelect" colSpan="12" readonlyIf="ticketStatusSelect == 1 || ticketStatusSelect == 5 " widget="SelectProgress"/>
     </panel>
-	<panel sidebar="true" title="Followers/Comments" readonlyIf="ticketStatusSelect == 5">
-		<field name="userSet" colSpan="6" widget="TagSelect" onSelect="action-event-attrs-watchers-domain" form-view="user-form" grid-view="user-gird"/>
-		<!--<field name="messageList" showTitle="false" colSpan="6" colSpan="12"/>-->
-		<!--TODO:messageList field have been commented in domain. please check and correct this here-->
-		<!--<grid edit-icon="true" title="Comments">
-			<field name="sentDate"/>
-			<field name="sender"/>
-			<field name="content" showTitle="false"   widget="Html" x-lite="true"/>
-        </grid>
-        <form title="Comment">
-			<group title="Informations" readonly="true"  >
-				<field name="sentDate"/>
-				<field name="sender"/>
-			</group>
-			<group title="Content"  >
-			<field name="content" showTitle="false"   widget="Html" x-lite="true"/>
-			</group>
-        </form>-->
-    </panel>
+    <panel-mail>
+		<mail-messages limit="4" />
+		<mail-followers />
+	</panel-mail>
 </form>
 
 	<grid name="leave-grid" title="Leaves" model="com.axelor.apps.crm.db.Event" orderBy="-startDateTime" canNew="false" canEdit="false">
