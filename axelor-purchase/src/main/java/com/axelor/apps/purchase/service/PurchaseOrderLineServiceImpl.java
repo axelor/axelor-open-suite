@@ -291,10 +291,10 @@ public class PurchaseOrderLineServiceImpl  extends PurchaseOrderLineRepository i
 	public BigDecimal convertDiscountAmount(PurchaseOrderLine purchaseOrderLine, PurchaseOrder purchaseOrder){
 		BigDecimal discountAmount = BigDecimal.ZERO;
 		if(purchaseOrderLine.getDiscountTypeSelect() == IPriceListLine.AMOUNT_TYPE_FIXED){
-			discountAmount = purchaseOrderLine.getPrice().subtract(this.computeDiscount(purchaseOrderLine));
+			discountAmount = purchaseOrderLine.getProduct().getPurchasePrice().subtract(this.computeDiscount(purchaseOrderLine));
 		}
 		else{
-			discountAmount = (purchaseOrderLine.getPrice().subtract(this.computeDiscount(purchaseOrderLine))).multiply(new BigDecimal(100)).divide(purchaseOrderLine.getProduct().getPurchasePrice(), 2, BigDecimal.ROUND_HALF_UP);
+			discountAmount = (purchaseOrderLine.getProduct().getPurchasePrice().subtract(this.computeDiscount(purchaseOrderLine))).multiply(new BigDecimal(100)).divide(purchaseOrderLine.getProduct().getPurchasePrice(), 2, BigDecimal.ROUND_HALF_UP);
 		}
 		if(purchaseOrderLine.getProduct().getInAti() && !purchaseOrder.getInAti()){
 			discountAmount = discountAmount.divide(purchaseOrderLine.getTaxLine().getValue().add(new BigDecimal(1)), 2, BigDecimal.ROUND_HALF_UP);
