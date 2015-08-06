@@ -84,6 +84,9 @@
     <many-to-one name="templateUser" ref="com.axelor.auth.db.User" title="Template created by" readonly="true"/>
     
     <boolean name="hideDiscount" title="Hide Discount ?"/>
+    
+	<date name="deliveryDate" title="Delivery date"/>
+	<string name="deliveryCondition" title="Delivery conditions" large="true" multiline="true"/>
 	
  	<unique-constraint columns="saleOrderSeq,company"/>
 
