@@ -136,8 +136,6 @@
             </list-property>
             <property name="odaDriverClass">org.postgresql.Driver</property>
             <property name="odaURL">jdbc:postgresql://localhost:5432/axelor-business-suite-wip</property>
-            <property name="odaUser">axelor</property>
-            <encrypted-property name="odaPassword" encryptionID="base64">bG1kcGRsYWE=</encrypted-property>
         </oda-data-source>
     </data-sources>
     <data-sets>
@@ -444,6 +442,12 @@
                     <text-property name="displayName">displayProductCodeOnPrinting</text-property>
                     <text-property name="heading">displayProductCodeOnPrinting</text-property>
                 </structure>
+                <structure>
+                    <property name="columnName">displayTaxDetailOnPrinting</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">displayTaxDetailOnPrinting</text-property>
+                    <text-property name="heading">displayTaxDetailOnPrinting</text-property>
+                </structure>
             </list-property>
             <list-property name="parameters">
                 <structure>
@@ -708,6 +712,11 @@
                     <structure>
                         <property name="position">50</property>
                         <property name="name">displayProductCodeOnPrinting</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">51</property>
+                        <property name="name">displayTaxDetailOnPrinting</property>
                         <property name="dataType">integer</property>
                     </structure>
                 </list-property>
@@ -1064,6 +1073,13 @@
                     <property name="dataType">integer</property>
                     <property name="nativeDataType">-7</property>
                 </structure>
+                <structure>
+                    <property name="position">51</property>
+                    <property name="name">displayTaxDetailOnPrinting</property>
+                    <property name="nativeName">displayTaxDetailOnPrinting</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">-7</property>
+                </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[select SaleOrder.id, SaleOrder.sale_order_seq as "saleOrderSeq", SaleOrder.creation_date as "CreationDate", 
 SalemanPartner.full_name as "SalemanName", SalemanPartner.fixed_phone as "SalemanPhone", 
@@ -1086,7 +1102,8 @@ BankDetail.iban, BankDetail.bic, Currency.code as "CurrencyCode", SaleOrder.exte
 PrintingSettings.pdf_header as "header", PrintingSettings.pdf_footer as "footer", SaleOrder.description as "description",  
 InvoicingAddress.id as "invAddressId", DeliveryAddress.id as "delAddressId",
 Duration.name as "durationName", SaleOrder.delivery_date as "deliveryDate", SaleOrder.delivery_condition as "deliveryCondition",
-SaleOrder.hide_discount as "hideDiscount", SaleConfig.display_product_code_on_printing as "displayProductCodeOnPrinting" 
+SaleOrder.hide_discount as "hideDiscount", SaleConfig.display_product_code_on_printing as "displayProductCodeOnPrinting", 
+SaleConfig.display_tax_detail_on_printing as "displayTaxDetailOnPrinting"  
 from public.sale_sale_order as SaleOrder
 left outer join public.base_company as Company on (SaleOrder.company = Company.id)
 left outer join public.meta_file as MetaFile on (MetaFile.id = Company.logo)
@@ -1927,6 +1944,12 @@ where LangTranslate.key = ? and LangTranslate.language = ?]]></xml-property>
                     <expression name="expression" type="javascript">dataSetRow["displayProductCodeOnPrinting"]</expression>
                     <property name="dataType">integer</property>
                 </structure>
+                <structure>
+                    <property name="name">displayTaxDetailOnPrinting</property>
+                    <text-property name="displayName">displayTaxDetailOnPrinting</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["displayTaxDetailOnPrinting"]</expression>
+                    <property name="dataType">integer</property>
+                </structure>
             </list-property>
             <column id="3343">
                 <property name="width">1.15in</property>
@@ -2385,7 +2408,7 @@ row["ClientPartFirstName"]
                         <list-property name="visibility">
                             <structure>
                                 <property name="format">all</property>
-                                <expression name="valueExpr" type="javascript">row._outer["invAddressId"]==null</expression>
+                                <expression name="valueExpr" type="javascript">row._outer["invAddressId"]==null||row._outer["delAddressId"] == null</expression>
                             </structure>
                         </list-property>
                         <list-property name="paramBindings">
@@ -2622,26 +2645,7 @@ row["ClientPartFirstName"]
                             </structure>
                         </list-property>
                         <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> : ]]></text-property>
-                    </text>
-                </cell>
-            </row>
-            <row id="3907">
-                <property name="height">0.238125cm</property>
-                <cell id="3908">
-                    <property name="colSpan">8</property>
-                    <property name="rowSpan">1</property>
-                    <text id="3914">
-                        <property name="fontSize">9pt</property>
-                        <property name="fontStyle">italic</property>
-                        <list-property name="visibility">
-                            <structure>
-                                <property name="format">all</property>
-                                <expression name="valueExpr" type="javascript">row._outer["DisplayDeliveryCondition"] == 0</expression>
-                            </structure>
-                        </list-property>
-                        <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<I><VALUE-OF format="HTML">row["deliveryCondition"]</VALUE-OF></I>
+                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> : <I><VALUE-OF format="HTML">row._outer["deliveryCondition"]</VALUE-OF></I>
 ]]></text-property>
                     </text>
                 </cell>
@@ -2668,11 +2672,12 @@ row["ClientPartFirstName"]
                     <property name="colSpan">8</property>
                     <property name="rowSpan">1</property>
                     <property name="color">black</property>
-                    <property name="paddingLeft">1pt</property>
+                    <property name="paddingLeft">0pt</property>
+                    <property name="paddingRight">0pt</property>
                     <property name="textAlign">left</property>
-                    <table id="3427">
-                        <property name="marginLeft">2pt</property>
-                        <property name="width">7.4in</property>
+                    <table name="SaleOrderLines" id="3427">
+                        <property name="marginLeft">0pt</property>
+                        <property name="width">7.5in</property>
                         <property name="dataSet">OrderLineDS</property>
                         <list-property name="boundDataColumns">
                             <structure>
@@ -2747,6 +2752,69 @@ row["ClientPartFirstName"]
                                 <expression name="expression" type="javascript">dataSetRow["totalDiscountAmount"]</expression>
                                 <property name="dataType">decimal</property>
                             </structure>
+                            <structure>
+                                <property name="name">nb_diff_tax_line</property>
+                                <text-property name="displayName">nb_diff_tax_line</text-property>
+                                <property name="dataType">integer</property>
+                                <property name="aggregateFunction">COUNTDISTINCT</property>
+                                <list-property name="arguments">
+                                    <structure>
+                                        <property name="name">Expression</property>
+                                        <expression name="value" type="javascript">row["tax_line"]</expression>
+                                    </structure>
+                                </list-property>
+                                <property name="allowExport">true</property>
+                            </structure>
+                            <structure>
+                                <property name="name">sumDiscountLine</property>
+                                <property name="dataType">float</property>
+                                <property name="aggregateFunction">SUM</property>
+                                <list-property name="arguments">
+                                    <structure>
+                                        <property name="name">Expression</property>
+                                        <expression name="value" type="javascript">row["totalDiscountAmount"]</expression>
+                                    </structure>
+                                </list-property>
+                                <property name="allowExport">true</property>
+                            </structure>
+                            <structure>
+                                <property name="name">sumNegativeExTaxTotal</property>
+                                <property name="dataType">float</property>
+                                <property name="aggregateFunction">SUM</property>
+                                <list-property name="arguments">
+                                    <structure>
+                                        <property name="name">Expression</property>
+                                        <expression name="value" type="javascript">row["ex_tax_total"]</expression>
+                                    </structure>
+                                </list-property>
+                                <expression name="filterExpr" type="javascript">dataSetRow["ex_tax_total"] &lt; 0</expression>
+                                <property name="allowExport">true</property>
+                            </structure>
+                            <structure>
+                                <property name="name">totalDiscount</property>
+                                <expression name="expression" type="javascript">row["sumDiscountLine"]+row["sumNegativeExTaxTotal"]</expression>
+                                <property name="dataType">decimal</property>
+                                <property name="allowExport">true</property>
+                            </structure>
+                            <structure>
+                                <property name="name">totalExTaxTotalBeforeDiscount</property>
+                                <property name="dataType">float</property>
+                                <property name="aggregateFunction">SUM</property>
+                                <list-property name="arguments">
+                                    <structure>
+                                        <property name="name">Expression</property>
+                                        <expression name="value" type="javascript">row["ex_tax_total"]-dataSetRow["totalDiscountAmount"]</expression>
+                                    </structure>
+                                </list-property>
+                                <expression name="filterExpr" type="javascript">dataSetRow["ex_tax_total"]>=0</expression>
+                                <property name="allowExport">true</property>
+                            </structure>
+                            <structure>
+                                <property name="name">totalWithoutDiscount</property>
+                                <expression name="expression" type="javascript">row["totalExTaxTotalBeforeDiscount"]</expression>
+                                <property name="dataType">decimal</property>
+                                <property name="allowExport">true</property>
+                            </structure>
                         </list-property>
                         <column id="3713">
                             <list-property name="visibility">
@@ -2755,14 +2823,20 @@ row["ClientPartFirstName"]
                                     <expression name="valueExpr" type="javascript">row._outer["displayProductCodeOnPrinting"] != 1</expression>
                                 </structure>
                             </list-property>
-                            <property name="width">1in</property>
+                            <property name="width">0.8in</property>
                         </column>
                         <column id="3446"/>
                         <column id="3447">
+                            <list-property name="visibility">
+                                <structure>
+                                    <property name="format">all</property>
+                                    <expression name="valueExpr" type="javascript">row["nb_diff_tax_line"] &lt;= 1 || row._outer["displayTaxDetailOnPrinting"] != 1</expression>
+                                </structure>
+                            </list-property>
                             <property name="width">0.5in</property>
                         </column>
                         <column id="3448">
-                            <property name="width">0.6in</property>
+                            <property name="width">0.7in</property>
                         </column>
                         <column id="3449">
                             <property name="width">0.7in</property>
@@ -2777,10 +2851,10 @@ row["ClientPartFirstName"]
                             <property name="width">0.6in</property>
                         </column>
                         <column id="3450">
-                            <property name="width">0.6in</property>
+                            <property name="width">0.7in</property>
                         </column>
                         <column id="3795">
-                            <property name="width">0.4in</property>
+                            <property name="width">0.3in</property>
                         </column>
                         <header>
                             <row id="3428">
@@ -3079,26 +3153,13 @@ row["ClientPartFirstName"]
                             <property name="hideDetail">false</property>
                             <header>
                                 <row id="3693">
-                                    <property name="borderBottomStyle">solid</property>
-                                    <property name="borderBottomWidth">thin</property>
-                                    <property name="borderLeftStyle">solid</property>
-                                    <property name="borderLeftWidth">thin</property>
-                                    <property name="borderRightStyle">solid</property>
-                                    <property name="borderRightWidth">thin</property>
-                                    <property name="borderTopStyle">solid</property>
-                                    <property name="borderTopWidth">thin</property>
-                                    <property name="height">0.4375in</property>
                                     <cell id="3709">
                                         <property name="colSpan">1</property>
                                         <property name="rowSpan">1</property>
-                                        <property name="borderBottomStyle">solid</property>
-                                        <property name="borderBottomWidth">thin</property>
                                         <property name="borderLeftStyle">solid</property>
                                         <property name="borderLeftWidth">thin</property>
                                         <property name="borderRightStyle">solid</property>
                                         <property name="borderRightWidth">thin</property>
-                                        <property name="borderTopStyle">solid</property>
-                                        <property name="borderTopWidth">thin</property>
                                         <text id="4149">
                                             <property name="fontSize">8pt</property>
                                             <property name="contentType">html</property>
@@ -3106,14 +3167,10 @@ row["ClientPartFirstName"]
                                         </text>
                                     </cell>
                                     <cell id="4148">
-                                        <property name="borderBottomStyle">solid</property>
-                                        <property name="borderBottomWidth">thin</property>
                                         <property name="borderLeftStyle">solid</property>
                                         <property name="borderLeftWidth">thin</property>
                                         <property name="borderRightStyle">solid</property>
                                         <property name="borderRightWidth">thin</property>
-                                        <property name="borderTopStyle">solid</property>
-                                        <property name="borderTopWidth">thin</property>
                                         <text id="3457">
                                             <property name="fontSize">8pt</property>
                                             <property name="contentType">html</property>
@@ -3127,14 +3184,10 @@ row["ClientPartFirstName"]
                                         </text>
                                     </cell>
                                     <cell id="3695">
-                                        <property name="borderBottomStyle">solid</property>
-                                        <property name="borderBottomWidth">thin</property>
                                         <property name="borderLeftStyle">solid</property>
                                         <property name="borderLeftWidth">thin</property>
                                         <property name="borderRightStyle">solid</property>
                                         <property name="borderRightWidth">thin</property>
-                                        <property name="borderTopStyle">solid</property>
-                                        <property name="borderTopWidth">thin</property>
                                         <text id="3691">
                                             <property name="fontSize">8pt</property>
                                             <property name="textAlign">center</property>
@@ -3143,14 +3196,10 @@ row["ClientPartFirstName"]
                                         </text>
                                     </cell>
                                     <cell id="3696">
-                                        <property name="borderBottomStyle">solid</property>
-                                        <property name="borderBottomWidth">thin</property>
                                         <property name="borderLeftStyle">solid</property>
                                         <property name="borderLeftWidth">thin</property>
                                         <property name="borderRightStyle">solid</property>
                                         <property name="borderRightWidth">thin</property>
-                                        <property name="borderTopStyle">solid</property>
-                                        <property name="borderTopWidth">thin</property>
                                         <text id="3459">
                                             <property name="fontSize">8pt</property>
                                             <property name="textAlign">center</property>
@@ -3159,14 +3208,10 @@ row["ClientPartFirstName"]
                                         </text>
                                     </cell>
                                     <cell id="3697">
-                                        <property name="borderBottomStyle">solid</property>
-                                        <property name="borderBottomWidth">thin</property>
                                         <property name="borderLeftStyle">solid</property>
                                         <property name="borderLeftWidth">thin</property>
                                         <property name="borderRightStyle">solid</property>
                                         <property name="borderRightWidth">thin</property>
-                                        <property name="borderTopStyle">solid</property>
-                                        <property name="borderTopWidth">thin</property>
                                         <text id="3460">
                                             <property name="fontSize">8pt</property>
                                             <property name="textAlign">right</property>
@@ -3175,12 +3220,10 @@ row["ClientPartFirstName"]
                                         </text>
                                     </cell>
                                     <cell id="4152">
-                                        <property name="borderBottomStyle">solid</property>
-                                        <property name="borderBottomWidth">thin</property>
                                         <property name="borderLeftStyle">solid</property>
                                         <property name="borderLeftWidth">thin</property>
-                                        <property name="borderTopStyle">solid</property>
-                                        <property name="borderTopWidth">thin</property>
+                                        <property name="borderRightStyle">solid</property>
+                                        <property name="borderRightWidth">thin</property>
                                         <text id="4155">
                                             <property name="fontSize">8pt</property>
                                             <property name="textAlign">right</property>
@@ -3195,12 +3238,8 @@ row["ClientPartFirstName"]
                                         </text>
                                     </cell>
                                     <cell id="3698">
-                                        <property name="borderBottomStyle">solid</property>
-                                        <property name="borderBottomWidth">thin</property>
                                         <property name="borderLeftStyle">solid</property>
                                         <property name="borderLeftWidth">thin</property>
-                                        <property name="borderTopStyle">solid</property>
-                                        <property name="borderTopWidth">thin</property>
                                         <text id="3461">
                                             <property name="fontSize">8pt</property>
                                             <property name="textAlign">right</property>
@@ -3211,12 +3250,8 @@ row["ClientPartFirstName"]
                                     <cell id="3699">
                                         <property name="colSpan">1</property>
                                         <property name="rowSpan">1</property>
-                                        <property name="borderBottomStyle">solid</property>
-                                        <property name="borderBottomWidth">thin</property>
                                         <property name="borderRightStyle">solid</property>
                                         <property name="borderRightWidth">thin</property>
-                                        <property name="borderTopStyle">solid</property>
-                                        <property name="borderTopWidth">thin</property>
                                         <text id="3667">
                                             <property name="fontSize">8pt</property>
                                             <property name="textAlign">left</property>
@@ -3230,45 +3265,63 @@ row["ClientPartFirstName"]
                         <footer>
                             <row id="3440">
                                 <cell id="3712">
-                                    <property name="borderTopColor">#606062</property>
-                                    <property name="borderTopStyle">solid</property>
-                                    <property name="borderTopWidth">thin</property>
+                                    <property name="borderBottomStyle">solid</property>
+                                    <property name="borderBottomWidth">thin</property>
+                                    <property name="borderLeftStyle">solid</property>
+                                    <property name="borderLeftWidth">thin</property>
                                 </cell>
                                 <cell id="3441">
-                                    <property name="borderTopColor">#606062</property>
-                                    <property name="borderTopStyle">solid</property>
-                                    <property name="borderTopWidth">thin</property>
+                                    <property name="borderBottomStyle">solid</property>
+                                    <property name="borderBottomWidth">thin</property>
+                                    <property name="borderLeftStyle">solid</property>
+                                    <property name="borderLeftWidth">thin</property>
+                                    <property name="borderRightStyle">solid</property>
+                                    <property name="borderRightWidth">thin</property>
                                     <label id="3668"/>
                                 </cell>
                                 <cell id="3442">
-                                    <property name="borderTopColor">#606062</property>
-                                    <property name="borderTopStyle">solid</property>
-                                    <property name="borderTopWidth">thin</property>
+                                    <property name="borderBottomStyle">solid</property>
+                                    <property name="borderBottomWidth">thin</property>
+                                    <property name="borderLeftStyle">solid</property>
+                                    <property name="borderLeftWidth">thin</property>
+                                    <property name="borderRightStyle">solid</property>
+                                    <property name="borderRightWidth">thin</property>
                                 </cell>
                                 <cell id="3443">
-                                    <property name="borderTopColor">#606062</property>
-                                    <property name="borderTopStyle">solid</property>
-                                    <property name="borderTopWidth">thin</property>
+                                    <property name="borderBottomStyle">solid</property>
+                                    <property name="borderBottomWidth">thin</property>
+                                    <property name="borderLeftStyle">solid</property>
+                                    <property name="borderLeftWidth">thin</property>
+                                    <property name="borderRightStyle">solid</property>
+                                    <property name="borderRightWidth">thin</property>
                                 </cell>
                                 <cell id="3444">
-                                    <property name="borderTopColor">#606062</property>
-                                    <property name="borderTopStyle">solid</property>
-                                    <property name="borderTopWidth">thin</property>
+                                    <property name="borderBottomStyle">solid</property>
+                                    <property name="borderBottomWidth">thin</property>
+                                    <property name="borderLeftStyle">solid</property>
+                                    <property name="borderLeftWidth">thin</property>
+                                    <property name="borderRightStyle">solid</property>
+                                    <property name="borderRightWidth">thin</property>
                                 </cell>
                                 <cell id="4153">
-                                    <property name="borderTopColor">#606062</property>
-                                    <property name="borderTopStyle">solid</property>
-                                    <property name="borderTopWidth">thin</property>
+                                    <property name="borderBottomStyle">solid</property>
+                                    <property name="borderBottomWidth">thin</property>
+                                    <property name="borderLeftStyle">solid</property>
+                                    <property name="borderLeftWidth">thin</property>
+                                    <property name="borderRightStyle">solid</property>
+                                    <property name="borderRightWidth">thin</property>
                                 </cell>
                                 <cell id="3445">
-                                    <property name="borderTopColor">#606062</property>
-                                    <property name="borderTopStyle">solid</property>
-                                    <property name="borderTopWidth">thin</property>
+                                    <property name="borderBottomStyle">solid</property>
+                                    <property name="borderBottomWidth">thin</property>
+                                    <property name="borderLeftStyle">solid</property>
+                                    <property name="borderLeftWidth">thin</property>
                                 </cell>
                                 <cell id="3794">
-                                    <property name="borderTopColor">#606062</property>
-                                    <property name="borderTopStyle">solid</property>
-                                    <property name="borderTopWidth">thin</property>
+                                    <property name="borderBottomStyle">solid</property>
+                                    <property name="borderBottomWidth">thin</property>
+                                    <property name="borderRightStyle">solid</property>
+                                    <property name="borderRightWidth">thin</property>
                                 </cell>
                             </row>
                         </footer>
@@ -3288,10 +3341,18 @@ row["ClientPartFirstName"]
             <row id="3977">
                 <cell id="3978">
                     <property name="colSpan">3</property>
-                    <property name="rowSpan">3</property>
+                    <property name="rowSpan">5</property>
+                    <property name="paddingLeft">0pt</property>
+                    <property name="paddingRight">0pt</property>
                     <table id="3493">
                         <property name="width">3in</property>
                         <property name="dataSet">SaleOrderLineTaxDS</property>
+                        <list-property name="visibility">
+                            <structure>
+                                <property name="format">all</property>
+                                <expression name="valueExpr" type="javascript">row._outer["displayTaxDetailOnPrinting"] != 1</expression>
+                            </structure>
+                        </list-property>
                         <list-property name="boundDataColumns">
                             <structure>
                                 <property name="name">value</property>
@@ -3535,11 +3596,17 @@ row["ClientPartFirstName"]
                         <property name="fontWeight">normal</property>
                         <property name="textAlign">left</property>
                         <property name="dataSet">TranslateDS</property>
+                        <list-property name="visibility">
+                            <structure>
+                                <property name="format">all</property>
+                                <expression name="valueExpr" type="javascript">row._outer["hideDiscount"]== 1</expression>
+                            </structure>
+                        </list-property>
                         <list-property name="paramBindings">
                             <structure>
                                 <property name="paramName">param_1</property>
                                 <simple-property-list name="expression">
-                                    <value type="javascript">'SaleOrder.totalExclTax'</value>
+                                    <value type="javascript">'SaleOrder.totalExclTaxWithoutDiscount'</value>
                                 </simple-property-list>
                             </structure>
                         </list-property>
@@ -3566,6 +3633,171 @@ row["ClientPartFirstName"]
                     <property name="borderLeftWidth">thin</property>
                     <property name="borderTopStyle">solid</property>
                     <property name="borderTopWidth">thin</property>
+                    <data id="4181">
+                        <property name="fontSize">9pt</property>
+                        <structure name="numberFormat">
+                            <property name="category">Fixed</property>
+                            <property name="pattern">###0.00{RoundingMode=HALF_UP}</property>
+                        </structure>
+                        <property name="textAlign">right</property>
+                        <property name="dataBindingRef">SaleOrderLines</property>
+                        <list-property name="visibility">
+                            <structure>
+                                <property name="format">all</property>
+                                <expression name="valueExpr" type="javascript">row._outer["hideDiscount"]== 1</expression>
+                            </structure>
+                        </list-property>
+                        <property name="resultSetColumn">totalWithoutDiscount</property>
+                    </data>
+                </cell>
+                <cell id="3983">
+                    <property name="borderRightStyle">solid</property>
+                    <property name="borderRightWidth">thin</property>
+                    <property name="borderTopStyle">solid</property>
+                    <property name="borderTopWidth">thin</property>
+                    <text id="3532">
+                        <property name="fontSize">9pt</property>
+                        <property name="fontWeight">normal</property>
+                        <property name="textAlign">left</property>
+                        <list-property name="visibility">
+                            <structure>
+                                <property name="format">all</property>
+                                <expression name="valueExpr" type="javascript">row["hideDiscount"] == 1</expression>
+                            </structure>
+                        </list-property>
+                        <property name="contentType">html</property>
+                        <text-property name="content"><![CDATA[<VALUE-OF>row["CurrencyCode"]</VALUE-OF>]]></text-property>
+                    </text>
+                </cell>
+            </row>
+            <row id="4157">
+                <cell id="4161"/>
+                <cell id="4162">
+                    <property name="colSpan">2</property>
+                    <property name="rowSpan">1</property>
+                    <property name="borderLeftStyle">solid</property>
+                    <property name="borderLeftWidth">thin</property>
+                    <property name="borderRightStyle">solid</property>
+                    <property name="borderRightWidth">thin</property>
+                    <text id="4175">
+                        <property name="fontSize">9pt</property>
+                        <property name="fontWeight">normal</property>
+                        <property name="textAlign">left</property>
+                        <property name="dataSet">TranslateDS</property>
+                        <list-property name="visibility">
+                            <structure>
+                                <property name="format">all</property>
+                                <expression name="valueExpr" type="javascript">row._outer["hideDiscount"]== 1</expression>
+                            </structure>
+                        </list-property>
+                        <list-property name="paramBindings">
+                            <structure>
+                                <property name="paramName">param_1</property>
+                                <simple-property-list name="expression">
+                                    <value type="javascript">'SaleOrder.totalDiscount'</value>
+                                </simple-property-list>
+                            </structure>
+                        </list-property>
+                        <list-property name="boundDataColumns">
+                            <structure>
+                                <property name="name">key</property>
+                                <text-property name="displayName">key</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">translation</property>
+                                <text-property name="displayName">translation</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                        </list-property>
+                        <property name="contentType">html</property>
+                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+                    </text>
+                </cell>
+                <cell id="4164">
+                    <property name="borderLeftStyle">solid</property>
+                    <property name="borderLeftWidth">thin</property>
+                    <data id="4180">
+                        <property name="fontSize">9pt</property>
+                        <structure name="numberFormat">
+                            <property name="category">Fixed</property>
+                            <property name="pattern">###0.00{RoundingMode=HALF_UP}</property>
+                        </structure>
+                        <property name="textAlign">right</property>
+                        <property name="dataSet">OrderLineDS</property>
+                        <property name="dataBindingRef">SaleOrderLines</property>
+                        <list-property name="visibility">
+                            <structure>
+                                <property name="format">all</property>
+                                <expression name="valueExpr" type="javascript">row._outer["hideDiscount"]== 1</expression>
+                            </structure>
+                        </list-property>
+                        <property name="resultSetColumn">totalDiscount</property>
+                    </data>
+                </cell>
+                <cell id="4165">
+                    <property name="borderRightStyle">solid</property>
+                    <property name="borderRightWidth">thin</property>
+                    <text id="4177">
+                        <property name="fontSize">9pt</property>
+                        <property name="fontWeight">normal</property>
+                        <property name="textAlign">left</property>
+                        <list-property name="visibility">
+                            <structure>
+                                <property name="format">all</property>
+                                <expression name="valueExpr" type="javascript">row["hideDiscount"] == 1</expression>
+                            </structure>
+                        </list-property>
+                        <property name="contentType">html</property>
+                        <text-property name="content"><![CDATA[<VALUE-OF>row["CurrencyCode"]</VALUE-OF>]]></text-property>
+                    </text>
+                </cell>
+            </row>
+            <row id="4166">
+                <cell id="4170"/>
+                <cell id="4171">
+                    <property name="colSpan">2</property>
+                    <property name="rowSpan">1</property>
+                    <property name="borderLeftStyle">solid</property>
+                    <property name="borderLeftWidth">thin</property>
+                    <property name="borderRightStyle">solid</property>
+                    <property name="borderRightWidth">thin</property>
+                    <text id="4176">
+                        <property name="fontSize">9pt</property>
+                        <property name="fontWeight">normal</property>
+                        <property name="textAlign">left</property>
+                        <property name="dataSet">TranslateDS</property>
+                        <list-property name="paramBindings">
+                            <structure>
+                                <property name="paramName">param_1</property>
+                                <simple-property-list name="expression">
+                                    <value type="javascript">'SaleOrder.totalExclTax'</value>
+                                </simple-property-list>
+                            </structure>
+                        </list-property>
+                        <list-property name="boundDataColumns">
+                            <structure>
+                                <property name="name">key</property>
+                                <text-property name="displayName">key</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">translation</property>
+                                <text-property name="displayName">translation</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                        </list-property>
+                        <property name="contentType">html</property>
+                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+                    </text>
+                </cell>
+                <cell id="4173">
+                    <property name="borderLeftStyle">solid</property>
+                    <property name="borderLeftWidth">thin</property>
                     <text id="3531">
                         <property name="fontSize">9pt</property>
                         <property name="fontWeight">normal</property>
@@ -3574,12 +3806,10 @@ row["ClientPartFirstName"]
                         <text-property name="content"><![CDATA[<VALUE-OF format="#0.00">row["ex_tax_total"]</VALUE-OF>]]></text-property>
                     </text>
                 </cell>
-                <cell id="3983">
+                <cell id="4174">
                     <property name="borderRightStyle">solid</property>
                     <property name="borderRightWidth">thin</property>
-                    <property name="borderTopStyle">solid</property>
-                    <property name="borderTopWidth">thin</property>
-                    <text id="3532">
+                    <text id="4178">
                         <property name="fontSize">9pt</property>
                         <property name="fontWeight">normal</property>
                         <property name="textAlign">left</property>
@@ -3652,6 +3882,7 @@ row["ClientPartFirstName"]
                 </cell>
             </row>
             <row id="3991">
+                <property name="height">0.5in</property>
                 <cell id="3995"/>
                 <cell id="4078">
                     <property name="colSpan">2</property>
@@ -3662,6 +3893,7 @@ row["ClientPartFirstName"]
                     <property name="borderLeftWidth">thin</property>
                     <property name="borderRightStyle">solid</property>
                     <property name="borderRightWidth">thin</property>
+                    <property name="verticalAlign">middle</property>
                     <text id="3530">
                         <property name="fontSize">9pt</property>
                         <property name="fontWeight">bold</property>
@@ -3700,6 +3932,7 @@ row["ClientPartFirstName"]
                     <property name="borderLeftWidth">thin</property>
                     <property name="borderTopStyle">solid</property>
                     <property name="borderTopWidth">thin</property>
+                    <property name="verticalAlign">middle</property>
                     <text id="3536">
                         <property name="fontSize">9pt</property>
                         <property name="fontWeight">bold</property>
@@ -3715,6 +3948,7 @@ row["ClientPartFirstName"]
                     <property name="borderRightWidth">thin</property>
                     <property name="borderTopStyle">solid</property>
                     <property name="borderTopWidth">thin</property>
+                    <property name="verticalAlign">middle</property>
                     <text id="3534">
                         <property name="fontSize">9pt</property>
                         <property name="fontWeight">bold</property>
