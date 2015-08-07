@@ -68,6 +68,21 @@
 	  		public static final Integer TYPE_EVENT = 6;
 	  ]]>
       </extra-code>
+      
+    <track>
+      <field name="subject" />
+      <field name="statusSelect" />
+      <field name="startDateTime"/>
+      <field name="endDateTime"/>
+      <message if="true" on="CREATE">Event created</message>
+      <message if="statusSelect == 2" tag="important">Event realized</message>
+      <message if="statusSelect == 3" tag="important">Event Canceled</message>
+      <message if="typeSelect == 5 &amp;&amp; ticketStatusSelect == 2" tag="important">Ticket In Progress</message>
+      <message if="typeSelect == 5 &amp;&amp; ticketStatusSelect == 3" tag="important">Ticket Resolved</message>
+      <message if="typeSelect == 5 &amp;&amp; ticketStatusSelect == 4" tag="important">Ticket in Feedback status</message>
+      <message if="typeSelect == 5 &amp;&amp; ticketStatusSelect == 5" tag="important">Ticket Closed</message> 
+    </track>
+      
   </entity>
 
 </domain-models>

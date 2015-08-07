@@ -165,7 +165,10 @@
 			<field name="lead" onChange="action-meeting-set-location-lead" form-view="lead-form" grid-view="lead-grid"/>
 			<field name="relatedToSelect" widget="RefSelect" x-related="relatedToSelectId"/>
 		</panel>
-		
+		<panel-mail>
+			<mail-messages limit="4" />
+			<mail-followers />
+		</panel-mail>
 	</form>
     
     <action-method name="action-method-crm-event-assign-tome">
@@ -235,6 +238,10 @@
 			<field name="lead" onChange="action-meeting-set-location-lead" form-view="lead-form" grid-view="lead-grid"/>
 			<field name="relatedToSelect" widget="RefSelect" x-related="relatedToSelectId"/>
 		</panel>
+	<panel-mail>
+		<mail-messages limit="4" />
+		<mail-followers />
+	</panel-mail>
 	</form>
 	
 	<form model="com.axelor.apps.crm.db.Event" title="Reschedule" name="popup-event-form">
