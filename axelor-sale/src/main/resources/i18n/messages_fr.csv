@@ -66,6 +66,7 @@
 "Display delivery condition on printing ?","Afficher les conditions de livraison sur l'impression ?",,
 "Display product code on printing ?","Afficher le code produit sur l'impression ?",,
 "Display saleman on printing ?","Afficher le vendeur sur l'impression",,
+"Display tax detail on printing ?","Afficher le détail de la TVA sur l'impression ?",,
 "Draft","Brouillon",,
 "End of validity","Date de fin de validité",,
 "Estimated delivery date","Date de livraison estimée",,

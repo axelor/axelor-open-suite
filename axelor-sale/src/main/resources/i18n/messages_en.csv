@@ -66,6 +66,7 @@
 "Display delivery condition on printing ?",,,
 "Display product code on printing ?",,,
 "Display saleman on printing ?",,,
+"Display tax detail on printing ?",,,
 "Draft",,,
 "End of validity",,,
 "Estimated delivery date",,,

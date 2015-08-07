@@ -136,8 +136,6 @@
             </list-property>
             <property name="odaDriverClass">org.postgresql.Driver</property>
             <property name="odaURL">jdbc:postgresql://localhost:5432/axelor-business-suite-wip</property>
-            <property name="odaUser">axelor</property>
-            <encrypted-property name="odaPassword" encryptionID="base64">bG1kcGRsYWE=</encrypted-property>
         </oda-data-source>
     </data-sources>
     <data-sets>
@@ -2410,7 +2408,7 @@ row["ClientPartFirstName"]
                         <list-property name="visibility">
                             <structure>
                                 <property name="format">all</property>
-                                <expression name="valueExpr" type="javascript">row._outer["invAddressId"]==null</expression>
+                                <expression name="valueExpr" type="javascript">row._outer["invAddressId"]==null||row._outer["delAddressId"] == null</expression>
                             </structure>
                         </list-property>
                         <list-property name="paramBindings">
@@ -2647,26 +2645,7 @@ row["ClientPartFirstName"]
                             </structure>
                         </list-property>
                         <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> : ]]></text-property>
-                    </text>
-                </cell>
-            </row>
-            <row id="3907">
-                <property name="height">0.238125cm</property>
-                <cell id="3908">
-                    <property name="colSpan">8</property>
-                    <property name="rowSpan">1</property>
-                    <text id="3914">
-                        <property name="fontSize">9pt</property>
-                        <property name="fontStyle">italic</property>
-                        <list-property name="visibility">
-                            <structure>
-                                <property name="format">all</property>
-                                <expression name="valueExpr" type="javascript">row._outer["DisplayDeliveryCondition"] == 0</expression>
-                            </structure>
-                        </list-property>
-                        <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<I><VALUE-OF format="HTML">row["deliveryCondition"]</VALUE-OF></I>
+                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> : <I><VALUE-OF format="HTML">row._outer["deliveryCondition"]</VALUE-OF></I>
 ]]></text-property>
                     </text>
                 </cell>
