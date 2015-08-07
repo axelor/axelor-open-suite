@@ -15,6 +15,7 @@
   	<string name="saleOrderClientBox" large="true" multiline="true" title="Client box in sale order"/>
   	<boolean name="displaySalemanOnPrinting" title="Display saleman on printing ?"/>
   	<boolean name="displayDelCondOnPrinting" title="Display delivery condition on printing ?"/>
+  	<boolean name="displayProductCodeOnPrinting" title="Display product code on printing ?"/>
   	<many-to-one name="defaultValidityDuration" ref="com.axelor.apps.base.db.Duration" title="Validity duration per default"/>
   	
   </entity>

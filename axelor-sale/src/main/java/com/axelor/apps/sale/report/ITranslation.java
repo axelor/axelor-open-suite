@@ -40,9 +40,17 @@ public interface ITranslation {
 	public static final String SALES_ORDER_TOTAL_TAX = /*$$(*/ "SaleOrder.totalTax"; /*)*/
 	public static final String SALES_ORDER_TOTAL_INCL_TAX = /*$$(*/ "SaleOrder.totalInclTax"; /*)*/
 	public static final String SALES_ORDER_NOTE = /*$$(*/ "SaleOrder.note"; /*)*/
-	public static final String SALES_ORDER_BANKING_INFO = /*$$(*/ "SaleOrder.bankingInfo"; /*)*/
 	public static final String SALES_ORDER_CHEQUE = /*$$(*/ "SaleOrder.cheque"; /*)*/
-	public static final String SALES_ORDER_BANK_DETAILS = /*$$(*/ "SaleOrder.bankDetails"; /*)*/
+	public static final String SALES_ORDER_BANK = /*$$(*/ "SaleOrder.bank"; /*)*/
 	public static final String SALES_ORDER_LAW = /*$$(*/ "SaleOrder.law"; /*)*/
+	public static final String SALES_ORDER_SALEMAN_NAME = /*$$(*/ "SaleOrder.salemanName"; /*)*/
+	public static final String SALES_ORDER_SALEMAN_EMAIL = /*$$(*/ "SaleOrder.salemanEmail"; /*)*/
+	public static final String SALES_ORDER_SALEMAN_PHONE = /*$$(*/ "SaleOrder.salemanPhone"; /*)*/
+	public static final String SALES_ORDER_DELIVERY_DATE = /*$$(*/ "SaleOrder.deliveryDate"; /*)*/
+	public static final String SALES_ORDER_DELIVERY_CONDITION = /*$$(*/ "SaleOrder.deliveryCondition"; /*)*/
+	public static final String SALES_ORDER_PRODUCT_DESCRIPTION = /*$$(*/ "SaleOrder.productDescription"; /*)*/
+	public static final String SALES_ORDER_PRODUCT_CODE = /*$$(*/ "SaleOrder.productCode"; /*)*/
+	public static final String SALES_ORDER_DISCOUNT_AMOUNT = /*$$(*/ "SaleOrder.discountAmount"; /*)*/
+
 
 }

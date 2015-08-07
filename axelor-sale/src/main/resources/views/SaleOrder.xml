@@ -117,8 +117,10 @@
 	      <panel title="Invoicing" if-module="axelor-supplychain" colSpan="12">
 	        <field name="invoicingMomentSelect"/>
 	      </panel>
-	      <panel title="Stock location" if-module="axelor-supplychain">
-   		      <field name="location" domain="self.company = :company and self.typeSelect = 1" form-view="location-form" grid-view="location-grid"/>
+	      <panel title="Delivery information" colSpan="12">
+   		      <field name="location" domain="self.company = :company and self.typeSelect = 1" form-view="location-form" grid-view="location-grid" if-module="axelor-supplychain"/>
+   		      <field name="deliveryDate"/>
+   		      <field name="deliveryCondition" colSpan="12"/>
 	      </panel>
        	  <panel title="Specific settings" colSpan="12">
        	  	  <field name="isToPrintLineSubTotal"/>

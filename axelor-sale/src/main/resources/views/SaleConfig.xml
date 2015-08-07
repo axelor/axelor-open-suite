@@ -19,6 +19,7 @@
   		<panel title="Printing settings">
   			<field name="displaySalemanOnPrinting"/>
   			<field name="displayDelCondOnPrinting"/>
+  			<field name="displayProductCodeOnPrinting"/>
 	 		<field name="saleOrderClientBox" widget="html" x-lite="true" colSpan="12"/>
 	  	</panel>
 	</form>
