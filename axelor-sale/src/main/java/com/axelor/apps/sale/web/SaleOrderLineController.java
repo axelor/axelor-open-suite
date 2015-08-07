@@ -72,10 +72,9 @@ public class SaleOrderLineController {
 
 				if(exTaxTotal != null) {
 
-					SaleOrder saleOrder = saleOrderLine.getSaleOrder();
-
-					if(saleOrder == null) {
-						saleOrder = request.getContext().getParentContext().asType(SaleOrder.class);
+					SaleOrder saleOrder = request.getContext().getParentContext().asType(SaleOrder.class);
+					if(!request.getContext().getParentContext().getContextClass().toString().equals(SaleOrder.class.toString())){
+						saleOrder = saleOrderLine.getSaleOrder();
 					}
 
 					if(saleOrder != null) {
@@ -101,10 +100,9 @@ public class SaleOrderLineController {
 
 				if(inTaxTotal != null) {
 
-					SaleOrder saleOrder = saleOrderLine.getSaleOrder();
-
-					if(saleOrder == null) {
-						saleOrder = request.getContext().getParentContext().asType(SaleOrder.class);
+					SaleOrder saleOrder = request.getContext().getParentContext().asType(SaleOrder.class);
+					if(!request.getContext().getParentContext().getContextClass().toString().equals(SaleOrder.class.toString())){
+						saleOrder = saleOrderLine.getSaleOrder();
 					}
 
 					if(saleOrder != null) {
@@ -132,9 +130,9 @@ public class SaleOrderLineController {
 
 		SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
 
-		SaleOrder saleOrder = saleOrderLine.getSaleOrder();
-		if(saleOrder == null)  {
-			saleOrder = request.getContext().getParentContext().asType(SaleOrder.class);
+		SaleOrder saleOrder = request.getContext().getParentContext().asType(SaleOrder.class);
+		if(!request.getContext().getParentContext().getContextClass().toString().equals(SaleOrder.class.toString())){
+			saleOrder = saleOrderLine.getSaleOrder();
 		}
 
 		if(saleOrder != null && saleOrderLine.getProduct() != null) {
@@ -204,9 +202,9 @@ public class SaleOrderLineController {
 
 		SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
 
-		SaleOrder saleOrder = saleOrderLine.getSaleOrder();
-		if(saleOrder == null)  {
-			saleOrder = request.getContext().getParentContext().asType(SaleOrder.class);
+		SaleOrder saleOrder = request.getContext().getParentContext().asType(SaleOrder.class);
+		if(!request.getContext().getParentContext().getContextClass().toString().equals(SaleOrder.class.toString())){
+			saleOrder = saleOrderLine.getSaleOrder();
 		}
 
 		if(saleOrder != null && saleOrderLine.getProduct() != null) {
@@ -253,9 +251,9 @@ public class SaleOrderLineController {
 
 		SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
 
-		SaleOrder saleOrder = saleOrderLine.getSaleOrder();
-		if(saleOrder == null)  {
-			saleOrder = request.getContext().getParentContext().asType(SaleOrder.class);
+		SaleOrder saleOrder = request.getContext().getParentContext().asType(SaleOrder.class);
+		if(!request.getContext().getParentContext().getContextClass().toString().equals(SaleOrder.class.toString())){
+			saleOrder = saleOrderLine.getSaleOrder();
 		}
 
 		if(saleOrder != null) {
