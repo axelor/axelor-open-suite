@@ -2668,11 +2668,12 @@ row["ClientPartFirstName"]
                     <property name="colSpan">8</property>
                     <property name="rowSpan">1</property>
                     <property name="color">black</property>
-                    <property name="paddingLeft">1pt</property>
+                    <property name="paddingLeft">0pt</property>
+                    <property name="paddingRight">0pt</property>
                     <property name="textAlign">left</property>
                     <table id="3427">
-                        <property name="marginLeft">2pt</property>
-                        <property name="width">7.4in</property>
+                        <property name="marginLeft">0pt</property>
+                        <property name="width">7.5in</property>
                         <property name="dataSet">OrderLineDS</property>
                         <list-property name="boundDataColumns">
                             <structure>
@@ -2747,6 +2748,19 @@ row["ClientPartFirstName"]
                                 <expression name="expression" type="javascript">dataSetRow["totalDiscountAmount"]</expression>
                                 <property name="dataType">decimal</property>
                             </structure>
+                            <structure>
+                                <property name="name">nb_diff_tax_line</property>
+                                <text-property name="displayName">nb_diff_tax_line</text-property>
+                                <property name="dataType">integer</property>
+                                <property name="aggregateFunction">COUNTDISTINCT</property>
+                                <list-property name="arguments">
+                                    <structure>
+                                        <property name="name">Expression</property>
+                                        <expression name="value" type="javascript">row["tax_line"]</expression>
+                                    </structure>
+                                </list-property>
+                                <property name="allowExport">true</property>
+                            </structure>
                         </list-property>
                         <column id="3713">
                             <list-property name="visibility">
@@ -2759,6 +2773,12 @@ row["ClientPartFirstName"]
                         </column>
                         <column id="3446"/>
                         <column id="3447">
+                            <list-property name="visibility">
+                                <structure>
+                                    <property name="format">all</property>
+                                    <expression name="valueExpr" type="javascript">row["nb_diff_tax_line"] &lt;= 1</expression>
+                                </structure>
+                            </list-property>
                             <property name="width">0.5in</property>
                         </column>
                         <column id="3448">
@@ -3079,26 +3099,14 @@ row["ClientPartFirstName"]
                             <property name="hideDetail">false</property>
                             <header>
                                 <row id="3693">
-                                    <property name="borderBottomStyle">solid</property>
-                                    <property name="borderBottomWidth">thin</property>
-                                    <property name="borderLeftStyle">solid</property>
-                                    <property name="borderLeftWidth">thin</property>
-                                    <property name="borderRightStyle">solid</property>
-                                    <property name="borderRightWidth">thin</property>
-                                    <property name="borderTopStyle">solid</property>
-                                    <property name="borderTopWidth">thin</property>
                                     <property name="height">0.4375in</property>
                                     <cell id="3709">
                                         <property name="colSpan">1</property>
                                         <property name="rowSpan">1</property>
-                                        <property name="borderBottomStyle">solid</property>
-                                        <property name="borderBottomWidth">thin</property>
                                         <property name="borderLeftStyle">solid</property>
                                         <property name="borderLeftWidth">thin</property>
                                         <property name="borderRightStyle">solid</property>
                                         <property name="borderRightWidth">thin</property>
-                                        <property name="borderTopStyle">solid</property>
-                                        <property name="borderTopWidth">thin</property>
                                         <text id="4149">
                                             <property name="fontSize">8pt</property>
                                             <property name="contentType">html</property>
@@ -3106,14 +3114,10 @@ row["ClientPartFirstName"]
                                         </text>
                                     </cell>
                                     <cell id="4148">
-                                        <property name="borderBottomStyle">solid</property>
-                                        <property name="borderBottomWidth">thin</property>
                                         <property name="borderLeftStyle">solid</property>
                                         <property name="borderLeftWidth">thin</property>
                                         <property name="borderRightStyle">solid</property>
                                         <property name="borderRightWidth">thin</property>
-                                        <property name="borderTopStyle">solid</property>
-                                        <property name="borderTopWidth">thin</property>
                                         <text id="3457">
                                             <property name="fontSize">8pt</property>
                                             <property name="contentType">html</property>
@@ -3127,14 +3131,10 @@ row["ClientPartFirstName"]
                                         </text>
                                     </cell>
                                     <cell id="3695">
-                                        <property name="borderBottomStyle">solid</property>
-                                        <property name="borderBottomWidth">thin</property>
                                         <property name="borderLeftStyle">solid</property>
                                         <property name="borderLeftWidth">thin</property>
                                         <property name="borderRightStyle">solid</property>
                                         <property name="borderRightWidth">thin</property>
-                                        <property name="borderTopStyle">solid</property>
-                                        <property name="borderTopWidth">thin</property>
                                         <text id="3691">
                                             <property name="fontSize">8pt</property>
                                             <property name="textAlign">center</property>
@@ -3143,14 +3143,10 @@ row["ClientPartFirstName"]
                                         </text>
                                     </cell>
                                     <cell id="3696">
-                                        <property name="borderBottomStyle">solid</property>
-                                        <property name="borderBottomWidth">thin</property>
                                         <property name="borderLeftStyle">solid</property>
                                         <property name="borderLeftWidth">thin</property>
                                         <property name="borderRightStyle">solid</property>
                                         <property name="borderRightWidth">thin</property>
-                                        <property name="borderTopStyle">solid</property>
-                                        <property name="borderTopWidth">thin</property>
                                         <text id="3459">
                                             <property name="fontSize">8pt</property>
                                             <property name="textAlign">center</property>
@@ -3159,14 +3155,10 @@ row["ClientPartFirstName"]
                                         </text>
                                     </cell>
                                     <cell id="3697">
-                                        <property name="borderBottomStyle">solid</property>
-                                        <property name="borderBottomWidth">thin</property>
                                         <property name="borderLeftStyle">solid</property>
                                         <property name="borderLeftWidth">thin</property>
                                         <property name="borderRightStyle">solid</property>
                                         <property name="borderRightWidth">thin</property>
-                                        <property name="borderTopStyle">solid</property>
-                                        <property name="borderTopWidth">thin</property>
                                         <text id="3460">
                                             <property name="fontSize">8pt</property>
                                             <property name="textAlign">right</property>
@@ -3175,12 +3167,10 @@ row["ClientPartFirstName"]
                                         </text>
                                     </cell>
                                     <cell id="4152">
-                                        <property name="borderBottomStyle">solid</property>
-                                        <property name="borderBottomWidth">thin</property>
                                         <property name="borderLeftStyle">solid</property>
                                         <property name="borderLeftWidth">thin</property>
-                                        <property name="borderTopStyle">solid</property>
-                                        <property name="borderTopWidth">thin</property>
+                                        <property name="borderRightStyle">solid</property>
+                                        <property name="borderRightWidth">thin</property>
                                         <text id="4155">
                                             <property name="fontSize">8pt</property>
                                             <property name="textAlign">right</property>
@@ -3195,12 +3185,8 @@ row["ClientPartFirstName"]
                                         </text>
                                     </cell>
                                     <cell id="3698">
-                                        <property name="borderBottomStyle">solid</property>
-                                        <property name="borderBottomWidth">thin</property>
                                         <property name="borderLeftStyle">solid</property>
                                         <property name="borderLeftWidth">thin</property>
-                                        <property name="borderTopStyle">solid</property>
-                                        <property name="borderTopWidth">thin</property>
                                         <text id="3461">
                                             <property name="fontSize">8pt</property>
                                             <property name="textAlign">right</property>
@@ -3211,12 +3197,8 @@ row["ClientPartFirstName"]
                                     <cell id="3699">
                                         <property name="colSpan">1</property>
                                         <property name="rowSpan">1</property>
-                                        <property name="borderBottomStyle">solid</property>
-                                        <property name="borderBottomWidth">thin</property>
                                         <property name="borderRightStyle">solid</property>
                                         <property name="borderRightWidth">thin</property>
-                                        <property name="borderTopStyle">solid</property>
-                                        <property name="borderTopWidth">thin</property>
                                         <text id="3667">
                                             <property name="fontSize">8pt</property>
                                             <property name="textAlign">left</property>
@@ -3230,45 +3212,63 @@ row["ClientPartFirstName"]
                         <footer>
                             <row id="3440">
                                 <cell id="3712">
-                                    <property name="borderTopColor">#606062</property>
-                                    <property name="borderTopStyle">solid</property>
-                                    <property name="borderTopWidth">thin</property>
+                                    <property name="borderBottomStyle">solid</property>
+                                    <property name="borderBottomWidth">thin</property>
+                                    <property name="borderLeftStyle">solid</property>
+                                    <property name="borderLeftWidth">thin</property>
                                 </cell>
                                 <cell id="3441">
-                                    <property name="borderTopColor">#606062</property>
-                                    <property name="borderTopStyle">solid</property>
-                                    <property name="borderTopWidth">thin</property>
+                                    <property name="borderBottomStyle">solid</property>
+                                    <property name="borderBottomWidth">thin</property>
+                                    <property name="borderLeftStyle">solid</property>
+                                    <property name="borderLeftWidth">thin</property>
+                                    <property name="borderRightStyle">solid</property>
+                                    <property name="borderRightWidth">thin</property>
                                     <label id="3668"/>
                                 </cell>
                                 <cell id="3442">
-                                    <property name="borderTopColor">#606062</property>
-                                    <property name="borderTopStyle">solid</property>
-                                    <property name="borderTopWidth">thin</property>
+                                    <property name="borderBottomStyle">solid</property>
+                                    <property name="borderBottomWidth">thin</property>
+                                    <property name="borderLeftStyle">solid</property>
+                                    <property name="borderLeftWidth">thin</property>
+                                    <property name="borderRightStyle">solid</property>
+                                    <property name="borderRightWidth">thin</property>
                                 </cell>
                                 <cell id="3443">
-                                    <property name="borderTopColor">#606062</property>
-                                    <property name="borderTopStyle">solid</property>
-                                    <property name="borderTopWidth">thin</property>
+                                    <property name="borderBottomStyle">solid</property>
+                                    <property name="borderBottomWidth">thin</property>
+                                    <property name="borderLeftStyle">solid</property>
+                                    <property name="borderLeftWidth">thin</property>
+                                    <property name="borderRightStyle">solid</property>
+                                    <property name="borderRightWidth">thin</property>
                                 </cell>
                                 <cell id="3444">
-                                    <property name="borderTopColor">#606062</property>
-                                    <property name="borderTopStyle">solid</property>
-                                    <property name="borderTopWidth">thin</property>
+                                    <property name="borderBottomStyle">solid</property>
+                                    <property name="borderBottomWidth">thin</property>
+                                    <property name="borderLeftStyle">solid</property>
+                                    <property name="borderLeftWidth">thin</property>
+                                    <property name="borderRightStyle">solid</property>
+                                    <property name="borderRightWidth">thin</property>
                                 </cell>
                                 <cell id="4153">
-                                    <property name="borderTopColor">#606062</property>
-                                    <property name="borderTopStyle">solid</property>
-                                    <property name="borderTopWidth">thin</property>
+                                    <property name="borderBottomStyle">solid</property>
+                                    <property name="borderBottomWidth">thin</property>
+                                    <property name="borderLeftStyle">solid</property>
+                                    <property name="borderLeftWidth">thin</property>
+                                    <property name="borderRightStyle">solid</property>
+                                    <property name="borderRightWidth">thin</property>
                                 </cell>
                                 <cell id="3445">
-                                    <property name="borderTopColor">#606062</property>
-                                    <property name="borderTopStyle">solid</property>
-                                    <property name="borderTopWidth">thin</property>
+                                    <property name="borderBottomStyle">solid</property>
+                                    <property name="borderBottomWidth">thin</property>
+                                    <property name="borderLeftStyle">solid</property>
+                                    <property name="borderLeftWidth">thin</property>
                                 </cell>
                                 <cell id="3794">
-                                    <property name="borderTopColor">#606062</property>
-                                    <property name="borderTopStyle">solid</property>
-                                    <property name="borderTopWidth">thin</property>
+                                    <property name="borderBottomStyle">solid</property>
+                                    <property name="borderBottomWidth">thin</property>
+                                    <property name="borderRightStyle">solid</property>
+                                    <property name="borderRightWidth">thin</property>
                                 </cell>
                             </row>
                         </footer>
@@ -3289,6 +3289,8 @@ row["ClientPartFirstName"]
                 <cell id="3978">
                     <property name="colSpan">3</property>
                     <property name="rowSpan">3</property>
+                    <property name="paddingLeft">0pt</property>
+                    <property name="paddingRight">0pt</property>
                     <table id="3493">
                         <property name="width">3in</property>
                         <property name="dataSet">SaleOrderLineTaxDS</property>
