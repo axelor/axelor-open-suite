@@ -84,7 +84,7 @@
 	      <field name="supplierPartner" domain="self.isSupplier = true" form-view="partner-form" grid-view="partner-grid" />
 	      <panel-related field="purchaseOrderSupplierLineList" colSpan="12" form-view="purchase-order-supplier-line-form" grid-view="purchase-order-supplier-line-grid"/>
 	    </panel>
-	    <panel title="Account" if-module="axelor-account" if="_config__.general.getManageInvoicedAmountByLine()">
+	    <panel title="Account" if-module="axelor-account" if="__config__.general.getManageInvoicedAmountByLine()">
 	      <field name="amountInvoiced"/>
 	    </panel>
 	    <panel-related field="invoiceSet">

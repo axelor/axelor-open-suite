@@ -1,6 +1,7 @@
 package com.axelor.apps.hr.service.leave;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
@@ -23,6 +24,7 @@ import com.axelor.apps.message.db.Message;
 import com.axelor.apps.message.db.Template;
 import com.axelor.apps.message.service.MessageServiceImpl;
 import com.axelor.apps.message.service.TemplateMessageService;
+import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.exception.service.TraceBackService;
@@ -292,5 +294,38 @@ public class LeaveService extends LeaveRequestRepository{
 
 		Event event = eventService.createEvent(fromDateTime, toDateTime, leave.getUser(), leave.getComments(), EventService.TYPE_LEAVE, leave.getReason().getLeaveReason()+" "+leave.getUser().getFullName());
 		eventService.save(event);
+	}
+	
+	public BigDecimal computeLeaveDays(LocalDate fromDate, LocalDate toDate, User user) throws AxelorException{
+		BigDecimal leaveDays = BigDecimal.ZERO;
+		WeeklyPlanning weeklyPlanning = user.getEmployee().getPlanning();
+		List<LeaveRequest> leaveRequestList = this.all().filter("self.user = ?1 AND (self.statusSelect = ?2 OR self.statusSelect = ?5) AND ((?3 <= self.dateFrom AND ?4 >= self.dateFrom) OR (?3 <= self.dateTo AND ?4 >= self.dateTo) OR (?3 >= self.dateFrom AND ?4 <= self.dateTo))", user, LeaveService.STATUS_SELECT_VALIDATED, fromDate, toDate, LeaveService.STATUS_SELECT_AWAITING_VALIDATION).fetch();
+		for (LeaveRequest leaveRequest : leaveRequestList) {
+			if(leaveRequest.getDateFrom().equals(fromDate)){
+				leaveDays = leaveDays.add(new BigDecimal(this.computeStartDateWithSelect(fromDate, leaveRequest.getStartOnSelect(), weeklyPlanning)));
+			}
+			if(leaveRequest.getDateTo().equals(toDate)){
+				leaveDays = leaveDays.add(new BigDecimal(this.computeEndDateWithSelect(toDate, leaveRequest.getEndOnSelect(), weeklyPlanning)));
+			}
+			if(fromDate.isBefore(leaveRequest.getDateFrom()) || fromDate.equals(leaveRequest.getDateFrom())){
+				
+				LocalDate itDate = new LocalDate(leaveRequest.getDateFrom().plusDays(1));
+
+				while(!itDate.isEqual(leaveRequest.getDateTo()) || ! itDate.isAfter(toDate)){
+					leaveDays = leaveDays.add(new BigDecimal(weeklyPlanningService.workingDayValue(weeklyPlanning, itDate)));
+					itDate = itDate.plusDays(1);
+				}
+			}
+			else{
+				LocalDate itDate = new LocalDate(fromDate);
+
+				while(!itDate.isEqual(leaveRequest.getDateTo()) || ! itDate.isAfter(toDate)){
+					leaveDays = leaveDays.add(new BigDecimal(weeklyPlanningService.workingDayValue(weeklyPlanning, itDate)));
+					itDate = itDate.plusDays(1);
+				}
+			}
+			leaveDays = leaveDays.subtract(Beans.get(PublicHolidayService.class).computePublicHolidayDays(fromDate,toDate, weeklyPlanning, user.getEmployee()));
+		}
+		return leaveDays;
 	}
 }

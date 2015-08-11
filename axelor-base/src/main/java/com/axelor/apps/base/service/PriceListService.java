@@ -146,7 +146,7 @@ public class PriceListService extends PriceListRepository {
 		else if(discountTypeSelect == IPriceListLine.AMOUNT_TYPE_PERCENT)  {
 			return unitPrice.multiply(
 					BigDecimal.ONE.subtract(
-							discountAmount.divide(new BigDecimal(100)))).setScale(generalService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
+							discountAmount.divide(new BigDecimal(100),generalService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP))).setScale(generalService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
 		}
 
 		return unitPrice;

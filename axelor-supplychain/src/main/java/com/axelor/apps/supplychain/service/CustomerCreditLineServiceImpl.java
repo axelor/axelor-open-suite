@@ -14,6 +14,7 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.SaleConfigRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.supplychain.db.CustomerCreditLine;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 
 public class CustomerCreditLineServiceImpl implements CustomerCreditLineService{
@@ -74,7 +75,11 @@ public class CustomerCreditLineServiceImpl implements CustomerCreditLineService{
 				boolean test = testUsedCredit(customerCreditLine);
 				map.put("bloqued", test);
 				if(test){
-					map.put("message", customerCreditLine.getCompany().getOrderBloquedMessage());
+					if(customerCreditLine.getCompany().getOrderBloquedMessage() == null || customerCreditLine.getCompany().getOrderBloquedMessage().isEmpty()){
+						map.put("message", I18n.get("Client bloqued"));
+					}else{
+						map.put("message", customerCreditLine.getCompany().getOrderBloquedMessage());
+					}
 				}
 			}
 		}
