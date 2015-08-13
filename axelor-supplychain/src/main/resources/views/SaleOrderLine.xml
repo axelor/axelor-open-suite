@@ -12,7 +12,7 @@
 			<field name="subscripInvTypeSelect"/>
 			<button colSpan="3" name="generateSubscriptions" title="Generate Subscriptions" onClick="action-supplychain-group-button-generate-subscriptions"/>
 			<button name="invoiceSubscription" title="Generate invoice for subscriptions" onClick="save,com.axelor.apps.supplychain.web.SubscriptionController:generateInvoice,save" readonlyIf="id == null || id &lt;= 0" colSpan="3"/>
-			<field name="subscriptionList" colSpan="12" form-view="subscription-form" grid-view="subscription-grid"/>
+			<field name="subscriptionList" colSpan="12" form-view="subscription-form" grid-view="subscription-grid" onChange="action-sale-order-line-method-compute"/>
 		</panel>
 	</form>
 	
@@ -27,7 +27,7 @@
 	</action-record>
 	
 	<action-record name="action-supplychain-record-set-subscription-price" model="com.axelor.apps.sale.db.SaleOrderLine">
-		<field name="price" expr="eval:(periodicity/product.periodicitySelect)*product.salePrice" if="periodicity &gt; 0"/>
+		<field name="price" expr="eval:new BigDecimal((periodicity/product.periodicitySelect)*product.salePrice).setScale(2, BigDecimal.ROUND_HALF_UP)" if="periodicity &gt; 0"/>
 	</action-record>
 	
 	<action-validate name="action-supplychain-validate-generate-all-subscriptions">

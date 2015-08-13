@@ -44,9 +44,12 @@ public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineService{
 
 		BigDecimal price = this.computeDiscount(saleOrderLine);
 
+
 		BigDecimal amount = saleOrderLine.getQty().multiply(price).setScale(IAdministration.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_EVEN);
 
-		if (ProductRepository.PRODUCT_TYPE_SUBSCRIPTABLE.equals(saleOrderLine.getProduct().getProductTypeSelect())){
+		if (ProductRepository.PRODUCT_TYPE_SUBSCRIPTABLE.equals(saleOrderLine.getProduct().getProductTypeSelect())
+				&& saleOrderLine.getSubscriptionList() != null
+				&& !saleOrderLine.getSubscriptionList().isEmpty()){
 			amount = amount.multiply(new BigDecimal(saleOrderLine.getSubscriptionList().size())).setScale(IAdministration.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_EVEN);
 		}
 
