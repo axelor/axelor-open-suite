@@ -90,6 +90,7 @@
     	<action name="action-sale-order-line-attrs-hidden-subscription"/>
     	<action name="action-supplychain-attrs-readonly-invoice-subscription"/>
     	<action name="action-sale-order-attrs-hide-ati"/>
+    	<action name="action-sale-order-line-attrs-title-subscription"/>
     	
     </action-group>
 
@@ -100,7 +101,7 @@
     	<action name="action-sale-order-line-method-compute"/>
     	<action name="action-sale-order-line-attrs-hide-bill-of-material"/>
     	<action name="action-sale-order-line-get-production-information" if="axelor-production"/>
-    	<action name="action-sale-order-line-attrs-title-price"/>
+    	<action name="action-sale-order-line-attrs-title-subscription"/>
     	<action name="action-sale-order-line-attrs-hidden-subscription"/>
     	<action name="action-supplychain-record-periodicity"/>
     </action-group>
@@ -186,9 +187,11 @@
 		<attribute name="title" for="discountAmount" expr="Discount Amount" if="discountTypeSelect == 2"/>
 	</action-attrs>
 	
-	<action-attrs name="action-sale-order-line-attrs-title-price">
+	<action-attrs name="action-sale-order-line-attrs-title-subscription">
 		<attribute name="title" for="price" expr="Unit Price (by month)" if="product?.productTypeSelect == 'subscriptable'"/>
 		<attribute name="title" for="price" expr="Unit Price" if="product?.productTypeSelect != 'subscriptable'"/>
+		<attribute name="title" for="exTaxTotal" expr="Total subscription HT" if="product?.productTypeSelect == 'subscriptable'"/>
+		<attribute name="title" for="exTaxTotal" expr="Total HT" if="product?.productTypeSelect != 'subscriptable'"/>		
 	</action-attrs>
 	
 	<action-attrs name="action-sale-order-line-attrs-hidden-subscription">
