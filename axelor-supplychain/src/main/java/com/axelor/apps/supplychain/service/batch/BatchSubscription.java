@@ -35,7 +35,7 @@ public class BatchSubscription extends AbstractBatch{
 			List<SaleOrderLine> saleOrderLineList = new ArrayList<SaleOrderLine>();
 			saleOrderLineList.add(saleOrderLine);
 			try {
-				saleOrderInvoiceService.generateSubscriptionInvoice(subscription,saleOrderLineList,saleOrder);
+				saleOrderInvoiceService.generateSubscriptionInvoice(lateSubscriptionsList,saleOrder);
 				i++;
 				incrementDone();
 

@@ -32,8 +32,6 @@
     <!-- Dates -->
     <date name="invoiceDate" title="Invoice Date" />
     <date name="dueDate" title="Due Date"/>
-    <date name="subscriptionFromDate" title="From"/>
-    <date name="subscriptionToDate" title="To"/>
     
     <!-- Accounting informations -->
     <boolean name="schedulePaymentOk" title="Belong to a payment schedule ?" default="false"/>

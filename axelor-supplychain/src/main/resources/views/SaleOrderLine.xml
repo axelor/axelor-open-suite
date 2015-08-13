@@ -5,13 +5,13 @@
 	
 	<form name="subscription-sale-order-line-form" title="Subscription" model="com.axelor.apps.sale.db.SaleOrderLine" width="large">
 		<panel colSpan="12">
-			<field name="periodicity" colSpan="3" onChange="action-supplychain-record-set-dateSubTo"/>
+			<field name="periodicity" colSpan="3" onChange="action-supplychain-record-set-dateSubTo, action-supplychain-record-set-subscription-price" readonlyIf="subscriptionList.length > 0"/>
 			<field name="fromSubDate" colSpan="3" onChange="action-supplychain-record-set-dateSubTo"/>
 			<field name="periodNumber" colSpan="3" onChange="action-supplychain-record-set-dateSubTo"/>
 			<field name="toSubDate" readonly="true" colSpan="3"/>
 			<field name="subscripInvTypeSelect"/>
 			<button colSpan="3" name="generateSubscriptions" title="Generate Subscriptions" onClick="action-supplychain-group-button-generate-subscriptions"/>
-			<button name="invoiceSubscription" title="Generate invoice for subscriptions" onClick="save,com.axelor.apps.supplychain.web.SubscriptionController:generateInvoice" readonlyIf="id == null || id &lt;= 0" colSpan="3"/>
+			<button name="invoiceSubscription" title="Generate invoice for subscriptions" onClick="save,com.axelor.apps.supplychain.web.SubscriptionController:generateInvoice,save" readonlyIf="id == null || id &lt;= 0" colSpan="3"/>
 			<field name="subscriptionList" colSpan="12" form-view="subscription-form" grid-view="subscription-grid"/>
 		</panel>
 	</form>
@@ -19,10 +19,15 @@
 	<action-group name="action-supplychain-group-button-generate-subscriptions">
 		<action name="save" if="__this__.id &gt; 0"/>
 		<action name="com.axelor.apps.supplychain.web.SubscriptionController:generateSubscriptions"/>
+		<action name="action-sale-order-line-method-compute"/>
 	</action-group>
 	
 	<action-record name="action-supplychain-record-set-dateSubTo" model="com.axelor.apps.sale.db.SaleOrderLine">
 		<field name="toSubDate" expr="eval:fromSubDate.plusMonths(periodicity*periodNumber)" if="periodicity &gt; 0 &amp;&amp; fromSubDate != null &amp;&amp; periodNumber &gt; 0"/>
+	</action-record>
+	
+	<action-record name="action-supplychain-record-set-subscription-price" model="com.axelor.apps.sale.db.SaleOrderLine">
+		<field name="price" expr="eval:(periodicity/product.periodicitySelect)*product.salePrice" if="periodicity &gt; 0"/>
 	</action-record>
 	
 	<action-validate name="action-supplychain-validate-generate-all-subscriptions">

@@ -65,7 +65,7 @@ public class SaleOrderLineController {
 			}
 			if(!request.getContext().getParentContext().asType(SaleOrder.class).getInAti()){
 				if (saleOrderLine.getPrice() != null && saleOrderLine.getQty() != null) {
-					exTaxTotal = SaleOrderLineService.computeAmount(saleOrderLine.getQty(), saleOrderLineService.computeDiscount(saleOrderLine));
+					exTaxTotal = saleOrderLineService.computeAmount(saleOrderLine);
 					inTaxTotal = exTaxTotal.add(exTaxTotal.multiply(saleOrderLine.getTaxLine().getValue()));
 					priceDiscounted = saleOrderLineService.computeDiscount(saleOrderLine);
 				}
@@ -93,7 +93,7 @@ public class SaleOrderLineController {
 			}
 			else{
 				if (saleOrderLine.getPrice() != null && saleOrderLine.getQty() != null) {
-					inTaxTotal = SaleOrderLineService.computeAmount(saleOrderLine.getQty(), saleOrderLineService.computeDiscount(saleOrderLine));
+					inTaxTotal = saleOrderLineService.computeAmount(saleOrderLine);
 					exTaxTotal = inTaxTotal.divide(saleOrderLine.getTaxLine().getValue().add(new BigDecimal(1)), 2, BigDecimal.ROUND_HALF_UP);
 					priceDiscounted = saleOrderLineService.computeDiscount(saleOrderLine);
 				}

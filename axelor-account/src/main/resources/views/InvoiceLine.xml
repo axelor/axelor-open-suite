@@ -32,6 +32,7 @@
 		    	<field name="taxLine" onChange="action-invoice-line-method-convert-tax,action-invoice-line-method-compute" grid-view="tax-line-grid" form-view="tax-line-form"/>
 		    	<field name="exTaxTotal" readonly="true"/>
 	    		<field name="inTaxTotal" readonly="true"/>
+	    		<field name="invoice.isSubscription" hidden="true"/>
 				 <panel name="discount" title="Discount" colSpan="12">
 			        <field name="discountTypeSelect" onChange="action-invoice-line-method-compute,action-invoice-line-attrs-discountamount-title,action-invoice-line-attrs-scale-and-precision"/>
 			        <field name="discountAmount" onChange="action-invoice-line-method-compute" hideIf="discountTypeSelect == 3"/>
@@ -42,6 +43,10 @@
     		</panel>
     		<panel name="projectTaskPanel" if="__config__.general.getProjectTaskInvoiceLines()" title="Project/Task" if-module="axelor-business-project">
 				<field name="project" onSelect="action-invoice-line-attrs-domain-project" form-view="project-task-form" grid-view="project-task-grid"/>
+			</panel>
+			<panel name="subscriptionPanel" title="Subscription" showIf="invoice.isSubscription">
+				<field name="subscriptionFromDate"/>
+				<field name="subscriptionToDate"/>
 			</panel>
     	</panel-tabs>
         

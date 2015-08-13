@@ -29,7 +29,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.app.AppSettings;
-import com.axelor.apps.MetaFilesTemp;
 import com.axelor.apps.ReportSettings;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
@@ -52,11 +51,13 @@ import com.axelor.apps.tool.net.URLService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.db.JPA;
+import com.axelor.dms.db.DMSFile;
+import com.axelor.dms.db.repo.DMSFileRepository;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.axelor.meta.db.MetaAttachment;
+import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
@@ -317,17 +318,28 @@ public class SaleOrderServiceImpl extends SaleOrderRepository  implements SaleOr
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void saveSaleOrderPDFAsAttachment(SaleOrder saleOrder) throws IOException{
 		String
-	    		filePath = AppSettings.get().get("file.upload.dir"),
+	    		filePath = AppSettings.get().get("file.upload.dir") + "/tmp",
 	    		fileName = saleOrder.getSaleOrderSeq() + ((saleOrder.getVersionNumber() > 1) ? "-V" + saleOrder.getVersionNumber() : "") + "." + ReportSettings.FORMAT_PDF,
 	    		birtReportURL = this.getURLSaleOrderPDF(saleOrder);
 
 	    File file = URLService.fileDownload(birtReportURL, filePath, fileName);
 
 		if (file != null){
-			MetaFilesTemp metaFilesTemp = Beans.get(MetaFilesTemp.class);
-			MetaFile metaFile = metaFilesTemp.upload(file);
-			MetaAttachment metaAttachment = metaFilesTemp.attach(metaFile, saleOrder);
-			JPA.save(metaAttachment);
+			MetaFiles metaFiles = Beans.get(MetaFiles.class);
+			MetaFile metaFile = metaFiles.upload(file);
+			String relatedModel = generalService.getPersistentClass(saleOrder).getCanonicalName();
+			//Search if there is a parent directory
+			DMSFile dmsDirectory = Beans.get(DMSFileRepository.class).all().filter("self.relatedId = ?1 AND self.relatedModel = ?2 and self.isDirectory = true",
+														saleOrder.getId(), relatedModel).fetchOne();
+			DMSFile dmsFile = new DMSFile();
+			if (dmsDirectory != null){
+				dmsFile.setParent(dmsDirectory);
+			}
+			dmsFile.setFileName(fileName);
+			dmsFile.setRelatedModel(relatedModel);
+			dmsFile.setRelatedId(saleOrder.getId());
+			dmsFile.setMetaFile(metaFile);
+			Beans.get(DMSFileRepository.class).save(dmsFile);
 		}
 	}
 

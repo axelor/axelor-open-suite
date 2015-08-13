@@ -85,7 +85,7 @@
 	    <field name="currency" form-view="currency-form" grid-view="currency-grid"/>
 	    <field name="versionNumber" if="__config__.general.getManageSaleOrderVersion()"/>
 	    <field name="inAti" onChange="action-sale-order-attrs-in-ati"/>
-	    <field name="subscription" hidden="true" if-module="axelor-supplychain"/>
+	    <field name="subscription" if-module="axelor-supplychain" if="__config__.general.getAllowSusbcriptionSaleOrder()"/>
 	  </panel>
 	  
 	  <panel title="Customer information">
@@ -453,7 +453,6 @@
     <action-attrs name="action-sale-order-attrs-in-ati">
     	<attribute name="hidden" for="saleOrderLineList.exTaxTotal" expr="inAti"/>
     	<attribute name="hidden" for="saleOrderLineList.inTaxTotal" expr="!inAti"/>
-    	<attribute name="hidden" for="subscription" expr="eval: !__config__.general.getAllowSusbcriptionSaleOrder()"/>
     </action-attrs>
     
     <action-record name="action-sale-order-record-in-ati" model="com.axelor.apps.sale.db.SaleOrder">

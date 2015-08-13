@@ -244,7 +244,7 @@ public class SaleOrderController{
 			List<Long> listInvoiceId = new ArrayList<Long>();
 			for (Integer integer : listSelectedSaleOrder) {
 				saleOrder = saleOrderRepo.find(integer.longValue());
-				Invoice invoice = saleOrderInvoiceServiceImpl.generateSubcriptionsForSaleOrder(saleOrder);
+				Invoice invoice = saleOrderInvoiceServiceImpl.generateSubcriptionInvoiceForSaleOrder(saleOrder);
 				if(invoice != null){
 					listInvoiceId.add(invoice.getId());
 				}
@@ -275,7 +275,7 @@ public class SaleOrderController{
 	public void invoiceSubscriptionsSaleOrder(ActionRequest request, ActionResponse response) throws AxelorException{
 		SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
 		saleOrder = saleOrderRepo.find(saleOrder.getId());
-		Invoice invoice = saleOrderInvoiceServiceImpl.generateSubcriptionsForSaleOrder(saleOrder);
+		Invoice invoice = saleOrderInvoiceServiceImpl.generateSubcriptionInvoiceForSaleOrder(saleOrder);
 		if(invoice == null){
 			throw new AxelorException(I18n.get("No Subscription to Invoice"), IException.CONFIGURATION_ERROR);
 		}

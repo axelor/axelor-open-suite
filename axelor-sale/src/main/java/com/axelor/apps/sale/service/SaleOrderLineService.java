@@ -65,10 +65,21 @@ public class SaleOrderLineService extends SaleOrderLineRepository{
 	 * @return
 	 * 			Le montant HT de la ligne.
 	 */
+	public BigDecimal computeAmount(SaleOrderLine saleOrderLine) {
+
+		BigDecimal price = this.computeDiscount(saleOrderLine);
+
+		BigDecimal amount = saleOrderLine.getQty().multiply(price).setScale(IAdministration.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_EVEN);
+
+		LOG.debug("Calcul du montant HT avec une quantité de {} pour {} : {}", new Object[] { saleOrderLine.getQty(), price, amount });
+
+		return amount;
+	}
+	
 	public static BigDecimal computeAmount(BigDecimal quantity, BigDecimal price) {
 
 		BigDecimal amount = quantity.multiply(price).setScale(IAdministration.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_EVEN);
-
+		
 		LOG.debug("Calcul du montant HT avec une quantité de {} pour {} : {}", new Object[] { quantity, price, amount });
 
 		return amount;
