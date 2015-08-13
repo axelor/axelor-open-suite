@@ -9,15 +9,18 @@ import java.util.Map;
 import com.axelor.apps.account.db.AccountingSituation;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.sale.db.ISaleOrder;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.SaleConfigRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.supplychain.db.CustomerCreditLine;
+import com.axelor.apps.supplychain.db.repo.CustomerCreditLineRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.google.inject.persist.Transactional;
 
-public class CustomerCreditLineServiceImpl implements CustomerCreditLineService{
+public class CustomerCreditLineServiceImpl extends CustomerCreditLineRepository implements CustomerCreditLineService{
 
 	@Override
 	public Partner generateLines(Partner partner){
@@ -113,6 +116,27 @@ public class CustomerCreditLineServiceImpl implements CustomerCreditLineService{
 		else{
 			return false;
 		}
+	}
+	
+	@Override
+	@Transactional
+	public boolean checkBlockedPartner(Partner partner, Company company){
+		CustomerCreditLine customerCreditLine = this.all().filter("self.company = ?1 AND self.partner = ?2", company, partner).fetchOne();
+		if(customerCreditLine == null){
+			partner = generateLines(partner);
+			for (CustomerCreditLine customerCreditLineIt : partner.getCustomerCreditLineList()) {
+				if(customerCreditLineIt.getCompany() == company){
+					customerCreditLine = customerCreditLineIt;
+				}
+			}
+			Beans.get(PartnerRepository.class).save(partner);
+		}
+		else{
+			customerCreditLine = this.computeUsedCredit(customerCreditLine);
+			save(customerCreditLine);
+		}
+		
+		return this.testUsedCredit(customerCreditLine);
 	}
 
 }
