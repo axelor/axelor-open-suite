@@ -1,7 +1,5 @@
 package com.axelor.apps.supplychain.service;
 
-import java.math.BigDecimal;
-
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
@@ -38,13 +36,6 @@ public class SubscriptionServiceImpl extends SubscriptionRepository implements S
 			}
 			subscription.setFromPeriodDate(saleOrderLine.getFromSubDate().plusMonths(saleOrderLine.getPeriodicity()*iterator));
 			subscription.setToPeriodDate(saleOrderLine.getFromSubDate().plusMonths(saleOrderLine.getPeriodicity()*(iterator+1)).minusDays(1));
-			subscription.setQuantity(saleOrderLine.getQty());
-			if(saleOrderLine.getPeriodicity() == saleOrderLine.getProduct().getPeriodicitySelect()){
-				subscription.setUnitPrice(saleOrderLine.getPrice().multiply(new BigDecimal(saleOrderLine.getPeriodicity())));
-			}
-			else{
-				subscription.setUnitPrice(saleOrderLine.getPrice().multiply(new BigDecimal(saleOrderLine.getPeriodicity()).divide(new BigDecimal(saleOrderLine.getProduct().getPeriodicitySelect()))));
-			}
 			subscription.setInvoiced(false);
 			saleOrderLine.addSubscriptionListItem(subscription);
 			iterator++;
@@ -77,13 +68,6 @@ public class SubscriptionServiceImpl extends SubscriptionRepository implements S
 			}
 			subscription.setFromPeriodDate(saleOrder.getFromSubDate().plusMonths(saleOrder.getPeriodicity()*iterator));
 			subscription.setToPeriodDate(saleOrder.getFromSubDate().plusMonths(saleOrder.getPeriodicity()*(iterator+1)).minusDays(1));
-			subscription.setQuantity(saleOrderLineIt.getQty());
-			if(saleOrder.getPeriodicity() == saleOrderLineIt.getProduct().getPeriodicitySelect()){
-				subscription.setUnitPrice(saleOrderLineIt.getPrice().multiply(new BigDecimal(saleOrder.getPeriodicity())));
-			}
-			else{
-				subscription.setUnitPrice(saleOrderLineIt.getPrice().multiply(new BigDecimal(saleOrder.getPeriodicity()).divide(new BigDecimal(saleOrderLineIt.getProduct().getPeriodicitySelect()))));
-			}
 			subscription.setInvoiced(false);
 			saleOrderLineIt.addSubscriptionListItem(subscription);
 			iterator++;

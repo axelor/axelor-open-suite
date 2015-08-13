@@ -7,8 +7,19 @@
 		<field name="invoicingDate"/>
 	    <field name="fromPeriodDate"/>
 	    <field name="toPeriodDate"/>
-	    <field name="quantity"/>
-	    <field name="unitPrice"/>
+	    <field name="invoiced"/>
+	 </grid>
+	 
+	 <grid name="subscription-from-menu-grid" title="Subscriptions" model="com.axelor.apps.supplychain.db.Subscription">
+	 	<toolbar>
+			<button name="generateInvoiceForSelectedSubscrip" hidden="true" title="Generate invoice from selected subscrip" prompt="Are you sure you want to generate invoice for selected subscriptions ?" onClick="action-validate-supplychain-subscription-check-selection, com.axelor.apps.supplychain.web.SubscriptionController:generateInvoiceForSelectedSubscriptions"/>
+			<button name="generateInvoiceForAll" title="Generate invoice for all subscrip" prompt="Are you sure you want to generate invoice for all subscriptions ?" onClick="com.axelor.apps.supplychain.web.SubscriptionController:generateInvoiceForAllSubscriptions"/>
+    	</toolbar>
+	 	<field name="saleOrderLine.saleOrder"/>
+	 	<field name="saleOrderLine"/>
+		<field name="invoicingDate"/>
+	    <field name="fromPeriodDate"/>
+	    <field name="toPeriodDate"/>
 	    <field name="invoiced"/>
 	 </grid>
 	
@@ -16,9 +27,20 @@
 		<field name="invoicingDate" readonlyIf="invoiced"/>
 	    <field name="fromPeriodDate" readonlyIf="invoiced"/>
 	    <field name="toPeriodDate" readonlyIf="invoiced"/>
-	    <field name="quantity" readonlyIf="invoiced"/>
-	    <field name="unitPrice" readonlyIf="invoiced"/>
 	    <field name="invoiced" readonly="true"/>
 	 </form>
+	 
+	 <form model="com.axelor.apps.supplychain.db.Subscription" title="Subscription" name="subscription-from-menu-form">
+	 	<field name="saleOrderLine.saleOrder"/>
+	 	<field name="saleOrderLine"/>
+		<field name="invoicingDate" readonlyIf="invoiced"/>
+	    <field name="fromPeriodDate" readonlyIf="invoiced"/>
+	    <field name="toPeriodDate" readonlyIf="invoiced"/>
+	    <field name="invoiced" readonly="true"/>
+	 </form>
+	 
+	<action-validate name="action-validate-supplychain-subscription-check-selection">
+		<error message="You have to select at least one subscription" if="_ids == null || _ids.size() == 0"/>
+	</action-validate>
 	
 </object-views>

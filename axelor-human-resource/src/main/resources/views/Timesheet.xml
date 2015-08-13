@@ -22,7 +22,7 @@
 	<form name="timesheet-form" title="Timesheet" model="com.axelor.apps.hr.db.Timesheet" cols="12" width="large"
 	    onNew="action-group-timesheet-onnew"
 	    onLoad="action-timesheet-attrs-buttons,action-timesheet-line-attrs-set-visible-duration-title,action-timesheet-attrs-title-project-task,action-timesheet-attrs-from-date" canNew="false"
-	    onSave="action-timesheet-validate-toDate,action-timesheet-method-valid-to-date">
+	    onSave="action-timesheet-validate-toDate,action-timesheet-method-valid-to-date" canCopy="false">
 
 	    <panel sidebar="true" title="Actions" stacked="true">
 	    	<button name="confirmButton" onClick="action-timesheet-record-to-date,action-timesheet-method-valid-to-date,action-timesheet-record-confirm,save,action-timesheet-attrs-buttons,action-timesheet-attrs-from-date" title="Confirm" hideIf="statusSelect &gt; 1" icon="fa-check-square-o"/>

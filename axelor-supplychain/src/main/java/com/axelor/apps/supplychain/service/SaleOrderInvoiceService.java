@@ -57,12 +57,18 @@ public interface SaleOrderInvoiceService  extends Repository<SaleOrder>  {
 	public BigDecimal getAmountInvoiced(SaleOrder saleOrder, Long exceptInvoiceId, boolean includeInvoice);
 
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public Invoice generateSubscriptionInvoice(Subscription subscription,List<SaleOrderLine> saleOrderLineList,SaleOrder saleOrder) throws AxelorException;
+	public Invoice generateSubscriptionInvoice(List<Subscription> subscriptionList, SaleOrder saleOrder) throws AxelorException;
 
 	public void fillInLines(Invoice invoice);
 
 	@Transactional
-	public Invoice generateSubcriptionsForSaleOrderLine(SaleOrderLine saleOrderLine) throws AxelorException;
+	public Invoice generateSubcriptionInvoiceForSaleOrderLine(SaleOrderLine saleOrderLine) throws AxelorException;
+
+	@Transactional
+	public Invoice generateSubcriptionInvoiceForSaleOrder(SaleOrder saleOrder) throws AxelorException;
+
+	@Transactional
+	public Invoice generateSubcriptionInvoiceForSaleOrderAndListSubscrip(Long saleOrderId, List<Long> subscriptionIdList) throws AxelorException;
 }
 
 

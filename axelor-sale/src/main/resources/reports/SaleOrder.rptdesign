@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.3.2.v20140211-1400 Build &lt;4.3.2.v20140218-1056></property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.4.2.v201410272105 Build &lt;4.4.2.v20150217-1805></property>
     <list-property name="userProperties">
         <structure>
             <property name="name">test</property>
@@ -135,7 +135,9 @@
                 </ex-property>
             </list-property>
             <property name="odaDriverClass">org.postgresql.Driver</property>
-            <property name="odaURL">jdbc:postgresql://localhost:5432/axelor-business-suite-wip</property>
+            <property name="odaURL">jdbc:postgresql://localhost:5432/comeback-webapp</property>
+            <property name="odaUser">axelor</property>
+            <encrypted-property name="odaPassword" encryptionID="base64">Z3VpdGFyZTAzMDc5Mg==</encrypted-property>
         </oda-data-source>
     </data-sources>
     <data-sets>
@@ -1215,6 +1217,12 @@ where SaleOrder.id = ? ]]></xml-property>
                     <text-property name="displayName">totalDiscountAmount</text-property>
                     <text-property name="heading">totalDiscountAmount</text-property>
                 </structure>
+                <structure>
+                    <property name="columnName">sequence</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">sequence</text-property>
+                    <text-property name="heading">sequence</text-property>
+                </structure>
             </list-property>
             <list-property name="parameters">
                 <structure>
@@ -1285,6 +1293,11 @@ where SaleOrder.id = ? ]]></xml-property>
                         <property name="position">11</property>
                         <property name="name">totalDiscountAmount</property>
                         <property name="dataType">decimal</property>
+                    </structure>
+                    <structure>
+                        <property name="position">12</property>
+                        <property name="name">sequence</property>
+                        <property name="dataType">integer</property>
                     </structure>
                 </list-property>
             </structure>
@@ -1367,11 +1380,19 @@ where SaleOrder.id = ? ]]></xml-property>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">2</property>
                 </structure>
+                <structure>
+                    <property name="position">12</property>
+                    <property name="name">sequence</property>
+                    <property name="nativeName">sequence</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
+                </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[select SOLine.id, SOLine.description, SOLine.qty as "quantity", Unit.label_to_printing as "UnitCode", 
 SOLine.product_name as "ProductName", SOLine.price as "unit_price", SOLine.ex_tax_total, 
 Currency.code as "CurrencyCode", TaxLine.value as "tax_line", Product.code as "productCode", 
-SOLine.ex_tax_total - (SOLine.qty * SOLine.price) as "totalDiscountAmount" 
+SOLine.ex_tax_total - (SOLine.qty * SOLine.price) as "totalDiscountAmount",
+SOLine.sequence 
 from public.sale_sale_order as SaleOrder
 left outer join public.sale_sale_order_line as SOLine on (SOLine.sale_order = SaleOrder.id)
 left outer join public.base_product as Product on (SOLine.product = Product.id)
@@ -2815,6 +2836,12 @@ row["ClientPartFirstName"]
                                 <property name="dataType">decimal</property>
                                 <property name="allowExport">true</property>
                             </structure>
+                            <structure>
+                                <property name="name">sequence</property>
+                                <text-property name="displayName">sequence</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["sequence"]</expression>
+                                <property name="dataType">integer</property>
+                            </structure>
                         </list-property>
                         <column id="3713">
                             <list-property name="visibility">
@@ -3151,6 +3178,13 @@ row["ClientPartFirstName"]
                                 <expression name="expressionValue" type="javascript">row["description"]</expression>
                             </structure>
                             <property name="hideDetail">false</property>
+                            <list-property name="sort">
+                                <structure>
+                                    <expression name="key" type="javascript">row["sequence"]</expression>
+                                    <property name="direction">asc</property>
+                                    <property name="strength">-1</property>
+                                </structure>
+                            </list-property>
                             <header>
                                 <row id="3693">
                                     <cell id="3709">

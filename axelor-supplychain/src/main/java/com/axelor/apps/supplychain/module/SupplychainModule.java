@@ -25,6 +25,7 @@ import com.axelor.apps.purchase.service.PurchaseOrderLineServiceImpl;
 import com.axelor.apps.purchase.service.PurchaseOrderServiceImpl;
 import com.axelor.apps.sale.db.repo.SaleOrderManagementRepository;
 import com.axelor.apps.sale.service.OpportunitySaleOrderServiceImpl;
+import com.axelor.apps.sale.service.SaleOrderLineService;
 import com.axelor.apps.sale.service.SaleOrderServiceImpl;
 import com.axelor.apps.stock.service.LocationLineService;
 import com.axelor.apps.stock.service.LocationLineServiceImpl;
@@ -44,6 +45,7 @@ import com.axelor.apps.supplychain.service.PurchaseOrderInvoiceServiceImpl;
 import com.axelor.apps.supplychain.service.PurchaseOrderServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.SaleOrderInvoiceService;
 import com.axelor.apps.supplychain.service.SaleOrderInvoiceServiceImpl;
+import com.axelor.apps.supplychain.service.SaleOrderLineServiceSupplyChainImpl;
 import com.axelor.apps.supplychain.service.SaleOrderPurchaseService;
 import com.axelor.apps.supplychain.service.SaleOrderPurchaseServiceImpl;
 import com.axelor.apps.supplychain.service.SaleOrderServiceSupplychainImpl;
@@ -79,5 +81,6 @@ public class SupplychainModule extends AxelorModule {
         bind(SubscriptionService.class).to(SubscriptionServiceImpl.class);
         bind(OpportunitySaleOrderServiceImpl.class).to(OpportunitySaleOrderServiceSupplychainImpl.class);
         bind(CustomerCreditLineService.class).to(CustomerCreditLineServiceImpl.class);
+        bind(SaleOrderLineService.class).to(SaleOrderLineServiceSupplyChainImpl.class);
     }
 }

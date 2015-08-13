@@ -38,6 +38,7 @@ public interface IExceptionMessage {
 	static final String LEAVE_LINE = /*$$(*/ "il n'y a pas de ligne de créée sur l'employé %s pour la raison %s"/*)*/ ;
 	static final String LEAVE_ALLOW_NEGATIVE_VALUE_EMPLOYEE = /*$$(*/ "L'employé %s n'est pas autorisé à prendre des congés en avance"/*)*/ ;
 	static final String LEAVE_ALLOW_NEGATIVE_VALUE_REASON = /*$$(*/ "Il n'est pas possible de prendre des congés en avance pour le motif %s"/*)*/ ;
+	static final String LEAVE_HR_CONFIG_TEMPLATES = /*$$(*/ "No email sent, please configure HR config for company %s"/*)*/ ;
 
 	static final String EMPLOYEE_PLANNING = /*$$(*/ "Please, add a planning for employee : %s"/*)*/ ;
 	static final String EMPLOYEE_PUBLIC_HOLIDAY = /*$$(*/ "Please, add a public holiday planning for employee : %s"/*)*/ ;

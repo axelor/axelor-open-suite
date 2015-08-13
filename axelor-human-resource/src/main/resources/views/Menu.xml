@@ -52,6 +52,14 @@
 		<call class="com.axelor.apps.hr.web.expense.ExpenseController" method="validateExpense"/>
 	</action-method>
 	
+	<menuitem name="ventilate-expense" groups="MNGT,admins" parent="expense-root" title="Expenses to Ventilate" action="expense.ventilate"/>
+	
+	<action-view name="expense.ventilate" title="com.axelor.apps.hr.db.Expense">
+		<view type="grid" name="expense-grid"/>
+		<view type="form" name="expense-form"/>
+		<domain>self.statusSelect = 3 AND self.ventilated = false</domain>
+	</action-view>
+	
 	<menuitem name="historic-expense" groups="MNGT,admins" parent="expense-root" title="Historic colleague Expenses" action="expense.historic"/>
 	
 	<action-method name="expense.historic">

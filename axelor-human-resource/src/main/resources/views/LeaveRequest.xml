@@ -29,7 +29,7 @@
 	
 	<form name="leave-request-form" title="Leave Request" model="com.axelor.apps.hr.db.LeaveRequest"
 	    onNew="action-leave-request-record-default,action-leave-request-attrs-buttons" onLoad="action-leave-request-attrs-buttons"
-	    onSave="action-leave-request-validate-dates-on-save">
+	    onSave="action-leave-request-validate-dates-on-save" canCopy="false">
 
 	    <panel sidebar="true" title="Actions" stacked="true">
 	    	<button name="sendLeave" colSpan="4" title="Send Leave Request" onClick="action-leave-request-validate-dates-on-save,save, action-leave-request-method-manage-sent-leave-requests,action-leave-request-record-status-confirmed, save,action-leave-request-attrs-buttons,action-leave-request-method-send-mail-leave-request-sent" readonlyIf="statusSelect &gt; 1"/>
@@ -122,6 +122,7 @@
 	
 	<action-validate name="action-leave-request-validate-dates-on-save">
 		<error message="Invalide dates" if="((!(__user__ == user?.employee?.manager || (__user__ == user &amp;&amp; user?.employee?.manager == null) || __user__ == user?.employee?.manager?.employee?.manager) &amp;&amp; dateFrom &lt; __date__) || (dateTo &lt; dateFrom) || (dateTo == dateFrom &amp;&amp; startOnSelect &gt; endOnSelect))"/>
+		<error message="Duration equals 0" if="duration == 0"/>
 	</action-validate>
 	
 	<action-validate name="action-leave-request-validate-duration">

@@ -23,7 +23,7 @@
 
 	<form name="expense-form" title="Expense" model="com.axelor.apps.hr.db.Expense"
 	    onNew="action-expense-record-default,action-expense-attrs-buttons" onLoad="action-expense-attrs-buttons" width="large" canNew="false"
-	    onSave="action-expense-method-validate-date">
+	    onSave="action-expense-method-validate-date" canCopy="false">
 	    <panel sidebar="true" title="Actions" stacked="true">
 	    	<button name="sendExpenses" colSpan="4" title="Send Expenses" onClick="action-expense-record-status-confirmed, save,action-expense-attrs-buttons, action-expense-view-new-expense" readonlyIf="statusSelect &gt; 1"/>
 			<button name="ventilate" colSpan="4" title="Ventilate" onClick="action-expense-method-ventilate" readonlyIf="statusSelect != 3 || ventilated"/>

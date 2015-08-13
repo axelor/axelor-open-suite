@@ -28,6 +28,7 @@ import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.stock.db.StockMove;
+import com.axelor.apps.supplychain.db.Subscription;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
@@ -44,12 +45,24 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
 	protected SaleOrderLine saleOrderLine;
 	protected PurchaseOrderLine purchaseOrderLine;
 	protected StockMove stockMove;
+	protected Subscription subscription;
 
 	protected InvoiceLineGeneratorSupplyChain( Invoice invoice, Product product, String productName, String description, BigDecimal qty,
 			Unit unit, int sequence, boolean isTaxInvoice,
 			SaleOrderLine saleOrderLine, PurchaseOrderLine purchaseOrderLine, StockMove stockMove) {
 
+		this(invoice, product, productName, description, qty, unit, sequence, isTaxInvoice, saleOrderLine, purchaseOrderLine, stockMove, null);
+    }
+
+	protected InvoiceLineGeneratorSupplyChain( Invoice invoice, Product product, String productName, String description, BigDecimal qty,
+			Unit unit, int sequence, boolean isTaxInvoice,
+			SaleOrderLine saleOrderLine, PurchaseOrderLine purchaseOrderLine, StockMove stockMove, Subscription subscription) {
+
 		super(invoice, product, productName, description, qty, unit, sequence, isTaxInvoice);
+
+		if (subscription != null){
+			this.subscription = subscription;
+		}
 
 		if (saleOrderLine != null){
 			this.saleOrderLine = saleOrderLine;

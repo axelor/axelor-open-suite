@@ -210,15 +210,19 @@ public class SaleOrderInvoiceServiceImpl extends SaleOrderRepository implements 
 	}
 
 	//Need to create this new method because createInvoiceLines doesn't take into account lines with subscriptable products anymore
-	public List<InvoiceLine> createInvoiceLinesSubscription(Invoice invoice, List<SaleOrderLine> saleOrderLineList) throws AxelorException  {
+	public List<InvoiceLine> createSubscriptionInvoiceLines(Invoice invoice, List<Subscription> subscriptionList) throws AxelorException  {
 
 		List<InvoiceLine> invoiceLineList = new ArrayList<InvoiceLine>();
 
-		for(SaleOrderLine saleOrderLine : saleOrderLineList)  {
+		Integer sequence = 10;
 
-			invoiceLineList.addAll(this.createInvoiceLine(invoice, saleOrderLine));
+		for(Subscription subscription : subscriptionList)  {
 
-			saleOrderLine.setInvoiced(true);
+			invoiceLineList.addAll(this.createSubscriptionInvoiceLine(invoice, subscription, sequence));
+
+			subscription.setInvoiced(true);
+
+			sequence += 10;
 		}
 
 		return invoiceLineList;
@@ -238,6 +242,33 @@ public class SaleOrderInvoiceServiceImpl extends SaleOrderRepository implements 
 			public List<InvoiceLine> creates() throws AxelorException {
 
 				InvoiceLine invoiceLine = this.createInvoiceLine();
+
+				List<InvoiceLine> invoiceLines = new ArrayList<InvoiceLine>();
+				invoiceLines.add(invoiceLine);
+
+				return invoiceLines;
+			}
+		};
+
+		return invoiceLineGenerator.creates();
+	}
+
+	public List<InvoiceLine> createSubscriptionInvoiceLine(Invoice invoice, Subscription subscription, Integer sequence) throws AxelorException  {
+
+		SaleOrderLine saleOrderLine = subscription.getSaleOrderLine();
+		Product product = saleOrderLine.getProduct();
+
+		InvoiceLineGenerator invoiceLineGenerator = new InvoiceLineGeneratorSupplyChain(invoice, product, saleOrderLine.getProductName()+"("+saleOrderLine.getPeriodicity()+" "+I18n.get("month(s)")+")",
+				saleOrderLine.getDescription(), saleOrderLine.getQty(), saleOrderLine.getUnit(),
+				sequence, false, saleOrderLine, null, null, subscription)  {
+
+			@Override
+			public List<InvoiceLine> creates() throws AxelorException {
+
+				InvoiceLine invoiceLine = this.createInvoiceLine();
+
+				invoiceLine.setSubscriptionFromDate(subscription.getFromPeriodDate());
+				invoiceLine.setSubscriptionToDate(subscription.getToPeriodDate());
 
 				List<InvoiceLine> invoiceLines = new ArrayList<InvoiceLine>();
 				invoiceLines.add(invoiceLine);
@@ -307,12 +338,11 @@ public class SaleOrderInvoiceServiceImpl extends SaleOrderRepository implements 
 
 	@Override
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public Invoice generateSubscriptionInvoice(Subscription subscription,List<SaleOrderLine> saleOrderLineList ,SaleOrder saleOrder) throws AxelorException{
+	public Invoice generateSubscriptionInvoice(List<Subscription> subscriptionList, SaleOrder saleOrder) throws AxelorException{
 
-		if(saleOrderLineList == null || saleOrderLineList.isEmpty()){
+		if(subscriptionList == null || subscriptionList.isEmpty()){
 			return null;
 		}
-
 
 		InvoiceGenerator invoiceGenerator = this.createInvoiceGenerator(saleOrder);
 
@@ -320,30 +350,13 @@ public class SaleOrderInvoiceServiceImpl extends SaleOrderRepository implements 
 
 		invoice.setInAti(Beans.get(AccountConfigRepository.class).all().filter("self.company = ?1", saleOrder.getCompany()).fetchOne().getInvoiceInAti());
 
-
-		invoiceGenerator.populate(invoice, this.createInvoiceLinesSubscription(invoice, saleOrderLineList));
-
+		invoiceGenerator.populate(invoice, this.createSubscriptionInvoiceLines(invoice, subscriptionList));
 
 		this.fillInLines(invoice);
 
-
 		invoice.setIsSubscription(true);
 
-		invoice.setSubscriptionFromDate(subscription.getFromPeriodDate());
-
-		invoice.setSubscriptionToDate(subscription.getToPeriodDate());
-		int it = 0;
-		for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
-			//invoiceLine.setSaleOrderLine(saleOrderLine); it's done already in InvoiceLineGenerator
-			invoiceLine.setProductName(invoiceLine.getProduct().getName()+"("+saleOrderLineList.get(it).getPeriodicity()+" "+I18n.get("month(s)")+")");
-			it++;
-		}
-
 		Beans.get(InvoiceServiceImpl.class).save(invoice);
-
-		subscription.setInvoiced(true);
-
-		Beans.get(SubscriptionRepository.class).save(subscription);
 
 		return invoice;
 	}
@@ -357,52 +370,32 @@ public class SaleOrderInvoiceServiceImpl extends SaleOrderRepository implements 
 	}
 
 
+	@Override
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public Invoice generateSubcriptionsForSaleOrder(SaleOrder saleOrder) throws AxelorException{
+	public Invoice generateSubcriptionInvoiceForSaleOrder(SaleOrder saleOrder) throws AxelorException{
 		List<Subscription> subscriptionList = Beans.get(SubscriptionRepository.class).all().filter("self.invoicingDate <= ?1 AND self.saleOrderLine.saleOrder.id = ?2 AND self.invoiced = false",generalService.getTodayDate(),saleOrder.getId()).fetch();
 		if(subscriptionList != null && !subscriptionList.isEmpty()){
-			List<SaleOrderLine> saleOrderLineList = new ArrayList<SaleOrderLine>();
-			for (Subscription subscription : subscriptionList) {
-				SaleOrderLine saleOrderLine = saleOrderLineRepo.copy(subscription.getSaleOrderLine(), false);
-				if(saleOrderLine.getDescription() != null){
-					saleOrderLine.setDescription(subscription.getFromPeriodDate().toString()+I18n.get(" to ") + subscription.getToPeriodDate().toString() + saleOrderLine.getDescription());
-				}
-				else{
-					saleOrderLine.setDescription(subscription.getFromPeriodDate().toString()+I18n.get(" to ") + subscription.getToPeriodDate().toString());
-				}
-				saleOrderLineList.add(saleOrderLine);
-
-				subscription.setInvoiced(true);
-
-				Beans.get(SubscriptionRepository.class).save(subscription);
-			}
-			return this.generateSubscriptionInvoice(subscriptionList.get(0), saleOrderLineList,saleOrder);
+			return this.generateSubscriptionInvoice(subscriptionList,saleOrder);
 		}
 		return null;
 	}
 
 	@Override
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public Invoice generateSubcriptionsForSaleOrderLine(SaleOrderLine saleOrderLine) throws AxelorException{
+	public Invoice generateSubcriptionInvoiceForSaleOrderAndListSubscrip(Long saleOrderId, List<Long> subscriptionIdList) throws AxelorException{
+		List<Subscription> subscriptionList = Beans.get(SubscriptionRepository.class).all().filter("self.id IN (:subscriptionIds)").bind("subscriptionIds", subscriptionIdList).fetch();
+		if(subscriptionList != null && !subscriptionList.isEmpty()){
+			return this.generateSubscriptionInvoice(subscriptionList, this.find(saleOrderId));
+		}
+		return null;
+	}
+
+	@Override
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
+	public Invoice generateSubcriptionInvoiceForSaleOrderLine(SaleOrderLine saleOrderLine) throws AxelorException{
 		List<Subscription> subscriptionList = Beans.get(SubscriptionRepository.class).all().filter("self.invoicingDate <= ?1 AND self.saleOrderLine.id = ?2 AND self.invoiced = false",generalService.getTodayDate(),saleOrderLine.getId()).fetch();
 		if(subscriptionList != null && !subscriptionList.isEmpty()){
-			List<SaleOrderLine> saleOrderLineList = new ArrayList<SaleOrderLine>();
-			for (Subscription subscription : subscriptionList) {
-				saleOrderLineRepo.copy(saleOrderLine, false);
-				if(saleOrderLine.getDescription() != null){
-					saleOrderLine.setDescription(subscription.getFromPeriodDate().toString()+I18n.get(" to ") + subscription.getToPeriodDate().toString() + saleOrderLine.getDescription());
-				}
-				else{
-					saleOrderLine.setDescription(subscription.getFromPeriodDate().toString()+I18n.get(" to ") + subscription.getToPeriodDate().toString());
-				}
-
-				saleOrderLineList.add(saleOrderLine);
-
-				subscription.setInvoiced(true);
-
-				Beans.get(SubscriptionRepository.class).save(subscription);
-			}
-			return this.generateSubscriptionInvoice(subscriptionList.get(0), saleOrderLineList,saleOrderLine.getSaleOrder());
+			return this.generateSubscriptionInvoice(subscriptionList, saleOrderLine.getSaleOrder());
 		}
 		return null;
 	}

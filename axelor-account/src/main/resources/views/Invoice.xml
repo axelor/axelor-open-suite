@@ -45,6 +45,7 @@
 			<field name="project" if-module="axelor-business-project" onSelect="action-invoice-attrs-domain-project" form-view="project-form" grid-view="project-grid"/>
 			<field name="inAti" onChange="action-invoice-attrs-in-ati"/>
 			<field name="hideDiscount"/>
+			<field name="isSubscription" hidden="true"/>
 		</panel>
 	  
 		<panel title="Invoicing informations">
@@ -132,8 +133,6 @@
 			<panel title="Dates" readonlyIf="statusSelect == 3">
 				<field name="invoiceDate" onChange="action-invoice-record-due-date"/>
 				<field name="dueDate"/>
-				<field name="subscriptionFromDate" showIf="isSubscription"/>
-				<field name="subscriptionToDate" showIf="isSubscription"/>
 			</panel>
 		</panel-stack>
 	 

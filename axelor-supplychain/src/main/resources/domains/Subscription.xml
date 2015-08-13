@@ -14,8 +14,6 @@
   	<date name="fromPeriodDate" title="Date From"/>
   	<date name="toPeriodDate" title="Date To"/>
   	
-  	<decimal name="quantity"/>
-  	<decimal name="unitPrice"/>
   	<boolean name="invoiced" title="Invoiced ?"/>
   	
   </entity>
