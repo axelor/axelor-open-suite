@@ -69,7 +69,7 @@ public class WeeklyPlanningServiceImp implements WeeklyPlanningService{
 	@Override
 	public double workingDayValue(WeeklyPlanning planning, LocalDate date){
 		double value = 0;
-		DayPlanning dayPlanning = planning.getWeekDays().get(date.getDayOfWeek()-1);
+		DayPlanning dayPlanning = findDayPlanning(planning,date);
 		if(dayPlanning.getMorningFrom()!= null && dayPlanning.getMorningTo()!= null){
 			value+=0.5;
 		}
@@ -78,5 +78,44 @@ public class WeeklyPlanningServiceImp implements WeeklyPlanningService{
 		}
 		return value;
 	}
+	
+	public DayPlanning findDayPlanning(WeeklyPlanning planning, LocalDate date){
+		int dayOfWeek = date.getDayOfWeek();
+		switch (dayOfWeek) {
+		case 1:
+			return findDayWithName(planning,"monday");
+			
+		case 2:
+			return findDayWithName(planning,"tuesday");
+			
+		case 3:
+			return findDayWithName(planning,"wednesday");
+			
+		case 4:
+			return findDayWithName(planning,"thursday");
+			
+		case 5:
+			return findDayWithName(planning,"friday");
+			
+		case 6:
+			return findDayWithName(planning,"saturday");
+			
+		case 7:
+			return findDayWithName(planning,"sunday");
+			
 
+		default:
+			return findDayWithName(planning,"null");
+		}
+	}
+	
+	public DayPlanning findDayWithName(WeeklyPlanning planning, String name){
+		List<DayPlanning> dayPlanningList = planning.getWeekDays();
+		for (DayPlanning dayPlanning : dayPlanningList) {
+			if(dayPlanning.getName().equals(name)){
+				return dayPlanning;
+			}
+		}
+		return null;
+	}
 }
