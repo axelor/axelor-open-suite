@@ -135,9 +135,7 @@
                 </ex-property>
             </list-property>
             <property name="odaDriverClass">org.postgresql.Driver</property>
-            <property name="odaURL">jdbc:postgresql://localhost:5432/comeback-webapp</property>
-            <property name="odaUser">axelor</property>
-            <encrypted-property name="odaPassword" encryptionID="base64">Z3VpdGFyZTAzMDc5Mg==</encrypted-property>
+            <property name="odaURL">jdbc:postgresql://localhost:5432/</property>
         </oda-data-source>
     </data-sources>
     <data-sets>
@@ -450,6 +448,12 @@
                     <text-property name="displayName">displayTaxDetailOnPrinting</text-property>
                     <text-property name="heading">displayTaxDetailOnPrinting</text-property>
                 </structure>
+                <structure>
+                    <property name="columnName">subscription</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">subscription</text-property>
+                    <text-property name="heading">subscription</text-property>
+                </structure>
             </list-property>
             <list-property name="parameters">
                 <structure>
@@ -719,6 +723,11 @@
                     <structure>
                         <property name="position">51</property>
                         <property name="name">displayTaxDetailOnPrinting</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">52</property>
+                        <property name="name">subscription</property>
                         <property name="dataType">integer</property>
                     </structure>
                 </list-property>
@@ -1082,6 +1091,13 @@
                     <property name="dataType">integer</property>
                     <property name="nativeDataType">-7</property>
                 </structure>
+                <structure>
+                    <property name="position">52</property>
+                    <property name="name">subscription</property>
+                    <property name="nativeName">subscription</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">-7</property>
+                </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[select SaleOrder.id, SaleOrder.sale_order_seq as "saleOrderSeq", SaleOrder.creation_date as "CreationDate", 
 SalemanPartner.full_name as "SalemanName", SalemanPartner.fixed_phone as "SalemanPhone", 
@@ -1105,7 +1121,8 @@ PrintingSettings.pdf_header as "header", PrintingSettings.pdf_footer as "footer"
 InvoicingAddress.id as "invAddressId", DeliveryAddress.id as "delAddressId",
 Duration.name as "durationName", SaleOrder.delivery_date as "deliveryDate", SaleOrder.delivery_condition as "deliveryCondition",
 SaleOrder.hide_discount as "hideDiscount", SaleConfig.display_product_code_on_printing as "displayProductCodeOnPrinting", 
-SaleConfig.display_tax_detail_on_printing as "displayTaxDetailOnPrinting"  
+SaleConfig.display_tax_detail_on_printing as "displayTaxDetailOnPrinting",
+SaleOrder.subscription
 from public.sale_sale_order as SaleOrder
 left outer join public.base_company as Company on (SaleOrder.company = Company.id)
 left outer join public.meta_file as MetaFile on (MetaFile.id = Company.logo)
@@ -1223,6 +1240,42 @@ where SaleOrder.id = ? ]]></xml-property>
                     <text-property name="displayName">sequence</text-property>
                     <text-property name="heading">sequence</text-property>
                 </structure>
+                <structure>
+                    <property name="columnName">periodicity</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">periodicity</text-property>
+                    <text-property name="heading">periodicity</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">subscription</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">subscription</text-property>
+                    <text-property name="heading">subscription</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">from_period_date</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">from_period_date</text-property>
+                    <text-property name="heading">from_period_date</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">to_period_date</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">to_period_date</text-property>
+                    <text-property name="heading">to_period_date</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">product_type_select</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">product_type_select</text-property>
+                    <text-property name="heading">product_type_select</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">subscription_18</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">subscription</text-property>
+                    <text-property name="heading">subscription</text-property>
+                </structure>
             </list-property>
             <list-property name="parameters">
                 <structure>
@@ -1297,6 +1350,36 @@ where SaleOrder.id = ? ]]></xml-property>
                     <structure>
                         <property name="position">12</property>
                         <property name="name">sequence</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">13</property>
+                        <property name="name">periodicity</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">14</property>
+                        <property name="name">subscription</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">15</property>
+                        <property name="name">from_period_date</property>
+                        <property name="dataType">date</property>
+                    </structure>
+                    <structure>
+                        <property name="position">16</property>
+                        <property name="name">to_period_date</property>
+                        <property name="dataType">date</property>
+                    </structure>
+                    <structure>
+                        <property name="position">17</property>
+                        <property name="name">product_type_select</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">18</property>
+                        <property name="name">subscription_18</property>
                         <property name="dataType">integer</property>
                     </structure>
                 </list-property>
@@ -1387,18 +1470,64 @@ where SaleOrder.id = ? ]]></xml-property>
                     <property name="dataType">integer</property>
                     <property name="nativeDataType">4</property>
                 </structure>
+                <structure>
+                    <property name="position">13</property>
+                    <property name="name">periodicity</property>
+                    <property name="nativeName">periodicity</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">14</property>
+                    <property name="name">subscription</property>
+                    <property name="nativeName">subscription</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">-7</property>
+                </structure>
+                <structure>
+                    <property name="position">15</property>
+                    <property name="name">from_period_date</property>
+                    <property name="nativeName">from_period_date</property>
+                    <property name="dataType">date</property>
+                    <property name="nativeDataType">91</property>
+                </structure>
+                <structure>
+                    <property name="position">16</property>
+                    <property name="name">to_period_date</property>
+                    <property name="nativeName">to_period_date</property>
+                    <property name="dataType">date</property>
+                    <property name="nativeDataType">91</property>
+                </structure>
+                <structure>
+                    <property name="position">17</property>
+                    <property name="name">product_type_select</property>
+                    <property name="nativeName">product_type_select</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">18</property>
+                    <property name="name">subscription_18</property>
+                    <property name="nativeName">subscription</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">-7</property>
+                </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[select SOLine.id, SOLine.description, SOLine.qty as "quantity", Unit.label_to_printing as "UnitCode", 
 SOLine.product_name as "ProductName", SOLine.price as "unit_price", SOLine.ex_tax_total, 
 Currency.code as "CurrencyCode", TaxLine.value as "tax_line", Product.code as "productCode", 
 SOLine.ex_tax_total - (SOLine.qty * SOLine.price) as "totalDiscountAmount",
-SOLine.sequence 
+SOLine.sequence, select_item.title as periodicity, SaleOrder.subscription, Subscription.from_period_date,
+Subscription.to_period_date, Product.product_type_select, SaleOrder.subscription
 from public.sale_sale_order as SaleOrder
 left outer join public.sale_sale_order_line as SOLine on (SOLine.sale_order = SaleOrder.id)
+	left outer join public.supplychain_subscription as Subscription on (Subscription.sale_order_line = SOLine.id)
 left outer join public.base_product as Product on (SOLine.product = Product.id)
 left outer join public.base_unit as Unit on (SOLine.unit = Unit.id)
 left outer join public.base_currency as Currency on (SaleOrder.currency = Currency.id)
 left outer join public.account_tax_line as TaxLine on (SOLine.tax_line = TaxLine.id)
+LEFT JOIN meta_select mselect ON (mselect.name = 'product.periodicity.subscription.select')
+LEFT JOIN meta_select_item select_item ON (select_item.select_id = mselect.id AND select_item.value = CAST(SOLine.periodicity AS CHAR))
 where SaleOrder.id = ?]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
@@ -1442,6 +1571,12 @@ where SaleOrder.id = ?]]></xml-property>
                     <text-property name="displayName">tax_total</text-property>
                     <text-property name="heading">tax_total</text-property>
                 </structure>
+                <structure>
+                    <property name="columnName">subscription</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">subscription</text-property>
+                    <text-property name="heading">subscription</text-property>
+                </structure>
             </list-property>
             <list-property name="parameters">
                 <structure>
@@ -1473,6 +1608,11 @@ where SaleOrder.id = ?]]></xml-property>
                         <property name="name">tax_total</property>
                         <property name="dataType">decimal</property>
                     </structure>
+                    <structure>
+                        <property name="position">4</property>
+                        <property name="name">subscription</property>
+                        <property name="dataType">integer</property>
+                    </structure>
                 </list-property>
             </structure>
             <property name="dataSource">Data Source</property>
@@ -1498,8 +1638,15 @@ where SaleOrder.id = ?]]></xml-property>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">2</property>
                 </structure>
+                <structure>
+                    <property name="position">4</property>
+                    <property name="name">subscription</property>
+                    <property name="nativeName">subscription</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">-7</property>
+                </structure>
             </list-property>
-            <xml-property name="queryText"><![CDATA[select TaxLine.value, SOLineTax.ex_tax_base, SOLineTax.tax_total
+            <xml-property name="queryText"><![CDATA[select TaxLine.value, SOLineTax.ex_tax_base, SOLineTax.tax_total, SOrder.subscription
 from public.sale_sale_order_line_tax as SOLineTax
 inner join public.sale_sale_order as SOrder on (SOLineTax.sale_order = SOrder.id)
 left outer join public.account_tax_line as TaxLine on (SOLineTax.tax_line = TaxLine.id)
@@ -1969,6 +2116,19 @@ where LangTranslate.key = ? and LangTranslate.language = ?]]></xml-property>
                     <property name="name">displayTaxDetailOnPrinting</property>
                     <text-property name="displayName">displayTaxDetailOnPrinting</text-property>
                     <expression name="expression" type="javascript">dataSetRow["displayTaxDetailOnPrinting"]</expression>
+                    <property name="dataType">integer</property>
+                </structure>
+                <structure>
+                    <property name="name">total_discount_not_sub</property>
+                    <text-property name="displayName">total_discount_not_sub</text-property>
+                    <expression name="expression" type="javascript">1</expression>
+                    <property name="dataType">decimal</property>
+                    <property name="allowExport">true</property>
+                </structure>
+                <structure>
+                    <property name="name">subscription</property>
+                    <text-property name="displayName">subscription</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["subscription"]</expression>
                     <property name="dataType">integer</property>
                 </structure>
             </list-property>
@@ -2842,6 +3002,242 @@ row["ClientPartFirstName"]
                                 <expression name="expression" type="javascript">dataSetRow["sequence"]</expression>
                                 <property name="dataType">integer</property>
                             </structure>
+                            <structure>
+                                <property name="name">periodicity</property>
+                                <text-property name="displayName">periodicity</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["periodicity"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">subscription</property>
+                                <text-property name="displayName">subscription</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["subscription"]</expression>
+                                <property name="dataType">integer</property>
+                            </structure>
+                            <structure>
+                                <property name="name">from_period_date</property>
+                                <text-property name="displayName">from_period_date</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["from_period_date"]</expression>
+                                <property name="dataType">date</property>
+                            </structure>
+                            <structure>
+                                <property name="name">to_period_date</property>
+                                <text-property name="displayName">to_period_date</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["to_period_date"]</expression>
+                                <property name="dataType">date</property>
+                            </structure>
+                            <structure>
+                                <property name="name">number_subscriptions</property>
+                                <text-property name="displayName">number_subscriptions</text-property>
+                                <property name="dataType">integer</property>
+                                <simple-property-list name="aggregateOn">
+                                    <value>SaleOrderLine</value>
+                                </simple-property-list>
+                                <property name="aggregateFunction">COUNT</property>
+                                <list-property name="arguments">
+                                    <structure>
+                                        <property name="name">Expression</property>
+                                        <expression name="value" type="javascript">dataSetRow["subscription"]</expression>
+                                    </structure>
+                                </list-property>
+                                <expression name="filterExpr" type="javascript">dataSetRow["subscription"]</expression>
+                                <property name="allowExport">true</property>
+                            </structure>
+                            <structure>
+                                <property name="name">product_type_select</property>
+                                <text-property name="displayName">product_type_select</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["product_type_select"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">Aggregation_nb_sub</property>
+                                <text-property name="displayName">nb_sub</text-property>
+                                <property name="dataType">integer</property>
+                                <simple-property-list name="aggregateOn">
+                                    <value>SaleOrderLine</value>
+                                </simple-property-list>
+                                <property name="aggregateFunction">COUNT</property>
+                                <list-property name="arguments">
+                                    <structure>
+                                        <property name="name">Expression</property>
+                                        <expression name="value" type="javascript">dataSetRow["periodicity"]</expression>
+                                    </structure>
+                                </list-property>
+                                <expression name="filterExpr" type="javascript">dataSetRow["product_type_select"]=='subscriptable'</expression>
+                                <property name="allowExport">true</property>
+                            </structure>
+                            <structure>
+                                <property name="name">Column Binding_tot_sub</property>
+                                <text-property name="displayName">tot_sub</text-property>
+                                <expression name="expression" type="javascript">if(row["Aggregation_nb_sub"]!=0)row["ex_tax_total"]/row["Aggregation_nb_sub"]</expression>
+                                <property name="dataType">decimal</property>
+                                <property name="allowExport">true</property>
+                            </structure>
+                            <structure>
+                                <property name="name">Aggregation_start_sub</property>
+                                <text-property name="displayName">start_sub_date</text-property>
+                                <property name="dataType">date</property>
+                                <simple-property-list name="aggregateOn">
+                                    <value>SaleOrderLine</value>
+                                </simple-property-list>
+                                <property name="aggregateFunction">MIN</property>
+                                <list-property name="arguments">
+                                    <structure>
+                                        <property name="name">Expression</property>
+                                        <expression name="value" type="javascript">dataSetRow["from_period_date"]</expression>
+                                    </structure>
+                                </list-property>
+                                <property name="allowExport">true</property>
+                            </structure>
+                            <structure>
+                                <property name="name">Aggregation_end_sub</property>
+                                <text-property name="displayName">end_sub_date</text-property>
+                                <property name="dataType">date</property>
+                                <simple-property-list name="aggregateOn">
+                                    <value>SaleOrderLine</value>
+                                </simple-property-list>
+                                <property name="aggregateFunction">MAX</property>
+                                <list-property name="arguments">
+                                    <structure>
+                                        <property name="name">Expression</property>
+                                        <expression name="value" type="javascript">dataSetRow["to_period_date"]</expression>
+                                    </structure>
+                                </list-property>
+                                <property name="allowExport">true</property>
+                            </structure>
+                            <structure>
+                                <property name="name">Column Binding_sub_label</property>
+                                <text-property name="displayName">sub_label</text-property>
+                                <expression name="expression" type="javascript">row["Aggregation_nb_sub"]+" "+row["Aggregation_start_sub"]+" "+row["Aggregation_end_sub"]</expression>
+                                <property name="dataType">string</property>
+                                <property name="allowExport">true</property>
+                            </structure>
+                            <structure>
+                                <property name="name">sumDiscountLineNoSub</property>
+                                <text-property name="displayName">sumDiscountLineNoSub</text-property>
+                                <property name="dataType">float</property>
+                                <property name="aggregateFunction">SUM</property>
+                                <list-property name="arguments">
+                                    <structure>
+                                        <property name="name">Expression</property>
+                                        <expression name="value" type="javascript">dataSetRow["totalDiscountAmount"]</expression>
+                                    </structure>
+                                </list-property>
+                                <expression name="filterExpr" type="javascript">dataSetRow["product_type_select"]!='subscriptable'</expression>
+                                <property name="allowExport">true</property>
+                            </structure>
+                            <structure>
+                                <property name="name">sumDiscountLineSub</property>
+                                <text-property name="displayName">sumDiscountLineSub</text-property>
+                                <property name="dataType">float</property>
+                                <property name="aggregateFunction">SUM</property>
+                                <list-property name="arguments">
+                                    <structure>
+                                        <property name="name">Expression</property>
+                                        <expression name="value" type="javascript">dataSetRow["ex_tax_total"]-(dataSetRow["unit_price"]*dataSetRow["quantity"]*row["Aggregation_nb_sub"])</expression>
+                                    </structure>
+                                </list-property>
+                                <expression name="filterExpr" type="javascript">dataSetRow["product_type_select"]=='subscriptable'</expression>
+                                <property name="allowExport">true</property>
+                            </structure>
+                            <structure>
+                                <property name="name">sumNegativeExtaxTotalNoSub</property>
+                                <text-property name="displayName">sumNegativeExtaxTotalNoSub</text-property>
+                                <property name="dataType">float</property>
+                                <property name="aggregateFunction">SUM</property>
+                                <list-property name="arguments">
+                                    <structure>
+                                        <property name="name">Expression</property>
+                                        <expression name="value" type="javascript">dataSetRow["ex_tax_total"]</expression>
+                                    </structure>
+                                </list-property>
+                                <expression name="filterExpr" type="javascript">dataSetRow["ex_tax_total"]&lt;0 &amp;&amp; dataSetRow["product_type_select"]!='subscriptable'</expression>
+                                <property name="allowExport">true</property>
+                            </structure>
+                            <structure>
+                                <property name="name">sumNegativeExtaxTotalSub</property>
+                                <text-property name="displayName">sumNegativeExtaxTotalSub</text-property>
+                                <property name="dataType">float</property>
+                                <property name="aggregateFunction">SUM</property>
+                                <list-property name="arguments">
+                                    <structure>
+                                        <property name="name">Expression</property>
+                                        <expression name="value" type="javascript">dataSetRow["ex_tax_total"]</expression>
+                                    </structure>
+                                </list-property>
+                                <expression name="filterExpr" type="javascript">dataSetRow["ex_tax_total"]&lt;0 &amp;&amp; dataSetRow["product_type_select"]=='subscriptable'</expression>
+                                <property name="allowExport">true</property>
+                            </structure>
+                            <structure>
+                                <property name="name">totalDiscountNoSub</property>
+                                <text-property name="displayName">totalDiscountNoSub</text-property>
+                                <expression name="expression" type="javascript">row["sumDiscountLineNoSub"]+row["sumNegativeExtaxTotalNoSub"]</expression>
+                                <property name="dataType">decimal</property>
+                                <property name="allowExport">true</property>
+                            </structure>
+                            <structure>
+                                <property name="name">totalDiscountSub</property>
+                                <text-property name="displayName">totalDiscountNoSub</text-property>
+                                <expression name="expression" type="javascript">row["sumDiscountLineSub"]+row["sumNegativeExtaxTotalSub"]</expression>
+                                <property name="dataType">decimal</property>
+                                <property name="allowExport">true</property>
+                            </structure>
+                            <structure>
+                                <property name="name">sumExTaxTotalNoSub</property>
+                                <text-property name="displayName">sumExTaxTotalNoSub</text-property>
+                                <property name="dataType">float</property>
+                                <property name="aggregateFunction">SUM</property>
+                                <list-property name="arguments">
+                                    <structure>
+                                        <property name="name">Expression</property>
+                                        <expression name="value" type="javascript">dataSetRow["ex_tax_total"]</expression>
+                                    </structure>
+                                </list-property>
+                                <expression name="filterExpr" type="javascript">dataSetRow["product_type_select"]!='subscriptable'</expression>
+                                <property name="allowExport">true</property>
+                            </structure>
+                            <structure>
+                                <property name="name">sumExTaxTotalSub</property>
+                                <text-property name="displayName">sumExTaxTotalSub</text-property>
+                                <property name="dataType">float</property>
+                                <property name="aggregateFunction">SUM</property>
+                                <list-property name="arguments">
+                                    <structure>
+                                        <property name="name">Expression</property>
+                                        <expression name="value" type="javascript">dataSetRow["ex_tax_total"]</expression>
+                                    </structure>
+                                </list-property>
+                                <expression name="filterExpr" type="javascript">dataSetRow["product_type_select"]=='subscriptable'</expression>
+                                <property name="allowExport">true</property>
+                            </structure>
+                            <structure>
+                                <property name="name">totExTaxTotalNoSub</property>
+                                <text-property name="displayName">totExTaxTotalNoSub</text-property>
+                                <expression name="expression" type="javascript">row["sumExTaxTotalNoSub"]</expression>
+                                <property name="dataType">decimal</property>
+                                <property name="allowExport">true</property>
+                            </structure>
+                            <structure>
+                                <property name="name">totExTaxTotalSub</property>
+                                <text-property name="displayName">totExTaxTotalNoSub</text-property>
+                                <expression name="expression" type="javascript">row["sumExTaxTotalSub"]</expression>
+                                <property name="dataType">decimal</property>
+                                <property name="allowExport">true</property>
+                            </structure>
+                            <structure>
+                                <property name="name">discount_sub</property>
+                                <text-property name="displayName">discount_sub</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["ex_tax_total"]-(dataSetRow["unit_price"]*dataSetRow["quantity"]*row["Aggregation_nb_sub"])</expression>
+                                <property name="dataType">decimal</property>
+                                <property name="allowExport">true</property>
+                            </structure>
+                            <structure>
+                                <property name="name">tot_ex_tax_total_all_sub</property>
+                                <text-property name="displayName">tot_ex_tax_total_all_sub</text-property>
+                                <expression name="expression" type="javascript">row._outer["ex_tax_total"]-row["totExTaxTotalNoSub"]</expression>
+                                <property name="dataType">decimal</property>
+                                <property name="allowExport">true</property>
+                            </structure>
                         </list-property>
                         <column id="3713">
                             <list-property name="visibility">
@@ -3212,9 +3608,50 @@ row["ClientPartFirstName"]
                                         </text>
                                         <text id="3779">
                                             <property name="fontSize">8pt</property>
+                                            <list-property name="visibility">
+                                                <structure>
+                                                    <property name="format">all</property>
+                                                    <expression name="valueExpr" type="javascript">row["description"] == null || row["description"] == ''</expression>
+                                                </structure>
+                                            </list-property>
                                             <property name="contentType">html</property>
                                             <text-property name="content"><![CDATA[<I><VALUE-OF format="HTML">row["description"]</VALUE-OF></I>
 ]]></text-property>
+                                        </text>
+                                        <text id="4187">
+                                            <property name="fontSize">8pt</property>
+                                            <property name="dataSet">TranslateDS</property>
+                                            <list-property name="visibility">
+                                                <structure>
+                                                    <property name="format">all</property>
+                                                    <expression name="valueExpr" type="javascript">row._outer["product_type_select"]!='subscriptable'</expression>
+                                                </structure>
+                                            </list-property>
+                                            <list-property name="paramBindings">
+                                                <structure>
+                                                    <property name="paramName">param_1</property>
+                                                    <simple-property-list name="expression">
+                                                        <value type="javascript">if(row["Aggregation_nb_sub"] == 1)'Subscription'
+else 'Subscriptions'</value>
+                                                    </simple-property-list>
+                                                </structure>
+                                            </list-property>
+                                            <list-property name="boundDataColumns">
+                                                <structure>
+                                                    <property name="name">key</property>
+                                                    <text-property name="displayName">key</text-property>
+                                                    <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                                    <property name="dataType">string</property>
+                                                </structure>
+                                                <structure>
+                                                    <property name="name">translation</property>
+                                                    <text-property name="displayName">translation</text-property>
+                                                    <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                                    <property name="dataType">string</property>
+                                                </structure>
+                                            </list-property>
+                                            <property name="contentType">html</property>
+                                            <text-property name="content"><![CDATA[<I><VALUE-OF>row._outer["Aggregation_nb_sub"]</VALUE-OF><VALUE-OF format="^">" "</VALUE-OF><VALUE-OF>row["translation"]</VALUE-OF><VALUE-OF format="^">":"</VALUE-OF><VALUE-OF format="dd/MM/yyyy">row._outer["Aggregation_start_sub"]</VALUE-OF><VALUE-OF format="^">"-"</VALUE-OF><VALUE-OF format="dd/MM/yyyy">row._outer["Aggregation_end_sub"]</VALUE-OF></I>]]></text-property>
                                         </text>
                                     </cell>
                                     <cell id="3695">
@@ -3240,6 +3677,41 @@ row["ClientPartFirstName"]
                                             <property name="contentType">html</property>
                                             <text-property name="content"><![CDATA[<VALUE-OF>row["quantity"]</VALUE-OF> <VALUE-OF format="^">"  "</VALUE-OF><VALUE-OF>row["UnitCode"]</VALUE-OF>]]></text-property>
                                         </text>
+                                        <text id="4182">
+                                            <property name="fontSize">8pt</property>
+                                            <property name="textAlign">center</property>
+                                            <property name="dataSet">TranslateDS</property>
+                                            <list-property name="visibility">
+                                                <structure>
+                                                    <property name="format">all</property>
+                                                    <expression name="valueExpr" type="javascript">row._outer["product_type_select"]!='subscriptable'</expression>
+                                                </structure>
+                                            </list-property>
+                                            <list-property name="paramBindings">
+                                                <structure>
+                                                    <property name="paramName">param_1</property>
+                                                    <simple-property-list name="expression">
+                                                        <value type="javascript">row["periodicity"]</value>
+                                                    </simple-property-list>
+                                                </structure>
+                                            </list-property>
+                                            <list-property name="boundDataColumns">
+                                                <structure>
+                                                    <property name="name">key</property>
+                                                    <text-property name="displayName">key</text-property>
+                                                    <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                                    <property name="dataType">string</property>
+                                                </structure>
+                                                <structure>
+                                                    <property name="name">translation</property>
+                                                    <text-property name="displayName">translation</text-property>
+                                                    <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                                    <property name="dataType">string</property>
+                                                </structure>
+                                            </list-property>
+                                            <property name="contentType">html</property>
+                                            <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+                                        </text>
                                     </cell>
                                     <cell id="3697">
                                         <property name="borderLeftStyle">solid</property>
@@ -3264,12 +3736,23 @@ row["ClientPartFirstName"]
                                             <list-property name="visibility">
                                                 <structure>
                                                     <property name="format">all</property>
-                                                    <expression name="valueExpr" type="javascript">row["totalDiscountAmount"] >= -0.1</expression>
+                                                    <expression name="valueExpr" type="javascript">row["totalDiscountAmount"] >= -0.1 || row["product_type_select"]=='subscriptable'</expression>
                                                 </structure>
                                             </list-property>
                                             <property name="contentType">html</property>
                                             <text-property name="content"><![CDATA[<VALUE-OF format="#0.00">row["totalDiscountAmount"]</VALUE-OF>]]></text-property>
                                         </text>
+                                        <data id="4282">
+                                            <property name="fontSize">8pt</property>
+                                            <property name="textAlign">right</property>
+                                            <list-property name="visibility">
+                                                <structure>
+                                                    <property name="format">all</property>
+                                                    <expression name="valueExpr" type="javascript">row["discount_sub"] >= -0.1 || row["product_type_select"]!='subscriptable'</expression>
+                                                </structure>
+                                            </list-property>
+                                            <property name="resultSetColumn">discount_sub</property>
+                                        </data>
                                     </cell>
                                     <cell id="3698">
                                         <property name="borderLeftStyle">solid</property>
@@ -3277,9 +3760,30 @@ row["ClientPartFirstName"]
                                         <text id="3461">
                                             <property name="fontSize">8pt</property>
                                             <property name="textAlign">right</property>
+                                            <list-property name="visibility">
+                                                <structure>
+                                                    <property name="format">all</property>
+                                                    <expression name="valueExpr" type="javascript">row["product_type_select"] == 'subscriptable'</expression>
+                                                </structure>
+                                            </list-property>
                                             <property name="contentType">html</property>
                                             <text-property name="content"><![CDATA[<VALUE-OF format="#0.00">row["ex_tax_total"]</VALUE-OF>]]></text-property>
                                         </text>
+                                        <data id="4184">
+                                            <property name="fontSize">8pt</property>
+                                            <structure name="numberFormat">
+                                                <property name="category">Fixed</property>
+                                                <property name="pattern">###0.00{RoundingMode=HALF_UP}</property>
+                                            </structure>
+                                            <property name="textAlign">right</property>
+                                            <list-property name="visibility">
+                                                <structure>
+                                                    <property name="format">all</property>
+                                                    <expression name="valueExpr" type="javascript">row["product_type_select"] != 'subscriptable'</expression>
+                                                </structure>
+                                            </list-property>
+                                            <property name="resultSetColumn">Column Binding_tot_sub</property>
+                                        </data>
                                     </cell>
                                     <cell id="3699">
                                         <property name="colSpan">1</property>
@@ -3292,6 +3796,52 @@ row["ClientPartFirstName"]
                                             <property name="contentType">html</property>
                                             <text-property name="content"><![CDATA[<VALUE-OF>row["CurrencyCode"]</VALUE-OF>]]></text-property>
                                         </text>
+                                    </cell>
+                                </row>
+                                <row id="4188">
+                                    <cell id="4189">
+                                        <property name="borderLeftStyle">solid</property>
+                                        <property name="borderLeftWidth">thin</property>
+                                        <property name="borderRightStyle">solid</property>
+                                        <property name="borderRightWidth">thin</property>
+                                    </cell>
+                                    <cell id="4190">
+                                        <property name="borderLeftStyle">solid</property>
+                                        <property name="borderLeftWidth">thin</property>
+                                        <property name="borderRightStyle">solid</property>
+                                        <property name="borderRightWidth">thin</property>
+                                    </cell>
+                                    <cell id="4191">
+                                        <property name="borderLeftStyle">solid</property>
+                                        <property name="borderLeftWidth">thin</property>
+                                        <property name="borderRightStyle">solid</property>
+                                        <property name="borderRightWidth">thin</property>
+                                    </cell>
+                                    <cell id="4192">
+                                        <property name="borderLeftStyle">solid</property>
+                                        <property name="borderLeftWidth">thin</property>
+                                        <property name="borderRightStyle">solid</property>
+                                        <property name="borderRightWidth">thin</property>
+                                    </cell>
+                                    <cell id="4193">
+                                        <property name="borderLeftStyle">solid</property>
+                                        <property name="borderLeftWidth">thin</property>
+                                        <property name="borderRightStyle">solid</property>
+                                        <property name="borderRightWidth">thin</property>
+                                    </cell>
+                                    <cell id="4194">
+                                        <property name="borderLeftStyle">solid</property>
+                                        <property name="borderLeftWidth">thin</property>
+                                        <property name="borderRightStyle">solid</property>
+                                        <property name="borderRightWidth">thin</property>
+                                    </cell>
+                                    <cell id="4195">
+                                        <property name="borderLeftStyle">solid</property>
+                                        <property name="borderLeftWidth">thin</property>
+                                    </cell>
+                                    <cell id="4196">
+                                        <property name="borderRightStyle">solid</property>
+                                        <property name="borderRightWidth">thin</property>
                                     </cell>
                                 </row>
                             </header>
@@ -3384,7 +3934,7 @@ row["ClientPartFirstName"]
                         <list-property name="visibility">
                             <structure>
                                 <property name="format">all</property>
-                                <expression name="valueExpr" type="javascript">row._outer["displayTaxDetailOnPrinting"] != 1</expression>
+                                <expression name="valueExpr" type="javascript">row._outer["displayTaxDetailOnPrinting"] != 1 || row["subscription"]</expression>
                             </structure>
                         </list-property>
                         <list-property name="boundDataColumns">
@@ -3405,6 +3955,12 @@ row["ClientPartFirstName"]
                                 <text-property name="displayName">tax_total</text-property>
                                 <expression name="expression" type="javascript">dataSetRow["tax_total"]</expression>
                                 <property name="dataType">decimal</property>
+                            </structure>
+                            <structure>
+                                <property name="name">subscription</property>
+                                <text-property name="displayName">subscription</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["subscription"]</expression>
+                                <property name="dataType">integer</property>
                             </structure>
                         </list-property>
                         <column id="3506">
@@ -3633,7 +4189,7 @@ row["ClientPartFirstName"]
                         <list-property name="visibility">
                             <structure>
                                 <property name="format">all</property>
-                                <expression name="valueExpr" type="javascript">row._outer["hideDiscount"]== 1</expression>
+                                <expression name="valueExpr" type="javascript">row._outer["hideDiscount"]== 1 || row._outer["subscription"]</expression>
                             </structure>
                         </list-property>
                         <list-property name="paramBindings">
@@ -3678,7 +4234,7 @@ row["ClientPartFirstName"]
                         <list-property name="visibility">
                             <structure>
                                 <property name="format">all</property>
-                                <expression name="valueExpr" type="javascript">row._outer["hideDiscount"]== 1</expression>
+                                <expression name="valueExpr" type="javascript">row._outer["hideDiscount"]== 1 || row._outer["subscription"]</expression>
                             </structure>
                         </list-property>
                         <property name="resultSetColumn">totalWithoutDiscount</property>
@@ -3696,7 +4252,7 @@ row["ClientPartFirstName"]
                         <list-property name="visibility">
                             <structure>
                                 <property name="format">all</property>
-                                <expression name="valueExpr" type="javascript">row["hideDiscount"] == 1</expression>
+                                <expression name="valueExpr" type="javascript">row["hideDiscount"] == 1 || row["subscription"]</expression>
                             </structure>
                         </list-property>
                         <property name="contentType">html</property>
@@ -3721,7 +4277,7 @@ row["ClientPartFirstName"]
                         <list-property name="visibility">
                             <structure>
                                 <property name="format">all</property>
-                                <expression name="valueExpr" type="javascript">row._outer["hideDiscount"]== 1</expression>
+                                <expression name="valueExpr" type="javascript">row._outer["hideDiscount"]== 1 || row._outer["subscription"]</expression>
                             </structure>
                         </list-property>
                         <list-property name="paramBindings">
@@ -3765,7 +4321,7 @@ row["ClientPartFirstName"]
                         <list-property name="visibility">
                             <structure>
                                 <property name="format">all</property>
-                                <expression name="valueExpr" type="javascript">row._outer["hideDiscount"]== 1</expression>
+                                <expression name="valueExpr" type="javascript">row._outer["hideDiscount"]== 1 || row._outer["subscription"]</expression>
                             </structure>
                         </list-property>
                         <property name="resultSetColumn">totalDiscount</property>
@@ -3781,7 +4337,7 @@ row["ClientPartFirstName"]
                         <list-property name="visibility">
                             <structure>
                                 <property name="format">all</property>
-                                <expression name="valueExpr" type="javascript">row["hideDiscount"] == 1</expression>
+                                <expression name="valueExpr" type="javascript">row["hideDiscount"] == 1 || row["subscription"]</expression>
                             </structure>
                         </list-property>
                         <property name="contentType">html</property>
@@ -3803,6 +4359,12 @@ row["ClientPartFirstName"]
                         <property name="fontWeight">normal</property>
                         <property name="textAlign">left</property>
                         <property name="dataSet">TranslateDS</property>
+                        <list-property name="visibility">
+                            <structure>
+                                <property name="format">all</property>
+                                <expression name="valueExpr" type="javascript">row._outer["subscription"]</expression>
+                            </structure>
+                        </list-property>
                         <list-property name="paramBindings">
                             <structure>
                                 <property name="paramName">param_1</property>
@@ -3836,6 +4398,12 @@ row["ClientPartFirstName"]
                         <property name="fontSize">9pt</property>
                         <property name="fontWeight">normal</property>
                         <property name="textAlign">right</property>
+                        <list-property name="visibility">
+                            <structure>
+                                <property name="format">all</property>
+                                <expression name="valueExpr" type="javascript">row["subscription"]</expression>
+                            </structure>
+                        </list-property>
                         <property name="contentType">html</property>
                         <text-property name="content"><![CDATA[<VALUE-OF format="#0.00">row["ex_tax_total"]</VALUE-OF>]]></text-property>
                     </text>
@@ -3847,6 +4415,12 @@ row["ClientPartFirstName"]
                         <property name="fontSize">9pt</property>
                         <property name="fontWeight">normal</property>
                         <property name="textAlign">left</property>
+                        <list-property name="visibility">
+                            <structure>
+                                <property name="format">all</property>
+                                <expression name="valueExpr" type="javascript">row["subscription"]</expression>
+                            </structure>
+                        </list-property>
                         <property name="contentType">html</property>
                         <text-property name="content"><![CDATA[<VALUE-OF>row["CurrencyCode"]</VALUE-OF>]]></text-property>
                     </text>
@@ -3866,6 +4440,12 @@ row["ClientPartFirstName"]
                         <property name="fontWeight">normal</property>
                         <property name="textAlign">left</property>
                         <property name="dataSet">TranslateDS</property>
+                        <list-property name="visibility">
+                            <structure>
+                                <property name="format">all</property>
+                                <expression name="valueExpr" type="javascript">row._outer["subscription"]</expression>
+                            </structure>
+                        </list-property>
                         <list-property name="paramBindings">
                             <structure>
                                 <property name="paramName">param_1</property>
@@ -3899,6 +4479,12 @@ row["ClientPartFirstName"]
                         <property name="fontSize">9pt</property>
                         <property name="fontWeight">normal</property>
                         <property name="textAlign">right</property>
+                        <list-property name="visibility">
+                            <structure>
+                                <property name="format">all</property>
+                                <expression name="valueExpr" type="javascript">row["subscription"]</expression>
+                            </structure>
+                        </list-property>
                         <property name="contentType">html</property>
                         <text-property name="content"><![CDATA[<VALUE-OF format="#0.00">row["tax_total"]</VALUE-OF>]]></text-property>
                     </text>
@@ -3910,6 +4496,12 @@ row["ClientPartFirstName"]
                         <property name="fontSize">9pt</property>
                         <property name="fontWeight">normal</property>
                         <property name="textAlign">left</property>
+                        <list-property name="visibility">
+                            <structure>
+                                <property name="format">all</property>
+                                <expression name="valueExpr" type="javascript">row["subscription"]</expression>
+                            </structure>
+                        </list-property>
                         <property name="contentType">html</property>
                         <text-property name="content"><![CDATA[<VALUE-OF>row["CurrencyCode"]</VALUE-OF>]]></text-property>
                     </text>
@@ -3933,6 +4525,12 @@ row["ClientPartFirstName"]
                         <property name="fontWeight">bold</property>
                         <property name="textAlign">left</property>
                         <property name="dataSet">TranslateDS</property>
+                        <list-property name="visibility">
+                            <structure>
+                                <property name="format">all</property>
+                                <expression name="valueExpr" type="javascript">row._outer["subscription"]</expression>
+                            </structure>
+                        </list-property>
                         <list-property name="paramBindings">
                             <structure>
                                 <property name="paramName">param_1</property>
@@ -3971,6 +4569,12 @@ row["ClientPartFirstName"]
                         <property name="fontSize">9pt</property>
                         <property name="fontWeight">bold</property>
                         <property name="textAlign">right</property>
+                        <list-property name="visibility">
+                            <structure>
+                                <property name="format">all</property>
+                                <expression name="valueExpr" type="javascript">row["subscription"]</expression>
+                            </structure>
+                        </list-property>
                         <property name="contentType">html</property>
                         <text-property name="content"><![CDATA[<VALUE-OF format="#0.00">row["in_tax_total"]</VALUE-OF>]]></text-property>
                     </text>
@@ -3987,6 +4591,12 @@ row["ClientPartFirstName"]
                         <property name="fontSize">9pt</property>
                         <property name="fontWeight">bold</property>
                         <property name="textAlign">left</property>
+                        <list-property name="visibility">
+                            <structure>
+                                <property name="format">all</property>
+                                <expression name="valueExpr" type="javascript">row["subscription"]</expression>
+                            </structure>
+                        </list-property>
                         <property name="contentType">html</property>
                         <text-property name="content"><![CDATA[<VALUE-OF>row["CurrencyCode"]</VALUE-OF>]]></text-property>
                     </text>
@@ -3998,10 +4608,458 @@ row["ClientPartFirstName"]
                 <cell id="4000"/>
                 <cell id="4001"/>
                 <cell id="4002"/>
-                <cell id="4079"/>
+                <cell id="4079">
+                    <property name="verticalAlign">bottom</property>
+                    <text id="4290">
+                        <property name="fontSize">8pt</property>
+                        <property name="fontWeight">bold</property>
+                        <property name="dataSet">TranslateDS</property>
+                        <list-property name="paramBindings">
+                            <structure>
+                                <property name="paramName">param_1</property>
+                                <simple-property-list name="expression">
+                                    <value type="javascript">'Subscriptions'</value>
+                                </simple-property-list>
+                            </structure>
+                        </list-property>
+                        <list-property name="boundDataColumns">
+                            <structure>
+                                <property name="name">key</property>
+                                <text-property name="displayName">key</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">translation</property>
+                                <text-property name="displayName">translation</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                        </list-property>
+                        <property name="contentType">html</property>
+                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+                    </text>
+                </cell>
                 <cell id="4003"/>
                 <cell id="4136"/>
                 <cell id="4004"/>
+            </row>
+            <row id="4197">
+                <property name="height">0.3in</property>
+                <cell id="4198"/>
+                <cell id="4199"/>
+                <cell id="4200"/>
+                <cell id="4201"/>
+                <cell id="4202">
+                    <property name="colSpan">2</property>
+                    <property name="rowSpan">1</property>
+                    <property name="borderLeftStyle">solid</property>
+                    <property name="borderLeftWidth">1px</property>
+                    <property name="borderRightStyle">solid</property>
+                    <property name="borderRightWidth">1px</property>
+                    <property name="borderTopStyle">solid</property>
+                    <property name="borderTopWidth">1px</property>
+                    <text id="4252">
+                        <property name="fontSize">9pt</property>
+                        <property name="fontWeight">normal</property>
+                        <property name="textAlign">left</property>
+                        <property name="dataSet">TranslateDS</property>
+                        <list-property name="visibility">
+                            <structure>
+                                <property name="format">all</property>
+                                <expression name="valueExpr" type="javascript">row._outer["hideDiscount"]== 1</expression>
+                            </structure>
+                        </list-property>
+                        <list-property name="paramBindings">
+                            <structure>
+                                <property name="paramName">param_1</property>
+                                <simple-property-list name="expression">
+                                    <value type="javascript">'SaleOrder.totalDiscount'</value>
+                                </simple-property-list>
+                            </structure>
+                        </list-property>
+                        <list-property name="boundDataColumns">
+                            <structure>
+                                <property name="name">key</property>
+                                <text-property name="displayName">key</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">translation</property>
+                                <text-property name="displayName">translation</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                        </list-property>
+                        <property name="contentType">html</property>
+                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+                    </text>
+                </cell>
+                <cell id="4204">
+                    <property name="borderBottomStyle">none</property>
+                    <property name="borderLeftStyle">solid</property>
+                    <property name="borderLeftWidth">1px</property>
+                    <property name="borderRightStyle">none</property>
+                    <property name="borderTopStyle">solid</property>
+                    <property name="borderTopWidth">1px</property>
+                    <data id="4285">
+                        <property name="fontSize">9pt</property>
+                        <structure name="numberFormat">
+                            <property name="category">Fixed</property>
+                            <property name="pattern">###0.00{RoundingMode=HALF_UP}</property>
+                        </structure>
+                        <property name="textAlign">right</property>
+                        <property name="dataSet">OrderLineDS</property>
+                        <property name="dataBindingRef">SaleOrderLines</property>
+                        <list-property name="visibility">
+                            <structure>
+                                <property name="format">all</property>
+                                <expression name="valueExpr" type="javascript">row._outer["hideDiscount"]== 1</expression>
+                            </structure>
+                        </list-property>
+                        <property name="resultSetColumn">discount_sub</property>
+                    </data>
+                </cell>
+                <cell id="4205">
+                    <property name="borderRightStyle">solid</property>
+                    <property name="borderRightWidth">1px</property>
+                    <property name="borderTopStyle">solid</property>
+                    <property name="borderTopWidth">1px</property>
+                    <text id="4258">
+                        <property name="fontSize">9pt</property>
+                        <property name="fontWeight">normal</property>
+                        <property name="textAlign">left</property>
+                        <list-property name="visibility">
+                            <structure>
+                                <property name="format">all</property>
+                                <expression name="valueExpr" type="javascript">row["hideDiscount"] == 1</expression>
+                            </structure>
+                        </list-property>
+                        <property name="contentType">html</property>
+                        <text-property name="content"><![CDATA[<VALUE-OF>row["CurrencyCode"]</VALUE-OF>]]></text-property>
+                    </text>
+                </cell>
+            </row>
+            <row id="4233">
+                <property name="height">0.3in</property>
+                <cell id="4234"/>
+                <cell id="4235"/>
+                <cell id="4236"/>
+                <cell id="4237"/>
+                <cell id="4238">
+                    <property name="colSpan">2</property>
+                    <property name="rowSpan">1</property>
+                    <property name="borderBottomStyle">solid</property>
+                    <property name="borderBottomWidth">1px</property>
+                    <property name="borderLeftStyle">solid</property>
+                    <property name="borderLeftWidth">1px</property>
+                    <property name="borderRightStyle">solid</property>
+                    <property name="borderRightWidth">1px</property>
+                    <text id="4253">
+                        <property name="fontSize">9pt</property>
+                        <property name="fontWeight">normal</property>
+                        <property name="textAlign">left</property>
+                        <property name="dataSet">TranslateDS</property>
+                        <list-property name="paramBindings">
+                            <structure>
+                                <property name="paramName">param_1</property>
+                                <simple-property-list name="expression">
+                                    <value type="javascript">'SaleOrder.totalExclTax'</value>
+                                </simple-property-list>
+                            </structure>
+                        </list-property>
+                        <list-property name="boundDataColumns">
+                            <structure>
+                                <property name="name">key</property>
+                                <text-property name="displayName">key</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">translation</property>
+                                <text-property name="displayName">translation</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                        </list-property>
+                        <property name="contentType">html</property>
+                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+                    </text>
+                </cell>
+                <cell id="4240">
+                    <property name="borderBottomStyle">solid</property>
+                    <property name="borderBottomWidth">1px</property>
+                    <property name="borderLeftStyle">solid</property>
+                    <property name="borderLeftWidth">1px</property>
+                    <data id="4287">
+                        <property name="fontSize">9pt</property>
+                        <structure name="numberFormat">
+                            <property name="category">Fixed</property>
+                            <property name="pattern">###0.00{RoundingMode=HALF_UP}</property>
+                        </structure>
+                        <property name="textAlign">right</property>
+                        <property name="dataSet">OrderLineDS</property>
+                        <property name="dataBindingRef">SaleOrderLines</property>
+                        <list-property name="visibility">
+                            <structure>
+                                <property name="format">all</property>
+                                <expression name="valueExpr" type="javascript">row._outer["hideDiscount"]== 1</expression>
+                            </structure>
+                        </list-property>
+                        <property name="resultSetColumn">tot_ex_tax_total_all_sub</property>
+                    </data>
+                </cell>
+                <cell id="4241">
+                    <property name="borderBottomStyle">solid</property>
+                    <property name="borderBottomWidth">1px</property>
+                    <property name="borderRightStyle">solid</property>
+                    <property name="borderRightWidth">1px</property>
+                    <text id="4262">
+                        <property name="fontSize">9pt</property>
+                        <property name="fontWeight">normal</property>
+                        <property name="textAlign">left</property>
+                        <property name="contentType">html</property>
+                        <text-property name="content"><![CDATA[<VALUE-OF>row["CurrencyCode"]</VALUE-OF>]]></text-property>
+                    </text>
+                </cell>
+            </row>
+            <row id="4224">
+                <property name="height">0.3in</property>
+                <cell id="4225"/>
+                <cell id="4226"/>
+                <cell id="4227"/>
+                <cell id="4228"/>
+                <cell id="4229">
+                    <property name="verticalAlign">bottom</property>
+                    <text id="4291">
+                        <property name="fontSize">8pt</property>
+                        <property name="fontWeight">bold</property>
+                        <property name="dataSet">TranslateDS</property>
+                        <list-property name="paramBindings">
+                            <structure>
+                                <property name="paramName">param_1</property>
+                                <simple-property-list name="expression">
+                                    <value type="javascript">'Others'</value>
+                                </simple-property-list>
+                            </structure>
+                        </list-property>
+                        <list-property name="boundDataColumns">
+                            <structure>
+                                <property name="name">key</property>
+                                <text-property name="displayName">key</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">translation</property>
+                                <text-property name="displayName">translation</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                        </list-property>
+                        <property name="contentType">html</property>
+                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+                    </text>
+                </cell>
+                <cell id="4230"/>
+                <cell id="4231"/>
+                <cell id="4232"/>
+            </row>
+            <row id="4215">
+                <property name="height">0.3in</property>
+                <cell id="4216"/>
+                <cell id="4217"/>
+                <cell id="4218"/>
+                <cell id="4219"/>
+                <cell id="4220">
+                    <property name="colSpan">2</property>
+                    <property name="rowSpan">1</property>
+                    <property name="borderLeftStyle">solid</property>
+                    <property name="borderLeftWidth">1px</property>
+                    <property name="borderRightStyle">solid</property>
+                    <property name="borderRightWidth">1px</property>
+                    <property name="borderTopStyle">solid</property>
+                    <property name="borderTopWidth">1px</property>
+                    <text id="4255">
+                        <property name="fontSize">9pt</property>
+                        <property name="fontWeight">normal</property>
+                        <property name="textAlign">left</property>
+                        <property name="dataSet">TranslateDS</property>
+                        <list-property name="visibility">
+                            <structure>
+                                <property name="format">all</property>
+                                <expression name="valueExpr" type="javascript">row._outer["hideDiscount"]== 1</expression>
+                            </structure>
+                        </list-property>
+                        <list-property name="paramBindings">
+                            <structure>
+                                <property name="paramName">param_1</property>
+                                <simple-property-list name="expression">
+                                    <value type="javascript">'SaleOrder.totalDiscount'</value>
+                                </simple-property-list>
+                            </structure>
+                        </list-property>
+                        <list-property name="boundDataColumns">
+                            <structure>
+                                <property name="name">key</property>
+                                <text-property name="displayName">key</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">translation</property>
+                                <text-property name="displayName">translation</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                        </list-property>
+                        <property name="contentType">html</property>
+                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+                    </text>
+                </cell>
+                <cell id="4222">
+                    <property name="colSpan">1</property>
+                    <property name="rowSpan">1</property>
+                    <property name="borderBottomStyle">none</property>
+                    <property name="borderLeftStyle">solid</property>
+                    <property name="borderLeftWidth">1px</property>
+                    <property name="borderRightStyle">none</property>
+                    <property name="borderTopStyle">solid</property>
+                    <property name="borderTopWidth">1px</property>
+                    <data id="4266">
+                        <property name="fontSize">9pt</property>
+                        <structure name="numberFormat">
+                            <property name="category">Fixed</property>
+                            <property name="pattern">###0.00{RoundingMode=HALF_UP}</property>
+                        </structure>
+                        <property name="textAlign">right</property>
+                        <property name="dataSet">OrderLineDS</property>
+                        <property name="dataBindingRef">SaleOrderLines</property>
+                        <list-property name="visibility">
+                            <structure>
+                                <property name="format">all</property>
+                                <expression name="valueExpr" type="javascript">row._outer["hideDiscount"]== 1</expression>
+                            </structure>
+                        </list-property>
+                        <property name="resultSetColumn">totalDiscountNoSub</property>
+                    </data>
+                </cell>
+                <cell id="4223">
+                    <property name="borderRightStyle">solid</property>
+                    <property name="borderRightWidth">1px</property>
+                    <property name="borderTopStyle">solid</property>
+                    <property name="borderTopWidth">1px</property>
+                    <text id="4259">
+                        <property name="fontSize">9pt</property>
+                        <property name="fontWeight">normal</property>
+                        <property name="textAlign">left</property>
+                        <list-property name="visibility">
+                            <structure>
+                                <property name="format">all</property>
+                                <expression name="valueExpr" type="javascript">row["hideDiscount"] == 1</expression>
+                            </structure>
+                        </list-property>
+                        <property name="contentType">html</property>
+                        <text-property name="content"><![CDATA[<VALUE-OF>row["CurrencyCode"]</VALUE-OF>]]></text-property>
+                    </text>
+                </cell>
+            </row>
+            <row id="4206">
+                <property name="height">0.3in</property>
+                <cell id="4207"/>
+                <cell id="4208"/>
+                <cell id="4209"/>
+                <cell id="4210"/>
+                <cell id="4211">
+                    <property name="colSpan">2</property>
+                    <property name="rowSpan">1</property>
+                    <property name="borderBottomStyle">solid</property>
+                    <property name="borderBottomWidth">1px</property>
+                    <property name="borderLeftStyle">solid</property>
+                    <property name="borderLeftWidth">1px</property>
+                    <property name="borderRightStyle">solid</property>
+                    <property name="borderRightWidth">1px</property>
+                    <text id="4254">
+                        <property name="fontSize">9pt</property>
+                        <property name="fontWeight">normal</property>
+                        <property name="textAlign">left</property>
+                        <property name="dataSet">TranslateDS</property>
+                        <list-property name="paramBindings">
+                            <structure>
+                                <property name="paramName">param_1</property>
+                                <simple-property-list name="expression">
+                                    <value type="javascript">'SaleOrder.totalExclTax'</value>
+                                </simple-property-list>
+                            </structure>
+                        </list-property>
+                        <list-property name="boundDataColumns">
+                            <structure>
+                                <property name="name">key</property>
+                                <text-property name="displayName">key</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">translation</property>
+                                <text-property name="displayName">translation</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                        </list-property>
+                        <property name="contentType">html</property>
+                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+                    </text>
+                </cell>
+                <cell id="4284">
+                    <property name="borderBottomStyle">solid</property>
+                    <property name="borderBottomWidth">1px</property>
+                    <property name="borderLeftStyle">solid</property>
+                    <property name="borderLeftWidth">1px</property>
+                    <property name="borderRightStyle">none</property>
+                    <property name="borderTopStyle">none</property>
+                    <data id="4292">
+                        <property name="fontSize">9pt</property>
+                        <structure name="numberFormat">
+                            <property name="category">Fixed</property>
+                            <property name="pattern">###0.00{RoundingMode=HALF_UP}</property>
+                        </structure>
+                        <property name="textAlign">right</property>
+                        <property name="dataSet">OrderLineDS</property>
+                        <property name="dataBindingRef">SaleOrderLines</property>
+                        <list-property name="visibility">
+                            <structure>
+                                <property name="format">all</property>
+                                <expression name="valueExpr" type="javascript">row._outer["hideDiscount"]== 1</expression>
+                            </structure>
+                        </list-property>
+                        <property name="resultSetColumn">totExTaxTotalNoSub</property>
+                    </data>
+                </cell>
+                <cell id="4214">
+                    <property name="borderBottomStyle">solid</property>
+                    <property name="borderBottomWidth">1px</property>
+                    <property name="borderRightStyle">solid</property>
+                    <property name="borderRightWidth">1px</property>
+                    <text id="4263">
+                        <property name="fontSize">9pt</property>
+                        <property name="fontWeight">normal</property>
+                        <property name="textAlign">left</property>
+                        <property name="contentType">html</property>
+                        <text-property name="content"><![CDATA[<VALUE-OF>row["CurrencyCode"]</VALUE-OF>]]></text-property>
+                    </text>
+                </cell>
+            </row>
+            <row id="4243">
+                <property name="height">0.3in</property>
+                <cell id="4244"/>
+                <cell id="4245"/>
+                <cell id="4246"/>
+                <cell id="4247"/>
+                <cell id="4248"/>
+                <cell id="4249"/>
+                <cell id="4250"/>
+                <cell id="4251"/>
             </row>
             <row id="4005">
                 <cell id="4006"/>
@@ -4241,5 +5299,22 @@ row["ClientPartFirstName"]
                 <cell id="4104"/>
             </row>
         </grid>
+        <data id="4268">
+            <property name="fontSize">9pt</property>
+            <structure name="numberFormat">
+                <property name="category">Fixed</property>
+                <property name="pattern">###0.00{RoundingMode=HALF_UP}</property>
+            </structure>
+            <property name="textAlign">right</property>
+            <property name="dataSet">OrderLineDS</property>
+            <property name="dataBindingRef">SaleOrderLines</property>
+            <list-property name="visibility">
+                <structure>
+                    <property name="format">all</property>
+                    <expression name="valueExpr" type="javascript">row._outer["hideDiscount"]== 1</expression>
+                </structure>
+            </list-property>
+            <property name="resultSetColumn">totalDiscountSub</property>
+        </data>
     </body>
 </report>
