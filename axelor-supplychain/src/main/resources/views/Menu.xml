@@ -59,12 +59,12 @@
 	</action-view>
 	
 	<menuitem name="sale-order-root-subscription" parent="sc-root-sale"
-		title="Subscriptions" order="-60"/>
+		title="Subscriptions" order="-60" groups="admins,ERP"/>
 	
 	<menuitem name="sale-order-line-subscription-to-invoiced" parent="sale-order-root-subscription" 
-    	title="Abonnements à facturer" action="sale.order.line.subscription.toinvoiced" groups="comeback"/> 
+    	title="Subscriptions to invoice" action="sale.order.line.subscription.toinvoiced" /> 
 
-	<action-view name="sale.order.line.subscription.toinvoiced" title="Abonnements à facturer" model="com.axelor.apps.supplychain.db.Subscription">
+	<action-view name="sale.order.line.subscription.toinvoiced" title="Subscriptions to invoice" model="com.axelor.apps.supplychain.db.Subscription">
     	<view type="grid" name="subscription-from-menu-grid"/>
 	    <view type="form" name="subscription-from-menu-form"/>
 	    <domain>self.invoicingDate &lt;= :todayDate AND self.invoiced = false</domain>
