@@ -12,7 +12,7 @@
 	 
 	 <grid name="subscription-from-menu-grid" title="Subscriptions" model="com.axelor.apps.supplychain.db.Subscription">
 	 	<toolbar>
-			<button name="generateInvoiceForSelectedSubscrip" hidden="true" title="Generate invoice from selected subscrip" prompt="Are you sure you want to generate invoice for selected subscriptions ?" onClick="action-validate-supplychain-subscription-check-selection, com.axelor.apps.supplychain.web.SubscriptionController:generateInvoiceForSelectedSubscriptions"/>
+			<button name="generateInvoiceForSelectedSubscrip" title="Generate invoice from selected subscrip" prompt="Are you sure you want to generate invoice for selected subscriptions ?" onClick="action-validate-supplychain-subscription-check-selection, com.axelor.apps.supplychain.web.SubscriptionController:generateInvoiceForSelectedSubscriptions"/>
 			<button name="generateInvoiceForAll" title="Generate invoice for all subscrip" prompt="Are you sure you want to generate invoice for all subscriptions ?" onClick="com.axelor.apps.supplychain.web.SubscriptionController:generateInvoiceForAllSubscriptions"/>
     	</toolbar>
 	 	<field name="saleOrderLine.saleOrder"/>
