@@ -93,7 +93,9 @@
 		<call class="com.axelor.apps.hr.web.leave.LeaveController" method="historicLeave"/>
 	</action-method>
 	
-	<menuitem name="employee-all" parent="hr-root"
+	<menuitem name="hr-conf" parent="hr-root" title="Configuration"/>
+	
+	<menuitem name="employee-all" parent="hr-conf"
     	title="Employee"
     	action="employee.all"/>
 
@@ -102,7 +104,7 @@
 	    <view type="form" name="employee-form"/>
 	</action-view>
 	
-	<menuitem name="leave-reason-all" parent="hr-root"
+	<menuitem name="leave-reason-all" parent="hr-conf"
     	title="Leave reason"
     	action="leave.reason.all"/>
 
@@ -111,7 +113,7 @@
 	    <view type="form" name="leave-reason-form"/>
 	</action-view>
 	
-	<menuitem name="company-department-all" parent="hr-root"
+	<menuitem name="company-department-all" parent="hr-conf"
     	title="Departments"
     	action="company.department.all"/>
 
@@ -119,8 +121,6 @@
     	<view type="grid" name="company-department-grid"/>
 	    <view type="form" name="company-department-form"/>
 	</action-view>
-	
-	<menuitem name="hr-conf" parent="hr-root" title="Configuration"/>
 		
 	<menuitem name="hr-conf-product-activity" parent="hr-conf" title="Product Activities" action="conf.product.activity"/>
 	
