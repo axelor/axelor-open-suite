@@ -111,9 +111,6 @@
 	        <field name="paymentMode" domain="self.inOutSelect = 1" if-module="axelor-supplychain" form-view="payment-mode-form" grid-view="payment-mode-grid"/>
 	        <field name="paymentCondition" if-module="axelor-supplychain" form-view="payment-condition-form" grid-view="payment-condition-grid"/>
 	      </panel>
-	      <panel title="Marketing" colSpan="12">
-	        <field name="source" form-view="source-form" grid-view="source-grid"/>
-	      </panel>
 	      <panel title="Invoicing" if-module="axelor-supplychain" colSpan="12">
 	        <field name="invoicingMomentSelect"/>
 	      </panel>
@@ -249,9 +246,6 @@
 	      <panel title="Financial terms" colSpan="12">
 	        <field name="paymentMode" domain="self.inOutSelect = 1" if-module="axelor-supplychain" form-view="payment-mode-form" grid-view="payment-mode-grid"/>
 	        <field name="paymentCondition" if-module="axelor-supplychain" form-view="payment-condition-form" grid-view="payment-condition-grid"/>
-	      </panel>
-	      <panel title="Marketing" colSpan="12">
-	        <field name="source" form-view="source-form" grid-view="source-grid"/>
 	      </panel>
 <!-- 	      <panel title="Invoicing" if-module="axelor-supplychain" colSpan="12" showIf="invoicingTypeSelect == 2"> -->
 <!-- 	        <field name="invoicingMomentSelect"/> -->
