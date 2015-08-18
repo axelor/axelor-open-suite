@@ -69,7 +69,7 @@
 	      <field name="createdBy" form-view="user-form" grid-view="user-grid"/>
 	      <field name="createdOn"/>
 	    </panel>
-	    <panel title="Delivery">
+	    <panel name="deliveryPanel" title="Delivery" hidden="true">
 	      <field name="desiredDelivDate"/>
 	      <field name="estimatedDelivDate"/>	      
 	      <!-- TODO: remove this comment if portlet works well in panel
@@ -116,6 +116,7 @@
 	</action-group>
 	
 	<action-group name="action-group-purchase-purchase-orderline-product-onchange">
+		<action name="action-purchase-order-line-attrs-delivery-panel"/>
 		<action name="action-purchase-order-line-method-get-product-information"/>
 		<action name="action-purchase-order-line-method-convert-tax"/>
 		<action name="action-purchase-order-line-method-compute"/>
@@ -133,6 +134,10 @@
 		<action name="action-purchase-order-line-method-generate-suppliers-requests"/>
 		<action name="save"/>
 	</action-group>
+	
+	<action-attrs name="action-purchase-order-line-attrs-delivery-panel">
+		<attribute name="hidden" for="deliveryPanel" expr="eval: product?.productTypeSelect != 'storable'"/>
+	</action-attrs>
 	
 	<action-attrs name="action-purchase-order-attrs-hide-ati">
 		<attribute name="hidden" for="exTaxTotal" expr="eval:_parent.inAti" if="_parent._model == 'com.axelor.apps.purchase.db.PurchaseOrder'"/>
