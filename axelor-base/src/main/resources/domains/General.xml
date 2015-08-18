@@ -37,6 +37,8 @@
 		<many-to-one name="unitHours" ref="com.axelor.apps.base.db.Unit" title="Hours Unit"/>
 		<many-to-one name="unitMinutes" ref="com.axelor.apps.base.db.Unit" title="Minutes Unit"/>
 		
+		<boolean name="teamManagement" title="Team Management" default="true"/>
+		
 		<extra-code>
 	   		<![CDATA[
 	   			public static final Integer DISCOUNT_SEPARATE = 1;

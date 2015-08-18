@@ -169,7 +169,7 @@
 	</action-view>
 	
 	<menuitem name="crm-root-meeting-team-calendar" parent="crm-root"
-		title="Team Calendar" action="crm.root.meeting.team.calendar" />
+		title="Team Calendar" action="crm.root.meeting.team.calendar"/>
 		
 	<action-view name="crm.root.meeting.team.calendar" title="Team Calendar"
 		model="com.axelor.apps.crm.db.Event" >

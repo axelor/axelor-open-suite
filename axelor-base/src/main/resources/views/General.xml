@@ -41,6 +41,7 @@
 		    	<field name="unitDays" form-view="unit-form" grid-view="unit-grid"/>
 		    	<field name="unitHours" form-view="unit-form" grid-view="unit-grid"/>
 		    	<field name="unitMinutes" form-view="unit-form" grid-view="unit-grid"/>
+		    	<field name="teamManagement"/>
 		    </panel>
 		    <panel title="Accounting">
 				<field name="defaultExemptionTax" form-view="tax-form" grid-view="tax-grid"/>

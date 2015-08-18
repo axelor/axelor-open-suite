@@ -14,7 +14,7 @@
         <field name="startDateTime"/>
         <field name="duration" widget="duration" x-big="true"/>
         <field name="user" form-view="user-form"  grid-view="user-grid"/>
-        <field name="team" form-view="team-form" grid-view="team-grid"/>
+        <field name="team" form-view="team-form" grid-view="team-grid" if="__config__.general.getTeamManagement()"/>
     </grid>
     
     <calendar name="event-calendar-color-by-user" title="Meetings" mode="month" colorBy="user" 
@@ -55,7 +55,7 @@
 			<field name="endDateTime" colSpan="4" onChange="action-event-method-compute-from-end-date-time"/>
 			<spacer colSpan="8"/>
 			<field name="user" form-view="user-form" grid-view="user-grid"/>
-			<field name="team" onSelect="action-event-attrs-team-domain" form-view="team-form" grid-view="team-grid"/>
+			<field name="team" onSelect="action-event-attrs-team-domain" form-view="team-form" grid-view="team-grid" if="__config__.general.getTeamManagement()"/>
 			<panel colSpan="12">
 				<field name="description" widget="TEXT" height="3" colSpan="12"/>
 			</panel>
@@ -142,7 +142,7 @@
 		<panel colSpan="12">
 			<field name="subject" colSpan="12"/>
 			<field name="user" form-view="user-form" grid-view="user-grid"/>
-			<field name="team" onSelect="action-event-attrs-team-domain" form-view="team-form" grid-view="team-grid"/>
+			<field name="team" onSelect="action-event-attrs-team-domain" form-view="team-form" grid-view="team-grid" if="__config__.general.getTeamManagement()"/>
 			<panel colSpan="12">
 				<field name="description" widget="TEXT" height="3" colSpan="12"/>
 			</panel>
@@ -213,7 +213,7 @@
 			<field name="subject" colSpan="6"/>
 			<field name="location" colSpan="6"/>
 			<field name="user" form-view="user-form" grid-view="user-grid"/>
-			<field name="team" onSelect="action-event-attrs-team-domain" form-view="team-form" grid-view="team-grid"/>
+			<field name="team" onSelect="action-event-attrs-team-domain" form-view="team-form" grid-view="team-grid" if="__config__.general.getTeamManagement()"/>
 			<panel colSpan="12">
 				<field name="description" widget="TEXT" height="3" colSpan="12"/>
 			</panel>
@@ -292,7 +292,7 @@
 			<field name="subject"/>
 			<field name="limitDateT" colSpan="3"/>
 			<field name="user" form-view="user-form" grid-view="user-grid"/>
-			<field name="team" onSelect="action-event-attrs-team-domain" form-view="team-form" grid-view="team-grid"/>
+			<field name="team" onSelect="action-event-attrs-team-domain" form-view="team-form" grid-view="team-grid" if="__config__.general.getTeamManagement()"/>
 			<panel colSpan="12">
 				<field name="description" widget="TEXT" x-height="3" colSpan="12"/>
 			</panel>

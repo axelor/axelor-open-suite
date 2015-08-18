@@ -310,7 +310,7 @@
 	</action-view>
 	
 	<menuitem name="admin-root-user-team" parent="admin-root-user"
-		title="Teams" action="admin.root.base.team" />
+		title="Teams" action="admin.root.base.team"/>
 
 	<action-view name="admin.root.base.team" title="Teams"
 		model="com.axelor.apps.base.db.Team" >

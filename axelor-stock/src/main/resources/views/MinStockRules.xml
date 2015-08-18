@@ -27,7 +27,7 @@
         </panel>
 		<panel title="Reordering managed by">
 			<field name="user" form-view="user-form" grid-view="user-grid"/>
-	        <field name="team" form-view="team-form" grid-view="team-grid"/>
+	        <field name="team" form-view="team-form" grid-view="team-grid" if="__config__.general.getTeamManagement()"/>
 		</panel>
     </form>
     
