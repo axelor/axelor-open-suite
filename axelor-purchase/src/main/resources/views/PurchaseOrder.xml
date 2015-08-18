@@ -53,9 +53,9 @@
 	  
 		<panel readonlyIf="statusSelect == 4">
 			<field name="supplierPartner.purchaseOrderInformation" css="bold red" colSpan="12" showTitle="false" hideIf="supplierPartner == null || supplierPartner.purchaseOrderInformation == null"/>
-			<field name="purchaseOrderSeq" css="label-bold bold" colSpan="3"/>
-			<field name="statusSelect" showTitle="false" widget="NavSelect" colSpan="9"/>
-			<field name="receiptState" css="label-bold bold" showIf="statusSelect >= 2" /> 
+			<field name="statusSelect" showTitle="false" widget="NavSelect" colSpan="12"/>
+			<field name="purchaseOrderSeq" css="label-bold bold" colSpan="6"/>
+			<field name="receiptState" css="label-bold bold" showIf="statusSelect == 3 || statusSelect == 4" /> 
 			<field name="company" widget="SuggestBox" onChange="action-group-purchase-order-company-change-actions" form-view="company-form" grid-view="company-gri"/>
 			<field name="currency" form-view="currency-form" grid-view="currency-grid"/>
 			<field name="buyerUser" form-view="user-form" grid-view="user-grid"/>
