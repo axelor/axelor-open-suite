@@ -151,6 +151,7 @@
 	
     <action-record name="action-purchase-order-line-record-new" model="com.axelor.apps.purchase.db.PurchaseOrderLine">
     	<field name="qty" expr="eval: 1"/>
+    	<field name="desiredDelivDate" expr="eval: _parent.deliveryDate"/>
     </action-record>
     
     
