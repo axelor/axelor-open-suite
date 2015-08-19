@@ -6,11 +6,11 @@
 		<!-- SALES MAN DASHBOARD -->
 		
 	<dashboard title="Dashboard" name="sale.saleman.dashboard.sample"  >
-		<dashlet action="dashlet.salesman.dashboard.orders" height="350" canSearch="true" />
+		<dashlet action="dashlet.salesman.dashboard.orders" height="350" canSearch="true" colSpan="12"/>
 		<dashlet action="dashlet.my.turnover.per.month" height="350" />
-		<dashlet action="dashlet.salesman.dashboard.leads" canSearch="true" height="350" />
 		<dashlet action="dashlet.salesman.dashboard.activities" canSearch="true" height="350" />
-		<dashlet action="dashlet.salesman.dashboard.opportunities" canSearch="true" height="350" />
+		<dashlet action="dashlet.salesman.dashboard.leads" canSearch="true" height="350" colSpan="12"/>
+		<dashlet action="dashlet.salesman.dashboard.opportunities" canSearch="true" height="350" colSpan="12"/>
 	</dashboard>
 	
 	<action-view name="dashlet.salesman.dashboard.orders" title="My Sales Orders" model="com.axelor.apps.sale.db.SaleOrder">
@@ -168,8 +168,8 @@
 	
 	<!-- Sales DashBoard -->
 	
-	<dashboard name="sale.dashboard.view.1" title="Sales Dashboard 1">
-		<dashlet action="dashlet.salesman.dashboard.orders" canSearch="true" height="350" />
+	<dashboard name="sale.dashboard.view.1" title="Sales Details">
+		<dashlet action="dashlet.salesman.dashboard.orders" canSearch="true" height="350" colSpan="12"/>
 		<dashlet action="dashlet.my.turnover.per.month"  height="350" />
 		<dashlet action="dashlet.sales.manager.dashboard.turnover.per.team"  height="350" if="__config__.general.getTeamManagement()"/>
 		<dashlet action="dashlet.sales.manager.dashboard.turnover.per.salesman"  height="350" />
@@ -180,7 +180,7 @@
 		<dashlet action="dashlet.units.sold.on.cust.sales.by.category"  height="350" />
 	</dashboard>
 	
-	<dashboard name="sale.dashboard.view.2" title="Sales Dashboard 2">
+	<dashboard name="sale.dashboard.view.2" title="Turnover Study">
 		<dashlet action="dashlet.sales.turnover.by.product.ytd.vs.lastyear" canSearch="true" height="350" />
 		<dashlet action="dashlet.sales.turnover.ytd.vs.previous.years.by.month" height="350"/>
 		<dashlet action="dashlet.sales.turnover.ytd.vs.lastyear" canSearch="true" height="350" />

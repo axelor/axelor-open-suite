@@ -44,7 +44,6 @@
     <string name="mobilePhone" title="Mobile phone"/>
     <string name="webSite" title="Website"/>
     
-    <many-to-one name="site" ref="com.axelor.apps.consulting.db.Site" title="Site"/>
     <string name="department" title="Dept./Div."/>
     
     <many-to-many name="companySet" ref="com.axelor.apps.base.db.Company" title="Companies associated to" help="true"/>

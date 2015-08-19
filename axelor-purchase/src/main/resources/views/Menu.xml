@@ -4,8 +4,32 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
 	
 	
-	<menuitem name="sc-root-purchase" title="Purchases" order="-150" 
+	<menuitem name="sc-root-purchase" title="Purchases" order="-105" 
 		icon="fa-shopping-cart" groups="admins,ERP"/>
+		
+	<menuitem name="sc-root-purchase-suppliers" parent="sc-root-purchase" order="-200"
+		title="Suppliers" action="sc.root.purchase.suppliers" />
+
+	<action-view name="sc.root.purchase.suppliers" title="Suppliers"
+		model="com.axelor.apps.base.db.Partner" >
+		<view type="grid" name="partner-supplier-grid" />
+		<view type="form" name="partner-supplier-form" />
+		<view-param name="search-filters" value="partner-filters"/>
+		<!-- <domain>self.curUser = null OR self.curUser = :user_id</domain> -->
+		<domain>self.isContact = false AND self.isSupplier = true</domain>
+		<context name="user_id" expr="eval:__user__" />
+		<context name="searchFields" expr="name;firstName"/>
+	</action-view>
+	
+	<menuitem name="sc-root-purchase-contacts" parent="sc-root-purchase" order="-150"
+		title="Contacts" action="sc.root.purchase.contacts" />
+
+	<action-view name="sc.root.purchase.contacts" title="Contacts"
+		model="com.axelor.apps.base.db.Partner" >
+		<view type="grid" name="partner-contact-grid" />
+		<view type="form" name="partner-contact-form" />
+		<domain>self.isContact = true AND self.mainPartner.isSupplier = true</domain>
+	</action-view>
 		
 	<menuitem name="sc-root-purchase-order-new" title="New Purchase order" order="-2" 
 		groups="admins,ERP" action="sc.root.purchase.order.new" parent="sc-root-purchase"/>
@@ -33,8 +57,28 @@
 	<action-view name="purchase.order.merge" title="Merge purchase orders" model="com.axelor.apps.base.db.Wizard">
 	    <view type="form" name="purchase-order-merge-form"/>
 	</action-view>
+	
+	<menuitem name="sc-root-purchase-report" parent="sc-root-purchase" title="Reportings"/>
 
+	<menuitem name="purchase-maps-partner-suppliers" parent="sc-root-purchase-report" 
+		title="Suppliers Map" action="action-show-suppliers-on-map-page" order="10"/>		
+		
+	<action-view name="action-show-suppliers-on-map-page" title="Suppliers">  		
+ 		<view type="html" name="map/gmap-objs.html?object=supplier" /> 
+	</action-view>
+	
+	<menuitem name="sc-root-purchase-conf" parent="sc-root-purchase"
+		title="Configuration"/>
+		
+	<menuitem name="sc-root-purchase-conf-price-list" parent="sc-root-purchase-conf"
+		title="Price lists" action="sc.root.purchase.conf.price.list" />
 
+	<action-view name="sc.root.purchase.conf.price.list" title="Price lists"
+		model="com.axelor.apps.base.db.PriceList" >
+		<view type="grid" name="price-list-grid" />
+		<view type="form" name="purchase-price-list-form" />
+		<domain>self.typeSelect = 2</domain>
+	</action-view>
 
 <!-- ADMINISTRATION -->
 
@@ -87,51 +131,26 @@
 		<domain>self.statusSelect in (4,5) </domain>
 	</action-view>
 	
-	<menuitem name="menu-purchase-buyer-dashboard-sample" parent="menu-dashboards-sample" order="-190"
-		title="Purchase Buyer Db"  action="purchase.buyer.dashboard.view.sample" />	
-
-	<action-view name="purchase.buyer.dashboard.view.sample" title="Purchase Buyer Dashboard">
-		<view type="dashboard" name="purchase.buyer.dashboard.sample" />
-    	<context name="_user" expr="eval:__user__"/>
-    	<context name="_user_id" expr="eval:__user__.id"/>
-	</action-view>
 	
-	<menuitem name="menu-purchase-manager-dashboard-sample" parent="menu-dashboards-sample" order="-180"
-		title="Purchase Manager Db"  action="purchase.manager.dashboard.view.sample" />	
-
-	<action-view name="purchase.manager.dashboard.view.sample" title="Purchase Manager Dashboard">
-		<view type="dashboard" name="purchase.manager.dashboard.sample" />
-	</action-view>
-	
-	<menuitem name="menu-purchase-order-dashboard-sample" parent="menu-dashboards-sample"  order="-170"
-		title="Purchase Order Db"  action="purchase.order.dashboard.view.sample" />	
+	<menuitem name="menu-purchase-dashboard-1" parent="sc-root-purchase-report"  
+		title="Purchase Buyer"  action="purchase.dashboard.1" />	
 		
-	<action-view name="purchase.order.dashboard.view.sample" title="Purchase Order Dashboard">
-		<view type="dashboard" name="purchase.order.dashboard.sample" />	    
-	</action-view>
-	
-	<menuitem name="menu-purchase-dashboard" parent="menu-dashboards"  
-		title="Purchases" order="-60" />	
-	
-	<menuitem name="menu-purchase-dashboard-1" parent="menu-purchase-dashboard"  
-		title="Purchases Db 1"  action="purchase.dashboard.1" />	
-		
-	<action-view name="purchase.dashboard.1" title="Purchases Db 1">
+	<action-view name="purchase.dashboard.1" title="Purchase Buyer">
 		<view type="dashboard" name="purchase.dashboard.1" />	 
 		<context name="_user_id" expr="eval:__user__.id"/>   
 	</action-view>
 	
-	<menuitem name="menu-purchase-dashboard-2" parent="menu-purchase-dashboard"  
-		title="Purchases Db 2"  action="purchase.dashboard.2" />	
+	<menuitem name="menu-purchase-dashboard-2" parent="sc-root-purchase-report"  
+		title="Purchase Manager"  action="purchase.dashboard.2" />	
 		
-	<action-view name="purchase.dashboard.2" title="Purchases Db 2">
+	<action-view name="purchase.dashboard.2" title="Purchase Manager">
 		<view type="dashboard" name="purchase.dashboard.2" />	    
 	</action-view>
 	
-	<menuitem name="menu-purchase-dashboard-3" parent="menu-purchase-dashboard"  
-		title="Purchases Db 3"  action="purchase.purchase.dashboard.3" />	
+	<menuitem name="menu-purchase-dashboard-3" parent="sc-root-purchase-report"  
+		title="Purchase Orders"  action="purchase.purchase.dashboard.3" />	
 		
-	<action-view name="purchase.purchase.dashboard.3" title="Purchases Db 3">
+	<action-view name="purchase.purchase.dashboard.3" title="Purchase Orders Details">
 		<view type="dashboard" name="purchase.dashboard.3" />	    
 	</action-view>
 	

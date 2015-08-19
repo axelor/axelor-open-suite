@@ -3,41 +3,20 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
 	
-	<menuitem name="menu-products-dashboard" parent="menu-dashboards-products-goods"  
-		title="Products" order="-10" />	
 	
-	<menuitem name="menu-products-dashboard-1" parent="menu-products-dashboard"  
-		title="Product Db"  action="supplychain.products.dashboard.1" />	
+	<menuitem name="menu-products-dashboard-1" parent="product-root-report"  
+		title="Products"  action="supplychain.products.dashboard.1" />	
 		
-	<action-view name="supplychain.products.dashboard.1" title="Product Db">
+	<action-view name="supplychain.products.dashboard.1" title="Products Details">
 		<view type="dashboard" name="supplychain.products.dashboard.view.1" />	 
 	</action-view>
 
-	<menuitem name="menu-category-dashboard" parent="menu-dashboards-products-goods"  
-		title="Category" order="-20" />	
-		
-	<menuitem name="menu-category-dashboard-1" parent="menu-category-dashboard"  
-		title="Category Db"  action="supplychain.products.category.dashboard" />		
-		
-	<menuitem name="menu-family-dashboard" parent="menu-dashboards-products-goods"  
-		title="Family" order="-30"  />	
-	
-	<menuitem name="menu-family-dashboard-1" parent="menu-family-dashboard"  
-		title="Family Db"  action="supplychain.products.family.dashboard" />	
-		
-	<action-view name="supplychain.products.category.dashboard" title="Category Dashboard">
-		<view type="dashboard" name="supplychain.products.category.dashboard.view.1" />	 
-	</action-view>
-	
-	<action-view name="supplychain.products.family.dashboard" title="Family Dashboard">
-		<view type="dashboard" name="supplychain.products.family.dashboard.view.1" />	 
-	</action-view>
 
 	<menuitem name="stock-multi-sale-invoicing" parent="stock-root"
-		title="Mass Cust. Stock Move Invoicing" action="stock.root.multi.sale.invoicing" />
+		title="Mass Cust. Stock Move Invoicing" action="stock.root.multi.sale.invoicing" order="-5"/>
 
 	<menuitem name="stock-multi-purchase-invoicing" parent="stock-root"
-		title="Mass Suppl. Stock Move Invoicing" action="stock.root.multi.purchase.invoicing" />
+		title="Mass Suppl. Stock Move Invoicing" action="stock.root.multi.purchase.invoicing" order="-10"/>
 
 	<action-view name="stock.root.multi.sale.invoicing" title="Mass Cust. Stock Move Invoicing"
 		model="com.axelor.apps.stock.db.StockMove" >

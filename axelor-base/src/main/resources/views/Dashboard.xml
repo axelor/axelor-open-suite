@@ -8,11 +8,9 @@
 	<dashboard title="Partner Dashboard" name="base.partner.list.dashboard" width="large">
 	    <dashlet action="dashlet.customers.by.country" height="350"   canSearch="true"/>
 	    <dashlet action="dashlet.customers.by.industrySector" height="350"   canSearch="true"/>
-	    <dashlet action="dashlet.suppliers.by.country"   height="350"/>
-		<dashlet action="dashlet.my.recent.customers" height="350"   canSearch="true"/> 
-	    <dashlet action="dashlet.partner.by.saleman" height="350"   canSearch="true"/>
-		<dashlet action="dashlet.partner.recent.partners" height="350"   canSearch="true"/>	
-		<dashlet action="dashlet.my.customers" height="350"   canSearch="true"/>	
+	    <dashlet action="dashlet.partner.by.saleman" height="350"   canSearch="true" colSpan="12"/>
+		<dashlet action="dashlet.partner.recent.partners" height="350"   canSearch="true" colSpan="12"/>	
+		<dashlet action="dashlet.my.customers" height="350"   canSearch="true" colSpan="12"/>	
 		<dashlet height="350" action="dashlet.prospects.by.country" canSearch="true"/> 
 		<dashlet height="350" action="dashlet.prospects.by.industrySector" canSearch="true"/>
 		<dashlet height="350" action="dashlet.my.prospects" canSearch="true"/>
@@ -66,7 +64,7 @@
 	<action-view title="My Prospects" model="com.axelor.apps.base.db.Partner" name="dashlet.my.prospects">
 		  <view type="grid" name="partner-grid"/>
 		  <view type="form" name="partner-form"/>
-		  <domain>self.user = :__user__ AND self.isCustomer=true AND :activeCompanyId MEMBER OF self.companySet</domain>
+		  <domain>self.user = :__user__ AND self.isCustomer=true AND self.hasOrdered != true AND :activeCompanyId MEMBER OF self.companySet</domain>
 		  <context name="activeCompanyId" expr="eval:__user__.activeCompany != null ? __user__.activeCompany.id : null"/>  
 	</action-view>
   	

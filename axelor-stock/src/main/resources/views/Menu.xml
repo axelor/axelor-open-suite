@@ -133,6 +133,9 @@
 		<view type="grid" name="stock-move-line-all-grid"/>
 		<view type="form" name="stock-move-line-all-form"/>
 	</action-view>		
+	
+	<menuitem name="stock-root-report" parent="stock-root"
+		title="Reportings" />
 		
 	<menuitem name="stock-root-conf" parent="stock-root" title="Configuration"/>
 		
@@ -238,30 +241,19 @@
 		<context name="_typeSelect" expr="eval: 3" />
 	</action-view>	
 
-	<menuitem name="menu-stock-dashboard-sample" parent="menu-dashboards-sample" order="-150" 
-		title="Stock Db"   action="stock.dashboard.view.sample"/>	
-
-	<action-view name="stock.dashboard.view.sample" title="Stock Dashboard">
-		<view type="dashboard" name="stock.dashboard.sample" />
-	    <context name="_newDate" expr="eval: __date__.plusDays(5)"/>
-	</action-view>
-	
-	
-	<menuitem name="menu-stock-dashboard" parent="menu-dashboards" 
-		title="Stock"  order="-80" />	
 		
-	<menuitem name="menu-stock-dashboard-1" parent="menu-stock-dashboard" 
-		title="Stock Db 1"  action="stock.dashboard.one.view" />	
+	<menuitem name="menu-stock-dashboard-1" parent="stock-root-report" 
+		title="General"  action="stock.dashboard.one.view" />	
 
-	<action-view name="stock.dashboard.one.view" title="Stock Dashboard 1">
+	<action-view name="stock.dashboard.one.view" title="General Stock Details">
 		<view type="dashboard" name="stock.dashboard.one" />
 	    <context name="_newDate" expr="eval: __date__.plusDays(5)"/>
 	</action-view>
 	
-	<menuitem name="menu-stock-dashboard-2" parent="menu-stock-dashboard" 
-		title="Stock Db 2"  action="stock.dashboard.two.view" />	
+	<menuitem name="menu-stock-dashboard-2" parent="stock-root-report" 
+		title="Deliveries"  action="stock.dashboard.two.view" />	
 
-	<action-view name="stock.dashboard.two.view" title="Stock Dashboard 2">
+	<action-view name="stock.dashboard.two.view" title="Deliveries Details">
 		<view type="dashboard" name="stock.dashboard.two" />	    
 	</action-view>
 	
