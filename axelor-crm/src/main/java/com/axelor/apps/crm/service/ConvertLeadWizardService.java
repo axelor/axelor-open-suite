@@ -57,7 +57,7 @@ public class ConvertLeadWizardService {
 	 * @return
 	 * @throws AxelorException
 	 */
-	public Partner createPartner(Map<String, Object> context) throws AxelorException  {
+	public Partner createPartner(Map<String, Object> context, Address primaryAddress, Address otherAddress) throws AxelorException  {
 
 		Mapper mapper = Mapper.of(Partner.class);
 		Partner partner = Mapper.toBean(Partner.class, null);
@@ -70,7 +70,7 @@ public class ConvertLeadWizardService {
 
 		partnerService.setPartnerFullName(partner);
 
-		this.setAddress(partner, context);
+		this.setAddress(partner, primaryAddress, otherAddress);
 
 		return partner;
 	}
@@ -87,21 +87,19 @@ public class ConvertLeadWizardService {
 	}
 
 
-	public void setAddress(Partner partner, Map<String, Object> context)  {
-		Address invoicingAddress = this.createPrimaryAddress(context);
-		Address deliveryAddress = this.createOtherAddress(context);
-		if(partner.getIsContact() && invoicingAddress != null)  {
-			partner.setMainInvoicingAddress(invoicingAddress);
+	public void setAddress(Partner partner, Address primaryAddress, Address otherAddress)  {
+		if(partner.getIsContact() && primaryAddress != null)  {
+			partner.setMainInvoicingAddress(primaryAddress);
 		}
 		else {
-			if(invoicingAddress != null){
-				partner.setMainInvoicingAddress(invoicingAddress);
+			if(primaryAddress != null){
+				partner.setMainInvoicingAddress(primaryAddress);
 			}
-			if(deliveryAddress != null){
-				partner.setDeliveryAddress(deliveryAddress);
+			if(otherAddress != null){
+				partner.setDeliveryAddress(otherAddress);
 			}
-			else if(invoicingAddress != null){
-				partner.setDeliveryAddress(invoicingAddress);
+			else if(primaryAddress != null){
+				partner.setDeliveryAddress(primaryAddress);
 			}
 		}
 

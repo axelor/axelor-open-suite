@@ -33,15 +33,17 @@
 						<field name="mobilePhone"/>
 						<field name="emailAddress" canSelect="false" form-view="email-address-simple-form"/>
 						<field name="fax"/>
-						
+					</editor>
+				</field>
 			<!-- 			<field name="mainInvoicingAddress" title="Address"/>    -->
 						<label title="Address"/>
-						<field name="primaryAddress" title="Address" widget="STRING" type="STRING" colSpan="12"/>
-						<field name="primaryCity" title="City" colSpan="4"/>
-						<field name="primaryState" title="State" colSpan="4"/>
-						<field name="primaryPostalCode" title="Postal code" colSpan="4"/>
-						<field colSpan="12" name="primaryCountry" title="Country" widget="ManyToOne" target="com.axelor.apps.base.db.Country" target-name="name"/>
-						
+						<field name="primaryAddress" placeholder="Address" showTitle="false" type="string" colSpan="12"/>
+						<field name="primaryCity" placeholder="City" showTitle="false" type="string" colSpan="4"/>
+						<field name="primaryState" placeholder="State" showTitle="false" type="string" colSpan="4"/>
+						<field name="primaryPostalCode" placeholder="Postal code" showTitle="false" type="string" colSpan="4"/>
+						<field colSpan="12" name="primaryCountry" placeholder="Country" showTitle="false" widget="ManyToOne" target="com.axelor.apps.base.db.Country" target-name="name"/>
+				<field name="contactPartner" showTitle="false" colSpan="12" canSelect="false" x-show-icons="false" form-view="contact-lead-converted-form" target="com.axelor.apps.base.db.Partner" type="many-to-one">
+					<editor x-show-titles="false" >
 						<label title="Notes"/>
 					  	<field name="description" showTitle="false" widget="Html" x-lite="true" colSpan="12" />
 						<label title="Settings"/>
@@ -79,20 +81,24 @@
 				        <field name="registrationCode" hideIf="partnerTypeSelect == 2"/>
 				        <field name="taxNbr" hideIf="partnerTypeSelect == 2"/>
 				        <field name="parentPartner" hideIf="partnerTypeSelect != 1" domain="self.iscontact = false AND self.partnerTypeSelect = 1" form-view="partner-form" grid-view="partner-grid"/>
-
+					</editor>
+				</field>
 					    
 					    <label title="Invoicing Address" colSpan="12"/>
-					    <field name="primaryAddress" title="Address" colSpan="6"/>
-					    <field name="primaryCity" title="City"/>
-					    <field name="primaryState" title="State"/>
-					    <field name="primaryPostalCode" title="Postal code"/>
-					    <field name="primaryCountry" title="Country" widget="ManyToOne" target="com.axelor.apps.base.db.Country" target-name="name"/>
+					    <field name="primaryAddress" placeholder="Address" showTitle="false" type="string"/>
+					    <field name="primaryCity" placeholder="City" showTitle="false" type="string"/>
+					    <field name="primaryState" placeholder="State" showTitle="false" type="string"/>
+					    <field name="primaryPostalCode" placeholder="Postal code" showTitle="false" type="string"/>
+					    <field name="primaryCountry" placeholder="Country" showTitle="false" widget="ManyToOne" target="com.axelor.apps.base.db.Country" target-name="name"/>
 					    <label title="Delivery Address" colSpan="12"/>
-				        <field name="otherAddress" title="Address"/>
-				        <field name="otherCity" title="City"/>
-				        <field name="otherState" title="State"/>
-				        <field name="otherPostalCode" title="Postal code"/>
-				        <field name="otherCountry" title="Country" widget="ManyToOne" target="com.axelor.apps.base.db.Country" target-name="name"/>
+				        <field name="otherAddress" placeholder="Address" showTitle="false" type="string"/>
+				        <field name="otherCity"  placeholder="City" showTitle="false" type="string"/>
+				        <field name="otherState" placeholder="State" showTitle="false" type="string"/>
+				        <field name="otherPostalCode" placeholder="Postal code" showTitle="false" type="string"/>
+				        <field name="otherCountry" placeholder="Country" showTitle="false" widget="ManyToOne" target="com.axelor.apps.base.db.Country" target-name="name"/>
+	   			
+	   			<field name="partner" showTitle="false" colSpan="12" canSelect="false" x-show-icons="false" form-view="partner-lead-converted-form" target="com.axelor.apps.base.db.Partner" type="many-to-one">
+					<editor x-show-titles="false">		
 	   					<label title="Contact" colSpan="12"/>
 						<field name="fixedPhone"/>
 						<field name="mobilePhone" hideIf="partnerTypeSelect == 1"/>
@@ -231,11 +237,16 @@
 	</action-group>
 	
 	<action-record name="action-convert-lead-wizard-address" model="com.axelor.apps.base.db.Wizard">
-		<field name="primaryAddress" expr="_lead.primaryAddress"/>
-		<field name="primaryCity" expr="_lead.primaryCity"/>
-		<field name="primaryState" expr="_lead.primaryState"/>
-		<field name="primaryPostalCode" expr="_lead.primaryPostalCode"/>
-		<field name="primaryCountry" expr="_lead.primaryCountry"/>
+		<field name="primaryAddress" expr="eval: _lead.primaryAddress"/>
+		<field name="primaryCity" expr="eval: _lead.primaryCity"/>
+		<field name="primaryState" expr="eval: _lead.primaryState"/>
+		<field name="primaryPostalCode" expr="eval: _lead.primaryPostalCode"/>
+		<field name="primaryCountry" expr="eval: _lead.primaryCountry"/>
+		<field name="otherAddress" expr="eval: _lead.otherAddress"/>
+		<field name="otherCity" expr="eval: _lead.otherCity"/>
+		<field name="otherState" expr="eval: _lead.otherState"/>
+		<field name="otherPostalCode" expr="eval: _lead.otherPostalCode"/>
+		<field name="otherCountry" expr="eval: _lead.otherCountry"/>
 	</action-record>
 	
 	<action-record name="action-convert-lead-wizard-default" model="com.axelor.apps.base.db.Wizard">
@@ -246,6 +257,7 @@
     	<field name="meetingEvent" expr="action: action-convert-lead-wizard-default-meeting-event"/>
     	<field name="taskEvent" expr="action: action-convert-lead-wizard-default-task-event"/>
     	<field name="_lead" expr="eval: _lead"/>
+    	
     </action-record>
     
 	
