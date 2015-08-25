@@ -103,7 +103,7 @@
 				</panel>
 	      	</panel>
 	      	<panel colSpan="9">
-	      	<field name="fullName" colSpan="12" showTitle="false">
+	      	<field name="fullName" colSpan="9" showTitle="false">
 	      		<hilite strong="true" if="true" color="primary"/>        
 		        <editor x-show-titles="false">
 		            <field name="partnerTypeSelect" showTitle="false" onChange="action-partner-attrs-change-name,action-partner-method-set-social-network-url" colSpan="4"/>
@@ -113,6 +113,7 @@
 		            <field name="titleSelect" showTitle="false" hideIf="partnerTypeSelect != 2" placeholder="Civility" colSpan="2"/>
 		        </editor>
 		    </field>
+		    <button name="generateProject" readonlyIf="id == null || id &lt; 1" title="Generate Project" colSpan="3" if-module="axelor-project" onClick="action-partner-view-generate-project"/>
 			<field name="isContact" hidden="true" colSpan="12" />
 		</panel>
   		</panel>
@@ -187,12 +188,6 @@
 			</panel>
 			<panel name="customerCredit" title="Encours Client" if-module="axelor-supplychain" colSpan="12" hideIf="!isCustomer">
 				<panel-include if-module="axelor-supplychain" view="incl-customer-credit-partner-form" from="axelor-supplychain" />
-			</panel>
-			<panel title="Business Project" if-module="axelor-business-project" colSpan="12">
-				<button name="generateProject" title="Generate Project"/>
-				<field name="chargeBackPurchase" colSpan="4"/>
-				<label title="OR" colSpan="4"/>
-				<field name="flatFeePurchase" colSpan="4"/>
 			</panel>
 			<panel title="Sale Order" if-module="axelor-sale" showIf="isCustomer">
 				<field name="saleOrderInformation" colSpan="12"/>
@@ -462,6 +457,14 @@
 	<action-method name="action-partner-method-view-emails-contact">
 		<call class="com.axelor.apps.base.web.PartnerController" method="findContactMails"/>
 	</action-method>
+	
+
+	
+	<action-view name="action-partner-view-generate-project" title="Generated Project" model="com.axelor.apps.project.db.ProjectTask">
+    	<view type="form" name="project-form"/>
+		<view type="grid" name="project-grid"/>
+    	<context name="_idPartner" expr="eval: id"/>
+    </action-view>
 	
 	<search-filters name="partner-filters" model="com.axelor.apps.base.db.Partner" title="Partner filters">
 		<filter title="All Enterprises">

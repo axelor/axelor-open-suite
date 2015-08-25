@@ -33,7 +33,7 @@
 		    <panel title="Configuration">
 		    	<field name="defaultPartnerLanguage" />
 		    	<field name="mailAccountByUser" />
-		    	<field name="productInAti"/>
+		    	<field name="productInAtiSelect"/>
 		    	<field name="nbDecimalDigitForUnitPrice"/>
 		    	<field name="computeMethodDiscountSelect"/>
 		    	<field name="timeLoggingPreferenceSelect"/>

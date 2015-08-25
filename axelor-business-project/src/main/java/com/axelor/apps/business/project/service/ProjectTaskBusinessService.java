@@ -49,11 +49,13 @@ public class ProjectTaskBusinessService extends ProjectTaskService{
 			project.setProjTaskInvTypeSelect(parentProject.getProjTaskInvTypeSelect());
 		}
 		Product product = generalService.getGeneral().getProductInvoicingProjectTask();
-		project.setProduct(product);
-		project.setQty(BigDecimal.ONE);
-		project.setPrice(product.getPurchasePrice());
-		project.setUnit(product.getUnit());
-		project.setExTaxTotal(product.getPurchasePrice());
+		if(product != null){
+			project.setProduct(product);
+			project.setQty(BigDecimal.ONE);
+			project.setPrice(product.getPurchasePrice());
+			project.setUnit(product.getUnit());
+			project.setExTaxTotal(product.getPurchasePrice());
+		}
 		return project;
 	}
 

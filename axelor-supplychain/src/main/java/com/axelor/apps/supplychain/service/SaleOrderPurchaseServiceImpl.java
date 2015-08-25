@@ -132,7 +132,13 @@ public class SaleOrderPurchaseServiceImpl implements SaleOrderPurchaseService  {
 				supplierPartner.getPurchasePriceList(),
 				supplierPartner);
 
-		purchaseOrder.setInAti(Beans.get(PurchaseConfigRepository.class).all().filter("self.company = ?1", saleOrder.getCompany()).fetchOne().getPurchaseOrderInAti());
+		Integer atiChoice = Beans.get(PurchaseConfigRepository.class).all().filter("self.company = ?1", saleOrder.getCompany()).fetchOne().getPurchaseOrderInAtiSelect();
+		if(atiChoice == 2 || atiChoice == 4){
+			purchaseOrder.setInAti(true);
+		}
+		else{
+			purchaseOrder.setInAti(false);
+		}
 
 		for(SaleOrderLine saleOrderLine : saleOrderLineList)  {
 

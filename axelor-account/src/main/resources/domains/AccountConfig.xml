@@ -105,7 +105,7 @@
     <!--  Account chart template-->
 	<many-to-one name="accountChart" ref="com.axelor.apps.account.db.AccountChart" title="Account chart" />
 	<boolean name="hasChartImported"  title="Chart imported?" />
-	<boolean name="invoiceInAti" title="Invoice In ATI"/>
+	<integer name="invoiceInAtiSelect" title="Invoice ATI/WT" selection="base.in.ati.select" default="1"/>
 	
 <!-- 	Sequence  -->
 	<many-to-one name="custInvSequence" ref="com.axelor.apps.base.db.Sequence" title="Customer invoices sequence"/>

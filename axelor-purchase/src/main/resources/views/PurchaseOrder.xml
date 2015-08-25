@@ -171,10 +171,13 @@
     <action-attrs name="action-purchase-order-attrs-in-ati">
     	<attribute name="hidden" for="purchaseOrderLineList.exTaxTotal" expr="inAti"/>
     	<attribute name="hidden" for="purchaseOrderLineList.inTaxTotal" expr="!inAti"/>
+    	<attribute name="hidden" for="inAti" expr=" eval: __repo__.of(PurchaseConfig).all().filter('self.company = ?',company).fetchOne()?.purchaseOrderInAtiSelect == 1
+    									|| __repo__.of(PurchaseConfig).all().filter('self.company = ?',company).fetchOne()?.purchaseOrderInAtiSelect == 2"/>
     </action-attrs>
     
     <action-record name="action-purchase-order-record-in-ati" model="com.axelor.apps.purchase.db.PurchaseOrder">
-    	<field name="inAti" expr="eval: __repo__.of(PurchaseConfig).all().filter('self.company = ?',company).fetchOne()?.purchaseOrderInAti"/>
+    	<field name="inAti" expr="eval: __repo__.of(PurchaseConfig).all().filter('self.company = ?',company).fetchOne()?.purchaseOrderInAtiSelect == 2
+    									|| __repo__.of(PurchaseConfig).all().filter('self.company = ?',company).fetchOne()?.purchaseOrderInAtiSelect == 4"/>
     </action-record>
      
     <action-record name="action-purchase-order-record-new" model="com.axelor.apps.purchase.db.PurchaseOrder">

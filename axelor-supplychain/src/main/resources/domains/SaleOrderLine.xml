@@ -13,9 +13,6 @@
   	
   	<decimal name="amountInvoiced" title="Amount invoiced W.T." readonly="true"/>
   	
-<!--   Onglet Historique -->
-  	<many-to-many name="invoiceSet" ref="com.axelor.apps.account.db.Invoice" title="Associated invoice lines"/>
-  	
   	
 <!-- Bon de livraison -->
   	<boolean name="isInvoiceControlled" title="Invoice controlled"/>

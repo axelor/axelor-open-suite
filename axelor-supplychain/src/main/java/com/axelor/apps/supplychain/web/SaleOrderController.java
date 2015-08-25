@@ -204,6 +204,13 @@ public class SaleOrderController{
 			if(invoice != null)  {
 				response.setReload(true);
 				response.setFlash(I18n.get(IExceptionMessage.PO_INVOICE_2));
+				response.setView(ActionView
+		            .define(I18n.get("Invoice generated"))
+		            .model(Invoice.class.getName())
+		            .add("form", "invoice-form")
+		            .add("grid", "invoice-grid")
+		            .context("_showRecord",String.valueOf(invoice.getId()))
+		            .map());
 			}
 		}
 		catch(Exception e)  { TraceBackService.trace(response, e); }

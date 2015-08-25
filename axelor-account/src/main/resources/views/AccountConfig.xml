@@ -20,7 +20,7 @@
 		  <field name="hasChartImported"/>
 		  <field name="allowCancelVentilatedInvoice"/>
 	   	  <field name="allowRemovalValidatedMove" showIf="allowCancelVentilatedInvoice"/>
-	   	  <field name="invoiceInAti"/>
+	   	  <field name="invoiceInAtiSelect"/>
     
 		</panel>
 		

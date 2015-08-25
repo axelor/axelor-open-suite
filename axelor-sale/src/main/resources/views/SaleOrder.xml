@@ -101,31 +101,16 @@
 	    <panel title="Content">
 	    	<panel-related field="saleOrderLineList" form-view="sale-order-line-form" colSpan="12" onChange="action-sale-order-method-compute" grid-view="sale-order-line-grid"/>
 	    	<panel-related field="saleOrderLineTaxList" colSpan="12" form-view="sale-order-line-tax-form" grid-view="sale-order-line-tax-grid"/>
-	    </panel>
-	    <panel title="Other informations" showTitle="false">
-	      <panel title="Sales follow-up" colSpan="12">
-	        <field name="salemanUser" grid-view="user-grid" form-view="user-form"/>
-	        <field name="team" onSelect="action-sale-order-domain-on-team" form-view="team-form" grid-view="team-grid" if="__config__.general.getTeamManagement()"/>
-	      </panel>
-	      <panel title="Financial terms" colSpan="12">
-	        <field name="paymentMode" domain="self.inOutSelect = 1" if-module="axelor-supplychain" form-view="payment-mode-form" grid-view="payment-mode-grid"/>
-	        <field name="paymentCondition" if-module="axelor-supplychain" form-view="payment-condition-form" grid-view="payment-condition-grid"/>
-	      </panel>
-	      <panel title="Invoicing" if-module="axelor-supplychain" colSpan="12">
-	        <field name="invoicingMomentSelect"/>
-	      </panel>
-	      <panel title="Delivery information" colSpan="12">
-   		      <field name="location" domain="self.company = :company and self.typeSelect = 1" form-view="location-form" grid-view="location-grid" if-module="axelor-supplychain"/>
-   		      <field name="deliveryDate"/>
-   		      <field name="deliveryCondition" colSpan="12"/>
-	      </panel>
-       	  <panel title="Specific settings" colSpan="12">
-       	  	  <field name="isToPrintLineSubTotal"/>
-       	  </panel>
-	      <panel title="Description" colSpan="12">
-	        <field name="description" showTitle="false" widget="Html" x-lite="true" colSpan="12"/>
-	      </panel>
-	    </panel>
+	    	<panel title="Description" colSpan="12">
+	        	<field name="description" showTitle="false" widget="Html" x-lite="true" colSpan="12"/>
+	      	</panel>
+	    </panel>  
+      	<panel title="Delivery information" colSpan="12">
+  		    <field name="location" domain="self.company = :company and self.typeSelect = 1" form-view="location-form" grid-view="location-grid" if-module="axelor-supplychain"/>
+  		    <field name="deliveryDate"/>
+  		    <field name="deliveryCondition" colSpan="12"/>
+      	</panel>
+	      
 	    
 <!-- 	    <panel-related field="saleOrderScheduleLineList" title="Schedules" showIf="invoicingTypeSelect == 2" showTitle="false" if-module="axelor-supplychain" grid-view="sale-order-schedule-line-grid" form-view="sale-order-schedule-line-form"/>  -->
 	    <panel-dashlet action="action-view-show-invoices-from-sale-order" title="Invoicing"/>
@@ -187,6 +172,21 @@
 	          </viewer>
 	        </field>
       </panel>
+      
+      <panel sidebar="true">
+      	<panel title="Sales follow-up" colSpan="12">
+	        <field name="salemanUser" grid-view="user-grid" form-view="user-form"/>
+	        <field name="team" onSelect="action-sale-order-domain-on-team" form-view="team-form" grid-view="team-grid" if="__config__.general.getTeamManagement()"/>
+	    </panel>
+	    <panel title="Financial terms" colSpan="12">
+	        <field name="paymentMode" domain="self.inOutSelect = 1" if-module="axelor-supplychain" form-view="payment-mode-form" grid-view="payment-mode-grid"/>
+	        <field name="paymentCondition" if-module="axelor-supplychain" form-view="payment-condition-form" grid-view="payment-condition-grid"/>
+	    </panel>
+	    <panel title="Invoicing" if-module="axelor-supplychain" colSpan="12">
+	        <field name="invoicingMomentSelect"/>
+	    </panel>
+      </panel>
+      
       <panel-mail>
 		  <mail-messages limit="4" />
 		  <mail-followers />
@@ -253,9 +253,6 @@
 	      <panel title="Stock location" if-module="axelor-supplychain">
    		      <field name="location" domain="self.company = :company and self.typeSelect = 1" form-view="location-form" grid-view="location-grid"/>
 	      </panel>
-       	  <panel title="Specific settings" colSpan="12">
-       	  	  <field name="isToPrintLineSubTotal"/>
-       	  </panel>
 	      <panel title="Description" colSpan="12">
 	        <field name="description" showTitle="false" widget="Html" x-lite="true" colSpan="12"/>
 	      </panel>        
@@ -447,10 +444,13 @@
     <action-attrs name="action-sale-order-attrs-in-ati">
     	<attribute name="hidden" for="saleOrderLineList.exTaxTotal" expr="inAti"/>
     	<attribute name="hidden" for="saleOrderLineList.inTaxTotal" expr="!inAti"/>
+    	<attribute name="hidden" for="inAti" expr=" eval: __repo__.of(SaleConfig).all().filter('self.company = ?',company).fetchOne()?.saleOrderInAtiSelect == 1
+    									|| __repo__.of(SaleConfig).all().filter('self.company = ?',company).fetchOne()?.saleOrderInAtiSelect == 2"/>
     </action-attrs>
     
     <action-record name="action-sale-order-record-in-ati" model="com.axelor.apps.sale.db.SaleOrder">
-    	<field name="inAti" expr="eval: __repo__.of(SaleConfig).all().filter('self.company = ?',company).fetchOne()?.saleOrderInAti"/>
+    	<field name="inAti" expr="eval: __repo__.of(SaleConfig).all().filter('self.company = ?',company).fetchOne()?.saleOrderInAtiSelect == 2
+    									|| __repo__.of(SaleConfig).all().filter('self.company = ?',company).fetchOne()?.saleOrderInAtiSelect == 4"/>
     </action-record>
     
     <action-method name="action-sale-order-method-finalize">

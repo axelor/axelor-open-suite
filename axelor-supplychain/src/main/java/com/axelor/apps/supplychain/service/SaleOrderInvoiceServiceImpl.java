@@ -30,7 +30,6 @@ import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
-import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.invoice.InvoiceServiceImpl;
 import com.axelor.apps.account.service.invoice.generator.InvoiceGenerator;
@@ -150,9 +149,6 @@ public class SaleOrderInvoiceServiceImpl extends SaleOrderRepository implements 
 		InvoiceGenerator invoiceGenerator = this.createInvoiceGenerator(saleOrder);
 
 		Invoice invoice = invoiceGenerator.generate();
-
-		invoice.setInAti(Beans.get(AccountConfigRepository.class).all().filter("self.company = ?1", saleOrder.getCompany()).fetchOne().getInvoiceInAti());
-
 
 		invoiceGenerator.populate(invoice, this.createInvoiceLines(invoice, saleOrderLineList));
 
@@ -347,8 +343,6 @@ public class SaleOrderInvoiceServiceImpl extends SaleOrderRepository implements 
 		InvoiceGenerator invoiceGenerator = this.createInvoiceGenerator(saleOrder);
 
 		Invoice invoice = invoiceGenerator.generate();
-
-		invoice.setInAti(Beans.get(AccountConfigRepository.class).all().filter("self.company = ?1", saleOrder.getCompany()).fetchOne().getInvoiceInAti());
 
 		invoiceGenerator.populate(invoice, this.createSubscriptionInvoiceLines(invoice, subscriptionList));
 

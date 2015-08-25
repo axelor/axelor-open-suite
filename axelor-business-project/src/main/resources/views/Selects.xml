@@ -23,4 +23,10 @@
 		<option value="6">6</option>
 	</selection>
 	
+	<selection name="business.project.charging.back.purchases.select">
+		<option value="1">Identically</option>
+		<option value="2">With price list</option>
+		<option value="3">With percentage</option>
+	</selection>
+	
 </object-views>

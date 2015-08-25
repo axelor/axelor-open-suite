@@ -14,7 +14,7 @@
 		<field name="progress" widget="Progress"/>
 	</grid>
 
-	<form name="project-form" title="Project" model="com.axelor.apps.project.db.ProjectTask" onNew="action-project-project-default,action-project-task-attrs-duration-title,action-project-attrs-scale-and-precision"
+	<form name="project-form" title="Project" model="com.axelor.apps.project.db.ProjectTask" onNew="action-project-task-group-on-new-project"
 	onLoad="action-project-task-record-set-visible-duration,action-project-task-attrs-duration-title,action-project-attrs-scale-and-precision">
 		<toolbar>
 			<button name="printProjectTask" title="Print" onClick="save,action-project-task-method-print-project-task" if-module="axelor-business-project"/>
@@ -247,6 +247,19 @@
 			<field name="membersUserSet" widget="TagSelect" form-view="user-form" grid-view="user-grid"/>
 		</panel>
 	</form>
+	
+	
+	<action-group name="action-project-task-group-on-new-project">
+		<action name="action-project-task-generate-project-from-partner" if="_idPartner != null"/>
+		<action name="action-project-project-default"/>
+		<action name="action-project-task-attrs-duration-title"/>
+		<action name="action-project-task-attrs-duration-title"/>
+		<action name="action-project-attrs-scale-and-precision"/>
+	</action-group>
+	
+	<action-method name="action-project-task-generate-project-from-partner">
+		<call class="com.axelor.apps.project.web.ProjectTaskController" method="generateProjectFromPartner"/>
+	</action-method>
 	
 	<action-record name="action-project-task-record-inv-type-select" model="com.axelor.apps.project.db.ProjectTask">
 		<field name="projTaskInvTypeSelect" expr="eval: project?.projTaskInvTypeSelect"/>

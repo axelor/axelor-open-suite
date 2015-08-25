@@ -18,7 +18,6 @@
 	onLoad="action-group-sale-saleorderline-onload" onNew="action-group-sale-saleorderline-onnew" width="large">
 		<panel>
 			<field name="sequence"/>
-		   	<field name="isToPrintLineSubTotal"/>
 		</panel>
 		<panel>
 		   	<field name="product" onChange="action-group-sale-saleorderline-product-onchange" onSelect="action-sale-order-line-attrs-domain-product" form-view="product-form" grid-view="product-grid"/>
@@ -41,7 +40,7 @@
 			<panel name="subscription" title="Subscription">
 				<panel-include view="subscription-sale-order-line-form" from="axelor-supplychain" if-module="axelor-supplychain"/>
 			</panel>
-		   	<panel title="Settings">
+		   	<panel name="settingsPanel" title="Settings">
 		      	<field name="saleSupplySelect" onChange="action-group-sale-saleorderline-salesupplyselect-onchange" if-module="axelor-supplychain"/>        
 		       	<field name="supplierPartner" showIf="saleSupplySelect == 2" domain="self.isContact = false AND self.isSupplier = true" form-view="partner-form" grid-view="partner-grid"/>
 		       	<field name="billOfMaterial" onSelect="action-sale-order-line-attrs-bill-of-material-domain" if-module="axelor-production" form-view="bill-of-material-form" grid-view="bill-of-material-grid"/>
@@ -50,21 +49,28 @@
 		   	<panel title="Notes">
 		   		<field name="description" showTitle="false" colSpan="12" widget="Html" x-lite="true"/>
 		   	</panel>
-		   	<panel title="Delivery">
+		   	<panel name="deliveryPanel" title="Delivery">
 		   		<field name="estimatedDelivDate"/>
 		   		<panel-dashlet name="sale.order.line.dashboard" title="Stock Moves" action="action-sale-order-line-view-stock-move-line" colSpan="12"/>
 		   	</panel>
 		   	<panel title="Invoicing follow-up" if-module="axelor-supplychain">
 		   		<field name="invoicingDate"/>
 		  		<field name="amountInvoiced" if="__config__.general.getManageInvoicedAmountByLine()"/>
+		  		<panel-dashlet action="action-sale-order-line-view-show-invoice-lines" if="__config__.general.getManageInvoicedAmountByLine()" colSpan="12"/>
 		   	</panel>
-			<panel-related field="invoiceSet" form-view="invoice-form" grid-view="invoice-grid"/>
 			<panel name="projectTaskPanel" if="__config__.general.getProjectTaskSaleOrderLines()" title="Project/Task" if-module="axelor-business-project">
 				<field name="project" onSelect="action-sale-order-line-attrs-domain-project" onChange="action-sale-order-line-record-progress" form-view="project-task-form" grid-view="project-task-grid"/>
 				<field name="progress" readonly="true" widget="SelectProgress"/>
 			</panel>
 		</panel-tabs>
 	</form>
+	
+	<action-view name="action-sale-order-line-view-show-invoice-lines" title="Invoice Lines" model="com.axelor.apps.account.db.InvoiceLine">	
+		<view type="grid" name="invoice-line-grid" />
+		<view type="form" name="invoice-line-form" />
+		<domain>self.saleOrderLine.id = :saleOrderLineId</domain>
+		<context name="saleOrderLineId" expr="eval: id" />
+	</action-view>
 	
 	<action-attrs name="action-sale-order-line-attrs-domain-project">
 		<attribute name="domain" for="project" expr="eval: &quot; self.clientPartner.id = ${_parent?.clientPartner?.id} &quot;"/>
@@ -133,7 +139,6 @@
     <action-record name="action-sale-order-line-record-new" model="com.axelor.apps.sale.db.SaleOrderLine">
     	<field name="qty" expr="eval: 1"/>
     	<field name="isOrdered" expr="true"/>
-    	<field name="isToPrintLineSubTotal" expr="eval: _parent?.isToPrintLineSubTotal"/>
     </action-record>
     
 	<action-record name="action-sale-order-line-record-sequence" model="com.axelor.apps.sale.db.SaleOrderLine">
@@ -196,6 +201,9 @@
 	
 	<action-attrs name="action-sale-order-line-attrs-hidden-subscription">
 		<attribute name="hidden" for="subscription" expr="product?.productTypeSelect != 'subscriptable'"/>
+		<attribute name="hidden" for="settingsPanel" expr="product?.productTypeSelect == 'subscriptable'"/>
+		<attribute name="hidden" for="deliveryPanel" expr="product?.productTypeSelect == 'subscriptable'"/>
+		<attribute name="hidden" for="projectTaskPanel" expr="product?.productTypeSelect == 'subscriptable'"/>
 	</action-attrs>
 	
 	<action-attrs name="action-sale-order-line-attrs-domain-product">

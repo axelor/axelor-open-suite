@@ -12,34 +12,29 @@ public interface IExceptionMessage {
 	 * Purchase Order Invoice Service and controller
 	 */
 
-	static final String PO_INVOICE_1 = /*$$(*/ "Veuillez selectionner une devise pour la commande %s" /*)*/;
-	static final String PO_INVOICE_2 = /*$$(*/ "Facture créée" /*)*/;
+	static final String PO_INVOICE_1 = /*$$(*/ "Please, select a currency for the order %s" /*)*/;
+	static final String PO_INVOICE_2 = /*$$(*/ "Invoice created" /*)*/;
 
 	/**
 	 * Purchase Order Service
 	 */
-	static final String PURCHASE_ORDER_1 = /*$$(*/ "%s Veuillez configurer un entrepot virtuel fournisseur pour la société %s" /*)*/;
+	static final String PURCHASE_ORDER_1 = /*$$(*/ "%s please configure a virtual supplier stock location for the company %s" /*)*/;
 
 	/**
 	 * Sale Order Invoice Service
 	 */
-	static final String SO_INVOICE_1 = /*$$(*/ "Il est nécessaire de définir un planificateur." /*)*/;
-	static final String SO_INVOICE_2 = /*$$(*/ "Il est nécessaire de définir une date de début d'abonnement." /*)*/;
-	static final String SO_INVOICE_3 = /*$$(*/ "Il est nécessaire de définir une date de première facturation." /*)*/;
-	static final String SO_INVOICE_4 = /*$$(*/ "Le devis %s sera facturé le %s." /*)*/;
-	static final String SO_INVOICE_5 = /*$$(*/ "Le devis est déjà complêtement facturé" /*)*/;
-	static final String SO_INVOICE_6 = /*$$(*/ "Veuillez selectionner une devise pour le devis %s" /*)*/;
+	static final String SO_INVOICE_6 = /*$$(*/ "Please, select a currency for the order %s" /*)*/;
 
 	/**
 	 * Sale Order Purchase Service
 	 */
-	static final String SO_PURCHASE_1 = /*$$(*/ "Veuillez choisir un fournisseur pour la ligne %s" /*)*/;
+	static final String SO_PURCHASE_1 = /*$$(*/ "Please, select a supplier for the line %s" /*)*/;
 	static final String SO_LINE_PURCHASE_AT_LEAST_ONE = /*$$(*/ "At least one sale order line must be selected" /*)*/;
 
 	/**
 	 * Stock Move Invoice Service
 	 */
-	static final String STOCK_MOVE_INVOICE_1 = /*$$(*/ "Produit incorrect dans le mouvement de stock %s" /*)*/;
+	static final String STOCK_MOVE_INVOICE_1 = /*$$(*/ "Incorrect product in the stock move %s" /*)*/;
 	static final String STOCK_MOVE_MULTI_INVOICE_CURRENCY = /*$$(*/ "The currency is required and must be the same for all sale orders" /*)*/;
 	static final String STOCK_MOVE_MULTI_INVOICE_CLIENT_PARTNER = /*$$(*/ "The client Partner is required and must be the same for all sale orders" /*)*/;
 	static final String STOCK_MOVE_MULTI_INVOICE_SUPPLIER_PARTNER = /*$$(*/ "The supplier Partner is required and must be the same for all purchase orders" /*)*/;
@@ -55,7 +50,7 @@ public interface IExceptionMessage {
 	 * Batch Invoicing
 	 */
 	static final String BATCH_INVOICING_1 = /*$$(*/ "Compte rendu de génération de facture d'abonnement :\n" /*)*/;
-	static final String BATCH_INVOICING_2 = /*$$(*/ "Devis(s) traité(s)" /*)*/;
+	static final String BATCH_INVOICING_2 = /*$$(*/ "Order(s) processed" /*)*/;
 
 
 }

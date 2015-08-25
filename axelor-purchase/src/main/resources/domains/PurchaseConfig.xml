@@ -10,7 +10,7 @@
    
     <one-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company" required="true" unique="true"/>
 
-  	<boolean name="purchaseOrderInAti" title="Purchase Orders In ATI"/>
+  	<integer name="purchaseOrderInAtiSelect" title="Purchase Orders ATI/WT" selection="base.in.ati.select" default="1"/>
   </entity>
   
 </domain-models>

@@ -12,6 +12,8 @@
 	        <field name="fiscalPosition" form-view="fiscal-position-form" grid-view="fiscal-position-grid"/>
 	        <field name="payerQuality"/>
 	        <field name="bankDetails" widget="SuggestBox" domain="self.partner.id = :id" grid-view="bank-details-grid" form-view="bank-details-form"/>
+	        <field name="chargeBackPurchaseSelect" colSpan="3" if-module="axelor-business-project"/>
+	        <field name="chargeBackPurchase" colSpan="3" if-module="axelor-business-project" showIf="chargeBackPurchaseSelect == 3"/>
 	        <panel colSpan="6">
 	    		<button name="showAllInvoices" title="Show invoices"  onClick="save,action-partner-view-partner-invoice"/>
         		<button name="showUnpaidInvoice" title="View all unpaid invoices"  onClick="save,action-partner-view-show-unpaid-invoice"/>

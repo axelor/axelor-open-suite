@@ -86,20 +86,18 @@
 	    </panel>
 	    <panel title="Account" if-module="axelor-account" if="__config__.general.getManageInvoicedAmountByLine()">
 	      <field name="amountInvoiced"/>
+	      <panel-dashlet action="action-purchase-order-line-view-show-invoice-lines" colSpan="12"/>
 	    </panel>
-	    <panel-related field="invoiceSet">
-	      <field name="invoiceId"/>
-	      <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
-	      <field name="paymentMode" form-view="payment-mode-form" grid-view="payment-mode-grid"/>
-	      <field name="invoiceDate"/>
-	      <field name="dueDate"/>
-	      <field name="status"/>
-	      <field name="inTaxTotal" title="Total"/>
-	      <field name="inTaxTotalRemaining" title="Remaining"/>	    
-	    </panel-related>
 	  </panel-tabs>
 	</form>
 	
+	
+	<action-view name="action-purchase-order-line-view-show-invoice-lines" title="Invoice Lines" model="com.axelor.apps.account.db.InvoiceLine">	
+		<view type="grid" name="invoice-line-grid" />
+		<view type="form" name="invoice-line-form" />
+		<domain>self.purchaseOrderLine.id = :purchaseOrderLineId</domain>
+		<context name="purchaseOrderLineId" expr="eval: id" />
+	</action-view>
 	<!-- ACTION GROUPs -->
 	
 	<action-group name="action-group-purchase-purchase-orderline-onnew">
