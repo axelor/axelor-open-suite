@@ -62,7 +62,7 @@
 		</panel>
 		
 		<panel title="Payer" itemSpan="12" readonlyIf="statusSelect == 2">
-			<field name="partner" form-view="partner-form" grid-view="partner-grid" colSpan="4" onChange="action-pv-moveLine-domain-4" onSelect="action-payment-voucher-set-partner-domain" />
+			<field name="partner" form-view="partner-form" grid-view="partner-grid" colSpan="4" onChange="action-pv-moveLine-domain-4, action-pv-record-default-partner-inf" onSelect="action-payment-voucher-set-partner-domain" />
 			<field name="paymentMode" grid-view="payment-mode-grid" form-view="payment-mode-form" colSpan="4" widget="SuggestBox" onChange="action-group-account-payment-voucher-paymentmode-onchange" onSelect="action-set-payment-mode-domain"/>
 			<field name="currency" colSpan="4" form-view="currency-form" grid-view="currency-grid"/>
 		</panel>
@@ -86,6 +86,11 @@
 		</panel-stack>
 		
 	</form>
+	
+	<action-record name="action-pv-record-default-partner-inf" model="com.axelor.apps.account.db.PaymentVoucher">
+		<field name="paymentMode" expr="eval: partner?.paymentMode"/>
+		<field name="currency" expr="eval: partner == null ? company?.currency : partner?.currency"/>
+	</action-record>
 	
 	<action-view name="action-payment-voucher-view-show-move-lines" title="Payment move lines">
 		<view type="form" name="move-line-form"/>
@@ -259,6 +264,8 @@
 		<field name="company"  expr="eval:__user__.activeCompany" if="__user__.activeCompany != null"/>
     	<field name="company"  expr="eval:__repo__.of(Company).all().fetchOne()" if="__user__.activeCompany == null &amp;&amp; __repo__.of(Company).all().fetch().size == 1"/>
 		<field name="operationTypeSelect" expr="eval: _operationTypeSelect"/>
+		<field name="currency"  expr="eval:__user__.activeCompany?.currency"/>
+		<field name="currency"  expr="eval:__repo__.of(Company).all().fetchOne()?.currency" if="__user__.activeCompany == null &amp;&amp; __repo__.of(Company).all().fetch().size == 1"/>
 	</action-record>
 	
 	<action-record name="action-record-payment-voucher-cash-register-record" model="com.axelor.apps.account.db.PaymentVoucher">
