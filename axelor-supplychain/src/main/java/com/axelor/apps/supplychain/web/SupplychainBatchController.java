@@ -21,7 +21,7 @@ public class SupplychainBatchController {
 		batch = supplychainBatchService.billSubscriptions(supplychainBatchService.find(supplychainBatch.getId()));
 		
 		if(batch != null)
-			response.setFlash(batch.getComment());
+			response.setFlash(batch.getComments());
 		response.setReload(true);
 	}
 }

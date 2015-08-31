@@ -11,33 +11,33 @@ import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
 
 public class MailBatchController{
-	
-	@Inject 
+
+	@Inject
 	MailBatchService mailBatchService;
-	
+
 	public void remindTimesheet(ActionRequest request, ActionResponse response) throws AxelorException{
-		
+
 		MailBatch mailBatch = request.getContext().asType(MailBatch.class);
-		
+
 		Batch batch = null;
-		
+
 		batch = mailBatchService.remindMail(mailBatchService.find(mailBatch.getId()));
-		
+
 		if(batch != null)
-			response.setFlash(batch.getComment());
+			response.setFlash(batch.getComments());
 		response.setReload(true);
 	}
-	
+
 	public void remindTimesheetGeneral(ActionRequest request, ActionResponse response) throws AxelorException{
-		
+
 		MailBatch mailBatch = Beans.get(MailBatchRepository.class).findByCode(MailBatchRepository.CODE_BATCH_EMAIL_TIME_SHEET);
-		
+
 		Batch batch = null;
-		
+
 		batch = mailBatchService.remindMail(mailBatch);
-		
+
 		if(batch != null)
-			response.setFlash(batch.getComment());
+			response.setFlash(batch.getComments());
 		response.setReload(true);
 	}
 }

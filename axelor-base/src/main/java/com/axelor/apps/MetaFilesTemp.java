@@ -91,8 +91,8 @@ public class MetaFilesTemp {
 			final String mime = Files.probeContentType(file.toPath());
 
 			metaFile.setFileName(file.getName());
-			metaFile.setMime(mime);
-			metaFile.setSize(Files.size(file.toPath()));
+			metaFile.setFileType(mime);
+			metaFile.setFileSize(Files.size(file.toPath()));
 			metaFile.setFilePath(file.getPath());
 
 			final MetaFileRepository repo = Beans.get(MetaFileRepository.class);

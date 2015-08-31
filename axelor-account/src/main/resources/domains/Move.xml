@@ -7,7 +7,7 @@
   
     <many-to-one name="journal" ref="Journal" title="Journal" required="true"/>
     <many-to-one name="period" ref="com.axelor.apps.base.db.Period" title="Period" readonly="true" required="true"/>
-    <date name="date" title="Date"/> <!--  Only used for Manual Misc. Operations -->
+    <date name="date" column="date_val" title="Date"/> <!--  Only used for Manual Misc. Operations -->
     <string name="reference" title="Reference" namecolumn="true" readonly="true" unique="true"/>
     <one-to-many name="moveLineList" ref="MoveLine" title="Move line" mappedBy="move"/>
     <many-to-one name="partner" ref="com.axelor.apps.base.db.Partner" title="Partner"/>
