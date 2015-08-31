@@ -31,6 +31,35 @@
 		<call class="com.axelor.apps.hr.web.timesheet.TimesheetController" method="historicTimesheet"/>
 	</action-method>
 	
+	
+	<menuitem name="extra-hours-root" parent="hr-root"
+    	title="Extra hours"/>
+	
+	<menuitem name="edit-extra-hours" parent="extra-hours-root" title="Enter extra hours" action="edit.extra.hours"/>
+	
+	<action-method name="edit.extra.hours">
+		<call class="com.axelor.apps.hr.web.extra.hours.ExtraHoursController" method="editExtraHours"/>
+	</action-method>
+	
+	<menuitem name="all-extra-hours" parent="extra-hours-root" title="All my extra hours" action="extra.hours.all"/>
+	
+	<action-method name="extra.hours.all">
+		<call class="com.axelor.apps.hr.web.extra.hours.ExtraHoursController" method="allExtraHours"/>
+	</action-method>
+	
+	<menuitem name="validate-extra-hours" groups="MNGT,admins" parent="extra-hours-root" title="Extra hours to Validate" action="extra.hours.validate"/>
+	
+	<action-method name="extra.hours.validate">
+		<call class="com.axelor.apps.hr.web.extra.hours.ExtraHoursController" method="validateExtraHours"/>
+	</action-method>
+	
+	<menuitem name="historic-extra-hours" groups="MNGT,admins" parent="extra-hours-root" title="Historic colleague extra hours" action="extra.hours.historic"/>
+	
+	<action-method name="extra.hours.historic">
+		<call class="com.axelor.apps.hr.web.extra.hours.ExtraHoursController" method="historicExtraHours"/>
+	</action-method>
+	
+	
 	<menuitem name="expense-root" parent="hr-root"
     	title="Expenses"/>
 	
@@ -93,6 +122,20 @@
 		<call class="com.axelor.apps.hr.web.leave.LeaveController" method="historicLeave"/>
 	</action-method>
 	
+	<menuitem name="all-payroll-preparation" parent="hr-root" title="Payroll Preparations" action="payroll.preparation.all"/>
+	
+	<action-view name="payroll.preparation.all" title="Payroll Preparations" model="com.axelor.apps.hr.db.PayrollPreparation">
+    	<view type="grid" name="payroll-preparation-grid"/>
+	    <view type="form" name="payroll-preparation-form"/>
+	</action-view>
+	
+	<menuitem name="all-employment-contract" parent="hr-root" title="Employment Contracts" action="employment.contracts.all"/>
+	
+	<action-view name="employment.contracts.all" title="Employment Contracts" model="com.axelor.apps.hr.db.EmploymentContract">
+    	<view type="grid" name="employment-contract-grid"/>
+	    <view type="form" name="employment-contract-form"/>
+	</action-view>
+	
 	<menuitem name="hr-conf" parent="hr-root" title="Configuration"/>
 	
 	<menuitem name="employee-all" parent="hr-conf"
@@ -150,5 +193,24 @@
 		<view type="form" name="hr-config-form"/>
 	</action-view>
 	
+	
+	<menuitem name="end-of-contract-reason-all" parent="hr-conf"
+    	title="End of contract reasons"
+    	action="end.of.contract.reason.all"/>
+
+	<action-view name="end.of.contract.reason.all" title="End of contract reasons" model="com.axelor.apps.hr.db.EndOfContractReason">
+    	<view type="grid" name="end-of-contract-reason-grid"/>
+	    <view type="form" name="end-of-contract-reason-form"/>
+	</action-view>
+	
+	
+	<menuitem name="employment-contract-template-all" parent="hr-conf"
+    	title="Employment Contract Templates"
+    	action="employment.contract.templat.all"/>
+
+	<action-view name="employment.contract.templat.all" title="Employment Contract Templates" model="com.axelor.apps.hr.db.EmploymentContractTemplate">
+    	<view type="grid" name="employment-contract-template-grid"/>
+	    <view type="form" name="employment-contract-template-form"/>
+	</action-view>
 	
 </object-views>

@@ -49,4 +49,28 @@
 		<option value="1">Use line's Activity</option>
 		<option value="2">Use employee's Activity</option>
 	</selection>
+	
+	<selection name="hrs.payroll.leave.unit.select">
+		<option value="1">Hours</option>
+		<option value="2">Days</option>
+	</selection>
+	
+	<selection name="hr.employment.contract.amendment.type.select">
+        <option value="1">Extension Amendment</option>
+        <option value="2">Miscellaneous Amendment</option>
+        <option value="3">Extension and Miscellaneous Amendment</option>
+    </selection>
+    
+    <selection name="hr.employment.contract.contract.type.select">
+        <option value="1">Fixed-term full-time</option>
+        <option value="2">Fixed-term part-time</option>
+        <option value="3">Permanent full-time</option>
+        <option value="4">Permanent part-time</option>
+    </selection>
+    
+    <selection name="hr.employment.contract.executiveStatus.select">
+        <option value="1">Executive</option>
+        <option value="2">Non-Executive</option>
+    </selection>
+	
 </object-views>
