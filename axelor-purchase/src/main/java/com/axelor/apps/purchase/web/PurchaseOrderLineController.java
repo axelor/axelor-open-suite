@@ -92,7 +92,7 @@ public class PurchaseOrderLineController {
 						companyExTaxTotal = purchaseOrderLineService.getCompanyExTaxTotal(exTaxTotal, purchaseOrder);
 						companyInTaxTotal = companyExTaxTotal.add(companyExTaxTotal.multiply(purchaseOrderLine.getTaxLine().getValue()));
 						response.setValue("saleMinPrice", purchaseOrderLineService.getMinSalePrice(purchaseOrder, purchaseOrderLine));
-						response.setValue("salePrice", purchaseOrderLineService.getSalePrice(purchaseOrder, purchaseOrderLine.getPrice()));
+						response.setValue("salePrice", purchaseOrderLineService.getSalePrice(purchaseOrder, purchaseOrderLine.getProduct(),purchaseOrderLine.getPrice()));
 					}
 
 				}
@@ -124,7 +124,7 @@ public class PurchaseOrderLineController {
 						companyInTaxTotal = purchaseOrderLineService.getCompanyExTaxTotal(inTaxTotal, purchaseOrder);
 						companyExTaxTotal = companyInTaxTotal.divide(purchaseOrderLine.getTaxLine().getValue().add(new BigDecimal(1)), 2, BigDecimal.ROUND_HALF_UP);
 						response.setValue("saleMinPrice", purchaseOrderLineService.getMinSalePrice(purchaseOrder, purchaseOrderLine));
-						response.setValue("salePrice", purchaseOrderLineService.getSalePrice(purchaseOrder, purchaseOrderLine.getPrice()));
+						response.setValue("salePrice", purchaseOrderLineService.getSalePrice(purchaseOrder, purchaseOrderLine.getProduct(),purchaseOrderLine.getPrice()));
 					}
 
 				}
@@ -165,7 +165,7 @@ public class PurchaseOrderLineController {
 				response.setValue("qty", purchaseOrderLineService.getQty(purchaseOrder,purchaseOrderLine));
 
 				response.setValue("saleMinPrice", purchaseOrderLineService.getMinSalePrice(purchaseOrder, purchaseOrderLine));
-				response.setValue("salePrice", purchaseOrderLineService.getSalePrice(purchaseOrder, price));
+				response.setValue("salePrice", purchaseOrderLineService.getSalePrice(purchaseOrder, purchaseOrderLine.getProduct(),price));
 				PriceList priceList = purchaseOrder.getPriceList();
 				if(priceList != null)  {
 					PriceListLine priceListLine = purchaseOrderLineService.getPriceListLine(purchaseOrderLine, priceList);

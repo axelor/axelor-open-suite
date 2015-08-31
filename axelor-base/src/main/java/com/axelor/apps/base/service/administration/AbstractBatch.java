@@ -160,7 +160,7 @@ public abstract class AbstractBatch {
 
 		batch = batchRepo.find( batch.getId() );
 
-		batch.setComment(comment);
+		batch.setComments(comment);
 
 		checkPoint();
 

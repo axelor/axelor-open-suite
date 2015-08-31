@@ -7,7 +7,7 @@
 
   <entity name="User" sequential="true" lang="java">
   		
-      <many-to-one name="employee" ref="com.axelor.apps.hr.db.Employee" title="Employee" />
+      <one-to-one name="employee" ref="com.axelor.apps.hr.db.Employee" title="Employee" mappedBy="user"/>
 		    	
   </entity>
 

@@ -7,7 +7,7 @@
   
   <entity name="Alarm" lang="java">
   
-    <datetime name="date" title="Date" required="true" tz="true"/>
+    <datetime name="date" column="date_val" title="Date" required="true" tz="true"/>
     <many-to-one name="alarmEngine" ref="com.axelor.apps.base.db.AlarmEngine" title="Alarm engine"/>
     <boolean name="acquitOk" title="Suspend Alarm ?" />
     

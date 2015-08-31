@@ -9,7 +9,7 @@
         
 		<many-to-one name="project" ref="com.axelor.apps.project.db.ProjectTask" title="Project"/>
 		<many-to-one name="user" ref="com.axelor.auth.db.User" title="User" column="user_id"/>
-		<date name="date" title="Date"/>
+		<date name="date" column="date_val" title="Date"/>
        	<many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"/>
   		<decimal name="qty" title="Qty" default="1"/>
   		<many-to-one name="unit" ref="com.axelor.apps.base.db.Unit" title="Unit"/>

@@ -20,21 +20,24 @@
 			<field name="contactPartner.mobilePhone" colSpan="6" />
            	<field name="contactPartner.webSite" colSpan="6" />
         </panel>
-		<panel>
-       	    <field name="hourlyRate" />
-       	    <field name="timeLoggingPreferenceSelect" />
-       	    <field name="weeklyWorkHours" />
-       	    <field name="dailyWorkHours" />
-       	    <field name="product" domain="self.isActivity = true" form-view="product-form" grid-view="product-grid"/>
-       	    <field name="manager" form-view="user-form" grid-view="user-grid" />
-       	    <field name="department" form-view="department-form" grid-view="department-grid"/>
-       	    <field name="timesheetReminder" />
-       	    <field name="external" />
-       	    <field name="planning" canNew="true" grid-view="weekly-planning-grid" form-view="weekly-planning-form"/>
-       	    <field name="publicHolidayPlanning" grid-view="public-holiday-planning-grid" form-view="public-holiday-planning-form"/>
-       	    <field name="negativeValueLeave"/>
-       	</panel>
-       	<panel-related field="leaveLineList" grid-view="leave-line-grid" form-view="leave-line-form"/>
+        <panel-tabs>
+        	<panel title="Information">
+	       	    <field name="hourlyRate" />
+	       	    <field name="timeLoggingPreferenceSelect" />
+	       	    <field name="weeklyWorkHours" />
+	       	    <field name="dailyWorkHours" />
+	       	    <field name="product" domain="self.isActivity = true" form-view="product-form" grid-view="product-grid"/>
+	       	    <field name="manager" form-view="user-form" grid-view="user-grid" />
+	       	    <field name="department" form-view="department-form" grid-view="department-grid"/>
+	       	    <field name="timesheetReminder" />
+	       	    <field name="external" />
+	       	    <field name="planning" canNew="true" grid-view="weekly-planning-grid" form-view="weekly-planning-form"/>
+	       	    <field name="publicHolidayPlanning" grid-view="public-holiday-planning-grid" form-view="public-holiday-planning-form"/>
+	       	    <field name="negativeValueLeave"/>
+	       	    <panel-related field="leaveLineList" grid-view="leave-line-grid" form-view="leave-line-form" colSpan="12"/>
+	       	</panel>
+	       	<panel-related field="employmentContractList" grid-view="employment-contract-employee-grid" form-view="employment-contract-form"/>
+        </panel-tabs>
 	</form>
 	
 	<action-record name="action-employee-record-default" model="com.axelor.apps.hr.db.Employee">

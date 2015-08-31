@@ -32,7 +32,7 @@ public class CrmBatchController {
 
 	@Inject
 	private CrmBatchService crmBatchService;
-	
+
 	/**
 	 * Lancer le batch de relance
 	 *
@@ -40,16 +40,16 @@ public class CrmBatchController {
 	 * @param response
 	 */
 	public void actionEventReminder(ActionRequest request, ActionResponse response){
-		
+
 		CrmBatch crmBatch = request.getContext().asType(CrmBatch.class);
-		
+
 		Batch batch = crmBatchService.eventReminder(crmBatchService.find(crmBatch.getId()));
-		
+
 		if(batch != null)
-			response.setFlash(batch.getComment());
+			response.setFlash(batch.getComments());
 		response.setReload(true);
 	}
-	
+
 	/**
 	 * Lancer le batch des objectifs
 	 *
@@ -57,31 +57,31 @@ public class CrmBatchController {
 	 * @param response
 	 */
 	public void actionTarget(ActionRequest request, ActionResponse response){
-		
+
 		CrmBatch crmBatch = request.getContext().asType(CrmBatch.class);
-		
+
 		Batch batch = crmBatchService.target(crmBatchService.find(crmBatch.getId()));
-		
+
 		if(batch != null)
-			response.setFlash(batch.getComment());
+			response.setFlash(batch.getComments());
 		response.setReload(true);
 	}
-	
-	
+
+
 	// WS
-	
+
 	/**
 	 * Lancer le batch à travers un web service.
 	 *
 	 * @param request
 	 * @param response
-	 * @throws AxelorException 
+	 * @throws AxelorException
 	 */
 	public void run(ActionRequest request, ActionResponse response) throws AxelorException{
-	    
+
 		Batch batch = crmBatchService.run((String) request.getContext().get("code"));
-	    Map<String,Object> mapData = new HashMap<String,Object>();   
+	    Map<String,Object> mapData = new HashMap<String,Object>();
 		mapData.put("anomaly", batch.getAnomaly());
-		response.setData(mapData);	       
+		response.setData(mapData);
 	}
 }

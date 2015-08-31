@@ -9,7 +9,7 @@
     <integer title="Type" name="typeSelect" selection="trace.back.type.select"/>
     <integer title="Category" name="categorySelect" selection="trace.back.category.select"/>
     <string name="origin" selection="trace.back.origin.select" title="Origin" />
-    <datetime title="Date" tz="true" name="date" required="true"/>
+    <datetime title="Date" tz="true" name="date" required="true" column="date_val"/>
     <many-to-one ref="com.axelor.auth.db.User" title="User" name="internalUser"/>
     <string title="Error" name="error" large="true"/>
     <string title="Cause" name="cause" large="true"/>

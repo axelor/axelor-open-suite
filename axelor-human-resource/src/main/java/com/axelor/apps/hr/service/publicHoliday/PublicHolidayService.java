@@ -27,4 +27,15 @@ public class PublicHolidayService extends PublicHolidayDayRepository{
 		}
 		return publicHolidayDays;
 	}
+	
+	public boolean checkPublicHolidayDay(LocalDate date, Employee employee) throws AxelorException{
+
+		List<PublicHolidayDay> publicHolidayDayList = this.all().filter("self.publicHolidayPlann = ?1 AND self.date = ?2", employee.getPublicHolidayPlanning(), date).fetch();
+		if(publicHolidayDayList == null || publicHolidayDayList.isEmpty()){
+			return false;
+		}
+		else{
+			return true;
+		}
+	}
 }

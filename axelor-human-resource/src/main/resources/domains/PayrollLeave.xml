@@ -1,0 +1,19 @@
+<?xml version="1.0" ?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_4.0.xsd">
+
+  <module name="human-resource" package="com.axelor.apps.hr.db"/>
+
+  <entity name="PayrollLeave" cachable="true">
+      
+      <many-to-one name="payrollPreparation" ref="com.axelor.apps.hr.db.PayrollPreparation"/>
+      <date name="fromDate" title="From" required="true"/>
+      <date name="toDate" title="To" required="true"/>
+      <decimal name="duration" title="Duration" scale="1" precision="5"/>
+      <many-to-one name="reason" ref="com.axelor.apps.hr.db.LeaveReason" title="Reason" />
+      <many-to-one name="leaveRequest" ref="com.axelor.apps.hr.db.LeaveRequest" title="Leave request" />
+      
+  </entity>
+  
+</domain-models>
