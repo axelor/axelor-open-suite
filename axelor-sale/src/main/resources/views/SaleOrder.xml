@@ -84,6 +84,7 @@
 	    <field name="company" widget="SuggestBox" onChange="action-sale-group-onchange-company" form-view="company-form" grid-view="company-grid"/>
 	    <field name="currency" form-view="currency-form" grid-view="currency-grid"/>
 	    <field name="versionNumber" if="__config__.general.getManageSaleOrderVersion()"/>
+	    <field name="bankDetails" widget="SuggestBox" onSelect="action-accounting-batch-attrs-bank-details-domain" form-view="bank-details-form" grid-view="bank-details-grid" if="__config__.general.getManageMultiBanks()"/>
 	    <field name="inAti" onChange="action-sale-order-attrs-in-ati"/>
 	    <field name="subscription" if-module="axelor-supplychain" if="__config__.general.getAllowSusbcriptionSaleOrder()"/>
 	  </panel>
@@ -128,6 +129,7 @@
 			<button colSpan="3" name="generateAllSubscriptions" title="Generate Subscriptions" onClick="action-supplychain-validate-generate-all-subscriptions,save,com.axelor.apps.supplychain.web.SubscriptionController:generateAllSubscriptions"/>
 			<button name="generateInvoiceSubscriptions" title="Generate invoice for subscriptions" colSpan="3" onClick="save,action-sale-order-method-invoice-subscriptions-sale-order" showIf="id != null &amp;&amp; id > 0"/>
 		</panel>
+		<panel-related field="timetableList" grid-view="timetable-grid" form-view="timetable-form" if-module="axelor-supplychain"/>
 
 	  </panel-tabs>
 	  
@@ -537,6 +539,7 @@
 		<field name="deliveryAddress" expr="eval: clientPartner?.deliveryAddress"/>
 		<field name="priceList" expr="eval: clientPartner?.salePriceList"/>
 		<field name="hideDiscount" expr="eval: priceList?.hideDiscount"/>
+		<field name="bankDetails" expr="eval: partner?.bankDetails" if="partner?.bankDetails != null"/>
     </action-record>
     
     <action-record name="action-sale-order-record-hide-discount" model="com.axelor.apps.sale.db.SaleOrder">

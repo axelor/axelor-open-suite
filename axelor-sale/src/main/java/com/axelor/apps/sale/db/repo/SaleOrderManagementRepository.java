@@ -8,6 +8,7 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.service.SaleOrderService;
 import com.axelor.db.JPA;
 import com.axelor.inject.Beans;
+import com.google.common.base.Strings;
 import com.google.inject.Inject;
 
 public class SaleOrderManagementRepository extends SaleOrderRepository {
@@ -38,7 +39,9 @@ public class SaleOrderManagementRepository extends SaleOrderRepository {
 	public SaleOrder save(SaleOrder saleOrder) {
 		try {
 //			saleOrder = super.save(saleOrder);
-			Beans.get(SaleOrderService.class).setDraftSequence(saleOrder);
+			if(saleOrder.getSaleOrderSeq() == null || Strings.isNullOrEmpty(saleOrder.getSaleOrderSeq())){
+				saleOrder.setSaleOrderSeq(Beans.get(SaleOrderService.class).getSequence(saleOrder.getCompany()));
+			}
 
 			return JPA.save(saleOrder);
 		} catch (Exception e) {

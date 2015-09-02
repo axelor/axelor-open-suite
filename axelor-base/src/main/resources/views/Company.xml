@@ -46,6 +46,8 @@
 	  			<field name="currency" form-view="currency-form" grid-view="currency-grid"/>
 	  			<field name="printingSettings" canNew="true" form-view="printing-setting-form" grid-view="printing-setting-grid"/>
 	  			<field name="defaultPartnerTypeSelect"/>
+	  			<field name="customerPaymentDelay" if-module="axelor-cash-management"/>
+	  			<field name="supplierPaymentDelay" if-module="axelor-cash-management"/>
 	  		</panel>
 	    	<panel title="Bank details">
 	      		<field name="defaultBankDetails"/>

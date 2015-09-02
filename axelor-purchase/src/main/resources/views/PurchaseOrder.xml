@@ -44,7 +44,7 @@
 		</panel>
     </form>
 	
-	<form name="purchase-order-form" title="Supplier RFQ/PO" model="com.axelor.apps.purchase.db.PurchaseOrder" onLoad="action-purchase-order-attrs-hide-contact-partner,action-purchase-order-attrs-in-ati"
+	<form name="purchase-order-form" title="Supplier RFQ/PO" model="com.axelor.apps.purchase.db.PurchaseOrder" onLoad="action-purchase-order-attrs-hide-contact-partner,action-purchase-order-attrs-in-ati,action-purchase-order-method-update-timetable,save"
 	  onNew="action-group-purchase-order-on-new-actions" >
 		<toolbar>
 			<button name="print" title="Print" icon="fa-print" onClick="save,action-purchase-order-method-show-purchase-order"/>
@@ -60,6 +60,7 @@
 			<field name="currency" form-view="currency-form" grid-view="currency-grid"/>
 			<field name="buyerUser" form-view="user-form" grid-view="user-grid"/>
 			<field name="versionNumber" if="__config__.general.getManagePurchaseOrderVersion()"/>
+			<field name="bankDetails" widget="SuggestBox" onSelect="action-accounting-batch-attrs-bank-details-domain" form-view="bank-details-form" grid-view="bank-details-grid" if="__config__.general.getManageMultiBanks()"/>
 			<field name="inAti" onChange="action-purchase-order-attrs-in-ati"/>   
 		</panel>
 		
@@ -96,6 +97,7 @@
 			<panel title="PO Management" if-module="axelor-supplier-management" colSpan="12">
 				<panel-include view="purchase-order-supplier-form" from="axelor-supplier-management" if-module="axelor-supplier-management"/>
 			</panel>
+			<panel-related field="timetableList" grid-view="timetable-grid" form-view="timetable-form" if-module="axelor-supplychain"/>
 		</panel-tabs>
 	  
 		<panel sidebar="true" title="Actions">
@@ -144,6 +146,10 @@
 	  </panel-mail>
 		
 	</form>
+	
+	<action-method name="action-purchase-order-method-update-timetable" if-module="axelor-supplychain">
+		<call class="com.axelor.apps.supplychain.web.PurchaseOrderController" method="updateTimetable"/>
+	</action-method>
 	
     <action-group name="action-group-purchase-order-on-new-actions">
     	<action name="action-purchase-order-record-new"/>

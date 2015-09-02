@@ -14,6 +14,8 @@
     <decimal name="amountInvoiced" title="Amount invoiced" readonly="true"/>
     
   	<many-to-one name="location" ref="com.axelor.apps.stock.db.Location" title="Location"/>
+  	
+  	<one-to-many name="timetableList" ref="com.axelor.apps.supplychain.db.Timetable" title="Timetable" mappedBy="purchaseOrder"/>
 	
   </entity>
 

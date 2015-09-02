@@ -42,11 +42,13 @@
 		    	<field name="unitHours" form-view="unit-form" grid-view="unit-grid"/>
 		    	<field name="unitMinutes" form-view="unit-form" grid-view="unit-grid"/>
 		    	<field name="teamManagement"/>
+		    	<field name="manageMultiBanks"/>
 		    </panel>
 		    <panel title="Accounting">
 				<field name="defaultExemptionTax" form-view="tax-form" grid-view="tax-grid"/>
 				<field name="isInvoiceMoveConsolidated"/>
 				<field name="manageCustomerCredit" if-module="axelor-account"/>
+				<field name="allowTimetableInvoicing" if-module="axelor-supplychain"/>
 				<panel title="Rejects reasons and codes list" colSpan="12">
 					<field name="transferAndDirectDebitInterbankCode" grid-view="interbank-code-grid" form-view="interbank-code-form"/>
 					<field name="chequeInterbankCode" grid-view="interbank-code-grid" form-view="interbank-code-form"/>

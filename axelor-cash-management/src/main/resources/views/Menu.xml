@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
+
+	<menuitem name="cash-management-root" title="Cash Management" order="-86"
+		icon="fa-money" groups="admins,ERP"/>
+		
+	<menuitem name="cash-management-root-cash-flow-forecast" order="10" parent="cash-management-root"
+		title="Cash Flow Forecasts" action="cash.management.root.cash.flow.forecast" />
+
+	<action-view name="cash.management.root.cash.flow.forecast" title="Cash Flow Forecasts"
+		model="com.axelor.apps.cash.management.db.CashFlowForecast" >
+		<view type="grid" name="cash-flow-forecast-grid" />
+		<view type="form" name="cash-flow-forecast-form" />
+	</action-view>
+	
+	<menuitem name="cash-management-root-cash-mngt-recap" order="20" parent="cash-management-root"
+		title="Cash Management Recaps" action="cash.management.root.cash.mngt.recap" />
+
+	<action-view name="cash.management.root.cash.mngt.recap" title="Cash Management Recaps"
+		model="com.axelor.apps.cash.management.db.CashManagementRecap" >
+		<view type="grid" name="cash-management-recap-grid" />
+		<view type="form" name="cash-management-recap-form" />
+	</action-view>
+		
+	<menuitem name="cash-management-conf" title="Configuration" order="200" parent="cash-management-root"/>
+	
+	<menuitem name="cash-management-conf-cash-flow-forecast-generator" order="10" parent="cash-management-conf"
+		title="Cash Flow Forecast Assistants" action="cash.management.conf.cash.flow.forecast.generator" />
+
+	<action-view name="cash.management.conf.cash.flow.forecast.generator" title="Cash Flow Forecast Assistants"
+		model="com.axelor.apps.cash.management.db.CashFlowForecastGenerator" >
+		<view type="grid" name="cash-flow-forecast-generator-grid" />
+		<view type="form" name="cash-flow-forecast-generator-form" />
+	</action-view>
+	
+	<menuitem name="cash-management-conf-cash-flow-reason" order="20" parent="cash-management-conf"
+		title="Cash Flow Reasons" action="cash.management.conf.cash.flow.reason" />
+
+	<action-view name="cash.management.conf.cash.flow.reason" title="Cash Flow Reasons"
+		model="com.axelor.apps.cash.management.db.CashFlowReason" >
+		<view type="grid" name="cash-flow-reason-grid" />
+		<view type="form" name="cash-flow-reason-form" />
+	</action-view>
+	
+	
+</object-views>

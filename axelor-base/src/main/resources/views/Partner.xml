@@ -154,6 +154,7 @@
 						<field name="nbrEmployees" colSpan="6"/>
 						<field name="registrationCode" colSpan="6"/>
 						<field name="taxNbr" colSpan="6"/>
+						<field name="paymentDelay" if-module="axelor-cash-management"/>
 						<field name="parentPartner" hideIf="partnerTypeSelect != 1" domain="self.isContact = false AND self.partnerTypeSelect = 1" colSpan="6" form-view="partner-form"  grid-view="partner-grid"/>
 					</panel>
 		      	</panel>
@@ -171,6 +172,9 @@
 				</panel>
 	    	</panel>
 			<panel name="payment" title="Invoicing/Payment" hideIf="isContact" if-module="axelor-account" colSpan="12" >
+				<panel if-module="axelor-cash-management" if="__config__.general.getManageMultiBanks()">
+					<field name="bankDetails"/>
+				</panel>
 		    	<panel-include view="incl-invoice-payment-partner-form" from="axelor-account"/>
 				<panel-include if-module="axelor-account" view="incl-sepa-direct-debit-partner-form" from="axelor-account"/>
 		    </panel>
@@ -409,6 +413,11 @@
     	<field name="team"  expr="#{__user__.activeTeam}"/>
     	<field name="companySet" expr="call:com.axelor.apps.base.web.PartnerController:getActiveCompany()"/>
     	<field name="languageSelect" expr="#{__config__.general.getDefaultPartnerLanguage()}" />
+    	<field name="isCustomer" expr="true" if="_isCustomer"/>
+  		<field name="isSupplier" expr="true" if="_isSupplier"/>
+    	<field name="paymentDelay" expr="eval: __user__.activeCompany?.customerPaymentDelay" if="_isCustomer"/>
+    	<field name="paymentDelay" expr="eval: __user__.activeCompany?.supplierPaymentDelay" if="_isSupplier"/>
+    	<field name="bankDetails" expr="eval: __user__.activeCompany?.defaultBankDetails"/>
     </action-record>
     
     <action-record name="action-partner-contact-record-default" model="com.axelor.apps.base.db.Partner">

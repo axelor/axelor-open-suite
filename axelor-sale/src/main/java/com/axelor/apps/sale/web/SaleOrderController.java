@@ -45,7 +45,7 @@ public class SaleOrderController {
 	public void compute(ActionRequest request, ActionResponse response)  {
 
 		SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
-
+		
 		try {
 			saleOrder = saleOrderService.computeSaleOrder(saleOrder);
 			response.setValues(saleOrder);
