@@ -157,6 +157,12 @@
 					<field name="tempInterbankPaymentOrderRejectImportPathCFONB" colSpan="4"/>
 				</panel>
 			</panel>
+			<panel title="Printing settings">
+	  			<field name="displayDelAddrOnPrinting"/>
+	  			<field name="displayProductCodeOnPrinting"/>
+	  			<field name="displayTaxDetailOnPrinting"/>
+		 		<field name="invoiceClientBox" widget="html" x-lite="true" colSpan="12"/>
+		  	</panel>
 		
 		</panel-tabs>
 	 
