@@ -109,7 +109,7 @@
 
 	<menuitem name="top-purchase" title="Purchases" groups="admins,ERP" top="true" left="false" order="-150"/>
 	
-	<menuitem name="top-purchase-create-rfq" title="Create RFQ" order="-100" parent="top-purchase" action="sc.root.purchase.order.new"/>
+	<menuitem name="top-purchase-create-rfq" title="Create RFQ" order="-100" parent="top-purchase" top="true" action="sc.root.purchase.order.new"/>
 	<menuitem name="top-purchase-orders-all" title="RFQs &amp; Orders" order="-70" action="sc.root.purchase.orders" parent="top-purchase" groups="admins,ERP" top="true" left="false"/>		
 	
 	<menuitem name="top-purchase-quotes" title="View RFQ" order="-90" action="top.purchase.quotes" parent="top-purchase" groups="admins,ERP" top="true" left="false"/>		
