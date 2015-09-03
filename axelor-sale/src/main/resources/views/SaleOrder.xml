@@ -130,7 +130,12 @@
 			<button name="generateInvoiceSubscriptions" title="Generate invoice for subscriptions" colSpan="3" onClick="save,action-sale-order-method-invoice-subscriptions-sale-order" showIf="id != null &amp;&amp; id > 0"/>
 		</panel>
 		<panel-related field="timetableList" grid-view="timetable-grid" form-view="timetable-form" if-module="axelor-supplychain"/>
-
+		
+		<panel title="Advance Payments">
+			<panel-related field="advancePaymentList" colSpan="12" grid-view="advance-payment-grid" form-view="advance-payment-form"/>
+		
+		
+		</panel>
 	  </panel-tabs>
 	  
 	  <panel sidebar="true" title="Actions" stacked="true">
