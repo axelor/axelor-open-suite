@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
+    
+    <grid name="advance-payment-grid" canMove="true" title="Advance Payment list" model="com.axelor.apps.sale.db.AdvancePayment" orderBy="amount">
+	    <field name="amount"/>
+	    <field name="amountRemainingToUse" if-module="supplychain"/>
+	    <field name="advancePaymentDate"/>
+	    <field name="move" if-module="supplychain"/>
+	    <field name="currency"/>
+	    <field name="paymentMode" if-module="supplychain"/>
+
+	</grid>
+    
+	<form name="advance-payment-form" title="Advance Payment" model="com.axelor.apps.sale.db.AdvancePayment" onNew="action-advance-payment-new" width="large">
+		<panel>
+			<field name="amount" onChange="action-advance-payment-change-amount"/>
+			<field name="advancePaymentDate"/>
+			<field name="amountRemainingToUse" if-module="supplychain"/>
+		</panel>
+		<panel>
+		    <field name="currency"/>
+	    	<!-- <field name="move" showIf="ventilated" form-view="move-form" grid-view="move-grid"/> -->
+	    	<field name="paymentMode" if-module="axelor-supplychain"/>
+		 </panel>
+	</form>
+	
+	
+	<action-record name="action-advance-payment-new" model="com.axelor.apps.sale.db.AdvancePayment">
+    	<field name="currency" expr="eval: _parent?.currency"/>
+    	<field name="advancePaymentDate" expr="eval: __date__"/>
+    </action-record>
+  
+    <action-record name="action-advance-payment-change-amount" model="com.axelor.apps.sale.db.AdvancePayment">
+    	<field name="amountRemainingToUse" expr="eval: __self__?.amountRemainingToUse - (__self__?.amount -__this__?.amount)"/> 
+    </action-record>
+   
+	  <!--  -->
+	
+	</object-views>
