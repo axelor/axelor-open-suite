@@ -479,7 +479,7 @@
 
 	<menuitem name="top-menu-utility" order="-200"  title="Create" groups="admins,ERP" top="true" left="false"/> 	
 
-	<menuitem name="top-menu-create-partner" order="-100" parent="top-menu-utility" title="Create Account" action="top.new.partner.view" top="true" left="false"/> 	
+	<menuitem name="top-menu-create-partner" order="-100" parent="top-menu-utility" title="Create Partner" action="top.new.partner.view" top="true" left="false"/> 	
 		
 	<action-view name="top.new.partner.view" title="Create Account" model="com.axelor.apps.base.db.Partner" >
 		<view type="form" name="partner-form"/>
@@ -495,7 +495,7 @@
 <!-- 		<context name="_partnerTypeSelect" expr="eval:2" /> -->
 <!-- 	</action-view> -->
 	
-	<menuitem name="top-menu-create-contact" order="-90" parent="top-menu-utility" title="Create Contact" action="top.new.contact.view" />
+	<menuitem name="top-menu-create-contact" order="-90" parent="top-menu-utility" top="true" title="Create Contact" action="top.new.contact.view" />
 		
 	<action-view name="top.new.contact.view" title="Create Contact" model="com.axelor.apps.base.db.Partner" >
 		<view type="form" name="partner-contact-form"/>
@@ -504,8 +504,11 @@
 	</action-view>
 
 	<menuitem name="top-relations" title="Relations" groups="admins,ERP" top="true" left="false" order="-190"/>
+
 	<menuitem name="top-relations-create-partner" order="-100" parent="top-relations" title="Create Account" action="top.new.partner.view" top="true" left="false"/> 	
 	<menuitem name="top-relations-partners" order="-90" title="View Accounts" action="admin.root.referential.partners" parent="top-relations" groups="admins,ERP" top="true" left="false"/>
+
 	<menuitem name="top-relations-create-contact" order="-80" parent="top-relations" title="Create Contact" action="top.new.contact.view" /> 	
 	<menuitem name="top-relations-contacts" order="-70" title="View Contacts" action="admin.root.referential.contacts" parent="top-relations" groups="admins,ERP" top="true" left="false"/>		  
+
 </object-views>

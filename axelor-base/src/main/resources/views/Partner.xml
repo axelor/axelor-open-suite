@@ -126,8 +126,8 @@
 					<field name="isSupplier" hideIf="partnerTypeSelect == 2 || isContact"/>
 				</panel>
 				<panel title="Postal addresses" colSpan="12">
-					<field name="deliveryAddress" canNew="true" onChange="action-partner-record-main-invoicing-address" form-view="address-form" grid-view="address-grid"/>
 					<field name="mainInvoicingAddress" canNew="true" form-view="address-form" grid-view="address-grid"/>
+					<field name="deliveryAddress" canNew="true" onChange="action-partner-record-main-invoicing-address" form-view="address-form" grid-view="address-grid"/>
 					<field name="deliveryDelay" showIf="isSupplier"/>
 				</panel>
 				<panel title="Contact details" colSpan="12">
