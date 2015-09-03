@@ -4,13 +4,8 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
 	
 	<dashboard title="Dashboard" name="manufacturing.dashboard.sample"  >
-		<dashlet action="manufacturing.dashboard.upcoming.production.orders" height="350" canSearch="true" />
-		<dashlet action="manufacturing.dashboard.current.production.orders" canSearch="true" height="350" />
-	</dashboard>
-
-	<dashboard title="Dashboard" name="manufacturing.dashboard"  >
-		<dashlet action="manufacturing.dashboard.upcoming.production.orders" height="350" canSearch="true" />
-		<dashlet action="manufacturing.dashboard.current.production.orders" canSearch="true" height="350" />
+		<dashlet action="manufacturing.dashboard.upcoming.production.orders" height="350" canSearch="true" colSpan="12"/>
+		<dashlet action="manufacturing.dashboard.current.production.orders" canSearch="true" height="350" colSpan="12"/>
 	</dashboard>
 
 	<action-view name="manufacturing.dashboard.upcoming.production.orders" title="All Upcoming Manufacturing Orders"

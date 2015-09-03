@@ -601,4 +601,11 @@
 		<option value="com.axelor.apps.project.db.ProjectTask">Project/Task</option>
 	</selection>
 	
+	<selection name="base.in.ati.select">
+		<option value="1">Always W.T.</option>
+		<option value="2">Always A.T.I.</option>
+		<option value="3">W.T. by default</option>
+		<option value="4">A.T.I. by default</option>
+	</selection>
+	
 </object-views>

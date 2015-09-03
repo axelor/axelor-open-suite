@@ -18,7 +18,7 @@
 			<button name="showSubordinateLeaveToValidate" title="Show leaves to be validated by my subordinates" onClick="com.axelor.apps.hr.web.leave.LeaveController:showSubordinateLeaves"/>
 		 </toolbar>
 		 <field name="company" form-view="company-form" grid-view="company-grid"/>
-		 <field name="user" form-view="user-form" grid-view="user-grid"/>
+		 <field name="user" form-view="user-form" grid-view="user-grid" onChange="action-leave-request-validate-dates"/>
 		 <field name="requestDate" />
 		 <field name="dateFrom" onChange="action-leave-request-validate-dates"/>
 		 <field name="startOnSelect" />
@@ -41,7 +41,7 @@
 		<panel>
 			<field name="statusSelect" colSpan="12" widget="NavSelect" />
 			<field name="company" form-view="company-form" grid-view="company-grid"/>
-			<field name="user" form-view="user-form" grid-view="user-grid"/>
+			<field name="user" form-view="user-form" grid-view="user-grid" onChange="action-leave-request-validate-dates,action-leave-request-methode-compute-duration"/>
 			<field name="requestDate" colSpan="12" width="50%"/>
 			<field name="dateFrom" onChange="action-leave-request-validate-dates,action-leave-request-methode-compute-duration"/>
 			<field name="startOnSelect" onChange="action-leave-request-validate-dates,action-leave-request-methode-compute-duration"/>

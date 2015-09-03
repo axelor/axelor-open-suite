@@ -105,7 +105,7 @@
     <!--  Account chart template-->
 	<many-to-one name="accountChart" ref="com.axelor.apps.account.db.AccountChart" title="Account chart" />
 	<boolean name="hasChartImported"  title="Chart imported?" />
-	<boolean name="invoiceInAti" title="Invoice In ATI"/>
+	<integer name="invoiceInAtiSelect" title="Invoice ATI/WT" selection="base.in.ati.select" default="1"/>
 	
 <!-- 	Sequence  -->
 	<many-to-one name="custInvSequence" ref="com.axelor.apps.base.db.Sequence" title="Customer invoices sequence"/>
@@ -113,7 +113,16 @@
 	<many-to-one name="suppInvSequence" ref="com.axelor.apps.base.db.Sequence" title="Supplier invoices sequence"/>
 	<many-to-one name="suppRefSequence" ref="com.axelor.apps.base.db.Sequence" title="Supplier refunds sequence"/>
 	
-	   
+<!-- 	Invoice printing    -->
+	<boolean name="displayDelAddrOnPrinting" title="Display delivery address on printing ?"/>
+  	<boolean name="displayProductCodeOnPrinting" title="Display product code on printing ?"/>
+ 	<boolean name="displayTaxDetailOnPrinting" title="Display tax detail on printing ?"/>
+  	<string name="invoiceClientBox" large="true" multiline="true" title="Client box in invoice"/>
+  	
+  	
+	
+	
+	
   </entity>
   
 </domain-models>

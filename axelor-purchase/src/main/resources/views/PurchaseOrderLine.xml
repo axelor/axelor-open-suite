@@ -5,7 +5,7 @@
     
     
     <grid name="purchase-order-line-grid" title="PO lines" model="com.axelor.apps.purchase.db.PurchaseOrderLine">
-    	<hilite background="danger" if="salePrice &gt; saleMinPrice"/>
+    	<hilite background="danger" if="salePrice &lt; saleMinPrice"/>
     	<field name="purchaseOrder" form-view="purchase-order-form" grid-view="purchase-order-grid"/>
     	<field name="supplierPartner" form-view="partner-form" grid-view="partner-grid"/>
     	<field name="productName"/>
@@ -23,7 +23,7 @@
     </grid>
     
     <grid name="purchase-order-line-purchase-order-grid" title="PO lines" model="com.axelor.apps.purchase.db.PurchaseOrderLine">
-    	<hilite background="danger" if="salePrice &gt; saleMinPrice"/>
+    	<hilite background="danger" if="salePrice &lt; saleMinPrice"/>
     	<field name="productName"/>
     	<field name="desiredDelivDate"/>
     	<field name="estimatedDelivDate"/>
@@ -49,7 +49,7 @@
 	    <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
 	    <field name="taxLine" onChange="action-purchase-order-line-method-convert-tax,action-purchase-order-line-method-compute" domain="self.endDate = null or self.endDate &gt; :__date__" grid-view="tax-line-grid" form-view="tax-line-form"/>
 	    <field name="price" onChange="action-purchase-order-line-method-compute">
-	      <hilite color="danger" if="price &lt; saleMinPrice"/>
+	      <hilite color="danger" if="salePrice &lt; saleMinPrice"/>
 	    </field>
 	    <field name="priceDiscounted" colSpan="4" readonly="true" hidden="true"/>
 	    <field name="exTaxTotal" readonly="true"/>
@@ -69,7 +69,7 @@
 	      <field name="createdBy" form-view="user-form" grid-view="user-grid"/>
 	      <field name="createdOn"/>
 	    </panel>
-	    <panel title="Delivery">
+	    <panel name="deliveryPanel" title="Delivery" hidden="true">
 	      <field name="desiredDelivDate"/>
 	      <field name="estimatedDelivDate"/>	      
 	      <!-- TODO: remove this comment if portlet works well in panel
@@ -86,20 +86,18 @@
 	    </panel>
 	    <panel title="Account" if-module="axelor-account" if="__config__.general.getManageInvoicedAmountByLine()">
 	      <field name="amountInvoiced"/>
+	      <panel-dashlet action="action-purchase-order-line-view-show-invoice-lines" colSpan="12"/>
 	    </panel>
-	    <panel-related field="invoiceSet">
-	      <field name="invoiceId"/>
-	      <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
-	      <field name="paymentMode" form-view="payment-mode-form" grid-view="payment-mode-grid"/>
-	      <field name="invoiceDate"/>
-	      <field name="dueDate"/>
-	      <field name="status"/>
-	      <field name="inTaxTotal" title="Total"/>
-	      <field name="inTaxTotalRemaining" title="Remaining"/>	    
-	    </panel-related>
 	  </panel-tabs>
 	</form>
 	
+	
+	<action-view name="action-purchase-order-line-view-show-invoice-lines" title="Invoice Lines" model="com.axelor.apps.account.db.InvoiceLine">	
+		<view type="grid" name="invoice-line-grid" />
+		<view type="form" name="invoice-line-form" />
+		<domain>self.purchaseOrderLine.id = :purchaseOrderLineId</domain>
+		<context name="purchaseOrderLineId" expr="eval: id" />
+	</action-view>
 	<!-- ACTION GROUPs -->
 	
 	<action-group name="action-group-purchase-purchase-orderline-onnew">
@@ -116,6 +114,7 @@
 	</action-group>
 	
 	<action-group name="action-group-purchase-purchase-orderline-product-onchange">
+		<action name="action-purchase-order-line-attrs-delivery-panel"/>
 		<action name="action-purchase-order-line-method-get-product-information"/>
 		<action name="action-purchase-order-line-method-convert-tax"/>
 		<action name="action-purchase-order-line-method-compute"/>
@@ -134,6 +133,10 @@
 		<action name="save"/>
 	</action-group>
 	
+	<action-attrs name="action-purchase-order-line-attrs-delivery-panel">
+		<attribute name="hidden" for="deliveryPanel" expr="eval: product?.productTypeSelect != 'storable'"/>
+	</action-attrs>
+	
 	<action-attrs name="action-purchase-order-attrs-hide-ati">
 		<attribute name="hidden" for="exTaxTotal" expr="eval:_parent.inAti" if="_parent._model == 'com.axelor.apps.purchase.db.PurchaseOrder'"/>
 		<attribute name="hidden" for="inTaxTotal" expr="eval:!_parent.inAti" if="_parent._model == 'com.axelor.apps.purchase.db.PurchaseOrder'"/>
@@ -151,6 +154,7 @@
 	
     <action-record name="action-purchase-order-line-record-new" model="com.axelor.apps.purchase.db.PurchaseOrderLine">
     	<field name="qty" expr="eval: 1"/>
+    	<field name="desiredDelivDate" expr="eval: _parent.deliveryDate"/>
     </action-record>
     
     

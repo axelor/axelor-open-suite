@@ -148,8 +148,8 @@
 		<dashlet action="dashlet.my.closed.opportunities" height="350" canSearch="true"/>
 		<dashlet action="dashlet.my.open.opportunities" height="350" canSearch="true"/>
 		<dashlet action="dashlet.unassigned.opportunities" height="350" canSearch="true"/>
-		<dashlet action="dashlet.team.closed.opportunities" height="350" canSearch="true"/>
-		<dashlet action="dashlet.team.open.opportunities" height="350" canSearch="true"/>
+		<dashlet action="dashlet.team.closed.opportunities" height="350" canSearch="true" if="__config__.general.getTeamManagement()"/>
+		<dashlet action="dashlet.team.open.opportunities" height="350" canSearch="true" if="__config__.general.getTeamManagement()"/>
 		<dashlet action="dashlet.opportunities.by.source" height="350" canSearch="true"/>
 		<dashlet action="dashlet.opportunities.by.saletage" height="350" canSearch="true"/>
 		<dashlet action="dashlet.opportunities.by.saletage.funnel" height="350" canSearch="true"/>
@@ -172,9 +172,9 @@
 	<dashboard title="Dashboard" name="crm.opportunities.dashboard.3"  >
 		<dashlet action="dashlet.opportunities.pipeline.next.90d" height="350" />
 		<dashlet action="dashlet.opportunities.my.top.deals" height="350" canSearch="true"/>
-		<dashlet action="dashlet.opportunities.my.team.top.deals" height="350" canSearch="true"/>
+		<dashlet action="dashlet.opportunities.my.team.top.deals" height="350" canSearch="true" if="__config__.general.getTeamManagement()"/>
 		<dashlet action="dashlet.opportunities.my.key.account" height="350" canSearch="true"/>
-		<dashlet action="dashlet.opportunities.my.team.key.account" height="350" canSearch="true"/>
+		<dashlet action="dashlet.opportunities.my.team.key.account" height="350" canSearch="true" if="__config__.general.getTeamManagement()"/>
 	</dashboard>
 
 	<action-view name="dashlet.opportunities.by.source" title="Chart">
@@ -232,11 +232,11 @@
 		<dashlet action="dashlet.salesman.dashboard.leads" height="350" canSearch="true"/>
 		<dashlet action="dashlet.leads.by.source" height="350" />
 		<dashlet action="dashlet.leads.by.country" height="350" />
-		<dashlet action="dashlet.leads.by.team.by.status" height="350" />
+		<dashlet action="dashlet.leads.by.team.by.status" height="350" if="__config__.general.getTeamManagement()"/>
 		<dashlet action="dashlet.leads.by.saleman.by.status" height="350" />
 		<dashlet action="dashlet.my.leads" height="350" />
 		<dashlet action="dashlet.unassigned.leads" height="350" />		
-		<dashlet action="dashlet.team.leads" height="350" />		
+		<dashlet action="dashlet.team.leads" height="350" if="__config__.general.getTeamManagement()"/>		
 		<dashlet action="dashlet.created.leads.per.month" height="350" />
 	</dashboard>
 
@@ -296,11 +296,11 @@
 	
 	<dashboard title="Calls Dashboard" name="crm.calls.dashboard"  >
 		<dashlet action="dashlet.calls.types.by.user" height="350" />
-		<dashlet action="dashlet.calls.types.by.team" height="350" />
-		<dashlet action="dashlet.calls.by.team.by.user" height="350" />
+		<dashlet action="dashlet.calls.types.by.team" height="350" if="__config__.general.getTeamManagement()"/>
+		<dashlet action="dashlet.calls.by.team.by.user" height="350" if="__config__.general.getTeamManagement()"/>
 		<dashlet action="dashlet.held.calls.types.by.user" height="350"/>
-		<dashlet action="dashlet.held.calls.types.by.team" height="350"/>
-		<dashlet action="dashlet.daily.team.calls.summary.by.user" height="350"/>
+		<dashlet action="dashlet.held.calls.types.by.team" height="350" if="__config__.general.getTeamManagement()"/>
+		<dashlet action="dashlet.daily.team.calls.summary.by.user" height="350" if="__config__.general.getTeamManagement()"/>
 	</dashboard>
 	
 	<!-- Event Tickets Dashboard -->
@@ -543,7 +543,7 @@
 	
 	<!-- Target Team Graph Dashboard -->
 	
-	<dashboard title="Target team Dashboard" name="crm.target.team.dashboard"  >
+	<dashboard title="Target team Dashboard" name="crm.target.team.dashboard">
 		<dashlet action="dashlet.team.call.target.gauge" height="350" />
 		<dashlet action="dashlet.team.call.target.bar" height="350"/>
 		<dashlet action="dashlet.team.meeting.target.gauge" height="350"/>

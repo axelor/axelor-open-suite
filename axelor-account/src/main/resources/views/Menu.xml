@@ -5,10 +5,10 @@
 
 
 
-	<menuitem name="invoice-root" title="Invoice" order="-100"
+	<menuitem name="invoice-root" title="Invoicing" order="-100"
 		icon="fa-list-alt" groups="admins,ERP"/>
 		
-	<menuitem name="invoice-root-cust-invoice" parent="invoice-root"
+	<menuitem name="invoice-root-cust-invoice" parent="invoice-root-sale"
 		title="New cust. invoice" action="invoice.root.cust.invoice" />
 
 	<action-view name="invoice.root.cust.invoice" title="New cust. invoice"
@@ -20,7 +20,7 @@
 		<context name="todayDate" expr="eval:__config__.generalService.getTodayDate()" />
 	</action-view>	
 	
-	<menuitem name="invoice-root-sup-invoice" parent="invoice-root"
+	<menuitem name="invoice-root-sup-invoice" parent="invoice-root-purchase"
 		title="New sup. invoice" action="invoice.root.sup.invoice" />
 
 	<action-view name="invoice.root.sup.invoice" title="New sup. invoice"
@@ -117,7 +117,10 @@
         <view type="form" name="payment-schedule-line-form"/>
         <view-param name="search-filters" value="payment-schedule-line-filters"/>
     </action-view>
-
+	
+	
+	<menuitem name="invoice-root-report" parent="invoice-root"
+		title="Reportings"/>
 
 	<menuitem name="account-root" title="Accounting" order="-90"
 		icon="fa-calculator" groups="admins,ERP"/>
@@ -362,6 +365,11 @@
 		<domain>self.typeSelect in (6,7,8,9)</domain>
 	</action-view>
 	
+	
+	<menuitem name="account-root-report" parent="account-root"
+		title="Reportings"/>
+	
+	
 	<menuitem name="account-conf" parent="account-root" title="Configuration"/>
 
 	<menuitem name="account-conf-cash-register" parent="account-conf"
@@ -373,8 +381,18 @@
 		<view type="form" name="cash-register-form"/>
 	</action-view>
 	
+	
 	<menuitem name="account-conf-financial" parent="account-conf"
 		title="Financial" />
+		
+	<menuitem name="account-conf-fiscal-position" parent="account-conf-financial"
+		title="Fiscal positions" action="account.conf.fiscal.position" />
+
+	<action-view name="account.conf.fiscal.position" title="Fiscal position"
+		model="com.axelor.apps.account.db.FiscalPosition" >
+		<view type="grid" name="fiscal-position-grid" />
+		<view type="form" name="fiscal-position-form" />
+	</action-view>
 
 	<menuitem name="account-conf-financial-year" parent="account-conf-financial"
 		title="Fiscal years" action="account.conf.financial.year" />
@@ -558,18 +576,7 @@
 		<view type="grid" name="account-config-grid"/>
 		<view type="form" name="account-config-form"/>
 	</action-view>
-	
-	
-	
-	
-	<menuitem name="contact-conf-fiscal-position" parent="contact-conf"
-		title="Fiscal positions" action="contact.conf.fiscal.position" />
-
-	<action-view name="contact.conf.fiscal.position" title="Fiscal position"
-		model="com.axelor.apps.account.db.FiscalPosition" >
-		<view type="grid" name="fiscal-position-grid" />
-		<view type="form" name="fiscal-position-form" />
-	</action-view>	
+		
 	
 	<menuitem name="top-invoice" title="Invoices/Refunds" groups="admins,ERP" top="true" left="false" order="-130"/>
 	<menuitem name="top-invoice-create-invoice" title="Create Invoice" top="true" parent="top-invoice" order="-100" action="top.invoice.new"/>
@@ -628,62 +635,35 @@
 		<context name="_operationTypeSelect" expr="eval:2"/>
 	</action-view>	
 	
-	<menuitem name="menu-account-invoice-dashboard-sample" parent="menu-dashboards-sample" order="-145"
-    title="Account Db"  action="account.invoice.dashboard.view.sample"/>    
+	<menuitem name="menu-account-invoice-dashboard-sample" parent="invoice-root-report" order="-145"
+    title="General"  action="account.invoice.dashboard.view.sample"/>    
 
-    <action-view name="account.invoice.dashboard.view.sample" title="Account Dashboard">
+    <action-view name="account.invoice.dashboard.view.sample" title="General Details">
         <view type="dashboard" name="account.invoice.dashboard.sample" />        
     </action-view>
-
-	<menuitem name="menu-account-invoice-dashboard" parent="menu-dashboards" 
-    title="Invoice" order="-100"/>    
+   
+    
+	<menuitem name="menu-account-sale-invoice-dashboard-1" parent="invoice-root-report" 
+    title="Sale Invoices"  action="account.sale.invoice.dashboard.1.view" />    
 	
-			<menuitem name="menu-account-sale-invoice-dashboard" parent="menu-account-invoice-dashboard" 
-		    title="Sales Invoice" order="-15" /> 
-		    
-			<menuitem name="menu-account-sale-invoice-dashboard-1" parent="menu-account-sale-invoice-dashboard" 
-		    title="Sales Invoice Db 1"  action="account.sale.invoice.dashboard.1.view" />    
-			
-		    <action-view name="account.sale.invoice.dashboard.1.view" title="Sales Invoice Db 1">
-		        <view type="dashboard" name="account.sale.invoice.dashboard.1" />        
-		    </action-view>
-		    
-		    <menuitem name="menu-account-sale-invoice-dashboard-2" parent="menu-account-sale-invoice-dashboard" 
-		    title="Sales Invoice Db 2"  action="account.sale.invoice.dashboard.2.view" />    
-			
-		    <action-view name="account.sale.invoice.dashboard.2.view" title="Sales Invoice Db 2">
-		        <view type="dashboard" name="account.sale.invoice.dashboard.2" />        
-		    </action-view>
-		    
-		    <menuitem name="menu-account-purchase-invoice-dashboard" parent="menu-account-invoice-dashboard"
-		    title="Purchase Invoice" order="-10" />    
-			
-		    <menuitem name="menu-account-purchase-invoice-dashboard-1" parent="menu-account-purchase-invoice-dashboard"
-		    title="Purchase Invoice Db"  action="account.purchase.invoice.dashboard.2.view"/>    
-			
-		    <action-view name="account.purchase.invoice.dashboard.2.view" title="Purchase Invoice Db">
-		        <view type="dashboard" name="account.purchase.invoice.dashboard.1" />        
-		    </action-view>
-		    
-		    <menuitem name="menu-account-mix-invoice-dashboard" parent="menu-account-invoice-dashboard" 
-		    title="Invoices" order="-5"/>    
-			
-		    <menuitem name="menu-account-mix-invoice-dashboard-1" parent="menu-account-mix-invoice-dashboard" 
-		    title="Invoice Db"  action="account.mix.invoice.dashboard.1.view"/>    
-			
-		    <action-view name="account.mix.invoice.dashboard.1.view" title="Invoice Db">
-		        <view type="dashboard" name="account.mix.invoice.dashboard" />        
-		    </action-view>
+    <action-view name="account.sale.invoice.dashboard.1.view" title="Sale Invoices Details">
+        <view type="dashboard" name="account.sale.invoice.dashboard.1" />        
+    </action-view> 
 	
-	<menuitem name="menu-accounting-dashboard" parent="menu-dashboards" 
-    title="Accounting"  order="-110"/>    
+    <menuitem name="menu-account-purchase-invoice-dashboard-1" parent="invoice-root-report"
+    title="Purchase Invoices"  action="account.purchase.invoice.dashboard.2.view"/>    
 	
-	 <menuitem name="menu-accounting-dashboard-1" parent="menu-accounting-dashboard" 
-        title="Accounting Db"  action="accounting.dashboard.view" />    
-
-	    <action-view name="accounting.dashboard.view" title="Accounting">
-	        <view type="dashboard" name="accounting.dashboard.sample" />        
-	    </action-view>
+    <action-view name="account.purchase.invoice.dashboard.2.view" title="Purchase Invoices Details">
+        <view type="dashboard" name="account.purchase.invoice.dashboard.1" />        
+    </action-view>
+	   
+	
+	<menuitem name="menu-accounting-dashboard-1" parent="account-root-report" 
+	       title="Accounting"  action="accounting.dashboard.view" />    
+	
+    <action-view name="accounting.dashboard.view" title="Accounting Details">
+        <view type="dashboard" name="accounting.dashboard.sample" />        
+    </action-view>
 	
 	<menuitem name="top-payments" title="Payments" groups="admins,ERP" top="true" left="false"/>
 	

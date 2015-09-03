@@ -19,6 +19,7 @@
   	<integer name="periodNumber" title="Number of Periods"/>
   	<date name="toSubDate" title="Date To"/>
   	<integer name="subscripInvTypeSelect" title="Invoicing Type" selection="supplychain.subscription.invoicing.type.select"/>
+  	<one-to-many name="timetableList" ref="com.axelor.apps.supplychain.db.Timetable" title="Timetable" mappedBy="saleOrder"/>
 	
 	<extra-code>
    		<![CDATA[

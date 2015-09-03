@@ -2,155 +2,8 @@
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
-	
-	<menuitem name="menu-dashboards" order="-200"
-    	title="Dashboards" icon="fa-tachometer" groups="admins,ERP"/> 	
-    	
-	<menuitem name="menu-dashboards-sample" order="-200" parent="menu-dashboards"
-    	title="Samples"  groups="admins,ERP"/> 
-    	
-	<menuitem name="menu-dashboards-partner-contact" order="-195" parent="menu-dashboards"
-    	title="Partners/Contacts"  groups="admins,ERP"/>
-	
-	<menuitem name="menu-dashboards-partner" order="-100" parent="menu-dashboards-partner-contact"
-    	title="Partner"  groups="admins,ERP" />
-	
-	<menuitem name="menu-dashboards-partner-1"  parent="menu-dashboards-partner"
-    	title="Partner Db" icon="fa-bar-chart"  action="base.partner.list.dashboard.view"/>
-	
-	<menuitem name="menu-dashboards-contact" order="-90" parent="menu-dashboards-partner-contact"
-    	title="Contacts"  groups="admins,ERP"/>	
-    	    
-	<menuitem name="menu-dashboards-contact-1"  parent="menu-dashboards-contact"
-    	title="Contacts Db"  />		
-	
-	<action-view name="base.partner.list.dashboard.view" title="Partner Db">
-		<view type="dashboard" name="base.partner.list.dashboard" />
-	</action-view>
-	
-	<menuitem name="menu-dashboards-products-goods" order="-40" parent="menu-dashboards"
-    	title="Products/Goods"  groups="admins,ERP"/>
-	
-	<menuitem name="contact-root" title="Accounts/Contacts" order="-190"
-		icon="fa-building-o" groups="admins,ERP,CRM"/>
 
-	<menuitem name="contact-root-partner" parent="contact-root" order="-4"
-		title="Accounts/Partners" action="contact.root.partner" />
-
-	<action-view name="contact.root.partner" title="Accounts"
-		model="com.axelor.apps.base.db.Partner" >
-		<view type="grid" name="partner-grid" />
-		<view type="form" name="partner-form" />
-		<view-param name="search-filters" value="partner-filters"/>
-		<!-- <domain>self.curUser = null OR self.curUser = :user_id</domain> -->
-		<domain>self.isContact = false</domain>
-		<context name="user_id" expr="eval:__user__" />
-		<context name="searchFields" expr="name;firstName"/>
-	</action-view>
 	
-	<menuitem name="contact-root-contact" parent="contact-root" order="-3"
-		title="Contacts" action="contact.root.contact" />
-
-	<action-view name="contact.root.contact" title="Contacts"
-		model="com.axelor.apps.base.db.Partner" >
-		<view type="grid" name="partner-contact-grid" />
-		<view type="form" name="partner-contact-form" />
-		<domain>self.isContact = true</domain>
-	</action-view>
-	
-	<menuitem name="contact-maps-partner" parent="contact-root" title="Maps" 
-		order="-2" />
-		
-	<menuitem name="contact-maps-partner-all-partners" parent="contact-maps-partner" 
-		title="All Partners" action="action-show-partners-on-map-page"/>
-	<action-view name="action-show-partners-on-map-page" title="All Partners">  		
- 		<view type="html" name="map/gmap-objs.html?object=partner" /> 
-	</action-view>	
-	
-	<menuitem name="contact-maps-partner-customers" parent="contact-maps-partner" 
-		title="Customers" action="action-show-customers-on-map-page"/>
-	<action-view name="action-show-customers-on-map-page" title="Customers">  		
- 		<view type="html" name="map/gmap-objs.html?object=customer" /> 
-	</action-view>	
-	
-	<menuitem name="contact-maps-partner-prospects" parent="contact-maps-partner" 
-		title="Prospects" action="action-show-prospects-on-map-page"/>
-	<action-view name="action-show-prospects-on-map-page" title="Prospects">  		
- 		<view type="html" name="map/gmap-objs.html?object=prospect" /> 
-	</action-view>
-	
-	<menuitem name="contact-maps-partner-suppliers" parent="contact-maps-partner" 
-		title="Suppliers" action="action-show-suppliers-on-map-page"/>		
-	<action-view name="action-show-suppliers-on-map-page" title="Suppliers">  		
- 		<view type="html" name="map/gmap-objs.html?object=supplier" /> 
-	</action-view>
-	
-	<menuitem name="contact-conf" parent="contact-root" title="Configuration" order="-1"/>
-		
-	<menuitem name="contact-conf-category" parent="contact-conf"
-		title="Partner categories" action="contact.conf.category" />
-
-	<action-view name="contact.conf.category" title="Partner categories"
-		model="com.axelor.apps.base.db.PartnerCategory" >
-		<view type="grid" name="partner-category-grid"/>
-		<view type="form" name="partner-category-form"/>
-	</action-view>
-
-	<menuitem name="contact-conf-address" parent="contact-conf"
-		title="Addresses" action="contact.conf.address"  />
-
-	<action-view name="contact.conf.address" title="Addresses"
-		model="com.axelor.apps.base.db.Address" >
-		<view type="grid" name="address-grid" />
-		<view type="form" name="address-form" />
-		<context name="fromMain" expr="eval:true"/>
-		<context name="searchFields" expr=" addressL4;addressL6"/>
-	</action-view>
-	
-	<menuitem name="contact-conf-invoice-rib" parent="contact-conf"
-		title="Bank details" action="contact.conf.invoice.rib" />
-
-	<action-view name="contact.conf.invoice.rib"
-		title="Bank details" model="com.axelor.apps.base.db.BankDetails" >
-		<view type="grid" name="bank-details-grid"/>
-		<view type="form" name="bank-details-form"/>
-	</action-view>
-
-	<menuitem name="contact-conf-invoice-bic" parent="contact-conf"
-		title="SWIFT codes" action="contact.conf.invoice.bic" />
-
-	<action-view name="contact.conf.invoice.bic"
-		title="SWIFT codes" model="com.axelor.apps.base.db.Bic" >
-		<view type="grid" name="bic-grid"/>
-		<view type="form" name="bic-form"/>
-	</action-view>
-
-	<menuitem name="contact-conf-invoice-sources" parent="contact-conf"
-		title="Sources" action="contact.conf.invoice.sources" />
-
-	<action-view name="contact.conf.invoice.sources"
-		title="Sources" model="com.axelor.apps.base.db.Source" >
-		<view type="grid" name="source-grid" />
-		<view type="form" name="source-form"/>
-	</action-view>
-	
-	<menuitem name="contact-conf-invoice-site" parent="contact-conf"
-		title="Sites" action="contact.conf.invoice.sites" />
-
-	<action-view name="contact.conf.invoice.sites"
-		title="Sites" model="com.axelor.apps.consulting.db.Site" >
-		<view type="grid" name="site-grid"/>
-		<view type="form" name="site-form"/>
-	</action-view>
-	
-	<menuitem name="contact-conf-price-list" parent="contact-conf"
-		title="Price lists" action="contact.conf.price.list" />
-
-	<action-view name="contact.conf.price.list" title="Price lists"
-		model="com.axelor.apps.base.db.PriceList" >
-		<view type="grid" name="price-list-grid" />
-		<view type="form" name="price-list-form" />
-	</action-view>	
 	
 	
 <!-- 	<menuitem name="contact-conf-geographical-area" parent="contact-conf" -->
@@ -172,7 +25,7 @@
 <!-- 	</action-view> -->
 	
 	
-	<menuitem name="product-root" title="Products" order="-170"
+	<menuitem name="product-root" title="Products" order="-107"
 		icon="fa-cube" groups="admins,ERP,CRM"/>
 
 	<menuitem name="product-root-product" parent="product-root"
@@ -200,6 +53,11 @@
 		<context name="_activeCompany" expr="eval:__user__.activeCompany"/>
 		<context name="_isModel" expr="true"/>
 	</action-view>
+	
+	
+	<menuitem name="product-root-report" parent="product-root"
+		title="Reportings"/>
+	
 	
 	<menuitem name="product-conf" parent="product-root" title="Configuration"/>
 
@@ -231,8 +89,63 @@
 		<view type="form" name="tracking-number-configuration-form"/>
 	</action-view>
 
-	<menuitem name="admin-root" title="ERP Administration" order="-60"
+	<menuitem name="admin-root" title="Application Config" order="-60"
 		icon="fa-gear" groups="admins,ERP,CRM"/>
+		
+	<menuitem name="admin-root-referential" parent="admin-root" title="Referential"/>
+	
+	<menuitem name="admin-root-referential-partners" parent="admin-root-referential"
+		title="Partners" action="admin.root.referential.partners" />
+
+	<action-view name="admin.root.referential.partners" title="Partners"
+		model="com.axelor.apps.base.db.Partner" >
+		<view type="grid" name="partner-grid" />
+		<view type="form" name="partner-form" />
+		<view-param name="search-filters" value="partner-filters"/>
+		<!-- <domain>self.curUser = null OR self.curUser = :user_id</domain> -->
+		<domain>self.isContact != true</domain>
+		<context name="user_id" expr="eval:__user__" />
+		<context name="searchFields" expr="name;firstName"/>
+	</action-view>
+	
+	<menuitem name="admin-root-referential-contacts" parent="admin-root-referential"
+		title="Contacts" action="admin.root.referential.contacts" />
+
+	<action-view name="admin.root.referential.contacts" title="Contacts"
+		model="com.axelor.apps.base.db.Partner" >
+		<view type="grid" name="partner-contact-grid" />
+		<view type="form" name="partner-contact-form" />
+		<domain>self.isContact = true</domain>
+	</action-view>
+	
+	<menuitem name="admin-root-referential-address" parent="admin-root-referential"
+		title="Addresses" action="admin.root.referential.address"  />
+
+	<action-view name="admin.root.referential.address" title="Addresses"
+		model="com.axelor.apps.base.db.Address" >
+		<view type="grid" name="address-grid" />
+		<view type="form" name="address-form" />
+		<context name="fromMain" expr="eval:true"/>
+		<context name="searchFields" expr=" addressL4;addressL6"/>
+	</action-view>
+	
+	<menuitem name="admin-root-referential-invoice-rib" parent="admin-root-referential"
+		title="Bank details" action="admin.root.referential.invoice.rib" />
+
+	<action-view name="admin.root.referential.invoice.rib"
+		title="Bank details" model="com.axelor.apps.base.db.BankDetails" >
+		<view type="grid" name="bank-details-grid"/>
+		<view type="form" name="bank-details-form"/>
+	</action-view>
+
+	<menuitem name="admin-root-referential-invoice-bic" parent="admin-root-referential"
+		title="SWIFT codes" action="admin.root.referential.invoice.bic" />
+
+	<action-view name="admin.root.referential.invoice.bic"
+		title="SWIFT codes" model="com.axelor.apps.base.db.Bic" >
+		<view type="grid" name="bic-grid"/>
+		<view type="form" name="bic-form"/>
+	</action-view>
 
 	<menuitem name="admin-root-organisation" parent="admin-root" title="Organization"/>
 
@@ -286,6 +199,25 @@
 		<view type="grid" name="country-grid"/>
 		<view type="form" name="country-form"/>
 	</action-view>
+	
+	<menuitem name="admin-root-organisation-category" parent="admin-root-organisation"
+		title="Customers/Suppliers categories" action="admin.root.organisation.category" />
+
+	<action-view name="admin.root.organisation.category" title="Customers/Suppliers categories"
+		model="com.axelor.apps.base.db.PartnerCategory" >
+		<view type="grid" name="partner-category-grid"/>
+		<view type="form" name="partner-category-form"/>
+	</action-view>
+	
+	<menuitem name="admin-root-organisation-source"
+		parent="admin-root-organisation" title="Sources"
+		action="admin.root.organisation.source" />
+
+	<action-view name="admin.root.organisation.source"
+		title="Sources" model="com.axelor.apps.base.db.Source" >
+		<view type="grid" name="source-grid"/>
+		<view type="form" name="source-form"/>
+	</action-view>
 
 	<menuitem name="admin-root-organisation-territory-canton"
 		parent="admin-root-organisation-territory" title="Cantons"
@@ -310,7 +242,7 @@
 	</action-view>
 	
 	<menuitem name="admin-root-user-team" parent="admin-root-user"
-		title="Teams" action="admin.root.base.team" />
+		title="Teams" action="admin.root.base.team"/>
 
 	<action-view name="admin.root.base.team" title="Teams"
 		model="com.axelor.apps.base.db.Team" >
@@ -362,7 +294,7 @@
 		title="General"/>
 
 	<menuitem name="admin-root-general-general" parent="admin-root-general"
-		title="General admin" action="admin.root.general.general" />
+		title="General configuration" action="admin.root.general.general" />
 
 	<action-view name="admin.root.general.general" title="General admin"
 		model="com.axelor.apps.base.db.General" >
@@ -372,7 +304,7 @@
 	</action-view>
 
 	<menuitem name="admin-conf-general" parent="admin-root-general"
-		title="Configuration"  />
+		title="General data"  />
 
 	<menuitem name="admin-conf-general-unit" parent="admin-conf-general"
 		title="Units" action="admin.conf.general.unit" />
@@ -434,15 +366,7 @@
 		<view type="form" name="keyword-form"/>
 	</action-view>
 	
-	<menuitem name="admin-conf-general-source"
-		parent="admin-conf-general" title="Sources"
-		action="admin.conf.general.source" />
-
-	<action-view name="admin.conf.general.source"
-		title="Sources" model="com.axelor.apps.base.db.Source" >
-		<view type="grid" name="source-grid"/>
-		<view type="form" name="source-form"/>
-	</action-view>
+	
 
 	<menuitem name="admin-root-maintenance" parent="admin-root"
 		title="Technical maintenance" />
@@ -580,8 +504,10 @@
 	</action-view>
 
 	<menuitem name="top-relations" title="Relations" groups="admins,ERP" top="true" left="false" order="-190"/>
-	<menuitem name="top-relations-create-partner" order="-100" parent="top-relations" title="Create Partner" action="top.new.partner.view" top="true" left="false"/> 	
-	<menuitem name="top-relations-partners" order="-90" title="View Accounts" action="contact.root.partner" parent="top-relations" groups="admins,ERP" top="true" left="false"/>
-	<menuitem name="top-relations-create-contact" order="-80" parent="top-relations" top="true" title="Create Contact" action="top.new.contact.view" /> 	
-	<menuitem name="top-relations-contacts" order="-70" title="View Contacts" action="contact.root.contact" parent="top-relations" groups="admins,ERP" top="true" left="false"/>		  
+
+	<menuitem name="top-relations-create-partner" order="-100" parent="top-relations" title="Create Account" action="top.new.partner.view" top="true" left="false"/> 	
+	<menuitem name="top-relations-partners" order="-90" title="View Accounts" action="admin.root.referential.partners" parent="top-relations" groups="admins,ERP" top="true" left="false"/>
+	<menuitem name="top-relations-create-contact" order="-80" parent="top-relations" title="Create Contact" action="top.new.contact.view"  /> 	
+	<menuitem name="top-relations-contacts" order="-70" title="View Contacts" action="admin.root.referential.contacts" parent="top-relations" groups="admins,ERP" top="true" left="false"/>		  
+
 </object-views>

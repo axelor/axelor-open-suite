@@ -5,7 +5,7 @@
 
 
 
-	<menuitem name="crm-root" title="CRM" order="-180"
+	<menuitem name="crm-root" title="CRM" order="-108"
 		icon="fa-users" groups="admins,ERP,CRM"/>
 
 	<menuitem name="crm-root-create" parent="crm-root"
@@ -169,7 +169,7 @@
 	</action-view>
 	
 	<menuitem name="crm-root-meeting-team-calendar" parent="crm-root"
-		title="Team Calendar" action="crm.root.meeting.team.calendar" />
+		title="Team Calendar" action="crm.root.meeting.team.calendar"/>
 		
 	<action-view name="crm.root.meeting.team.calendar" title="Team Calendar"
 		model="com.axelor.apps.crm.db.Event" >
@@ -204,6 +204,8 @@
 		<context name="_typeSelect" expr="2"/>
 	</action-view>
 	-->
+	
+	<menuitem name="crm-root-report" parent="crm-root" title="Reportings"/>
 				
 	<menuitem name="crm-conf" parent="crm-root" title="Configuration"/>
 	
@@ -367,11 +369,8 @@
 	  
 	<!-- CRM Dashboard Entry for CRM.... -->
 
-
-
-	<menuitem name="menu-crm-dashboards" order="-200" title="CRM" parent="menu-dashboards" groups="admins,ERP,CRM"/>  
 	
- 	<menuitem name="menu-event-dashboard" parent="menu-crm-dashboards" title="Event" order="-5"/> 
+ 	<menuitem name="menu-event-dashboard" parent="crm-root-report" title="Event" order="-5"/> 
 		
  	<menuitem name="menu-event-dashboard-one" parent="menu-event-dashboard" title="Event Db"  action="crm.event.dashboard.one.view" /> 
 
@@ -379,7 +378,7 @@
  		<view type="dashboard" name="crm.event.dashboard.one" />
 	</action-view>
 	 
-	<menuitem name="menu-lead-dashboard" parent="menu-crm-dashboards" title="Lead" order="-10"/>
+	<menuitem name="menu-lead-dashboard" parent="crm-root-report" title="Lead" order="-10"/>
 	
 	<menuitem name="menu-lead-dashboard-one" parent="menu-lead-dashboard" title="Lead Db"  action="crm.lead.dashboard.one.view" />
 
@@ -387,7 +386,7 @@
 		<view type="dashboard" name="crm.lead.dashboard.one" />
 	</action-view>
 	
-	<menuitem name="menu-target-dashboard" parent="menu-crm-dashboards"	title="Target" />
+	<menuitem name="menu-target-dashboard" parent="crm-root-report"	title="Target" />
 		
 	<menuitem name="menu-target-user-dashboard" parent="menu-target-dashboard"
 		title="Target User Db"  action="crm.target.user.dashboard.view"/>	
@@ -408,7 +407,7 @@
 	</action-view>
 	
 	
-	<menuitem name="menu-opportunities-dashboard" parent="menu-crm-dashboards"
+	<menuitem name="menu-opportunities-dashboard" parent="crm-root-report"
 		title="Opportunities" order="-20" />	
 	
 	<menuitem name="menu-opportunities-dashboard-1" parent="menu-opportunities-dashboard"
@@ -432,19 +431,19 @@
 		<view type="dashboard" name="crm.opportunities.dashboard.3" />
 	</action-view>
 	
-	<menuitem name="menu-tasks-dashboard" parent="menu-crm-dashboards"
+	<menuitem name="menu-tasks-dashboard" parent="crm-root-report"
 		title="Tasks" order="-30" />	
 	
 	<menuitem name="menu-tasks-dashboard-1"  parent="menu-tasks-dashboard"
 		title="Tasks Db" />
 		
-	<menuitem name="menu-meetings-dashboard" parent="menu-crm-dashboards"
+	<menuitem name="menu-meetings-dashboard" parent="crm-root-report"
 		title="Meetings" order="-40" />	
 	
 	<menuitem name="menu-meetings-dashboard-1"  parent="menu-meetings-dashboard"
 		title="Meetings Db"  />
 		
-	<menuitem name="menu-calls-dashboard" parent="menu-crm-dashboards"
+	<menuitem name="menu-calls-dashboard" parent="crm-root-report"
 		title="Calls" order="-50" />	
 		
 	<menuitem name="menu-calls-dashboard-1" parent="menu-calls-dashboard"
@@ -454,7 +453,7 @@
 		<view type="dashboard" name="crm.calls.dashboard" />
 	</action-view>	
 	
-	<menuitem name="menu-tickets-dashboard" parent="menu-crm-dashboards"
+	<menuitem name="menu-tickets-dashboard" parent="crm-root-report"
 		title="Tickets" order="-60"   />
 		
 	<menuitem name="menu-tickets-dashboard-1" parent="menu-tickets-dashboard"

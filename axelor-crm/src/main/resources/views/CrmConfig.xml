@@ -14,6 +14,9 @@
 	  	<panel title="Reminder Templates">
 	    	<field name="taskTemplate" canNew="true" form-view="template-form" grid-view="template-grid"/>
 	    	<field name="meetingTemplate" canNew="true" form-view="template-form" grid-view="template-grid"/>
+	    	<field name="meetingDateChangeTemplate" canNew="true" form-view="template-form" grid-view="template-grid"/>
+	    	<field name="meetingGuestAddedTemplate" canNew="true" form-view="template-form" grid-view="template-grid"/>
+	    	<field name="meetingGuestDeletedTemplate" canNew="true" form-view="template-form" grid-view="template-grid"/>
 	    	<field name="callTemplate" canNew="true" form-view="template-form" grid-view="template-grid"/>
 	  	</panel>
 	</form>

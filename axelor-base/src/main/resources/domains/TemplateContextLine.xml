@@ -8,7 +8,7 @@
   <entity name="TemplateContextLine" lang="java">
   	
   	<string name="name" title="Name"/>
-  	<string name="key" title="Key"/>
+  	<string name="key" column="key_val" title="Key"/>
   	<string name="query" title="Query" large="true" multiline="true"/>
   	
   	<!-- back reference -->

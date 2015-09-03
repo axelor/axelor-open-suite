@@ -33,7 +33,7 @@
 		    <panel title="Configuration">
 		    	<field name="defaultPartnerLanguage" />
 		    	<field name="mailAccountByUser" />
-		    	<field name="productInAti"/>
+		    	<field name="productInAtiSelect"/>
 		    	<field name="nbDecimalDigitForUnitPrice"/>
 		    	<field name="computeMethodDiscountSelect"/>
 		    	<field name="timeLoggingPreferenceSelect"/>
@@ -41,11 +41,14 @@
 		    	<field name="unitDays" form-view="unit-form" grid-view="unit-grid"/>
 		    	<field name="unitHours" form-view="unit-form" grid-view="unit-grid"/>
 		    	<field name="unitMinutes" form-view="unit-form" grid-view="unit-grid"/>
+		    	<field name="teamManagement"/>
+		    	<field name="manageMultiBanks"/>
 		    </panel>
 		    <panel title="Accounting">
 				<field name="defaultExemptionTax" form-view="tax-form" grid-view="tax-grid"/>
 				<field name="isInvoiceMoveConsolidated"/>
 				<field name="manageCustomerCredit" if-module="axelor-account"/>
+				<field name="allowTimetableInvoicing" if-module="axelor-supplychain"/>
 				<panel title="Rejects reasons and codes list" colSpan="12">
 					<field name="transferAndDirectDebitInterbankCode" grid-view="interbank-code-grid" form-view="interbank-code-form"/>
 					<field name="chequeInterbankCode" grid-view="interbank-code-grid" form-view="interbank-code-form"/>
@@ -131,7 +134,7 @@
 	</form>
 	
 	<form model="com.axelor.apps.base.db.Wizard" title="Check duplicate" name="wizard-check-duplicate-form" onNew="action-general-check-duplicate-set-fields-set">
-		<panel-related field="fieldsSet" title="Fields" help="Key fields to check duplicate records" readonly="true" colSpan="12" type="many-to-many" target="com.axelor.meta.db.MetaField"/>
+		<panel-related field="fieldsSet" title="Fields" help="Key fields to check duplicate records" readonly="true" colSpan="12" type="many-to-many" target="com.axelor.meta.db.MetaField" grid-view="meta-field-light-grid"/>
   		<panel>
     		<button name="showDuplicate" title="Show" colSpan="6" onClick="action-general-method-show-duplicate"/>
   		</panel>

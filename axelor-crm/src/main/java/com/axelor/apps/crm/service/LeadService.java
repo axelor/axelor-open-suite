@@ -78,6 +78,7 @@ public class LeadService extends LeadRepository {
 				partner.setContactPartnerSet(new HashSet<Partner>());
 			}
 			partner.getContactPartnerSet().add(contactPartner);
+			contactPartner.setMainPartner(partner);
 		}
 
 		if(opportunity != null && partner != null)  {

@@ -37,27 +37,27 @@
 <!-- 	Stock Dashboard -->
 	
 	<dashboard title="Dashboard" name="stock.dashboard.sample"  >		
-		<dashlet action="dashlet.stock.dashboard.upcoming.deliveries" canSearch="true" height="350" />
-		<dashlet action="dashlet.stock.move.late.cust.late.deliveries" canSearch="true" height="350" />
-		<dashlet action="dashlet.stock.move.upcoming.suppl.arrivals" height="350" canSearch="true" />
-		<dashlet action="dashlet.stock.move.late.suppl.arrivals" canSearch="true" height="350" />
+		<dashlet action="dashlet.stock.dashboard.upcoming.deliveries" canSearch="true" height="350" colSpan="12"/>
+		<dashlet action="dashlet.stock.move.late.cust.late.deliveries" canSearch="true" height="350" colSpan="12"/>
+		<dashlet action="dashlet.stock.move.upcoming.suppl.arrivals" height="350" canSearch="true" colSpan="12"/>
+		<dashlet action="dashlet.stock.move.late.suppl.arrivals" canSearch="true" height="350" colSpan="12"/>
 		<dashlet action="dashlet.location.line.product.out.stock.bylocation" canSearch="true" height="350" />
-	    <dashlet action="dashlet.production.stock.move.in.planned"  height="350" canSearch="true"/>    
-	    <dashlet action="dashlet.production.stock.move.out.planned" height="350" canSearch="true"/>       			
-	    <dashlet action="dashlet.production.stock.move.in.realized" height="350" canSearch="true"/>
-	    <dashlet action="dashlet.production.stock.move.out.realized" height="350" canSearch="true"/>  
+	    <dashlet action="dashlet.production.stock.move.in.planned"  height="350" canSearch="true" colSpan="12"/>    
+	    <dashlet action="dashlet.production.stock.move.out.planned" height="350" canSearch="true" colSpan="12"/>       			
+	    <dashlet action="dashlet.production.stock.move.in.realized" height="350" canSearch="true" colSpan="12"/>
+	    <dashlet action="dashlet.production.stock.move.out.realized" height="350" canSearch="true" colSpan="12"/>  
 	    <dashlet action="dashlet.nbr.product.per.family" height="350" canSearch="true" if-module="axelor-supplychain"/>       			
 	</dashboard>
 
 	<dashboard title="Dashboard" name="stock.dashboard.one"  >	
-		<dashlet action="dashlet.stock.dashboard.upcoming.deliveries" canSearch="true" height="350" />	
-		<dashlet action="dashlet.stock.move.late.cust.late.deliveries" canSearch="true" height="350" />	
-		<dashlet action="dashlet.stock.move.upcoming.suppl.arrivals" canSearch="true" height="350" />	
-		<dashlet action="dashlet.stock.move.late.suppl.arrivals" canSearch="true" height="350" />	
-		<dashlet action="dashlet.production.stock.move.in.planned" canSearch="true" height="350" />	
-		<dashlet action="dashlet.production.stock.move.in.realized" canSearch="true" height="350" />	
-		<dashlet action="dashlet.production.stock.move.out.planned" canSearch="true" height="350" />	
-		<dashlet action="dashlet.production.stock.move.out.realized" canSearch="true" height="350" />	
+		<dashlet action="dashlet.stock.dashboard.upcoming.deliveries" canSearch="true" height="350" colSpan="12"/>	
+		<dashlet action="dashlet.stock.move.late.cust.late.deliveries" canSearch="true" height="350" colSpan="12"/>	
+		<dashlet action="dashlet.stock.move.upcoming.suppl.arrivals" canSearch="true" height="350" colSpan="12"/>	
+		<dashlet action="dashlet.stock.move.late.suppl.arrivals" canSearch="true" height="350" colSpan="12"/>	
+		<dashlet action="dashlet.production.stock.move.in.planned" canSearch="true" height="350" colSpan="12"/>	
+		<dashlet action="dashlet.production.stock.move.in.realized" canSearch="true" height="350" colSpan="12"/>	
+		<dashlet action="dashlet.production.stock.move.out.planned" canSearch="true" height="350" colSpan="12"/>	
+		<dashlet action="dashlet.production.stock.move.out.realized" canSearch="true" height="350" colSpan="12"/>	
 		<dashlet action="dashlet.location.line.product.out.stock.bylocation" canSearch="true" height="350" />
 	</dashboard>
 

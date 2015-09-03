@@ -85,7 +85,13 @@ public abstract class InvoiceGenerator  {
 		this.priceList = priceList;
 		this.internalReference = internalReference;
 		this.externalReference = externalReference;
-		this.inAti = Beans.get(AccountConfigRepository.class).all().filter("self.company = ?1", company).fetchOne().getInvoiceInAti();
+		Integer atiChoice = Beans.get(AccountConfigRepository.class).all().filter("self.company = ?1", company).fetchOne().getInvoiceInAtiSelect();
+		if(atiChoice == 2 || atiChoice == 4){
+			this.inAti = true;
+		}
+		else{
+			this.inAti = false;
+		}
 		this.today = Beans.get(GeneralService.class).getTodayDate();
 		this.journalService = new JournalService();
 
@@ -110,7 +116,13 @@ public abstract class InvoiceGenerator  {
 		this.priceList = priceList;
 		this.internalReference = internalReference;
 		this.externalReference = externalReference;
-		this.inAti = Beans.get(AccountConfigRepository.class).all().filter("self.company = ?1", company).fetchOne().getInvoiceInAti();
+		Integer atiChoice = Beans.get(AccountConfigRepository.class).all().filter("self.company = ?1", company).fetchOne().getInvoiceInAtiSelect();
+		if(atiChoice == 2 || atiChoice == 4){
+			this.inAti = true;
+		}
+		else{
+			this.inAti = false;
+		}
 		this.today = Beans.get(GeneralService.class).getTodayDate();
 		this.journalService = new JournalService();
 

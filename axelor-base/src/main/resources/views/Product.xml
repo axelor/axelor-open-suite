@@ -178,6 +178,7 @@
     	<action name="action-product-record-default-new"/>
     	<action name="action-product-record-sale-supply-select"/>
     	<action name="action-product-record-in-ati"/>
+    	<action name="action-product-attrs-in-ati"/>
     </action-group>
     
     <action-group name="action-group-base-product-producttype-onchange">
@@ -192,8 +193,12 @@
     </action-group>
     
     <action-record name="action-product-record-in-ati" model="com.axelor.apps.base.db.Product">
-    	<field name="inAti" expr="eval:__config__.general.getProductInAti()"/>
+    	<field name="inAti" expr="eval:__config__.general.getProductInAtiSelect() == 2 || __config__.general.getProductInAtiSelect() == 4"/>
     </action-record>
+    
+    <action-attrs name="action-product-attrs-in-ati">
+    	<attribute name="hidden" for="inAti" expr=" eval: __config__.general.getProductInAtiSelect() == 1 || __config__.general.getProductInAtiSelect() == 2"/>
+    </action-attrs>
 
     <action-attrs name="action-product-attrs-scale-and-precision">
 		<attribute name="scale" for="salePrice" expr="eval: __config__.generalService.getNbDecimalDigitForUnitPrice()"/>

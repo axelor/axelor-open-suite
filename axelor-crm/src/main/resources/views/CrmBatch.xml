@@ -19,7 +19,6 @@
   </panel>
   <panel-tabs>
     <panel name="eventReminderPage" title="Event reminder page">
-      <field name="durationTypeSelect"/>
       <button name="eventReminderBatch" title="Event reminder batch"   onClick="save,action-crm-batch-method-action-event-reminder"/>
     </panel>
     <panel name="targetPage" title="Target page">

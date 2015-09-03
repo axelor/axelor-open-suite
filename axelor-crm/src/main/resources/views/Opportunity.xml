@@ -111,7 +111,7 @@
 		<panel title="Assigned to" readonlyIf="salesStageSelect == 9 || salesStageSelect == 10" sidebar="true">
 		  <field name="user" form-view="user-form" grid-view="user-grid"/>
 		  <button name="grabLead" title="Assign to me" hideIf="user.id == _internalUserId"   icon="fa-suitcase" onClick="save,com.axelor.apps.crm.web.OpportunityController:assignToMe"/>
-		  <field name="team" form-view="team-form" grid-view="team-grid"/>
+		  <field name="team" form-view="team-form" grid-view="team-grid" if="__config__.general.getTeamManagement()"/>
 		  <field name="company" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
 		</panel>
 		

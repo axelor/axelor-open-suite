@@ -36,6 +36,7 @@ import com.axelor.apps.supplychain.exception.IExceptionMessage;
 import com.axelor.apps.supplychain.service.SaleOrderInvoiceServiceImpl;
 import com.axelor.apps.supplychain.service.SaleOrderPurchaseService;
 import com.axelor.apps.supplychain.service.SaleOrderServiceStockImpl;
+import com.axelor.apps.supplychain.service.TimetableService;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
@@ -204,6 +205,13 @@ public class SaleOrderController{
 			if(invoice != null)  {
 				response.setReload(true);
 				response.setFlash(I18n.get(IExceptionMessage.PO_INVOICE_2));
+				response.setView(ActionView
+		            .define(I18n.get("Invoice generated"))
+		            .model(Invoice.class.getName())
+		            .add("form", "invoice-form")
+		            .add("grid", "invoice-grid")
+		            .context("_showRecord",String.valueOf(invoice.getId()))
+		            .map());
 			}
 		}
 		catch(Exception e)  { TraceBackService.trace(response, e); }
@@ -287,6 +295,13 @@ public class SaleOrderController{
 	            .add("grid", "invoice-grid")
 	            .context("_showRecord",String.valueOf(invoice.getId()))
 	            .map());
+	}
+	
+	public void updateTimetable(ActionRequest request, ActionResponse response){
+		SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+		saleOrder = Beans.get(SaleOrderRepository.class).find(saleOrder.getId());
+		Beans.get(TimetableService.class).updateTimetable(saleOrder);
+		response.setValues(saleOrder);
 	}
 
 }

@@ -8,10 +8,10 @@
   <entity name="EventReminder" lang="java">
 
 	 <many-to-one name="event" ref="com.axelor.apps.crm.db.Event" title="Event"/>
-	 <integer name="typeSelect" title="Type" selection="crm.event.reminder.type.select"/>
+	 <integer name="typeSelect" title="Type" selection="crm.event.reminder.type.select" default="1"/>
 	 <integer name="duration" title="Duration"/>
-	 <integer name="durationTypeSelect" title="Duration type" selection="crm.eventReminder.duration.type.select"/>
-	 <integer name="assignToSelect" title="Assign to" selection="crm.eventReminder.assign.to.select"/>
+	 <integer name="durationTypeSelect" title="Duration type" selection="crm.eventReminder.duration.type.select" default = "3"/>
+	 <integer name="assignToSelect" title="Assign to" selection="crm.eventReminder.assign.to.select" default = "1"/>
 	 <boolean name="isReminded" title="RemindedOk" default="false"/>
   	 <many-to-many name="batchSet" ref="com.axelor.apps.base.db.Batch" title="Batchs"/>
 	  

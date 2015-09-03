@@ -13,6 +13,7 @@ import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.PriceListLine;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.GeneralRepository;
+import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.base.service.administration.GeneralService;
@@ -61,7 +62,7 @@ public class PurchaseOrderInvoiceProjectServiceImpl extends PurchaseOrderInvoice
 		BigDecimal price = product.getCostPrice();
 		BigDecimal discountAmount = product.getCostPrice();
 		int discountTypeSelect = 1;
-		if(invoice.getPartner().getFlatFeePurchase()){
+		if(invoice.getPartner().getChargeBackPurchaseSelect() == PartnerRepository.CHARGING_BACK_TYPE_PRICE_LIST){
 			PriceList priceList = invoice.getPartner().getSalePriceList();
 			if(priceList != null)  {
 				PriceListLine priceListLine = purchaseOrderLineServiceImpl.getPriceListLine(purchaseOrderLine, priceList);
@@ -102,7 +103,24 @@ public class PurchaseOrderInvoiceProjectServiceImpl extends PurchaseOrderInvoice
 			};
 			return invoiceLineGenerator.creates();
 		}
+		else if(invoice.getPartner().getChargeBackPurchaseSelect() == PartnerRepository.CHARGING_BACK_TYPE_PERCENTAGE){
+			price = price.multiply(invoice.getPartner().getChargeBackPurchase().divide(new BigDecimal(100), generalService.getNbDecimalDigitForUnitPrice(), BigDecimal.ROUND_HALF_UP)).setScale(generalService.getNbDecimalDigitForUnitPrice(), BigDecimal.ROUND_HALF_UP);
+			InvoiceLineGenerator invoiceLineGenerator = new InvoiceLineGenerator(invoice, product, product.getName(), price,
+					purchaseOrderLine.getDescription(),purchaseOrderLine.getQty(),purchaseOrderLine.getUnit(),InvoiceLineGenerator.DEFAULT_SEQUENCE,discountAmount,discountTypeSelect,
+					price.multiply(purchaseOrderLine.getQty()), null, false)   {
+				@Override
+				public List<InvoiceLine> creates() throws AxelorException {
 
+					InvoiceLine invoiceLine = this.createInvoiceLine();
+
+					List<InvoiceLine> invoiceLines = new ArrayList<InvoiceLine>();
+					invoiceLines.add(invoiceLine);
+
+					return invoiceLines;
+				}
+			};
+			return invoiceLineGenerator.creates();
+		}
 
 		else{
 			InvoiceLineGeneratorSupplyChain invoiceLineGenerator = new InvoiceLineGeneratorSupplyChain(invoice, product, purchaseOrderLine.getProductName(),

@@ -37,7 +37,6 @@ import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.supplychain.service.PurchaseOrderInvoiceServiceImpl;
 import com.axelor.apps.supplychain.service.SaleOrderInvoiceServiceImpl;
 import com.axelor.apps.supplychain.service.invoice.generator.InvoiceLineGeneratorSupplyChain;
-import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
@@ -76,7 +75,7 @@ public class InvoicingProjectService extends InvoicingProjectRepository{
 		if(company == null){
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.INVOICING_PROJECT_PROJECT_TASK_COMPANY)), IException.CONFIGURATION_ERROR);
 		}
-		User user = projectTask.getAssignedTo();
+		projectTask.getAssignedTo();
 		InvoiceGenerator invoiceGenerator = new InvoiceGenerator(InvoiceRepository.OPERATION_TYPE_CLIENT_SALE, company, customer.getPaymentCondition(),
 				customer.getPaymentMode(), customer.getMainInvoicingAddress(), customer, null,
 				customer.getCurrency(), customer.getSalePriceList(), null, null){
@@ -88,7 +87,7 @@ public class InvoicingProjectService extends InvoicingProjectRepository{
 			}
 		};
 		Invoice invoice = invoiceGenerator.generate();
-		invoice.setInAti(user.getActiveCompany().getAccountConfig().getInvoiceInAti());
+
 		invoiceGenerator.populate(invoice,this.populate(invoice,invoicingProject));
 		Beans.get(InvoiceRepository.class).save(invoice);
 
@@ -108,7 +107,7 @@ public class InvoicingProjectService extends InvoicingProjectRepository{
 
 		List<InvoiceLine> invoiceLineList = new ArrayList<InvoiceLine>();
 		invoiceLineList.addAll( this.createSaleOrderInvoiceLines(invoice, saleOrderLineList,folder.getSaleOrderLineSetPrioritySelect()));
-		invoiceLineList.addAll(this.customerChargeBackPurchases(this.createPurchaseOrderInvoiceLines(invoice, purchaseOrderLineList,folder.getPurchaseOrderLineSetPrioritySelect()),folder));
+		invoiceLineList.addAll(this.createPurchaseOrderInvoiceLines(invoice, purchaseOrderLineList,folder.getPurchaseOrderLineSetPrioritySelect()));
 		invoiceLineList.addAll(timesheetServiceImp.createInvoiceLines(invoice, timesheetLineList,folder.getLogTimesSetPrioritySelect()));
 		invoiceLineList.addAll(expenseService.createInvoiceLines(invoice, expenseLineList,folder.getExpenseLineSetPrioritySelect()));
 		invoiceLineList.addAll(elementsToInvoiceService.createInvoiceLines(invoice, elementsToInvoiceList, folder.getElementsToInvoiceSetPrioritySelect()));
@@ -168,11 +167,9 @@ public class InvoicingProjectService extends InvoicingProjectRepository{
 	public List<InvoiceLine> createPurchaseOrderInvoiceLines(Invoice invoice, List<PurchaseOrderLine> purchaseOrderLineList, int priority) throws AxelorException  {
 
 		List<InvoiceLine> invoiceLineList = new ArrayList<InvoiceLine>();
-		int count = 0;
 		for(PurchaseOrderLine purchaseOrderLine : purchaseOrderLineList) {
 
-			invoiceLineList.addAll(this.createInvoiceLine(invoice, purchaseOrderLine, priority*100+count));
-			count++;
+			invoiceLineList.addAll(Beans.get(PurchaseOrderInvoiceProjectServiceImpl.class).createInvoiceLine(invoice, purchaseOrderLine));
 			purchaseOrderLine.setInvoiced(true);
 		}
 		return invoiceLineList;
@@ -265,17 +262,6 @@ public class InvoicingProjectService extends InvoicingProjectRepository{
 		}
 	}
 
-
-	public List<InvoiceLine> customerChargeBackPurchases(List<InvoiceLine> invoiceLineList,InvoicingProject invoicingProject) throws AxelorException{
-		Partner customer = Beans.get(ProjectTaskService.class).getClientPartnerFromProjectTask(invoicingProject.getProjectTask());
-		if(!customer.getFlatFeePurchase()){
-			for (InvoiceLine invoiceLine : invoiceLineList) {
-				invoiceLine.setPrice(invoiceLine.getPrice().multiply(customer.getChargeBackPurchase().divide(new BigDecimal(100), generalService.getNbDecimalDigitForUnitPrice(), BigDecimal.ROUND_HALF_UP)).setScale(generalService.getNbDecimalDigitForUnitPrice(), BigDecimal.ROUND_HALF_UP));
-				invoiceLine.setExTaxTotal(invoiceLine.getPrice().multiply(invoiceLine.getQty()).setScale(2, BigDecimal.ROUND_HALF_UP));
-			}
-		}
-		return invoiceLineList;
-	}
 
 
 	public void getLines(ProjectTask projectTask, List<SaleOrderLine> saleOrderLineList, List<PurchaseOrderLine> purchaseOrderLineList,

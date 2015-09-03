@@ -57,7 +57,6 @@
 <!--   	Onglet Autres informations -->
 	<many-to-one name="salemanUser" ref="com.axelor.auth.db.User" title="Salesman" massUpdate="true"/>
 	<many-to-one name="team" ref="com.axelor.apps.base.db.Team" title="Team" massUpdate="true"/>
-    <many-to-one name="source" ref="com.axelor.apps.base.db.Source" title="Source"/>
 	
 <!-- 	Onglet description -->
 	<string name="description" title="Description" large="true"/>
@@ -83,7 +82,7 @@
     
     <many-to-one name="templateUser" ref="com.axelor.auth.db.User" title="Template created by" readonly="true"/>
     
-    <boolean name="hideDiscount" title="Hide Discount ?"/>
+    <boolean name="hideDiscount" title="Hide Discount on prints?"/>
     
 	<date name="deliveryDate" title="Delivery date"/>
 	<string name="deliveryCondition" title="Delivery conditions" large="true" multiline="true"/>

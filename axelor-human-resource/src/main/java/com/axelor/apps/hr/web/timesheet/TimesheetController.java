@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Map;
 
 import com.axelor.apps.base.db.Wizard;
-import com.axelor.apps.hr.db.Expense;
 import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.db.repo.TimesheetRepository;
@@ -171,7 +170,7 @@ public class TimesheetController {
 			}
 
 			response.setView(ActionView.define(I18n.get("Timesheets to be Validated by your subordinates"))
-				   .model(Expense.class.getName())
+				   .model(Timesheet.class.getName())
 				   .add("grid","timesheet-grid")
 				   .add("form","timesheet-form")
 				   .domain("self.id in ("+timesheetListIdStr+")")

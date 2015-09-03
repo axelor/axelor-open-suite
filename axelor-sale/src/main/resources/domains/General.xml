@@ -7,6 +7,7 @@
 	<entity name="General" lang="java" cachable="true">
 		<boolean name="manageSaleOrderVersion" title="Manage sale order versions" default="false"/>
 		<boolean name="generateInvoiceFromSaleOrder" title="Generate invoice from sale order" default="false"/>
+		<boolean name="allowTimetableInvoicing" title="Allow timetable invoicing" default="false"/>
 	</entity>
 
 </domain-models>

@@ -9,7 +9,7 @@
   	  <integer name="importId"/>
   	  <many-to-one name="publicHolidayPlann" ref="com.axelor.apps.hr.db.PublicHolidayPlanning"/>
   	  <integer name="year" required="true" title="Year"/>
-  	  <date name="date" required="true" title="Date"/>
+  	  <date name="date" column="date_val" required="true" title="Date"/>
   	  <string name="description" title="Description"/>
   </entity>
   

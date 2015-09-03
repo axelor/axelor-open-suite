@@ -26,16 +26,26 @@
 		</panel>
         <panel-include view="user-form" from="axelor-core"/>
         <panel-tabs>
-             <panel title="Contact">
-                <field name="partner" domain="self.partnerTypeSelect = 2 OR self.isContact = true" grid-view="partner-grid" form-view="partner-form" colSpan="12" />
+             <panel title="Contact Informations">
+                <field name="partner" domain="self.partnerTypeSelect = 2 OR self.isContact = true" grid-view="partner-contact-grid" form-view="partner-contact-form" colSpan="12" />
                 <field name="partner.emailAddress" colSpan="6" />
 				<field name="partner.fax" colSpan="6" />
 				<field name="partner.fixedPhone" colSpan="6" />
 				<field name="partner.mobilePhone" colSpan="6" />
 	           	<field name="partner.webSite" colSpan="6" />
+<!-- 	           	<field name="partner" canSelect="false" canNew="true" colSpan="12" grid-view="partner-contact-grid" form-view="partner-contact-form"> -->
+<!--         			<editor x-show-titles="false"> -->
+<!-- 			        	<field name="fax" placeholder="Fax"/> -->
+<!-- 			        	<field name="fixedPhone" placeholder="Fixed phone"/> -->
+<!-- 				        <field name="mobilePhone" placeholder="Mobile phone"/> -->
+<!-- 			    	    <field name="webSite" placeholder="Website"/> -->
+<!-- 			    	    <field name="name" hidden="true"/> -->
+<!-- 			    	    <field name="firstName" hidden="true"/> -->
+<!-- 				    </editor> -->
+<!--         		</field> -->
 	         </panel>
         	 <panel-related title="Internal companies" field="companySet" showTitle="false" canNew="false"/>
-        	 <panel title="Teams">
+        	 <panel title="Teams" if="__config__.general.getTeamManagement()">
         		<field name="activeTeam" form-view="team-form" grid-view="team-grid"/>
         		<panel-related field="teamSet" canNew="false" colSpan="12" form-view="team-form" grid-view="team-grid"/>
         	 </panel>

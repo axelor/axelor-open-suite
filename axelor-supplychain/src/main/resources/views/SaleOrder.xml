@@ -55,6 +55,8 @@
 		<action name="action-sale-order-attrs-validated-read-only"/>
 		<action name="action-partner-attrs-hide-contact-partner" />
 		<action name="action-sale-order-attrs-in-ati"/>
+		<action name="action-sale-order-method-update-timetable"/>
+		<action name="save"/>
 	</action-group>
 	
 	<action-group name="action-group-supplychain-sale-order-confirmed" if-module="axelor-supplychain">
@@ -62,6 +64,10 @@
     	<action name="action-supplychain-sale-order-create-stock-move" if="eval: __config__.general.getCustomerStockMoveGenerationAuto()"/>
     	<action name="action-supplychain-sale-order-create-production-order" if="eval: __config__.general.getProductionOrderGenerationAuto()"/>
 	</action-group>
+	
+	<action-method name="action-sale-order-method-update-timetable" if-module="axelor-supplychain">
+		<call class="com.axelor.apps.supplychain.web.SaleOrderController" method="updateTimetable"/>
+	</action-method>
 	
 	<action-method name="action-supplychain-sale-order-method-get-location">
     	<call class="com.axelor.apps.supplychain.web.SaleOrderController" method="getLocation"/>
@@ -100,7 +106,7 @@
 	</action-record>
 	
 	<action-view name="action-view-show-invoices-from-sale-order" title="Invoices" model="com.axelor.apps.account.db.Invoice">	
-		<view type="grid" name="invoice-grid" />
+		<view type="grid" name="invoice-light-grid" />
 		<view type="form" name="invoice-form" />
 		<domain>self.saleOrder.id = :saleOrderId OR (self.saleOrder.id IS NULL AND EXISTS(SELECT 1 FROM self.invoiceLineList inli WHERE inli.saleOrderLine.id IN (:saleOrderLineIdList)))</domain>
 		<context name="saleOrderId" expr="eval: id" />

@@ -22,6 +22,7 @@ import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.supplychain.service.PurchaseOrderServiceSupplychainImpl;
+import com.axelor.apps.supplychain.service.TimetableService;
 import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -82,6 +83,11 @@ public class PurchaseOrderController {
 
 	}
 
-
+	public void updateTimetable(ActionRequest request, ActionResponse response){
+		PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
+		purchaseOrder = Beans.get(PurchaseOrderRepository.class).find(purchaseOrder.getId());
+		Beans.get(TimetableService.class).updateTimetable(purchaseOrder);
+		response.setValues(purchaseOrder);
+	}
 
 }

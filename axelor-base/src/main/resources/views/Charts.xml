@@ -94,7 +94,7 @@
 	  LEFT JOIN  
 	    base_country AS addressCountry ON addressCountry.id=baseAddress.addressl7country
 	  WHERE
-	    self.is_customer = true AND self.has_ordered = false AND is_contact=false
+	    self.is_customer = true AND self.has_ordered != true AND is_contact=false
 	  GROUP BY
 	   _address_country	
 	  ORDER BY

@@ -23,7 +23,7 @@
 	    <field name="estimatedDelivDate"/>
 	  </panel>
 	  <panel>
-	    <field name="comment" colSpan="12"/>
+	    <field name="comments" colSpan="12"/>
 	  </panel>  
 	  <panel sidebar="true" title="Actions">
 	    <button name="accept" title="Accept" showIf="stateSelect == 1 || stateSelect == 2"   onClick="save,action-purchase-order-supplier-line-method-accept,save"/>
@@ -42,7 +42,7 @@
 		<field name="purchaseOrderLine.unit" form-view="unit-form" grid-view="unit-grid"/>
 		<field name="price"/>
 		<field name="estimatedDelivDate"/>
-		<field name="comment"/>
+		<field name="comments"/>
 		<field name="stateSelect"/>
 	</grid>
 	
@@ -60,7 +60,7 @@
 	    <button name="submit" title="Submit" showIf="stateSelect == 1" onClick="save,action-purchase-order-supplier-line-record-submit,save"/>
 	  </panel>
 	  <panel>
-	    <field name="comment" colSpan="12"/>
+	    <field name="comments" colSpan="12"/>
 	  </panel>  
 	</form>	
 	

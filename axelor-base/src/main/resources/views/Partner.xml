@@ -18,6 +18,38 @@
 		<button name="scheduleMeeting" title="Schedule Meeting"   help="Schedule Meeting" icon="fa-group" onClick="action-partner-view-create-meeting" if-module="axelor-crm"/>
 		<button name="sendByEmail" title="Send Email"   help="Send Email" icon="fa-envelope" onClick="action-send-by-email-with-template" if-module="axelor-crm"/>
 	</grid>
+	
+	<grid name="partner-customer-grid" title="Customers" model="com.axelor.apps.base.db.Partner" orderBy="name">
+	    <toolbar>
+	        <button name="printPhoneBook" title="PhoneBook" icon="fa-print" onClick="action-print-phonebook"/>
+	        <button name="printCompanyPhoneBook" title="Company phoneBook" icon="fa-print" onClick="action-print-compnay-phonebook"/>
+	        <button name="checkDuplicate" title="Check Duplicate" onClick="action-general-method-show-duplicate"/>
+	    </toolbar>
+	    <field name="fullName"/>
+	    <field name="mainInvoicingAddress" form-view="address-form" grid-view="address-grid"/>
+	    <field name="fixedPhone" placeholder="+33100000000" pattern="^\+?\d{8,11}$"/>
+		<field name="emailAddress.address" placeholder="whatever@example.com" pattern="^[a-z0-9A-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ!#$%&amp;'*+/=?^_`{|}~-]+(?:\.[a-z0-9A-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ!#$%&amp;'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+(?:[a-z]{2,})$"/>
+	    <field name="partnerCategory" grid-view="partner-category-grid" form-view="partner-category-form"/>
+		<button name="logCall" title="Log Call"   icon="fa-phone" help="Log Call" onClick="action-partner-view-create-call"  if-module="axelor-crm"/>
+		<button name="scheduleMeeting" title="Schedule Meeting"   help="Schedule Meeting" icon="fa-group" onClick="action-partner-view-create-meeting" if-module="axelor-crm"/>
+		<button name="sendByEmail" title="Send Email"   help="Send Email" icon="fa-envelope" onClick="action-send-by-email-with-template" if-module="axelor-crm"/>
+	</grid>
+	
+	<grid name="partner-supplier-grid" title="Suppliers" model="com.axelor.apps.base.db.Partner" orderBy="name">
+	    <toolbar>
+	        <button name="printPhoneBook" title="PhoneBook" icon="fa-print" onClick="action-print-phonebook"/>
+	        <button name="printCompanyPhoneBook" title="Company phoneBook" icon="fa-print" onClick="action-print-compnay-phonebook"/>
+	        <button name="checkDuplicate" title="Check Duplicate" onClick="action-general-method-show-duplicate"/>
+	    </toolbar>
+	    <field name="fullName"/>
+	    <field name="mainInvoicingAddress" form-view="address-form" grid-view="address-grid"/>
+	    <field name="fixedPhone" placeholder="+33100000000" pattern="^\+?\d{8,11}$"/>
+		<field name="emailAddress.address" placeholder="whatever@example.com" pattern="^[a-z0-9A-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ!#$%&amp;'*+/=?^_`{|}~-]+(?:\.[a-z0-9A-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ!#$%&amp;'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+(?:[a-z]{2,})$"/>
+	    <field name="partnerCategory" grid-view="partner-category-grid" form-view="partner-category-form"/>
+		<button name="logCall" title="Log Call"   icon="fa-phone" help="Log Call" onClick="action-partner-view-create-call"  if-module="axelor-crm"/>
+		<button name="scheduleMeeting" title="Schedule Meeting"   help="Schedule Meeting" icon="fa-group" onClick="action-partner-view-create-meeting" if-module="axelor-crm"/>
+		<button name="sendByEmail" title="Send Email"   help="Send Email" icon="fa-envelope" onClick="action-send-by-email-with-template" if-module="axelor-crm"/>
+	</grid>
     
     <grid name="partner-contact-grid" title="Contacts" model="com.axelor.apps.base.db.Partner">
 	    <field name="fullName"/>
@@ -38,9 +70,21 @@
         <field name="user" form-view="user-form" grid-view="user-grid"/>
     </grid>
     
+     <form name="partner-customer-form"  title="Customer" model="com.axelor.apps.base.db.Partner"    
+    onNew="action-group-base-partner-onnew" 
+    onLoad="action-group-partner-onload" width="large" >
+    	<panel-include view="partner-form" from="axelor-base"/>
+    </form>
+    
+    <form name="partner-supplier-form"  title="Supplier" model="com.axelor.apps.base.db.Partner"    
+    onNew="action-group-base-partner-onnew" 
+    onLoad="action-group-partner-onload" width="large">
+    	<panel-include view="partner-form" from="axelor-base"/>
+    </form>
+    
     <form name="partner-form"  title="Partner" model="com.axelor.apps.base.db.Partner"    
     onNew="action-group-base-partner-onnew" 
-    onLoad="action-group-partner-onload">
+    onLoad="action-group-partner-onload" width="large">
 	    <toolbar>
 	        <button name="sendByEmail" title="Send email" icon="fa-envelope" onClick="save,action-send-by-email-with-template" readonlyIf="id == null" if-module="axelor-message"/>
 	        <button name="showPartnerInfo" title="Print Informations" icon="fa-print" onClick="save,action-partner-method-show-partner-info" readonlyIf="id == null"/>
@@ -48,11 +92,18 @@
 	    </toolbar>
 	    <panel-include view="incl-event-actions-partner-form" from="axelor-crm" />
 	    <panel>
-	    	<panel colSpan="2">
-	        	<field name="picture" showTitle="false" widget="Image" colSpan="12" width="80" height="80"/>
+	    	<panel colSpan="3">
+	        	<field name="picture" showTitle="false" widget="Image" colSpan="12"/>
+	        	<panel colSpan="12" showIf="fullName != null">
+				    <label name="google" title="&lt;a class='fa fa-google-plus' href='http://www.google.com' target='_blank' /&gt;" colSpan="2"/>
+				    <label name="facebook" title="&lt;a class='fa fa-facebook' href='http://www.facebook.com' target='_blank' /&gt;" colSpan="2"/>
+				    <label name="twitter" title="&lt;a class='fa fa-twitter' href='http://www.twitter.com' target='_blank' /&gt;" colSpan="2"/>
+				    <label name="linkedin" title="&lt;a class='fa fa-linkedin' href='http://www.linkedin.com' target='_blank' /&gt;" colSpan="2"/>
+				    <label name="youtube" title="&lt;a class='fa fa-youtube' href='http://www.youtube.com' target='_blank' /&gt;" colSpan="2"/>
+				</panel>
 	      	</panel>
 	      	<panel colSpan="9">
-	      	<field name="fullName" colSpan="12" showTitle="false">
+	      	<field name="fullName" colSpan="9" showTitle="false">
 	      		<hilite strong="true" if="true" color="primary"/>        
 		        <editor x-show-titles="false">
 		            <field name="partnerTypeSelect" showTitle="false" onChange="action-partner-attrs-change-name,action-partner-method-set-social-network-url" colSpan="4"/>
@@ -62,13 +113,7 @@
 		            <field name="titleSelect" showTitle="false" hideIf="partnerTypeSelect != 2" placeholder="Civility" colSpan="2"/>
 		        </editor>
 		    </field>
-			<panel colSpan="4" showIf="fullName != null">
-			    <label name="google" title="&lt;a class='fa fa-google-plus' href='http://www.google.com' target='_blank' /&gt;" colSpan="2"/>
-			    <label name="facebook" title="&lt;a class='fa fa-facebook' href='http://www.facebook.com' target='_blank' /&gt;" colSpan="2"/>
-			    <label name="twitter" title="&lt;a class='fa fa-twitter' href='http://www.twitter.com' target='_blank' /&gt;" colSpan="2"/>
-			    <label name="linkedin" title="&lt;a class='fa fa-linkedin' href='http://www.linkedin.com' target='_blank' /&gt;" colSpan="2"/>
-			    <label name="youtube" title="&lt;a class='fa fa-youtube' href='http://www.youtube.com' target='_blank' /&gt;" colSpan="2"/>
-			</panel>
+		    <button name="generateProject" readonlyIf="id == null || id &lt; 1" title="Generate Project" colSpan="3" if-module="axelor-project" onClick="action-partner-view-generate-project"/>
 			<field name="isContact" hidden="true" colSpan="12" />
 		</panel>
   		</panel>
@@ -109,11 +154,27 @@
 						<field name="nbrEmployees" colSpan="6"/>
 						<field name="registrationCode" colSpan="6"/>
 						<field name="taxNbr" colSpan="6"/>
+						<field name="paymentDelay" if-module="axelor-cash-management"/>
 						<field name="parentPartner" hideIf="partnerTypeSelect != 1" domain="self.isContact = false AND self.partnerTypeSelect = 1" colSpan="6" form-view="partner-form"  grid-view="partner-grid"/>
 					</panel>
 		      	</panel>
+		      	<panel title="Settings" colSpan="12">
+					<field name="partnerSeq" colSpan="6"/>
+					<field name="languageSelect" colSpan="6"/>
+					<panel title="Assigned to" colSpan="12">
+						<field name="user" colSpan="6" form-view="user-form" grid-view="user-grid"/>
+						<field name="team" colSpan="6" form-view="team-form" grid-view="team-grid" if="__config__.general.getTeamManagement()"/>
+						<field name="companySet" colSpan="12" widget="TagSelect" onChange="action-partner-company-set-validate,action-partner-method-generate-customer-credit-line" canNew="false" form-view="company-form" grid-view="company-grid"/>
+					</panel>
+				</panel>
+				<panel title="Notes" colSpan="12">
+					<field name="description" colSpan="12" height="8" showTitle="false"/>
+				</panel>
 	    	</panel>
 			<panel name="payment" title="Invoicing/Payment" hideIf="isContact" if-module="axelor-account" colSpan="12" >
+				<panel if-module="axelor-cash-management" if="__config__.general.getManageMultiBanks()">
+					<field name="bankDetails"/>
+				</panel>
 		    	<panel-include view="incl-invoice-payment-partner-form" from="axelor-account"/>
 				<panel-include if-module="axelor-account" view="incl-sepa-direct-debit-partner-form" from="axelor-account"/>
 		    </panel>
@@ -123,19 +184,14 @@
 			</panel>
 			
 			<panel-include if-module="axelor-account" view="incl-blocking-partner-form" from="axelor-account" />
-			<panel title="Activities" showIf="id != null" if-module="axelor-crm">
+			<panel title="Activities" showIf="id != null" if-module="axelor-crm" onTabSelect="action-partner-method-view-emails">
 				<panel-include if-module="axelor-organisation" view="incl-show-project-partner-form" from="axelor-organisation"/>
 		        <panel-include view="incl-activities-partner-form" from="axelor-crm" />
 		        <panel-include if-module="axelor-supplychain" view="incl-sales-partner-form" from="axelor-supplychain"/>
+		        <field name="$emailsList" colSpan="12" type="many-to-many" target="com.axelor.apps.message.db.Message" title="Emails" canNew="false" canSelect="false" canRemove="false"/>
 			</panel>
 			<panel name="customerCredit" title="Encours Client" if-module="axelor-supplychain" colSpan="12" hideIf="!isCustomer">
 				<panel-include if-module="axelor-supplychain" view="incl-customer-credit-partner-form" from="axelor-supplychain" />
-			</panel>
-			<panel title="Business Project" if-module="axelor-business-project" colSpan="12">
-				<button name="generateProject" title="Generate Project"/>
-				<field name="chargeBackPurchase" colSpan="4"/>
-				<label title="OR" colSpan="4"/>
-				<field name="flatFeePurchase" colSpan="4"/>
 			</panel>
 			<panel title="Sale Order" if-module="axelor-sale" showIf="isCustomer">
 				<field name="saleOrderInformation" colSpan="12"/>
@@ -144,19 +200,6 @@
 				<field name="purchaseOrderInformation" colSpan="12"/>
 			</panel>
 		</panel-tabs>
-		
-		<panel title="Settings" colSpan="12" sidebar="true">
-			<field name="partnerSeq" colSpan="6"/>
-			<field name="languageSelect" colSpan="6"/>
-			<panel title="Assigned to" colSpan="12">
-				<field name="user" colSpan="6" form-view="user-form" grid-view="user-grid"/>
-				<field name="team" colSpan="6" form-view="team-form" grid-view="team-grid"/>
-				<field name="companySet" colSpan="12" widget="TagSelect" onChange="action-partner-company-set-validate,action-partner-method-generate-customer-credit-line" canNew="false" form-view="company-form" grid-view="company-grid"/>
-			</panel>
-		</panel>
-		<panel title="Notes" colSpan="12" sidebar="true">
-			<field name="description" colSpan="12" height="8" showTitle="false"/>
-		</panel>
 	</form>
 	
 	<grid name="partner-light-grid" title="Contacts" model="com.axelor.apps.base.db.Partner">
@@ -244,25 +287,33 @@
 	           	<field name="isContact" hidden="true" colSpan="12"/>
 	        </panel>
          </panel>
-        <panel title="Contact details">
-            <field name="jobTitle"/>
-            <field name="reportsTo" domain="self.isContact = true"/>
-            <field name="fixedPhone" placeholder="+33100000000" pattern="^\+?\d{8,11}$"/>
-            <field name="mobilePhone" placeholder="+33100000000" pattern="^\+?\d{8,11}$"/>
-            <field name="emailAddress" canSelect="false" form-view="email-address-simple-form" x-show-icons="false">
-				<editor x-show-titles="false">
-					<field name="address" placeholder="whatever@example.com" pattern="^[a-z0-9A-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ!#$%&amp;'*+/=?^_`{|}~-]+(?:\.[a-z0-9A-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ!#$%&amp;'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+(?:[a-z]{2,})$"/>
-				</editor>
-			</field>
-            <field name="fax" pattern="^\+?\d{8,11}$" placeholder="+33000000000"/>
-            <field name="mainInvoicingAddress" title="Address" canNew="true" form-view="address-form" grid-view="address-grid"/>     
-        </panel>
+        <panel-tabs>
+	        <panel title="Contact details">
+	            <field name="jobTitle"/>
+	            <field name="reportsTo" domain="self.isContact = true"/>
+	            <field name="fixedPhone" placeholder="+33100000000" pattern="^\+?\d{8,11}$"/>
+	            <field name="mobilePhone" placeholder="+33100000000" pattern="^\+?\d{8,11}$"/>
+	            <field name="emailAddress" canSelect="false" form-view="email-address-simple-form" x-show-icons="false">
+					<editor x-show-titles="false">
+						<field name="address" placeholder="whatever@example.com" pattern="^[a-z0-9A-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ!#$%&amp;'*+/=?^_`{|}~-]+(?:\.[a-z0-9A-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ!#$%&amp;'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+(?:[a-z]{2,})$"/>
+					</editor>
+				</field>
+	            <field name="fax" pattern="^\+?\d{8,11}$" placeholder="+33000000000"/>
+	            <field name="mainInvoicingAddress" title="Address" canNew="true" form-view="address-form" grid-view="address-grid"/>     
+	        </panel>
+	        <panel title="Activities" showIf="id != null" if-module="axelor-crm" onTabSelect="action-partner-method-view-emails-contact">
+				<panel-include if-module="axelor-organisation" view="incl-show-project-partner-form" from="axelor-organisation"/>
+		        <panel-include view="incl-activities-contact-form" from="axelor-crm" />
+		        <panel-include if-module="axelor-supplychain" view="incl-sales-contact-form" from="axelor-supplychain"/>
+		        <field name="$emailsList" colSpan="12" type="many-to-many" target="com.axelor.apps.message.db.Message" title="Emails" canNew="false" canSelect="false" canRemove="false"/>
+			</panel>
+		</panel-tabs>
         <panel sidebar="true" title="Settings">
             <field name="partnerSeq"/>
             <field name="languageSelect"/>
             <panel title="Assigned to" canCollapse="true" colSpan="12">
 				<field name="user" colSpan="6" form-view="user-form" grid-view="user-grid"/>
-                <field name="team" colSpan="6" form-view="team-form" grid-view="team-grid"/>
+                <field name="team" colSpan="6" form-view="team-form" grid-view="team-grid" if="__config__.general.getTeamManagement()"/>
                 <field name="companySet" colSpan="12" widget="TagSelect" onChange="action-partner-company-set-validate" canNew="false" form-view="company-form" grid-view="company-grid"/>
             </panel>
         </panel>
@@ -362,6 +413,11 @@
     	<field name="team"  expr="#{__user__.activeTeam}"/>
     	<field name="companySet" expr="call:com.axelor.apps.base.web.PartnerController:getActiveCompany()"/>
     	<field name="languageSelect" expr="#{__config__.general.getDefaultPartnerLanguage()}" />
+    	<field name="isCustomer" expr="true" if="_isCustomer"/>
+  		<field name="isSupplier" expr="true" if="_isSupplier"/>
+    	<field name="paymentDelay" expr="eval: __user__.activeCompany?.customerPaymentDelay" if="_isCustomer"/>
+    	<field name="paymentDelay" expr="eval: __user__.activeCompany?.supplierPaymentDelay" if="_isSupplier"/>
+    	<field name="bankDetails" expr="eval: __user__.activeCompany?.defaultBankDetails"/>
     </action-record>
     
     <action-record name="action-partner-contact-record-default" model="com.axelor.apps.base.db.Partner">
@@ -401,6 +457,23 @@
 	<action-method name="action-partner-method-update-customer-credit-line-from-partner" if-module="axelor-supplychain">
 		<call class="com.axelor.apps.supplychain.web.CustomerCreditLineController" method="updateLinesFromPartner"/>
 	</action-method>
+	
+	
+	<action-method name="action-partner-method-view-emails">
+		<call class="com.axelor.apps.base.web.PartnerController" method="findPartnerMails"/>
+	</action-method>
+	
+	<action-method name="action-partner-method-view-emails-contact">
+		<call class="com.axelor.apps.base.web.PartnerController" method="findContactMails"/>
+	</action-method>
+	
+
+	
+	<action-view name="action-partner-view-generate-project" title="Generated Project" model="com.axelor.apps.project.db.ProjectTask">
+    	<view type="form" name="project-form"/>
+		<view type="grid" name="project-grid"/>
+    	<context name="_idPartner" expr="eval: id"/>
+    </action-view>
 	
 	<search-filters name="partner-filters" model="com.axelor.apps.base.db.Partner" title="Partner filters">
 		<filter title="All Enterprises">

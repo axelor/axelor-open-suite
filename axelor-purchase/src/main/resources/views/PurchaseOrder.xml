@@ -44,7 +44,7 @@
 		</panel>
     </form>
 	
-	<form name="purchase-order-form" title="Supplier RFQ/PO" model="com.axelor.apps.purchase.db.PurchaseOrder" onLoad="action-purchase-order-attrs-hide-contact-partner,action-purchase-order-attrs-in-ati"
+	<form name="purchase-order-form" title="Supplier RFQ/PO" model="com.axelor.apps.purchase.db.PurchaseOrder" onLoad="action-purchase-order-attrs-hide-contact-partner,action-purchase-order-attrs-in-ati,action-purchase-order-method-update-timetable,save"
 	  onNew="action-group-purchase-order-on-new-actions" >
 		<toolbar>
 			<button name="print" title="Print" icon="fa-print" onClick="save,action-purchase-order-method-show-purchase-order"/>
@@ -53,13 +53,14 @@
 	  
 		<panel readonlyIf="statusSelect == 4">
 			<field name="supplierPartner.purchaseOrderInformation" css="bold red" colSpan="12" showTitle="false" hideIf="supplierPartner == null || supplierPartner.purchaseOrderInformation == null"/>
-			<field name="purchaseOrderSeq" css="label-bold bold" colSpan="3"/>
-			<field name="statusSelect" showTitle="false" widget="NavSelect" colSpan="9"/>
-			<field name="receiptState" css="label-bold bold" showIf="statusSelect >= 2" /> 
+			<field name="statusSelect" showTitle="false" widget="NavSelect" colSpan="12"/>
+			<field name="purchaseOrderSeq" css="label-bold bold" colSpan="6"/>
+			<field name="receiptState" css="label-bold bold" showIf="statusSelect == 3 || statusSelect == 4" /> 
 			<field name="company" widget="SuggestBox" onChange="action-group-purchase-order-company-change-actions" form-view="company-form" grid-view="company-gri"/>
 			<field name="currency" form-view="currency-form" grid-view="currency-grid"/>
 			<field name="buyerUser" form-view="user-form" grid-view="user-grid"/>
 			<field name="versionNumber" if="__config__.general.getManagePurchaseOrderVersion()"/>
+			<field name="bankDetails" widget="SuggestBox" onSelect="action-accounting-batch-attrs-bank-details-domain" form-view="bank-details-form" grid-view="bank-details-grid" if="__config__.general.getManageMultiBanks()"/>
 			<field name="inAti" onChange="action-purchase-order-attrs-in-ati"/>   
 		</panel>
 		
@@ -96,6 +97,7 @@
 			<panel title="PO Management" if-module="axelor-supplier-management" colSpan="12">
 				<panel-include view="purchase-order-supplier-form" from="axelor-supplier-management" if-module="axelor-supplier-management"/>
 			</panel>
+			<panel-related field="timetableList" grid-view="timetable-grid" form-view="timetable-form" if-module="axelor-supplychain"/>
 		</panel-tabs>
 	  
 		<panel sidebar="true" title="Actions">
@@ -145,6 +147,10 @@
 		
 	</form>
 	
+	<action-method name="action-purchase-order-method-update-timetable" if-module="axelor-supplychain">
+		<call class="com.axelor.apps.supplychain.web.PurchaseOrderController" method="updateTimetable"/>
+	</action-method>
+	
     <action-group name="action-group-purchase-order-on-new-actions">
     	<action name="action-purchase-order-record-new"/>
     	<action name="action-purchase-order-record-company-configuration"/>
@@ -171,10 +177,13 @@
     <action-attrs name="action-purchase-order-attrs-in-ati">
     	<attribute name="hidden" for="purchaseOrderLineList.exTaxTotal" expr="inAti"/>
     	<attribute name="hidden" for="purchaseOrderLineList.inTaxTotal" expr="!inAti"/>
+    	<attribute name="hidden" for="inAti" expr=" eval: __repo__.of(PurchaseConfig).all().filter('self.company = ?',company).fetchOne()?.purchaseOrderInAtiSelect == 1
+    									|| __repo__.of(PurchaseConfig).all().filter('self.company = ?',company).fetchOne()?.purchaseOrderInAtiSelect == 2"/>
     </action-attrs>
     
     <action-record name="action-purchase-order-record-in-ati" model="com.axelor.apps.purchase.db.PurchaseOrder">
-    	<field name="inAti" expr="eval: __repo__.of(PurchaseConfig).all().filter('self.company = ?',company).fetchOne()?.purchaseOrderInAti"/>
+    	<field name="inAti" expr="eval: __repo__.of(PurchaseConfig).all().filter('self.company = ?',company).fetchOne()?.purchaseOrderInAtiSelect == 2
+    									|| __repo__.of(PurchaseConfig).all().filter('self.company = ?',company).fetchOne()?.purchaseOrderInAtiSelect == 4"/>
     </action-record>
      
     <action-record name="action-purchase-order-record-new" model="com.axelor.apps.purchase.db.PurchaseOrder">

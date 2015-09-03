@@ -82,15 +82,13 @@ public interface SaleOrderService extends Repository<SaleOrder>{
 
 	public String getSequence(Company company) throws AxelorException;
 
-	public void setDraftSequence(SaleOrder saleOrder);
-
 
 	public SaleOrder createSaleOrder(User buyerUser, Company company, Partner contactPartner, Currency currency,
 			LocalDate deliveryDate, String internalReference, String externalReference, LocalDate orderDate,
 			PriceList priceList, Partner clientPartner, Team team) throws AxelorException;
-	
+
 	public SaleOrder createSaleOrder(Company company) throws AxelorException;
-	
+
 	public void cancelSaleOrder(SaleOrder saleOrder);
 
 	public void finalizeSaleOrder(SaleOrder saleOrder) throws Exception;
@@ -98,13 +96,13 @@ public interface SaleOrderService extends Repository<SaleOrder>{
 	public void saveSaleOrderPDFAsAttachment(SaleOrder saleOrder) throws IOException;
 
 	public String getURLSaleOrderPDF(SaleOrder saleOrder);
-	
+
 	@Transactional
 	public SaleOrder createTemplate(SaleOrder context);
-	
+
 	@Transactional
 	public SaleOrder createSaleOrder(SaleOrder context);
-	
+
 	public SaleOrder computeEndOfValidityDate(SaleOrder saleOrder);
 }
 

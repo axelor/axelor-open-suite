@@ -29,6 +29,26 @@
         <button name="sendByEmail" title="Send email" icon="fa-envelope" onClick="action-send-by-email-with-template"/>
     </grid>
     
+    <grid name="invoice-light-grid" title="Invoices" model="com.axelor.apps.account.db.Invoice" orderBy="-invoiceDate">
+    	<toolbar>
+			<button name="printInvoices" title="Print invoices" icon="fa-print" onClick="action-invoice-method-show-invoice"/>
+			<button name="massInvoiceValidation" title="Validate selected invoices" prompt="Are you sure you want to validate all selected invoices ?" onClick="action-invoice-method-mass-validation"/>
+			<button name="massInvoiceVentilation" title="Ventilate selected invoices" prompt="Are you sure you want to ventilate all selected invoices ?" onClick="action-invoice-method-mass-ventilation"/>
+    	</toolbar>   
+    	<hilite color="info" if="statusSelect == 1"/>
+	    <hilite color="danger" if="statusSelect == 3 &amp;&amp; companyInTaxTotalRemaining &gt; 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &lt; 0"/>
+	    <hilite color="warning" if="statusSelect == 3 &amp;&amp; companyInTaxTotalRemaining &gt; 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &lt;= 5"/>
+	    <hilite color="success" if="statusSelect == 3 &amp;&amp; companyInTaxTotalRemaining == 0"/>
+        <field name="invoiceId"/>
+        <field name="operationTypeSelect" />
+        <field name="invoiceDate"/>
+        <field name="exTaxTotal"/>
+        <field name="amountPaid"/>
+        <field name="statusSelect"/>
+        <button name="showInvoice" title="Print" icon="fa-print" onClick="action-invoice-method-show-invoice"/>
+        <button name="sendByEmail" title="Send email" icon="fa-envelope" onClick="action-send-by-email-with-template"/>
+    </grid>
+    
 	<form name="invoice-form" title="Invoice" model="com.axelor.apps.account.db.Invoice"  
 	onNew="action-account-invoice-onnew-group" onLoad="action-account-invoice-onload-group">
 	
@@ -55,9 +75,9 @@
 			<field name="address" form-view="address-form" grid-view="address-grid" />
 			<field name="paymentMode" grid-view="payment-mode-grid" form-view="payment-mode-form" widget="SuggestBox" onSelect="action-set-payment-mode-domain"/>
 			<field name="paymentCondition" readonlyIf="statusSelect == 3" widget="SuggestBox" onChange="action-invoice-record-due-date" form-view="payment-condition-form" grid-view="payment-condition-grid"/>
-			<field name="bankDetails" hideIf="operationTypeSelect &gt;= 3" widget="SuggestBox" onSelect="action-accounting-batch-attrs-bank-details-domain" domain="self.partner = :partner" form-view="bank-details-form" grid-view="bank-details-grid"/>
+			<field name="bankDetails" hideIf="operationTypeSelect &gt;= 3" widget="SuggestBox" onSelect="action-accounting-batch-attrs-bank-details-domain" form-view="bank-details-form" grid-view="bank-details-grid"/>
 			<field name="priceList" onChange="action-invoice-record-hide-discount" readonlyIf="statusSelect != 1" onSelect="action-invoice-attrs-domain-priceList" form-view="price-list-form" grid-view="price-list-grid"/>
-			<field name="saleOrder" if="!_config__.general.getManageInvoicedAmountByLine()" if-module="axelor-supplychain" onChange="action-invoice-method-fill-in-lines" form-view="sale-order-form" grid-view="sale-order-grid"/>
+			<field name="saleOrder" if="!__config__.general.getManageInvoicedAmountByLine()" if-module="axelor-supplychain" onChange="action-invoice-method-fill-in-lines" form-view="sale-order-form" grid-view="sale-order-grid"/>
 			<field name="message" />
 			<field name="discount" />
 			<field name="supplierInvoiceNb" showIf="operationTypeSelect == 1 || operationTypeSelect == 2"/>
@@ -131,8 +151,9 @@
 				<field name="externalReference"/>
 			</panel>
 			<panel title="Dates" readonlyIf="statusSelect == 3">
-				<field name="invoiceDate" onChange="action-invoice-record-due-date"/>
-				<field name="dueDate"/>
+				<field name="invoiceDate" onChange="action-invoice-record-due-date,action-invoice-record-estimated-payment-date"/>
+				<field name="dueDate" onChange="action-invoice-record-estimated-payment-date"/>
+				<field name="estimatedPaymentDate" readonly="true" if-module="axelor-cash-management"/>
 			</panel>
 		</panel-stack>
 	 
@@ -235,11 +256,14 @@
     <action-group name="action-group-account-invoice-partner-onchange">
     	<action name="action-invoice-record-partner-change"/>
     	<action name="action-invoice-record-due-date"/>
+    	<action name="action-invoice-record-estimated-payment-date"/>
     </action-group>
 
 	<action-attrs name="action-invoice-attrs-in-ati">
     	<attribute name="hidden" for="invoiceLineList.exTaxTotal" expr="inAti"/>
     	<attribute name="hidden" for="invoiceLineList.inTaxTotal" expr="!inAti"/>
+    	<attribute name="hidden" for="inAti" expr=" eval: __repo__.of(AccountConfig).all().filter('self.company = ?',company).fetchOne()?.invoiceInAtiSelect == 1
+										|| __repo__.of(AccountConfig).all().filter('self.company = ?',company).fetchOne()?.invoiceInAtiSelect == 2"/>
     </action-attrs>
     
     <action-attrs name="action-invoice-attrs-domain-project">
@@ -248,12 +272,17 @@
 	
 	<!-- ACTION RECORD -->
 	
+	<action-record name="action-invoice-record-estimated-payment-date" model="com.axelor.apps.account.db.Invoice" if-module="axelor-cash-management">
+		<field name="estimatedPaymentDate" expr="eval: dueDate?.plusDays(partner?.paymentDelay?.intValue())"/>
+	</action-record>
+	
 	<action-record name="action-invoice-record-hide-discount" model="com.axelor.apps.account.db.Invoice">
 		<field name="hideDiscount" expr="eval: priceList?.hideDiscount"/>
 	</action-record>
 	
 	<action-record name="action-invoice-record-in-ati" model="com.axelor.apps.account.db.Invoice">
-		<field name="inAti" expr="eval: __repo__.of(AccountConfig).all().filter('self.company = ?',company).fetchOne()?.invoiceInAti"/>
+		<field name="inAti" expr="eval: __repo__.of(AccountConfig).all().filter('self.company = ?',company).fetchOne()?.invoiceInAtiSelect == 2
+										|| __repo__.of(AccountConfig).all().filter('self.company = ?',company).fetchOne()?.invoiceInAtiSelect == 4"/>
 	</action-record>
 	
     <action-record name="action-invoice-record-default" model="com.axelor.apps.account.db.Invoice">
@@ -268,7 +297,7 @@
     </action-record>
     
     <action-record name="action-invoice-record-company-change" model="com.axelor.apps.account.db.Invoice">
-        <field name="bankDetails" expr="eval: company?.bankDetails"/>
+        <field name="bankDetails" expr="eval: company?.defaultBankDetails"/>
     </action-record>
     
     <action-record name="action-invoice-record-partner-change" model="com.axelor.apps.account.db.Invoice">
@@ -280,6 +309,7 @@
     	<field name="currency" expr="eval: partner?.currency"/>
 		<field name="priceList" expr="eval: partner?.salePriceList" if="operationTypeSelect == 3 || operationTypeSelect == 4"/>
 		<field name="priceList" expr="eval: partner?.purchasePriceList" if="operationTypeSelect == 1 || operationTypeSelect == 2"/>
+		<field name="bankDetails" expr="eval: partner?.bankDetails" if="partner?.bankDetails != null"/>
     </action-record>
     
     

@@ -102,9 +102,11 @@ public class PurchaseOrderLineServiceImpl  extends PurchaseOrderLineRepository i
 	}
 
 	@Override
-	public BigDecimal getSalePrice(PurchaseOrder purchaseOrder, BigDecimal price) throws AxelorException  {
+	public BigDecimal getSalePrice(PurchaseOrder purchaseOrder, Product product,BigDecimal price) throws AxelorException  {
 
-		return price;
+		return currencyService.getAmountCurrencyConverted(
+				product.getSaleCurrency(), purchaseOrder.getCurrency(), price.multiply(product.getManagPriceCoef()), purchaseOrder.getOrderDate())
+				.setScale(generalService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
 
 	}
 

@@ -252,6 +252,10 @@
 		<bind to="ticketNumberSeq" if="typeSelect.equals('5')" eval="call:com.axelor.apps.base.service.administration.SequenceService:getSequenceNumber(com.axelor.apps.base.db.IAdministration.EVENT_TICKET)" />
 	</input>
 	
+	<input file="crm_event.csv" separator=";" type="com.axelor.apps.crm.db.Event" search="self.importId = :importId">
+		<bind column="subject" to="subjectTeam"/>
+	</input>
+	
 	<input file="crm_opportunityType.csv" separator=";" type="com.axelor.apps.crm.db.OpportunityType" search="self.code = :code"/>
 	
 	<input file="crm_opportunity.csv" separator=";" type="com.axelor.apps.crm.db.Opportunity" search="self.importId = :importId">

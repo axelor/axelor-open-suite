@@ -86,6 +86,9 @@
 		<view type="dashboard" name="charge.by.machine.dashboard" />
 		<context name="today" expr="eval:__config__.generalService.getTodayDate()"/>
 	</action-view>
+	
+	<menuitem name="manufacturing-root-report" parent="manufacturing-root"
+		title="Reportings"/>
 
 	<menuitem name="manufacturing-conf" parent="manufacturing-root" title="Configurations"/>
 
@@ -118,21 +121,10 @@
 		<view type="grid" name="production-config-grid"/>
 		<view type="form" name="production-config-form"/>
 	</action-view>
-	
-	<menuitem name="menu-manufacturing-dashboard-sample" parent="menu-dashboards-sample" order="-155"
-		title="Manufacturing Dashboard"  action="manufacturing.dashboard.view.sample" groups="admins,axelordemo"/>	
 
-	<action-view name="manufacturing.dashboard.view.sample" title="Manufacturing Dashboard">
-		<view type="dashboard" name="manufacturing.dashboard.sample" />
-	    <context name="_today" expr="eval: __date__.toDate()"/>
-	</action-view>
-
-	
-	<menuitem name="menu-manufacturing-dashboard" parent="menu-dashboards" 
-		title="Manufacturing" groups="admins,axelordemo" order="-90"/>	
 		
-	<menuitem name="menu-manufacturing-dashboard-1" parent="menu-manufacturing-dashboard" 
-		title="Manufacturing Db"  action="manufacturing.dashboard.view" />	
+	<menuitem name="menu-manufacturing-dashboard-1" parent="manufacturing-root-report" 
+		title="Manufacturing"  action="manufacturing.dashboard.view" />	
 
 	<action-view name="manufacturing.dashboard.view" title="Manufacturing Dashboard">
 		<view type="dashboard" name="manufacturing.dashboard" />

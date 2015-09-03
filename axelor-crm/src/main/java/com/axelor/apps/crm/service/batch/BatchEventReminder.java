@@ -85,10 +85,8 @@ public class BatchEventReminder extends BatchStrategy {
 
 			int i = 0;
 
-			int durationTypeSelect = batch.getCrmBatch().getDurationTypeSelect();
 
-			List<? extends EventReminder> eventReminderList = eventReminderService.all()
-					.filter("self.event.startDateTime > ?1 AND self.durationTypeSelect = ?2", today, durationTypeSelect).fetch();
+			List<? extends EventReminder> eventReminderList = eventReminderService.all().fetch();
 
 
 			for(EventReminder eventReminder : eventReminderList)  {
@@ -97,7 +95,7 @@ public class BatchEventReminder extends BatchStrategy {
 
 					eventReminder = eventReminderService.find(eventReminder.getId());
 
-					if(this.isExpired(eventReminder, durationTypeSelect))  {
+					if(this.isExpired(eventReminder))  {
 						eventReminder.setIsReminded(true);
 						updateEventReminder(eventReminder);
 						i++;
@@ -123,10 +121,10 @@ public class BatchEventReminder extends BatchStrategy {
 	}
 
 
-	private boolean isExpired(EventReminder eventReminder, int durationTypeSelect)  {
+	private boolean isExpired(EventReminder eventReminder)  {
 
 		LocalDateTime startDateTime = eventReminder.getEvent().getStartDateTime();
-
+		int durationTypeSelect = eventReminder.getDurationTypeSelect();
 		switch (durationTypeSelect) {
 		case IEventReminder.DURATION_MINUTES:
 

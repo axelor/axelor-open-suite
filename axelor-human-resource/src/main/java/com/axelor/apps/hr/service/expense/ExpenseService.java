@@ -192,7 +192,8 @@ public class ExpenseService extends ExpenseRepository{
 
 		Product product = expenseLine.getExpenseType();
 		InvoiceLineGenerator invoiceLineGenerator = null;
-		if(!invoice.getCompany().getAccountConfig().getInvoiceInAti()){
+		Integer atiChoice = invoice.getCompany().getAccountConfig().getInvoiceInAtiSelect();
+		if(atiChoice == 1 || atiChoice == 3){
 			invoiceLineGenerator = new InvoiceLineGenerator(invoice, product, product.getName(), expenseLine.getUntaxedAmount(),
 					null,BigDecimal.ONE,product.getUnit(),priority,BigDecimal.ZERO,IPriceListLine.AMOUNT_TYPE_NONE,
 					null, null, false)  {

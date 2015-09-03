@@ -4,13 +4,18 @@
   <module name="base" package="com.axelor.apps.base.db"/>
   
   <entity name="Partner" lang="java">
-  
+  	
+  	<integer name="chargeBackPurchaseSelect" title="Charging Back Purchases Type" selection=""/>
   	<decimal name="chargeBackPurchase" title="% Charging Back Purhcases" default="100"/>
   	
-  	
-  	<boolean name="flatFeePurchase" title="Customer Flat Fee Purchases"/>
-  	
-	
+	<extra-code><![CDATA[
+		
+		   	// TYPE SELECT
+			public static final int CHARGING_BACK_TYPE_IDENTICALLY = 1;
+			public static final int CHARGING_BACK_TYPE_PRICE_LIST = 2;
+			public static final int CHARGING_BACK_TYPE_PERCENTAGE = 3;
+		
+		]]></extra-code>
   </entity>
   
 </domain-models>
