@@ -17,6 +17,11 @@
             <property name="id">209</property>
             <expression name="value" type="javascript">params["Password"].value</expression>
         </structure>
+        <structure>
+            <property name="name">odaDriverClass</property>
+            <property name="id">209</property>
+            <expression name="value" type="javascript">params["DefaultDriver"].value</expression>
+        </structure>
     </list-property>
     <property name="units">cm</property>
     <property name="layoutPreference">auto layout</property>
@@ -26,7 +31,7 @@
         <scalar-parameter name="PartnerId" id="3265">
             <property name="valueType">static</property>
             <property name="isRequired">true</property>
-            <property name="dataType">string</property>
+            <property name="dataType">decimal</property>
             <property name="distinct">true</property>
             <simple-property-list name="defaultValue">
                 <value type="constant">1</value>
@@ -111,6 +116,18 @@
             <simple-property-list name="defaultValue">
                 <value type="constant"></value>
             </simple-property-list>
+            <list-property name="selectionList"/>
+            <property name="paramType">simple</property>
+            <property name="controlType">text-box</property>
+            <structure name="format">
+                <property name="category">Unformatted</property>
+            </structure>
+        </scalar-parameter>
+        <scalar-parameter name="DefaultDriver" id="3819">
+            <property name="valueType">static</property>
+            <property name="isRequired">true</property>
+            <property name="dataType">string</property>
+            <property name="distinct">true</property>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
             <property name="controlType">text-box</property>
@@ -706,9 +723,9 @@ where Partner.id = ?
                     <property name="nativeDataType">12</property>
                 </structure>
             </list-property>
-            <xml-property name="queryText"><![CDATA[select LangTranslate.key, LangTranslate.message as "translation" 
+            <xml-property name="queryText"><![CDATA[select LangTranslate.message_key, LangTranslate.message_value as "translation" 
 from meta_translation as LangTranslate 
-where LangTranslate.key = ? and LangTranslate.language = ?]]></xml-property>
+where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
   <Version>2.0</Version>
@@ -747,6 +764,7 @@ where LangTranslate.key = ? and LangTranslate.language = ?]]></xml-property>
 </model:DesignValues>]]></xml-property>
         </oda-data-set>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="ClientPartnerDS" id="4066">
+            <property name="nullsOrdering">nulls lowest</property>
             <list-property name="columnHints">
                 <structure>
                     <property name="columnName">id</property>
@@ -756,7 +774,7 @@ where LangTranslate.key = ? and LangTranslate.language = ?]]></xml-property>
                 </structure>
                 <structure>
                     <property name="columnName">title_select</property>
-                    <property name="analysis">dimension</property>
+                    <property name="analysis">measure</property>
                     <text-property name="displayName">title_select</text-property>
                     <text-property name="heading">title_select</text-property>
                 </structure>
@@ -821,7 +839,7 @@ where LangTranslate.key = ? and LangTranslate.language = ?]]></xml-property>
                     <property name="paramName">PartnerId</property>
                     <property name="nativeName"></property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">-5</property>
+                    <property name="nativeDataType">-1</property>
                     <property name="position">1</property>
                     <property name="isInput">true</property>
                     <property name="isOutput">false</property>
@@ -837,7 +855,7 @@ where LangTranslate.key = ? and LangTranslate.language = ?]]></xml-property>
                     <structure>
                         <property name="position">2</property>
                         <property name="name">title_select</property>
-                        <property name="dataType">string</property>
+                        <property name="dataType">integer</property>
                     </structure>
                     <structure>
                         <property name="position">3</property>
@@ -899,8 +917,8 @@ where LangTranslate.key = ? and LangTranslate.language = ?]]></xml-property>
                     <property name="position">2</property>
                     <property name="name">title_select</property>
                     <property name="nativeName">title_select</property>
-                    <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
                 </structure>
                 <structure>
                     <property name="position">3</property>
@@ -966,21 +984,22 @@ where LangTranslate.key = ? and LangTranslate.language = ?]]></xml-property>
                     <property name="nativeDataType">4</property>
                 </structure>
             </list-property>
-            <xml-property name="queryText"><![CDATA[select 
-				ContactPartner.id, ContactPartner.title_select, ContactPartner.name, ContactPartner.first_name, 
-				ContactPartner.fixed_phone, ContactPartner.partner_type_select, ContactPartner.mobile_phone, 
-				ContactPartner.job_title, EmailAddress.address, DeliveryAddress.full_name as delivery_address,
-				Partner.partner_type_select as partner_partner_type_select
-
-from 
-				base_partner as Partner
-
-inner join 	base_partner_contact_partner_set as ContactParnerSet on (ContactParnerSet.base_partner = Partner.id)
-inner join 	base_partner as ContactPartner on (ContactPartner.id = ContactParnerSet.contact_partner_set)
-left join	 	message_email_address as EmailAddress on (ContactPartner.email_address = EmailAddress.id)
-left join 		base_address as DeliveryAddress on (ContactPartner.delivery_address = DeliveryAddress.id)
-
-where 			Partner.id = ?]]></xml-property>
+            <xml-property name="queryText"><![CDATA[SELECT 
+	ContactPartner.id, ContactPartner.title_select, ContactPartner.name, ContactPartner.first_name, 
+	ContactPartner.fixed_phone, ContactPartner.partner_type_select AS partner_type_select, ContactPartner.mobile_phone, 
+	ContactPartner.job_title, EmailAddress.address, DeliveryAddress.full_name AS delivery_address,
+	Partner.partner_type_select AS partner_partner_type_select
+FROM 
+	base_partner AS Partner
+LEFT JOIN 	
+	base_partner_contact_partner_set AS ContactParnerSet ON (ContactParnerSet.base_partner = Partner.id)
+LEFT JOIN 	
+	base_partner AS ContactPartner ON (ContactPartner.id = ContactParnerSet.contact_partner_set)
+LEFT JOIN	
+	message_email_address AS EmailAddress ON (ContactPartner.email_address = EmailAddress.id)
+LEFT JOIN	
+	base_address AS DeliveryAddress ON (ContactPartner.delivery_address = DeliveryAddress.id)
+WHERE Partner.id = ?]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
   <Version>2.0</Version>
@@ -993,7 +1012,7 @@ where 			Partner.id = ?]]></xml-property>
             <design:name></design:name>
             <design:position>1</design:position>
           </design:identifier>
-          <design:nativeDataTypeCode>-5</design:nativeDataTypeCode>
+          <design:nativeDataTypeCode>-1</design:nativeDataTypeCode>
           <design:precision>0</design:precision>
           <design:scale>0</design:scale>
           <design:nullability>Unknown</design:nullability>
@@ -1061,10 +1080,10 @@ where 			Partner.id = ?]]></xml-property>
                     <text-property name="heading">creation_date</text-property>
                 </structure>
                 <structure>
-                    <property name="columnName">validation_date</property>
+                    <property name="columnName">confirmation_date</property>
                     <property name="analysis">dimension</property>
-                    <text-property name="displayName">validation_date</text-property>
-                    <text-property name="heading">validation_date</text-property>
+                    <text-property name="displayName">confirmation_date</text-property>
+                    <text-property name="heading">confirmation_date</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">sale_order_seq</property>
@@ -1080,7 +1099,7 @@ where 			Partner.id = ?]]></xml-property>
                 </structure>
                 <structure>
                     <property name="columnName">title_select</property>
-                    <property name="analysis">dimension</property>
+                    <property name="analysis">measure</property>
                     <text-property name="displayName">title_select</text-property>
                     <text-property name="heading">title_select</text-property>
                 </structure>
@@ -1115,12 +1134,6 @@ where 			Partner.id = ?]]></xml-property>
                     <text-property name="heading">in_tax_total</text-property>
                 </structure>
                 <structure>
-                    <property name="columnName">amount_remaining_to_be_invoiced</property>
-                    <property name="analysis">measure</property>
-                    <text-property name="displayName">amount_remaining_to_be_invoiced</text-property>
-                    <text-property name="heading">amount_remaining_to_be_invoiced</text-property>
-                </structure>
-                <structure>
                     <property name="columnName">status_select</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">status_select</text-property>
@@ -1133,7 +1146,7 @@ where 			Partner.id = ?]]></xml-property>
                     <text-property name="heading">order_date</text-property>
                 </structure>
                 <structure>
-                    <property name="columnName">currency</property>
+                    <property name="columnName">Currency</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">currency</text-property>
                     <text-property name="heading">currency</text-property>
@@ -1175,7 +1188,7 @@ where 			Partner.id = ?]]></xml-property>
                     </structure>
                     <structure>
                         <property name="position">3</property>
-                        <property name="name">validation_date</property>
+                        <property name="name">confirmation_date</property>
                         <property name="dataType">date</property>
                     </structure>
                     <structure>
@@ -1191,7 +1204,7 @@ where 			Partner.id = ?]]></xml-property>
                     <structure>
                         <property name="position">6</property>
                         <property name="name">title_select</property>
-                        <property name="dataType">string</property>
+                        <property name="dataType">integer</property>
                     </structure>
                     <structure>
                         <property name="position">7</property>
@@ -1220,26 +1233,21 @@ where 			Partner.id = ?]]></xml-property>
                     </structure>
                     <structure>
                         <property name="position">12</property>
-                        <property name="name">amount_remaining_to_be_invoiced</property>
-                        <property name="dataType">decimal</property>
-                    </structure>
-                    <structure>
-                        <property name="position">13</property>
                         <property name="name">status_select</property>
                         <property name="dataType">integer</property>
                     </structure>
                     <structure>
-                        <property name="position">14</property>
+                        <property name="position">13</property>
                         <property name="name">order_date</property>
                         <property name="dataType">date</property>
                     </structure>
                     <structure>
-                        <property name="position">15</property>
-                        <property name="name">currency</property>
+                        <property name="position">14</property>
+                        <property name="name">Currency</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">16</property>
+                        <property name="position">15</property>
                         <property name="name">AvgOfSO</property>
                         <property name="dataType">float</property>
                     </structure>
@@ -1263,8 +1271,8 @@ where 			Partner.id = ?]]></xml-property>
                 </structure>
                 <structure>
                     <property name="position">3</property>
-                    <property name="name">validation_date</property>
-                    <property name="nativeName">validation_date</property>
+                    <property name="name">confirmation_date</property>
+                    <property name="nativeName">confirmation_date</property>
                     <property name="dataType">date</property>
                     <property name="nativeDataType">91</property>
                 </structure>
@@ -1286,8 +1294,8 @@ where 			Partner.id = ?]]></xml-property>
                     <property name="position">6</property>
                     <property name="name">title_select</property>
                     <property name="nativeName">title_select</property>
-                    <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
                 </structure>
                 <structure>
                     <property name="position">7</property>
@@ -1326,48 +1334,38 @@ where 			Partner.id = ?]]></xml-property>
                 </structure>
                 <structure>
                     <property name="position">12</property>
-                    <property name="name">amount_remaining_to_be_invoiced</property>
-                    <property name="nativeName">amount_remaining_to_be_invoiced</property>
-                    <property name="dataType">decimal</property>
-                    <property name="nativeDataType">2</property>
-                </structure>
-                <structure>
-                    <property name="position">13</property>
                     <property name="name">status_select</property>
                     <property name="nativeName">status_select</property>
                     <property name="dataType">integer</property>
                     <property name="nativeDataType">4</property>
                 </structure>
                 <structure>
-                    <property name="position">14</property>
+                    <property name="position">13</property>
                     <property name="name">order_date</property>
                     <property name="nativeName">order_date</property>
                     <property name="dataType">date</property>
                     <property name="nativeDataType">91</property>
                 </structure>
                 <structure>
-                    <property name="position">15</property>
-                    <property name="name">currency</property>
+                    <property name="position">14</property>
+                    <property name="name">Currency</property>
                     <property name="nativeName">currency</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
             </list-property>
-            <xml-property name="queryText"><![CDATA[select 
-SaleOrder.id, SaleOrder.creation_date, SaleOrder.validation_date, 
+            <xml-property name="queryText"><![CDATA[SELECT 
+SaleOrder.id, SaleOrder.creation_date,SaleOrder.confirmation_date,
 SaleOrder.sale_order_seq, ContactPartner.partner_type_select,
 ContactPartner.title_select, ContactPartner.name, ContactPartner.first_name,
 SaleOrder.ex_tax_total, SaleOrder.tax_total, SaleOrder.in_tax_total, 
-SaleOrder.amount_remaining_to_be_invoiced, SaleOrder.status_select, 
-SaleOrder.order_date, Currency.symbol as Currency
-
-from base_partner as Partner
-inner join sale_sale_order as SaleOrder on (SaleOrder.client_partner = Partner.id)
-left join base_partner as ContactPartner on (ContactPartner.id = SaleOrder.contact_partner)
-inner join auth_user as AuthUser on (AuthUser.id = Partner.user_id)
-left join base_currency as Currency on (SaleOrder.currency = Currency.id)
-where Partner.id = ? and SaleOrder.company = AuthUser.active_company
-
+SaleOrder.status_select, SaleOrder.order_date, Currency.symbol AS currency
+FROM base_partner AS Partner
+INNER JOIN sale_sale_order AS SaleOrder ON (SaleOrder.client_partner = Partner.id)
+LEFT JOIN base_partner AS ContactPartner ON (ContactPartner.id = SaleOrder.contact_partner)
+INNER JOIN auth_user AS AuthUser ON (AuthUser.id = Partner.user_id)
+LEFT JOIN base_currency AS Currency ON (SaleOrder.currency = Currency.id)
+WHERE Partner.id = ? and SaleOrder.company = AuthUser.active_company
 ORDER BY SaleOrder.order_date desc
 ]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
@@ -1422,50 +1420,7 @@ ORDER BY SaleOrder.order_date desc
         </oda-data-set>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="EventDS" id="4263">
             <property name="nullsOrdering">nulls lowest</property>
-            <list-property name="columnHints">
-                <structure>
-                    <property name="columnName">id</property>
-                    <property name="analysis">measure</property>
-                    <text-property name="displayName">id</text-property>
-                    <text-property name="heading">id</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">created_on</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">created_on</text-property>
-                    <text-property name="heading">created_on</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">end_date_time</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">end_date_time</text-property>
-                    <text-property name="heading">end_date_time</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">start_date_time</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">start_date_time</text-property>
-                    <text-property name="heading">start_date_time</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">full_name</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">full_name</text-property>
-                    <text-property name="heading">full_name</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">type_select</property>
-                    <property name="analysis">measure</property>
-                    <text-property name="displayName">type_select</text-property>
-                    <text-property name="heading">type_select</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">status_select</property>
-                    <property name="analysis">measure</property>
-                    <text-property name="displayName">status_select</text-property>
-                    <text-property name="heading">status_select</text-property>
-                </structure>
-            </list-property>
+            <list-property name="columnHints"/>
             <list-property name="parameters">
                 <structure>
                     <property name="name">param_1</property>
@@ -1474,124 +1429,28 @@ ORDER BY SaleOrder.order_date desc
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">-5</property>
                     <property name="position">1</property>
+                    <property name="isOptional">false</property>
                     <property name="isInput">true</property>
                     <property name="isOutput">false</property>
-                </structure>
-                <structure>
-                    <property name="name">param_2</property>
-                    <property name="nativeName"></property>
-                    <property name="dataType">integer</property>
-                    <property name="nativeDataType">4</property>
-                    <property name="position">2</property>
-                    <property name="isInput">true</property>
                 </structure>
                 <structure>
                     <property name="name">param_3</property>
                     <property name="nativeName"></property>
                     <property name="dataType">integer</property>
                     <property name="nativeDataType">4</property>
-                    <property name="position">3</property>
+                    <property name="position">2</property>
+                    <property name="isOptional">false</property>
                     <property name="isInput">true</property>
                 </structure>
             </list-property>
-            <structure name="cachedMetaData">
-                <list-property name="resultSet">
-                    <structure>
-                        <property name="position">1</property>
-                        <property name="name">id</property>
-                        <property name="dataType">decimal</property>
-                    </structure>
-                    <structure>
-                        <property name="position">2</property>
-                        <property name="name">created_on</property>
-                        <property name="dataType">date-time</property>
-                    </structure>
-                    <structure>
-                        <property name="position">3</property>
-                        <property name="name">end_date_time</property>
-                        <property name="dataType">date-time</property>
-                    </structure>
-                    <structure>
-                        <property name="position">4</property>
-                        <property name="name">start_date_time</property>
-                        <property name="dataType">date-time</property>
-                    </structure>
-                    <structure>
-                        <property name="position">5</property>
-                        <property name="name">full_name</property>
-                        <property name="dataType">string</property>
-                    </structure>
-                    <structure>
-                        <property name="position">6</property>
-                        <property name="name">type_select</property>
-                        <property name="dataType">integer</property>
-                    </structure>
-                    <structure>
-                        <property name="position">7</property>
-                        <property name="name">status_select</property>
-                        <property name="dataType">integer</property>
-                    </structure>
-                </list-property>
-            </structure>
+            <structure name="cachedMetaData"/>
             <property name="dataSource">Data Source</property>
-            <list-property name="resultSet">
-                <structure>
-                    <property name="position">1</property>
-                    <property name="name">id</property>
-                    <property name="nativeName">id</property>
-                    <property name="dataType">decimal</property>
-                    <property name="nativeDataType">-5</property>
-                </structure>
-                <structure>
-                    <property name="position">2</property>
-                    <property name="name">created_on</property>
-                    <property name="nativeName">created_on</property>
-                    <property name="dataType">date-time</property>
-                    <property name="nativeDataType">93</property>
-                </structure>
-                <structure>
-                    <property name="position">3</property>
-                    <property name="name">end_date_time</property>
-                    <property name="nativeName">end_date_time</property>
-                    <property name="dataType">date-time</property>
-                    <property name="nativeDataType">93</property>
-                </structure>
-                <structure>
-                    <property name="position">4</property>
-                    <property name="name">start_date_time</property>
-                    <property name="nativeName">start_date_time</property>
-                    <property name="dataType">date-time</property>
-                    <property name="nativeDataType">93</property>
-                </structure>
-                <structure>
-                    <property name="position">5</property>
-                    <property name="name">full_name</property>
-                    <property name="nativeName">full_name</property>
-                    <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
-                </structure>
-                <structure>
-                    <property name="position">6</property>
-                    <property name="name">type_select</property>
-                    <property name="nativeName">type_select</property>
-                    <property name="dataType">integer</property>
-                    <property name="nativeDataType">4</property>
-                </structure>
-                <structure>
-                    <property name="position">7</property>
-                    <property name="name">status_select</property>
-                    <property name="nativeName">status_select</property>
-                    <property name="dataType">integer</property>
-                    <property name="nativeDataType">4</property>
-                </structure>
-            </list-property>
-            <xml-property name="queryText"><![CDATA[select Event.id, Event.created_on, Event.end_date_time, Event.start_date_time, AuthUser.full_name, Event.type_select, 
-Event.status_select
+            <list-property name="resultSet"/>
+            <xml-property name="queryText"><![CDATA[select Event.id, Event.created_on, Event.end_date_time, Event.start_date_time, AuthUser.full_name, Event.type_select
 from base_partner as Partner
 inner join crm_event as Event on(Event.client_partner = Partner.id)
 left join auth_user as AuthUser on (AuthUser.id = Event.user_id)
 where Partner.id = ?
-AND Event.status_select = ? 
 AND Event.type_select = ?
 ORDER BY Event.created_on desc]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
@@ -1611,6 +1470,9 @@ ORDER BY Event.created_on desc]]></xml-property>
           <design:scale>0</design:scale>
           <design:nullability>Unknown</design:nullability>
         </design:attributes>
+        <design:inputAttributes>
+          <design:elementAttributes/>
+        </design:inputAttributes>
       </design:ParameterDefinition>
     </parameter>
     <parameter>
@@ -1626,6 +1488,9 @@ ORDER BY Event.created_on desc]]></xml-property>
           <design:scale>0</design:scale>
           <design:nullability>Unknown</design:nullability>
         </design:attributes>
+        <design:inputAttributes>
+          <design:elementAttributes/>
+        </design:inputAttributes>
       </design:ParameterDefinition>
     </parameter>
     <parameter>
@@ -1641,6 +1506,9 @@ ORDER BY Event.created_on desc]]></xml-property>
           <design:scale>0</design:scale>
           <design:nullability>Unknown</design:nullability>
         </design:attributes>
+        <design:inputAttributes>
+          <design:elementAttributes/>
+        </design:inputAttributes>
       </design:ParameterDefinition>
     </parameter>
   </DataSetParameters>
@@ -1698,10 +1566,10 @@ ORDER BY Event.created_on desc]]></xml-property>
                     <text-property name="heading">tax_total</text-property>
                 </structure>
                 <structure>
-                    <property name="columnName">in_tax_total_remaining</property>
+                    <property name="columnName">company_in_tax_total_remaining</property>
                     <property name="analysis">measure</property>
-                    <text-property name="displayName">in_tax_total_remaining</text-property>
-                    <text-property name="heading">in_tax_total_remaining</text-property>
+                    <text-property name="displayName">company_in_tax_total_remaining</text-property>
+                    <text-property name="heading">company_in_tax_total_remaining</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">due_date</property>
@@ -1773,7 +1641,7 @@ ORDER BY Event.created_on desc]]></xml-property>
                     </structure>
                     <structure>
                         <property name="position">9</property>
-                        <property name="name">in_tax_total_remaining</property>
+                        <property name="name">company_in_tax_total_remaining</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
@@ -1848,8 +1716,8 @@ ORDER BY Event.created_on desc]]></xml-property>
                 </structure>
                 <structure>
                     <property name="position">9</property>
-                    <property name="name">in_tax_total_remaining</property>
-                    <property name="nativeName">in_tax_total_remaining</property>
+                    <property name="name">company_in_tax_total_remaining</property>
+                    <property name="nativeName">company_in_tax_total_remaining</property>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">2</property>
                 </structure>
@@ -1870,8 +1738,8 @@ ORDER BY Event.created_on desc]]></xml-property>
             </list-property>
             <xml-property name="queryText"><![CDATA[select 
 Invoice.id, Invoice.invoice_date, Invoice.invoice_id, Invoice.internal_reference, Invoice.external_reference,
-Invoice.ex_tax_total, Invoice.in_tax_total, Invoice.tax_total, Invoice.in_tax_total_remaining,
-Invoice.due_date, Currency.symbol as Currency
+Invoice.ex_tax_total, Invoice.in_tax_total, Invoice.tax_total, Invoice.company_in_tax_total_remaining,
+Invoice.due_date, Currency.symbol as currency
 
 from base_partner as Partner
 inner join account_invoice as Invoice on (Invoice.partner = Partner.id)
@@ -2140,7 +2008,7 @@ where Partner.id = ?]]></xml-property>
                             <structure>
                                 <property name="name">key</property>
                                 <text-property name="displayName">key</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                 <property name="dataType">string</property>
                             </structure>
                             <structure>
@@ -2177,7 +2045,7 @@ where Partner.id = ?]]></xml-property>
                             <structure>
                                 <property name="name">key</property>
                                 <text-property name="displayName">key</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                 <property name="dataType">string</property>
                             </structure>
                             <structure>
@@ -2215,7 +2083,7 @@ where Partner.id = ?]]></xml-property>
                             <structure>
                                 <property name="name">key</property>
                                 <text-property name="displayName">key</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                 <property name="dataType">string</property>
                             </structure>
                             <structure>
@@ -2345,7 +2213,7 @@ row["partner_first_name"]
                             <structure>
                                 <property name="name">key</property>
                                 <text-property name="displayName">key</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                 <property name="dataType">string</property>
                             </structure>
                             <structure>
@@ -2363,9 +2231,8 @@ row["partner_first_name"]
                     <property name="colSpan">4</property>
                     <property name="rowSpan">1</property>
                     <property name="backgroundColor">#FFFFFF</property>
-                    <data id="4098">
-                        <property name="marginTop">2pt</property>
-                        <property name="resultSetColumn">Column Binding</property>
+                    <data id="4486">
+                        <property name="resultSetColumn">invoicing_full_name</property>
                     </data>
                 </cell>
             </row>
@@ -2389,7 +2256,7 @@ row["partner_first_name"]
                             <structure>
                                 <property name="name">key</property>
                                 <text-property name="displayName">key</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                 <property name="dataType">string</property>
                             </structure>
                             <structure>
@@ -2437,7 +2304,7 @@ row["partner_first_name"]
                             <structure>
                                 <property name="name">key</property>
                                 <text-property name="displayName">key</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                 <property name="dataType">string</property>
                             </structure>
                             <structure>
@@ -2485,7 +2352,7 @@ row["mobile_phone"]
                             <structure>
                                 <property name="name">key</property>
                                 <text-property name="displayName">key</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                 <property name="dataType">string</property>
                             </structure>
                             <structure>
@@ -2534,7 +2401,7 @@ row["mobile_phone"]
                             <structure>
                                 <property name="name">key</property>
                                 <text-property name="displayName">key</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                 <property name="dataType">string</property>
                             </structure>
                             <structure>
@@ -2710,7 +2577,7 @@ row["fax"]
                                 <structure>
                                     <property name="name">key</property>
                                     <text-property name="displayName">key</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                    <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                     <property name="dataType">string</property>
                                 </structure>
                                 <structure>
@@ -2771,7 +2638,7 @@ row["fax"]
                                 <structure>
                                     <property name="name">key</property>
                                     <text-property name="displayName">key</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                    <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                     <property name="dataType">string</property>
                                 </structure>
                                 <structure>
@@ -2830,7 +2697,7 @@ row["fax"]
                                 <structure>
                                     <property name="name">key</property>
                                     <text-property name="displayName">key</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                    <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                     <property name="dataType">string</property>
                                 </structure>
                                 <structure>
@@ -2889,7 +2756,7 @@ row["fax"]
                                 <structure>
                                     <property name="name">key</property>
                                     <text-property name="displayName">key</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                    <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                     <property name="dataType">string</property>
                                 </structure>
                                 <structure>
@@ -2948,7 +2815,7 @@ row["fax"]
                                 <structure>
                                     <property name="name">key</property>
                                     <text-property name="displayName">key</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                    <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                     <property name="dataType">string</property>
                                 </structure>
                                 <structure>
@@ -3007,7 +2874,7 @@ row["fax"]
                                 <structure>
                                     <property name="name">key</property>
                                     <text-property name="displayName">key</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                    <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                     <property name="dataType">string</property>
                                 </structure>
                                 <structure>
@@ -3063,7 +2930,7 @@ row["fax"]
                                 <structure>
                                     <property name="name">key</property>
                                     <text-property name="displayName">key</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                    <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                     <property name="dataType">string</property>
                                 </structure>
                                 <structure>
@@ -3292,7 +3159,7 @@ row["first_name"]
                             <structure>
                                 <property name="name">key</property>
                                 <text-property name="displayName">key</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                 <property name="dataType">string</property>
                             </structure>
                             <structure>
@@ -3339,7 +3206,7 @@ row["first_name"]
                             <structure>
                                 <property name="name">key</property>
                                 <text-property name="displayName">key</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                 <property name="dataType">string</property>
                             </structure>
                             <structure>
@@ -3369,12 +3236,6 @@ row["first_name"]
                         <property name="marginTop">2pt</property>
                         <property name="dataSet">EventDS</property>
                         <list-property name="paramBindings">
-                            <structure>
-                                <property name="paramName">param_2</property>
-                                <simple-property-list name="expression">
-                                    <value type="javascript">2</value>
-                                </simple-property-list>
-                            </structure>
                             <structure>
                                 <property name="paramName">param_3</property>
                                 <simple-property-list name="expression">
@@ -3419,12 +3280,6 @@ row["first_name"]
                                 <expression name="expression" type="javascript">dataSetRow["type_select"]</expression>
                                 <property name="dataType">integer</property>
                             </structure>
-                            <structure>
-                                <property name="name">status_select</property>
-                                <text-property name="displayName">status_select</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["status_select"]</expression>
-                                <property name="dataType">integer</property>
-                            </structure>
                         </list-property>
                         <structure name="toc"/>
                         <property name="contentType">html</property>
@@ -3460,7 +3315,7 @@ row["first_name"]
                             <structure>
                                 <property name="name">key</property>
                                 <text-property name="displayName">key</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                 <property name="dataType">string</property>
                             </structure>
                             <structure>
@@ -3490,12 +3345,6 @@ row["first_name"]
                         <property name="marginTop">2pt</property>
                         <property name="dataSet">EventDS</property>
                         <list-property name="paramBindings">
-                            <structure>
-                                <property name="paramName">param_2</property>
-                                <simple-property-list name="expression">
-                                    <value type="javascript">2</value>
-                                </simple-property-list>
-                            </structure>
                             <structure>
                                 <property name="paramName">param_3</property>
                                 <simple-property-list name="expression">
@@ -3540,12 +3389,6 @@ row["first_name"]
                                 <expression name="expression" type="javascript">dataSetRow["type_select"]</expression>
                                 <property name="dataType">integer</property>
                             </structure>
-                            <structure>
-                                <property name="name">status_select</property>
-                                <text-property name="displayName">status_select</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["status_select"]</expression>
-                                <property name="dataType">integer</property>
-                            </structure>
                         </list-property>
                         <structure name="toc"/>
                         <property name="contentType">html</property>
@@ -3581,7 +3424,7 @@ row["first_name"]
                             <structure>
                                 <property name="name">key</property>
                                 <text-property name="displayName">key</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                 <property name="dataType">string</property>
                             </structure>
                             <structure>
@@ -3624,9 +3467,9 @@ row["first_name"]
                                 <property name="dataType">date</property>
                             </structure>
                             <structure>
-                                <property name="name">validation_date</property>
-                                <text-property name="displayName">validation_date</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["validation_date"]</expression>
+                                <property name="name">confirmation_date</property>
+                                <text-property name="displayName">confirmation_date</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["confirmation_date"]</expression>
                                 <property name="dataType">date</property>
                             </structure>
                             <structure>
@@ -3645,7 +3488,7 @@ row["first_name"]
                                 <property name="name">title_select</property>
                                 <text-property name="displayName">title_select</text-property>
                                 <expression name="expression" type="javascript">dataSetRow["title_select"]</expression>
-                                <property name="dataType">string</property>
+                                <property name="dataType">integer</property>
                             </structure>
                             <structure>
                                 <property name="name">name</property>
@@ -3666,15 +3509,15 @@ row["first_name"]
                                 <property name="dataType">decimal</property>
                             </structure>
                             <structure>
-                                <property name="name">in_tax_total</property>
-                                <text-property name="displayName">in_tax_total</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["in_tax_total"]</expression>
+                                <property name="name">tax_total</property>
+                                <text-property name="displayName">tax_total</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["tax_total"]</expression>
                                 <property name="dataType">decimal</property>
                             </structure>
                             <structure>
-                                <property name="name">amount_remaining_to_be_invoiced</property>
-                                <text-property name="displayName">amount_remaining_to_be_invoiced</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["amount_remaining_to_be_invoiced"]</expression>
+                                <property name="name">in_tax_total</property>
+                                <text-property name="displayName">in_tax_total</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["in_tax_total"]</expression>
                                 <property name="dataType">decimal</property>
                             </structure>
                             <structure>
@@ -3690,15 +3533,9 @@ row["first_name"]
                                 <property name="dataType">date</property>
                             </structure>
                             <structure>
-                                <property name="name">tax_total</property>
-                                <text-property name="displayName">tax_total</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["tax_total"]</expression>
-                                <property name="dataType">decimal</property>
-                            </structure>
-                            <structure>
-                                <property name="name">currency</property>
-                                <text-property name="displayName">currency</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["currency"]</expression>
+                                <property name="name">Currency</property>
+                                <text-property name="displayName">Currency</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["Currency"]</expression>
                                 <property name="dataType">string</property>
                             </structure>
                             <structure>
@@ -3746,7 +3583,7 @@ row["first_name"]
                             <structure>
                                 <property name="name">key</property>
                                 <text-property name="displayName">key</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                 <property name="dataType">string</property>
                             </structure>
                             <structure>
@@ -3776,12 +3613,6 @@ row["first_name"]
                         <property name="marginTop">2pt</property>
                         <property name="dataSet">EventDS</property>
                         <list-property name="paramBindings">
-                            <structure>
-                                <property name="paramName">param_2</property>
-                                <simple-property-list name="expression">
-                                    <value type="javascript">2</value>
-                                </simple-property-list>
-                            </structure>
                             <structure>
                                 <property name="paramName">param_3</property>
                                 <simple-property-list name="expression">
@@ -3826,12 +3657,6 @@ row["first_name"]
                                 <expression name="expression" type="javascript">dataSetRow["type_select"]</expression>
                                 <property name="dataType">integer</property>
                             </structure>
-                            <structure>
-                                <property name="name">status_select</property>
-                                <text-property name="displayName">status_select</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["status_select"]</expression>
-                                <property name="dataType">integer</property>
-                            </structure>
                         </list-property>
                         <property name="contentType">html</property>
                         <text-property name="content"><![CDATA[<VALUE-OF>row["full_name"]</VALUE-OF>]]></text-property>
@@ -3866,7 +3691,7 @@ row["first_name"]
                             <structure>
                                 <property name="name">key</property>
                                 <text-property name="displayName">key</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                 <property name="dataType">string</property>
                             </structure>
                             <structure>
@@ -3896,12 +3721,6 @@ row["first_name"]
                         <property name="marginTop">2pt</property>
                         <property name="dataSet">EventDS</property>
                         <list-property name="paramBindings">
-                            <structure>
-                                <property name="paramName">param_2</property>
-                                <simple-property-list name="expression">
-                                    <value type="javascript">2</value>
-                                </simple-property-list>
-                            </structure>
                             <structure>
                                 <property name="paramName">param_3</property>
                                 <simple-property-list name="expression">
@@ -3946,12 +3765,6 @@ row["first_name"]
                                 <expression name="expression" type="javascript">dataSetRow["type_select"]</expression>
                                 <property name="dataType">integer</property>
                             </structure>
-                            <structure>
-                                <property name="name">status_select</property>
-                                <text-property name="displayName">status_select</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["status_select"]</expression>
-                                <property name="dataType">integer</property>
-                            </structure>
                         </list-property>
                         <property name="contentType">html</property>
                         <text-property name="content"><![CDATA[<VALUE-OF>row["full_name"]</VALUE-OF>]]></text-property>
@@ -3986,7 +3799,7 @@ row["first_name"]
                             <structure>
                                 <property name="name">key</property>
                                 <text-property name="displayName">key</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                 <property name="dataType">string</property>
                             </structure>
                             <structure>
@@ -4029,9 +3842,9 @@ row["first_name"]
                                 <property name="dataType">date</property>
                             </structure>
                             <structure>
-                                <property name="name">validation_date</property>
-                                <text-property name="displayName">validation_date</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["validation_date"]</expression>
+                                <property name="name">confirmation_date</property>
+                                <text-property name="displayName">confirmation_date</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["confirmation_date"]</expression>
                                 <property name="dataType">date</property>
                             </structure>
                             <structure>
@@ -4077,12 +3890,6 @@ row["first_name"]
                                 <property name="dataType">decimal</property>
                             </structure>
                             <structure>
-                                <property name="name">amount_remaining_to_be_invoiced</property>
-                                <text-property name="displayName">amount_remaining_to_be_invoiced</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["amount_remaining_to_be_invoiced"]</expression>
-                                <property name="dataType">decimal</property>
-                            </structure>
-                            <structure>
                                 <property name="name">status_select</property>
                                 <text-property name="displayName">status_select</text-property>
                                 <expression name="expression" type="javascript">dataSetRow["status_select"]</expression>
@@ -4107,9 +3914,15 @@ row["first_name"]
                                 <property name="dataType">decimal</property>
                             </structure>
                             <structure>
-                                <property name="name">currency</property>
-                                <text-property name="displayName">currency</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["currency"]</expression>
+                                <property name="name">title_select_1</property>
+                                <text-property name="displayName">title_select</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["title_select"]</expression>
+                                <property name="dataType">integer</property>
+                            </structure>
+                            <structure>
+                                <property name="name">Currency</property>
+                                <text-property name="displayName">Currency</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["Currency"]</expression>
                                 <property name="dataType">string</property>
                             </structure>
                         </list-property>
@@ -4151,7 +3964,7 @@ row["first_name"]
                             <structure>
                                 <property name="name">key</property>
                                 <text-property name="displayName">key</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                 <property name="dataType">string</property>
                             </structure>
                             <structure>
@@ -4181,12 +3994,6 @@ row["first_name"]
                         <property name="marginTop">2pt</property>
                         <property name="dataSet">EventDS</property>
                         <list-property name="paramBindings">
-                            <structure>
-                                <property name="paramName">param_2</property>
-                                <simple-property-list name="expression">
-                                    <value type="javascript">1</value>
-                                </simple-property-list>
-                            </structure>
                             <structure>
                                 <property name="paramName">param_3</property>
                                 <simple-property-list name="expression">
@@ -4231,12 +4038,6 @@ row["first_name"]
                                 <expression name="expression" type="javascript">dataSetRow["type_select"]</expression>
                                 <property name="dataType">integer</property>
                             </structure>
-                            <structure>
-                                <property name="name">status_select</property>
-                                <text-property name="displayName">status_select</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["status_select"]</expression>
-                                <property name="dataType">integer</property>
-                            </structure>
                         </list-property>
                         <structure name="toc"/>
                         <property name="contentType">html</property>
@@ -4272,7 +4073,7 @@ row["first_name"]
                             <structure>
                                 <property name="name">key</property>
                                 <text-property name="displayName">key</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                 <property name="dataType">string</property>
                             </structure>
                             <structure>
@@ -4302,12 +4103,6 @@ row["first_name"]
                         <property name="marginTop">2pt</property>
                         <property name="dataSet">EventDS</property>
                         <list-property name="paramBindings">
-                            <structure>
-                                <property name="paramName">param_2</property>
-                                <simple-property-list name="expression">
-                                    <value type="javascript">1</value>
-                                </simple-property-list>
-                            </structure>
                             <structure>
                                 <property name="paramName">param_3</property>
                                 <simple-property-list name="expression">
@@ -4352,12 +4147,6 @@ row["first_name"]
                                 <expression name="expression" type="javascript">dataSetRow["type_select"]</expression>
                                 <property name="dataType">integer</property>
                             </structure>
-                            <structure>
-                                <property name="name">status_select</property>
-                                <text-property name="displayName">status_select</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["status_select"]</expression>
-                                <property name="dataType">integer</property>
-                            </structure>
                         </list-property>
                         <structure name="toc"/>
                         <property name="contentType">html</property>
@@ -4393,7 +4182,7 @@ row["first_name"]
                             <structure>
                                 <property name="name">key</property>
                                 <text-property name="displayName">key</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                 <property name="dataType">string</property>
                             </structure>
                             <structure>
@@ -4435,9 +4224,9 @@ row["first_name"]
                                 <property name="dataType">date</property>
                             </structure>
                             <structure>
-                                <property name="name">validation_date</property>
-                                <text-property name="displayName">validation_date</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["validation_date"]</expression>
+                                <property name="name">confirmation_date</property>
+                                <text-property name="displayName">confirmation_date</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["confirmation_date"]</expression>
                                 <property name="dataType">date</property>
                             </structure>
                             <structure>
@@ -4483,12 +4272,6 @@ row["first_name"]
                                 <property name="dataType">decimal</property>
                             </structure>
                             <structure>
-                                <property name="name">amount_remaining_to_be_invoiced</property>
-                                <text-property name="displayName">amount_remaining_to_be_invoiced</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["amount_remaining_to_be_invoiced"]</expression>
-                                <property name="dataType">decimal</property>
-                            </structure>
-                            <structure>
                                 <property name="name">status_select</property>
                                 <text-property name="displayName">status_select</text-property>
                                 <expression name="expression" type="javascript">dataSetRow["status_select"]</expression>
@@ -4524,12 +4307,6 @@ row["first_name"]
                                 <text-property name="displayName">tax_total</text-property>
                                 <expression name="expression" type="javascript">dataSetRow["tax_total"]</expression>
                                 <property name="dataType">decimal</property>
-                            </structure>
-                            <structure>
-                                <property name="name">currency</property>
-                                <text-property name="displayName">currency</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["currency"]</expression>
-                                <property name="dataType">string</property>
                             </structure>
                         </list-property>
                         <list-property name="filter">
@@ -4608,7 +4385,7 @@ row["first_name"]
                             <structure>
                                 <property name="name">key</property>
                                 <text-property name="displayName">key</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                 <property name="dataType">string</property>
                             </structure>
                             <structure>
@@ -4638,12 +4415,6 @@ row["first_name"]
                         <property name="marginTop">2pt</property>
                         <property name="dataSet">EventDS</property>
                         <list-property name="paramBindings">
-                            <structure>
-                                <property name="paramName">param_2</property>
-                                <simple-property-list name="expression">
-                                    <value type="javascript">1</value>
-                                </simple-property-list>
-                            </structure>
                             <structure>
                                 <property name="paramName">param_3</property>
                                 <simple-property-list name="expression">
@@ -4688,12 +4459,6 @@ row["first_name"]
                                 <expression name="expression" type="javascript">dataSetRow["type_select"]</expression>
                                 <property name="dataType">integer</property>
                             </structure>
-                            <structure>
-                                <property name="name">status_select</property>
-                                <text-property name="displayName">status_select</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["status_select"]</expression>
-                                <property name="dataType">integer</property>
-                            </structure>
                         </list-property>
                         <structure name="toc"/>
                         <property name="contentType">html</property>
@@ -4729,7 +4494,7 @@ row["first_name"]
                             <structure>
                                 <property name="name">key</property>
                                 <text-property name="displayName">key</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                 <property name="dataType">string</property>
                             </structure>
                             <structure>
@@ -4795,12 +4560,6 @@ row["first_name"]
                                 <expression name="expression" type="javascript">dataSetRow["type_select"]</expression>
                                 <property name="dataType">integer</property>
                             </structure>
-                            <structure>
-                                <property name="name">status_select</property>
-                                <text-property name="displayName">status_select</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["status_select"]</expression>
-                                <property name="dataType">integer</property>
-                            </structure>
                         </list-property>
                         <structure name="toc"/>
                         <property name="contentType">html</property>
@@ -4836,7 +4595,7 @@ row["first_name"]
                             <structure>
                                 <property name="name">key</property>
                                 <text-property name="displayName">key</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                 <property name="dataType">string</property>
                             </structure>
                             <structure>
@@ -4878,9 +4637,9 @@ row["first_name"]
                                 <property name="dataType">date</property>
                             </structure>
                             <structure>
-                                <property name="name">validation_date</property>
-                                <text-property name="displayName">validation_date</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["validation_date"]</expression>
+                                <property name="name">confirmation_date</property>
+                                <text-property name="displayName">confirmation_date</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["confirmation_date"]</expression>
                                 <property name="dataType">date</property>
                             </structure>
                             <structure>
@@ -4923,12 +4682,6 @@ row["first_name"]
                                 <property name="name">in_tax_total</property>
                                 <text-property name="displayName">in_tax_total</text-property>
                                 <expression name="expression" type="javascript">dataSetRow["in_tax_total"]</expression>
-                                <property name="dataType">decimal</property>
-                            </structure>
-                            <structure>
-                                <property name="name">amount_remaining_to_be_invoiced</property>
-                                <text-property name="displayName">amount_remaining_to_be_invoiced</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["amount_remaining_to_be_invoiced"]</expression>
                                 <property name="dataType">decimal</property>
                             </structure>
                             <structure>
@@ -4995,9 +4748,15 @@ row["first_name"]
                                 <property name="dataType">decimal</property>
                             </structure>
                             <structure>
-                                <property name="name">currency</property>
-                                <text-property name="displayName">currency</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["currency"]</expression>
+                                <property name="name">title_select_1</property>
+                                <text-property name="displayName">title_select</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["title_select"]</expression>
+                                <property name="dataType">integer</property>
+                            </structure>
+                            <structure>
+                                <property name="name">Currency</property>
+                                <text-property name="displayName">Currency</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["Currency"]</expression>
                                 <property name="dataType">string</property>
                             </structure>
                         </list-property>
@@ -5058,9 +4817,9 @@ BirtMath.roundUp(BirtDateTime.diffDay(row["LatestSO"], row["OldestSO"])/(row["Co
                     <property name="dataType">date</property>
                 </structure>
                 <structure>
-                    <property name="name">validation_date</property>
-                    <text-property name="displayName">validation_date</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["validation_date"]</expression>
+                    <property name="name">confirmation_date</property>
+                    <text-property name="displayName">confirmation_date</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["confirmation_date"]</expression>
                     <property name="dataType">date</property>
                 </structure>
                 <structure>
@@ -5100,12 +4859,6 @@ BirtMath.roundUp(BirtDateTime.diffDay(row["LatestSO"], row["OldestSO"])/(row["Co
                     <property name="dataType">decimal</property>
                 </structure>
                 <structure>
-                    <property name="name">amount_remaining_to_be_invoiced</property>
-                    <text-property name="displayName">amount_remaining_to_be_invoiced</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["amount_remaining_to_be_invoiced"]</expression>
-                    <property name="dataType">decimal</property>
-                </structure>
-                <structure>
                     <property name="name">status_select</property>
                     <text-property name="displayName">status_select</text-property>
                     <expression name="expression" type="javascript">dataSetRow["status_select"]</expression>
@@ -5136,12 +4889,6 @@ BirtMath.roundUp(BirtDateTime.diffDay(row["LatestSO"], row["OldestSO"])/(row["Co
                     <property name="dataType">date</property>
                 </structure>
                 <structure>
-                    <property name="name">currency</property>
-                    <text-property name="displayName">currency</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["currency"]</expression>
-                    <property name="dataType">string</property>
-                </structure>
-                <structure>
                     <property name="name">AvgOfSO</property>
                     <text-property name="displayName">AvgOfSO</text-property>
                     <expression name="expression" type="javascript">dataSetRow["AvgOfSO"]</expression>
@@ -5153,11 +4900,23 @@ BirtMath.roundUp(BirtDateTime.diffDay(row["LatestSO"], row["OldestSO"])/(row["Co
                     <expression name="expression" type="javascript">dataSetRow["tax_total"]</expression>
                     <property name="dataType">decimal</property>
                 </structure>
+                <structure>
+                    <property name="name">title_select_1</property>
+                    <text-property name="displayName">title_select</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["title_select"]</expression>
+                    <property name="dataType">integer</property>
+                </structure>
+                <structure>
+                    <property name="name">Currency</property>
+                    <text-property name="displayName">Currency</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["Currency"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
             </list-property>
             <list-property name="sort">
                 <structure>
                     <expression name="key" type="javascript">if(row["status_select"] == "3"){
-row["validation_date"]
+row["confirmation_date"]
 }else{
 row["creation_date"]
 }</expression>
@@ -5218,7 +4977,7 @@ row["creation_date"]
                                 <structure>
                                     <property name="name">key</property>
                                     <text-property name="displayName">key</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                    <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                     <property name="dataType">string</property>
                                 </structure>
                                 <structure>
@@ -5277,7 +5036,7 @@ row["creation_date"]
                                 <structure>
                                     <property name="name">key</property>
                                     <text-property name="displayName">key</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                    <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                     <property name="dataType">string</property>
                                 </structure>
                                 <structure>
@@ -5336,7 +5095,7 @@ row["creation_date"]
                                 <structure>
                                     <property name="name">key</property>
                                     <text-property name="displayName">key</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                    <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                     <property name="dataType">string</property>
                                 </structure>
                                 <structure>
@@ -5395,7 +5154,7 @@ row["creation_date"]
                                 <structure>
                                     <property name="name">key</property>
                                     <text-property name="displayName">key</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                    <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                     <property name="dataType">string</property>
                                 </structure>
                                 <structure>
@@ -5454,7 +5213,7 @@ row["creation_date"]
                                 <structure>
                                     <property name="name">key</property>
                                     <text-property name="displayName">key</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                    <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                     <property name="dataType">string</property>
                                 </structure>
                                 <structure>
@@ -5513,7 +5272,7 @@ row["creation_date"]
                                 <structure>
                                     <property name="name">key</property>
                                     <text-property name="displayName">key</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                    <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                     <property name="dataType">string</property>
                                 </structure>
                                 <structure>
@@ -5572,7 +5331,7 @@ row["creation_date"]
                                 <structure>
                                     <property name="name">key</property>
                                     <text-property name="displayName">key</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                    <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                     <property name="dataType">string</property>
                                 </structure>
                                 <structure>
@@ -5631,7 +5390,7 @@ row["creation_date"]
                                 <structure>
                                     <property name="name">key</property>
                                     <text-property name="displayName">key</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                    <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                     <property name="dataType">string</property>
                                 </structure>
                                 <structure>
@@ -5687,7 +5446,7 @@ row["creation_date"]
                                 <structure>
                                     <property name="name">key</property>
                                     <text-property name="displayName">key</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                    <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                     <property name="dataType">string</property>
                                 </structure>
                                 <structure>
@@ -5726,7 +5485,7 @@ row["creation_date"]
                             <property name="textAlign">center</property>
                             <property name="contentType">html</property>
                             <text-property name="content"><![CDATA[<VALUE-OF format="dd/MM/yyyy">if(row["status_select"] == "3"){
-row["validation_date"]
+row["confirmation_date"]
 }else{
 row["creation_date"]
 }</VALUE-OF>]]></text-property>
@@ -5851,7 +5610,7 @@ row["first_name"]
                             <property name="marginRight">1pt</property>
                             <property name="textAlign">right</property>
                             <property name="contentType">html</property>
-                            <text-property name="content"><![CDATA[<VALUE-OF format="###,##0.00">row["in_tax_total"]</VALUE-OF><VALUE-OF format="^">" "</VALUE-OF> <VALUE-OF>row["currency"]</VALUE-OF>]]></text-property>
+                            <text-property name="content"><![CDATA[<VALUE-OF format="###,##0.00">row["in_tax_total"]</VALUE-OF><VALUE-OF format="^">" "</VALUE-OF> <VALUE-OF>row["Currency"]</VALUE-OF>]]></text-property>
                         </text>
                     </cell>
                     <cell id="4193">
@@ -5868,14 +5627,6 @@ row["first_name"]
                         <property name="borderTopStyle">solid</property>
                         <property name="borderTopWidth">thin</property>
                         <property name="verticalAlign">middle</property>
-                        <text id="4205">
-                            <property name="fontSize">8pt</property>
-                            <property name="marginBottom">1pt</property>
-                            <property name="marginRight">1pt</property>
-                            <property name="textAlign">right</property>
-                            <property name="contentType">html</property>
-                            <text-property name="content"><![CDATA[<VALUE-OF format="###,##0.00">row["amount_remaining_to_be_invoiced"]</VALUE-OF><VALUE-OF format="^">" "</VALUE-OF> <VALUE-OF>row["currency"]</VALUE-OF>]]></text-property>
-                        </text>
                     </cell>
                     <cell id="4197">
                         <property name="borderBottomColor">#7F7F7F</property>
@@ -6095,7 +5846,7 @@ row["first_name"]
                             <structure>
                                 <property name="name">key</property>
                                 <text-property name="displayName">key</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                 <property name="dataType">string</property>
                             </structure>
                             <structure>
@@ -6138,7 +5889,7 @@ row["first_name"]
                             <structure>
                                 <property name="name">key</property>
                                 <text-property name="displayName">key</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                 <property name="dataType">string</property>
                             </structure>
                             <structure>
@@ -6191,7 +5942,7 @@ row["first_name"]
                             <structure>
                                 <property name="name">key</property>
                                 <text-property name="displayName">key</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                 <property name="dataType">string</property>
                             </structure>
                             <structure>
@@ -6244,7 +5995,7 @@ row["first_name"]
                             <structure>
                                 <property name="name">key</property>
                                 <text-property name="displayName">key</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                 <property name="dataType">string</property>
                             </structure>
                             <structure>
@@ -6330,22 +6081,10 @@ row["first_name"]
                     <property name="dataType">decimal</property>
                 </structure>
                 <structure>
-                    <property name="name">in_tax_total_remaining</property>
-                    <text-property name="displayName">in_tax_total_remaining</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["in_tax_total_remaining"]</expression>
-                    <property name="dataType">decimal</property>
-                </structure>
-                <structure>
                     <property name="name">due_date</property>
                     <text-property name="displayName">due_date</text-property>
                     <expression name="expression" type="javascript">dataSetRow["due_date"]</expression>
                     <property name="dataType">date</property>
-                </structure>
-                <structure>
-                    <property name="name">currency</property>
-                    <text-property name="displayName">currency</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["currency"]</expression>
-                    <property name="dataType">string</property>
                 </structure>
                 <structure>
                     <property name="name">CountInvoice</property>
@@ -6364,6 +6103,18 @@ row["first_name"]
                     <text-property name="displayName">tax_total</text-property>
                     <expression name="expression" type="javascript">dataSetRow["tax_total"]</expression>
                     <property name="dataType">decimal</property>
+                </structure>
+                <structure>
+                    <property name="name">company_in_tax_total_remaining</property>
+                    <text-property name="displayName">company_in_tax_total_remaining</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["company_in_tax_total_remaining"]</expression>
+                    <property name="dataType">decimal</property>
+                </structure>
+                <structure>
+                    <property name="name">currency</property>
+                    <text-property name="displayName">currency</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["currency"]</expression>
+                    <property name="dataType">string</property>
                 </structure>
             </list-property>
             <list-property name="sort">
@@ -6432,7 +6183,7 @@ row["first_name"]
                                 <structure>
                                     <property name="name">key</property>
                                     <text-property name="displayName">key</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                    <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                     <property name="dataType">string</property>
                                 </structure>
                                 <structure>
@@ -6491,7 +6242,7 @@ row["first_name"]
                                 <structure>
                                     <property name="name">key</property>
                                     <text-property name="displayName">key</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                    <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                     <property name="dataType">string</property>
                                 </structure>
                                 <structure>
@@ -6550,7 +6301,7 @@ row["first_name"]
                                 <structure>
                                     <property name="name">key</property>
                                     <text-property name="displayName">key</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                    <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                     <property name="dataType">string</property>
                                 </structure>
                                 <structure>
@@ -6609,7 +6360,7 @@ row["first_name"]
                                 <structure>
                                     <property name="name">key</property>
                                     <text-property name="displayName">key</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                    <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                     <property name="dataType">string</property>
                                 </structure>
                                 <structure>
@@ -6668,7 +6419,7 @@ row["first_name"]
                                 <structure>
                                     <property name="name">key</property>
                                     <text-property name="displayName">key</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                    <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                     <property name="dataType">string</property>
                                 </structure>
                                 <structure>
@@ -6727,7 +6478,7 @@ row["first_name"]
                                 <structure>
                                     <property name="name">key</property>
                                     <text-property name="displayName">key</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                    <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                     <property name="dataType">string</property>
                                 </structure>
                                 <structure>
@@ -6786,7 +6537,7 @@ row["first_name"]
                                 <structure>
                                     <property name="name">key</property>
                                     <text-property name="displayName">key</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                    <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                     <property name="dataType">string</property>
                                 </structure>
                                 <structure>
@@ -6845,7 +6596,7 @@ row["first_name"]
                                 <structure>
                                     <property name="name">key</property>
                                     <text-property name="displayName">key</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                    <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                     <property name="dataType">string</property>
                                 </structure>
                                 <structure>
@@ -6904,7 +6655,7 @@ row["first_name"]
                                 <structure>
                                     <property name="name">key</property>
                                     <text-property name="displayName">key</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                    <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                     <property name="dataType">string</property>
                                 </structure>
                                 <structure>
@@ -6960,7 +6711,7 @@ row["first_name"]
                                 <structure>
                                     <property name="name">key</property>
                                     <text-property name="displayName">key</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                    <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                     <property name="dataType">string</property>
                                 </structure>
                                 <structure>
@@ -7157,7 +6908,7 @@ row["first_name"]
                             <property name="marginRight">1pt</property>
                             <property name="textAlign">right</property>
                             <property name="contentType">html</property>
-                            <text-property name="content"><![CDATA[<VALUE-OF format="###,##0.00">row["in_tax_total_remaining"]</VALUE-OF><VALUE-OF format="^">" "</VALUE-OF> <VALUE-OF>row["currency"]</VALUE-OF>]]></text-property>
+                            <text-property name="content"><![CDATA[<VALUE-OF format="###,##0.00">row["company_in_tax_total_remaining"]</VALUE-OF><VALUE-OF format="^">" "</VALUE-OF> <VALUE-OF>row["currency"]</VALUE-OF>]]></text-property>
                         </text>
                     </cell>
                     <cell id="4432">

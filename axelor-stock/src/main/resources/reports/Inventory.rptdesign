@@ -17,6 +17,11 @@
             <property name="id">209</property>
             <expression name="value" type="javascript">params["Password"].value</expression>
         </structure>
+        <structure>
+            <property name="name">odaDriverClass</property>
+            <property name="id">209</property>
+            <expression name="value" type="javascript">params["DefaultDriver"].value</expression>
+        </structure>
     </list-property>
     <property name="units">in</property>
     <property name="iconFile">/templates/blank_report.gif</property>
@@ -27,13 +32,14 @@
         <scalar-parameter name="InventoryId" id="3265">
             <property name="valueType">static</property>
             <property name="isRequired">true</property>
-            <property name="dataType">decimal</property>
+            <property name="dataType">string</property>
             <property name="distinct">true</property>
             <simple-property-list name="defaultValue">
                 <value type="constant">1</value>
             </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
+            <property name="concealValue">false</property>
             <property name="controlType">text-box</property>
             <structure name="format">
                 <property name="category">Unformatted</property>
@@ -104,6 +110,17 @@
                 <property name="category">Unformatted</property>
             </structure>
         </scalar-parameter>
+        <scalar-parameter name="DefaultDriver" id="3897">
+            <property name="valueType">static</property>
+            <property name="dataType">string</property>
+            <property name="distinct">true</property>
+            <list-property name="selectionList"/>
+            <property name="paramType">simple</property>
+            <property name="controlType">text-box</property>
+            <structure name="format">
+                <property name="category">Unformatted</property>
+            </structure>
+        </scalar-parameter>
     </parameters>
     <data-sources>
         <oda-data-source extensionID="org.eclipse.birt.report.data.oda.jdbc" name="Data Source" id="209">
@@ -124,7 +141,7 @@
                 </ex-property>
             </list-property>
             <property name="odaDriverClass">org.postgresql.Driver</property>
-            <property name="odaURL">jdbc:postgresql://localhost:5432/abs</property>
+            <property name="odaURL">jdbc:postgresql://localhost:5432</property>
         </oda-data-source>
     </data-sources>
     <data-sets>
@@ -276,7 +293,7 @@ where Inventory.id = ?]]></xml-property>
                     <property name="paramName">InventoryId</property>
                     <property name="nativeName"></property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">-5</property>
+                    <property name="nativeDataType">-1</property>
                     <property name="position">1</property>
                     <property name="isInput">true</property>
                     <property name="isOutput">false</property>
@@ -297,12 +314,12 @@ where Inventory.id = ?]]></xml-property>
                     <structure>
                         <property name="position">3</property>
                         <property name="name">current_qty</property>
-                        <property name="dataType">integer</property>
+                        <property name="dataType">decimal</property>
                     </structure>
                     <structure>
                         <property name="position">4</property>
                         <property name="name">real_qty</property>
-                        <property name="dataType">integer</property>
+                        <property name="dataType">decimal</property>
                     </structure>
                     <structure>
                         <property name="position">5</property>
@@ -336,15 +353,15 @@ where Inventory.id = ?]]></xml-property>
                     <property name="position">3</property>
                     <property name="name">current_qty</property>
                     <property name="nativeName">current_qty</property>
-                    <property name="dataType">integer</property>
-                    <property name="nativeDataType">4</property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">3</property>
                 </structure>
                 <structure>
                     <property name="position">4</property>
                     <property name="name">real_qty</property>
                     <property name="nativeName">real_qty</property>
-                    <property name="dataType">integer</property>
-                    <property name="nativeDataType">4</property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">3</property>
                 </structure>
                 <structure>
                     <property name="position">5</property>
@@ -362,7 +379,7 @@ where Inventory.id = ?]]></xml-property>
                 </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[select Product.name as "productName", Product.code as "productCode", InventoryLine.current_qty,
-InventoryLine.real_qty, InventoryLine.description, Unit.code as "unit"
+InventoryLine.real_qty, InventoryLine.description, Unit.name as "unit"
 from stock_inventory_line as InventoryLine 
 inner join stock_inventory as Inventory on (InventoryLine.inventory = Inventory.id)
 left outer join base_product as Product on (InventoryLine.product = Product.id)
@@ -381,7 +398,7 @@ order by Product.name]]></xml-property>
             <design:name></design:name>
             <design:position>1</design:position>
           </design:identifier>
-          <design:nativeDataTypeCode>-5</design:nativeDataTypeCode>
+          <design:nativeDataTypeCode>-1</design:nativeDataTypeCode>
           <design:precision>0</design:precision>
           <design:scale>0</design:scale>
           <design:nullability>Unknown</design:nullability>
@@ -488,9 +505,9 @@ order by Product.name]]></xml-property>
                     <property name="nativeDataType">12</property>
                 </structure>
             </list-property>
-            <xml-property name="queryText"><![CDATA[select LangTranslate.key, LangTranslate.message as "translation" 
+            <xml-property name="queryText"><![CDATA[select LangTranslate.message_key, LangTranslate.message_value as "translation" 
 from meta_translation as LangTranslate 
-where LangTranslate.key = ? and LangTranslate.language = ?]]></xml-property>
+where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
   <Version>2.0</Version>
@@ -649,13 +666,13 @@ where LangTranslate.key = ? and LangTranslate.language = ?]]></xml-property>
                     <property name="name">current_qty</property>
                     <text-property name="displayName">current_qty</text-property>
                     <expression name="expression" type="javascript">dataSetRow["current_qty"]</expression>
-                    <property name="dataType">integer</property>
+                    <property name="dataType">decimal</property>
                 </structure>
                 <structure>
                     <property name="name">real_qty</property>
                     <text-property name="displayName">real_qty</text-property>
                     <expression name="expression" type="javascript">dataSetRow["real_qty"]</expression>
-                    <property name="dataType">integer</property>
+                    <property name="dataType">decimal</property>
                 </structure>
                 <structure>
                     <property name="name">description</property>
@@ -783,7 +800,7 @@ where LangTranslate.key = ? and LangTranslate.language = ?]]></xml-property>
                                 <structure>
                                     <property name="name">key</property>
                                     <text-property name="displayName">key</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                    <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                     <property name="dataType">string</property>
                                 </structure>
                                 <structure>
@@ -868,7 +885,7 @@ where LangTranslate.key = ? and LangTranslate.language = ?]]></xml-property>
                                 <structure>
                                     <property name="name">key</property>
                                     <text-property name="displayName">key</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                    <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                     <property name="dataType">string</property>
                                 </structure>
                                 <structure>
@@ -982,7 +999,7 @@ where LangTranslate.key = ? and LangTranslate.language = ?]]></xml-property>
                                 <structure>
                                     <property name="name">key</property>
                                     <text-property name="displayName">key</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                    <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                     <property name="dataType">string</property>
                                 </structure>
                                 <structure>
@@ -1116,7 +1133,7 @@ where LangTranslate.key = ? and LangTranslate.language = ?]]></xml-property>
                                 <structure>
                                     <property name="name">key</property>
                                     <text-property name="displayName">key</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                    <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                     <property name="dataType">string</property>
                                 </structure>
                                 <structure>
@@ -1250,7 +1267,7 @@ where LangTranslate.key = ? and LangTranslate.language = ?]]></xml-property>
                                 <structure>
                                     <property name="name">key</property>
                                     <text-property name="displayName">key</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                    <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                     <property name="dataType">string</property>
                                 </structure>
                                 <structure>
@@ -1282,7 +1299,7 @@ where LangTranslate.key = ? and LangTranslate.language = ?]]></xml-property>
                                 <structure>
                                     <property name="name">key</property>
                                     <text-property name="displayName">key</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                    <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                     <property name="dataType">string</property>
                                 </structure>
                                 <structure>
@@ -1329,7 +1346,7 @@ where LangTranslate.key = ? and LangTranslate.language = ?]]></xml-property>
                                 <structure>
                                     <property name="name">key</property>
                                     <text-property name="displayName">key</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                    <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                     <property name="dataType">string</property>
                                 </structure>
                                 <structure>
@@ -1374,7 +1391,7 @@ where LangTranslate.key = ? and LangTranslate.language = ?]]></xml-property>
                                 <structure>
                                     <property name="name">key</property>
                                     <text-property name="displayName">key</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                    <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                     <property name="dataType">string</property>
                                 </structure>
                                 <structure>
@@ -1419,7 +1436,7 @@ where LangTranslate.key = ? and LangTranslate.language = ?]]></xml-property>
                                 <structure>
                                     <property name="name">key</property>
                                     <text-property name="displayName">key</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                    <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                     <property name="dataType">string</property>
                                 </structure>
                                 <structure>

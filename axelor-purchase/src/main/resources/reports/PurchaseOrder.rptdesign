@@ -3,18 +3,6 @@
     <property name="createdBy">Eclipse BIRT Designer Version 4.4.2.v201410272105 Build &lt;4.4.2.v20150217-1805></property>
     <list-property name="propertyBindings">
         <structure>
-            <property name="name">queryText</property>
-            <property name="id">3694</property>
-        </structure>
-        <structure>
-            <property name="name">queryTimeOut</property>
-            <property name="id">3694</property>
-        </structure>
-        <structure>
-            <property name="name">rowFetchSize</property>
-            <property name="id">3694</property>
-        </structure>
-        <structure>
             <property name="name">odaURL</property>
             <property name="id">209</property>
             <expression name="value" type="javascript">params["DBName"].value</expression>
@@ -28,6 +16,11 @@
             <property name="name">odaPassword</property>
             <property name="id">209</property>
             <expression name="value" type="javascript">params["Password"].value</expression>
+        </structure>
+        <structure>
+            <property name="name">odaDriverClass</property>
+            <property name="id">209</property>
+            <expression name="value" type="javascript">params["DefaultDriver"].value</expression>
         </structure>
     </list-property>
     <property name="units">cm</property>
@@ -115,6 +108,17 @@
                 <property name="category">Unformatted</property>
             </structure>
         </scalar-parameter>
+        <scalar-parameter name="DefaultDriver" id="3819">
+            <property name="valueType">static</property>
+            <property name="dataType">string</property>
+            <property name="distinct">true</property>
+            <list-property name="selectionList"/>
+            <property name="paramType">simple</property>
+            <property name="controlType">text-box</property>
+            <structure name="format">
+                <property name="category">Unformatted</property>
+            </structure>
+        </scalar-parameter>
     </parameters>
     <data-sources>
         <oda-data-source extensionID="org.eclipse.birt.report.data.oda.jdbc" name="Data Source" id="209">
@@ -134,8 +138,8 @@
                     <value>ILYNN</value>
                 </ex-property>
             </list-property>
-            <property name="odaDriverClass">org.postgresql.Driver</property>
-            <property name="odaURL">jdbc:postgresql://localhost:5432/abs</property>
+            <property name="odaDriverClass">com.mysql.jdbc.Driver</property>
+            <property name="odaURL">jdbc:mysql://localhost:3306</property>
         </oda-data-source>
     </data-sources>
     <data-sets>
@@ -597,16 +601,16 @@ Address.addressl2, Address.addressl3, Address.addressl4, Address.addressl5, Addr
 Country.name as "countryName", PaymentMode.name as "PaymentMode", PaymentCond.name as "PaymentCond",
 PurchaseOrder.ex_tax_total, PurchaseOrder.in_tax_total, PurchaseOrder.tax_total, Currency.code as "CurrencyCode",
 DefBankDetail.iban, DefBankDetail.bic, Company.name as "CopmanyName", PurchaseOrder.notes
-from public.purchase_purchase_order as PurchaseOrder
-left outer join public.base_company as Company on (PurchaseOrder.company = Company.id)
-left outer join public.meta_file as MetaFile on (MetaFile.id = Company.logo)
-left outer join public.base_partner as Partner on (PurchaseOrder.supplier_partner = Partner.id)
-left outer join public.base_address as Address on (Partner.main_invoicing_address = Address.id)
-left outer join public.base_country as Country on (Address.addressl7country = Country.id)
-left outer join public.account_payment_condition as PaymentCond on (Partner.payment_condition = PaymentCond.id)
+from purchase_purchase_order as PurchaseOrder
+left outer join base_company as Company on (PurchaseOrder.company = Company.id)
+left outer join meta_file as MetaFile on (MetaFile.id = Company.logo)
+left outer join base_partner as Partner on (PurchaseOrder.supplier_partner = Partner.id)
+left outer join base_address as Address on (Partner.main_invoicing_address = Address.id)
+left outer join base_country as Country on (Address.addressl7country = Country.id)
+left outer join account_payment_condition as PaymentCond on (Partner.payment_condition = PaymentCond.id)
 left outer join base_currency as Currency on (PurchaseOrder.currency = Currency.id)
-left outer join public.base_bank_details as DefBankDetail on (Company.default_bank_details = DefBankDetail.id)
-left outer join public.account_payment_mode as PaymentMode on (Partner.payment_mode = PaymentMode.id)
+left outer join base_bank_details as DefBankDetail on (Company.default_bank_details = DefBankDetail.id)
+left outer join account_payment_mode as PaymentMode on (Partner.payment_mode = PaymentMode.id)
 
 ]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
@@ -776,7 +780,6 @@ left outer join public.account_payment_mode as PaymentMode on (Partner.payment_m
                 </structure>
                 <structure>
                     <property name="columnName">qty</property>
-                    <property name="analysis">measure</property>
                     <text-property name="displayName">qty</text-property>
                     <text-property name="heading">qty</text-property>
                 </structure>
@@ -788,19 +791,16 @@ left outer join public.account_payment_mode as PaymentMode on (Partner.payment_m
                 </structure>
                 <structure>
                     <property name="columnName">UnitPrice</property>
-                    <property name="analysis">measure</property>
                     <text-property name="displayName">UnitPrice</text-property>
                     <text-property name="heading">UnitPrice</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">ex_tax_total</property>
-                    <property name="analysis">measure</property>
                     <text-property name="displayName">ex_tax_total</text-property>
                     <text-property name="heading">ex_tax_total</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">TaxValue</property>
-                    <property name="analysis">measure</property>
                     <text-property name="displayName">TaxValue</text-property>
                     <text-property name="heading">TaxValue</text-property>
                 </structure>
@@ -890,7 +890,7 @@ left outer join public.account_payment_mode as PaymentMode on (Partner.payment_m
                     <property name="name">qty</property>
                     <property name="nativeName">qty</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">2</property>
+                    <property name="nativeDataType">3</property>
                 </structure>
                 <structure>
                     <property name="position">6</property>
@@ -904,31 +904,31 @@ left outer join public.account_payment_mode as PaymentMode on (Partner.payment_m
                     <property name="name">UnitPrice</property>
                     <property name="nativeName">UnitPrice</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">2</property>
+                    <property name="nativeDataType">3</property>
                 </structure>
                 <structure>
                     <property name="position">8</property>
                     <property name="name">ex_tax_total</property>
                     <property name="nativeName">ex_tax_total</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">2</property>
+                    <property name="nativeDataType">3</property>
                 </structure>
                 <structure>
                     <property name="position">9</property>
                     <property name="name">TaxValue</property>
                     <property name="nativeName">TaxValue</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">2</property>
+                    <property name="nativeDataType">3</property>
                 </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[select PurchaseOrder.id as purchase_id, PurchaseOrderLine.id as purchase_line_id, PurchaseOrderLine.product_name, PurchaseOrderLine.description, PurchaseOrderLine.qty,
-Unit.code as "UnitCode", PurchaseOrderLine.price as "UnitPrice", PurchaseOrderLine.ex_tax_total,
+Unit.name as "UnitCode", PurchaseOrderLine.price as "UnitPrice", PurchaseOrderLine.ex_tax_total,
 TaxLine.value as "TaxValue"
-from public.purchase_purchase_order_line as PurchaseOrderLine
-inner join public.purchase_purchase_order as PurchaseOrder on (PurchaseOrderLine.purchase_order = PurchaseOrder.id)
-left outer join public.base_product as Product on (PurchaseOrderLine.product = Product.id)
-left outer join public.base_unit as Unit on (PurchaseOrderLine.unit = Unit.id)
-left outer join public.account_tax_line as TaxLine on (PurchaseOrderLine.tax_line = TaxLine.id)]]></xml-property>
+from purchase_purchase_order_line as PurchaseOrderLine
+inner join purchase_purchase_order as PurchaseOrder on (PurchaseOrderLine.purchase_order = PurchaseOrder.id)
+left outer join base_product as Product on (PurchaseOrderLine.product = Product.id)
+left outer join base_unit as Unit on (PurchaseOrderLine.unit = Unit.id)
+left outer join account_tax_line as TaxLine on (PurchaseOrderLine.tax_line = TaxLine.id)]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
   <Version>2.0</Version>
@@ -1027,9 +1027,9 @@ left outer join public.account_tax_line as TaxLine on (PurchaseOrderLine.tax_lin
                     <property name="dataType">string</property>
                 </structure>
             </list-property>
-            <xml-property name="queryText"><![CDATA[select LangTranslate.key, LangTranslate.message as "translation" 
+            <xml-property name="queryText"><![CDATA[select LangTranslate.message_key, LangTranslate.message_value as "translation" 
 from meta_translation as LangTranslate 
-where LangTranslate.key = ? and LangTranslate.language = ?]]></xml-property>
+where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
   <Version>2.0</Version>
@@ -1152,9 +1152,9 @@ where LangTranslate.key = ? and LangTranslate.language = ?]]></xml-property>
                 </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[select POrder.id as purchase_id, TaxLine.value, POLineTax.ex_tax_base, POLineTax.tax_total
-from public.purchase_purchase_order_line_tax as POLineTax
-inner join public.purchase_purchase_order as POrder on (POLineTax.purchase_order = POrder.id)
-left outer join public.account_tax_line as TaxLine on (POLineTax.tax_line = TaxLine.id)]]></xml-property>
+from purchase_purchase_order_line_tax as POLineTax
+inner join purchase_purchase_order as POrder on (POLineTax.purchase_order = POrder.id)
+left outer join account_tax_line as TaxLine on (POLineTax.tax_line = TaxLine.id)]]></xml-property>
         </oda-data-set>
     </data-sets>
     <styles>
@@ -1433,7 +1433,7 @@ left outer join public.account_tax_line as TaxLine on (POLineTax.tax_line = TaxL
                                             <structure>
                                                 <property name="name">key</property>
                                                 <text-property name="displayName">key</text-property>
-                                                <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                                 <property name="dataType">string</property>
                                             </structure>
                                             <structure>
@@ -1482,7 +1482,7 @@ left outer join public.account_tax_line as TaxLine on (POLineTax.tax_line = TaxL
                                             <structure>
                                                 <property name="name">key</property>
                                                 <text-property name="displayName">key</text-property>
-                                                <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                                 <property name="dataType">string</property>
                                             </structure>
                                             <structure>
@@ -1533,7 +1533,7 @@ left outer join public.account_tax_line as TaxLine on (POLineTax.tax_line = TaxL
                                                         <structure>
                                                             <property name="name">key</property>
                                                             <text-property name="displayName">key</text-property>
-                                                            <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                                            <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                                             <property name="dataType">string</property>
                                                         </structure>
                                                         <structure>
@@ -1565,7 +1565,7 @@ left outer join public.account_tax_line as TaxLine on (POLineTax.tax_line = TaxL
                                                         <structure>
                                                             <property name="name">key</property>
                                                             <text-property name="displayName">key</text-property>
-                                                            <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                                            <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                                             <property name="dataType">string</property>
                                                         </structure>
                                                         <structure>
@@ -1605,7 +1605,7 @@ left outer join public.account_tax_line as TaxLine on (POLineTax.tax_line = TaxL
                                                         <structure>
                                                             <property name="name">key</property>
                                                             <text-property name="displayName">key</text-property>
-                                                            <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                                            <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                                             <property name="dataType">string</property>
                                                         </structure>
                                                         <structure>
@@ -1637,7 +1637,7 @@ left outer join public.account_tax_line as TaxLine on (POLineTax.tax_line = TaxL
                                                         <structure>
                                                             <property name="name">key</property>
                                                             <text-property name="displayName">key</text-property>
-                                                            <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                                            <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                                             <property name="dataType">string</property>
                                                         </structure>
                                                         <structure>
@@ -1878,7 +1878,7 @@ row["first_name"]
                                                 <structure>
                                                     <property name="name">key</property>
                                                     <text-property name="displayName">key</text-property>
-                                                    <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                                    <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                                     <property name="dataType">string</property>
                                                 </structure>
                                                 <structure>
@@ -1923,7 +1923,7 @@ row["first_name"]
                                                 <structure>
                                                     <property name="name">key</property>
                                                     <text-property name="displayName">key</text-property>
-                                                    <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                                    <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                                     <property name="dataType">string</property>
                                                 </structure>
                                                 <structure>
@@ -1968,7 +1968,7 @@ row["first_name"]
                                                 <structure>
                                                     <property name="name">key</property>
                                                     <text-property name="displayName">key</text-property>
-                                                    <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                                    <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                                     <property name="dataType">string</property>
                                                 </structure>
                                                 <structure>
@@ -2013,7 +2013,7 @@ row["first_name"]
                                                 <structure>
                                                     <property name="name">key</property>
                                                     <text-property name="displayName">key</text-property>
-                                                    <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                                    <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                                     <property name="dataType">string</property>
                                                 </structure>
                                                 <structure>
@@ -2060,7 +2060,7 @@ row["first_name"]
                                                 <structure>
                                                     <property name="name">key</property>
                                                     <text-property name="displayName">key</text-property>
-                                                    <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                                    <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                                     <property name="dataType">string</property>
                                                 </structure>
                                                 <structure>
@@ -2452,7 +2452,7 @@ row["first_name"]
                                                             <structure>
                                                                 <property name="name">key</property>
                                                                 <text-property name="displayName">key</text-property>
-                                                                <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                                                 <property name="dataType">string</property>
                                                             </structure>
                                                             <structure>
@@ -2496,7 +2496,7 @@ row["first_name"]
                                                             <structure>
                                                                 <property name="name">key</property>
                                                                 <text-property name="displayName">key</text-property>
-                                                                <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                                                 <property name="dataType">string</property>
                                                             </structure>
                                                             <structure>
@@ -2540,7 +2540,7 @@ row["first_name"]
                                                             <structure>
                                                                 <property name="name">key</property>
                                                                 <text-property name="displayName">key</text-property>
-                                                                <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                                                 <property name="dataType">string</property>
                                                             </structure>
                                                             <structure>
@@ -2674,7 +2674,7 @@ row["first_name"]
                                                         <structure>
                                                             <property name="name">key</property>
                                                             <text-property name="displayName">key</text-property>
-                                                            <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                                            <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                                             <property name="dataType">string</property>
                                                         </structure>
                                                         <structure>
@@ -2747,7 +2747,7 @@ row["first_name"]
                                                         <structure>
                                                             <property name="name">key</property>
                                                             <text-property name="displayName">key</text-property>
-                                                            <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                                            <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                                             <property name="dataType">string</property>
                                                         </structure>
                                                         <structure>
@@ -2820,7 +2820,7 @@ row["first_name"]
                                                         <structure>
                                                             <property name="name">key</property>
                                                             <text-property name="displayName">key</text-property>
-                                                            <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                                            <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                                             <property name="dataType">string</property>
                                                         </structure>
                                                         <structure>
@@ -2904,7 +2904,7 @@ row["first_name"]
                                             <structure>
                                                 <property name="name">key</property>
                                                 <text-property name="displayName">key</text-property>
-                                                <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                                 <property name="dataType">string</property>
                                             </structure>
                                             <structure>
@@ -2969,7 +2969,7 @@ row["first_name"]
                                             <structure>
                                                 <property name="name">key</property>
                                                 <text-property name="displayName">key</text-property>
-                                                <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                                 <property name="dataType">string</property>
                                             </structure>
                                             <structure>
@@ -3013,7 +3013,7 @@ row["first_name"]
                                             <structure>
                                                 <property name="name">key</property>
                                                 <text-property name="displayName">key</text-property>
-                                                <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                                 <property name="dataType">string</property>
                                             </structure>
                                             <structure>
@@ -3050,7 +3050,7 @@ row["first_name"]
                                             <structure>
                                                 <property name="name">key</property>
                                                 <text-property name="displayName">key</text-property>
-                                                <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                                 <property name="dataType">string</property>
                                             </structure>
                                             <structure>

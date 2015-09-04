@@ -78,7 +78,8 @@ public class ReportSettings {
 		
 		AppSettings appSettings = AppSettings.get();
 		
-		return this.addParam("DBName", appSettings.get("db.default.url"))
+		return this.addParam("DefaultDriver", appSettings.get("db.default.driver"))
+		.addParam("DBName", appSettings.get("db.default.url"))
 		.addParam("UserName", appSettings.get("db.default.user"))
 		.addParam("Password", appSettings.get("db.default.password"));
 		
