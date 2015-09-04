@@ -18,7 +18,7 @@
 
 	<action-record name="action-production-order-wizard-record-default" model="com.axelor.apps.base.db.Wizard">
     	<field name="product_id" expr="eval: _productId"/>
-    	<field name="product" expr="eval: __repo__.of(Product).find(_productId?.id)" if="_productId"/>
+    	<field name="product" expr="eval: __repo__.of(Product).find(_productId)" if="_productId"/>
     	<field name="business_id" expr="eval: _businessId?.id"/>
 		<field name="qty" expr="eval: 1.0"/>
 	</action-record>

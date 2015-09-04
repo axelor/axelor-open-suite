@@ -25,6 +25,6 @@ import com.axelor.rpc.Context;
 public interface ProductionOrderWizardService extends Repository<ProductionOrder> {
 
 	
-	public String validate(Context context) throws AxelorException;
+	public Long validate(Context context) throws AxelorException;
 	
 }

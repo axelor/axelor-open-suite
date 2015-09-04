@@ -23,7 +23,6 @@ import org.joda.time.Duration;
 import org.joda.time.Interval;
 import org.joda.time.LocalDateTime;
 
-import com.axelor.app.production.db.IManufOrder;
 import com.axelor.app.production.db.IOperationOrder;
 import com.axelor.app.production.db.IProdResource;
 import com.axelor.apps.base.service.administration.GeneralService;
@@ -52,7 +51,7 @@ public class OperationOrderWorkflowService extends OperationOrderRepository{
 
 	}
 
-
+	@Transactional
 	public OperationOrder plan(OperationOrder operationOrder) throws AxelorException  {
 
 		operationOrder.setPlannedStartDateT(this.getLastOperationOrder(operationOrder));
@@ -66,11 +65,8 @@ public class OperationOrderWorkflowService extends OperationOrderRepository{
 		operationOrderStockMoveService.createToConsumeStockMove(operationOrder);
 
 		operationOrder.setStatusSelect(IOperationOrder.STATUS_PLANNED);
-		if(operationOrder.getManufOrder() != null && operationOrder.getManufOrder().getStatusSelect() == IManufOrder.STATUS_DRAFT){
-			operationOrder.getManufOrder().setStatusSelect(IManufOrder.STATUS_PLANNED);
-		}
 
-		return operationOrder;
+		return save(operationOrder);
 
 	}
 
@@ -129,7 +125,7 @@ public class OperationOrderWorkflowService extends OperationOrderRepository{
 
 	}
 
-
+	@Transactional
 	public OperationOrder finish(OperationOrder operationOrder) throws AxelorException  {
 
 		operationOrderStockMoveService.finish(operationOrder);
@@ -138,7 +134,7 @@ public class OperationOrderWorkflowService extends OperationOrderRepository{
 
 		operationOrder.setStatusSelect(IOperationOrder.STATUS_FINISHED);
 
-		return operationOrder;
+		return save(operationOrder);
 
 	}
 

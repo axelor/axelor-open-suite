@@ -123,7 +123,7 @@
                 </ex-property>
             </list-property>
             <property name="odaDriverClass">org.postgresql.Driver</property>
-            <property name="odaURL">jdbc:postgresql://localhost:5432/abs</property>
+            <property name="odaURL">jdbc:postgresql://localhost:5432/</property>
         </oda-data-source>
     </data-sources>
     <data-sets>
@@ -904,7 +904,7 @@ where LangTranslate.key = ? and LangTranslate.language = ?]]></xml-property>
                 </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[SELECT 
-	OperationOrder.id as operation_order_id, StockMoveLine.id, Product.name as product_name, Product.code as product_code, Unit.code as unit_code,
+	OperationOrder.id as operation_order_id, StockMoveLine.id, Product.name as product_name, Product.code as product_code, Unit.name as unit_code,
 	TrackingNumber.tracking_number_seq, StockMoveLine.qty
 FROM
 	stock_stock_move_line AS StockMoveLine 

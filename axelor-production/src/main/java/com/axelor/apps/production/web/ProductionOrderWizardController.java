@@ -21,10 +21,12 @@ import java.math.BigDecimal;
 
 import javax.inject.Inject;
 
+import com.axelor.apps.production.db.ProductionOrder;
 import com.axelor.apps.production.exceptions.IExceptionMessage;
 import com.axelor.apps.production.service.ProductionOrderWizardService;
 import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
+import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
@@ -45,9 +47,16 @@ public class ProductionOrderWizardController {
 			response.setFlash(I18n.get(IExceptionMessage.PRODUCTION_ORDER_4)+" !");
 		}
 		else  {
+			response.setView(ActionView
+					  .define(I18n.get("Production order generated"))
+					  .model(ProductionOrder.class.getName())
+					  .add("form", "production-order-form")
+					  .add("grid", "production-order-grid")
+					  .param("forceEdit", "true")
+					  .context("_showRecord", productionOrderWizardService.validate(context).toString())
+					  .map());
 			
-			response.setFlash(productionOrderWizardService.validate(context));
-			
+			response.setCanClose(true);
 		}
 	}
 	

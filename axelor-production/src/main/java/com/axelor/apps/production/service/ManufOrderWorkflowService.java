@@ -210,4 +210,22 @@ public class ManufOrderWorkflowService extends ManufOrderRepository{
 		return manufOrder.getPlannedStartDateT();
 		
 	}
+	
+	@Transactional
+	public void allOpFinished(ManufOrder manufOrder) throws AxelorException  {
+		int count = 0;
+		List<OperationOrder> operationOrderList = manufOrder.getOperationOrderList();
+		for (OperationOrder operationOrderIt : operationOrderList) {
+			if(operationOrderIt.getStatusSelect() == IOperationOrder.STATUS_FINISHED){
+				count++;
+			}
+		}
+		if(count == operationOrderList.size()){
+			Beans.get(ManufOrderStockMoveService.class).finish(manufOrder);
+			
+			manufOrder.setStatusSelect(IManufOrder.STATUS_FINISHED);
+			
+			save(manufOrder);
+		}
+	}
 }

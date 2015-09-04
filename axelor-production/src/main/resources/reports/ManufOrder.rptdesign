@@ -17,30 +17,6 @@
             <property name="id">209</property>
             <expression name="value" type="javascript">params["Password"].value</expression>
         </structure>
-        <structure>
-            <property name="name">odaDriverClass</property>
-            <property name="id">209</property>
-        </structure>
-        <structure>
-            <property name="name">odaAutoCommit</property>
-            <property name="id">209</property>
-        </structure>
-        <structure>
-            <property name="name">odaIsolationMode</property>
-            <property name="id">209</property>
-        </structure>
-        <structure>
-            <property name="name">odaJndiName</property>
-            <property name="id">209</property>
-        </structure>
-        <structure>
-            <property name="name">OdaConnProfileName</property>
-            <property name="id">209</property>
-        </structure>
-        <structure>
-            <property name="name">OdaConnProfileStorePath</property>
-            <property name="id">209</property>
-        </structure>
     </list-property>
     <property name="units">cm</property>
     <property name="layoutPreference">auto layout</property>
@@ -147,7 +123,7 @@
                 </ex-property>
             </list-property>
             <property name="odaDriverClass">org.postgresql.Driver</property>
-            <property name="odaURL">jdbc:postgresql://localhost:5432/abs</property>
+            <property name="odaURL">jdbc:postgresql://localhost:5432/</property>
         </oda-data-source>
     </data-sources>
     <data-sets>
@@ -336,7 +312,7 @@
                 </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[SELECT ManufOrder.id, MetaFile.file_path AS logo_path, ManufOrder.manuf_order_seq, BOM.name as bom_name, Product.name as product_name,
-ManufOrder.qty, Unit.code as unit_code, ProdProcess.name as prod_process, ManufOrder.planned_start_datet
+ManufOrder.qty, Unit.name as unit_code, ProdProcess.name as prod_process, ManufOrder.planned_start_datet
 FROM production_manuf_order AS ManufOrder
 LEFT JOIN base_company AS Company ON (Company.id = ManufOrder.company)
 LEFT JOIN meta_file AS MetaFile ON (MetaFile.id = Company.logo)
@@ -918,7 +894,7 @@ LEFT JOIN
                 </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[SELECT 
-	ManufOrder.id as manuf_order_id, StockMoveLine.id, Product.name as product_name, Product.code as product_code, Unit.code as unit_code,
+	ManufOrder.id as manuf_order_id, StockMoveLine.id, Product.name as product_name, Product.code as product_code, Unit.name as unit_code,
 	TrackingNumber.tracking_number_seq, StockMoveLine.qty
 FROM
 	stock_stock_move_line AS StockMoveLine 

@@ -36,6 +36,7 @@ import com.axelor.apps.production.db.repo.MachineRepository;
 import com.axelor.apps.production.db.repo.OperationOrderRepository;
 import com.axelor.apps.production.exceptions.IExceptionMessage;
 import com.axelor.apps.production.report.IReport;
+import com.axelor.apps.production.service.ManufOrderWorkflowService;
 import com.axelor.apps.production.service.OperationOrderWorkflowService;
 import com.axelor.apps.tool.net.URLService;
 import com.axelor.auth.AuthUtils;
@@ -47,7 +48,6 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
-import com.google.inject.persist.Transactional;
 
 public class OperationOrderController {
 	
@@ -110,7 +110,7 @@ public class OperationOrderController {
 
 		operationOrder = operationOrderWorkflowService.plan(operationOrderWorkflowService.find(operationOrder.getId()));
 		
-		response.setValues(operationOrder);
+		response.setReload(true);
 		
 	}
 	
@@ -122,28 +122,10 @@ public class OperationOrderController {
 
 		operationOrder = operationOrderWorkflowService.finish(operationOrderWorkflowService.find(operationOrder.getId()));
 		
-		response.setValues(operationOrder);
+		Beans.get(ManufOrderWorkflowService.class).allOpFinished(operationOrder.getManufOrder());
 		
-	}
-	
-	
-	
-	
-//	TODO A SUPPRIMER UNE FOIS BUG FRAMEWORK CORRIGE
-	public void saveOperationOrder(ActionRequest request, ActionResponse response) throws AxelorException {
-		OperationOrder operationOrder = request.getContext().asType( OperationOrder.class );
-		OperationOrder persistOperationOrder =  Beans.get(OperationOrderWorkflowService.class).find(operationOrder.getId());
-		persistOperationOrder.setStatusSelect(operationOrder.getStatusSelect());
-		persistOperationOrder.setRealStartDateT(operationOrder.getRealStartDateT());
-		persistOperationOrder.setRealEndDateT(operationOrder.getRealEndDateT());
+		response.setReload(true);
 		
-		this.saveOperationOrder(persistOperationOrder);
-	}
-	
-	
-	@Transactional
-	public void saveOperationOrder(OperationOrder operationOrder){
-		 Beans.get(OperationOrderWorkflowService.class).save(operationOrder);
 	}
 	
 	
@@ -295,6 +277,14 @@ public class OperationOrderController {
 		}
 		
 		response.setData(dataList);
+	}
+	
+	public void start (ActionRequest request, ActionResponse response) throws AxelorException {
+		OperationOrder operationOrder = request.getContext().asType( OperationOrder.class );
+		operationOrder = Beans.get(OperationOrderWorkflowService.class).find(operationOrder.getId());
+		Beans.get(ManufOrderWorkflowService.class).start(operationOrder.getManufOrder());
+		response.setReload(true);
+		
 	}
 	
 }

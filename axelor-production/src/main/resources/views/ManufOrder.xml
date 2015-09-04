@@ -48,8 +48,7 @@
    		<button name="print" title="Print" icon="fa-print" onClick="action-manuf-order-method-print"/>
     </grid>
     
-	<form onLoad="action-manuf-order-attrs-is-cons-pro-on-operation" 
-	      onNew="action-manuf-order-default-record,action-manuf-order-attrs-is-cons-pro-on-operation" 
+	<form onNew="action-manuf-order-default-record" 
 	      name="manuf-order-form" title="Manufacturing order" model="com.axelor.apps.production.db.ManufOrder"
 	      onSave="save,action-manuf-order-set-draft-seq,save">
 <!--     TODO avec propagation -->
@@ -65,10 +64,9 @@
 			<field name="prodProcess" readonlyIf="statusSelect &gt; 1" grid-view="prod-process-grid" form-view="prod-process-form"/>
 			<field name="product" required="true" readonlyIf="statusSelect &gt; 1" form-view="product-form" grid-view="product-grid"/>
 			<field name="qty" readonlyIf="statusSelect &gt; 1"/>
-			<field name="isConsProOnOperation" readonlyIf="statusSelect &gt; 1" onChange="action-manuf-order-attrs-is-cons-pro-on-operation"/>
+			<field name="isConsProOnOperation" readonlyIf="statusSelect &gt; 1"/>
 			<field name="isToInvoice" onChange="save,action-manuf-order-method-is-to-invoice" if-module="axelor-business-production"/>
-			<field name="toInvoice" if-module="axelor-business-production"/>
-			<field name="invoiced" showIf="toInvoice" if-module="axelor-business-production"/>
+			<field name="invoiced" showIf="isToInvoice" if-module="axelor-business-production"/>
 			<button name="preFillOperations" colSpan="4" title="Pre-fill operations" hideIf="statusSelect &gt; 1" onClick="save,action-manuf-order-method-pre-fill-operations" />
 		</panel>  
 		<panel-tabs colSpan="4">
@@ -85,7 +83,7 @@
 			</panel>
 			<panel title="Stock moves">
 				<panel title="Moves In/Out" readonlyIf="statusSelect == 6" colSpan="12">
-					<field name="inStockMove" form-view="stock-move-form" grid-view="stock-move-grid"/>
+					<field name="inStockMove" form-view="stock-move-form" grid-view="stock-move-grid" hideIf="isConsProOnOperation"/>
 					<field name="outStockMove" form-view="stock-move-form" grid-view="stock-move-grid"/>
 				</panel>
 				<panel title="Production waste" colSpan="12">
@@ -93,16 +91,16 @@
 					<field name="wasteStockMove" form-view="stock-move-form" grid-view="stock-move-grid"/>
 				</panel>
 			</panel>
-			<panel title="Consumed products" onSelect="action-manuf-order-record-selected-page-consumed">
+			<panel title="Consumed products" onSelect="action-manuf-order-record-selected-page-consumed" hideIf="isConsProOnOperation">
 				<panel-related field="toConsumeProdProductList" readonlyIf="statusSelect &gt;= 4" colSpan="12" grid-view="prod-product-grid" form-view="prod-product-form"/>
 				<panel-related field="consumedStockMoveLineList" readonlyIf="statusSelect == 6" colSpan="12" form-view="stock-move-line-production-form" grid-view="stock-move-line-production-grid"/>
 				<panel-related field="diffConsumeProdProductList" colSpan="12" grid-view="prod-product-grid" form-view="prod-product-form"/>
 			</panel>
-<!--    			<panel title="Consumed products" onSelect="action-manuf-order-record-selected-page-produced"> -->
-<!-- 	 	      <panel-dashlet readonlyIf="statusSelect &gt;= 4" colSpan="12" action="action-manuf-order-view-operation-order-to-consume-product"/> -->
-<!-- 	 	      <panel-dashlet colSpan="12" action="action-manuf-order-view-operation-order-diff-consume-product"/> -->
-<!-- 	 	      <panel-dashlet readonlyIf="statusSelect == 6" colSpan="12" action="action-manuf-order-view-operation-order-consumed-product"/>  -->
-<!-- 			</panel> -->
+   			<panel title="Consumed products" onSelect="action-manuf-order-record-selected-page-produced" showIf="isConsProOnOperation">
+	 	      <panel-dashlet readonlyIf="statusSelect &gt;= 4" colSpan="12" action="action-manuf-order-view-operation-order-to-consume-product"/>
+	 	      <panel-dashlet colSpan="12" action="action-manuf-order-view-operation-order-diff-consume-product"/>
+	 	      <panel-dashlet readonlyIf="statusSelect == 6" colSpan="12" action="action-manuf-order-view-operation-order-consumed-product"/> 
+			</panel>
 			<panel title="Finished products">
 				<panel-related field="toProduceProdProductList" readonlyIf="statusSelect &gt;= 4" colSpan="12" grid-view="prod-product-grid" form-view="prod-product-form"/>
 				<panel-related field="producedStockMoveLineList" readonlyIf="statusSelect == 6" colSpan="12" form-view="stock-move-line-production-form" grid-view="stock-move-line-production-grid"/>
@@ -113,12 +111,12 @@
 			</panel>
 		</panel-tabs>
 		<panel title="Actions" colSpan="12" sidebar="true" showIf="id">
-			<button name="plan" icon="fa-calendar" title="Plan" colSpan="12" showIf="statusSelect == 1 || statusSelect == 2" onClick="save,action-manuf-order-set-draft-seq,action-manuf-order-method-plan,save"/>
-			<button name="start" icon="fa-play" title="Start" colSpan="12" showIf="statusSelect == 3" onClick="save,action-manuf-order-method-start,save"/>
-			<button name="pause" icon="fa-pause" title="Pause" colSpan="12" showIf="statusSelect == 4" onClick="save,action-manuf-order-method-pause,save"/>
-			<button name="resume" icon="fa-step-forward" title="Resume" colSpan="12" showIf="statusSelect == 5" onClick="save,action-manuf-order-method-resume,save"/>
-			<button name="finish" icon="fa-power-off" title="Finish" colSpan="12" showIf="statusSelect == 4" onClick="save,action-manuf-order-method-finish,save"/>
-			<button name="cancel" icon="fa-times-circle" title="Cancel" colSpan="12" showIf="statusSelect != 2" onClick="save,action-manuf-order-method-cancel,save"/>
+			<button name="plan" icon="fa-calendar" title="Plan" colSpan="12" showIf="statusSelect == 1 || statusSelect == 2" onClick="save,action-manuf-order-set-draft-seq,action-manuf-order-method-plan"/>
+			<button name="start" icon="fa-play" title="Start" colSpan="12" showIf="statusSelect == 3" onClick="save,action-manuf-order-method-start"/>
+			<button name="pause" icon="fa-pause" title="Pause" colSpan="12" showIf="statusSelect == 4" onClick="save,action-manuf-order-method-pause"/>
+			<button name="resume" icon="fa-step-forward" title="Resume" colSpan="12" showIf="statusSelect == 5" onClick="save,action-manuf-order-method-resume"/>
+			<button name="finish" icon="fa-power-off" title="Finish" colSpan="12" showIf="statusSelect == 4" onClick="save,action-manuf-order-method-finish"/>
+			<button name="cancel" icon="fa-times-circle" title="Cancel" colSpan="12" showIf="statusSelect != 2" onClick="save,action-manuf-order-method-cancel"/>
 		</panel>
 	  
 	</form>
@@ -197,12 +195,6 @@
     <action-method name="action-manuf-order-method-pre-fill-operations">
 		<call class="com.axelor.apps.production.web.ManufOrderController" method="preFillOperations"/>
     </action-method>
-    
-     <action-attrs name="action-manuf-order-attrs-is-cons-pro-on-operation">
-    	<attribute name="hidden" for="consumedProductPage" expr="eval: isConsProOnOperation"/>
-    	<attribute name="hidden" for="inStockMove" expr="eval: isConsProOnOperation"/>
-    	<attribute name="hidden" for="consumedProductOperationPage" expr="eval: !isConsProOnOperation"/>
-    </action-attrs>
     
    	<action-view name="action-manuf-order-view-operation-order-to-consume-product" title="To consume products" model="com.axelor.apps.production.db.ProdProduct">
   		<view type="grid" name="prod-product-grid"/>

@@ -20,28 +20,21 @@ package com.axelor.apps.production.service;
 import java.math.BigDecimal;
 import java.util.Map;
 
-import org.joda.time.LocalDateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductRepository;
-import com.axelor.apps.base.service.administration.SequenceService;
 //import com.axelor.apps.organisation.db.Project;
 import com.axelor.apps.production.db.BillOfMaterial;
-import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.ProductionOrder;
 import com.axelor.apps.production.db.repo.ProductionOrderRepository;
 import com.axelor.apps.production.exceptions.IExceptionMessage;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
-import com.axelor.rpc.ActionRequest;
-import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.google.inject.Inject;
-import com.google.inject.persist.Transactional;
 
 public class ProductionOrderWizardServiceImpl extends ProductionOrderRepository implements ProductionOrderWizardService {
 
@@ -57,7 +50,7 @@ public class ProductionOrderWizardServiceImpl extends ProductionOrderRepository 
 	protected ProductRepository productRepo;
 	
 	
-	public String validate(Context context) throws AxelorException  {
+	public Long validate(Context context) throws AxelorException  {
 	
 		Map<String, Object> bomContext = (Map<String, Object>) context.get("billOfMaterial");
 		BillOfMaterial billOfMaterial = billOfMaterialService.find(((Integer) bomContext.get("id")).longValue());
@@ -76,10 +69,10 @@ public class ProductionOrderWizardServiceImpl extends ProductionOrderRepository 
 		ProductionOrder productionOrder = productionOrderService.generateProductionOrder(product, billOfMaterial, qty);
 		
 		if(productionOrder != null)  {
-			return I18n.get(IExceptionMessage.PRODUCTION_ORDER_1)+" ("+productionOrder.getProductionOrderSeq()+")";
+			return productionOrder.getId();
 		}
 		else  {
-			return I18n.get(IExceptionMessage.PRODUCTION_ORDER_2);
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.PRODUCTION_ORDER_2)),IException.CONFIGURATION_ERROR);
 		}
 	}
 	
