@@ -106,7 +106,6 @@
 <!--	    <panel-related field="timesheetLineList" title="Timesheet lines" form-view="timesheet-line-production-form" grid-view="timesheet-line-production-grid" colSpan="12"/>  --> 
 	</form>
     
-    
     <action-record name="action-operation-order-default-record" model="com.axelor.apps.production.db.OperationOrder">
     	<field name="statusSelect" expr="eval: 1"/>
     </action-record>

@@ -49,7 +49,7 @@
     <many-to-one name="inStockMove" ref="com.axelor.apps.stock.db.StockMove" title="Stock move in"/>
     <many-to-one name="outStockMove" ref="com.axelor.apps.stock.db.StockMove" title="Stock move out"/>
     
-    <many-to-one name="wasteStockMove" ref="com.axelor.apps.stock.db.StockMove" title="Stock move out"/>
+    <many-to-one name="wasteStockMove" ref="com.axelor.apps.stock.db.StockMove" title="Waste stock move"/>
     
     <string name="wasteProdDescription" title="Description" large="true"/>
     

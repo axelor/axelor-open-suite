@@ -31,8 +31,8 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.ProductVariantService;
-import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.administration.GeneralService;
+import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.ProdProcess;
@@ -263,6 +263,5 @@ public class ManufOrderServiceImpl extends ManufOrderRepository implements  Manu
 		return false;
 
 	}
-
 
 }
