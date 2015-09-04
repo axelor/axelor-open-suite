@@ -103,7 +103,8 @@ public class GeneralServiceImpl extends GeneralRepository implements GeneralServ
 		else if (getGeneral() != null && getGeneral().getToday() != null){
 			todayDateTime = getGeneral().getToday();
 		}
-
+		
+		System.out.println("Today date: "+todayDateTime);
 		return todayDateTime;
 	}
 
