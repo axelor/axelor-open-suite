@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
     
     <grid name="partner-list-grid" title="Partner lists" model="com.axelor.apps.base.db.PartnerList">
          <field name="code"/>
         <field name="description"  />
     </grid>
     
-    <form name="partner-list-form" title="Partner list" model="com.axelor.apps.base.db.PartnerList">
+    <form name="partner-list-form" title="Partner list" model="com.axelor.apps.base.db.PartnerList" width="large">
     	<panel>
 	        <field name="code" x-bind="{{code|uppercase}}"/>
 	        <field name="description" colSpan="12"/>
-	        <panel-related field="partnerSet" colSpan="12"/>
+	        <panel-related field="partnerSet" colSpan="12" form-view="partner-form" grid-view="partner-grid"/>
         </panel>
     </form>
 
@@ -26,7 +26,7 @@
 	    <panel>
 	        <field name="code" x-bind="{{code|uppercase}}"/>
 	        <field name="description" colSpan="12"/>
-	        <field name="partnerSet" colSpan="12" domain="self.partnerTypeSelect = 1" showTitle="false"/>
+	        <field name="partnerSet" colSpan="12" domain="self.partnerTypeSelect = 1" showTitle="false" form-view="partner-form" grid-view="partner-grid"/>
 	    </panel>
 	    <panel sidebar="true" name="action_buttons" title="Actions" hideIf="$popup()">
 	        <button name="map" title="Sales map" onClick="save,com.axelor.apps.base.web.AddressController:viewSalesMap"/>

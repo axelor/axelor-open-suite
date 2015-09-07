@@ -17,18 +17,26 @@
  */
 package com.axelor.apps.production.web;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
+import org.joda.time.LocalDateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.ReportSettings;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.production.db.OperationOrder;
+import com.axelor.apps.production.db.repo.MachineRepository;
+import com.axelor.apps.production.db.repo.OperationOrderRepository;
 import com.axelor.apps.production.exceptions.IExceptionMessage;
 import com.axelor.apps.production.report.IReport;
+import com.axelor.apps.production.service.ManufOrderWorkflowService;
 import com.axelor.apps.production.service.OperationOrderWorkflowService;
 import com.axelor.apps.tool.net.URLService;
 import com.axelor.auth.AuthUtils;
@@ -39,9 +47,18 @@ import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.common.base.Strings;
-import com.google.inject.persist.Transactional;
+import com.google.inject.Inject;
 
 public class OperationOrderController {
+	
+	@Inject
+	protected MachineRepository machineRepo;
+	
+	@Inject
+	protected OperationOrderRepository operationOrderRepo;
+	
+	@Inject
+	protected GeneralService generalService;
 
 	private static final Logger LOG = LoggerFactory.getLogger(ManufOrderController.class);
 	
@@ -88,11 +105,10 @@ public class OperationOrderController {
 	
 	
 	public void plan (ActionRequest request, ActionResponse response) throws AxelorException {
-
 		OperationOrder operationOrder = request.getContext().asType( OperationOrder.class );
 		OperationOrderWorkflowService operationOrderWorkflowService = Beans.get(OperationOrderWorkflowService.class);
 
-		operationOrderWorkflowService.plan(operationOrderWorkflowService.find(operationOrder.getId()));
+		operationOrder = operationOrderWorkflowService.plan(operationOrderWorkflowService.find(operationOrder.getId()));
 		
 		response.setReload(true);
 		
@@ -104,30 +120,12 @@ public class OperationOrderController {
 		OperationOrder operationOrder = request.getContext().asType( OperationOrder.class );
 		OperationOrderWorkflowService operationOrderWorkflowService = Beans.get(OperationOrderWorkflowService.class);
 
-		operationOrderWorkflowService.finish(operationOrderWorkflowService.find(operationOrder.getId()));
+		operationOrder = operationOrderWorkflowService.finish(operationOrderWorkflowService.find(operationOrder.getId()));
+		
+		Beans.get(ManufOrderWorkflowService.class).allOpFinished(operationOrder.getManufOrder());
 		
 		response.setReload(true);
 		
-	}
-	
-	
-	
-	
-//	TODO A SUPPRIMER UNE FOIS BUG FRAMEWORK CORRIGE
-	public void saveOperationOrder(ActionRequest request, ActionResponse response) throws AxelorException {
-		OperationOrder operationOrder = request.getContext().asType( OperationOrder.class );
-		OperationOrder persistOperationOrder =  Beans.get(OperationOrderWorkflowService.class).find(operationOrder.getId());
-		persistOperationOrder.setStatusSelect(operationOrder.getStatusSelect());
-		persistOperationOrder.setRealStartDateT(operationOrder.getRealStartDateT());
-		persistOperationOrder.setRealEndDateT(operationOrder.getRealEndDateT());
-		
-		this.saveOperationOrder(persistOperationOrder);
-	}
-	
-	
-	@Transactional
-	public void saveOperationOrder(OperationOrder operationOrder){
-		 Beans.get(OperationOrderWorkflowService.class).save(operationOrder);
 	}
 	
 	
@@ -209,11 +207,85 @@ public class OperationOrderController {
 		}	
 	}
 	
+	public void chargeByMachineHours(ActionRequest request, ActionResponse response) {
+		List<Map<String, Object>> dataList = new ArrayList<Map<String, Object>>();
+		LocalDateTime fromDateTime = new LocalDateTime().minusHours(48);
+		LocalDateTime toDateTime = new LocalDateTime().plusHours(48);
+		LocalDateTime itDateTime = new LocalDateTime(fromDateTime);
+		
+		while(!itDateTime.isAfter(toDateTime)){
+			List<OperationOrder> operationOrderList = operationOrderRepo.all().filter("self.plannedStartDateT <= ?1 AND self.plannedEndDateT >= ?1", itDateTime).fetch();
+			Map<String, BigDecimal> map = new HashMap<String, BigDecimal>();
+			for (OperationOrder operationOrder : operationOrderList) {
+				if(operationOrder.getProdResource() != null && operationOrder.getProdResource().getMachine() != null){
+					String machine = operationOrder.getProdResource().getMachine().getName();
+					if(map.containsKey(machine)){
+						map.put(machine, map.get(machine).add(BigDecimal.ONE));
+					}
+					else{
+						map.put(machine, BigDecimal.ONE);
+					}
+				}
+			}
+			Set<String> keyList = map.keySet();
+			Map<String, Object> dataMap = new HashMap<String, Object>();
+			for (String key : keyList) {
+				dataMap.put("dateTime",(Object)itDateTime.toString());
+				dataMap.put("charge", (Object)map.get(key).multiply(new BigDecimal(100)));
+				dataMap.put("machine", (Object) key);
+				dataList.add(dataMap);
+			}
+			
+			
+			itDateTime = itDateTime.plusHours(1);
+		}
+		
+		response.setData(dataList);
+	}
 	
+	public void chargeByMachineMinutes(ActionRequest request, ActionResponse response) {
+		List<Map<String, Object>> dataList = new ArrayList<Map<String, Object>>();
+		LocalDateTime fromDateTime = new LocalDateTime().minusHours(48);
+		LocalDateTime toDateTime = new LocalDateTime().plusHours(48);
+		LocalDateTime itDateTime = new LocalDateTime(fromDateTime);
+		
+		while(!itDateTime.isAfter(toDateTime)){
+			List<OperationOrder> operationOrderList = operationOrderRepo.all().filter("self.plannedStartDateT <= ?1 AND self.plannedEndDateT >= ?1", itDateTime).fetch();
+			Map<String, BigDecimal> map = new HashMap<String, BigDecimal>();
+			for (OperationOrder operationOrder : operationOrderList) {
+				if(operationOrder.getProdResource() != null && operationOrder.getProdResource().getMachine() != null){
+					String machine = operationOrder.getProdResource().getMachine().getName();
+					if(map.containsKey(machine)){
+						map.put(machine, map.get(machine).add(BigDecimal.ONE));
+					}
+					else{
+						map.put(machine, BigDecimal.ONE);
+					}
+				}
+			}
+			Set<String> keyList = map.keySet();
+			Map<String, Object> dataMap = new HashMap<String, Object>();
+			for (String key : keyList) {
+				dataMap.put("dateTime",(Object)itDateTime.toString());
+				dataMap.put("charge", (Object)map.get(key).multiply(new BigDecimal(100)));
+				dataMap.put("machine", (Object) key);
+				dataList.add(dataMap);
+			}
+			
+			
+			itDateTime = itDateTime.plusMinutes(1);
+		}
+		
+		response.setData(dataList);
+	}
 	
-	
-	
-	
+	public void start (ActionRequest request, ActionResponse response) throws AxelorException {
+		OperationOrder operationOrder = request.getContext().asType( OperationOrder.class );
+		operationOrder = Beans.get(OperationOrderWorkflowService.class).find(operationOrder.getId());
+		Beans.get(ManufOrderWorkflowService.class).start(operationOrder.getManufOrder());
+		response.setReload(true);
+		
+	}
 	
 }
 

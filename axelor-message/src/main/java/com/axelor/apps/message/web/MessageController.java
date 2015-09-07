@@ -32,27 +32,25 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 
 public class MessageController {
-	
+
 	public void sendByEmail(ActionRequest request, ActionResponse response) {
-		
+
 		Message message = request.getContext().asType(Message.class);
 		MessageService messageService =  Beans.get(MessageService.class);
-		
+
 		try {
 			message = messageService.sendByEmail( messageService.find( message.getId() ) );
-			
+
 			response.setReload(true);
-			
+
 			if ( message.getStatusSelect() == MessageRepository.STATUS_SENT ) {
-				
+
 				if ( message.getSentByEmail() ) { response.setFlash( I18n.get( IExceptionMessage.MESSAGE_4 ) ); }
 				else { response.setFlash( I18n.get( IExceptionMessage.MESSAGE_5 ) ); }
-				
+
 			} else  { response.setFlash( I18n.get( IExceptionMessage.MESSAGE_6 ) );	}
-			
+
 		} catch (MessagingException | IOException e) { TraceBackService.trace(e); }
 	}
-	
-	
-	
+
 }

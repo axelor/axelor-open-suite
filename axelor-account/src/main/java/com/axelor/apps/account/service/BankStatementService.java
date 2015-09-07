@@ -18,6 +18,7 @@
 package com.axelor.apps.account.service;
 
 import java.math.BigDecimal;
+
 import org.joda.time.LocalDate;
 
 import com.axelor.apps.account.db.BankStatement;
@@ -26,8 +27,8 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.BankStatementRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
-import com.axelor.apps.account.service.administration.GeneralServiceAccount;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.service.administration.GeneralServiceImpl;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
@@ -35,40 +36,40 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
 public class BankStatementService extends BankStatementRepository {
-	
+
 	@Inject
 	private MoveService moveService;
-	
+
 	@Inject
 	private MoveLineService moveLineService;
-	
-	
+
+
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void compute(BankStatement bankStatement) throws AxelorException  {
-		
+
 		BigDecimal computedBalance = bankStatement.getStartingBalance();
-		
+
 		for(BankStatementLine bankStatementLine : bankStatement.getBankStatementLineList())  {
-			
+
 			computedBalance = computedBalance.add(bankStatementLine.getAmount());
-			
+
 		}
-		
+
 		bankStatement.setComputedBalance(computedBalance);
-		
+
 		save(bankStatement);
 	}
-	
-	
+
+
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void validate(BankStatement bankStatement) throws AxelorException  {
-		
+
 		this.checkBalance(bankStatement);
-		
+
 		for(BankStatementLine bankStatementLine : bankStatement.getBankStatementLineList())  {
-			
+
 			if(!bankStatementLine.getIsPosted())  {
-			
+
 				if(bankStatementLine.getMoveLine() == null)  {
 					this.validate(bankStatementLine);
 				}
@@ -77,81 +78,81 @@ public class BankStatementService extends BankStatementRepository {
 				}
 			}
 		}
-		
+
 		bankStatement.setStatusSelect(BankStatementRepository.STATUS_VALIDATED);
-		
+
 		save(bankStatement);
 	}
-	
+
 	public void checkBalance(BankStatement bankStatement) throws AxelorException  {
-		
-		if(bankStatement.getComputedBalance().compareTo(bankStatement.getEndingBalance()) != 0)  {  
+
+		if(bankStatement.getComputedBalance().compareTo(bankStatement.getEndingBalance()) != 0)  {
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.BANK_STATEMENT_1),
-					GeneralServiceAccount.getExceptionAccountingMsg()), IException.CONFIGURATION_ERROR);
+					GeneralServiceImpl.EXCEPTION), IException.CONFIGURATION_ERROR);
 		}
-		
+
 	}
-	
-	
+
+
 	public void validate(BankStatementLine bankStatementLine) throws AxelorException  {
-		
+
 		BigDecimal amount = bankStatementLine.getAmount();
-		
+
 		//TODO add currency conversion
-		
+
 		if(amount.compareTo(BigDecimal.ZERO) == 0)  {
-			
+
 			return;
-			
+
 		}
-		
+
 		BankStatement bankStatement = bankStatementLine.getBankStatement();
-		
+
 		Partner partner = bankStatementLine.getPartner();
-		
+
 		LocalDate effectDate = bankStatementLine.getEffectDate();
-		
+
 		String name = bankStatementLine.getName();
-		
+
 		Move move = moveService.createMove(bankStatement.getJournal(), bankStatement.getCompany(), null, partner, effectDate, null);
-		
+
 		boolean isNegate = amount.compareTo(BigDecimal.ZERO) < 0;
-		
-		MoveLine partnerMoveLine = moveLineService.createMoveLine(move, partner, bankStatementLine.getAccount(), amount, 
-				isNegate, isNegate, effectDate, effectDate, 1, name);
+
+		MoveLine partnerMoveLine = moveLineService.createMoveLine(move, partner, bankStatementLine.getAccount(), amount,
+				isNegate, effectDate, effectDate, 1, name);
 		move.addMoveLineListItem(partnerMoveLine);
-		
+
 		move.addMoveLineListItem(
-				moveLineService.createMoveLine(move, partner, bankStatement.getCashAccount(), amount, 
-						!isNegate, isNegate, effectDate, effectDate, 1, name));
+				moveLineService.createMoveLine(move, partner, bankStatement.getCashAccount(), amount,
+						!isNegate, effectDate, effectDate, 1, name));
 
 		moveService.save(move);
-		
+
 		moveService.validateMove(move);
-		
+
 		bankStatementLine.setMoveLine(partnerMoveLine);
-		
+
 		bankStatementLine.setIsPosted(true);
-		
+
 	}
-  	
+
 	public void checkAmount(BankStatementLine bankStatementLine) throws AxelorException  {
-		
+
 		MoveLine moveLine = bankStatementLine.getMoveLine();
-		
-		if(bankStatementLine.getAmount().compareTo(BigDecimal.ZERO) == 0 )  {  
-			
+
+		if(bankStatementLine.getAmount().compareTo(BigDecimal.ZERO) == 0 )  {
+
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.BANK_STATEMENT_3),
-					GeneralServiceAccount.getExceptionAccountingMsg(), bankStatementLine.getReference()), IException.CONFIGURATION_ERROR);
+					GeneralServiceImpl.EXCEPTION, bankStatementLine.getReference()), IException.CONFIGURATION_ERROR);
 		}
-		
-		if((bankStatementLine.getAmount().compareTo(BigDecimal.ZERO) > 0  && bankStatementLine.getAmount().compareTo(moveLine.getCredit()) != 0 ) 
-				|| (bankStatementLine.getAmount().compareTo(BigDecimal.ZERO) < 0  && bankStatementLine.getAmount().compareTo(moveLine.getDebit()) != 0 ) )  {  
-			
+
+		if((bankStatementLine.getAmount().compareTo(BigDecimal.ZERO) > 0  && bankStatementLine.getAmount().compareTo(moveLine.getCredit()) != 0 )
+				|| (bankStatementLine.getAmount().compareTo(BigDecimal.ZERO) < 0  && bankStatementLine.getAmount().compareTo(moveLine.getDebit()) != 0 ) )  {
+
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.BANK_STATEMENT_2),
-					GeneralServiceAccount.getExceptionAccountingMsg(), bankStatementLine.getReference()), IException.CONFIGURATION_ERROR);
+					GeneralServiceImpl.EXCEPTION, bankStatementLine.getReference()), IException.CONFIGURATION_ERROR);
 		}
-		
+
 	}
-	
+
 }

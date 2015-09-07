@@ -1,11 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.3.2.v20140211-1400 Build &lt;4.3.2.v20140211-1526></property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.4.2.v201410272105 Build &lt;4.4.2.v20150217-1805></property>
     <list-property name="propertyBindings">
-        <structure>
-            <property name="name">odaDriverClass</property>
-            <property name="id">23</property>
-        </structure>
         <structure>
             <property name="name">odaURL</property>
             <property name="id">23</property>
@@ -17,29 +13,14 @@
             <expression name="value" type="javascript">params["UserName"].value</expression>
         </structure>
         <structure>
-            <property name="name">odaAutoCommit</property>
-            <property name="id">23</property>
-        </structure>
-        <structure>
-            <property name="name">odaIsolationMode</property>
-            <property name="id">23</property>
-        </structure>
-        <structure>
             <property name="name">odaPassword</property>
             <property name="id">23</property>
             <expression name="value" type="javascript">params["Password"].value</expression>
         </structure>
         <structure>
-            <property name="name">odaJndiName</property>
+            <property name="name">odaDriverClass</property>
             <property name="id">23</property>
-        </structure>
-        <structure>
-            <property name="name">OdaConnProfileName</property>
-            <property name="id">23</property>
-        </structure>
-        <structure>
-            <property name="name">OdaConnProfileStorePath</property>
-            <property name="id">23</property>
+            <expression name="value" type="javascript">params["DefaultDriver"].value</expression>
         </structure>
     </list-property>
     <property name="units">in</property>
@@ -95,6 +76,17 @@
                 <property name="category">Unformatted</property>
             </structure>
         </scalar-parameter>
+        <scalar-parameter name="DefaultDriver" id="3819">
+            <property name="valueType">static</property>
+            <property name="dataType">string</property>
+            <property name="distinct">true</property>
+            <list-property name="selectionList"/>
+            <property name="paramType">simple</property>
+            <property name="controlType">text-box</property>
+            <structure name="format">
+                <property name="category">Unformatted</property>
+            </structure>
+        </scalar-parameter>
     </parameters>
     <data-sources>
         <oda-data-source extensionID="org.eclipse.birt.report.data.oda.jdbc" name="Data Source" id="23">
@@ -115,7 +107,7 @@
                 </ex-property>
             </list-property>
             <property name="odaDriverClass">org.postgresql.Driver</property>
-            <property name="odaURL">jdbc:postgresql://localhost:5432/axelor-erp</property>
+            <property name="odaURL">jdbc:postgresql://localhost:5432</property>
         </oda-data-source>
     </data-sources>
     <data-sets>
@@ -216,7 +208,7 @@
             <xml-property name="queryText"><![CDATA[select Partner.name, Partner.first_name, Address.addressl4, Address.addressl6
 from base_partner AS Partner
 inner join base_address AS Address
-on Partner.main_invoicing_address = Address.id
+on (Partner.main_invoicing_address = Address.id)
 where Partner.id = ?]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">

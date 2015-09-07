@@ -1,101 +1,180 @@
 "key","message","comment","context"
-"%",,,"resources/domains/SaleOrderScheduleLine.xml:13"
-"%s Veuillez configurer un entrepot virtuel fournisseur pour la société %s",,,"java/com/axelor/apps/supplychain/exception/IExceptionMessage.java:22"
-"Amount invoiced",,,"resources/domains/SaleOrderLine.xml:16"
-"Amount remaining to invoice",,,"resources/domains/SaleOrder.xml:15"
-"Amount to invoice",,,"resources/domains/SaleOrderScheduleLine.xml:12"
-"Associated invoice lines",,,"resources/domains/SaleOrderLine.xml:20"
-"Category",,,"resources/views/Menu.xml:18"
-"Category Dashboard",,,"resources/views/Menu.xml:30"
-"Category Db",,,"resources/views/Menu.xml:21"
-"Compte rendu de génération de facture d'abonnement :\n",,,"java/com/axelor/apps/supplychain/exception/IExceptionMessage.java:47"
-"Created by",,,"resources/views/SaleBatch.xml:22"
-"Created on",,,"resources/views/SaleBatch.xml:21"
-"Cumulated invoiced %",,,"resources/domains/SaleOrderScheduleLine.xml:15"
-"Date of shipment",,,"resources/domains/SaleOrder.xml:11"
-"Description",,,"resources/views/SaleBatch.xml:26"
-"Devis",,,"java/com/axelor/apps/supplychain/service/batch/BatchInvoicing.java:78
-java/com/axelor/apps/supplychain/service/batch/BatchInvoicing.java:83"
-"Devis(s) traité(s)",,,"java/com/axelor/apps/supplychain/exception/IExceptionMessage.java:48"
-"Draft invoice N days after order validation",,,"resources/views/Selects.xml:11"
-"Facture créée",,,"java/com/axelor/apps/supplychain/exception/IExceptionMessage.java:17"
-"Family",,,"resources/views/Menu.xml:24"
-"Family Dashboard",,,"resources/views/Dashboard.xml:14
-resources/views/Dashboard.xml:18
-resources/views/Menu.xml:35"
-"Family Db",,,"resources/views/Menu.xml:27"
-"Family sale turnover (Excl. Tax) per month",,,"resources/views/ProductFamily.xml:13"
-"From Date",,,"resources/views/Charts.xml:69"
-"Il est nécessaire de définir un plannificateur.",,,"java/com/axelor/apps/supplychain/exception/IExceptionMessage.java:27"
-"Il est nécessaire de définir une date de début d'abonnement.",,,"java/com/axelor/apps/supplychain/exception/IExceptionMessage.java:28"
-"Il est nécessaire de définir une date de première facturation.",,,"java/com/axelor/apps/supplychain/exception/IExceptionMessage.java:29"
-"Invoice",,,"resources/domains/SaleOrderScheduleLine.xml:17
-resources/domains/StockMove.xml:13"
-"Invoice controlled",,,"resources/domains/SaleOrderLine.xml:24"
-"Invoiced ?",,,"resources/domains/SaleOrderLine.xml:15"
-"Invoicing",,,"resources/views/Selects.xml:15"
-"Invoicing Date",,,"resources/domains/SaleOrderLine.xml:12"
-"Invoicing batch",,,"resources/views/SaleBatch.xml:23"
-"Invoicing trigger",,,"resources/domains/SaleOrder.xml:14"
-"Invoicing type",,,"resources/domains/SaleOrder.xml:12"
-"Le devis %s sera facturé le %s.",,,"java/com/axelor/apps/supplychain/exception/IExceptionMessage.java:30"
-"Le devis est déjà complêtement facturé",,,"java/com/axelor/apps/supplychain/exception/IExceptionMessage.java:31"
-"Linked invoices",,,"resources/domains/SaleOrder.xml:18"
-"Location",,,"resources/domains/PurchaseOrder.xml:10
-resources/domains/SaleOrder.xml:10"
-"Month",,,"resources/views/Charts.xml:104"
-"Nbr of days",,,"resources/domains/SaleOrderScheduleLine.xml:16"
-"Number of Product per Category",,,"resources/views/Charts.xml:26
-resources/views/Dashboard.xml:35"
-"Number of Product per Family",,,"resources/views/Charts.xml:6
-resources/views/Dashboard.xml:31"
-"Partner",,,"resources/views/Partner.xml:10
-resources/views/Partner.xml:6"
-"Product Category",,,"resources/views/Charts.xml:42"
-"Product Db",,,"resources/views/Menu.xml:10
-resources/views/Menu.xml:13"
-"Product Family",,,"resources/views/Charts.xml:22"
-"Product Type",,,"resources/views/Charts.xml:63"
-"Product family",,,"resources/views/ProductFamily.xml:6"
-"Product launches/withdrawal each month",,,"resources/views/Charts.xml:67
-resources/views/Dashboard.xml:26"
-"Product type distribution",,,"resources/views/Charts.xml:46
-resources/views/Dashboard.xml:22"
-"Products",,,"resources/views/Charts.xml:105
-resources/views/Charts.xml:23
-resources/views/Charts.xml:43
-resources/views/Charts.xml:64
-resources/views/Menu.xml:7"
-"Products DB 1",,,"resources/views/Dashboard.xml:6"
-"Produit incorrect dans le mouvement de stock %s",,,"java/com/axelor/apps/supplychain/exception/IExceptionMessage.java:42"
-"Purchase order",,,"resources/domains/StockMove.xml:12"
-"Purchase order line",,,"resources/domains/StockMoveLine.xml:11"
-"Remaining to invoice",,,"resources/domains/SaleOrderLine.xml:17"
-"SO schedule line",,,"resources/views/SaleOrderScheduleLine.xml:17"
-"SO schedule lines",,,"resources/views/SaleOrderScheduleLine.xml:6"
-"Sale Batch",,,"resources/views/SaleBatch.xml:14"
-"Sale batches",,,"resources/views/SaleBatch.xml:6"
-"Sale order",,,"resources/domains/SaleOrderScheduleLine.xml:10
-resources/domains/StockMove.xml:11
-resources/views/SaleOrder.xml:17
-resources/views/SaleOrder.xml:9"
-"Sales",,,"resources/views/Partner.xml:7"
-"Sales Turnover",,,"resources/views/ProductFamily.xml:8"
-"Sales order line",,,"resources/domains/StockMoveLine.xml:10"
-"Sales orders",,,"resources/views/Partner.xml:11
-resources/views/Partner.xml:14
-resources/views/Partner.xml:21"
-"Schedule line list",,,"resources/domains/SaleOrder.xml:21"
-"Seq.",,,"resources/domains/SaleOrderScheduleLine.xml:11"
-"Show details in invoice",,,"resources/domains/SaleOrder.xml:13"
-"Supply method",,,"resources/domains/SaleOrderLine.xml:10"
-"Task",,,"resources/domains/SaleOrderScheduleLine.xml:14"
-"The location must be filled.",,,"resources/views/SaleOrder.xml:64"
-"To Date",,,"resources/views/Charts.xml:70"
-"To invoice?",,,"resources/domains/SaleOrderLine.xml:14"
-"Veuillez choisir un fournisseur pour la ligne %s",,,"java/com/axelor/apps/supplychain/exception/IExceptionMessage.java:37"
-"Veuillez selectionner une devise pour la commande %s",,,"java/com/axelor/apps/supplychain/exception/IExceptionMessage.java:16"
-"Veuillez selectionner une devise pour le devis %s",,,"java/com/axelor/apps/supplychain/exception/IExceptionMessage.java:32"
-"When a task is over",,,"resources/views/Selects.xml:10"
-"help:SaleOrderScheduleLine.nbOfDay","If invoicing based on Nbr. of days",,"resources/domains/SaleOrderScheduleLine.xml:16"
-"help:SaleOrderScheduleLine.saleOrderLine","If invoicing based on task(s).",,"resources/domains/SaleOrderScheduleLine.xml:14"
+"%",,,
+"%s please configure a virtual supplier stock location for the company %s",,,
+"A contact partner must be selected",,,
+"A payment condition must be selected",,,
+"A payment mode must be selected",,,
+"A supplier partner must be selected",,,
+"Accepted Credit",,,
+"Action",,,
+"Actions",,,
+"Advance Payment",,,
+"Advance Payment list",,,
+"Allow Subscriptions for Sale Orders",,,
+"Amount",,,
+"Amount invoiced",,,
+"Amount invoiced W.T.",,,
+"Amount remaining to use",,,
+"Amount to invoice",,,
+"An active stockMove already exists for this purchaseOrder",,,
+"An active stockMove already exists for this saleOrder",,,
+"An invoice not canceled already exists for the incoming stock move %s",,,
+"An invoice not canceled already exists for the outgoing stock move %s",,,
+"Annulation",,,
+"Archived ?",,,
+"Are you sure you want to generate invoice for all subscriptions ?",,,
+"Are you sure you want to generate invoice for selected subscriptions ?",,,
+"At least one sale order line must be selected",,,
+"Batchs",,,
+"Bill Late Subscriptions",,,
+"Bill Late Subscriptions Batch",,,
+"Client bloqued",,,
+"Code",,,
+"Comments",,,
+"Company",,,
+"Compte rendu de génération de facture d'abonnement :\n",,,
+"Confirm Purchase order generation",,,
+"Confirmation",,,
+"Confirmer",,,
+"Contact",,,
+"Contact partner",,,
+"Created by",,,
+"Created on",,,
+"Cumulated invoiced %",,,
+"Customer Credits",,,
+"Customer Stock Move to invoice",,,
+"Customer deliveries management",,,
+"Customer delivery",,,
+"Date",,,
+"Date From",,,
+"Date To",,,
+"Date of shipment",,,
+"Description",,,
+"Devis",,,
+"Draft invoice N days after order validation",,,
+"Encours utilisé",,,
+"Family Dashboard",,,
+"Family sale turnover (Excl. Tax) per month",,,
+"Fied Date To is empty because fields periodicity, date from or number of periods are empty",,,
+"Field Date To is empty because fields periodicity, date from or number of periods are empty",,,
+"From Date",,,
+"Generate Invoice",,,
+"Generate Subscriptions",,,
+"Generate customer deliveries automatically",,,
+"Generate invoice for all subscrip",,,
+"Generate invoice for subscriptions",,,
+"Generate invoice from selected subscrip",,,
+"Generate invoice from stock move",,,
+"Generate one invoice per incoming stockMove",,,
+"Generate one invoice per outgoing stockMove",,,
+"Generate single invoice",,,
+"Generate supplier arrivals automatically",,,
+"Incorrect product in the stock move %s",,,
+"Information",,,
+"Invoice",,,
+"Invoice Generated",,,
+"Invoice controlled",,,
+"Invoice created",,,
+"Invoice generated",,,
+"Invoiced",,,
+"Invoiced ?",,,
+"Invoices",,,
+"Invoices Generated",,,
+"Invoicing Date",,,
+"Invoicing Type",,,
+"Invoicing batch",,,
+"Invoicing trigger",,,
+"Location",,,
+"Mail batches",,,
+"Manage the invoiced amount by line",,,
+"Mass Cust. Stock Move Invoicing",,,
+"Mass Suppl. Stock Move Invoicing",,,
+"Month",,,
+"Move",,,
+"Nbr of days",,,
+"No Subscription to Invoice",,,
+"No invoice was generated",,,
+"No sale order selected or no subscription to invoice",,,
+"Number of Periods",,,
+"Number of Product per Category",,,
+"Number of Product per Family",,,
+"Order(s) processed",,,
+"PO line",,,
+"Partner",,,
+"Payment condition",,,
+"Payment mode",,,
+"Period Beginning",,,
+"Period Ending",,,
+"Periodicity",,,
+"Please, select a currency for the order %s",,,
+"Please, select a supplier for the line %s",,,
+"Product",,,
+"Product Category",,,
+"Product Family",,,
+"Product Type",,,
+"Product family",,,
+"Product launches/withdrawal each month",,,
+"Product name",,,
+"Product type distribution",,,
+"Products",,,
+"Products DB 1",,,
+"Products Details",,,
+"Purchase Order",,,
+"Purchase order",,,
+"Purchase order line",,,
+"Qty",,,
+"SO line",,,
+"SO schedule line",,,
+"SO schedule lines",,,
+"Sale Batch",,,
+"Sale Order",,,
+"Sale batches",,,
+"Sale order",,,
+"Sale order line",,,
+"Sales",,,
+"Sales Turnover",,,
+"Sales order line",,,
+"Sales orders",,,
+"Schedule line list",,,
+"Select a product",,,
+"Select an unit",,,
+"Select supplier partner",,,
+"Seq.",,,
+"Some order lines already contain subscriptions, subscriptions not invoiced will be deleted, do you want to continue?",,,
+"Stock Move",,,
+"Stock move",,,
+"Subscription",,,
+"Subscription List",,,
+"Subscription Sale Orders",,,
+"Subscription Sale orders To Invoice",,,
+"Subscriptions",,,
+"Subscriptions to invoice",,,
+"Supplier Stock Move to invoice",,,
+"Supplier arrival",,,
+"Supplier arrivals management",,,
+"Supply method",,,
+"Supplychain Batch",,,
+"Supplychain batch",,,
+"Supplychain batches",,,
+"Task",,,
+"Template",,,
+"The client Partner is required and must be the same for all sale orders",,,
+"The company is required and must be the same for all purchase orders",,,
+"The company is required and must be the same for all sale orders",,,
+"The currency is required and must be the same for all sale orders",,,
+"The invoice for the stock move %s can't be generated because of this following error : %s",,,
+"The location must be filled.",,,
+"The supplier Partner is required and must be the same for all purchase orders",,,
+"Timetable",,,
+"Timetables",,,
+"To Date",,,
+"To invoice",,,
+"Unit",,,
+"Unit prices in A.T.I and in W.T. can't be mix",,,
+"When a task is over",,,
+"You have to choose at least one incoming stock move",,,
+"You have to choose at least one outgoing stock move",,,
+"You have to select at least one subscription",,,
+"help:SaleOrderScheduleLine.nbOfDay","If invoicing based on Nbr. of days",,
+"help:SaleOrderScheduleLine.saleOrderLine","If invoicing based on task(s).",,
+"month(s)",,,

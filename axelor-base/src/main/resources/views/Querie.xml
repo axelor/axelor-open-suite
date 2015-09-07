@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
     
     <grid name="querie-grid" title="Queries" model="com.axelor.apps.base.db.Querie">
     	<field name="name"/>
         <field name="type"/>
-        <field name="metaModel"/>
+        <field name="metaModel" form-view="meta-model-form" grid-view="meta-model-grid"/>
     </grid>
     
     <form name="querie-form" title="Querie" model="com.axelor.apps.base.db.Querie" 
     	onNew="action-querie-record-new">
     	<panel>
 	        <field name="name"/>
-	        <field name="metaModel"/>
+	        <field name="metaModel" form-view="meta-model-form" grid-view="meta-model-grid"/>
 	        <field name="type"/>
 	        <field name="query" widget="CodeEditor" x-syntax="sql" hideIf="type == 3" colSpan="12"/>
 	        <button name="checkQuery" title="Check query" onClick="action-querie-check-query"/>

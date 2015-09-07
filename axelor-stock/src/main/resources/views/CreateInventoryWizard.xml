@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
     
     
 	<form onNew="action-create-inventory-wizard-record-default" name="create-inventory-wizard-form" title="Create inventory" model="com.axelor.apps.base.db.Wizard">
 	  <panel title="Basic">
-	    <field name="location" title="Location" widget="ManyToOne" target="com.axelor.apps.stock.db.Location"/>
+	    <field name="location" title="Location" widget="ManyToOne" target="com.axelor.apps.stock.db.Location" form-view="location-form" grid-view="location-grid"/>
 	    <field name="inventoryDate" title="Inventory date" widget="Date"/>        
 	    <field name="description" title="Description" colSpan="12" max="600"/>
 	  </panel>
 	  <panel title="Fill inventory with">
-	    <field name="productFamily" title="Product family" widget="ManyToOne" target="com.axelor.apps.base.db.ProductFamily"/>
-	    <field name="productCategory" title="Product category" widget="ManyToOne" target="com.axelor.apps.base.db.ProductCategory"/>
+	    <field name="productFamily" title="Product family" widget="ManyToOne" target="com.axelor.apps.base.db.ProductFamily" form-view="product-family-form" grid-view="product-family-grid"/>
+	    <field name="productCategory" title="Product category" widget="ManyToOne" target="com.axelor.apps.base.db.ProductCategory" form-view="product-category-form" grid-view="product-category-grid"/>
 	    <field name="excludeOutOfStock" title="Exclude out of stock products ?" widget="Boolean"/>
 	    <field name="includeObsolete" title="Include obsolete products ?" widget="Boolean"/>
 	  </panel>

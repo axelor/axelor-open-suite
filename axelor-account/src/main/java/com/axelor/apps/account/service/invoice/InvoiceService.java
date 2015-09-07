@@ -62,7 +62,7 @@ public interface InvoiceService extends Repository<Invoice>{
 	 * @throws AxelorException
 	 */
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void compute(final Invoice invoice) throws AxelorException;
+	public Invoice compute(final Invoice invoice) throws AxelorException;
 	
 	
 	/**
@@ -127,4 +127,7 @@ public interface InvoiceService extends Repository<Invoice>{
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public Invoice createRefund(Invoice invoice) throws AxelorException;
 	
+	
+	public void setDraftSequence(Invoice invoice);
+
 }

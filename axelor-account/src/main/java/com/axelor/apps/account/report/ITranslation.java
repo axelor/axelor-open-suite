@@ -19,13 +19,13 @@ package com.axelor.apps.account.report;
 
 public interface ITranslation {
 
-	
+
 	public static final String INVOICE_DATE = /*$$(*/ "Invoice.date"; /*)*/
 	public static final String INVOICE_PAYMENT_TERMS = /*$$(*/ "Invoice.paymentTerms"; /*)*/
 	public static final String INVOICE_DUE_DATE = /*$$(*/ "Invoice.dueDate"; /*)*/
 	public static final String INVOICE_DOCUMENT_REF = /*$$(*/ "Invoice.documentRef"; /*)*/
 	public static final String INVOICE_SUPPLIER = /*$$(*/ "Invoice.supplier"; /*)*/
-	public static final String INVOICE_PRODUCT_DESCRIPTION = /*$$(*/ "Invoice.productDescription"; /*)*/
+	public static final String INVOICE_DESCRIPTION = /*$$(*/ "Invoice.description"; /*)*/
 	public static final String INVOICE_TAX = /*$$(*/ "Invoice.tax"; /*)*/
 	public static final String INVOICE_QTY_UNIT = /*$$(*/ "Invoice.qtyUnit"; /*)*/
 	public static final String INVOICE_UNIT_PRICE = /*$$(*/ "Invoice.unitPrice"; /*)*/
@@ -47,5 +47,5 @@ public interface ITranslation {
 	public static final String INVOICE_REFUND_NO = /*$$(*/ "Invoice.refundNo"; /*)*/
 	public static final String INVOICE_LAW = /*$$(*/ "Invoice.law"; /*)*/
 	
-	
+
 }

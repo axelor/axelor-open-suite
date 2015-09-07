@@ -1,361 +1,298 @@
 "key","message","comment","context"
-"%s :\n Veuillez configurer le module vente pour la société %s",,,"java/com/axelor/apps/sale/exception/IExceptionMessage.java:42"
-"Action","Action",,"resources/domains/SaleBatch.xml:12"
-"Actions","Actions",,"resources/views/SaleOrder.xml:117
-resources/views/SaleOrder.xml:39
-resources/views/SaleOrder.xml:8"
-"Amount","Montant",,"resources/views/Charts.xml:260
-resources/views/Charts.xml:290
-resources/views/Charts.xml:325
-resources/views/Charts.xml:358
-resources/views/Charts.xml:391
-resources/views/Charts.xml:418"
-"Amount A.T.I.","Montant T.T.C.",,"resources/domains/SaleOrderLineTax.xml:12"
-"Amount Tax","Montant Taxe",,"resources/domains/SaleOrderLineTax.xml:11"
-"Base W.T.","Base H.T.",,"resources/domains/SaleOrderLineTax.xml:10"
-"Batchs","Batch",,"resources/domains/SaleBatch.xml:17
-resources/domains/SaleOrder.xml:25"
-"Business project","Affaire/Projet",,"resources/views/SaleOrder.xml:87"
-"Call","Appel",,"resources/views/SaleOrder.xml:388"
-"Cancel","Annuler",,"resources/views/SaleOrder.xml:121"
-"Category","Catégorie",,"resources/views/Charts.xml:680"
-"Category sale turnover (Excl. Tax) per month","CA H.T. par catégorie par mois",,"resources/views/Charts.xml:709
-resources/views/Dashboard.xml:228"
-"Code","Code",,"resources/domains/SaleBatch.xml:11"
-"Company","Société",,"resources/domains/SaleBatch.xml:13
-resources/domains/SaleConfig.xml:11
-resources/domains/SaleOrder.xml:10"
-"Compute","Calculer",,"resources/views/SaleOrder.xml:118"
-"Confirm","Confirmer",,"resources/views/SaleOrder.xml:119"
-"Contact","Contact",,"resources/domains/SaleOrder.xml:29"
-"Content","Contenu",,"resources/views/SaleOrder.xml:63"
-"Country","Pays",,"resources/views/Charts.xml:390"
-"Create Quote","Créer Devis",,"resources/views/Menu.xml:73"
-"Create SO","Créer Devis",,"resources/views/Menu.xml:62"
-"Creation date","Date de création",,"resources/domains/SaleOrder.xml:23"
-"Currency","Devise",,"resources/domains/SaleOrder.xml:21"
-"Customer","Client",,"resources/domains/SaleOrder.xml:28"
-"Customer information","Informations client",,"resources/views/SaleOrder.xml:181
-resources/views/SaleOrder.xml:53"
-"Customer reference","Réf. Client",,"resources/domains/SaleOrder.xml:22"
-"Customize BOM","Nomenclature Personnalisée",,"resources/views/SaleOrderLine.xml:43"
-"Dashboard","Tableau de bord",,"resources/views/Dashboard.xml:56
-resources/views/Dashboard.xml:8"
-"Default value for sublines","Valeur par défaut pour ss-lignes",,"resources/domains/SaleOrder.xml:35"
-"Delivery","Livraison",,"resources/views/SaleOrderLine.xml:48"
-"Delivery address","Adresse de livraison",,"resources/domains/SaleOrder.xml:32"
-"Delivery date","Date de livraison",,"resources/domains/SaleOrderLine.xml:35"
-"Description","Description",,"resources/domains/SaleBatch.xml:16
-resources/domains/SaleOrder.xml:56
-resources/domains/SaleOrderLine.xml:21
-resources/domains/SaleOrderSubLine.xml:15
-resources/views/SaleOrder.xml:94"
-"Devis",,,"java/com/axelor/apps/sale/web/SaleOrderController.java:139
-java/com/axelor/apps/sale/web/SaleOrderController.java:185
-java/com/axelor/apps/sale/web/SaleOrderController.java:94"
-"Discount","Remise",,"resources/views/SaleOrderLine.xml:33
-resources/views/SaleOrderSubLine.xml:33"
-"Discount amount","Montant remise",,"resources/domains/SaleOrderLine.xml:25
-resources/domains/SaleOrderSubLine.xml:22"
-"Estimated delivery date","Date de livraison estimée",,"resources/domains/SaleOrderLine.xml:28"
-"Excel Export","Export Excel",,"resources/views/SaleOrder.xml:35"
-"Family sale turnover (Excl. Tax) per month","CA H.T. par famille par mois",,"resources/views/Charts.xml:11"
-"Financial terms","Termes financiers",,"resources/views/SaleOrder.xml:72"
-"From Date","Date de",,"resources/views/Charts.xml:13
-resources/views/Charts.xml:239
-resources/views/Charts.xml:265
-resources/views/Charts.xml:295
-resources/views/Charts.xml:330
-resources/views/Charts.xml:363
-resources/views/Charts.xml:396
-resources/views/Charts.xml:424
-resources/views/Charts.xml:473
-resources/views/Charts.xml:525
-resources/views/Charts.xml:577
-resources/views/Charts.xml:608
-resources/views/Charts.xml:639
-resources/views/Charts.xml:664
-resources/views/Charts.xml:686
-resources/views/Charts.xml:711"
-"Full name","Nom complet",,"resources/domains/SaleOrder.xml:12"
-"Generate invoice","Générer facture",,"resources/views/SaleOrder.xml:122"
-"Import","Import",,"resources/domains/SaleConfig.xml:9
-resources/domains/SaleOrder.xml:11
-resources/domains/SaleOrderLine.xml:12"
-"In % / fixed","En % / Fixe",,"resources/domains/SaleOrderLine.xml:26
-resources/domains/SaleOrderSubLine.xml:23"
-"Industry Sector","Secteur d'activité",,"resources/views/Charts.xml:705"
-"Info.","Info.",,"resources/views/SaleOrder.xml:126"
-"Invoiced first date","Date de première facture",,"resources/domains/SaleOrder.xml:66"
-"Invoices","Factures",,"resources/views/SaleOrder.xml:347"
-"Invoices dates","Dates de factures",,"resources/views/SaleOrder.xml:107"
-"Invoicing","Facturation",,"resources/views/SaleOrder.xml:100
-resources/views/SaleOrder.xml:213
-resources/views/SaleOrder.xml:79
-resources/views/Selects.xml:10"
-"Invoicing address","Adresse de facturation",,"resources/domains/SaleOrder.xml:30"
-"Invoicing follow-up","Suivi Facturation",,"resources/views/SaleOrderLine.xml:53"
-"Invoicing informations","Informations Facturation",,"resources/views/SaleConfig.xml:14"
-"La facturation par expédition impose que l'ensemble des lignes de devis comporte des produits de service ou stockable avec un approvisionnement depuis le stock",,,"java/com/axelor/apps/sale/exception/IExceptionMessage.java:32"
-"La société %s n'a pas de séquence de configurée pour les devis clients",,,"java/com/axelor/apps/sale/exception/IExceptionMessage.java:37"
-"Label","Libellé",,"resources/domains/SaleOrderSubLine.xml:14"
-"Last Year To Date","Année N-1 à Ajd",,"resources/views/Charts.xml:164"
-"Marketing","Marketing",,"resources/views/SaleOrder.xml:76"
-"Month","Mois",,"resources/views/Charts.xml:32
-resources/views/Charts.xml:417
-resources/views/Charts.xml:465
-resources/views/Charts.xml:516
-resources/views/Charts.xml:543
-resources/views/Charts.xml:570
-resources/views/Charts.xml:596
-resources/views/Charts.xml:627
-resources/views/Charts.xml:70
-resources/views/Charts.xml:730
-resources/views/Charts.xml:779"
-"My Current Leads","Mes Pistes en cours",,"resources/views/Dashboard.xml:29"
-"My Opportunities","Mes Opportunités",,"resources/views/Dashboard.xml:46"
-"My Proposals","Mes Propositions Commerciales",,"resources/views/SaleOrder.xml:368"
-"My Sales","Mes Ventes",,"resources/views/SaleOrder.xml:371"
-"My Sales Orders","Mes devis/cmdes clients",,"resources/views/Dashboard.xml:16"
-"My Team Proposals","Propositions Commerciales de mon Equipe",,"resources/views/SaleOrder.xml:374"
-"My Team Sales","Ventes de mon Equipe",,"resources/views/SaleOrder.xml:377"
-"My Today Activities","Mes activités du jour",,"resources/views/Dashboard.xml:38"
-"My Turnover per month","Mon CA par mois",,"resources/views/Charts.xml:394
-resources/views/Dashboard.xml:23"
-"Nbr of Units sold (Orders) by category","Nbre d'unité vendues par catégorie",,"resources/views/Charts.xml:471
-resources/views/Dashboard.xml:147"
-"New Sale order","Nouv. Devis/Cmde client",,"resources/views/Menu.xml:11
-resources/views/Menu.xml:14"
-"Next invoiced period start date","Date de début prochaine période",,"resources/domains/SaleOrder.xml:67"
-"No Of Units","Nbr. D'unités",,"resources/views/Charts.xml:517"
-"Notes","Remarques",,"resources/views/SaleOrderLine.xml:45"
-"Order Date","Date de commande",,"resources/domains/SaleOrder.xml:59"
-"Order Number","N° de commande",,"resources/domains/SaleOrder.xml:60"
-"Orders","Commandes",,"resources/views/Menu.xml:92"
-"Other informations","Autres informations",,"resources/views/SaleOrder.xml:67"
-"Partner Type","Type tiers",,"resources/views/Charts.xml:658"
-"Plan a call","Plannifier un appel",,"resources/views/SaleOrder.xml:10
-resources/views/SaleOrder.xml:41"
-"Plan a meeting","Planifier un render-vous",,"resources/views/SaleOrder.xml:382
-resources/views/SaleOrder.xml:40
-resources/views/SaleOrder.xml:9"
-"Plan a task","Planifier une tâche",,"resources/views/SaleOrder.xml:11
-resources/views/SaleOrder.xml:394
-resources/views/SaleOrder.xml:42"
-"Price list","Liste de prix",,"resources/domains/SaleOrder.xml:31"
-"Print","Imprimer",,"resources/views/SaleOrder.xml:163
-resources/views/SaleOrder.xml:172
-resources/views/SaleOrder.xml:22
-resources/views/SaleOrder.xml:33"
-"Print subtotal / line","Imprimer ss-total / ligne",,"resources/domains/SaleOrderLine.xml:15"
-"Print subtotal per line","Imprimer ss-total / ligne",,"resources/domains/SaleOrder.xml:34"
-"Product","Produit",,"resources/domains/SaleOrderLine.xml:13
-resources/domains/SaleOrderSubLine.xml:13
-resources/views/Charts.xml:553"
-"Product Category","Catégorie de produit",,"resources/views/Charts.xml:357"
-"Product Family","Famille produit",,"resources/views/Charts.xml:222
-resources/views/Charts.xml:324"
-"Product Family Sales Turnover this year vs last year","CA par famille produit année N vs N-1",,"resources/views/Charts.xml:196
-resources/views/Dashboard.xml:105"
-"Product name","Nom produit",,"resources/domains/SaleOrderLine.xml:16"
-"Product sale turnover (Excl. Tax) last 12 month","CA HT par produit sur 12 derniers mois",,"resources/views/Charts.xml:550
-resources/views/Dashboard.xml:162"
-"Product sale turnover (Excl. Tax) per month","CA HT par produit par mois",,"resources/views/Charts.xml:523
-resources/views/Dashboard.xml:156"
-"Product variant","Variante produit",,"resources/domains/SaleOrderLine.xml:37
-resources/domains/SaleOrderSubLine.xml:25"
-"Qty","Qté",,"resources/domains/SaleOrderLine.xml:14
-resources/domains/SaleOrderSubLine.xml:17"
-"Quotes","Devis",,"resources/views/Menu.xml:79"
-"Quotes & Orders","Devis & Commandes",,"resources/views/Menu.xml:74"
-"Reference","Référence",,"resources/domains/SaleOrder.xml:20"
-"SO Tax line","Ligne de TVA",,"resources/views/SaleOrderLineTax.xml:14"
-"SO Tax lines","Les lignes de TVA",,"resources/views/SaleOrderLineTax.xml:6"
-"SO line","Ligne de devis",,"resources/views/SaleOrderLine.xml:18"
-"SO lines","Lignes de devis",,"resources/views/SaleOrderLine.xml:52
-resources/views/SaleOrderLine.xml:6"
-"SO subline","Sous-ligne de devis/cmde",,"resources/views/SaleOrderSubLine.xml:19"
-"SO sublines","Sous-lignes de devis",,"resources/views/SaleOrderSubLine.xml:6"
-"Sale batch","Traitement de masse Ventes",,"resources/domains/Batch.xml:11"
-"Sale batches","Traitement de masse Ventes",,"resources/views/Menu.xml:40
-resources/views/Menu.xml:43"
-"Sale config","Config. Ventes",,"resources/domains/Company.xml:10"
-"Sale configuration","Config. Ventes",,"resources/views/SaleConfig.xml:10"
-"Sale configurations","Config. Ventes",,"resources/views/Menu.xml:50
-resources/views/Menu.xml:53
-resources/views/SaleConfig.xml:6"
-"Sale order","Devis",,"resources/domains/SaleOrderLine.xml:10
-resources/domains/SaleOrderLineTax.xml:8
-resources/views/SaleOrder.xml:170
-resources/views/SaleOrder.xml:30"
-"Sale order lines","Lignes de devis",,"resources/domains/SaleOrder.xml:39
-resources/domains/SaleOrderSubLine.xml:10"
-"Sale order sub-lines","Sous-ligne de devis",,"resources/domains/SaleOrderLine.xml:31"
-"Sale orders","Devis/Cmdes Clients",,"resources/views/Menu.xml:23
-resources/views/Menu.xml:26
-resources/views/SaleOrder.xml:154
-resources/views/SaleOrder.xml:6"
-"SaleOrder.bankDetails","Banque",,"java/com/axelor/apps/sale/report/ITranslation.java:45"
-"SaleOrder.bankingInfo","Informations bancaires",,"java/com/axelor/apps/sale/report/ITranslation.java:43"
-"SaleOrder.base","Base",,"java/com/axelor/apps/sale/report/ITranslation.java:37"
-"SaleOrder.cheque","Chèque",,"java/com/axelor/apps/sale/report/ITranslation.java:44"
-"SaleOrder.customer","Client",,"java/com/axelor/apps/sale/report/ITranslation.java:29"
-"SaleOrder.customerRef","Réf. Client",,"java/com/axelor/apps/sale/report/ITranslation.java:27"
-"SaleOrder.date","Date du devis",,"java/com/axelor/apps/sale/report/ITranslation.java:23"
-"SaleOrder.deliveryAddress","Adresse de livraison",,"java/com/axelor/apps/sale/report/ITranslation.java:31"
-"SaleOrder.invoicingAddrs","Adresse de facturation",,"java/com/axelor/apps/sale/report/ITranslation.java:30"
-"SaleOrder.law","Dans le cadre de la loi N°92-1442 du décembre 1992 nous vous précisons que tout retard de paiement donnera lieu à une application d'une pénalité égale à une fois et demi le taux d'intérêt légal.",,"java/com/axelor/apps/sale/report/ITranslation.java:46"
-"SaleOrder.no","Devis N° ",,"java/com/axelor/apps/sale/report/ITranslation.java:22"
-"SaleOrder.note","Remarques",,"java/com/axelor/apps/sale/report/ITranslation.java:42"
-"SaleOrder.paymentCondition","Conditions de paiement",,"java/com/axelor/apps/sale/report/ITranslation.java:24"
-"SaleOrder.paymentMode","Mode de paiement",,"java/com/axelor/apps/sale/report/ITranslation.java:25"
-"SaleOrder.priceExclTax","Prix H.T.",,"java/com/axelor/apps/sale/report/ITranslation.java:36"
-"SaleOrder.productDescription","Produit/Description",,"java/com/axelor/apps/sale/report/ITranslation.java:32"
-"SaleOrder.qtyUnit","Qté / Unité",,"java/com/axelor/apps/sale/report/ITranslation.java:34"
-"SaleOrder.supplier","Fournisseur",,"java/com/axelor/apps/sale/report/ITranslation.java:28"
-"SaleOrder.supplyRef","Réf. Fournisseur",,"java/com/axelor/apps/sale/report/ITranslation.java:26"
-"SaleOrder.tax","T.V.A",,"java/com/axelor/apps/sale/report/ITranslation.java:33"
-"SaleOrder.taxAmount","Montant T.V.A.",,"java/com/axelor/apps/sale/report/ITranslation.java:38"
-"SaleOrder.totalExclTax","Total H.T.",,"java/com/axelor/apps/sale/report/ITranslation.java:39"
-"SaleOrder.totalInclTax","Total T.T.C.",,"java/com/axelor/apps/sale/report/ITranslation.java:41"
-"SaleOrder.totalTax","Total T.V.A.",,"java/com/axelor/apps/sale/report/ITranslation.java:40"
-"SaleOrder.unitPrice","Prix unitaire",,"java/com/axelor/apps/sale/report/ITranslation.java:35"
-"Sales","Vente",,"resources/views/Menu.xml:123
-resources/views/Menu.xml:71
-resources/views/Menu.xml:8"
-"Sales Dashboard 1","Tb Ventes 1",,"resources/views/Dashboard.xml:171"
-"Sales Dashboard 2","Tb Ventes 2",,"resources/views/Dashboard.xml:183"
-"Sales Db 1","Tb Ventes 1",,"resources/views/Menu.xml:126
-resources/views/Menu.xml:129"
-"Sales Db 2","Tb Ventes 2",,"resources/views/Menu.xml:137
-resources/views/Menu.xml:140"
-"Sales Manager Dashboard","Tb Resp. Commercial",,"resources/views/Menu.xml:117"
-"Sales Manager Db","Tb Resp. Commercial",,"resources/views/Menu.xml:114"
-"Sales Order filters","Filtres Devis/Cmdes Clients",,"resources/views/SaleOrder.xml:367"
-"Sales TurnOver by Product this year vs last year","CA par produit année N vs N-1",,"resources/views/Charts.xml:105
-resources/views/Dashboard.xml:93"
-"Sales Turnover (Orders) by month by category","CA par mois par catégorie",,"resources/views/Charts.xml:422
-resources/views/Dashboard.xml:141"
-"Sales Turnover This year vs Last year","CA année N vs N-1",,"resources/views/Dashboard.xml:82"
-"Sales Turnover YTD vs Last year by Product Family","CA par famille produit année N vs N-1",,"resources/views/Charts.xml:131
-resources/views/Dashboard.xml:99"
-"Sales distribution per product category","Répartition des ventes par catégorie de produit",,"resources/views/Charts.xml:328
-resources/views/Dashboard.xml:129"
-"Sales distribution per product family","Répartition des ventes par famille de produit",,"resources/views/Charts.xml:293
-resources/views/Dashboard.xml:123"
-"Sales follow-up","Suivi devis",,"resources/views/SaleOrder.xml:68"
-"Sales order","Devis/Cmdes clients",,"resources/views/Menu.xml:65"
-"Sales order invoicing type","Type facturation",,"resources/domains/SaleConfig.xml:13"
-"Sales per country","Ventes par pays",,"resources/views/Charts.xml:361
-resources/views/Dashboard.xml:135"
-"Sales turnover comparison per month this year vs past years","CA par mois année N vs N-1",,"resources/views/Charts.xml:37
-resources/views/Dashboard.xml:76"
-"Sales turnover comparison per month this year vs past years by family","CA par mois par famille année N vs N-1",,"resources/views/Charts.xml:737
-resources/views/Dashboard.xml:235"
-"Sales turnover this year vs last year","CA année N vs N-1",,"resources/views/Charts.xml:75"
-"Sales turnover this year vs past years","CA année N vs années précédentes",,"resources/views/Charts.xml:161
-resources/views/Dashboard.xml:87"
-"SalesMan","Commercial",,"resources/views/Charts.xml:578"
-"Salesman","Commercial",,"resources/domains/SaleOrder.xml:51
-resources/views/Charts.xml:289
-resources/views/Charts.xml:609"
-"Salesman Dashboard","Tb Commercial",,"resources/views/Menu.xml:106"
-"Salesman Db","Tb Commercial",,"resources/views/Menu.xml:103"
-"Scheduler instance","Instance Echéancier",,"resources/domains/SaleOrder.xml:64"
-"Schedules","Echéanciers",,"resources/views/SaleOrder.xml:99"
-"Send email","Envoyer email",,"resources/views/SaleOrder.xml:23
-resources/views/SaleOrder.xml:34"
-"Seq.","Séq.",,"resources/domains/SaleOrderLine.xml:11
-resources/domains/SaleOrderSubLine.xml:12"
-"Settings","Configurations",,"resources/views/SaleOrderLine.xml:38"
-"Show Invoices","Les factures",,"resources/views/SaleOrder.xml:123"
-"Source",,,"resources/domains/SaleOrder.xml:53"
-"Specific settings","Configuration spécifique",,"resources/views/SaleOrder.xml:91"
-"Status","Statut",,"resources/domains/SaleOrder.xml:48"
-"Stock Moves",,,"resources/views/SaleOrderLine.xml:50"
-"Stock location","Emplacement de stock",,"resources/views/SaleOrder.xml:84"
-"Subscription","Abonnement",,"resources/views/SaleOrder.xml:102"
-"Subscription dates","Date d'abonnement",,"resources/views/SaleOrder.xml:103"
-"Subscription end date","Date de fin d'abonnement",,"resources/domains/SaleOrder.xml:68"
-"Subscription start date","Date de début d'abonnement",,"resources/domains/SaleOrder.xml:65"
-"Supplier","Fournisseur",,"resources/domains/SaleOrderLine.xml:24"
-"Tax","Taxe",,"resources/domains/SaleOrderLine.xml:18
-resources/domains/SaleOrderLineTax.xml:9
-resources/domains/SaleOrderSubLine.xml:19"
-"Tax Lines","Lignes de taxe",,"resources/domains/SaleOrder.xml:42"
-"Team","Equipe",,"resources/domains/SaleOrder.xml:52
-resources/views/Charts.xml:259"
-"This Year To Date","Année N",,"resources/views/Charts.xml:163"
-"To Date","à Date",,"resources/views/Charts.xml:14
-resources/views/Charts.xml:240
-resources/views/Charts.xml:266
-resources/views/Charts.xml:296
-resources/views/Charts.xml:331
-resources/views/Charts.xml:364
-resources/views/Charts.xml:397
-resources/views/Charts.xml:425
-resources/views/Charts.xml:474
-resources/views/Charts.xml:526
-resources/views/Charts.xml:552
-resources/views/Charts.xml:640
-resources/views/Charts.xml:665
-resources/views/Charts.xml:687
-resources/views/Charts.xml:712"
-"Total A.T.I.","Total T.T.C.",,"resources/domains/SaleOrder.xml:46"
-"Total W.T.","Total H.T.",,"resources/domains/SaleOrder.xml:44
-resources/domains/SaleOrderLine.xml:19
-resources/domains/SaleOrderSubLine.xml:20"
-"Total W.T. in company currency","Total H.T. Devise Sté",,"resources/domains/SaleOrderLine.xml:40
-resources/domains/SaleOrderSubLine.xml:28"
-"Total tax","Total T.V.A.",,"resources/domains/SaleOrder.xml:45"
-"TurnOver","CA HT",,"resources/views/Charts.xml:102
-resources/views/Charts.xml:128
-resources/views/Charts.xml:193
-resources/views/Charts.xml:466
-resources/views/Charts.xml:71"
-"Turnover","CA HT",,"resources/views/Charts.xml:158
-resources/views/Charts.xml:223
-resources/views/Charts.xml:33
-resources/views/Charts.xml:544
-resources/views/Charts.xml:571
-resources/views/Charts.xml:597
-resources/views/Charts.xml:628
-resources/views/Charts.xml:659
-resources/views/Charts.xml:681
-resources/views/Charts.xml:706
-resources/views/Charts.xml:731
-resources/views/Charts.xml:780"
-"Turnover (excl. Tax) per saleman","CA HT par commercial",,"resources/views/Charts.xml:263
-resources/views/Dashboard.xml:117"
-"Turnover (excl. Tax) per team","CA HT par équipe",,"resources/views/Charts.xml:237
-resources/views/Dashboard.xml:111"
-"Turnover per customer category","CA HT par catégorie client",,"resources/views/Charts.xml:662
-resources/views/Dashboard.xml:215"
-"Turnover per customer sector","CA HT par secteur d'activité",,"resources/views/Charts.xml:684
-resources/views/Dashboard.xml:221"
-"Turnover per customer type","CA HT par type client",,"resources/views/Charts.xml:637
-resources/views/Dashboard.xml:209"
-"Turnover per month per saleman (4 month)","CA HT par commercial (sur 4 mois)",,"resources/views/Charts.xml:606
-resources/views/Dashboard.xml:203"
-"Turnover per month per saleman (6 month)","CA HT par commercial (sur 6 mois)",,"resources/views/Charts.xml:575
-resources/views/Dashboard.xml:197"
-"Unit","Unité",,"resources/domains/SaleOrderLine.xml:22
-resources/domains/SaleOrderSubLine.xml:16"
-"Unit cost price in company currency","Coût unitaire dans devise société",,"resources/domains/SaleOrderLine.xml:41
-resources/domains/SaleOrderSubLine.xml:29"
-"Unit price","Prix unitaire",,"resources/domains/SaleOrderLine.xml:17
-resources/domains/SaleOrderSubLine.xml:18"
-"Validate","Valider",,"resources/views/SaleOrder.xml:120"
-"Validated by","Validé par",,"resources/domains/SaleOrder.xml:70"
-"Validation date","Date de validation",,"resources/domains/SaleOrder.xml:24"
-"View Orders","Voir Commandes",,"resources/views/Menu.xml:89"
-"View Quotes","Voir Devis",,"resources/views/Menu.xml:77"
-"Word Export","Export Word",,"resources/views/SaleOrder.xml:36"
-"Year","Année",,"resources/views/Charts.xml:101
-resources/views/Charts.xml:127
-resources/views/Charts.xml:157
-resources/views/Charts.xml:192"
-"Year 1 To Date","Année 1 à date",,"resources/views/Charts.xml:39
-resources/views/Charts.xml:739"
-"Year 2 To Date","Année 2 à date",,"resources/views/Charts.xml:40
-resources/views/Charts.xml:740"
+"${clientPartner.saleOrderInformation}",,,
+"${company.orderBloquedMessage}",,,
+"%s :\n Veuillez configurer le module vente pour la société %s",,,
+"A cancel reason must be selected","Un motif d'annulation doit être sélectionné",,
+"Accepted Credit","Montant encours accepté",,
+"Action","Action",,
+"Actions","Actions",,
+"Addition",,,
+"Advance Payment","Avoir",,
+"Advance Payment list","Liste d'avoirs",,
+"Advance Payments","Avoirs",,
+"All Templates","Tous les modèles",,
+"Allow timetable invoicing","Autoriser facturation par échéancier",,
+"Amount","Montant",,
+"Amount A.T.I.","Montant T.T.C.",,
+"Amount Tax","Montant Taxe",,
+"Annulation",,,
+"Base W.T.","Base H.T.",,
+"Batchs","Batch",,
+"Bi-monthly","Bimensuel ",,
+"Bloqued","Bloqué",,
+"Business project","Affaire/Projet",,
+"Call","Appel",,
+"Cancel","Annuler",,
+"Cancel Reason","Raison d'annulation",,
+"Cancel Reasons","Raisons d'annulation",,
+"Cancel reason","Raison d'annulation",,
+"Canceled","Annulé",,
+"Cancellation confirmation","Confirmation d'annulation",,
+"Category","Catégorie",,
+"Category sale turnover (Excl. Tax) per month","CA H.T. par catégorie par mois",,
+"Client box in sale order",,,
+"Code","Code",,
+"Company","Société",,
+"Configuration",,,
+"Confirm cancellation","Confirmer l'annulation",,
+"Confirmation date","Date de confirmation",,
+"Confirmed by","Confirmé par",,
+"Contacts",,,
+"Content","Contenu",,
+"Convert into order","Convertir en devis",,
+"Country","Pays",,
+"Create Order from this Template","Créer Devis depuis ce modèle",,
+"Create Quote","Créer Devis",,
+"Create SO","Créer Devis",,
+"Create a template","Créer un modèle",,
+"Creation date","Date de création",,
+"Currency","Devise",,
+"Customer","Client",,
+"Customer Credit","Encours client",,
+"Customer contact","Contact client",,
+"Customer information","Informations client",,
+"Customer reference","Réf. Client",,
+"Customers","Clients",,
+"Customize BOM","Nomenclature Personnalisée",,
+"Dashboard","Tableau de bord",,
+"Date",,,
+"Default value for sublines","Valeur par défaut pour ss-lignes",,
+"Define as template","Définir en tant que modèle",,
+"Delivered","Livré",,
+"Delivery","Livraison",,
+"Delivery State","Statut de Livraison",,
+"Delivery address","Adresse de livraison",,
+"Delivery conditions","Conditions de livraison",,
+"Delivery date","Date de livraison",,
+"Delivery information","Informations de livraison",,
+"Description","Description",,
+"Devis",,,
+"Discount","Remise",,
+"Discount Type","Type de remise",,
+"Discount amount","Montant remise",,
+"Display delivery condition on printing ?","Afficher les conditions de livraison sur l'impression ?",,
+"Display product code on printing ?","Afficher le code produit sur l'impression ?",,
+"Display saleman on printing ?","Afficher le vendeur sur l'impression",,
+"Display tax detail on printing ?","Afficher le détail de la TVA sur l'impression ?",,
+"Displayed Product name","Libellé produit à afficher",,
+"Draft","Brouillon",,
+"End of validity","Date de fin de validité",,
+"Estimated delivery date","Date de livraison estimée",,
+"Excel Export","Export Excel",,
+"Family sale turnover (Excl. Tax) per month","CA H.T. par famille par mois",,
+"Finalize","Finalisé",,
+"Financial terms","Termes financiers",,
+"From Date","Date de",,
+"Full name","Nom complet",,
+"Generate Project","Générer projet",,
+"Generate Subscriptions","Générer les abonnements",,
+"Generate Tasks","Générer Tâches pour Projet",,
+"Generate customer deliveries","Générer les BL",,
+"Generate invoice","Générer facture",,
+"Generate invoice for subscriptions","Générer facture pour les abonnements",,
+"Generate invoice from sale order","Générer la facture à partir de la cmde client",,
+"Generate production order","Générer order de production",,
+"Generate purchase order","Générer cmde fournisseur",,
+"Grouping line","Ligne de regroupement",,
+"Half-yearly","Semestriel",,
+"Hide Discount on prints?",,,
+"Il manque une ligne de taxe",,,
+"Import","Import",,
+"In ATI","En TTC",,
+"Industry Sector","Secteur d'activité",,
+"Info.","Info.",,
+"Internal Number","Numéro Interne",,
+"Invoice Lines",,,
+"Invoice selected sale orders","Facturer les devis sélectionner",,
+"Invoiced first date","Date de première facture",,
+"Invoicing","Facturation",,
+"Invoicing follow-up","Suivi Facturation",,
+"La facturation par expédition impose que l'ensemble des lignes de devis comporte des produits de service ou stockable avec un approvisionnement depuis le stock",,,
+"La société %s n'a pas de séquence de configurée pour les devis clients",,,
+"Last Year To Date","Année N-1 à Ajd",,
+"Main/Invoicing address","Adresse Principale/Facturation",,
+"Manage sale order versions","Gérer les versions pour les devis client",,
+"Manual Unblock","Déblocage manuel",,
+"Maps","Cartes géographiques",,
+"Month","Mois",,
+"Monthly","Mensuel",,
+"My Current Leads","Mes Pistes en cours",,
+"My Opportunities","Mes Opportunités",,
+"My Proposals","Mes Propositions Commerciales",,
+"My Sales","Mes Ventes",,
+"My Sales Orders","Mes devis/cmdes clients",,
+"My Team Proposals","Propositions Commerciales de mon Equipe",,
+"My Team Sales","Ventes de mon Equipe",,
+"My Templates","Mes modèles",,
+"My Today Activities","Mes activités du jour",,
+"My Turnover per month","Mon CA par mois",,
+"Name","Nom",,
+"Nbr of Units sold (Orders) by category","Nbre d'unité vendues par catégorie",,
+"New Sale order","Nouv. Devis/Cmde client",,
+"New Template","Nouv. Template",,
+"New version","Nouvelle version",,
+"Next invoiced period start date","Date de début prochaine période",,
+"No Of Units","Nbr. D'unités",,
+"No client selected, a new one will be created from the lead, do you agree?","Aucun client sélectionné, un nouveau va être créé depuis la piste, acceptez-vous ?",,
+"Not delivered","Non Livré",,
+"Notes","Remarques",,
+"Opportunity",,,
+"Order Date","Date de commande",,
+"Order Number","N° de commande",,
+"Order bloqued message","Message pour les cmdes bloquées",,
+"Order confirmed","Commande confirmée",,
+"Orders","Commandes",,
+"Other informations","Autres informations",,
+"Partially delivered","Partiellement Livré",,
+"Partner Type","Type tiers",,
+"Plan",,,
+"Plan a call","Plannifier un appel",,
+"Plan a meeting","Planifier un render-vous",,
+"Plan a task","Planifier une tâche",,
+"Price list","Liste de prix",,
+"Price lists",,,
+"Print","Imprimer",,
+"Print subtotal / line","Imprimer ss-total / ligne",,
+"Print subtotal per line","Imprimer ss-total / ligne",,
+"Printing settings","Paramétrage d'impression",,
+"Product","Produit",,
+"Product Category","Catégorie de produit",,
+"Product Family","Famille produit",,
+"Product Family Sales Turnover this year vs last year","CA par famille produit année N vs N-1",,
+"Product sale turnover (Excl. Tax) last 12 month","CA HT par produit sur 12 derniers mois",,
+"Product sale turnover (Excl. Tax) per month","CA HT par produit par mois",,
+"Project/Task",,,
+"Prospects",,,
+"Qty","Qté",,
+"Quarterly","Trimestriel",,
+"Quotes","Devis",,
+"Quotes & Orders","Devis & Commandes",,
+"Reportings",,,
+"SO Tax line","Ligne de TVA",,
+"SO Tax lines","Les lignes de TVA",,
+"SO line","Ligne de devis/cmde",,
+"SO lines","Lignes de devis/cmde",,
+"Sale Order","Devis/Cmde Clients",,
+"Sale Orders ATI/WT","Devis/Cmde Clients en TTC/HT",,
+"Sale batch","Traitement de masse Ventes",,
+"Sale batches","Traitement de masse Ventes",,
+"Sale config","Config. Ventes",,
+"Sale configuration","Config. Ventes",,
+"Sale configurations","Config. Ventes",,
+"Sale order","Devis",,
+"Sale order information","Information à la commande",,
+"Sale order lines","Lignes de devis",,
+"Sale orders","Devis/Cmdes Clients",,
+"SaleOrder.bank","Notre banque",,
+"SaleOrder.base","Base",,
+"SaleOrder.cheque","Chèque",,
+"SaleOrder.customer","Client",,
+"SaleOrder.customerRef","Réf. Client",,
+"SaleOrder.date","Date de facture",,
+"SaleOrder.deliveryAddress","Adresse de livraison",,
+"SaleOrder.deliveryCondition","Conditions de livraison",,
+"SaleOrder.deliveryDate","Date de livraison",,
+"SaleOrder.description","Description",,
+"SaleOrder.discountAmount","Remise",,
+"SaleOrder.invoicingAddrs","Adresse de facturation",,
+"SaleOrder.law","Dans le cadre de la loi N°92-1442 du décembre 1992 nous vous précisons que tout retard de paiement donnera lieu à une application d'une pénalité égale à une fois et demi le taux d'intérêt légal.",,
+"SaleOrder.no","Commande N° ",,
+"SaleOrder.note","Remarques",,
+"SaleOrder.paymentCondition","Conditions de paiement",,
+"SaleOrder.paymentMode","Mode de paiement",,
+"SaleOrder.priceExclTax","Montant H.T.",,
+"SaleOrder.productCode","Référence",,
+"SaleOrder.productDescription","Désignation",,
+"SaleOrder.qtyUnit","Qté / Unité",,
+"SaleOrder.salemanEmail","Email",,
+"SaleOrder.salemanName","Commercial",,
+"SaleOrder.salemanPhone","Tél",,
+"SaleOrder.supplier","Fournisseur",,
+"SaleOrder.supplyRef","Réf. Fournisseur",,
+"SaleOrder.tax","T.V.A",,
+"SaleOrder.taxAmount","Montant T.V.A.",,
+"SaleOrder.totalDiscount","Remise",,
+"SaleOrder.totalExclTax","Total H.T.",,
+"SaleOrder.totalExclTaxWithoutDiscount","Total HT brut",,
+"SaleOrder.totalInclTax","Total T.T.C.",,
+"SaleOrder.totalTax","Total T.V.A.",,
+"SaleOrder.unitPrice","Prix unitaire",,
+"Sales","Vente",,
+"Sales Details","Détails vente",,
+"Sales Manager","Manager",,
+"Sales Manager Details","Détails manager",,
+"Sales Order filters","Filtres Devis/Cmdes Clients",,
+"Sales TurnOver by Product this year vs last year","CA par produit année N vs N-1",,
+"Sales Turnover (Orders) by month by category","CA par mois par catégorie",,
+"Sales Turnover This year vs Last year","CA année N vs N-1",,
+"Sales Turnover YTD vs Last year by Product Family","CA par famille produit année N vs N-1",,
+"Sales distribution per product category","Répartition des ventes par catégorie de produit",,
+"Sales distribution per product family","Répartition des ventes par famille de produit",,
+"Sales follow-up","Suivi devis",,
+"Sales order","Devis/Cmdes clients",,
+"Sales per country","Ventes par pays",,
+"Sales turnover comparison per month this year vs past years","CA par mois année N vs N-1",,
+"Sales turnover comparison per month this year vs past years by family","CA par mois par famille année N vs N-1",,
+"Sales turnover this year vs last year","CA année N vs N-1",,
+"Sales turnover this year vs past years","CA année N vs années précédentes",,
+"SalesMan","Commercial",,
+"Salesman","Commercial",,
+"Salesman Details","Détails commercial",,
+"Scheduler instance","Instance Echéancier",,
+"Send email","Envoyer email",,
+"Seq.","Séq.",,
+"Settings","Paramètres",,
+"Status","Statut",,
+"Stock Moves","BL/BR",,
+"Stock location","Emplacement de stock",,
+"Subscription","Abonnement",,
+"Subscription Sale orders","Devis d'abonnement",,
+"Subscription end date","Date de fin d'abonnement",,
+"Subscription start date","Date de début d'abonnement",,
+"Supplier","Fournisseur",,
+"Tax","Taxe",,
+"Tax Lines","Lignes de taxe",,
+"Team","Equipe",,
+"Template","Modèle",,
+"Template created by","Modèle créé par",,
+"Templates","Modèles",,
+"This Year To Date","Année N",,
+"To Date","à Date",,
+"Tools","Outils",,
+"Total A.T.I.","Total T.T.C.",,
+"Total A.T.I. in company currency","Total TTC Devise Société",,
+"Total W.T.","Total H.T.",,
+"Total W.T. in company currency","Total H.T. Devise Société",,
+"Total cost in company currency","Total coûts Devise Société",,
+"Total subscription W.T.","Total abonnement H.T.",,
+"Total tax","Total T.V.A.",,
+"TurnOver","CA HT",,
+"Turnover","CA HT",,
+"Turnover (excl. Tax) per saleman","CA HT par commercial",,
+"Turnover (excl. Tax) per team","CA HT par équipe",,
+"Turnover Study","Etude CA",,
+"Turnover per customer category","CA HT par catégorie client",,
+"Turnover per customer sector","CA HT par secteur d'activité",,
+"Turnover per customer type","CA HT par type client",,
+"Turnover per month per saleman (4 month)","CA HT par commercial (sur 4 mois)",,
+"Turnover per month per saleman (6 month)","CA HT par commercial (sur 6 mois)",,
+"Unit","Unité",,
+"Unit Price","Prix unitaire",,
+"Unit Price (by month)","Prix unitaire (par mois)",,
+"Unit cost price in company currency","Coût unitaire dans devise société",,
+"Unit price","Prix unitaire",,
+"Unit price discounted","Prix unitaire remisé",,
+"Validity duration","Durée de validité",,
+"Validity duration per default","Durée de validité par défaut",,
+"Version Number","Numéro de version",,
+"View Orders","Voir Commandes",,
+"View Quotes","Voir Devis",,
+"Word Export","Export Word",,
+"Year","Année",,
+"Year 1 To Date","Année 1 à date",,
+"Year 2 To Date","Année 2 à date",,
+"Yearly","Annuel",,
+"important",,,
+"info",,,
+"success",,,
+"warning",,,

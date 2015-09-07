@@ -21,7 +21,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,10 +28,8 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
-import com.axelor.apps.account.db.PaymentCondition;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
-import com.axelor.apps.account.db.repo.PaymentConditionRepository;
 import com.axelor.apps.account.service.invoice.factory.CancelFactory;
 import com.axelor.apps.account.service.invoice.factory.ValidateFactory;
 import com.axelor.apps.account.service.invoice.factory.VentilateFactory;
@@ -42,6 +39,7 @@ import com.axelor.apps.base.db.Alarm;
 import com.axelor.apps.base.service.alarm.AlarmEngineService;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
+import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -113,7 +111,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 	 * @throws AxelorException
 	 */
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void compute(final Invoice invoice) throws AxelorException {
+	public Invoice compute(final Invoice invoice) throws AxelorException {
 
 		LOG.debug("Calcule de la facture");
 		
@@ -132,7 +130,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 			
 		};
 		
-		save(invoiceGenerator.generate());
+		return invoiceGenerator.generate();
 		
 	}
 	
@@ -248,29 +246,15 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 		
 	}
 	
-	public static LocalDate getDueDate(PaymentCondition paymentCondition, LocalDate invoiceDate)  {
+	protected String getDraftSequence(Invoice invoice)  {
+		return "*" + invoice.getId();
+	}
+	
+	public void setDraftSequence(Invoice invoice)  {
 		
-		switch (paymentCondition.getTypeSelect()) {
-		case PaymentConditionRepository.TYPE_NET:
-			
-			return invoiceDate.plusDays(paymentCondition.getPaymentTime());
-			
-		case PaymentConditionRepository.TYPE_END_OF_MONTH_N_DAYS:
-					
-			return invoiceDate.dayOfMonth().withMaximumValue().plusDays(paymentCondition.getPaymentTime());
-					
-		case PaymentConditionRepository.TYPE_N_DAYS_END_OF_MONTH:
-			
-			return invoiceDate.plusDays(paymentCondition.getPaymentTime()).dayOfMonth().withMaximumValue();
-			
-		case PaymentConditionRepository.TYPE_N_DAYS_END_OF_MONTH_AT:
-			
-			return invoiceDate.plusDays(paymentCondition.getPaymentTime()).dayOfMonth().withMaximumValue().plusDays(paymentCondition.getDaySelect());
-
-		default:
-			return invoiceDate;
+		if (invoice.getId() != null && Strings.isNullOrEmpty(invoice.getInvoiceId()))  {
+			invoice.setInvoiceId(this.getDraftSequence(invoice));
 		}
 		
 	}
-	
 }

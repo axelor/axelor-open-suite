@@ -2,14 +2,18 @@ package com.axelor.apps.account.db.repo;
 
 import java.math.BigDecimal;
 
+import javax.persistence.PersistenceException;
+
 import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.service.invoice.InvoiceService;
+import com.axelor.inject.Beans;
 
 public class InvoiceManagementRepository extends InvoiceRepository {
 	@Override
 	public Invoice copy(Invoice entity, boolean deep) {
-		
+
 		Invoice copy = super.copy(entity, deep);
-		
+
 		copy.setStatusSelect(STATUS_DRAFT);
 		copy.setInvoiceId(null);
 		copy.setInvoiceDate(null);
@@ -17,7 +21,7 @@ public class InvoiceManagementRepository extends InvoiceRepository {
 		copy.setValidatedByUser(null);
 		copy.setMove(null);
 		copy.setOriginalInvoice(null);
-		copy.setInTaxTotalRemaining(BigDecimal.ZERO);
+		copy.setCompanyInTaxTotalRemaining(BigDecimal.ZERO);
 		copy.setIrrecoverableStatusSelect(IRRECOVERABLE_STATUS_NOT_IRRECOUVRABLE);
 		copy.setAmountRejected(BigDecimal.ZERO);
 		copy.clearBatchSet();
@@ -36,7 +40,21 @@ public class InvoiceManagementRepository extends InvoiceRepository {
 		copy.setCanceledPaymentSchedule(null);
 		copy.setDirectDebitAmount(BigDecimal.ZERO);
 		copy.setImportId(null);
-		
+
 		return copy;
 	}
+
+
+	@Override
+	public Invoice save(Invoice invoice) {
+		try {
+			invoice = super.save(invoice);
+			Beans.get(InvoiceService.class).setDraftSequence(invoice);
+
+			return invoice;
+		} catch (Exception e) {
+			throw new PersistenceException(e.getLocalizedMessage());
+		}
+	}
+
 }

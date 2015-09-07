@@ -41,7 +41,6 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.db.Reimbursement;
 import com.axelor.apps.account.exception.IExceptionMessage;
-import com.axelor.apps.account.service.administration.GeneralServiceAccount;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
@@ -50,11 +49,9 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.BlockingService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.administration.GeneralService;
+import com.axelor.apps.base.service.administration.GeneralServiceImpl;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.tool.xml.Marschaller;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
-import com.axelor.i18n.I18n;
 import com.axelor.apps.xsd.sepa.AccountIdentification3Choice;
 import com.axelor.apps.xsd.sepa.AmountType2Choice;
 import com.axelor.apps.xsd.sepa.BranchAndFinancialInstitutionIdentification3;
@@ -75,95 +72,99 @@ import com.axelor.apps.xsd.sepa.PaymentTypeInformation1;
 import com.axelor.apps.xsd.sepa.RemittanceInformation1;
 import com.axelor.apps.xsd.sepa.ServiceLevel1Code;
 import com.axelor.apps.xsd.sepa.ServiceLevel2Choice;
+import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.IException;
+import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
 public class ReimbursementExportService {
-	
-	private static final Logger LOG = LoggerFactory.getLogger(ReimbursementExportService.class); 
-	
+
+	private static final Logger LOG = LoggerFactory.getLogger(ReimbursementExportService.class);
+
 	@Inject
 	private MoveService moveService;
-	
+
 	@Inject
 	private MoveLineService moveLineService;
-	
+
 	@Inject
 	private ReconcileService reconcileService;
-	
+
 	@Inject
 	private SequenceService sequenceService;
-	
+
 	@Inject
 	private BlockingService blockingService;
-	
+
 	@Inject
 	private ReimbursementService reimbursementService;
-	
+
 	@Inject
 	private AccountConfigService accountConfigService;
-	
+
 	@Inject
 	private PartnerService partnerService;
-	
+
 	private LocalDate today;
 
 	@Inject
 	public ReimbursementExportService() {
 
-		this.today = GeneralService.getTodayDate();
+		this.today = Beans.get(GeneralService.class).getTodayDate();
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * @param reimbursementExport
 	 */
 	public void fillMoveLineSet(Reimbursement reimbursement, List<MoveLine> moveLineList, BigDecimal total)  {
-		
+
 		LOG.debug("In fillMoveLineSet");
 		LOG.debug("Nombre de trop-perçus trouvés : {}", moveLineList.size());
-		
+
 		for(MoveLine moveLine : moveLineList)  {
 			// On passe les lignes d'écriture (trop perçu) à l'état 'en cours de remboursement'
 			moveLine.setReimbursementStatusSelect(MoveLineService.REIMBURSEMENT_STATUS_REIMBURSING);
 		}
-		
+
 		reimbursement.setMoveLineSet(new HashSet<MoveLine>());
 		reimbursement.getMoveLineSet().addAll(moveLineList);
-		
+
 		LOG.debug("End fillMoveLineSet");
 	}
-	
-	
+
+
 	/**
-	 * 
+	 *
 	 * @param reimbursementExport
-	 * @throws AxelorException 
+	 * @throws AxelorException
 	 */
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public Reimbursement runCreateReimbursement(List<MoveLine> moveLineList, Company company, Partner partner) throws AxelorException  {
-		
+
 		LOG.debug("In runReimbursementProcess");
-		
+
 		BigDecimal total = this.getTotalAmountRemaining(moveLineList);
-		
+
 		AccountConfig accountConfig = company.getAccountConfig();
-		
+
 		// Seuil bas respecté et remboursement manuel autorisé
 		if(total.compareTo(accountConfig.getLowerThresholdReimbursement()) > 0 )  {
-			
+
 			Reimbursement reimbursement = createReimbursement(partner, company);
-			
+
 			fillMoveLineSet(reimbursement, moveLineList, total);
-			
+
 			if(total.compareTo(accountConfig.getUpperThresholdReimbursement()) > 0 || reimbursement.getBankDetails() == null)  {
-			// Seuil haut dépassé	
+			// Seuil haut dépassé
 				reimbursement.setStatusSelect(ReimbursementService.STATUS_TO_VALIDATE);
 			}
 			else  {
 				reimbursement.setStatusSelect(ReimbursementService.STATUS_VALIDATED);
 			}
-			
+
 			reimbursementService.save(reimbursement);
 			return reimbursement;
 		}
@@ -171,8 +172,8 @@ public class ReimbursementExportService {
 		LOG.debug("End runReimbursementProcess");
 		return null;
 	}
-	
-	
+
+
 	/**
 	 * Fonction permettant de calculer le montant total restant à payer / à lettrer
 	 * @param movelineList
@@ -185,13 +186,13 @@ public class ReimbursementExportService {
 		for(MoveLine moveLine : moveLineList)  {
 			total=total.add(moveLine.getAmountRemaining());
 		}
-		
+
 		LOG.debug("Total Amount Remaining : {}",total);
-		
+
 		return total;
 	}
-	
-	
+
+
 	/**
 	 * Methode permettant de créer l'écriture de remboursement
 	 * @param reimbursementExport
@@ -200,44 +201,44 @@ public class ReimbursementExportService {
 	 */
 	public void createReimbursementMove(Reimbursement reimbursement, Company company) throws AxelorException  {
 		reimbursement = reimbursementService.find(reimbursement.getId());
-		
+
 		Partner partner = null;
 		Move newMove = null;
 		boolean first = true;
-		
+
 		AccountConfig accountConfig = company.getAccountConfig();
-		
+
 		if(reimbursement.getMoveLineSet() != null && !reimbursement.getMoveLineSet().isEmpty())  {
 			int seq = 1;
 			for(MoveLine moveLine : reimbursement.getMoveLineSet())  {
 				BigDecimal amountRemaining = moveLine.getAmountRemaining();
 				if(amountRemaining.compareTo(BigDecimal.ZERO) > 0)  {
 					partner = moveLine.getPartner();
-					
+
 					// On passe les lignes d'écriture (trop perçu) à l'état 'remboursé'
 					moveLine.setReimbursementStatusSelect(MoveLineService.REIMBURSEMENT_STATUS_REIMBURSED);
-					
+
 					if(first)  {
 						newMove = moveService.createMove(accountConfig.getReimbursementJournal(), company, null, partner, null);
 						first = false;
 					}
 					// Création d'une ligne au débit
-					MoveLine newDebitMoveLine = moveLineService.createMoveLine(newMove , partner, moveLine.getAccount(), amountRemaining, true, false, today, seq, null);
-					newMove.getMoveLineList().add(newDebitMoveLine);		
+					MoveLine newDebitMoveLine = moveLineService.createMoveLine(newMove , partner, moveLine.getAccount(), amountRemaining, true, today, seq, null);
+					newMove.getMoveLineList().add(newDebitMoveLine);
 					if(reimbursement.getDescription() != null && !reimbursement.getDescription().isEmpty())  {
 						newDebitMoveLine.setDescription(reimbursement.getDescription());
 					}
-					
+
 					seq++;
-					
+
 					//Création de la réconciliation
 					Reconcile reconcile = reconcileService.createReconcile(newDebitMoveLine, moveLine, amountRemaining);
 					reconcileService.confirmReconcile(reconcile, false);
-				}			
+				}
 			}
 			// Création de la ligne au crédit
-			MoveLine newCreditMoveLine = moveLineService.createMoveLine(newMove, partner, accountConfig.getReimbursementAccount(), reimbursement.getAmountReimbursed(), false, false, today, seq, null);
-		
+			MoveLine newCreditMoveLine = moveLineService.createMoveLine(newMove, partner, accountConfig.getReimbursementAccount(), reimbursement.getAmountReimbursed(), false, today, seq, null);
+
 			newMove.getMoveLineList().add(newCreditMoveLine);
 			if(reimbursement.getDescription() != null && !reimbursement.getDescription().isEmpty())  {
 				newCreditMoveLine.setDescription(reimbursement.getDescription());
@@ -246,8 +247,8 @@ public class ReimbursementExportService {
 			moveService.save(newMove);
 		}
 	}
-	
-	
+
+
 	/**
 	 * Procédure permettant de tester la présence des champs et des séquences nécessaire aux remboursements.
 	 *
@@ -258,19 +259,19 @@ public class ReimbursementExportService {
 	public void testCompanyField(Company company) throws AxelorException  {
 
 		AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
-		
+
 		accountConfigService.getReimbursementAccount(accountConfig);
 		accountConfigService.getReimbursementJournal(accountConfig);
 		accountConfigService.getReimbursementExportFolderPath(accountConfig);
-		
+
 		if(!sequenceService.hasSequence(IAdministration.REIMBOURSEMENT, company)) {
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.REIMBURSEMENT_1),
-					GeneralServiceAccount.getExceptionAccountingMsg(),company.getName()), IException.CONFIGURATION_ERROR);
+					GeneralServiceImpl.EXCEPTION,company.getName()), IException.CONFIGURATION_ERROR);
 		}
-		
+
 	}
-	
-	
+
+
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void reimburse(Reimbursement reimbursement, Company company) throws AxelorException  {
 		reimbursement.setAmountReimbursed(reimbursement.getAmountToReimburse());
@@ -278,8 +279,8 @@ public class ReimbursementExportService {
 		reimbursement.setStatusSelect(ReimbursementService.STATUS_REIMBURSED);
 		reimbursementService.save(reimbursement);
 	}
-	
-	
+
+
 	/**
 	 * Méthode permettant de créer un remboursement
 	 * @param partner
@@ -295,30 +296,30 @@ public class ReimbursementExportService {
 	public Reimbursement createReimbursement(Partner partner, Company  company) throws AxelorException   {
 		Reimbursement reimbursement = new Reimbursement();
 		reimbursement.setPartner(partner);
-		
+
 		BankDetails bankDetails = partner.getBankDetails();
-		
+
 		reimbursement.setBankDetails(bankDetails);
-		
+
 		reimbursement.setRef(sequenceService.getSequenceNumber(IAdministration.REIMBOURSEMENT, company));
-		
+
 		return reimbursement;
 	}
-	
-	
+
+
 	/**
 	 * Le tiers peux t-il être remboursé ?
 	 * Si le tiers est bloqué en remboursement et que la date de fin de blocage n'est pas passée alors on ne peut pas rembourser.
-	 * 
+	 *
 	 * @return
 	 */
 	public boolean canBeReimbursed(Partner partner, Company company){
-		
+
 		return !blockingService.isReminderBlocking(partner, company);
 	}
-	
-	
-	
+
+
+
 	/**
 	 * Procédure permettant de mettre à jour la liste des RIBs du tiers
 	 * @param reimbursement
@@ -328,14 +329,14 @@ public class ReimbursementExportService {
 	public void updatePartnerCurrentRIB(Reimbursement reimbursement)  {
 		BankDetails bankDetails = reimbursement.getBankDetails();
 		Partner partner = reimbursement.getPartner();
-		
+
 		if(partner != null && bankDetails != null && !bankDetails.equals(partner.getBankDetails()))  {
 			partner.setBankDetails(bankDetails);
 			partnerService.save(partner);
 		}
 	}
-	
-	
+
+
 	/**
 	 * Méthode permettant de créer un fichier xml de virement au format SEPA
 	 * @param export
@@ -347,56 +348,56 @@ public class ReimbursementExportService {
 	 * @throws IOException
 	 */
 	public void exportSepa(Company company, DateTime dateTime, List<Reimbursement> reimbursementList, BankDetails bankDetails) throws AxelorException, DatatypeConfigurationException, JAXBException, IOException {
-		
+
 		String exportFolderPath = accountConfigService.getReimbursementExportFolderPath(accountConfigService.getAccountConfig(company));
-		
+
 		if (exportFolderPath == null)  {
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.REIMBURSEMENT_2),
 					company.getName()), IException.MISSING_FIELD);
 		}
-			
-		
+
+
 		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 		DatatypeFactory datatypeFactory = DatatypeFactory.newInstance();
 		Date date = dateTime.toDate();
 		BigDecimal ctrlSum = BigDecimal.ZERO;
 		int nbOfTxs = 0;
-		
+
 	/**
 	 * Création du documemnt XML en mémoire
 	 */
 
 		ObjectFactory factory = new ObjectFactory();
-		
+
 	// Débit
-		
+
 		// Paiement
 		ServiceLevel2Choice svcLvl = factory.createServiceLevel2Choice();
 		svcLvl.setCd(ServiceLevel1Code.SEPA);
 
 		PaymentTypeInformation1 pmtTpInf = factory.createPaymentTypeInformation1();
 		pmtTpInf.setSvcLvl(svcLvl);
-		
+
 		// Payeur
 		PartyIdentification8 dbtr = factory.createPartyIdentification8();
 		dbtr.setNm(bankDetails.getOwnerName());
-		
+
 		// IBAN
 		AccountIdentification3Choice iban = factory.createAccountIdentification3Choice();
 		iban.setIBAN(bankDetails.getIban());
-		
+
 		CashAccount7 dbtrAcct = factory.createCashAccount7();
 		dbtrAcct.setId(iban);
-		
+
 		// BIC
 		FinancialInstitutionIdentification5Choice finInstnId = factory.createFinancialInstitutionIdentification5Choice();
 		finInstnId.setBIC(bankDetails.getBic());
-		
+
 		BranchAndFinancialInstitutionIdentification3 dbtrAgt = factory.createBranchAndFinancialInstitutionIdentification3();
 		dbtrAgt.setFinInstnId(finInstnId);
-		
+
 	// Lot
-		
+
 		PaymentInstructionInformation1 pmtInf = factory.createPaymentInstructionInformation1();
 		pmtInf.setPmtMtd(PaymentMethod3Code.TRF);
 		pmtInf.setPmtTpInf(pmtTpInf);
@@ -404,7 +405,7 @@ public class ReimbursementExportService {
 		pmtInf.setDbtr(dbtr);
 		pmtInf.setDbtrAcct(dbtrAcct);
 		pmtInf.setDbtrAgt(dbtrAgt);
-		
+
 	// Crédit
 		CreditTransferTransactionInformation1 cdtTrfTxInf = null; PaymentIdentification1 pmtId = null;
 		AmountType2Choice amt = null; CurrencyAndAmount instdAmt = null;
@@ -414,45 +415,45 @@ public class ReimbursementExportService {
 		for (Reimbursement reimbursement : reimbursementList){
 
 			reimbursement = reimbursementService.find(reimbursement.getId());
-			
+
 			nbOfTxs++;
 			ctrlSum = ctrlSum.add(reimbursement.getAmountReimbursed());
 			bankDetails = reimbursement.getBankDetails();
-			
+
 			// Paiement
 			pmtId = factory.createPaymentIdentification1();
 			pmtId.setEndToEndId(reimbursement.getRef());
-			
+
 			// Montant
 			instdAmt = factory.createCurrencyAndAmount();
 			instdAmt.setCcy("EUR");
 			instdAmt.setValue(reimbursement.getAmountReimbursed());
-			
+
 			amt = factory.createAmountType2Choice();
 			amt.setInstdAmt(instdAmt);
-			
+
 			// Débiteur
 			cbtr = factory.createPartyIdentification8();
 			cbtr.setNm(bankDetails.getOwnerName());
-			
+
 			// IBAN
 			iban = factory.createAccountIdentification3Choice();
 			iban.setIBAN(bankDetails.getIban());
-			
+
 			cbtrAcct = factory.createCashAccount7();
 			cbtrAcct.setId(iban);
-			
+
 			// BIC
 			finInstnId = factory.createFinancialInstitutionIdentification5Choice();
 			finInstnId.setBIC(bankDetails.getBic());
-			
+
 			cbtrAgt = factory.createBranchAndFinancialInstitutionIdentification3();
 			cbtrAgt.setFinInstnId(finInstnId);
-			
+
 			rmtInf = factory.createRemittanceInformation1();
-			
+
 			rmtInf.getUstrd().add(reimbursement.getDescription());
-						
+
 			// Transaction
 			cdtTrfTxInf = factory.createCreditTransferTransactionInformation1();
 			cdtTrfTxInf.setPmtId(pmtId);
@@ -461,42 +462,42 @@ public class ReimbursementExportService {
 			cdtTrfTxInf.setCdtrAcct(cbtrAcct);
 			cdtTrfTxInf.setCdtrAgt(cbtrAgt);
 			cdtTrfTxInf.setRmtInf(rmtInf);
-			
+
 			pmtInf.getCdtTrfTxInf().add(cdtTrfTxInf);
 		}
-		
+
 	// En-tête
 		dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
-		
+
 		GroupHeader1 grpHdr = factory.createGroupHeader1();
 		grpHdr.setCreDtTm(datatypeFactory.newXMLGregorianCalendar(dateFormat.format(date)));
 		grpHdr.setNbOfTxs(Integer.toString(nbOfTxs));
 		grpHdr.setCtrlSum(ctrlSum);
 		grpHdr.setGrpg(Grouping1Code.MIXD);
 		grpHdr.setInitgPty(dbtr);
-	
+
 	// Parent
 		Pain00100102 pain00100102 = factory.createPain00100102();
 		pain00100102.setGrpHdr(grpHdr);
 		pain00100102.getPmtInf().add(pmtInf);
 
-	// Document		
+	// Document
 		Document xml = factory.createDocument();
 		xml.setPain00100102(pain00100102);
-		
+
 		/**
 		 * Création du documemnt XML physique
 		 */
-		Marschaller.marschalFile(factory.createDocument(xml), "com.axelor.apps.xsd.sepa", 
+		Marschaller.marschalFile(factory.createDocument(xml), "com.axelor.apps.xsd.sepa",
 				exportFolderPath, String.format("%s.xml", dateFormat.format(date)));
-		
+
 	}
-	
-	
+
+
 	/************************* Remboursement lors d'une facture fin de cycle *********************************/
-	
-	
-	
+
+
+
 	/**
 	 * Procédure permettant de créer un remboursement si un trop perçu est généré à la facture fin de cycle
 	 * @param partner
@@ -509,19 +510,19 @@ public class ReimbursementExportService {
 	 */
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void createReimbursementInvoice(Partner partner, Company company, List<? extends MoveLine> moveLineList) throws AxelorException  {
-			
+
 		BigDecimal total = this.getTotalAmountRemaining((List<MoveLine>) moveLineList);
-		
-		if(total.compareTo(BigDecimal.ZERO) > 0)  {			
-			
+
+		if(total.compareTo(BigDecimal.ZERO) > 0)  {
+
 			this.testCompanyField(company);
-			
+
 			Reimbursement reimbursement = this.createReimbursement(partner, company);
-				
+
 			this.fillMoveLineSet(reimbursement, (List<MoveLine>) moveLineList, total);
-				
+
 			if(total.compareTo(company.getAccountConfig().getUpperThresholdReimbursement()) > 0 || reimbursement.getBankDetails() == null)  {
-			// Seuil haut dépassé	
+			// Seuil haut dépassé
 				reimbursement.setStatusSelect(ReimbursementService.STATUS_TO_VALIDATE);
 			}
 			else  {
@@ -530,10 +531,10 @@ public class ReimbursementExportService {
 			}
 			reimbursementService.save(reimbursement);
 		}
-		
+
 	}
-	
-	
+
+
 	/**
 	 * Procédure permettant de créer un remboursement si un trop perçu est généré à la facture fin de cycle grand comptes
 	 * @param invoice
@@ -544,15 +545,15 @@ public class ReimbursementExportService {
 	public void createReimbursementInvoice(Invoice invoice) throws AxelorException  {
 		Company company = invoice.getCompany();
 		Partner partner = invoice.getPartner();
-		
+
 		// récupération des trop-perçus du tiers
 		List<? extends MoveLine> moveLineList = moveLineService.all().filter("self.account.reconcileOk = 'true' AND self.fromSchedulePaymentOk = 'false' " +
 				"AND self.move.statusSelect = ?1 AND self.amountRemaining > 0 AND self.credit > 0 AND self.partner = ?2 AND self.reimbursementStatusSelect = ?3 ",
 				MoveService.STATUS_VALIDATED , partner, MoveLineService.REIMBURSEMENT_STATUS_NULL).fetch();
-		
+
 		this.createReimbursementInvoice(partner, company, moveLineList);
-		
+
 	}
-	
-	
+
+
 }

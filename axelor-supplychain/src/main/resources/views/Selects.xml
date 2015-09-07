@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
 
 
 	<!-- Nomenclature : * name : "interfaceName" + "fieldName" + ".select" -->
@@ -11,8 +11,13 @@
 		<option value="2">Draft invoice N days after order validation</option>
 	</selection>
 	
+	<selection name="supplychain.subscription.invoicing.type.select">
+		<option value="1">Period Beginning</option>
+		<option value="2">Period Ending</option>
+	</selection>
+	
 	<selection name="supplychain.batch.action.select">
-		<option value="1">Invoicing</option>
+		<option value="1">Bill Late Subscriptions</option>
 	</selection>
 	
 	

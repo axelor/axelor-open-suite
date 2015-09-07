@@ -33,7 +33,7 @@ import com.axelor.apps.base.service.MapService;
 import com.axelor.apps.crm.db.Lead;
 import com.axelor.apps.crm.db.Opportunity;
 import com.axelor.apps.crm.service.LeadService;
-import com.axelor.apps.crm.service.OpportunityService;
+import com.axelor.apps.crm.service.OpportunityServiceImpl;
 import com.axelor.i18n.I18n;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -52,7 +52,7 @@ public class MapRest {
 	private LeadService leadService;
 	
 	@Inject
-	private OpportunityService opportunityService;
+	private OpportunityServiceImpl opportunityService;
 	
 	@Inject
 	private AddressRepository addressRepo;

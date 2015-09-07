@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_3.0.xsd">
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_4.0.xsd">
   
   <module name="exception" package="com.axelor.exception.db"/>
   
@@ -9,7 +9,7 @@
     <integer title="Type" name="typeSelect" selection="trace.back.type.select"/>
     <integer title="Category" name="categorySelect" selection="trace.back.category.select"/>
     <string name="origin" selection="trace.back.origin.select" title="Origin" />
-    <datetime title="Date" tz="true" name="date" required="true"/>
+    <datetime title="Date" tz="true" name="date" required="true" column="date_val"/>
     <many-to-one ref="com.axelor.auth.db.User" title="User" name="internalUser"/>
     <string title="Error" name="error" large="true"/>
     <string title="Cause" name="cause" large="true"/>

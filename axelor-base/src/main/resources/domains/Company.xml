@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_3.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_4.0.xsd">
 
   <module name="base" package="com.axelor.apps.base.db"/>
 
@@ -16,7 +16,7 @@
     <many-to-one name="administration" ref="com.axelor.apps.base.db.General" title="Administration" help="true"/>
     
     <string name="notes" large="true" title="Notes"/>
-    <string name="logoPath" title="Path to company logo" help="true"/>
+    <many-to-one name="logo" ref="com.axelor.meta.db.MetaFile" title="Logo" help="true"/>
 
    	<many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" title="Currency" help="true"/>
 
@@ -26,6 +26,7 @@
 
   	<many-to-one name="printingSettings" ref="PrintingSettings" title="Printing Settings" help="true"/>
   	
+  	<integer name="defaultPartnerTypeSelect" title="Partner Type" selection="company.partner.type.select" default="1"/>
   	
   </entity>
   

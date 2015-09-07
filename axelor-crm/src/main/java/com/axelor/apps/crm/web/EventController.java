@@ -17,10 +17,12 @@
  */
 package com.axelor.apps.crm.web;
 
-import java.math.BigDecimal;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.mail.MessagingException;
 
 import org.joda.time.Duration;
 import org.slf4j.Logger;
@@ -35,25 +37,25 @@ import com.axelor.apps.crm.db.Lead;
 import com.axelor.apps.crm.exception.IExceptionMessage;
 import com.axelor.apps.crm.service.EventService;
 import com.axelor.apps.crm.service.LeadService;
+import com.axelor.auth.AuthUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.axelor.auth.AuthUtils;
 
 public class EventController {
 
 	private static final Logger LOG = LoggerFactory.getLogger(EventController.class);
-	
+
 	public void computeFromStartDateTime(ActionRequest request, ActionResponse response) {
-		
+
 		Event event = request.getContext().asType(Event.class);
 		EventService eventService = Beans.get(EventService.class);
-		
+
 		LOG.debug("event : {}", event);
-		
+
 		if(event.getStartDateTime() != null) {
 			if(event.getDuration() != null) {
 				response.setValue("endDateTime", eventService.computeEndDateTime(event.getStartDateTime(), event.getDuration().intValue()));
@@ -64,14 +66,14 @@ public class EventController {
 			}
 		}
 	}
-	
+
 	public void computeFromEndDateTime(ActionRequest request, ActionResponse response) {
-		
+
 		Event event = request.getContext().asType(Event.class);
 		EventService eventService = Beans.get(EventService.class);
-		
+
 		LOG.debug("event : {}", event);
-		
+
 		if(event.getEndDateTime() != null) {
 			if(event.getStartDateTime() != null && event.getStartDateTime().isBefore(event.getEndDateTime())) {
 				Duration duration =  eventService.computeDuration(event.getStartDateTime(), event.getEndDateTime());
@@ -82,14 +84,14 @@ public class EventController {
 			}
 		}
 	}
-	
+
 	public void computeFromDuration(ActionRequest request, ActionResponse response) {
-		
+
 		Event event = request.getContext().asType(Event.class);
 		EventService eventService = Beans.get(EventService.class);
-		
+
 		LOG.debug("event : {}", event);
-		
+
 		if(event.getDuration() != null)  {
 			if(event.getStartDateTime() != null)  {
 				response.setValue("endDateTime", eventService.computeEndDateTime(event.getStartDateTime(), event.getDuration().intValue()));
@@ -99,26 +101,26 @@ public class EventController {
 			}
 		}
 	}
-	
-	
+
+
 	public void computeFromCalendar(ActionRequest request, ActionResponse response) {
-		
+
 		Event event = request.getContext().asType(Event.class);
 		EventService eventService = Beans.get(EventService.class);
-		
+
 		LOG.debug("event : {}", event);
-		
+
 		if(event.getStartDateTime() != null && event.getEndDateTime() != null) {
 			Duration duration =  eventService.computeDuration(event.getStartDateTime(), event.getEndDateTime());
 			response.setValue("duration", eventService.getDuration(duration));
 		}
 	}
-	
-	
+
+
 	public void setSequence(ActionRequest request, ActionResponse response) throws AxelorException {
-		
+
 		Event event = request.getContext().asType(Event.class);
-		
+
 		if(event.getTicketNumberSeq() ==  null && event.getTypeSelect() == IEvent.TICKET){
 			String seq = Beans.get(SequenceService.class).getSequenceNumber(IAdministration.EVENT_TICKET);
 			if (seq == null)
@@ -128,40 +130,29 @@ public class EventController {
 				response.setValue("ticketNumberSeq", seq);
 		}
 	}
-	
-	//TODO : replace by XML action
-	public void saveEventStatusSelect(ActionRequest request, ActionResponse response) throws AxelorException {
-		
-		Event event = request.getContext().asType(Event.class);
-		EventService eventService = Beans.get(EventService.class);
-		Event persistEvent = eventService.find(event.getId());
-		persistEvent.setStatusSelect(event.getStatusSelect());
-		eventService.saveEvent(persistEvent);
-		
-	}
-	
+
 	//TODO : replace by XML action
 	public void saveEventTaskStatusSelect(ActionRequest request, ActionResponse response) throws AxelorException {
-		
+
 		Event event = request.getContext().asType(Event.class);
 		EventService eventService = Beans.get(EventService.class);
 		Event persistEvent = eventService.find(event.getId());
 		persistEvent.setTaskStatusSelect(event.getTaskStatusSelect());
 		eventService.saveEvent(persistEvent);
-		
+
 	}
-	
+
 	//TODO : replace by XML action
 	public void saveEventTicketStatusSelect(ActionRequest request, ActionResponse response) throws AxelorException {
-		
+
 		Event event = request.getContext().asType(Event.class);
 		EventService eventService = Beans.get(EventService.class);
 		Event persistEvent = eventService.find(event.getId());
 		persistEvent.setTicketStatusSelect(event.getTicketStatusSelect());
 		eventService.saveEvent(persistEvent);
-		
+
 	}
-	
+
 	public void viewMap(ActionRequest request, ActionResponse response)  {
 		Event event = request.getContext().asType(Event.class);
 		if(event.getLocation() != null){
@@ -177,30 +168,30 @@ public class EventController {
 				response.setFlash(String.format(I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.ADDRESS_5),event.getLocation()));
 		}else
 			response.setFlash(I18n.get(IExceptionMessage.EVENT_2));
-	}	
-	
-	
+	}
+
+
 	public void addLeadAttendee(ActionRequest request, ActionResponse response)  {
 		Lead lead = request.getContext().asType(Lead.class);
-		
+
 		if(lead != null)  {
-			
+
 			Event event = request.getContext().getParentContext().asType(Event.class);
-			
+
 			if(event != null)  {
-				
+
 				Beans.get(EventService.class).addLeadAttendee(event, lead, null);
 				response.setReload(true);
-				
+
 			}
-			
+
 		}
-		
+
 	}
-	
+
 	public void assignToMeLead(ActionRequest request, ActionResponse response)  {
 		LeadService leadService = Beans.get(LeadService.class);
-		
+
 		if(request.getContext().get("id") != null){
 			Lead lead = leadService.find((Long)request.getContext().get("id"));
 			lead.setUser(AuthUtils.getUser());
@@ -217,11 +208,11 @@ public class EventController {
 			}
 		}
 		response.setReload(true);
-		
+
 	}
-	
+
 	public void assignToMeEvent(ActionRequest request, ActionResponse response)  {
-		
+
 		EventService eventService = Beans.get(EventService.class);
 		if(request.getContext().get("id") != null){
 			Event event = eventService.find((Long)request.getContext().get("id"));
@@ -235,8 +226,23 @@ public class EventController {
 			}
 		}
 		response.setReload(true);
-		
+
 	}
-	
-	
+
+
+
+	public void checkModifications(ActionRequest request, ActionResponse response) throws ClassNotFoundException, InstantiationException, IllegalAccessException, AxelorException, IOException, MessagingException  {
+		EventService eventService = Beans.get(EventService.class);
+
+		Event event = request.getContext().asType(Event.class);
+		Long idEvent = event.getId();
+		if(idEvent != null && idEvent > 0){
+			Event previousEvent = eventService.find(event.getId());
+			event = eventService.checkModifications(event, previousEvent);
+		}
+		else{
+			eventService.sendMails(event);
+		}
+	}
+
 }

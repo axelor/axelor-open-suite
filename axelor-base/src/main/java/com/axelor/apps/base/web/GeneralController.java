@@ -33,6 +33,7 @@ import org.slf4j.LoggerFactory;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.administration.ExportDbObjectService;
+import com.axelor.apps.tool.StringTool;
 import com.axelor.db.JPA;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -46,28 +47,28 @@ import com.google.common.base.Joiner;
 import com.google.inject.Inject;
 
 public class GeneralController {
-	
+
 	private static final Logger LOG = LoggerFactory.getLogger(CurrencyService.class);
-	
+
 	@Inject
 	private ExportDbObjectService eos;
-	
+
 	public Set<MetaField> setFields(String model) throws IOException {
 		LOG.debug("Model: {}",model);
 		Set<MetaField> fieldSet = new HashSet<MetaField>();
 		List<String> fields = new ArrayList<String>();
-		
+
 		MetaFieldRepository metaFieldRepository = Beans.get(MetaFieldRepository.class);
-		
+
 		for(MetaField field : metaFieldRepository.all().filter("metaModel.fullName = ?1 AND (relationship = null OR relationship = 'ManyToOne')",model).fetch()){
 			fieldSet.add(field);
 			fields.add(field.getName());
 		}
-			
+
 		LOG.debug("Fields set: {}",fields);
 		return fieldSet;
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	public void showDuplicate(ActionRequest request, ActionResponse response){
 		String model = (String)request.getContext().get("object");
@@ -77,7 +78,7 @@ public class GeneralController {
 			model=request.getModel();
 			searchFields=(String) request.getContext().get("searchFields");
 			fieldList.addAll(Arrays.asList(searchFields.split(";")));
-			
+
 		}else{
 			for(HashMap<String,Object> field:(List<HashMap<String,Object>>) request.getContext().get("fieldsSet")){
 				if((Boolean)field.get("selected"))
@@ -97,10 +98,10 @@ public class GeneralController {
 						  .domain("self.id in ("+ids+")")
 						  .map());
 		}
-		else 
+		else
 			response.setFlash(I18n.get(IExceptionMessage.GENERAL_3));
 	}
-	
+
 	public void exportObjects(ActionRequest request, ActionResponse response){
 		MetaFile metaFile = eos.exportObject();
 		if(metaFile == null){
@@ -119,12 +120,34 @@ public class GeneralController {
 	}
 	private String findDuplicateRecords(List<String> fieldList,String object){
 		List<String> joinList=new ArrayList<>();
-		joinList.add("m.id <> m1.id");
+
 		for(String field:fieldList){
-			joinList.add("m."+field+" = "+"m1."+field);
+			joinList.add("m."+field);
 		}
-		Query query = JPA.em().createQuery("SELECT DISTINCT(m.id) FROM "+object+" m,"+object+" m1 WHERE "+Joiner.on(" AND ").join(joinList));
-		String ids = Joiner.on(",").join(query.getResultList());
-		return ids;
+		Query query = JPA.em().createQuery("SELECT new List( CAST ( m.id AS string ), "+Joiner.on(",").join(joinList)+") FROM "+object+" m");
+
+		List<List<String>> stringLists = query.getResultList();
+		List<String> idList = new ArrayList<String>();
+		List<List<String>> newStringLists = new ArrayList<List<String>>();
+		for (List<String> list : stringLists){
+			List<String> newList = new ArrayList<String>();
+			for (String string : list) {
+				newList.add(StringTool.deleteAccent(string.toLowerCase()));
+			}
+			newStringLists.add(newList);
+		}
+
+		for (List<String> list : newStringLists){
+			List<String> testList = new ArrayList<String>();
+			for(int i = 1; i<fieldList.size()+1; i++){
+				testList.add(list.get(i));
+			}
+			for (List<String> listIt : newStringLists){
+				if(!listIt.get(0).equals(list.get(0)) && listIt.containsAll(testList)){
+					idList.add(listIt.get(0));
+				}
+			}
+		}
+		return Joiner.on(",").join(idList);
 	}
 }

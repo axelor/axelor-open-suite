@@ -24,13 +24,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.base.db.Product;
-import com.axelor.apps.organisation.db.Project;
-import com.axelor.apps.organisation.db.repo.ProjectRepository;
 //import com.axelor.apps.organisation.db.Project;
 import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.ProductionOrder;
 import com.axelor.apps.production.exceptions.IExceptionMessage;
+import com.axelor.apps.project.db.ProjectTask;
+import com.axelor.apps.project.db.repo.ProjectTaskRepository;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.Context;
@@ -39,20 +40,20 @@ import com.google.inject.Inject;
 public class ProductionOrderWizardServiceBusinessImpl extends ProductionOrderWizardServiceImpl {
 
 	private final Logger logger = LoggerFactory.getLogger(getClass());
-	
+
 	@Inject
 	private ProductionOrderServiceBusinessImpl productionOrderServiceBusinessImpl;
-	
+
 	@Override
-	public String validate(Context context) throws AxelorException  {
-	
+	public Long validate(Context context) throws AxelorException  {
+
 		Map<String, Object> bomContext = (Map<String, Object>) context.get("billOfMaterial");
 		BillOfMaterial billOfMaterial = billOfMaterialService.find(((Integer) bomContext.get("id")).longValue());
-		
+
 		BigDecimal qty = new BigDecimal((String)context.get("qty"));
-		
+
 		Product product = null;
-		
+
 		if(context.get("product") != null)  {
 			Map<String, Object> productContext = (Map<String, Object>) context.get("product");
 			product = productRepo.find(((Integer) productContext.get("id")).longValue());
@@ -60,20 +61,20 @@ public class ProductionOrderWizardServiceBusinessImpl extends ProductionOrderWiz
 		else  {
 			product = billOfMaterial.getProduct();
 		}
-		
-		Project businessProject = null;
+
+		ProjectTask projectTask = null;
 		if(context.get("business_id") != null)  {
-			businessProject = Beans.get(ProjectRepository.class).find(((Integer) context.get("business_id")).longValue());
+			projectTask = Beans.get(ProjectTaskRepository.class).find(((Integer) context.get("business_id")).longValue());
 		}
-		
-		ProductionOrder productionOrder = productionOrderServiceBusinessImpl.generateProductionOrder(product, billOfMaterial, qty, businessProject);
-		
+
+		ProductionOrder productionOrder = productionOrderServiceBusinessImpl.generateProductionOrder(product, billOfMaterial, qty, projectTask);
+
 		if(productionOrder != null)  {
-			return I18n.get(IExceptionMessage.PRODUCTION_ORDER_1)+" ("+productionOrder.getProductionOrderSeq()+")";
+			return productionOrder.getId();
 		}
 		else  {
-			return I18n.get(IExceptionMessage.PRODUCTION_ORDER_2);
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.PRODUCTION_ORDER_2)),IException.CONFIGURATION_ERROR);
 		}
 	}
-	
+
 }

@@ -18,11 +18,14 @@
 package com.axelor.apps.supplychain.module;
 
 import com.axelor.app.AxelorModule;
-import com.axelor.app.AxelorModuleInfo;
+import com.axelor.apps.account.service.invoice.workflow.cancel.CancelState;
+import com.axelor.apps.account.service.invoice.workflow.ventilate.VentilateState;
 import com.axelor.apps.purchase.service.PurchaseOrderLineService;
 import com.axelor.apps.purchase.service.PurchaseOrderLineServiceImpl;
 import com.axelor.apps.purchase.service.PurchaseOrderServiceImpl;
 import com.axelor.apps.sale.db.repo.SaleOrderManagementRepository;
+import com.axelor.apps.sale.service.OpportunitySaleOrderServiceImpl;
+import com.axelor.apps.sale.service.SaleOrderLineService;
 import com.axelor.apps.sale.service.SaleOrderServiceImpl;
 import com.axelor.apps.stock.service.LocationLineService;
 import com.axelor.apps.stock.service.LocationLineServiceImpl;
@@ -33,20 +36,28 @@ import com.axelor.apps.stock.service.StockMoveLineServiceImpl;
 import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.apps.stock.service.StockMoveServiceImpl;
 import com.axelor.apps.supplychain.db.repo.SaleOrderSupplychainRepository;
+import com.axelor.apps.supplychain.service.CustomerCreditLineService;
+import com.axelor.apps.supplychain.service.CustomerCreditLineServiceImpl;
 import com.axelor.apps.supplychain.service.MinStockRulesServiceSupplychainImpl;
+import com.axelor.apps.supplychain.service.OpportunitySaleOrderServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.PurchaseOrderInvoiceService;
 import com.axelor.apps.supplychain.service.PurchaseOrderInvoiceServiceImpl;
 import com.axelor.apps.supplychain.service.PurchaseOrderServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.SaleOrderInvoiceService;
 import com.axelor.apps.supplychain.service.SaleOrderInvoiceServiceImpl;
+import com.axelor.apps.supplychain.service.SaleOrderLineServiceSupplyChainImpl;
 import com.axelor.apps.supplychain.service.SaleOrderPurchaseService;
 import com.axelor.apps.supplychain.service.SaleOrderPurchaseServiceImpl;
-import com.axelor.apps.supplychain.service.SaleOrderServiceStockImpl;
 import com.axelor.apps.supplychain.service.SaleOrderServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.StockMoveInvoiceService;
 import com.axelor.apps.supplychain.service.StockMoveInvoiceServiceImpl;
+import com.axelor.apps.supplychain.service.StockMoveServiceSupplychainImpl;
+import com.axelor.apps.supplychain.service.SubscriptionService;
+import com.axelor.apps.supplychain.service.SubscriptionServiceImpl;
+import com.axelor.apps.supplychain.service.workflow.CancelStateSupplyChain;
+import com.axelor.apps.supplychain.service.workflow.VentilateStateSupplyChain;
 
-@AxelorModuleInfo(name = "axelor-supplychain")
+
 public class SupplychainModule extends AxelorModule {
 
     @Override
@@ -57,7 +68,6 @@ public class SupplychainModule extends AxelorModule {
         bind(PurchaseOrderServiceImpl.class).to(PurchaseOrderServiceSupplychainImpl.class);
         bind(PurchaseOrderLineService.class).to(PurchaseOrderLineServiceImpl.class);
         bind(LocationLineService.class).to(LocationLineServiceImpl.class);
-        bind(SaleOrderServiceStockImpl.class);
         bind(SaleOrderServiceImpl.class).to(SaleOrderServiceSupplychainImpl.class);
         bind(PurchaseOrderInvoiceService.class).to(PurchaseOrderInvoiceServiceImpl.class);
         bind(SaleOrderInvoiceService.class).to(SaleOrderInvoiceServiceImpl.class);
@@ -65,5 +75,12 @@ public class SupplychainModule extends AxelorModule {
         bind(StockMoveLineService.class).to(StockMoveLineServiceImpl.class);
         bind(StockMoveInvoiceService.class).to(StockMoveInvoiceServiceImpl.class);
         bind(SaleOrderManagementRepository.class).to(SaleOrderSupplychainRepository.class);
+        bind(StockMoveServiceImpl.class).to(StockMoveServiceSupplychainImpl.class);
+        bind(VentilateState.class).to(VentilateStateSupplyChain.class);
+        bind(CancelState.class).to(CancelStateSupplyChain.class);
+        bind(SubscriptionService.class).to(SubscriptionServiceImpl.class);
+        bind(OpportunitySaleOrderServiceImpl.class).to(OpportunitySaleOrderServiceSupplychainImpl.class);
+        bind(CustomerCreditLineService.class).to(CustomerCreditLineServiceImpl.class);
+        bind(SaleOrderLineService.class).to(SaleOrderLineServiceSupplyChainImpl.class);
     }
 }

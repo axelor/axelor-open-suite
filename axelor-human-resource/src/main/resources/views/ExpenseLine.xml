@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
+
+	<grid name="expense-line-grid" title="Expense lines" model="com.axelor.apps.hr.db.ExpenseLine"
+		onNew="action-expense-line-default">
+		<field name="projectTask" requiredIf="toInvoice" domain="self.imputable = true" form-view="project-task-form" grid-view="project-task-grid"/>
+		<field name="expenseType" domain="self.expense = true" widget="SuggestBox" form-view="product-expense-form" grid-view="product-expense-grid"/>
+		<field name="expenseDate" onChange="action-expense-line-validate-expenseDate"/>
+		<field name="untaxedAmount" />
+		<field name="totalTax" onChange="action-expense-on-change-tax-untaxt-amount"/>
+		<field name="totalAmount" onChange="action-expense-on-change-tax-untaxt-amount"/>
+		<field name="comments"/>
+		<field name="user" hidden="true" form-view="user-form" grid-view="user-grid"/>
+	</grid>
+
+	<form name="expense-line-form" title="Expense line" model="com.axelor.apps.hr.db.ExpenseLine"
+		onNew="action-expense-line-default"
+		onSave="action-expense-line-validate-expenseDate" width="large">
+		<panel>
+			<field name="projectTask" requiredIf="toInvoice" domain="self.imputable = true" form-view="project-task-form" grid-view="project-task-grid"/>
+			<field name="expenseType" domain="self.expense = true" widget="SuggestBox" form-view="product-expense-form" grid-view="product-expense-grid"/>
+			<field name="expenseDate" onChange="action-expense-line-validate-expenseDate"/>
+			<field name="untaxedAmount" />
+			<field name="totalTax" onChange="action-expense-on-change-tax-untaxt-amount"/>
+			<field name="totalAmount" onChange="action-expense-on-change-tax-untaxt-amount"/>
+			<field name="toInvoice"/>
+			<field name="invoiced" showIf="toInvoice"/>
+			<field name="comments" colSpan="12"/>
+			<field name="user" hidden="true" form-view="user-form" grid-view="user-grid"/>
+		</panel>
+	</form>
+	
+	<action-record name="action-expense-line-default" model="com.axelor.apps.hr.db.ExpenseLine">
+		<field name="user" expr="eval: _parent?.user"/>
+	</action-record>
+	
+	<action-record name="action-expense-on-change-tax-untaxt-amount" model="com.axelor.apps.hr.db.ExpenseLine">
+	    <field name="untaxedAmount" expr="eval:totalAmount-totalTax" />
+	</action-record>
+	
+	<action-validate name="action-expense-line-validate-expenseDate" model="com.axelor.apps.hr.db.ExpenseLine">
+		<error message="Date can't be in the future" if="expenseDate &gt; __date__" action="action-expense-line-record-expenseDate-invalide"/>
+	</action-validate>
+	
+	<action-record name="action-expense-line-record-expenseDate-invalide" model="com.axelor.apps.hr.db.ExpenseLine">
+		<field name="expenseDate" expr="eval :__date__"/>
+	</action-record>
+
+</object-views>

@@ -33,11 +33,11 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.PaymentScheduleLine;
 import com.axelor.apps.account.exception.IExceptionMessage;
-import com.axelor.apps.account.service.administration.GeneralServiceAccount;
 import com.axelor.apps.account.service.config.CfonbConfigService;
 import com.axelor.apps.account.service.payment.PaymentModeService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.service.administration.GeneralService;
+import com.axelor.apps.base.service.administration.GeneralServiceImpl;
 import com.axelor.apps.tool.file.FileTool;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
@@ -45,38 +45,41 @@ import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 
 public class CfonbImportService {
-	
+
 	private static final Logger LOG = LoggerFactory.getLogger(CfonbImportService.class);
-	
+
 	private CfonbConfig cfonbConfig;
-	
+
 	private List<String> importFile;
-	
+
 	@Inject
 	private CfonbConfigService cfonbConfigService;
-	
+
 	@Inject
 	private CfonbToolService cfonbToolService;
-	
+
 	@Inject
 	private PaymentModeService paymentModeService;
-	
-	
+
+	@Inject
+	protected GeneralService generalService;
+
+
 	private void init(CfonbConfig cfonbConfig)  {
-		
+
 		this.cfonbConfig = cfonbConfig;
-		
+
 	}
-	
+
 	private void init(Company company) throws AxelorException  {
-		
+
 		this.init(cfonbConfigService.getCfonbConfig(company));
-		
+
 	}
-	
-	
+
+
 	/**
-	 * 
+	 *
 	 * @param fileName
 	 * @param company
 	 * @param operation
@@ -95,8 +98,8 @@ public class CfonbImportService {
 	public List<String[]> importCFONB(String fileName, Company company, int operation) throws AxelorException, IOException  {
 		return this.importCFONB(fileName, company, operation, 999);
 	}
-	
-	
+
+
 	/**
 	 * Récupération par lots
 	 * @param fileName
@@ -117,11 +120,11 @@ public class CfonbImportService {
 	public Map<List<String[]>,String> importCFONBByLot(String fileName, Company company, int operation) throws AxelorException, IOException  {
 		return this.importCFONBByLot(fileName, company, operation, 999);
 	}
-	
-	
-	
+
+
+
 	/**
-	 * 
+	 *
 	 * @param fileName
 	 * @param company
 	 * @param operation
@@ -138,26 +141,26 @@ public class CfonbImportService {
 	 * @throws IOException
 	 */
 	public List<String[]> importCFONB(String fileName, Company company, int operation, int optionalOperation) throws AxelorException, IOException  {
-		
+
 		//		un enregistrement "en-tête" (code 31)
 		// 		un enregistrement "détail" (code 34)
 		// 		un enregistrement "fin" (code 39)
-		
+
 		this.testCompanyImportCFONBField(company);
-		
+
 		this.importFile = FileTool.reader(fileName);
-		
-		if(GeneralService.getGeneral().getTransferAndDirectDebitInterbankCode() == null)  {
+
+		if(generalService.getGeneral().getTransferAndDirectDebitInterbankCode() == null)  {
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.CFONB_IMPORT_1),
-					GeneralServiceAccount.getExceptionAccountingMsg()), IException.CONFIGURATION_ERROR);	
+					GeneralServiceImpl.EXCEPTION), IException.CONFIGURATION_ERROR);
 		}
-		
+
 		String headerCFONB = null;
 		List<String> multiDetailsCFONB = null;
 		String endingCFONB = null;
 		List<String[]> importDataList = new ArrayList<String[]>();
 
-		
+
 		// Pour chaque sequence, on récupère les enregistrements, et on les vérifie.
 		// Ensuite on supprime les lignes traitées du fichier chargé en mémoire
 		// Et on recommence l'opération jusqu'à ne plus avoir de ligne à traiter
@@ -165,35 +168,35 @@ public class CfonbImportService {
 			headerCFONB = this.getHeaderCFONB(this.importFile, operation, optionalOperation);
 			if(headerCFONB == null)  {
 				throw new AxelorException(String.format(I18n.get(IExceptionMessage.CFONB_IMPORT_2),
-						GeneralServiceAccount.getExceptionAccountingMsg(),fileName), IException.CONFIGURATION_ERROR);
+						GeneralServiceImpl.EXCEPTION,fileName), IException.CONFIGURATION_ERROR);
 			}
 			this.importFile.remove(headerCFONB);
-			
+
 			multiDetailsCFONB = this.getDetailsCFONB(this.importFile, operation, optionalOperation);
 			if(multiDetailsCFONB.isEmpty())  {
 				throw new AxelorException(String.format(I18n.get(IExceptionMessage.CFONB_IMPORT_3),
-						GeneralServiceAccount.getExceptionAccountingMsg(),fileName), IException.CONFIGURATION_ERROR);
+						GeneralServiceImpl.EXCEPTION,fileName), IException.CONFIGURATION_ERROR);
 			}
 			for(String detail : multiDetailsCFONB)  {
 				this.importFile.remove(detail);
 			}
-			
+
 			endingCFONB = this.getEndingCFONB(this.importFile, operation, optionalOperation);
 			if(endingCFONB == null)  {
 				throw new AxelorException(String.format(I18n.get(IExceptionMessage.CFONB_IMPORT_4),
-						GeneralServiceAccount.getExceptionAccountingMsg(),fileName), IException.CONFIGURATION_ERROR);
+						GeneralServiceImpl.EXCEPTION,fileName), IException.CONFIGURATION_ERROR);
 			}
 			this.importFile.remove(endingCFONB);
-			
+
 			this.testLength(headerCFONB, multiDetailsCFONB, endingCFONB, company);
-			
+
 			importDataList.addAll(this.getDetailDataAndCheckAmount(operation, headerCFONB, multiDetailsCFONB, endingCFONB, fileName));
 		}
 		return importDataList;
 	}
-	
-	
-	
+
+
+
 	/**
 	 * Récupération par lots
 	 * @param fileName
@@ -212,26 +215,26 @@ public class CfonbImportService {
 	 * @throws IOException
 	 */
 	public Map<List<String[]>,String> importCFONBByLot(String fileName, Company company, int operation, int optionalOperation) throws AxelorException, IOException  {
-		
+
 		//		un enregistrement "en-tête" (code 31)
 		// 		un enregistrement "détail" (code 34)
 		// 		un enregistrement "fin" (code 39)
-		
+
 		this.testCompanyImportCFONBField(company);
-		
+
 		this.importFile = FileTool.reader(fileName);
-		
-		if(GeneralService.getGeneral().getTransferAndDirectDebitInterbankCode() == null)  {
+
+		if(generalService.getGeneral().getTransferAndDirectDebitInterbankCode() == null)  {
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.CFONB_IMPORT_1),
-					GeneralServiceAccount.getExceptionAccountingMsg()), IException.CONFIGURATION_ERROR);	
+					GeneralServiceImpl.EXCEPTION), IException.CONFIGURATION_ERROR);
 		}
-		
+
 		String headerCFONB = null;
 		List<String> multiDetailsCFONB = null;
 		String endingCFONB = null;
 		Map<List<String[]>,String> importDataList = new HashMap<List<String[]>,String>();
 
-		
+
 		// Pour chaque sequence, on récupère les enregistrements, et on les vérifie.
 		// Ensuite on supprime les lignes traitées du fichier chargé en mémoire
 		// Et on recommence l'opération jusqu'à ne plus avoir de ligne à traiter
@@ -239,34 +242,34 @@ public class CfonbImportService {
 			headerCFONB = this.getHeaderCFONB(this.importFile, operation, optionalOperation);
 			if(headerCFONB == null)  {
 				throw new AxelorException(String.format(I18n.get(IExceptionMessage.CFONB_IMPORT_2),
-						GeneralServiceAccount.getExceptionAccountingMsg(),fileName), IException.CONFIGURATION_ERROR);
+						GeneralServiceImpl.EXCEPTION,fileName), IException.CONFIGURATION_ERROR);
 			}
 			this.importFile.remove(headerCFONB);
-			
+
 			multiDetailsCFONB = this.getDetailsCFONB(this.importFile, operation, optionalOperation);
 			if(multiDetailsCFONB.isEmpty())  {
 				throw new AxelorException(String.format(I18n.get(IExceptionMessage.CFONB_IMPORT_3),
-						GeneralServiceAccount.getExceptionAccountingMsg(),fileName), IException.CONFIGURATION_ERROR);
+						GeneralServiceImpl.EXCEPTION,fileName), IException.CONFIGURATION_ERROR);
 			}
 			for(String detail : multiDetailsCFONB)  {
 				this.importFile.remove(detail);
 			}
-			
+
 			endingCFONB = this.getEndingCFONB(this.importFile, operation, optionalOperation);
 			if(endingCFONB == null)  {
 				throw new AxelorException(String.format(I18n.get(IExceptionMessage.CFONB_IMPORT_4),
-						GeneralServiceAccount.getExceptionAccountingMsg(),fileName), IException.CONFIGURATION_ERROR);
+						GeneralServiceImpl.EXCEPTION,fileName), IException.CONFIGURATION_ERROR);
 			}
 			this.importFile.remove(endingCFONB);
-			
+
 			this.testLength(headerCFONB, multiDetailsCFONB, endingCFONB, company);
-			
+
 			importDataList.put(this.getDetailDataAndCheckAmount(operation, headerCFONB, multiDetailsCFONB, endingCFONB, fileName),this.getHeaderDate(headerCFONB));
 		}
 		return importDataList;
 	}
-	
-	
+
+
 	private List<String[]> getDetailDataAndCheckAmount(int operation, String headerCFONB, List<String> multiDetailsCFONB, String endingCFONB, String fileName) throws AxelorException  {
 		List<String[]> importDataList = new ArrayList<String[]>();
 		switch(operation)  {
@@ -305,26 +308,26 @@ public class CfonbImportService {
 		}
 		return importDataList;
 	}
-	
-	
+
+
 	private void checkTotalAmount(List<String> multiDetailsCFONB, String endingCFONB, String fileName, int amountPosStart, int amountPosEnd) throws AxelorException   {
 		int totalAmount = 0;
 		for(String detailCFONB : multiDetailsCFONB)  {
 			totalAmount += Integer.parseInt(detailCFONB.substring(amountPosStart,amountPosEnd));
 		}
-		
+
 		int totalRecord = Integer.parseInt(endingCFONB.substring(amountPosStart,amountPosEnd));
-		
-		LOG.debug("Controle du montant total des enregistrement détail ({}) et du montant de l'enregistrement total ({})", 
+
+		LOG.debug("Controle du montant total des enregistrement détail ({}) et du montant de l'enregistrement total ({})",
 				new Object[]{totalAmount,totalRecord});
-		
+
 		if(totalAmount != totalRecord)  {
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.CFONB_IMPORT_5),
-					GeneralServiceAccount.getExceptionAccountingMsg(),fileName, endingCFONB), IException.CONFIGURATION_ERROR);
+					GeneralServiceImpl.EXCEPTION,fileName, endingCFONB), IException.CONFIGURATION_ERROR);
 		}
 	}
-	
-	
+
+
 	private void testLength(String headerCFONB, List<String> multiDetailsCFONB, String endingCFONB, Company company) throws AxelorException  {
 		cfonbToolService.testLength(headerCFONB, company, 3, 240);
 		cfonbToolService.testLength(endingCFONB, company, 5, 240);
@@ -332,8 +335,8 @@ public class CfonbImportService {
 			cfonbToolService.testLength(detailCFONB, company, 4, 240);
 		}
 	}
-	
-	
+
+
 	/**
 	 * Fonction permettant de récupérer les infos de rejet d'un prélèvement ou virement
 	 * @param detailCFONB
@@ -346,7 +349,7 @@ public class CfonbImportService {
 	private String[] getDetailData(String detailCFONB, boolean isRejectTIP)  {
 		String[] detailData = new String[4];
 		if (LOG.isDebugEnabled())  {  LOG.debug("detailCFONB : {}",detailCFONB);  }
-		
+
 		detailData[0] = detailCFONB.substring(214, 220);  																	// Date de rejet
 		if(isRejectTIP)  {
 			detailData[1] = detailCFONB.substring(159, 183).split("/")[0].trim();											// Ref facture pour TIP
@@ -356,13 +359,13 @@ public class CfonbImportService {
 		}
 		detailData[2] = detailCFONB.substring(228, 240).substring(0, 10)+"."+detailCFONB.substring(228, 240).substring(10);	// Montant rejeté
 		detailData[3] = detailCFONB.substring(226, 228);																	// Motif du rejet
-		
-		LOG.debug("Obtention des données d'un enregistrement détail CFONB: Date de rejet = {}, Ref prélèvement = {}, Montant rejeté = {}, Motif du rejet = {}", 
+
+		LOG.debug("Obtention des données d'un enregistrement détail CFONB: Date de rejet = {}, Ref prélèvement = {}, Montant rejeté = {}, Motif du rejet = {}",
 				new Object[]{detailData[0],detailData[1],detailData[2],detailData[3]});
-		
+
 		return detailData;
 	}
-	
+
 	/**
 	 * Fonction permettant de récupérer les infos de paiement par TIP ou TIP+chèque
 	 * @param detailCFONB
@@ -371,21 +374,21 @@ public class CfonbImportService {
 	 */
 	private String[] getDetailDataTIP(String detailCFONB)  {
 		String[] detailData = new String[6];
-		
+
 		detailData[0] = detailCFONB.substring(2, 4);  																		// Mode de paiement
 		detailData[1] = detailCFONB.substring(125, 149).split("/")[0].trim();												// Ref facture
 		detailData[2] = detailCFONB.substring(81, 102);																		// RIB
 		detailData[3] = detailCFONB.substring(155, 157);																	// clé RIB
 		detailData[4] = detailCFONB.substring(154, 155);																	// action RIB
-		detailData[5] = detailCFONB.substring(102, 116)+"."+detailCFONB.substring(116, 118);								// Montant rejeté				
-		
-		LOG.debug("Obtention des données d'un enregistrement détail CFONB d'un TIP : Mode de paiement = {}, Ref facture = {}, RIB = {}, clé RIB = {}, action RIB = {}, Montant rejeté = {}", 
+		detailData[5] = detailCFONB.substring(102, 116)+"."+detailCFONB.substring(116, 118);								// Montant rejeté
+
+		LOG.debug("Obtention des données d'un enregistrement détail CFONB d'un TIP : Mode de paiement = {}, Ref facture = {}, RIB = {}, clé RIB = {}, action RIB = {}, Montant rejeté = {}",
 				new Object[]{detailData[0],detailData[1],detailData[2],detailData[3],detailData[4],detailData[5]});
-		
+
 		return detailData;
 	}
-	
-	
+
+
 	/**
 	 * Fonction permettant de récupérer la date de rejet de l'en-tête d'un lot de rejet de prélèvement ou virement
 	 * @param detailCFONB
@@ -398,20 +401,20 @@ public class CfonbImportService {
 	private String getHeaderDate(String headerCFONB)  {
 		return headerCFONB.substring(10, 16);
 	}
-	
-	
-	
+
+
+
 	/**
 	 * Méthode permettant de récupérer le mode de paiement en fonction du code de début de lot de l'enregistrement
 	 * @param company
 	 * @param code
 	 * @return
-	 * @throws AxelorException 
+	 * @throws AxelorException
 	 */
 	//TODO à passer en configuration
 	public PaymentMode getPaymentMode(Company company, String code) throws AxelorException  {
 		LOG.debug("Récupération du mode de paiement depuis l'enregistrement CFONB : Société = {} , code CFONB = {}", new Object[]{company.getName(),code});
-		
+
 		if(code.equals(this.cfonbConfig.getIpoOperationCodeImportCFONB()))  {
 			return paymentModeService.findByCode("TIP");
 		}
@@ -419,10 +422,10 @@ public class CfonbImportService {
 			return paymentModeService.findByCode("TIC");
 		}
 		throw new AxelorException(String.format(I18n.get(IExceptionMessage.CFONB_IMPORT_6),
-				GeneralServiceAccount.getExceptionAccountingMsg(), code, company.getName()), IException.INCONSISTENCY);
+				GeneralServiceImpl.EXCEPTION, code, company.getName()), IException.INCONSISTENCY);
 	}
-	
-	
+
+
 	/**
 	 * Procédure permettant de vérifier la conformité des champs en rapport avec les imports CFONB d'une société
 	 * @param company
@@ -430,9 +433,9 @@ public class CfonbImportService {
 	 * @throws AxelorException
 	 */
 	public void testCompanyImportCFONBField(Company company) throws AxelorException  {
-		
+
 		this.init(company);
-		
+
 		cfonbConfigService.getHeaderRecordCodeImportCFONB(this.cfonbConfig);
 		cfonbConfigService.getDetailRecordCodeImportCFONB(this.cfonbConfig);
 		cfonbConfigService.getEndingRecordCodeImportCFONB(this.cfonbConfig);
@@ -441,13 +444,13 @@ public class CfonbImportService {
 		cfonbConfigService.getIpoRejectOperationCodeImportCFONB(this.cfonbConfig);
 		cfonbConfigService.getIpoAndChequeOperationCodeImportCFONB(this.cfonbConfig);
 		cfonbConfigService.getIpoOperationCodeImportCFONB(this.cfonbConfig);
-		
+
 	}
-	
-	
-	
+
+
+
 	/**
-	 * 
+	 *
 	 * @param file
 	 * @param company
 	 * @param operation
@@ -466,10 +469,10 @@ public class CfonbImportService {
 		String optionalRecordCode = this.getHeaderRecordCode(optionalOperation);
 		String operationCode = this.getImportOperationCode(operation);
 		String optionalOperationCode = this.getImportOperationCode(optionalOperation);
-		
-		LOG.debug("Obtention enregistrement en-tête CFONB: recordCode = {}, operationCode = {}, optionalRecordCode = {}, optionalOperationCode = {}", 
+
+		LOG.debug("Obtention enregistrement en-tête CFONB: recordCode = {}, operationCode = {}, optionalRecordCode = {}, optionalOperationCode = {}",
 				new Object[]{recordCode,operationCode,optionalRecordCode,optionalOperationCode});
-		
+
 		for(String s : file)  {
 			LOG.debug("file line : {}",s);
 			LOG.debug("s.substring(0, 2) : {}",s.substring(0, 2));
@@ -486,8 +489,8 @@ public class CfonbImportService {
 		}
 		return null;
 	}
-	
-	
+
+
 	/**
 	 * Fonction permettant de récupérer le code d'enregistrement en-tête
 	 * @param company
@@ -513,10 +516,10 @@ public class CfonbImportService {
 		}
 		return "999";
 	}
-	
-	
+
+
 	/**
-	 * 
+	 *
 	 * @param file
 	 * @param company
 	 * @param operation
@@ -531,16 +534,16 @@ public class CfonbImportService {
 	 * @return
 	 */
 	private List<String> getDetailsCFONB(List<String> file, int operation, int optionalOperation)  {
-		
+
 		List<String> stringList = new ArrayList<String>();
 		String recordCode = this.getDetailRecordCode(operation);
 		String operationCode = this.getImportOperationCode(operation);
 		String optionalRecordCode = this.getDetailRecordCode(optionalOperation);
 		String optionalOperationCode = this.getImportOperationCode(optionalOperation);
-		
-		LOG.debug("Obtention enregistrement détails CFONB: recordCode = {}, operationCode = {}, optionalRecordCode = {}, optionalOperationCode = {}", 
+
+		LOG.debug("Obtention enregistrement détails CFONB: recordCode = {}, operationCode = {}, optionalRecordCode = {}, optionalOperationCode = {}",
 				new Object[]{recordCode,operationCode,optionalRecordCode,optionalOperationCode});
-		
+
 		for(String s : file)  {
 			if(s.substring(0, 2).equals(recordCode) || s.substring(0, 2).equals(optionalRecordCode))  {
 				if((s.substring(8, 10).equals(operationCode) && optionalOperation == 999)|| s.substring(2, 4).equals(operationCode) || s.substring(2, 4).equals(optionalOperationCode))  {
@@ -551,12 +554,12 @@ public class CfonbImportService {
 				break;
 			}
 		}
-				
+
 		return stringList;
 	}
-	
-	
-	
+
+
+
 	/**
 	 * Fonction permettant de récupérer le code d'enregistrement détail
 	 * @param company
@@ -582,10 +585,10 @@ public class CfonbImportService {
 		}
 		return "999";
 	}
-	
-	
+
+
 	/**
-	 * 
+	 *
 	 * @param file
 	 * @param company
 	 * @param operation
@@ -605,7 +608,7 @@ public class CfonbImportService {
 		String optionalRecordCode = this.getEndingRecordCode(optionalOperation);
 		String optionalOperationCode = this.getImportOperationCode(optionalOperation);
 
-		LOG.debug("Obtention enregistrement fin CFONB: recordCode = {}, operationCode = {}, optionalRecordCode = {}, optionalOperationCode = {}", 
+		LOG.debug("Obtention enregistrement fin CFONB: recordCode = {}, operationCode = {}, optionalRecordCode = {}, optionalOperationCode = {}",
 				new Object[]{recordCode,operationCode,optionalRecordCode,optionalOperationCode});
 		for(String s : file)  {
 			if(s.substring(0, 2).equals(recordCode) || s.substring(0, 2).equals(optionalRecordCode))  {
@@ -619,8 +622,8 @@ public class CfonbImportService {
 		}
 		return null;
 	}
-	
-	
+
+
 	/**
 	 * Fonction permettant de récupérer le code d'enregistrement fin
 	 * @param company
@@ -646,12 +649,12 @@ public class CfonbImportService {
 		}
 		return "999";
 	}
-	
-	
+
+
 
 	/**
 	 * Méthode permettant de récupérer le code "opération" défini par société en fonction du type d'opération souhaité
-	 *  
+	 *
 	 * @param company
 	 * 		La société
 	 * @param operation
@@ -689,8 +692,8 @@ public class CfonbImportService {
 		}
 		return operationCode;
 	}
-	
-	
+
+
 	public BigDecimal getAmountRemainingFromPaymentMove(PaymentScheduleLine psl)  {
 		BigDecimal amountRemaining = BigDecimal.ZERO;
 		if(psl.getAdvanceOrPaymentMove() != null && psl.getAdvanceOrPaymentMove().getMoveLineList() != null)  {
@@ -702,7 +705,7 @@ public class CfonbImportService {
 		}
 		return amountRemaining;
 	}
-	
+
 	public BigDecimal getAmountRemainingFromPaymentMove(Invoice invoice)  {
 		BigDecimal amountRemaining = BigDecimal.ZERO;
 		if(invoice.getPaymentMove() != null && invoice.getPaymentMove().getMoveLineList() != null)  {
@@ -714,5 +717,5 @@ public class CfonbImportService {
 		}
 		return amountRemaining;
 	}
-	
+
 }

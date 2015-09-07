@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
 	
     <grid name="mail-account-grid" title="Mail accounts" model="com.axelor.apps.message.db.MailAccount">
         <field name="name"/>
@@ -19,8 +19,8 @@
         <panel name="configPanel" title="Configurations" readonlyIf="isValid">
         	<field name="serverTypeSelect"/>
         	<field name="host"/>
+        	<field name="securitySelect" onChange="action-mail-account-onchange-security-select"/>
         	<field name="port"/>
-        	<field name="securitySelect"/>
         </panel>
         <panel name="loginPanel" title="Login" readonlyIf="isValid" >
        	 	<field name="login"/>
@@ -39,5 +39,10 @@
 	<action-validate name="action-mail-account-validate-is-default">
 		<error message="There is already a default mail account" if="call: com.axelor.apps.message.db.MailAccount.MailAccountService:checkDefaultMailAccount(__this__)"/>
 	</action-validate>
+	
+	<action-attrs name="action-mail-account-onchange-security-select" model="com.axelor.apps.message.db.MailAccount">
+		<attribute for="port" name="value" expr="#{securitySelect == 1 ? 465 : securitySelect == 2 ? 587 : 25}"/>
+	</action-attrs>
+	
     
 </object-views>

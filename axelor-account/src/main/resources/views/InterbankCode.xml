@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
     
 	<grid name="interbank-code-grid" title="Blocking reason/reject codes lists" model="com.axelor.apps.account.db.InterbankCode">
         <field name="code"/>
@@ -16,7 +16,7 @@
 		<field name="technicalRejectOk"/>
 	</grid>
 	
-    <form name="interbank-code-form" title="Blocking reason/reject codes lists" model="com.axelor.apps.account.db.InterbankCode">
+    <form name="interbank-code-form" title="Blocking reason/reject codes lists" model="com.axelor.apps.account.db.InterbankCode" width="large">
 		<panel >
 			<field name="code"/>
 			<field name="name"/>
@@ -25,7 +25,7 @@
 		<panel title="Description" >
 			<field name="description" showTitle="false" colSpan="12"/>
 		</panel> 
-		<panel-related field="interbankCodeLineList" form-view="interbank-code-line-custom-form" grid-view="interbank-code-line-custom-grid"/>
+		<panel-related field="interbankCodeLineList" form-view="interbank-code-line-custom-form" grid-view="interbank-code-line-grid"/>
 </form>
     
 </object-views>

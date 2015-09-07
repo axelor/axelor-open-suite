@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
+
+	<grid name="employee-grid" title="Employee" model="com.axelor.apps.hr.db.Employee">
+		 <field name="contactPartner" grid-view="partner-contact-grid" form-view="partner-contact-form"/>
+		 <field name="hourlyRate" />
+		 <field name="timeLoggingPreferenceSelect" />
+		 <field name="manager" form-view="user-form" grid-view="user-grid" />
+		 <field name="department" form-view="department-form" grid-view="department-grid"/>
+	</grid>
+
+	<form name="employee-form" title="Employee" model="com.axelor.apps.hr.db.Employee"
+		onNew="action-employee-record-default" width="large">
+	    <panel title="Contact">
+            <field name="contactPartner" domain="self.partnerTypeSelect = 2 OR self.isContact = true" grid-view="partner-contact-grid" form-view="partner-contact-form" colSpan="12" />
+            <field name="contactPartner.emailAddress" colSpan="6" />
+			<field name="contactPartner.fax" colSpan="6" />
+			<field name="contactPartner.fixedPhone" colSpan="6" />
+			<field name="contactPartner.mobilePhone" colSpan="6" />
+           	<field name="contactPartner.webSite" colSpan="6" />
+        </panel>
+        <panel-tabs>
+        	<panel title="Information">
+	       	    <field name="hourlyRate" />
+	       	    <field name="bankDetails" widget="SuggestBox" onSelect="action-accounting-batch-attrs-bank-details-domain" form-view="bank-details-form" grid-view="bank-details-grid" if="__config__.general.getManageMultiBanks()"/>
+	       	    <field name="timeLoggingPreferenceSelect" />
+	       	    <field name="weeklyWorkHours" />
+	       	    <field name="dailyWorkHours" />
+	       	    <field name="product" domain="self.isActivity = true" form-view="product-form" grid-view="product-grid"/>
+	       	    <field name="manager" form-view="user-form" grid-view="user-grid" />
+	       	    <field name="department" form-view="department-form" grid-view="department-grid"/>
+	       	    <field name="timesheetReminder" />
+	       	    <field name="external" />
+	       	    <field name="planning" canNew="true" grid-view="weekly-planning-grid" form-view="weekly-planning-form"/>
+	       	    <field name="publicHolidayPlanning" grid-view="public-holiday-planning-grid" form-view="public-holiday-planning-form"/>
+	       	    <field name="negativeValueLeave"/>
+	       	    <panel-related field="leaveLineList" grid-view="leave-line-grid" form-view="leave-line-form" colSpan="12"/>
+	       	</panel>
+	       	<panel-related field="employmentContractList" grid-view="employment-contract-employee-grid" form-view="employment-contract-form"/>
+        </panel-tabs>
+	</form>
+	
+	<action-record name="action-employee-record-default" model="com.axelor.apps.hr.db.Employee">
+		<field name="timeLoggingPreferenceSelect" expr="eval:__config__.general.getTimeLoggingPreferenceSelect()"/>
+		<field name="dailyWorkHours" expr="eval:__config__.general.getDailyWorkHours()"/>
+		<field name="negativeValueLeave" expr="eval:__config__.general.getAllowNegativeLeaveEmployees()"/>
+		<field name="publicHolidayPlanning" expr="eval: __repo__.of(PublicHolidayPlanning).copy(__user__.activeCompany?.hrConfig?.publicHolidayPlanning,true)"/>
+	</action-record>
+	
+	<action-record name="action-hr-create-user-employee" model="com.axelor.apps.hr.db.Employee">
+	    <field name="contactPartner" expr="eval:partner" />
+	    <field name="timeLoggingPreferenceSelect" expr="eval:__config__.general.getTimeLoggingPreferenceSelect()"/>
+	    <field name="dailyWorkHours" expr="eval:__config__.general.getDailyWorkHours()"/>
+	    <field name="negativeValueLeave" expr="eval:__config__.general.getAllowNegativeLeaveEmployees()"/>
+	    <field name="publicHolidayPlanning" expr="eval: __repo__.of(PublicHolidayPlanning).copy(__user__.activeCompany?.hrConfig?.publicHolidayPlanning,true)"/>
+	</action-record>
+	
+	<action-view name="action-hr-user-show-employee" title="Employee" model="com.axelor.apps.hr.db.Employee">
+	    <view type="grid" name="employee-grid"/>
+	    <view type="form" name="employee-form"/>
+	    <context name="_showRecord" expr="eval:employee?.id"/>
+	</action-view>
+	
+</object-views>

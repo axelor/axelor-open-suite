@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
     
     <grid name="inventory-grid" title="Inventory" model="com.axelor.apps.stock.db.Inventory">
         <field name="inventorySeq"/>
-        <field name="location"/>
+        <field name="location" form-view="location-form" grid-view="location-grid"/>
         <field name="dateT"/>
         <field name="statusSelect"/>
     </grid>
@@ -15,12 +15,12 @@
 			<field name="inventorySeq" readOnly="true" colSpan="4"/>    
 			<field name="statusSelect" showTitle="false" widget="NavSelect" colSpan="8"/>
 			<field name="dateT" colSpan="4" readonlyIf="statusSelect == 3 || statusSelect == 4"/>
-			<field name="location" onSelect="action-inventory-attrs-set-location-domain" colSpan="8" readonlyIf="statusSelect == 3 || statusSelect == 4"/>
+			<field name="location" onSelect="action-inventory-attrs-set-location-domain" colSpan="8" readonlyIf="statusSelect == 3 || statusSelect == 4"  form-view="location-form" grid-view="location-grid"/>
 			<field name="description" colSpan="12" height="3"/>
 		</panel>  
 		<panel title="Fill inventory with" hideIf="statusSelect == 3 || statusSelect == 4 || location == null">
-			<field name="productFamily"/>
-			<field name="productCategory"/>
+			<field name="productFamily" form-view="product-family-form" grid-view="product-family-grid"/>
+			<field name="productCategory" form-view="product-category-form" grid-view="product-category-grid"/>
 			<field name="excludeOutOfStock"/>
 			<field name="includeObsolete"/>
 			<button name="fillInventory" title="Fill inventory" showIf="location != null" onClick="action-group-stock-inventory-fillinventory-click"/>
@@ -84,7 +84,7 @@
 
     <action-record name="action-inventory-record-new" model="com.axelor.apps.stock.db.Inventory">
 	    <field name="statusSelect" expr="1"/>
-	    <field name="dateT" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDateTime()"/>
+	    <field name="dateT" expr="eval:__config__.generalService.getTodayDateTime()"/>
 	    <field name="formatSelect" expr="1"/>
 	</action-record>
 	

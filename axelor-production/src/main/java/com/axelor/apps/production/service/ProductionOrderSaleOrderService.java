@@ -17,6 +17,8 @@
  */
 package com.axelor.apps.production.service;
 
+import java.util.List;
+
 import com.axelor.apps.production.db.ProductionOrder;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
@@ -26,11 +28,11 @@ import com.google.inject.persist.Transactional;
 
 public interface ProductionOrderSaleOrderService extends Repository<ProductionOrder> {
 
-	
-	public void generateProductionOrder(SaleOrder saleOrder) throws AxelorException;
-	
+
+	public List<Long> generateProductionOrder(SaleOrder saleOrder) throws AxelorException;
+
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public ProductionOrder generateProductionOrder(SaleOrderLine saleOrderLine) throws AxelorException;
-	
-	
+
+
 }

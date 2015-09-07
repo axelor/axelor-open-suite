@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_4.0.xsd">
+
+  <module name="supplychain" package="com.axelor.apps.supplychain.db"/>
+
+  <entity name="SupplychainBatch" lang="java">
+  	
+  	<!-- HEADER -->
+  	<string name="code" title="Code" namecolumn="true"/>
+    <integer name="actionSelect" title="Action" required="true" selection="supplychain.batch.action.select" default="1"/>
+    <many-to-one name="company" ref="com.axelor.apps.base.db.Company" required="true" title="Company" />
+    
+    <!-- OTHERS INFORMATIONS -->
+    <string name="description" title="Description" large="true" />
+    <one-to-many name="batchList" ref="com.axelor.apps.base.db.Batch" mappedBy="supplychainBatch" title="Batchs"/>
+ 
+  	<extra-code><![CDATA[
+	
+	   	// ACTION TYPE
+		public static final int ACTION_BILL_SUB = 1;
+		
+		public static final String CODE_BATCH_BILL_SUB = "S_B_SUB";
+	]]></extra-code>
+  
+  </entity>
+
+</domain-models>

@@ -40,39 +40,40 @@ import com.axelor.apps.account.service.AccountCustomerService;
 import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.account.service.MoveLineService;
 import com.axelor.apps.account.service.PaymentScheduleLineService;
-import com.axelor.apps.account.service.administration.GeneralServiceAccount;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.administration.GeneralService;
+import com.axelor.apps.base.service.administration.GeneralServiceImpl;
 import com.axelor.apps.tool.date.DateTool;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
 public class ReminderService extends ReminderRepository{
-	
-	private static final Logger LOG = LoggerFactory.getLogger(ReminderService.class); 
-	
+
+	private static final Logger LOG = LoggerFactory.getLogger(ReminderService.class);
+
 	@Inject
 	private ReminderSessionService rss;
 	@Inject
 	private ReminderActionService ras;
 	@Inject
 	private AccountCustomerService acs;
-	
+
 	@Inject
 	private MoveLineService moveLineService;
-	
+
 	@Inject
 	private PaymentScheduleLineService paymentScheduleLineService;
-	
+
 	@Inject
 	private AccountConfigService accountConfigService;
-	
+
 	@Inject
 	private AccountingSituationService accountingSituationService;
 
@@ -81,19 +82,19 @@ public class ReminderService extends ReminderRepository{
 	@Inject
 	public ReminderService() {
 
-		this.today = GeneralService.getTodayDate();
-		
+		this.today = Beans.get(GeneralService.class).getTodayDate();
+
 	}
-	
-	
+
+
 	public void testCompanyField(Company company) throws AxelorException  {
-		
+
 		AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
-		
+
 		accountConfigService.getReminderConfigLineList(accountConfig);
-		
+
 	}
-	
+
 
 	/**
 	 * Fonction permettant de calculer le solde exigible relançable d'un tiers
@@ -111,8 +112,8 @@ public class ReminderService extends ReminderRepository{
 		balanceDueReminder = balanceDueReminder.add(balanceSubstract);
 		return balanceDueReminder;
 	}
-				
-	
+
+
 	public BigDecimal getSubstractBalanceDue( Partner partner)  {
 		List<? extends MoveLine> moveLineQuery = moveLineService.all().filter("self.partner = ?1", partner).fetch();
 		BigDecimal balance = BigDecimal.ZERO;
@@ -125,19 +126,19 @@ public class ReminderService extends ReminderRepository{
 		}
 		return balance;
 	}
-	
-			
+
+
 	/**
 	 * Fonction qui récupère la plus ancienne date d'échéance d'une liste de lignes d'écriture
 	 * @param moveLineList
 	 * 			Une liste de lignes d'écriture
-	 * @return 
+	 * @return
 	 * 			la plus ancienne date d'échéance
 	 */
 	public LocalDate getOldDateMoveLine(List<MoveLine> moveLineList)  {
 		LocalDate minMoveLineDate = new LocalDate();
-		
-		
+
+
 		if(moveLineList != null && !moveLineList.isEmpty())  {
 			for(MoveLine moveLine : moveLineList)  {
 				if(minMoveLineDate.isAfter(moveLine.getDueDate()))  {	minMoveLineDate=moveLine.getDueDate();	}
@@ -146,8 +147,8 @@ public class ReminderService extends ReminderRepository{
 		else  {	minMoveLineDate=null;	}
 		return minMoveLineDate;
 	}
-	
-	
+
+
 	/**
 	 * Fonction qui récupére la plus récente date entre deux date
 	 * @param date1
@@ -168,20 +169,20 @@ public class ReminderService extends ReminderRepository{
 		else  {	minDate=null;	}
 		return minDate;
 	}
-	
-	
+
+
 	/**
 	 * Fonction qui permet de récupérer la date de relance la plus récente
 	 * @param reminder
 	 * 			Une relance
-	 * @return 
+	 * @return
 	 * 			La date de relance la plus récente
 	 */
 	public LocalDate getLastDateReminder(Reminder reminder)  {
-		return reminder.getReminderDate(); 
+		return reminder.getReminderDate();
 	}
-	
-	
+
+
 	/**
 	 * Fonction qui détermine la date de référence
 	 * @param reminder
@@ -192,24 +193,24 @@ public class ReminderService extends ReminderRepository{
 	public LocalDate getReferenceDate(Reminder reminder)  {
 		AccountingSituation accountingSituation = reminder.getAccountingSituation();
 		List<MoveLine> moveLineList = this.getMoveLineReminder(accountingSituation.getPartner(), accountingSituation.getCompany());
-		
+
 		// Date la plus ancienne des lignes d'écriture
 		LocalDate minMoveLineDate = getOldDateMoveLine(moveLineList);
-		LOG.debug("minMoveLineDate : {}",minMoveLineDate);	
-		
+		LOG.debug("minMoveLineDate : {}",minMoveLineDate);
+
 		// 2: Date la plus récente des relances
 		LocalDate reminderLastDate = getLastDateReminder(reminder);
 		LOG.debug("reminderLastDate : {}",reminderLastDate);
-		
+
 		// Date de référence : Date la plus récente des deux ensembles (1 et 2)
 		LocalDate reminderRefDate = getLastDate(minMoveLineDate, reminderLastDate);
-		LOG.debug("reminderRefDate : {}",reminderRefDate);	
-		
+		LOG.debug("reminderRefDate : {}",reminderRefDate);
+
 		return reminderRefDate;
 	}
-	
-	
-	
+
+
+
 	/**
 	 * Fonction permettant de récuperer une liste de ligne d'écriture exigible relançable d'un tiers
 	 * @param partner
@@ -223,17 +224,17 @@ public class ReminderService extends ReminderRepository{
 		List<MoveLine> moveLineList = new ArrayList<MoveLine>();
 
 		List<MoveLine> moveLineQuery = (List<MoveLine>) this.getMoveLine(partner, company);
-		
+
 		int mailTransitTime = company.getAccountConfig().getMailTransitTime();
-		
+
 		for(MoveLine moveLine : moveLineQuery)  {
 			if(moveLine.getMove()!=null && !moveLine.getMove().getIgnoreInReminderOk())  {
 				Move move = moveLine.getMove();
 				//facture exigibles non bloquée en relance et dont la date de facture + délai d'acheminement < date du jour
-				if(move.getInvoice()!=null && !move.getInvoice().getReminderBlockingOk() 
+				if(move.getInvoice()!=null && !move.getInvoice().getReminderBlockingOk()
 						&& !move.getInvoice().getSchedulePaymentOk()
 						&& ((move.getInvoice().getInvoiceDate()).plusDays(mailTransitTime)).isBefore(today))  {
-					if((moveLine.getDebit().compareTo(BigDecimal.ZERO) > 0) 
+					if((moveLine.getDebit().compareTo(BigDecimal.ZERO) > 0)
 							&& moveLine.getDueDate() != null
 							&&	(today.isAfter(moveLine.getDueDate())  || today.isEqual(moveLine.getDueDate())))  {
 						if(moveLine.getAccount()!=null && moveLine.getAccount().getReconcileOk())  {
@@ -245,8 +246,8 @@ public class ReminderService extends ReminderRepository{
 				}
 				//échéances rejetées qui ne sont pas bloqués
 				else if(move.getInvoice()==null)  {
-					if(moveLine.getPaymentScheduleLine() != null 
-							&& (moveLine.getDebit().compareTo(BigDecimal.ZERO) > 0) 
+					if(moveLine.getPaymentScheduleLine() != null
+							&& (moveLine.getDebit().compareTo(BigDecimal.ZERO) > 0)
 							&& moveLine.getDueDate() != null
 							&&	(today.isAfter(moveLine.getDueDate())  || today.isEqual(moveLine.getDueDate())))  {
 						if(moveLine.getAccount()!=null && moveLine.getAccount().getReconcileOk())  {
@@ -257,11 +258,11 @@ public class ReminderService extends ReminderRepository{
 					}
 				}
 			}
-		}	
+		}
 		return moveLineList;
 	}
-	
-	
+
+
 	public List<Invoice> getInvoiceList(List<MoveLine> moveLineList)  {
 		List<Invoice> invoiceList = new ArrayList<Invoice>();
 		for(MoveLine moveLine : moveLineList)  {
@@ -271,8 +272,8 @@ public class ReminderService extends ReminderRepository{
 		}
 		return invoiceList;
 	}
-	
-	
+
+
 	public List<PaymentScheduleLine> getPaymentScheduleList(List<MoveLine> moveLineList, Partner partner)  {
 		List<PaymentScheduleLine> paymentScheduleLineList = new ArrayList<PaymentScheduleLine>();
 		for(MoveLine moveLine : moveLineList)  {
@@ -280,7 +281,7 @@ public class ReminderService extends ReminderRepository{
 				// Ajout à la liste des échéances exigibles relançables
 				PaymentScheduleLine paymentScheduleLine = getPaymentScheduleFromMoveLine(partner, moveLine);
 				if(paymentScheduleLine != null)  {
-					// Si un montant reste à payer, c'est à dire une échéance rejeté 
+					// Si un montant reste à payer, c'est à dire une échéance rejeté
 					if(moveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) > 0)  {
 						paymentScheduleLineList.add(paymentScheduleLine);
 					}
@@ -289,7 +290,7 @@ public class ReminderService extends ReminderRepository{
 		}
 		return paymentScheduleLineList;
 	}
-	
+
 	/**
 	 * Méthode permettant de récupérer l'ensemble des lignes d'écriture d'un tiers
 	 * @param partner
@@ -299,12 +300,12 @@ public class ReminderService extends ReminderRepository{
 	 * @return
 	 */
 	public List<? extends MoveLine> getMoveLine(Partner partner, Company company)  {
-		
+
 		return moveLineService.all().filter("self.partner = ?1 and self.move.company = ?2", partner, company).fetch();
 
 	}
-	
-	
+
+
 	/**
 	 * Méthode permettant de récupérer une ligne d'échéancier depuis une ligne d'écriture
 	  * @param partner
@@ -315,7 +316,7 @@ public class ReminderService extends ReminderRepository{
 	public PaymentScheduleLine getPaymentScheduleFromMoveLine(Partner partner, MoveLine moveLine)  {
 		return paymentScheduleLineService.all().filter("self.rejectMoveLine = ?1", moveLine).fetchOne();
 	}
-	
+
 
 	/**
 	 * Procédure permettant de tester si aujourd'hui nous sommes dans une période particulière
@@ -331,12 +332,12 @@ public class ReminderService extends ReminderRepository{
 	 * 			Sommes-nous dans la période?
 	 */
 	public boolean periodOk(int dayBegin, int dayEnd, int monthBegin, int monthEnd)  {
-		
+
 		return DateTool.dateInPeriod(today, dayBegin, monthBegin, dayEnd, monthEnd);
-		
+
 	}
-	
-	
+
+
 	public Reminder getReminder(Partner partner, Company company) throws AxelorException  {
 		AccountingSituation accountingSituation = accountingSituationService.all().filter("self.partner = ?1 and self.company = ?2", partner, company).fetchOne();
 		if(accountingSituation != null)  {
@@ -347,14 +348,14 @@ public class ReminderService extends ReminderRepository{
 				return this.createReminder(accountingSituation);
 			}
 		}
-		
+
 		else  {
-			throw new AxelorException(String.format("%s :\n"+I18n.get("Tiers")+" %s, "+I18n.get("Société")+" %s : "+I18n.get(IExceptionMessage.REMINDER_1), 
-					GeneralServiceAccount.getExceptionReminderMsg(), partner.getName(), company.getName()), IException.CONFIGURATION_ERROR);
+			throw new AxelorException(String.format("%s :\n"+I18n.get("Tiers")+" %s, "+I18n.get("Société")+" %s : "+I18n.get(IExceptionMessage.REMINDER_1),
+					GeneralServiceImpl.EXCEPTION, partner.getName(), company.getName()), IException.CONFIGURATION_ERROR);
 		}
 	}
-	
-	
+
+
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public Reminder createReminder(AccountingSituation accountingSituation)  {
 		Reminder reminder = new Reminder();
@@ -362,8 +363,8 @@ public class ReminderService extends ReminderRepository{
 		save(reminder);
 		return reminder;
 	}
-	
-	
+
+
 	/**
 	 * Méthode de relance en masse
 	 * @param partner
@@ -371,52 +372,52 @@ public class ReminderService extends ReminderRepository{
 	 * @param company
 	 * 			Une société
 	 * @throws AxelorException
-	 * @throws IllegalAccessException 
-	 * @throws InstantiationException 
-	 * @throws ClassNotFoundException 
-	 * @throws IOException 
+	 * @throws IllegalAccessException
+	 * @throws InstantiationException
+	 * @throws ClassNotFoundException
+	 * @throws IOException
 	 */
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public boolean reminderGenerate(Partner partner, Company company) throws AxelorException, ClassNotFoundException, InstantiationException, IllegalAccessException, IOException {			
+	public boolean reminderGenerate(Partner partner, Company company) throws AxelorException, ClassNotFoundException, InstantiationException, IllegalAccessException, IOException {
 		boolean remindedOk = false;
-		
+
 		Reminder reminder = this.getReminder(partner, company); // ou getReminder si existe
-		
+
 		BigDecimal balanceDue = acs.getBalanceDue(partner, company);
-		
+
 		if (balanceDue.compareTo(BigDecimal.ZERO) > 0)  {
-			
+
 			reminder.setBalanceDue(balanceDue);
 			LOG.debug("balanceDue : {} ",balanceDue);
-			
+
 			BigDecimal balanceDueReminder = acs.getBalanceDueReminder(partner, company);
-			
+
 			if (balanceDueReminder.compareTo(BigDecimal.ZERO) > 0) {
 				LOG.debug("balanceDueReminder : {} ",balanceDueReminder);
-				
+
 				remindedOk = true;
-				
+
 				List<MoveLine> moveLineList = this.getMoveLineReminder(partner, company);
-				
+
 				this.updateInvoiceReminder(reminder,  this.getInvoiceList(moveLineList));
 				this.updatePaymentScheduleLineReminder(reminder, this.getPaymentScheduleList(moveLineList, partner));
-				
+
 				reminder.setBalanceDueReminder(balanceDueReminder);
-				
+
 				Integer levelReminder = 0;
 				if(reminder.getReminderMethodLine() != null)  {
 					levelReminder = reminder.getReminderMethodLine().getReminderLevel().getName();
 				}
-				
+
 				LocalDate referenceDate = this.getReferenceDate(reminder);
-				
+
 				if(referenceDate != null)  {
 					LOG.debug("date de référence : {} ",referenceDate);
-					reminder.setReferenceDate(referenceDate);	
+					reminder.setReferenceDate(referenceDate);
 				}
 				else {
-					throw new AxelorException(String.format("%s :\n"+I18n.get("Tiers")+" %s, "+I18n.get("Société")+" %s : "+I18n.get(IExceptionMessage.REMINDER_2), 
-							GeneralServiceAccount.getExceptionReminderMsg(), partner.getName(), company.getName()), IException.CONFIGURATION_ERROR);
+					throw new AxelorException(String.format("%s :\n"+I18n.get("Tiers")+" %s, "+I18n.get("Société")+" %s : "+I18n.get(IExceptionMessage.REMINDER_2),
+							GeneralServiceImpl.EXCEPTION, partner.getName(), company.getName()), IException.CONFIGURATION_ERROR);
 				}
 				if(reminder.getReminderMethod() == null)  {
 					if(rss.getReminderMethod(reminder)!=null)  {
@@ -424,8 +425,8 @@ public class ReminderService extends ReminderRepository{
 						rss.reminderSession(reminder);
 					}
 					else  {
-						throw new AxelorException(String.format("%s :\n"+I18n.get("Tiers")+" %s, "+I18n.get("Société")+" %s : "+I18n.get(IExceptionMessage.REMINDER_3),  
-								GeneralServiceAccount.getExceptionReminderMsg(), partner.getName(), company.getName()), IException.CONFIGURATION_ERROR);
+						throw new AxelorException(String.format("%s :\n"+I18n.get("Tiers")+" %s, "+I18n.get("Société")+" %s : "+I18n.get(IExceptionMessage.REMINDER_3),
+								GeneralServiceImpl.EXCEPTION, partner.getName(), company.getName()), IException.CONFIGURATION_ERROR);
 					}
 				}
 				else {
@@ -439,12 +440,12 @@ public class ReminderService extends ReminderRepository{
 					}
 				}
 				else  {
-					LOG.debug("Tiers {}, Société {} - Niveau de relance en attente ", partner.getName(), company.getName());	
+					LOG.debug("Tiers {}, Société {} - Niveau de relance en attente ", partner.getName(), company.getName());
 					// TODO Alarm ?
 					TraceBackService.trace(new AxelorException(
-						String.format("%s :\n"+I18n.get("Tiers")+" %s, "+I18n.get("Société")+" %s : "+I18n.get(IExceptionMessage.REMINDER_4),  
-								GeneralServiceAccount.getExceptionReminderMsg(), partner.getName(), company.getName()), IException.INCONSISTENCY));
-				}	
+						String.format("%s :\n"+I18n.get("Tiers")+" %s, "+I18n.get("Société")+" %s : "+I18n.get(IExceptionMessage.REMINDER_4),
+								GeneralServiceImpl.EXCEPTION, partner.getName(), company.getName()), IException.INCONSISTENCY));
+				}
 			}
 		}
 		else  {
@@ -452,16 +453,16 @@ public class ReminderService extends ReminderRepository{
 		}
 		return remindedOk;
 	}
-	
-	
+
+
 	public void updateInvoiceReminder(Reminder reminder, List<Invoice> invoiceList)  {
 		reminder.setInvoiceReminderSet(new HashSet<Invoice>());
 		reminder.getInvoiceReminderSet().addAll(invoiceList);
 	}
-	
+
 	public void updatePaymentScheduleLineReminder(Reminder reminder, List<PaymentScheduleLine> paymentSchedueLineList)  {
 		reminder.setPaymentScheduleLineReminderSet(new HashSet<PaymentScheduleLine>());
 		reminder.getPaymentScheduleLineReminderSet().addAll(paymentSchedueLineList);
 	}
-	
+
 }

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
 
 
 	<!-- Nomenclature : * name : "interfaceName" + "fieldName" + ".select" -->
@@ -10,4 +10,32 @@
 		<option value="1">Invoicing</option>
 	</selection>
 	
+	<selection name="sale.order.status.select">
+		<option value="1">Draft</option>
+		<option value="2">Finalize</option>
+		<option value="3">Order confirmed</option>
+		<option value="4">Canceled</option>
+	</selection>
+	
+	<selection name="sale.order.delivery.state">
+		<option value="1">Not delivered</option>
+		<option value="2">Partially delivered</option>
+		<option value="3">Delivered</option>
+	</selection>
+	
+	<selection name="product.periodicity.subscription.select">
+		<option value="1">Monthly</option>
+		<option value="2">Bi-monthly</option>
+		<option value="3">Quarterly</option>
+		<option value="6">Half-yearly</option>
+		<option value="12">Yearly</option>
+	</selection>
+	
+	<selection name="sale.order.line.discount.amount.type.select">
+		<option value="1">Discount</option>
+		<option value="2">Addition</option>
+	</selection>
+	
+	
+
 </object-views>

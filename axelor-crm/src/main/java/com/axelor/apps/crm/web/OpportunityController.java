@@ -25,8 +25,9 @@ import java.util.Map;
 import com.axelor.app.AppSettings;
 import com.axelor.apps.base.service.MapService;
 import com.axelor.apps.crm.db.Opportunity;
+import com.axelor.apps.crm.db.repo.OpportunityRepository;
 import com.axelor.apps.crm.exception.IExceptionMessage;
-import com.axelor.apps.crm.service.OpportunityService;
+import com.axelor.apps.crm.service.OpportunityServiceImpl;
 import com.axelor.auth.AuthUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
@@ -40,7 +41,7 @@ public class OpportunityController {
 	public void saveOpportunitySalesStage(ActionRequest request, ActionResponse response) throws AxelorException {
 		
 		Opportunity opportunity = request.getContext().asType(Opportunity.class);
-		OpportunityService opportunityService = Beans.get(OpportunityService.class);
+		OpportunityServiceImpl opportunityService = Beans.get(OpportunityServiceImpl.class);
 		Opportunity persistOpportunity = opportunityService.find(opportunity.getId());
 		persistOpportunity.setSalesStageSelect(opportunity.getSalesStageSelect());
 		opportunityService.saveOpportunity(persistOpportunity);
@@ -48,7 +49,7 @@ public class OpportunityController {
 	}
 	
 	public void assignToMe(ActionRequest request, ActionResponse response)  {
-		OpportunityService opportunityService = Beans.get(OpportunityService.class);
+		OpportunityServiceImpl opportunityService = Beans.get(OpportunityServiceImpl.class);
 		if(request.getContext().get("id") != null){
 			Opportunity opportunity = opportunityService.find((Long)request.getContext().get("id"));
 			opportunity.setUser(AuthUtils.getUser());
@@ -81,4 +82,11 @@ public class OpportunityController {
 		mapView.put("viewType", "html");		
 		response.setView(mapView);
 	}	
+	
+	public void createClient(ActionRequest request, ActionResponse response) throws AxelorException{
+		Opportunity opportunity = request.getContext().asType(Opportunity.class);
+		opportunity = Beans.get(OpportunityRepository.class).find(opportunity.getId());
+		Beans.get(OpportunityServiceImpl.class).createClientFromLead(opportunity);
+		response.setReload(true);
+	}
 }

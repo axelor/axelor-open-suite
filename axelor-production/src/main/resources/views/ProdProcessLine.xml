@@ -1,26 +1,26 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
     
     <grid name="prod-process-line-grid" title="Production process" model="com.axelor.apps.production.db.ProdProcessLine" orderBy="priority">
     	<field name="priority"/>
 		<field name="name"/>
-        <field name="prodResource"/>
+        <field name="prodResource" grid-view="prod-resource-grid" form-view="prod-resource-form"/>
         <field name="description"/>
     </grid>
     
     <form name="prod-process-line-form" title="Production process" model="com.axelor.apps.production.db.ProdProcessLine"
-    onNew="action-prod-process-line-record-default">
+    onNew="action-prod-process-line-record-default" width="large">
     	<panel>
 	    	<field name="name"/>
 	    	<field name="priority" colSpan="3"/>
-	    	<field name="prodResource"/>
+	    	<field name="prodResource" grid-view="prod-resource-grid" form-view="prod-resource-form"/>
 			<panel title="Description" colSpan="12">
     			<field name="description" showTitle="false" height="5" colSpan="12"/>
     		</panel>
     	</panel>
-    	<panel-related  field="toConsumeProdProductList" title="To consume products" colSpan="12"/>        
+    	<panel-related  field="toConsumeProdProductList" title="To consume products" colSpan="12" form-view="prod-product-form" grid-view="prod-product-grid"/>        
     </form>
     
     <action-record name="action-prod-process-line-record-default" model="com.axelor.apps.production.db.ProdProcessLine">

@@ -1,51 +1,88 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
 	
 	<form name="sale-order-form" title="Sale order" model="com.axelor.apps.sale.db.SaleOrder" id="supplychain-sale-order-form"
 	onNew="action-group-supplychain-saleorder-onnew"
-	onLoad="action-group-supplychain-saleorder-onload" 
-	onSave="save,action-method-set-sale-order-draft-sequence,save">
+	onLoad="action-group-supplychain-saleorder-onload">
 		
 		<panel-include view="sale-order-form" from="axelor-sale"/>
 	</form>
 
-	
+	<form name="sale-order-generate-po-select-supplierpartner-form" model="com.axelor.apps.sale.db.SaleOrder" title="Confirm Purchase order generation" onNew="action-record-load-dummy-supplier-partner">
+		<panel>
+			<field name="supplierPartnerSelect" title="Select supplier partner" colSpan="12" width="300px" type="many-to-one" target="com.axelor.apps.base.db.Partner" domain="self.isContact = false AND self.isSupplier = true" required="true"/>
+			<button name="generatePOConfirm" title="Confirm Purchase order generation" onClick="action-supplychain-so-generate-po-check-supplier-partner,action-supplychain-sale-order-generate-purchase-orders-from-selected-SOLines" colSpan="12" width="300px"/>
+		</panel>
+    </form>
+
 	<form name="sale-order-form-client" id="supplychain-sale-order-form-client" title="Sale order" model="com.axelor.apps.sale.db.SaleOrder" cols="4" 
 		  onNew="action-group-supplychain-saleorder-onnew"
-		  onSave="save,action-method-set-sale-order-draft-sequence,save" onLoad="action-group-supplychain-saleorder-onload">
+		  onSave="save,action-sale-order-method-compute,save" onLoad="action-group-supplychain-saleorder-onload" width="large">
 		<panel-include view="sale-order-form-client" from="axelor-sale"/>
 	</form>
 	
+	<form name="sale-order-template-form" title="Template" model="com.axelor.apps.sale.db.SaleOrder" id="supplychain-sale-order-template-form"
+		onNew="action-group-sale-saleorder-onnew,action-saleorder-record-template,action-sale-order-method-create-template"
+		onLoad="action-group-sale-saleorder-onload">
+		<panel-include view="sale-order-template-form" from="axelor-sale"/>
+	</form>
+	
+	<action-view name="action-sale-order-view-select-supplier-partner" title="Annulation" model="com.axelor.apps.sale.db.SaleOrder">
+	  <view type="form" name="sale-order-generate-po-select-supplierpartner-form"/>
+	  <view-param name="popup" value="reload"/>
+	  <view-param name="show-toolbar" value="false"/>
+	  <view-param name="show-confirm" value="false" />
+	  <view-param name="forceEdit" value="true" />
+	  <context name="_showRecord" expr="eval: __this__.id" />
+	</action-view>
+	
 	<action-group name="action-group-supplychain-saleorder-onnew">
+		<action name="action-sale-order-attrs-show-project-panel"/>
 		<action name="action-sale-order-record-default"/>
 		<action name="action-sale-order-record-company-configuration"/>
 		<action name="action-supplychain-sale-order-method-get-location"/>
 		<action name="action-sale-order-record-currency"/>
 		<action name="action-sale-order-attrs-collapse-specific-settings-group"/>
+		<action name="action-sale-order-record-in-ati"/>
+		<action name="action-sale-order-attrs-in-ati"/>
 	</action-group>
 	
 	<action-group name="action-group-supplychain-saleorder-onload">
+		<action name="action-sale-order-attrs-show-project-panel"/>
 		<action name="action-sale-order-attrs-collapse-specific-settings-group"/>
 		<action name="action-sale-order-attrs-validated-read-only"/>
 		<action name="action-partner-attrs-hide-contact-partner" />
+		<action name="action-sale-order-attrs-in-ati"/>
+		<action name="action-sale-order-method-update-timetable"/>
+		<action name="save"/>
 	</action-group>
+	
+	<action-group name="action-group-supplychain-sale-order-confirmed" if-module="axelor-supplychain">
+		<action name="action-supplychain-sale-order-create-purchase-order" if="eval: __config__.general.getPurchaseOrderGenerationAuto()"/>
+    	<action name="action-supplychain-sale-order-create-stock-move" if="eval: __config__.general.getCustomerStockMoveGenerationAuto()"/>
+    	<action name="action-supplychain-sale-order-create-production-order" if="eval: __config__.general.getProductionOrderGenerationAuto()"/>
+	</action-group>
+	
+	<action-method name="action-sale-order-method-update-timetable" if-module="axelor-supplychain">
+		<call class="com.axelor.apps.supplychain.web.SaleOrderController" method="updateTimetable"/>
+	</action-method>
 	
 	<action-method name="action-supplychain-sale-order-method-get-location">
     	<call class="com.axelor.apps.supplychain.web.SaleOrderController" method="getLocation"/>
     </action-method>
     
     <action-method name="action-supplychain-sale-order-method-generate-invoice">
- 		<call class="com.axelor.apps.supplychain.web.SaleOrderInvoiceController" method="generateInvoice"/>
+ 		<call class="com.axelor.apps.supplychain.web.SaleOrderController" method="generateInvoice"/>
 	</action-method>
 	
 	<action-method name="action-supplychain-sale-order-create-stock-move" >
-		<call class="com.axelor.apps.supplychain.web.SaleOrderController" method="createStockMoves"/>
+		<call class="com.axelor.apps.supplychain.web.SaleOrderController" method="createStockMove"/>
 	</action-method>
 	
 	<action-method name="action-supplychain-sale-order-create-purchase-order" >
-		<call class="com.axelor.apps.supplychain.web.SaleOrderController" method="createPurchaseOrders"/>
+		<call class="com.axelor.apps.supplychain.web.SaleOrderController" method="createPurchaseOrders" />
 	</action-method>
 	
 	<action-method name="action-sale-order-method-get-location" >
@@ -56,13 +93,28 @@
 		<call class="com.axelor.apps.production.web.ProductionOrderSaleOrderController" method="createProductionOrders"/>
 	</action-method>
 
-    <action-method name="action-supplychain-sale-order-alert-generate-invoice">
-        <call class="com.axelor.apps.supplychain.web.SaleOrderController" method="alertGenerateInvoice"/>
-    </action-method>
+	<action-method name="action-supplychain-sale-order-generate-purchase-orders-from-selected-SOLines" >
+		<call class="com.axelor.apps.supplychain.web.SaleOrderController" method="generatePurchaseOrdersFromSelectedSOLines"/>
+	</action-method>
 	
 	<action-validate name="action-supplychain-sale-order-validate-check-location">
 		<error message="The location must be filled." if="location == null"/>
 	</action-validate>
 	
+	<action-record name="action-record-load-dummy-supplier-partner" model="com.axelor.apps.sale.db.SaleOrder">
+		<field name="supplierPartnerSelect" expr="eval:__repo__.of(Partner).find(Long.valueOf(supplierPartnerId))"/>
+	</action-record>
 	
-</object-views>	
+	<action-view name="action-view-show-invoices-from-sale-order" title="Invoices" model="com.axelor.apps.account.db.Invoice">	
+		<view type="grid" name="invoice-light-grid" />
+		<view type="form" name="invoice-form" />
+		<domain>self.saleOrder.id = :saleOrderId OR (self.saleOrder.id IS NULL AND EXISTS(SELECT 1 FROM self.invoiceLineList inli WHERE inli.saleOrderLine.id IN (:saleOrderLineIdList)))</domain>
+		<context name="saleOrderId" expr="eval: id" />
+		<context name="saleOrderLineIdList" expr="eval: (id != null &amp;&amp; saleOrderLineList != null &amp;&amp; !saleOrderLineList.isEmpty()) ? saleOrderLineList.collect{it.id} : null"/>
+    </action-view>
+    
+    <action-condition name="action-supplychain-so-generate-po-check-supplier-partner">
+		<check error="A supplier partner must be selected" field="supplierPartnerSelect" if="supplierPartnerSelect == null"/>
+	</action-condition>
+	
+</object-views>

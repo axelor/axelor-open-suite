@@ -1,7 +1,7 @@
 package com.axelor.apps.production.module;
 
 import com.axelor.app.AxelorModule;
-import com.axelor.app.AxelorModuleInfo;
+
 import com.axelor.apps.production.db.repo.ManufOrderManagementRepository;
 import com.axelor.apps.production.db.repo.ManufOrderRepository;
 import com.axelor.apps.production.service.BillOfMaterialService;
@@ -16,7 +16,7 @@ import com.axelor.apps.production.service.ProductionOrderService;
 import com.axelor.apps.production.service.ProductionOrderServiceImpl;
 import com.axelor.apps.production.service.ProductionOrderWizardService;
 import com.axelor.apps.production.service.ProductionOrderWizardServiceImpl;
-@AxelorModuleInfo(name="axelor-production")
+
 public class ProductionModule extends AxelorModule {
 
 	@Override

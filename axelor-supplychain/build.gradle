@@ -6,10 +6,11 @@ module {
 	title "Axelor :: Supply chain"
 	
 	removable true
-
+	
 	module "modules:axelor-purchase"
 	module "modules:axelor-sale"
 	module "modules:axelor-stock"
 	module "modules:axelor-account"
+	module "modules:axelor-crm"
 }
 

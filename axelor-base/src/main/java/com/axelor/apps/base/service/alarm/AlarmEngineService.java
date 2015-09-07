@@ -44,60 +44,63 @@ import com.google.inject.Inject;
  */
 public class AlarmEngineService <T extends Model> extends AlarmEngineRepository {
 
+
+	protected GeneralService generalService;
+
 	private static final Logger LOG = LoggerFactory.getLogger(AlarmEngineService.class);
-		
+
 	private DateTime dateTime;
-	
+
 	private Templates templates;
-	
+
 	@Inject
-	public AlarmEngineService() {
-		
-		dateTime = GeneralService.getTodayDateTime();
-		
+	public AlarmEngineService(GeneralService generalService) {
+		this.generalService = generalService;
+		dateTime = this.generalService.getTodayDateTime();
+
 	}
 
 	public AlarmEngineService(DateTime dateTime) {
-		
+
 		this.dateTime = dateTime;
-		
+
 	}
-	
+
 	public Alarm get(String alarmEngineCode, T t, boolean isExternal){
-		
+
 		AlarmEngine alarmEngine = all().filter("self.code = ?1 AND externalOk = ?2 AND activeOk = true", alarmEngineCode, isExternal).fetchOne();
-		
+
 		if (alarmEngine != null) { return createAlarm(alarmEngine, t); }
 		else return null;
-		
+
 	}
-	
+
 	/**
 	 * Obtenir le tuple model cible et sa liste d'alarmes pour un type de moteur précis.
-	 * 
+	 *
 	 * @param klass
 	 * 		Le modèle cible des requête.
 	 * @param params
 	 * 		Liste de paramètre de la requête.
-	 * 
+	 *
 	 * @return
 	 * 		Un dictionnaire contenant l'ensemble des éléments remonté par la requête avec la liste des alarmes concernées.
-	 * 
+	 *
 	 * @throws Exception
 	 */
 	public Map<T, List<Alarm>> get(Class<T> klass, T... params) {
-		
-		List<? extends AlarmEngine> alarmEngines = all().filter("metaModel = ?1 AND activeOk = true AND externalOk = false", MetaModelService.getMetaModel(klass)).fetch(); 
-		
+
+		List<? extends AlarmEngine> alarmEngines = all().filter("metaModel = ?1 AND activeOk = true AND externalOk = false", MetaModelService.getMetaModel(klass)).fetch();
+
 		LOG.debug("Lancement des moteurs de type {} : {} moteurs à lancer", klass, alarmEngines.size());
-				
+
 		return get(alarmEngines, klass, params);
-		
+
 	}
-	
+
 	/**
 	 * Obtenir le tuple model cible et sa liste d'alarmes.
-	 * 
+	 *
 	 * @param alarmEngineLines
 	 * 		Une liste d'éléments (lignes) d'un ou plusieurs moteur d'alarme.
 	 * @param klass
@@ -106,39 +109,39 @@ public class AlarmEngineService <T extends Model> extends AlarmEngineRepository 
 	 * 		Une liste d'éléments du modèle cible pré-établies limitant le champs de recherche à ces éléments.
 	 * @param params
 	 * 		Liste de paramètre de la requête.
-	 * 
+	 *
 	 * @return
 	 * 		Un dictionnaire contenant l'ensemble des éléments remonté par la requête avec la liste des alarmes concernées.
-	 * 
+	 *
 	 * @throws Exception
 	 */
 	protected Map<T, List<Alarm>> get(List<? extends AlarmEngine> alarmEngines, Class<T> klass, T... params) {
-	
+
 		Map<T, List<Alarm>> map = new HashMap<T, List<Alarm>>();
 		Map<T, Alarm> alarmMap = new HashMap<T, Alarm>();
-		
+
 		for (AlarmEngine alarmEngine : alarmEngines){
-			
+
 			alarmMap.clear();
 			alarmMap.putAll( get(alarmEngine, klass, params) );
-			
+
 			for (T t : alarmMap.keySet()){
-				
+
 				if (!map.containsKey(t)) { map.put(t, new ArrayList<Alarm>()); }
-				
+
 				map.get(t).add(alarmMap.get(t));
-				
+
 			}
-			
+
 		}
-		
+
 		return map;
-		
+
 	}
-	
+
 	/**
 	 * Obtenir le tuple model cible et alarme.
-	 * 
+	 *
 	 * @param message
 	 * 		Le message à attribuer à l'alarme.
 	 * @param query
@@ -149,30 +152,30 @@ public class AlarmEngineService <T extends Model> extends AlarmEngineRepository 
 	 * 		Une liste d'éléments du modèle cible pré-établies limitant le champs de recherche à ces éléments.
 	 * @param params
 	 * 		Liste de paramètre de la requête.
-	 * 
+	 *
 	 * @return
 	 * 		Un dictionnaire contenant l'ensemble des éléments remonté par la requête avec l'alarme concernée.
-	 * 
+	 *
 	 * @throws Exception
 	 */
 	protected Map<T, Alarm> get(AlarmEngine alarmEngine, Class<T> klass, T... params) {
-		
+
 		Map<T, Alarm> map = new HashMap<T, Alarm>();
-				
+
 		for (T t : this.results(alarmEngine.getQuery(), klass, params)){
-			
+
 			if (!map.containsKey(t)) { map.put(t, createAlarm(alarmEngine, t)); }
 		}
-		
+
 		LOG.debug("{} objets en alarmes", map.size());
-		
+
 		return map;
-		
+
 	}
-	
+
 	/**
 	 * Lancer une requête pour un model défini.
-	 * 
+	 *
 	 * @param query
 	 * 		La condition de la requête (Clause WHERE).
 	 * @param klass
@@ -181,43 +184,43 @@ public class AlarmEngineService <T extends Model> extends AlarmEngineRepository 
 	 * 		Une liste d'éléments du modèle cible pré-établies limitant le champs de recherche à ces éléments.
 	 * @param params
 	 * 		Liste de paramètre de la requête.
-	 * 
+	 *
 	 * @return
-	 * 		Liste d'élément correspondant au modèle cible.	
-	 * 
+	 * 		Liste d'élément correspondant au modèle cible.
+	 *
 	 * @throws Exception
 	 */
 	public List<T> results(String query, Class<T> klass, T... params) {
-		
+
 		LOG.debug("Lancement de la requête {} => Objet: {}, params: {}", new Object[]{query, klass.getSimpleName(), params});
-		
+
 		if (params != null && params.length > 0){
-						
+
 			String query2 = String.format("self in ?1 AND (%s)", query);
-			
+
 			return JPA.all(klass).filter(query2, Arrays.asList(params)).fetch();
-		
+
 		}
-		
+
 		return JPA.all(klass).filter(query).fetch();
-		
+
 	}
-	
+
 	public Alarm createAlarm(AlarmEngine alarmEngine, T t){
 
 		Alarm alarm = new Alarm();
-		
+
 		alarm.setDate(dateTime);
 		alarm.setAlarmEngine(alarmEngine);
 		alarm.setContent( content(alarmEngine.getAlarmMessage(), t) );
-		
+
 		if ( alarm.getAlarmEngine().getLockingOk()) { alarm.setAcquitOk(false); }
 		else { alarm.setAcquitOk(true); }
-		
+
 		return alarm;
-		
+
 	}
-	
+
 	protected String content(AlarmMessage alarmMessage, T t){
 		return templates.fromText(alarmMessage.getMessage()).make(Mapper.toMap(t)).render();
 	}

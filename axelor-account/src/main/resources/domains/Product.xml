@@ -5,8 +5,8 @@
  
   <entity name="Product" lang="java">
   
-    <many-to-one name="invoiceLineType" ref="com.axelor.apps.account.db.InvoiceLineType" title="Invoice line type"/>
-        
+    <boolean name="isAnalyticCapture" title="Use for Analytic Capture"/>
+    
   </entity>
 
 </domain-models>

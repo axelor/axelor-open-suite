@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_3.0.xsd">
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_4.0.xsd">
   
   <module name="account" package="com.axelor.apps.account.db"/>
 
@@ -27,12 +27,11 @@
     <string name="internalReference" title="Internal Ref." help="true"/>
     <string name="externalReference" title="External Ref." help="true"/>
     <many-to-one name="priceList" ref="com.axelor.apps.base.db.PriceList" title="Price list"/>
+    <boolean name="hideDiscount" title="Hide Discount on prints"/>
     
     <!-- Dates -->
     <date name="invoiceDate" title="Invoice Date" />
     <date name="dueDate" title="Due Date"/>
-    <date name="subscriptionFromDate" title="From"/>
-    <date name="subscriptionToDate" title="To"/>
     
     <!-- Accounting informations -->
     <boolean name="schedulePaymentOk" title="Belong to a payment schedule ?" default="false"/>
@@ -42,6 +41,7 @@
     <many-to-one name="oldMove" ref="com.axelor.apps.account.db.Move" title="Previous Move" readonly="true"/>
     <boolean name="doubtfulCustomerOk" title="Doubtful Customer" default="false"/>
   	<many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" title="Currency" help="true"/>
+  	<one-to-many name="advancePaymentList" ref="com.axelor.apps.account.db.AdvancePaymentAccount" title ="Advance payment list" mappedBy="invoice"/>
     
     
     <!-- Invoice content -->
@@ -85,21 +85,27 @@
     <!-- Totals & Status -->
     
 	<!--     Total based on the partner currency in the company accounts -->
-	<!--     TODO : To be renamed with the prefix 'accounting' -->
     <decimal name="exTaxTotal" title="Total W.T." scale="2" precision="20" readonly="true" help="true"/>
     <decimal name="taxTotal" title="Total Tax" scale="2" precision="20" readonly="true" help="true"/>
     <decimal name="inTaxTotal" title="Total A.T.I." scale="2" precision="20" readonly="true" help="true"/>
-    <decimal name="inTaxTotalRemaining" title="Remaining to pay" readonly="true" />
+    <decimal name="amountPaid" title="Amount paid" readonly="true" />
     
-	<!--     Totals based on the invoice currency -->
-    <decimal name="invoiceExTaxTotal" title="Total W.T." scale="2" precision="20" readonly="true"/>
-    <decimal name="invoiceTaxTotal" title="Total Tax" scale="2" precision="20" readonly="true"/>
-    <decimal name="invoiceInTaxTotal" title="Total A.T.I." scale="2" precision="20" readonly="true"/>
-    <decimal name="invoiceAmountPaid" title="Amount paid" readonly="true" />
+    
+	<!--     Totals based on the company currency -->
+    <decimal name="companyExTaxTotal" title="Total W.T." scale="2" precision="20" readonly="true"/>
+    <decimal name="companyTaxTotal" title="Total Tax" scale="2" precision="20" readonly="true"/>
+    <decimal name="companyInTaxTotal" title="Total A.T.I." scale="2" precision="20" readonly="true"/>
+    <decimal name="companyInTaxTotalRemaining" title="Remaining to pay" readonly="true" />
     
     <integer name="statusSelect" title="Status" selection="iaccount.invoice.status.select" readonly="true" default="1"/>
     
-    <many-to-one name="validatedByUser" ref="com.axelor.auth.db.User" readonly="true" title="Validated by"/>  
+    <many-to-one name="validatedByUser" ref="com.axelor.auth.db.User" readonly="true" title="Validated by"/>
+    <string name="message" title="Message"/>
+    <decimal name="discount" title="Discount"/>
+    
+    <boolean name="inAti" title="In ATI"/>
+    
+    <string name="supplierInvoiceNb" title="Supplier invoice number"/>
 
   	<unique-constraint columns="invoiceId,company"/>
 
@@ -125,7 +131,16 @@
 		public static final int STATUS_CANCELED = 4;
 	
 	]]></extra-code>
-
+	
+	<track>
+      <field name="invoiceId" />
+      <field name="partner" />
+      <field name="statusSelect" on="UPDATE"/>
+      <message if="true" on="CREATE">Invoice created</message>
+      <message if="statusSelect == 2" tag="important">Validated</message>
+      <message if="statusSelect == 3" tag="success">Ventilated</message>
+      <message if="statuSelect == 3 &amp;&amp; dueDate.isAfter(__date__)">Important</message>
+    </track>
 
   </entity>
   

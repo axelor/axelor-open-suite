@@ -1,40 +1,59 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
 	
-	<menuitem name="menu-products-dashboard" parent="menu-dashboards-products-goods"  
-		title="Products" priority="10" />	
 	
-	<menuitem name="menu-products-dashboard-1" parent="menu-products-dashboard"  
-		title="Product Db" icon="img/16px/chart_16px.png" action="supplychain.products.dashboard.1" />	
+	<menuitem name="menu-products-dashboard-1" parent="product-root-report"  
+		title="Products"  action="supplychain.products.dashboard.1" />	
 		
-	<action-view name="supplychain.products.dashboard.1" title="Product Db"
-		icon="img/16px/crmSmall_16px.png">
+	<action-view name="supplychain.products.dashboard.1" title="Products Details">
 		<view type="dashboard" name="supplychain.products.dashboard.view.1" />	 
 	</action-view>
 
-	<menuitem name="menu-category-dashboard" parent="menu-dashboards-products-goods"  
-		title="Category" priority="20" />	
-		
-	<menuitem name="menu-category-dashboard-1" parent="menu-category-dashboard"  
-		title="Category Db" icon="img/16px/chart_16px.png" action="supplychain.products.category.dashboard" />		
-		
-	<menuitem name="menu-family-dashboard" parent="menu-dashboards-products-goods"  
-		title="Family" priority="30"  />	
-	
-	<menuitem name="menu-family-dashboard-1" parent="menu-family-dashboard"  
-		title="Family Db" icon="img/16px/chart_16px.png" action="supplychain.products.family.dashboard" />	
-		
-	<action-view name="supplychain.products.category.dashboard" title="Category Dashboard"
-		icon="img/16px/crmSmall_16px.png">
-		<view type="dashboard" name="supplychain.products.category.dashboard.view.1" />	 
-	</action-view>
-	
-	<action-view name="supplychain.products.family.dashboard" title="Family Dashboard"
-		icon="img/16px/crmSmall_16px.png">
-		<view type="dashboard" name="supplychain.products.family.dashboard.view.1" />	 
+
+	<menuitem name="stock-multi-sale-invoicing" parent="stock-root"
+		title="Mass Cust. Stock Move Invoicing" action="stock.root.multi.sale.invoicing" order="-5"/>
+
+	<menuitem name="stock-multi-purchase-invoicing" parent="stock-root"
+		title="Mass Suppl. Stock Move Invoicing" action="stock.root.multi.purchase.invoicing" order="-10"/>
+
+	<action-view name="stock.root.multi.sale.invoicing" title="Mass Cust. Stock Move Invoicing"
+		model="com.axelor.apps.stock.db.StockMove" >
+		<view type="form" name="stock-move-multi-sale-invoicing-form"/>
 	</action-view>
 
+	<action-view name="stock.root.multi.purchase.invoicing" title="Mass Suppl. Stock Move Invoicing"
+		model="com.axelor.apps.stock.db.StockMove" >
+		<view type="form" name="stock-move-multi-purchase-invoicing-form"/>
+	</action-view>
 	
+	<menuitem name="admin-root-batch-supplychain" parent="admin-root-batch"
+		title="Supplychain batches" action="admin.root.batch.supplychain" />
+
+	<action-view name="admin.root.batch.supplychain" title="Supplychain batches"
+		model="com.axelor.apps.supplychain.db.SupplychainBatch" >
+		<view type="grid" name="supplychain-batch-grid"/>
+		<view type="form" name="supplychain-batch-form"/>
+	</action-view>
+	
+	<menuitem name="sale-order-root-subscription" parent="sc-root-sale"
+		title="Subscriptions" order="-60" groups="admins,ERP"/>
+	
+	<menuitem name="sale-order-line-subscription-to-invoiced" parent="sale-order-root-subscription" 
+    	title="Subscriptions to invoice" action="sale.order.line.subscription.toinvoiced" /> 
+
+	<action-view name="sale.order.line.subscription.toinvoiced" title="Subscriptions to invoice" model="com.axelor.apps.supplychain.db.Subscription">
+    	<view type="grid" name="subscription-from-menu-grid"/>
+	    <view type="form" name="subscription-from-menu-form"/>
+	    <domain>self.invoicingDate &lt;= :todayDate AND self.invoiced = false</domain>
+	    <context name="todayDate" expr="eval: eval:__config__.generalService.getTodayDate()"/>
+	</action-view>
+	
+	<menuitem name="sc-root-sale-orders-subscription" parent="sale-order-root-subscription" order="-2"
+		groups="admins,ERP" title="Subscription Sale orders To Invoice" action="sc.root.sale.orders.subscription" />
+	
+	<action-method name="sc.root.sale.orders.subscription">
+		<call class="com.axelor.apps.supplychain.web.SaleOrderController" method="getSubscriptionSaleOrdersToInvoice"/>
+	</action-method>
 </object-views>

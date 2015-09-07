@@ -1,13 +1,19 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
  	
     <form name="incl-activities-partner-form" title="Partner" model="com.axelor.apps.base.db.Partner" >
 	    <panel-dashlet colSpan="12" action="action-partner-view-upcoming-events"/>
 	    <panel-dashlet colSpan="12" action="action-partner-view-historical-events-completed"/>
 	    <panel-dashlet colSpan="12" action="action-partner-view-opportunities"/>
 	    <panel-dashlet colSpan="12" action="action-partner-view-tickets"/>
+	</form>
+	
+	<form name="incl-activities-contact-form" title="Contact" model="com.axelor.apps.base.db.Partner" >
+	    <panel-dashlet colSpan="12" action="action-contact-view-upcoming-events"/>
+	    <panel-dashlet colSpan="12" action="action-contact-view-historical-events-completed"/>
+	    <panel-dashlet colSpan="12" action="action-contact-view-tickets"/>
 	</form>
 	
     <form name="incl-events-partner-form" title="Partner" model="com.axelor.apps.base.db.Partner" >
@@ -60,10 +66,26 @@
 		<context name="_todayTime" expr="eval: __datetime__"/>
 	</action-view>
 	
+	<action-view name="action-contact-view-upcoming-events" title="Upcoming events" model="com.axelor.apps.crm.db.Event">
+		<view type="grid" name="event-grid"/>
+		<view type="form" name="event-form"/>
+		<domain>(self.contactPartner.id = :id) and self.startDateTime > :_todayTime and self.typeSelect != 5</domain>
+		<context name="id" expr="eval: id"/>
+		<context name="_todayTime" expr="eval: __datetime__"/>
+	</action-view>
+	
 	<action-view name="action-partner-view-historical-events-completed" title="Historical events completed" model="com.axelor.apps.crm.db.Event">
 		<view type="grid" name="event-grid"/>
 		<view type="form" name="event-form"/>
 		<domain>(self.clientPartner.id = :id OR self.contactPartner.id = :id) and self.endDateTime &lt; :_todayTime and self.typeSelect != 5</domain>
+		<context name="id" expr="eval: id"/>
+		<context name="_todayTime" expr="eval: __datetime__"/>
+	</action-view>
+	
+	<action-view name="action-contact-view-historical-events-completed" title="Historical events completed" model="com.axelor.apps.crm.db.Event">
+		<view type="grid" name="event-grid"/>
+		<view type="form" name="event-form"/>
+		<domain>(self.contactPartner.id = :id) and self.endDateTime &lt; :_todayTime and self.typeSelect != 5</domain>
 		<context name="id" expr="eval: id"/>
 		<context name="_todayTime" expr="eval: __datetime__"/>
 	</action-view>
@@ -79,6 +101,13 @@
 		<view type="grid" name="ticket-grid"/>
 		<view type="form" name="ticket-form"/>
 		<domain>(self.clientPartner.id = :id OR self.contactPartner.id = :id) AND self.typeSelect = 5</domain>
+		<context name="id" expr="eval: id"/>
+	</action-view>
+	
+	<action-view name="action-contact-view-tickets" title="Tickets" model="com.axelor.apps.crm.db.Event">
+		<view type="grid" name="ticket-grid"/>
+		<view type="form" name="ticket-form"/>
+		<domain>(self.contactPartner.id = :id) AND self.typeSelect = 5</domain>
 		<context name="id" expr="eval: id"/>
 	</action-view>
     	

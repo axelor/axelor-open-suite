@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_3.0.xsd">
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_4.0.xsd">
   
   <module name="base" package="com.axelor.apps.base.db"/>
   
@@ -17,11 +17,12 @@
     <string name="name" title="Name/Company Name" required="true"/>
     <string name="firstName" title="First Name"/>
     <string name="jobTitle" title="Function"/>
-    <many-to-one name="picture" ref="com.axelor.meta.db.MetaFile" title="Photo" />
+    <many-to-one name="picture" ref="com.axelor.meta.db.MetaFile" title="Photo"/>
     
     
-    <integer name="customerTypeSelect" title="Customer Type" selection="partner.customer.type.select" help="true"/>
-    <integer name="supplierTypeSelect" title="Supplier Type" selection="partner.supplier.type.select" help="true"/>
+    <boolean name="isCustomer" title="Customer?"/>
+    <boolean name="hasOrdered" title="Has Ordered"/>
+    <boolean name="isSupplier" title="Supplier?"/>
     <boolean name="isContact" title="Contact ?" default="false" />
     
     
@@ -43,7 +44,6 @@
     <string name="mobilePhone" title="Mobile phone"/>
     <string name="webSite" title="Website"/>
     
-    <many-to-one name="site" ref="com.axelor.apps.consulting.db.Site" title="Site"/>
     <string name="department" title="Dept./Div."/>
     
     <many-to-many name="companySet" ref="com.axelor.apps.base.db.Company" title="Companies associated to" help="true"/>
@@ -53,6 +53,8 @@
     <!--  Page règle de facturation/paiement -->
     <many-to-one name="bankDetails" ref="com.axelor.apps.base.db.BankDetails" title="Default Bank Details" help="true"/>
   	<many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" title="Currency" help="true"/>
+  	<many-to-one name="salePriceList" ref="com.axelor.apps.base.db.PriceList" title="Sale Price List"/>
+  	<many-to-one name="purchasePriceList" ref="com.axelor.apps.base.db.PriceList" title=" Purchase Price List"/>
    
     <!-- PAGE Blocage -->
 	<one-to-many name="blockingList" ref="com.axelor.apps.base.db.Blocking" title="Blocking follow-up List" mappedBy="partner"/>
@@ -63,7 +65,7 @@
 	<many-to-one name="team" ref="com.axelor.apps.base.db.Team" title="Team" help="true"/>
 	<many-to-one name="reportsTo" ref="com.axelor.apps.base.db.Partner" title="Reports to" massUpdate="true" help="true"/>
     <string name="description" title="Description"  large="true"/>
-   	<integer name="industrySectorSelect" title="Industry" selection="partner.industry.sectory.select"/> 
+   	<integer name="industrySectorSelect" title="Industry" selection="partner.industry.sectory.select" nullable="true"/> 
 	<integer name="nbrEmployees" title="Employees (Nbr)"/>
 	<integer name="saleTurnover" title="Turnover"/>
 	<string name="registrationCode" title="Registration code" help="true"/>

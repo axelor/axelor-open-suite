@@ -27,6 +27,7 @@ import com.axelor.app.production.db.IProdResource;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.ProductService;
 import com.axelor.apps.base.service.UnitConversionService;
+import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.ProdProcess;
 import com.axelor.apps.production.db.ProdProcessLine;
@@ -43,67 +44,73 @@ import com.google.inject.persist.Transactional;
 public class BillOfMaterialServiceImpl extends BillOfMaterialRepository implements BillOfMaterialService {
 
 	private final Logger logger = LoggerFactory.getLogger(getClass());
-	
+
 	@Inject
 	protected UnitConversionService unitConversionService;
-	
+
 	@Inject
 	private ProductService productService;
-	
+
+	@Inject
+	protected GeneralService generalService;
+
+	@Override
 	public List<BillOfMaterial> getBillOfMaterialList(Product product)  {
-		
-		return(List<BillOfMaterial>) all().filter("self.product = ?1", product).fetch();
-		
-		
+
+		return all().filter("self.product = ?1", product).fetch();
+
+
 	}
-	
+
+	@Override
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void computeCostPrice(BillOfMaterial billOfMaterial) throws AxelorException  {
-		
-		billOfMaterial.setCostPrice(this._computeCostPrice(billOfMaterial).setScale(2, BigDecimal.ROUND_HALF_EVEN));
-		
+
+		billOfMaterial.setCostPrice(this._computeCostPrice(billOfMaterial).setScale(generalService.getNbDecimalDigitForUnitPrice(), BigDecimal.ROUND_HALF_EVEN));
+
 		save(billOfMaterial);
 	}
-	
-	
+
+
+	@Override
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void updateProductCostPrice(BillOfMaterial billOfMaterial) throws AxelorException  {
-		
+
 		Product product = billOfMaterial.getProduct();
-		
+
 		product.setCostPrice(billOfMaterial.getCostPrice());
-		
+
 		productService.updateSalePrice(product);
-		
+
 		save(billOfMaterial);
 	}
-	
-	
+
+
 	protected BigDecimal _computeCostPrice(BillOfMaterial billOfMaterial) throws AxelorException  {
-		
+
 		BigDecimal costPrice = BigDecimal.ZERO;
-		
+
 		// Cout des composants
 		costPrice = costPrice.add(this._computeToConsumeProduct(billOfMaterial));
-		
+
 		// Cout des operations
 		costPrice = costPrice.add(this._computeProcess(billOfMaterial.getProdProcess()));
-		
+
 		return costPrice;
-		
+
 	}
-	
-	
+
+
 	protected BigDecimal _computeToConsumeProduct(BillOfMaterial billOfMaterial) throws AxelorException  {
-		
+
 		BigDecimal costPrice = BigDecimal.ZERO;
-		
+
 		if(billOfMaterial.getBillOfMaterialList() != null)  {
-			
+
 			for(BillOfMaterial billOfMaterialLine : billOfMaterial.getBillOfMaterialList())  {
-				
+
 				Product product = billOfMaterialLine.getProduct();
-					
+
 				if(product != null)  {
 					if(billOfMaterialLine.getIsRawMaterial())  {
 						BigDecimal unitPrice = unitConversionService.convert(product.getUnit(), billOfMaterialLine.getUnit(), product.getCostPrice());
@@ -115,67 +122,68 @@ public class BillOfMaterialServiceImpl extends BillOfMaterialRepository implemen
 				}
 			}
 		}
-		
+
 		return costPrice;
 	}
-	
-	
-	
+
+
+
 	protected BigDecimal _computeProcess(ProdProcess prodProcess) throws AxelorException  {
-		
+
 		BigDecimal costPrice = BigDecimal.ZERO;
-		
+
 		if(prodProcess != null && prodProcess.getProdProcessLineList() != null)  {
-			
+
 			for(ProdProcessLine prodProcessLine : prodProcess.getProdProcessLineList())  {
-				
+
 				ProdResource prodResource = prodProcessLine.getProdResource();
-				
+
 				if(prodResource != null)  {
 
 					int resourceType = prodResource.getResourceTypeSelect();
-					
+
 					if(resourceType == IProdResource.RESOURCE_MACHINE || resourceType == IProdResource.RESOURCE_BOTH)  {
-						
+
 						costPrice = costPrice.add(this._computeMachineCost(prodResource));
-						
+
 					}
-					
+
 				}
 			}
 		}
-		
+
 		return costPrice;
 	}
-	
-	
+
+
 	protected BigDecimal _computeMachineCost(ProdResource prodResource)  {
-		
+
 		BigDecimal costPrice = BigDecimal.ZERO;
-		
+
 		int costType = prodResource.getCostTypeSelect();
-		
+
 		if(costType == IProdResource.COST_PER_CYCLE)  {
-			
+
 			costPrice = prodResource.getCostAmount();
 		}
 		else if(costType == IProdResource.COST_PER_HOUR)  {
-			
+
 			costPrice = (prodResource.getCostAmount().multiply(new BigDecimal(prodResource.getDurationPerCycle())).divide(new BigDecimal(3600), BigDecimal.ROUND_HALF_EVEN));
-			
+
 		}
-		
+
 		logger.debug("Machine cost : {} (Resource : {})",costPrice, prodResource.getName());
-		
+
 		return costPrice;
 	}
-	
-	
+
+
+	@Override
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public BillOfMaterial customizeBillOfMaterial(SaleOrderLine saleOrderLine)  {
-		
+
 		BillOfMaterial billOfMaterial = saleOrderLine.getBillOfMaterial();
-		
+
 		if(billOfMaterial != null)  {
 			BillOfMaterial personalizedBOM = JPA.copy(billOfMaterial, true);
 			save(personalizedBOM);
@@ -183,10 +191,10 @@ public class BillOfMaterialServiceImpl extends BillOfMaterialRepository implemen
 			personalizedBOM.setPersonalized(true);
 			return personalizedBOM;
 		}
-		
+
 		return null;
-		
+
 	}
-	
-	
+
+
 }

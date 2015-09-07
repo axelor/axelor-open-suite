@@ -38,88 +38,91 @@ import com.axelor.apps.account.service.MoveService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.administration.GeneralService;
+import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import com.axelor.auth.db.User;
 
 public class PaymentVoucherCreateService extends PaymentVoucherRepository {
-	
-	private static final Logger LOG = LoggerFactory.getLogger(PaymentVoucherCreateService.class); 
-	
+
+	private static final Logger LOG = LoggerFactory.getLogger(PaymentVoucherCreateService.class);
+
 	@Inject
 	private MoveService moveService;
-	
+
 	@Inject
 	private PaymentInvoiceToPayService paymentInvoiceToPayService;
-	
+
 	@Inject
 	private PaymentVoucherConfirmService paymentVoucherConfirmService;
 
 	@Inject
 	private PaymentVoucherSequenceService paymentVoucherSequenceService;
 
+	protected GeneralService generalService;
+
 	private DateTime todayTime;
 
 	@Inject
-	public PaymentVoucherCreateService() {
+	public PaymentVoucherCreateService(GeneralService generalService) {
 
-		this.todayTime = GeneralService.getTodayDateTime();
-		
+		this.generalService = generalService;
+		this.todayTime = this.generalService.getTodayDateTime();
+
 	}
-	
-	
+
+
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public PaymentVoucher createPaymentVoucherIPO(Invoice invoice, DateTime dateTime, BigDecimal amount, PaymentMode paymentMode) throws AxelorException  {
 		MoveLine customerMoveLine = moveService.getCustomerMoveLineByQuery(invoice);
-		
+
 		if (LOG.isDebugEnabled())  {  LOG.debug("Création d'une saisie paiement par TIP ou TIP chèque - facture : {}",invoice.getInvoiceId());  }
 		if (LOG.isDebugEnabled())  {  LOG.debug("Création d'une saisie paiement par TIP ou TIP chèque - mode de paiement : {}",paymentMode.getCode());  }
 		if (LOG.isDebugEnabled())  {  LOG.debug("Création d'une saisie paiement par TIP ou TIP chèque - société : {}",invoice.getCompany().getName());  }
 		if (LOG.isDebugEnabled())  {  LOG.debug("Création d'une saisie paiement par TIP ou TIP chèque - tiers payeur : {}",invoice.getPartner().getName());  }
-		
+
 		PaymentVoucher paymentVoucher = this.createPaymentVoucher(
-				invoice.getCompany(), 
-				null, 
+				invoice.getCompany(),
 				null,
-				paymentMode, 
-				dateTime, 
-				invoice.getPartner(), 
-				amount, 
+				null,
+				paymentMode,
+				dateTime,
+				invoice.getPartner(),
+				amount,
 				null,
 				invoice,
-				null, 
-				null, 
+				null,
+				null,
 				null);
-		
+
 		paymentVoucher.setHasAutoInput(true);
-		
+
 		List<PaymentInvoiceToPay> lines = new ArrayList<PaymentInvoiceToPay>();
-	
-		lines.add(paymentInvoiceToPayService.createPaymentInvoiceToPay(paymentVoucher, 
-				1, 
-				invoice, 
-				customerMoveLine, 
-				customerMoveLine.getDebit(), 
+
+		lines.add(paymentInvoiceToPayService.createPaymentInvoiceToPay(paymentVoucher,
+				1,
+				invoice,
+				customerMoveLine,
+				customerMoveLine.getDebit(),
 				customerMoveLine.getAmountRemaining(),
 				amount));
-		
+
 		paymentVoucher.setPaymentInvoiceToPayList(lines);
-		
+
 		save(paymentVoucher);
-		
+
 		paymentVoucherConfirmService.confirmPaymentVoucher(paymentVoucher, false);
 		return paymentVoucher;
 	}
-	
-	
+
+
 	/**
 	 * Generic method to create a payment voucher
 	 * @param seq
 	 * @param pm
 	 * @param partner
 	 * @return
-	 * @throws AxelorException 
+	 * @throws AxelorException
 	 */
 	public PaymentVoucher createPaymentVoucher(Company company, CashRegister cashRegister, User user, PaymentMode paymentMode, DateTime dateTime, Partner partner,
 			BigDecimal amount, MoveLine moveLine, Invoice invoiceToPay, MoveLine rejectToPay,
@@ -161,5 +164,5 @@ public class PaymentVoucherCreateService extends PaymentVoucherRepository {
 		return null;
 	}
 
-	
+
 }

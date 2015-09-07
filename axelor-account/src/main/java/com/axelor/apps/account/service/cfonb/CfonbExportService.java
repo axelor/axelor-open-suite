@@ -38,12 +38,12 @@ import com.axelor.apps.account.db.Reimbursement;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.PaymentScheduleLineService;
 import com.axelor.apps.account.service.ReimbursementService;
-import com.axelor.apps.account.service.administration.GeneralServiceAccount;
 import com.axelor.apps.account.service.config.CfonbConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.service.administration.GeneralServiceImpl;
 import com.axelor.apps.tool.StringTool;
 import com.axelor.apps.tool.file.FileTool;
 import com.axelor.exception.AxelorException;
@@ -52,31 +52,31 @@ import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 
 public class CfonbExportService {
-	
+
 	private CfonbConfig cfonbConfig;
-	
+
 	@Inject
 	private CfonbToolService cfonbToolService;
-	
+
 	@Inject
 	private CfonbConfigService cfonbConfigService;
-	
+
 	@Inject
 	private ReimbursementService reimbursementService;
-	
+
 	@Inject
 	private PaymentScheduleLineService paymentScheduleLineService;
-	
+
 	@Inject
 	private InvoiceService invoiceService;
-	
-	
+
+
 	private void init(CfonbConfig cfonbConfig)  {
-		
+
 		this.cfonbConfig = cfonbConfig;
-		
+
 	}
-	
+
 	private boolean sepa;
 
 	public void setSepa(boolean sepa)  {
@@ -84,10 +84,10 @@ public class CfonbExportService {
 		this.sepa = sepa;
 
 	}
-	
+
 	/****************************************  Export CFONB  *****************************************************/
-	
-	
+
+
 	/**
 	 * Méthode permettant d'exporter les remboursements au format CFONB
 	 * @param reimbursementExport
@@ -96,14 +96,14 @@ public class CfonbExportService {
 	 * @throws AxelorException
 	 */
 	public void exportCFONB(Company company, DateTime dateTime, List<Reimbursement> reimbursementList, BankDetails bankDetails) throws AxelorException  {
-		
+
 		this.testCompanyExportCFONBField(company);
-		
-		// paramètre obligatoire : au minimum 
+
+		// paramètre obligatoire : au minimum
 		//		un enregistrement emetteur par date de règlement (code 03)
 		// 		un enregistrement destinataire (code 06)
 		// 		un enregistrement total (code 08)
-		
+
 		String senderCFONB = this.createSenderReimbursementCFONB(dateTime, bankDetails);
 		List<String> multiRecipientCFONB = new ArrayList<String>();
 		for(Reimbursement reimbursement : reimbursementList)  {
@@ -112,17 +112,17 @@ public class CfonbExportService {
 			multiRecipientCFONB.add(this.createRecipientCFONB(reimbursement));
 		}
 		String totalCFONB = this.createReimbursementTotalCFONB(this.getTotalAmountReimbursementExport(reimbursementList));
-		
+
 		cfonbToolService.testLength(senderCFONB, totalCFONB, multiRecipientCFONB, company);
-		
+
 		List<String> cFONB = this.createCFONBExport(senderCFONB, multiRecipientCFONB, totalCFONB);
-		
+
 		// Mise en majuscule des enregistrement
 		cFONB = this.toUpperCase(cFONB);
-		
+
 		this.createCFONBFile(cFONB, dateTime, company.getAccountConfig().getReimbursementExportFolderPathCFONB(), "virement");
 	}
-	
+
 	/**
 	 * Méthode permettant d'exporter les prélèvements d'échéance de mensu au format CFONB
 	 * @param paymentScheduleExport
@@ -131,19 +131,19 @@ public class CfonbExportService {
 	 * @throws AxelorException
 	 */
 	public void exportPaymentScheduleCFONB(DateTime processingDateTime, LocalDate scheduleDate, List<PaymentScheduleLine> paymentScheduleLineList, Company company, BankDetails bankDetails) throws AxelorException  {
-		
+
 		if(paymentScheduleLineList == null || paymentScheduleLineList.isEmpty())  {   return;  }
-		
+
 		this.testCompanyExportCFONBField(company);
-		
-		// paramètre obligatoire : au minimum 
+
+		// paramètre obligatoire : au minimum
 		//		un enregistrement emetteur par date de règlement (code 03)
 		// 		un enregistrement destinataire (code 06)
 		// 		un enregistrement total (code 08)
-		
+
 		String senderCFONB = this.createSenderMonthlyExportCFONB(scheduleDate, bankDetails);
 		List<String> multiRecipientCFONB = new ArrayList<String>();
-		
+
 		List<DirectDebitManagement> directDebitManagementList = new ArrayList<DirectDebitManagement>();
 		for(PaymentScheduleLine paymentScheduleLine : paymentScheduleLineList)  {
 			paymentScheduleLine = paymentScheduleLineService.find(paymentScheduleLine.getId());
@@ -156,24 +156,24 @@ public class CfonbExportService {
 				}
 			}
 		}
-		
+
 		for(DirectDebitManagement directDebitManagement : directDebitManagementList)  {
 			multiRecipientCFONB.add(this.createRecipientCFONB(directDebitManagement, false));
 		}
-		
+
 		String totalCFONB = this.createPaymentScheduleTotalCFONB(company,this.getTotalAmountPaymentSchedule(paymentScheduleLineList));
-		
+
 		cfonbToolService.testLength(senderCFONB, totalCFONB, multiRecipientCFONB, company);
-		
+
 		List<String> cFONB = this.createCFONBExport(senderCFONB, multiRecipientCFONB, totalCFONB);
-		
+
 		// Mise en majuscule des enregistrement
 		cFONB = this.toUpperCase(cFONB);
-		
+
 		this.createCFONBFile(cFONB, processingDateTime, company.getAccountConfig().getPaymentScheduleExportFolderPathCFONB(), "prelevement");
 	}
-	
-	
+
+
 	/**
 	 * Méthode permettant d'exporter les prélèvements de facture au format CFONB
 	 * @param paymentScheduleExport
@@ -183,21 +183,21 @@ public class CfonbExportService {
 	 * @throws AxelorException
 	 */
 	public void exportInvoiceCFONB(DateTime processingDateTime, LocalDate scheduleDate, List<Invoice> invoiceList, Company company, BankDetails bankDetails) throws AxelorException  {
-		
+
 		if((invoiceList == null || invoiceList.isEmpty()))  {   return;  }
-		
+
 		this.testCompanyExportCFONBField(company);
-		
-		// paramètre obligatoire : au minimum 
+
+		// paramètre obligatoire : au minimum
 		//		un enregistrement emetteur par date de règlement (code 03)
 		// 		un enregistrement destinataire (code 06)
 		// 		un enregistrement total (code 08)
-		
+
 		String senderCFONB = this.createSenderMonthlyExportCFONB(scheduleDate, bankDetails);
 		List<String> multiRecipientCFONB = new ArrayList<String>();
-		
+
 		List<DirectDebitManagement> directDebitManagementList = new ArrayList<DirectDebitManagement>();
-		
+
 		for(Invoice invoice : invoiceList)  {
 			invoice = invoiceService.find(invoice.getId());
 			if(invoice.getDirectDebitManagement() == null)  {
@@ -209,27 +209,27 @@ public class CfonbExportService {
 				}
 			}
 		}
-		
+
 		for(DirectDebitManagement directDebitManagement : directDebitManagementList)  {
 			multiRecipientCFONB.add(this.createRecipientCFONB(directDebitManagement, true));
 		}
 
 		BigDecimal amount = this.getTotalAmountInvoice(invoiceList);
-		
+
 		String totalCFONB = this.createPaymentScheduleTotalCFONB(company, amount);
-		
+
 		cfonbToolService.testLength(senderCFONB, totalCFONB, multiRecipientCFONB, company);
-		
+
 		List<String> cFONB = this.createCFONBExport(senderCFONB, multiRecipientCFONB, totalCFONB);
-		
+
 		// Mise en majuscule des enregistrement
 		cFONB = this.toUpperCase(cFONB);
-		
+
 		this.createCFONBFile(cFONB, processingDateTime, company.getAccountConfig().getPaymentScheduleExportFolderPathCFONB(), "prelevement");
 	}
-	
-	
-	
+
+
+
 	/**
 	 * Méthode permettant d'exporter les prélèvements de facture et d'échéance de paiement au format CFONB
 	 * @param paymentScheduleExport
@@ -239,20 +239,20 @@ public class CfonbExportService {
 	 * @throws AxelorException
 	 */
 	public void exportCFONB(DateTime processingDateTime, LocalDate scheduleDate, List<PaymentScheduleLine> paymentScheduleLineList, List<Invoice> invoiceList, Company company, BankDetails bankDetails) throws AxelorException  {
-		
+
 		if((paymentScheduleLineList == null || paymentScheduleLineList.isEmpty())
 				&& (invoiceList == null || invoiceList.isEmpty()))  {   return;  }
-		
+
 		this.testCompanyExportCFONBField(company);
-		
-		// paramètre obligatoire : au minimum 
+
+		// paramètre obligatoire : au minimum
 		//		un enregistrement emetteur par date de règlement (code 03)
 		// 		un enregistrement destinataire (code 06)
 		// 		un enregistrement total (code 08)
-		
+
 		String senderCFONB = this.createSenderMonthlyExportCFONB(scheduleDate, bankDetails);
 		List<String> multiRecipientCFONB = new ArrayList<String>();
-		
+
 		// Echéanciers
 		List<DirectDebitManagement> directDebitManagementList = new ArrayList<DirectDebitManagement>();
 		for(PaymentScheduleLine paymentScheduleLine : paymentScheduleLineList)  {
@@ -266,12 +266,12 @@ public class CfonbExportService {
 				}
 			}
 		}
-		
+
 		for(DirectDebitManagement directDebitManagement : directDebitManagementList)  {
 			multiRecipientCFONB.add(this.createRecipientCFONB(directDebitManagement, false));
 		}
-		
-		
+
+
 		// Factures
 		directDebitManagementList = new ArrayList<DirectDebitManagement>();
 		for(Invoice invoice : invoiceList)  {
@@ -285,28 +285,28 @@ public class CfonbExportService {
 				}
 			}
 		}
-		
+
 		for(DirectDebitManagement directDebitManagement : directDebitManagementList)  {
 			multiRecipientCFONB.add(this.createRecipientCFONB(directDebitManagement, true));
 		}
 
-		
+
 		BigDecimal amount = this.getTotalAmountPaymentSchedule(paymentScheduleLineList).add(this.getTotalAmountInvoice(invoiceList));
-		
+
 		String totalCFONB = this.createPaymentScheduleTotalCFONB(company,amount);
-		
+
 		cfonbToolService.testLength(senderCFONB, totalCFONB, multiRecipientCFONB, company);
-		
+
 		List<String> cFONB = this.createCFONBExport(senderCFONB, multiRecipientCFONB, totalCFONB);
-		
+
 		// Mise en majuscule des enregistrement
 		cFONB = this.toUpperCase(cFONB);
-		
+
 		this.createCFONBFile(cFONB, processingDateTime, company.getAccountConfig().getPaymentScheduleExportFolderPathCFONB(), "prelevement");
 	}
-	
-	
-	
+
+
+
 	/**
 	 * Méthode permettant de mettre en majuscule et sans accent un CFONB
 	 * @param cFONB
@@ -321,7 +321,7 @@ public class CfonbExportService {
 		return upperCase;
 	}
 
-	
+
 	/**
 	 * Méthode permettant de récupérer la facture depuis une ligne d'écriture de facture ou une ligne d'écriture de rejet de facture
 	 * @param moveLine
@@ -339,8 +339,8 @@ public class CfonbExportService {
 		}
 		return invoice;
 	}
-	
-	
+
+
 	/**
 	 * Fonction permettant de créer un enregistrement 'émetteur' pour un virement des remboursements
 	 * @param company
@@ -352,18 +352,18 @@ public class CfonbExportService {
 	 * @throws AxelorException
 	 */
 	private String createSenderReimbursementCFONB(DateTime dateTime, BankDetails bankDetails) throws AxelorException  {
-		
-		DateFormat ddmmFormat = new SimpleDateFormat("ddMM"); 
+
+		DateFormat ddmmFormat = new SimpleDateFormat("ddMM");
 		String date = ddmmFormat.format(dateTime.toDate());
 		date += String.format("%s", StringTool.truncLeft(String.format("%s",dateTime.getYear()), 1));
-		
+
 		// Récupération des valeurs
 		String a = this.cfonbConfig.getSenderRecordCodeExportCFONB();  		// Code enregistrement
 		String b1 = this.cfonbConfig.getTransferOperationCodeExportCFONB();	// Code opération
 		String b2 = "";												// Zone réservée
 		String b3 = this.cfonbConfig.getSenderNumExportCFONB();				// Numéro d'émetteur
 		String c1One = "";											// Code CCD
-		String c1Two = "";											// Zone réservée	
+		String c1Two = "";											// Zone réservée
 		String c1Three = date;										// Date d'échéance
 		String c2 = this.cfonbConfig.getSenderNameCodeExportCFONB();			// Nom/Raison sociale du donneur d'ordre
 		String d1One = "";											// Référence de la remise
@@ -377,7 +377,7 @@ public class CfonbExportService {
 		String f = ""; 												// Zone réservée
 		String g1 = bankDetails.getBankCode();						// Code établissement de la banque du donneur d'ordre
 		String g2 = "";												// Zone réservée
-		
+
 		// Tronquage / remplissage à droite (chaine de caractère)
 		b2 = StringTool.fillStringRight(b2, ' ', 8);
 		b3 = StringTool.fillStringRight(b3, ' ', 6);
@@ -392,7 +392,7 @@ public class CfonbExportService {
 		e = StringTool.fillStringRight(e, ' ', 16);
 		f = StringTool.fillStringRight(f, ' ', 31);
 		g2 = StringTool.fillStringRight(g2, ' ', 6);
-		
+
 		// Tronquage / remplissage à gauche (nombre)
 		a = StringTool.fillStringLeft(a, '0', 2);
 		b1 = StringTool.fillStringLeft(b1, '0', 2);
@@ -405,12 +405,12 @@ public class CfonbExportService {
 		cfonbToolService.testDigital(b1, 0);
 		cfonbToolService.testDigital(d3, 0);
 		cfonbToolService.testDigital(g1, 0);
-		
+
 		// création de l'enregistrement
 		return a+b1+b2+b3+c1One+c1Two+c1Three+c2+d1One+d1Two+d2One+d2Two+d2Three+d3+d4+e+f+g1+g2;
 	}
-	
-	
+
+
 	/**
 	 * Fonction permettant de créer un enregistrement 'émetteur' pour un export de prélèvement de mensu
 	 * @param company
@@ -422,18 +422,18 @@ public class CfonbExportService {
 	 * @throws AxelorException
 	 */
 	private String createSenderMonthlyExportCFONB(LocalDate localDate, BankDetails bankDetails) throws AxelorException  {
-		
-		DateFormat ddmmFormat = new SimpleDateFormat("ddMM"); 
+
+		DateFormat ddmmFormat = new SimpleDateFormat("ddMM");
 		String date = ddmmFormat.format(localDate.toDateTimeAtCurrentTime().toDate());
 		date += String.format("%s", StringTool.truncLeft(String.format("%s",localDate.getYear()), 1));
-		
+
 		// Récupération des valeurs
 		String a = this.cfonbConfig.getSenderRecordCodeExportCFONB();  			// Code enregistrement
 		String b1 = this.cfonbConfig.getDirectDebitOperationCodeExportCFONB();	// Code opération
 		String b2 = "";													// Zone réservée
 		String b3 = this.cfonbConfig.getSenderNumExportCFONB();					// Numéro d'émetteur
 		String c1One = "";												// Zone réservée
-		String c1Two = date;											// Date d'échéance	
+		String c1Two = date;											// Date d'échéance
 		String c2 = this.cfonbConfig.getSenderNameCodeExportCFONB();				// Nom/Raison sociale du donneur d'ordre
 		String d1One = "";												// Référence de la remise
 		String d1Two = "";												// Zone réservée
@@ -444,7 +444,7 @@ public class CfonbExportService {
 		String f = ""; 													// Zone réservée
 		String g1 = bankDetails.getBankCode();							// Code établissement de la banque du donneur d'ordre
 		String g2 = "";													// Zone réservée
-		
+
 		// Tronquage / remplissage à droite (chaine de caractère)
 		b2 = StringTool.fillStringRight(b2, ' ', 8);
 		b3 = StringTool.fillStringRight(b3, ' ', 6);
@@ -457,7 +457,7 @@ public class CfonbExportService {
 		e = StringTool.fillStringRight(e, ' ', 16);
 		f = StringTool.fillStringRight(f, ' ', 31);
 		g2 = StringTool.fillStringRight(g2, ' ', 6);
-		
+
 		// Tronquage / remplissage à gauche (nombre)
 		a = StringTool.fillStringLeft(a, '0', 2);
 		b1 = StringTool.fillStringLeft(b1, '0', 2);
@@ -470,12 +470,12 @@ public class CfonbExportService {
 		cfonbToolService.testDigital(b1, 0);
 		cfonbToolService.testDigital(d3, 0);
 		cfonbToolService.testDigital(g1, 0);
-		
+
 		// création de l'enregistrement
 		return a+b1+b2+b3+c1One+c1Two+c2+d1One+d1Two+d2+d3+d4+e+f+g1+g2;
 	}
-	
-	
+
+
 	/**
 	 * Fonction permettant de créer un enregistrement 'destinataire' pour un virement de remboursement
 	 * @param company
@@ -488,22 +488,22 @@ public class CfonbExportService {
 	 */
 	private String createRecipientCFONB(Reimbursement reimbursement) throws AxelorException  {
 		BankDetails bankDetails = reimbursement.getBankDetails();
- 
+
 		if(bankDetails == null)  {
 			throw new AxelorException(String.format("%s :\n "+I18n.get(IExceptionMessage.CFONB_EXPORT_1)+" %s",
-					GeneralServiceAccount.getExceptionAccountingMsg(),reimbursement.getRef()), IException.CONFIGURATION_ERROR);
+					GeneralServiceImpl.EXCEPTION,reimbursement.getRef()), IException.CONFIGURATION_ERROR);
 		}
-		
+
 		BigDecimal amount = reimbursement.getAmountReimbursed();
-		
+
 		String ref = reimbursement.getRef();									// Référence
 		String partner = this.getPayeurPartnerName(reimbursement.getPartner());	// Nom/Raison sociale du bénéficiaire
 		String operationCode = this.cfonbConfig.getTransferOperationCodeExportCFONB();	// Code opération
 
 		return this.createRecipientCFONB(amount, ref, partner, bankDetails, operationCode);
 	}
-	
-	
+
+
 	/**
 	 * Fonction permettant de créer un enregistrement 'destinataire' pour un export de prélèvement d'une échéance
 	 * @param company
@@ -520,23 +520,23 @@ public class CfonbExportService {
 		if(bankDetails == null)  {
 			bankDetails = partner.getBankDetails();
 		}
-		
+
 		if(bankDetails == null) {
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.PAYMENT_SCHEDULE_2),
-					GeneralServiceAccount.getExceptionAccountingMsg(),partner.getName()), IException.CONFIGURATION_ERROR);
+					GeneralServiceImpl.EXCEPTION,partner.getName()), IException.CONFIGURATION_ERROR);
 		}
-		
+
 		BigDecimal amount = paymentScheduleLine.getDirectDebitAmount();
- 
+
 		String ref = paymentScheduleLine.getDebitNumber();									// Référence
 		String partnerName = this.getPayeurPartnerName(partner);							// Nom/Raison sociale du débiteur
 		String operationCode = this.cfonbConfig.getDirectDebitOperationCodeExportCFONB();	// Code opération
 
 		return this.createRecipientCFONB(amount, ref, partnerName, bankDetails, operationCode);
 	}
-	
-	
-	
+
+
+
 	/**
 	 * Fonction permettant de créer un enregistrement 'destinataire' pour un export de prélèvement de plusieurs échéances par le biais d'un objet de gestion de prélèvement
 	 * @param company
@@ -557,37 +557,37 @@ public class CfonbExportService {
 			partnerName = this.getPayeurPartnerName(invoice.getPartner());			// Nom/Raison sociale du débiteur
 			if(bankDetails == null) {
 				throw new AxelorException(String.format(I18n.get(IExceptionMessage.PAYMENT_SCHEDULE_2),
-						GeneralServiceAccount.getExceptionAccountingMsg(), partner.getName()), IException.CONFIGURATION_ERROR);
+						GeneralServiceImpl.EXCEPTION, partner.getName()), IException.CONFIGURATION_ERROR);
 			}
 		}
 		else  {
 			PaymentSchedule paymentSchedule = directDebitManagement.getPaymentScheduleLineList().get(0).getPaymentSchedule();
 			Partner partner = paymentSchedule.getPartner();
 			partnerName = this.getPayeurPartnerName(partner);						// Nom/Raison sociale du débiteur
-			
+
 			bankDetails = paymentSchedule.getBankDetails();
 			if(bankDetails == null)  {
 				bankDetails = partner.getBankDetails();
 			}
 			if(bankDetails == null) {
 				throw new AxelorException(String.format(I18n.get(IExceptionMessage.PAYMENT_SCHEDULE_2),
-						GeneralServiceAccount.getExceptionAccountingMsg(), partner.getName()), IException.CONFIGURATION_ERROR);
+						GeneralServiceImpl.EXCEPTION, partner.getName()), IException.CONFIGURATION_ERROR);
 			}
 		}
-		
+
 		BigDecimal amount = this.getAmount(directDebitManagement, isForInvoice);
- 
+
 		String ref = directDebitManagement.getDebitNumber();						// Référence
 
 		String operationCode = this.cfonbConfig.getDirectDebitOperationCodeExportCFONB();	// Code opération
 
 		return this.createRecipientCFONB(amount, ref, partnerName, bankDetails, operationCode);
 	}
-	
-	
+
+
 	private BigDecimal getAmount(DirectDebitManagement directDebitManagement, boolean isForInvoice)  {
 		BigDecimal amount = BigDecimal.ZERO;
-		
+
 		if(isForInvoice)  {
 			for(Invoice invoice : directDebitManagement.getInvoiceSet())  {
 				amount = amount.add(invoice.getDirectDebitAmount());
@@ -595,14 +595,14 @@ public class CfonbExportService {
 		}
 		else  {
 			for(PaymentScheduleLine paymentScheduleLine : directDebitManagement.getPaymentScheduleLineList())  {
-				amount = amount.add(paymentScheduleLine.getDirectDebitAmount());  
+				amount = amount.add(paymentScheduleLine.getDirectDebitAmount());
 			}
 		}
-		
+
 		return amount;
 	}
-	
-	
+
+
 	/**
 	 * Fonction permettant de créer un enregistrement 'destinataire' pour un export de prélèvement d'une facture
 	 * @param company
@@ -618,20 +618,20 @@ public class CfonbExportService {
 		BankDetails bankDetails = partner.getBankDetails();
 		if(bankDetails == null)  {
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.PAYMENT_SCHEDULE_2),
-					GeneralServiceAccount.getExceptionAccountingMsg(),partner.getName()), IException.CONFIGURATION_ERROR);
+					GeneralServiceImpl.EXCEPTION,partner.getName()), IException.CONFIGURATION_ERROR);
 		}
-	
+
 		BigDecimal amount = invoice.getDirectDebitAmount();
-		
+
 		String ref = invoice.getDebitNumber();										// Référence
 		String partnerName = this.getPayeurPartnerName(partner);					// Nom/Raison sociale du débiteur
 		String operationCode = this.cfonbConfig.getDirectDebitOperationCodeExportCFONB();	// Code opération
 
 		return this.createRecipientCFONB(amount, ref, partnerName, bankDetails, operationCode);
 	}
-	
-	
-	
+
+
+
 	/**
 	 * Fonction permettant de créer un enregistrement 'destinataire'
 	 * @param company
@@ -649,12 +649,12 @@ public class CfonbExportService {
 	 * @param operationCode
 	 * 		Le code d'opération défini par société
 	 * @return
-	 * 				L'enregistrement 'destinataire' 
+	 * 				L'enregistrement 'destinataire'
 	 * @throws AxelorException
 	 */
 	private String createRecipientCFONB(BigDecimal amount, String ref, String partner, BankDetails bankDetails, String operationCode) throws AxelorException  {
 		this.testBankDetailsField(bankDetails);
-		
+
 		String amountFixed = amount.setScale(2).toString().replace(".","");
 
 		// Récupération des valeurs
@@ -683,18 +683,18 @@ public class CfonbExportService {
 		d4 = StringTool.fillStringRight(d4, ' ', 11);
 		f = StringTool.fillStringRight(f, ' ', 31);
 		g2 = StringTool.fillStringRight(g2, ' ', 6);
-		
+
 		// Tronquage / remplissage à gauche (nombre)
 		a = StringTool.fillStringLeft(a, '0', 2);
 		b1 = StringTool.fillStringLeft(b1, '0', 2);
 		d3 = StringTool.fillStringLeft(d3, '0', 5);
 		e = StringTool.fillStringLeft(e, '0', 16);
 		g1 = StringTool.fillStringLeft(g1, '0', 5);
-		
+
 		return a+b1+b2+b3+c1+c2+d1+d2+d3+d4+e+f+g1+g2;
 	}
-	
-	
+
+
 	/**
 	 * Fonction permettant de créer un enregistrement 'total' au format CFONB pour un remboursement
 	 * @param company
@@ -704,14 +704,14 @@ public class CfonbExportService {
 	 * @return
 	 */
 	private String createReimbursementTotalCFONB(BigDecimal amount)  {
-		
+
 		// Code opération
-		String operationCode = this.cfonbConfig.getTransferOperationCodeExportCFONB();	
-		
+		String operationCode = this.cfonbConfig.getTransferOperationCodeExportCFONB();
+
 		return this.createTotalCFONB(amount, operationCode);
-	}	
-	
-	
+	}
+
+
 	/**
 	 * Fonction permettant de créer un enregistrement 'total' au format CFONB pour un échéancier
 	 * @param company
@@ -722,14 +722,14 @@ public class CfonbExportService {
 	 * 				L'enregistrement 'total'
 	 */
 	private String createPaymentScheduleTotalCFONB(Company company, BigDecimal amount)  {
-		
+
 		// Code opération
-		String operationCode = this.cfonbConfig.getDirectDebitOperationCodeExportCFONB();	
-		
+		String operationCode = this.cfonbConfig.getDirectDebitOperationCodeExportCFONB();
+
 		return this.createTotalCFONB(amount, operationCode);
 	}
-	
-	
+
+
 	/**
 	 * Fonction permettant de créer un enregistrement 'total' au format CFONB
 	 * @param company
@@ -748,7 +748,7 @@ public class CfonbExportService {
 	 */
 	private String createTotalCFONB(BigDecimal amount, String operationCode)  {
 		String totalAmount = amount.setScale(2).toString().replace(".","");
-		
+
 		// Récupération des valeurs
 		String a = this.cfonbConfig.getTotalRecordCodeExportCFONB();  	// Code enregistrement
 		String b1 = operationCode;								// Code opération
@@ -764,7 +764,7 @@ public class CfonbExportService {
 		String f = "";											// Zone réservée
 		String g1 = "";											// Zone réservée
 		String g2 = "";											// Zone réservée
-		
+
 		// Tronquage / remplissage à droite (chaine de caractère)
 		b2 = StringTool.fillStringRight(b2, ' ', 8);
 		b3 = StringTool.fillStringRight(b3, ' ', 6);
@@ -777,16 +777,16 @@ public class CfonbExportService {
 		f = StringTool.fillStringRight(f, ' ', 31);
 		g1 = StringTool.fillStringRight(g1, ' ', 5);
 		g2 = StringTool.fillStringRight(g2, ' ', 6);
-		
+
 		// Tronquage / remplissage à gauche (nombre)
 		a = StringTool.fillStringLeft(a, '0', 2);
 		b1 = StringTool.fillStringLeft(b1, '0', 2);
 		e = StringTool.fillStringLeft(e, '0', 16);
-		
+
 		return a+b1+b2+b3+c1+c2+d1+d2+d3+d4+e+f+g1+g2;
 	}
-	
-	
+
+
 	/**
 	 * Fonction permettant de créer le CFONB
 	 * @param senderCFONB
@@ -802,15 +802,15 @@ public class CfonbExportService {
 		// checker meme compte emetteur
 		// checker meme type de virement
 		// checker meme date de règlement
-		
+
 		List<String> cFONB = new ArrayList<String>();
 		cFONB.add(senderCFONB);
 		cFONB.addAll(recipientCFONB);
 		cFONB.add(totalCFONB);
 		return cFONB;
 	}
-	
-	
+
+
 	/**
 	 * Procédure permettant de créer un fichier CFONB au format .dat
 	 * @param cFONB
@@ -827,18 +827,18 @@ public class CfonbExportService {
 		DateFormat yyyyMMddHHmmssFormat = new SimpleDateFormat("yyyyMMddHHmmss");
 		String dateFileName = yyyyMMddHHmmssFormat.format(dateTime.toDate());
 		String fileName = String.format("%s%s.dat", prefix, dateFileName);
-		
+
 		try {
 			FileTool.writer(destinationFolder, fileName, cFONB);
 		} catch (IOException e) {
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.CFONB_EXPORT_2),
-					GeneralServiceAccount.getExceptionAccountingMsg(),e), IException.CONFIGURATION_ERROR);
+					GeneralServiceImpl.EXCEPTION,e), IException.CONFIGURATION_ERROR);
 		}
-		
-		
+
+
 	}
-	
-	
+
+
 	/**
 	 * Méthode permettant de construire le Nom/Raison sociale du tiers payeur d'un mémoire
 	 * @param memory
@@ -848,17 +848,17 @@ public class CfonbExportService {
 	 * 				Civilité + Nom 				sinon
 	 */
 	private String getPayeurPartnerName(Partner partner)  {
-		
+
 		if(partner.getTitleSelect() != null )  {
 			return String.format("%s %s", partner.getTitleSelect(), partner.getName());
 		}
 		else {
 			return String.format("%s", partner.getName());
 		}
-			
+
 	}
-		
-	
+
+
 	/**
 	 * Méthode permettant de calculer le montant total des remboursements
 	 * @param reimbursementList
@@ -874,8 +874,8 @@ public class CfonbExportService {
 		}
 		return totalAmount;
 	}
-	
-	
+
+
 	/**
 	 * Fonction permettant de récupérer le montant total à prélever d'une liste d'échéance de mensu
 	 * @param paymentScheduleLineList
@@ -885,16 +885,16 @@ public class CfonbExportService {
 	 */
 	private BigDecimal getTotalAmountPaymentSchedule(List<PaymentScheduleLine> paymentScheduleLineList)  {
 		BigDecimal totalAmount = BigDecimal.ZERO;
-		
+
 		for(PaymentScheduleLine paymentScheduleLine : paymentScheduleLineList)  {
-			
+
 			totalAmount = totalAmount.add(paymentScheduleLineService.find(paymentScheduleLine.getId()).getDirectDebitAmount());
-		
+
 		}
 		return totalAmount;
 	}
-	
-	
+
+
 	/**
 	 * Fonction permettant de récupérer le montant total à prélever d'une liste d'échéance de mensu
 	 * @param paymentScheduleLineList
@@ -904,17 +904,17 @@ public class CfonbExportService {
 	 */
 	private BigDecimal getTotalAmountInvoice(List<Invoice> invoiceList)  {
 		BigDecimal totalAmount = BigDecimal.ZERO;
-		
+
 		for(Invoice invoice : invoiceList)  {
-			
+
 			totalAmount = totalAmount.add(invoiceService.find(invoice.getId()).getDirectDebitAmount());
 		}
-		
+
 		return totalAmount;
 	}
-	
-	
-	
+
+
+
 	/**
 	 * Procédure permettant de vérifier la conformité des champs en rapport avec les exports CFONB d'une société
 	 * @param company
@@ -922,14 +922,14 @@ public class CfonbExportService {
 	 * @throws AxelorException
 	 */
 	public void testCompanyExportCFONBField(Company company) throws AxelorException  {
-		
+
 		AccountConfig accountConfig = cfonbConfigService.getAccountConfig(company);
-		
+
 		cfonbConfigService.getReimbursementExportFolderPathCFONB(accountConfig);
 		cfonbConfigService.getPaymentScheduleExportFolderPathCFONB(accountConfig);
-		
+
 		this.init(cfonbConfigService.getCfonbConfig(company));
-		
+
 		cfonbConfigService.getSenderRecordCodeExportCFONB(this.cfonbConfig);
 		cfonbConfigService.getSenderNumExportCFONB(this.cfonbConfig);
 		cfonbConfigService.getSenderNameCodeExportCFONB(this.cfonbConfig);
@@ -937,11 +937,11 @@ public class CfonbExportService {
 		cfonbConfigService.getTotalRecordCodeExportCFONB(this.cfonbConfig);
 		cfonbConfigService.getTransferOperationCodeExportCFONB(this.cfonbConfig);
 		cfonbConfigService.getDirectDebitOperationCodeExportCFONB(this.cfonbConfig);
-		
+
 	}
-	
-	
-	
+
+
+
 	/**
 	 * Procédure permettant de vérifier la conformité des champs d'un RIB
 	 * @param bankDetails
@@ -951,21 +951,21 @@ public class CfonbExportService {
 	public void testBankDetailsField(BankDetails bankDetails) throws AxelorException  {
 		if(bankDetails.getSortCode() == null || bankDetails.getSortCode().isEmpty())  {
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.CFONB_EXPORT_3),
-					GeneralServiceAccount.getExceptionAccountingMsg(),bankDetails.getIban(), bankDetails.getPartner().getName()), IException.CONFIGURATION_ERROR);
+					GeneralServiceImpl.EXCEPTION,bankDetails.getIban(), bankDetails.getPartner().getName()), IException.CONFIGURATION_ERROR);
 		}
 		if(bankDetails.getAccountNbr() == null || bankDetails.getAccountNbr().isEmpty()) {
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.CFONB_EXPORT_4),
-					GeneralServiceAccount.getExceptionAccountingMsg(),bankDetails.getIban(), bankDetails.getPartner().getName()), IException.CONFIGURATION_ERROR);
+					GeneralServiceImpl.EXCEPTION,bankDetails.getIban(), bankDetails.getPartner().getName()), IException.CONFIGURATION_ERROR);
 		}
 		if(bankDetails.getBankCode() == null || bankDetails.getBankCode().isEmpty()) {
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.CFONB_EXPORT_5),
-					GeneralServiceAccount.getExceptionAccountingMsg(),bankDetails.getIban(), bankDetails.getPartner().getName()), IException.CONFIGURATION_ERROR);
+					GeneralServiceImpl.EXCEPTION,bankDetails.getIban(), bankDetails.getPartner().getName()), IException.CONFIGURATION_ERROR);
 		}
 		if(bankDetails.getBankAddress() == null || bankDetails.getBankAddress().isEmpty()) {
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.CFONB_EXPORT_6),
-					GeneralServiceAccount.getExceptionAccountingMsg(),bankDetails.getIban(), bankDetails.getPartner().getName()), IException.CONFIGURATION_ERROR);
+					GeneralServiceImpl.EXCEPTION,bankDetails.getIban(), bankDetails.getPartner().getName()), IException.CONFIGURATION_ERROR);
 		}
 	}
-	
-	
+
+
 }

@@ -1,0 +1,24 @@
+<?xml version="1.0" ?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_4.0.xsd">
+
+  <module name="human-resource" package="com.axelor.apps.hr.db"/>
+
+  <entity name="TimesheetLine" cachable="true">
+      
+      <integer name="importId"/>
+      <many-to-one name="projectTask" ref="com.axelor.apps.project.db.ProjectTask" title="Project/Task"/>
+      <many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Activity" required="true"/>
+      <many-to-one name="user" title="User" ref="com.axelor.auth.db.User" readonly="true" column="user_id"/>
+      <date name="date" column="date_val" default="now"/>
+      <many-to-one name="affectedToTimeSheet" ref="com.axelor.apps.hr.db.Timesheet" title="Time Sheet" readonly="true"/>
+      <decimal name="visibleDuration" title="Duration" required="true" />
+	  <decimal name="durationStored" title="Duration" />
+      <string name="comments" large="true"/>
+      <boolean name="toInvoice"/>
+      <boolean name="invoiced" title="Invoiced" readonly="true"/>
+	          
+  </entity>
+  
+</domain-models>

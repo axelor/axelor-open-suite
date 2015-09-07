@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
+	
+	<form name="convert-opportunity-form" title="Opportunity" model="com.axelor.apps.crm.db.Opportunity">
+		<panel colSpan="12">
+			<button name="generateSaleOrder" title="Convert into order" onClick="action-sale-group-generate-sale-order"/>
+			<field name="saleOrder" title="Sale Order" hideIf="saleOrder == null" form-view="sale-order-form" grid-view="sale-order-grid"/>
+		</panel>
+	</form>
+	
+	<action-group name="action-sale-group-generate-sale-order">
+		<action name="action-sale-validate-create-client" if="partner == null"/>
+		<action name="save"/>
+		<action name="action-sale-method-create-client" if="partner == null"/>
+		<action name="action-sale-method-generate-sale-order"/>
+	</action-group>
+	
+	<action-validate name="action-sale-validate-create-client">
+		<alert message="No client selected, a new one will be created from the lead, do you agree?"/>
+	</action-validate>
+	
+	<action-method name="action-sale-method-create-client">
+		<call class="com.axelor.apps.crm.web.OpportunityController" method="createClient"/>
+	</action-method>
+	
+	<action-method name="action-sale-method-generate-sale-order">
+		<call class="com.axelor.apps.sale.web.OpportunitySaleOrderController" method="generateSaleOrder"/>
+	</action-method>
+	
+</object-views>	

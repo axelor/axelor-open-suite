@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.exception.AxelorException;
@@ -35,7 +36,7 @@ public interface SaleOrderPurchaseService {
 	
 	
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void createPurchaseOrder(Partner supplierPartner, List<SaleOrderLine> saleOrderLineList, SaleOrder saleOrder) throws AxelorException;
+	public PurchaseOrder createPurchaseOrder(Partner supplierPartner, List<SaleOrderLine> saleOrderLineList, SaleOrder saleOrder) throws AxelorException;
 }
 
 

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
    
     <grid name="commune-grid" title="Cities-Communes" model="com.axelor.apps.base.db.Commune">
        <toolbar>
@@ -11,7 +11,7 @@
 		<field name="zip"/>
     </grid>
     
-    <form name="commune-form" title="City-Commune" model="com.axelor.apps.base.db.Commune"  >
+    <form name="commune-form" title="City-Commune" model="com.axelor.apps.base.db.Commune" width="large">
     	<panel>
 			<field name="name"/>
 			<field name="artmin" colSpan="2"/>
@@ -20,8 +20,9 @@
 			<field name="hasZipOnRight"/>
 		</panel>
 		<panel title="Localization">
-			<field name="department"/>
-			<field name="canton"/>
+			<field name="country" form-view="country-form" grid-view="country-grid" />
+			<field name="department" form-view="department-form" grid-view="department-grid"/>
+			<field name="canton" form-view="canton-form" grid-view="canton-grid"/>
 		</panel>  
 		<panel title="Demography">
 			<field name="nbInhCommune"/>

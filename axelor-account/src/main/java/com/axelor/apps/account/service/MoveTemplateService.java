@@ -79,13 +79,13 @@ public class MoveTemplateService extends MoveTemplateRepository{
 					if(line.getDebitCreditSelect().equals("0")){
 						if(line.getHasPartnerToDebit())
 							partner = debitPartner;
-						MoveLine moveLine = moveLineService.createMoveLine(move, partner, line.getAccount(), moveBalance.multiply(line.getPercentage()).divide(hundred), true, false, moveDate, moveDate, 0, line.getName());
+						MoveLine moveLine = moveLineService.createMoveLine(move, partner, line.getAccount(), moveBalance.multiply(line.getPercentage()).divide(hundred), true, moveDate, moveDate, 0, line.getName());
 						move.getMoveLineList().add(moveLine);
 					}
 					else{
 						if(line.getHasPartnerToDebit())
 							partner = creditPartner;
-						MoveLine moveLine = moveLineService.createMoveLine(move, partner, line.getAccount(), moveBalance.multiply(line.getPercentage()).divide(hundred), false, false, moveDate, moveDate, 0, line.getName());
+						MoveLine moveLine = moveLineService.createMoveLine(move, partner, line.getAccount(), moveBalance.multiply(line.getPercentage()).divide(hundred), false, moveDate, moveDate, 0, line.getName());
 						move.getMoveLineList().add(moveLine);
 					}
 				}

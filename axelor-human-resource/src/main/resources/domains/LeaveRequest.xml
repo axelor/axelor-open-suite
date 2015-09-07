@@ -1,0 +1,49 @@
+<?xml version="1.0" ?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_4.0.xsd">
+
+  <module name="human-resource" package="com.axelor.apps.hr.db"/>
+
+  <entity name="LeaveRequest" cachable="true">
+      
+      <many-to-one name="user" ref="com.axelor.auth.db.User" title="User" required="true" column="user_id"/>
+      <integer name="statusSelect" title="Status" selection="hrs.expenses.status.select" default="1" />
+      <date name="requestDate" title="Request date" readonly="true" />
+      <date name="dateFrom" title="Date from" required="true"/>
+      <integer name="startOnSelect" title="Start On" selection="hr.start.on.select" required="true" default="1"/>
+      <date name="dateTo" title="Date to (Included)" />
+      <integer name="endOnSelect" title="End On" selection="hr.start.on.select" required="true" default="2"/>
+      <decimal name="duration" title="Duration" scale="1" precision="5"/>
+      <many-to-one name="reason" ref="com.axelor.apps.hr.db.LeaveReason" title="Reason" />
+      <string name="comments" title="Comments" large="true"/>
+      <many-to-one name="company" ref="com.axelor.apps.base.db.Company"/>
+	  <integer name="injectConsumeSelect" title="Inject/Consume" selection="hrs.leave.reason.inject.consume.select" default="1"/>
+	  <many-to-one name="validatedBy" ref="com.axelor.auth.db.User" title="Validated" readonly="true"/>
+      <many-to-one name="refusedBy" ref="com.axelor.auth.db.User" title="Refused By" readonly="true"/>
+      <date name="validationDate" title="Validation Date" readonly="true"  />
+      <date name="refusalDate" title="Refusal Date" readonly="true"  />
+      
+      <string name="fullName" namecolumn="true" readonly="true">
+      <![CDATA[
+	  		return this.getUser().getFullName()+" "+this.getCreatedOn().getDayOfMonth()+"/"+this.getCreatedOn().getMonthOfYear()
+	  				+"/"+this.getCreatedOn().getYear()+"  "+this.getCreatedOn().getHourOfDay()+":"+this.getCreatedOn().getMinuteOfHour();
+	  ]]>
+      </string>
+	  
+	  <extra-code>
+   		<![CDATA[
+   			public static final Integer SELECT_CONSUME = 1;
+   			public static final Integer SELECT_INJECT = 2;
+   			public static final Integer STATUS_SELECT_DRAFT = 1;
+   			public static final Integer STATUS_SELECT_AWAITING_VALIDATION = 2;
+   			public static final Integer STATUS_SELECT_VALIDATED = 3;
+   			public static final Integer STATUS_SELECT_REFUSED = 4;
+   			public static final Integer STATUS_SELECT_CANCELED = 5;
+			public static final Integer SELECT_MORNING = 1;
+   			public static final Integer SELECT_AFTERNOON = 2;
+   		]]>
+   	</extra-code>
+  </entity>
+  
+</domain-models>

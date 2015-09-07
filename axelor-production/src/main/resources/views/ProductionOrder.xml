@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
     
     <grid name="production-order-grid" title="Production orders" model="com.axelor.apps.production.db.ProductionOrder" orderBy="-productionOrderSeq">
         <field name="productionOrderSeq"/>
@@ -10,23 +10,24 @@
          -->
     </grid>
     
-	<form name="production-order-form" title="Production order" model="com.axelor.apps.production.db.ProductionOrder">
+	<form name="production-order-form" title="Production order" model="com.axelor.apps.production.db.ProductionOrder" onNew="action-production-order-attrs-title-project-task"
+		onLoad="action-production-order-attrs-title-project-task" width="large">
 	  <panel>
 	    <field name="productionOrderSeq"/>
-	    <field name="businessProject" if-module="axelor-business-production"/>
+	    <field name="projectTask" if-module="axelor-business-production" form-view="project-task-form" grid-view="project-task-grid"/>
 	    <field name="isToInvoice" onChange="save,action-production-order-method-is-to-invoice" if-module="axelor-business-production"/>
 	    <button name="showManufOrderWizard" title="Add Manuf. Order"   onClick="save,action-production-order-attrs-add-manuf-order-wizard,action-production-order-record-default-wizard"/>
 	  </panel>  
 	  <panel name="addManufOrderWizard" title="Add Manuf. Order" hidden="true">
-	    <field name="product" title="Product" widget="ManyToOne" target="com.axelor.apps.base.db.Product" domain="self.applicationTypeSelect = 1 and self.productTypeSelect = 'storable' and self.procurementMethodSelect = 'produce'"/>
-	    <field name="billOfMaterial" title="BOM" widget="ManyToOne" onChange="action-production-order-wizard-record-product" onSelect="action-production-order-wizard-attrs-bill-of-material-domain" target="com.axelor.apps.production.db.BillOfMaterial"/>
+	    <field name="product" title="Product" widget="ManyToOne" target="com.axelor.apps.base.db.Product" domain="self.expense = false and self.productTypeSelect = 'storable' and self.procurementMethodSelect = 'produce'" form-view="product-form" grid-view="product-grid"/>
+	    <field name="billOfMaterial" title="BOM" widget="ManyToOne" onChange="action-production-order-wizard-record-product" onSelect="action-production-order-wizard-attrs-bill-of-material-domain" target="com.axelor.apps.production.db.BillOfMaterial" form-view="bill-of-material-form" grid-view="bill-of-material-grid" />
 	    <field name="qty" title="Quantity" widget="decimal"/>
 	    <button name="AddManufOrder" title="Add Manuf. Order"   onClick="action-production-order-method-add-manuf-order"/>
 	  </panel>
 	<!--         <button name="generateSaleOrder" title="Generate sale order" colSpan="2" onClick="action-production-order-method-generate-sale-order" showIf="businessProject"/> -->
 	  <panel-related field="manufOrderList" colSpan="12">
         <field name="manufOrderSeq"/>      
-        <field name="product"/>
+        <field name="product" form-view="product-form" grid-view="product-grid"/>
         <field name="qty"/>
         <field name="plannedStartDate"/>    
         <field name="plannedEndDate"/>    
@@ -35,6 +36,10 @@
 	  </panel-related>
 	  <panel-dashlet   action="action-production-order-view-operation-order"/>
 	</form>
+    
+    <action-attrs name="action-production-order-attrs-title-project-task">
+		<attribute name="title" for="projectTask" expr="eval: __config__.general.getProjectTaskLabel()" if="!com.google.common.base.Strings.isNullOrEmpty(__config__.general.getProjectTaskLabel())"/>
+	</action-attrs>
     
    	<action-method name="action-production-order-method-add-manuf-order">
     	<call class="com.axelor.apps.production.web.ProductionOrderController" method="addManufOrder"/>

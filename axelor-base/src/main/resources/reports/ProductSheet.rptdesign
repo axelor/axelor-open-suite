@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.3.2.v20140211-1400 Build &lt;4.3.2.v20140211-1526></property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.4.2.v201410272105 Build &lt;4.4.2.v20150217-1805></property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -15,6 +15,7 @@
         <structure>
             <property name="name">odaDriverClass</property>
             <property name="id">209</property>
+            <expression name="value" type="javascript">params["DefaultDriver"].value</expression>
         </structure>
         <structure>
             <property name="name">odaAutoCommit</property>
@@ -127,6 +128,32 @@
                 <property name="category">Unformatted</property>
             </structure>
         </scalar-parameter>
+        <scalar-parameter name="AttachmentPath" id="4115">
+            <property name="valueType">static</property>
+            <property name="isRequired">false</property>
+            <property name="dataType">string</property>
+            <property name="distinct">true</property>
+            <simple-property-list name="defaultValue">
+                <value type="constant"></value>
+            </simple-property-list>
+            <list-property name="selectionList"/>
+            <property name="paramType">simple</property>
+            <property name="controlType">text-box</property>
+            <structure name="format">
+                <property name="category">Unformatted</property>
+            </structure>
+        </scalar-parameter>
+        <scalar-parameter name="DefaultDriver" id="3819">
+            <property name="valueType">static</property>
+            <property name="dataType">string</property>
+            <property name="distinct">true</property>
+            <list-property name="selectionList"/>
+            <property name="paramType">simple</property>
+            <property name="controlType">text-box</property>
+            <structure name="format">
+                <property name="category">Unformatted</property>
+            </structure>
+        </scalar-parameter>
     </parameters>
     <data-sources>
         <oda-data-source extensionID="org.eclipse.birt.report.data.oda.jdbc" name="Data Source" id="209">
@@ -146,8 +173,8 @@
                     <value>ILYNN</value>
                 </ex-property>
             </list-property>
-            <property name="odaDriverClass">org.postgresql.Driver</property>
-            <property name="odaURL">jdbc:postgresql://localhost:5432/axelor-erp</property>
+            <property name="odaDriverClass">com.mysql.jdbc.Driver</property>
+            <property name="odaURL">jdbc:mysql://localhost:3306/</property>
         </oda-data-source>
     </data-sources>
     <data-sets>
@@ -365,12 +392,13 @@
                     <property name="nativeDataType">4</property>
                 </structure>
             </list-property>
-            <xml-property name="queryText"><![CDATA[select Product.id, Company.logo_path, Product.name as product_name, Product.code as product_code,
+            <xml-property name="queryText"><![CDATA[select Product.id, MetaFile.file_path as logo_path, Product.name as product_name, Product.code as product_code,
 Product.picture as product_picture, Product.description as product_description, Product.sale_price,
 Currency.symbol as currency_symbol, Product.has_warranty, Product.warranty_nbr_of_months
 from base_product as Product
 left join base_company as Company on (Company.id = ?)
-left join public.base_currency as Currency on (Product.sale_currency = Currency.id)
+left join meta_file as MetaFile on (MetaFile.id = Company.logo)
+left join base_currency as Currency on (Product.sale_currency = Currency.id)
 where Product.id = ?
 ]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
@@ -589,9 +617,9 @@ where Product.id = ?
                     <property name="nativeDataType">12</property>
                 </structure>
             </list-property>
-            <xml-property name="queryText"><![CDATA[select LangTranslate.key, LangTranslate.message as "translation" 
+            <xml-property name="queryText"><![CDATA[select LangTranslate.message_key, LangTranslate.message_value as "translation" 
 from meta_translation as LangTranslate 
-where LangTranslate.key = ? and LangTranslate.language = ?]]></xml-property>
+where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
   <Version>2.0</Version>
@@ -772,7 +800,8 @@ where LangTranslate.key = ? and LangTranslate.language = ?]]></xml-property>
                         <property name="height">2.169583333333333cm</property>
                         <property name="width">6.138333333333333cm</property>
                         <property name="source">file</property>
-                        <expression name="uri" type="javascript">row["logo_path"]</expression>
+                        <property name="proportionalScale">true</property>
+                        <expression name="uri" type="javascript">params["AttachmentPath"].value+row["logo_path"]</expression>
                     </image>
                 </cell>
                 <cell id="4032">
@@ -795,7 +824,7 @@ where LangTranslate.key = ? and LangTranslate.language = ?]]></xml-property>
                             <structure>
                                 <property name="name">key</property>
                                 <text-property name="displayName">key</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                 <property name="dataType">string</property>
                             </structure>
                             <structure>
@@ -924,7 +953,7 @@ where LangTranslate.key = ? and LangTranslate.language = ?]]></xml-property>
                             <structure>
                                 <property name="name">key</property>
                                 <text-property name="displayName">key</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                 <property name="dataType">string</property>
                             </structure>
                             <structure>
@@ -990,7 +1019,7 @@ where LangTranslate.key = ? and LangTranslate.language = ?]]></xml-property>
                             <structure>
                                 <property name="name">key</property>
                                 <text-property name="displayName">key</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                 <property name="dataType">string</property>
                             </structure>
                             <structure>
@@ -1027,7 +1056,7 @@ where LangTranslate.key = ? and LangTranslate.language = ?]]></xml-property>
                             <structure>
                                 <property name="name">key</property>
                                 <text-property name="displayName">key</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                 <property name="dataType">string</property>
                             </structure>
                             <structure>
@@ -1059,7 +1088,7 @@ where LangTranslate.key = ? and LangTranslate.language = ?]]></xml-property>
                             <structure>
                                 <property name="name">key</property>
                                 <text-property name="displayName">key</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                 <property name="dataType">string</property>
                             </structure>
                             <structure>

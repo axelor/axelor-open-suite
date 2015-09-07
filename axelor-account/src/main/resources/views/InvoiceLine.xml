@@ -1,78 +1,107 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
    
-    <grid name="invoice-line-grid" title="Invoice lines" model="com.axelor.apps.account.db.InvoiceLine" orderBy="sequence,invoiceLineType.name,qty" >
+    <grid name="invoice-line-grid" title="Invoice lines" model="com.axelor.apps.account.db.InvoiceLine" orderBy="sequence,qty" >
     	<field name="sequence"/>
-        <field name="invoiceLineType"/>
         <field name="productName"/>
         <field name="qty"/>
         <field name="price"/>
-        <field name="unit"/>
+        <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
         <field name="exTaxTotal"/>
+	    <field name="inTaxTotal"/>
     </grid>
     
     <form name="invoice-line-form" title="Invoice line" model="com.axelor.apps.account.db.InvoiceLine"   
     onNew="action-account-invoice-line-onnew-group"
-    onLoad="action-account-invoice-line-onload-group">
+    onLoad="action-account-invoice-line-onload-group" width="large">
     	<panel-tabs>
     		<panel title="Informations">
     			<field name="sequence"/>
-    			<spacer/>
-		        <field name="product" required="true" onChange="action-group-account-invoice-line-product-onchange"/>
-		        <field name="invoiceLineType"/>
+    			<field name="saleOrder" if="!__config__.general.getManageInvoicedAmountByLine()" if-module="axelor-supplychain" form-view="sale-order-form" grid-view="sale-order-grid"/>
+    			<field name="saleOrderLine" if="__config__.general.getManageInvoicedAmountByLine()" if-module="axelor-supplychain" form-view="sale-order-line-form" grid-view="sale-order-line-grid"/>
+    			<field name="purchaseOrderLine" if-module="axelor-supplychain" form-view="purchase-order-line-form" grid-view="purchase-order-line-grid"/>
+		        <field name="product" required="true" onChange="action-group-account-invoice-line-product-onchange" form-view="product-form" grid-view="product-grid"/>
 		        <field name="productName"/>
-		        <field name="qty" required="true" onChange="action-invoice-line-method-compute"/>
+		        <field name="qty" required="true" onChange="action-invoice-line-method-get-discount,action-invoice-line-method-convert-tax,action-invoice-line-method-compute"/>
 		        <field name="price" required="true"  onChange="action-invoice-line-method-compute"/>
-		        <field name="unit"/>
-		        <field name="exTaxTotal"/>
-		        <field name="task"/>
-		    	<field name="taxLine" grid-view="tax-line-grid" form-view="tax-line-form"/>
+		        <field name="priceDiscounted" hidden="true"/>
+		        <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
+		        <panel-related field="analyticAccountSet" colSpan="12" form-view="analytic-account-form" grid-view="analytic-account-grid" />
+		    	<field name="taxLine" onChange="action-invoice-line-method-convert-tax,action-invoice-line-method-compute" grid-view="tax-line-grid" form-view="tax-line-form"/>
+		    	<field name="exTaxTotal" readonly="true"/>
+	    		<field name="inTaxTotal" readonly="true"/>
 				 <panel name="discount" title="Discount" colSpan="12">
-			        <field name="discountTypeSelect" onChange="action-invoice-line-method-compute"/>
-			        <field name="discountAmount" onChange="action-invoice-line-method-compute"/>
+			        <field name="discountTypeSelect" onChange="action-invoice-line-method-compute,action-invoice-line-attrs-discountamount-title,action-invoice-line-attrs-scale-and-precision"/>
+			        <field name="discountAmount" onChange="action-invoice-line-method-compute" hideIf="discountTypeSelect == 3"/>
 			    </panel>
     		</panel>
     		<panel title="Description">
     			<field name="description" colSpan="12" widget="html"/>
     		</panel>
+    		<panel name="projectTaskPanel" if="__config__.general.getProjectTaskInvoiceLines()" title="Project/Task" if-module="axelor-business-project">
+				<field name="project" onSelect="action-invoice-line-attrs-domain-project" form-view="project-task-form" grid-view="project-task-grid"/>
+			</panel>
+			<panel name="subscriptionPanel" title="Subscription">
+				<field name="subscriptionFromDate"/>
+				<field name="subscriptionToDate"/>
+			</panel>
     	</panel-tabs>
         
     </form>
     
+    <action-attrs name="action-invoice-line-attrs-domain-project">
+    	<attribute name="domain" for="project" expr="eval: &quot; self.clientPartner.id = ${_parent?.partner.id} &quot;"/>
+    </action-attrs>
+    
+    
     <!-- ACTION GROUPs -->
     <action-group name="action-account-invoice-line-onnew-group">
+    	<action name="action-invoice-line-attrs-show-elements"/>
+    	<action name="action-invoice-line-attrs-scale-and-precision"/>
 	    <action name="action-invoice-line-record-new"/>
 	    <action name="action-invoice-line-record-sequence"/>
-	    <action name="action-invoice-line-attrs-hide-product-variant"/>
+	    <action name="action-invoice-attrs-hide-ati"/>
+	    <action name="action-invoice-line-record-project"/>
     </action-group>
     
     <action-group name="action-account-invoice-line-onload-group">
-	    <action name="action-invoice-line-method-product-management"/>
-	    <action name="action-invoice-line-attrs-hide-product-variant"/>
+    	<action name="action-invoice-line-attrs-show-elements"/>
+    	<action name="action-invoice-line-attrs-scale-and-precision"/>
+	    <action name="action-invoice-attrs-hide-ati"/>
     </action-group>
     
     <action-group name="action-group-account-invoice-line-product-onchange">
-    	<action name="action-invoice-line-attrs-hide-product-variant"/>
     	<action name="action-invoice-line-method-get-product-information"/>
+    	<action name="action-invoice-line-method-convert-tax"/>
     	<action name="action-invoice-line-method-compute"/>
     </action-group>
     
     
     <!--     ACTION RECORDS -->
     
+    <action-record name="action-invoice-line-record-in-tax-total" model="com.axelor.apps.account.db.InvoiceLine">
+    	<field name="inTaxTotal" expr="eval: exTaxTotal + (exTaxTotal*taxLine.value)"/>
+    	<field name="companyInTaxTotal" expr="eval: companyExTaxTotal + (companyExTaxTotal*taxLine.value)"/>
+    </action-record>
+    
     <action-record name="action-invoice-line-record-sequence" model="com.axelor.apps.account.db.InvoiceLine">
     	<field name="sequence" expr="10" if="eval: _parent?.invoiceLineList == null"/>
     	<field name="sequence" expr="eval: (_parent?.invoiceLineList.size()+1)*10" if="eval: _parent?.invoiceLineList != null"/>
     </action-record>
     
-    <action-record name="action-invoice-line-record-new" model="com.axelor.apps.purchase.db.PurchaseOrderLine">
+    <action-record name="action-invoice-line-record-new" model="com.axelor.apps.account.db.InvoiceLine">
     	<field name="qty" expr="eval: 1"/>
-    	<field name="task" expr="eval: _parent?.project?.defaultTask"/>
     </action-record>
     
 	<!-- ACTION METHOD -->
+
+	
+	<action-method name="action-invoice-line-method-convert-tax">
+		<call class="com.axelor.apps.account.web.InvoiceLineController" method="convertUnitPrice"/>
+	</action-method>
+	
 	<action-method name="action-invoice-line-method-compute">
 		<call class="com.axelor.apps.account.web.InvoiceLineController" method="compute"/>
 	</action-method>
@@ -86,8 +115,31 @@
 	</action-method>
 	
 	<!-- ACTION ATTRS -->
-	<action-attrs name="action-invoice-line-attrs-hide-product-variant">
-    	<attribute name="hidden" for="productVariant" expr="product?.productVariantConfiguration == null"/>
-    </action-attrs>
+	<action-attrs name="action-invoice-line-attrs-show-elements">
+		<attribute name="title" for="projectTaskPanel" expr="eval: __config__.general.getProjectTaskLabel()" if="!com.google.common.base.Strings.isNullOrEmpty(__config__.general.getProjectTaskLabel())"/>
+		<attribute name="title" for="project" expr="eval: __config__.general.getProjectTaskLabel()" if="!com.google.common.base.Strings.isNullOrEmpty(__config__.general.getProjectTaskLabel())"/>
+		<attribute name="hidden" for="subscriptionPanel" expr="eval: !_parent.isSubscription"/>
+		<attribute name="hidden" for="saleOrderLine" expr="eval: _parent.operationTypeSelect != 3 &amp;&amp; _parent.operationTypeSelect != 4"/>
+		<attribute name="hidden" for="purchaseOrderLine" expr="eval: _parent.operationTypeSelect != 1 &amp;&amp; _parent.operationTypeSelect != 2"/>
+	</action-attrs>
 	
+    <action-attrs name="action-invoice-line-attrs-discountamount-title">
+		<attribute name="title" for="discountAmount" expr="Discount Rate" if="discountTypeSelect == 1"/>
+		<attribute name="title" for="discountAmount" expr="Discount Amount" if="discountTypeSelect == 2"/>
+	</action-attrs>
+	
+	<action-attrs name="action-invoice-attrs-hide-ati">
+		<attribute name="hidden" for="exTaxTotal" expr="eval:_parent.inAti"/>
+		<attribute name="hidden" for="inTaxTotal" expr="eval:!_parent.inAti"/>
+	</action-attrs>
+	
+	<action-attrs name="action-invoice-line-attrs-scale-and-precision">
+		<attribute name="scale" for="price" expr="eval: __config__.generalService.getNbDecimalDigitForUnitPrice()"/>
+		<attribute name="scale" for="discountAmount" expr="eval: __config__.generalService.getNbDecimalDigitForUnitPrice()"/>
+	</action-attrs>
+	
+	<action-record name="action-invoice-line-record-project" model="com.axelor.apps.account.db.InvoiceLine" if-module="axelor-business-project">
+		<field name="project" expr="eval: _parent?.project"/>
+	</action-record>
+
 </object-views>

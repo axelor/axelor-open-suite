@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
+    
+    <grid name="cash-management-recap-grid" title="Cash Management Recaps" model="com.axelor.apps.cash.management.db.CashManagementRecap">
+       <field name="company"/>
+       <field name="bankDetails" if="__config__.general.getManageMultiBanks()"/>
+       <field name="fromDate"/>
+       <field name="toDate"/>
+    </grid>
+ 
+	 <form name="cash-management-recap-form" title="Cash Management Recap" model="com.axelor.apps.cash.management.db.CashManagementRecap"
+	 	onNew="action-cash-management-recap-record-default-on-new">
+	 	<panel >
+			<field name="company" onChange="action-cash-flow-forecast-record-bank"/>
+	       	<field name="bankDetails" onSelect="action-accounting-batch-attrs-bank-details-domain" if="__config__.general.getManageMultiBanks()"/>
+	       	<field name="fromDate" onChange="action-cash-management-recap-validate-dates"/>
+       		<field name="toDate" onChange="action-cash-management-recap-validate-dates"/>
+       		<field name="startingBalance"/>
+       		<button name="populateRecap" title="Populate" onClick="action-cash-management-recap-validate-dates-before-populate, action-cash-management-recap-method-populate"/>
+       		<panel-related field="cashManagementRecapLineList" readonly="true" colSpan="12"/>
+       		<field name="endingBalance"/>
+	 	</panel>
+	 </form>
+	 
+	 <action-record name="action-cash-management-recap-record-default-on-new" model="com.axelor.apps.cash.management.db.CashManagementRecap">
+	 	<field name="company" expr="eval: __user__.activeCompany"/>
+	 </action-record>
+	 
+	 <action-validate name="action-cash-management-recap-validate-dates">
+		<error message="Invalid dates" if="toDate != null &amp;&amp; fromDate != null &amp;&amp; toDate &lt; fromDate" action="action-cash-management-recap-null-toDate"/>
+	</action-validate>
+	
+	<action-record name="action-cash-management-recap-null-toDate" model="com.axelor.apps.cash.management.db.CashManagementRecap">
+		<field name="toDate" expr="eval: null"/>
+	</action-record>
+	
+	<action-validate name="action-cash-management-recap-validate-dates-before-populate">
+		<error message="Invalid dates" if="toDate == null || fromDate == null"/>
+	</action-validate>
+	
+	<action-method name="action-cash-management-recap-method-populate">
+		<call class="com.axelor.apps.cash.management.web.CashManagementRecapController" method="populate"/>
+	</action-method>
+    
+</object-views>

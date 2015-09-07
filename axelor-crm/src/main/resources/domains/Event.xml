@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_3.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_4.0.xsd">
 
   <module name="crm" package="com.axelor.apps.crm.db"/>
 
@@ -11,7 +11,7 @@
 	<integer name="importId" />
   	<integer name="typeSelect" title="Type" selection="crm.event.type.select" required="true" default="2" help="true"/>
   	<string name="subject" namecolumn="true" title="Subject" required="true"/>
-	<integer name="statusSelect" title="Status" selection="crm.event.status.select"/>  
+  	<string name="subjectTeam"/>
   	<datetime name="startDateTime" title="Start Date"/>
   	<datetime name="endDateTime" title="End Date"/>
 	<datetime name="limitDateT" title="Limit Date" help="true"/>
@@ -40,12 +40,17 @@
   	<many-to-one name="contactPartner" ref="com.axelor.apps.base.db.Partner" title="Contact"/>
 	<many-to-one name="lead" ref="com.axelor.apps.crm.db.Lead" title="Lead"/>
 	
+	<integer name="visibilitySelect" title="Visibility" selection="crm.event.visibility.select" default="1"/>
+	<integer name="disponibilitySelect" title="Availability" selection="crm.event.disponibility.select" default="1"/>
+	
 <!-- Call -->
     <integer name="callTypeSelect" title="Call type" selection="crm.event.call.type.select"/>  
     
 <!-- Meeting -->
 	<many-to-one name="meetingType" ref="com.axelor.apps.crm.db.MeetingType" title="Meeting type"/>
 	<string name="location" title="Location" help="true"/>
+	<many-to-many name="internalGuestSet" ref="com.axelor.auth.db.User" title="Internal Guests"/>
+	<many-to-many name="externalGuestSet" ref="com.axelor.apps.base.db.Partner" title="External Guests"/>
 
 <!-- Task -->
 	<integer name="taskStatusSelect" title="Status" selection="crm.event.task.status.select"/>
@@ -57,7 +62,31 @@
     <many-to-many name="userSet" ref="com.axelor.auth.db.User" title="Watchers"/>
     <many-to-one name="responsibleUser" ref="com.axelor.auth.db.User" title="User in charge of the issue"/>
 <!--   	<one-to-many name="messageList" ref="com.axelor.apps.message.db.Message" mappedBy="event" title="Comments"/> -->
-  
+  	
+  	<extra-code>
+      	<![CDATA[
+	  		public static final Integer TYPE_CALL = 1;
+	  		public static final Integer TYPE_MEETING = 2;
+	  		public static final Integer TYPE_TASK = 3;
+	  		public static final Integer TYPE_LEAVE = 4;
+	  		public static final Integer TYPE_TICKET = 5;
+	  		public static final Integer TYPE_EVENT = 6;
+	  ]]>
+      </extra-code>
+      
+    <track>
+      <field name="subject" />
+      <field name="startDateTime"/>
+      <field name="endDateTime" on="UPDATE"/>
+      <field name="internalGuestSet"/>
+	   <field name="externalGuestSet"/>
+      <message if="typeSelect == 5 &amp;&amp; ticketStatusSelect == 2" tag="important">Ticket In Progress</message>
+      <message if="typeSelect == 5 &amp;&amp; ticketStatusSelect == 3" tag="important">Ticket Resolved</message>
+      <message if="typeSelect == 5 &amp;&amp; ticketStatusSelect == 4" tag="important">Ticket in Feedback status</message>
+      <message if="typeSelect == 5 &amp;&amp; ticketStatusSelect == 5" tag="important">Ticket Closed</message> 
+    </track>
+      
+
   </entity>
 
 </domain-models>

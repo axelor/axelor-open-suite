@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
+    xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
 
     <grid name="irrecoverable-invoice-line-grid" title="Invoices" model="com.axelor.apps.account.db.IrrecoverableInvoiceLine">
         <field name="name"/>
-        <field name="invoice"/>
+        <field name="invoice" grid-view="invoice-grid" form-view="invoice-form"/>
     </grid>
-    <form name="irrecoverable-invoice-line-form" title="Invoice" model="com.axelor.apps.account.db.IrrecoverableInvoiceLine"  >
+    <form name="irrecoverable-invoice-line-form" title="Invoice" model="com.axelor.apps.account.db.IrrecoverableInvoiceLine" width="large">
        <panel >
 			<field name="name"/>
 			<field name="invoiceLineSeq"/>
 			<field name="invoice" grid-view="invoice-grid" form-view="invoice-form"/> 
        </panel>
        <panel-tabs>
-       		<panel-related field="irrecoverableReportLineList" colSpan="12"/>
+       		<panel-related field="irrecoverableReportLineList" colSpan="12" form-view="irrecoverable-report-form" grid-view="irrecoverable-report-grid"/>
        </panel-tabs>
         
     </form>

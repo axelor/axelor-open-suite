@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
     
     <grid name="cash-register-line-grid" title="Cash register closing" model="com.axelor.apps.account.db.CashRegisterLine">
-        <field name="user"/>
-        <field name="cashRegister"/>
+        <field name="user" form-view="user-form" grid-view="user-grid"/>
+        <field name="cashRegister" form-view="cash-register-form" grid-view="cash-register-grid"/>
         <field name="createDateTime"/>
         <field name="cashRegisterDate"/>
         <field name="cashRegisterAmount"/>
@@ -18,9 +18,9 @@
 	 
 		<panel  readonlyIf="emailSentOk">
 			<field name="statusSelect"/>
-			<field name="user"/>
+			<field name="user" form-view="user-form" grid-view="user-grid"/>
 			<field name="createDateTime"/>
-			<field name="cashRegister"/>
+			<field name="cashRegister" form-view="cash-register-form" grid-view="cash-register-grid"/>
 			<field name="cashRegisterDate"/>
 		</panel> 
 		
@@ -51,8 +51,8 @@
     <action-record name="action-cash-register-line-record-new" model="com.axelor.apps.account.db.CashRegisterLine">
     	<field name="user" expr="eval:__user__"/>
     	<field name="cashRegister"   expr="eval:__user__.activeCashRegister"/>
-    	<field name="createDateTime" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDateTime()"/>
-    	<field name="cashRegisterDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()"/>
+    	<field name="createDateTime" expr="eval:__config__.generalService.getTodayDateTime()"/>
+    	<field name="cashRegisterDate" expr="eval:__config__.generalService.getTodayDate()"/>
     </action-record>
 
 </object-views>

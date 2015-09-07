@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.2.2.v201301221637 Build &lt;4.2.2.v20130206-1509></property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.4.2.v201410272105 Build &lt;4.4.2.v20150217-1805></property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -20,26 +20,7 @@
         <structure>
             <property name="name">odaDriverClass</property>
             <property name="id">209</property>
-        </structure>
-        <structure>
-            <property name="name">odaAutoCommit</property>
-            <property name="id">209</property>
-        </structure>
-        <structure>
-            <property name="name">odaIsolationMode</property>
-            <property name="id">209</property>
-        </structure>
-        <structure>
-            <property name="name">odaJndiName</property>
-            <property name="id">209</property>
-        </structure>
-        <structure>
-            <property name="name">OdaConnProfileName</property>
-            <property name="id">209</property>
-        </structure>
-        <structure>
-            <property name="name">OdaConnProfileStorePath</property>
-            <property name="id">209</property>
+            <expression name="value" type="javascript">params["DefaultDriver"].value</expression>
         </structure>
     </list-property>
     <property name="units">cm</property>
@@ -112,6 +93,32 @@
                 <property name="category">Unformatted</property>
             </structure>
         </scalar-parameter>
+        <scalar-parameter name="AttachmentPath" id="4234">
+            <property name="valueType">static</property>
+            <property name="isRequired">false</property>
+            <property name="dataType">string</property>
+            <property name="distinct">true</property>
+            <simple-property-list name="defaultValue">
+                <value type="constant"></value>
+            </simple-property-list>
+            <list-property name="selectionList"/>
+            <property name="paramType">simple</property>
+            <property name="controlType">text-box</property>
+            <structure name="format">
+                <property name="category">Unformatted</property>
+            </structure>
+        </scalar-parameter>
+        <scalar-parameter name="DefaultDriver" id="3819">
+            <property name="valueType">static</property>
+            <property name="dataType">string</property>
+            <property name="distinct">true</property>
+            <list-property name="selectionList"/>
+            <property name="paramType">simple</property>
+            <property name="controlType">text-box</property>
+            <structure name="format">
+                <property name="category">Unformatted</property>
+            </structure>
+        </scalar-parameter>
     </parameters>
     <data-sources>
         <oda-data-source extensionID="org.eclipse.birt.report.data.oda.jdbc" name="Data Source" id="209">
@@ -131,9 +138,8 @@
                     <value>ILYNN</value>
                 </ex-property>
             </list-property>
-            <property name="odaDriverClass">org.postgresql.Driver</property>
-            <property name="odaURL">jdbc:postgresql://localhost:5432/axelor-erp</property>
-            <property name="odaUser">axelor</property>
+            <property name="odaDriverClass">com.mysql.jdbc.Driver</property>
+            <property name="odaURL">jdbc:mysql://localhost:3306</property>
         </oda-data-source>
     </data-sources>
     <data-sets>
@@ -297,7 +303,7 @@
                     <property name="name">qty</property>
                     <property name="nativeName">qty</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">2</property>
+                    <property name="nativeDataType">3</property>
                 </structure>
                 <structure>
                     <property name="position">7</property>
@@ -321,10 +327,11 @@
                     <property name="nativeDataType">93</property>
                 </structure>
             </list-property>
-            <xml-property name="queryText"><![CDATA[SELECT ManufOrder.id, Company.logo_path, ManufOrder.manuf_order_seq, BOM.name as bom_name, Product.name as product_name,
-ManufOrder.qty, Unit.code as unit_code, ProdProcess.name as prod_process, ManufOrder.planned_start_datet
+            <xml-property name="queryText"><![CDATA[SELECT ManufOrder.id, MetaFile.file_path AS logo_path, ManufOrder.manuf_order_seq, BOM.name as bom_name, Product.name as product_name,
+ManufOrder.qty, Unit.name as unit_code, ProdProcess.name as prod_process, ManufOrder.planned_start_datet
 FROM production_manuf_order AS ManufOrder
 LEFT JOIN base_company AS Company ON (Company.id = ManufOrder.company)
+LEFT JOIN meta_file AS MetaFile ON (MetaFile.id = Company.logo)
 LEFT JOIN production_bill_of_material AS BOM ON (BOM.id = ManufOrder.bill_of_material) 
 LEFT JOIN base_product as Product ON (Product.id = BOM.product)
 LEFT JOIN base_unit AS Unit ON (Unit.id = BOM.unit)
@@ -514,9 +521,9 @@ LEFT JOIN production_prod_process AS ProdProcess ON (ProdProcess.id = BOM.prod_p
                     <property name="nativeDataType">12</property>
                 </structure>
             </list-property>
-            <xml-property name="queryText"><![CDATA[select LangTranslate.key, LangTranslate.message as "translation" 
+            <xml-property name="queryText"><![CDATA[select LangTranslate.message_key, LangTranslate.message_value as "translation" 
 from meta_translation as LangTranslate 
-where LangTranslate.key = ? and LangTranslate.language = ?]]></xml-property>
+where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
   <Version>2.0</Version>
@@ -899,11 +906,11 @@ LEFT JOIN
                     <property name="name">qty</property>
                     <property name="nativeName">qty</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">2</property>
+                    <property name="nativeDataType">3</property>
                 </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[SELECT 
-	ManufOrder.id as manuf_order_id, StockMoveLine.id, Product.name as product_name, Product.code as product_code, Unit.code as unit_code,
+	ManufOrder.id as manuf_order_id, StockMoveLine.id, Product.name as product_name, Product.code as product_code, Unit.name as unit_code,
 	TrackingNumber.tracking_number_seq, StockMoveLine.qty
 FROM
 	stock_stock_move_line AS StockMoveLine 
@@ -1060,8 +1067,8 @@ LEFT JOIN
             </column>
             <detail>
                 <row id="4227">
-                    <property name="height">15.345833333333335cm</property>
                     <property name="pageBreakAfter">always</property>
+                    <property name="height">15.345833333333335cm</property>
                     <cell id="4228">
                         <grid id="3342">
                             <property name="marginLeft">2pt</property>
@@ -1074,7 +1081,7 @@ LEFT JOIN
                                 <property name="width">1.0520833333333333in</property>
                             </column>
                             <column id="3345">
-                                <property name="width">0.9791666666666666in</property>
+                                <property name="width">1.03125in</property>
                             </column>
                             <column id="3346">
                                 <property name="width">0.20833333333333334in</property>
@@ -1091,10 +1098,11 @@ LEFT JOIN
                                     <property name="colSpan">3</property>
                                     <property name="rowSpan">1</property>
                                     <image id="3419">
-                                        <property name="height">2.169583333333333cm</property>
-                                        <property name="width">6.138333333333333cm</property>
+                                        <property name="height">91px</property>
+                                        <property name="width">350px</property>
                                         <property name="source">file</property>
-                                        <expression name="uri" type="javascript">row["logo_path"]</expression>
+                                        <property name="proportionalScale">true</property>
+                                        <expression name="uri" type="javascript">params["AttachmentPath"].value+row["logo_path"]</expression>
                                     </image>
                                 </cell>
                                 <cell id="4032">
@@ -1117,7 +1125,7 @@ LEFT JOIN
                                             <structure>
                                                 <property name="name">key</property>
                                                 <text-property name="displayName">key</text-property>
-                                                <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                                 <property name="dataType">string</property>
                                             </structure>
                                             <structure>
@@ -1146,7 +1154,7 @@ LEFT JOIN
                                             <structure>
                                                 <property name="name">key</property>
                                                 <text-property name="displayName">key</text-property>
-                                                <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                                 <property name="dataType">string</property>
                                             </structure>
                                             <structure>
@@ -1183,7 +1191,7 @@ LEFT JOIN
                                             <structure>
                                                 <property name="name">key</property>
                                                 <text-property name="displayName">key</text-property>
-                                                <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                                 <property name="dataType">string</property>
                                             </structure>
                                             <structure>
@@ -1217,7 +1225,7 @@ LEFT JOIN
                                             <structure>
                                                 <property name="name">key</property>
                                                 <text-property name="displayName">key</text-property>
-                                                <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                                 <property name="dataType">string</property>
                                             </structure>
                                             <structure>
@@ -1254,7 +1262,7 @@ LEFT JOIN
                                             <structure>
                                                 <property name="name">key</property>
                                                 <text-property name="displayName">key</text-property>
-                                                <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                                 <property name="dataType">string</property>
                                             </structure>
                                             <structure>
@@ -1288,7 +1296,7 @@ LEFT JOIN
                                             <structure>
                                                 <property name="name">key</property>
                                                 <text-property name="displayName">key</text-property>
-                                                <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                                 <property name="dataType">string</property>
                                             </structure>
                                             <structure>
@@ -1325,7 +1333,7 @@ LEFT JOIN
                                             <structure>
                                                 <property name="name">key</property>
                                                 <text-property name="displayName">key</text-property>
-                                                <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                                 <property name="dataType">string</property>
                                             </structure>
                                             <structure>
@@ -1359,7 +1367,7 @@ LEFT JOIN
                                             <structure>
                                                 <property name="name">key</property>
                                                 <text-property name="displayName">key</text-property>
-                                                <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                                 <property name="dataType">string</property>
                                             </structure>
                                             <structure>
@@ -1425,7 +1433,7 @@ LEFT JOIN
                                             <structure>
                                                 <property name="name">key</property>
                                                 <text-property name="displayName">key</text-property>
-                                                <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                                 <property name="dataType">string</property>
                                             </structure>
                                             <structure>
@@ -1607,7 +1615,7 @@ LEFT JOIN
                                                 <structure>
                                                     <property name="name">key</property>
                                                     <text-property name="displayName">key</text-property>
-                                                    <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                                    <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                                     <property name="dataType">string</property>
                                                 </structure>
                                                 <structure>
@@ -1655,7 +1663,7 @@ LEFT JOIN
                                                 <structure>
                                                     <property name="name">key</property>
                                                     <text-property name="displayName">key</text-property>
-                                                    <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                                    <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                                     <property name="dataType">string</property>
                                                 </structure>
                                                 <structure>
@@ -1704,7 +1712,7 @@ LEFT JOIN
                                                 <structure>
                                                     <property name="name">key</property>
                                                     <text-property name="displayName">key</text-property>
-                                                    <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                                    <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                                     <property name="dataType">string</property>
                                                 </structure>
                                                 <structure>
@@ -1750,7 +1758,7 @@ LEFT JOIN
                                                 <structure>
                                                     <property name="name">key</property>
                                                     <text-property name="displayName">key</text-property>
-                                                    <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                                    <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                                     <property name="dataType">string</property>
                                                 </structure>
                                                 <structure>
@@ -1796,7 +1804,7 @@ LEFT JOIN
                                                 <structure>
                                                     <property name="name">key</property>
                                                     <text-property name="displayName">key</text-property>
-                                                    <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                                    <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                                     <property name="dataType">string</property>
                                                 </structure>
                                                 <structure>
@@ -1842,7 +1850,7 @@ LEFT JOIN
                                                 <structure>
                                                     <property name="name">key</property>
                                                     <text-property name="displayName">key</text-property>
-                                                    <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                                    <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                                     <property name="dataType">string</property>
                                                 </structure>
                                                 <structure>
@@ -1888,7 +1896,7 @@ LEFT JOIN
                                                 <structure>
                                                     <property name="name">key</property>
                                                     <text-property name="displayName">key</text-property>
-                                                    <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                                    <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                                     <property name="dataType">string</property>
                                                 </structure>
                                                 <structure>
@@ -1934,7 +1942,7 @@ LEFT JOIN
                                                 <structure>
                                                     <property name="name">key</property>
                                                     <text-property name="displayName">key</text-property>
-                                                    <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                                    <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                                     <property name="dataType">string</property>
                                                 </structure>
                                                 <structure>
@@ -1980,7 +1988,7 @@ LEFT JOIN
                                                 <structure>
                                                     <property name="name">key</property>
                                                     <text-property name="displayName">key</text-property>
-                                                    <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                                    <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                                     <property name="dataType">string</property>
                                                 </structure>
                                                 <structure>
@@ -2026,7 +2034,7 @@ LEFT JOIN
                                                 <structure>
                                                     <property name="name">key</property>
                                                     <text-property name="displayName">key</text-property>
-                                                    <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                                    <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                                     <property name="dataType">string</property>
                                                 </structure>
                                                 <structure>
@@ -2362,7 +2370,7 @@ LEFT JOIN
                                                 <structure>
                                                     <property name="name">key</property>
                                                     <text-property name="displayName">key</text-property>
-                                                    <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                                    <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                                     <property name="dataType">string</property>
                                                 </structure>
                                                 <structure>
@@ -2429,7 +2437,7 @@ LEFT JOIN
                                                 <structure>
                                                     <property name="name">key</property>
                                                     <text-property name="displayName">key</text-property>
-                                                    <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                                    <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                                     <property name="dataType">string</property>
                                                 </structure>
                                                 <structure>
@@ -2475,7 +2483,7 @@ LEFT JOIN
                                                 <structure>
                                                     <property name="name">key</property>
                                                     <text-property name="displayName">key</text-property>
-                                                    <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                                    <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                                     <property name="dataType">string</property>
                                                 </structure>
                                                 <structure>
@@ -2523,7 +2531,7 @@ LEFT JOIN
                                                 <structure>
                                                     <property name="name">key</property>
                                                     <text-property name="displayName">key</text-property>
-                                                    <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                                    <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                                     <property name="dataType">string</property>
                                                 </structure>
                                                 <structure>
@@ -2569,7 +2577,7 @@ LEFT JOIN
                                                 <structure>
                                                     <property name="name">key</property>
                                                     <text-property name="displayName">key</text-property>
-                                                    <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                                    <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                                     <property name="dataType">string</property>
                                                 </structure>
                                                 <structure>

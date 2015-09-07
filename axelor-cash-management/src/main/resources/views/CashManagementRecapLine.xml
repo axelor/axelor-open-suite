@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
+    
+    <grid name="cash-management-recap-line-grid" title="Lines" model="com.axelor.apps.cash.management.db.CashManagementRecapLine">
+       	<field name="estimatedDate"/>
+	   	<field name="typeSelect"/>
+	   	<field name="cashFlowReason"/>
+	   	<field name="amount"/>
+	   	<field name="balance"/>
+    </grid>
+ 
+	 <form name="cash-management-recap-line-form" title="Line" model="com.axelor.apps.cash.management.db.CashManagementRecapLine">
+	 	<panel >
+	       	<field name="estimatedDate"/>
+	       	<field name="typeSelect"/>
+	       	<field name="cashFlowReason"/>
+	       	<field name="amount"/>
+	       	<field name="balance"/>
+	 	</panel>
+	 </form>
+    
+</object-views>

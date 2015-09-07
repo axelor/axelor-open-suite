@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
     <grid name="analytic-account-grid" title="Analytic Accounts" model="com.axelor.apps.account.db.AnalyticAccount">
         <field name="code"/>
         <field name="name"/>
-        <field name="analyticAxis"/>
-        <field name="parent"/>
+        <field name="analyticAxis" form-view="analytic-axis-form" grid-view="analytic-axis-grid"/>
+        <field name="parent" form-view="analytic-account-form" grid-view="analytic-account-grid"/>
     </grid>
     <form name="analytic-account-form" title="Analytic Account" model="com.axelor.apps.account.db.AnalyticAccount"  >
         <panel >
 	        <field name="code"/>
 	        <field name="name"/>
-	        <field name="analyticAxis"/>
-	        <field name="parent"/>
+	        <field name="analyticAxis" form-view="analytic-axis-form" grid-view="analytic-axis-grid"/>
+	        <field name="parent" form-view="analytic-account-form" grid-view="analytic-account-grid"/>
         </panel>
     </form>
 </object-views>

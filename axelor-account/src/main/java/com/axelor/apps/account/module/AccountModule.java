@@ -18,55 +18,50 @@
 package com.axelor.apps.account.module;
 
 import com.axelor.app.AxelorModule;
-import com.axelor.app.AxelorModuleInfo;
 import com.axelor.apps.account.db.repo.BankStatementManagementRepository;
 import com.axelor.apps.account.db.repo.BankStatementRepository;
 import com.axelor.apps.account.db.repo.InvoiceManagementRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.MoveManagementRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
+import com.axelor.apps.account.db.repo.PartnerAccountRepository;
 import com.axelor.apps.account.db.repo.PaymentVoucherManagementRepository;
 import com.axelor.apps.account.db.repo.PaymentVoucherRepository;
 import com.axelor.apps.account.service.AccountManagementServiceAccountImpl;
 import com.axelor.apps.account.service.AddressServiceAccountImpl;
 import com.axelor.apps.account.service.FiscalPositionServiceAccountImpl;
-import com.axelor.apps.account.service.ProductServiceAccountImpl;
-import com.axelor.apps.account.service.administration.GeneralServiceAccount;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.InvoiceServiceImpl;
+import com.axelor.apps.base.db.repo.PartnerBaseRepository;
 import com.axelor.apps.base.service.AddressServiceImpl;
-import com.axelor.apps.base.service.ProductServiceImpl;
-import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.base.service.tax.AccountManagementServiceImpl;
 import com.axelor.apps.base.service.tax.FiscalPositionServiceImpl;
 import com.axelor.apps.message.service.TemplateMessageService;
 import com.axelor.apps.message.service.TemplateMessageServiceImpl;
 
-@AxelorModuleInfo(name = "axelor-account")
+
 public class AccountModule extends AxelorModule {
 
     @Override
     protected void configure() {
         bind(AddressServiceImpl.class).to(AddressServiceAccountImpl.class);
-        
-        bind(ProductServiceImpl.class).to(ProductServiceAccountImpl.class);
-        
-        bind(GeneralService.class).to(GeneralServiceAccount.class);
-        
+
         bind(AccountManagementServiceImpl.class).to(AccountManagementServiceAccountImpl.class);
-        
+
         bind(FiscalPositionServiceImpl.class).to(FiscalPositionServiceAccountImpl.class);
-        
+
         bind(TemplateMessageService.class).to(TemplateMessageServiceImpl.class);
-        
+
         bind(InvoiceRepository.class).to(InvoiceManagementRepository.class);
-        
+
         bind(MoveRepository.class).to(MoveManagementRepository.class);
-        
+
         bind(BankStatementRepository.class).to(BankStatementManagementRepository.class);
-        
+
         bind(PaymentVoucherRepository.class).to(PaymentVoucherManagementRepository.class);
-        
+
         bind(InvoiceService.class).to(InvoiceServiceImpl.class);
+
+        bind(PartnerBaseRepository.class).to(PartnerAccountRepository.class);
     }
 }

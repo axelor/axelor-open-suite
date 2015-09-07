@@ -1,0 +1,12 @@
+apply plugin: 'axelor-module'
+
+module {
+	name "axelor-human-resource"
+	title "Axelor human resource"
+
+	//module dependencies
+	module "modules:axelor-account"
+	module "modules:axelor-project"
+	module "modules:axelor-crm"
+	
+}

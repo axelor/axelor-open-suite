@@ -1,31 +1,31 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
    
     <grid name="bank-statement-line-grid" title="Bank Statement Lines" model="com.axelor.apps.account.db.BankStatementLine">
         <field name="effectDate"/>
         <field name="name"/>
         <field name="reference"/>
-        <field name="partner"/>
+        <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
         <field name="typeSelect"/>
-        <field name="account"/>
+        <field name="account" form-view="account-form" grid-view="account-grid"/>
         <field name="amount"/>
     </grid>
   
-     <form   name="bank-statement-line-form" title="Bank Statement Line" model="com.axelor.apps.account.db.BankStatementLine">
-	  <panel >
+     <form name="bank-statement-line-form" title="Bank Statement Line" model="com.axelor.apps.account.db.BankStatementLine" width="large">
+	  <panel>
 	    <field name="name"/>
 	    <field name="reference"/>
 	    <field name="effectDate"/>
-	    <field name="partner" onChange="action-bank-statement-line-set-account"/>
+	    <field name="partner" onChange="action-bank-statement-line-set-account" form-view="partner-form" grid-view="partner-grid"/>
 	    <field name="typeSelect" onChange="action-bank-statement-line-set-account"/>
-	    <field name="account"/>
+	    <field name="account" form-view="account-form" grid-view="account-grid"/>
 	    <field name="amount"/>
 	  </panel>
   
 	  <panel title="Associated MoveLine">
-	    <field name="moveLine" onSelect="action-bank-statement-line-move-line-domain"/>
+	    <field name="moveLine" onSelect="action-bank-statement-line-move-line-domain" form-view="move-line-form" grid-view="move-line-grid"/>
 	    <field name="isPosted"/>
 	  </panel>
 </form>

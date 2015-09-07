@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_3.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_4.0.xsd">
 
   <module name="base" package="com.axelor.apps.base.db"/>
 
@@ -32,6 +32,7 @@
     <date name="reimbursementBlockingToDate" title="Block until"/>
     <many-to-one name="reimbursementBlockingReason" ref="com.axelor.apps.base.db.StopReason" title="Blocking reason"/>
     <many-to-one name="reimbursementBlockingByUser" ref="com.axelor.auth.db.User" title="Blocking done by"/>
+   
         
     <string name="name" title="Reference" search="company,partner">
 	    <![CDATA[

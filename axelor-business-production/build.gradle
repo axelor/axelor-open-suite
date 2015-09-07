@@ -6,8 +6,8 @@ module {
 	title "Axelor :: Business Production"
 	
 	removable true
-
+	
 	module "modules:axelor-production"
-	module "modules:axelor-account-organisation"
+	module "modules:axelor-business-project"
 }
 

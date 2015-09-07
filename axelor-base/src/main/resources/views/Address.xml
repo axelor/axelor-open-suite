@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
 	
 	<grid name="address-grid" title="Address list" model="com.axelor.apps.base.db.Address">
 		<toolbar>
@@ -13,30 +13,28 @@
 	</grid>
 	
 	<form name="address-form" title="Address" model="com.axelor.apps.base.db.Address" 
-	onSave="action-group-base-address-onsave,save,action-base-address-method-check-lat-lang" onLoad="action-address-get-general-qas" onNew="default-address-record,action-address-get-general-qas" >
+	onSave="action-group-base-address-onsave,save,action-base-address-method-check-lat-lang" onNew="default-address-record" width="large">
 		<panel name="main" title="Address details" colSpan="12">
 			<field name="addressL2"  placeholder="e.g. Financial department, CEO"/>
 			<field name="addressL3"  placeholder="e.g. Building A, Entry 2, 2nd Floor, Door 2E"/>
 			<field name="addressL4" />
 			<field name="addressL5"  placeholder="e.g. POB 254"/>
-			<field name="commune" onChange="action-address-change-commune"/>
+			<field name="commune" onChange="action-address-change-commune" form-view="commune-form" grid-view="commune-grid"/>
 			<field name="addressL6"  required="true"/>
-			<field name="addressL7Country" required="true"/>
-			<field name="exteralReference" />
+			<field name="addressL7Country" required="true" form-view="country-form" grid-view="country-grid"/>
 			<button-group colSpan="6">
 				<button name="map" title="View map" icon="fa-map-marker" onClick="action-base-address-method-view-map" hideIf="$popup()"/>
 				<button name="directions" title="Get direction" icon="fa-location-arrow" onClick="action-base-address-method-view-direction" hideIf="$popup()"/>
 			</button-group>
-			<field name="isUsed" hidden="true" widget="BOOLEAN"/>
+			<field name="isUsed" hidden="true" type="boolean"/>
 		</panel>
-		<panel title="QAS certification" colSpan="12" showIf="hasQasValidation">
+		<panel title="QAS certification" colSpan="12" if="__config__.general.getHasQasValidation()">
 			<field name="certifiedOk" colSpan="4"/>
 			<panel colSpan="4">
 				<button name="validate" title="Validate"  onClick="com.axelor.apps.base.web.AddressController:validate,save"/>
 				<button name="select" title="Choose" onClick="com.axelor.apps.base.web.AddressController:select,save"/>
 			</panel>
-			<panel-related field="pickList" title="Pick list" colSpan="12" />
-			<field name="hasQasValidation" type="BOOLEAN" hidden="true"/>
+			<panel-related field="pickList" title="Pick list" colSpan="12" form="pick-list-entry-form" grid-view="pick-list-entry-grid"/>
 		</panel>
 	</form>
 	
@@ -51,13 +49,10 @@
 	
 	<action-record name="action-address-change-commune" model="com.axelor.apps.base.db.Address">
 		<field name="addressL6" expr="eval:commune.hasZipOnRight ? commune.name+' '+commune.zip :commune.zip+' '+commune.name" if="addressL6 == null"/>
-  		<field name="addressL7Country" expr="eval:commune.department==null?addressL7Country:commune.department.region!=null?commune.department.region.country:addressL7Country"/>
+<!--   		<field name="addressL7Country" expr="eval:commune.department==null?addressL7Country:commune.department.region!=null?commune.department.region.country:addressL7Country"/> -->
+  		<field name="addressL7Country" expr="eval:commune?.country"/>
 	</action-record>
 	
-	<action-record name="action-address-get-general-qas" model="com.axelor.apps.base.db.Address">
-		<field name="hasQasValidation" expr="eval:com.axelor.apps.base.service.administration.GeneralService.getGeneral().getHasQasValidation()" />
-	</action-record>
-
 	<action-record name="default-address-country-record"
 		model="com.axelor.apps.base.db.Country" search="('self.code LIKE ?1', 'FRA')">
 		<field name="code" expr="FRA" />

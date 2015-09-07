@@ -1,0 +1,15 @@
+weeklyPlann.importId;name;morningFrom;morningTo;afternoonFrom;afternoonTo;importId
+1;monday;08:30:00;12:00:00;14:00:00;17:30:00;1
+1;tuesday;08:30:00;12:00:00;14:00:00;17:30:00;2
+1;wednesday;08:30:00;12:00:00;14:00:00;17:30:00;3
+1;thursday;08:30:00;12:00:00;14:00:00;17:30:00;4
+1;friday;08:30:00;12:00:00;14:00:00;17:30:00;5
+1;saturday;;;;;6
+1;sunday;;;;;7
+2;monday;08:30:00;12:00:00;;;8
+2;tuesday;08:30:00;12:00:00;;;9
+2;wednesday;08:30:00;12:00:00;;;10
+2;thursday;08:30:00;12:00:00;;;11
+2;friday;08:30:00;12:00:00;;;12
+2;saturday;;;;;13
+2;sunday;;;;;14

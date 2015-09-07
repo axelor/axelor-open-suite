@@ -55,7 +55,6 @@ public interface ManufOrderService extends Repository<ManufOrder> {
 	public void preFillOperations(ManufOrder manufOrder) throws AxelorException;
 	
 	
-	
 	public String getManufOrderSeq() throws AxelorException;
 	
 	public boolean isManagedConsumedProduct(BillOfMaterial billOfMaterial);

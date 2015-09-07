@@ -72,7 +72,7 @@ public class BatchTarget extends BatchStrategy {
 			try {
 			
 				targetService.createsTargets(targetConfiguration);
-//					updateEventReminder(eventReminder);
+				updateTargetConfiguration(targetConfiguration);
 				i++;
 				
 			} catch (Exception e) {

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
     
     <grid name="tracking-number-configuration-grid" title="Tracking Number Configuration" model="com.axelor.apps.base.db.TrackingNumberConfiguration">
         <field name="isPurchaseTrackingManaged"/>
@@ -18,7 +18,7 @@
     </grid>
     
     <form name="tracking-number-configuration-form" title="Tracking Number Configuration" model="com.axelor.apps.base.db.TrackingNumberConfiguration"
-    	onNew="action-tracking-number-config-record-default" onSave="action-tracking-number-validate-qty">
+    	onNew="action-tracking-number-config-record-default" onSave="action-tracking-number-validate-qty" width="large">
     	<panel>
 	        <field name="isPurchaseTrackingManaged" onChange="action-tracking-number-set-default-purchase-qty"/>
 		    <panel title="Purchase tracking management" showIf="isPurchaseTrackingManaged" colSpan="12">
@@ -43,7 +43,7 @@
 		    </panel>
 		</panel>
 		<panel>
-		    <field name="sequence" showIf="generatePurchaseAutoTrackingNbr || generateProductionAutoTrackingNbr || generateSaleAutoTrackingNbr" domain="self.code = 'productTrackingNumber'"/>
+		    <field name="sequence" showIf="generatePurchaseAutoTrackingNbr || generateProductionAutoTrackingNbr || generateSaleAutoTrackingNbr" domain="self.code = 'productTrackingNumber'" form-view="sequence-form" grid-view="sequence-grid"/>
 		</panel>
     </form>
     

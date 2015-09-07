@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.3.2.v20140211-1400 Build &lt;4.3.2.v20140225-1404></property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.4.2.v201410272105 Build &lt;4.4.2.v20150217-1805></property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -13,33 +13,9 @@
             <expression name="value" type="javascript">params["UserName"].value</expression>
         </structure>
         <structure>
-            <property name="name">odaDriverClass</property>
-            <property name="id">230</property>
-        </structure>
-        <structure>
-            <property name="name">odaAutoCommit</property>
-            <property name="id">230</property>
-        </structure>
-        <structure>
-            <property name="name">odaIsolationMode</property>
-            <property name="id">230</property>
-        </structure>
-        <structure>
             <property name="name">odaPassword</property>
             <property name="id">230</property>
             <expression name="value" type="javascript">params["Password"].value</expression>
-        </structure>
-        <structure>
-            <property name="name">odaJndiName</property>
-            <property name="id">230</property>
-        </structure>
-        <structure>
-            <property name="name">OdaConnProfileName</property>
-            <property name="id">230</property>
-        </structure>
-        <structure>
-            <property name="name">OdaConnProfileStorePath</property>
-            <property name="id">230</property>
         </structure>
     </list-property>
     <property name="units">in</property>
@@ -143,7 +119,7 @@
                 </ex-property>
             </list-property>
             <property name="odaDriverClass">org.postgresql.Driver</property>
-            <property name="odaURL">jdbc:postgresql://localhost:5432/axelor-erp</property>
+            <property name="odaURL">jdbc:postgresql://localhost:5432</property>
         </oda-data-source>
     </data-sources>
     <data-sets>
@@ -540,6 +516,7 @@ order by Employee.name]]></xml-property>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">-5</property>
                     <property name="position">1</property>
+                    <property name="isOptional">false</property>
                     <property name="isInput">true</property>
                     <property name="isOutput">false</property>
                 </structure>
@@ -587,11 +564,12 @@ order by Employee.name]]></xml-property>
                     <property name="nativeDataType">12</property>
                 </structure>
             </list-property>
-            <xml-property name="queryText"><![CDATA[select Company.logo_path, Address.full_name, Partner.web_site
+            <xml-property name="queryText"><![CDATA[select MetaFile.file_path as logo_path, Address.full_name, Partner.web_site
 from auth_user as AuthUser 
 left outer join base_company as Company on (AuthUser.active_company = Company.id)
 left outer join base_address as Address on (Company.address = Address.id)
 left outer join base_partner as Partner on (Company.partner = Partner.id)
+left outer join meta_file as MetaFile on (MetaFile.id = Company.logo)
 where AuthUser.id = ?]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
@@ -959,7 +937,8 @@ where LangTranslate.key = ? and LangTranslate.language = ?]]></xml-property>
                                 </structure>
                             </list-property>
                             <property name="source">file</property>
-                            <expression name="uri" type="javascript">row["logo_path"]</expression>
+                            <property name="proportionalScale">true</property>
+                            <expression name="uri" type="javascript">params["AttachmentPath"].value+row["logo_path"]</expression>
                             <list-property name="action">
                                 <structure>
                                     <property name="linkType">hyperlink</property>

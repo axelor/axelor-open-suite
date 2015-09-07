@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_3.0.xsd">
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_4.0.xsd">
  
   <module name="base" package="com.axelor.apps.base.db"/>
  
@@ -18,19 +18,18 @@
     <many-to-one name="productFamily" ref="ProductFamily" title="Family" initParam="true" help="true"/>
     <many-to-one name="unit" ref="Unit" title="Unit" initParam="true" massUpdate="true" help="true"/>
 
-    <integer name="applicationTypeSelect" title="Application type" selection="product.application.type.select" initParam="true" help="true"/>
     <integer name="saleSupplySelect" title="Sale supply default method" selection="product.sale.supply.select" initParam="true" help="true"/>
      
-    <string name="productTypeSelect" title="Product type" required="true" selection="product.product.type.select" initParam="true" help="true"/>
+    <string name="productTypeSelect" title="Type" required="true" selection="product.product.type.select" initParam="true" help="true"/>
     <string name="procurementMethodSelect" title="Procurement method" selection="product.procurement.method.select" initParam="true" help="true"/>
     <boolean name="isRawMaterial" title="Raw material" initParam="true" help="true"/>
     
-    <decimal name="salePrice" title="Sale price W.T." precision="20" scale="2" massUpdate="true"/>
+    <decimal name="salePrice" title="Sale price W.T." precision="20" scale="5" massUpdate="true"/>
     <many-to-one name="saleCurrency" ref="com.axelor.apps.base.db.Currency" title="Sale currency" initParam="true"  />
-    <decimal name="purchasePrice" title="Purchase price W.T." precision="20" scale="2" massUpdate="true"/>
+    <decimal name="purchasePrice" title="Purchase price W.T." precision="20" scale="5" massUpdate="true"/>
     <many-to-one name="purchaseCurrency" ref="com.axelor.apps.base.db.Currency" title="Purchase / Cost currency" initParam="true" />
     
-    <decimal name="costPrice" title="Cost price" precision="20" scale="2" massUpdate="true" help="true"/>
+    <decimal name="costPrice" title="Cost price" precision="20" scale="5" massUpdate="true" help="true"/>
     
     <decimal name="managPriceCoef" title="Management coef." help="true"/>
     
@@ -58,6 +57,33 @@
   	
   	<boolean name="sellable" title="Sellable" default="true" />
   	<boolean name="purchasable" title="Purchasable" default="true"/>
+  	<boolean name="inAti" title="In ATI"/>
+  	
+  	<extra-code>
+	   		<![CDATA[
+	   			// APPLICATION TYPE SELECT VALUE
+				public static final int APPLICATION_TYPE_PRODUCT = 1;
+				public static final int APPLICATION_TYPE_PROFILE = 2;
+				public static final int APPLICATION_TYPE_EXPENSE = 3;
+			
+				// PRODUCT TYPE SELECT
+				public static final String PRODUCT_TYPE_SERVICE = "service";
+				public static final String PRODUCT_TYPE_STORABLE = "storable";
+				public static final String PRODUCT_TYPE_SUBSCRIPTABLE = "subscriptable";
+				
+				// SALE TRACKING ORDER SELECT
+				public static final int SALE_TRACKING_ORDER_FIFO = 1;
+				public static final int SALE_TRACKING_ORDER_LIFO = 2;
+				
+				// SALE SUPPLY SELECT
+				public static final int SALE_SUPPLY_FROM_STOCK = 1;
+				public static final int SALE_SUPPLY_PURCHASE = 2;
+				public static final int SALE_SUPPLY_PRODUCE = 3;
+				
+				public static final String PROCUREMENT_METHOD_BUY = "buy";
+				public static final String PROCUREMENT_METHOD_PRODUCE = "produce";
+	   		]]>
+	   	</extra-code>
   	
   </entity>
 

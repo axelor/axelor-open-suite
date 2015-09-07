@@ -24,7 +24,6 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.PriceListLine;
 import com.axelor.apps.base.db.Product;
-import com.axelor.apps.base.db.ProductVariant;
 import com.axelor.apps.base.db.SupplierCatalog;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.purchase.db.PurchaseOrder;
@@ -33,37 +32,42 @@ import com.axelor.db.Repository;
 import com.axelor.exception.AxelorException;
 
 public interface PurchaseOrderLineService extends Repository<PurchaseOrderLine>{
-	
-	
+
+
 	public BigDecimal getUnitPrice(PurchaseOrder purchaseOrder, PurchaseOrderLine purchaseOrderLine) throws AxelorException;
-	
+
 	public BigDecimal getMinSalePrice(PurchaseOrder purchaseOrder, PurchaseOrderLine purchaseOrderLine) throws AxelorException;
-	
-	public BigDecimal getSalePrice(PurchaseOrder purchaseOrder, BigDecimal price) throws AxelorException;
-	
-	
+
+	public BigDecimal getSalePrice(PurchaseOrder purchaseOrder, Product product, BigDecimal price) throws AxelorException;
+
+
 	public TaxLine getTaxLine(PurchaseOrder purchaseOrder, PurchaseOrderLine purchaseOrderLine) throws AxelorException;
-	
+
 	public BigDecimal computePurchaseOrderLine(PurchaseOrderLine purchaseOrderLine);
 
-	
+
 	public BigDecimal getCompanyExTaxTotal(BigDecimal exTaxTotal, PurchaseOrder purchaseOrder) throws AxelorException;
-	
+
 	public PriceListLine getPriceListLine(PurchaseOrderLine purchaseOrderLine, PriceList priceList);
-	
+
 	public BigDecimal computeDiscount(PurchaseOrderLine purchaseOrderLine);
-	
-	
-	public PurchaseOrderLine createPurchaseOrderLine(PurchaseOrder purchaseOrder, Product product, String description, ProductVariant productVariant, 
+
+
+	public PurchaseOrderLine createPurchaseOrderLine(PurchaseOrder purchaseOrder, Product product, String description,
 			BigDecimal qty, Unit unit) throws AxelorException;
-	
-	
+
+
 	public BigDecimal getQty(PurchaseOrder purchaseOrder, PurchaseOrderLine purchaseOrderLine);
-	
+
 	public SupplierCatalog getSupplierCatalog(PurchaseOrder purchaseOrder, PurchaseOrderLine purchaseOrderLine);
+
+
+	public SupplierCatalog getSupplierCatalog(Product product, Partner supplierPartner);
+
+	public BigDecimal convertUnitPrice(PurchaseOrderLine purchaseOrderLine, PurchaseOrder purchaseOrder);
+
+	public BigDecimal convertDiscountAmount(PurchaseOrderLine purchaseOrderLine, PurchaseOrder purchaseOrder);
 	
-	
-	public SupplierCatalog getSupplierCatalog(Product product, Partner supplierPartner); 
-	
-	
+	public int getDiscountTypeSelect(PurchaseOrderLine purchaseOrderLine, PurchaseOrder purchaseOrder);
+
 }

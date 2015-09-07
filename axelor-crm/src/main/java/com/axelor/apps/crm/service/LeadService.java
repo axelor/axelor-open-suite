@@ -45,20 +45,20 @@ public class LeadService extends LeadRepository {
 
 	@Inject
 	private SequenceService sequenceService;
-	
+
 	@Inject
 	private UserService userService;
-	
+
 	@Inject
 	private PartnerService partnerService;
-	
+
 	@Inject
-	private OpportunityService opportunityService;
-	
+	private OpportunityServiceImpl opportunityService;
+
 	@Inject
 	private EventService  eventService;
-	
-	
+
+
 	/**
 	 * Convert lead into a partner
 	 * @param lead
@@ -67,23 +67,24 @@ public class LeadService extends LeadRepository {
 	 */
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public Lead convertLead(Lead lead, Partner partner, Partner contactPartner, Opportunity opportunity, Event callEvent, Event meetingEvent, Event taskEvent) throws AxelorException  {
-		
+
 //		lead.setEvent(meeting);
 //		lead.setCall(call);
 //		lead.setOpportunity(opportunity);
 //		lead.setContactPartner(contact);
-		
+
 		if(partner != null && contactPartner != null)  {
 			if(partner.getContactPartnerSet()==null)  {
 				partner.setContactPartnerSet(new HashSet<Partner>());
 			}
 			partner.getContactPartnerSet().add(contactPartner);
+			contactPartner.setMainPartner(partner);
 		}
-		
+
 		if(opportunity != null && partner != null)  {
 			opportunity.setPartner(partner);
 		}
-		
+
 		if(partner != null)  {
 			lead.setPartner(partner);
 			partnerService.save(partner);
@@ -103,23 +104,23 @@ public class LeadService extends LeadRepository {
 		if(taskEvent!=null)  {
 			eventService.save(taskEvent);
 		}
-		
+
 		lead.setPartner(partner);
 		lead.setStatusSelect(ILead.STATUS_CONVERTED);
 		save(lead);
-		
+
 		return lead;
-		
+
 	}
-	
-	
+
+
 	/**
 	 * Get sequence for partner
 	 * @return
 	 * @throws AxelorException
 	 */
 	public String getSequence() throws AxelorException  {
-		
+
 		String seq = sequenceService.getSequenceNumber(IAdministration.PARTNER);
 		if (seq == null)  {
 			throw new AxelorException(I18n.get(IExceptionMessage.PARTNER_1),
@@ -127,28 +128,28 @@ public class LeadService extends LeadRepository {
 		}
 		return seq;
 	}
-	
-	
+
+
 	/**
 	 * Assign user company to partner
 	 * @param partner
 	 * @return
 	 */
 	public Partner setPartnerCompany(Partner partner)  {
-		
-		
+
+
 		if(userService.getUserActiveCompany() != null)  {
 			partner.setCompanySet(new HashSet<Company>());
 			partner.getCompanySet().add(userService.getUserActiveCompany());
 		}
-		
+
 		return partner;
 	}
-	
+
 	public Map<String,String> getSocialNetworkUrl(String name,String firstName, String companyName){
-		
+
 		Map<String,String> urlMap = new HashMap<String,String>();
-		String searchName = firstName != null && name != null ? firstName+"+"+name : name == null ? firstName : name;  
+		String searchName = firstName != null && name != null ? firstName+"+"+name : name == null ? firstName : name;
 		searchName = searchName == null ? "" : searchName;
 		urlMap.put("facebook","<a class='fa fa-facebook' href='https://www.facebook.com/search/more/?q="+searchName+"&init=public"+"' target='_blank'/>");
 		urlMap.put("twitter", "<a class='fa fa-twitter' href='https://twitter.com/search?q="+searchName+"' target='_blank' />");
@@ -168,8 +169,8 @@ public class LeadService extends LeadRepository {
 	public void saveLead(Lead lead){
 		save(lead);
 	}
-	
-	
+
+
 	public Object importLead(Object bean, Map values) {
 
 		assert bean instanceof Lead;

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_3.0.xsd">
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_4.0.xsd">
   
   <module name="base" package="com.axelor.apps.base.db"/>
   
@@ -17,11 +17,8 @@
     <integer name="rejectCounter" title="Reject counter"/>
    
 	 <!-- PAGE SEPA -->
-	<one-to-many name="rumList" ref="com.axelor.apps.account.db.Rum" mappedBy="partner" title="UMR List"/>
-	<many-to-one name="activeRum" ref="com.axelor.apps.account.db.Rum" title="Active UMR"/>
-	
-	<!--  Customer Credit -->
-	<one-to-many name="customerCreditLineList" ref="com.axelor.apps.account.db.CustomerCreditLine" title="Customer Credits" />
+	<one-to-many name="umrList" ref="com.axelor.apps.account.db.Umr" mappedBy="partner" title="UMR List"/>
+	<many-to-one name="activeUmr" ref="com.axelor.apps.account.db.Umr" title="Active UMR"/>
 	
   </entity>
   

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
     
     <grid name="target-grid" title="Targets" model="com.axelor.apps.crm.db.Target">
         <field name="name"/>
@@ -68,12 +68,12 @@
 <!--         </group> -->
 <!-- 	</form> -->
 	
-<form   onLoad="action-target-method-update,save" onSave="action-target-validate" name="target-form" title="Target" model="com.axelor.apps.crm.db.Target">
+<form onLoad="action-target-method-update,save" onSave="action-target-validate" name="target-form" title="Target" model="com.axelor.apps.crm.db.Target" width="large">
   <panel title="Information">
     <field name="name"/>
     <field name="code"/>
-    <field name="user" showIf="team == null"/>
-    <field name="team" showIf="user == null"/>
+    <field name="user" showIf="team == null" form-view="user-form" grid-view="user-grid"/>
+    <field name="team" showIf="user == null" form-view="team-form" grid-view="team-grid" if="__config__.general.getTeamManagement()"/>
   </panel>
   <panel title="Period">
     <field name="periodTypeSelect"/>
