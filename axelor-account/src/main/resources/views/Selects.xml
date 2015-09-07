@@ -253,4 +253,9 @@
 		<option value="2">Validated</option>
 	</selection>
 	
+	<selection name="advance.payment.account.select">
+		<option value="1">Advance Payment</option>
+		<option value="2">Payment</option>
+	</selection>
+	
 </object-views>

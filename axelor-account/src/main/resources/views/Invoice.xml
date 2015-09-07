@@ -143,6 +143,9 @@
 			<panel title="Notes" colSpan="12">
 				<field name="note" showTitle="false" colSpan="12"/>
 			</panel>
+			<panel title="Payments/Advance Payments">
+				<panel-related field="advancePaymentList" colSpan="12" grid-view="advance-payment-account-grid" form-view="advance-payment-account-form"/>
+			</panel>
 		</panel-tabs>
 	
 		<panel-stack sidebar="true">
