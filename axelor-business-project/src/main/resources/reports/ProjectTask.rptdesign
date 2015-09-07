@@ -17,6 +17,11 @@
             <property name="id">209</property>
             <expression name="value" type="javascript">params["Password"].value</expression>
         </structure>
+        <structure>
+            <property name="name">odaDriverClass</property>
+            <property name="id">209</property>
+            <expression name="value" type="javascript">params["DefaultDriver"].value</expression>
+        </structure>
     </list-property>
     <property name="units">in</property>
     <property name="iconFile">/templates/blank_report.gif</property>
@@ -90,11 +95,25 @@
         <scalar-parameter name="ProjectTaskId" id="4503">
             <property name="valueType">static</property>
             <property name="isRequired">true</property>
-            <property name="dataType">decimal</property>
+            <property name="dataType">string</property>
             <property name="distinct">true</property>
+            <simple-property-list name="defaultValue">
+                <value type="constant">7</value>
+            </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
             <property name="concealValue">false</property>
+            <property name="controlType">text-box</property>
+            <structure name="format">
+                <property name="category">Unformatted</property>
+            </structure>
+        </scalar-parameter>
+        <scalar-parameter name="DefaultDriver" id="3819">
+            <property name="valueType">static</property>
+            <property name="dataType">string</property>
+            <property name="distinct">true</property>
+            <list-property name="selectionList"/>
+            <property name="paramType">simple</property>
             <property name="controlType">text-box</property>
             <structure name="format">
                 <property name="category">Unformatted</property>
@@ -299,9 +318,9 @@ WHERE ProjectTask.id = ?]]></xml-property>
                     <property name="nativeDataType">12</property>
                 </structure>
             </list-property>
-            <xml-property name="queryText"><![CDATA[select LangTranslate.key, LangTranslate.message as "translation" 
+            <xml-property name="queryText"><![CDATA[select LangTranslate.message_key, LangTranslate.message_value as "translation" 
 from meta_translation as LangTranslate 
-where LangTranslate.key = ? and LangTranslate.language = ?]]></xml-property>
+where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
   <Version>2.0</Version>
@@ -378,9 +397,8 @@ where LangTranslate.key = ? and LangTranslate.language = ?]]></xml-property>
                     <property name="paramName">ProjectTaskId</property>
                     <property name="nativeName"></property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">-5</property>
+                    <property name="nativeDataType">-1</property>
                     <property name="position">1</property>
-                    <property name="isOptional">false</property>
                     <property name="isInput">true</property>
                     <property name="isOutput">false</property>
                 </structure>
@@ -389,7 +407,7 @@ where LangTranslate.key = ? and LangTranslate.language = ?]]></xml-property>
                     <property name="paramName">ProjectTaskId</property>
                     <property name="nativeName"></property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">-5</property>
+                    <property name="nativeDataType">-1</property>
                     <property name="position">2</property>
                     <property name="isInput">true</property>
                     <property name="isOutput">false</property>
@@ -445,21 +463,21 @@ where LangTranslate.key = ? and LangTranslate.language = ?]]></xml-property>
                     <property name="name">so_sales</property>
                     <property name="nativeName">so_sales</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">2</property>
+                    <property name="nativeDataType">3</property>
                 </structure>
                 <structure>
                     <property name="position">4</property>
                     <property name="name">so_costs</property>
                     <property name="nativeName">so_costs</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">2</property>
+                    <property name="nativeDataType">3</property>
                 </structure>
                 <structure>
                     <property name="position">5</property>
                     <property name="name">so_margin</property>
                     <property name="nativeName">so_margin</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">2</property>
+                    <property name="nativeDataType">3</property>
                 </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[select 
@@ -468,9 +486,9 @@ where LangTranslate.key = ? and LangTranslate.language = ?]]></xml-property>
  SO.company_ex_tax_total as so_sales,
  SO.company_cost_total as so_costs,
  (SO.company_ex_tax_total-SO.company_cost_total) as so_margin
-from sale_sale_order so
-left join project_project_task project on (project.id = so.project)
-where so.status_select = 3 and (project.id = ? or project.project = ?)]]></xml-property>
+from sale_sale_order SO
+left join project_project_task project on (project.id = SO.project)
+where SO.status_select = 3 and (project.id = ? or project.project = ?)]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
   <Version>2.0</Version>
@@ -483,7 +501,7 @@ where so.status_select = 3 and (project.id = ? or project.project = ?)]]></xml-p
             <design:name></design:name>
             <design:position>1</design:position>
           </design:identifier>
-          <design:nativeDataTypeCode>-5</design:nativeDataTypeCode>
+          <design:nativeDataTypeCode>-1</design:nativeDataTypeCode>
           <design:precision>0</design:precision>
           <design:scale>0</design:scale>
           <design:nullability>Unknown</design:nullability>
@@ -498,7 +516,7 @@ where so.status_select = 3 and (project.id = ? or project.project = ?)]]></xml-p
             <design:name></design:name>
             <design:position>2</design:position>
           </design:identifier>
-          <design:nativeDataTypeCode>-5</design:nativeDataTypeCode>
+          <design:nativeDataTypeCode>-1</design:nativeDataTypeCode>
           <design:precision>0</design:precision>
           <design:scale>0</design:scale>
           <design:nullability>Unknown</design:nullability>
@@ -896,7 +914,7 @@ group by invoice.invoice_id,invoice.invoice_date]]></xml-property>
                     <property name="paramName">ProjectTaskId</property>
                     <property name="nativeName"></property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">-5</property>
+                    <property name="nativeDataType">-1</property>
                     <property name="position">1</property>
                     <property name="isInput">true</property>
                     <property name="isOutput">false</property>
@@ -906,7 +924,7 @@ group by invoice.invoice_id,invoice.invoice_date]]></xml-property>
                     <property name="paramName">ProjectTaskId</property>
                     <property name="nativeName"></property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">-5</property>
+                    <property name="nativeDataType">-1</property>
                     <property name="position">2</property>
                     <property name="isInput">true</property>
                     <property name="isOutput">false</property>
@@ -952,17 +970,17 @@ group by invoice.invoice_id,invoice.invoice_date]]></xml-property>
                     <property name="name">exp_amt</property>
                     <property name="nativeName">exp_amt</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">2</property>
+                    <property name="nativeDataType">3</property>
                 </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[select emp.id as emp_id,
        emp.name as emp_name,
        sum(expl.untaxed_amount) as exp_amt
-from hr_expense_line expl
-left join hr_expense expense on (expense.id = expl.expense)
+from human_resource_expense_line expl
+left join human_resource_expense expense on (expense.id = expl.expense)
 left join auth_user authuser on (authuser.id = expense.user_id)
-left join hr_employee emp on (emp.id = authuser.employee)
-left join project_project_task task on (task.id = expl.task)
+left join human_resource_employee emp on (emp.user_id = authuser.id)
+left join project_project_task task on (task.id = expl.project_task)
 where (task.project = ? or task.id = ?)
 and expense.status_select = 3
 group by emp.id,emp.name]]></xml-property>
@@ -978,7 +996,7 @@ group by emp.id,emp.name]]></xml-property>
             <design:name></design:name>
             <design:position>1</design:position>
           </design:identifier>
-          <design:nativeDataTypeCode>-5</design:nativeDataTypeCode>
+          <design:nativeDataTypeCode>-1</design:nativeDataTypeCode>
           <design:precision>0</design:precision>
           <design:scale>0</design:scale>
           <design:nullability>Unknown</design:nullability>
@@ -993,7 +1011,7 @@ group by emp.id,emp.name]]></xml-property>
             <design:name></design:name>
             <design:position>2</design:position>
           </design:identifier>
-          <design:nativeDataTypeCode>-5</design:nativeDataTypeCode>
+          <design:nativeDataTypeCode>-1</design:nativeDataTypeCode>
           <design:precision>0</design:precision>
           <design:scale>0</design:scale>
           <design:nullability>Unknown</design:nullability>
@@ -1130,10 +1148,10 @@ group by emp.id,emp.name]]></xml-property>
        sum(tml.duration_stored) as total_hours,
        emp.hourly_rate as emp_rate,
        sum(tml.duration_stored)*emp.hourly_rate as emp_cost
-from hr_timesheet_line tml
-left join hr_timesheet tm on (tm.id = tml.affected_to_time_sheet)
+from human_resource_timesheet_line tml
+left join human_resource_timesheet tm on (tm.id = tml.affected_to_time_sheet)
 left join auth_user usr on (usr.id = tm.user_id)
-left join hr_employee emp on (emp.id = usr.employee)
+left join human_resource_employee emp on (emp.user_id = usr.id)
 left join project_project_task task on (task.id = tml.project_task)
 where tm.status_select = 3 and (task.id = ? or task.project = ?)
 group by emp.id,emp.name,emp.hourly_rate]]></xml-property>
@@ -1379,6 +1397,7 @@ group by product.id,product.name]]></xml-property>
                     </structure>
                 </list-property>
             </structure>
+            <method name="beforeOpen"><![CDATA[if(params["DBName"].value.indexOf("jdbc:mysql") === 0){this.queryText = this.queryText.replace("to_char","DATE_FORMAT").replace("'YYYY-MM'","'%Y-%m'");}]]></method>
             <property name="dataSource">Data Source</property>
             <list-property name="resultSet">
                 <structure>
@@ -1407,9 +1426,9 @@ group by product.id,product.name]]></xml-property>
  to_char(SO.order_date,'YYYY-MM') as so_date,
  sum(SO.company_ex_tax_total) as so_sales,
  sum(SO.company_cost_total) as so_costs
-from sale_sale_order so
-left join project_project_task project on (project.id = so.project)
-where so.status_select = 3 and (project.id = ? or project.project = ?)
+from sale_sale_order SO
+left join project_project_task project on (project.id = SO.project)
+where SO.status_select = 3 and (project.id = ? or project.project = ?)
 group by so_date;]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
@@ -1679,6 +1698,7 @@ group by so_date;]]></xml-property>
                     </structure>
                 </list-property>
             </structure>
+            <method name="beforeOpen"><![CDATA[if(params["DBName"].value.indexOf("jdbc:mysql") === 0){this.queryText = this.queryText.replace("to_char","DATE_FORMAT").replace("'YYYY-MM'","'%Y-%m'");}]]></method>
             <property name="dataSource">Data Source</property>
             <list-property name="resultSet">
                 <structure>
@@ -1723,23 +1743,23 @@ and invoice.operation_type_select in (1,2)
 group by month
 union
 select to_char(expense_date,'YYYY-MM') as month,sum(expl.untaxed_amount) as cost
-from hr_expense_line expl
-left join project_project_task task on (task.id = expl.task)
-left join hr_expense expense on (expense.id = expl.expense)
+from human_resource_expense_line expl
+left join project_project_task task on (task.id = expl.project_task)
+left join human_resource_expense expense on (expense.id = expl.expense)
 where (task.project = ? or task.id = ?)
 and expense.status_select = 3
 group by month
 union
-select to_char(date,'YYYY-MM') as month,sum(tml.duration_stored*emp.hourly_rate) as cost
-from hr_timesheet_line tml
-left join hr_timesheet tm on (tm.id = tml.affected_to_time_sheet)
+select to_char(date_val,'YYYY-MM') as month,sum(tml.duration_stored*emp.hourly_rate) as cost
+from human_resource_timesheet_line tml
+left join human_resource_timesheet tm on (tm.id = tml.affected_to_time_sheet)
 left join auth_user usr on (usr.id = tm.user_id)
-left join hr_employee emp on (emp.id = usr.employee)
+left join human_resource_employee emp on (emp.user_id = usr.id)
 left join project_project_task task on (task.id = tml.project_task)
 where tm.status_select = 3 and (task.id = ? or task.project = ?)
 group by month
 union
-select to_char(date,'YYYY-MM') as month,-1*sum(aml.amount) as cost
+select to_char(date_val,'YYYY-MM') as month,-1*sum(aml.amount) as cost
 from account_analytic_move_line aml
 left join project_project_task project on (project.id = aml.project_task)
 where project.id =  ? or project.project = ?
@@ -2086,7 +2106,7 @@ group by month) CostData group by month)) ChartData group by month order by mont
                             <structure>
                                 <property name="name">key</property>
                                 <text-property name="displayName">key</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                 <property name="dataType">string</property>
                             </structure>
                             <structure>
@@ -2128,7 +2148,7 @@ group by month) CostData group by month)) ChartData group by month order by mont
                             <structure>
                                 <property name="name">key</property>
                                 <text-property name="displayName">key</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                 <property name="dataType">string</property>
                             </structure>
                             <structure>
@@ -2171,7 +2191,7 @@ group by month) CostData group by month)) ChartData group by month order by mont
                             <structure>
                                 <property name="name">key</property>
                                 <text-property name="displayName">key</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                 <property name="dataType">string</property>
                             </structure>
                             <structure>
@@ -2211,7 +2231,7 @@ group by month) CostData group by month)) ChartData group by month order by mont
                             <structure>
                                 <property name="name">key</property>
                                 <text-property name="displayName">key</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                 <property name="dataType">string</property>
                             </structure>
                             <structure>
@@ -2360,7 +2380,7 @@ group by month) CostData group by month)) ChartData group by month order by mont
                                             <structure>
                                                 <property name="name">key</property>
                                                 <text-property name="displayName">key</text-property>
-                                                <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                                 <property name="dataType">string</property>
                                             </structure>
                                             <structure>
@@ -2448,7 +2468,7 @@ group by month) CostData group by month)) ChartData group by month order by mont
                                             <structure>
                                                 <property name="name">key</property>
                                                 <text-property name="displayName">key</text-property>
-                                                <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                                 <property name="dataType">string</property>
                                             </structure>
                                             <structure>
@@ -2536,7 +2556,7 @@ group by month) CostData group by month)) ChartData group by month order by mont
                                             <structure>
                                                 <property name="name">key</property>
                                                 <text-property name="displayName">key</text-property>
-                                                <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                                 <property name="dataType">string</property>
                                             </structure>
                                             <structure>
@@ -2621,7 +2641,7 @@ group by month) CostData group by month)) ChartData group by month order by mont
                                             <structure>
                                                 <property name="name">key</property>
                                                 <text-property name="displayName">key</text-property>
-                                                <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                                 <property name="dataType">string</property>
                                             </structure>
                                             <structure>
@@ -2709,7 +2729,7 @@ group by month) CostData group by month)) ChartData group by month order by mont
                                             <structure>
                                                 <property name="name">key</property>
                                                 <text-property name="displayName">key</text-property>
-                                                <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                                 <property name="dataType">string</property>
                                             </structure>
                                             <structure>
@@ -3015,7 +3035,7 @@ group by month) CostData group by month)) ChartData group by month order by mont
                                             <structure>
                                                 <property name="name">key</property>
                                                 <text-property name="displayName">key</text-property>
-                                                <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                                 <property name="dataType">string</property>
                                             </structure>
                                             <structure>
@@ -3053,7 +3073,7 @@ group by month) CostData group by month)) ChartData group by month order by mont
                                             <structure>
                                                 <property name="name">key</property>
                                                 <text-property name="displayName">key</text-property>
-                                                <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                                 <property name="dataType">string</property>
                                             </structure>
                                             <structure>
@@ -3091,7 +3111,7 @@ group by month) CostData group by month)) ChartData group by month order by mont
                                             <structure>
                                                 <property name="name">key</property>
                                                 <text-property name="displayName">key</text-property>
-                                                <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                                 <property name="dataType">string</property>
                                             </structure>
                                             <structure>
@@ -5217,7 +5237,7 @@ group by month) CostData group by month)) ChartData group by month order by mont
                             <structure>
                                 <property name="name">key</property>
                                 <text-property name="displayName">key</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                 <property name="dataType">string</property>
                             </structure>
                             <structure>
@@ -5259,7 +5279,7 @@ group by month) CostData group by month)) ChartData group by month order by mont
                             <structure>
                                 <property name="name">key</property>
                                 <text-property name="displayName">key</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                 <property name="dataType">string</property>
                             </structure>
                             <structure>
@@ -5300,7 +5320,7 @@ group by month) CostData group by month)) ChartData group by month order by mont
                             <structure>
                                 <property name="name">key</property>
                                 <text-property name="displayName">key</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                 <property name="dataType">string</property>
                             </structure>
                             <structure>
@@ -5447,7 +5467,7 @@ group by month) CostData group by month)) ChartData group by month order by mont
                                             <structure>
                                                 <property name="name">key</property>
                                                 <text-property name="displayName">key</text-property>
-                                                <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                                 <property name="dataType">string</property>
                                             </structure>
                                             <structure>
@@ -5535,7 +5555,7 @@ group by month) CostData group by month)) ChartData group by month order by mont
                                             <structure>
                                                 <property name="name">key</property>
                                                 <text-property name="displayName">key</text-property>
-                                                <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                                 <property name="dataType">string</property>
                                             </structure>
                                             <structure>
@@ -5623,7 +5643,7 @@ group by month) CostData group by month)) ChartData group by month order by mont
                                             <structure>
                                                 <property name="name">key</property>
                                                 <text-property name="displayName">key</text-property>
-                                                <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                                 <property name="dataType">string</property>
                                             </structure>
                                             <structure>
@@ -5844,7 +5864,7 @@ group by month) CostData group by month)) ChartData group by month order by mont
                                             <structure>
                                                 <property name="name">key</property>
                                                 <text-property name="displayName">key</text-property>
-                                                <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                                 <property name="dataType">string</property>
                                             </structure>
                                             <structure>
@@ -5889,7 +5909,7 @@ group by month) CostData group by month)) ChartData group by month order by mont
                             <structure>
                                 <property name="name">key</property>
                                 <text-property name="displayName">key</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                 <property name="dataType">string</property>
                             </structure>
                             <structure>
@@ -5931,7 +5951,7 @@ group by month) CostData group by month)) ChartData group by month order by mont
                             <structure>
                                 <property name="name">key</property>
                                 <text-property name="displayName">key</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                 <property name="dataType">string</property>
                             </structure>
                             <structure>
@@ -6077,7 +6097,7 @@ group by month) CostData group by month)) ChartData group by month order by mont
                                             <structure>
                                                 <property name="name">key</property>
                                                 <text-property name="displayName">key</text-property>
-                                                <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                                 <property name="dataType">string</property>
                                             </structure>
                                             <structure>
@@ -6165,7 +6185,7 @@ group by month) CostData group by month)) ChartData group by month order by mont
                                             <structure>
                                                 <property name="name">key</property>
                                                 <text-property name="displayName">key</text-property>
-                                                <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                                 <property name="dataType">string</property>
                                             </structure>
                                             <structure>
@@ -6253,7 +6273,7 @@ group by month) CostData group by month)) ChartData group by month order by mont
                                             <structure>
                                                 <property name="name">key</property>
                                                 <text-property name="displayName">key</text-property>
-                                                <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                                 <property name="dataType">string</property>
                                             </structure>
                                             <structure>
@@ -6475,7 +6495,7 @@ group by month) CostData group by month)) ChartData group by month order by mont
                                             <structure>
                                                 <property name="name">key</property>
                                                 <text-property name="displayName">key</text-property>
-                                                <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                                 <property name="dataType">string</property>
                                             </structure>
                                             <structure>
@@ -6517,7 +6537,7 @@ group by month) CostData group by month)) ChartData group by month order by mont
                             <structure>
                                 <property name="name">key</property>
                                 <text-property name="displayName">key</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                 <property name="dataType">string</property>
                             </structure>
                             <structure>
@@ -6637,7 +6657,7 @@ group by month) CostData group by month)) ChartData group by month order by mont
                                             <structure>
                                                 <property name="name">key</property>
                                                 <text-property name="displayName">key</text-property>
-                                                <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                                 <property name="dataType">string</property>
                                             </structure>
                                             <structure>
@@ -6725,7 +6745,7 @@ group by month) CostData group by month)) ChartData group by month order by mont
                                             <structure>
                                                 <property name="name">key</property>
                                                 <text-property name="displayName">key</text-property>
-                                                <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                                 <property name="dataType">string</property>
                                             </structure>
                                             <structure>
@@ -6883,7 +6903,7 @@ group by month) CostData group by month)) ChartData group by month order by mont
                                             <structure>
                                                 <property name="name">key</property>
                                                 <text-property name="displayName">key</text-property>
-                                                <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                                 <property name="dataType">string</property>
                                             </structure>
                                             <structure>
@@ -6928,7 +6948,7 @@ group by month) CostData group by month)) ChartData group by month order by mont
                             <structure>
                                 <property name="name">key</property>
                                 <text-property name="displayName">key</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                 <property name="dataType">string</property>
                             </structure>
                             <structure>
@@ -7072,7 +7092,7 @@ group by month) CostData group by month)) ChartData group by month order by mont
                                             <structure>
                                                 <property name="name">key</property>
                                                 <text-property name="displayName">key</text-property>
-                                                <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                                 <property name="dataType">string</property>
                                             </structure>
                                             <structure>
@@ -7160,7 +7180,7 @@ group by month) CostData group by month)) ChartData group by month order by mont
                                             <structure>
                                                 <property name="name">key</property>
                                                 <text-property name="displayName">key</text-property>
-                                                <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                                 <property name="dataType">string</property>
                                             </structure>
                                             <structure>
@@ -7248,7 +7268,7 @@ group by month) CostData group by month)) ChartData group by month order by mont
                                             <structure>
                                                 <property name="name">key</property>
                                                 <text-property name="displayName">key</text-property>
-                                                <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                                 <property name="dataType">string</property>
                                             </structure>
                                             <structure>
@@ -7336,7 +7356,7 @@ group by month) CostData group by month)) ChartData group by month order by mont
                                             <structure>
                                                 <property name="name">key</property>
                                                 <text-property name="displayName">key</text-property>
-                                                <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                                 <property name="dataType">string</property>
                                             </structure>
                                             <structure>
@@ -7565,7 +7585,7 @@ group by month) CostData group by month)) ChartData group by month order by mont
                                             <structure>
                                                 <property name="name">key</property>
                                                 <text-property name="displayName">key</text-property>
-                                                <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                                 <property name="dataType">string</property>
                                             </structure>
                                             <structure>
@@ -7607,7 +7627,7 @@ group by month) CostData group by month)) ChartData group by month order by mont
                             <structure>
                                 <property name="name">key</property>
                                 <text-property name="displayName">key</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                 <property name="dataType">string</property>
                             </structure>
                             <structure>
@@ -7733,7 +7753,7 @@ group by month) CostData group by month)) ChartData group by month order by mont
                                             <structure>
                                                 <property name="name">key</property>
                                                 <text-property name="displayName">key</text-property>
-                                                <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                                 <property name="dataType">string</property>
                                             </structure>
                                             <structure>
@@ -7821,7 +7841,7 @@ group by month) CostData group by month)) ChartData group by month order by mont
                                             <structure>
                                                 <property name="name">key</property>
                                                 <text-property name="displayName">key</text-property>
-                                                <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                                 <property name="dataType">string</property>
                                             </structure>
                                             <structure>
@@ -7979,7 +7999,7 @@ group by month) CostData group by month)) ChartData group by month order by mont
                                             <structure>
                                                 <property name="name">key</property>
                                                 <text-property name="displayName">key</text-property>
-                                                <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                                 <property name="dataType">string</property>
                                             </structure>
                                             <structure>
@@ -8036,7 +8056,7 @@ group by month) CostData group by month)) ChartData group by month order by mont
                             <structure>
                                 <property name="name">key</property>
                                 <text-property name="displayName">key</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                 <property name="dataType">string</property>
                             </structure>
                             <structure>
@@ -8081,7 +8101,7 @@ group by month) CostData group by month)) ChartData group by month order by mont
                             <structure>
                                 <property name="name">key</property>
                                 <text-property name="displayName">key</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                 <property name="dataType">string</property>
                             </structure>
                             <structure>
