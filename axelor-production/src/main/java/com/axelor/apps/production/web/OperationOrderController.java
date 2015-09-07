@@ -217,8 +217,8 @@ public class OperationOrderController {
 			List<OperationOrder> operationOrderList = operationOrderRepo.all().filter("self.plannedStartDateT <= ?1 AND self.plannedEndDateT >= ?1", itDateTime).fetch();
 			Map<String, BigDecimal> map = new HashMap<String, BigDecimal>();
 			for (OperationOrder operationOrder : operationOrderList) {
-				if(operationOrder.getProdResource() != null && operationOrder.getProdResource().getMachine() != null){
-					String machine = operationOrder.getProdResource().getMachine().getName();
+				if(operationOrder.getWorkCenter() != null && operationOrder.getWorkCenter().getMachine() != null){
+					String machine = operationOrder.getWorkCenter().getMachine().getName();
 					if(map.containsKey(machine)){
 						map.put(machine, map.get(machine).add(BigDecimal.ONE));
 					}
@@ -253,8 +253,8 @@ public class OperationOrderController {
 			List<OperationOrder> operationOrderList = operationOrderRepo.all().filter("self.plannedStartDateT <= ?1 AND self.plannedEndDateT >= ?1", itDateTime).fetch();
 			Map<String, BigDecimal> map = new HashMap<String, BigDecimal>();
 			for (OperationOrder operationOrder : operationOrderList) {
-				if(operationOrder.getProdResource() != null && operationOrder.getProdResource().getMachine() != null){
-					String machine = operationOrder.getProdResource().getMachine().getName();
+				if(operationOrder.getWorkCenter() != null && operationOrder.getWorkCenter().getMachine() != null){
+					String machine = operationOrder.getWorkCenter().getMachine().getName();
 					if(map.containsKey(machine)){
 						map.put(machine, map.get(machine).add(BigDecimal.ONE));
 					}

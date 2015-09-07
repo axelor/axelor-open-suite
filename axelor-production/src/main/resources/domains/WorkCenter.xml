@@ -5,14 +5,14 @@
 
   <module name="production" package="com.axelor.apps.production.db"/>
 
-  <entity name="ProdResource" lang="java">
+  <entity name="WorkCenter" lang="java">
   	
  	<integer name="importId"/> 	
   
     <string name="name" title="Label" required="true"/>
     <string name="code" title="Code"/>
     <many-to-one name="machine" ref="com.axelor.apps.production.db.Machine" title="Default Machine"/>
-    <integer name="resourceTypeSelect" title="Resource type" selection="iproduction.prod.resource.resource.type.select"/>
+    <integer name="workCenterTypeSelect" title="Work center type" selection="iproduction.work.center.type.select"/>
     <decimal name="capacityPerCycle" title="Capacity / cycle"/>
     <decimal name="maxCapacityPerCycle" title="Max. capacity / cycle"/>
     <long name="durationPerCycle" title="Duration / cycle (hh:mm)"/>
@@ -22,13 +22,13 @@
 	
 	<many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"/>
 	
-	<integer name="costTypeSelect" title="Cost type" selection="iproduction.prod.resource.cost.type.select"/>    
+	<integer name="costTypeSelect" title="Cost type" selection="iproduction.work.center.cost.type.select"/>    
     <decimal name="costAmount" title="Cost (W.T.)"/>
     
-    <one-to-many name="prodHumanResourceList" ref="com.axelor.apps.production.db.ProdHumanResource" mappedBy="prodResource" title="Human resources"/>
+    <one-to-many name="prodHumanResourceList" ref="com.axelor.apps.production.db.ProdHumanResource" mappedBy="workCenter" title="Human resources"/>
     
-    <one-to-many name="prodResourceList" ref="com.axelor.apps.production.db.ProdResource" mappedBy="parentProdResource" title="Replacement machines"/>
-    <many-to-one name="parentProdResource" ref="com.axelor.apps.production.db.ProdResource" title="Resource"/>
+    <one-to-many name="workCenterList" ref="com.axelor.apps.production.db.WorkCenter" mappedBy="parentWorkCenter" title="Replacement machines"/>
+    <many-to-one name="parentWorkCenter" ref="com.axelor.apps.production.db.WorkCenter" title="Work center"/>
     
     <many-to-one name="operationOrder" ref="com.axelor.apps.production.db.OperationOrder" title="Operation order"/>
     

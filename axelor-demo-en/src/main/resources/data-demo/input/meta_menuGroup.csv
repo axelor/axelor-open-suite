@@ -290,7 +290,7 @@
 "debt-recovery-root-conf-reminder-method";"Reminder methods";"admins|ERP|CPT|MGT"
 "debt-recovery-root-reminders";"Reminders history";"admins|ERP|CPT|MGT"
 "account-conf-reporting";"Reportings/Exports";"admins|ERP|CPT|MGT"
-"manufacturing-conf-prod-resource";"Resources";"admins|ERP|MGT"
+"manufacturing-conf-work-center";"Work centers";"admins|ERP|MGT"
 "top-purchase-quotes";"RFQ";"admins|ERP|MGT|ACH"
 "menu-auth-roles";"Roles";"admins"
 "mail-root-email-conf-routing";"Routings";"admins"

@@ -24,11 +24,11 @@ import org.joda.time.Interval;
 import org.joda.time.LocalDateTime;
 
 import com.axelor.app.production.db.IOperationOrder;
-import com.axelor.app.production.db.IProdResource;
+import com.axelor.app.production.db.IWorkCenter;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.db.ProdHumanResource;
-import com.axelor.apps.production.db.ProdResource;
+import com.axelor.apps.production.db.WorkCenter;
 import com.axelor.apps.production.db.repo.OperationOrderRepository;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
@@ -154,20 +154,20 @@ public class OperationOrderWorkflowService extends OperationOrderRepository{
 
 	public LocalDateTime computePlannedEndDateT(OperationOrder operationOrder)  {
 
-		if(operationOrder.getProdResource() != null)  {
+		if(operationOrder.getWorkCenter() != null)  {
 			return operationOrder.getPlannedStartDateT()
-					.plusSeconds((int)this.computeEntireCycleDuration(operationOrder.getProdResource(), operationOrder.getManufOrder().getQty()));
+					.plusSeconds((int)this.computeEntireCycleDuration(operationOrder.getWorkCenter(), operationOrder.getManufOrder().getQty()));
 		}
 
 		return operationOrder.getPlannedStartDateT();
 	}
 
 
-	public long computeEntireCycleDuration(ProdResource prodResource, BigDecimal qty)  {
+	public long computeEntireCycleDuration(WorkCenter workCenter, BigDecimal qty)  {
 
-		long machineDuration = this.computeMachineDuration(prodResource, qty);
+		long machineDuration = this.computeMachineDuration(workCenter, qty);
 
-		long humanDuration = this.computeHumanDuration(prodResource, qty);
+		long humanDuration = this.computeHumanDuration(workCenter, qty);
 
 		if(machineDuration >= humanDuration)  {
 			return machineDuration;
@@ -179,21 +179,21 @@ public class OperationOrderWorkflowService extends OperationOrderRepository{
 	}
 
 
-	public long computeMachineDuration(ProdResource prodResource, BigDecimal qty)  {
+	public long computeMachineDuration(WorkCenter workCenter, BigDecimal qty)  {
 
 		long duration = 0;
 
-		int resourceType = prodResource.getResourceTypeSelect();
+		int workCenterTypeSelect = workCenter.getWorkCenterTypeSelect();
 
-		if(resourceType == IProdResource.RESOURCE_MACHINE || resourceType == IProdResource.RESOURCE_BOTH)  {
+		if(workCenterTypeSelect == IWorkCenter.WORK_CENTER_MACHINE || workCenterTypeSelect == IWorkCenter.WORK_CENTER_BOTH)  {
 
-			duration += prodResource.getStartingDuration();
+			duration += workCenter.getStartingDuration();
 
-			BigDecimal durationPerCycle = new BigDecimal(prodResource.getDurationPerCycle());
+			BigDecimal durationPerCycle = new BigDecimal(workCenter.getDurationPerCycle());
 
-			duration += (qty.divide(prodResource.getCapacityPerCycle())).multiply(durationPerCycle).longValue();
+			duration += (qty.divide(workCenter.getCapacityPerCycle())).multiply(durationPerCycle).longValue();
 
-			duration += prodResource.getEndingDuration();
+			duration += workCenter.getEndingDuration();
 
 		}
 
@@ -201,17 +201,17 @@ public class OperationOrderWorkflowService extends OperationOrderRepository{
 	}
 
 
-	public long computeHumanDuration(ProdResource prodResource, BigDecimal qty)  {
+	public long computeHumanDuration(WorkCenter workCenter, BigDecimal qty)  {
 
 		long duration = 0;
 
-		int resourceType = prodResource.getResourceTypeSelect();
+		int workCenterTypeSelect = workCenter.getWorkCenterTypeSelect();
 
-		if(resourceType == IProdResource.RESOURCE_HUMAN || resourceType == IProdResource.RESOURCE_BOTH)  {
+		if(workCenterTypeSelect == IWorkCenter.WORK_CENTER_HUMAN || workCenterTypeSelect == IWorkCenter.WORK_CENTER_BOTH)  {
 
-			if(prodResource.getProdHumanResourceList() != null)  {
+			if(workCenter.getProdHumanResourceList() != null)  {
 
-				for(ProdHumanResource prodHumanResource : prodResource.getProdHumanResourceList())  {
+				for(ProdHumanResource prodHumanResource : workCenter.getProdHumanResourceList())  {
 
 					duration += prodHumanResource.getDuration();
 

@@ -3,22 +3,22 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
     
-    <grid name="prod-resource-grid" title="Resources" model="com.axelor.apps.production.db.ProdResource">
+    <grid name="work-center-grid" title="Work centers" model="com.axelor.apps.production.db.WorkCenter">
         <field name="name"/>
         <field name="code"/>
         <field name="machine" form-view="machine-form" grid-view="machine-grid"/>
-        <field name="resourceTypeSelect"/>
+        <field name="workCenterTypeSelect"/>
     </grid>
     
-	<form name="prod-resource-form" title="Resource" model="com.axelor.apps.production.db.ProdResource" width="large">
+	<form name="work-center-form" title="Work center" model="com.axelor.apps.production.db.WorkCenter" width="large">
 	  <panel>
 	    <field name="name"/>
 	    <field name="code" colSpan="3"/>
-	    <field name="resourceTypeSelect" required="true"/>
-		<field name="machine" requiredIf="resourceTypeSelect == 2 || resourceTypeSelect == 3" showIf="resourceTypeSelect == 2 || resourceTypeSelect == 3" form-view="machine-form" grid-view="machine-grid"/>
+	    <field name="workCenterTypeSelect" required="true"/>
+		<field name="machine" requiredIf="workCenterTypeSelect == 2 || workCenterTypeSelect == 3" showIf="workCenterTypeSelect == 2 || workCenterTypeSelect == 3" form-view="machine-form" grid-view="machine-grid"/>
 	  </panel>  
 	  <panel-tabs>
-	    <panel title="Default Machine settings" readonlyIf="!machine" showIf="resourceTypeSelect == 2 || resourceTypeSelect == 3">
+	    <panel title="Default Machine settings" readonlyIf="!machine" showIf="workCenterTypeSelect == 2 || workCenterTypeSelect == 3">
 	        <panel title="Capacity settings" colSpan="12">
 	          <field name="capacityPerCycle" colSpan="3"/>
 	          <field name="maxCapacityPerCycle" colSpan="3"/>
@@ -34,18 +34,18 @@
 	          <field name="costAmount" colSpan="3"/>
 	        </panel>
 	    </panel>
-	    <panel-related field="prodHumanResourceList" title="Human resources" showIf="resourceTypeSelect == 1 || resourceTypeSelect == 3" form-view="prod-human-resource-form" grid-view="prod-human-resource-grid"/>
-	    <panel-related field="prodResourceList" title="Replacement machines" showIf="resourceTypeSelect == 2 || resourceTypeSelect == 3" form-view="prod-resource-machine-form" grid-view="prod-resource-machine-grid"/>
+	    <panel-related field="prodHumanResourceList" title="Human resources" showIf="workCenterTypeSelect == 1 || workCenterTypeSelect == 3" form-view="prod-human-resource-form" grid-view="prod-human-resource-grid"/>
+	    <panel-related field="workCenterList" title="Replacement machines" showIf="workCenterTypeSelect == 2 || workCenterTypeSelect == 3" form-view="work-center-machine-form" grid-view="work-center-machine-grid"/>
 	  </panel-tabs>
 	</form>
     
-    <grid name="prod-resource-machine-grid" title="Machines" model="com.axelor.apps.production.db.ProdResource">
+    <grid name="work-center-machine-grid" title="Machines" model="com.axelor.apps.production.db.WorkCenter">
         <field name="name"/>
         <field name="code"/>
         <field name="machine"/>
     </grid>
     
-    <form name="prod-resource-machine-form" title="Machine" model="com.axelor.apps.production.db.ProdResource" width="large">
+    <form name="work-center-machine-form" title="Machine" model="com.axelor.apps.production.db.WorkCenter" width="large">
     	<panel>
 	        <field name="name"/>
 	        <field name="code"/>
@@ -69,7 +69,7 @@
 	    </panel>
     </form>
     
-    <action-record name="action-prod-resource-record-default" model="com.axelor.apps.production.db.ProdResource">
+    <action-record name="action-work-center-record-default" model="com.axelor.apps.production.db.WorkCenter">
     	<field name="product" expr="eval: "/>
     
     </action-record>

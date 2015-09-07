@@ -6,7 +6,7 @@
     <grid name="prod-process-line-grid" title="Production process" model="com.axelor.apps.production.db.ProdProcessLine" orderBy="priority">
     	<field name="priority"/>
 		<field name="name"/>
-        <field name="prodResource" grid-view="prod-resource-grid" form-view="prod-resource-form"/>
+        <field name="workCenter" grid-view="work-center-grid" form-view="work-center-form"/>
         <field name="description"/>
     </grid>
     
@@ -15,7 +15,7 @@
     	<panel>
 	    	<field name="name"/>
 	    	<field name="priority" colSpan="3"/>
-	    	<field name="prodResource" grid-view="prod-resource-grid" form-view="prod-resource-form"/>
+	    	<field name="workCenter" grid-view="work-center-grid" form-view="work-center-form"/>
 			<panel title="Description" colSpan="12">
     			<field name="description" showTitle="false" height="5" colSpan="12"/>
     		</panel>

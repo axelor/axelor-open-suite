@@ -23,16 +23,16 @@ package com.axelor.app.production.db;
  * @author dubaux
  * 
  */
-public interface IProdResource {
+public interface IWorkCenter {
 
 
 	/**
-	 * Static resource type select
+	 * Static work center type select
 	 */
 
-	static final int RESOURCE_HUMAN = 1;
-	static final int RESOURCE_MACHINE = 2;
-	static final int RESOURCE_BOTH = 3;
+	static final int WORK_CENTER_HUMAN = 1;
+	static final int WORK_CENTER_MACHINE = 2;
+	static final int WORK_CENTER_BOTH = 3;
 	
 	/**
 	 * Static cost type select
