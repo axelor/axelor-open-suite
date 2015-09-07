@@ -51,8 +51,7 @@ public class OperationOrderWorkflowService extends OperationOrderRepository{
 
 	}
 
-
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
+	@Transactional
 	public OperationOrder plan(OperationOrder operationOrder) throws AxelorException  {
 
 		operationOrder.setPlannedStartDateT(this.getLastOperationOrder(operationOrder));
@@ -126,9 +125,8 @@ public class OperationOrderWorkflowService extends OperationOrderRepository{
 
 	}
 
-
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void finish(OperationOrder operationOrder) throws AxelorException  {
+	@Transactional
+	public OperationOrder finish(OperationOrder operationOrder) throws AxelorException  {
 
 		operationOrderStockMoveService.finish(operationOrder);
 
@@ -136,7 +134,7 @@ public class OperationOrderWorkflowService extends OperationOrderRepository{
 
 		operationOrder.setStatusSelect(IOperationOrder.STATUS_FINISHED);
 
-		save(operationOrder);
+		return save(operationOrder);
 
 	}
 

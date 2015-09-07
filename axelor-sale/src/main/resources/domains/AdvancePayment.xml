@@ -10,7 +10,7 @@
   
  	<decimal name="amount" title="Amount" required="true" default="0"/>
  	
- 	<date name="advancePaymentDate" title="advance Payment Date" required="true"/>
+ 	<date name="advancePaymentDate" title="Date" required="true"/>
  	
  	<many-to-one name="saleOrder" ref="com.axelor.apps.sale.db.SaleOrder"/>
  	

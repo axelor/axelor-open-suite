@@ -9,7 +9,7 @@
   
   	<integer name="importId"/>
   
-  	<string name="productionOrderSeq" title="Name" namecolumn="true" initParam="true"/>
+  	<string name="productionOrderSeq" title="Name" namecolumn="true" initParam="true" required="true"/>
     <one-to-many name="manufOrderList" ref="com.axelor.apps.production.db.ManufOrder" mappedBy="productionOrder" title="Manufacturing orders"/>
     <boolean name="isClosed" >
 	    <![CDATA[

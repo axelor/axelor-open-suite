@@ -31,6 +31,7 @@ import com.axelor.apps.production.exceptions.IExceptionMessage;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.Context;
@@ -44,7 +45,7 @@ public class ProductionOrderWizardServiceBusinessImpl extends ProductionOrderWiz
 	private ProductionOrderServiceBusinessImpl productionOrderServiceBusinessImpl;
 
 	@Override
-	public String validate(Context context) throws AxelorException  {
+	public Long validate(Context context) throws AxelorException  {
 
 		Map<String, Object> bomContext = (Map<String, Object>) context.get("billOfMaterial");
 		BillOfMaterial billOfMaterial = billOfMaterialService.find(((Integer) bomContext.get("id")).longValue());
@@ -69,10 +70,10 @@ public class ProductionOrderWizardServiceBusinessImpl extends ProductionOrderWiz
 		ProductionOrder productionOrder = productionOrderServiceBusinessImpl.generateProductionOrder(product, billOfMaterial, qty, projectTask);
 
 		if(productionOrder != null)  {
-			return I18n.get(IExceptionMessage.PRODUCTION_ORDER_1)+" ("+productionOrder.getProductionOrderSeq()+")";
+			return productionOrder.getId();
 		}
 		else  {
-			return I18n.get(IExceptionMessage.PRODUCTION_ORDER_2);
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.PRODUCTION_ORDER_2)),IException.CONFIGURATION_ERROR);
 		}
 	}
 

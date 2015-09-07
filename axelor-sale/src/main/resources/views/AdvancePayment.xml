@@ -3,25 +3,25 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
     
-    <grid name="advance-payment-grid" canMove="true" title="Advance Payment list" model="com.axelor.apps.sale.db.AdvancePayment" orderBy="amount">
+    <grid name="advance-payment-grid" editable="true" title="Advance Payment list" model="com.axelor.apps.sale.db.AdvancePayment" orderBy="advancePaymentDate"
+    	onNew="action-advance-payment-new">
 	    <field name="amount"/>
 	    <field name="amountRemainingToUse" if-module="axelor-supplychain"/>
 	    <field name="advancePaymentDate"/>
-	    <field name="move" if-module="axelor-supplychain"/>
 	    <field name="currency"/>
 	    <field name="paymentMode" if-module="axelor-supplychain"/>
-
+	    <field name="move" if-module="axelor-supplychain"/>
 	</grid>
     
 	<form name="advance-payment-form" title="Advance Payment" model="com.axelor.apps.sale.db.AdvancePayment" onNew="action-advance-payment-new" width="large">
 		<panel>
 			<field name="amount" onChange="action-advance-payment-change-amount"/>
+			<field name="currency"/>
 			<field name="advancePaymentDate"/>
 			<field name="amountRemainingToUse" if-module="axelor-supplychain"/>
 		</panel>
 		<panel>
-		    <field name="currency"/>
-	    	<field name="move" form-view="move-form" grid-view="move-grid"/>
+	    	<field name="move" form-view="move-form" grid-view="move-grid" if-module="axelor-supplychain"/>
 	    	<field name="paymentMode" if-module="axelor-supplychain"/>
 		 </panel>
 	</form>

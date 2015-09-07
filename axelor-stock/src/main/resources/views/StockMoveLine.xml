@@ -80,6 +80,7 @@
     <grid name="stock-move-line-production-grid" title="Stock move lines" model="com.axelor.apps.stock.db.StockMoveLine">
         <field name="product" form-view="product-form" grid-view="product-grid"/>
         <field name="productModel" form-view="product-form" grid-view="product-grid"/>
+        <field name="qty" title="Consumed quantity"/>
         <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
         <field name="trackingNumber"/>
     </grid>
@@ -90,7 +91,7 @@
 		    <field name="productName" required="true" />
 	        <field name="product" domain="self.expense = false" onChange="action-stock-move-line-set-product-info" onSelect="action-stock-move-line-product-domain" form-view="product-form" grid-view="product-grid"/>
 	        <field name="productModel" form-view="product-form" grid-view="product-grid"/>
-	        <field name="qty" onChange="action-stock-move-line-record-qty"/>
+	        <field name="qty" onChange="action-stock-move-line-record-qty" title="Consumed quantity"/>
 	        <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
 	        <field name="trackingNumber" onChange="action-stock-move-line-record-product"/>
 	        <field name="businessProject" if-module="axelor-business-project" domain="self.businessProject = true AND self.typeSelect = 'project'" form-view="project-form" grid-view="project-grid"/>

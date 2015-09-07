@@ -87,7 +87,8 @@
 	<date name="deliveryDate" title="Delivery date"/>
 	<string name="deliveryCondition" title="Delivery conditions" large="true" multiline="true"/>
 	
-	<one-to-many name="advancePaymentList" ref="com.axelor.apps.sale.db.AdvancePayment" mappedBy="saleOrder"/>
+	<one-to-many name="advancePaymentList" ref="com.axelor.apps.sale.db.AdvancePayment" mappedBy="saleOrder" title="Advance Payments"/>
+
 	
  	<unique-constraint columns="saleOrderSeq,company"/>
 
