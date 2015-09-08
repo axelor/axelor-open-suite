@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
+    
+    <grid name="advance-payment-account-grid" editable="true" title="Advance Payment list" model="com.axelor.apps.account.db.AdvancePaymentAccount" orderBy="advancePaymentDate"
+    	onNew="action-advance-payment-account-new">
+	    <field name="amount"/>
+	    <field name="advancePaymentDate"/>
+	    <field name="currency"/>
+	    <field name="paymentMode"/>
+	    <field name="typeSelect"/>
+	    <field name="move"/>
+	</grid>
+    
+	<form name="advance-payment-account-form" title="Advance Payment" model="com.axelor.apps.account.db.AdvancePaymentAccount" onNew="action-advance-payment-account-new" width="large">
+		<panel>
+			<field name="amount"/>
+			<field name="currency"/>
+			<field name="advancePaymentDate"/>
+		</panel>
+		<panel>
+	    	<field name="move" form-view="move-form" grid-view="move-grid"/>
+	    	<field name="paymentMode"/>
+		 </panel>
+	</form>
+	
+	
+	<action-record name="action-advance-payment-account-new" model="com.axelor.apps.account.db.AdvancePaymentAccount">
+    	<field name="currency" expr="eval: _parent?.currency"/>
+    	<field name="advancePaymentDate" expr="eval: __date__"/>
+    </action-record>
+  
+	</object-views>
+	

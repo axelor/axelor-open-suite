@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_4.0.xsd">
+
+  <module name="account" package="com.axelor.apps.account.db"/>
+
+  <entity name="AdvancePaymentAccount" lang="java">
+  
+  
+ 	<decimal name="amount" title="Amount" required="true" default="0"/>
+ 	
+ 	<date name="advancePaymentDate" title="Date" required="true"/>
+ 	
+ 	<many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" title="Currency" required="true"/>
+  	<many-to-one name="paymentMode" ref="com.axelor.apps.account.db.PaymentMode" title="Payment mode"/>	
+  	<many-to-one name="move" ref="com.axelor.apps.account.db.Move" title="Move" readonly="true"/>
+ 	
+ 	<many-to-one name="invoice" ref="com.axelor.apps.account.db.Invoice"/>
+ 	
+ 	<integer name="typeSelect" title="Type" selection="advance.payment.account.select"/>
+ 	 	 	
+  	
+  	
+  </entity>
+
+</domain-models>
