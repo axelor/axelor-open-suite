@@ -25,6 +25,8 @@ import java.util.Map;
 import java.util.Set;
 
 import org.joda.time.LocalDateTime;
+import org.joda.time.format.DateTimeFormatter;
+import org.joda.time.format.ISODateTimeFormat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -209,8 +211,9 @@ public class OperationOrderController {
 	
 	public void chargeByMachineHours(ActionRequest request, ActionResponse response) {
 		List<Map<String, Object>> dataList = new ArrayList<Map<String, Object>>();
-		LocalDateTime fromDateTime = new LocalDateTime().minusHours(48);
-		LocalDateTime toDateTime = new LocalDateTime().plusHours(48);
+		DateTimeFormatter parser = ISODateTimeFormat.dateTime();
+		LocalDateTime fromDateTime = LocalDateTime.parse(request.getContext().get("fromDateTime").toString(),parser);
+		LocalDateTime toDateTime = LocalDateTime.parse(request.getContext().get("toDateTime").toString(),parser);
 		LocalDateTime itDateTime = new LocalDateTime(fromDateTime);
 		
 		while(!itDateTime.isAfter(toDateTime)){
@@ -245,8 +248,9 @@ public class OperationOrderController {
 	
 	public void chargeByMachineMinutes(ActionRequest request, ActionResponse response) {
 		List<Map<String, Object>> dataList = new ArrayList<Map<String, Object>>();
-		LocalDateTime fromDateTime = new LocalDateTime().minusHours(48);
-		LocalDateTime toDateTime = new LocalDateTime().plusHours(48);
+		DateTimeFormatter parser = ISODateTimeFormat.dateTime();
+		LocalDateTime fromDateTime = LocalDateTime.parse(request.getContext().get("fromDateTime").toString(),parser);
+		LocalDateTime toDateTime = LocalDateTime.parse(request.getContext().get("toDateTime").toString(),parser);
 		LocalDateTime itDateTime = new LocalDateTime(fromDateTime);
 		
 		while(!itDateTime.isAfter(toDateTime)){
