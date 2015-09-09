@@ -4,19 +4,25 @@ def modules = new File('modules/abs').listFiles().findAll { dir ->
 	new File(dir, 'build.gradle').exists()
 }
 
-def installedModules = new File('modules/abs').listFiles().findAll { dir ->
+def enModules = new File('modules/abs').listFiles().findAll { dir ->
 	new File(dir, 'build.gradle').exists() && !dir.name.endsWith('-demo-fr') && !dir.name.endsWith('-l10n-fr')
 }
+
+def frModules = new File('modules/abs').listFiles().findAll { dir ->
+	new File(dir, 'build.gradle').exists() && !dir.name.endsWith('-demo-en') && !dir.name.endsWith('-l10n-en')
+}
+
+def installedModules = project.hasProperty('lang') && project.getProperty('lang') == 'fr' ? frModules : enModules
 
 application {
 
 	name "axelor-erp"
 	title "Axelor :: ERP"
 	
-	version "3.0.1"
+	version "3.0.2"
 	
 	// ADK version required
-	adkVersion "~3.0.7"
+	adkVersion "~3.0.17"
 
 	// depends on all modules
 	modules.each { dir ->
