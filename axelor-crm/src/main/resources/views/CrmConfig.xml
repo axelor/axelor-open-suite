@@ -7,7 +7,7 @@
         <field name="company" form-view="company-form" grid-view="company-grid"/>
     </grid>
 
-	<form name="crm-config-form" title="CRM configuration" model="com.axelor.apps.crm.db.CrmConfig" onNew="action-crm-config-record-default">
+	<form name="crm-config-form" title="CRM configuration" model="com.axelor.apps.crm.db.CrmConfig" onNew="action-crm-config-record-default" width="large">
 	  	<panel>
 	    	<field name="company" form-view="company-form" colSpan="4" grid-view="company-grid"/>
 	  	</panel>
