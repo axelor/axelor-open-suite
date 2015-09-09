@@ -19,10 +19,10 @@ application {
 	name "axelor-erp"
 	title "Axelor :: ERP"
 	
-	version "3.0.1"
+	version "3.0.2"
 	
 	// ADK version required
-	adkVersion "~3.0.7"
+	adkVersion "~3.0.17"
 
 	// depends on all modules
 	modules.each { dir ->
