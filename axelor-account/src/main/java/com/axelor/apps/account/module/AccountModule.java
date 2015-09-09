@@ -22,6 +22,8 @@ import com.axelor.apps.account.db.repo.BankStatementManagementRepository;
 import com.axelor.apps.account.db.repo.BankStatementRepository;
 import com.axelor.apps.account.db.repo.InvoiceManagementRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
+import com.axelor.apps.account.db.repo.JournalManagementRepository;
+import com.axelor.apps.account.db.repo.JournalRepository;
 import com.axelor.apps.account.db.repo.MoveManagementRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.PartnerAccountRepository;
@@ -55,6 +57,8 @@ public class AccountModule extends AxelorModule {
         bind(InvoiceRepository.class).to(InvoiceManagementRepository.class);
 
         bind(MoveRepository.class).to(MoveManagementRepository.class);
+        
+        bind(JournalRepository.class).to(JournalManagementRepository.class);
 
         bind(BankStatementRepository.class).to(BankStatementManagementRepository.class);
 
