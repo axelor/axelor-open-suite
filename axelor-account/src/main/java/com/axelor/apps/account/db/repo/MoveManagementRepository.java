@@ -1,6 +1,9 @@
 package com.axelor.apps.account.db.repo;
 
+import javax.persistence.PersistenceException;
+
 import com.axelor.apps.account.db.Move;
+import com.axelor.apps.account.service.MoveService;
 import com.axelor.apps.base.db.Period;
 import com.axelor.apps.base.service.PeriodService;
 import com.axelor.apps.base.service.administration.GeneralService;
@@ -22,7 +25,7 @@ public class MoveManagementRepository extends MoveRepository {
 		try {
 			period = Beans.get(PeriodService.class).rightPeriod(entity.getDate(),entity.getCompany());
 		} catch (AxelorException e) {
-			e.printStackTrace();
+			throw new PersistenceException(e.getLocalizedMessage());
 		}
 		copy.setStatusSelect(STATUS_DRAFT);
 		copy.setReference(null);
@@ -39,6 +42,20 @@ public class MoveManagementRepository extends MoveRepository {
 
 		return copy;
 	}
+	
+	
+	@Override
+	public Move save(Move move) {
+		try {
+
+			Beans.get(MoveService.class).setDraftSequence(move);
+
+			return super.save(move);
+		} catch (Exception e) {
+			throw new PersistenceException(e.getLocalizedMessage());
+		}
+	}
+	
 
 	@Override
 	public void remove(Move entity){
