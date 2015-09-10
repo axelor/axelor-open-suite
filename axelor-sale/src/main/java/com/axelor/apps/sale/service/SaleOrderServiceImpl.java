@@ -254,10 +254,9 @@ public class SaleOrderServiceImpl extends SaleOrderRepository  implements SaleOr
 		}
 
 		saleOrder.setCompany(company);
-
-		saleOrder.setMainInvoicingAddress(clientPartner.getMainInvoicingAddress());
-		saleOrder.setDeliveryAddress(clientPartner.getDeliveryAddress());
-
+		saleOrder.setMainInvoicingAddress(partnerService.getInvoicingAddress(clientPartner));
+		saleOrder.setDeliveryAddress(partnerService.getDeliveryAddress(clientPartner));
+		
 		if(priceList == null)  {
 			priceList = clientPartner.getSalePriceList();
 		}

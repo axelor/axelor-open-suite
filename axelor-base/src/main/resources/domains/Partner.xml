@@ -28,8 +28,7 @@
     
     <string name="languageSelect" title="Language" selection="select.language" massUpdate="true" help="true"/>
     <many-to-one name="parentPartner" ref="com.axelor.apps.base.db.Partner" title="Mother company" massUpdate="true"/>
-    <many-to-one name="mainInvoicingAddress" ref="com.axelor.apps.base.db.Address" title="Invoicing Address" help="true"/>
-    <many-to-one name="deliveryAddress" ref="com.axelor.apps.base.db.Address" title="Delivery Address" help="true"/>
+    <one-to-many name="partnerAddressList" ref="com.axelor.apps.base.db.PartnerAddress" title="Addresses" mappedBy="partner"/>
     
     <integer name="deliveryDelay" title="Delivery delay (days)"/>
     
@@ -74,6 +73,7 @@
  	<string name="fullName" title="Name" namecolumn="true"/>
 	 
    	<many-to-one name="fiscalPosition" ref="com.axelor.apps.account.db.FiscalPosition" title="Fiscal position" help="true"/>
+	<many-to-one name="contactAddress" ref="com.axelor.apps.base.db.Address" title="Address" />
 	
   </entity>
   

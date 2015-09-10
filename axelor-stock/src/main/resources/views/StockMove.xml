@@ -74,8 +74,8 @@
 	      <field name="toLocation" domain="self.company = :company" onChange="action-stock-move-set-to-address" colSpan="12" readonlyIf="statusSelect != 1" form-view="location-form" grid-view="location-grid"/>
 	      <field name="estimatedDate" colSpan="6" readonlyIf="statusSelect != 1"/>
 	      <field name="realDate" colSpan="6"/>
-	      <field name="fromAddress" showIf="typeSelect == 3" colSpan="12" form-view="address-form" grid-view="address-grid"/>
-	      <field name="toAddress" showIf="typeSelect == 2" colSpan="12" readonlyIf="statusSelect == 3 || statusSelect == 4" form-view="address-form" grid-view="address-grid"/>
+	      <field name="fromAddress" showIf="typeSelect == 3" colSpan="12" onSelect="action-stock-move-attrs-domain-address" form-view="address-partner-address-form"/>
+	      <field name="toAddress" showIf="typeSelect == 2" colSpan="12" onSelect="action-stock-move-attrs-domain-address" readonlyIf="statusSelect == 3 || statusSelect == 4" form-view="address-partner-address-form"/>
 	      <field name="isWithReturnSurplus" showIf="typeSelect &gt;= 2" colSpan="6"/>
 	      <field name="isWithBackorder" colSpan="6"/>
 	    </panel>
@@ -197,6 +197,11 @@
     	<attribute name="title" for="stockMoveLineList" expr="eval: com.axelor.i18n.I18n.get('Internal move line')" if="typeSelect == 1"/>
     	<attribute name="title" for="stockMoveLineList" expr="eval: com.axelor.i18n.I18n.get('Outgoing move line')" if="typeSelect == 2"/>
     	<attribute name="title" for="stockMoveLineList" expr="eval: com.axelor.i18n.I18n.get('Incoming move line')" if="typeSelect == 3"/>
+	</action-attrs>
+
+    <action-attrs name="action-stock-move-attrs-domain-address">
+		<attribute name="domain" for="fromAddress" expr="eval: &quot;self.id IN (${(partner?.partnerAddressList?.findAll{it.isDeliveryAddr}.collect{it.address.id}+[null]).join(',')})&quot;" />
+		<attribute name="domain" for="toAddress" expr="eval: &quot;self.id IN (${(partner?.partnerAddressList?.findAll{it.isDeliveryAddr}.collect{it.address.id}+[null]).join(',')})&quot;" />
     </action-attrs>
     
     <action-record name="action-stock-move-record-draft" model="com.axelor.apps.stock.db.StockMove">

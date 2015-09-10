@@ -13,7 +13,7 @@
 	</grid>
 	
 	<form name="address-form" title="Address" model="com.axelor.apps.base.db.Address" 
-	onSave="action-group-base-address-onsave,save,action-base-address-method-check-lat-lang" onNew="default-address-record" width="large">
+	onSave="action-group-base-address-onsave,save,action-base-address-method-check-lat-lang"  onNew="default-address-record" width="large" >
 		<panel name="main" title="Address details" colSpan="12">
 			<field name="addressL2"  placeholder="e.g. Financial department, CEO"/>
 			<field name="addressL3"  placeholder="e.g. Building A, Entry 2, 2nd Floor, Door 2E"/>
@@ -22,6 +22,35 @@
 			<field name="commune" onChange="action-address-change-commune" form-view="commune-form" grid-view="commune-grid"/>
 			<field name="addressL6"  required="true"/>
 			<field name="addressL7Country" required="true" form-view="country-form" grid-view="country-grid"/>
+			<button-group colSpan="6">
+				<button name="map" title="View map" icon="fa-map-marker" onClick="action-base-address-method-view-map" hideIf="$popup()"/>
+				<button name="directions" title="Get direction" icon="fa-location-arrow" onClick="action-base-address-method-view-direction" hideIf="$popup()"/>
+			</button-group>
+			<field name="isUsed" hidden="true" type="boolean"/>
+		</panel>
+		<panel title="QAS certification" colSpan="12" if="__config__.general.getHasQasValidation()">
+			<field name="certifiedOk" colSpan="4"/>
+			<panel colSpan="4">
+				<button name="validate" title="Validate"  onClick="com.axelor.apps.base.web.AddressController:validate,save"/>
+				<button name="select" title="Choose" onClick="com.axelor.apps.base.web.AddressController:select,save"/>
+			</panel>
+			<panel-related field="pickList" title="Pick list" colSpan="12" form="pick-list-entry-form" grid-view="pick-list-entry-grid"/>
+		</panel>
+	</form>
+	
+	<form name="address-partner-address-form" title="Address" model="com.axelor.apps.base.db.Address" 
+	onSave="action-group-base-address-onsave,save,action-base-address-method-create-partner-address,action-base-address-method-check-lat-lang"  onNew="default-address-record" width="large" >
+		<panel name="main" title="Address details" colSpan="12">
+			<field name="addressL2"  placeholder="e.g. Financial department, CEO"/>
+			<field name="addressL3"  placeholder="e.g. Building A, Entry 2, 2nd Floor, Door 2E"/>
+			<field name="addressL4" />
+			<field name="addressL5"  placeholder="e.g. POB 254"/>
+			<field name="commune" onChange="action-address-change-commune" form-view="commune-form" grid-view="commune-grid"/>
+			<field name="addressL6"  required="true"/>
+			<field name="addressL7Country" required="true" form-view="country-form" grid-view="country-grid"/>
+			<field name="isInvoicingAddr" type="boolean" showIf="$popup() &amp;&amp; id == null" title="Invoicing address" />
+			<field name="isDeliveryAddr" type="boolean" showIf="$popup() &amp;&amp; id == null" title="Delivery address" />
+			<field name="isDefault" type="boolean" showIf="$popup() &amp;&amp; id == null" title="Default" />
 			<button-group colSpan="6">
 				<button name="map" title="View map" icon="fa-map-marker" onClick="action-base-address-method-view-map" hideIf="$popup()"/>
 				<button name="directions" title="Get direction" icon="fa-location-arrow" onClick="action-base-address-method-view-direction" hideIf="$popup()"/>
@@ -79,4 +108,8 @@
 		<call class="com.axelor.apps.base.web.AddressController" method="checkLatLang"/>
 	</action-method>
 	
+	<action-method name="action-base-address-method-create-partner-address">
+		<call class="com.axelor.apps.base.web.AddressController" method="createPartnerAddress" />
+	</action-method>
+
 </object-views>

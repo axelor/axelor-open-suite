@@ -36,6 +36,7 @@ import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.stock.db.StockMove;
@@ -47,6 +48,7 @@ import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -284,7 +286,7 @@ public class StockMoveInvoiceServiceImpl extends StockMoveRepository implements 
 		 */
 
 		if (invoiceMainInvoicingAddress == null){
-			invoiceMainInvoicingAddress = invoiceClientPartner.getMainInvoicingAddress();
+			invoiceMainInvoicingAddress = Beans.get(PartnerService.class).getInvoicingAddress(invoiceClientPartner);
 		}
 
 		if (invoicePriceList == null){

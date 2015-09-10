@@ -21,8 +21,10 @@
 			    _country.name AS country_name
 			FROM
 				base_partner AS _partner
+			JOIN 
+				base_partner_address AS _partner_address ON _partner_address.partner = _partner.id AND _partner_address.is_default_addr = true
 			JOIN
-				base_address AS _address ON _address.id = _partner.main_invoicing_address
+				base_address AS _address ON _address.id = _partner_address.address
 			JOIN
 				base_country AS _country ON _country.id = _address.addressL7country
 			WHERE
@@ -68,8 +70,10 @@
 	      _country.name AS country_name
 	    FROM
 	      base_partner AS _partner
-	    JOIN
-	      base_address AS _address ON _address.id = _partner.main_invoicing_address
+	    JOIN 
+			base_partner_address AS _partner_address ON _partner_address.partner = _partner.id AND _partner_address.is_default_addr = true
+		JOIN
+			base_address AS _address ON _address.id = _partner_address.address
 	    JOIN
 	      base_country AS _country ON _country.id = _address.addressL7country
 	    WHERE
@@ -89,8 +93,10 @@
 	    addressCountry.name as _address_country
 	  FROM
 	    base_partner as self
+	  LEFT JOIN 
+		base_partner_address AS partner_address ON partner_address.partner = self.id AND partner_address.is_default_addr = true
 	  LEFT JOIN
-	    base_address as baseAddress ON baseAddress.id=self.main_invoicing_address
+	    base_address as baseAddress ON baseAddress.id=partner_address.address
 	  LEFT JOIN  
 	    base_country AS addressCountry ON addressCountry.id=baseAddress.addressl7country
 	  WHERE

@@ -3,6 +3,18 @@
     <property name="createdBy">Eclipse BIRT Designer Version 4.4.2.v201410272105 Build &lt;4.4.2.v20150217-1805></property>
     <list-property name="propertyBindings">
         <structure>
+            <property name="name">queryText</property>
+            <property name="id">24</property>
+        </structure>
+        <structure>
+            <property name="name">queryTimeOut</property>
+            <property name="id">24</property>
+        </structure>
+        <structure>
+            <property name="name">rowFetchSize</property>
+            <property name="id">24</property>
+        </structure>
+        <structure>
             <property name="name">odaURL</property>
             <property name="id">23</property>
             <expression name="value" type="javascript">params["DBName"].value</expression>
@@ -207,8 +219,8 @@
             </list-property>
             <xml-property name="queryText"><![CDATA[select Partner.name, Partner.first_name, Address.addressl4, Address.addressl6
 from base_partner AS Partner
-inner join base_address AS Address
-on (Partner.main_invoicing_address = Address.id)
+left join base_partner_address AS PartnerAddress on (PartnerAddress.partner = partner.id and PartnerAddress.is_default_addr is true and PartnerAddress.is_invoicing_addr = true)
+inner join base_address AS Address on (Address.id = PartnerAddress.address OR Address.id = Partner.contact_address)
 where Partner.id = ?]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">

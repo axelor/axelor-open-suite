@@ -42,6 +42,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
+import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.base.service.administration.GeneralServiceImpl;
 import com.axelor.exception.AxelorException;
@@ -185,7 +186,7 @@ public abstract class InvoiceGenerator  {
 		invoice.setPaymentMode(paymentMode);
 
 		if(mainInvoicingAddress == null)  {
-			mainInvoicingAddress = partner.getMainInvoicingAddress();
+			mainInvoicingAddress = Beans.get(PartnerService.class).getInvoicingAddress(partner);
 		}
 		if(mainInvoicingAddress == null)  {
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.INVOICE_GENERATOR_5), GeneralServiceImpl.EXCEPTION), IException.MISSING_FIELD);

@@ -33,9 +33,11 @@ import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.PartnerAddress;
 import com.axelor.apps.base.db.PartnerList;
 import com.axelor.apps.base.db.repo.AddressRepository;
 import com.axelor.apps.base.service.MapService;
+import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -73,10 +75,9 @@ public class AddressController {
 			while(it.hasNext()) {
 
 				Partner partner = it.next();
-				//def address = partner.mainInvoicingAddress
-				if (partner.getMainInvoicingAddress() != null) {
-					partner.getMainInvoicingAddress().getId();
-					Address address = addressRepo.find(partner.getMainInvoicingAddress().getId());
+				Address address = Beans.get(PartnerService.class).getInvoicingAddress(partner);
+				if (address != null) {
+				    address = addressRepo.find(address.getId());
 					if (!(address.getLatit() != null && address.getLongit() != null)) {
 						String qString = address.getAddressL4()+" ,"+address.getAddressL6();
 						LOG.debug("qString = {}", qString);

@@ -22,6 +22,7 @@ import java.util.Map;
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.Country;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.PartnerAddress;
 import com.axelor.apps.base.db.repo.CountryRepository;
 import com.axelor.apps.base.service.AddressService;
 import com.axelor.apps.base.service.PartnerService;
@@ -88,24 +89,20 @@ public class ConvertLeadWizardService {
 
 
 	public void setAddress(Partner partner, Address primaryAddress, Address otherAddress)  {
+
 		if(partner.getIsContact() && primaryAddress != null)  {
-			partner.setMainInvoicingAddress(primaryAddress);
+			partner.setContactAddress(primaryAddress);
 		}
 		else {
 			if(primaryAddress != null){
-				partner.setMainInvoicingAddress(primaryAddress);
+				partnerService.addPartnerAddress(partner, primaryAddress, true, true, otherAddress == null);
 			}
 			if(otherAddress != null){
-				partner.setDeliveryAddress(otherAddress);
-			}
-			else if(primaryAddress != null){
-				partner.setDeliveryAddress(primaryAddress);
+				partnerService.addPartnerAddress(partner, otherAddress, true, false, true);
 			}
 		}
-
 	}
-
-
+		
 	public Address createPrimaryAddress(Map<String, Object> context)  {
 
 		String addressL4 = (String) context.get("primaryAddress");

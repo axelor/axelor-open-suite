@@ -155,7 +155,7 @@
                 </ex-property>
             </list-property>
             <property name="odaDriverClass">org.postgresql.Driver</property>
-            <property name="odaURL">jdbc:postgresql://localhost:5432/</property>
+            <property name="odaURL">jdbc:postgresql://localhost:5432</property>
         </oda-data-source>
     </data-sources>
     <data-sets>
@@ -277,9 +277,8 @@
                     <property name="paramName">PartnerId</property>
                     <property name="nativeName"></property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">0</property>
+                    <property name="nativeDataType">-5</property>
                     <property name="position">1</property>
-                    <property name="isOptional">false</property>
                     <property name="isInput">true</property>
                     <property name="isOutput">false</property>
                 </structure>
@@ -515,7 +514,8 @@ AccountingSituation.balance_cust_account, AccountingSituation.balance_due_cust_a
 from base_partner as Partner
 left join auth_user as AuthUser on (Partner.user_id = AuthUser.id)
 left join base_company as Company on (Company.id = AuthUser.active_company)
-left join base_address as InvoicingAddress on (Partner.main_invoicing_address = InvoicingAddress.id)
+left join base_partner_address as PartnerAddress on (PartnerAddress.partner = Partner.id and PartnerAddress.is_invoicing_addr is true and PartnerAddress.is_default_addr is true)
+left join base_address as InvoicingAddress on (InvoicingAddress.id = PartnerAddress.address)
 left join message_email_address as EmailAddress on (Partner.email_address = EmailAddress.id)
 left join base_team as Team on (Partner.team = Team.id)
 left join account_accounting_situation as AccountingSituation on (AccountingSituation.partner = Partner.id and AccountingSituation.company = Company.id)
@@ -839,7 +839,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     <property name="paramName">PartnerId</property>
                     <property name="nativeName"></property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">-1</property>
+                    <property name="nativeDataType">-5</property>
                     <property name="position">1</property>
                     <property name="isInput">true</property>
                     <property name="isOutput">false</property>
@@ -996,9 +996,11 @@ LEFT JOIN
 LEFT JOIN 	
 	base_partner AS ContactPartner ON (ContactPartner.id = ContactParnerSet.contact_partner_set)
 LEFT JOIN	
-	message_email_address AS EmailAddress ON (ContactPartner.email_address = EmailAddress.id)
+	message_email_address AS EmailAddress ON (ContactPartner.email_address = EmailAddress.id)	
+LEFT JOIN 
+	base_partner_address AS PartnerAddress ON (PartnerAddress.partner = Partner.id AND is_default_addr IS true AND is_delivery_addr IS true)
 LEFT JOIN	
-	base_address AS DeliveryAddress ON (ContactPartner.delivery_address = DeliveryAddress.id)
+	base_address AS DeliveryAddress ON (PartnerAddress.address = DeliveryAddress.id)
 WHERE Partner.id = ?]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
@@ -1012,7 +1014,7 @@ WHERE Partner.id = ?]]></xml-property>
             <design:name></design:name>
             <design:position>1</design:position>
           </design:identifier>
-          <design:nativeDataTypeCode>-1</design:nativeDataTypeCode>
+          <design:nativeDataTypeCode>-5</design:nativeDataTypeCode>
           <design:precision>0</design:precision>
           <design:scale>0</design:scale>
           <design:nullability>Unknown</design:nullability>
@@ -1443,9 +1445,79 @@ ORDER BY SaleOrder.order_date desc
                     <property name="isInput">true</property>
                 </structure>
             </list-property>
-            <structure name="cachedMetaData"/>
+            <structure name="cachedMetaData">
+                <list-property name="resultSet">
+                    <structure>
+                        <property name="position">1</property>
+                        <property name="name">id</property>
+                        <property name="dataType">decimal</property>
+                    </structure>
+                    <structure>
+                        <property name="position">2</property>
+                        <property name="name">created_on</property>
+                        <property name="dataType">date-time</property>
+                    </structure>
+                    <structure>
+                        <property name="position">3</property>
+                        <property name="name">end_date_time</property>
+                        <property name="dataType">date-time</property>
+                    </structure>
+                    <structure>
+                        <property name="position">4</property>
+                        <property name="name">start_date_time</property>
+                        <property name="dataType">date-time</property>
+                    </structure>
+                    <structure>
+                        <property name="position">5</property>
+                        <property name="name">full_name</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">6</property>
+                        <property name="name">type_select</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                </list-property>
+            </structure>
             <property name="dataSource">Data Source</property>
-            <list-property name="resultSet"/>
+            <list-property name="resultSet">
+                <structure>
+                    <property name="position">1</property>
+                    <property name="name">id</property>
+                    <property name="nativeName">id</property>
+                    <property name="dataType">decimal</property>
+                </structure>
+                <structure>
+                    <property name="position">2</property>
+                    <property name="name">created_on</property>
+                    <property name="nativeName">created_on</property>
+                    <property name="dataType">date-time</property>
+                </structure>
+                <structure>
+                    <property name="position">3</property>
+                    <property name="name">end_date_time</property>
+                    <property name="nativeName">end_date_time</property>
+                    <property name="dataType">date-time</property>
+                </structure>
+                <structure>
+                    <property name="position">4</property>
+                    <property name="name">start_date_time</property>
+                    <property name="nativeName">start_date_time</property>
+                    <property name="dataType">date-time</property>
+                </structure>
+                <structure>
+                    <property name="position">5</property>
+                    <property name="name">full_name</property>
+                    <property name="nativeName">full_name</property>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="position">6</property>
+                    <property name="name">type_select</property>
+                    <property name="nativeName">type_select</property>
+                    <property name="dataType">integer</property>
+                </structure>
+            </list-property>
             <xml-property name="queryText"><![CDATA[select Event.id, Event.created_on, Event.end_date_time, Event.start_date_time, AuthUser.full_name, Event.type_select
 from base_partner as Partner
 inner join crm_event as Event on(Event.client_partner = Partner.id)

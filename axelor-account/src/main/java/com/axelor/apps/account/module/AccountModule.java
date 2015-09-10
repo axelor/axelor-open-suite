@@ -18,6 +18,7 @@
 package com.axelor.apps.account.module;
 
 import com.axelor.app.AxelorModule;
+import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.repo.BankStatementManagementRepository;
 import com.axelor.apps.account.db.repo.BankStatementRepository;
 import com.axelor.apps.account.db.repo.InvoiceManagementRepository;
@@ -34,6 +35,7 @@ import com.axelor.apps.account.service.AddressServiceAccountImpl;
 import com.axelor.apps.account.service.FiscalPositionServiceAccountImpl;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.InvoiceServiceImpl;
+import com.axelor.apps.base.db.IPartner;
 import com.axelor.apps.base.db.repo.PartnerBaseRepository;
 import com.axelor.apps.base.service.AddressServiceImpl;
 import com.axelor.apps.base.service.tax.AccountManagementServiceImpl;
@@ -67,5 +69,7 @@ public class AccountModule extends AxelorModule {
         bind(InvoiceService.class).to(InvoiceServiceImpl.class);
 
         bind(PartnerBaseRepository.class).to(PartnerAccountRepository.class);
+        
+        IPartner.modelPartnerFieldMap.put(Invoice.class.getName(), "partner");
     }
 }

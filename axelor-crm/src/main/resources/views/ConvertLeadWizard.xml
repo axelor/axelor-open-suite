@@ -35,7 +35,6 @@
 						<field name="fax"/>
 					</editor>
 				</field>
-			<!-- 			<field name="mainInvoicingAddress" title="Address"/>    -->
 						<label title="Address"/>
 						<field name="primaryAddress" placeholder="Address" showTitle="false" type="string" colSpan="12"/>
 						<field name="primaryCity" placeholder="City" showTitle="false" type="string" colSpan="4"/>
@@ -291,7 +290,6 @@
 			<field name="emailAddress" canSelect="false" form-view="email-address-simple-form"/>
 			<field name="fax"/>
 			
-<!-- 			<field name="mainInvoicingAddress" title="Address"/>    -->
 			<panel title="Address" css="address-list">
 				<field name="primaryAddress" title="Address" widget="STRING" type="STRING" colSpan="12"/>
 				<field name="primaryCity" title="City" colSpan="4"/>

@@ -78,6 +78,13 @@
 		<bind to="emailAddress" search="self.address = :email">
 			<bind to="address" column="email" />
 		</bind>
+		<bind to="partnerAddressList" search="self.address.importId = :address" if="address != null &amp;&amp; isContact == 'false'">
+		    <bind to="address" search="self.importId = :address" update="true" />
+		    <bind to="isInvoicingAddr" eval="true" />
+		    <bind to="isDeliveryAddr" eval="true" />
+		    <bind to="isDefaultAddr" eval="true" />
+		</bind>
+		<bind to="contactAddress" search="self.importId = :address" if="address != null &amp;&amp; isContact == 'true'" update="true" />
 	</input>
 	
 	<!-- A BESOIN DE PARTNER -->
