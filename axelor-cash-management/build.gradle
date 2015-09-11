@@ -5,6 +5,9 @@ module {
 	title "Axelor cash management"
 
 	// module dependencies
+	
+	removable true
+	
 	module "modules:axelor-human-resource"
 	module "modules:axelor-supplychain"
 }

@@ -14,11 +14,6 @@
 		<series key="charge" groupBy="machine" type="line"/>
 	</chart>
 	
-	
-	<action-record name="action.production.chart.set.from.date.to.date" model="com.axelor.apps.production.db.Machine">
- 	    <field name="toDateTime" expr="eval:__datetime__.plusDays(1)" />
- 	    <field name="fromDateTime" expr="eval:__datetime__"/>
- 	</action-record>
  	
  	<chart name="chart.planned.charge.by.machine.minutes" title="Charge previsionnelle par machine" onInit="action.production.chart.set.from.date.to.date">
 		<search-fields>
