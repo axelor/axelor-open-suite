@@ -139,7 +139,7 @@
                 </ex-property>
             </list-property>
             <property name="odaDriverClass">org.postgresql.Driver</property>
-            <property name="odaURL">jdbc:postgresql://localhost:5432/</property>
+            <property name="odaURL">jdbc:postgresql://localhost:5432</property>
         </oda-data-source>
     </data-sources>
     <data-sets>
@@ -976,10 +976,10 @@ group by invoice.invoice_id,invoice.invoice_date]]></xml-property>
             <xml-property name="queryText"><![CDATA[select emp.id as emp_id,
        emp.name as emp_name,
        sum(expl.untaxed_amount) as exp_amt
-from human_resource_expense_line expl
-left join human_resource_expense expense on (expense.id = expl.expense)
+from hr_expense_line expl
+left join hr_expense expense on (expense.id = expl.expense)
 left join auth_user authuser on (authuser.id = expense.user_id)
-left join human_resource_employee emp on (emp.user_id = authuser.id)
+left join hr_employee emp on (emp.user_id = authuser.id)
 left join project_project_task task on (task.id = expl.project_task)
 where (task.project = ? or task.id = ?)
 and expense.status_select = 3
@@ -1148,10 +1148,10 @@ group by emp.id,emp.name]]></xml-property>
        sum(tml.duration_stored) as total_hours,
        emp.hourly_rate as emp_rate,
        sum(tml.duration_stored)*emp.hourly_rate as emp_cost
-from human_resource_timesheet_line tml
-left join human_resource_timesheet tm on (tm.id = tml.affected_to_time_sheet)
+from hr_timesheet_line tml
+left join hr_timesheet tm on (tm.id = tml.affected_to_time_sheet)
 left join auth_user usr on (usr.id = tm.user_id)
-left join human_resource_employee emp on (emp.user_id = usr.id)
+left join hr_employee emp on (emp.user_id = usr.id)
 left join project_project_task task on (task.id = tml.project_task)
 where tm.status_select = 3 and (task.id = ? or task.project = ?)
 group by emp.id,emp.name,emp.hourly_rate]]></xml-property>
@@ -1743,18 +1743,18 @@ and invoice.operation_type_select in (1,2)
 group by month
 union
 select to_char(expense_date,'YYYY-MM') as month,sum(expl.untaxed_amount) as cost
-from human_resource_expense_line expl
+from hr_expense_line expl
 left join project_project_task task on (task.id = expl.project_task)
-left join human_resource_expense expense on (expense.id = expl.expense)
+left join hr_expense expense on (expense.id = expl.expense)
 where (task.project = ? or task.id = ?)
 and expense.status_select = 3
 group by month
 union
 select to_char(date_val,'YYYY-MM') as month,sum(tml.duration_stored*emp.hourly_rate) as cost
-from human_resource_timesheet_line tml
-left join human_resource_timesheet tm on (tm.id = tml.affected_to_time_sheet)
+from hr_timesheet_line tml
+left join hr_timesheet tm on (tm.id = tml.affected_to_time_sheet)
 left join auth_user usr on (usr.id = tm.user_id)
-left join human_resource_employee emp on (emp.user_id = usr.id)
+left join hr_employee emp on (emp.user_id = usr.id)
 left join project_project_task task on (task.id = tml.project_task)
 where tm.status_select = 3 and (task.id = ? or task.project = ?)
 group by month

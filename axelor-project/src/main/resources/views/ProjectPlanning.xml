@@ -22,7 +22,7 @@
 			
 		</panel>
 		<panel>
-			<field name="$projectPlanningLineList" grid-view="project-my-planning-line-grid" title="Planning Lines" type="many-to-many" target="com.axelor.apps.project.db.ProjectPlanningLine" showTitle="false" canNew="false" canRemove="false" canSelect="false" onChange="action-project-planning-method-save" colSpan="12"/>
+			<field name="$projectPlanningLineList" grid-view="project-my-planning-line-grid" form-view="project-my-planning-line-form" title="Planning Lines" type="many-to-many" target="com.axelor.apps.project.db.ProjectPlanningLine" showTitle="false" canNew="false" canRemove="false" canSelect="false" onChange="action-project-planning-method-save" colSpan="12"/>
 		</panel>
 	    <panel>
 	    	<button name="seeMonth" title="See Month" colSpan="4"/>
@@ -45,7 +45,7 @@
 			
 		</panel>
 		<panel>
-			<field name="$projectPlanningLineList" grid-view="project-my-team-planning-line-grid" title="Planning Lines" type="many-to-many" target="com.axelor.apps.project.db.ProjectPlanningLine" showTitle="false" canNew="false" canRemove="false" canSelect="false" onChange="action-project-planning-method-save" colSpan="12"/>
+			<field name="$projectPlanningLineList" grid-view="project-my-team-planning-line-grid"  form-view="project-my-team-planning-line-form" title="Planning Lines" type="many-to-many" target="com.axelor.apps.project.db.ProjectPlanningLine" showTitle="false" canNew="false" canRemove="false" canSelect="false" onChange="action-project-planning-method-save" colSpan="12"/>
 		</panel>
 	    <panel>
 	    	<button name="seeMonth" title="See Month" colSpan="4"/>
