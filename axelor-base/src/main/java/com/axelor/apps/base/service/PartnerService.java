@@ -216,11 +216,14 @@ public class PartnerService extends PartnerRepository{
 	}
 
 
-	private Address getAddress(Partner partner, String query){
+	private Address getAddress(Partner partner, String querySpecific, String queryComman){
 
 		if(partner != null){
 			PartnerAddressRepository partnerAddressRepo = Beans.get(PartnerAddressRepository.class);
-			List<PartnerAddress> partnerAddressList = partnerAddressRepo.all().filter(query, partner.getId()).fetch();
+			List<PartnerAddress> partnerAddressList = partnerAddressRepo.all().filter(querySpecific, partner.getId()).fetch();
+			if(partnerAddressList.isEmpty()){
+				partnerAddressList = partnerAddressRepo.all().filter(queryComman, partner.getId()).fetch();
+			}
 			if(partnerAddressList.size() == 1){
 				return partnerAddressList.get(0).getAddress();
 			}
@@ -236,13 +239,14 @@ public class PartnerService extends PartnerRepository{
 
 	public Address getInvoicingAddress(Partner partner){
 
-		return getAddress(partner, "self.partner.id = ?1 AND self.isInvoicingAddr = true");
+		return getAddress(partner, "self.partner.id = ?1 AND self.isInvoicingAddr = true AND self.isDeliveryAddr = false AND self.isDefaultAddr = true",
+				"self.partner.id = ?1 AND self.isInvoicingAddr = true");
 	}
-
 
 	public Address getDeliveryAddress(Partner partner){
 
-		return getAddress(partner, "self.partner.id = ?1 AND self.isDeliveryAddr = true");
+		return getAddress(partner, "self.partner.id = ?1 AND self.isDeliveryAddr = true AND self.isInvoicingAddr = false AND self.isDefaultAddr = true",
+				"self.partner.id = ?1 AND self.isDeliveryAddr = true");
 	}
 
 	@Transactional
