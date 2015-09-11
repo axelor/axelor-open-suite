@@ -20,7 +20,13 @@
  	
  	<integer name="typeSelect" title="Type" selection="advance.payment.account.select"/>
  	 	 	
-  	
+  	    <extra-code><![CDATA[
+	
+	   	// STATUS SELECT
+		public static final int STATUS_ADVANCEPAYMENT = 1;
+		public static final int STATUS_PAYMENT = 2;
+	
+	]]></extra-code>
   	
   </entity>
 

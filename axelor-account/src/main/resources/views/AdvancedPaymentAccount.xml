@@ -16,8 +16,9 @@
 	<form name="advance-payment-account-form" title="Advance Payment" model="com.axelor.apps.account.db.AdvancePaymentAccount" onNew="action-advance-payment-account-new" width="large">
 		<panel>
 			<field name="amount"/>
-			<field name="currency"/>
 			<field name="advancePaymentDate"/>
+			<field name="typeSelect"/>
+			<field name="currency"/>
 		</panel>
 		<panel>
 	    	<field name="move" form-view="move-form" grid-view="move-grid"/>
@@ -30,6 +31,13 @@
     	<field name="currency" expr="eval: _parent?.currency"/>
     	<field name="advancePaymentDate" expr="eval: __date__"/>
     </action-record>
+    <!-- 
+    onChange="action-advance-payment-validate-change"
+    <action-method name="action-advance-payment-method-change">
+    	<call class="com.axelor.apps.supplychain.db.AdvancePaymentService" method="azeaze"/>
+    </action-method>
+     -->
+    
   
 	</object-views>
 	

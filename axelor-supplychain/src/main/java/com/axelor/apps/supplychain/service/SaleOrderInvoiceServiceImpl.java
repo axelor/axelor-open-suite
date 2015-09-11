@@ -28,15 +28,31 @@ import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.axelor.apps.account.db.Account;
+import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.AdvancePaymentAccount;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
+import com.axelor.apps.account.db.Journal;
+import com.axelor.apps.account.db.Move;
+import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
+import com.axelor.apps.account.service.MoveLineService;
+import com.axelor.apps.account.service.MoveService;
+import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceServiceImpl;
 import com.axelor.apps.account.service.invoice.generator.InvoiceGenerator;
 import com.axelor.apps.account.service.invoice.generator.InvoiceLineGenerator;
+import com.axelor.apps.account.service.payment.PaymentModeService;
+import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.Period;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductRepository;
+import com.axelor.apps.base.service.CurrencyConversionService;
+import com.axelor.apps.base.service.CurrencyService;
+import com.axelor.apps.base.service.PeriodService;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.sale.db.AdvancePayment;
 import com.axelor.apps.sale.db.SaleOrder;
@@ -66,6 +82,9 @@ public class SaleOrderInvoiceServiceImpl extends SaleOrderRepository implements 
 
 	@Inject
 	private SaleOrderLineRepository saleOrderLineRepo;
+	
+	@Inject
+	private AdvancePaymentService advancePaymentService;
 
 	@Inject
 	public SaleOrderInvoiceServiceImpl(GeneralService generalService) {
@@ -153,10 +172,7 @@ public class SaleOrderInvoiceServiceImpl extends SaleOrderRepository implements 
 		Invoice invoice = invoiceGenerator.generate();
 
 		invoiceGenerator.populate(invoice, this.createInvoiceLines(invoice, saleOrderLineList));
-
-		//function Advance Payment
-		
-		this.fillAdvancePayment(invoice, saleOrder, saleOrderLineList);
+		advancePaymentService.fillAdvancePayment(invoice, saleOrder, saleOrderLineList);
 		
 		this.fillInLines(invoice);
 
@@ -366,76 +382,6 @@ public class SaleOrderInvoiceServiceImpl extends SaleOrderRepository implements 
 		for (InvoiceLine invoiceLine : invoiceLineList) {
 			invoiceLine.setSaleOrder(invoice.getSaleOrder());
 		}
-	}
-	
-	public void fillAdvancePayment(Invoice invoice, SaleOrder saleOrder, List<SaleOrderLine> saleOrderLineList)
-	{
-		if(!saleOrder.getAdvancePaymentList().isEmpty())
-		{
-			BigDecimal total = BigDecimal.ZERO;
-			for (SaleOrderLine saleOrderLine : saleOrderLineList)
-				total = total.add(saleOrderLine.getInTaxTotal());
-			
-			for (AdvancePayment advancePayment : saleOrder.getAdvancePaymentList()) 
-			{
-				if(advancePayment.getAmountRemainingToUse().compareTo(BigDecimal.ZERO) != 0 && total.compareTo(BigDecimal.ZERO) != 0)
-				{
-					if(total.max(advancePayment.getAmountRemainingToUse()) == total)
-					{
-						
-						total = total.subtract(advancePayment.getAmountRemainingToUse());
-						AdvancePaymentAccount advancePaymentAccount = null;
-						advancePaymentAccount = createAdvancePaymentAccount(advancePayment, invoice, false, total);
-						List <AdvancePaymentAccount> APAlist = new ArrayList<>();
-						
-						if (invoice.getAdvancePaymentList() != null)
-							APAlist.addAll(invoice.getAdvancePaymentList());
-						
-						APAlist.add(advancePaymentAccount);
-						invoice.setAdvancePaymentList(APAlist);
-						advancePayment.setAmountRemainingToUse(BigDecimal.ZERO);
-					}
-					else
-					{
-						advancePayment.setAmountRemainingToUse(advancePayment.getAmountRemainingToUse().subtract(total));
-						AdvancePaymentAccount advancePaymentAccount = null;
-						advancePaymentAccount = createAdvancePaymentAccount(advancePayment, invoice, true, total);
-						List <AdvancePaymentAccount> APAlist = new ArrayList<>();
-						if (invoice.getAdvancePaymentList() != null)
-						 APAlist.addAll(invoice.getAdvancePaymentList());
-						APAlist.add(advancePaymentAccount);
-						invoice.setAdvancePaymentList(APAlist);
-						
-						total = BigDecimal.ZERO;
-					}
-				}
-				
-			}
-			
-		
-		}
-		
-		
-		
-	}
-
-	public AdvancePaymentAccount createAdvancePaymentAccount(AdvancePayment advancePayment, Invoice invoice, boolean isFinished, BigDecimal total)
-	{
-		AdvancePaymentAccount advancePaymentAccount = new AdvancePaymentAccount();
-		
-		advancePaymentAccount.setAdvancePaymentDate(advancePayment.getAdvancePaymentDate());
-		advancePaymentAccount.setCurrency(advancePayment.getCurrency());
-		advancePaymentAccount.setMove(advancePayment.getMove());
-		advancePaymentAccount.setInvoice(invoice);
-		advancePaymentAccount.setPaymentMode(advancePayment.getPaymentMode());
-		advancePaymentAccount.setTypeSelect(1);
-		
-		if(isFinished)
-			advancePaymentAccount.setAmount(total);
-		else
-			advancePaymentAccount.setAmount(advancePayment.getAmountRemainingToUse());
-		
-		return advancePaymentAccount;
 	}
 
 	@Override

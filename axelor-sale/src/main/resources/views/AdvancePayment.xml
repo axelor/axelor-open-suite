@@ -5,10 +5,10 @@
     
     <grid name="advance-payment-grid" editable="true" title="Advance Payment list" model="com.axelor.apps.sale.db.AdvancePayment" orderBy="advancePaymentDate"
     	onNew="action-advance-payment-new">
-	    <field name="amount"/>
+	    <field name="amount" onChange="action-advance-payment-change-amount"/>
 	    <field name="amountRemainingToUse" if-module="axelor-supplychain"/>
 	    <field name="advancePaymentDate"/>
-	    <field name="currency"/>
+	    <field name="currency" />
 	    <field name="paymentMode" if-module="axelor-supplychain"/>
 	    <field name="move" if-module="axelor-supplychain"/>
 	</grid>
@@ -33,10 +33,10 @@
     </action-record>
   
     <action-record name="action-advance-payment-change-amount" model="com.axelor.apps.sale.db.AdvancePayment">
-    	<field name="amountRemainingToUse" if="__self__" expr="eval: __self__?.amountRemainingToUse - (__self__?.amount -__this__?.amount)"/>
-    	<field name="amountRemainingToUse" if="!__self__" expr="eval: amount"/> 
+    	<field name="amountRemainingToUse" if="id != null &amp;&amp; id &gt; 0" expr="eval: __self__?.amountRemainingToUse - (__self__?.amount -__this__?.amount)"/>
+    	<field name="amountRemainingToUse" if="id == null || id &lt;= 0" expr="eval: amount"/> 
     </action-record>
-	  <!--  -->
+	
 	
 	</object-views>
 	

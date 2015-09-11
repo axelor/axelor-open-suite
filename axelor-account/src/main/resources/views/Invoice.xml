@@ -50,7 +50,7 @@
     </grid>
     
 	<form name="invoice-form" title="Invoice" model="com.axelor.apps.account.db.Invoice"  
-	onNew="action-account-invoice-onnew-group" onLoad="action-account-invoice-onload-group">
+	onNew="action-account-invoice-onnew-group" onLoad="action-account-invoice-onload-group" onSave="action-invoice-method-advance-payment-account-compute">
 	
 		<toolbar>
 		  <button name="showInvoice" title="Print" icon="fa-print" onClick="save,action-invoice-method-show-invoice"/>
@@ -144,7 +144,7 @@
 				<field name="note" showTitle="false" colSpan="12"/>
 			</panel>
 			<panel title="Payments/Advance Payments">
-				<panel-related field="advancePaymentList" colSpan="12" grid-view="advance-payment-account-grid" form-view="advance-payment-account-form"/>
+				<panel-related field="advancePaymentList" colSpan="12" onChange="action-sale-order-method-advance-payment-change, save" grid-view="advance-payment-account-grid" form-view="advance-payment-account-form"/>
 			</panel>
 		</panel-tabs>
 	
@@ -398,6 +398,10 @@
     <action-method name="action-invoice-method-get-journal">
         <call class="com.axelor.apps.account.web.InvoiceController" method="getJournal"/>
     </action-method>
+    
+    <action-method name="action-invoice-method-advance-payment-account-compute">
+		<call method="changeOnInvoiceAdvancePayment" class="com.axelor.apps.supplychain.web.InvoiceController"/>	
+	</action-method>
 
 	<search-filters name="customer-invoices-filters" model="com.axelor.apps.account.db.Invoice" title="Customer invoices filters">
 		<filter title="Validated">

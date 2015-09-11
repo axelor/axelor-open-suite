@@ -21,18 +21,26 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.axelor.apps.account.db.AdvancePaymentAccount;
 import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
+import com.axelor.apps.sale.db.AdvancePayment;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
+import com.axelor.apps.sale.db.repo.AdvancePaymentRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.stock.db.Location;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.supplychain.db.Subscription;
 import com.axelor.apps.supplychain.db.repo.SubscriptionRepository;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;
+import com.axelor.apps.supplychain.service.AdvancePaymentService;
 import com.axelor.apps.supplychain.service.SaleOrderInvoiceServiceImpl;
 import com.axelor.apps.supplychain.service.SaleOrderPurchaseService;
 import com.axelor.apps.supplychain.service.SaleOrderServiceStockImpl;
@@ -50,6 +58,8 @@ import com.google.common.base.Joiner;
 import com.google.inject.Inject;
 
 public class SaleOrderController{
+	
+	private static final Logger LOG = LoggerFactory.getLogger(SaleOrderInvoiceServiceImpl.class);
 
 	@Inject
 	private SaleOrderRepository saleOrderRepo;
@@ -59,6 +69,9 @@ public class SaleOrderController{
 
 	@Inject
 	private SaleOrderInvoiceServiceImpl saleOrderInvoiceServiceImpl;
+	
+	@Inject
+	private AdvancePaymentService advancePaymentService;
 
 
 	public void createStockMove(ActionRequest request, ActionResponse response) throws AxelorException {
@@ -303,5 +316,48 @@ public class SaleOrderController{
 		Beans.get(TimetableService.class).updateTimetable(saleOrder);
 		response.setValues(saleOrder);
 	}
-
+	
+	public void addMoveToAdvancePayment(ActionRequest request, ActionResponse response) throws AxelorException
+	{
+		LOG.debug("Dans le Controller");
+		
+		SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+		SaleOrder saleOrderDB = Beans.get(SaleOrderRepository.class).find(saleOrder.getId());
+		
+		int y = 1;
+		for (AdvancePayment advancePaymentDB : saleOrderDB.getAdvancePaymentList()) 
+		{
+			LOG.debug("ForEach advancePaymentDB No {}", y);
+			LOG.debug("MOVE de BDD {}", advancePaymentDB.getMove());
+			boolean isInContext = false;
+			for (AdvancePayment advancePaymentContext : saleOrder.getAdvancePaymentList()) 
+			{
+				if (advancePaymentDB.getId() == advancePaymentContext.getId())
+					isInContext = true;
+			}
+			if(!isInContext)
+			{
+				try{
+					LOG.debug("L'écriture de la Ligne No {} (Move = {}) va etre supprimée !", y, advancePaymentDB.getMove().getReference());
+					JPA.remove(advancePaymentDB.getMove());
+				}catch(Exception e){
+					throw new AxelorException(I18n.get(/*$$(*/ "Impossible to delete the Move, due to 'to pay' Amount different from total Amount" /*)*/), IException.CONFIGURATION_ERROR);
+				}
+			}
+			y ++;
+		}
+		
+		int x = 1;
+		for (AdvancePayment advancePayment : saleOrder.getAdvancePaymentList()) 
+		{
+			LOG.debug("Appel Service : Advance Payment No {}", x);
+			advancePaymentService.addMoveToAdvancePayment(saleOrderDB, advancePayment);
+			x ++;
+		}
+		
+		//AdvancePayment advancePayment = request.getContext().asType(AdvancePayment.class);
+		
+		response.setReload(true);
+	}
+	
 }
