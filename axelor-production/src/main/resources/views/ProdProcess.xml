@@ -11,13 +11,27 @@
     </grid>
     
     <form name="prod-process-form" title="Production process" model="com.axelor.apps.production.db.ProdProcess"
-    	onSave="action-prod-process-record-name" width="large">
+    	onSave="action-prod-process-method-validate-prod-process" width="large">
 		<panel>
 	    	<field name="name"/>
 	    	<field name="code"/>
 	        <field name="location" required="true" grid-view="location-grid" form-view="location-form"/>
+	        <field name="isConsProOnOperation" showIf="$popup()" onChange="action-prod-process-validate-is-cons-pro"/>
         </panel>
         <panel-related field="prodProcessLineList" colSpan="12" grid-view="prod-process-line-grid" form-view="prod-process-line-form"/>        
     </form>
+    
+    <action-validate name="action-prod-process-validate-is-cons-pro">
+    	<error message="You can't manage the consumed products on operations because this production process is related to several bills of material"
+    		if="isConsProOnOperation == true &amp;&amp; __repo__.of(BillOfMaterial).all().filter('self.prodProcess.id = ?1', __this__.id).fetch().size &gt; 1" action="action-prod-process-record-false"/>
+    </action-validate>
+    
+    <action-record name="action-prod-process-record-false" model="com.axelor.apps.production.db.ProdProcess">
+    	<field name="isConsProOnOperation" expr="false"/>
+    </action-record>
+    
+    <action-method name="action-prod-process-method-validate-prod-process">
+    	<call class="com.axelor.apps.production.web.ProdProcessController" method="validateProdProcess"/>
+    </action-method>
     
 </object-views>

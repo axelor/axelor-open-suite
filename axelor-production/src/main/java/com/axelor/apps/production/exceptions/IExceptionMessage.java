@@ -86,5 +86,11 @@ public interface IExceptionMessage {
 	 * Production Order Controller
 	 */
 	static final String PRODUCTION_ORDER_NO_GENERATION = /*$$(*/ "No production order has been generated" /*)*/;
+	
+	/**
+	 * ProdProcess service
+	 */
+	static final String PROD_PROCESS_USELESS_PRODUCT = /*$$(*/ "The product %s is not in the bill of material related to this production process" /*)*/;
+	static final String PROD_PROCESS_MISS_PRODUCT = /*$$(*/ "Not enough quantity in products to consume for: %s" /*)*/;
 }
 

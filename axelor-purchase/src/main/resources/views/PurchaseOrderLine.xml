@@ -35,6 +35,18 @@
         <field name="saleMinPrice"/>
         <field name="salePrice" hidden="true"/>
     </grid>
+    
+    <grid name="purchase-order-line-invoicing-project-grid" title="PO lines" model="com.axelor.apps.purchase.db.PurchaseOrderLine">
+    	<hilite background="danger" if="salePrice &lt; saleMinPrice"/>
+    	<field name="purchaseOrder" form-view="purchase-order-form" grid-view="purchase-order-grid"/>
+    	<field name="supplierPartner" form-view="partner-form" grid-view="partner-grid"/>
+    	<field name="productName"/>
+        <field name="qty"/>
+        <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
+        <field name="price"/>
+        <field name="exTaxTotal"/>
+	    <field name="inTaxTotal"/>
+    </grid>
 
 	<form name="purchase-order-line-form" title="PO line" 
 		model="com.axelor.apps.purchase.db.PurchaseOrderLine" 

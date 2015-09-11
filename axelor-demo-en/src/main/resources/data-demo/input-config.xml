@@ -350,7 +350,7 @@
 <!-- 	  	PRODUCTION -->
 	<input file="production_machine.csv" separator=";" type="com.axelor.apps.production.db.Machine"/>
 	
-	<input file="production_prodResource.csv" separator=";" type="com.axelor.apps.production.db.ProdResource"/>
+	<input file="production_workCenter.csv" separator=";" type="com.axelor.apps.production.db.WorkCenter"/>
 	
 	<input file="production_prodHumanResource.csv" separator=";" type="com.axelor.apps.production.db.ProdHumanResource"/>
 	

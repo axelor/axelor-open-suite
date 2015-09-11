@@ -13,6 +13,8 @@
   	<string name="name" title="Label" required="true"/>
   	<string name="code" title="Code"/>
   	
+  	<boolean name="isConsProOnOperation" title="Manage consumed products on operations?"/>
+  	
   	<many-to-one name="location" ref="com.axelor.apps.stock.db.Location" title="Production location"/>
   	
   </entity>

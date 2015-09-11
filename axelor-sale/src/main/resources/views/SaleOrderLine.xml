@@ -5,7 +5,6 @@
     
     <grid name="sale-order-line-grid" canMove="true" title="SO lines" model="com.axelor.apps.sale.db.SaleOrderLine" orderBy="sequence">
 	    <field name="productName"/>
-	    <field name="estimatedDelivDate"/>
 	    <field name="qty"/>
 	    <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
 	    <field name="price"/>

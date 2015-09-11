@@ -25,6 +25,8 @@ import java.util.Map;
 import java.util.Set;
 
 import org.joda.time.LocalDateTime;
+import org.joda.time.format.DateTimeFormatter;
+import org.joda.time.format.ISODateTimeFormat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -209,16 +211,17 @@ public class OperationOrderController {
 	
 	public void chargeByMachineHours(ActionRequest request, ActionResponse response) {
 		List<Map<String, Object>> dataList = new ArrayList<Map<String, Object>>();
-		LocalDateTime fromDateTime = new LocalDateTime().minusHours(48);
-		LocalDateTime toDateTime = new LocalDateTime().plusHours(48);
+		DateTimeFormatter parser = ISODateTimeFormat.dateTime();
+		LocalDateTime fromDateTime = LocalDateTime.parse(request.getContext().get("fromDateTime").toString(),parser);
+		LocalDateTime toDateTime = LocalDateTime.parse(request.getContext().get("toDateTime").toString(),parser);
 		LocalDateTime itDateTime = new LocalDateTime(fromDateTime);
 		
 		while(!itDateTime.isAfter(toDateTime)){
 			List<OperationOrder> operationOrderList = operationOrderRepo.all().filter("self.plannedStartDateT <= ?1 AND self.plannedEndDateT >= ?1", itDateTime).fetch();
 			Map<String, BigDecimal> map = new HashMap<String, BigDecimal>();
 			for (OperationOrder operationOrder : operationOrderList) {
-				if(operationOrder.getProdResource() != null && operationOrder.getProdResource().getMachine() != null){
-					String machine = operationOrder.getProdResource().getMachine().getName();
+				if(operationOrder.getWorkCenter() != null && operationOrder.getWorkCenter().getMachine() != null){
+					String machine = operationOrder.getWorkCenter().getMachine().getName();
 					if(map.containsKey(machine)){
 						map.put(machine, map.get(machine).add(BigDecimal.ONE));
 					}
@@ -245,16 +248,17 @@ public class OperationOrderController {
 	
 	public void chargeByMachineMinutes(ActionRequest request, ActionResponse response) {
 		List<Map<String, Object>> dataList = new ArrayList<Map<String, Object>>();
-		LocalDateTime fromDateTime = new LocalDateTime().minusHours(48);
-		LocalDateTime toDateTime = new LocalDateTime().plusHours(48);
+		DateTimeFormatter parser = ISODateTimeFormat.dateTime();
+		LocalDateTime fromDateTime = LocalDateTime.parse(request.getContext().get("fromDateTime").toString(),parser);
+		LocalDateTime toDateTime = LocalDateTime.parse(request.getContext().get("toDateTime").toString(),parser);
 		LocalDateTime itDateTime = new LocalDateTime(fromDateTime);
 		
 		while(!itDateTime.isAfter(toDateTime)){
 			List<OperationOrder> operationOrderList = operationOrderRepo.all().filter("self.plannedStartDateT <= ?1 AND self.plannedEndDateT >= ?1", itDateTime).fetch();
 			Map<String, BigDecimal> map = new HashMap<String, BigDecimal>();
 			for (OperationOrder operationOrder : operationOrderList) {
-				if(operationOrder.getProdResource() != null && operationOrder.getProdResource().getMachine() != null){
-					String machine = operationOrder.getProdResource().getMachine().getName();
+				if(operationOrder.getWorkCenter() != null && operationOrder.getWorkCenter().getMachine() != null){
+					String machine = operationOrder.getWorkCenter().getMachine().getName();
 					if(map.containsKey(machine)){
 						map.put(machine, map.get(machine).add(BigDecimal.ONE));
 					}

@@ -117,6 +117,7 @@
 		<attribute name="hidden" for="refuseButton" expr="eval: !(statusSelect == 2 &amp;&amp; (__user__ == user?.employee?.manager || (__user__ == user &amp;&amp; user?.employee?.manager == null)))"/>
 		<attribute name="readonly" for="head" expr="eval: (statusSelect == 2 &amp;&amp; !(__user__ == user?.employee?.manager || (__user__ == user &amp;&amp; user?.employee?.manager == null))) || statusSelect &gt; 2"/>
 		<attribute name="hidden" for="generateLinesButton" expr="eval: (statusSelect == 2 &amp;&amp; !(__user__ == user?.employee?.manager || (__user__ == user &amp;&amp; user?.employee?.manager == null))) || statusSelect &gt; 2"/>
+		<attribute name="hidden" for="getTimeFromTask" expr="eval: (statusSelect == 2 &amp;&amp; !(__user__ == user?.employee?.manager || (__user__ == user &amp;&amp; user?.employee?.manager == null))) || statusSelect &gt; 2"/>
 		<attribute name="readonly" for="timesheetLineList" expr="eval: (statusSelect == 2 &amp;&amp; !(__user__ == user?.employee?.manager || (__user__ == user &amp;&amp; user?.employee?.manager == null))) || statusSelect &gt; 2"/>
 	</action-attrs>
 	

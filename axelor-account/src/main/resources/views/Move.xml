@@ -19,8 +19,8 @@
         <field name="statusSelect"/>
     </grid>
     
-	<form name="move-form" title="Account move" model="com.axelor.apps.account.db.Move"    canDelete="false" 
-	onNew="action-account-move-onnew-group" onSave="save,action-move-record-draft-sequence">
+	<form name="move-form" title="Account move" model="com.axelor.apps.account.db.Move" canDelete="false" 
+	onNew="action-account-move-onnew-group">
 	
 		<toolbar>
 			<button name="reverse" title="Reverse" icon="fa-exchange" onClick="action-move-method-generate-reverse-move"/>
@@ -78,8 +78,6 @@
 	
 	<action-group name="action-group-account-move-validate-click">
 		<action name="save"/>
-		<action name="action-move-record-draft-sequence"/>
-		<action name="save"/>
 		<action name="action-move-method-validate"/>
 		<action name="save"/>
 	</action-group>
@@ -93,10 +91,6 @@
 		<field name="date" expr="eval:__config__.generalService.getTodayDate()" if="date == null"/>
     </action-record>
     
-    <action-record name="action-move-record-draft-sequence" model="com.axelor.apps.account.db.Move">
-    	<field name="reference" expr="eval: '*'+id"/>
-    </action-record>
-   
 	<!-- ACTION ATTRS -->
 	<action-attrs name="action-move-attrs-set-domain-company">
 	  <attribute name="domain" for="company" if="__user__.activeCompany != null" expr="eval: &quot; self.id = ${__user__.activeCompany.id}  &quot;"/>

@@ -232,10 +232,10 @@
     
     <action-attrs name="action-event-hide-private">
     	<attribute name="hidden" for="meetingGeneral" expr="eval: (__user__ != user &amp;&amp; !internalGuestSet.contains(__user__)) &amp;&amp; visibilitySelect == 2"/>
-    	<attribute name="hidden" for="meetingAttributes" expr="eval: (__user__ != user &amp;&amp; !internalGuestSet.contains(__user__)) &amp;&amp;  &amp;&amp; visibilitySelect == 2"/>
-    	<attribute name="hidden" for="meetingGuests" expr="eval: (__user__ != user &amp;&amp; !internalGuestSet.contains(__user__)) &amp;&amp;  &amp;&amp; visibilitySelect == 2"/>
-    	<attribute name="hidden" for="meetingLinked" expr="eval: (__user__ != user &amp;&amp; !internalGuestSet.contains(__user__)) &amp;&amp;  &amp;&amp; visibilitySelect == 2"/>
-    	<attribute name="hidden" for="panelMail" expr="eval: (__user__ != user &amp;&amp; !internalGuestSet.contains(__user__)) &amp;&amp;  &amp;&amp; visibilitySelect == 2"/>
+    	<attribute name="hidden" for="meetingAttributes" expr="eval: (__user__ != user &amp;&amp; !internalGuestSet.contains(__user__)) &amp;&amp; visibilitySelect == 2"/>
+    	<attribute name="hidden" for="meetingGuests" expr="eval: (__user__ != user &amp;&amp; !internalGuestSet.contains(__user__)) &amp;&amp; visibilitySelect == 2"/>
+    	<attribute name="hidden" for="meetingLinked" expr="eval: (__user__ != user &amp;&amp; !internalGuestSet.contains(__user__)) &amp;&amp; visibilitySelect == 2"/>
+    	<attribute name="hidden" for="panelMail" expr="eval: (__user__ != user &amp;&amp; !internalGuestSet.contains(__user__)) &amp;&amp; visibilitySelect == 2"/>
     </action-attrs>
     
     <grid name="crm-task-grid" title="Tasks" model="com.axelor.apps.crm.db.Event" orderBy="-startDateTime">
@@ -586,7 +586,7 @@
 	
 	
 	<action-validate name="action-event-validate-emails-sent">
-		<alert message="Emails will be sent to all guests"/>
+		<alert message="Emails will be sent to all guests" if="internalGuestSet.size &gt; 0 || externalGuestSet.size &gt; 0"/>
 	</action-validate>
 	
 <!-- 	FILTERS -->

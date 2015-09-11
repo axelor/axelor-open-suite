@@ -15,9 +15,9 @@
 			<field name="year"/>
 			<field name="week"/>
 			<button-group colOffset="10" colSpan="2">
-				<button name="previousWeek" icon="fa-chevron-circle-left" onClick="save,action-project-planning-method-previous-week"/>
-				<button name="currentWeek" title="Current Week" onClick="save,action-project-planning-method-current-week"/>
-				<button name="nextWeek" icon="fa-chevron-circle-right" onClick="save,action-project-planning-method-next-week"/>
+				<button name="previousWeek" icon="fa-chevron-circle-left" onClick="action-project-planning-method-previous-week"/>
+				<button name="currentWeek" title="Current Week" onClick="action-project-planning-method-current-week"/>
+				<button name="nextWeek" icon="fa-chevron-circle-right" onClick="action-project-planning-method-next-week"/>
 			</button-group>
 			
 		</panel>
@@ -38,9 +38,9 @@
 			<field name="year"/>
 			<field name="week"/>
 			<button-group colOffset="10" colSpan="2">
-				<button name="previousWeek" icon="fa-chevron-circle-left" onClick="save,action-project-planning-method-previous-week"/>
-				<button name="currentWeek" title="Current Week" onClick="save,action-project-planning-method-current-week"/>
-				<button name="nextWeek" icon="fa-chevron-circle-right" onClick="save,action-project-planning-method-next-week"/>
+				<button name="previousWeek" icon="fa-chevron-circle-left" onClick="action-project-planning-method-previous-week"/>
+				<button name="currentWeek" title="Current Week" onClick="action-project-planning-method-current-week"/>
+				<button name="nextWeek" icon="fa-chevron-circle-right" onClick="action-project-planning-method-next-week"/>
 			</button-group>
 			
 		</panel>

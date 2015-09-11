@@ -22,14 +22,14 @@ import java.math.BigDecimal;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.axelor.app.production.db.IProdResource;
+import com.axelor.app.production.db.IWorkCenter;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.UnitRepository;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.production.db.ProdHumanResource;
 import com.axelor.apps.production.db.ProdProcess;
 import com.axelor.apps.production.db.ProdProcessLine;
-import com.axelor.apps.production.db.ProdResource;
+import com.axelor.apps.production.db.WorkCenter;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
@@ -51,20 +51,20 @@ public class BillOfMaterialServiceBusinessImpl extends BillOfMaterialServiceImpl
 
 			for(ProdProcessLine prodProcessLine : prodProcess.getProdProcessLineList())  {
 
-				ProdResource prodResource = prodProcessLine.getProdResource();
+				WorkCenter workCenter = prodProcessLine.getWorkCenter();
 
-				if(prodResource != null)  {
+				if(workCenter != null)  {
 
-					int resourceType = prodResource.getResourceTypeSelect();
+					int workCenterTypeSelect = workCenter.getWorkCenterTypeSelect();
 
-					if(resourceType == IProdResource.RESOURCE_HUMAN || resourceType == IProdResource.RESOURCE_BOTH)  {
+					if(workCenterTypeSelect == IWorkCenter.WORK_CENTER_HUMAN || workCenterTypeSelect == IWorkCenter.WORK_CENTER_BOTH)  {
 
-						costPrice = costPrice.add(this._computeHumanResourceCost(prodResource));
+						costPrice = costPrice.add(this._computeHumanResourceCost(workCenter));
 
 					}
-					if(resourceType == IProdResource.RESOURCE_MACHINE || resourceType == IProdResource.RESOURCE_BOTH)  {
+					if(workCenterTypeSelect == IWorkCenter.WORK_CENTER_MACHINE || workCenterTypeSelect == IWorkCenter.WORK_CENTER_BOTH)  {
 
-						costPrice = costPrice.add(this._computeMachineCost(prodResource));
+						costPrice = costPrice.add(this._computeMachineCost(workCenter));
 
 					}
 
@@ -77,15 +77,15 @@ public class BillOfMaterialServiceBusinessImpl extends BillOfMaterialServiceImpl
 
 
 
-	private BigDecimal _computeHumanResourceCost(ProdResource prodResource) throws AxelorException  {
+	private BigDecimal _computeHumanResourceCost(WorkCenter workCenter) throws AxelorException  {
 
 		BigDecimal costPrice = BigDecimal.ZERO;
 
 		Beans.get(UnitRepository.class);
 
-		if(prodResource.getProdHumanResourceList() != null)  {
+		if(workCenter.getProdHumanResourceList() != null)  {
 
-			for(ProdHumanResource prodHumanResource : prodResource.getProdHumanResourceList())  {
+			for(ProdHumanResource prodHumanResource : workCenter.getProdHumanResourceList())  {
 
 				if(prodHumanResource.getEmployee() != null)  {
 
@@ -107,7 +107,7 @@ public class BillOfMaterialServiceBusinessImpl extends BillOfMaterialServiceImpl
 
 		}
 
-		logger.debug("Human resource cost : {} (Resource : {})",costPrice, prodResource.getName());
+		logger.debug("Human resource cost : {} (Resource : {})",costPrice, workCenter.getName());
 
 		return costPrice;
 	}

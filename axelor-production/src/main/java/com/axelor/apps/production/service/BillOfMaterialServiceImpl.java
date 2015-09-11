@@ -23,7 +23,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.axelor.app.production.db.IProdResource;
+import com.axelor.app.production.db.IWorkCenter;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.ProductService;
 import com.axelor.apps.base.service.UnitConversionService;
@@ -31,7 +31,7 @@ import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.ProdProcess;
 import com.axelor.apps.production.db.ProdProcessLine;
-import com.axelor.apps.production.db.ProdResource;
+import com.axelor.apps.production.db.WorkCenter;
 import com.axelor.apps.production.db.repo.BillOfMaterialRepository;
 import com.axelor.apps.production.exceptions.IExceptionMessage;
 import com.axelor.apps.sale.db.SaleOrderLine;
@@ -136,15 +136,15 @@ public class BillOfMaterialServiceImpl extends BillOfMaterialRepository implemen
 
 			for(ProdProcessLine prodProcessLine : prodProcess.getProdProcessLineList())  {
 
-				ProdResource prodResource = prodProcessLine.getProdResource();
+				WorkCenter workCenter = prodProcessLine.getWorkCenter();
 
-				if(prodResource != null)  {
+				if(workCenter != null)  {
 
-					int resourceType = prodResource.getResourceTypeSelect();
+					int workCenterTypeSelect = workCenter.getWorkCenterTypeSelect();
 
-					if(resourceType == IProdResource.RESOURCE_MACHINE || resourceType == IProdResource.RESOURCE_BOTH)  {
+					if(workCenterTypeSelect == IWorkCenter.WORK_CENTER_MACHINE || workCenterTypeSelect == IWorkCenter.WORK_CENTER_BOTH)  {
 
-						costPrice = costPrice.add(this._computeMachineCost(prodResource));
+						costPrice = costPrice.add(this._computeMachineCost(workCenter));
 
 					}
 
@@ -156,23 +156,23 @@ public class BillOfMaterialServiceImpl extends BillOfMaterialRepository implemen
 	}
 
 
-	protected BigDecimal _computeMachineCost(ProdResource prodResource)  {
+	protected BigDecimal _computeMachineCost(WorkCenter workCenter)  {
 
 		BigDecimal costPrice = BigDecimal.ZERO;
 
-		int costType = prodResource.getCostTypeSelect();
+		int costType = workCenter.getCostTypeSelect();
 
-		if(costType == IProdResource.COST_PER_CYCLE)  {
+		if(costType == IWorkCenter.COST_PER_CYCLE)  {
 
-			costPrice = prodResource.getCostAmount();
+			costPrice = workCenter.getCostAmount();
 		}
-		else if(costType == IProdResource.COST_PER_HOUR)  {
+		else if(costType == IWorkCenter.COST_PER_HOUR)  {
 
-			costPrice = (prodResource.getCostAmount().multiply(new BigDecimal(prodResource.getDurationPerCycle())).divide(new BigDecimal(3600), BigDecimal.ROUND_HALF_EVEN));
+			costPrice = (workCenter.getCostAmount().multiply(new BigDecimal(workCenter.getDurationPerCycle())).divide(new BigDecimal(3600), BigDecimal.ROUND_HALF_EVEN));
 
 		}
 
-		logger.debug("Machine cost : {} (Resource : {})",costPrice, prodResource.getName());
+		logger.debug("Machine cost : {} (Resource : {})",costPrice, workCenter.getName());
 
 		return costPrice;
 	}

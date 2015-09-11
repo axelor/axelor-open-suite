@@ -52,6 +52,7 @@ import com.axelor.exception.db.IException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -983,4 +984,18 @@ public class MoveService extends MoveRepository {
 		}
 		return error;
 	}
+	
+	protected String getDraftSequence(Move move)  {		
+		return "*" + move.getId();		
+	}		
+			
+	public void setDraftSequence(Move move)  {		
+			
+		if (move.getId() != null && Strings.isNullOrEmpty(move.getReference())
+			&& move.getStatusSelect() == MoveRepository.STATUS_DRAFT)  {		
+			move.setReference(this.getDraftSequence(move));		
+		}		
+		
+	}		
+		
 }

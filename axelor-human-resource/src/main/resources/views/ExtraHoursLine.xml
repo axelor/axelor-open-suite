@@ -2,7 +2,7 @@
 <object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
 	
-	<grid name="extra-hours-line-grid" title="Extra Hours" model="com.axelor.apps.hr.db.ExtraHoursLine" editable="true" onNew="action-group-extra-hours-line-onnew">
+	<grid name="extra-hours-line-grid" title="Extra Hours" model="com.axelor.apps.hr.db.ExtraHoursLine" editable="true" onNew="action-extra-hours-line-record-default">
 		<field name="date"/>
 		<field name="qty" onChange="action-extra-hours-line-validate-qty"/>
 		<field name="projectTask"/>

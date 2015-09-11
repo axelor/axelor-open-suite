@@ -532,10 +532,10 @@
 		OperationOrder.planned_end_datet, OperationOrder.real_start_datet, OperationOrder.real_end_datet,
 		Machine.serial_number as machine_serial_num, Machine.name as machine_name,
 		ProdProcessLine.description, OperationOrder.status_select,
-		TO_CHAR((MachineProdResource.duration_per_cycle || ' seconds')::interval, 'HH24:MI:SS') as duration_per_cycle,
-		TO_CHAR((MachineProdResource.starting_duration || ' seconds')::interval, 'HH24:MI:SS') as starting_duration,
-		TO_CHAR((MachineProdResource.setup_duration || ' seconds')::interval, 'HH24:MI:SS') as setup_duration,
-		TO_CHAR((MachineProdResource.ending_duration || ' seconds')::interval, 'HH24:MI:SS') as ending_duration
+		TO_CHAR((MachineWorkCenter.duration_per_cycle || ' seconds')::interval, 'HH24:MI:SS') as duration_per_cycle,
+		TO_CHAR((MachineWorkCenter.starting_duration || ' seconds')::interval, 'HH24:MI:SS') as starting_duration,
+		TO_CHAR((MachineWorkCenter.setup_duration || ' seconds')::interval, 'HH24:MI:SS') as setup_duration,
+		TO_CHAR((MachineWorkCenter.ending_duration || ' seconds')::interval, 'HH24:MI:SS') as ending_duration
 FROM 
 	production_operation_order AS OperationOrder
 LEFT JOIN 
@@ -551,9 +551,9 @@ LEFT JOIN
 LEFT JOIN
 	base_unit AS Unit ON (Unit.id = BOM.unit)
 LEFT JOIN 
-	production_prod_resource AS MachineProdResource ON (MachineProdResource.id = OperationOrder.machine_prod_resource)
+	production_work_center AS MachineWorkCenter ON (MachineWorkCenter.id = OperationOrder.machine_work_center)
 LEFT JOIN 
-	production_machine AS Machine ON (Machine.id = MachineProdResource.machine)
+	production_machine AS Machine ON (Machine.id = MachineWorkCenter.machine)
 LEFT JOIN 
 	production_prod_process AS ProdProcess ON (ProdProcess.id = BOM.prod_process)
 LEFT JOIN 

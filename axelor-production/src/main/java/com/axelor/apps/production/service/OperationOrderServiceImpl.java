@@ -23,14 +23,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.app.production.db.IOperationOrder;
-import com.axelor.apps.base.db.Product;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.db.ProdHumanResource;
 //import com.axelor.apps.production.db.ProdHumanResource;
 import com.axelor.apps.production.db.ProdProcessLine;
 import com.axelor.apps.production.db.ProdProduct;
-import com.axelor.apps.production.db.ProdResource;
+import com.axelor.apps.production.db.WorkCenter;
 import com.axelor.apps.production.db.repo.OperationOrderRepository;
 import com.axelor.exception.AxelorException;
 import com.google.inject.persist.Transactional;
@@ -46,8 +45,8 @@ public class OperationOrderServiceImpl extends OperationOrderRepository implemen
 		OperationOrder operationOrder = this.createOperationOrder(
 				manufOrder,
 				prodProcessLine.getPriority(), 
-				prodProcessLine.getProdResource(), 
-				prodProcessLine.getProdResource(), 
+				prodProcessLine.getWorkCenter(), 
+				prodProcessLine.getWorkCenter(), 
 				prodProcessLine);
 		
 		return save(operationOrder);
@@ -57,7 +56,7 @@ public class OperationOrderServiceImpl extends OperationOrderRepository implemen
 	
 	
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public OperationOrder createOperationOrder(ManufOrder manufOrder, int priority, ProdResource prodResource, ProdResource machineProdResource,
+	public OperationOrder createOperationOrder(ManufOrder manufOrder, int priority, WorkCenter workCenter, WorkCenter machineWorkCenter,
 			ProdProcessLine prodProcessLine) throws AxelorException  {
 		
 		logger.debug("Création d'une opération {} pour l'OF {}", priority, manufOrder.getManufOrderSeq());
@@ -69,24 +68,24 @@ public class OperationOrderServiceImpl extends OperationOrderRepository implemen
 				this.computeName(manufOrder, priority, operationName), 
 				operationName,
 				manufOrder, 
-				prodResource, 
-				machineProdResource, 
+				workCenter, 
+				machineWorkCenter, 
 				IOperationOrder.STATUS_DRAFT, 
 				prodProcessLine);
 		
 		this._createToConsumeProdProductList(operationOrder, prodProcessLine);
 		
-		this._createHumanResourceList(operationOrder, machineProdResource);
+		this._createHumanResourceList(operationOrder, machineWorkCenter);
 		
 		return save(operationOrder);
 	}
 	
 	
-	protected void _createHumanResourceList(OperationOrder operationOrder, ProdResource prodResource)  {
+	protected void _createHumanResourceList(OperationOrder operationOrder, WorkCenter workCenter)  {
 		
-		if(prodResource != null && prodResource.getProdHumanResourceList() != null)  {
+		if(workCenter != null && workCenter.getProdHumanResourceList() != null)  {
 			
-			for(ProdHumanResource prodHumanResource : prodResource.getProdHumanResourceList())  {
+			for(ProdHumanResource prodHumanResource : workCenter.getProdHumanResourceList())  {
 				
 				operationOrder.addProdHumanResourceListItem(this.copyProdHumanResource(prodHumanResource));
 				

@@ -37,6 +37,8 @@ import com.axelor.apps.crm.db.Lead;
 import com.axelor.apps.crm.exception.IExceptionMessage;
 import com.axelor.apps.crm.service.EventService;
 import com.axelor.apps.crm.service.LeadService;
+import com.axelor.apps.crm.service.config.CrmConfigService;
+import com.axelor.apps.message.db.Template;
 import com.axelor.auth.AuthUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
@@ -236,13 +238,27 @@ public class EventController {
 
 		Event event = request.getContext().asType(Event.class);
 		Long idEvent = event.getId();
-		if(idEvent != null && idEvent > 0){
-			Event previousEvent = eventService.find(event.getId());
-			event = eventService.checkModifications(event, previousEvent);
+		Template deletedGuestsTemplate = Beans.get(CrmConfigService.class).getCrmConfig(event.getUser().getActiveCompany()).getMeetingGuestDeletedTemplate();
+		Template addedGuestsTemplate = Beans.get(CrmConfigService.class).getCrmConfig(event.getUser().getActiveCompany()).getMeetingGuestAddedTemplate();
+		Template changedDateTemplate = Beans.get(CrmConfigService.class).getCrmConfig(event.getUser().getActiveCompany()).getMeetingDateChangeTemplate();
+
+		if(deletedGuestsTemplate == null && addedGuestsTemplate == null && changedDateTemplate == null){
+			response.setFlash(String.format(I18n.get(IExceptionMessage.CRM_CONFIG_TEMPLATES_NONE),event.getUser().getActiveCompany().getName()));
+		}
+		else if(deletedGuestsTemplate == null || addedGuestsTemplate == null || changedDateTemplate == null){
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.CRM_CONFIG_TEMPLATES),event.getUser().getActiveCompany().getName()),
+					IException.CONFIGURATION_ERROR);
 		}
 		else{
-			eventService.sendMails(event);
+			if(idEvent != null && idEvent > 0){
+				Event previousEvent = eventService.find(event.getId());
+				event = eventService.checkModifications(event, previousEvent);
+			}
+			else{
+				eventService.sendMails(event);
+			}
 		}
+		
 	}
 
 }

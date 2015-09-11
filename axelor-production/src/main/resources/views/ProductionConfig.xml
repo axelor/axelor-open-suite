@@ -13,7 +13,7 @@
 		</panel>
 		<panel>
 			<field name="productionVirtualLocation" domain="self.typeSelect = 3" colSpan="4" form-view="location-form" grid-view="location-grid"/>
-			<field name="prodResourceProduct" colSpan="4" form-view="product-form" grid-view="product-grid"/>
+			<field name="workCenterProduct" colSpan="4" form-view="product-form" grid-view="product-grid"/>
 		</panel>
     </form>
 	
