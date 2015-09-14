@@ -191,8 +191,8 @@
 		<panel title="Overview">
 			<field name="typeSelect"/>
 			<field name="statusSelect" widget="NavSelect" colSpan="12"/>
-			<field name="project" requiredIf="typeSelect == 'task'" onChange="action-project-task-attrs-hide-invoicing-panel,action-project-task-record-inv-type-select" title="Parent Project" domain="self.typeSelect = 'project'" form-view="project-form" grid-view="project-grid"/>
 			<field name="name"/>
+			<field name="project" requiredIf="typeSelect == 'task' &amp;&amp; !$popup()"  hideIf="$popup()" onChange="action-project-task-attrs-hide-invoicing-panel,action-project-task-record-inv-type-select" title="Parent Project" domain="self.typeSelect = 'project'" form-view="project-form" grid-view="project-grid"/>
 			<field name="code"/>
 			<field name="company" requiredIf="project == null &amp;&amp; typeSelect == 'project'" hideIf="typeSelect == 'task' || project != null"/>
 			<field name="clientPartner" requiredIf="project == null &amp;&amp; typeSelect == 'project'" domain="self.isCustomer = true" hideIf="typeSelect == 'task'"/>

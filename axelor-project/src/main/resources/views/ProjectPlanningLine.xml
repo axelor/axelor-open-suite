@@ -17,16 +17,18 @@
 	</grid>
 	
 	<form name="project-my-planning-line-form" title="Project Planning Lines" model="com.axelor.apps.project.db.ProjectPlanningLine" editable="false">
-		<field name="user" />
-		<field name="projectTask" form-view="project-task-form" grid-view="project-task-grid" />
-		<field name="monday" aggregate="sum" onChange="action-project-planning-line-record-to-save"/>
-		<field name="tuesday" aggregate="sum" onChange="action-project-planning-line-record-to-save"/>
-		<field name="wednesday" aggregate="sum" onChange="action-project-planning-line-record-to-save"/>
-		<field name="thursday" aggregate="sum" onChange="action-project-planning-line-record-to-save"/>
-		<field name="friday" aggregate="sum" onChange="action-project-planning-line-record-to-save"/>
-		<field name="saturday" aggregate="sum" onChange="action-project-planning-line-record-to-save"/>
-		<field name="sunday" aggregate="sum" onChange="action-project-planning-line-record-to-save"/>
-		<field name="toSave" hidden="true"/>
+	    <panel>
+			<field name="user" />
+			<field name="projectTask" form-view="project-task-form" grid-view="project-task-grid" />
+			<field name="monday" aggregate="sum" onChange="action-project-planning-line-record-to-save"/>
+			<field name="tuesday" aggregate="sum" onChange="action-project-planning-line-record-to-save"/>
+			<field name="wednesday" aggregate="sum" onChange="action-project-planning-line-record-to-save"/>
+			<field name="thursday" aggregate="sum" onChange="action-project-planning-line-record-to-save"/>
+			<field name="friday" aggregate="sum" onChange="action-project-planning-line-record-to-save"/>
+			<field name="saturday" aggregate="sum" onChange="action-project-planning-line-record-to-save"/>
+			<field name="sunday" aggregate="sum" onChange="action-project-planning-line-record-to-save"/>
+			<field name="toSave" hidden="true"/>
+		</panel>
 	</form>
 	
 	<grid name="project-my-team-planning-line-grid" title="Project Planning Lines" model="com.axelor.apps.project.db.ProjectPlanningLine" editable="true" groupBy="user">
@@ -43,16 +45,18 @@
 	</grid>
 	
 	<form name="project-my-team-planning-line-form" title="Project Planning Lines" model="com.axelor.apps.project.db.ProjectPlanningLine" editable="false">
-		<field name="user" />
-		<field name="projectTask"  form-view="project-task-form" grid-view="project-task-grid" />
-		<field name="monday" aggregate="sum" onChange="action-project-planning-line-record-to-save"/>
-		<field name="tuesday" aggregate="sum" onChange="action-project-planning-line-record-to-save"/>
-		<field name="wednesday" aggregate="sum" onChange="action-project-planning-line-record-to-save"/>
-		<field name="thursday" aggregate="sum" onChange="action-project-planning-line-record-to-save"/>
-		<field name="friday" aggregate="sum" onChange="action-project-planning-line-record-to-save"/>
-		<field name="saturday" aggregate="sum" onChange="action-project-planning-line-record-to-save"/>
-		<field name="sunday" aggregate="sum" onChange="action-project-planning-line-record-to-save"/>
-		<field name="toSave" hidden="true"/>
+	    <panel>
+			<field name="user" />
+			<field name="projectTask"  form-view="project-task-form" grid-view="project-task-grid" />
+			<field name="monday" aggregate="sum" onChange="action-project-planning-line-record-to-save"/>
+			<field name="tuesday" aggregate="sum" onChange="action-project-planning-line-record-to-save"/>
+			<field name="wednesday" aggregate="sum" onChange="action-project-planning-line-record-to-save"/>
+			<field name="thursday" aggregate="sum" onChange="action-project-planning-line-record-to-save"/>
+			<field name="friday" aggregate="sum" onChange="action-project-planning-line-record-to-save"/>
+			<field name="saturday" aggregate="sum" onChange="action-project-planning-line-record-to-save"/>
+			<field name="sunday" aggregate="sum" onChange="action-project-planning-line-record-to-save"/>
+			<field name="toSave" hidden="true"/>
+		</panel>
 	</form>
 	
 	<action-record name="action-project-planning-line-record-to-save" model="com.axelor.apps.project.db.ProjectPlanningLine">

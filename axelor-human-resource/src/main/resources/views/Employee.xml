@@ -13,12 +13,18 @@
 	<form name="employee-form" title="Employee" model="com.axelor.apps.hr.db.Employee"
 		onNew="action-employee-record-default" width="large">
 	    <panel title="Contact">
-            <field name="contactPartner" domain="self.partnerTypeSelect = 2 OR self.isContact = true" grid-view="partner-contact-grid" form-view="partner-contact-form" colSpan="12" />
-            <field name="contactPartner.emailAddress" colSpan="6" />
-			<field name="contactPartner.fax" colSpan="6" />
-			<field name="contactPartner.fixedPhone" colSpan="6" />
-			<field name="contactPartner.mobilePhone" colSpan="6" />
-           	<field name="contactPartner.webSite" colSpan="6" />
+            <field name="contactPartner" domain="self.partnerTypeSelect = 2 OR self.isContact = true" grid-view="partner-contact-grid" form-view="partner-contact-form" colSpan="12" showTitle="false">
+	            <editor x-viewer="true">
+	                <field name="titleSelect" colSpan="2" />
+	            	<field name="name" title="Name" x-bind="{{code|uppercase}}"  onChange="action-partner-record-full-name" colSpan="5" />
+	            	<field name="firstName" x-bind="{{code|uppercase}}" onChange="action-partner-record-full-name" colSpan="5" />
+		            <field name="emailAddress" form-view="email-address-simple-form" canNew="true" />
+					<field name="fax" pattern="^\+?\d{8,11}$" placeholder="+33000000000"/>
+					<field name="fixedPhone"  placeholder="+33100000000" pattern="^\+?\d{8,11}$"/>
+					<field name="mobilePhone" placeholder="+33100000000" pattern="^\+?\d{8,11}$"/>
+		           	<field name="webSite" />
+	            </editor>
+            </field>
         </panel>
         <panel-tabs>
         	<panel title="Information">
