@@ -406,7 +406,7 @@
     </action-record>
     
     <action-record name="action-partner-record-full-name" model="com.axelor.apps.base.db.Partner" >
-    	<field name="fullName" expr="#{name + ' ' + firstName}" if="#{name != null &amp;&amp; firstName != null}"/>
+    	<field name="fullName" expr="#{name += ' ' += firstName}" if="#{name != null &amp;&amp; firstName != null}"/>
     	<field name="fullName" expr="#{name}" if="#{name != null &amp;&amp; firstName == null}"/>
     	<field name="fullName" expr="#{firstName}" if="#{firstName != null &amp;&amp; name == null}"/>
     	<field name="fullName" expr="#{id}" if="#{firstName == null &amp;&amp; name == null}"/>

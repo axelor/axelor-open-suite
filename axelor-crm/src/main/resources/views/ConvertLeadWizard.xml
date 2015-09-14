@@ -67,8 +67,8 @@
 						<field name="firstName" showTitle="false" hideIf="partnerTypeSelect != 2" css="highlight" placeholder="First name" colSpan="5" onChange="action-group-base-partner-contact-name-onchange"/>
 						
 						<label title="Informations" colSpan="12"/>
-		      			<field name="isCustomer" hideIf="(isContact &amp;&amp; partnerTypeSelect == 2)"/>
-		      			<field name="isSupplier" hideIf="partnerTypeSelect == 2 || isContact"/>
+		      			<field name="isCustomer" showTitle="true" hideIf="(isContact &amp;&amp; partnerTypeSelect == 2)"/>
+		      			<field name="isSupplier" showTitle="true" hideIf="partnerTypeSelect == 2 || isContact"/>
 		      			
 		    			<label title="Partner Details" hideIf="partnerTypeSelect == 2" colSpan="12"/>
 				        <field name="partnerCategory" widget="SuggestBox" hideIf="partnerTypeSelect == 2" form-view="partner-category-form" grid-view="partner-category-grid"/>
