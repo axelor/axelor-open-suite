@@ -5,10 +5,14 @@
 
   <module name="production" package="com.axelor.apps.production.db"/>
 
-  <entity name="ProductionOrder" lang="java">
+  <entity name="ObjectDescription" lang="java">
   
-     <many-to-one name="projectTask" ref="com.axelor.apps.project.db.ProjectTask" title="Project/Task"/>
-    
+  	<integer name="importId"/>
+  
+ 	<many-to-one name="prodProcessLine" ref="com.axelor.apps.production.db.ProdProcessLine"/>
+    <integer name="sequence" title="Sequence"/>
+    <string name="description" title="Description" large="true"/>
+    <binary name="image" image="true"/>
     
   </entity>
 </domain-models>

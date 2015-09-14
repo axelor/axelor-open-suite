@@ -608,4 +608,9 @@
 		<option value="4">A.T.I. by default</option>
 	</selection>
 	
+	<selection name="base.product.cost.type.select">
+		<option value="1">Standard</option>
+		<option value="2">Last purchase price</option>
+	</selection>
+	
 </object-views>

@@ -172,7 +172,12 @@
     	<action name="action-sale-order-method-validate-supplier"/>
     	<action name="action-purchase-order-set-sequence"/>
     	<action name="save"/>
+    	<action name="action-purchase-order-method-update-cost-price"/>
     </action-group>
+    
+    <action-method name="action-purchase-order-method-update-cost-price">
+    	<call class="com.axelor.apps.purchase.web.PurchaseOrderController" method="updateCostPrice"/>
+    </action-method>
     
     <action-attrs name="action-purchase-order-attrs-in-ati">
     	<attribute name="hidden" for="purchaseOrderLineList.exTaxTotal" expr="inAti"/>

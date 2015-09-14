@@ -22,7 +22,7 @@
     </form>
     
     <action-validate name="action-prod-process-validate-is-cons-pro">
-    	<error message="You can't manage the consumed products on operations because this production process is related to several bills of material"
+    	<error message="You can't manage the consumed products on phases because this production process is related to several bills of material"
     		if="isConsProOnOperation == true &amp;&amp; __repo__.of(BillOfMaterial).all().filter('self.prodProcess.id = ?1', __this__.id).fetch().size &gt; 1" action="action-prod-process-record-false"/>
     </action-validate>
     

@@ -97,5 +97,6 @@ public interface PurchaseOrderService extends Repository<PurchaseOrder> {
 	public void requestPurchaseOrder(PurchaseOrder purchaseOrder) throws Exception;
 
 	public PurchaseOrder mergePurchaseOrders(List<PurchaseOrder> purchaseOrderList, Currency currency, Partner supplierPartner, Company company, Partner contactPartner, PriceList priceList) throws AxelorException;
-
+	
+	public void updateCostPrice(PurchaseOrder purchaseOrder);
 }

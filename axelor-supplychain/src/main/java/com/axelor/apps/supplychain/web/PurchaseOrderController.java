@@ -85,7 +85,9 @@ public class PurchaseOrderController {
 
 	public void updateTimetable(ActionRequest request, ActionResponse response){
 		PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
-		purchaseOrder = Beans.get(PurchaseOrderRepository.class).find(purchaseOrder.getId());
+		if(purchaseOrder.getId() != null && purchaseOrder.getId() > 0){
+			purchaseOrder = Beans.get(PurchaseOrderRepository.class).find(purchaseOrder.getId());
+		}
 		Beans.get(TimetableService.class).updateTimetable(purchaseOrder);
 		response.setValues(purchaseOrder);
 	}

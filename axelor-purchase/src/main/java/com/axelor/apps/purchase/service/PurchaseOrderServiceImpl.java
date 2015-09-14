@@ -35,6 +35,8 @@ import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
+import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.base.service.administration.SequenceService;
@@ -347,6 +349,22 @@ public class PurchaseOrderServiceImpl extends PurchaseOrderRepository implements
 		
 		if(purchaseOrder.getId() != null && Strings.isNullOrEmpty(purchaseOrder.getPurchaseOrderSeq())){
 			purchaseOrder.setPurchaseOrderSeq(this.getDraftSequence(purchaseOrder.getId()));
+		}
+	}
+	
+	@Override
+	@Transactional
+	public void updateCostPrice(PurchaseOrder purchaseOrder) {
+		if(purchaseOrder.getPurchaseOrderLineList() != null){
+			for (PurchaseOrderLine purchaseOrderLine : purchaseOrder.getPurchaseOrderLineList()) {
+				Product product = purchaseOrderLine.getProduct();
+				if(product.getCostTypeSelect() == ProductRepository.COST_TYPE_LAST_PURCHASE_PRICE){
+					product.setPurchasePrice(purchaseOrderLine.getPrice());
+					product.setCostPrice(purchaseOrderLine.getPrice());
+				}
+				
+			}
+			save(purchaseOrder);
 		}
 	}
 

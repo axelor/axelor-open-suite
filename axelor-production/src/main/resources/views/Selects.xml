@@ -25,6 +25,7 @@
 	<selection name="iproduction.work.center.cost.type.select">
 		<option value="1">Per hour</option>
 		<option value="2">Per Cycle</option>
+		<option value="3">Per piece</option>
 	</selection>
 	
 </object-views>

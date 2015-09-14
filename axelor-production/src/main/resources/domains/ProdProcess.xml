@@ -9,11 +9,11 @@
   
   	<integer name="importId"/>
   
-  	<one-to-many name="prodProcessLineList" ref="com.axelor.apps.production.db.ProdProcessLine" mappedBy="prodProcess" title="Operations"/>
+  	<one-to-many name="prodProcessLineList" ref="com.axelor.apps.production.db.ProdProcessLine" mappedBy="prodProcess" title="Phases"/>
   	<string name="name" title="Label" required="true"/>
   	<string name="code" title="Code"/>
   	
-  	<boolean name="isConsProOnOperation" title="Manage consumed products on operations?"/>
+  	<boolean name="isConsProOnOperation" title="Manage consumed products on phases?"/>
   	
   	<many-to-one name="location" ref="com.axelor.apps.stock.db.Location" title="Production location"/>
   	

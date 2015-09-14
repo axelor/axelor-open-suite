@@ -82,7 +82,8 @@
 					<field name="defaultSupplierPartner" domain="self.isContact = false AND self.isSupplier = true" colSpan="12" showIf="purchasable" form-view="partner-form" grid-view="partner-grid"/>
 				</panel>
 				<panel title="Costs" colSpan="6">
-					<field name="costPrice" onChange="action-product-record-compute-sale-price" colSpan="12"/>
+					<field name="costPrice" onChange="action-product-record-compute-sale-price" colSpan="6"/>
+					<field name="costTypeSelect" colSpan="6"/>
 					<field name="managPriceCoef" onChange="action-product-record-compute-sale-price" colSpan="12"/>
 				</panel>
 				<panel-related title="Suppliers catalog" field="supplierCatalogList" colSpan="12" showIf="purchasable" form-view="supplier-catalog-form" grid-view="supplier-catalog-grid"/>        

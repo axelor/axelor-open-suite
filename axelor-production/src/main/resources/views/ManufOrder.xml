@@ -72,10 +72,10 @@
 			<field name="company" readonlyIf="statusSelect &gt; 1" colSpan="3" form-view="company-form" grid-view="company-grid"/>
 			<field name="statusSelect" showTitle="false" readonly="true" colSpan="12" widget="NavSelect"/>
 			<field name="billOfMaterial" required="true" readonlyIf="statusSelect &gt; 1" domain="self.isRawMaterial = false" onChange="action-manuf-order-on-change-bill-of-material" grid-view="bill-of-material-grid" form-view="bill-of-material-form"/>
-			<field name="prodProcess" readonlyIf="statusSelect &gt; 1" grid-view="prod-process-grid" form-view="prod-process-form"/>
+			<field name="prodProcess" onChange="action-manuf-order-record-isConsProOnOperation" readonlyIf="statusSelect &gt; 1" grid-view="prod-process-grid" form-view="prod-process-form"/>
 			<field name="product" required="true" readonlyIf="statusSelect &gt; 1" form-view="product-form" grid-view="product-grid"/>
 			<field name="qty" readonlyIf="statusSelect &gt; 1"/>
-			<field name="isConsProOnOperation" readonlyIf="statusSelect &gt; 1"/>
+			<field name="isConsProOnOperation" readonly="true"/>
 			<field name="isToInvoice" onChange="save,action-manuf-order-method-is-to-invoice" if-module="axelor-business-production"/>
 			<field name="invoiced" showIf="isToInvoice" if-module="axelor-business-production"/>
 			<button name="preFillOperations" colSpan="4" title="Pre-fill operations" hideIf="statusSelect &gt; 1" onClick="save,action-manuf-order-method-pre-fill-operations" />
@@ -131,8 +131,16 @@
 		</panel>
 	  
 	</form>
+	
+	<action-method name="action-manuf-order-method-is-to-invoice">
+		<call class="com.axelor.apps.production.web.ManufOrderBusinessController" method="propagateIsToInvoice"/>
+	</action-method>
     
-     
+    <action-record name="action-manuf-order-record-isConsProOnOperation" model="com.axelor.apps.production.db.ManufOrder">
+    	<field name="isConsProOnOperation" expr="eval: prodProcess?.isConsProOnOperation"/>
+    </action-record>
+    
+    
     <action-record name="action-manuf-order-record-selected-page-consumed" model="com.axelor.apps.production.db.ManufOrder">
     	<field name="selectedPage" expr="eval: 'consumed'"/>
     </action-record>
@@ -158,9 +166,6 @@
         <field name="prodProcess" expr="eval:billOfMaterial.prodProcess" if="billOfMaterial != null"/>
     </action-record>
     
-    <action-method name="action-manuf-order-method-is-to-invoice">
-    	<call class="com.axelor.apps.production.web.ManufOrderController" method="propagateIsToInvoice"/>
-    </action-method>
     
     <action-method name="action-manuf-order-method-copy-to-consume">
     	<call class="com.axelor.apps.production.web.ManufOrderController" method="copyToConsume"/>
@@ -244,11 +249,11 @@
 		<filter title="Finished MOs">
 			<domain>self.statusSelect = 6</domain>
 		</filter>
-		<filter title="Cancelled MOs">
-			<domain>self.statusSelect = 2</domain>
-		</filter>
 		<filter title="MOs to invoice">
 			<domain>self.isToInvoice = true</domain>
+		</filter>
+		<filter title="Cancelled MOs">
+			<domain>self.statusSelect = 2</domain>
 		</filter>
 		<filter title="Late Planned MOs">
 			<domain>self.statusSelect = 3 AND self.plannedStartDateT &lt; :_todayDateTime</domain>

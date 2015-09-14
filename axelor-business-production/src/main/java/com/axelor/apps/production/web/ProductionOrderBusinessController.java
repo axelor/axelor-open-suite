@@ -39,16 +39,6 @@ public class ProductionOrderBusinessController {
 	ProductionOrderSaleOrderServiceBusinessImpl productionOrderSaleOrderServiceBusinessImpl;
 	
 	
-	public void propagateIsToInvoice (ActionRequest request, ActionResponse response) {
-
-		ProductionOrder productionOrder = request.getContext().asType( ProductionOrder.class );
-
-		productionOrderServiceBusinessImpl.propagateIsToInvoice(productionOrderService.find(productionOrder.getId()));
-		
-		response.setReload(true);
-		
-	}
-	
 	public void generateSaleOrder (ActionRequest request, ActionResponse response) throws AxelorException {
 
 		ProductionOrder productionOrder = request.getContext().asType( ProductionOrder.class );

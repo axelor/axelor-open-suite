@@ -57,7 +57,7 @@
     
      
     
-	<form onLoad="action-operation-order-attrs-is-cons-pro-on-operation" onSave="action-operation-order-name" onNew="action-operation-order-default-record" name="operation-order-form" title="Operation" model="com.axelor.apps.production.db.OperationOrder">
+	<form onLoad="action-operation-order-attrs-is-cons-pro-on-operation" onSave="action-operation-order-name" onNew="action-operation-order-attrs-is-cons-pro-on-operation,action-operation-order-default-record" name="operation-order-form" title="Operation" model="com.axelor.apps.production.db.OperationOrder">
 		<toolbar>
 			
 			<button name="print" title="Print" icon="fa-print" onClick="action-operation-order-method-print"/>
@@ -103,6 +103,13 @@
 			<button name="resume" title="Resume" icon="fa-step-forward" showIf="statusSelect == 5" colSpan="12" onClick="save,action-operation-order-record-resume,save"/>
 		</panel>
 		
+		<panel name="informationPanel" title="Information" sidebar="true" colSpan="12" showIf="id">
+			<field name="startedBy" colSpan="6"/>
+			<field name="startingDateTime" colSpan="6"/>
+			<field name="stoppedBy" colSpan="6"/>
+			<field name="stoppingDateTime" colSpan="6"/>
+		</panel>
+		
 <!--	    <panel-related field="timesheetLineList" title="Timesheet lines" form-view="timesheet-line-production-form" grid-view="timesheet-line-production-grid" colSpan="12"/>  --> 
 	</form>
 	
@@ -121,9 +128,15 @@
     </action-record>
     
     <action-group name="action-operation-order-group-start">
-    	<action name="action-operation-order-record-start" if="_parent?.statusSelect != 3"/>
+    	<action name="action-operation-order-record-started"/>
+    	<action name="action-operation-order-record-start"/>
     	<action name="action-operation-order-method-start" if="_parent?.statusSelect == 3"/>
     </action-group>
+    
+    <action-record name="action-operation-order-record-started" model="com.axelor.apps.production.db.OperationOrder">
+    	<field name="startedBy" expr="eval: __user__"/>
+		<field name="startingDateTime" expr="eval: __datetime__"/>
+    </action-record>
     
     <action-method name="action-operation-order-method-start">
     	<call class="com.axelor.apps.production.web.OperationOrderController" method="start"/>
@@ -140,6 +153,8 @@
     
     <action-record name="action-operation-order-record-pause" model="com.axelor.apps.production.db.OperationOrder">
     	<field name="statusSelect" expr="eval: 5"/>
+    	<field name="stoppedBy" expr="eval: __user__"/>
+		<field name="stoppingDateTime" expr="eval: __datetime__"/>
     </action-record>
     
     <action-record name="action-operation-order-record-resume" model="com.axelor.apps.production.db.OperationOrder">
@@ -171,8 +186,10 @@
     </action-method>
     
     <action-attrs name="action-operation-order-attrs-is-cons-pro-on-operation">
-    	<attribute name="hidden" for="consumedProductPage" expr="eval: !manufOrder.isConsProOnOperation"/>
-    	<attribute name="hidden" for="stockMoves" expr="eval: !manufOrder.isConsProOnOperation"/>
+    	<attribute name="hidden" for="consumedProductPage" expr="eval: !manufOrder?.isConsProOnOperation"/>
+    	<attribute name="hidden" for="stockMoves" expr="eval: !manufOrder?.isConsProOnOperation"/>
+    	<attribute name="hidden" for="consumedProductPage" expr="eval: !_parent?.isConsProOnOperation"/>
+    	<attribute name="hidden" for="stockMoves" expr="eval: !_parent.isConsProOnOperation"/>
     </action-attrs>
     
     <search-filters name="operation-order-filters" model="com.axelor.apps.production.db.OperationOrder" title="Operation order filters">
