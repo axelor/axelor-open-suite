@@ -33,6 +33,7 @@ import com.axelor.apps.production.db.WorkCenter;
 import com.axelor.apps.production.db.repo.OperationOrderRepository;
 import com.axelor.auth.AuthUtils;
 import com.axelor.exception.AxelorException;
+import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -68,7 +69,7 @@ public class OperationOrderWorkflowService extends OperationOrderRepository{
 
 		operationOrder.setStatusSelect(IOperationOrder.STATUS_PLANNED);
 
-		return save(operationOrder);
+		return Beans.get(OperationOrderRepository.class).save(operationOrder);
 
 	}
 
@@ -115,7 +116,7 @@ public class OperationOrderWorkflowService extends OperationOrderRepository{
 		
 		operationOrder.setStartingDateTime(new LocalDateTime(generalService.getTodayDateTime()));
 
-		save(operationOrder);
+		Beans.get(OperationOrderRepository.class).save(operationOrder);
 
 	}
 
@@ -127,7 +128,7 @@ public class OperationOrderWorkflowService extends OperationOrderRepository{
 
 		operationOrder.setStatusSelect(IOperationOrder.STATUS_CANCELED);
 
-		save(operationOrder);
+		Beans.get(OperationOrderRepository.class).save(operationOrder);
 
 	}
 
@@ -140,7 +141,7 @@ public class OperationOrderWorkflowService extends OperationOrderRepository{
 
 		operationOrder.setStatusSelect(IOperationOrder.STATUS_FINISHED);
 
-		return save(operationOrder);
+		return Beans.get(OperationOrderRepository.class).save(operationOrder);
 
 	}
 

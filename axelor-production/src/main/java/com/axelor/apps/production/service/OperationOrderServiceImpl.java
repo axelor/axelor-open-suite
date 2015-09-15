@@ -78,7 +78,7 @@ public class OperationOrderServiceImpl extends OperationOrderRepository implemen
 		
 		this._createHumanResourceList(operationOrder, machineWorkCenter);
 		
-		return save(operationOrder);
+		return Beans.get(OperationOrderRepository.class).save(operationOrder);
 	}
 	
 	
