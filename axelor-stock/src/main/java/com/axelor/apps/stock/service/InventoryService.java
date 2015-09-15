@@ -283,7 +283,7 @@ public class InventoryService extends InventoryRepository{
 
 
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public List<InventoryLine> fillInventoryLineList(Inventory inventory) throws AxelorException {
+	public Boolean fillInventoryLineList(Inventory inventory) throws AxelorException {
 
 		if(inventory.getLocation() == null)  {
 			throw new AxelorException(I18n.get(IExceptionMessage.INVENTORY_1),IException.CONFIGURATION_ERROR);
@@ -294,16 +294,13 @@ public class InventoryService extends InventoryRepository{
 		List<? extends LocationLine> locationLineList = this.getLocationLines(inventory);
 
 		if (locationLineList != null) {
-			List<InventoryLine> inventoryLineList = new ArrayList<InventoryLine>();
-
+			Boolean succeed = false;
 			for (LocationLine locationLine : locationLineList) {
-
-				inventoryLineList.add(this.createInventoryLine(inventory, locationLine));
-
+				inventory.addInventoryLineListItem(this.createInventoryLine(inventory, locationLine));
+				succeed = true;
 			}
-			inventory.setInventoryLineList(inventoryLineList);
 			save(inventory);
-			return inventoryLineList;
+			return succeed;
 		}
 		return null;
 	}

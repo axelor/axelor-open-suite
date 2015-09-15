@@ -111,14 +111,15 @@ public class InventoryController {
 	
 	public void fillInventoryLineList(ActionRequest request, ActionResponse response) throws AxelorException {
 		
-		Inventory inventory = request.getContext().asType(Inventory.class);
-		if(inventory != null) {
-			List<InventoryLine> inventoryLineList = inventoryService.fillInventoryLineList(inventory);
-			if(inventoryLineList == null)  {
+		Long inventoryId  = (Long) request.getContext().get("id");
+		if(inventoryId != null) {
+			Inventory inventory = inventoryService.find(inventoryId);
+			Boolean succeed = inventoryService.fillInventoryLineList(inventory);
+			if(succeed == null)  {
 				response.setFlash(I18n.get(IExceptionMessage.INVENTORY_9));
 			}
 			else {
-				if(inventoryLineList.size() > 0) {
+				if(succeed) {
 					response.setFlash(I18n.get(IExceptionMessage.INVENTORY_10));
 				}
 				else  {
