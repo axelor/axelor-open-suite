@@ -108,7 +108,7 @@
 			<field name="startingDateTime" colSpan="6"/>
 			<field name="stoppedBy" colSpan="6"/>
 			<field name="stoppingDateTime" colSpan="6"/>
-			<field name="barCorde"/>
+			<field name="barCode"/>
 		</panel>
 		
 <!--	    <panel-related field="timesheetLineList" title="Timesheet lines" form-view="timesheet-line-production-form" grid-view="timesheet-line-production-grid" colSpan="12"/>  --> 
