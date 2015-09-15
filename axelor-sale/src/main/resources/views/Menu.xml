@@ -111,16 +111,12 @@
 	<menuitem name="sale-maps-partner-customers" parent="sc-root-sale-maps" 
 		title="Customers" action="action-show-customers-on-map-page"/>
 		
-	<action-view name="action-show-customers-on-map-page" title="Customers">  		
- 		<view type="html" name="map/gmap-objs.html?object=customer" /> 
-	</action-view>	
+		
 	
 	<menuitem name="sale-maps-partner-prospects" parent="sc-root-sale-maps" 
 		title="Prospects" action="action-show-prospects-on-map-page"/>
-		
-	<action-view name="action-show-prospects-on-map-page" title="Prospects">  		
- 		<view type="html" name="map/gmap-objs.html?object=prospect" /> 
-	</action-view>
+	
+	
 		
 	
 	<menuitem name="sc-root-sale-conf" parent="sc-root-sale"
@@ -251,8 +247,6 @@
 	<menuitem name="menu-dashboards-customers"  parent="sc-root-sale-report"
     	title="Customers" icon="fa-bar-chart"  action="customer.list.dashboard.view"/>
 	
-	<action-view name="customer.list.dashboard.view" title="Customers">
-		<view type="dashboard" name="base.partner.list.dashboard" />
-	</action-view>
+	
 		
 </object-views>

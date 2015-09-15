@@ -4,7 +4,7 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
 	
 	
-	<menuitem name="menu-products-dashboard-1" parent="product-root-report"  
+	<menuitem name="menu-products-dashboard-1" parent="referential-report"  
 		title="Products"  action="supplychain.products.dashboard.1" />	
 		
 	<action-view name="supplychain.products.dashboard.1" title="Products Details">
