@@ -49,6 +49,7 @@ public interface ITranslation {
 	public static final String MANUF_ORDER_BILL_OF_MATERIAL = /*$$(*/ "ManufOrder.billOfMaterial"; /*)*/
 	public static final String MANUF_ORDER_PRODUCTION_PROCESS = /*$$(*/ "ManufOrder.productionProcess"; /*)*/
 	public static final String MANUF_ORDER_OPERATIONS = /*$$(*/ "ManufOrder.operations"; /*)*/
+	public static final String MANUF_ORDER_OPERATION_DETAILS = /*$$(*/ "ManufOrder.operationDetails"; /*)*/
 	public static final String MANUF_ORDER_FORECAST = /*$$(*/ "ManufOrder.forecast"; /*)*/
 	public static final String MANUF_ORDER_EFFECTIVE = /*$$(*/ "ManufOrder.effective"; /*)*/
 	public static final String MANUF_ORDER_NUM = /*$$(*/ "ManufOrder.num"; /*)*/

@@ -32,6 +32,7 @@ import com.axelor.apps.production.db.ProdProduct;
 import com.axelor.apps.production.db.WorkCenter;
 import com.axelor.apps.production.db.repo.OperationOrderRepository;
 import com.axelor.exception.AxelorException;
+import com.axelor.inject.Beans;
 import com.google.inject.persist.Transactional;
 
 public class OperationOrderServiceImpl extends OperationOrderRepository implements OperationOrderService  {
@@ -49,7 +50,7 @@ public class OperationOrderServiceImpl extends OperationOrderRepository implemen
 				prodProcessLine.getWorkCenter(), 
 				prodProcessLine);
 		
-		return save(operationOrder);
+		return Beans.get(OperationOrderRepository.class).save(operationOrder);
 	}
 	
 	

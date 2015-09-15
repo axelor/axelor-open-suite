@@ -16,7 +16,7 @@
 	    	<field name="name"/>
 	    	<field name="code"/>
 	        <field name="location" required="true" grid-view="location-grid" form-view="location-form"/>
-	        <field name="isConsProOnOperation" showIf="$popup()" onChange="action-prod-process-validate-is-cons-pro"/>
+	        <field name="isConsProOnOperation" onChange="action-prod-process-validate-is-cons-pro"/>
         </panel>
         <panel-related field="prodProcessLineList" colSpan="12" grid-view="prod-process-line-grid" form-view="prod-process-line-form"/>        
     </form>

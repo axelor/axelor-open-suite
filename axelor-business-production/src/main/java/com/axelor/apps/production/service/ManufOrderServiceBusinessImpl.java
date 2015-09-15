@@ -26,7 +26,6 @@ import org.slf4j.LoggerFactory;
 import com.axelor.app.production.db.IManufOrder;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
-import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.OperationOrder;
@@ -125,8 +124,7 @@ public class ManufOrderServiceBusinessImpl extends ManufOrderServiceImpl  {
 		if(prodProcess != null && prodProcess.getProdProcessLineList() != null)  {
 			
 			for(ProdProcessLine prodProcessLine : this._sortProdProcessLineByPriority(prodProcess.getProdProcessLineList()))  {
-				manufOrder.addOperationOrderListItem(
-						operationOrderServiceBusinessImpl.createOperationOrder(manufOrder, prodProcessLine, manufOrder.getIsToInvoice()));
+				manufOrder.addOperationOrderListItem(operationOrderServiceBusinessImpl.createOperationOrder(manufOrder, prodProcessLine, manufOrder.getIsToInvoice()));
 			}
 			
 		}

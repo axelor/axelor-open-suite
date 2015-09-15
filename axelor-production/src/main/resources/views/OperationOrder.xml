@@ -81,8 +81,8 @@
 	      </panel>
 	    </panel>
 		<panel title="Resources" colSpan="12" readonlyIf="statusSelect == 6">
-			<field name="workCenter" readonlyIf="statusSelect == 6" grid-view="prod-process-grid" form-view="prod-process-form"/>
-			<field name="machineWorkCenter" readonlyIf="statusSelect == 6" grid-view="prod-process-grid" form-view="prod-process-form"/>
+			<field name="workCenter" readonlyIf="statusSelect == 6" grid-view="work-center-grid" form-view="work-center-form"/>
+			<field name="machineWorkCenter" readonlyIf="statusSelect == 6" grid-view="work-center-machine-grid" form-view="work-center-machine-form"/>
 			<panel-related field="prodHumanResourceList" readonlyIf="statusSelect == 6" colSpan="12" grid-view="prod-human-resource-grid" form-view="prod-human-resource-form"/>
 		</panel>
 
@@ -108,6 +108,7 @@
 			<field name="startingDateTime" colSpan="6"/>
 			<field name="stoppedBy" colSpan="6"/>
 			<field name="stoppingDateTime" colSpan="6"/>
+			<field name="barCorde"/>
 		</panel>
 		
 <!--	    <panel-related field="timesheetLineList" title="Timesheet lines" form-view="timesheet-line-production-form" grid-view="timesheet-line-production-grid" colSpan="12"/>  --> 

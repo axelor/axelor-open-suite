@@ -12,19 +12,16 @@ import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.ProdProcess;
 import com.axelor.apps.production.db.ProdProcessLine;
 import com.axelor.apps.production.db.ProdProduct;
-import com.axelor.apps.production.db.repo.BillOfMaterialRepository;
 import com.axelor.apps.production.db.repo.ProdProcessRepository;
 import com.axelor.apps.production.exceptions.IExceptionMessage;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
 import com.google.common.base.Joiner;
 
 public class ProdProcessService extends ProdProcessRepository{
 	
-	public void validateProdProcess(ProdProcess prodProcess) throws AxelorException{
-		BillOfMaterial bom = Beans.get(BillOfMaterialRepository.class).all().filter("self.prodProcess = ?1", prodProcess).fetchOne();
+	public void validateProdProcess(ProdProcess prodProcess, BillOfMaterial bom) throws AxelorException{
 		Map<Product,BigDecimal> bomMap = new HashMap<Product,BigDecimal>();
 		for (BillOfMaterial bomIt : bom.getBillOfMaterialList()) {
 			bomMap.put(bomIt.getProduct(), bomIt.getQty());

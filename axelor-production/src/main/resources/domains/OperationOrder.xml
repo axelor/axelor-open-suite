@@ -58,5 +58,7 @@
 
     <string name="comments" title="Comments" large="true"/>
     
+    <many-to-one name="barCode" ref="com.axelor.meta.db.MetaFile" title="Barcode" readonly="true"/>
+    
   </entity>
 </domain-models>

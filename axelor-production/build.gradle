@@ -8,5 +8,10 @@ module {
 	removable true
 
 	module "modules:axelor-supplychain"
+
+	
 }
 
+dependencies {
+	compile "net.sourceforge.barbecue:barbecue:1.5-beta1"
+}

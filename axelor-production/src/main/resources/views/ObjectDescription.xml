@@ -10,7 +10,7 @@
     
     <form name="object-description-form" title="Description" model="com.axelor.apps.production.db.ObjectDescription" width="large">
     	<panel>
-    		<field name="image" colSpan="3"/>
+    		<field name="image" colSpan="3" canNew="true"/>
 	    	<field name="sequence" colSpan="3"/>
     		<field name="description" widget="html" colSpan="12"/>
     	</panel>       
