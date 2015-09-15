@@ -21,7 +21,7 @@
         </panel>
     </form>
     
-    <action-view name="action-view-product-by-family" title="Products" model="com.axelor.apps.base.db.Product">
+    <action-view name="action-view-product-by-family" title="Products (${ name })" model="com.axelor.apps.base.db.Product">
 		<view type="grid" name="product-grid"/>
 		<view type="form" name="product-form"/>
 		<domain>self.productFamily.id = :_productFamilyId</domain>

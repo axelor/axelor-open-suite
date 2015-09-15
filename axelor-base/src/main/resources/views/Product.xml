@@ -168,7 +168,7 @@
 	  	</panel-tabs>
 	</form>    
     
-    <action-view name="action-product-view-create-production-order" title="Create production order" model="com.axelor.apps.base.db.Wizard">
+    <action-view name="action-product-view-create-production-order" title="Create production order (${ name })" model="com.axelor.apps.base.db.Wizard">
     	<view type="form" name="production-order-wizard-form"/>
     	<view-param name="popup" value="reload"/>
     	<view-param name="forceEdit" value="true"/> 
