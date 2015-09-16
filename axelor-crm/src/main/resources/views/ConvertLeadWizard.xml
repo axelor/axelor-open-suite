@@ -73,7 +73,6 @@
 		    			<label title="Partner Details" hideIf="partnerTypeSelect == 2" colSpan="12"/>
 				        <field name="partnerCategory" widget="SuggestBox" hideIf="partnerTypeSelect == 2" form-view="partner-category-form" grid-view="partner-category-grid"/>
 				        <field name="industrySectorSelect" hideIf="partnerTypeSelect == 2"/>
-				        <field name="site" hideIf="partnerTypeSelect == 2" form-view="site-form" grid-view="site-grid"/>
 				        <field name="department" hideIf="partnerTypeSelect == 2" form-view="department-form" grid-view="department-grid"/>
 				        <field name="saleTurnover" hideIf="partnerTypeSelect == 2"/>
 				        <field name="nbrEmployees" hideIf="partnerTypeSelect == 2"/>
@@ -340,7 +339,6 @@
 		    <panel title="Partner Details" hideIf="partnerTypeSelect == 2" colSpan="12">
 		        <field name="partnerCategory" widget="SuggestBox"/>
 		        <field name="industrySectorSelect"/>
-		        <field name="site"/>
 		        <field name="department"/>
 		        <field name="saleTurnover"/>
 		        <field name="nbrEmployees"/>
