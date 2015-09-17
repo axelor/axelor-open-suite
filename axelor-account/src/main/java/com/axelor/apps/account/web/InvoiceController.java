@@ -49,6 +49,9 @@ public class InvoiceController {
 
 	@Inject
 	private InvoiceService invoiceService;
+	
+	@Inject
+	private InvoiceRepository invoiceRepo;
 
 	/**
 	 * Fonction appeler par le bouton calculer
@@ -80,7 +83,7 @@ public class InvoiceController {
 	public void validate(ActionRequest request, ActionResponse response) {
 
 		Invoice invoice = request.getContext().asType(Invoice.class);
-		invoice = invoiceService.find(invoice.getId());
+		invoice = invoiceRepo.find(invoice.getId());
 
 		try{
 			invoiceService.validate(invoice);
@@ -101,7 +104,7 @@ public class InvoiceController {
 	public void ventilate(ActionRequest request, ActionResponse response) {
 
 		Invoice invoice = request.getContext().asType(Invoice.class);
-		invoice = invoiceService.find(invoice.getId());
+		invoice = invoiceRepo.find(invoice.getId());
 
 		try {
 			invoiceService.ventilate(invoice);
@@ -121,7 +124,7 @@ public class InvoiceController {
 	public void cancel(ActionRequest request, ActionResponse response) throws AxelorException {
 
 		Invoice invoice = request.getContext().asType(Invoice.class);
-		invoice = invoiceService.find(invoice.getId());
+		invoice = invoiceRepo.find(invoice.getId());
 
 		invoiceService.cancel(invoice);
 		response.setFlash(I18n.get(IExceptionMessage.INVOICE_1));
@@ -140,7 +143,7 @@ public class InvoiceController {
 
 		try {
 
-			invoice = invoiceService.find(invoice.getId());
+			invoice = invoiceRepo.find(invoice.getId());
 			Invoice refund = invoiceService.createRefund( invoice );
 			response.setReload(true);
 			response.setNotify(I18n.get(IExceptionMessage.INVOICE_2));
@@ -160,7 +163,7 @@ public class InvoiceController {
 	public void usherProcess(ActionRequest request, ActionResponse response) {
 
 		Invoice invoice = request.getContext().asType(Invoice.class);
-		invoice = invoiceService.find(invoice.getId());
+		invoice = invoiceRepo.find(invoice.getId());
 
 		try {
 			invoiceService.usherProcess(invoice);
@@ -173,7 +176,7 @@ public class InvoiceController {
 	public void passInIrrecoverable(ActionRequest request, ActionResponse response)  {
 
 		Invoice invoice = request.getContext().asType(Invoice.class);
-		invoice = Beans.get(InvoiceService.class).find(invoice.getId());
+		invoice = invoiceRepo.find(invoice.getId());
 
 		try  {
 			Beans.get(IrrecoverableService.class).passInIrrecoverable(invoice, true);
@@ -187,7 +190,7 @@ public class InvoiceController {
 	public void notPassInIrrecoverable(ActionRequest request, ActionResponse response)  {
 
 		Invoice invoice = request.getContext().asType(Invoice.class);
-		invoice = Beans.get(InvoiceService.class).find(invoice.getId());
+		invoice = invoiceRepo.find(invoice.getId());
 
 		try  {
 			Beans.get(IrrecoverableService.class).notPassInIrrecoverable(invoice);
@@ -234,7 +237,7 @@ public class InvoiceController {
 
 		if(!invoiceIds.equals("")){
 			invoiceIds = invoiceIds.substring(0, invoiceIds.length()-1);
-			invoice = Beans.get(InvoiceService.class).find(new Long(lstSelectedPartner.get(0)));
+			invoice = invoiceRepo.find(new Long(lstSelectedPartner.get(0)));
 		}else if(invoice.getId() != null){
 			invoiceIds = invoice.getId().toString();
 		}
@@ -288,7 +291,7 @@ public class InvoiceController {
 			Invoice invoice = null;
 			int count = 1;
 			for(Integer invoiceId : listSelectedInvoice){
-				invoice = invoiceService.find(invoiceId.longValue());
+				invoice = invoiceRepo.find(invoiceId.longValue());
 				if (invoice.getStatusSelect() != InvoiceRepository.STATUS_DRAFT){
 					continue;
 				}else{
@@ -316,7 +319,7 @@ public class InvoiceController {
 			Invoice invoice = null;
 			int count = 1;
 			for(Integer invoiceId : listSelectedInvoice){
-				invoice = invoiceService.find(invoiceId.longValue());
+				invoice = invoiceRepo.find(invoiceId.longValue());
 				if (invoice.getStatusSelect() != InvoiceRepository.STATUS_VALIDATED){
 					continue;
 				}else{

@@ -21,10 +21,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
@@ -45,7 +43,7 @@ import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.persist.Transactional;
 
-public class AccountChartService extends AccountChartRepository{
+public class AccountChartService{
 	private static final Logger LOG = LoggerFactory.getLogger(AccountChartService.class);
 	
 	@Inject
@@ -56,6 +54,9 @@ public class AccountChartService extends AccountChartRepository{
 	
 	@Inject
 	private CompanyRepository companyRepo;
+	
+	@Inject
+	private AccountChartRepository accountChartRepository;
 	
 	public Boolean installAccountChart(AccountChart act, Company company, AccountConfig accountConfig){
 		try {
@@ -110,12 +111,12 @@ public class AccountChartService extends AccountChartRepository{
 		accountConfig = accountConfigRepo.find(accountConfig.getId());
 		accountConfig.setHasChartImported(true);
 		accountConfigRepo.save(accountConfig);
-		act = find(act.getId());
+		act = accountChartRepository.find(act.getId());
 		company = companyRepo.find(company.getId());
 		Set<Company> companySet = act.getCompanySet();
 		companySet.add(company);
 		act.setCompanySet(companySet);
-		save(act);
+		accountChartRepository.save(act);
 	}
 	
 	public void importAccountChartData(String configPath, String dataDir,HashMap<String,Object> context) throws IOException {

@@ -37,6 +37,8 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.db.Tax;
 import com.axelor.apps.account.db.repo.AccountClearanceRepository;
+import com.axelor.apps.account.db.repo.MoveLineRepository;
+import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.IAdministration;
@@ -53,7 +55,7 @@ import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
-public class AccountClearanceService extends AccountClearanceRepository {
+public class AccountClearanceService{
 
 	private static final Logger LOG = LoggerFactory.getLogger(AccountClearanceService.class);
 
@@ -62,6 +64,9 @@ public class AccountClearanceService extends AccountClearanceRepository {
 
 	@Inject
 	private MoveLineService moveLineService;
+	
+	@Inject
+	private MoveLineRepository moveLineRepo;
 
 	@Inject
 	private SequenceService sequenceService;
@@ -74,6 +79,9 @@ public class AccountClearanceService extends AccountClearanceRepository {
 
 	@Inject
 	private TaxAccountService taxAccountService;
+	
+	@Inject
+	private AccountClearanceRepository accountClearanceRepository;
 
 
 	protected GeneralService generalService;
@@ -96,9 +104,9 @@ public class AccountClearanceService extends AccountClearanceRepository {
 
 		this.testCompanyField(company);
 
-		List<? extends MoveLine> moveLineList = moveLineService.all().filter("self.company = ?1 AND self.account.reconcileOk = 'true' AND self.fromSchedulePaymentOk = 'false' " +
+		List<? extends MoveLine> moveLineList = moveLineRepo.all().filter("self.company = ?1 AND self.account.reconcileOk = 'true' AND self.fromSchedulePaymentOk = 'false' " +
 				"AND self.move.statusSelect = ?2 AND self.amountRemaining > 0 AND self.amountRemaining <= ?3 AND self.credit > 0 AND self.account in ?4 AND self.date <= ?5",
-				company, MoveService.STATUS_VALIDATED , accountClearance.getAmountThreshold(),
+				company, MoveRepository.STATUS_VALIDATED , accountClearance.getAmountThreshold(),
 				company.getAccountConfig().getClearanceAccountSet(), accountClearance.getDateThreshold()).fetch();
 
 		LOG.debug("Liste des trop perçus récupérés : {}", moveLineList);
@@ -107,6 +115,7 @@ public class AccountClearanceService extends AccountClearanceRepository {
 	}
 
 
+	@SuppressWarnings("unchecked")
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void setExcessPayment(AccountClearance accountClearance) throws AxelorException  {
 		accountClearance.setMoveLineSet(new HashSet<MoveLine>());
@@ -114,7 +123,7 @@ public class AccountClearanceService extends AccountClearanceRepository {
 		if(moveLineList != null && moveLineList.size() != 0)  {
 			accountClearance.getMoveLineSet().addAll(moveLineList);
 		}
-		save(accountClearance);
+		accountClearanceRepository.save(accountClearance);
 	}
 
 
@@ -137,10 +146,10 @@ public class AccountClearanceService extends AccountClearanceRepository {
 			moveService.validateMove(move);
 		}
 
-		accountClearance.setStatusSelect(STATUS_VALIDATED);
+		accountClearance.setStatusSelect(AccountClearanceRepository.STATUS_VALIDATED);
 		accountClearance.setDateTime(this.todayTime);
 		accountClearance.setName(sequenceService.getSequenceNumber(IAdministration.ACCOUNT_CLEARANCE, company));
-		save(accountClearance);
+		accountClearanceRepository.save(accountClearance);
 	}
 
 
@@ -187,7 +196,7 @@ public class AccountClearanceService extends AccountClearanceRepository {
 		accountClearance.setName(name);
 		accountClearance.setDateTime(this.todayTime);
 		accountClearance.setUser(this.user);
-		accountClearance.setStatusSelect(STATUS_VALIDATED);
+		accountClearance.setStatusSelect(AccountClearanceRepository.STATUS_VALIDATED);
 		return accountClearance;
 
 	}

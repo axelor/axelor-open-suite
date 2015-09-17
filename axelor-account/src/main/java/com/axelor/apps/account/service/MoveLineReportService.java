@@ -46,12 +46,15 @@ import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.persist.Transactional;
 
-public class MoveLineReportService extends MoveLineReportRepository {
+public class MoveLineReportService {
 
 	private static final Logger LOG = LoggerFactory.getLogger(MoveLineReportService.class);
 
 	@Inject
 	private Injector injector;
+	
+	@Inject
+	private MoveLineReportRepository moveLineReportRepo;
 
 	private DateTime dateTime;
 
@@ -217,7 +220,7 @@ public class MoveLineReportService extends MoveLineReportRepository {
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void setSequence(MoveLineReport moveLineReport, String sequence)  {
 		moveLineReport.setRef(sequence);
-		save(moveLineReport);
+		moveLineReportRepo.save(moveLineReport);
 	}
 
 	public String getSequence(MoveLineReport moveLineReport) throws AxelorException  {
@@ -254,19 +257,19 @@ public class MoveLineReportService extends MoveLineReportRepository {
 		AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
 
 		switch (moveLineReport.getTypeSelect()) {
-			case EXPORT_SALES:
+			case MoveLineReportRepository.EXPORT_SALES:
 
 				return accountConfigService.getSaleJournalType(accountConfig);
 
-			case EXPORT_REFUNDS:
+			case MoveLineReportRepository.EXPORT_REFUNDS:
 
 				return accountConfigService.getCreditNoteJournalType(accountConfig);
 
-			case EXPORT_TREASURY:
+			case MoveLineReportRepository.EXPORT_TREASURY:
 
 				return accountConfigService.getCashJournalType(accountConfig);
 
-			case EXPORT_PURCHASES:
+			case MoveLineReportRepository.EXPORT_PURCHASES:
 
 				return accountConfigService.getPurchaseJournalType(accountConfig);
 
@@ -287,8 +290,8 @@ public class MoveLineReportService extends MoveLineReportRepository {
 
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void setStatus(MoveLineReport moveLineReport)  {
-		moveLineReport.setStatusSelect(STATUS_VALIDATED);
-		save(moveLineReport);
+		moveLineReport.setStatusSelect(MoveLineReportRepository.STATUS_VALIDATED);
+		moveLineReportRepo.save(moveLineReport);
 	}
 
 	/**
@@ -297,7 +300,7 @@ public class MoveLineReportService extends MoveLineReportRepository {
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void setPublicationDateTime(MoveLineReport moveLineReport)  {
 		moveLineReport.setPublicationDateTime(this.dateTime);
-		save(moveLineReport);
+		moveLineReportRepo.save(moveLineReport);
 	}
 
 

@@ -34,12 +34,12 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentScheduleLine;
 import com.axelor.apps.account.db.Reminder;
+import com.axelor.apps.account.db.repo.AccountingSituationRepository;
+import com.axelor.apps.account.db.repo.MoveLineRepository;
+import com.axelor.apps.account.db.repo.PaymentScheduleLineRepository;
 import com.axelor.apps.account.db.repo.ReminderRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.AccountCustomerService;
-import com.axelor.apps.account.service.AccountingSituationService;
-import com.axelor.apps.account.service.MoveLineService;
-import com.axelor.apps.account.service.PaymentScheduleLineService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
@@ -54,7 +54,7 @@ import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
-public class ReminderService extends ReminderRepository{
+public class ReminderService {
 
 	private static final Logger LOG = LoggerFactory.getLogger(ReminderService.class);
 
@@ -66,16 +66,16 @@ public class ReminderService extends ReminderRepository{
 	private AccountCustomerService acs;
 
 	@Inject
-	private MoveLineService moveLineService;
+	private MoveLineRepository moveLineRepo;
 
 	@Inject
-	private PaymentScheduleLineService paymentScheduleLineService;
+	private PaymentScheduleLineRepository paymentScheduleLineRepo;
 
 	@Inject
 	private AccountConfigService accountConfigService;
-
+	
 	@Inject
-	private AccountingSituationService accountingSituationService;
+	private ReminderRepository reminderRepo;
 
 	private LocalDate today;
 
@@ -115,7 +115,7 @@ public class ReminderService extends ReminderRepository{
 
 
 	public BigDecimal getSubstractBalanceDue( Partner partner)  {
-		List<? extends MoveLine> moveLineQuery = moveLineService.all().filter("self.partner = ?1", partner).fetch();
+		List<? extends MoveLine> moveLineQuery = moveLineRepo.all().filter("self.partner = ?1", partner).fetch();
 		BigDecimal balance = BigDecimal.ZERO;
 		for(MoveLine moveLine : moveLineQuery)  {
 			if(moveLine.getCredit().compareTo(BigDecimal.ZERO) > 0)  {
@@ -301,7 +301,7 @@ public class ReminderService extends ReminderRepository{
 	 */
 	public List<? extends MoveLine> getMoveLine(Partner partner, Company company)  {
 
-		return moveLineService.all().filter("self.partner = ?1 and self.move.company = ?2", partner, company).fetch();
+		return moveLineRepo.all().filter("self.partner = ?1 and self.move.company = ?2", partner, company).fetch();
 
 	}
 
@@ -314,7 +314,7 @@ public class ReminderService extends ReminderRepository{
 	 * @return
 	 */
 	public PaymentScheduleLine getPaymentScheduleFromMoveLine(Partner partner, MoveLine moveLine)  {
-		return paymentScheduleLineService.all().filter("self.rejectMoveLine = ?1", moveLine).fetchOne();
+		return paymentScheduleLineRepo.all().filter("self.rejectMoveLine = ?1", moveLine).fetchOne();
 	}
 
 
@@ -339,7 +339,10 @@ public class ReminderService extends ReminderRepository{
 
 
 	public Reminder getReminder(Partner partner, Company company) throws AxelorException  {
-		AccountingSituation accountingSituation = accountingSituationService.all().filter("self.partner = ?1 and self.company = ?2", partner, company).fetchOne();
+		
+		AccountingSituationRepository accSituationRepo = Beans.get(AccountingSituationRepository.class);
+		AccountingSituation accountingSituation = accSituationRepo.all().filter("self.partner = ?1 and self.company = ?2", partner, company).fetchOne();
+		
 		if(accountingSituation != null)  {
 			if(accountingSituation.getReminder() != null)  {
 				return accountingSituation.getReminder();
@@ -360,7 +363,7 @@ public class ReminderService extends ReminderRepository{
 	public Reminder createReminder(AccountingSituation accountingSituation)  {
 		Reminder reminder = new Reminder();
 		reminder.setAccountingSituation(accountingSituation);
-		save(reminder);
+		reminderRepo.save(reminder);
 		return reminder;
 	}
 

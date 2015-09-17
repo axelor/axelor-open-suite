@@ -29,14 +29,18 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.google.inject.Inject;
 
 /**
  * InvoiceBatchService est une classe implémentant l'ensemble des batchs de
  * facturations.
  */
-public class InvoiceBatchService extends InvoiceBatchRepository{
+public class InvoiceBatchService {
 
 	// Appel 	
+	
+	@Inject
+	private InvoiceBatchRepository invoiceBatchRepo;
 	
 	/**
 	 * Lancer un batch à partir de son code.
@@ -49,11 +53,11 @@ public class InvoiceBatchService extends InvoiceBatchRepository{
 	public Batch run(String batchCode) throws AxelorException {
 				
 		Batch batch;
-		InvoiceBatch invoiceBatch = findByCode(batchCode);
+		InvoiceBatch invoiceBatch = invoiceBatchRepo.findByCode(batchCode);
 		
 		if (invoiceBatch != null){
 			switch (invoiceBatch.getActionSelect()) {
-			case BATCH_STATUS:
+			case InvoiceBatchRepository.BATCH_STATUS:
 				batch = wkf(invoiceBatch);
 				break;
 			default:

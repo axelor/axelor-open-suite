@@ -18,6 +18,7 @@
 package com.axelor.apps.account.web;
 
 import com.axelor.apps.account.db.ChequeRejection;
+import com.axelor.apps.account.db.repo.ChequeRejectionRepository;
 import com.axelor.apps.account.service.ChequeRejectionService;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.rpc.ActionRequest;
@@ -29,10 +30,13 @@ public class ChequeRejectionController {
 	@Inject
 	private ChequeRejectionService crs;
 	
+	@Inject
+	private ChequeRejectionRepository chequeRejectionRepo;
+	
 	public void validateChequeRejection(ActionRequest request, ActionResponse response)  {
 		
 		ChequeRejection chequeRejection = request.getContext().asType(ChequeRejection.class);
-		chequeRejection = crs.find(chequeRejection.getId());
+		chequeRejection = chequeRejectionRepo.find(chequeRejection.getId());
 		
 		try {
 			crs.validateChequeRejection(chequeRejection);

@@ -23,7 +23,7 @@ import com.axelor.apps.account.db.TaxAccount;
 import com.axelor.apps.account.db.repo.TaxAccountRepository;
 import com.axelor.apps.base.db.Company;
 
-public class TaxAccountService extends TaxAccountRepository {
+public class TaxAccountService {
 	
 	
 	public Account getAccount(Tax tax, Company company)  {

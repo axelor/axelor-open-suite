@@ -34,6 +34,8 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentInvoiceToPay;
 import com.axelor.apps.account.db.Reconcile;
+import com.axelor.apps.account.db.repo.MoveLineRepository;
+import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.MoveLineService;
 import com.axelor.apps.account.service.MoveService;
 import com.axelor.apps.account.service.PaymentScheduleService;
@@ -58,6 +60,9 @@ public class PaymentService {
 
 	@Inject
 	private MoveLineService mls;
+	
+	@Inject
+	private MoveLineRepository moveLineRepo;
 
 	@Inject
 	private ReconcileService rs;
@@ -131,11 +136,11 @@ public class PaymentService {
 	public List<? extends MoveLine> getExcessPayment(Invoice invoice, Account account) throws AxelorException {
 		 Company company = invoice.getCompany();
 
-		 List<? extends MoveLine> creditMoveLines =  mls.all()
+		 List<? extends MoveLine> creditMoveLines =  moveLineRepo.all()
 		 .filter("self.move.company = ?1 AND self.move.statusSelect = ?2 AND self.move.ignoreInAccountingOk IN (false,null)" +
 		 " AND self.account.reconcileOk = ?3 AND self.credit > 0 and self.amountRemaining > 0" +
 		 " AND self.partner = ?4 AND self.account = ?5 ORDER BY self.date ASC",
-		 company, MoveService.STATUS_VALIDATED, true, invoice.getPartner(), account).fetch();
+		 company, MoveRepository.STATUS_VALIDATED, true, invoice.getPartner(), account).fetch();
 
 		 LOG.debug("Nombre de trop-perçus à imputer sur la facture récupéré : {}", creditMoveLines.size());
 
@@ -161,18 +166,18 @@ public class PaymentService {
 		List<? extends MoveLine> othersDebitMoveLines = null;
 		if(useOthersInvoiceDue)  {
 			if(debitMoveLines != null && debitMoveLines.size() != 0)  {
-				othersDebitMoveLines = mls.all()
+				othersDebitMoveLines = moveLineRepo.all()
 						 .filter("self.move.company = ?1 AND self.move.statusSelect = ?2 AND self.move.ignoreInAccountingOk IN (false,null)" +
 						 " AND self.account.reconcileOk = ?3 AND self.debit > 0 AND self.amountRemaining > 0 " +
 						 " AND self.partner = ?4 AND self NOT IN (?5) ORDER BY self.date ASC ",
-						 company, MoveService.STATUS_VALIDATED, true, partner, debitMoveLines).fetch();
+						 company, MoveRepository.STATUS_VALIDATED, true, partner, debitMoveLines).fetch();
 			}
 			else  {
-				othersDebitMoveLines = mls.all()
+				othersDebitMoveLines = moveLineRepo.all()
 						 .filter("self.move.company = ?1 AND self.move.statusSelect = ?2 AND self.move.ignoreInAccountingOk IN (false,null)" +
 						 " AND self.account.reconcileOk = ?3 AND self.debit > 0 AND self.amountRemaining > 0 " +
 						 " AND self.partner = ?4 ORDER BY self.date ASC ",
-						 company, MoveService.STATUS_VALIDATED, true, partner).fetch();
+						 company, MoveRepository.STATUS_VALIDATED, true, partner).fetch();
 			}
 			debitMoveLines.addAll(othersDebitMoveLines);
 		}

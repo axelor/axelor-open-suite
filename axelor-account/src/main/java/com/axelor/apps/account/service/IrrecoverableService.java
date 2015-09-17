@@ -51,6 +51,8 @@ import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.IrrecoverableCustomerLineRepository;
 import com.axelor.apps.account.db.repo.IrrecoverableRepository;
 import com.axelor.apps.account.db.repo.ManagementObjectRepository;
+import com.axelor.apps.account.db.repo.MoveLineRepository;
+import com.axelor.apps.account.db.repo.PaymentScheduleLineRepository;
 import com.axelor.apps.account.db.repo.PaymentScheduleRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.config.AccountConfigService;
@@ -70,7 +72,7 @@ import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
-public class IrrecoverableService extends IrrecoverableRepository{
+public class IrrecoverableService{
 
 	private static final Logger LOG = LoggerFactory.getLogger(IrrecoverableService.class);
 
@@ -82,6 +84,9 @@ public class IrrecoverableService extends IrrecoverableRepository{
 
 	@Inject
 	private MoveLineService moveLineService;
+	
+	@Inject
+	private MoveLineRepository moveLineRepo;
 
 	@Inject
 	private ReconcileService reconcileService;
@@ -94,6 +99,12 @@ public class IrrecoverableService extends IrrecoverableRepository{
 
 	@Inject
 	private PaymentScheduleService paymentScheduleService;
+	
+	@Inject
+	private PaymentScheduleRepository paymentScheduleRepo;
+	
+	@Inject
+	private PaymentScheduleLineRepository paymentScheduleLineRepo;
 
 	@Inject
 	private AccountConfigService accountConfigService;
@@ -103,13 +114,15 @@ public class IrrecoverableService extends IrrecoverableRepository{
 
 	@Inject
 	private InvoiceService invoiceService;
-
+	
 	@Inject
-	private PaymentScheduleLineService paymentScheduleLineService;
+	private InvoiceRepository invoiceRepo;
 
 	@Inject
 	private ManagementObjectRepository managementObjectRepo;
 
+	@Inject
+	private IrrecoverableRepository irrecoverableRepo;
 
 	protected GeneralService generalService;
 
@@ -148,7 +161,7 @@ public class IrrecoverableService extends IrrecoverableRepository{
 		irrecoverable.setPaymentScheduleLineSet(new HashSet<PaymentScheduleLine>());
 		irrecoverable.getPaymentScheduleLineSet().addAll(this.getPaymentScheduleLineList(company));
 
-		save(irrecoverable);
+		irrecoverableRepo.save(irrecoverable);
 	}
 
 
@@ -177,7 +190,7 @@ public class IrrecoverableService extends IrrecoverableRepository{
 	 * @return
 	 */
 	public List<Invoice> getInvoiceList(Company company)   {
-		return invoiceService.all().filter("self.irrecoverableStateSelect = ?1 AND self.company = ?2 AND self.statusSelect = ?3 " +
+		return invoiceRepo.all().filter("self.irrecoverableStateSelect = ?1 AND self.company = ?2 AND self.statusSelect = ?3 " +
 				"AND self.inTaxTotalRemaining > 0 AND self.rejectMoveLine IS NULL ORDER BY self.dueDate ASC",
 				InvoiceRepository.IRRECOVERABLE_STATUS_TO_PASS_IN_IRRECOUVRABLE, company, InvoiceRepository.STATUS_VENTILATED).fetch();
 	}
@@ -189,7 +202,7 @@ public class IrrecoverableService extends IrrecoverableRepository{
 	 * @return
 	 */
 	public List<Invoice> getRejectInvoiceList(Company company)   {
-		return invoiceService.all().filter("self.irrecoverableStateSelect = ?1 AND self.company = ?2 AND self.statusSelect = ?3 " +
+		return invoiceRepo.all().filter("self.irrecoverableStateSelect = ?1 AND self.company = ?2 AND self.statusSelect = ?3 " +
 				"AND self.inTaxTotalRemaining = 0 AND self.rejectMoveLine IS NOT NULL ORDER BY self.dueDate ASC",
 				InvoiceRepository.IRRECOVERABLE_STATUS_TO_PASS_IN_IRRECOUVRABLE, company, InvoiceRepository.STATUS_VENTILATED).fetch();
 	}
@@ -202,7 +215,7 @@ public class IrrecoverableService extends IrrecoverableRepository{
 	 * @return
 	 */
 	public List<PaymentScheduleLine> getPaymentScheduleLineList(Company company)   {
-		return paymentScheduleLineService.all()
+		return paymentScheduleLineRepo.all()
 				.filter("self.paymentSchedule.irrecoverableStateSelect = ?1 AND self.paymentSchedule.company = ?2 " +
 						"AND self.paymentSchedule.stateSelect = ?3 AND self.rejectMoveLine.amountRemaining > 0 ORDER BY self.scheduleDate ASC",
 						PaymentScheduleRepository.IRRECOVERABLE_STATUS_TO_PASS_IN_IRRECOUVRABLE, company, PaymentScheduleRepository.STATUS_CONFIRMED).fetch();
@@ -292,7 +305,7 @@ public class IrrecoverableService extends IrrecoverableRepository{
 							payerPartner,
 							this.getInvoiceList(payerPartner, invoiceSet),
 							this.getPaymentScheduleLineList(payerPartner, paymentScheduleLineSet));
-					save(irrecoverable);
+					irrecoverableRepo.save(irrecoverable);
 					transaction.commit();
 
 					if (i % 50 == 0)  {
@@ -373,7 +386,7 @@ public class IrrecoverableService extends IrrecoverableRepository{
 
 					this.createIrrecoverableInvoiceLineMove(irrecoverable, invoice);
 
-					save(irrecoverable);
+					irrecoverableRepo.save(irrecoverable);
 
 					if (i % 50 == 0)  {
 						JPA.flush();
@@ -410,7 +423,7 @@ public class IrrecoverableService extends IrrecoverableRepository{
 
 					this.createMoveForPaymentScheduleLineReject(irrecoverable, paymentScheduleLine);
 
-					save(irrecoverable);
+					irrecoverableRepo.save(irrecoverable);
 
 					if (i % 50 == 0)  {
 						JPA.flush();
@@ -437,8 +450,8 @@ public class IrrecoverableService extends IrrecoverableRepository{
 		if (!transaction.isActive())  {
 			transaction.begin();
 		}
-		irrecoverable.setStatusSelect(STATUS_VALIDATED);
-		save(irrecoverable);
+		irrecoverable.setStatusSelect(IrrecoverableRepository.STATUS_VALIDATED);
+		irrecoverableRepo.save(irrecoverable);
 		transaction.commit();
 
 		return anomaly;
@@ -477,7 +490,7 @@ public class IrrecoverableService extends IrrecoverableRepository{
 		invoice.setIrrecoverableStatusSelect(InvoiceRepository.IRRECOVERABLE_STATUS_PASSED_IN_IRRECOUVRABLE);
 
 		if(invoice.getCanceledPaymentSchedule() != null && this.isAllInvoicePassedInIrrecoverable(invoice.getCanceledPaymentSchedule()))  {
-			invoice.getCanceledPaymentSchedule().setIrrecoverableStatusSelect(PaymentScheduleService.IRRECOVERABLE_STATUS_PASSED_IN_IRRECOUVRABLE);
+			invoice.getCanceledPaymentSchedule().setIrrecoverableStatusSelect(PaymentScheduleRepository.IRRECOVERABLE_STATUS_PASSED_IN_IRRECOUVRABLE);
 		}
 
 	}
@@ -629,7 +642,7 @@ public class IrrecoverableService extends IrrecoverableRepository{
 			seq++;
 		}
 		// Afin de ne pas modifier les valeurs des lignes de factures, on les recharges depuis la base
-		invoiceService.refresh(invoice);
+		invoiceRepo.refresh(invoice);
 		return irlList;
 	}
 
@@ -798,7 +811,7 @@ public class IrrecoverableService extends IrrecoverableRepository{
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.IRRECOVERABLE_3),
 					GeneralServiceImpl.EXCEPTION, invoice.getInvoiceId()), IException.INCONSISTENCY);
 		}
-		customerMoveLine.setIrrecoverableStatusSelect(MoveLineService.IRRECOVERABLE_STATUS_PASSED_IN_IRRECOUVRABLE);
+		customerMoveLine.setIrrecoverableStatusSelect(MoveLineRepository.IRRECOVERABLE_STATUS_PASSED_IN_IRRECOUVRABLE);
 
 		// Credit MoveLine Customer account (411, 416, ...)
 		MoveLine creditMoveLine = moveLineService.createMoveLine(move, payerPartner, customerMoveLine.getAccount(), creditAmount, false, date, seq, null);
@@ -933,7 +946,7 @@ public class IrrecoverableService extends IrrecoverableRepository{
 
 		}
 
-		invoiceService.save(invoice);
+		invoiceRepo.save(invoice);
 	}
 
 
@@ -957,7 +970,7 @@ public class IrrecoverableService extends IrrecoverableRepository{
 
 		this.passInIrrecoverable(moveLine, managementObject, false);
 
-		invoiceService.save(invoice);
+		invoiceRepo.save(invoice);
 	}
 
 
@@ -977,7 +990,7 @@ public class IrrecoverableService extends IrrecoverableRepository{
 			this.notPassInIrrecoverable(moveLine, false);
 		}
 
-		invoiceService.save(invoice);
+		invoiceRepo.save(invoice);
 	}
 
 
@@ -994,7 +1007,7 @@ public class IrrecoverableService extends IrrecoverableRepository{
 	 */
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void passInIrrecoverable(MoveLine moveLine, boolean generateEvent, boolean passInvoice) throws AxelorException  {
-		moveLine.setIrrecoverableStatusSelect(MoveLineService.IRRECOVERABLE_STATUS_TO_PASS_IN_IRRECOUVRABLE);
+		moveLine.setIrrecoverableStatusSelect(MoveLineRepository.IRRECOVERABLE_STATUS_TO_PASS_IN_IRRECOUVRABLE);
 		ManagementObject managementObject = null;
 		if(generateEvent)  {
 			Company company = moveLine.getMove().getCompany();
@@ -1008,7 +1021,7 @@ public class IrrecoverableService extends IrrecoverableRepository{
 			this.passInIrrecoverable(moveLine.getMove().getInvoice(), managementObject);
 		}
 
-		moveLineService.save(moveLine);
+		moveLineRepo.save(moveLine);
 	}
 
 
@@ -1028,7 +1041,7 @@ public class IrrecoverableService extends IrrecoverableRepository{
 
 		moveLine.setManagementObject(managementObject);
 
-		moveLineService.save(moveLine);
+		moveLineRepo.save(moveLine);
 	}
 
 
@@ -1042,13 +1055,13 @@ public class IrrecoverableService extends IrrecoverableRepository{
 	 */
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void notPassInIrrecoverable(MoveLine moveLine, boolean passInvoice) throws AxelorException  {
-		moveLine.setIrrecoverableStatusSelect(MoveLineService.IRRECOVERABLE_STATUS_NOT_IRRECOUVRABLE);
+		moveLine.setIrrecoverableStatusSelect(MoveLineRepository.IRRECOVERABLE_STATUS_NOT_IRRECOUVRABLE);
 
 		if(moveLine.getMove().getInvoice() != null && passInvoice)  {
 			this.notPassInIrrecoverable(moveLine.getMove().getInvoice());
 		}
 
-		moveLineService.save(moveLine);
+		moveLineRepo.save(moveLine);
 	}
 
 
@@ -1065,7 +1078,7 @@ public class IrrecoverableService extends IrrecoverableRepository{
 	public void passInIrrecoverable(PaymentSchedule paymentSchedule) throws AxelorException  {
 		Company company = paymentSchedule.getCompany();
 
-		paymentSchedule.setIrrecoverableStatusSelect(PaymentScheduleService.IRRECOVERABLE_STATUS_TO_PASS_IN_IRRECOUVRABLE);
+		paymentSchedule.setIrrecoverableStatusSelect(PaymentScheduleRepository.IRRECOVERABLE_STATUS_TO_PASS_IN_IRRECOUVRABLE);
 
 		ManagementObject managementObject = this.createManagementObject("IRR", accountConfigService.getIrrecoverableReasonPassage(accountConfigService.getAccountConfig(company)));
 		paymentSchedule.setManagementObject(managementObject);
@@ -1090,7 +1103,7 @@ public class IrrecoverableService extends IrrecoverableRepository{
 
 		paymentScheduleService.cancelPaymentSchedule(paymentSchedule);
 
-		paymentScheduleService.save(paymentSchedule);
+		paymentScheduleRepo.save(paymentSchedule);
 	}
 
 
@@ -1104,7 +1117,7 @@ public class IrrecoverableService extends IrrecoverableRepository{
 	 */
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void notPassInIrrecoverable(PaymentSchedule paymentSchedule) throws AxelorException  {
-		paymentSchedule.setIrrecoverableStatusSelect(PaymentScheduleService.IRRECOVERABLE_STATUS_NOT_IRRECOUVRABLE);
+		paymentSchedule.setIrrecoverableStatusSelect(PaymentScheduleRepository.IRRECOVERABLE_STATUS_NOT_IRRECOUVRABLE);
 
 		List<MoveLine> paymentScheduleLineRejectMoveLineList = new ArrayList<MoveLine>();
 
@@ -1121,6 +1134,6 @@ public class IrrecoverableService extends IrrecoverableRepository{
 		for(Invoice invoice : paymentSchedule.getInvoiceSet())  {
 			this.notPassInIrrecoverable(invoice);
 		}
-		paymentScheduleService.save(paymentSchedule);
+		paymentScheduleRepo.save(paymentSchedule);
 	}
 }

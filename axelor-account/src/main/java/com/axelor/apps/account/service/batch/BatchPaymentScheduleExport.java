@@ -29,9 +29,11 @@ import com.axelor.apps.account.db.AccountingBatch;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentScheduleLine;
+import com.axelor.apps.account.db.repo.AccountingBatchRepository;
+import com.axelor.apps.account.db.repo.InvoiceRepository;
+import com.axelor.apps.account.db.repo.PaymentScheduleLineRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.PaymentScheduleExportService;
-import com.axelor.apps.account.service.PaymentScheduleLineService;
 import com.axelor.apps.account.service.cfonb.CfonbExportService;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.payment.PaymentModeService;
@@ -54,10 +56,10 @@ public class BatchPaymentScheduleExport extends BatchStrategy {
 	private String updateCustomerAccountLog = "";
 	
 	@Inject
-	private PaymentScheduleLineService paymentScheduleLineService;
+	private PaymentScheduleLineRepository paymentScheduleLineRepo;
 	
 	@Inject
-	private InvoiceService invoiceService;
+	private InvoiceRepository invoiceRepo;
 	
 	@Inject
 	public BatchPaymentScheduleExport(PaymentScheduleExportService paymentScheduleExportService, PaymentModeService paymentModeService, CfonbExportService cfonbExportService, BatchAccountCustomer batchAccountCustomer) {
@@ -85,7 +87,7 @@ public class BatchPaymentScheduleExport extends BatchStrategy {
 		
 		switch (batch.getAccountingBatch().getDirectDebitExportTypeSelect()) {
 		
-		case AccountingBatchService.DIRECT_DEBIT_EXPORT_TYPE_INVOICE:
+		case AccountingBatchRepository.DIRECT_DEBIT_EXPORT_TYPE_INVOICE:
 			try {
 				paymentScheduleExportService.checkDebitDate(batch.getAccountingBatch());
 				paymentScheduleExportService.checkInvoiceExportCompany(company);
@@ -98,7 +100,7 @@ public class BatchPaymentScheduleExport extends BatchStrategy {
 			}
 			break;
 			
-		case AccountingBatchService.DIRECT_DEBIT_EXPORT_TYPE_MONTHLY:
+		case AccountingBatchRepository.DIRECT_DEBIT_EXPORT_TYPE_MONTHLY:
 			try {
 				paymentScheduleExportService.checkDebitDate(batch.getAccountingBatch());
 				paymentScheduleExportService.checkMonthlyExportCompany(company);
@@ -147,7 +149,7 @@ public class BatchPaymentScheduleExport extends BatchStrategy {
 			
 			switch (batch.getAccountingBatch().getDirectDebitExportTypeSelect()) {
 				
-				case AccountingBatchService.DIRECT_DEBIT_EXPORT_TYPE_INVOICE:
+				case AccountingBatchRepository.DIRECT_DEBIT_EXPORT_TYPE_INVOICE:
 					
 					this.exportInvoice();
 					
@@ -155,7 +157,7 @@ public class BatchPaymentScheduleExport extends BatchStrategy {
 					
 					break;
 					
-				case AccountingBatchService.DIRECT_DEBIT_EXPORT_TYPE_MONTHLY:
+				case AccountingBatchRepository.DIRECT_DEBIT_EXPORT_TYPE_MONTHLY:
 					
 					this.exportMajorMonthlyPayment();
 					
@@ -175,13 +177,13 @@ public class BatchPaymentScheduleExport extends BatchStrategy {
 			
 			switch (batch.getAccountingBatch().getDirectDebitExportTypeSelect()) {
 				
-				case AccountingBatchService.DIRECT_DEBIT_EXPORT_TYPE_INVOICE:
+				case AccountingBatchRepository.DIRECT_DEBIT_EXPORT_TYPE_INVOICE:
 					
 					this.createInvoiceCfonbFile(batch.getAccountingBatch().getBatchToReExport());
 					
 					break;
 					
-				case AccountingBatchService.DIRECT_DEBIT_EXPORT_TYPE_MONTHLY:
+				case AccountingBatchRepository.DIRECT_DEBIT_EXPORT_TYPE_MONTHLY:
 					
 					this.createMonthlyCfonbFile(batch.getAccountingBatch().getBatchToReExport());
 					
@@ -215,7 +217,7 @@ public class BatchPaymentScheduleExport extends BatchStrategy {
 			cfonbExportService.exportPaymentScheduleCFONB(
 					batch.getStartDate(),
 					accountingBatch.getDebitDate(),
-					(List<PaymentScheduleLine>) paymentScheduleLineService.all().filter("?1 MEMBER OF self.batchSet", batchToExport).fetch(),
+					(List<PaymentScheduleLine>) paymentScheduleLineRepo.all().filter("?1 MEMBER OF self.batchSet", batchToExport).fetch(),
 					accountingBatch.getCompany(),
 					accountingBatch.getBankDetails());
 
@@ -259,7 +261,7 @@ public class BatchPaymentScheduleExport extends BatchStrategy {
 					if(!paymentScheduleExportService.isDebitBlocking(paymentScheduleLine))  {
 					
 						PaymentScheduleLine paymentScheduleLineToExport = paymentScheduleExportService.generateExportMensu(
-								paymentScheduleLineService.find(paymentScheduleLine.getId()), paymentscheduleLineList, 
+								paymentScheduleLineRepo.find(paymentScheduleLine.getId()), paymentscheduleLineList, 
 								companyRepo.find(company.getId()));
 						
 						if(paymentScheduleLineToExport != null)  {
@@ -271,17 +273,17 @@ public class BatchPaymentScheduleExport extends BatchStrategy {
 					
 				} catch (AxelorException e) {
 					
-					TraceBackService.trace(new AxelorException(String.format(I18n.get(IExceptionMessage.BATCH_PAYMENT_SCHEDULE_3), paymentScheduleLineService.find(paymentScheduleLine.getId()).getName()), e, e.getcategory()), IException.DIRECT_DEBIT, batch.getId());
+					TraceBackService.trace(new AxelorException(String.format(I18n.get(IExceptionMessage.BATCH_PAYMENT_SCHEDULE_3), paymentScheduleLineRepo.find(paymentScheduleLine.getId()).getName()), e, e.getcategory()), IException.DIRECT_DEBIT, batch.getId());
 					
 					incrementAnomaly();
 					
 				} catch (Exception e) {
 					
-					TraceBackService.trace(new Exception(String.format(I18n.get(IExceptionMessage.BATCH_PAYMENT_SCHEDULE_3), paymentScheduleLineService.find(paymentScheduleLine.getId()).getName()), e), IException.DIRECT_DEBIT, batch.getId());
+					TraceBackService.trace(new Exception(String.format(I18n.get(IExceptionMessage.BATCH_PAYMENT_SCHEDULE_3), paymentScheduleLineRepo.find(paymentScheduleLine.getId()).getName()), e), IException.DIRECT_DEBIT, batch.getId());
 					
 					incrementAnomaly();
 					
-					LOG.error("Bug(Anomalie) généré(e) pour le Prélèvement de l'échéance {}", paymentScheduleLineService.find(paymentScheduleLine.getId()).getName());
+					LOG.error("Bug(Anomalie) généré(e) pour le Prélèvement de l'échéance {}", paymentScheduleLineRepo.find(paymentScheduleLine.getId()).getName());
 					
 				} finally {
 					
@@ -318,12 +320,12 @@ public class BatchPaymentScheduleExport extends BatchStrategy {
 			
 			try  {
 				
-				moveLine = moveLineService.find(moveLine.getId());
+				moveLine = moveLineRepo.find(moveLine.getId());
 				
 				LOG.debug("Paiement par prélèvement de l'écriture {}", moveLine.getName());
 				
 				Invoice invoice = paymentScheduleExportService.exportInvoice(
-						moveLineService.find(moveLine.getId()), 
+						moveLineRepo.find(moveLine.getId()), 
 						moveLineList, 
 						companyRepo.find(company.getId()), 
 						directDebitManagementMaxId);
@@ -367,7 +369,7 @@ public class BatchPaymentScheduleExport extends BatchStrategy {
 			cfonbExportService.exportInvoiceCFONB(
 					batch.getStartDate(), 
 					accountingBatch.getDebitDate(), 
-					(List<Invoice>) invoiceService.all().filter("?1 MEMBER OF self.batchSet", batchToExport).fetch(), 
+					(List<Invoice>) invoiceRepo.all().filter("?1 MEMBER OF self.batchSet", batchToExport).fetch(), 
 					accountingBatch.getCompany(), 
 					accountingBatch.getBankDetails());
 		
@@ -391,7 +393,7 @@ public class BatchPaymentScheduleExport extends BatchStrategy {
 
 	protected String getInvoiceName(MoveLine moveLine)  {
 
-		moveLine = moveLineService.find(moveLine.getId());
+		moveLine = moveLineRepo.find(moveLine.getId());
 
 		if(moveLine.getMove() != null && moveLine.getMove().getInvoice() != null)  {
 			return moveLine.getMove().getInvoice().getInvoiceId();
@@ -418,7 +420,7 @@ public class BatchPaymentScheduleExport extends BatchStrategy {
 		
 		switch (batchRepo.find(batch.getId()).getAccountingBatch().getDirectDebitExportTypeSelect()) {
 		
-			case AccountingBatchService.DIRECT_DEBIT_EXPORT_TYPE_INVOICE:
+			case AccountingBatchRepository.DIRECT_DEBIT_EXPORT_TYPE_INVOICE:
 				comment = I18n.get(IExceptionMessage.BATCH_PAYMENT_SCHEDULE_4);
 				comment += String.format("\t* %s "+I18n.get(IExceptionMessage.BATCH_PAYMENT_SCHEDULE_5)+"\n", batch.getDone());
 				comment += String.format("\t* "+I18n.get(IExceptionMessage.BATCH_INTERBANK_PO_IMPORT_5)+" : %s \n", this.totalAmount);
@@ -426,7 +428,7 @@ public class BatchPaymentScheduleExport extends BatchStrategy {
 				
 				break;
 				
-			case AccountingBatchService.DIRECT_DEBIT_EXPORT_TYPE_MONTHLY:
+			case AccountingBatchRepository.DIRECT_DEBIT_EXPORT_TYPE_MONTHLY:
 	            comment = I18n.get(IExceptionMessage.BATCH_PAYMENT_SCHEDULE_6);
 	            comment += String.format("\t* %s "+I18n.get(IExceptionMessage.BATCH_PAYMENT_SCHEDULE_7)+"\n", batch.getDone());
 	            comment += String.format("\t* "+I18n.get(IExceptionMessage.BATCH_INTERBANK_PO_IMPORT_5)+" : %s \n", this.totalAmount);

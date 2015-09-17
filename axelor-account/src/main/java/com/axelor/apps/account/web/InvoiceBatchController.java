@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.axelor.apps.account.db.InvoiceBatch;
+import com.axelor.apps.account.db.repo.InvoiceBatchRepository;
 import com.axelor.apps.account.service.invoice.InvoiceBatchService;
 import com.axelor.apps.account.service.invoice.generator.batch.BatchWkf;
 import com.axelor.apps.base.db.Batch;
@@ -34,6 +35,9 @@ public class InvoiceBatchController {
 
 	@Inject
 	private InvoiceBatchService invoiceBatchService;
+	
+	@Inject
+	private InvoiceBatchRepository invoiceBatchRepo;
 
 	/**
 	 * Lancer le batch de mise à jour de statut.
@@ -46,7 +50,7 @@ public class InvoiceBatchController {
 
 		InvoiceBatch invoiceBatch = request.getContext().asType(InvoiceBatch.class);
 
-		Batch batch = invoiceBatchService.wkf(invoiceBatchService.find(invoiceBatch.getId()));
+		Batch batch = invoiceBatchService.wkf(invoiceBatchRepo.find(invoiceBatch.getId()));
 
 		response.setFlash(batch.getComments());
 		response.setReload(true);

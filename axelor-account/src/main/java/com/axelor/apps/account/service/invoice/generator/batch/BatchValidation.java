@@ -49,8 +49,8 @@ public class BatchValidation extends BatchWkf {
 
 			try {
 
-				invoiceService.validate( invoiceService.find(invoice.getId()) );
-				updateInvoice( invoiceService.find(invoice.getId()) );
+				invoiceService.validate( invoiceRepo.find(invoice.getId()) );
+				updateInvoice( invoiceRepo.find(invoice.getId()) );
 
 			}  catch (AxelorException e) {
 

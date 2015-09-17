@@ -26,9 +26,9 @@ import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.account.db.AccountingBatch;
 import com.axelor.apps.account.db.AccountingSituation;
+import com.axelor.apps.account.db.repo.AccountingSituationRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.AccountCustomerService;
-import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
@@ -41,7 +41,7 @@ public class BatchAccountCustomer extends BatchStrategy {
 	private static final Logger LOG = LoggerFactory.getLogger(BatchAccountCustomer.class);
 	
 	@Inject
-	private AccountingSituationService accountingSituationService;
+	private AccountingSituationRepository accountingSituationRepo;;
 
 	@Inject
 	public BatchAccountCustomer(AccountCustomerService accountCustomerService) {
@@ -70,14 +70,14 @@ public class BatchAccountCustomer extends BatchStrategy {
 		boolean updateDueCustAccountOk = accountingBatch.getUpdateDueCustAccountOk();
 		boolean updateDueReminderCustAccountOk = accountingBatch.getUpdateDueReminderCustAccountOk();
 		
-		List<AccountingSituation> accountingSituationList = (List<AccountingSituation>) accountingSituationService.all().filter("self.company = ?1", company).fetch();
+		List<AccountingSituation> accountingSituationList = (List<AccountingSituation>) accountingSituationRepo.all().filter("self.company = ?1", company).fetch();
 		int i = 0;
 		JPA.clear();
 		for(AccountingSituation accountingSituation : accountingSituationList)  {
 			try {
 				
 				accountingSituation = accountCustomerService.updateAccountingSituationCustomerAccount(
-						accountingSituationService.find(accountingSituation.getId()),
+						accountingSituationRepo.find(accountingSituation.getId()),
 						updateCustAccountOk,
 						updateDueCustAccountOk,
 						updateDueReminderCustAccountOk);
@@ -90,11 +90,11 @@ public class BatchAccountCustomer extends BatchStrategy {
 			} catch (Exception e) {
 				
 				TraceBackService.trace(new Exception(String.format(I18n.get(IExceptionMessage.BATCH_ACCOUNT_1), 
-						accountingSituationService.find(accountingSituation.getId()).getName()), e), IException.ACCOUNT_CUSTOMER, batch.getId());
+						accountingSituationRepo.find(accountingSituation.getId()).getName()), e), IException.ACCOUNT_CUSTOMER, batch.getId());
 				
 				incrementAnomaly();
 				
-				LOG.error("Bug(Anomalie) généré(e) pour la situation compable {}", accountingSituationService.find(accountingSituation.getId()).getName());
+				LOG.error("Bug(Anomalie) généré(e) pour la situation compable {}", accountingSituationRepo.find(accountingSituation.getId()).getName());
 				
 			} finally {
 				
@@ -132,10 +132,10 @@ public class BatchAccountCustomer extends BatchStrategy {
 		List<AccountingSituation> accountingSituationList = null;
 		
 		if(company != null)  {
-			accountingSituationList = (List<AccountingSituation>) accountingSituationService.all().filter("self.company = ?1 and self.custAccountMustBeUpdateOk = 'true'", company).fetch();
+			accountingSituationList = (List<AccountingSituation>) accountingSituationRepo.all().filter("self.company = ?1 and self.custAccountMustBeUpdateOk = 'true'", company).fetch();
 		}
 		else  {
-			accountingSituationList = (List<AccountingSituation>) accountingSituationService.all().filter("self.custAccountMustBeUpdateOk = 'true'").fetch();
+			accountingSituationList = (List<AccountingSituation>) accountingSituationRepo.all().filter("self.custAccountMustBeUpdateOk = 'true'").fetch();
 		}
 		
 		int i = 0;
@@ -144,7 +144,7 @@ public class BatchAccountCustomer extends BatchStrategy {
 			try {
 				
 				accountingSituation = accountCustomerService.updateAccountingSituationCustomerAccount(
-						accountingSituationService.find(accountingSituation.getId()),
+						accountingSituationRepo.find(accountingSituation.getId()),
 						true, true, false);
 				
 				if(accountingSituation != null)  {
@@ -153,11 +153,11 @@ public class BatchAccountCustomer extends BatchStrategy {
 				
 			} catch (Exception e) {
 				
-				TraceBackService.trace(new Exception(String.format(I18n.get(IExceptionMessage.BATCH_ACCOUNT_1),  accountingSituationService.find(accountingSituation.getId()).getName()), e), IException.ACCOUNT_CUSTOMER, batch.getId());
+				TraceBackService.trace(new Exception(String.format(I18n.get(IExceptionMessage.BATCH_ACCOUNT_1),  accountingSituationRepo.find(accountingSituation.getId()).getName()), e), IException.ACCOUNT_CUSTOMER, batch.getId());
 				
 				anomaly++;
 				
-				LOG.error("Bug(Anomalie) généré(e) pour le compte client {}",  accountingSituationService.find(accountingSituation.getId()));
+				LOG.error("Bug(Anomalie) généré(e) pour le compte client {}",  accountingSituationRepo.find(accountingSituation.getId()));
 				
 			} finally {
 				

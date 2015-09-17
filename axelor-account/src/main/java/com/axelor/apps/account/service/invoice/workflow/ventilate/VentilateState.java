@@ -56,6 +56,9 @@ public class VentilateState extends WorkflowInvoice {
 
 	@Inject
 	protected GeneralService generalService;
+	
+	@Inject
+	private InvoiceRepository invoiceRepo;
 
 	@Override
 	public void init(Invoice invoice){
@@ -131,7 +134,7 @@ public class VentilateState extends WorkflowInvoice {
 
 		}
 
-		if(all().filter(query, params.toArray()).count() > 0)  {
+		if(invoiceRepo.all().filter(query, params.toArray()).count() > 0)  {
 			if(sequence.getMonthlyResetOk())  {
 				throw new AxelorException(I18n.get(IExceptionMessage.VENTILATE_STATE_2), IException.CONFIGURATION_ERROR);
 			}

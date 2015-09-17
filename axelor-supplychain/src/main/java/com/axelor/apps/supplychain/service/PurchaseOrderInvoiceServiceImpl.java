@@ -48,13 +48,16 @@ public class PurchaseOrderInvoiceServiceImpl extends PurchaseOrderRepository imp
 
 	@Inject
 	private InvoiceService invoiceService;
+	
+	@Inject
+	private InvoiceRepository invoiceRepo;
 
 	@Override
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public Invoice generateInvoice(PurchaseOrder purchaseOrder) throws AxelorException  {
 
 		Invoice invoice = this.createInvoice(purchaseOrder);
-		invoiceService.save(invoice);
+		invoiceRepo.save(invoice);
 		invoiceService.setDraftSequence(invoice);
 
 		if(invoice != null) {

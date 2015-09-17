@@ -48,7 +48,7 @@ import com.google.inject.persist.Transactional;
  * facturations.
  * 
  */
-public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceService  {
+public class InvoiceServiceImpl implements InvoiceService  {
 
 	private static final Logger LOG = LoggerFactory.getLogger(InvoiceServiceImpl.class);
 	
@@ -56,6 +56,9 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 	private VentilateFactory ventilateFactory;
 	private CancelFactory cancelFactory;
 	private AlarmEngineService<Invoice> alarmEngineService;
+	
+	@Inject
+	private InvoiceRepository invoiceRepo;
 	
 	@Inject
 	public InvoiceServiceImpl(ValidateFactory validateFactory, VentilateFactory ventilateFactory, CancelFactory cancelFactory, AlarmEngineService<Invoice> alarmEngineService) {
@@ -150,7 +153,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 		LOG.debug("Validation de la facture");
 		
 		validateFactory.getValidator(invoice).process( );
-		save(invoice);
+		invoiceRepo.save(invoice);
 		
 	}
 
@@ -170,7 +173,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 		
 		ventilateFactory.getVentilator(invoice).process();
 		
-		save(invoice);
+		invoiceRepo.save(invoice);
 		
 	}
 
@@ -190,7 +193,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 		
 		cancelFactory.getCanceller(invoice).process();
 		
-		save(invoice);
+		invoiceRepo.save(invoice);
 		
 	}
 	
@@ -240,7 +243,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 		LOG.debug("Créer un avoir pour la facture {}", new Object[] { invoice.getInvoiceId() });
 		Invoice refund = new RefundInvoice(invoice).generate();
 		invoice.addRefundInvoiceListItem( refund );
-		save(invoice);
+		invoiceRepo.save(invoice);
 		
 		return refund;
 		

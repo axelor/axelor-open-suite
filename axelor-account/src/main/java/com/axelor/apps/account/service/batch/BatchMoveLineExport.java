@@ -27,6 +27,7 @@ import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.account.db.AccountingBatch;
 import com.axelor.apps.account.db.MoveLineReport;
+import com.axelor.apps.account.db.repo.MoveLineReportRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.MoveLineExportService;
 import com.axelor.apps.account.service.MoveLineReportService;
@@ -51,7 +52,7 @@ public class BatchMoveLineExport extends BatchStrategy {
 	private BigDecimal balance = BigDecimal.ZERO;
 
 	@Inject
-	private MoveLineReportService moveLineReportService;
+	private MoveLineReportRepository moveLineReportRepo;
 
 	@Inject
 	public BatchMoveLineExport(MoveLineExportService moveLineExportService) {
@@ -96,10 +97,10 @@ public class BatchMoveLineExport extends BatchStrategy {
 
 				JPA.clear();
 
-				moveLineReport = moveLineReportService.find(moveLineReport.getId());
+				moveLineReport = moveLineReportRepo.find(moveLineReport.getId());
 
-				moveLineDone = moveLineService.all().filter("self.move.moveLineReport = ?1", moveLineReport).count();
-				moveDone = moveService.all().filter("self.moveLineReport = ?1", moveLineReport).count();
+				moveLineDone = moveLineRepo.all().filter("self.move.moveLineReport = ?1", moveLineReport).count();
+				moveDone = moveRepo.all().filter("self.moveLineReport = ?1", moveLineReport).count();
 				debit = moveLineReport.getTotalDebit();
 				credit = moveLineReport.getTotalCredit();
 				balance = moveLineReport.getBalance();

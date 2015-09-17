@@ -36,9 +36,10 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentScheduleLine;
 import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.account.db.repo.InterbankCodeLineRepository;
+import com.axelor.apps.account.db.repo.InvoiceRepository;
+import com.axelor.apps.account.db.repo.PaymentScheduleLineRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.PaymentScheduleImportService;
-import com.axelor.apps.account.service.PaymentScheduleLineService;
 import com.axelor.apps.account.service.RejectImportService;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.base.db.Company;
@@ -67,10 +68,10 @@ public class BatchPaymentScheduleImport extends BatchStrategy {
 	private  AccountRepository accountRepo;
 
 	@Inject
-	private InvoiceService invoiceService;
+	private InvoiceRepository invoiceRepo;
 
 	@Inject
-	private PaymentScheduleLineService paymentScheduleLineService;
+	private PaymentScheduleLineRepository paymentScheduleLineRepo;
 
 	@Inject
 	public BatchPaymentScheduleImport(PaymentScheduleImportService paymentScheduleImportService, RejectImportService rejectImportService, BatchAccountCustomer batchAccountCustomer) {
@@ -232,7 +233,7 @@ public class BatchPaymentScheduleImport extends BatchStrategy {
 
 				LOG.debug("Création des écritures de rejets : Echéancier de lissage de paiement");
 				ref = this.createMajorAccountRejectMoveLines(pslListGC, companyRepo.find(company.getId()),
-						companyRepo.find(company.getId()).getAccountConfig().getCustomerAccount(), moveService.find(move.getId()), ref);
+						companyRepo.find(company.getId()).getAccountConfig().getCustomerAccount(), moveRepo.find(move.getId()), ref);
 
 			}
 
@@ -241,11 +242,11 @@ public class BatchPaymentScheduleImport extends BatchStrategy {
 
 				LOG.debug("Création des écritures de rejets : Facture");
 				ref = this.createInvoiceRejectMoveLines(invoiceList, companyRepo.find(company.getId()),
-						companyRepo.find(company.getId()).getAccountConfig().getCustomerAccount(), moveService.find(move.getId()), ref);
+						companyRepo.find(company.getId()).getAccountConfig().getCustomerAccount(), moveRepo.find(move.getId()), ref);
 			}
 
 
-			this.validateRejectMove(companyRepo.find(company.getId()), moveService.find(move.getId()), ref, rejectDate);
+			this.validateRejectMove(companyRepo.find(company.getId()), moveRepo.find(move.getId()), ref, rejectDate);
 
 		}
 
@@ -285,14 +286,14 @@ public class BatchPaymentScheduleImport extends BatchStrategy {
 
 			if(ref > 1)  {
 
-				MoveLine oppositeMoveLine = paymentScheduleImportService.createRejectOppositeMoveLine(company, moveService.find(move.getId()), ref, rejectDate);
+				MoveLine oppositeMoveLine = paymentScheduleImportService.createRejectOppositeMoveLine(company, moveRepo.find(move.getId()), ref, rejectDate);
 
-				paymentScheduleImportService.validateMove(moveService.find(move.getId()));
+				paymentScheduleImportService.validateMove(moveRepo.find(move.getId()));
 
-				this.totalAmount = moveLineService.find(oppositeMoveLine.getId()).getCredit();
+				this.totalAmount = moveLineRepo.find(oppositeMoveLine.getId()).getCredit();
 			}
 			else {
-				paymentScheduleImportService.deleteMove(moveService.find(move.getId()));
+				paymentScheduleImportService.deleteMove(moveRepo.find(move.getId()));
 			}
 		} catch (AxelorException e) {
 
@@ -333,12 +334,12 @@ public class BatchPaymentScheduleImport extends BatchStrategy {
 
 		for(PaymentScheduleLine paymentScheduleLine : pslListGC)  {
 			try  {
-				MoveLine moveLine = paymentScheduleImportService.createMajorAccountRejectMoveLine(paymentScheduleLineService.find(paymentScheduleLine.getId()), companyRepo.find(company.getId()),
-						accountRepo.find(customerAccount.getId()), moveService.find(move.getId()), ref);
+				MoveLine moveLine = paymentScheduleImportService.createMajorAccountRejectMoveLine(paymentScheduleLineRepo.find(paymentScheduleLine.getId()), companyRepo.find(company.getId()),
+						accountRepo.find(customerAccount.getId()), moveRepo.find(move.getId()), ref);
 
 				if(moveLine != null)  {
 					ref2++;
-					updatePaymentScheduleLine(paymentScheduleLineService.find(paymentScheduleLine.getId()));
+					updatePaymentScheduleLine(paymentScheduleLineRepo.find(paymentScheduleLine.getId()));
 				}
 			} catch (AxelorException e) {
 
@@ -378,8 +379,8 @@ public class BatchPaymentScheduleImport extends BatchStrategy {
 		int ref2 = ref;
 		for(Invoice invoice : invoiceList)  {
 			try  {
-				MoveLine moveLine = paymentScheduleImportService.createInvoiceRejectMoveLine(invoiceService.find(invoice.getId()), companyRepo.find(company.getId()),
-						accountRepo.find(customerAccount.getId()), moveService.find(move.getId()), ref2);
+				MoveLine moveLine = paymentScheduleImportService.createInvoiceRejectMoveLine(invoiceRepo.find(invoice.getId()), companyRepo.find(company.getId()),
+						accountRepo.find(customerAccount.getId()), moveRepo.find(move.getId()), ref2);
 				if(moveLine != null)  {
 					ref2++;
 					updateInvoice(invoice);
