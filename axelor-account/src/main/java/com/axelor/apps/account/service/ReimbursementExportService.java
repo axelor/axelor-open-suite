@@ -40,6 +40,9 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.db.Reimbursement;
+import com.axelor.apps.account.db.repo.MoveLineRepository;
+import com.axelor.apps.account.db.repo.MoveRepository;
+import com.axelor.apps.account.db.repo.ReimbursementRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.db.BankDetails;
@@ -85,6 +88,9 @@ public class ReimbursementExportService {
 
 	@Inject
 	private MoveService moveService;
+	
+	@Inject
+	private MoveRepository moveRepo;
 
 	@Inject
 	private MoveLineService moveLineService;
@@ -99,7 +105,7 @@ public class ReimbursementExportService {
 	private BlockingService blockingService;
 
 	@Inject
-	private ReimbursementService reimbursementService;
+	private ReimbursementRepository reimbursementRepo;
 
 	@Inject
 	private AccountConfigService accountConfigService;
@@ -126,7 +132,7 @@ public class ReimbursementExportService {
 
 		for(MoveLine moveLine : moveLineList)  {
 			// On passe les lignes d'écriture (trop perçu) à l'état 'en cours de remboursement'
-			moveLine.setReimbursementStatusSelect(MoveLineService.REIMBURSEMENT_STATUS_REIMBURSING);
+			moveLine.setReimbursementStatusSelect(MoveLineRepository.REIMBURSEMENT_STATUS_REIMBURSING);
 		}
 
 		reimbursement.setMoveLineSet(new HashSet<MoveLine>());
@@ -159,13 +165,13 @@ public class ReimbursementExportService {
 
 			if(total.compareTo(accountConfig.getUpperThresholdReimbursement()) > 0 || reimbursement.getBankDetails() == null)  {
 			// Seuil haut dépassé
-				reimbursement.setStatusSelect(ReimbursementService.STATUS_TO_VALIDATE);
+				reimbursement.setStatusSelect(ReimbursementRepository.STATUS_TO_VALIDATE);
 			}
 			else  {
-				reimbursement.setStatusSelect(ReimbursementService.STATUS_VALIDATED);
+				reimbursement.setStatusSelect(ReimbursementRepository.STATUS_VALIDATED);
 			}
 
-			reimbursementService.save(reimbursement);
+			reimbursementRepo.save(reimbursement);
 			return reimbursement;
 		}
 
@@ -200,7 +206,7 @@ public class ReimbursementExportService {
 	 * @throws AxelorException
 	 */
 	public void createReimbursementMove(Reimbursement reimbursement, Company company) throws AxelorException  {
-		reimbursement = reimbursementService.find(reimbursement.getId());
+		reimbursement = reimbursementRepo.find(reimbursement.getId());
 
 		Partner partner = null;
 		Move newMove = null;
@@ -216,7 +222,7 @@ public class ReimbursementExportService {
 					partner = moveLine.getPartner();
 
 					// On passe les lignes d'écriture (trop perçu) à l'état 'remboursé'
-					moveLine.setReimbursementStatusSelect(MoveLineService.REIMBURSEMENT_STATUS_REIMBURSED);
+					moveLine.setReimbursementStatusSelect(MoveLineRepository.REIMBURSEMENT_STATUS_REIMBURSED);
 
 					if(first)  {
 						newMove = moveService.createMove(accountConfig.getReimbursementJournal(), company, null, partner, null);
@@ -244,7 +250,7 @@ public class ReimbursementExportService {
 				newCreditMoveLine.setDescription(reimbursement.getDescription());
 			}
 			moveService.validateMove(newMove);
-			moveService.save(newMove);
+			moveRepo.save(newMove);
 		}
 	}
 
@@ -276,8 +282,8 @@ public class ReimbursementExportService {
 	public void reimburse(Reimbursement reimbursement, Company company) throws AxelorException  {
 		reimbursement.setAmountReimbursed(reimbursement.getAmountToReimburse());
 		this.createReimbursementMove(reimbursement, company);
-		reimbursement.setStatusSelect(ReimbursementService.STATUS_REIMBURSED);
-		reimbursementService.save(reimbursement);
+		reimbursement.setStatusSelect(ReimbursementRepository.STATUS_REIMBURSED);
+		reimbursementRepo.save(reimbursement);
 	}
 
 
@@ -414,7 +420,7 @@ public class ReimbursementExportService {
 		RemittanceInformation1 rmtInf = null;
 		for (Reimbursement reimbursement : reimbursementList){
 
-			reimbursement = reimbursementService.find(reimbursement.getId());
+			reimbursement = reimbursementRepo.find(reimbursement.getId());
 
 			nbOfTxs++;
 			ctrlSum = ctrlSum.add(reimbursement.getAmountReimbursed());
@@ -523,13 +529,13 @@ public class ReimbursementExportService {
 
 			if(total.compareTo(company.getAccountConfig().getUpperThresholdReimbursement()) > 0 || reimbursement.getBankDetails() == null)  {
 			// Seuil haut dépassé
-				reimbursement.setStatusSelect(ReimbursementService.STATUS_TO_VALIDATE);
+				reimbursement.setStatusSelect(ReimbursementRepository.STATUS_TO_VALIDATE);
 			}
 			else  {
 			// Seuil haut non dépassé
-				reimbursement.setStatusSelect(ReimbursementService.STATUS_VALIDATED);
+				reimbursement.setStatusSelect(ReimbursementRepository.STATUS_VALIDATED);
 			}
-			reimbursementService.save(reimbursement);
+			reimbursementRepo.save(reimbursement);
 		}
 
 	}
@@ -545,11 +551,11 @@ public class ReimbursementExportService {
 	public void createReimbursementInvoice(Invoice invoice) throws AxelorException  {
 		Company company = invoice.getCompany();
 		Partner partner = invoice.getPartner();
-
+		MoveLineRepository moveLineRepo = Beans.get(MoveLineRepository.class);
 		// récupération des trop-perçus du tiers
-		List<? extends MoveLine> moveLineList = moveLineService.all().filter("self.account.reconcileOk = 'true' AND self.fromSchedulePaymentOk = 'false' " +
+		List<? extends MoveLine> moveLineList = moveLineRepo.all().filter("self.account.reconcileOk = 'true' AND self.fromSchedulePaymentOk = 'false' " +
 				"AND self.move.statusSelect = ?1 AND self.amountRemaining > 0 AND self.credit > 0 AND self.partner = ?2 AND self.reimbursementStatusSelect = ?3 ",
-				MoveService.STATUS_VALIDATED , partner, MoveLineService.REIMBURSEMENT_STATUS_NULL).fetch();
+				MoveRepository.STATUS_VALIDATED , partner, MoveLineRepository.REIMBURSEMENT_STATUS_NULL).fetch();
 
 		this.createReimbursementInvoice(partner, company, moveLineList);
 

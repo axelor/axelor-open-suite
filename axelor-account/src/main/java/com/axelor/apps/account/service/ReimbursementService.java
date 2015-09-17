@@ -18,14 +18,13 @@
 package com.axelor.apps.account.service;
 
 import com.axelor.apps.account.db.Reimbursement;
-import com.axelor.apps.account.db.repo.ReimbursementRepository;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.PartnerService;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
-public class ReimbursementService extends  ReimbursementRepository{
+public class ReimbursementService {
 	
 	@Inject
 	private PartnerService partnerService;

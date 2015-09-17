@@ -32,11 +32,11 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentInvoice;
 import com.axelor.apps.account.db.PaymentInvoiceToPay;
 import com.axelor.apps.account.db.PaymentVoucher;
+import com.axelor.apps.account.db.repo.MoveLineRepository;
+import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.PaymentInvoiceRepository;
 import com.axelor.apps.account.db.repo.PaymentVoucherRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
-import com.axelor.apps.account.service.MoveLineService;
-import com.axelor.apps.account.service.MoveService;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.service.CurrencyService;
@@ -44,6 +44,7 @@ import com.axelor.apps.base.service.administration.GeneralServiceImpl;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -62,9 +63,6 @@ public class PaymentVoucherLoadService extends PaymentVoucherRepository {
 	private PaymentVoucherToolService paymentVoucherToolService;
 
 	@Inject
-	private MoveLineService moveLineService;
-
-	@Inject
 	private PaymentInvoiceRepository paymentInvoiceRepo;
 
 	@Inject
@@ -78,6 +76,9 @@ public class PaymentVoucherLoadService extends PaymentVoucherRepository {
 	 * @throws AxelorException
 	 */
 	public List<MoveLine> getMoveLines(PaymentVoucher paymentVoucher, MoveLine excludeMoveLine) throws AxelorException {
+		
+		MoveLineRepository moveLineRepo = Beans.get(MoveLineRepository.class);
+		
 		List<? extends MoveLine> moveLines = null;
 
 		String query = "self.partner = ?1 " +
@@ -94,7 +95,7 @@ public class PaymentVoucherLoadService extends PaymentVoucherRepository {
 			query += " and self.credit > 0 ";
 		}
 
-		moveLines = moveLineService.all().filter(query, paymentVoucher.getPartner(), paymentVoucher.getCompany(), MoveService.STATUS_VALIDATED).fetch();
+		moveLines = moveLineRepo.all().filter(query, paymentVoucher.getPartner(), paymentVoucher.getCompany(), MoveRepository.STATUS_VALIDATED).fetch();
 
 		moveLines.remove(excludeMoveLine);
 

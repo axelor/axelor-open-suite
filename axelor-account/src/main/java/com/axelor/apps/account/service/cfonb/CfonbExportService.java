@@ -35,11 +35,11 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentSchedule;
 import com.axelor.apps.account.db.PaymentScheduleLine;
 import com.axelor.apps.account.db.Reimbursement;
+import com.axelor.apps.account.db.repo.InvoiceRepository;
+import com.axelor.apps.account.db.repo.PaymentScheduleLineRepository;
+import com.axelor.apps.account.db.repo.ReimbursementRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
-import com.axelor.apps.account.service.PaymentScheduleLineService;
-import com.axelor.apps.account.service.ReimbursementService;
 import com.axelor.apps.account.service.config.CfonbConfigService;
-import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
@@ -62,13 +62,13 @@ public class CfonbExportService {
 	private CfonbConfigService cfonbConfigService;
 
 	@Inject
-	private ReimbursementService reimbursementService;
+	private ReimbursementRepository reimbursementRepo;
 
 	@Inject
-	private PaymentScheduleLineService paymentScheduleLineService;
+	private PaymentScheduleLineRepository paymentScheduleLineRepo;
 
 	@Inject
-	private InvoiceService invoiceService;
+	private InvoiceRepository invoiceRepo;
 
 
 	private void init(CfonbConfig cfonbConfig)  {
@@ -107,7 +107,7 @@ public class CfonbExportService {
 		String senderCFONB = this.createSenderReimbursementCFONB(dateTime, bankDetails);
 		List<String> multiRecipientCFONB = new ArrayList<String>();
 		for(Reimbursement reimbursement : reimbursementList)  {
-			reimbursement = reimbursementService.find(reimbursement.getId());
+			reimbursement = reimbursementRepo.find(reimbursement.getId());
 
 			multiRecipientCFONB.add(this.createRecipientCFONB(reimbursement));
 		}
@@ -146,7 +146,7 @@ public class CfonbExportService {
 
 		List<DirectDebitManagement> directDebitManagementList = new ArrayList<DirectDebitManagement>();
 		for(PaymentScheduleLine paymentScheduleLine : paymentScheduleLineList)  {
-			paymentScheduleLine = paymentScheduleLineService.find(paymentScheduleLine.getId());
+			paymentScheduleLine = paymentScheduleLineRepo.find(paymentScheduleLine.getId());
 			if(paymentScheduleLine.getDirectDebitManagement() == null)  {
 				multiRecipientCFONB.add(this.createRecipientCFONB(paymentScheduleLine, true));
 			}
@@ -199,7 +199,7 @@ public class CfonbExportService {
 		List<DirectDebitManagement> directDebitManagementList = new ArrayList<DirectDebitManagement>();
 
 		for(Invoice invoice : invoiceList)  {
-			invoice = invoiceService.find(invoice.getId());
+			invoice = invoiceRepo.find(invoice.getId());
 			if(invoice.getDirectDebitManagement() == null)  {
 				multiRecipientCFONB.add(this.createRecipientCFONB(company, invoice));
 			}
@@ -256,7 +256,7 @@ public class CfonbExportService {
 		// Echéanciers
 		List<DirectDebitManagement> directDebitManagementList = new ArrayList<DirectDebitManagement>();
 		for(PaymentScheduleLine paymentScheduleLine : paymentScheduleLineList)  {
-			paymentScheduleLine = paymentScheduleLineService.find(paymentScheduleLine.getId());
+			paymentScheduleLine = paymentScheduleLineRepo.find(paymentScheduleLine.getId());
 			if(paymentScheduleLine.getDirectDebitManagement() == null)  {
 				multiRecipientCFONB.add(this.createRecipientCFONB(paymentScheduleLine, false));
 			}
@@ -275,7 +275,7 @@ public class CfonbExportService {
 		// Factures
 		directDebitManagementList = new ArrayList<DirectDebitManagement>();
 		for(Invoice invoice : invoiceList)  {
-			invoice = invoiceService.find(invoice.getId());
+			invoice = invoiceRepo.find(invoice.getId());
 			if(invoice.getDirectDebitManagement() == null)  {
 				multiRecipientCFONB.add(this.createRecipientCFONB(company, invoice));
 			}
@@ -869,7 +869,7 @@ public class CfonbExportService {
 	private BigDecimal getTotalAmountReimbursementExport(List<Reimbursement> reimbursementList)  {
 		BigDecimal totalAmount = BigDecimal.ZERO;
 		for(Reimbursement reimbursement : reimbursementList)  {
-			reimbursement = reimbursementService.find(reimbursement.getId());
+			reimbursement = reimbursementRepo.find(reimbursement.getId());
 			totalAmount = totalAmount.add(reimbursement.getAmountReimbursed());
 		}
 		return totalAmount;
@@ -888,7 +888,7 @@ public class CfonbExportService {
 
 		for(PaymentScheduleLine paymentScheduleLine : paymentScheduleLineList)  {
 
-			totalAmount = totalAmount.add(paymentScheduleLineService.find(paymentScheduleLine.getId()).getDirectDebitAmount());
+			totalAmount = totalAmount.add(paymentScheduleLineRepo.find(paymentScheduleLine.getId()).getDirectDebitAmount());
 
 		}
 		return totalAmount;
@@ -907,7 +907,7 @@ public class CfonbExportService {
 
 		for(Invoice invoice : invoiceList)  {
 
-			totalAmount = totalAmount.add(invoiceService.find(invoice.getId()).getDirectDebitAmount());
+			totalAmount = totalAmount.add(invoiceRepo.find(invoice.getId()).getDirectDebitAmount());
 		}
 
 		return totalAmount;

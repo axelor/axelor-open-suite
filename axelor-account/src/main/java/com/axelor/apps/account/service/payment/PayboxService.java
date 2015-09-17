@@ -63,7 +63,7 @@ import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
-public class PayboxService extends PayboxRepository {
+public class PayboxService {
 
 	private static final Logger LOG = LoggerFactory.getLogger(PayboxService.class);
 

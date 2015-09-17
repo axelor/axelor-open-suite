@@ -17,7 +17,7 @@
  */
 package com.axelor.apps.account.web;
 
-import java.io.File;
+//import java.io.File;
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -28,12 +28,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
-import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.db.PartnerAddress;
 import com.axelor.apps.base.db.PartnerList;
 import com.axelor.apps.base.db.repo.AddressRepository;
 import com.axelor.apps.base.service.MapService;
@@ -57,7 +56,7 @@ public class AddressController {
 	private AddressRepository addressRepo;
 
 	@Inject
-	private InvoiceService invoiceService;
+	private InvoiceRepository invoiceRepo;
 
 
 	@SuppressWarnings("unchecked")
@@ -67,7 +66,7 @@ public class AddressController {
 		if (generalService.getGeneral().getMapApiSelect() == IAdministration.MAP_API_GOOGLE) {
 			PartnerList partnerList = request.getContext().asType(PartnerList.class);
 
-			File file = new File("/home/axelor/www/HTML/latlng_"+partnerList.getId()+".csv");
+//			File file = new File("/home/axelor/www/HTML/latlng_"+partnerList.getId()+".csv");
 			//file.write("latitude,longitude,fullName,turnover\n");
 
 			Iterator<Partner> it = partnerList.getPartnerSet().iterator();
@@ -89,7 +88,7 @@ public class AddressController {
 					}
 					if (address.getLatit() != null && address.getLongit() != null) {
 						//def turnover = Invoice.all().filter("self.partner.id = ? AND self.statusSelect = 'val'", partner.id).fetch().sum{ it.inTaxTotal }
-						List<Invoice> listInvoice = invoiceService.all().filter("self.partner.id = ?", partner.getId()).fetch();
+						List<Invoice> listInvoice = invoiceRepo.all().filter("self.partner.id = ?", partner.getId()).fetch();
 						BigDecimal turnover = BigDecimal.ZERO;
 						for(Invoice invoice: listInvoice) {
 							turnover.add(invoice.getInTaxTotal());

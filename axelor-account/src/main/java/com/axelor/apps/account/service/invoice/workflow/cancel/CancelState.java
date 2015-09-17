@@ -21,6 +21,7 @@ import java.math.BigDecimal;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.Move;
+import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.invoice.workflow.WorkflowInvoice;
@@ -42,7 +43,7 @@ public class CancelState extends WorkflowInvoice {
 	@Override
 	public void process() throws AxelorException {
 
-		if(invoice.getStatusSelect() == STATUS_VENTILATED && invoice.getCompany().getAccountConfig().getAllowCancelVentilatedInvoice())  {
+		if(invoice.getStatusSelect() == InvoiceRepository.STATUS_VENTILATED && invoice.getCompany().getAccountConfig().getAllowCancelVentilatedInvoice())  {
 			cancelMove();
 		}
 
@@ -52,7 +53,7 @@ public class CancelState extends WorkflowInvoice {
 
 	protected void setStatus(){
 
-		invoice.setStatusSelect(STATUS_CANCELED);
+		invoice.setStatusSelect(InvoiceRepository.STATUS_CANCELED);
 
 	}
 

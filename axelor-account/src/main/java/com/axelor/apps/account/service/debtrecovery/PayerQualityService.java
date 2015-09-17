@@ -32,8 +32,8 @@ import com.axelor.apps.account.db.Reminder;
 import com.axelor.apps.account.db.ReminderHistory;
 import com.axelor.apps.account.db.ReminderLevel;
 import com.axelor.apps.account.db.ReminderMethodLine;
+import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
-import com.axelor.apps.account.service.MoveLineService;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.administration.GeneralService;
@@ -50,9 +50,6 @@ public class PayerQualityService {
 	private static final Logger LOG = LoggerFactory.getLogger(PayerQualityService.class);
 
 	private LocalDate today;
-
-	@Inject
-	private MoveLineService moveLineService;
 
 	@Inject
 	private PartnerService partnerService;
@@ -87,7 +84,10 @@ public class PayerQualityService {
 
 
 	public List<MoveLine> getMoveLineRejectList(Partner partner)  {
-		return moveLineService.all().filter("self.partner = ?1 AND self.date > ?2 AND self.interbankCodeLine IS NOT NULL", partner, today.minusYears(1)).fetch();
+		
+		MoveLineRepository moveLineRepo = Beans.get(MoveLineRepository.class);
+		
+		return moveLineRepo.all().filter("self.partner = ?1 AND self.date > ?2 AND self.interbankCodeLine IS NOT NULL", partner, today.minusYears(1)).fetch();
 	}
 
 

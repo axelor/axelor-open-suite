@@ -134,8 +134,8 @@ public class BatchDoubtfulCustomer extends BatchStrategy {
 		for(Move move : moveList)  {
 			try {
 				
-				doubtfulCustomerService.createDoubtFulCustomerMove(moveService.find(move.getId()), accountRepo.find(doubtfulCustomerAccount.getId()), debtPassReason);
-				updateInvoice(moveService.find(move.getId()).getInvoice()); 
+				doubtfulCustomerService.createDoubtFulCustomerMove(moveRepo.find(move.getId()), accountRepo.find(doubtfulCustomerAccount.getId()), debtPassReason);
+				updateInvoice(moveRepo.find(move.getId()).getInvoice()); 
 			
 			} catch (AxelorException e) {
 				
@@ -148,7 +148,7 @@ public class BatchDoubtfulCustomer extends BatchStrategy {
 				
 				incrementAnomaly();
 				
-				LOG.error("Bug(Anomalie) généré(e) pour la facture {}", moveService.find(move.getId()).getInvoice().getInvoiceId());
+				LOG.error("Bug(Anomalie) généré(e) pour la facture {}", moveRepo.find(move.getId()).getInvoice().getInvoiceId());
 				
 			} finally {
 				
@@ -178,8 +178,8 @@ public class BatchDoubtfulCustomer extends BatchStrategy {
 			
 			try {
 				
-				doubtfulCustomerService.createDoubtFulCustomerRejectMove(moveLineService.find(moveLine.getId()), accountRepo.find(doubtfulCustomerAccount.getId()), debtPassReason);
-				updateInvoice(moveLineService.find(moveLine.getId()).getInvoiceReject()); 
+				doubtfulCustomerService.createDoubtFulCustomerRejectMove(moveLineRepo.find(moveLine.getId()), accountRepo.find(doubtfulCustomerAccount.getId()), debtPassReason);
+				updateInvoice(moveLineRepo.find(moveLine.getId()).getInvoiceReject()); 
 				i++;
 				
 			} catch (AxelorException e) {
@@ -193,7 +193,7 @@ public class BatchDoubtfulCustomer extends BatchStrategy {
 				
 				incrementAnomaly();
 				
-				LOG.error("Bug(Anomalie) généré(e) pour la facture {}", moveLineService.find(moveLine.getId()).getInvoiceReject().getInvoiceId());
+				LOG.error("Bug(Anomalie) généré(e) pour la facture {}", moveLineRepo.find(moveLine.getId()).getInvoiceReject().getInvoiceId());
 				
 			} finally {
 				

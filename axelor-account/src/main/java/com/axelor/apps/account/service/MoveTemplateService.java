@@ -28,16 +28,20 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.MoveTemplate;
 import com.axelor.apps.account.db.MoveTemplateLine;
+import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.MoveTemplateRepository;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.PartnerService;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
-public class MoveTemplateService extends MoveTemplateRepository{
+public class MoveTemplateService {
 	
 	@Inject
 	MoveService moveService;
+	
+	@Inject
+	MoveRepository moveRepo;
 	
 	@Inject
 	MoveLineService moveLineService;
@@ -45,12 +49,15 @@ public class MoveTemplateService extends MoveTemplateRepository{
 	@Inject
 	PartnerService partnerService;
 	
+	@Inject
+	MoveTemplateRepository moveTemplateRepo;
+	
 	@Transactional
 	public void validateMoveTemplateLine(MoveTemplate moveTemplate){
 		moveTemplate.setIsValid(true);
 		for(MoveTemplateLine line : moveTemplate.getMoveTemplateLineList())
 			line.setIsValid(true);
-		save(moveTemplate);
+		moveTemplateRepo.save(moveTemplate);
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -89,7 +96,7 @@ public class MoveTemplateService extends MoveTemplateRepository{
 						move.getMoveLineList().add(moveLine);
 					}
 				}
-				moveService.save(move);
+				moveRepo.save(move);
 				moveList.add(move.getId());
 			}
 			return moveList;

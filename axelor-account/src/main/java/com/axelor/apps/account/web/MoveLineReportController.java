@@ -30,6 +30,7 @@ import com.axelor.apps.account.db.JournalType;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.MoveLineReport;
+import com.axelor.apps.account.db.repo.MoveLineReportRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.report.IReport;
 import com.axelor.apps.account.service.MoveLineExportService;
@@ -40,11 +41,17 @@ import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.common.collect.Maps;
+import com.google.inject.Inject;
 
 public class MoveLineReportController {
 
 	private static final Logger LOG = LoggerFactory.getLogger(MoveLineReportController.class);
-
+	
+	@Inject
+	MoveLineReportService moveLineReportService;
+	
+	@Inject
+	MoveLineReportRepository  moveLineReportRepo;
 	/**
 	 * @param request
 	 * @param response
@@ -52,10 +59,9 @@ public class MoveLineReportController {
 	public void searchMoveLine(ActionRequest request, ActionResponse response) {
 
 		MoveLineReport moveLineReport = request.getContext().asType(MoveLineReport.class);
-		MoveLineReportService moveLineReportService = Beans.get(MoveLineReportService.class);
 
 		try  {
-			moveLineReport = moveLineReportService.find(moveLineReport.getId());
+			moveLineReport = moveLineReportRepo.find(moveLineReport.getId());
 			
 			String queryFilter = moveLineReportService.getMoveLineList(moveLineReport);
 			BigDecimal debitBalance = moveLineReportService.getDebitBalance(queryFilter);
@@ -150,7 +156,7 @@ public class MoveLineReportController {
 	public void replayExport(ActionRequest request, ActionResponse response) {
 
 		MoveLineReport moveLineReport = request.getContext().asType(MoveLineReport.class);
-		moveLineReport = Beans.get(MoveLineReportService.class).find(moveLineReport.getId());		
+		moveLineReport = moveLineReportRepo.find(moveLineReport.getId());		
 		MoveLineExportService moveLineExportService = Beans.get(MoveLineExportService.class);
 		
 		try {
@@ -182,8 +188,7 @@ public class MoveLineReportController {
 	public void printExportMoveLine(ActionRequest request, ActionResponse response) {
 
 		MoveLineReport moveLineReport = request.getContext().asType(MoveLineReport.class);
-		MoveLineReportService moveLineReportService = Beans.get(MoveLineReportService.class);
-		moveLineReport = moveLineReportService.find(moveLineReport.getId());
+		moveLineReport = moveLineReportRepo.find(moveLineReport.getId());
 
 		try {	
 			if(moveLineReport.getExportTypeSelect() == null || moveLineReport.getExportTypeSelect().isEmpty() || moveLineReport.getTypeSelect() == 0) {

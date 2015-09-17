@@ -22,7 +22,6 @@ import java.math.BigDecimal;
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.Journal;
-import com.axelor.apps.account.db.repo.JournalRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.db.Company;
@@ -30,7 +29,7 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 
-public class JournalService extends JournalRepository{
+public class JournalService {
 	
 	private AccountConfigService accountConfigService;
 	

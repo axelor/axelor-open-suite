@@ -25,10 +25,10 @@ import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.ReportSettings;
 import com.axelor.apps.account.db.Irrecoverable;
+import com.axelor.apps.account.db.repo.IrrecoverableRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.report.IReport;
 import com.axelor.apps.account.service.IrrecoverableService;
-import com.axelor.exception.db.IException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.rpc.ActionRequest;
@@ -38,17 +38,20 @@ import com.google.inject.Inject;
 public class IrrecoverableController {
 
 	@Inject 
-	private IrrecoverableService is;
+	private IrrecoverableService irrecoverableService;
+	
+	@Inject
+	private IrrecoverableRepository irrecoverableRepo;
 
 	private static final Logger LOG = LoggerFactory.getLogger(IrrecoverableController.class);
 
 	public void getIrrecoverable(ActionRequest request, ActionResponse response)  {
 
 		Irrecoverable irrecoverable = request.getContext().asType(Irrecoverable.class);
-		irrecoverable = is.find(irrecoverable.getId());
+		irrecoverable = irrecoverableRepo.find(irrecoverable.getId());
 
 		try {
-			is.getIrrecoverable(irrecoverable);
+			irrecoverableService.getIrrecoverable(irrecoverable);
 			response.setReload(true);
 		}
 		catch(Exception e)  { TraceBackService.trace(response, e); }	
@@ -57,10 +60,10 @@ public class IrrecoverableController {
 	public void createIrrecoverableReport(ActionRequest request, ActionResponse response)  {
 
 		Irrecoverable irrecoverable = request.getContext().asType(Irrecoverable.class);
-		irrecoverable = is.find(irrecoverable.getId());
+		irrecoverable = irrecoverableRepo.find(irrecoverable.getId());
 
 		try {
-			is.createIrrecoverableReport(irrecoverable);
+			irrecoverableService.createIrrecoverableReport(irrecoverable);
 			response.setReload(true);
 		}
 		catch(Exception e)  { TraceBackService.trace(response, e); }
@@ -69,10 +72,10 @@ public class IrrecoverableController {
 	public void passInIrrecoverable(ActionRequest request, ActionResponse response)  {
 
 		Irrecoverable irrecoverable = request.getContext().asType(Irrecoverable.class);
-		irrecoverable = is.find(irrecoverable.getId());
+		irrecoverable = irrecoverableRepo.find(irrecoverable.getId());
 
 		try {
-			int anomaly = is.passInIrrecoverable(irrecoverable);
+			int anomaly = irrecoverableService.passInIrrecoverable(irrecoverable);
 			
 			response.setReload(true);
 			

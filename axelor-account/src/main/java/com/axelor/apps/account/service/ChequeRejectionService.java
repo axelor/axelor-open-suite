@@ -41,7 +41,7 @@ import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
-public class ChequeRejectionService extends ChequeRejectionRepository{
+public class ChequeRejectionService {
 
 	@Inject
 	private MoveService moveService;
@@ -54,6 +54,9 @@ public class ChequeRejectionService extends ChequeRejectionRepository{
 
 	@Inject
 	private AccountConfigService accountConfigService;
+	
+	@Inject
+	private ChequeRejectionRepository chequeRejectionRepo;
 
 	/**
 	 * procédure de validation du rejet de chèque
@@ -76,7 +79,7 @@ public class ChequeRejectionService extends ChequeRejectionRepository{
 
 		chequeRejection.setStatusSelect(ChequeRejectionRepository.STATUS_VALIDATED);
 
-		save(chequeRejection);
+		chequeRejectionRepo.save(chequeRejection);
 	}
 
 	/**

@@ -32,9 +32,9 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.PaymentScheduleLine;
+import com.axelor.apps.account.db.repo.PaymentModeRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.config.CfonbConfigService;
-import com.axelor.apps.account.service.payment.PaymentModeService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.base.service.administration.GeneralServiceImpl;
@@ -59,7 +59,7 @@ public class CfonbImportService {
 	private CfonbToolService cfonbToolService;
 
 	@Inject
-	private PaymentModeService paymentModeService;
+	private PaymentModeRepository paymentModeRepo;
 
 	@Inject
 	protected GeneralService generalService;
@@ -416,10 +416,10 @@ public class CfonbImportService {
 		LOG.debug("Récupération du mode de paiement depuis l'enregistrement CFONB : Société = {} , code CFONB = {}", new Object[]{company.getName(),code});
 
 		if(code.equals(this.cfonbConfig.getIpoOperationCodeImportCFONB()))  {
-			return paymentModeService.findByCode("TIP");
+			return paymentModeRepo.findByCode("TIP");
 		}
 		else if(code.equals(this.cfonbConfig.getIpoAndChequeOperationCodeImportCFONB()))  {
-			return paymentModeService.findByCode("TIC");
+			return paymentModeRepo.findByCode("TIC");
 		}
 		throw new AxelorException(String.format(I18n.get(IExceptionMessage.CFONB_IMPORT_6),
 				GeneralServiceImpl.EXCEPTION, code, company.getName()), IException.INCONSISTENCY);

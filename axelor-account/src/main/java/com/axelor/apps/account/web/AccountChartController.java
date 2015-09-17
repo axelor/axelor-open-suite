@@ -23,6 +23,8 @@ import java.util.List;
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountChart;
 import com.axelor.apps.account.db.AccountConfig;
+import com.axelor.apps.account.db.repo.AccountChartRepository;
+import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.AccountChartService;
@@ -37,25 +39,30 @@ import com.google.inject.Inject;
 public class AccountChartController {
 	
 	@Inject
-	AccountChartService acts;
+	AccountChartService accountChartsService;
 	
 	@Inject
 	CompanyRepository companyRepo;
 	
 	@Inject
-	AccountConfigService accountConfigService;
+	AccountConfigRepository accountConfigRepo;
 	
 	@Inject
 	AccountRepository accountRepo;
 	
+	@Inject
+	AccountChartRepository accountChartRepo;
+	
 	public void installChart(ActionRequest request, ActionResponse response){
+		
 		AccountConfig accountConfig = request.getContext().asType(AccountConfig.class);
-		AccountChart act = acts.find(accountConfig.getAccountChart().getId());
+		AccountChart act = accountChartRepo.find(accountConfig.getAccountChart().getId());
 		Company company = companyRepo.find(accountConfig.getCompany().getId());
-		accountConfig = accountConfigService.find(accountConfig.getId());
+		accountConfig = accountConfigRepo.find(accountConfig.getId());
 		List<? extends Account> accountList = accountRepo.all().filter("self.company.id = ?1 AND self.parent != null", company.getId()).fetch();
+		
 		if(accountList.isEmpty()){
-			if(acts.installAccountChart(act,company,accountConfig))
+			if(accountChartsService.installAccountChart(act,company,accountConfig))
 				response.setFlash(I18n.get(IExceptionMessage.ACCOUNT_CHART_1));
 			else
 				response.setFlash(I18n.get(IExceptionMessage.ACCOUNT_CHART_2));
