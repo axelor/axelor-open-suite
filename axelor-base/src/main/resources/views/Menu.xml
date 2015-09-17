@@ -24,7 +24,7 @@
 <!-- 		<view type="form" name="partner-list-map-form" /> -->
 <!-- 	</action-view> -->
 
-	<menuitem name="referential-root" title="Referential" order="-105"
+	<menuitem name="referential-root" title="Referential" order="-109"
 		icon="fa-cube" groups="admins,ERP,CRM"/>
 		
 	<menuitem name="referential-root-partners" parent="referential-root"

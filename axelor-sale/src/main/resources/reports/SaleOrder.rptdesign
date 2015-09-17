@@ -4648,6 +4648,12 @@ else 'Subscriptions'</value>
             </row>
             <row id="3998">
                 <property name="height">0.3in</property>
+                <list-property name="visibility">
+                    <structure>
+                        <property name="format">all</property>
+                        <expression name="valueExpr" type="javascript">!row._outer["subscription"]</expression>
+                    </structure>
+                </list-property>
                 <cell id="3999"/>
                 <cell id="4000"/>
                 <cell id="4001"/>
@@ -4696,6 +4702,12 @@ else 'Subscriptions'</value>
             </row>
             <row id="4197">
                 <property name="height">0.3in</property>
+                <list-property name="visibility">
+                    <structure>
+                        <property name="format">all</property>
+                        <expression name="valueExpr" type="javascript">!row._outer["subscription"]</expression>
+                    </structure>
+                </list-property>
                 <cell id="4198"/>
                 <cell id="4199"/>
                 <cell id="4200"/>
@@ -4793,6 +4805,12 @@ else 'Subscriptions'</value>
             </row>
             <row id="4233">
                 <property name="height">0.3in</property>
+                <list-property name="visibility">
+                    <structure>
+                        <property name="format">all</property>
+                        <expression name="valueExpr" type="javascript">!row._outer["subscription"]</expression>
+                    </structure>
+                </list-property>
                 <cell id="4234"/>
                 <cell id="4235"/>
                 <cell id="4236"/>
@@ -4888,6 +4906,12 @@ else 'Subscriptions'</value>
             </row>
             <row id="4224">
                 <property name="height">0.3in</property>
+                <list-property name="visibility">
+                    <structure>
+                        <property name="format">all</property>
+                        <expression name="valueExpr" type="javascript">!row._outer["subscription"]</expression>
+                    </structure>
+                </list-property>
                 <cell id="4225"/>
                 <cell id="4226"/>
                 <cell id="4227"/>
@@ -4936,6 +4960,12 @@ else 'Subscriptions'</value>
             </row>
             <row id="4215">
                 <property name="height">0.3in</property>
+                <list-property name="visibility">
+                    <structure>
+                        <property name="format">all</property>
+                        <expression name="valueExpr" type="javascript">!row._outer["subscription"]</expression>
+                    </structure>
+                </list-property>
                 <cell id="4216"/>
                 <cell id="4217"/>
                 <cell id="4218"/>
@@ -5035,6 +5065,12 @@ else 'Subscriptions'</value>
             </row>
             <row id="4206">
                 <property name="height">0.3in</property>
+                <list-property name="visibility">
+                    <structure>
+                        <property name="format">all</property>
+                        <expression name="valueExpr" type="javascript">!row._outer["subscription"]</expression>
+                    </structure>
+                </list-property>
                 <cell id="4207"/>
                 <cell id="4208"/>
                 <cell id="4209"/>
