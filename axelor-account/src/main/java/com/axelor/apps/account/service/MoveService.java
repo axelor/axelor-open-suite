@@ -19,6 +19,8 @@ package com.axelor.apps.account.service;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import org.joda.time.LocalDate;
@@ -28,6 +30,7 @@ import org.slf4j.LoggerFactory;
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.AccountingSituation;
+import com.axelor.apps.account.db.AdvancePaymentAccount;
 import com.axelor.apps.account.db.CashRegister;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.Journal;
@@ -44,6 +47,7 @@ import com.axelor.apps.account.service.payment.PaymentService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Period;
+import com.axelor.apps.base.db.TemplateRuleLine;
 import com.axelor.apps.base.service.PeriodService;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.base.service.administration.SequenceService;
@@ -80,7 +84,7 @@ public class MoveService extends MoveRepository {
 
 	@Inject
 	private AccountConfigService accountConfigService;
-
+	
 	private GeneralService generalService;
 
 	private LocalDate toDay;
@@ -430,7 +434,7 @@ public class MoveService extends MoveRepository {
 	 *
 	 *
 	 */
-	public Move createMoveUseExcessPaymentOrDue(Invoice invoice) throws AxelorException{
+	public Move createMoveUseExcessPaymentOrDue(Invoice invoice, boolean AuthorizeAutoReconcileOnInvoice) throws AxelorException{
 
 		Move move = null;
 
@@ -439,10 +443,11 @@ public class MoveService extends MoveRepository {
 			if(this.isDebitCustomer(invoice))  {
 
 				// Emploie du trop perçu
-				this.createMoveUseExcessPayment(invoice);
+				this.createMoveUseExcessPayment(invoice, AuthorizeAutoReconcileOnInvoice);
 
 			}
-			else   {
+			if (!this.isDebitCustomer(invoice) && AuthorizeAutoReconcileOnInvoice)
+			{
 
 				// Emploie des dûs
 				this.createMoveUseInvoiceDue(invoice);
@@ -531,61 +536,132 @@ public class MoveService extends MoveRepository {
 		}
 
 	}
+	
+	public List <MoveLine> orderListByDate(List <MoveLine> list)
+	{
+		
+			
+			Collections.sort(list, new Comparator<MoveLine>() {
+				
 
+				@Override
+				public int compare(MoveLine o1, MoveLine o2) {
+					
+					return o1.getDate().compareTo(o2.getDate());
+				}
+			});
+			
+			
+		
+		
+		
+		
+		LOG.debug("Test du tri : ");
+		
+		int it = 1;
+		for (MoveLine moveLine : list) 
+		{
+			LOG.debug("moveLine No {}, Date : {}", it++, moveLine.getDate());
+		}
+		LOG.debug("test fini");
+		
+		
+		return list;
+	}
+	
+	public List <MoveLine> addAdvancePayment(Invoice invoice)
+	{
+		LOG.debug("Ajout des acomptes");
+		List<MoveLine> moveLineList = new ArrayList<MoveLine>();
+		
+		int count = 1;
+		if (invoice.getAdvancePaymentList() != null)
+		{
+			for (AdvancePaymentAccount advancePayment : invoice.getAdvancePaymentList()) 
+			{
+				for (MoveLine moveLine : advancePayment.getMove().getMoveLineList()) 
+				{
+					if (moveLine.getCredit().compareTo(BigDecimal.ZERO) != 0)
+					{
+						//moveLine.get
+						moveLineList.add(moveLine);
+						LOG.debug("New line : Date : {}", moveLine.getDate());
+					}
+				
+				}
+			}
+			LOG.debug("Acomptes ajoutés");
+			return this.orderListByDate(moveLineList);
+		}
+		
+		LOG.debug("Pas d'Acomptes");
+		return moveLineList;
+	}
 
-	public Move createMoveUseExcessPayment(Invoice invoice) throws AxelorException{
+	
+
+	public Move createMoveUseExcessPayment(Invoice invoice, boolean AuthorizeAutoReconcileOnInvoice) throws AxelorException{
 
 		Move move = null;
 
 		Company company = invoice.getCompany();
+		
+		//Récupération des acomptes de la facture
+		List<MoveLine> creditMoveLineList = addAdvancePayment(invoice);
+		
+		if(AuthorizeAutoReconcileOnInvoice)
+		{
+			// Récupération des trop-perçus
+			//List<MoveLine> creditMoveLineList = (List<MoveLine>) paymentService.getExcessPayment(invoice, this.getCustomerAccount(invoice.getPartner(), company, InvoiceToolService.isPurchase(invoice)));
+			creditMoveLineList.addAll(paymentService.getExcessPayment(invoice, this.getCustomerAccount(invoice.getPartner(), company, InvoiceToolService.isPurchase(invoice))));
+		}
+			if(creditMoveLineList != null && creditMoveLineList.size() != 0)  {
 
-		// Récupération des trop-perçus
-		List<MoveLine> creditMoveLineList = (List<MoveLine>) paymentService.getExcessPayment(invoice, this.getCustomerAccount(invoice.getPartner(), company, InvoiceToolService.isPurchase(invoice)));
+				Partner partner = invoice.getPartner();
+				Account account = invoice.getPartnerAccount();
+				MoveLine invoiceCustomerMoveLine = this.getCustomerMoveLineByLoop(invoice);
 
-		if(creditMoveLineList != null && creditMoveLineList.size() != 0)  {
+				Journal journal = accountConfigService.getMiscOperationJournal(accountConfigService.getAccountConfig(company));
 
-			Partner partner = invoice.getPartner();
-			Account account = invoice.getPartnerAccount();
-			MoveLine invoiceCustomerMoveLine = this.getCustomerMoveLineByLoop(invoice);
+				// Si c'est le même compte sur les trop-perçus et sur la facture, alors on lettre directement
+				if(this.isSameAccount(creditMoveLineList, account))  {
+					List<MoveLine> debitMoveLineList = new ArrayList<MoveLine>();
+					debitMoveLineList.add(invoiceCustomerMoveLine);
+					paymentService.useExcessPaymentOnMoveLines(debitMoveLineList, creditMoveLineList);
+				}
+				// Sinon on créée une O.D. pour passer du compte de la facture à un autre compte sur les trop-perçus
+				else  {
 
-			Journal journal = accountConfigService.getMiscOperationJournal(accountConfigService.getAccountConfig(company));
+					LOG.debug("Création d'une écriture comptable O.D. spécifique à l'emploie des trop-perçus {} (Société : {}, Journal : {})", new Object[]{invoice.getInvoiceId(), company.getName(), journal.getCode()});
 
-			// Si c'est le même compte sur les trop-perçus et sur la facture, alors on lettre directement
-			if(this.isSameAccount(creditMoveLineList, account))  {
-				List<MoveLine> debitMoveLineList = new ArrayList<MoveLine>();
-				debitMoveLineList.add(invoiceCustomerMoveLine);
-				paymentService.useExcessPaymentOnMoveLines(debitMoveLineList, creditMoveLineList);
-			}
-			// Sinon on créée une O.D. pour passer du compte de la facture à un autre compte sur les trop-perçus
-			else  {
+					move = this.createMove(journal, company, null, partner, invoice.getInvoiceDate(), null);
 
-				LOG.debug("Création d'une écriture comptable O.D. spécifique à l'emploie des trop-perçus {} (Société : {}, Journal : {})", new Object[]{invoice.getInvoiceId(), company.getName(), journal.getCode()});
+					if (move != null){
+						BigDecimal totalCreditAmount = this.getTotalCreditAmount(creditMoveLineList);
+						BigDecimal amount = totalCreditAmount.min(invoiceCustomerMoveLine.getDebit());
 
-				move = this.createMove(journal, company, null, partner, invoice.getInvoiceDate(), null);
+						// Création de la ligne au crédit
+						MoveLine creditMoveLine =  moveLineService.createMoveLine(move , partner, account , amount, false, toDay, 1, null);
+						move.getMoveLineList().add(creditMoveLine);
 
-				if (move != null){
-					BigDecimal totalCreditAmount = this.getTotalCreditAmount(creditMoveLineList);
-					BigDecimal amount = totalCreditAmount.min(invoiceCustomerMoveLine.getDebit());
-
-					// Création de la ligne au crédit
-					MoveLine creditMoveLine =  moveLineService.createMoveLine(move , partner, account , amount, false, toDay, 1, null);
-					move.getMoveLineList().add(creditMoveLine);
-
-					// Emploie des trop-perçus sur les lignes de debit qui seront créées au fil de l'eau
-					paymentService.useExcessPaymentWithAmountConsolidated(creditMoveLineList, amount, move, 2, partner,
+						// Emploie des trop-perçus sur les lignes de debit qui seront créées au fil de l'eau
+						paymentService.useExcessPaymentWithAmountConsolidated(creditMoveLineList, amount, move, 2, partner,
 							 company, account, invoice.getInvoiceDate(), invoice.getDueDate());
 
-					this.validateMove(move);
+						this.validateMove(move);
 
-					//Création de la réconciliation
-					Reconcile reconcile = reconcileService.createReconcile(invoiceCustomerMoveLine, creditMoveLine, amount);
-					reconcileService.confirmReconcile(reconcile);
+						//Création de la réconciliation
+						Reconcile reconcile = reconcileService.createReconcile(invoiceCustomerMoveLine, creditMoveLine, amount);
+						reconcileService.confirmReconcile(reconcile);
+					}
 				}
-			}
 
-			invoice.setCompanyInTaxTotalRemaining(this.getInTaxTotalRemaining(invoice));
-		}
+				invoice.setCompanyInTaxTotalRemaining(this.getInTaxTotalRemaining(invoice));
+			}
+	
+			
 		return move;
+		
 	}
 
 

@@ -21,6 +21,8 @@ import java.math.BigDecimal;
 import java.util.List;
 
 import org.joda.time.LocalDate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.Invoice;
@@ -44,6 +46,8 @@ import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 
 public class VentilateState extends WorkflowInvoice {
+	
+	private static final Logger LOG = LoggerFactory.getLogger(VentilateState.class);
 
 	@Inject
 	private SequenceService sequenceService;
@@ -62,6 +66,8 @@ public class VentilateState extends WorkflowInvoice {
 		this.invoice = invoice;
 	}
 
+	
+	
 
 	@Override
 	public void process( ) throws AxelorException {
@@ -78,6 +84,7 @@ public class VentilateState extends WorkflowInvoice {
 
 		setInvoiceId(sequence);
 		updatePaymentSchedule( );
+		LOG.debug("Set Move incomming");
 		setMove( );
 		setStatus( );
 	}
@@ -154,12 +161,12 @@ public class VentilateState extends WorkflowInvoice {
 
 		if(invoice.getInTaxTotal().compareTo(BigDecimal.ZERO) == 0)  {  return;  }
 
+		LOG.debug("In Set Move");
 		// Création de l'écriture comptable
 		Move move = moveService.createMove(invoice);
+		if (move != null)  {
 
-		if (move != null && Beans.get(AccountConfigService.class).getAccountConfig(invoice.getCompany()).getAutoReconcileOnInvoice())  {
-
-			moveService.createMoveUseExcessPaymentOrDue(invoice);
+			moveService.createMoveUseExcessPaymentOrDue(invoice, Beans.get(AccountConfigService.class).getAccountConfig(invoice.getCompany()).getAutoReconcileOnInvoice());
 
 		}
 

@@ -173,7 +173,7 @@ public class SaleOrderInvoiceServiceImpl extends SaleOrderRepository implements 
 
 		invoiceGenerator.populate(invoice, this.createInvoiceLines(invoice, saleOrderLineList));
 		advancePaymentService.fillAdvancePayment(invoice, saleOrder, saleOrderLineList);
-		
+		LOG.debug("fillAdvancePayment : methode terminée");
 		this.fillInLines(invoice);
 
 		return invoice;
@@ -413,6 +413,13 @@ public class SaleOrderInvoiceServiceImpl extends SaleOrderRepository implements 
 		}
 		return null;
 	}
+/*
+	@Transactional
+	public void saveSaleOrderForAdvancePayment(SaleOrder so) 
+	{
+		save(so);
+	}*/
 }
+
 
 

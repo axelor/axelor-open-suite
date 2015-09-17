@@ -18,12 +18,17 @@ import com.axelor.apps.account.service.MoveService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.payment.PaymentModeService;
 import com.axelor.apps.base.service.CurrencyService;
+import com.axelor.apps.message.db.repo.MessageRepository;
 import com.axelor.apps.sale.db.AdvancePayment;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.AdvancePaymentRepository;
+import com.axelor.apps.sale.service.SaleOrderService;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.IException;
+import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -47,8 +52,26 @@ public class AdvancePaymentService extends AdvancePaymentRepository{
 	@Inject
 	private AccountConfigService accountConfigService;
 	
+	@Inject
+	private SaleOrderService saleOrderService;
 	
-
+	@Inject
+	private AdvancePaymentAccountRepository apar;
+	
+	@Transactional
+	public void deleteLine(AdvancePaymentAccount APA)
+	{
+		try{
+			//Beans.get(AdvancePaymentAccountRepository.class).all().filter("self.id = ?1", APA.getId()).remove();
+			
+			moveService.remove(APA.getMove());
+			apar.remove(APA);
+			LOG.debug("Advance Payment Account (montant = {} ) normalement supprimé ", APA.getAmount());
+		}catch(Exception e){
+			LOG.debug("AdvancePaymentAccount: {}, Exception: {}",APA.getId(),e.getMessage());
+		}
+	}
+	
 	public void fillAdvancePayment(Invoice invoice, SaleOrder saleOrder, List<SaleOrderLine> saleOrderLineList) throws AxelorException
 	{
 		if(!saleOrder.getAdvancePaymentList().isEmpty())
@@ -59,6 +82,8 @@ public class AdvancePaymentService extends AdvancePaymentRepository{
 				total = total.add(saleOrderLine.getInTaxTotal());
 				LOG.debug("Total = {}+{}", total.subtract(saleOrderLine.getInTaxTotal()), saleOrderLine.getInTaxTotal());
 			}
+			if (total.compareTo(BigDecimal.ZERO) == 0);	//	RESOUDRE PROBLEME IN TAX TOTAL !!
+				total = saleOrder.getInTaxTotal();
 			for (AdvancePayment advancePayment : saleOrder.getAdvancePaymentList()) 
 			{
 				if(advancePayment.getAmountRemainingToUse().compareTo(BigDecimal.ZERO) != 0 && total.compareTo(BigDecimal.ZERO) != 0)
@@ -67,26 +92,17 @@ public class AdvancePaymentService extends AdvancePaymentRepository{
 					{
 						total = total.subtract(advancePayment.getAmountRemainingToUse());
 						AdvancePaymentAccount advancePaymentAccount = null;
-						advancePaymentAccount = createAdvancePaymentAccount(advancePayment, invoice, false, total, saleOrder);
-						List <AdvancePaymentAccount> APAlist = new ArrayList<>();
-						
-						if (invoice.getAdvancePaymentList() != null)
-							APAlist.addAll(invoice.getAdvancePaymentList());
-						
-						APAlist.add(advancePaymentAccount);
-						invoice.setAdvancePaymentList(APAlist);
+						advancePaymentAccount = createAdvancePaymentAccount(advancePayment, invoice, advancePayment.getAmountRemainingToUse(), saleOrder);
+						invoice.addAdvancePaymentListItem(advancePaymentAccount);
 						advancePayment.setAmountRemainingToUse(BigDecimal.ZERO);
 					}
 					else
 					{
 						advancePayment.setAmountRemainingToUse(advancePayment.getAmountRemainingToUse().subtract(total));
 						AdvancePaymentAccount advancePaymentAccount = null;
-						advancePaymentAccount = createAdvancePaymentAccount(advancePayment, invoice, true, total, saleOrder);
-						List <AdvancePaymentAccount> APAlist = new ArrayList<>();
-						if (invoice.getAdvancePaymentList() != null)
-						 APAlist.addAll(invoice.getAdvancePaymentList());
-						APAlist.add(advancePaymentAccount);
-						invoice.setAdvancePaymentList(APAlist);
+						advancePaymentAccount = createAdvancePaymentAccount(advancePayment, invoice, total, saleOrder);
+						advancePaymentAccount.setInvoice(invoice);
+						invoice.addAdvancePaymentListItem(advancePaymentAccount);
 						total = BigDecimal.ZERO;
 					}
 				}
@@ -95,33 +111,40 @@ public class AdvancePaymentService extends AdvancePaymentRepository{
 	}
 	
 	@Transactional
-	public AdvancePayment addMoveToAdvancePayment(SaleOrder saleOrder, AdvancePayment advancePayment) throws AxelorException
+	public AdvancePayment addMoveToAdvancePayment(SaleOrder saleOrder, AdvancePayment advancePayment, AdvancePayment advancePaymentDB) throws AxelorException
 	{			
 		
 		if (advancePayment.getMove() != null)
 		{
-			advancePayment.getMove().setDate(advancePayment.getAdvancePaymentDate());
-			advancePayment.getMove().setCompany(saleOrder.getCompany());
+			advancePaymentDB.setAmount(advancePayment.getAmount());
+			advancePaymentDB.setAmountRemainingToUse(advancePayment.getAmountRemainingToUse());
+			advancePaymentDB.setAdvancePaymentDate(advancePayment.getAdvancePaymentDate());
+			advancePaymentDB.setCurrency(advancePayment.getCurrency());
+			advancePaymentDB.setPaymentMode(advancePayment.getPaymentMode());
 			
-			for (MoveLine moveLine : advancePayment.getMove().getMoveLineList()) 
+			advancePaymentDB.getMove().setDate(advancePayment.getAdvancePaymentDate());
+			advancePaymentDB.getMove().setCompany(saleOrder.getCompany());
+			
+			for (MoveLine moveLine : advancePaymentDB.getMove().getMoveLineList()) 
 			{
 				if (moveLine.getCredit().compareTo(BigDecimal.ZERO) == 0 && moveLine.getDebit().compareTo(BigDecimal.ZERO) != 0)
 					moveLine.setDebit(currencyService.getAmountCurrencyConverted(advancePayment.getCurrency(), saleOrder.getCurrency(), advancePayment.getAmount(), advancePayment.getAdvancePaymentDate()));
-
+					
 				if (moveLine.getDebit().compareTo(BigDecimal.ZERO) == 0 && moveLine.getCredit().compareTo(BigDecimal.ZERO) != 0)
 					moveLine.setCredit(currencyService.getAmountCurrencyConverted(advancePayment.getCurrency(), saleOrder.getCurrency(), advancePayment.getAmount(), advancePayment.getAdvancePaymentDate()));
+				
+				moveLine.setDate(advancePayment.getAdvancePaymentDate());
 			}
 			
 			
-				advancePayment.getMove().setPaymentMode(advancePayment.getPaymentMode());
-				advancePayment.getMove().setJournal(accountConfigService.getCustomerSalesJournal(accountConfigService
+				advancePaymentDB.getMove().setPaymentMode(advancePayment.getPaymentMode());
+				advancePaymentDB.getMove().setJournal(accountConfigService.getCustomerSalesJournal(accountConfigService
 						.getAccountConfig(saleOrder.getCompany())));
 				
-				if (advancePayment.getMove().getStatusSelect() == 1)
-					moveService.validate(advancePayment.getMove());
-			
-				save(advancePayment);
-			return advancePayment;
+				if (advancePaymentDB.getMove().getStatusSelect() == 1)
+					moveService.validate(advancePaymentDB.getMove());
+				
+				return advancePayment;
 		}
 		else	
 			return this.createMoveForAdvancePayment(saleOrder, advancePayment);
@@ -139,19 +162,9 @@ public class AdvancePaymentService extends AdvancePaymentRepository{
 		MoveLine movelineCredit = null;
 		Account account2 = null;
 		account2 = paymentModeService.getCompanyAccount(advancePayment.getPaymentMode(), saleOrder.getCompany());
-		/*
-		BigDecimal rate = BigDecimal.ONE;
-		
-		if (!saleOrder.getCurrency().equals(advancePayment.getCurrency()))
-		{
-			rate = currencyService.getCurrencyConversionRate(saleOrder.getCurrency(), advancePayment.getCurrency());
-			LOG.debug("Currency Conversion Rate : 1{} = {}{}",saleOrder.getCurrency().getSymbol(), rate.toString(), advancePayment.getCurrency().getSymbol());
-		}
-		*/
 		
 		movelineDebit = moveLineService.createMoveLine(move, saleOrder.getClientPartner(),
 				account2,
-				//accountConfigService.getIrrecoverableAccount(accountConfigService.getAccountConfig(saleOrder.getCompany())), 
 				currencyService.getAmountCurrencyConverted(advancePayment.getCurrency(), saleOrder.getCurrency(), advancePayment.getAmount(), advancePayment.getAdvancePaymentDate()), 
 				true, advancePayment.getAdvancePaymentDate(), null, 1, "");
 		movelineCredit = moveLineService.createMoveLine(move, saleOrder.getClientPartner(), 
@@ -172,15 +185,13 @@ public class AdvancePaymentService extends AdvancePaymentRepository{
 	}
 	
 @Transactional
-	public AdvancePaymentAccount createAdvancePaymentAccount(AdvancePayment advancePayment, Invoice invoice, boolean isFinished, BigDecimal total, SaleOrder saleOrder) throws AxelorException
+	public AdvancePaymentAccount createAdvancePaymentAccount(AdvancePayment advancePayment, Invoice invoice, BigDecimal amount, SaleOrder saleOrder) throws AxelorException
 	{
 		LOG.debug("Creation d'un advancePaymentAccount");
 		AdvancePaymentAccount advancePaymentAccount = new AdvancePaymentAccount();
 		
-		if(isFinished) //Define whether the source AdvancePayment will be completely used or not in this transaction
-			advancePaymentAccount.setAmount(total);
-		else
-			advancePaymentAccount.setAmount(advancePayment.getAmountRemainingToUse());
+		//Define whether the source AdvancePayment will be completely used or not in this transaction
+		advancePaymentAccount.setAmount(amount);
 		
 		advancePaymentAccount.setAdvancePaymentDate(advancePayment.getAdvancePaymentDate());
 		advancePaymentAccount.setCurrency(advancePayment.getCurrency());
@@ -236,17 +247,9 @@ public class AdvancePaymentService extends AdvancePaymentRepository{
 	{
 		if (advancePaymentAccount.getMove() != null)
 		{
-			LOG.debug("L'AdvancePaymentAccount a deja un Move : MaJ");
 			advancePaymentAccount.getMove().setDate(advancePaymentAccount.getAdvancePaymentDate());
 			advancePaymentAccount.getMove().setCompany(invoice.getCompany());
-			/*
-			BigDecimal rate = BigDecimal.ONE;
-			if (!invoice.getCurrency().equals(advancePaymentAccount.getCurrency()))
-			{
-				rate = currencyService.getCurrencyConversionRate(invoice.getCurrency(), advancePaymentAccount.getCurrency());
-				LOG.debug("Currency Conversion Rate : 1{} = {}{}",invoice.getCurrency().getSymbol(), rate.toString(), advancePaymentAccount.getCurrency().getSymbol());
-			}
-			*/
+	
 			for (MoveLine moveLine : advancePaymentAccount.getMove().getMoveLineList()) 
 			{
 				if (moveLine.getCredit().compareTo(BigDecimal.ZERO) == 0 && moveLine.getDebit().compareTo(BigDecimal.ZERO) != 0)
@@ -254,8 +257,8 @@ public class AdvancePaymentService extends AdvancePaymentRepository{
 
 				if (moveLine.getDebit().compareTo(BigDecimal.ZERO) == 0 && moveLine.getCredit().compareTo(BigDecimal.ZERO) != 0)
 					moveLine.setCredit(currencyService.getAmountCurrencyConverted(advancePaymentAccount.getCurrency(), invoice.getCurrency(), advancePaymentAccount.getAmount(), advancePaymentAccount.getAdvancePaymentDate()));
+			moveLine.setDate(advancePaymentAccount.getAdvancePaymentDate());
 			}
-			
 			
 			advancePaymentAccount.getMove().setPaymentMode(advancePaymentAccount.getPaymentMode());
 			advancePaymentAccount.getMove().setJournal(accountConfigService.getCustomerSalesJournal(accountConfigService
@@ -264,7 +267,7 @@ public class AdvancePaymentService extends AdvancePaymentRepository{
 				if (advancePaymentAccount.getMove().getStatusSelect() == 1)
 					moveService.validate(advancePaymentAccount.getMove());
 			
-				JPA.save(advancePaymentAccount);
+				//apar.save(advancePaymentAccount);
 				return advancePaymentAccount;
 		}
 		else	
@@ -288,28 +291,13 @@ public class AdvancePaymentService extends AdvancePaymentRepository{
 		Account account2 = null;
 		Account account1 = null;
 		
-		if (advancePaymentAccount.getTypeSelect() == AdvancePaymentAccountRepository.STATUS_ADVANCEPAYMENT)//Type_Select == "Advance Payment" 
-		{
-			LOG.debug("Le Type Select est à 1 (AdvancePayment)");
+		if (advancePaymentAccount.getTypeSelect() == AdvancePaymentAccountRepository.STATUS_ADVANCEPAYMENT) 
 			account1 = accountConfigService.getAdvancePaymentAccount(accountConfigService.getAccountConfig(invoice.getCompany()));
-		}
-		else	//Type_Select == "Payment"
-		{
-			LOG.debug("Le Type Select est à 2 (Payment)");
+		else
 			account1 = invoice.getPartnerAccount();
-		}
 		
 		account2 = paymentModeService.getCompanyAccount(advancePaymentAccount.getPaymentMode(), invoice.getCompany());
-		/*
-		BigDecimal rate = BigDecimal.ONE;
 		
-		if (!invoice.getCurrency().equals(advancePaymentAccount.getCurrency()))
-		{
-			rate = currencyService.getCurrencyConversionRate(invoice.getCurrency(), advancePaymentAccount.getCurrency());
-			LOG.debug("Currency Conversion Rate : 1{} = {}{}",invoice.getCurrency().getSymbol(), rate, advancePaymentAccount.getCurrency().getSymbol());
-		}
-		
-		*/
 		movelineDebit = moveLineService.createMoveLine(move, invoice.getPartner(), account2,
 				currencyService.getAmountCurrencyConverted(advancePaymentAccount.getCurrency(), invoice.getCurrency(), advancePaymentAccount.getAmount(), advancePaymentAccount.getAdvancePaymentDate()), 
 				true, advancePaymentAccount.getAdvancePaymentDate(), null, 1, "");
@@ -331,6 +319,42 @@ public class AdvancePaymentService extends AdvancePaymentRepository{
 		
 		return advancePaymentAccount;
 		
+	}
+	
+	@Transactional
+	public void checkAdvancePaymentToDelete(SaleOrder saleOrder, SaleOrder saleOrderDB) throws AxelorException
+	{
+		
+		int y = 1;
+		for (AdvancePayment advancePaymentDB : saleOrderDB.getAdvancePaymentList()) 
+		{
+			boolean isInContext = false;
+			for (AdvancePayment advancePaymentContext : saleOrder.getAdvancePaymentList()) 
+			{
+				if (advancePaymentDB.getId() == advancePaymentContext.getId())
+					isInContext = true;
+			}
+			if(!isInContext)
+			{
+				try{
+					LOG.debug("L'écriture de la Ligne No {} (Move = {}) va etre supprimée !", y, advancePaymentDB.getMove().getReference());
+					moveService.remove(advancePaymentDB.getMove());
+				}catch(Exception e){
+					LOG.debug("AdvancePayment: {}, Exception: {}",advancePaymentDB.getId(),e.getMessage());
+				}
+			}
+			y ++;
+		}
+	}
+	
+	public boolean equalsTo(AdvancePaymentAccount context, AdvancePaymentAccount db)
+	{
+		if (context.getAdvancePaymentDate().isEqual(db.getAdvancePaymentDate()) && context.getAmount().compareTo(db.getAmount()) == 0 &&
+				context.getCurrency().getId() == db.getCurrency().getId() && context.getTypeSelect() != db.getTypeSelect() &&
+				context.getPaymentMode().getCode().equals(db.getPaymentMode().getCode()))
+			return true;
+		
+		return false;
 	}
 	
 	

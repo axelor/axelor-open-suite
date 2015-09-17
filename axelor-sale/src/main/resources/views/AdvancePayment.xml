@@ -6,7 +6,7 @@
     <grid name="advance-payment-grid" editable="true" title="Advance Payment list" model="com.axelor.apps.sale.db.AdvancePayment" orderBy="advancePaymentDate"
     	onNew="action-advance-payment-new">
 	    <field name="amount" onChange="action-advance-payment-change-amount"/>
-	    <field name="amountRemainingToUse" if-module="axelor-supplychain"/>
+	    <field name="amountRemainingToUse" if-module="axelor-supplychain" onChange="action-attrs-advance-payment-readonly"/>
 	    <field name="advancePaymentDate"/>
 	    <field name="currency" />
 	    <field name="paymentMode" if-module="axelor-supplychain"/>
@@ -18,7 +18,7 @@
 			<field name="amount" onChange="action-advance-payment-change-amount"/>
 			<field name="currency"/>
 			<field name="advancePaymentDate"/>
-			<field name="amountRemainingToUse" if-module="axelor-supplychain"/>
+			<field name="amountRemainingToUse" if-module="axelor-supplychain" onChange="action-attrs-advance-payment-readonly"/>
 		</panel>
 		<panel>
 	    	<field name="move" form-view="move-form" grid-view="move-grid" if-module="axelor-supplychain"/>
@@ -37,6 +37,12 @@
     	<field name="amountRemainingToUse" if="id == null || id &lt;= 0" expr="eval: amount"/> 
     </action-record>
 	
+	<action-attrs name="action-attrs-advance-payment-readonly">
+		<attribute name="readonly" for="amount" expr="true" if="self.amount != self.amountRemainingToUse"/>
+		<attribute name="readonly" for="advancePaymentDate" expr="true" if="self.amount != self.amountRemainingToUse"/>
+		<attribute name="readonly" for="paymentMode" expr="true" if="self.amount != self.amountRemainingToUse"/>
+		<attribute name="readonly" for="currency" expr="true" if="self.amount != self.amountRemainingToUse"/>
+	</action-attrs>
 	
 	</object-views>
 	

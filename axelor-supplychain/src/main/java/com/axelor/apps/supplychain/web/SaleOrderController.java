@@ -317,46 +317,42 @@ public class SaleOrderController{
 		response.setValues(saleOrder);
 	}
 	
+	
 	public void addMoveToAdvancePayment(ActionRequest request, ActionResponse response) throws AxelorException
 	{
-		LOG.debug("Dans le Controller");
+		SaleOrder saleOrderContext = request.getContext().asType(SaleOrder.class);
 		
-		SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
-		SaleOrder saleOrderDB = Beans.get(SaleOrderRepository.class).find(saleOrder.getId());
+		if(saleOrderContext.getId() == null || saleOrderContext.getId() <= 0)
+			return;
 		
-		int y = 1;
-		for (AdvancePayment advancePaymentDB : saleOrderDB.getAdvancePaymentList()) 
-		{
-			LOG.debug("ForEach advancePaymentDB No {}", y);
-			LOG.debug("MOVE de BDD {}", advancePaymentDB.getMove());
-			boolean isInContext = false;
-			for (AdvancePayment advancePaymentContext : saleOrder.getAdvancePaymentList()) 
-			{
-				if (advancePaymentDB.getId() == advancePaymentContext.getId())
-					isInContext = true;
-			}
-			if(!isInContext)
-			{
-				try{
-					LOG.debug("L'écriture de la Ligne No {} (Move = {}) va etre supprimée !", y, advancePaymentDB.getMove().getReference());
-					JPA.remove(advancePaymentDB.getMove());
-				}catch(Exception e){
-					throw new AxelorException(I18n.get(/*$$(*/ "Impossible to delete the Move, due to 'to pay' Amount different from total Amount" /*)*/), IException.CONFIGURATION_ERROR);
-				}
-			}
-			y ++;
-		}
+		SaleOrder saleOrderDB = Beans.get(SaleOrderRepository.class).find(saleOrderContext.getId());
+		
+		advancePaymentService.checkAdvancePaymentToDelete(saleOrderContext, saleOrderDB);
 		
 		int x = 1;
-		for (AdvancePayment advancePayment : saleOrder.getAdvancePaymentList()) 
+		for (AdvancePayment advancePayment : saleOrderContext.getAdvancePaymentList()) 
 		{
-			LOG.debug("Appel Service : Advance Payment No {}", x);
-			advancePaymentService.addMoveToAdvancePayment(saleOrderDB, advancePayment);
-			x ++;
+			LOG.debug("Appel Service : Advance Payment No {}", x++);
+			
+			if (advancePayment.getId() != null)
+				advancePaymentService.addMoveToAdvancePayment(saleOrderDB, advancePayment, Beans.get(AdvancePaymentRepository.class).find(advancePayment.getId()));
+			else
+				advancePaymentService.createMoveForAdvancePayment(saleOrderDB, advancePayment);
 		}
+		//saleOrderInvoiceServiceImpl.saveSaleOrderForAdvancePayment(saleOrderDB);
 		
-		//AdvancePayment advancePayment = request.getContext().asType(AdvancePayment.class);
+		response.setReload(true);
+	}
+	
+	public void checkAdvancePaymentDB(ActionRequest request, ActionResponse response) throws AxelorException
+	{
+		SaleOrder saleOrderContext = request.getContext().asType(SaleOrder.class);
+		if (saleOrderContext.getId() == null || saleOrderContext.getId() <= 0)
+			return;
+		SaleOrder saleOrderDB = Beans.get(SaleOrderRepository.class).find(saleOrderContext.getId());
 		
+		advancePaymentService.checkAdvancePaymentToDelete(saleOrderContext, saleOrderDB);
+		LOG.debug("fin");
 		response.setReload(true);
 	}
 	
