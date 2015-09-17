@@ -26,10 +26,12 @@ import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.Team;
+import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.stock.db.Location;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
+import com.axelor.inject.Beans;
 
 public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceStockImpl {
 
@@ -59,11 +61,12 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceStockImpl {
 	
 	public SaleOrder getClientInformations(SaleOrder saleOrder){
 		Partner client = saleOrder.getClientPartner();
+		PartnerService partnerService = Beans.get(PartnerService.class);
 		if(client != null){
 			saleOrder.setPaymentCondition(client.getPaymentCondition());
 			saleOrder.setPaymentMode(client.getPaymentMode());
-			saleOrder.setMainInvoicingAddress(client.getMainInvoicingAddress());
-			saleOrder.setDeliveryAddress(client.getDeliveryAddress());
+			saleOrder.setMainInvoicingAddress(partnerService.getInvoicingAddress(client));
+			saleOrder.setDeliveryAddress(partnerService.getDeliveryAddress(client));
 			saleOrder.setPriceList(client.getSalePriceList());
 		}
 		return saleOrder;

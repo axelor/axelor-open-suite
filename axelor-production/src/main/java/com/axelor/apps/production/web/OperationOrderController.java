@@ -212,8 +212,10 @@ public class OperationOrderController {
 	public void chargeByMachineHours(ActionRequest request, ActionResponse response) {
 		List<Map<String, Object>> dataList = new ArrayList<Map<String, Object>>();
 		DateTimeFormatter parser = ISODateTimeFormat.dateTime();
-		LocalDateTime fromDateTime = LocalDateTime.parse(request.getContext().get("fromDateTime").toString(),parser);
-		LocalDateTime toDateTime = LocalDateTime.parse(request.getContext().get("toDateTime").toString(),parser);
+		//LocalDateTime fromDateTime = LocalDateTime.parse(request.getContext().get("fromDateTime").toString(),parser);
+		LocalDateTime fromDateTime = new LocalDateTime();
+		//LocalDateTime toDateTime = LocalDateTime.parse(request.getContext().get("toDateTime").toString(),parser);
+		LocalDateTime toDateTime = new LocalDateTime().plusDays(1);
 		LocalDateTime itDateTime = new LocalDateTime(fromDateTime);
 		
 		while(!itDateTime.isAfter(toDateTime)){

@@ -15,8 +15,7 @@
 	  <panel>
 	    <field name="productionOrderSeq"/>
 	    <field name="projectTask" if-module="axelor-business-production" form-view="project-task-form" grid-view="project-task-grid"/>
-	    <field name="isToInvoice" onChange="save,action-production-order-method-is-to-invoice" if-module="axelor-business-production"/>
-	    <button name="showManufOrderWizard" title="Add Manuf. Order"   onClick="save,action-production-order-attrs-add-manuf-order-wizard,action-production-order-record-default-wizard"/>
+	    <button name="showManufOrderWizard" title="Add Manuf. Order" width="50%"   onClick="save,action-production-order-attrs-add-manuf-order-wizard,action-production-order-record-default-wizard"/>
 	  </panel>  
 	  <panel name="addManufOrderWizard" title="Add Manuf. Order" hidden="true">
 	    <field name="product" title="Product" widget="ManyToOne" target="com.axelor.apps.base.db.Product" domain="self.expense = false and self.productTypeSelect = 'storable' and self.procurementMethodSelect = 'produce'" form-view="product-form" grid-view="product-grid"/>
@@ -62,9 +61,7 @@
   	</action-view>
     
     <search-filters name="production-order-filters" model="com.axelor.apps.production.db.ProductionOrder" title="Production order filters">
-		<filter title="Production orders to invoice">
-			<domain>self.isToInvoice = true</domain>
-		</filter>
+
 		<filter title="Production orders closed">
 			<domain>self.isClosed = true</domain>
 		</filter>

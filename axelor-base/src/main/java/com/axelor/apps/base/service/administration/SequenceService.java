@@ -210,5 +210,14 @@ public class SequenceService extends SequenceRepository {
 		return sequenceVersion;
 
 	}
+	
+	@Override
+	public Sequence copy(Sequence sequence, boolean deep) {
+		
+		log.debug("Seuqence copy override");
+		sequence.clearSequenceVersionList();
+		
+		return super.copy(sequence, deep);
+	}
 
 }

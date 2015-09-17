@@ -26,6 +26,7 @@ import com.axelor.apps.account.db.BankStatementLine;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.BankStatementRepository;
+import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.administration.GeneralServiceImpl;
@@ -35,14 +36,19 @@ import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
-public class BankStatementService extends BankStatementRepository {
+public class BankStatementService {
 
 	@Inject
 	private MoveService moveService;
+	
+	@Inject
+	private MoveRepository moveRepo;
 
 	@Inject
 	private MoveLineService moveLineService;
-
+	
+	@Inject
+	private BankStatementRepository bankStatementRepo;
 
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void compute(BankStatement bankStatement) throws AxelorException  {
@@ -57,7 +63,7 @@ public class BankStatementService extends BankStatementRepository {
 
 		bankStatement.setComputedBalance(computedBalance);
 
-		save(bankStatement);
+		bankStatementRepo.save(bankStatement);
 	}
 
 
@@ -81,7 +87,7 @@ public class BankStatementService extends BankStatementRepository {
 
 		bankStatement.setStatusSelect(BankStatementRepository.STATUS_VALIDATED);
 
-		save(bankStatement);
+		bankStatementRepo.save(bankStatement);
 	}
 
 	public void checkBalance(BankStatement bankStatement) throws AxelorException  {
@@ -126,7 +132,7 @@ public class BankStatementService extends BankStatementRepository {
 				moveLineService.createMoveLine(move, partner, bankStatement.getCashAccount(), amount,
 						!isNegate, effectDate, effectDate, 1, name));
 
-		moveService.save(move);
+		moveRepo.save(move);
 
 		moveService.validateMove(move);
 

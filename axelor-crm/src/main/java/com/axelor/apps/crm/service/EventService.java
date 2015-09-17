@@ -28,7 +28,9 @@ import org.joda.time.Duration;
 import org.joda.time.Interval;
 import org.joda.time.LocalDateTime;
 
+import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.crm.db.Event;
 import com.axelor.apps.crm.db.Lead;
 import com.axelor.apps.crm.db.repo.EventRepository;
@@ -51,6 +53,9 @@ public class EventService extends EventRepository {
 
 	@Inject
 	private EventAttendeeService eventAttendeeService;
+	
+	@Inject
+	private PartnerService partnerService;
 
 	public Duration computeDuration(LocalDateTime startDateTime, LocalDateTime endDateTime)  {
 
@@ -102,8 +107,17 @@ public class EventService extends EventRepository {
 		}
 		return event;
 	}
+	
+	public String getInvoicingAddressFullName(Partner partner) {
 
-
+		Address address = partnerService.getInvoicingAddress(partner);
+		if(address != null){
+			return address.getFullName();
+		}
+		
+		return null;
+	}
+	
 	public Event checkModifications(Event event, Event previousEvent) throws AxelorException, ClassNotFoundException, InstantiationException, IllegalAccessException, IOException, MessagingException{
 		Set<User> previousUserSet = previousEvent.getInternalGuestSet();
 		Set<User> userSet = event.getInternalGuestSet();
@@ -242,4 +256,5 @@ public class EventService extends EventRepository {
 		message.addToEmailAddressSetItem(event.getUser().getPartner().getEmailAddress());
 		message = Beans.get(MessageService.class).sendByEmail(message);
 	}
+		
 }

@@ -9,6 +9,10 @@
 	<many-to-one name="defaultBillOfMaterial" ref="com.axelor.apps.production.db.BillOfMaterial" title="Default BOM"/>
   
   	<integer name="versionSelect" title="Version" selection="base.product.version.select"/>
+  	
+  	<track>
+      <field name="costPrice"/>
+    </track>
   
   </entity>
 

@@ -34,7 +34,7 @@
             <property name="dataType">string</property>
             <property name="distinct">true</property>
             <simple-property-list name="defaultValue">
-                <value type="constant">1,2,3</value>
+                <value type="constant">1</value>
             </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
@@ -138,8 +138,8 @@
                     <value>ILYNN</value>
                 </ex-property>
             </list-property>
-            <property name="odaDriverClass">com.mysql.jdbc.Driver</property>
-            <property name="odaURL">jdbc:mysql://localhost:3306</property>
+            <property name="odaDriverClass">org.postgresql.Driver</property>
+            <property name="odaURL">jdbc:postgresql://localhost:5432</property>
         </oda-data-source>
     </data-sources>
     <data-sets>
@@ -605,7 +605,8 @@ from purchase_purchase_order as PurchaseOrder
 left outer join base_company as Company on (PurchaseOrder.company = Company.id)
 left outer join meta_file as MetaFile on (MetaFile.id = Company.logo)
 left outer join base_partner as Partner on (PurchaseOrder.supplier_partner = Partner.id)
-left outer join base_address as Address on (Partner.main_invoicing_address = Address.id)
+left outer join base_partner_address as PartnerAddress on (PartnerAddress.partner = Partner.id and PartnerAddress.is_default_addr is true)
+left outer join base_address as Address on (PartnerAddress.address = Address.id)
 left outer join base_country as Country on (Address.addressl7country = Country.id)
 left outer join account_payment_condition as PaymentCond on (Partner.payment_condition = PaymentCond.id)
 left outer join base_currency as Currency on (PurchaseOrder.currency = Currency.id)

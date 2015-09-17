@@ -43,13 +43,15 @@ import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
-public class CashRegisterLineService extends CashRegisterLineRepository{
+public class CashRegisterLineService{
 
 	private static final Logger LOG = LoggerFactory.getLogger(CashRegisterLineService.class);
 
 	@Inject
 	private TemplateMessageService templateMessageService;
-
+	
+	@Inject
+	private CashRegisterLineRepository cashRegisterLineRepo;
 
 	protected GeneralService generalService;
 
@@ -76,7 +78,7 @@ public class CashRegisterLineService extends CashRegisterLineRepository{
 
 		LOG.debug("In closeCashRegister");
 
-		CashRegisterLine cashRegisterLineFound = all()
+		CashRegisterLine cashRegisterLineFound = cashRegisterLineRepo.all()
 				.filter("self.cashRegister = ?1 and self.cashRegisterDate = ?2 and self.statusSelect = '1'",
 						cashRegisterLine.getCashRegister(), cashRegisterLine.getCashRegisterDate()).fetchOne();
 
@@ -95,7 +97,7 @@ public class CashRegisterLineService extends CashRegisterLineRepository{
 			cashRegisterLine.setCreateDateTime(this.todayTime);
 			cashRegisterLine.setUser(this.user);
 			cashRegisterLine.setStatusSelect(CashRegisterLineRepository.CLOSED_CASHREGISTERLINE);
-			save(cashRegisterLine);
+			cashRegisterLineRepo.save(cashRegisterLine);
 
 			return Beans.get(MessageRepository.class).save(this.createCashRegisterLineMail(accountConfig.getCashRegisterAddressEmail(), company, cashRegisterLine));
 
@@ -110,7 +112,7 @@ public class CashRegisterLineService extends CashRegisterLineRepository{
 
 		cashRegisterLine.setStatusSelect(CashRegisterLineRepository.DRAFT_CASHREGISTERLINE);
 
-		save(cashRegisterLine);
+		cashRegisterLineRepo.save(cashRegisterLine);
 	}
 
 

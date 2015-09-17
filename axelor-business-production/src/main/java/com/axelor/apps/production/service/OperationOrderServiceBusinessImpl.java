@@ -27,7 +27,9 @@ import com.axelor.apps.production.db.ProdHumanResource;
 //import com.axelor.apps.production.db.ProdHumanResource;
 import com.axelor.apps.production.db.ProdProcessLine;
 import com.axelor.apps.production.db.WorkCenter;
+import com.axelor.apps.production.db.repo.OperationOrderRepository;
 import com.axelor.exception.AxelorException;
+import com.axelor.inject.Beans;
 import com.google.inject.persist.Transactional;
 
 public class OperationOrderServiceBusinessImpl extends OperationOrderServiceImpl  {
@@ -46,7 +48,7 @@ public class OperationOrderServiceBusinessImpl extends OperationOrderServiceImpl
 				prodProcessLine.getWorkCenter(), 
 				prodProcessLine);
 		
-		return save(operationOrder);
+		return Beans.get(OperationOrderRepository.class).save(operationOrder);
 	}
 	
 	
@@ -75,7 +77,7 @@ public class OperationOrderServiceBusinessImpl extends OperationOrderServiceImpl
 		
 		this._createHumanResourceList(operationOrder, machineWorkCenter);
 		
-		return save(operationOrder);
+		return Beans.get(OperationOrderRepository.class).save(operationOrder);
 	}
 	
 	

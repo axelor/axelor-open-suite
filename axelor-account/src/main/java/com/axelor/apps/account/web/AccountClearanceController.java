@@ -22,6 +22,7 @@ import java.util.Map;
 
 import com.axelor.apps.account.db.AccountClearance;
 import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.account.db.repo.AccountClearanceRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.AccountClearanceService;
 import com.axelor.exception.service.TraceBackService;
@@ -47,9 +48,11 @@ public class AccountClearanceController {
 	
 	public void validateAccountClearance(ActionRequest request, ActionResponse response)  {
 		
+		AccountClearanceRepository accountClearanceRepo = Beans.get(AccountClearanceRepository.class);
 		AccountClearanceService accountClearanceService = Beans.get(AccountClearanceService.class);
+
 		AccountClearance accountClearance = request.getContext().asType(AccountClearance.class);
-		accountClearance = accountClearanceService.find(accountClearance.getId());
+		accountClearance = accountClearanceRepo.find(accountClearance.getId());
 		
 		try {
 			accountClearanceService.validateAccountClearance(accountClearance);

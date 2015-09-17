@@ -20,7 +20,7 @@ public class ProjectTaskService extends ProjectTaskRepository{
 
 	public static int MAX_LEVEL_OF_PROJECT = 10;
 
-	public ProjectTask generateProject(ProjectTask parentProject,String fullName, User assignedTo, Company company, Partner clientPartner){
+	public ProjectTask generateProject(ProjectTask parentProject, String fullName, User assignedTo, Company company, Partner clientPartner){
 		ProjectTask project = new ProjectTask();
 		project.setTypeSelect(ProjectTaskRepository.TYPE_PROJECT);
 		project.setStatusSelect(ProjectTaskRepository.STATE_PLANNED);

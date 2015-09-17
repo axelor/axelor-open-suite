@@ -59,6 +59,8 @@
   	<boolean name="purchasable" title="Purchasable" default="true"/>
   	<boolean name="inAti" title="In ATI"/>
   	
+  	<integer name="costTypeSelect" title="Cost type" selection="base.product.cost.type.select" default="1"/>
+  	
   	<extra-code>
 	   		<![CDATA[
 	   			// APPLICATION TYPE SELECT VALUE
@@ -82,6 +84,9 @@
 				
 				public static final String PROCUREMENT_METHOD_BUY = "buy";
 				public static final String PROCUREMENT_METHOD_PRODUCE = "produce";
+				
+				public static final int COST_TYPE_STANDARD = 1;
+				public static final int COST_TYPE_LAST_PURCHASE_PRICE = 2;
 	   		]]>
 	   	</extra-code>
   	

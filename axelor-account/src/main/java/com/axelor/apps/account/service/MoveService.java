@@ -39,6 +39,7 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
+import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.config.AccountConfigService;
@@ -60,7 +61,7 @@ import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
-public class MoveService extends MoveRepository {
+public class MoveService {
 
 	private static final Logger LOG = LoggerFactory.getLogger(MoveService.class);
 
@@ -69,6 +70,12 @@ public class MoveService extends MoveRepository {
 
 	@Inject
 	private MoveLineService moveLineService;
+	
+	@Inject
+	private MoveLineRepository moveLineRepo;
+	
+	@Inject
+	private MoveRepository moveRepo;
 
 	@Inject
 	private SequenceService sequenceService;
@@ -182,7 +189,7 @@ public class MoveService extends MoveRepository {
 		}
 		move.setPaymentMode(paymentMode);
 
-		save(move);
+		moveRepo.save(move);
 		move.setReference("*"+move.getId());
 
 		return move;
@@ -224,7 +231,7 @@ public class MoveService extends MoveRepository {
 
 				move.getMoveLineList().addAll(moveLineService.createMoveLines(invoice, move, company, partner, account, consolidate, isPurchase, isDebitCustomer));
 
-				save(move);
+				moveRepo.save(move);
 
 				invoice.setMove(move);
 
@@ -354,11 +361,11 @@ public class MoveService extends MoveRepository {
 	public MoveLine getInvoiceCustomerMoveLineByQuery(Invoice invoice) throws AxelorException  {
 
 		if(this.isDebitCustomer(invoice))  {
-			return moveLineService.all().filter("self.move = ?1 AND self.account = ?2 AND self.debit > 0 AND self.amountRemaining > 0",
+			return moveLineRepo.all().filter("self.move = ?1 AND self.account = ?2 AND self.debit > 0 AND self.amountRemaining > 0",
 					invoice.getMove(), invoice.getPartnerAccount()).fetchOne();
 		}
 		else  {
-			return moveLineService.all().filter("self.move = ?1 AND self.account = ?2 AND self.credit > 0 AND self.amountRemaining > 0",
+			return moveLineRepo.all().filter("self.move = ?1 AND self.account = ?2 AND self.credit > 0 AND self.amountRemaining > 0",
 				invoice.getMove(), invoice.getPartnerAccount()).fetchOne();
 		}
 	}
@@ -834,7 +841,7 @@ public class MoveService extends MoveRepository {
 		}
 
 		this.validateMove(move);
-		save(move);
+		moveRepo.save(move);
 	}
 
 
@@ -887,7 +894,7 @@ public class MoveService extends MoveRepository {
 
 		this.validateEquiponderanteMove(move);
 
-		save(move);
+		moveRepo.save(move);
 
 		if(updateCustomerAccount)  {
 			this.updateCustomerAccount(move);
@@ -955,7 +962,7 @@ public class MoveService extends MoveRepository {
 				throw new AxelorException(String.format(I18n.get(IExceptionMessage.MOVE_7),
 						move.getReference(), totalDebit, totalCredit), IException.INCONSISTENCY);
 			}
-			move.setStatusSelect(STATUS_VALIDATED);
+			move.setStatusSelect(MoveRepository.STATUS_VALIDATED);
 		}
 	}
 
@@ -1045,7 +1052,7 @@ public class MoveService extends MoveRepository {
 																null);
 			newMove.addMoveLineListItem(newMoveLine);
 		}
-		return save(newMove);
+		return moveRepo.save(newMove);
 	}
 
 	public boolean validateMultiple(List<? extends Move> moveList){

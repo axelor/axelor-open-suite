@@ -38,6 +38,10 @@ import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.PaymentSchedule;
 import com.axelor.apps.account.db.PaymentScheduleLine;
 import com.axelor.apps.account.db.repo.DirectDebitManagementRepository;
+import com.axelor.apps.account.db.repo.InvoiceRepository;
+import com.axelor.apps.account.db.repo.MoveLineRepository;
+import com.axelor.apps.account.db.repo.MoveRepository;
+import com.axelor.apps.account.db.repo.PaymentScheduleLineRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.cfonb.CfonbImportService;
 import com.axelor.apps.account.service.config.AccountConfigService;
@@ -65,15 +69,21 @@ private static final Logger LOG = LoggerFactory.getLogger(PaymentScheduleImportS
 
 	@Inject
 	private MoveLineService mls;
+	
+	@Inject
+	private MoveLineRepository moveLineRepo;
 
 	@Inject
 	private MoveService ms;
+	
+	@Inject
+	private MoveRepository moveRepo;
 
 	@Inject
 	private PaymentScheduleService pss;
 
 	@Inject
-	private PaymentScheduleLineService paymentScheduleLineService;
+	private PaymentScheduleLineRepository paymentScheduleLineRepo;
 
 	@Inject
 	private PaymentModeService pms;
@@ -93,6 +103,9 @@ private static final Logger LOG = LoggerFactory.getLogger(PaymentScheduleImportS
 
 	@Inject
 	private InvoiceService invoiceService;
+	
+	@Inject
+	private InvoiceRepository invoiceRepo;
 
 	@Inject
 	protected GeneralService generalService;
@@ -158,7 +171,7 @@ private static final Logger LOG = LoggerFactory.getLogger(PaymentScheduleImportS
 	public List<PaymentScheduleLine> getPaymentScheduleLinesToReject(String refDebitReject, Company company)  {
 
 		// Identification de la ligne d'échéance correspondant au rejet
-		PaymentScheduleLine pslRequested = paymentScheduleLineService.all().filter("UPPER(self.debitNumber) = ?1 AND self.paymentSchedule.company = ?2", refDebitReject, company).fetchOne();
+		PaymentScheduleLine pslRequested = paymentScheduleLineRepo.all().filter("UPPER(self.debitNumber) = ?1 AND self.paymentSchedule.company = ?2", refDebitReject, company).fetchOne();
 
 		// Identification de l'objet de gestion de prélèvement (cas des export bancaire dont plusieurs échéances ont été consolidées)
 		DirectDebitManagement directDebitManagementRequested = directDebitManagementRepo.all().filter("UPPER(self.debitNumber) = ?1 AND company = ?2", refDebitReject, company).fetchOne();
@@ -221,7 +234,7 @@ private static final Logger LOG = LoggerFactory.getLogger(PaymentScheduleImportS
 	public List<Invoice> getInvoicesToReject(String refDebitReject, Company company)  {
 
 		// Identification de la facture correspondant au rejet
-		Invoice invoiceRequested = invoiceService.all().filter("UPPER(self.debitNumber) = ?1 AND company = ?2", refDebitReject, company).fetchOne();
+		Invoice invoiceRequested = invoiceRepo.all().filter("UPPER(self.debitNumber) = ?1 AND company = ?2", refDebitReject, company).fetchOne();
 
 		// Identification de l'objet de gestion de prélèvement (cas des export bancaire dont plusieurs échéances où plusieurs factures ont été consolidés)
 		DirectDebitManagement directDebitManagementRequested = directDebitManagementRepo.all().filter("UPPER(self.debitNumber) = ?1 AND company = ?2", refDebitReject, company).fetchOne();
@@ -257,7 +270,7 @@ private static final Logger LOG = LoggerFactory.getLogger(PaymentScheduleImportS
 				invoice.setRejectDate(dateReject);
 				invoice.setInterbankCodeLine(causeReject);
 
-				invoiceService.save(invoice);
+				invoiceRepo.save(invoice);
 
 				invoiceList.add(invoice);
 				invoiceRejectedList.add(invoice);
@@ -411,7 +424,7 @@ private static final Logger LOG = LoggerFactory.getLogger(PaymentScheduleImportS
 
 		Move move = ms.createMove(rejectJournal, company, null, null, date, null);
 		move.setRejectOk(true);
-		ms.save(move);
+		moveRepo.save(move);
 		return move;
 	}
 
@@ -419,14 +432,14 @@ private static final Logger LOG = LoggerFactory.getLogger(PaymentScheduleImportS
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public Move validateMove(Move move) throws AxelorException  {
 		ms.validateMove(move);
-		ms.save(move);
+		moveRepo.save(move);
 		return move;
 	}
 
 
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void deleteMove(Move move) throws AxelorException  {
-		ms.remove(move);
+		moveRepo.remove(move);
 	}
 
 
@@ -442,7 +455,7 @@ private static final Logger LOG = LoggerFactory.getLogger(PaymentScheduleImportS
 		MoveLine moveLine = mls.createMoveLine(move, null, paymentModeAccount, this.getTotalDebit(move), false, rejectDate, ref, null);
 		move.getMoveLineList().add(moveLine);
 
-		mls.save(moveLine);
+		moveLineRepo.save(moveLine);
 
 		return moveLine;
 	}
@@ -491,7 +504,7 @@ private static final Logger LOG = LoggerFactory.getLogger(PaymentScheduleImportS
 					true, paymentScheduleLine.getRejectDate(), paymentScheduleLine.getRejectDate(), ref, paymentScheduleLine.getName());
 			moveLine.setPaymentScheduleLine(paymentScheduleLine);
 			move.getMoveLineList().add(moveLine);
-			mls.save(moveLine);
+			moveLineRepo.save(moveLine);
 
 			InterbankCodeLine interbankCodeLine = paymentScheduleLine.getInterbankCodeLine();
 
@@ -583,7 +596,7 @@ private static final Logger LOG = LoggerFactory.getLogger(PaymentScheduleImportS
 
 		rejectMoveLine.setInvoiceReject(invoice);
 
-		mls.save(rejectMoveLine);
+		moveLineRepo.save(rejectMoveLine);
 
 		invoice.setRejectMoveLine(rejectMoveLine);
 
@@ -651,7 +664,7 @@ private static final Logger LOG = LoggerFactory.getLogger(PaymentScheduleImportS
 			this.setPaymentMode(invoice);
 			// Alarme générée dans l'historique du client ?
 			LOG.debug("Alarme générée dans l'historique du client");
-			invoiceService.save(invoice);
+			invoiceRepo.save(invoice);
 		}
 	}
 
@@ -737,9 +750,9 @@ private static final Logger LOG = LoggerFactory.getLogger(PaymentScheduleImportS
 		paymentScheduleLineCopy.setScheduleLineSeq(paymentScheduleLine.getScheduleLineSeq());
 		paymentScheduleLineCopy.setFromReject(true);
 
-		paymentScheduleLineCopy.setStatusSelect(PaymentScheduleLineService.STATUS_IN_PROGRESS);
+		paymentScheduleLineCopy.setStatusSelect(PaymentScheduleLineRepository.STATUS_IN_PROGRESS);
 
-		return paymentScheduleLineService.save(paymentScheduleLineCopy);
+		return paymentScheduleLineRepo.save(paymentScheduleLineCopy);
 	}
 
 
@@ -758,7 +771,7 @@ private static final Logger LOG = LoggerFactory.getLogger(PaymentScheduleImportS
 
 		paymentScheduleLine.setRejectDate(dateReject);
 		paymentScheduleLine.setInterbankCodeLine(causeReject);
-		paymentScheduleLine.setStatusSelect(PaymentScheduleLineService.STATUS_CLOSED);
+		paymentScheduleLine.setStatusSelect(PaymentScheduleLineRepository.STATUS_CLOSED);
 	}
 
 

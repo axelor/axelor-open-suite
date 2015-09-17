@@ -40,6 +40,7 @@ public interface IWorkCenter {
 
 	static final int COST_PER_HOUR = 1;
 	static final int COST_PER_CYCLE = 2;
+	static final int COST_PER_PIECE = 3;
 
 	
 }

@@ -593,12 +593,7 @@
 	
 	<selection name="message.related.to.select" id="base.message.related.to.select">
 		<option value="com.axelor.apps.base.db.Partner">Partner/Contact</option>
-		<option value="com.axelor.apps.crm.db.Lead">Lead</option>
-		<option value="com.axelor.apps.crm.db.Opportunity">Opportunity</option>
 		<option value="com.axelor.apps.base.db.Product">Product</option>
-		<option value="com.axelor.apps.crm.db.Event">Event</option>
-		<option value="com.axelor.apps.sale.db.SaleOrder">Quote/Order</option>
-		<option value="com.axelor.apps.project.db.ProjectTask">Project/Task</option>
 	</selection>
 	
 	<selection name="base.in.ati.select">
@@ -606,6 +601,16 @@
 		<option value="2">Always A.T.I.</option>
 		<option value="3">W.T. by default</option>
 		<option value="4">A.T.I. by default</option>
+	</selection>
+	
+	<selection name="base.product.cost.type.select">
+		<option value="1">Standard</option>
+		<option value="2">Last purchase price</option>
+	</selection>
+	
+	<selection name="crm.event.related.to.select" id="base.crm.event.related.to.select">
+		<option value="com.axelor.apps.base.db.Partner">Partner/Contact</option>
+		<option value="com.axelor.apps.base.db.Product">Product</option>
 	</selection>
 	
 </object-views>

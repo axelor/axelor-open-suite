@@ -30,10 +30,14 @@ import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.IPartner;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.PartnerAddress;
+import com.axelor.apps.base.db.repo.PartnerAddressRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.message.db.EmailAddress;
 import com.axelor.db.JPA;
+import com.axelor.inject.Beans;
 import com.google.common.base.Strings;
+import com.google.inject.persist.Transactional;
 
 
 public class PartnerService extends PartnerRepository{
@@ -52,10 +56,6 @@ public class PartnerService extends PartnerRepository{
 		partner.setMobilePhone(mobilePhone);
 		partner.setEmailAddress(emailAddress);
 		partner.setCurrency(currency);
-
-		partner.setDeliveryAddress(deliveryAddress);
-		partner.setMainInvoicingAddress(mainInvoicingAddress);
-
 		Partner contact = new Partner();
 		contact.setPartnerTypeSelect(IPartner.PARTNER_TYPE_SELECT_INDIVIDUAL);
 		contact.setIsContact(true);
@@ -64,6 +64,14 @@ public class PartnerService extends PartnerRepository{
 		contact.setMainPartner(partner);
 		contact.setFullName(this.computeFullName(partner));
 		partner.addContactPartnerSetItem(contact);
+		
+		if(deliveryAddress == mainInvoicingAddress){
+			addPartnerAddress(partner, mainInvoicingAddress, true, true, true);
+		}
+		else {
+			addPartnerAddress(partner, deliveryAddress, true, false, true);
+			addPartnerAddress(partner, mainInvoicingAddress, true, true, false);
+		}
 
 		return partner;
 	}
@@ -112,13 +120,11 @@ public class PartnerService extends PartnerRepository{
 		List<Long> idList = new ArrayList<Long>();
 
 		idList.addAll(this.findMailsFromPartner(partner));
-		idList.addAll(this.findMailsFromSaleOrder(partner));
 
 		Set<Partner> contactSet = partner.getContactPartnerSet();
 		if(contactSet != null && !contactSet.isEmpty()){
 			for (Partner contact : contactSet) {
 				idList.addAll(this.findMailsFromPartner(contact));
-				idList.addAll(this.findMailsFromSaleOrderContact(contact));
 			}
 		}
 		return idList;
@@ -128,7 +134,6 @@ public class PartnerService extends PartnerRepository{
 		List<Long> idList = new ArrayList<Long>();
 
 		idList.addAll(this.findMailsFromPartner(partner));
-		idList.addAll(this.findMailsFromSaleOrderContact(partner));
 
 		return idList;
 	}
@@ -139,21 +144,94 @@ public class PartnerService extends PartnerRepository{
 				"OR (email.relatedTo2Select = 'com.axelor.apps.base.db.Partner' AND email.relatedTo2SelectId = "+partner.getId()+")";
 		return JPA.em().createQuery(query).getResultList();
 	}
+	
+	private PartnerAddress createPartnerAddress(Address address, Boolean isDefault){
 
-	public List<Long> findMailsFromSaleOrder(Partner partner){
-		String query = "SELECT DISTINCT(email.id) FROM Message as email, SaleOrder as so, Partner as part"+
-				" WHERE part.id = "+partner.getId()+" AND so.clientPartner = part.id AND email.mediaTypeSelect = 2 AND "+
-				"((email.relatedTo1Select = 'com.axelor.apps.sale.db.SaleOrder' AND email.relatedTo1SelectId = so.id) "+
-				"OR (email.relatedTo2Select = 'com.axelor.apps.sale.db.SaleOrder' AND email.relatedTo2SelectId = so.id))";
-		return JPA.em().createQuery(query).getResultList();
+		PartnerAddress partnerAddress = new PartnerAddress();
+		partnerAddress.setAddress(address);
+		partnerAddress.setIsDefaultAddr(isDefault);
+
+		return partnerAddress;
 	}
 
-	public List<Long> findMailsFromSaleOrderContact(Partner partner){
-		String query = "SELECT DISTINCT(email.id) FROM Message as email, SaleOrder as so, Partner as part"+
-				" WHERE part.id = "+partner.getId()+" AND so.contactPartner = part.id AND email.mediaTypeSelect = 2 AND "+
-				"((email.relatedTo1Select = 'com.axelor.apps.sale.db.SaleOrder' AND email.relatedTo1SelectId = so.id) "+
-				"OR (email.relatedTo2Select = 'com.axelor.apps.sale.db.SaleOrder' AND email.relatedTo2SelectId = so.id))";
-		return JPA.em().createQuery(query).getResultList();
+
+	@Transactional
+	public void resetDefaultAddress(Partner partner, String addrTypeQuery) {
+
+		if(partner.getId() != null){
+			PartnerAddressRepository partnerAddressRepo = Beans.get(PartnerAddressRepository.class);
+			PartnerAddress partnerAddress =  partnerAddressRepo.all().filter("self.partner.id = ? AND self.isDefaultAddr = true"+addrTypeQuery,partner.getId()).fetchOne();
+			if(partnerAddress != null){
+				partnerAddress.setIsDefaultAddr(false);
+				partnerAddressRepo.save(partnerAddress);
+			}
+		}
+
+	}
+
+	public Partner addPartnerAddress(Partner partner,Address address, Boolean isDefault, Boolean isInvoicing, Boolean isDelivery){
+
+		PartnerAddress partnerAddress = createPartnerAddress(address,isDefault);
+		
+		if(isDefault != null && isDefault){
+			String query = " AND self.isDeliveryAddr = false AND self.isInvoicingAddr = false";
+			if((isInvoicing != null && isInvoicing)  && (isDelivery != null && isDelivery)){
+				query = " AND self.isDeliveryAddr = true AND self.isInvoicingAddr = true";
+			}
+			else if(isInvoicing != null && isInvoicing){
+				query = " AND self.isDeliveryAddr = false AND self.isInvoicingAddr = true";
+			}
+			else if(isDelivery != null && isDelivery){
+				query = " AND self.isDeliveryAddr = true AND self.isInvoicingAddr = false";
+			}
+			resetDefaultAddress(partner,query);
+		}
+		
+		partnerAddress.setIsInvoicingAddr(isInvoicing);
+		partnerAddress.setIsDeliveryAddr(isDelivery);
+		partnerAddress.setIsDefaultAddr(isDefault);
+		partner.addPartnerAddressListItem(partnerAddress);
+		
+		return partner;
+	}
+
+
+	private Address getAddress(Partner partner, String querySpecific, String queryComman){
+
+		if(partner != null){
+			PartnerAddressRepository partnerAddressRepo = Beans.get(PartnerAddressRepository.class);
+			List<PartnerAddress> partnerAddressList = partnerAddressRepo.all().filter(querySpecific, partner.getId()).fetch();
+			if(partnerAddressList.isEmpty()){
+				partnerAddressList = partnerAddressRepo.all().filter(queryComman, partner.getId()).fetch();
+			}
+			if(partnerAddressList.size() == 1){
+				return partnerAddressList.get(0).getAddress();
+			}
+			for(PartnerAddress partnerAddress : partnerAddressList){
+				if(partnerAddress.getIsDefaultAddr()){
+					return partnerAddress.getAddress();
+				}
+			}
+		}
+		
+		return null;
+	}
+
+	public Address getInvoicingAddress(Partner partner){
+
+		return getAddress(partner, "self.partner.id = ?1 AND self.isInvoicingAddr = true AND self.isDeliveryAddr = false AND self.isDefaultAddr = true",
+				"self.partner.id = ?1 AND self.isInvoicingAddr = true");
+	}
+
+	public Address getDeliveryAddress(Partner partner){
+
+		return getAddress(partner, "self.partner.id = ?1 AND self.isDeliveryAddr = true AND self.isInvoicingAddr = false AND self.isDefaultAddr = true",
+				"self.partner.id = ?1 AND self.isDeliveryAddr = true");
+	}
+
+	@Transactional
+	public Partner savePartner(Partner partner){
+		return save(partner);
 	}
 
 }

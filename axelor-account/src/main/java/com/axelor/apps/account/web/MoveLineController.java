@@ -18,6 +18,7 @@
 package com.axelor.apps.account.web;
 
 import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.service.IrrecoverableService;
 import com.axelor.apps.account.service.MoveLineService;
 import com.axelor.exception.service.TraceBackService;
@@ -32,12 +33,12 @@ public class MoveLineController {
 	private Injector injector;
 	
 	@Inject
-	private MoveLineService moveLineService;
+	private MoveLineRepository moveLineRepo;
 	
 	public void usherProcess(ActionRequest request, ActionResponse response) {
 		
 		MoveLine moveLine = request.getContext().asType(MoveLine.class);
-		moveLine = moveLineService.find(moveLine.getId());
+		moveLine = moveLineRepo.find(moveLine.getId());
 		
 		MoveLineService mls = injector.getInstance(MoveLineService.class);
 		
@@ -50,7 +51,7 @@ public class MoveLineController {
 	public void passInIrrecoverable(ActionRequest request, ActionResponse response)  {
 		
 		MoveLine moveLine = request.getContext().asType(MoveLine.class);
-		moveLine = moveLineService.find(moveLine.getId());
+		moveLine = moveLineRepo.find(moveLine.getId());
 		
 		IrrecoverableService is = injector.getInstance(IrrecoverableService.class);
 		
@@ -64,7 +65,7 @@ public class MoveLineController {
 	public void notPassInIrrecoverable(ActionRequest request, ActionResponse response)  {
 		
 		MoveLine moveLine = request.getContext().asType(MoveLine.class);
-		moveLine = moveLineService.find(moveLine.getId());
+		moveLine = moveLineRepo.find(moveLine.getId());
 		
 		IrrecoverableService is = injector.getInstance(IrrecoverableService.class);
 		

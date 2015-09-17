@@ -31,17 +31,22 @@ import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.AddressExport;
 import com.axelor.apps.base.db.General;
 import com.axelor.apps.base.db.IAdministration;
+import com.axelor.apps.base.db.IPartner;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.PartnerAddress;
 import com.axelor.apps.base.db.PickListEntry;
+import com.axelor.apps.base.db.repo.PartnerAddressRepository;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.service.AddressService;
 import com.axelor.apps.base.service.MapService;
+import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.axelor.rpc.Context;
 import com.google.inject.Inject;
 import com.qas.web_2005_02.AddressLineType;
 import com.qas.web_2005_02.PicklistEntryType;
@@ -56,6 +61,9 @@ public class AddressController {
 
 	@Inject
 	protected GeneralService generalService;
+	
+	@Inject
+	private PartnerService partnerService;
 
 
 	private static final Logger LOG = LoggerFactory.getLogger(AddressController.class);
@@ -217,8 +225,7 @@ public class AddressController {
 			response.setFlash(I18n.get(IExceptionMessage.ADDRESS_6));
 			return;
 		}
-
-		Address departureAddress = currPartner.getDeliveryAddress();
+		Address departureAddress = partnerService.getDeliveryAddress(currPartner);
 		if (departureAddress == null) {
 			response.setFlash(I18n.get(IExceptionMessage.ADDRESS_7));
 			return;
@@ -259,4 +266,45 @@ public class AddressController {
 		addressService.checkLatLang(address, true);
 		response.setReload(true);
 	}
+
+
+	public void createPartnerAddress(ActionRequest request, ActionResponse response){
+
+		Context context = request.getContext();
+		LOG.debug("Context fields: {}",context.keySet());
+		Address address = context.asType(Address.class);
+
+		Context parentContext = context.getParentContext();
+		LOG.debug("Parent Context fields: {}",parentContext.keySet());
+		if(parentContext.isEmpty()){
+			return;
+		}
+
+		String parentModel = (String) parentContext.get("_model");
+		LOG.debug("Partner modelPartnerFieldMap: {}",IPartner.modelPartnerFieldMap);
+		LOG.debug("Parent model: {}",parentModel);
+		String parnterField = IPartner.modelPartnerFieldMap.get(parentModel);
+		Partner partner = (Partner) parentContext.get(parnterField);
+		if(partner == null || partner.getId() == null){
+			return;
+		}
+
+		PartnerAddress partnerAddress = Beans.get(PartnerAddressRepository.class).all().filter("self.partner.id = ? AND self.address.id = ?", partner.getId(), address.getId()).fetchOne();
+		
+		LOG.debug("Partner address: {}",partnerAddress);
+		if(partnerAddress ==  null){
+			partner = partnerService.find(partner.getId());
+			address = addressService.find(address.getId());
+			Boolean invoicing = (Boolean)context.get("isInvoicingAddr");
+			Boolean delivery = (Boolean)context.get("isDeliveryAddr");
+			Boolean isDefault = (Boolean)context.get("isDefault");
+			LOG.debug("Address isDelivery : {} , isInvoicing: {}",delivery,invoicing);
+
+			partnerService.addPartnerAddress(partner, address, isDefault, invoicing, delivery);
+			partnerService.savePartner(partner);
+		}
+				
+		
+	}
+
 }

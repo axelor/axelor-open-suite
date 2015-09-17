@@ -23,10 +23,6 @@
 	          <field name="capacityPerCycle" colSpan="3"/>
 	          <field name="maxCapacityPerCycle" colSpan="3"/>
 	          <field name="durationPerCycle" colSpan="3" widget="duration" x-big="true" x-seconds="true"/>
-			  <label title="" colSpan="3"/>
-				<field name="startingDuration" colSpan="3" widget="duration" x-big="true" x-seconds="true"/>
-				<field name="setupDuration" colSpan="3" widget="duration" x-big="true" x-seconds="true"/>
-				<field name="endingDuration" colSpan="3" widget="duration" x-big="true" x-seconds="true"/>
 	        </panel>
 	        <panel title="Costing settings" colSpan="12">
 	          <field name="product" form-view="product-form" grid-view="product-grid"/>
@@ -68,11 +64,7 @@
 	        </panel>
 	    </panel>
     </form>
-    
-    <action-record name="action-work-center-record-default" model="com.axelor.apps.production.db.WorkCenter">
-    	<field name="product" expr="eval: "/>
-    
-    </action-record>
+
     
 </object-views>
 

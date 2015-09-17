@@ -18,7 +18,8 @@
 package com.axelor.apps.stock.module;
 
 import com.axelor.app.AxelorModule;
-
+import com.axelor.apps.base.db.IPartner;
+import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.repo.InventoryManagementRepository;
 import com.axelor.apps.stock.db.repo.InventoryRepository;
 import com.axelor.apps.stock.db.repo.StockMoveManagementRepository;
@@ -39,5 +40,6 @@ public class StockModule extends AxelorModule {
         bind(InventoryRepository.class).to(InventoryManagementRepository.class);
         bind(StockMoveRepository.class).to(StockMoveManagementRepository.class);
         bind(StockMoveService.class).to(StockMoveServiceImpl.class);
+        IPartner.modelPartnerFieldMap.put(StockMove.class.getName(), "partner");
     }
 }

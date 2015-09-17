@@ -127,7 +127,7 @@
 		title="Manufacturing"  action="manufacturing.dashboard.view" />	
 
 	<action-view name="manufacturing.dashboard.view" title="Manufacturing Dashboard">
-		<view type="dashboard" name="manufacturing.dashboard" />
+		<view type="dashboard" name="manufacturing.dashboard.sample" />
 	    <context name="_today" expr="eval: __date__.toDate()"/>
 	</action-view>
 	

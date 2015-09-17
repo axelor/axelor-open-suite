@@ -18,10 +18,9 @@
 package com.axelor.apps.account.service.invoice.workflow;
 
 import com.axelor.apps.account.db.Invoice;
-import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.exception.AxelorException;
 
-public abstract class WorkflowInvoice extends InvoiceRepository {
+public abstract class WorkflowInvoice {
 
 	protected Invoice invoice;
 

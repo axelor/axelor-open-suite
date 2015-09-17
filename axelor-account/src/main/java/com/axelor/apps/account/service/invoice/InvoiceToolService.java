@@ -35,7 +35,7 @@ import com.axelor.i18n.I18n;
  * facturations.
  * 
  */
-public class InvoiceToolService extends InvoiceRepository  {
+public class InvoiceToolService {
 
 	private static final Logger LOG = LoggerFactory.getLogger(InvoiceToolService.class);
 	

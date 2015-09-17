@@ -59,7 +59,6 @@ xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/
     <!-- ACTION RECORD -->
     <action-record name="action-sequence-default" model="com.axelor.apps.base.db.Sequence">
     	<field name="padding" expr="3"/>
-    	<field name="nextNum" expr="1"/>
     	<field name="toBeAdded" expr="1"/>
 		<field name="resetDate" expr="eval: __config__.generalService.getTodayDate()"/>
     	<field name="company"  expr="eval:__user__.activeCompany" if="__user__.activeCompany != null"/>

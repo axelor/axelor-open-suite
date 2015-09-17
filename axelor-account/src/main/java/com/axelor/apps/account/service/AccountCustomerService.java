@@ -33,6 +33,7 @@ import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.AccountingSituation;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.account.db.repo.AccountingSituationRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
@@ -56,10 +57,13 @@ public class AccountCustomerService {
 	private LocalDate today;
 
 	private AccountingSituationService  accountingSituationService;
+	
+	@Inject
+	private AccountingSituationRepository accSituationRepo;
 
 	@Inject
 	protected GeneralService generalService;
-
+	
 	@Inject
 	public AccountCustomerService(AccountingSituationService  accountingSituationService) {
 
@@ -275,7 +279,7 @@ public class AccountCustomerService {
 		for(Partner partner : partnerList)  {
 			AccountingSituation accountingSituation = accountingSituationService.getAccountingSituation(partner, company);
 			accountingSituation.setCustAccountMustBeUpdateOk(true);
-			accountingSituationService.save(accountingSituation);
+			accSituationRepo.save(accountingSituation);
 		}
 	}
 
@@ -297,7 +301,7 @@ public class AccountCustomerService {
 		accountingSituation.setBalanceDueCustAccount(this.getBalanceDue(partner, company));
 		accountingSituation.setBalanceDueReminderCustAccount(this.getBalanceDueReminder(partner, company));
 
-		accountingSituationService.save(accountingSituation);
+		accSituationRepo.save(accountingSituation);
 
 		LOG.debug("End updateCustomerAccount service");
 	}
@@ -321,7 +325,8 @@ public class AccountCustomerService {
 			accountingSituation.setBalanceDueReminderCustAccount(this.getBalanceDueReminder(partner, company));
 		}
 		accountingSituation.setCustAccountMustBeUpdateOk(false);
-		accountingSituationService.save(accountingSituation);
+		accSituationRepo.save(accountingSituation);
+		
 		return accountingSituation;
 	}
 

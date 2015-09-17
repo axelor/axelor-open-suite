@@ -1,9 +1,10 @@
 package com.axelor.apps.production.module;
 
 import com.axelor.app.AxelorModule;
-
 import com.axelor.apps.production.db.repo.ManufOrderManagementRepository;
 import com.axelor.apps.production.db.repo.ManufOrderRepository;
+import com.axelor.apps.production.db.repo.OperationOrderManagementRepository;
+import com.axelor.apps.production.db.repo.OperationOrderRepository;
 import com.axelor.apps.production.service.BillOfMaterialService;
 import com.axelor.apps.production.service.BillOfMaterialServiceImpl;
 import com.axelor.apps.production.service.ManufOrderService;
@@ -22,6 +23,7 @@ public class ProductionModule extends AxelorModule {
 	@Override
 	protected void configure() {
 		bind(ManufOrderRepository.class).to(ManufOrderManagementRepository.class);
+		bind(OperationOrderRepository.class).to(OperationOrderManagementRepository.class);
 		bind(ProductionOrderService.class).to(ProductionOrderServiceImpl.class);
 		bind(BillOfMaterialService.class).to(BillOfMaterialServiceImpl.class);
 		bind(ManufOrderService.class).to(ManufOrderServiceImpl.class);

@@ -32,6 +32,7 @@ import com.axelor.apps.account.db.Reminder;
 import com.axelor.apps.account.db.ReminderConfigLine;
 import com.axelor.apps.account.db.ReminderMethod;
 import com.axelor.apps.account.db.ReminderMethodLine;
+import com.axelor.apps.account.db.repo.ReminderRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
@@ -51,7 +52,7 @@ public class ReminderSessionService {
 	private LocalDate today;
 
 	@Inject
-	private ReminderService reminderService;
+	private ReminderRepository reminderRepo;
 
 	@Inject
 	public ReminderSessionService() {
@@ -197,7 +198,7 @@ public class ReminderSessionService {
 
 		LOG.debug("End ReminderInitialisation service");
 
-		reminderService.save(reminder);
+		reminderRepo.save(reminder);
 	}
 
 

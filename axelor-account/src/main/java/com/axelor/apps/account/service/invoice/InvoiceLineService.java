@@ -42,7 +42,6 @@ public class InvoiceLineService {
 
 	private static final Logger LOG = LoggerFactory.getLogger(InvoiceLineService.class);
 
-
 	@Inject
 	private AccountManagementService accountManagementService;
 

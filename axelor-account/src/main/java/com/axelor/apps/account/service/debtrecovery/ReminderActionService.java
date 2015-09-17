@@ -29,9 +29,10 @@ import com.axelor.apps.account.db.AccountingSituation;
 import com.axelor.apps.account.db.Reminder;
 import com.axelor.apps.account.db.ReminderHistory;
 import com.axelor.apps.account.db.ReminderMethodLine;
+import com.axelor.apps.account.db.repo.AccountingSituationRepository;
 import com.axelor.apps.account.db.repo.ReminderHistoryRepository;
+import com.axelor.apps.account.db.repo.ReminderRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
-import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.administration.GeneralService;
@@ -58,13 +59,10 @@ public class ReminderActionService {
 	private LocalDate today;
 
 	@Inject
-	private ReminderService reminderService;
+	private ReminderRepository reminderRepo;
 
 	@Inject
 	private ReminderHistoryRepository reminderHistoryRepository;
-
-	@Inject
-	private AccountingSituationService accountingSituationService;
 
 	@Inject
 	private TemplateMessageService templateMessageService;
@@ -162,9 +160,10 @@ public class ReminderActionService {
 
 
 	public List<ReminderHistory> getReminderHistoryList(Partner partner, Company company)  {
-
-
-		AccountingSituation accountingSituation = accountingSituationService.all().filter("self.partner = ?1 and self.company = ?2", partner, company).fetchOne();
+		
+		AccountingSituationRepository accSituationRepo = Beans.get(AccountingSituationRepository.class);
+		
+		AccountingSituation accountingSituation = accSituationRepo.all().filter("self.partner = ?1 and self.company = ?2", partner, company).fetchOne();
 		if(accountingSituation != null && accountingSituation.getReminder() != null)  {
 			return accountingSituation.getReminder().getReminderHistoryList();
 		}
@@ -238,7 +237,7 @@ public class ReminderActionService {
 
 		reminder.setWaitReminderMethodLine(reminderMethodLine);
 
-		reminderService.save(reminder);
+		reminderRepo.save(reminder);
 
 	}
 

@@ -14,8 +14,11 @@
     <string name="name" title="Label"/>
     <integer name="priority" title="Priority"/>
     <string name="description" title="Description" large="true"/>
+    <decimal name="capacityPerCycle" title="Capacity / cycle"/>
+    <decimal name="maxCapacityPerCycle" title="Max. capacity / cycle"/>
+    <long name="durationPerCycle" title="Duration / cycle (hh:mm)"/>
     
     <one-to-many name="toConsumeProdProductList" ref="com.axelor.apps.production.db.ProdProduct" mappedBy="toConsumeProdProcessLine" title="Products to consume"/>
-    
+    <one-to-many name="objectDescriptionList" ref="com.axelor.apps.production.db.ObjectDescription" mappedBy="prodProcessLine" title="Descriptions"/>
   </entity>
 </domain-models>

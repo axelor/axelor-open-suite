@@ -64,9 +64,7 @@
 	<menuitem name="purchase-maps-partner-suppliers" parent="sc-root-purchase-report" 
 		title="Suppliers Map" action="action-show-suppliers-on-map-page" order="10"/>		
 		
-	<action-view name="action-show-suppliers-on-map-page" title="Suppliers">  		
- 		<view type="html" name="map/gmap-objs.html?object=supplier" /> 
-	</action-view>
+	
 	
 	<menuitem name="sc-root-purchase-conf" parent="sc-root-purchase"
 		title="Configuration"/>

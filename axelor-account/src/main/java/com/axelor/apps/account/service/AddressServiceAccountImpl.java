@@ -20,7 +20,6 @@ package com.axelor.apps.account.service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.base.service.AddressServiceImpl;
 import com.google.inject.Inject;

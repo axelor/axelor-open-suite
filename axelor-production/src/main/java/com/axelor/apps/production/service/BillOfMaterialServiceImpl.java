@@ -171,6 +171,11 @@ public class BillOfMaterialServiceImpl extends BillOfMaterialRepository implemen
 			costPrice = (workCenter.getCostAmount().multiply(new BigDecimal(workCenter.getDurationPerCycle())).divide(new BigDecimal(3600), BigDecimal.ROUND_HALF_EVEN));
 
 		}
+		else if(costType == IWorkCenter.COST_PER_PIECE)  {
+
+			costPrice = (workCenter.getCostAmount().multiply(workCenter.getCapacityPerCycle()));
+
+		}
 
 		logger.debug("Machine cost : {} (Resource : {})",costPrice, workCenter.getName());
 

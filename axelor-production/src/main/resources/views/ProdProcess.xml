@@ -16,13 +16,13 @@
 	    	<field name="name"/>
 	    	<field name="code"/>
 	        <field name="location" required="true" grid-view="location-grid" form-view="location-form"/>
-	        <field name="isConsProOnOperation" showIf="$popup()" onChange="action-prod-process-validate-is-cons-pro"/>
+	        <field name="isConsProOnOperation" onChange="action-prod-process-validate-is-cons-pro"/>
         </panel>
         <panel-related field="prodProcessLineList" colSpan="12" grid-view="prod-process-line-grid" form-view="prod-process-line-form"/>        
     </form>
     
     <action-validate name="action-prod-process-validate-is-cons-pro">
-    	<error message="You can't manage the consumed products on operations because this production process is related to several bills of material"
+    	<error message="You can't manage the consumed products on phases because this production process is related to several bills of material"
     		if="isConsProOnOperation == true &amp;&amp; __repo__.of(BillOfMaterial).all().filter('self.prodProcess.id = ?1', __this__.id).fetch().size &gt; 1" action="action-prod-process-record-false"/>
     </action-validate>
     

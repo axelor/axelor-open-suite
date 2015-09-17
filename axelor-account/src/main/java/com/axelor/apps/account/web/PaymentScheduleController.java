@@ -18,6 +18,7 @@
 package com.axelor.apps.account.web;
 
 import com.axelor.apps.account.db.PaymentSchedule;
+import com.axelor.apps.account.db.repo.PaymentScheduleRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.IrrecoverableService;
 import com.axelor.apps.account.service.PaymentScheduleService;
@@ -28,15 +29,21 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.google.inject.Inject;
 
 public class PaymentScheduleController {
+	
+	@Inject
+	PaymentScheduleService paymentScheduleService;
+	
+	@Inject
+	PaymentScheduleRepository paymentScheduleRepo;
 	
 	// Validation button
 	public void validate(ActionRequest request, ActionResponse response) {
 
 		PaymentSchedule paymentSchedule = request.getContext().asType(PaymentSchedule.class);
-		PaymentScheduleService paymentScheduleService = Beans.get(PaymentScheduleService.class);
-		paymentSchedule = paymentScheduleService.find(paymentSchedule.getId());
+		paymentSchedule = paymentScheduleRepo.find(paymentSchedule.getId());
 		
 		try {
 			paymentScheduleService.validatePaymentSchedule(paymentSchedule);
@@ -49,8 +56,7 @@ public class PaymentScheduleController {
 	public void cancel(ActionRequest request, ActionResponse response) {
 
 		PaymentSchedule paymentSchedule = request.getContext().asType(PaymentSchedule.class);
-		PaymentScheduleService paymentScheduleService = Beans.get(PaymentScheduleService.class);
-		paymentSchedule = paymentScheduleService.find(paymentSchedule.getId());
+		paymentSchedule = paymentScheduleRepo.find(paymentSchedule.getId());
 		
 		try {
 			paymentScheduleService.toCancelPaymentSchedule(paymentSchedule);
@@ -82,8 +88,7 @@ public class PaymentScheduleController {
 	public void createPaymentScheduleLines(ActionRequest request, ActionResponse response) {
 
 		PaymentSchedule paymentSchedule = request.getContext().asType(PaymentSchedule.class);
-		PaymentScheduleService paymentScheduleService = Beans.get(PaymentScheduleService.class);
-		paymentSchedule = paymentScheduleService.find(paymentSchedule.getId());
+		paymentSchedule = paymentScheduleRepo.find(paymentSchedule.getId());
 		
 		paymentScheduleService.createPaymentScheduleLines(paymentSchedule);
 		response.setReload(true);
@@ -92,7 +97,7 @@ public class PaymentScheduleController {
 	public void passInIrrecoverable(ActionRequest request, ActionResponse response)  {
 
 		PaymentSchedule paymentSchedule = request.getContext().asType(PaymentSchedule.class);		
-		paymentSchedule = Beans.get(PaymentScheduleService.class).find(paymentSchedule.getId());
+		paymentSchedule = paymentScheduleRepo.find(paymentSchedule.getId());
 		
 		try  {
 			Beans.get(IrrecoverableService.class).passInIrrecoverable(paymentSchedule);
@@ -104,7 +109,7 @@ public class PaymentScheduleController {
 	public void notPassInIrrecoverable(ActionRequest request, ActionResponse response)  {
 
 		PaymentSchedule paymentSchedule = request.getContext().asType(PaymentSchedule.class);		
-		paymentSchedule = Beans.get(PaymentScheduleService.class).find(paymentSchedule.getId());
+		paymentSchedule = paymentScheduleRepo.find(paymentSchedule.getId());
 		
 		try  {
 			Beans.get(IrrecoverableService.class).notPassInIrrecoverable(paymentSchedule);

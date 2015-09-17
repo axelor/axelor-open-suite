@@ -15,9 +15,9 @@
 	    <field name="serialNumber"/>
 		<field name="brand"/>
 	    <field name="location" required="true" grid-view="location-grid" form-view="location-form"/>
-	    <field name="planning"/>
-	    <field name="startingDuration" colSpan="3"/>
-	    <field name="setupDuration" colSpan="3"/>
+	    <field name="startingDuration" colSpan="4" widget="duration" x-big="true" x-seconds="true"/>
+		<field name="setupDuration" colSpan="4" widget="duration" x-big="true" x-seconds="true"/>
+		<field name="endingDuration" colSpan="4" widget="duration" x-big="true" x-seconds="true"/>
 	    <field name="description" colSpan="12"/>
 	  </panel>
 	</form>

@@ -8,6 +8,7 @@ import java.util.List;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
+import com.axelor.apps.account.service.AnalyticMoveLineService;
 import com.axelor.apps.account.service.invoice.generator.InvoiceGenerator;
 import com.axelor.apps.account.service.invoice.generator.InvoiceLineGenerator;
 import com.axelor.apps.account.util.InvoiceLineComparator;
@@ -15,7 +16,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.IPriceListLine;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
-import com.axelor.apps.base.service.administration.GeneralService;
+import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.business.project.exception.IExceptionMessage;
 import com.axelor.apps.businessproject.db.ElementsToInvoice;
 import com.axelor.apps.businessproject.db.InvoicingProject;
@@ -62,8 +63,12 @@ public class InvoicingProjectService extends InvoicingProjectRepository{
 	@Inject
 	protected ElementsToInvoiceService elementsToInvoiceService;
 
+	protected AnalyticMoveLineService analyticMoveLineService;
+
 	@Inject
-	protected GeneralService generalService;
+	protected PartnerService partnerService;
+
+	protected int MAX_LEVEL_OF_PROJECT = 10;
 
 	protected int sequence = 10;
 
@@ -77,7 +82,7 @@ public class InvoicingProjectService extends InvoicingProjectRepository{
 		}
 		projectTask.getAssignedTo();
 		InvoiceGenerator invoiceGenerator = new InvoiceGenerator(InvoiceRepository.OPERATION_TYPE_CLIENT_SALE, company, customer.getPaymentCondition(),
-				customer.getPaymentMode(), customer.getMainInvoicingAddress(), customer, null,
+				customer.getPaymentMode(), partnerService.getInvoicingAddress(customer), customer, null,
 				customer.getCurrency(), customer.getSalePriceList(), null, null){
 
 			@Override

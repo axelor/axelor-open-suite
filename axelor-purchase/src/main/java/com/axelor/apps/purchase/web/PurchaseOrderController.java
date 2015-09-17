@@ -165,6 +165,13 @@ public class PurchaseOrderController {
 		response.setReload(true);
 
 	}
+	
+	public void updateCostPrice(ActionRequest request, ActionResponse response) throws Exception {
+
+		PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
+		purchaseOrderService.updateCostPrice(purchaseOrderService.find(purchaseOrder.getId()));
+
+	}
 
 	//Generate single purchase order from several
 	@SuppressWarnings("rawtypes")

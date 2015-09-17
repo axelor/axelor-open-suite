@@ -506,11 +506,13 @@
     </action-record>
     
     <action-record name="action-meeting-set-location-partner" model="com.axelor.apps.crm.db.Event">
-		<field name="location" expr="eval:clientPartner?.mainInvoicingAddress?.fullName"/>
+		<field name="location" expr="call:com.axelor.apps.crm.service.EventService.getInvoicingAddressFullName(clientPartner)"/>
 	</action-record>
+
 	<action-record name="action-meeting-set-location-contact" model="com.axelor.apps.crm.db.Event">
-		<field name="location" expr="eval:contactPartner?.mainInvoicingAddress?.fullName"/>
+		<field name="location" expr="eval:contactPartner?.contactAddress?.fullName"/>
 	</action-record>
+
 	<action-record name="action-meeting-set-location-lead" model="com.axelor.apps.crm.db.Event">
 		<field name="location" expr="eval:(lead?.primaryAddress != null ? lead.primaryAddress+', ' : '')+(lead?.primaryPostalCode != null ? lead.primaryPostalCode+' ' : '')+(lead?.primaryCity != null ? lead.primaryCity: '')"/>
 	</action-record>

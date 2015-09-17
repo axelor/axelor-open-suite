@@ -23,9 +23,11 @@ import org.joda.time.LocalDateTime;
 
 import com.axelor.app.production.db.IManufOrder;
 import com.axelor.app.production.db.IOperationOrder;
+import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.db.repo.ManufOrderRepository;
+import com.axelor.auth.AuthUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
@@ -39,7 +41,8 @@ public class ManufOrderWorkflowService extends ManufOrderRepository{
 	@Inject
 	private ManufOrderStockMoveService manufOrderStockMoveService;
 	
-	
+	@Inject
+	protected GeneralService generalService;
 
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void start(ManufOrder manufOrder)  {
@@ -76,6 +79,10 @@ public class ManufOrderWorkflowService extends ManufOrderRepository{
 					
 					operationOrder.setStatusSelect(IOperationOrder.STATUS_STANDBY);
 					
+					operationOrder.setStoppedBy(AuthUtils.getUser());
+					
+					operationOrder.setStoppingDateTime(new LocalDateTime(generalService.getTodayDateTime()));
+					
 				}
 				
 			}
@@ -99,6 +106,10 @@ public class ManufOrderWorkflowService extends ManufOrderRepository{
 				if(operationOrder.getStatusSelect() == IOperationOrder.STATUS_STANDBY)  {
 					
 					operationOrder.setStatusSelect(IOperationOrder.STATUS_IN_PROGRESS);
+					
+					operationOrder.setStartedBy(AuthUtils.getUser());
+					
+					operationOrder.setStartingDateTime(new LocalDateTime(generalService.getTodayDateTime()));
 					
 				}
 				

@@ -72,7 +72,7 @@ public class StockMoveController {
 		try {
 			StockMove stockMove = stockMoveService.find(stockMoveFromRequest.getId());
 			String newSeq = stockMoveService.realize(stockMove);
-
+			
 			response.setReload(true);
 
 			if(newSeq != null)  {

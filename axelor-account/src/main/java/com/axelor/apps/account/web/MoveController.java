@@ -18,9 +18,9 @@
 package com.axelor.apps.account.web;
 
 import java.util.List;
-import java.util.Map;
 
 import com.axelor.apps.account.db.Move;
+import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.MoveService;
 import com.axelor.apps.base.service.PeriodService;
@@ -30,15 +30,21 @@ import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.google.common.collect.Maps;
+import com.google.inject.Inject;
 
 public class MoveController {
+	
+	@Inject
+	MoveService moveService;
+	
+	@Inject
+	MoveRepository moveRepo;
 	
 	public void validate(ActionRequest request, ActionResponse response) {
 
 		Move move = request.getContext().asType(Move.class);
 		MoveService  moveService = Beans.get(MoveService.class);
-		move = moveService.find(move.getId());
+		move = moveRepo.find(move.getId());
 		
 		try {
 			moveService.validate(move);
@@ -69,7 +75,7 @@ public class MoveController {
 		MoveService  moveService = Beans.get(MoveService.class);
 		
 		try {
-			Move newMove = moveService.generateReverse(moveService.find(move.getId()));
+			Move newMove = moveService.generateReverse(moveRepo.find(move.getId()));
 			if(newMove != null){
 				response.setView(ActionView
 							.define(I18n.get("Account move"))
@@ -87,7 +93,7 @@ public class MoveController {
 		MoveService  moveService = Beans.get(MoveService.class);
 		List<Long> moveIds = (List<Long>) request.getContext().get("_ids");
 		if(!moveIds.isEmpty()){
-			List<? extends Move> moveList = moveService.all().filter("self.id in ?1 AND self.statusSelect NOT IN (?2, ?3)", moveIds, MoveService.STATUS_VALIDATED, MoveService.STATUS_CANCELED).fetch();
+			List<? extends Move> moveList = moveRepo.all().filter("self.id in ?1 AND self.statusSelect NOT IN (?2, ?3)", moveIds, MoveRepository.STATUS_VALIDATED, MoveRepository.STATUS_CANCELED).fetch();
 			if(!moveList.isEmpty()){
 				boolean error = moveService.validateMultiple(moveList);
 				if(error)

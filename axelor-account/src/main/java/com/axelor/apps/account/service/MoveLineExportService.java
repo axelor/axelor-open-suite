@@ -37,6 +37,10 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.MoveLineReport;
 import com.axelor.apps.account.db.repo.AccountRepository;
+import com.axelor.apps.account.db.repo.JournalRepository;
+import com.axelor.apps.account.db.repo.MoveLineReportRepository;
+import com.axelor.apps.account.db.repo.MoveLineRepository;
+import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.db.Company;
@@ -68,13 +72,16 @@ public class MoveLineExportService {
 	private AccountConfigService accountConfigService;
 
 	@Inject
-	private MoveService moveService;
+	private MoveRepository moveRepo;
 
 	@Inject
-	private MoveLineService moveLineService;
+	private MoveLineRepository moveLineRepo;
+	
+	@Inject
+	private MoveLineReportRepository moveLineReportRepo;
 
 	@Inject
-	private JournalService journalService;
+	private JournalRepository journalRepo;
 
 	@Inject
 	private AccountRepository accountRepo;
@@ -97,7 +104,7 @@ public class MoveLineExportService {
 
 		for(Move move : moveList)  {
 
-			this.updateMove(moveService.find(move.getId()), moveLineReportService.find(moveLineReport.getId()), localDate, exportToAgressoNumber);
+			this.updateMove(moveRepo.find(move.getId()), moveLineReportRepo.find(moveLineReport.getId()), localDate, exportToAgressoNumber);
 
 			if (i % 10 == 0) { JPA.clear(); }
 			if (i++ % 100 == 0) { LOG.debug("Process : {} / {}" , i, moveListSize); }
@@ -113,7 +120,7 @@ public class MoveLineExportService {
 		move.setExportDate(localDate);
 		move.setAccountingOk(true);
 		move.setMoveLineReport(moveLineReport);
-		moveService.save(move);
+		moveRepo.save(move);
 
 		return move;
 	}
@@ -282,7 +289,7 @@ public class MoveLineExportService {
 			dateQueryStr += " AND self.accountingOk = false ";
 		}
 		dateQueryStr += " AND self.ignoreInAccountingOk = false AND self.journal.notExportOk = false ";
-		dateQueryStr += String.format(" AND self.statusSelect = %s ", MoveService.STATUS_VALIDATED);
+		dateQueryStr += String.format(" AND self.statusSelect = %s ", MoveRepository.STATUS_VALIDATED);
 		Query dateQuery = JPA.em().createQuery("SELECT self.date from Move self" + dateQueryStr + "group by self.date order by self.date");
 
 		List<LocalDate> allDates = new ArrayList<LocalDate>();
@@ -321,13 +328,13 @@ public class MoveLineExportService {
 		else  {
 			moveQueryStr += " AND self.accountingOk = false ";
 		}
-		moveQueryStr += String.format(" AND self.statusSelect = %s ", MoveService.STATUS_VALIDATED);
+		moveQueryStr += String.format(" AND self.statusSelect = %s ", MoveRepository.STATUS_VALIDATED);
 
 		LocalDate interfaceDate = moveLineReport.getDate();
 
 		for(LocalDate dt : allDates) {
 
-			List<Journal> journalList = journalService.all().filter("self.type = ?1 AND self.notExportOk = false", journalType).fetch();
+			List<Journal> journalList = journalRepo.all().filter("self.type = ?1 AND self.notExportOk = false", journalType).fetch();
 
 			if(moveLineReport.getJournal() != null)  {
 				journalList = new ArrayList<Journal>();
@@ -336,7 +343,7 @@ public class MoveLineExportService {
 
 			for(Journal journal : journalList)  {
 
-				List<? extends Move> moveList = moveService.all().filter("self.date = ?1 AND self.ignoreInAccountingOk = false AND self.journal.notExportOk = false AND self.journal = ?2" + moveQueryStr, dt, journal).fetch();
+				List<? extends Move> moveList = moveRepo.all().filter("self.date = ?1 AND self.ignoreInAccountingOk = false AND self.journal.notExportOk = false AND self.journal = ?2" + moveQueryStr, dt, journal).fetch();
 
 				String journalCode = journal.getExportCode();
 
@@ -430,7 +437,7 @@ public class MoveLineExportService {
 			dateQueryStr += " AND self.accountingOk = false ";
 		}
 		dateQueryStr += " AND self.ignoreInAccountingOk = false AND self.journal.notExportOk = false ";
-		dateQueryStr += String.format(" AND self.statusSelect = %s ", MoveService.STATUS_VALIDATED);
+		dateQueryStr += String.format(" AND self.statusSelect = %s ", MoveRepository.STATUS_VALIDATED);
 		Query dateQuery = JPA.em().createQuery("SELECT self.date from Move self" + dateQueryStr + "group by self.date order by self.date");
 
 		List<LocalDate> allDates = new ArrayList<LocalDate>();
@@ -469,13 +476,13 @@ public class MoveLineExportService {
 		else  {
 			moveQueryStr += " AND self.accountingOk = false ";
 		}
-		moveQueryStr += String.format(" AND self.statusSelect = %s ", MoveService.STATUS_VALIDATED);
+		moveQueryStr += String.format(" AND self.statusSelect = %s ", MoveRepository.STATUS_VALIDATED);
 
 		LocalDate interfaceDate = moveLineReport.getDate();
 
 		for(LocalDate dt : allDates) {
 
-			List<Journal> journalList = journalService.all().filter("self.type = ?1 AND self.notExportOk = false", journalType).fetch();
+			List<Journal> journalList = journalRepo.all().filter("self.type = ?1 AND self.notExportOk = false", journalType).fetch();
 
 			if(moveLineReport.getJournal()!=null)  {
 				journalList = new ArrayList<Journal>();
@@ -484,7 +491,7 @@ public class MoveLineExportService {
 
 			for(Journal journal : journalList)  {
 
-				List<Move> moveList = moveService.all().filter("self.date = ?1 AND self.ignoreInAccountingOk = false AND self.journal.notExportOk = false AND self.journal = ?2" + moveQueryStr, dt, journal).fetch();
+				List<Move> moveList = moveRepo.all().filter("self.date = ?1 AND self.ignoreInAccountingOk = false AND self.journal.notExportOk = false AND self.journal = ?2" + moveQueryStr, dt, journal).fetch();
 
 				String journalCode = journal.getExportCode();
 
@@ -577,7 +584,7 @@ public class MoveLineExportService {
 			dateQueryStr += " AND self.accountingOk = false ";
 		}
 		dateQueryStr += " AND self.ignoreInAccountingOk = false AND self.journal.notExportOk = false ";
-		dateQueryStr += String.format(" AND self.statusSelect = %s ", MoveService.STATUS_VALIDATED);
+		dateQueryStr += String.format(" AND self.statusSelect = %s ", MoveRepository.STATUS_VALIDATED);
 		Query dateQuery = JPA.em().createQuery("SELECT self.date from Move self" + dateQueryStr + "group by self.date order by self.date");
 
 		List<LocalDate> allDates = new ArrayList<LocalDate>();
@@ -616,13 +623,13 @@ public class MoveLineExportService {
 		else  {
 			moveQueryStr += " AND self.accountingOk = false ";
 		}
-		moveQueryStr += String.format(" AND self.statusSelect = %s ", MoveService.STATUS_VALIDATED);
+		moveQueryStr += String.format(" AND self.statusSelect = %s ", MoveRepository.STATUS_VALIDATED);
 
 		LocalDate interfaceDate = moveLineReport.getDate();
 
 		for(LocalDate dt : allDates) {
 
-			List<Journal> journalList = journalService.all().filter("self.type = ?1 AND self.notExportOk = false", journalType).fetch();
+			List<Journal> journalList = journalRepo.all().filter("self.type = ?1 AND self.notExportOk = false", journalType).fetch();
 
 			if(moveLineReport.getJournal()!=null)  {
 				journalList = new ArrayList<Journal>();
@@ -631,13 +638,13 @@ public class MoveLineExportService {
 
 			for(Journal journal : journalList)  {
 
-				List<Move> moveList = moveService.all().filter("self.date = ?1 AND self.ignoreInAccountingOk = false AND self.journal.notExportOk = false AND self.journal = ?2" + moveQueryStr, dt, journal).fetch();
+				List<Move> moveList = moveRepo.all().filter("self.date = ?1 AND self.ignoreInAccountingOk = false AND self.journal.notExportOk = false AND self.journal = ?2" + moveQueryStr, dt, journal).fetch();
 
 				String journalCode = journal.getExportCode();
 
 				if (moveList.size() > 0) {
 
-					long moveLineListSize = moveLineService.all().filter("self.move in ?1 AND (self.debit > 0 OR self.credit > 0) " + moveLineQueryStr, moveList).count();
+					long moveLineListSize = moveLineRepo.all().filter("self.move in ?1 AND (self.debit > 0 OR self.credit > 0) " + moveLineQueryStr, moveList).count();
 
 					if(moveLineListSize > 0) {
 
@@ -722,7 +729,7 @@ public class MoveLineExportService {
 			dateQueryStr += " AND self.accountingOk = false ";
 		}
 		dateQueryStr += " AND self.ignoreInAccountingOk = false AND self.journal.notExportOk = false ";
-		dateQueryStr += String.format(" AND self.statusSelect = %s ", MoveService.STATUS_VALIDATED);
+		dateQueryStr += String.format(" AND self.statusSelect = %s ", MoveRepository.STATUS_VALIDATED);
 		Query dateQuery = JPA.em().createQuery("SELECT self.date from Move self" + dateQueryStr + "group by self.date order by self.date");
 
 		List<LocalDate> allDates = new ArrayList<LocalDate>();
@@ -761,13 +768,13 @@ public class MoveLineExportService {
 		else  {
 			moveQueryStr += " AND self.accountingOk = false ";
 		}
-		moveQueryStr += String.format(" AND self.statusSelect = %s ", MoveService.STATUS_VALIDATED);
+		moveQueryStr += String.format(" AND self.statusSelect = %s ", MoveRepository.STATUS_VALIDATED);
 
 		LocalDate interfaceDate = moveLineReport.getDate();
 
 		for(LocalDate dt : allDates) {
 
-			List<Journal> journalList = journalService.all().filter("self.type = ?1 AND self.notExportOk = false", journalType).fetch();
+			List<Journal> journalList = journalRepo.all().filter("self.type = ?1 AND self.notExportOk = false", journalType).fetch();
 
 			if(moveLineReport.getJournal()!=null)  {
 				journalList = new ArrayList<Journal>();
@@ -776,7 +783,7 @@ public class MoveLineExportService {
 
 			for(Journal journal : journalList)  {
 
-				List<Move> moveList = moveService.all().filter("self.date = ?1 AND self.ignoreInAccountingOk = false AND self.journal.notExportOk = false AND self.journal = ?2" + moveQueryStr, dt, journal).fetch();
+				List<Move> moveList = moveRepo.all().filter("self.date = ?1 AND self.ignoreInAccountingOk = false AND self.journal.notExportOk = false AND self.journal = ?2" + moveQueryStr, dt, journal).fetch();
 
 				String journalCode = journal.getExportCode();
 
@@ -788,7 +795,7 @@ public class MoveLineExportService {
 
 					for(Move move : moveList)  {
 
-						List<MoveLine> moveLineList = moveLineService.all().filter("self.account.reconcileOk = true AND self.credit != 0.00 AND self.move in ?1" + moveLineQueryStr, moveList).fetch();
+						List<MoveLine> moveLineList = moveLineRepo.all().filter("self.account.reconcileOk = true AND self.credit != 0.00 AND self.move in ?1" + moveLineQueryStr, moveList).fetch();
 
 						if(moveLineList.size() > 0) {
 
@@ -887,7 +894,7 @@ public class MoveLineExportService {
 			moveLineQueryStr += String.format(" AND self.account.reconcileOk = false ");
 		}
 		moveLineQueryStr += String.format("AND self.move.accountingOk = true AND self.move.ignoreInAccountingOk = false AND self.move.moveLineReport = %s", moveLineReport.getId());
-		moveLineQueryStr += String.format(" AND self.move.statusSelect = %s ", MoveService.STATUS_VALIDATED);
+		moveLineQueryStr += String.format(" AND self.move.statusSelect = %s ", MoveRepository.STATUS_VALIDATED);
 
 		Query queryDate = JPA.em().createQuery("SELECT self.date from MoveLine self where self.account != null AND (self.debit > 0 OR self.credit > 0) " + moveLineQueryStr + " group by self.date ORDER BY self.date");
 
@@ -922,7 +929,7 @@ public class MoveLineExportService {
 					for (Long accountId : accountIds) {
 						if(accountId!=null) {
 							String accountCode = accountRepo.find(accountId).getCode();
-							List<MoveLine> moveLines = moveLineService.all().filter("self.account.id = ?1 AND (self.debit > 0 OR self.credit > 0) AND self.date = '"+
+							List<MoveLine> moveLines = moveLineRepo.all().filter("self.account.id = ?1 AND (self.debit > 0 OR self.credit > 0) AND self.date = '"+
 							localDate.toString() +"' AND self.move.exportNumber = '"+ exportAgressoRef +"'" + moveLineQueryStr, accountId).fetch();
 
 							LOG.debug("movelines  : {} " , moveLines);
@@ -1168,22 +1175,22 @@ public class MoveLineExportService {
 		moveLineReportService.setStatus(moveLineReport);
 
 		switch (moveLineReport.getTypeSelect()) {
-		case MoveLineReportService.EXPORT_SALES:
+		case MoveLineReportRepository.EXPORT_SALES:
 
 			this.exportMoveLineTypeSelect6(moveLineReport, false);
 			break;
 
-		case MoveLineReportService.EXPORT_REFUNDS:
+		case MoveLineReportRepository.EXPORT_REFUNDS:
 
 			this.exportMoveLineTypeSelect7(moveLineReport, false);
 			break;
 
-		case MoveLineReportService.EXPORT_TREASURY:
+		case MoveLineReportRepository.EXPORT_TREASURY:
 
 			this.exportMoveLineTypeSelect8(moveLineReport, false);
 			break;
 
-		case MoveLineReportService.EXPORT_PURCHASES:
+		case MoveLineReportRepository.EXPORT_PURCHASES:
 
 			this.exportMoveLineTypeSelect9(moveLineReport, false);
 			break;
@@ -1203,7 +1210,7 @@ public class MoveLineExportService {
 		moveLineReport.setTypeSelect(exportTypeSelect);
 		moveLineReport.setDateFrom(startDate);
 		moveLineReport.setDateTo(endDate);
-		moveLineReport.setStatusSelect(MoveLineReportService.STATUS_DRAFT);
+		moveLineReport.setStatusSelect(MoveLineReportRepository.STATUS_DRAFT);
 		moveLineReport.setDate(todayTime.toLocalDate());
 		moveLineReport.setRef(moveLineReportService.getSequence(moveLineReport));
 
@@ -1215,7 +1222,7 @@ public class MoveLineExportService {
 		moveLineReport.setTotalCredit(creditBalance);
 		moveLineReport.setBalance(debitBalance.subtract(creditBalance));
 
-		moveLineReportService.save(moveLineReport);
+		moveLineReportRepo.save(moveLineReport);
 
 		return moveLineReport;
 

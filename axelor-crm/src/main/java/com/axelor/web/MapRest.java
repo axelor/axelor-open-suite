@@ -28,13 +28,16 @@ import javax.ws.rs.core.MediaType;
 
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.PartnerAddress;
 import com.axelor.apps.base.db.repo.AddressRepository;
 import com.axelor.apps.base.service.MapService;
+import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.crm.db.Lead;
 import com.axelor.apps.crm.db.Opportunity;
 import com.axelor.apps.crm.service.LeadService;
 import com.axelor.apps.crm.service.OpportunityServiceImpl;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
@@ -150,8 +153,8 @@ public class MapRest {
 				objectNode.put("emailAddress", partner.getEmailAddress().getAddress());
 			}
 			
-			if (partner.getMainInvoicingAddress() != null) {
-				Address address = partner.getMainInvoicingAddress();
+			Address address = Beans.get(PartnerService.class).getInvoicingAddress(partner);
+			if (address != null) {
 				String addressString = mapService.makeAddressString(address, objectNode);
 				addressRepo.save(address);
 				objectNode.put("address", addressString);							

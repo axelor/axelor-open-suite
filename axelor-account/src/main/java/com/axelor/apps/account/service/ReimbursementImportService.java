@@ -30,6 +30,9 @@ import com.axelor.apps.account.db.InterbankCodeLine;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.Reimbursement;
+import com.axelor.apps.account.db.repo.MoveLineRepository;
+import com.axelor.apps.account.db.repo.MoveRepository;
+import com.axelor.apps.account.db.repo.ReimbursementRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.db.Company;
@@ -37,6 +40,7 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -48,6 +52,9 @@ public class ReimbursementImportService {
 	private MoveService ms;
 	
 	@Inject
+	private MoveRepository moveRepo;
+	
+	@Inject
 	private MoveLineService mls;
 	
 	@Inject
@@ -57,7 +64,7 @@ public class ReimbursementImportService {
 	private AccountConfigService accountConfigService;
 	
 	@Inject
-	private ReimbursementService reimbursementService;
+	private ReimbursementRepository reimbursementRepo;
 	
 	
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
@@ -99,8 +106,9 @@ public class ReimbursementImportService {
 		String refReject = reject[1];
 	//	String amountReject = reject[2];
 		InterbankCodeLine causeReject = ris.getInterbankCodeLine(reject[3], 0);
+		MoveLineRepository moveLineRepo = Beans.get(MoveLineRepository.class);
 		
-		Reimbursement reimbursement = reimbursementService.all().filter("UPPER(self.ref) = ?1 AND self.company = ?2", refReject, company).fetchOne();
+		Reimbursement reimbursement = reimbursementRepo.all().filter("UPPER(self.ref) = ?1 AND self.company = ?2", refReject, company).fetchOne();
 		if(reimbursement == null)  {
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.REIMBURSEMENT_3),
 					refReject, company.getName()), IException.INCONSISTENCY);
@@ -113,23 +121,23 @@ public class ReimbursementImportService {
 		MoveLine creditMoveLine = mls.createMoveLine(move , partner, company.getAccountConfig().getCustomerAccount(), amount, false, rejectDate, seq, refReject);
 		move.getMoveLineList().add(creditMoveLine);	
 		
-		mls.save(creditMoveLine); 
+		moveLineRepo.save(creditMoveLine); 
 
-		ms.save(move);
+		moveRepo.save(move);
 		creditMoveLine.setInterbankCodeLine(causeReject);
 		
 		reimbursement.setRejectedOk(true);
 		reimbursement.setRejectDate(rejectDate);
 		reimbursement.setRejectMoveLine(creditMoveLine);
 		reimbursement.setInterbankCodeLine(causeReject);
-		reimbursementService.save(reimbursement);
+		reimbursementRepo.save(reimbursement);
 		
 		return reimbursement;
 	}
 	
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public Move createMoveReject(Company company, LocalDate date) throws AxelorException  {
-		return ms.save(ms.createMove(company.getAccountConfig().getRejectJournal(), company, null, null, date, null));
+		return moveRepo.save(ms.createMove(company.getAccountConfig().getRejectJournal(), company, null, null, date, null));
 
 	}
 	
@@ -149,7 +157,7 @@ public class ReimbursementImportService {
 		// Création d'une ligne au débit
 		MoveLine debitMoveLine = mls.createMoveLine(move , null, move.getCompany().getAccountConfig().getReimbursementAccount(), this.getTotalAmount(move), true, rejectDate, seq, null);
 		move.getMoveLineList().add(debitMoveLine);	
-		ms.save(move);
+		moveRepo.save(move);
 		return debitMoveLine;
 	}
 	
@@ -157,12 +165,12 @@ public class ReimbursementImportService {
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void validateMove(Move move) throws AxelorException  {
 		ms.validateMove(move);
-		ms.save(move);
+		moveRepo.save(move);
 	}
 	
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void deleteMove(Move move) throws AxelorException  {
-		ms.remove(move);
+		moveRepo.remove(move);
 	}
 	
 	

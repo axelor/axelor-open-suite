@@ -65,6 +65,11 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl  {
 
 		return newStockSeq;
 	}
+	
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
+	public void computeProductWeightedAveragePrice(StockMove stockMove){
+		
+	}
 
 
 }

@@ -35,7 +35,6 @@
 						<field name="fax"/>
 					</editor>
 				</field>
-			<!-- 			<field name="mainInvoicingAddress" title="Address"/>    -->
 						<label title="Address"/>
 						<field name="primaryAddress" placeholder="Address" showTitle="false" type="string" colSpan="12"/>
 						<field name="primaryCity" placeholder="City" showTitle="false" type="string" colSpan="4"/>
@@ -68,13 +67,12 @@
 						<field name="firstName" showTitle="false" hideIf="partnerTypeSelect != 2" css="highlight" placeholder="First name" colSpan="5" onChange="action-group-base-partner-contact-name-onchange"/>
 						
 						<label title="Informations" colSpan="12"/>
-		      			<field name="isCustomer" hideIf="(isContact &amp;&amp; partnerTypeSelect == 2)"/>
-		      			<field name="isSupplier" hideIf="partnerTypeSelect == 2 || isContact"/>
+		      			<field name="isCustomer" showTitle="true" hideIf="(isContact &amp;&amp; partnerTypeSelect == 2)"/>
+		      			<field name="isSupplier" showTitle="true" hideIf="partnerTypeSelect == 2 || isContact"/>
 		      			
 		    			<label title="Partner Details" hideIf="partnerTypeSelect == 2" colSpan="12"/>
 				        <field name="partnerCategory" widget="SuggestBox" hideIf="partnerTypeSelect == 2" form-view="partner-category-form" grid-view="partner-category-grid"/>
 				        <field name="industrySectorSelect" hideIf="partnerTypeSelect == 2"/>
-				        <field name="site" hideIf="partnerTypeSelect == 2" form-view="site-form" grid-view="site-grid"/>
 				        <field name="department" hideIf="partnerTypeSelect == 2" form-view="department-form" grid-view="department-grid"/>
 				        <field name="saleTurnover" hideIf="partnerTypeSelect == 2"/>
 				        <field name="nbrEmployees" hideIf="partnerTypeSelect == 2"/>
@@ -291,7 +289,6 @@
 			<field name="emailAddress" canSelect="false" form-view="email-address-simple-form"/>
 			<field name="fax"/>
 			
-<!-- 			<field name="mainInvoicingAddress" title="Address"/>    -->
 			<panel title="Address" css="address-list">
 				<field name="primaryAddress" title="Address" widget="STRING" type="STRING" colSpan="12"/>
 				<field name="primaryCity" title="City" colSpan="4"/>
@@ -342,7 +339,6 @@
 		    <panel title="Partner Details" hideIf="partnerTypeSelect == 2" colSpan="12">
 		        <field name="partnerCategory" widget="SuggestBox"/>
 		        <field name="industrySectorSelect"/>
-		        <field name="site"/>
 		        <field name="department"/>
 		        <field name="saleTurnover"/>
 		        <field name="nbrEmployees"/>

@@ -32,6 +32,7 @@ import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.ReportedBalance;
 import com.axelor.apps.account.db.ReportedBalanceLine;
+import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.ReportedBalanceLineRepository;
 import com.axelor.apps.account.db.repo.ReportedBalanceRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
@@ -48,10 +49,11 @@ import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
-public class YearService extends YearRepository {
+public class YearService {
 
 	private static final Logger LOG = LoggerFactory.getLogger(YearService.class);
 
@@ -66,9 +68,9 @@ public class YearService extends YearRepository {
 
 	@Inject
 	private ReportedBalanceLineRepository reportedBalanceLineRepo;
-
+	
 	@Inject
-	private MoveLineService moveLineService;
+	private YearRepository yearRepo;
 	/**
 	 * Procédure permettant de cloturer un exercice comptable
 	 * @param year
@@ -77,7 +79,7 @@ public class YearService extends YearRepository {
 	 */
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void closeYear(Year year) throws AxelorException  {
-		year = find(year.getId());
+		year = yearRepo.find(year.getId());
 
 		for (Period period : year.getPeriodList())  {
 			period.setStatusSelect(PeriodService.STATUS_CLOSED);
@@ -143,8 +145,8 @@ public class YearService extends YearRepository {
 
 			partnerService.save(partner);
 		}
-		year.setStatusSelect(STATUS_CLOSED);
-		save(year);
+		year.setStatusSelect(YearRepository.STATUS_CLOSED);
+		yearRepo.save(year);
 	}
 
 
@@ -219,8 +221,10 @@ public class YearService extends YearRepository {
 
 	@Deprecated
 	public BigDecimal computeReportedBalance2(LocalDate fromDate, LocalDate toDate, Partner partner, Account account)  {
-
-		List<? extends MoveLine> moveLineList = moveLineService.all()
+		
+		MoveLineRepository moveLineRepo = Beans.get(MoveLineRepository.class);
+		
+		List<? extends MoveLine> moveLineList = moveLineRepo.all()
 				.filter("self.partner = ?1 AND self.ignoreInAccountingOk = 'false' AND self.date >= ?2 AND self.date <= ?3 AND self.account = ?4",
 						partner, fromDate, toDate, account).fetch();
 

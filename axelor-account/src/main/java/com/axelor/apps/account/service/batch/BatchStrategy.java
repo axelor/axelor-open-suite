@@ -24,6 +24,8 @@ import com.axelor.apps.account.db.MoveLineReport;
 import com.axelor.apps.account.db.PaymentScheduleLine;
 import com.axelor.apps.account.db.PaymentVoucher;
 import com.axelor.apps.account.db.Reimbursement;
+import com.axelor.apps.account.db.repo.MoveLineRepository;
+import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.AccountCustomerService;
 import com.axelor.apps.account.service.InterbankPaymentOrderImportService;
@@ -82,9 +84,15 @@ public abstract class BatchStrategy extends AbstractBatch {
 
 	@Inject
 	protected MoveService moveService;
+	
+	@Inject
+	protected MoveRepository moveRepo;
 
 	@Inject
 	protected MoveLineService moveLineService;
+	
+	@Inject
+	protected MoveLineRepository  moveLineRepo;
 
 	@Inject
 	protected ReimbursementService reimbursementService;

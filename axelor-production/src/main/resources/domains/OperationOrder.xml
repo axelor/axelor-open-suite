@@ -32,11 +32,11 @@
     
     <many-to-one name="prodProcessLine" ref="com.axelor.apps.production.db.ProdProcessLine" title="Operation" initParam="true"/> 
   
-    <datetime name="plannedStartDateT" title="Planned start date"/>
-  	<datetime name="plannedEndDateT" title="Planned end date"/>
+    <datetime name="plannedStartDateT" title="Start date"/>
+  	<datetime name="plannedEndDateT" title="End date"/>
   	
- 	<datetime name="realStartDateT" title="Real start date"/>
-  	<datetime name="realEndDateT" title="Real end date"/>
+ 	<datetime name="realStartDateT" title="Start date"/>
+  	<datetime name="realEndDateT" title="End date"/>
     
     <many-to-one name="inStockMove" ref="com.axelor.apps.stock.db.StockMove" title="Stock move in"/>
     
@@ -50,8 +50,15 @@
     	return true;
 	    ]]>
     </boolean>
+    
+    <many-to-one name="startedBy" ref="com.axelor.auth.db.User" title="Started by" readonly="true"/>
+    <many-to-one name="stoppedBy" ref="com.axelor.auth.db.User" title="Stopped by" readonly="true"/>
+    <datetime name="startingDateTime" title="Starting Date" readonly="true"  />
+    <datetime name="stoppingDateTime" title="Stoppping Date" readonly="true"  />
 
     <string name="comments" title="Comments" large="true"/>
+    
+    <many-to-one name="barCode" ref="com.axelor.meta.db.MetaFile" title="Barcode" readonly="true"/>
     
   </entity>
 </domain-models>

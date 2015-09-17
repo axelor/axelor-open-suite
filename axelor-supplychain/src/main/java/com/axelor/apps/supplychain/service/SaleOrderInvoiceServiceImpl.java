@@ -371,7 +371,7 @@ public class SaleOrderInvoiceServiceImpl extends SaleOrderRepository implements 
 
 		invoice.setIsSubscription(true);
 
-		Beans.get(InvoiceServiceImpl.class).save(invoice);
+		Beans.get(InvoiceRepository.class).save(invoice);
 
 		return invoice;
 	}

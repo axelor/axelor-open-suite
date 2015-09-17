@@ -18,6 +18,7 @@
 package com.axelor.apps.account.service.invoice.generator.batch;
 
 import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.base.db.repo.BatchRepository;
 import com.axelor.apps.base.service.administration.AbstractBatch;
@@ -29,6 +30,9 @@ public abstract class BatchStrategy extends AbstractBatch {
 	
 	@Inject
 	private BatchRepository batchRepo;
+	
+	@Inject
+	protected InvoiceRepository invoiceRepo;
 
 	
 	protected BatchStrategy( InvoiceService invoiceService ) {

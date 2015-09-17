@@ -33,6 +33,7 @@ import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.Reconcile;
+import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.ReconcileRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.config.AccountConfigService;
@@ -47,12 +48,15 @@ import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
-public class ReconcileService extends ReconcileRepository {
+public class ReconcileService {
 
 	private static final Logger LOG = LoggerFactory.getLogger(ReconcileService.class);
 
 	@Inject
 	private MoveService moveService;
+	
+	@Inject
+	private MoveRepository moveRepo;
 
 	@Inject
 	private MoveLineService moveLineService;
@@ -62,6 +66,9 @@ public class ReconcileService extends ReconcileRepository {
 
 	@Inject
 	private AccountConfigService accountConfigService;
+	
+	@Inject
+	private ReconcileRepository reconcileRepo;
 
 	private LocalDate today;
 
@@ -96,7 +103,7 @@ public class ReconcileService extends ReconcileRepository {
 		Reconcile reconcile =  new Reconcile(
 				amount.setScale(2, RoundingMode.HALF_EVEN),
 				debitMoveLine, creditMoveLine,
-				STATUS_DRAFT,
+				ReconcileRepository.STATUS_DRAFT,
 				canBeZeroBalanceOk, mustBeZeroBalanceOk);
 
 		if(inverse)  {
@@ -105,7 +112,7 @@ public class ReconcileService extends ReconcileRepository {
 			reconcile.setCreditMoveLine(debitMoveLine);
 		}
 
-		return save(reconcile);
+		return reconcileRepo.save(reconcile);
 
 	}
 
@@ -188,14 +195,14 @@ public class ReconcileService extends ReconcileRepository {
 		this.updatePartnerAccountingSituation(reconcile, updateCustomerAccount);
 		this.updateInvoiceRemainingAmount(reconcile);
 
-		reconcile.setStatusSelect(STATUS_CONFIRMED);
+		reconcile.setStatusSelect(ReconcileRepository.STATUS_CONFIRMED);
 
 		if(reconcile.getCanBeZeroBalanceOk())  {
 			// Alors nous utilisons la règle de gestion consitant à imputer l'écart sur un compte transitoire si le seuil est respecté
 			canBeZeroBalance(reconcile);
 		}
 
-		save(reconcile);
+		reconcileRepo.save(reconcile);
 
 		return reconcile.getStatusSelect();
 	}
@@ -326,7 +333,7 @@ public class ReconcileService extends ReconcileRepository {
 		MoveLine creditMoveLine = reconcile.getCreditMoveLine();
 
 		// Change the state
-		reconcile.setStatusSelect(STATUS_CANCELED);
+		reconcile.setStatusSelect(ReconcileRepository.STATUS_CANCELED);
 		//Add the reconciled amount to the reconciled amount in the move line
 		creditMoveLine.setAmountPaid(creditMoveLine.getAmountPaid().subtract(reconcile.getAmount()));
 		debitMoveLine.setAmountPaid(debitMoveLine.getAmountPaid().subtract(reconcile.getAmount()));
@@ -335,7 +342,7 @@ public class ReconcileService extends ReconcileRepository {
 		this.updatePartnerAccountingSituation(reconcile, true);
 		this.updateInvoiceRemainingAmount(reconcile);
 
-		save(reconcile);
+		reconcileRepo.save(reconcile);
 
 		return reconcile.getStatusSelect();
 
@@ -383,12 +390,12 @@ public class ReconcileService extends ReconcileRepository {
 				newMove.getMoveLineList().add(newCreditMoveLine);
 				newMove.getMoveLineList().add(newDebitMoveLine);
 				moveService.validateMove(newMove);
-				moveService.save(newMove);
+				moveRepo.save(newMove);
 
 				//Création de la réconciliation
 				Reconcile newReconcile = this.createReconcile(debitMoveLine, newCreditMoveLine, debitAmountRemaining);
 				this.confirmReconcile(newReconcile);
-				save(newReconcile);
+				reconcileRepo.save(newReconcile);
 			}
 		}
 
@@ -433,12 +440,12 @@ public class ReconcileService extends ReconcileRepository {
 					newMove.getMoveLineList().add(newCreditMoveLine);
 					newMove.getMoveLineList().add(newDebitMoveLine);
 					moveService.validateMove(newMove, updateCustomerAccount);
-					moveService.save(newMove);
+					moveRepo.save(newMove);
 
 					//Création de la réconciliation
 					Reconcile newReconcile = this.createReconcile(newDebitMoveLine, creditMoveLine, creditAmountRemaining);
 					this.confirmReconcile(newReconcile, updateCustomerAccount);
-					save(newReconcile);
+					reconcileRepo.save(newReconcile);
 				}
 			}
 		}

@@ -193,8 +193,7 @@ public class ManufOrderServiceImpl extends ManufOrderRepository implements  Manu
 		if(prodProcess != null && prodProcess.getProdProcessLineList() != null)  {
 
 			for(ProdProcessLine prodProcessLine : this._sortProdProcessLineByPriority(prodProcess.getProdProcessLineList()))  {
-				manufOrder.addOperationOrderListItem(
-						operationOrderService.createOperationOrder(manufOrder, prodProcessLine));
+				manufOrder.addOperationOrderListItem(operationOrderService.createOperationOrder(manufOrder, prodProcessLine));
 			}
 
 		}

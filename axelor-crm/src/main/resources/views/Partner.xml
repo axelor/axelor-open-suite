@@ -33,25 +33,25 @@
 	
     <!--     CREATE CRM OBJECT FROM PARTNER -->
     
-    <action-view name="action-partner-view-create-call" title="Create call" model="com.axelor.apps.crm.db.Event">
+    <action-view name="action-partner-view-create-call" title="Create call (${ fullName })" model="com.axelor.apps.crm.db.Event">
     	<view type="form" name="call-form"/>
     	<context name="_partner" expr="eval: __self__"/>
     	<context name="_typeSelect" expr="1"/>
     </action-view>
     
-    <action-view name="action-partner-view-create-meeting" title="Create meeting" model="com.axelor.apps.crm.db.Event">
+    <action-view name="action-partner-view-create-meeting" title="Create meeting (${ fullName })" model="com.axelor.apps.crm.db.Event">
     	<view type="form" name="meeting-form"/>
     	<context name="_partner" expr="eval: __self__"/>
     	<context name="_typeSelect" expr="2"/>
     </action-view>
     
-    <action-view name="action-partner-view-create-task" title="Create task" model="com.axelor.apps.crm.db.Event">
+    <action-view name="action-partner-view-create-task" title="Create task (${ fullName })" model="com.axelor.apps.crm.db.Event">
     	<view type="form" name="crm-task-form"/>
     	<context name="_partner" expr="eval: __self__"/>
     	<context name="_typeSelect" expr="3"/>
     </action-view>
     
-    <action-view name="action-partner-view-create-opportunity" title="Create opportunity" model="com.axelor.apps.crm.db.Opportunity">
+    <action-view name="action-partner-view-create-opportunity" title="Create opportunity (${ fullName })" model="com.axelor.apps.crm.db.Opportunity">
     	<view type="form" name="opportunity-form"/>
     	<context name="_partner" expr="eval: __self__"/>
     </action-view>

@@ -31,7 +31,7 @@ import com.google.inject.persist.Transactional;
  * facturations.
  * 
  */
-public interface InvoiceService extends Repository<Invoice>{
+public interface InvoiceService {
 	
 	public Map<Invoice, List<Alarm>> getAlarms(Invoice... invoices);
 	

@@ -226,7 +226,7 @@
    		<attribute name="readonly" for="otherCountry" expr="eval: isCopyAddress"/>
    	</action-attrs>
    	
-   	<action-view name="action-lead-view-convert-lead" title="Convert lead" model="com.axelor.apps.base.db.Wizard">
+   	<action-view name="action-lead-view-convert-lead" title="Convert lead (${ fullName })" model="com.axelor.apps.base.db.Wizard">
 		<view type="form" name="convert-lead-wizard-form"/>
 		<context name="_lead" expr="eval: __self__"/>
 		<context name="_primaryAddress" expr="eval: primaryAddress"/>
@@ -234,25 +234,25 @@
     
     <!--     CREATE CRM OBJECT FROM LEAD -->
     
-    <action-view name="action-lead-view-create-call" title="Create call" model="com.axelor.apps.crm.db.Event">
+    <action-view name="action-lead-view-create-call" title="Create call (${ fullName })" model="com.axelor.apps.crm.db.Event">
     	<view type="form" name="call-form"/>
     	<context name="_lead" expr="eval: __self__"/>
     	<context name="_typeSelect" expr="1"/>
     </action-view>
     
-    <action-view name="action-lead-view-create-meeting" title="Create meeting" model="com.axelor.apps.crm.db.Event">
+    <action-view name="action-lead-view-create-meeting" title="Create meeting (${ fullName })" model="com.axelor.apps.crm.db.Event">
     	<view type="form" name="meeting-form"/>
     	<context name="_lead" expr="eval: __self__"/>
     	<context name="_typeSelect" expr="2"/>
     </action-view>
     
-    <action-view name="action-lead-view-create-task" title="Create task" model="com.axelor.apps.crm.db.Event">
+    <action-view name="action-lead-view-create-task" title="Create task (${ fullName })" model="com.axelor.apps.crm.db.Event">
     	<view type="form" name="crm-task-form"/>
     	<context name="_lead" expr="eval: __self__"/>
     	<context name="_typeSelect" expr="3"/>
     </action-view>
     
-    <action-view name="action-lead-view-create-opportunity" title="Create opportunity" model="com.axelor.apps.crm.db.Opportunity">
+    <action-view name="action-lead-view-create-opportunity" title="Create opportunity (${ fullName })" model="com.axelor.apps.crm.db.Opportunity">
     	<view type="form" name="opportunity-form"/>
     	<context name="_lead" expr="eval: __self__"/>
     </action-view>

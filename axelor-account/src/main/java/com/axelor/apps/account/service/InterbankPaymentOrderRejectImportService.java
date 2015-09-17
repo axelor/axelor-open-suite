@@ -29,6 +29,8 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
+import com.axelor.apps.account.db.repo.MoveRepository;
+import com.axelor.apps.account.db.repo.PaymentModeRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.cfonb.CfonbImportService;
 import com.axelor.apps.account.service.config.AccountConfigService;
@@ -53,9 +55,15 @@ public class InterbankPaymentOrderRejectImportService {
 
 	@Inject
 	private PaymentModeService paymentModeService;
+	
+	@Inject
+	private PaymentModeRepository paymentModeRepo;
 
 	@Inject
 	private MoveService moveService;
+	
+	@Inject
+	private MoveRepository moveRepo;
 
 	@Inject
 	private MoveLineService moveLineService;
@@ -121,7 +129,7 @@ public class InterbankPaymentOrderRejectImportService {
 			MoveLine creditMoveLine = moveLineService.createMoveLine(move , partner, bankAccount, amountReject, false, rejectImportService.createRejectDate(dateReject), 2, null);
 			move.getMoveLineList().add(creditMoveLine);
 			moveService.validateMove(move);
-			moveService.save(move);
+			moveRepo.save(move);
 
 			return invoice;
 	}
@@ -140,14 +148,14 @@ public class InterbankPaymentOrderRejectImportService {
 		PaymentMode paymentMode = null;
 
 		if(isTIPCheque)  {
-			paymentMode = paymentModeService.findByCode("TIC");
+			paymentMode = paymentModeRepo.findByCode("TIC");
 			if(paymentMode == null)  {
 				throw new AxelorException(String.format(I18n.get(IExceptionMessage.INTER_BANK_PO_REJECT_IMPORT_3),
 						GeneralServiceImpl.EXCEPTION), IException.CONFIGURATION_ERROR);
 			}
 		}
 		else  {
-			paymentMode = paymentModeService.findByCode("TIP");
+			paymentMode = paymentModeRepo.findByCode("TIP");
 			if(paymentMode == null)  {
 				throw new AxelorException(String.format(I18n.get(IExceptionMessage.INTER_BANK_PO_REJECT_IMPORT_4),
 						GeneralServiceImpl.EXCEPTION), IException.CONFIGURATION_ERROR);

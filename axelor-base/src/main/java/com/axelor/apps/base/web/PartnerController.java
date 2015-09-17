@@ -282,4 +282,9 @@ public class PartnerController {
 
 		response.setValue("$emailsList",emailsList);
 	}
+	
+	public void partnerAddressListChange(ActionRequest request, ActionResponse response) {
+		LOG.debug("Called..............");
+		
+	}
 }

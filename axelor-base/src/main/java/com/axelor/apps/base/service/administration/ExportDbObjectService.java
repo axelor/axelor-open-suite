@@ -85,13 +85,16 @@ public class ExportDbObjectService {
 	@Transactional
 	public MetaFile exportObject() {
 		
-		//group = AuthUtils.getUser().getGroup();
+//		group = AuthUtils.getUser().getGroup();
 		group = Beans.get(GroupRepository.class).all().filter("self.code = 'admins'").fetchOne();
 		try {
 			log.debug("Attachment dir: {}",AppSettings.get().get("file.upload.dir"));
-			if(!new File(AppSettings.get().get("file.upload.dir")).exists()) { return null; }
-			File moduleDir = new File(AppSettings.get().get("application.src"));
-			log.debug("Module dir: {}",AppSettings.get().get("application.src"));
+			String uploadDir = AppSettings.get().get("file.upload.dir");
+			if(uploadDir == null || !new File(uploadDir).exists()) { return null; }
+			String appSrc = AppSettings.get().get("application.src");
+			log.debug("Module dir: {}",appSrc);
+			if(appSrc == null){ return null;}
+			File moduleDir = new File(appSrc);
 			if(!moduleDir.exists()){ return null; }
 			
 			MetaFile metaFile = new MetaFile();

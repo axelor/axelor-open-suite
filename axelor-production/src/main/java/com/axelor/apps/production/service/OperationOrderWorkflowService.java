@@ -26,11 +26,14 @@ import org.joda.time.LocalDateTime;
 import com.axelor.app.production.db.IOperationOrder;
 import com.axelor.app.production.db.IWorkCenter;
 import com.axelor.apps.base.service.administration.GeneralService;
+import com.axelor.apps.production.db.Machine;
 import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.db.ProdHumanResource;
 import com.axelor.apps.production.db.WorkCenter;
 import com.axelor.apps.production.db.repo.OperationOrderRepository;
+import com.axelor.auth.AuthUtils;
 import com.axelor.exception.AxelorException;
+import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -39,7 +42,7 @@ public class OperationOrderWorkflowService extends OperationOrderRepository{
 	@Inject
 	private OperationOrderStockMoveService operationOrderStockMoveService;
 
-
+	@Inject
 	protected GeneralService generalService;
 
 	private LocalDateTime today;
@@ -66,7 +69,7 @@ public class OperationOrderWorkflowService extends OperationOrderRepository{
 
 		operationOrder.setStatusSelect(IOperationOrder.STATUS_PLANNED);
 
-		return save(operationOrder);
+		return Beans.get(OperationOrderRepository.class).save(operationOrder);
 
 	}
 
@@ -108,8 +111,12 @@ public class OperationOrderWorkflowService extends OperationOrderRepository{
 		operationOrder.setStatusSelect(IOperationOrder.STATUS_IN_PROGRESS);
 
 		operationOrder.setRealStartDateT(today);
+		
+		operationOrder.setStartedBy(AuthUtils.getUser());
+		
+		operationOrder.setStartingDateTime(new LocalDateTime(generalService.getTodayDateTime()));
 
-		save(operationOrder);
+		Beans.get(OperationOrderRepository.class).save(operationOrder);
 
 	}
 
@@ -121,7 +128,7 @@ public class OperationOrderWorkflowService extends OperationOrderRepository{
 
 		operationOrder.setStatusSelect(IOperationOrder.STATUS_CANCELED);
 
-		save(operationOrder);
+		Beans.get(OperationOrderRepository.class).save(operationOrder);
 
 	}
 
@@ -134,7 +141,7 @@ public class OperationOrderWorkflowService extends OperationOrderRepository{
 
 		operationOrder.setStatusSelect(IOperationOrder.STATUS_FINISHED);
 
-		return save(operationOrder);
+		return Beans.get(OperationOrderRepository.class).save(operationOrder);
 
 	}
 
@@ -186,14 +193,14 @@ public class OperationOrderWorkflowService extends OperationOrderRepository{
 		int workCenterTypeSelect = workCenter.getWorkCenterTypeSelect();
 
 		if(workCenterTypeSelect == IWorkCenter.WORK_CENTER_MACHINE || workCenterTypeSelect == IWorkCenter.WORK_CENTER_BOTH)  {
-
-			duration += workCenter.getStartingDuration();
+			Machine machine = workCenter.getMachine();
+			duration += machine.getStartingDuration();
 
 			BigDecimal durationPerCycle = new BigDecimal(workCenter.getDurationPerCycle());
 
 			duration += (qty.divide(workCenter.getCapacityPerCycle())).multiply(durationPerCycle).longValue();
 
-			duration += workCenter.getEndingDuration();
+			duration += machine.getEndingDuration();
 
 		}
 
