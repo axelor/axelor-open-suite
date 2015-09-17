@@ -14,5 +14,12 @@
 		<option value="3">Finished</option>
 	</selection>
 	
+	<selection name="message.related.to.select" id="project.message.related.to.select">
+	    <option value="com.axelor.apps.project.db.ProjectTask">Project/Task</option>
+	</selection>
+	
+	<selection name="crm.event.related.to.select" id="project.crm.event.related.to.select">
+		<option value="com.axelor.apps.project.db.ProjectTask">Project/Business/Task (Project)</option>
+	</selection>
 	
 </object-views>
