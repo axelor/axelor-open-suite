@@ -379,12 +379,6 @@
     	<call class="com.axelor.apps.base.web.PartnerController" method="setSocialNetworkUrl" />
     </action-method>
     
-
-	<action-view name="action-partner-view-sn-profile" title="Profiles" model="com.axelor.apps.socialnetwork.db.SnProfile">
-		<view type="form" name="sn-profile-form"/>
-		<context name="id" expr="#{id}"/>
-	</action-view>
-    
 	<action-attrs name="action-partner-attrs-change-name">
 		<attribute name="title" for="name" expr="Raison sociale" if="partnerTypeSelect != 2"/>
     	<attribute name="title" for="name" expr="Nom" if="partnerTypeSelect == 2"/>
