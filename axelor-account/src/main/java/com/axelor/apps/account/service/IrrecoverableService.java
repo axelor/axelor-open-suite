@@ -56,7 +56,8 @@ import com.axelor.apps.account.db.repo.PaymentScheduleLineRepository;
 import com.axelor.apps.account.db.repo.PaymentScheduleRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.config.AccountConfigService;
-import com.axelor.apps.account.service.invoice.InvoiceService;
+import com.axelor.apps.account.service.move.MoveLineService;
+import com.axelor.apps.account.service.move.MoveService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.Partner;
@@ -74,65 +75,49 @@ import com.google.inject.persist.Transactional;
 
 public class IrrecoverableService{
 
-	private static final Logger LOG = LoggerFactory.getLogger(IrrecoverableService.class);
+	private final Logger log = LoggerFactory.getLogger( getClass() );
+
+	protected SequenceService sequenceService;
+	protected MoveService moveService;
+	protected MoveLineService moveLineService;
+	protected MoveLineRepository moveLineRepo;
+	protected ReconcileService reconcileService;
+	protected TaxService taxService;
+	protected TaxAccountService taxAccountService;
+	protected PaymentScheduleService paymentScheduleService;
+	protected PaymentScheduleRepository paymentScheduleRepo;
+	protected PaymentScheduleLineRepository paymentScheduleLineRepo;
+	protected AccountConfigService accountConfigService;
+	protected IrrecoverableCustomerLineRepository irrecoverableCustomerLineRepo;
+	protected InvoiceRepository invoiceRepo;
+	protected ManagementObjectRepository managementObjectRepo;
+	protected IrrecoverableRepository irrecoverableRepo;
+
+	protected LocalDate date;
 
 	@Inject
-	private SequenceService sequenceService;
+	public IrrecoverableService(GeneralService generalService, SequenceService sequenceService, MoveService moveService, MoveLineService moveLineService, MoveLineRepository moveLineRepo,
+			ReconcileService reconcileService, TaxService taxService, TaxAccountService taxAccountService, PaymentScheduleService paymentScheduleService, PaymentScheduleRepository paymentScheduleRepo,
+			PaymentScheduleLineRepository paymentScheduleLineRepo, AccountConfigService accountConfigService, IrrecoverableCustomerLineRepository irrecoverableCustomerLineRepo,
+			InvoiceRepository invoiceRepo, ManagementObjectRepository managementObjectRepo, IrrecoverableRepository irrecoverableRepo) {
 
-	@Inject
-	private MoveService moveService;
-
-	@Inject
-	private MoveLineService moveLineService;
-	
-	@Inject
-	private MoveLineRepository moveLineRepo;
-
-	@Inject
-	private ReconcileService reconcileService;
-
-	@Inject
-	private TaxService taxService;
-
-	@Inject
-	private TaxAccountService taxAccountService;
-
-	@Inject
-	private PaymentScheduleService paymentScheduleService;
-	
-	@Inject
-	private PaymentScheduleRepository paymentScheduleRepo;
-	
-	@Inject
-	private PaymentScheduleLineRepository paymentScheduleLineRepo;
-
-	@Inject
-	private AccountConfigService accountConfigService;
-
-	@Inject
-	private IrrecoverableCustomerLineRepository irrecoverableCustomerLineRepo;
-
-	@Inject
-	private InvoiceService invoiceService;
-	
-	@Inject
-	private InvoiceRepository invoiceRepo;
-
-	@Inject
-	private ManagementObjectRepository managementObjectRepo;
-
-	@Inject
-	private IrrecoverableRepository irrecoverableRepo;
-
-	protected GeneralService generalService;
-
-	private LocalDate date;
-
-	@Inject
-	public IrrecoverableService(GeneralService generalService) {
-
-		this.generalService = generalService;
-		this.date = this.generalService.getTodayDate();
+		this.sequenceService = sequenceService;
+		this.moveService = moveService;
+		this.moveLineService = moveLineService;
+		this.moveLineRepo = moveLineRepo;
+		this.reconcileService = reconcileService;
+		this.taxService = taxService;
+		this.taxAccountService = taxAccountService;
+		this.paymentScheduleService = paymentScheduleService;
+		this.paymentScheduleRepo = paymentScheduleRepo;
+		this.paymentScheduleLineRepo = paymentScheduleLineRepo;
+		this.accountConfigService = accountConfigService;
+		this.irrecoverableCustomerLineRepo = irrecoverableCustomerLineRepo;
+		this.invoiceRepo = invoiceRepo;
+		this.managementObjectRepo = managementObjectRepo;
+		this.irrecoverableRepo = irrecoverableRepo;
+		
+		this.date = generalService.getTodayDate();
 
 	}
 
@@ -241,7 +226,7 @@ public class IrrecoverableService{
 			}
 		}
 
-		LOG.debug("Nombre de facture à passer en irrécouvrable pour le tiers : {}", invoiceList.size());
+		log.debug("Nombre de facture à passer en irrécouvrable pour le tiers : {}", invoiceList.size());
 
 		return invoiceList;
 	}
@@ -266,7 +251,7 @@ public class IrrecoverableService{
 			}
 		}
 
-		LOG.debug("Nombre d'échéances à passer en irrécouvrable pour le tiers : {}", paymentScheduleLineList.size());
+		log.debug("Nombre d'échéances à passer en irrécouvrable pour le tiers : {}", paymentScheduleLineList.size());
 
 		return paymentScheduleLineList;
 	}
@@ -299,7 +284,7 @@ public class IrrecoverableService{
 
 				i++;
 				try {
-					LOG.debug("Tiers : {}", payerPartner.getName());
+					log.debug("Tiers : {}", payerPartner.getName());
 					this.createIrrecoverableCustomerLine(
 							irrecoverable,
 							payerPartner,
@@ -315,7 +300,7 @@ public class IrrecoverableService{
 
 				} catch (Exception e) {
 					TraceBackService.trace(e);
-					LOG.error("Bug(Anomalie) généré(e) pour le tiers : {}", payerPartner.getName());
+					log.error("Bug(Anomalie) généré(e) pour le tiers : {}", payerPartner.getName());
 
 				} finally {
 					if (!transaction.isActive())  {
@@ -350,7 +335,7 @@ public class IrrecoverableService{
 		icl.setIrrecoverablePaymentScheduleLineLineList(this.createIrrecoverablePaymentScheduleLineLineList(icl, paymentScheduleLineList));
 		icl.setIrrecoverableInvoiceLineList(this.createIrrecoverableInvoiceLineList(icl, invoiceList));
 
-		LOG.debug("Ligne client : {}", icl);
+		log.debug("Ligne client : {}", icl);
 
 		return icl;
 	}
@@ -382,7 +367,7 @@ public class IrrecoverableService{
 				}
 
 				try {
-					LOG.debug("Facture : {}", invoice.getInvoiceId());
+					log.debug("Facture : {}", invoice.getInvoiceId());
 
 					this.createIrrecoverableInvoiceLineMove(irrecoverable, invoice);
 
@@ -396,12 +381,12 @@ public class IrrecoverableService{
 				} catch (AxelorException e) {
 					anomaly++;
 					TraceBackService.trace(new AxelorException(String.format(I18n.get("Invoice")+" %s", invoice.getInvoiceId()), e, e.getcategory()), IException.IRRECOVERABLE, irrecoverable.getId());
-					LOG.error("Bug(Anomalie) généré(e) pour la facture : {}", invoice.getInvoiceId());
+					log.error("Bug(Anomalie) généré(e) pour la facture : {}", invoice.getInvoiceId());
 
 				} catch (Exception e) {
 					anomaly++;
 					TraceBackService.trace(new Exception(String.format(I18n.get("Invoice")+" %s", invoice.getInvoiceId()), e), IException.IRRECOVERABLE, irrecoverable.getId());
-					LOG.error("Bug(Anomalie) généré(e) pour la facture : {}", invoice.getInvoiceId());
+					log.error("Bug(Anomalie) généré(e) pour la facture : {}", invoice.getInvoiceId());
 
 				} finally {
 					if (!transaction.isActive())  {
@@ -419,7 +404,7 @@ public class IrrecoverableService{
 				}
 
 				try {
-					LOG.debug("Ligne d'échéancier : {}", paymentScheduleLine.getName());
+					log.debug("Ligne d'échéancier : {}", paymentScheduleLine.getName());
 
 					this.createMoveForPaymentScheduleLineReject(irrecoverable, paymentScheduleLine);
 
@@ -433,12 +418,12 @@ public class IrrecoverableService{
 				} catch (AxelorException e) {
 					anomaly++;
 					TraceBackService.trace(new AxelorException(String.format(I18n.get(IExceptionMessage.IRRECOVERABLE_1), paymentScheduleLine.getName()), e, e.getcategory()), IException.IRRECOVERABLE, irrecoverable.getId());
-					LOG.error("Bug(Anomalie) généré(e) pour la ligne d'échéancier : {}", paymentScheduleLine.getName());
+					log.error("Bug(Anomalie) généré(e) pour la ligne d'échéancier : {}", paymentScheduleLine.getName());
 
 				} catch (Exception e) {
 					anomaly++;
 					TraceBackService.trace(new Exception(String.format(I18n.get(IExceptionMessage.IRRECOVERABLE_1), paymentScheduleLine.getName()), e), IException.IRRECOVERABLE, irrecoverable.getId());
-					LOG.error("Bug(Anomalie) généré(e) pour la ligne d'échéancier : {}", paymentScheduleLine.getName());
+					log.error("Bug(Anomalie) généré(e) pour la ligne d'échéancier : {}", paymentScheduleLine.getName());
 
 				} finally {
 					if (!transaction.isActive())  {
@@ -466,7 +451,7 @@ public class IrrecoverableService{
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.IRRECOVERABLE_2),
 					GeneralServiceImpl.EXCEPTION), IException.INCONSISTENCY);
 		}
-		moveService.validateMove(move);
+		moveService.getMoveValidateService().validateMove(move);
 		irrecoverable.getMoveSet().add(move);
 
 	}
@@ -484,7 +469,7 @@ public class IrrecoverableService{
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.IRRECOVERABLE_2),
 					GeneralServiceImpl.EXCEPTION), IException.INCONSISTENCY);
 		}
-		moveService.validateMove(move);
+		moveService.getMoveValidateService().validateMove(move);
 		irrecoverable.getMoveSet().add(move);
 
 		invoice.setIrrecoverableStatusSelect(InvoiceRepository.IRRECOVERABLE_STATUS_PASSED_IN_IRRECOUVRABLE);
@@ -559,7 +544,7 @@ public class IrrecoverableService{
 
 		iil.setIrrecoverableReportLineList(this.createIrrecoverableReportLineList(iil, invoice, prorataRate));
 
-		LOG.debug("Ligne facture : {}", iil);
+		log.debug("Ligne facture : {}", iil);
 
 		return iil;
 	}
@@ -587,7 +572,7 @@ public class IrrecoverableService{
 
 		ipsll.setIrrecoverableReportLineList(this.createIrrecoverableReportLineList(ipsll, paymentScheduleLine, tax));
 
-		LOG.debug("Ligne échéance rejetée : {}", ipsll);
+		log.debug("Ligne échéance rejetée : {}", ipsll);
 
 		return ipsll;
 	}
@@ -700,7 +685,7 @@ public class IrrecoverableService{
 		irl.setValue(value);
 		irl.setIrrecoverableInvoiceLine(iil);
 
-		LOG.debug("Ligne reporting : {}", irl);
+		log.debug("Ligne reporting : {}", irl);
 
 		return irl;
 	}
@@ -725,7 +710,7 @@ public class IrrecoverableService{
 		irl.setValue(value);
 		irl.setIrrecoverablePaymentScheduleLineLine(ipsll);
 
-		LOG.debug("Ligne reporting : {}", irl);
+		log.debug("Ligne reporting : {}", irl);
 
 		return irl;
 	}
@@ -748,7 +733,7 @@ public class IrrecoverableService{
 			prorataRate = invoice.getCompanyInTaxTotalRemaining().divide(invoice.getInTaxTotal(), 6, RoundingMode.HALF_EVEN);
 		}
 
-		LOG.debug("Taux d'impayé pour la facture {} : {}", invoice.getInvoiceId(), prorataRate);
+		log.debug("Taux d'impayé pour la facture {} : {}", invoice.getInvoiceId(), prorataRate);
 
 		return prorataRate;
 	}
@@ -772,7 +757,7 @@ public class IrrecoverableService{
 		AccountConfig accountConfig = company.getAccountConfig();
 
 		// Move
-		Move move = moveService.createMove(accountConfig.getIrrecoverableJournal(), company, null, payerPartner, null);
+		Move move = moveService.getMoveCreateService().createMove(accountConfig.getIrrecoverableJournal(), company, null, payerPartner, null);
 
 		int seq = 1;
 
@@ -806,7 +791,7 @@ public class IrrecoverableService{
 		seq++;
 
 		// Getting customer MoveLine from Facture
-		MoveLine customerMoveLine = moveService.getCustomerMoveLineByQuery(invoice);
+		MoveLine customerMoveLine = moveService.getMoveToolService().getCustomerMoveLineByQuery(invoice);
 		if(customerMoveLine == null)  {
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.IRRECOVERABLE_3),
 					GeneralServiceImpl.EXCEPTION, invoice.getInvoiceId()), IException.INCONSISTENCY);
@@ -840,7 +825,7 @@ public class IrrecoverableService{
 		AccountConfig accountConfig = company.getAccountConfig();
 
 		// Move
-		Move move = moveService.createMove(accountConfig.getIrrecoverableJournal(), company, null, payerPartner, null);
+		Move move = moveService.getMoveCreateService().createMove(accountConfig.getIrrecoverableJournal(), company, null, payerPartner, null);
 
 		int seq = 1;
 
@@ -935,7 +920,7 @@ public class IrrecoverableService{
 			ManagementObject managementObject = this.createManagementObject("IRR", accountConfigService.getIrrecoverableReasonPassage(accountConfigService.getAccountConfig(company)));
 			invoice.setManagementObject(managementObject);
 
-			MoveLine moveLine = moveService.getCustomerMoveLineByQuery(invoice);
+			MoveLine moveLine = moveService.getMoveToolService().getCustomerMoveLineByQuery(invoice);
 
 			if(moveLine == null)  {
 				throw new AxelorException(String.format(I18n.get(IExceptionMessage.IRRECOVERABLE_3),
@@ -961,7 +946,7 @@ public class IrrecoverableService{
 	public void passInIrrecoverable(Invoice invoice, ManagementObject managementObject) throws AxelorException  {
 		this.passInIrrecoverable(invoice, false);
 		invoice.setManagementObject(managementObject);
-		MoveLine moveLine = moveService.getCustomerMoveLineByQuery(invoice);
+		MoveLine moveLine = moveService.getMoveToolService().getCustomerMoveLineByQuery(invoice);
 
 		if(moveLine == null)  {
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.IRRECOVERABLE_3),
@@ -984,7 +969,7 @@ public class IrrecoverableService{
 	public void notPassInIrrecoverable(Invoice invoice) throws AxelorException  {
 		invoice.setIrrecoverableStatusSelect(InvoiceRepository.IRRECOVERABLE_STATUS_NOT_IRRECOUVRABLE);
 
-		MoveLine moveLine = moveService.getCustomerMoveLineByQuery(invoice);
+		MoveLine moveLine = moveService.getMoveToolService().getCustomerMoveLineByQuery(invoice);
 
 		if(moveLine != null)  {
 			this.notPassInIrrecoverable(moveLine, false);

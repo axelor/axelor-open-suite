@@ -34,11 +34,15 @@ import com.google.inject.persist.Transactional;
 
 public class AccountingSituationService	{
 
-	@Inject
-	private AccountConfigService accountConfigService;
+	protected AccountConfigService accountConfigService;
+	protected AccountingSituationRepository situationRepository;
 	
 	@Inject
-	private AccountingSituationRepository situationRepository;
+	public AccountingSituationService(AccountConfigService accountConfigService, AccountingSituationRepository situationRepository)  {
+		
+		this.accountConfigService = accountConfigService;
+		this.situationRepository = situationRepository;
+	}
 
 	public boolean checkAccountingSituationList(List<AccountingSituation> accountingSituationList, Company company) {
 

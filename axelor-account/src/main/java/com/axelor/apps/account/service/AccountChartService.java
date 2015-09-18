@@ -44,19 +44,24 @@ import com.google.inject.Injector;
 import com.google.inject.persist.Transactional;
 
 public class AccountChartService{
-	private static final Logger LOG = LoggerFactory.getLogger(AccountChartService.class);
+	
+	private final Logger log = LoggerFactory.getLogger( getClass() );
+	
+	protected Injector injector;
+	protected AccountConfigRepository accountConfigRepo;
+	protected CompanyRepository companyRepo;
+	protected AccountChartRepository accountChartRepository;
 	
 	@Inject
-	private Injector injector;
+	public AccountChartService(Injector injector, AccountConfigRepository accountConfigRepo, CompanyRepository companyRepo, AccountChartRepository accountChartRepository)  {
+		
+		this.injector = injector;
+		this.accountConfigRepo = accountConfigRepo;
+		this.companyRepo = companyRepo;
+		this.accountChartRepository = accountChartRepository;
+		
+	}
 	
-	@Inject
-	private AccountConfigRepository accountConfigRepo;
-	
-	@Inject
-	private CompanyRepository companyRepo;
-	
-	@Inject
-	private AccountChartRepository accountChartRepository;
 	
 	public Boolean installAccountChart(AccountChart act, Company company, AccountConfig accountConfig){
 		try {
@@ -80,7 +85,7 @@ public class AccountChartService{
 				String resource = chartPath+fileName;
 				if(fileName.equals("chart-config.xml"))
 					resource = "/l10n/chart-config.xml";
-				LOG.debug("Resource file path: {}",resource);
+				log.debug("Resource file path: {}",resource);
 				InputStream inputStream = this.getClass().getResourceAsStream(resource);
 				if(inputStream  == null)
 					continue;
@@ -132,8 +137,8 @@ public class AccountChartService{
 
 			@Override
 			public void imported(Integer total, Integer count) {
-				LOG.debug("Total records: {}",total);
-				LOG.debug("Success records: {}",count);
+				log.debug("Total records: {}",total);
+				log.debug("Success records: {}",count);
 			}
 
 		});

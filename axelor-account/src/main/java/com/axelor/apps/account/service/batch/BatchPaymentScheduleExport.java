@@ -33,9 +33,9 @@ import com.axelor.apps.account.db.repo.AccountingBatchRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.PaymentScheduleLineRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.service.AccountingService;
 import com.axelor.apps.account.service.PaymentScheduleExportService;
 import com.axelor.apps.account.service.cfonb.CfonbExportService;
-import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.payment.PaymentModeService;
 import com.axelor.apps.base.db.Batch;
 import com.axelor.apps.base.db.Company;
@@ -47,24 +47,28 @@ import com.axelor.i18n.I18n;
 
 public class BatchPaymentScheduleExport extends BatchStrategy {
 
-	private static final Logger LOG = LoggerFactory.getLogger(BatchPaymentScheduleExport.class);
+	private final Logger log = LoggerFactory.getLogger( getClass() );
 	
-	private boolean stop = false;
+	protected boolean stop = false;
 	
-	private BigDecimal totalAmount = BigDecimal.ZERO;
+	protected BigDecimal totalAmount = BigDecimal.ZERO;
 	
-	private String updateCustomerAccountLog = "";
+	protected String updateCustomerAccountLog = "";
 	
-	@Inject
-	private PaymentScheduleLineRepository paymentScheduleLineRepo;
+	protected PaymentScheduleLineRepository paymentScheduleLineRepo;
 	
-	@Inject
-	private InvoiceRepository invoiceRepo;
+	protected InvoiceRepository invoiceRepo;
 	
 	@Inject
-	public BatchPaymentScheduleExport(PaymentScheduleExportService paymentScheduleExportService, PaymentModeService paymentModeService, CfonbExportService cfonbExportService, BatchAccountCustomer batchAccountCustomer) {
+	public BatchPaymentScheduleExport(PaymentScheduleExportService paymentScheduleExportService, PaymentModeService paymentModeService, CfonbExportService cfonbExportService, 
+			BatchAccountCustomer batchAccountCustomer, PaymentScheduleLineRepository paymentScheduleLineRepo, InvoiceRepository invoiceRepo) {
 		
 		super(paymentScheduleExportService, paymentModeService, cfonbExportService, batchAccountCustomer);
+		
+		this.paymentScheduleLineRepo = paymentScheduleLineRepo;
+		this.invoiceRepo = invoiceRepo;
+		
+		AccountingService.setUpdateCustomerAccount(false);
 		
 	}
 
@@ -198,7 +202,7 @@ public class BatchPaymentScheduleExport extends BatchStrategy {
 	protected void exportMajorMonthlyPayment()  {
 
 		// Génération de l'écriture de paiement pour Mensu Grand Compte
-		LOG.debug("Génération de l'écriture de paiement pour Mensu Grand Compte");
+		log.debug("Génération de l'écriture de paiement pour Mensu Grand Compte");
 		
 		this.generateAllExportMensu(
 				paymentScheduleExportService.getPaymentScheduleLineToDebit(batchRepo.find(batch.getId()).getAccountingBatch()));
@@ -233,7 +237,7 @@ public class BatchPaymentScheduleExport extends BatchStrategy {
 
 			incrementAnomaly();
 
-			LOG.error("Bug(Anomalie) généré(e) pour le batch d'export des prélèvements {}", batch.getId());
+			log.error("Bug(Anomalie) généré(e) pour le batch d'export des prélèvements {}", batch.getId());
 
 		}
 
@@ -283,7 +287,7 @@ public class BatchPaymentScheduleExport extends BatchStrategy {
 					
 					incrementAnomaly();
 					
-					LOG.error("Bug(Anomalie) généré(e) pour le Prélèvement de l'échéance {}", paymentScheduleLineRepo.find(paymentScheduleLine.getId()).getName());
+					log.error("Bug(Anomalie) généré(e) pour le Prélèvement de l'échéance {}", paymentScheduleLineRepo.find(paymentScheduleLine.getId()).getName());
 					
 				} finally {
 					
@@ -322,7 +326,7 @@ public class BatchPaymentScheduleExport extends BatchStrategy {
 				
 				moveLine = moveLineRepo.find(moveLine.getId());
 				
-				LOG.debug("Paiement par prélèvement de l'écriture {}", moveLine.getName());
+				log.debug("Paiement par prélèvement de l'écriture {}", moveLine.getName());
 				
 				Invoice invoice = paymentScheduleExportService.exportInvoice(
 						moveLineRepo.find(moveLine.getId()), 
@@ -349,7 +353,7 @@ public class BatchPaymentScheduleExport extends BatchStrategy {
 				
 				incrementAnomaly();
 				
-				LOG.error("Bug(Anomalie) généré(e) pour le batch d'export des prélèvements {}", this.getInvoiceName(moveLine));
+				log.error("Bug(Anomalie) généré(e) pour le batch d'export des prélèvements {}", this.getInvoiceName(moveLine));
 				
 			} finally {
 				
@@ -385,7 +389,7 @@ public class BatchPaymentScheduleExport extends BatchStrategy {
 			
 			incrementAnomaly();
 			
-			LOG.error("Bug(Anomalie) généré(e) pour le batch d'export des prélèvements {}", batch.getId());
+			log.error("Bug(Anomalie) généré(e) pour le batch d'export des prélèvements {}", batch.getId());
 		
 		}	
 	}

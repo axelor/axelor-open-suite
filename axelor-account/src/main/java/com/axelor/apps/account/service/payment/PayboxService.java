@@ -47,7 +47,6 @@ import org.slf4j.LoggerFactory;
 import com.axelor.apps.account.db.AccountingSituation;
 import com.axelor.apps.account.db.PayboxConfig;
 import com.axelor.apps.account.db.PaymentVoucher;
-import com.axelor.apps.account.db.repo.PayboxRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.account.service.config.PayboxConfigService;
@@ -60,26 +59,26 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
 public class PayboxService {
 
-	private static final Logger LOG = LoggerFactory.getLogger(PayboxService.class);
+	private final Logger log = LoggerFactory.getLogger( getClass() );
 
+	protected PayboxConfigService payboxConfigService;
+	protected PartnerService partnerService;
+	
+	protected final String CHARSET = "UTF-8";
+	protected final String HASH_ENCRYPTION_ALGORITHM = "SHA1withRSA";
+	protected final String ENCRYPTION_ALGORITHM = "RSA";
 
-	@Inject
-	private PayboxConfigService payboxConfigService;
-
-	@Inject
-	private PartnerService partnerService;
-
-	private final String CHARSET = "UTF-8";
-
-	private final String HASH_ENCRYPTION_ALGORITHM = "SHA1withRSA";
-
-	private final String ENCRYPTION_ALGORITHM = "RSA";
-
+	public PayboxService(PayboxConfigService payboxConfigService, PartnerService partnerService)  {
+		
+		this.payboxConfigService = payboxConfigService;
+		this.partnerService = partnerService;
+	}
+	
+	
 	/**
 	 * Procédure permettant de réaliser un paiement avec Paybox
 	 * @param paymentVoucher
@@ -131,11 +130,11 @@ public class PayboxService {
 				pbxRetour, pbxEffectue, pbxRefuse, pbxAnnule, pbxHash, pbxTime, pbxTypepaiement, pbxTypecarte);
 
 
-		LOG.debug("Message : {}",message);
+		log.debug("Message : {}",message);
 
 		String messageHmac = this.getHmacSignature(message, pbxHmac, pbxHash);
 
-		LOG.debug("Message HMAC : {}",messageHmac);
+		log.debug("Message HMAC : {}",messageHmac);
 
 		String messageEncode = this.buildMessage(
 				URLEncoder.encode(pbxSite, this.CHARSET),
@@ -157,7 +156,7 @@ public class PayboxService {
 
 		String url = payboxUrl + messageEncode + "&PBX_HMAC="+ messageHmac;
 
-		LOG.debug("Url : {}",url);
+		log.debug("Url : {}",url);
 
 		return url;
 	}
@@ -374,7 +373,7 @@ public class PayboxService {
 
 		boolean result =  this.checkPaybox(signature, varUrl, company.getAccountConfig().getPayboxConfig().getPayboxPublicKeyPath());
 
-		LOG.debug("Resultat de la verification de signature : {}",result);
+		log.debug("Resultat de la verification de signature : {}",result);
 
 		return result;
 	}
@@ -394,7 +393,7 @@ public class PayboxService {
 	public boolean checkPaybox(String signature, List<String> urlParam, String pubKeyPath) throws Exception {
 
     	String payboxParams = StringUtils.join(urlParam, "&");
-     	LOG.debug("Liste des variables Paybox signées : {}",payboxParams);
+    	log.debug("Liste des variables Paybox signées : {}",payboxParams);
 
 //	 		Déjà décodée par le framework
 //	     	String decoded = URLDecoder.decode(sign, this.CHARSET);

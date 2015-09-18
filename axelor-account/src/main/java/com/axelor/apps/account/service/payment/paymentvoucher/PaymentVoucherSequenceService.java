@@ -33,12 +33,15 @@ import com.google.inject.Inject;
 
 public class PaymentVoucherSequenceService  {
 
-	@Inject
-	private SequenceService sequenceService;
+	protected SequenceService sequenceService;
+	protected PaymentModeService paymentModeService;
 
 	@Inject
-	private PaymentModeService paymentModeService;
-
+	public PaymentVoucherSequenceService(SequenceService sequenceService, PaymentModeService paymentModeService)  {
+		
+		this.sequenceService = sequenceService;
+		this.paymentModeService = paymentModeService;
+	}
 
 
 	public void setReference(PaymentVoucher paymentVoucher) throws AxelorException  {

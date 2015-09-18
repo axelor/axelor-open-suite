@@ -35,8 +35,14 @@ import com.google.inject.Inject;
 
 public class PaymentVoucherControlService  {
 
+	protected PaymentVoucherSequenceService paymentVoucherSequenceService;
+	
 	@Inject
-	private PaymentVoucherSequenceService paymentVoucherSequenceService;
+	public PaymentVoucherControlService(PaymentVoucherSequenceService paymentVoucherSequenceService)  {
+		
+		this.paymentVoucherSequenceService = paymentVoucherSequenceService;
+		
+	}
 
 
 	/**

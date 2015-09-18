@@ -38,15 +38,16 @@ import com.axelor.i18n.I18n;
 
 public class BatchAccountCustomer extends BatchStrategy {
 
-	private static final Logger LOG = LoggerFactory.getLogger(BatchAccountCustomer.class);
+	private final Logger log = LoggerFactory.getLogger( getClass() );
 	
-	@Inject
-	private AccountingSituationRepository accountingSituationRepo;;
+	protected AccountingSituationRepository accountingSituationRepo;
 
 	@Inject
-	public BatchAccountCustomer(AccountCustomerService accountCustomerService) {
+	public BatchAccountCustomer(AccountCustomerService accountCustomerService, AccountingSituationRepository accountingSituationRepo) {
 		
 		super(accountCustomerService);
+		
+		this.accountingSituationRepo = accountingSituationRepo;
 	}
 	
 	
@@ -94,7 +95,7 @@ public class BatchAccountCustomer extends BatchStrategy {
 				
 				incrementAnomaly();
 				
-				LOG.error("Bug(Anomalie) généré(e) pour la situation compable {}", accountingSituationRepo.find(accountingSituation.getId()).getName());
+				log.error("Bug(Anomalie) généré(e) pour la situation compable {}", accountingSituationRepo.find(accountingSituation.getId()).getName());
 				
 			} finally {
 				
@@ -157,7 +158,7 @@ public class BatchAccountCustomer extends BatchStrategy {
 				
 				anomaly++;
 				
-				LOG.error("Bug(Anomalie) généré(e) pour le compte client {}",  accountingSituationRepo.find(accountingSituation.getId()));
+				log.error("Bug(Anomalie) généré(e) pour le compte client {}",  accountingSituationRepo.find(accountingSituation.getId()));
 				
 			} finally {
 				

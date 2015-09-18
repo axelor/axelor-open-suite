@@ -20,9 +20,6 @@ package com.axelor.apps.account.service.invoice;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.TaxLine;
@@ -40,20 +37,20 @@ import com.google.inject.Inject;
 
 public class InvoiceLineService {
 
-	private static final Logger LOG = LoggerFactory.getLogger(InvoiceLineService.class);
-
-	@Inject
 	private AccountManagementService accountManagementService;
-
-	@Inject
 	private CurrencyService currencyService;
-
-	@Inject
 	private PriceListService priceListService;
-
-	@Inject
 	protected GeneralService generalService;
 
+	@Inject
+	public InvoiceLineService(AccountManagementService accountManagementService, CurrencyService currencyService, PriceListService priceListService, GeneralService generalService)  {
+		
+		this.accountManagementService = accountManagementService;
+		this.currencyService = currencyService;
+		this.priceListService = priceListService;
+		this.generalService = generalService;
+		
+	}
 
 	public TaxLine getTaxLine(Invoice invoice, InvoiceLine invoiceLine, boolean isPurchase) throws AxelorException  {
 

@@ -49,39 +49,31 @@ import com.google.inject.persist.Transactional;
 
 public class InterbankPaymentOrderImportService {
 
-	private static final Logger LOG = LoggerFactory.getLogger(InterbankPaymentOrderImportService.class);
+	private final Logger log = LoggerFactory.getLogger( getClass() );
+
+	protected PaymentVoucherCreateService paymentVoucherCreateService;
+	protected CfonbImportService cfonbImportService;
+	protected RejectImportService rejectImportService;
+	protected BankDetailsService bankDetailsService;
+	protected AccountConfigService accountConfigService;
+	protected PartnerRepository partnerRepo;
+	protected InvoiceRepository invoiceRepo;
+
+	protected DateTime dateTime;
 
 	@Inject
-	private PaymentVoucherCreateService paymentVoucherCreateService;
+	public InterbankPaymentOrderImportService(GeneralService generalService, PaymentVoucherCreateService paymentVoucherCreateService, CfonbImportService cfonbImportService,
+			RejectImportService rejectImportService, BankDetailsService bankDetailsService, AccountConfigService accountConfigService, PartnerRepository partnerRepo,
+			InvoiceRepository invoiceRepo) {
 
-	@Inject
-	private CfonbImportService cfonbImportService;
-
-	@Inject
-	private RejectImportService ris;
-
-	@Inject
-	private BankDetailsService bds;
-
-	@Inject
-	private AccountConfigService accountConfigService;
-
-	@Inject
-	private PartnerRepository partnerRepo;
-
-	@Inject
-	private InvoiceRepository invoiceRepo;
-
-
-	protected GeneralService generalService;
-
-	private DateTime dateTime;
-
-	@Inject
-	public InterbankPaymentOrderImportService(GeneralService generalService) {
-
-		this.generalService = generalService;
-		this.dateTime = this.generalService.getTodayDateTime();
+		this.paymentVoucherCreateService = paymentVoucherCreateService;
+		this.cfonbImportService = cfonbImportService;
+		this.rejectImportService = rejectImportService;
+		this.bankDetailsService = bankDetailsService;
+		this.accountConfigService = accountConfigService;
+		this.partnerRepo = partnerRepo;
+		this.invoiceRepo = invoiceRepo;
+		this.dateTime = generalService.getTodayDateTime();
 
 	}
 
@@ -91,7 +83,7 @@ public class InterbankPaymentOrderImportService {
 
 		AccountConfig accountConfig = company.getAccountConfig();
 
-		String dest = ris.getDestCFONBFile(accountConfig.getInterbankPaymentOrderImportPathCFONB(), accountConfig.getTempInterbankPaymentOrderImportPathCFONB());
+		String dest = rejectImportService.getDestCFONBFile(accountConfig.getInterbankPaymentOrderImportPathCFONB(), accountConfig.getTempInterbankPaymentOrderImportPathCFONB());
 
 		// Récupération des enregistrements
 		List<String[]> file = cfonbImportService.importCFONB(dest, company, 3, 4);
@@ -106,7 +98,7 @@ public class InterbankPaymentOrderImportService {
 		Invoice invoice = this.getInvoice(payment[1], company);
 
 		PaymentMode paymentMode = cfonbImportService.getPaymentMode(invoice.getCompany(), payment[0]);
-		LOG.debug("Mode de paiement récupéré depuis l'enregistrement CFONB : {}", new Object[]{paymentMode.getName()});
+		log.debug("Mode de paiement récupéré depuis l'enregistrement CFONB : {}", new Object[]{paymentMode.getName()});
 
 		BigDecimal amount = new BigDecimal(payment[5]);
 
@@ -119,12 +111,12 @@ public class InterbankPaymentOrderImportService {
 
 
 	public void updateBankDetails(String[] payment, Invoice invoice, PaymentMode paymentMode)  {
-		LOG.debug("Mise à jour des coordonnées bancaire du payeur : Payeur = {} , Facture = {}, Mode de paiement = {}",
+		log.debug("Mise à jour des coordonnées bancaire du payeur : Payeur = {} , Facture = {}, Mode de paiement = {}",
 				new Object[]{invoice.getPartner().getName(),invoice.getInvoiceId(),paymentMode.getName()});
 
 		Partner partner = invoice.getPartner();
 
-		BankDetails bankDetails = bds.createBankDetails( //TODO
+		BankDetails bankDetails = bankDetailsService.createBankDetails( //TODO
 				this.getAccountNbr(payment[2]),
 				"",
 				this.getBankCode(payment[2]),
@@ -160,7 +152,7 @@ public class InterbankPaymentOrderImportService {
 	 * 			Les coordonnées bancaire du payeur doivent-elles être mise à jour ?
 	 */
 	public boolean bankDetailsMustBeUpdate(String val)  {
-		LOG.debug("Doit-on mettre à jour les coordonnées bancaires du payeur ? {}", !val.equals("1"));
+		log.debug("Doit-on mettre à jour les coordonnées bancaires du payeur ? {}", !val.equals("1"));
 
 		return  !val.equals("1");
 	}

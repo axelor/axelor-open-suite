@@ -20,7 +20,6 @@ package com.axelor.apps.account.service;
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.Tax;
 import com.axelor.apps.account.db.TaxAccount;
-import com.axelor.apps.account.db.repo.TaxAccountRepository;
 import com.axelor.apps.base.db.Company;
 
 public class TaxAccountService {

@@ -40,6 +40,8 @@ import com.axelor.apps.account.db.repo.AccountClearanceRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.service.move.MoveLineService;
+import com.axelor.apps.account.service.move.MoveService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.Partner;
@@ -57,44 +59,25 @@ import com.google.inject.persist.Transactional;
 
 public class AccountClearanceService{
 
-	private static final Logger LOG = LoggerFactory.getLogger(AccountClearanceService.class);
+	private final Logger log = LoggerFactory.getLogger( getClass() );
 
-	@Inject
-	private MoveService moveService;
-
-	@Inject
-	private MoveLineService moveLineService;
-	
-	@Inject
-	private MoveLineRepository moveLineRepo;
-
-	@Inject
-	private SequenceService sequenceService;
-
-	@Inject
-	private ReconcileService reconcileService;
-
-	@Inject
-	private TaxService taxService;
-
-	@Inject
-	private TaxAccountService taxAccountService;
-	
-	@Inject
-	private AccountClearanceRepository accountClearanceRepository;
-
-
-	protected GeneralService generalService;
-
-	private DateTime todayTime;
-	private User user;
+	protected MoveService moveService;
+	protected MoveLineService moveLineService;
+	protected MoveLineRepository moveLineRepo;
+	protected SequenceService sequenceService;
+	protected ReconcileService reconcileService;
+	protected TaxService taxService;
+	protected TaxAccountService taxAccountService;
+	protected AccountClearanceRepository accountClearanceRepository;
+	protected DateTime todayTime;
+	protected User user;
 
 	@Inject
 	public AccountClearanceService(UserService userService, GeneralService generalService) {
 
-		this.generalService = generalService;
-		this.todayTime = this.generalService.getTodayDateTime();
+		this.todayTime = generalService.getTodayDateTime();
 		this.user = userService.getUser();
+		
 	}
 
 
@@ -109,7 +92,7 @@ public class AccountClearanceService{
 				company, MoveRepository.STATUS_VALIDATED , accountClearance.getAmountThreshold(),
 				company.getAccountConfig().getClearanceAccountSet(), accountClearance.getDateThreshold()).fetch();
 
-		LOG.debug("Liste des trop perçus récupérés : {}", moveLineList);
+		log.debug("Liste des trop perçus récupérés : {}", moveLineList);
 
 		return moveLineList;
 	}
@@ -143,7 +126,7 @@ public class AccountClearanceService{
 
 		for(MoveLine moveLine : moveLineList)  {
 			Move move = this.createAccountClearanceMove(moveLine, taxRate, taxAccount, profitAccount, company, journal, accountClearance);
-			moveService.validateMove(move);
+			moveService.getMoveValidateService().validateMove(move);
 		}
 
 		accountClearance.setStatusSelect(AccountClearanceRepository.STATUS_VALIDATED);
@@ -157,7 +140,7 @@ public class AccountClearanceService{
 		Partner partner = moveLine.getPartner();
 
 		// Move
-		Move move = moveService.createMove(journal, company, null, partner, null);
+		Move move = moveService.getMoveCreateService().createMove(journal, company, null, partner, null);
 
 		// Debit MoveLine 411
 		BigDecimal amount = moveLine.getAmountRemaining();

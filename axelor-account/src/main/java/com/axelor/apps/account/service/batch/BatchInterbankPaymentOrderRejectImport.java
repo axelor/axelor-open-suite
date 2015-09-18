@@ -27,6 +27,7 @@ import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.service.AccountingService;
 import com.axelor.apps.account.service.InterbankPaymentOrderRejectImportService;
 import com.axelor.apps.account.service.RejectImportService;
 import com.axelor.apps.base.db.Company;
@@ -38,13 +39,13 @@ import com.axelor.i18n.I18n;
 
 public class BatchInterbankPaymentOrderRejectImport extends BatchStrategy {
 
-	private static final Logger LOG = LoggerFactory.getLogger(BatchInterbankPaymentOrderRejectImport.class);
+	private final Logger log = LoggerFactory.getLogger( getClass() );
 
-	private boolean stop = false;
+	protected boolean stop = false;
 	
-	private BigDecimal totalAmount = BigDecimal.ZERO;
+	protected BigDecimal totalAmount = BigDecimal.ZERO;
 	
-	private String updateCustomerAccountLog = "";
+	protected String updateCustomerAccountLog = "";
 	
 	
 	@Inject
@@ -52,6 +53,8 @@ public class BatchInterbankPaymentOrderRejectImport extends BatchStrategy {
 			RejectImportService rejectImportService, BatchAccountCustomer batchAccountCustomer) {
 		
 		super(interbankPaymentOrderRejectImportService, rejectImportService, batchAccountCustomer);
+		
+		AccountingService.setUpdateCustomerAccount(false);
 		
 	}
 
@@ -109,7 +112,7 @@ public class BatchInterbankPaymentOrderRejectImport extends BatchStrategy {
 			
 			incrementAnomaly();
 			
-			LOG.error("Bug(Anomalie) généré(e) pour le batch d'import des rejets de paiement par TIP et TIP chèque {}", batch.getId());
+			log.error("Bug(Anomalie) généré(e) pour le batch d'import des rejets de paiement par TIP et TIP chèque {}", batch.getId());
 			
 		}
 		
@@ -144,7 +147,7 @@ public class BatchInterbankPaymentOrderRejectImport extends BatchStrategy {
 				
 				incrementAnomaly();
 				
-				LOG.error("Bug(Anomalie) généré(e) pour le rejet de paiement de la facture {}", reject[1]);
+				log.error("Bug(Anomalie) généré(e) pour le rejet de paiement de la facture {}", reject[1]);
 				
 			} finally {
 				

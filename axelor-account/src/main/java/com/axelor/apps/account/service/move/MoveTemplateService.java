@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.account.service;
+package com.axelor.apps.account.service.move;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -32,27 +32,27 @@ import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.MoveTemplateRepository;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.PartnerService;
+import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
 public class MoveTemplateService {
 	
-	@Inject
-	MoveService moveService;
+	protected MoveService moveService;
+	protected MoveRepository moveRepo;
+	protected MoveLineService moveLineService;
+	protected PartnerService partnerService;
+	protected MoveTemplateRepository moveTemplateRepo;
 	
 	@Inject
-	MoveRepository moveRepo;
+	public MoveTemplateService(MoveService moveService, MoveRepository moveRepo, MoveLineService moveLineService, PartnerService partnerService)  {
+		this.moveService = moveService;
+		this.moveRepo = moveRepo;
+		this.moveLineService = moveLineService;
+		this.partnerService = partnerService;
+	}
 	
-	@Inject
-	MoveLineService moveLineService;
-	
-	@Inject
-	PartnerService partnerService;
-	
-	@Inject
-	MoveTemplateRepository moveTemplateRepo;
-	
-	@Transactional
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void validateMoveTemplateLine(MoveTemplate moveTemplate){
 		moveTemplate.setIsValid(true);
 		for(MoveTemplateLine line : moveTemplate.getMoveTemplateLineList())
@@ -61,7 +61,7 @@ public class MoveTemplateService {
 	}
 	
 	@SuppressWarnings("unchecked")
-	@Transactional
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public List<Long> generateMove(MoveTemplate moveTemplate, List<HashMap<String,Object>> dataList){
 		try {
 			List<Long> moveList = new ArrayList<Long>();
@@ -80,7 +80,7 @@ public class MoveTemplateService {
 					creditPartner = partnerService.find(Long.parseLong(((HashMap<String,Object>) data.get("creditPartner")).get("id").toString()));
 					partner = creditPartner;
 				}
-				Move move = moveService.createMove(moveTemplate.getJournal(), moveTemplate.getJournal().getCompany(), null, partner,moveDate, null);
+				Move move = moveService.getMoveCreateService().createMove(moveTemplate.getJournal(), moveTemplate.getJournal().getCompany(), null, partner,moveDate, null);
 				for(MoveTemplateLine line : moveTemplate.getMoveTemplateLineList()){
 					partner = null;
 					if(line.getDebitCreditSelect().equals("0")){

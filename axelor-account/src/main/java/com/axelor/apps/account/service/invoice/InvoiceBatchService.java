@@ -39,8 +39,14 @@ public class InvoiceBatchService {
 
 	// Appel 	
 	
+	protected InvoiceBatchRepository invoiceBatchRepo;
+	
 	@Inject
-	private InvoiceBatchRepository invoiceBatchRepo;
+	public InvoiceBatchService(InvoiceBatchRepository invoiceBatchRepo)  {
+		
+		this.invoiceBatchRepo = invoiceBatchRepo;
+		
+	}
 	
 	/**
 	 * Lancer un batch à partir de son code.

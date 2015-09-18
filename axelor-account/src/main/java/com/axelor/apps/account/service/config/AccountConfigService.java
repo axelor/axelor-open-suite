@@ -26,7 +26,6 @@ import com.axelor.apps.account.db.JournalType;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.ReminderConfigLine;
 import com.axelor.apps.account.db.Tax;
-import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Sequence;

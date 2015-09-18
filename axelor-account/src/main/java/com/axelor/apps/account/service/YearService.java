@@ -55,22 +55,26 @@ import com.google.inject.persist.Transactional;
 
 public class YearService {
 
-	private static final Logger LOG = LoggerFactory.getLogger(YearService.class);
+	private final Logger log = LoggerFactory.getLogger( getClass() );
 
-	@Inject
-	private AccountConfigService accountConfigService;
-
-	@Inject
-	private PartnerService partnerService;
-
-	@Inject
-	private ReportedBalanceRepository reportedBalanceRepo;
-
-	@Inject
-	private ReportedBalanceLineRepository reportedBalanceLineRepo;
+	protected AccountConfigService accountConfigService;
+	protected PartnerService partnerService;
+	protected ReportedBalanceRepository reportedBalanceRepo;
+	protected ReportedBalanceLineRepository reportedBalanceLineRepo;
+	protected YearRepository yearRepo;
 	
 	@Inject
-	private YearRepository yearRepo;
+	public YearService(AccountConfigService accountConfigService, PartnerService partnerService, ReportedBalanceRepository reportedBalanceRepo,
+			ReportedBalanceLineRepository reportedBalanceLineRepo, YearRepository yearRepo)  {
+		
+		this.accountConfigService = accountConfigService;
+		this.partnerService = partnerService;
+		this.reportedBalanceRepo = reportedBalanceRepo;
+		this.reportedBalanceLineRepo = reportedBalanceLineRepo;
+		this.yearRepo = yearRepo;
+		
+	}
+	
 	/**
 	 * Procédure permettant de cloturer un exercice comptable
 	 * @param year
@@ -101,8 +105,8 @@ public class YearService {
 		List<? extends Partner> partnerListAll = partnerService.all().fetch();
 
 
-		LOG.debug("Nombre total de tiers : {}", partnerListAll.size());
-		LOG.debug("Nombre de tiers récupéré : {}", partnerList.size());
+		log.debug("Nombre total de tiers : {}", partnerListAll.size());
+		log.debug("Nombre de tiers récupéré : {}", partnerList.size());
 
 		AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
 		Account customerAccount = accountConfigService.getCustomerAccount(accountConfig);
@@ -110,18 +114,18 @@ public class YearService {
 
 		for(Partner partner : partnerList)  {
 			partner = partnerService.find(partner.getId());
-			LOG.debug("Tiers en cours de traitement : {}", partner.getName());
+			log.debug("Tiers en cours de traitement : {}", partner.getName());
 			boolean find = false;
 			for(ReportedBalance reportedBalance : partner.getReportedBalanceList())  {
 				if(reportedBalance.getCompany().equals(company))  {
 					// On ajoute une ligne au A nouveau trouvé
-					LOG.debug("On ajoute une ligne au A nouveau trouvé");
+					log.debug("On ajoute une ligne au A nouveau trouvé");
 
 					ReportedBalanceLine reportedBalanceLine = this.createReportedBalanceLine(
 							reportedBalance,
 							this.computeReportedBalance(year.getFromDate(), year.getToDate(), partner, customerAccount, doubtfulCustomerAccount),
 							year);
-					LOG.debug("ReportedBalanceLine : {}",reportedBalanceLine);
+					log.debug("ReportedBalanceLine : {}",reportedBalanceLine);
 					reportedBalance.getReportedBalanceLineList().add(reportedBalanceLine);
 //					year.getReportedBalanceLineList().add(reportedBalanceLine);
 //					reportedBalance.save();
@@ -131,14 +135,14 @@ public class YearService {
 			}
 			if(!find)  {
 				// On crée un A nouveau et on lui ajoute une ligne
-				LOG.debug("On crée un A nouveau et on lui ajoute une ligne");
+				log.debug("On crée un A nouveau et on lui ajoute une ligne");
 				ReportedBalance reportedBalance = this.createReportedBalance(company, partner);
 				ReportedBalanceLine reportedBalanceLine = this.createReportedBalanceLine(
 						reportedBalance,
 						this.computeReportedBalance(year.getFromDate(), year.getToDate(), partner, customerAccount, doubtfulCustomerAccount),
 						year);
 //				year.getReportedBalanceLineList().add(reportedBalanceLine);
-				LOG.debug("ReportedBalanceLine : {}",reportedBalanceLine);
+				log.debug("ReportedBalanceLine : {}",reportedBalanceLine);
 				reportedBalance.getReportedBalanceLineList().add(reportedBalanceLine);
 				reportedBalanceRepo.save(reportedBalance);
 			}
@@ -207,7 +211,7 @@ public class YearService {
 		q.setParameter(5, account2);
 
 		BigDecimal result = (BigDecimal) q.getSingleResult();
-		LOG.debug("Solde rapporté (result) : {}", result);
+		log.debug("Solde rapporté (result) : {}", result);
 
 		if(result != null)  {
 			return result;
@@ -237,7 +241,7 @@ public class YearService {
 				reportedBalanceAmount = reportedBalanceAmount.add(moveLine.getAmountRemaining());
 			}
 		}
-		if (LOG.isDebugEnabled())  {  LOG.debug("Solde rapporté : {}", reportedBalanceAmount);  }
+		if (log.isDebugEnabled())  {  log.debug("Solde rapporté : {}", reportedBalanceAmount);  }
 		return reportedBalanceAmount;
 
 

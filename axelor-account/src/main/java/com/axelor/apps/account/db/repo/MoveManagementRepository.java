@@ -3,7 +3,7 @@ package com.axelor.apps.account.db.repo;
 import javax.persistence.PersistenceException;
 
 import com.axelor.apps.account.db.Move;
-import com.axelor.apps.account.service.MoveService;
+import com.axelor.apps.account.service.move.MoveSequenceService;
 import com.axelor.apps.base.db.Period;
 import com.axelor.apps.base.service.PeriodService;
 import com.axelor.apps.base.service.administration.GeneralService;
@@ -48,7 +48,7 @@ public class MoveManagementRepository extends MoveRepository {
 	public Move save(Move move) {
 		try {
 
-			Beans.get(MoveService.class).setDraftSequence(move);
+			Beans.get(MoveSequenceService.class).setDraftSequence(move);
 
 			return super.save(move);
 		} catch (Exception e) {

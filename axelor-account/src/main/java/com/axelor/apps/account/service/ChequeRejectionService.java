@@ -30,6 +30,8 @@ import com.axelor.apps.account.db.PaymentVoucher;
 import com.axelor.apps.account.db.repo.ChequeRejectionRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.account.service.move.MoveLineService;
+import com.axelor.apps.account.service.move.MoveService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.Partner;
@@ -43,20 +45,23 @@ import com.google.inject.persist.Transactional;
 
 public class ChequeRejectionService {
 
-	@Inject
-	private MoveService moveService;
-
-	@Inject
-	private MoveLineService moveLineService;
-
-	@Inject
-	private SequenceService sequenceService;
-
-	@Inject
-	private AccountConfigService accountConfigService;
+	protected MoveService moveService;
+	protected MoveLineService moveLineService;
+	protected SequenceService sequenceService;
+	protected AccountConfigService accountConfigService;
+	protected ChequeRejectionRepository chequeRejectionRepository;
 	
 	@Inject
-	private ChequeRejectionRepository chequeRejectionRepo;
+	public ChequeRejectionService(MoveService moveService, MoveLineService moveLineService, SequenceService sequenceService, 
+			AccountConfigService accountConfigService, ChequeRejectionRepository chequeRejectionRepository)  {
+		
+		this.moveService = moveService;
+		this.moveLineService = moveLineService;
+		this.sequenceService = sequenceService;
+		this.accountConfigService = accountConfigService;
+		this.chequeRejectionRepository = chequeRejectionRepository;
+		
+	}
 
 	/**
 	 * procédure de validation du rejet de chèque
@@ -79,7 +84,7 @@ public class ChequeRejectionService {
 
 		chequeRejection.setStatusSelect(ChequeRejectionRepository.STATUS_VALIDATED);
 
-		chequeRejectionRepo.save(chequeRejection);
+		chequeRejectionRepository.save(chequeRejection);
 	}
 
 	/**
@@ -110,7 +115,7 @@ public class ChequeRejectionService {
 		LocalDate rejectionDate = chequeRejection.getRejectionDate();
 
 		// Move
-		Move move = moveService.createMove(journal, company, null, partner, rejectionDate, null);
+		Move move = moveService.getMoveCreateService().createMove(journal, company, null, partner, rejectionDate, null);
 
 		int ref = 1;
 
@@ -137,7 +142,7 @@ public class ChequeRejectionService {
 
 		move.setRejectOk(true);
 
-		moveService.validateMove(move);
+		moveService.getMoveValidateService().validateMove(move);
 
 		return move;
 	}

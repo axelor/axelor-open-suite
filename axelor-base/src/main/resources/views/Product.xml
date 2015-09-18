@@ -113,7 +113,7 @@
 	        <panel title="Tracking number" showIf="productTypeSelect != 'service'" showTitle="false">
         		<panel colSpan="12">
         			<field name="hasWarranty" />
-	            	<field name="warrantyNbrOfMonths"  showIf="hasWarranty"/>
+	            	<field name="warrantyNbrOfMonths" showIf="hasWarranty"/>
         	 		<field name="isPerishable" />
 	            	<field name="perishableNbrOfMonths" showIf="isPerishable"/>
         	 	</panel>

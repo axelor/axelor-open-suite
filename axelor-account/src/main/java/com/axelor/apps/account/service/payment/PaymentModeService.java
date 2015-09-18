@@ -34,7 +34,7 @@ import com.axelor.i18n.I18n;
 
 public class PaymentModeService {
 
-	private static final Logger LOG = LoggerFactory.getLogger(PaymentModeService.class);
+	private final Logger log = LoggerFactory.getLogger( getClass() );
 
 //	public Account getCompanyAccount(PaymentMode paymentMode,Company company, boolean isPurchase) throws AxelorException{
 //
@@ -69,7 +69,7 @@ public class PaymentModeService {
 
 	public Account getCompanyAccount(PaymentMode paymentMode, Company company) throws AxelorException{
 
-		LOG.debug("Récupération du compte comptable du mode de paiement associé à la société :" +
+		log.debug("Récupération du compte comptable du mode de paiement associé à la société :" +
 			" Société : {}, Mode de paiement : {}", new Object[]{ company.getName(),paymentMode.getName() });
 
 		AccountManagement accountManagement = this.getAccountManagement(paymentMode, company);

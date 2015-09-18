@@ -46,25 +46,26 @@ import com.google.inject.Inject;
 
 public class CfonbImportService {
 
-	private static final Logger LOG = LoggerFactory.getLogger(CfonbImportService.class);
+	private final Logger log = LoggerFactory.getLogger( getClass() );
 
-	private CfonbConfig cfonbConfig;
-
-	private List<String> importFile;
-
-	@Inject
-	private CfonbConfigService cfonbConfigService;
-
-	@Inject
-	private CfonbToolService cfonbToolService;
-
-	@Inject
-	private PaymentModeRepository paymentModeRepo;
-
-	@Inject
+	protected CfonbConfigService cfonbConfigService;
+	protected CfonbToolService cfonbToolService;
+	protected PaymentModeRepository paymentModeRepo;
 	protected GeneralService generalService;
+	
+	protected CfonbConfig cfonbConfig;
+	protected List<String> importFile;
 
-
+	@Inject
+	public CfonbImportService(CfonbConfigService cfonbConfigService, CfonbToolService cfonbToolService, PaymentModeRepository paymentModeRepo, GeneralService generalService)  {
+		
+		this.cfonbConfigService = cfonbConfigService;
+		this.cfonbToolService = cfonbToolService;
+		this.paymentModeRepo = paymentModeRepo;
+		this.generalService = generalService;
+		
+	}
+	
 	private void init(CfonbConfig cfonbConfig)  {
 
 		this.cfonbConfig = cfonbConfig;
@@ -318,7 +319,7 @@ public class CfonbImportService {
 
 		int totalRecord = Integer.parseInt(endingCFONB.substring(amountPosStart,amountPosEnd));
 
-		LOG.debug("Controle du montant total des enregistrement détail ({}) et du montant de l'enregistrement total ({})",
+		log.debug("Controle du montant total des enregistrement détail ({}) et du montant de l'enregistrement total ({})",
 				new Object[]{totalAmount,totalRecord});
 
 		if(totalAmount != totalRecord)  {
@@ -348,7 +349,7 @@ public class CfonbImportService {
 	 */
 	private String[] getDetailData(String detailCFONB, boolean isRejectTIP)  {
 		String[] detailData = new String[4];
-		if (LOG.isDebugEnabled())  {  LOG.debug("detailCFONB : {}",detailCFONB);  }
+		log.debug("detailCFONB : {}",detailCFONB);
 
 		detailData[0] = detailCFONB.substring(214, 220);  																	// Date de rejet
 		if(isRejectTIP)  {
@@ -360,7 +361,7 @@ public class CfonbImportService {
 		detailData[2] = detailCFONB.substring(228, 240).substring(0, 10)+"."+detailCFONB.substring(228, 240).substring(10);	// Montant rejeté
 		detailData[3] = detailCFONB.substring(226, 228);																	// Motif du rejet
 
-		LOG.debug("Obtention des données d'un enregistrement détail CFONB: Date de rejet = {}, Ref prélèvement = {}, Montant rejeté = {}, Motif du rejet = {}",
+		log.debug("Obtention des données d'un enregistrement détail CFONB: Date de rejet = {}, Ref prélèvement = {}, Montant rejeté = {}, Motif du rejet = {}",
 				new Object[]{detailData[0],detailData[1],detailData[2],detailData[3]});
 
 		return detailData;
@@ -382,7 +383,7 @@ public class CfonbImportService {
 		detailData[4] = detailCFONB.substring(154, 155);																	// action RIB
 		detailData[5] = detailCFONB.substring(102, 116)+"."+detailCFONB.substring(116, 118);								// Montant rejeté
 
-		LOG.debug("Obtention des données d'un enregistrement détail CFONB d'un TIP : Mode de paiement = {}, Ref facture = {}, RIB = {}, clé RIB = {}, action RIB = {}, Montant rejeté = {}",
+		log.debug("Obtention des données d'un enregistrement détail CFONB d'un TIP : Mode de paiement = {}, Ref facture = {}, RIB = {}, clé RIB = {}, action RIB = {}, Montant rejeté = {}",
 				new Object[]{detailData[0],detailData[1],detailData[2],detailData[3],detailData[4],detailData[5]});
 
 		return detailData;
@@ -413,7 +414,7 @@ public class CfonbImportService {
 	 */
 	//TODO à passer en configuration
 	public PaymentMode getPaymentMode(Company company, String code) throws AxelorException  {
-		LOG.debug("Récupération du mode de paiement depuis l'enregistrement CFONB : Société = {} , code CFONB = {}", new Object[]{company.getName(),code});
+		log.debug("Récupération du mode de paiement depuis l'enregistrement CFONB : Société = {} , code CFONB = {}", new Object[]{company.getName(),code});
 
 		if(code.equals(this.cfonbConfig.getIpoOperationCodeImportCFONB()))  {
 			return paymentModeRepo.findByCode("TIP");
@@ -470,15 +471,15 @@ public class CfonbImportService {
 		String operationCode = this.getImportOperationCode(operation);
 		String optionalOperationCode = this.getImportOperationCode(optionalOperation);
 
-		LOG.debug("Obtention enregistrement en-tête CFONB: recordCode = {}, operationCode = {}, optionalRecordCode = {}, optionalOperationCode = {}",
+		log.debug("Obtention enregistrement en-tête CFONB: recordCode = {}, operationCode = {}, optionalRecordCode = {}, optionalOperationCode = {}",
 				new Object[]{recordCode,operationCode,optionalRecordCode,optionalOperationCode});
 
 		for(String s : file)  {
-			LOG.debug("file line : {}",s);
-			LOG.debug("s.substring(0, 2) : {}",s.substring(0, 2));
+			log.debug("file line : {}",s);
+			log.debug("s.substring(0, 2) : {}",s.substring(0, 2));
 			if(s.substring(0, 2).equals(recordCode) || s.substring(0, 2).equals(optionalRecordCode))  {
-				LOG.debug("s.substring(8, 10) : {}",s.substring(8, 10));
-				LOG.debug("s.substring(2, 4) : {}",s.substring(2, 4));
+				log.debug("s.substring(8, 10) : {}",s.substring(8, 10));
+				log.debug("s.substring(2, 4) : {}",s.substring(2, 4));
 				if((s.substring(8, 10).equals(operationCode) && optionalOperation == 999)|| s.substring(2, 4).equals(operationCode) || s.substring(2, 4).equals(optionalOperationCode))  {
 					return s;
 				}
@@ -541,7 +542,7 @@ public class CfonbImportService {
 		String optionalRecordCode = this.getDetailRecordCode(optionalOperation);
 		String optionalOperationCode = this.getImportOperationCode(optionalOperation);
 
-		LOG.debug("Obtention enregistrement détails CFONB: recordCode = {}, operationCode = {}, optionalRecordCode = {}, optionalOperationCode = {}",
+		log.debug("Obtention enregistrement détails CFONB: recordCode = {}, operationCode = {}, optionalRecordCode = {}, optionalOperationCode = {}",
 				new Object[]{recordCode,operationCode,optionalRecordCode,optionalOperationCode});
 
 		for(String s : file)  {
@@ -608,7 +609,7 @@ public class CfonbImportService {
 		String optionalRecordCode = this.getEndingRecordCode(optionalOperation);
 		String optionalOperationCode = this.getImportOperationCode(optionalOperation);
 
-		LOG.debug("Obtention enregistrement fin CFONB: recordCode = {}, operationCode = {}, optionalRecordCode = {}, optionalOperationCode = {}",
+		log.debug("Obtention enregistrement fin CFONB: recordCode = {}, operationCode = {}, optionalRecordCode = {}, optionalOperationCode = {}",
 				new Object[]{recordCode,operationCode,optionalRecordCode,optionalOperationCode});
 		for(String s : file)  {
 			if(s.substring(0, 2).equals(recordCode) || s.substring(0, 2).equals(optionalRecordCode))  {

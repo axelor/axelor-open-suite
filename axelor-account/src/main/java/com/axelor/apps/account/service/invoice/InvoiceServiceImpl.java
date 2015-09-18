@@ -50,18 +50,16 @@ import com.google.inject.persist.Transactional;
  */
 public class InvoiceServiceImpl implements InvoiceService  {
 
-	private static final Logger LOG = LoggerFactory.getLogger(InvoiceServiceImpl.class);
+	private final Logger log = LoggerFactory.getLogger( getClass() );
 	
 	private ValidateFactory validateFactory;
 	private VentilateFactory ventilateFactory;
 	private CancelFactory cancelFactory;
 	private AlarmEngineService<Invoice> alarmEngineService;
-	
-	@Inject
 	private InvoiceRepository invoiceRepo;
 	
 	@Inject
-	public InvoiceServiceImpl(ValidateFactory validateFactory, VentilateFactory ventilateFactory, CancelFactory cancelFactory, AlarmEngineService<Invoice> alarmEngineService) {
+	public InvoiceServiceImpl(ValidateFactory validateFactory, VentilateFactory ventilateFactory, CancelFactory cancelFactory, AlarmEngineService<Invoice> alarmEngineService, InvoiceRepository invoiceRepo) {
 
 		this.validateFactory = validateFactory;
 		this.ventilateFactory = ventilateFactory;
@@ -116,7 +114,7 @@ public class InvoiceServiceImpl implements InvoiceService  {
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public Invoice compute(final Invoice invoice) throws AxelorException {
 
-		LOG.debug("Calcule de la facture");
+		log.debug("Calcule de la facture");
 		
 		InvoiceGenerator invoiceGenerator = new InvoiceGenerator() {
 			
@@ -150,7 +148,7 @@ public class InvoiceServiceImpl implements InvoiceService  {
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void validate(Invoice invoice) throws AxelorException {
 
-		LOG.debug("Validation de la facture");
+		log.debug("Validation de la facture");
 		
 		validateFactory.getValidator(invoice).process( );
 		invoiceRepo.save(invoice);
@@ -169,7 +167,7 @@ public class InvoiceServiceImpl implements InvoiceService  {
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void ventilate( Invoice invoice ) throws AxelorException {
 
-		LOG.debug("Ventilation de la facture {}", invoice.getInvoiceId());
+		log.debug("Ventilation de la facture {}", invoice.getInvoiceId());
 		
 		ventilateFactory.getVentilator(invoice).process();
 		
@@ -189,7 +187,7 @@ public class InvoiceServiceImpl implements InvoiceService  {
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void cancel(Invoice invoice) throws AxelorException {
 
-		LOG.debug("Annulation de la facture {}", invoice.getInvoiceId());
+		log.debug("Annulation de la facture {}", invoice.getInvoiceId());
 		
 		cancelFactory.getCanceller(invoice).process();
 		
@@ -240,7 +238,7 @@ public class InvoiceServiceImpl implements InvoiceService  {
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public Invoice createRefund(Invoice invoice) throws AxelorException {
 		
-		LOG.debug("Créer un avoir pour la facture {}", new Object[] { invoice.getInvoiceId() });
+		log.debug("Créer un avoir pour la facture {}", new Object[] { invoice.getInvoiceId() });
 		Invoice refund = new RefundInvoice(invoice).generate();
 		invoice.addRefundInvoiceListItem( refund );
 		invoiceRepo.save(invoice);

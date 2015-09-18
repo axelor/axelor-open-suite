@@ -35,10 +35,10 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
-import com.axelor.apps.account.service.MoveLineService;
-import com.axelor.apps.account.service.MoveService;
 import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.account.service.move.MoveLineService;
+import com.axelor.apps.account.service.move.MoveService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.administration.GeneralService;
@@ -50,31 +50,26 @@ import com.google.inject.persist.Transactional;
 
 public class DoubtfulCustomerService {
 
-	private static final Logger LOG = LoggerFactory.getLogger(DoubtfulCustomerService.class);
+	private final Logger log = LoggerFactory.getLogger( getClass() );
+
+	protected MoveService moveService;
+	protected MoveRepository moveRepo;
+	protected MoveLineService moveLineService;
+	protected MoveLineRepository moveLineRepo;
+	protected ReconcileService reconcileService;
+	protected AccountConfigService accountConfigService;
+	protected LocalDate today;
 
 	@Inject
-	private MoveService ms;
-	
-	@Inject
-	private MoveRepository moveRepo;
+	public DoubtfulCustomerService(MoveService moveService, MoveRepository moveRepo, MoveLineService moveLineService, MoveLineRepository moveLineRepo,
+			ReconcileService reconcileService, AccountConfigService accountConfigService) {
 
-	@Inject
-	private MoveLineService mls;
-	
-	@Inject
-	private MoveLineRepository moveLineRepo;
-
-	@Inject
-	private ReconcileService rs;
-
-	@Inject
-	private AccountConfigService accountConfigService;
-
-	private LocalDate today;
-
-	@Inject
-	public DoubtfulCustomerService() {
-
+		this.moveService = moveService;
+		this.moveRepo = moveRepo;
+		this.moveLineService = moveLineService;
+		this.moveLineRepo = moveLineRepo;
+		this.reconcileService = reconcileService;
+		this.accountConfigService = accountConfigService;
 		this.today = Beans.get(GeneralService.class).getTodayDate();
 	}
 
@@ -132,12 +127,12 @@ public class DoubtfulCustomerService {
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void createDoubtFulCustomerMove(Move move, Account doubtfulCustomerAccount, String debtPassReason) throws AxelorException  {
 
-		LOG.debug("Ecriture concernée : {} ",move.getReference());
+		log.debug("Ecriture concernée : {} ",move.getReference());
 
 		BigDecimal totalAmountRemaining = BigDecimal.ZERO;
 		Company company = move.getCompany();
 		Partner partner = move.getPartner();
-		Move newMove = ms.createMove(company.getAccountConfig().getMiscOperationJournal(), company, move.getInvoice(), partner, move.getPaymentMode());
+		Move newMove = moveService.getMoveCreateService().createMove(company.getAccountConfig().getMiscOperationJournal(), company, move.getInvoice(), partner, move.getPaymentMode());
 
 		int ref = 1;
 		List<Reconcile> reconcileList = new ArrayList<Reconcile>();
@@ -150,10 +145,10 @@ public class DoubtfulCustomerService {
 
 					BigDecimal amountRemaining = moveLine.getAmountRemaining();
 					// Ecriture au crédit sur le 411
-					MoveLine creditMoveLine = mls.createMoveLine(newMove , moveLine.getPartner(), moveLine.getAccount(), amountRemaining, false, today, ref, null);
+					MoveLine creditMoveLine = moveLineService.createMoveLine(newMove , moveLine.getPartner(), moveLine.getAccount(), amountRemaining, false, today, ref, null);
 					newMove.getMoveLineList().add(creditMoveLine);
 
-					Reconcile reconcile = rs.createReconcile(moveLine, creditMoveLine, amountRemaining);
+					Reconcile reconcile = reconcileService.createReconcile(moveLine, creditMoveLine, amountRemaining);
 					reconcileList.add(reconcile);
 
 					totalAmountRemaining = totalAmountRemaining.add(amountRemaining);
@@ -163,16 +158,16 @@ public class DoubtfulCustomerService {
 		}
 
 		// Ecriture au débit sur le 416 (client douteux)
-		MoveLine debitMoveLine = mls.createMoveLine(newMove , newMove.getPartner(), doubtfulCustomerAccount, totalAmountRemaining, true, today, ref, null);
+		MoveLine debitMoveLine = moveLineService.createMoveLine(newMove , newMove.getPartner(), doubtfulCustomerAccount, totalAmountRemaining, true, today, ref, null);
 		newMove.getMoveLineList().add(debitMoveLine);
 
 		debitMoveLine.setPassageReason(debtPassReason);
 
-		ms.validateMove(newMove);
+		moveService.getMoveValidateService().validateMove(newMove);
 		moveRepo.save(newMove);
 
 		for(Reconcile reconcile : reconcileList)  {
-			rs.confirmReconcile(reconcile, false);
+			reconcileService.confirmReconcile(reconcile);
 		}
 
 		this.invoiceProcess(newMove, doubtfulCustomerAccount, debtPassReason);
@@ -204,32 +199,32 @@ public class DoubtfulCustomerService {
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void createDoubtFulCustomerRejectMove(MoveLine moveLine, Account doubtfulCustomerAccount, String debtPassReason) throws AxelorException  {
 
-		LOG.debug("Ecriture concernée : {} ",moveLine.getName());
+		log.debug("Ecriture concernée : {} ",moveLine.getName());
 		Company company = moveLine.getMove().getCompany();
 		Partner partner = moveLine.getPartner();
 
-		Move newMove = ms.createMove(company.getAccountConfig().getMiscOperationJournal(), company, null, partner, moveLine.getMove().getPaymentMode());
+		Move newMove = moveService.getMoveCreateService().createMove(company.getAccountConfig().getMiscOperationJournal(), company, null, partner, moveLine.getMove().getPaymentMode());
 
 		List<Reconcile> reconcileList = new ArrayList<Reconcile>();
 
 		BigDecimal amountRemaining = moveLine.getAmountRemaining();
 
 		// Ecriture au crédit sur le 411
-		MoveLine creditMoveLine = mls.createMoveLine(newMove , partner, moveLine.getAccount(), amountRemaining, false, today, 1, null);
-		newMove.getMoveLineList().add(creditMoveLine);
+		MoveLine creditMoveLine = moveLineService.createMoveLine(newMove , partner, moveLine.getAccount(), amountRemaining, false, today, 1, null);
+		newMove.addMoveLineListItem(creditMoveLine);
 
-		Reconcile reconcile = rs.createReconcile(moveLine, creditMoveLine, amountRemaining);
+		Reconcile reconcile = reconcileService.createReconcile(moveLine, creditMoveLine, amountRemaining);
 		reconcileList.add(reconcile);
-		rs.confirmReconcile(reconcile, false);
+		reconcileService.confirmReconcile(reconcile);
 
 		// Ecriture au débit sur le 416 (client douteux)
-		MoveLine debitMoveLine = mls.createMoveLine(newMove , newMove.getPartner(), doubtfulCustomerAccount, amountRemaining, true, today, 2, null);
+		MoveLine debitMoveLine = moveLineService.createMoveLine(newMove , newMove.getPartner(), doubtfulCustomerAccount, amountRemaining, true, today, 2, null);
 		newMove.getMoveLineList().add(debitMoveLine);
 
 		debitMoveLine.setInvoiceReject(moveLine.getInvoiceReject());
 		debitMoveLine.setPassageReason(debtPassReason);
 
-		ms.validateMove(newMove);
+		moveService.getMoveValidateService().validateMove(newMove);
 		moveRepo.save(newMove);
 
 		this.invoiceRejectProcess(debitMoveLine, doubtfulCustomerAccount, debtPassReason);
@@ -286,7 +281,7 @@ public class DoubtfulCustomerService {
 			invoice.setPartnerAccount(doubtfulCustomerAccount);
 			invoice.setDoubtfulCustomerOk(true);
 			// Recalcule du restant à payer de la facture
-			invoice.setCompanyInTaxTotalRemaining(ms.getInTaxTotalRemaining(invoice));
+			invoice.setCompanyInTaxTotalRemaining(moveService.getMoveToolService().getInTaxTotalRemaining(invoice));
 		}
 		return invoice;
 	}
@@ -348,13 +343,13 @@ public class DoubtfulCustomerService {
 				break;
 		}
 
-		LOG.debug("Date de créance prise en compte : {} ",date);
+		log.debug("Date de créance prise en compte : {} ",date);
 
 		String request = "SELECT DISTINCT m FROM MoveLine ml, Move m WHERE ml.move = m AND ml.company.id = "+ company.getId() +" AND ml.account.reconcileOk = 'true' " +
 				"AND ml.invoice IS NOT NULL AND ml.amountRemaining > 0.00 AND ml.debit > 0.00 AND ml.dueDate < '"+ date.toString() +
 				"' AND ml.account.id != "+doubtfulCustomerAccount.getId();
 
-		LOG.debug("Requete : {} ",request);
+		log.debug("Requete : {} ",request);
 
 		Query query = JPA.em().createQuery(request);
 
@@ -406,7 +401,7 @@ public class DoubtfulCustomerService {
 				break;
 		}
 
-		LOG.debug("Date de créance prise en compte : {} ",date);
+		log.debug("Date de créance prise en compte : {} ",date);
 
 		return moveLineList;
 	}

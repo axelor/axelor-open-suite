@@ -53,31 +53,31 @@ import com.google.inject.Inject;
 
 public class CfonbExportService {
 
-	private CfonbConfig cfonbConfig;
+	protected CfonbConfig cfonbConfig;
+	protected CfonbToolService cfonbToolService;
+	protected CfonbConfigService cfonbConfigService;
+	protected ReimbursementRepository reimbursementRepo;
+	protected PaymentScheduleLineRepository paymentScheduleLineRepo;
+	protected InvoiceRepository invoiceRepo;
+	private boolean sepa;
 
 	@Inject
-	private CfonbToolService cfonbToolService;
+	public CfonbExportService(CfonbToolService cfonbToolService, CfonbConfigService cfonbConfigService,
+			ReimbursementRepository reimbursementRepo, PaymentScheduleLineRepository paymentScheduleLineRepo, InvoiceRepository invoiceRepo)  {
 
-	@Inject
-	private CfonbConfigService cfonbConfigService;
-
-	@Inject
-	private ReimbursementRepository reimbursementRepo;
-
-	@Inject
-	private PaymentScheduleLineRepository paymentScheduleLineRepo;
-
-	@Inject
-	private InvoiceRepository invoiceRepo;
-
-
+		this.cfonbToolService = cfonbToolService;
+		this.cfonbConfigService = cfonbConfigService;
+		this.reimbursementRepo = reimbursementRepo;
+		this.paymentScheduleLineRepo = paymentScheduleLineRepo;
+		this.invoiceRepo = invoiceRepo;
+		
+	}
+	
 	private void init(CfonbConfig cfonbConfig)  {
 
 		this.cfonbConfig = cfonbConfig;
 
 	}
-
-	private boolean sepa;
 
 	public void setSepa(boolean sepa)  {
 

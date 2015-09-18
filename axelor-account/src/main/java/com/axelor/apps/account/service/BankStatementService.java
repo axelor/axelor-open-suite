@@ -28,6 +28,8 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.BankStatementRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.service.move.MoveLineService;
+import com.axelor.apps.account.service.move.MoveService;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.administration.GeneralServiceImpl;
 import com.axelor.exception.AxelorException;
@@ -38,17 +40,19 @@ import com.google.inject.persist.Transactional;
 
 public class BankStatementService {
 
-	@Inject
-	private MoveService moveService;
+	protected MoveService moveService;
+	protected MoveRepository moveRepository;
+	protected MoveLineService moveLineService;
+	protected BankStatementRepository bankStatementRepository;
 	
 	@Inject
-	private MoveRepository moveRepo;
-
-	@Inject
-	private MoveLineService moveLineService;
-	
-	@Inject
-	private BankStatementRepository bankStatementRepo;
+	public BankStatementService(MoveService moveService, MoveRepository moveRepository, MoveLineService moveLineService, BankStatementRepository bankStatementRepository)  {
+		
+		this.moveService = moveService;
+		this.moveRepository = moveRepository;
+		this.moveLineService = moveLineService;
+		this.bankStatementRepository = bankStatementRepository;
+	}
 
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void compute(BankStatement bankStatement) throws AxelorException  {
@@ -63,7 +67,7 @@ public class BankStatementService {
 
 		bankStatement.setComputedBalance(computedBalance);
 
-		bankStatementRepo.save(bankStatement);
+		bankStatementRepository.save(bankStatement);
 	}
 
 
@@ -87,7 +91,7 @@ public class BankStatementService {
 
 		bankStatement.setStatusSelect(BankStatementRepository.STATUS_VALIDATED);
 
-		bankStatementRepo.save(bankStatement);
+		bankStatementRepository.save(bankStatement);
 	}
 
 	public void checkBalance(BankStatement bankStatement) throws AxelorException  {
@@ -120,7 +124,7 @@ public class BankStatementService {
 
 		String name = bankStatementLine.getName();
 
-		Move move = moveService.createMove(bankStatement.getJournal(), bankStatement.getCompany(), null, partner, effectDate, null);
+		Move move = moveService.getMoveCreateService().createMove(bankStatement.getJournal(), bankStatement.getCompany(), null, partner, effectDate, null);
 
 		boolean isNegate = amount.compareTo(BigDecimal.ZERO) < 0;
 
@@ -132,9 +136,9 @@ public class BankStatementService {
 				moveLineService.createMoveLine(move, partner, bankStatement.getCashAccount(), amount,
 						!isNegate, effectDate, effectDate, 1, name));
 
-		moveRepo.save(move);
+		moveRepository.save(move);
 
-		moveService.validateMove(move);
+		moveService.getMoveValidateService().validateMove(move);
 
 		bankStatementLine.setMoveLine(partnerMoveLine);
 

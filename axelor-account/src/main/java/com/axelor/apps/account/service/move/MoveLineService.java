@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.account.service;
+package com.axelor.apps.account.service.move;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -42,6 +42,9 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.Tax;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.service.AccountManagementServiceAccountImpl;
+import com.axelor.apps.account.service.FiscalPositionServiceAccountImpl;
+import com.axelor.apps.account.service.TaxAccountService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
@@ -55,28 +58,21 @@ import com.google.inject.persist.Transactional;
 
 public class MoveLineService {
 
-	private static final Logger LOG = LoggerFactory.getLogger(MoveLineService.class);
+	private final Logger log = LoggerFactory.getLogger( getClass() );
 
-	private AccountManagementServiceAccountImpl accountManagementService;
-
-	private TaxAccountService taxAccountService;
-
-	private FiscalPositionServiceAccountImpl fiscalPositionService;
-
-	private LocalDate toDay;
-
-
-	protected GeneralService generalService;
+	protected AccountManagementServiceAccountImpl accountManagementService;
+	protected TaxAccountService taxAccountService;
+	protected FiscalPositionServiceAccountImpl fiscalPositionService;
+	protected LocalDate today;
 
 	@Inject
 	public MoveLineService(AccountManagementServiceAccountImpl accountManagementService, TaxAccountService taxAccountService,
 			FiscalPositionServiceAccountImpl fiscalPositionService, GeneralService generalService) {
-		this.generalService = generalService;
-		toDay = this.generalService.getTodayDate();
 		this.accountManagementService = accountManagementService;
 		this.taxAccountService = taxAccountService;
 		this.fiscalPositionService = fiscalPositionService;
 
+		today = generalService.getTodayDate();
 	}
 
 
@@ -108,7 +104,7 @@ public class MoveLineService {
 	public MoveLine createMoveLine(Move move, Partner partner, Account account, BigDecimal amount, boolean isDebit, LocalDate date,
 			LocalDate dueDate, int counter, String descriptionOption){
 
-		LOG.debug("Création d'une ligne d'écriture comptable (compte comptable : {}, montant : {}, debit ? : {}, " +
+		log.debug("Création d'une ligne d'écriture comptable (compte comptable : {}, montant : {}, debit ? : {}, " +
 			" date d'échéance : {}, référence : {}",  new Object[]{account.getName(), amount, isDebit, dueDate, counter});
 
 		if(partner != null)  {
@@ -160,7 +156,7 @@ public class MoveLineService {
 	 */
 	public MoveLine createMoveLine(Move move, Partner partner, Account account, BigDecimal amount, boolean isDebit, LocalDate dueDate, int ref, String descriptionOption){
 
-		return this.createMoveLine(move, partner, account, amount, isDebit, toDay, dueDate, ref, descriptionOption);
+		return this.createMoveLine(move, partner, account, amount, isDebit, today, dueDate, ref, descriptionOption);
 	}
 
 
@@ -174,7 +170,7 @@ public class MoveLineService {
 	 */
 	public List<MoveLine> createMoveLines(Invoice invoice, Move move, Company company, Partner partner, Account account, boolean consolidate, boolean isPurchase, boolean isDebitCustomer) throws AxelorException{
 
-		LOG.debug("Création des lignes d'écriture comptable de la facture/l'avoir {}", invoice.getInvoiceId());
+		log.debug("Création des lignes d'écriture comptable de la facture/l'avoir {}", invoice.getInvoiceId());
 
 		Account account2 = account;
 
@@ -229,7 +225,7 @@ public class MoveLineService {
 	
 				exTaxTotal = invoiceLine.getCompanyExTaxTotal();
 	
-				LOG.debug("Traitement de la ligne de facture : compte comptable = {}, montant = {}", new Object[]{account2.getName(), exTaxTotal});
+				log.debug("Traitement de la ligne de facture : compte comptable = {}, montant = {}", new Object[]{account2.getName(), exTaxTotal});
 
 			
 				MoveLine moveLine = this.createMoveLine(move, partner, account2, exTaxTotal, !isDebitCustomer, invoice.getInvoiceDate(), null, moveLineId++, invoice.getInvoiceId());

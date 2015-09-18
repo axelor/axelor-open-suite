@@ -50,28 +50,24 @@ import com.google.inject.persist.Transactional;
 
 public class PaymentScheduleService {
 
-	private static final Logger LOG = LoggerFactory.getLogger(PaymentScheduleService.class);
+	private final Logger log = LoggerFactory.getLogger( getClass() );
+
+	protected PaymentScheduleLineService paymentScheduleLineService;
+	protected PaymentScheduleLineRepository paymentScheduleLineRepo;
+	protected SequenceService sequenceService;
+	protected PaymentScheduleRepository paymentScheduleRepo;
+
+	protected LocalDate date;
 
 	@Inject
-	private PaymentScheduleLineService psls;
-	
-	@Inject
-	private PaymentScheduleLineRepository paymentScheduleLineRepo;
-
-	@Inject
-	private SequenceService sequenceService;
-	
-	@Inject
-	private PaymentScheduleRepository paymentScheduleRepo;
-	
-	protected GeneralService generalService;
-
-	private LocalDate date;
-
-	@Inject
-	public PaymentScheduleService(GeneralService generalService) {
-		this.generalService = generalService;
-		date = this.generalService.getTodayDate();
+	public PaymentScheduleService(GeneralService generalService, PaymentScheduleLineService paymentScheduleLineService, PaymentScheduleLineRepository paymentScheduleLineRepo,
+			SequenceService sequenceService, PaymentScheduleRepository paymentScheduleRepo) {
+		this.paymentScheduleLineService = paymentScheduleLineService;
+		this.paymentScheduleLineRepo = paymentScheduleLineRepo;
+		this.sequenceService = sequenceService;
+		this.paymentScheduleRepo = paymentScheduleRepo;
+		
+		date = generalService.getTodayDate();
 	}
 
 	/**
@@ -202,14 +198,14 @@ public class PaymentScheduleService {
 			for (PaymentScheduleLine paymentScheduleLine : paymentSchedule.getPaymentScheduleLineList()){
 				if (paymentScheduleLine.getInTaxAmount() != null) {
 
-					LOG.debug("Somme TTC des lignes de l'échéancier {} : total = {}, ajout = {}", new Object[] {paymentSchedule.getScheduleId(), totalAmount, paymentScheduleLine.getInTaxAmount()});
+					log.debug("Somme TTC des lignes de l'échéancier {} : total = {}, ajout = {}", new Object[] {paymentSchedule.getScheduleId(), totalAmount, paymentScheduleLine.getInTaxAmount()});
 
 					totalAmount = totalAmount.add(paymentScheduleLine.getInTaxAmount());
 				}
 			}
 		}
 
-		LOG.debug("Obtention de la somme TTC des lignes de l'échéancier {} : {}", new Object[] {paymentSchedule.getScheduleId(), totalAmount});
+		log.debug("Obtention de la somme TTC des lignes de l'échéancier {} : {}", new Object[] {paymentSchedule.getScheduleId(), totalAmount});
 
 		return totalAmount;
 
@@ -227,13 +223,13 @@ public class PaymentScheduleService {
 	@Transactional
 	public void updatePaymentSchedule(PaymentSchedule paymentSchedule, BigDecimal inTaxTotal){
 
-		LOG.debug("Mise à jour de l'échéancier {} : {}", new Object[] {paymentSchedule.getScheduleId(), inTaxTotal});
+		log.debug("Mise à jour de l'échéancier {} : {}", new Object[] {paymentSchedule.getScheduleId(), inTaxTotal});
 
 		for (PaymentScheduleLine paymentScheduleLine : paymentSchedule.getPaymentScheduleLineList()){
 
 			if (paymentScheduleLine.getStatusSelect() == PaymentScheduleLineRepository.STATUS_IN_PROGRESS && !paymentScheduleLine.getRejectedOk()) {
 
-				LOG.debug("Mise à jour de la ligne {} ", paymentScheduleLine.getName());
+				log.debug("Mise à jour de la ligne {} ", paymentScheduleLine.getName());
 
 				paymentScheduleLine.setInTaxAmount(inTaxTotal);
 			}
@@ -275,7 +271,7 @@ public class PaymentScheduleService {
 		paymentSchedule.setPaymentScheduleLineList(new ArrayList<PaymentScheduleLine>());
 
 		for (int term = 1; term < nbrTerm + 1; term++){
-			paymentSchedule.getPaymentScheduleLineList().add(psls.createPaymentScheduleLine(paymentSchedule, initialInTaxAmount, term, firstTermDate.plusMonths(term-1)));
+			paymentSchedule.getPaymentScheduleLineList().add(paymentScheduleLineService.createPaymentScheduleLine(paymentSchedule, initialInTaxAmount, term, firstTermDate.plusMonths(term-1)));
 		}
 
 		return paymentSchedule;
@@ -289,7 +285,7 @@ public class PaymentScheduleService {
 	 * @return
 	 */
 	public List<MoveLine> getPaymentSchedulerMoveLineToPay(PaymentSchedule paymentSchedule){
-		LOG.debug("In getPaymentSchedulerMoveLineToPay ....");
+		log.debug("In getPaymentSchedulerMoveLineToPay ....");
 		List<MoveLine> moveLines = new ArrayList<MoveLine>();
 		for (Invoice invoice : paymentSchedule.getInvoiceSet())  {
 			if (invoice.getCompanyInTaxTotalRemaining().compareTo(BigDecimal.ZERO) > 0 && invoice.getMove() != null && invoice.getMove().getMoveLineList() != null)  {
@@ -300,7 +296,7 @@ public class PaymentScheduleService {
 				}
 			}
 		}
-		LOG.debug("End getPaymentSchedulerMoveLineToPay.");
+		log.debug("End getPaymentSchedulerMoveLineToPay.");
 		return moveLines;
 	}
 
@@ -314,7 +310,7 @@ public class PaymentScheduleService {
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void validatePaymentSchedule(PaymentSchedule paymentSchedule) throws AxelorException {
 
-		LOG.debug("Validation de l'échéancier {}", paymentSchedule.getScheduleId());
+		log.debug("Validation de l'échéancier {}", paymentSchedule.getScheduleId());
 
 		if(paymentSchedule.getPaymentScheduleLineList() == null || paymentSchedule.getPaymentScheduleLineList().size() == 0)  {
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.PAYMENT_SCHEDULE_6),
@@ -394,7 +390,7 @@ public class PaymentScheduleService {
 		if(paymentScheduleLine != null)  {
 			if(paymentScheduleLineRepo.all().filter("self.paymentSchedule = ?1 and self.scheduleDate > ?2 and self.statusSelect = ?3",
 					paymentScheduleLine.getPaymentSchedule(), paymentScheduleLine.getScheduleDate(), PaymentScheduleLineRepository.STATUS_IN_PROGRESS).fetchOne() == null)  {
-				LOG.debug("Dernière échéance");
+				log.debug("Dernière échéance");
 				return true;
 			}
 			else  {
@@ -415,7 +411,7 @@ public class PaymentScheduleService {
 	 */
   	public void closePaymentSchedule(PaymentSchedule paymentSchedule) throws AxelorException  {
 
-		LOG.debug("Cloture de l'échéancier");
+  		log.debug("Cloture de l'échéancier");
 
 		//On récupère un statut cloturé, afin de pouvoir changer l'état des lignes d'échéanciers
 
@@ -466,7 +462,7 @@ public class PaymentScheduleService {
 
 		this.initCollection(paymentSchedule);
 
-		paymentSchedule.getPaymentScheduleLineList().addAll(psls.createPaymentScheduleLines(paymentSchedule));
+		paymentSchedule.getPaymentScheduleLineList().addAll(paymentScheduleLineService.createPaymentScheduleLines(paymentSchedule));
 		paymentScheduleRepo.save(paymentSchedule);
 
 	}

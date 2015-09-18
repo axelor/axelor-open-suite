@@ -47,20 +47,19 @@ import com.google.inject.persist.Transactional;
 
 public class PayerQualityService {
 
-	private static final Logger LOG = LoggerFactory.getLogger(PayerQualityService.class);
+	private final Logger log = LoggerFactory.getLogger( getClass() );
 
-	private LocalDate today;
-
-	@Inject
-	private PartnerService partnerService;
-
-	@Inject
+	protected PartnerService partnerService;
 	protected GeneralService generalService;
 
+	protected LocalDate today;
+	
 	@Inject
-	public PayerQualityService() {
+	public PayerQualityService(PartnerService partnerService, GeneralService generalService) {
 
-		this.today = Beans.get(GeneralService.class).getTodayDate();
+		this.partnerService = partnerService;
+		this.generalService = generalService;
+		this.today = generalService.getTodayDate();
 
 	}
 
@@ -97,8 +96,8 @@ public class PayerQualityService {
 		List<ReminderHistory> reminderHistoryList = this.getReminderHistoryList(partner);
 		List<MoveLine> moveLineList = this.getMoveLineRejectList(partner);
 
-		LOG.debug("Tiers {} : Nombre de relance concernée : {}",partner.getName(), reminderHistoryList.size());
-		LOG.debug("Tiers {} : Nombre de rejets concernée : {}", partner.getName(), moveLineList.size());
+		log.debug("Tiers {} : Nombre de relance concernée : {}",partner.getName(), reminderHistoryList.size());
+		log.debug("Tiers {} : Nombre de rejets concernée : {}", partner.getName(), moveLineList.size());
 
 		for(ReminderHistory reminderHistory : reminderHistoryList)  {
 			burden = burden.add(this.getPayerQualityNote(reminderHistory, payerQualityConfigLineList));
@@ -106,7 +105,7 @@ public class PayerQualityService {
 		for(MoveLine moveLine : moveLineList)  {
 			burden = burden.add(this.getPayerQualityNote(moveLine, payerQualityConfigLineList));
 		}
-		LOG.debug("Tiers {} : Qualité payeur : {}", partner.getName(), burden);
+		log.debug("Tiers {} : Qualité payeur : {}", partner.getName(), burden);
 		return burden;
 	}
 
@@ -175,7 +174,7 @@ public class PayerQualityService {
 				if(burden.compareTo(BigDecimal.ZERO) == 1)  {
 					partner.setPayerQuality(burden);
 					partnerService.save(partner);
-					LOG.debug("Tiers payeur {} : Qualité payeur : {}",partner.getName(), burden);
+					log.debug("Tiers payeur {} : Qualité payeur : {}",partner.getName(), burden);
 				}
 			}
 		}

@@ -58,41 +58,32 @@ import com.google.inject.persist.Transactional;
 
 public class MoveLineExportService {
 
-	private static final Logger LOG = LoggerFactory.getLogger(MoveLineExportService.class);
+	private final Logger log = LoggerFactory.getLogger( getClass() );
 
-	private DateTime todayTime;
+	protected DateTime todayTime;
 
-	@Inject
-	private MoveLineReportService moveLineReportService;
-
-	@Inject
-	private SequenceService sequenceService;
-
-	@Inject
-	private AccountConfigService accountConfigService;
-
-	@Inject
-	private MoveRepository moveRepo;
+	protected MoveLineReportService moveLineReportService;
+	protected SequenceService sequenceService;
+	protected AccountConfigService accountConfigService;
+	protected MoveRepository moveRepo;
+	protected MoveLineRepository moveLineRepo;
+	protected MoveLineReportRepository moveLineReportRepo;
+	protected JournalRepository journalRepo;
+	protected AccountRepository accountRepo;
 
 	@Inject
-	private MoveLineRepository moveLineRepo;
-	
-	@Inject
-	private MoveLineReportRepository moveLineReportRepo;
-
-	@Inject
-	private JournalRepository journalRepo;
-
-	@Inject
-	private AccountRepository accountRepo;
-
-
-	protected GeneralService generalService;
-
-	@Inject
-	public MoveLineExportService(GeneralService generalService) {
-		this.generalService = generalService;
-		todayTime = this.generalService.getTodayDateTime();
+	public MoveLineExportService(GeneralService generalService, MoveLineReportService moveLineReportService, SequenceService sequenceService, 
+			AccountConfigService accountConfigService, MoveRepository moveRepo, MoveLineRepository moveLineRepo, MoveLineReportRepository moveLineReportRepo,
+			JournalRepository journalRepo, AccountRepository accountRepo) {
+		this.moveLineReportService = moveLineReportService;
+		this.sequenceService = sequenceService;
+		this.accountConfigService = accountConfigService;
+		this.moveRepo = moveRepo;
+		this.moveLineRepo = moveLineRepo;
+		this.moveLineReportRepo = moveLineReportRepo;
+		this.journalRepo = journalRepo;
+		this.accountRepo = accountRepo;
+		todayTime = generalService.getTodayDateTime();
 	}
 
 
@@ -107,7 +98,7 @@ public class MoveLineExportService {
 			this.updateMove(moveRepo.find(move.getId()), moveLineReportRepo.find(moveLineReport.getId()), localDate, exportToAgressoNumber);
 
 			if (i % 10 == 0) { JPA.clear(); }
-			if (i++ % 100 == 0) { LOG.debug("Process : {} / {}" , i, moveListSize); }
+			if (i++ % 100 == 0) { log.debug("Process : {} / {}" , i, moveListSize); }
 		}
 
 	}
@@ -132,7 +123,7 @@ public class MoveLineExportService {
 		q.setParameter(1, moveList);
 
 		BigDecimal result = (BigDecimal) q.getSingleResult();
-		LOG.debug("Total debit : {}", result);
+		log.debug("Total debit : {}", result);
 
 		if(result != null)  {
 			return result;
@@ -149,7 +140,7 @@ public class MoveLineExportService {
 		q.setParameter(1, moveList);
 
 		BigDecimal result = (BigDecimal) q.getSingleResult();
-		LOG.debug("Total credit : {}", result);
+		log.debug("Total credit : {}", result);
 
 		if(result != null)  {
 			return result;
@@ -248,7 +239,7 @@ public class MoveLineExportService {
 	 */
 	public void exportMoveLineTypeSelect6(MoveLineReport mlr, boolean replay) throws AxelorException, IOException {
 
-		LOG.info("In Export type service : ");
+		log.info("In Export type service : ");
 
 		String fileName = "detail"+todayTime.toString("YYYYMMddHHmmss")+"ventes.dat";
 		this.exportMoveLineTypeSelect6FILE1(mlr, replay);
@@ -267,7 +258,7 @@ public class MoveLineExportService {
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void exportMoveLineTypeSelect6FILE1(MoveLineReport moveLineReport, boolean replay) throws AxelorException, IOException {
 
-		LOG.info("In export service Type 6 FILE 1 :");
+		log.info("In export service Type 6 FILE 1 :");
 
 		Company company = moveLineReport.getCompany();
 
@@ -295,7 +286,7 @@ public class MoveLineExportService {
 		List<LocalDate> allDates = new ArrayList<LocalDate>();
 		allDates = dateQuery.getResultList();
 
-		LOG.debug("allDates : {}" , allDates);
+		log.debug("allDates : {}" , allDates);
 
 		List<String[]> allMoveData = new ArrayList<String[]>();
 		String companyCode = "";
@@ -379,7 +370,7 @@ public class MoveLineExportService {
 		String filePath = accountConfigService.getExportPath(accountConfigService.getAccountConfig(company));
 		new File(filePath).mkdirs();
 
-		LOG.debug("Full path to export : {}{}" , filePath, fileName);
+		log.debug("Full path to export : {}{}" , filePath, fileName);
 		CsvTool.csvWriter(filePath, fileName, '|', null, allMoveData);
 		// Utilisé pour le debuggage
 //			CsvTool.csvWriter(filePath, fileName, '|', this.createHeaderForHeaderFile(mlr.getTypeSelect()), allMoveData);
@@ -396,7 +387,7 @@ public class MoveLineExportService {
 	 */
 	public void exportMoveLineTypeSelect7(MoveLineReport moveLineReport, boolean replay) throws AxelorException, IOException {
 
-		LOG.info("In Export type 7 service : ");
+		log.info("In Export type 7 service : ");
 
 		String fileName = "detail"+todayTime.toString("YYYYMMddHHmmss")+"avoirs.dat";
 		this.exportMoveLineTypeSelect7FILE1(moveLineReport, replay);
@@ -415,7 +406,7 @@ public class MoveLineExportService {
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void exportMoveLineTypeSelect7FILE1(MoveLineReport moveLineReport, boolean replay) throws AxelorException, IOException {
 
-		LOG.info("In export service 7 FILE 1:");
+		log.info("In export service 7 FILE 1:");
 
 		Company company = moveLineReport.getCompany();
 
@@ -443,7 +434,7 @@ public class MoveLineExportService {
 		List<LocalDate> allDates = new ArrayList<LocalDate>();
 		allDates = dateQuery.getResultList();
 
-		LOG.debug("allDates : {}" , allDates);
+		log.debug("allDates : {}" , allDates);
 
 		List<String[]> allMoveData = new ArrayList<String[]>();
 		String companyCode = "";
@@ -527,7 +518,7 @@ public class MoveLineExportService {
 		String filePath = accountConfigService.getExportPath(accountConfigService.getAccountConfig(company));
 		new File(filePath).mkdirs();
 
-		LOG.debug("Full path to export : {}{}" , filePath, fileName);
+		log.debug("Full path to export : {}{}" , filePath, fileName);
 		CsvTool.csvWriter(filePath, fileName, '|', null, allMoveData);
 		// Utilisé pour le debuggage
 //			CsvTool.csvWriter(filePath, fileName, '|', this.createHeaderForHeaderFile(mlr.getTypeSelect()), allMoveData);
@@ -543,7 +534,7 @@ public class MoveLineExportService {
 	 */
 	public void exportMoveLineTypeSelect8(MoveLineReport moveLineReport, boolean replay) throws AxelorException, IOException {
 
-		LOG.info("In Export type 8 service : ");
+		log.info("In Export type 8 service : ");
 
 		String fileName = "detail"+todayTime.toString("YYYYMMddHHmmss")+"tresorerie.dat";
 		this.exportMoveLineTypeSelect8FILE1(moveLineReport, replay);
@@ -562,7 +553,7 @@ public class MoveLineExportService {
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void exportMoveLineTypeSelect8FILE1(MoveLineReport moveLineReport, boolean replay) throws AxelorException, IOException {
 
-		LOG.info("In export service 8 FILE 1:");
+		log.info("In export service 8 FILE 1:");
 
 		Company company = moveLineReport.getCompany();
 
@@ -590,7 +581,7 @@ public class MoveLineExportService {
 		List<LocalDate> allDates = new ArrayList<LocalDate>();
 		allDates = dateQuery.getResultList();
 
-		LOG.debug("allDates : {}" , allDates);
+		log.debug("allDates : {}" , allDates);
 
 		List<String[]> allMoveData = new ArrayList<String[]>();
 		String companyCode = "";
@@ -674,7 +665,7 @@ public class MoveLineExportService {
 		String filePath = accountConfigService.getExportPath(accountConfigService.getAccountConfig(company));
 		new File(filePath).mkdirs();
 
-		LOG.debug("Full path to export : {}{}" , filePath, fileName);
+		log.debug("Full path to export : {}{}" , filePath, fileName);
 		CsvTool.csvWriter(filePath, fileName, '|', null, allMoveData);
 		// Utilisé pour le debuggage
 //			CsvTool.csvWriter(filePath, fileName, '|', this.createHeaderForHeaderFile(mlr.getTypeSelect()), allMoveData);
@@ -690,7 +681,7 @@ public class MoveLineExportService {
 	 */
 	public void exportMoveLineTypeSelect9(MoveLineReport moveLineReport, boolean replay) throws AxelorException, IOException {
 
-		LOG.info("In Export type 9 service : ");
+		log.info("In Export type 9 service : ");
 		String fileName = "detail"+todayTime.toString("YYYYMMddHHmmss")+"achats.dat";
 		this.exportMoveLineTypeSelect9FILE1(moveLineReport, replay);
 		this.exportMoveLineAllTypeSelectFILE2(moveLineReport, fileName);
@@ -708,7 +699,7 @@ public class MoveLineExportService {
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void exportMoveLineTypeSelect9FILE1(MoveLineReport moveLineReport, boolean replay) throws AxelorException, IOException {
 
-		LOG.info("In export service 9 FILE 1:");
+		log.info("In export service 9 FILE 1:");
 
 		Company company = moveLineReport.getCompany();
 		String dateQueryStr = String.format(" WHERE self.company = %s", company.getId());
@@ -735,7 +726,7 @@ public class MoveLineExportService {
 		List<LocalDate> allDates = new ArrayList<LocalDate>();
 		allDates = dateQuery.getResultList();
 
-		LOG.debug("allDates : {}" , allDates);
+		log.debug("allDates : {}" , allDates);
 
 		List<String[]> allMoveData = new ArrayList<String[]>();
 		String companyCode = "";
@@ -829,7 +820,7 @@ public class MoveLineExportService {
 							this.updateMove(move, moveLineReport, interfaceDate, exportNumber);
 
 							if (i % 10 == 0) { JPA.clear(); }
-							if (i++ % 100 == 0) { LOG.debug("Process : {} / {}" , i, moveListSize); }
+							if (i++ % 100 == 0) { log.debug("Process : {} / {}" , i, moveListSize); }
 						}
 					}
 				}
@@ -840,7 +831,7 @@ public class MoveLineExportService {
 		String filePath = accountConfigService.getExportPath(accountConfigService.getAccountConfig(company));
 		new File(filePath).mkdirs();
 
-		LOG.debug("Full path to export : {}{}" , filePath, fileName);
+		log.debug("Full path to export : {}{}" , filePath, fileName);
 		CsvTool.csvWriter(filePath, fileName, '|', null, allMoveData);
 		// Utilisé pour le debuggage
 //			CsvTool.csvWriter(filePath, fileName, '|', this.createHeaderForHeaderFile(mlr.getTypeSelect()), allMoveData);
@@ -857,7 +848,7 @@ public class MoveLineExportService {
 	@SuppressWarnings("unchecked")
 	public void exportMoveLineAllTypeSelectFILE2(MoveLineReport moveLineReport, String fileName) throws AxelorException, IOException {
 
-		LOG.info("In export service FILE 2 :");
+		log.info("In export service FILE 2 :");
 
 		Company company = moveLineReport.getCompany();
 
@@ -901,7 +892,7 @@ public class MoveLineExportService {
 		List<LocalDate> dates = new ArrayList<LocalDate>();
 		dates = queryDate.getResultList();
 
-		LOG.debug("dates : {}" , dates);
+		log.debug("dates : {}" , dates);
 
 		List<String[]> allMoveLineData = new ArrayList<String[]>();
 
@@ -924,7 +915,7 @@ public class MoveLineExportService {
 					List<Long> accountIds = new ArrayList<Long>();
 					accountIds = query.getResultList();
 
-					LOG.debug("accountIds : {}" , accountIds);
+					log.debug("accountIds : {}" , accountIds);
 
 					for (Long accountId : accountIds) {
 						if(accountId!=null) {
@@ -932,7 +923,7 @@ public class MoveLineExportService {
 							List<MoveLine> moveLines = moveLineRepo.all().filter("self.account.id = ?1 AND (self.debit > 0 OR self.credit > 0) AND self.date = '"+
 							localDate.toString() +"' AND self.move.exportNumber = '"+ exportAgressoRef +"'" + moveLineQueryStr, accountId).fetch();
 
-							LOG.debug("movelines  : {} " , moveLines);
+							log.debug("movelines  : {} " , moveLines);
 
 							if(moveLines.size() > 0) {
 
@@ -1020,7 +1011,7 @@ public class MoveLineExportService {
 		String filePath = accountConfigService.getExportPath(accountConfigService.getAccountConfig(company));
 		new File(filePath).mkdirs();
 
-		LOG.debug("Full path to export : {}{}" , filePath, fileName);
+		log.debug("Full path to export : {}{}" , filePath, fileName);
 		CsvTool.csvWriter(filePath, fileName, '|',  null, allMoveLineData);
 		// Utilisé pour le debuggage
 //			CsvTool.csvWriter(filePath, fileName, '|',  this.createHeaderForDetailFile(typeSelect), allMoveLineData);

@@ -51,29 +51,25 @@ import com.google.inject.persist.Transactional;
 
 public class ReminderActionService {
 
-	private static final Logger LOG = LoggerFactory.getLogger(ReminderActionService.class);
+	private final Logger log = LoggerFactory.getLogger( getClass() );
+
+	protected UserService userService;
+	protected ReminderRepository reminderRepo;
+	protected ReminderHistoryRepository reminderHistoryRepository;
+	protected TemplateMessageService templateMessageService;
+
+	protected LocalDate today;
 
 	@Inject
-	private UserService userService;
+	public ReminderActionService(UserService userService, ReminderRepository reminderRepo, ReminderHistoryRepository reminderHistoryRepository, 
+			TemplateMessageService templateMessageService, GeneralService generalService) {
 
-	private LocalDate today;
-
-	@Inject
-	private ReminderRepository reminderRepo;
-
-	@Inject
-	private ReminderHistoryRepository reminderHistoryRepository;
-
-	@Inject
-	private TemplateMessageService templateMessageService;
-
-	@Inject
-	protected GeneralService generalService;
-
-	@Inject
-	public ReminderActionService() {
-
-		this.today = Beans.get(GeneralService.class).getTodayDate();
+		this.userService = userService;
+		this.reminderRepo = reminderRepo;
+		this.reminderHistoryRepository = reminderHistoryRepository;
+		this.templateMessageService = templateMessageService;
+		
+		this.today = generalService.getTodayDate();
 
 	}
 
@@ -197,7 +193,7 @@ public class ReminderActionService {
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void runManualAction(Reminder reminder) throws AxelorException, ClassNotFoundException, InstantiationException, IllegalAccessException, IOException  {
 
-		LOG.debug("Begin runManualAction service ...");
+		log.debug("Begin runManualAction service ...");
 		if(reminder.getReminderMethod()==null )  {
 			throw new AxelorException(String.format("%s :\n"+I18n.get("Tiers")+" %s: "+I18n.get(IExceptionMessage.REMINDER_ACTION_1),
 					GeneralServiceImpl.EXCEPTION, reminder.getAccountingSituation().getPartner().getName()), IException.MISSING_FIELD);
@@ -220,7 +216,7 @@ public class ReminderActionService {
 			this.updateReminderHistory(reminder, message);
 
 		}
-		LOG.debug("End runManualAction service");
+		log.debug("End runManualAction service");
 	}
 
 
@@ -252,12 +248,12 @@ public class ReminderActionService {
 	 * @throws AxelorException
 	 */
 	public Reminder reminderLevelValidate(Reminder reminder) throws AxelorException  {
-		LOG.debug("Begin ReminderLevelValidate service ...");
+		log.debug("Begin ReminderLevelValidate service ...");
 
 		reminder.setReminderMethodLine(reminder.getWaitReminderMethodLine());
 		reminder.setWaitReminderMethodLine(null);
 
-		LOG.debug("End ReminderLevelValidate service");
+		log.debug("End ReminderLevelValidate service");
 		return reminder;
 	}
 

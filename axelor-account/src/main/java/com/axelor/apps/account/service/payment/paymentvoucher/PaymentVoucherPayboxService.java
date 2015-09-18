@@ -22,9 +22,19 @@ import java.math.BigDecimal;
 import com.axelor.apps.account.db.PaymentVoucher;
 import com.axelor.apps.account.db.repo.PaymentVoucherRepository;
 import com.axelor.exception.AxelorException;
+import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
 public class PaymentVoucherPayboxService extends PaymentVoucherRepository {
+	
+	protected PaymentVoucherRepository paymentVoucherRepository;
+	
+	@Inject
+	public PaymentVoucherPayboxService(PaymentVoucherRepository paymentVoucherRepository)  {
+		
+		this.paymentVoucherRepository = paymentVoucherRepository;
+		
+	}
 	
 	/**
 	 * Procédure permettant d'autauriser la confirmation de la saisie paiement

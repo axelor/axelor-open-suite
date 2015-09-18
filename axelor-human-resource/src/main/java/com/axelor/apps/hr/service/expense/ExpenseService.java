@@ -20,9 +20,9 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.AccountManagementServiceAccountImpl;
-import com.axelor.apps.account.service.MoveLineService;
-import com.axelor.apps.account.service.MoveService;
 import com.axelor.apps.account.service.invoice.generator.InvoiceLineGenerator;
+import com.axelor.apps.account.service.move.MoveLineService;
+import com.axelor.apps.account.service.move.MoveService;
 import com.axelor.apps.base.db.IPriceListLine;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.PeriodService;
@@ -39,21 +39,26 @@ import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
-public class ExpenseService extends ExpenseRepository{
+public class ExpenseService  {
 
-	@Inject
-	private MoveService moveService;
-
-	@Inject
-	private MoveLineService moveLineService;
-
-	@Inject
-	private AccountManagementServiceAccountImpl accountManagementService;
-
-	@Inject
+	protected MoveService moveService;
+	protected ExpenseRepository expenseRepository;
+	protected MoveLineService moveLineService;
+	protected AccountManagementServiceAccountImpl accountManagementService;
 	protected GeneralService generalService;
-
-	@Inject private AccountConfigHRService accountConfigService;
+	protected AccountConfigHRService accountConfigService;
+	
+	@Inject
+	public ExpenseService(MoveService moveService, ExpenseRepository expenseRepository, MoveLineService moveLineService,
+			AccountManagementServiceAccountImpl accountManagementService, GeneralService generalService, AccountConfigHRService accountConfigService)  {
+		
+		this.moveService = moveService;
+		this.expenseRepository = expenseRepository;
+		this.moveLineService = moveLineService;
+		this.accountManagementService = accountManagementService;
+		this.generalService = generalService;
+		this.accountConfigService = accountConfigService;
+	}
 
 	public Expense compute (Expense expense){
 
@@ -87,7 +92,7 @@ public class ExpenseService extends ExpenseRepository{
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.USER_PARTNER),expense.getUser().getName()), IException.CONFIGURATION_ERROR);
 		}
 
-		Move move = moveService.createMove(accountConfigService.getExpenseJournal(accountConfig), accountConfig.getCompany(), null, expense.getUser().getPartner(), moveDate, expense.getUser().getPartner().getPaymentMode());
+		Move move = moveService.getMoveCreateService().createMove(accountConfigService.getExpenseJournal(accountConfig), accountConfig.getCompany(), null, expense.getUser().getPartner(), moveDate, expense.getUser().getPartner().getPaymentMode());
 
 		List<MoveLine> moveLines = new ArrayList<MoveLine>();
 
@@ -140,11 +145,11 @@ public class ExpenseService extends ExpenseRepository{
 
 		move.getMoveLineList().addAll(moveLines);
 
-		moveService.validateMove(move);
+		moveService.getMoveValidateService().validateMove(move);
 
 		expense.setMove(move);
 		expense.setVentilated(true);
-		save(expense);
+		expenseRepository.save(expense);
 
 		return move;
 	}
@@ -155,7 +160,7 @@ public class ExpenseService extends ExpenseRepository{
 		if(move == null)
 		{
 			expense.setStatusSelect(IExpense.STATUS_CANCELED);
-			save(expense);
+			expenseRepository.save(expense);
 			return;
 		}
 		Beans.get(PeriodService.class).testOpenPeriod(move.getPeriod());
@@ -169,7 +174,7 @@ public class ExpenseService extends ExpenseRepository{
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.EXPENSE_CANCEL_MOVE)), IException.CONFIGURATION_ERROR);
 		}
 
-		save(expense);
+		expenseRepository.save(expense);
 	}
 
 	public List<InvoiceLine> createInvoiceLines(Invoice invoice, List<ExpenseLine> expenseLineList, int priority) throws AxelorException  {

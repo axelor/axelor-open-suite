@@ -45,24 +45,21 @@ import com.google.inject.persist.Transactional;
 
 public class CashRegisterLineService{
 
-	private static final Logger LOG = LoggerFactory.getLogger(CashRegisterLineService.class);
+	private final Logger log = LoggerFactory.getLogger( getClass() );
+
+	protected TemplateMessageService templateMessageService;
+	protected CashRegisterLineRepository cashRegisterLineRepo;
+
+	protected DateTime todayTime;
+	protected User user;
 
 	@Inject
-	private TemplateMessageService templateMessageService;
-	
-	@Inject
-	private CashRegisterLineRepository cashRegisterLineRepo;
+	public CashRegisterLineService(TemplateMessageService templateMessageService, CashRegisterLineRepository cashRegisterLineRepo, UserService userService, GeneralService generalService) {
 
-	protected GeneralService generalService;
-
-	private DateTime todayTime;
-	private User user;
-
-	@Inject
-	public CashRegisterLineService(UserService userService,GeneralService generalService) {
-
-		this.generalService = generalService;
-		this.todayTime = this.generalService.getTodayDateTime();
+		this.templateMessageService = templateMessageService;
+		this.cashRegisterLineRepo = cashRegisterLineRepo;
+		
+		this.todayTime = generalService.getTodayDateTime();
 		this.user = userService.getUser();
 
 	}
@@ -76,7 +73,7 @@ public class CashRegisterLineService{
 					GeneralServiceImpl.EXCEPTION, this.user.getFullName()), IException.CONFIGURATION_ERROR);
 		}
 
-		LOG.debug("In closeCashRegister");
+		log.debug("In closeCashRegister");
 
 		CashRegisterLine cashRegisterLineFound = cashRegisterLineRepo.all()
 				.filter("self.cashRegister = ?1 and self.cashRegisterDate = ?2 and self.statusSelect = '1'",

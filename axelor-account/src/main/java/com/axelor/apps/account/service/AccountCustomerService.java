@@ -18,7 +18,6 @@
 package com.axelor.apps.account.service;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.Query;
@@ -31,7 +30,6 @@ import org.slf4j.LoggerFactory;
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.AccountingSituation;
-import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.AccountingSituationRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
@@ -51,24 +49,19 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
 public class AccountCustomerService {
-	private static final Logger LOG = LoggerFactory.getLogger(AccountCustomerService.class);
 
+	private final Logger log = LoggerFactory.getLogger( getClass() );
 
-	private LocalDate today;
-
-	private AccountingSituationService  accountingSituationService;
+	protected AccountingSituationService  accountingSituationService;
+	protected AccountingSituationRepository accSituationRepo;
+	protected LocalDate today;
 	
 	@Inject
-	private AccountingSituationRepository accSituationRepo;
+	public AccountCustomerService(AccountingSituationService  accountingSituationService, AccountingSituationRepository accSituationRepo, GeneralService generalService) {
 
-	@Inject
-	protected GeneralService generalService;
-	
-	@Inject
-	public AccountCustomerService(AccountingSituationService  accountingSituationService) {
-
-		this.today = Beans.get(GeneralService.class).getTodayDate();
-		this.accountingSituationService = accountingSituationService;
+		this.accountingSituationService =accountingSituationService;
+		this.accSituationRepo = accSituationRepo;
+		this.today = generalService.getTodayDate();
 	}
 
 	public AccountingSituationService getAccountingSituationService()  {
@@ -86,7 +79,7 @@ public class AccountCustomerService {
 	 * 			Le solde total
 	 */
 	public BigDecimal getBalance (Partner partner, Company company)  {
-		LOG.debug("Compute balance (Partner : {}, Company : {})",partner.getName(),company.getName());
+		log.debug("Compute balance (Partner : {}, Company : {})",partner.getName(),company.getName());
 
 		Query query = JPA.em().createNativeQuery("SELECT SUM(COALESCE(m1.sum_remaining,0) - COALESCE(m2.sum_remaining,0) ) "+
 												"FROM public.account_move_line AS ml  "+
@@ -112,7 +105,7 @@ public class AccountCustomerService {
 			balance = BigDecimal.ZERO;
 		}
 
-		LOG.debug("Balance : {}", balance);
+		log.debug("Balance : {}", balance);
 
 		return balance;
 	}
@@ -133,7 +126,7 @@ public class AccountCustomerService {
 	 * 			Le solde exigible
 	 */
 	public BigDecimal getBalanceDue (Partner partner, Company company)  {
-		LOG.debug("Compute balance due (Partner : {}, Company : {})",partner.getName(),company.getName());
+		log.debug("Compute balance due (Partner : {}, Company : {})",partner.getName(),company.getName());
 
 		Query query = JPA.em().createNativeQuery("SELECT SUM( COALESCE(m1.sum_remaining,0) - COALESCE(m2.sum_remaining,0) ) "+
 				"FROM public.account_move_line AS ml  "+
@@ -164,7 +157,7 @@ public class AccountCustomerService {
 			balance = BigDecimal.ZERO;
 		}
 
-		LOG.debug("Balance due : {}", balance);
+		log.debug("Balance due : {}", balance);
 
 		return balance;
 	}
@@ -177,7 +170,7 @@ public class AccountCustomerService {
 	/** solde des échéances rejetées qui ne sont pas bloqués ******************************************************/
 
 	public BigDecimal getBalanceDueReminder(Partner partner, Company company)  {
-		LOG.debug("Compute balance due reminder (Partner : {}, Company : {})",partner.getName(),company.getName());
+		log.debug("Compute balance due reminder (Partner : {}, Company : {})",partner.getName(),company.getName());
 
 		int mailTransitTime = 0;
 
@@ -218,7 +211,7 @@ public class AccountCustomerService {
 			balance = BigDecimal.ZERO;
 		}
 
-		LOG.debug("Balance due reminder : {}", balance);
+		log.debug("Balance due reminder : {}", balance);
 
 		return balance;
 	}
@@ -256,24 +249,6 @@ public class AccountCustomerService {
 	}
 
 
-	/**
-	 * Méthode permettant de récupérer la liste des tiers distincts impactés par l'écriture
-	 * @param move
-	 * 			Une écriture
-	 * @return
-	 */
-	public List<Partner> getPartnerOfMove(Move move)  {
-		List<Partner> partnerList = new ArrayList<Partner>();
-		for(MoveLine moveLine : move.getMoveLineList())  {
-			if(moveLine.getAccount() != null && moveLine.getAccount().getReconcileOk() && moveLine.getPartner() != null
-					&& !partnerList.contains(moveLine.getPartner()))  {
-				partnerList.add(moveLine.getPartner());
-			}
-		}
-		return partnerList;
-	}
-
-
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void flagPartners(List<Partner> partnerList, Company company)  {
 		for(Partner partner : partnerList)  {
@@ -292,7 +267,7 @@ public class AccountCustomerService {
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void updateCustomerAccount(AccountingSituation accountingSituation)  {
 
-		LOG.debug("Begin updateCustomerAccount service ...");
+		log.debug("Begin updateCustomerAccount service ...");
 
 		Partner partner = accountingSituation.getPartner();
 		Company company = accountingSituation.getCompany();
@@ -303,7 +278,7 @@ public class AccountCustomerService {
 
 		accSituationRepo.save(accountingSituation);
 
-		LOG.debug("End updateCustomerAccount service");
+		log.debug("End updateCustomerAccount service");
 	}
 
 
@@ -312,7 +287,7 @@ public class AccountCustomerService {
 		Partner partner = accountingSituation.getPartner();
 		Company company = accountingSituation.getCompany();
 
-		LOG.debug("Update customer account (Partner : {}, Company : {}, Update balance : {}, balance due : {}, balance due reminder : {})",
+		log.debug("Update customer account (Partner : {}, Company : {}, Update balance : {}, balance due : {}, balance due reminder : {})",
 				partner.getName(), company.getName(), updateCustAccount, updateDueReminderCustAccount);
 
 		if(updateCustAccount)  {

@@ -45,6 +45,8 @@ import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.ReimbursementRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.account.service.move.MoveLineService;
+import com.axelor.apps.account.service.move.MoveService;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.IAdministration;
@@ -84,41 +86,34 @@ import com.google.inject.persist.Transactional;
 
 public class ReimbursementExportService {
 
-	private static final Logger LOG = LoggerFactory.getLogger(ReimbursementExportService.class);
+	private final Logger log = LoggerFactory.getLogger( getClass() );
+
+	protected MoveService moveService;
+	protected MoveRepository moveRepo;
+	protected MoveLineService moveLineService;
+	protected ReconcileService reconcileService;
+	protected SequenceService sequenceService;
+	protected BlockingService blockingService;
+	protected ReimbursementRepository reimbursementRepo;
+	protected AccountConfigService accountConfigService;
+	protected PartnerService partnerService;
+	protected LocalDate today;
 
 	@Inject
-	private MoveService moveService;
-	
-	@Inject
-	private MoveRepository moveRepo;
+	public ReimbursementExportService(MoveService moveService, MoveRepository moveRepo, MoveLineService moveLineService, ReconcileService reconcileService,
+			SequenceService sequenceService, BlockingService blockingService, ReimbursementRepository reimbursementRepo, AccountConfigService accountConfigService,
+			PartnerService partnerService, GeneralService generalService) {
 
-	@Inject
-	private MoveLineService moveLineService;
-
-	@Inject
-	private ReconcileService reconcileService;
-
-	@Inject
-	private SequenceService sequenceService;
-
-	@Inject
-	private BlockingService blockingService;
-
-	@Inject
-	private ReimbursementRepository reimbursementRepo;
-
-	@Inject
-	private AccountConfigService accountConfigService;
-
-	@Inject
-	private PartnerService partnerService;
-
-	private LocalDate today;
-
-	@Inject
-	public ReimbursementExportService() {
-
-		this.today = Beans.get(GeneralService.class).getTodayDate();
+		this.moveService = moveService;
+		this.moveRepo = moveRepo;
+		this.moveLineService = moveLineService;
+		this.reconcileService = reconcileService;
+		this.sequenceService = sequenceService;
+		this.blockingService = blockingService;
+		this.reimbursementRepo = reimbursementRepo;
+		this.accountConfigService = accountConfigService;
+		this.partnerService = partnerService;
+		this.today = generalService.getTodayDate();
 	}
 
 	/**
@@ -127,8 +122,8 @@ public class ReimbursementExportService {
 	 */
 	public void fillMoveLineSet(Reimbursement reimbursement, List<MoveLine> moveLineList, BigDecimal total)  {
 
-		LOG.debug("In fillMoveLineSet");
-		LOG.debug("Nombre de trop-perçus trouvés : {}", moveLineList.size());
+		log.debug("In fillMoveLineSet");
+		log.debug("Nombre de trop-perçus trouvés : {}", moveLineList.size());
 
 		for(MoveLine moveLine : moveLineList)  {
 			// On passe les lignes d'écriture (trop perçu) à l'état 'en cours de remboursement'
@@ -138,7 +133,7 @@ public class ReimbursementExportService {
 		reimbursement.setMoveLineSet(new HashSet<MoveLine>());
 		reimbursement.getMoveLineSet().addAll(moveLineList);
 
-		LOG.debug("End fillMoveLineSet");
+		log.debug("End fillMoveLineSet");
 	}
 
 
@@ -150,7 +145,7 @@ public class ReimbursementExportService {
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public Reimbursement runCreateReimbursement(List<MoveLine> moveLineList, Company company, Partner partner) throws AxelorException  {
 
-		LOG.debug("In runReimbursementProcess");
+		log.debug("In runReimbursementProcess");
 
 		BigDecimal total = this.getTotalAmountRemaining(moveLineList);
 
@@ -175,7 +170,7 @@ public class ReimbursementExportService {
 			return reimbursement;
 		}
 
-		LOG.debug("End runReimbursementProcess");
+		log.debug("End runReimbursementProcess");
 		return null;
 	}
 
@@ -193,7 +188,7 @@ public class ReimbursementExportService {
 			total=total.add(moveLine.getAmountRemaining());
 		}
 
-		LOG.debug("Total Amount Remaining : {}",total);
+		log.debug("Total Amount Remaining : {}",total);
 
 		return total;
 	}
@@ -225,7 +220,7 @@ public class ReimbursementExportService {
 					moveLine.setReimbursementStatusSelect(MoveLineRepository.REIMBURSEMENT_STATUS_REIMBURSED);
 
 					if(first)  {
-						newMove = moveService.createMove(accountConfig.getReimbursementJournal(), company, null, partner, null);
+						newMove = moveService.getMoveCreateService().createMove(accountConfig.getReimbursementJournal(), company, null, partner, null);
 						first = false;
 					}
 					// Création d'une ligne au débit
@@ -239,7 +234,7 @@ public class ReimbursementExportService {
 
 					//Création de la réconciliation
 					Reconcile reconcile = reconcileService.createReconcile(newDebitMoveLine, moveLine, amountRemaining);
-					reconcileService.confirmReconcile(reconcile, false);
+					reconcileService.confirmReconcile(reconcile);
 				}
 			}
 			// Création de la ligne au crédit
@@ -249,7 +244,7 @@ public class ReimbursementExportService {
 			if(reimbursement.getDescription() != null && !reimbursement.getDescription().isEmpty())  {
 				newCreditMoveLine.setDescription(reimbursement.getDescription());
 			}
-			moveService.validateMove(newMove);
+			moveService.getMoveValidateService().validateMove(newMove);
 			moveRepo.save(newMove);
 		}
 	}

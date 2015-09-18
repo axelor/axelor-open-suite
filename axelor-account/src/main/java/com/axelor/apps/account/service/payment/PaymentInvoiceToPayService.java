@@ -29,7 +29,7 @@ import com.axelor.apps.account.db.PaymentVoucher;
 
 public class PaymentInvoiceToPayService {
 	
-	private static final Logger LOG = LoggerFactory.getLogger(PaymentInvoiceToPayService.class); 
+	private final Logger log = LoggerFactory.getLogger( getClass() );
 	
 	/**
 	 * Generic method for creating invoice to pay lines (2nd O2M in the view)
@@ -39,7 +39,7 @@ public class PaymentInvoiceToPayService {
 	 */
 	public PaymentInvoiceToPay createPaymentInvoiceToPay(PaymentVoucher pv,int seq,Invoice invoice,MoveLine ml,BigDecimal totalAmount,BigDecimal remainingAmount,BigDecimal amountToPay){
 		
-		LOG.debug("In  createPaymentInvoiceToPay....");
+		log.debug("In  createPaymentInvoiceToPay....");
 		
 		if (pv != null && ml != null){
 			PaymentInvoiceToPay piToPay= new PaymentInvoiceToPay();
@@ -50,12 +50,12 @@ public class PaymentInvoiceToPayService {
 			piToPay.setAmountToPay(amountToPay);
 			piToPay.setPaymentVoucher(pv);
 			
-			LOG.debug("End createPaymentInvoiceToPay IF.");
+			log.debug("End createPaymentInvoiceToPay IF.");
 			
 			return piToPay;
 		}
 		else{
-			LOG.debug("End createPaymentInvoiceToPay ELSE.");
+			log.debug("End createPaymentInvoiceToPay ELSE.");
 			return null;
 		}
 	}

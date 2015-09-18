@@ -37,29 +37,28 @@ import com.google.inject.Inject;
 
 public class RejectImportService{
 
-	private static final Logger LOG = LoggerFactory.getLogger(RejectImportService.class);
-
-	private DateTime todayTime;
-
+	private final Logger log = LoggerFactory.getLogger( getClass() );
 
 	protected GeneralService generalService;
+	protected CfonbImportService cfonbImportService;
+	protected InterbankCodeLineRepository interbankCodeLineRepo;
+	
+	protected DateTime todayTime;
 
 	@Inject
-	private CfonbImportService cfonbImportService;
-
-	@Inject
-	private InterbankCodeLineRepository interbankCodeLineRepo;
-
-	@Inject
-	public RejectImportService(GeneralService generalService) {
+	public RejectImportService(GeneralService generalService, CfonbImportService cfonbImportService, InterbankCodeLineRepository interbankCodeLineRepo) {
+		
 		this.generalService = generalService;
+		this.cfonbImportService = cfonbImportService;
+		this.interbankCodeLineRepo = interbankCodeLineRepo;
 		this.todayTime = this.generalService.getTodayDateTime();
 
 	}
 
+	
 	public String getDestFilename(String src, String dest)  {
 		// chemin du fichier de destination :
-		LOG.debug("Chemin de destination : {}", dest);
+		log.debug("Chemin de destination : {}", dest);
 		String newDest = ((dest).split("\\."))[0];
 		String timeString = this.todayTime.toString();
 		timeString = timeString.replace("-", "");
@@ -76,7 +75,7 @@ public class RejectImportService{
 			newDest += src.split("\\.")[1];
 		}
 
-		LOG.debug("Chemin de destination généré : {}", newDest);
+		log.debug("Chemin de destination généré : {}", newDest);
 
 		return newDest;
 	}

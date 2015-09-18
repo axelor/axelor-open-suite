@@ -30,7 +30,6 @@ import com.axelor.apps.account.db.MoveLineReport;
 import com.axelor.apps.account.db.repo.MoveLineReportRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.MoveLineExportService;
-import com.axelor.apps.account.service.MoveLineReportService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.service.administration.GeneralServiceImpl;
 import com.axelor.db.JPA;
@@ -41,23 +40,24 @@ import com.axelor.i18n.I18n;
 
 public class BatchMoveLineExport extends BatchStrategy {
 
-	private static final Logger LOG = LoggerFactory.getLogger(BatchMoveLineExport.class);
+	private final Logger log = LoggerFactory.getLogger( getClass() );
 
-	private boolean stop = false;
+	protected boolean stop = false;
 
-	private long moveLineDone = 0;
-	private long moveDone = 0;
-	private BigDecimal debit = BigDecimal.ZERO;
-	private BigDecimal credit = BigDecimal.ZERO;
-	private BigDecimal balance = BigDecimal.ZERO;
+	protected long moveLineDone = 0;
+	protected long moveDone = 0;
+	protected BigDecimal debit = BigDecimal.ZERO;
+	protected BigDecimal credit = BigDecimal.ZERO;
+	protected BigDecimal balance = BigDecimal.ZERO;
+
+	protected MoveLineReportRepository moveLineReportRepository;
 
 	@Inject
-	private MoveLineReportRepository moveLineReportRepo;
-
-	@Inject
-	public BatchMoveLineExport(MoveLineExportService moveLineExportService) {
+	public BatchMoveLineExport(MoveLineExportService moveLineExportService, MoveLineReportRepository moveLineReportRepository) {
 
 		super(moveLineExportService);
+		
+		this.moveLineReportRepository = moveLineReportRepository;
 	}
 
 
@@ -97,7 +97,7 @@ public class BatchMoveLineExport extends BatchStrategy {
 
 				JPA.clear();
 
-				moveLineReport = moveLineReportRepo.find(moveLineReport.getId());
+				moveLineReport = moveLineReportRepository.find(moveLineReport.getId());
 
 				moveLineDone = moveLineRepo.all().filter("self.move.moveLineReport = ?1", moveLineReport).count();
 				moveDone = moveRepo.all().filter("self.moveLineReport = ?1", moveLineReport).count();
@@ -118,7 +118,7 @@ public class BatchMoveLineExport extends BatchStrategy {
 
 				incrementAnomaly();
 
-				LOG.error("Bug(Anomalie) généré(e) pour le batch {}", batch.getId());
+				log.error("Bug(Anomalie) généré(e) pour le batch {}", batch.getId());
 
 			}
 		}

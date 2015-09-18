@@ -31,6 +31,7 @@ import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.ReimbursementRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.service.AccountingService;
 import com.axelor.apps.account.service.ReimbursementExportService;
 import com.axelor.apps.account.service.cfonb.CfonbExportService;
 import com.axelor.apps.base.db.Company;
@@ -44,21 +45,25 @@ import com.google.inject.Inject;
 
 public class BatchReimbursementExport extends BatchStrategy {
 
-	private static final Logger LOG = LoggerFactory.getLogger(BatchReimbursementExport.class);
+	private final Logger log = LoggerFactory.getLogger( getClass() );
 
-	private boolean stop = false;
+	protected boolean stop = false;
 	
-	private BigDecimal totalAmount = BigDecimal.ZERO;
+	protected BigDecimal totalAmount = BigDecimal.ZERO;
 	
-	private String updateCustomerAccountLog = "";
+	protected String updateCustomerAccountLog = "";
+	
+	protected ReimbursementRepository reimbursementRepo;
 	
 	@Inject
-	private ReimbursementRepository reimbursementRepo;
-	
-	@Inject
-	public BatchReimbursementExport(ReimbursementExportService reimbursementExportService, CfonbExportService cfonbExportService, BatchAccountCustomer batchAccountCustomer) {
+	public BatchReimbursementExport(ReimbursementExportService reimbursementExportService, CfonbExportService cfonbExportService, BatchAccountCustomer batchAccountCustomer,
+			ReimbursementRepository reimbursementRepo) {
 		
 		super(reimbursementExportService, cfonbExportService, batchAccountCustomer);
+		
+		this.reimbursementRepo = reimbursementRepo;
+		
+		AccountingService.setUpdateCustomerAccount(false);
 		
 	}
 
@@ -140,7 +145,7 @@ public class BatchReimbursementExport extends BatchStrategy {
 
 		for(Reimbursement reimbursement : reimbursementList)  {
 			
-			LOG.debug("Remboursement n° {}", reimbursement.getRef());
+			log.debug("Remboursement n° {}", reimbursement.getRef());
 			
 			updateReimbursement(reimbursementRepo.find(reimbursement.getId()));
 		}
@@ -152,7 +157,7 @@ public class BatchReimbursementExport extends BatchStrategy {
 			try {
 				partner = partnerService.find(partner.getId());
 				
-				LOG.debug("Tiers n° {}", partner.getName());
+				log.debug("Tiers n° {}", partner.getName());
 				
 				if(reimbursementExportService.canBeReimbursed(partner, companyRepo.find(company.getId())))  {
 				
@@ -161,7 +166,7 @@ public class BatchReimbursementExport extends BatchStrategy {
 							"self.reimbursementStatusSelect = ?4 ",
 							MoveRepository.STATUS_VALIDATED ,partnerService.find(partner.getId()), companyRepo.find(company.getId()), MoveLineRepository.REIMBURSEMENT_STATUS_NULL).fetch();
 					
-					LOG.debug("Liste des trop perçus : {}", moveLineList);
+					log.debug("Liste des trop perçus : {}", moveLineList);
 					
 					if(moveLineList != null && moveLineList.size() != 0)  {
 						
@@ -185,7 +190,7 @@ public class BatchReimbursementExport extends BatchStrategy {
 				
 				incrementAnomaly();
 				
-				LOG.error("Bug(Anomalie) généré(e) pour le tiers {}", partnerService.find(partner.getId()).getName());
+				log.error("Bug(Anomalie) généré(e) pour le tiers {}", partnerService.find(partner.getId()).getName());
 				
 			} finally {
 				
@@ -240,7 +245,7 @@ public class BatchReimbursementExport extends BatchStrategy {
 				
 				incrementAnomaly();
 				
-				LOG.error("Bug(Anomalie) généré(e) pour l'export du remboursement {}", reimbursementRepo.find(reimbursement.getId()).getRef());
+				log.error("Bug(Anomalie) généré(e) pour l'export du remboursement {}", reimbursementRepo.find(reimbursement.getId()).getRef());
 				
 			} finally {
 				
@@ -261,7 +266,7 @@ public class BatchReimbursementExport extends BatchStrategy {
 				
 				incrementAnomaly();
 				
-				LOG.error("Bug(Anomalie) généré(e)e dans l'export SEPA - Batch {}", batch.getId());
+				log.error("Bug(Anomalie) généré(e)e dans l'export SEPA - Batch {}", batch.getId());
 				
 			}
 			
@@ -275,7 +280,7 @@ public class BatchReimbursementExport extends BatchStrategy {
 				
 				incrementAnomaly();
 				
-				LOG.error("Bug(Anomalie) généré(e)e dans l'export CFONB - Batch {}", batch.getId());
+				log.error("Bug(Anomalie) généré(e)e dans l'export CFONB - Batch {}", batch.getId());
 				
 			}
 		}

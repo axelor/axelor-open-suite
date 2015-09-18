@@ -39,9 +39,9 @@ import com.axelor.apps.account.db.repo.InterbankCodeLineRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.PaymentScheduleLineRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.service.AccountingService;
 import com.axelor.apps.account.service.PaymentScheduleImportService;
 import com.axelor.apps.account.service.RejectImportService;
-import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.service.administration.GeneralServiceImpl;
 import com.axelor.db.JPA;
@@ -53,30 +53,31 @@ import com.google.inject.persist.Transactional;
 
 public class BatchPaymentScheduleImport extends BatchStrategy {
 
-	private static final Logger LOG = LoggerFactory.getLogger(BatchPaymentScheduleImport.class);
+	private final Logger log = LoggerFactory.getLogger( getClass() );
 
-	private boolean stop = false;
+	protected boolean stop = false;
 
-	private BigDecimal totalAmount = BigDecimal.ZERO;
+	protected BigDecimal totalAmount = BigDecimal.ZERO;
 
-	private String updateCustomerAccountLog = "";
+	protected String updateCustomerAccountLog = "";
 
-	@Inject
-	private InterbankCodeLineRepository interbankCodeLineRepo;
-
-	@Inject
-	private  AccountRepository accountRepo;
-
-	@Inject
-	private InvoiceRepository invoiceRepo;
+	protected InterbankCodeLineRepository interbankCodeLineRepo;
+	protected AccountRepository accountRepo;
+	protected InvoiceRepository invoiceRepo;
+	protected PaymentScheduleLineRepository paymentScheduleLineRepo;
 
 	@Inject
-	private PaymentScheduleLineRepository paymentScheduleLineRepo;
-
-	@Inject
-	public BatchPaymentScheduleImport(PaymentScheduleImportService paymentScheduleImportService, RejectImportService rejectImportService, BatchAccountCustomer batchAccountCustomer) {
+	public BatchPaymentScheduleImport(PaymentScheduleImportService paymentScheduleImportService, RejectImportService rejectImportService, BatchAccountCustomer batchAccountCustomer,
+			InterbankCodeLineRepository interbankCodeLineRepo, AccountRepository accountRepo, InvoiceRepository invoiceRepo, PaymentScheduleLineRepository paymentScheduleLineRepo) {
 
 		super(paymentScheduleImportService, rejectImportService, batchAccountCustomer);
+		
+		this.interbankCodeLineRepo = interbankCodeLineRepo;
+		this.accountRepo = accountRepo;
+		this.invoiceRepo = invoiceRepo;
+		this.paymentScheduleLineRepo = paymentScheduleLineRepo;
+		
+		AccountingService.setUpdateCustomerAccount(false);
 
 	}
 
@@ -139,7 +140,7 @@ public class BatchPaymentScheduleImport extends BatchStrategy {
 
 			stop = true;
 
-			LOG.error("Bug(Anomalie) généré(e) pour l'import des rejets de prélèvement {}", batch.getId());
+			log.error("Bug(Anomalie) généré(e) pour l'import des rejets de prélèvement {}", batch.getId());
 
 		}
 
@@ -185,7 +186,7 @@ public class BatchPaymentScheduleImport extends BatchStrategy {
 
 						incrementAnomaly();
 
-						LOG.error("Bug(Anomalie) généré(e) pour l'import du rejet {}", reject[1]);
+						log.error("Bug(Anomalie) généré(e) pour l'import du rejet {}", reject[1]);
 
 					} finally {
 
@@ -231,7 +232,7 @@ public class BatchPaymentScheduleImport extends BatchStrategy {
 			/*** Echéancier de Lissage de paiement en PRLVT ***/
 			if(pslListGC != null && pslListGC.size()!=0 )  {
 
-				LOG.debug("Création des écritures de rejets : Echéancier de lissage de paiement");
+				log.debug("Création des écritures de rejets : Echéancier de lissage de paiement");
 				ref = this.createMajorAccountRejectMoveLines(pslListGC, companyRepo.find(company.getId()),
 						companyRepo.find(company.getId()).getAccountConfig().getCustomerAccount(), moveRepo.find(move.getId()), ref);
 
@@ -240,7 +241,7 @@ public class BatchPaymentScheduleImport extends BatchStrategy {
 			/*** Facture en PRLVT ***/
 			if(invoiceList != null && invoiceList.size()!=0)  {
 
-				LOG.debug("Création des écritures de rejets : Facture");
+				log.debug("Création des écritures de rejets : Facture");
 				ref = this.createInvoiceRejectMoveLines(invoiceList, companyRepo.find(company.getId()),
 						companyRepo.find(company.getId()).getAccountConfig().getCustomerAccount(), moveRepo.find(move.getId()), ref);
 			}
@@ -274,7 +275,7 @@ public class BatchPaymentScheduleImport extends BatchStrategy {
 
 			stop = true;
 
-			LOG.error("Bug(Anomalie) généré(e) pour l'import des rejets de prélèvement {}", batch.getId());
+			log.error("Bug(Anomalie) généré(e) pour l'import des rejets de prélèvement {}", batch.getId());
 
 		}
 		return move;
@@ -307,7 +308,7 @@ public class BatchPaymentScheduleImport extends BatchStrategy {
 
 			incrementAnomaly();
 
-			LOG.error("Bug(Anomalie) généré(e) pour l'import des rejets de prélèvement {}", batch.getId());
+			log.error("Bug(Anomalie) généré(e) pour l'import des rejets de prélèvement {}", batch.getId());
 
 		}
 	}
@@ -353,7 +354,7 @@ public class BatchPaymentScheduleImport extends BatchStrategy {
 
 				incrementAnomaly();
 
-				LOG.error("Bug(Anomalie) généré(e) pour la création de l'écriture de rejet de l'échéance {}", paymentScheduleLine.getName());
+				log.error("Bug(Anomalie) généré(e) pour la création de l'écriture de rejet de l'échéance {}", paymentScheduleLine.getName());
 
 			} finally {
 
@@ -397,7 +398,7 @@ public class BatchPaymentScheduleImport extends BatchStrategy {
 
 				incrementAnomaly();
 
-				LOG.error("Bug(Anomalie) généré(e) pour la création de l'écriture de rejet de la facture {}", invoice.getInvoiceId());
+				log.error("Bug(Anomalie) généré(e) pour la création de l'écriture de rejet de la facture {}", invoice.getInvoiceId());
 
 			} finally {
 

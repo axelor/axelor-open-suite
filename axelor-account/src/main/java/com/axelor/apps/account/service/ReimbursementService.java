@@ -26,8 +26,14 @@ import com.google.inject.persist.Transactional;
 
 public class ReimbursementService {
 	
+	protected PartnerService partnerService;
+
 	@Inject
-	private PartnerService partnerService;
+	public ReimbursementService(PartnerService partnerService)  {
+		
+		this.partnerService = partnerService;
+		
+	}
 	
 	/**
 	 * Procédure permettant de mettre à jour la liste des RIBs du tiers

@@ -13,6 +13,7 @@ import com.axelor.apps.base.db.Product;
 import com.axelor.exception.AxelorException;
 
 public class AnalyticMoveLineService {
+	
 	public List<InvoiceLine> createInvoiceLines(Invoice invoice, List<AnalyticMoveLine> analyticMoveLineList) throws AxelorException  {
 
 		List<InvoiceLine> invoiceLineList = new ArrayList<InvoiceLine>();

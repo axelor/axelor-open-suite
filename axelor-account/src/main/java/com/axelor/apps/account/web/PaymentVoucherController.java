@@ -89,7 +89,7 @@ public class PaymentVoucherController {
 		paymentVoucher = Beans.get(PaymentVoucherLoadService.class).find(paymentVoucher.getId());
 		
 		try{				
-			Beans.get(PaymentVoucherConfirmService.class).confirmPaymentVoucher(paymentVoucher, false);
+			Beans.get(PaymentVoucherConfirmService.class).confirmPaymentVoucher(paymentVoucher);
 			response.setReload(true);	
 		}
 		catch(Exception e)  { TraceBackService.trace(response, e); }

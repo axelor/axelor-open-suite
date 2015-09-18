@@ -56,33 +56,31 @@ import com.google.inject.persist.Transactional;
 
 public class ReminderService {
 
-	private static final Logger LOG = LoggerFactory.getLogger(ReminderService.class);
+	private final Logger log = LoggerFactory.getLogger( getClass() );
+
+	protected ReminderSessionService reminderSessionService;
+	protected ReminderActionService reminderActionService;
+	protected AccountCustomerService accountCustomerService;
+	protected MoveLineRepository moveLineRepo;
+	protected PaymentScheduleLineRepository paymentScheduleLineRepo;
+	protected AccountConfigService accountConfigService;
+	protected ReminderRepository reminderRepo;
+
+	protected LocalDate today;
 
 	@Inject
-	private ReminderSessionService rss;
-	@Inject
-	private ReminderActionService ras;
-	@Inject
-	private AccountCustomerService acs;
+	public ReminderService(ReminderSessionService reminderSessionService, ReminderActionService reminderActionService, AccountCustomerService accountCustomerService,
+			MoveLineRepository moveLineRepo, PaymentScheduleLineRepository paymentScheduleLineRepo, AccountConfigService accountConfigService, ReminderRepository reminderRepo,
+			GeneralService generalService) {
 
-	@Inject
-	private MoveLineRepository moveLineRepo;
-
-	@Inject
-	private PaymentScheduleLineRepository paymentScheduleLineRepo;
-
-	@Inject
-	private AccountConfigService accountConfigService;
-	
-	@Inject
-	private ReminderRepository reminderRepo;
-
-	private LocalDate today;
-
-	@Inject
-	public ReminderService() {
-
-		this.today = Beans.get(GeneralService.class).getTodayDate();
+		this.reminderSessionService = reminderSessionService;
+		this.reminderActionService = reminderActionService;
+		this.accountCustomerService = accountCustomerService;
+		this.moveLineRepo = moveLineRepo;
+		this.paymentScheduleLineRepo = paymentScheduleLineRepo;
+		this.accountConfigService = accountConfigService;
+		this.reminderRepo = reminderRepo;
+		this.today = generalService.getTodayDate();
 
 	}
 
@@ -196,15 +194,15 @@ public class ReminderService {
 
 		// Date la plus ancienne des lignes d'écriture
 		LocalDate minMoveLineDate = getOldDateMoveLine(moveLineList);
-		LOG.debug("minMoveLineDate : {}",minMoveLineDate);
+		log.debug("minMoveLineDate : {}",minMoveLineDate);
 
 		// 2: Date la plus récente des relances
 		LocalDate reminderLastDate = getLastDateReminder(reminder);
-		LOG.debug("reminderLastDate : {}",reminderLastDate);
+		log.debug("reminderLastDate : {}",reminderLastDate);
 
 		// Date de référence : Date la plus récente des deux ensembles (1 et 2)
 		LocalDate reminderRefDate = getLastDate(minMoveLineDate, reminderLastDate);
-		LOG.debug("reminderRefDate : {}",reminderRefDate);
+		log.debug("reminderRefDate : {}",reminderRefDate);
 
 		return reminderRefDate;
 	}
@@ -386,17 +384,17 @@ public class ReminderService {
 
 		Reminder reminder = this.getReminder(partner, company); // ou getReminder si existe
 
-		BigDecimal balanceDue = acs.getBalanceDue(partner, company);
+		BigDecimal balanceDue = accountCustomerService.getBalanceDue(partner, company);
 
 		if (balanceDue.compareTo(BigDecimal.ZERO) > 0)  {
 
 			reminder.setBalanceDue(balanceDue);
-			LOG.debug("balanceDue : {} ",balanceDue);
+			log.debug("balanceDue : {} ",balanceDue);
 
-			BigDecimal balanceDueReminder = acs.getBalanceDueReminder(partner, company);
+			BigDecimal balanceDueReminder = accountCustomerService.getBalanceDueReminder(partner, company);
 
 			if (balanceDueReminder.compareTo(BigDecimal.ZERO) > 0) {
-				LOG.debug("balanceDueReminder : {} ",balanceDueReminder);
+				log.debug("balanceDueReminder : {} ",balanceDueReminder);
 
 				remindedOk = true;
 
@@ -415,7 +413,7 @@ public class ReminderService {
 				LocalDate referenceDate = this.getReferenceDate(reminder);
 
 				if(referenceDate != null)  {
-					LOG.debug("date de référence : {} ",referenceDate);
+					log.debug("date de référence : {} ",referenceDate);
 					reminder.setReferenceDate(referenceDate);
 				}
 				else {
@@ -423,9 +421,9 @@ public class ReminderService {
 							GeneralServiceImpl.EXCEPTION, partner.getName(), company.getName()), IException.CONFIGURATION_ERROR);
 				}
 				if(reminder.getReminderMethod() == null)  {
-					if(rss.getReminderMethod(reminder)!=null)  {
-						reminder.setReminderMethod(rss.getReminderMethod(reminder));
-						rss.reminderSession(reminder);
+					if(reminderSessionService.getReminderMethod(reminder)!=null)  {
+						reminder.setReminderMethod(reminderSessionService.getReminderMethod(reminder));
+						reminderSessionService.reminderSession(reminder);
 					}
 					else  {
 						throw new AxelorException(String.format("%s :\n"+I18n.get("Tiers")+" %s, "+I18n.get("Société")+" %s : "+I18n.get(IExceptionMessage.REMINDER_3),
@@ -433,17 +431,17 @@ public class ReminderService {
 					}
 				}
 				else {
-					rss.reminderSession(reminder);
+					reminderSessionService.reminderSession(reminder);
 				}
 				if(reminder.getWaitReminderMethodLine()==null)  {
 					// Si le niveau de relance à évolué
 					if(reminder.getReminderMethodLine() != null && reminder.getReminderMethodLine().getReminderLevel() != null &&
 							reminder.getReminderMethodLine().getReminderLevel().getName() > levelReminder)  {
-						ras.runAction(reminder);
+						reminderActionService.runAction(reminder);
 					}
 				}
 				else  {
-					LOG.debug("Tiers {}, Société {} - Niveau de relance en attente ", partner.getName(), company.getName());
+					log.debug("Tiers {}, Société {} - Niveau de relance en attente ", partner.getName(), company.getName());
 					// TODO Alarm ?
 					TraceBackService.trace(new AxelorException(
 						String.format("%s :\n"+I18n.get("Tiers")+" %s, "+I18n.get("Société")+" %s : "+I18n.get(IExceptionMessage.REMINDER_4),
@@ -452,7 +450,7 @@ public class ReminderService {
 			}
 		}
 		else  {
-			rss.reminderInitialisation(reminder);
+			reminderSessionService.reminderInitialisation(reminder);
 		}
 		return remindedOk;
 	}

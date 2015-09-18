@@ -37,9 +37,14 @@ import com.google.inject.Inject;
  */
 public class AccountingBatchService {
 
-// Appel 	
-	@Inject
 	AccountingBatchRepository accountingBatchRepo;
+	
+	@Inject
+	public AccountingBatchService(AccountingBatchRepository accountingBatchRepo)  {
+		
+		this.accountingBatchRepo = accountingBatchRepo;
+		
+	}
 	
 	/**
 	 * Lancer un batch à partir de son code.

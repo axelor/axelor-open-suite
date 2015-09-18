@@ -42,34 +42,28 @@ import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.google.inject.Inject;
-import com.google.inject.Injector;
 import com.google.inject.persist.Transactional;
 
 public class MoveLineReportService {
 
-	private static final Logger LOG = LoggerFactory.getLogger(MoveLineReportService.class);
+	private final Logger log = LoggerFactory.getLogger( getClass() );
+
+	protected MoveLineReportRepository moveLineReportRepo;
+
+	protected DateTime dateTime;
+
+	protected String query;
+
+	protected AccountRepository accountRepo;
+
 
 	@Inject
-	private Injector injector;
-	
-	@Inject
-	private MoveLineReportRepository moveLineReportRepo;
-
-	private DateTime dateTime;
-
-	private String query;
-
-	@Inject
-	private AccountRepository accountRepo;
-
-
-	protected GeneralService generalService;
-
-	@Inject
-	public MoveLineReportService(GeneralService generalService) {
-		this.generalService = generalService;
-		dateTime = this.generalService.getTodayDateTime();
+	public MoveLineReportService(GeneralService generalService, MoveLineReportRepository moveLineReportRepo, AccountRepository accountRepo) {
+		this.moveLineReportRepo = moveLineReportRepo;
+		this.accountRepo = accountRepo;
+		dateTime = generalService.getTodayDateTime();
 
 	}
 
@@ -80,7 +74,7 @@ public class MoveLineReportService {
 
 		this.buildQuery(moveLineReport);
 
-		LOG.debug("Requete : {}", this.query);
+		log.debug("Requete : {}", this.query);
 
 		return this.query;
 
@@ -226,7 +220,7 @@ public class MoveLineReportService {
 	public String getSequence(MoveLineReport moveLineReport) throws AxelorException  {
 		if(moveLineReport.getTypeSelect() <= 0)  { 	return null;  }
 
-		SequenceService sequenceService = injector.getInstance(SequenceService.class);
+		SequenceService sequenceService = Beans.get(SequenceService.class);
 		if(moveLineReport.getTypeSelect() <= 5 || moveLineReport.getTypeSelect() >= 10 )  {
 
 			String seq = sequenceService.getSequenceNumber(IAdministration.MOVE_LINE_REPORT, moveLineReport.getCompany());
@@ -252,7 +246,7 @@ public class MoveLineReportService {
 	public JournalType getJournalType(MoveLineReport moveLineReport) throws AxelorException  {
 		Company company = moveLineReport.getCompany();
 
-		AccountConfigService accountConfigService = injector.getInstance(AccountConfigService.class);
+		AccountConfigService accountConfigService = Beans.get(AccountConfigService.class);
 
 		AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
 
@@ -313,7 +307,7 @@ public class MoveLineReportService {
 		Query q = JPA.em().createQuery("select SUM(self.debit) FROM MoveLine as self WHERE " + queryFilter, BigDecimal.class);
 
 		BigDecimal result = (BigDecimal) q.getSingleResult();
-		LOG.debug("Total debit : {}", result);
+		log.debug("Total debit : {}", result);
 
 		if(result != null)  {
 			return result;
@@ -334,7 +328,7 @@ public class MoveLineReportService {
 		Query q = JPA.em().createQuery("select SUM(self.credit) FROM MoveLine as self WHERE " + queryFilter, BigDecimal.class);
 
 		BigDecimal result = (BigDecimal) q.getSingleResult();
-		LOG.debug("Total debit : {}", result);
+		log.debug("Total debit : {}", result);
 
 		if(result != null)  {
 			return result;
@@ -351,7 +345,7 @@ public class MoveLineReportService {
 		Query q = JPA.em().createQuery("select SUM(self.amountRemaining) FROM MoveLine as self WHERE " + queryFilter, BigDecimal.class);
 
 		BigDecimal result = (BigDecimal) q.getSingleResult();
-		LOG.debug("Total debit : {}", result);
+		log.debug("Total debit : {}", result);
 
 		if(result != null) {
 			return result;

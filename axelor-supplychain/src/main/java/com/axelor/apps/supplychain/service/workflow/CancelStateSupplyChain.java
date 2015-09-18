@@ -24,8 +24,8 @@ import java.util.List;
 
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
-import com.axelor.apps.account.service.MoveService;
 import com.axelor.apps.account.service.invoice.workflow.cancel.CancelState;
+import com.axelor.apps.account.service.move.MoveService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.sale.db.SaleOrder;

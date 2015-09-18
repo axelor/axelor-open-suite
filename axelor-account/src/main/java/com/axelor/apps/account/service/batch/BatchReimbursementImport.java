@@ -32,6 +32,7 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.Reimbursement;
 import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.service.AccountingService;
 import com.axelor.apps.account.service.ReimbursementImportService;
 import com.axelor.apps.account.service.RejectImportService;
 import com.axelor.apps.base.db.Company;
@@ -43,19 +44,21 @@ import com.axelor.i18n.I18n;
 
 public class BatchReimbursementImport extends BatchStrategy {
 
-	private static final Logger LOG = LoggerFactory.getLogger(BatchReimbursementImport.class);
+	private final Logger log = LoggerFactory.getLogger( getClass() );
 
-	private boolean stop = false;
+	protected boolean stop = false;
 	
-	private BigDecimal totalAmount = BigDecimal.ZERO;
+	protected BigDecimal totalAmount = BigDecimal.ZERO;
 	
-	private String updateCustomerAccountLog = "";
+	protected String updateCustomerAccountLog = "";
 
 	
 	@Inject
 	public BatchReimbursementImport(ReimbursementImportService reimbursementImportService, RejectImportService rejectImportService, BatchAccountCustomer batchAccountCustomer) {
 		
 		super(reimbursementImportService, rejectImportService, batchAccountCustomer);
+		
+		AccountingService.setUpdateCustomerAccount(false);
 		
 	}
 
@@ -109,7 +112,7 @@ public class BatchReimbursementImport extends BatchStrategy {
 				
 				incrementAnomaly();
 				
-				LOG.error("Bug(Anomalie) généré(e) pour le batch d'import des remboursements {}", batch.getId());
+				log.error("Bug(Anomalie) généré(e) pour le batch d'import des remboursements {}", batch.getId());
 			
 				stop();
 			}	
@@ -130,7 +133,7 @@ public class BatchReimbursementImport extends BatchStrategy {
 						
 						Reimbursement reimbursement = reimbursementImportService.createReimbursementRejectMoveLine(reject, companyRepo.find(company.getId()), seq, moveRepo.find(move.getId()), rejectDate);
 						if(reimbursement != null)  {
-							LOG.debug("Remboursement n° {} traité", reimbursement.getRef());
+							log.debug("Remboursement n° {} traité", reimbursement.getRef());
 							seq++;
 							i++;
 							updateReimbursement(reimbursement);
@@ -147,7 +150,7 @@ public class BatchReimbursementImport extends BatchStrategy {
 						
 						incrementAnomaly();
 						
-						LOG.error("Bug(Anomalie) généré(e) pour le rejet de remboursement {}", reject[1]);
+						log.error("Bug(Anomalie) généré(e) pour le rejet de remboursement {}", reject[1]);
 						
 					} finally {
 						
@@ -187,7 +190,7 @@ public class BatchReimbursementImport extends BatchStrategy {
 			
 			incrementAnomaly();
 			
-			LOG.error("Bug(Anomalie) généré(e) pour le batch d'import des remboursements {}", batch.getId());
+			log.error("Bug(Anomalie) généré(e) pour le batch d'import des remboursements {}", batch.getId());
 		
 			stop();
 		}	
@@ -218,7 +221,7 @@ public class BatchReimbursementImport extends BatchStrategy {
 			
 			incrementAnomaly();
 			
-			LOG.error("Bug(Anomalie) généré(e) pour le batch d'import des remboursements {}", batch.getId());
+			log.error("Bug(Anomalie) généré(e) pour le batch d'import des remboursements {}", batch.getId());
 		
 		}
 	}

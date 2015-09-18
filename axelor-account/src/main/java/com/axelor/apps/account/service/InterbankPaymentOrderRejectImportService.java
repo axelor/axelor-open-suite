@@ -34,6 +34,8 @@ import com.axelor.apps.account.db.repo.PaymentModeRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.cfonb.CfonbImportService;
 import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.account.service.move.MoveLineService;
+import com.axelor.apps.account.service.move.MoveService;
 import com.axelor.apps.account.service.payment.PaymentModeService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
@@ -47,33 +49,32 @@ import com.google.inject.persist.Transactional;
 
 public class InterbankPaymentOrderRejectImportService {
 
-	@Inject
-	private RejectImportService rejectImportService;
+	protected RejectImportService rejectImportService;
+	protected CfonbImportService cfonbImportService;
+	protected PaymentModeService paymentModeService;
+	protected PaymentModeRepository paymentModeRepo;
+	protected MoveService moveService;
+	protected MoveRepository moveRepo;
+	protected MoveLineService moveLineService;
+	protected AccountConfigService accountConfigService;
+	protected InvoiceRepository invoiceRepo;
 
 	@Inject
-	private CfonbImportService cfonbImportService;
-
-	@Inject
-	private PaymentModeService paymentModeService;
+	public InterbankPaymentOrderRejectImportService(RejectImportService rejectImportService, CfonbImportService cfonbImportService, PaymentModeService paymentModeService, 
+			PaymentModeRepository paymentModeRepo, MoveService moveService, MoveRepository moveRepo, MoveLineService moveLineService, AccountConfigService accountConfigService, InvoiceRepository invoiceRepo)  {
+		
+		this.rejectImportService = rejectImportService;
+		this.cfonbImportService = cfonbImportService;
+		this.paymentModeService = paymentModeService;
+		this.paymentModeRepo = paymentModeRepo;
+		this.moveService = moveService;
+		this.moveRepo = moveRepo;
+		this.moveLineService = moveLineService;
+		this.accountConfigService = accountConfigService;
+		this.invoiceRepo = invoiceRepo;
+		
+	}
 	
-	@Inject
-	private PaymentModeRepository paymentModeRepo;
-
-	@Inject
-	private MoveService moveService;
-	
-	@Inject
-	private MoveRepository moveRepo;
-
-	@Inject
-	private MoveLineService moveLineService;
-
-	@Inject
-	private AccountConfigService accountConfigService;
-
-	@Inject
-	private InvoiceRepository invoiceRepo;
-
 
 	public List<String[]> getCFONBFile(Company company) throws AxelorException, IOException  {
 
@@ -118,7 +119,7 @@ public class InterbankPaymentOrderRejectImportService {
 
 			AccountConfig accountConfig = company.getAccountConfig();
 
-			Move move = moveService.createMove(accountConfig.getRejectJournal(), company, null, partner, null);
+			Move move = moveService.getMoveCreateService().createMove(accountConfig.getRejectJournal(), company, null, partner, null);
 
 			// Création d'une ligne au crédit
 			MoveLine debitMoveLine = moveLineService.createMoveLine(move , partner, accountConfig.getCustomerAccount(), amountReject, true, rejectImportService.createRejectDate(dateReject), 1, refReject);
@@ -128,7 +129,7 @@ public class InterbankPaymentOrderRejectImportService {
 			// Création d'une ligne au crédit
 			MoveLine creditMoveLine = moveLineService.createMoveLine(move , partner, bankAccount, amountReject, false, rejectImportService.createRejectDate(dateReject), 2, null);
 			move.getMoveLineList().add(creditMoveLine);
-			moveService.validateMove(move);
+			moveService.getMoveValidateService().validateMove(move);
 			moveRepo.save(move);
 
 			return invoice;

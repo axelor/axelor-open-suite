@@ -36,12 +36,12 @@ import com.axelor.i18n.I18n;
 
 public class BatchReminder extends BatchStrategy {
 
-	private static final Logger LOG = LoggerFactory.getLogger(BatchReminder.class);
+	private final Logger log = LoggerFactory.getLogger( getClass() );
 
 	protected int mailDone = 0;
 	protected int mailAnomaly = 0;
 	
-	private boolean stop = false;
+	protected boolean stop = false;
 	
 	@Inject
 	public BatchReminder(ReminderService reminderService) {
@@ -98,7 +98,7 @@ public class BatchReminder extends BatchStrategy {
 				
 				if(remindedOk == true)  {  updatePartner(partner); i++; }
 
-				LOG.debug("Tiers traité : {}", partner.getName());	
+				log.debug("Tiers traité : {}", partner.getName());	
 
 			} catch (AxelorException e) {
 				
@@ -111,7 +111,7 @@ public class BatchReminder extends BatchStrategy {
 				
 				incrementAnomaly();
 				
-				LOG.error("Bug(Anomalie) généré(e) pour le tiers {}", partner.getName());
+				log.error("Bug(Anomalie) généré(e) pour le tiers {}", partner.getName());
 				
 			} finally {
 				
