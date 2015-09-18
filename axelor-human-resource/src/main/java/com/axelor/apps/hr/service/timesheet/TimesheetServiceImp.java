@@ -46,7 +46,7 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
 
-public class TimesheetServiceImp extends TimesheetRepository implements TimesheetService{
+public class TimesheetServiceImp implements TimesheetService{
 
 	@Inject
 	private EmployeeService employeeService;

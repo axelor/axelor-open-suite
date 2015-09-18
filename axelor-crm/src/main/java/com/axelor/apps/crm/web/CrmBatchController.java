@@ -22,6 +22,7 @@ import java.util.Map;
 
 import com.axelor.apps.base.db.Batch;
 import com.axelor.apps.crm.db.CrmBatch;
+import com.axelor.apps.crm.db.repo.CrmBatchRepository;
 import com.axelor.apps.crm.service.batch.CrmBatchService;
 import com.axelor.exception.AxelorException;
 import com.axelor.rpc.ActionRequest;
@@ -32,6 +33,9 @@ public class CrmBatchController {
 
 	@Inject
 	private CrmBatchService crmBatchService;
+	
+	@Inject
+	private CrmBatchRepository crmBatchRepo;
 
 	/**
 	 * Lancer le batch de relance
@@ -43,7 +47,7 @@ public class CrmBatchController {
 
 		CrmBatch crmBatch = request.getContext().asType(CrmBatch.class);
 
-		Batch batch = crmBatchService.eventReminder(crmBatchService.find(crmBatch.getId()));
+		Batch batch = crmBatchService.eventReminder(crmBatchRepo.find(crmBatch.getId()));
 
 		if(batch != null)
 			response.setFlash(batch.getComments());
@@ -60,7 +64,7 @@ public class CrmBatchController {
 
 		CrmBatch crmBatch = request.getContext().asType(CrmBatch.class);
 
-		Batch batch = crmBatchService.target(crmBatchService.find(crmBatch.getId()));
+		Batch batch = crmBatchService.target(crmBatchRepo.find(crmBatch.getId()));
 
 		if(batch != null)
 			response.setFlash(batch.getComments());

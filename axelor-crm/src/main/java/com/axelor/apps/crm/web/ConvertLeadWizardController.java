@@ -24,6 +24,7 @@ import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.crm.db.Event;
 import com.axelor.apps.crm.db.Lead;
 import com.axelor.apps.crm.db.Opportunity;
+import com.axelor.apps.crm.db.repo.LeadRepository;
 import com.axelor.apps.crm.exception.IExceptionMessage;
 import com.axelor.apps.crm.service.ConvertLeadWizardService;
 import com.axelor.apps.crm.service.LeadService;
@@ -38,6 +39,9 @@ public class ConvertLeadWizardController {
 
 	@Inject
 	private LeadService leadService;
+	
+	@Inject
+	private LeadRepository leadRepo;
 
 	@Inject
 	private ConvertLeadWizardService convertLeadWizardService;
@@ -53,7 +57,7 @@ public class ConvertLeadWizardController {
 
 		Map<String, Object> leadContext = (Map<String, Object>) context.get("_lead");
 
-		Lead lead = leadService.find(((Integer)leadContext.get("id")).longValue());
+		Lead lead = leadRepo.find(((Integer)leadContext.get("id")).longValue());
 
 		Partner partner = null;
 		Partner contactPartner = null;

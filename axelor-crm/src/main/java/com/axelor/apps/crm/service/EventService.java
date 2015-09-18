@@ -49,13 +49,16 @@ import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
-public class EventService extends EventRepository {
+public class EventService {
 
 	@Inject
 	private EventAttendeeService eventAttendeeService;
 	
 	@Inject
 	private PartnerService partnerService;
+	
+	@Inject
+	private EventRepository eventRepo;
 
 	public Duration computeDuration(LocalDateTime startDateTime, LocalDateTime endDateTime)  {
 
@@ -83,7 +86,7 @@ public class EventService extends EventRepository {
 
 	@Transactional
 	public void saveEvent(Event event){
-		save(event);
+		eventRepo.save(event);
 	}
 
 
@@ -91,7 +94,7 @@ public class EventService extends EventRepository {
 	public void addLeadAttendee(Event event, Lead lead, Partner contactPartner)  {
 
 		event.addEventAttendeeListItem(eventAttendeeService.createEventAttendee(event, lead, contactPartner));
-		save(event);
+		eventRepo.save(event);
 
 	}
 

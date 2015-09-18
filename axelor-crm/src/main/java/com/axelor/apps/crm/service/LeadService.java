@@ -32,7 +32,9 @@ import com.axelor.apps.crm.db.Event;
 import com.axelor.apps.crm.db.ILead;
 import com.axelor.apps.crm.db.Lead;
 import com.axelor.apps.crm.db.Opportunity;
+import com.axelor.apps.crm.db.repo.EventRepository;
 import com.axelor.apps.crm.db.repo.LeadRepository;
+import com.axelor.apps.crm.db.repo.OpportunityRepository;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
@@ -41,7 +43,7 @@ import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
-public class LeadService extends LeadRepository {
+public class LeadService {
 
 	@Inject
 	private SequenceService sequenceService;
@@ -53,10 +55,13 @@ public class LeadService extends LeadRepository {
 	private PartnerRepository partnerRepo;
 
 	@Inject
-	private OpportunityServiceImpl opportunityService;
+	private OpportunityRepository opportunityRepo;
 
 	@Inject
-	private EventService  eventService;
+	private EventRepository eventRepo;
+	
+	@Inject
+	private LeadRepository leadRepo;
 
 
 	/**
@@ -93,21 +98,21 @@ public class LeadService extends LeadRepository {
 			partnerRepo.save(contactPartner);
 		}
 		if(opportunity!=null)  {
-			opportunityService.save(opportunity);
+			opportunityRepo.save(opportunity);
 		}
 		if(callEvent!=null)  {
-			eventService.save(callEvent);
+			eventRepo.save(callEvent);
 		}
 		if(meetingEvent!=null)  {
-			eventService.save(meetingEvent);
+			eventRepo.save(meetingEvent);
 		}
 		if(taskEvent!=null)  {
-			eventService.save(taskEvent);
+			eventRepo.save(taskEvent);
 		}
 
 		lead.setPartner(partner);
 		lead.setStatusSelect(ILead.STATUS_CONVERTED);
-		save(lead);
+		leadRepo.save(lead);
 
 		return lead;
 
@@ -167,7 +172,7 @@ public class LeadService extends LeadRepository {
 
 	@Transactional
 	public void saveLead(Lead lead){
-		save(lead);
+		leadRepo.save(lead);
 	}
 
 

@@ -34,6 +34,8 @@ import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.crm.db.Event;
 import com.axelor.apps.crm.db.IEvent;
 import com.axelor.apps.crm.db.Lead;
+import com.axelor.apps.crm.db.repo.EventRepository;
+import com.axelor.apps.crm.db.repo.LeadRepository;
 import com.axelor.apps.crm.exception.IExceptionMessage;
 import com.axelor.apps.crm.service.EventService;
 import com.axelor.apps.crm.service.LeadService;
@@ -46,15 +48,27 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.google.inject.Inject;
 
 public class EventController {
 
 	private static final Logger LOG = LoggerFactory.getLogger(EventController.class);
+	
+	@Inject
+	private EventRepository eventRepo;
+	
+	@Inject
+	private EventService eventService;
+	
+	@Inject
+	private LeadRepository leadRepo;
+	
+	@Inject
+	private LeadService leadService;
 
 	public void computeFromStartDateTime(ActionRequest request, ActionResponse response) {
 
 		Event event = request.getContext().asType(Event.class);
-		EventService eventService = Beans.get(EventService.class);
 
 		LOG.debug("event : {}", event);
 
@@ -72,7 +86,6 @@ public class EventController {
 	public void computeFromEndDateTime(ActionRequest request, ActionResponse response) {
 
 		Event event = request.getContext().asType(Event.class);
-		EventService eventService = Beans.get(EventService.class);
 
 		LOG.debug("event : {}", event);
 
@@ -90,7 +103,6 @@ public class EventController {
 	public void computeFromDuration(ActionRequest request, ActionResponse response) {
 
 		Event event = request.getContext().asType(Event.class);
-		EventService eventService = Beans.get(EventService.class);
 
 		LOG.debug("event : {}", event);
 
@@ -108,7 +120,6 @@ public class EventController {
 	public void computeFromCalendar(ActionRequest request, ActionResponse response) {
 
 		Event event = request.getContext().asType(Event.class);
-		EventService eventService = Beans.get(EventService.class);
 
 		LOG.debug("event : {}", event);
 
@@ -137,8 +148,7 @@ public class EventController {
 	public void saveEventTaskStatusSelect(ActionRequest request, ActionResponse response) throws AxelorException {
 
 		Event event = request.getContext().asType(Event.class);
-		EventService eventService = Beans.get(EventService.class);
-		Event persistEvent = eventService.find(event.getId());
+		Event persistEvent = eventRepo.find(event.getId());
 		persistEvent.setTaskStatusSelect(event.getTaskStatusSelect());
 		eventService.saveEvent(persistEvent);
 
@@ -148,8 +158,7 @@ public class EventController {
 	public void saveEventTicketStatusSelect(ActionRequest request, ActionResponse response) throws AxelorException {
 
 		Event event = request.getContext().asType(Event.class);
-		EventService eventService = Beans.get(EventService.class);
-		Event persistEvent = eventService.find(event.getId());
+		Event persistEvent = eventRepo.find(event.getId());
 		persistEvent.setTicketStatusSelect(event.getTicketStatusSelect());
 		eventService.saveEvent(persistEvent);
 
@@ -192,17 +201,16 @@ public class EventController {
 	}
 
 	public void assignToMeLead(ActionRequest request, ActionResponse response)  {
-		LeadService leadService = Beans.get(LeadService.class);
 
 		if(request.getContext().get("id") != null){
-			Lead lead = leadService.find((Long)request.getContext().get("id"));
+			Lead lead = leadRepo.find((Long)request.getContext().get("id"));
 			lead.setUser(AuthUtils.getUser());
 			if(lead.getStatusSelect() == 1)
 				lead.setStatusSelect(2);
 			leadService.saveLead(lead);
 		}
 		else if(!((List)request.getContext().get("_ids")).isEmpty()){
-			for(Lead lead : leadService.all().filter("id in ?1",request.getContext().get("_ids")).fetch()){
+			for(Lead lead : leadRepo.all().filter("id in ?1",request.getContext().get("_ids")).fetch()){
 				lead.setUser(AuthUtils.getUser());
 				if(lead.getStatusSelect() == 1)
 					lead.setStatusSelect(2);
@@ -215,14 +223,13 @@ public class EventController {
 
 	public void assignToMeEvent(ActionRequest request, ActionResponse response)  {
 
-		EventService eventService = Beans.get(EventService.class);
 		if(request.getContext().get("id") != null){
-			Event event = eventService.find((Long)request.getContext().get("id"));
+			Event event = eventRepo.find((Long)request.getContext().get("id"));
 			event.setUser(AuthUtils.getUser());
 			eventService.saveEvent(event);
 		}
 		else if(!((List)request.getContext().get("_ids")).isEmpty()){
-			for(Event event : eventService.all().filter("id in ?1",request.getContext().get("_ids")).fetch()){
+			for(Event event : eventRepo.all().filter("id in ?1",request.getContext().get("_ids")).fetch()){
 				event.setUser(AuthUtils.getUser());
 				eventService.saveEvent(event);
 			}
@@ -234,7 +241,6 @@ public class EventController {
 
 
 	public void checkModifications(ActionRequest request, ActionResponse response) throws ClassNotFoundException, InstantiationException, IllegalAccessException, AxelorException, IOException, MessagingException  {
-		EventService eventService = Beans.get(EventService.class);
 
 		Event event = request.getContext().asType(Event.class);
 		Long idEvent = event.getId();
@@ -251,7 +257,7 @@ public class EventController {
 		}
 		else{
 			if(idEvent != null && idEvent > 0){
-				Event previousEvent = eventService.find(event.getId());
+				Event previousEvent = eventRepo.find(event.getId());
 				event = eventService.checkModifications(event, previousEvent);
 			}
 			else{

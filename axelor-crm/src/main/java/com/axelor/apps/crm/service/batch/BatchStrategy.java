@@ -20,10 +20,12 @@ package com.axelor.apps.crm.service.batch;
 import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.apps.crm.db.EventReminder;
 import com.axelor.apps.crm.db.TargetConfiguration;
+import com.axelor.apps.crm.db.repo.EventReminderRepository;
 import com.axelor.apps.crm.message.MessageServiceCrmImpl;
 import com.axelor.apps.crm.service.EventReminderService;
 import com.axelor.apps.crm.service.TargetService;
 import com.axelor.apps.message.service.MailAccountService;
+import com.google.inject.Inject;
 
 public abstract class BatchStrategy extends AbstractBatch {
 
@@ -31,8 +33,10 @@ public abstract class BatchStrategy extends AbstractBatch {
 	protected MessageServiceCrmImpl messageServiceCrmImpl;
 	protected MailAccountService mailAccountService;
 	protected TargetService targetService;
-
-
+	
+	
+	@Inject
+	protected EventReminderRepository eventReminderRepo;
 
 	protected BatchStrategy(EventReminderService eventReminderService, MessageServiceCrmImpl messageServiceCrmImpl, MailAccountService mailAccountService) {
 		super();

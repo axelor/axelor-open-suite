@@ -14,7 +14,7 @@ import com.axelor.apps.cash.management.db.CashFlowReason;
 import com.axelor.apps.cash.management.db.repo.CashFlowForecastRepository;
 import com.google.inject.Inject;
 
-public class CashFlowForecastService extends CashFlowForecastRepository{
+public class CashFlowForecastService {
 	
 	@Inject
 	protected GeneralService generalService;
@@ -28,10 +28,10 @@ public class CashFlowForecastService extends CashFlowForecastRepository{
 		if(cashFlowForecastGenerator.getCashFlowForecastList() != null && !cashFlowForecastGenerator.getCashFlowForecastList().isEmpty()){
 			List<CashFlowForecast> cashFlowForecastList = cashFlowForecastGenerator.getCashFlowForecastList();
 			for (CashFlowForecast cashFlowForecast : cashFlowForecastList) {
-				if(cashFlowForecast.getRealizedSelect() == REALISED_SELECT_NO){
+				if(cashFlowForecast.getRealizedSelect() == CashFlowForecastRepository.REALISED_SELECT_NO){
 					cashFlowForecastList.remove(cashFlowForecast);
 				}
-				else if(cashFlowForecast.getRealizedSelect() == REALISED_SELECT_AUTO && cashFlowForecast.getEstimatedDate().isAfter(todayDate)){
+				else if(cashFlowForecast.getRealizedSelect() == CashFlowForecastRepository.REALISED_SELECT_AUTO && cashFlowForecast.getEstimatedDate().isAfter(todayDate)){
 					cashFlowForecastList.remove(cashFlowForecast);
 				}
 			}

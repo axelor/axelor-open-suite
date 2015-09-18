@@ -39,7 +39,7 @@ import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
-public class ExpenseService extends ExpenseRepository{
+public class ExpenseService {
 
 	@Inject
 	private MoveService moveService;
@@ -53,7 +53,12 @@ public class ExpenseService extends ExpenseRepository{
 	@Inject
 	protected GeneralService generalService;
 
-	@Inject private AccountConfigHRService accountConfigService;
+	@Inject 
+	private AccountConfigHRService accountConfigService;
+	
+	@Inject
+	protected ExpenseRepository expenseRepo;
+	
 
 	public Expense compute (Expense expense){
 
@@ -144,7 +149,7 @@ public class ExpenseService extends ExpenseRepository{
 
 		expense.setMove(move);
 		expense.setVentilated(true);
-		save(expense);
+		expenseRepo.save(expense);
 
 		return move;
 	}
@@ -155,7 +160,7 @@ public class ExpenseService extends ExpenseRepository{
 		if(move == null)
 		{
 			expense.setStatusSelect(IExpense.STATUS_CANCELED);
-			save(expense);
+			expenseRepo.save(expense);
 			return;
 		}
 		Beans.get(PeriodService.class).testOpenPeriod(move.getPeriod());
@@ -169,7 +174,7 @@ public class ExpenseService extends ExpenseRepository{
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.EXPENSE_CANCEL_MOVE)), IException.CONFIGURATION_ERROR);
 		}
 
-		save(expense);
+		expenseRepo.save(expense);
 	}
 
 	public List<InvoiceLine> createInvoiceLines(Invoice invoice, List<ExpenseLine> expenseLineList, int priority) throws AxelorException  {

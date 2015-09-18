@@ -30,13 +30,17 @@ import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.common.base.Strings;
+import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
-public class OpportunityServiceImpl extends OpportunityRepository implements OpportunityService {
+public class OpportunityServiceImpl implements OpportunityService {
+	
+	@Inject
+	protected OpportunityRepository opportunityRepo;
 	
 	@Transactional
 	public void saveOpportunity(Opportunity opportunity){
-		save(opportunity);
+		opportunityRepo.save(opportunity);
 	}
 
 	@Override
@@ -57,7 +61,7 @@ public class OpportunityServiceImpl extends OpportunityRepository implements Opp
 		Partner partner = Beans.get(PartnerService.class).createPartner(name, null, lead.getFixedPhone(), lead.getMobilePhone(), lead.getEmailAddress(), opportunity.getCurrency(), address, address);
 
 		opportunity.setPartner(partner);
-		save(opportunity);
+		opportunityRepo.save(opportunity);
 
 		return partner;
 	}

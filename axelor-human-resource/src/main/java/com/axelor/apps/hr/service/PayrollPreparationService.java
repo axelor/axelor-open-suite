@@ -15,7 +15,7 @@ import com.axelor.apps.hr.db.PayrollLeave;
 import com.axelor.apps.hr.db.PayrollPreparation;
 import com.axelor.apps.hr.db.repo.ExpenseRepository;
 import com.axelor.apps.hr.db.repo.ExtraHoursLineRepository;
-import com.axelor.apps.hr.db.repo.PayrollPreparationRepository;
+import com.axelor.apps.hr.db.repo.LeaveRequestRepository;
 import com.axelor.apps.hr.exception.IExceptionMessage;
 import com.axelor.apps.hr.service.leave.LeaveService;
 import com.axelor.apps.hr.service.weeklyplanning.WeeklyPlanningService;
@@ -25,10 +25,13 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 
-public class PayrollPreparationService extends PayrollPreparationRepository{
+public class PayrollPreparationService {
 	
 	@Inject
 	protected LeaveService leaveService;
+	
+	@Inject
+	protected LeaveRequestRepository leaveRequestRepo;
 	
 	@Inject
 	protected WeeklyPlanningService weeklyPlanningService;
@@ -70,7 +73,7 @@ public class PayrollPreparationService extends PayrollPreparationRepository{
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.EMPLOYEE_PLANNING),employee.getName()), IException.CONFIGURATION_ERROR);
 		}
 		
-		List<LeaveRequest> leaveRequestList = leaveService.all().filter("self.statusSelect = 3 AND self.user.employee = ?3 AND self.dateFrom <= ?1 AND self.dateTo >= ?2",toDate, fromDate,employee).fetch();
+		List<LeaveRequest> leaveRequestList = leaveRequestRepo.all().filter("self.statusSelect = 3 AND self.user.employee = ?3 AND self.dateFrom <= ?1 AND self.dateTo >= ?2",toDate, fromDate,employee).fetch();
 		for (LeaveRequest leaveRequest : leaveRequestList) {
 			PayrollLeave payrollLeave = new PayrollLeave();
 			if(leaveRequest.getDateFrom().isBefore(fromDate)){
