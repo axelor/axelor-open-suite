@@ -88,13 +88,13 @@ public class BatchReminder extends BatchStrategy {
 	public void reminderPartner()  {
 		
 		int i = 0;
-		List<Partner> partnerList = (List<Partner>) partnerService.all().filter("self.isContact = false AND ?1 MEMBER OF self.companySet", batch.getAccountingBatch().getCompany()).fetch();
+		List<Partner> partnerList = (List<Partner>) partnerRepo.all().filter("self.isContact = false AND ?1 MEMBER OF self.companySet", batch.getAccountingBatch().getCompany()).fetch();
 		
 		for (Partner partner : partnerList) {
 
 			try {
 				
-				boolean remindedOk = reminderService.reminderGenerate(partnerService.find(partner.getId()), batch.getAccountingBatch().getCompany());
+				boolean remindedOk = reminderService.reminderGenerate(partnerRepo.find(partner.getId()), batch.getAccountingBatch().getCompany());
 				
 				if(remindedOk == true)  {  updatePartner(partner); i++; }
 

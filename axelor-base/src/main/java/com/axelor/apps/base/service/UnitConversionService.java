@@ -31,10 +31,13 @@ import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 
-public class UnitConversionService extends UnitConversionRepository{
+public class UnitConversionService {
 
 	@Inject
 	protected GeneralService generalService;
+	
+	@Inject
+	private UnitConversionRepository unitConversionRepo;
 
 	/**
 	 * Obtenir le coefficient entre deux unités dans une liste de conversion. Si l'unité de départ et l'unité
@@ -128,7 +131,7 @@ public class UnitConversionService extends UnitConversionRepository{
 		if (startUnit.equals(endUnit))
 			return value;
 		else {
-			BigDecimal coefficient = this.getCoefficient(all().fetch(), startUnit, endUnit);
+			BigDecimal coefficient = this.getCoefficient(unitConversionRepo.all().fetch(), startUnit, endUnit);
 
 			return value.multiply(coefficient).setScale(generalService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_EVEN);
 		}

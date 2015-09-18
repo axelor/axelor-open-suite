@@ -27,6 +27,7 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.google.inject.Inject;
 
 /**
  * InvoiceBatchService est une classe implémentant l'ensemble des batchs de
@@ -36,9 +37,12 @@ import com.axelor.inject.Beans;
  * 
  * @version 0.1
  */
-public class CrmBatchService extends CrmBatchRepository{
+public class CrmBatchService {
 
-
+	
+	@Inject
+	protected CrmBatchRepository crmBatchRepo;
+	
 // Appel 	
 	
 	/**
@@ -52,7 +56,7 @@ public class CrmBatchService extends CrmBatchRepository{
 	public Batch run(String batchCode) throws AxelorException {
 				
 		Batch batch;
-		CrmBatch crmBatch = findByCode(batchCode);
+		CrmBatch crmBatch = crmBatchRepo.findByCode(batchCode);
 		
 		if (crmBatch != null){
 			switch (crmBatch.getActionSelect()) {

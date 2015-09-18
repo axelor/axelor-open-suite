@@ -21,12 +21,11 @@ import java.util.Map;
 
 import com.axelor.apps.base.db.TemplateContext;
 import com.axelor.apps.base.db.TemplateContextLine;
-import com.axelor.apps.base.db.repo.TemplateContextRepository;
 import com.axelor.db.Model;
 import com.google.common.collect.Maps;
 import com.google.inject.Inject;
 
-public class TemplateContextService extends  TemplateContextRepository{
+public class TemplateContextService {
 	
 	@Inject
 	private TemplateContextLineService tcls;

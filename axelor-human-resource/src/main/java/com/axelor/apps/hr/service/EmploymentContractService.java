@@ -14,10 +14,14 @@ import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaAttachment;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.meta.db.repo.MetaAttachmentRepository;
+import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
-public class EmploymentContractService extends EmploymentContractRepository{
-
+public class EmploymentContractService {
+	
+	@Inject
+	private EmploymentContractRepository employmentContractRepo;
+	
 	@Transactional
     public int addAmendment( EmploymentContract EmploymentContract ) throws IOException{
 
@@ -44,7 +48,7 @@ public class EmploymentContractService extends EmploymentContractRepository{
 
     	int version = EmploymentContract.getEmploymentContractVersion() + 1;
     	EmploymentContract.setEmploymentContractVersion( version );
-    	save(EmploymentContract);
+    	employmentContractRepo.save(EmploymentContract);
 
     	return version;
 	}

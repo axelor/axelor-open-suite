@@ -35,7 +35,9 @@ import com.axelor.apps.base.db.IPartner;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PartnerAddress;
 import com.axelor.apps.base.db.PickListEntry;
+import com.axelor.apps.base.db.repo.AddressRepository;
 import com.axelor.apps.base.db.repo.PartnerAddressRepository;
+import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.service.AddressService;
 import com.axelor.apps.base.service.MapService;
@@ -58,12 +60,18 @@ public class AddressController {
 
 	@Inject
 	private AddressService addressService;
+	
+	@Inject
+	private AddressRepository addressRepo;
 
 	@Inject
 	protected GeneralService generalService;
 	
 	@Inject
 	private PartnerService partnerService;
+	
+	@Inject
+	private PartnerRepository partnerRepo;
 
 
 	private static final Logger LOG = LoggerFactory.getLogger(AddressController.class);
@@ -293,8 +301,8 @@ public class AddressController {
 		
 		LOG.debug("Partner address: {}",partnerAddress);
 		if(partnerAddress ==  null){
-			partner = partnerService.find(partner.getId());
-			address = addressService.find(address.getId());
+			partner = partnerRepo.find(partner.getId());
+			address = addressRepo.find(address.getId());
 			Boolean invoicing = (Boolean)context.get("isInvoicingAddr");
 			Boolean delivery = (Boolean)context.get("isDeliveryAddr");
 			Boolean isDefault = (Boolean)context.get("isDefault");

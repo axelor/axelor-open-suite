@@ -15,18 +15,21 @@ import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
-public class SaleOrderProjectService extends SaleOrderRepository{
+public class SaleOrderProjectService {
 
 	@Inject
 	protected GeneralService generalService;
 
 	@Inject
 	protected ProjectTaskBusinessService projectTaskBusinessService;
+	
+	@Inject
+	protected SaleOrderRepository saleOrderRepo;
 
 	@Transactional
 	public ProjectTask generateProject(SaleOrder saleOrder){
 		ProjectTask project = projectTaskBusinessService.generateProject(saleOrder);
-		save(saleOrder);
+		saleOrderRepo.save(saleOrder);
 		return project;
 	}
 

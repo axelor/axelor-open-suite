@@ -49,6 +49,7 @@ import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.BlockingService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.administration.GeneralService;
@@ -112,6 +113,9 @@ public class ReimbursementExportService {
 
 	@Inject
 	private PartnerService partnerService;
+	
+	@Inject
+	private PartnerRepository partnerRepo;
 
 	private LocalDate today;
 
@@ -338,7 +342,7 @@ public class ReimbursementExportService {
 
 		if(partner != null && bankDetails != null && !bankDetails.equals(partner.getBankDetails()))  {
 			partner.setBankDetails(bankDetails);
-			partnerService.save(partner);
+			partnerRepo.save(partner);
 		}
 	}
 

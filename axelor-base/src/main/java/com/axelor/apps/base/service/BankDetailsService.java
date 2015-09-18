@@ -20,12 +20,11 @@ package com.axelor.apps.base.service;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Bic;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.db.repo.BankDetailsRepository;
 import com.axelor.apps.base.db.repo.BicRepository;
 import com.axelor.apps.tool.StringTool;
 import com.google.inject.Inject;
 
-public class BankDetailsService extends BankDetailsRepository{
+public class BankDetailsService {
 	
 	@Inject
 	private BicRepository bicRepo;

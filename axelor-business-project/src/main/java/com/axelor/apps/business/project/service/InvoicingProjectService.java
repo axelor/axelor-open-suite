@@ -45,8 +45,7 @@ import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
-public class InvoicingProjectService extends InvoicingProjectRepository{
-
+public class InvoicingProjectService {
 
 	@Inject
 	protected SaleOrderInvoiceServiceImpl saleOrderInvoiceServiceImpl;
@@ -67,6 +66,9 @@ public class InvoicingProjectService extends InvoicingProjectRepository{
 
 	@Inject
 	protected PartnerService partnerService;
+	
+	@Inject
+	protected InvoicingProjectRepository  invoicingProjectRepo;
 
 	protected int MAX_LEVEL_OF_PROJECT = 10;
 
@@ -98,7 +100,7 @@ public class InvoicingProjectService extends InvoicingProjectRepository{
 
 		this.setInvoiced(invoicingProject);
 		invoicingProject.setInvoice(invoice);
-		save(invoicingProject);
+		invoicingProjectRepo.save(invoicingProject);
 		return invoice;
 	}
 

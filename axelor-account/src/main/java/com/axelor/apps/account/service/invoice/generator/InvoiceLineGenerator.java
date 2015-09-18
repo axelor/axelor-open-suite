@@ -40,8 +40,8 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.UnitConversion;
+import com.axelor.apps.base.db.repo.UnitConversionRepository;
 import com.axelor.apps.base.service.CurrencyService;
-import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.base.service.tax.AccountManagementServiceImpl;
 import com.axelor.apps.tool.date.Period;
@@ -86,7 +86,7 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
 	public static final int DEFAULT_SEQUENCE = 10;
 
 	@Inject
-	protected UnitConversionService unitConversionService;
+	protected UnitConversionRepository unitConversionRepo;
 
 	@Inject
 	protected GeneralService generalService;
@@ -419,7 +419,7 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
 	 */
 	protected BigDecimal convertCoef(Unit startUnit, Unit endUnit){
 
-		UnitConversion unitConversion = unitConversionService.all().filter("self.startUnit = ?1 AND self.endUnit = ?2", startUnit, endUnit).fetchOne();
+		UnitConversion unitConversion = unitConversionRepo.all().filter("self.startUnit = ?1 AND self.endUnit = ?2", startUnit, endUnit).fetchOne();
 
 		if (unitConversion != null){ return unitConversion.getCoef(); }
 		else { return BigDecimal.ONE; }

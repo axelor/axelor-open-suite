@@ -36,6 +36,7 @@ import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.Team;
+import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.DurationService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.administration.GeneralService;
@@ -77,6 +78,9 @@ public class SaleOrderServiceImpl extends SaleOrderRepository  implements SaleOr
 
 	@Inject
 	private PartnerService partnerService;
+	
+	@Inject
+	private PartnerRepository partnerRepo;
 
 	@Inject
 	protected SaleOrderRepository saleOrderRepo;
@@ -189,11 +193,11 @@ public class SaleOrderServiceImpl extends SaleOrderRepository  implements SaleOr
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public Partner validateCustomer(SaleOrder saleOrder)  {
 
-		Partner clientPartner = partnerService.find(saleOrder.getClientPartner().getId());
+		Partner clientPartner = partnerRepo.find(saleOrder.getClientPartner().getId());
 		clientPartner.setIsCustomer(true);
 		clientPartner.setHasOrdered(true);
 
-		return partnerService.save(clientPartner);
+		return partnerRepo.save(clientPartner);
 	}
 
 

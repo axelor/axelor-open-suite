@@ -2,6 +2,7 @@ package com.axelor.apps.hr.service.batch;
 
 import com.axelor.apps.base.db.Batch;
 import com.axelor.apps.base.db.MailBatch;
+import com.axelor.apps.base.db.repo.MailBatchRepository;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.service.batch.MailBatchService;
 import com.axelor.exception.AxelorException;
@@ -13,11 +14,11 @@ public class MailBatchServiceHR extends MailBatchService{
 	@Override
 	public Batch run(String batchCode) throws AxelorException {
 		Batch batch = super.run(batchCode);
-		MailBatch mailBatch = findByCode(batchCode);
+		MailBatch mailBatch = mailBatchRepo.findByCode(batchCode);
 		
 		if (batchCode != null){
 			switch (mailBatch.getActionSelect()) {
-			case ACTION_REMIN_TIMESHEET:
+			case MailBatchRepository.ACTION_REMIN_TIMESHEET:
 				batch = reminderTimesheet(mailBatch);
 				break;
 			

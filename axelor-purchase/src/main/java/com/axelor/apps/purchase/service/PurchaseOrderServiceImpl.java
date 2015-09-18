@@ -36,8 +36,8 @@ import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.ProductRepository;
-import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.purchase.db.IPurchaseOrder;
@@ -72,7 +72,7 @@ public class PurchaseOrderServiceImpl extends PurchaseOrderRepository implements
 	private SequenceService sequenceService;
 
 	@Inject
-	private PartnerService partnerService;
+	private PartnerRepository partnerRepo;
 
 	@Inject
 	protected GeneralService generalService;
@@ -223,11 +223,11 @@ public class PurchaseOrderServiceImpl extends PurchaseOrderRepository implements
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public Partner validateSupplier(PurchaseOrder purchaseOrder)  {
 
-		Partner supplierPartner = partnerService.find(purchaseOrder.getSupplierPartner().getId());
+		Partner supplierPartner = partnerRepo.find(purchaseOrder.getSupplierPartner().getId());
 		supplierPartner.setIsSupplier(true);
 		supplierPartner.setHasOrdered(true);
 
-		return partnerService.save(supplierPartner);
+		return partnerRepo.save(supplierPartner);
 	}
 
 //	@Override

@@ -39,12 +39,15 @@ import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
-public class PriceListService extends PriceListRepository {
+public class PriceListService {
 
 	private static final Logger LOG = LoggerFactory.getLogger(PriceListService.class);
 
 	@Inject
 	private PriceListLineRepository priceListLineRepo;
+	
+	@Inject
+	private PriceListRepository priceListRepo;
 
 	@Inject
 	protected GeneralService generalService;
@@ -181,7 +184,7 @@ public class PriceListService extends PriceListRepository {
 			historizedPriceList.addPriceListLineListItem(newPriceListLine);
 		}
 		priceList.addHistorizedPriceList(historizedPriceList);
-		save(priceList);
+		priceListRepo.save(priceList);
 		return priceList;
 	}
 

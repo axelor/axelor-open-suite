@@ -31,6 +31,7 @@ import com.axelor.apps.base.db.ImportConfiguration;
 import com.axelor.apps.base.db.repo.ImportConfigurationRepository;
 import com.axelor.apps.base.service.MapService;
 import com.axelor.apps.crm.db.Lead;
+import com.axelor.apps.crm.db.repo.LeadRepository;
 import com.axelor.apps.crm.db.report.IReport;
 import com.axelor.apps.crm.exception.IExceptionMessage;
 import com.axelor.apps.crm.service.LeadService;
@@ -52,6 +53,9 @@ public class LeadController {
 	
 	@Inject
 	private LeadService ls;
+	
+	@Inject
+	private LeadRepository leadRepo;
 	
 	/**
 	 * Fonction appeler par le bouton imprimer
@@ -76,7 +80,7 @@ public class LeadController {
 			
 		if(!leadIds.equals("")){
 			leadIds = leadIds.substring(0, leadIds.length()-1);	
-			lead = Beans.get(LeadService.class).find(new Long(lstSelectedleads.get(0)));
+			lead = leadRepo.find(new Long(lstSelectedleads.get(0)));
 		}else if(lead.getId() != null){
 			leadIds = lead.getId().toString();			
 		}

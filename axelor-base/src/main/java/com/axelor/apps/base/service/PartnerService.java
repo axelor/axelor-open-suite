@@ -37,12 +37,16 @@ import com.axelor.apps.message.db.EmailAddress;
 import com.axelor.db.JPA;
 import com.axelor.inject.Beans;
 import com.google.common.base.Strings;
+import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
 
-public class PartnerService extends PartnerRepository{
+public class PartnerService {
 
 	private static final Logger LOG = LoggerFactory.getLogger(PartnerService.class);
+	
+	@Inject
+	private PartnerRepository partnerRepo;
 
 	public Partner createPartner(String name, String firstName, String fixedPhone, String mobilePhone, EmailAddress emailAddress, Currency currency, Address deliveryAddress, Address mainInvoicingAddress){
 		Partner partner = new Partner();
@@ -231,7 +235,7 @@ public class PartnerService extends PartnerRepository{
 
 	@Transactional
 	public Partner savePartner(Partner partner){
-		return save(partner);
+		return partnerRepo.save(partner);
 	}
 
 }
