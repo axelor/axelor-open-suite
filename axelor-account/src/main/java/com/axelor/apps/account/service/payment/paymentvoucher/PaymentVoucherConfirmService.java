@@ -91,7 +91,6 @@ public class PaymentVoucherConfirmService  {
 		
 	}
 	
-
 	/**
 	 * Confirms the payment voucher
 	 * if the selected lines PiToPay 2nd O2M belongs to different companies -> error

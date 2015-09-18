@@ -17,7 +17,6 @@ import com.axelor.apps.cash.management.db.CashManagementRecap;
 import com.axelor.apps.cash.management.db.CashManagementRecapLine;
 import com.axelor.apps.cash.management.db.repo.CashFlowForecastRepository;
 import com.axelor.apps.cash.management.db.repo.CashManagementRecapLineRepository;
-import com.axelor.apps.cash.management.db.repo.CashManagementRecapRepository;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.Expense;
 import com.axelor.apps.hr.db.repo.EmployeeRepository;
@@ -30,7 +29,7 @@ import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
-public class CashManagementRecapService extends CashManagementRecapRepository{
+public class CashManagementRecapService {
 	
 	@Inject
 	protected TimetableService timetableService;

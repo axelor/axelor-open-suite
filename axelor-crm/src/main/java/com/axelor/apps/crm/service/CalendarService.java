@@ -68,24 +68,25 @@ import com.axelor.apps.crm.db.Event;
 import com.axelor.apps.crm.db.EventAttendee;
 import com.axelor.apps.crm.db.ICalendar;
 import com.axelor.apps.crm.db.repo.CalendarRepository;
+import com.axelor.apps.crm.db.repo.EventRepository;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
-public class CalendarService extends CalendarRepository {
+public class CalendarService {
 
 	private static final Logger LOG = LoggerFactory.getLogger(CalendarService.class);
 	
 	@Inject
-	private EventService eventService;
+	private EventRepository eventRepo;
+	
+	@Inject
+	protected CalendarRepository calendarRepo;
 	
 	public void exportCalendar() throws IOException, ParserException, ValidationException, ObjectStoreException, ObjectNotFoundException  {
 		
 		this.createCalendarFile(this.createCalendar());
 		
 	}
-	
-	
-	
 	
 	private static class myICal extends PathResolver {
 
@@ -202,7 +203,7 @@ public class CalendarService extends CalendarRepository {
 		
 //		List<? extends Calendar> internalCalendarList = Calendar.all().filter("self", User user) // TODO Récupérer la liste des calendriers du tiers
 		
-		List<? extends Calendar> internalCalendarList = all().fetch();
+		List<? extends Calendar> internalCalendarList = calendarRepo.all().fetch();
 		
 		return internalCalendarList; 
 	}
@@ -246,7 +247,7 @@ public class CalendarService extends CalendarRepository {
 //		  Calendar calendar = collection.getCalendar("@axelor.com");
 		
 		
-		List<? extends Event> eventList = eventService.all().filter("self.typeSelect != 6 and self.calendarEventUid IS NULL and self.calendar = ?1",internalCalendar).fetch();
+		List<? extends Event> eventList = eventRepo.all().filter("self.typeSelect != 6 and self.calendarEventUid IS NULL and self.calendar = ?1",internalCalendar).fetch();
 		
 	  
 		List<VEvent> vEventList = new ArrayList<VEvent>();
@@ -324,7 +325,7 @@ public class CalendarService extends CalendarRepository {
 		// Add the event and print
 //		calendar.getComponents().add(this.createEvent());
 		
-		calendar.getComponents().addAll(this.createEvents(eventService.all().fetch()));
+		calendar.getComponents().addAll(this.createEvents(eventRepo.all().fetch()));
 				
 		return calendar;
 	}
@@ -400,7 +401,7 @@ public class CalendarService extends CalendarRepository {
 	public void updateEvent(Event event, String uid)  {
 		
 		event.setCalendarEventUid(uid);
-		eventService.save(event);
+		eventRepo.save(event);
 		
 	}
 	
@@ -497,7 +498,7 @@ public class CalendarService extends CalendarRepository {
 		
 		for(VEvent vEvent : vEventList)  {
 			
-			Event event = eventService.all().filter("self.calendarEventUid = ?1", vEvent.getUid().getValue()).fetchOne(); 
+			Event event = eventRepo.all().filter("self.calendarEventUid = ?1", vEvent.getUid().getValue()).fetchOne(); 
 			if(event != null)  {
 				
 				this.updateEvent(event, vEvent);
@@ -521,10 +522,10 @@ public class CalendarService extends CalendarRepository {
 		List<? extends Event> eventList = null;
 		
 		if(uidList != null && uidList.size() > 0)  {
-			eventList = eventService.all().filter("self.typeSelect = ?1 AND self.calendar = ?2 AND self.calendarEventUid not in ?3", 6, internalCalendar, uidList).fetch();
+			eventList = eventRepo.all().filter("self.typeSelect = ?1 AND self.calendar = ?2 AND self.calendarEventUid not in ?3", 6, internalCalendar, uidList).fetch();
 		}
 		else  {
-			eventList = eventService.all().filter("self.typeSelect = ?1 AND self.calendar = ?2", 6, internalCalendar).fetch();
+			eventList = eventRepo.all().filter("self.typeSelect = ?1 AND self.calendar = ?2", 6, internalCalendar).fetch();
 		}
 		
 		for(Event event : eventList)  {
@@ -538,7 +539,7 @@ public class CalendarService extends CalendarRepository {
 	@Transactional
 	public void removeEvent(Event event)  {  
 		
-		eventService.remove(event);
+		eventRepo.remove(event);
 		
 	}
 	
@@ -566,7 +567,7 @@ public class CalendarService extends CalendarRepository {
 		}
 		event.setStartDateTime(new LocalDateTime(vEvent.getStartDate().getDate()));
 		event.setEndDateTime(new LocalDateTime(vEvent.getEndDate().getDate()));
-		eventService.save(event);
+		eventRepo.save(event);
 		
 		return event;
 	}

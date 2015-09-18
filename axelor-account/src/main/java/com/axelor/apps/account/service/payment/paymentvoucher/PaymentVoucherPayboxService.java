@@ -25,7 +25,7 @@ import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
-public class PaymentVoucherPayboxService extends PaymentVoucherRepository {
+public class PaymentVoucherPayboxService {
 	
 	protected PaymentVoucherRepository paymentVoucherRepository;
 	
@@ -48,7 +48,7 @@ public class PaymentVoucherPayboxService extends PaymentVoucherRepository {
 		paymentVoucher.setBankCardTransactionNumber(bankCardTransactionNumber);
 		paymentVoucher.setPayboxAmountPaid(new BigDecimal(payboxAmountPaid).divide(new BigDecimal("100")));
 		
-		save(paymentVoucher);
+		paymentVoucherRepository.save(paymentVoucher);
 	}
 	
 }

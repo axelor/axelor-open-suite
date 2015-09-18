@@ -24,6 +24,7 @@ import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 
 /**
  * InvoiceBatchService est une classe implémentant l'ensemble des batchs de
@@ -33,7 +34,7 @@ import com.axelor.i18n.I18n;
  * 
  * @version 0.1
  */
-public class BaseBatchService extends BaseBatchRepository{
+public class BaseBatchService {
 
 // Appel 	
 	
@@ -46,8 +47,8 @@ public class BaseBatchService extends BaseBatchRepository{
 	 * @throws AxelorException
 	 */
 	public Batch run(String batchCode) throws AxelorException {
-				
-		BaseBatch baseBatch = findByCode(batchCode);
+		
+		BaseBatch baseBatch = Beans.get(BaseBatchRepository.class).findByCode(batchCode);
 		
 		if (baseBatch != null){
 			switch (baseBatch.getActionSelect()) {

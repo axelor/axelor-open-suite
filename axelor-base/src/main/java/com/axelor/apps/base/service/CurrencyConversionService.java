@@ -41,7 +41,7 @@ import com.axelor.exception.service.TraceBackService;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
-public class CurrencyConversionService extends CurrencyConversionLineRepository {
+public class CurrencyConversionService {
 
 	private static final Logger LOG = LoggerFactory.getLogger(CurrencyConversionService.class);
 
@@ -50,6 +50,9 @@ public class CurrencyConversionService extends CurrencyConversionLineRepository 
 
 	@Inject
 	protected GeneralService generalService;
+	
+	@Inject
+	private CurrencyConversionLineRepository cclRepo;
 
 
 	public BigDecimal convert(Currency currencyFrom, Currency currencyTo){
@@ -114,13 +117,13 @@ public class CurrencyConversionService extends CurrencyConversionLineRepository 
 		ccl.setExchangeRate(rate);
 		ccl.setGeneral(general);
 		ccl.setVariations(variations);
-		save(ccl);
+		cclRepo.save(ccl);
 
 	}
 
 	@Transactional
 	public void saveCurrencyConversionLine(CurrencyConversionLine ccl){
-		save(ccl);
+		cclRepo.save(ccl);
 	}
 
 
@@ -133,7 +136,7 @@ public class CurrencyConversionService extends CurrencyConversionLineRepository 
 		if(currencyFrom != null && currencyTo != null && rateDate != null){
 			currencyFrom = currencyRepo.find(currencyFrom.getId());
 			currencyTo = currencyRepo.find(currencyTo.getId());
-			CurrencyConversionLine ccl = all().filter("startCurrency = ?1 AND endCurrency = ?2 AND fromDate <= ?3 AND (toDate >= ?3 OR toDate = null)",currencyFrom,currencyTo,rateDate).fetchOne();
+			CurrencyConversionLine ccl = cclRepo.all().filter("startCurrency = ?1 AND endCurrency = ?2 AND fromDate <= ?3 AND (toDate >= ?3 OR toDate = null)",currencyFrom,currencyTo,rateDate).fetchOne();
 			if(ccl != null)
 				rate =  ccl.getExchangeRate();
 		}

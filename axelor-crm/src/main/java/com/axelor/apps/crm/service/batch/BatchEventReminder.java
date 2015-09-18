@@ -19,7 +19,6 @@ package com.axelor.apps.crm.service.batch;
 
 import java.util.List;
 
-import javax.inject.Inject;
 import javax.persistence.Query;
 
 import org.joda.time.LocalDateTime;
@@ -30,10 +29,10 @@ import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.crm.db.Event;
 import com.axelor.apps.crm.db.EventReminder;
 import com.axelor.apps.crm.db.IEventReminder;
+import com.axelor.apps.crm.db.repo.EventRepository;
 import com.axelor.apps.crm.exception.IExceptionMessage;
 import com.axelor.apps.crm.message.MessageServiceCrmImpl;
 import com.axelor.apps.crm.service.EventReminderService;
-import com.axelor.apps.crm.service.EventService;
 import com.axelor.apps.message.db.Message;
 import com.axelor.apps.message.service.MailAccountService;
 import com.axelor.apps.message.service.MessageService;
@@ -43,6 +42,7 @@ import com.axelor.exception.db.IException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.google.inject.Inject;
 
 public class BatchEventReminder extends BatchStrategy {
 
@@ -52,8 +52,8 @@ public class BatchEventReminder extends BatchStrategy {
 	private LocalDateTime today;
 
 	@Inject
-	private EventService eventService;
-
+	private EventRepository eventRepo;
+	
 	@Inject
 	public BatchEventReminder(EventReminderService eventReminderService, MessageServiceCrmImpl messageServiceCrmImpl, MailAccountService mailAccountService) {
 
@@ -86,14 +86,14 @@ public class BatchEventReminder extends BatchStrategy {
 			int i = 0;
 
 
-			List<? extends EventReminder> eventReminderList = eventReminderService.all().fetch();
+			List<? extends EventReminder> eventReminderList = eventReminderRepo.all().fetch();
 
 
 			for(EventReminder eventReminder : eventReminderList)  {
 
 				try {
 
-					eventReminder = eventReminderService.find(eventReminder.getId());
+					eventReminder = eventReminderRepo.find(eventReminder.getId());
 
 					if(this.isExpired(eventReminder))  {
 						eventReminder.setIsReminded(true);
@@ -105,11 +105,11 @@ public class BatchEventReminder extends BatchStrategy {
 				} catch (Exception e) {
 
 					TraceBackService.trace(new Exception(String.format(I18n.get(IExceptionMessage.BATCH_EVENT_REMINDER_1),
-							eventReminderService.find(eventReminder.getId()).getEvent().getSubject()), e), IException.CRM, batch.getId());
+							eventReminderRepo.find(eventReminder.getId()).getEvent().getSubject()), e), IException.CRM, batch.getId());
 
 					incrementAnomaly();
 
-					LOG.error("Bug(Anomalie) généré(e) pour le rappel de l'évènement {}", eventReminderService.find(eventReminder.getId()).getEvent().getSubject());
+					LOG.error("Bug(Anomalie) généré(e) pour le rappel de l'évènement {}", eventReminderRepo.find(eventReminder.getId()).getEvent().getSubject());
 
 				} finally {
 
@@ -180,11 +180,11 @@ public class BatchEventReminder extends BatchStrategy {
 				} catch (Exception e) {
 
 					TraceBackService.trace(new Exception(String.format(I18n.get("Event")+" %s",
-							eventService.find(event.getId()).getSubject()), e), IException.CRM, batch.getId());
+							eventRepo.find(event.getId()).getSubject()), e), IException.CRM, batch.getId());
 
 					incrementAnomaly();
 
-					LOG.error("Bug(Anomalie) généré(e) pour l'évènement {}", eventService.find(event.getId()).getSubject());
+					LOG.error("Bug(Anomalie) généré(e) pour l'évènement {}", eventRepo.find(event.getId()).getSubject());
 
 				} finally {
 

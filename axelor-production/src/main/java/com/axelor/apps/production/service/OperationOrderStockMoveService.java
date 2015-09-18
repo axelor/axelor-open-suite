@@ -20,7 +20,6 @@ package com.axelor.apps.production.service;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.db.ProdProduct;
-import com.axelor.apps.production.db.repo.OperationOrderRepository;
 import com.axelor.apps.production.service.config.ProductionConfigService;
 import com.axelor.apps.stock.db.Location;
 import com.axelor.apps.stock.db.StockMove;
@@ -32,7 +31,7 @@ import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 
-public class OperationOrderStockMoveService extends OperationOrderRepository {
+public class OperationOrderStockMoveService {
 
 	@Inject
 	private StockMoveService stockMoveService;

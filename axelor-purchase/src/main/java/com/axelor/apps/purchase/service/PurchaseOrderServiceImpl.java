@@ -36,8 +36,8 @@ import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.ProductRepository;
-import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.purchase.db.IPurchaseOrder;
@@ -61,7 +61,7 @@ import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
-public class PurchaseOrderServiceImpl extends PurchaseOrderRepository implements PurchaseOrderService {
+public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 
 	private static final Logger LOG = LoggerFactory.getLogger(PurchaseOrderServiceImpl.class);
 
@@ -72,10 +72,13 @@ public class PurchaseOrderServiceImpl extends PurchaseOrderRepository implements
 	private SequenceService sequenceService;
 
 	@Inject
-	private PartnerService partnerService;
+	private PartnerRepository partnerRepo;
 
 	@Inject
 	protected GeneralService generalService;
+	
+	@Inject
+	protected PurchaseOrderRepository purchaseOrderRepo;
 
 	@Override
 	public PurchaseOrder _computePurchaseOrderLines(PurchaseOrder purchaseOrder) throws AxelorException  {
@@ -223,11 +226,11 @@ public class PurchaseOrderServiceImpl extends PurchaseOrderRepository implements
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public Partner validateSupplier(PurchaseOrder purchaseOrder)  {
 
-		Partner supplierPartner = partnerService.find(purchaseOrder.getSupplierPartner().getId());
+		Partner supplierPartner = partnerRepo.find(purchaseOrder.getSupplierPartner().getId());
 		supplierPartner.setIsSupplier(true);
 		supplierPartner.setHasOrdered(true);
 
-		return partnerService.save(supplierPartner);
+		return partnerRepo.save(supplierPartner);
 	}
 
 //	@Override
@@ -284,7 +287,7 @@ public class PurchaseOrderServiceImpl extends PurchaseOrderRepository implements
 		if (purchaseOrder.getVersionNumber() == 1){
 			purchaseOrder.setPurchaseOrderSeq(this.getSequence(purchaseOrder.getCompany()));
 		}
-		this.save(purchaseOrder);
+		purchaseOrderRepo.save(purchaseOrder);
 		if (generalService.getGeneral().getManagePurchaseOrderVersion()){
 			this.savePurchaseOrderPDFAsAttachment(purchaseOrder);
 		}
@@ -334,11 +337,11 @@ public class PurchaseOrderServiceImpl extends PurchaseOrderRepository implements
 
 		this.computePurchaseOrder(purchaseOrderMerged);
 
-		this.save(purchaseOrderMerged);
+		purchaseOrderRepo.save(purchaseOrderMerged);
 
 		//Remove old purchase orders
 		for(PurchaseOrder purchaseOrder : purchaseOrderList)  {
-			this.remove(purchaseOrder);
+			purchaseOrderRepo.remove(purchaseOrder);
 		}
 
 		return purchaseOrderMerged;
@@ -364,7 +367,7 @@ public class PurchaseOrderServiceImpl extends PurchaseOrderRepository implements
 				}
 				
 			}
-			save(purchaseOrder);
+			purchaseOrderRepo.save(purchaseOrder);
 		}
 	}
 

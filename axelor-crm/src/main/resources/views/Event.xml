@@ -246,9 +246,9 @@
 	    <field name="taskStatusSelect"/>    
 	    <field name="prioritySelect"/>
 	    <field name="user" form-view="user-form" grid-view="user-grid"/>
-	    <button name="start" icon="fa-play" help="Start" onClick="action-group-crm-task-start-click" readonlyIf="taskStatusSelect == 2 || taskStatusSelect == 4"/>
-	    <button name="pause" icon="fa-pause" help="Pause" onClick="action-group-crm-task-pause-click" readonlyIf="taskStatusSelect == 4 || taskStatusSelect == 3"/>
-	    <button name="accept" icon="fa-power-off" help="Finish" onClick="action-group-crm-task-accept-click" readonlyIf="taskStatusSelect == 4"/>
+	    <button name="start" icon="fa-play" help="Start" onClick="action-group-crm-task-start-click,save" readonlyIf="taskStatusSelect == 2 || taskStatusSelect == 4"/>
+	    <button name="pause" icon="fa-pause" help="Pause" onClick="action-group-crm-task-pause-click,save" readonlyIf="taskStatusSelect == 4 || taskStatusSelect == 3"/>
+	    <button name="accept" icon="fa-power-off" help="Finish" onClick="action-group-crm-task-accept-click,save" readonlyIf="taskStatusSelect == 4"/>
 	</grid>
     
 	
@@ -292,17 +292,14 @@
 	
     <action-group name="action-group-crm-task-start-click">
     	<action name="action-set-task-status-select-2"/>
-    	<action name="action-save-event-task-status-select"/>
     </action-group>
     
     <action-group name="action-group-crm-task-pause-click">
     	<action name="action-set-task-status-select-3"/>
-    	<action name="action-save-event-task-status-select"/>
     </action-group>
     
     <action-group name="action-group-crm-task-accept-click">
     	<action name="action-set-task-status-select-4"/>
-    	<action name="action-save-event-task-status-select"/>
     </action-group>
     
 	<grid name="ticket-grid" title="Ticket" model="com.axelor.apps.crm.db.Event" orderBy="ticketNumberSeq" >
@@ -323,9 +320,9 @@
 	    <field name="ticketStatusSelect"/>
 	    <field name="progressSelect" widget="SelectProgress"/>
 	    <button name="grabEvent" help="Assign to me" icon="fa-suitcase" readonlyIf="ticketStatusSelect == 5 || user != null" onClick="action-method-crm-event-assign-tome" />
-	    <button name="start" icon="fa-play" help="Start" onClick="action-group-crm-ticket-start-click" readonlyIf="ticketStatusSelect &gt; 1"/>
-	    <button name="accept" icon="fa-check" help="Validate" onClick="action-group-crm-ticket-accept-click" readonlyIf="ticketStatusSelect &gt; 2"/>
-	    <button name="stop" icon="fa-power-off" help="Finish" onClick="action-group-crm-ticket-stop-click" readonlyIf="ticketStatusSelect &gt; 4" />
+	    <button name="start" icon="fa-play" help="Start" onClick="action-group-crm-ticket-start-click,save" readonlyIf="ticketStatusSelect &gt; 1"/>
+	    <button name="accept" icon="fa-check" help="Validate" onClick="action-group-crm-ticket-accept-click,save" readonlyIf="ticketStatusSelect &gt; 2"/>
+	    <button name="stop" icon="fa-power-off" help="Finish" onClick="action-group-crm-ticket-stop-click,save" readonlyIf="ticketStatusSelect &gt; 4" />
 	</grid>
     
     <form name="ticket-form" title="Ticket" model="com.axelor.apps.crm.db.Event" onLoad="action-event-ticket-attrs-default,action-partner-attrs-hide-contact-partner" onSave="action-event-record-subjectTeam,action-event-set-sequence" onNew="action-group-crm-ticket-onnew">
@@ -412,17 +409,14 @@
     
     <action-group name="action-group-crm-ticket-start-click">
     	<action name="action-set-ticket-status-select-2"/>
-    	<action name="action-save-event-ticket-status-select"/>
     </action-group>
     
     <action-group name="action-group-crm-ticket-accept-click">
     	<action name="action-set-ticket-status-select-3"/>
-    	<action name="action-save-event-ticket-status-select"/>
     </action-group>
     
     <action-group name="action-group-crm-ticket-stop-click">
     	<action name="action-set-ticket-status-select-5"/>
-    	<action name="action-save-event-ticket-status-select"/>
     </action-group>
     
 <!--     ACTION ATTRIBUTS -->
@@ -572,14 +566,6 @@
     
     <action-method name="action-event-method-compute-from-calendar">
     	<call class="com.axelor.apps.crm.web.EventController" method="computeFromCalendar" />
-    </action-method>
-    
-    <action-method name="action-save-event-task-status-select">
-    	<call class="com.axelor.apps.crm.web.EventController" method="saveEventTaskStatusSelect" />
-    </action-method>
-    
-    <action-method name="action-save-event-ticket-status-select">
-    	<call class="com.axelor.apps.crm.web.EventController" method="saveEventTicketStatusSelect" />
     </action-method>
     
     <action-method name="action-event-method-check-modifications">

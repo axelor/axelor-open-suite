@@ -64,7 +64,7 @@ public class MessageServiceCrmImpl extends MessageServiceBaseImpl {
 
 		Message message = Beans.get(TemplateMessageService.class).generateMessage(event, template);
 
-		return save(message);
+		return messageRepo.save(message);
 	}
 
 

@@ -43,7 +43,7 @@ import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
-public class ProductionOrderSaleOrderServiceImpl extends ProductionOrderRepository implements ProductionOrderSaleOrderService {
+public class ProductionOrderSaleOrderServiceImpl implements ProductionOrderSaleOrderService {
 
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -53,6 +53,9 @@ public class ProductionOrderSaleOrderServiceImpl extends ProductionOrderReposito
 
 	@Inject
 	protected ProductionOrderService productionOrderService;
+	
+	@Inject
+	protected ProductionOrderRepository productionOrderRepo;
 
 	@Inject
 	public ProductionOrderSaleOrderServiceImpl(UserService userInfoService) {
@@ -115,7 +118,7 @@ public class ProductionOrderSaleOrderServiceImpl extends ProductionOrderReposito
 
 			}
 
-			return save(productionOrderService.generateProductionOrder(product, billOfMaterial, saleOrderLine.getQty()));
+			return productionOrderRepo.save(productionOrderService.generateProductionOrder(product, billOfMaterial, saleOrderLine.getQty()));
 
 		}
 

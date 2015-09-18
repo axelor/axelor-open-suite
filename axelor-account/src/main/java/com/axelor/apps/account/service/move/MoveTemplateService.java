@@ -31,7 +31,7 @@ import com.axelor.apps.account.db.MoveTemplateLine;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.MoveTemplateRepository;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.service.PartnerService;
+import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -41,15 +41,15 @@ public class MoveTemplateService {
 	protected MoveService moveService;
 	protected MoveRepository moveRepo;
 	protected MoveLineService moveLineService;
-	protected PartnerService partnerService;
+	protected PartnerRepository partnerRepo;
 	protected MoveTemplateRepository moveTemplateRepo;
 	
 	@Inject
-	public MoveTemplateService(MoveService moveService, MoveRepository moveRepo, MoveLineService moveLineService, PartnerService partnerService)  {
+	public MoveTemplateService(MoveService moveService, MoveRepository moveRepo, MoveLineService moveLineService, PartnerRepository partnerRepo)  {
 		this.moveService = moveService;
 		this.moveRepo = moveRepo;
 		this.moveLineService = moveLineService;
-		this.partnerService = partnerService;
+		this.partnerRepo = partnerRepo;
 	}
 	
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
@@ -73,11 +73,11 @@ public class MoveTemplateService {
 				BigDecimal moveBalance = new BigDecimal(data.get("moveBalance").toString());
 				Partner partner = null;
 				if(data.get("debitPartner") != null){
-					debitPartner = partnerService.find(Long.parseLong(((HashMap<String,Object>) data.get("debitPartner")).get("id").toString()));
+					debitPartner = partnerRepo.find(Long.parseLong(((HashMap<String,Object>) data.get("debitPartner")).get("id").toString()));
 					partner = debitPartner;
 				}	
 				if(data.get("creditPartner") != null){
-					creditPartner = partnerService.find(Long.parseLong(((HashMap<String,Object>) data.get("creditPartner")).get("id").toString()));
+					creditPartner = partnerRepo.find(Long.parseLong(((HashMap<String,Object>) data.get("creditPartner")).get("id").toString()));
 					partner = creditPartner;
 				}
 				Move move = moveService.getMoveCreateService().createMove(moveTemplate.getJournal(), moveTemplate.getJournal().getCompany(), null, partner,moveDate, null);

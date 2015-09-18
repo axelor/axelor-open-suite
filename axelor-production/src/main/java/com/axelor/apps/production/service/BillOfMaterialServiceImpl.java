@@ -41,7 +41,7 @@ import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
-public class BillOfMaterialServiceImpl extends BillOfMaterialRepository implements BillOfMaterialService {
+public class BillOfMaterialServiceImpl implements BillOfMaterialService {
 
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -53,11 +53,14 @@ public class BillOfMaterialServiceImpl extends BillOfMaterialRepository implemen
 
 	@Inject
 	protected GeneralService generalService;
+	
+	@Inject
+	protected BillOfMaterialRepository billOfMaterialRepo;
 
 	@Override
 	public List<BillOfMaterial> getBillOfMaterialList(Product product)  {
 
-		return all().filter("self.product = ?1", product).fetch();
+		return billOfMaterialRepo.all().filter("self.product = ?1", product).fetch();
 
 
 	}
@@ -68,7 +71,7 @@ public class BillOfMaterialServiceImpl extends BillOfMaterialRepository implemen
 
 		billOfMaterial.setCostPrice(this._computeCostPrice(billOfMaterial).setScale(generalService.getNbDecimalDigitForUnitPrice(), BigDecimal.ROUND_HALF_EVEN));
 
-		save(billOfMaterial);
+		billOfMaterialRepo.save(billOfMaterial);
 	}
 
 
@@ -82,7 +85,7 @@ public class BillOfMaterialServiceImpl extends BillOfMaterialRepository implemen
 
 		productService.updateSalePrice(product);
 
-		save(billOfMaterial);
+		billOfMaterialRepo.save(billOfMaterial);
 	}
 
 
@@ -191,7 +194,7 @@ public class BillOfMaterialServiceImpl extends BillOfMaterialRepository implemen
 
 		if(billOfMaterial != null)  {
 			BillOfMaterial personalizedBOM = JPA.copy(billOfMaterial, true);
-			save(personalizedBOM);
+			billOfMaterialRepo.save(personalizedBOM);
 			personalizedBOM.setName(personalizedBOM.getName() + " ("+I18n.get(IExceptionMessage.BOM_1)+" " + personalizedBOM.getId() + ")");
 			personalizedBOM.setPersonalized(true);
 			return personalizedBOM;

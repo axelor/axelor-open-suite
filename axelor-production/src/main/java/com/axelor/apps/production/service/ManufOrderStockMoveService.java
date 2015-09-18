@@ -25,7 +25,6 @@ import org.slf4j.LoggerFactory;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.ProdProduct;
-import com.axelor.apps.production.db.repo.ManufOrderRepository;
 import com.axelor.apps.production.service.config.ProductionConfigService;
 import com.axelor.apps.stock.db.Location;
 import com.axelor.apps.stock.db.StockMove;
@@ -37,7 +36,7 @@ import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 
-public class ManufOrderStockMoveService extends ManufOrderRepository {
+public class ManufOrderStockMoveService {
 
 	@Inject
 	private StockMoveService stockMoveService;

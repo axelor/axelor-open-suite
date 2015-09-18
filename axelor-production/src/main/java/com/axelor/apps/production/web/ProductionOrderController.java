@@ -26,8 +26,9 @@ import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.ProductionOrder;
+import com.axelor.apps.production.db.repo.BillOfMaterialRepository;
+import com.axelor.apps.production.db.repo.ProductionOrderRepository;
 import com.axelor.apps.production.exceptions.IExceptionMessage;
-import com.axelor.apps.production.service.BillOfMaterialService;
 import com.axelor.apps.production.service.ProductionOrderSaleOrderService;
 import com.axelor.apps.production.service.ProductionOrderService;
 import com.axelor.exception.AxelorException;
@@ -45,7 +46,10 @@ public class ProductionOrderController {
 	ProductionOrderSaleOrderService productionOrderSaleOrderService;
 	
 	@Inject
-	private BillOfMaterialService billOfMaterialService;
+	private BillOfMaterialRepository billOfMaterialRepo;
+	
+	@Inject
+	private ProductionOrderRepository productionOrderRepo;
 	
 	@Inject
 	private ProductRepository productRepo;
@@ -63,7 +67,7 @@ public class ProductionOrderController {
 		}
 		else  {
 			Map<String, Object> bomContext = (Map<String, Object>) context.get("billOfMaterial");
-			BillOfMaterial billOfMaterial = billOfMaterialService.find(((Integer) bomContext.get("id")).longValue());
+			BillOfMaterial billOfMaterial = billOfMaterialRepo.find(((Integer) bomContext.get("id")).longValue());
 			
 			BigDecimal qty = new BigDecimal((String)context.get("qty"));
 			
@@ -80,7 +84,7 @@ public class ProductionOrderController {
 			
 			ProductionOrder productionOrder = request.getContext().asType( ProductionOrder.class );
 			
-			productionOrderService.addManufOrder(productionOrderService.find(productionOrder.getId()), product, billOfMaterial, qty);
+			productionOrderService.addManufOrder(productionOrderRepo.find(productionOrder.getId()), product, billOfMaterial, qty);
 			
 			response.setReload(true);
 		}

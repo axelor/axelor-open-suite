@@ -35,6 +35,7 @@ import com.axelor.apps.account.db.ReminderMethodLine;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.base.service.administration.GeneralServiceImpl;
@@ -51,14 +52,16 @@ public class PayerQualityService {
 
 	protected PartnerService partnerService;
 	protected GeneralService generalService;
-
+	protected PartnerRepository partnerRepository;
+	
 	protected LocalDate today;
 	
 	@Inject
-	public PayerQualityService(PartnerService partnerService, GeneralService generalService) {
+	public PayerQualityService(PartnerService partnerService, GeneralService generalService, PartnerRepository partnerRepository) {
 
 		this.partnerService = partnerService;
 		this.generalService = generalService;
+		this.partnerRepository = partnerRepository;
 		this.today = generalService.getTodayDate();
 
 	}
@@ -154,7 +157,7 @@ public class PayerQualityService {
 
 
 	public List<Partner> getPartnerList()  {
-		return  partnerService.all().filter("self.isCustomer = true and self.hasOrdered = true").fetch();
+		return  partnerRepository.all().filter("self.isCustomer = true and self.hasOrdered = true").fetch();
 	}
 
 
@@ -173,7 +176,7 @@ public class PayerQualityService {
 
 				if(burden.compareTo(BigDecimal.ZERO) == 1)  {
 					partner.setPayerQuality(burden);
-					partnerService.save(partner);
+					partnerRepository.save(partner);
 					log.debug("Tiers payeur {} : Qualité payeur : {}",partner.getName(), burden);
 				}
 			}

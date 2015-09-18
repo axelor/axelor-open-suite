@@ -25,11 +25,10 @@ import com.axelor.apps.base.db.ProductVariant;
 import com.axelor.apps.base.db.ProductVariantConfig;
 import com.axelor.apps.base.db.ProductVariantValue;
 import com.axelor.apps.base.db.SupplierCatalog;
-import com.axelor.db.Repository;
 import com.axelor.exception.AxelorException;
 import com.google.inject.persist.Transactional;
 
-public interface ProductService extends Repository<Product> {
+public interface ProductService {
 
 
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})

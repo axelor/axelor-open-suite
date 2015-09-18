@@ -47,7 +47,6 @@ import com.axelor.apps.account.service.payment.PaymentModeService;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.BatchRepository;
 import com.axelor.apps.base.db.repo.CompanyRepository;
-import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.apps.base.service.administration.GeneralServiceImpl;
 import com.axelor.exception.AxelorException;
@@ -75,9 +74,6 @@ public abstract class BatchStrategy extends AbstractBatch {
 
 	@Inject
 	protected BatchRepository batchRepo;
-
-	@Inject
-	protected PartnerService  partnerService;
 
 	@Inject
 	protected CompanyRepository companyRepo;

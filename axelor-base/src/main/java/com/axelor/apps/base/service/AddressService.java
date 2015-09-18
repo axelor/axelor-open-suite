@@ -22,10 +22,8 @@ import java.util.Map;
 
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.Country;
-import com.axelor.db.Repository;
 
-
-public interface AddressService extends Repository<Address>{
+public interface AddressService {
 	
 	
 	public boolean check(String wsdlUrl);

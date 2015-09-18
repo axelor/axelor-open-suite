@@ -27,9 +27,8 @@ import com.axelor.apps.base.db.CurrencyConversionLine;
 import com.axelor.apps.base.db.General;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.db.Model;
-import com.axelor.db.Repository;
 
-public interface GeneralService extends Repository<General> {
+public interface GeneralService {
 
 	public General getGeneral();
 

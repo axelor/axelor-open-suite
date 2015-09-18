@@ -55,8 +55,8 @@ public class GeneralController {
 	private CurrencyConversionLineRepository cclRepo;
 
 	@Inject
-	protected GeneralService generalService;
-
+	private GeneralService generalService;
+	
 	public void payerQualityProcess(ActionRequest request, ActionResponse response)  {
 
 		try  {
@@ -84,7 +84,7 @@ public class GeneralController {
 				ccs.saveCurrencyConversionLine(ccl);
 				BigDecimal previousRate = ccl.getExchangeRate();
 				String variations = ccs.getVariations(currentRate, previousRate);
-				ccs.createCurrencyConversionLine(ccl.getStartCurrency(), ccl.getEndCurrency(), today, currentRate, gs.find(general.getId()), variations);
+				ccs.createCurrencyConversionLine(ccl.getStartCurrency(), ccl.getEndCurrency(), today, currentRate, gs.getGeneral(), variations);
 			}
 		 }
 		 response.setReload(true);

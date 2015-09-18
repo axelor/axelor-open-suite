@@ -20,6 +20,7 @@ package com.axelor.apps.production.web;
 import javax.inject.Inject;
 
 import com.axelor.apps.production.db.BillOfMaterial;
+import com.axelor.apps.production.db.repo.BillOfMaterialRepository;
 import com.axelor.apps.production.service.BillOfMaterialService;
 import com.axelor.exception.AxelorException;
 import com.axelor.rpc.ActionRequest;
@@ -30,11 +31,14 @@ public class BillOfMaterialController {
 	@Inject
 	BillOfMaterialService billOfMaterialService;
 	
+	@Inject
+	BillOfMaterialRepository billOfMaterialRepo;
+	
 	public void computeCostPrice (ActionRequest request, ActionResponse response) throws AxelorException {
 
 		BillOfMaterial billOfMaterial = request.getContext().asType( BillOfMaterial.class );
 
-		billOfMaterialService.computeCostPrice(billOfMaterialService.find(billOfMaterial.getId()));
+		billOfMaterialService.computeCostPrice(billOfMaterialRepo.find(billOfMaterial.getId()));
 		
 		response.setReload(true);
 		
@@ -45,7 +49,7 @@ public class BillOfMaterialController {
 
 		BillOfMaterial billOfMaterial = request.getContext().asType( BillOfMaterial.class );
 
-		billOfMaterialService.updateProductCostPrice(billOfMaterialService.find(billOfMaterial.getId()));
+		billOfMaterialService.updateProductCostPrice(billOfMaterialRepo.find(billOfMaterial.getId()));
 		
 		response.setReload(true);
 		

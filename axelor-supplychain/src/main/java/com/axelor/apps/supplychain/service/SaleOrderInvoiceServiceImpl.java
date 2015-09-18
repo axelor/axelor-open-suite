@@ -31,7 +31,6 @@ import org.slf4j.LoggerFactory;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
-import com.axelor.apps.account.service.invoice.InvoiceServiceImpl;
 import com.axelor.apps.account.service.invoice.generator.InvoiceGenerator;
 import com.axelor.apps.account.service.invoice.generator.InvoiceLineGenerator;
 import com.axelor.apps.base.db.Product;
@@ -39,7 +38,6 @@ import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
-import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.supplychain.db.Subscription;
 import com.axelor.apps.supplychain.db.repo.SubscriptionRepository;
@@ -54,7 +52,7 @@ import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
-public class SaleOrderInvoiceServiceImpl extends SaleOrderRepository implements SaleOrderInvoiceService {
+public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 
 	private static final Logger LOG = LoggerFactory.getLogger(SaleOrderInvoiceServiceImpl.class);
 
@@ -63,7 +61,7 @@ public class SaleOrderInvoiceServiceImpl extends SaleOrderRepository implements 
 	protected GeneralService generalService;
 
 	@Inject
-	private SaleOrderLineRepository saleOrderLineRepo;
+	private SaleOrderRepository saleOrderRepo;
 
 	@Inject
 	public SaleOrderInvoiceServiceImpl(GeneralService generalService) {
@@ -82,7 +80,7 @@ public class SaleOrderInvoiceServiceImpl extends SaleOrderRepository implements 
 
 		Beans.get(InvoiceRepository.class).save(invoice);
 
-		save(fillSaleOrder(saleOrder, invoice));
+		saleOrderRepo.save(fillSaleOrder(saleOrder, invoice));
 
 		return invoice;
 	}
@@ -94,7 +92,7 @@ public class SaleOrderInvoiceServiceImpl extends SaleOrderRepository implements 
 
 		Beans.get(InvoiceRepository.class).save(invoice);
 
-		save(fillSaleOrder(saleOrder, invoice));
+		saleOrderRepo.save(fillSaleOrder(saleOrder, invoice));
 
 		return invoice;
 	}
@@ -379,7 +377,7 @@ public class SaleOrderInvoiceServiceImpl extends SaleOrderRepository implements 
 	public Invoice generateSubcriptionInvoiceForSaleOrderAndListSubscrip(Long saleOrderId, List<Long> subscriptionIdList) throws AxelorException{
 		List<Subscription> subscriptionList = Beans.get(SubscriptionRepository.class).all().filter("self.id IN (:subscriptionIds)").bind("subscriptionIds", subscriptionIdList).fetch();
 		if(subscriptionList != null && !subscriptionList.isEmpty()){
-			return this.generateSubscriptionInvoice(subscriptionList, this.find(saleOrderId));
+			return this.generateSubscriptionInvoice(subscriptionList, saleOrderRepo.find(saleOrderId));
 		}
 		return null;
 	}

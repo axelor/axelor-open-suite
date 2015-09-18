@@ -23,9 +23,8 @@ import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.TrackingNumber;
 import com.axelor.apps.stock.db.Inventory;
 import com.axelor.apps.stock.db.InventoryLine;
-import com.axelor.apps.stock.db.repo.InventoryLineRepository;
 
-public class InventoryLineService extends InventoryLineRepository {
+public class InventoryLineService {
 
 	public InventoryLine createInventoryLine(Inventory inventory, Product product, BigDecimal currentQty, TrackingNumber trackingNumber)  {
 		

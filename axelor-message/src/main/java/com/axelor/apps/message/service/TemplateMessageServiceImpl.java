@@ -32,7 +32,6 @@ import com.axelor.apps.message.db.EmailAddress;
 import com.axelor.apps.message.db.Message;
 import com.axelor.apps.message.db.Template;
 import com.axelor.apps.message.db.repo.EmailAddressRepository;
-import com.axelor.apps.message.db.repo.TemplateRepository;
 import com.axelor.apps.message.exception.IExceptionMessage;
 import com.axelor.db.JPA;
 import com.axelor.db.Model;
@@ -48,7 +47,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.google.inject.Inject;
 
-public class TemplateMessageServiceImpl extends TemplateRepository implements TemplateMessageService {
+public class TemplateMessageServiceImpl implements TemplateMessageService {
 
 	private static final String RECIPIENT_SEPARATOR = ";|,";
 	private static final char TEMPLATE_DELIMITER = '$';

@@ -36,6 +36,7 @@ import com.axelor.apps.account.service.ReimbursementExportService;
 import com.axelor.apps.account.service.cfonb.CfonbExportService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
@@ -54,14 +55,16 @@ public class BatchReimbursementExport extends BatchStrategy {
 	protected String updateCustomerAccountLog = "";
 	
 	protected ReimbursementRepository reimbursementRepo;
+	protected PartnerRepository partnerRepository;
 	
 	@Inject
 	public BatchReimbursementExport(ReimbursementExportService reimbursementExportService, CfonbExportService cfonbExportService, BatchAccountCustomer batchAccountCustomer,
-			ReimbursementRepository reimbursementRepo) {
+			ReimbursementRepository reimbursementRepo, PartnerRepository partnerRepository) {
 		
 		super(reimbursementExportService, cfonbExportService, batchAccountCustomer);
 		
 		this.reimbursementRepo = reimbursementRepo;
+		this.partnerRepository = partnerRepository;
 		
 		AccountingService.setUpdateCustomerAccount(false);
 		
@@ -150,12 +153,12 @@ public class BatchReimbursementExport extends BatchStrategy {
 			updateReimbursement(reimbursementRepo.find(reimbursement.getId()));
 		}
 		
-		List<Partner> partnerList = (List<Partner>) partnerService.all().filter("?1 IN self.companySet = ?1", company).fetch();
+		List<Partner> partnerList = (List<Partner>) partnerRepository.all().filter("?1 IN self.companySet = ?1", company).fetch();
 		
 		for(Partner partner : partnerList)  {
 			
 			try {
-				partner = partnerService.find(partner.getId());
+				partner = partnerRepository.find(partner.getId());
 				
 				log.debug("Tiers n° {}", partner.getName());
 				
@@ -164,13 +167,13 @@ public class BatchReimbursementExport extends BatchStrategy {
 					List<MoveLine> moveLineList = (List<MoveLine>) moveLineRepo.all().filter("self.account.reconcileOk = 'true' AND self.fromSchedulePaymentOk = 'false' " +
 							"AND self.move.statusSelect = ?1 AND self.amountRemaining > 0 AND self.credit > 0 AND self.partner = ?2 AND self.company = ?3 AND " +
 							"self.reimbursementStatusSelect = ?4 ",
-							MoveRepository.STATUS_VALIDATED ,partnerService.find(partner.getId()), companyRepo.find(company.getId()), MoveLineRepository.REIMBURSEMENT_STATUS_NULL).fetch();
+							MoveRepository.STATUS_VALIDATED, partnerRepository.find(partner.getId()), companyRepo.find(company.getId()), MoveLineRepository.REIMBURSEMENT_STATUS_NULL).fetch();
 					
 					log.debug("Liste des trop perçus : {}", moveLineList);
 					
 					if(moveLineList != null && moveLineList.size() != 0)  {
 						
-						Reimbursement reimbursement = reimbursementExportService.runCreateReimbursement(moveLineList, companyRepo.find(company.getId()), partnerService.find(partner.getId()));
+						Reimbursement reimbursement = reimbursementExportService.runCreateReimbursement(moveLineList, companyRepo.find(company.getId()), partnerRepository.find(partner.getId()));
 						if(reimbursement != null)  {
 							updateReimbursement(reimbursementRepo.find(reimbursement.getId()));
 							this.totalAmount = this.totalAmount.add(reimbursementRepo.find(reimbursement.getId()).getAmountToReimburse());
@@ -180,17 +183,17 @@ public class BatchReimbursementExport extends BatchStrategy {
 				}
 			} catch (AxelorException e) {
 				
-				TraceBackService.trace(new AxelorException(String.format(I18n.get("Tiers")+"%s", partnerService.find(partner.getId()).getName()), e, e.getcategory()), IException.REIMBURSEMENT, batch.getId());
+				TraceBackService.trace(new AxelorException(String.format(I18n.get("Tiers")+"%s", partnerRepository.find(partner.getId()).getName()), e, e.getcategory()), IException.REIMBURSEMENT, batch.getId());
 				
 				incrementAnomaly();
 				
 			} catch (Exception e) {
 				
-				TraceBackService.trace(new Exception(String.format(I18n.get("Tiers")+"%s", partnerService.find(partner.getId()).getName()), e), IException.REIMBURSEMENT, batch.getId());
+				TraceBackService.trace(new Exception(String.format(I18n.get("Tiers")+"%s", partnerRepository.find(partner.getId()).getName()), e), IException.REIMBURSEMENT, batch.getId());
 				
 				incrementAnomaly();
 				
-				log.error("Bug(Anomalie) généré(e) pour le tiers {}", partnerService.find(partner.getId()).getName());
+				log.error("Bug(Anomalie) généré(e) pour le tiers {}", partnerRepository.find(partner.getId()).getName());
 				
 			} finally {
 				

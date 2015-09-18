@@ -27,7 +27,7 @@ import com.axelor.apps.base.db.Duration;
 import com.axelor.apps.base.db.repo.DurationRepository;
 
 
-public class DurationServiceImpl extends DurationRepository implements DurationService  {
+public class DurationServiceImpl implements DurationService  {
 	
 	
 	public LocalDate computeDuration(Duration duration, LocalDate date)  {
@@ -36,11 +36,11 @@ public class DurationServiceImpl extends DurationRepository implements DurationS
 			
 		switch (duration.getTypeSelect()) {
 		
-		case TYPE_MONTH:
+		case DurationRepository.TYPE_MONTH:
 			
 			return date.plusMonths(duration.getValue());
 			
-		case TYPE_DAY:
+		case DurationRepository.TYPE_DAY:
 			
 			return date.plusDays(duration.getValue());
 

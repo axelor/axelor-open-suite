@@ -32,7 +32,7 @@ import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
-public class SequenceService extends SequenceRepository {
+public class SequenceService {
 
 	private final static String
 		PATTERN_YEAR = "%Y",
@@ -46,6 +46,9 @@ public class SequenceService extends SequenceRepository {
 	private SequenceVersionRepository sequenceVersionRepository;
 
 	private LocalDate today, refDate;
+	
+	@Inject
+	private SequenceRepository sequenceRepo;
 
 	@Inject
 	public SequenceService( SequenceVersionRepository sequenceVersionRepository ) {
@@ -75,9 +78,9 @@ public class SequenceService extends SequenceRepository {
 	public Sequence getSequence(String code, Company company) {
 
 		if (code == null)  { return null; }
-		if (company == null)  { return findByCode(code); }
+		if (company == null)  { return sequenceRepo.findByCode(code); }
 
-		return find(code, company);
+		return sequenceRepo.find(code, company);
 
 	}
 
@@ -127,12 +130,12 @@ public class SequenceService extends SequenceRepository {
 		if ( !monthlyResetOk && !yearlyResetOk ){ return true; }
 
 		String
-			seqPrefixe = StringUtils.defaultString(sequence.getPrefixe(), StringUtils.EMPTY),
-			seqSuffixe = StringUtils.defaultString(sequence.getSuffixe(), StringUtils.EMPTY),
+			seqPrefixe = StringUtils.defaultString(sequence.getPrefixe(), ""),
+			seqSuffixe = StringUtils.defaultString(sequence.getSuffixe(), ""),
 			seq = seqPrefixe + seqSuffixe;
 
-		if ( yearlyResetOk && !StringUtils.contains(seq, PATTERN_YEAR) ){ return false; }
-		if ( monthlyResetOk && !StringUtils.contains(seq, PATTERN_MONTH) && !StringUtils.contains(seq, PATTERN_YEAR) ){ return false; }
+		if ( yearlyResetOk && !seq.contains(PATTERN_YEAR) ){ return false; }
+		if ( monthlyResetOk && !seq.contains(PATTERN_MONTH) && !seq.contains(PATTERN_YEAR) ){ return false; }
 
 		return true;
 
@@ -154,8 +157,8 @@ public class SequenceService extends SequenceRepository {
 		SequenceVersion sequenceVersion = getVersion(sequence);
 
 		String
-			seqPrefixe = StringUtils.defaultString(sequence.getPrefixe(), StringUtils.EMPTY),
-			seqSuffixe = StringUtils.defaultString(sequence.getSuffixe(), StringUtils.EMPTY),
+			seqPrefixe = StringUtils.defaultString(sequence.getPrefixe(), ""),
+			seqSuffixe = StringUtils.defaultString(sequence.getSuffixe(), ""),
 			padLeft = StringUtils.leftPad( sequenceVersion.getNextNum().toString(), sequence.getPadding(), PADDING_STRING );
 
 
@@ -211,13 +214,4 @@ public class SequenceService extends SequenceRepository {
 
 	}
 	
-	@Override
-	public Sequence copy(Sequence sequence, boolean deep) {
-		
-		log.debug("Seuqence copy override");
-		sequence.clearSequenceVersionList();
-		
-		return super.copy(sequence, deep);
-	}
-
 }

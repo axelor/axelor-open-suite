@@ -35,19 +35,21 @@ import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
-public class TrackingNumberService extends TrackingNumberRepository{
+public class TrackingNumberService {
 
 	@Inject
 	private SequenceService sequenceService;
-
+	
+	@Inject
+	private TrackingNumberRepository trackingNumberRepo;
 
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public TrackingNumber getTrackingNumber(Product product, BigDecimal sizeOfLot, Company company, LocalDate date) throws AxelorException  {
 
-		TrackingNumber trackingNumber = all().filter("self.product = ?1 AND self.counter < ?2", product, sizeOfLot).fetchOne();
+		TrackingNumber trackingNumber = trackingNumberRepo.all().filter("self.product = ?1 AND self.counter < ?2", product, sizeOfLot).fetchOne();
 
 		if(trackingNumber == null)  {
-			trackingNumber = save(this.createTrackingNumber(product, company, date));
+			trackingNumber = trackingNumberRepo.save(this.createTrackingNumber(product, company, date));
 		}
 
 		trackingNumber.setCounter(trackingNumber.getCounter().add(sizeOfLot));

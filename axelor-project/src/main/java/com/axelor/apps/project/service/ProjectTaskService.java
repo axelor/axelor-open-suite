@@ -16,7 +16,7 @@ import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 import com.google.common.base.Strings;
 
-public class ProjectTaskService extends ProjectTaskRepository{
+public class ProjectTaskService {
 
 	public static int MAX_LEVEL_OF_PROJECT = 10;
 

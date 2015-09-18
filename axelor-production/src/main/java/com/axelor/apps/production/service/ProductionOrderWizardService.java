@@ -17,12 +17,10 @@
  */
 package com.axelor.apps.production.service;
 
-import com.axelor.apps.production.db.ProductionOrder;
-import com.axelor.db.Repository;
 import com.axelor.exception.AxelorException;
 import com.axelor.rpc.Context;
 
-public interface ProductionOrderWizardService extends Repository<ProductionOrder> {
+public interface ProductionOrderWizardService {
 
 	
 	public Long validate(Context context) throws AxelorException;

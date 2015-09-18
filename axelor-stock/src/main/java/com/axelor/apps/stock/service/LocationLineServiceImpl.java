@@ -39,10 +39,12 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
 
-public class LocationLineServiceImpl extends LocationLineRepository implements LocationLineService {
+public class LocationLineServiceImpl implements LocationLineService {
 	
 	private static final Logger LOG = LoggerFactory.getLogger(LocationLineServiceImpl.class); 
 	
+	@Inject
+	protected LocationLineRepository locationLineRepo;
 	
 	@Inject
 	protected MinStockRulesService minStockRulesService;
@@ -77,7 +79,7 @@ public class LocationLineServiceImpl extends LocationLineRepository implements L
 		
 		this.checkStockMin(locationLine, false);
 		
-		save(locationLine);
+		locationLineRepo.save(locationLine);
 		
 	}
 	
@@ -107,7 +109,7 @@ public class LocationLineServiceImpl extends LocationLineRepository implements L
 		
 		this.checkStockMin(detailLocationLine, true);
 		
-		save(detailLocationLine);
+		locationLineRepo.save(detailLocationLine);
 		
 	}
 	

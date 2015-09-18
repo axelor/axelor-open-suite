@@ -29,7 +29,6 @@ import com.axelor.apps.base.db.Scheduler;
 import com.axelor.apps.base.db.SchedulerInstance;
 import com.axelor.apps.base.db.SchedulerInstanceHistory;
 import com.axelor.apps.base.db.repo.SchedulerInstanceRepository;
-import com.axelor.apps.base.db.repo.SchedulerRepository;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.exception.AxelorException;
@@ -47,7 +46,7 @@ import com.google.inject.persist.Transactional;
  * @version 1.0
  *
  */
-public class SchedulerService extends SchedulerRepository{
+public class SchedulerService {
 
 
 	protected GeneralService generalService;

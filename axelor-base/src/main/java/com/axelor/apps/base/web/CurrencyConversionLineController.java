@@ -54,6 +54,9 @@ public class CurrencyConversionLineController {
 	private GeneralService gs;
 	
 	@Inject
+	private GeneralRepository generalRepo;
+	
+	@Inject
 	private CurrencyRepository currencyRepo;
 	
 	
@@ -109,7 +112,7 @@ public class CurrencyConversionLineController {
 			    General general = null;
 			    
 			    if(context.get("general") != null && ((HashMap)context.get("general")).get("id") != null)
-			    	general = gs.find(Long.parseLong(((HashMap)context.get("general")).get("id").toString()));
+			    	general = generalRepo.find(Long.parseLong(((HashMap)context.get("general")).get("id").toString()));
 			    
 				ccs.createCurrencyConversionLine(fromCurrency,toCurrency,today,rate,general,variation);
 				

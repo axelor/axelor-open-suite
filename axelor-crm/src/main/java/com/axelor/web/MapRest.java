@@ -17,7 +17,6 @@
  */
 package com.axelor.web;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
@@ -28,14 +27,13 @@ import javax.ws.rs.core.MediaType;
 
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.db.PartnerAddress;
 import com.axelor.apps.base.db.repo.AddressRepository;
 import com.axelor.apps.base.service.MapService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.crm.db.Lead;
 import com.axelor.apps.crm.db.Opportunity;
-import com.axelor.apps.crm.service.LeadService;
-import com.axelor.apps.crm.service.OpportunityServiceImpl;
+import com.axelor.apps.crm.db.repo.LeadRepository;
+import com.axelor.apps.crm.db.repo.OpportunityRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -52,10 +50,10 @@ public class MapRest {
 	@Inject MapService mapService;
 	
 	@Inject
-	private LeadService leadService;
+	private LeadRepository leadRepo;
 	
 	@Inject
-	private OpportunityServiceImpl opportunityService;
+	private OpportunityRepository opportunityRepo;
 	
 	@Inject
 	private AddressRepository addressRepo;
@@ -65,7 +63,7 @@ public class MapRest {
 	@Produces(MediaType.APPLICATION_JSON)
 	public JsonNode getLeads() {
 
-		List<? extends Lead> leads = leadService.all().fetch();
+		List<? extends Lead> leads = leadRepo.all().fetch();
 		JsonNodeFactory factory = JsonNodeFactory.instance;
 		ObjectNode mainNode = factory.objectNode();
 		ArrayNode arrayNode = factory.arrayNode();
@@ -123,7 +121,7 @@ public class MapRest {
 	@Produces(MediaType.APPLICATION_JSON)
 	public JsonNode getOpportunities() {
 
-		List<? extends Opportunity> opportunities = opportunityService.all().fetch();
+		List<? extends Opportunity> opportunities = opportunityRepo.all().fetch();
 		JsonNodeFactory factory = JsonNodeFactory.instance;
 		ObjectNode mainNode = factory.objectNode();
 		ArrayNode arrayNode = factory.arrayNode();

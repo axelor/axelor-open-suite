@@ -2,6 +2,7 @@ package com.axelor.apps.supplychain.web;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.supplychain.db.Timetable;
+import com.axelor.apps.supplychain.db.repo.TimetableRepository;
 import com.axelor.apps.supplychain.service.TimetableService;
 import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
@@ -15,9 +16,12 @@ public class TimetableController {
 	@Inject
 	protected TimetableService timetableService;
 	
+	@Inject
+	protected TimetableRepository timeTableRepo;
+	
 	public void generateInvoice(ActionRequest request, ActionResponse response) throws AxelorException{
 		Timetable timetable = request.getContext().asType(Timetable.class);
-		timetable = timetableService.find(timetable.getId());
+		timetable = timeTableRepo.find(timetable.getId());
 		Invoice invoice = timetableService.generateInvoice(timetable);
 		response.setView(ActionView
 				.define(I18n.get("Invoice generated"))

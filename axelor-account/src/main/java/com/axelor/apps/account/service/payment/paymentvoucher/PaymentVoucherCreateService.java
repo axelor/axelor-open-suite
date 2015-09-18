@@ -43,7 +43,7 @@ import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
-public class PaymentVoucherCreateService extends PaymentVoucherRepository {
+public class PaymentVoucherCreateService {
 
 	private final Logger log = LoggerFactory.getLogger( getClass() );
 
@@ -51,19 +51,20 @@ public class PaymentVoucherCreateService extends PaymentVoucherRepository {
 	protected PaymentInvoiceToPayService paymentInvoiceToPayService;
 	protected PaymentVoucherConfirmService paymentVoucherConfirmService;
 	protected PaymentVoucherSequenceService paymentVoucherSequenceService;
-	protected GeneralService generalService;
+	protected PaymentVoucherRepository paymentVoucherRepository;
 	protected DateTime todayTime;
 
 	@Inject
 	public PaymentVoucherCreateService(GeneralService generalService, MoveToolService moveToolService, PaymentInvoiceToPayService paymentInvoiceToPayService, 
-			PaymentVoucherConfirmService paymentVoucherConfirmService, PaymentVoucherSequenceService paymentVoucherSequenceService) {
+			PaymentVoucherConfirmService paymentVoucherConfirmService, PaymentVoucherSequenceService paymentVoucherSequenceService,
+			PaymentVoucherRepository paymentVoucherRepository) {
 
-		this.generalService = generalService;
 		this.moveToolService = moveToolService;
 		this.paymentInvoiceToPayService = paymentInvoiceToPayService;
 		this.paymentVoucherConfirmService = paymentVoucherConfirmService;
 		this.paymentVoucherSequenceService = paymentVoucherSequenceService;
-		this.todayTime = this.generalService.getTodayDateTime();
+		this.paymentVoucherRepository = paymentVoucherRepository;
+		this.todayTime = generalService.getTodayDateTime();
 
 	}
 
@@ -105,7 +106,7 @@ public class PaymentVoucherCreateService extends PaymentVoucherRepository {
 
 		paymentVoucher.setPaymentInvoiceToPayList(lines);
 
-		save(paymentVoucher);
+		paymentVoucherRepository.save(paymentVoucher);
 
 		paymentVoucherConfirmService.confirmPaymentVoucher(paymentVoucher);
 		return paymentVoucher;

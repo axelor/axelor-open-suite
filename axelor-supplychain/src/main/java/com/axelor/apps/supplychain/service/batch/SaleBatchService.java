@@ -24,11 +24,13 @@ import com.axelor.apps.sale.db.repo.SaleBatchRepository;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
+import com.google.inject.Inject;
 
-public class SaleBatchService extends SaleBatchRepository {
+public class SaleBatchService {
 
-// Appel
-
+	@Inject
+	private SaleBatchRepository saleBatchRepo;
+	
 	/**
 	 * Lancer un batch à partir de son code.
 	 *
@@ -39,7 +41,7 @@ public class SaleBatchService extends SaleBatchRepository {
 	 */
 	public Batch run(String batchCode) throws AxelorException {
 
-		SaleBatch saleBatch = findByCode(batchCode);
+		SaleBatch saleBatch = saleBatchRepo.findByCode(batchCode);
 
 		if (saleBatch != null){
 			switch (saleBatch.getActionSelect()) {

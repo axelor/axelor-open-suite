@@ -47,7 +47,7 @@ public class ProductionOrderServiceBusinessImpl extends ProductionOrderServiceIm
 
 		this.addManufOrder(productionOrder, product, billOfMaterial, qtyRequested);
 
-		return save(productionOrder);
+		return productionOrderRepo.save(productionOrder);
 
 	}
 

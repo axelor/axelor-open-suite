@@ -47,7 +47,7 @@ import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
-public class ManufOrderServiceImpl extends ManufOrderRepository implements  ManufOrderService  {
+public class ManufOrderServiceImpl implements  ManufOrderService  {
 
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -65,6 +65,9 @@ public class ManufOrderServiceImpl extends ManufOrderRepository implements  Manu
 
 	@Inject
 	protected GeneralService generalService;
+	
+	@Inject
+	protected ManufOrderRepository manufOrderRepo;
 
 
 	@Override
@@ -76,7 +79,7 @@ public class ManufOrderServiceImpl extends ManufOrderRepository implements  Manu
 
 		manufOrder = manufOrderWorkflowService.plan(manufOrder);
 
-		return save(manufOrder);
+		return manufOrderRepo.save(manufOrder);
 
 	}
 
@@ -198,7 +201,7 @@ public class ManufOrderServiceImpl extends ManufOrderRepository implements  Manu
 
 		}
 
-		save(manufOrder);
+		manufOrderRepo.save(manufOrder);
 
 		manufOrder.setPlannedEndDateT(manufOrderWorkflowService.computePlannedEndDateT(manufOrder));
 
@@ -208,7 +211,7 @@ public class ManufOrderServiceImpl extends ManufOrderRepository implements  Manu
 
 		this.createToProduceProdProductList(manufOrder);
 
-		save(manufOrder);
+		manufOrderRepo.save(manufOrder);
 	}
 
 

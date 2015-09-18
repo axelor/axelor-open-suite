@@ -23,10 +23,8 @@ import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 
 import com.axelor.apps.base.db.Duration;
-import com.axelor.db.Repository;
 
-
-public interface DurationService extends Repository<Duration>{
+public interface DurationService {
 	
 	
 	public LocalDate computeDuration(Duration duration, LocalDate date);

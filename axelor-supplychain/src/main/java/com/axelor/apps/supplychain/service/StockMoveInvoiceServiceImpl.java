@@ -52,7 +52,7 @@ import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
-public class StockMoveInvoiceServiceImpl extends StockMoveRepository implements StockMoveInvoiceService {
+public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
 
 	@Inject
 	private SaleOrderInvoiceService saleOrderInvoiceService;
@@ -62,6 +62,9 @@ public class StockMoveInvoiceServiceImpl extends StockMoveRepository implements 
 
 	@Inject
 	private InvoiceRepository invoiceRepository;
+	
+	@Inject
+	private StockMoveRepository stockMoveRepo;
 
 	@Override
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
@@ -84,7 +87,7 @@ public class StockMoveInvoiceServiceImpl extends StockMoveRepository implements 
 			invoiceRepository.save(invoice);
 
 			stockMove.setInvoice(invoice);
-			save(stockMove);
+			stockMoveRepo.save(stockMove);
 		}
 		return invoice;
 
@@ -111,7 +114,7 @@ public class StockMoveInvoiceServiceImpl extends StockMoveRepository implements 
 			invoiceRepository.save(invoice);
 
 			stockMove.setInvoice(invoice);
-			save(stockMove);
+			stockMoveRepo.save(stockMove);
 		}
 		return invoice;
 	}

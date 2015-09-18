@@ -29,19 +29,23 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 import com.axelor.mail.SmtpAccount;
+import com.google.inject.Inject;
 
-public class MailAccountServiceImpl extends MailAccountRepository implements MailAccountService {
+public class MailAccountServiceImpl implements MailAccountService {
 	
 	static final int CHECK_CONF_TIMEOUT = 5000;
+	
+	@Inject
+	protected MailAccountRepository mailAccountRepo;
 		
 	@Override
 	public boolean checkDefaultMailAccount(MailAccount mailAccount) {
-		return all().filter("self.isDefault = true").count() == 0 && mailAccount.getIsDefault();
+		return mailAccountRepo.all().filter("self.isDefault = true").count() == 0 && mailAccount.getIsDefault();
 	}
 
 	@Override
 	public MailAccount getDefaultMailAccount()  {
-		return all().filter("self.isDefault = true").fetchOne();
+		return mailAccountRepo.all().filter("self.isDefault = true").fetchOne();
 	}
    
 	@Override
@@ -69,15 +73,15 @@ public class MailAccountServiceImpl extends MailAccountRepository implements Mai
 	
 	public String getSmtpSecurity(MailAccount mailAccount)  {
 		
-		if ( mailAccount.getSecuritySelect() == SECURITY_SSL ) { return SmtpAccount.ENCRYPTION_SSL; }
-		else if (mailAccount.getSecuritySelect() == SECURITY_TLS ) { return SmtpAccount.ENCRYPTION_TLS; }
+		if ( mailAccount.getSecuritySelect() == MailAccountRepository.SECURITY_SSL ) { return SmtpAccount.ENCRYPTION_SSL; }
+		else if (mailAccount.getSecuritySelect() == MailAccountRepository.SECURITY_TLS ) { return SmtpAccount.ENCRYPTION_TLS; }
 		else { return null; }
 		
 	}
 	
 	public String getProtocol(MailAccount mailAccount) {
 		switch ( mailAccount.getServerTypeSelect() ) {
-		case SERVER_TYPE_SMTP:
+		case MailAccountRepository.SERVER_TYPE_SMTP:
 			return "smtp";
 		default:
 			return "";

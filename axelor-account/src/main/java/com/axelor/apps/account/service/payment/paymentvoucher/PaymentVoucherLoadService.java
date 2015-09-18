@@ -35,6 +35,7 @@ import com.axelor.apps.account.db.PaymentVoucher;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.PaymentInvoiceRepository;
+import com.axelor.apps.account.db.repo.PaymentInvoiceToPayRepository;
 import com.axelor.apps.account.db.repo.PaymentVoucherRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.base.db.Currency;
@@ -49,7 +50,7 @@ import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
-public class PaymentVoucherLoadService extends PaymentVoucherRepository {
+public class PaymentVoucherLoadService {
 
 	private final Logger log = LoggerFactory.getLogger( getClass() );
 
@@ -58,16 +59,21 @@ public class PaymentVoucherLoadService extends PaymentVoucherRepository {
 	protected PaymentVoucherToolService paymentVoucherToolService;
 	protected PaymentInvoiceRepository paymentInvoiceRepo;
 	protected PaymentInvoiceToPayService paymentInvoiceToPayService;
+	protected PaymentVoucherRepository paymentVoucherRepository;
+	protected PaymentInvoiceToPayRepository paymentInvoiceToPayRepository;
 	
 	@Inject
 	public PaymentVoucherLoadService(CurrencyService currencyService, PaymentVoucherSequenceService paymentVoucherSequenceService, PaymentVoucherToolService paymentVoucherToolService,
-			PaymentInvoiceRepository paymentInvoiceRepo, PaymentInvoiceToPayService paymentInvoiceToPayService)  {
+			PaymentInvoiceRepository paymentInvoiceRepo, PaymentInvoiceToPayService paymentInvoiceToPayService, PaymentVoucherRepository paymentVoucherRepository,
+			PaymentInvoiceToPayRepository paymentInvoiceToPayRepository)  {
 		
 		this.currencyService = currencyService;
 		this.paymentVoucherSequenceService = paymentVoucherSequenceService;
 		this.paymentVoucherToolService = paymentVoucherToolService;
 		this.paymentInvoiceRepo = paymentInvoiceRepo;
 		this.paymentInvoiceToPayService = paymentInvoiceToPayService;
+		this.paymentVoucherRepository = paymentVoucherRepository;
+		this.paymentInvoiceToPayRepository = paymentInvoiceToPayRepository;
 		
 	}
 
@@ -234,7 +240,7 @@ public class PaymentVoucherLoadService extends PaymentVoucherRepository {
 		}
 
 		paymentVoucherSequenceService.setReference(paymentVoucher);
-		save(paymentVoucher);
+		paymentVoucherRepository.save(paymentVoucher);
 
 
 	}
@@ -298,7 +304,7 @@ public class PaymentVoucherLoadService extends PaymentVoucherRepository {
 					// + initialiser la sequence
 					if (paymentVoucherContext.getPaymentInvoiceToPayList() != null)  {
 						for (PaymentInvoiceToPay pToPay : paymentVoucherContext.getPaymentInvoiceToPayList())  {
-							PaymentInvoiceToPay piToPayFromContext = paymentInvoiceToPayService.find(pToPay.getId());
+							PaymentInvoiceToPay piToPayFromContext = paymentInvoiceToPayRepository.find(pToPay.getId());
 							PaymentInvoiceToPay piToPayOld = new PaymentInvoiceToPay();
 							piToPayOld.setSequence(piToPayFromContext.getSequence());
 							piToPayOld.setMoveLine(piToPayFromContext.getMoveLine());
@@ -386,7 +392,7 @@ public class PaymentVoucherLoadService extends PaymentVoucherRepository {
 			}
 		}
 
-		save(paymentVoucher);
+		paymentVoucherRepository.save(paymentVoucher);
 		log.debug("End loadSelectedLinesService.");
 		return paymentVoucher;
 	}

@@ -50,6 +50,9 @@ public class SaleOrderServiceStockImpl extends SaleOrderServiceImpl {
 
 	@Inject
 	private LocationRepository locationRepo;
+	
+	@Inject
+	protected StockMoveRepository stockMoveRepo;
 
 
 	public Location getLocation(Company company)  {
@@ -162,7 +165,7 @@ public class SaleOrderServiceStockImpl extends SaleOrderServiceImpl {
 
 	//Check if existing at least one stockMove not canceled for the saleOrder
 	public boolean existActiveStockMoveForSaleOrder(Long saleOrderId){
-		long nbStockMove = stockMoveService.all().filter("self.saleOrder.id = ? AND self.statusSelect <> ?", saleOrderId, StockMoveRepository.STATUS_CANCELED).count();
+		long nbStockMove = stockMoveRepo.all().filter("self.saleOrder.id = ? AND self.statusSelect <> ?", saleOrderId, StockMoveRepository.STATUS_CANCELED).count();
 		return nbStockMove > 0;
 	}
 }

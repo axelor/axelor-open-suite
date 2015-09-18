@@ -37,13 +37,16 @@ import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
-public class OperationOrderWorkflowService extends OperationOrderRepository{
+public class OperationOrderWorkflowService {
 
 	@Inject
 	private OperationOrderStockMoveService operationOrderStockMoveService;
 
 	@Inject
 	protected GeneralService generalService;
+	
+	@Inject
+	protected OperationOrderRepository operationOrderRepo;
 
 	private LocalDateTime today;
 
@@ -76,7 +79,7 @@ public class OperationOrderWorkflowService extends OperationOrderRepository{
 
 	public LocalDateTime getLastOperationOrder(OperationOrder operationOrder)  {
 
-		OperationOrder lastOperationOrder = all().filter("self.manufOrder = ?1 AND self.priority <= ?2 AND self.statusSelect >= 3 AND self.statusSelect < 6",
+		OperationOrder lastOperationOrder = operationOrderRepo.all().filter("self.manufOrder = ?1 AND self.priority <= ?2 AND self.statusSelect >= 3 AND self.statusSelect < 6",
 				operationOrder.getManufOrder(), operationOrder.getPriority()).order("-self.priority").order("-self.plannedEndDateT").fetchOne();
 
 		if(lastOperationOrder != null)  {

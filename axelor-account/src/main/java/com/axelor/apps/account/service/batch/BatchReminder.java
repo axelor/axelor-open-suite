@@ -28,6 +28,7 @@ import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.debtrecovery.ReminderService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
@@ -42,11 +43,13 @@ public class BatchReminder extends BatchStrategy {
 	protected int mailAnomaly = 0;
 	
 	protected boolean stop = false;
+	protected PartnerRepository partnerRepository;
 	
 	@Inject
-	public BatchReminder(ReminderService reminderService) {
+	public BatchReminder(ReminderService reminderService, PartnerRepository partnerRepository) {
 		
 		super(reminderService);
+		this.partnerRepository = partnerRepository;
 	}
 
 
@@ -88,13 +91,13 @@ public class BatchReminder extends BatchStrategy {
 	public void reminderPartner()  {
 		
 		int i = 0;
-		List<Partner> partnerList = (List<Partner>) partnerService.all().filter("self.isContact = false AND ?1 MEMBER OF self.companySet", batch.getAccountingBatch().getCompany()).fetch();
+		List<Partner> partnerList = (List<Partner>) partnerRepository.all().filter("self.isContact = false AND ?1 MEMBER OF self.companySet", batch.getAccountingBatch().getCompany()).fetch();
 		
 		for (Partner partner : partnerList) {
 
 			try {
 				
-				boolean remindedOk = reminderService.reminderGenerate(partnerService.find(partner.getId()), batch.getAccountingBatch().getCompany());
+				boolean remindedOk = reminderService.reminderGenerate(partnerRepository.find(partner.getId()), batch.getAccountingBatch().getCompany());
 				
 				if(remindedOk == true)  {  updatePartner(partner); i++; }
 

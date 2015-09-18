@@ -23,11 +23,10 @@ import com.axelor.apps.base.db.Product;
 //import com.axelor.apps.organisation.db.Project;
 import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.ProductionOrder;
-import com.axelor.db.Repository;
 import com.axelor.exception.AxelorException;
 import com.google.inject.persist.Transactional;
 
-public interface ProductionOrderService extends Repository<ProductionOrder> {
+public interface ProductionOrderService {
 
 	
 	public ProductionOrder createProductionOrder() throws AxelorException;

@@ -19,6 +19,8 @@ package com.axelor.apps.base.service.template;
 
 import java.util.Map;
 
+import com.axelor.apps.base.db.TemplateContext;
+import com.axelor.apps.base.db.repo.TemplateContextRepository;
 import com.axelor.apps.message.db.Template;
 import com.axelor.apps.message.service.TemplateService;
 import com.axelor.db.Model;
@@ -31,12 +33,20 @@ public class TemplateBaseService extends TemplateService {
 	@Inject
 	private TemplateContextService tcs;
 	
+	@Inject
+	private TemplateContextRepository templateContextRepo;
+	
 	public Map<String, Object> getContext(Template template, Model bean) {
-		if(template.getTemplateContext() == null) {
+		
+		TemplateContext templateContext = template.getTemplateContext();
+		
+		if(templateContext == null) {
 			return null;
 		}
 		
-		return tcs.getContext(tcs.find(find(template.getId()).getTemplateContext().getId()), bean);
+		templateContext = templateContextRepo.find(templateContext.getId());
+		
+		return tcs.getContext(templateContext, bean);
 	}
 
 	

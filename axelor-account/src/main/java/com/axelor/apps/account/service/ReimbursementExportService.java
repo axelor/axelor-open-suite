@@ -51,6 +51,7 @@ import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.BlockingService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.administration.GeneralService;
@@ -97,12 +98,13 @@ public class ReimbursementExportService {
 	protected ReimbursementRepository reimbursementRepo;
 	protected AccountConfigService accountConfigService;
 	protected PartnerService partnerService;
+	protected PartnerRepository partnerRepository;
 	protected LocalDate today;
 
 	@Inject
 	public ReimbursementExportService(MoveService moveService, MoveRepository moveRepo, MoveLineService moveLineService, ReconcileService reconcileService,
 			SequenceService sequenceService, BlockingService blockingService, ReimbursementRepository reimbursementRepo, AccountConfigService accountConfigService,
-			PartnerService partnerService, GeneralService generalService) {
+			PartnerService partnerService, GeneralService generalService, PartnerRepository partnerRepository) {
 
 		this.moveService = moveService;
 		this.moveRepo = moveRepo;
@@ -113,6 +115,7 @@ public class ReimbursementExportService {
 		this.reimbursementRepo = reimbursementRepo;
 		this.accountConfigService = accountConfigService;
 		this.partnerService = partnerService;
+		this.partnerRepository = partnerRepository;
 		this.today = generalService.getTodayDate();
 	}
 
@@ -333,7 +336,7 @@ public class ReimbursementExportService {
 
 		if(partner != null && bankDetails != null && !bankDetails.equals(partner.getBankDetails()))  {
 			partner.setBankDetails(bankDetails);
-			partnerService.save(partner);
+			partnerRepository.save(partner);
 		}
 	}
 

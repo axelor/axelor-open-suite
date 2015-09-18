@@ -48,7 +48,7 @@ public class ProductionOrderWizardServiceBusinessImpl extends ProductionOrderWiz
 	public Long validate(Context context) throws AxelorException  {
 
 		Map<String, Object> bomContext = (Map<String, Object>) context.get("billOfMaterial");
-		BillOfMaterial billOfMaterial = billOfMaterialService.find(((Integer) bomContext.get("id")).longValue());
+		BillOfMaterial billOfMaterial = billOfMaterialRepo.find(((Integer) bomContext.get("id")).longValue());
 
 		BigDecimal qty = new BigDecimal((String)context.get("qty"));
 

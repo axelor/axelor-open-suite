@@ -9,19 +9,22 @@ import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 
-public class MailBatchService extends MailBatchRepository{
+public class MailBatchService {
 	
 	@Inject
 	protected BatchReminderMail batchReminderMail;
 	
+	@Inject
+	protected MailBatchRepository mailBatchRepo;
+	
 	public Batch run(String batchCode) throws AxelorException {
 		
 		Batch batch;
-		MailBatch mailBatch = findByCode(batchCode);
+		MailBatch mailBatch = mailBatchRepo.findByCode(batchCode);
 		
 		if (batchCode != null){
 			switch (mailBatch.getActionSelect()) {
-			case ACTION_REMIN_TIMESHEET:
+			case MailBatchRepository.ACTION_REMIN_TIMESHEET:
 				batch = null;
 				break;
 			default:

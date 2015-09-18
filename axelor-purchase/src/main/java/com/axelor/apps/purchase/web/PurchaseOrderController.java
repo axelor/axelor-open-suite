@@ -55,6 +55,9 @@ public class PurchaseOrderController {
 
 	@Inject
 	private PurchaseOrderService purchaseOrderService;
+	
+	@Inject
+	private PurchaseOrderRepository purchaseOrderRepo;
 
 	public void setSequence(ActionRequest request, ActionResponse response) throws AxelorException {
 
@@ -160,7 +163,7 @@ public class PurchaseOrderController {
 
 		PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
 
-		purchaseOrderService.requestPurchaseOrder(purchaseOrderService.find(purchaseOrder.getId()));
+		purchaseOrderService.requestPurchaseOrder(purchaseOrderRepo.find(purchaseOrder.getId()));
 
 		response.setReload(true);
 
@@ -169,7 +172,7 @@ public class PurchaseOrderController {
 	public void updateCostPrice(ActionRequest request, ActionResponse response) throws Exception {
 
 		PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
-		purchaseOrderService.updateCostPrice(purchaseOrderService.find(purchaseOrder.getId()));
+		purchaseOrderService.updateCostPrice(purchaseOrderRepo.find(purchaseOrder.getId()));
 
 	}
 

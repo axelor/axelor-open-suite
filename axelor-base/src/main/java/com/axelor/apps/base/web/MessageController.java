@@ -28,18 +28,24 @@ import com.axelor.apps.ReportSettings;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.report.IReport;
 import com.axelor.apps.message.db.Message;
+import com.axelor.apps.message.db.repo.MessageRepository;
 import com.axelor.apps.message.service.MessageService;
 import com.axelor.apps.tool.net.URLService;
 import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.google.inject.Inject;
 
 public class MessageController extends com.axelor.apps.message.web.MessageController {
 
 	
 	private static final Logger LOG = LoggerFactory.getLogger(MessageController.class);
 	
+	@Inject
+	private MessageRepository messageRepo;
+	
+	@Inject
+	private MessageService messageService;
 	
 	/**
 	 * Fonction appeler par le bouton imprimer
@@ -49,8 +55,10 @@ public class MessageController extends com.axelor.apps.message.web.MessageContro
 	 * @return
 	 */
 	public void printMessage(ActionRequest request, ActionResponse response) {
+		
 		Message message = request.getContext().asType(Message.class);
-		String pdfPath = Beans.get(MessageService.class).printMessage(message);
+		String pdfPath = messageService.printMessage(message);
+		
 		if(pdfPath != null){
 			Map<String,Object> mapView = new HashMap<String,Object>();
 			mapView.put("title", "Message "+message.getSubject());
@@ -78,7 +86,7 @@ public class MessageController extends com.axelor.apps.message.web.MessageContro
 			
 		if(!messageIds.equals("")){
 			messageIds = messageIds.substring(0, messageIds.length()-1);	
-			message = Beans.get(MessageService.class).find(new Long(lstSelectedMessages.get(0)));
+			message = messageRepo.find(new Long(lstSelectedMessages.get(0)));
 		}else if(message.getId() != null){
 			messageIds = message.getId().toString();			
 		}

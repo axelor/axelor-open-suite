@@ -38,7 +38,7 @@ public class MailAccountServiceBaseImpl extends MailAccountServiceImpl {
 	@Override
 	public boolean checkDefaultMailAccount(MailAccount mailAccount) {
 		if ( generalService.getGeneral().getMailAccountByUser() ) {
-			return all().filter("self.user = ?1 AND self.isDefault = true", userService.getUser()).count() == 0 && mailAccount.getIsDefault();
+			return mailAccountRepo.all().filter("self.user = ?1 AND self.isDefault = true", userService.getUser()).count() == 0 && mailAccount.getIsDefault();
 		}
 
 		return super.checkDefaultMailAccount( mailAccount);
@@ -49,7 +49,7 @@ public class MailAccountServiceBaseImpl extends MailAccountServiceImpl {
 	public MailAccount getDefaultMailAccount()  {
 
 		if ( generalService.getGeneral().getMailAccountByUser() ) {
-			return all().filter("self.user = ?1 AND self.isDefault = true", userService.getUser()).fetchOne();
+			return mailAccountRepo.all().filter("self.user = ?1 AND self.isDefault = true", userService.getUser()).fetchOne();
 		}
 
 		return super.getDefaultMailAccount();

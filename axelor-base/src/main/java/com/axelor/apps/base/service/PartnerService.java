@@ -36,14 +36,17 @@ import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.message.db.EmailAddress;
 import com.axelor.db.JPA;
 import com.axelor.inject.Beans;
-import com.axelor.rpc.Context;
 import com.google.common.base.Strings;
+import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
 
-public class PartnerService extends PartnerRepository{
+public class PartnerService {
 
 	private static final Logger LOG = LoggerFactory.getLogger(PartnerService.class);
+	
+	@Inject
+	private PartnerRepository partnerRepo;
 
 	public Partner createPartner(String name, String firstName, String fixedPhone, String mobilePhone, EmailAddress emailAddress, Currency currency, Address deliveryAddress, Address mainInvoicingAddress){
 		Partner partner = new Partner();
@@ -121,13 +124,11 @@ public class PartnerService extends PartnerRepository{
 		List<Long> idList = new ArrayList<Long>();
 
 		idList.addAll(this.findMailsFromPartner(partner));
-		idList.addAll(this.findMailsFromSaleOrder(partner));
 
 		Set<Partner> contactSet = partner.getContactPartnerSet();
 		if(contactSet != null && !contactSet.isEmpty()){
 			for (Partner contact : contactSet) {
 				idList.addAll(this.findMailsFromPartner(contact));
-				idList.addAll(this.findMailsFromSaleOrderContact(contact));
 			}
 		}
 		return idList;
@@ -137,7 +138,6 @@ public class PartnerService extends PartnerRepository{
 		List<Long> idList = new ArrayList<Long>();
 
 		idList.addAll(this.findMailsFromPartner(partner));
-		idList.addAll(this.findMailsFromSaleOrderContact(partner));
 
 		return idList;
 	}
@@ -146,22 +146,6 @@ public class PartnerService extends PartnerRepository{
 		String query = "SELECT DISTINCT(email.id) FROM Message as email WHERE email.mediaTypeSelect = 2 AND "+
 				"(email.relatedTo1Select = 'com.axelor.apps.base.db.Partner' AND email.relatedTo1SelectId = "+partner.getId()+") "+
 				"OR (email.relatedTo2Select = 'com.axelor.apps.base.db.Partner' AND email.relatedTo2SelectId = "+partner.getId()+")";
-		return JPA.em().createQuery(query).getResultList();
-	}
-
-	public List<Long> findMailsFromSaleOrder(Partner partner){
-		String query = "SELECT DISTINCT(email.id) FROM Message as email, SaleOrder as so, Partner as part"+
-				" WHERE part.id = "+partner.getId()+" AND so.clientPartner = part.id AND email.mediaTypeSelect = 2 AND "+
-				"((email.relatedTo1Select = 'com.axelor.apps.sale.db.SaleOrder' AND email.relatedTo1SelectId = so.id) "+
-				"OR (email.relatedTo2Select = 'com.axelor.apps.sale.db.SaleOrder' AND email.relatedTo2SelectId = so.id))";
-		return JPA.em().createQuery(query).getResultList();
-	}
-
-	public List<Long> findMailsFromSaleOrderContact(Partner partner){
-		String query = "SELECT DISTINCT(email.id) FROM Message as email, SaleOrder as so, Partner as part"+
-				" WHERE part.id = "+partner.getId()+" AND so.contactPartner = part.id AND email.mediaTypeSelect = 2 AND "+
-				"((email.relatedTo1Select = 'com.axelor.apps.sale.db.SaleOrder' AND email.relatedTo1SelectId = so.id) "+
-				"OR (email.relatedTo2Select = 'com.axelor.apps.sale.db.SaleOrder' AND email.relatedTo2SelectId = so.id))";
 		return JPA.em().createQuery(query).getResultList();
 	}
 	
@@ -251,7 +235,7 @@ public class PartnerService extends PartnerRepository{
 
 	@Transactional
 	public Partner savePartner(Partner partner){
-		return save(partner);
+		return partnerRepo.save(partner);
 	}
 
 }

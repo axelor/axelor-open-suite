@@ -20,7 +20,6 @@ package com.axelor.apps.base.service.administration;
 import java.math.BigDecimal;
 import java.util.List;
 
-import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.persistence.Query;
 
@@ -37,15 +36,19 @@ import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.db.JPA;
 import com.axelor.db.Model;
+import com.google.inject.Inject;
 
 @Singleton
-public class GeneralServiceImpl extends GeneralRepository implements GeneralService {
+public class GeneralServiceImpl implements GeneralService {
 
 	public static final String EXCEPTION = "Warning !";
 
 	private static GeneralServiceImpl INSTANCE;
 
 	private Long administrationId;
+	
+	@Inject
+	private GeneralRepository generalRepo;
 
 	@Inject
 	public GeneralServiceImpl() {
@@ -77,7 +80,7 @@ public class GeneralServiceImpl extends GeneralRepository implements GeneralServ
 	 */
 	@Override
 	public General getGeneral() {
-		return find(administrationId);
+		return generalRepo.find(administrationId);
 	}
 
 // Date du jour

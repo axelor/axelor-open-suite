@@ -52,6 +52,7 @@ import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.account.service.config.PayboxConfigService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.administration.GeneralServiceImpl;
 import com.axelor.apps.tool.StringTool;
@@ -67,15 +68,17 @@ public class PayboxService {
 
 	protected PayboxConfigService payboxConfigService;
 	protected PartnerService partnerService;
+	protected PartnerRepository partnerRepository;
 	
 	protected final String CHARSET = "UTF-8";
 	protected final String HASH_ENCRYPTION_ALGORITHM = "SHA1withRSA";
 	protected final String ENCRYPTION_ALGORITHM = "RSA";
 
-	public PayboxService(PayboxConfigService payboxConfigService, PartnerService partnerService)  {
+	public PayboxService(PayboxConfigService payboxConfigService, PartnerService partnerService, PartnerRepository partnerRepository)  {
 		
 		this.payboxConfigService = payboxConfigService;
 		this.partnerService = partnerService;
+		this.partnerRepository = partnerRepository;
 	}
 	
 	
@@ -353,7 +356,7 @@ public class PayboxService {
 		if(toSaveOk)  {
 
 			partner.getEmailAddress().setAddress(email);
-			partnerService.save(partner);
+			partnerRepository.save(partner);
 		}
 	}
 

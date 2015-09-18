@@ -20,10 +20,11 @@ package com.axelor.apps.crm.web;
 import java.util.Map;
 
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.service.PartnerService;
+import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.crm.db.Event;
 import com.axelor.apps.crm.db.Lead;
 import com.axelor.apps.crm.db.Opportunity;
+import com.axelor.apps.crm.db.repo.LeadRepository;
 import com.axelor.apps.crm.exception.IExceptionMessage;
 import com.axelor.apps.crm.service.ConvertLeadWizardService;
 import com.axelor.apps.crm.service.LeadService;
@@ -38,12 +39,15 @@ public class ConvertLeadWizardController {
 
 	@Inject
 	private LeadService leadService;
+	
+	@Inject
+	private LeadRepository leadRepo;
 
 	@Inject
 	private ConvertLeadWizardService convertLeadWizardService;
 
 	@Inject
-	private PartnerService partnerService;
+	private PartnerRepository partnerRepo;
 
 
 	@SuppressWarnings("unchecked")
@@ -53,7 +57,7 @@ public class ConvertLeadWizardController {
 
 		Map<String, Object> leadContext = (Map<String, Object>) context.get("_lead");
 
-		Lead lead = leadService.find(((Integer)leadContext.get("id")).longValue());
+		Lead lead = leadRepo.find(((Integer)leadContext.get("id")).longValue());
 
 		Partner partner = null;
 		Partner contactPartner = null;
@@ -70,7 +74,7 @@ public class ConvertLeadWizardController {
 		}
 		else  if(context.get("selectContact") != null) {
 			Map<String, Object> selectContactContext = (Map<String, Object>) context.get("selectContact");
-			contactPartner = partnerService.find(((Integer) selectContactContext.get("id")).longValue());
+			contactPartner = partnerRepo.find(((Integer) selectContactContext.get("id")).longValue());
 		}
 
 		if(context.get("hasConvertIntoPartner") != null && (Boolean) context.get("hasConvertIntoPartner")) {
@@ -81,7 +85,7 @@ public class ConvertLeadWizardController {
 		}
 		else  if(context.get("selectPartner") != null) {
 			Map<String, Object> selectPartnerContext = (Map<String, Object>) context.get("selectPartner");
-			partner = partnerService.find(((Integer) selectPartnerContext.get("id")).longValue());
+			partner = partnerRepo.find(((Integer) selectPartnerContext.get("id")).longValue());
 		}
 
 		if(context.get("hasConvertIntoOpportunity") != null && (Boolean) context.get("hasConvertIntoOpportunity")) {

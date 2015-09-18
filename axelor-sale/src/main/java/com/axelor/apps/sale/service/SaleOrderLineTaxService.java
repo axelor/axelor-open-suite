@@ -30,10 +30,9 @@ import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.SaleOrderLineTax;
-import com.axelor.apps.sale.db.repo.SaleOrderLineTaxRepository;
 import com.google.inject.Inject;
 
-public class SaleOrderLineTaxService extends SaleOrderLineTaxRepository{
+public class SaleOrderLineTaxService {
 
 	private static final Logger LOG = LoggerFactory.getLogger(SaleOrderLineTaxService.class); 
 	

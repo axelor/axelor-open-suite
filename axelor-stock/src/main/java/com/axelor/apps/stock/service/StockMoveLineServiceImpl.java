@@ -32,13 +32,12 @@ import com.axelor.apps.stock.db.LocationLine;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.LocationLineRepository;
-import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 
-public class StockMoveLineServiceImpl extends StockMoveLineRepository implements StockMoveLineService  {
+public class StockMoveLineServiceImpl implements StockMoveLineService  {
 
 	@Inject
 	private TrackingNumberService trackingNumberService;
