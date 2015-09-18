@@ -31,6 +31,7 @@ import com.axelor.apps.account.db.MoveTemplateLine;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.MoveTemplateRepository;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.PartnerService;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -48,6 +49,9 @@ public class MoveTemplateService {
 	
 	@Inject
 	PartnerService partnerService;
+	
+	@Inject
+	PartnerRepository partnerRepo;
 	
 	@Inject
 	MoveTemplateRepository moveTemplateRepo;
@@ -73,11 +77,11 @@ public class MoveTemplateService {
 				BigDecimal moveBalance = new BigDecimal(data.get("moveBalance").toString());
 				Partner partner = null;
 				if(data.get("debitPartner") != null){
-					debitPartner = partnerService.find(Long.parseLong(((HashMap<String,Object>) data.get("debitPartner")).get("id").toString()));
+					debitPartner = partnerRepo.find(Long.parseLong(((HashMap<String,Object>) data.get("debitPartner")).get("id").toString()));
 					partner = debitPartner;
 				}	
 				if(data.get("creditPartner") != null){
-					creditPartner = partnerService.find(Long.parseLong(((HashMap<String,Object>) data.get("creditPartner")).get("id").toString()));
+					creditPartner = partnerRepo.find(Long.parseLong(((HashMap<String,Object>) data.get("creditPartner")).get("id").toString()));
 					partner = creditPartner;
 				}
 				Move move = moveService.createMove(moveTemplate.getJournal(), moveTemplate.getJournal().getCompany(), null, partner,moveDate, null);

@@ -32,7 +32,7 @@ import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
-public class SequenceService extends SequenceRepository {
+public class SequenceService {
 
 	private final static String
 		PATTERN_YEAR = "%Y",
@@ -46,6 +46,9 @@ public class SequenceService extends SequenceRepository {
 	private SequenceVersionRepository sequenceVersionRepository;
 
 	private LocalDate today, refDate;
+	
+	@Inject
+	private SequenceRepository sequenceRepo;
 
 	@Inject
 	public SequenceService( SequenceVersionRepository sequenceVersionRepository ) {
@@ -75,9 +78,9 @@ public class SequenceService extends SequenceRepository {
 	public Sequence getSequence(String code, Company company) {
 
 		if (code == null)  { return null; }
-		if (company == null)  { return findByCode(code); }
+		if (company == null)  { return sequenceRepo.findByCode(code); }
 
-		return find(code, company);
+		return sequenceRepo.find(code, company);
 
 	}
 
@@ -211,13 +214,4 @@ public class SequenceService extends SequenceRepository {
 
 	}
 	
-	@Override
-	public Sequence copy(Sequence sequence, boolean deep) {
-		
-		log.debug("Seuqence copy override");
-		sequence.clearSequenceVersionList();
-		
-		return super.copy(sequence, deep);
-	}
-
 }

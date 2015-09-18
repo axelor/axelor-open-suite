@@ -32,6 +32,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.CompanyRepository;
+import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.report.IReport;
 import com.axelor.apps.base.service.PartnerService;
@@ -61,12 +62,15 @@ public class PartnerController {
 
 	@Inject
 	private PartnerService partnerService;
+	
+	@Inject
+	private PartnerRepository partnerRepo;
 
 	private static final Logger LOG = LoggerFactory.getLogger(PartnerController.class);
 
 	public void setPartnerSequence(ActionRequest request, ActionResponse response) throws AxelorException {
 		Partner partner = request.getContext().asType(Partner.class);
-		partner = partnerService.find(partner.getId());
+		partner = partnerRepo.find(partner.getId());
 		if(partner.getPartnerSeq() ==  null) {
 			String seq = sequenceService.getSequenceNumber(IAdministration.PARTNER);
 			if (seq == null)

@@ -20,7 +20,7 @@ package com.axelor.apps.crm.web;
 import java.util.Map;
 
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.service.PartnerService;
+import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.crm.db.Event;
 import com.axelor.apps.crm.db.Lead;
 import com.axelor.apps.crm.db.Opportunity;
@@ -43,7 +43,7 @@ public class ConvertLeadWizardController {
 	private ConvertLeadWizardService convertLeadWizardService;
 
 	@Inject
-	private PartnerService partnerService;
+	private PartnerRepository partnerRepo;
 
 
 	@SuppressWarnings("unchecked")
@@ -70,7 +70,7 @@ public class ConvertLeadWizardController {
 		}
 		else  if(context.get("selectContact") != null) {
 			Map<String, Object> selectContactContext = (Map<String, Object>) context.get("selectContact");
-			contactPartner = partnerService.find(((Integer) selectContactContext.get("id")).longValue());
+			contactPartner = partnerRepo.find(((Integer) selectContactContext.get("id")).longValue());
 		}
 
 		if(context.get("hasConvertIntoPartner") != null && (Boolean) context.get("hasConvertIntoPartner")) {
@@ -81,7 +81,7 @@ public class ConvertLeadWizardController {
 		}
 		else  if(context.get("selectPartner") != null) {
 			Map<String, Object> selectPartnerContext = (Map<String, Object>) context.get("selectPartner");
-			partner = partnerService.find(((Integer) selectPartnerContext.get("id")).longValue());
+			partner = partnerRepo.find(((Integer) selectPartnerContext.get("id")).longValue());
 		}
 
 		if(context.get("hasConvertIntoOpportunity") != null && (Boolean) context.get("hasConvertIntoOpportunity")) {

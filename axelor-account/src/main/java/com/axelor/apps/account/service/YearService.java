@@ -41,9 +41,9 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Period;
 import com.axelor.apps.base.db.Year;
+import com.axelor.apps.base.db.repo.PartnerRepository;
+import com.axelor.apps.base.db.repo.PeriodRepository;
 import com.axelor.apps.base.db.repo.YearRepository;
-import com.axelor.apps.base.service.PartnerService;
-import com.axelor.apps.base.service.PeriodService;
 import com.axelor.apps.base.service.administration.GeneralServiceImpl;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
@@ -61,7 +61,7 @@ public class YearService {
 	private AccountConfigService accountConfigService;
 
 	@Inject
-	private PartnerService partnerService;
+	private PartnerRepository partnerRepo;
 
 	@Inject
 	private ReportedBalanceRepository reportedBalanceRepo;
@@ -82,7 +82,7 @@ public class YearService {
 		year = yearRepo.find(year.getId());
 
 		for (Period period : year.getPeriodList())  {
-			period.setStatusSelect(PeriodService.STATUS_CLOSED);
+			period.setStatusSelect(PeriodRepository.STATUS_CLOSED);
 		}
 		Company company = year.getCompany();
 		if(company == null)  {
@@ -98,7 +98,7 @@ public class YearService {
 		@SuppressWarnings("unchecked")
 		List<Partner> partnerList = q.getResultList();
 
-		List<? extends Partner> partnerListAll = partnerService.all().fetch();
+		List<? extends Partner> partnerListAll = partnerRepo.all().fetch();
 
 
 		LOG.debug("Nombre total de tiers : {}", partnerListAll.size());
@@ -109,7 +109,7 @@ public class YearService {
 		Account doubtfulCustomerAccount = accountConfigService.getDoubtfulCustomerAccount(accountConfig);
 
 		for(Partner partner : partnerList)  {
-			partner = partnerService.find(partner.getId());
+			partner = partnerRepo.find(partner.getId());
 			LOG.debug("Tiers en cours de traitement : {}", partner.getName());
 			boolean find = false;
 			for(ReportedBalance reportedBalance : partner.getReportedBalanceList())  {
@@ -143,7 +143,7 @@ public class YearService {
 				reportedBalanceRepo.save(reportedBalance);
 			}
 
-			partnerService.save(partner);
+			partnerRepo.save(partner);
 		}
 		year.setStatusSelect(YearRepository.STATUS_CLOSED);
 		yearRepo.save(year);

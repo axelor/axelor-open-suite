@@ -26,6 +26,7 @@ import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.ReportSettings;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.report.IReport;
 import com.axelor.apps.base.service.ProductService;
@@ -46,11 +47,16 @@ public class ProductController {
 
 	@Inject
 	protected GeneralService generalService;
+	
+	@Inject
+	private ProductService productService;
+	
+	@Inject
+	private ProductRepository productRepo;
 
 	public void generateProductVariants(ActionRequest request, ActionResponse response) throws AxelorException {
 		Product product = request.getContext().asType(Product.class);
-		ProductService productService = Beans.get(ProductService.class);
-		product = productService.find(product.getId());
+		product = productRepo.find(product.getId());
 
 		if(product.getProductVariantConfig() != null)  {
 			productService.generateProductVariants(product);
@@ -62,9 +68,8 @@ public class ProductController {
 
 	public void updateProductsPrices(ActionRequest request, ActionResponse response) throws AxelorException {
 		Product product = request.getContext().asType(Product.class);
-		ProductService productService = Beans.get(ProductService.class);
 
-		product = productService.find(product.getId());
+		product = productRepo.find(product.getId());
 
 		productService.updateProductPrice(product);
 

@@ -25,7 +25,6 @@ import org.joda.time.LocalDate;
 
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.CurrencyConversionLine;
-import com.axelor.apps.base.db.repo.CurrencyRepository;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.exception.AxelorException;
@@ -34,7 +33,7 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 
-public class CurrencyService extends CurrencyRepository{
+public class CurrencyService {
 
 	protected GeneralService generalService;
 

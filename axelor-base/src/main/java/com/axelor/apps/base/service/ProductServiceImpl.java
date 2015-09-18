@@ -33,21 +33,28 @@ import com.axelor.apps.base.db.ProductVariantConfig;
 import com.axelor.apps.base.db.ProductVariantValue;
 import com.axelor.apps.base.db.SupplierCatalog;
 import com.axelor.apps.base.db.repo.ProductRepository;
+import com.axelor.apps.base.db.repo.ProductVariantRepository;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.exception.AxelorException;
 import com.beust.jcommander.internal.Lists;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
-public class ProductServiceImpl extends ProductRepository implements ProductService  {
+public class ProductServiceImpl implements ProductService  {
 
 	private static final Logger LOG = LoggerFactory.getLogger(ProductServiceImpl.class);
 
 	@Inject
 	private ProductVariantService productVariantService;
+	
+	@Inject
+	private ProductVariantRepository productVariantRepo;
 
 	@Inject
 	protected GeneralService generalService;
+	
+	@Inject
+	private ProductRepository productRepo;
 
 	@Override
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
@@ -55,7 +62,7 @@ public class ProductServiceImpl extends ProductRepository implements ProductServ
 
 		this.updateSalePrice(product);
 
-		save(product);
+		productRepo.save(product);
 
 	}
 
@@ -112,7 +119,7 @@ public class ProductServiceImpl extends ProductRepository implements ProductServ
 
 	private void updateSalePriceOfVariant(Product product)  {
 
-		List<? extends Product> productVariantList = all().filter("self.parentProduct = ?1", product).fetch();
+		List<? extends Product> productVariantList = productRepo.all().filter("self.parentProduct = ?1", product).fetch();
 
 		for(Product productVariant : productVariantList)  {
 
@@ -137,9 +144,9 @@ public class ProductServiceImpl extends ProductRepository implements ProductServ
 
 		for(ProductVariant productVariant : productVariantList)  {
 
-			productVariantService.save(productVariant);
+			productVariantRepo.save(productVariant);
 
-			save(this.createProduct(productModel, productVariant));
+			productRepo.save(this.createProduct(productModel, productVariant));
 
 		}
 

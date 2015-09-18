@@ -19,22 +19,24 @@ package com.axelor.apps.base.service.imports;
 
 import java.io.IOException;
 
-import javax.inject.Inject;
-
 import com.axelor.apps.base.db.ImportConfiguration;
 import com.axelor.apps.base.db.ImportHistory;
 import com.axelor.apps.base.db.repo.ImportConfigurationRepository;
 import com.axelor.apps.base.service.imports.importer.FactoryImporter;
 import com.axelor.exception.AxelorException;
+import com.google.inject.Inject;
 
-public class ImportService extends ImportConfigurationRepository {
+public class ImportService {
 
 	@Inject
 	private FactoryImporter factoryImporter;
 	
+	@Inject
+	private ImportConfigurationRepository importConfigRepo;
+	
 	public ImportHistory run( ImportConfiguration configuration ) throws AxelorException, IOException {
 		
-		 return factoryImporter.createImporter( find( configuration.getId() ) ).run();
+		 return factoryImporter.createImporter( importConfigRepo.find( configuration.getId() ) ).run();
 		
 	}
 

@@ -27,9 +27,13 @@ import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
+import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
-public class IndicatorGeneratorService extends IndicatorGeneratorRepository{
+public class IndicatorGeneratorService {
+	
+	@Inject
+	private IndicatorGeneratorRepository indicatorGeneratorRepo;
 	
 	@Transactional
 	public String run(IndicatorGenerator indicatorGenerator) throws AxelorException  {
@@ -71,7 +75,7 @@ public class IndicatorGeneratorService extends IndicatorGeneratorRepository{
 		
 		indicatorGenerator.setResult(result);
 		
-		save(indicatorGenerator);
+		indicatorGeneratorRepo.save(indicatorGenerator);
 		
 		return result;
 	}

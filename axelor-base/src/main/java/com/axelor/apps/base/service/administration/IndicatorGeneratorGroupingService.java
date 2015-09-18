@@ -31,11 +31,13 @@ import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
-public class IndicatorGeneratorGroupingService extends IndicatorGeneratorGroupingRepository{
+public class IndicatorGeneratorGroupingService {
 
 	@Inject
 	private IndicatorGeneratorService indicatorGeneratorService;
-
+	
+	@Inject
+	private IndicatorGeneratorGroupingRepository iggRepo;
 	
 	@Transactional
 	public void run(IndicatorGeneratorGrouping indicatorGeneratorGrouping) throws AxelorException  {
@@ -59,7 +61,7 @@ public class IndicatorGeneratorGroupingService extends IndicatorGeneratorGroupin
 		
 		indicatorGeneratorGrouping.setLog(log);
 		
-		save(indicatorGeneratorGrouping);
+		iggRepo.save(indicatorGeneratorGrouping);
 	}
 	
 	
@@ -107,7 +109,7 @@ public class IndicatorGeneratorGroupingService extends IndicatorGeneratorGroupin
 			indicatorGeneratorGrouping.setLog(log2);
 		}
 		
-		save(indicatorGeneratorGrouping);
+		iggRepo.save(indicatorGeneratorGrouping);
 	}
 	
 	

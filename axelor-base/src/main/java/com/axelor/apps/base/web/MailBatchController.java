@@ -14,6 +14,9 @@ public class MailBatchController{
 
 	@Inject
 	MailBatchService mailBatchService;
+	
+	@Inject
+	MailBatchRepository mailBatchRepo;
 
 	public void remindTimesheet(ActionRequest request, ActionResponse response) throws AxelorException{
 
@@ -21,7 +24,7 @@ public class MailBatchController{
 
 		Batch batch = null;
 
-		batch = mailBatchService.remindMail(mailBatchService.find(mailBatch.getId()));
+		batch = mailBatchService.remindMail(mailBatchRepo.find(mailBatch.getId()));
 
 		if(batch != null)
 			response.setFlash(batch.getComments());

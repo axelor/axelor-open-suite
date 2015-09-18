@@ -24,8 +24,8 @@ import java.util.Map;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
-import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.crm.db.Event;
@@ -50,7 +50,7 @@ public class LeadService extends LeadRepository {
 	private UserService userService;
 
 	@Inject
-	private PartnerService partnerService;
+	private PartnerRepository partnerRepo;
 
 	@Inject
 	private OpportunityServiceImpl opportunityService;
@@ -87,10 +87,10 @@ public class LeadService extends LeadRepository {
 
 		if(partner != null)  {
 			lead.setPartner(partner);
-			partnerService.save(partner);
+			partnerRepo.save(partner);
 		}
 		if(contactPartner!=null)  {
-			partnerService.save(contactPartner);
+			partnerRepo.save(contactPartner);
 		}
 		if(opportunity!=null)  {
 			opportunityService.save(opportunity);

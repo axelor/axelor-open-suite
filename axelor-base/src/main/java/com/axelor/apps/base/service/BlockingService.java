@@ -22,13 +22,12 @@ import org.joda.time.LocalDate;
 import com.axelor.apps.base.db.Blocking;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.db.repo.BlockingRepository;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 
 
-public class BlockingService extends BlockingRepository{
+public class BlockingService {
 
 	private LocalDate today;
 

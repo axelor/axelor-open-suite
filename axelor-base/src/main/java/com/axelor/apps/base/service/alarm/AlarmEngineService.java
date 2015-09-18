@@ -42,7 +42,7 @@ import com.google.inject.Inject;
 /**
  * Classe implémentant l'ensemble des fonctions utiles au moteur d'alarmes.
  */
-public class AlarmEngineService <T extends Model> extends AlarmEngineRepository {
+public class AlarmEngineService <T extends Model> {
 
 
 	protected GeneralService generalService;
@@ -52,6 +52,9 @@ public class AlarmEngineService <T extends Model> extends AlarmEngineRepository 
 	private DateTime dateTime;
 
 	private Templates templates;
+	
+	@Inject
+	private AlarmEngineRepository alarmEngineRepo;
 
 	@Inject
 	public AlarmEngineService(GeneralService generalService) {
@@ -68,7 +71,7 @@ public class AlarmEngineService <T extends Model> extends AlarmEngineRepository 
 
 	public Alarm get(String alarmEngineCode, T t, boolean isExternal){
 
-		AlarmEngine alarmEngine = all().filter("self.code = ?1 AND externalOk = ?2 AND activeOk = true", alarmEngineCode, isExternal).fetchOne();
+		AlarmEngine alarmEngine = alarmEngineRepo.all().filter("self.code = ?1 AND externalOk = ?2 AND activeOk = true", alarmEngineCode, isExternal).fetchOne();
 
 		if (alarmEngine != null) { return createAlarm(alarmEngine, t); }
 		else return null;
@@ -90,7 +93,7 @@ public class AlarmEngineService <T extends Model> extends AlarmEngineRepository 
 	 */
 	public Map<T, List<Alarm>> get(Class<T> klass, T... params) {
 
-		List<? extends AlarmEngine> alarmEngines = all().filter("metaModel = ?1 AND activeOk = true AND externalOk = false", MetaModelService.getMetaModel(klass)).fetch();
+		List<? extends AlarmEngine> alarmEngines = alarmEngineRepo.all().filter("metaModel = ?1 AND activeOk = true AND externalOk = false", MetaModelService.getMetaModel(klass)).fetch();
 
 		LOG.debug("Lancement des moteurs de type {} : {} moteurs à lancer", klass, alarmEngines.size());
 
