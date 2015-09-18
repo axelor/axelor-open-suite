@@ -413,12 +413,6 @@ public class SaleOrderInvoiceServiceImpl extends SaleOrderRepository implements 
 		}
 		return null;
 	}
-/*
-	@Transactional
-	public void saveSaleOrderForAdvancePayment(SaleOrder so) 
-	{
-		save(so);
-	}*/
 }
 
 

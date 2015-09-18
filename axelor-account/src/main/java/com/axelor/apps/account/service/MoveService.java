@@ -546,8 +546,6 @@ public class MoveService {
 	
 	public List <MoveLine> orderListByDate(List <MoveLine> list)
 	{
-		
-			
 			Collections.sort(list, new Comparator<MoveLine>() {
 				
 
@@ -557,31 +555,14 @@ public class MoveService {
 					return o1.getDate().compareTo(o2.getDate());
 				}
 			});
-			
-			
-		
-		
-		
-		
-		LOG.debug("Test du tri : ");
-		
-		int it = 1;
-		for (MoveLine moveLine : list) 
-		{
-			LOG.debug("moveLine No {}, Date : {}", it++, moveLine.getDate());
-		}
-		LOG.debug("test fini");
-		
-		
+
 		return list;
 	}
 	
 	public List <MoveLine> addAdvancePayment(Invoice invoice)
 	{
-		LOG.debug("Ajout des acomptes");
 		List<MoveLine> moveLineList = new ArrayList<MoveLine>();
 		
-		int count = 1;
 		if (invoice.getAdvancePaymentList() != null)
 		{
 			for (AdvancePaymentAccount advancePayment : invoice.getAdvancePaymentList()) 
@@ -590,18 +571,15 @@ public class MoveService {
 				{
 					if (moveLine.getCredit().compareTo(BigDecimal.ZERO) != 0)
 					{
-						//moveLine.get
 						moveLineList.add(moveLine);
 						LOG.debug("New line : Date : {}", moveLine.getDate());
 					}
 				
 				}
 			}
-			LOG.debug("Acomptes ajoutés");
 			return this.orderListByDate(moveLineList);
 		}
 		
-		LOG.debug("Pas d'Acomptes");
 		return moveLineList;
 	}
 

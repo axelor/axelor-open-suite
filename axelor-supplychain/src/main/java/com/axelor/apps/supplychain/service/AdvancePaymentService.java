@@ -13,6 +13,7 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.AdvancePaymentAccountRepository;
+import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.MoveLineService;
 import com.axelor.apps.account.service.MoveService;
 import com.axelor.apps.account.service.config.AccountConfigService;
@@ -58,13 +59,14 @@ public class AdvancePaymentService extends AdvancePaymentRepository{
 	@Inject
 	private AdvancePaymentAccountRepository apar;
 	
+	@Inject
+	private MoveRepository moveRepo;
+	
 	@Transactional
 	public void deleteLine(AdvancePaymentAccount APA)
 	{
 		try{
-			//Beans.get(AdvancePaymentAccountRepository.class).all().filter("self.id = ?1", APA.getId()).remove();
-			
-			moveService.remove(APA.getMove());
+			moveRepo.remove(APA.getMove());
 			apar.remove(APA);
 			LOG.debug("Advance Payment Account (montant = {} ) normalement supprimé ", APA.getAmount());
 		}catch(Exception e){
@@ -190,7 +192,6 @@ public class AdvancePaymentService extends AdvancePaymentRepository{
 		LOG.debug("Creation d'un advancePaymentAccount");
 		AdvancePaymentAccount advancePaymentAccount = new AdvancePaymentAccount();
 		
-		//Define whether the source AdvancePayment will be completely used or not in this transaction
 		advancePaymentAccount.setAmount(amount);
 		
 		advancePaymentAccount.setAdvancePaymentDate(advancePayment.getAdvancePaymentDate());
@@ -210,14 +211,7 @@ public class AdvancePaymentService extends AdvancePaymentRepository{
 		MoveLine movelineCredit = null;
 		Account account2 = null;
 		account2 = paymentModeService.getCompanyAccount(saleOrder.getPaymentMode(), saleOrder.getCompany());
-		/*
-		BigDecimal rate = BigDecimal.ONE;
-		if (!saleOrder.getCurrency().equals(advancePayment.getCurrency()))
-		{
-			rate = currencyService.getCurrencyConversionRate(saleOrder.getCurrency(), advancePayment.getCurrency());
-			LOG.debug("Currency Conversion Rate : 1{} = {}{}",saleOrder.getCurrency().getSymbol(), rate.toString(), advancePayment.getCurrency().getSymbol());
-		}
-		*/
+		
 		movelineDebit = moveLineService.createMoveLine(move, saleOrder.getClientPartner(), 
 				accountConfigService.getIrrecoverableAccount(accountConfigService.getAccountConfig(saleOrder.getCompany())), 
 				currencyService.getAmountCurrencyConverted(advancePayment.getCurrency(), saleOrder.getCurrency(), advancePaymentAccount.getAmount(), advancePayment.getAdvancePaymentDate()),
@@ -338,7 +332,7 @@ public class AdvancePaymentService extends AdvancePaymentRepository{
 			{
 				try{
 					LOG.debug("L'écriture de la Ligne No {} (Move = {}) va etre supprimée !", y, advancePaymentDB.getMove().getReference());
-					moveService.remove(advancePaymentDB.getMove());
+					moveRepo.remove(advancePaymentDB.getMove());
 				}catch(Exception e){
 					LOG.debug("AdvancePayment: {}, Exception: {}",advancePaymentDB.getId(),e.getMessage());
 				}
