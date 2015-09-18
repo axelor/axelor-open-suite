@@ -28,7 +28,7 @@ import com.axelor.apps.base.db.repo.ProductRepository;
 //import com.axelor.apps.organisation.db.Project;
 import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.ProductionOrder;
-import com.axelor.apps.production.db.repo.ProductionOrderRepository;
+import com.axelor.apps.production.db.repo.BillOfMaterialRepository;
 import com.axelor.apps.production.exceptions.IExceptionMessage;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
@@ -36,7 +36,7 @@ import com.axelor.i18n.I18n;
 import com.axelor.rpc.Context;
 import com.google.inject.Inject;
 
-public class ProductionOrderWizardServiceImpl extends ProductionOrderRepository implements ProductionOrderWizardService {
+public class ProductionOrderWizardServiceImpl implements ProductionOrderWizardService {
 
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 	
@@ -44,7 +44,7 @@ public class ProductionOrderWizardServiceImpl extends ProductionOrderRepository 
 	protected ProductionOrderService productionOrderService;
 	
 	@Inject
-	protected BillOfMaterialService billOfMaterialService;
+	protected BillOfMaterialRepository billOfMaterialRepo;
 	
 	@Inject
 	protected ProductRepository productRepo;
@@ -53,7 +53,7 @@ public class ProductionOrderWizardServiceImpl extends ProductionOrderRepository 
 	public Long validate(Context context) throws AxelorException  {
 	
 		Map<String, Object> bomContext = (Map<String, Object>) context.get("billOfMaterial");
-		BillOfMaterial billOfMaterial = billOfMaterialService.find(((Integer) bomContext.get("id")).longValue());
+		BillOfMaterial billOfMaterial = billOfMaterialRepo.find(((Integer) bomContext.get("id")).longValue());
 		
 		BigDecimal qty = new BigDecimal((String)context.get("qty"));
 		

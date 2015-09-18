@@ -98,7 +98,7 @@ public class SubscriptionController {
 			SaleOrder saleOrder = null;
 			List<Long> invoiceIdList = new ArrayList<Long>();
 			for(Long saleOrderId : saleOrderIdList){
-				saleOrder = Beans.get(SaleOrderService.class).find(saleOrderId);
+				saleOrder = Beans.get(SaleOrderRepository.class).find(saleOrderId);
 				try {
 					Invoice invoice = Beans.get(SaleOrderInvoiceService.class).generateSubcriptionInvoiceForSaleOrder(saleOrder);
 					invoiceIdList.add(invoice.getId());

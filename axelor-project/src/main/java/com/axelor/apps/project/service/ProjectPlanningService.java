@@ -23,13 +23,16 @@ import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
-public class ProjectPlanningService extends ProjectPlanningRepository{
+public class ProjectPlanningService {
 
 	@Inject
 	protected ProjectPlanningLineRepository projectPlanningLineRepository;
 
 	@Inject
 	protected GeneralService generalService;
+	
+	@Inject
+	protected ProjectPlanningRepository projectPlanningRepo;
 
 	@Transactional
 	public ProjectPlanning createPlanning(int year, int week) throws AxelorException{
@@ -37,7 +40,7 @@ public class ProjectPlanningService extends ProjectPlanningRepository{
 		planning.setYear(year);
 		planning.setWeek(week);
 
-		save(planning);
+		projectPlanningRepo.save(planning);
 		return planning;
 	}
 

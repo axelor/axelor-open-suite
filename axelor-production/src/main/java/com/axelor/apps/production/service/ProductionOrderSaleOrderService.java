@@ -22,11 +22,10 @@ import java.util.List;
 import com.axelor.apps.production.db.ProductionOrder;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
-import com.axelor.db.Repository;
 import com.axelor.exception.AxelorException;
 import com.google.inject.persist.Transactional;
 
-public interface ProductionOrderSaleOrderService extends Repository<ProductionOrder> {
+public interface ProductionOrderSaleOrderService {
 
 
 	public List<Long> generateProductionOrder(SaleOrder saleOrder) throws AxelorException;

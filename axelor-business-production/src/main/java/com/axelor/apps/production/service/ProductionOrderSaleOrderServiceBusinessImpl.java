@@ -109,7 +109,7 @@ public class ProductionOrderSaleOrderServiceBusinessImpl extends ProductionOrder
 
 			}
 
-			return save(productionOrderService.generateProductionOrder(product, billOfMaterial, saleOrderLine.getQty(), saleOrderLine.getSaleOrder().getProject()));
+			return productionOrderRepo.save(productionOrderService.generateProductionOrder(product, billOfMaterial, saleOrderLine.getQty(), saleOrderLine.getSaleOrder().getProject()));
 
 		}
 

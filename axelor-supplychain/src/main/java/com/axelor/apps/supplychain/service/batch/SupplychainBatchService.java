@@ -9,19 +9,22 @@ import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 
-public class SupplychainBatchService extends SupplychainBatchRepository{
+public class SupplychainBatchService {
 
 	@Inject
 	protected BatchSubscription batchSubscription;
+	
+	@Inject
+	protected SupplychainBatchRepository supplychainBatchRepo;
 
 	public Batch run(String batchCode) throws AxelorException {
 
 		Batch batch;
-		SupplychainBatch supplychainBatch = findByCode(batchCode);
+		SupplychainBatch supplychainBatch = supplychainBatchRepo.findByCode(batchCode);
 
 		if (batchCode != null){
 			switch (supplychainBatch.getActionSelect()) {
-			case ACTION_BILL_SUB:
+			case SupplychainBatchRepository.ACTION_BILL_SUB:
 				batch = billSubscriptions(supplychainBatch);
 				break;
 			default:

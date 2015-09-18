@@ -16,14 +16,17 @@ import com.axelor.rpc.ActionResponse;
 import com.google.common.base.Joiner;
 import com.google.inject.Inject;
 
-public class SaleOrderProjectController extends SaleOrderRepository{
+public class SaleOrderProjectController {
 
 	@Inject
 	protected SaleOrderProjectService saleOrderProjectService;
+	
+	@Inject
+	protected SaleOrderRepository saleOrderRepo;
 
 	public void generateProject(ActionRequest request, ActionResponse response){
 		SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
-		saleOrder = this.find(saleOrder.getId());
+		saleOrder = saleOrderRepo.find(saleOrder.getId());
 		ProjectTask project = saleOrderProjectService.generateProject(saleOrder);
 
 		response.setReload(true);
@@ -37,7 +40,7 @@ public class SaleOrderProjectController extends SaleOrderRepository{
 
 	public void generateTasks(ActionRequest request, ActionResponse response) throws AxelorException{
 		SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
-		saleOrder = this.find(saleOrder.getId());
+		saleOrder = saleOrderRepo.find(saleOrder.getId());
 		if(saleOrder.getProject() == null){
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.SALE_ORDER_NO_PROJECT)), IException.CONFIGURATION_ERROR);
 		}

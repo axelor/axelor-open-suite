@@ -34,11 +34,14 @@ import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
-public class MinStockRulesServiceImpl extends MinStockRulesRepository implements MinStockRulesService  {
+public class MinStockRulesServiceImpl implements MinStockRulesService  {
 
 	private LocalDate today;
 
 	protected User user;
+	
+	@Inject
+	protected MinStockRulesRepository minStockRuleRepo;
 
 	@Inject
 	public MinStockRulesServiceImpl() {
@@ -67,7 +70,7 @@ public class MinStockRulesServiceImpl extends MinStockRulesRepository implements
 
 		if(this.useMinStockRules(locationLine, minStockRules, qty, type))  {
 
-			if(minStockRules.getOrderAlertSelect() == ORDER_ALERT_ALERT)  {
+			if(minStockRules.getOrderAlertSelect() == MinStockRulesRepository.ORDER_ALERT_ALERT)  {
 
 				//TODO
 			}
@@ -86,14 +89,14 @@ public class MinStockRulesServiceImpl extends MinStockRulesRepository implements
 
 		BigDecimal minQty = minStockRules.getMinQty();
 
-		if(type == TYPE_CURRENT)  {
+		if(type == MinStockRulesRepository.TYPE_CURRENT)  {
 
 			if(currentQty.compareTo(minQty) >= 0 && (currentQty.subtract(qty)).compareTo(minQty) == -1)  {
 				return true;
 			}
 
 		}
-		else  if(type == TYPE_FUTURE){
+		else  if(type == MinStockRulesRepository.TYPE_FUTURE){
 
 			if(futureQty.compareTo(minQty) >= 0 && (futureQty.subtract(qty)).compareTo(minQty) == -1)  {
 				return true;
@@ -107,7 +110,7 @@ public class MinStockRulesServiceImpl extends MinStockRulesRepository implements
 	@Override
 	public MinStockRules getMinStockRules(Product product, Location location, int type)  {
 
-		return all().filter("self.product = ?1 AND self.location = ?2 AND self.typeSelect = ?3", product, location, type).fetchOne();
+		return minStockRuleRepo.all().filter("self.product = ?1 AND self.location = ?2 AND self.typeSelect = ?3", product, location, type).fetchOne();
 
 		//TODO , plusieurs régles min de stock par produit (achat a 500 et production a 100)...
 

@@ -22,11 +22,10 @@ import com.axelor.apps.production.db.OperationOrder;
 //import com.axelor.apps.production.db.ProdHumanResource;
 import com.axelor.apps.production.db.ProdProcessLine;
 import com.axelor.apps.production.db.WorkCenter;
-import com.axelor.db.Repository;
 import com.axelor.exception.AxelorException;
 import com.google.inject.persist.Transactional;
 
-public interface OperationOrderService extends Repository<OperationOrder>{
+public interface OperationOrderService {
 
 	
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})

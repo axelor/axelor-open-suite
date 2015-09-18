@@ -56,7 +56,7 @@ import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
-public class PaymentVoucherConfirmService extends PaymentVoucherRepository {
+public class PaymentVoucherConfirmService {
 
 	private static final Logger LOG = LoggerFactory.getLogger(PaymentVoucherConfirmService.class);
 
@@ -89,6 +89,9 @@ public class PaymentVoucherConfirmService extends PaymentVoucherRepository {
 
 	@Inject
 	private PaymentInvoiceToPayRepository paymentInvoiceToPayRepo;
+	
+	@Inject
+	private PaymentVoucherRepository paymentVoucherRepo;
 
 
 	/**
@@ -219,7 +222,7 @@ public class PaymentVoucherConfirmService extends PaymentVoucherRepository {
 		}
 		paymentVoucher.setStatusSelect(PaymentVoucherRepository.STATUS_CONFIRMED);
 		paymentVoucherSequenceService.setReceiptNo(paymentVoucher, company, journal);
-		save(paymentVoucher);
+		paymentVoucherRepo.save(paymentVoucher);
 	}
 
 

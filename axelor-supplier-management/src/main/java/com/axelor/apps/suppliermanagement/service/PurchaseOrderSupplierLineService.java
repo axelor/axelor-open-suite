@@ -26,9 +26,13 @@ import com.axelor.apps.suppliermanagement.db.IPurchaseOrderSupplierLine;
 import com.axelor.apps.suppliermanagement.db.PurchaseOrderSupplierLine;
 import com.axelor.apps.suppliermanagement.db.repo.PurchaseOrderSupplierLineRepository;
 import com.axelor.exception.AxelorException;
+import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
-public class PurchaseOrderSupplierLineService extends PurchaseOrderSupplierLineRepository {
+public class PurchaseOrderSupplierLineService {
+	
+	@Inject
+	PurchaseOrderSupplierLineRepository poSupplierLineRepo;
 	
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void accept(PurchaseOrderSupplierLine purchaseOrderSupplierLine)  {
@@ -43,7 +47,7 @@ public class PurchaseOrderSupplierLineService extends PurchaseOrderSupplierLineR
 		
 		purchaseOrderSupplierLine.setStateSelect(IPurchaseOrderSupplierLine.ACCEPTED);
 		
-		save(purchaseOrderSupplierLine);
+		poSupplierLineRepo.save(purchaseOrderSupplierLine);
 		
 	}
 	

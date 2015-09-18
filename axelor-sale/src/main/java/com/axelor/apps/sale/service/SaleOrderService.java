@@ -28,11 +28,10 @@ import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.Team;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.auth.db.User;
-import com.axelor.db.Repository;
 import com.axelor.exception.AxelorException;
 import com.google.inject.persist.Transactional;
 
-public interface SaleOrderService extends Repository<SaleOrder>{
+public interface SaleOrderService {
 
 
 	public SaleOrder _computeSaleOrderLineList(SaleOrder saleOrder) throws AxelorException;

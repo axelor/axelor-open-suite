@@ -35,12 +35,11 @@ import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.base.service.tax.AccountManagementService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
-import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 
-public class SaleOrderLineService extends SaleOrderLineRepository{
+public class SaleOrderLineService {
 
 	private static final Logger LOG = LoggerFactory.getLogger(SaleOrderLineService.class);
 

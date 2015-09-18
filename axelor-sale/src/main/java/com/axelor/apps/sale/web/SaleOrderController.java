@@ -25,6 +25,7 @@ import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.ReportSettings;
 import com.axelor.apps.sale.db.SaleOrder;
+import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.report.IReport;
 import com.axelor.apps.sale.service.SaleOrderService;
 import com.axelor.apps.tool.net.URLService;
@@ -39,6 +40,10 @@ public class SaleOrderController {
 
 	@Inject
 	private SaleOrderService saleOrderService;
+	
+	@Inject
+	private SaleOrderRepository saleOrderRepo;
+	
 
 	private static final Logger LOG = LoggerFactory.getLogger(SaleOrderController.class);
 
@@ -194,7 +199,7 @@ public class SaleOrderController {
 
 		SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
 
-		saleOrderService.cancelSaleOrder(saleOrderService.find(saleOrder.getId()));
+		saleOrderService.cancelSaleOrder(saleOrderRepo.find(saleOrder.getId()));
 
 		response.setFlash("The sale order was canceled");
 		response.setCanClose(true);
@@ -205,7 +210,7 @@ public class SaleOrderController {
 
 		SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
 
-		saleOrderService.finalizeSaleOrder(saleOrderService.find(saleOrder.getId()));
+		saleOrderService.finalizeSaleOrder(saleOrderRepo.find(saleOrder.getId()));
 
 		response.setReload(true);
 
@@ -213,7 +218,7 @@ public class SaleOrderController {
 
 	public void generateViewSaleOrder(ActionRequest request, ActionResponse response){
 		SaleOrder context = request.getContext().asType(SaleOrder.class);
-		context = saleOrderService.find(context.getId());
+		context = saleOrderRepo.find(context.getId());
 		response.setView(ActionView
 	            .define("Sale Order")
 	            .model(SaleOrder.class.getName())
@@ -224,7 +229,7 @@ public class SaleOrderController {
 
 	public void generateViewTemplate(ActionRequest request, ActionResponse response){
 		SaleOrder context = request.getContext().asType(SaleOrder.class);
-		context = saleOrderService.find(context.getId());
+		context = saleOrderRepo.find(context.getId());
 		response.setView(ActionView
 	            .define("Template")
 	            .model(SaleOrder.class.getName())
@@ -234,13 +239,13 @@ public class SaleOrderController {
 	}
 
 	public void createSaleOrder(ActionRequest request, ActionResponse response)  {
-		SaleOrder origin = saleOrderService.find(Long.parseLong(request.getContext().get("_idCopy").toString()));
+		SaleOrder origin = saleOrderRepo.find(Long.parseLong(request.getContext().get("_idCopy").toString()));
 		SaleOrder copy = saleOrderService.createSaleOrder(origin);
 		response.setValues(copy);
 	}
 
 	public void createTemplate(ActionRequest request, ActionResponse response)  {
-		SaleOrder origin = saleOrderService.find(Long.parseLong(request.getContext().get("_idCopy").toString()));
+		SaleOrder origin = saleOrderRepo.find(Long.parseLong(request.getContext().get("_idCopy").toString()));
 		SaleOrder copy = saleOrderService.createTemplate(origin);
 		response.setValues(copy);
 	}

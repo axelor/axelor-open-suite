@@ -26,6 +26,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.account.db.PaymentVoucher;
+import com.axelor.apps.account.db.repo.PaymentVoucherRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.payment.PayboxService;
 import com.axelor.apps.account.service.payment.paymentvoucher.PaymentVoucherPayboxService;
@@ -86,6 +87,8 @@ public class PayboxController {
         Context context = request.getContext();
         
         PaymentVoucherPayboxService paymentVoucherPayboxService = Beans.get(PaymentVoucherPayboxService.class);
+        PaymentVoucherRepository paymentVoucherRepo = Beans.get(PaymentVoucherRepository.class);
+        
         String idPaymentVoucher = (String) context.get("idPV");
         String operation = (String) context.get("retour");
         String signature = (String) context.get("sign");
@@ -94,7 +97,7 @@ public class PayboxController {
             
             LOG.debug("idPaymentVoucher :"+idPaymentVoucher);
             
-            PaymentVoucher paymentVoucher = paymentVoucherPayboxService.find(Long.parseLong(idPaymentVoucher));
+            PaymentVoucher paymentVoucher = paymentVoucherRepo.find(Long.parseLong(idPaymentVoucher));
             LOG.debug("paymentVoucher :"+paymentVoucher);
             
             boolean verified = false;

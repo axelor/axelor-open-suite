@@ -35,7 +35,7 @@ import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.inject.persist.Transactional;
 
-public class OperationOrderServiceImpl extends OperationOrderRepository implements OperationOrderService  {
+public class OperationOrderServiceImpl implements OperationOrderService  {
 
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 	

@@ -39,11 +39,10 @@ import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.base.service.tax.AccountManagementService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
-import com.axelor.apps.purchase.db.repo.PurchaseOrderLineRepository;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 
-public class PurchaseOrderLineServiceImpl  extends PurchaseOrderLineRepository implements PurchaseOrderLineService {
+public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
 	private static final Logger LOG = LoggerFactory.getLogger(PurchaseOrderLineServiceImpl.class);
 
 	@Inject

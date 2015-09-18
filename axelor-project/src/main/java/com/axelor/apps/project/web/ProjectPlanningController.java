@@ -19,20 +19,23 @@ import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
-public class ProjectPlanningController extends ProjectPlanningRepository{
+public class ProjectPlanningController {
 
 	@Inject
 	protected ProjectPlanningService projectPlanningService;
 
 	@Inject
 	protected ProjectPlanningLineRepository projectPlanningLineRepository;
+	
+	@Inject
+	protected ProjectPlanningRepository projectPlanningRepo;
 
 	@Inject
 	protected GeneralService generalService;
 
 	public void myPlanning(ActionRequest request, ActionResponse response) throws AxelorException{
 		LocalDate todayDate = generalService.getTodayDate();
-		ProjectPlanning planning = this.all().filter("self.year = ?1 AND self.week = ?2",todayDate.getYear(),todayDate.getWeekOfWeekyear()).fetchOne();
+		ProjectPlanning planning = projectPlanningRepo.all().filter("self.year = ?1 AND self.week = ?2",todayDate.getYear(),todayDate.getWeekOfWeekyear()).fetchOne();
 		if(planning == null){
 			planning = projectPlanningService.createPlanning(todayDate.getYear(),todayDate.getWeekOfWeekyear());
 		}
@@ -47,7 +50,7 @@ public class ProjectPlanningController extends ProjectPlanningRepository{
 
 	public void myTeamPlanning(ActionRequest request, ActionResponse response) throws AxelorException{
 		LocalDate todayDate = generalService.getTodayDate();
-		ProjectPlanning planning = this.all().filter("self.year = ?1 AND self.week = ?2",todayDate.getYear(),todayDate.getWeekOfWeekyear()).fetchOne();
+		ProjectPlanning planning = projectPlanningRepo.all().filter("self.year = ?1 AND self.week = ?2",todayDate.getYear(),todayDate.getWeekOfWeekyear()).fetchOne();
 		if(planning == null){
 			planning = projectPlanningService.createPlanning(todayDate.getYear(),todayDate.getWeekOfWeekyear());
 		}
@@ -71,7 +74,7 @@ public class ProjectPlanningController extends ProjectPlanningRepository{
 
 		ProjectPlanning planningPreviousWeek = null;
 
-		planningPreviousWeek = this.all().filter("self.year = ?1 AND self.week = ?2",year,previousWeek).fetchOne();
+		planningPreviousWeek = projectPlanningRepo.all().filter("self.year = ?1 AND self.week = ?2",year,previousWeek).fetchOne();
 
 		if(planningPreviousWeek == null){
 
@@ -111,7 +114,7 @@ public class ProjectPlanningController extends ProjectPlanningRepository{
 		}
 		ProjectPlanning planningNextWeek = null;
 
-		planningNextWeek = this.all().filter("self.year = ?1 AND self.week = ?2",year,nextWeek).fetchOne();
+		planningNextWeek = projectPlanningRepo.all().filter("self.year = ?1 AND self.week = ?2",year,nextWeek).fetchOne();
 
 		if(planningNextWeek == null){
 
@@ -146,7 +149,7 @@ public class ProjectPlanningController extends ProjectPlanningRepository{
 		int week = currentDate.getWeekOfWeekyear();
 		ProjectPlanning planningCurrentWeek = null;
 
-		planningCurrentWeek = this.all().filter("self.year = ?1 AND self.week = ?2",year,week).fetchOne();
+		planningCurrentWeek = projectPlanningRepo.all().filter("self.year = ?1 AND self.week = ?2",year,week).fetchOne();
 
 		if(planningCurrentWeek == null){
 

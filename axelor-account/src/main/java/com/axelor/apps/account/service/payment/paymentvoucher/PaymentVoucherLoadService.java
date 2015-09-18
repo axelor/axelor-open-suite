@@ -35,6 +35,7 @@ import com.axelor.apps.account.db.PaymentVoucher;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.PaymentInvoiceRepository;
+import com.axelor.apps.account.db.repo.PaymentInvoiceToPayRepository;
 import com.axelor.apps.account.db.repo.PaymentVoucherRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.base.db.Currency;
@@ -49,7 +50,7 @@ import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
-public class PaymentVoucherLoadService extends PaymentVoucherRepository {
+public class PaymentVoucherLoadService {
 
 	private static final Logger LOG = LoggerFactory.getLogger(PaymentVoucherLoadService.class);
 
@@ -66,7 +67,10 @@ public class PaymentVoucherLoadService extends PaymentVoucherRepository {
 	private PaymentInvoiceRepository paymentInvoiceRepo;
 
 	@Inject
-	private PaymentInvoiceToPayService paymentInvoiceToPayService;
+	private PaymentVoucherRepository paymentVoucherRepo;
+	
+	@Inject
+	private PaymentInvoiceToPayRepository paymentInvoiceToPayRepo;
 
 	/**
 	 * Searching move lines to pay
@@ -231,7 +235,7 @@ public class PaymentVoucherLoadService extends PaymentVoucherRepository {
 		}
 
 		paymentVoucherSequenceService.setReference(paymentVoucher);
-		save(paymentVoucher);
+		paymentVoucherRepo.save(paymentVoucher);
 
 
 	}
@@ -295,7 +299,7 @@ public class PaymentVoucherLoadService extends PaymentVoucherRepository {
 					// + initialiser la sequence
 					if (paymentVoucherContext.getPaymentInvoiceToPayList() != null)  {
 						for (PaymentInvoiceToPay pToPay : paymentVoucherContext.getPaymentInvoiceToPayList())  {
-							PaymentInvoiceToPay piToPayFromContext = paymentInvoiceToPayService.find(pToPay.getId());
+							PaymentInvoiceToPay piToPayFromContext = paymentInvoiceToPayRepo.find(pToPay.getId());
 							PaymentInvoiceToPay piToPayOld = new PaymentInvoiceToPay();
 							piToPayOld.setSequence(piToPayFromContext.getSequence());
 							piToPayOld.setMoveLine(piToPayFromContext.getMoveLine());
@@ -383,7 +387,7 @@ public class PaymentVoucherLoadService extends PaymentVoucherRepository {
 			}
 		}
 
-		save(paymentVoucher);
+		paymentVoucherRepo.save(paymentVoucher);
 		LOG.debug("End loadSelectedLinesService.");
 		return paymentVoucher;
 	}

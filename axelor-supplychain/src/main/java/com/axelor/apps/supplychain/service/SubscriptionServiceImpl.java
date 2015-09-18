@@ -5,14 +5,13 @@ import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.supplychain.db.Subscription;
-import com.axelor.apps.supplychain.db.repo.SubscriptionRepository;
 import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
-public class SubscriptionServiceImpl extends SubscriptionRepository implements SubscriptionService{
+public class SubscriptionServiceImpl implements SubscriptionService{
 
 	@Inject
 	protected SaleOrderInvoiceServiceImpl saleOrderInvoiceServiceImpl;

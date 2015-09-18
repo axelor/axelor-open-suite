@@ -53,7 +53,7 @@ import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
-public class InventoryService extends InventoryRepository{
+public class InventoryService {
 
 	@Inject
 	private InventoryLineService inventoryLineService;
@@ -66,13 +66,16 @@ public class InventoryService extends InventoryRepository{
 
 	@Inject
 	private ProductRepository productRepo;
+	
+	@Inject
+	private InventoryRepository inventoryRepo;
 
 
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public Inventory createInventoryFromWizard(LocalDate date, String description, Location location, boolean excludeOutOfStock,
 			boolean includeObsolete, ProductFamily productFamily, ProductCategory productCategory) throws Exception {
 
-		Inventory inventory = save(this.createInventory(date, description, location, excludeOutOfStock, includeObsolete, productFamily, productCategory));
+		Inventory inventory = inventoryRepo.save(this.createInventory(date, description, location, excludeOutOfStock, includeObsolete, productFamily, productCategory));
 
 		this.fillInventoryLineList(inventory);
 
@@ -96,7 +99,7 @@ public class InventoryService extends InventoryRepository{
 
 		inventory.setDescription(description);
 
-		inventory.setFormatSelect(FORMAT_PDF);
+		inventory.setFormatSelect(InventoryRepository.FORMAT_PDF);
 
 		inventory.setLocation(location);
 
@@ -108,7 +111,7 @@ public class InventoryService extends InventoryRepository{
 
 		inventory.setProductFamily(productFamily);
 
-		inventory.setStatusSelect(STATUS_DRAFT);
+		inventory.setStatusSelect(InventoryRepository.STATUS_DRAFT);
 
 		return inventory;
 	}
@@ -178,7 +181,7 @@ public class InventoryService extends InventoryRepository{
 		}
 		inventory.setInventoryLineList(inventoryLineList);
 
-		save(inventory);
+		inventoryRepo.save(inventory);
 	}
 
 
@@ -299,7 +302,7 @@ public class InventoryService extends InventoryRepository{
 				inventory.addInventoryLineListItem(this.createInventoryLine(inventory, locationLine));
 				succeed = true;
 			}
-			save(inventory);
+			inventoryRepo.save(inventory);
 			return succeed;
 		}
 		return null;

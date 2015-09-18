@@ -31,6 +31,7 @@ import org.slf4j.LoggerFactory;
 import com.axelor.apps.message.db.EmailAddress;
 import com.axelor.apps.message.db.MailAccount;
 import com.axelor.apps.message.db.Message;
+import com.axelor.apps.message.db.repo.MailAccountRepository;
 import com.axelor.apps.message.db.repo.MessageRepository;
 import com.axelor.auth.AuthUtils;
 import com.axelor.db.Query;
@@ -51,7 +52,7 @@ import com.google.common.collect.Sets;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
-public class MessageServiceImpl extends MessageRepository implements MessageService {
+public class MessageServiceImpl implements MessageService {
 	
 	private final Logger log = LoggerFactory.getLogger( getClass() );
 
@@ -60,6 +61,12 @@ public class MessageServiceImpl extends MessageRepository implements MessageServ
 	private MetaAttachmentRepository metaAttachmentRepository;
 
 	private MailAccountService mailAccountService;
+	
+	@Inject
+	protected MailAccountRepository mailAccountRepo;
+	
+	@Inject
+	protected MessageRepository messageRepo;
 	
 	@Inject
 	public MessageServiceImpl( MetaAttachmentRepository metaAttachmentRepository, MailAccountService mailAccountService ) {
@@ -76,10 +83,10 @@ public class MessageServiceImpl extends MessageRepository implements MessageServ
 	public Message createMessage(String model, int id, String subject, String content, EmailAddress fromEmailAddress, List<EmailAddress> replyToEmailAddressList, List<EmailAddress> toEmailAddressList, List<EmailAddress> ccEmailAddressList, 
 			List<EmailAddress> bccEmailAddressList, Set<MetaFile> metaFiles, String addressBlock, int mediaTypeSelect)  {
 		
-		Message message = createMessage( content, fromEmailAddress,	model, id, null, 0, getTodayLocalTime(), false,	STATUS_DRAFT, subject, TYPE_SENT,
+		Message message = createMessage( content, fromEmailAddress,	model, id, null, 0, getTodayLocalTime(), false,	MessageRepository.STATUS_DRAFT, subject, MessageRepository.TYPE_SENT,
 				replyToEmailAddressList, toEmailAddressList, ccEmailAddressList, bccEmailAddressList, addressBlock, mediaTypeSelect) ;
 		
-		save( message );
+		messageRepo.save( message );
 		
 		attachMetaFiles(message, metaFiles);
 		
@@ -119,7 +126,7 @@ public class MessageServiceImpl extends MessageRepository implements MessageServ
 			toEmailAddressSet = Sets.newHashSet(),
 			ccEmailAddressSet = Sets.newHashSet();
 		
-		if ( mediaTypeSelect == MEDIA_TYPE_EMAIL ) {
+		if ( mediaTypeSelect == MessageRepository.MEDIA_TYPE_EMAIL ) {
 			
 			if ( replyToEmailAddressSet != null) { replyToEmailAddressSet.addAll(bccEmailAddressList); }
 			if ( bccEmailAddressList != null) { bccEmailAddressSet.addAll(bccEmailAddressList); }
@@ -129,7 +136,7 @@ public class MessageServiceImpl extends MessageRepository implements MessageServ
 		
 		MailAccount mailAccount = mailAccountService.getDefaultMailAccount();
 		if ( mailAccount != null ) {
-			mailAccount = mailAccountService.find( mailAccount.getId() );
+			mailAccount = mailAccountRepo.find( mailAccount.getId() );
 			content += "<p></p><p></p>" + mailAccountService.getSignature(mailAccount);
 			log.debug( "Mail account ::: {}", mailAccount );
 		}
@@ -149,9 +156,9 @@ public class MessageServiceImpl extends MessageRepository implements MessageServ
 		
 		try {
 
-			if ( message.getMediaTypeSelect() == MEDIA_TYPE_MAIL ) { return sendByMail(message); }
-			else if ( message.getMediaTypeSelect() == MEDIA_TYPE_EMAIL ) { return sendByEmail(message); }
-			else if ( message.getMediaTypeSelect() == MEDIA_TYPE_CHAT ) { return sendToUser(message); }
+			if ( message.getMediaTypeSelect() == MessageRepository.MEDIA_TYPE_MAIL ) { return sendByMail(message); }
+			else if ( message.getMediaTypeSelect() == MessageRepository.MEDIA_TYPE_EMAIL ) { return sendByEmail(message); }
+			else if ( message.getMediaTypeSelect() == MessageRepository.MEDIA_TYPE_CHAT ) { return sendToUser(message); }
 			
 		} catch (MessagingException | IOException  e) { TraceBackService.trace(e); }
 		
@@ -170,7 +177,7 @@ public class MessageServiceImpl extends MessageRepository implements MessageServ
 		message.setStatusSelect(MessageRepository.STATUS_SENT);
 		message.setSentByEmail(false);
 		message.setSentDateT(LocalDateTime.now());
-		return save(message);
+		return messageRepo.save(message);
 		
 	}
 
@@ -181,7 +188,7 @@ public class MessageServiceImpl extends MessageRepository implements MessageServ
 		message.setStatusSelect(MessageRepository.STATUS_SENT);
 		message.setSentByEmail(false);
 		message.setSentDateT(LocalDateTime.now());
-		return save(message);
+		return messageRepo.save(message);
 			
 	}
 
@@ -228,7 +235,7 @@ public class MessageServiceImpl extends MessageRepository implements MessageServ
 		message.setStatusSelect(MessageRepository.STATUS_SENT);
 		message.setSentDateT(LocalDateTime.now());
 		
-		return save(message);
+		return messageRepo.save(message);
 	
 	}
 	

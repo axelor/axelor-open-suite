@@ -27,31 +27,38 @@ import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.db.repo.ManufOrderRepository;
+import com.axelor.apps.production.db.repo.OperationOrderRepository;
 import com.axelor.auth.AuthUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
-public class ManufOrderWorkflowService extends ManufOrderRepository{
+public class ManufOrderWorkflowService {
 
 	@Inject
 	private OperationOrderWorkflowService operationOrderWorkflowService;
+	
+	@Inject
+	private OperationOrderRepository operationOrderRepo;
 	
 	@Inject
 	private ManufOrderStockMoveService manufOrderStockMoveService;
 	
 	@Inject
 	protected GeneralService generalService;
+	
+	@Inject
+	protected ManufOrderRepository manufOrderRepo;
 
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void start(ManufOrder manufOrder)  {
 		
 		if(manufOrder.getOperationOrderList() != null)  {
 			
-			OperationOrder operationOrderPriority = operationOrderWorkflowService.all().filter("self.manufOrder = ?1", manufOrder).order("priority").fetchOne();
+			OperationOrder operationOrderPriority = operationOrderRepo.all().filter("self.manufOrder = ?1", manufOrder).order("priority").fetchOne();
 			
-			List<OperationOrder> operationOrderList = (List<OperationOrder>)operationOrderWorkflowService.all().filter("self.manufOrder = ?1 AND self.priority = ?2", manufOrder, operationOrderPriority.getPriority()).fetch();
+			List<OperationOrder> operationOrderList = (List<OperationOrder>)operationOrderRepo.all().filter("self.manufOrder = ?1 AND self.priority = ?2", manufOrder, operationOrderPriority.getPriority()).fetch();
 			
 			for(OperationOrder operationOrder : operationOrderList)  {
 				
@@ -63,7 +70,7 @@ public class ManufOrderWorkflowService extends ManufOrderRepository{
 		
 		manufOrder.setStatusSelect(IManufOrder.STATUS_IN_PROGRESS);
 		
-		save(manufOrder);
+		manufOrderRepo.save(manufOrder);
 		
 	}
 	
@@ -91,7 +98,7 @@ public class ManufOrderWorkflowService extends ManufOrderRepository{
 		
 		manufOrder.setStatusSelect(IManufOrder.STATUS_STANDBY);
 		
-		save(manufOrder);
+		manufOrderRepo.save(manufOrder);
 		
 	}
 	
@@ -119,7 +126,7 @@ public class ManufOrderWorkflowService extends ManufOrderRepository{
 		
 		manufOrder.setStatusSelect(IManufOrder.STATUS_IN_PROGRESS);
 		
-		save(manufOrder);
+		manufOrderRepo.save(manufOrder);
 		
 	}
 	
@@ -149,7 +156,7 @@ public class ManufOrderWorkflowService extends ManufOrderRepository{
 		
 		manufOrder.setStatusSelect(IManufOrder.STATUS_FINISHED);
 		
-		save(manufOrder);
+		manufOrderRepo.save(manufOrder);
 		
 	}
 	
@@ -172,7 +179,7 @@ public class ManufOrderWorkflowService extends ManufOrderRepository{
 		
 		manufOrder.setStatusSelect(IManufOrder.STATUS_CANCELED);
 		
-		save(manufOrder);
+		manufOrderRepo.save(manufOrder);
 		
 	}
 	
@@ -204,13 +211,13 @@ public class ManufOrderWorkflowService extends ManufOrderRepository{
 		
 		manufOrder.setManufOrderSeq(mfService.getManufOrderSeq());
 		
-		return save(manufOrder);
+		return manufOrderRepo.save(manufOrder);
 	}
 	
 	
 	public LocalDateTime computePlannedEndDateT(ManufOrder manufOrder)  {
 		
-		OperationOrder lastOperationOrder = operationOrderWorkflowService.all().filter("self.manufOrder = ?1 ORDER BY self.plannedEndDateT DESC", manufOrder).fetchOne();
+		OperationOrder lastOperationOrder = operationOrderRepo.all().filter("self.manufOrder = ?1 ORDER BY self.plannedEndDateT DESC", manufOrder).fetchOne();
 		
 		if(lastOperationOrder != null)  {
 			
@@ -236,7 +243,7 @@ public class ManufOrderWorkflowService extends ManufOrderRepository{
 			
 			manufOrder.setStatusSelect(IManufOrder.STATUS_FINISHED);
 			
-			save(manufOrder);
+			manufOrderRepo.save(manufOrder);
 		}
 	}
 }

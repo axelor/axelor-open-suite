@@ -51,6 +51,9 @@ public class StockMoveController {
 
 	@Inject
 	private StockMoveService stockMoveService;
+	
+	@Inject
+	private StockMoveRepository stockMoveRepo;
 
 	@Inject
 	protected GeneralService generalService;
@@ -59,7 +62,7 @@ public class StockMoveController {
 
 		StockMove stockMove = request.getContext().asType(StockMove.class);
 		try {
-			stockMoveService.plan(stockMoveService.find(stockMove.getId()));
+			stockMoveService.plan(stockMoveRepo.find(stockMove.getId()));
 			response.setReload(true);
 		}
 		catch(Exception e)  { TraceBackService.trace(response, e); }
@@ -70,7 +73,7 @@ public class StockMoveController {
 		StockMove stockMoveFromRequest = request.getContext().asType(StockMove.class);
 
 		try {
-			StockMove stockMove = stockMoveService.find(stockMoveFromRequest.getId());
+			StockMove stockMove = stockMoveRepo.find(stockMoveFromRequest.getId());
 			String newSeq = stockMoveService.realize(stockMove);
 			
 			response.setReload(true);
@@ -93,7 +96,7 @@ public class StockMoveController {
 		StockMove stockMove = request.getContext().asType(StockMove.class);
 
 		try {
-			stockMoveService.cancel(stockMoveService.find(stockMove.getId()));
+			stockMoveService.cancel(stockMoveRepo.find(stockMove.getId()));
 			response.setReload(true);
 		}
 		catch(Exception e)  { TraceBackService.trace(response, e); }
@@ -123,7 +126,7 @@ public class StockMoveController {
 
 		if(!stockMoveIds.equals("")){
 			stockMoveIds = stockMoveIds.substring(0, stockMoveIds.length()-1);
-			stockMove = stockMoveService.find(new Long(lstSelectedMove.get(0)));
+			stockMove = stockMoveRepo.find(new Long(lstSelectedMove.get(0)));
 		}else if(stockMove.getId() != null){
 			stockMoveIds = stockMove.getId().toString();
 		}
@@ -244,7 +247,7 @@ public class StockMoveController {
 
 	public void shipReciveAllProducts(ActionRequest request, ActionResponse response) {
 		StockMove stockMove = request.getContext().asType(StockMove.class);
-		stockMoveService.copyQtyToRealQty(stockMoveService.find(stockMove.getId()));
+		stockMoveService.copyQtyToRealQty(stockMoveRepo.find(stockMove.getId()));
 		response.setReload(true);
 	}
 
@@ -253,7 +256,7 @@ public class StockMoveController {
 		StockMove stockMove = request.getContext().asType(StockMove.class);
 
 		try {
-			stockMoveService.generateReversion(stockMoveService.find(stockMove.getId()));
+			stockMoveService.generateReversion(stockMoveRepo.find(stockMove.getId()));
 			response.setReload(true);
 		}
 		catch(Exception e)  { TraceBackService.trace(response, e); }

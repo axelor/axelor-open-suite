@@ -21,22 +21,26 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.production.db.ManufOrder;
+import com.axelor.apps.production.db.repo.ManufOrderRepository;
 import com.axelor.apps.production.service.ManufOrderServiceBusinessImpl;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.google.inject.Inject;
 
 public class ManufOrderBusinessController {
-
 	
 	private static final Logger LOG = LoggerFactory.getLogger(ManufOrderController.class);
+	
+	@Inject
+	private ManufOrderRepository manufOrderRepo;
 	
 	public void propagateIsToInvoice (ActionRequest request, ActionResponse response) {
 		
 		ManufOrderServiceBusinessImpl manufOrderService = Beans.get(ManufOrderServiceBusinessImpl.class);
 		ManufOrder manufOrder = request.getContext().asType( ManufOrder.class );
 
-		manufOrderService.propagateIsToInvoice(manufOrderService.find(manufOrder.getId()));
+		manufOrderService.propagateIsToInvoice(manufOrderRepo.find(manufOrder.getId()));
 		
 		response.setReload(true);
 		

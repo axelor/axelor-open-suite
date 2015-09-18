@@ -130,12 +130,12 @@ public class SequenceService {
 		if ( !monthlyResetOk && !yearlyResetOk ){ return true; }
 
 		String
-			seqPrefixe = StringUtils.defaultString(sequence.getPrefixe(), StringUtils.EMPTY),
-			seqSuffixe = StringUtils.defaultString(sequence.getSuffixe(), StringUtils.EMPTY),
+			seqPrefixe = StringUtils.defaultString(sequence.getPrefixe(), ""),
+			seqSuffixe = StringUtils.defaultString(sequence.getSuffixe(), ""),
 			seq = seqPrefixe + seqSuffixe;
 
-		if ( yearlyResetOk && !StringUtils.contains(seq, PATTERN_YEAR) ){ return false; }
-		if ( monthlyResetOk && !StringUtils.contains(seq, PATTERN_MONTH) && !StringUtils.contains(seq, PATTERN_YEAR) ){ return false; }
+		if ( yearlyResetOk && !seq.contains(PATTERN_YEAR) ){ return false; }
+		if ( monthlyResetOk && !seq.contains(PATTERN_MONTH) && !seq.contains(PATTERN_YEAR) ){ return false; }
 
 		return true;
 
@@ -157,8 +157,8 @@ public class SequenceService {
 		SequenceVersion sequenceVersion = getVersion(sequence);
 
 		String
-			seqPrefixe = StringUtils.defaultString(sequence.getPrefixe(), StringUtils.EMPTY),
-			seqSuffixe = StringUtils.defaultString(sequence.getSuffixe(), StringUtils.EMPTY),
+			seqPrefixe = StringUtils.defaultString(sequence.getPrefixe(), ""),
+			seqSuffixe = StringUtils.defaultString(sequence.getSuffixe(), ""),
 			padLeft = StringUtils.leftPad( sequenceVersion.getNextNum().toString(), sequence.getPadding(), PADDING_STRING );
 
 

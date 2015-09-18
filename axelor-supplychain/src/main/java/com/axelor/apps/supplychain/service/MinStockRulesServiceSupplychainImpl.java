@@ -32,6 +32,7 @@ import com.axelor.apps.purchase.service.config.PurchaseConfigService;
 import com.axelor.apps.stock.db.Location;
 import com.axelor.apps.stock.db.LocationLine;
 import com.axelor.apps.stock.db.MinStockRules;
+import com.axelor.apps.stock.db.repo.MinStockRulesRepository;
 import com.axelor.apps.stock.service.MinStockRulesServiceImpl;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
@@ -76,16 +77,16 @@ public class MinStockRulesServiceSupplychainImpl extends MinStockRulesServiceImp
 
 		if(this.useMinStockRules(locationLine, minStockRules, qty, type))  {
 
-			if(minStockRules.getOrderAlertSelect() == ORDER_ALERT_ALERT)  {
+			if(minStockRules.getOrderAlertSelect() ==  MinStockRulesRepository.ORDER_ALERT_ALERT)  {
 
 				//TODO
 
 			}
-			else if(minStockRules.getOrderAlertSelect() == ORDER_ALERT_PRODUCTION_ORDER)  {
+			else if(minStockRules.getOrderAlertSelect() == MinStockRulesRepository.ORDER_ALERT_PRODUCTION_ORDER)  {
 
 
 			}
-			else if(minStockRules.getOrderAlertSelect() == ORDER_ALERT_PURCHASE_ORDER)  {
+			else if(minStockRules.getOrderAlertSelect() == MinStockRulesRepository.ORDER_ALERT_PURCHASE_ORDER)  {
 
 				Partner supplierPartner = product.getDefaultSupplierPartner();
 

@@ -71,7 +71,7 @@ public class MessageServiceBaseImpl extends MessageServiceImpl {
 
 		message.setCompany(userService.getUserActiveCompany());
 
-		return save(message);
+		return messageRepo.save(message);
 
 	}
 
@@ -111,7 +111,7 @@ public class MessageServiceBaseImpl extends MessageServiceImpl {
 		if( !message.getStatusSelect().equals( MessageRepository.STATUS_SENT ) ){ return message; }
 
 		message.setSentDateT( generalService.getTodayDateTime().toLocalDateTime() );
-		return save(message);
+		return messageRepo.save(message);
 	}
 
 }

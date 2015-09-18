@@ -2,13 +2,12 @@ package com.axelor.apps.hr.service.config;
 
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.hr.db.HRConfig;
-import com.axelor.apps.hr.db.repo.HRConfigRepository;
 import com.axelor.apps.hr.exception.IExceptionMessage;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 
-public class HRConfigService extends HRConfigRepository{
+public class HRConfigService {
 	public HRConfig getHRConfig(Company company) throws AxelorException  {
 		HRConfig hrConfig = company.getHrConfig();
 

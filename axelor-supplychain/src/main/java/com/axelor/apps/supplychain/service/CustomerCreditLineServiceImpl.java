@@ -18,9 +18,13 @@ import com.axelor.apps.supplychain.db.CustomerCreditLine;
 import com.axelor.apps.supplychain.db.repo.CustomerCreditLineRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
-public class CustomerCreditLineServiceImpl extends CustomerCreditLineRepository implements CustomerCreditLineService{
+public class CustomerCreditLineServiceImpl implements CustomerCreditLineService{
+	
+	@Inject
+	private CustomerCreditLineRepository customerCreditLineRepo;
 
 	@Override
 	public Partner generateLines(Partner partner){
@@ -121,7 +125,7 @@ public class CustomerCreditLineServiceImpl extends CustomerCreditLineRepository 
 	@Override
 	@Transactional
 	public boolean checkBlockedPartner(Partner partner, Company company){
-		CustomerCreditLine customerCreditLine = this.all().filter("self.company = ?1 AND self.partner = ?2", company, partner).fetchOne();
+		CustomerCreditLine customerCreditLine = customerCreditLineRepo.all().filter("self.company = ?1 AND self.partner = ?2", company, partner).fetchOne();
 		if(customerCreditLine == null){
 			partner = generateLines(partner);
 			for (CustomerCreditLine customerCreditLineIt : partner.getCustomerCreditLineList()) {
@@ -133,7 +137,7 @@ public class CustomerCreditLineServiceImpl extends CustomerCreditLineRepository 
 		}
 		else{
 			customerCreditLine = this.computeUsedCredit(customerCreditLine);
-			save(customerCreditLine);
+			customerCreditLineRepo.save(customerCreditLine);
 		}
 		
 		return this.testUsedCredit(customerCreditLine);

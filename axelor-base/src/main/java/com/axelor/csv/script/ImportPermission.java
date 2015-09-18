@@ -18,6 +18,7 @@
 package com.axelor.csv.script;
 
 import com.axelor.inject.Beans;
+
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Map;
@@ -27,39 +28,42 @@ import com.axelor.auth.db.Group;
 import com.axelor.auth.db.Permission;
 import com.axelor.auth.db.repo.PermissionRepository;
 import com.axelor.auth.db.repo.GroupRepository;
-
+import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
 
-public class ImportPermission extends PermissionRepository {
+public class ImportPermission {
+	
+	@Inject
+	PermissionRepository permissionRepo;
 		
-		@Transactional
-		public Object importPermission(Object bean, Map values) {
-			assert bean instanceof Permission;
-	        try{
-	        	
-	        	GroupRepository groupRepository = Beans.get(GroupRepository.class);
-	        	
-	            Permission permission = (Permission) bean;
-				String groups = (String) values.get("group");
-				if(permission.getId()!= null){
-					if(groups != null && !groups.isEmpty()){
-						for(Group group: groupRepository.all().filter("code in ?1",Arrays.asList(groups.split("\\|"))).fetch()){
-							Set<Permission> permissions = group.getPermissions();
-							if(permissions == null)
-								permissions = new HashSet<Permission>();
-							permissions.add(find(permission.getId()));
-							group.setPermissions(permissions);
-							groupRepository.save(group);
-						}
+	@Transactional
+	public Object importPermission(Object bean, Map values) {
+		assert bean instanceof Permission;
+        try{
+        	
+        	GroupRepository groupRepository = Beans.get(GroupRepository.class);
+        	
+            Permission permission = (Permission) bean;
+			String groups = (String) values.get("group");
+			if(permission.getId()!= null){
+				if(groups != null && !groups.isEmpty()){
+					for(Group group: groupRepository.all().filter("code in ?1",Arrays.asList(groups.split("\\|"))).fetch()){
+						Set<Permission> permissions = group.getPermissions();
+						if(permissions == null)
+							permissions = new HashSet<Permission>();
+						permissions.add(permissionRepo.find(permission.getId()));
+						group.setPermissions(permissions);
+						groupRepository.save(group);
 					}
 				}
-				return permission;
-	        }catch(Exception e){
-	            e.printStackTrace();
-	        }
-			return bean;
-		}
+			}
+			return permission;
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+		return bean;
+	}
 		
 }
 

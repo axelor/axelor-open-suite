@@ -25,11 +25,10 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.ManufOrder;
-import com.axelor.db.Repository;
 import com.axelor.exception.AxelorException;
 import com.google.inject.persist.Transactional;
 
-public interface ManufOrderService extends Repository<ManufOrder> {
+public interface ManufOrderService {
 
 	public static int DEFAULT_PRIORITY = 10;
 	public static int DEFAULT_PRIORITY_INTERVAL = 10;

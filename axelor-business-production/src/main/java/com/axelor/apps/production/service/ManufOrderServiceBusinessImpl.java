@@ -57,7 +57,7 @@ public class ManufOrderServiceBusinessImpl extends ManufOrderServiceImpl  {
 			}
 		}
 		
-		save(manufOrder);
+		manufOrderRepo.save(manufOrder);
 		
 	}
 
@@ -129,7 +129,7 @@ public class ManufOrderServiceBusinessImpl extends ManufOrderServiceImpl  {
 			
 		}
 		
-		save(manufOrder);
+		manufOrderRepo.save(manufOrder);
 		
 		manufOrder.setPlannedEndDateT(manufOrderWorkflowService.computePlannedEndDateT(manufOrder));
 		
@@ -139,7 +139,7 @@ public class ManufOrderServiceBusinessImpl extends ManufOrderServiceImpl  {
 		
 		this.createToProduceProdProductList(manufOrder);
 		
-		save(manufOrder);
+		manufOrderRepo.save(manufOrder);
 	}
 	
 }

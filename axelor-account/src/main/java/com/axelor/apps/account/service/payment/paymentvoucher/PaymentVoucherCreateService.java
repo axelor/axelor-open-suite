@@ -43,7 +43,7 @@ import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
-public class PaymentVoucherCreateService extends PaymentVoucherRepository {
+public class PaymentVoucherCreateService {
 
 	private static final Logger LOG = LoggerFactory.getLogger(PaymentVoucherCreateService.class);
 
@@ -58,6 +58,9 @@ public class PaymentVoucherCreateService extends PaymentVoucherRepository {
 
 	@Inject
 	private PaymentVoucherSequenceService paymentVoucherSequenceService;
+	
+	@Inject
+	private PaymentVoucherRepository paymentVoucherRepo;
 
 	protected GeneralService generalService;
 
@@ -109,7 +112,7 @@ public class PaymentVoucherCreateService extends PaymentVoucherRepository {
 
 		paymentVoucher.setPaymentInvoiceToPayList(lines);
 
-		save(paymentVoucher);
+		paymentVoucherRepo.save(paymentVoucher);
 
 		paymentVoucherConfirmService.confirmPaymentVoucher(paymentVoucher, false);
 		return paymentVoucher;

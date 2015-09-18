@@ -23,14 +23,17 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
 
-public class InvoicingProjectController extends InvoicingProjectRepository{
+public class InvoicingProjectController {
 
 	@Inject
 	protected InvoicingProjectService invoicingProjectService;
+	
+	@Inject
+	protected InvoicingProjectRepository invoicingProjectRepo;
 
 	public void generateInvoice(ActionRequest request, ActionResponse response) throws AxelorException{
 		InvoicingProject invoicingProject = request.getContext().asType(InvoicingProject.class);
-		invoicingProject = this.find(invoicingProject.getId());
+		invoicingProject = invoicingProjectRepo.find(invoicingProject.getId());
 		if(invoicingProject.getSaleOrderLineSet().isEmpty() && invoicingProject.getPurchaseOrderLineSet().isEmpty()
 				&& invoicingProject.getLogTimesSet().isEmpty() && invoicingProject.getExpenseLineSet().isEmpty() && invoicingProject.getElementsToInvoiceSet().isEmpty()
 				&& invoicingProject.getProjectTaskSet().isEmpty()){

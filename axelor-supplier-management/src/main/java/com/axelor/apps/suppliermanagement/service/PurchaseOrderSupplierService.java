@@ -47,7 +47,7 @@ import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
-public class PurchaseOrderSupplierService extends PurchaseOrderRepository {
+public class PurchaseOrderSupplierService {
 
 	private static final Logger LOG = LoggerFactory.getLogger(PurchaseOrderSupplierService.class);
 
@@ -62,6 +62,9 @@ public class PurchaseOrderSupplierService extends PurchaseOrderRepository {
 
 	@Inject
 	protected GeneralService generalService;
+	
+	@Inject
+	protected PurchaseOrderRepository poRepo;
 
 	private LocalDate today;
 
@@ -83,7 +86,7 @@ public class PurchaseOrderSupplierService extends PurchaseOrderRepository {
 			this.generateSuppliersRequests(purchaseOrderLine);
 
 		}
-		save(purchaseOrder);
+		poRepo.save(purchaseOrder);
 	}
 
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
@@ -118,7 +121,7 @@ public class PurchaseOrderSupplierService extends PurchaseOrderRepository {
 		}
 
 
-		save(purchaseOrder);
+		poRepo.save(purchaseOrder);
 
 	}
 
@@ -181,7 +184,7 @@ public class PurchaseOrderSupplierService extends PurchaseOrderRepository {
 		purchaseOrder.setStatusSelect(IPurchaseOrder.STATUS_REQUESTED);
 		purchaseOrder.setReceiptState(IPurchaseOrder.STATE_NOT_RECEIVED);
 
-		save(purchaseOrder);
+		poRepo.save(purchaseOrder);
 	}
 
 

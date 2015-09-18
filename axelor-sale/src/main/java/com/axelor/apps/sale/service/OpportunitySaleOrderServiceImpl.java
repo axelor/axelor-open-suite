@@ -8,10 +8,13 @@ import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
-public class OpportunitySaleOrderServiceImpl extends SaleOrderRepository implements OpportunitySaleOrderService  {
+public class OpportunitySaleOrderServiceImpl implements OpportunitySaleOrderService  {
 
 	@Inject
-	private SaleOrderServiceImpl saleOrderService;
+	protected SaleOrderServiceImpl saleOrderService;
+	
+	@Inject
+	protected SaleOrderRepository saleOrderRepo;
 
 	@Inject
 	protected GeneralService generalService;
@@ -23,7 +26,7 @@ public class OpportunitySaleOrderServiceImpl extends SaleOrderRepository impleme
 		SaleOrder saleOrder = saleOrderService.createSaleOrder(opportunity.getUser(), opportunity.getCompany(), null, opportunity.getCurrency(), null, opportunity.getName(), null,
 				generalService.getTodayDate(), opportunity.getPartner().getSalePriceList(), opportunity.getPartner(), opportunity.getTeam());
 
-		save(saleOrder);
+		saleOrderRepo.save(saleOrder);
 
 		return saleOrder;
 	}

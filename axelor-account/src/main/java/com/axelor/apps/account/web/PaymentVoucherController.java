@@ -25,6 +25,7 @@ import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.ReportSettings;
 import com.axelor.apps.account.db.PaymentVoucher;
+import com.axelor.apps.account.db.repo.PaymentVoucherRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.report.IReport;
 import com.axelor.apps.account.service.payment.paymentvoucher.PaymentVoucherConfirmService;
@@ -37,10 +38,18 @@ import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.common.base.Strings;
+import com.google.inject.Inject;
 
 public class PaymentVoucherController {
 
 	private static final Logger LOG = LoggerFactory.getLogger(PaymentVoucherController.class);
+	
+	@Inject
+	private PaymentVoucherRepository paymentVoucherRepo;
+	
+	@Inject
+	private PaymentVoucherLoadService paymentVoucherLoadService; 
+	
 	
 	//Called on onSave event
 	public void paymentVoucherSetNum(ActionRequest request, ActionResponse response) throws AxelorException{
@@ -58,8 +67,7 @@ public class PaymentVoucherController {
 	public void loadMoveLines(ActionRequest request, ActionResponse response) {
 
 		PaymentVoucher paymentVoucher = request.getContext().asType(PaymentVoucher.class);
-		PaymentVoucherLoadService paymentVoucherLoadService = Beans.get(PaymentVoucherLoadService.class); 
-		paymentVoucher = paymentVoucherLoadService.find(paymentVoucher.getId());
+		paymentVoucher = paymentVoucherRepo.find(paymentVoucher.getId());
 		
 		try {
 			paymentVoucherLoadService.loadMoveLines(paymentVoucher);
@@ -72,8 +80,7 @@ public class PaymentVoucherController {
 	public void loadSelectedLines(ActionRequest request, ActionResponse response) {
 				
 		PaymentVoucher paymentVoucherContext = request.getContext().asType(PaymentVoucher.class);
-		PaymentVoucherLoadService paymentVoucherLoadService = Beans.get(PaymentVoucherLoadService.class);
-		PaymentVoucher paymentVoucher = paymentVoucherLoadService.find(paymentVoucherContext.getId());
+		PaymentVoucher paymentVoucher = paymentVoucherRepo.find(paymentVoucherContext.getId());
 			
 		try {
 			paymentVoucherLoadService.loadSelectedLines(paymentVoucher,paymentVoucherContext);
@@ -86,7 +93,7 @@ public class PaymentVoucherController {
 	public void confirmPaymentVoucher(ActionRequest request, ActionResponse response) {
 				
 		PaymentVoucher paymentVoucher = request.getContext().asType(PaymentVoucher.class);
-		paymentVoucher = Beans.get(PaymentVoucherLoadService.class).find(paymentVoucher.getId());
+		paymentVoucher = paymentVoucherRepo.find(paymentVoucher.getId());
 		
 		try{				
 			Beans.get(PaymentVoucherConfirmService.class).confirmPaymentVoucher(paymentVoucher, false);

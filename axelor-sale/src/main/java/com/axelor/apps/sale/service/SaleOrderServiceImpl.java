@@ -63,7 +63,7 @@ import com.axelor.meta.db.MetaFile;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
-public class SaleOrderServiceImpl extends SaleOrderRepository  implements SaleOrderService {
+public class SaleOrderServiceImpl implements SaleOrderService {
 
 	private static final Logger LOG = LoggerFactory.getLogger(SaleOrderServiceImpl.class);
 
@@ -287,7 +287,7 @@ public class SaleOrderServiceImpl extends SaleOrderRepository  implements SaleOr
 			saleOrder.getClientPartner().setHasOrdered(false);
 		}
 		saleOrder.setStatusSelect(ISaleOrder.STATUS_CANCELED);
-		this.save(saleOrder);
+		saleOrderRepo.save(saleOrder);
 	}
 
 	@Override
@@ -297,7 +297,7 @@ public class SaleOrderServiceImpl extends SaleOrderRepository  implements SaleOr
 		if (saleOrder.getVersionNumber() == 1){
 			saleOrder.setSaleOrderSeq(this.getSequence(saleOrder.getCompany()));
 		}
-		this.save(saleOrder);
+		saleOrderRepo.save(saleOrder);
 		if (generalService.getGeneral().getManageSaleOrderVersion()){
 			this.saveSaleOrderPDFAsAttachment(saleOrder);
 		}
