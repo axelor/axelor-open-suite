@@ -12,8 +12,8 @@
       <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company" required="true"/>
       <integer name="monthSelect" selection="iadministration.month.select" title="Month" required="true" default="1"/>
       <integer name="yearPeriod" title="Year" required="true" default="2015"/>
-      <one-to-many name="extraHoursLineList" ref="com.axelor.apps.hr.db.ExtraHoursLine" title="Extra hours" mappedBy="payrollPreparation" orphan="true"/>
-      <one-to-many name="expenseList" ref="com.axelor.apps.hr.db.Expense" title="Expenses" mappedBy="payrollPreparation" orphan="true"/>
+      <one-to-many name="extraHoursLineList" ref="com.axelor.apps.hr.db.ExtraHoursLine" title="Extra hours" mappedBy="payrollPreparation" orphanRemoval="false"/>
+      <one-to-many name="expenseList" ref="com.axelor.apps.hr.db.Expense" title="Expenses" mappedBy="payrollPreparation" orphanRemoval="false"/>
       <decimal name="duration" title="Working days' number" scale="1" precision="5"/>
       <decimal name="expenseAmount" title="Expenses amount to pay" scale="2" precision="15"/>
       <many-to-many name="otherCostsEmployeeSet" title="Others" ref="com.axelor.apps.hr.db.OtherCostsEmployee"/>

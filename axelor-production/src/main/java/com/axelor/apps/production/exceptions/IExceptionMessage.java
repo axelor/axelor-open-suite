@@ -92,5 +92,7 @@ public interface IExceptionMessage {
 	 */
 	static final String PROD_PROCESS_USELESS_PRODUCT = /*$$(*/ "The product %s is not in the bill of material related to this production process" /*)*/;
 	static final String PROD_PROCESS_MISS_PRODUCT = /*$$(*/ "Not enough quantity in products to consume for: %s" /*)*/;
+	
+	static final String CHARGE_MACHINE_DAYS = /*$$(*/ "Too many days" /*)*/;
 }
 

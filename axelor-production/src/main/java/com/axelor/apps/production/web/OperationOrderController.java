@@ -18,13 +18,18 @@
 package com.axelor.apps.production.web;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.joda.time.Days;
+import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
+import org.joda.time.Minutes;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
 import org.slf4j.Logger;
@@ -44,6 +49,7 @@ import com.axelor.apps.tool.net.URLService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
@@ -211,52 +217,113 @@ public class OperationOrderController {
 		}	
 	}
 	
-	public void chargeByMachineHours(ActionRequest request, ActionResponse response) {
-		List<Map<String, Object>> dataList = new ArrayList<Map<String, Object>>();
-		DateTimeFormatter parser = ISODateTimeFormat.dateTime();
-		//LocalDateTime fromDateTime = LocalDateTime.parse(request.getContext().get("fromDateTime").toString(),parser);
-		LocalDateTime fromDateTime = new LocalDateTime();
-		//LocalDateTime toDateTime = LocalDateTime.parse(request.getContext().get("toDateTime").toString(),parser);
-		LocalDateTime toDateTime = new LocalDateTime().plusDays(1);
-		LocalDateTime itDateTime = new LocalDateTime(fromDateTime);
-		
-		while(!itDateTime.isAfter(toDateTime)){
-			List<OperationOrder> operationOrderList = operationOrderRepo.all().filter("self.plannedStartDateT <= ?1 AND self.plannedEndDateT >= ?1", itDateTime).fetch();
-			Map<String, BigDecimal> map = new HashMap<String, BigDecimal>();
-			for (OperationOrder operationOrder : operationOrderList) {
-				if(operationOrder.getWorkCenter() != null && operationOrder.getWorkCenter().getMachine() != null){
-					String machine = operationOrder.getWorkCenter().getMachine().getName();
-					if(map.containsKey(machine)){
-						map.put(machine, map.get(machine).add(BigDecimal.ONE));
-					}
-					else{
-						map.put(machine, BigDecimal.ONE);
-					}
-				}
-			}
-			Set<String> keyList = map.keySet();
-			Map<String, Object> dataMap = new HashMap<String, Object>();
-			for (String key : keyList) {
-				dataMap.put("dateTime",(Object)itDateTime.toString());
-				dataMap.put("charge", (Object)map.get(key).multiply(new BigDecimal(100)));
-				dataMap.put("machine", (Object) key);
-				dataList.add(dataMap);
-			}
-			
-			
-			itDateTime = itDateTime.plusHours(1);
-		}
-		
-		response.setData(dataList);
-	}
-	
-	public void chargeByMachineMinutes(ActionRequest request, ActionResponse response) {
+	public void chargeByMachineHours(ActionRequest request, ActionResponse response) throws AxelorException {
 		List<Map<String, Object>> dataList = new ArrayList<Map<String, Object>>();
 		DateTimeFormatter parser = ISODateTimeFormat.dateTime();
 		LocalDateTime fromDateTime = LocalDateTime.parse(request.getContext().get("fromDateTime").toString(),parser);
 		LocalDateTime toDateTime = LocalDateTime.parse(request.getContext().get("toDateTime").toString(),parser);
 		LocalDateTime itDateTime = new LocalDateTime(fromDateTime);
 		
+		if(Days.daysBetween(new LocalDate(fromDateTime.getYear(), fromDateTime.getMonthOfYear(), fromDateTime.getDayOfMonth()),
+				new LocalDate(toDateTime.getYear(), toDateTime.getMonthOfYear(), toDateTime.getDayOfMonth())).getDays() > 20){
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.CHARGE_MACHINE_DAYS)), IException.CONFIGURATION_ERROR);
+		}
+		
+		List<OperationOrder> operationOrderListTemp = operationOrderRepo.all().filter("self.plannedStartDateT <= ?2 AND self.plannedEndDateT >= ?1", fromDateTime, toDateTime).fetch();
+		Set<String> machineNameList = new HashSet<String>();
+		for (OperationOrder operationOrder : operationOrderListTemp) {
+			if(operationOrder.getWorkCenter() != null && operationOrder.getWorkCenter().getMachine() != null){
+				if(!machineNameList.contains(operationOrder.getWorkCenter().getMachine().getName())){
+					machineNameList.add(operationOrder.getWorkCenter().getMachine().getName());
+				}
+			}
+		}
+		while(!itDateTime.isAfter(toDateTime)){
+			List<OperationOrder> operationOrderList = operationOrderRepo.all().filter("self.plannedStartDateT <= ?2 AND self.plannedEndDateT >= ?1", itDateTime, itDateTime.plusHours(1)).fetch();
+			Map<String, BigDecimal> map = new HashMap<String, BigDecimal>();
+			for (OperationOrder operationOrder : operationOrderList) {
+				if(operationOrder.getWorkCenter() != null && operationOrder.getWorkCenter().getMachine() != null){
+					String machine = operationOrder.getWorkCenter().getMachine().getName();
+					int numberOfMinutes = 0;
+					if(operationOrder.getPlannedStartDateT().isBefore(itDateTime)){
+						numberOfMinutes = Minutes.minutesBetween(itDateTime, operationOrder.getPlannedEndDateT()).getMinutes();
+					}
+					else if(operationOrder.getPlannedEndDateT().isAfter(itDateTime.plusHours(1))){
+						numberOfMinutes = Minutes.minutesBetween(operationOrder.getPlannedStartDateT(), itDateTime.plusHours(1)).getMinutes();
+					}
+					else{
+						numberOfMinutes = Minutes.minutesBetween(operationOrder.getPlannedStartDateT(), operationOrder.getPlannedEndDateT()).getMinutes();
+					}
+					if(numberOfMinutes > 60){
+						numberOfMinutes = 60;
+					}
+					BigDecimal percentage = new BigDecimal(numberOfMinutes).multiply(new BigDecimal(100)).divide(new BigDecimal(60), 2, RoundingMode.HALF_UP);
+					if(map.containsKey(machine)){
+						map.put(machine, map.get(machine).add(percentage));
+					}
+					else{
+						map.put(machine, percentage);
+					}
+				}
+			}
+			Set<String> keyList = map.keySet();
+			Map<String, Object> dataMap = new HashMap<String, Object>();
+			for (String key : machineNameList) {
+				if(keyList.contains(key)){
+					/*if(Hours.hoursBetween(fromDateTime, toDateTime).getHours()>24){
+						dataMap.put("dateTime",(Object)itDateTime.toString("dd/MM/yyyy"));
+					}
+					else{
+						dataMap.put("dateTime",(Object)itDateTime.toString("HH:mm"));
+					}*/
+					dataMap.put("dateTime",(Object)itDateTime.toString());//remove when ticket #4058 ok and uncomment previous lines
+					dataMap.put("charge", (Object)map.get(key));
+					dataMap.put("machine", (Object) key);
+					dataList.add(dataMap);
+				}
+				else{
+					/*if(Hours.hoursBetween(fromDateTime, toDateTime).getHours()>24){
+						dataMap.put("dateTime",(Object)itDateTime.toString("dd/MM/yyyy"));
+					}
+					else{
+						dataMap.put("dateTime",(Object)itDateTime.toString("HH:mm"));
+					}*/
+					dataMap.put("dateTime",(Object)itDateTime.toString());//remove when ticket #4058 ok and uncomment previous lines
+					dataMap.put("charge", (Object)BigDecimal.ZERO);
+					dataMap.put("machine", (Object) key);
+					dataList.add(dataMap);
+				}
+			}
+			
+			
+			itDateTime = itDateTime.plusHours(1);
+		}
+		
+		
+		response.setData(dataList);
+	}
+	
+	public void chargeByMachineMinutes(ActionRequest request, ActionResponse response) throws AxelorException {
+		List<Map<String, Object>> dataList = new ArrayList<Map<String, Object>>();
+		DateTimeFormatter parser = ISODateTimeFormat.dateTime();
+		LocalDateTime fromDateTime = LocalDateTime.parse(request.getContext().get("fromDateTime").toString(),parser);
+		LocalDateTime toDateTime = LocalDateTime.parse(request.getContext().get("toDateTime").toString(),parser);
+		LocalDateTime itDateTime = new LocalDateTime(fromDateTime);
+		if(Days.daysBetween(new LocalDate(fromDateTime.getYear(), fromDateTime.getMonthOfYear(), fromDateTime.getDayOfMonth()),
+				new LocalDate(toDateTime.getYear(), toDateTime.getMonthOfYear(), toDateTime.getDayOfMonth())).getDays() > 5){
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.CHARGE_MACHINE_DAYS)), IException.CONFIGURATION_ERROR);
+		}
+		
+		
+		List<OperationOrder> operationOrderListTemp = operationOrderRepo.all().filter("self.plannedStartDateT <= ?2 AND self.plannedEndDateT >= ?1", fromDateTime, toDateTime).fetch();
+		Set<String> machineNameList = new HashSet<String>();
+		for (OperationOrder operationOrder : operationOrderListTemp) {
+			if(operationOrder.getWorkCenter() != null && operationOrder.getWorkCenter().getMachine() != null){
+				if(!machineNameList.contains(operationOrder.getWorkCenter().getMachine().getName())){
+					machineNameList.add(operationOrder.getWorkCenter().getMachine().getName());
+				}
+			}
+		}
 		while(!itDateTime.isAfter(toDateTime)){
 			List<OperationOrder> operationOrderList = operationOrderRepo.all().filter("self.plannedStartDateT <= ?1 AND self.plannedEndDateT >= ?1", itDateTime).fetch();
 			Map<String, BigDecimal> map = new HashMap<String, BigDecimal>();
@@ -273,11 +340,31 @@ public class OperationOrderController {
 			}
 			Set<String> keyList = map.keySet();
 			Map<String, Object> dataMap = new HashMap<String, Object>();
-			for (String key : keyList) {
-				dataMap.put("dateTime",(Object)itDateTime.toString());
-				dataMap.put("charge", (Object)map.get(key).multiply(new BigDecimal(100)));
-				dataMap.put("machine", (Object) key);
-				dataList.add(dataMap);
+			for (String key : machineNameList) {
+				if(keyList.contains(key)){
+					/*if(Hours.hoursBetween(fromDateTime, toDateTime).getHours()>24){
+						dataMap.put("dateTime",(Object)itDateTime.toString("dd/MM/yyyy"));
+					}
+					else{
+						dataMap.put("dateTime",(Object)itDateTime.toString("HH:mm"));
+					}*/
+					dataMap.put("dateTime",(Object)itDateTime.toString());//remove when ticket #4058 ok and uncomment previous lines
+					dataMap.put("charge", (Object)map.get(key).multiply(new BigDecimal(100)));
+					dataMap.put("machine", (Object) key);
+					dataList.add(dataMap);
+				}
+				else{
+					/*if(Hours.hoursBetween(fromDateTime, toDateTime).getHours()>24){
+						dataMap.put("dateTime",(Object)itDateTime.toString("dd/MM/yyyy"));
+					}
+					else{
+						dataMap.put("dateTime",(Object)itDateTime.toString("HH:mm"));
+					}*/
+					dataMap.put("dateTime",(Object)itDateTime.toString());//remove when ticket #4058 ok and uncomment previous lines
+					dataMap.put("charge", (Object)BigDecimal.ZERO);
+					dataMap.put("machine", (Object) key);
+					dataList.add(dataMap);
+				}
 			}
 			
 			

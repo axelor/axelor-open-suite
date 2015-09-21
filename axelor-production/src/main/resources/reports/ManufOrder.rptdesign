@@ -1458,7 +1458,7 @@ INNER JOIN
         <simple-master-page name="Simple MasterPage" id="2">
             <property name="type">a4</property>
             <property name="topMargin">0.47625cm</property>
-            <property name="leftMargin">0.3958333333333333in</property>
+            <property name="leftMargin">0.4in</property>
             <property name="rightMargin">0.396875cm</property>
             <property name="headerHeight">0in</property>
             <property name="footerHeight">0.2in</property>
@@ -1466,7 +1466,7 @@ INNER JOIN
     </page-setup>
     <body>
         <table id="4224">
-            <property name="width">19.817291666666666cm</property>
+            <property name="width">8.416666666666666in</property>
             <property name="dataSet">ManufOrderDS</property>
             <list-property name="boundDataColumns">
                 <structure>
@@ -1525,7 +1525,7 @@ INNER JOIN
                 </structure>
             </list-property>
             <column id="4231">
-                <property name="width">19.817291666666666cm</property>
+                <property name="width">19.076cm</property>
             </column>
             <detail>
                 <row id="4227">
@@ -3396,7 +3396,7 @@ else dataSetRow["planned_end_datet"]</expression>
                                                     <structure>
                                                         <property name="paramName">param_1</property>
                                                         <simple-property-list name="expression">
-                                                            <value type="javascript">"From"</value>
+                                                            <value type="javascript">'ManufOrder.from'</value>
                                                         </simple-property-list>
                                                     </structure>
                                                 </list-property>
@@ -3435,7 +3435,7 @@ else dataSetRow["planned_end_datet"]</expression>
                                                     <structure>
                                                         <property name="paramName">param_1</property>
                                                         <simple-property-list name="expression">
-                                                            <value type="javascript">"To"</value>
+                                                            <value type="javascript">'ManufOrder.to'</value>
                                                         </simple-property-list>
                                                     </structure>
                                                 </list-property>
@@ -3474,7 +3474,7 @@ else dataSetRow["planned_end_datet"]</expression>
                                                     <structure>
                                                         <property name="paramName">param_1</property>
                                                         <simple-property-list name="expression">
-                                                            <value type="javascript">"Serial Nbr"</value>
+                                                            <value type="javascript">'ManufOrder.serial'</value>
                                                         </simple-property-list>
                                                     </structure>
                                                 </list-property>
@@ -3890,11 +3890,14 @@ else dataSetRow["planned_end_datet"]</expression>
                                         <property name="height">0.59375in</property>
                                         <cell id="4445"/>
                                         <cell id="4446">
+                                            <property name="textAlign">center</property>
                                             <image id="4531">
-                                                <property name="height">60px</property>
-                                                <property name="width">360px</property>
+                                                <property name="height">25.93mm</property>
+                                                <property name="width">37.29mm</property>
                                                 <structure name="toc"/>
                                                 <property name="source">file</property>
+                                                <property name="fitToContainer">true</property>
+                                                <property name="proportionalScale">true</property>
                                                 <expression name="uri" type="javascript">params["AttachmentPath"].value+row["bar_code_path"]</expression>
                                             </image>
                                         </cell>
@@ -3912,6 +3915,12 @@ else dataSetRow["planned_end_datet"]</expression>
                                 <header>
                                     <row id="4449">
                                         <property name="height">1in</property>
+                                        <list-property name="visibility">
+                                            <structure>
+                                                <property name="format">all</property>
+                                                <expression name="valueExpr" type="javascript">row["description_id"] == null</expression>
+                                            </structure>
+                                        </list-property>
                                         <cell id="4450">
                                             <property name="borderBottomColor">#7F7F7F</property>
                                             <property name="borderBottomStyle">solid</property>
