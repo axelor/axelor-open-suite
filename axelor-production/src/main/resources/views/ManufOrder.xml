@@ -151,14 +151,6 @@
     	<call class="com.axelor.apps.production.web.ManufOrderController" method="propagateIsToInvoice"/>
     </action-method>
     
-    <action-method name="action-manuf-order-method-copy-to-consume">
-    	<call class="com.axelor.apps.production.web.ManufOrderController" method="copyToConsume"/>
-    </action-method>
-    
-    <action-method name="action-manuf-order-method-copy-to-produce">
-    	<call class="com.axelor.apps.production.web.ManufOrderController" method="copyToProduce"/>
-    </action-method>
-    
     <action-group name="action-manuf-order-method-start-or-resume">
     	<action name="action-manuf-order-method-start" if="statusSelect == 3"/>
     	<action name="action-manuf-order-method-resume" if="statusSelect == 5"/>

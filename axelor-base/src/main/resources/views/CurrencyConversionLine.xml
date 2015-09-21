@@ -61,10 +61,6 @@
     	<action name="action-currency-conversion-line-method-convert"/>
     </action-group>
     
-    <action-method name="action-currency-conversion-line-method-getTodayDate">
-    	<call class="com.axelor.apps.base.service.administration.GeneralService" method="getTodayDate()"/>
-   	</action-method>
-    
     <action-method name="action-currency-conversion-line-method-check-date">
     	<call class="com.axelor.apps.base.web.CurrencyConversionLineController" method="checkDate"/>
     </action-method>
@@ -76,11 +72,6 @@
     <action-method name="action-currency-conversion-line-method-convert" >
     	<call class="com.axelor.apps.base.web.CurrencyConversionLineController" method="convert"/>
     </action-method>
-    
-    <action-record name="action-currency-conversion-line-reset-dates" model="com.axelor.apps.base.db.CurrencyConversionLine">
-    	<field name="fromDate" expr="eval:null" />
-    	<field name="toDate" expr="eval:null" />
-    </action-record>
     
     <action-record name="action-currency-conversion-line-set-exchange-rate" model="com.axelor.apps.base.db.Wizard">
     	<field name="exchangeRate" if="startCurrency != null &amp;&amp; endCurrency != null &amp;&amp; date != null" expr="call:com.axelor.apps.base.service.CurrencyConversionService:getRate(__repo__.of(Currency).find(startCurrency.id),__repo__.of(Currency).find(endCurrency.id), new LocalDate(date))" />

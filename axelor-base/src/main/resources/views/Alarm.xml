@@ -34,8 +34,4 @@
 	  </panel>  
 	</form>
     
-    <action-method name="action-alarm-method-acquit-invoice">
-    	<call class="com.axelor.apps.base.web.AlarmController" method="acquitAlarms"/>
-    </action-method>
-    
 </object-views>

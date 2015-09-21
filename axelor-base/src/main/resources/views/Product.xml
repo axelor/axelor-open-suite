@@ -164,12 +164,6 @@
 	  	</panel-tabs>
 	</form>    
     
-   <action-view name="action-product-view-stock-product-variant" title="Stock" model="com.axelor.apps.stock.db.LocationLine">
-    	<view type="grid" name="location-line-product-group-by-variant-grid"/>
-    	<view type="form" name="location-line-product-form"/>
-    	<domain>self.product.parentProduct.id = :id and self.location.typeSelect = 1</domain>
-    </action-view>
-    
     <action-group name="action-group-base-product-onnew">
    	 	<action name="action-product-attrs-scale-and-precision"/>
     	<action name="action-product-record-default-new"/>
@@ -218,13 +212,6 @@
     	<field name="salePrice" expr="eval: managPriceCoef*costPrice" if="costPrice != null &amp;&amp; managPriceCoef != null"/>
     
     </action-record>
-    
-    <action-attrs name="action-hide-product-field">
-    	<attribute name="hidden" for="productTypeSelect" expr="eval:applicationTypeSelect == 2 || applicationTypeSelect == 3"  />
-    	<attribute name="hidden" for="isRawMaterial" expr="eval:productTypeSelect == 'service'"  />
-    	<attribute name="hidden" for="tab-stock" expr="eval:productTypeSelect == 'service'"  />
-    	<attribute name="hidden" for="tab-tracking-number" expr="eval:productTypeSelect == 'service'"  />
-    </action-attrs>
     
     <action-validate name="action-product-validate-sale-supply-select">
    		<alert message="A product of type service can't be procured from stock." if="saleSupplySelect == 1 &amp;&amp; productTypeSelect == 'service'"/>

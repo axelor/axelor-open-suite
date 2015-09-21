@@ -103,18 +103,6 @@
 		<attribute name="readonly" for="perhaps" expr="eval: __repo__.of(EventAttendee).all().filter(&quot; self.event = ?1 AND self.contact.id = ?2 &quot;, :id,:__user__?.partner?.id).fetchOne().statusSelect == 3"/>
 	</action-attrs>
 	
-    <action-view name="action-event-view-lead" title="Leads" model="com.axelor.apps.crm.db.Lead">
-    	<view type="grid" name="lead-event-grid"/>
-    	<view type="form" name="lead-event-form"/>
-    </action-view>
-    
-    <action-view name="action-event-view-contact" title="Contacts" model="com.axelor.apps.base.db.Partner">
-    	<view type="grid" name="contact-event-grid"/>
-    	<view type="form" name="contact-event-form"/>
-    	<domain>self.isContact = true</domain>
-    </action-view>
-    
-    
     <grid name="call-grid" title="Calls" model="com.axelor.apps.crm.db.Event" orderBy="-startDateTime">
     	<toolbar>
     		<button name="grabEvent" help="Assign to me" icon="fa-suitcase" onClick="action-method-crm-event-assign-tome" />

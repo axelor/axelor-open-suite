@@ -19,8 +19,4 @@
 		<field name="billOfMaterial" expr="eval:__repo__.of(BillOfMaterial).all().filter('self.id = ?1',_productId.defaultBillOfMaterial.id).fetchOne()"/>
 	</action-record>
 
-    <action-method name="action-generate-product-variant-wizard-method-validate">
-		<call class="com.axelor.apps.base.web.GenerateProductVariantWizardController" method="generate"/>
-    </action-method>
-    
 </object-views>

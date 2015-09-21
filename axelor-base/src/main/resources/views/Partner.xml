@@ -284,11 +284,6 @@
 		<action name="action-partner-record-full-name"/>
 	</action-group>
 	
-	<action-record name="action-partner-record-get-lead-converted-context" model="com.axelor.apps.base.db.Partner">
-		<field name="name" expr="eval:__repo__.of(Lead).find(_parent._lead).name"/>
-	</action-record>
-	
-    
     <action-method name="action-partner-method-show-partner-info">
 		<call class="com.axelor.apps.base.web.PartnerController" method="showPartnerInfo"/>
 	</action-method>
@@ -299,11 +294,6 @@
     </action-method>
     
 
-	<action-view name="action-partner-view-sn-profile" title="Profiles" model="com.axelor.apps.socialnetwork.db.SnProfile">
-		<view type="form" name="sn-profile-form"/>
-		<context name="id" expr="eval: id"/>
-	</action-view>
-    
 	<action-attrs name="action-partner-attrs-change-name">
 		<attribute name="title" for="name" expr="Raison sociale" if="partnerTypeSelect != 2"/>
     	<attribute name="title" for="name" expr="Nom" if="partnerTypeSelect == 2"/>
@@ -356,11 +346,6 @@
     	<field name="mainInvoicingAddress" expr="eval:__repo__.of(Address).find(_parent.mainInvoicingAddress.id)" if="_parent.mainInvoicingAddress?.id != null &amp;&amp;_parent._model == 'com.axelor.apps.base.db.Partner'"/>
     </action-record>
     
-    <action-record name="action-partner-set-non-contact-fields" model="com.axelor.apps.base.db.Partner">
-    	<field name="currency" expr="eval:null" if="!isContact"/>
-    	<field name="invoiceSendingFormatSelect" expr="eval:null" if="!isContact"/>
-    </action-record>
-
     <action-method name="action-set-partner-seq" >
 		<call class="com.axelor.apps.base.web.PartnerController" method="setPartnerSequence"/>
 	</action-method>

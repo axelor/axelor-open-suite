@@ -68,10 +68,6 @@
     <action-workflow name="action-leave-request-workflow" model="com.axelor.apps.organisation.db.LeaveRequest"/>
     
     <!-- ACTION GROUP -->
-    <action-group name="action-leave-request-group-validate">
-    	<action name="action-leave-request-method-validate"/>
-    	<action name="action-leave-request-record-validate"/>
-    </action-group>
     
     <action-group name="action-leave-request-group-wkf">
     	<action name="save"/>

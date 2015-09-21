@@ -69,10 +69,4 @@
 	    </panel>
     </form>
     
-    <action-record name="action-prod-resource-record-default" model="com.axelor.apps.production.db.ProdResource">
-    	<field name="product" expr="eval: "/>
-    
-    </action-record>
-    
 </object-views>
-
