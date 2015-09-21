@@ -3,8 +3,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
    
-    <grid name="invoice-line-grid" title="Invoice lines" model="com.axelor.apps.account.db.InvoiceLine" orderBy="sequence,qty" >
-    	<field name="sequence"/>
+    <grid name="invoice-line-grid" title="Invoice lines" model="com.axelor.apps.account.db.InvoiceLine" orderBy="sequence" canMove="true" >
         <field name="productName"/>
         <field name="qty"/>
         <field name="price"/>
@@ -18,7 +17,6 @@
     onLoad="action-account-invoice-line-onload-group" width="large">
     	<panel-tabs>
     		<panel title="Informations">
-    			<field name="sequence"/>
     			<field name="saleOrder" if="!__config__.general.getManageInvoicedAmountByLine()" if-module="axelor-supplychain" form-view="sale-order-form" grid-view="sale-order-grid"/>
     			<field name="saleOrderLine" if="__config__.general.getManageInvoicedAmountByLine()" if-module="axelor-supplychain" form-view="sale-order-line-form" grid-view="sale-order-line-grid"/>
     			<field name="purchaseOrderLine" if-module="axelor-supplychain" form-view="purchase-order-line-form" grid-view="purchase-order-line-grid"/>
@@ -26,8 +24,8 @@
 		        <field name="productName"/>
 		        <field name="qty" required="true" onChange="action-invoice-line-method-get-discount,action-invoice-line-method-convert-tax,action-invoice-line-method-compute"/>
 		        <field name="price" required="true"  onChange="action-invoice-line-method-compute"/>
-		        <field name="priceDiscounted" hidden="true"/>
 		        <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
+		        <field name="priceDiscounted" hidden="true"/>
 		        <panel-related field="analyticAccountSet" colSpan="12" form-view="analytic-account-form" grid-view="analytic-account-grid" />
 		    	<field name="taxLine" onChange="action-invoice-line-method-convert-tax,action-invoice-line-method-compute" grid-view="tax-line-grid" form-view="tax-line-form"/>
 		    	<field name="exTaxTotal" readonly="true"/>
@@ -61,7 +59,6 @@
     	<action name="action-invoice-line-attrs-show-elements"/>
     	<action name="action-invoice-line-attrs-scale-and-precision"/>
 	    <action name="action-invoice-line-record-new"/>
-	    <action name="action-invoice-line-record-sequence"/>
 	    <action name="action-invoice-attrs-hide-ati"/>
 	    <action name="action-invoice-line-record-project"/>
     </action-group>
@@ -80,16 +77,6 @@
     
     
     <!--     ACTION RECORDS -->
-    
-    <action-record name="action-invoice-line-record-in-tax-total" model="com.axelor.apps.account.db.InvoiceLine">
-    	<field name="inTaxTotal" expr="eval: exTaxTotal + (exTaxTotal*taxLine.value)"/>
-    	<field name="companyInTaxTotal" expr="eval: companyExTaxTotal + (companyExTaxTotal*taxLine.value)"/>
-    </action-record>
-    
-    <action-record name="action-invoice-line-record-sequence" model="com.axelor.apps.account.db.InvoiceLine">
-    	<field name="sequence" expr="10" if="eval: _parent?.invoiceLineList == null"/>
-    	<field name="sequence" expr="eval: (_parent?.invoiceLineList.size()+1)*10" if="eval: _parent?.invoiceLineList != null"/>
-    </action-record>
     
     <action-record name="action-invoice-line-record-new" model="com.axelor.apps.account.db.InvoiceLine">
     	<field name="qty" expr="eval: 1"/>

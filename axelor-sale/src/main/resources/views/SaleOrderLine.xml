@@ -15,9 +15,6 @@
 	<form name="sale-order-line-form" title="SO line" model="com.axelor.apps.sale.db.SaleOrderLine" 
 	onLoad="action-group-sale-saleorderline-onload" onNew="action-group-sale-saleorderline-onnew" width="large">
 		<panel>
-			<field name="sequence"/>
-		</panel>
-		<panel>
 		   	<field name="product" onChange="action-group-sale-saleorderline-product-onchange" onSelect="action-sale-order-line-attrs-domain-product" form-view="product-form" grid-view="product-grid"/>
 		   	<field name="productName"/>
 		   	<field name="qty" onChange="action-group-sale-saleorderline-qty-onchange"/>
@@ -78,7 +75,6 @@
     	<action name="action-sale-order-line-attrs-title-project-task"/>
     	<action name="action-sale-order-line-attrs-scale-and-precision"/>
     	<action name="action-sale-order-line-record-new"/>
-    	<action name="action-sale-order-line-record-sequence"/>
     	<action name="action-sale-order-line-attrs-hide-bill-of-material"/>
     	<action name="action-sale-order-line-attrs-hidden-subscription"/>
     	<action name="action-supplychain-attrs-readonly-invoice-subscription"/>
@@ -137,11 +133,6 @@
     <action-record name="action-sale-order-line-record-new" model="com.axelor.apps.sale.db.SaleOrderLine">
     	<field name="qty" expr="eval: 1"/>
     	<field name="isOrdered" expr="true"/>
-    </action-record>
-    
-	<action-record name="action-sale-order-line-record-sequence" model="com.axelor.apps.sale.db.SaleOrderLine">
-    	<field name="sequence" expr="10" if="eval: _parent?.saleOrderLineList == null"/>
-    	<field name="sequence" expr="eval: (_parent?.saleOrderLineList.size()+1)*10" if="eval: _parent?.saleOrderLineList != null"/>
     </action-record>
     
 <!--     TODO : should be splited per module -->
