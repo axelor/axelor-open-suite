@@ -1,3 +1,10 @@
+buildscript {
+	apply from: "gradle/adk.gradle"
+	dependencies {
+		classpath adkPlugins()
+	}
+}
+
 apply plugin: 'axelor-app'
 
 def modules = new File('modules/abs').listFiles().findAll { dir ->
@@ -34,6 +41,11 @@ application {
 			install "$dir.name"
 	}
 	
+}
+
+allprojects {
+	sourceCompatibility = 1.7
+	targetCompatibility = 1.7
 }
 
 tomcat {
