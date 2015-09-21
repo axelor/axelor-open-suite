@@ -1,4 +1,5 @@
 apply plugin: 'axelor-module'
+apply plugin: 'groovy'
 
 module {
 	name "axelor-tool"
