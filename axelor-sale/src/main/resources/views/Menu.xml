@@ -14,7 +14,7 @@
 		model="com.axelor.apps.sale.db.SaleOrder">
 		<view type="form" name="sale-order-template-form"/>
 		<view type="grid" name="sale-order-template-grid"/>
-		<domain>self.template = true AND templateUser = :_user</domain>
+		<domain>self.template = true AND self.templateUser.id = :_user</domain>
 		<context name="_user" expr="eval: __user__.id"/>
 		<context name="_internalUser" expr="eval: __user__.id"/>
 		<context name="_myActiveTeam" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"/>

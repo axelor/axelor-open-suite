@@ -57,7 +57,7 @@
 	</form>
 	
 	<action-attrs name="action-timesheet-line-attrs-domain-project-task">
-		<attribute name="domain" for="projectTask" expr="eval: &quot; self.imputable = true AND (${__user__.id} MEMBER OF self.membersUserSet OR self.assignedTo.id = ${__user__.id}) &quot;"/>
+		<attribute name="domain" for="projectTask" expr="eval: &quot; ${__user__.id} MEMBER OF self.membersUserSet OR self.assignedTo.id = ${__user__.id} &quot;"/>
 	</action-attrs>
 	
 	<action-validate name="action-timesheet-validate-date">
