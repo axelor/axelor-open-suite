@@ -1466,7 +1466,7 @@ INNER JOIN
     </page-setup>
     <body>
         <table id="4224">
-            <property name="width">8.416666666666666in</property>
+            <property name="width">7.7in</property>
             <property name="dataSet">ManufOrderDS</property>
             <list-property name="boundDataColumns">
                 <structure>
@@ -1933,7 +1933,7 @@ INNER JOIN
                             </row>
                         </grid>
                         <table id="4102">
-                            <property name="width">19.473333333333333cm</property>
+                            <property name="width">7.5in</property>
                             <property name="dataSet">ManufOrderLineDS</property>
                             <list-property name="boundDataColumns">
                                 <structure>
@@ -2014,30 +2014,14 @@ INNER JOIN
                                     <property name="updateAggregation">true</property>
                                 </structure>
                             </list-property>
-                            <column id="4130">
-                                <property name="width">1.349375cm</property>
-                            </column>
-                            <column id="4131">
-                                <property name="width">0.96875in</property>
-                            </column>
-                            <column id="4132">
-                                <property name="width">1.0625in</property>
-                            </column>
-                            <column id="4133">
-                                <property name="width">1.2291666666666667in</property>
-                            </column>
-                            <column id="4134">
-                                <property name="width">1.0729166666666667in</property>
-                            </column>
-                            <column id="4135">
-                                <property name="width">2.6722916666666667cm</property>
-                            </column>
-                            <column id="4136">
-                                <property name="width">2.6722916666666667cm</property>
-                            </column>
-                            <column id="4137">
-                                <property name="width">1.7727083333333333cm</property>
-                            </column>
+                            <column id="4130"/>
+                            <column id="4131"/>
+                            <column id="4132"/>
+                            <column id="4133"/>
+                            <column id="4134"/>
+                            <column id="4135"/>
+                            <column id="4136"/>
+                            <column id="4137"/>
                             <header>
                                 <row id="4138">
                                     <cell id="4139"/>
@@ -2709,7 +2693,7 @@ INNER JOIN
                             </footer>
                         </table>
                         <table id="4166">
-                            <property name="width">19.552708333333335cm</property>
+                            <property name="width">7.5in</property>
                             <property name="dataSet">ConsumedProductDS</property>
                             <list-property name="boundDataColumns">
                                 <structure>
@@ -2766,19 +2750,19 @@ INNER JOIN
                                 </structure>
                             </list-property>
                             <column id="4182">
-                                <property name="width">1.7083333333333333in</property>
+                                <property name="width">2cm</property>
                             </column>
                             <column id="4183">
-                                <property name="width">8.228541666666667cm</property>
+                                <property name="width">6cm</property>
                             </column>
                             <column id="4184">
-                                <property name="width">1.6404166666666669cm</property>
+                                <property name="width">1cm</property>
                             </column>
                             <column id="4198">
-                                <property name="width">1.4816666666666667cm</property>
+                                <property name="width">1cm</property>
                             </column>
                             <column id="4185">
-                                <property name="width">3.8629166666666666cm</property>
+                                <property name="width">1cm</property>
                             </column>
                             <header>
                                 <row id="4206">
@@ -3162,6 +3146,7 @@ INNER JOIN
                         </table>
                         <table id="4378">
                             <property name="pageBreakBefore">always</property>
+                            <property name="width">7.677083333333333in</property>
                             <property name="dataSet">OperationDetails</property>
                             <list-property name="boundDataColumns">
                                 <structure>
@@ -3297,7 +3282,7 @@ else dataSetRow["planned_end_datet"]</expression>
                                 <property name="width">2.71875in</property>
                             </column>
                             <column id="4392">
-                                <property name="width">5.625in</property>
+                                <property name="width">4.958333333333333in</property>
                             </column>
                             <header>
                                 <row id="4394">
@@ -3506,7 +3491,6 @@ else dataSetRow["planned_end_datet"]</expression>
                                             <property name="rowSpan">1</property>
                                             <table id="4489">
                                                 <property name="pageBreakBefore">auto</property>
-                                                <property name="width">19.552708333333335cm</property>
                                                 <property name="dataSet">ConsumedProductDS1</property>
                                                 <list-property name="visibility">
                                                     <structure>
@@ -3575,17 +3559,15 @@ else dataSetRow["planned_end_datet"]</expression>
                                                         <property name="updateAggregation">true</property>
                                                     </structure>
                                                 </list-property>
-                                                <column id="4525">
-                                                    <property name="width">1.7083333333333333in</property>
-                                                </column>
+                                                <column id="4525"/>
                                                 <column id="4526">
-                                                    <property name="width">8.228541666666667cm</property>
+                                                    <property name="width">3.8541666666666665in</property>
                                                 </column>
                                                 <column id="4527">
-                                                    <property name="width">1.6404166666666669cm</property>
+                                                    <property name="width">0.9270833333333334in</property>
                                                 </column>
                                                 <column id="4528">
-                                                    <property name="width">1.4816666666666667cm</property>
+                                                    <property name="width">0.9270833333333334in</property>
                                                 </column>
                                                 <header>
                                                     <row id="4490">
@@ -3890,7 +3872,7 @@ else dataSetRow["planned_end_datet"]</expression>
                                         <property name="height">0.59375in</property>
                                         <cell id="4445"/>
                                         <cell id="4446">
-                                            <property name="textAlign">center</property>
+                                            <property name="textAlign">right</property>
                                             <image id="4531">
                                                 <property name="height">25.93mm</property>
                                                 <property name="width">37.29mm</property>
