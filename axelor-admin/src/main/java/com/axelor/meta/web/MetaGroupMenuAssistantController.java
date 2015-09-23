@@ -19,6 +19,8 @@ package com.axelor.meta.web;
 
 import org.joda.time.LocalDateTime;
 
+import com.axelor.auth.db.IMessage;
+import com.axelor.i18n.I18n;
 import com.axelor.meta.db.repo.MetaGroupMenuAssistantRepository;
 import com.axelor.meta.service.MetaGroupMenuAssistantService;
 import com.axelor.rpc.ActionRequest;
@@ -47,12 +49,12 @@ public class MetaGroupMenuAssistantController{
 		String errorLog = groupMenuAssistantService.importGroupMenu(groupMenuAssistantRepo.find(groupMenuAssistantId));
 
 		if(errorLog.equals("")){
-			response.setFlash("Import completed succesfully");
+			response.setFlash(I18n.get(IMessage.IMPORT_OK));
 			response.setValue("importDate", LocalDateTime.now());
 		}
 		else{
 			response.setValue("log", errorLog);
-			response.setFlash("Error in import. Please check the log");
+			response.setFlash(I18n.get(IMessage.ERR_IMPORT));
 		}
 
 	}

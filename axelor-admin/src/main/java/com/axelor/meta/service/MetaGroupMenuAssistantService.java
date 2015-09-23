@@ -2,7 +2,6 @@ package com.axelor.meta.service;
 
 import java.io.File;
 import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -11,6 +10,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
 
+import org.apache.commons.io.output.FileWriterWithEncoding;
 import org.joda.time.LocalDateTime;
 
 import au.com.bytecode.opencsv.CSVReader;
@@ -18,16 +18,15 @@ import au.com.bytecode.opencsv.CSVWriter;
 
 import com.axelor.app.AppSettings;
 import com.axelor.auth.db.Group;
+import com.axelor.auth.db.IMessage;
 import com.axelor.auth.db.repo.GroupRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.meta.db.MetaGroupMenuAssistant;
 import com.axelor.meta.db.MetaMenu;
-import com.axelor.meta.db.MetaTranslation;
 import com.axelor.meta.db.repo.MetaGroupMenuAssistantRepository;
 import com.axelor.meta.db.repo.MetaMenuRepository;
-import com.axelor.meta.db.repo.MetaTranslationRepository;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -65,8 +64,9 @@ public class MetaGroupMenuAssistantService {
 		File groupMenuFile = new File(appSettings.get("file.upload.dir"), getFileName(groupMenuAssistant));
 
 		try {
-
-			CSVWriter csvWriter =  new CSVWriter(new FileWriter(groupMenuFile), ';');
+			
+			FileWriterWithEncoding fileWriter = new FileWriterWithEncoding(groupMenuFile, "utf-8");
+			CSVWriter csvWriter =  new CSVWriter(fileWriter, ';');
 			String language = groupMenuAssistant.getLanguage();
 			language = language != null ? language : "en";
 
@@ -138,7 +138,7 @@ public class MetaGroupMenuAssistantService {
 		}
 
 		if(!badGroups.isEmpty()){
-			errorLog += "\n"+String.format(I18n.get("Groups not found: %s"),badGroups);
+			errorLog += "\n"+String.format(I18n.get(IMessage.NO_GROUP),badGroups);
 		}
 
 		return groupMap;
@@ -154,7 +154,7 @@ public class MetaGroupMenuAssistantService {
 			String[] groupRow = csvReader.readNext();
 			if(groupRow == null || groupRow.length < 3){
 				csvReader.close();
-				return I18n.get("Bad import file");
+				return I18n.get(IMessage.BAD_FILE);
 			}
 
 			Map<String,Group> groupMap = checkGroups(groupRow);
@@ -166,7 +166,7 @@ public class MetaGroupMenuAssistantService {
 
 		}catch(Exception e){
 			e.printStackTrace();
-			errorLog += "\n"+String.format(I18n.get("Error in import: %s. Please check server log"), e.getMessage());
+			errorLog += "\n"+String.format(I18n.get(IMessage.ERR_IMPORT_WITH_MSG), e.getMessage());
 		}
 
 		return errorLog;
@@ -193,7 +193,7 @@ public class MetaGroupMenuAssistantService {
 		MetaMenu menu =  menuRepository.all().filter("self.name = ?1", row[0]).fetchOne();
 
 		if(menu == null){
-			errorLog += "\n"+String.format(I18n.get("Menu not found: %s"), row[0]);
+			errorLog += "\n"+String.format(I18n.get(IMessage.NO_MENU), row[0]);
 			return;
 		}
 

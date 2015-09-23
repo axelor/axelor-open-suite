@@ -19,7 +19,6 @@ package com.axelor.auth.service;
 
 import java.io.File;
 import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -31,6 +30,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
 
+import org.apache.commons.io.output.FileWriterWithEncoding;
 import org.joda.time.LocalDateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,6 +40,7 @@ import au.com.bytecode.opencsv.CSVWriter;
 
 import com.axelor.app.AppSettings;
 import com.axelor.auth.db.Group;
+import com.axelor.auth.db.IMessage;
 import com.axelor.auth.db.Permission;
 import com.axelor.auth.db.PermissionAssistant;
 import com.axelor.auth.db.repo.GroupRepository;
@@ -110,8 +111,9 @@ public class PermissionAssistantService {
 		File permFile = new File(appSettings.get("file.upload.dir"), getFileName(assistant));
 
 		try {
-
-			CSVWriter csvWriter =  new CSVWriter(new FileWriter(permFile), ';');
+			
+			FileWriterWithEncoding fileWriter = new FileWriterWithEncoding(permFile, "utf-8");
+			CSVWriter csvWriter =  new CSVWriter(fileWriter, ';');
 			writeGroup(csvWriter, assistant);
 			csvWriter.close();
 
@@ -238,15 +240,15 @@ public class PermissionAssistantService {
 
 			String[] groupRow = csvReader.readNext();
 			if(groupRow == null || groupRow.length < 11){
-				errorLog = I18n.get("Bad import file");
+				errorLog = I18n.get(IMessage.BAD_FILE);
 			}
 
 			String[] headerRow = csvReader.readNext();
 			if(headerRow == null){
-				errorLog =  I18n.get("No headerRow found");
+				errorLog =  I18n.get(IMessage.NO_HEADER);
 			}
 			if(!checkHeaderRow(headerRow)){
-				errorLog =  I18n.get("Bad header row: ")+Arrays.asList(headerRow);
+				errorLog =  I18n.get(IMessage.BAD_HEADER)+Arrays.asList(headerRow);
 			}
 
 			if(!errorLog.equals("")){
@@ -262,7 +264,7 @@ public class PermissionAssistantService {
 
 		} catch (Exception e) {
 			e.printStackTrace();
-			errorLog += "\n"+String.format(I18n.get("Error in import: %s. Please check the server log"), e.getMessage());
+			errorLog += "\n"+String.format(I18n.get(IMessage.ERR_IMPORT_WITH_MSG), e.getMessage());
 		}
 
 		return errorLog;
@@ -295,7 +297,7 @@ public class PermissionAssistantService {
 		}
 
 		if(!badGroups.isEmpty()){
-			errorLog += "\n"+String.format(I18n.get("Groups not found: %s"), badGroups);
+			errorLog += "\n"+String.format(I18n.get(IMessage.NO_GROUP), badGroups);
 		}
 
 		return groupMap;
@@ -306,7 +308,7 @@ public class PermissionAssistantService {
 		MetaModel model = modelRepository.all().filter("self.fullName = ?1", objectName).fetchOne();
 
 		if(model == null){
-			errorLog += "\n"+String.format(I18n.get("Object not found: %s"), objectName);
+			errorLog += "\n"+String.format(I18n.get(IMessage.NO_OBJECT), objectName);
 			return null;
 		}
 
