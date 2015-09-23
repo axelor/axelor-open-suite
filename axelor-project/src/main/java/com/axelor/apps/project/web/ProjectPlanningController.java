@@ -189,12 +189,11 @@ public class ProjectPlanningController {
 		else{
 			projectPlanningLineList = projectPlanningService.populateMyTeamPlanning(planning, user.getActiveTeam());
 		}
-		response.setValue("$projectPlanningLineList", projectPlanningLineList);
+		response.setValue("projectPlanningLineList", projectPlanningLineList);
 	}
 
 	@Transactional
 	public void saveLines(ActionRequest request, ActionResponse response) throws AxelorException{
-
 		List<ProjectPlanningLine> planningLineList =(List<ProjectPlanningLine>) request.getContext().get("projectPlanningLineList");
 		if(planningLineList != null){
 			for (ProjectPlanningLine projectPlanningLine : planningLineList) {
