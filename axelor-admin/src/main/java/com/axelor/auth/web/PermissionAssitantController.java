@@ -19,8 +19,10 @@ package com.axelor.auth.web;
 
 import org.joda.time.LocalDateTime;
 
+import com.axelor.auth.db.IMessage;
 import com.axelor.auth.db.repo.PermissionAssistantRepository;
 import com.axelor.auth.service.PermissionAssistantService;
+import com.axelor.i18n.I18n;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
@@ -50,10 +52,10 @@ public class PermissionAssitantController {
 		response.setValue("log", errors);
 
 		if(errors.equals("")){
-			response.setFlash("Imported completed succesfully");
+			response.setFlash(I18n.get(IMessage.IMPORT_OK));
 		}
 		else{
-			response.setFlash("Error in import. Please check log");
+			response.setFlash(I18n.get(IMessage.ERR_IMPORT));
 		}
 
 	}
