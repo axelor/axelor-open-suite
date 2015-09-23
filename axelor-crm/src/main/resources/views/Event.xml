@@ -574,7 +574,7 @@
 	
 	
 	<action-validate name="action-event-validate-emails-sent">
-		<alert message="Emails will be sent to all guests" if="internalGuestSet.size &gt; 0 || externalGuestSet.size &gt; 0"/>
+		<alert message="Emails will be sent to all guests" if="internalGuestSet?.size &gt; 0 || externalGuestSet?.size &gt; 0"/>
 	</action-validate>
 	
 <!-- 	FILTERS -->

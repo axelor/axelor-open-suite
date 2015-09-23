@@ -33,9 +33,11 @@ public class CustomerCreditLineController {
 	
 	public void updateLinesFromPartner(ActionRequest request, ActionResponse response)  {
 		Partner partnerView = request.getContext().asType(Partner.class);
-		Partner partner = partnerRepo.find(partnerView.getId());
-		Map<String,Object> map = customerCreditLineService.updateLines(partner);
-		response.setValues(map);
+		if(partnerView.getId() != null && partnerView.getId() > 0){
+			Partner partner = partnerRepo.find(partnerView.getId());
+			Map<String,Object> map = customerCreditLineService.updateLines(partner);
+			response.setValues(map);
+		}
 	}
 	
 	public void updateLinesFromSaleOrder(ActionRequest request, ActionResponse response)  {
