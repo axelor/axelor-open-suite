@@ -65,6 +65,7 @@ public class InvoiceServiceImpl implements InvoiceService  {
 		this.ventilateFactory = ventilateFactory;
 		this.cancelFactory = cancelFactory;
 		this.alarmEngineService = alarmEngineService;
+		this.invoiceRepo = invoiceRepo;
 	}
 	
 	
