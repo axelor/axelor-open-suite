@@ -12,6 +12,7 @@ import com.axelor.apps.project.db.repo.ProjectPlanningRepository;
 import com.axelor.apps.project.service.ProjectPlanningService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
+import com.axelor.db.EntityHelper;
 import com.axelor.exception.AxelorException;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
@@ -189,7 +190,7 @@ public class ProjectPlanningController {
 		else{
 			projectPlanningLineList = projectPlanningService.populateMyTeamPlanning(planning, user.getActiveTeam());
 		}
-		response.setValue("projectPlanningLineList", projectPlanningLineList);
+		response.setValue("$projectPlanningLineList", projectPlanningLineList);
 	}
 
 	@Transactional
@@ -197,6 +198,7 @@ public class ProjectPlanningController {
 		List<ProjectPlanningLine> planningLineList =(List<ProjectPlanningLine>) request.getContext().get("projectPlanningLineList");
 		if(planningLineList != null){
 			for (ProjectPlanningLine projectPlanningLine : planningLineList) {
+				projectPlanningLine = EntityHelper.getEntity(projectPlanningLine);
 				if(projectPlanningLine.getToSave()){
 					projectPlanningLineRepository.save(projectPlanningLine);
 				}
