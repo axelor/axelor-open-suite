@@ -67,7 +67,7 @@
 	
 	
 	<menuitem name="sc-root-purchase-conf" parent="sc-root-purchase"
-		title="Configuration"/>
+		title="Configuration" order="300"/>
 		
 	<menuitem name="sc-root-purchase-conf-price-list" parent="sc-root-purchase-conf"
 		title="Price lists" action="sc.root.purchase.conf.price.list" />
