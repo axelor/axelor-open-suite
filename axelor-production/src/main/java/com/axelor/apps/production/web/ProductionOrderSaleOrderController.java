@@ -46,7 +46,7 @@ public class ProductionOrderSaleOrderController {
 		SaleOrder saleOrder = request.getContext().asType( SaleOrder.class );
 
 		List<Long> productionOrderIdList = productionOrderSaleOrderService.generateProductionOrder(saleOrder);
-		if (!generalService.getGeneral().getProductionOrderGenerationAuto()
+		if (generalService.getGeneral().getProductionOrderGenerationAuto()
 				&& !productionOrderIdList.isEmpty()){
 			response.setView(ActionView
 							.define(I18n.get("Production order"))

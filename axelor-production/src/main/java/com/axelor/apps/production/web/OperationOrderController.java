@@ -27,6 +27,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.joda.time.Days;
+import org.joda.time.Hours;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
 import org.joda.time.Minutes;
@@ -270,26 +271,24 @@ public class OperationOrderController {
 			for (String key : machineNameList) {
 				if(keyList.contains(key)){
 					Map<String, Object> dataMap = new HashMap<String, Object>();
-					/*if(Hours.hoursBetween(fromDateTime, toDateTime).getHours()>24){
-						dataMap.put("dateTime",(Object)itDateTime.toString("dd/MM/yyyy"));
+					if(Hours.hoursBetween(fromDateTime, toDateTime).getHours()>24){
+						dataMap.put("dateTime",(Object)itDateTime.toString("dd/MM/yyyy HH:mm"));
 					}
 					else{
 						dataMap.put("dateTime",(Object)itDateTime.toString("HH:mm"));
-					}*/
-					dataMap.put("dateTime",(Object)itDateTime.toString());//remove when ticket #4058 ok and uncomment previous lines
+					}
 					dataMap.put("charge", (Object)map.get(key));
 					dataMap.put("machine", (Object) key);
 					dataList.add(dataMap);
 				}
 				else{
 					Map<String, Object> dataMap = new HashMap<String, Object>();
-					/*if(Hours.hoursBetween(fromDateTime, toDateTime).getHours()>24){
-						dataMap.put("dateTime",(Object)itDateTime.toString("dd/MM/yyyy"));
+					if(Hours.hoursBetween(fromDateTime, toDateTime).getHours()>24){
+						dataMap.put("dateTime",(Object)itDateTime.toString("dd/MM/yyyy HH:mm"));
 					}
 					else{
 						dataMap.put("dateTime",(Object)itDateTime.toString("HH:mm"));
-					}*/
-					dataMap.put("dateTime",(Object)itDateTime.toString());//remove when ticket #4058 ok and uncomment previous lines
+					}
 					dataMap.put("charge", (Object)BigDecimal.ZERO);
 					dataMap.put("machine", (Object) key);
 					dataList.add(dataMap);
@@ -344,27 +343,24 @@ public class OperationOrderController {
 			for (String key : machineNameList) {
 				if(keyList.contains(key)){
 					Map<String, Object> dataMap = new HashMap<String, Object>();
-					/*if(Hours.hoursBetween(fromDateTime, toDateTime).getHours()>24){
-						dataMap.put("dateTime",(Object)itDateTime.toString("dd/MM/yyyy"));
+					if(Hours.hoursBetween(fromDateTime, toDateTime).getHours()>24){
+						dataMap.put("dateTime",(Object)itDateTime.toString("dd/MM/yyyy HH:mm"));
 					}
 					else{
 						dataMap.put("dateTime",(Object)itDateTime.toString("HH:mm"));
-					}*/
-					
-					dataMap.put("dateTime",(Object)itDateTime.toString());//remove when ticket #4058 ok and uncomment previous lines
+					}
 					dataMap.put("charge", (Object)map.get(key).multiply(new BigDecimal(100)));
 					dataMap.put("machine", (Object) key);
 					dataList.add(dataMap);
 				}
 				else{
 					Map<String, Object> dataMap = new HashMap<String, Object>();
-					/*if(Hours.hoursBetween(fromDateTime, toDateTime).getHours()>24){
-						dataMap.put("dateTime",(Object)itDateTime.toString("dd/MM/yyyy"));
+					if(Hours.hoursBetween(fromDateTime, toDateTime).getHours()>24){
+						dataMap.put("dateTime",(Object)itDateTime.toString("dd/MM/yyyy HH:mm"));
 					}
 					else{
 						dataMap.put("dateTime",(Object)itDateTime.toString("HH:mm"));
-					}*/
-					dataMap.put("dateTime",(Object)itDateTime.toString());//remove when ticket #4058 ok and uncomment previous lines
+					}
 					dataMap.put("charge", (Object)BigDecimal.ZERO);
 					dataMap.put("machine", (Object) key);
 					dataList.add(dataMap);

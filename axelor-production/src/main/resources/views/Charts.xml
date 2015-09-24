@@ -10,7 +10,7 @@
 	 		<field type="datetime" name="toDateTime" title="To Date"/>
 	 	</search-fields>
 		<dataset type="rpc">com.axelor.apps.production.web.OperationOrderController:chargeByMachineHours</dataset>
-		<category key="dateTime" type="date" />
+		<category key="dateTime" type="text" />
 		<series key="charge" groupBy="machine" type="bar"/>
 	</chart>
 	
@@ -21,7 +21,7 @@
 	 		<field type="datetime" name="toDateTime" title="To Date"/>
 	 	</search-fields>
 		<dataset type="rpc">com.axelor.apps.production.web.OperationOrderController:chargeByMachineMinutes</dataset>
-		<category key="dateTime" type="date" />
+		<category key="dateTime" type="text" />
 		<series key="charge" groupBy="machine" type="line"/>
 	</chart>
 	
