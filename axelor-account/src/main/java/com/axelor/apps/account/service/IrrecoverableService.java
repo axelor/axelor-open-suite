@@ -176,7 +176,7 @@ public class IrrecoverableService{
 	 */
 	public List<Invoice> getInvoiceList(Company company)   {
 		return invoiceRepo.all().filter("self.irrecoverableStateSelect = ?1 AND self.company = ?2 AND self.statusSelect = ?3 " +
-				"AND self.inTaxTotalRemaining > 0 AND self.rejectMoveLine IS NULL ORDER BY self.dueDate ASC",
+				"AND self.companyInTaxTotalRemaining > 0 AND self.rejectMoveLine IS NULL ORDER BY self.dueDate ASC",
 				InvoiceRepository.IRRECOVERABLE_STATUS_TO_PASS_IN_IRRECOUVRABLE, company, InvoiceRepository.STATUS_VENTILATED).fetch();
 	}
 
@@ -188,7 +188,7 @@ public class IrrecoverableService{
 	 */
 	public List<Invoice> getRejectInvoiceList(Company company)   {
 		return invoiceRepo.all().filter("self.irrecoverableStateSelect = ?1 AND self.company = ?2 AND self.statusSelect = ?3 " +
-				"AND self.inTaxTotalRemaining = 0 AND self.rejectMoveLine IS NOT NULL ORDER BY self.dueDate ASC",
+				"AND self.companyInTaxTotalRemaining = 0 AND self.rejectMoveLine IS NOT NULL ORDER BY self.dueDate ASC",
 				InvoiceRepository.IRRECOVERABLE_STATUS_TO_PASS_IN_IRRECOUVRABLE, company, InvoiceRepository.STATUS_VENTILATED).fetch();
 	}
 

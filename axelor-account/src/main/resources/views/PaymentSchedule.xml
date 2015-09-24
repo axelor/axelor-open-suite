@@ -36,7 +36,7 @@
 		</panel>
 		
 		<panel-related title="Invoices" field="invoiceSet" grid-view="invoice-account-grid" form-view="invoice-form" 
-			domain="self.partner = :partner and self.schedulePaymentOk = 'f' and self.company=:company and self.statusSelect = 3 and self.inTaxTotalRemaining > 0.0 AND self.currency = :currency"
+			domain="self.partner = :partner and self.schedulePaymentOk = 'f' and self.company=:company and self.statusSelect = 3 and self.companyInTaxTotalRemaining > 0.0 AND self.currency = :currency"
 			readonlyIf="statusSelect != 1" onChange="action-payment-schedule-record-in-tax-amount" />
 			
 		<panel-related title="Payment Schedule Line" field="paymentScheduleLineList" grid-view="payment-schedule-line-payment-schedule-grid" form-view="payment-schedule-line-payment-schedule-form"
@@ -94,7 +94,7 @@
 	<action-record name="action-payment-schedule-record-in-tax-amount"
 		model="com.axelor.apps.account.db.PaymentSchedule">
 		<field name="inTaxAmount"
-			expr="eval: invoiceSet?.collect(){ it?.inTaxTotalRemaining }?.sum()" />
+			expr="eval: invoiceSet?.collect(){ it?.companyInTaxTotalRemaining }?.sum()" />
 	</action-record>
 
 
