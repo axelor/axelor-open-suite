@@ -160,6 +160,15 @@
 		<view type="form" name="tracking-number-configuration-form"/>
 	</action-view>
 	
+	<menuitem name="referential-conf-industry-sector-config" parent="referential-conf"
+		title="Industry sectors" action="referential.conf.industry.sector.config" />
+
+	<action-view name="referential.conf.industry.sector.config" title="Industry sectors"
+		model="com.axelor.apps.base.db.IndustrySector" >
+		<view type="grid" name="industry-sector-grid"/>
+		<view type="form" name="industry-sector-form"/>
+	</action-view>
+	
 	
 	<menuitem name="referential-report" parent="referential-root" order="90"
 		title="Reportings"/>

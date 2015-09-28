@@ -76,7 +76,7 @@ public class AccountingSituationService	{
 				if(!checkAccountingSituationList(accountingSituationList, company)) {
 
 					AccountingSituation accountingSituation = this.createAccountingSituation(company);
-
+					accountingSituation.setPartner(partner);
 					accountingSituationList.add(accountingSituation);
 					
 				}

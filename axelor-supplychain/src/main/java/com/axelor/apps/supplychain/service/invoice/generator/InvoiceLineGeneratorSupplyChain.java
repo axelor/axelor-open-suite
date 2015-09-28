@@ -72,6 +72,8 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
 			this.taxLine = saleOrderLine.getTaxLine();
 			this.discountTypeSelect = saleOrderLine.getDiscountTypeSelect();
 			this.groupingLine = saleOrderLine.getGroupingLine();
+			this.exTaxTotal = saleOrderLine.getExTaxTotal();
+			this.inTaxTotal = saleOrderLine.getInTaxTotal();
 		} else if (purchaseOrderLine != null){
 			this.purchaseOrderLine = purchaseOrderLine;
 			this.discountAmount = purchaseOrderLine.getDiscountAmount();
@@ -79,6 +81,8 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
 			this.priceDiscounted = purchaseOrderLine.getPriceDiscounted();
 			this.taxLine = purchaseOrderLine.getTaxLine();
 			this.discountTypeSelect = purchaseOrderLine.getDiscountTypeSelect();
+			this.exTaxTotal = purchaseOrderLine.getExTaxTotal();
+			this.inTaxTotal = purchaseOrderLine.getInTaxTotal();
 		}
 
 		if(stockMove != null){

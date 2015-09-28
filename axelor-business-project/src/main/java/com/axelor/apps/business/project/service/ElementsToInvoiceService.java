@@ -35,8 +35,8 @@ public class ElementsToInvoiceService {
 		Product product = elementsToInvoice.getProduct();
 
 		InvoiceLineGenerator invoiceLineGenerator = new InvoiceLineGenerator(invoice, product, product.getName(), elementsToInvoice.getSalePrice(),
-				null,elementsToInvoice.getQty(),elementsToInvoice.getUnit(),priority,BigDecimal.ZERO,IPriceListLine.AMOUNT_TYPE_NONE,
-				elementsToInvoice.getSalePrice().multiply(elementsToInvoice.getQty()),null,false)  {
+					elementsToInvoice.getSalePrice(),null,elementsToInvoice.getQty(),elementsToInvoice.getUnit(), null,priority,BigDecimal.ZERO,IPriceListLine.AMOUNT_TYPE_NONE,
+					elementsToInvoice.getSalePrice().multiply(elementsToInvoice.getQty()), null, null,false)  {
 
 			@Override
 			public List<InvoiceLine> creates() throws AxelorException {

@@ -138,53 +138,6 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
         this.accountManagementServiceImpl = new AccountManagementServiceImpl();
     }
 
-	protected InvoiceLineGenerator( Invoice invoice, Product product, String productName, BigDecimal price, String description, BigDecimal qty,
-			Unit unit, TaxLine taxLine, int sequence, BigDecimal discountAmount, int discountTypeSelect, BigDecimal exTaxTotal,
-			GroupingLine groupingLine, boolean isTaxInvoice) {
-
-        this.invoice = invoice;
-        this.product = product;
-        this.productName = productName;
-        this.price = price;
-        this.description = description;
-        this.qty = qty;
-        this.unit = unit;
-        this.taxLine = taxLine;
-        this.discountTypeSelect = discountTypeSelect;
-        this.discountAmount = discountAmount;
-        this.sequence = sequence;
-        this.exTaxTotal = exTaxTotal;
-        this.groupingLine = groupingLine;
-        this.isTaxInvoice = isTaxInvoice;
-        this.today = Beans.get(GeneralService.class).getTodayDate();
-        this.currencyService = new CurrencyService(this.today);
-        this.accountManagementServiceImpl = new AccountManagementServiceImpl();
-    }
-
-	protected InvoiceLineGenerator( Invoice invoice, Product product, String productName, BigDecimal price, String description, BigDecimal qty,
-			Unit unit, int sequence, BigDecimal discountAmount, int discountTypeSelect, BigDecimal exTaxTotal,
-			GroupingLine groupingLine, boolean isTaxInvoice) {
-
-
-
-        this.invoice = invoice;
-        this.product = product;
-        this.productName = productName;
-        this.price = price;
-        this.description = description;
-        this.qty = qty;
-        this.unit = unit;
-        this.sequence = sequence;
-        this.discountTypeSelect = discountTypeSelect;
-        this.discountAmount = discountAmount;
-        this.exTaxTotal = exTaxTotal;
-        this.groupingLine = groupingLine;
-        this.isTaxInvoice = isTaxInvoice;
-        this.today = Beans.get(GeneralService.class).getTodayDate();
-        this.currencyService = new CurrencyService(this.today);
-        this.accountManagementServiceImpl = new AccountManagementServiceImpl();
-    }
-
 	protected InvoiceLineGenerator( Invoice invoice, Product product, String productName, String description, BigDecimal qty,
 			Unit unit, int sequence, boolean isTaxInvoice) {
 		this.invoice = invoice;

@@ -32,8 +32,8 @@ public class AnalyticMoveLineService {
 
 		Product product = analyticMoveLine.getProduct();
 		InvoiceLineGenerator invoiceLineGenerator = new InvoiceLineGenerator(invoice, product, product.getName(), product.getSalePrice().multiply(new BigDecimal(-1)),
-				null,analyticMoveLine.getQte(),product.getUnit(),10,BigDecimal.ZERO,IPriceListLine.AMOUNT_TYPE_NONE,
-				product.getSalePrice().multiply(new BigDecimal(-1)).multiply(analyticMoveLine.getQte()),null,false)  {
+					product.getSalePrice().multiply(new BigDecimal(-1)),null,analyticMoveLine.getQte(),product.getUnit(), null,10,BigDecimal.ZERO,IPriceListLine.AMOUNT_TYPE_NONE,
+					null, null, null,false)  {
 
 			@Override
 			public List<InvoiceLine> creates() throws AxelorException {

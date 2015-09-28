@@ -88,8 +88,8 @@ public class PurchaseOrderInvoiceProjectServiceImpl extends PurchaseOrderInvoice
 
 
 			InvoiceLineGenerator invoiceLineGenerator = new InvoiceLineGenerator(invoice, product, product.getName(), price,
-					purchaseOrderLine.getDescription(),purchaseOrderLine.getQty(),purchaseOrderLine.getUnit(),InvoiceLineGenerator.DEFAULT_SEQUENCE,discountAmount,discountTypeSelect,
-					price.multiply(purchaseOrderLine.getQty()), null, false)   {
+						price,purchaseOrderLine.getDescription(),purchaseOrderLine.getQty(),purchaseOrderLine.getUnit(), null,InvoiceLineGenerator.DEFAULT_SEQUENCE,discountAmount,discountTypeSelect,
+						null, null, null,false)  {
 				@Override
 				public List<InvoiceLine> creates() throws AxelorException {
 
@@ -106,8 +106,8 @@ public class PurchaseOrderInvoiceProjectServiceImpl extends PurchaseOrderInvoice
 		else if(invoice.getPartner().getChargeBackPurchaseSelect() == PartnerRepository.CHARGING_BACK_TYPE_PERCENTAGE){
 			price = price.multiply(invoice.getPartner().getChargeBackPurchase().divide(new BigDecimal(100), generalService.getNbDecimalDigitForUnitPrice(), BigDecimal.ROUND_HALF_UP)).setScale(generalService.getNbDecimalDigitForUnitPrice(), BigDecimal.ROUND_HALF_UP);
 			InvoiceLineGenerator invoiceLineGenerator = new InvoiceLineGenerator(invoice, product, product.getName(), price,
-					purchaseOrderLine.getDescription(),purchaseOrderLine.getQty(),purchaseOrderLine.getUnit(),InvoiceLineGenerator.DEFAULT_SEQUENCE,discountAmount,discountTypeSelect,
-					price.multiply(purchaseOrderLine.getQty()), null, false)   {
+						price,purchaseOrderLine.getDescription(),purchaseOrderLine.getQty(),purchaseOrderLine.getUnit(), null,InvoiceLineGenerator.DEFAULT_SEQUENCE,discountAmount,discountTypeSelect,
+						null, null, null,false)  {
 				@Override
 				public List<InvoiceLine> creates() throws AxelorException {
 

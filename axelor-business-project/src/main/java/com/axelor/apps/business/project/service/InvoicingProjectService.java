@@ -230,8 +230,8 @@ public class InvoicingProjectService {
 		}
 
 		InvoiceLineGenerator invoiceLineGenerator = new InvoiceLineGenerator(invoice, product, projectTask.getName(), projectTask.getPrice(),
-				null,projectTask.getQty(),projectTask.getUnit(),priority,BigDecimal.ZERO,IPriceListLine.AMOUNT_TYPE_NONE,
-				projectTask.getPrice().multiply(projectTask.getQty()),null,false)  {
+					projectTask.getPrice(),null,projectTask.getQty(),projectTask.getUnit(), null,priority,BigDecimal.ZERO,IPriceListLine.AMOUNT_TYPE_NONE,
+					projectTask.getPrice().multiply(projectTask.getQty()), null, null,false)  {
 
 			@Override
 			public List<InvoiceLine> creates() throws AxelorException {

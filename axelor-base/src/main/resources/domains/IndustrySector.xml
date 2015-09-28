@@ -3,16 +3,13 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_4.0.xsd">
 
-  <module name="purchase" package="com.axelor.apps.purchase.db"/>
+  <module name="base" package="com.axelor.apps.base.db"/>
 
-  <entity name="PurchaseOrderLine" lang="java">
+  <entity name="IndustrySector" lang="java" cachable="true">
+     
+    <integer name="importId"/>
+    <string name="name" title="Name" required="true" unique="true"/>
   
-  	<decimal name="amountInvoiced" title="Amount invoiced W.T." readonly="true"/>
-
-  	
-	<boolean name="toInvoice"/>
-	<boolean name="invoiced" readonly="true"/>
-	  	
   </entity>
-
+  
 </domain-models>

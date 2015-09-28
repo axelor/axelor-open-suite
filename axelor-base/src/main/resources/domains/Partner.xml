@@ -64,7 +64,7 @@
 	<many-to-one name="team" ref="com.axelor.apps.base.db.Team" title="Team" help="true"/>
 	<many-to-one name="reportsTo" ref="com.axelor.apps.base.db.Partner" title="Reports to" massUpdate="true" help="true"/>
     <string name="description" title="Description"  large="true"/>
-   	<integer name="industrySectorSelect" title="Industry" selection="partner.industry.sectory.select" nullable="true"/> 
+   	<many-to-one name="industrySector" title="Industry" ref="com.axelor.apps.base.db.IndustrySector"/> 
 	<integer name="nbrEmployees" title="Employees (Nbr)"/>
 	<integer name="saleTurnover" title="Turnover"/>
 	<string name="registrationCode" title="Registration code" help="true"/>
