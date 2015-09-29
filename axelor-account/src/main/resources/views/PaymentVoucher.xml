@@ -26,7 +26,7 @@
 			 <field name="ref" readonly="true" colSpan="4"/>
 			 <field name="operationTypeSelect" colSpan="4" onChange="action-payment-voucher-hidden-fields-if-purchase"/>
 			 <field name="user" colSpan="4" form-view="user-form" grid-view="user-grid"/>
-			 <field name="paymentDateTime" colSpan="4"/>
+			 <field name="paymentDateTime" colSpan="4" required="true"/>
 			 <field name="company" widget="SuggestBox" colSpan="4" form-view="company-form" grid-view="company-grid"/>
 			 <field name="cashRegister" colSpan="4" grid-view="cash-register-grid" form-view="cash-register-form"/>
 			 <field name="hasAutoInput" colSpan="4" hidden="true"/>
@@ -55,7 +55,6 @@
 		
 		<panel sidebar="true" title="Actions" stacked="true">
 			<button name="confirmPaymentVoucher" title="Confirm payment" onClick="action-group-account-payment-voucher-confirm-click" showIf="statusSelect == 1"/>
-			<button name="showMoveLines" title="Show move lines" onClick="action-payment-voucher-view-show-move-lines" showIf="statusSelect == 2"/>
 			<button name="printPaymentVoucher" title="Print receipt" icon="fa-print" onClick="save,com.axelor.apps.account.web.PaymentVoucherController:printPaymentVoucher" showIf="statusSelect == 2"/>
 			<button name="loadMoveLines" title="Load invoice and display other invoices to pay"   onClick="save,com.axelor.apps.account.web.PaymentVoucherController:loadMoveLines,save" showIf="statusSelect == 1"/>
 			<button name="loadSelectedLines" title="Load selected lines"   onClick="com.axelor.apps.account.web.PaymentVoucherController:loadSelectedLines,save" showIf="statusSelect == 1"/>
@@ -105,7 +104,7 @@
 	    <action name="action-pv-hide-confirm-button"/>
 	    <action name="action-pv-hide-rejectToPay"/>
 	    <action name="action-pv-hide-invoiceToPay"/>
-	    <action name="action-record-fill-date-time-pv"/>
+	    <action name="action-payment-voucher-getDateTime"/>
 	    <action name="action-pv-attrs-hidden-bankCardTransactionNumber"/>
 	    <action name="action-attrs-payment-voucher-hidden-receipt"/>
 	    <action name="action-attrs-payment-voucher-readonly-status"/>
@@ -117,7 +116,6 @@
 	    <action name="action-pv-hide-confirm-button"/>
 	    <action name="action-pv-hide-rejectToPay"/>
 	    <action name="action-pv-hide-invoiceToPay"/>
-	    <action name="action-record-fill-date-time-pv"/>
 	    <action name="action-pv-attrs-hidden-bankCardTransactionNumber"/>
 	    <action name="action-attrs-payment-voucher-hidden-receipt"/>
 	    <action name="action-attrs-payment-voucher-readonly-status"/>
@@ -170,9 +168,6 @@
     	<call class="com.axelor.apps.account.web.PaymentVoucherController" method="confirmPaymentVoucher"/>
     </action-method>
     
- 	<action-record name="action-record-fill-date-time-pv" model="com.axelor.apps.account.db.PaymentVoucher">
-   		<field name="paymentDateTime" expr="action:action-payment-voucher-getDateTime" if="id == null"/>
-	</action-record>
  
   	<action-record name="action-record-fill-paidAmount-fromMoveLine" model="com.axelor.apps.account.db.PaymentVoucher">
    		<field name="paidAmount" expr="eval: moveLine?.amountRemaining"/>
@@ -239,8 +234,8 @@
 	</action-attrs>
 	
 	<action-attrs name="action-attrs-payment-voucher-hidden-receipt">
-		<attribute name="hidden" for="receiptNo" expr="eval: paymentMode?.bankJournal?.editReceiptOk == false || statusSelect != 2"/>
-		<attribute name="hidden" for="printPaymentVoucher" expr="eval: paymentMode?.bankJournal?.editReceiptOk == false || statusSelect != 2"/>
+		<attribute name="hidden" for="receiptNo" expr="eval: __repo__.of(AccountManagement).all().filter('self.company.id = ?1 AND self.paymentMode.id = ?2',company.id,paymentMode.id).fetchOne()?.journal?.editReceiptOk == false || statusSelect != 2"/>
+		<attribute name="hidden" for="printPaymentVoucher" expr="eval: __repo__.of(AccountManagement).all().filter('self.company.id = ?1 AND self.paymentMode.id = ?2',company.id,paymentMode.id).fetchOne()?.journal?.editReceiptOk == false || statusSelect != 2"/>
 	</action-attrs>
 	
 	<action-attrs name="action-attrs-payment-voucher-readonly-status">
@@ -272,9 +267,9 @@
 		<field name="cashRegister" expr="eval: user?.activeCashRegister"/>
 	</action-record>
 	
-	<action-method name="action-payment-voucher-getDateTime">
-    	<call class="__config__.generalService" method="getTodayDateTime()"/>
-   	</action-method>
+	<action-record name="action-payment-voucher-getDateTime" model="com.axelor.apps.account.db.PaymentVoucher">
+    	<field name="paymentDateTime" expr="eval: __config__.generalService.getTodayDateTime()"/>
+   	</action-record>
    	
    	<action-view name="account.root.periodic.processing.account.voucher.paybox.email" title="Email used by Paybox"
 		model="com.axelor.apps.account.db.PayboxEmail">

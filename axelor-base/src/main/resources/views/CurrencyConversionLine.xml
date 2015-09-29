@@ -60,10 +60,10 @@
     	<action name="action-currency-conversion-line-set-exchange-rate"/>
     	<action name="action-currency-conversion-line-method-convert"/>
     </action-group>
-    
-    <action-method name="action-currency-conversion-line-method-getTodayDate">
-    	<call class="__config__.generalService" method="getTodayDate()"/>
-   	</action-method>
+   	
+   	<action-record name="action-currency-conversion-line-method-getTodayDate" model="com.axelor.apps.base.db.CurrencyConversionLine">
+    	<field name="fromDate" expr="eval: __config__.generalService.getTodayDate()"/>
+   	</action-record>
     
     <action-method name="action-currency-conversion-line-method-check-date">
     	<call class="com.axelor.apps.base.web.CurrencyConversionLineController" method="checkDate"/>
