@@ -20,7 +20,7 @@
     	<panel>
 	        <field name="location" form-view="location-form" grid-view="location-grid"/>
 			<field name="typeSelect"/>
-	        <field name="product" domain="self.productTypeSelect == storable" form-view="product-form" grid-view="product-grid"/>
+	        <field name="product" domain="self.productTypeSelect = 'storable'" form-view="product-form" grid-view="product-grid"/>
 			<field name="orderAlertSelect"/>
 	        <field name="minQty"/>
 	        <field name="reOrderQty"/>
