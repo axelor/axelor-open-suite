@@ -3967,6 +3967,12 @@ else 'Subscriptions'</value>
                 <cell id="3976"/>
             </row>
             <row id="3977">
+                <list-property name="visibility">
+                    <structure>
+                        <property name="format">all</property>
+                        <expression name="valueExpr" type="javascript">row._outer["subscription"]</expression>
+                    </structure>
+                </list-property>
                 <cell id="3978">
                     <property name="colSpan">3</property>
                     <property name="rowSpan">5</property>
@@ -4305,6 +4311,12 @@ else 'Subscriptions'</value>
                 </cell>
             </row>
             <row id="4157">
+                <list-property name="visibility">
+                    <structure>
+                        <property name="format">all</property>
+                        <expression name="valueExpr" type="javascript">row._outer["subscription"]</expression>
+                    </structure>
+                </list-property>
                 <cell id="4161"/>
                 <cell id="4162">
                     <property name="colSpan">2</property>
@@ -4390,6 +4402,12 @@ else 'Subscriptions'</value>
                 </cell>
             </row>
             <row id="4166">
+                <list-property name="visibility">
+                    <structure>
+                        <property name="format">all</property>
+                        <expression name="valueExpr" type="javascript">row._outer["subscription"]</expression>
+                    </structure>
+                </list-property>
                 <cell id="4170"/>
                 <cell id="4171">
                     <property name="colSpan">2</property>
@@ -4471,6 +4489,12 @@ else 'Subscriptions'</value>
                 </cell>
             </row>
             <row id="3984">
+                <list-property name="visibility">
+                    <structure>
+                        <property name="format">all</property>
+                        <expression name="valueExpr" type="javascript">row._outer["subscription"]</expression>
+                    </structure>
+                </list-property>
                 <cell id="3988"/>
                 <cell id="4077">
                     <property name="colSpan">2</property>
@@ -4553,6 +4577,12 @@ else 'Subscriptions'</value>
             </row>
             <row id="3991">
                 <property name="height">0.5in</property>
+                <list-property name="visibility">
+                    <structure>
+                        <property name="format">all</property>
+                        <expression name="valueExpr" type="javascript">row._outer["subscription"]</expression>
+                    </structure>
+                </list-property>
                 <cell id="3995"/>
                 <cell id="4078">
                     <property name="colSpan">2</property>
