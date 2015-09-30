@@ -34,26 +34,6 @@
             <property name="id">209</property>
             <expression name="value" type="javascript">params["DefaultDriver"].value</expression>
         </structure>
-        <structure>
-            <property name="name">odaAutoCommit</property>
-            <property name="id">209</property>
-        </structure>
-        <structure>
-            <property name="name">odaIsolationMode</property>
-            <property name="id">209</property>
-        </structure>
-        <structure>
-            <property name="name">odaJndiName</property>
-            <property name="id">209</property>
-        </structure>
-        <structure>
-            <property name="name">OdaConnProfileName</property>
-            <property name="id">209</property>
-        </structure>
-        <structure>
-            <property name="name">OdaConnProfileStorePath</property>
-            <property name="id">209</property>
-        </structure>
     </list-property>
     <property name="units">cm</property>
     <property name="layoutPreference">auto layout</property>
@@ -169,8 +149,8 @@
                     <value>ILYNN</value>
                 </ex-property>
             </list-property>
-            <property name="odaDriverClass">com.mysql.jdbc.Driver</property>
-            <property name="odaURL">jdbc:mysql://localhost:3306</property>
+            <property name="odaDriverClass">org.postgresql.Driver</property>
+            <property name="odaURL">jdbc:postgresql://localhost:5432/</property>
         </oda-data-source>
     </data-sources>
     <data-sets>
@@ -756,7 +736,7 @@
             <xml-property name="queryText"><![CDATA[select
 Lead.id as id,MetaFile.file_path as logopath, Lead.created_on, Lead.updated_on, Lead.created_by, Lead.updated_by, Lead.title_select,
 Lead.name as lead_name, Lead.first_name as lead_first_name, Lead.status_select, Source.name AS source_name,
-SelectItem.title as industry_sector_select, Lead.fax,messageEmailAddress.address AS email, Lead.fixed_phone, Lead.mobile_phone, Lead.web_site, Lead.enterprise_name,
+IndustrySector.name as industry_sector_select, Lead.fax,messageEmailAddress.address AS email, Lead.fixed_phone, Lead.mobile_phone, Lead.web_site, Lead.enterprise_name,
 Lead.primary_address, Lead.primary_state, Lead.primary_city, Lead.primary_postal_code, PrimaryCountry.name as primary_country,
 Lead.other_address, Lead.other_state, Lead.other_city, Lead.other_postal_code, OtherCountry.name as other_country,
 Lead.job_title, AuthUser.full_name as user_name, Company.name as company_name
@@ -764,14 +744,12 @@ from crm_lead as Lead
 left join auth_user as AuthUser on (Lead.user_id = AuthUser.id)
 left join base_company as Company on (AuthUser.active_company = Company.id)
 left join meta_file as MetaFile on (MetaFile.id = Company.logo)
-left join base_partner as Partner on (AuthUser.partner = Partner.id)
+left join base_partner as Partner on (Lead.partner = Partner.id)
+left join base_industry_sector as IndustrySector on (IndustrySector.id = Lead.industry_sector)
 left join base_source as Source on (Lead.source = Source.id)
 left join base_country as PrimaryCountry on (Lead.primary_country = PrimaryCountry.id)
 left join base_country as OtherCountry on (Lead.other_country = OtherCountry.id)
-left join message_email_address as messageEmailAddress On messageEmailAddress.id=Lead.email_address
-left join meta_select as MetaSelect on (MetaSelect.name = 'partner.industry.sectory.select')
-left join meta_select_item as SelectItem on (SelectItem.select_id = MetaSelect.id and cast(SelectItem.value as decimal) = Partner.industry_sector_select)
-]]></xml-property>
+left join message_email_address as messageEmailAddress On messageEmailAddress.id=Lead.email_address]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
   <Version>2.0</Version>

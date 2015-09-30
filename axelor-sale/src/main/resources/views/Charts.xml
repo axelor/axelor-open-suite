@@ -690,18 +690,17 @@
 		<dataset type="jpql">
 			SELECT
 				SUM(self.exTaxTotal) AS _amount,
-				item.title AS _industry_sector
+				industrySector.name AS _industry_sector
 			FROM
 				SaleOrderLine self,
-				MetaSelectItem item
+				IndustrySector industrySector
 			WHERE
 				self.saleOrder.statusSelect = 3
 				AND self.saleOrder.confirmationDate BETWEEN DATE(:fromDate) AND DATE(:toDate)
 				AND self.saleOrder.company = :activeCompany
-				AND item.select.name='partner.industry.sectory.select'
-				AND CAST(item.value as int) = self.saleOrder.clientPartner.industrySectorSelect
+				AND industrySector.id = self.saleOrder.clientPartner.industrySector.id
 			GROUP BY
-				item.title
+				industrySector.name
 		</dataset>
 		<category key="_industry_sector" type="text" title="Industry Sector"/>
 		<series key="_amount" type="donut" title="Turnover"/>

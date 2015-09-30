@@ -17,6 +17,10 @@ public class PartnerAccountRepository extends PartnerBaseRepository {
 	public Partner save(Partner partner) {
 		try {
 
+			if(partner.getId() == null){
+				return super.save(partner);
+			}
+			
 			List<AccountingSituation> accountingSituationList = Beans.get(AccountingSituationService.class).createAccountingSituation(Beans.get(PartnerRepository.class).find(partner.getId()));
 
 			if(accountingSituationList != null) {
