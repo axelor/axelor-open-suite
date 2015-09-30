@@ -182,7 +182,7 @@
 	</action-attrs>
 	
 	<action-attrs name="action-sale-order-line-attrs-title-subscription">
-		<attribute name="title" for="price" expr="eval: com.axelor.i18n.I18n.get('Unit Price (by month)')" if="product?.productTypeSelect == 'subscriptable'"/>
+		<attribute name="title" for="price" expr="eval: com.axelor.i18n.I18n.get('Unit Price (by period)')" if="product?.productTypeSelect == 'subscriptable'"/>
 		<attribute name="title" for="price" expr="eval: com.axelor.i18n.I18n.get('Unit Price')" if="product?.productTypeSelect != 'subscriptable'"/>
 		<attribute name="title" for="exTaxTotal" expr="eval: com.axelor.i18n.I18n.get('Total subscription W.T.')" if="product?.productTypeSelect == 'subscriptable'"/>
 		<attribute name="title" for="exTaxTotal" expr="eval: com.axelor.i18n.I18n.get('Total W.T.')" if="product?.productTypeSelect != 'subscriptable'"/>		

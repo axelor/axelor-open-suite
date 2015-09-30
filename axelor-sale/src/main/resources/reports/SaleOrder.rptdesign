@@ -182,8 +182,10 @@
                     <value>ILYNN</value>
                 </ex-property>
             </list-property>
-            <property name="odaDriverClass">com.mysql.jdbc.Driver</property>
-            <property name="odaURL">jdbc:mysql://localhost:3306/</property>
+            <property name="odaDriverClass">org.postgresql.Driver</property>
+            <property name="odaURL">jdbc:postgresql://localhost:5432/comeback-webapp</property>
+            <property name="odaUser">axelor</property>
+            <encrypted-property name="odaPassword" encryptionID="base64">Z3VpdGFyZTAzMDc5Mg==</encrypted-property>
         </oda-data-source>
     </data-sources>
     <data-sets>
@@ -3113,7 +3115,7 @@ row["ClientPartFirstName"]
                             <structure>
                                 <property name="name">Column Binding_tot_sub</property>
                                 <text-property name="displayName">tot_sub</text-property>
-                                <expression name="expression" type="javascript">if(row["Aggregation_nb_sub"]!=0)row["ex_tax_total"]/row["Aggregation_nb_sub"]</expression>
+                                <expression name="expression" type="javascript">row["ex_tax_total"]</expression>
                                 <property name="dataType">decimal</property>
                                 <property name="allowExport">true</property>
                             </structure>
@@ -3279,6 +3281,27 @@ row["ClientPartFirstName"]
                                 <property name="name">tot_ex_tax_total_all_sub</property>
                                 <text-property name="displayName">tot_ex_tax_total_all_sub</text-property>
                                 <expression name="expression" type="javascript">row._outer["ex_tax_total"]-row["totExTaxTotalNoSub"]</expression>
+                                <property name="dataType">decimal</property>
+                                <property name="allowExport">true</property>
+                            </structure>
+                            <structure>
+                                <property name="name">Aggregation_total_discount_sub</property>
+                                <text-property name="displayName">total_discount_sub</text-property>
+                                <property name="dataType">float</property>
+                                <property name="aggregateFunction">SUM</property>
+                                <list-property name="arguments">
+                                    <structure>
+                                        <property name="name">Expression</property>
+                                        <expression name="value" type="javascript">row["discount_sub"]/row["number_subscriptions"]</expression>
+                                    </structure>
+                                </list-property>
+                                <expression name="filterExpr" type="javascript">dataSetRow["product_type_select"]=='subscriptable'</expression>
+                                <property name="allowExport">true</property>
+                            </structure>
+                            <structure>
+                                <property name="name">Column Binding_total_discount_sub</property>
+                                <text-property name="displayName">total_discount_sub</text-property>
+                                <expression name="expression" type="javascript">row["Aggregation_total_discount_sub"]</expression>
                                 <property name="dataType">decimal</property>
                                 <property name="allowExport">true</property>
                             </structure>
@@ -3724,37 +3747,14 @@ else 'Subscriptions'</value>
                                         <text id="4182">
                                             <property name="fontSize">8pt</property>
                                             <property name="textAlign">center</property>
-                                            <property name="dataSet">TranslateDS</property>
                                             <list-property name="visibility">
                                                 <structure>
                                                     <property name="format">all</property>
-                                                    <expression name="valueExpr" type="javascript">row._outer["product_type_select"]!='subscriptable'</expression>
-                                                </structure>
-                                            </list-property>
-                                            <list-property name="paramBindings">
-                                                <structure>
-                                                    <property name="paramName">param_1</property>
-                                                    <simple-property-list name="expression">
-                                                        <value type="javascript">row["periodicity"]</value>
-                                                    </simple-property-list>
-                                                </structure>
-                                            </list-property>
-                                            <list-property name="boundDataColumns">
-                                                <structure>
-                                                    <property name="name">key</property>
-                                                    <text-property name="displayName">key</text-property>
-                                                    <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
-                                                    <property name="dataType">string</property>
-                                                </structure>
-                                                <structure>
-                                                    <property name="name">translation</property>
-                                                    <text-property name="displayName">translation</text-property>
-                                                    <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
-                                                    <property name="dataType">string</property>
+                                                    <expression name="valueExpr" type="javascript">row["product_type_select"]!='subscriptable'</expression>
                                                 </structure>
                                             </list-property>
                                             <property name="contentType">html</property>
-                                            <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+                                            <text-property name="content"><![CDATA[<VALUE-OF>row["periodicity"]</VALUE-OF>]]></text-property>
                                         </text>
                                     </cell>
                                     <cell id="3697">
@@ -3970,7 +3970,7 @@ else 'Subscriptions'</value>
                 <list-property name="visibility">
                     <structure>
                         <property name="format">all</property>
-                        <expression name="valueExpr" type="javascript">row._outer["subscription"]</expression>
+                        <expression name="valueExpr" type="javascript">row["subscription"]</expression>
                     </structure>
                 </list-property>
                 <cell id="3978">
@@ -4314,7 +4314,7 @@ else 'Subscriptions'</value>
                 <list-property name="visibility">
                     <structure>
                         <property name="format">all</property>
-                        <expression name="valueExpr" type="javascript">row._outer["subscription"]</expression>
+                        <expression name="valueExpr" type="javascript">row["subscription"]</expression>
                     </structure>
                 </list-property>
                 <cell id="4161"/>
@@ -4405,7 +4405,7 @@ else 'Subscriptions'</value>
                 <list-property name="visibility">
                     <structure>
                         <property name="format">all</property>
-                        <expression name="valueExpr" type="javascript">row._outer["subscription"]</expression>
+                        <expression name="valueExpr" type="javascript">row["subscription"]</expression>
                     </structure>
                 </list-property>
                 <cell id="4170"/>
@@ -4492,7 +4492,7 @@ else 'Subscriptions'</value>
                 <list-property name="visibility">
                     <structure>
                         <property name="format">all</property>
-                        <expression name="valueExpr" type="javascript">row._outer["subscription"]</expression>
+                        <expression name="valueExpr" type="javascript">row["subscription"]</expression>
                     </structure>
                 </list-property>
                 <cell id="3988"/>
@@ -4580,7 +4580,7 @@ else 'Subscriptions'</value>
                 <list-property name="visibility">
                     <structure>
                         <property name="format">all</property>
-                        <expression name="valueExpr" type="javascript">row._outer["subscription"]</expression>
+                        <expression name="valueExpr" type="javascript">row["subscription"]</expression>
                     </structure>
                 </list-property>
                 <cell id="3995"/>
@@ -4681,7 +4681,7 @@ else 'Subscriptions'</value>
                 <list-property name="visibility">
                     <structure>
                         <property name="format">all</property>
-                        <expression name="valueExpr" type="javascript">!row._outer["subscription"]</expression>
+                        <expression name="valueExpr" type="javascript">!row["subscription"]</expression>
                     </structure>
                 </list-property>
                 <cell id="3999"/>
@@ -4735,7 +4735,7 @@ else 'Subscriptions'</value>
                 <list-property name="visibility">
                     <structure>
                         <property name="format">all</property>
-                        <expression name="valueExpr" type="javascript">!row._outer["subscription"]</expression>
+                        <expression name="valueExpr" type="javascript">!row["subscription"]</expression>
                     </structure>
                 </list-property>
                 <cell id="4198"/>
@@ -4802,7 +4802,7 @@ else 'Subscriptions'</value>
                             <property name="pattern">###0.00{RoundingMode=HALF_UP}</property>
                         </structure>
                         <property name="textAlign">right</property>
-                        <property name="dataSet">OrderLineDS</property>
+                        <property name="dataSet">SaleOrderDS</property>
                         <property name="dataBindingRef">SaleOrderLines</property>
                         <list-property name="visibility">
                             <structure>
@@ -4810,7 +4810,321 @@ else 'Subscriptions'</value>
                                 <expression name="valueExpr" type="javascript">row._outer["hideDiscount"]== 1 || !row._outer["subscription"]</expression>
                             </structure>
                         </list-property>
-                        <property name="resultSetColumn">discount_sub</property>
+                        <list-property name="boundDataColumns">
+                            <structure>
+                                <property name="name">id</property>
+                                <text-property name="displayName">id</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["id"]</expression>
+                                <property name="dataType">decimal</property>
+                            </structure>
+                            <structure>
+                                <property name="name">saleOrderSeq</property>
+                                <text-property name="displayName">saleOrderSeq</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["saleOrderSeq"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">CreationDate</property>
+                                <text-property name="displayName">CreationDate</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["CreationDate"]</expression>
+                                <property name="dataType">date</property>
+                            </structure>
+                            <structure>
+                                <property name="name">SalemanName</property>
+                                <text-property name="displayName">SalemanName</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["SalemanName"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">SalemanPhone</property>
+                                <text-property name="displayName">SalemanPhone</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["SalemanPhone"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">SalemanEmail</property>
+                                <text-property name="displayName">SalemanEmail</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["SalemanEmail"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">DisplaySaleman</property>
+                                <text-property name="displayName">DisplaySaleman</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["DisplaySaleman"]</expression>
+                                <property name="dataType">integer</property>
+                            </structure>
+                            <structure>
+                                <property name="name">ShipmentDate</property>
+                                <text-property name="displayName">ShipmentDate</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["ShipmentDate"]</expression>
+                                <property name="dataType">date</property>
+                            </structure>
+                            <structure>
+                                <property name="name">ClientBox</property>
+                                <text-property name="displayName">ClientBox</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["ClientBox"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">DisplayDeliveryCondition</property>
+                                <text-property name="displayName">DisplayDeliveryCondition</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["DisplayDeliveryCondition"]</expression>
+                                <property name="dataType">integer</property>
+                            </structure>
+                            <structure>
+                                <property name="name">CompanyName</property>
+                                <text-property name="displayName">CompanyName</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["CompanyName"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">logo_path</property>
+                                <text-property name="displayName">logo_path</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["logo_path"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">partner_type_select</property>
+                                <text-property name="displayName">partner_type_select</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["partner_type_select"]</expression>
+                                <property name="dataType">integer</property>
+                            </structure>
+                            <structure>
+                                <property name="name">ClientPartName</property>
+                                <text-property name="displayName">ClientPartName</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["ClientPartName"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">ClientPartFirstName</property>
+                                <text-property name="displayName">ClientPartFirstName</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["ClientPartFirstName"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">ClientTitle</property>
+                                <text-property name="displayName">ClientTitle</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["ClientTitle"]</expression>
+                                <property name="dataType">integer</property>
+                            </structure>
+                            <structure>
+                                <property name="name">ContactName</property>
+                                <text-property name="displayName">ContactName</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["ContactName"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">ContactFirstName</property>
+                                <text-property name="displayName">ContactFirstName</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["ContactFirstName"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">invAddress2</property>
+                                <text-property name="displayName">invAddress2</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["invAddress2"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">invAddress3</property>
+                                <text-property name="displayName">invAddress3</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["invAddress3"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">invAddress4</property>
+                                <text-property name="displayName">invAddress4</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["invAddress4"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">invAddress5</property>
+                                <text-property name="displayName">invAddress5</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["invAddress5"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">invAddress6</property>
+                                <text-property name="displayName">invAddress6</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["invAddress6"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">invoicecountry</property>
+                                <text-property name="displayName">invoicecountry</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["invoicecountry"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">PaymentCondName</property>
+                                <text-property name="displayName">PaymentCondName</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["PaymentCondName"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">PaymentMode</property>
+                                <text-property name="displayName">PaymentMode</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["PaymentMode"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">delAddress2</property>
+                                <text-property name="displayName">delAddress2</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["delAddress2"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">delAddress3</property>
+                                <text-property name="displayName">delAddress3</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["delAddress3"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">delAddress4</property>
+                                <text-property name="displayName">delAddress4</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["delAddress4"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">delAddress5</property>
+                                <text-property name="displayName">delAddress5</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["delAddress5"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">delAddress6</property>
+                                <text-property name="displayName">delAddress6</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["delAddress6"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">DeliveryCountry</property>
+                                <text-property name="displayName">DeliveryCountry</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["DeliveryCountry"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">ex_tax_total</property>
+                                <text-property name="displayName">ex_tax_total</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["ex_tax_total"]</expression>
+                                <property name="dataType">decimal</property>
+                            </structure>
+                            <structure>
+                                <property name="name">tax_total</property>
+                                <text-property name="displayName">tax_total</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["tax_total"]</expression>
+                                <property name="dataType">decimal</property>
+                            </structure>
+                            <structure>
+                                <property name="name">in_tax_total</property>
+                                <text-property name="displayName">in_tax_total</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["in_tax_total"]</expression>
+                                <property name="dataType">decimal</property>
+                            </structure>
+                            <structure>
+                                <property name="name">bank_address</property>
+                                <text-property name="displayName">bank_address</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["bank_address"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">iban</property>
+                                <text-property name="displayName">iban</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["iban"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">bic</property>
+                                <text-property name="displayName">bic</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["bic"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">CurrencyCode</property>
+                                <text-property name="displayName">CurrencyCode</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["CurrencyCode"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">external_reference</property>
+                                <text-property name="displayName">external_reference</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["external_reference"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">header</property>
+                                <text-property name="displayName">header</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["header"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">footer</property>
+                                <text-property name="displayName">footer</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["footer"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">description</property>
+                                <text-property name="displayName">description</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["description"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">invAddressId</property>
+                                <text-property name="displayName">invAddressId</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["invAddressId"]</expression>
+                                <property name="dataType">decimal</property>
+                            </structure>
+                            <structure>
+                                <property name="name">delAddressId</property>
+                                <text-property name="displayName">delAddressId</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["delAddressId"]</expression>
+                                <property name="dataType">decimal</property>
+                            </structure>
+                            <structure>
+                                <property name="name">durationName</property>
+                                <text-property name="displayName">durationName</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["durationName"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">deliveryDate</property>
+                                <text-property name="displayName">deliveryDate</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["deliveryDate"]</expression>
+                                <property name="dataType">date</property>
+                            </structure>
+                            <structure>
+                                <property name="name">deliveryCondition</property>
+                                <text-property name="displayName">deliveryCondition</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["deliveryCondition"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">hideDiscount</property>
+                                <text-property name="displayName">hideDiscount</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["hideDiscount"]</expression>
+                                <property name="dataType">integer</property>
+                            </structure>
+                            <structure>
+                                <property name="name">displayProductCodeOnPrinting</property>
+                                <text-property name="displayName">displayProductCodeOnPrinting</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["displayProductCodeOnPrinting"]</expression>
+                                <property name="dataType">integer</property>
+                            </structure>
+                            <structure>
+                                <property name="name">displayTaxDetailOnPrinting</property>
+                                <text-property name="displayName">displayTaxDetailOnPrinting</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["displayTaxDetailOnPrinting"]</expression>
+                                <property name="dataType">integer</property>
+                            </structure>
+                            <structure>
+                                <property name="name">subscription</property>
+                                <text-property name="displayName">subscription</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["subscription"]</expression>
+                                <property name="dataType">integer</property>
+                            </structure>
+                        </list-property>
+                        <property name="resultSetColumn">Column Binding_total_discount_sub</property>
                     </data>
                 </cell>
                 <cell id="4205">
@@ -4838,7 +5152,7 @@ else 'Subscriptions'</value>
                 <list-property name="visibility">
                     <structure>
                         <property name="format">all</property>
-                        <expression name="valueExpr" type="javascript">!row._outer["subscription"]</expression>
+                        <expression name="valueExpr" type="javascript">!row["subscription"]</expression>
                     </structure>
                 </list-property>
                 <cell id="4234"/>
@@ -4939,7 +5253,7 @@ else 'Subscriptions'</value>
                 <list-property name="visibility">
                     <structure>
                         <property name="format">all</property>
-                        <expression name="valueExpr" type="javascript">!row._outer["subscription"]</expression>
+                        <expression name="valueExpr" type="javascript">!row["subscription"]</expression>
                     </structure>
                 </list-property>
                 <cell id="4225"/>
@@ -4993,7 +5307,7 @@ else 'Subscriptions'</value>
                 <list-property name="visibility">
                     <structure>
                         <property name="format">all</property>
-                        <expression name="valueExpr" type="javascript">!row._outer["subscription"]</expression>
+                        <expression name="valueExpr" type="javascript">!row["subscription"]</expression>
                     </structure>
                 </list-property>
                 <cell id="4216"/>
@@ -5098,7 +5412,7 @@ else 'Subscriptions'</value>
                 <list-property name="visibility">
                     <structure>
                         <property name="format">all</property>
-                        <expression name="valueExpr" type="javascript">!row._outer["subscription"]</expression>
+                        <expression name="valueExpr" type="javascript">!row["subscription"]</expression>
                     </structure>
                 </list-property>
                 <cell id="4207"/>

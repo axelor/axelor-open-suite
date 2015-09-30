@@ -53,6 +53,8 @@ public interface ITranslation {
 	public static final String SALES_ORDER_DISCOUNT_AMOUNT = /*$$(*/ "SaleOrder.discountAmount"; /*)*/
 	public static final String SALES_ORDER_TOTAL_EXCL_TAX_WITHOUT_DISCOUNT = /*$$(*/ "SaleOrder.totalExclTaxWithoutDiscount"; /*)*/
 	public static final String SALES_ORDER_TOTAL_DISCOUNT = /*$$(*/ "SaleOrder.totalDiscount"; /*)*/
+	public static final String SALES_ORDER_OTHERS = /*$$(*/ "Others"; /*)*/
+	public static final String SALES_ORDER_SUBSCRIPTIONS = /*$$(*/ "Subscriptions"; /*)*/
 
 	
 	

@@ -39,8 +39,7 @@
 	</action-record>
 	
 	<action-record name="action-expense-on-change-untaxt-amount" model="com.axelor.apps.hr.db.ExpenseLine">
-		<field name="totalTax" expr="eval:"/>
-		<field name="untaxedAmount" expr="eval:totalAmount-totalTax"/>
+		<field name="untaxedAmount" expr="eval: totalAmount-totalTax"/>
 	</action-record>
 	
 	<action-validate name="action-expense-line-validate-expenseDate" model="com.axelor.apps.hr.db.ExpenseLine">

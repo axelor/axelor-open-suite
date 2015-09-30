@@ -67,8 +67,6 @@
 	              &lt;dd&gt;{{record.taxTotal}}&lt;/dd&gt;
 	              &lt;dt class="order-subtotal-total" x-translate&gt;Total A.T.I.&lt;/dt&gt;
 	              &lt;dd class="order-subtotal-total"&gt;{{record.inTaxTotal}}&lt;/dd&gt;
-	              &lt;dt x-translate&gt;Amount invoiced W.T.&lt;/dt&gt;
-	              &lt;dd&gt;{{record.amountInvoiced}}&lt;/dd&gt;
 	            &lt;/dl&gt;
 	          </viewer>
 	        </field>
@@ -84,6 +82,9 @@
 	    <field name="user" expr="eval:__user__"/>
 	    <field name="company" expr="eval: __user__.activeCompany"/>
 	    <field name="period" expr="eval: __repo__.of(Period).all().filter('self.fromDate &lt;= ?1 AND self.toDate &gt;= ?1',__date__).fetchOne()"/>
+		<field name="exTaxTotal" expr="eval: 0"/>
+    	<field name="taxTotal" expr="eval: 0"/>
+    	<field name="inTaxTotal" expr="eval: 0"/>
 	</action-record>
 	
 

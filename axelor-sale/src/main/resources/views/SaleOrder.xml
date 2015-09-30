@@ -521,7 +521,7 @@
     	<field name="exTaxTotal" expr="eval: 0"/>
     	<field name="taxTotal" expr="eval: 0"/>
     	<field name="inTaxTotal" expr="eval: 0"/>
-    	<field name="amountRemainingToBeInvoiced" expr="eval: 0"/>
+    	<field name="amountInvoiced" expr="eval: 0"/>
     	<field name="creationDate" expr="eval: __date__"/>
     	<field name="statusSelect" expr="eval: 1"/>
     	<field name="company"  expr="eval:__user__.activeCompany" if="__user__.activeCompany != null"/>

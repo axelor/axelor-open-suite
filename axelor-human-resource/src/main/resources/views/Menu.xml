@@ -83,7 +83,7 @@
 	
 	<menuitem name="ventilate-expense" groups="MNGT,admins" parent="expense-root" title="Expenses to Ventilate" action="expense.ventilate"/>
 	
-	<action-view name="expense.ventilate" title="com.axelor.apps.hr.db.Expense">
+	<action-view name="expense.ventilate" title="Expenses to Ventilate" model="com.axelor.apps.hr.db.Expense">
 		<view type="grid" name="expense-grid"/>
 		<view type="form" name="expense-form"/>
 		<domain>self.statusSelect = 3 AND self.ventilated = false</domain>
