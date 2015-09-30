@@ -183,9 +183,7 @@
                 </ex-property>
             </list-property>
             <property name="odaDriverClass">org.postgresql.Driver</property>
-            <property name="odaURL">jdbc:postgresql://localhost:5432/comeback-webapp</property>
-            <property name="odaUser">axelor</property>
-            <encrypted-property name="odaPassword" encryptionID="base64">Z3VpdGFyZTAzMDc5Mg==</encrypted-property>
+            <property name="odaURL">jdbc:postgresql://localhost:5432/</property>
         </oda-data-source>
     </data-sources>
     <data-sets>
@@ -3115,7 +3113,8 @@ row["ClientPartFirstName"]
                             <structure>
                                 <property name="name">Column Binding_tot_sub</property>
                                 <text-property name="displayName">tot_sub</text-property>
-                                <expression name="expression" type="javascript">row["ex_tax_total"]</expression>
+                                <expression name="expression" type="javascript">if(row["number_subscriptions"] != 0)row["ex_tax_total"]/row["number_subscriptions"]
+else row["ex_tax_total"]</expression>
                                 <property name="dataType">decimal</property>
                                 <property name="allowExport">true</property>
                             </structure>
@@ -3273,14 +3272,15 @@ row["ClientPartFirstName"]
                             <structure>
                                 <property name="name">discount_sub</property>
                                 <text-property name="displayName">discount_sub</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["ex_tax_total"]-(dataSetRow["unit_price"]*dataSetRow["quantity"]*row["Aggregation_nb_sub"])</expression>
+                                <expression name="expression" type="javascript">if(row["Aggregation_nb_sub"]!=0)dataSetRow["ex_tax_total"]/row["Aggregation_nb_sub"]-(dataSetRow["unit_price"]*dataSetRow["quantity"])
+else dataSetRow["ex_tax_total"] - (dataSetRow["unit_price"]*dataSetRow["quantity"])</expression>
                                 <property name="dataType">decimal</property>
                                 <property name="allowExport">true</property>
                             </structure>
                             <structure>
                                 <property name="name">tot_ex_tax_total_all_sub</property>
                                 <text-property name="displayName">tot_ex_tax_total_all_sub</text-property>
-                                <expression name="expression" type="javascript">row._outer["ex_tax_total"]-row["totExTaxTotalNoSub"]</expression>
+                                <expression name="expression" type="javascript">row["Aggregation_tot_ett_sub"]</expression>
                                 <property name="dataType">decimal</property>
                                 <property name="allowExport">true</property>
                             </structure>
@@ -3303,6 +3303,21 @@ row["ClientPartFirstName"]
                                 <text-property name="displayName">total_discount_sub</text-property>
                                 <expression name="expression" type="javascript">row["Aggregation_total_discount_sub"]</expression>
                                 <property name="dataType">decimal</property>
+                                <property name="allowExport">true</property>
+                            </structure>
+                            <structure>
+                                <property name="name">Aggregation_tot_ett_sub</property>
+                                <text-property name="displayName">tot_ett_sub</text-property>
+                                <property name="dataType">float</property>
+                                <property name="aggregateFunction">SUM</property>
+                                <list-property name="arguments">
+                                    <structure>
+                                        <property name="name">Expression</property>
+                                        <expression name="value" type="javascript">if(row["number_subscriptions"]!=0)row["Column Binding_tot_sub"]/row["number_subscriptions"]
+else row["Column Binding_tot_sub"]</expression>
+                                    </structure>
+                                </list-property>
+                                <expression name="filterExpr" type="javascript">dataSetRow["product_type_select"]=='subscriptable'</expression>
                                 <property name="allowExport">true</property>
                             </structure>
                         </list-property>
