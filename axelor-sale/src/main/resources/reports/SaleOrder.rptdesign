@@ -5774,22 +5774,5 @@ else 'Subscriptions'</value>
                 <cell id="4104"/>
             </row>
         </grid>
-        <data id="4268">
-            <property name="fontSize">9pt</property>
-            <structure name="numberFormat">
-                <property name="category">Fixed</property>
-                <property name="pattern">###0.00{RoundingMode=HALF_UP}</property>
-            </structure>
-            <property name="textAlign">right</property>
-            <property name="dataSet">OrderLineDS</property>
-            <property name="dataBindingRef">SaleOrderLines</property>
-            <list-property name="visibility">
-                <structure>
-                    <property name="format">all</property>
-                    <expression name="valueExpr" type="javascript">row._outer["hideDiscount"]== 1</expression>
-                </structure>
-            </list-property>
-            <property name="resultSetColumn">totalDiscountSub</property>
-        </data>
     </body>
 </report>
