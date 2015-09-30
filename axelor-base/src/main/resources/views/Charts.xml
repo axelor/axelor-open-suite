@@ -42,16 +42,13 @@
 	    <![CDATA[
 		SELECT
           COUNT(self.id) AS _total_partner,
-	      selection_item.title as _industry_sector
+	      industrySector.name as _industry_sector
 	    FROM
 	        base_partner as self
-	    LEFT JOIN
-	        meta_select as selection ON selection.name = 'partner.industry.sectory.select'
-	    LEFT JOIN 
-	    	meta_select_item as selection_item ON selection_item.select_id = selection.id
+	    JOIN 
+	    	base_industry_sector as industrySector on industrySector.id = self.industry_sector
 		WHERE
-			cast(selection_item.value as decimal) = self.industry_sector_select	
-			and self.is_contact != true and self.is_customer = true AND self.has_ordered = true		
+			self.is_contact != true and self.is_customer = true AND self.has_ordered = true
 	    GROUP BY
 		   _industry_sector
 		ORDER BY
