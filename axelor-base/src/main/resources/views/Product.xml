@@ -298,7 +298,7 @@
 	</action-attrs>
 	
 	<action-attrs name="action-product-attrs-title-sale-price">
-		<attribute name="title" for="salePrice" expr="Sale Price (for periodicity selected)" if="productTypeSelect == 'subscriptable'"/>
+		<attribute name="title" for="salePrice" expr="eval: com.axelor.i18n.I18n.get('Sale Price (for periodicity selected)')" if="productTypeSelect == 'subscriptable'"/>
 		<attribute name="title" for="salePrice" expr="Sale Price" if="productTypeSelect != 'subscriptable'"/>
 	</action-attrs>
 	

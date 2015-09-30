@@ -12,7 +12,7 @@
       <integer name="statusSelect" title="Status" selection="hrs.timesheet.status.select" default="1"/>
       <date name="sentDate" title="Sent Date" readonly="true"/>
 	  
-	  <many-to-one name="validatedBy" ref="com.axelor.auth.db.User" title="Validated" readonly="true"/>
+	  <many-to-one name="validatedBy" ref="com.axelor.auth.db.User" title="Validated by" readonly="true"/>
       <many-to-one name="refusedBy" ref="com.axelor.auth.db.User" title="Refused By" readonly="true"/>
       <date name="validationDate" title="Validation Date" readonly="true"  />
       <date name="refusalDate" title="Refusal Date" readonly="true"  />

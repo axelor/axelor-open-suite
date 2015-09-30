@@ -1,4 +1,6 @@
 "key","message","comment","context"
+"+33000000000",,,
+"+33100000000",,,
 "Accounting",,,
 "Actions",,,
 "Activity","Activité",,
@@ -302,6 +304,7 @@
 "Valid","Valider",,
 "Validated","Validé",,
 "Validated Leave Request Template","Modèle pour demande de congés validée",,
+"Validated by",,,
 "Validation Date","Date de validation",,
 "Value","Valeur",,
 "Variants",,,

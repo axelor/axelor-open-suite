@@ -18,12 +18,15 @@
 package com.axelor.apps.supplychain.service.invoice.generator;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.service.invoice.generator.InvoiceLineGenerator;
+import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
+import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.sale.db.SaleOrderLine;
@@ -74,6 +77,12 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
 			this.groupingLine = saleOrderLine.getGroupingLine();
 			this.exTaxTotal = saleOrderLine.getExTaxTotal();
 			this.inTaxTotal = saleOrderLine.getInTaxTotal();
+			if (ProductRepository.PRODUCT_TYPE_SUBSCRIPTABLE.equals(saleOrderLine.getProduct().getProductTypeSelect())
+					&& saleOrderLine.getSubscriptionList() != null
+					&& !saleOrderLine.getSubscriptionList().isEmpty()){
+				this.exTaxTotal = this.exTaxTotal.divide(new BigDecimal(saleOrderLine.getSubscriptionList().size())).setScale(IAdministration.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_EVEN);
+				this.inTaxTotal = this.inTaxTotal.divide(new BigDecimal(saleOrderLine.getSubscriptionList().size())).setScale(IAdministration.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_EVEN);
+			}
 		} else if (purchaseOrderLine != null){
 			this.purchaseOrderLine = purchaseOrderLine;
 			this.discountAmount = purchaseOrderLine.getDiscountAmount();

@@ -8,13 +8,11 @@ import java.util.Map;
 import javax.persistence.Query;
 
 import com.axelor.apps.account.db.Invoice;
-import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
-import com.axelor.apps.sale.service.SaleOrderService;
 import com.axelor.apps.supplychain.service.SaleOrderInvoiceService;
 import com.axelor.apps.supplychain.service.SubscriptionService;
 import com.axelor.db.JPA;
@@ -28,6 +26,7 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.common.base.Joiner;
 import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 
 public class SubscriptionController {
 
@@ -50,18 +49,15 @@ public class SubscriptionController {
 		saleOrderLine = subscriptionService.generateSubscriptions(saleOrderLine);
 		response.setValue("subscriptionList", saleOrderLine.getSubscriptionList());
 	}
-
+	
+	@Transactional
 	public void generateAllSubscriptions(ActionRequest request, ActionResponse response) throws AxelorException{
 		SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
 
 		saleOrder  = Beans.get(SaleOrderRepository.class).find(saleOrder.getId());
-
-		for (SaleOrderLine saleOrderLineIt : saleOrder.getSaleOrderLineList()) {
-			if(saleOrderLineIt.getProduct().getProductTypeSelect().equals(ProductRepository.PRODUCT_TYPE_SUBSCRIPTABLE)){
-				subscriptionService.generateSubscriptions(saleOrderLineIt,saleOrder);
-			}
-		}
-
+		
+		subscriptionService.generateAllSubscriptions(saleOrder);
+		
 		response.setReload(true);
 	}
 

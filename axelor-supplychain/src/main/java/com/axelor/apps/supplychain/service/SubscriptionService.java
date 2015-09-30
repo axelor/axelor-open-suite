@@ -11,5 +11,8 @@ public interface SubscriptionService {
 
 	@Transactional
 	public SaleOrderLine generateSubscriptions(SaleOrderLine saleOrderLineIt,SaleOrder saleOrder) throws AxelorException;
+	
+	@Transactional
+	public void generateAllSubscriptions(SaleOrder saleOrder) throws AxelorException;
 
 }

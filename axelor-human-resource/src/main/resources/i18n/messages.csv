@@ -1,4 +1,6 @@
 "key","message","comment","context"
+"+33000000000",,,
+"+33100000000",,,
 "Accounting",,,
 "Actions",,,
 "Activity",,,
@@ -302,6 +304,7 @@
 "Valid",,,
 "Validated",,,
 "Validated Leave Request Template",,,
+"Validated by",,,
 "Validation Date",,,
 "Value",,,
 "Variants",,,
