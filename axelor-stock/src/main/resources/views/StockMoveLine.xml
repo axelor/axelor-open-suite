@@ -143,7 +143,7 @@
 		<attribute name="scale" for="price" expr="eval: __config__.generalService.getNbDecimalDigitForUnitPrice()"/>
 	</action-attrs>
 	
-	<action-view name="action-stock-move-line-product-default-planned" title="Stock Move Lines"
+	<action-view name="action-stock-move-line-product-default-planned" title="${fullName} plan. st. move"
 		model="com.axelor.apps.stock.db.StockMoveLine" >
 		<view type="grid" name="stock-move-line-all-grid"/>
 		<view type="form" name="stock-move-line-all-form"/>
@@ -151,7 +151,7 @@
 		<context name="_location" expr="call:com.axelor.apps.stock.service.LocationService:getDefaultLocation()"/>
 	</action-view>	
 	
-	<action-view name="action-stock-move-line-product-default-realized" title="Stock Move Lines"
+	<action-view name="action-stock-move-line-product-default-realized" title="${fullName} real st. move"
 		model="com.axelor.apps.stock.db.StockMoveLine" >
 		<view type="grid" name="stock-move-line-all-grid"/>
 		<view type="form" name="stock-move-line-all-form"/>

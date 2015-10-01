@@ -34,14 +34,14 @@
     	</toolbar>
 	    <panel>
 	    	<panel colSpan="4">
-	        	<field name="picture" showTitle="false" widget="Image" colSpan="12"/>
-	        	<field name="versionSelect" colSpan="12"/>
-	        	<panel colSpan="12" showIf="productTypeSelect == 'storable'" showTitle="false" if-module="axelor-stock">
+	        	<field name="picture" showTitle="false" widget="Image" colSpan="5"/>
+	        	<panel colSpan="7" showIf="productTypeSelect == 'storable'" showTitle="false" if-module="axelor-stock">
 		        	<field name="realQty" hidden="true"/>
 	                <field name="futureQty" hidden="true"/>
-	                <button name="realQty" title="Real qty" widget="info-button" colSpan="6" onClick="action-stock-move-line-product-default-planned"/>
-	                <button name="futureQty" title="Future qty" widget="info-button" colSpan="6" onClick="action-stock-move-line-product-default-realized"/>
+	                <button name="realQty" title="Real qty" widget="info-button" colSpan="12" onClick="action-stock-move-line-product-default-realized"/>
+	                <button name="futureQty" title="Future qty" widget="info-button" colSpan="12" onClick="action-stock-move-line-product-default-planned"/>
                 </panel>
+                <field name="versionSelect" colSpan="12"/>
 	        </panel>
             <panel colSpan="8">
 				<field name="name" showTitle="false" css="label-bold bold" placeholder="Name"	colSpan="8"/>

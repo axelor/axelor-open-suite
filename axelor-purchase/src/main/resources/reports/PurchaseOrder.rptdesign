@@ -139,7 +139,7 @@
                 </ex-property>
             </list-property>
             <property name="odaDriverClass">org.postgresql.Driver</property>
-            <property name="odaURL">jdbc:postgresql://localhost:5432</property>
+            <property name="odaURL">jdbc:postgresql://localhost:5432/</property>
         </oda-data-source>
     </data-sources>
     <data-sets>
@@ -781,6 +781,7 @@ left outer join account_payment_mode as PaymentMode on (Partner.payment_mode = P
                 </structure>
                 <structure>
                     <property name="columnName">qty</property>
+                    <property name="analysis">measure</property>
                     <text-property name="displayName">qty</text-property>
                     <text-property name="heading">qty</text-property>
                 </structure>
@@ -792,16 +793,19 @@ left outer join account_payment_mode as PaymentMode on (Partner.payment_mode = P
                 </structure>
                 <structure>
                     <property name="columnName">UnitPrice</property>
+                    <property name="analysis">measure</property>
                     <text-property name="displayName">UnitPrice</text-property>
                     <text-property name="heading">UnitPrice</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">ex_tax_total</property>
+                    <property name="analysis">measure</property>
                     <text-property name="displayName">ex_tax_total</text-property>
                     <text-property name="heading">ex_tax_total</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">TaxValue</property>
+                    <property name="analysis">measure</property>
                     <text-property name="displayName">TaxValue</text-property>
                     <text-property name="heading">TaxValue</text-property>
                 </structure>
@@ -891,7 +895,7 @@ left outer join account_payment_mode as PaymentMode on (Partner.payment_mode = P
                     <property name="name">qty</property>
                     <property name="nativeName">qty</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">3</property>
+                    <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
                     <property name="position">6</property>
@@ -905,21 +909,21 @@ left outer join account_payment_mode as PaymentMode on (Partner.payment_mode = P
                     <property name="name">UnitPrice</property>
                     <property name="nativeName">UnitPrice</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">3</property>
+                    <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
                     <property name="position">8</property>
                     <property name="name">ex_tax_total</property>
                     <property name="nativeName">ex_tax_total</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">3</property>
+                    <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
                     <property name="position">9</property>
                     <property name="name">TaxValue</property>
                     <property name="nativeName">TaxValue</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">3</property>
+                    <property name="nativeDataType">2</property>
                 </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[select PurchaseOrder.id as purchase_id, PurchaseOrderLine.id as purchase_line_id, PurchaseOrderLine.product_name, PurchaseOrderLine.description, PurchaseOrderLine.qty,
@@ -929,7 +933,8 @@ from purchase_purchase_order_line as PurchaseOrderLine
 inner join purchase_purchase_order as PurchaseOrder on (PurchaseOrderLine.purchase_order = PurchaseOrder.id)
 left outer join base_product as Product on (PurchaseOrderLine.product = Product.id)
 left outer join base_unit as Unit on (PurchaseOrderLine.unit = Unit.id)
-left outer join account_tax_line as TaxLine on (PurchaseOrderLine.tax_line = TaxLine.id)]]></xml-property>
+left outer join account_tax_line as TaxLine on (PurchaseOrderLine.tax_line = TaxLine.id)
+order by PurchaseOrderLine.sequence]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
   <Version>2.0</Version>
