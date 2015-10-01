@@ -22,6 +22,8 @@ import com.axelor.apps.base.db.repo.DurationBaseRepository;
 import com.axelor.apps.base.db.repo.DurationRepository;
 import com.axelor.apps.base.db.repo.PartnerBaseRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
+import com.axelor.apps.base.db.repo.ProductBaseRepository;
+import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.db.repo.SequenceBaseRepository;
 import com.axelor.apps.base.db.repo.SequenceRepository;
 import com.axelor.apps.base.service.AddressService;
@@ -66,5 +68,6 @@ public class BaseModule extends AxelorModule {
         bind(DurationService.class).to(DurationServiceImpl.class);
         bind(GeneralService.class).to(GeneralServiceImpl.class);
         bind(SequenceRepository.class).to(SequenceBaseRepository.class);
+        bind(ProductRepository.class).to(ProductBaseRepository.class);
     }
 }

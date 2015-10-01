@@ -317,5 +317,6 @@ public class LocationLineServiceImpl implements LocationLineService {
 		return detailLocationLine;
 		
 	}
+
 		
 }

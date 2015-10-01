@@ -4,7 +4,7 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
     
     
-    <grid name="purchase-order-line-grid" title="PO lines" model="com.axelor.apps.purchase.db.PurchaseOrderLine">
+    <grid name="purchase-order-line-grid" title="PO lines" model="com.axelor.apps.purchase.db.PurchaseOrderLine" orderBy="sequence" canMove="true">
     	<hilite background="danger" if="salePrice &lt; saleMinPrice"/>
     	<field name="purchaseOrder" form-view="purchase-order-form" grid-view="purchase-order-grid"/>
     	<field name="supplierPartner" form-view="partner-form" grid-view="partner-grid"/>
@@ -22,7 +22,7 @@
         <field name="salePrice" hidden="true"/>
     </grid>
     
-    <grid name="purchase-order-line-purchase-order-grid" title="PO lines" model="com.axelor.apps.purchase.db.PurchaseOrderLine">
+    <grid name="purchase-order-line-purchase-order-grid" title="PO lines" model="com.axelor.apps.purchase.db.PurchaseOrderLine" orderBy="sequence" canMove="true">
     	<hilite background="danger" if="salePrice &lt; saleMinPrice"/>
     	<field name="productName"/>
     	<field name="desiredDelivDate"/>
@@ -36,9 +36,7 @@
         <field name="salePrice" hidden="true"/>
     </grid>
     
-    <grid name="purchase-order-line-invoicing-project-grid" title="PO lines" model="com.axelor.apps.purchase.db.PurchaseOrderLine">
-    	<hilite background="danger" if="salePrice &lt; saleMinPrice"/>
-    	<field name="purchaseOrder" form-view="purchase-order-form" grid-view="purchase-order-grid"/>
+    <grid name="purchase-order-line-invoicing-project-grid" title="PO lines" model="com.axelor.apps.purchase.db.PurchaseOrderLine" orderBy="sequence" canMove="true">
     	<field name="supplierPartner" form-view="partner-form" grid-view="partner-grid"/>
     	<field name="productName"/>
         <field name="qty"/>

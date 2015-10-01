@@ -26,6 +26,7 @@ import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.TrackingNumber;
 import com.axelor.apps.stock.db.Location;
 import com.axelor.apps.stock.db.LocationLine;
+import com.axelor.db.mapper.types.DecimalAdapter;
 import com.axelor.exception.AxelorException;
 import com.google.inject.persist.Transactional;
 
@@ -58,8 +59,6 @@ public interface LocationLineService {
 			LocalDate lastFutureStockMoveDate);
 	
 	public LocationLine getLocationLine(Location location, Product product);
-	
-	
 	
 	/**
 	 * Récupération de la ligne détaillée de stock :

@@ -61,6 +61,8 @@
   	
   	<integer name="costTypeSelect" title="Cost type" selection="base.product.cost.type.select" default="1"/>
   	
+  	<string name="fullName" title="Full name"/>
+  	
   	<extra-code>
 	   		<![CDATA[
 	   			// APPLICATION TYPE SELECT VALUE
