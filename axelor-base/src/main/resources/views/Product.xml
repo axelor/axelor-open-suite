@@ -27,7 +27,7 @@
 
    <form name="product-form" title="Product" model="com.axelor.apps.base.db.Product" 
    onNew="action-group-base-product-onnew" 
-   onLoad="action-product-attrs-scale-and-precision,action-product-attrs-title-sale-price,action-product-set-stock" width="large">
+   onLoad="action-group-product-onload" width="large">
     <toolbar>
     		<button name="sendByEmail" title="Send Email" icon="fa-envelope" onClick="action-send-by-email-with-template"/>
 			<button name="showProductSheet" title="Product sheet" icon="fa-print" onClick="save,action-product-method-show-product-sheet"/>
@@ -42,6 +42,8 @@
 	                <button name="futureQty" title="Future qty" widget="info-button" colSpan="12" onClick="action-stock-move-line-product-default-planned"/>
                 </panel>
                 <field name="versionSelect" colSpan="12"/>
+                <field name="totalVariants" type="integer" hidden="true"/>
+                <button name="totalVariants" title="Total variants" widget="info-button" colSpan="12" onClick="action-product-view-total-variants" showIf="totalVariants &gt; 0"/>
 	        </panel>
             <panel colSpan="8">
 				<field name="name" showTitle="false" css="label-bold bold" placeholder="Name"	colSpan="8"/>
@@ -232,6 +234,13 @@
     	<action name="action-product-method-reset-end-date"/>
     </action-group>
     
+    <action-group name="action-group-product-onload">
+        <action name="action-product-attrs-scale-and-precision"/>
+        <action name="action-product-attrs-title-sale-price"/>
+        <action name="action-product-set-stock"/>
+        <action name="action-product-set-total-variants"/>
+    </action-group>
+    
     <action-record name="action-product-record-in-ati" model="com.axelor.apps.base.db.Product">
     	<field name="inAti" expr="eval:__config__.general.getProductInAtiSelect() == 2 || __config__.general.getProductInAtiSelect() == 4"/>
     </action-record>
@@ -266,6 +275,10 @@
     
     <action-record name="action-product-record-compute-sale-price" model="com.axelor.apps.base.db.Product">
     	<field name="salePrice" expr="eval: managPriceCoef*costPrice" if="costPrice != null &amp;&amp; managPriceCoef != null"/>
+    </action-record>
+    
+    <action-record name="action-product-set-total-variants" model="com.axelor.apps.base.db.Product">
+    	<field name="totalVariants" expr="eval:__repo__.of(Product).all().filter('self.parentProduct.id = ?',id).fetch().size"/>    
     </action-record>
     
     <action-attrs name="action-hide-product-field">
@@ -315,6 +328,13 @@
 		<view type="form" name="product-form"/>
 		<domain>self.parentProduct.id = :parentId</domain>
 		<context name="parentId" expr="eval: parentProduct?.id"/>
+	</action-view>	
+	
+	<action-view name="action-product-view-total-variants" title="${fullName} variants"
+		model="com.axelor.apps.base.db.Product">
+		<view type="grid" name="product-product-variant-grid"/>
+		<view type="form" name="product-form"/>
+		<domain>self.parentProduct.id = :_id</domain>
 	</action-view>	
 	
 	<action-attrs name="action-product-attrs-bill-of-material-domain">
