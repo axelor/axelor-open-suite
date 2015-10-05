@@ -93,7 +93,7 @@ public class CurrencyService {
 
 		// Si la devise source est différente de la devise d'arrivée
 		// Alors on convertit
-		if(!currencyStart.equals(currencyEnd))  {
+		if(currencyStart != null && currencyEnd != null && !currencyStart.equals(currencyEnd))  {
 			// CONVERTIR
 
 			CurrencyConversionLine currencyConversionLine = this.getCurrencyConversionLine(currencyStart, currencyEnd, this.getDateToConvert(localDate));
