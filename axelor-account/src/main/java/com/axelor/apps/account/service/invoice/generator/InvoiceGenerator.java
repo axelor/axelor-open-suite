@@ -188,7 +188,7 @@ public abstract class InvoiceGenerator  {
 		if(mainInvoicingAddress == null)  {
 			mainInvoicingAddress = Beans.get(PartnerService.class).getInvoicingAddress(partner);
 		}
-		if(mainInvoicingAddress == null)  {
+		if(mainInvoicingAddress == null && partner.getIsCustomer())  {
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.INVOICE_GENERATOR_5), GeneralServiceImpl.EXCEPTION), IException.MISSING_FIELD);
 		}
 
