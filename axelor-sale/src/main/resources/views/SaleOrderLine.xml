@@ -100,7 +100,7 @@
     	<action name="action-sale-order-line-method-convert-tax"/>
     	<action name="action-sale-order-line-method-compute"/>
     	<action name="action-sale-order-line-attrs-hide-bill-of-material"/>
-    	<action name="action-sale-order-line-get-production-information" if="axelor-production"/>
+    	<action name="action-sale-order-line-get-production-information"/>
     	<action name="action-sale-order-line-attrs-title-subscription"/>
     	<action name="action-sale-order-line-attrs-hidden-subscription"/>
     	<action name="action-supplychain-record-periodicity"/>
