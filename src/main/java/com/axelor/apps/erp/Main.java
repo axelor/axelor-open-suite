@@ -82,7 +82,7 @@ public class Main {
 			@Override
 			protected void configure() {
 				install(new JpaModule("persistenceUnit", true, true));
-				install(new AuthModule.Simple());
+				install(new AuthModule());
 				install(new AppModule());
 				bindConstant().annotatedWith(Names.named("axelor.data.config")).to(cmd.getConfig().toString());
 				bindConstant().annotatedWith(Names.named("axelor.data.dir")).to(cmd.getDataDir().toString());
