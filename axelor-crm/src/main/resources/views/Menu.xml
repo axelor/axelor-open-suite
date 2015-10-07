@@ -419,12 +419,6 @@
 		<view type="dashboard" name="crm.opportunities.dashboard.3" />
 	</action-view>
 	
-	<menuitem name="menu-tasks-dashboard" parent="menu-crm-dashboards"
-		title="Tasks" priority="30" />	
-	
-	<menuitem name="menu-tasks-dashboard-1" icon="img/16px/chart_16px.png" parent="menu-tasks-dashboard"
-		title="Tasks Db" />
-		
 	<menuitem name="menu-meetings-dashboard" parent="menu-crm-dashboards"
 		title="Meetings" priority="40" />	
 	
