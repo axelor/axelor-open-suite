@@ -19,6 +19,8 @@ package com.axelor.apps.account.service.move;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import org.joda.time.LocalDate;
@@ -26,6 +28,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.account.db.Account;
+import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
@@ -40,6 +43,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.exception.AxelorException;
+import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -224,20 +228,25 @@ public class MoveService {
 
 	public Move createMoveUseExcessPayment(Invoice invoice) throws AxelorException{
 
-		Move move = null;
-
 		Company company = invoice.getCompany();
-
-		// Récupération des trop-perçus
-		List<MoveLine> creditMoveLineList = moveExcessPaymentService.getExcessPayment(invoice, moveToolService.getCustomerAccount(invoice.getPartner(), company, InvoiceToolService.isPurchase(invoice)));
-
+		
+		//Récupération des acomptes de la facture
+		List<MoveLine> creditMoveLineList = moveExcessPaymentService.getAdvancePaymentMoveList(invoice);
+		
+		AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
+		
+		if(accountConfig.getAutoReconcileOnInvoice())
+		{
+			// Récupération des trop-perçus
+			moveExcessPaymentService.getExcessPayment(invoice, moveToolService.getCustomerAccount(invoice.getPartner(), company, InvoiceToolService.isPurchase(invoice)));
+		}
 		if(creditMoveLineList != null && creditMoveLineList.size() != 0)  {
 
 			Partner partner = invoice.getPartner();
 			Account account = invoice.getPartnerAccount();
 			MoveLine invoiceCustomerMoveLine = moveToolService.getCustomerMoveLineByLoop(invoice);
 
-			Journal journal = accountConfigService.getMiscOperationJournal(accountConfigService.getAccountConfig(company));
+			Journal journal = accountConfigService.getMiscOperationJournal(accountConfig);
 
 			// Si c'est le même compte sur les trop-perçus et sur la facture, alors on lettre directement
 			if(moveToolService.isSameAccount(creditMoveLineList, account))  {
@@ -250,7 +259,7 @@ public class MoveService {
 
 				log.debug("Création d'une écriture comptable O.D. spécifique à l'emploie des trop-perçus {} (Société : {}, Journal : {})", new Object[]{invoice.getInvoiceId(), company.getName(), journal.getCode()});
 
-				move = moveCreateService.createMove(journal, company, null, partner, invoice.getInvoiceDate(), null);
+				Move move = moveCreateService.createMove(journal, company, null, partner, invoice.getInvoiceDate(), null);
 
 				if (move != null){
 					BigDecimal totalCreditAmount = moveToolService.getTotalCreditAmount(creditMoveLineList);
@@ -274,10 +283,10 @@ public class MoveService {
 
 			invoice.setCompanyInTaxTotalRemaining(moveToolService.getInTaxTotalRemaining(invoice));
 		}
-		return move;
+		return null;
 	}
 
-
+	
 	public Move createMoveUseDebit(Invoice invoice, List<MoveLine> debitMoveLines, MoveLine invoiceCustomerMoveLine) throws AxelorException{
 		Company company = invoice.getCompany();
 		Partner partner = invoice.getPartner();

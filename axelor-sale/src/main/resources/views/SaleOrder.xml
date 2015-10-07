@@ -131,11 +131,8 @@
 		</panel>
 		<panel-related field="timetableList" grid-view="timetable-grid" form-view="timetable-form" if-module="axelor-supplychain"/>
 		
-		<panel title="Advance Payments">
-			<panel-related field="advancePaymentList" colSpan="12" grid-view="advance-payment-grid" form-view="advance-payment-form"/>
+		<panel-related field="advancePaymentList" colSpan="12" grid-view="advance-payment-grid" form-view="advance-payment-form" readonly="true"/>
 		
-		
-		</panel>
 	  </panel-tabs>
 	  
 	  <panel sidebar="true" title="Actions" stacked="true">
@@ -148,6 +145,7 @@
 	    <button name="generateProductionOrder" title="Generate production order"  colSpan="12" if="__config__.general.getProductionOrderManagement() &amp;&amp; !__config__.general.getProductionOrderGenerationAuto()" showIf="statusSelect == 3" onClick="action-supplychain-sale-order-create-production-order" hidden="true"/>
 		<spacer/>
 	    <button name="cancel" title="Cancel" showIf="id &amp;&amp; (statusSelect == 1 || statusSelect == 2)" colSpan="12" onClick="save,action-sale-order-record-cancel"/>
+	  	<button name="addAdvancePayment" title="Register a deposit" showIf="statusSelect == 3 &amp;&amp; amountInvoiced == 0" colSpan="12" onClick="save,action-sale-order-view-register-advance-payment"/>
 	  </panel>
 	  
 	  <panel sidebar="true" title="Info.">
@@ -634,6 +632,16 @@
     	<context name="_saleOrder" expr="eval:_ids != null ? __repo__.of(SaleOrder).find(_ids.get(0)) : __this__"/>
     	<context name="_typeSelect" expr="3"/>
     </action-view>
+    
+    <action-view name="action-sale-order-view-register-advance-payment" title="Register a deposit" model="com.axelor.apps.sale.db.AdvancePayment">
+    	<view type="form" name="advance-payment-form"/>
+    	<view-param name="popup" value="reload"/>
+	  	<view-param name="show-toolbar" value="false"/>
+	  	<view-param name="forceEdit" value="true" />
+	  	<view-param name="popup-save" value="true"/>
+ 	  	<view-param name="show-confirm" value="true"/>
+	  	<context name="_saleOrder" expr="eval: __this__"/>
+    </action-view>
 	
 	<action-validate name="action-sale-order-validate-information">
 		<info message="${clientPartner.saleOrderInformation}" if="clientPartner.saleOrderInformation != null"/>
@@ -663,5 +671,9 @@
 	<action-validate name="action-sale-order-validate-bloqued" model="com.axelor.apps.sale.db.SaleOrder">
 		<error message="${company.orderBloquedMessage}" if="bloqued &amp;&amp; !manualUnblock"/>
 	</action-validate>
+	
+	<action-method name="action-sale-order-method-advance-payment-delete-line">
+		<call class="com.axelor.apps.supplychain.web.SaleOrderController" method="checkAdvancePaymentDB"/>
+	</action-method>
 	
 </object-views>

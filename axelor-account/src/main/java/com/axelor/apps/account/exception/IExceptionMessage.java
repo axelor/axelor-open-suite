@@ -334,6 +334,7 @@ public interface IExceptionMessage {
 	static final String ACCOUNT_CONFIG_35 = /*$$(*/ "%s :\n Veuillez configurer un Motif de passage (créance de plus de six mois) pour la société %s" /*)*/;
 	static final String ACCOUNT_CONFIG_36 = /*$$(*/ "%s :\n Veuillez configurer un Motif de passage (créance de plus de trois mois) pour la société %s" /*)*/;
 	static final String ACCOUNT_CONFIG_37 = /*$$(*/ "%s :\n Veuillez configurer le tableau de relance pour la société %s" /*)*/;
+	static final String ACCOUNT_CONFIG_38 = /*$$(*/ "%s :\n Veuillez configurer un compte d'acompte pour la société %s" /*)*/;
 	
 	static final String ACCOUNT_CONFIG_SEQUENCE_1 = /*$$(*/ "%s :\n Please, configure a sequence for the customer invoices and the company %s" /*)*/;
 	static final String ACCOUNT_CONFIG_SEQUENCE_2 = /*$$(*/ "%s :\n Please, configure a sequence for the customer refunds and the company %s" /*)*/;
@@ -440,10 +441,12 @@ public interface IExceptionMessage {
 	/**
 	 * Cancel state
 	 */
-	static final String CANCEL_STATE_1 = /*$$(*/ "Move should be unreconcile before to cancel the invoice" /*)*/;
-	static final String CANCEL_STATE_2 = /*$$(*/ "Invoice is passed in doubfult debit, and can't be canceled" /*)*/;
-	static final String CANCEL_STATE_3 = /*$$(*/ "Invoice is ventilated on a closed period, and can't be canceled" /*)*/;
-	static final String CANCEL_STATE_4 = /*$$(*/ "So many accounting operations are used on this invoice, so invoice can't be canceled" /*)*/;
+	static final String MOVE_CANCEL_1 = /*$$(*/ "Move should be unreconcile before to cancel the invoice" /*)*/;
+	static final String MOVE_CANCEL_2 = /*$$(*/ "Move is ventilated on a closed period, and can't be canceled" /*)*/;
+	static final String MOVE_CANCEL_3 = /*$$(*/ "So many accounting operations are used on this move, so move can't be canceled" /*)*/;
+	
+	static final String INVOICE_CANCEL_1 = /*$$(*/ "Invoice is passed in doubfult debit, and can't be canceled" /*)*/;
+
 
 	/**
 	 * Ventilate state

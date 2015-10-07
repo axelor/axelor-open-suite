@@ -128,5 +128,9 @@ public interface InvoiceService {
 	
 	
 	public void setDraftSequence(Invoice invoice);
+	
+	
+	public void updateAmountPaid(Invoice invoice) throws AxelorException;
+
 
 }

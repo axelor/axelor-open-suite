@@ -197,7 +197,7 @@ public class ReconcileService {
 		// Check if the amount to reconcile is != zero
 		if (reconcile.getAmount() == null || reconcile.getAmount().compareTo(BigDecimal.ZERO) == 0)  {
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.RECONCILE_4),
-					GeneralServiceImpl.EXCEPTION, debitMoveLine.getName(), debitMoveLine.getAccount().getLabel(),
+					GeneralServiceImpl.EXCEPTION, reconcile.getId(), debitMoveLine.getName(), debitMoveLine.getAccount().getLabel(),
 					creditMoveLine.getName(), creditMoveLine.getAccount().getLabel()), IException.INCONSISTENCY);
 
 		}
@@ -207,7 +207,7 @@ public class ReconcileService {
 			throw new AxelorException(
 					String.format(I18n.get(IExceptionMessage.RECONCILE_5)+" " +
 							I18n.get(IExceptionMessage.RECONCILE_3),
-							GeneralServiceImpl.EXCEPTION, debitMoveLine.getName(), debitMoveLine.getAccount().getLabel(),
+							GeneralServiceImpl.EXCEPTION, reconcile.getId(), debitMoveLine.getName(), debitMoveLine.getAccount().getLabel(),
 					creditMoveLine.getName(), creditMoveLine.getAccount().getLabel()), IException.INCONSISTENCY);
 
 		}

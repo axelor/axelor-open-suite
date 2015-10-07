@@ -113,7 +113,7 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
 
     }
 
-	protected InvoiceLineGenerator( Invoice invoice, Product product, String productName, BigDecimal price, BigDecimal priceDiscounted,String description, BigDecimal qty,
+	protected InvoiceLineGenerator( Invoice invoice, Product product, String productName, BigDecimal price, BigDecimal priceDiscounted, String description, BigDecimal qty,
 			Unit unit, TaxLine taxLine, int sequence, BigDecimal discountAmount, int discountTypeSelect, BigDecimal exTaxTotal,
 			BigDecimal inTaxTotal, GroupingLine groupingLine, boolean isTaxInvoice) {
 

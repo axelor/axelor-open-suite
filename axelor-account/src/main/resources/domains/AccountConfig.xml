@@ -33,6 +33,7 @@
     <many-to-one name="doubtfulCustomerAccount" ref="com.axelor.apps.account.db.Account" title="Doubtful customers account" help="true"/>    
     <many-to-one name="irrecoverableAccount" ref="com.axelor.apps.account.db.Account" title="Irrecoverable account"/>
     <many-to-one name="cashPositionVariationAccount" ref="com.axelor.apps.account.db.Account" title="Cashier Regulation account"/>
+    <many-to-one name="advancePaymentAccount" ref="com.axelor.apps.account.db.Account" title="Advance Payment Account"/>
     
     <decimal name="thresholdDistanceFromRegulation" title="Allowed payment range"/>
     
@@ -101,6 +102,8 @@
     <!-- Onglet Facturation -->
     <boolean name="allowCancelVentilatedInvoice" title="Allow cancelation of ventilated invoice"/>
     <boolean name="allowRemovalValidatedMove" title="Allow removal of validated move"/>
+    <boolean name="generateMoveForInvoicePayment" title="Generate move for payment on invoice"/>
+    <boolean name="generateMoveForAdvancePayment" title="Generate move for advance payment"/>
     
     <!--  Account chart template-->
 	<many-to-one name="accountChart" ref="com.axelor.apps.account.db.AccountChart" title="Account chart" />
