@@ -19,7 +19,9 @@
 	
 		  <field name="hasChartImported"/>
 		  <field name="allowCancelVentilatedInvoice"/>
-	   	  <field name="allowRemovalValidatedMove" showIf="allowCancelVentilatedInvoice"/>
+	   	  <field name="allowRemovalValidatedMove"/>
+	   	  <field name="generateMoveForInvoicePayment"/>
+  	   	  <field name="generateMoveForAdvancePayment"/>
 	   	  <field name="invoiceInAtiSelect"/>
     
 		</panel>
@@ -47,6 +49,7 @@
 					<field name="supplierAccount" domain="self.company = :company" grid-view="account-grid" form-view="account-form"/>
 					<field name="doubtfulCustomerAccount" domain="self.company = :company" grid-view="account-grid" form-view="account-form"/>
 					<field name="irrecoverableAccount" domain="self.company = :company" grid-view="account-grid" form-view="account-form"/>
+					<field name="advancePaymentAccount"/>
 				</panel>
 				<panel title="Payment differences" colSpan="12">
 					<field name="thresholdDistanceFromRegulation"/>

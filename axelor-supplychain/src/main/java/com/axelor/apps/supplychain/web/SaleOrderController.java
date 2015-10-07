@@ -50,7 +50,7 @@ import com.google.common.base.Joiner;
 import com.google.inject.Inject;
 
 public class SaleOrderController{
-
+	
 	@Inject
 	private SaleOrderRepository saleOrderRepo;
 
@@ -59,7 +59,7 @@ public class SaleOrderController{
 
 	@Inject
 	private SaleOrderInvoiceServiceImpl saleOrderInvoiceServiceImpl;
-
+	
 
 	public void createStockMove(ActionRequest request, ActionResponse response) throws AxelorException {
 
@@ -305,5 +305,6 @@ public class SaleOrderController{
 		Beans.get(TimetableService.class).updateTimetable(saleOrder);
 		response.setValues(saleOrder);
 	}
-
+	
+	
 }

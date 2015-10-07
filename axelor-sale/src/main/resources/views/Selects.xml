@@ -44,4 +44,10 @@
 		<option value="com.axelor.apps.sale.db.SaleOrder">Quote/Order</option>
 	</selection>
 	
+	<selection name="advance.payment.status.select">
+  		<option value="0">Draft</option>
+		<option value="1">Validated</option>
+		<option value="2">Canceled</option>
+	</selection>
+	
 </object-views>

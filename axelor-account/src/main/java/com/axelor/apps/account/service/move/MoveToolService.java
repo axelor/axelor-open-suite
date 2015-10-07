@@ -18,6 +18,8 @@
 package com.axelor.apps.account.service.move;
 
 import java.math.BigDecimal;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -376,5 +378,18 @@ public class MoveToolService {
 		return null;
 	}
 
+	
+	public List <MoveLine> orderListByDate(List <MoveLine> list)  {
+		Collections.sort(list, new Comparator<MoveLine>() {
+
+			@Override
+			public int compare(MoveLine o1, MoveLine o2) {
+				
+				return o1.getDate().compareTo(o2.getDate());
+			}
+		});
+
+	return list;
+}
 		
 }

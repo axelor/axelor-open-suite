@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.account.service.move;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -24,11 +25,13 @@ import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.base.db.Company;
 import com.axelor.exception.AxelorException;
+import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 
 public class MoveExcessPaymentService {
@@ -36,11 +39,14 @@ public class MoveExcessPaymentService {
 	private final Logger log = LoggerFactory.getLogger( getClass() );
 
 	protected MoveLineRepository moveLineRepository;
+	protected MoveToolService moveToolService;
+
 	
 	@Inject
-	public MoveExcessPaymentService(MoveLineRepository moveLineRepository) {
+	public MoveExcessPaymentService(MoveLineRepository moveLineRepository, MoveToolService moveToolService) {
 
 		this.moveLineRepository = moveLineRepository;
+		this.moveToolService = moveToolService;
 
 	}
 	
@@ -68,4 +74,28 @@ public class MoveExcessPaymentService {
 		 return creditMoveLines;
 	}
 		
+	
+	public List<MoveLine> getAdvancePaymentMoveList(Invoice invoice)  {
+		
+		List<MoveLine> moveLineList = Lists.newArrayList();
+		
+		if (invoice.getInvoicePaymentList() != null)  {
+			
+			for (InvoicePayment invoicePayment : invoice.getInvoicePaymentList())  {
+				
+				for (MoveLine moveLine : invoicePayment.getMove().getMoveLineList())  {
+					
+					if (moveLine.getCredit().compareTo(BigDecimal.ZERO) != 0)  {
+						moveLineList.add(moveLine);
+					}
+				}
+			}
+			
+			return moveToolService.orderListByDate(moveLineList);
+		}
+		
+		return moveLineList;
+	}
+	
+	
 }
