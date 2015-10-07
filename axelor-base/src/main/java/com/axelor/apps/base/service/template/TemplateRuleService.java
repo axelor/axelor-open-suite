@@ -43,9 +43,6 @@ public class TemplateRuleService {
 	@Inject
 	private TemplateBaseService ts;
 	
-	@Inject
-	private ActionHandler ac;
-	
 	public Map<String, Object> getContext(TemplateRule templateRule, Model bean) {
 		Template template = this.getTemplate(bean, templateRule);
 		
@@ -138,7 +135,7 @@ public class TemplateRuleService {
 		request.setModel(model);
 		request.setAction(action);
 
-		return ac.forRequest(request);
+		return new ActionHandler(request);
 	}
 
 }

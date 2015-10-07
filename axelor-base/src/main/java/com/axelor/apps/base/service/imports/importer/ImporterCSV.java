@@ -24,17 +24,13 @@ import javax.inject.Inject;
 import com.axelor.apps.base.db.ImportHistory;
 import com.axelor.apps.base.service.imports.listener.ImporterListener;
 import com.axelor.data.csv.CSVImporter;
-import com.google.inject.Injector;
 
 class ImporterCSV extends Importer {
-
-	@Inject
-	public ImporterCSV( Injector injector ) { super( injector ); }
 
 	@Override
 	protected ImportHistory process( String bind, String data ) throws IOException {
 
-		CSVImporter importer = new CSVImporter( injector, bind, data );
+		CSVImporter importer = new CSVImporter( bind, data );
 		
 		ImporterListener listener = new ImporterListener( getConfiguration().getName() ); 		
 		importer.addListener( listener );

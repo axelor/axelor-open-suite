@@ -40,22 +40,19 @@ import com.axelor.data.csv.CSVImporter;
 import com.axelor.db.Model;
 import com.axelor.exception.service.TraceBackService;
 import com.google.inject.Inject;
-import com.google.inject.Injector;
 import com.google.inject.persist.Transactional;
 
 public class AccountChartService{
 	
 	private final Logger log = LoggerFactory.getLogger( getClass() );
 	
-	protected Injector injector;
 	protected AccountConfigRepository accountConfigRepo;
 	protected CompanyRepository companyRepo;
 	protected AccountChartRepository accountChartRepository;
 	
 	@Inject
-	public AccountChartService(Injector injector, AccountConfigRepository accountConfigRepo, CompanyRepository companyRepo, AccountChartRepository accountChartRepository)  {
+	public AccountChartService(AccountConfigRepository accountConfigRepo, CompanyRepository companyRepo, AccountChartRepository accountChartRepository)  {
 		
-		this.injector = injector;
 		this.accountConfigRepo = accountConfigRepo;
 		this.companyRepo = companyRepo;
 		this.accountChartRepository = accountChartRepository;
@@ -125,7 +122,7 @@ public class AccountChartService{
 	}
 	
 	public void importAccountChartData(String configPath, String dataDir,HashMap<String,Object> context) throws IOException {
-		CSVImporter importer = new CSVImporter(injector, configPath.toString(), dataDir);
+		CSVImporter importer = new CSVImporter(configPath.toString(), dataDir);
 		importer.addListener(new Listener() {
 			@Override
 			public void handle(Model bean, Exception e) {
