@@ -31,7 +31,7 @@
 	    onNew="action-expense-record-default,action-expense-attrs-buttons" onLoad="action-expense-attrs-buttons" width="large" canNew="false"
 	    onSave="action-expense-method-validate-date" canCopy="false">
 		<toolbar>
-			<button name="printExpense" title="Print" colSpan="2" icon="fa-print" onClick="action-print-expense"/>
+			<button name="printExpense" title="Print" colSpan="2" icon="fa-print" onClick="save,action-print-expense"/>
 		</toolbar>
 	    <panel sidebar="true" title="Actions" stacked="true">
 	    	<button name="sendExpenses" colSpan="4" title="Send Expenses" onClick="action-expense-record-status-confirmed, save,action-expense-attrs-buttons, action-expense-view-new-expense" readonlyIf="statusSelect &gt; 1"/>
