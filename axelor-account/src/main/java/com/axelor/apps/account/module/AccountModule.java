@@ -34,6 +34,8 @@ import com.axelor.apps.account.db.repo.PaymentVoucherManagementRepository;
 import com.axelor.apps.account.db.repo.PaymentVoucherRepository;
 import com.axelor.apps.account.service.AccountManagementServiceAccountImpl;
 import com.axelor.apps.account.service.AddressServiceAccountImpl;
+import com.axelor.apps.account.service.AnalyticDistributionLineService;
+import com.axelor.apps.account.service.AnalyticDistributionLineServiceImpl;
 import com.axelor.apps.account.service.FiscalPositionServiceAccountImpl;
 import com.axelor.apps.account.service.InvoicePaymentService;
 import com.axelor.apps.account.service.InvoicePaymentServiceImpl;
@@ -73,6 +75,8 @@ public class AccountModule extends AxelorModule {
         bind(InvoiceService.class).to(InvoiceServiceImpl.class);
 
         bind(PartnerBaseRepository.class).to(PartnerAccountRepository.class);
+        
+        bind(AnalyticDistributionLineService.class).to(AnalyticDistributionLineServiceImpl.class);
         
         bind(InvoicePaymentRepository.class).to(InvoicePaymentManagementRepository.class);
 
