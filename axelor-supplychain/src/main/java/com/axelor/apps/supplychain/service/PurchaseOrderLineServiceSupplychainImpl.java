@@ -18,10 +18,13 @@
 package com.axelor.apps.supplychain.service;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.axelor.apps.account.db.AnalyticDistributionLine;
+import com.axelor.apps.account.service.AnalyticDistributionLineService;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.purchase.db.PurchaseOrder;
@@ -29,8 +32,12 @@ import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.service.PurchaseOrderLineServiceImpl;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.exception.AxelorException;
+import com.google.inject.Inject;
 
 public class PurchaseOrderLineServiceSupplychainImpl extends PurchaseOrderLineServiceImpl  {
+	
+	@Inject
+	protected AnalyticDistributionLineService analyticDistributionLineService;
 	
 	private static final Logger LOG = LoggerFactory.getLogger(PurchaseOrderLineServiceSupplychainImpl.class); 
 	
@@ -61,5 +68,18 @@ public class PurchaseOrderLineServiceSupplychainImpl extends PurchaseOrderLineSe
 		return purchaseOrderLine;
 	}
 	
+	public PurchaseOrderLine computeAnalyticDistribution(PurchaseOrderLine purchaseOrderLine){
+		List<AnalyticDistributionLine> analyticDistributionLineList = purchaseOrderLine.getAnalyticDistributionLineList();
+		if(analyticDistributionLineList != null){
+			for (AnalyticDistributionLine analyticDistributionLine : analyticDistributionLineList) {
+				if(analyticDistributionLine.getPurchaseOrderLine() == null){
+					analyticDistributionLine.setPurchaseOrderLine(purchaseOrderLine);
+				}
+				analyticDistributionLine.setAmount(analyticDistributionLineService.computeAmount(analyticDistributionLine));
+				analyticDistributionLine.setDate(generalService.getTodayDate());
+			}
+		}
+		return purchaseOrderLine;
+	}
 	
 }

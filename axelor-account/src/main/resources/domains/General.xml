@@ -19,6 +19,19 @@
 		<!-- Manage CustomerCreditLines -->
 		<boolean name="manageCustomerCredit" title="Manage customerCredit"/>
 		
+		<boolean name="manageAnalyticAccounting" title="Manage analytic accounting"/>
+		<integer name="analyticDistributionTypeSelect" title="Analytic distribution type" selection="account.general.analytic.distribution.type.select" default="1"/>
+		
+		<extra-code><![CDATA[
+	
+	   
+		public static final int DISTRIBUTION_TYPE_FREE = 1;
+		public static final int DISTRIBUTION_TYPE_PARTNER = 2;
+		public static final int DISTRIBUTION_TYPE_PRODUCT = 3;
+	
+	
+		]]></extra-code>
+		
 	</entity>
 
 </domain-models>

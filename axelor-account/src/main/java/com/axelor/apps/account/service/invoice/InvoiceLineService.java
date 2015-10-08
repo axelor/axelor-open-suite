@@ -19,10 +19,13 @@ package com.axelor.apps.account.service.invoice;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.List;
 
+import com.axelor.apps.account.db.AnalyticDistributionLine;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.TaxLine;
+import com.axelor.apps.account.service.AnalyticDistributionLineService;
 import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.IPriceListLine;
 import com.axelor.apps.base.db.PriceList;
@@ -41,17 +44,34 @@ public class InvoiceLineService {
 	private CurrencyService currencyService;
 	private PriceListService priceListService;
 	protected GeneralService generalService;
+	protected AnalyticDistributionLineService analyticDistributionLineService;
 
 	@Inject
-	public InvoiceLineService(AccountManagementService accountManagementService, CurrencyService currencyService, PriceListService priceListService, GeneralService generalService)  {
+	public InvoiceLineService(AccountManagementService accountManagementService, CurrencyService currencyService, PriceListService priceListService, GeneralService generalService, AnalyticDistributionLineService analyticDistributionLineService)  {
 		
 		this.accountManagementService = accountManagementService;
 		this.currencyService = currencyService;
 		this.priceListService = priceListService;
 		this.generalService = generalService;
+		this.analyticDistributionLineService = analyticDistributionLineService;
 		
 	}
-
+	
+	public InvoiceLine computeAnalyticDistribution(InvoiceLine invoiceLine){
+		List<AnalyticDistributionLine> analyticDistributionLineList = invoiceLine.getAnalyticDistributionLineList();
+		if(analyticDistributionLineList != null){
+			for (AnalyticDistributionLine analyticDistributionLine : analyticDistributionLineList) {
+				if(analyticDistributionLine.getInvoiceLine() == null){
+					analyticDistributionLine.setInvoiceLine(invoiceLine);
+				}
+				analyticDistributionLine.setAmount(analyticDistributionLineService.computeAmount(analyticDistributionLine));
+				analyticDistributionLine.setDate(generalService.getTodayDate());
+			}
+		}
+		return invoiceLine;
+	}
+	
+	
 	public TaxLine getTaxLine(Invoice invoice, InvoiceLine invoiceLine, boolean isPurchase) throws AxelorException  {
 
 		return accountManagementService.getTaxLine(

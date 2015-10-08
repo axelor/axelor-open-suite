@@ -19,7 +19,9 @@ package com.axelor.apps.supplychain.service.invoice.generator;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.ArrayList;
 
+import com.axelor.apps.account.db.AnalyticDistributionLine;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.service.invoice.generator.InvoiceLineGenerator;
@@ -83,6 +85,7 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
 				this.exTaxTotal = this.exTaxTotal.divide(new BigDecimal(saleOrderLine.getSubscriptionList().size())).setScale(IAdministration.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_EVEN);
 				this.inTaxTotal = this.inTaxTotal.divide(new BigDecimal(saleOrderLine.getSubscriptionList().size())).setScale(IAdministration.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_EVEN);
 			}
+			this.analyticDistributionLineList = new ArrayList<AnalyticDistributionLine>(saleOrderLine.getAnalyticDistributionLineList());
 		} else if (purchaseOrderLine != null){
 			this.purchaseOrderLine = purchaseOrderLine;
 			this.discountAmount = purchaseOrderLine.getDiscountAmount();
@@ -92,6 +95,7 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
 			this.discountTypeSelect = purchaseOrderLine.getDiscountTypeSelect();
 			this.exTaxTotal = purchaseOrderLine.getExTaxTotal();
 			this.inTaxTotal = purchaseOrderLine.getInTaxTotal();
+			this.analyticDistributionLineList = new ArrayList<AnalyticDistributionLine>(purchaseOrderLine.getAnalyticDistributionLineList());
 		}
 
 		if(stockMove != null){

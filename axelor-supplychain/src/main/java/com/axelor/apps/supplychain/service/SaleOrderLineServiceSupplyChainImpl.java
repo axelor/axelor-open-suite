@@ -19,10 +19,13 @@ package com.axelor.apps.supplychain.service;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.axelor.apps.account.db.AnalyticDistributionLine;
+import com.axelor.apps.account.service.AnalyticDistributionLineService;
 import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.administration.GeneralService;
@@ -37,7 +40,9 @@ public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineService{
 
 	@Inject
 	protected GeneralService generalService;
-
+	
+	@Inject
+	protected AnalyticDistributionLineService analyticDistributionLineService;
 
 	@Override
 	public BigDecimal computeAmount(SaleOrderLine saleOrderLine) {
@@ -56,6 +61,21 @@ public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineService{
 		LOG.debug("Calcul du montant HT avec une quantité de {} pour {} : {}", new Object[] { saleOrderLine.getQty(), price, amount });
 
 		return amount;
+	}
+	
+	
+	public SaleOrderLine computeAnalyticDistribution(SaleOrderLine saleOrderLine){
+		List<AnalyticDistributionLine> analyticDistributionLineList = saleOrderLine.getAnalyticDistributionLineList();
+		if(analyticDistributionLineList != null){
+			for (AnalyticDistributionLine analyticDistributionLine : analyticDistributionLineList) {
+				if(analyticDistributionLine.getSaleOrderLine() == null){
+					analyticDistributionLine.setSaleOrderLine(saleOrderLine);
+				}
+				analyticDistributionLine.setAmount(analyticDistributionLineService.computeAmount(analyticDistributionLine));
+				analyticDistributionLine.setDate(generalService.getTodayDate());
+			}
+		}
+		return saleOrderLine;
 	}
 
 }

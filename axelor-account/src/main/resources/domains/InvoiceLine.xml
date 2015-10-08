@@ -35,6 +35,8 @@
   	<date name="subscriptionFromDate" title="From"/>
     <date name="subscriptionToDate" title="To"/>
   	
+  	<one-to-many name="analyticDistributionLineList" ref="com.axelor.apps.account.db.AnalyticDistributionLine" title="Analytic distribution lines" mappedBy="invoiceLine"/>
+	<many-to-one name="analyticDistributionTemplate" title="Analytic distribution template" ref="com.axelor.apps.account.db.AnalyticDistributionTemplate"/>
     
     <string name="name" title="Name" search="invoice,productName">
    	    <![CDATA[

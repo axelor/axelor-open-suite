@@ -18,6 +18,7 @@
 package com.axelor.apps.supplychain.module;
 
 import com.axelor.app.AxelorModule;
+import com.axelor.apps.account.service.AnalyticDistributionLineServiceImpl;
 import com.axelor.apps.account.service.invoice.workflow.cancel.CancelState;
 import com.axelor.apps.account.service.invoice.workflow.ventilate.VentilateState;
 import com.axelor.apps.purchase.service.PurchaseOrderLineService;
@@ -36,6 +37,7 @@ import com.axelor.apps.stock.service.StockMoveLineServiceImpl;
 import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.apps.stock.service.StockMoveServiceImpl;
 import com.axelor.apps.supplychain.db.repo.SaleOrderSupplychainRepository;
+import com.axelor.apps.supplychain.service.AnalyticDistributionLineServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.CustomerCreditLineService;
 import com.axelor.apps.supplychain.service.CustomerCreditLineServiceImpl;
 import com.axelor.apps.supplychain.service.MinStockRulesServiceSupplychainImpl;
@@ -82,5 +84,6 @@ public class SupplychainModule extends AxelorModule {
         bind(OpportunitySaleOrderServiceImpl.class).to(OpportunitySaleOrderServiceSupplychainImpl.class);
         bind(CustomerCreditLineService.class).to(CustomerCreditLineServiceImpl.class);
         bind(SaleOrderLineService.class).to(SaleOrderLineServiceSupplyChainImpl.class);
+        bind(AnalyticDistributionLineServiceImpl.class).to(AnalyticDistributionLineServiceSupplychainImpl.class);
     }
 }

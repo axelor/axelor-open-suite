@@ -19,8 +19,8 @@
 		   	<field name="productName"/>
 		   	<field name="qty" onChange="action-group-sale-saleorderline-qty-onchange"/>
 		   	<field name="unit" form-view="unit-form" grid-view="unit-grid"/>
-		   	<field name="taxLine" colSpan="4" onChange="action-sale-order-line-method-convert-tax,action-sale-order-line-method-compute" domain="self.endDate = null or self.endDate &gt; :__date__" grid-view="tax-line-grid" form-view="tax-line-form"/>
-		   	<field name="price" onChange="action-sale-order-line-method-compute" colSpan="4"/>
+		   	<field name="taxLine" colSpan="4" onChange="action-sale-order-line-method-convert-tax,action-sale-order-line-method-compute,action-sale-order-line-method-compute-analytic-distribution" domain="self.endDate = null or self.endDate &gt; :__date__" grid-view="tax-line-grid" form-view="tax-line-form"/>
+		   	<field name="price" onChange="action-sale-order-line-method-compute,action-sale-order-line-method-compute-analytic-distribution" colSpan="4"/>
 		   	<field name="priceDiscounted" colSpan="4" hidden="true"/>
 		   	<field name="exTaxTotal" readonly="true"/>
 		   	<field name="inTaxTotal" readonly="true"/>
@@ -28,8 +28,8 @@
 			<field name="invoiced" showIf="toInvoice"/>
 		</panel>
 		<panel name="discount" title="Discount">
-		   	<field name="discountTypeSelect" onChange="action-sale-order-line-method-compute,action-sale-order-line-attrs-discountamount-title"/>
-		   	<field name="discountAmount" onChange="action-sale-order-line-method-compute" hideIf="discountTypeSelect == 3"/>
+		   	<field name="discountTypeSelect" onChange="action-sale-order-line-method-compute,action-sale-order-line-attrs-discountamount-title,action-sale-order-line-method-compute-analytic-distribution"/>
+		   	<field name="discountAmount" onChange="action-sale-order-line-method-compute,action-sale-order-line-method-compute-analytic-distribution" hideIf="discountTypeSelect == 3"/>
 		</panel>
 		<panel-tabs>
 			<panel name="subscription" title="Subscription">
@@ -57,8 +57,21 @@
 				<field name="project" onSelect="action-sale-order-line-attrs-domain-project" onChange="action-sale-order-line-record-progress" form-view="project-task-form" grid-view="project-task-grid"/>
 				<field name="progress" readonly="true" widget="SelectProgress"/>
 			</panel>
+			<panel title="Analytic distribution" if-module="axelor-supplychain" if="__config__.general.getManageAnalyticAccounting()" onTabSelect="action-sale-order-line-attrs-read-only-distribution-lines">
+				<field name="analyticDistributionTemplate" if="__config__.general.getAnalyticDistributionTypeSelect() == 1"/>
+				<button name="generateDistributionLinesButton" title="Generate distribution lines" showIf="analyticDistributionTemplate != null" if="__config__.general.getAnalyticDistributionTypeSelect() == 1"/>
+				<panel-related field="analyticDistributionLineList" grid-view="analytic-distribution-line-grid" form-view="analytic-distribution-line-form" colSpan="12"/>
+			</panel>
 		</panel-tabs>
 	</form>
+	
+	<action-method name="action-sale-order-line-method-compute-analytic-distribution" if-module="axelor-supplychain">
+		<call class="com.axelor.apps.supplychain.web.SaleOrderLineController" method="computeAnalyticDistribution"/>
+	</action-method>
+	
+	<action-attrs name="action-sale-order-line-attrs-read-only-distribution-lines">
+		<attribute name="readonly" for="analyticDistributionLineList" expr="eval: __config__.general.getAnalyticDistributionTypeSelect() != 1"/>
+	</action-attrs>
 	
 	<action-view name="action-sale-order-line-view-show-invoice-lines" title="Invoice Lines" model="com.axelor.apps.account.db.InvoiceLine">	
 		<view type="grid" name="invoice-line-grid" />
@@ -104,12 +117,14 @@
     	<action name="action-sale-order-line-attrs-title-subscription"/>
     	<action name="action-sale-order-line-attrs-hidden-subscription"/>
     	<action name="action-supplychain-record-periodicity"/>
+    	<action name="action-sale-order-line-method-compute-analytic-distribution" if="__config__.general.getManageAnalyticAccounting()"/>
     </action-group>
 
     <action-group name="action-group-sale-saleorderline-qty-onchange">
     	<action name="action-sale-order-line-method-get-discount"/>
     	<action name="action-sale-order-line-method-convert-tax"/>
     	<action name="action-sale-order-line-method-compute"/>
+    	<action name="action-sale-order-line-method-compute-analytic-distribution" if="__config__.general.getManageAnalyticAccounting()"/>
     </action-group>
 
     <action-group name="action-group-sale-saleorderline-salesupplyselect-onchange" if-module="axelor-production">

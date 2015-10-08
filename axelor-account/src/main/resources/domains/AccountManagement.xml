@@ -14,6 +14,8 @@
     <many-to-one  name="paymentMode" ref="com.axelor.apps.account.db.PaymentMode" title="Payment mode"/>
     <many-to-one name="journal" ref="com.axelor.apps.account.db.Journal" title="Journal"/>
    	<many-to-one name="sequence" ref="com.axelor.apps.base.db.Sequence" title="Sequence"/>
+   	
+   	<many-to-one name="analyticDistributionTemplate" title="Analytic distribution template" ref="com.axelor.apps.account.db.AnalyticDistributionTemplate"/>
     
     
   </entity>

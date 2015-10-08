@@ -58,7 +58,16 @@ public class InvoiceLineController {
 
 	@Inject
 	protected GeneralService generalService;
-
+	
+	
+	public void computeAnalyticDistribution(ActionRequest request, ActionResponse response){
+		InvoiceLine invoiceLine = request.getContext().asType(InvoiceLine.class);
+		if(Beans.get(GeneralService.class).getGeneral().getManageAnalyticAccounting()){
+			invoiceLine = invoiceLineService.computeAnalyticDistribution(invoiceLine);
+			response.setValue("analyticDistributionLineList", invoiceLine.getAnalyticDistributionLineList());
+		}
+	}
+	
 	public void compute(ActionRequest request, ActionResponse response) throws AxelorException {
 
 		InvoiceLine invoiceLine = request.getContext().asType(InvoiceLine.class);

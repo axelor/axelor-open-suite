@@ -20,6 +20,8 @@
 	<one-to-many name="umrList" ref="com.axelor.apps.account.db.Umr" mappedBy="partner" title="UMR List"/>
 	<many-to-one name="activeUmr" ref="com.axelor.apps.account.db.Umr" title="Active UMR"/>
 	
+	<many-to-one name="analyticDistributionTemplate" title="Analytic distribution template" ref="com.axelor.apps.account.db.AnalyticDistributionTemplate"/>
+	
   </entity>
   
 </domain-models>

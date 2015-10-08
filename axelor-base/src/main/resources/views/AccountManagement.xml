@@ -9,6 +9,7 @@
 		<field name="saleAccount" if-module="axelor-account" form-view="account-form" grid-view="account-grid"/>
         <field name="purchaseAccount" if-module="axelor-account" form-view="account-form" grid-view="account-grid"/>
 		<field name="cashAccount" if-module="axelor-account" form-view="account-form" grid-view="account-grid"/>
+		<field name="analyticDistributionTemplate" if-module="axelor-account"/>
     </grid>
     
     <grid name="account-management-product-grid" title="Account managements" model="com.axelor.apps.account.db.AccountManagement">
@@ -17,6 +18,7 @@
 		<field name="saleTax" form-view="tax-form" grid-view="tax-grid"/>
         <field name="purchaseAccount" if-module="axelor-account" form-view="account-form" grid-view="account-grid"/>
         <field name="purchaseTax" if-module="axelor-account" form-view="tax-form" grid-view="tax-grid"/>
+        <field name="analyticDistributionTemplate" if-module="axelor-account"/>
     </grid>
     
 	<form name="account-management-product-form" title="Account management" model="com.axelor.apps.account.db.AccountManagement"  
@@ -26,12 +28,12 @@
 		   	<field name="company" widget="SuggestBox" form-view="company-form" onChange="action-group-account-account-management-onchange-common" grid-view="company-grid"/>
 		   	<field name="purchaseAccount" domain="self.company = :company AND self.accountType.nameSelect = 'expense'" onChange="action-group-account-account-management-onchange-common" if-module="axelor-account" form-view="account-form" grid-view="account-grid"/>
 		   	<field name="saleAccount" domain="self.company = :company AND self.accountType.nameSelect = 'income'" onChange="action-group-account-account-management-onchange-common" if-module="axelor-account" form-view="account-form" grid-view="account-grid"/>
+			<field name="analyticDistributionTemplate" canNew="true" if-module="axelor-account"/>
 		</panel>
 		<panel name="taxPage" title="Tax">
 			<field name="purchaseTax" form-view="tax-form" grid-view="tax-grid"/>
 			<field name="saleTax" form-view="tax-form" grid-view="tax-grid"/>
 		</panel>
-		<panel-related field="analyticAccountManagementList" colSpan="12" if-module="axelor-account"/>
 	</form>
 	
 	<form name="account-management-form" title="Account management" model="com.axelor.apps.account.db.AccountManagement"    
@@ -46,6 +48,7 @@
 			<panel colSpan="12" showIf="typeSelect == 3">
 				<field name="cashAccount" onChange="action-group-account-account-management-onchange-common" domain="self.company = :company AND self.accountType.nameSelect = 'cash'" if-module="axelor-account" form-view="account-form" grid-view="account-grid"/>
 			</panel>
+			<field name="analyticDistributionTemplate" canNew="true" if-module="axelor-account"/>
 		</panel>
 		
 		<panel name="productPage" title="Product" showIf="typeSelect == 1">
@@ -62,7 +65,6 @@
 		  <field name="journal" domain="self.company = :company AND self.statusSelect = 1" form-view="journal-form" grid-view="journal-grid"/>
 		  <field name="sequence" domain="self.company = :company" canNew="true" form-view="sequence-form" grid-view="sequence-grid"/>
 		</panel>
-		<panel-related field="analyticAccountManagementList" colSpan="12" if-module="axelor-account" form-view="analytic-account-management-form" grid-view="analytic-account-management-grid"/>
 	</form>
     
     

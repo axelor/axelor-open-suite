@@ -33,6 +33,7 @@ import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountManagement;
 import com.axelor.apps.account.db.AnalyticAccount;
 import com.axelor.apps.account.db.AnalyticAccountManagement;
+import com.axelor.apps.account.db.AnalyticDistributionLine;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.InvoiceLineTax;
@@ -43,6 +44,7 @@ import com.axelor.apps.account.db.Tax;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.AccountManagementServiceAccountImpl;
+import com.axelor.apps.account.service.AnalyticDistributionLineService;
 import com.axelor.apps.account.service.FiscalPositionServiceAccountImpl;
 import com.axelor.apps.account.service.TaxAccountService;
 import com.axelor.apps.base.db.Company;
@@ -64,17 +66,35 @@ public class MoveLineService {
 	protected TaxAccountService taxAccountService;
 	protected FiscalPositionServiceAccountImpl fiscalPositionService;
 	protected LocalDate today;
-
+	protected AnalyticDistributionLineService analyticDistributionLineService;
+	protected GeneralService generalService;
+	
 	@Inject
 	public MoveLineService(AccountManagementServiceAccountImpl accountManagementService, TaxAccountService taxAccountService,
-			FiscalPositionServiceAccountImpl fiscalPositionService, GeneralService generalService) {
+			FiscalPositionServiceAccountImpl fiscalPositionService, GeneralService generalService,
+			AnalyticDistributionLineService analyticDistributionLineService) {
 		this.accountManagementService = accountManagementService;
 		this.taxAccountService = taxAccountService;
 		this.fiscalPositionService = fiscalPositionService;
-
+		this.analyticDistributionLineService = analyticDistributionLineService;
+		this.generalService = generalService;
 		today = generalService.getTodayDate();
 	}
-
+	
+	
+	public MoveLine computeAnalyticDistribution(MoveLine moveLine){
+		List<AnalyticDistributionLine> analyticDistributionLineList = moveLine.getAnalyticDistributionLineList();
+		if(analyticDistributionLineList != null){
+			for (AnalyticDistributionLine analyticDistributionLine : analyticDistributionLineList) {
+				if(analyticDistributionLine.getMoveLine() == null){
+					analyticDistributionLine.setMoveLine(moveLine);
+				}
+				analyticDistributionLine.setAmount(analyticDistributionLineService.computeAmount(analyticDistributionLine));
+				analyticDistributionLine.setDate(generalService.getTodayDate());
+			}
+		}
+		return moveLine;
+	}
 
 	/**
 	 * Créer une ligne d'écriture comptable
