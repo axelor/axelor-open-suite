@@ -24,7 +24,6 @@
     <boolean name="exportedDirectDebitOk" title="Exported Direct Debit" default="false"/>
     <many-to-one name="interbankCodeLine" ref="com.axelor.apps.account.db.InterbankCodeLine" title="Reject reason"/>
     
-    <many-to-many name="analyticAccountSet" ref="AnalyticAccount" title="Analytic account"/>
     <integer name="reimbursementStatusSelect" title="Reimbursement status" default="0" selection="move.line.reimbursement.state.select"/>
     <string name="passageReason" title="Irrecoverable Shift Reason" readonly="true"/>
     <boolean name="usherPassageOk" title="Transfer(ed) to Usher "/>

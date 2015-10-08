@@ -1,6 +1,7 @@
 package com.axelor.apps.hr.service.expense;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -12,19 +13,22 @@ import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.AccountManagement;
 import com.axelor.apps.account.db.AnalyticAccount;
-import com.axelor.apps.account.db.AnalyticAccountManagement;
+import com.axelor.apps.account.db.AnalyticDistributionLine;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.account.db.repo.AnalyticDistributionLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.AccountManagementServiceAccountImpl;
+import com.axelor.apps.account.service.AnalyticDistributionLineService;
 import com.axelor.apps.account.service.invoice.generator.InvoiceLineGenerator;
 import com.axelor.apps.account.service.move.MoveLineService;
 import com.axelor.apps.account.service.move.MoveService;
 import com.axelor.apps.base.db.IPriceListLine;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.repo.GeneralRepository;
 import com.axelor.apps.base.service.PeriodService;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.hr.db.Expense;
@@ -47,10 +51,12 @@ public class ExpenseService  {
 	protected AccountManagementServiceAccountImpl accountManagementService;
 	protected GeneralService generalService;
 	protected AccountConfigHRService accountConfigService;
+	protected AnalyticDistributionLineService analyticDistributionLineService;
 	
 	@Inject
 	public ExpenseService(MoveService moveService, ExpenseRepository expenseRepository, MoveLineService moveLineService,
-			AccountManagementServiceAccountImpl accountManagementService, GeneralService generalService, AccountConfigHRService accountConfigService)  {
+			AccountManagementServiceAccountImpl accountManagementService, GeneralService generalService,
+			AccountConfigHRService accountConfigService, AnalyticDistributionLineService analyticDistributionLineService)  {
 		
 		this.moveService = moveService;
 		this.expenseRepository = expenseRepository;
@@ -58,8 +64,46 @@ public class ExpenseService  {
 		this.accountManagementService = accountManagementService;
 		this.generalService = generalService;
 		this.accountConfigService = accountConfigService;
+		this.analyticDistributionLineService = analyticDistributionLineService;
 	}
-
+	
+	public ExpenseLine createAnalyticDistributionWithTemplate(ExpenseLine expenseLine) throws AxelorException{
+		List<AnalyticDistributionLine> analyticDistributionLineList = null;
+		analyticDistributionLineList = analyticDistributionLineService.generateLinesWithTemplate(expenseLine.getAnalyticDistributionTemplate(), expenseLine.getUntaxedAmount());
+		if(analyticDistributionLineList != null){
+			for (AnalyticDistributionLine analyticDistributionLine : analyticDistributionLineList) {
+				analyticDistributionLine.setExpenseLine(expenseLine);
+			}
+		}
+		expenseLine.setAnalyticDistributionLineList(analyticDistributionLineList);
+		return expenseLine;
+	}
+	
+	public ExpenseLine computeAnalyticDistribution(ExpenseLine expenseLine) throws AxelorException{
+		List<AnalyticDistributionLine> analyticDistributionLineList = expenseLine.getAnalyticDistributionLineList();
+		if((analyticDistributionLineList == null || analyticDistributionLineList.isEmpty()) && generalService.getGeneral().getAnalyticDistributionTypeSelect() != GeneralRepository.DISTRIBUTION_TYPE_FREE){
+			analyticDistributionLineList = analyticDistributionLineService.generateLines(expenseLine.getUser().getPartner(), expenseLine.getExpenseType(), expenseLine.getExpense().getCompany(), expenseLine.getUntaxedAmount());
+			if(analyticDistributionLineList != null){
+				for (AnalyticDistributionLine analyticDistributionLine : analyticDistributionLineList) {
+					analyticDistributionLine.setExpenseLine(expenseLine);
+					analyticDistributionLine.setAmount(
+							analyticDistributionLine.getPercentage().multiply(analyticDistributionLine.getExpenseLine().getUntaxedAmount()
+							.divide(new BigDecimal(100),2,RoundingMode.HALF_UP)));
+					analyticDistributionLine.setDate(generalService.getTodayDate());
+				}
+				expenseLine.setAnalyticDistributionLineList(analyticDistributionLineList);
+			}
+		}
+		if(analyticDistributionLineList != null && generalService.getGeneral().getAnalyticDistributionTypeSelect() != GeneralRepository.DISTRIBUTION_TYPE_FREE){
+			for (AnalyticDistributionLine analyticDistributionLine : analyticDistributionLineList) {
+				analyticDistributionLine.setExpenseLine(expenseLine);
+				analyticDistributionLine.setAmount(analyticDistributionLineService.computeAmount(analyticDistributionLine));
+				analyticDistributionLine.setDate(generalService.getTodayDate());
+			}
+		}
+		return expenseLine;
+	}
+	
 	public Expense compute (Expense expense){
 
 		BigDecimal exTaxTotal = BigDecimal.ZERO;
@@ -116,22 +160,18 @@ public class ExpenseService  {
 						 expenseLineId,expense.getCompany().getName()), IException.CONFIGURATION_ERROR);
 			}
 
-			for (AnalyticAccountManagement analyticAccountManagement : accountManagement.getAnalyticAccountManagementList()){
-				if(analyticAccountManagement.getAnalyticAccount() == null){
-					throw new AxelorException(String.format(I18n.get(IExceptionMessage.MOVE_LINE_5),
-							analyticAccountManagement.getAnalyticAxis().getName(),expenseLine.getExpenseType().getName(), expense.getCompany().getName()), IException.CONFIGURATION_ERROR);
-				}
-				analyticAccounts.add(analyticAccountManagement.getAnalyticAccount());
-			}
 			exTaxTotal = expenseLine.getUntaxedAmount();
 			MoveLine moveLine = moveLineService.createMoveLine(move, expense.getUser().getPartner(), account, exTaxTotal, true, moveDate, moveDate, moveLineId++, "");
-			moveLine.setAnalyticAccountSet(analyticAccounts);
-
+			for (AnalyticDistributionLine analyticDistributionLineIt : expenseLine.getAnalyticDistributionLineList()) {
+				AnalyticDistributionLine analyticDistributionLine = Beans.get(AnalyticDistributionLineRepository.class).copy(analyticDistributionLineIt, false);
+				analyticDistributionLine.setExpenseLine(null);
+				moveLine.addAnalyticDistributionLineListItem(analyticDistributionLine);
+			}
 			moveLines.add(moveLine);
 			expenseLineId++;
 
 		}
-
+		
 		moveLineService.consolidateMoveLines(moveLines);
 		account = accountConfigService.getExpenseTaxAccount(accountConfig);
 		BigDecimal taxTotal = BigDecimal.ZERO;

@@ -32,7 +32,6 @@ import org.slf4j.LoggerFactory;
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountManagement;
 import com.axelor.apps.account.db.AnalyticAccount;
-import com.axelor.apps.account.db.AnalyticAccountManagement;
 import com.axelor.apps.account.db.AnalyticDistributionLine;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
@@ -41,6 +40,7 @@ import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.Tax;
+import com.axelor.apps.account.db.repo.AnalyticDistributionLineRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.AccountManagementServiceAccountImpl;
@@ -50,6 +50,7 @@ import com.axelor.apps.account.service.TaxAccountService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.repo.GeneralRepository;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
@@ -84,11 +85,9 @@ public class MoveLineService {
 	
 	public MoveLine computeAnalyticDistribution(MoveLine moveLine){
 		List<AnalyticDistributionLine> analyticDistributionLineList = moveLine.getAnalyticDistributionLineList();
-		if(analyticDistributionLineList != null){
+		if(analyticDistributionLineList != null && generalService.getGeneral().getAnalyticDistributionTypeSelect() != GeneralRepository.DISTRIBUTION_TYPE_FREE){
 			for (AnalyticDistributionLine analyticDistributionLine : analyticDistributionLineList) {
-				if(analyticDistributionLine.getMoveLine() == null){
-					analyticDistributionLine.setMoveLine(moveLine);
-				}
+				analyticDistributionLine.setMoveLine(moveLine);
 				analyticDistributionLine.setAmount(analyticDistributionLineService.computeAmount(analyticDistributionLine));
 				analyticDistributionLine.setDate(generalService.getTodayDate());
 			}
@@ -235,21 +234,16 @@ public class MoveLineService {
 							invoiceLine.getName(), company.getName()), IException.CONFIGURATION_ERROR);
 				}
 	
-				for (AnalyticAccountManagement analyticAccountManagement : accountManagement.getAnalyticAccountManagementList()){
-					if(analyticAccountManagement.getAnalyticAccount() == null){
-						throw new AxelorException(String.format(I18n.get(IExceptionMessage.MOVE_LINE_5),
-								analyticAccountManagement.getAnalyticAxis().getName(),invoiceLine.getProductName(), company.getName()), IException.CONFIGURATION_ERROR);
-					}
-					analyticAccounts.add(analyticAccountManagement.getAnalyticAccount());
-				}
-	
 				exTaxTotal = invoiceLine.getCompanyExTaxTotal();
 	
 				log.debug("Traitement de la ligne de facture : compte comptable = {}, montant = {}", new Object[]{account2.getName(), exTaxTotal});
 
 			
 				MoveLine moveLine = this.createMoveLine(move, partner, account2, exTaxTotal, !isDebitCustomer, invoice.getInvoiceDate(), null, moveLineId++, invoice.getInvoiceId());
-				moveLine.setAnalyticAccountSet(analyticAccounts);
+				for (AnalyticDistributionLine analyticDistributionLineIt : invoiceLine.getAnalyticDistributionLineList()) {
+					AnalyticDistributionLine analyticDistributionLine = Beans.get(AnalyticDistributionLineRepository.class).copy(analyticDistributionLineIt, false);
+					moveLine.addAnalyticDistributionLineListItem(analyticDistributionLine);
+				}
 				moveLine.setTaxLine(invoiceLine.getTaxLine());
 				moveLines.add(moveLine);
 			}
@@ -284,13 +278,50 @@ public class MoveLineService {
 
 		return moveLines;
 	}
+	
+	public MoveLine findConsolidateMoveLine(Map<List<Object>, MoveLine> map, MoveLine moveLine, List<Object> keys){
+		if(map != null && !map.isEmpty()){
+			Map<List<Object>, MoveLine> copyMap = new HashMap<List<Object>, MoveLine>(map);
+			while(!copyMap.isEmpty()){
+				if(map.containsKey(keys)){
+					MoveLine moveLineIt =  map.get(keys);
+					int count = 0;
+					List<AnalyticDistributionLine> list1 = moveLineIt.getAnalyticDistributionLineList();
+					List<AnalyticDistributionLine> list2 = moveLine.getAnalyticDistributionLineList();
+					List<AnalyticDistributionLine> copyList = new ArrayList<AnalyticDistributionLine>(list1);
+					if(list1.size() == list2.size()){
+						for (AnalyticDistributionLine analyticDistributionLine : list2) {
+							for (AnalyticDistributionLine analyticDistributionLineIt : copyList) {
+								if(analyticDistributionLine.getAnalyticAxis().equals(analyticDistributionLineIt.getAnalyticAxis()) &&
+										analyticDistributionLine.getAnalyticAccount().equals(analyticDistributionLineIt.getAnalyticAccount()) &&
+										analyticDistributionLine.getPercentage().equals(analyticDistributionLineIt.getPercentage()) &&
+										analyticDistributionLine.getAnalyticJournal().equals(analyticDistributionLineIt.getAnalyticJournal())){
+									copyList.remove(analyticDistributionLineIt);
+									count++;
+									break;
+								}
+							}
+						}
+						if(count == list1.size()){
+							return moveLineIt;
+						}
+					}
+				}
+				else{
+					return null;
+				}
+			}
+		}
+			
+		return null;
+	}
 
 	/**
 	 * Consolider des lignes d'écritures par compte comptable.
 	 *
 	 * @param moveLines
 	 */
-	public void consolidateMoveLines(List<MoveLine> moveLines){
+	public List<MoveLine> consolidateMoveLines(List<MoveLine> moveLines){
 
 		Map<List<Object>, MoveLine> map = new HashMap<List<Object>, MoveLine>();
 		MoveLine consolidateMoveLine = null;
@@ -300,16 +331,23 @@ public class MoveLineService {
 
 			keys.clear();
 			keys.add(moveLine.getAccount());
-			keys.add(moveLine.getAnalyticAccountSet());
 			keys.add(moveLine.getTaxLine());
-
-			if (map.containsKey(keys)){
-
-				consolidateMoveLine = map.get(keys);
+			consolidateMoveLine = this.findConsolidateMoveLine(map, moveLine, keys);
+			if (consolidateMoveLine != null){
+				
 				consolidateMoveLine.setCredit(consolidateMoveLine.getCredit().add(moveLine.getCredit()));
 				consolidateMoveLine.setDebit(consolidateMoveLine.getDebit().add(moveLine.getDebit()));
-				consolidateMoveLine.getAnalyticAccountSet().addAll(moveLine.getAnalyticAccountSet());
-
+				for (AnalyticDistributionLine analyticDistributionLine : consolidateMoveLine.getAnalyticDistributionLineList()) {
+					for (AnalyticDistributionLine analyticDistributionLineIt : moveLine.getAnalyticDistributionLineList()) {
+						if(analyticDistributionLine.getAnalyticAxis().equals(analyticDistributionLineIt.getAnalyticAxis()) &&
+								analyticDistributionLine.getAnalyticAccount().equals(analyticDistributionLineIt.getAnalyticAccount()) &&
+								analyticDistributionLine.getPercentage().equals(analyticDistributionLineIt.getPercentage()) &&
+								analyticDistributionLine.getAnalyticJournal().equals(analyticDistributionLineIt.getAnalyticJournal())){
+							analyticDistributionLine.setAmount(analyticDistributionLine.getAmount().add(analyticDistributionLineIt.getAmount()));
+							break;
+						}
+					}
+				}
 			}
 			else {
 				map.put(keys, moveLine);
@@ -349,6 +387,8 @@ public class MoveLineService {
 				moveLines.add(moveLine);
 			}
 		}
+		
+		return moveLines;
 	}
 
 

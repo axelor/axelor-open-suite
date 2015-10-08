@@ -59,11 +59,15 @@
 			</panel>
 			<panel title="Analytic distribution" if-module="axelor-supplychain" if="__config__.general.getManageAnalyticAccounting()" onTabSelect="action-sale-order-line-attrs-read-only-distribution-lines">
 				<field name="analyticDistributionTemplate" if="__config__.general.getAnalyticDistributionTypeSelect() == 1"/>
-				<button name="generateDistributionLinesButton" title="Generate distribution lines" showIf="analyticDistributionTemplate != null" if="__config__.general.getAnalyticDistributionTypeSelect() == 1"/>
+				<button name="generateDistributionLinesButton" onClick="action-sale-order-line-method-create-distribution" title="Generate distribution lines" showIf="analyticDistributionTemplate != null" if="__config__.general.getAnalyticDistributionTypeSelect() == 1"/>
 				<panel-related field="analyticDistributionLineList" grid-view="analytic-distribution-line-grid" form-view="analytic-distribution-line-form" colSpan="12"/>
 			</panel>
 		</panel-tabs>
 	</form>
+	
+	<action-method name="action-sale-order-line-method-create-distribution">
+		<call class="com.axelor.apps.supplychain.web.SaleOrderLineController" method="createAnalyticDistributionWithTemplate"/>
+	</action-method>
 	
 	<action-method name="action-sale-order-line-method-compute-analytic-distribution" if-module="axelor-supplychain">
 		<call class="com.axelor.apps.supplychain.web.SaleOrderLineController" method="computeAnalyticDistribution"/>

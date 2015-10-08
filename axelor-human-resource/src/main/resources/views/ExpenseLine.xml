@@ -20,15 +20,32 @@
 			<field name="projectTask" requiredIf="toInvoice" domain="self.imputable = true" form-view="project-task-form" grid-view="project-task-grid"/>
 			<field name="expenseType" domain="self.expense = true" widget="SuggestBox" form-view="product-expense-form" grid-view="product-expense-grid"/>
 			<field name="expenseDate" onChange="action-expense-line-validate-expenseDate"/>
-			<field name="totalAmount" onChange="action-expense-on-change-untaxt-amount"/>
-			<field name="totalTax" onChange="action-expense-on-change-tax-untaxt-amount"/>
+			<field name="totalAmount" onChange="action-expense-on-change-untaxt-amount, action-expense-line-method-compute-analytic-distribution"/>
+			<field name="totalTax" onChange="action-expense-on-change-tax-untaxt-amount, action-expense-line-method-compute-analytic-distribution"/>
 			<field name="untaxedAmount" />
 			<field name="toInvoice"/>
 			<field name="invoiced" showIf="toInvoice"/>
 			<field name="comments" colSpan="12"/>
 			<field name="user" hidden="true" form-view="user-form" grid-view="user-grid"/>
 		</panel>
+		<panel title="Analytic distribution" if="__config__.general.getManageAnalyticAccounting()" onTabSelect="action-expense-line-attrs-read-only-distribution-lines">
+			<field name="analyticDistributionTemplate" if="__config__.general.getAnalyticDistributionTypeSelect() == 1"/>
+			<button name="generateDistributionLinesButton" onClick="action-expense-line-method-create-distribution" title="Generate distribution lines" showIf="analyticDistributionTemplate != null" if="__config__.general.getAnalyticDistributionTypeSelect() == 1"/>
+			<panel-related field="analyticDistributionLineList" grid-view="analytic-distribution-line-grid" form-view="analytic-distribution-line-form" colSpan="12"/>
+		</panel>
 	</form>
+	
+	<action-method name="action-expense-line-method-create-distribution">
+		<call class="com.axelor.apps.hr.web.expense.ExpenseController" method="createAnalyticDistributionWithTemplate"/>
+	</action-method>
+	
+	<action-method name="action-expense-line-method-compute-analytic-distribution">
+		<call class="com.axelor.apps.hr.web.expense.ExpenseController" method="computeAnalyticDistribution"/>
+	</action-method>
+	
+	<action-attrs name="action-expense-line-attrs-read-only-distribution-lines">
+		<attribute name="readonly" for="analyticDistributionLineList" expr="eval: __config__.general.getAnalyticDistributionTypeSelect() != 1"/>
+	</action-attrs>
 	
 	<action-record name="action-expense-line-default" model="com.axelor.apps.hr.db.ExpenseLine">
 		<field name="user" expr="eval: _parent?.user"/>

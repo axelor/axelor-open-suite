@@ -54,8 +54,6 @@
     
     <form name="incl-analytic-distribution-move-line-form" model="com.axelor.apps.account.db.MoveLine" title="Move line">
     	<panel title="Analytic distribution" if="__config__.general.getManageAnalyticAccounting()" onTabSelect="action-move-line-attrs-read-only-distribution-lines">
-			<field name="analyticDistributionTemplate" if="__config__.general.getAnalyticDistributionTypeSelect() == 1"/>
-			<button name="generateDistributionLinesButton" title="Generate distribution lines" showIf="analyticDistributionTemplate != null" if="__config__.general.getAnalyticDistributionTypeSelect() == 1"/>
 			<panel-related field="analyticDistributionLineList" grid-view="analytic-distribution-line-grid" form-view="analytic-distribution-line-form" colSpan="12"/>
 		</panel>
     </form>
@@ -87,7 +85,6 @@
 	        <panel-related field="reconcileList1" canRemove="false" canNew="false" showIf="$number(debit) &gt; 0.00" form-view="reconcile-form" grid-view="reconcile-grid"/>
 	        <panel-related field="reconcileList2"  canRemove="false" canNew="false" showIf="$number(credit) &gt; 0.00" form-view="reconcile-form" grid-view="reconcile-grid"/>
 	        
-	    	<panel-related field="analyticAccountSet" title="Analytics" readonly="true" colSpan="12" grid-view="analytic-account-grid" form-view="analytic-account-form"/>
 	    	
 	    	<panel name="irrecoverable" title="Irrecoverable">
 	        	<field name="irrecoverablestatusSelect" /> 
@@ -129,7 +126,6 @@
 			<panel-related field="reconcileList1" canRemove="false" canNew="false" showIf="$number(debit) &gt; 0.00" form-view="reconcile-form" grid-view="reconcile-grid"/>
 	        <panel-related field="reconcileList2"  canRemove="false" canNew="false" showIf="$number(credit) &gt; 0.00" form-view="reconcile-form" grid-view="reconcile-grid"/>
 			
-			<panel-related field="analyticAccountSet" title="Analytics" readonly="true" colSpan="12" grid-view="analytic-account-grid" form-view="analytic-account-form"/>
 			
 			<panel title="Others" >
 				<field name="exportedDirectDebitOk" colSpan="12"/>
@@ -168,7 +164,6 @@
 	        <panel-related field="reconcileList1" canRemove="false" canNew="false" showIf="$number(debit) &gt; 0.00" form-view="reconcile-form" grid-view="reconcile-grid"/>
 	        <panel-related field="reconcileList2"  canRemove="false" canNew="false" showIf="$number(credit) &gt; 0.00" form-view="reconcile-form" grid-view="reconcile-grid"/>
 			
-			<panel-related field="analyticAccountSet" title="Analytics" readonly="true" colSpan="12" grid-view="analytic-account-grid" form-view="analytic-account-form"/>
 			
 			<panel name="irrecoverable" title="Irrecoverable" >
 	        	<field name="irrecoverablestatusSelect"/>

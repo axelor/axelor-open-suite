@@ -19,8 +19,6 @@ package com.axelor.apps.account.service.move;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 import org.joda.time.LocalDate;
@@ -43,7 +41,6 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.exception.AxelorException;
-import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -65,7 +62,7 @@ public class MoveService {
 
 	@Inject
 	public MoveService(GeneralService generalService, MoveLineService moveLineService, MoveCreateService moveCreateService, MoveValidateService moveValidateService, MoveToolService moveToolService,
-			ReconcileService reconcileService, MoveDueService moveDueService, MoveExcessPaymentService moveExcessPaymentService, MoveRepository moveRepository) {
+			ReconcileService reconcileService, MoveDueService moveDueService, MoveExcessPaymentService moveExcessPaymentService, MoveRepository moveRepository, AccountConfigService accountConfigService) {
 
 		this.moveLineService = moveLineService;
 		this.moveCreateService = moveCreateService;
@@ -75,6 +72,7 @@ public class MoveService {
 		this.moveDueService = moveDueService;
 		this.moveExcessPaymentService = moveExcessPaymentService;
 		this.moveRepository = moveRepository;
+		this.accountConfigService = accountConfigService;
 		
 		today = generalService.getTodayDate();
 

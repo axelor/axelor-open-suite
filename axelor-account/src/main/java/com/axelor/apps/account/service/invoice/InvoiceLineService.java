@@ -31,6 +31,7 @@ import com.axelor.apps.base.db.IPriceListLine;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.PriceListLine;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.repo.GeneralRepository;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.base.service.administration.GeneralService;
@@ -57,13 +58,34 @@ public class InvoiceLineService {
 		
 	}
 	
-	public InvoiceLine computeAnalyticDistribution(InvoiceLine invoiceLine){
-		List<AnalyticDistributionLine> analyticDistributionLineList = invoiceLine.getAnalyticDistributionLineList();
+	public InvoiceLine createAnalyticDistributionWithTemplate(InvoiceLine invoiceLine) throws AxelorException{
+		List<AnalyticDistributionLine> analyticDistributionLineList = null;
+		analyticDistributionLineList = analyticDistributionLineService.generateLinesWithTemplate(invoiceLine.getAnalyticDistributionTemplate(), invoiceLine.getExTaxTotal());
 		if(analyticDistributionLineList != null){
 			for (AnalyticDistributionLine analyticDistributionLine : analyticDistributionLineList) {
-				if(analyticDistributionLine.getInvoiceLine() == null){
+				analyticDistributionLine.setInvoiceLine(invoiceLine);
+			}
+		}
+		invoiceLine.setAnalyticDistributionLineList(analyticDistributionLineList);
+		return invoiceLine;
+	}
+	
+	public InvoiceLine computeAnalyticDistribution(InvoiceLine invoiceLine) throws AxelorException{
+		List<AnalyticDistributionLine> analyticDistributionLineList = invoiceLine.getAnalyticDistributionLineList();
+		if((analyticDistributionLineList == null || analyticDistributionLineList.isEmpty()) && generalService.getGeneral().getAnalyticDistributionTypeSelect() != GeneralRepository.DISTRIBUTION_TYPE_FREE){
+			analyticDistributionLineList = analyticDistributionLineService.generateLines(invoiceLine.getInvoice().getPartner(), invoiceLine.getProduct(), invoiceLine.getInvoice().getCompany(), invoiceLine.getExTaxTotal());
+			if(analyticDistributionLineList != null){
+				for (AnalyticDistributionLine analyticDistributionLine : analyticDistributionLineList) {
 					analyticDistributionLine.setInvoiceLine(invoiceLine);
+					analyticDistributionLine.setAmount(analyticDistributionLineService.computeAmount(analyticDistributionLine));
+					analyticDistributionLine.setDate(generalService.getTodayDate());
 				}
+				invoiceLine.setAnalyticDistributionLineList(analyticDistributionLineList);
+			}
+		}
+		else if(analyticDistributionLineList != null && generalService.getGeneral().getAnalyticDistributionTypeSelect() != GeneralRepository.DISTRIBUTION_TYPE_FREE){
+			for (AnalyticDistributionLine analyticDistributionLine : analyticDistributionLineList) {
+				analyticDistributionLine.setInvoiceLine(invoiceLine);
 				analyticDistributionLine.setAmount(analyticDistributionLineService.computeAmount(analyticDistributionLine));
 				analyticDistributionLine.setDate(generalService.getTodayDate());
 			}

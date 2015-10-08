@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import com.axelor.apps.account.db.AnalyticDistributionLine;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
+import com.axelor.apps.account.db.repo.AnalyticDistributionLineRepository;
 import com.axelor.apps.account.service.invoice.generator.InvoiceLineGenerator;
 import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.Product;
@@ -85,7 +86,11 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
 				this.exTaxTotal = this.exTaxTotal.divide(new BigDecimal(saleOrderLine.getSubscriptionList().size())).setScale(IAdministration.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_EVEN);
 				this.inTaxTotal = this.inTaxTotal.divide(new BigDecimal(saleOrderLine.getSubscriptionList().size())).setScale(IAdministration.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_EVEN);
 			}
-			this.analyticDistributionLineList = new ArrayList<AnalyticDistributionLine>(saleOrderLine.getAnalyticDistributionLineList());
+			analyticDistributionLineList = new ArrayList<AnalyticDistributionLine>();
+			for (AnalyticDistributionLine analyticDistributionLineIt : saleOrderLine.getAnalyticDistributionLineList()) {
+				AnalyticDistributionLine analyticDistributionLine = Beans.get(AnalyticDistributionLineRepository.class).copy(analyticDistributionLineIt, false);
+				analyticDistributionLineList.add(analyticDistributionLine);
+			}
 		} else if (purchaseOrderLine != null){
 			this.purchaseOrderLine = purchaseOrderLine;
 			this.discountAmount = purchaseOrderLine.getDiscountAmount();
@@ -95,7 +100,11 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
 			this.discountTypeSelect = purchaseOrderLine.getDiscountTypeSelect();
 			this.exTaxTotal = purchaseOrderLine.getExTaxTotal();
 			this.inTaxTotal = purchaseOrderLine.getInTaxTotal();
-			this.analyticDistributionLineList = new ArrayList<AnalyticDistributionLine>(purchaseOrderLine.getAnalyticDistributionLineList());
+			analyticDistributionLineList = new ArrayList<AnalyticDistributionLine>();
+			for (AnalyticDistributionLine analyticDistributionLineIt : purchaseOrderLine.getAnalyticDistributionLineList()) {
+				AnalyticDistributionLine analyticDistributionLine = Beans.get(AnalyticDistributionLineRepository.class).copy(analyticDistributionLineIt, false);
+				analyticDistributionLineList.add(analyticDistributionLine);
+			}
 		}
 
 		if(stockMove != null){
@@ -112,7 +121,10 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
 	protected InvoiceLine createInvoiceLine() throws AxelorException  {
 
 		InvoiceLine invoiceLine = super.createInvoiceLine();
-
+		for (AnalyticDistributionLine analyticDistributionLine : analyticDistributionLineList) {
+			analyticDistributionLine.setInvoiceLine(invoiceLine);
+		}
+		invoiceLine.setAnalyticDistributionLineList(analyticDistributionLineList);
 		if (Beans.get(GeneralService.class).getGeneral().getManageInvoicedAmountByLine()){
 			if (saleOrderLine != null){
 				invoiceLine.setSaleOrderLine(saleOrderLine);

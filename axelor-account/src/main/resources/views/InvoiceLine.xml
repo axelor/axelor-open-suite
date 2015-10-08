@@ -26,8 +26,7 @@
 		        <field name="price" required="true"  onChange="action-invoice-line-method-compute,action-invoice-line-method-compute-analytic-distribution"/>
 		        <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
 		        <field name="priceDiscounted" hidden="true"/>
-		        <panel-related field="analyticAccountSet" colSpan="12" form-view="analytic-account-form" grid-view="analytic-account-grid" />
-		    	<field name="taxLine" onChange="action-invoice-line-method-convert-tax,action-invoice-line-method-compute,action-invoice-line-method-compute-analytic-distribution" grid-view="tax-line-grid" form-view="tax-line-form"/>
+		        <field name="taxLine" onChange="action-invoice-line-method-convert-tax,action-invoice-line-method-compute,action-invoice-line-method-compute-analytic-distribution" grid-view="tax-line-grid" form-view="tax-line-form"/>
 		    	<field name="exTaxTotal" readonly="true"/>
 	    		<field name="inTaxTotal" readonly="true"/>
 				 <panel name="discount" title="Discount" colSpan="12">
@@ -47,12 +46,16 @@
 			</panel>
 			<panel title="Analytic distribution" if-module="axelor-supplychain" if="__config__.general.getManageAnalyticAccounting()" onTabSelect="action-invoice-line-attrs-read-only-distribution-lines">
 				<field name="analyticDistributionTemplate" if="__config__.general.getAnalyticDistributionTypeSelect() == 1"/>
-				<button name="generateDistributionLinesButton" title="Generate distribution lines" showIf="analyticDistributionTemplate != null" if="__config__.general.getAnalyticDistributionTypeSelect() == 1"/>
+				<button name="generateDistributionLinesButton" onClick="action-invoice-line-method-create-distribution" title="Generate distribution lines" showIf="analyticDistributionTemplate != null" if="__config__.general.getAnalyticDistributionTypeSelect() == 1"/>
 				<panel-related field="analyticDistributionLineList" grid-view="analytic-distribution-line-grid" form-view="analytic-distribution-line-form" colSpan="12"/>
 			</panel>
     	</panel-tabs>
         
     </form>
+    
+    <action-method name="action-invoice-line-method-create-distribution">
+		<call class="com.axelor.apps.account.web.InvoiceLineController" method="createAnalyticDistributionWithTemplate"/>
+	</action-method>
     
     <action-attrs name="action-invoice-line-attrs-read-only-distribution-lines">
 		<attribute name="readonly" for="analyticDistributionLineList" expr="eval: __config__.general.getAnalyticDistributionTypeSelect() != 1"/>

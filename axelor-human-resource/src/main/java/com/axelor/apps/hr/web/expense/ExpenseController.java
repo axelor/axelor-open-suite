@@ -35,7 +35,36 @@ public class ExpenseController {
 
 	@Inject
 	protected GeneralService generalService;
-
+	
+	public void createAnalyticDistributionWithTemplate(ActionRequest request, ActionResponse response) throws AxelorException{
+		ExpenseLine expenseLine = request.getContext().asType(ExpenseLine.class);
+		Expense expense = expenseLine.getExpense();
+		if(expense == null){
+			expense = request.getContext().getParentContext().asType(Expense.class);
+			expenseLine.setExpense(expense);
+		}
+		if(expenseLine.getAnalyticDistributionTemplate() != null){
+			expenseLine = expenseService.createAnalyticDistributionWithTemplate(expenseLine);
+			response.setValue("analyticDistributionLineList", expenseLine.getAnalyticDistributionLineList());
+		}
+		else{
+			throw new AxelorException(I18n.get("No template selected"), IException.CONFIGURATION_ERROR);
+		}
+	}
+	
+	public void computeAnalyticDistribution(ActionRequest request, ActionResponse response) throws AxelorException{
+		ExpenseLine expenseLine = request.getContext().asType(ExpenseLine.class);
+		Expense expense = expenseLine.getExpense();
+		if(expense == null){
+			expense = request.getContext().getParentContext().asType(Expense.class);
+			expenseLine.setExpense(expense);
+		}
+		if(Beans.get(GeneralService.class).getGeneral().getManageAnalyticAccounting()){
+			expenseLine = expenseService.computeAnalyticDistribution(expenseLine);
+			response.setValue("analyticDistributionLineList", expenseLine.getAnalyticDistributionLineList());
+		}
+	}
+	
 	public void editExpense(ActionRequest request, ActionResponse response){
 		List<Expense> expenseList = Beans.get(ExpenseRepository.class).all().filter("self.user = ?1 AND self.company = ?2 AND self.statusSelect = 1",AuthUtils.getUser(),AuthUtils.getUser().getActiveCompany()).fetch();
 		if(expenseList.isEmpty()){
