@@ -3,40 +3,45 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
     
-    <grid name="advance-payment-grid" editable="true" title="Advance Payment list" model="com.axelor.apps.sale.db.AdvancePayment" orderBy="advancePaymentDate"
-    	onNew="action-advance-payment-new">
+    <grid name="advance-payment-grid" title="Advance Payments" model="com.axelor.apps.sale.db.AdvancePayment" orderBy="advancePaymentDate">
+   	    <field name="advancePaymentDate"/>
 	    <field name="amount"/>
-	    <field name="amountRemainingToUse" if-module="axelor-supplychain"/>
-	    <field name="advancePaymentDate"/>
-	    <field name="currency"/>
-	    <field name="paymentMode" if-module="axelor-supplychain"/>
-	    <field name="move" if-module="axelor-supplychain"/>
+	    <field name="currency" form-view="currency-form" grid-view="currency-grid"/>
+	    <field name="paymentMode" if-module="axelor-supplychain" form-view="payment-mode-form" grid-view="payment-mode-grid"/>
+	    <field name="statusSelect"/>
+   		<button name="cancel" icon="fa-times-circle" help="Cancel" onClick="action-advance-payment-method-cancel" readonlyIf="statusSelect == 2"/>
 	</grid>
     
-	<form name="advance-payment-form" title="Advance Payment" model="com.axelor.apps.sale.db.AdvancePayment" onNew="action-advance-payment-new" width="large">
-		<panel>
-			<field name="amount" onChange="action-advance-payment-change-amount"/>
-			<field name="currency"/>
-			<field name="advancePaymentDate"/>
+	<form name="advance-payment-form" title="Advance Payment" model="com.axelor.apps.sale.db.AdvancePayment" onNew="action-advance-payment-record-new">
+		<panel readonlyIf="id">
+			<field name="amount" onChange="action-advance-payment-record-change-amount" required="true"/>
+			<field name="currency" form-view="currency-form" grid-view="currency-grid" required="true"/>
+			<field name="advancePaymentDate" required="true"/> 
 			<field name="amountRemainingToUse" if-module="axelor-supplychain"/>
-		</panel>
-		<panel>
-	    	<field name="move" form-view="move-form" grid-view="move-grid" if-module="axelor-supplychain"/>
-	    	<field name="paymentMode" if-module="axelor-supplychain"/>
-		 </panel>
+	    	<field name="paymentMode" form-view="payment-mode-form" grid-view="payment-mode-grid" required="true" if-module="axelor-supplychain"/>
+	 	</panel>
+	 	<panel showIf="id">
+  	    	<field name="move" form-view="move-form" grid-view="move-grid"/>
+			<field name="statusSelect"/>
+   			<button name="cancel" icon="fa-times-circle" help="Cancel" onClick="action-advance-payment-method-cancel" readonlyIf="statusSelect == 2"/>
+	 	</panel>
 	</form>
 	
 	
-	<action-record name="action-advance-payment-new" model="com.axelor.apps.sale.db.AdvancePayment">
-    	<field name="currency" expr="eval: _parent?.currency"/>
+	<action-record name="action-advance-payment-record-new" model="com.axelor.apps.sale.db.AdvancePayment">
+    	<field name="currency" expr="eval: _saleOrder?.currency"/>
     	<field name="advancePaymentDate" expr="eval: __date__"/>
+    	<field name="saleOrder" expr="eval: _saleOrder"/>
+    	<field name="paymentMode" expr="eval: _saleOrder?.paymentMode"/>
     </action-record>
   
-    <action-record name="action-advance-payment-change-amount" model="com.axelor.apps.sale.db.AdvancePayment">
-    	<field name="amountRemainingToUse" if="__self__" expr="eval: __self__?.amountRemainingToUse - (__self__?.amount -__this__?.amount)"/>
-    	<field name="amountRemainingToUse" if="!__self__" expr="eval: amount"/> 
+    <action-record name="action-advance-payment-record-change-amount" model="com.axelor.apps.sale.db.AdvancePayment">
+    	<field name="amountRemainingToUse" expr="eval: amount" /> 
     </action-record>
-	  <!--  -->
-	
-	</object-views>
+
+    <action-method name="action-advance-payment-method-cancel">
+        <call class="com.axelor.apps.sale.web.AdvancePaymentController" method="cancelAdvancePayment"/>
+    </action-method>
+    
+</object-views>
 	

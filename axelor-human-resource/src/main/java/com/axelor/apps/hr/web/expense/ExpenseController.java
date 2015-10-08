@@ -1,16 +1,20 @@
 package com.axelor.apps.hr.web.expense;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.axelor.apps.ReportSettings;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.base.db.Wizard;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.hr.db.Expense;
 import com.axelor.apps.hr.db.ExpenseLine;
 import com.axelor.apps.hr.db.repo.ExpenseRepository;
+import com.axelor.apps.hr.report.IReport;
 import com.axelor.apps.hr.service.expense.ExpenseService;
+import com.axelor.apps.tool.net.URLService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.db.Query;
@@ -212,5 +216,31 @@ public class ExpenseController {
 			}
 		}
 	}
+	
+	public void printExpense(ActionRequest request, ActionResponse response) {
+		Expense expense = request.getContext().asType(Expense.class);
+		StringBuilder url = new StringBuilder();
+		User user = AuthUtils.getUser();
+		String language = user != null? (user.getLanguage() == null || user.getLanguage().equals(""))? "en" : user.getLanguage() : "en"; 
+		url.append(
+				new ReportSettings(IReport.EXPENSE)
+				.addParam("Locale", language)
+				.addParam("__locale", "fr_FR")
+				.addParam("ExpenseId", expense.getId().toString())
+				.getUrl());
+		
+		String urlNotExist = URLService.notExist(url.toString());
+		if (urlNotExist == null){
+			Map<String,Object> mapView = new HashMap<String,Object>();
+			mapView.put("title", I18n.get("Expense"));
+			mapView.put("resource", url);
+			mapView.put("viewType", "html");
+			response.setView(mapView);	
+		}
+		else {
+			response.setFlash(urlNotExist);
+		}
+	}
+	
 
 }

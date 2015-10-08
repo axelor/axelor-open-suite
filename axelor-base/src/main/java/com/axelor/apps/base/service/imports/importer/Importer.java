@@ -42,7 +42,6 @@ import com.axelor.i18n.I18n;
 import com.axelor.meta.MetaFiles;
 import com.google.common.base.Preconditions;
 import com.google.common.io.Files;
-import com.google.inject.Injector;
 
 public abstract class Importer {
 
@@ -50,14 +49,8 @@ public abstract class Importer {
 	
 	protected Logger log = LoggerFactory.getLogger(getClass());
 
-	protected Injector injector;
-	
 	private ImportConfiguration configuration;
 	private File workspace;
-
-	public Importer( Injector injector ) {
-		this.injector = injector;
-	}
 
 	public void setConfiguration( ImportConfiguration configuration ) { this.configuration = configuration; }
 

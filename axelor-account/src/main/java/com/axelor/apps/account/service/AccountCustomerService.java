@@ -185,9 +185,9 @@ public class AccountCustomerService {
 				"LEFT OUTER JOIN ( "+
 					"SELECT moveline.amount_remaining AS sum_remaining, moveline.id AS moveline_id "+
 					"FROM public.account_move_line AS moveline "+
-					"WHERE moveline.debit > 0 AND (( moveline.date = moveline.due_date AND (moveline.due_date + ?1 ) < ?2 ) " +
-					"OR (moveline.due_date IS NOT NULL AND moveline.date != moveline.due_date AND moveline.due_date < ?2)" +
-					"OR (moveline.due_date IS NULL AND moveline.date < ?2)) " +
+					"WHERE moveline.debit > 0 AND (( moveline.date_val = moveline.due_date AND (moveline.due_date + ?1 ) < ?2 ) " +
+					"OR (moveline.due_date IS NOT NULL AND moveline.date_val != moveline.due_date AND moveline.due_date < ?2)" +
+					"OR (moveline.due_date IS NULL AND moveline.date_val < ?2)) " +
 					"GROUP BY moveline.id, moveline.amount_remaining) AS m1 ON (m1.moveline_id = ml.id) "+
 				"LEFT OUTER JOIN ( "+
 					"SELECT moveline.amount_remaining AS sum_remaining, moveline.id AS moveline_id "+

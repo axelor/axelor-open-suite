@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_4.0.xsd">
+
+  <module name="account" package="com.axelor.apps.account.db"/>
+
+  <entity name="InvoicePayment" lang="java">
+  
+ 	<decimal name="amount" title="Amount" required="true" default="0"/>
+ 	
+ 	<date name="paymentDate" title="Date" required="true"/>
+ 	
+ 	<many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" title="Currency" required="true"/>
+  	<many-to-one name="paymentMode" ref="com.axelor.apps.account.db.PaymentMode" title="Payment mode"/>	
+  	<many-to-one name="move" ref="com.axelor.apps.account.db.Move" title="Move" readonly="true"/>
+ 	
+ 	<many-to-one name="invoice" ref="com.axelor.apps.account.db.Invoice"/>
+ 	
+ 	<integer name="typeSelect" title="Type" selection="invoice.payment.type.select"/>
+ 	 	 	
+ 	<integer name="statusSelect" title="Status" selection="invoice.payment.status.select"/>
+  	
+  	 <extra-code>
+   		<![CDATA[
+   		
+   		// STATUS SELECT
+		public static final Integer STATUS_DRAFT = 0;
+		public static final Integer STATUS_VALIDATED = 1;
+		public static final Integer STATUS_CANCELED = 2;
+	
+	   	// TYPE SELECT
+		public static final int TYPE_ADVANCEPAYMENT = 1;
+		public static final int TYPE_PAYMENT = 2;
+	
+	]]></extra-code>
+  	
+  </entity>
+
+</domain-models>

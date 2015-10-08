@@ -37,6 +37,7 @@ public class SequenceService {
 	private final static String
 		PATTERN_YEAR = "%Y",
 		PATTERN_MONTH = "%M",
+		PATTERN_FULL_MONTH ="%FM",
 		PATTERN_DAY = "%D",
 		PATTERN_WEEK = "%WY",
 		PADDING_STRING = "0";
@@ -135,7 +136,7 @@ public class SequenceService {
 			seq = seqPrefixe + seqSuffixe;
 
 		if ( yearlyResetOk && !seq.contains(PATTERN_YEAR) ){ return false; }
-		if ( monthlyResetOk && !seq.contains(PATTERN_MONTH) && !seq.contains(PATTERN_YEAR) ){ return false; }
+		if ( monthlyResetOk && !seq.contains(PATTERN_MONTH) && !seq.contains(PATTERN_FULL_MONTH) && !seq.contains(PATTERN_YEAR) ){ return false; }
 
 		return true;
 
@@ -165,6 +166,7 @@ public class SequenceService {
 		String nextSeq = ( seqPrefixe + padLeft + seqSuffixe )
 				.replaceAll( PATTERN_YEAR, Integer.toString( refDate.getYearOfCentury() ) )
 				.replaceAll( PATTERN_MONTH, Integer.toString( refDate.getMonthOfYear() ) )
+				.replaceAll( PATTERN_FULL_MONTH, refDate.toString("MM") )
 				.replaceAll( PATTERN_DAY, Integer.toString( refDate.getDayOfMonth() ) )
 				.replaceAll( PATTERN_WEEK, Integer.toString( refDate.getWeekOfWeekyear() ) ) ;
 

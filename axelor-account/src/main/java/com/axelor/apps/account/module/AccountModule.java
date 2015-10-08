@@ -22,6 +22,8 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.repo.BankStatementManagementRepository;
 import com.axelor.apps.account.db.repo.BankStatementRepository;
 import com.axelor.apps.account.db.repo.InvoiceManagementRepository;
+import com.axelor.apps.account.db.repo.InvoicePaymentManagementRepository;
+import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.JournalManagementRepository;
 import com.axelor.apps.account.db.repo.JournalRepository;
@@ -33,6 +35,8 @@ import com.axelor.apps.account.db.repo.PaymentVoucherRepository;
 import com.axelor.apps.account.service.AccountManagementServiceAccountImpl;
 import com.axelor.apps.account.service.AddressServiceAccountImpl;
 import com.axelor.apps.account.service.FiscalPositionServiceAccountImpl;
+import com.axelor.apps.account.service.InvoicePaymentService;
+import com.axelor.apps.account.service.InvoicePaymentServiceImpl;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.InvoiceServiceImpl;
 import com.axelor.apps.base.db.IPartner;
@@ -69,6 +73,10 @@ public class AccountModule extends AxelorModule {
         bind(InvoiceService.class).to(InvoiceServiceImpl.class);
 
         bind(PartnerBaseRepository.class).to(PartnerAccountRepository.class);
+        
+        bind(InvoicePaymentRepository.class).to(InvoicePaymentManagementRepository.class);
+
+        bind(InvoicePaymentService.class).to(InvoicePaymentServiceImpl.class);
         
         IPartner.modelPartnerFieldMap.put(Invoice.class.getName(), "partner");
     }

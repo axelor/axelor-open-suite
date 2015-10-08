@@ -7,13 +7,14 @@ import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
 
 public class InvoiceController {
-
+	
 	@Inject
 	protected SaleOrderInvoiceService saleOrderInvoiceService;
-
+	
 	public void fillInLines(ActionRequest request, ActionResponse response) {
 		Invoice invoice = request.getContext().asType(Invoice.class);
 		saleOrderInvoiceService.fillInLines(invoice);
 		response.setValues(invoice);
 	}
+	
 }

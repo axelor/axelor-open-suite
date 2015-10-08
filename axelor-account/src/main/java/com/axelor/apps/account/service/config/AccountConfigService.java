@@ -314,6 +314,17 @@ public class AccountConfigService {
 		return accountConfig.getCustomerAccount();
 
 	}
+	
+	public Account getAdvancePaymentAccount(AccountConfig accountConfig) throws AxelorException  {
+
+		if(accountConfig.getAdvancePaymentAccount() == null)   {
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.ACCOUNT_CONFIG_38),
+					GeneralServiceImpl.EXCEPTION,accountConfig.getCompany().getName()), IException.CONFIGURATION_ERROR);
+		}
+
+		return accountConfig.getAdvancePaymentAccount();
+
+	}
 
 	public Account getCashPositionVariationAccount(AccountConfig accountConfig) throws AxelorException  {
 

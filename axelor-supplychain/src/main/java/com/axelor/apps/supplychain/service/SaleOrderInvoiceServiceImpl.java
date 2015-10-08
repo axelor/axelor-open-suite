@@ -38,6 +38,7 @@ import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
+import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.supplychain.db.Subscription;
 import com.axelor.apps.supplychain.db.repo.SubscriptionRepository;
@@ -62,6 +63,9 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 
 	@Inject
 	private SaleOrderRepository saleOrderRepo;
+
+	@Inject
+	private AdvancePaymentServiceSupplychainImpl advancePaymentService;
 
 	@Inject
 	public SaleOrderInvoiceServiceImpl(GeneralService generalService) {
@@ -149,14 +153,13 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 		Invoice invoice = invoiceGenerator.generate();
 
 		invoiceGenerator.populate(invoice, this.createInvoiceLines(invoice, saleOrderLineList));
-
-
+//		advancePaymentService.fillAdvancePayment(invoice, saleOrder, saleOrderLineList);  //TODO
+		LOG.debug("fillAdvancePayment : methode terminée");
 		this.fillInLines(invoice);
 
 		return invoice;
 
 	}
-
 
 
 	@Override
@@ -361,7 +364,6 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 		}
 	}
 
-
 	@Override
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public Invoice generateSubcriptionInvoiceForSaleOrder(SaleOrder saleOrder) throws AxelorException{
@@ -392,5 +394,6 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 		return null;
 	}
 }
+
 
 

@@ -6,7 +6,7 @@
   <entity name="Product" lang="java">
   
     <integer name="importId"/>
-    <string name="name" title="Name" required="true" namecolumn="true" initParam="true"/>
+    <string name="name" title="Name" required="true" initParam="true"/>
 	
     <string name="code" title="Code" required="true" initParam="true"/>
 	<string name="ean13" title="EAN13 Code" unique="true"/>
@@ -61,7 +61,7 @@
   	
   	<integer name="costTypeSelect" title="Cost type" selection="base.product.cost.type.select" default="1"/>
   	
-  	<string name="fullName" title="Full name"/>
+  	<string name="fullName" title="Full name" namecolumn="true"/>
   	
   	<extra-code>
 	   		<![CDATA[

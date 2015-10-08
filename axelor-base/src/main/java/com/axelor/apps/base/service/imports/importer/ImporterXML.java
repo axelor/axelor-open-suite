@@ -26,13 +26,10 @@ import com.google.inject.Injector;
 
 class ImporterXML extends Importer {
 
-	@Inject
-	public ImporterXML( Injector injector ) { super( injector ); }
-
 	@Override
 	protected ImportHistory process( String bind, String data ) {
 
-		XMLImporter importer = new XMLImporter(injector, bind, data);
+		XMLImporter importer = new XMLImporter( bind, data);
 		
 		ImporterListener listener = new ImporterListener( getConfiguration().getName() ); 		
 		importer.addListener( listener );

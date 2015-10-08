@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
+    
+    <grid name="invoice-payment-grid" title="Payments" model="com.axelor.apps.account.db.InvoicePayment" orderBy="paymentDate">
+	    <field name="advancePaymentDate"/>
+	    <field name="amount"/>
+		<field name="currency" form-view="currency-form" grid-view="currency-grid"/>
+    	<field name="paymentMode" form-view="payment-mode-form" grid-view="payment-mode-grid"/>
+	    <field name="typeSelect"/>
+    	<field name="move" form-view="move-form" grid-view="move-grid"/>
+    	<field name="statusSelect"/>
+   		<button name="cancel" icon="fa-times-circle" help="Cancel" onClick="action-invoice-payment-method-cancel" readonlyIf="statusSelect == 2"/>
+	</grid>
+    
+	<form name="invoice-payment-form" title="Payment" model="com.axelor.apps.account.db.InvoicePayment" onNew="action-invoice-payment-record-new">
+        <panel>
+			<field name="amount"/>
+			<field name="currency" form-view="currency-form" grid-view="currency-grid"/>
+   			<field name="paymentDate"/>
+	    	<field name="paymentMode" form-view="payment-mode-form" grid-view="payment-mode-grid"/>
+	 	</panel>
+ 		<panel showIf="id">
+ 		    <field name="move" form-view="move-form" grid-view="move-grid"/>
+			<field name="statusSelect"/>
+			<button name="cancel" icon="fa-times-circle" help="Cancel" onClick="action-advance-payment-method-cancel" readonlyIf="statusSelect == 2"/>
+ 		</panel>
+	</form>
+	
+	<action-record name="action-invoice-payment-record-new" model="com.axelor.apps.account.db.InvoicePayment">
+    	<field name="currency" expr="eval: _invoice?.currency"/>
+    	<field name="paymentDate" expr="eval: __date__"/>
+    	<field name="amount" expr="eval: new BigDecimal(_invoice?.inTaxTotal) - new BigDecimal(_invoice?.amountPaid)"/>
+    	<field name="paymentMode" expr="eval: _invoice?.paymentMode"/>
+    	<field name="invoice" expr="eval: _invoice"/>
+    	<field name="typeSelect" expr="2"/>
+    </action-record>
+    
+    <action-method name="action-invoice-payment-method-cancel">
+        <call class="com.axelor.apps.account.web.InvoicePaymentController" method="cancelInvoicePayment"/>
+    </action-method>
+	
+</object-views>
+	
