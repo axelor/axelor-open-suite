@@ -158,6 +158,20 @@ public class InvoiceLineService {
 
 		return unitPrice;
 	}
+	
+	public BigDecimal computeDiscount(int discountTypeSelect, BigDecimal discountAmount, BigDecimal unitPrice,Invoice invoice)  {
+
+		if(discountTypeSelect == IPriceListLine.AMOUNT_TYPE_FIXED)  {
+			return  unitPrice.add(discountAmount);
+		}
+		else if(discountTypeSelect == IPriceListLine.AMOUNT_TYPE_PERCENT)  {
+			return unitPrice.multiply(
+					BigDecimal.ONE.add(
+							discountAmount.divide(new BigDecimal(100))));
+		}
+
+		return unitPrice;
+	}
 
 	public BigDecimal convertUnitPrice(InvoiceLine invoiceLine, Invoice invoice){
 		BigDecimal price = invoiceLine.getPrice();

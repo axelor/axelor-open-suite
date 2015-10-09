@@ -18,6 +18,7 @@
 package com.axelor.apps.stock.service;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 
 import org.joda.time.LocalDate;
@@ -27,6 +28,7 @@ import com.axelor.apps.base.db.TrackingNumber;
 import com.axelor.apps.base.db.TrackingNumberConfiguration;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.service.UnitConversionService;
+import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.stock.db.Location;
 import com.axelor.apps.stock.db.LocationLine;
 import com.axelor.apps.stock.db.StockMove;
@@ -41,6 +43,9 @@ public class StockMoveLineServiceImpl implements StockMoveLineService  {
 
 	@Inject
 	private TrackingNumberService trackingNumberService;
+	
+	@Inject
+	protected GeneralService generalService;
 
 	/**
 	 * Méthode générique permettant de créer une ligne de mouvement de stock en gérant les numéros de suivi en fonction du type d'opération.
@@ -56,11 +61,20 @@ public class StockMoveLineServiceImpl implements StockMoveLineService  {
 	 * @throws AxelorException
 	 */
 	@Override
-	public StockMoveLine createStockMoveLine(Product product, String productName, String description, BigDecimal quantity, Unit unit, StockMove stockMove, int type ) throws AxelorException {
+	public StockMoveLine createStockMoveLine(Product product, String productName, String description, BigDecimal quantity, BigDecimal unitPrice, Unit unit, StockMove stockMove, int type , boolean taxed, BigDecimal taxRate) throws AxelorException {
 
 		if(product != null) {
-
-			StockMoveLine stockMoveLine = this.createStockMoveLine(product, productName, description, quantity, unit, stockMove, null);
+			BigDecimal unitPriceUntaxed = BigDecimal.ZERO;
+			BigDecimal unitPriceTaxed = BigDecimal.ZERO;
+			if(taxed){
+				unitPriceTaxed = unitPrice.setScale(generalService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
+				unitPriceUntaxed = unitPrice.divide(taxRate.add(BigDecimal.ONE), generalService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
+			}
+			else{
+				unitPriceUntaxed = unitPrice.setScale(generalService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
+				unitPriceTaxed = unitPrice.multiply(taxRate.add(BigDecimal.ONE)).setScale(generalService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
+			}
+			StockMoveLine stockMoveLine = this.createStockMoveLine(product, productName, description, quantity, unitPriceUntaxed, unitPriceTaxed, unit, stockMove, null);
 
 			TrackingNumberConfiguration trackingNumberConfiguration = product.getTrackingNumberConfiguration();
 			if(trackingNumberConfiguration != null)  {
@@ -138,7 +152,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService  {
 	 * @throws AxelorException
 	 */
 	@Override
-	public StockMoveLine createStockMoveLine(Product product, String  productName, String description, BigDecimal quantity, Unit unit, StockMove stockMove, TrackingNumber trackingNumber) throws AxelorException {
+	public StockMoveLine createStockMoveLine(Product product, String  productName, String description, BigDecimal quantity, BigDecimal unitPriceUntaxed, BigDecimal unitPriceTaxed, Unit unit, StockMove stockMove, TrackingNumber trackingNumber) throws AxelorException {
 
 		StockMoveLine stockMoveLine = new StockMoveLine();
 		stockMoveLine.setStockMove(stockMove);
@@ -147,6 +161,8 @@ public class StockMoveLineServiceImpl implements StockMoveLineService  {
 		stockMoveLine.setDescription(description);
 		stockMoveLine.setQty(quantity);
 		stockMoveLine.setRealQty(quantity);
+		stockMoveLine.setUnitPriceUntaxed(unitPriceUntaxed);
+		stockMoveLine.setUnitPriceTaxed(unitPriceTaxed);
 		stockMoveLine.setUnit(unit);
 		stockMoveLine.setTrackingNumber(trackingNumber);
 
@@ -199,6 +215,8 @@ public class StockMoveLineServiceImpl implements StockMoveLineService  {
 				stockMoveLine.getProductName(),
 				stockMoveLine.getDescription(),
 				qty,
+				stockMoveLine.getUnitPriceUntaxed(),
+				stockMoveLine.getUnitPriceTaxed(),
 				stockMoveLine.getUnit(),
 				stockMoveLine.getStockMove(),
 				trackingNumber);
@@ -277,6 +295,26 @@ public class StockMoveLineServiceImpl implements StockMoveLineService  {
 				break;
 		}
 
+	}
+	
+	@Override
+	public StockMoveLine compute(StockMoveLine stockMoveLine, StockMove stockMove) throws AxelorException{
+		BigDecimal unitPriceUntaxed = BigDecimal.ZERO;
+		if(stockMoveLine.getProduct() != null && stockMove != null){
+			if(stockMove.getTypeSelect() == StockMoveRepository.TYPE_OUTGOING){
+				unitPriceUntaxed = stockMoveLine.getProduct().getSalePrice();
+			}
+			else if(stockMove.getTypeSelect() == StockMoveRepository.TYPE_INCOMING){
+				unitPriceUntaxed = stockMoveLine.getProduct().getPurchasePrice();
+			}
+			else{
+				unitPriceUntaxed = stockMoveLine.getProduct().getCostPrice();
+			}
+			
+		}
+		stockMoveLine.setUnitPriceUntaxed(unitPriceUntaxed);
+		stockMoveLine.setUnitPriceTaxed(unitPriceUntaxed);
+		return stockMoveLine;
 	}
 
 

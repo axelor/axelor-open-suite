@@ -25,19 +25,23 @@ import com.axelor.apps.account.db.AnalyticDistributionLine;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.repo.AnalyticDistributionLineRepository;
+import com.axelor.apps.account.db.repo.InvoiceRepository;
+import com.axelor.apps.account.service.invoice.InvoiceLineService;
 import com.axelor.apps.account.service.invoice.generator.InvoiceLineGenerator;
+import com.axelor.apps.account.service.invoice.generator.line.InvoiceLineManagement;
 import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.administration.GeneralService;
+import com.axelor.apps.base.service.tax.AccountManagementService;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.stock.db.StockMove;
+import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.supplychain.db.Subscription;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
-import com.google.inject.Inject;
 
 /**
  * Classe de création de ligne de facture abstraite.
@@ -45,8 +49,6 @@ import com.google.inject.Inject;
  */
 public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerator {
 
-	@Inject
-	protected GeneralService generalService;
 
 	protected SaleOrderLine saleOrderLine;
 	protected PurchaseOrderLine purchaseOrderLine;
@@ -55,14 +57,14 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
 
 	protected InvoiceLineGeneratorSupplyChain( Invoice invoice, Product product, String productName, String description, BigDecimal qty,
 			Unit unit, int sequence, boolean isTaxInvoice,
-			SaleOrderLine saleOrderLine, PurchaseOrderLine purchaseOrderLine, StockMove stockMove) {
-
-		this(invoice, product, productName, description, qty, unit, sequence, isTaxInvoice, saleOrderLine, purchaseOrderLine, stockMove, null);
+			SaleOrderLine saleOrderLine, PurchaseOrderLine purchaseOrderLine, StockMove stockMove, StockMoveLine stockMoveLine) throws AxelorException {
+		this(invoice, product, productName, description, qty, unit, sequence, isTaxInvoice, saleOrderLine, purchaseOrderLine, stockMove, null, stockMoveLine);
     }
 
 	protected InvoiceLineGeneratorSupplyChain( Invoice invoice, Product product, String productName, String description, BigDecimal qty,
 			Unit unit, int sequence, boolean isTaxInvoice,
-			SaleOrderLine saleOrderLine, PurchaseOrderLine purchaseOrderLine, StockMove stockMove, Subscription subscription) {
+			SaleOrderLine saleOrderLine, PurchaseOrderLine purchaseOrderLine, StockMove stockMove,
+			Subscription subscription, StockMoveLine stockMoveLine) throws AxelorException {
 
 		super(invoice, product, productName, description, qty, unit, sequence, isTaxInvoice);
 
@@ -106,6 +108,30 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
 				analyticDistributionLineList.add(analyticDistributionLine);
 			}
 		}
+		else if(stockMoveLine != null){
+			this.price = stockMoveLine.getUnitPriceUntaxed();
+			this.priceDiscounted = stockMoveLine.getUnitPriceUntaxed();
+			this.exTaxTotal = qty.multiply(stockMoveLine.getUnitPriceUntaxed());
+			this.taxLine = Beans.get(AccountManagementService.class).getTaxLine(
+					Beans.get(GeneralService.class).getTodayDate(), stockMoveLine.getProduct(), invoice.getCompany(),
+					invoice.getPartner().getFiscalPosition(), invoice.getOperationTypeSelect()<InvoiceRepository.OPERATION_TYPE_CLIENT_SALE);
+			//Compute discount
+			//compute totals and priceDiscounted
+			if(!invoice.getInAti()){
+				if(price != null && qty != null) {
+
+					exTaxTotal = InvoiceLineManagement.computeAmount(qty, Beans.get(InvoiceLineService.class).computeDiscount(discountTypeSelect,discountAmount,price,invoice));
+					inTaxTotal = exTaxTotal.add(exTaxTotal.multiply(taxLine.getValue()));
+				}
+			}
+			else{
+				if(price != null && qty != null) {
+
+					inTaxTotal = InvoiceLineManagement.computeAmount(qty, Beans.get(InvoiceLineService.class).computeDiscount(discountTypeSelect,discountAmount,price,invoice));
+					exTaxTotal = inTaxTotal.divide(taxLine.getValue().add(BigDecimal.ONE), 2, BigDecimal.ROUND_HALF_UP);
+				}
+			}
+		}
 
 		if(stockMove != null){
 			this.stockMove = stockMove;
@@ -121,10 +147,13 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
 	protected InvoiceLine createInvoiceLine() throws AxelorException  {
 
 		InvoiceLine invoiceLine = super.createInvoiceLine();
-		for (AnalyticDistributionLine analyticDistributionLine : analyticDistributionLineList) {
-			analyticDistributionLine.setInvoiceLine(invoiceLine);
+		if(analyticDistributionLineList != null){
+			for (AnalyticDistributionLine analyticDistributionLine : analyticDistributionLineList) {
+				analyticDistributionLine.setInvoiceLine(invoiceLine);
+			}
+			invoiceLine.setAnalyticDistributionLineList(analyticDistributionLineList);
 		}
-		invoiceLine.setAnalyticDistributionLineList(analyticDistributionLineList);
+		
 		if (Beans.get(GeneralService.class).getGeneral().getManageInvoicedAmountByLine()){
 			if (saleOrderLine != null){
 				invoiceLine.setSaleOrderLine(saleOrderLine);

@@ -17,6 +17,8 @@
  */
 package com.axelor.apps.supplychain.service;
 
+import java.math.BigDecimal;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,6 +28,7 @@ import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.stock.db.StockMove;
+import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.service.StockMoveServiceImpl;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
@@ -34,7 +37,26 @@ import com.google.inject.persist.Transactional;
 public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl  {
 
 	private static final Logger LOG = LoggerFactory.getLogger(StockMoveServiceSupplychainImpl.class);
-
+	
+	
+	@Override
+	public BigDecimal compute(StockMove stockMove){
+		BigDecimal exTaxTotal = BigDecimal.ZERO;
+		if(stockMove.getStockMoveLineList() != null && !stockMove.getStockMoveLineList().isEmpty()){
+			if((stockMove.getSaleOrder() != null && stockMove.getSaleOrder().getInAti()) || (stockMove.getPurchaseOrder() != null && stockMove.getPurchaseOrder().getInAti())){
+				for (StockMoveLine stockMoveLine : stockMove.getStockMoveLineList()) {
+					exTaxTotal = exTaxTotal.add(stockMoveLine.getRealQty().multiply(stockMoveLine.getUnitPriceTaxed()));
+				}
+			}
+			else{
+				for (StockMoveLine stockMoveLine : stockMove.getStockMoveLineList()) {
+					exTaxTotal = exTaxTotal.add(stockMoveLine.getRealQty().multiply(stockMoveLine.getUnitPriceUntaxed()));
+				}
+			}
+		}
+		return exTaxTotal;
+	}
+	
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	@Override
 	public String realize(StockMove stockMove) throws AxelorException  {
@@ -70,6 +92,5 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl  {
 	public void computeProductWeightedAveragePrice(StockMove stockMove){
 		
 	}
-
 
 }

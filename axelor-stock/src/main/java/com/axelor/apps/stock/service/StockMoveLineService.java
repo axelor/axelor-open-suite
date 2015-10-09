@@ -52,7 +52,7 @@ public interface StockMoveLineService {
 	 * @return l'objet StockMoveLine
 	 * @throws AxelorException
 	 */
-	public StockMoveLine createStockMoveLine(Product product, String productName, String description, BigDecimal quantity, Unit unit, StockMove stockMove, int type ) throws AxelorException;;
+	public StockMoveLine createStockMoveLine(Product product, String productName, String description, BigDecimal quantity, BigDecimal unitPrice, Unit unit, StockMove stockMove, int type , boolean taxed, BigDecimal taxRate) throws AxelorException;
 
 
 	public void generateTrackingNumber(StockMoveLine stockMoveLine, TrackingNumberConfiguration trackingNumberConfiguration, Product product, BigDecimal qtyByTracking) throws AxelorException;
@@ -69,7 +69,7 @@ public interface StockMoveLineService {
 	 * @return
 	 * @throws AxelorException
 	 */
-	public StockMoveLine createStockMoveLine(Product product, String productName, String description, BigDecimal quantity, Unit unit, StockMove stockMove, TrackingNumber trackingNumber) throws AxelorException;
+	public StockMoveLine createStockMoveLine(Product product, String productName, String description, BigDecimal quantity, BigDecimal unitPriceUntaxed, BigDecimal unitPriceTaxed, Unit unit, StockMove stockMove, TrackingNumber trackingNumber) throws AxelorException;
 
 
 
@@ -91,7 +91,8 @@ public interface StockMoveLineService {
 
 	public void updateLocations(Location fromLocation, Location toLocation, Product product, BigDecimal qty, int fromStatus, int toStatus, LocalDate
 			lastFutureStockMoveDate, TrackingNumber trackingNumber) throws AxelorException;
-
+	
+	public StockMoveLine compute(StockMoveLine stockMoveLine, StockMove stockMove) throws AxelorException;
 
 
 

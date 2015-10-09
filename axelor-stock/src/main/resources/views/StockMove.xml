@@ -88,9 +88,9 @@
 	  </panel>  
 	  <panel-tabs>
 	   
-	    <panel-related name="stockMoveLineListPanel" title="Stock move line" field="stockMoveLineList" readonlyIf="statusSelect == 3" form-view="stock-move-line-form" grid-view="stock-move-line-grid"/>
+	    <panel-related name="stockMoveLineListPanel" title="Stock move line" field="stockMoveLineList" onChange="action-stock-move-method-compute" readonlyIf="statusSelect == 3" form-view="stock-move-line-form" grid-view="stock-move-line-grid"/>
 	    <panel title="Configuration">
-	      <field name="saleOrder" if-module="axelor-supplychain" readonlyIf="statusSelect == 3 || statusSelect == 4" form-view="sale-order-form" grid-view="sale-order-grid"/>
+	      <field name="saleOrder" onChange="action-stock-move-attrs-typeselect-change" if-module="axelor-supplychain" readonlyIf="statusSelect == 3 || statusSelect == 4" form-view="sale-order-form" grid-view="sale-order-grid"/>
 	      <field name="purchaseOrder" if-module="axelor-supplychain" readonlyIf="statusSelect == 3 || statusSelect == 4" form-view="purchase-order-form" grid-view="purchase-order-grid"/>
 	      <field name="invoice" if-module="axelor-supplychain" readonlyIf="statusSelect == 3 || statusSelect == 4" form-view="invoice-form" grid-view="invoice-grid"/>
 	    </panel>
@@ -113,6 +113,17 @@
 	      <button name="specialSplit" title="Special split"  onClick="save,action-stock-move-wizard-special-split"/>
 	      <button name="shipReciveAllProducts" title="Ship/Receive all products" onClick="save,action-stock-move-ship-recieve-all-products"/>
 	    </panel>
+	    
+	    <panel sidebar="true" readonly="true"  colSpan="4">  
+	  		<field name="exTaxTotal" css="order-subtotal" showTitle="false" colSpan="12">
+	          <viewer>
+	            &lt;dl class="dl-horizontal"&gt;
+	              &lt;dt x-translate&gt;Total W.T.&lt;/dt&gt;
+	              &lt;dd&gt;{{record.exTaxTotal}}&lt;/dd&gt;
+	            &lt;/dl&gt;
+	          </viewer>
+	        </field>
+      </panel>
 	</form>
     
     <form name="stock-move-wizard-special-split-form" title="Special split" model="com.axelor.apps.base.db.Wizard">
@@ -139,6 +150,10 @@
         </panel>
     </form>
     
+    
+    <action-method name="action-stock-move-method-compute">
+    	<call class="com.axelor.apps.stock.web.StockMoveController" method="compute"/>
+    </action-method>
     
     <action-view title="Split into 2" model="com.axelor.apps.stock.db.StockMove" name="action-stock-move-split-into-2">
 	    <view type="form" name="stock-move-split-into-2-form"/>
@@ -197,7 +212,9 @@
     	<attribute name="title" for="stockMoveLineList" expr="eval: com.axelor.i18n.I18n.get('Internal move line')" if="typeSelect == 1"/>
     	<attribute name="title" for="stockMoveLineList" expr="eval: com.axelor.i18n.I18n.get('Outgoing move line')" if="typeSelect == 2"/>
     	<attribute name="title" for="stockMoveLineList" expr="eval: com.axelor.i18n.I18n.get('Incoming move line')" if="typeSelect == 3"/>
-	</action-attrs>
+    	<attribute name="hidden" for="stockMoveLineList.unitPriceUntaxed" expr="eval: saleOrder?.inAti"/>
+    	<attribute name="hidden" for="stockMoveLineList.unitPriceTaxed" expr="eval: !saleOrder?.inAti"/>
+    </action-attrs>
 
     <action-attrs name="action-stock-move-attrs-domain-address">
 		<attribute name="domain" for="fromAddress" expr="eval: &quot;self.id IN (${(partner?.partnerAddressList?.findAll{it.isDeliveryAddr}.collect{it.address.id}+[null]).join(',')})&quot;" />

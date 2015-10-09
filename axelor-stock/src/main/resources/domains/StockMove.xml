@@ -36,6 +36,8 @@
     <integer name="numOfPalettes" title="Number Of Palettes"/>
     <decimal name="grossWeight" title="Gross Weight"/>
     
+    <decimal name="exTaxTotal" title="Total W.T." precision="20" scale="5"/>
+    
     <string name="description" title="Description" large="true"/>
     
     <extra-code><![CDATA[

@@ -75,7 +75,21 @@ public class StockMoveServiceImpl implements StockMoveService {
 		this.today = Beans.get(GeneralService.class).getTodayDate();
 
 	}
-
+	
+	
+	@Override
+	public BigDecimal compute(StockMove stockMove){
+		BigDecimal exTaxTotal = BigDecimal.ZERO;
+		if(stockMove.getStockMoveLineList() != null && !stockMove.getStockMoveLineList().isEmpty()){
+			for (StockMoveLine stockMoveLine : stockMove.getStockMoveLineList()) {
+				exTaxTotal = exTaxTotal.add(stockMoveLine.getRealQty().multiply(stockMoveLine.getUnitPriceUntaxed()));
+			}
+		}
+		return exTaxTotal;
+	}
+	
+	
+	
 	/**
 	 * Méthode permettant d'obtenir la séquence du StockMove.
 	 * @param stockMoveType Type de mouvement de stock

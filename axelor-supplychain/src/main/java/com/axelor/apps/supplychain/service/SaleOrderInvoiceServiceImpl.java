@@ -38,7 +38,6 @@ import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
-import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.supplychain.db.Subscription;
 import com.axelor.apps.supplychain.db.repo.SubscriptionRepository;
@@ -64,8 +63,6 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 	@Inject
 	private SaleOrderRepository saleOrderRepo;
 
-	@Inject
-	private AdvancePaymentServiceSupplychainImpl advancePaymentService;
 
 	@Inject
 	public SaleOrderInvoiceServiceImpl(GeneralService generalService) {
@@ -233,7 +230,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 
 		InvoiceLineGenerator invoiceLineGenerator = new InvoiceLineGeneratorSupplyChain(invoice, product, saleOrderLine.getProductName(),
 				saleOrderLine.getDescription(), saleOrderLine.getQty(), saleOrderLine.getUnit(),
-				saleOrderLine.getSequence(), false, saleOrderLine, null, null)  {
+				saleOrderLine.getSequence(), false, saleOrderLine, null, null, null)  {
 
 			@Override
 			public List<InvoiceLine> creates() throws AxelorException {
@@ -257,7 +254,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 
 		InvoiceLineGenerator invoiceLineGenerator = new InvoiceLineGeneratorSupplyChain(invoice, product, saleOrderLine.getProductName()+"("+saleOrderLine.getPeriodicity()+" "+I18n.get("month(s)")+")",
 				saleOrderLine.getDescription(), saleOrderLine.getQty(), saleOrderLine.getUnit(),
-				sequence, false, saleOrderLine, null, null, subscription)  {
+				sequence, false, saleOrderLine, null, null, subscription, null)  {
 
 			@Override
 			public List<InvoiceLine> creates() throws AxelorException {

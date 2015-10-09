@@ -255,7 +255,11 @@ public class InventoryService {
 			if (currentQty.compareTo(realQty) != 0) {
 				BigDecimal diff = realQty.subtract(currentQty);
 
-				StockMoveLine stockMoveLine = Beans.get(StockMoveLineService.class).createStockMoveLine(product, product.getName(), product.getDescription(), diff, product.getUnit(), stockMove, 0);
+				StockMoveLine stockMoveLine = Beans.get(StockMoveLineService.class).createStockMoveLine(
+						product, product.getName(), 
+						product.getDescription(), diff,
+						product.getCostPrice(),
+						product.getUnit(), stockMove, 0,false, BigDecimal.ZERO);
 				if (stockMoveLine == null)  {
 					throw new AxelorException(I18n.get(IExceptionMessage.INVENTORY_7)+" "+inventorySeq, IException.CONFIGURATION_ERROR);
 				}

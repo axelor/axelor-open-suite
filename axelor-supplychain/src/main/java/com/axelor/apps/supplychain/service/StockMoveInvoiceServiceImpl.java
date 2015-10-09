@@ -538,7 +538,7 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
 				//Depending on stockMove type
 				if (stockMoveLine.getSaleOrderLine() != null){
 					stockMoveLine.getSaleOrderLine().setInvoiced(true);
-				}else{
+				}else if(stockMoveLine.getPurchaseOrderLine() != null){
 					stockMoveLine.getPurchaseOrderLine().setInvoiced(true);
 				}
 			}
@@ -558,7 +558,7 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
 
 		InvoiceLineGenerator invoiceLineGenerator = new InvoiceLineGeneratorSupplyChain(invoice, product, product.getName(),
 				stockMoveLine.getDescription(), stockMoveLine.getRealQty(), stockMoveLine.getUnit(),
-				InvoiceLineGenerator.DEFAULT_SEQUENCE, false, stockMoveLine.getSaleOrderLine(), stockMoveLine.getPurchaseOrderLine(), stockMoveLine.getStockMove())  {
+				InvoiceLineGenerator.DEFAULT_SEQUENCE, false, stockMoveLine.getSaleOrderLine(), stockMoveLine.getPurchaseOrderLine(), stockMoveLine.getStockMove(), stockMoveLine)  {
 			@Override
 			public List<InvoiceLine> creates() throws AxelorException {
 
