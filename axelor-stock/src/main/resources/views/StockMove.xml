@@ -118,8 +118,8 @@
 	  		<field name="exTaxTotal" css="order-subtotal" showTitle="false" colSpan="12">
 	          <viewer>
 	            &lt;dl class="dl-horizontal"&gt;
-	              &lt;dt x-translate&gt;Total W.T.&lt;/dt&gt;
-	              &lt;dd&gt;{{record.exTaxTotal}}&lt;/dd&gt;
+	              &lt;dt class="order-subtotal-total" x-translate&gt;Total W.T.&lt;/dt&gt;
+	              &lt;dd class="order-subtotal-total" &gt;{{record.exTaxTotal}}&lt;/dd&gt;
 	            &lt;/dl&gt;
 	          </viewer>
 	        </field>
