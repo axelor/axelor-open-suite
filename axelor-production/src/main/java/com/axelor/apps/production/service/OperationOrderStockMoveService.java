@@ -17,6 +17,8 @@
  */
 package com.axelor.apps.production.service;
 
+import java.math.BigDecimal;
+
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.db.ProdProduct;
@@ -110,9 +112,10 @@ public class OperationOrderStockMoveService {
 				prodProduct.getProduct().getName(),
 				prodProduct.getProduct().getDescription(),
 				prodProduct.getQty(),
+				prodProduct.getProduct().getCostPrice(),
 				prodProduct.getUnit(),
 				null,
-				StockMoveLineService.TYPE_PRODUCTIONS);
+				StockMoveLineService.TYPE_PRODUCTIONS, false, BigDecimal.ZERO);
 
 	}
 
