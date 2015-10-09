@@ -17,6 +17,8 @@
  */
 package com.axelor.apps.production.service;
 
+import java.math.BigDecimal;
+
 import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
 import org.slf4j.Logger;
@@ -159,9 +161,10 @@ public class ManufOrderStockMoveService {
 				prodProduct.getProduct().getName(),
 				prodProduct.getProduct().getDescription(),
 				prodProduct.getQty(),
+				prodProduct.getProduct().getCostPrice(),
 				prodProduct.getUnit(),
 				null,
-				StockMoveLineService.TYPE_PRODUCTIONS);
+				StockMoveLineService.TYPE_PRODUCTIONS, false, BigDecimal.ZERO);
 
 	}
 
