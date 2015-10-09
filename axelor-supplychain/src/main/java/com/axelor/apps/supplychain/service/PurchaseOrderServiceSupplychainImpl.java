@@ -127,9 +127,9 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
 				}
 			}
 			if(stockMove.getStockMoveLineList() != null && !stockMove.getStockMoveLineList().isEmpty()){
+				stockMove.setExTaxTotal(Beans.get(StockMoveService.class).compute(stockMove));
 				Beans.get(StockMoveService.class).plan(stockMove);
 			}
-
 			stockMoveId = stockMove.getId();
 		}
 		return stockMoveId;

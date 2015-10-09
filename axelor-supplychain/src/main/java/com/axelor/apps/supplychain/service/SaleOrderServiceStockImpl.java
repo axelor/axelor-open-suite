@@ -35,6 +35,7 @@ import com.axelor.apps.stock.service.StockMoveLineService;
 import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.apps.stock.service.config.StockConfigService;
 import com.axelor.exception.AxelorException;
+import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 
 public class SaleOrderServiceStockImpl extends SaleOrderServiceImpl {
@@ -82,6 +83,7 @@ public class SaleOrderServiceStockImpl extends SaleOrderServiceImpl {
 			}
 
 			if(stockMove.getStockMoveLineList() != null && !stockMove.getStockMoveLineList().isEmpty()){
+				stockMove.setExTaxTotal(stockMoveService.compute(stockMove));
 				stockMoveService.plan(stockMove);
 			}
 
@@ -112,7 +114,6 @@ public class SaleOrderServiceStockImpl extends SaleOrderServiceImpl {
 
 		stockMove.setSaleOrder(saleOrder);
 		stockMove.setStockMoveLineList(new ArrayList<StockMoveLine>());
-
 		return stockMove;
 	}
 
