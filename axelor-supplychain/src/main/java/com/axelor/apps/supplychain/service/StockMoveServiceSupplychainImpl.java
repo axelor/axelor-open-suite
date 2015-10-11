@@ -18,6 +18,7 @@
 package com.axelor.apps.supplychain.service;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,7 +55,7 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl  {
 				}
 			}
 		}
-		return exTaxTotal;
+		return exTaxTotal.setScale(2, RoundingMode.HALF_UP);
 	}
 	
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})

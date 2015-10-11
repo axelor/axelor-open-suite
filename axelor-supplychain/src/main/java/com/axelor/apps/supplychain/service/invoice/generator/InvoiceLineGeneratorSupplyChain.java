@@ -29,7 +29,6 @@ import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.invoice.InvoiceLineService;
 import com.axelor.apps.account.service.invoice.generator.InvoiceLineGenerator;
 import com.axelor.apps.account.service.invoice.generator.line.InvoiceLineManagement;
-import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.ProductRepository;
@@ -60,6 +59,7 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
 			SaleOrderLine saleOrderLine, PurchaseOrderLine purchaseOrderLine, StockMove stockMove, StockMoveLine stockMoveLine) throws AxelorException {
 		this(invoice, product, productName, description, qty, unit, sequence, isTaxInvoice, saleOrderLine, purchaseOrderLine, stockMove, null, stockMoveLine);
     }
+	
 
 	protected InvoiceLineGeneratorSupplyChain( Invoice invoice, Product product, String productName, String description, BigDecimal qty,
 			Unit unit, int sequence, boolean isTaxInvoice,
@@ -85,8 +85,8 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
 			if (ProductRepository.PRODUCT_TYPE_SUBSCRIPTABLE.equals(saleOrderLine.getProduct().getProductTypeSelect())
 					&& saleOrderLine.getSubscriptionList() != null
 					&& !saleOrderLine.getSubscriptionList().isEmpty()){
-				this.exTaxTotal = this.exTaxTotal.divide(new BigDecimal(saleOrderLine.getSubscriptionList().size())).setScale(IAdministration.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_EVEN);
-				this.inTaxTotal = this.inTaxTotal.divide(new BigDecimal(saleOrderLine.getSubscriptionList().size())).setScale(IAdministration.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_EVEN);
+				this.exTaxTotal = this.exTaxTotal.divide(new BigDecimal(saleOrderLine.getSubscriptionList().size())).setScale(2, RoundingMode.HALF_EVEN);
+				this.inTaxTotal = this.inTaxTotal.divide(new BigDecimal(saleOrderLine.getSubscriptionList().size())).setScale(2, RoundingMode.HALF_EVEN);
 			}
 			analyticDistributionLineList = new ArrayList<AnalyticDistributionLine>();
 			for (AnalyticDistributionLine analyticDistributionLineIt : saleOrderLine.getAnalyticDistributionLineList()) {
@@ -137,6 +137,8 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
 			this.stockMove = stockMove;
 		}
     }
+	
+	
 
 
 	/**
