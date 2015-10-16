@@ -24,7 +24,6 @@ import org.joda.time.LocalDate;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
-import com.axelor.apps.base.db.repo.PriceListRepository;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.purchase.service.PurchaseOrderLineService;
@@ -36,7 +35,6 @@ import com.axelor.apps.stock.db.repo.MinStockRulesRepository;
 import com.axelor.apps.stock.service.MinStockRulesServiceImpl;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
-import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -104,7 +102,7 @@ public class MinStockRulesServiceSupplychainImpl extends MinStockRulesServiceImp
 							null,
 							location,
 							this.today,
-							Beans.get(PriceListRepository.class).all().filter("self.partner = ?1", supplierPartner).fetchOne(),
+							supplierPartner.getPurchasePriceList(),
 							supplierPartner));
 
 					purchaseOrder.addPurchaseOrderLineListItem(

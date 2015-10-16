@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_4.0.xsd">
+ 
+  <module name="supplychain" package="com.axelor.apps.supplychain.db"/>
+ 
+  <entity name="Mrp" lang="java">
+  
+      <many-to-one name="location" ref="com.axelor.apps.stock.db.Location" title="Location" required="true"/>
+      <many-to-many name="productSet" ref="com.axelor.apps.base.db.Product" title="Products"/>
+      <many-to-many name="productCategorySet" ref="com.axelor.apps.base.db.ProductCategory" title="Product categories"/>
+      <many-to-many name="productFamilySet" ref="com.axelor.apps.base.db.ProductFamily" title="Product families"/>
+      <many-to-many name="saleOrderLineSet" ref="com.axelor.apps.sale.db.SaleOrderLine" title="Sale orders"/>
+      <many-to-many name="mrpForecastSet" ref="com.axelor.apps.supplychain.db.MrpForecast" title="Forecasts"/>
+      <date name="endDate" title="End date"/>
+      <integer name="statusSelect" title="Status" selection="supplychain.mrp.status.select" default="0"/>
+      <one-to-many name="mrpLineList" ref="com.axelor.apps.supplychain.db.MrpLine" mappedBy="mrp" title="Results"/>
+      
+      <extra-code><![CDATA[
+	
+	   	// STATUS SELECT
+		public static final int STATUS_DRAFT = 0;
+		public static final int STATUS_CALCULATION_STARTED = 1;
+		public static final int STATUS_CALCULATION_ENDED = 2;
+	
+	]]></extra-code>
+      
+  </entity>
+
+</domain-models>

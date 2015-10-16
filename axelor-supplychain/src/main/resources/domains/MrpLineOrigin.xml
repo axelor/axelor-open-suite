@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_4.0.xsd">
+ 
+  <module name="supplychain" package="com.axelor.apps.supplychain.db"/>
+ 
+  <entity name="MrpLineOrigin" lang="java">
+  
+      	<many-to-one name="mrpLine" ref="com.axelor.apps.supplychain.db.MrpLine" title="Mrp line"/>
+      	<string name="relatedToSelect" title="Related to" selection="supplychain.mrp.line.related.to.select"/>
+  		<long name="relatedToSelectId"/>
+      
+  </entity>
+
+</domain-models>

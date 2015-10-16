@@ -98,14 +98,11 @@ public class ProductionOrderServiceImpl implements ProductionOrderService {
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public ProductionOrder addManufOrder(ProductionOrder productionOrder, Product product, BillOfMaterial billOfMaterial, BigDecimal qtyRequested) throws AxelorException  {
 		
-		BigDecimal qty = qtyRequested.divide(billOfMaterial.getQty());
-		
 		ManufOrder manufOrder = manufOrderService.generateManufOrder(
 				product, 
-				qty, 
+				qtyRequested, 
 				ManufOrderService.DEFAULT_PRIORITY, 
 				ManufOrderService.IS_TO_INVOICE, 
-				billOfMaterial.getCompany(), 
 				billOfMaterial, 
 				new LocalDateTime());
 		
@@ -114,6 +111,5 @@ public class ProductionOrderServiceImpl implements ProductionOrderService {
 		return productionOrderRepo.save(productionOrder);
 		
 	}
-	
 	
 }

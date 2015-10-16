@@ -96,29 +96,7 @@ public class ProductionOrderSaleOrderServiceImpl implements ProductionOrderSaleO
 
 		if(saleOrderLine.getSaleSupplySelect() == ProductRepository.SALE_SUPPLY_PRODUCE && product != null && product.getProductTypeSelect().equals(ProductRepository.PRODUCT_TYPE_STORABLE) )  {
 
-			BillOfMaterial billOfMaterial = saleOrderLine.getBillOfMaterial();
-
-			if(billOfMaterial == null)  {
-
-				billOfMaterial = product.getDefaultBillOfMaterial();
-
-			}
-
-			if(billOfMaterial == null && product.getParentProduct() != null)  {
-
-				billOfMaterial = product.getParentProduct().getDefaultBillOfMaterial();
-
-			}
-
-			if(billOfMaterial == null)  {
-
-				throw new AxelorException(
-						String.format(I18n.get(IExceptionMessage.PRODUCTION_ORDER_SALES_ORDER_NO_BOM), product.getName(), product.getCode()),
-						IException.CONFIGURATION_ERROR);
-
-			}
-
-			return productionOrderRepo.save(productionOrderService.generateProductionOrder(product, billOfMaterial, saleOrderLine.getQty()));
+			return productionOrderRepo.save(productionOrderService.generateProductionOrder(product, saleOrderLine.getBillOfMaterial(), saleOrderLine.getQty()));
 
 		}
 

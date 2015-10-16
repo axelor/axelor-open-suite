@@ -20,5 +20,35 @@
 		<option value="1">Bill Late Subscriptions</option>
 	</selection>
 	
+	<selection name="supplychain.mrp.status.select">
+	    <option value="0">Draft</option>
+	    <option value="1">Calculation started</option>
+  	    <option value="2">Calculation ended</option>
+	</selection>
+	
+	<selection name="supplychain.mrp.line.element.select">
+	    <option value="1">Available stock</option>
+	    <option value="2">Purchase order</option>
+	    <option value="3">Sale order</option>
+	    <option value="4">Sales forecast</option>
+   	    <option value="5">Purchase proposal</option>
+	    <option value="6">Manufacturing order</option>
+	    <option value="7">Need / Manufacturing order</option>
+   	    <option value="8">Manufacturing proposal</option>
+  	    <option value="9">Need / Manufacturing proposal</option>
+	</selection>
+	
+	<selection name="supplychain.mrp.line.type.select">
+	    <option value="1">Entry of stock</option>
+	    <option value="2">Out of stock</option>
+	</selection>
+	
+	
+	<selection name="supplychain.mrp.line.related.to.select">
+		<option value="com.axelor.apps.sale.db.SaleOrderLine">Sale order line</option>
+		<option value="com.axelor.apps.purchase.db.PurchaseOrderLine">Purchase order line</option>
+		<option value="com.axelor.apps.supplychain.db.MrpForecast">Sale forecast</option>
+	</selection>
+	
 	
 </object-views>

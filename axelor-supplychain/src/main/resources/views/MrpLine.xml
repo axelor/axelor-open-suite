@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
+	
+    <grid name="mrp-line-grid" model="com.axelor.apps.supplychain.db.MrpLine" title="Results" groupBy="product" orderBy="product.code,maturityDate,mrpLineType.typeSelect,mrpLineType.sequence,id">
+        <hilite if="[5,8,9].indexOf($get('mrpLineType.elementSelect')) != -1" strong="true" color="info"/>
+        <field name="product" hidden="true"/>
+        <field name="mrpLineType" width="300"/>
+        <field name="qty" aggregate="sum"/>
+        <field name="maturityDate" width="100"/>
+        <field name="cumulativeQty" css="bold"/>
+        <field name="product.unit"/>
+        <field name="minQty"/>
+        <field name="location"/>
+        <field name="maxLevel"/>
+        <field name="relatedToSelectName"/>
+        <button name="generateProposal" icon="fa-calendar" help="Generate proposal" onClick="action-mrp-line-method-generate-proposal" readonlyIf="[5,8].indexOf($get('mrpLineType.elementSelect')) == -1"/>
+        <field name="mrpLineType.elementSelect" hidden="true"/>
+    </grid>
+    
+	<form name="mrp-line-form" model="com.axelor.apps.supplychain.db.MrpLine" title="Result">
+	    <panel readonly="true">
+	        <field name="product"/>
+	        <field name="mrpLineType"/>
+        	<field name="qty"/>
+        	<field name="maturityDate"/>
+        	<field name="cumulativeQty" css="bold"/>
+        	<field name="product.unit"/>
+   	        <field name="minQty"/>
+        	<field name="location"/>
+        	<field name="maxLevel"/>
+   	        <button name="generateProposal" title="Generate proposal" onClick="action-mrp-line-method-generate-proposal" showIf="[5,8].indexOf(mrpLineType.elementSelect) != -1"/>
+            <field name="mrpLineType.elementSelect" hidden="true"/>
+            <field name="mrpLineOriginList" colSpan="12">
+                <editor x-viewer="true">
+           			<field name="relatedToSelect" widget="RefSelect" x-related="relatedToSelectId" colSpan="12" showTitle="false"/>
+                </editor>
+            </field>
+	    </panel>
+	 </form>
+	 
+	<action-method name="action-mrp-line-method-generate-proposal">
+	    <call class="com.axelor.apps.supplychain.web.MrpLineController" method="generateProposal"/>
+	</action-method>
+	
+</object-views>

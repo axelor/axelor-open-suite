@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
+	
+    <grid name="mrp-forecast-grid" model="com.axelor.apps.supplychain.db.MrpForecast" title="MRP forecasts" orderBy="-forecastDate,product.code">
+        <hilite if="$moment(forecastDate) &lt; $moment(todayDate)" color="danger"/>
+     	<field name="id" title="Ref"/>
+       	<field name="forecastDate"/>
+       	<field name="product"/>
+        <field name="qty"/>
+       	<field name="location"/>
+       	<field name="partner"/>
+    </grid>
+    
+	<form name="mrp-forecast-form" model="com.axelor.apps.supplychain.db.MrpForecast" title="MRP forecast">
+	    <panel>
+	        <field name="id" title="Ref"/>
+	        <field name="forecastDate"/>
+   	        <field name="product"/>
+   	        <field name="qty"/>
+        	<field name="location"/>
+        	<field name="partner"/>
+        	<field name="note" colSpan="12"/>
+	    </panel>
+	 </form>
+	 
+</object-views>

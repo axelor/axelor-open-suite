@@ -37,7 +37,7 @@ public interface ManufOrderService {
 	
 	
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public ManufOrder generateManufOrder(Product product, BigDecimal qty, int priority, boolean isToInvoice, Company company,
+	public ManufOrder generateManufOrder(Product product, BigDecimal qtyRequested, int priority, boolean isToInvoice, 
 			BillOfMaterial billOfMaterial, LocalDateTime plannedStartDateT) throws AxelorException;
 	
 	

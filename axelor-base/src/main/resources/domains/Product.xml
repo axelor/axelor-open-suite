@@ -61,6 +61,8 @@
   	
   	<integer name="costTypeSelect" title="Cost type" selection="base.product.cost.type.select" default="1"/>
   	
+  	<integer name="supplierDeliveryTime" title="Supplier delivery time (days)"/>
+  	
   	<string name="fullName" title="Full name" namecolumn="true"/>
   	
   	<extra-code>

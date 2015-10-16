@@ -9,6 +9,8 @@ import com.axelor.apps.production.service.BillOfMaterialService;
 import com.axelor.apps.production.service.BillOfMaterialServiceImpl;
 import com.axelor.apps.production.service.ManufOrderService;
 import com.axelor.apps.production.service.ManufOrderServiceImpl;
+import com.axelor.apps.production.service.MrpLineServiceProductionImpl;
+import com.axelor.apps.production.service.MrpServiceProductionImpl;
 import com.axelor.apps.production.service.OperationOrderService;
 import com.axelor.apps.production.service.OperationOrderServiceImpl;
 import com.axelor.apps.production.service.ProductionOrderSaleOrderService;
@@ -17,6 +19,8 @@ import com.axelor.apps.production.service.ProductionOrderService;
 import com.axelor.apps.production.service.ProductionOrderServiceImpl;
 import com.axelor.apps.production.service.ProductionOrderWizardService;
 import com.axelor.apps.production.service.ProductionOrderWizardServiceImpl;
+import com.axelor.apps.supplychain.service.MrpLineServiceImpl;
+import com.axelor.apps.supplychain.service.MrpServiceImpl;
 
 public class ProductionModule extends AxelorModule {
 
@@ -31,7 +35,8 @@ public class ProductionModule extends AxelorModule {
 		bind(ProductionOrderService.class).to(ProductionOrderServiceImpl.class);
 		bind(ProductionOrderWizardService.class).to(ProductionOrderWizardServiceImpl.class);		
 		bind(ProductionOrderSaleOrderService.class).to(ProductionOrderSaleOrderServiceImpl.class);
-
+		bind(MrpLineServiceImpl.class).to(MrpLineServiceProductionImpl.class);
+		bind(MrpServiceImpl.class).to(MrpServiceProductionImpl.class);
 
 	}
 

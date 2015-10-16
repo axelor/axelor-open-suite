@@ -43,6 +43,10 @@ import com.axelor.apps.supplychain.service.AdvancePaymentServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.CustomerCreditLineService;
 import com.axelor.apps.supplychain.service.CustomerCreditLineServiceImpl;
 import com.axelor.apps.supplychain.service.MinStockRulesServiceSupplychainImpl;
+import com.axelor.apps.supplychain.service.MrpLineService;
+import com.axelor.apps.supplychain.service.MrpLineServiceImpl;
+import com.axelor.apps.supplychain.service.MrpService;
+import com.axelor.apps.supplychain.service.MrpServiceImpl;
 import com.axelor.apps.supplychain.service.OpportunitySaleOrderServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.PurchaseOrderInvoiceService;
 import com.axelor.apps.supplychain.service.PurchaseOrderInvoiceServiceImpl;
@@ -88,6 +92,8 @@ public class SupplychainModule extends AxelorModule {
         bind(SaleOrderLineService.class).to(SaleOrderLineServiceSupplyChainImpl.class);
         bind(AdvancePaymentRepository.class).to(AdvancePaymentSupplychainRepository.class);
         bind(AdvancePaymentServiceImpl.class).to(AdvancePaymentServiceSupplychainImpl.class);
+        bind(MrpService.class).to(MrpServiceImpl.class);
+        bind(MrpLineService.class).to(MrpLineServiceImpl.class);
 
     }
 }

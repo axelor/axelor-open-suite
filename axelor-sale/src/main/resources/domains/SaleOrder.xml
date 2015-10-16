@@ -85,6 +85,7 @@
 	
  	<unique-constraint columns="saleOrderSeq,company"/>
 
+ 	//TODO move into supplychain ?
     <extra-code>
    		<![CDATA[
    			public static final Integer STATE_NOT_DELIVERED = 1;

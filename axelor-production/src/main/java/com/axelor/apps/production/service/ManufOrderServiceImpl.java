@@ -72,8 +72,14 @@ public class ManufOrderServiceImpl implements  ManufOrderService  {
 
 	@Override
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public ManufOrder generateManufOrder(Product product, BigDecimal qty, int priority, boolean isToInvoice, Company company,
+	public ManufOrder generateManufOrder(Product product, BigDecimal qtyRequested, int priority, boolean isToInvoice,
 			BillOfMaterial billOfMaterial, LocalDateTime plannedStartDateT) throws AxelorException  {
+		
+		if(billOfMaterial == null)  {  billOfMaterial = this.getBillOfMaterial(product);  }
+		
+		Company company = billOfMaterial.getCompany();
+		
+		BigDecimal qty = qtyRequested.divide(billOfMaterial.getQty());
 
 		ManufOrder manufOrder = this.createManufOrder(product, qty, priority, IS_TO_INVOICE, company, billOfMaterial, plannedStartDateT);
 
@@ -264,6 +270,28 @@ public class ManufOrderServiceImpl implements  ManufOrderService  {
 
 		return false;
 
+	}
+	
+	
+	public BillOfMaterial getBillOfMaterial(Product product) throws AxelorException  {
+		
+		BillOfMaterial billOfMaterial = product.getDefaultBillOfMaterial();
+
+		if(billOfMaterial == null && product.getParentProduct() != null)  {
+
+			billOfMaterial = product.getParentProduct().getDefaultBillOfMaterial();
+
+		}
+
+		if(billOfMaterial == null)  {
+
+			throw new AxelorException(
+					String.format(I18n.get(IExceptionMessage.PRODUCTION_ORDER_SALES_ORDER_NO_BOM), product.getName(), product.getCode()),
+					IException.CONFIGURATION_ERROR);
+
+		}
+		return billOfMaterial;
+		
 	}
 
 }
