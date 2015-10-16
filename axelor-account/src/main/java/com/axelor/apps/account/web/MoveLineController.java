@@ -17,11 +17,14 @@
  */
 package com.axelor.apps.account.web;
 
+import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.service.IrrecoverableService;
 import com.axelor.apps.account.service.move.MoveLineService;
+import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.exception.service.TraceBackService;
+import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
@@ -33,7 +36,24 @@ public class MoveLineController {
 	private Injector injector;
 	
 	@Inject
+	private MoveLineService moveLineService;
+	
+	@Inject
 	private MoveLineRepository moveLineRepo;
+	
+	
+	public void computeAnalyticDistribution(ActionRequest request, ActionResponse response){
+		MoveLine moveLine = request.getContext().asType(MoveLine.class);
+		Move move = moveLine.getMove();
+		if(move == null){
+			move = request.getContext().getParentContext().asType(Move.class);
+			moveLine.setMove(move);
+		}
+		if(Beans.get(GeneralService.class).getGeneral().getManageAnalyticAccounting()){
+			moveLine = moveLineService.computeAnalyticDistribution(moveLine);
+			response.setValue("analyticDistributionLineList", moveLine.getAnalyticDistributionLineList());
+		}
+	}
 	
 	public void usherProcess(ActionRequest request, ActionResponse response) {
 		

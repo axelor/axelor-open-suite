@@ -19,15 +19,19 @@ package com.axelor.apps.account.service.invoice;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.List;
 
+import com.axelor.apps.account.db.AnalyticDistributionLine;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.TaxLine;
+import com.axelor.apps.account.service.AnalyticDistributionLineService;
 import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.IPriceListLine;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.PriceListLine;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.repo.GeneralRepository;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.base.service.administration.GeneralService;
@@ -41,17 +45,55 @@ public class InvoiceLineService {
 	private CurrencyService currencyService;
 	private PriceListService priceListService;
 	protected GeneralService generalService;
+	protected AnalyticDistributionLineService analyticDistributionLineService;
 
 	@Inject
-	public InvoiceLineService(AccountManagementService accountManagementService, CurrencyService currencyService, PriceListService priceListService, GeneralService generalService)  {
+	public InvoiceLineService(AccountManagementService accountManagementService, CurrencyService currencyService, PriceListService priceListService, GeneralService generalService, AnalyticDistributionLineService analyticDistributionLineService)  {
 		
 		this.accountManagementService = accountManagementService;
 		this.currencyService = currencyService;
 		this.priceListService = priceListService;
 		this.generalService = generalService;
+		this.analyticDistributionLineService = analyticDistributionLineService;
 		
 	}
-
+	
+	public InvoiceLine createAnalyticDistributionWithTemplate(InvoiceLine invoiceLine) throws AxelorException{
+		List<AnalyticDistributionLine> analyticDistributionLineList = null;
+		analyticDistributionLineList = analyticDistributionLineService.generateLinesWithTemplate(invoiceLine.getAnalyticDistributionTemplate(), invoiceLine.getExTaxTotal());
+		if(analyticDistributionLineList != null){
+			for (AnalyticDistributionLine analyticDistributionLine : analyticDistributionLineList) {
+				analyticDistributionLine.setInvoiceLine(invoiceLine);
+			}
+		}
+		invoiceLine.setAnalyticDistributionLineList(analyticDistributionLineList);
+		return invoiceLine;
+	}
+	
+	public InvoiceLine computeAnalyticDistribution(InvoiceLine invoiceLine) throws AxelorException{
+		List<AnalyticDistributionLine> analyticDistributionLineList = invoiceLine.getAnalyticDistributionLineList();
+		if((analyticDistributionLineList == null || analyticDistributionLineList.isEmpty()) && generalService.getGeneral().getAnalyticDistributionTypeSelect() != GeneralRepository.DISTRIBUTION_TYPE_FREE){
+			analyticDistributionLineList = analyticDistributionLineService.generateLines(invoiceLine.getInvoice().getPartner(), invoiceLine.getProduct(), invoiceLine.getInvoice().getCompany(), invoiceLine.getExTaxTotal());
+			if(analyticDistributionLineList != null){
+				for (AnalyticDistributionLine analyticDistributionLine : analyticDistributionLineList) {
+					analyticDistributionLine.setInvoiceLine(invoiceLine);
+					analyticDistributionLine.setAmount(analyticDistributionLineService.computeAmount(analyticDistributionLine));
+					analyticDistributionLine.setDate(generalService.getTodayDate());
+				}
+				invoiceLine.setAnalyticDistributionLineList(analyticDistributionLineList);
+			}
+		}
+		else if(analyticDistributionLineList != null && generalService.getGeneral().getAnalyticDistributionTypeSelect() != GeneralRepository.DISTRIBUTION_TYPE_FREE){
+			for (AnalyticDistributionLine analyticDistributionLine : analyticDistributionLineList) {
+				analyticDistributionLine.setInvoiceLine(invoiceLine);
+				analyticDistributionLine.setAmount(analyticDistributionLineService.computeAmount(analyticDistributionLine));
+				analyticDistributionLine.setDate(generalService.getTodayDate());
+			}
+		}
+		return invoiceLine;
+	}
+	
+	
 	public TaxLine getTaxLine(Invoice invoice, InvoiceLine invoiceLine, boolean isPurchase) throws AxelorException  {
 
 		return accountManagementService.getTaxLine(
@@ -105,16 +147,12 @@ public class InvoiceLineService {
 	public BigDecimal computeDiscount(InvoiceLine invoiceLine, Invoice invoice)  {
 		BigDecimal unitPrice = invoiceLine.getPrice();
 
-		if(invoiceLine.getDiscountTypeSelect() == IPriceListLine.AMOUNT_TYPE_FIXED)  {
-			return  unitPrice.add(invoiceLine.getDiscountAmount());
-		}
-		else if(invoiceLine.getDiscountTypeSelect() == IPriceListLine.AMOUNT_TYPE_PERCENT)  {
-			return unitPrice.multiply(
-					BigDecimal.ONE.add(
-							invoiceLine.getDiscountAmount().divide(new BigDecimal(100))));
-		}
+		return priceListService.computeDiscount(unitPrice, invoiceLine.getDiscountTypeSelect(), invoiceLine.getDiscountAmount());
+	}
+	
+	public BigDecimal computeDiscount(int discountTypeSelect, BigDecimal discountAmount, BigDecimal unitPrice,Invoice invoice)  {
 
-		return unitPrice;
+		return priceListService.computeDiscount(unitPrice,discountTypeSelect, discountAmount);
 	}
 
 	public BigDecimal convertUnitPrice(InvoiceLine invoiceLine, Invoice invoice){

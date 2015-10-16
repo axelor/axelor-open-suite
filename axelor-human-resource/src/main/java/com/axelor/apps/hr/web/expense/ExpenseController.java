@@ -1,16 +1,20 @@
 package com.axelor.apps.hr.web.expense;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.axelor.apps.ReportSettings;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.base.db.Wizard;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.hr.db.Expense;
 import com.axelor.apps.hr.db.ExpenseLine;
 import com.axelor.apps.hr.db.repo.ExpenseRepository;
+import com.axelor.apps.hr.report.IReport;
 import com.axelor.apps.hr.service.expense.ExpenseService;
+import com.axelor.apps.tool.net.URLService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.db.Query;
@@ -31,7 +35,36 @@ public class ExpenseController {
 
 	@Inject
 	protected GeneralService generalService;
-
+	
+	public void createAnalyticDistributionWithTemplate(ActionRequest request, ActionResponse response) throws AxelorException{
+		ExpenseLine expenseLine = request.getContext().asType(ExpenseLine.class);
+		Expense expense = expenseLine.getExpense();
+		if(expense == null){
+			expense = request.getContext().getParentContext().asType(Expense.class);
+			expenseLine.setExpense(expense);
+		}
+		if(expenseLine.getAnalyticDistributionTemplate() != null){
+			expenseLine = expenseService.createAnalyticDistributionWithTemplate(expenseLine);
+			response.setValue("analyticDistributionLineList", expenseLine.getAnalyticDistributionLineList());
+		}
+		else{
+			throw new AxelorException(I18n.get("No template selected"), IException.CONFIGURATION_ERROR);
+		}
+	}
+	
+	public void computeAnalyticDistribution(ActionRequest request, ActionResponse response) throws AxelorException{
+		ExpenseLine expenseLine = request.getContext().asType(ExpenseLine.class);
+		Expense expense = expenseLine.getExpense();
+		if(expense == null){
+			expense = request.getContext().getParentContext().asType(Expense.class);
+			expenseLine.setExpense(expense);
+		}
+		if(Beans.get(GeneralService.class).getGeneral().getManageAnalyticAccounting()){
+			expenseLine = expenseService.computeAnalyticDistribution(expenseLine);
+			response.setValue("analyticDistributionLineList", expenseLine.getAnalyticDistributionLineList());
+		}
+	}
+	
 	public void editExpense(ActionRequest request, ActionResponse response){
 		List<Expense> expenseList = Beans.get(ExpenseRepository.class).all().filter("self.user = ?1 AND self.company = ?2 AND self.statusSelect = 1",AuthUtils.getUser(),AuthUtils.getUser().getActiveCompany()).fetch();
 		if(expenseList.isEmpty()){
@@ -212,5 +245,31 @@ public class ExpenseController {
 			}
 		}
 	}
+	
+	public void printExpense(ActionRequest request, ActionResponse response) {
+		Expense expense = request.getContext().asType(Expense.class);
+		StringBuilder url = new StringBuilder();
+		User user = AuthUtils.getUser();
+		String language = user != null? (user.getLanguage() == null || user.getLanguage().equals(""))? "en" : user.getLanguage() : "en"; 
+		url.append(
+				new ReportSettings(IReport.EXPENSE)
+				.addParam("Locale", language)
+				.addParam("__locale", "fr_FR")
+				.addParam("ExpenseId", expense.getId().toString())
+				.getUrl());
+		
+		String urlNotExist = URLService.notExist(url.toString());
+		if (urlNotExist == null){
+			Map<String,Object> mapView = new HashMap<String,Object>();
+			mapView.put("title", I18n.get("Expense"));
+			mapView.put("resource", url);
+			mapView.put("viewType", "html");
+			response.setView(mapView);	
+		}
+		else {
+			response.setFlash(urlNotExist);
+		}
+	}
+	
 
 }

@@ -29,5 +29,9 @@
     <string name="productName" title="Title" />
     <string name="description" title="Description" />
     
+    <decimal name="unitPriceUntaxed" precision="20" scale="5" title="Unit price"/>
+    
+    <decimal name="unitPriceTaxed" precision="20" scale="5" title="Unit price"/>
+    
   </entity>
 </domain-models>

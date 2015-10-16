@@ -350,7 +350,7 @@
 	
 	<action-attrs name="action-product-attrs-title-sale-price">
 		<attribute name="title" for="salePrice" expr="eval: com.axelor.i18n.I18n.get('Sale Price (for periodicity selected)')" if="productTypeSelect == 'subscriptable'"/>
-		<attribute name="title" for="salePrice" expr="Sale Price" if="productTypeSelect != 'subscriptable'"/>
+		<attribute name="title" for="salePrice" expr="eval: com.axelor.i18n.I18n.get('Sale price')" if="productTypeSelect != 'subscriptable'"/>
 	</action-attrs>
 	
     <search-filters name="products-filters" model="com.axelor.apps.base.db.Product" title="Products filters">

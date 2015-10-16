@@ -19,6 +19,8 @@ package com.axelor.apps.account.module;
 
 import com.axelor.app.AxelorModule;
 import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.repo.AnalyticDistributionLineMngtRepository;
+import com.axelor.apps.account.db.repo.AnalyticDistributionLineRepository;
 import com.axelor.apps.account.db.repo.BankStatementManagementRepository;
 import com.axelor.apps.account.db.repo.BankStatementRepository;
 import com.axelor.apps.account.db.repo.InvoiceManagementRepository;
@@ -34,6 +36,8 @@ import com.axelor.apps.account.db.repo.PaymentVoucherManagementRepository;
 import com.axelor.apps.account.db.repo.PaymentVoucherRepository;
 import com.axelor.apps.account.service.AccountManagementServiceAccountImpl;
 import com.axelor.apps.account.service.AddressServiceAccountImpl;
+import com.axelor.apps.account.service.AnalyticDistributionLineService;
+import com.axelor.apps.account.service.AnalyticDistributionLineServiceImpl;
 import com.axelor.apps.account.service.FiscalPositionServiceAccountImpl;
 import com.axelor.apps.account.service.InvoicePaymentService;
 import com.axelor.apps.account.service.InvoicePaymentServiceImpl;
@@ -74,9 +78,13 @@ public class AccountModule extends AxelorModule {
 
         bind(PartnerBaseRepository.class).to(PartnerAccountRepository.class);
         
+        bind(AnalyticDistributionLineService.class).to(AnalyticDistributionLineServiceImpl.class);
+        
         bind(InvoicePaymentRepository.class).to(InvoicePaymentManagementRepository.class);
 
         bind(InvoicePaymentService.class).to(InvoicePaymentServiceImpl.class);
+        
+        bind(AnalyticDistributionLineRepository.class).to(AnalyticDistributionLineMngtRepository.class);
         
         IPartner.modelPartnerFieldMap.put(Invoice.class.getName(), "partner");
     }

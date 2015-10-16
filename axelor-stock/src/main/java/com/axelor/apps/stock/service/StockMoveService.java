@@ -104,5 +104,7 @@ public interface StockMoveService {
 	public void generateReversion(StockMove stockMove) throws AxelorException;
 
 	public Long splitInto2(Long originalStockMoveId, List<StockMoveLine> stockMoveLines);
+	
+	public BigDecimal compute(StockMove stockMove);
 
 }

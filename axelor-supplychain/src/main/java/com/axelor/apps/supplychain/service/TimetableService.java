@@ -128,7 +128,7 @@ public class TimetableService {
 
 		InvoiceLineGenerator invoiceLineGenerator = new InvoiceLineGeneratorSupplyChain(invoice, product, timetable.getProductName(),
 				timetable.getComments(), timetable.getQty(), timetable.getUnit(),
-				1, false, null, null, null)  {
+				1, false, null, null, null, null)  {
 
 			@Override
 			public List<InvoiceLine> creates() throws AxelorException {

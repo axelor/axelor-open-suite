@@ -18,6 +18,8 @@
 package com.axelor.apps.supplychain.module;
 
 import com.axelor.app.AxelorModule;
+import com.axelor.apps.account.db.repo.AnalyticDistributionLineMngtRepository;
+import com.axelor.apps.account.service.AnalyticDistributionLineServiceImpl;
 import com.axelor.apps.account.service.invoice.workflow.cancel.CancelState;
 import com.axelor.apps.account.service.invoice.workflow.ventilate.VentilateState;
 import com.axelor.apps.purchase.service.PurchaseOrderLineService;
@@ -38,8 +40,10 @@ import com.axelor.apps.stock.service.StockMoveLineServiceImpl;
 import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.apps.stock.service.StockMoveServiceImpl;
 import com.axelor.apps.supplychain.db.repo.AdvancePaymentSupplychainRepository;
+import com.axelor.apps.supplychain.db.repo.AnalyticDistributionLineSupplychainRepository;
 import com.axelor.apps.supplychain.db.repo.SaleOrderSupplychainRepository;
 import com.axelor.apps.supplychain.service.AdvancePaymentServiceSupplychainImpl;
+import com.axelor.apps.supplychain.service.AnalyticDistributionLineServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.CustomerCreditLineService;
 import com.axelor.apps.supplychain.service.CustomerCreditLineServiceImpl;
 import com.axelor.apps.supplychain.service.MinStockRulesServiceSupplychainImpl;
@@ -59,6 +63,7 @@ import com.axelor.apps.supplychain.service.SaleOrderPurchaseServiceImpl;
 import com.axelor.apps.supplychain.service.SaleOrderServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.StockMoveInvoiceService;
 import com.axelor.apps.supplychain.service.StockMoveInvoiceServiceImpl;
+import com.axelor.apps.supplychain.service.StockMoveLineSupplychainServiceImpl;
 import com.axelor.apps.supplychain.service.StockMoveServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.SubscriptionService;
 import com.axelor.apps.supplychain.service.SubscriptionServiceImpl;
@@ -90,10 +95,12 @@ public class SupplychainModule extends AxelorModule {
         bind(OpportunitySaleOrderServiceImpl.class).to(OpportunitySaleOrderServiceSupplychainImpl.class);
         bind(CustomerCreditLineService.class).to(CustomerCreditLineServiceImpl.class);
         bind(SaleOrderLineService.class).to(SaleOrderLineServiceSupplyChainImpl.class);
+        bind(AnalyticDistributionLineServiceImpl.class).to(AnalyticDistributionLineServiceSupplychainImpl.class);
         bind(AdvancePaymentRepository.class).to(AdvancePaymentSupplychainRepository.class);
         bind(AdvancePaymentServiceImpl.class).to(AdvancePaymentServiceSupplychainImpl.class);
         bind(MrpService.class).to(MrpServiceImpl.class);
         bind(MrpLineService.class).to(MrpLineServiceImpl.class);
-
+        bind(AnalyticDistributionLineMngtRepository.class).to(AnalyticDistributionLineSupplychainRepository.class);
+        bind(StockMoveLineServiceImpl.class).to(StockMoveLineSupplychainServiceImpl.class);
     }
 }

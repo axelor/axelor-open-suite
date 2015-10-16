@@ -30,7 +30,7 @@ import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.axelor.apps.account.db.AnalyticAccount;
+import com.axelor.apps.account.db.AnalyticDistributionLine;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.JournalType;
 import com.axelor.apps.account.db.Move;
@@ -43,6 +43,7 @@ import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.account.service.move.MoveLineService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.service.administration.GeneralService;
@@ -70,11 +71,12 @@ public class MoveLineExportService {
 	protected MoveLineReportRepository moveLineReportRepo;
 	protected JournalRepository journalRepo;
 	protected AccountRepository accountRepo;
-
+	protected MoveLineService moveLineService;
+	
 	@Inject
 	public MoveLineExportService(GeneralService generalService, MoveLineReportService moveLineReportService, SequenceService sequenceService, 
 			AccountConfigService accountConfigService, MoveRepository moveRepo, MoveLineRepository moveLineRepo, MoveLineReportRepository moveLineReportRepo,
-			JournalRepository journalRepo, AccountRepository accountRepo) {
+			JournalRepository journalRepo, AccountRepository accountRepo, MoveLineService moveLineService) {
 		this.moveLineReportService = moveLineReportService;
 		this.sequenceService = sequenceService;
 		this.accountConfigService = accountConfigService;
@@ -83,6 +85,7 @@ public class MoveLineExportService {
 		this.moveLineReportRepo = moveLineReportRepo;
 		this.journalRepo = journalRepo;
 		this.accountRepo = accountRepo;
+		this.moveLineService = moveLineService;
 		todayTime = generalService.getTodayDateTime();
 	}
 
@@ -927,7 +930,7 @@ public class MoveLineExportService {
 
 							if(moveLines.size() > 0) {
 
-								List<MoveLine> moveLineList = this.consolidateMoveLineByAnalyticAxis(moveLines);
+								List<MoveLine> moveLineList = moveLineService.consolidateMoveLines(moveLines);
 
 								List<MoveLine> sortMoveLineList = this.sortMoveLineByDebitCredit(moveLineList);
 
@@ -961,41 +964,19 @@ public class MoveLineExportService {
 									items[6] = totAmt.toString();
 
 
-									String activeStr = "";
-									String crbStr = "";
-									String metiertr = "";
-									String siteStr = "";
-
-									for(AnalyticAccount analyticAccount : moveLine3.getAnalyticAccountSet())  {
-
-										if(analyticAccount.getAnalyticAxis() != null && analyticAccount.getAnalyticAxis().getCode().equals("ACTIVITE"))  {
-											activeStr = analyticAccount.getCode();
-										}
-										if(analyticAccount.getAnalyticAxis() != null && analyticAccount.getAnalyticAxis().getCode().equals("CRB"))  {
-											crbStr = analyticAccount.getCode();
-										}
-										if(analyticAccount.getAnalyticAxis() != null && analyticAccount.getAnalyticAxis().getCode().equals("METIER"))  {
-											metiertr = analyticAccount.getCode();
-										}
-										if(analyticAccount.getAnalyticAxis() != null && analyticAccount.getAnalyticAxis().getCode().equals("SITE"))  {
-											siteStr = analyticAccount.getCode();
-										}
+									String analyticAccounts = "";
+									for (AnalyticDistributionLine analyticDistributionLine : moveLine3.getAnalyticDistributionLineList()) {
+										analyticAccounts = analyticAccounts + analyticDistributionLine.getAnalyticAccount().getCode() + "/";
 									}
 
 									if(typeSelect == 9)  {
 										items[7]= "";
-										items[8]= crbStr;
-										items[9]= siteStr;
-										items[10]= metiertr;
-										items[11]= activeStr;
-										items[12]= String.format("%s DU %s", journal.getCode(), date.toString("dd/MM/yyyy"));
+										items[8]= analyticAccounts;
+										items[9]= String.format("%s DU %s", journal.getCode(), date.toString("dd/MM/yyyy"));
 									}
 									else  {
-										items[7]= crbStr;
-										items[8]= siteStr;
-										items[9]= metiertr;
-										items[10]= activeStr;
-										items[11]= String.format("%s DU %s", journal.getCode(), date.toString("dd/MM/yyyy"));
+										items[7]= analyticAccounts;
+										items[8]= String.format("%s DU %s", journal.getCode(), date.toString("dd/MM/yyyy"));
 									}
 
 									allMoveLineData.add(items);
@@ -1017,33 +998,6 @@ public class MoveLineExportService {
 //			CsvTool.csvWriter(filePath, fileName, '|',  this.createHeaderForDetailFile(typeSelect), allMoveLineData);
 	}
 
-
-	/**
-	 * Methode permettant de consolider une liste de ligne d'écriture par axe analytique
-	 * @param moveLineList
-	 * @return
-	 */
-	public List<MoveLine> consolidateMoveLineByAnalyticAxis(List<MoveLine> moveLineList)  {
-		List<MoveLine> sortMoveLineList = new ArrayList<MoveLine>();
-
-		for(MoveLine moveLine : moveLineList) {
-
-			boolean found = false;
-			for(MoveLine moveLine2 : sortMoveLineList)  {
-				if(moveLine.getAnalyticAccountSet().equals(moveLine2.getAnalyticAccountSet())
-						&& moveLine.getMove().getJournal().equals(moveLine2.getMove().getJournal())
-						&& moveLine.getMove().getExportNumber().equals(moveLine2.getMove().getExportNumber()))  {
-					moveLine2.setDebit(moveLine2.getDebit().add(moveLine.getDebit()));
-					moveLine2.setCredit(moveLine2.getCredit().add(moveLine.getCredit()));
-					found = true;
-				}
-			}
-			if(!found)  {
-				sortMoveLineList.add(moveLine);
-			}
-		}
-		return sortMoveLineList;
-	}
 
 
 	/**

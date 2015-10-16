@@ -47,6 +47,8 @@
 		    <panel title="Accounting">
 				<field name="defaultExemptionTax" form-view="tax-form" grid-view="tax-grid"/>
 				<field name="isInvoiceMoveConsolidated"/>
+				<field name="manageAnalyticAccounting" if-module="axelor-account"/>
+				<field name="analyticDistributionTypeSelect" if-module="axelor-account" showIf="manageAnalyticAccounting"/>
 				<field name="manageCustomerCredit" if-module="axelor-account"/>
 				<field name="allowTimetableInvoicing" if-module="axelor-supplychain"/>
 				<panel title="Rejects reasons and codes list" colSpan="12">

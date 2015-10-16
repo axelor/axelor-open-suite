@@ -5,7 +5,7 @@
   
   <entity name="Partner" lang="java">
   	
-  	<integer name="chargeBackPurchaseSelect" title="Charging Back Purchases Type" selection=""/>
+  	<integer name="chargeBackPurchaseSelect" title="Charging Back Purchases Type" selection="business.project.charging.back.purchases.select"/>
   	<decimal name="chargeBackPurchase" title="% Charging Back Purhcases" default="100"/>
   	
 	<extra-code><![CDATA[

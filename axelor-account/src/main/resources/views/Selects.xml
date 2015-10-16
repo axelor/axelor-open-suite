@@ -253,6 +253,13 @@
 		<option value="2">Validated</option>
 	</selection>
 	
+
+	<selection name='account.general.analytic.distribution.type.select'>
+		<option value='1'>Free</option>
+		<option value='2'>Per partner</option>
+		<option value='3'>Per product/family</option>
+	</selection>
+	
 	<selection name="invoice.payment.type.select">
 		<option value="1">Advance Payment</option>
 		<option value="2">Payment</option>

@@ -113,7 +113,11 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
 								|| (stockConfig.getHasInSmForNonStorableProduct() && !ProductRepository.PRODUCT_TYPE_STORABLE.equals(product.getProductTypeSelect())))
 						&& !ProductRepository.PRODUCT_TYPE_SUBSCRIPTABLE.equals(product.getProductTypeSelect())) {
 
-					StockMoveLine stockMoveLine = Beans.get(StockMoveLineService.class).createStockMoveLine(product, purchaseOrderLine.getProductName(), purchaseOrderLine.getDescription(), purchaseOrderLine.getQty(), purchaseOrderLine.getUnit(), stockMove, 2);
+					StockMoveLine stockMoveLine = Beans.get(StockMoveLineService.class).createStockMoveLine(
+							product, purchaseOrderLine.getProductName(), 
+							purchaseOrderLine.getDescription(), purchaseOrderLine.getQty(), 
+							purchaseOrderLine.getPriceDiscounted(),purchaseOrderLine.getUnit(), 
+							stockMove, 2, purchaseOrder.getInAti(), purchaseOrderLine.getTaxLine().getValue());
 					if(stockMoveLine != null) {
 
 						stockMoveLine.setPurchaseOrderLine(purchaseOrderLine);
@@ -123,9 +127,9 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
 				}
 			}
 			if(stockMove.getStockMoveLineList() != null && !stockMove.getStockMoveLineList().isEmpty()){
+				stockMove.setExTaxTotal(Beans.get(StockMoveService.class).compute(stockMove));
 				Beans.get(StockMoveService.class).plan(stockMove);
 			}
-
 			stockMoveId = stockMove.getId();
 		}
 		return stockMoveId;

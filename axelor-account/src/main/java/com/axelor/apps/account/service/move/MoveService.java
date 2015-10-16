@@ -62,7 +62,7 @@ public class MoveService {
 
 	@Inject
 	public MoveService(GeneralService generalService, MoveLineService moveLineService, MoveCreateService moveCreateService, MoveValidateService moveValidateService, MoveToolService moveToolService,
-			ReconcileService reconcileService, MoveDueService moveDueService, MoveExcessPaymentService moveExcessPaymentService, MoveRepository moveRepository) {
+			ReconcileService reconcileService, MoveDueService moveDueService, MoveExcessPaymentService moveExcessPaymentService, MoveRepository moveRepository, AccountConfigService accountConfigService) {
 
 		this.moveLineService = moveLineService;
 		this.moveCreateService = moveCreateService;
@@ -72,6 +72,7 @@ public class MoveService {
 		this.moveDueService = moveDueService;
 		this.moveExcessPaymentService = moveExcessPaymentService;
 		this.moveRepository = moveRepository;
+		this.accountConfigService = accountConfigService;
 		
 		today = generalService.getTodayDate();
 

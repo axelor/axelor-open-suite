@@ -25,6 +25,7 @@ import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.axelor.apps.account.db.AnalyticDistributionLine;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.TaxLine;
@@ -82,6 +83,7 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
 	protected BigDecimal exTaxTotal;
 	protected BigDecimal inTaxTotal;
 	protected GroupingLine groupingLine;
+	protected List<AnalyticDistributionLine> analyticDistributionLineList;
 
 	public static final int DEFAULT_SEQUENCE = 10;
 

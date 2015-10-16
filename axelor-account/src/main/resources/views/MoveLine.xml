@@ -52,6 +52,12 @@
         <field name="amountRemaining"/>
     </grid>
     
+    <form name="incl-analytic-distribution-move-line-form" model="com.axelor.apps.account.db.MoveLine" title="Move line">
+    	<panel title="Analytic distribution" if="__config__.general.getManageAnalyticAccounting()" onTabSelect="action-move-line-attrs-read-only-distribution-lines">
+			<panel-related field="analyticDistributionLineList" grid-view="analytic-distribution-line-grid" form-view="analytic-distribution-line-form" colSpan="12"/>
+		</panel>
+    </form>
+    
     <form name="move-line-form" title="Move line" model="com.axelor.apps.account.db.MoveLine" canDelete="false"
     onLoad="action-move-line-attrs-collapse-irrecoverable-group" 
     onNew="action-account-move-line-onnew-group" width="large">
@@ -79,7 +85,6 @@
 	        <panel-related field="reconcileList1" canRemove="false" canNew="false" showIf="$number(debit) &gt; 0.00" form-view="reconcile-form" grid-view="reconcile-grid"/>
 	        <panel-related field="reconcileList2"  canRemove="false" canNew="false" showIf="$number(credit) &gt; 0.00" form-view="reconcile-form" grid-view="reconcile-grid"/>
 	        
-	    	<panel-related field="analyticAccountSet" title="Analytics" readonly="true" colSpan="12" grid-view="analytic-account-grid" form-view="analytic-account-form"/>
 	    	
 	    	<panel name="irrecoverable" title="Irrecoverable">
 	        	<field name="irrecoverablestatusSelect" /> 
@@ -93,6 +98,7 @@
 		        <field name="exportedDirectDebitOk"/>
 		        <field name="reimbursementstatusSelect"/>
 		    </panel>
+		    <panel-include view="incl-analytic-distribution-move-line-form" />
         </panel-tabs>
     </form>
     
@@ -120,11 +126,11 @@
 			<panel-related field="reconcileList1" canRemove="false" canNew="false" showIf="$number(debit) &gt; 0.00" form-view="reconcile-form" grid-view="reconcile-grid"/>
 	        <panel-related field="reconcileList2"  canRemove="false" canNew="false" showIf="$number(credit) &gt; 0.00" form-view="reconcile-form" grid-view="reconcile-grid"/>
 			
-			<panel-related field="analyticAccountSet" title="Analytics" readonly="true" colSpan="12" grid-view="analytic-account-grid" form-view="analytic-account-form"/>
 			
 			<panel title="Others" >
 				<field name="exportedDirectDebitOk" colSpan="12"/>
 			</panel>
+			<panel-include view="incl-analytic-distribution-move-line-form" />
 		</panel-tabs>
 	</form>
     
@@ -158,7 +164,6 @@
 	        <panel-related field="reconcileList1" canRemove="false" canNew="false" showIf="$number(debit) &gt; 0.00" form-view="reconcile-form" grid-view="reconcile-grid"/>
 	        <panel-related field="reconcileList2"  canRemove="false" canNew="false" showIf="$number(credit) &gt; 0.00" form-view="reconcile-form" grid-view="reconcile-grid"/>
 			
-			<panel-related field="analyticAccountSet" title="Analytics" readonly="true" colSpan="12" grid-view="analytic-account-grid" form-view="analytic-account-form"/>
 			
 			<panel name="irrecoverable" title="Irrecoverable" >
 	        	<field name="irrecoverablestatusSelect"/>
@@ -171,8 +176,13 @@
 		        <field name="taxLine" grid-view="tax-line-grid" form-view="tax-line-form"/>
 		        <field name="exportedDirectDebitOk"/>
 		    </panel>
+		    <panel-include view="incl-analytic-distribution-move-line-form" />
         </panel-tabs>
     </form>
+    
+    <action-attrs name="action-move-line-attrs-read-only-distribution-lines">
+		<attribute name="readonly" for="analyticDistributionLineList" expr="eval: __config__.general.getAnalyticDistributionTypeSelect() != 1"/>
+	</action-attrs>
     
     <action-group name="action-account-move-line-onnew-group">
 	    <action name="action-move-line-attrs-collapse-irrecoverable-group"/>
@@ -184,6 +194,7 @@
 	<action-group name="action-group-account-moveline-debitcredit-onchange">
 		<action name="action-move-line-debit-credit-validate"/>
 		<action name="action-move-line-debit-credit-clean"/>
+		<action name="action-move-line-method-compute-analytic-distribution"/>
 	</action-group>
     
     <action-group name="action-group-account-moveline-accounting-situation-onload">
@@ -200,6 +211,10 @@
     	<action name="save"/>
     	<action name="action-method-account-moveline-usher-process"/>
     </action-group>
+    
+    <action-method name="action-move-line-method-compute-analytic-distribution">
+		<call class="com.axelor.apps.account.web.MoveLineController" method="computeAnalyticDistribution"/>
+	</action-method>
     
     <action-method name="action-method-account-moveline-usher-process">
     	<call class="com.axelor.apps.account.web.MoveLineController" method="usherProcess"/>

@@ -282,5 +282,12 @@ public class StockMoveController {
 		}
 
 	}
+	
+	public void  compute(ActionRequest request, ActionResponse response) {
+		
+		StockMove stockMove = request.getContext().asType(StockMove.class);
+		response.setValue("exTaxTotal", stockMoveService.compute(stockMove));
+		
+	}
 
 }

@@ -58,7 +58,37 @@ public class InvoiceLineController {
 
 	@Inject
 	protected GeneralService generalService;
-
+	
+	
+	public void createAnalyticDistributionWithTemplate(ActionRequest request, ActionResponse response) throws AxelorException{
+		InvoiceLine invoiceLine = request.getContext().asType(InvoiceLine.class);
+		Invoice invoice = invoiceLine.getInvoice();
+		if(invoice == null){
+			invoice = request.getContext().getParentContext().asType(Invoice.class);
+			invoiceLine.setInvoice(invoice);
+		}
+		if(invoiceLine.getAnalyticDistributionTemplate() != null){
+			invoiceLine = invoiceLineService.createAnalyticDistributionWithTemplate(invoiceLine);
+			response.setValue("analyticDistributionLineList", invoiceLine.getAnalyticDistributionLineList());
+		}
+		else{
+			throw new AxelorException(I18n.get("No template selected"), IException.CONFIGURATION_ERROR);
+		}
+	}
+	
+	public void computeAnalyticDistribution(ActionRequest request, ActionResponse response) throws AxelorException{
+		InvoiceLine invoiceLine = request.getContext().asType(InvoiceLine.class);
+		Invoice invoice = invoiceLine.getInvoice();
+		if(invoice == null){
+			invoice = request.getContext().getParentContext().asType(Invoice.class);
+			invoiceLine.setInvoice(invoice);
+		}
+		if(Beans.get(GeneralService.class).getGeneral().getManageAnalyticAccounting()){
+			invoiceLine = invoiceLineService.computeAnalyticDistribution(invoiceLine);
+			response.setValue("analyticDistributionLineList", invoiceLine.getAnalyticDistributionLineList());
+		}
+	}
+	
 	public void compute(ActionRequest request, ActionResponse response) throws AxelorException {
 
 		InvoiceLine invoiceLine = request.getContext().asType(InvoiceLine.class);
