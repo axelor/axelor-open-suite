@@ -1,4 +1,6 @@
 "key","message","comment","context"
+"${fullName} plan. st. move",,,
+"${fullName} real st. move",,,
 "<B>%s or %s</B> not found",,,
 "A partial stock move has been generated (%s)","Un mouvement de stock partiel a été généré (%s)",,
 "Accordance","Accord",,
@@ -283,6 +285,7 @@
 "To location","Vers l'emplacement",,
 "Today","Aujourd'hui",,
 "Today Arrivals","Réceptions du jour",,
+"Total W.T.",,,
 "Tracking Nbr","N° Suivi/lot",,
 "Tracking Nbr.","N° Suivi/lot",,
 "Tracking Number","Numéro de tracking",,
@@ -292,6 +295,7 @@
 "Type Status","Type Statut",,
 "Type de mouvement de stock non déterminé",,,
 "Unit","Unité",,
+"Unit price",,,
 "Upcoming arrivals","Réceptions à venir",,
 "Upcoming deliveries","Livraisons à venir",,
 "Upcoming supplier arrivals","Réceptions à venir",,
