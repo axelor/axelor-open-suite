@@ -32,10 +32,6 @@
 	    <option value="3">Sale order</option>
 	    <option value="4">Sales forecast</option>
    	    <option value="5">Purchase proposal</option>
-	    <option value="6">Manufacturing order</option>
-	    <option value="7">Need / Manufacturing order</option>
-   	    <option value="8">Manufacturing proposal</option>
-  	    <option value="9">Need / Manufacturing proposal</option>
 	</selection>
 	
 	<selection name="supplychain.mrp.line.type.select">

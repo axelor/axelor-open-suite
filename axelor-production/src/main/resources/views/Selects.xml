@@ -28,6 +28,13 @@
 		<option value="3">Per piece</option>
 	</selection>
 	
+	<selection name="supplychain.mrp.line.element.select" id="production.supplychain.mrp.line.element.select">
+	    <option value="6">Manufacturing order</option>
+	    <option value="7">Need / Manufacturing order</option>
+   	    <option value="8">Manufacturing proposal</option>
+  	    <option value="9">Need / Manufacturing proposal</option>
+	</selection>
+	
 	<selection name="supplychain.mrp.line.related.to.select" id="production.supplychain.mrp.line.related.to.select">
 		<option value="com.axelor.apps.production.db.ManufOrder">Manufactoring order</option>
 		<option value="com.axelor.apps.production.db.OperationOrder">Operation order</option>
