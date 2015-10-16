@@ -143,7 +143,7 @@
 			<panel title="Notes" colSpan="12">
 				<field name="note" showTitle="false" colSpan="12"/>
 			</panel>
-			<panel-related title="Payments details" field="invoicePaymentList" colSpan="12" grid-view="invoice-payment-grid" form-view="invoice-payment-form"/>
+			<panel-related title="Payments details" field="invoicePaymentList" colSpan="12" grid-view="invoice-payment-grid" form-view="invoice-payment-form" canNew="false" canRemove="false"/>
 		</panel-tabs>
 	
 		<panel-stack sidebar="true">
@@ -184,7 +184,7 @@
 		         &lt;/dl&gt;
 		       </viewer>
 		     </field>
-		     <field name="invoicePaymentList" css="right" colSpan="12" showTitle="false">
+		     <field name="invoicePaymentList" css="right" colSpan="12" showTitle="false" readonly="true">
               	<viewer> 
 				      Paid on {{record.paymentDate}}          -{{record.amount}} {{record.currency.symbol}}
       			</viewer>
