@@ -147,30 +147,12 @@ public class InvoiceLineService {
 	public BigDecimal computeDiscount(InvoiceLine invoiceLine, Invoice invoice)  {
 		BigDecimal unitPrice = invoiceLine.getPrice();
 
-		if(invoiceLine.getDiscountTypeSelect() == IPriceListLine.AMOUNT_TYPE_FIXED)  {
-			return  unitPrice.add(invoiceLine.getDiscountAmount());
-		}
-		else if(invoiceLine.getDiscountTypeSelect() == IPriceListLine.AMOUNT_TYPE_PERCENT)  {
-			return unitPrice.multiply(
-					BigDecimal.ONE.add(
-							invoiceLine.getDiscountAmount().divide(new BigDecimal(100))));
-		}
-
-		return unitPrice;
+		return priceListService.computeDiscount(unitPrice, invoiceLine.getDiscountTypeSelect(), invoiceLine.getDiscountAmount());
 	}
 	
 	public BigDecimal computeDiscount(int discountTypeSelect, BigDecimal discountAmount, BigDecimal unitPrice,Invoice invoice)  {
 
-		if(discountTypeSelect == IPriceListLine.AMOUNT_TYPE_FIXED)  {
-			return  unitPrice.add(discountAmount);
-		}
-		else if(discountTypeSelect == IPriceListLine.AMOUNT_TYPE_PERCENT)  {
-			return unitPrice.multiply(
-					BigDecimal.ONE.add(
-							discountAmount.divide(new BigDecimal(100))));
-		}
-
-		return unitPrice;
+		return priceListService.computeDiscount(unitPrice,discountTypeSelect, discountAmount);
 	}
 
 	public BigDecimal convertUnitPrice(InvoiceLine invoiceLine, Invoice invoice){

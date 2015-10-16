@@ -315,6 +315,7 @@ public class MoveLineService {
 			
 		return null;
 	}
+	
 
 	/**
 	 * Consolider des lignes d'écritures par compte comptable.
@@ -390,8 +391,134 @@ public class MoveLineService {
 		
 		return moveLines;
 	}
+	
+	public List<MoveLine> consolidateMoveLinesWithoutAnalytic(List<MoveLine> moveLines){
 
+		Map<List<Object>, MoveLine> map = new HashMap<List<Object>, MoveLine>();
+		MoveLine consolidateMoveLine = null;
+		List<Object> keys = new ArrayList<Object>();
 
+		for (MoveLine moveLine : moveLines){
+
+			keys.clear();
+			keys.add(moveLine.getAccount());
+			keys.add(moveLine.getTaxLine());
+			if (map.containsKey(keys)){
+				consolidateMoveLine = map.get(keys);
+				
+				consolidateMoveLine.setCredit(consolidateMoveLine.getCredit().add(moveLine.getCredit()));
+				consolidateMoveLine.setDebit(consolidateMoveLine.getDebit().add(moveLine.getDebit()));
+			}
+			else {
+				map.put(keys, moveLine);
+			}
+
+		}
+
+		BigDecimal credit = null;
+		BigDecimal debit = null;
+
+		int moveLineId = 1;
+		moveLines.clear();
+
+		for (MoveLine moveLine : map.values()){
+
+			credit = moveLine.getCredit();
+			debit = moveLine.getDebit();
+
+			if (debit.compareTo(BigDecimal.ZERO) == 1 && credit.compareTo(BigDecimal.ZERO) == 1){
+
+				if (debit.compareTo(credit) == 1){
+					moveLine.setDebit(debit.subtract(credit));
+					moveLine.setCredit(BigDecimal.ZERO);
+					moveLine.setCounter(moveLineId++);
+					moveLines.add(moveLine);
+				}
+				else if (credit.compareTo(debit) == 1){
+					moveLine.setCredit(credit.subtract(debit));
+					moveLine.setDebit(BigDecimal.ZERO);
+					moveLine.setCounter(moveLineId++);
+					moveLines.add(moveLine);
+				}
+
+			}
+			else if (debit.compareTo(BigDecimal.ZERO) == 1 || credit.compareTo(BigDecimal.ZERO) == 1){
+				moveLine.setCounter(moveLineId++);
+				moveLines.add(moveLine);
+			}
+		}
+		
+		return moveLines;
+	}
+	
+	public List<MoveLine> consolidateMoveLinesOnlyAnalytic(List<MoveLine> moveLines){
+
+		Map<List<Object>, MoveLine> map = new HashMap<List<Object>, MoveLine>();
+		MoveLine consolidateMoveLine = null;
+		List<Object> keys = new ArrayList<Object>();
+
+		for (MoveLine moveLine : moveLines){
+
+			keys.clear();
+			keys.add(moveLine.getAccount());
+			consolidateMoveLine = this.findConsolidateMoveLine(map, moveLine, keys);
+			if (consolidateMoveLine != null){
+				
+				consolidateMoveLine.setCredit(consolidateMoveLine.getCredit().add(moveLine.getCredit()));
+				consolidateMoveLine.setDebit(consolidateMoveLine.getDebit().add(moveLine.getDebit()));
+				for (AnalyticDistributionLine analyticDistributionLine : consolidateMoveLine.getAnalyticDistributionLineList()) {
+					for (AnalyticDistributionLine analyticDistributionLineIt : moveLine.getAnalyticDistributionLineList()) {
+						if(analyticDistributionLine.getAnalyticAxis().equals(analyticDistributionLineIt.getAnalyticAxis()) &&
+								analyticDistributionLine.getAnalyticAccount().equals(analyticDistributionLineIt.getAnalyticAccount()) &&
+								analyticDistributionLine.getPercentage().equals(analyticDistributionLineIt.getPercentage()) &&
+								analyticDistributionLine.getAnalyticJournal().equals(analyticDistributionLineIt.getAnalyticJournal())){
+							analyticDistributionLine.setAmount(analyticDistributionLine.getAmount().add(analyticDistributionLineIt.getAmount()));
+							break;
+						}
+					}
+				}
+			}
+			else {
+				map.put(keys, moveLine);
+			}
+
+		}
+
+		BigDecimal credit = null;
+		BigDecimal debit = null;
+
+		int moveLineId = 1;
+		moveLines.clear();
+
+		for (MoveLine moveLine : map.values()){
+
+			credit = moveLine.getCredit();
+			debit = moveLine.getDebit();
+
+			if (debit.compareTo(BigDecimal.ZERO) == 1 && credit.compareTo(BigDecimal.ZERO) == 1){
+
+				if (debit.compareTo(credit) == 1){
+					moveLine.setDebit(debit.subtract(credit));
+					moveLine.setCredit(BigDecimal.ZERO);
+					moveLine.setCounter(moveLineId++);
+					moveLines.add(moveLine);
+				}
+				else if (credit.compareTo(debit) == 1){
+					moveLine.setCredit(credit.subtract(debit));
+					moveLine.setDebit(BigDecimal.ZERO);
+					moveLine.setCounter(moveLineId++);
+					moveLines.add(moveLine);
+				}
+
+			}
+			else if (debit.compareTo(BigDecimal.ZERO) == 1 || credit.compareTo(BigDecimal.ZERO) == 1){
+				moveLine.setCounter(moveLineId++);
+				moveLines.add(moveLine);
+			}
+		}
+		
+		return moveLines;
+	}
 
 	/**
 	 * Fonction permettant de récuperer la ligne d'écriture (au credit et non complétement lettrée sur le compte client) de la facture

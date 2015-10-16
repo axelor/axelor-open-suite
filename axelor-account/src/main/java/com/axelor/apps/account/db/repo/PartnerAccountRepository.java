@@ -20,12 +20,14 @@ public class PartnerAccountRepository extends PartnerBaseRepository {
 			if(partner.getId() == null){
 				return super.save(partner);
 			}
-			
-			List<AccountingSituation> accountingSituationList = Beans.get(AccountingSituationService.class).createAccountingSituation(Beans.get(PartnerRepository.class).find(partner.getId()));
+			if(!partner.getIsContact()){
+				List<AccountingSituation> accountingSituationList = Beans.get(AccountingSituationService.class).createAccountingSituation(Beans.get(PartnerRepository.class).find(partner.getId()));
 
-			if(accountingSituationList != null) {
-				partner.setAccountingSituationList(accountingSituationList);
+				if(accountingSituationList != null) {
+					partner.setAccountingSituationList(accountingSituationList);
+				}
 			}
+			
 
 			return super.save(partner);
 		} catch (Exception e) {

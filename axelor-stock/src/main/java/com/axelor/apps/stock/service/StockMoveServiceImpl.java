@@ -18,6 +18,7 @@
 package com.axelor.apps.stock.service;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -85,7 +86,7 @@ public class StockMoveServiceImpl implements StockMoveService {
 				exTaxTotal = exTaxTotal.add(stockMoveLine.getRealQty().multiply(stockMoveLine.getUnitPriceUntaxed()));
 			}
 		}
-		return exTaxTotal;
+		return exTaxTotal.setScale(2, RoundingMode.HALF_UP);
 	}
 	
 	

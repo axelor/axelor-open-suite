@@ -24,8 +24,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.joda.time.LocalDateTime;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.base.db.HistorizedPriceList;
 import com.axelor.apps.base.db.IPriceListLine;
@@ -40,8 +38,6 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
 public class PriceListService {
-
-	private static final Logger LOG = LoggerFactory.getLogger(PriceListService.class);
 
 	@Inject
 	private PriceListLineRepository priceListLineRepo;
