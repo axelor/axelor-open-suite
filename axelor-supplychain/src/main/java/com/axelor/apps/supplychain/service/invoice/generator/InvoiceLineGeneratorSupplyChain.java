@@ -89,10 +89,13 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
 				this.inTaxTotal = this.inTaxTotal.divide(new BigDecimal(saleOrderLine.getSubscriptionList().size())).setScale(2, RoundingMode.HALF_EVEN);
 			}
 			analyticDistributionLineList = new ArrayList<AnalyticDistributionLine>();
-			for (AnalyticDistributionLine analyticDistributionLineIt : saleOrderLine.getAnalyticDistributionLineList()) {
-				AnalyticDistributionLine analyticDistributionLine = Beans.get(AnalyticDistributionLineRepository.class).copy(analyticDistributionLineIt, false);
-				analyticDistributionLineList.add(analyticDistributionLine);
+			if(saleOrderLine.getAnalyticDistributionLineList() != null){
+				for (AnalyticDistributionLine analyticDistributionLineIt : saleOrderLine.getAnalyticDistributionLineList()) {
+					AnalyticDistributionLine analyticDistributionLine = Beans.get(AnalyticDistributionLineRepository.class).copy(analyticDistributionLineIt, false);
+					analyticDistributionLineList.add(analyticDistributionLine);
+				}
 			}
+			
 		} else if (purchaseOrderLine != null){
 			this.purchaseOrderLine = purchaseOrderLine;
 			this.discountAmount = purchaseOrderLine.getDiscountAmount();
@@ -103,10 +106,13 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
 			this.exTaxTotal = purchaseOrderLine.getExTaxTotal().setScale(2, RoundingMode.HALF_EVEN);
 			this.inTaxTotal = purchaseOrderLine.getInTaxTotal().setScale(2, RoundingMode.HALF_EVEN);
 			analyticDistributionLineList = new ArrayList<AnalyticDistributionLine>();
-			for (AnalyticDistributionLine analyticDistributionLineIt : purchaseOrderLine.getAnalyticDistributionLineList()) {
-				AnalyticDistributionLine analyticDistributionLine = Beans.get(AnalyticDistributionLineRepository.class).copy(analyticDistributionLineIt, false);
-				analyticDistributionLineList.add(analyticDistributionLine);
+			if(purchaseOrderLine.getAnalyticDistributionLineList() != null){
+				for (AnalyticDistributionLine analyticDistributionLineIt : purchaseOrderLine.getAnalyticDistributionLineList()) {
+					AnalyticDistributionLine analyticDistributionLine = Beans.get(AnalyticDistributionLineRepository.class).copy(analyticDistributionLineIt, false);
+					analyticDistributionLineList.add(analyticDistributionLine);
+				}
 			}
+			
 		}
 		if(stockMoveLine != null && purchaseOrderLine == null && saleOrderLine == null){
 			this.price = stockMoveLine.getUnitPriceUntaxed();
