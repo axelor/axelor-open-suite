@@ -89,10 +89,13 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
 				this.inTaxTotal = this.inTaxTotal.divide(new BigDecimal(saleOrderLine.getSubscriptionList().size())).setScale(2, RoundingMode.HALF_EVEN);
 			}
 			analyticDistributionLineList = new ArrayList<AnalyticDistributionLine>();
-			for (AnalyticDistributionLine analyticDistributionLineIt : saleOrderLine.getAnalyticDistributionLineList()) {
-				AnalyticDistributionLine analyticDistributionLine = Beans.get(AnalyticDistributionLineRepository.class).copy(analyticDistributionLineIt, false);
-				analyticDistributionLineList.add(analyticDistributionLine);
+			if(saleOrderLine.getAnalyticDistributionLineList() != null){
+				for (AnalyticDistributionLine analyticDistributionLineIt : saleOrderLine.getAnalyticDistributionLineList()) {
+					AnalyticDistributionLine analyticDistributionLine = Beans.get(AnalyticDistributionLineRepository.class).copy(analyticDistributionLineIt, false);
+					analyticDistributionLineList.add(analyticDistributionLine);
+				}
 			}
+			
 		} else if (purchaseOrderLine != null){
 			this.purchaseOrderLine = purchaseOrderLine;
 			this.discountAmount = purchaseOrderLine.getDiscountAmount();
@@ -103,14 +106,23 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
 			this.exTaxTotal = purchaseOrderLine.getExTaxTotal().setScale(2, RoundingMode.HALF_EVEN);
 			this.inTaxTotal = purchaseOrderLine.getInTaxTotal().setScale(2, RoundingMode.HALF_EVEN);
 			analyticDistributionLineList = new ArrayList<AnalyticDistributionLine>();
-			for (AnalyticDistributionLine analyticDistributionLineIt : purchaseOrderLine.getAnalyticDistributionLineList()) {
-				AnalyticDistributionLine analyticDistributionLine = Beans.get(AnalyticDistributionLineRepository.class).copy(analyticDistributionLineIt, false);
-				analyticDistributionLineList.add(analyticDistributionLine);
+			if(purchaseOrderLine.getAnalyticDistributionLineList() != null){
+				for (AnalyticDistributionLine analyticDistributionLineIt : purchaseOrderLine.getAnalyticDistributionLineList()) {
+					AnalyticDistributionLine analyticDistributionLine = Beans.get(AnalyticDistributionLineRepository.class).copy(analyticDistributionLineIt, false);
+					analyticDistributionLineList.add(analyticDistributionLine);
+				}
 			}
+			
 		}
-		if(stockMoveLine != null){
+		if(stockMoveLine != null && purchaseOrderLine == null && saleOrderLine == null){
 			this.price = stockMoveLine.getUnitPriceUntaxed();
 			this.priceDiscounted = stockMoveLine.getUnitPriceUntaxed();
+			
+			if(taxLine == null){
+				this.taxLine = Beans.get(AccountManagementService.class).getTaxLine(
+						Beans.get(GeneralService.class).getTodayDate(), stockMoveLine.getProduct(), invoice.getCompany(),
+						invoice.getPartner().getFiscalPosition(), invoice.getOperationTypeSelect()<InvoiceRepository.OPERATION_TYPE_CLIENT_SALE);
+			}
 			if(!invoice.getInAti()){
 				this.exTaxTotal = qty.multiply(stockMoveLine.getUnitPriceUntaxed()).setScale(2, RoundingMode.HALF_EVEN);
 				if(taxLine != null){
@@ -125,22 +137,20 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
 			}
 			//Compute discount
 			//compute totals and priceDiscounted
-			if(purchaseOrderLine == null && saleOrderLine == null){
-				this.taxLine = Beans.get(AccountManagementService.class).getTaxLine(
-						Beans.get(GeneralService.class).getTodayDate(), stockMoveLine.getProduct(), invoice.getCompany(),
-						invoice.getPartner().getFiscalPosition(), invoice.getOperationTypeSelect()<InvoiceRepository.OPERATION_TYPE_CLIENT_SALE);
-				
-				if(!invoice.getInAti()){
-					if(price != null && qty != null) {
+			if(!invoice.getInAti()){
+				if(price != null && qty != null) {
 
-						exTaxTotal = InvoiceLineManagement.computeAmount(qty, Beans.get(InvoiceLineService.class).computeDiscount(discountTypeSelect,discountAmount,price,invoice)).setScale(2, RoundingMode.HALF_EVEN);
+					exTaxTotal = InvoiceLineManagement.computeAmount(qty, Beans.get(InvoiceLineService.class).computeDiscount(discountTypeSelect,discountAmount,price,invoice)).setScale(2, RoundingMode.HALF_EVEN);
+					if(taxLine != null){
 						inTaxTotal = exTaxTotal.add(exTaxTotal.multiply(taxLine.getValue())).setScale(2, RoundingMode.HALF_EVEN);
 					}
 				}
-				else{
-					if(price != null && qty != null) {
+			}
+			else{
+				if(price != null && qty != null) {
 
-						inTaxTotal = InvoiceLineManagement.computeAmount(qty, Beans.get(InvoiceLineService.class).computeDiscount(discountTypeSelect,discountAmount,price,invoice)).setScale(2, RoundingMode.HALF_EVEN);
+					inTaxTotal = InvoiceLineManagement.computeAmount(qty, Beans.get(InvoiceLineService.class).computeDiscount(discountTypeSelect,discountAmount,price,invoice)).setScale(2, RoundingMode.HALF_EVEN);
+					if(taxLine != null){
 						exTaxTotal = inTaxTotal.divide(taxLine.getValue().add(BigDecimal.ONE), 2, BigDecimal.ROUND_HALF_UP);
 					}
 				}
