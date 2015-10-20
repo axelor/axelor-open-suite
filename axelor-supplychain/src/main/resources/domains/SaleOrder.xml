@@ -20,7 +20,7 @@
   	<date name="toSubDate" title="Date To"/>
   	<integer name="subscripInvTypeSelect" title="Invoicing Type" selection="supplychain.subscription.invoicing.type.select"/>
   	<one-to-many name="timetableList" ref="com.axelor.apps.supplychain.db.Timetable" title="Timetable" mappedBy="saleOrder"/>
-	
+	<date name="expectedRealisationDate" title="Expected realisation date"/>
 	<extra-code>
    		<![CDATA[
    			public static final Integer SUBSCRIPTION_PERIOD_BEGINNING = 1;

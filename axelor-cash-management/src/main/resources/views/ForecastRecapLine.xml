@@ -3,19 +3,19 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
     
-    <grid name="cash-management-recap-line-grid" title="Lines" model="com.axelor.apps.cash.management.db.CashManagementRecapLine">
+    <grid name="forecast-recap-line-grid" title="Lines" model="com.axelor.apps.cash.management.db.ForecastRecapLine">
        	<field name="estimatedDate"/>
 	   	<field name="typeSelect"/>
-	   	<field name="cashFlowReason"/>
+	   	<field name="forecastReason"/>
 	   	<field name="amount"/>
 	   	<field name="balance"/>
     </grid>
  
-	 <form name="cash-management-recap-line-form" title="Line" model="com.axelor.apps.cash.management.db.CashManagementRecapLine">
+	 <form name="forecast-recap-line-form" title="Line" model="com.axelor.apps.cash.management.db.ForecastRecapLine">
 	 	<panel >
 	       	<field name="estimatedDate"/>
 	       	<field name="typeSelect"/>
-	       	<field name="cashFlowReason"/>
+	       	<field name="forecastReason"/>
 	       	<field name="amount"/>
 	       	<field name="balance"/>
 	 	</panel>

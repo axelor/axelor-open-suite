@@ -3,11 +3,11 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
     
-    <grid name="cash-flow-reason-grid" title="Cash Flow reasons" model="com.axelor.apps.cash.management.db.CashFlowReason">
+    <grid name="forecast-reason-grid" title="Forecast reasons" model="com.axelor.apps.cash.management.db.ForecastReason">
        <field name="reason"/>
     </grid>
  
-	 <form name="cash-flow-reason-form" title="Cash Flow reason" model="com.axelor.apps.cash.management.db.CashFlowReason">
+	 <form name="forecast-reason-form" title="Forecast reason" model="com.axelor.apps.cash.management.db.ForecastReason">
 	 	<panel >
 			<field name="reason" colSpan="12"/>
 	 	</panel>

@@ -18,4 +18,5 @@ public interface AnalyticDistributionLineService {
 	public List<AnalyticDistributionLine> generateLinesFromPartner(Partner partner, BigDecimal total);
 	public List<AnalyticDistributionLine> generateLinesFromProduct(Product product, Company company, BigDecimal total) throws AxelorException;
 	public List<AnalyticDistributionLine> generateLinesWithTemplate(AnalyticDistributionTemplate template, BigDecimal total);
+	public boolean validateLines(List<AnalyticDistributionLine> analyticDistributionLineList);
 }

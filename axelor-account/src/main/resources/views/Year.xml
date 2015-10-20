@@ -13,7 +13,7 @@
         <field name="statusSelect"/>
     </grid>
     
-    <form onSave="action-year-check-date,action-fiscal-year-check-date" onNew="action-year-account-record-new" name="year-account-form" title="Fiscal year" model="com.axelor.apps.base.db.Year">
+    <form onSave="action-year-check-date" onNew="action-year-account-record-new" name="year-account-form" title="Fiscal year" model="com.axelor.apps.base.db.Year">
 		<panel readonlyIf="statusSelect == 2">
 			<field name="name"/>
 			<field name="code" colSpan="3"/>
@@ -39,14 +39,12 @@
     
     <action-group name="action-group-account-year-close-click">
     	<action name="action-year-check-date"/>
-    	<action name="action-fiscal-year-check-date"/>
     	<action name="action-year-close-method"/>
     	<action name="save"/>
     </action-group>
     
     <action-group name="action-group-account-year-generateperiod-click">
     	<action name="action-year-check-date"/>
-    	<action name="action-fiscal-year-check-date"/>
     	<action name="save"/>
     	<action name="action-year-validate-generate-period"/>
     	<action name="action-method-account-year-generate-periods"/>

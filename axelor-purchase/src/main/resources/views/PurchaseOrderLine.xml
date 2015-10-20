@@ -105,6 +105,10 @@
 			<button name="generateDistributionLinesButton" onClick="action-purchase-order-line-method-create-distribution" title="Generate distribution lines" showIf="analyticDistributionTemplate != null" if="__config__.general.getAnalyticDistributionTypeSelect() == 1"/>
 			<panel-related field="analyticDistributionLineList" grid-view="analytic-distribution-line-grid" form-view="analytic-distribution-line-form" colSpan="12"/>
 		</panel>
+		<panel title="Budget distribution" if="__config__.general.getManageBudget()" if-module="axelor-supplychain">
+			<field name="budget" if="__config__.general.getManageBudget() &amp;&amp; !__config__.general.getManageMultiBudget()"/>
+			<field name="budgetDistributionList" colSpan="12" if="__config__.general.getManageBudget() &amp;&amp; __config__.general.getManageMultiBudget()"/>
+		</panel>
 	  </panel-tabs>
 	</form>
 	

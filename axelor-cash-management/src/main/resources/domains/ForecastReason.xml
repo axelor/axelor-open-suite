@@ -3,7 +3,7 @@
   
   <module name="cash-management" package="com.axelor.apps.cash.management.db"/>
   
-  <entity name="CashFlowReason" lang="java">
+  <entity name="ForecastReason" lang="java">
 	
 	<string name="reason" title="Reason" required="true" namecolumn="true"/>
 	

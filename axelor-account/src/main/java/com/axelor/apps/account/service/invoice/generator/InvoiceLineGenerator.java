@@ -26,6 +26,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.account.db.AnalyticDistributionLine;
+import com.axelor.apps.account.db.BudgetDistribution;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.TaxLine;
@@ -35,7 +36,6 @@ import com.axelor.apps.account.service.invoice.generator.line.InvoiceLineManagem
 import com.axelor.apps.base.db.Alarm;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
-import com.axelor.apps.base.db.GroupingLine;
 import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
@@ -82,8 +82,8 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
 	protected int discountTypeSelect;
 	protected BigDecimal exTaxTotal;
 	protected BigDecimal inTaxTotal;
-	protected GroupingLine groupingLine;
 	protected List<AnalyticDistributionLine> analyticDistributionLineList;
+	protected List<BudgetDistribution> budgetDistributionList;
 
 	public static final int DEFAULT_SEQUENCE = 10;
 
@@ -117,7 +117,7 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
 
 	protected InvoiceLineGenerator( Invoice invoice, Product product, String productName, BigDecimal price, BigDecimal priceDiscounted, String description, BigDecimal qty,
 			Unit unit, TaxLine taxLine, int sequence, BigDecimal discountAmount, int discountTypeSelect, BigDecimal exTaxTotal,
-			BigDecimal inTaxTotal, GroupingLine groupingLine, boolean isTaxInvoice) {
+			BigDecimal inTaxTotal, boolean isTaxInvoice) {
 
         this.invoice = invoice;
         this.product = product;
@@ -133,7 +133,6 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
         this.sequence = sequence;
         this.exTaxTotal = exTaxTotal;
         this.inTaxTotal = inTaxTotal;
-        this.groupingLine = groupingLine;
         this.isTaxInvoice = isTaxInvoice;
         this.today = Beans.get(GeneralService.class).getTodayDate();
         this.currencyService = new CurrencyService(this.today);
@@ -247,7 +246,6 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
 			taxLine =  accountManagementServiceImpl.getTaxLine(today, product, invoice.getCompany(), partner.getFiscalPosition(), isPurchase);
 		}
 		invoiceLine.setTaxLine(taxLine);
-		invoiceLine.setGroupingLine(groupingLine);
 		invoiceLine.setSequence(sequence);
 
 		invoiceLine.setDiscountTypeSelect(discountTypeSelect);

@@ -25,6 +25,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.axelor.apps.account.db.BudgetDistribution;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.InvoicePayment;
@@ -41,6 +42,7 @@ import com.axelor.apps.account.service.invoice.generator.invoice.RefundInvoice;
 import com.axelor.apps.base.db.Alarm;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.service.CurrencyService;
+import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.base.service.alarm.AlarmEngineService;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
@@ -62,15 +64,18 @@ public class InvoiceServiceImpl implements InvoiceService  {
 	private CancelFactory cancelFactory;
 	private AlarmEngineService<Invoice> alarmEngineService;
 	private InvoiceRepository invoiceRepo;
+	private GeneralService generalService;
 	
 	@Inject
-	public InvoiceServiceImpl(ValidateFactory validateFactory, VentilateFactory ventilateFactory, CancelFactory cancelFactory, AlarmEngineService<Invoice> alarmEngineService, InvoiceRepository invoiceRepo) {
+	public InvoiceServiceImpl(ValidateFactory validateFactory, VentilateFactory ventilateFactory, CancelFactory cancelFactory,
+			AlarmEngineService<Invoice> alarmEngineService, InvoiceRepository invoiceRepo, GeneralService generalService) {
 
 		this.validateFactory = validateFactory;
 		this.ventilateFactory = ventilateFactory;
 		this.cancelFactory = cancelFactory;
 		this.alarmEngineService = alarmEngineService;
 		this.invoiceRepo = invoiceRepo;
+		this.generalService = generalService;
 	}
 	
 	
@@ -157,10 +162,27 @@ public class InvoiceServiceImpl implements InvoiceService  {
 		log.debug("Validation de la facture");
 		
 		validateFactory.getValidator(invoice).process( );
+		if(generalService.getGeneral().getManageBudget() && !generalService.getGeneral().getManageMultiBudget()){
+			this.generateBudgetDistribution(invoice);
+		}
 		invoiceRepo.save(invoice);
 		
 	}
-
+	
+	@Override
+	public void generateBudgetDistribution(Invoice invoice){
+		if(invoice.getInvoiceLineList() != null){
+			for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
+				if(invoiceLine.getBudget() != null && invoiceLine.getBudgetDistributionList().isEmpty()){
+					BudgetDistribution budgetDistribution = new BudgetDistribution();
+					budgetDistribution.setBudget(invoiceLine.getBudget());
+					budgetDistribution.setAmount(invoiceLine.getExTaxTotal());
+					invoiceLine.addBudgetDistributionListItem(budgetDistribution);
+				}
+			}
+		}
+	}
+	
 	/**
 	 * Ventilation comptable d'une facture.
 	 * (Transaction)

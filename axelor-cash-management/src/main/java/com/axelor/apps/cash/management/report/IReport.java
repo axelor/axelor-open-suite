@@ -15,12 +15,12 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.cash.management.exception;
+package com.axelor.apps.cash.management.report;
 
+public interface IReport {
 
-public interface IExceptionMessage {
-
-	static final String FORECAST_COMPANY = /*$$(*/ "Please select a company" /*)*/;
-
-
+	
+	public static final String FORECAST_RECAP = "ForecastRecap.rptdesign";
+	
+	
 }

@@ -24,6 +24,7 @@ import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.axelor.apps.account.db.BudgetDistribution;
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
@@ -50,6 +51,7 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.google.inject.persist.Transactional;
 
 public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImpl {
 
@@ -160,6 +162,19 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
 		long nbStockMove = Beans.get(StockMoveRepository.class).all().filter("self.purchaseOrder.id = ? AND self.statusSelect <> ?", purchaseOrderId, StockMoveRepository.STATUS_CANCELED).count();
 		return nbStockMove > 0;
 	}
-
-
+	
+	@Transactional
+	public void generateBudgetDistribution(PurchaseOrder purchaseOrder){
+		if(purchaseOrder.getPurchaseOrderLineList() != null){
+			for (PurchaseOrderLine purchaseOrderLine : purchaseOrder.getPurchaseOrderLineList()) {
+				if(purchaseOrderLine.getBudget() != null && purchaseOrderLine.getBudgetDistributionList().isEmpty()){
+					BudgetDistribution budgetDistribution = new BudgetDistribution();
+					budgetDistribution.setBudget(purchaseOrderLine.getBudget());
+					budgetDistribution.setAmount(purchaseOrderLine.getExTaxTotal());
+					purchaseOrderLine.addBudgetDistributionListItem(budgetDistribution);
+				}
+			}
+			purchaseOrderRepo.save(purchaseOrder);
+		}
+	}
 }

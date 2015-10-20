@@ -3,19 +3,27 @@
   
   <module name="cash-management" package="com.axelor.apps.cash.management.db"/>
   
-  <entity name="CashFlowForecastGenerator" lang="java">
+  <entity name="Forecast" lang="java">
 	
 	<many-to-one name="company" ref="com.axelor.apps.base.db.Company" required="true" title="Company" />
 	<many-to-one name="bankDetails" ref="com.axelor.apps.base.db.BankDetails" title="Bank" required="true"/>
-	<many-to-one name="cashFlowReason" ref="com.axelor.apps.cash.management.db.CashFlowReason" required="true" title="Reason" />
+	<many-to-one name="forecastReason" ref="com.axelor.apps.cash.management.db.ForecastReason" required="true" title="Reason" />
 	<integer name="typeSelect" selection="iaccount.payment.mode.in.out.select" title="Type" required="true"/>
 	<decimal name="amount" title="Amount"/>
-	<date name="fromDate" title="From" required="true"/>
-	<date name="toDate" title="To" required="true"/>
+	<date name="estimatedDate" title="Estimated date"/>
 	<string name="comments" title="Comments" large="true"/>
-	<integer name="realizedSelect" selection="cash.flow.forecast.realized.select" title="Realized?" default="2"/>
-	<integer name="periodicitySelect" selection="product.periodicity.subscription.select" title="Periodicity" default="1"/>
-	<one-to-many name="cashFlowForecastList" ref="com.axelor.apps.cash.management.db.CashFlowForecast" title="Cash Flow forecasts generated" mappedBy="cashFlowForecastGenerator"/>
+	<integer name="realizedSelect" selection="forecast.realized.select" title="Realized?" default="2"/>
+	<many-to-one name="forecastGenerator" ref="com.axelor.apps.cash.management.db.ForecastGenerator"/>
+	
+	<extra-code><![CDATA[
+
+		
+		public static final int REALISED_SELECT_YES = 1;
+		public static final int REALISED_SELECT_NO = 2;
+		public static final int REALISED_SELECT_AUTO = 3;
+	
+	
+	]]></extra-code>
   </entity>
   
 </domain-models>

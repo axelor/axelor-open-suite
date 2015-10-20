@@ -22,6 +22,8 @@ import java.math.RoundingMode;
 import java.util.ArrayList;
 
 import com.axelor.apps.account.db.AnalyticDistributionLine;
+import com.axelor.apps.account.db.Budget;
+import com.axelor.apps.account.db.BudgetDistribution;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.repo.AnalyticDistributionLineRepository;
@@ -53,6 +55,7 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
 	protected PurchaseOrderLine purchaseOrderLine;
 	protected StockMove stockMove;
 	protected Subscription subscription;
+	protected Budget budget;
 
 	protected InvoiceLineGeneratorSupplyChain( Invoice invoice, Product product, String productName, String description, BigDecimal qty,
 			Unit unit, int sequence, boolean isTaxInvoice,
@@ -79,7 +82,6 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
 			this.priceDiscounted = saleOrderLine.getPriceDiscounted();
 			this.taxLine = saleOrderLine.getTaxLine();
 			this.discountTypeSelect = saleOrderLine.getDiscountTypeSelect();
-			this.groupingLine = saleOrderLine.getGroupingLine();
 			this.exTaxTotal = saleOrderLine.getExTaxTotal().setScale(2, RoundingMode.HALF_EVEN);
 			this.inTaxTotal = saleOrderLine.getInTaxTotal().setScale(2, RoundingMode.HALF_EVEN);
 			if (ProductRepository.PRODUCT_TYPE_SUBSCRIPTABLE.equals(saleOrderLine.getProduct().getProductTypeSelect())
@@ -112,7 +114,16 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
 					analyticDistributionLineList.add(analyticDistributionLine);
 				}
 			}
-			
+			budgetDistributionList = new ArrayList<BudgetDistribution>();
+			if(purchaseOrderLine.getBudgetDistributionList() != null){
+				for (BudgetDistribution budgetDistributionIt : purchaseOrderLine.getBudgetDistributionList()) {
+					BudgetDistribution budgetDistribution = new BudgetDistribution();
+					budgetDistribution.setBudget(budgetDistributionIt.getBudget());
+					budgetDistribution.setAmount(budgetDistributionIt.getAmount());
+					budgetDistributionList.add(budgetDistribution);
+				}
+			}
+			budget = purchaseOrderLine.getBudget();
 		}
 		if(stockMoveLine != null && purchaseOrderLine == null && saleOrderLine == null){
 			this.price = stockMoveLine.getUnitPriceUntaxed();
@@ -179,6 +190,14 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
 			}
 			invoiceLine.setAnalyticDistributionLineList(analyticDistributionLineList);
 		}
+		
+		if(budgetDistributionList != null){
+			for (BudgetDistribution budgetDistribution : budgetDistributionList) {
+				budgetDistribution.setInvoiceLine(invoiceLine);
+			}
+			invoiceLine.setBudgetDistributionList(budgetDistributionList);
+		}
+		invoiceLine.setBudget(budget);
 		
 		if (Beans.get(GeneralService.class).getGeneral().getManageInvoicedAmountByLine()){
 			if (saleOrderLine != null){

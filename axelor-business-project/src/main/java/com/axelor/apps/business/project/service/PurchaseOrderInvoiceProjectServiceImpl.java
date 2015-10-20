@@ -89,7 +89,7 @@ public class PurchaseOrderInvoiceProjectServiceImpl extends PurchaseOrderInvoice
 
 			InvoiceLineGenerator invoiceLineGenerator = new InvoiceLineGenerator(invoice, product, product.getName(), price,
 						price,purchaseOrderLine.getDescription(),purchaseOrderLine.getQty(),purchaseOrderLine.getUnit(), null,InvoiceLineGenerator.DEFAULT_SEQUENCE,discountAmount,discountTypeSelect,
-						null, null, null,false)  {
+						null, null,false)  {
 				@Override
 				public List<InvoiceLine> creates() throws AxelorException {
 
@@ -107,7 +107,7 @@ public class PurchaseOrderInvoiceProjectServiceImpl extends PurchaseOrderInvoice
 			price = price.multiply(invoice.getPartner().getChargeBackPurchase().divide(new BigDecimal(100), generalService.getNbDecimalDigitForUnitPrice(), BigDecimal.ROUND_HALF_UP)).setScale(generalService.getNbDecimalDigitForUnitPrice(), BigDecimal.ROUND_HALF_UP);
 			InvoiceLineGenerator invoiceLineGenerator = new InvoiceLineGenerator(invoice, product, product.getName(), price,
 						price,purchaseOrderLine.getDescription(),purchaseOrderLine.getQty(),purchaseOrderLine.getUnit(), null,InvoiceLineGenerator.DEFAULT_SEQUENCE,discountAmount,discountTypeSelect,
-						null, null, null,false)  {
+						null, null,false)  {
 				@Override
 				public List<InvoiceLine> creates() throws AxelorException {
 

@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
+    
+    <grid name="forecast-generator-grid" title="Forecast Assistants" model="com.axelor.apps.cash.management.db.ForecastGenerator">
+       <field name="company"/>
+       <field name="bankDetails"/>
+       <field name="typeSelect"/>
+       <field name="amount"/>
+       <field name="fromDate"/>
+       <field name="toDate"/>
+       <field name="periodicitySelect"/>
+    </grid>
+ 
+	 <form name="forecast-generator-form" title="Forecast Assistant" model="com.axelor.apps.cash.management.db.ForecastGenerator"
+	 	onNew="action-forecast-generator-record-default-on-new">
+	 	<panel >
+	 		<button name="generate" title="Generate" onClick="action-forecast-generator-validate-dates,action-forecast-generator-method-generate,action-forecast-generator-attrs-title-generate" colSpan="3" colOffset="9"/>
+			<field name="company" onChange="action-forecast-generator-record-bank"/>
+	       	<field name="bankDetails" onSelect="action-accounting-batch-attrs-bank-details-domain"/>
+	       	<field name="typeSelect"/>
+	       	<field name="amount"/>
+	       	<field name="fromDate" onChange="action-forecast-generator-validate-dates"/>
+       	   	<field name="toDate" onChange="action-forecast-generator-validate-dates"/>
+		   	<field name="periodicitySelect"/>
+	       	<field name="forecastReason"/>
+	       	<field name="realizedSelect" widget="RadioSelect"/>
+	       	<field name="comments" colSpan="12"/>
+	       	<panel-related field="forecastList" readonly="true" colSpan="12" grid-view="forecast-grid" form-view="forecast-form"/>
+	 	</panel>
+	 </form>
+	 
+	 <action-record name="action-forecast-generator-record-default-on-new" model="com.axelor.apps.cash.management.db.ForecastGenerator">
+	 	<field name="company" expr="eval: __user__.activeCompany"/>
+	 	<field name="bankDetails" expr="eval: __user__.activeCompany?.defaultBankDetails"/>
+	 </action-record>
+	 
+	  <action-record name="action-forecast-generator-record-bank" model="com.axelor.apps.cash.management.db.ForecastGenerator">
+	 	<field name="bankDetails" expr="eval: company?.defaultBankDetails"/>
+	 </action-record>
+	 
+	 <action-attrs name="action-forecast-generator-attrs-title-generate">
+	 	<attribute name="title" for="generate" expr="Actualize"/>
+	 </action-attrs>
+	 
+	 <action-method name="action-forecast-generator-method-generate">
+	 	<call class="com.axelor.apps.cash.management.web.ForecastController" method="generate"/>
+	 </action-method>
+	 
+	 <action-validate name="action-forecast-generator-validate-dates">
+		<error message="Invalid dates" if="toDate != null &amp;&amp; fromDate != null &amp;&amp; toDate &lt; fromDate" action="action-forecast-generator-null-toDate"/>
+	</action-validate>
+	
+	<action-record name="action-forecast-generator-null-toDate" model="com.axelor.apps.cash.management.db.ForecastGenerator">
+		<field name="toDate" expr="eval: null"/>
+	</action-record>
+    
+</object-views>

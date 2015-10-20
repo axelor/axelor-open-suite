@@ -19,10 +19,6 @@
        		<field name="analyticJournal" form-view="analytic-journal-form" grid-view="analytic-journal-grid"/>
 	        <field name="analyticAccount" form-view="analytic-account-form" grid-view="analytic-account-grid"/>
 	        <field name="date"/>
-	        <field name="product" domain="self.isAnalyticCapture = true" form-view="product-form" grid-view="product-grid"/>
-	        <field name="unitPrice"/>
-	        <field name="qte"/>
-	        <field name="unit"/>
 	        <field name="amount"/>
 	        <field name="currency" form-view="currency-form" grid-view="currency-grid"/>
 	        <field name="partner" form-view="partner-form" grid-view="partner-grid"/>

@@ -3,7 +3,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
 	
-    <grid name="analytic-distribution-line-grid" title="Analytic distribution lines" model="com.axelor.apps.account.db.AnalyticDistributionLine">
+    <grid name="analytic-distribution-line-grid" title="Analytic distribution lines" model="com.axelor.apps.account.db.AnalyticDistributionLine" groupBy="analyticAxis">
         <field name="analyticAxis" form-view="analytic-axis-form" grid-view="analytic-axis-grid"/>
         <field name="analyticAccount" grid-view="analytic-account-grid" form-view="analytic-account-form"/>
         <field name="percentage"/>
@@ -25,7 +25,7 @@
         </panel>      
     </form>
     
-    <grid name="analytic-distribution-line-model-grid" title="Analytic distribution lines" model="com.axelor.apps.account.db.AnalyticDistributionLine">
+    <grid name="analytic-distribution-line-model-grid" title="Analytic distribution lines" model="com.axelor.apps.account.db.AnalyticDistributionLine" groupBy="analyticAxis">
         <field name="analyticAxis" form-view="analytic-axis-form" grid-view="analytic-axis-grid"/>
         <field name="analyticAccount" grid-view="analytic-account-grid" form-view="analytic-account-form"/>
         <field name="percentage"/>

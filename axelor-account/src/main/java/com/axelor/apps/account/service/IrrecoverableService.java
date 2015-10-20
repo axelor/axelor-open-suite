@@ -615,11 +615,7 @@ public class IrrecoverableService{
 
 		for(InvoiceLine invoiceLine : invoice.getInvoiceLineList())  {
 
-			String groupingLineName = null;
-			if(invoiceLine.getGroupingLine() != null)   {
-				groupingLineName = invoiceLine.getGroupingLine().getName();
-			}
-			irlList.add(this.createIrrecoverableReportLine(iil, groupingLineName, invoiceLine.getExTaxTotal().multiply(prorataRate).setScale(IAdministration.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_EVEN), seq));
+			irlList.add(this.createIrrecoverableReportLine(iil, invoiceLine.getName(), invoiceLine.getExTaxTotal().multiply(prorataRate).setScale(IAdministration.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_EVEN), seq));
 			seq++;
 		}
 		for(InvoiceLineTax invoiceLineTax : invoice.getInvoiceLineTaxList())  {

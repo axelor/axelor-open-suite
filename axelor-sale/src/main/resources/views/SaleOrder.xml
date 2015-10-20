@@ -129,7 +129,12 @@
 			<button colSpan="3" name="generateAllSubscriptions" title="Generate Subscriptions" onClick="action-supplychain-validate-generate-all-subscriptions,save,com.axelor.apps.supplychain.web.SubscriptionController:generateAllSubscriptions"/>
 			<button name="generateInvoiceSubscriptions" title="Generate invoice for subscriptions" colSpan="3" onClick="save,action-sale-order-method-invoice-subscriptions-sale-order" showIf="id != null &amp;&amp; id > 0"/>
 		</panel>
-		<panel-related field="timetableList" grid-view="timetable-grid" form-view="timetable-form" if-module="axelor-supplychain"/>
+		<panel title="Timetable" if-module="axelor-supplychain">
+			<field name="expectedRealisationDate" colSpan="12" width="50%"/>
+			<label title="OR"/>
+			<panel-related field="timetableList" colSpan="12" grid-view="timetable-grid" form-view="timetable-form" if-module="axelor-supplychain"/>
+		</panel>
+		
 		
 		<panel-related field="advancePaymentList" colSpan="12" grid-view="advance-payment-grid" form-view="advance-payment-form" readonly="true"/>
 		
