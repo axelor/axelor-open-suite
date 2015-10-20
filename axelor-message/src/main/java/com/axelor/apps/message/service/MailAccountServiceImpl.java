@@ -28,6 +28,7 @@ import com.axelor.apps.message.exception.IExceptionMessage;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
+import com.axelor.mail.MailConstants;
 import com.axelor.mail.SmtpAccount;
 import com.google.inject.Inject;
 
@@ -73,8 +74,8 @@ public class MailAccountServiceImpl implements MailAccountService {
 	
 	public String getSmtpSecurity(MailAccount mailAccount)  {
 		
-		if ( mailAccount.getSecuritySelect() == MailAccountRepository.SECURITY_SSL ) { return SmtpAccount.ENCRYPTION_SSL; }
-		else if (mailAccount.getSecuritySelect() == MailAccountRepository.SECURITY_TLS ) { return SmtpAccount.ENCRYPTION_TLS; }
+		if ( mailAccount.getSecuritySelect() == MailAccountRepository.SECURITY_SSL ) { return MailConstants.CHANNEL_SSL; }
+		else if (mailAccount.getSecuritySelect() == MailAccountRepository.SECURITY_STARTTLS ) { return MailConstants.CHANNEL_STARTTLS; }
 		else { return null; }
 		
 	}
