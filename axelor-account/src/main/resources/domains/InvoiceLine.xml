@@ -37,6 +37,8 @@
     <many-to-one name="budget" ref="com.axelor.apps.account.db.Budget" title="Budget"/>
     <one-to-many name="budgetDistributionList" ref="com.axelor.apps.account.db.BudgetDistribution" title="Budget Distribution" mappedBy="invoiceLine"/>
     
+    <boolean name="isTitleLine" title="Title Line"/>
+    
     <string name="name" title="Name" search="invoice,productName">
    	    <![CDATA[
    	    	String name = productName;

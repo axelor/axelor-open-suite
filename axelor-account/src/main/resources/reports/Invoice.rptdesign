@@ -139,7 +139,7 @@
                 </ex-property>
             </list-property>
             <property name="odaDriverClass">org.postgresql.Driver</property>
-            <property name="odaURL">jdbc:postgresql://localhost:5432</property>
+            <property name="odaURL">jdbc:postgresql://localhost:5432/</property>
         </oda-data-source>
     </data-sources>
     <data-sets>
@@ -897,6 +897,12 @@ left outer join account_account_config as AccountConfig on (AccountConfig.compan
                     <text-property name="displayName">sequence</text-property>
                     <text-property name="heading">sequence</text-property>
                 </structure>
+                <structure>
+                    <property name="columnName">is_title_line</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">is_title_line</text-property>
+                    <text-property name="heading">is_title_line</text-property>
+                </structure>
             </list-property>
             <list-property name="filter">
                 <structure>
@@ -961,6 +967,11 @@ left outer join account_account_config as AccountConfig on (AccountConfig.compan
                         <property name="name">sequence</property>
                         <property name="dataType">integer</property>
                     </structure>
+                    <structure>
+                        <property name="position">11</property>
+                        <property name="name">is_title_line</property>
+                        <property name="dataType">integer</property>
+                    </structure>
                 </list-property>
             </structure>
             <property name="dataSource">Data Source</property>
@@ -991,14 +1002,14 @@ left outer join account_account_config as AccountConfig on (AccountConfig.compan
                     <property name="name">TaxValue</property>
                     <property name="nativeName">TaxValue</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">3</property>
+                    <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
                     <property name="position">5</property>
                     <property name="name">qty</property>
                     <property name="nativeName">qty</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">3</property>
+                    <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
                     <property name="position">6</property>
@@ -1012,14 +1023,14 @@ left outer join account_account_config as AccountConfig on (AccountConfig.compan
                     <property name="name">price</property>
                     <property name="nativeName">price</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">3</property>
+                    <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
                     <property name="position">8</property>
                     <property name="name">ex_tax_total</property>
                     <property name="nativeName">ex_tax_total</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">3</property>
+                    <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
                     <property name="position">9</property>
@@ -1035,9 +1046,17 @@ left outer join account_account_config as AccountConfig on (AccountConfig.compan
                     <property name="dataType">integer</property>
                     <property name="nativeDataType">4</property>
                 </structure>
+                <structure>
+                    <property name="position">11</property>
+                    <property name="name">is_title_line</property>
+                    <property name="nativeName">is_title_line</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">-7</property>
+                </structure>
             </list-property>
-            <xml-property name="queryText"><![CDATA[select Invoice.id as inv_id, InvoiceLine.product_name, InvoiceLine.description, TaxLine.value as "TaxValue", InvoiceLine.qty,
-Unit.name as "unitName", InvoiceLine.price, InvoiceLine.ex_tax_total, Currency.code as "currencyCode", InvoiceLine.sequence as "sequence" 
+            <xml-property name="queryText"><![CDATA[select Invoice.id as inv_id, InvoiceLine.product_name, InvoiceLine.description, TaxLine.value as "TaxValue",
+InvoiceLine.qty,Unit.name as "unitName", InvoiceLine.price, InvoiceLine.ex_tax_total, 
+Currency.code as "currencyCode", InvoiceLine.sequence as "sequence" , InvoiceLine.is_title_line
 from account_invoice_line as InvoiceLine
 inner join account_invoice as Invoice on (InvoiceLine.invoice = Invoice.id)
 left outer join account_tax_line as TaxLine on (InvoiceLine.tax_line = TaxLine.id)
@@ -2719,6 +2738,12 @@ row["partnerFirstName"]
                                                 <expression name="expression" type="javascript">dataSetRow["description"]</expression>
                                                 <property name="dataType">string</property>
                                             </structure>
+                                            <structure>
+                                                <property name="name">is_title_line</property>
+                                                <text-property name="displayName">is_title_line</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["is_title_line"]</expression>
+                                                <property name="dataType">integer</property>
+                                            </structure>
                                         </list-property>
                                         <list-property name="sort">
                                             <structure>
@@ -3118,6 +3143,12 @@ row["partnerFirstName"]
                                                     <property name="borderRightWidth">thin</property>
                                                     <text id="3459">
                                                         <property name="textAlign">center</property>
+                                                        <list-property name="visibility">
+                                                            <structure>
+                                                                <property name="format">all</property>
+                                                                <expression name="valueExpr" type="javascript">row["is_title_line"]</expression>
+                                                            </structure>
+                                                        </list-property>
                                                         <property name="contentType">html</property>
                                                         <text-property name="content"><![CDATA[<VALUE-OF>row["qty"]</VALUE-OF> <VALUE-OF format="^">"  "</VALUE-OF><VALUE-OF>row["unitName"]</VALUE-OF>]]></text-property>
                                                     </text>
@@ -3131,6 +3162,12 @@ row["partnerFirstName"]
                                                     <property name="borderTopStyle">none</property>
                                                     <text id="3460">
                                                         <property name="textAlign">right</property>
+                                                        <list-property name="visibility">
+                                                            <structure>
+                                                                <property name="format">all</property>
+                                                                <expression name="valueExpr" type="javascript">row["is_title_line"]</expression>
+                                                            </structure>
+                                                        </list-property>
                                                         <property name="contentType">html</property>
                                                         <text-property name="content"><![CDATA[<VALUE-OF format="#0.00">row["price"]</VALUE-OF>]]></text-property>
                                                     </text>
@@ -3143,6 +3180,12 @@ row["partnerFirstName"]
                                                     <property name="borderTopStyle">none</property>
                                                     <text id="3995">
                                                         <property name="textAlign">right</property>
+                                                        <list-property name="visibility">
+                                                            <structure>
+                                                                <property name="format">all</property>
+                                                                <expression name="valueExpr" type="javascript">row["is_title_line"]</expression>
+                                                            </structure>
+                                                        </list-property>
                                                         <property name="contentType">html</property>
                                                         <text-property name="content"><![CDATA[<VALUE-OF format="#0.00">row["price"]</VALUE-OF>]]></text-property>
                                                     </text>
@@ -3155,6 +3198,12 @@ row["partnerFirstName"]
                                                     <property name="borderTopStyle">none</property>
                                                     <text id="3461">
                                                         <property name="textAlign">right</property>
+                                                        <list-property name="visibility">
+                                                            <structure>
+                                                                <property name="format">all</property>
+                                                                <expression name="valueExpr" type="javascript">row["is_title_line"]</expression>
+                                                            </structure>
+                                                        </list-property>
                                                         <property name="contentType">html</property>
                                                         <text-property name="content"><![CDATA[<VALUE-OF format="#0.00">row["ex_tax_total"]</VALUE-OF>]]></text-property>
                                                     </text>
@@ -3167,6 +3216,12 @@ row["partnerFirstName"]
                                                     <property name="borderTopStyle">none</property>
                                                     <text id="3667">
                                                         <property name="textAlign">left</property>
+                                                        <list-property name="visibility">
+                                                            <structure>
+                                                                <property name="format">all</property>
+                                                                <expression name="valueExpr" type="javascript">row["is_title_line"]</expression>
+                                                            </structure>
+                                                        </list-property>
                                                         <property name="contentType">html</property>
                                                         <text-property name="content"><![CDATA[ <VALUE-OF>row["currencyCode"]</VALUE-OF>]]></text-property>
                                                     </text>

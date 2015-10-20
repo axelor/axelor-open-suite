@@ -84,6 +84,7 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
 	protected BigDecimal inTaxTotal;
 	protected List<AnalyticDistributionLine> analyticDistributionLineList;
 	protected List<BudgetDistribution> budgetDistributionList;
+	protected boolean isTitleLine;
 
 	public static final int DEFAULT_SEQUENCE = 10;
 
@@ -189,7 +190,7 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
 		invoiceLine.setProductName(productName);
 		invoiceLine.setDescription(description);
 		Partner partner = invoice.getPartner();
-		if(taxLine == null)  {
+		if(taxLine == null && product != null)  {
 			boolean isPurchase = false;
 			if(invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE || invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND)  {
 				isPurchase = true;
@@ -238,7 +239,7 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
 				currencyService.getAmountCurrencyConverted(
 						invoice.getCurrency(), companyCurrency, inTaxTotal, today).setScale(IAdministration.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP));
 
-		if(taxLine == null)  {
+		if(taxLine == null && product != null)  {
 			boolean isPurchase = false;
 			if(invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE || invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND)  {
 				isPurchase = true;
@@ -250,6 +251,8 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
 
 		invoiceLine.setDiscountTypeSelect(discountTypeSelect);
 		invoiceLine.setDiscountAmount(discountAmount);
+		
+		invoiceLine.setIsTitleLine(isTitleLine);
 
 		return invoiceLine;
 

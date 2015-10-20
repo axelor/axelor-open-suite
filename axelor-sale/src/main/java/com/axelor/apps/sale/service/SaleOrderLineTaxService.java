@@ -69,27 +69,28 @@ public class SaleOrderLineTaxService {
 			LOG.debug("Création des lignes de tva pour les lignes de factures.");
 			
 			for (SaleOrderLine saleOrderLine : saleOrderLineList) {
-				
-				TaxLine taxLine = saleOrderLine.getTaxLine();
-				LOG.debug("Tax {}", taxLine);
-				
-				if (map.containsKey(taxLine)) {
-				
-					SaleOrderLineTax saleOrderLineTax = map.get(taxLine);
+				if(!saleOrderLine.getIsTitleLine()){
+					TaxLine taxLine = saleOrderLine.getTaxLine();
+					LOG.debug("Tax {}", taxLine);
 					
-					saleOrderLineTax.setExTaxBase(saleOrderLineTax.getExTaxBase().add(saleOrderLine.getExTaxTotal()));
+					if (map.containsKey(taxLine)) {
 					
-				}
-				else {
-					
-					SaleOrderLineTax saleOrderLineTax = new SaleOrderLineTax();
-					saleOrderLineTax.setSaleOrder(saleOrder);
-					
-					saleOrderLineTax.setExTaxBase(saleOrderLine.getExTaxTotal());
-					
-					saleOrderLineTax.setTaxLine(taxLine);
-					map.put(taxLine, saleOrderLineTax);
-					
+						SaleOrderLineTax saleOrderLineTax = map.get(taxLine);
+						
+						saleOrderLineTax.setExTaxBase(saleOrderLineTax.getExTaxBase().add(saleOrderLine.getExTaxTotal()));
+						
+					}
+					else {
+						
+						SaleOrderLineTax saleOrderLineTax = new SaleOrderLineTax();
+						saleOrderLineTax.setSaleOrder(saleOrder);
+						
+						saleOrderLineTax.setExTaxBase(saleOrderLine.getExTaxTotal());
+						
+						saleOrderLineTax.setTaxLine(taxLine);
+						map.put(taxLine, saleOrderLineTax);
+						
+					}
 				}
 			}
 		}

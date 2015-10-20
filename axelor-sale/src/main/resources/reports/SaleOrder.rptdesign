@@ -81,7 +81,7 @@
         <scalar-parameter name="SaleOrderId" id="3265">
             <property name="valueType">static</property>
             <property name="isRequired">true</property>
-            <property name="dataType">string</property>
+            <property name="dataType">decimal</property>
             <property name="distinct">true</property>
             <simple-property-list name="defaultValue">
                 <value type="constant">6</value>
@@ -1323,6 +1323,12 @@ where SaleOrder.id = ? ]]></xml-property>
                     <text-property name="displayName">subscription</text-property>
                     <text-property name="heading">subscription</text-property>
                 </structure>
+                <structure>
+                    <property name="columnName">is_title_line</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">is_title_line</text-property>
+                    <text-property name="heading">is_title_line</text-property>
+                </structure>
             </list-property>
             <list-property name="parameters">
                 <structure>
@@ -1330,7 +1336,7 @@ where SaleOrder.id = ? ]]></xml-property>
                     <property name="paramName">SaleOrderId</property>
                     <property name="nativeName"></property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">-1</property>
+                    <property name="nativeDataType">-5</property>
                     <property name="position">1</property>
                     <property name="isInput">true</property>
                     <property name="isOutput">false</property>
@@ -1428,6 +1434,11 @@ where SaleOrder.id = ? ]]></xml-property>
                         <property name="name">subscription_18</property>
                         <property name="dataType">integer</property>
                     </structure>
+                    <structure>
+                        <property name="position">19</property>
+                        <property name="name">is_title_line</property>
+                        <property name="dataType">integer</property>
+                    </structure>
                 </list-property>
             </structure>
             <property name="dataSource">Data Source</property>
@@ -1451,7 +1462,7 @@ where SaleOrder.id = ? ]]></xml-property>
                     <property name="name">quantity</property>
                     <property name="nativeName">quantity</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">3</property>
+                    <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
                     <property name="position">4</property>
@@ -1472,14 +1483,14 @@ where SaleOrder.id = ? ]]></xml-property>
                     <property name="name">unit_price</property>
                     <property name="nativeName">unit_price</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">3</property>
+                    <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
                     <property name="position">7</property>
                     <property name="name">ex_tax_total</property>
                     <property name="nativeName">ex_tax_total</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">3</property>
+                    <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
                     <property name="position">8</property>
@@ -1493,7 +1504,7 @@ where SaleOrder.id = ? ]]></xml-property>
                     <property name="name">tax_line</property>
                     <property name="nativeName">tax_line</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">3</property>
+                    <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
                     <property name="position">10</property>
@@ -1507,7 +1518,7 @@ where SaleOrder.id = ? ]]></xml-property>
                     <property name="name">totalDiscountAmount</property>
                     <property name="nativeName">totalDiscountAmount</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">3</property>
+                    <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
                     <property name="position">12</property>
@@ -1558,13 +1569,21 @@ where SaleOrder.id = ? ]]></xml-property>
                     <property name="dataType">integer</property>
                     <property name="nativeDataType">-7</property>
                 </structure>
+                <structure>
+                    <property name="position">19</property>
+                    <property name="name">is_title_line</property>
+                    <property name="nativeName">is_title_line</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">-7</property>
+                </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[select SOLine.id, SOLine.description, SOLine.qty as "quantity", Unit.label_to_printing as "UnitCode", 
 SOLine.product_name as "ProductName", SOLine.price as "unit_price", SOLine.ex_tax_total, 
 Currency.code as "CurrencyCode", TaxLine.value as "tax_line", Product.code as "productCode", 
 SOLine.ex_tax_total - (SOLine.qty * SOLine.price) as "totalDiscountAmount",
 SOLine.sequence, select_item.title as periodicity, SaleOrder.subscription, Subscription.from_period_date,
-Subscription.to_period_date, Product.product_type_select, SaleOrder.subscription
+Subscription.to_period_date, Product.product_type_select, SaleOrder.subscription,
+SOLine.is_title_line
 from sale_sale_order as SaleOrder
 left outer join sale_sale_order_line as SOLine on (SOLine.sale_order = SaleOrder.id)
 left outer join supplychain_subscription as Subscription on (Subscription.sale_order_line = SOLine.id)
@@ -1587,7 +1606,7 @@ where SaleOrder.id = ?]]></xml-property>
             <design:name></design:name>
             <design:position>1</design:position>
           </design:identifier>
-          <design:nativeDataTypeCode>-1</design:nativeDataTypeCode>
+          <design:nativeDataTypeCode>-5</design:nativeDataTypeCode>
           <design:precision>0</design:precision>
           <design:scale>0</design:scale>
           <design:nullability>Unknown</design:nullability>
@@ -3320,6 +3339,18 @@ else row["Column Binding_tot_sub"]</expression>
                                 <expression name="filterExpr" type="javascript">dataSetRow["product_type_select"]=='subscriptable'</expression>
                                 <property name="allowExport">true</property>
                             </structure>
+                            <structure>
+                                <property name="name">subscription_18</property>
+                                <text-property name="displayName">subscription</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["subscription_18"]</expression>
+                                <property name="dataType">integer</property>
+                            </structure>
+                            <structure>
+                                <property name="name">is_title_line</property>
+                                <text-property name="displayName">is_title_line</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["is_title_line"]</expression>
+                                <property name="dataType">integer</property>
+                            </structure>
                         </list-property>
                         <column id="3713">
                             <list-property name="visibility">
@@ -3744,6 +3775,12 @@ else 'Subscriptions'</value>
                                         <text id="3691">
                                             <property name="fontSize">8pt</property>
                                             <property name="textAlign">center</property>
+                                            <list-property name="visibility">
+                                                <structure>
+                                                    <property name="format">all</property>
+                                                    <expression name="valueExpr" type="javascript">row["is_title_line"]</expression>
+                                                </structure>
+                                            </list-property>
                                             <property name="contentType">html</property>
                                             <text-property name="content"><![CDATA[<VALUE-OF format="###0.00%{RoundingMode=HALF_UP}">row["tax_line"]</VALUE-OF>]]></text-property>
                                         </text>
@@ -3756,6 +3793,12 @@ else 'Subscriptions'</value>
                                         <text id="3459">
                                             <property name="fontSize">8pt</property>
                                             <property name="textAlign">center</property>
+                                            <list-property name="visibility">
+                                                <structure>
+                                                    <property name="format">all</property>
+                                                    <expression name="valueExpr" type="javascript">row["is_title_line"]</expression>
+                                                </structure>
+                                            </list-property>
                                             <property name="contentType">html</property>
                                             <text-property name="content"><![CDATA[<VALUE-OF>row["quantity"]</VALUE-OF> <VALUE-OF format="^">"  "</VALUE-OF><VALUE-OF>row["UnitCode"]</VALUE-OF>]]></text-property>
                                         </text>
@@ -3780,6 +3823,12 @@ else 'Subscriptions'</value>
                                         <text id="3460">
                                             <property name="fontSize">8pt</property>
                                             <property name="textAlign">right</property>
+                                            <list-property name="visibility">
+                                                <structure>
+                                                    <property name="format">all</property>
+                                                    <expression name="valueExpr" type="javascript">row["is_title_line"]</expression>
+                                                </structure>
+                                            </list-property>
                                             <property name="contentType">html</property>
                                             <text-property name="content"><![CDATA[<VALUE-OF format="#0.00">row["unit_price"]</VALUE-OF>]]></text-property>
                                         </text>
@@ -3822,7 +3871,7 @@ else 'Subscriptions'</value>
                                             <list-property name="visibility">
                                                 <structure>
                                                     <property name="format">all</property>
-                                                    <expression name="valueExpr" type="javascript">row["product_type_select"] == 'subscriptable'</expression>
+                                                    <expression name="valueExpr" type="javascript">row["product_type_select"] == 'subscriptable' || row["is_title_line"]</expression>
                                                 </structure>
                                             </list-property>
                                             <property name="contentType">html</property>
@@ -3852,6 +3901,12 @@ else 'Subscriptions'</value>
                                         <text id="3667">
                                             <property name="fontSize">8pt</property>
                                             <property name="textAlign">left</property>
+                                            <list-property name="visibility">
+                                                <structure>
+                                                    <property name="format">all</property>
+                                                    <expression name="valueExpr" type="javascript">row["is_title_line"]</expression>
+                                                </structure>
+                                            </list-property>
                                             <property name="contentType">html</property>
                                             <text-property name="content"><![CDATA[<VALUE-OF>row["CurrencyCode"]</VALUE-OF>]]></text-property>
                                         </text>

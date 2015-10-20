@@ -339,4 +339,14 @@ public class InvoiceLineController {
 			}
 		}
 	}
+	
+	public void emptyLine(ActionRequest request, ActionResponse response){
+		InvoiceLine invoiceLine = request.getContext().asType(InvoiceLine.class);
+		if(invoiceLine.getIsTitleLine()){
+			InvoiceLine newInvoiceLine = new InvoiceLine();
+			newInvoiceLine.setIsTitleLine(true);
+			newInvoiceLine.setQty(BigDecimal.ZERO);
+			response.setValues(newInvoiceLine);
+		}
+	}
 }

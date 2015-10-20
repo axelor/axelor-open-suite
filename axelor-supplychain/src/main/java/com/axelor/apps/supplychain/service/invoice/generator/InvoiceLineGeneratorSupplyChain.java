@@ -84,7 +84,7 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
 			this.discountTypeSelect = saleOrderLine.getDiscountTypeSelect();
 			this.exTaxTotal = saleOrderLine.getExTaxTotal().setScale(2, RoundingMode.HALF_EVEN);
 			this.inTaxTotal = saleOrderLine.getInTaxTotal().setScale(2, RoundingMode.HALF_EVEN);
-			if (ProductRepository.PRODUCT_TYPE_SUBSCRIPTABLE.equals(saleOrderLine.getProduct().getProductTypeSelect())
+			if (saleOrderLine.getProduct() != null && ProductRepository.PRODUCT_TYPE_SUBSCRIPTABLE.equals(saleOrderLine.getProduct().getProductTypeSelect())
 					&& saleOrderLine.getSubscriptionList() != null
 					&& !saleOrderLine.getSubscriptionList().isEmpty()){
 				this.exTaxTotal = this.exTaxTotal.divide(new BigDecimal(saleOrderLine.getSubscriptionList().size())).setScale(2, RoundingMode.HALF_EVEN);
@@ -97,6 +97,7 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
 					analyticDistributionLineList.add(analyticDistributionLine);
 				}
 			}
+			this.isTitleLine = saleOrderLine.getIsTitleLine();
 			
 		} else if (purchaseOrderLine != null){
 			this.purchaseOrderLine = purchaseOrderLine;
@@ -198,6 +199,7 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
 			invoiceLine.setBudgetDistributionList(budgetDistributionList);
 		}
 		invoiceLine.setBudget(budget);
+		invoiceLine.setIsTitleLine(isTitleLine);
 		
 		if (Beans.get(GeneralService.class).getGeneral().getManageInvoicedAmountByLine()){
 			if (saleOrderLine != null){

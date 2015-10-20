@@ -272,6 +272,15 @@ public class SaleOrderLineController {
 			}
 		}
 	}
-
+	
+	public void emptyLine(ActionRequest request, ActionResponse response){
+		SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
+		if(saleOrderLine.getIsTitleLine()){
+			SaleOrderLine newSaleOrderLine = new SaleOrderLine();
+			newSaleOrderLine.setIsTitleLine(true);
+			newSaleOrderLine.setQty(BigDecimal.ZERO);
+			response.setValues(newSaleOrderLine);
+		}
+	}
 
 }

@@ -65,35 +65,36 @@ public class TaxInvoiceLine extends TaxGenerator {
 			LOG.debug("Création des lignes de tva pour les lignes de factures.");
 
 			for (InvoiceLine invoiceLine : invoiceLines) {
+				if(!invoiceLine.getIsTitleLine()){
+					TaxLine taxLine = invoiceLine.getTaxLine();
+					LOG.debug("TVA {}", taxLine);
 
-				TaxLine taxLine = invoiceLine.getTaxLine();
-				LOG.debug("TVA {}", taxLine);
+					if (map.containsKey(taxLine)) {
 
-				if (map.containsKey(taxLine)) {
+						InvoiceLineTax invoiceLineTax = map.get(taxLine);
 
-					InvoiceLineTax invoiceLineTax = map.get(taxLine);
+						// Dans la devise de la facture
+						invoiceLineTax.setExTaxBase(invoiceLineTax.getExTaxBase().add(invoiceLine.getExTaxTotal()));
 
-					// Dans la devise de la facture
-					invoiceLineTax.setExTaxBase(invoiceLineTax.getExTaxBase().add(invoiceLine.getExTaxTotal()));
+						// Dans la devise de la société
+						invoiceLineTax.setCompanyExTaxBase(invoiceLineTax.getCompanyExTaxBase().add(invoiceLine.getCompanyExTaxTotal()));
 
-					// Dans la devise de la société
-					invoiceLineTax.setCompanyExTaxBase(invoiceLineTax.getCompanyExTaxBase().add(invoiceLine.getCompanyExTaxTotal()));
+					}
+					else {
 
-				}
-				else {
+						InvoiceLineTax invoiceLineTax = new InvoiceLineTax();
+						invoiceLineTax.setInvoice(invoice);
 
-					InvoiceLineTax invoiceLineTax = new InvoiceLineTax();
-					invoiceLineTax.setInvoice(invoice);
+						// Dans la devise de la facture
+						invoiceLineTax.setExTaxBase(invoiceLine.getExTaxTotal());
 
-					// Dans la devise de la facture
-					invoiceLineTax.setExTaxBase(invoiceLine.getExTaxTotal());
+						// Dans la devise de la comptabilité du tiers
+						invoiceLineTax.setCompanyExTaxBase(invoiceLine.getCompanyExTaxTotal());
 
-					// Dans la devise de la comptabilité du tiers
-					invoiceLineTax.setCompanyExTaxBase(invoiceLine.getCompanyExTaxTotal());
+						invoiceLineTax.setTaxLine(taxLine);
+						map.put(taxLine, invoiceLineTax);
 
-					invoiceLineTax.setTaxLine(taxLine);
-					map.put(taxLine, invoiceLineTax);
-
+					}
 				}
 			}
 		}
