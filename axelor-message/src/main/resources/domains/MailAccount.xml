@@ -13,7 +13,7 @@
 		<string name="password" title="Password" />
 		<string name="host" title="Host" required="true" help="true"/>
 		<integer name="port" title="Port" min="1" nullable="true"/>
-		<integer name="securitySelect" title="SSL/TLS" selection="mail.account.security.select" help="true"/>
+		<integer name="securitySelect" title="SSL/STARTTLS" selection="mail.account.security.select" help="true"/>
 		<boolean name="isDefault" title="Default account ?" help="true"/>
 		<boolean name="isValid" title="Valid ?" help="true"/>
 		<string name="signature" title="Signature"/>
@@ -28,7 +28,7 @@
 		// SECURITY TYPE SELECT
 		public static final int SECURITY_NONE = 0;
 		public static final int SECURITY_SSL = 1;
-		public static final int SECURITY_TLS = 2;
+		public static final int SECURITY_STARTTLS = 2;
 	
 		]]></extra-code>
 

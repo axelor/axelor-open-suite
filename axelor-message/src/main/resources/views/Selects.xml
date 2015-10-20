@@ -36,7 +36,7 @@
 	<selection name="mail.account.security.select">
 		<option value="0">NONE</option>
 		<option value="1">SSL</option>
-		<option value="2">TLS</option>
+		<option value="2">STARTTLS</option>
 	</selection>
 
 </object-views>
