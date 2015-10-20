@@ -35,7 +35,6 @@ import com.axelor.apps.stock.service.StockMoveLineService;
 import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.apps.stock.service.config.StockConfigService;
 import com.axelor.exception.AxelorException;
-import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 
 public class SaleOrderServiceStockImpl extends SaleOrderServiceImpl {
@@ -77,9 +76,9 @@ public class SaleOrderServiceStockImpl extends SaleOrderServiceImpl {
 			StockMove stockMove = this.createStockMove(saleOrder, company);
 
 			for(SaleOrderLine saleOrderLine: saleOrder.getSaleOrderLineList()) {
-
-				this.createStockMoveLine(stockMove, saleOrderLine, company);
-
+				if(saleOrderLine.getProduct() != null){
+					this.createStockMoveLine(stockMove, saleOrderLine, company);
+				}
 			}
 
 			if(stockMove.getStockMoveLineList() != null && !stockMove.getStockMoveLineList().isEmpty()){

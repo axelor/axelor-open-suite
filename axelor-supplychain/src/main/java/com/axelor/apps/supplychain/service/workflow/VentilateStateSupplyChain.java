@@ -52,7 +52,7 @@ public class VentilateStateSupplyChain extends VentilateState {
 				SaleOrder currentSaleOrder = null;
 				List<SaleOrder> saleOrderList = new ArrayList<SaleOrder>();
 				for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
-					if (invoiceLine.getSaleOrderLine() != null){
+					if (invoiceLine.getSaleOrderLine() != null && invoiceLine.getProduct() != null){
 						if (currentSaleOrder == null
 								|| !currentSaleOrder.equals(invoiceLine.getSaleOrderLine().getSaleOrder())){
 							saleOrderList.add(invoiceLine.getSaleOrderLine().getSaleOrder());
