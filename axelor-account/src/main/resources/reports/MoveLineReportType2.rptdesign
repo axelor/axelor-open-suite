@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.2.2.v201301221637 Build &lt;4.2.2.v20130206-1509></property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.3.2.v20140211-1400 Build &lt;4.3.2.v20140218-1056></property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -93,7 +93,7 @@
                 </ex-property>
             </list-property>
             <property name="odaDriverClass">org.postgresql.Driver</property>
-            <property name="odaURL">jdbc:postgresql://localhost:5432/axelor-erp</property>
+            <property name="odaURL">jdbc:postgresql://localhost:5432/axelor-business-suite</property>
             <property name="odaUser">axelor</property>
         </oda-data-source>
     </data-sources>
@@ -180,19 +180,7 @@
                     <text-property name="heading">account_code</text-property>
                 </structure>
             </list-property>
-            <list-property name="parameters">
-                <structure>
-                    <property name="name">param_1</property>
-                    <property name="paramName">MoveLineReportId</property>
-                    <property name="nativeName"></property>
-                    <property name="dataType">decimal</property>
-                    <property name="nativeDataType">-5</property>
-                    <property name="position">1</property>
-                    <property name="isOptional">false</property>
-                    <property name="isInput">true</property>
-                    <property name="isOutput">false</property>
-                </structure>
-            </list-property>
+            <list-property name="parameters"/>
             <structure name="cachedMetaData">
                 <list-property name="resultSet">
                     <structure>
@@ -358,10 +346,10 @@
                 </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[select MoveLine.id as "MoveLineId", MoveLine.name as "MoveLineName", MoveLine.description, MoveLine.debit, MoveLine.credit, 
-MoveLine.date, Partner.name as partner_name, Partner.first_name as partner_first_name, Partner.id as partner_id, 
+MoveLine.date_val as "date", Partner.name as partner_name, Partner.first_name as partner_first_name, Partner.id as partner_id, 
 Partner.partner_seq as reference, MoveLine.amount_paid, Invoice.invoice_id, MoveLineAccount.code as account_code 
 from public.account_move_line_report as MoveLineReport 
-left outer join public.account_move_line as MoveLine on (MoveLineReport.id = ?)
+left outer join public.account_move_line as MoveLine on (MoveLineReport.id = 1)
 left outer join public.account_move as Move on (MoveLine.move = Move.id)
 left outer join public.account_account as Account on (MoveLineReport.account  = Account.id )
 left outer join public.account_account as MoveLineAccount on (MoveLine.account  = MoveLineAccount.id )
@@ -371,36 +359,14 @@ left outer join public.base_partner as ToPartner on (MoveLineReport.to_partner =
 left outer join public.account_invoice as Invoice on (Move.invoice = Invoice.id)
 left outer join public.base_company as Company on (MoveLineReport.company = Company.id)
 where 
-(MoveLineReport.date_from IS NULL OR MoveLine.date >= MoveLineReport.date_from) AND 
-(MoveLineReport.date_to IS NULL OR MoveLine.date <= MoveLineReport.date_to) AND
-MoveLine.date <= MoveLineReport.date AND Move.company = MoveLineReport.company AND
+(MoveLineReport.date_from IS NULL OR MoveLine.date_val >= MoveLineReport.date_from) AND 
+(MoveLineReport.date_to IS NULL OR MoveLine.date_val <= MoveLineReport.date_to) AND
+MoveLine.date_val <= MoveLineReport.date_val AND Move.company = MoveLineReport.company AND
 (MoveLineReport.partner IS NULL OR MoveLineReport.partner = MoveLine.partner) AND
 (MoveLineReport.from_partner IS NULL OR (MoveLine.partner IS NULL OR (FromPartner.name <= Partner.name))) AND 
 (MoveLineReport.to_partner IS NULL OR (MoveLine.partner IS NULL OR (ToPartner.name >= Partner.name))) AND
 (MoveLineReport.account IS NULL OR (MoveLineReport.account = MoveLine.account)) AND 
-(MoveLine.account IS NULL OR (MoveLineAccount.reconcile_ok = true )) AND 
 Move.ignore_in_accounting_ok = false]]></xml-property>
-            <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
-<model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
-  <Version>2.0</Version>
-  <DataSetParameters>
-    <parameter>
-      <design:ParameterDefinition>
-        <design:inOutMode>In</design:inOutMode>
-        <design:attributes>
-          <design:identifier>
-            <design:name></design:name>
-            <design:position>1</design:position>
-          </design:identifier>
-          <design:nativeDataTypeCode>-5</design:nativeDataTypeCode>
-          <design:precision>0</design:precision>
-          <design:scale>0</design:scale>
-          <design:nullability>Unknown</design:nullability>
-        </design:attributes>
-      </design:ParameterDefinition>
-    </parameter>
-  </DataSetParameters>
-</model:DesignValues>]]></xml-property>
         </oda-data-set>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="MoveLineReportDS" id="489">
             <list-property name="columnHints">
@@ -551,7 +517,7 @@ Move.ignore_in_accounting_ok = false]]></xml-property>
                     <property name="nativeDataType">93</property>
                 </structure>
             </list-property>
-            <xml-property name="queryText"><![CDATA[select Company.name as company_name, Period.name as period_name, MoveLineReport.date_from, MoveLineReport.date as "ReportDate",
+            <xml-property name="queryText"><![CDATA[select Company.name as company_name, Period.name as period_name, MoveLineReport.date_from, MoveLineReport.date_val as "ReportDate",
 MoveLineReport.date_to, Account.code, MoveLineReport.publication_date_time as "ReportDateEdition" 
 from public.account_move_line_report as MoveLineReport 
 inner join public.base_company as Company on (MoveLineReport.id = ? and MoveLineReport.company = Company.id)  
@@ -1454,10 +1420,10 @@ Total.sum(row["credit"]) - Total.sum(row["debit"])
                                     <property name="hideDetail">false</property>
                                     <header>
                                         <row id="3139">
-                                            <property name="height">0.2604166666666667in</property>
                                             <property name="borderBottomColor">#9C9C9C</property>
                                             <property name="borderBottomStyle">solid</property>
                                             <property name="borderBottomWidth">thin</property>
+                                            <property name="height">0.2604166666666667in</property>
                                             <cell id="3142">
                                                 <property name="borderLeftColor">#9C9C9C</property>
                                                 <property name="borderLeftStyle">solid</property>
@@ -1775,8 +1741,8 @@ Total.sum(row["credit"]) - Total.sum(row["debit"])
             </group>
             <footer>
                 <row id="2560">
-                    <property name="height">0.25in</property>
                     <property name="backgroundColor">#EFEFEF</property>
+                    <property name="height">0.25in</property>
                     <cell id="2561">
                         <property name="borderBottomColor">#9C9C9C</property>
                         <property name="borderBottomStyle">solid</property>
@@ -1873,8 +1839,8 @@ GENERALE]]></text-property>
                     </cell>
                 </row>
                 <row id="2570">
-                    <property name="height">0.19791666666666666in</property>
                     <property name="backgroundColor">#EFEFEF</property>
+                    <property name="height">0.19791666666666666in</property>
                     <cell id="2571">
                         <property name="borderBottomColor">#9C9C9C</property>
                         <property name="borderBottomStyle">solid</property>
@@ -1991,8 +1957,8 @@ de la période]]></text-property>
                     </cell>
                 </row>
                 <row id="2582">
-                    <property name="height">0.40625in</property>
                     <property name="backgroundColor">#EFEFEF</property>
+                    <property name="height">0.40625in</property>
                     <cell id="2583">
                         <property name="borderBottomColor">#9C9C9C</property>
                         <property name="borderBottomStyle">solid</property>
