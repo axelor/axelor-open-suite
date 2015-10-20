@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_4.0.xsd">
+
+  <module name="account" package="com.axelor.apps.account.db"/>
+
+  <entity name="Budget" lang="java" cachable="true">
+  
+    <string name="name" title="Name"/>
+    <string name="code" title="Code"/>
+    <date name="fromDate" title="From"/>
+    <date name="toDate" title="To"/>
+    <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"/>
+    <many-to-one name="inChargeUser" ref="com.axelor.auth.db.User" title="Person in charge"/>
+    <decimal name="totalAmountExpected" title="Expected total amount" precision="20" scale="2"/>
+    <one-to-many name="budgetLineList" ref="com.axelor.apps.account.db.BudgetLine" title="Budget Lines" mappedBy="budget"/>
+  	<integer name="periodDurationSelect" title="Period duration" selection="account.year.period.duration.select"/>
+  	<decimal name="amountForGeneration" title="Amount for each line"/>
+  	
+  </entity>
+
+</domain-models>

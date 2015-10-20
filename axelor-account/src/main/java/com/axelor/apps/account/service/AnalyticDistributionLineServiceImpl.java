@@ -3,9 +3,12 @@ package com.axelor.apps.account.service;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.axelor.apps.account.db.AccountManagement;
+import com.axelor.apps.account.db.AnalyticAxis;
 import com.axelor.apps.account.db.AnalyticDistributionLine;
 import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.account.db.InvoiceLine;
@@ -131,6 +134,27 @@ public class AnalyticDistributionLineServiceImpl implements AnalyticDistribution
 			}
 		}
 		return analyticDistributionLineList;
+	}
+	
+	@Override
+	public boolean validateLines(List<AnalyticDistributionLine> analyticDistributionLineList){
+		if(analyticDistributionLineList != null){
+			Map<AnalyticAxis, BigDecimal> map = new HashMap<AnalyticAxis, BigDecimal>();
+			for (AnalyticDistributionLine analyticDistributionLine : analyticDistributionLineList) {
+				if(map.containsKey(analyticDistributionLine.getAnalyticAxis())){
+					map.put(analyticDistributionLine.getAnalyticAxis(), map.get(analyticDistributionLine.getAnalyticAxis()).add(analyticDistributionLine.getPercentage()));
+				}
+				else{
+					map.put(analyticDistributionLine.getAnalyticAxis(), analyticDistributionLine.getPercentage());
+				}
+			}
+			for (AnalyticAxis analyticAxis : map.keySet()) {
+				if(map.get(analyticAxis).compareTo(new BigDecimal(100)) > 0){
+					return false;
+				}
+			}
+		}
+		return true;
 	}
 
 }

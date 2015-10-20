@@ -97,7 +97,11 @@
 			<panel title="PO Management" if-module="axelor-supplier-management" colSpan="12">
 				<panel-include view="purchase-order-supplier-form" from="axelor-supplier-management" if-module="axelor-supplier-management"/>
 			</panel>
-			<panel-related field="timetableList" grid-view="timetable-grid" form-view="timetable-form" if-module="axelor-supplychain"/>
+			<panel title="Timetable" if-module="axelor-supplychain">
+				<field name="expectedRealisationDate" colSpan="12" width="50%"/>
+				<label title="OR"/>
+				<panel-related field="timetableList" colSpan="12" grid-view="timetable-grid" form-view="timetable-form" if-module="axelor-supplychain"/>
+			</panel>		
 		</panel-tabs>
 	  
 		<panel sidebar="true" title="Actions">
@@ -169,10 +173,11 @@
     	<action name="action-purchase-order-method-compute"/>
     	<action name="action-purchase-order-create-stock-move" if="eval: __config__.general.getSupplierStockMoveGenerationAuto()"/>
     	<action name="action-purchase-order-record-validate"/>
-    	<action name="action-sale-order-method-validate-supplier"/>
+    	<action name="action-purchase-order-method-validate-supplier"/>
     	<action name="action-purchase-order-set-sequence"/>
     	<action name="save"/>
     	<action name="action-purchase-order-method-update-cost-price"/>
+    	<action name="action-purchase-order-method-generate-budget-distribution"/>
     </action-group>
     
     <action-method name="action-purchase-order-method-update-cost-price">
@@ -240,8 +245,12 @@
     	<field name="supplierPartner" expr="eval: contactPartner.mainPartner" if="contactPartner.mainPartner != null"/>
     </action-record>
     
-    <action-method name="action-sale-order-method-validate-supplier">
+    <action-method name="action-purchase-order-method-validate-supplier">
     	<call class="com.axelor.apps.purchase.web.PurchaseOrderController" method="validateSupplier"/>
+    </action-method>
+    
+    <action-method name="action-purchase-order-method-generate-budget-distribution" if-module="axelor-supplychain">
+    	<call class="com.axelor.apps.supplychain.web.PurchaseOrderController" method="generateBudgetDistribution"/>
     </action-method>
     
     <action-method name="action-purchase-order-method-compute">

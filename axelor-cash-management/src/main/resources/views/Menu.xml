@@ -3,45 +3,56 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
 
-	<menuitem name="cash-management-root" title="Cash Management" order="-86"
+	<menuitem name="forecast-root" title="Forecasts" order="-86"
 		icon="fa-money" groups="admins,ERP"/>
 		
-	<menuitem name="cash-management-root-cash-flow-forecast" order="10" parent="cash-management-root"
-		title="Cash Flow Forecasts" action="cash.management.root.cash.flow.forecast" />
+	<menuitem name="forecast-root-forecast" order="10" parent="forecast-root"
+		title="Forecasts" action="forecast.root.forecast" />
 
-	<action-view name="cash.management.root.cash.flow.forecast" title="Cash Flow Forecasts"
-		model="com.axelor.apps.cash.management.db.CashFlowForecast" >
-		<view type="grid" name="cash-flow-forecast-grid" />
-		<view type="form" name="cash-flow-forecast-form" />
+	<action-view name="forecast.root.forecast" title="Forecasts"
+		model="com.axelor.apps.cash.management.db.Forecast" >
+		<view type="grid" name="forecast-grid" />
+		<view type="form" name="forecast-form" />
 	</action-view>
 	
-	<menuitem name="cash-management-root-cash-mngt-recap" order="20" parent="cash-management-root"
-		title="Cash Management Recaps" action="cash.management.root.cash.mngt.recap" />
+	<menuitem name="forecast-root-forecast-recap" order="20" parent="forecast-root"
+		title="Forecast Recaps" action="forecast.root.forecast.recap" />
 
-	<action-view name="cash.management.root.cash.mngt.recap" title="Cash Management Recaps"
-		model="com.axelor.apps.cash.management.db.CashManagementRecap" >
-		<view type="grid" name="cash-management-recap-grid" />
-		<view type="form" name="cash-management-recap-form" />
+	<action-view name="forecast.root.forecast.recap" title="Forecast Recaps"
+		model="com.axelor.apps.cash.management.db.ForecastRecap" >
+		<view type="grid" name="forecast-recap-grid" />
+		<view type="form" name="forecast-recap-form" />
+		<domain>self.isReport != true</domain>
+	</action-view>
+	
+	<menuitem name="forecast-root-forecast-report" order="30" parent="forecast-root"
+		title="Forecast Reports" action="forecast.root.forecast.report" />
+
+	<action-view name="forecast.root.forecast.report" title="Forecast Reports"
+		model="com.axelor.apps.cash.management.db.ForecastRecap" >
+		<view type="grid" name="forecast-report-grid" />
+		<view type="form" name="forecast-report-form" />
+		<domain>self.isReport = true</domain>
 	</action-view>
 		
-	<menuitem name="cash-management-conf" title="Configuration" order="200" parent="cash-management-root"/>
+	<menuitem name="forecast-conf" title="Configuration" order="200" parent="forecast-root"/>
 	
-	<menuitem name="cash-management-conf-cash-flow-forecast-generator" order="10" parent="cash-management-conf"
-		title="Cash Flow Forecast Assistants" action="cash.management.conf.cash.flow.forecast.generator" />
+	<menuitem name="forecast-conf-forecast-generator" order="10" parent="forecast-conf"
+		title="Forecast Assistants" action="forecast.conf.forecast.generator" />
 
-	<action-view name="cash.management.conf.cash.flow.forecast.generator" title="Cash Flow Forecast Assistants"
-		model="com.axelor.apps.cash.management.db.CashFlowForecastGenerator" >
-		<view type="grid" name="cash-flow-forecast-generator-grid" />
-		<view type="form" name="cash-flow-forecast-generator-form" />
+	<action-view name="forecast.conf.forecast.generator" title="Forecast Assistants"
+		model="com.axelor.apps.cash.management.db.ForecastGenerator" >
+		<view type="grid" name="forecast-generator-grid" />
+		<view type="form" name="forecast-generator-form" />
 	</action-view>
 	
-	<menuitem name="cash-management-conf-cash-flow-reason" order="20" parent="cash-management-conf"
-		title="Cash Flow Reasons" action="cash.management.conf.cash.flow.reason" />
+	<menuitem name="forecast-conf-forecast-reason" order="20" parent="forecast-conf"
+		title="Forecast Reasons" action="forecast.conf.forecast.reason" />
 
-	<action-view name="cash.management.conf.cash.flow.reason" title="Cash Flow Reasons"
-		model="com.axelor.apps.cash.management.db.CashFlowReason" >
-		<view type="grid" name="cash-flow-reason-grid" />
-		<view type="form" name="cash-flow-reason-form" />
+	<action-view name="forecast.conf.forecast.reason" title="Forecast Reasons"
+		model="com.axelor.apps.cash.management.db.ForecastReason" >
+		<view type="grid" name="forecast-reason-grid" />
+		<view type="form" name="forecast-reason-form" />
 	</action-view>
 	
 	

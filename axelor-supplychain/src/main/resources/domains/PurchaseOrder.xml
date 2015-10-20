@@ -16,7 +16,7 @@
   	<many-to-one name="location" ref="com.axelor.apps.stock.db.Location" title="Location"/>
   	
   	<one-to-many name="timetableList" ref="com.axelor.apps.supplychain.db.Timetable" title="Timetable" mappedBy="purchaseOrder"/>
-	
+	<date name="expectedRealisationDate" title="Expected realisation date"/>
   </entity>
 
 </domain-models>

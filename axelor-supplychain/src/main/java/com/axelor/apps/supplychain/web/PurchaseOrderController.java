@@ -78,7 +78,7 @@ public class PurchaseOrderController {
 	public void clearPurchaseOrder(ActionRequest request, ActionResponse response) throws AxelorException {
 
 		PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
-
+		purchaseOrder = Beans.get(PurchaseOrderRepository.class).find(purchaseOrder.getId());
 		purchaseOrderServiceSupplychain.clearPurchaseOrder(purchaseOrder);
 
 	}
@@ -91,5 +91,13 @@ public class PurchaseOrderController {
 		Beans.get(TimetableService.class).updateTimetable(purchaseOrder);
 		response.setValues(purchaseOrder);
 	}
-
+	
+	public void generateBudgetDistribution(ActionRequest request, ActionResponse response){
+		PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
+		if(generalService.getGeneral().getManageBudget() && !generalService.getGeneral().getManageMultiBudget()){
+			purchaseOrder = Beans.get(PurchaseOrderRepository.class).find(purchaseOrder.getId());
+			purchaseOrderServiceSupplychain.generateBudgetDistribution(purchaseOrder);
+			response.setValues(purchaseOrder);
+		}
+	}
 }

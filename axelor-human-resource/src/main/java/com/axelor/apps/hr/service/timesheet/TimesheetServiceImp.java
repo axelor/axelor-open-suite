@@ -284,7 +284,7 @@ public class TimesheetServiceImp implements TimesheetService{
 
 		InvoiceLineGenerator invoiceLineGenerator = new InvoiceLineGenerator(invoice, product, productName, price,
 					price,description,qtyConverted,product.getUnit(), null,priority,discountAmount,discountTypeSelect,
-					price.multiply(qtyConverted), null, null,false)  {
+					price.multiply(qtyConverted), null,false)  {
 
 			@Override
 			public List<InvoiceLine> creates() throws AxelorException {

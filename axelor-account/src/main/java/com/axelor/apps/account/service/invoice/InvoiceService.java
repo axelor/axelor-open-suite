@@ -131,6 +131,7 @@ public interface InvoiceService {
 	
 	
 	public void updateAmountPaid(Invoice invoice) throws AxelorException;
-
+	
+	public void generateBudgetDistribution(Invoice invoice);
 
 }

@@ -365,6 +365,28 @@
 		<domain>self.typeSelect in (6,7,8,9)</domain>
 	</action-view>
 	
+	<menuitem name="account-root-budget-management" parent="account-root"
+		title="Budget Preparation"/>
+	
+		<menuitem name="account-root-budget-management-my-budgets" parent="account-root-budget-management"
+			title="My budgets" action="account.root.budget.management.my.budgets" />
+		
+		<action-view name="account.root.budget.management.my.budgets" title="My budgets"
+			model="com.axelor.apps.account.db.Budget" >
+			<view type="grid" name="budget-grid"/>
+			<view type="form" name="budget-form"/>
+			<domain>self.inChargeUser.id = :_id</domain>
+			<context name="_id" expr="eval: __user__.id"/>
+		</action-view>
+		
+		<menuitem name="account-root-budget-management-all-budgets" parent="account-root-budget-management"
+			title="All budgets" action="account.root.budget.management.all.budgets" />
+			
+		<action-view name="account.root.budget.management.all.budgets" title="All budgets"
+			model="com.axelor.apps.account.db.Budget" >
+			<view type="grid" name="budget-grid"/>
+			<view type="form" name="budget-form"/>
+		</action-view>
 	
 	<menuitem name="account-root-report" parent="account-root"
 		title="Reportings"/>

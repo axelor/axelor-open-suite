@@ -13,5 +13,5 @@ module {
 
 dependencies {
 	compile 	libs.javax_mail
-	testCompile libs.subetha_smtp
+	testCompile libs.greenmail
 }

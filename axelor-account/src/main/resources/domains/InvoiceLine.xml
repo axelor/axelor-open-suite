@@ -24,8 +24,6 @@
     
     <string name="description" title="Description" large="true"/>
     
-  	<many-to-one name="groupingLine" ref="com.axelor.apps.base.db.GroupingLine" title="Grouping line"/>
-    
     <!--   	Champ technique non affiché, utilisé pour les reportings -->
   	<decimal name="companyExTaxTotal" title="Total W.T. in Acc. currency" hidden="true"/>
   	<decimal name="companyInTaxTotal" title="Total A.T.I. in company currency" hidden="true"/>
@@ -35,6 +33,9 @@
   	
   	<one-to-many name="analyticDistributionLineList" ref="com.axelor.apps.account.db.AnalyticDistributionLine" title="Analytic distribution lines" mappedBy="invoiceLine"/>
 	<many-to-one name="analyticDistributionTemplate" title="Analytic distribution template" ref="com.axelor.apps.account.db.AnalyticDistributionTemplate"/>
+    
+    <many-to-one name="budget" ref="com.axelor.apps.account.db.Budget" title="Budget"/>
+    <one-to-many name="budgetDistributionList" ref="com.axelor.apps.account.db.BudgetDistribution" title="Budget Distribution" mappedBy="invoiceLine"/>
     
     <string name="name" title="Name" search="invoice,productName">
    	    <![CDATA[

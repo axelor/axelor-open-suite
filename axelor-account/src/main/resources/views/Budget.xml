@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
+    
+    <grid name="budget-grid" title="Budgets" model="com.axelor.apps.account.db.Budget">
+        <field name="name"/>
+        <field name="code"/>
+        <field name="fromDate"/>
+        <field name="toDate"/>
+        <field name="company"/>
+        <field name="inChargeUser"/>
+        <field name="totalAmountExpected"/>
+    </grid>
+    
+    <form name="budget-form" title="Budget" model="com.axelor.apps.account.db.Budget" width="large"
+    	onNew="action-budget-record-on-new"
+    	onLoad="action-budget-method-update-lines, save">
+       <panel>
+	       <field name="name" required="true"/>
+	       <field name="code" required="true"/>
+	       <field name="fromDate"/>
+	       <field name="toDate"/>
+	       <field name="company"/>
+	       <field name="inChargeUser"/>
+       </panel>
+       <panel-related field="budgetLineList" onChange="action-budget-method-compute-total-amount"/>
+       <panel sidebar="true" title="Periods generation assistant" hideIf="statusSelect == 2">
+			<field name="periodDurationSelect"/>
+			<field name="amountForGeneration"/>
+			<button name="generatePeriods" title="Generate periods" onClick="action-group-account-budget-generateperiod-click" />    
+		</panel>
+		<panel sidebar="true" readonly="true"  colSpan="4">  
+	  		<field name="totalAmountExpected" css="order-subtotal" showTitle="false" colSpan="12">
+	          <viewer>
+	            &lt;dl class="dl-horizontal"&gt;
+	              &lt;dt class="order-subtotal-total" x-translate&gt;Expected total Amount&lt;/dt&gt;
+	              &lt;dd class="order-subtotal-total" &gt;{{record.totalAmountExpected}}&lt;/dd&gt;
+	            &lt;/dl&gt;
+	          </viewer>
+	        </field>
+      	</panel>
+    </form>
+    
+   <action-group name="action-group-account-budget-generateperiod-click">
+    	<action name="action-year-check-date"/>
+    	<action name="save"/>
+    	<action name="action-budget-validate-generate-period"/>
+    	<action name="action-method-budget-year-generate-periods"/>
+    	<action name="action-budget-method-compute-total-amount"/>
+    </action-group>
+    
+    <action-validate name="action-budget-validate-generate-period">
+	    <error message="To generate periods, please fill in the limits of the budget." if="fromDate == null || toDate == null" />
+	    <error message="To generate periods, please fill in the Period duration." if="periodDurationSelect == null || periodDurationSelect == 0"/>
+	    <alert message="Warning, existing lines will be deleted, do you wish to continue?" if="budgetLineList != null &amp;&amp; !budgetLineList.empty"/>
+	</action-validate>
+    
+    <action-record name="action-budget-record-on-new" model="com.axelor.apps.account.db.Budget">
+    	<field name="company"  expr="eval:__user__.activeCompany"/>
+    	<field name="inChargeUser" expr="eval: __user__"/>
+    </action-record>
+    
+    <action-method name="action-budget-method-compute-total-amount">
+    	<call class="com.axelor.apps.account.web.BudgetController" method="compute"/>
+    </action-method>
+    
+    <action-method name="action-budget-method-update-lines">
+    	<call class="com.axelor.apps.account.web.BudgetController" method="updateLines"/>
+    </action-method>
+    
+    <action-method name="action-method-budget-year-generate-periods">
+    	<call class="com.axelor.apps.account.web.BudgetController" method="generatePeriods"/>
+    </action-method>
+    
+</object-views>

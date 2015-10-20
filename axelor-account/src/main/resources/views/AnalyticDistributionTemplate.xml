@@ -12,11 +12,11 @@
         <panel >
 	        <field name="name"/>
         </panel>      
-        <panel-related field="analyticDistributionLineList" grid-view="analytic-distribution-line-model-grid" form-view="analytic-distribution-line-model-form" onChange="action-analytic-dist-template-validate-tot-percentage"/>
+        <panel-related field="analyticDistributionLineList" grid-view="analytic-distribution-line-model-grid" form-view="analytic-distribution-line-model-form" onChange="action-analytic-dist-template-method-validate-tot-percentage"/>
     </form>
     
-    <action-validate name="action-analytic-dist-template-validate-tot-percentage">
-    	<error message="Total percentage is higher than 100%" if="analyticDistributionLineList?.sum{it.percentage} &gt; 100"/>
-    </action-validate>
+    <action-method name="action-analytic-dist-template-method-validate-tot-percentage">
+    	<call class="com.axelor.apps.account.web.AnalyticDistributionLineController" method="validateLines"/>
+    </action-method>
     
 </object-views>

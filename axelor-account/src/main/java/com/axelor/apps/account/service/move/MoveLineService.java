@@ -45,6 +45,7 @@ import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.AccountManagementServiceAccountImpl;
 import com.axelor.apps.account.service.AnalyticDistributionLineService;
+import com.axelor.apps.account.service.AnalyticMoveLineService;
 import com.axelor.apps.account.service.FiscalPositionServiceAccountImpl;
 import com.axelor.apps.account.service.TaxAccountService;
 import com.axelor.apps.base.db.Company;
@@ -69,16 +70,18 @@ public class MoveLineService {
 	protected LocalDate today;
 	protected AnalyticDistributionLineService analyticDistributionLineService;
 	protected GeneralService generalService;
+	protected AnalyticMoveLineService analyticMoveLineService;
 	
 	@Inject
 	public MoveLineService(AccountManagementServiceAccountImpl accountManagementService, TaxAccountService taxAccountService,
 			FiscalPositionServiceAccountImpl fiscalPositionService, GeneralService generalService,
-			AnalyticDistributionLineService analyticDistributionLineService) {
+			AnalyticDistributionLineService analyticDistributionLineService, AnalyticMoveLineService analyticMoveLineService) {
 		this.accountManagementService = accountManagementService;
 		this.taxAccountService = taxAccountService;
 		this.fiscalPositionService = fiscalPositionService;
 		this.analyticDistributionLineService = analyticDistributionLineService;
 		this.generalService = generalService;
+		this.analyticMoveLineService = analyticMoveLineService;
 		today = generalService.getTodayDate();
 	}
 	

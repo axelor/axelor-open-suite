@@ -43,6 +43,8 @@
 		    	<field name="unitMinutes" form-view="unit-form" grid-view="unit-grid"/>
 		    	<field name="teamManagement"/>
 		    	<field name="manageMultiBanks"/>
+		    	<field name="manageBudget" if-module="axelor-account"/>
+		    	<field name="manageMultiBudget" showIf="manageBudget" if-module="axelor-account"/>
 		    </panel>
 		    <panel title="Accounting">
 				<field name="defaultExemptionTax" form-view="tax-form" grid-view="tax-grid"/>

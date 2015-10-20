@@ -241,7 +241,7 @@ public class ExpenseService  {
 		if(atiChoice == 1 || atiChoice == 3){
 			invoiceLineGenerator = new InvoiceLineGenerator(invoice, product, product.getName(), expenseLine.getUntaxedAmount(),
 					expenseLine.getUntaxedAmount(),expenseLine.getComments(),BigDecimal.ONE,product.getUnit(), null,priority,BigDecimal.ZERO,IPriceListLine.AMOUNT_TYPE_NONE,
-					expenseLine.getUntaxedAmount(), expenseLine.getTotalAmount(), null,false)  {
+					expenseLine.getUntaxedAmount(), expenseLine.getTotalAmount(),false)  {
 
 				@Override
 				public List<InvoiceLine> creates() throws AxelorException {
@@ -259,7 +259,7 @@ public class ExpenseService  {
 		else{
 			invoiceLineGenerator = new InvoiceLineGenerator(invoice, product, product.getName(), expenseLine.getTotalAmount(),
 					expenseLine.getTotalAmount(),expenseLine.getComments(),BigDecimal.ONE,product.getUnit(), null,priority,BigDecimal.ZERO,IPriceListLine.AMOUNT_TYPE_NONE,
-					expenseLine.getUntaxedAmount(), expenseLine.getTotalAmount(), null,false)  {
+					expenseLine.getUntaxedAmount(), expenseLine.getTotalAmount(),false)  {
 
 				@Override
 				public List<InvoiceLine> creates() throws AxelorException {
