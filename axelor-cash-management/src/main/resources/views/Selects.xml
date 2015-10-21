@@ -19,7 +19,7 @@
 	
 	<selection name="display.type.select">
 		<option value="1">Sales</option>
-		<option value="2">Expenses</option>
+		<option value="2">Spending</option>
 		<option value="3">Both</option>
 	</selection>
 	

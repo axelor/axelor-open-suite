@@ -47,13 +47,25 @@
        		<field name="opportunitiesTypeSelect" colSpan="12" width="50%"/>
        		<field name="displayTypeSelect"/>
        		<button name="update" title="Update" onClick="save, action-forecast-report-refresh"/>
-       		<panel-dashlet name="reportDashlet" action="forecast.report.sales.dashlet" colSpan="12"/>
+       		<panel-dashlet name="reportDashletSales" action="forecast.report.sales.dashlet" colSpan="12" hideIf="displayTypeSelect == 2"/>
+       		<panel-dashlet name="reportDashletSpending" action="forecast.report.spending.dashlet" colSpan="12" hideIf="displayTypeSelect == 1"/>
+       		<panel-dashlet name="reportDashletMarges" action="forecast.report.marges.dashlet" colSpan="12" hideIf="displayTypeSelect != 3"/>
        		<field name="isReport" hidden="true"/>
 	 	</panel>
 	 </form>
 	 
 	 <action-view title="Sales" name="forecast.report.sales.dashlet">
 	  <view type="chart" name="chart.forecast.report.sales"/>
+	  <context name="_id" expr="eval: id" />
+	</action-view>
+	
+	<action-view title="Spending" name="forecast.report.spending.dashlet">
+	  <view type="chart" name="chart.forecast.report.spending"/>
+	  <context name="_id" expr="eval: id" />
+	</action-view>
+	
+	<action-view title="Marges" name="forecast.report.marges.dashlet">
+	  <view type="chart" name="chart.forecast.report.marges"/>
 	  <context name="_id" expr="eval: id" />
 	</action-view>
 	 

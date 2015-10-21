@@ -46,6 +46,7 @@ public interface ITranslation {
 	public static final String INVOICE_INVOICE_NO = /*$$(*/ "Invoice.invoiceNo"; /*)*/
 	public static final String INVOICE_REFUND_NO = /*$$(*/ "Invoice.refundNo"; /*)*/
 	public static final String INVOICE_LAW = /*$$(*/ "Invoice.law"; /*)*/
+	public static final String INVOICE_DISCOUNT_AMOUNT = /*$$(*/ "Invoice.discountAmount"; /*)*/
 	
 
 }

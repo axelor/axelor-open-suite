@@ -67,7 +67,7 @@ public class ForecastRecapService {
 			forecastRecapLineList.clear();
 		}
 		forecastRecap.setCurrentBalance(forecastRecap.getStartingBalance());
-		if(forecastRecap.getOpportunitiesTypeSelect() != null && forecastRecap.getOpportunitiesTypeSelect() != ForecastRecapRepository.OPPORTUNITY_TYPE_NO){
+		if(forecastRecap.getOpportunitiesTypeSelect() != null && forecastRecap.getOpportunitiesTypeSelect() > ForecastRecapRepository.OPPORTUNITY_TYPE_NO){
 			this.populateWithOpportunities(forecastRecap);
 		}
 		this.populateWithInvoices(forecastRecap);
@@ -428,6 +428,27 @@ public class ForecastRecapService {
 			forecastRecap.addForecastRecapLineListItem(this.createForecastRecapLine(forecast.getEstimatedDate(), forecast.getTypeSelect(), forecast.getForecastReason(), forecast.getAmount(), forecastRecap.getCurrentBalance()));
 			forecast.setRealizedSelect(ForecastRepository.REALISED_SELECT_YES);
 			forecastRepo.save(forecast);
+		}
+	}
+	
+	public void populateWithForecastsNoSave(ForecastRecap forecastRecap){
+		List<Forecast> forecastList = new ArrayList<Forecast>();
+		if(forecastRecap.getBankDetails() != null){
+			forecastList = Beans.get(ForecastRepository.class).all().filter("self.estimatedDate BETWEEN ?1 AND ?2 AND self.company = ?3 AND"
+					+ " self.bankDetails = ?4 AND (self.realizedSelect = 2 OR (self.realizedSelect = 3 AND self.estimatedDate <= ?5))", forecastRecap.getFromDate(), forecastRecap.getToDate(), forecastRecap.getCompany(),forecastRecap.getBankDetails(), generalService.getTodayDate()).fetch();
+		}
+		else{
+			forecastList = Beans.get(ForecastRepository.class).all().filter("self.estimatedDate BETWEEN ?1 AND ?2 AND self.company = ?3 AND"
+					+ " (self.realizedSelect = 2 OR (self.realizedSelect = 3 AND self.estimatedDate <= ?4))", forecastRecap.getFromDate(), forecastRecap.getToDate(), forecastRecap.getCompany(), generalService.getTodayDate()).fetch();
+		}
+		for (Forecast forecast : forecastList) {
+			if(forecast.getTypeSelect() == 1){
+				forecastRecap.setCurrentBalance(forecastRecap.getCurrentBalance().add(forecast.getAmount()));
+			}
+			else{
+				forecastRecap.setCurrentBalance(forecastRecap.getCurrentBalance().subtract(forecast.getAmount()));
+			}
+			forecastRecap.addForecastRecapLineListItem(this.createForecastRecapLine(forecast.getEstimatedDate(), forecast.getTypeSelect(), forecast.getForecastReason(), forecast.getAmount(), forecastRecap.getCurrentBalance()));
 		}
 	}
 	
