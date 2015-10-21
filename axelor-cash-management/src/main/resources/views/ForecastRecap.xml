@@ -18,7 +18,6 @@
 	       	<field name="fromDate" onChange="action-forecast-recap-validate-dates"/>
        		<field name="toDate" onChange="action-forecast-recap-validate-dates"/>
        		<field name="opportunitiesTypeSelect"/>
-       		<field name="inAti"/>
        		<field name="startingBalance"/>
        		<button name="populateRecap" title="Populate" onClick="action-forecast-recap-validate-dates-before-populate, action-forecast-recap-method-populate"/>
        		<panel-related field="forecastRecapLineList" readonly="true" colSpan="12"/>

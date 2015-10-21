@@ -7,7 +7,7 @@
 
   <entity name="AnalyticDistributionLine" lang="java">
 	
-	<many-to-one name="analyticDistributionTemplate" ref="com.axelor.apps.account.db.AnalyticDistributionTemplate"/>
+	<many-to-one name="analyticDistributionTemplate" ref="com.axelor.apps.account.db.AnalyticDistributionTemplate" index="idx_acc_ana_dist_line_ana_dist_template"/>
 	<many-to-one name="invoiceLine" ref="com.axelor.apps.account.db.InvoiceLine"/>
 	<many-to-one name="moveLine" ref="com.axelor.apps.account.db.MoveLine"/>
 	

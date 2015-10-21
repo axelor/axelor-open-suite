@@ -137,6 +137,7 @@
 
 	<action-view name="crm.root.opportunity" title="Opportunities"
 		model="com.axelor.apps.crm.db.Opportunity" >
+		<view type="kanban" name="opportunity-kanban"/>
 		<view type="grid" name="opportunity-grid"/>
 		<view type="form" name="opportunity-form"/>
 		<view-param name="search-filters" value="opportunity-filters"/>
