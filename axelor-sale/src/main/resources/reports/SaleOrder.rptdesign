@@ -3830,7 +3830,7 @@ else 'Subscriptions'</value>
                                                 </structure>
                                             </list-property>
                                             <property name="contentType">html</property>
-                                            <text-property name="content"><![CDATA[<VALUE-OF format="#0.00">row["unit_price"]</VALUE-OF>]]></text-property>
+                                            <text-property name="content"><![CDATA[<VALUE-OF format="#,###.00">row["unit_price"]</VALUE-OF>]]></text-property>
                                         </text>
                                     </cell>
                                     <cell id="4152">
@@ -3848,10 +3848,14 @@ else 'Subscriptions'</value>
                                                 </structure>
                                             </list-property>
                                             <property name="contentType">html</property>
-                                            <text-property name="content"><![CDATA[<VALUE-OF format="#0.00">row["totalDiscountAmount"]</VALUE-OF>]]></text-property>
+                                            <text-property name="content"><![CDATA[<VALUE-OF format="#,###.00">row["totalDiscountAmount"]</VALUE-OF>]]></text-property>
                                         </text>
                                         <data id="4282">
                                             <property name="fontSize">8pt</property>
+                                            <structure name="numberFormat">
+                                                <property name="category">Fixed</property>
+                                                <property name="pattern">#,##0.00{RoundingMode=HALF_UP}</property>
+                                            </structure>
                                             <property name="textAlign">right</property>
                                             <list-property name="visibility">
                                                 <structure>
@@ -3875,13 +3879,13 @@ else 'Subscriptions'</value>
                                                 </structure>
                                             </list-property>
                                             <property name="contentType">html</property>
-                                            <text-property name="content"><![CDATA[<VALUE-OF format="#0.00">row["ex_tax_total"]</VALUE-OF>]]></text-property>
+                                            <text-property name="content"><![CDATA[<VALUE-OF format="#,###.00">row["ex_tax_total"]</VALUE-OF>]]></text-property>
                                         </text>
                                         <data id="4184">
                                             <property name="fontSize">8pt</property>
                                             <structure name="numberFormat">
                                                 <property name="category">Fixed</property>
-                                                <property name="pattern">###0.00{RoundingMode=HALF_UP}</property>
+                                                <property name="pattern">#,##0.00{RoundingMode=HALF_UP}</property>
                                             </structure>
                                             <property name="textAlign">right</property>
                                             <list-property name="visibility">
@@ -4261,7 +4265,7 @@ else 'Subscriptions'</value>
                                         <property name="fontSize">8pt</property>
                                         <property name="textAlign">right</property>
                                         <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<VALUE-OF format="#0.00">row["ex_tax_base"]</VALUE-OF>]]></text-property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF format="#,###.00">row["ex_tax_base"]</VALUE-OF>]]></text-property>
                                     </text>
                                 </cell>
                                 <cell id="3501">
@@ -4277,7 +4281,7 @@ else 'Subscriptions'</value>
                                         <property name="fontSize">8pt</property>
                                         <property name="textAlign">right</property>
                                         <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<VALUE-OF format="#0.00">row["tax_total"]</VALUE-OF>]]></text-property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF format="#,###.00">row["tax_total"]</VALUE-OF>]]></text-property>
                                     </text>
                                 </cell>
                             </row>
@@ -4347,7 +4351,7 @@ else 'Subscriptions'</value>
                         <property name="fontSize">9pt</property>
                         <structure name="numberFormat">
                             <property name="category">Fixed</property>
-                            <property name="pattern">###0.00{RoundingMode=HALF_UP}</property>
+                            <property name="pattern">#,##0.00{RoundingMode=HALF_UP}</property>
                         </structure>
                         <property name="textAlign">right</property>
                         <property name="dataBindingRef">SaleOrderLines</property>
@@ -4439,7 +4443,7 @@ else 'Subscriptions'</value>
                         <property name="fontSize">9pt</property>
                         <structure name="numberFormat">
                             <property name="category">Fixed</property>
-                            <property name="pattern">###0.00{RoundingMode=HALF_UP}</property>
+                            <property name="pattern">#,##0.00{RoundingMode=HALF_UP}</property>
                         </structure>
                         <property name="textAlign">right</property>
                         <property name="dataSet">OrderLineDS</property>
@@ -4537,7 +4541,7 @@ else 'Subscriptions'</value>
                             </structure>
                         </list-property>
                         <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<VALUE-OF format="#0.00">row["ex_tax_total"]</VALUE-OF>]]></text-property>
+                        <text-property name="content"><![CDATA[<VALUE-OF format="#,###.00">row["ex_tax_total"]</VALUE-OF>]]></text-property>
                     </text>
                 </cell>
                 <cell id="4174">
@@ -4624,7 +4628,7 @@ else 'Subscriptions'</value>
                             </structure>
                         </list-property>
                         <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<VALUE-OF format="#0.00">row["tax_total"]</VALUE-OF>]]></text-property>
+                        <text-property name="content"><![CDATA[<VALUE-OF format="#,###.00">row["tax_total"]</VALUE-OF>]]></text-property>
                     </text>
                 </cell>
                 <cell id="3990">
@@ -4720,7 +4724,7 @@ else 'Subscriptions'</value>
                             </structure>
                         </list-property>
                         <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<VALUE-OF format="#0.00">row["in_tax_total"]</VALUE-OF>]]></text-property>
+                        <text-property name="content"><![CDATA[<VALUE-OF format="#,###.00">row["in_tax_total"]</VALUE-OF>]]></text-property>
                     </text>
                 </cell>
                 <cell id="3997">
@@ -4869,7 +4873,7 @@ else 'Subscriptions'</value>
                         <property name="fontSize">9pt</property>
                         <structure name="numberFormat">
                             <property name="category">Fixed</property>
-                            <property name="pattern">###0.00{RoundingMode=HALF_UP}</property>
+                            <property name="pattern">#,##0.00{RoundingMode=HALF_UP}</property>
                         </structure>
                         <property name="textAlign">right</property>
                         <property name="dataSet">SaleOrderDS</property>
@@ -5284,7 +5288,7 @@ else 'Subscriptions'</value>
                         <property name="fontSize">9pt</property>
                         <structure name="numberFormat">
                             <property name="category">Fixed</property>
-                            <property name="pattern">###0.00{RoundingMode=HALF_UP}</property>
+                            <property name="pattern">#,##0.00{RoundingMode=HALF_UP}</property>
                         </structure>
                         <property name="textAlign">right</property>
                         <property name="dataSet">OrderLineDS</property>
@@ -5443,7 +5447,7 @@ else 'Subscriptions'</value>
                         <property name="fontSize">9pt</property>
                         <structure name="numberFormat">
                             <property name="category">Fixed</property>
-                            <property name="pattern">###0.00{RoundingMode=HALF_UP}</property>
+                            <property name="pattern">#,##0.00{RoundingMode=HALF_UP}</property>
                         </structure>
                         <property name="textAlign">right</property>
                         <property name="dataSet">OrderLineDS</property>
@@ -5546,7 +5550,7 @@ else 'Subscriptions'</value>
                         <property name="fontSize">9pt</property>
                         <structure name="numberFormat">
                             <property name="category">Fixed</property>
-                            <property name="pattern">###0.00{RoundingMode=HALF_UP}</property>
+                            <property name="pattern">#,##0.00{RoundingMode=HALF_UP}</property>
                         </structure>
                         <property name="textAlign">right</property>
                         <property name="dataSet">OrderLineDS</property>

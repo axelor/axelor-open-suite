@@ -2158,7 +2158,7 @@ row["first_name"]
                                         <text id="3460">
                                             <property name="textAlign">right</property>
                                             <property name="contentType">html</property>
-                                            <text-property name="content"><![CDATA[<VALUE-OF format="#0.00">row["UnitPrice"]</VALUE-OF>]]></text-property>
+                                            <text-property name="content"><![CDATA[<VALUE-OF format="#,###.00">row["UnitPrice"]</VALUE-OF>]]></text-property>
                                         </text>
                                     </cell>
                                     <cell id="3439">
@@ -2174,7 +2174,7 @@ row["first_name"]
                                         <text id="3461">
                                             <property name="textAlign">right</property>
                                             <property name="contentType">html</property>
-                                            <text-property name="content"><![CDATA[<VALUE-OF format="#0.00">row["ex_tax_total"]</VALUE-OF>]]></text-property>
+                                            <text-property name="content"><![CDATA[<VALUE-OF format="#,###.00">row["ex_tax_total"]</VALUE-OF>]]></text-property>
                                         </text>
                                     </cell>
                                     <cell id="3664">
@@ -2599,7 +2599,7 @@ row["first_name"]
                                                     <text id="3540">
                                                         <property name="textAlign">right</property>
                                                         <property name="contentType">html</property>
-                                                        <text-property name="content"><![CDATA[<VALUE-OF format="#0.00">row["ex_tax_base"]</VALUE-OF>]]></text-property>
+                                                        <text-property name="content"><![CDATA[<VALUE-OF format="##,###.00">row["ex_tax_base"]</VALUE-OF>]]></text-property>
                                                     </text>
                                                 </cell>
                                                 <cell id="3501">
@@ -2618,7 +2618,7 @@ row["first_name"]
                                                     <text id="3541">
                                                         <property name="textAlign">right</property>
                                                         <property name="contentType">html</property>
-                                                        <text-property name="content"><![CDATA[<VALUE-OF format="#0.00">row["tax_total"]</VALUE-OF>]]></text-property>
+                                                        <text-property name="content"><![CDATA[<VALUE-OF format="#,###.00">row["tax_total"]</VALUE-OF>]]></text-property>
                                                     </text>
                                                 </cell>
                                             </row>
@@ -2709,7 +2709,7 @@ row["first_name"]
                                                     <property name="fontWeight">bold</property>
                                                     <property name="textAlign">right</property>
                                                     <property name="contentType">html</property>
-                                                    <text-property name="content"><![CDATA[<VALUE-OF format="#0.00">row["ex_tax_total"]</VALUE-OF>]]></text-property>
+                                                    <text-property name="content"><![CDATA[<VALUE-OF format="#,###.00">row["ex_tax_total"]</VALUE-OF>]]></text-property>
                                                 </text>
                                             </cell>
                                             <cell id="3519">
@@ -2782,7 +2782,7 @@ row["first_name"]
                                                     <property name="fontWeight">bold</property>
                                                     <property name="textAlign">right</property>
                                                     <property name="contentType">html</property>
-                                                    <text-property name="content"><![CDATA[<VALUE-OF format="#0.00">row["tax_total"]</VALUE-OF>]]></text-property>
+                                                    <text-property name="content"><![CDATA[<VALUE-OF format="#,###.00">row["tax_total"]</VALUE-OF>]]></text-property>
                                                 </text>
                                             </cell>
                                             <cell id="3523">
@@ -2855,7 +2855,7 @@ row["first_name"]
                                                     <property name="fontWeight">bold</property>
                                                     <property name="textAlign">right</property>
                                                     <property name="contentType">html</property>
-                                                    <text-property name="content"><![CDATA[<VALUE-OF format="#0.00">row["in_tax_total"]</VALUE-OF>]]></text-property>
+                                                    <text-property name="content"><![CDATA[<VALUE-OF format="#,###.00">row["in_tax_total"]</VALUE-OF>]]></text-property>
                                                 </text>
                                             </cell>
                                             <cell id="3527">

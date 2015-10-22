@@ -1658,7 +1658,7 @@ where Expense.id = ?]]></xml-property>
                             <property name="marginRight">2pt</property>
                             <property name="textAlign">right</property>
                             <property name="contentType">html</property>
-                            <text-property name="content"><![CDATA[<VALUE-OF format="#0.00">row["untaxed_amount"]</VALUE-OF>]]></text-property>
+                            <text-property name="content"><![CDATA[<VALUE-OF format="#,###.00">row["untaxed_amount"]</VALUE-OF>]]></text-property>
                         </text>
                     </cell>
                     <cell id="3967">
@@ -1874,7 +1874,7 @@ where Expense.id = ?]]></xml-property>
                                 </structure>
                             </list-property>
                             <property name="contentType">html</property>
-                            <text-property name="content"><![CDATA[<VALUE-OF  format="#0.00">row["total_amount"]</VALUE-OF>]]></text-property>
+                            <text-property name="content"><![CDATA[<VALUE-OF  format="#,###.00">row["total_amount"]</VALUE-OF>]]></text-property>
                         </text>
                     </cell>
                 </row>
