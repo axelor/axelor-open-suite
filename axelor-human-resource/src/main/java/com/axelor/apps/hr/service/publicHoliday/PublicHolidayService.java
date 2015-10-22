@@ -5,11 +5,11 @@ import java.util.List;
 
 import org.joda.time.LocalDate;
 
+import com.axelor.apps.base.db.WeeklyPlanning;
+import com.axelor.apps.base.service.weeklyplanning.WeeklyPlanningService;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.PublicHolidayDay;
-import com.axelor.apps.hr.db.WeeklyPlanning;
 import com.axelor.apps.hr.db.repo.PublicHolidayDayRepository;
-import com.axelor.apps.hr.service.weeklyplanning.WeeklyPlanningService;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 

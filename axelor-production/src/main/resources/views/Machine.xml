@@ -18,6 +18,7 @@
 	    <field name="startingDuration" colSpan="4" widget="duration" x-big="true" x-seconds="true"/>
 		<field name="setupDuration" colSpan="4" widget="duration" x-big="true" x-seconds="true"/>
 		<field name="endingDuration" colSpan="4" widget="duration" x-big="true" x-seconds="true"/>
+		<field name="weeklyPlanning" canNew="true"/>
 	    <field name="description" colSpan="12"/>
 	  </panel>
 	</form>

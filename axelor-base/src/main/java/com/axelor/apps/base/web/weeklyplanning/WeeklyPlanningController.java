@@ -1,7 +1,7 @@
-package com.axelor.apps.hr.web.weeklyplanning;
+package com.axelor.apps.base.web.weeklyplanning;
 
-import com.axelor.apps.hr.db.WeeklyPlanning;
-import com.axelor.apps.hr.service.weeklyplanning.WeeklyPlanningService;
+import com.axelor.apps.base.db.WeeklyPlanning;
+import com.axelor.apps.base.service.weeklyplanning.WeeklyPlanningService;
 import com.axelor.exception.AxelorException;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;

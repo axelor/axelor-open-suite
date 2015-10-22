@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.joda.time.LocalDate;
 
+import com.axelor.apps.base.service.weeklyplanning.WeeklyPlanningService;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.EmploymentContract;
 import com.axelor.apps.hr.db.Expense;
@@ -18,7 +19,6 @@ import com.axelor.apps.hr.db.repo.ExtraHoursLineRepository;
 import com.axelor.apps.hr.db.repo.LeaveRequestRepository;
 import com.axelor.apps.hr.exception.IExceptionMessage;
 import com.axelor.apps.hr.service.leave.LeaveService;
-import com.axelor.apps.hr.service.weeklyplanning.WeeklyPlanningService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;

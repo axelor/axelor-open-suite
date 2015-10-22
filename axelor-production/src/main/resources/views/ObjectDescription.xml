@@ -3,15 +3,13 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
     
-    <grid name="object-description-grid" title="Descriptions" model="com.axelor.apps.production.db.ObjectDescription" orderBy="sequence">
-    	<field name="sequence"/>
+    <grid name="object-description-grid" canMove="true" title="Descriptions" model="com.axelor.apps.production.db.ObjectDescription" orderBy="sequence">
     	<field name="description"/>
     </grid>
     
     <form name="object-description-form" title="Description" model="com.axelor.apps.production.db.ObjectDescription" width="large">
     	<panel>
-    		<field name="image" colSpan="3" canNew="true"/>
-	    	<field name="sequence" colSpan="3"/>
+    		<field name="image" colSpan="3" canNew="true" widget="Image"/>
     		<field name="description" widget="html" colSpan="12"/>
     	</panel>       
     </form>

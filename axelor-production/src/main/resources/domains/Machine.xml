@@ -17,6 +17,7 @@
     <long name="startingDuration" title="Starting duration (hh:mm)"/>
     <long name="setupDuration" title="Duration between two cycles (hh:mm)"/>
     <long name="endingDuration" title="Ending duration (hh:mm)"/>
+    <many-to-one name="weeklyPlanning" ref="com.axelor.apps.base.db.WeeklyPlanning" title="Machine's planning"/>
     
   </entity>
 </domain-models>

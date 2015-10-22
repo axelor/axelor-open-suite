@@ -1,9 +1,9 @@
-package com.axelor.apps.hr.service.weeklyplanning;
+package com.axelor.apps.base.service.weeklyplanning;
 
 import org.joda.time.LocalDate;
 
-import com.axelor.apps.hr.db.DayPlanning;
-import com.axelor.apps.hr.db.WeeklyPlanning;
+import com.axelor.apps.base.db.DayPlanning;
+import com.axelor.apps.base.db.WeeklyPlanning;
 import com.axelor.exception.AxelorException;
 
 

@@ -15,14 +15,14 @@
 	</chart>
 	
  	
- 	<chart name="chart.planned.charge.by.machine.minutes" title="Previsional charge by machine (per minute)" onInit="action.production.chart.set.from.date.to.date">
+ 	<chart name="chart.planned.charge.by.machine.days" title="Previsional charge by machine (per days)" onInit="action.production.chart.set.from.date.to.date">
 		<search-fields>
 			<field type="datetime" name="fromDateTime" title="From Date"/>
 	 		<field type="datetime" name="toDateTime" title="To Date"/>
 	 	</search-fields>
-		<dataset type="rpc">com.axelor.apps.production.web.OperationOrderController:chargeByMachineMinutes</dataset>
+		<dataset type="rpc">com.axelor.apps.production.web.OperationOrderController:chargeByMachineDays</dataset>
 		<category key="dateTime" type="text" />
-		<series key="charge" groupBy="machine" type="line"/>
+		<series key="charge" groupBy="machine" type="bar"/>
 	</chart>
 	
 	

@@ -38,7 +38,9 @@ import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.ReportSettings;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.DayPlanning;
 import com.axelor.apps.base.service.administration.GeneralService;
+import com.axelor.apps.base.service.weeklyplanning.WeeklyPlanningService;
 import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.db.repo.MachineRepository;
 import com.axelor.apps.production.db.repo.OperationOrderRepository;
@@ -71,6 +73,9 @@ public class OperationOrderController {
 	
 	@Inject
 	protected OperationOrderWorkflowService operationOrderWorkflowService;
+	
+	@Inject
+	protected WeeklyPlanningService weeklyPlanningService;
 
 	private static final Logger LOG = LoggerFactory.getLogger(ManufOrderController.class);
 	
@@ -303,14 +308,16 @@ public class OperationOrderController {
 		response.setData(dataList);
 	}
 	
-	public void chargeByMachineMinutes(ActionRequest request, ActionResponse response) throws AxelorException {
+	public void chargeByMachineDays(ActionRequest request, ActionResponse response) throws AxelorException {
 		List<Map<String, Object>> dataList = new ArrayList<Map<String, Object>>();
 		DateTimeFormatter parser = ISODateTimeFormat.dateTime();
 		LocalDateTime fromDateTime = LocalDateTime.parse(request.getContext().get("fromDateTime").toString(),parser);
+		fromDateTime = fromDateTime.withHourOfDay(0).withMinuteOfHour(0);
 		LocalDateTime toDateTime = LocalDateTime.parse(request.getContext().get("toDateTime").toString(),parser);
+		toDateTime = toDateTime.withHourOfDay(23).withMinuteOfHour(59);
 		LocalDateTime itDateTime = new LocalDateTime(fromDateTime);
 		if(Days.daysBetween(new LocalDate(fromDateTime.getYear(), fromDateTime.getMonthOfYear(), fromDateTime.getDayOfMonth()),
-				new LocalDate(toDateTime.getYear(), toDateTime.getMonthOfYear(), toDateTime.getDayOfMonth())).getDays() > 5){
+				new LocalDate(toDateTime.getYear(), toDateTime.getMonthOfYear(), toDateTime.getDayOfMonth())).getDays() > 500){
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.CHARGE_MACHINE_DAYS)), IException.CONFIGURATION_ERROR);
 		}
 		
@@ -325,50 +332,68 @@ public class OperationOrderController {
 			}
 		}
 		while(!itDateTime.isAfter(toDateTime)){
-			List<OperationOrder> operationOrderList = operationOrderRepo.all().filter("self.plannedStartDateT <= ?1 AND self.plannedEndDateT >= ?1", itDateTime).fetch();
+			List<OperationOrder> operationOrderList = operationOrderRepo.all().filter("self.plannedStartDateT <= ?2 AND self.plannedEndDateT >= ?1", itDateTime, itDateTime.plusHours(1)).fetch();
 			Map<String, BigDecimal> map = new HashMap<String, BigDecimal>();
 			for (OperationOrder operationOrder : operationOrderList) {
 				if(operationOrder.getWorkCenter() != null && operationOrder.getWorkCenter().getMachine() != null){
 					String machine = operationOrder.getWorkCenter().getMachine().getName();
-					if(map.containsKey(machine)){
-						map.put(machine, map.get(machine).add(BigDecimal.ONE));
+					int numberOfMinutes = 0;
+					if(operationOrder.getPlannedStartDateT().isBefore(itDateTime)){
+						numberOfMinutes = Minutes.minutesBetween(itDateTime, operationOrder.getPlannedEndDateT()).getMinutes();
+					}
+					else if(operationOrder.getPlannedEndDateT().isAfter(itDateTime.plusHours(1))){
+						numberOfMinutes = Minutes.minutesBetween(operationOrder.getPlannedStartDateT(), itDateTime.plusHours(1)).getMinutes();
 					}
 					else{
-						map.put(machine, BigDecimal.ONE);
+						numberOfMinutes = Minutes.minutesBetween(operationOrder.getPlannedStartDateT(), operationOrder.getPlannedEndDateT()).getMinutes();
+					}
+					if(numberOfMinutes > 60){
+						numberOfMinutes = 60;
+					}
+					int numberOfMinutesPerDay = 0;
+					if(operationOrder.getWorkCenter().getMachine().getWeeklyPlanning() != null){
+						DayPlanning dayPlanning = weeklyPlanningService.findDayPlanning(operationOrder.getWorkCenter().getMachine().getWeeklyPlanning(), new LocalDate(itDateTime));
+						numberOfMinutesPerDay = Minutes.minutesBetween(dayPlanning.getMorningFrom(), dayPlanning.getMorningTo()).getMinutes();
+						numberOfMinutesPerDay += Minutes.minutesBetween(dayPlanning.getAfternoonFrom(), dayPlanning.getAfternoonTo()).getMinutes();
+					}
+					else{
+						numberOfMinutesPerDay = 60*8;
+					}
+					BigDecimal percentage = new BigDecimal(numberOfMinutes).multiply(new BigDecimal(100)).divide(new BigDecimal(numberOfMinutesPerDay), 2, RoundingMode.HALF_UP);
+					if(map.containsKey(machine)){
+						map.put(machine, map.get(machine).add(percentage));
+					}
+					else{
+						map.put(machine, percentage);
 					}
 				}
 			}
 			Set<String> keyList = map.keySet();
-			
 			for (String key : machineNameList) {
 				if(keyList.contains(key)){
-					Map<String, Object> dataMap = new HashMap<String, Object>();
-					if(Hours.hoursBetween(fromDateTime, toDateTime).getHours()>24){
-						dataMap.put("dateTime",(Object)itDateTime.toString("dd/MM/yyyy HH:mm"));
+					int found = 0;
+					for (Map<String, Object> mapIt : dataList) {
+						if(mapIt.get("dateTime").equals((Object)itDateTime.toString("dd/MM/yyyy")) &&
+							mapIt.get("machine").equals((Object) key)){
+							mapIt.put("charge", new BigDecimal(mapIt.get("charge").toString()).add(map.get(key)));
+							found = 1;
+							break;
+						}
+
 					}
-					else{
-						dataMap.put("dateTime",(Object)itDateTime.toString("HH:mm"));
+					if(found == 0){
+						Map<String, Object> dataMap = new HashMap<String, Object>();
+						
+						dataMap.put("dateTime",(Object)itDateTime.toString("dd/MM/yyyy"));
+						dataMap.put("charge", (Object)map.get(key));
+						dataMap.put("machine", (Object) key);
+						dataList.add(dataMap);
 					}
-					dataMap.put("charge", (Object)map.get(key).multiply(new BigDecimal(100)));
-					dataMap.put("machine", (Object) key);
-					dataList.add(dataMap);
-				}
-				else{
-					Map<String, Object> dataMap = new HashMap<String, Object>();
-					if(Hours.hoursBetween(fromDateTime, toDateTime).getHours()>24){
-						dataMap.put("dateTime",(Object)itDateTime.toString("dd/MM/yyyy HH:mm"));
-					}
-					else{
-						dataMap.put("dateTime",(Object)itDateTime.toString("HH:mm"));
-					}
-					dataMap.put("charge", (Object)BigDecimal.ZERO);
-					dataMap.put("machine", (Object) key);
-					dataList.add(dataMap);
 				}
 			}
 			
 			
-			itDateTime = itDateTime.plusMinutes(1);
+			itDateTime = itDateTime.plusHours(1);
 		}
 		
 		response.setData(dataList);

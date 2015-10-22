@@ -273,9 +273,9 @@
 	</input>
 	
 	
-	<input file="hr_weeklyPlanning.csv" separator=";" type="com.axelor.apps.hr.db.WeeklyPlanning" search="self.importId  = :importId"/>
+	<input file="hr_weeklyPlanning.csv" separator=";" type="com.axelor.apps.base.db.WeeklyPlanning" search="self.importId  = :importId"/>
   
-  	<input file="hr_dayPlanning.csv" separator=";" type="com.axelor.apps.hr.db.DayPlanning" search="self.importId  = :importId"/>
+  	<input file="hr_dayPlanning.csv" separator=";" type="com.axelor.apps.base.db.DayPlanning" search="self.importId  = :importId"/>
 	
 	<input file="hr_employee.csv" separator=";" type="com.axelor.apps.hr.db.Employee" search="self.importId  = :importId"/>
 	

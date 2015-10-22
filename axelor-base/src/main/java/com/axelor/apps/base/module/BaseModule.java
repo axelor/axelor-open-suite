@@ -44,6 +44,8 @@ import com.axelor.apps.base.service.tax.FiscalPositionServiceImpl;
 import com.axelor.apps.base.service.template.TemplateBaseService;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.base.service.user.UserServiceImpl;
+import com.axelor.apps.base.service.weeklyplanning.WeeklyPlanningService;
+import com.axelor.apps.base.service.weeklyplanning.WeeklyPlanningServiceImp;
 import com.axelor.apps.message.service.MailAccountServiceImpl;
 import com.axelor.apps.message.service.MessageServiceImpl;
 import com.axelor.apps.message.service.TemplateMessageServiceImpl;
@@ -69,5 +71,6 @@ public class BaseModule extends AxelorModule {
         bind(GeneralService.class).to(GeneralServiceImpl.class);
         bind(SequenceRepository.class).to(SequenceBaseRepository.class);
         bind(ProductRepository.class).to(ProductBaseRepository.class);
+        bind(WeeklyPlanningService.class).to(WeeklyPlanningServiceImp.class);
     }
 }

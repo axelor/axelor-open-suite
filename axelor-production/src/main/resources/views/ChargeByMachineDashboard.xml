@@ -5,7 +5,7 @@
 	
 	<dashboard title="Charge by machine" name="charge.by.machine.dashboard"  >
 		<dashlet action="chart:chart.planned.charge.by.machine.hours" height="400" colSpan="12"/>
-		<dashlet action="chart:chart.planned.charge.by.machine.minutes" height="400" colSpan="12"/>
+		<dashlet action="chart:chart.planned.charge.by.machine.days" height="400" colSpan="12"/>
 	</dashboard>
 
 </object-views>
