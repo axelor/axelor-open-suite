@@ -28,7 +28,7 @@
         </toolbar>
         <panel-stack>
 			<panel>
-			  <field name="employee" canSuggest="false"/>
+			  <field name="employee" canSuggest="false" hideIf="$popup()"/>
 			  <field name="payCompany" canSuggest="false"/>
 			  <field name="employmentContractVersion" canSuggest="false"/>
 			  <field name="employmentContractTemplate" readonlyIf="!payCompany" widget="SuggestBox" domain=":payCompany MEMBER OF self.companySet" />
@@ -71,7 +71,7 @@
         <field name="duration" expr="35" if="!duration &amp;&amp; (contractTypeSelect == 1 || contractTypeSelect == 3)"/>
     </action-record>
 
-    <action-record name="action-contract-of-employment-record-on-new" model="com.axelor.apps.hr.db.EmploymentContract">
+    <action-record name="action-employment-contract-record-on-new" model="com.axelor.apps.hr.db.EmploymentContract">
         <field name="signatureDate" expr="eval: __date__"/>
         <field name="payCompany" expr="eval: __user__.activeCompany"/>
     </action-record>
@@ -84,7 +84,7 @@
     	<error message="Please, select an employment contract template" if="!employmentContractTemplate"/>
     </action-validate>
     
-    <action-export output="/home/agc-portage/courrier" download="true" name="action-employment-contract-export-word">
+    <action-export output="/home/employment_contracts" download="true" name="action-employment-contract-export-word">
   		<export template="eval: com.axelor.meta.MetaFiles.getPath(EmploymentContractTemplate.metaFile).toString()" name="${fullName}.xml" engine="groovy"/>
 	</action-export>
 	
