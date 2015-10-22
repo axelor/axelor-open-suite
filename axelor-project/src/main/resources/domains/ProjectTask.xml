@@ -38,7 +38,16 @@
 	  
 	  <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"/>
 	  
-	  <string name="fullName" namecolumn="true" title="Name"/>
+	  <string name="fullName" namecolumn="true" title="Name">
+	  <![CDATA[
+		  if(this.getCode() != null && !this.getCode().isEmpty()) {
+				return this.getCode() + " " + this.getName();
+			}
+			else{
+				return this.getName();
+			}
+	  ]]>
+	  </string>
 
 	   <extra-code>
    		<![CDATA[

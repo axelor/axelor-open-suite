@@ -31,7 +31,7 @@
 			<field name="fromDate" />
 			<field name="toDate" />
 			<field name="$visibleDuration" colSpan="6" title="Duration" type="decimal" onChange="action-project-task-record-set-stored-duration, action-attrs-project-task-compute-leadDelay"/>
-			<field name="$visibleTimeSpent" colSpan="6" title="Time Spent" type="decimal" onChange="action-project-task-record-set-stored-time-spent"/>
+			<field name="$visibleTimeSpent" readonly="true" colSpan="6" title="Time Spent" type="decimal" onChange="action-project-task-record-set-stored-time-spent"/>
 			<field name="dueDate" />
 			<field name="progress" widget="Progress" onChange="action-attrs-project-task-compute-leadDelay"/>
 			<field name="$visibleLeadDelay" colSpan="6" title="Lead/Delay" type="decimal" onChange="action-project-task-record-set-stored-lead-delay, action-method-project-task-compute-progress"/>
@@ -65,48 +65,14 @@
 				<field name="timeSpent" hidden="true"/>
 				<field name="leadDelay" hidden="true"/>
 			</panel>
-			<panel title="Financial Information">
-				<panel title="Sales">
-					<field name="totalSaleOrdersFinalized"/>
-					<field name="totalSaleOrdersConfirmed"/>
-					<field name="totalSaleOrdersInvoiced"/>
-				</panel>
-				<panel title="Purchases">
-					<field name="totalPurchaseOrdersFinalized"/>
-					<field name="totalPurchaseOrdersConfirmed"/>
-					<field name="totalPurchaseOrdersInvoiced"/>
-				</panel>
-				<panel title="Internal">
-					<panel title="Log Times">
-						<field name="totalTimesPlanned"/>
-						<field name="totalTimesRealised"/>
-					</panel>
-					<panel title="Expenses">
-						<field name="totalExpenses"/>
-					</panel>
-					<panel title="Production">
-						<field name="totalEstimatedCosts"/>
-						<field name="totalRealCosts"/>
-					</panel>
-					<button name="dashBoardButton" title="See DashBoard"/>
-					<button name="computeDetailsButton" title="See Compute Details"/>
-				</panel>
-				<panel title="Margins">
-					<field name="totalProducedTO"/>
-					<field name="estimatedMargin"/>
-					<field name="realTimesMargin"/>
-					<field name="realInvoicingMargin"/>
-					<button name="monthlyDetails" title="See Monthly Details"/>
-				</panel>
-			</panel>
 		</panel-tabs>
-		<panel sidebar="true" title="Actions" stacked="true">
+		<panel sidebar="true" title="Actions" stacked="true" showIf="childProjectTaskList.length > 0">
 	    	<button name="computeDurationFromChildren" title="Compute duration" showIf="childProjectTaskList.length > 0" colSpan="12" onClick="save,action-method-project-task-compute-duration-fromchildren,save"/>
 	  	</panel>
 		<panel title="Settings" sidebar="true">
 			<field name="membersUserSet" widget="TagSelect" form-view="user-form" grid-view="user-grid"/>
-			<field name="sequence" />
 			<field name="typeSelect"/>
+			<field name="sequence" hidden="true"/>
 		</panel>
 	</form>
 	
@@ -141,7 +107,7 @@
 			<field name="fromDate" />
 			<field name="toDate" />
 			<field name="$visibleDuration" title="Duration" type="decimal" onChange="action-project-task-record-set-stored-duration, action-attrs-project-task-compute-leadDelay"/>
-			<field name="$visibleTimeSpent" title="Time Spent" type="decimal" onChange="action-project-task-record-set-stored-time-spent"/>
+			<field name="$visibleTimeSpent" readonly="true" title="Time Spent" type="decimal" onChange="action-project-task-record-set-stored-time-spent"/>
 			<field name="dueDate" />
 			<field name="progress" onChange="action-attrs-project-task-compute-leadDelay"/>
 			<field name="$visibleLeadDelay" title="Lead/Delay" type="decimal" onChange="action-project-task-record-set-stored-lead-delay, action-method-project-task-compute-progress"/>
@@ -201,7 +167,7 @@
 			<field name="fromDate" />
 			<field name="toDate" />
 			<field name="$visibleDuration" title="Duration" type="decimal" onChange="action-project-task-record-set-stored-duration, action-attrs-project-task-compute-leadDelay"/>
-			<field name="$visibleTimeSpent" title="Time Spent" type="decimal" onChange="action-project-task-record-set-stored-time-spent"/>
+			<field name="$visibleTimeSpent" readonly="true" title="Time Spent" type="decimal" onChange="action-project-task-record-set-stored-time-spent"/>
 			<field name="dueDate" />
 			<field name="progress" widget="Progress" onChange="action-attrs-project-task-compute-leadDelay"/>
 			<field name="$visibleLeadDelay" title="Lead/Delay" type="decimal" onChange="action-project-task-record-set-stored-lead-delay, action-method-project-task-compute-progress"/>
@@ -236,7 +202,7 @@
 				<field name="leadDelay" hidden="true"/>
 			</panel>
 		</panel-tabs>
-		<panel sidebar="true" title="Actions" stacked="true" hideIf="typeSelect == 'task'">
+		<panel sidebar="true" title="Actions" stacked="true" hideIf="typeSelect == 'task' || childProjectTaskList == null || childProjectTaskList.length == 0">
 	    	<button name="computeDurationFromChildren" title="Compute duration" showIf="childProjectTaskList.length > 0" colSpan="12" onClick="save,action-method-project-task-compute-duration-fromchildren,save"/>
 	  	</panel>
 		<panel title="Settings" sidebar="true" hideIf="typeSelect == 'task'">
