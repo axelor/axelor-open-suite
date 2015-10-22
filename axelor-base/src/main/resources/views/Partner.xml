@@ -117,9 +117,9 @@
   		<panel-tabs>
   			<panel name="information" title="Informations">
 				<panel hideIf="isContact" colSpan="12">
-					<field name="isCustomer" hideIf="(isContact &amp;&amp; partnerTypeSelect == 2)" onChange="action-partner-attrs-hide-customer-credit-lines"/>
-					<field name="hasOrdered" showIf="isCustomer"/>
-					<field name="isSupplier" hideIf="partnerTypeSelect == 2 || isContact"/>
+					<field name="isCustomer" hideIf="isContact"/>
+					<field name="hasOrdered" showIf="isCustomer" hideIf="isContact"/>
+					<field name="isSupplier" hideIf="isContact"/>
 				</panel>
 				<panel title="Postal addresses" colSpan="12">
 					<field name="partnerAddressList" colSpan="12" onChange="action-partner-address-list-change">
@@ -191,7 +191,7 @@
 		        <panel-include if-module="axelor-supplychain" view="incl-sales-partner-form" from="axelor-supplychain"/>
 		        <field name="$emailsList" colSpan="12" type="many-to-many" target="com.axelor.apps.message.db.Message" title="Emails" canNew="false" canSelect="false" canRemove="false"/>
 			</panel>
-			<panel name="customerCredit" title="Encours Client" if-module="axelor-supplychain" colSpan="12" hideIf="!isCustomer">
+			<panel name="customerCredit" title="Encours Client" if-module="axelor-supplychain" colSpan="12" hideIf="isContact || !isCustomer" if="__config__.general.getManageCustomerCredit()">
 				<panel-include if-module="axelor-supplychain" view="incl-customer-credit-partner-form" from="axelor-supplychain" />
 			</panel>
 			<panel title="Sale Order" if-module="axelor-sale" showIf="isCustomer">
@@ -352,12 +352,10 @@
     	<action name="save"/>
     	<action name="action-partner-attrs-change-name"/>
     	<action name="action-partner-method-set-social-network-url"/>
-    	<action name="action-partner-attrs-hide-customer-credit-lines"/>
     </action-group>
 	
 	<action-group name="action-group-base-partner-onnew">
 		<action name="action-partner-record-partner-type-select"/>
-		<action name="action-partner-attrs-hide-customer-credit-lines" />
 		<action name="action-partner-record-set-default"/>
 	</action-group>
 	
@@ -387,10 +385,6 @@
 	
 	<action-attrs name="action-partner-attrs-hide-contact-partner">
         <attribute name="hidden" for="contactPartner" expr="#{clientPartner != null &amp;&amp; clientPartner.partnerTypeSelect == 2}" />
-    </action-attrs>
-    
-    <action-attrs name="action-partner-attrs-hide-customer-credit-lines">
-        <attribute name="hidden" for="customerCredit" expr="#{isContact || !isCustomer || !__config__.general.manageCustomerCredit}" />
     </action-attrs>
     
 	<action-record name="action-partner-record-partner-type-select" model="com.axelor.apps.base.db.Partner" >
