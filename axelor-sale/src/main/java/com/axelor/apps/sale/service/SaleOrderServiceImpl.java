@@ -310,25 +310,28 @@ public class SaleOrderServiceImpl implements SaleOrderService {
 	    		filePath = AppSettings.get().get("file.upload.dir") + "/tmp",
 	    		fileName = saleOrder.getSaleOrderSeq() + ((saleOrder.getVersionNumber() > 1) ? "-V" + saleOrder.getVersionNumber() : "") + "." + ReportSettings.FORMAT_PDF,
 	    		birtReportURL = this.getURLSaleOrderPDF(saleOrder);
-
-	    File file = URLService.fileDownload(birtReportURL, filePath, fileName);
-
-		if (file != null){
-			MetaFiles metaFiles = Beans.get(MetaFiles.class);
-			MetaFile metaFile = metaFiles.upload(file);
-			String relatedModel = generalService.getPersistentClass(saleOrder).getCanonicalName();
-			//Search if there is a parent directory
-			DMSFile dmsDirectory = Beans.get(DMSFileRepository.class).all().filter("self.relatedId = ?1 AND self.relatedModel = ?2 and self.isDirectory = true",
-														saleOrder.getId(), relatedModel).fetchOne();
-			DMSFile dmsFile = new DMSFile();
-			if (dmsDirectory != null){
-				dmsFile.setParent(dmsDirectory);
+		
+		String urlNotExist = URLService.notExist(birtReportURL.toString());
+		if(urlNotExist == null) {
+		    File file = URLService.fileDownload(birtReportURL, filePath, fileName);
+	
+			if (file != null){
+				MetaFiles metaFiles = Beans.get(MetaFiles.class);
+				MetaFile metaFile = metaFiles.upload(file);
+				String relatedModel = generalService.getPersistentClass(saleOrder).getCanonicalName();
+				//Search if there is a parent directory
+				DMSFile dmsDirectory = Beans.get(DMSFileRepository.class).all().filter("self.relatedId = ?1 AND self.relatedModel = ?2 and self.isDirectory = true",
+															saleOrder.getId(), relatedModel).fetchOne();
+				DMSFile dmsFile = new DMSFile();
+				if (dmsDirectory != null){
+					dmsFile.setParent(dmsDirectory);
+				}
+				dmsFile.setFileName(fileName);
+				dmsFile.setRelatedModel(relatedModel);
+				dmsFile.setRelatedId(saleOrder.getId());
+				dmsFile.setMetaFile(metaFile);
+				Beans.get(DMSFileRepository.class).save(dmsFile);
 			}
-			dmsFile.setFileName(fileName);
-			dmsFile.setRelatedModel(relatedModel);
-			dmsFile.setRelatedId(saleOrder.getId());
-			dmsFile.setMetaFile(metaFile);
-			Beans.get(DMSFileRepository.class).save(dmsFile);
 		}
 	}
 
