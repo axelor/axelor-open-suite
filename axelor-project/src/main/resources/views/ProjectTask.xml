@@ -191,8 +191,8 @@
 		<panel title="Overview">
 			<field name="typeSelect"/>
 			<field name="statusSelect" widget="NavSelect" colSpan="12"/>
+			<field name="project" requiredIf="typeSelect == 'task' &amp;&amp; !$popup()"  hideIf="$popup()" onChange="action-project-task-attrs-hide-invoicing-panel,action-project-task-record-inv-type-select" title="Parent Project" domain="self.typeSelect = 'project'" form-view="project-form" grid-view="project-grid" colSpan="12" width="50%"/>
 			<field name="name"/>
-			<field name="project" requiredIf="typeSelect == 'task' &amp;&amp; !$popup()"  hideIf="$popup()" onChange="action-project-task-attrs-hide-invoicing-panel,action-project-task-record-inv-type-select" title="Parent Project" domain="self.typeSelect = 'project'" form-view="project-form" grid-view="project-grid"/>
 			<field name="code"/>
 			<field name="company" requiredIf="project == null &amp;&amp; typeSelect == 'project'" hideIf="typeSelect == 'task' || project != null"/>
 			<field name="clientPartner" requiredIf="project == null &amp;&amp; typeSelect == 'project'" domain="self.isCustomer = true" hideIf="typeSelect == 'task'"/>
@@ -203,8 +203,6 @@
 			<field name="$visibleDuration" title="Duration" type="decimal" onChange="action-project-task-record-set-stored-duration, action-attrs-project-task-compute-leadDelay"/>
 			<field name="$visibleTimeSpent" title="Time Spent" type="decimal" onChange="action-project-task-record-set-stored-time-spent"/>
 			<field name="dueDate" />
-			<field name="progress" widget="Progress"/>
-			<field name="$visibleLeadDelay" title="Lead/Delay" type="decimal" onChange="action-project-task-record-set-stored-lead-delay"/>
 			<field name="progress" widget="Progress" onChange="action-attrs-project-task-compute-leadDelay"/>
 			<field name="$visibleLeadDelay" title="Lead/Delay" type="decimal" onChange="action-project-task-record-set-stored-lead-delay, action-method-project-task-compute-progress"/>
 			<field name="imputable" if-module="axelor-business-project"/>
