@@ -75,12 +75,27 @@ public class OperationOrderWorkflowService {
 		return Beans.get(OperationOrderRepository.class).save(operationOrder);
 
 	}
+	
+	@Transactional
+	public OperationOrder replan(OperationOrder operationOrder) throws AxelorException  {
+
+		operationOrder.setPlannedStartDateT(this.getLastOperationOrder(operationOrder));
+
+		operationOrder.setPlannedEndDateT(this.computePlannedEndDateT(operationOrder));
+
+		operationOrder.setPlannedDuration(
+				this.getDuration(
+				this.computeDuration(operationOrder.getPlannedStartDateT(), operationOrder.getPlannedEndDateT())));
+
+		return Beans.get(OperationOrderRepository.class).save(operationOrder);
+
+	}
 
 
 	public LocalDateTime getLastOperationOrder(OperationOrder operationOrder)  {
 
-		OperationOrder lastOperationOrder = operationOrderRepo.all().filter("self.manufOrder = ?1 AND self.priority <= ?2 AND self.statusSelect >= 3 AND self.statusSelect < 6",
-				operationOrder.getManufOrder(), operationOrder.getPriority()).order("-self.priority").order("-self.plannedEndDateT").fetchOne();
+		OperationOrder lastOperationOrder = operationOrderRepo.all().filter("self.manufOrder = ?1 AND self.priority <= ?2 AND self.statusSelect >= 3 AND self.statusSelect < 6 AND self.id != ?3",
+				operationOrder.getManufOrder(), operationOrder.getPriority(), operationOrder.getId()).order("-self.priority").order("-self.plannedEndDateT").fetchOne();
 
 		if(lastOperationOrder != null)  {
 
@@ -105,6 +120,7 @@ public class OperationOrderWorkflowService {
 		return today;
 
 	}
+	
 
 
 

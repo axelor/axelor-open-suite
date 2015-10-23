@@ -36,6 +36,7 @@ import org.joda.time.format.ISODateTimeFormat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.axelor.app.production.db.IOperationOrder;
 import com.axelor.apps.ReportSettings;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.DayPlanning;
@@ -120,6 +121,20 @@ public class OperationOrderController {
 		}
 	}
 	
+	public void machineChange(ActionRequest request, ActionResponse response) throws AxelorException{
+		OperationOrder operationOrder = request.getContext().asType( OperationOrder.class );
+		
+		operationOrder = operationOrderRepo.find(operationOrder.getId());
+		if(operationOrder != null && operationOrder.getStatusSelect() == IOperationOrder.STATUS_PLANNED){
+			operationOrder = operationOrderWorkflowService.replan(operationOrder);
+			List<OperationOrder> operationOrderList = operationOrderRepo.all().filter("self.manufOrder = ?1 AND self.priority >= ?2 AND self.statusSelect = 3 AND self.id != ?3",
+					operationOrder.getManufOrder(), operationOrder.getPriority(), operationOrder.getId()).order("self.priority").order("self.plannedEndDateT").fetch();
+			for (OperationOrder operationOrderIt : operationOrderList) {
+				operationOrderIt = operationOrderWorkflowService.replan(operationOrderIt);
+			}
+			response.setReload(true);
+		}
+	}
 	
 	public void plan (ActionRequest request, ActionResponse response) throws AxelorException {
 		OperationOrder operationOrder = request.getContext().asType( OperationOrder.class );
