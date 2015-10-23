@@ -9,6 +9,8 @@ import org.joda.time.LocalDate;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.Unit;
+import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
@@ -31,6 +33,7 @@ import com.axelor.db.Model;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -96,14 +99,21 @@ public class MrpLineServiceImpl implements MrpLineService  {
 				this.today,
 				supplierPartner.getPurchasePriceList(),
 				supplierPartner));
-
+		Unit unit = product.getPurchasesUnit();
+		BigDecimal qty = mrpLine.getQty();
+		if(unit == null){
+			unit = product.getUnit();
+		}
+		else{
+			qty = Beans.get(UnitConversionService.class).convertWithProduct(product.getUnit(), unit, qty, product);
+		}
 		purchaseOrder.addPurchaseOrderLineListItem(
 				purchaseOrderLineService.createPurchaseOrderLine(
 						purchaseOrder,
 						product,
 						product.getName(),
-						mrpLine.getQty(),
-						product.getUnit()));
+						qty,
+						unit));
 
 		purchaseOrderServiceSupplychainImpl.computePurchaseOrder(purchaseOrder);
 

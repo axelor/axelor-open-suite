@@ -23,6 +23,7 @@ import java.util.Map;
 import com.axelor.apps.base.db.IPriceListLine;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.PriceListLine;
+import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.GeneralRepository;
 import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.base.service.administration.GeneralService;
@@ -144,7 +145,11 @@ public class SaleOrderLineController {
 				response.setValue("taxLine", saleOrderLineService.getTaxLine(saleOrder, saleOrderLine));
 				response.setValue("productName", saleOrderLine.getProduct().getName());
 				response.setValue("saleSupplySelect", saleOrderLine.getProduct().getSaleSupplySelect());
-				response.setValue("unit", saleOrderLine.getProduct().getUnit());
+				Unit unit = saleOrderLine.getProduct().getSalesUnit();
+				if(unit == null){
+					unit = saleOrderLine.getProduct().getUnit();
+				}
+				response.setValue("unit", unit);
 				response.setValue("companyCostPrice", saleOrderLineService.getCompanyCostPrice(saleOrder, saleOrderLine));
 
 				PriceList priceList = saleOrder.getPriceList();

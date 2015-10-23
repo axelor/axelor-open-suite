@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.supplychain.service;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,8 +32,10 @@ import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.PartnerService;
+import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.service.PurchaseOrderServiceImpl;
@@ -51,10 +54,14 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
 public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImpl {
 
+	@Inject
+	protected UnitConversionService unitConversionService;
+	
 	private static final Logger LOG = LoggerFactory.getLogger(PurchaseOrderServiceSupplychainImpl.class);
 
 	public PurchaseOrder createPurchaseOrder(User buyerUser, Company company, Partner contactPartner, Currency currency,
@@ -114,11 +121,19 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
 						&& ((stockConfig.getHasInSmForStorableProduct() && ProductRepository.PRODUCT_TYPE_STORABLE.equals(product.getProductTypeSelect()))
 								|| (stockConfig.getHasInSmForNonStorableProduct() && !ProductRepository.PRODUCT_TYPE_STORABLE.equals(product.getProductTypeSelect())))
 						&& !ProductRepository.PRODUCT_TYPE_SUBSCRIPTABLE.equals(product.getProductTypeSelect())) {
-
+					
+					Unit unit = purchaseOrderLine.getProduct().getUnit();
+					BigDecimal qty = purchaseOrderLine.getQty();
+					BigDecimal priceDiscounted = purchaseOrderLine.getPriceDiscounted();
+					if(!unit.equals(purchaseOrderLine.getUnit())){
+						qty = unitConversionService.convertWithProduct(purchaseOrderLine.getUnit(), unit, qty, purchaseOrderLine.getProduct());
+						priceDiscounted = unitConversionService.convertWithProduct(purchaseOrderLine.getUnit(), unit, priceDiscounted, purchaseOrderLine.getProduct());
+					}
+					
 					StockMoveLine stockMoveLine = Beans.get(StockMoveLineService.class).createStockMoveLine(
 							product, purchaseOrderLine.getProductName(), 
-							purchaseOrderLine.getDescription(), purchaseOrderLine.getQty(), 
-							purchaseOrderLine.getPriceDiscounted(),purchaseOrderLine.getUnit(), 
+							purchaseOrderLine.getDescription(), qty, 
+							priceDiscounted,unit, 
 							stockMove, 2, purchaseOrder.getInAti(), purchaseOrderLine.getTaxLine().getValue());
 					if(stockMoveLine != null) {
 

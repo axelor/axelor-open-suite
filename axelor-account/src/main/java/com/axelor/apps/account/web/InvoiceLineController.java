@@ -32,6 +32,7 @@ import com.axelor.apps.base.db.IPriceListLine;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.PriceListLine;
 import com.axelor.apps.base.db.SupplierCatalog;
+import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.GeneralRepository;
 import com.axelor.apps.base.db.repo.SupplierCatalogRepository;
 import com.axelor.apps.base.service.PriceListService;
@@ -174,7 +175,8 @@ public class InvoiceLineController {
 
 				response.setValue("taxLine", invoiceLineService.getTaxLine(invoice, invoiceLine, isPurchase));
 				response.setValue("productName", invoiceLine.getProduct().getName());
-				response.setValue("unit", invoiceLine.getProduct().getUnit());
+				Unit unit = invoiceLineService.getUnit(invoiceLine.getProduct(), isPurchase);
+				response.setValue("unit", unit);
 
 				PriceList priceList = invoice.getPriceList();
 				if(priceList != null)  {

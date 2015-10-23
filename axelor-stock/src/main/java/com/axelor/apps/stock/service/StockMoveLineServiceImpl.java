@@ -246,9 +246,9 @@ public class StockMoveLineServiceImpl implements StockMoveLineService  {
 			else  {
 				qty = stockMoveLine.getQty();
 			}
-
+			
 			if(productUnit != null && !productUnit.equals(stockMoveLineUnit))  {
-				qty = new UnitConversionService().convert(stockMoveLineUnit, productUnit, qty);
+				qty = Beans.get(UnitConversionService.class).convertWithProduct(stockMoveLineUnit, productUnit, qty, stockMoveLine.getProduct());
 			}
 
 			this.updateLocations(fromLocation, toLocation, stockMoveLine.getProduct(), qty, fromStatus, toStatus,

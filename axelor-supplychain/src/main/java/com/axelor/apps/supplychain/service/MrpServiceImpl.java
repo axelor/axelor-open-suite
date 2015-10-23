@@ -13,7 +13,9 @@ import org.slf4j.LoggerFactory;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.SupplierCatalog;
+import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.ProductRepository;
+import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.purchase.db.IPurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrder;
@@ -46,6 +48,7 @@ import com.axelor.db.Model;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
@@ -450,7 +453,12 @@ public class MrpServiceImpl implements MrpService  {
 			if(maturityDate == null)  {  maturityDate = purchaseOrder.getOrderDate();  }
 			
 			if(this.isBeforeEndDate(maturityDate))  {
-				mrp.addMrpLineListItem(this.createMrpLine(purchaseOrderLine.getProduct(), purchaseProposalMrpLineType, purchaseOrderLine.getQty(), maturityDate, BigDecimal.ZERO, purchaseOrder.getLocation(), purchaseOrderLine));
+				Unit unit = purchaseOrderLine.getProduct().getUnit();
+				BigDecimal qty = purchaseOrderLine.getQty();
+				if(!unit.equals(purchaseOrderLine.getUnit())){
+					qty = Beans.get(UnitConversionService.class).convertWithProduct(purchaseOrderLine.getUnit(), unit, qty, purchaseOrderLine.getProduct());
+				}
+				mrp.addMrpLineListItem(this.createMrpLine(purchaseOrderLine.getProduct(), purchaseProposalMrpLineType, qty, maturityDate, BigDecimal.ZERO, purchaseOrder.getLocation(), purchaseOrderLine));
 			}
 		}
 	}
@@ -489,7 +497,12 @@ public class MrpServiceImpl implements MrpService  {
 			if(maturityDate == null)  {  maturityDate = saleOrder.getCreationDate();  }
 			
 			if(this.isBeforeEndDate(maturityDate))  {
-				mrp.addMrpLineListItem(this.createMrpLine(saleOrderLine.getProduct(), saleForecastMrpLineType, saleOrderLine.getQty(), maturityDate, BigDecimal.ZERO, saleOrder.getLocation(), saleOrderLine));
+				Unit unit = saleOrderLine.getProduct().getUnit();
+				BigDecimal qty = saleOrderLine.getQty();
+				if(!unit.equals(saleOrderLine.getUnit())){
+					qty = Beans.get(UnitConversionService.class).convertWithProduct(saleOrderLine.getUnit(), unit, qty, saleOrderLine.getProduct());
+				}
+				mrp.addMrpLineListItem(this.createMrpLine(saleOrderLine.getProduct(), saleForecastMrpLineType, qty, maturityDate, BigDecimal.ZERO, saleOrder.getLocation(), saleOrderLine));
 			}
 			
 		}
@@ -517,9 +530,13 @@ public class MrpServiceImpl implements MrpService  {
 			LocalDate maturityDate = mrpForecast.getForecastDate();
 			
 			if(this.isBeforeEndDate(maturityDate))  {
-			
+				Unit unit = mrpForecast.getProduct().getUnit();
+				BigDecimal qty = mrpForecast.getQty();
+				if(!unit.equals(mrpForecast.getUnit())){
+					qty = Beans.get(UnitConversionService.class).convertWithProduct(mrpForecast.getUnit(), unit, qty, mrpForecast.getProduct());
+				}
 				mrp.addMrpLineListItem(
-						this.createMrpLine(mrpForecast.getProduct(), saleForecastMrpLineType, mrpForecast.getQty(), maturityDate, BigDecimal.ZERO, mrpForecast.getLocation(), mrpForecast));
+						this.createMrpLine(mrpForecast.getProduct(), saleForecastMrpLineType, qty, maturityDate, BigDecimal.ZERO, mrpForecast.getLocation(), mrpForecast));
 			}
 		}
 	}

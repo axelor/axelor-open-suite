@@ -31,6 +31,7 @@ import com.axelor.apps.base.db.IPriceListLine;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.PriceListLine;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.GeneralRepository;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.PriceListService;
@@ -199,5 +200,9 @@ public class InvoiceLineService {
 			return priceListLine.getTypeSelect();
 		}
 		return 0;
+	}
+	
+	public Unit getUnit(Product product, boolean isPurchase){
+		return product.getUnit();
 	}
 }

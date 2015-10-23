@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.production.service;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,23 +26,21 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.ProductRepository;
+import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.base.service.user.UserService;
-//import com.axelor.apps.organisation.db.Project;
-import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.ProductionOrder;
 import com.axelor.apps.production.db.repo.ProductionOrderRepository;
-import com.axelor.apps.production.exceptions.IExceptionMessage;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
-import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+//import com.axelor.apps.organisation.db.Project;
 
 public class ProductionOrderSaleOrderServiceImpl implements ProductionOrderSaleOrderService {
 
@@ -50,7 +49,10 @@ public class ProductionOrderSaleOrderServiceImpl implements ProductionOrderSaleO
 	protected LocalDate today;
 
 	protected User user;
-
+	
+	@Inject
+	protected UnitConversionService unitConversionService;
+	
 	@Inject
 	protected ProductionOrderService productionOrderService;
 	
@@ -95,8 +97,13 @@ public class ProductionOrderSaleOrderServiceImpl implements ProductionOrderSaleO
 		Product product = saleOrderLine.getProduct();
 
 		if(saleOrderLine.getSaleSupplySelect() == ProductRepository.SALE_SUPPLY_PRODUCE && product != null && product.getProductTypeSelect().equals(ProductRepository.PRODUCT_TYPE_STORABLE) )  {
-
-			return productionOrderRepo.save(productionOrderService.generateProductionOrder(product, saleOrderLine.getBillOfMaterial(), saleOrderLine.getQty()));
+			Unit unit = saleOrderLine.getProduct().getUnit();
+			BigDecimal qty = saleOrderLine.getQty();
+			if(!unit.equals(saleOrderLine.getUnit())){
+				qty = unitConversionService.convertWithProduct(saleOrderLine.getUnit(), unit, qty, saleOrderLine.getProduct());
+			}
+			return productionOrderRepo.save(productionOrderService.generateProductionOrder(product, 
+					saleOrderLine.getBillOfMaterial(), qty));
 
 		}
 

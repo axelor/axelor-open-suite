@@ -613,4 +613,9 @@
 		<option value="com.axelor.apps.base.db.Product">Product</option>
 	</selection>
 	
+	<selection name="unit.conversion.type.select">
+		<option value="1">Coeff</option>
+		<option value="2">Formula</option>
+	</selection>
+	
 </object-views>

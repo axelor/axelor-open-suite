@@ -26,6 +26,7 @@ import com.axelor.apps.base.db.IPriceListLine;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.PriceListLine;
 import com.axelor.apps.base.db.SupplierCatalog;
+import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.GeneralRepository;
 import com.axelor.apps.base.db.repo.SupplierCatalogRepository;
 import com.axelor.apps.base.service.PriceListService;
@@ -161,7 +162,11 @@ public class PurchaseOrderLineController {
 
 				response.setValue("taxLine", purchaseOrderLineService.getTaxLine(purchaseOrder, purchaseOrderLine));
 				response.setValue("productName", purchaseOrderLine.getProduct().getName());
-				response.setValue("unit", purchaseOrderLine.getProduct().getUnit());
+				Unit unit = purchaseOrderLine.getProduct().getPurchasesUnit();
+				if(unit == null){
+					unit = purchaseOrderLine.getProduct().getUnit();
+				}
+				response.setValue("unit", unit);
 				response.setValue("qty", purchaseOrderLineService.getQty(purchaseOrder,purchaseOrderLine));
 
 				response.setValue("saleMinPrice", purchaseOrderLineService.getMinSalePrice(purchaseOrder, purchaseOrderLine));

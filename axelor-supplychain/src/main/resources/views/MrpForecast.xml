@@ -9,6 +9,7 @@
        	<field name="forecastDate"/>
        	<field name="product"/>
         <field name="qty"/>
+        <field name="unit"/>
        	<field name="location"/>
        	<field name="partner"/>
     </grid>
@@ -17,12 +18,18 @@
 	    <panel>
 	        <field name="id" title="Ref"/>
 	        <field name="forecastDate"/>
-   	        <field name="product"/>
+   	        <field name="product" onChange="action-mrp-forecast-record-unit"/>
    	        <field name="qty"/>
+   	        <field name="unit"/>
         	<field name="location"/>
         	<field name="partner"/>
         	<field name="note" colSpan="12"/>
 	    </panel>
 	 </form>
+	 
+	 <action-record name="action-mrp-forecast-record-unit" model="com.axelor.apps.supplychain.db.MrpForecast">
+	 	<field name="unit" expr="eval: product?.salesUnit" if="product?.salesUnit != null"/>
+	 	<field name="unit" expr="eval: product?.unit" if="product?.salesUnit == null"/>
+	 </action-record>
 	 
 </object-views>

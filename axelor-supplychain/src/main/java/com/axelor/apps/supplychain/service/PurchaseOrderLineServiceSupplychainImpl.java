@@ -28,6 +28,7 @@ import com.axelor.apps.account.service.AnalyticDistributionLineService;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.GeneralRepository;
+import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.service.PurchaseOrderLineServiceImpl;
@@ -40,6 +41,9 @@ public class PurchaseOrderLineServiceSupplychainImpl extends PurchaseOrderLineSe
 	@Inject
 	protected AnalyticDistributionLineService analyticDistributionLineService;
 	
+	@Inject
+	protected UnitConversionService unitConversionService;
+	
 	private static final Logger LOG = LoggerFactory.getLogger(PurchaseOrderLineServiceSupplychainImpl.class); 
 	
 	public PurchaseOrderLine createPurchaseOrderLine(PurchaseOrder purchaseOrder, SaleOrderLine saleOrderLine) throws AxelorException  {
@@ -47,12 +51,21 @@ public class PurchaseOrderLineServiceSupplychainImpl extends PurchaseOrderLineSe
 		LOG.debug("Création d'une ligne de commande fournisseur pour le produit : {}",
 				new Object[] { saleOrderLine.getProductName() });
 		
+		Unit unit = saleOrderLine.getProduct().getPurchasesUnit();
+		BigDecimal qty = saleOrderLine.getQty();
+		if(unit == null){
+			unit = saleOrderLine.getUnit();
+		}
+		else{
+			qty = unitConversionService.convertWithProduct(saleOrderLine.getUnit(), unit, qty, saleOrderLine.getProduct());
+		}
+		
 		PurchaseOrderLine purchaseOrderLine = super.createPurchaseOrderLine(
 														purchaseOrder, 
 														saleOrderLine.getProduct(), 
 														saleOrderLine.getDescription(), 
-														saleOrderLine.getQty(), 
-														saleOrderLine.getUnit());
+														qty, 
+														unit);
 		this.computeAnalyticDistribution(purchaseOrderLine);
 		return purchaseOrderLine;
 		

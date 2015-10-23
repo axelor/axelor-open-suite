@@ -41,6 +41,8 @@
 		    	<field name="unitDays" form-view="unit-form" grid-view="unit-grid"/>
 		    	<field name="unitHours" form-view="unit-form" grid-view="unit-grid"/>
 		    	<field name="unitMinutes" form-view="unit-form" grid-view="unit-grid"/>
+		    	<field name="manageSalesUnits" if-module="axelor-sale"/>
+		    	<field name="managePurchasesUnits" if-module="axelor-purchase"/>
 		    	<field name="teamManagement"/>
 		    	<field name="manageMultiBanks"/>
 		    	<field name="manageBudget" if-module="axelor-account"/>

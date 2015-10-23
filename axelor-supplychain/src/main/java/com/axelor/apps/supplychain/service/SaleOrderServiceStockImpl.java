@@ -17,11 +17,14 @@
  */
 package com.axelor.apps.supplychain.service;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.ProductRepository;
+import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.service.SaleOrderServiceImpl;
@@ -53,6 +56,9 @@ public class SaleOrderServiceStockImpl extends SaleOrderServiceImpl {
 	
 	@Inject
 	protected StockMoveRepository stockMoveRepo;
+	
+	@Inject
+	protected UnitConversionService unitConversionService;
 
 
 	public Location getLocation(Company company)  {
@@ -121,16 +127,24 @@ public class SaleOrderServiceStockImpl extends SaleOrderServiceImpl {
 
 		Product product = saleOrderLine.getProduct();
 
-		if(this.isStockMoveProduct(saleOrderLine)
+		if(product != null && this.isStockMoveProduct(saleOrderLine)
 				&& !ProductRepository.PRODUCT_TYPE_SUBSCRIPTABLE.equals(product.getProductTypeSelect())) {
-
+			
+			Unit unit = saleOrderLine.getProduct().getUnit();
+			BigDecimal qty = saleOrderLine.getQty();
+			BigDecimal priceDiscounted = saleOrderLine.getPriceDiscounted();
+			if(!unit.equals(saleOrderLine.getUnit())){
+				qty = unitConversionService.convertWithProduct(saleOrderLine.getUnit(), unit, qty, saleOrderLine.getProduct());
+				priceDiscounted = unitConversionService.convertWithProduct(saleOrderLine.getUnit(), unit, priceDiscounted, saleOrderLine.getProduct());
+			}
+			
 			StockMoveLine stockMoveLine = stockMoveLineService.createStockMoveLine(
 					product,
 					saleOrderLine.getProductName(),
 					saleOrderLine.getDescription(),
-					saleOrderLine.getQty(),
-					saleOrderLine.getPriceDiscounted(),
-					saleOrderLine.getUnit(),
+					qty,
+					priceDiscounted,
+					unit,
 					stockMove,
 					1, saleOrderLine.getSaleOrder().getInAti(), saleOrderLine.getTaxLine().getValue());
 

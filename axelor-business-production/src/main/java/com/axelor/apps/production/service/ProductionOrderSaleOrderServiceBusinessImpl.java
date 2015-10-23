@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.production.service;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,6 +25,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.production.db.BillOfMaterial;
@@ -108,8 +110,12 @@ public class ProductionOrderSaleOrderServiceBusinessImpl extends ProductionOrder
 						IException.CONFIGURATION_ERROR);
 
 			}
-
-			return productionOrderRepo.save(productionOrderService.generateProductionOrder(product, billOfMaterial, saleOrderLine.getQty(), saleOrderLine.getSaleOrder().getProject()));
+			Unit unit = saleOrderLine.getProduct().getUnit();
+			BigDecimal qty = saleOrderLine.getQty();
+			if(!unit.equals(saleOrderLine.getUnit())){
+				qty = unitConversionService.convertWithProduct(saleOrderLine.getUnit(), unit, qty, saleOrderLine.getProduct());
+			}
+			return productionOrderRepo.save(productionOrderService.generateProductionOrder(product, billOfMaterial, qty, saleOrderLine.getSaleOrder().getProject()));
 
 		}
 
