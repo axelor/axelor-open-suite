@@ -17,6 +17,8 @@
  */
 package com.axelor.apps.message.service;
 
+import java.util.List;
+
 import javax.mail.AuthenticationFailedException;
 import javax.mail.NoSuchProviderException;
 import javax.mail.Session;
@@ -30,6 +32,7 @@ import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 import com.axelor.mail.MailConstants;
 import com.axelor.mail.SmtpAccount;
+import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 
 public class MailAccountServiceImpl implements MailAccountService {
@@ -41,7 +44,16 @@ public class MailAccountServiceImpl implements MailAccountService {
 		
 	@Override
 	public boolean checkDefaultMailAccount(MailAccount mailAccount) {
-		return mailAccountRepo.all().filter("self.isDefault = true").count() == 0 && mailAccount.getIsDefault();
+		if(mailAccount.getIsDefault()){
+			String request = "self.isDefault = true";
+			List<Object> params = Lists.newArrayList();
+			if(mailAccount.getId() != null){
+				request += " AND self.id != ?1";
+				params.add(mailAccount.getId());
+			}
+			return mailAccountRepo.all().filter(request, params.toArray()).count() == 0;
+		}
+		return true;
 	}
 
 	@Override

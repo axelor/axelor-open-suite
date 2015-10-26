@@ -45,6 +45,7 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.mail.db.repo.MailFollowerRepository;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -59,6 +60,9 @@ public class EventService {
 	
 	@Inject
 	private EventRepository eventRepo;
+	
+	@Inject
+	protected MailFollowerRepository mailFollowerRepo;
 
 	public Duration computeDuration(LocalDateTime startDateTime, LocalDateTime endDateTime)  {
 
@@ -119,6 +123,13 @@ public class EventService {
 		}
 		
 		return null;
+	}
+	
+	public void manageFollowers(Event event){
+		Set<User> currentUsersSet = event.getInternalGuestSet();
+		for (User user : currentUsersSet) {
+			mailFollowerRepo.follow(event, user);
+		}
 	}
 	
 	public Event checkModifications(Event event, Event previousEvent) throws AxelorException, ClassNotFoundException, InstantiationException, IllegalAccessException, IOException, MessagingException{

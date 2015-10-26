@@ -80,7 +80,6 @@
 		<option value="3">Negociation</option>
 		<option value="4">Closed won</option>
 		<option value="5">Closed lost</option>
-		<option value="6">Transformed</option>
 	</selection>
 	
 	<selection name="crm.event.call.type.select">

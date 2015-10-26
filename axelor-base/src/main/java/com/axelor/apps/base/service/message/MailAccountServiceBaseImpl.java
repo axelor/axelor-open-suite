@@ -17,10 +17,13 @@
  */
 package com.axelor.apps.base.service.message;
 
+import java.util.List;
+
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.message.db.MailAccount;
 import com.axelor.apps.message.service.MailAccountServiceImpl;
+import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 
 public class MailAccountServiceBaseImpl extends MailAccountServiceImpl {
@@ -37,8 +40,15 @@ public class MailAccountServiceBaseImpl extends MailAccountServiceImpl {
 
 	@Override
 	public boolean checkDefaultMailAccount(MailAccount mailAccount) {
-		if ( generalService.getGeneral().getMailAccountByUser() ) {
-			return mailAccountRepo.all().filter("self.user = ?1 AND self.isDefault = true", userService.getUser()).count() == 0 && mailAccount.getIsDefault();
+		if ( generalService.getGeneral().getMailAccountByUser() && mailAccount.getIsDefault()) {
+			String request = "self.user = ?1 AND self.isDefault = true";
+			List<Object> params = Lists.newArrayList();
+			params.add(userService.getUser());
+			if(mailAccount.getId() != null){
+				request += " AND self.id != ?2";
+				params.add(mailAccount.getId());
+			}
+			return mailAccountRepo.all().filter(request, params.toArray()).count() == 0;
 		}
 
 		return super.checkDefaultMailAccount( mailAccount);
