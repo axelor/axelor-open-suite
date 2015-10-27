@@ -3,8 +3,10 @@ package com.axelor.apps.hr.service.expense;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.joda.time.LocalDate;
@@ -29,6 +31,7 @@ import com.axelor.apps.account.service.move.MoveService;
 import com.axelor.apps.base.db.IPriceListLine;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.GeneralRepository;
+import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.PeriodService;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.hr.db.Expense;
@@ -274,5 +277,17 @@ public class ExpenseService  {
 			};
 		}
 		return invoiceLineGenerator.creates();
+	}
+	
+	public List<Map<String,String>> getExpensesTypes(){
+		List<Map<String,String>> dataList = new ArrayList<Map<String,String>>();
+		List<Product> productList = Beans.get(ProductRepository.class).all().filter("self.expense = true").fetch();
+		for (Product product : productList) {
+			Map<String, String> map = new HashMap<String,String>();
+			map.put("name", product.getName());
+			map.put("id", product.getId().toString());
+			dataList.add(map);
+		}
+		return dataList;
 	}
 }

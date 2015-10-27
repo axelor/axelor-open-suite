@@ -1,6 +1,10 @@
 package com.axelor.apps.business.project.service;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
@@ -12,6 +16,7 @@ import com.axelor.apps.project.service.ProjectTaskService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.auth.db.User;
+import com.axelor.inject.Beans;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 
@@ -92,6 +97,23 @@ public class ProjectTaskBusinessService extends ProjectTaskService{
 		task.setExTaxTotal(product.getPurchasePrice());
 		task.setProjTaskInvTypeSelect(project.getProjTaskInvTypeSelect());
 		return task;
+	}
+	
+	public List<Map<String,String>> getProjects(User user){
+		List<Map<String,String>> dataList = new ArrayList<Map<String,String>>();
+		if(user != null){
+			List<ProjectTask> projectTaskList = Beans.get(ProjectTaskRepository.class).all().filter("self.imputable = true").fetch();
+			for (ProjectTask projectTask : projectTaskList) {
+				if((projectTask.getMembersUserSet() != null && projectTask.getMembersUserSet().contains(user))
+						|| user.equals(projectTask.getAssignedTo())){
+					Map<String, String> map = new HashMap<String,String>();
+					map.put("name", projectTask.getName());
+					map.put("id", projectTask.getId().toString());
+					dataList.add(map);
+				}
+			}
+		}
+		return dataList;
 	}
 
 }

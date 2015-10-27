@@ -13,20 +13,21 @@ import org.joda.time.LocalDate;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.service.invoice.generator.InvoiceLineGenerator;
+import com.axelor.apps.base.db.DayPlanning;
 import com.axelor.apps.base.db.IPriceListLine;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.PriceListLine;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.WeeklyPlanning;
 import com.axelor.apps.base.db.repo.GeneralRepository;
+import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.administration.GeneralService;
-import com.axelor.apps.base.db.DayPlanning;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.LeaveRequest;
 import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.db.TimesheetLine;
-import com.axelor.apps.base.db.WeeklyPlanning;
 import com.axelor.apps.hr.db.repo.EmployeeRepository;
 import com.axelor.apps.hr.db.repo.LeaveRequestRepository;
 import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
@@ -343,6 +344,18 @@ public class TimesheetServiceImp implements TimesheetService{
 			sum = sum.add(timesheetLine.getDurationStored());
 		}
 		return sum;
+	}
+	
+	public List<Map<String,String>> getActivities(){
+		List<Map<String,String>> dataList = new ArrayList<Map<String,String>>();
+		List<Product> productList = Beans.get(ProductRepository.class).all().filter("self.isActivity = true").fetch();
+		for (Product product : productList) {
+			Map<String, String> map = new HashMap<String,String>();
+			map.put("name", product.getName());
+			map.put("id", product.getId().toString());
+			dataList.add(map);
+		}
+		return dataList;
 	}
 }
 
