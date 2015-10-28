@@ -1,5 +1,8 @@
 package com.axelor.apps.hr.service.timesheet;
 
+import java.util.List;
+import java.util.Map;
+
 import org.joda.time.LocalDate;
 
 import com.axelor.apps.hr.db.Timesheet;
@@ -13,4 +16,5 @@ public interface TimesheetService {
 	public LocalDate getFromPeriodDate();
 	@Transactional
 	public void computeTimeSpent(Timesheet timesheet);
+	public List<Map<String,String>> getActivities();
 }
