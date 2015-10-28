@@ -261,6 +261,8 @@ public class MrpServiceImpl implements MrpService  {
 				this.createProposalMrpLine(product, mrpLineTypeProposal, reorderQty, mrpLine.getLocation(), mrpLine.getMaturityDate(), mrpLine.getMrpLineOriginList(), mrpLine.getRelatedToSelectName());
 				
 				doASecondPass = true;
+				
+				break;
 			}
 		}
 			
