@@ -1,0 +1,26 @@
+<?xml version="1.0" ?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_4.0.xsd">
+
+    <module name="human-resource" package="com.axelor.apps.hr.db"/>
+
+    <entity sequential="true" name="KilometricAllowance" lang="java" >
+    
+        <many-to-one name="expense" ref="com.axelor.apps.hr.db.Expense" title="Expense"/>
+        <many-to-one name="projectTask" ref="com.axelor.apps.project.db.ProjectTask" title="Project/Task"/>
+        
+        <integer name="vehicleFiscalPower" selection="hr.employee.vehicleFiscalPower.number.select" title="Vehicle power"/>
+        <decimal name="rate" title="Rate" precision="20" scale="3" />
+        <integer name="typeSelect" title="Type" required="true" selection="hr.kilometric.allowance.type.select"/>
+        <decimal name="distance" title="KM number" required="true" min="0"/>
+        <string name="cityFrom" title="Starting city with Zip" required="true" />
+        <string name="cityTo" title="Arriving city with Zip" required="true" />
+        <decimal name="inTaxTotal" title="Total (A.T.I)" />
+        <date name="date" title="Date" column="date_val"/>
+        <string name="reason" title="Reason" />
+        <boolean name="toInvoice" title="To invoice"/>
+        
+    </entity>
+
+</domain-models>

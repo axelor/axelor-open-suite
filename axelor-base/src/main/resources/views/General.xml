@@ -85,6 +85,7 @@
 					<field name="currencyWsURL" colSpan="12"/>
 				</panel>
 		    </panel>
+		    <panel-related field="kilometricAllowanceRateList"/>
 		</panel-tabs>
 	</form>
 	

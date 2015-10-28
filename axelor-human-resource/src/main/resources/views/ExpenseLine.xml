@@ -25,6 +25,7 @@
 			<field name="untaxedAmount" />
 			<field name="toInvoice"/>
 			<field name="invoiced" showIf="toInvoice"/>
+			<field name="justification"/>
 			<field name="comments" colSpan="12"/>
 			<field name="user" hidden="true" form-view="user-form" grid-view="user-grid"/>
 		</panel>

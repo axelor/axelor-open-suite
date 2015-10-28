@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
+
+	<grid editable="true" name="kilometric-allowance-grid" title="Kilometric allowances" model="com.axelor.apps.hr.db.KilometricAllowance" 
+		onNew="action-kilometric-allowance-record-default,action-kilometric-allowance-record-rate">
+		<field name="vehicleFiscalPower" onChange="action-kilometric-allowance-record-rate"/>
+        <field name="rate" onChange="action-kilometric-allowance-record-in-tax-total" />
+        <field name="typeSelect" />
+        <field name="distance" onChange="action-kilometric-allowance-record-in-tax-total" />
+        <field name="cityFrom"/>
+        <field name="cityTo" />
+        <field name="date" />
+	    <field name="reason" />
+      	<field name="inTaxTotal" readonly="true" required="true" />
+    </grid>
+
+    <form name="kilometric-allowance-form" title="Kilometric allowance" model="com.axelor.apps.hr.db.KilometricAllowance" onNew="action-kilometric-allowance-record-default,action-kilometric-allowance-record-rate">
+    	<panel>
+			<field name="vehicleFiscalPower" onChange="action-kilometric-allowance-record-rate"/>
+	        <field name="rate" onChange="action-kilometric-allowance-record-in-tax-total" />
+	        <field name="typeSelect" />
+	        <field name="distance" onChange="action-kilometric-allowance-record-in-tax-total" />
+	        <field name="cityFrom"/>
+	        <field name="cityTo" />
+	        <field name="date" />
+	    	<field name="reason" />
+      		<field name="inTaxTotal" readonly="true" required="true" />
+        </panel>
+    </form>
+
+    <action-record name="action-kilometric-allowance-record-default" model="com.axelor.apps.hr.db.KilometricAllowance">
+    	<field name="vehicleFiscalPower" expr="eval:  _parent?.employee?.vehicleFiscalPower"/>
+    </action-record>
+
+    <action-record name="action-kilometric-allowance-record-rate" model="com.axelor.apps.hr.db.KilometricAllowance">
+        <field name="rate" expr="eval: __repo__.of(KilometricAllowanceRate).findByVehicleFiscalPower( vehicleFiscalPower )?.rate"/>
+    </action-record>
+
+    <action-record name="action-kilometric-allowance-record-in-tax-total" model="com.axelor.apps.hr.db.KilometricAllowance">
+        <field name="inTaxTotal" expr="eval: rate * distance"/>
+    </action-record>
+
+</object-views>

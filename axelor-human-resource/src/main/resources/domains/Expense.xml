@@ -25,6 +25,7 @@
       <boolean name="ventilated"/>
       <boolean name="expenseCompanyCb" title="Expense paied with company's credit card"/>
       <many-to-one name="payrollPreparation" ref="com.axelor.apps.hr.db.PayrollPreparation"/>
+      <one-to-many name="kilometricAllowanceList" ref="com.axelor.apps.hr.db.KilometricAllowance" title="Kilometric allowance" mappedBy="expense"/>
       
       <string name="fullName" namecolumn="true" readonly="true">
       <![CDATA[

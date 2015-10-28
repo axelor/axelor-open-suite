@@ -72,5 +72,29 @@
         <option value="1">Executive</option>
         <option value="2">Non-Executive</option>
     </selection>
+    
+    <selection name="hr.employee.vehicleFiscalPower.number.select">
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="4">4</option>
+        <option value="5">5</option>
+        <option value="6">6</option>
+        <option value="7">7</option>
+        <option value="99">More than 7</option>
+        <option value="100">1 /5000km</option>
+        <option value="101">2 /5000km</option>
+        <option value="102">3 /5000km</option>
+        <option value="103">4 /5000km</option>
+        <option value="104">5 /5000km</option>
+        <option value="105">6 /5000km</option>
+        <option value="106">7 /5000km</option>
+        <option value="199">Plus de 7 /5000km</option>
+    </selection>
+    
+    <selection name="hr.kilometric.allowance.type.select">
+		<option value="1">One-way</option>
+		<option value="2">Round trip</option>
+	</selection>
 	
 </object-views>

@@ -16,7 +16,10 @@ import com.axelor.apps.project.service.ProjectTaskService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.auth.db.User;
+import com.axelor.auth.db.repo.UserRepository;
 import com.axelor.inject.Beans;
+import com.axelor.rpc.ActionRequest;
+import com.axelor.rpc.ActionResponse;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 
@@ -99,8 +102,10 @@ public class ProjectTaskBusinessService extends ProjectTaskService{
 		return task;
 	}
 	
-	public List<Map<String,String>> getProjects(User user){
+	public void getProjects(ActionRequest request, ActionResponse response){
 		List<Map<String,String>> dataList = new ArrayList<Map<String,String>>();
+		
+		User user = Beans.get(UserRepository.class).find(new Long(request.getData().get("user").toString()));
 		if(user != null){
 			List<ProjectTask> projectTaskList = Beans.get(ProjectTaskRepository.class).all().filter("self.imputable = true").fetch();
 			for (ProjectTask projectTask : projectTaskList) {
@@ -113,7 +118,7 @@ public class ProjectTaskBusinessService extends ProjectTaskService{
 				}
 			}
 		}
-		return dataList;
+		response.setData(dataList);
 	}
 
 }
