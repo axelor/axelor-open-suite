@@ -45,8 +45,8 @@ import com.axelor.apps.hr.db.repo.TimesheetRepository;
 import com.axelor.apps.hr.service.config.AccountConfigHRService;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
+import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
-import com.axelor.auth.db.repo.UserRepository;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
@@ -303,7 +303,7 @@ public class ExpenseService  {
 	
 	@Transactional
 	public void insertExpenseLine(ActionRequest request, ActionResponse response){
-		User user = Beans.get(UserRepository.class).find(new Long(request.getData().get("user").toString()));
+		User user = AuthUtils.getUser();
 		ProjectTask projectTask = Beans.get(ProjectTaskRepository.class).find(new Long(request.getData().get("project").toString()));
 		Product product = Beans.get(ProductRepository.class).find(new Long(request.getData().get("expenseType").toString()));
 		if(user != null){
@@ -333,7 +333,7 @@ public class ExpenseService  {
 	
 	@Transactional
 	public void insertKMExpenses(ActionRequest request, ActionResponse response){
-		User user = Beans.get(UserRepository.class).find(new Long(request.getData().get("user").toString()));
+		User user = AuthUtils.getUser();
 		ProjectTask projectTask = Beans.get(ProjectTaskRepository.class).find(new Long(request.getData().get("project").toString()));
 		if(user != null){
 			Expense expense = Beans.get(ExpenseRepository.class).all().filter("self.statusSelect = 1 AND self.user.id = ?1", user.getId()).order("-id").fetchOne();

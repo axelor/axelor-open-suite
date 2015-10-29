@@ -40,7 +40,6 @@ import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
-import com.axelor.auth.db.repo.UserRepository;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
@@ -366,7 +365,7 @@ public class TimesheetServiceImp implements TimesheetService{
 	@Transactional
 	public void insertTSLine(ActionRequest request, ActionResponse response){
 		
-		User user = Beans.get(UserRepository.class).find(new Long(request.getData().get("user").toString()));
+		User user = AuthUtils.getUser();
 		ProjectTask projectTask = Beans.get(ProjectTaskRepository.class).find(new Long(request.getData().get("project").toString()));
 		Product product = Beans.get(ProductRepository.class).find(new Long(request.getData().get("activity").toString()));
 		LocalDate date = new LocalDate(request.getData().get("date").toString());
