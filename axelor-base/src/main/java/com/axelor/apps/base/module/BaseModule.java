@@ -30,6 +30,7 @@ import com.axelor.apps.base.service.AddressService;
 import com.axelor.apps.base.service.AddressServiceImpl;
 import com.axelor.apps.base.service.DurationService;
 import com.axelor.apps.base.service.DurationServiceImpl;
+import com.axelor.apps.base.service.MailServiceBaseImpl;
 import com.axelor.apps.base.service.ProductService;
 import com.axelor.apps.base.service.ProductServiceImpl;
 import com.axelor.apps.base.service.administration.GeneralService;
@@ -47,6 +48,7 @@ import com.axelor.apps.base.service.user.UserServiceImpl;
 import com.axelor.apps.base.service.weeklyplanning.WeeklyPlanningService;
 import com.axelor.apps.base.service.weeklyplanning.WeeklyPlanningServiceImp;
 import com.axelor.apps.message.service.MailAccountServiceImpl;
+import com.axelor.apps.message.service.MailServiceMessageImpl;
 import com.axelor.apps.message.service.MessageServiceImpl;
 import com.axelor.apps.message.service.TemplateMessageServiceImpl;
 import com.axelor.apps.message.service.TemplateService;
@@ -72,5 +74,6 @@ public class BaseModule extends AxelorModule {
         bind(SequenceRepository.class).to(SequenceBaseRepository.class);
         bind(ProductRepository.class).to(ProductBaseRepository.class);
         bind(WeeklyPlanningService.class).to(WeeklyPlanningServiceImp.class);
+        bind(MailServiceMessageImpl.class).to(MailServiceBaseImpl.class);
     }
 }
