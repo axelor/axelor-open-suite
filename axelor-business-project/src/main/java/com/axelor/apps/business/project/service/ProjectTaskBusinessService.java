@@ -15,8 +15,8 @@ import com.axelor.apps.project.db.repo.ProjectTaskRepository;
 import com.axelor.apps.project.service.ProjectTaskService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
+import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
-import com.axelor.auth.db.repo.UserRepository;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -105,7 +105,7 @@ public class ProjectTaskBusinessService extends ProjectTaskService{
 	public void getProjects(ActionRequest request, ActionResponse response){
 		List<Map<String,String>> dataList = new ArrayList<Map<String,String>>();
 		
-		User user = Beans.get(UserRepository.class).find(new Long(request.getData().get("user").toString()));
+		User user = AuthUtils.getUser();
 		if(user != null){
 			List<ProjectTask> projectTaskList = Beans.get(ProjectTaskRepository.class).all().filter("self.imputable = true").fetch();
 			for (ProjectTask projectTask : projectTaskList) {
