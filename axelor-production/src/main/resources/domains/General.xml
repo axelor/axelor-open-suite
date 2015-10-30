@@ -7,6 +7,12 @@
 	<entity name="General" lang="java" cachable="true">
 		<boolean name="productionOrderManagement" title="production order management" default="false"/>		
 		<boolean name="productionOrderGenerationAuto" title="Generate production orders automatically" default="false"/>
+    	
+    	<many-to-one name="workCenterProduct" ref="com.axelor.apps.base.db.Product" title="Default work center product"/>
+   		<many-to-one name="workCenterCostSheetGroup" ref="com.axelor.apps.production.db.CostSheetGroup" title="Cost sheet group for work center"/>
+ 		<many-to-one name="productCostSheetGroup" ref="com.axelor.apps.production.db.CostSheetGroup" title="Cost sheet group for product"/>
+ 		
+ 		<many-to-one name="cycleUnit" ref="com.axelor.apps.base.db.Unit" title="Cycle unit"/>
 	</entity>
 
 </domain-models>

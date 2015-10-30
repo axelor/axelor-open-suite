@@ -31,6 +31,7 @@
 				<button name="computeCostPrice" title="Compute cost price"   onClick="save,action-bill-of-material-method-compute-cost-price"/>
 				<field name="costPrice" readonly="true"/>
 				<button name="updateProductCostPrice" title="Update product cost price"  onClick="save,action-bill-of-material-method-update-product-cost-price"/>
+				<panel-related field="costSheetList" colSpan="12" readonly="true"/>
 			</panel>
 		</panel-tabs>
 	  
@@ -38,7 +39,7 @@
     
     
     <grid name="bill-of-material-line-grid" title="Bills of material" model="com.axelor.apps.production.db.BillOfMaterial">
-        <field name="priority" readonlyIf="isRawMaterial"/>
+        <field name="priority" readonlyIf="isRawMaterial" width="20"/>
         <field name="product" domain="self.productTypeSelect = 'storable'"  onChange="action-bill-of-material-record-product" form-view="product-form" grid-view="product-grid"/>
         <field name="qty"/>
         <field name="unit" form-view="unit-form" grid-view="unit-grid"/>

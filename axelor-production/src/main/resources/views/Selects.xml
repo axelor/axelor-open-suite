@@ -40,4 +40,24 @@
 		<option value="com.axelor.apps.production.db.OperationOrder">Operation order</option>
 	</selection>
 	
+	<selection name="production.cost.sheet.line.type.select">
+	    <option value="1">Produced product</option>
+	    <option value="2">Consommed product</option>
+	    <option value="3">Work center</option>
+	    <option value="4">Indirect cost</option>
+	</selection>
+	
+	<selection name="production.cost.sheet.group.cost.type.select">
+	    <option value="1">Direct Material</option>
+	    <option value="2">Direct Manufacturing</option>
+	    <option value="3">Indirect</option>
+	</selection>
+	
+	<selection name="production.cost.sheet.group.rate.type.select">
+	    <option value="1">Surcharge</option>
+	    <option value="2">Rate</option>
+	</selection>
+	
+	
+	
 </object-views>

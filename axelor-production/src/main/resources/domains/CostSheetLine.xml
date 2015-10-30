@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_4.0.xsd">
+
+  <module name="production" package="com.axelor.apps.production.db"/>
+
+  <entity name="CostSheetLine" lang="java">
+  
+  	<many-to-one name="costSheet" ref="com.axelor.apps.production.db.CostSheet" title="CostSheet"/>
+	<many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"/>
+	<many-to-one name="workCenter" ref="com.axelor.apps.production.db.WorkCenter" title="WorkCenter"/>
+	<integer name="bomLevel" title="Level"/>
+	<many-to-one name="costSheetGroup" ref="com.axelor.apps.production.db.CostSheetGroup" title="Cost sheet group"/>
+	<decimal name="consumptionQty" title="Consumption"/>
+	<many-to-one name="unit" ref="com.axelor.apps.base.db.Unit" title="Unit"/>
+  	<decimal name="costPrice" title="Cost price"/>
+	<many-to-one name="parentCostSheetLine" ref="com.axelor.apps.production.db.CostSheetLine" title="Parent"/>
+	<one-to-many name="costSheetLineList" ref="com.axelor.apps.production.db.CostSheetLine" mappedBy="parentCostSheetLine" title="Parent"/>
+  	<integer name="typeSelect" title="Type" selection="production.cost.sheet.line.type.select"/>
+  	<string name="code" title="Code"/>
+  	<string name="name" title="name"/>
+  	
+  	 <extra-code><![CDATA[
+	
+	   	// TYPE SELECT
+		public static final int TYPE_PRODUCED_PRODUCT = 1;
+		public static final int TYPE_CONSUMED_PRODUCT = 2;
+		public static final int TYPE_WORK_CENTER = 3;
+		public static final int TYPE_INDIRECT_COST = 4;
+	
+	]]></extra-code>
+    
+  </entity>
+</domain-models>

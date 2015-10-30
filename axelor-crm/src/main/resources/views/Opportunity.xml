@@ -70,7 +70,8 @@
         <field name="amount" aggregate="sum"/>
     </grid>
 	 
-    <form   name="opportunity-form" title="Opportunity" model="com.axelor.apps.crm.db.Opportunity" onNew="action-opportunity-group-new" >
+    <form   name="opportunity-form" title="Opportunity" model="com.axelor.apps.crm.db.Opportunity" onNew="action-opportunity-group-new" 
+        onLoad="action-test-parameters">
 		<toolbar>
 			<button name="previous-stage" help="Previous Stage" readonlyIf="salesStageSelect &lt; 2" icon="fa-chevron-circle-left" onClick="action-opportunity-set-previous-stage,save"/>
 			<button name="next-stage" help="Next Stage" readonlyIf="salesStageSelect &gt; 7" icon="fa-chevron-circle-right" onClick="action-opportunity-set-next-stage,save"/>
@@ -123,6 +124,10 @@
  
 	</form>
 	
+ <action-record name="action-test-parameters" model="com.axelor.apps.crm.db.Opportunity">
+ 	<field name="subject" expr="eval: myparameter"/>
+ </action-record>	
+ 
 	<kanban columnBy="salesStageSelect" sequenceBy="id" onNew="project.task.kanban.on.new" limit="10"
 	 name="opportunity-kanban" title="Opportunities" model="com.axelor.apps.crm.db.Opportunity">
 		<field name="name"/>

@@ -116,9 +116,13 @@
 				<field name="generateInvoiceFromStockMove"/>
 			</panel>
 			
-			<panel title="Production order configuration">
-				<field name="productionOrderManagement" if-module="axelor-production" readonlyIf="productionOrderGenerationAuto"/>
-				<field name="productionOrderGenerationAuto" showIf="productionOrderManagement" if-module="axelor-production"/>
+			<panel title="Production configuration" if-module="axelor-production">
+				<field name="productionOrderManagement" readonlyIf="productionOrderGenerationAuto"/>
+				<field name="productionOrderGenerationAuto" showIf="productionOrderManagement"/>
+				<field name="workCenterProduct" form-view="product-form" grid-view="product-grid"/>
+		  		<field name="productCostSheetGroup" form-view="cost-sheet-group-form" grid-view="cost-sheet-group-grid" domain="self.costTypeSelect = 1"/>
+	  			<field name="workCenterCostSheetGroup" form-view="cost-sheet-group-form" grid-view="cost-sheet-group-grid" domain="self.costTypeSelect = 2"/>
+	  			<field name="cycleUnit" form-view="unit-form" grid-view="unit-grid"/>
 			</panel>
 			
 			<panel title="Human Resource configuration" if-module="axelor-human-resource">

@@ -110,7 +110,14 @@
 		<view type="form" name="machine-form" />
 	</action-view>
 	
-	
+	<menuitem name="manufacturing-conf-cost-sheet-group" parent="manufacturing-conf"
+		title="Cost sheet groups" action="manufacturing.conf.cost.sheet.group" />
+
+	<action-view name="manufacturing.conf.cost.sheet.group" title="Cost sheet group"
+		model="com.axelor.apps.production.db.CostSheetGroup" >
+		<view type="grid" name="cost-sheet-group-grid" />
+		<view type="form" name="cost-sheet-group-form" />
+	</action-view>
 	
 	
 	<menuitem name="admin-root-conf-production-config" parent="admin-root-conf"
