@@ -289,6 +289,8 @@
 	
 <!--     IMPORT DU PACKAGE 'SUPPLY CHAIN' -->
 	
+	<input file="supplychain_mrpLineType.csv" separator=";" type="com.axelor.apps.supplychain.db.MrpLineType" search="self.code = :code"/>
+	
 	<input file="sale_cancelReason.csv" separator=";" type="com.axelor.apps.sale.db.CancelReason" />
 	
 	<input file="base_company.csv" separator=";" type="com.axelor.apps.base.db.Company" search="self.importId = :importId" update="true"/> 	

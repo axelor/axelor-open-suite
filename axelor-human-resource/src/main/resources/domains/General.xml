@@ -10,6 +10,7 @@
 		<boolean name="allowNegativeLeaveEmployees" title="Allow negative values for employee leaves"/>
 		<integer name="invoicingTypeLogTimesSelect" title="Invoicing Type for Log Times" selection="hrs.timesheet.line.invoicing.type.select" default="1"/>
 		<boolean name="consolidateTSLine" title="Consolidate timesheet line on invoice"/>
+		<one-to-many name="kilometricAllowanceRateList" ref="com.axelor.apps.hr.db.KilometricAllowanceRate" title="Kilometric allowance rates" mappedBy="general"/>
 		
 		<extra-code>
    		<![CDATA[

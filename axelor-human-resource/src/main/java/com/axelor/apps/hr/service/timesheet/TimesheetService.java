@@ -1,12 +1,11 @@
 package com.axelor.apps.hr.service.timesheet;
 
-import java.util.List;
-import java.util.Map;
-
 import org.joda.time.LocalDate;
 
 import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.exception.AxelorException;
+import com.axelor.rpc.ActionRequest;
+import com.axelor.rpc.ActionResponse;
 import com.google.inject.persist.Transactional;
 
 public interface TimesheetService {
@@ -16,5 +15,7 @@ public interface TimesheetService {
 	public LocalDate getFromPeriodDate();
 	@Transactional
 	public void computeTimeSpent(Timesheet timesheet);
-	public List<Map<String,String>> getActivities();
+	public void getActivities(ActionRequest request, ActionResponse response);
+	@Transactional
+	public void insertTSLine(ActionRequest request, ActionResponse response);
 }

@@ -8,7 +8,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.joda.time.Hours;
 import org.joda.time.LocalDate;
+import org.joda.time.LocalTime;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
@@ -43,6 +45,8 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.rpc.ActionRequest;
+import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -346,7 +350,7 @@ public class TimesheetServiceImp implements TimesheetService{
 		return sum;
 	}
 	
-	public List<Map<String,String>> getActivities(){
+	public void getActivities(ActionRequest request, ActionResponse response){
 		List<Map<String,String>> dataList = new ArrayList<Map<String,String>>();
 		List<Product> productList = Beans.get(ProductRepository.class).all().filter("self.isActivity = true").fetch();
 		for (Product product : productList) {
@@ -355,7 +359,40 @@ public class TimesheetServiceImp implements TimesheetService{
 			map.put("id", product.getId().toString());
 			dataList.add(map);
 		}
-		return dataList;
+		response.setData(dataList);
+	}
+	
+	@Transactional
+	public void insertTSLine(ActionRequest request, ActionResponse response){
+		
+		User user = AuthUtils.getUser();
+		ProjectTask projectTask = Beans.get(ProjectTaskRepository.class).find(new Long(request.getData().get("project").toString()));
+		Product product = Beans.get(ProductRepository.class).find(new Long(request.getData().get("activity").toString()));
+		LocalDate date = new LocalDate(request.getData().get("date").toString());
+		if(user != null){
+			Timesheet timesheet = Beans.get(TimesheetRepository.class).all().filter("self.statusSelect = 1 AND self.user.id = ?1", user.getId()).order("-id").fetchOne();
+			if(timesheet == null){
+				timesheet = new Timesheet();
+				timesheet.setUser(user);
+				timesheet.setCompany(user.getActiveCompany());
+				timesheet.setFromDate(date);
+				timesheet.setToDate(date);
+				timesheet.setStatusSelect(TimesheetRepository.STATUS_DRAFT);
+			}
+			TimesheetLine timesheetLine = new TimesheetLine();
+			timesheetLine.setDate(date);
+			timesheetLine.setComments(request.getData().get("comments").toString());
+			timesheetLine.setProduct(product);
+			timesheetLine.setProjectTask(projectTask);
+			timesheetLine.setUser(user);
+			timesheetLine.setToInvoice(new Boolean(request.getData().get("toInvoice").toString()));
+			BigDecimal durationHours = new BigDecimal(Hours.hoursBetween(new LocalTime(0,0), new LocalTime(request.getData().get("duration").toString())).getHours());
+			timesheetLine.setDurationStored(durationHours);
+			timesheetLine.setVisibleDuration(durationHours);
+			timesheet.addTimesheetLineListItem(timesheetLine);
+			
+			Beans.get(TimesheetRepository.class).save(timesheet);
+		}
 	}
 }
 

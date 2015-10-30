@@ -29,11 +29,11 @@
   	<many-to-one name="team" ref="com.axelor.apps.base.db.Team" title="Team"/>
   	
   	<track>
-      <field name="name" />
+      <field name="name"/>
       <message if="true" on="CREATE">Opportunity created</message>
-      <message if="salesStageSelect == 3" tag="important">Needs analysis</message>
-      <message if="salesStageSelect == 9" tag="success">Opportunity won</message>
-      <message if="salesStageSelect == 10" tag="warning">Opportunity lost</message>
+      <message if="salesStageSelect == 2" fields="salesStageSelect" tag="important">Needs analysis</message>
+      <message if="salesStageSelect == 4" fields="salesStageSelect" tag="success">Opportunity won</message>
+      <message if="salesStageSelect == 5" fields="salesStageSelect" tag="warning">Opportunity lost</message>
     </track>
     
   </entity>

@@ -37,12 +37,22 @@ import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.hr.db.Expense;
 import com.axelor.apps.hr.db.ExpenseLine;
 import com.axelor.apps.hr.db.IExpense;
+import com.axelor.apps.hr.db.KilometricAllowance;
+import com.axelor.apps.hr.db.KilometricAllowanceRate;
 import com.axelor.apps.hr.db.repo.ExpenseRepository;
+import com.axelor.apps.hr.db.repo.KilometricAllowanceRateRepository;
+import com.axelor.apps.hr.db.repo.TimesheetRepository;
 import com.axelor.apps.hr.service.config.AccountConfigHRService;
+import com.axelor.apps.project.db.ProjectTask;
+import com.axelor.apps.project.db.repo.ProjectTaskRepository;
+import com.axelor.auth.AuthUtils;
+import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.rpc.ActionRequest;
+import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -279,7 +289,7 @@ public class ExpenseService  {
 		return invoiceLineGenerator.creates();
 	}
 	
-	public List<Map<String,String>> getExpensesTypes(){
+	public void getExpensesTypes(ActionRequest request, ActionResponse response){
 		List<Map<String,String>> dataList = new ArrayList<Map<String,String>>();
 		List<Product> productList = Beans.get(ProductRepository.class).all().filter("self.expense = true").fetch();
 		for (Product product : productList) {
@@ -288,6 +298,73 @@ public class ExpenseService  {
 			map.put("id", product.getId().toString());
 			dataList.add(map);
 		}
-		return dataList;
+		response.setData(dataList);
+	}
+	
+	@Transactional
+	public void insertExpenseLine(ActionRequest request, ActionResponse response){
+		User user = AuthUtils.getUser();
+		ProjectTask projectTask = Beans.get(ProjectTaskRepository.class).find(new Long(request.getData().get("project").toString()));
+		Product product = Beans.get(ProductRepository.class).find(new Long(request.getData().get("expenseType").toString()));
+		if(user != null){
+			Expense expense = Beans.get(ExpenseRepository.class).all().filter("self.statusSelect = 1 AND self.user.id = ?1", user.getId()).order("-id").fetchOne();
+			if(expense == null){
+				expense = new Expense();
+				expense.setUser(user);
+				expense.setCompany(user.getActiveCompany());
+				expense.setStatusSelect(TimesheetRepository.STATUS_DRAFT);
+			}
+			ExpenseLine expenseLine = new ExpenseLine();
+			expenseLine.setExpenseDate(new LocalDate(request.getData().get("date").toString()));
+			expenseLine.setComments(request.getData().get("comments").toString());
+			expenseLine.setExpenseType(product);
+			expenseLine.setToInvoice(new Boolean(request.getData().get("toInvoice").toString()));
+			expenseLine.setProjectTask(projectTask);
+			expenseLine.setUser(user);
+			expenseLine.setUntaxedAmount(new BigDecimal(request.getData().get("amountWithoutVat").toString()));
+			expenseLine.setTotalTax(new BigDecimal(request.getData().get("vatAmount").toString()));
+			expenseLine.setTotalAmount(expenseLine.getUntaxedAmount().add(expenseLine.getTotalTax()));
+			expenseLine.setJustification((byte[])request.getData().get("justification"));
+			expense.addExpenseLineListItem(expenseLine);
+			
+			Beans.get(ExpenseRepository.class).save(expense);
+		}
+	}
+	
+	@Transactional
+	public void insertKMExpenses(ActionRequest request, ActionResponse response){
+		User user = AuthUtils.getUser();
+		ProjectTask projectTask = Beans.get(ProjectTaskRepository.class).find(new Long(request.getData().get("project").toString()));
+		if(user != null){
+			Expense expense = Beans.get(ExpenseRepository.class).all().filter("self.statusSelect = 1 AND self.user.id = ?1", user.getId()).order("-id").fetchOne();
+			if(expense == null){
+				expense = new Expense();
+				expense.setUser(user);
+				expense.setCompany(user.getActiveCompany());
+				expense.setStatusSelect(TimesheetRepository.STATUS_DRAFT);
+			}
+			KilometricAllowance kmAllowance = new KilometricAllowance();
+			kmAllowance.setDistance(new BigDecimal(request.getData().get("kmNumber").toString()));
+			kmAllowance.setCityFrom(request.getData().get("locationFrom").toString());
+			kmAllowance.setCityTo(request.getData().get("locationTo").toString());
+			kmAllowance.setProjectTask(projectTask);
+			kmAllowance.setTypeSelect(new Integer(request.getData().get("allowanceTypeSelect").toString()));
+			kmAllowance.setToInvoice(new Boolean(request.getData().get("toInvoice").toString()));
+			kmAllowance.setReason(request.getData().get("comments").toString());
+			if(user.getEmployee() != null && user.getEmployee().getVehicleFiscalPower() != null){
+				kmAllowance.setVehicleFiscalPower(user.getEmployee().getVehicleFiscalPower());
+				KilometricAllowanceRate kilometricAllowanceRate = Beans.get(KilometricAllowanceRateRepository.class).findByVehicleFiscalPower(user.getEmployee().getVehicleFiscalPower());
+				if(kilometricAllowanceRate != null){
+					BigDecimal rate = kilometricAllowanceRate.getRate();
+					if(rate != null){
+						kmAllowance.setInTaxTotal(rate.multiply(kmAllowance.getDistance()));
+					}
+				}
+			}
+			
+			expense.addKilometricAllowanceListItem(kmAllowance);
+			
+			Beans.get(ExpenseRepository.class).save(expense);
+		}
 	}
 }

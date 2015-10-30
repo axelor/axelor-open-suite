@@ -3,13 +3,13 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
     
-    <grid name="prod-remains-grid" title="Production remains" model="com.axelor.apps.production.db.ProdRemains" editable="true">
+    <grid name="prod-residual-product-grid" title="Residual products" model="com.axelor.apps.production.db.ProdResidualProduct" editable="true">
         <field name="product" form-view="product-form" grid-view="product-grid"/>
         <field name="qty"/>
         <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
     </grid>
     
-    <form name="prod-remains-form" title="Production remains" model="com.axelor.apps.production.db.ProdRemains">
+    <form name="prod-residual-product-form" title="Residual product" model="com.axelor.apps.production.db.ProdResidualProduct">
 		<panel>        
 	        <field name="product" form-view="product-form" grid-view="product-grid"/>
 	        <field name="qty"/>
