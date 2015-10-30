@@ -184,9 +184,14 @@
 		         &lt;/dl&gt;
 		       </viewer>
 		     </field>
-		     <field name="invoicePaymentList" css="right" colSpan="12" showTitle="false" readonly="true">
+		     <field name="invoicePaymentList" colSpan="12" showTitle="false" readonly="true" css="order-subtotal">
               	<viewer> 
-				      Paid on {{record.paymentDate}}          -{{record.amount}} {{record.currency.symbol}}
+				  &lt;span class="form-item-container"&gt;
+         			&lt;dl class="dl-horizontal"&gt;
+	           		 &lt;dt x-translate&gt;Paid on {{record.paymentDate}}&lt;/dt&gt;
+	           		 &lt;dd&gt;-{{record.amount}} {{record.currency.symbol}}&lt;/dd&gt;
+	           		&lt;/dl&gt; 
+           	      &lt;/span&gt;   
       			</viewer>
       			<editor layout="table" x-show-titles="false"> <label title="Paid on"/>
                      <field name="paymentDate"/>

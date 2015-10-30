@@ -38,7 +38,7 @@ import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.ProdProcess;
 import com.axelor.apps.production.db.ProdProcessLine;
 import com.axelor.apps.production.db.ProdProduct;
-import com.axelor.apps.production.db.ProdRemains;
+import com.axelor.apps.production.db.ProdResidualProduct;
 import com.axelor.apps.production.db.repo.ManufOrderRepository;
 import com.axelor.apps.production.exceptions.IExceptionMessage;
 import com.axelor.exception.AxelorException;
@@ -127,14 +127,14 @@ public class ManufOrderServiceImpl implements  ManufOrderService  {
 				new ProdProduct(manufOrder.getProduct(), billOfMaterial.getQty().multiply(manufOrderQty), billOfMaterial.getUnit()));
 
 		// Ajout des restes
-		if(billOfMaterial.getProdRemainsList() != null)  {
+		if(billOfMaterial.getProdResidualProductList() != null)  {
 
-			for(ProdRemains prodRemains : billOfMaterial.getProdRemainsList())  {
+			for(ProdResidualProduct prodResidualProduct : billOfMaterial.getProdResidualProductList())  {
 
-				Product product = productVariantService.getProductVariant(manufOrder.getProduct(), prodRemains.getProduct());
+				Product product = productVariantService.getProductVariant(manufOrder.getProduct(), prodResidualProduct.getProduct());
 
 				manufOrder.addToProduceProdProductListItem(
-						new ProdProduct(product, prodRemains.getQty().multiply(manufOrderQty), prodRemains.getUnit()));
+						new ProdProduct(product, prodResidualProduct.getQty().multiply(manufOrderQty), prodResidualProduct.getUnit()));
 
 			}
 

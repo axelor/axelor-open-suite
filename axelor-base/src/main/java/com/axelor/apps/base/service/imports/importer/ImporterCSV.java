@@ -19,8 +19,6 @@ package com.axelor.apps.base.service.imports.importer;
 
 import java.io.IOException;
 
-import javax.inject.Inject;
-
 import com.axelor.apps.base.db.ImportHistory;
 import com.axelor.apps.base.service.imports.listener.ImporterListener;
 import com.axelor.data.csv.CSVImporter;
@@ -34,7 +32,7 @@ class ImporterCSV extends Importer {
 		
 		ImporterListener listener = new ImporterListener( getConfiguration().getName() ); 		
 		importer.addListener( listener );
-		importer.run(null);
+		importer.run();
 		
 		return addHistory( listener );
 		
