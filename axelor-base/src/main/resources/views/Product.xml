@@ -40,7 +40,7 @@
 	                <button name="$futureQty" title="Future qty" widget="info-button" colSpan="12" onClick="action-stock-move-line-product-default-planned"/>
                 </panel>
                 <field name="versionSelect" colSpan="12"/>
-                <button name="$totalVariants" title="Total variants" widget="info-button" colSpan="12" onClick="action-product-view-total-variants" showIf="totalVariants &gt; 0"/>
+                <button name="$totalVariants" title="Total variants" widget="info-button" colSpan="12" onClick="action-product-view-total-variants" showIf="$totalVariants &gt; 0"/>
 	        </panel>
             <panel colSpan="8">
 				<field name="name" showTitle="false" css="label-bold bold" placeholder="Name"	colSpan="8"/>
