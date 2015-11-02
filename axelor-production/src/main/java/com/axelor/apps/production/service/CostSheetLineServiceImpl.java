@@ -26,12 +26,14 @@ import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
+import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.production.db.CostSheetGroup;
 import com.axelor.apps.production.db.CostSheetLine;
 import com.axelor.apps.production.db.WorkCenter;
 import com.axelor.apps.production.db.repo.CostSheetGroupRepository;
 import com.axelor.apps.production.db.repo.CostSheetLineRepository;
+import com.axelor.exception.AxelorException;
 import com.beust.jcommander.internal.Lists;
 import com.google.inject.Inject;
 
@@ -47,6 +49,9 @@ public class CostSheetLineServiceImpl implements CostSheetLineService  {
 	
 	@Inject
 	protected CostSheetGroupRepository costSheetGroupRepository;
+	
+	@Inject
+	protected UnitConversionService unitConversionService;
 
 	public CostSheetLine createCostSheetLine(String name, String code, int bomLevel, BigDecimal consumptionQty, BigDecimal costPrice, 
 			CostSheetGroup costSheetGroup, Product product, int typeSelect, Unit unit, WorkCenter workCenter, CostSheetLine parentCostSheetLine)  {
@@ -76,27 +81,36 @@ public class CostSheetLineServiceImpl implements CostSheetLineService  {
 		return costSheetLine;
 	}
 
-	public CostSheetLine createProducedProductCostSheetLine(Product product, BigDecimal consumptionQty)  {
+	public CostSheetLine createProducedProductCostSheetLine(Product product, Unit unit, BigDecimal consumptionQty)  {
 		
 		return this.createCostSheetLine(product.getName(), product.getCode(), 0, consumptionQty, null, product.getCostSheetGroup(), 
-				product, CostSheetLineRepository.TYPE_PRODUCED_PRODUCT, product.getUnit(), null, null);
+				product, CostSheetLineRepository.TYPE_PRODUCED_PRODUCT, unit, null, null);
+	}
+	
+	public CostSheetLine createResidualProductCostSheetLine(Product product, Unit unit, BigDecimal consumptionQty) throws AxelorException  {
+		
+		if(generalService.getGeneral().getSubtractProdResidualOnCostSheet())  {  consumptionQty = consumptionQty.negate();  }
+		
+		BigDecimal costPrice = unitConversionService.convert(product.getUnit(), unit, product.getCostPrice().multiply(consumptionQty));
+		
+		return this.createCostSheetLine(product.getName(), product.getCode(), 0, consumptionQty, costPrice, product.getCostSheetGroup(), 
+				product, CostSheetLineRepository.TYPE_PRODUCED_PRODUCT, unit, null, null);
 	}
  	
-	public CostSheetLine createConsumedProductCostSheetLine(Product product, int bomLevel, CostSheetLine parentCostSheetLine, BigDecimal consumptionQty)  {
+	public CostSheetLine createConsumedProductCostSheetLine(Product product, Unit unit, int bomLevel, CostSheetLine parentCostSheetLine, BigDecimal consumptionQty) throws AxelorException  {
 		
-		CostSheetLine costSheetLine = this.createCostSheetLine(product.getName(), product.getCode(), bomLevel, consumptionQty, product.getCostPrice().multiply(consumptionQty), product.getCostSheetGroup(), 
-				product, CostSheetLineRepository.TYPE_CONSUMED_PRODUCT, product.getUnit(), null, parentCostSheetLine);
+		BigDecimal costPrice = unitConversionService.convert(product.getUnit(), unit, product.getCostPrice().multiply(consumptionQty));
 		
-		return costSheetLine;
+		return this.createCostSheetLine(product.getName(), product.getCode(), bomLevel, consumptionQty, costPrice, product.getCostSheetGroup(), 
+				product, CostSheetLineRepository.TYPE_CONSUMED_PRODUCT, unit, null, parentCostSheetLine);
 	
 	}
 	
 	public CostSheetLine createWorkCenterCostSheetLine(WorkCenter workCenter, int priority, int bomLevel, CostSheetLine parentCostSheetLine, BigDecimal consumptionQty, BigDecimal costPrice, Unit unit)  {
 		
-		CostSheetLine costSheetLine = this.createCostSheetLine(workCenter.getName(), priority + " - " + workCenter.getCode(), bomLevel, consumptionQty, costPrice, workCenter.getCostSheetGroup(), 
+		return this.createCostSheetLine(workCenter.getName(), priority + " - " + workCenter.getCode(), bomLevel, consumptionQty, costPrice, workCenter.getCostSheetGroup(), 
 				null, CostSheetLineRepository.TYPE_WORK_CENTER, unit, workCenter, parentCostSheetLine);
 		
-		return costSheetLine;
 	}
  	
 	protected List<CostSheetGroup> getIndirectCostSheetGroups(CostSheetGroup costSheetGroup)  {
@@ -160,7 +174,6 @@ public class CostSheetLineServiceImpl implements CostSheetLineService  {
 		}
 		
 		return null;
-//		return costSheetLineRepository.all().filter("self.parentCostSheetLine = ?1 AND self.costSheetGroup = ?2", parentCostSheetLine, costSheetGroup).fetchOne();
 		
 	}
 	

@@ -49,7 +49,7 @@ public class BillOfMaterialController {
 		
 		response.setView(ActionView
 				.define(String.format(I18n.get("Cost sheet - %s"), billOfMaterial.getName()))
-				.model(BillOfMaterial.class.getName())
+				.model(CostSheet.class.getName())
 				.param("popup", "true")
 				.param("show-toolbar", "false")
 				.param("show-confirm", "false")

@@ -3,7 +3,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
     
-    <grid name="cost-sheet-grid" title="Cost sheet" model="com.axelor.apps.production.db.CostSheet">
+    <grid name="cost-sheet-grid" title="Cost sheet" model="com.axelor.apps.production.db.CostSheet" orderBy="-createdOn">
         <field name="createdOn"/>
 		<field name="createdBy"/>
  		<field name="billOfMaterial" form-view="bill-of-material-form" grid-view="bill-of-material-grid"/>
@@ -12,7 +12,7 @@
   		<field name="costPrice" readonly="true"/>
     </grid>
     
-    <grid name="cost-sheet-bill-of-material-grid" title="Cost sheet" model="com.axelor.apps.production.db.CostSheet">
+    <grid name="cost-sheet-bill-of-material-grid" title="Cost sheet" model="com.axelor.apps.production.db.CostSheet" orderBy="-createdOn">
         <field name="createdOn"/>
 		<field name="createdBy"/>
   		<field name="costPrice" readonly="true"/>

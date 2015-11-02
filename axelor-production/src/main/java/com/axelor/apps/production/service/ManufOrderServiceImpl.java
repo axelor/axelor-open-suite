@@ -122,12 +122,12 @@ public class ManufOrderServiceImpl implements  ManufOrderService  {
 
 		BillOfMaterial billOfMaterial = manufOrder.getBillOfMaterial();
 
-		// Ajout du produit final
+		// add the produced product
 		manufOrder.addToProduceProdProductListItem(
 				new ProdProduct(manufOrder.getProduct(), billOfMaterial.getQty().multiply(manufOrderQty), billOfMaterial.getUnit()));
 
-		// Ajout des restes
-		if(billOfMaterial.getProdResidualProductList() != null)  {
+		// Add the residual products
+		if(generalService.getGeneral().getManageResidualProductOnBom() && billOfMaterial.getProdResidualProductList() != null)  {
 
 			for(ProdResidualProduct prodResidualProduct : billOfMaterial.getProdResidualProductList())  {
 

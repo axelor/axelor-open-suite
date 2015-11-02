@@ -35,6 +35,7 @@ import com.axelor.apps.production.db.CostSheetLine;
 import com.axelor.apps.production.db.ProdHumanResource;
 import com.axelor.apps.production.db.ProdProcess;
 import com.axelor.apps.production.db.ProdProcessLine;
+import com.axelor.apps.production.db.ProdResidualProduct;
 import com.axelor.apps.production.db.WorkCenter;
 import com.axelor.apps.production.db.repo.BillOfMaterialRepository;
 import com.axelor.exception.AxelorException;
@@ -51,7 +52,8 @@ public class CostSheetServiceImpl implements CostSheetService  {
 	
 	protected Unit hourUnit;
 	protected Unit cycleUnit;
-
+	protected boolean manageResidualProductOnBom;
+	protected boolean subtractProdResidualOnCostSheet;
 	
 	protected CostSheet costSheet;
 	
@@ -65,6 +67,9 @@ public class CostSheetServiceImpl implements CostSheetService  {
 		General general = generalService.getGeneral();
 		this.hourUnit = general.getUnitHours();
 		this.cycleUnit = general.getCycleUnit();
+		this.manageResidualProductOnBom = general.getManageResidualProductOnBom();
+		this.subtractProdResidualOnCostSheet = general.getSubtractProdResidualOnCostSheet();
+		
 	}
 	
 	
@@ -73,15 +78,15 @@ public class CostSheetServiceImpl implements CostSheetService  {
 
 		costSheet = new CostSheet();
 		
-		CostSheetLine producedCostSheetLine = costSheetLineService.createProducedProductCostSheetLine(billOfMaterial.getProduct(), billOfMaterial.getQty());
+		CostSheetLine producedCostSheetLine = costSheetLineService.createProducedProductCostSheetLine(billOfMaterial.getProduct(), billOfMaterial.getUnit(), billOfMaterial.getQty());
+		
+		costSheet.addCostSheetLineListItem(producedCostSheetLine);
 		
 		this._computeCostPrice(billOfMaterial, 0, producedCostSheetLine);
 		
-		billOfMaterial.setCostPrice(this.computeCostPrice(producedCostSheetLine));
+		this.computeResidualProduct(billOfMaterial);
 		
-		costSheet.setCostPrice(billOfMaterial.getCostPrice());
-		
-		costSheet.addCostSheetLineListItem(producedCostSheetLine);
+		billOfMaterial.setCostPrice(this.computeCostPrice(costSheet));
 		
 		billOfMaterial.addCostSheetListItem(costSheet);
 		
@@ -90,6 +95,46 @@ public class CostSheetServiceImpl implements CostSheetService  {
 		return costSheet;
 		
 	}
+	
+	
+	protected void computeResidualProduct(BillOfMaterial billOfMaterial) throws AxelorException  {
+		
+		if(this.manageResidualProductOnBom && billOfMaterial.getProdResidualProductList() != null)  {
+			
+			for(ProdResidualProduct prodResidualProduct : billOfMaterial.getProdResidualProductList())  {
+				
+				CostSheetLine costSheetLine = costSheetLineService.createResidualProductCostSheetLine(prodResidualProduct.getProduct(), prodResidualProduct.getUnit(), prodResidualProduct.getQty());
+				
+				costSheet.addCostSheetLineListItem(costSheetLine);
+						
+			}
+			
+		}
+		
+	}
+	
+	
+	protected BigDecimal computeCostPrice(CostSheet costSheet)  {
+		
+		BigDecimal costPrice = BigDecimal.ZERO;
+		
+		if(costSheet.getCostSheetLineList() != null)  {
+			for(CostSheetLine costSheetLine : costSheet.getCostSheetLineList())  {
+				
+				if(costSheetLine.getCostSheetLineList() != null && !costSheetLine.getCostSheetLineList().isEmpty())  {
+					costPrice = costPrice.add(this.computeCostPrice(costSheetLine));
+				}
+				else  {
+					costPrice = costPrice.add(costSheetLine.getCostPrice());
+				}
+			}
+		}
+		
+		costSheet.setCostPrice(costPrice);
+		
+		return costPrice;
+	}
+	
 	
 	protected BigDecimal computeCostPrice(CostSheetLine parentCostSheetLine)  {
 		
@@ -136,9 +181,7 @@ public class CostSheetServiceImpl implements CostSheetService  {
 
 				if(product != null)  {
 					
-					BigDecimal qty = unitConversionService.convert(billOfMaterialLine.getUnit(), product.getUnit(), billOfMaterialLine.getQty());
-					
-					CostSheetLine costSheetLine = costSheetLineService.createConsumedProductCostSheetLine(product, bomLevel, parentCostSheetLine, qty);
+					CostSheetLine costSheetLine = costSheetLineService.createConsumedProductCostSheetLine(product, billOfMaterialLine.getUnit(), bomLevel, parentCostSheetLine, billOfMaterialLine.getQty());
 					
 					if(!billOfMaterialLine.getIsRawMaterial())  {
 						this._computeCostPrice(billOfMaterialLine, bomLevel, costSheetLine);

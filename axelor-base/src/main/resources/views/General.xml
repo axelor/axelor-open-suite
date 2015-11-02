@@ -120,10 +120,18 @@
 			<panel title="Production configuration" if-module="axelor-production">
 				<field name="productionOrderManagement" readonlyIf="productionOrderGenerationAuto"/>
 				<field name="productionOrderGenerationAuto" showIf="productionOrderManagement"/>
-				<field name="workCenterProduct" form-view="product-form" grid-view="product-grid"/>
-		  		<field name="productCostSheetGroup" form-view="cost-sheet-group-form" grid-view="cost-sheet-group-grid" domain="self.costTypeSelect = 1"/>
-	  			<field name="workCenterCostSheetGroup" form-view="cost-sheet-group-form" grid-view="cost-sheet-group-grid" domain="self.costTypeSelect = 2"/>
-	  			<field name="cycleUnit" form-view="unit-form" grid-view="unit-grid"/>
+				<panel title="Bill of material">
+				    <field name="manageResidualProductOnBom"/>
+				</panel>
+				<panel title="Manufacturing process">
+    				<field name="workCenterProduct" form-view="product-form" grid-view="product-grid"/>
+				</panel>
+				<panel title="Cost sheet">
+				    <field name="productCostSheetGroup" form-view="cost-sheet-group-form" grid-view="cost-sheet-group-grid" domain="self.costTypeSelect = 1"/>
+	  				<field name="workCenterCostSheetGroup" form-view="cost-sheet-group-form" grid-view="cost-sheet-group-grid" domain="self.costTypeSelect = 2"/>
+	  				<field name="cycleUnit" form-view="unit-form" grid-view="unit-grid"/>
+					<field name="subtractProdResidualOnCostSheet" showIf="manageResidualProductOnBom"/>
+				</panel>
 			</panel>
 			
 			<panel title="Human Resource configuration" if-module="axelor-human-resource">
@@ -143,6 +151,7 @@
 			</panel>
 		</panel-tabs>				
 	</form>
+	
 	
 	<form model="com.axelor.apps.base.db.Wizard" title="Check duplicate" name="wizard-check-duplicate-form" onNew="action-general-check-duplicate-set-fields-set">
 		<panel-related field="fieldsSet" title="Fields" help="Key fields to check duplicate records" readonly="true" colSpan="12" type="many-to-many" target="com.axelor.meta.db.MetaField" grid-view="meta-field-light-grid"/>
