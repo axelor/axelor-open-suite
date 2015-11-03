@@ -123,6 +123,7 @@
 	<input file="base_product.csv" separator=";" type="com.axelor.apps.base.db.Product" search="self.importId = :importId">
 		<bind to="startDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(startDate)" column="startDate"/>
 		<bind to="createdOn" eval="call:com.axelor.csv.script.ImportDateTime:importDate(startDate)" column="startDate"/>
+		<bind to="fullName" eval="'['+code+']'+name" />
 	</input>
 	
 	<input file="base_supplierCatalog.csv" separator=";" type="com.axelor.apps.base.db.SupplierCatalog"/>
@@ -288,6 +289,8 @@
 	<input file="stock_minStockRules.csv" separator=";" type="com.axelor.apps.stock.db.MinStockRules"/>
 	
 <!--     IMPORT DU PACKAGE 'SUPPLY CHAIN' -->
+	
+	<input file="supplychain_mrpLineType.csv" separator=";" type="com.axelor.apps.supplychain.db.MrpLineType" search="self.code = :code"/>
 	
 	<input file="sale_cancelReason.csv" separator=";" type="com.axelor.apps.sale.db.CancelReason" />
 	

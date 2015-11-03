@@ -17,30 +17,16 @@
  */
 package com.axelor.apps.production.service;
 
-import java.util.List;
-
-import com.axelor.apps.base.db.Product;
 import com.axelor.apps.production.db.BillOfMaterial;
-import com.axelor.apps.sale.db.SaleOrderLine;
+import com.axelor.apps.production.db.CostSheet;
 import com.axelor.exception.AxelorException;
 import com.google.inject.persist.Transactional;
 
-public interface BillOfMaterialService {
+public interface CostSheetService {
 
-	static final String UNIT_MIN_CODE = "MIN";
-	
-	static final String UNIT_DAY_CODE = "JR";
-	
-	
-	public List<BillOfMaterial> getBillOfMaterialList(Product product);
-	
 	
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void updateProductCostPrice(BillOfMaterial billOfMaterial) throws AxelorException;
-		
+	public CostSheet computeCostPrice(BillOfMaterial billOfMaterial) throws AxelorException;
 	
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public BillOfMaterial customizeBillOfMaterial(SaleOrderLine saleOrderLine);
-	
-	
+
 }

@@ -26,7 +26,7 @@
     </grid>
 
    <form name="product-form" title="Product" model="com.axelor.apps.base.db.Product" 
-   onNew="action-group-base-product-onnew" 
+   onNew="action-group-base-product-onnew"
    onLoad="action-group-product-onload" width="large">
     <toolbar>
     		<button name="sendByEmail" title="Send Email" icon="fa-envelope" onClick="action-send-by-email-with-template"/>
@@ -36,14 +36,11 @@
 	    	<panel colSpan="4">
 	        	<field name="picture" showTitle="false" widget="Image" colSpan="5"/>
 	        	<panel colSpan="7" showIf="productTypeSelect == 'storable'" showTitle="false" if-module="axelor-stock">
-		        	<field name="realQty" hidden="true"/>
-	                <field name="futureQty" hidden="true"/>
-	                <button name="realQty" title="Real qty" widget="info-button" colSpan="12" onClick="action-stock-move-line-product-default-realized"/>
-	                <button name="futureQty" title="Future qty" widget="info-button" colSpan="12" onClick="action-stock-move-line-product-default-planned"/>
+	                <button name="$realQty" title="Real qty" widget="info-button" colSpan="12" onClick="action-stock-move-line-product-default-realized"/>
+	                <button name="$futureQty" title="Future qty" widget="info-button" colSpan="12" onClick="action-stock-move-line-product-default-planned"/>
                 </panel>
                 <field name="versionSelect" colSpan="12"/>
-                <field name="totalVariants" type="integer" hidden="true"/>
-                <button name="totalVariants" title="Total variants" widget="info-button" colSpan="12" onClick="action-product-view-total-variants" showIf="totalVariants &gt; 0"/>
+                <button name="$totalVariants" title="Total variants" widget="info-button" colSpan="12" onClick="action-product-view-total-variants" showIf="$totalVariants &gt; 0"/>
 	        </panel>
             <panel colSpan="8">
 				<field name="name" showTitle="false" css="label-bold bold" placeholder="Name"	colSpan="8"/>
@@ -118,12 +115,7 @@
 				</panel>
 			</panel>
 			<panel title="Production informations" onTabSelect="action-product-attrs-readonly-create-production-order" showIf="productTypeSelect != 'service'" showTitle="false" if-module="axelor-production">
-				<field name="defaultBillOfMaterial" onSelect="action-product-attrs-bill-of-material-domain" form-view="bill-of-material-form" grid-view="bill-of-material-grid"/>
-				<field name="lastProductionPrice" readonly="true"/>
-				<panel if-module="axelor-production" colSpan="12">
-					<button name="createProductionOrder" title="Create production order"  onClick="save,action-product-view-create-production-order"/>
-					<panel-dashlet action="action-product-view-show-bill-of-material" colSpan="12"/>
-				</panel>
+				<panel-include view="product-production-form"/>
 			</panel>
 	        <panel title="Tracking number" showIf="productTypeSelect != 'service'" showTitle="false">
         		<panel colSpan="12">
@@ -183,8 +175,8 @@
 	  	</panel-tabs>
 	</form>    
 	
-	<cards name="product-cards" title="Product" model="com.axelor.apps.base.db.Product" cardWidth="25%" >
-		<field name="picture"/>
+	<cards name="product-cards" title="Product" model="com.axelor.apps.base.db.Product" cardWidth="25%">
+		<field name="picture" />
 		<field name="fullName" />
 		<field name="salePrice" />
 		<field name="saleCurrency.symbol" />
@@ -193,7 +185,7 @@
 		<template><![CDATA[
 			<div>
 			  <div class="span4 card-image">
-			    <img ng-src="{{$image(null, 'picture')}}">
+			    <img ng-src="{{$image('picture', 'content')}}" />
 			  </div>
 			  <div class="span8">
 			    <span>{{salePrice}} {{saleCurrency.symbol}}<br/>
@@ -228,6 +220,7 @@
     	<action name="action-product-record-sale-supply-select"/>
     	<action name="action-product-record-in-ati"/>
     	<action name="action-product-attrs-in-ati"/>
+    	<action name="action-product-record-default-production"/>
     </action-group>
     
     <action-group name="action-group-base-product-producttype-onchange">
@@ -290,7 +283,7 @@
     </action-record>
     
     <action-record name="action-product-set-total-variants" model="com.axelor.apps.base.db.Product">
-    	<field name="totalVariants" expr="eval:__repo__.of(Product).all().filter('self.parentProduct.id = ?',id).fetch().size"/>    
+    	<field name="$totalVariants" expr="eval:__repo__.of(Product).all().filter('self.parentProduct.id = ?',id).fetch().size"/>    
     </action-record>
     
     <action-attrs name="action-hide-product-field">

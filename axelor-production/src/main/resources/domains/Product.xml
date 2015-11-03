@@ -10,6 +10,8 @@
   
   	<integer name="versionSelect" title="Version" selection="base.product.version.select"/>
   	
+  	<many-to-one name="costSheetGroup" ref="com.axelor.apps.production.db.CostSheetGroup" title="Cost sheet group"/>
+  	
   	<track>
       <field name="costPrice"/>
     </track>

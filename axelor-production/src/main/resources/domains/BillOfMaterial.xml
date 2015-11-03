@@ -18,11 +18,13 @@
     <many-to-one name="prodProcess" ref="com.axelor.apps.production.db.ProdProcess" title="Production process"/>
   	<one-to-many name="billOfMaterialList" ref="com.axelor.apps.production.db.BillOfMaterial" mappedBy="parentBillOfMaterial" title="BOMs"/>
   	<many-to-one name="parentBillOfMaterial" ref="com.axelor.apps.production.db.BillOfMaterial" title="Parent BOM"/>
-  	<one-to-many name="prodRemainsList" ref="com.axelor.apps.production.db.ProdRemains" title="Production remains"/>
+  	<one-to-many name="prodResidualProductList" ref="com.axelor.apps.production.db.ProdResidualProduct" title="Residual products"/>
   	<decimal name="costPrice" title="Cost price" precision="20" scale="5"/>
     <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"/>
     <boolean name="hasNoManageStock" title="Not manage stock"/>
     <boolean name="personalized" title="Personalized"/>
-    
+  	<one-to-many name="costSheetList" ref="com.axelor.apps.production.db.CostSheet" title="Cost sheets"/>
+
+     	
   </entity>
 </domain-models>

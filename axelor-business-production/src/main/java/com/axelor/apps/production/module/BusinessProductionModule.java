@@ -1,9 +1,8 @@
 package com.axelor.apps.production.module;
 
 import com.axelor.app.AxelorModule;
-
-import com.axelor.apps.production.service.BillOfMaterialServiceBusinessImpl;
-import com.axelor.apps.production.service.BillOfMaterialServiceImpl;
+import com.axelor.apps.production.service.CostSheetServiceBusinessImpl;
+import com.axelor.apps.production.service.CostSheetServiceImpl;
 import com.axelor.apps.production.service.ManufOrderServiceBusinessImpl;
 import com.axelor.apps.production.service.ManufOrderServiceImpl;
 import com.axelor.apps.production.service.OperationOrderServiceBusinessImpl;
@@ -20,7 +19,7 @@ public class BusinessProductionModule extends AxelorModule {
 	@Override
 	protected void configure() {
 		bind(ProductionOrderServiceImpl.class).to(ProductionOrderServiceBusinessImpl.class);
-		bind(BillOfMaterialServiceImpl.class).to(BillOfMaterialServiceBusinessImpl.class);
+		bind(CostSheetServiceImpl.class).to(CostSheetServiceBusinessImpl.class);
 		bind(ManufOrderServiceImpl.class).to(ManufOrderServiceBusinessImpl.class);
 		bind(OperationOrderServiceImpl.class).to(OperationOrderServiceBusinessImpl.class);
 		bind(ProductionOrderServiceImpl.class).to(ProductionOrderServiceBusinessImpl.class);

@@ -3,18 +3,26 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
     
-    <grid name="prod-human-resource-grid" title="Prod. Human resources" model="com.axelor.apps.production.db.ProdHumanResource">
+    <grid name="prod-human-resource-grid" title="Prod. Human resources" editable="true" model="com.axelor.apps.production.db.ProdHumanResource"
+        onNew="action-prod-human-resource-record-default">
         <field name="product" form-view="product-form" grid-view="product-grid"/>
         <field name="employee" form-view="employee-form" grid-view="employee-grid"/>
         <field name="duration" widget="duration" x-big="true" x-seconds="true"/>
+	  	<field name="costSheetGroup" form-view="cost-sheet-group-form" grid-view="cost-sheet-group-grid" domain="self.costTypeSelect = 2"/>
     </grid>
     
-    <form name="prod-human-resource-form" title="Prod. Human resource" model="com.axelor.apps.production.db.ProdHumanResource">
+    <form name="prod-human-resource-form" title="Prod. Human resource" model="com.axelor.apps.production.db.ProdHumanResource"
+        onNew="action-prod-human-resource-record-default">
 		<panel>
 	        <field name="product" form-view="product-form" grid-view="product-grid"/>
 	        <field name="employee" form-view="employee-form" grid-view="employee-grid"/>
 	        <field name="duration" widget="duration" x-big="true" x-seconds="true"/>
+  		  	<field name="costSheetGroup" form-view="cost-sheet-group-form" grid-view="cost-sheet-group-grid" domain="self.costTypeSelect = 2"/>
         </panel>
     </form>
+    
+    <action-record name="action-prod-human-resource-record-default" model="com.axelor.apps.production.db.ProdHumanResource">
+        <field name="costSheetGroup" expr="eval: __config__?.general?.workCenterCostSheetGroup"/>
+    </action-record>
     
 </object-views>
