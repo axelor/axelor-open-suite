@@ -18,17 +18,22 @@
 package com.axelor.apps.crm.web;
 
 import java.io.IOException;
+import java.text.ParseException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.mail.MessagingException;
 
+import net.fortuna.ical4j.model.ValidationException;
+
 import org.joda.time.Duration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.base.db.IAdministration;
+import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.ical.ICalendarException;
 import com.axelor.apps.base.service.MapService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.crm.db.Event;
@@ -42,12 +47,14 @@ import com.axelor.apps.crm.service.LeadService;
 import com.axelor.apps.crm.service.config.CrmConfigService;
 import com.axelor.apps.message.db.Template;
 import com.axelor.auth.AuthUtils;
+import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.google.common.base.Strings;
 import com.google.inject.Inject;
 
 public class EventController {
@@ -266,5 +273,43 @@ public class EventController {
 		}
 		
 	}
-
+	
+	public void addUserGuest(ActionRequest request, ActionResponse response) throws ClassNotFoundException, InstantiationException, IllegalAccessException, AxelorException, MessagingException, IOException, ICalendarException, ValidationException, ParseException{
+		Event event = request.getContext().asType(Event.class);
+		if(request.getContext().containsKey("guestPartner")){
+			User user = (User) request.getContext().get("guestUser");
+			if(user != null){
+				event = eventRepo.find(event.getId());
+				eventService.addUserGuest(user, event);
+			}
+		}
+		
+		response.setReload(true);
+	}
+	
+	public void addPartnerGuest(ActionRequest request, ActionResponse response) throws ClassNotFoundException, InstantiationException, IllegalAccessException, AxelorException, MessagingException, IOException, ICalendarException, ValidationException, ParseException{
+		Event event = request.getContext().asType(Event.class);
+		if(request.getContext().containsKey("guestPartner")){
+			Partner partner = (Partner) request.getContext().get("guestPartner");
+			if(partner != null){
+				event = eventRepo.find(event.getId());
+				eventService.addPartnerGuest(partner, event);
+			}
+		}
+		
+		response.setReload(true);
+	}
+	
+	public void addEmailGuest(ActionRequest request, ActionResponse response) throws ClassNotFoundException, InstantiationException, IllegalAccessException, AxelorException, MessagingException, IOException, ICalendarException, ValidationException, ParseException{
+		Event event = request.getContext().asType(Event.class);
+		if(request.getContext().containsKey("guestEmail")){
+			String email = request.getContext().get("guestEmail").toString();
+			if(!Strings.isNullOrEmpty(email)){
+				event = eventRepo.find(event.getId());
+				eventService.addEmailGuest(email, event);
+			}
+		}
+		response.setReload(true);
+	}
+	
 }

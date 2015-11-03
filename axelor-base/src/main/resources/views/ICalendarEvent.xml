@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
+	
+	<grid name="calendar-event-grid" model="com.axelor.apps.base.db.ICalendarEvent" title="Events">
+	  <field name="summary" />
+	  <field name="startDate" />
+	  <field name="endDate" />
+	  <field name="allDay" />
+	</grid>
+	
+	<form name="calendar-event-form" model="com.axelor.apps.base.db.ICalendarEvent" title="Event" >
+	  <field name="summary" />
+	  <field name="status" />
+	  <field name="allDay" />
+	  <field name="organizer" />
+	  <field name="startDateTime" />
+	  <field name="endDateTime" />
+	  <field name="location" />
+	  <field name="geo" />
+	  <notebook>
+	    <page title="Attendees" cols="1">
+	      <field name="attendees" />
+	    </page>
+	    <page title="Description" cols="1">
+	      <field name="description" />
+	    </page>
+	  </notebook>
+	</form>
+	
+	<calendar name="calendar-all" model="com.axelor.apps.base.db.ICalendarEvent" title="Calendar"
+	  eventStart="startDate" eventStop="endDate" colorBy="calendar">
+	  <field name="summary" />
+	</calendar>
+
+</object-views>

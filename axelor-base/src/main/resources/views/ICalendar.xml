@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
+
+	<grid name="calendar-grid" model="com.axelor.apps.base.db.ICalendar" title="Calendars">
+	  <field name="name" />
+	</grid>
+	
+	<form name="calendar-form" model="com.axelor.apps.base.db.ICalendar" title="Calendar" >
+	  <field name="name" />
+	  <field name="keepRemote" />
+	  <field name="events" colSpan="4" />
+	</form>
+
+</object-views>

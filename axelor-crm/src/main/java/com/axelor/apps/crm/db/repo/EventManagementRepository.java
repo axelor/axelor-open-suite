@@ -1,11 +1,17 @@
 package com.axelor.apps.crm.db.repo;
 
+import com.axelor.apps.crm.db.Calendar;
 import com.axelor.apps.crm.db.Event;
+import com.axelor.apps.crm.service.CalendarService;
 import com.axelor.apps.crm.service.EventService;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
+import com.google.inject.Inject;
 
 public class EventManagementRepository extends EventRepository {
-
+	
+	@Inject
+	protected CalendarService calendarService;
 
 	@Override
 	public Event copy(Event entity, boolean deep) {
@@ -34,6 +40,28 @@ public class EventManagementRepository extends EventRepository {
 		}
 		
 		return super.save(entity);
+	}
+	
+	
+	@Override
+	public void remove(Event entity) {
+		try{
+			calendarService.removeEventFromIcal(entity);
+		}
+		catch(Exception e){
+			TraceBackService.trace(e);
+		}
+		Calendar calendar = entity.getCalendarCrm();
+		super.remove(entity);
+		if(calendar != null){
+			try{
+				calendarService.sync(calendar);
+			}
+			catch(Exception e){
+				TraceBackService.trace(e);
+			}
+		}
+		
 	}
 
 }

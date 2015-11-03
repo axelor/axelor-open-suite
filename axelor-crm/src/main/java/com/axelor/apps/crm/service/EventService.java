@@ -17,27 +17,42 @@
  */
 package com.axelor.apps.crm.service;
 
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 import javax.mail.MessagingException;
+
+import net.fortuna.ical4j.model.Calendar;
+import net.fortuna.ical4j.model.ValidationException;
+import net.fortuna.ical4j.model.property.Method;
 
 import org.joda.time.Duration;
 import org.joda.time.Interval;
 import org.joda.time.LocalDateTime;
 
 import com.axelor.apps.base.db.Address;
+import com.axelor.apps.base.db.ICalendarUser;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.ical.ICalendarException;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.crm.db.Event;
 import com.axelor.apps.crm.db.Lead;
 import com.axelor.apps.crm.db.repo.EventRepository;
 import com.axelor.apps.crm.exception.IExceptionMessage;
 import com.axelor.apps.crm.service.config.CrmConfigService;
+import com.axelor.apps.message.db.EmailAddress;
 import com.axelor.apps.message.db.Message;
 import com.axelor.apps.message.db.Template;
+import com.axelor.apps.message.db.repo.EmailAddressRepository;
+import com.axelor.apps.message.db.repo.MessageRepository;
+import com.axelor.apps.message.service.MailAccountService;
 import com.axelor.apps.message.service.MessageService;
 import com.axelor.apps.message.service.TemplateMessageService;
 import com.axelor.auth.db.User;
@@ -46,6 +61,7 @@ import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.mail.db.repo.MailFollowerRepository;
+import com.axelor.meta.db.MetaFile;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -63,6 +79,8 @@ public class EventService {
 	
 	@Inject
 	protected MailFollowerRepository mailFollowerRepo;
+	
+	static final String REQUEST = "REQUEST";
 
 	public Duration computeDuration(LocalDateTime startDateTime, LocalDateTime endDateTime)  {
 
@@ -127,8 +145,10 @@ public class EventService {
 	
 	public void manageFollowers(Event event){
 		Set<User> currentUsersSet = event.getInternalGuestSet();
-		for (User user : currentUsersSet) {
-			mailFollowerRepo.follow(event, user);
+		if(currentUsersSet != null){
+			for (User user : currentUsersSet) {
+				mailFollowerRepo.follow(event, user);
+			}
 		}
 	}
 	
@@ -270,5 +290,123 @@ public class EventService {
 		message.addToEmailAddressSetItem(event.getUser().getPartner().getEmailAddress());
 		message = Beans.get(MessageService.class).sendByEmail(message);
 	}
-		
+	
+	@Transactional
+	public void addUserGuest(User user, Event event) throws ClassNotFoundException, InstantiationException, IllegalAccessException, AxelorException, MessagingException, IOException, ICalendarException, ValidationException, ParseException{
+		if(user.getPartner() != null && user.getPartner().getEmailAddress() != null){
+			String email = user.getPartner().getEmailAddress().getAddress();
+			if(event.getAttendees() != null && !Strings.isNullOrEmpty(email)){
+				boolean exist = false;
+				for (ICalendarUser attendee : event.getAttendees()) {
+					if(email.equals(attendee.getEmail())){
+						exist = true;
+						break;
+					}
+				}
+				if(!exist){
+					ICalendarUser calUser = new ICalendarUser();
+					calUser.setEmail(email);
+					calUser.setName(user.getFullName());
+					event.addAttendee(calUser);
+					eventRepo.save(event);
+					if(event.getCalendarCrm() != null){
+						Beans.get(CalendarService.class).sync(event.getCalendarCrm());
+					}
+					this.sendMail(event, email);
+				}
+			}
+		}
+	}
+	
+	@Transactional
+	public void addPartnerGuest(Partner partner, Event event) throws ClassNotFoundException, InstantiationException, IllegalAccessException, AxelorException, MessagingException, IOException, ICalendarException, ValidationException, ParseException{
+		if(partner.getEmailAddress() != null){
+			String email = partner.getEmailAddress().getAddress();
+			if(event.getAttendees() != null && !Strings.isNullOrEmpty(email)){
+				boolean exist = false;
+				for (ICalendarUser attendee : event.getAttendees()) {
+					if(email.equals(attendee.getEmail())){
+						exist = true;
+						break;
+					}
+				}
+				if(!exist){
+					ICalendarUser calUser = new ICalendarUser();
+					calUser.setEmail(email);
+					calUser.setName(partner.getFullName());
+					event.addAttendee(calUser);
+					eventRepo.save(event);
+					if(event.getCalendarCrm() != null){
+						Beans.get(CalendarService.class).sync(event.getCalendarCrm());
+					}
+					this.sendMail(event, email);
+					
+				}
+			}
+		}
+	}
+	
+	@Transactional
+	public void addEmailGuest(String email, Event event) throws ClassNotFoundException, InstantiationException, IllegalAccessException, AxelorException, MessagingException, IOException, ICalendarException, ValidationException, ParseException{
+		if(event.getAttendees() != null && !Strings.isNullOrEmpty(email)){
+			boolean exist = false;
+			for (ICalendarUser attendee : event.getAttendees()) {
+				if(email.equals(attendee.getEmail())){
+					exist = true;
+					break;
+				}
+			}
+			if(!exist){
+				ICalendarUser calUser = new ICalendarUser();
+				calUser.setEmail(email);
+				calUser.setName(email);
+				event.addAttendee(calUser);
+				eventRepo.save(event);
+			}
+		}
+	}
+	
+	@Transactional
+	public void sendMail(Event event, String email) throws AxelorException, MessagingException, IOException, ClassNotFoundException, InstantiationException, IllegalAccessException, ValidationException, ParseException, ICalendarException{
+		EmailAddress emailAddress = null;
+		emailAddress = Beans.get(EmailAddressRepository.class).all().filter("self.address = ?1", email).fetchOne();
+		if(emailAddress == null){
+			emailAddress = new EmailAddress(email);
+		}
+		Template guestAddedTemplate = Beans.get(CrmConfigService.class).getCrmConfig(event.getUser().getActiveCompany()).getMeetingGuestAddedTemplate();
+		Message message = new Message();
+		if(guestAddedTemplate == null){
+			
+			if(message.getFromEmailAddress() == null){
+				message.setFromEmailAddress(event.getUser().getPartner().getEmailAddress());
+			}
+			message.addToEmailAddressSetItem(emailAddress);
+			message.setSubject(event.getSubject());
+			message.setMailAccount(Beans.get(MailAccountService.class).getDefaultMailAccount());
+		}
+		else{
+			message = Beans.get(TemplateMessageService.class).generateMessage(event, guestAddedTemplate);
+			if(message.getFromEmailAddress() == null){
+				message.setFromEmailAddress(event.getUser().getPartner().getEmailAddress());
+			}
+			message.addToEmailAddressSetItem(emailAddress);	
+		}
+		if(event.getUid() != null){
+			CalendarService calendarService = Beans.get(CalendarService.class);
+			Calendar cal = calendarService.getCalendar(event.getUid(), event.getCalendarCrm());
+			cal.getProperties().add(Method.REQUEST);
+			File file = calendarService.export(cal);
+			Path filePath = file.toPath();
+			MetaFile metaFile = new MetaFile();
+			metaFile.setFileName( file.getName() );
+			metaFile.setFileType( Files.probeContentType( filePath ) );
+			metaFile.setFileSize( Files.size( filePath ) );
+			metaFile.setFilePath( file.getName() );
+			Set<MetaFile> fileSet = new HashSet<MetaFile>();
+			fileSet.add(metaFile);
+			Beans.get(MessageRepository.class).save(message);
+			Beans.get(MessageService.class).attachMetaFiles(message, fileSet);
+		}
+		message = Beans.get(MessageService.class).sendByEmail(message);
+	}
 }

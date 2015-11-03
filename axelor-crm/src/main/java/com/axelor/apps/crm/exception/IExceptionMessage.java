@@ -64,5 +64,10 @@ public interface IExceptionMessage {
 	static final String CRM_CONFIG_1 = /*$$(*/ "Please configure informations for CRM for company %s" /*)*/;
 	static final String CRM_CONFIG_TEMPLATES = /*$$(*/ "Please configure all templates in CRM configuration for company %s" /*)*/;
 	static final String CRM_CONFIG_TEMPLATES_NONE = /*$$(*/ "No template created in CRM configuration for company %s, emails have not been sent" /*)*/;
-
+	
+	
+	/**
+	 * Calendar
+	 */
+	static final String CALENDAR_NOT_VALID = /*$$(*/ "Calendar configuration not valid" /*)*/;
 }

@@ -4,11 +4,6 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
     
     <grid name="event-grid" title="Events" model="com.axelor.apps.crm.db.Event" orderBy="startDateTime">
-    	<toolbar>
-    		<button name="exportCalendar" title="Export calendar" onClick="com.axelor.apps.crm.web.CalendarController:exportCalendar"  />
-    		<button name="importCalendar" title="Import calendar" onClick="com.axelor.apps.crm.web.CalendarController:importCalendar"  />
-    		<button name="synchronizeCalendars" title="Synchronize calendar" onClick="com.axelor.apps.crm.web.CalendarController:synchronizeCalendars"  />
-    	</toolbar>
     	<field name="subject"/>
         <field name="typeSelect"/>
         <field name="startDateTime"/>
@@ -38,13 +33,8 @@
     
 	<form  onLoad="action-group-crm-event-onload" onNew="action-group-crm-event-onnew" name="event-form" title="Events" model="com.axelor.apps.crm.db.Event"
 			onSave="action-event-record-subjectTeam">
-		<toolbar>
-			<button name="exportCalendar" title="Export calendar"   onClick="com.axelor.apps.crm.web.CalendarController:exportCalendar"/>
-			<button name="importCalendar" title="Import calendar"   onClick="com.axelor.apps.crm.web.CalendarController:importCalendar"/>
-			<button name="synchronizeCalendars" title="Synchronize calendars"   onClick="com.axelor.apps.crm.web.CalendarController:synchronizeCalendars"/>
-		</toolbar>
 		<panel colSpan="12">
-			<field name="calendar" widget="SuggestBox"/>
+			<field name="calendarCrm" widget="SuggestBox"/>
 		</panel>
 		<panel colSpan="12">
 			<field name="subject" colSpan="6"/>
@@ -79,6 +69,22 @@
 			<field name="contactPartner" onChange="action-group-crm-meeting-contactpartner-onchange" onSelect="action-event-attrs-contact-partner-domain" domain="self.isContact = true" form-view="partner-contact-form" grid-view="partner-contact-grid"/>
 			<field name="lead" onChange="action-meeting-set-location-lead" form-view="lead-form" grid-view="lead-grid"/>
 			<field name="relatedToSelect" widget="RefSelect" x-related="relatedToSelectId"/>
+		</panel>
+		<panel title="Add Guests" sidebar="true">
+			<field name="$guestUser" title="Existing user" colSpan="9" type="many-to-one" target="com.axelor.auth.db.User"/>
+			<button name="addNewGuestUser" title="Add" colSpan="3" onClick="save, action-event-method-add-user-guest"/>
+			<field name="$guestPartner" title="Existing customer/supplier/contact" colSpan="9" type="many-to-one" target="com.axelor.apps.base.db.Partner"/>
+			<button name="addNewGuestPartner" title="Add" colSpan="3" onClick="save, action-event-method-add-partner-guest"/>
+			<field name="$guestEmail" title="new email address" colSpan="9" type="string"/>
+			<button name="addNewGuestEmail" title="Add" colSpan="3" onClick="save, action-event-method-add-email-guest"/>
+		</panel>
+		<panel sidebar="true" title="Guests">
+			<field name="attendees" canNew="false" canSelect="false" showTitle="true">
+				<editor layout="table" x-show-titles="false">
+					<field name="name" readonly="true"/>
+					<field name="statusSelect" widget="RadioSelect"/>
+		        </editor>
+			</field>
 		</panel>
 	</form>
 	
@@ -207,9 +213,21 @@
 		<panel name="meetingAttributes" sidebar="true" title="Attributes">
 			<field name="meetingType" widget="SuggestBox" form-view="meeting-type-form" grid-view="meeting-type-grid"/>
 		</panel>
-		<panel name="meetingGuests" sidebar="true" title="Guests">
-			<field name="internalGuestSet" widget="TagSelect"/>
-			<field name="externalGuestSet" widget="TagSelect"/>
+		<panel title="Add Guests" sidebar="true">
+			<field name="$guestUser" title="Existing user" colSpan="9" type="many-to-one" target="com.axelor.auth.db.User"/>
+			<button name="addNewGuestUser" title="Add" colSpan="3" onClick="save, action-event-method-add-user-guest"/>
+			<field name="$guestPartner" title="Existing customer/supplier/contact" colSpan="9" type="many-to-one" target="com.axelor.apps.base.db.Partner"/>
+			<button name="addNewGuestPartner" title="Add" colSpan="3" onClick="save, action-event-method-add-partner-guest"/>
+			<field name="$guestEmail" title="new email address" colSpan="9" type="string"/>
+			<button name="addNewGuestEmail" title="Add" colSpan="3" onClick="save, action-event-method-add-email-guest"/>
+		</panel>
+		<panel sidebar="true" title="Guests">
+			<field name="attendees" canNew="false" canSelect="false" showTitle="true">
+				<editor layout="table" x-show-titles="false">
+					<field name="name" readonly="true"/>
+					<field name="statusSelect" widget="RadioSelect"/>
+		        </editor>
+			</field>
 		</panel>
 		<panel name="meetingLinked" sidebar="true" title="Linked to" >
 			<field name="clientPartner" onChange="action-meeting-set-location-partner,action-partner-attrs-hide-contact-partner" form-view="partner-form" grid-view="partner-grid"/>
@@ -224,6 +242,18 @@
 	  	</panel-mail>
 	</form>
     
+    
+    <action-method name="action-event-method-add-user-guest">
+    	<call class="com.axelor.apps.crm.web.EventController" method="addUserGuest"/>
+    </action-method>
+    
+    <action-method name="action-event-method-add-partner-guest">
+    	<call class="com.axelor.apps.crm.web.EventController" method="addPartnerGuest"/>
+    </action-method>
+    
+    <action-method name="action-event-method-add-email-guest">
+    	<call class="com.axelor.apps.crm.web.EventController" method="addEmailGuest"/>
+    </action-method>
     
     <action-group name="action-group-crm-meeting-contactpartner-onchange">
     	<action name="action-event-record-client-partner"/>

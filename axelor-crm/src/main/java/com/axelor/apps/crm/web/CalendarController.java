@@ -17,9 +17,13 @@
  */
 package com.axelor.apps.crm.web;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.SocketException;
+import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.List;
 
 import net.fortuna.ical4j.connector.ObjectNotFoundException;
 import net.fortuna.ical4j.connector.ObjectStoreException;
@@ -27,9 +31,27 @@ import net.fortuna.ical4j.data.ParserException;
 import net.fortuna.ical4j.model.ConstraintViolationException;
 import net.fortuna.ical4j.model.ValidationException;
 
+import com.axelor.apps.base.db.ICalendarEvent;
+import com.axelor.apps.base.db.ImportConfiguration;
+import com.axelor.apps.base.db.Team;
+import com.axelor.apps.base.ical.ICalendarException;
+import com.axelor.apps.crm.db.Calendar;
+import com.axelor.apps.crm.db.CalendarConfiguration;
+import com.axelor.apps.crm.db.Event;
+import com.axelor.apps.crm.db.repo.CalendarConfigurationRepository;
+import com.axelor.apps.crm.db.repo.CalendarRepository;
+import com.axelor.apps.crm.db.repo.EventRepository;
+import com.axelor.apps.crm.exception.IExceptionMessage;
 import com.axelor.apps.crm.service.CalendarService;
+import com.axelor.auth.AuthUtils;
+import com.axelor.auth.db.User;
+import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
+import com.axelor.meta.MetaFiles;
+import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.google.common.base.Joiner;
 import com.google.inject.Inject;
 
 public class CalendarController {
@@ -37,18 +59,120 @@ public class CalendarController {
 	@Inject
 	private CalendarService calendarService;
 	
-	public void exportCalendar(ActionRequest request, ActionResponse response) throws IOException, ParserException, ValidationException, ObjectStoreException, ObjectNotFoundException {
-		
-		calendarService.exportCalendar();
+	public void exportCalendar(ActionRequest request, ActionResponse response) throws IOException, ParserException, ValidationException, ObjectStoreException, ObjectNotFoundException, ParseException {
+		Calendar cal = request.getContext().asType(Calendar.class);
+		calendarService.export(cal);
 	}
 	
-	public void importCalendar(ActionRequest request, ActionResponse response) throws IOException, ParserException {
+	public void importCalendarFile(ActionRequest request, ActionResponse response) throws IOException, ParserException
+	{
+
+		ImportConfiguration imp = request.getContext().asType(ImportConfiguration.class);
+		Object object = request.getContext().get("_id");
+		Calendar cal = null;
+		if(object != null){
+			Long id = Long.valueOf(object.toString());
+			cal = Beans.get(CalendarRepository.class).find(id);
+		}
 		
-		calendarService.importCalendar();
+		if(cal == null){
+			cal = new Calendar();
+		}
+		
+		
+		File data = MetaFiles.getPath( imp.getDataMetaFile() ).toFile();
+
+		calendarService.importCalendar(cal, data);
+		response.setCanClose(true);
+		response.setReload(true);
+		
 	}
 	
-	public void synchronizeCalendars(ActionRequest request, ActionResponse response) throws MalformedURLException, SocketException, ObjectStoreException, ObjectNotFoundException, ConstraintViolationException {
+	public void importCalendar(ActionRequest request, ActionResponse response) throws IOException, ParserException 
+	{
+		Calendar cal = request.getContext().asType(Calendar.class);
+		response.setView(ActionView
+					  		.define(I18n.get(IExceptionMessage.LEAD_5))
+					  		.model("com.axelor.apps.base.db.ImportConfiguration")
+					  		.add("form", "import-calendar-form")
+					  		.param("popup", "reload")
+					  		.param("forceEdit", "true")
+					  		.param("show-toolbar", "false")
+					  		.param("show-confirm", "false")
+					  		.context("_id", cal.getId())
+					  		.map());
+	}
+	
+	public void testConnect(ActionRequest request, ActionResponse response) throws Exception
+	{
+		Calendar cal = request.getContext().asType(Calendar.class);
+		if (calendarService.testConnect(cal))
+			response.setValue("isValid", true);
+		else
+			response.setAlert("Login and password do not match.");
 		
-		calendarService.synchronizeCalendars(null);
+	}
+	
+	public void showMyEvents(ActionRequest request, ActionResponse response){
+		User user = AuthUtils.getUser();
+		List<Long> eventIdlist = new ArrayList<Long>();
+		List<CalendarConfiguration> calConfList = Beans.get(CalendarConfigurationRepository.class).all().filter("self.calendarUser.id = ?1", user.getId()).fetch();
+		for (CalendarConfiguration calendarConfiguration : calConfList) {
+			for (Calendar calendar : calendarConfiguration.getCalendarSet()) {
+				for (ICalendarEvent event : calendar.getEventsCrm()) {
+					eventIdlist.add(event.getId());
+				}
+			}
+		}
+		List<Event> eventList = Beans.get(EventRepository.class).all().filter("self.user.id = ?1", user.getId()).fetch();
+		for (Event event : eventList) {
+			eventIdlist.add(event.getId());
+		}
+		response.setView(ActionView
+	            .define(I18n.get("My Calendar"))
+	            .model(Event.class.getName())
+				.add("calendar", "event-calendar-color-by-calendar")
+	            .add("grid", "event-grid")
+	            .add("form", "event-form")
+	            .context("_typeSelect", 2)
+	            .domain("self.id in ("+Joiner.on(",").join(eventIdlist)+")")
+	            .map());
+	}
+	
+	public void showTeamEvents(ActionRequest request, ActionResponse response){
+		User user = AuthUtils.getUser();
+		Team team = user.getActiveTeam();
+		List<Long> eventIdlist = new ArrayList<Long>();
+		List<CalendarConfiguration> calConfList = Beans.get(CalendarConfigurationRepository.class).all().filter("self.calendarUser.id in (?1)", Joiner.on(",").join(team.getUserSet())).fetch();
+		for (CalendarConfiguration calendarConfiguration : calConfList) {
+			for (Calendar calendar : calendarConfiguration.getCalendarSet()) {
+				for (ICalendarEvent event : calendar.getEventsCrm()) {
+					eventIdlist.add(event.getId());
+				}
+			}
+		}
+		List<Event> eventList = Beans.get(EventRepository.class).all().filter("self.user.id in (?1) OR self.team.id = ?2", Joiner.on(",").join(team.getUserSet()), team.getId()).fetch();
+		for (Event event : eventList) {
+			eventIdlist.add(event.getId());
+		}
+		response.setView(ActionView
+	            .define(I18n.get("Team Calendar"))
+	            .model(Event.class.getName())
+				.add("calendar", "event-calendar-color-by-calendar")
+	            .add("grid", "event-grid")
+	            .add("form", "event-form")
+	            .context("_typeSelect", 2)
+	            .domain("self.id in ("+Joiner.on(",").join(eventIdlist)+")")
+	            .map());
+	}
+	
+	public void synchronizeCalendar(ActionRequest request, ActionResponse response) throws MalformedURLException, SocketException, ObjectStoreException, ObjectNotFoundException, ConstraintViolationException, ICalendarException {
+		Calendar cal = request.getContext().asType(Calendar.class);
+		cal = Beans.get(CalendarRepository.class).find(cal.getId());
+		calendarService.sync(cal);
+		response.setReload(true);
 	}
 }
+
+
+

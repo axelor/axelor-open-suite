@@ -159,29 +159,18 @@
 		
 	<menuitem name="crm-root-meeting-my-calendar" parent="crm-root"
 		title="My Calendar" action="crm.root.meeting.my.calendar" />
-
-	<action-view name="crm.root.meeting.my.calendar" title="My Calendar"
-		model="com.axelor.apps.crm.db.Event" >
-		<view type="calendar" name="event-calendar-color-by-calendar"/>
-		<view type="grid" name="event-grid"/>
-		<view type="form" name="event-form"/>
-		<domain>self.user = :__user__</domain>
-		<context name="_typeSelect" expr="2"/>
-	</action-view>
+	
+	
+	<action-method name="crm.root.meeting.my.calendar">
+		<call class="com.axelor.apps.crm.web.CalendarController" method="showMyEvents"/>
+	</action-method>
 	
 	<menuitem name="crm-root-meeting-team-calendar" parent="crm-root"
 		title="Team Calendar" action="crm.root.meeting.team.calendar"/>
 		
-	<action-view name="crm.root.meeting.team.calendar" title="Team Calendar"
-		model="com.axelor.apps.crm.db.Event" >
-		<view type="calendar" name="event-calendar-color-by-user"/>
-		<view type="grid" name="event-grid"/>
-		<view type="form" name="event-form"/>
-		<domain>self.team = :_myActiveTeam</domain>
-		<context name="_internalUser" expr="eval: __user__.id"/>
-		<context name="_typeSelect" expr="2"/>
-		<context name="_myActiveTeam" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"/>
-	</action-view>
+	<action-method name="crm.root.meeting.team.calendar">
+		<call class="com.axelor.apps.crm.web.CalendarController" method="showTeamEvents"/>
+	</action-method>
 	
 <!-- 	<action-view title="My Meetings Calendar"  model="com.axelor.apps.crm.db.Event" name="crm.root.meeting.my.calendar"> -->
 <!-- 	    <view type="calendar" name="event-calendar"/> -->

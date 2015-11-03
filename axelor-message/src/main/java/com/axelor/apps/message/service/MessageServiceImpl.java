@@ -250,13 +250,15 @@ public class MessageServiceImpl implements MessageService {
 	public List<String> getEmailAddresses(Set<EmailAddress> emailAddressSet)  {
 		               
 	   List<String> recipients = Lists.newArrayList();
-	   
-	   for(EmailAddress emailAddress : emailAddressSet)  {
+	   if(emailAddressSet != null){
+		   for(EmailAddress emailAddress : emailAddressSet)  {
 	           
-           if( Strings.isNullOrEmpty( emailAddress.getAddress() ) ) { continue; }
-           recipients.add( emailAddress.getAddress() );
-           
+	           if( Strings.isNullOrEmpty( emailAddress.getAddress() ) ) { continue; }
+	           recipients.add( emailAddress.getAddress() );
+	           
+		   }
 	   }
+	   
 	   
 	   return recipients;
 	}

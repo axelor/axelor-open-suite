@@ -29,6 +29,13 @@
         	<panel-related field="importHistoryList" title="Historical" form-view="import-history-form" grid-view="import-history-grid" readonly="true"/>
         </panel-tabs>
 	</form>
+	
+	<form name="import-calendar-form" title="Import calendar" model="com.axelor.apps.base.db.ImportConfiguration" width="large">
+        <panel>
+    		<field name="dataMetaFile" onSelect="action-attrs-calendar-type-file" canNew="true" form-view="meta-file-form" grid-view="meta-file-grid"/>
+    		<button name="import" title="Import Calendar" colSpan="5" onClick="com.axelor.apps.crm.web.CalendarController:importCalendarFile" prompt="Are you sure you want to start the import?" />
+        </panel>      	
+	</form>
   
     <action-method name="action-import-configuration-method-run">
       <call class="com.axelor.apps.base.web.ImportConfigurationController" method="run"/>
@@ -41,6 +48,10 @@
    <action-attrs model="com.axelor.apps.base.db.ImportConfiguration" name="action-attar-set-data-meta-file-domain">
      <attribute name="domain" for="dataMetaFile" expr="eval: &quot;self.id != ${bindMetaFile?.id} and self.mime='text/csv'&quot;" if="typeSelect=='csv'"/>
      <attribute name="domain" for="dataMetaFile" expr="eval: &quot;self.id != ${bindMetaFile?.id} and self.mime='text/xml'&quot;" if="typeSelect=='xml'"/>
+   </action-attrs>
+   
+   <action-attrs model="com.axelor.apps.base.db.ImportConfiguration" name="action-attrs-calendar-type-file">
+     <attribute name="domain" for="dataMetaFile" expr="eval: &quot;self.id != ${bindMetaFile?.id} and self.mime='text/csv'&quot;" if="typeSelect=='ics'"/>
    </action-attrs>
    
 </object-views>
