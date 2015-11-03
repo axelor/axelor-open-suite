@@ -40,26 +40,40 @@
 			<field name="subject" colSpan="6"/>
 			<field name="location" colSpan="5" css="highlight" showIf="typeSelect == 2"/>
 			<button name="viewOnMap" colSpan="1" icon="fa-map-marker" showIf="typeSelect == 2" onClick="com.axelor.apps.crm.web.EventController:viewMap"/>
-			<field name="startDateTime" colSpan="4" onChange="action-event-method-compute-from-start-date-time"/>
+			<field name="startDateTime" colSpan="3" onChange="action-event-method-compute-from-start-date-time"/>
 			<field name="duration" widget="duration" colSpan="2" onChange="action-event-method-compute-from-duration" x-big="true"/>
+			<field name="endDateTime" colSpan="3" onChange="action-event-method-compute-from-end-date-time"/>
 			<field name="limitDateT" colSpan="4" showIf="typeSelect == 3"/>
-			<field name="endDateTime" colSpan="4" onChange="action-event-method-compute-from-end-date-time"/>
-			<spacer colSpan="8"/>
 			<field name="user" form-view="user-form" grid-view="user-grid"/>
 			<field name="team" onSelect="action-event-attrs-team-domain" form-view="team-form" grid-view="team-grid" if="__config__.general.getTeamManagement()"/>
 			<panel colSpan="12">
 				<field name="description" widget="TEXT" height="3" colSpan="12"/>
 			</panel>
-			
+			<panel title="Guests" colSpan="12">
+				<field name="attendees" canNew="false" canSelect="false" showTitle="true" colSpan="12">
+					<editor layout="table" x-show-titles="false">
+						<field name="name" readonly="true"/>
+						<field name="statusSelect" widget="RadioSelect"/>
+			        </editor>
+				</field>
+			</panel>
 			<panel-related field="eventReminderList" colSpan="12" showTitle="false" form-view="event-reminder-form" grid-view="event-reminder-grid"/>
 			<field name="subjectTeam" hidden="true"/>
 		</panel>
+		<panel title="Add Guests" sidebar="true">
+			<field name="$guestUser" title="Existing user" colSpan="9" type="many-to-one" target="com.axelor.auth.db.User"/>
+			<button name="addNewGuestUser" title="Add" colSpan="3" onClick="save, action-event-method-add-user-guest"/>
+			<field name="$guestPartner" title="Existing customer/supplier/contact" colSpan="9" type="many-to-one" target="com.axelor.apps.base.db.Partner"/>
+			<button name="addNewGuestPartner" title="Add" colSpan="3" onClick="save, action-event-method-add-partner-guest"/>
+			<field name="$guestEmail" title="new email address" colSpan="9" type="string"/>
+			<button name="addNewGuestEmail" title="Add" colSpan="3" onClick="save, action-event-method-add-email-guest"/>
+		</panel>
 		
 		<panel sidebar="true" title="Attributes">
-			<field name="typeSelect" colSpan="6" domain="self.value IN ('1','2','3')"/>
-			<field name="callTypeSelect" colSpan="6" showIf="typeSelect == 1"/>
-			<field name="meetingType" colSpan="6" widget="SuggestBox" form-view="meeting-type-form" grid-view="meeting-type-grid"/>
-			<field name="taskStatusSelect" showIf="typeSelect == 4"/>
+			<field name="typeSelect" domain="self.value IN ('1','2','3')"/>
+			<field name="callTypeSelect"  showIf="typeSelect == 1"/>
+			<field name="meetingType" showIf="typeSelect == 2" widget="SuggestBox" form-view="meeting-type-form" grid-view="meeting-type-grid"/>
+			<field name="taskStatusSelect" showIf="typeSelect == 3"/>
 			<field name="prioritySelect" showIf="typeSelect == 3"/>
 			
 		</panel>
@@ -70,22 +84,7 @@
 			<field name="lead" onChange="action-meeting-set-location-lead" form-view="lead-form" grid-view="lead-grid"/>
 			<field name="relatedToSelect" widget="RefSelect" x-related="relatedToSelectId"/>
 		</panel>
-		<panel title="Add Guests" sidebar="true">
-			<field name="$guestUser" title="Existing user" colSpan="9" type="many-to-one" target="com.axelor.auth.db.User"/>
-			<button name="addNewGuestUser" title="Add" colSpan="3" onClick="save, action-event-method-add-user-guest"/>
-			<field name="$guestPartner" title="Existing customer/supplier/contact" colSpan="9" type="many-to-one" target="com.axelor.apps.base.db.Partner"/>
-			<button name="addNewGuestPartner" title="Add" colSpan="3" onClick="save, action-event-method-add-partner-guest"/>
-			<field name="$guestEmail" title="new email address" colSpan="9" type="string"/>
-			<button name="addNewGuestEmail" title="Add" colSpan="3" onClick="save, action-event-method-add-email-guest"/>
-		</panel>
-		<panel sidebar="true" title="Guests">
-			<field name="attendees" canNew="false" canSelect="false" showTitle="true">
-				<editor layout="table" x-show-titles="false">
-					<field name="name" readonly="true"/>
-					<field name="statusSelect" widget="RadioSelect"/>
-		        </editor>
-			</field>
-		</panel>
+		
 	</form>
 	
 	<action-group name="action-group-crm-event-onnew">
@@ -207,11 +206,16 @@
 				<field name="disponibilitySelect" widget="RadioSelect"/>
 				<field name="visibilitySelect" widget="RadioSelect"/>
 			</panel>
+			<panel title="Guests" colSpan="12">
+				<field name="attendees" canNew="false" canSelect="false" showTitle="true" colSpan="12">
+					<editor layout="table" x-show-titles="false">
+						<field name="name" readonly="true"/>
+						<field name="statusSelect" widget="RadioSelect"/>
+			        </editor>
+				</field>
+			</panel>
 			<panel-related field="eventReminderList" colSpan="12" showTitle="false" form-view="event-reminder-form" grid-view="event-reminder-grid"/>
 			<field name="subjectTeam" hidden="true"/>
-		</panel>
-		<panel name="meetingAttributes" sidebar="true" title="Attributes">
-			<field name="meetingType" widget="SuggestBox" form-view="meeting-type-form" grid-view="meeting-type-grid"/>
 		</panel>
 		<panel title="Add Guests" sidebar="true">
 			<field name="$guestUser" title="Existing user" colSpan="9" type="many-to-one" target="com.axelor.auth.db.User"/>
@@ -221,13 +225,8 @@
 			<field name="$guestEmail" title="new email address" colSpan="9" type="string"/>
 			<button name="addNewGuestEmail" title="Add" colSpan="3" onClick="save, action-event-method-add-email-guest"/>
 		</panel>
-		<panel sidebar="true" title="Guests">
-			<field name="attendees" canNew="false" canSelect="false" showTitle="true">
-				<editor layout="table" x-show-titles="false">
-					<field name="name" readonly="true"/>
-					<field name="statusSelect" widget="RadioSelect"/>
-		        </editor>
-			</field>
+		<panel name="meetingAttributes" sidebar="true" title="Attributes">
+			<field name="meetingType" widget="SuggestBox" form-view="meeting-type-form" grid-view="meeting-type-grid"/>
 		</panel>
 		<panel name="meetingLinked" sidebar="true" title="Linked to" >
 			<field name="clientPartner" onChange="action-meeting-set-location-partner,action-partner-attrs-hide-contact-partner" form-view="partner-form" grid-view="partner-grid"/>
