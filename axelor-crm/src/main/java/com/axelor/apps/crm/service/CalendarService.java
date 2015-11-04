@@ -77,6 +77,8 @@ import com.axelor.apps.crm.db.ICalendar;
 import com.axelor.apps.crm.db.repo.CalendarRepository;
 import com.axelor.apps.crm.db.repo.EventRepository;
 import com.axelor.apps.crm.exception.IExceptionMessage;
+import com.axelor.apps.message.db.EmailAddress;
+import com.axelor.apps.message.db.repo.EmailAddressRepository;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
@@ -279,6 +281,10 @@ public class CalendarService extends ICalendarService{
 			user = new ICalendarUser();
 			user.setEmail(email);
 			user.setName(email);
+			EmailAddress emailAddress = Beans.get(EmailAddressRepository.class).findByAddress(email);
+			if(emailAddress.getPartner() != null && emailAddress.getPartner().getUser() != null){
+				user.setUser(emailAddress.getPartner().getUser());
+			}
 		}
 		if (source.getParameter(Parameter.CN) != null) {
 			user.setName(source.getParameter(Parameter.CN).getValue());

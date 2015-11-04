@@ -20,6 +20,7 @@ package com.axelor.apps.crm.web;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -45,7 +46,9 @@ import com.axelor.apps.crm.exception.IExceptionMessage;
 import com.axelor.apps.crm.service.EventService;
 import com.axelor.apps.crm.service.LeadService;
 import com.axelor.apps.crm.service.config.CrmConfigService;
+import com.axelor.apps.message.db.EmailAddress;
 import com.axelor.apps.message.db.Template;
+import com.axelor.apps.message.db.repo.EmailAddressRepository;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
@@ -54,7 +57,6 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.google.common.base.Strings;
 import com.google.inject.Inject;
 
 public class EventController {
@@ -303,10 +305,13 @@ public class EventController {
 	public void addEmailGuest(ActionRequest request, ActionResponse response) throws ClassNotFoundException, InstantiationException, IllegalAccessException, AxelorException, MessagingException, IOException, ICalendarException, ValidationException, ParseException{
 		Event event = request.getContext().asType(Event.class);
 		if(request.getContext().containsKey("guestEmail")){
-			String email = request.getContext().get("guestEmail").toString();
-			if(!Strings.isNullOrEmpty(email)){
+			Map<String,Object> email = (LinkedHashMap<String,Object>) request.getContext().get("guestEmail");
+			String id = email.get("id").toString();
+			if(email != null){
+				EmailAddressRepository emailAddressRepo = Beans.get(EmailAddressRepository.class);
+				EmailAddress emailAddress = emailAddressRepo.find(new Long(id));
 				event = eventRepo.find(event.getId());
-				eventService.addEmailGuest(email, event);
+				eventService.addEmailGuest(emailAddress, event);
 			}
 		}
 		response.setReload(true);

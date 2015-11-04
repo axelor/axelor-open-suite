@@ -49,13 +49,21 @@
         		<field name="activeTeam" form-view="team-form" grid-view="team-grid"/>
         		<panel-related field="teamSet" canNew="false" colSpan="12" form-view="team-form" grid-view="team-grid"/>
         	 </panel>
-        	<panel title="Calendars">
-        		<panel-related field="followersCalUserSet" colSpan="12" form-view="user-form" grid-view="user-grid"/>
-        		<panel-related field="authorizeCalUserSet" colSpan="12" form-view="user-form" grid-view="user-grid"/>
+        	<panel title="Calendars Configuration" if-module="axelor-crm">
+        		<panel-related field="followersCalUserSet" colSpan="12" form-view="user-form" grid-view="user-grid" onSelect="action-user-attrs-domain-followers"/>
+        		<panel-related field="calendarManagementList" colSpan="12"/>
         	</panel>
         </panel-tabs>
     </form>
     
+    <action-attrs name="action-user-attrs-domain-followers">
+    	<attribute name="domain" for="followersCalUserSet" expr="eval: &quot; self.id IN 
+    	(${__repo__.of(CalendarManagement).all().filter('self.user.id = ?1', id).fetch().collect{it.parentUser.id}.join(',')}) &quot;" 
+    	if="!__repo__.of(CalendarManagement).all().filter('self.user.id = ?1', id).fetch().isEmpty()"/>
+    	
+    	<attribute name="domain" for="followersCalUserSet" expr="eval: &quot; self.id = 0 &quot;" 
+    	if="__repo__.of(CalendarManagement).all().filter('self.user.id = ?1', id).fetch().isEmpty()"/>
+    </action-attrs>
     
     <action-record name="action-user-default-record" model="com.axelor.auth.db.User">
     	<field name="language" expr="fr"/>

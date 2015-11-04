@@ -307,6 +307,7 @@ public class EventService {
 					ICalendarUser calUser = new ICalendarUser();
 					calUser.setEmail(email);
 					calUser.setName(user.getFullName());
+					calUser.setUser(user);
 					event.addAttendee(calUser);
 					eventRepo.save(event);
 					if(event.getCalendarCrm() != null){
@@ -334,6 +335,9 @@ public class EventService {
 					ICalendarUser calUser = new ICalendarUser();
 					calUser.setEmail(email);
 					calUser.setName(partner.getFullName());
+					if(partner.getUser() != null){
+						calUser.setUser(partner.getUser());
+					}
 					event.addAttendee(calUser);
 					eventRepo.save(event);
 					if(event.getCalendarCrm() != null){
@@ -347,19 +351,22 @@ public class EventService {
 	}
 	
 	@Transactional
-	public void addEmailGuest(String email, Event event) throws ClassNotFoundException, InstantiationException, IllegalAccessException, AxelorException, MessagingException, IOException, ICalendarException, ValidationException, ParseException{
-		if(event.getAttendees() != null && !Strings.isNullOrEmpty(email)){
+	public void addEmailGuest(EmailAddress email, Event event) throws ClassNotFoundException, InstantiationException, IllegalAccessException, AxelorException, MessagingException, IOException, ICalendarException, ValidationException, ParseException{
+		if(event.getAttendees() != null && email != null){
 			boolean exist = false;
 			for (ICalendarUser attendee : event.getAttendees()) {
-				if(email.equals(attendee.getEmail())){
+				if(email.getAddress().equals(attendee.getEmail())){
 					exist = true;
 					break;
 				}
 			}
 			if(!exist){
 				ICalendarUser calUser = new ICalendarUser();
-				calUser.setEmail(email);
-				calUser.setName(email);
+				calUser.setEmail(email.getAddress());
+				calUser.setName(email.getName());
+				if(email.getPartner() != null && email.getPartner().getUser() != null){
+					calUser.setUser(email.getPartner().getUser());
+				}
 				event.addAttendee(calUser);
 				eventRepo.save(event);
 			}

@@ -41,4 +41,5 @@ public class CalendarConfigurationController {
 		
 		calendarConfigurationService.deleteEntryMenu(calendarConfiguration);
 	}
+
 }

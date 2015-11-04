@@ -172,6 +172,13 @@
 		<call class="com.axelor.apps.crm.web.CalendarController" method="showTeamEvents"/>
 	</action-method>
 	
+	<menuitem name="crm-root-meeting-sharedm-calendar" parent="crm-root"
+		title="Shared Calendar" action="crm.root.meeting.shared.calendar"/>
+		
+	<action-method name="crm.root.meeting.shared.calendar">
+		<call class="com.axelor.apps.crm.web.CalendarController" method="showSharedEvents"/>
+	</action-method>
+	
 <!-- 	<action-view title="My Meetings Calendar"  model="com.axelor.apps.crm.db.Event" name="crm.root.meeting.my.calendar"> -->
 <!-- 	    <view type="calendar" name="event-calendar"/> -->
 <!-- 	    <view type="form" name="event-form"/> -->

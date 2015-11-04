@@ -5,6 +5,7 @@
     
     <grid name="crm-calendar-grid" title="Calendars" model="com.axelor.apps.crm.db.Calendar">
         <field name="name"/>
+        <field name="user"/>
     </grid>
     
     <form name="crm-calendar-form" title="Calendar" model="com.axelor.apps.crm.db.Calendar" width="large">
@@ -17,6 +18,7 @@
 		<panel>
 		  <field name="name"/>
 		  <field name="keepRemote" />
+		  <field name="user"/>
 		</panel>
 		<panel title="Connection settings">
 		  <field name="url"/>
@@ -29,7 +31,7 @@
 		  <field name="login"/>
 		  <field name="password" widget="password"/>
 		</panel>
-</form>
+	</form>
     
    	 
 </object-views>

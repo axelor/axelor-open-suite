@@ -24,6 +24,7 @@ import java.net.SocketException;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import net.fortuna.ical4j.connector.ObjectNotFoundException;
 import net.fortuna.ical4j.connector.ObjectStoreException;
@@ -31,14 +32,14 @@ import net.fortuna.ical4j.data.ParserException;
 import net.fortuna.ical4j.model.ConstraintViolationException;
 import net.fortuna.ical4j.model.ValidationException;
 
-import com.axelor.apps.base.db.ICalendarEvent;
+import com.axelor.apps.base.db.ICalendarUser;
 import com.axelor.apps.base.db.ImportConfiguration;
 import com.axelor.apps.base.db.Team;
+import com.axelor.apps.base.db.repo.ICalendarUserRepository;
 import com.axelor.apps.base.ical.ICalendarException;
 import com.axelor.apps.crm.db.Calendar;
-import com.axelor.apps.crm.db.CalendarConfiguration;
+import com.axelor.apps.crm.db.CalendarManagement;
 import com.axelor.apps.crm.db.Event;
-import com.axelor.apps.crm.db.repo.CalendarConfigurationRepository;
 import com.axelor.apps.crm.db.repo.CalendarRepository;
 import com.axelor.apps.crm.db.repo.EventRepository;
 import com.axelor.apps.crm.exception.IExceptionMessage;
@@ -116,17 +117,24 @@ public class CalendarController {
 	public void showMyEvents(ActionRequest request, ActionResponse response){
 		User user = AuthUtils.getUser();
 		List<Long> eventIdlist = new ArrayList<Long>();
-		List<CalendarConfiguration> calConfList = Beans.get(CalendarConfigurationRepository.class).all().filter("self.calendarUser.id = ?1", user.getId()).fetch();
-		for (CalendarConfiguration calendarConfiguration : calConfList) {
-			for (Calendar calendar : calendarConfiguration.getCalendarSet()) {
-				for (ICalendarEvent event : calendar.getEventsCrm()) {
-					eventIdlist.add(event.getId());
-				}
-			}
-		}
-		List<Event> eventList = Beans.get(EventRepository.class).all().filter("self.user.id = ?1", user.getId()).fetch();
+		List<ICalendarUser> userList = Beans.get(ICalendarUserRepository.class).all().filter("self.user.id = ?1", user.getId()).fetch();
+		
+		List<Event> eventList = Beans.get(EventRepository.class).all().filter("self.user.id = ?1",
+				user.getId()).fetch();
 		for (Event event : eventList) {
 			eventIdlist.add(event.getId());
+		}
+		List<Calendar> calList = Beans.get(CalendarRepository.class).all().filter("self.user.id = ?1", user.getId()).fetch();
+		for (Calendar calendar : calList) {
+			for (Event event : calendar.getEventsCrm()) {
+				eventIdlist.add(event.getId());
+			}
+		}
+		for (ICalendarUser iCalendarUser : userList) {
+			eventList = Beans.get(EventRepository.class).all().filter("?1 MEMBER OF self.attendees OR self.organizer.id = ?1", iCalendarUser.getId()).fetch();
+			for (Event event : eventList) {
+				eventIdlist.add(event.getId());
+			}
 		}
 		response.setView(ActionView
 	            .define(I18n.get("My Calendar"))
@@ -143,25 +151,132 @@ public class CalendarController {
 		User user = AuthUtils.getUser();
 		Team team = user.getActiveTeam();
 		List<Long> eventIdlist = new ArrayList<Long>();
-		List<CalendarConfiguration> calConfList = Beans.get(CalendarConfigurationRepository.class).all().filter("self.calendarUser.id in (?1)", Joiner.on(",").join(team.getUserSet())).fetch();
-		for (CalendarConfiguration calendarConfiguration : calConfList) {
-			for (Calendar calendar : calendarConfiguration.getCalendarSet()) {
-				for (ICalendarEvent event : calendar.getEventsCrm()) {
+		
+		List<Event> eventList = Beans.get(EventRepository.class).all().filter("self.team.id = ?1",
+				team.getId()).fetch();
+		
+		for (User userIt : team.getUserSet()) {
+			List<ICalendarUser> userList = Beans.get(ICalendarUserRepository.class).all().filter("self.user.id = ?1", userIt.getId()).fetch();
+			
+			eventList = Beans.get(EventRepository.class).all().filter("self.user.id = ?1",
+					userIt.getId()).fetch();
+			for (Event event : eventList) {
+				eventIdlist.add(event.getId());
+			}
+			List<Calendar> calList = Beans.get(CalendarRepository.class).all().filter("self.user.id = ?1", userIt.getId()).fetch();
+			for (Calendar calendar : calList) {
+				for (Event event : calendar.getEventsCrm()) {
+					eventIdlist.add(event.getId());
+				}
+			}
+			for (ICalendarUser iCalendarUser : userList) {
+				eventList = Beans.get(EventRepository.class).all().filter("?1 MEMBER OF self.attendees OR self.organizer.id = ?1",
+						iCalendarUser.getId()).fetch();
+				for (Event event : eventList) {
 					eventIdlist.add(event.getId());
 				}
 			}
 		}
-		List<Event> eventList = Beans.get(EventRepository.class).all().filter("self.user.id in (?1) OR self.team.id = ?2", Joiner.on(",").join(team.getUserSet()), team.getId()).fetch();
-		for (Event event : eventList) {
-			eventIdlist.add(event.getId());
-		}
+		
 		response.setView(ActionView
 	            .define(I18n.get("Team Calendar"))
 	            .model(Event.class.getName())
-				.add("calendar", "event-calendar-color-by-calendar")
+				.add("calendar", "event-calendar-color-by-user")
 	            .add("grid", "event-grid")
 	            .add("form", "event-form")
 	            .context("_typeSelect", 2)
+	            .context("_internalUser", user.getId())
+	            .domain("self.id in ("+Joiner.on(",").join(eventIdlist)+")")
+	            .map());
+	}
+	
+	public void showSharedEvents(ActionRequest request, ActionResponse response){
+		User user = AuthUtils.getUser();
+		Team team = user.getActiveTeam();
+		Set<User> followedUsers = user.getFollowersCalUserSet();
+		List<Long> eventIdlist = new ArrayList<Long>();
+		
+		for (User userIt : followedUsers) {
+			for (CalendarManagement calendarManagement : userIt.getCalendarManagementList()) {
+				if((user.equals(calendarManagement.getUser())) || (team != null && team.equals(calendarManagement.getTeam()))){
+					if(calendarManagement.getAllCalendars()){
+						List<ICalendarUser> userList = Beans.get(ICalendarUserRepository.class).all().filter("self.user.id = ?1", userIt.getId()).fetch();
+						
+						List<Event> eventList = Beans.get(EventRepository.class).all().filter("self.user.id = ?1",
+								userIt.getId()).fetch();
+						for (Event event : eventList) {
+							eventIdlist.add(event.getId());
+						}
+						List<Calendar> calList = Beans.get(CalendarRepository.class).all().filter("self.user.id = ?1", userIt.getId()).fetch();
+						for (Calendar calendar : calList) {
+							for (Event event : calendar.getEventsCrm()) {
+								eventIdlist.add(event.getId());
+							}
+						}
+						for (ICalendarUser iCalendarUser : userList) {
+							eventList = Beans.get(EventRepository.class).all().filter("?1 MEMBER OF self.attendees OR self.organizer.id = ?1",
+									iCalendarUser.getId()).fetch();
+							for (Event event : eventList) {
+								eventIdlist.add(event.getId());
+							}
+						}
+					}
+					else{
+						if(calendarManagement.getErpCalendars()){
+							List<ICalendarUser> userList = Beans.get(ICalendarUserRepository.class).all().filter("self.user.id = ?1", userIt.getId()).fetch();
+							
+							List<Event> eventList = Beans.get(EventRepository.class).all().filter("self.user.id = ?1 AND self.calendarCrm is NULL",
+									userIt.getId()).fetch();
+							for (Event event : eventList) {
+								eventIdlist.add(event.getId());
+							}
+							for (ICalendarUser iCalendarUser : userList) {
+								eventList = Beans.get(EventRepository.class).all().filter("(?1 MEMBER OF self.attendees OR self.organizer.id = ?1) AND self.calendarCrm is NULL",
+										iCalendarUser.getId()).fetch();
+								for (Event event : eventList) {
+									eventIdlist.add(event.getId());
+								}
+							}
+						}
+						if(calendarManagement.getIcalCalendars()){
+							for (Calendar calendar : calendarManagement.getCalendarSet()) {
+								for (Event event : calendar.getEventsCrm()) {
+									eventIdlist.add(event.getId());
+								}
+							}
+						}
+					}
+				}
+			}
+		}	
+		
+		List<ICalendarUser> userList = Beans.get(ICalendarUserRepository.class).all().filter("self.user.id = ?1", user.getId()).fetch();
+		
+		List<Event> eventList = Beans.get(EventRepository.class).all().filter("self.user.id = ?1",
+				user.getId()).fetch();
+		for (Event event : eventList) {
+			eventIdlist.add(event.getId());
+		}
+		List<Calendar> calList = Beans.get(CalendarRepository.class).all().filter("self.user.id = ?1", user.getId()).fetch();
+		for (Calendar calendar : calList) {
+			for (Event event : calendar.getEventsCrm()) {
+				eventIdlist.add(event.getId());
+			}
+		}
+		for (ICalendarUser iCalendarUser : userList) {
+			eventList = Beans.get(EventRepository.class).all().filter("?1 MEMBER OF self.attendees OR self.organizer.id = ?1", iCalendarUser.getId()).fetch();
+			for (Event event : eventList) {
+				eventIdlist.add(event.getId());
+			}
+		}
+		response.setView(ActionView
+	            .define(I18n.get("Shared Calendar"))
+	            .model(Event.class.getName())
+				.add("calendar", "event-calendar-color-by-user")
+	            .add("grid", "event-grid")
+	            .add("form", "event-form")
+	            .context("_typeSelect", 2)
+	            .context("_internalUser", user.getId())
 	            .domain("self.id in ("+Joiner.on(",").join(eventIdlist)+")")
 	            .map());
 	}
@@ -172,6 +287,7 @@ public class CalendarController {
 		calendarService.sync(cal);
 		response.setReload(true);
 	}
+
 }
 
 

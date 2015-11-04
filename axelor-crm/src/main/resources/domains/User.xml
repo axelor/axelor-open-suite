@@ -8,8 +8,8 @@
   <entity name="User" sequential="true" lang="java">
   
 <!--     Calendar -->
-    <many-to-many name="followersCalUserSet" ref="com.axelor.auth.db.User" title="Followers users" help="true"/>
-    <many-to-many name="authorizeCalUserSet" ref="com.axelor.auth.db.User" title="Authorized users to follow me" help="true"/>
+    <many-to-many name="followersCalUserSet" ref="com.axelor.auth.db.User" title="Followed users" help="true"/>
+    <one-to-many name="calendarManagementList" ref="com.axelor.apps.crm.db.CalendarManagement" title="Calendars permissions" help="true" mappedBy="parentUser"/>
     
     
   </entity>

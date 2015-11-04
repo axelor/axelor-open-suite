@@ -5,12 +5,16 @@
 
 	<grid name="calendar-grid" model="com.axelor.apps.base.db.ICalendar" title="Calendars">
 	  <field name="name" />
+	  <field name="user"/>
 	</grid>
 	
 	<form name="calendar-form" model="com.axelor.apps.base.db.ICalendar" title="Calendar" >
-	  <field name="name" />
-	  <field name="keepRemote" />
-	  <field name="events" colSpan="4" />
+	  <panel>
+		  <field name="name" />
+		  <field name="user"/>
+		  <field name="keepRemote" />
+	  </panel>
+	  <panel-related field="events" colSpan="12"/>
 	</form>
 
 </object-views>

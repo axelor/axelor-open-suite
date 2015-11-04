@@ -1,10 +1,15 @@
 package com.axelor.apps.crm.db.repo;
 
+import com.axelor.apps.base.db.ICalendarUser;
+import com.axelor.apps.base.db.repo.ICalendarUserRepository;
 import com.axelor.apps.crm.db.Calendar;
 import com.axelor.apps.crm.db.Event;
 import com.axelor.apps.crm.service.CalendarService;
 import com.axelor.apps.crm.service.EventService;
+import com.axelor.auth.AuthUtils;
+import com.axelor.auth.db.User;
 import com.axelor.exception.service.TraceBackService;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 
@@ -37,6 +42,32 @@ public class EventManagementRepository extends EventRepository {
 		if(entity.getTypeSelect() == EventRepository.TYPE_MEETING){
 			super.save(entity);
 			Beans.get(EventService.class).manageFollowers(entity);
+		}
+		User creator = entity.getCreatedBy();
+		if(creator == null){
+			creator = AuthUtils.getUser();
+		}
+		if(entity.getOrganizer() == null && creator != null){
+			if(creator.getPartner() != null && creator.getPartner().getEmailAddress() != null){
+				String email = creator.getPartner().getEmailAddress().getAddress();
+				ICalendarUser organizer = Beans.get(ICalendarUserRepository.class).all().filter("self.address = ?1 AND self.user.id = ?2",email, creator.getId()).fetchOne();
+				if(organizer == null){
+					organizer = new ICalendarUser();
+					organizer.setEmail(email);
+					organizer.setName(creator.getFullName());
+					organizer.setUser(creator);
+				}
+				entity.setOrganizer(organizer);
+			}
+		}
+		
+		
+		entity.setSubjectTeam(entity.getSubject());
+		if(entity.getVisibilitySelect() == 2){
+			entity.setSubjectTeam(I18n.get("Available"));
+			if(entity.getVisibilitySelect() == 1){
+				entity.setSubjectTeam(I18n.get("Busy"));
+			}
 		}
 		
 		return super.save(entity);

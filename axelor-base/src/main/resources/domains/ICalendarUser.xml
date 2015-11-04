@@ -10,6 +10,7 @@
 	   <string name="email" title="Email" required="true" initParam="true" />
 	   <integer name="statusSelect" selection="i.calendar.user.status.select"/>
 	   <many-to-one name="event" ref="com.axelor.apps.base.db.ICalendarEvent"/>
+	   <many-to-one name="user" column="user_id" ref="com.axelor.auth.db.User"/>
 	   
 	   <finder-method name="findByEmail" using="email" />
 	   
