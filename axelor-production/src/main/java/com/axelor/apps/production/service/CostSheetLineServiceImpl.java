@@ -26,6 +26,7 @@ import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
+import com.axelor.apps.base.db.repo.UnitRepository;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.production.db.CostSheetGroup;
@@ -52,6 +53,9 @@ public class CostSheetLineServiceImpl implements CostSheetLineService  {
 	
 	@Inject
 	protected UnitConversionService unitConversionService;
+	
+	@Inject
+	protected UnitRepository unitRepo;
 
 	public CostSheetLine createCostSheetLine(String name, String code, int bomLevel, BigDecimal consumptionQty, BigDecimal costPrice, 
 			CostSheetGroup costSheetGroup, Product product, int typeSelect, Unit unit, WorkCenter workCenter, CostSheetLine parentCostSheetLine)  {
@@ -64,7 +68,9 @@ public class CostSheetLineServiceImpl implements CostSheetLineService  {
 		costSheetLine.setCostSheetGroup(costSheetGroup);
 		costSheetLine.setProduct(product);
 		costSheetLine.setTypeSelect(typeSelect);
-		costSheetLine.setUnit(unit);
+		if(unit != null){
+			costSheetLine.setUnit(unitRepo.find(unit.getId()));
+		}
 		costSheetLine.setWorkCenter(workCenter);
 		
 		if(costPrice == null)  {
