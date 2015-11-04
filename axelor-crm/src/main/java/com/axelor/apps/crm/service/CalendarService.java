@@ -282,7 +282,7 @@ public class CalendarService extends ICalendarService{
 			user.setEmail(email);
 			user.setName(email);
 			EmailAddress emailAddress = Beans.get(EmailAddressRepository.class).findByAddress(email);
-			if(emailAddress.getPartner() != null && emailAddress.getPartner().getUser() != null){
+			if(emailAddress != null && emailAddress.getPartner() != null && emailAddress.getPartner().getUser() != null){
 				user.setUser(emailAddress.getPartner().getUser());
 			}
 		}
