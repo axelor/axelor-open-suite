@@ -60,6 +60,8 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.mail.db.MailAddress;
+import com.axelor.mail.db.repo.MailAddressRepository;
 import com.axelor.mail.db.repo.MailFollowerRepository;
 import com.axelor.meta.db.MetaFile;
 import com.google.common.base.Strings;
@@ -144,10 +146,17 @@ public class EventService {
 	}
 	
 	public void manageFollowers(Event event){
-		Set<User> currentUsersSet = event.getInternalGuestSet();
-		if(currentUsersSet != null){
-			for (User user : currentUsersSet) {
-				mailFollowerRepo.follow(event, user);
+		List<ICalendarUser> attendeesSet = event.getAttendees();
+		if(attendeesSet != null){
+			for (ICalendarUser user : attendeesSet) {
+				if(user.getUser() != null){
+					mailFollowerRepo.follow(event, user.getUser());
+				}
+				else{
+					MailAddress mailAddress = Beans.get(MailAddressRepository.class).findOrCreate(user.getEmail(), user.getName());
+					mailFollowerRepo.follow(event, mailAddress);
+				}
+				
 			}
 		}
 	}
