@@ -39,6 +39,8 @@
 		
 		<boolean name="teamManagement" title="Team Management" default="true"/>
 		
+		<boolean name="clientPortalManagement" title="Client portal management" default="false"/>
+		
 		<extra-code>
 	   		<![CDATA[
 	   			public static final Integer DISCOUNT_SEPARATE = 1;
