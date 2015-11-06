@@ -53,9 +53,11 @@ import net.fortuna.ical4j.model.PropertyList;
 import net.fortuna.ical4j.model.ValidationException;
 import net.fortuna.ical4j.model.component.VEvent;
 import net.fortuna.ical4j.model.property.Attendee;
+import net.fortuna.ical4j.model.property.Clazz;
 import net.fortuna.ical4j.model.property.DtEnd;
 import net.fortuna.ical4j.model.property.DtStart;
 import net.fortuna.ical4j.model.property.Organizer;
+import net.fortuna.ical4j.model.property.Transp;
 import net.fortuna.ical4j.model.property.XProperty;
 
 import org.apache.commons.httpclient.protocol.Protocol;
@@ -67,6 +69,7 @@ import org.slf4j.LoggerFactory;
 import com.axelor.app.AppSettings;
 import com.axelor.apps.base.db.ICalendarEvent;
 import com.axelor.apps.base.db.ICalendarUser;
+import com.axelor.apps.base.db.repo.ICalendarEventRepository;
 import com.axelor.apps.base.db.repo.ICalendarUserRepository;
 import com.axelor.apps.base.ical.ICalendarException;
 import com.axelor.apps.base.ical.ICalendarService;
@@ -239,6 +242,25 @@ public class CalendarService extends ICalendarService{
 		event.setLocation(getValue(vEvent, Property.LOCATION));
 		event.setGeo(getValue(vEvent, Property.GEO));
 		event.setUrl(getValue(vEvent, Property.URL));
+		event.setSubjectTeam(event.getSubject());
+		if(Clazz.PRIVATE.getValue().equals(getValue(vEvent, Property.CLASS))){
+			event.setVisibilitySelect(ICalendarEventRepository.VISIBILITY_PRIVATE);
+		}
+		else{
+			event.setVisibilitySelect(ICalendarEventRepository.VISIBILITY_PUBLIC);
+		}
+		if(Transp.TRANSPARENT.getValue().equals(getValue(vEvent, Property.TRANSP))){
+			event.setDisponibilitySelect(ICalendarEventRepository.DISPONIBILITY_AVAILABLE);
+		}
+		else{
+			event.setDisponibilitySelect(ICalendarEventRepository.DISPONIBILITY_BUSY);
+		}
+		if(event.getVisibilitySelect() == ICalendarEventRepository.VISIBILITY_PRIVATE){
+			event.setSubjectTeam(I18n.get("Available"));
+			if(event.getDisponibilitySelect() == ICalendarEventRepository.DISPONIBILITY_BUSY){
+				event.setSubjectTeam(I18n.get("Busy"));
+			}
+		}
 		ICalendarUser organizer = findOrCreateUser(vEvent.getOrganizer(), event);
 		if (organizer != null) {
 			event.setOrganizer(organizer);
@@ -427,6 +449,8 @@ public class CalendarService extends ICalendarService{
 			Property.DTSTART,
 			Property.DTEND,
 			Property.ORGANIZER,
+			Property.CLASS,
+			Property.TRANSP,
 			Property.ATTENDEE
 		};
 
@@ -492,6 +516,7 @@ public class CalendarService extends ICalendarService{
 						} else {
 							t.setValue(s.getValue());
 						}
+						
 					}
 					else{
 						PropertyList sourceList = source.getProperties(Property.ATTENDEE);

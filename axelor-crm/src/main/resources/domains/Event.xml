@@ -12,8 +12,6 @@
 	<integer name="importId" />
   	<integer name="typeSelect" title="Type" selection="crm.event.type.select" required="true" default="2" help="true"/>
   	
-  	<string name="subjectTeam"/>
-  	
 	<datetime name="limitDateT" title="Limit Date" help="true"/>
   	
   	<long name="duration" title="Duration"/>
@@ -37,9 +35,6 @@
 	<many-to-one name="clientPartner" ref="com.axelor.apps.base.db.Partner" title="Customer"/>
   	<many-to-one name="contactPartner" ref="com.axelor.apps.base.db.Partner" title="Contact"/>
 	<many-to-one name="lead" ref="com.axelor.apps.crm.db.Lead" title="Lead"/>
-	
-	<integer name="visibilitySelect" title="Visibility" selection="crm.event.visibility.select" default="1"/>
-	<integer name="disponibilitySelect" title="Availability" selection="crm.event.disponibility.select" default="1"/>
 	
 <!-- Call -->
     <integer name="callTypeSelect" title="Call type" selection="crm.event.call.type.select"/>  

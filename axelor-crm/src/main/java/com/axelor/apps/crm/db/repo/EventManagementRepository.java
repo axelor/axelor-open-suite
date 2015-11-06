@@ -1,6 +1,7 @@
 package com.axelor.apps.crm.db.repo;
 
 import com.axelor.apps.base.db.ICalendarUser;
+import com.axelor.apps.base.db.repo.ICalendarEventRepository;
 import com.axelor.apps.base.db.repo.ICalendarUserRepository;
 import com.axelor.apps.crm.db.Calendar;
 import com.axelor.apps.crm.db.Event;
@@ -50,7 +51,7 @@ public class EventManagementRepository extends EventRepository {
 		if(entity.getOrganizer() == null && creator != null){
 			if(creator.getPartner() != null && creator.getPartner().getEmailAddress() != null){
 				String email = creator.getPartner().getEmailAddress().getAddress();
-				ICalendarUser organizer = Beans.get(ICalendarUserRepository.class).all().filter("self.address = ?1 AND self.user.id = ?2",email, creator.getId()).fetchOne();
+				ICalendarUser organizer = Beans.get(ICalendarUserRepository.class).all().filter("self.email = ?1 AND self.user.id = ?2",email, creator.getId()).fetchOne();
 				if(organizer == null){
 					organizer = new ICalendarUser();
 					organizer.setEmail(email);
@@ -63,9 +64,9 @@ public class EventManagementRepository extends EventRepository {
 		
 		
 		entity.setSubjectTeam(entity.getSubject());
-		if(entity.getVisibilitySelect() == 2){
+		if(entity.getVisibilitySelect() == ICalendarEventRepository.VISIBILITY_PRIVATE){
 			entity.setSubjectTeam(I18n.get("Available"));
-			if(entity.getVisibilitySelect() == 1){
+			if(entity.getDisponibilitySelect() == ICalendarEventRepository.DISPONIBILITY_BUSY){
 				entity.setSubjectTeam(I18n.get("Busy"));
 			}
 		}

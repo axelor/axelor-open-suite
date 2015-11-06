@@ -46,6 +46,8 @@
 			<field name="limitDateT" colSpan="4" showIf="typeSelect == 3"/>
 			<field name="user" form-view="user-form" grid-view="user-grid"/>
 			<field name="team" onSelect="action-event-attrs-team-domain" form-view="team-form" grid-view="team-grid" if="__config__.general.getTeamManagement()"/>
+			<field name="disponibilitySelect" widget="RadioSelect" readonlyIf="calendarCrm != null"/>
+			<field name="visibilitySelect" widget="RadioSelect" readonlyIf="calendarCrm != null"/>
 			<panel colSpan="12">
 				<field name="description" widget="TEXT" height="3" colSpan="12"/>
 			</panel>
@@ -203,8 +205,8 @@
 				<field name="startDateTime" colSpan="3" onChange="action-event-method-compute-from-start-date-time"/>
 				<field name="duration" widget="duration" colSpan="3" onChange="action-event-method-compute-from-duration" x-big="true"/>
 				<field name="endDateTime" colSpan="3" onChange="action-event-method-compute-from-end-date-time"/>
-				<field name="disponibilitySelect" widget="RadioSelect"/>
-				<field name="visibilitySelect" widget="RadioSelect"/>
+				<field name="disponibilitySelect" widget="RadioSelect" readonlyIf="calendarCrm != null"/>
+				<field name="visibilitySelect" widget="RadioSelect" readonlyIf="calendarCrm != null"/>
 			</panel>
 			<panel title="Guests" colSpan="12">
 				<field name="attendees" canNew="false" canSelect="false" showTitle="true" colSpan="12">

@@ -624,4 +624,14 @@
 		<option value="3">Maybe</option>
 	</selection>
 	
+	<selection name="i.cal.event.visibility.select">
+		<option value="1">Public</option>
+		<option value="2">Private</option>
+	</selection>
+	
+	<selection name="i.cal.event.disponibility.select">
+		<option value="1">Busy</option>
+		<option value="2">Available</option>
+	</selection>
+	
 </object-views>
