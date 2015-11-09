@@ -183,8 +183,9 @@
 		<field name="productFamily" />
 		<field name="productCategory" />
 		<template><![CDATA[
+		    <div class="span12"><strong>{{fullName}}</strong></div>
 			<div>
-			  <div class="span4 card-image">
+			  <div class="span4 rectangle-image">
 			    <img ng-src="{{$image('picture', 'content')}}" />
 			  </div>
 			  <div class="span8">
@@ -192,7 +193,6 @@
 			    {{productFamily.name}}<br/>
 			    {{productCategory.name}}</span>
 			  </div>
-			  <div class="span12"><strong>{{fullName}}</strong></div>
 			</div>
 		]]>
 		</template>
