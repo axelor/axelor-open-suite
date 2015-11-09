@@ -652,3 +652,12 @@
 .content-yellow input{
 	color: yellow !important;
 }
+
+.rectangle-image img {
+	position: relative;
+	width: 64px;
+	height: 64px;
+	background-color: #e7e7e7;
+	border-radius: 0%;
+	
+}
