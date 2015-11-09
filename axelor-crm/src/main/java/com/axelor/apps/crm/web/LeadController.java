@@ -178,6 +178,7 @@ public class LeadController {
 							  .add("form", "import-configuration-form")
 							  .param("popup", "reload")
 							  .param("forceEdit", "true")
+  					  		  .param("popup-save", "false")
 							  .context("_showRecord", leadImportConfig.getId().toString())
 							  .map());
 		}

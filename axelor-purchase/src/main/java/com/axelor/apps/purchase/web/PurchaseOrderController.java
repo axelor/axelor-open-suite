@@ -289,6 +289,7 @@ public class PurchaseOrderController {
 										.param("popup", "true")
 										.param("show-toolbar", "false")
 										.param("show-confirm", "false")
+										.param("popup-save", "false")
 										.param("forceEdit", "true");
 
 			if (existPriceListDiff){

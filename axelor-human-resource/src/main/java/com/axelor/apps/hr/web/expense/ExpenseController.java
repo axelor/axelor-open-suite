@@ -92,6 +92,7 @@ public class ExpenseController {
 					.param("show-toolbar", "false")
 					.param("show-confirm", "false")
 					.param("forceEdit", "true")
+			  		.param("popup-save", "false")
 					.map());
 		}
 	}

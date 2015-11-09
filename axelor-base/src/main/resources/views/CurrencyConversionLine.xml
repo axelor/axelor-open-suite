@@ -100,6 +100,7 @@
 	    <view-param name="width" value="800" />
 	    <view-param name="show-confirm" value="false" />
 	    <view-param name="show-toolbar" value="false"/>
+ 	  	<view-param name="popup-save" value="false"/>
 	    <context name="_startCurrency" expr="eval:startCurrency" if="startCurrency != null" />
 	    <context name="_endCurrency" expr="eval:endCurrency" if="endCurrency != null" />
 	    <context name="_general" expr="eval:general"/>
