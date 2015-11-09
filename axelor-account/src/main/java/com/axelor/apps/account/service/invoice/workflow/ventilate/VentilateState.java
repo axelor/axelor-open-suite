@@ -21,80 +21,95 @@ import java.math.BigDecimal;
 import java.util.List;
 
 import org.joda.time.LocalDate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
-import com.axelor.apps.account.service.MoveService;
 import com.axelor.apps.account.service.config.AccountConfigService;
-import com.axelor.apps.account.service.invoice.InvoiceServiceImpl;
+import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.invoice.workflow.WorkflowInvoice;
-import com.axelor.apps.base.db.IAdministration;
+import com.axelor.apps.account.service.move.MoveService;
 import com.axelor.apps.base.db.Sequence;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
+import com.google.inject.Inject;
 
 public class VentilateState extends WorkflowInvoice {
+	
+	private static final Logger LOG = LoggerFactory.getLogger(VentilateState.class);
 
-	protected SequenceService sequenceService;
-	protected MoveService moveService;
-	protected LocalDate today;
+	@Inject
+	private SequenceService sequenceService;
+
+	@Inject
+	private MoveService moveService;
+
+	@Inject
+	private AccountConfigService accountConfigService;
+
+	@Inject
+	protected GeneralService generalService;
 	
-	public VentilateState(SequenceService sequenceService, MoveService moveService, Invoice invoice) {
-		
-		super(invoice);
-		this.sequenceService = sequenceService;
-		this.moveService = moveService;
-		this.today = GeneralService.getTodayDate();
+	@Inject
+	private InvoiceRepository invoiceRepo;
+
+	@Override
+	public void init(Invoice invoice){
+		this.invoice = invoice;
 	}
+
 	
 	
+
 	@Override
 	public void process( ) throws AxelorException {
-		
+
 		Preconditions.checkNotNull(invoice.getPartner());
-		
+
 		setDate();
-		
+
 		Sequence sequence = this.getSequence();
-		
-		if(!moveService.isPurchase(invoice))  {  
+
+		if(!InvoiceToolService.isPurchase(invoice))  {
 			this.checkInvoiceDate(sequence);
 		}
-		
+
 		setInvoiceId(sequence);
 		updatePaymentSchedule( );
+		LOG.debug("Set Move incomming");
 		setMove( );
 		setStatus( );
-		
 	}
-	
+
 	protected void updatePaymentSchedule( ){
-		
+
 		if ( invoice.getPaymentSchedule() != null ) { invoice.getPaymentSchedule().addInvoiceSetItem( invoice ); }
-		
+
 	}
-	
+
 	protected void setDate( ) throws AxelorException{
-		
+
 		if(invoice.getInvoiceDate() == null)  {
-			invoice.setInvoiceDate(this.today);
+			invoice.setInvoiceDate(generalService.getTodayDate());
 		}
-		
+
 		if(!invoice.getPaymentCondition().getIsFree() || invoice.getDueDate() == null)  {
 			invoice.setDueDate(this.getDueDate());
 		}
-		
+
 	}
-	
+
+
 	/**
 	 *  - Without reset : assure that he doesn't exist invoice with an invoice date greater than the current invoice date.
 	 *	- With monthly reset : determine the sequence using the Max number stored on ventilated invoice on the same month.
@@ -103,29 +118,29 @@ public class VentilateState extends WorkflowInvoice {
 	 * @throws AxelorException
 	 */
 	protected void checkInvoiceDate(Sequence sequence) throws AxelorException  {
-		
+
 		String query = "self.statusSelect = ?1 AND self.invoiceDate > ?2 AND self.operationTypeSelect = ?3 ";
 		List<Object> params = Lists.newArrayList();
 		params.add(InvoiceRepository.STATUS_VENTILATED);
 		params.add(invoice.getInvoiceDate());
 		params.add(invoice.getOperationTypeSelect());
-		
+
 		int i = 4;
-		
+
 		if(sequence.getMonthlyResetOk())  {
-			
+
 			query += String.format("AND EXTRACT (month from self.invoiceDate) = ?%d ", i++);
 			params.add(invoice.getInvoiceDate().getMonthOfYear());
-			
+
 		}
 		if(sequence.getYearlyResetOk())  {
-			
+
 			query += String.format("AND EXTRACT (year from self.invoiceDate) = ?%d ", i++);
 			params.add(invoice.getInvoiceDate().getYear());
-			
+
 		}
-		
-		if(all().filter(query, params.toArray()).count() > 0)  {
+
+		if(invoiceRepo.all().filter(query, params.toArray()).count() > 0)  {
 			if(sequence.getMonthlyResetOk())  {
 				throw new AxelorException(I18n.get(IExceptionMessage.VENTILATE_STATE_2), IException.CONFIGURATION_ERROR);
 			}
@@ -134,86 +149,88 @@ public class VentilateState extends WorkflowInvoice {
 			}
 			throw new AxelorException(I18n.get(IExceptionMessage.VENTILATE_STATE_1), IException.CONFIGURATION_ERROR);
 		}
-		
+
 	}
-	
-	
+
+
 	protected LocalDate getDueDate()  {
-		
-		return InvoiceServiceImpl.getDueDate(invoice.getPaymentCondition(),invoice.getInvoiceDate());
-		
+
+		return InvoiceToolService.getDueDate(invoice.getPaymentCondition(),invoice.getInvoiceDate());
+
 	}
-	
+
 	protected void setMove( ) throws AxelorException {
-		
+
 		if(invoice.getInTaxTotal().compareTo(BigDecimal.ZERO) == 0)  {  return;  }
-		
+
+		LOG.debug("In Set Move");
 		// Création de l'écriture comptable
 		Move move = moveService.createMove(invoice);
-		
-		if (move != null && Beans.get(AccountConfigService.class).getAccountConfig(invoice.getCompany()).getAutoReconcileOnInvoice())  {
-			
+		if (move != null)  {
+
 			moveService.createMoveUseExcessPaymentOrDue(invoice);
-			
+
 		}
-		
+
 	}
-	
-	
+
+
 	/**
 	 * Détermine le numéro de facture
-	 * 
+	 *
 	 * @param invoice
 	 * @param company
-	 * @throws AxelorException 
+	 * @throws AxelorException
 	 */
 	protected void setStatus( ) {
 		invoice.setStatusSelect(InvoiceRepository.STATUS_VENTILATED);
 	}
-	
+
 	/**
 	 * Détermine le numéro de facture
-	 * 
+	 *
 	 * @param invoice
 	 * @param company
-	 * @throws AxelorException 
+	 * @throws AxelorException
 	 */
 	protected void setInvoiceId( Sequence sequence ) throws AxelorException {
-		
-		if ( !Strings.isNullOrEmpty( invoice.getInvoiceId() ) ) { return; }
-		
+
+		if ( !Strings.isNullOrEmpty(invoice.getInvoiceId()) && !invoice.getInvoiceId().contains("*") ) { return; }
+
 		invoice.setInvoiceId( sequenceService.setRefDate( invoice.getInvoiceDate() ).getSequenceNumber(sequence) );
-		
+
 		if (invoice.getInvoiceId() != null) { return; }
-		
+
 		throw new AxelorException(String.format(I18n.get(IExceptionMessage.VENTILATE_STATE_4), invoice.getCompany().getName()), IException.CONFIGURATION_ERROR);
 
 	}
-	
+
 	protected Sequence getSequence( ) throws AxelorException{
-		
+
+		AccountConfig accountConfig = accountConfigService.getAccountConfig(invoice.getCompany());
+
 		switch (invoice.getOperationTypeSelect()) {
-		
+
 		case InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE:
-			
-			return sequenceService.getSequence(IAdministration.SUPPLIER_INVOICE, invoice.getCompany());
-			
+
+			return accountConfigService.getSuppInvSequence(accountConfig);
+
 		case InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND:
-			
-			return sequenceService.getSequence(IAdministration.SUPPLIER_REFUND, invoice.getCompany());
+
+			return accountConfigService.getSuppRefSequence(accountConfig);
 
 		case InvoiceRepository.OPERATION_TYPE_CLIENT_SALE:
-			
-			return sequenceService.getSequence(IAdministration.CUSTOMER_INVOICE, invoice.getCompany());
-			
+
+			return accountConfigService.getCustInvSequence(accountConfig);
+
 		case InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND:
-				
-			return sequenceService.getSequence(IAdministration.CUSTOMER_REFUND, invoice.getCompany());
-			
+
+			return accountConfigService.getCustRefSequence(accountConfig);
+
 		default:
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.JOURNAL_1),invoice.getInvoiceId()), IException.MISSING_FIELD);
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.JOURNAL_1), invoice.getInvoiceId()), IException.MISSING_FIELD);
 		}
-		
+
 	}
 
 }

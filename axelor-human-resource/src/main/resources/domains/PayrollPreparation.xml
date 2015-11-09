@@ -1,0 +1,34 @@
+<?xml version="1.0" ?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_4.0.xsd">
+
+  <module name="human-resource" package="com.axelor.apps.hr.db"/>
+
+  <entity name="PayrollPreparation" cachable="true">
+      
+      <many-to-one name="employmentContract" ref="com.axelor.apps.hr.db.EmploymentContract" title="Employment contract" required="true"/>
+      <many-to-one name="employee" ref="com.axelor.apps.hr.db.Employee" required="true" title="Employee"/>
+      <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company" required="true"/>
+      <integer name="monthSelect" selection="iadministration.month.select" title="Month" required="true" default="1"/>
+      <integer name="yearPeriod" title="Year" required="true" default="2015"/>
+      <one-to-many name="extraHoursLineList" ref="com.axelor.apps.hr.db.ExtraHoursLine" title="Extra hours" mappedBy="payrollPreparation" orphanRemoval="false"/>
+      <one-to-many name="expenseList" ref="com.axelor.apps.hr.db.Expense" title="Expenses" mappedBy="payrollPreparation" orphanRemoval="false"/>
+      <decimal name="duration" title="Working days' number" scale="1" precision="5"/>
+      <decimal name="expenseAmount" title="Expenses amount to pay" scale="2" precision="15"/>
+      <many-to-many name="otherCostsEmployeeSet" title="Others" ref="com.axelor.apps.hr.db.OtherCostsEmployee"/>
+      <string name="comments" title="Comments" large="true"/>
+      <decimal name="annualGrossSalary" title="Annual gross salary" scale="2" precision="15"/>
+      <decimal name="netSalary" title="Net salary" scale="2" precision="15"/>
+      <decimal name="socialCharges" title="Social Charges" scale="2" precision="15"/>
+      <decimal name="total" title="Total to pay" scale="2" precision="15"/>
+      
+      <string name="fullName" namecolumn="true" readonly="true">
+      <![CDATA[
+	  		return this.getEmployee().getName()+" "+this.getCompany().getName()+" "+this.getMonthSelect()+"/"+this.getYearPeriod();
+	  ]]>
+      </string>
+
+  </entity>
+  
+</domain-models>

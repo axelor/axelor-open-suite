@@ -1,18 +1,17 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
 
 	
-	<menuitem name="manufacturing-root" title="Manufacturing" priority="84"
-		icon="img/16px/wheel_16px.png" groups="admins,ERP"/>
-		
+	<menuitem name="manufacturing-root" title="Manufacturing" order="-84"
+		icon="fa-recycle" groups="admins,ERP"/>
 	
 	<menuitem name="manufacturing-root-bill-of-material" parent="manufacturing-root"
 		title="Bills of materials" action="manufacturing.root.bill.of.material" />
 
 	<action-view name="manufacturing.root.bill.of.material" title="Bills of materials"
-		model="com.axelor.apps.production.db.BillOfMaterial" icon="img/16px/wheel_16px.png">
+		model="com.axelor.apps.production.db.BillOfMaterial" >
 		<view type="grid" name="bill-of-material-grid" />
 		<view type="form" name="bill-of-material-form" />
 		<domain>self.isRawMaterial = false AND self.personalized = false</domain>
@@ -22,7 +21,7 @@
 		title="Manufacturing processes" action="manufacturing.root.prod.process" />
 
 	<action-view name="manufacturing.root.prod.process" title="Manufacturing processes"
-		model="com.axelor.apps.production.db.ProdProcess" icon="img/16px/wheel_16px.png">
+		model="com.axelor.apps.production.db.ProdProcess" >
 		<view type="grid" name="prod-process-grid" />
 		<view type="form" name="prod-process-form" />
 	</action-view>
@@ -31,7 +30,7 @@
 		title="Productions orders" action="manufacturing.root.production.order" />
 
 	<action-view name="manufacturing.root.production.order" title="Productions orders"
-		model="com.axelor.apps.production.db.ProductionOrder" icon="img/16px/wheel_16px.png">
+		model="com.axelor.apps.production.db.ProductionOrder" >
 		<view type="grid" name="production-order-grid" />
 		<view type="form" name="production-order-form" />
 		<view-param name="search-filters" value="production-order-filters"/>
@@ -41,117 +40,113 @@
 		title="Manufacturing orders" action="manufacturing.root.manuf.order" />
 
 	<action-view name="manufacturing.root.manuf.order" title="Manufacturing orders"
-		model="com.axelor.apps.production.db.ManufOrder" icon="img/16px/wheel_16px.png">
+		model="com.axelor.apps.production.db.ManufOrder" >
 		<view type="grid" name="manuf-order-grid" />
 		<view type="form" name="manuf-order-form" />
 		<view-param name="search-filters" value="manuf-order-filters"/>
-		<context name="_todayDateTime" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDateTime()"/>
+		<context name="_todayDateTime" expr="eval:__config__.generalService.getTodayDateTime()"/>
 	</action-view>	
 	
 	<menuitem name="manufacturing-root-operation-order" parent="manufacturing-root"
 		title="Operations orders" action="manufacturing.root.operation.order" />
 
 	<action-view name="manufacturing.root.operation.order" title="Operation orders"
-		model="com.axelor.apps.production.db.OperationOrder" icon="img/16px/wheel_16px.png">
+		model="com.axelor.apps.production.db.OperationOrder" >
 		<view type="grid" name="operation-order-group-grid" />
 		<view type="form" name="operation-order-form" />
 		<view-param name="search-filters" value="operation-order-filters"/>
-		<context name="_todayDateTime" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDateTime()"/>
+		<context name="_todayDateTime" expr="eval:__config__.generalService.getTodayDateTime()"/>
 	</action-view>	
 	
 	<menuitem name="manufacturing-root-operation-order-planned-calendar" parent="manufacturing-root"
-		title="Planned operations" action="manufacturing.root.operation.order.planned.calendar" icon="img/16px/calendarTask_16px.png"/>
+		title="Planned operations" action="manufacturing.root.operation.order.planned.calendar" />
 
 	<action-view name="manufacturing.root.operation.order.planned.calendar" title="Planned operations"
-		model="com.axelor.apps.production.db.OperationOrder" icon="img/16px/calendarTask_16px.png">
+		model="com.axelor.apps.production.db.OperationOrder" >
 		<view type="calendar" name="operation-order-planned-calendar"/>
 		<view type="grid" name="operation-order-grid" />
 		<view type="form" name="operation-order-form" />
 	</action-view>
 	
 	<menuitem name="manufacturing-root-operation-order-real-calendar" parent="manufacturing-root"
-		title="Real operations" action="manufacturing.root.operation.order.real.calendar" icon="img/16px/calendarTask_16px.png"/>
+		title="Real operations" action="manufacturing.root.operation.order.real.calendar" />
 
 	<action-view name="manufacturing.root.operation.order.real.calendar" title="Real operations"
-		model="com.axelor.apps.production.db.OperationOrder" icon="img/16px/calendarTask_16px.png">
+		model="com.axelor.apps.production.db.OperationOrder" >
 		<view type="calendar" name="operation-order-real-calendar"/>
 		<view type="grid" name="operation-order-grid" />
 		<view type="form" name="operation-order-form" />
 	</action-view>
 	
 	<menuitem name="manufacturing-root-charge-by-machine-dashboard" parent="manufacturing-root"
-		title="Charge by machine" action="manufacturing.root.charge.by.machine.dashboardr" icon="img/16px/chart_16px.png"/>
+		title="Charge by machine" action="manufacturing.root.charge.by.machine.dashboardr" />
 
 	<action-view name="manufacturing.root.charge.by.machine.dashboardr" title="Charge by machine"
-		icon="img/16px/chart_16px.png">
+		>
 		<view type="dashboard" name="charge.by.machine.dashboard" />
-		<context name="today" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()"/>
+		<context name="today" expr="eval:__config__.generalService.getTodayDate()"/>
 	</action-view>
+	
+	<menuitem name="manufacturing-root-report" parent="manufacturing-root"
+		title="Reportings"/>
 
-	<menuitem name="manufacturing-conf" parent="manufacturing-root" title="Configurations"
-		icon="img/Other/parameter_59px.png" />
+	<menuitem name="manufacturing-conf" parent="manufacturing-root" title="Configurations"/>
 
-	<menuitem name="manufacturing-conf-prod-resource" parent="manufacturing-conf"
-		title="Resources" action="manufacturing.conf.prod.resource" />
+	<menuitem name="manufacturing-conf-work-center" parent="manufacturing-conf"
+		title="Resources" action="manufacturing.conf.work.center" />
 
-	<action-view name="manufacturing.conf.prod.resource" title="Resources"
-		model="com.axelor.apps.production.db.ProdResource" icon="img/16px/parameterSmall_16px.png">
-		<view type="grid" name="prod-resource-grid" />
-		<view type="form" name="prod-resource-form" />
+	<action-view name="manufacturing.conf.work.center" title="Work centers"
+		model="com.axelor.apps.production.db.WorkCenter" >
+		<view type="grid" name="work-center-grid" />
+		<view type="form" name="work-center-form" />
 	</action-view>
 	
 	<menuitem name="manufacturing-conf-machine" parent="manufacturing-conf"
 		title="Machines" action="manufacturing.conf.machine" />
 
 	<action-view name="manufacturing.conf.machine" title="Machines"
-		model="com.axelor.apps.production.db.Machine" icon="img/16px/parameterSmall_16px.png">
+		model="com.axelor.apps.production.db.Machine" >
 		<view type="grid" name="machine-grid" />
 		<view type="form" name="machine-form" />
 	</action-view>
 	
-	
+	<menuitem name="manufacturing-conf-cost-sheet-group" parent="manufacturing-conf"
+		title="Cost sheet groups" action="manufacturing.conf.cost.sheet.group" />
+
+	<action-view name="manufacturing.conf.cost.sheet.group" title="Cost sheet group"
+		model="com.axelor.apps.production.db.CostSheetGroup" >
+		<view type="grid" name="cost-sheet-group-grid" />
+		<view type="form" name="cost-sheet-group-form" />
+	</action-view>
 	
 	
 	<menuitem name="admin-root-conf-production-config" parent="admin-root-conf"
-		title="Production configurations" action="admin.root.conf.production.config" icon="img/Other/parameter_59px.png"/>
+		title="Production configurations" action="admin.root.conf.production.config" />
 		
 	<action-view name="admin.root.conf.production.config" title="Production configurations"
-		model="com.axelor.apps.production.db.ProductionConfig" icon="img/16px/parameterSmall_16px.png">
-		<view type="grid" />
-		<view type="form" />
-	</action-view>
-	
-	<menuitem name="menu-manufacturing-dashboard-sample" parent="menu-dashboards-sample" priority="155"
-		title="Manufacturing Dashboard" icon="img/16px/chart_16px.png" action="manufacturing.dashboard.view.sample" groups="admins,axelordemo"/>	
-
-	<action-view name="manufacturing.dashboard.view.sample" title="Manufacturing Dashboard"
-		icon="img/16px/crmSmall_16px.png">
-		<view type="dashboard" name="manufacturing.dashboard.sample" />
-	    <context name="_today" expr="eval: __date__.toDate()"/>
+		model="com.axelor.apps.production.db.ProductionConfig" >
+		<view type="grid" name="production-config-grid"/>
+		<view type="form" name="production-config-form"/>
 	</action-view>
 
-	
-	<menuitem name="menu-manufacturing-dashboard" parent="menu-dashboards" 
-		title="Manufacturing" groups="admins,axelordemo" priority="90"/>	
 		
-	<menuitem name="menu-manufacturing-dashboard-1" parent="menu-manufacturing-dashboard" 
-		title="Manufacturing Db" icon="img/16px/chart_16px.png" action="manufacturing.dashboard.view" />	
+	<menuitem name="menu-manufacturing-dashboard-1" parent="manufacturing-root-report" 
+		title="Manufacturing"  action="manufacturing.dashboard.view" />	
 
-	<action-view name="manufacturing.dashboard.view" title="Manufacturing Dashboard"
-		icon="img/16px/crmSmall_16px.png">
-		<view type="dashboard" name="manufacturing.dashboard" />
+	<action-view name="manufacturing.dashboard.view" title="Manufacturing Dashboard">
+		<view type="dashboard" name="manufacturing.dashboard.sample" />
 	    <context name="_today" expr="eval: __date__.toDate()"/>
 	</action-view>
 	
 	<!-- TOP MENU -->
 	
 	<menuitem name="top-manufacturing" title="Manufacturing" left="false" top="true" groups="admins,ERP"/>
-	<menuitem name="top-manufacturing-create-manufacturing-order" title="Create Manuf. Order" parent="top-manufacturing" priority="100" action="top.manufacturing.create.manufacturing.order"/>
+	<menuitem name="top-manufacturing-create-manufacturing-order" title="Create Manuf. Order" top="true" parent="top-manufacturing" order="-100" action="top.manufacturing.create.manufacturing.order"/>
 	<action-view name="top.manufacturing.create.manufacturing.order" title="New Manufacturing Order" model="com.axelor.apps.production.db.ManufOrder">
 		<view type="form" name="manuf-order-form"/>
 	</action-view>
-	<menuitem name="top-manufacturing-manufacturing-orders" title="View Manuf. Orders" priority="90" parent="top-manufacturing" action="manufacturing.root.manuf.order"/>
-	<menuitem name="top-manufacturing-operation-orders" title="View Operation Orders" parent="top-manufacturing" priority="80" action="manufacturing.root.operation.order"/>
-	<menuitem name="top-manufacturing-bill-of-material" title="View Bill Of Materials" parent="top-manufacturing" priority="70" action="manufacturing.root.bill.of.material" />
+	<menuitem name="top-manufacturing-manufacturing-orders" title="View Manuf. Orders" order="-90" parent="top-manufacturing" top="true" action="manufacturing.root.manuf.order"/>
+	<menuitem name="top-manufacturing-operation-orders" title="View Operation Orders" parent="top-manufacturing" top="true" order="-80" action="manufacturing.root.operation.order"/>
+	<menuitem name="top-manufacturing-bill-of-material" title="View Bill Of Materials" parent="top-manufacturing" top="true" order="-70" action="manufacturing.root.bill.of.material" />
 
 </object-views>

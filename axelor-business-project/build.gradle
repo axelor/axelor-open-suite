@@ -1,0 +1,11 @@
+apply plugin: 'axelor-module'
+
+module {
+	name "axelor-business-project"
+	version "4.0.0"
+	title "Axelor Business Project"
+
+	// module dependencies
+	module "modules:axelor-human-resource"
+	module "modules:axelor-supplychain"
+}

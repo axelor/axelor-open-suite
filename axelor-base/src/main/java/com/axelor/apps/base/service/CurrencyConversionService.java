@@ -25,6 +25,11 @@ import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import wslite.http.HTTPClient;
+import wslite.http.HTTPMethod;
+import wslite.http.HTTPRequest;
+import wslite.http.HTTPResponse;
+
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.CurrencyConversionLine;
 import com.axelor.apps.base.db.General;
@@ -36,29 +41,30 @@ import com.axelor.exception.service.TraceBackService;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
-import wslite.http.HTTPClient;
-import wslite.http.HTTPMethod;
-import wslite.http.HTTPRequest;
-import wslite.http.HTTPResponse;
+public class CurrencyConversionService {
 
-public class CurrencyConversionService extends CurrencyConversionLineRepository {
-	
 	private static final Logger LOG = LoggerFactory.getLogger(CurrencyConversionService.class);
-	
+
 	@Inject
 	private CurrencyRepository currencyRepo;
-	 
+
+	@Inject
+	protected GeneralService generalService;
+	
+	@Inject
+	private CurrencyConversionLineRepository cclRepo;
+
 
 	public BigDecimal convert(Currency currencyFrom, Currency currencyTo){
-		BigDecimal rate = new BigDecimal(-1); 
-		
+		BigDecimal rate = new BigDecimal(-1);
+
 		LOG.debug("Currerncy conversion From: {} To: {}",new Object[] { currencyFrom,currencyTo});
-		String wsUrl = GeneralService.getGeneral().getCurrencyWsURL();
+		String wsUrl = generalService.getGeneral().getCurrencyWsURL();
 		if(wsUrl == null){
 			LOG.info("Currency WS URL not configured");
 			return rate;
 		}
-		
+
 		if(currencyFrom != null && currencyTo != null){
 			try{
 		        HTTPClient httpclient = new HTTPClient();
@@ -83,27 +89,27 @@ public class CurrencyConversionService extends CurrencyConversionLineRepository 
 		LOG.debug("Currerncy conversion rate: {}",new Object[] {rate});
 		return rate;
 	}
-	
+
 	public String getVariations(BigDecimal currentRate, BigDecimal previousRate){
 		String variations = "0";
 		LOG.debug("Currency rate variation calculation for CurrentRate: {} PreviousRate: {}", new Object[]{currentRate,previousRate});
-		
+
 		if(currentRate != null && previousRate != null && previousRate.compareTo(BigDecimal.ZERO) != 0){
 			BigDecimal diffRate = currentRate.subtract(previousRate);
 			BigDecimal variation = diffRate.multiply(new BigDecimal(100)).divide(previousRate,RoundingMode.HALF_EVEN);
 			variation = variation.setScale(IAdministration.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_EVEN);
 			variations = variation.toString()+"%";
 		}
-		
+
 		LOG.debug("Currency rate variation result: {}",new Object[]{variations});
 		return variations;
 	}
-	
+
 	@Transactional
 	public void createCurrencyConversionLine(Currency currencyFrom, Currency currencyTo, LocalDate fromDate, BigDecimal rate, General general, String variations){
 		LOG.debug("Create new currency conversion line CurrencyFrom: {}, CurrencyTo: {},FromDate: {},ConversionRate: {}, General: {}, Variations: {}",
 				   new Object[]{currencyFrom,currencyTo,fromDate,rate,general,variations});
-		
+
 		CurrencyConversionLine ccl = new CurrencyConversionLine();
 		ccl.setStartCurrency(currencyFrom);
 		ccl.setEndCurrency(currencyTo);
@@ -111,32 +117,32 @@ public class CurrencyConversionService extends CurrencyConversionLineRepository 
 		ccl.setExchangeRate(rate);
 		ccl.setGeneral(general);
 		ccl.setVariations(variations);
-		save(ccl);
-		
+		cclRepo.save(ccl);
+
 	}
-	
-	@Transactional 
+
+	@Transactional
 	public void saveCurrencyConversionLine(CurrencyConversionLine ccl){
-		save(ccl);
+		cclRepo.save(ccl);
 	}
-	
-	
+
+
 	public BigDecimal getRate(Currency currencyFrom, Currency currencyTo, LocalDate rateDate){
-		
+
 		LOG.debug("Get Last rate for CurrencyFrom: {} CurrencyTo: {} RateDate: {}",new Object[]{currencyFrom,currencyTo,rateDate});
-		
+
 		BigDecimal rate = null;
-		
+
 		if(currencyFrom != null && currencyTo != null && rateDate != null){
 			currencyFrom = currencyRepo.find(currencyFrom.getId());
 			currencyTo = currencyRepo.find(currencyTo.getId());
-			CurrencyConversionLine ccl = all().filter("startCurrency = ?1 AND endCurrency = ?2 AND fromDate <= ?3 AND (toDate >= ?3 OR toDate = null)",currencyFrom,currencyTo,rateDate).fetchOne();
+			CurrencyConversionLine ccl = cclRepo.all().filter("startCurrency = ?1 AND endCurrency = ?2 AND fromDate <= ?3 AND (toDate >= ?3 OR toDate = null)",currencyFrom,currencyTo,rateDate).fetchOne();
 			if(ccl != null)
 				rate =  ccl.getExchangeRate();
 		}
-		
+
 		LOG.debug("Current Rate: {}",new Object[]{rate});
-		
+
 		return rate;
 	}
 }

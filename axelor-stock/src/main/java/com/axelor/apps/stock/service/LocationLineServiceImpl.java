@@ -26,11 +26,11 @@ import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.TrackingNumber;
-import com.axelor.apps.stock.db.ILocation;
-import com.axelor.apps.stock.db.IMinStockRules;
 import com.axelor.apps.stock.db.Location;
 import com.axelor.apps.stock.db.LocationLine;
 import com.axelor.apps.stock.db.repo.LocationLineRepository;
+import com.axelor.apps.stock.db.repo.LocationRepository;
+import com.axelor.apps.stock.db.repo.MinStockRulesRepository;
 import com.axelor.apps.stock.exception.IExceptionMessage;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
@@ -39,10 +39,12 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
 
-public class LocationLineServiceImpl extends LocationLineRepository implements LocationLineService {
+public class LocationLineServiceImpl implements LocationLineService {
 	
 	private static final Logger LOG = LoggerFactory.getLogger(LocationLineServiceImpl.class); 
 	
+	@Inject
+	protected LocationLineRepository locationLineRepo;
 	
 	@Inject
 	protected MinStockRulesService minStockRulesService;
@@ -77,7 +79,7 @@ public class LocationLineServiceImpl extends LocationLineRepository implements L
 		
 		this.checkStockMin(locationLine, false);
 		
-		save(locationLine);
+		locationLineRepo.save(locationLine);
 		
 	}
 	
@@ -85,10 +87,10 @@ public class LocationLineServiceImpl extends LocationLineRepository implements L
 	public void minStockRules(Product product, BigDecimal qty, LocationLine locationLine, boolean current, boolean future) throws AxelorException  {
 		
 		if(current)  {
-			minStockRulesService.generatePurchaseOrder(product, qty, locationLine, IMinStockRules.TYPE_CURRENT);			
+			minStockRulesService.generatePurchaseOrder(product, qty, locationLine, MinStockRulesRepository.TYPE_CURRENT);			
 		}
 		if(future)  {
-			minStockRulesService.generatePurchaseOrder(product, qty, locationLine, IMinStockRules.TYPE_FUTURE);
+			minStockRulesService.generatePurchaseOrder(product, qty, locationLine, MinStockRulesRepository.TYPE_FUTURE);
 		}
 		
 	}
@@ -107,19 +109,19 @@ public class LocationLineServiceImpl extends LocationLineRepository implements L
 		
 		this.checkStockMin(detailLocationLine, true);
 		
-		save(detailLocationLine);
+		locationLineRepo.save(detailLocationLine);
 		
 	}
 	
 	
 	public void checkStockMin(LocationLine locationLine, boolean isDetailLocationLine) throws AxelorException  {
-		if(!isDetailLocationLine && locationLine.getCurrentQty().compareTo(BigDecimal.ZERO) == -1 && locationLine.getLocation().getTypeSelect() == ILocation.INTERNAL)  {
+		if(!isDetailLocationLine && locationLine.getCurrentQty().compareTo(BigDecimal.ZERO) == -1 && locationLine.getLocation().getTypeSelect() == LocationRepository.TYPE_INTERNAL)  {
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.LOCATION_LINE_1), 
 					locationLine.getProduct().getName(), locationLine.getProduct().getCode()), IException.CONFIGURATION_ERROR);
 		}
 		else if(isDetailLocationLine && locationLine.getCurrentQty().compareTo(BigDecimal.ZERO) == -1 
-				&& ((locationLine.getLocation() != null && locationLine.getLocation().getTypeSelect() == ILocation.INTERNAL)
-				    || (locationLine.getDetailsLocation() != null && locationLine.getDetailsLocation().getTypeSelect() == ILocation.INTERNAL)))  {
+				&& ((locationLine.getLocation() != null && locationLine.getLocation().getTypeSelect() == LocationRepository.TYPE_INTERNAL)
+				    || (locationLine.getDetailsLocation() != null && locationLine.getDetailsLocation().getTypeSelect() == LocationRepository.TYPE_INTERNAL)))  {
 
 			String trackingNumber = "";
 			if(locationLine.getTrackingNumber() != null)  {
@@ -315,5 +317,6 @@ public class LocationLineServiceImpl extends LocationLineRepository implements L
 		return detailLocationLine;
 		
 	}
+
 		
 }

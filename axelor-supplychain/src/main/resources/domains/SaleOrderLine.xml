@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_3.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_4.0.xsd">
 
   <module name="sale" package="com.axelor.apps.sale.db"/>
 
@@ -11,17 +11,32 @@
   	
   	<date name="invoicingDate" title="Invoicing Date"/>
   	
-  	<boolean name="isToInvoice" title="To invoice?"/>
-  	<boolean name="isInvoiced" title="Invoiced ?"/>
-  	<decimal name="amountInvoiced" title="Amount invoiced"/>
-  	<decimal name="amountRemainingToBeInvoiced" title="Remaining to invoice"/>
-  	
-<!--   Onglet Historique -->
-  	<many-to-many name="invoiceSet" ref="com.axelor.apps.account.db.Invoice" title="Associated invoice lines"/>
+  	<decimal name="amountInvoiced" title="Amount invoiced W.T." readonly="true"/>
   	
   	
 <!-- Bon de livraison -->
   	<boolean name="isInvoiceControlled" title="Invoice controlled"/>
+  	
+  	<integer name="periodicity" selection="product.periodicity.subscription.select"/>
+  	<date name="fromSubDate" title="Date From"/>
+  	<integer name="periodNumber" title="Number of Periods"/>
+  	<date name="toSubDate" title="Date To"/>
+  	<integer name="subscripInvTypeSelect" title="Invoicing Type" selection="supplychain.subscription.invoicing.type.select"/>
+  	<one-to-many name="subscriptionList" ref="com.axelor.apps.supplychain.db.Subscription" mappedBy="saleOrderLine" title="Subscription List" orphanRemoval="true"/>
+  	<one-to-many name="analyticDistributionLineList" ref="com.axelor.apps.account.db.AnalyticDistributionLine" title="Analytic distribution lines" mappedBy="saleOrderLine"/>
+  	<many-to-one name="analyticDistributionTemplate" title="Analytic distribution template" ref="com.axelor.apps.account.db.AnalyticDistributionTemplate"/>
+  	<boolean name="toInvoice"/>
+	<boolean name="invoiced" readonly="true"/>
+  	
+  	<extra-code>
+  		<![CDATA[
+  		// SALE SUPPLY SELECT
+	  		public static final int SALE_SUPPLY_NONE = 0;
+	  		public static final int SALE_SUPPLY_FROM_STOCK = 1;
+	  		public static final int SALE_SUPPLY_PURCHASE = 2;
+	  		public static final int SALE_SUPPLY_PRODUCE = 3;
+	  	]]>
+  	</extra-code>
   	
   	
   </entity>

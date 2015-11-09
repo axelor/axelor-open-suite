@@ -17,6 +17,8 @@
  */
 package com.axelor.apps.message.service;
 
+import java.util.List;
+
 import javax.mail.AuthenticationFailedException;
 import javax.mail.NoSuchProviderException;
 import javax.mail.Session;
@@ -28,20 +30,35 @@ import com.axelor.apps.message.exception.IExceptionMessage;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
+import com.axelor.mail.MailConstants;
 import com.axelor.mail.SmtpAccount;
+import com.google.common.collect.Lists;
+import com.google.inject.Inject;
 
-public class MailAccountServiceImpl extends MailAccountRepository implements MailAccountService {
+public class MailAccountServiceImpl implements MailAccountService {
 	
 	static final int CHECK_CONF_TIMEOUT = 5000;
+	
+	@Inject
+	protected MailAccountRepository mailAccountRepo;
 		
 	@Override
 	public boolean checkDefaultMailAccount(MailAccount mailAccount) {
-		return all().filter("self.isDefault = true").count() == 0 && mailAccount.getIsDefault();
+		if(mailAccount.getIsDefault()){
+			String request = "self.isDefault = true";
+			List<Object> params = Lists.newArrayList();
+			if(mailAccount.getId() != null){
+				request += " AND self.id != ?1";
+				params.add(mailAccount.getId());
+			}
+			return mailAccountRepo.all().filter(request, params.toArray()).count() == 0;
+		}
+		return true;
 	}
 
 	@Override
 	public MailAccount getDefaultMailAccount()  {
-		return all().filter("self.isDefault = true").fetchOne();
+		return mailAccountRepo.all().filter("self.isDefault = true").fetchOne();
 	}
    
 	@Override
@@ -69,15 +86,15 @@ public class MailAccountServiceImpl extends MailAccountRepository implements Mai
 	
 	public String getSmtpSecurity(MailAccount mailAccount)  {
 		
-		if ( mailAccount.getSecuritySelect() == SECURITY_SSL ) { return SmtpAccount.ENCRYPTION_SSL; }
-		else if (mailAccount.getSecuritySelect() == SECURITY_TLS ) { return SmtpAccount.ENCRYPTION_TLS; }
+		if ( mailAccount.getSecuritySelect() == MailAccountRepository.SECURITY_SSL ) { return MailConstants.CHANNEL_SSL; }
+		else if (mailAccount.getSecuritySelect() == MailAccountRepository.SECURITY_STARTTLS ) { return MailConstants.CHANNEL_STARTTLS; }
 		else { return null; }
 		
 	}
 	
 	public String getProtocol(MailAccount mailAccount) {
 		switch ( mailAccount.getServerTypeSelect() ) {
-		case SERVER_TYPE_SMTP:
+		case MailAccountRepository.SERVER_TYPE_SMTP:
 			return "smtp";
 		default:
 			return "";

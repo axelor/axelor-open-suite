@@ -1,4 +1,4 @@
-"importId";"prodProcess.importId";"name";"name_EN";"priority";"prodResource.importId";"description"
+"importId";"prodProcess.importId";"name";"name_EN";"priority";"workCenter.importId";"description"
 1;1;"Assemblage CM – Proc. – Mém.";;10;10;
 2;1;"Montage éléments sur Rack";;10;20;
 4;1;"Branchement des connectiques";;30;30;

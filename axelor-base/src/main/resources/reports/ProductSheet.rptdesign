@@ -15,6 +15,7 @@
         <structure>
             <property name="name">odaDriverClass</property>
             <property name="id">209</property>
+            <expression name="value" type="javascript">params["DefaultDriver"].value</expression>
         </structure>
         <structure>
             <property name="name">odaAutoCommit</property>
@@ -142,6 +143,47 @@
                 <property name="category">Unformatted</property>
             </structure>
         </scalar-parameter>
+        <scalar-parameter name="DefaultDriver" id="3819">
+            <property name="valueType">static</property>
+            <property name="dataType">string</property>
+            <property name="distinct">true</property>
+            <list-property name="selectionList"/>
+            <property name="paramType">simple</property>
+            <property name="controlType">text-box</property>
+            <structure name="format">
+                <property name="category">Unformatted</property>
+            </structure>
+        </scalar-parameter>
+        <scalar-parameter name="-o" id="4116">
+            <property name="valueType">static</property>
+            <property name="isRequired">false</property>
+            <property name="dataType">string</property>
+            <property name="distinct">true</property>
+            <simple-property-list name="defaultValue">
+                <value type="constant">Prod.pdf</value>
+            </simple-property-list>
+            <list-property name="selectionList"/>
+            <property name="paramType">simple</property>
+            <property name="controlType">text-box</property>
+            <structure name="format">
+                <property name="category">Unformatted</property>
+            </structure>
+        </scalar-parameter>
+        <scalar-parameter name="outputFileName" id="4117">
+            <property name="valueType">static</property>
+            <property name="isRequired">false</property>
+            <property name="dataType">string</property>
+            <property name="distinct">true</property>
+            <simple-property-list name="defaultValue">
+                <value type="constant">TestPdf.pdf</value>
+            </simple-property-list>
+            <list-property name="selectionList"/>
+            <property name="paramType">simple</property>
+            <property name="controlType">text-box</property>
+            <structure name="format">
+                <property name="category">Unformatted</property>
+            </structure>
+        </scalar-parameter>
     </parameters>
     <data-sources>
         <oda-data-source extensionID="org.eclipse.birt.report.data.oda.jdbc" name="Data Source" id="209">
@@ -161,8 +203,8 @@
                     <value>ILYNN</value>
                 </ex-property>
             </list-property>
-            <property name="odaDriverClass">org.postgresql.Driver</property>
-            <property name="odaURL">jdbc:postgresql://localhost:5432</property>
+            <property name="odaDriverClass">com.mysql.jdbc.Driver</property>
+            <property name="odaURL">jdbc:mysql://localhost:3306/</property>
         </oda-data-source>
     </data-sources>
     <data-sets>
@@ -386,7 +428,7 @@ Currency.symbol as currency_symbol, Product.has_warranty, Product.warranty_nbr_o
 from base_product as Product
 left join base_company as Company on (Company.id = ?)
 left join meta_file as MetaFile on (MetaFile.id = Company.logo)
-left join public.base_currency as Currency on (Product.sale_currency = Currency.id)
+left join base_currency as Currency on (Product.sale_currency = Currency.id)
 where Product.id = ?
 ]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
@@ -605,9 +647,9 @@ where Product.id = ?
                     <property name="nativeDataType">12</property>
                 </structure>
             </list-property>
-            <xml-property name="queryText"><![CDATA[select LangTranslate.key, LangTranslate.message as "translation" 
+            <xml-property name="queryText"><![CDATA[select LangTranslate.message_key, LangTranslate.message_value as "translation" 
 from meta_translation as LangTranslate 
-where LangTranslate.key = ? and LangTranslate.language = ?]]></xml-property>
+where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
   <Version>2.0</Version>
@@ -812,7 +854,7 @@ where LangTranslate.key = ? and LangTranslate.language = ?]]></xml-property>
                             <structure>
                                 <property name="name">key</property>
                                 <text-property name="displayName">key</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                 <property name="dataType">string</property>
                             </structure>
                             <structure>
@@ -941,7 +983,7 @@ where LangTranslate.key = ? and LangTranslate.language = ?]]></xml-property>
                             <structure>
                                 <property name="name">key</property>
                                 <text-property name="displayName">key</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                 <property name="dataType">string</property>
                             </structure>
                             <structure>
@@ -1007,7 +1049,7 @@ where LangTranslate.key = ? and LangTranslate.language = ?]]></xml-property>
                             <structure>
                                 <property name="name">key</property>
                                 <text-property name="displayName">key</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                 <property name="dataType">string</property>
                             </structure>
                             <structure>
@@ -1044,7 +1086,7 @@ where LangTranslate.key = ? and LangTranslate.language = ?]]></xml-property>
                             <structure>
                                 <property name="name">key</property>
                                 <text-property name="displayName">key</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                 <property name="dataType">string</property>
                             </structure>
                             <structure>
@@ -1076,7 +1118,7 @@ where LangTranslate.key = ? and LangTranslate.language = ?]]></xml-property>
                             <structure>
                                 <property name="name">key</property>
                                 <text-property name="displayName">key</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                 <property name="dataType">string</property>
                             </structure>
                             <structure>
@@ -1101,4 +1143,10 @@ Formatter.format((row._outer["warranty_nbr_of_months"]/12), "#0") + " Year(s) an
             </row>
         </grid>
     </body>
+    <property name="pageVariables">
+        <variable-element name="outputFileName">
+            <expression name="value" type="javascript">'TestPdf.pdf'</expression>
+            <property name="type">report</property>
+        </variable-element>
+    </property>
 </report>

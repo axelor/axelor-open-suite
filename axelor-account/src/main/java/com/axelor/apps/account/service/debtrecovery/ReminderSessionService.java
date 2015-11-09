@@ -32,11 +32,12 @@ import com.axelor.apps.account.db.Reminder;
 import com.axelor.apps.account.db.ReminderConfigLine;
 import com.axelor.apps.account.db.ReminderMethod;
 import com.axelor.apps.account.db.ReminderMethodLine;
+import com.axelor.apps.account.db.repo.ReminderRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
-import com.axelor.apps.account.service.administration.GeneralServiceAccount;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.administration.GeneralService;
+import com.axelor.apps.base.service.administration.GeneralServiceImpl;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
@@ -44,23 +45,22 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
 public class ReminderSessionService {
+
+	private final Logger log = LoggerFactory.getLogger( getClass() );
+
+	protected ReminderRepository reminderRepo;
 	
-	private static final Logger LOG = LoggerFactory.getLogger(ReminderSessionService.class); 
-	
-	private LocalDate today;
-	
-	@Inject
-	private ReminderService reminderService;
+	protected LocalDate today;
 
 	@Inject
-	public ReminderSessionService() {
+	public ReminderSessionService(ReminderRepository reminderRepo, GeneralService generalService) {
 
-		this.today = GeneralService.getTodayDate();
-		
+		this.today = generalService.getTodayDate();
+
 	}
-	
-	
-	
+
+
+
 	/**
 	 * Fonction permettant de récupérer une méthode de relance en fonction de la categorie du tiers et d'une société
 	 * @param reminder
@@ -68,99 +68,99 @@ public class ReminderSessionService {
 	 * @return
 	 */
 	public ReminderMethod getReminderMethod(Reminder reminder)  {
-		
+
 		AccountingSituation accountingSituation = reminder.getAccountingSituation();
 		Company company = accountingSituation.getCompany();
 		Partner partner = accountingSituation.getPartner();
 		List<ReminderConfigLine> reminderConfigLines = company.getAccountConfig().getReminderConfigLineList();
-			
+
 		for(ReminderConfigLine reminderConfigLine : reminderConfigLines)  {
 			if(reminderConfigLine.getPartnerCategory().equals(partner.getPartnerCategory()))  {
-				
-				LOG.debug("méthode de relance determinée ");
+
+				log.debug("méthode de relance determinée ");
 				return reminderConfigLine.getReminderMethod();
-			}	
+			}
 		}
-		
-		LOG.debug("méthode de relance non determinée ");
-		
+
+		log.debug("méthode de relance non determinée ");
+
 		return null;
 	}
-	
-	
-	
+
+
+
 	/**
 	 * Session de relance
-	 * 
+	 *
 	 * @param reminder
 	 * 				Une relance
-	 * @throws AxelorException 
+	 * @throws AxelorException
 	 */
 	public Reminder reminderSession(Reminder reminder) throws AxelorException  {
-		
-		LOG.debug("Begin ReminderActiveSession service...");			
-		
+
+		log.debug("Begin ReminderActiveSession service...");
+
 		LocalDate referenceDate = reminder.getReferenceDate();
 		BigDecimal balanceDueReminder = reminder.getBalanceDueReminder();
-		
+
 		int reminderLevel=0;
 		if(reminder.getReminderMethodLine()!=null && reminder.getReminderMethodLine().getReminderLevel().getName()!=null)  {
 			reminderLevel = reminder.getReminderMethodLine().getReminderLevel().getName();
 		}
-		
+
 		int theoricalReminderLevel;
-		
+
 		int levelMax = this.getMaxLevel(reminder);
-		
+
 		// Test inutile... à verifier
 		if((today.isAfter(referenceDate)  ||  today.isEqual(referenceDate))  &&  balanceDueReminder.compareTo(BigDecimal.ZERO) > 0  )  {
-			LOG.debug("Si la date actuelle est égale ou ultérieur à la date de référence et le solde due relançable positif");
+			log.debug("Si la date actuelle est égale ou ultérieur à la date de référence et le solde due relançable positif");
 			//Pour les client à haut risque vital, on passe directement du niveau de relance 2 au niveau de relance 4
 			if(reminderLevel < levelMax)  {
-				LOG.debug("Sinon ce n'est pas un client à haut risque vital");
+				log.debug("Sinon ce n'est pas un client à haut risque vital");
 				theoricalReminderLevel = reminderLevel+1;
 			}
 			else  {
-				LOG.debug("Sinon c'est un client à un haut risque vital");
+				log.debug("Sinon c'est un client à un haut risque vital");
 				theoricalReminderLevel = levelMax;
 			}
-			
+
 			ReminderMethodLine reminderMethodLine = this.getReminderMethodLine(reminder, theoricalReminderLevel);
-			
-			
-			if((!(referenceDate.plusDays(reminderMethodLine.getStandardDeadline())).isAfter(today))  
+
+
+			if((!(referenceDate.plusDays(reminderMethodLine.getStandardDeadline())).isAfter(today))
 					&&  balanceDueReminder.compareTo(reminderMethodLine.getMinThreshold()) > 0 )  {
-				LOG.debug("Si le seuil du solde exigible relançable est respecté et le délai est respecté");
-				
+				log.debug("Si le seuil du solde exigible relançable est respecté et le délai est respecté");
+
 				if(!reminderMethodLine.getManualValidationOk())  {
-					LOG.debug("Si le niveau ne necessite pas de validation manuelle");
+					log.debug("Si le niveau ne necessite pas de validation manuelle");
 					reminder.setReminderMethodLine(reminderMethodLine);		// Afin d'afficher la ligne de niveau sur le tiers
 					reminder.setWaitReminderMethodLine(null);
 					// et lancer les autres actions du niveau
 				}
 				else  {
-					LOG.debug("Si le niveau necessite une validation manuelle");
+					log.debug("Si le niveau necessite une validation manuelle");
 					reminder.setWaitReminderMethodLine(reminderMethodLine);  // Si le passage est manuel
 				}
 			}
-			
+
 		}
 		else  {
-			LOG.debug("Sinon on lance une réinitialisation");
+			log.debug("Sinon on lance une réinitialisation");
 			this.reminderInitialisation(reminder);
 		}
-		LOG.debug("End ReminderActiveSession service");
+		log.debug("End ReminderActiveSession service");
 		return reminder;
 	}
-	
-	
-	
+
+
+
 	public int getMaxLevel(Reminder reminder)  {
-		
+
 		ReminderMethod reminderMethod = reminder.getReminderMethod();
-		
+
 		int levelMax = 0;
-		
+
 		if(reminderMethod!=null && reminderMethod.getReminderMethodLineList()!=null)  {
 			for(ReminderMethodLine reminderMethodLine : reminderMethod.getReminderMethodLineList())  {
 				int currentLevel = reminderMethodLine.getReminderLevel().getName();
@@ -169,24 +169,24 @@ public class ReminderSessionService {
 				}
 			}
 		}
-		
+
 		return levelMax;
-		
+
 	}
-	
-	
-	
-	
+
+
+
+
 	/**
 	 * Fonction réinitialisant la relance
-	 * @throws AxelorException 
+	 * @throws AxelorException
 	 * @param relance
 	 */
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void reminderInitialisation (Reminder reminder) throws AxelorException  {
-		
-        LOG.debug("Begin ReminderInitialisation service...");
-        
+
+		log.debug("Begin ReminderInitialisation service...");
+
 		reminder.setReminderMethodLine(null);
 		reminder.setWaitReminderMethodLine(null);
 		reminder.setBalanceDue(BigDecimal.ZERO);
@@ -194,26 +194,26 @@ public class ReminderSessionService {
 		reminder.setInvoiceReminderSet(new HashSet<Invoice>());
 		reminder.setPaymentScheduleLineReminderSet(new HashSet<PaymentScheduleLine>());
 
-		LOG.debug("End ReminderInitialisation service");
-		
-		reminderService.save(reminder);
+		log.debug("End ReminderInitialisation service");
+
+		reminderRepo.save(reminder);
 	}
-	
-	
-	
+
+
+
 	/**
 	 * Fonction permetant de récupérer l'ensemble des lignes de relance de la matrice de relance pour un tiers
-	 * 
+	 *
 	 * @param reminder
 	 *			Une relance
 	 * @return
-	 *			Une liste de ligne de matrice de relance 			
+	 *			Une liste de ligne de matrice de relance
 	 */
 	public List<ReminderMethodLine>  getReminderMethodLineList(Reminder reminder)  {
 		return reminder.getReminderMethod().getReminderMethodLineList();
 	}
-	
-	
+
+
 	/**
 	 * Fonction permettant de récupérer une ligne de relance de la matrice de relance pour un tiers
 	 *
@@ -222,14 +222,14 @@ public class ReminderSessionService {
 	 * @param reminderLevel
 	 * 			Un niveau de relance
 	 * @return
-	 *			Une ligne de matrice de relance 
+	 *			Une ligne de matrice de relance
 	 * @throws AxelorException
 	 */
 	public ReminderMethodLine getReminderMethodLine(Reminder reminder, int reminderLevel) throws AxelorException  {
-		if(reminder.getReminderMethod() == null 
+		if(reminder.getReminderMethod() == null
 				|| reminder.getReminderMethod().getReminderMethodLineList() == null
 				|| reminder.getReminderMethod().getReminderMethodLineList().isEmpty())  {
-			throw new AxelorException(String.format("%s :\n"+I18n.get("Tiers")+" %s: +"+I18n.get(IExceptionMessage.REMINDER_SESSION_1), GeneralServiceAccount.getExceptionReminderMsg(), 
+			throw new AxelorException(String.format("%s :\n"+I18n.get("Tiers")+" %s: +"+I18n.get(IExceptionMessage.REMINDER_SESSION_1), GeneralServiceImpl.EXCEPTION,
 					reminder.getAccountingSituation().getPartner().getName()), IException.MISSING_FIELD);
 		}
 		for(ReminderMethodLine reminderMatrixLine : reminder.getReminderMethod().getReminderMethodLineList())  {
@@ -239,8 +239,8 @@ public class ReminderSessionService {
 		}
 		return null;
 	}
-	
-	
-	
-	
+
+
+
+
 }

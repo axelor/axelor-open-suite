@@ -45,13 +45,16 @@ import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.google.inject.Inject;
 
 
 public class MapService {
-	
-	
+
+	@Inject
+	protected GeneralService generalService;
+
 	private static final Logger LOG = LoggerFactory.getLogger(MapService.class);
-	
+
 	public JSONObject geocodeGoogle(String qString) {
 		if(qString == null){
 			return null;
@@ -68,7 +71,7 @@ public class MapService {
 		responseMap.put("path", "/maps/api/geocode/json");
 		responseMap.put("accept", ContentType.JSON);
 		responseMap.put("query", responseQuery);
-		
+
 		responseMap.put("connectTimeout", 5000);
 		responseMap.put("readTimeout", 10000);
 		responseMap.put("followRedirects", false);
@@ -85,12 +88,12 @@ public class MapService {
 				else restResponse = null;
 			}
 			else restResponse = null;
-				
+
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 		/*
 		log.debug("restResponse = {}", restResponse)
 		log.debug("restResponse.parsedResponseContent.text = {}", restResponse.parsedResponseContent.text)
@@ -109,7 +112,7 @@ public class MapService {
 		def results = searchresults.results;
 
 		if (results.size() > 1) {
-			response.put("multiple", true);			
+			response.put("multiple", true);
 		}
 		def firstPlaceFound = results[0];
 
@@ -125,7 +128,7 @@ public class MapService {
 
 		return restResponse;
 	}
-	
+
 	public HashMap<String,Object> getMapGoogle(String qString){
 		LOG.debug("Query string: {}",qString);
 		try {
@@ -141,14 +144,14 @@ public class MapService {
 					result.put("longitude",longitude);
 					return result;
 				}
-			
+
 		}catch(Exception e){
 			TraceBackService.trace(e);
 		}
 		return null;
 	}
-	
-	
+
+
 	public HashMap<String,Object> getMapOsm(String qString){
 		HashMap<String,Object> result = new HashMap<String,Object>();
 		try {
@@ -191,32 +194,32 @@ public class MapService {
 				result.put("longitude",longitude);
 				return result;
 			}
-			
+
 		}catch(Exception e)  {
-			TraceBackService.trace(e); 
+			TraceBackService.trace(e);
 		}
 		return null;
 	}
-	
+
 	public HashMap<String,Object> getMap(String qString){
 		LOG.debug("qString = {}", qString);
-		if (GeneralService.getGeneral().getMapApiSelect() == IAdministration.MAP_API_GOOGLE) 
+		if (generalService.getGeneral().getMapApiSelect() == IAdministration.MAP_API_GOOGLE)
 			return getMapGoogle(qString);
 		else
 			return getMapOsm(qString);
 	}
-	
+
 	public String getMapUrl(BigDecimal latitude, BigDecimal longitude){
-		if (GeneralService.getGeneral().getMapApiSelect() == IAdministration.MAP_API_GOOGLE) 
+		if (generalService.getGeneral().getMapApiSelect() == IAdministration.MAP_API_GOOGLE)
 			return "map/gmaps.html?x="+latitude+"&y="+longitude+"&z=18";
 		else
 			return "map/oneMarker.html?x="+latitude+"&y="+longitude+"&z=18";
 	}
-	
+
 	public String getDirectionUrl(BigDecimal dLat, BigDecimal dLon, BigDecimal aLat, BigDecimal aLon){
 			return "map/directions.html?dx="+dLat+"&dy="+dLon+"&ax="+aLat+"&ay="+aLon;
 	}
-	
+
 	public HashMap<String,Object> getDirectionMapGoogle(String dString, BigDecimal dLat, BigDecimal dLon, String aString, BigDecimal aLat, BigDecimal aLon){
 		LOG.debug("departureString = {}", dString);
 		LOG.debug("arrivalString = {}", aString);
@@ -238,8 +241,8 @@ public class MapService {
 				}
 			}
 			LOG.debug("arrivalLat = {}, arrivalLng={}", aLat,aLon);
-			if(BigDecimal.ZERO.compareTo(dLat) != 0  && BigDecimal.ZERO.compareTo(dLon) != 0){ 
-				if(BigDecimal.ZERO.compareTo(aLat) != 0 && BigDecimal.ZERO.compareTo(aLon) != 0){ 
+			if(BigDecimal.ZERO.compareTo(dLat) != 0  && BigDecimal.ZERO.compareTo(dLon) != 0){
+				if(BigDecimal.ZERO.compareTo(aLat) != 0 && BigDecimal.ZERO.compareTo(aLon) != 0){
 					result.put("url","map/directions.html?dx="+dLat+"&dy="+dLon+"&ax="+aLat+"&ay="+aLon);
 					result.put("aLat", aLat);
 					result.put("dLat", dLat);
@@ -247,16 +250,16 @@ public class MapService {
 				}
 			}
 		}catch(Exception e)  {
-			TraceBackService.trace(e); 
+			TraceBackService.trace(e);
 		}
-			
+
 		return null;
 	}
-	
+
 	public boolean isInternetAvailable() {
 		return testInternet("google.com") || testInternet("facebook.com") || testInternet("yahoo.com");
 	}
-	
+
 	private boolean testInternet(String site) {
 	    Socket socket = new Socket();
 	    InetSocketAddress address = new InetSocketAddress(site, 80);
@@ -267,12 +270,12 @@ public class MapService {
 	        return false;
 	    } finally {
 	        try {socket.close();}
-	        catch (IOException e) {}	        
+	        catch (IOException e) {}
 	    }
 	}
-	
+
 	public String makeAddressString(Address address, ObjectNode objectNode) {
-		
+
 		address = Beans.get(AddressService.class).checkLatLang(address,false);
 		BigDecimal latit = address.getLatit();
 		BigDecimal longit = address.getLongit();
@@ -281,9 +284,9 @@ public class MapService {
 		}
 		objectNode.put("latit",latit);
 		objectNode.put("longit",longit);
-		
+
 		StringBuilder addressString = new StringBuilder();
-		
+
 		if (address.getAddressL2() != null) {
 			addressString.append(address.getAddressL2() + "</br>");
 		}
@@ -298,11 +301,11 @@ public class MapService {
 		}
 		if (address.getAddressL6() != null) {
 			addressString.append(address.getAddressL6());
-		}						 
+		}
 		if (address.getAddressL7Country() != null) {
 			addressString = addressString.append("</br>" + address.getAddressL7Country().getName());
-		}		
-		
+		}
+
 		return addressString.toString();
 	}
 }

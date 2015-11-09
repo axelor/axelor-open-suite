@@ -50,5 +50,13 @@ public class MailAccountController {
 		}
 		
 	}
+	
+	public void checkDefaultMailAccount(ActionRequest request, ActionResponse response){
+		MailAccount account = request.getContext().asType(MailAccount.class);
+		if(!mailAccountService.checkDefaultMailAccount(account)){
+			response.setError(I18n.get(IExceptionMessage.MAIL_ACCOUNT_5));
+			response.setValue("isDefault", false);
+		}
+	}
 
 }

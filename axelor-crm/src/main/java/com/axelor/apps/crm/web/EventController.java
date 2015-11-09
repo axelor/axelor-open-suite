@@ -17,43 +17,70 @@
  */
 package com.axelor.apps.crm.web;
 
-import java.math.BigDecimal;
+import java.io.IOException;
+import java.text.ParseException;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.mail.MessagingException;
+
+import net.fortuna.ical4j.model.ValidationException;
 
 import org.joda.time.Duration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.base.db.IAdministration;
+import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.ical.ICalendarException;
 import com.axelor.apps.base.service.MapService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.crm.db.Event;
 import com.axelor.apps.crm.db.IEvent;
 import com.axelor.apps.crm.db.Lead;
+import com.axelor.apps.crm.db.repo.EventRepository;
+import com.axelor.apps.crm.db.repo.LeadRepository;
 import com.axelor.apps.crm.exception.IExceptionMessage;
 import com.axelor.apps.crm.service.EventService;
 import com.axelor.apps.crm.service.LeadService;
+import com.axelor.apps.crm.service.config.CrmConfigService;
+import com.axelor.apps.message.db.EmailAddress;
+import com.axelor.apps.message.db.Template;
+import com.axelor.apps.message.db.repo.EmailAddressRepository;
+import com.axelor.auth.AuthUtils;
+import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.axelor.auth.AuthUtils;
+import com.google.inject.Inject;
 
 public class EventController {
 
 	private static final Logger LOG = LoggerFactory.getLogger(EventController.class);
 	
+	@Inject
+	private EventRepository eventRepo;
+	
+	@Inject
+	private EventService eventService;
+	
+	@Inject
+	private LeadRepository leadRepo;
+	
+	@Inject
+	private LeadService leadService;
+
 	public void computeFromStartDateTime(ActionRequest request, ActionResponse response) {
-		
+
 		Event event = request.getContext().asType(Event.class);
-		EventService eventService = Beans.get(EventService.class);
-		
+
 		LOG.debug("event : {}", event);
-		
+
 		if(event.getStartDateTime() != null) {
 			if(event.getDuration() != null) {
 				response.setValue("endDateTime", eventService.computeEndDateTime(event.getStartDateTime(), event.getDuration().intValue()));
@@ -64,14 +91,13 @@ public class EventController {
 			}
 		}
 	}
-	
+
 	public void computeFromEndDateTime(ActionRequest request, ActionResponse response) {
-		
+
 		Event event = request.getContext().asType(Event.class);
-		EventService eventService = Beans.get(EventService.class);
-		
+
 		LOG.debug("event : {}", event);
-		
+
 		if(event.getEndDateTime() != null) {
 			if(event.getStartDateTime() != null && event.getStartDateTime().isBefore(event.getEndDateTime())) {
 				Duration duration =  eventService.computeDuration(event.getStartDateTime(), event.getEndDateTime());
@@ -82,14 +108,13 @@ public class EventController {
 			}
 		}
 	}
-	
+
 	public void computeFromDuration(ActionRequest request, ActionResponse response) {
-		
+
 		Event event = request.getContext().asType(Event.class);
-		EventService eventService = Beans.get(EventService.class);
-		
+
 		LOG.debug("event : {}", event);
-		
+
 		if(event.getDuration() != null)  {
 			if(event.getStartDateTime() != null)  {
 				response.setValue("endDateTime", eventService.computeEndDateTime(event.getStartDateTime(), event.getDuration().intValue()));
@@ -99,26 +124,25 @@ public class EventController {
 			}
 		}
 	}
-	
-	
+
+
 	public void computeFromCalendar(ActionRequest request, ActionResponse response) {
-		
+
 		Event event = request.getContext().asType(Event.class);
-		EventService eventService = Beans.get(EventService.class);
-		
+
 		LOG.debug("event : {}", event);
-		
+
 		if(event.getStartDateTime() != null && event.getEndDateTime() != null) {
 			Duration duration =  eventService.computeDuration(event.getStartDateTime(), event.getEndDateTime());
 			response.setValue("duration", eventService.getDuration(duration));
 		}
 	}
-	
-	
+
+
 	public void setSequence(ActionRequest request, ActionResponse response) throws AxelorException {
-		
+
 		Event event = request.getContext().asType(Event.class);
-		
+
 		if(event.getTicketNumberSeq() ==  null && event.getTypeSelect() == IEvent.TICKET){
 			String seq = Beans.get(SequenceService.class).getSequenceNumber(IAdministration.EVENT_TICKET);
 			if (seq == null)
@@ -128,40 +152,27 @@ public class EventController {
 				response.setValue("ticketNumberSeq", seq);
 		}
 	}
-	
-	//TODO : replace by XML action
-	public void saveEventStatusSelect(ActionRequest request, ActionResponse response) throws AxelorException {
-		
-		Event event = request.getContext().asType(Event.class);
-		EventService eventService = Beans.get(EventService.class);
-		Event persistEvent = eventService.find(event.getId());
-		persistEvent.setStatusSelect(event.getStatusSelect());
-		eventService.saveEvent(persistEvent);
-		
-	}
-	
+
 	//TODO : replace by XML action
 	public void saveEventTaskStatusSelect(ActionRequest request, ActionResponse response) throws AxelorException {
-		
+
 		Event event = request.getContext().asType(Event.class);
-		EventService eventService = Beans.get(EventService.class);
-		Event persistEvent = eventService.find(event.getId());
+		Event persistEvent = eventRepo.find(event.getId());
 		persistEvent.setTaskStatusSelect(event.getTaskStatusSelect());
 		eventService.saveEvent(persistEvent);
-		
+
 	}
-	
+
 	//TODO : replace by XML action
 	public void saveEventTicketStatusSelect(ActionRequest request, ActionResponse response) throws AxelorException {
-		
+
 		Event event = request.getContext().asType(Event.class);
-		EventService eventService = Beans.get(EventService.class);
-		Event persistEvent = eventService.find(event.getId());
+		Event persistEvent = eventRepo.find(event.getId());
 		persistEvent.setTicketStatusSelect(event.getTicketStatusSelect());
 		eventService.saveEvent(persistEvent);
-		
+
 	}
-	
+
 	public void viewMap(ActionRequest request, ActionResponse response)  {
 		Event event = request.getContext().asType(Event.class);
 		if(event.getLocation() != null){
@@ -177,39 +188,38 @@ public class EventController {
 				response.setFlash(String.format(I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.ADDRESS_5),event.getLocation()));
 		}else
 			response.setFlash(I18n.get(IExceptionMessage.EVENT_2));
-	}	
-	
-	
+	}
+
+
 	public void addLeadAttendee(ActionRequest request, ActionResponse response)  {
 		Lead lead = request.getContext().asType(Lead.class);
-		
+
 		if(lead != null)  {
-			
+
 			Event event = request.getContext().getParentContext().asType(Event.class);
-			
+
 			if(event != null)  {
-				
+
 				Beans.get(EventService.class).addLeadAttendee(event, lead, null);
 				response.setReload(true);
-				
+
 			}
-			
+
 		}
-		
+
 	}
-	
+
 	public void assignToMeLead(ActionRequest request, ActionResponse response)  {
-		LeadService leadService = Beans.get(LeadService.class);
-		
+
 		if(request.getContext().get("id") != null){
-			Lead lead = leadService.find((Long)request.getContext().get("id"));
+			Lead lead = leadRepo.find((Long)request.getContext().get("id"));
 			lead.setUser(AuthUtils.getUser());
 			if(lead.getStatusSelect() == 1)
 				lead.setStatusSelect(2);
 			leadService.saveLead(lead);
 		}
 		else if(!((List)request.getContext().get("_ids")).isEmpty()){
-			for(Lead lead : leadService.all().filter("id in ?1",request.getContext().get("_ids")).fetch()){
+			for(Lead lead : leadRepo.all().filter("id in ?1",request.getContext().get("_ids")).fetch()){
 				lead.setUser(AuthUtils.getUser());
 				if(lead.getStatusSelect() == 1)
 					lead.setStatusSelect(2);
@@ -217,26 +227,94 @@ public class EventController {
 			}
 		}
 		response.setReload(true);
-		
+
 	}
-	
+
 	public void assignToMeEvent(ActionRequest request, ActionResponse response)  {
-		
-		EventService eventService = Beans.get(EventService.class);
+
 		if(request.getContext().get("id") != null){
-			Event event = eventService.find((Long)request.getContext().get("id"));
+			Event event = eventRepo.find((Long)request.getContext().get("id"));
 			event.setUser(AuthUtils.getUser());
 			eventService.saveEvent(event);
 		}
 		else if(!((List)request.getContext().get("_ids")).isEmpty()){
-			for(Event event : eventService.all().filter("id in ?1",request.getContext().get("_ids")).fetch()){
+			for(Event event : eventRepo.all().filter("id in ?1",request.getContext().get("_ids")).fetch()){
 				event.setUser(AuthUtils.getUser());
 				eventService.saveEvent(event);
 			}
 		}
 		response.setReload(true);
+
+	}
+
+
+
+	public void checkModifications(ActionRequest request, ActionResponse response) throws ClassNotFoundException, InstantiationException, IllegalAccessException, AxelorException, IOException, MessagingException  {
+
+		Event event = request.getContext().asType(Event.class);
+		Long idEvent = event.getId();
+		Template deletedGuestsTemplate = Beans.get(CrmConfigService.class).getCrmConfig(event.getUser().getActiveCompany()).getMeetingGuestDeletedTemplate();
+		Template addedGuestsTemplate = Beans.get(CrmConfigService.class).getCrmConfig(event.getUser().getActiveCompany()).getMeetingGuestAddedTemplate();
+		Template changedDateTemplate = Beans.get(CrmConfigService.class).getCrmConfig(event.getUser().getActiveCompany()).getMeetingDateChangeTemplate();
+
+		if(deletedGuestsTemplate == null && addedGuestsTemplate == null && changedDateTemplate == null){
+			response.setFlash(String.format(I18n.get(IExceptionMessage.CRM_CONFIG_TEMPLATES_NONE),event.getUser().getActiveCompany().getName()));
+		}
+		else if(deletedGuestsTemplate == null || addedGuestsTemplate == null || changedDateTemplate == null){
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.CRM_CONFIG_TEMPLATES),event.getUser().getActiveCompany().getName()),
+					IException.CONFIGURATION_ERROR);
+		}
+		else{
+			if(idEvent != null && idEvent > 0){
+				Event previousEvent = eventRepo.find(event.getId());
+				event = eventService.checkModifications(event, previousEvent);
+			}
+			else{
+				eventService.sendMails(event);
+			}
+		}
 		
 	}
 	
+	public void addUserGuest(ActionRequest request, ActionResponse response) throws ClassNotFoundException, InstantiationException, IllegalAccessException, AxelorException, MessagingException, IOException, ICalendarException, ValidationException, ParseException{
+		Event event = request.getContext().asType(Event.class);
+		if(request.getContext().containsKey("guestPartner")){
+			User user = (User) request.getContext().get("guestUser");
+			if(user != null){
+				event = eventRepo.find(event.getId());
+				eventService.addUserGuest(user, event);
+			}
+		}
+		
+		response.setReload(true);
+	}
+	
+	public void addPartnerGuest(ActionRequest request, ActionResponse response) throws ClassNotFoundException, InstantiationException, IllegalAccessException, AxelorException, MessagingException, IOException, ICalendarException, ValidationException, ParseException{
+		Event event = request.getContext().asType(Event.class);
+		if(request.getContext().containsKey("guestPartner")){
+			Partner partner = (Partner) request.getContext().get("guestPartner");
+			if(partner != null){
+				event = eventRepo.find(event.getId());
+				eventService.addPartnerGuest(partner, event);
+			}
+		}
+		
+		response.setReload(true);
+	}
+	
+	public void addEmailGuest(ActionRequest request, ActionResponse response) throws ClassNotFoundException, InstantiationException, IllegalAccessException, AxelorException, MessagingException, IOException, ICalendarException, ValidationException, ParseException{
+		Event event = request.getContext().asType(Event.class);
+		if(request.getContext().containsKey("guestEmail")){
+			Map<String,Object> email = (LinkedHashMap<String,Object>) request.getContext().get("guestEmail");
+			String id = email.get("id").toString();
+			if(email != null){
+				EmailAddressRepository emailAddressRepo = Beans.get(EmailAddressRepository.class);
+				EmailAddress emailAddress = emailAddressRepo.find(new Long(id));
+				event = eventRepo.find(event.getId());
+				eventService.addEmailGuest(emailAddress, event);
+			}
+		}
+		response.setReload(true);
+	}
 	
 }

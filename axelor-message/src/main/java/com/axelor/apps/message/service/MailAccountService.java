@@ -18,10 +18,9 @@
 package com.axelor.apps.message.service;
 
 import com.axelor.apps.message.db.MailAccount;
-import com.axelor.db.Repository;
 import com.axelor.exception.AxelorException;
 
-public interface MailAccountService extends Repository<MailAccount> {
+public interface MailAccountService {
 
 	public boolean checkDefaultMailAccount(MailAccount mailAccount);
 	

@@ -30,11 +30,9 @@ import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.SaleOrderLineTax;
-import com.axelor.apps.sale.db.SaleOrderSubLine;
-import com.axelor.apps.sale.db.repo.SaleOrderLineTaxRepository;
 import com.google.inject.Inject;
 
-public class SaleOrderLineTaxService extends SaleOrderLineTaxRepository{
+public class SaleOrderLineTaxService {
 
 	private static final Logger LOG = LoggerFactory.getLogger(SaleOrderLineTaxService.class); 
 	
@@ -71,35 +69,7 @@ public class SaleOrderLineTaxService extends SaleOrderLineTaxRepository{
 			LOG.debug("Création des lignes de tva pour les lignes de factures.");
 			
 			for (SaleOrderLine saleOrderLine : saleOrderLineList) {
-				
-				if(saleOrderLine.getSaleOrderSubLineList() != null && !saleOrderLine.getSaleOrderSubLineList().isEmpty())  {
-					
-					for(SaleOrderSubLine saleOrderSubLine : saleOrderLine.getSaleOrderSubLineList())  {
-						TaxLine taxLine = saleOrderSubLine.getTaxLine();
-						LOG.debug("Tax {}", taxLine);
-
-						if (map.containsKey(taxLine)) {
-						
-							SaleOrderLineTax saleOrderLineTax = map.get(taxLine);
-							
-							saleOrderLineTax.setExTaxBase(saleOrderLineTax.getExTaxBase().add(saleOrderSubLine.getExTaxTotal()));
-							
-						}
-						else {
-							
-							SaleOrderLineTax saleOrderLineTax = new SaleOrderLineTax();
-							saleOrderLineTax.setSaleOrder(saleOrder);
-							
-							saleOrderLineTax.setExTaxBase(saleOrderSubLine.getExTaxTotal());
-							
-							saleOrderLineTax.setTaxLine(taxLine);
-							map.put(taxLine, saleOrderLineTax);
-							
-						}
-					}
-				}
-				else  {
-				
+				if(!saleOrderLine.getIsTitleLine()){
 					TaxLine taxLine = saleOrderLine.getTaxLine();
 					LOG.debug("Tax {}", taxLine);
 					
@@ -135,7 +105,6 @@ public class SaleOrderLineTaxService extends SaleOrderLineTaxRepository{
 				saleOrderLineTax.setTaxTotal(taxTotal);
 			}
 			saleOrderLineTax.setInTaxTotal(exTaxBase.add(taxTotal));
-			
 			saleOrderLineTaxList.add(saleOrderLineTax);
 
 			LOG.debug("Ligne de TVA : Total TVA => {}, Total HT => {}", new Object[] {saleOrderLineTax.getTaxTotal(), saleOrderLineTax.getInTaxTotal()});

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
+	
+	<grid name="subscription-grid" title="Subscriptions" model="com.axelor.apps.supplychain.db.Subscription" orderBy="invoicingDate">
+		<field name="invoicingDate"/>
+	    <field name="fromPeriodDate"/>
+	    <field name="toPeriodDate"/>
+	    <field name="invoiced"/>
+	 </grid>
+	 
+	 <grid name="subscription-from-menu-grid" title="Subscriptions" model="com.axelor.apps.supplychain.db.Subscription">
+    	 <menubar>
+		    <menu title="Actions" icon="fa-list-ul" showTitle="true">
+		      <item title="Generate invoice from selected subscrip" prompt="Are you sure you want to generate invoice for selected subscriptions ?" action="action-validate-supplychain-subscription-check-selection, com.axelor.apps.supplychain.web.SubscriptionController:generateInvoiceForSelectedSubscriptions"/>
+		      <item title="Generate invoice for all subscrip" prompt="Are you sure you want to generate invoice for all subscriptions ?" action="com.axelor.apps.supplychain.web.SubscriptionController:generateInvoiceForAllSubscriptions"/>
+		    </menu>
+	  	</menubar>
+	 	<field name="saleOrderLine.saleOrder"/>
+	 	<field name="saleOrderLine"/>
+		<field name="invoicingDate"/>
+	    <field name="fromPeriodDate"/>
+	    <field name="toPeriodDate"/>
+	    <field name="invoiced"/>
+	 </grid>
+	
+	<form model="com.axelor.apps.supplychain.db.Subscription" title="Subscription" name="subscription-form">
+		<field name="invoicingDate" readonlyIf="invoiced"/>
+	    <field name="fromPeriodDate" readonlyIf="invoiced"/>
+	    <field name="toPeriodDate" readonlyIf="invoiced"/>
+	    <field name="invoiced" readonly="true"/>
+	 </form>
+	 
+	 <form model="com.axelor.apps.supplychain.db.Subscription" title="Subscription" name="subscription-from-menu-form">
+	 	<field name="saleOrderLine.saleOrder"/>
+	 	<field name="saleOrderLine"/>
+		<field name="invoicingDate" readonlyIf="invoiced"/>
+	    <field name="fromPeriodDate" readonlyIf="invoiced"/>
+	    <field name="toPeriodDate" readonlyIf="invoiced"/>
+	    <field name="invoiced" readonly="true"/>
+	 </form>
+	 
+	<action-validate name="action-validate-supplychain-subscription-check-selection">
+		<error message="You have to select at least one subscription" if="_ids == null || _ids.size() == 0"/>
+	</action-validate>
+	
+</object-views>

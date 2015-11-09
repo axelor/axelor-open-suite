@@ -61,4 +61,7 @@ public interface ITranslation {
 	public static final String STOCK_MOVE_QTY_UNIT = /*$$(*/ "StockMove.qtyUnit"; /*)*/
 	public static final String STOCK_MOVE_LOT_NO_REF = /*$$(*/ "StockMove.lotNoRef"; /*)*/
 	public static final String STOCK_MOVE_PRODUCT = /*$$(*/ "StockMove.product"; /*)*/
+	public static final String STOCK_MOVE_PACKAGE = /*$$(*/ "StockMove.numOfPackages"; /*)*/
+	public static final String STOCK_MOVE_PALETTES = /*$$(*/ "StockMove.numOfPalettes"; /*)*/
+	public static final String STOCK_MOVE_GROSS_WEIGHT = /*$$(*/ "StockMove.grossWeight"; /*)*/
 }

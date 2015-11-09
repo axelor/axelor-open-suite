@@ -29,7 +29,7 @@ public interface ITranslation {
 	public static final String SALES_ORDER_CUSTOMER = /*$$(*/ "SaleOrder.customer"; /*)*/
 	public static final String SALES_ORDER_INVOICING_ADDRS = /*$$(*/ "SaleOrder.invoicingAddrs"; /*)*/
 	public static final String SALES_ORDER_DELIVERY_ADDRESS = /*$$(*/ "SaleOrder.deliveryAddress"; /*)*/
-	public static final String SALES_ORDER_PRODUCT_DESCRIPTION = /*$$(*/ "SaleOrder.productDescription"; /*)*/
+	public static final String SALES_ORDER_DESCRIPTION = /*$$(*/ "SaleOrder.description"; /*)*/
 	public static final String SALES_ORDER_TAX = /*$$(*/ "SaleOrder.tax"; /*)*/
 	public static final String SALES_ORDER_QTY_UNIT = /*$$(*/ "SaleOrder.qtyUnit"; /*)*/
 	public static final String SALES_ORDER_UNIT_PRICE = /*$$(*/ "SaleOrder.unitPrice"; /*)*/
@@ -40,10 +40,24 @@ public interface ITranslation {
 	public static final String SALES_ORDER_TOTAL_TAX = /*$$(*/ "SaleOrder.totalTax"; /*)*/
 	public static final String SALES_ORDER_TOTAL_INCL_TAX = /*$$(*/ "SaleOrder.totalInclTax"; /*)*/
 	public static final String SALES_ORDER_NOTE = /*$$(*/ "SaleOrder.note"; /*)*/
-	public static final String SALES_ORDER_BANKING_INFO = /*$$(*/ "SaleOrder.bankingInfo"; /*)*/
 	public static final String SALES_ORDER_CHEQUE = /*$$(*/ "SaleOrder.cheque"; /*)*/
-	public static final String SALES_ORDER_BANK_DETAILS = /*$$(*/ "SaleOrder.bankDetails"; /*)*/
+	public static final String SALES_ORDER_BANK = /*$$(*/ "SaleOrder.bank"; /*)*/
 	public static final String SALES_ORDER_LAW = /*$$(*/ "SaleOrder.law"; /*)*/
+	public static final String SALES_ORDER_SALEMAN_NAME = /*$$(*/ "SaleOrder.salemanName"; /*)*/
+	public static final String SALES_ORDER_SALEMAN_EMAIL = /*$$(*/ "SaleOrder.salemanEmail"; /*)*/
+	public static final String SALES_ORDER_SALEMAN_PHONE = /*$$(*/ "SaleOrder.salemanPhone"; /*)*/
+	public static final String SALES_ORDER_DELIVERY_DATE = /*$$(*/ "SaleOrder.deliveryDate"; /*)*/
+	public static final String SALES_ORDER_DELIVERY_CONDITION = /*$$(*/ "SaleOrder.deliveryCondition"; /*)*/
+	public static final String SALES_ORDER_PRODUCT_DESCRIPTION = /*$$(*/ "SaleOrder.productDescription"; /*)*/
+	public static final String SALES_ORDER_PRODUCT_CODE = /*$$(*/ "SaleOrder.productCode"; /*)*/
+	public static final String SALES_ORDER_DISCOUNT_AMOUNT = /*$$(*/ "SaleOrder.discountAmount"; /*)*/
+	public static final String SALES_ORDER_TOTAL_EXCL_TAX_WITHOUT_DISCOUNT = /*$$(*/ "SaleOrder.totalExclTaxWithoutDiscount"; /*)*/
+	public static final String SALES_ORDER_TOTAL_DISCOUNT = /*$$(*/ "SaleOrder.totalDiscount"; /*)*/
+	public static final String SALES_ORDER_OTHERS = /*$$(*/ "Others"; /*)*/
+	public static final String SALES_ORDER_SUBSCRIPTIONS = /*$$(*/ "Subscriptions"; /*)*/
 
 	
+	
+
+
 }

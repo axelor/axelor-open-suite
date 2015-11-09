@@ -29,12 +29,15 @@ import com.axelor.meta.db.MetaAction;
 import com.axelor.meta.db.repo.MetaActionRepository;
 import com.axelor.meta.db.MetaMenu;
 import com.axelor.meta.db.repo.MetaMenuRepository;
+import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
-public class CalendarConfigurationService extends CalendarConfigurationRepository{
+public class CalendarConfigurationService {
 	
 	private final String NAME = "crm-root-event-calendar-";
 	
+	@Inject
+	protected CalendarConfigurationRepository calendarConfigurationRepo;
 	
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void createEntryMenu(CalendarConfiguration calendarConfiguration)  {
@@ -47,7 +50,7 @@ public class CalendarConfigurationService extends CalendarConfigurationRepositor
 		Beans.get(MetaMenuRepository.class).save(metaMenu);
 		
 		calendarConfiguration.setMetaAction(metaAction);
-		save(calendarConfiguration);
+		calendarConfigurationRepo.save(calendarConfiguration);
 		
 	}
 	

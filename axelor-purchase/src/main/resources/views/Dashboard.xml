@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
 	
 <!--   	Purchase Buyer Dashboard -->
 	
 	<dashboard title="Dashboard" name="purchase.buyer.dashboard.sample"  >
-		<dashlet action="dashlet.purchase.buyer.dashboard.validated.orders" height="350" canSearch="true" />
-		<dashlet action="dashlet.purchase.buyer.dashboard.orders" canSearch="true" height="350" />
+		<dashlet action="dashlet.purchase.buyer.dashboard.validated.orders" height="350" canSearch="true" colSpan="12"/>
+		<dashlet action="dashlet.purchase.buyer.dashboard.orders" canSearch="true" height="350" colSpan="12"/>
 		<dashlet action="dashlet.purchase.buyer.dashboard.order.to.validate" canSearch="true" height="350" />
 		<dashlet action="dashlet.my.purchase.per.product.family.volume" height="350"/>
 	    <dashlet action="dashlet.my.purchase.amount.per.product.family" height="350"/>
@@ -44,7 +44,7 @@
 	<action-view name="dashlet.my.purchase.per.product.family.volume" title="My purchased qty by product family"
 		model="com.axelor.apps.purchase.db.PurchaseOrder">
 	  <view type="chart" name="chart.my.purchase.per.product.family.volume"/>
-	  <context name="todayDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()"/>
+	  <context name="todayDate" expr="eval:__config__.generalService.getTodayDate()"/>
 	  <context name="activeUser" expr="eval:__user__"/>
 	  <context name="activeCompany" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveCompany()"/>
 	</action-view>
@@ -52,7 +52,7 @@
 	<action-view name="dashlet.my.purchase.amount.per.product.family" title="My purchased amount by product family"
 		model="com.axelor.apps.purchase.db.PurchaseOrder">
 	  <view type="chart" name="chart.my.purchase.amount.per.product.family"/>
-	  <context name="todayDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()"/>
+	  <context name="todayDate" expr="eval:__config__.generalService.getTodayDate()"/>
 	  <context name="activeUser" expr="eval:__user__"/>
 	  <context name="activeCompany" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveCompany()"/>
 	</action-view>
@@ -60,25 +60,25 @@
 	<action-view name="dashlet.purchase.amount.per.product.family" title="Purchased amount by product family"
 		model="com.axelor.apps.purchase.db.PurchaseOrder">
 	  <view type="chart" name="chart.purchase.amount.per.product.family"/>
-	  <context name="todayDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()"/>
+	  <context name="todayDate" expr="eval:__config__.generalService.getTodayDate()"/>
 	  <context name="activeCompany" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveCompany()"/>
 	</action-view>
 
 	<action-view name="dashlet.nbr.of.po.per.month" title="Nbr of PO by month" model="com.axelor.apps.purchase.db.PurchaseOrder">
 	  <view type="chart" name="chart.nbr.of.po.per.month"/>
-	  <context name="todayDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()"/>
+	  <context name="todayDate" expr="eval:__config__.generalService.getTodayDate()"/>
 	  <context name="_user_id" expr="eval:__user__.id"/>
 	</action-view>
 	
 	<action-view name="dashlet.total.purchase.amount" title="Total Purchased Amount by month" model="com.axelor.apps.purchase.db.PurchaseOrder">
 	  <view type="chart" name="chart.total.purchase.amount"/>
-	  <context name="todayDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()"/>
+	  <context name="todayDate" expr="eval:__config__.generalService.getTodayDate()"/>
 	  <context name="_user_id" expr="eval:__user__.id"/>
 	</action-view>	
 	
 	<action-view name="dashlet.total.purchase.qty" title="Total Purchased Qty by month" model="com.axelor.apps.purchase.db.PurchaseOrder">
 	  <view type="chart" name="chart.total.purchase.qty"/>
-	  <context name="todayDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()"/>
+	  <context name="todayDate" expr="eval:__config__.generalService.getTodayDate()"/>
 	  <context name="_user_id" expr="eval:__user__.id"/>
 	</action-view>
 
@@ -87,8 +87,8 @@
 	
 	
 	<dashboard title="Dashboard" name="purchase.manager.dashboard.sample"  >
-		<dashlet action="dashlet.purchase.manager.dashboard.validated.orders" height="350" canSearch="true" />
-		<dashlet action="dashlet.purchase.manager.dashboard.order.to.validate" canSearch="true" height="350" />
+		<dashlet action="dashlet.purchase.manager.dashboard.validated.orders" height="350" canSearch="true" colSpan="12"/>
+		<dashlet action="dashlet.purchase.manager.dashboard.order.to.validate" canSearch="true" height="350" colSpan="12"/>
 		<dashlet action="dashlet.purchase.order.volume.by.buyer.by.family" height="350"/>
 	    <dashlet action="dashlet.purchase.order.amount.by.family" height="350"/>
 	    <dashlet action="dashlet.purchase.order.amount.distribution.by.family" height="350"/>
@@ -111,19 +111,19 @@
 	
 	<action-view name="dashlet.purchase.order.volume.by.buyer.by.family" title="POs Volume by buyer by family">
 	  <view type="chart" name="chart.purchase.order.volume.by.buyer.by.family"/>
-	  <context name="todayDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()"/>
+	  <context name="todayDate" expr="eval:__config__.generalService.getTodayDate()"/>
 	  <context name="_user_id" expr="eval:__user__.id"/>
 	</action-view>
 	
 	<action-view name="dashlet.purchase.order.amount.by.family" title="Purchased amount by family">
 	  <view type="chart" name="chart.purchase.order.amount.by.family"/>
-	  <context name="todayDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()"/>
+	  <context name="todayDate" expr="eval:__config__.generalService.getTodayDate()"/>
 	  <context name="_user_id" expr="eval:__user__.id"/>  
 	</action-view>
 	
 	<action-view name="dashlet.purchase.order.amount.distribution.by.family" title="Purchased amount distribution by family">
 	  <view type="chart" name="chart.purchase.order.amount.distribution.by.family"/>
-	  <context name="todayDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()"/>
+	  <context name="todayDate" expr="eval:__config__.generalService.getTodayDate()"/>
 	  <context name="_user_id" expr="eval:__user__.id"/>    
 	</action-view>
 
@@ -135,11 +135,11 @@
 	
 	<!-- Purchase Order Dashboard -->
 	<dashboard name="purchase.order.dashboard.sample" title="Dashboard">
-		<dashlet action="dashlet.my.purchase.orders.to.execute" canSearch="true" height="350" />
-		<dashlet action="dashlet.ongoing.purchase.orders" canSearch="true" height="350" />
-		<dashlet action="dashlet.my.ongoing.purchase.orders" canSearch="true" height="350" />
-		<dashlet action="dashlet.closed.purchase.orders" canSearch="true" height="350" />
-		<dashlet action="dashlet.my.closed.purchase.orders" canSearch="true" height="350" />
+		<dashlet action="dashlet.my.purchase.orders.to.execute" canSearch="true" height="350" colSpan="12"/>
+		<dashlet action="dashlet.ongoing.purchase.orders" canSearch="true" height="350" colSpan="12"/>
+		<dashlet action="dashlet.my.ongoing.purchase.orders" canSearch="true" height="350" colSpan="12"/>
+		<dashlet action="dashlet.closed.purchase.orders" canSearch="true" height="350" colSpan="12"/>
+		<dashlet action="dashlet.my.closed.purchase.orders" canSearch="true" height="350" colSpan="12"/>
 	</dashboard>
 	
 	<action-view title="My Orders to process" model="com.axelor.apps.purchase.db.PurchaseOrder" name="dashlet.my.purchase.orders.to.execute">
@@ -175,35 +175,32 @@
 	
 	<!-- 	Purchases Dashboard -->
 	
-	<dashboard name="purchase.dashboard.1" title="Purchases Dashboard 1">
-		<dashlet action="dashlet.purchase.buyer.dashboard.validated.orders" canSearch="true" height="350" />
-		<dashlet action="dashlet.purchase.buyer.dashboard.orders" canSearch="true" height="350" />
-		<dashlet action="dashlet.purchase.buyer.dashboard.order.to.validate" canSearch="true" height="350" />
+	<dashboard name="purchase.dashboard.1" title="Purchase Buyer">
+		<dashlet action="dashlet.purchase.buyer.dashboard.validated.orders" canSearch="true" height="350" colSpan="12"/>
+		<dashlet action="dashlet.purchase.buyer.dashboard.orders" canSearch="true" height="350" colSpan="12"/>
+		<dashlet action="dashlet.purchase.buyer.dashboard.order.to.validate" canSearch="true" height="350" colSpan="12"/>
 		<dashlet action="dashlet.my.purchase.per.product.family.volume" canSearch="true" height="350" />
 		<dashlet action="dashlet.my.purchase.amount.per.product.family" canSearch="true" height="350" />
 		<dashlet action="dashlet.purchase.amount.per.product.family" canSearch="true" height="350" />
 		<dashlet action="dashlet.nbr.of.po.per.month" canSearch="true" height="350" />
 		<dashlet action="dashlet.total.purchase.amount" canSearch="true" height="350" />
 		<dashlet action="dashlet.total.purchase.qty" canSearch="true" height="350" />
-		<dashlet action="dashlet.purchase.manager.dashboard.validated.orders" canSearch="true" height="350" />
+		<dashlet action="dashlet.purchase.manager.dashboard.validated.orders" canSearch="true" height="350" colSpan="12"/>
 		</dashboard>
 	
-	<dashboard name="purchase.dashboard.2" title="Purchases Dashboard 2">
-		<dashlet action="dashlet.purchase.manager.dashboard.order.to.validate" canSearch="true" height="350" />
+	<dashboard name="purchase.dashboard.2" title="Purchase Manager">
+		<dashlet action="dashlet.purchase.manager.dashboard.order.to.validate" canSearch="true" height="350" colSpan="12"/>
 		<dashlet action="dashlet.purchase.order.volume.by.buyer.by.family" canSearch="true" height="350" />
 		<dashlet action="dashlet.purchase.order.amount.by.family" canSearch="true" height="350" />
 		<dashlet action="dashlet.purchase.order.amount.distribution.by.family" canSearch="true" height="350" />
-		<dashlet action="dashlet.ongoing.supplier.rfq" canSearch="true" height="350" />
-		<dashlet action="dashlet.my.ongoing.supplier.rfq" canSearch="true" height="350" />
-		<dashlet action="dashlet.purchase.orders.to.execute" canSearch="true" height="350" />
-		<dashlet action="dashlet.my.purchase.orders.to.execute" canSearch="true" height="350" />
-		<dashlet action="dashlet.ongoing.purchase.orders" canSearch="true" height="350" />
-		<dashlet action="dashlet.my.ongoing.purchase.orders" canSearch="true" height="350" />
 	</dashboard>
 	
-	<dashboard name="purchase.dashboard.3" title="Purchases Dashboard 3">
-		<dashlet action="dashlet.closed.purchase.orders" canSearch="true" height="350" />
-		<dashlet action="dashlet.my.closed.purchase.orders" canSearch="true" height="350" />
+	<dashboard name="purchase.dashboard.3" title="Purchase Orders Details">
+		<dashlet action="dashlet.my.purchase.orders.to.execute" canSearch="true" height="350" colSpan="12"/>
+		<dashlet action="dashlet.ongoing.purchase.orders" canSearch="true" height="350" colSpan="12"/>
+		<dashlet action="dashlet.my.ongoing.purchase.orders" canSearch="true" height="350" colSpan="12"/>
+		<dashlet action="dashlet.closed.purchase.orders" canSearch="true" height="350" colSpan="12"/>
+		<dashlet action="dashlet.my.closed.purchase.orders" canSearch="true" height="350" colSpan="12"/>
 	</dashboard>
 	
 </object-views>

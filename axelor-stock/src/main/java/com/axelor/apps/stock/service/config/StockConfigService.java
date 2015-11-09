@@ -20,13 +20,12 @@ package com.axelor.apps.stock.service.config;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.stock.db.StockConfig;
 import com.axelor.apps.stock.db.Location;
-import com.axelor.apps.stock.db.repo.StockConfigRepository;
 import com.axelor.apps.stock.exception.IExceptionMessage;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 
-public class StockConfigService extends StockConfigRepository
+public class StockConfigService
 {
 	
 	public StockConfig getStockConfig(Company company) throws AxelorException  {

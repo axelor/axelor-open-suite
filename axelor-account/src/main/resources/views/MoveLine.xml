@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
     
     <grid name="move-line-grid" orderBy="-date" title="Move lines" model="com.axelor.apps.account.db.MoveLine" canDelete="false">
     	<hilite color="danger" if="$get('move.statusSelect') == 1"/>
       	<field name="move.statusSelect" hidden="true"/>
         <field name="name"/>
         <field name="date"/>
-        <field name="partner"/>
-        <field name="account"/>
-        <field name="move.company"/>
+        <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
+        <field name="account" form-view="account-form" grid-view="account-grid"/>
+        <field name="move.company" form-view="company-form" grid-view="company-grid"/>
         <field name="debit"/>
         <field name="credit"/>
         <field name="amountRemaining"/>
@@ -19,8 +19,8 @@
     <grid name="move-line-move-grid" model="com.axelor.apps.account.db.MoveLine" title="Move lines">
 		<field name="name"/>
 		<field name="date"/>
-		<field name="partner" domain="self.isContact = false" form-view="partner-form" grid-view="partner-grid"/>
-		<field name="account" />
+		<field name="partner" form-view="partner-form" grid-view="partner-grid" domain="self.isContact = false"/>
+		<field name="account" form-view="account-form" grid-view="account-grid"/>
 		<field name="debit"/>
 		<field name="credit"/>
 		<field name="amountRemaining"/>
@@ -32,9 +32,9 @@
       	<field name="move.statusSelect" hidden="true"/>
         <field name="name"/>
         <field name="date"/>
-        <field name="partner"/>
-        <field name="account"/>
-        <field name="move.company"/>
+        <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
+        <field name="account" form-view="account-form" grid-view="account-grid"/>
+        <field name="move.company" form-view="company-form" grid-view="company-grid"/>
         <field name="debit" aggregate="sum"/>
         <field name="credit" aggregate="sum"/>
         <field name="amountRemaining" aggregate="sum"/>
@@ -46,23 +46,29 @@
         <field name="name"/>
         <field name="date"/>
         <field name="description"/>
-        <field name="account"/>
+        <field name="account" form-view="account-form" grid-view="account-grid"/>
         <field name="debit"/>
         <field name="credit"/>
         <field name="amountRemaining"/>
     </grid>
     
+    <form name="incl-analytic-distribution-move-line-form" model="com.axelor.apps.account.db.MoveLine" title="Move line">
+    	<panel title="Analytic distribution" if="__config__.general.getManageAnalyticAccounting()" onTabSelect="action-move-line-attrs-read-only-distribution-lines">
+			<panel-related field="analyticDistributionLineList" grid-view="analytic-distribution-line-grid" form-view="analytic-distribution-line-form" colSpan="12"/>
+		</panel>
+    </form>
+    
     <form name="move-line-form" title="Move line" model="com.axelor.apps.account.db.MoveLine" canDelete="false"
     onLoad="action-move-line-attrs-collapse-irrecoverable-group" 
-    onNew="action-account-move-line-onnew-group">
+    onNew="action-account-move-line-onnew-group" width="large">
     	
     	<panel title="Informations" readonly="true" >
    			<field name="name"/>
-	        <field name="move"/>
+	        <field name="move" form-view="move-form" grid-view="move-grid"/>
 	        <field name="date"/>
 	        <field name="dueDate"/>
-	        <field name="partner" onSelect="action-move-line-set-companyid-from-movecompany" domain="self.isContact = false AND :company_id MEMBER OF self.companySet" grid-view="partner-grid" form-view="partner-form"/>
-	        <field name="account" onSelect="action-move-line-attrs-domain-account"/>
+	        <field name="partner" form-view="partner-form" grid-view="partner-grid" onSelect="action-move-line-set-companyid-from-movecompany" domain="self.isContact = false AND :company_id MEMBER OF self.companySet"/>
+	        <field name="account" form-view="account-form" grid-view="account-grid" onSelect="action-move-line-attrs-domain-account"/>
 	        <field name="debit" onChange="action-group-account-moveline-debitcredit-onchange"/>
 	        <field name="credit" onChange="action-group-account-moveline-debitcredit-onchange"/>
 	        <field name="amountPaid"/>
@@ -70,20 +76,19 @@
 	        <field name="description" showIf="$number(credit) &gt; 0.00"/>
 	        <field name="passageReason" showIf="$number(debit) &gt; 0.00"/>
 	        <field name="usherPassageOk" onChange="action-group-account-moveline-usher-process-onchange"/>
-	        <field name="interbankCodeLine" showIf="interbankCodeLine"/>
+	        <field name="interbankCodeLine" showIf="interbankCodeLine" grid-view="interbank-code-line-grid" form-view="interbank-code-line-form"/>
 	        <!-- dummy field added for setting domain on partner -->
 	        <field name="company_id" hidden="true"/>
    		</panel>
     	
     	<panel-tabs>
-	        <panel-related field="reconcileList1" canRemove="false" canNew="false" showIf="$number(debit) &gt; 0.00"/>
-	        <panel-related field="reconcileList2"  canRemove="false" canNew="false" showIf="$number(credit) &gt; 0.00"/>
+	        <panel-related field="reconcileList1" canRemove="false" canNew="false" showIf="$number(debit) &gt; 0.00" form-view="reconcile-form" grid-view="reconcile-grid"/>
+	        <panel-related field="reconcileList2"  canRemove="false" canNew="false" showIf="$number(credit) &gt; 0.00" form-view="reconcile-form" grid-view="reconcile-grid"/>
 	        
-	    	<panel-related field="analyticAccountSet" title="Analytics" readonly="true" colSpan="12" />
 	    	
 	    	<panel name="irrecoverable" title="Irrecoverable">
 	        	<field name="irrecoverablestatusSelect" /> 
-        		<field name="managementObject"/>
+        		<field name="managementObject" form-view="management-object-form" grid-view="management-object-grid"/>
         		<button name="passInIrrecoverable" title="Shift to irrecoverable"   onClick="com.axelor.apps.account.web.MoveLineController:passInIrrecoverable"/>
         		<button name="notPassInIrrecoverable" title="Do not shift to irrecoverable"   onClick="com.axelor.apps.account.web.MoveLineController:notPassInIrrecoverable"/>
 	        </panel>
@@ -93,54 +98,55 @@
 		        <field name="exportedDirectDebitOk"/>
 		        <field name="reimbursementstatusSelect"/>
 		    </panel>
+		    <panel-include view="incl-analytic-distribution-move-line-form" />
         </panel-tabs>
     </form>
     
     <form name="move-line-move-form" title="Move line" model="com.axelor.apps.account.db.MoveLine" 
-	onNew="action-account-move-line-onnew-group" onLoad="action-account-move-moveline-onload-group">
+	onNew="action-account-move-line-onnew-group" onLoad="action-account-move-moveline-onload-group" width="large">
 		<panel>
 			<field name="name" css="bold"/>
 			<field name="date" colSpan="3"/>
 			<field name="dueDate" colSpan="3"/>
 			<panel title="Informations" colSpan="12">
-				<field name="account" onSelect="action-move-line-attrs-domain-account"/>
+				<field name="account" form-view="account-form" grid-view="account-grid" onSelect="action-move-line-attrs-domain-account"/>
 				<field name="debit" onChange="action-group-account-moveline-debitcredit-onchange" readonlyIf="credit &gt; 0" css="label-bold bold" colSpan="3"/>
 				<field name="credit" onChange="action-group-account-moveline-debitcredit-onchange" readonlyIf="debit &gt; 0" css="label-bold bold" colSpan="3"/>
-				<field name="partner" domain="self.isContact = false" form-view="partner-form" grid-view="partner-grid"/>
+				<field name="partner" form-view="partner-form" grid-view="partner-grid" domain="self.isContact = false"/>
 				<field name="amountRemaining" colSpan="3"/>
 				<field name="amountPaid" colSpan="3"/>
 				<field name="description" colSpan="12" />
 			</panel>
 			<panel title="Reject reason" colSpan="12" showIf="interbankCodeLine">
-				<field name="interbankCodeLine" showTitle="false"/>
+				<field name="interbankCodeLine" showTitle="false" grid-view="interbank-code-line-grid" form-view="interbank-code-line-form"/>
 			</panel>
 		</panel>
 			
 		<panel-tabs>	
-			<panel-related field="reconcileList1" canRemove="false" canNew="false" showIf="$number(debit) &gt; 0.00"/>
-	        <panel-related field="reconcileList2"  canRemove="false" canNew="false" showIf="$number(credit) &gt; 0.00"/>
+			<panel-related field="reconcileList1" canRemove="false" canNew="false" showIf="$number(debit) &gt; 0.00" form-view="reconcile-form" grid-view="reconcile-grid"/>
+	        <panel-related field="reconcileList2"  canRemove="false" canNew="false" showIf="$number(credit) &gt; 0.00" form-view="reconcile-form" grid-view="reconcile-grid"/>
 			
-			<panel-related field="analyticAccountSet" title="Analytics" readonly="true" colSpan="12" />
 			
 			<panel title="Others" >
 				<field name="exportedDirectDebitOk" colSpan="12"/>
 			</panel>
+			<panel-include view="incl-analytic-distribution-move-line-form" />
 		</panel-tabs>
 	</form>
     
     <form name="move-line-accounting-situation-form" title="Move line" model="com.axelor.apps.account.db.MoveLine"   canDelete="false" canNew="false"
     onLoad="action-group-account-moveline-accounting-situation-onload" 
-    onNew="action-account-move-line-onnew-group">
+    onNew="action-account-move-line-onnew-group" width="large">
     	
     	<panel name="informations" title="Informations" readonly="true">
 	        <field name="name"/>
-	        <field name="move"/>
+	        <field name="move" form-view="move-form" grid-view="move-grid"/>
 
 	        <field name="date"/>
 	        <field name="dueDate"/>
 	        <field name="customer"/>
 
-	        <field name="account" onSelect="action-move-line-attrs-domain-account"/>
+	        <field name="account" form-view="account-form" grid-view="account-grid" onSelect="action-move-line-attrs-domain-account"/>
    	     
 	        <field name="debit" onChange="action-group-account-moveline-debitcredit-onchange"/>
 	        <field name="credit" onChange="action-group-account-moveline-debitcredit-onchange"/>
@@ -155,14 +161,13 @@
         
     	<panel-tabs>
 	        
-	        <panel-related field="reconcileList1" canRemove="false" canNew="false" showIf="$number(debit) &gt; 0.00"/>
-	        <panel-related field="reconcileList2"  canRemove="false" canNew="false" showIf="$number(credit) &gt; 0.00"/>
+	        <panel-related field="reconcileList1" canRemove="false" canNew="false" showIf="$number(debit) &gt; 0.00" form-view="reconcile-form" grid-view="reconcile-grid"/>
+	        <panel-related field="reconcileList2"  canRemove="false" canNew="false" showIf="$number(credit) &gt; 0.00" form-view="reconcile-form" grid-view="reconcile-grid"/>
 			
-			<panel-related field="analyticAccountSet" title="Analytics" readonly="true" colSpan="12" />
 			
 			<panel name="irrecoverable" title="Irrecoverable" >
 	        	<field name="irrecoverablestatusSelect"/>
-        		<field name="managementObject"/>
+        		<field name="managementObject" form-view="management-object-form" grid-view="management-object-grid"/>
         		<button name="passInIrrecoverable" title="Shift to irrecoverable"   onClick="com.axelor.apps.account.web.MoveLineController:passInIrrecoverable"/>
         		<button name="notPassInIrrecoverable" title="Do not shift to irrecoverable"   onClick="com.axelor.apps.account.web.MoveLineController:notPassInIrrecoverable"/>
 	        </panel>
@@ -171,8 +176,13 @@
 		        <field name="taxLine" grid-view="tax-line-grid" form-view="tax-line-form"/>
 		        <field name="exportedDirectDebitOk"/>
 		    </panel>
+		    <panel-include view="incl-analytic-distribution-move-line-form" />
         </panel-tabs>
     </form>
+    
+    <action-attrs name="action-move-line-attrs-read-only-distribution-lines">
+		<attribute name="readonly" for="analyticDistributionLineList" expr="eval: __config__.general.getAnalyticDistributionTypeSelect() != 1"/>
+	</action-attrs>
     
     <action-group name="action-account-move-line-onnew-group">
 	    <action name="action-move-line-attrs-collapse-irrecoverable-group"/>
@@ -184,6 +194,7 @@
 	<action-group name="action-group-account-moveline-debitcredit-onchange">
 		<action name="action-move-line-debit-credit-validate"/>
 		<action name="action-move-line-debit-credit-clean"/>
+		<action name="action-move-line-method-compute-analytic-distribution"/>
 	</action-group>
     
     <action-group name="action-group-account-moveline-accounting-situation-onload">
@@ -200,6 +211,10 @@
     	<action name="save"/>
     	<action name="action-method-account-moveline-usher-process"/>
     </action-group>
+    
+    <action-method name="action-move-line-method-compute-analytic-distribution">
+		<call class="com.axelor.apps.account.web.MoveLineController" method="computeAnalyticDistribution"/>
+	</action-method>
     
     <action-method name="action-method-account-moveline-usher-process">
     	<call class="com.axelor.apps.account.web.MoveLineController" method="usherProcess"/>
@@ -222,7 +237,7 @@
 	
 	<action-record name="action-move-line-record-get-move-informations" model="com.axelor.apps.account.db.MoveLine">
 		<field name="partner" expr="eval: _parent?.partner"/>
-		<field name="date" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()" if="date == null"/>
+		<field name="date" expr="eval:__config__.generalService.getTodayDate()" if="date == null"/>
 		<field name="dueDate" expr="eval: _parent?.date"/>
 	</action-record>
 	

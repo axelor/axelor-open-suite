@@ -46,69 +46,72 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
 public class MessageServiceBaseImpl extends MessageServiceImpl {
-	
+
 	private final Logger LOG = LoggerFactory.getLogger( getClass() );
-	
+
 	@Inject
 	private UserService userService;
-	
+
+	@Inject
+	protected GeneralService generalService;
+
 	@Inject
 	public MessageServiceBaseImpl( MetaAttachmentRepository metaAttachmentRepository, MailAccountService mailAccountService, UserService userService ) {
 		super(metaAttachmentRepository, mailAccountService);
 		this.userService = userService;
 	}
-	
-	
+
+
 	@Override
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public Message createMessage(String model, int id, String subject, String content, EmailAddress fromEmailAddress, List<EmailAddress> replyToEmailAddressList, List<EmailAddress> toEmailAddressList, List<EmailAddress> ccEmailAddressList, 
+	public Message createMessage(String model, int id, String subject, String content, EmailAddress fromEmailAddress, List<EmailAddress> replyToEmailAddressList, List<EmailAddress> toEmailAddressList, List<EmailAddress> ccEmailAddressList,
 			List<EmailAddress> bccEmailAddressList, Set<MetaFile> metaFiles, String addressBlock, int mediaTypeSelect)  {
-		
+
 		Message message = super.createMessage( model, id, subject, content, fromEmailAddress, replyToEmailAddressList, toEmailAddressList, ccEmailAddressList, bccEmailAddressList, metaFiles, addressBlock, mediaTypeSelect) ;
-		
+
 		message.setCompany(userService.getUserActiveCompany());
-		
-		return save(message);
-		
+
+		return messageRepo.save(message);
+
 	}
-	
+
 	@Override
 	public String printMessage(Message message){
-		
+
 		Company company = message.getCompany();
 		if(company == null){ return null; }
-		
+
 		PrintingSettings printSettings = company.getPrintingSettings();
 		if ( printSettings == null || printSettings.getDefaultMailBirtTemplate() == null ) { return null; }
-		
+
 		BirtTemplate birtTemplate = printSettings.getDefaultMailBirtTemplate();
-		
+
 		LOG.debug("Default BirtTemplate : {}",birtTemplate);
-		
+
 		TemplateMaker maker = new TemplateMaker( new Locale( AuthUtils.getUser().getLanguage() ), '$', '$');
 		maker.setContext( JPA.find( message.getClass(), message.getId() ), "Message" );
-		
+
 		ReportSettings reportSettings = new ReportSettings(birtTemplate.getTemplateLink(), birtTemplate.getFormat());
-		
+
 		for ( BirtTemplateParameter birtTemplateParameter : birtTemplate.getBirtTemplateParameterList() )  {
 			maker.setTemplate(birtTemplateParameter.getValue());
 			reportSettings.addParam(birtTemplateParameter.getName(), maker.make());
 		}
-		
+
 		return reportSettings.getUrl();
-		
+
 	}
-	
+
 	@Override
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public Message sendMessage(Message message)  {
-		
+
 		super.sendMessage(message);
-		
+
 		if( !message.getStatusSelect().equals( MessageRepository.STATUS_SENT ) ){ return message; }
-		
-		message.setSentDateT( GeneralService.getTodayDateTime().toLocalDateTime() );
-		return save(message);
+
+		message.setSentDateT( generalService.getTodayDateTime().toLocalDateTime() );
+		return messageRepo.save(message);
 	}
-	
+
 }

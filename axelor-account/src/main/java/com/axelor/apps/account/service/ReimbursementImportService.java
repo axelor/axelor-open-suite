@@ -30,34 +30,45 @@ import com.axelor.apps.account.db.InterbankCodeLine;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.Reimbursement;
+import com.axelor.apps.account.db.repo.MoveLineRepository;
+import com.axelor.apps.account.db.repo.MoveRepository;
+import com.axelor.apps.account.db.repo.ReimbursementRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.account.service.move.MoveLineService;
+import com.axelor.apps.account.service.move.MoveService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
 public class ReimbursementImportService {
 	
-	private static final Logger LOG = LoggerFactory.getLogger(ReimbursementImportService.class); 
+	private final Logger log = LoggerFactory.getLogger( getClass() );
+	
+	protected MoveService moveService;
+	protected MoveRepository moveRepo;
+	protected MoveLineService moveLineService;
+	protected RejectImportService rejectImportService;
+	protected AccountConfigService accountConfigService;
+	protected ReimbursementRepository reimbursementRepo;
 	
 	@Inject
-	private MoveService ms;
-	
-	@Inject
-	private MoveLineService mls;
-	
-	@Inject
-	private RejectImportService ris;
-	
-	@Inject
-	private AccountConfigService accountConfigService;
-	
-	@Inject
-	private ReimbursementService reimbursementService;
+	public ReimbursementImportService(MoveService moveService, MoveRepository moveRepo, MoveLineService moveLineService,
+			RejectImportService rejectImportService, AccountConfigService accountConfigService, ReimbursementRepository reimbursementRepo)  {
+		
+		this.moveService = moveService;
+		this.moveRepo = moveRepo;
+		this.moveLineService = moveLineService;
+		this.rejectImportService = rejectImportService;
+		this.accountConfigService = accountConfigService;
+		this.reimbursementRepo = reimbursementRepo;
+		
+	}
 	
 	
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
@@ -68,7 +79,7 @@ public class ReimbursementImportService {
 		AccountConfig accountConfig = company.getAccountConfig();
 		
 		this.createReimbursementRejectMove(
-				ris.getCFONBFile(accountConfig.getReimbursementImportFolderPathCFONB(), accountConfig.getTempReimbImportFolderPathCFONB(),company, 0),
+				rejectImportService.getCFONBFile(accountConfig.getReimbursementImportFolderPathCFONB(), accountConfig.getTempReimbImportFolderPathCFONB(),company, 0),
 				company);
 		
 	}
@@ -77,7 +88,7 @@ public class ReimbursementImportService {
 	public void createReimbursementRejectMove(List<String[]> rejectList, Company company) throws AxelorException  {
 		int seq = 1;
 		if(rejectList != null && !rejectList.isEmpty())  {
-			LocalDate rejectDate = ris.createRejectDate(rejectList.get(0)[0]);
+			LocalDate rejectDate = rejectImportService.createRejectDate(rejectList.get(0)[0]);
 			Move move = this.createMoveReject(company, rejectDate);
 			for(String[] reject : rejectList)  {
 				
@@ -86,7 +97,7 @@ public class ReimbursementImportService {
 			}
 			if(move != null)  {
 			// Création d'une ligne au débit
-				MoveLine debitMoveLine = mls.createMoveLine(move , null, company.getAccountConfig().getReimbursementAccount(), this.getTotalAmount(move), true, false, rejectDate, seq, null);
+				MoveLine debitMoveLine = moveLineService.createMoveLine(move , null, company.getAccountConfig().getReimbursementAccount(), this.getTotalAmount(move), true, rejectDate, seq, null);
 				move.getMoveLineList().add(debitMoveLine);	
 				this.validateMove(move);
 			}
@@ -98,9 +109,10 @@ public class ReimbursementImportService {
 			
 		String refReject = reject[1];
 	//	String amountReject = reject[2];
-		InterbankCodeLine causeReject = ris.getInterbankCodeLine(reject[3], 0);
+		InterbankCodeLine causeReject = rejectImportService.getInterbankCodeLine(reject[3], 0);
+		MoveLineRepository moveLineRepo = Beans.get(MoveLineRepository.class);
 		
-		Reimbursement reimbursement = reimbursementService.all().filter("UPPER(self.ref) = ?1 AND self.company = ?2", refReject, company).fetchOne();
+		Reimbursement reimbursement = reimbursementRepo.all().filter("UPPER(self.ref) = ?1 AND self.company = ?2", refReject, company).fetchOne();
 		if(reimbursement == null)  {
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.REIMBURSEMENT_3),
 					refReject, company.getName()), IException.INCONSISTENCY);
@@ -110,26 +122,26 @@ public class ReimbursementImportService {
 		BigDecimal amount = reimbursement.getAmountReimbursed();
 		
 		// Création de la ligne au crédit
-		MoveLine creditMoveLine = mls.createMoveLine(move , partner, company.getAccountConfig().getCustomerAccount(), amount, false, false, rejectDate, seq, refReject);
+		MoveLine creditMoveLine = moveLineService.createMoveLine(move , partner, company.getAccountConfig().getCustomerAccount(), amount, false, rejectDate, seq, refReject);
 		move.getMoveLineList().add(creditMoveLine);	
 		
-		mls.save(creditMoveLine); 
+		moveLineRepo.save(creditMoveLine); 
 
-		ms.save(move);
+		moveRepo.save(move);
 		creditMoveLine.setInterbankCodeLine(causeReject);
 		
 		reimbursement.setRejectedOk(true);
 		reimbursement.setRejectDate(rejectDate);
 		reimbursement.setRejectMoveLine(creditMoveLine);
 		reimbursement.setInterbankCodeLine(causeReject);
-		reimbursementService.save(reimbursement);
+		reimbursementRepo.save(reimbursement);
 		
 		return reimbursement;
 	}
 	
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public Move createMoveReject(Company company, LocalDate date) throws AxelorException  {
-		return ms.save(ms.createMove(company.getAccountConfig().getRejectJournal(), company, null, null, date, null));
+		return moveRepo.save(moveService.getMoveCreateService().createMove(company.getAccountConfig().getRejectJournal(), company, null, null, date, null));
 
 	}
 	
@@ -147,22 +159,22 @@ public class ReimbursementImportService {
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public MoveLine createOppositeRejectMoveLine(Move move, int seq, LocalDate rejectDate) throws AxelorException  {
 		// Création d'une ligne au débit
-		MoveLine debitMoveLine = mls.createMoveLine(move , null, move.getCompany().getAccountConfig().getReimbursementAccount(), this.getTotalAmount(move), true, false, rejectDate, seq, null);
+		MoveLine debitMoveLine = moveLineService.createMoveLine(move , null, move.getCompany().getAccountConfig().getReimbursementAccount(), this.getTotalAmount(move), true, rejectDate, seq, null);
 		move.getMoveLineList().add(debitMoveLine);	
-		ms.save(move);
+		moveRepo.save(move);
 		return debitMoveLine;
 	}
 	
 	
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void validateMove(Move move) throws AxelorException  {
-		ms.validateMove(move);
-		ms.save(move);
+		moveService.getMoveValidateService().validateMove(move);
+		moveRepo.save(move);
 	}
 	
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void deleteMove(Move move) throws AxelorException  {
-		ms.remove(move);
+		moveRepo.remove(move);
 	}
 	
 	
@@ -174,7 +186,7 @@ public class ReimbursementImportService {
 	 * @throws AxelorException
 	 */
 	public void testCompanyField(Company company) throws AxelorException  {
-		LOG.debug("Test de la société {}", company.getName());	
+		log.debug("Test de la société {}", company.getName());	
 		
 		AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
 		

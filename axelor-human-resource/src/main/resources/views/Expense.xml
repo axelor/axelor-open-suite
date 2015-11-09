@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
+
+	<grid name="expense-grid" title="Expenses" model="com.axelor.apps.hr.db.Expense">
+		<field name="company" form-view="company-form" grid-view="company-grid"/>
+		<field name="sentDate"/>
+		<field name="period" form-view="period-form" grid-view="period-grid"/>
+		<field name="user" form-view="user-form" grid-view="user-grid"/>
+		<field name="statusSelect"/>
+	</grid>
+	
+	<grid name="expense-payroll-preparation-grid" title="Expenses" model="com.axelor.apps.hr.db.Expense">
+		<field name="sentDate"/>
+		<field name="period" form-view="period-form" grid-view="period-grid"/>
+		<field name="inTaxTotal"/>
+	</grid>
+	
+	<grid name="expense-validate-grid" title="Expenses" model="com.axelor.apps.hr.db.Expense">
+		<toolbar>
+			<button name="showSubordinateExpenseToValidate" title="Show expenses to be validated by my subordinates" onClick="com.axelor.apps.hr.web.expense.ExpenseController:showSubordinateExpenses"/>
+		</toolbar>
+		<field name="company" form-view="company-form" grid-view="company-grid"/>
+		<field name="sentDate"/>
+		<field name="period" form-view="period-form" grid-view="period-grid"/>
+		<field name="user" form-view="user-form" grid-view="user-grid"/>
+		<field name="statusSelect"/>
+	</grid>
+
+	<form name="expense-form" title="Expense" model="com.axelor.apps.hr.db.Expense"
+	    onNew="action-expense-record-default,action-expense-attrs-buttons" onLoad="action-expense-attrs-buttons" width="large" canNew="false"
+	    onSave="action-expense-method-validate-date" canCopy="false">
+		<toolbar>
+			<button name="printExpense" title="Print" colSpan="2" icon="fa-print" onClick="save,action-print-expense"/>
+		</toolbar>
+	    <panel sidebar="true" title="Actions" stacked="true">
+	    	<button name="sendExpenses" colSpan="4" title="Send Expenses" onClick="action-expense-record-status-confirmed, save,action-expense-attrs-buttons, action-expense-view-new-expense" readonlyIf="statusSelect &gt; 1"/>
+			<button name="ventilate" colSpan="4" title="Ventilate" onClick="action-expense-method-ventilate" readonlyIf="statusSelect != 3 || ventilated"/>
+	    	<button name="validButton" onClick="action-expense-record-valid,save,action-expense-attrs-buttons" title="Valid"/>
+	    	<button name="refuseButton" onClick="action-expense-record-refuse,save,action-expense-attrs-buttons" title="Refuse"/>
+	    	<button name="cancelButton" onClick="action-expense-validate-period,save,com.axelor.apps.hr.web.expense.ExpenseController:cancelExpense,action-expense-attrs-buttons" hideIf="statusSelect == 5" title="Cancel" icon="fa-close"/>
+	    	<button name="draftButton" onClick="action-expense-record-draft,save,action-expense-attrs-buttons" title="Return to draft status" showIf="statusSelect &gt; 3 "/>
+	    </panel>
+		<panel>
+		    <field name="statusSelect" colSpan="12" widget="NavSelect"/>
+		    <field name="moveDate" colSpan="4"/>
+		    <field name="ventilated" title="Expense Ventilated" readonly="true" colSpan="4"/>
+			<field name="sentDate" colSpan="4"/>
+			<field name="company" form-view="company-form" grid-view="company-grid"/>
+			<field name="bankDetails" widget="SuggestBox" onSelect="action-accounting-batch-attrs-bank-details-domain" form-view="bank-details-form" grid-view="bank-details-grid" if="__config__.general.getManageMultiBanks()"/>
+			<field name="user" colSpan="4" form-view="user-form" grid-view="user-grid"/>
+			<field name="period" colSpan="4" onSelect="action-expense-attrs-domain-period" form-view="period-form" grid-view="period-grid"/>
+			<field name="expenseCompanyCb"/>
+			<field name="move" showIf="ventilated" form-view="move-form" grid-view="move-grid"/>
+		</panel>
+		<panel-tabs>
+			<panel-related field="expenseLineList" readonlyIf="statusSelect &gt; 1" onChange="action-expense-method-compute" editable="true" form-view="expense-line-form" grid-view="expense-line-grid"/>
+			<panel-related field="kilometricAllowanceList" grid-view="kilometric-allowance-grid" form-view="kilometric-allowance-form"/>
+		</panel-tabs>
+		<panel>
+			<field name="validatedBy" form-view="user-form" grid-view="user-grid"/>
+			<field name="refusedBy" form-view="user-form" grid-view="user-grid"/>
+			<field name="validationDate"/>
+			<field name="refusalDate"/>
+		</panel>
+		<panel sidebar="true" readonly="true"  colSpan="4">  
+	  		<field name="inTaxTotal" css="order-subtotal" showTitle="false" colSpan="12">
+	          <viewer>
+	            &lt;dl class="dl-horizontal"&gt;
+	              &lt;dt x-translate&gt;Total W.T.&lt;/dt&gt;
+	              &lt;dd&gt;{{record.exTaxTotal}}&lt;/dd&gt;
+	              &lt;dt x-translate&gt;Total tax&lt;/dt&gt;
+	              &lt;dd&gt;{{record.taxTotal}}&lt;/dd&gt;
+	              &lt;dt class="order-subtotal-total" x-translate&gt;Total A.T.I.&lt;/dt&gt;
+	              &lt;dd class="order-subtotal-total"&gt;{{record.inTaxTotal}}&lt;/dd&gt;
+	            &lt;/dl&gt;
+	          </viewer>
+	        </field>
+      </panel>
+	</form>
+	
+	<form name="popup-expense-form" title="Select the expense you want to edit" model="com.axelor.apps.base.db.Wizard" onNew="action-expense-attrs-domain-expense-select">
+		<field name="$expenseSelect" title="Select Expense" type="many-to-one" target="com.axelor.apps.hr.db.Expense" widget="SuggestBox" />
+		<button name="editExpenseSelected" title="Edit Expense Selected" onClick="com.axelor.apps.hr.web.expense.ExpenseController:editExpenseSelected"/>
+	</form>
+	
+	<action-record name="action-expense-record-default" model="com.axelor.apps.hr.db.Expense">
+	    <field name="user" expr="eval:__user__"/>
+	    <field name="company" expr="eval: __user__.activeCompany"/>
+	    <field name="period" expr="eval: __repo__.of(Period).all().filter('self.fromDate &lt;= ?1 AND self.toDate &gt;= ?1',__date__).fetchOne()"/>
+		<field name="exTaxTotal" expr="eval: 0"/>
+    	<field name="taxTotal" expr="eval: 0"/>
+    	<field name="inTaxTotal" expr="eval: 0"/>
+	</action-record>
+	
+
+	<action-record name="action-expense-record-status-confirmed" model="com.axelor.apps.hr.db.Expense">
+	    <field name="statusSelect" expr="2"/>
+	    <field name="sentDate" expr="eval: __date__"/>
+	</action-record>
+	
+	<action-view name="action-expense-view-new-expense" title="Expense" model="com.axelor.apps.hr.db.Expense">
+		<view type="form" name="expense-form"/>
+		<view type="grid" name="expense-grid"/>
+	</action-view>
+	
+	<action-attrs name="action-expense-attrs-domain-expense-select">
+		<attribute name="domain" for="$expenseSelect" expr="eval: &quot; self.statusSelect = 1 AND self.user = ${__user__.id} &quot;"/>
+	</action-attrs>
+	
+	<action-attrs name="action-expense-attrs-domain-period">
+		<attribute name="domain" for="period" expr="eval: &quot; self.fromDate &lt;= CURRENT_DATE AND self.statusSelect = 1 &quot;"/>
+	</action-attrs>
+	
+	<action-method name="action-expense-method-compute">
+		<call class="com.axelor.apps.hr.web.expense.ExpenseController" method="compute"/>
+	</action-method>
+	
+	<action-method name="action-expense-method-validate-date">
+		<call class="com.axelor.apps.hr.web.expense.ExpenseController" method="validateDates"/>
+	</action-method>
+	
+	<action-method name="action-expense-method-ventilate">
+		<call class="com.axelor.apps.hr.web.expense.ExpenseController" method="ventilate"/>
+	</action-method>
+	
+	<action-method name="action-print-expense">
+    	<call class="com.axelor.apps.hr.web.expense.ExpenseController" method="printExpense"/>
+    </action-method>
+	
+	<action-record name="action-expense-record-valid" model="com.axelor.apps.hr.db.Expense">
+	    <field name="statusSelect" expr="3"/>
+	    <field name="validatedBy" expr="eval: __user__"/>
+	    <field name="validationDate" expr="eval: __date__"/>
+	</action-record>
+	
+	<action-record name="action-expense-record-refuse" model="com.axelor.apps.hr.db.Expense">
+	    <field name="statusSelect" expr="4"/>
+	    <field name="refusedBy" expr="eval: __user__"/>
+	    <field name="refusalDate" expr="eval: __date__"/>
+	</action-record>
+	
+	<action-record name="action-expense-record-cancel" model="com.axelor.apps.hr.db.Expense">
+	    <field name="statusSelect" expr="5"/>
+	</action-record>
+	
+	<action-record name="action-expense-record-draft" model="com.axelor.apps.hr.db.Expense">
+	    <field name="statusSelect" expr="1"/>
+	</action-record>
+	
+	<action-attrs name="action-expense-attrs-buttons">
+		<attribute name="hidden" for="validButton" expr="eval: !(statusSelect == 2 &amp;&amp; (__user__ == user?.employee?.manager || (__user__ == user &amp;&amp; user?.employee?.manager == null) || __user__ == user?.employee?.manager?.employee?.manager))"/>
+		<attribute name="hidden" for="refuseButton" expr="eval: !(statusSelect == 2 &amp;&amp; (__user__ == user?.employee?.manager || (__user__ == user &amp;&amp; user?.employee?.manager == null) || __user__ == user?.employee?.manager?.employee?.manager))"/>
+		<attribute name="hidden" for="cancelButton" expr="eval: period?.toDate &lt; __date__"/>
+	</action-attrs>
+	
+	<action-validate name="action-expense-validate-period">
+		<error message="Period is closed" if="period?.statusSelect == 2"/>
+	</action-validate>
+
+</object-views>

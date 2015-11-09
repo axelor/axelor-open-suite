@@ -22,11 +22,10 @@ import java.util.List;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.sale.db.SaleOrderLine;
-import com.axelor.db.Repository;
 import com.axelor.exception.AxelorException;
 import com.google.inject.persist.Transactional;
 
-public interface BillOfMaterialService extends Repository<BillOfMaterial> {
+public interface BillOfMaterialService {
 
 	static final String UNIT_MIN_CODE = "MIN";
 	
@@ -34,9 +33,6 @@ public interface BillOfMaterialService extends Repository<BillOfMaterial> {
 	
 	
 	public List<BillOfMaterial> getBillOfMaterialList(Product product);
-	
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void computeCostPrice(BillOfMaterial billOfMaterial) throws AxelorException;
 	
 	
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})

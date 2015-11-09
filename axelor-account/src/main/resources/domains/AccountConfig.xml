@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_3.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_4.0.xsd">
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
@@ -26,12 +26,14 @@
     <many-to-one name="cashJournalType" ref="com.axelor.apps.account.db.JournalType" title="Cash journal type"/>
     <many-to-one name="creditNoteJournalType" ref="com.axelor.apps.account.db.JournalType" title="Credit note journal type"/>
     
+    
 <!--     ACCOUNT -->
     <many-to-one name="customerAccount" ref="com.axelor.apps.account.db.Account" title="Customer account"/>
     <many-to-one name="supplierAccount" ref="com.axelor.apps.account.db.Account" title="Supplier account"/>
     <many-to-one name="doubtfulCustomerAccount" ref="com.axelor.apps.account.db.Account" title="Doubtful customers account" help="true"/>    
     <many-to-one name="irrecoverableAccount" ref="com.axelor.apps.account.db.Account" title="Irrecoverable account"/>
     <many-to-one name="cashPositionVariationAccount" ref="com.axelor.apps.account.db.Account" title="Cashier Regulation account"/>
+    <many-to-one name="advancePaymentAccount" ref="com.axelor.apps.account.db.Account" title="Advance Payment Account"/>
     
     <decimal name="thresholdDistanceFromRegulation" title="Allowed payment range"/>
     
@@ -98,14 +100,32 @@
     <string name="tempInterbankPaymentOrderRejectImportPathCFONB" title="Temporary filepath to import IPO, and IPO &amp; Cheque payments rejects" help="true"/>
   
     <!-- Onglet Facturation -->
-    <boolean name="showDetailsInInvoice" title="Show details on invoice"/>
     <boolean name="allowCancelVentilatedInvoice" title="Allow cancelation of ventilated invoice"/>
     <boolean name="allowRemovalValidatedMove" title="Allow removal of validated move"/>
+    <boolean name="generateMoveForInvoicePayment" title="Generate move for payment on invoice"/>
+    <boolean name="generateMoveForAdvancePayment" title="Generate move for advance payment"/>
     
     <!--  Account chart template-->
 	<many-to-one name="accountChart" ref="com.axelor.apps.account.db.AccountChart" title="Account chart" />
 	<boolean name="hasChartImported"  title="Chart imported?" />
-	   
+	<integer name="invoiceInAtiSelect" title="Invoice ATI/WT" selection="base.in.ati.select" default="1"/>
+	
+<!-- 	Sequence  -->
+	<many-to-one name="custInvSequence" ref="com.axelor.apps.base.db.Sequence" title="Customer invoices sequence"/>
+	<many-to-one name="custRefSequence" ref="com.axelor.apps.base.db.Sequence" title="Customer refunds sequence"/>
+	<many-to-one name="suppInvSequence" ref="com.axelor.apps.base.db.Sequence" title="Supplier invoices sequence"/>
+	<many-to-one name="suppRefSequence" ref="com.axelor.apps.base.db.Sequence" title="Supplier refunds sequence"/>
+	
+<!-- 	Invoice printing    -->
+	<boolean name="displayDelAddrOnPrinting" title="Display delivery address on printing ?"/>
+  	<boolean name="displayProductCodeOnPrinting" title="Display product code on printing ?"/>
+ 	<boolean name="displayTaxDetailOnPrinting" title="Display tax detail on printing ?"/>
+  	<string name="invoiceClientBox" large="true" multiline="true" title="Client box in invoice"/>
+  	
+  	
+	
+	
+	
   </entity>
   
 </domain-models>

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_4.0.xsd">
+
+  <module name="production" package="com.axelor.apps.production.db"/>
+
+  <entity name="WorkCenter" lang="java">
+  	
+ 	<integer name="importId"/> 	
+  
+    <string name="name" title="Label" required="true"/>
+    <string name="code" title="Code"/>
+    <many-to-one name="machine" ref="com.axelor.apps.production.db.Machine" title="Default Machine"/>
+    <integer name="workCenterTypeSelect" title="Work center type" selection="iproduction.work.center.type.select"/>
+    <decimal name="capacityPerCycle" title="Capacity / cycle"/>
+    <decimal name="maxCapacityPerCycle" title="Max. capacity / cycle"/>
+    <long name="durationPerCycle" title="Duration / cycle (hh:mm)"/>
+	
+	<many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"/>
+	
+	<integer name="costTypeSelect" title="Cost type" selection="iproduction.work.center.cost.type.select"/>    
+    <decimal name="costAmount" title="Cost (W.T.)"/>
+    
+    <one-to-many name="prodHumanResourceList" ref="com.axelor.apps.production.db.ProdHumanResource" mappedBy="workCenter" title="Human resources"/>
+    
+    <one-to-many name="workCenterList" ref="com.axelor.apps.production.db.WorkCenter" mappedBy="parentWorkCenter" title="Replacement machines"/>
+    <many-to-one name="parentWorkCenter" ref="com.axelor.apps.production.db.WorkCenter" title="Work center"/>
+    
+    <many-to-one name="operationOrder" ref="com.axelor.apps.production.db.OperationOrder" title="Operation order"/>
+    
+  	<many-to-one name="costSheetGroup" ref="com.axelor.apps.production.db.CostSheetGroup" title="Cost sheet group"/>
+    
+  </entity>
+</domain-models>

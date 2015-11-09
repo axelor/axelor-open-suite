@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_4.0.xsd">
+
+  <module name="sale" package="com.axelor.apps.sale.db"/>
+
+  <entity name="AdvancePayment" lang="java">
+  
+ 	<decimal name="amount" title="Amount" required="true" default="0"/>
+ 	
+ 	<date name="advancePaymentDate" title="Date" required="true"/>
+ 	
+ 	<many-to-one name="saleOrder" ref="com.axelor.apps.sale.db.SaleOrder"/>
+ 	
+  	<many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" title="Currency" required="true"/>
+  	<integer name="statusSelect" title="Status" selection="advance.payment.status.select"/>
+  	
+  	 <extra-code>
+   		<![CDATA[
+   			public static final Integer STATUS_DRAFT = 0;
+   			public static final Integer STATUS_VALIDATED = 1;
+   			public static final Integer STATUS_CANCELED = 2;
+   		]]>
+   	</extra-code>
+  	
+  </entity>
+
+</domain-models>

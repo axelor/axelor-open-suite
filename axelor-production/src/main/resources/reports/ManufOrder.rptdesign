@@ -20,26 +20,7 @@
         <structure>
             <property name="name">odaDriverClass</property>
             <property name="id">209</property>
-        </structure>
-        <structure>
-            <property name="name">odaAutoCommit</property>
-            <property name="id">209</property>
-        </structure>
-        <structure>
-            <property name="name">odaIsolationMode</property>
-            <property name="id">209</property>
-        </structure>
-        <structure>
-            <property name="name">odaJndiName</property>
-            <property name="id">209</property>
-        </structure>
-        <structure>
-            <property name="name">OdaConnProfileName</property>
-            <property name="id">209</property>
-        </structure>
-        <structure>
-            <property name="name">OdaConnProfileStorePath</property>
-            <property name="id">209</property>
+            <expression name="value" type="javascript">params["DefaultDriver"].value</expression>
         </structure>
     </list-property>
     <property name="units">cm</property>
@@ -127,6 +108,17 @@
                 <property name="category">Unformatted</property>
             </structure>
         </scalar-parameter>
+        <scalar-parameter name="DefaultDriver" id="3819">
+            <property name="valueType">static</property>
+            <property name="dataType">string</property>
+            <property name="distinct">true</property>
+            <list-property name="selectionList"/>
+            <property name="paramType">simple</property>
+            <property name="controlType">text-box</property>
+            <structure name="format">
+                <property name="category">Unformatted</property>
+            </structure>
+        </scalar-parameter>
     </parameters>
     <data-sources>
         <oda-data-source extensionID="org.eclipse.birt.report.data.oda.jdbc" name="Data Source" id="209">
@@ -147,7 +139,7 @@
                 </ex-property>
             </list-property>
             <property name="odaDriverClass">org.postgresql.Driver</property>
-            <property name="odaURL">jdbc:postgresql://localhost:5432/abs</property>
+            <property name="odaURL">jdbc:postgresql://localhost:5432/</property>
         </oda-data-source>
     </data-sources>
     <data-sets>
@@ -311,7 +303,7 @@
                     <property name="name">qty</property>
                     <property name="nativeName">qty</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">2</property>
+                    <property name="nativeDataType">3</property>
                 </structure>
                 <structure>
                     <property name="position">7</property>
@@ -336,7 +328,7 @@
                 </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[SELECT ManufOrder.id, MetaFile.file_path AS logo_path, ManufOrder.manuf_order_seq, BOM.name as bom_name, Product.name as product_name,
-ManufOrder.qty, Unit.code as unit_code, ProdProcess.name as prod_process, ManufOrder.planned_start_datet
+ManufOrder.qty, Unit.name as unit_code, ProdProcess.name as prod_process, ManufOrder.planned_start_datet
 FROM production_manuf_order AS ManufOrder
 LEFT JOIN base_company AS Company ON (Company.id = ManufOrder.company)
 LEFT JOIN meta_file AS MetaFile ON (MetaFile.id = Company.logo)
@@ -529,9 +521,9 @@ LEFT JOIN production_prod_process AS ProdProcess ON (ProdProcess.id = BOM.prod_p
                     <property name="nativeDataType">12</property>
                 </structure>
             </list-property>
-            <xml-property name="queryText"><![CDATA[select LangTranslate.key, LangTranslate.message as "translation" 
+            <xml-property name="queryText"><![CDATA[select LangTranslate.message_key, LangTranslate.message_value as "translation" 
 from meta_translation as LangTranslate 
-where LangTranslate.key = ? and LangTranslate.language = ?]]></xml-property>
+where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
   <Version>2.0</Version>
@@ -769,16 +761,234 @@ FROM
 INNER JOIN 
 	production_manuf_order AS ManufOrder ON (OperationOrderLine.manuf_order = ManufOrder.id)
 LEFT JOIN 
-	production_prod_resource AS ProdResource ON (ProdResource.id = OperationOrderLine.prod_resource)
+	production_work_center AS WorkCenter ON (WorkCenter.id = OperationOrderLine.work_center)
 LEFT JOIN 
 	production_prod_process_line AS ProdProcessLine ON (ProdProcessLine.id = OperationOrderLine.prod_process_line)
 LEFT JOIN 
-	production_prod_resource AS Machine ON (Machine.id = OperationOrderLine.prod_resource) 
+	production_work_center AS Machine ON (Machine.id = OperationOrderLine.work_center) 
 ]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
   <Version>2.0</Version>
 </model:DesignValues>]]></xml-property>
+        </oda-data-set>
+        <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="OperationDetails" id="4361">
+            <property name="nullsOrdering">nulls lowest</property>
+            <list-property name="columnHints"/>
+            <list-property name="filter">
+                <structure>
+                    <property name="operator">in</property>
+                    <expression name="expr" type="javascript">row["manuf_order_id"]</expression>
+                    <simple-property-list name="value1">
+                        <value>params["ManufOrderId"].value.split(",")</value>
+                    </simple-property-list>
+                </structure>
+            </list-property>
+            <list-property name="parameters"/>
+            <structure name="cachedMetaData">
+                <list-property name="resultSet">
+                    <structure>
+                        <property name="position">1</property>
+                        <property name="name">manuf_order_id</property>
+                        <property name="dataType">decimal</property>
+                    </structure>
+                    <structure>
+                        <property name="position">2</property>
+                        <property name="name">id</property>
+                        <property name="dataType">decimal</property>
+                    </structure>
+                    <structure>
+                        <property name="position">3</property>
+                        <property name="name">priority</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">4</property>
+                        <property name="name">prod_process_line</property>
+                        <property name="dataType">decimal</property>
+                    </structure>
+                    <structure>
+                        <property name="position">5</property>
+                        <property name="name">planned_start_datet</property>
+                        <property name="dataType">date-time</property>
+                    </structure>
+                    <structure>
+                        <property name="position">6</property>
+                        <property name="name">planned_end_datet</property>
+                        <property name="dataType">date-time</property>
+                    </structure>
+                    <structure>
+                        <property name="position">7</property>
+                        <property name="name">real_start_datet</property>
+                        <property name="dataType">date-time</property>
+                    </structure>
+                    <structure>
+                        <property name="position">8</property>
+                        <property name="name">real_end_datet</property>
+                        <property name="dataType">date-time</property>
+                    </structure>
+                    <structure>
+                        <property name="position">9</property>
+                        <property name="name">machine_serial</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">10</property>
+                        <property name="name">description_id</property>
+                        <property name="dataType">decimal</property>
+                    </structure>
+                    <structure>
+                        <property name="position">11</property>
+                        <property name="name">description_prio</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">12</property>
+                        <property name="name">file_path</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">13</property>
+                        <property name="name">description</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">14</property>
+                        <property name="name">is_cons_pro_on_operation</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">15</property>
+                        <property name="name">bar_code_path</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">16</property>
+                        <property name="name">operation_name</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                </list-property>
+            </structure>
+            <property name="dataSource">Data Source</property>
+            <list-property name="resultSet">
+                <structure>
+                    <property name="position">1</property>
+                    <property name="name">manuf_order_id</property>
+                    <property name="nativeName">manuf_order_id</property>
+                    <property name="dataType">decimal</property>
+                </structure>
+                <structure>
+                    <property name="position">2</property>
+                    <property name="name">id</property>
+                    <property name="nativeName">id</property>
+                    <property name="dataType">decimal</property>
+                </structure>
+                <structure>
+                    <property name="position">3</property>
+                    <property name="name">priority</property>
+                    <property name="nativeName">priority</property>
+                    <property name="dataType">integer</property>
+                </structure>
+                <structure>
+                    <property name="position">4</property>
+                    <property name="name">prod_process_line</property>
+                    <property name="nativeName">prod_process_line</property>
+                    <property name="dataType">decimal</property>
+                </structure>
+                <structure>
+                    <property name="position">5</property>
+                    <property name="name">planned_start_datet</property>
+                    <property name="nativeName">planned_start_datet</property>
+                    <property name="dataType">date-time</property>
+                </structure>
+                <structure>
+                    <property name="position">6</property>
+                    <property name="name">planned_end_datet</property>
+                    <property name="nativeName">planned_end_datet</property>
+                    <property name="dataType">date-time</property>
+                </structure>
+                <structure>
+                    <property name="position">7</property>
+                    <property name="name">real_start_datet</property>
+                    <property name="nativeName">real_start_datet</property>
+                    <property name="dataType">date-time</property>
+                </structure>
+                <structure>
+                    <property name="position">8</property>
+                    <property name="name">real_end_datet</property>
+                    <property name="nativeName">real_end_datet</property>
+                    <property name="dataType">date-time</property>
+                </structure>
+                <structure>
+                    <property name="position">9</property>
+                    <property name="name">machine_serial</property>
+                    <property name="nativeName">machine_serial</property>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="position">10</property>
+                    <property name="name">description_id</property>
+                    <property name="nativeName">description_id</property>
+                    <property name="dataType">decimal</property>
+                </structure>
+                <structure>
+                    <property name="position">11</property>
+                    <property name="name">description_prio</property>
+                    <property name="nativeName">description_prio</property>
+                    <property name="dataType">integer</property>
+                </structure>
+                <structure>
+                    <property name="position">12</property>
+                    <property name="name">file_path</property>
+                    <property name="nativeName">file_path</property>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="position">13</property>
+                    <property name="name">description</property>
+                    <property name="nativeName">description</property>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="position">14</property>
+                    <property name="name">is_cons_pro_on_operation</property>
+                    <property name="nativeName">is_cons_pro_on_operation</property>
+                    <property name="dataType">integer</property>
+                </structure>
+                <structure>
+                    <property name="position">15</property>
+                    <property name="name">bar_code_path</property>
+                    <property name="nativeName">bar_code_path</property>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="position">16</property>
+                    <property name="name">operation_name</property>
+                    <property name="nativeName">operation_name</property>
+                    <property name="dataType">string</property>
+                </structure>
+            </list-property>
+            <xml-property name="queryText"><![CDATA[SELECT 
+	ManufOrder.id as manuf_order_id, OperationOrderLine.id, OperationOrderLine.priority, ProdProcessLine.id as prod_process_line,
+	OperationOrderLine.planned_start_datet, OperationOrderLine.planned_end_datet, OperationOrderLine.real_start_datet,
+	OperationOrderLine.real_end_datet, Machine.serial_number as machine_serial,
+	ObjectDescription.id as description_id,ObjectDescription.sequence as description_prio, MetaFile.file_path, ObjectDescription.description,
+	ManufOrder.is_cons_pro_on_operation, MetaFileBarcode.file_path as bar_code_path, OperationOrderLine.operation_name
+	
+FROM production_object_description as ObjectDescription
+	LEFT JOIN meta_file AS MetaFile ON (MetaFile.id = ObjectDescription.image)
+	LEFT JOIN production_prod_process_line AS ProdProcessLine ON (ProdProcessLine.id = ObjectDescription.prod_process_line)
+		RIGHT JOIN production_operation_order as OperationOrderLine ON (OperationOrderLine.prod_process_line = ProdProcessLine.id)
+			LEFT JOIN meta_file AS MetaFileBarcode ON (MetaFileBarcode.id = OperationOrderLine.bar_code)
+INNER JOIN 
+	production_manuf_order AS ManufOrder ON (OperationOrderLine.manuf_order = ManufOrder.id)
+LEFT JOIN 
+	production_work_center AS WorkCenter ON (WorkCenter.id = OperationOrderLine.machine_work_center)
+	LEFT JOIN 
+		production_machine AS Machine ON (Machine.id = WorkCenter.machine)
+		
+	ORDER BY OperationOrderLine.priority, ObjectDescription.sequence
+]]></xml-property>
         </oda-data-set>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="ConsumedProductDS" id="4186">
             <list-property name="columnHints">
@@ -914,11 +1124,11 @@ LEFT JOIN
                     <property name="name">qty</property>
                     <property name="nativeName">qty</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">2</property>
+                    <property name="nativeDataType">3</property>
                 </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[SELECT 
-	ManufOrder.id as manuf_order_id, StockMoveLine.id, Product.name as product_name, Product.code as product_code, Unit.code as unit_code,
+	ManufOrder.id as manuf_order_id, StockMoveLine.id, Product.name as product_name, Product.code as product_code, Unit.name as unit_code,
 	TrackingNumber.tracking_number_seq, StockMoveLine.qty
 FROM
 	stock_stock_move_line AS StockMoveLine 
@@ -931,6 +1141,153 @@ LEFT JOIN
 LEFT JOIN 
 	base_tracking_number AS TrackingNumber ON (TrackingNumber.id = StockMoveLine.tracking_number)
 	
+]]></xml-property>
+            <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
+  <Version>2.0</Version>
+  <design:ResultSets derivedMetaData="true">
+    <design:resultSetDefinitions>
+      <design:resultSetColumns>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>id</design:name>
+              <design:position>1</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>-5</design:nativeDataTypeCode>
+            <design:precision>19</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>NotNullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>id</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>id</design:label>
+            <design:formattingHints>
+              <design:displaySize>20</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+      </design:resultSetColumns>
+      <design:criteria/>
+    </design:resultSetDefinitions>
+  </design:ResultSets>
+</model:DesignValues>]]></xml-property>
+        </oda-data-set>
+        <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="ConsumedProductDS1" id="4530">
+            <list-property name="columnHints"/>
+            <list-property name="parameters"/>
+            <structure name="cachedMetaData">
+                <list-property name="resultSet">
+                    <structure>
+                        <property name="position">1</property>
+                        <property name="name">manuf_order_id</property>
+                        <property name="dataType">decimal</property>
+                    </structure>
+                    <structure>
+                        <property name="position">2</property>
+                        <property name="name">id</property>
+                        <property name="dataType">decimal</property>
+                    </structure>
+                    <structure>
+                        <property name="position">3</property>
+                        <property name="name">priority</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">4</property>
+                        <property name="name">prod_process_line</property>
+                        <property name="dataType">decimal</property>
+                    </structure>
+                    <structure>
+                        <property name="position">5</property>
+                        <property name="name">product_name</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">6</property>
+                        <property name="name">product_code</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">7</property>
+                        <property name="name">unit_code</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">8</property>
+                        <property name="name">qty</property>
+                        <property name="dataType">decimal</property>
+                    </structure>
+                </list-property>
+            </structure>
+            <property name="dataSource">Data Source</property>
+            <list-property name="resultSet">
+                <structure>
+                    <property name="position">1</property>
+                    <property name="name">manuf_order_id</property>
+                    <property name="nativeName">manuf_order_id</property>
+                    <property name="dataType">decimal</property>
+                </structure>
+                <structure>
+                    <property name="position">2</property>
+                    <property name="name">id</property>
+                    <property name="nativeName">id</property>
+                    <property name="dataType">decimal</property>
+                </structure>
+                <structure>
+                    <property name="position">3</property>
+                    <property name="name">priority</property>
+                    <property name="nativeName">priority</property>
+                    <property name="dataType">integer</property>
+                </structure>
+                <structure>
+                    <property name="position">4</property>
+                    <property name="name">prod_process_line</property>
+                    <property name="nativeName">prod_process_line</property>
+                    <property name="dataType">decimal</property>
+                </structure>
+                <structure>
+                    <property name="position">5</property>
+                    <property name="name">product_name</property>
+                    <property name="nativeName">product_name</property>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="position">6</property>
+                    <property name="name">product_code</property>
+                    <property name="nativeName">product_code</property>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="position">7</property>
+                    <property name="name">unit_code</property>
+                    <property name="nativeName">unit_code</property>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="position">8</property>
+                    <property name="name">qty</property>
+                    <property name="nativeName">qty</property>
+                    <property name="dataType">decimal</property>
+                </structure>
+            </list-property>
+            <xml-property name="queryText"><![CDATA[
+SELECT 
+	ManufOrder.id as manuf_order_id, OperationOrderLine.id, OperationOrderLine.priority, ProdProcessLine.id as prod_process_line,
+	Product.name as product_name, Product.code as product_code, Unit.name as unit_code, ProdProduct.qty
+	
+FROM production_prod_product as ProdProduct
+	LEFT JOIN base_product AS Product ON (Product.id = ProdProduct.product)
+	LEFT JOIN base_unit as Unit ON (Unit.id = ProdProduct.unit)
+	LEFT JOIN production_prod_process_line AS ProdProcessLine ON (ProdProcessLine.id = ProdProduct.to_consume_prod_process_line)
+		RIGHT JOIN production_operation_order as OperationOrderLine ON (OperationOrderLine.prod_process_line = ProdProcessLine.id)
+INNER JOIN 
+	production_manuf_order AS ManufOrder ON (OperationOrderLine.manuf_order = ManufOrder.id)
+	
+		
+	ORDER BY OperationOrderLine.priority
 ]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
@@ -1004,7 +1361,7 @@ LEFT JOIN
         <simple-master-page name="Simple MasterPage" id="2">
             <property name="type">a4</property>
             <property name="topMargin">0.47625cm</property>
-            <property name="leftMargin">0.3958333333333333in</property>
+            <property name="leftMargin">0.4in</property>
             <property name="rightMargin">0.396875cm</property>
             <property name="headerHeight">0in</property>
             <property name="footerHeight">0.2in</property>
@@ -1012,7 +1369,7 @@ LEFT JOIN
     </page-setup>
     <body>
         <table id="4224">
-            <property name="width">19.817291666666666cm</property>
+            <property name="width">7.7in</property>
             <property name="dataSet">ManufOrderDS</property>
             <list-property name="boundDataColumns">
                 <structure>
@@ -1071,7 +1428,7 @@ LEFT JOIN
                 </structure>
             </list-property>
             <column id="4231">
-                <property name="width">19.817291666666666cm</property>
+                <property name="width">19.076cm</property>
             </column>
             <detail>
                 <row id="4227">
@@ -1133,7 +1490,7 @@ LEFT JOIN
                                             <structure>
                                                 <property name="name">key</property>
                                                 <text-property name="displayName">key</text-property>
-                                                <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                                 <property name="dataType">string</property>
                                             </structure>
                                             <structure>
@@ -1162,7 +1519,7 @@ LEFT JOIN
                                             <structure>
                                                 <property name="name">key</property>
                                                 <text-property name="displayName">key</text-property>
-                                                <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                                 <property name="dataType">string</property>
                                             </structure>
                                             <structure>
@@ -1199,7 +1556,7 @@ LEFT JOIN
                                             <structure>
                                                 <property name="name">key</property>
                                                 <text-property name="displayName">key</text-property>
-                                                <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                                 <property name="dataType">string</property>
                                             </structure>
                                             <structure>
@@ -1233,7 +1590,7 @@ LEFT JOIN
                                             <structure>
                                                 <property name="name">key</property>
                                                 <text-property name="displayName">key</text-property>
-                                                <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                                 <property name="dataType">string</property>
                                             </structure>
                                             <structure>
@@ -1270,7 +1627,7 @@ LEFT JOIN
                                             <structure>
                                                 <property name="name">key</property>
                                                 <text-property name="displayName">key</text-property>
-                                                <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                                 <property name="dataType">string</property>
                                             </structure>
                                             <structure>
@@ -1304,7 +1661,7 @@ LEFT JOIN
                                             <structure>
                                                 <property name="name">key</property>
                                                 <text-property name="displayName">key</text-property>
-                                                <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                                 <property name="dataType">string</property>
                                             </structure>
                                             <structure>
@@ -1341,7 +1698,7 @@ LEFT JOIN
                                             <structure>
                                                 <property name="name">key</property>
                                                 <text-property name="displayName">key</text-property>
-                                                <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                                 <property name="dataType">string</property>
                                             </structure>
                                             <structure>
@@ -1375,7 +1732,7 @@ LEFT JOIN
                                             <structure>
                                                 <property name="name">key</property>
                                                 <text-property name="displayName">key</text-property>
-                                                <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                                 <property name="dataType">string</property>
                                             </structure>
                                             <structure>
@@ -1441,7 +1798,7 @@ LEFT JOIN
                                             <structure>
                                                 <property name="name">key</property>
                                                 <text-property name="displayName">key</text-property>
-                                                <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                                 <property name="dataType">string</property>
                                             </structure>
                                             <structure>
@@ -1479,7 +1836,7 @@ LEFT JOIN
                             </row>
                         </grid>
                         <table id="4102">
-                            <property name="width">19.473333333333333cm</property>
+                            <property name="width">7.5in</property>
                             <property name="dataSet">ManufOrderLineDS</property>
                             <list-property name="boundDataColumns">
                                 <structure>
@@ -1560,30 +1917,14 @@ LEFT JOIN
                                     <property name="updateAggregation">true</property>
                                 </structure>
                             </list-property>
-                            <column id="4130">
-                                <property name="width">1.349375cm</property>
-                            </column>
-                            <column id="4131">
-                                <property name="width">0.96875in</property>
-                            </column>
-                            <column id="4132">
-                                <property name="width">1.0625in</property>
-                            </column>
-                            <column id="4133">
-                                <property name="width">1.2291666666666667in</property>
-                            </column>
-                            <column id="4134">
-                                <property name="width">1.0729166666666667in</property>
-                            </column>
-                            <column id="4135">
-                                <property name="width">2.6722916666666667cm</property>
-                            </column>
-                            <column id="4136">
-                                <property name="width">2.6722916666666667cm</property>
-                            </column>
-                            <column id="4137">
-                                <property name="width">1.7727083333333333cm</property>
-                            </column>
+                            <column id="4130"/>
+                            <column id="4131"/>
+                            <column id="4132"/>
+                            <column id="4133"/>
+                            <column id="4134"/>
+                            <column id="4135"/>
+                            <column id="4136"/>
+                            <column id="4137"/>
                             <header>
                                 <row id="4138">
                                     <cell id="4139"/>
@@ -1623,7 +1964,7 @@ LEFT JOIN
                                                 <structure>
                                                     <property name="name">key</property>
                                                     <text-property name="displayName">key</text-property>
-                                                    <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                                    <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                                     <property name="dataType">string</property>
                                                 </structure>
                                                 <structure>
@@ -1671,7 +2012,7 @@ LEFT JOIN
                                                 <structure>
                                                     <property name="name">key</property>
                                                     <text-property name="displayName">key</text-property>
-                                                    <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                                    <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                                     <property name="dataType">string</property>
                                                 </structure>
                                                 <structure>
@@ -1720,7 +2061,7 @@ LEFT JOIN
                                                 <structure>
                                                     <property name="name">key</property>
                                                     <text-property name="displayName">key</text-property>
-                                                    <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                                    <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                                     <property name="dataType">string</property>
                                                 </structure>
                                                 <structure>
@@ -1766,7 +2107,7 @@ LEFT JOIN
                                                 <structure>
                                                     <property name="name">key</property>
                                                     <text-property name="displayName">key</text-property>
-                                                    <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                                    <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                                     <property name="dataType">string</property>
                                                 </structure>
                                                 <structure>
@@ -1812,7 +2153,7 @@ LEFT JOIN
                                                 <structure>
                                                     <property name="name">key</property>
                                                     <text-property name="displayName">key</text-property>
-                                                    <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                                    <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                                     <property name="dataType">string</property>
                                                 </structure>
                                                 <structure>
@@ -1858,7 +2199,7 @@ LEFT JOIN
                                                 <structure>
                                                     <property name="name">key</property>
                                                     <text-property name="displayName">key</text-property>
-                                                    <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                                    <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                                     <property name="dataType">string</property>
                                                 </structure>
                                                 <structure>
@@ -1904,7 +2245,7 @@ LEFT JOIN
                                                 <structure>
                                                     <property name="name">key</property>
                                                     <text-property name="displayName">key</text-property>
-                                                    <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                                    <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                                     <property name="dataType">string</property>
                                                 </structure>
                                                 <structure>
@@ -1950,7 +2291,7 @@ LEFT JOIN
                                                 <structure>
                                                     <property name="name">key</property>
                                                     <text-property name="displayName">key</text-property>
-                                                    <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                                    <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                                     <property name="dataType">string</property>
                                                 </structure>
                                                 <structure>
@@ -1996,7 +2337,7 @@ LEFT JOIN
                                                 <structure>
                                                     <property name="name">key</property>
                                                     <text-property name="displayName">key</text-property>
-                                                    <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                                    <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                                     <property name="dataType">string</property>
                                                 </structure>
                                                 <structure>
@@ -2042,7 +2383,7 @@ LEFT JOIN
                                                 <structure>
                                                     <property name="name">key</property>
                                                     <text-property name="displayName">key</text-property>
-                                                    <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                                    <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                                     <property name="dataType">string</property>
                                                 </structure>
                                                 <structure>
@@ -2244,9 +2585,7 @@ LEFT JOIN
                             <footer>
                                 <row id="4121">
                                     <cell id="4122"/>
-                                    <cell id="4123">
-                                        <text id="4165"/>
-                                    </cell>
+                                    <cell id="4123"/>
                                     <cell id="4124"/>
                                     <cell id="4125"/>
                                     <cell id="4126"/>
@@ -2257,7 +2596,7 @@ LEFT JOIN
                             </footer>
                         </table>
                         <table id="4166">
-                            <property name="width">19.552708333333335cm</property>
+                            <property name="width">7.5in</property>
                             <property name="dataSet">ConsumedProductDS</property>
                             <list-property name="boundDataColumns">
                                 <structure>
@@ -2314,19 +2653,19 @@ LEFT JOIN
                                 </structure>
                             </list-property>
                             <column id="4182">
-                                <property name="width">1.7083333333333333in</property>
+                                <property name="width">2cm</property>
                             </column>
                             <column id="4183">
-                                <property name="width">8.228541666666667cm</property>
+                                <property name="width">6cm</property>
                             </column>
                             <column id="4184">
-                                <property name="width">1.6404166666666669cm</property>
+                                <property name="width">1cm</property>
                             </column>
                             <column id="4198">
-                                <property name="width">1.4816666666666667cm</property>
+                                <property name="width">1cm</property>
                             </column>
                             <column id="4185">
-                                <property name="width">3.8629166666666666cm</property>
+                                <property name="width">1cm</property>
                             </column>
                             <header>
                                 <row id="4206">
@@ -2378,7 +2717,7 @@ LEFT JOIN
                                                 <structure>
                                                     <property name="name">key</property>
                                                     <text-property name="displayName">key</text-property>
-                                                    <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                                    <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                                     <property name="dataType">string</property>
                                                 </structure>
                                                 <structure>
@@ -2399,7 +2738,6 @@ LEFT JOIN
                                     </cell>
                                     <cell id="4202">
                                         <property name="backgroundColor">#FFFFFF</property>
-                                        <text id="4223"/>
                                     </cell>
                                     <cell id="4203">
                                         <property name="backgroundColor">#FFFFFF</property>
@@ -2445,7 +2783,7 @@ LEFT JOIN
                                                 <structure>
                                                     <property name="name">key</property>
                                                     <text-property name="displayName">key</text-property>
-                                                    <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                                    <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                                     <property name="dataType">string</property>
                                                 </structure>
                                                 <structure>
@@ -2491,7 +2829,7 @@ LEFT JOIN
                                                 <structure>
                                                     <property name="name">key</property>
                                                     <text-property name="displayName">key</text-property>
-                                                    <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                                    <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                                     <property name="dataType">string</property>
                                                 </structure>
                                                 <structure>
@@ -2539,7 +2877,7 @@ LEFT JOIN
                                                 <structure>
                                                     <property name="name">key</property>
                                                     <text-property name="displayName">key</text-property>
-                                                    <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                                    <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                                     <property name="dataType">string</property>
                                                 </structure>
                                                 <structure>
@@ -2585,7 +2923,7 @@ LEFT JOIN
                                                 <structure>
                                                     <property name="name">key</property>
                                                     <text-property name="displayName">key</text-property>
-                                                    <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                                    <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                                     <property name="dataType">string</property>
                                                 </structure>
                                                 <structure>
@@ -2706,6 +3044,829 @@ LEFT JOIN
                                     <cell id="4180"/>
                                     <cell id="4197"/>
                                     <cell id="4181"/>
+                                </row>
+                            </footer>
+                        </table>
+                        <table id="4378">
+                            <property name="pageBreakBefore">always</property>
+                            <property name="width">7.604166666666667in</property>
+                            <property name="dataSet">OperationDetails</property>
+                            <list-property name="boundDataColumns">
+                                <structure>
+                                    <property name="name">manuf_order_id</property>
+                                    <text-property name="displayName">manuf_order_id</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["manuf_order_id"]</expression>
+                                    <property name="dataType">decimal</property>
+                                </structure>
+                                <structure>
+                                    <property name="name">id</property>
+                                    <text-property name="displayName">id</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["id"]</expression>
+                                    <property name="dataType">decimal</property>
+                                </structure>
+                                <structure>
+                                    <property name="name">priority</property>
+                                    <text-property name="displayName">priority</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["priority"]</expression>
+                                    <property name="dataType">integer</property>
+                                </structure>
+                                <structure>
+                                    <property name="name">prod_process_line</property>
+                                    <text-property name="displayName">prod_process_line</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["prod_process_line"]</expression>
+                                    <property name="dataType">string</property>
+                                </structure>
+                                <structure>
+                                    <property name="name">planned_start_datet</property>
+                                    <text-property name="displayName">planned_start_datet</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["planned_start_datet"]</expression>
+                                    <property name="dataType">date-time</property>
+                                </structure>
+                                <structure>
+                                    <property name="name">planned_end_datet</property>
+                                    <text-property name="displayName">planned_end_datet</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["planned_end_datet"]</expression>
+                                    <property name="dataType">date-time</property>
+                                </structure>
+                                <structure>
+                                    <property name="name">real_start_datet</property>
+                                    <text-property name="displayName">real_start_datet</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["real_start_datet"]</expression>
+                                    <property name="dataType">date-time</property>
+                                </structure>
+                                <structure>
+                                    <property name="name">real_end_datet</property>
+                                    <text-property name="displayName">real_end_datet</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["real_end_datet"]</expression>
+                                    <property name="dataType">date-time</property>
+                                </structure>
+                                <structure>
+                                    <property name="name">machine_serial</property>
+                                    <text-property name="displayName">machine_serial</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["machine_serial"]</expression>
+                                    <property name="dataType">string</property>
+                                </structure>
+                                <structure>
+                                    <property name="name">description_prio</property>
+                                    <text-property name="displayName">description_prio</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["description_prio"]</expression>
+                                    <property name="dataType">integer</property>
+                                </structure>
+                                <structure>
+                                    <property name="name">description</property>
+                                    <text-property name="displayName">description</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["description"]</expression>
+                                    <property name="dataType">string</property>
+                                </structure>
+                                <structure>
+                                    <property name="name">description_id</property>
+                                    <text-property name="displayName">description_id</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["description_id"]</expression>
+                                    <property name="dataType">decimal</property>
+                                </structure>
+                                <structure>
+                                    <property name="name">Column Binding_prio</property>
+                                    <text-property name="displayName">prio_op_order</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["priority"]</expression>
+                                    <property name="dataType">integer</property>
+                                    <property name="allowExport">true</property>
+                                </structure>
+                                <structure>
+                                    <property name="name">Column Binding_from</property>
+                                    <text-property name="displayName">from</text-property>
+                                    <expression name="expression" type="javascript">if(dataSetRow["real_start_datet"] != null) dataSetRow["real_start_datet"]
+else dataSetRow["planned_start_datet"]</expression>
+                                    <property name="dataType">date-time</property>
+                                    <property name="allowExport">true</property>
+                                </structure>
+                                <structure>
+                                    <property name="name">Column Binding_to</property>
+                                    <text-property name="displayName">to</text-property>
+                                    <expression name="expression" type="javascript">if(dataSetRow["real_end_datet"] != null) dataSetRow["real_end_datet"]
+else dataSetRow["planned_end_datet"]</expression>
+                                    <property name="dataType">date-time</property>
+                                    <property name="allowExport">true</property>
+                                </structure>
+                                <structure>
+                                    <property name="name">Column Binding_serial</property>
+                                    <text-property name="displayName">serial</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["machine_serial"]</expression>
+                                    <property name="dataType">string</property>
+                                    <property name="allowExport">true</property>
+                                </structure>
+                                <structure>
+                                    <property name="name">Column Binding_description</property>
+                                    <text-property name="displayName">description</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["description"]</expression>
+                                    <property name="dataType">string</property>
+                                    <property name="allowExport">true</property>
+                                </structure>
+                                <structure>
+                                    <property name="name">file_path</property>
+                                    <text-property name="displayName">file_path</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["file_path"]</expression>
+                                    <property name="dataType">string</property>
+                                </structure>
+                                <structure>
+                                    <property name="name">is_cons_pro_on_operation</property>
+                                    <text-property name="displayName">is_cons_pro_on_operation</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["is_cons_pro_on_operation"]</expression>
+                                    <property name="dataType">integer</property>
+                                </structure>
+                                <structure>
+                                    <property name="name">bar_code_path</property>
+                                    <text-property name="displayName">bar_code_path</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["bar_code_path"]</expression>
+                                    <property name="dataType">string</property>
+                                </structure>
+                                <structure>
+                                    <property name="name">prod_process_line_1</property>
+                                    <text-property name="displayName">prod_process_line</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["prod_process_line"]</expression>
+                                    <property name="dataType">decimal</property>
+                                </structure>
+                                <structure>
+                                    <property name="name">operation_name</property>
+                                    <text-property name="displayName">operation_name</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["operation_name"]</expression>
+                                    <property name="dataType">string</property>
+                                </structure>
+                            </list-property>
+                            <property name="repeatHeader">false</property>
+                            <column id="4391">
+                                <property name="width">2.71875in</property>
+                            </column>
+                            <column id="4567">
+                                <property name="width">3.1041666666666665in</property>
+                            </column>
+                            <column id="4392">
+                                <property name="width">1.78125in</property>
+                            </column>
+                            <header>
+                                <row id="4394">
+                                    <cell id="4395">
+                                        <property name="colSpan">3</property>
+                                        <property name="rowSpan">1</property>
+                                        <property name="backgroundColor">#606062</property>
+                                        <text id="4398">
+                                            <property name="fontSize">12pt</property>
+                                            <property name="fontWeight">bold</property>
+                                            <property name="color">#FFFFFF</property>
+                                            <property name="borderBottomColor">#606062</property>
+                                            <property name="borderBottomStyle">solid</property>
+                                            <property name="borderBottomWidth">thin</property>
+                                            <property name="borderLeftColor">#606062</property>
+                                            <property name="borderLeftStyle">solid</property>
+                                            <property name="borderLeftWidth">thin</property>
+                                            <property name="borderRightColor">#606062</property>
+                                            <property name="borderRightStyle">solid</property>
+                                            <property name="borderRightWidth">thin</property>
+                                            <property name="borderTopColor">#606062</property>
+                                            <property name="borderTopStyle">solid</property>
+                                            <property name="borderTopWidth">thin</property>
+                                            <property name="marginTop">-1pt</property>
+                                            <property name="textAlign">center</property>
+                                            <property name="dataSet">TranslateDS</property>
+                                            <list-property name="paramBindings">
+                                                <structure>
+                                                    <property name="paramName">param_1</property>
+                                                    <simple-property-list name="expression">
+                                                        <value type="javascript">'ManufOrder.operationDetails'</value>
+                                                    </simple-property-list>
+                                                </structure>
+                                            </list-property>
+                                            <list-property name="boundDataColumns">
+                                                <structure>
+                                                    <property name="name">key</property>
+                                                    <text-property name="displayName">key</text-property>
+                                                    <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                                    <property name="dataType">string</property>
+                                                </structure>
+                                                <structure>
+                                                    <property name="name">translation</property>
+                                                    <text-property name="displayName">translation</text-property>
+                                                    <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                                    <property name="dataType">string</property>
+                                                </structure>
+                                            </list-property>
+                                            <property name="contentType">html</property>
+                                            <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+                                        </text>
+                                    </cell>
+                                </row>
+                                <row id="4379">
+                                    <cell id="4380"/>
+                                    <cell id="4557"/>
+                                    <cell id="4381"/>
+                                </row>
+                            </header>
+                            <group id="4400">
+                                <property name="groupName">OperationOrderGroup</property>
+                                <expression name="keyExpr" type="javascript">row["id"]</expression>
+                                <structure name="toc">
+                                    <expression name="expressionValue" type="javascript">row["id"]</expression>
+                                </structure>
+                                <property name="repeatHeader">true</property>
+                                <property name="hideDetail">false</property>
+                                <property name="pageBreakAfter">auto</property>
+                                <property name="pageBreakBefore">auto</property>
+                                <header>
+                                    <row id="4401">
+                                        <cell id="4402">
+                                            <property name="colSpan">2</property>
+                                            <property name="rowSpan">4</property>
+                                            <property name="backgroundColor">#E5E5E5</property>
+                                            <text id="4485">
+                                                <property name="fontSize">14pt</property>
+                                                <property name="fontWeight">normal</property>
+                                                <property name="marginTop">1pt</property>
+                                                <property name="marginLeft">2pt</property>
+                                                <property name="textAlign">left</property>
+                                                <property name="contentType">html</property>
+                                                <text-property name="content"><![CDATA[<B>N°: <VALUE-OF>row["priority"]</VALUE-OF><VALUE-OF format="^">"  "</VALUE-OF><VALUE-OF>row["operation_name"]</VALUE-OF></B>]]></text-property>
+                                            </text>
+                                            <text id="4474">
+                                                <property name="fontWeight">normal</property>
+                                                <property name="marginTop">1pt</property>
+                                                <property name="marginLeft">2pt</property>
+                                                <property name="textAlign">left</property>
+                                                <property name="dataSet">TranslateDS</property>
+                                                <list-property name="paramBindings">
+                                                    <structure>
+                                                        <property name="paramName">param_1</property>
+                                                        <simple-property-list name="expression">
+                                                            <value type="javascript">'ManufOrder.from'</value>
+                                                        </simple-property-list>
+                                                    </structure>
+                                                </list-property>
+                                                <list-property name="boundDataColumns">
+                                                    <structure>
+                                                        <property name="name">key</property>
+                                                        <text-property name="displayName">key</text-property>
+                                                        <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                                        <property name="dataType">string</property>
+                                                    </structure>
+                                                    <structure>
+                                                        <property name="name">translation</property>
+                                                        <text-property name="displayName">translation</text-property>
+                                                        <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                                        <property name="dataType">string</property>
+                                                    </structure>
+                                                </list-property>
+                                                <property name="contentType">html</property>
+                                                <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF>: </B><VALUE-OF format="dd/MM/yyy hh:mm">row._outer["Column Binding_from"]</VALUE-OF>]]></text-property>
+                                            </text>
+                                            <text id="4476">
+                                                <property name="fontWeight">normal</property>
+                                                <property name="marginTop">1pt</property>
+                                                <property name="marginLeft">2pt</property>
+                                                <property name="textAlign">left</property>
+                                                <property name="dataSet">TranslateDS</property>
+                                                <list-property name="paramBindings">
+                                                    <structure>
+                                                        <property name="paramName">param_1</property>
+                                                        <simple-property-list name="expression">
+                                                            <value type="javascript">'ManufOrder.to'</value>
+                                                        </simple-property-list>
+                                                    </structure>
+                                                </list-property>
+                                                <list-property name="boundDataColumns">
+                                                    <structure>
+                                                        <property name="name">key</property>
+                                                        <text-property name="displayName">key</text-property>
+                                                        <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                                        <property name="dataType">string</property>
+                                                    </structure>
+                                                    <structure>
+                                                        <property name="name">translation</property>
+                                                        <text-property name="displayName">translation</text-property>
+                                                        <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                                        <property name="dataType">string</property>
+                                                    </structure>
+                                                </list-property>
+                                                <property name="contentType">html</property>
+                                                <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF>: </B><VALUE-OF format="dd/MM/yyy hh:mm">row._outer["Column Binding_to"]</VALUE-OF>]]></text-property>
+                                            </text>
+                                            <text id="4477">
+                                                <property name="fontWeight">normal</property>
+                                                <property name="marginTop">1pt</property>
+                                                <property name="marginLeft">2pt</property>
+                                                <property name="textAlign">left</property>
+                                                <property name="dataSet">TranslateDS</property>
+                                                <list-property name="paramBindings">
+                                                    <structure>
+                                                        <property name="paramName">param_1</property>
+                                                        <simple-property-list name="expression">
+                                                            <value type="javascript">'ManufOrder.serial'</value>
+                                                        </simple-property-list>
+                                                    </structure>
+                                                </list-property>
+                                                <list-property name="boundDataColumns">
+                                                    <structure>
+                                                        <property name="name">key</property>
+                                                        <text-property name="displayName">key</text-property>
+                                                        <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                                        <property name="dataType">string</property>
+                                                    </structure>
+                                                    <structure>
+                                                        <property name="name">translation</property>
+                                                        <text-property name="displayName">translation</text-property>
+                                                        <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                                        <property name="dataType">string</property>
+                                                    </structure>
+                                                </list-property>
+                                                <property name="contentType">html</property>
+                                                <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF>: </B><VALUE-OF>row._outer["machine_serial"]</VALUE-OF>]]></text-property>
+                                            </text>
+                                        </cell>
+                                        <cell id="4403">
+                                            <property name="colSpan">1</property>
+                                            <property name="rowSpan">4</property>
+                                            <property name="backgroundColor">#FFFFFF</property>
+                                            <property name="textAlign">right</property>
+                                            <image id="4531">
+                                                <property name="height">25.93mm</property>
+                                                <property name="width">37.29mm</property>
+                                                <structure name="toc"/>
+                                                <property name="source">file</property>
+                                                <property name="fitToContainer">true</property>
+                                                <property name="proportionalScale">true</property>
+                                                <expression name="uri" type="javascript">params["AttachmentPath"].value+row["bar_code_path"]</expression>
+                                            </image>
+                                        </cell>
+                                    </row>
+                                    <row id="4458"/>
+                                    <row id="4462"/>
+                                    <row id="4470"/>
+                                    <row id="4486">
+                                        <cell id="4487">
+                                            <property name="colSpan">3</property>
+                                            <property name="rowSpan">1</property>
+                                            <table id="4489">
+                                                <property name="pageBreakBefore">auto</property>
+                                                <property name="dataSet">ConsumedProductDS1</property>
+                                                <list-property name="visibility">
+                                                    <structure>
+                                                        <property name="format">all</property>
+                                                        <expression name="valueExpr" type="javascript">!row._outer["is_cons_pro_on_operation"]</expression>
+                                                    </structure>
+                                                </list-property>
+                                                <list-property name="boundDataColumns">
+                                                    <structure>
+                                                        <property name="name">manuf_order_id</property>
+                                                        <text-property name="displayName">manuf_order_id</text-property>
+                                                        <expression name="expression" type="javascript">dataSetRow["manuf_order_id"]</expression>
+                                                        <property name="dataType">decimal</property>
+                                                    </structure>
+                                                    <structure>
+                                                        <property name="name">id</property>
+                                                        <text-property name="displayName">id</text-property>
+                                                        <expression name="expression" type="javascript">dataSetRow["id"]</expression>
+                                                        <property name="dataType">decimal</property>
+                                                    </structure>
+                                                    <structure>
+                                                        <property name="name">priority</property>
+                                                        <text-property name="displayName">priority</text-property>
+                                                        <expression name="expression" type="javascript">dataSetRow["priority"]</expression>
+                                                        <property name="dataType">integer</property>
+                                                    </structure>
+                                                    <structure>
+                                                        <property name="name">prod_process_line</property>
+                                                        <text-property name="displayName">prod_process_line</text-property>
+                                                        <expression name="expression" type="javascript">dataSetRow["prod_process_line"]</expression>
+                                                        <property name="dataType">decimal</property>
+                                                    </structure>
+                                                    <structure>
+                                                        <property name="name">product_name</property>
+                                                        <text-property name="displayName">product_name</text-property>
+                                                        <expression name="expression" type="javascript">dataSetRow["product_name"]</expression>
+                                                        <property name="dataType">string</property>
+                                                    </structure>
+                                                    <structure>
+                                                        <property name="name">product_code</property>
+                                                        <text-property name="displayName">product_code</text-property>
+                                                        <expression name="expression" type="javascript">dataSetRow["product_code"]</expression>
+                                                        <property name="dataType">string</property>
+                                                    </structure>
+                                                    <structure>
+                                                        <property name="name">unit_code</property>
+                                                        <text-property name="displayName">unit_code</text-property>
+                                                        <expression name="expression" type="javascript">dataSetRow["unit_code"]</expression>
+                                                        <property name="dataType">string</property>
+                                                    </structure>
+                                                    <structure>
+                                                        <property name="name">qty</property>
+                                                        <text-property name="displayName">qty</text-property>
+                                                        <expression name="expression" type="javascript">dataSetRow["qty"]</expression>
+                                                        <property name="dataType">decimal</property>
+                                                    </structure>
+                                                </list-property>
+                                                <property name="repeatHeader">true</property>
+                                                <list-property name="filter">
+                                                    <structure>
+                                                        <property name="operator">eq</property>
+                                                        <expression name="expr" type="javascript">row["id"]</expression>
+                                                        <simple-property-list name="value1">
+                                                            <value>row._outer["id"]</value>
+                                                        </simple-property-list>
+                                                        <property name="updateAggregation">true</property>
+                                                    </structure>
+                                                </list-property>
+                                                <column id="4525"/>
+                                                <column id="4526">
+                                                    <property name="width">3.8541666666666665in</property>
+                                                </column>
+                                                <column id="4527">
+                                                    <property name="width">0.9270833333333334in</property>
+                                                </column>
+                                                <column id="4528">
+                                                    <property name="width">0.9270833333333334in</property>
+                                                </column>
+                                                <header>
+                                                    <row id="4490">
+                                                        <property name="height">0.6879166666666666cm</property>
+                                                        <cell id="4491">
+                                                            <property name="colSpan">4</property>
+                                                            <property name="rowSpan">1</property>
+                                                            <property name="backgroundColor">#FFFFFF</property>
+                                                            <property name="borderBottomStyle">none</property>
+                                                            <property name="borderLeftStyle">none</property>
+                                                            <property name="borderRightStyle">none</property>
+                                                            <property name="borderTopStyle">none</property>
+                                                            <text id="4492">
+                                                                <property name="backgroundColor">#FFFFFF</property>
+                                                                <property name="fontSize">12pt</property>
+                                                                <property name="fontWeight">bold</property>
+                                                                <property name="color">#000000</property>
+                                                                <property name="borderBottomStyle">none</property>
+                                                                <property name="borderLeftStyle">none</property>
+                                                                <property name="borderRightStyle">none</property>
+                                                                <property name="borderTopStyle">none</property>
+                                                                <property name="marginTop">-1pt</property>
+                                                                <property name="textAlign">center</property>
+                                                                <property name="dataSet">TranslateDS</property>
+                                                                <list-property name="paramBindings">
+                                                                    <structure>
+                                                                        <property name="paramName">param_1</property>
+                                                                        <simple-property-list name="expression">
+                                                                            <value type="javascript">'ManufOrder.productsToPrepare'</value>
+                                                                        </simple-property-list>
+                                                                    </structure>
+                                                                </list-property>
+                                                                <list-property name="boundDataColumns">
+                                                                    <structure>
+                                                                        <property name="name">key</property>
+                                                                        <text-property name="displayName">key</text-property>
+                                                                        <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                                                        <property name="dataType">string</property>
+                                                                    </structure>
+                                                                    <structure>
+                                                                        <property name="name">translation</property>
+                                                                        <text-property name="displayName">translation</text-property>
+                                                                        <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                                                        <property name="dataType">string</property>
+                                                                    </structure>
+                                                                </list-property>
+                                                                <property name="contentType">html</property>
+                                                                <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+                                                            </text>
+                                                        </cell>
+                                                    </row>
+                                                    <row id="4493">
+                                                        <cell id="4494">
+                                                            <property name="backgroundColor">#FFFFFF</property>
+                                                        </cell>
+                                                        <cell id="4495">
+                                                            <property name="backgroundColor">#FFFFFF</property>
+                                                        </cell>
+                                                        <cell id="4496">
+                                                            <property name="backgroundColor">#FFFFFF</property>
+                                                        </cell>
+                                                        <cell id="4497">
+                                                            <property name="backgroundColor">#FFFFFF</property>
+                                                        </cell>
+                                                    </row>
+                                                    <row id="4499">
+                                                        <property name="height">0.7672916666666666cm</property>
+                                                        <cell id="4500">
+                                                            <property name="backgroundColor">#E5E5E5</property>
+                                                            <property name="borderBottomColor">#606062</property>
+                                                            <property name="borderBottomStyle">solid</property>
+                                                            <property name="borderBottomWidth">thin</property>
+                                                            <property name="borderLeftColor">#606062</property>
+                                                            <property name="borderLeftStyle">solid</property>
+                                                            <property name="borderLeftWidth">thin</property>
+                                                            <property name="borderRightColor">#606062</property>
+                                                            <property name="borderRightStyle">solid</property>
+                                                            <property name="borderRightWidth">thin</property>
+                                                            <property name="borderTopColor">#606062</property>
+                                                            <property name="borderTopStyle">solid</property>
+                                                            <property name="borderTopWidth">thin</property>
+                                                            <text id="4501">
+                                                                <property name="fontWeight">bold</property>
+                                                                <property name="marginTop">1pt</property>
+                                                                <property name="marginLeft">2pt</property>
+                                                                <property name="textAlign">center</property>
+                                                                <property name="dataSet">TranslateDS</property>
+                                                                <list-property name="paramBindings">
+                                                                    <structure>
+                                                                        <property name="paramName">param_1</property>
+                                                                        <simple-property-list name="expression">
+                                                                            <value type="javascript">"ManufOrder.productCode"</value>
+                                                                        </simple-property-list>
+                                                                    </structure>
+                                                                </list-property>
+                                                                <list-property name="boundDataColumns">
+                                                                    <structure>
+                                                                        <property name="name">key</property>
+                                                                        <text-property name="displayName">key</text-property>
+                                                                        <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                                                        <property name="dataType">string</property>
+                                                                    </structure>
+                                                                    <structure>
+                                                                        <property name="name">translation</property>
+                                                                        <text-property name="displayName">translation</text-property>
+                                                                        <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                                                        <property name="dataType">string</property>
+                                                                    </structure>
+                                                                </list-property>
+                                                                <property name="contentType">html</property>
+                                                                <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+                                                            </text>
+                                                        </cell>
+                                                        <cell id="4502">
+                                                            <property name="backgroundColor">#E5E5E5</property>
+                                                            <property name="borderBottomColor">#606062</property>
+                                                            <property name="borderBottomStyle">solid</property>
+                                                            <property name="borderBottomWidth">thin</property>
+                                                            <property name="borderLeftColor">#606062</property>
+                                                            <property name="borderLeftStyle">solid</property>
+                                                            <property name="borderLeftWidth">thin</property>
+                                                            <property name="borderRightColor">#606062</property>
+                                                            <property name="borderRightStyle">solid</property>
+                                                            <property name="borderRightWidth">thin</property>
+                                                            <property name="borderTopColor">#606062</property>
+                                                            <property name="borderTopStyle">solid</property>
+                                                            <property name="borderTopWidth">thin</property>
+                                                            <text id="4503">
+                                                                <property name="fontWeight">bold</property>
+                                                                <property name="marginTop">1pt</property>
+                                                                <property name="marginLeft">2pt</property>
+                                                                <property name="textAlign">center</property>
+                                                                <property name="dataSet">TranslateDS</property>
+                                                                <list-property name="paramBindings">
+                                                                    <structure>
+                                                                        <property name="paramName">param_1</property>
+                                                                        <simple-property-list name="expression">
+                                                                            <value type="javascript">"ManufOrder.productName"</value>
+                                                                        </simple-property-list>
+                                                                    </structure>
+                                                                </list-property>
+                                                                <list-property name="boundDataColumns">
+                                                                    <structure>
+                                                                        <property name="name">key</property>
+                                                                        <text-property name="displayName">key</text-property>
+                                                                        <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                                                        <property name="dataType">string</property>
+                                                                    </structure>
+                                                                    <structure>
+                                                                        <property name="name">translation</property>
+                                                                        <text-property name="displayName">translation</text-property>
+                                                                        <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                                                        <property name="dataType">string</property>
+                                                                    </structure>
+                                                                </list-property>
+                                                                <property name="contentType">html</property>
+                                                                <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+                                                            </text>
+                                                        </cell>
+                                                        <cell id="4504">
+                                                            <property name="colSpan">2</property>
+                                                            <property name="rowSpan">1</property>
+                                                            <property name="backgroundColor">#E5E5E5</property>
+                                                            <property name="borderBottomColor">#606062</property>
+                                                            <property name="borderBottomStyle">solid</property>
+                                                            <property name="borderBottomWidth">thin</property>
+                                                            <property name="borderLeftColor">#606062</property>
+                                                            <property name="borderLeftStyle">solid</property>
+                                                            <property name="borderLeftWidth">thin</property>
+                                                            <property name="borderRightColor">#606062</property>
+                                                            <property name="borderRightStyle">solid</property>
+                                                            <property name="borderRightWidth">thin</property>
+                                                            <property name="borderTopColor">#606062</property>
+                                                            <property name="borderTopStyle">solid</property>
+                                                            <property name="borderTopWidth">thin</property>
+                                                            <text id="4505">
+                                                                <property name="fontWeight">bold</property>
+                                                                <property name="marginTop">1pt</property>
+                                                                <property name="marginLeft">2pt</property>
+                                                                <property name="textAlign">center</property>
+                                                                <property name="dataSet">TranslateDS</property>
+                                                                <list-property name="paramBindings">
+                                                                    <structure>
+                                                                        <property name="paramName">param_1</property>
+                                                                        <simple-property-list name="expression">
+                                                                            <value type="javascript">"ManufOrder.quantity"</value>
+                                                                        </simple-property-list>
+                                                                    </structure>
+                                                                </list-property>
+                                                                <list-property name="boundDataColumns">
+                                                                    <structure>
+                                                                        <property name="name">key</property>
+                                                                        <text-property name="displayName">key</text-property>
+                                                                        <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                                                        <property name="dataType">string</property>
+                                                                    </structure>
+                                                                    <structure>
+                                                                        <property name="name">translation</property>
+                                                                        <text-property name="displayName">translation</text-property>
+                                                                        <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                                                        <property name="dataType">string</property>
+                                                                    </structure>
+                                                                </list-property>
+                                                                <property name="contentType">html</property>
+                                                                <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+                                                            </text>
+                                                        </cell>
+                                                    </row>
+                                                </header>
+                                                <detail>
+                                                    <row id="4508">
+                                                        <property name="height">0.6614583333333334cm</property>
+                                                        <cell id="4509">
+                                                            <property name="borderBottomColor">#606062</property>
+                                                            <property name="borderBottomStyle">solid</property>
+                                                            <property name="borderBottomWidth">thin</property>
+                                                            <property name="borderLeftColor">#606062</property>
+                                                            <property name="borderLeftStyle">solid</property>
+                                                            <property name="borderLeftWidth">thin</property>
+                                                            <property name="borderRightColor">#606062</property>
+                                                            <property name="borderRightStyle">solid</property>
+                                                            <property name="borderRightWidth">thin</property>
+                                                            <property name="borderTopColor">#606062</property>
+                                                            <property name="borderTopStyle">solid</property>
+                                                            <property name="borderTopWidth">thin</property>
+                                                            <text id="4510">
+                                                                <property name="fontWeight">normal</property>
+                                                                <property name="textAlign">left</property>
+                                                                <property name="contentType">html</property>
+                                                                <text-property name="content"><![CDATA[<VALUE-OF>row["product_code"]</VALUE-OF>]]></text-property>
+                                                            </text>
+                                                        </cell>
+                                                        <cell id="4511">
+                                                            <property name="borderBottomColor">#606062</property>
+                                                            <property name="borderBottomStyle">solid</property>
+                                                            <property name="borderBottomWidth">thin</property>
+                                                            <property name="borderLeftColor">#606062</property>
+                                                            <property name="borderLeftStyle">solid</property>
+                                                            <property name="borderLeftWidth">thin</property>
+                                                            <property name="borderRightColor">#606062</property>
+                                                            <property name="borderRightStyle">solid</property>
+                                                            <property name="borderRightWidth">thin</property>
+                                                            <property name="borderTopColor">#606062</property>
+                                                            <property name="borderTopStyle">solid</property>
+                                                            <property name="borderTopWidth">thin</property>
+                                                            <text id="4512">
+                                                                <property name="fontWeight">normal</property>
+                                                                <property name="textAlign">left</property>
+                                                                <property name="contentType">html</property>
+                                                                <text-property name="content"><![CDATA[<VALUE-OF>row["product_name"]</VALUE-OF>]]></text-property>
+                                                            </text>
+                                                        </cell>
+                                                        <cell id="4513">
+                                                            <property name="borderBottomColor">#606062</property>
+                                                            <property name="borderBottomStyle">solid</property>
+                                                            <property name="borderBottomWidth">thin</property>
+                                                            <property name="borderLeftColor">#606062</property>
+                                                            <property name="borderLeftStyle">solid</property>
+                                                            <property name="borderLeftWidth">thin</property>
+                                                            <property name="borderTopColor">#606062</property>
+                                                            <property name="borderTopStyle">solid</property>
+                                                            <property name="borderTopWidth">thin</property>
+                                                            <text id="4514">
+                                                                <property name="fontWeight">normal</property>
+                                                                <property name="textAlign">right</property>
+                                                                <property name="contentType">html</property>
+                                                                <text-property name="content"><![CDATA[<VALUE-OF>row["qty"]</VALUE-OF>]]></text-property>
+                                                            </text>
+                                                        </cell>
+                                                        <cell id="4515">
+                                                            <property name="borderBottomColor">#606062</property>
+                                                            <property name="borderBottomStyle">solid</property>
+                                                            <property name="borderBottomWidth">thin</property>
+                                                            <property name="borderRightColor">#606062</property>
+                                                            <property name="borderRightStyle">solid</property>
+                                                            <property name="borderRightWidth">thin</property>
+                                                            <property name="borderTopColor">#606062</property>
+                                                            <property name="borderTopStyle">solid</property>
+                                                            <property name="borderTopWidth">thin</property>
+                                                            <text id="4516">
+                                                                <property name="fontWeight">normal</property>
+                                                                <property name="contentType">html</property>
+                                                                <text-property name="content"><![CDATA[<VALUE-OF>row["unit_code"]</VALUE-OF>]]></text-property>
+                                                            </text>
+                                                        </cell>
+                                                    </row>
+                                                </detail>
+                                                <footer>
+                                                    <row id="4519">
+                                                        <cell id="4520"/>
+                                                        <cell id="4521"/>
+                                                        <cell id="4522"/>
+                                                        <cell id="4523"/>
+                                                    </row>
+                                                </footer>
+                                            </table>
+                                        </cell>
+                                    </row>
+                                </header>
+                                <footer>
+                                    <row id="4444">
+                                        <property name="height">0.59375in</property>
+                                        <cell id="4445"/>
+                                        <cell id="4565">
+                                            <property name="textAlign">right</property>
+                                        </cell>
+                                        <cell id="4446">
+                                            <property name="textAlign">right</property>
+                                        </cell>
+                                    </row>
+                                </footer>
+                            </group>
+                            <group id="4448">
+                                <property name="groupName">descriptionGroup</property>
+                                <expression name="keyExpr" type="javascript">row["description_id"]</expression>
+                                <structure name="toc">
+                                    <expression name="expressionValue" type="javascript">row["description_id"]</expression>
+                                </structure>
+                                <property name="repeatHeader">false</property>
+                                <property name="hideDetail">false</property>
+                                <header>
+                                    <row id="4449">
+                                        <property name="height">1in</property>
+                                        <list-property name="visibility">
+                                            <structure>
+                                                <property name="format">all</property>
+                                                <expression name="valueExpr" type="javascript">row["description_id"] == null</expression>
+                                            </structure>
+                                        </list-property>
+                                        <cell id="4450">
+                                            <property name="borderBottomColor">#7F7F7F</property>
+                                            <property name="borderBottomStyle">solid</property>
+                                            <property name="borderBottomWidth">1px</property>
+                                            <property name="borderLeftColor">#7F7F7F</property>
+                                            <property name="borderLeftStyle">solid</property>
+                                            <property name="borderLeftWidth">1px</property>
+                                            <property name="borderRightColor">#7F7F7F</property>
+                                            <property name="borderRightStyle">solid</property>
+                                            <property name="borderRightWidth">1px</property>
+                                            <property name="borderTopColor">#7F7F7F</property>
+                                            <property name="borderTopStyle">solid</property>
+                                            <property name="borderTopWidth">1px</property>
+                                            <image id="4482">
+                                                <property name="height">88px</property>
+                                                <property name="width">245px</property>
+                                                <property name="source">file</property>
+                                                <expression name="uri" type="javascript">params["AttachmentPath"].value+row["file_path"]</expression>
+                                            </image>
+                                        </cell>
+                                        <cell id="4563">
+                                            <property name="colSpan">2</property>
+                                            <property name="rowSpan">1</property>
+                                            <property name="borderBottomColor">#7F7F7F</property>
+                                            <property name="borderBottomStyle">solid</property>
+                                            <property name="borderBottomWidth">1px</property>
+                                            <property name="borderLeftColor">#7F7F7F</property>
+                                            <property name="borderLeftStyle">solid</property>
+                                            <property name="borderLeftWidth">1px</property>
+                                            <property name="borderRightColor">#7F7F7F</property>
+                                            <property name="borderRightStyle">solid</property>
+                                            <property name="borderRightWidth">1px</property>
+                                            <property name="borderTopColor">#7F7F7F</property>
+                                            <property name="borderTopStyle">solid</property>
+                                            <property name="borderTopWidth">1px</property>
+                                            <text id="4484">
+                                                <property name="fontWeight">normal</property>
+                                                <property name="textAlign">left</property>
+                                                <property name="contentType">html</property>
+                                                <text-property name="content"><![CDATA[<VALUE-OF format="HTML">row["description"]</VALUE-OF>]]></text-property>
+                                            </text>
+                                        </cell>
+                                    </row>
+                                </header>
+                                <footer>
+                                    <row id="4453">
+                                        <cell id="4454"/>
+                                        <cell id="4564"/>
+                                        <cell id="4455"/>
+                                    </row>
+                                </footer>
+                            </group>
+                            <footer>
+                                <row id="4387">
+                                    <cell id="4388"/>
+                                    <cell id="4566"/>
+                                    <cell id="4389"/>
                                 </row>
                             </footer>
                         </table>

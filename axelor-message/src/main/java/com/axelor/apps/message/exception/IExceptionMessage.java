@@ -16,6 +16,7 @@ public interface IExceptionMessage {
 	static final String MAIL_ACCOUNT_2 = /*$$(*/ "Unable to reach server. Please check Host,Port and SSL/TLS" /*)*/;
 	static final String MAIL_ACCOUNT_3 = /*$$(*/ "Connection successful" /*)*/;
 	static final String MAIL_ACCOUNT_4 = /*$$(*/ "Provided settings are wrong, please modify them and try again" /*)*/;
+	static final String MAIL_ACCOUNT_5 = /*$$(*/ "There is already a default account" /*)*/;
 	
 	/**
 	 * Template service

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
 
 
 	<!-- Nomenclature : * name : "interfaceName" + "fieldName" + ".select" -->
@@ -11,8 +11,39 @@
 		<option value="2">Draft invoice N days after order validation</option>
 	</selection>
 	
+	<selection name="supplychain.subscription.invoicing.type.select">
+		<option value="1">Period Beginning</option>
+		<option value="2">Period Ending</option>
+	</selection>
+	
 	<selection name="supplychain.batch.action.select">
-		<option value="1">Invoicing</option>
+		<option value="1">Bill Late Subscriptions</option>
+	</selection>
+	
+	<selection name="supplychain.mrp.status.select">
+	    <option value="0">Draft</option>
+	    <option value="1">Calculation started</option>
+  	    <option value="2">Calculation ended</option>
+	</selection>
+	
+	<selection name="supplychain.mrp.line.element.select">
+	    <option value="1">Available stock</option>
+	    <option value="2">Purchase order</option>
+	    <option value="3">Sale order</option>
+	    <option value="4">Sales forecast</option>
+   	    <option value="5">Purchase proposal</option>
+	</selection>
+	
+	<selection name="supplychain.mrp.line.type.select">
+	    <option value="1">Entry of stock</option>
+	    <option value="2">Out of stock</option>
+	</selection>
+	
+	
+	<selection name="supplychain.mrp.line.related.to.select">
+		<option value="com.axelor.apps.sale.db.SaleOrderLine">Sale order line</option>
+		<option value="com.axelor.apps.purchase.db.PurchaseOrderLine">Purchase order line</option>
+		<option value="com.axelor.apps.supplychain.db.MrpForecast">Sale forecast</option>
 	</selection>
 	
 	

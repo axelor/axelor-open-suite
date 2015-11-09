@@ -18,18 +18,21 @@
 package com.axelor.apps.stock.module;
 
 import com.axelor.app.AxelorModule;
-import com.axelor.app.AxelorModuleInfo;
+import com.axelor.apps.base.db.IPartner;
+import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.repo.InventoryManagementRepository;
 import com.axelor.apps.stock.db.repo.InventoryRepository;
 import com.axelor.apps.stock.db.repo.StockMoveManagementRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.service.AddressServiceStockImpl;
+import com.axelor.apps.stock.service.LocationService;
+import com.axelor.apps.stock.service.LocationServiceImpl;
 import com.axelor.apps.stock.service.MinStockRulesService;
 import com.axelor.apps.stock.service.MinStockRulesServiceImpl;
 import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.apps.stock.service.StockMoveServiceImpl;
 
-@AxelorModuleInfo(name = "axelor-stock")
+
 public class StockModule extends AxelorModule {
 
     @Override
@@ -39,5 +42,7 @@ public class StockModule extends AxelorModule {
         bind(InventoryRepository.class).to(InventoryManagementRepository.class);
         bind(StockMoveRepository.class).to(StockMoveManagementRepository.class);
         bind(StockMoveService.class).to(StockMoveServiceImpl.class);
+        bind(LocationService.class).to(LocationServiceImpl.class);
+        IPartner.modelPartnerFieldMap.put(StockMove.class.getName(), "partner");
     }
 }

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
 	  
 	  
 		
@@ -27,6 +27,30 @@
 	    </dataset>
 	    <category key="_sale_stage" type="text" title="Sales Stage"/>
     	<series key="amount" type="bar" title="Amount"/>
+	 </chart>
+	 
+	 <chart name="chart.dashboard.opportunities.sale.stage.amount.funnel" title="Opportunities By Sale Stage">
+	    <dataset type="sql">
+	    <![CDATA[
+			SELECT
+	          SUM(self.amount) AS amount,
+		      selection_item.title as _sale_stage
+		    FROM
+		        crm_opportunity self
+		    LEFT JOIN
+		        meta_select as selection ON selection.name = 'crm.opportunity.sales.stage.select'
+		    LEFT JOIN 
+		    	meta_select_item as selection_item ON selection_item.select_id = selection.id
+			WHERE
+				cast(selection_item.value as decimal) = self.sales_stage_select AND self.sales_stage_select != 10		
+		    GROUP BY
+			   selection_item.id
+			ORDER BY
+			   selection_item.id
+	    ]]>
+	    </dataset>
+	    <category key="_sale_stage" type="text" title="Sales Stage"/>
+    	<series key="amount" type="funnel" title="Amount"/>
 	 </chart>
 	 
 	  <chart name="chart.dashboard.opportunities.by.stage.type.bar" title="Pipeline by Stage and Type">
@@ -366,7 +390,6 @@
 					_meta._select_value = _event.call_type_select	
 				WHERE
         			_event.type_select = 1 AND
-				_event.status_select=2 AND
         			_event.start_date_time BETWEEN (cast(:fromDateT as TIMESTAMP) AT TIME ZONE 'UTC') AND (cast(:toDateT as TIMESTAMP) AT TIME ZONE 'UTC')
 				GROUP BY
 					_user_name, _call_type
@@ -451,7 +474,6 @@
 					_meta._select_value = _event.call_type_select
 				WHERE
         			_event.type_select = 1 AND
-				_event.status_select=2 AND
         			_event.start_date_time BETWEEN (cast(:fromDateT as TIMESTAMP) AT TIME ZONE 'UTC') AND (cast(:toDateT as TIMESTAMP) AT TIME ZONE 'UTC')
 				GROUP BY
 					_team_name, _call_type
@@ -499,27 +521,23 @@
 	<dataset type="jpql">
 	SELECT
 	COUNT(*) AS _total_calls,
-	salesMan.fullName AS _sale_man,
-	_item.title as status
+	salesMan.fullName AS _sale_man
 	FROM
 	Event self,    
-	User salesMan,
-	MetaSelectItem _item
+	User salesMan
 	WHERE
 	self.typeSelect = 1 AND
 	self.user = salesMan AND
 	self.team = :activeTeam AND
-	DATE(self.startDateTime) = DATE(:toDateT) AND
-	_item.select.name = 'crm.event.status.select' AND
-	cast(_item.value as int) = self.statusSelect    
+	DATE(self.startDateTime) = DATE(:toDateT)
 	GROUP BY        
-	salesMan.fullName,_item.title
+	salesMan.fullName
 	ORDER BY         
 	salesMan.fullName
 
 	</dataset>
 	<category key="_sale_man" type="text" title="Salesman"/>
-	<series key="_total_calls" type="bar" groupBy="status" title="Calls"/>
+	<series key="_total_calls" type="bar" title="Calls"/>
 	</chart>
 
 	

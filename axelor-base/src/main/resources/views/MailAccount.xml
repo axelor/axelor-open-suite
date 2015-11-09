@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
 	
     <form name="mail-account-form" id="base-mail-account-form" title="Mail account" model="com.axelor.apps.message.db.MailAccount" 
-    	onNew="action-mail-account-default-attrs,action-mail-account-default-record" onLoad="action-mail-account-default-attrs">
+    	onNew="action-mail-account-default-record">
     	<panel title="Informations" >
             <field name="name" />
 			<field name="isDefault" onChange="action-mail-account-validate-is-default" />
@@ -13,16 +13,15 @@
         <panel name="configPanel" title="Configurations" readonlyIf="isValid">
         	<field name="serverTypeSelect"/>
         	<field name="host"/>
+        	<field name="securitySelect" onChange="action-mail-account-onchange-security-select"/>
         	<field name="port"/>
-        	<field name="securitySelect"/>
         </panel>
         <panel name="loginPanel" title="Login" readonlyIf="isValid" >
        	 	<field name="login"/>
         	<field name="password" widget="password"/>
         </panel>
-		<panel title="User" sidebar="true" showIf="_mailAccountByUser">
-        	<field name="user" requiredIf="_mailAccountByUser" showTitle="false" colSpan="12"/>
-        	<field name="$_mailAccountByUser" widget="BOOLEAN" hidden="true" readonly="true" />
+		<panel title="User" sidebar="true" if="__config__.general.getMailAccountByUser()">
+        	<field name="user" required="true" showTitle="false" colSpan="12" form-view="user-form" grid-view="user-grid"/>
 		</panel>
 		<panel sidebar="true" >
 			<button name="testConnection" onClick="save,action-method-mail-account-validate,save" title="Test connection" colSpan="10"/>
@@ -31,11 +30,7 @@
     </form>
     
 	<action-record name="action-mail-account-default-record" model="com.axelor.apps.message.db.MailAccount">
-    	<field name="user" expr="eval:__user__" if="_mailAccountByUser"/>
+    	<field name="user" expr="eval:__user__" if="__config__.general.getMailAccountByUser()"/>
     </action-record>
-    
-	<action-attrs name="action-mail-account-default-attrs" model="com.axelor.apps.message.db.MailAccount">
-    	<attribute name="value" for="_mailAccountByUser" expr="eval: com.axelor.apps.base.service.administration.GeneralService.getGeneral().getMailAccountByUser()"/>
-    </action-attrs>
     
 </object-views>

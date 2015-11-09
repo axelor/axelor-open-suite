@@ -18,17 +18,23 @@
 package com.axelor.apps.account.service;
 
 import com.axelor.apps.account.db.Reimbursement;
-import com.axelor.apps.account.db.repo.ReimbursementRepository;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.service.PartnerService;
+import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
-public class ReimbursementService extends  ReimbursementRepository{
+public class ReimbursementService {
 	
+	protected PartnerRepository partnerRepository;
+	
+
 	@Inject
-	private PartnerService partnerService;
+	public ReimbursementService(PartnerRepository partnerRepository)  {
+		
+		this.partnerRepository = partnerRepository;
+		
+	}
 	
 	/**
 	 * Procédure permettant de mettre à jour la liste des RIBs du tiers
@@ -42,7 +48,7 @@ public class ReimbursementService extends  ReimbursementRepository{
 
 		if(bankDetails != null && partner != null && !bankDetails.equals(partner.getBankDetails()))  {
 			partner.setBankDetails(bankDetails);
-			partnerService.save(partner);
+			partnerRepository.save(partner);
 		}
 	}
 	

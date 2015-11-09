@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_4.0.xsd">
+
+  <module name="sale" package="com.axelor.apps.sale.db"/>
+
+  <entity name="AdvancePayment" lang="java">
+  
+ 	<decimal name="amountRemainingToUse" title="Amount remaining to use" readonly="true"/>
+
+  	<many-to-one name="paymentMode" ref="com.axelor.apps.account.db.PaymentMode" title="Payment mode"/>	
+  	<many-to-one name="move" ref="com.axelor.apps.account.db.Move" title="Move" readonly="true"/>
+  	
+  	
+  </entity>
+
+</domain-models>

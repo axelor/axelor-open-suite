@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
    
     <grid name="irrecoverable-payment-schedule-line-line-grid" title="Payment schedule lines" model="com.axelor.apps.account.db.IrrecoverablePaymentScheduleLineLine">
         <field name="name"/>
-        <field name="paymentScheduleLine"/>
+        <field name="paymentScheduleLine" form-view="payment-schedule-line-form" grid-view="payment-schedule-line-grid"/>
     </grid>
    
-    <form name="irrecoverable-payment-schedule-line-line-form" title="Payment schedue line" model="com.axelor.apps.account.db.IrrecoverablePaymentScheduleLineLine"  >
+    <form name="irrecoverable-payment-schedule-line-line-form" title="Payment schedue line" model="com.axelor.apps.account.db.IrrecoverablePaymentScheduleLineLine" width="large">
         <panel >
 	       	<field name="name"/>
-	        <field name="paymentScheduleLine"/>
+	        <field name="paymentScheduleLine" form-view="payment-schedule-line-form" grid-view="payment-schedule-line-grid"/>
         </panel>
         <panel-tabs>
-        	<panel-related field="irrecoverableReportLineList" colSpan="12"/>
+        	<panel-related field="irrecoverableReportLineList" colSpan="12" grid-view="irrecoverable-report-grid" form-view="irrecoverable-report-form"/>
         </panel-tabs>
     </form>
     

@@ -29,6 +29,7 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.AddressRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.MapService;
+import com.axelor.apps.base.service.PartnerService;
 import com.axelor.inject.Beans;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -41,10 +42,14 @@ import com.google.inject.persist.Transactional;
 public class MapRest {
 
 	@Inject
+	private PartnerService partnerService;
+	
+	@Inject
 	private PartnerRepository partnerRepo;
 	
 	@Inject
 	private AddressRepository addressRepo;
+	
 	
 	@Transactional
 	@Path("/partner")
@@ -52,7 +57,7 @@ public class MapRest {
 	@Produces(MediaType.APPLICATION_JSON)
 	public JsonNode getPartners() {
 		
-		List<? extends Partner> customers = partnerRepo.all().filter("self.customerTypeSelect IN (?, ?) OR self.supplierTypeSelect IN (?, ?) AND self.isContact=?", 2,3,2,3, false).fetch();
+		List<? extends Partner> customers = partnerRepo.all().filter("self.isCustomer = true OR self.isSupplier = true AND self.isContact=?", false).fetch();
 		JsonNodeFactory factory = JsonNodeFactory.instance;
 		ObjectNode mainNode = factory.objectNode();
 		ArrayNode arrayNode = factory.arrayNode();
@@ -67,15 +72,15 @@ public class MapRest {
 				objectNode.put("emailAddress", partner.getEmailAddress().getAddress());
 			}
 			
-			Address address = partner.getMainInvoicingAddress();
+			Address address = partnerService.getInvoicingAddress(partner);
 			if (address != null && address.getFullName() != null) {
 				String addressString = Beans.get(MapService.class).makeAddressString(address, objectNode);
 				objectNode.put("address", addressString);				
 			}
 			
-			objectNode.put("pinColor", partner.getCustomerTypeSelect() == 2 ? "red" : "orange");
-			String pinChar = partner.getCustomerTypeSelect() == 2 ? "P" : "C";
-			if (partner.getSupplierTypeSelect() == 2 || partner.getSupplierTypeSelect() == 3) {
+			objectNode.put("pinColor", partner.getIsCustomer() &&  !partner.getHasOrdered() ? "red" : "orange");
+			String pinChar = partner.getIsCustomer() &&  !partner.getHasOrdered() ? "P" : "C";
+			if (partner.getIsSupplier()) {
 				pinChar = pinChar + "/S";
 			}									
 			objectNode.put("pinChar", pinChar);			
@@ -92,7 +97,7 @@ public class MapRest {
 	@Produces(MediaType.APPLICATION_JSON)
 	public JsonNode getCustomers() {
 		
-		List<? extends Partner> customers = partnerRepo.all().filter("self.customerTypeSelect=? AND self.isContact=?", 3, false).fetch();
+		List<? extends Partner> customers = partnerRepo.all().filter("self.isCustomer = true AND self.hasOrdered = true AND self.isContact=?", false).fetch();
 		JsonNodeFactory factory = JsonNodeFactory.instance;
 		ObjectNode mainNode = factory.objectNode();
 		ArrayNode arrayNode = factory.arrayNode();
@@ -107,8 +112,8 @@ public class MapRest {
 				objectNode.put("emailAddress", customer.getEmailAddress().getAddress());
 			}
 			
-			if (customer.getMainInvoicingAddress() != null) {
-				Address address = customer.getMainInvoicingAddress();
+			Address address = partnerService.getInvoicingAddress(customer);
+			if (address != null) {
 				String addressString = Beans.get(MapService.class).makeAddressString(address, objectNode);
 				addressRepo.save(address);
 				objectNode.put("address", addressString);							
@@ -129,7 +134,7 @@ public class MapRest {
 	@Produces(MediaType.APPLICATION_JSON)
 	public JsonNode getProspects() {
 		
-		List<? extends Partner> customers = partnerRepo.all().filter("self.customerTypeSelect=? AND self.isContact=?", 2, false).fetch();
+		List<? extends Partner> customers = partnerRepo.all().filter("self.isCustomer = true AND self.hasOrdered = false AND self.isContact=?", false).fetch();
 		JsonNodeFactory factory = JsonNodeFactory.instance;
 		ObjectNode mainNode = factory.objectNode();
 		ArrayNode arrayNode = factory.arrayNode();
@@ -144,8 +149,8 @@ public class MapRest {
 				objectNode.put("emailAddress", prospect.getEmailAddress().getAddress());
 			}
 			
-			if (prospect.getMainInvoicingAddress() != null) {
-				Address address = prospect.getMainInvoicingAddress();
+			Address address = partnerService.getInvoicingAddress(prospect);
+			if (address != null) {
 				String addressString = Beans.get(MapService.class).makeAddressString(address, objectNode);
 				addressRepo.save(address);
 				objectNode.put("address", addressString);							
@@ -166,7 +171,7 @@ public class MapRest {
 	@Produces(MediaType.APPLICATION_JSON)
 	public JsonNode getSuppliers() {
 		
-		List<? extends Partner> customers = partnerRepo.all().filter("self.supplierTypeSelect=? AND self.isContact=?", 2, 3 , false).fetch();
+		List<? extends Partner> customers = partnerRepo.all().filter("self.isSupplier = true AND self.isContact=?", false).fetch();
 		JsonNodeFactory factory = JsonNodeFactory.instance;
 		ObjectNode mainNode = factory.objectNode();
 		ArrayNode arrayNode = factory.arrayNode();
@@ -181,8 +186,8 @@ public class MapRest {
 				objectNode.put("emailAddress", supplier.getEmailAddress().getAddress());
 			}
 			
-			if (supplier.getMainInvoicingAddress() != null) {
-				Address address = supplier.getMainInvoicingAddress();
+			Address address = partnerService.getInvoicingAddress(supplier);
+			if (address != null) {
 				String addressString = Beans.get(MapService.class).makeAddressString(address, objectNode);
 				addressRepo.save(address);
 				objectNode.put("address", addressString);								

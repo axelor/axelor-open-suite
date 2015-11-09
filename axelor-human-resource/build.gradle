@@ -1,0 +1,13 @@
+apply plugin: 'axelor-module'
+
+module {
+	name "axelor-human-resource"
+	version "4.0.0"
+	title "Axelor human resource"
+
+	//module dependencies
+	module "modules:axelor-account"
+	module "modules:axelor-project"
+	module "modules:axelor-crm"
+	
+}

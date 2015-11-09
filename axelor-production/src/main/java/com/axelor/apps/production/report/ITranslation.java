@@ -49,6 +49,7 @@ public interface ITranslation {
 	public static final String MANUF_ORDER_BILL_OF_MATERIAL = /*$$(*/ "ManufOrder.billOfMaterial"; /*)*/
 	public static final String MANUF_ORDER_PRODUCTION_PROCESS = /*$$(*/ "ManufOrder.productionProcess"; /*)*/
 	public static final String MANUF_ORDER_OPERATIONS = /*$$(*/ "ManufOrder.operations"; /*)*/
+	public static final String MANUF_ORDER_OPERATION_DETAILS = /*$$(*/ "ManufOrder.operationDetails"; /*)*/
 	public static final String MANUF_ORDER_FORECAST = /*$$(*/ "ManufOrder.forecast"; /*)*/
 	public static final String MANUF_ORDER_EFFECTIVE = /*$$(*/ "ManufOrder.effective"; /*)*/
 	public static final String MANUF_ORDER_NUM = /*$$(*/ "ManufOrder.num"; /*)*/
@@ -61,4 +62,7 @@ public interface ITranslation {
 	public static final String MANUF_ORDER_PRODUCT_CODE = /*$$(*/ "ManufOrder.productCode"; /*)*/
 	public static final String MANUF_ORDER_PRODUCT_NAME = /*$$(*/ "ManufOrder.productName"; /*)*/
 	public static final String MANUF_ORDER_TRACKING_NUMBER = /*$$(*/ "ManufOrder.trackingNumber"; /*)*/
+	public static final String MANUF_ORDER_FROM = /*$$(*/ "ManufOrder.from"; /*)*/
+	public static final String MANUF_ORDER_TO = /*$$(*/ "ManufOrder.to"; /*)*/
+	public static final String MANUF_ORDER_SERIAL = /*$$(*/ "ManufOrder.serial"; /*)*/
 }

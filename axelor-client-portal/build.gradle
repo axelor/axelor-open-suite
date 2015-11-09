@@ -1,0 +1,11 @@
+apply plugin: 'axelor-module'
+
+module {
+	name "axelor-client-portal"
+	version "4.0.0"
+	title "Axelor client portal"
+
+	removable true
+	
+	module "modules:axelor-supplychain"
+}

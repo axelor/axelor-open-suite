@@ -17,22 +17,29 @@
  */
 package com.axelor.apps.crm.service;
 
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.SocketException;
-import java.net.URI;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.GregorianCalendar;
-import java.util.Iterator;
-import java.util.List;
 
-import net.fortuna.ical4j.connector.ObjectNotFoundException;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.Reader;
+import java.io.Writer;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import net.fortuna.ical4j.connector.FailedOperationException;
 import net.fortuna.ical4j.connector.ObjectStoreException;
 import net.fortuna.ical4j.connector.dav.CalDavCalendarCollection;
-import net.fortuna.ical4j.connector.dav.CalDavCalendarStore;
 import net.fortuna.ical4j.connector.dav.PathResolver;
 import net.fortuna.ical4j.data.CalendarBuilder;
 import net.fortuna.ical4j.data.CalendarOutputter;
@@ -40,65 +47,59 @@ import net.fortuna.ical4j.data.ParserException;
 import net.fortuna.ical4j.model.Component;
 import net.fortuna.ical4j.model.ConstraintViolationException;
 import net.fortuna.ical4j.model.DateTime;
+import net.fortuna.ical4j.model.Parameter;
 import net.fortuna.ical4j.model.Property;
-import net.fortuna.ical4j.model.TimeZone;
-import net.fortuna.ical4j.model.TimeZoneRegistry;
-import net.fortuna.ical4j.model.TimeZoneRegistryFactory;
+import net.fortuna.ical4j.model.PropertyList;
 import net.fortuna.ical4j.model.ValidationException;
 import net.fortuna.ical4j.model.component.VEvent;
-import net.fortuna.ical4j.model.component.VTimeZone;
-import net.fortuna.ical4j.model.parameter.Cn;
-import net.fortuna.ical4j.model.parameter.Role;
 import net.fortuna.ical4j.model.property.Attendee;
-import net.fortuna.ical4j.model.property.CalScale;
-import net.fortuna.ical4j.model.property.ProdId;
-import net.fortuna.ical4j.model.property.Uid;
-import net.fortuna.ical4j.model.property.Version;
-import net.fortuna.ical4j.util.CompatibilityHints;
-import net.fortuna.ical4j.util.UidGenerator;
+import net.fortuna.ical4j.model.property.Clazz;
+import net.fortuna.ical4j.model.property.DtEnd;
+import net.fortuna.ical4j.model.property.DtStart;
+import net.fortuna.ical4j.model.property.Organizer;
+import net.fortuna.ical4j.model.property.Transp;
+import net.fortuna.ical4j.model.property.XProperty;
 
 import org.apache.commons.httpclient.protocol.Protocol;
+import org.apache.jackrabbit.webdav.client.methods.DeleteMethod;
 import org.joda.time.LocalDateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.axelor.auth.db.User;
+import com.axelor.app.AppSettings;
+import com.axelor.apps.base.db.ICalendarEvent;
+import com.axelor.apps.base.db.ICalendarUser;
+import com.axelor.apps.base.db.repo.ICalendarEventRepository;
+import com.axelor.apps.base.db.repo.ICalendarUserRepository;
+import com.axelor.apps.base.ical.ICalendarException;
+import com.axelor.apps.base.ical.ICalendarService;
+import com.axelor.apps.base.ical.ICalendarStore;
 import com.axelor.apps.crm.db.Calendar;
 import com.axelor.apps.crm.db.Event;
-import com.axelor.apps.crm.db.EventAttendee;
 import com.axelor.apps.crm.db.ICalendar;
 import com.axelor.apps.crm.db.repo.CalendarRepository;
+import com.axelor.apps.crm.db.repo.EventRepository;
+import com.axelor.apps.crm.exception.IExceptionMessage;
+import com.axelor.apps.message.db.EmailAddress;
+import com.axelor.apps.message.db.repo.EmailAddressRepository;
+import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.IException;
+import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
+import com.google.common.base.Preconditions;
+import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
-public class CalendarService extends CalendarRepository {
+public class CalendarService extends ICalendarService{
 
-	private static final Logger LOG = LoggerFactory.getLogger(CalendarService.class);
+	private final Logger log = LoggerFactory.getLogger(CalendarService.class);
+	static final String X_WR_CALNAME = "X-WR-CALNAME";
 	
 	@Inject
-	private EventService eventService;
-	
-	public void exportCalendar() throws IOException, ParserException, ValidationException, ObjectStoreException, ObjectNotFoundException  {
-		
-		this.createCalendarFile(this.createCalendar());
-		
-	}
+	protected CalendarRepository calendarRepo;
 	
 	
-	
-	
-	private static class myICal extends PathResolver {
-
-        @Override
-        public String getPrincipalPath(String username) {
-            return "/DAVTest/";
-        }
-
-        @Override
-        public String getUserPath(String username) {
-        	 return "/DAVTest/";
-        }
-    }
 	
 	
 	public static class GenericPathResolver extends PathResolver {
@@ -163,29 +164,6 @@ public class CalendarService extends CalendarRepository {
 	}
 	
 	
-	public void synchronizeCalendars(User user) throws MalformedURLException, ObjectStoreException, ObjectNotFoundException, SocketException, ConstraintViolationException  {
-	
-		for(Calendar internalCalendar : this.getInternalCalendarList())  {
-			
-			
-			List<VEvent> vEventList = this.getExternalCalendar(
-					this.getPathResolver(internalCalendar.getTypeSelect()), 
-					internalCalendar.getUrl(),
-					this.getProtocol(internalCalendar.getIsSslConnection()),
-					internalCalendar.getPort(),
-					internalCalendar.getLogin(), 
-					internalCalendar.getPassword(),
-					internalCalendar);
-			
-			this.getEvent(vEventList, internalCalendar);
-			
-			this.removeEvent(vEventList, internalCalendar);
-			
-		}
-		
-	}
-	
-	
 	public Protocol getProtocol(boolean isSslConnection)  {
 		
 		if(isSslConnection)  {
@@ -198,401 +176,157 @@ public class CalendarService extends CalendarRepository {
 	}
 	
 	
-	public List<? extends Calendar> getInternalCalendarList()  {
+	@Transactional
+	public void importCalendar(Calendar cal, File file) throws IOException, ParserException  {
 		
-//		List<? extends Calendar> internalCalendarList = Calendar.all().filter("self", User user) // TODO Récupérer la liste des calendriers du tiers
-		
-		List<? extends Calendar> internalCalendarList = all().fetch();
-		
-		return internalCalendarList; 
+		log.debug("Import calendar {} ::: {}", cal.getName(), file.getName());
+		this.loadCRM(cal, file);
+		calendarRepo.save(cal);
 	}
 	
-		
-	
-	public List<VEvent> getExternalCalendar(PathResolver pathResolver, String url, Protocol protocol, int port, String login, String password, Calendar internalCalendar) throws MalformedURLException, ObjectStoreException, ObjectNotFoundException, SocketException, ConstraintViolationException  {
-		
-		String PRODID = "-//Ben Fortuna//iCal4j Connector 1.0//EN";
-	
-		CompatibilityHints.setHintEnabled(CompatibilityHints.KEY_RELAXED_PARSING, true);
-		CompatibilityHints.setHintEnabled(CompatibilityHints.KEY_OUTLOOK_COMPATIBILITY, true);
-		CompatibilityHints.setHintEnabled(CompatibilityHints.KEY_RELAXED_UNFOLDING, true); 
-		CompatibilityHints.setHintEnabled(CompatibilityHints.KEY_RELAXED_VALIDATION, true);
-		CompatibilityHints.setHintEnabled(CompatibilityHints.KEY_NOTES_COMPATIBILITY, true);
-		
-		URL url2 = new URL(protocol.getScheme(), url, port, "");
-	  	CalDavCalendarStore store = new CalDavCalendarStore(PRODID, url2, pathResolver);
-	  	
-	  	if(login != null && password != null)  {
-	  		store.connect(login, password.toCharArray());
-	  	}
-	  	else  {
-	  		store.connect();
-	  	}
-	  	
 
-	  	
-	  	List<CalDavCalendarCollection> collections = store.getCollections();
-	
-		CalDavCalendarCollection collection = (CalDavCalendarCollection) collections.get(0); 
+	@Transactional
+	public void loadCRM(Calendar calendar, File file) throws IOException, ParserException {
+		Preconditions.checkNotNull(calendar, "calendar can't be null");
+		Preconditions.checkNotNull(file, "input file can't be null");
+		Preconditions.checkArgument(file.exists(), "no such file: " + file);
 
-		System.out.println( "collectionID= " + collection.getId() ); 
-		
-//		CalDavCalendarCollection calDavCalendarCollection = store.getCollection("/calendar/dav/%40axelor.com/events/");
-		
-//		calDavCalendarCollection = store.get;
-   
-//		System.out.println( "calDavCalendarCollection.collectionID= " + calDavCalendarCollection.getId() ); 
-		
-//		  Calendar calendar = collection.getCalendar("@axelor.com");
-		
-		
-		List<? extends Event> eventList = eventService.all().filter("self.typeSelect != 6 and self.calendarEventUid IS NULL and self.calendar = ?1",internalCalendar).fetch();
-		
-	  
-		List<VEvent> vEventList = new ArrayList<VEvent>();
-		
-		CalDavCalendarCollection calDavCalendarCollection2 = null;
-		
-		for(CalDavCalendarCollection calDavCalendarCollection : collections)  {
-		  
-//			  Calendar calendar = calDavCalendarCollection.getCalendar("@axelor.com");
-		  
-			System.out.println( "collectionID2= " + calDavCalendarCollection.getId() ); 
-			net.fortuna.ical4j.model.Calendar[] calendars = calDavCalendarCollection.getEvents();
-
-			for(net.fortuna.ical4j.model.Calendar calendar : calendars)  {
-				System.out.print("CALENDAR - "+calendar.getProductId());
-				if (calendar != null) { 
-				  
-					if(calDavCalendarCollection2 == null)  {
-						calDavCalendarCollection2 = calDavCalendarCollection;
-					}
-					
-				  	vEventList.addAll(calendar.getComponents(Component.VEVENT));
-				  	for(Event event : eventList)  {
-				  		calendar.getComponents(Component.VEVENT).add(this.createVEvent(event));
-					}
-				  	calDavCalendarCollection.addCalendar(calendar);
-			  	}
-			}
-			
-			
-//			store.merge(calDavCalendarCollection.getId(), calDavCalendarCollection);
+		final Reader reader = new FileReader(file);
+		try {
+			loadCRM(calendar, reader);
+		} finally {
+			reader.close();
 		}
-		
-		for (VEvent vEvent : vEventList) {
-		  	System.out.print(vEvent.getProperty(Property.SUMMARY));
-		  	System.out.print(vEvent.getProperty(Property.DTSTART));
-		  	System.out.print(" - ");
-		  	System.out.println(vEvent.getProperty(Property.DTEND));
-	  	}
-		
-//		Collection collection = new Collection();
-//		for(Calendar calendar : Calendar.all().fetch())  {
-//			List<Event> eventList = Event.all().filter("self.typeSelect != 6 and self.calendarEventUid IS NULL and self.calendar = ?1",calendar).fetch();
-//			for(Event event : eventList)  {
-//				this.createVEvent(event);
-//			}
-//		}
-		
-//		calDavCalendarCollection2.getCalendar(uid)
-//		store.getCollections().add(calDavCalendarCollection2);
-//		store.merge(calDavCalendarCollection2.getId(), calDavCalendarCollection2);
-		
-//		store.
-		
-		store.disconnect();
-		
-		return vEventList;
-	}
-	
-	
-	
-	
-	
-	
-	
-	
-	public net.fortuna.ical4j.model.Calendar createCalendar() throws SocketException  {
-		
-		net.fortuna.ical4j.model.Calendar calendar = new net.fortuna.ical4j.model.Calendar();
-		calendar.getProperties().add(new ProdId("-//Events Calendar//iCal4j 1.0//EN"));
-		calendar.getProperties().add(Version.VERSION_2_0);
-		calendar.getProperties().add(CalScale.GREGORIAN);
-
-		// Add events, etc..
-		// Add the event and print
-//		calendar.getComponents().add(this.createEvent());
-		
-		calendar.getComponents().addAll(this.createEvents(eventService.all().fetch()));
-				
-		return calendar;
-	}
-	
-	
-	
-	public List<VEvent> createEvents(List<? extends Event> eventList) throws SocketException  {
-		
-		List<VEvent> vEventList = new ArrayList<VEvent>();
-		
-		if(eventList != null)  {
-			for(Event event : eventList)  {
-				vEventList.add(this.createVEvent(event));
-			}
-		}
-		
-		return vEventList;
-		
-	}
-	
-	
-	
-	public VEvent createVEvent(Event event) throws SocketException  {
-		LOG.debug("Create VEvent from "+event);
-		
-		// Create a TimeZone
-		TimeZoneRegistry registry = TimeZoneRegistryFactory.getInstance().createRegistry();
-		TimeZone timezone = registry.getTimeZone("Europe/Paris");
-		VTimeZone tz = timezone.getVTimeZone();
-
-		java.util.Calendar startDate = new GregorianCalendar();
-		startDate.setTimeZone(timezone);
-		if(event.getStartDateTime() != null)  {
-			startDate.setTime(event.getStartDateTime().toDate());
-		}
-
-		java.util.Calendar endDate = new GregorianCalendar();
-		endDate.setTimeZone(timezone);
-		if(event.getEndDateTime() != null)  {
-			endDate.setTime(event.getEndDateTime().toDate());
-		}
-		
-		// Create the event
-		String eventName = event.getSubject();
-		DateTime start = new DateTime(startDate.getTime());
-		DateTime end = new DateTime(endDate.getTime());
-		VEvent vEvent = new VEvent(start, end, eventName);
-
-		// add timezone info..
-		vEvent.getProperties().add(tz.getTimeZoneId());
-
-		// generate unique identifier..
-		if(event.getCalendarEventUid()!= null && !event.getCalendarEventUid().isEmpty())  {
-			vEvent.getProperties().add(new Uid(event.getCalendarEventUid()));
-		}
-		else  {
-			UidGenerator ug = new UidGenerator("uidGen");
-			Uid uid = ug.generateUid();
-			vEvent.getProperties().add(uid);
-
-			this.updateEvent(event, uid.getValue());
-		}
-		
-		
-		// add attendees..
-		vEvent.getProperties().addAll(this.createAttendees(event));
-		
-		return vEvent;
-		
 	}
 	
 	@Transactional
-	public void updateEvent(Event event, String uid)  {
-		
-		event.setCalendarEventUid(uid);
-		eventService.save(event);
-		
-	}
-	
-	
-	public List<Attendee> createAttendees(Event event)  {
-		
-		List<Attendee> attendeeList = new ArrayList<Attendee>();
-		
-		if(event.getEventAttendeeList() != null)  {
-			for(EventAttendee eventAttendee : event.getEventAttendeeList())  {
-				attendeeList.add(this.createAttendee(eventAttendee));
-			}
-		}
-		
-		return attendeeList;
-	}
-	
-	
-	public Attendee createAttendee(EventAttendee eventAttendee)  {
-		
-		Attendee attendee = null;
-		
-		if(eventAttendee.getContactPartner() != null)  {
-			attendee = new Attendee(URI.create("mailto:"+eventAttendee.getContactPartner().getEmailAddress().getAddress()));
-			attendee.getParameters().add(new Cn(eventAttendee.getContactPartner().getName()+eventAttendee.getContactPartner().getFirstName()));
-		}
-		else if(eventAttendee.getLead() != null)  {
-			attendee = new Attendee(URI.create("mailto:"+eventAttendee.getLead().getEmailAddress().getAddress()));
-			attendee.getParameters().add(new Cn(eventAttendee.getLead().getName()+eventAttendee.getLead().getFirstName()));
-		}
-		
-		attendee.getParameters().add(this.getRole(eventAttendee));
-		
-		return attendee;
-		
-	}
-	
-	
-	public Role getRole(EventAttendee eventAttendee)  {
-		
-		switch(eventAttendee.getStatusSelect())  {
-			case 1:
-				return Role.OPT_PARTICIPANT;
-			case 2:
-				return Role.OPT_PARTICIPANT;
-			case 3:
-				return Role.REQ_PARTICIPANT;
-			default:
-				return null;
-		}		
-	}
-	
-	
-	
-	public void createCalendarFile(net.fortuna.ical4j.model.Calendar calendar) throws IOException, ValidationException  {
-		
-		FileOutputStream fout = new FileOutputStream("mycalendar.ics");
+	public void loadCRM(Calendar calendar, Reader reader) throws IOException, ParserException {
+		Preconditions.checkNotNull(calendar, "calendar can't be null");
+		Preconditions.checkNotNull(reader, "reader can't be null");
 
-		CalendarOutputter outputter = new CalendarOutputter();
-		outputter.output(calendar, fout);
-		
-	}
-	
-	
-	
-	public void importCalendar() throws IOException, ParserException  {
-		
-		List<VEvent> vEventList = this.getVEvent(this.getCalendar());
-		
-		this.getEvent(vEventList, null);
-		
-		this.removeEvent(vEventList, null);
-		
-		this.getInfo(this.getCalendar());
-	}
-	
-	
-	
-	public net.fortuna.ical4j.model.Calendar getCalendar() throws IOException, ParserException  {
-		
-		FileInputStream fin = new FileInputStream("mycalendar.ics");
+		final CalendarBuilder builder = new CalendarBuilder();
+		final net.fortuna.ical4j.model.Calendar cal = builder.build(reader);
 
-		CalendarBuilder builder = new CalendarBuilder();
+		if (calendar.getName() == null && cal.getProperty(X_WR_CALNAME) != null) {
+			calendar.setName(cal.getProperty(X_WR_CALNAME).getValue());
+		}
 
-		net.fortuna.ical4j.model.Calendar calendar = builder.build(fin);
-		
-		return calendar;
-		
-	}
-	
-	
-	
-	public void getEvent(List<VEvent> vEventList, Calendar internalCalendar)  {
-		
-		for(VEvent vEvent : vEventList)  {
-			
-			Event event = eventService.all().filter("self.calendarEventUid = ?1", vEvent.getUid().getValue()).fetchOne(); 
-			if(event != null)  {
-				
-				this.updateEvent(event, vEvent);
-				
-			}
-			else  {
-				this.createEvent(vEvent, internalCalendar);
-			}
-		}
-		
-	}
-	
-	public void removeEvent(List<VEvent> vEventList, Calendar internalCalendar)  {
-		
-		List<String> uidList = new ArrayList<String>();
-		
-		for(VEvent vEvent : vEventList)  {
-			uidList.add(vEvent.getUid().getValue());
-		}
-		
-		List<? extends Event> eventList = null;
-		
-		if(uidList != null && uidList.size() > 0)  {
-			eventList = eventService.all().filter("self.typeSelect = ?1 AND self.calendar = ?2 AND self.calendarEventUid not in ?3", 6, internalCalendar, uidList).fetch();
-		}
-		else  {
-			eventList = eventService.all().filter("self.typeSelect = ?1 AND self.calendar = ?2", 6, internalCalendar).fetch();
-		}
-		
-		for(Event event : eventList)  {
-			
-			this.removeEvent(event);
-			
+		for (Object item : cal.getComponents(Component.VEVENT)) {
+			Event event = findOrCreateEventCRM((VEvent) item);
+			calendar.addEventsCrm(event);
 		}
 	}
-	
 	
 	@Transactional
-	public void removeEvent(Event event)  {  
-		
-		eventService.remove(event);
-		
-	}
-	
-	
-	public Event createEvent(VEvent vEvent, Calendar internalCalendar)  {
-		
-		Event event = new Event();
-		event.setTypeSelect(6);
-		event.setCalendarEventUid(vEvent.getUid().getValue());
-		
-		event.setCalendar(internalCalendar);
-		
-		this.updateEvent(event, vEvent);
-		
+	protected Event findOrCreateEventCRM(VEvent vEvent) {
+
+		String uid = vEvent.getUid().getValue();
+		DtStart dtStart = vEvent.getStartDate();
+		DtEnd dtEnd = vEvent.getEndDate();
+
+		EventRepository repo = Beans.get(EventRepository.class);
+		Event event = repo.all().filter("self.uid = ?1", uid).fetchOne();
+		if (event == null) {
+			event = new Event();
+			event.setUid(uid);
+		}
+		if(event.getTypeSelect() == null || event.getTypeSelect() == 0){
+			event.setTypeSelect(EventRepository.TYPE_EVENT);
+		}
+		event.setStartDateTime(new LocalDateTime(dtStart.getDate()));
+		event.setEndDateTime(new LocalDateTime(dtEnd.getDate()));
+		event.setAllDay(!(dtStart.getDate() instanceof DateTime));
+
+		event.setSubject(getValue(vEvent, Property.SUMMARY));
+		event.setDescription(getValue(vEvent, Property.DESCRIPTION));
+		event.setLocation(getValue(vEvent, Property.LOCATION));
+		event.setGeo(getValue(vEvent, Property.GEO));
+		event.setUrl(getValue(vEvent, Property.URL));
+		event.setSubjectTeam(event.getSubject());
+		if(Clazz.PRIVATE.getValue().equals(getValue(vEvent, Property.CLASS))){
+			event.setVisibilitySelect(ICalendarEventRepository.VISIBILITY_PRIVATE);
+		}
+		else{
+			event.setVisibilitySelect(ICalendarEventRepository.VISIBILITY_PUBLIC);
+		}
+		if(Transp.TRANSPARENT.getValue().equals(getValue(vEvent, Property.TRANSP))){
+			event.setDisponibilitySelect(ICalendarEventRepository.DISPONIBILITY_AVAILABLE);
+		}
+		else{
+			event.setDisponibilitySelect(ICalendarEventRepository.DISPONIBILITY_BUSY);
+		}
+		if(event.getVisibilitySelect() == ICalendarEventRepository.VISIBILITY_PRIVATE){
+			event.setSubjectTeam(I18n.get("Available"));
+			if(event.getDisponibilitySelect() == ICalendarEventRepository.DISPONIBILITY_BUSY){
+				event.setSubjectTeam(I18n.get("Busy"));
+			}
+		}
+		ICalendarUser organizer = findOrCreateUser(vEvent.getOrganizer(), event);
+		if (organizer != null) {
+			event.setOrganizer(organizer);
+			iCalendarUserRepository.save(organizer);
+		}
+
+		for (Object item : vEvent.getProperties(Property.ATTENDEE)) {
+			ICalendarUser attendee = findOrCreateUser((Property) item, event);
+			if (attendee != null) {
+				event.addAttendee(attendee);
+				iCalendarUserRepository.save(attendee);
+			}
+		}
+
 		return event;
-	}
+	}	
 	
-	
-	@Transactional
-	public Event updateEvent(Event event, VEvent vEvent)  {
+	protected ICalendarUser findOrCreateUser(Property source, Event event) {
+		URI addr = null;
+		if (source instanceof Organizer) {
+			addr = ((Organizer) source).getCalAddress();
+		}
+		if (source instanceof Attendee) {
+			addr = ((Attendee) source).getCalAddress();
+		}
+		if (addr == null) {
+			return null;
+		}
 
-		event.setSubject(vEvent.getSummary().getValue());
-		if(vEvent.getDescription()!=null)  {
-			event.setDescription(vEvent.getDescription().getValue());
+		String email = mailto(addr.toString(), true);
+		ICalendarUserRepository repo = Beans.get(ICalendarUserRepository.class);
+		ICalendarUser user = null;
+		if (source instanceof Organizer) {
+			user = repo.all().filter("self.email = ?1", email).fetchOne();
 		}
-		event.setStartDateTime(new LocalDateTime(vEvent.getStartDate().getDate()));
-		event.setEndDateTime(new LocalDateTime(vEvent.getEndDate().getDate()));
-		eventService.save(event);
-		
-		return event;
-	}
-	
-	
-	
-	public List<VEvent> getVEvent(net.fortuna.ical4j.model.Calendar calendar)  {
-		
-		return calendar.getComponents(Component.VEVENT);
-		
-	}
-	
-	
-	public void getInfo(net.fortuna.ical4j.model.Calendar calendar)  {
-		
-		for (Iterator i = calendar.getComponents().iterator(); i.hasNext();) {
-		    Component component = (Component) i.next();
-		    LOG.debug("Component [" + component.getName() + "]");
-			
-		    for (Iterator j = component.getProperties().iterator(); j.hasNext();) {
-		        Property property = (Property) j.next();
-		        LOG.debug("Property [" + property.getName() + ", " + property.getValue() + "]");
-		        
-		    }
+		else{
+			user = repo.all().filter("self.email = ?1 AND self.event.id = ?2", email, event.getId()).fetchOne();
 		}
+		if (user == null) {
+			user = new ICalendarUser();
+			user.setEmail(email);
+			user.setName(email);
+			EmailAddress emailAddress = Beans.get(EmailAddressRepository.class).findByAddress(email);
+			if(emailAddress != null && emailAddress.getPartner() != null && emailAddress.getPartner().getUser() != null){
+				user.setUser(emailAddress.getPartner().getUser());
+			}
+		}
+		if (source.getParameter(Parameter.CN) != null) {
+			user.setName(source.getParameter(Parameter.CN).getValue());
+		}
+		if(source.getParameter(Parameter.PARTSTAT) != null){
+			String role = source.getParameter(Parameter.PARTSTAT).getValue();
+			if(role.equals("TENTATIVE")){
+				user.setStatusSelect(ICalendarUserRepository.STATUS_MAYBE);
+			}
+			else if(role.equals("ACCEPTED")){
+				user.setStatusSelect(ICalendarUserRepository.STATUS_YES);
+			}
+			else if(role.equals("DECLINED")){
+				user.setStatusSelect(ICalendarUserRepository.STATUS_NO);
+			}
+		}
+
+		return user;
 	}
+
 	
 	
 //	public void createVCard()  {
@@ -617,61 +351,287 @@ public class CalendarService extends CalendarRepository {
 //		return vcard;
 //	}
 	
+	public boolean testConnect(Calendar cal) throws MalformedURLException, ObjectStoreException
+	{
+		boolean connected = false;
+		PathResolver RESOLVER = getPathResolver(cal.getTypeSelect());
+		Protocol protocol = getProtocol(cal.getIsSslConnection());
+		URL url = new URL(protocol.getScheme(), cal.getUrl(), cal.getPort(), "");
+		ICalendarStore store = new ICalendarStore(url, RESOLVER);
+		
+		try 
+		{
+			connected = store.connect(cal.getLogin(), cal.getPassword());
+		}
+		finally {
+			store.disconnect();
+		}
+		return connected;
+	}
+
+
+	public void export(Calendar calendar) throws IOException, ValidationException, ParseException {
+		String path = AppSettings.get().get("file.upload.dir");
+		if (!path.endsWith("/")) {
+			path += "/";
+        }	
+		String name = calendar.getName();
+		if (!name.endsWith(".ics")) {
+			name += ".ics";
+        }
+		FileOutputStream fout = new FileOutputStream(path + name );
+		Preconditions.checkNotNull(calendar, "calendar can't be null");
+		Preconditions.checkNotNull(calendar.getEventsCrm(), "can't export empty calendar");
+
+		net.fortuna.ical4j.model.Calendar cal = newCalendar();
+		cal.getProperties().add(new XProperty(X_WR_CALNAME, calendar.getName()));
+
+		for (ICalendarEvent item : calendar.getEventsCrm()) {
+			VEvent event = createVEvent(item);
+			cal.getComponents().add(event);
+		}
+		
+		CalendarOutputter outputter = new CalendarOutputter();
+		outputter.output(cal, fout);
+	}
 	
+	public File export(net.fortuna.ical4j.model.Calendar calendar) throws IOException, ValidationException, ParseException {
+		String path = AppSettings.get().get("file.upload.dir");
+		if (!path.endsWith("/")) {
+			path += "/";
+        }
+		String name = calendar.getProperty(X_WR_CALNAME).getValue();
+		if (!name.endsWith(".ics")) {
+			name += ".ics";
+        }
+		File file = new File(path + name );	
+		Writer writer = new FileWriter(file);
+		CalendarOutputter outputter = new CalendarOutputter();
+		outputter.output(calendar, writer);
+		writer.close();
+		return file;
+	}
+	
+	@Transactional
+	public void sync(Calendar calendar)
+			throws ICalendarException, MalformedURLException {
+		PathResolver RESOLVER = getPathResolver(calendar.getTypeSelect());
+		Protocol protocol = getProtocol(calendar.getIsSslConnection());
+		URL url = new URL(protocol.getScheme(), calendar.getUrl(), calendar.getPort(), "");
+		ICalendarStore store = new ICalendarStore(url, RESOLVER);
+		try {
+			if(store.connect(calendar.getLogin(), calendar.getPassword())){
+				List<CalDavCalendarCollection> colList = store.getCollections();
+				if(!colList.isEmpty()){
+					calendar = doSync(calendar, colList.get(0));
+					calendarRepo.save(calendar);
+				}
+			}
+			else{
+				throw new AxelorException(String.format(I18n.get(IExceptionMessage.CALENDAR_NOT_VALID)), IException.CONFIGURATION_ERROR);
+			}
+		} catch (Exception e) {
+			throw new ICalendarException(e);
+		}
+		finally {
+			store.disconnect();
+		}
+	}
 
-	public VEvent createEventTest() throws SocketException  {
-		
-		// Create a TimeZone
-		TimeZoneRegistry registry = TimeZoneRegistryFactory.getInstance().createRegistry();
-		TimeZone timezone = registry.getTimeZone("America/Mexico_City");
-		VTimeZone tz = timezone.getVTimeZone();
+	protected Calendar doSync(Calendar calendar, CalDavCalendarCollection collection)
+			throws IOException, URISyntaxException, ParseException, ObjectStoreException, ConstraintViolationException {
 
-		 // Start Date is on: April 1, 2008, 9:00 am
-		java.util.Calendar startDate = new GregorianCalendar();
-		startDate.setTimeZone(timezone);
-		startDate.set(java.util.Calendar.MONTH, java.util.Calendar.APRIL);
-		startDate.set(java.util.Calendar.DAY_OF_MONTH, 1);
-		startDate.set(java.util.Calendar.YEAR, 2008);
-		startDate.set(java.util.Calendar.HOUR_OF_DAY, 9);
-		startDate.set(java.util.Calendar.MINUTE, 0);
-		startDate.set(java.util.Calendar.SECOND, 0);
+		final String[] names = {
+			Property.UID,
+			Property.URL,
+			Property.SUMMARY,
+			Property.DESCRIPTION,
+			Property.DTSTART,
+			Property.DTEND,
+			Property.ORGANIZER,
+			Property.CLASS,
+			Property.TRANSP,
+			Property.ATTENDEE
+		};
 
-		 // End Date is on: April 1, 2008, 13:00
-		java.util.Calendar endDate = new GregorianCalendar();
-		endDate.setTimeZone(timezone);
-		endDate.set(java.util.Calendar.MONTH, java.util.Calendar.APRIL);
-		endDate.set(java.util.Calendar.DAY_OF_MONTH, 1);
-		endDate.set(java.util.Calendar.YEAR, 2008);
-		endDate.set(java.util.Calendar.HOUR_OF_DAY, 13);
-		endDate.set(java.util.Calendar.MINUTE, 0);	
-		endDate.set(java.util.Calendar.SECOND, 0);
+		final boolean keepRemote = calendar.getKeepRemote() == Boolean.TRUE;
 
-		// Create the event
-		String eventName = "Progress Meeting";
-		DateTime start = new DateTime(startDate.getTime());
-		DateTime end = new DateTime(endDate.getTime());
-		VEvent meeting = new VEvent(start, end, eventName);
+		final Map<String, VEvent> remoteEvents = new HashMap<>();
+		final List<VEvent> localEvents = new ArrayList<>();
+		final Set<String> synced = new HashSet<>();
+		for (VEvent item : ICalendarStore.getEvents(collection)) {
+			remoteEvents.put(item.getUid().getValue(), item);
+		}
 
-		// add timezone info..
-		meeting.getProperties().add(tz.getTimeZoneId());
+		for (ICalendarEvent item : calendar.getEventsCrm()) {
+			VEvent source = createVEvent(item);
+			VEvent target = remoteEvents.get(source.getUid().getValue());
+			if (target == null && Strings.isNullOrEmpty(item.getUid())) {
+				target = source;
+			}
+			
+			if(target != null){
+				if (keepRemote) {
+					VEvent tmp = target;
+					target = source;
+					source = tmp;
+				}
+				else{
+					if(source.getLastModified() != null && target.getLastModified() != null){
+						LocalDateTime lastModifiedSource = new LocalDateTime(source.getLastModified().getDateTime());
+						LocalDateTime lastModifiedTarget = new LocalDateTime(target.getLastModified().getDateTime());
+						if(lastModifiedSource.isBefore(lastModifiedTarget)){
+							VEvent tmp = target;
+							target = source;
+							source = tmp;
+						}
+					}
+					else if(target.getLastModified() != null){
+						VEvent tmp = target;
+						target = source;
+						source = tmp;
+					}
+				}
+				localEvents.add(target);
+				synced.add(target.getUid().getValue());
 
-		// generate unique identifier..
-		UidGenerator ug = new UidGenerator("uidGen");
-		Uid uid = ug.generateUid();
-		meeting.getProperties().add(uid);
+				if (source == target) {
+					continue;
+				}
 
-		// add attendees..
-		Attendee dev1 = new Attendee(URI.create("mailto:dev1@mycompany.com"));
-		dev1.getParameters().add(Role.REQ_PARTICIPANT);
-		dev1.getParameters().add(new Cn("Developer 1"));
-		meeting.getProperties().add(dev1);
+				for (String name : names) {
+					if(!name.equals(Property.ATTENDEE)){
+						Property s = source.getProperty(name);
+						Property t = target.getProperty(name);
+						PropertyList items = target.getProperties();
+						if (s == null && t == null) {
+							continue;
+						}
+						else if (t == null) {
+							t = s;
+							items.add(t);
+						}
+						else if (s == null) {
+							target.getProperties().remove(t);
+						} else {
+							t.setValue(s.getValue());
+						}
+						
+					}
+					else{
+						PropertyList sourceList = source.getProperties(Property.ATTENDEE);
+						PropertyList targetList = target.getProperties(Property.ATTENDEE);
+						target.getProperties().removeAll(targetList);
+						target.getProperties().addAll(sourceList);
+						target.getProperties();
+					}
+				}
+			}
+		}
 
-		Attendee dev2 = new Attendee(URI.create("mailto:dev2@mycompany.com"));
-		dev2.getParameters().add(Role.OPT_PARTICIPANT);
-		dev2.getParameters().add(new Cn("Developer 2"));
-		meeting.getProperties().add(dev2);
-		
-		return meeting;
-		
+		for (String uid : remoteEvents.keySet()) {
+			if (!synced.contains(uid)) {
+				localEvents.add(remoteEvents.get(uid));
+			}
+		}
+
+		// update local events
+		final List<Event> iEvents = new ArrayList<>();
+		for (VEvent item : localEvents) {
+			Event iEvent = findOrCreateEventCRM(item);
+			iEvents.add(iEvent);
+		}
+		calendar.getEventsCrm().clear();
+		for (Event event : iEvents) {
+			calendar.addEventsCrm(event);
+		}
+
+		// update remote events
+		for (VEvent item : localEvents) {
+			if (!synced.contains(item.getUid().getValue())) {
+				continue;
+			}
+			net.fortuna.ical4j.model.Calendar cal = newCalendar();
+			cal.getComponents().add(item);
+			collection.addCalendar(cal);
+		}
+
+		return calendar;
+	}
+	
+	public void removeEventFromIcal(Event event) throws MalformedURLException, ICalendarException{
+		if(event.getCalendarCrm() != null && !Strings.isNullOrEmpty(event.getUid())){
+			Calendar calendar  = event.getCalendarCrm();
+			PathResolver RESOLVER = getPathResolver(calendar.getTypeSelect());
+			Protocol protocol = getProtocol(calendar.getIsSslConnection());
+			URL url = new URL(protocol.getScheme(), calendar.getUrl(), calendar.getPort(), "");
+			ICalendarStore store = new ICalendarStore(url, RESOLVER);
+			try {
+				if(store.connect(calendar.getLogin(), calendar.getPassword())){
+					List<CalDavCalendarCollection> colList = store.getCollections();
+					if(!colList.isEmpty()){
+						CalDavCalendarCollection collection = colList.get(0);
+						final Map<String, VEvent> remoteEvents = new HashMap<>();
+
+						for (VEvent item : ICalendarStore.getEvents(collection)) {
+							remoteEvents.put(item.getUid().getValue(), item);
+						}
+
+						VEvent target = remoteEvents.get(event.getUid());
+						removeCalendar(collection,target.getUid().getValue());
+					}
+				}
+				else{
+					throw new AxelorException(String.format(I18n.get(IExceptionMessage.CALENDAR_NOT_VALID)), IException.CONFIGURATION_ERROR);
+				}
+			} catch (Exception e) {
+				throw new ICalendarException(e);
+			}
+			finally {
+				store.disconnect();
+			}
+		}
+	}
+	
+	public net.fortuna.ical4j.model.Calendar removeCalendar(CalDavCalendarCollection collection,String uid) throws FailedOperationException, ObjectStoreException {
+        net.fortuna.ical4j.model.Calendar calendar = collection.getCalendar(uid);
+
+        DeleteMethod deleteMethod = new DeleteMethod( collection.getPath() + uid + ".ics");
+        try {
+            collection.getStore().getClient().execute(deleteMethod);
+        } catch (IOException e) {
+            throw new ObjectStoreException(e);
+        }
+        if (!deleteMethod.succeeded()) {
+            throw new FailedOperationException(deleteMethod.getStatusLine().toString());
+        }
+
+        return calendar;
+    }
+	
+	public net.fortuna.ical4j.model.Calendar getCalendar(String uid, Calendar calendar) throws ICalendarException, MalformedURLException{
+		net.fortuna.ical4j.model.Calendar cal = null;
+		PathResolver RESOLVER = getPathResolver(calendar.getTypeSelect());
+		Protocol protocol = getProtocol(calendar.getIsSslConnection());
+		URL url = new URL(protocol.getScheme(), calendar.getUrl(), calendar.getPort(), "");
+		ICalendarStore store = new ICalendarStore(url, RESOLVER);
+		try {
+			if(store.connect(calendar.getLogin(), calendar.getPassword())){
+				List<CalDavCalendarCollection> colList = store.getCollections();
+				if(!colList.isEmpty()){
+					CalDavCalendarCollection collection = colList.get(0);
+					cal = collection.getCalendar(uid);
+				}
+			}
+			else{
+				throw new AxelorException(String.format(I18n.get(IExceptionMessage.CALENDAR_NOT_VALID)), IException.CONFIGURATION_ERROR);
+			}
+		} catch (Exception e) {
+			throw new ICalendarException(e);
+		}
+		finally {
+			store.disconnect();
+		}
+		return cal;
 	}
 }

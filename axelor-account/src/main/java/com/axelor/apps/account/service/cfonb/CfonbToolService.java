@@ -20,16 +20,16 @@ package com.axelor.apps.account.service.cfonb;
 import java.util.List;
 
 import com.axelor.apps.account.exception.IExceptionMessage;
-import com.axelor.apps.account.service.administration.GeneralServiceAccount;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.service.administration.GeneralServiceImpl;
 import com.axelor.apps.tool.StringTool;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 
 public class CfonbToolService {
-	
-	
+
+
 	/**
 	 * Procédure permettant de vérifier que la chaine de caractère ne contient que des entier
 	 * @param s
@@ -50,21 +50,21 @@ public class CfonbToolService {
 			switch(type)  {
 				case 0:
 					throw new AxelorException(String.format(I18n.get(IExceptionMessage.CFONB_TOOL_1),
-							GeneralServiceAccount.getExceptionAccountingMsg(), s), IException.CONFIGURATION_ERROR);
+							GeneralServiceImpl.EXCEPTION, s), IException.CONFIGURATION_ERROR);
 				case 1:
 					throw new AxelorException(String.format(I18n.get(IExceptionMessage.CFONB_TOOL_2),
-							GeneralServiceAccount.getExceptionAccountingMsg(), s), IException.CONFIGURATION_ERROR);
+							GeneralServiceImpl.EXCEPTION, s), IException.CONFIGURATION_ERROR);
 				case 2:
 					throw new AxelorException(String.format(I18n.get(IExceptionMessage.CFONB_TOOL_3),
-							GeneralServiceAccount.getExceptionAccountingMsg(), s), IException.CONFIGURATION_ERROR);
-				
+							GeneralServiceImpl.EXCEPTION, s), IException.CONFIGURATION_ERROR);
+
 				default:
 					break;
-			}	
+			}
 		}
 	}
-	
-	
+
+
 	/**
 	 * Procédure permettant de vérifier la longueur d'un CFONB
 	 * @param senderCFONB
@@ -84,10 +84,10 @@ public class CfonbToolService {
 			this.testLength(s, company, 1, 160);
 		}
 	}
-	
-	
-	
-	
+
+
+
+
 	/**
 	 * Procédure permettant de vérifier la longueur d'un enregistrement CFONB
 	 * @param s
@@ -104,7 +104,7 @@ public class CfonbToolService {
      *      <li>4 = détail</li>
      *      <li>5 = fin</li>
      *  	</ul>
-	 * 
+	 *
 	 * @param size
 	 * 			La longueur de l'enregistrement
 	 * @throws AxelorException
@@ -133,11 +133,11 @@ public class CfonbToolService {
 					break;
 				default:
 					break;
-			}	
+			}
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.CFONB_TOOL_4),
-					GeneralServiceAccount.getExceptionAccountingMsg(),size,s,concerned,company.getName()), IException.CONFIGURATION_ERROR);
+					GeneralServiceImpl.EXCEPTION,size,s,concerned,company.getName()), IException.CONFIGURATION_ERROR);
 		}
 	}
-	
-	
+
+
 }

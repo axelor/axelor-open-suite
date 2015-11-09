@@ -18,23 +18,26 @@
 package com.axelor.apps.supplychain.service;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.Query;
+
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
-import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.generator.InvoiceGenerator;
-import com.axelor.apps.account.service.invoice.generator.InvoiceLineGenerator;
 import com.axelor.apps.base.db.Product;
-import com.axelor.apps.base.db.ProductVariant;
-import com.axelor.apps.base.db.Unit;
+import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;
+import com.axelor.apps.supplychain.service.invoice.generator.InvoiceGeneratorSupplyChain;
+import com.axelor.apps.supplychain.service.invoice.generator.InvoiceLineGeneratorSupplyChain;
+import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
@@ -47,14 +50,19 @@ public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceServ
 	private InvoiceService invoiceService;
 	
 	@Inject
+	private InvoiceRepository invoiceRepo;
+	
+	@Inject
 	private PurchaseOrderRepository purchaseOrderRepo;
 
+	@Override
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public Invoice generateInvoice(PurchaseOrder purchaseOrder) throws AxelorException  {
 
 		Invoice invoice = this.createInvoice(purchaseOrder);
-		invoiceService.save(invoice);
-		
+		invoiceRepo.save(invoice);
+		invoiceService.setDraftSequence(invoice);
+
 		if(invoice != null) {
 			purchaseOrder.setInvoice(invoice);
 			purchaseOrderRepo.save(purchaseOrder);
@@ -62,6 +70,7 @@ public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceServ
 		return invoice;
 	}
 
+	@Override
 	public Invoice createInvoice(PurchaseOrder purchaseOrder) throws AxelorException{
 
 		InvoiceGenerator invoiceGenerator = this.createInvoiceGenerator(purchaseOrder);
@@ -72,14 +81,16 @@ public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceServ
 		return invoice;
 	}
 
+	@Override
 	public InvoiceGenerator createInvoiceGenerator(PurchaseOrder purchaseOrder) throws AxelorException  {
 
 		if(purchaseOrder.getCurrency() == null)  {
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.PO_INVOICE_1), purchaseOrder.getPurchaseOrderSeq()), IException.CONFIGURATION_ERROR);
 		}
 
-		InvoiceGenerator invoiceGenerator = new InvoiceGenerator(InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE, purchaseOrder.getCompany(), purchaseOrder.getSupplierPartner(), 
-				purchaseOrder.getContactPartner(), purchaseOrder.getPriceList(), purchaseOrder.getPurchaseOrderSeq(), purchaseOrder.getExternalReference()) {
+		InvoiceGenerator invoiceGenerator = new InvoiceGeneratorSupplyChain(InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE, purchaseOrder.getCompany(), 
+				purchaseOrder.getPaymentCondition(), purchaseOrder.getPaymentMode(), null, purchaseOrder.getSupplierPartner(),
+				purchaseOrder.getContactPartner(), purchaseOrder.getCurrency(),purchaseOrder.getPriceList(), purchaseOrder.getPurchaseOrderSeq(), purchaseOrder.getExternalReference(), purchaseOrder) {
 
 			@Override
 			public Invoice generate() throws AxelorException {
@@ -91,43 +102,99 @@ public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceServ
 		return invoiceGenerator;
 	}
 
+	@Override
 	public List<InvoiceLine> createInvoiceLines(Invoice invoice, List<PurchaseOrderLine> purchaseOrderLineList) throws AxelorException  {
 
 		List<InvoiceLine> invoiceLineList = new ArrayList<InvoiceLine>();
 
 		for(PurchaseOrderLine purchaseOrderLine : purchaseOrderLineList) {
 
-			invoiceLineList.addAll(this.createInvoiceLine(invoice, purchaseOrderLine));
+			//Lines of subscription type are invoiced directly from purchase order line or from the subscription batch
+			if (!ProductRepository.PRODUCT_TYPE_SUBSCRIPTABLE.equals(purchaseOrderLine.getProduct().getProductTypeSelect())){
+				invoiceLineList.addAll(this.createInvoiceLine(invoice, purchaseOrderLine));
+				purchaseOrderLine.setInvoiced(true);
+			}
 		}
 		return invoiceLineList;
 	}
-	
-	public List<InvoiceLine> createInvoiceLine(Invoice invoice, Product product, String productName, BigDecimal price, String description, BigDecimal qty,
-			Unit unit, TaxLine taxLine, ProductVariant productVariant, BigDecimal discountAmount, int discountTypeSelect, BigDecimal exTaxTotal) throws AxelorException  {
-		
-		InvoiceLineGenerator invoiceLineGenerator = new InvoiceLineGenerator(invoice, product, productName, price, description, qty, unit, taxLine, product.getInvoiceLineType(), 
-				InvoiceLineGenerator.DEFAULT_SEQUENCE, discountAmount, discountTypeSelect, exTaxTotal, false)  {
+
+	@Override
+	public List<InvoiceLine> createInvoiceLine(Invoice invoice, PurchaseOrderLine purchaseOrderLine) throws AxelorException  {
+
+		Product product = purchaseOrderLine.getProduct();
+
+		InvoiceLineGeneratorSupplyChain invoiceLineGenerator = new InvoiceLineGeneratorSupplyChain(invoice, product, purchaseOrderLine.getProductName(),
+				purchaseOrderLine.getDescription(), purchaseOrderLine.getQty(), purchaseOrderLine.getUnit(),
+				purchaseOrderLine.getSequence(), false, null, purchaseOrderLine, null, null)  {
 			@Override
 			public List<InvoiceLine> creates() throws AxelorException {
-				
+
 				InvoiceLine invoiceLine = this.createInvoiceLine();
-				
+
 				List<InvoiceLine> invoiceLines = new ArrayList<InvoiceLine>();
 				invoiceLines.add(invoiceLine);
-				
+
 				return invoiceLines;
 			}
 		};
-		
+
 		return invoiceLineGenerator.creates();
 	}
-	
-	public List<InvoiceLine> createInvoiceLine(Invoice invoice, PurchaseOrderLine purchaseOrderLine) throws AxelorException {
-		
-		return this.createInvoiceLine(invoice, purchaseOrderLine.getProduct(), purchaseOrderLine.getProductName(), 
-				purchaseOrderLine.getPrice(), purchaseOrderLine.getDescription(), purchaseOrderLine.getQty(), purchaseOrderLine.getUnit(), purchaseOrderLine.getTaxLine(), 
-				purchaseOrderLine.getProductVariant(), purchaseOrderLine.getDiscountAmount(), purchaseOrderLine.getDiscountTypeSelect(), purchaseOrderLine.getExTaxTotal());
-		
+
+	@Override
+	public BigDecimal getAmountInvoiced(PurchaseOrder purchaseOrder){
+		return this.getAmountInvoiced(purchaseOrder, null, false);
 	}
-			
+
+	/**
+	 * Return the remaining amount to invoice for the purchaseOrder in parameter
+	 *
+	 * @param purchaseOrder
+	 *
+	 * @param currentInvoiceId
+	 * In the case of invoice ventilation or cancellation, the invoice status isn't modify in database but it will be integrated in calculation
+	 * For ventilation, the invoice should be integrated in calculation
+	 * For cancellation,  the invoice shouldn't be integrated in calculation
+	 *
+	 * @param includeInvoice
+	 * To know if the invoice should be or not integrated in calculation
+	 */
+	@Override
+	public BigDecimal getAmountInvoiced(PurchaseOrder purchaseOrder, Long currentInvoiceId, boolean includeInvoice){
+
+		Query q = null;
+		String query;
+		query = "SELECT SUM(self.companyExTaxTotal)"
+				+ " FROM InvoiceLine as self"
+				+ " WHERE ( (self.purchaseOrderLine.id IN (SELECT id FROM PurchaseOrderLine WHERE purchaseOrder.id = :purchaseOrderId)"
+							+ " AND self.invoice.purchaseOrder IS NULL)"
+						+ " OR self.invoice.purchaseOrder.id = :purchaseOrderId )"
+					+ " AND self.invoice.statusSelect = :statusVentilated";
+		if (currentInvoiceId != null){
+			if (includeInvoice){
+				query += " OR self.invoice.id = :invoiceId";
+			}else{
+				query += " AND self.invoice.id <> :invoiceId";
+			}
+		}
+		q = JPA.em().createQuery(query, BigDecimal.class);
+
+		q.setParameter("purchaseOrderId", purchaseOrder.getId());
+		q.setParameter("statusVentilated", InvoiceRepository.STATUS_VENTILATED);
+		if (currentInvoiceId != null){
+			q.setParameter("invoiceId", currentInvoiceId);
+		}
+
+		BigDecimal invoicedAmount = (BigDecimal) q.getSingleResult();
+		if(invoicedAmount != null){
+			if (!purchaseOrder.getCurrency().equals(purchaseOrder.getCompany().getCurrency())){
+				BigDecimal rate = invoicedAmount.divide(purchaseOrder.getCompanyExTaxTotal(), 4, RoundingMode.HALF_UP);
+				invoicedAmount = purchaseOrder.getExTaxTotal().multiply(rate);
+			}
+		}
+
+		return invoicedAmount;
+
+	}
+
 }

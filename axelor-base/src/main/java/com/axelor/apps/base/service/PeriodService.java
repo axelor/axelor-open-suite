@@ -30,7 +30,7 @@ import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 
-public class PeriodService extends PeriodRepository  {
+public class PeriodService {
 	
 	private static final Logger LOG = LoggerFactory.getLogger(PeriodService.class);
 	
@@ -63,13 +63,19 @@ public class PeriodService extends PeriodRepository  {
 	
 	public Period getNextPeriod(Period period) throws AxelorException  {
 		
-		Period nextPeriod = all().filter("self.fromDate > ?1 AND self.company = ?2 AND self.statusSelect = ?3", period.getToDate(), period.getCompany(), PeriodRepository.STATUS_OPENED).fetchOne();
+		Period nextPeriod = periodRepo.all().filter("self.fromDate > ?1 AND self.company = ?2 AND self.statusSelect = ?3", period.getToDate(), period.getCompany(), PeriodRepository.STATUS_OPENED).fetchOne();
 		
 		if (nextPeriod == null || nextPeriod.getStatusSelect() == PeriodRepository.STATUS_CLOSED)  {
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.PERIOD_1), period.getCompany().getName()), IException.CONFIGURATION_ERROR);
 		}
 		LOG.debug("Next Period : {}",nextPeriod);	
 		return period;
+	}
+	
+	public void testOpenPeriod(Period period) throws AxelorException {
+		if(period.getStatusSelect()==PeriodRepository.STATUS_CLOSED){
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.PERIOD_2)), IException.CONFIGURATION_ERROR);
+		}
 	}
 	
 }

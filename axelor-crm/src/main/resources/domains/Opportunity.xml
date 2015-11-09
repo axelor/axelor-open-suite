@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_3.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_4.0.xsd">
 
   <module name="crm" package="com.axelor.apps.crm.db"/>
 
   <entity name="Opportunity" lang="java">
-  
+    
+    <integer name="importId"/>
     <string name="name" title="Name" required="true"/>
     <many-to-one name="partner" ref="com.axelor.apps.base.db.Partner" title="Customer"/>
     <many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" title="Currency"/>
@@ -26,7 +27,15 @@
     
   	<many-to-one name="user" column="user_id" ref="com.axelor.auth.db.User" title="Assigned to"/>
   	<many-to-one name="team" ref="com.axelor.apps.base.db.Team" title="Team"/>
-  
+  	
+  	<track>
+      <field name="name"/>
+      <message if="true" on="CREATE">Opportunity created</message>
+      <message if="salesStageSelect == 2" fields="salesStageSelect" tag="important">Needs analysis</message>
+      <message if="salesStageSelect == 4" fields="salesStageSelect" tag="success">Opportunity won</message>
+      <message if="salesStageSelect == 5" fields="salesStageSelect" tag="warning">Opportunity lost</message>
+    </track>
+    
   </entity>
 
 </domain-models>

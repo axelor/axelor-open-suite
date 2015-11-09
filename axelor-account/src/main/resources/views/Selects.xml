@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
 
 
 	<!-- Nomenclature : * name : "interfaceName" + "fieldName" + ".select" -->
@@ -253,6 +253,22 @@
 		<option value="2">Validated</option>
 	</selection>
 	
+
+	<selection name='account.general.analytic.distribution.type.select'>
+		<option value='1'>Free</option>
+		<option value='2'>Per partner</option>
+		<option value='3'>Per product/family</option>
+	</selection>
 	
+	<selection name="invoice.payment.type.select">
+		<option value="1">Advance Payment</option>
+		<option value="2">Payment</option>
+	</selection>
+	
+	<selection name="invoice.payment.status.select">
+  		<option value="0">Draft</option>
+		<option value="1">Validated</option>
+		<option value="2">Canceled</option>
+	</selection>
 	
 </object-views>

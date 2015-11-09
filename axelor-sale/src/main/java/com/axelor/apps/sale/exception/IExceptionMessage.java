@@ -25,7 +25,7 @@ package com.axelor.apps.sale.exception;
  */
 public interface IExceptionMessage {
 
-	
+	static final String SALE_ORDER_LINE_TAX_LINE = /*$$(*/ "Il manque une ligne de taxe"/*)*/ ;
 	/**
 	 * Sales Order Stock Move Service
 	 */

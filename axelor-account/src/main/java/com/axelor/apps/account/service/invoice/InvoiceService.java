@@ -22,7 +22,6 @@ import java.util.Map;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.base.db.Alarm;
-import com.axelor.db.Repository;
 import com.axelor.exception.AxelorException;
 import com.google.inject.persist.Transactional;
 
@@ -31,7 +30,7 @@ import com.google.inject.persist.Transactional;
  * facturations.
  * 
  */
-public interface InvoiceService extends Repository<Invoice>{
+public interface InvoiceService {
 	
 	public Map<Invoice, List<Alarm>> getAlarms(Invoice... invoices);
 	
@@ -62,7 +61,7 @@ public interface InvoiceService extends Repository<Invoice>{
 	 * @throws AxelorException
 	 */
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void compute(final Invoice invoice) throws AxelorException;
+	public Invoice compute(final Invoice invoice) throws AxelorException;
 	
 	
 	/**
@@ -127,4 +126,12 @@ public interface InvoiceService extends Repository<Invoice>{
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public Invoice createRefund(Invoice invoice) throws AxelorException;
 	
+	
+	public void setDraftSequence(Invoice invoice);
+	
+	
+	public void updateAmountPaid(Invoice invoice) throws AxelorException;
+	
+	public void generateBudgetDistribution(Invoice invoice);
+
 }

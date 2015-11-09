@@ -30,9 +30,9 @@ import com.axelor.apps.account.db.PaymentSchedule;
 import com.axelor.apps.account.db.PaymentScheduleLine;
 import com.axelor.apps.account.db.repo.PaymentScheduleLineRepository;
 
-public class PaymentScheduleLineService extends PaymentScheduleLineRepository{
+public class PaymentScheduleLineService {
 
-	private static final Logger LOG = LoggerFactory.getLogger(PaymentScheduleLineService.class);
+	private final Logger log = LoggerFactory.getLogger( getClass() );
 	
 	
 	/**
@@ -57,9 +57,9 @@ public class PaymentScheduleLineService extends PaymentScheduleLineRepository{
 		paymentScheduleLine.setScheduleLineSeq(scheduleLineSeq);
 		paymentScheduleLine.setScheduleDate(scheduleDate);
 		paymentScheduleLine.setInTaxAmount(inTaxAmount);
-		paymentScheduleLine.setStatusSelect(STATUS_IN_PROGRESS);
+		paymentScheduleLine.setStatusSelect(PaymentScheduleLineRepository.STATUS_IN_PROGRESS);
 		
-		LOG.debug("Création de la ligne de l'échéancier numéro {} pour la date du {} et la somme de {}", 
+		log.debug("Création de la ligne de l'échéancier numéro {} pour la date du {} et la somme de {}", 
 				new Object[] {paymentScheduleLine.getScheduleLineSeq(), paymentScheduleLine.getScheduleDate(), paymentScheduleLine.getInTaxAmount()});
 		
 		return paymentScheduleLine;
@@ -80,7 +80,7 @@ public class PaymentScheduleLineService extends PaymentScheduleLineRepository{
 		
 		BigDecimal inTaxAmount = paymentSchedule.getInTaxAmount();
 		
-		LOG.debug("Création de lignes pour l'échéancier numéro {} (nombre d'échéance : {}, montant : {})", new Object[]{paymentSchedule.getScheduleId(), nbrTerm, inTaxAmount});
+		log.debug("Création de lignes pour l'échéancier numéro {} (nombre d'échéance : {}, montant : {})", new Object[]{paymentSchedule.getScheduleId(), nbrTerm, inTaxAmount});
 		
 		if (nbrTerm > 0 && inTaxAmount.compareTo(BigDecimal.ZERO) == 1){
 			

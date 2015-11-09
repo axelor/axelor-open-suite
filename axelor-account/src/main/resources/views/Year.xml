@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
     
     <grid name="year-account-grid" title="Fiscal years" model="com.axelor.apps.base.db.Year">
         <field name="name"/>
@@ -9,22 +9,22 @@
         <field name="fromDate"/>
         <field name="toDate"/>
         <field name="reportedBalanceDate"/>
-        <field name="company"/>
+        <field name="company" form-view="company-form" grid-view="company-grid"/>
         <field name="statusSelect"/>
     </grid>
     
-    <form   onSave="action-year-check-date,action-fiscal-year-check-date" onNew="action-year-account-record-new" name="year-account-form" title="Fiscal year" model="com.axelor.apps.base.db.Year">
+    <form onSave="action-year-check-date" onNew="action-year-account-record-new" name="year-account-form" title="Fiscal year" model="com.axelor.apps.base.db.Year">
 		<panel readonlyIf="statusSelect == 2">
 			<field name="name"/>
 			<field name="code" colSpan="3"/>
-			<field name="company" widget="SuggestBox" form-view="company-form" required="true" colSpan="3"/>
+			<field name="company" widget="SuggestBox" form-view="company-form" required="true" colSpan="3" grid-view="company-grid"/>
 			<panel title="Dates" colSpan="12">
 				<field name="fromDate" colSpan="3"/>
 				<field name="toDate" colSpan="3"/>
 				<field name="reportedBalanceDate" colSpan="3"/>
 			</panel>
 		</panel>
-		<panel-related field="periodList" colSpan="12" readonlyIf="statusSelect == 2"/>
+		<panel-related field="periodList" colSpan="12" readonlyIf="statusSelect == 2" form-view="period-form" grid-view="period-grid"/>
 		<panel sidebar="true" readonlyIf="statusSelect == 2">
 			<field name="typeSelect" readonly="true" colSpan="6"/>
 			<field name="statusSelect" colSpan="6"/>
@@ -32,21 +32,19 @@
 		</panel>
 		<panel sidebar="true" title="Periods generation assistant" hideIf="statusSelect == 2">
 			<field name="periodDurationSelect"/>
-			<button name="generatePeriods" title="Generate periods" onClick="action-group-account-year-generateperiod-click"/>    
+			<button name="generatePeriods" title="Generate periods" onClick="action-group-account-year-generateperiod-click" />    
 		</panel>
 	</form>
 
     
     <action-group name="action-group-account-year-close-click">
     	<action name="action-year-check-date"/>
-    	<action name="action-fiscal-year-check-date"/>
     	<action name="action-year-close-method"/>
     	<action name="save"/>
     </action-group>
     
     <action-group name="action-group-account-year-generateperiod-click">
     	<action name="action-year-check-date"/>
-    	<action name="action-fiscal-year-check-date"/>
     	<action name="save"/>
     	<action name="action-year-validate-generate-period"/>
     	<action name="action-method-account-year-generate-periods"/>

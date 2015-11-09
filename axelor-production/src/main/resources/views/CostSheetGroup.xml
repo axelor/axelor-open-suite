@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
+    
+    <grid name="cost-sheet-group-grid" title="Cost sheet groups" model="com.axelor.apps.production.db.CostSheetGroup">
+	    <field name="code"/>
+  		<field name="name"/>
+  		<field name="costTypeSelect"/>
+    </grid>
+    
+	<form name="cost-sheet-group-form" title="Cost sheet group" model="com.axelor.apps.production.db.CostSheetGroup" width="large">
+	  <panel>
+	    <field name="code"/>
+  		<field name="name"/>
+  		<field name="costTypeSelect"/>
+  		<panel showIf="costTypeSelect == 3" colSpan="12">
+  		    <field name="rateTypeSelect"/>
+  		    <panel>
+  		        <field name="rate" placeholder="5" title="Surcharge" showIf="rateTypeSelect == 1"/>
+  		    	<field name="rate" placeholder="105" title="Rate" showIf="rateTypeSelect == 2"/>
+  		    </panel>
+	  	    <field name="costSheetGroupSet" form-view="cost-sheet-group-form" grid-view="cost-sheet-group-grid"  colSpan="12"/>
+  		</panel>
+	  </panel>
+	</form>
+	
+</object-views>

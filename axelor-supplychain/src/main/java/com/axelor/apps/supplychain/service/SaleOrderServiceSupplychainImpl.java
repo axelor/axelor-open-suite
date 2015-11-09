@@ -25,52 +25,52 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
-import com.axelor.auth.db.User;
+import com.axelor.apps.base.db.Team;
+import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.sale.db.SaleOrder;
-import com.axelor.apps.sale.service.SaleOrderServiceImpl;
 import com.axelor.apps.stock.db.Location;
+import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
+import com.axelor.inject.Beans;
 
-public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl {
+public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceStockImpl {
 
-	private static final Logger LOG = LoggerFactory.getLogger(SaleOrderServiceSupplychainImpl.class); 
+	private static final Logger LOG = LoggerFactory.getLogger(SaleOrderServiceSupplychainImpl.class);
 
-	/**
-	 * Calculer le montant d'une facture.
-	 * <p> 
-	 * Le calcul est basé sur les lignes de TVA préalablement créées.
-	 * </p>
-	 * 
-	 * @param invoice
-	 * @param vatLines
-	 * @throws AxelorException 
-	 */
-	@Override
-	public void _computeSaleOrder(SaleOrder saleOrder) throws AxelorException {
+	public SaleOrder createSaleOrder(User buyerUser, Company company, Partner contactPartner, Currency currency,
+			LocalDate deliveryDate, String internalReference, String externalReference, Location location, LocalDate orderDate,
+			PriceList priceList, Partner clientPartner, Team team) throws AxelorException  {
 
-		super._computeSaleOrder(saleOrder);
-
-		saleOrder.setAmountRemainingToBeInvoiced(saleOrder.getInTaxTotal());
-
-	}
-
-
-	public SaleOrder createSaleOrder(User buyerUser, Company company, Partner contactPartner, Currency currency, 
-			LocalDate deliveryDate, String internalReference, String externalReference, int invoicingTypeSelect, Location location, LocalDate orderDate, 
-			PriceList priceList, Partner clientPartner) throws AxelorException  {
-		
 		LOG.debug("Création d'une commande fournisseur : Société = {},  Reference externe = {}, Client = {}",
 				new Object[] { company.getName(), externalReference, clientPartner.getFullName() });
-		
-		SaleOrder saleOrder = super.createSaleOrder(buyerUser, company, contactPartner, currency, deliveryDate, internalReference, 
-				externalReference, orderDate, priceList, clientPartner);
+
+		SaleOrder saleOrder = super.createSaleOrder(buyerUser, company, contactPartner, currency, deliveryDate, internalReference,
+				externalReference, orderDate, priceList, clientPartner, team);
+
+		if(location == null)  {
+			location = this.getLocation(company);
+		}
 		
 		saleOrder.setLocation(location);
-		saleOrder.setInvoicingTypeSelect(invoicingTypeSelect);
+
+		saleOrder.setPaymentMode(clientPartner.getPaymentMode());
+		saleOrder.setPaymentCondition(clientPartner.getPaymentCondition());
 		
 		return saleOrder;
 	}
 	
+	public SaleOrder getClientInformations(SaleOrder saleOrder){
+		Partner client = saleOrder.getClientPartner();
+		PartnerService partnerService = Beans.get(PartnerService.class);
+		if(client != null){
+			saleOrder.setPaymentCondition(client.getPaymentCondition());
+			saleOrder.setPaymentMode(client.getPaymentMode());
+			saleOrder.setMainInvoicingAddress(partnerService.getInvoicingAddress(client));
+			saleOrder.setDeliveryAddress(partnerService.getDeliveryAddress(client));
+			saleOrder.setPriceList(client.getSalePriceList());
+		}
+		return saleOrder;
+	}
 }
 
 

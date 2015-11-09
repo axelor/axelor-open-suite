@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_4.0.xsd">
+
+  <module name="purchase" package="com.axelor.apps.purchase.db"/>
+
+  <entity name="PurchaseOrderLine" lang="java">
+  
+  	<decimal name="amountInvoiced" title="Amount invoiced W.T." readonly="true"/>
+
+  	<one-to-many name="analyticDistributionLineList" ref="com.axelor.apps.account.db.AnalyticDistributionLine" title="Analytic distribution lines" mappedBy="purchaseOrderLine"/>
+	<many-to-one name="analyticDistributionTemplate" title="Analytic distribution template" ref="com.axelor.apps.account.db.AnalyticDistributionTemplate"/>
+	<boolean name="toInvoice"/>
+	<boolean name="invoiced" readonly="true"/>
+	<many-to-one name="budget" ref="com.axelor.apps.account.db.Budget" title="Budget"/>
+	<one-to-many name="budgetDistributionList" ref="com.axelor.apps.account.db.BudgetDistribution" title="Budget Distribution" mappedBy="purchaseOrderLine"/>
+	
+  </entity>
+
+</domain-models>

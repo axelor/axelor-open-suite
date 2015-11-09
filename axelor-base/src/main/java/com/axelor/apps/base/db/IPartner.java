@@ -17,6 +17,9 @@
  */
 package com.axelor.apps.base.db;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Interface of Partner object. Enum all static variable of object.
  * 
@@ -29,13 +32,5 @@ public interface IPartner {
 
 	static final int PARTNER_TYPE_SELECT_ENTERPRISE = 1;
 	static final int PARTNER_TYPE_SELECT_INDIVIDUAL = 2;
-
-
-	static final int CUSTOMER_TYPE_SELECT_NO = 1;
-	static final int CUSTOMER_TYPE_SELECT_PROSPECT = 2;
-	static final int CUSTOMER_TYPE_SELECT_YES = 3;
-	
-	static final int SUPPLIER_TYPE_SELECT_NO = 1;
-	static final int SUPPLIER_TYPE_SELECT_YES = 2;
-	static final int SUPPLIER_TYPE_SELECT_APPROVED = 3;
+	static Map<String,String> modelPartnerFieldMap = new HashMap<>();
 }

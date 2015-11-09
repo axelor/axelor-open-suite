@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
 
 	<grid name="bank-details-grid" id="bank-details-grid" title="Bank details" model="com.axelor.apps.base.db.BankDetails">
 		<field name="ownerName" />
@@ -11,7 +11,7 @@
 	</grid>
 
 	<form onSave="action-validate-bank-details-bbanKey" onNew="action-set-default-partner" name="bank-details-form" title="Bank details" 
-	model="com.axelor.apps.base.db.BankDetails" id="bank-details-form">
+	model="com.axelor.apps.base.db.BankDetails" id="bank-details-form" width="large">
 		<panel title="Owner">
 			<field name="partner" onChange="action-set-owner-name" domain="self.isContact = false" form-view="partner-form" grid-view="partner-grid" />
 			<field name="ownerName" />

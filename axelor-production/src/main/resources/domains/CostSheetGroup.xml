@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_4.0.xsd">
+
+  <module name="production" package="com.axelor.apps.production.db"/>
+
+  <entity name="CostSheetGroup" lang="java">
+  
+	<string name="code" title="Code"/>
+	<string name="name" title="Name"/>
+	<integer name="costTypeSelect" title="Cost type" selection="production.cost.sheet.group.cost.type.select"/>
+    <many-to-many name="costSheetGroupSet" ref="com.axelor.apps.production.db.CostSheetGroup" title="Cost sheet groups"/>  
+    <integer name="rateTypeSelect" title="Rate type" selection="production.cost.sheet.group.rate.type.select"/>
+	<decimal name="rate" title="Rate"/>
+	
+	<extra-code><![CDATA[
+	
+	   	// COST TYPE SELECT
+		public static final int COST_TYPE_DIRECT_MATERIAL = 1;
+		public static final int COST_TYPE_DIRECT_MANUFACTURING = 2;
+		public static final int COST_TYPE_INDIRECT = 3;
+		
+	 	// RATE TYPE SELECT
+		public static final int COST_TYPE_SURCHARGE = 1;
+		public static final int COST_TYPE_RATE = 2;
+	
+	]]></extra-code>
+    
+  </entity>
+</domain-models>

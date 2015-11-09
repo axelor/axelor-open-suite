@@ -25,11 +25,10 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.ManufOrder;
-import com.axelor.db.Repository;
 import com.axelor.exception.AxelorException;
 import com.google.inject.persist.Transactional;
 
-public interface ManufOrderService extends Repository<ManufOrder> {
+public interface ManufOrderService {
 
 	public static int DEFAULT_PRIORITY = 10;
 	public static int DEFAULT_PRIORITY_INTERVAL = 10;
@@ -38,7 +37,7 @@ public interface ManufOrderService extends Repository<ManufOrder> {
 	
 	
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public ManufOrder generateManufOrder(Product product, BigDecimal qty, int priority, boolean isToInvoice, Company company,
+	public ManufOrder generateManufOrder(Product product, BigDecimal qtyRequested, int priority, boolean isToInvoice, 
 			BillOfMaterial billOfMaterial, LocalDateTime plannedStartDateT) throws AxelorException;
 	
 	
@@ -53,7 +52,6 @@ public interface ManufOrderService extends Repository<ManufOrder> {
 	
 	@Transactional
 	public void preFillOperations(ManufOrder manufOrder) throws AxelorException;
-	
 	
 	
 	public String getManufOrderSeq() throws AxelorException;

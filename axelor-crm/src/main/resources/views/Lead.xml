@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
     
     <grid name="lead-grid" title="Leads" model="com.axelor.apps.crm.db.Lead" orderBy="-contactDate,statusSelect">
     	<toolbar>
@@ -23,7 +23,7 @@
         <field name="fixedPhone"/>
 		<field name="emailAddress.address"/>
 		<field name="contactDate"/>
-		<field name="user"/>
+		<field name="user" form-view="user-form" grid-view="user-grid"/>
         <field name="statusSelect"/>
         <button name="grabLead" help="Assign to me" icon="fa-suitcase" onClick="com.axelor.apps.crm.web.EventController:assignToMeLead" readonlyIf="user != null"/>
 		<button name="logCall" title="Log Call" icon="fa-phone" onClick="action-lead-view-create-call"/>
@@ -56,16 +56,17 @@
 			<panel x-span="9" >
 				<field name="fullName" showTitle="false" colSpan="12" readonlyIf="statusSelect == 4 || statusSelect == 6">
 					<editor x-show-titles="false">
-						<field name="name" showTitle="false" css="highlight" placeholder="Name" colSpan="4" onChange="action-lead-method-set-social-network-url"/>
-						<field name="firstName" showTitle="false" css="highlight" placeholder="First name" colSpan="4" onChange="action-lead-method-set-social-network-url"/>            
-						<field name="titleSelect" showTitle="false" placeholder="Civility" colSpan="2"/>
+						<field name="name" showTitle="false" css="highlight" placeholder="Name" colSpan="12" onChange="action-lead-method-set-social-network-url"/>
+						<field name="firstName" showTitle="false" css="highlight" placeholder="First name" colSpan="12" onChange="action-lead-method-set-social-network-url"/>            
+						<field name="titleSelect" showTitle="false" placeholder="Civility" colSpan="12"/>
 					</editor>
 				</field>
 				<field name="companyName" showTitle="false" colSpan="12" readonlyIf="statusSelect == 4 || statusSelect == 6">
 					<editor x-show-titles="false">
-						<field name="enterpriseName" colSpan="4" showIf="partner == null" placeholder="Enterprise name" onChange="action-lead-method-set-social-network-url"/>
-						<field name="jobTitle" colSpan="4" placeholder="Function"/>
-						<field name="partner" colSpan="4" showIf="statusSelect == 4" domain="self.isContact = false" form-view="partner-form" grid-view="partner-grid"/>
+						<field name="enterpriseName" colSpan="12" showIf="partner == null" placeholder="Enterprise name" onChange="action-lead-method-set-social-network-url"/>
+						<field name="jobTitle" colSpan="12" placeholder="Function"/>
+						<field name="industrySector" colSpan="12" form-view="industry-sector-form" grid-view="industry-sector-grid"/>
+						<field name="partner" colSpan="12" showIf="statusSelect == 4" domain="self.isContact = false" form-view="partner-form" grid-view="partner-grid"/>
 					</editor>
 				</field>
 				<panel colSpan="4" showIf="fullName != null">
@@ -99,14 +100,14 @@
 				<field name="primaryState" colSpan="4"/>
 				<field name="primaryPostalCode" colSpan="4"/>
 				<spacer colSpan="8"/>
-				<field name="primaryCountry" colSpan="4"/>
+				<field name="primaryCountry" colSpan="4" form-view="country-form" grid-view="country-grid"/>
 			</panel>
 			<panel title="Other address" readonlyIf="statusSelect == 4 || statusSelect == 6" colSpan="6">
 				<field name="otherAddress" colSpan="12"/>
 				<field name="otherCity" colSpan="4"/>
 				<field name="otherState" colSpan="4"/>
 				<field name="otherPostalCode" colSpan="4"/>
-				<field name="otherCountry" colSpan="4"/>
+				<field name="otherCountry" colSpan="4" form-view="country-form" grid-view="country-grid"/>
 				<spacer colSpan="8"/> 
 				<field name="isCopyAddress" onChange="action-group-crm-lead-iscopyaddress-onchange"/>
 			</panel>
@@ -120,8 +121,8 @@
 		</panel>
 	
 		<panel sidebar="true" title="Follow-up" colSpan="12" readonlyIf="statusSelect == 4 || statusSelect == 6">
-			<field name="user" colSpan="6"/>
-			<field name="team" colSpan="6"/>
+			<field name="user" colSpan="6" form-view="user-form" grid-view="user-grid"/>
+			<field name="team" colSpan="6" form-view="team-form" grid-view="team-grid" if="__config__.general.getTeamManagement()"/>
 			<button name="grabLead" title="Assign to me" hideIf="user.id == _internalUserId" icon="fa-suitcase" onClick="save,com.axelor.apps.crm.web.EventController:assignToMeLead"/>
 			<field name="createdBy" colSpan="6"/>
 			<field name="createdOn" colSpan="6"/>
@@ -130,7 +131,7 @@
 		</panel>
 		
 		<panel sidebar="true" title="Marketing" readonlyIf="statusSelect == 4 || statusSelect == 6" colSpan="12">
-			<field name="source" colSpan="6"/>
+			<field name="source" colSpan="6" form-view="source-form" grid-view="source-grid"/>
 			<field name="referredBy" colSpan="6"/>
 			<field name="opportunityAmount" colSpan="6"/>
 		</panel>
@@ -141,6 +142,11 @@
 			<panel-dashlet action="action-lead-view-opportunity"/>
 			<panel-dashlet action="action-lead-view-event-ticket"/>
  		</panel>
+ 		
+ 		<panel-mail>
+		  <mail-messages limit="4" />
+		  <mail-followers />
+	  	</panel-mail>
 
 	</form>
 
@@ -151,7 +157,7 @@
         <field name="fixedPhone"/>
 		<field name="emailAddress.address"/>
 		<field name="contactDate"/>
-		<field name="user"/>
+		<field name="user" form-view="user-form" grid-view="user-grid"/>
         <field name="statusSelect"/>
 		<button name="add" title="Add" icon="fa-plus" onClick="action-lead-event-add-attendee"/>
     </grid>
@@ -200,7 +206,7 @@
     
     <action-record name="action-lead-default-record-new" model="com.axelor.apps.crm.db.Lead">
     	<field name="statusSelect" expr="2"/>
-    	<field name="contactDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()" if="contactDate == null"/>
+    	<field name="contactDate" expr="eval:__config__.generalService.getTodayDate()" if="contactDate == null"/>
     	<field name="user"  expr="eval:__user__"/>
     	<field name="team"  expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"/>
     </action-record>
@@ -221,7 +227,7 @@
    		<attribute name="readonly" for="otherCountry" expr="eval: isCopyAddress"/>
    	</action-attrs>
    	
-   	<action-view name="action-lead-view-convert-lead" title="Convert lead" model="com.axelor.apps.base.db.Wizard">
+   	<action-view name="action-lead-view-convert-lead" title="Convert lead (${ fullName })" model="com.axelor.apps.base.db.Wizard">
 		<view type="form" name="convert-lead-wizard-form"/>
 		<context name="_lead" expr="eval: __self__"/>
 		<context name="_primaryAddress" expr="eval: primaryAddress"/>
@@ -229,25 +235,25 @@
     
     <!--     CREATE CRM OBJECT FROM LEAD -->
     
-    <action-view name="action-lead-view-create-call" title="Create call" model="com.axelor.apps.crm.db.Event">
+    <action-view name="action-lead-view-create-call" title="Create call (${ fullName })" model="com.axelor.apps.crm.db.Event">
     	<view type="form" name="call-form"/>
     	<context name="_lead" expr="eval: __self__"/>
     	<context name="_typeSelect" expr="1"/>
     </action-view>
     
-    <action-view name="action-lead-view-create-meeting" title="Create meeting" model="com.axelor.apps.crm.db.Event">
+    <action-view name="action-lead-view-create-meeting" title="Create meeting (${ fullName })" model="com.axelor.apps.crm.db.Event">
     	<view type="form" name="meeting-form"/>
     	<context name="_lead" expr="eval: __self__"/>
     	<context name="_typeSelect" expr="2"/>
     </action-view>
     
-    <action-view name="action-lead-view-create-task" title="Create task" model="com.axelor.apps.crm.db.Event">
+    <action-view name="action-lead-view-create-task" title="Create task (${ fullName })" model="com.axelor.apps.crm.db.Event">
     	<view type="form" name="crm-task-form"/>
     	<context name="_lead" expr="eval: __self__"/>
     	<context name="_typeSelect" expr="3"/>
     </action-view>
     
-    <action-view name="action-lead-view-create-opportunity" title="Create opportunity" model="com.axelor.apps.crm.db.Opportunity">
+    <action-view name="action-lead-view-create-opportunity" title="Create opportunity (${ fullName })" model="com.axelor.apps.crm.db.Opportunity">
     	<view type="form" name="opportunity-form"/>
     	<context name="_lead" expr="eval: __self__"/>
     </action-view>

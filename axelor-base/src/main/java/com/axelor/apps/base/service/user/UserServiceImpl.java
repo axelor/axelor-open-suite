@@ -30,7 +30,7 @@ import com.google.inject.Inject;
  * les informations utilisateur.
  * 
  */
-public class UserServiceImpl extends UserRepository implements UserService  {
+public class UserServiceImpl implements UserService  {
 
 	/**
 	 * Méthode qui retourne le User de l'utilisateur connecté

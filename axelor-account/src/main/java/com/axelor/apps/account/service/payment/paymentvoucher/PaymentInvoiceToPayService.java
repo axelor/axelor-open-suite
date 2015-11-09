@@ -26,11 +26,10 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentInvoiceToPay;
 import com.axelor.apps.account.db.PaymentVoucher;
-import com.axelor.apps.account.db.repo.PaymentInvoiceToPayRepository;
 
-public class PaymentInvoiceToPayService extends PaymentInvoiceToPayRepository {
+public class PaymentInvoiceToPayService {
 	
-	private static final Logger LOG = LoggerFactory.getLogger(PaymentInvoiceToPayService.class); 
+	private final Logger log = LoggerFactory.getLogger( getClass() );
 	
 	/**
 	 * Generic method for creating invoice to pay lines (2nd O2M in the view)
@@ -38,25 +37,26 @@ public class PaymentInvoiceToPayService extends PaymentInvoiceToPayRepository {
 	 * @param seq
 	 * @return
 	 */
-	public PaymentInvoiceToPay createPaymentInvoiceToPay(PaymentVoucher pv,int seq,Invoice invoice,MoveLine ml,BigDecimal totalAmount,BigDecimal remainingAmount,BigDecimal amountToPay){
+	public PaymentInvoiceToPay createPaymentInvoiceToPay(PaymentVoucher paymentVoucher, int seq, Invoice invoice, MoveLine moveLine, 
+			BigDecimal totalAmount, BigDecimal remainingAmount, BigDecimal amountToPay){
 		
-		LOG.debug("In  createPaymentInvoiceToPay....");
+		log.debug("In  createPaymentInvoiceToPay....");
 		
-		if (pv != null && ml != null){
+		if (paymentVoucher != null && moveLine != null){
 			PaymentInvoiceToPay piToPay= new PaymentInvoiceToPay();
 			piToPay.setSequence(seq);
-			piToPay.setMoveLine(ml);
+			piToPay.setMoveLine(moveLine);
 			piToPay.setTotalAmount(totalAmount);
 			piToPay.setRemainingAmount(remainingAmount);
 			piToPay.setAmountToPay(amountToPay);
-			piToPay.setPaymentVoucher(pv);
+			piToPay.setPaymentVoucher(paymentVoucher);
 			
-			LOG.debug("End createPaymentInvoiceToPay IF.");
+			log.debug("End createPaymentInvoiceToPay IF.");
 			
 			return piToPay;
 		}
 		else{
-			LOG.debug("End createPaymentInvoiceToPay ELSE.");
+			log.debug("End createPaymentInvoiceToPay ELSE.");
 			return null;
 		}
 	}

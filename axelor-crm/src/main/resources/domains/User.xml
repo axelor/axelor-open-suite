@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_3.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_4.0.xsd">
 
   <module name="auth" package="com.axelor.auth.db"/>
 
   <entity name="User" sequential="true" lang="java">
   
 <!--     Calendar -->
-    <many-to-many name="followersCalUserSet" ref="com.axelor.auth.db.User" title="Followers users" help="true"/>
-    <many-to-many name="authorizeCalUserSet" ref="com.axelor.auth.db.User" title="Authorized users to follow me" help="true"/>
+    <many-to-many name="followersCalUserSet" ref="com.axelor.auth.db.User" title="Followed users" help="true"/>
+    <one-to-many name="calendarManagementList" ref="com.axelor.apps.crm.db.CalendarManagement" title="Calendars permissions" help="true" mappedBy="parentUser"/>
     
     
   </entity>

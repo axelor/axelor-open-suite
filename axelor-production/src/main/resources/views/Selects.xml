@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
 
 
 	<!-- Nomenclature : * name : "interfaceName" + "fieldName" + ".select" -->
@@ -16,21 +16,48 @@
 		
 	</selection>
 	
-	<selection name="iproduction.prod.resource.resource.type.select">
+	<selection name="iproduction.work.center.type.select">
 		<option value="1">Human</option>
 		<option value="2">Machine</option>
 		<option value="3">Human and Machine</option>
 	</selection>
 	
-	<selection name="iproduction.prod.resource.cost.type.select">
+	<selection name="iproduction.work.center.cost.type.select">
 		<option value="1">Per hour</option>
 		<option value="2">Per Cycle</option>
+		<option value="3">Per piece</option>
 	</selection>
 	
-	<selection name="iproduction.project.prod.inv.type.select">
-		<option value="1">None</option>
-		<option value="2">Yes (Fixed)</option>
-		<option value="3">Yes (Real)</option>
+	<selection name="supplychain.mrp.line.element.select" id="production.supplychain.mrp.line.element.select">
+	    <option value="6">Manufacturing order</option>
+	    <option value="7">Need / Manufacturing order</option>
+   	    <option value="8">Manufacturing proposal</option>
+  	    <option value="9">Need / Manufacturing proposal</option>
 	</selection>
+	
+	<selection name="supplychain.mrp.line.related.to.select" id="production.supplychain.mrp.line.related.to.select">
+		<option value="com.axelor.apps.production.db.ManufOrder">Manufactoring order</option>
+		<option value="com.axelor.apps.production.db.OperationOrder">Operation order</option>
+	</selection>
+	
+	<selection name="production.cost.sheet.line.type.select">
+	    <option value="1" icon="img/32px/produceProduct.png">Produced product</option>
+	    <option value="2" icon="img/32px/consumeProduct.png">Consommed product</option>
+	    <option value="3" icon="img/32px/workCenter.png">Work center</option>
+	    <option value="4" icon="img/32px/indirectCost.png">Indirect cost</option>
+	</selection>
+	
+	<selection name="production.cost.sheet.group.cost.type.select">
+	    <option value="1">Direct Material</option>
+	    <option value="2">Direct Manufacturing</option>
+	    <option value="3">Indirect</option>
+	</selection>
+	
+	<selection name="production.cost.sheet.group.rate.type.select">
+	    <option value="1">Surcharge</option>
+	    <option value="2">Rate</option>
+	</selection>
+	
+	
 	
 </object-views>

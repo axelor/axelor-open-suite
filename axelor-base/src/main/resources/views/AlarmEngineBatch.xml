@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
 
 	<grid name="alarm-engine-batch-grid" title="Alarm engine batches" model="com.axelor.apps.base.db.AlarmEngineBatch">
 		<field name="code" />
-		<field name="metaModelSet" />
-		<field name="alarmEngineSet" />
+		<field name="metaModelSet" form-view="meta-model-form" grid-view="meta-model-grid"/>
+		<field name="alarmEngineSet" grid-view="alarm-engine-grid" form-view="alarm-engine-form" />
 	</grid>
 
-	<form name="alarm-engine-batch-form" title="Alarm engine" model="com.axelor.apps.base.db.AlarmEngineBatch">
+	<form name="alarm-engine-batch-form" title="Alarm engine" model="com.axelor.apps.base.db.AlarmEngineBatch" width="large">
 		<toolbar>
 			<button name="run" title="Run" onClick="save,alarm-engine-batch-method-run" />
 		</toolbar>
@@ -18,8 +18,8 @@
 		</panel>
 		<panel-tabs>
 			<panel title="Configuration">
-				<panel-related field="metaModelSet" colSpan="12" />
-				<panel-related field="alarmEngineSet" onSelect="alarm-engine-batch-attrs-alarm-engine-domain" colSpan="12" />
+				<panel-related field="metaModelSet" colSpan="12" form-view="meta-model-form" grid-view="meta-model-grid"/>
+				<panel-related field="alarmEngineSet" onSelect="alarm-engine-batch-attrs-alarm-engine-domain" colSpan="12" grid-view="alarm-engine-grid" form-view="alarm-engine-form" />
 			</panel>
 			<panel title="Batches">
 				<field name="description" showTitle="false" colSpan="12" />

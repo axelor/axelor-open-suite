@@ -29,6 +29,11 @@
             <property name="id">209</property>
             <expression name="value" type="javascript">params["Password"].value</expression>
         </structure>
+        <structure>
+            <property name="name">odaDriverClass</property>
+            <property name="id">209</property>
+            <expression name="value" type="javascript">params["DefaultDriver"].value</expression>
+        </structure>
     </list-property>
     <property name="units">cm</property>
     <property name="layoutPreference">auto layout</property>
@@ -107,6 +112,17 @@
             <simple-property-list name="defaultValue">
                 <value type="constant"></value>
             </simple-property-list>
+            <list-property name="selectionList"/>
+            <property name="paramType">simple</property>
+            <property name="controlType">text-box</property>
+            <structure name="format">
+                <property name="category">Unformatted</property>
+            </structure>
+        </scalar-parameter>
+        <scalar-parameter name="DefaultDriver" id="3826">
+            <property name="valueType">static</property>
+            <property name="dataType">string</property>
+            <property name="distinct">true</property>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
             <property name="controlType">text-box</property>
@@ -718,24 +734,22 @@
                 </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[select
-Lead.id as id,MetaFile.file_path as logoPath, Lead.created_on, Lead.updated_on, Lead.created_by, Lead.updated_by, Lead.title_select,
-Lead.name as "lead_name", Lead.first_name as "lead_first_name", Lead.status_select, Source.name as "source_name",
-SelectItem.title as "industry_sector_select", Lead.fax,messageEmailAddress.address as email, Lead.fixed_phone, Lead.mobile_phone, Lead.web_site, Lead.enterprise_name,
-Lead.primary_address, Lead.primary_state, Lead.primary_city, Lead.primary_postal_code, PrimaryCountry.name as "primary_country",
-Lead.other_address, Lead.other_state, Lead.other_city, Lead.other_postal_code, OtherCountry.name as "other_country",
-Lead.job_title, AuthUser.full_name as "user_name", Company.name as "company_name"
+Lead.id as id,MetaFile.file_path as logopath, Lead.created_on, Lead.updated_on, Lead.created_by, Lead.updated_by, Lead.title_select,
+Lead.name as lead_name, Lead.first_name as lead_first_name, Lead.status_select, Source.name AS source_name,
+IndustrySector.name as industry_sector_select, Lead.fax,messageEmailAddress.address AS email, Lead.fixed_phone, Lead.mobile_phone, Lead.web_site, Lead.enterprise_name,
+Lead.primary_address, Lead.primary_state, Lead.primary_city, Lead.primary_postal_code, PrimaryCountry.name as primary_country,
+Lead.other_address, Lead.other_state, Lead.other_city, Lead.other_postal_code, OtherCountry.name as other_country,
+Lead.job_title, AuthUser.full_name as user_name, Company.name as company_name
 from crm_lead as Lead 
 left join auth_user as AuthUser on (Lead.user_id = AuthUser.id)
 left join base_company as Company on (AuthUser.active_company = Company.id)
 left join meta_file as MetaFile on (MetaFile.id = Company.logo)
-left join base_partner as Partner on (AuthUser.partner = Partner.id)
+left join base_partner as Partner on (Lead.partner = Partner.id)
+left join base_industry_sector as IndustrySector on (IndustrySector.id = Lead.industry_sector)
 left join base_source as Source on (Lead.source = Source.id)
 left join base_country as PrimaryCountry on (Lead.primary_country = PrimaryCountry.id)
 left join base_country as OtherCountry on (Lead.other_country = OtherCountry.id)
-left join message_email_address as messageEmailAddress On messageEmailAddress.id=Lead.email_address
-left join meta_select as MetaSelect on (MetaSelect.name = 'partner.industry.sectory.select')
-left join meta_select_item as SelectItem on (SelectItem.select_id = MetaSelect.id and cast(SelectItem.value as decimal) = Partner.industry_sector_select)
-]]></xml-property>
+left join message_email_address as messageEmailAddress On messageEmailAddress.id=Lead.email_address]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
   <Version>2.0</Version>
@@ -2895,9 +2909,9 @@ left join meta_select_item as SelectItem on (SelectItem.select_id = MetaSelect.i
                     <property name="nativeDataType">12</property>
                 </structure>
             </list-property>
-            <xml-property name="queryText"><![CDATA[select LangTranslate.key, LangTranslate.message as "translation" 
+            <xml-property name="queryText"><![CDATA[select LangTranslate.message_key, LangTranslate.message_value as "translation" 
 from meta_translation as LangTranslate 
-where LangTranslate.key = ? and LangTranslate.language = ?]]></xml-property>
+where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
   <Version>2.0</Version>
@@ -3243,7 +3257,7 @@ where LangTranslate.key = ? and LangTranslate.language = ?]]></xml-property>
                                             <structure>
                                                 <property name="name">key</property>
                                                 <text-property name="displayName">key</text-property>
-                                                <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                                 <property name="dataType">string</property>
                                             </structure>
                                             <structure>
@@ -3315,7 +3329,7 @@ where LangTranslate.key = ? and LangTranslate.language = ?]]></xml-property>
                                             <structure>
                                                 <property name="name">key</property>
                                                 <text-property name="displayName">key</text-property>
-                                                <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                                 <property name="dataType">string</property>
                                             </structure>
                                             <structure>
@@ -3369,7 +3383,7 @@ where LangTranslate.key = ? and LangTranslate.language = ?]]></xml-property>
                                             <structure>
                                                 <property name="name">key</property>
                                                 <text-property name="displayName">key</text-property>
-                                                <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                                 <property name="dataType">string</property>
                                             </structure>
                                             <structure>
@@ -3416,7 +3430,7 @@ where LangTranslate.key = ? and LangTranslate.language = ?]]></xml-property>
                                             <structure>
                                                 <property name="name">key</property>
                                                 <text-property name="displayName">key</text-property>
-                                                <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                                 <property name="dataType">string</property>
                                             </structure>
                                             <structure>
@@ -3462,7 +3476,7 @@ where LangTranslate.key = ? and LangTranslate.language = ?]]></xml-property>
                                             <structure>
                                                 <property name="name">key</property>
                                                 <text-property name="displayName">key</text-property>
-                                                <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                                 <property name="dataType">string</property>
                                             </structure>
                                             <structure>
@@ -3509,7 +3523,7 @@ where LangTranslate.key = ? and LangTranslate.language = ?]]></xml-property>
                                             <structure>
                                                 <property name="name">key</property>
                                                 <text-property name="displayName">key</text-property>
-                                                <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                                 <property name="dataType">string</property>
                                             </structure>
                                             <structure>
@@ -3555,7 +3569,7 @@ where LangTranslate.key = ? and LangTranslate.language = ?]]></xml-property>
                                             <structure>
                                                 <property name="name">key</property>
                                                 <text-property name="displayName">key</text-property>
-                                                <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                                 <property name="dataType">string</property>
                                             </structure>
                                             <structure>
@@ -3602,7 +3616,7 @@ where LangTranslate.key = ? and LangTranslate.language = ?]]></xml-property>
                                             <structure>
                                                 <property name="name">key</property>
                                                 <text-property name="displayName">key</text-property>
-                                                <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                                 <property name="dataType">string</property>
                                             </structure>
                                             <structure>
@@ -3648,7 +3662,7 @@ where LangTranslate.key = ? and LangTranslate.language = ?]]></xml-property>
                                             <structure>
                                                 <property name="name">key</property>
                                                 <text-property name="displayName">key</text-property>
-                                                <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                                 <property name="dataType">string</property>
                                             </structure>
                                             <structure>
@@ -3695,7 +3709,7 @@ where LangTranslate.key = ? and LangTranslate.language = ?]]></xml-property>
                                             <structure>
                                                 <property name="name">key</property>
                                                 <text-property name="displayName">key</text-property>
-                                                <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                                 <property name="dataType">string</property>
                                             </structure>
                                             <structure>
@@ -3741,7 +3755,7 @@ where LangTranslate.key = ? and LangTranslate.language = ?]]></xml-property>
                                             <structure>
                                                 <property name="name">key</property>
                                                 <text-property name="displayName">key</text-property>
-                                                <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                                 <property name="dataType">string</property>
                                             </structure>
                                             <structure>
@@ -3801,7 +3815,7 @@ where LangTranslate.key = ? and LangTranslate.language = ?]]></xml-property>
                                             <structure>
                                                 <property name="name">key</property>
                                                 <text-property name="displayName">key</text-property>
-                                                <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                                 <property name="dataType">string</property>
                                             </structure>
                                             <structure>
@@ -3847,7 +3861,7 @@ where LangTranslate.key = ? and LangTranslate.language = ?]]></xml-property>
                                             <structure>
                                                 <property name="name">key</property>
                                                 <text-property name="displayName">key</text-property>
-                                                <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                                 <property name="dataType">string</property>
                                             </structure>
                                             <structure>
@@ -3886,7 +3900,7 @@ where LangTranslate.key = ? and LangTranslate.language = ?]]></xml-property>
                                             <structure>
                                                 <property name="name">key</property>
                                                 <text-property name="displayName">key</text-property>
-                                                <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
                                                 <property name="dataType">string</property>
                                             </structure>
                                             <structure>

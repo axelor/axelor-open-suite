@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
+    
+    <action-record name="action-product-set-stock" model="com.axelor.apps.base.db.Product" if-module="axelor-stock">
+        <field name="$realQty" expr="call:com.axelor.apps.stock.service.LocationService:getRealQty(id, null)" />
+        <field name="$futureQty" expr="call:com.axelor.apps.stock.service.LocationService:getFutureQty(id, null)" />
+    </action-record>
+    
+	
+</object-views>

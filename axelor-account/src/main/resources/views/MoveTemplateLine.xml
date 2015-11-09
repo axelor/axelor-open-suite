@@ -1,24 +1,24 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
     
     <grid name="move-template-line-grid" title="Move template line" model="com.axelor.apps.account.db.MoveTemplateLine">
-        <field name="moveTemplate"/>
+        <field name="moveTemplate" form-view="move-template-form" grid-view="move-template-grid"/>
         <field name="name" />
         <field name="debitCreditSelect" />
-        <field name="product"/>
-        <field name="account"/>
+        <field name="product" form-view="product-form" grid-view="product-grid"/>
+        <field name="account" form-view="account-form" grid-view="account-grid"/>
         <field name="percentage"/>
     </grid>
     
     <form name="move-template-line-form" title="Move template line" model="com.axelor.apps.account.db.MoveTemplateLine">
-        <panel   readonlyIf="isValid">
-	        <field name="moveTemplate"  onChange="action-move-template-line-get-account" required="true"/>
+        <panel readonlyIf="isValid">
+	        <field name="moveTemplate"  onChange="action-move-template-line-get-account" required="true" form-view="move-template-form" grid-view="move-template-grid"/>
 	        <field name="name"/>
 	        <field name="debitCreditSelect" onChange="action-move-template-line-get-account"/>
-	        <field name="product" onChange="action-move-template-line-get-account"/>
-	        <field name="account" onSelect="action-move-template-line-set-account-domain"/>
+	        <field name="product" onChange="action-move-template-line-get-account" form-view="product-form" grid-view="product-grid"/>
+	        <field name="account" onSelect="action-move-template-line-set-account-domain" form-view="account-form" grid-view="account-grid"/>
 	        <field name="percentage" placeholder="80" onChange="action-template-move-line-check-percent"/>
 	        <field name="hasPartnerToDebit" showIf="debitCreditSelect == '0'" />
 	        <field name="hasPartnerToCredit" showIf="debitCreditSelect == '1'" />

@@ -25,13 +25,12 @@ import javax.mail.MessagingException;
 
 import com.axelor.apps.message.db.EmailAddress;
 import com.axelor.apps.message.db.Message;
-import com.axelor.db.Repository;
 import com.axelor.exception.AxelorException;
 import com.axelor.meta.db.MetaAttachment;
 import com.axelor.meta.db.MetaFile;
 import com.google.inject.persist.Transactional;
 
-public interface MessageService extends Repository<Message> {
+public interface MessageService {
 	
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public Message createMessage(String model, int id, String subject, String content, EmailAddress fromEmailAddress, List<EmailAddress> replytoEmailAddressList, List<EmailAddress> toEmailAddressList, 

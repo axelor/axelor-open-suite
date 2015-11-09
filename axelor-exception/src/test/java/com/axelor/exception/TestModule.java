@@ -32,6 +32,6 @@ public class TestModule extends AbstractModule {
 			CacheManager.getInstance().shutdown();
 		}
         install(new JpaModule("testUnit", true, true));
-        install(new AuthModule.Simple());
+        install(new AuthModule());
 	}
 }

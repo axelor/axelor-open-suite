@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_3.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_4.0.xsd">
 
   <module name="production" package="com.axelor.apps.production.db"/>
 
@@ -40,16 +40,16 @@
 <!--     Champ pointé ? -->
     <many-to-one name="prodProcess" ref="com.axelor.apps.production.db.ProdProcess" title="Production process" initParam="true" required="true"/> 
   
-    <datetime name="plannedStartDateT" title="Planned start date" initParam="true"/>
-  	<datetime name="plannedEndDateT" title="Planned end date"/>
+    <datetime name="plannedStartDateT" title="Start date" initParam="true"/>
+  	<datetime name="plannedEndDateT" title="End date"/>
   	
- 	<datetime name="realStartDateT" title="Real start date"/>
-  	<datetime name="realEndDateT" title="Real end date"/>
+ 	<datetime name="realStartDateT" title="Start date"/>
+  	<datetime name="realEndDateT" title="End date"/>
     
     <many-to-one name="inStockMove" ref="com.axelor.apps.stock.db.StockMove" title="Stock move in"/>
     <many-to-one name="outStockMove" ref="com.axelor.apps.stock.db.StockMove" title="Stock move out"/>
     
-    <many-to-one name="wasteStockMove" ref="com.axelor.apps.stock.db.StockMove" title="Stock move out"/>
+    <many-to-one name="wasteStockMove" ref="com.axelor.apps.stock.db.StockMove" title="Waste stock move"/>
     
     <string name="wasteProdDescription" title="Description" large="true"/>
     

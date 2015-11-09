@@ -1,0 +1,24 @@
+<?xml version="1.0" ?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_4.0.xsd">
+
+  <module name="base" package="com.axelor.apps.base.db"/>
+
+  <entity name="WeeklyPlanning" cachable="true">
+  	  <integer name="importId"/>
+  	  <string name="name" required="true" namecolumn="true"/>
+  	  <one-to-many name="weekDays" ref="com.axelor.apps.base.db.DayPlanning" mappedBy="weeklyPlann"/>
+  </entity>
+  
+  <entity name="DayPlanning">
+    <integer name="importId"/>
+  	<many-to-one name="weeklyPlann" ref="com.axelor.apps.base.db.WeeklyPlanning"/>
+  	<string name="name" required="true" namecolumn="true" title="Day" selection="hrs.weekly.day.select"/>
+  	<time name="morningFrom" title="Morning From"/>
+    <time name="morningTo" title="To"/>
+    <time name="afternoonFrom" title="Afternoon From"/>
+    <time name="afternoonTo" title="To"/>
+  </entity>
+  
+</domain-models>

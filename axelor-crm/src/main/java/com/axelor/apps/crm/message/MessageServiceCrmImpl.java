@@ -17,69 +17,58 @@
  */
 package com.axelor.apps.crm.message;
 
-import java.util.List;
-
-import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.message.MessageServiceBaseImpl;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.crm.db.Event;
-import com.axelor.apps.message.db.EmailAddress;
+import com.axelor.apps.crm.db.IEvent;
+import com.axelor.apps.crm.service.config.CrmConfigService;
 import com.axelor.apps.message.db.Message;
+import com.axelor.apps.message.db.Template;
 import com.axelor.apps.message.service.MailAccountService;
-import com.axelor.auth.db.User;
+import com.axelor.apps.message.service.TemplateMessageService;
+import com.axelor.exception.AxelorException;
+import com.axelor.inject.Beans;
 import com.axelor.meta.db.repo.MetaAttachmentRepository;
-import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
 public class MessageServiceCrmImpl extends MessageServiceBaseImpl {
-	
+
 	@Inject
-	public MessageServiceCrmImpl( MetaAttachmentRepository metaAttachmentRepository, MailAccountService mailAccountService, UserService userService ) { 
+	public MessageServiceCrmImpl( MetaAttachmentRepository metaAttachmentRepository, MailAccountService mailAccountService, UserService userService ) {
 		super(metaAttachmentRepository, mailAccountService, userService);
 	}
-	
+
 	@Transactional
-	public Message createMessage( Event event )  {
-		
-		User recipientUser = event.getUser();
-		
-		List<EmailAddress> toEmailAddressList = Lists.newArrayList();
-		
-		if ( recipientUser != null )  {
-			Partner partner = recipientUser.getPartner();
-			if(partner != null)  {
-				EmailAddress emailAddress = partner.getEmailAddress();
-				if(emailAddress != null)  {
-					toEmailAddressList.add(emailAddress);
-				}
-			}
+	public Message createMessage( Event event ) throws AxelorException, Exception  {
+
+			//Get template depending on event type
+		Template template = null;
+
+		switch (event.getTypeSelect()) {
+		case IEvent.TASK:
+			template = Beans.get(CrmConfigService.class).getCrmConfig(event.getUser().getActiveCompany()).getTaskTemplate();
+			break;
+
+		case IEvent.CALL:
+			template = Beans.get(CrmConfigService.class).getCrmConfig(event.getUser().getActiveCompany()).getCallTemplate();
+			break;
+
+		case IEvent.MEETING:
+			template = Beans.get(CrmConfigService.class).getCrmConfig(event.getUser().getActiveCompany()).getMeetingTemplate();
+			break;
+
+		default:
+			break;
 		}
-		
-		Message message = super.createMessage(
-				event.getDescription(),
-				null, 
-				RELATED_TO_EVENT, 
-				event.getId().intValue(),
-				event.getRelatedToSelect(),
-				event.getRelatedToSelectId(),
-				getTodayLocalTime(), 
-				false, 
-				STATUS_SENT, 
-				"Remind : " + event.getSubject(), 
-				TYPE_RECEIVED, 
-				null,
-				toEmailAddressList, 
-				null,
-				null,
-				null,
-				MEDIA_TYPE_EMAIL);
-		
-		return save(message);
-	}	
-	
-	
-	
-	
-	
+
+		Message message = Beans.get(TemplateMessageService.class).generateMessage(event, template);
+
+		return messageRepo.save(message);
+	}
+
+
+
+
+
 }

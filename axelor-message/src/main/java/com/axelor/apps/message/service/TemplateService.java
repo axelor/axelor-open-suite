@@ -22,7 +22,6 @@ import java.util.Locale;
 import java.util.Map;
 
 import com.axelor.apps.message.db.Template;
-import com.axelor.apps.message.db.repo.TemplateRepository;
 import com.axelor.apps.message.exception.IExceptionMessage;
 import com.axelor.db.Model;
 import com.axelor.db.mapper.Mapper;
@@ -37,7 +36,7 @@ import com.google.common.base.Strings;
 import com.google.inject.Singleton;
 
 @Singleton
-public class TemplateService extends TemplateRepository {
+public class TemplateService {
 	
 	public void checkTargetReceptor(Template template) throws AxelorException {
 		String target = template.getTarget();

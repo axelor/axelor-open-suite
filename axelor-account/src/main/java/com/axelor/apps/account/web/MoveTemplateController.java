@@ -27,8 +27,9 @@ import org.slf4j.LoggerFactory;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveTemplate;
 import com.axelor.apps.account.db.MoveTemplateLine;
+import com.axelor.apps.account.db.repo.MoveTemplateRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
-import com.axelor.apps.account.service.MoveTemplateService;
+import com.axelor.apps.account.service.move.MoveTemplateService;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
@@ -42,9 +43,12 @@ public class MoveTemplateController {
 	@Inject
 	MoveTemplateService mts;
 	
+	@Inject
+	MoveTemplateRepository  moveTemplateRepo;
+	
 	public void checkValidity(ActionRequest request, ActionResponse response){
 		MoveTemplate moveTemplate = request.getContext().asType(MoveTemplate.class);
-		moveTemplate = mts.find(moveTemplate.getId());
+		moveTemplate = moveTemplateRepo.find(moveTemplate.getId());
 		BigDecimal creditPercent = BigDecimal.ZERO;
 		BigDecimal debitPercent = BigDecimal.ZERO;
 		Boolean partnerDebit = false;
@@ -81,7 +85,7 @@ public class MoveTemplateController {
 	
 	public void generateMove(ActionRequest request, ActionResponse response){
 		HashMap<String,Object> moveTemplateMap = (HashMap<String, Object>) request.getContext().get("moveTemplate");
-		MoveTemplate moveTemplate = mts.find(Long.parseLong(moveTemplateMap.get("id").toString()));
+		MoveTemplate moveTemplate = moveTemplateRepo.find(Long.parseLong(moveTemplateMap.get("id").toString()));
 		List<HashMap<String,Object>> dataList = (List<HashMap<String, Object>>) request.getContext().get("dataInputList");
 		LOG.debug("MoveTemplate : {}",moveTemplate);
 		LOG.debug("Data inputlist : {}",dataList);

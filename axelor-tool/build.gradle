@@ -1,8 +1,9 @@
 apply plugin: 'axelor-module'
+apply plugin: 'groovy'
 
 module {
 	name "axelor-tool"
-	version "3.0.2"
+	version "4.0.0"
 	title "Axelor :: Tool"
 }
 

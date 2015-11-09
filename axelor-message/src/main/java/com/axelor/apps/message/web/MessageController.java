@@ -27,32 +27,35 @@ import com.axelor.apps.message.exception.IExceptionMessage;
 import com.axelor.apps.message.service.MessageService;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.google.inject.Inject;
 
 public class MessageController {
+
+	@Inject
+	private MessageRepository messageRepo;
+	
+	@Inject
+	private MessageService messageService;
 	
 	public void sendByEmail(ActionRequest request, ActionResponse response) {
-		
+
 		Message message = request.getContext().asType(Message.class);
-		MessageService messageService =  Beans.get(MessageService.class);
-		
+
 		try {
-			message = messageService.sendByEmail( messageService.find( message.getId() ) );
-			
+			message = messageService.sendByEmail( messageRepo.find( message.getId() ) );
+
 			response.setReload(true);
-			
+
 			if ( message.getStatusSelect() == MessageRepository.STATUS_SENT ) {
-				
+
 				if ( message.getSentByEmail() ) { response.setFlash( I18n.get( IExceptionMessage.MESSAGE_4 ) ); }
 				else { response.setFlash( I18n.get( IExceptionMessage.MESSAGE_5 ) ); }
-				
+
 			} else  { response.setFlash( I18n.get( IExceptionMessage.MESSAGE_6 ) );	}
-			
+
 		} catch (MessagingException | IOException e) { TraceBackService.trace(e); }
 	}
-	
-	
-	
+
 }

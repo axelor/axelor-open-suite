@@ -18,28 +18,32 @@
 package com.axelor.apps.account.service.invoice.workflow.validate;
 
 import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.invoice.workflow.WorkflowInvoice;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 
 public class ValidateState extends WorkflowInvoice {
-	
+
 	protected User user;
-	
-	public ValidateState(Invoice invoice) {
-		
-		super(invoice);
+
+	public ValidateState() {
+		super();
 		this.user = AuthUtils.getUser();
-		
+
 	}
-	
+
+	public void init(Invoice invoice){
+		this.invoice = invoice;
+	}
+
 	@Override
 	public void process( ) throws AxelorException {
-		
-		invoice.setStatusSelect(STATUS_VALIDATED);
+
+		invoice.setStatusSelect(InvoiceRepository.STATUS_VALIDATED);
 		invoice.setValidatedByUser( user );
-		
+
 	}
-	
+
 }

@@ -18,7 +18,7 @@
 package com.axelor.apps.account.web;
 
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.service.PartnerService;
+import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -27,13 +27,13 @@ import com.google.inject.Inject;
 public class ReminderController {
 
 	@Inject
-	private PartnerService partnerService;
+	private PartnerRepository partnerRepo;
 
 	public void ReminderGenerate(ActionRequest request, ActionResponse response) {
 
 		try {			
 			Partner partner = request.getContext().asType(Partner.class);
-			partner = partnerService.find(partner.getId());
+			partner = partnerRepo.find(partner.getId());
 
 //			MailService mailService = Beans.get(MailService.class);
 //			for(Mail mail : mailService.getMailList(partner))  {

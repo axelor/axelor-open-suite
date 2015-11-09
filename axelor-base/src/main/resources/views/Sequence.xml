@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
+xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
 
     <grid name="sequence-grid" title="Sequences" model="com.axelor.apps.base.db.Sequence">
         <field name="name"/>
         <field name="code" />
-        <field name="company"/>
+        <field name="company" form-view="company-form" grid-view="company-grid"/>
         <field name="prefixe"/>
         <field name="suffixe"/>
         <field name="padding"/>
@@ -15,7 +15,7 @@ xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/
     <form name="sequence-form" title="Sequence" model="com.axelor.apps.base.db.Sequence" onNew="action-group-base-sequence-onnew" onLoad="action-sequence-attrs" onSave="action-sequence-validate">
 		<panel itemSpan="12">
 			<field name="code" onChange="action-sequence-attrs"/>
-			<field name="company" widget="SuggestBox"/>
+			<field name="company" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
 			<field name="name"/>
 		</panel>
 		<panel title="Tips" sidebar="true" itemSpan="12">
@@ -59,9 +59,8 @@ xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/
     <!-- ACTION RECORD -->
     <action-record name="action-sequence-default" model="com.axelor.apps.base.db.Sequence">
     	<field name="padding" expr="3"/>
-    	<field name="nextNum" expr="1"/>
     	<field name="toBeAdded" expr="1"/>
-		<field name="resetDate" expr="eval: com.axelor.apps.base.service.administration.GeneralService.getTodayDate()"/>
+		<field name="resetDate" expr="eval: __config__.generalService.getTodayDate()"/>
     	<field name="company"  expr="eval:__user__.activeCompany" if="__user__.activeCompany != null"/>
     	<field name="company"  expr="eval:__repo__.of(Company).all().fetchOne()" if="__user__.activeCompany == null &amp;&amp; __repo__.of(Company).all().fetch().size == 1"/>
     </action-record>

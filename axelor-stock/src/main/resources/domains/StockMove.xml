@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_3.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_4.0.xsd">
 
   <module name="stock" package="com.axelor.apps.stock.db"/>
 
@@ -29,8 +29,32 @@
     <one-to-many name="stockMoveLineList" ref="com.axelor.apps.stock.db.StockMoveLine" mappedBy="stockMove" title="Stock move content"/>
     
     <boolean name="isWithReturnSurplus" title="Return surplus"/>
-    <boolean name="isWithBackorder" title="Manage BackOrder "/>
+    <boolean name="isWithBackorder" title="Manage BackOrder" default="true"/>
     
+    <string name="trackingNumber" title="Tracking Number"/>
+    <integer name="numOfPackages" title="Number Of Packages"/>
+    <integer name="numOfPalettes" title="Number Of Palettes"/>
+    <decimal name="grossWeight" title="Gross Weight"/>
+    
+    <decimal name="exTaxTotal" title="Total W.T." precision="20" scale="2"/>
+    
+    <string name="description" title="Description" large="true"/>
+    
+    <extra-code><![CDATA[
+	
+	   	// STATUS SELECT
+		public static final int STATUS_DRAFT = 1;
+		public static final int STATUS_PLANNED = 2;
+		public static final int STATUS_REALIZED = 3;
+		public static final int STATUS_CANCELED = 4;
+
+		// TYPE SELECT
+		public static final int TYPE_INTERNAL = 1;
+		public static final int TYPE_OUTGOING = 2;
+		public static final int TYPE_INCOMING = 3;
+
+	
+	]]></extra-code>
     
   </entity>
 </domain-models>

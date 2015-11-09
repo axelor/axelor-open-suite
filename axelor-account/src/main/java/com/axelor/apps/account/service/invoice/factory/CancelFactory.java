@@ -19,13 +19,15 @@ package com.axelor.apps.account.service.invoice.factory;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.service.invoice.workflow.cancel.CancelState;
+import com.axelor.inject.Beans;
 
 public class CancelFactory {
-	
+
 	public CancelState getCanceller(Invoice invoice){
-		
-		return new CancelState( invoice );
-		
+
+		CancelState cancelState = Beans.get(CancelState.class);
+		cancelState.init(invoice);
+		return cancelState;
 	}
-	
+
 }

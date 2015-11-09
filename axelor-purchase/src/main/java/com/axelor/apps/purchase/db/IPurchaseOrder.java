@@ -19,19 +19,25 @@ package com.axelor.apps.purchase.db;
 
 public interface IPurchaseOrder {
 
-	
+
 	/**
 	 * Static purchase order status select
 	 */
 
 	static final int STATUS_DRAFT = 1;
 	static final int STATUS_REQUESTED = 2;
-	static final int STATUS_RECEIVED = 3;
-	static final int STATUS_VALIDATED = 4;
-	static final int STATUS_FINISHED = 5;
-	static final int STATUS_CANCELED = 6;
-	
-	
+	static final int STATUS_VALIDATED = 3;
+	static final int STATUS_FINISHED = 4;
+	static final int STATUS_CANCELED = 5;
+
+	/**
+	 * Static purchase order receipt status select
+	 */
+	static final int STATE_NOT_RECEIVED = 1;
+	static final int STATE_PARTIALLY_RECEIVED = 2;
+	static final int STATE_RECEIVED = 3;
+
+
 	/**
 	 * Static invoicing type select
 	 */
@@ -39,6 +45,6 @@ public interface IPurchaseOrder {
 	static final int INVOICING_FREE = 1;
 	static final int INVOICING_BY_DELIVERY = 2;
 	static final int INVOICING_PER_ORDER = 3;
-	
-	
+
+
 }

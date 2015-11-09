@@ -21,9 +21,8 @@ import java.math.BigDecimal;
 import java.util.List;
 
 import com.axelor.apps.production.db.ProdProduct;
-import com.axelor.apps.production.db.repo.ProdProductRepository;
 
-public class ProdProductService extends ProdProductRepository {
+public class ProdProductService {
 
 	//TODO add conversion unit
 	public BigDecimal computeQuantity(List<ProdProduct> prodProductList)  {

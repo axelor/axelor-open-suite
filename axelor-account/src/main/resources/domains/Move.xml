@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_3.0.xsd">
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_4.0.xsd">
   
   <module name="account" package="com.axelor.apps.account.db"/>
   
@@ -7,11 +7,11 @@
   
     <many-to-one name="journal" ref="Journal" title="Journal" required="true"/>
     <many-to-one name="period" ref="com.axelor.apps.base.db.Period" title="Period" readonly="true" required="true"/>
-    <date name="date" title="Date"/> <!--  Only used for Manual Misc. Operations -->
+    <date name="date" column="date_val" title="Date"/> <!--  Only used for Manual Misc. Operations -->
     <string name="reference" title="Reference" namecolumn="true" readonly="true" unique="true"/>
     <one-to-many name="moveLineList" ref="MoveLine" title="Move line" mappedBy="move"/>
     <many-to-one name="partner" ref="com.axelor.apps.base.db.Partner" title="Partner"/>
-    <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"/>
+    <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company" required="true"/>
     <many-to-one name="cashRegister" ref="com.axelor.apps.account.db.CashRegister" title="Cash register"/>
     <many-to-one name="paymentMode" ref="com.axelor.apps.account.db.PaymentMode" title="Payment Mode"/>
     <many-to-one name="invoice" ref="com.axelor.apps.account.db.Invoice" title="Invoice"/>

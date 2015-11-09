@@ -32,10 +32,17 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
 
-public class AccountingSituationService extends AccountingSituationRepository  {
+public class AccountingSituationService	{
 
+	protected AccountConfigService accountConfigService;
+	protected AccountingSituationRepository situationRepository;
+	
 	@Inject
-	private AccountConfigService accountConfigService;
+	public AccountingSituationService(AccountConfigService accountConfigService, AccountingSituationRepository situationRepository)  {
+		
+		this.accountConfigService = accountConfigService;
+		this.situationRepository = situationRepository;
+	}
 
 	public boolean checkAccountingSituationList(List<AccountingSituation> accountingSituationList, Company company) {
 
@@ -69,7 +76,7 @@ public class AccountingSituationService extends AccountingSituationRepository  {
 				if(!checkAccountingSituationList(accountingSituationList, company)) {
 
 					AccountingSituation accountingSituation = this.createAccountingSituation(company);
-
+					accountingSituation.setPartner(partner);
 					accountingSituationList.add(accountingSituation);
 					
 				}
@@ -89,7 +96,7 @@ public class AccountingSituationService extends AccountingSituationRepository  {
 		accountingSituation.setCompany(company);
 		accountingSituation.setCustomerAccount(accountConfigService.getCustomerAccount(accountConfig));
 		accountingSituation.setSupplierAccount(accountConfigService.getSupplierAccount(accountConfig));
-		save(accountingSituation);
+		situationRepository.save(accountingSituation);
 			
 		return accountingSituation;
 	}

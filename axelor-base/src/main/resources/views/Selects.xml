@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
 
 
 	<!-- Nomenclature : * name : "interfaceName" + "fieldName" + ".select" -->
@@ -163,18 +163,6 @@
 		<option value="3">Dr</option>
 		<option value="4">Prof.</option>
 	</selection>
-
-	<selection name="partner.customer.type.select">
-		<option value="1">No</option>
-		<option value="2">Prospect</option>
-		<option value="3">Yes</option>
-	</selection>
-	
-	<selection name="partner.supplier.type.select">
-		<option value="1">No</option>
-		<option value="2">Yes</option>
-		<option value="3">Yes (Approved)</option>
-	</selection>
 	
 	<selection name="partner.partner.type.select">
 		<option value="1">Company</option>
@@ -234,7 +222,8 @@
 	
 	<selection name='product.product.type.select'>
 		<option value='service'>Service</option>
-		<option value='storable'>Storable</option>
+		<option value='storable'>Product</option>
+		<option value='subscriptable'>Subscription</option>
 	</selection>
 
 	<selection name='product.procurement.method.select'>
@@ -342,10 +331,7 @@
 	<selection name="sequence.generic.code.select">
 		<option value="partner">Partner (Cust/Suppl)</option>
 		<option value="move">Move</option>
-		<option value="customerInvoice">Customer invoice</option>
-		<option value="supplierInvoice">Supplier invoice</option>
-		<option value="customerRefund">Customer Refund</option>
-		<option value="supplierRefund">Supplier Refund</option>
+		<option value="invoice">Invoice</option>
 		<option value="paymentSchedule">Payment schedule</option>
 		<option value="paymentVoucher">Payment voucher</option>
 		<option value="debit">Direct debit</option>
@@ -421,8 +407,8 @@
 
 	<selection name="default.status.select">
 		<option value="1">Draft</option>
-		<option value="2">Confirmed</option>
-		<option value="3">Validated</option>
+		<option value="2">Finalize</option>
+		<option value="3">Order confirmed</option>
 		<option value="4">Canceled</option>
 	</selection>
 												
@@ -470,6 +456,7 @@
 	<selection name="base.price.list.line.amount.type.select">
 		<option value="1">In %</option>
 		<option value="2">Fixed</option>
+		<option value="3">No Discount</option>
 	</selection>
 	
 	
@@ -582,6 +569,69 @@
 	<selection name="base.period.status.select">
 		<option value="1">Opened</option>
 		<option value="2">Closed</option>
+	</selection>
+	
+	<selection name="company.partner.type.select">
+		<option value="1">Company</option>
+		<option value="2">Individual</option>
+	</selection>
+	
+	<selection name="base.batch.action.select">
+		<option value="1">Remind time sheets validation</option>
+	</selection>
+	
+	<selection name="base.duration.type.select">
+		<option value="1">Month</option>
+		<option value="2">Day</option>
+	</selection>
+	
+	<selection name="base.compute.method.discount.select">
+		<option value="1">Compute Discount Separately</option>
+		<option value="2">Include Discount in unit price only for replace type</option>
+		<option value="3">Include Discount in unit price</option>
+	</selection>
+	
+	<selection name="message.related.to.select" id="base.message.related.to.select">
+		<option value="com.axelor.apps.base.db.Partner">Partner/Contact</option>
+		<option value="com.axelor.apps.base.db.Product">Product</option>
+	</selection>
+	
+	<selection name="base.in.ati.select">
+		<option value="1">Always W.T.</option>
+		<option value="2">Always A.T.I.</option>
+		<option value="3">W.T. by default</option>
+		<option value="4">A.T.I. by default</option>
+	</selection>
+	
+	<selection name="base.product.cost.type.select">
+		<option value="1">Standard</option>
+		<option value="2">Last purchase price</option>
+	</selection>
+	
+	<selection name="crm.event.related.to.select" id="base.crm.event.related.to.select">
+		<option value="com.axelor.apps.base.db.Partner">Partner/Contact</option>
+		<option value="com.axelor.apps.base.db.Product">Product</option>
+	</selection>
+	
+	<selection name="unit.conversion.type.select">
+		<option value="1">Coeff</option>
+		<option value="2">Formula</option>
+	</selection>
+	
+	<selection name="i.calendar.user.status.select">
+		<option value="1">Yes</option>
+		<option value="2">No</option>
+		<option value="3">Maybe</option>
+	</selection>
+	
+	<selection name="i.cal.event.visibility.select">
+		<option value="1">Public</option>
+		<option value="2">Private</option>
+	</selection>
+	
+	<selection name="i.cal.event.disponibility.select">
+		<option value="1">Busy</option>
+		<option value="2">Available</option>
 	</selection>
 	
 </object-views>

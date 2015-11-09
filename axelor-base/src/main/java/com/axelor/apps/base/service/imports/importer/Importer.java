@@ -34,7 +34,6 @@ import org.slf4j.LoggerFactory;
 import com.axelor.apps.base.db.ImportConfiguration;
 import com.axelor.apps.base.db.ImportHistory;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
-import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.base.service.imports.listener.ImporterListener;
 import com.axelor.auth.AuthUtils;
 import com.axelor.exception.AxelorException;
@@ -43,7 +42,6 @@ import com.axelor.i18n.I18n;
 import com.axelor.meta.MetaFiles;
 import com.google.common.base.Preconditions;
 import com.google.common.io.Files;
-import com.google.inject.Injector;
 
 public abstract class Importer {
 
@@ -51,14 +49,8 @@ public abstract class Importer {
 	
 	protected Logger log = LoggerFactory.getLogger(getClass());
 
-	protected Injector injector;
-	
 	private ImportConfiguration configuration;
 	private File workspace;
-
-	public Importer( Injector injector ) {
-		this.injector = injector;
-	}
 
 	public void setConfiguration( ImportConfiguration configuration ) { this.configuration = configuration; }
 
@@ -88,10 +80,7 @@ public abstract class Importer {
 			data = MetaFiles.getPath( configuration.getDataMetaFile() ).toFile();
 
 		if (!bind.exists() || !data.exists()) {
-			throw new AxelorException(String.format(
-					I18n.get(IExceptionMessage.IMPORTER_1),
-					GeneralService.getGeneral().getExceptionDefaultMsg()),
-					IException.CONFIGURATION_ERROR);
+			throw new AxelorException(I18n.get(IExceptionMessage.IMPORTER_1), IException.CONFIGURATION_ERROR);
 		}
 
 		File workspace = createFinalWorkspace(data);

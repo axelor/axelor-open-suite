@@ -39,65 +39,63 @@ import com.axelor.i18n.I18n;
 public class BatchInvoicing extends BatchStrategy {
 
 	private static final Logger LOG = LoggerFactory.getLogger(BatchInvoicing.class);
-	
+
 	@Inject
 	private SaleOrderRepository saleOrderRepo;
-	
+
 	@Inject
 	public BatchInvoicing(SaleOrderInvoiceService saleOrderInvoiceService) {
-		
+
 		super(saleOrderInvoiceService);
 	}
 
 
 	@Override
 	protected void process() {
-		
+
 		int i = 0;
-		List<SaleOrder> saleOrderList = (List<SaleOrder>) saleOrderRepo.all().filter("self.invoicingTypeSelect = ?1 AND self.statusSelect = ?2 AND self.company = ?3", 
-				ISaleOrder.INVOICING_TYPE_SUBSCRIPTION, ISaleOrder.STATUS_VALIDATED, batch.getSaleBatch().getCompany()).fetch();
+		List<SaleOrder> saleOrderList = saleOrderRepo.all().filter("self.statusSelect = ?2 AND self.company = ?3",
+				ISaleOrder.STATUS_ORDER_CONFIRMED, batch.getSaleBatch().getCompany()).fetch();
 
 		for (SaleOrder saleOrder : saleOrderList) {
 
 			try {
-				
-				saleOrderInvoiceService.checkSubscriptionSaleOrder(saleOrderRepo.find(saleOrder.getId()));
-				
-				Invoice invoice = saleOrderInvoiceService.runSubscriptionInvoicing(saleOrderRepo.find(saleOrder.getId()));
-				
-				if(invoice != null)  {  
-					
-					updateSaleOrder(saleOrder); 
-					LOG.debug("Facture créée ({}) pour le devis {}", invoice.getInvoiceId(), saleOrder.getSaleOrderSeq());	
-					i++; 
-					
+
+				Invoice invoice = saleOrderInvoiceService.generateInvoice(saleOrderRepo.find(saleOrder.getId()));
+
+				if(invoice != null)  {
+
+					updateSaleOrder(saleOrder);
+					LOG.debug("Facture créée ({}) pour le devis {}", invoice.getInvoiceId(), saleOrder.getSaleOrderSeq());
+					i++;
+
 				}
 
 			} catch (AxelorException e) {
-				
+
 				TraceBackService.trace(new AxelorException(String.format(I18n.get("Devis")+" %s", saleOrderRepo.find(saleOrder.getId()).getSaleOrderSeq()), e, e.getcategory()), IException.INVOICE_ORIGIN, batch.getId());
 				incrementAnomaly();
-				
+
 			} catch (Exception e) {
-				
+
 				TraceBackService.trace(new Exception(String.format(I18n.get("Devis")+" %s", saleOrderRepo.find(saleOrder.getId()).getSaleOrderSeq()), e), IException.INVOICE_ORIGIN, batch.getId());
-				
+
 				incrementAnomaly();
-				
+
 				LOG.error("Bug(Anomalie) généré(e) pour le devis {}", saleOrderRepo.find(saleOrder.getId()).getSaleOrderSeq());
-				
+
 			} finally {
-				
+
 				if (i % 10 == 0) { JPA.clear(); }
-	
+
 			}
 
 		}
-		
-		
+
+
 	}
-	
-	
+
+
 	/**
 	 * As {@code batch} entity can be detached from the session, call {@code Batch.find()} get the entity in the persistant context.
 	 * Warning : {@code batch} entity have to be saved before.
@@ -108,10 +106,10 @@ public class BatchInvoicing extends BatchStrategy {
 		String comment = I18n.get(IExceptionMessage.BATCH_INVOICING_1);
 		comment += String.format("\t* %s "+I18n.get(IExceptionMessage.BATCH_INVOICING_2)+"\n", batch.getDone());
 		comment += String.format(I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.ALARM_ENGINE_BATCH_4), batch.getAnomaly());
-		
+
 		super.stop();
 		addComment(comment);
-		
+
 	}
 
 }

@@ -1,23 +1,24 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
     
     <grid name="machine-grid" title="Machines" model="com.axelor.apps.production.db.Machine">
         <field name="name"/>
 		<field name="serialNumber"/>
-        <field name="location"/>
+        <field name="location" grid-view="location-grid" form-view="location-form"/>
     </grid>
     
-	<form name="machine-form" title="Machine" model="com.axelor.apps.production.db.Machine">
+	<form name="machine-form" title="Machine" model="com.axelor.apps.production.db.Machine" width="large">
 	  <panel>
 	    <field name="name"/>
 	    <field name="serialNumber"/>
 		<field name="brand"/>
-	    <field name="location" required="true"/>
-	    <field name="planning"/>
-	    <field name="startingDuration" colSpan="3"/>
-	    <field name="setupDuration" colSpan="3"/>
+	    <field name="location" required="true" grid-view="location-grid" form-view="location-form"/>
+	    <field name="startingDuration" colSpan="4" widget="duration" x-big="true" x-seconds="true"/>
+		<field name="setupDuration" colSpan="4" widget="duration" x-big="true" x-seconds="true"/>
+		<field name="endingDuration" colSpan="4" widget="duration" x-big="true" x-seconds="true"/>
+		<field name="weeklyPlanning" canNew="true"/>
 	    <field name="description" colSpan="12"/>
 	  </panel>
 	</form>

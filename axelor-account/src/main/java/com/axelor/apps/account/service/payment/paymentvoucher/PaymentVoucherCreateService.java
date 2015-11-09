@@ -34,98 +34,98 @@ import com.axelor.apps.account.db.PaymentSchedule;
 import com.axelor.apps.account.db.PaymentScheduleLine;
 import com.axelor.apps.account.db.PaymentVoucher;
 import com.axelor.apps.account.db.repo.PaymentVoucherRepository;
-import com.axelor.apps.account.service.MoveService;
+import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.administration.GeneralService;
+import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import com.axelor.auth.db.User;
 
-public class PaymentVoucherCreateService extends PaymentVoucherRepository {
-	
-	private static final Logger LOG = LoggerFactory.getLogger(PaymentVoucherCreateService.class); 
-	
-	@Inject
-	private MoveService moveService;
-	
-	@Inject
-	private PaymentInvoiceToPayService paymentInvoiceToPayService;
-	
-	@Inject
-	private PaymentVoucherConfirmService paymentVoucherConfirmService;
+public class PaymentVoucherCreateService {
+
+	private final Logger log = LoggerFactory.getLogger( getClass() );
+
+	protected MoveToolService moveToolService;
+	protected PaymentInvoiceToPayService paymentInvoiceToPayService;
+	protected PaymentVoucherConfirmService paymentVoucherConfirmService;
+	protected PaymentVoucherSequenceService paymentVoucherSequenceService;
+	protected PaymentVoucherRepository paymentVoucherRepository;
+	protected DateTime todayTime;
 
 	@Inject
-	private PaymentVoucherSequenceService paymentVoucherSequenceService;
+	public PaymentVoucherCreateService(GeneralService generalService, MoveToolService moveToolService, PaymentInvoiceToPayService paymentInvoiceToPayService, 
+			PaymentVoucherConfirmService paymentVoucherConfirmService, PaymentVoucherSequenceService paymentVoucherSequenceService,
+			PaymentVoucherRepository paymentVoucherRepository) {
 
-	private DateTime todayTime;
+		this.moveToolService = moveToolService;
+		this.paymentInvoiceToPayService = paymentInvoiceToPayService;
+		this.paymentVoucherConfirmService = paymentVoucherConfirmService;
+		this.paymentVoucherSequenceService = paymentVoucherSequenceService;
+		this.paymentVoucherRepository = paymentVoucherRepository;
+		this.todayTime = generalService.getTodayDateTime();
 
-	@Inject
-	public PaymentVoucherCreateService() {
-
-		this.todayTime = GeneralService.getTodayDateTime();
-		
 	}
-	
-	
+
+
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public PaymentVoucher createPaymentVoucherIPO(Invoice invoice, DateTime dateTime, BigDecimal amount, PaymentMode paymentMode) throws AxelorException  {
-		MoveLine customerMoveLine = moveService.getCustomerMoveLineByQuery(invoice);
-		
-		if (LOG.isDebugEnabled())  {  LOG.debug("Création d'une saisie paiement par TIP ou TIP chèque - facture : {}",invoice.getInvoiceId());  }
-		if (LOG.isDebugEnabled())  {  LOG.debug("Création d'une saisie paiement par TIP ou TIP chèque - mode de paiement : {}",paymentMode.getCode());  }
-		if (LOG.isDebugEnabled())  {  LOG.debug("Création d'une saisie paiement par TIP ou TIP chèque - société : {}",invoice.getCompany().getName());  }
-		if (LOG.isDebugEnabled())  {  LOG.debug("Création d'une saisie paiement par TIP ou TIP chèque - tiers payeur : {}",invoice.getPartner().getName());  }
-		
+		MoveLine customerMoveLine = moveToolService.getCustomerMoveLineByQuery(invoice);
+
+		log.debug("Création d'une saisie paiement par TIP ou TIP chèque - facture : {}",invoice.getInvoiceId());
+		log.debug("Création d'une saisie paiement par TIP ou TIP chèque - mode de paiement : {}",paymentMode.getCode());
+		log.debug("Création d'une saisie paiement par TIP ou TIP chèque - société : {}",invoice.getCompany().getName());
+		log.debug("Création d'une saisie paiement par TIP ou TIP chèque - tiers payeur : {}",invoice.getPartner().getName());
+
 		PaymentVoucher paymentVoucher = this.createPaymentVoucher(
-				invoice.getCompany(), 
-				null, 
+				invoice.getCompany(),
 				null,
-				paymentMode, 
-				dateTime, 
-				invoice.getPartner(), 
-				amount, 
+				null,
+				paymentMode,
+				dateTime,
+				invoice.getPartner(),
+				amount,
 				null,
 				invoice,
-				null, 
-				null, 
+				null,
+				null,
 				null);
-		
+
 		paymentVoucher.setHasAutoInput(true);
-		
+
 		List<PaymentInvoiceToPay> lines = new ArrayList<PaymentInvoiceToPay>();
-	
-		lines.add(paymentInvoiceToPayService.createPaymentInvoiceToPay(paymentVoucher, 
-				1, 
-				invoice, 
-				customerMoveLine, 
-				customerMoveLine.getDebit(), 
+
+		lines.add(paymentInvoiceToPayService.createPaymentInvoiceToPay(paymentVoucher,
+				1,
+				invoice,
+				customerMoveLine,
+				customerMoveLine.getDebit(),
 				customerMoveLine.getAmountRemaining(),
 				amount));
-		
+
 		paymentVoucher.setPaymentInvoiceToPayList(lines);
-		
-		save(paymentVoucher);
-		
-		paymentVoucherConfirmService.confirmPaymentVoucher(paymentVoucher, false);
+
+		paymentVoucherRepository.save(paymentVoucher);
+
+		paymentVoucherConfirmService.confirmPaymentVoucher(paymentVoucher);
 		return paymentVoucher;
 	}
-	
-	
+
+
 	/**
 	 * Generic method to create a payment voucher
 	 * @param seq
 	 * @param pm
 	 * @param partner
 	 * @return
-	 * @throws AxelorException 
+	 * @throws AxelorException
 	 */
 	public PaymentVoucher createPaymentVoucher(Company company, CashRegister cashRegister, User user, PaymentMode paymentMode, DateTime dateTime, Partner partner,
 			BigDecimal amount, MoveLine moveLine, Invoice invoiceToPay, MoveLine rejectToPay,
 			PaymentScheduleLine scheduleToPay, PaymentSchedule paymentScheduleToPay) throws AxelorException  {
 
-		LOG.debug("\n\n createPaymentVoucher ....");
+		log.debug("\n\n createPaymentVoucher ....");
 		DateTime dateTime2 = dateTime;
 		if(dateTime2 == null)  {
 			dateTime2 = this.todayTime;
@@ -161,5 +161,5 @@ public class PaymentVoucherCreateService extends PaymentVoucherRepository {
 		return null;
 	}
 
-	
+
 }

@@ -17,65 +17,23 @@
  */
 package com.axelor.apps.base.service.administration;
 
+import java.math.BigDecimal;
 import java.util.List;
-
-import javax.inject.Inject;
-import javax.inject.Singleton;
 
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 
 import com.axelor.apps.base.db.CurrencyConversionLine;
 import com.axelor.apps.base.db.General;
-import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.Unit;
-import com.axelor.apps.base.db.repo.GeneralRepository;
-import com.axelor.auth.AuthUtils;
-import com.axelor.auth.db.User;
-import com.axelor.inject.Beans;
+import com.axelor.db.Model;
 
-@Singleton
-public class GeneralService extends GeneralRepository {
+public interface GeneralService {
 
-	protected static final String EXCEPTION = "Warning !";
-	
-	private static GeneralService INSTANCE;
-	
-	private Long administrationId;
-	
-	@Inject
-	protected GeneralService() {
-	
-		General general = all().fetchOne();
-		if(general != null)  {
-			administrationId = all().fetchOne().getId();
-		}
-		else  {
-			throw new RuntimeException("Veuillez configurer l'administration générale.");
-		}
-		
-	}
-	
-	private static GeneralService get() {
-		
-		if ( INSTANCE == null ) { INSTANCE = new GeneralService(); }
-		
-		return INSTANCE;
-	}
-
-// Accesseur	
-	
-	/**
-	 * Récupérer l'administration générale
-	 * 
-	 * @return
-	 */
-	public static General getGeneral() {
-		return Beans.get(GeneralRepository.class).find(get().administrationId);
-	}
+	public General getGeneral();
 
 // Date du jour
-	
+
 	/**
 	 * Récupérer la date du jour avec l'heure.
 	 * Retourne la date du jour paramétré dans l'utilisateur si existe,
@@ -84,111 +42,37 @@ public class GeneralService extends GeneralRepository {
 	 * private
 	 * @return
 	 */
-	public static DateTime getTodayDateTime(){	
-		
-		DateTime todayDateTime = new DateTime();
-		
-		User user = AuthUtils.getUser();
-		
-		if (user != null && user.getToday() != null){
-			todayDateTime = user.getToday();
-		}
-		else if (getGeneral() != null && getGeneral().getToday() != null){
-			todayDateTime = getGeneral().getToday();
-		}
-		
-		return todayDateTime;
-	}
-	
+	public DateTime getTodayDateTime();
+
 	/**
 	 * Récupérer la date du jour.
 	 * Retourne la date du jour paramétré dans l'utilisateur si existe,
 	 * sinon récupère celle de l'administration générale,
 	 * sinon date du jour.
-	 * 
+	 *
 	 * @return
 	 */
-	public static LocalDate getTodayDate(){
-		
-		return getTodayDateTime().toLocalDate();
-		
-	}
-	
+	public LocalDate getTodayDate();
 
-	
-// Log
-	
-	/**
-	 * Savoir si le logger est activé
-	 * 
-	 * @return
-	 */
-	public static boolean isLogEnabled(){
-		
-		if (getGeneral() != null){
-			return getGeneral().getLogOk();
-		}
-		
-		return false;
-	}
-	
-	public static Unit getUnit(){
-		
-		if (getGeneral() != null){
-			return getGeneral().getDefaultProjectUnit();
-		}
-		
-		return null;
-	}
-	
+	public Unit getUnit();
 
-	public static int getNbDecimalDigitForUnitPrice(){
-		
-		if (getGeneral() != null){
-			return getGeneral().getNbDecimalDigitForUnitPrice();
-		}
-		
-		return IAdministration.DEFAULT_NB_DECIMAL_DIGITS;
-	}
-	
-	
-// Message exception	
-	
-	
-	
-	/**
-	 * Obtenir le message d'erreur pour les achats/ventes.
-	 * 
-	 * @return
-	 */
-	public static String getExceptionSupplychainMsg(){
-		
-		if (getGeneral() != null) {
-			
-			if (getGeneral().getExceptionSupplychainMsg() != null ) {
-				return getGeneral().getExceptionSupplychainMsg();
-			}
-			else {
-				return getGeneral().getExceptionDefaultMsg();
-			}
-		}
-		else {
-			return EXCEPTION;
-		}
-		
-	}
+
+	public int getNbDecimalDigitForUnitPrice();
 
 
 // Conversion de devise
-	
+
 	/**
 	 * Obtenir la tva à 0%
-	 * 
+	 *
 	 * @return
 	 */
-	public static List<CurrencyConversionLine> getCurrencyConfigurationLineList(){
-		if (getGeneral() != null) { return getGeneral().getCurrencyConversionLineList(); }
-		else { return null; }
-	}
-	
+	public List<CurrencyConversionLine> getCurrencyConfigurationLineList();
+
+	public Class<? extends Model> getPersistentClass(Model model);
+
+	public BigDecimal getDurationHours(BigDecimal duration);
+
+	public BigDecimal getGeneralDuration(BigDecimal duration);
+
 }

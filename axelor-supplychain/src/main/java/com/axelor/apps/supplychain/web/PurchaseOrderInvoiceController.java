@@ -19,10 +19,12 @@ package com.axelor.apps.supplychain.web;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.purchase.db.PurchaseOrder;
+import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;
 import com.axelor.apps.supplychain.service.PurchaseOrderInvoiceService;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
@@ -35,6 +37,8 @@ public class PurchaseOrderInvoiceController {
 	public void generateInvoice(ActionRequest request, ActionResponse response)  {
 		
 		PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
+		
+		purchaseOrder = Beans.get(PurchaseOrderRepository.class).find(purchaseOrder.getId());
 		
 		try {
 			Invoice invoice = purchaseOrderInvoiceService.generateInvoice(purchaseOrder);

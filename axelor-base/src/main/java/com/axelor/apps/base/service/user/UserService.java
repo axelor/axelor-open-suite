@@ -21,14 +21,13 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Team;
 import com.axelor.auth.db.User;
-import com.axelor.db.Repository;
 
 /**
  * UserService est une classe implémentant l'ensemble des services pour
  * les informations utilisateur.
  * 
  */
-public interface UserService extends Repository<User> {
+public interface UserService {
 
 	/**
 	 * Méthode qui retourne le user de l'utilisateur connecté

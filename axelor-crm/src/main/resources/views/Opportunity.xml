@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
     
     <grid name="opportunity-grid" title="Opportunities" model="com.axelor.apps.crm.db.Opportunity" orderBy="salesStageSelect,expectedCloseDate">
     	<toolbar>
@@ -15,13 +15,13 @@
   		<hilite background="danger" if="salesStageSelect == 10"/>
 		<field name="name" required="true"/>
 		<field name="createdOn" hidden="true"/>
-        <field name="partner"/>
-		<field name="lead"/>
+        <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
+		<field name="lead" form-view="lead-form" grid-view="lead-grid"/>
 		<field name="salesStageSelect"/>
 		<field name="amount"/>
 		<field name="probability"/>
         <field name="expectedCloseDate"/>
-        <field name="user"/>
+        <field name="user" form-view="user-form" grid-view="user-grid"/>
         <button name="grabLead" help="Assign to me" icon="fa-suitcase" onClick="com.axelor.apps.crm.web.OpportunityController:assignToMe" readonlyIf="user != null" />
         <button name="next-stage" icon="fa-chevron-circle-right" help="Next Stage" onClick="action-group-crm-opportunity-nextstage-click" readonlyIf="salesStageSelect &gt; 7" />
         <button name="closed-won" icon="fa-check-circle" help="Closed won" onClick="action-group-crm-opportunity-closedwon-click" readonlyIf="salesStageSelect &gt; 8" />
@@ -36,8 +36,8 @@
   		<hilite background="danger" if="salesStageSelect == 10"/>
 		<field name="name" width="300"/>
 		<field name="createdOn" hidden="true"/>
-		<field name="partner"/>
-		<field name="lead"/>
+		<field name="partner" form-view="partner-form" grid-view="partner-grid"/>
+		<field name="lead" form-view="lead-form" grid-view="lead-grid"/>
 		<field name="salesStageSelect"/>
 		<field name="amount"/>
 		<field name="probability"/>
@@ -51,26 +51,27 @@
     	 
    <grid name="opportunity-grid-group" title="Opportunities" model="com.axelor.apps.crm.db.Opportunity" groupBy="partner"> 
    		<field name="name"/>
-   		<field name="user"/>
-        <field name="partner"/>
-        <field name="currency"/>
+   		<field name="user" form-view="user-form" grid-view="user-grid"/>
+        <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
+        <field name="currency" form-view="currency-form" grid-view="currency-grid"/>
         <field name="expectedCloseDate"/>
         <field name="amount"/>
 	</grid>
 	
 	<grid name="opportunity-top-deal-grid" title="Opportunities" model="com.axelor.apps.crm.db.Opportunity" orderBy="-amount" >
         <field name="name"/>
-        <field name="partner"/>
+        <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
         <field name="amount"/>
     </grid>
     
     <grid groupBy="partner" name="opportunity-key-account-grid" title="Opportunities" model="com.axelor.apps.crm.db.Opportunity" orderBy="amount">
         <field name="name"/>
-        <field name="partner"/>
+        <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
         <field name="amount" aggregate="sum"/>
     </grid>
 	 
-    <form   name="opportunity-form" title="Opportunity" model="com.axelor.apps.crm.db.Opportunity" onNew="action-opportunity-group-new" >
+    <form   name="opportunity-form" title="Opportunity" model="com.axelor.apps.crm.db.Opportunity" onNew="action-opportunity-group-new" 
+        onLoad="action-test-parameters">
 		<toolbar>
 			<button name="previous-stage" help="Previous Stage" readonlyIf="salesStageSelect &lt; 2" icon="fa-chevron-circle-left" onClick="action-opportunity-set-previous-stage,save"/>
 			<button name="next-stage" help="Next Stage" readonlyIf="salesStageSelect &gt; 7" icon="fa-chevron-circle-right" onClick="action-opportunity-set-next-stage,save"/>
@@ -80,8 +81,8 @@
 	  
 		<panel readonlyIf="salesStageSelect == 9 || salesStageSelect == 10">
 			<field name="name" css="label-bold bold"/>
-			<field name="opportunityType" widget="SuggestBox" colSpan="3"/>
-			<field name="source" colSpan="3"/>
+			<field name="opportunityType" widget="SuggestBox" colSpan="3" grid-view="opportunity-type-grid" form-view="opportunity-type-form"/>
+			<field name="source" colSpan="3" form-view="source-form" grid-view="source-grid"/>
 		</panel>
 		
 		<panel title="Follow-up">
@@ -93,7 +94,7 @@
 		
 		<panel title="Financial terms" readonlyIf="salesStageSelect == 9 || salesStageSelect == 10">
 			<field name="amount" colSpan="3"/>
-			<field name="currency" colSpan="3"/>
+			<field name="currency" colSpan="3" form-view="currency-form" grid-view="currency-grid"/>
 			<field name="bestCase" colSpan="3"/>
 			<field name="worstCase" colSpan="3"/>
 		</panel>
@@ -102,19 +103,51 @@
 			<field name="description" colSpan="12" showTitle="false" readonlyIf="salesStageSelect == 9 || salesStageSelect == 10" />
 		</panel>
 		
-		<panel title="Linked to"  readonlyIf="salesStageSelect == 9 || salesStageSelect == 10" sidebar="true">
-			<field name="partner" domain="self.isContact = false" form-view="partner-form" grid-view="partner-grid"/>
-			<field name="lead"/>
+		<panel title="Linked to" sidebar="true">
+			<field name="partner" domain="self.isContact = false" form-view="partner-form" grid-view="partner-grid" readonlyIf="salesStageSelect == 9 || salesStageSelect == 10"/>
+			<field name="lead" readonlyIf="salesStageSelect == 9 || salesStageSelect == 10" form-view="lead-form" grid-view="lead-grid"/>
+			<panel-include view="convert-opportunity-form" from="axelor-sale" if-module="axelor-sale"/>
 		</panel>
 		
 		<panel title="Assigned to" readonlyIf="salesStageSelect == 9 || salesStageSelect == 10" sidebar="true">
-		  <field name="user"/>
+		  <field name="user" form-view="user-form" grid-view="user-grid"/>
 		  <button name="grabLead" title="Assign to me" hideIf="user.id == _internalUserId"   icon="fa-suitcase" onClick="save,com.axelor.apps.crm.web.OpportunityController:assignToMe"/>
-		  <field name="team"/>
-		  <field name="company" widget="SuggestBox"/>
+		  <field name="team" form-view="team-form" grid-view="team-grid" if="__config__.general.getTeamManagement()"/>
+		  <field name="company" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
+		  <field name="bankDetails" widget="SuggestBox" onSelect="action-accounting-batch-attrs-bank-details-domain" form-view="bank-details-form" grid-view="bank-details-grid" if="__config__.general.getManageMultiBanks()"/>
 		</panel>
+		
+		<panel-mail>
+		  <mail-messages limit="4" />
+		  <mail-followers />
+	  	</panel-mail>
  
 	</form>
+	
+ <action-record name="action-test-parameters" model="com.axelor.apps.crm.db.Opportunity">
+ 	<field name="subject" expr="eval: myparameter"/>
+ </action-record>	
+ 
+	<kanban columnBy="salesStageSelect" sequenceBy="id" onNew="project.task.kanban.on.new" limit="10"
+	 name="opportunity-kanban" title="Opportunities" model="com.axelor.apps.crm.db.Opportunity">
+		<field name="name"/>
+		<field name="description"/>
+		<field name="probability"/>
+		<field name="expectedCloseDate"/>
+		<field name="user"/>
+		<hilite color="danger" if="probability &lt;= 25"/>
+		<hilite color="success" if="probability &gt;= 75"/>
+		<hilite color="info" if="probability &gt;= 50"/>
+		<hilite color="warning" if="probability &lt; 50"/>
+		<template>
+		&lt;h4&gt;{{name}}&lt;/h4&gt;
+		&lt;img ng-if="user" ng-src="{{$image('user', 'image')}}"&gt;
+		&lt;div class="card-body"&gt;{{description}}&lt;/div&gt;
+		&lt;div class="card-footer"&gt;
+		  &lt;i class='fa fa-clock-o'&gt;&lt;/i&gt; &lt;span&gt;{{expectedCloseDate|date:'dd/MM/yyyy'}}&lt;/span&gt;
+		&lt;/div&gt;
+		</template>
+	</kanban>
     
     <action-group name="action-opportunity-group-new">
     	<action name="action-opportunity-record-new"/>

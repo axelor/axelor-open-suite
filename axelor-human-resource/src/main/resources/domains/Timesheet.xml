@@ -1,0 +1,46 @@
+<?xml version="1.0" ?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_4.0.xsd">
+
+  <module name="human-resource" package="com.axelor.apps.hr.db"/>
+
+  <entity name="Timesheet" cachable="true">
+      
+      <integer name="importId"/>
+      <date name="sentDate" title="Sent Date" readonly="true"/>
+      <integer name="statusSelect" title="Status" selection="hrs.timesheet.status.select" default="1"/>
+      <many-to-one name="user" ref="com.axelor.auth.db.User" title="User" column="user_id" required="true" readonly="true"/>
+      <one-to-many name="timesheetLineList" ref="com.axelor.apps.hr.db.TimesheetLine" title="Timesheet Lines" mappedBy="affectedToTimeSheet"/>
+      <date name="fromDate"/>
+      <date name="toDate"/>
+      <date name="fromGenerationDate"/>
+      <date name="toGenerationDate"/>
+      <many-to-one name="projectTask" ref="com.axelor.apps.project.db.ProjectTask" title="Project/Task"/>
+      <decimal name="logTime" title="Duration(by day)"/>
+      <many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Activity"/>
+      <many-to-one name="company" ref="com.axelor.apps.base.db.Company"/>
+      <many-to-one name="validatedBy" ref="com.axelor.auth.db.User" title="Validated by" readonly="true"/>
+      <many-to-one name="refusedBy" ref="com.axelor.auth.db.User" title="Refused By" readonly="true"/>
+      <date name="validationDate" title="Validation Date" readonly="true"  />
+      <date name="refusalDate" title="Refusal Date" readonly="true"  />
+      
+      <string name="fullName" namecolumn="true" readonly="true">
+      <![CDATA[
+	  		return this.getUser().getFullName()+" "+this.getCreatedOn().getDayOfMonth()+"/"+this.getCreatedOn().getMonthOfYear()
+	  				+"/"+this.getCreatedOn().getYear()+"  "+this.getCreatedOn().getHourOfDay()+":"+this.getCreatedOn().getMinuteOfHour();
+	  ]]>
+      </string>
+      
+      <extra-code>
+      	<![CDATA[
+	  		public static final Integer STATUS_DRAFT = 1;
+	  		public static final Integer STATUS_CONFIRMED = 2;
+	  		public static final Integer STATUS_VALIDATED = 3;
+	  		public static final Integer STATUS_REFUSED = 4;
+	  		public static final Integer STATUS_CANCELED = 5;
+	  ]]>
+      </extra-code>
+  </entity>
+  
+</domain-models>

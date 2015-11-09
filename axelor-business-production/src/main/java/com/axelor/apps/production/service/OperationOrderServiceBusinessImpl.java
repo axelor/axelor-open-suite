@@ -26,8 +26,10 @@ import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.db.ProdHumanResource;
 //import com.axelor.apps.production.db.ProdHumanResource;
 import com.axelor.apps.production.db.ProdProcessLine;
-import com.axelor.apps.production.db.ProdResource;
+import com.axelor.apps.production.db.WorkCenter;
+import com.axelor.apps.production.db.repo.OperationOrderRepository;
 import com.axelor.exception.AxelorException;
+import com.axelor.inject.Beans;
 import com.google.inject.persist.Transactional;
 
 public class OperationOrderServiceBusinessImpl extends OperationOrderServiceImpl  {
@@ -42,17 +44,17 @@ public class OperationOrderServiceBusinessImpl extends OperationOrderServiceImpl
 				manufOrder,
 				prodProcessLine.getPriority(), 
 				isToInvoice, 
-				prodProcessLine.getProdResource(), 
-				prodProcessLine.getProdResource(), 
+				prodProcessLine.getWorkCenter(), 
+				prodProcessLine.getWorkCenter(), 
 				prodProcessLine);
 		
-		return save(operationOrder);
+		return Beans.get(OperationOrderRepository.class).save(operationOrder);
 	}
 	
 	
 	
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public OperationOrder createOperationOrder(ManufOrder manufOrder, int priority, boolean isToInvoice, ProdResource prodResource, ProdResource machineProdResource,
+	public OperationOrder createOperationOrder(ManufOrder manufOrder, int priority, boolean isToInvoice, WorkCenter workCenter, WorkCenter machineWorkCenter,
 			ProdProcessLine prodProcessLine) throws AxelorException  {
 		
 		logger.debug("Création d'une opération {} pour l'OF {}", priority, manufOrder.getManufOrderSeq());
@@ -64,8 +66,8 @@ public class OperationOrderServiceBusinessImpl extends OperationOrderServiceImpl
 				this.computeName(manufOrder, priority, operationName), 
 				operationName,
 				manufOrder, 
-				prodResource, 
-				machineProdResource, 
+				workCenter, 
+				machineWorkCenter, 
 				IOperationOrder.STATUS_DRAFT, 
 				prodProcessLine);
 		
@@ -73,9 +75,9 @@ public class OperationOrderServiceBusinessImpl extends OperationOrderServiceImpl
 		
 		this._createToConsumeProdProductList(operationOrder, prodProcessLine);
 		
-		this._createHumanResourceList(operationOrder, machineProdResource);
+		this._createHumanResourceList(operationOrder, machineWorkCenter);
 		
-		return save(operationOrder);
+		return Beans.get(OperationOrderRepository.class).save(operationOrder);
 	}
 	
 	

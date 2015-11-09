@@ -1,2 +1,2 @@
-"importId";"today";"axelorVersion";"defaultProjectUnit.importId";"isInvoiceMoveConsolidated";"transferAndDirectDebitInterbankCode.code";"chequeInterbankCode.code";"exceptionDefaultMsg";"exceptionInvoiceMsg";"exceptionAccountingMsg";"exceptionReminderMsg";"defaultExemptionTax_code";"qasWsdlUrl";"currencyWsURL";"defaultPartnerLanguage"
-1;;"2.0.0";;"false";;;"Problème de configuration !";;;;;;"http://quote.yahoo.com/d/quotes.csv?s=%s%s=X&f=l1&e=.csv";"en"
+importId;today;defaultProjectUnit.importId;isInvoiceMoveConsolidated;transferAndDirectDebitInterbankCode.code;chequeInterbankCode.code;defaultExemptionTax_code;qasWsdlUrl;currencyWsURL;defaultPartnerLanguage
+1;;;false;;;;;http://quote.yahoo.com/d/quotes.csv?s=%s%s=X&f=l1&e=.csv;en

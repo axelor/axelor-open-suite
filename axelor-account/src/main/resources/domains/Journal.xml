@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_3.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_4.0.xsd">
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
@@ -25,6 +25,15 @@
   	
   	<many-to-many name="validAccountTypeSet" ref="com.axelor.apps.account.db.AccountType" title="Compatible Account Types" help="true"/>
   	<many-to-many name="validAccountSet" ref="com.axelor.apps.account.db.Account" title="Compatible Accounts" help="true"/>
+  	
+  	 <extra-code><![CDATA[
+	
+	   	// STATUS SELECT
+		public static final int STATUS_INACTIVE = 0;
+		public static final int STATUS_ACTIVE = 1;
+		public static final int STATUS_ARCHIVED = 2;
+	
+	]]></extra-code>
   	
   </entity>
 

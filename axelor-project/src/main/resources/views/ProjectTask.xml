@@ -1,0 +1,389 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
+
+	
+	<grid name="project-grid" title="Projects" model="com.axelor.apps.project.db.ProjectTask">
+		<field name="fullName"/>
+		<field name="company" form-view="company-form" grid-view="company-grid"/>
+		<field name="clientPartner" form-view="partner-form" grid-view="partner-grid" />
+		<field name="fromDate" />
+		<field name="toDate" />
+		<field name="dueDate" />
+		<field name="statusSelect"/>
+		<field name="progress" widget="Progress"/>
+	</grid>
+
+	<form name="project-form" title="Project" model="com.axelor.apps.project.db.ProjectTask" onNew="action-project-task-group-on-new-project"
+	onLoad="action-project-task-record-set-visible-duration,action-project-task-attrs-duration-title,action-project-attrs-scale-and-precision">
+		<toolbar>
+			<button name="printProjectTask" title="Print" onClick="save,action-project-task-method-print-project-task" if-module="axelor-business-project"/>
+		</toolbar>
+		<panel title="Overview">
+			<field name="statusSelect" widget="NavSelect" colSpan="12"/>
+			<field name="project" onChange="action-project-task-record-inv-type-select" colSpan="12" title="Parent Project" domain="self.typeSelect = 'project'" form-view="project-form" grid-view="project-grid"/>
+			<field name="name"/>
+			<field name="code"/>
+			<field name="company" requiredIf="project == null" hideIf="project != null" form-view="company-form" grid-view="company-grid"/>
+			<field name="clientPartner" requiredIf="project == null &amp;&amp; typeSelect == 'project'" domain="self.isCustomer = true" form-view="partner-form" grid-view="partner-grid" />
+			<field name="assignedTo" title="Person In Charge" onChange="action-attrs-project-add-member" form-view="user-form" grid-view="user-grid"/>
+			<field name="saleOrder" domain="self.clientPartner = :clientPartner" if-module="axelor-business-project" form-view="sale-order-form" grid-view="sale-order-grid"/>
+			<field name="fromDate" />
+			<field name="toDate" />
+			<field name="$visibleDuration" colSpan="6" title="Duration" type="decimal" onChange="action-project-task-record-set-stored-duration, action-attrs-project-task-compute-leadDelay"/>
+			<field name="$visibleTimeSpent" readonly="true" colSpan="6" title="Time Spent" type="decimal" onChange="action-project-task-record-set-stored-time-spent"/>
+			<field name="dueDate" />
+			<field name="progress" widget="Progress" onChange="action-attrs-project-task-compute-leadDelay"/>
+			<field name="$visibleLeadDelay" colSpan="6" title="Lead/Delay" type="decimal" onChange="action-project-task-record-set-stored-lead-delay, action-method-project-task-compute-progress"/>
+			<field name="imputable" if-module="axelor-business-project"/>
+			<field name="projTaskInvTypeSelect" if-module="axelor-business-project"/>
+			<field name="invoiced" showIf="projTaskInvTypeSelect == 2 || projTaskInvTypeSelect == 3" if-module="axelor-business-project"/>
+			<button name="seeReportingFolder" title="See Reporting Folder" onClick="action-show-reporting-folder"/>
+		</panel>
+		<panel-tabs>
+			<panel title="Invoicing" if-module="axelor-business-project" showIf="projTaskInvTypeSelect == 3">
+				<field name="product" onChange="action-project-task-record-unit" requiredIf="projTaskInvTypeSelect == 3"/>
+  				<field name="price" onChange="action-project-task-record-compute-exTaxTotal" requiredIf="projTaskInvTypeSelect == 3"/>
+  				<field name="qty" onChange="action-project-task-record-compute-exTaxTotal" requiredIf="projTaskInvTypeSelect == 3"/>
+  				<field name="unit" requiredIf="projTaskInvTypeSelect == 3"/>
+  				<field name="exTaxTotal" readonly="true"/>
+			</panel>
+			<panel title="Related Projects/Tasks">
+				<panel-related field="childProjectTaskList" colSpan="12" form-view="project-task-form" grid-view="project-task-grid"/>
+			</panel>
+			<panel title="Other elements to invoice" if-module="axelor-business-project">
+				<panel-related field="elementsToInvoiceList" colSpan="12"/>
+			</panel>
+			<panel title="Log Times">
+				<panel-related field="timesheetLineList" colSpan="12" grid-view="timesheet-line-project-grid" form-view="timesheet-line-project-form" if-module="axelor-human-resource"/>
+			</panel>
+			<panel title="Project Tree">
+				<panel-dashlet action="action-view-show-project-tree" colSpan="12" title="Project Tree"/>
+			</panel>
+			<panel title="Description">
+				<field name="description" showTitle="false" colSpan="12" widget="html"/>
+				<field name="timeSpent" hidden="true"/>
+				<field name="leadDelay" hidden="true"/>
+			</panel>
+		</panel-tabs>
+		<panel sidebar="true" title="Actions" stacked="true" showIf="childProjectTaskList.length > 0">
+	    	<button name="computeDurationFromChildren" title="Compute duration" showIf="childProjectTaskList.length > 0" colSpan="12" onClick="save,action-method-project-task-compute-duration-fromchildren,save"/>
+	  	</panel>
+		<panel title="Settings" sidebar="true">
+			<field name="membersUserSet" widget="TagSelect" form-view="user-form" grid-view="user-grid"/>
+			<field name="typeSelect"/>
+			<field name="sequence" hidden="true"/>
+		</panel>
+	</form>
+	
+	<grid name="task-grid" title="Tasks" model="com.axelor.apps.project.db.ProjectTask">
+		<field name="name"/>
+		<field name="assignedTo" form-view="user-form" grid-view="user-grid"/>
+		<field name="fromDate" />
+		<field name="toDate" />
+		<field name="dueDate" />
+		<field name="statusSelect"/>
+		<field name="progress" />
+	</grid>
+	
+	<gantt name="project-gantt" title="Project gantt" model="com.axelor.apps.project.db.ProjectTask" taskStart="fromDate" taskDuration="duration" taskParent="project" 
+		   taskProgress="progress" taskSequence="sequence" x-finish-to-start="finishToStartTaskSet" x-start-to-start="startToStartTaskSet"
+		   x-finish-to-finish="finishToFinishTaskSet" x-start-to-finish="startToFinishTaskSet">
+		   <field name="name" />
+		   <field name="assignedTo" />
+    </gantt>   
+
+	<form name="task-form" title="Task" model="com.axelor.apps.project.db.ProjectTask" 
+	onNew="action-project-task-attrs-hide-invoicing-panel,action-project-task-default,action-project-task-attrs-duration-title,action-project-attrs-scale-and-precision"
+	onLoad="action-project-task-attrs-hide-invoicing-panel,action-project-task-record-set-visible-duration,action-project-task-attrs-duration-title,action-project-attrs-scale-and-precision" width="large">
+		<toolbar>
+			<button name="printProjectTask" title="Print" onClick="save,action-project-task-method-print-project-task" if-module="axelor-business-project"/>
+		</toolbar>
+	    <panel>
+	    	<field name="statusSelect" widget="NavSelect" colSpan="12"/>
+	        <field name="project" onChange="action-project-task-attrs-hide-invoicing-panel,action-project-task-record-inv-type-select" requiredIf="!$popup()" title="Project" hideIf="$popup()" domain="self.typeSelect = 'project'" form-view="project-form" grid-view="project-grid"/>
+		    <field name="name" colSpan="12" />
+			<field name="assignedTo" colSpan="12" title="Assigned To" onSelect="action-task-attrs-assigned-to-domain" onChange="action-attrs-project-add-member" form-view="user-form" grid-view="user-grid"/>
+			<field name="fromDate" />
+			<field name="toDate" />
+			<field name="$visibleDuration" title="Duration" type="decimal" onChange="action-project-task-record-set-stored-duration, action-attrs-project-task-compute-leadDelay"/>
+			<field name="$visibleTimeSpent" readonly="true" title="Time Spent" type="decimal" onChange="action-project-task-record-set-stored-time-spent"/>
+			<field name="dueDate" />
+			<field name="progress" onChange="action-attrs-project-task-compute-leadDelay"/>
+			<field name="$visibleLeadDelay" title="Lead/Delay" type="decimal" onChange="action-project-task-record-set-stored-lead-delay, action-method-project-task-compute-progress"/>
+			<field name="imputable" if-module="axelor-business-project"/>
+			<field name="projTaskInvTypeSelect" onChange="action-project-task-attrs-hide-invoicing-panel" if-module="axelor-business-project"/>
+			<field name="invoiced" showIf="projTaskInvTypeSelect == 2 || projTaskInvTypeSelect == 3" if-module="axelor-business-project"/>
+			<field name="sequence" />
+			<field name="typeSelect"/>
+		</panel>
+		<panel-tabs>
+			<panel name="invoicingPanel" title="Invoicing" if-module="axelor-business-project" hidden="true">
+				<field name="product" onChange="action-project-task-record-unit"/>
+  				<field name="price" onChange="action-project-task-record-compute-exTaxTotal"/>
+  				<field name="qty" onChange="action-project-task-record-compute-exTaxTotal"/>
+  				<field name="unit" requiredIf="product != null"/>
+  				<field name="exTaxTotal" readonly="true"/>
+			</panel>
+			<panel title="Log Times">
+				<panel-related field="timesheetLineList" colSpan="12" grid-view="timesheet-line-project-grid" form-view="timesheet-line-project-form" if-module="axelor-human-resource"/>
+			</panel>
+			<panel title="Description">
+				<field name="description" showTitle="false" colSpan="12" widget="html"/>
+				<field name="typeSelect" hidden="true" />
+				<field name="duration" hidden="true"/>
+				<field name="timeSpent" hidden="true"/>
+				<field name="leadDelay" hidden="true"/>
+				<field name="company" hidden="true" />
+			</panel>
+		</panel-tabs>
+	</form>
+	
+	
+	<grid name="project-task-grid" title="Projects/Tasks" model="com.axelor.apps.project.db.ProjectTask">
+		<field name="fullName"/>
+		<field name="clientPartner" form-view="partner-form" grid-view="partner-grid"/>
+		<field name="fromDate" />
+		<field name="toDate" />
+		<field name="dueDate" />
+		<field name="statusSelect"/>
+		<field name="progress" widget="Progress"/>
+		<field name="typeSelect"/>
+	</grid>
+
+	<form name="project-task-form" title="Project/Task" model="com.axelor.apps.project.db.ProjectTask" 
+	onNew="action-project-task-attrs-hide-invoicing-panel,action-project-project-default,action-project-task-attrs-duration-title,action-project-attrs-scale-and-precision"
+	onLoad="action-project-task-attrs-hide-invoicing-panel,action-project-task-record-set-visible-duration,action-project-task-attrs-duration-title,action-project-attrs-scale-and-precision">
+		<panel title="Overview">
+			<field name="typeSelect"/>
+			<field name="statusSelect" widget="NavSelect" colSpan="12"/>
+			<field name="project" requiredIf="typeSelect == 'task' &amp;&amp; !$popup()"  hideIf="$popup()" onChange="action-project-task-attrs-hide-invoicing-panel,action-project-task-record-inv-type-select" title="Parent Project" domain="self.typeSelect = 'project'" form-view="project-form" grid-view="project-grid" colSpan="12" width="50%"/>
+			<field name="name"/>
+			<field name="code"/>
+			<field name="company" requiredIf="project == null &amp;&amp; typeSelect == 'project'" hideIf="typeSelect == 'task' || project != null"/>
+			<field name="clientPartner" requiredIf="project == null &amp;&amp; typeSelect == 'project'" domain="self.isCustomer = true" hideIf="typeSelect == 'task'"/>
+			<field name="assignedTo" title="Person In Charge" onSelect="action-task-attrs-assigned-to-domain" onChange="action-attrs-project-add-member" form-view="user-form" grid-view="user-grid"/>
+			<field name="saleOrder" domain="self.clientPartner.id = :clientPartner.id" if-module="axelor-business-project" hideIf="typeSelect == 'task'" form-view="sale-order-form" grid-view="sale-order-grid"/>
+			<field name="fromDate" />
+			<field name="toDate" />
+			<field name="$visibleDuration" title="Duration" type="decimal" onChange="action-project-task-record-set-stored-duration, action-attrs-project-task-compute-leadDelay"/>
+			<field name="$visibleTimeSpent" readonly="true" title="Time Spent" type="decimal" onChange="action-project-task-record-set-stored-time-spent"/>
+			<field name="dueDate" />
+			<field name="progress" widget="Progress" onChange="action-attrs-project-task-compute-leadDelay"/>
+			<field name="$visibleLeadDelay" title="Lead/Delay" type="decimal" onChange="action-project-task-record-set-stored-lead-delay, action-method-project-task-compute-progress"/>
+			<field name="imputable" if-module="axelor-business-project"/>
+			<field name="projTaskInvTypeSelect" onChange="action-project-task-attrs-hide-invoicing-panel" if-module="axelor-business-project"/>
+			<field name="invoiced" showIf="projTaskInvTypeSelect == 2 || projTaskInvTypeSelect == 3" if-module="axelor-business-project"/>
+		</panel>
+		<panel-tabs>
+			<panel name="invoicingPanel" title="Invoicing" if-module="axelor-business-project" hidden="true">
+				<field name="product" onChange="action-project-task-record-unit"/>
+  				<field name="price" onChange="action-project-task-record-compute-exTaxTotal"/>
+  				<field name="qty" onChange="action-project-task-record-compute-exTaxTotal"/>
+  				<field name="unit" requiredIf="product != null"/>
+  				<field name="exTaxTotal" readonly="true"/>
+			</panel>
+			<panel title="Related Projects/Tasks" hideIf="typeSelect == 'task'">
+				<panel-related field="childProjectTaskList" colSpan="12" form-view="project-task-form" grid-view="project-task-grid"/>
+			</panel>
+			<panel title="Log Times">
+				<panel-related field="timesheetLineList" colSpan="12" grid-view="timesheet-line-project-grid" form-view="timesheet-line-project-form" if-module="axelor-human-resource"/>
+			</panel>
+			<panel title="Other elements to invoice" if-module="axelor-business-project" hideIf="typeSelect == 'task'">
+				<panel-related field="elementsToInvoiceList" colSpan="12"/>
+			</panel>
+			<panel title="Project Tree" hideIf="typeSelect == 'task'">
+				<panel-dashlet action="action-view-show-project-tree" colSpan="12" title="Project Tree"/>
+			</panel>
+			<panel title="Description">
+				<field name="description" showTitle="false" colSpan="12" widget="html"/>
+				<field name="duration" hidden="true"/>
+				<field name="timeSpent" hidden="true"/>
+				<field name="leadDelay" hidden="true"/>
+			</panel>
+		</panel-tabs>
+		<panel sidebar="true" title="Actions" stacked="true" hideIf="typeSelect == 'task' || childProjectTaskList == null || childProjectTaskList.length == 0">
+	    	<button name="computeDurationFromChildren" title="Compute duration" showIf="childProjectTaskList.length > 0" colSpan="12" onClick="save,action-method-project-task-compute-duration-fromchildren,save"/>
+	  	</panel>
+		<panel title="Settings" sidebar="true" hideIf="typeSelect == 'task'">
+			<field name="membersUserSet" widget="TagSelect" form-view="user-form" grid-view="user-grid"/>
+		</panel>
+	</form>
+	
+	
+	<action-group name="action-project-task-group-on-new-project">
+		<action name="action-project-task-generate-project-from-partner" if="_idPartner != null"/>
+		<action name="action-project-project-default"/>
+		<action name="action-project-task-attrs-duration-title"/>
+		<action name="action-project-task-attrs-duration-title"/>
+		<action name="action-project-attrs-scale-and-precision"/>
+	</action-group>
+	
+	<action-method name="action-project-task-generate-project-from-partner">
+		<call class="com.axelor.apps.project.web.ProjectTaskController" method="generateProjectFromPartner"/>
+	</action-method>
+	
+	<action-record name="action-project-task-record-inv-type-select" model="com.axelor.apps.project.db.ProjectTask">
+		<field name="projTaskInvTypeSelect" expr="eval: project?.projTaskInvTypeSelect"/>
+	</action-record>
+	
+	<action-attrs name="action-project-task-attrs-hide-invoicing-panel">
+		<attribute name="hidden" for="invoicingPanel" expr="eval: projTaskInvTypeSelect != 3"/>
+	</action-attrs>
+	
+	<action-attrs name="action-task-attrs-assigned-to-domain">
+	    <attribute name="domain" for="assignedTo" expr="eval:&quot;self.id in (${(project?.membersUserSet?.collect{it->it.id}+[0,0]).join(',')}) &quot;" if="typeSelect == 'task'"/>
+	</action-attrs>
+	
+	<action-attrs name="action-project-project-default" model="com.axelor.apps.project.db.ProjectTask">
+		<attribute name="value" for="typeSelect" expr="eval:'project'" />
+		<attribute name="value" for="fromDate" expr="eval: __datetime__"/>
+		<attribute name="value" for="company" expr="eval:__user__.activeCompany"/>
+		<attribute name="value" for="product" expr="eval: __config__.general.getProductInvoicingProjectTask()"/>
+		<attribute name="value" for="assignedTo" expr="eval: __user__"/>
+		<attribute name="value:add" for="membersUserSet" expr="eval: __user__"/>
+		<attribute name="value" for="price" expr="eval: __config__.general.getProductInvoicingProjectTask().salePrice"/>
+		<attribute name="value" for="unit" expr="eval: __config__.general.getProductInvoicingProjectTask().unit"/>
+		<attribute name="value" for="exTaxTotal" expr="eval: __config__.general.getProductInvoicingProjectTask().salePrice"/>
+	</action-attrs>
+	
+	<action-record name="action-project-task-default" model="com.axelor.apps.project.db.ProjectTask">
+		<field name="typeSelect" expr="eval:'task'" />
+		<field name="company" expr="eval:__user__.activeCompany"/>
+		<field name="product" expr="eval: __config__.general.getProductInvoicingProjectTask()" if="projTaskInvTypeSelect != 3 &amp;&amp; project?.projTaskInvTypeSelect != 3"/>
+		<field name="fromDate" expr="eval: __date__"/>
+		<field name="assignedTo" expr="eval: __user__"/>
+		<field name="price" expr="eval: __config__.general.getProductInvoicingProjectTask().salePrice"/>
+		<field name="unit" expr="eval: __config__.general.getProductInvoicingProjectTask().unit"/>
+		<field name="exTaxTotal" expr="eval: __config__.general.getProductInvoicingProjectTask().salePrice"/>
+	</action-record>
+	
+	<action-attrs name="action-attrs-project-add-member" model="com.axelor.apps.project.db.ProjectTask">
+		<attribute name="value:add" for="membersUserSet" expr="eval: assignedTo"/>
+	</action-attrs>
+	
+	<action-view name="action-view-show-project-tree" title="Project Tree" model="com.axelor.apps.project.db.ProjectTask">	
+		<view type="tree" name="project-tree"/>
+    	<view type="form" name="project-form"/>
+    	<domain>self.project.id = :id</domain>
+     	<context name="id" expr="eval: id"/>
+	</action-view>
+	
+	<tree name="project-tree" title="Projects">
+    	
+    	<column name="name" type="string"/>
+    	<column name="assignedTo" type="reference"/>
+    	<column name="progress" type="decimal"/>
+    	<column name="typeSelect" type="string"/>
+		
+		<node model="com.axelor.apps.project.db.ProjectTask" domain="self.project.id = :id" onClick="action-task-view">
+			<field name="name" as="name"/>
+			<field name="assignedTo" as="assignedTo"/>
+			<field name="progress" as="progress"/>
+			<field name="typeSelect" as="typeSelect"/>
+		</node>    	
+		
+		<node model="com.axelor.apps.project.db.ProjectTask" parent="project" draggable="true" onClick="action-project-view">
+			<field name="name" as="name"/>
+			<field name="assignedTo" as="assignedTo"/>
+			<field name="progress" as="progress"/>
+			<field name="typeSelect" as="typeSelect"/>
+		</node>
+    
+	</tree>
+	
+	<action-view name="action-project-view" title="Projects" model="com.axelor.apps.project.db.ProjectTask">
+    	<view type="form" name="project-form"/>
+        <view-param name="popup" value="reload"/>
+        <view-param name="show-toolbar" value="false"/>
+  		<view-param name="show-confirm" value="false" />
+	  	<view-param name="popup-save" value="false"/>
+    	<context name="_showRecord" expr="eval: id"/>
+    </action-view>
+	
+	<action-view name="action-task-view" title="Tasks" model="com.axelor.apps.project.db.ProjectTask">
+    	<view type="form" name="task-form"/>
+        <view-param name="popup" value="reload"/>
+        <view-param name="show-toolbar" value="false"/>
+  		<view-param name="show-confirm" value="false" />
+	  	<view-param name="popup-save" value="false"/>
+    	<context name="_showRecord" expr="eval: id"/>
+    </action-view>
+    
+    <action-attrs name="action-project-task-attrs-duration-title">
+	    <attribute name="title" for="timesheetLineList.visibleDuration" expr="eval:__user__.employee?.timeLoggingPreferenceSelect == 'days' ? com.axelor.i18n.I18n.get('Days') : __user__.employee?.timeLoggingPreferenceSelect == 'minutes' ? com.axelor.i18n.I18n.get('Minutes') : com.axelor.i18n.I18n.get('Hours')"/>
+		<attribute name="title" for="$visibleDuration" expr="eval:__user__.employee?.timeLoggingPreferenceSelect == 'days' ? com.axelor.i18n.I18n.get('Duration(Days)') : __user__.employee?.timeLoggingPreferenceSelect == 'minutes' ? com.axelor.i18n.I18n.get('Duration(Minutes)') : com.axelor.i18n.I18n.get('Duration(Hours)')"/>
+		<attribute name="title" for="$visibleTimeSpent" expr="eval:__user__.employee?.timeLoggingPreferenceSelect == 'days' ? com.axelor.i18n.I18n.get('Time Spent(Days)') : __user__.employee?.timeLoggingPreferenceSelect == 'minutes' ? com.axelor.i18n.I18n.get('Time Spent(Minutes)') : com.axelor.i18n.I18n.get('Time Spent(Hours)')"/>
+		<attribute name="title" for="$visibleLeadDelay" expr="eval:__user__.employee?.timeLoggingPreferenceSelect == 'days' ? com.axelor.i18n.I18n.get('Lead/Delay(Days)') : __user__.employee?.timeLoggingPreferenceSelect == 'minutes' ? com.axelor.i18n.I18n.get('Lead/Delay(Minutes)') : com.axelor.i18n.I18n.get('Lead/Delay(Hours)')"/>
+	</action-attrs>
+	
+	<action-view name="action-project-task-view-show-project" title="Related Projects" model="com.axelor.apps.project.db.ProjectTask">
+		<view type="grid" name="project-grid" />
+		<view type="form" name="project-form" />
+		<domain>self.typeSelect = 'project' AND self.project.id = :id</domain>
+	</action-view>
+	
+	<action-view name="action-project-task-view-show-task" title="Tasks" model="com.axelor.apps.project.db.ProjectTask">
+		<view type="grid" name="task-grid" />
+		<view type="form" name="task-form" />
+		<domain>self.typeSelect = 'task' AND self.project.id = :id</domain>
+	</action-view>
+	
+	<action-record name="action-project-task-record-set-stored-duration" model="com.axelor.apps.project.db.ProjectTask">
+	    <field name="duration" expr="call:com.axelor.apps.hr.service.employee.EmployeeService:getDurationHours(visibleDuration)"/>
+	</action-record>
+	
+	<action-record name="action-project-task-record-set-stored-time-spent" model="com.axelor.apps.project.db.ProjectTask">
+	    <field name="timeSpent" expr="call:com.axelor.apps.hr.service.employee.EmployeeService:getDurationHours(visibleTimeSpent)"/>
+	</action-record>
+	
+	<action-record name="action-project-task-record-set-stored-lead-delay" model="com.axelor.apps.project.db.ProjectTask">
+	    <field name="leadDelay" expr="call:com.axelor.apps.hr.service.employee.EmployeeService:getDurationHours(visibleLeadDelay)"/>
+	</action-record>
+	
+	<action-record name="action-project-task-record-set-visible-duration" model="com.axelor.apps.project.db.ProjectTask">
+	    <field name="$visibleDuration" expr="call:com.axelor.apps.hr.service.employee.EmployeeService:getUserDuration(duration)"/>
+	    <field name="$visibleTimeSpent" expr="call:com.axelor.apps.hr.service.employee.EmployeeService:getUserDuration(timeSpent)"/>
+	    <field name="$visibleLeadDelay" expr="call:com.axelor.apps.hr.service.employee.EmployeeService:getUserDuration(leadDelay)"/>
+	</action-record>
+	
+	<action-record name="action-project-task-record-compute-exTaxTotal" model="com.axelor.apps.project.db.ProjectTask">
+		<field name="exTaxTotal" expr="eval: price*qty"/>
+	</action-record>
+	
+	<action-record name="action-project-task-record-unit" model="com.axelor.apps.project.db.ProjectTask">
+		<field name="unit" expr="eval: product?.unit"/>
+		<field name="price" expr="eval: product?.salePrice"/>
+		<field name="qty" expr="1"/>
+		<field name="exTaxTotal" expr="eval: product?.salePrice"/>
+	</action-record>
+	
+	<action-record name="action-attrs-project-task-compute-totalDuration" model="com.axelor.apps.project.db.ProjectTask">
+	    <field name="duration" expr="call:com.axelor.apps.hr.service.employee.EmployeeService:getDurationHours($visibleDuration)"/>
+	</action-record>
+	
+	<action-record name="action-record-project-task-compute-progress" model="com.axelor.apps.project.db.ProjectTask">
+	    <field name="progress" expr="call:com.axelor.apps.project.service.ProjectTaskService:computeProgress(__this__)"/>
+	</action-record>
+	
+	<action-method name="action-method-project-task-compute-progress">
+		<call class="com.axelor.apps.business.project.web.ProjectTaskController" method="computeProgress"/>
+	</action-method>
+	
+	<action-method name="action-method-project-task-compute-duration-fromchildren">
+		<call class="com.axelor.apps.business.project.web.ProjectTaskController" method="computeDurationFromChildren"/>
+	</action-method>
+	
+  	<action-attrs name="action-project-attrs-scale-and-precision">
+		<attribute name="scale" for="price" expr="eval: __config__.generalService.getNbDecimalDigitForUnitPrice()"/>
+	</action-attrs>
+	
+	<action-attrs name="action-attrs-project-task-compute-leadDelay" model="com.axelor.apps.project.db.ProjectTask">
+	    <attribute name="value" for="$visibleLeadDelay" expr="eval: new BigDecimal(visibleTimeSpent).subtract(new BigDecimal(visibleDuration).multiply(progress).divide(100))"/>
+	</action-attrs>
+	
+	<action-view name="action-show-reporting-folder" title="Folder">  		
+ 		<view type="html" name="http://localhost:8080/abs-webapp/Exemple_report_Affaire.pdf" /> 
+	</action-view>
+
+</object-views>

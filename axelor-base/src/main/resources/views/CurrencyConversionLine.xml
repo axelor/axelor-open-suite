@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
     
     <grid name="currency-conversion-line-grid" groupBy="startCurrency,endCurrency" orderBy="-fromDate" title="Currency conversion lines" model="com.axelor.apps.base.db.CurrencyConversionLine">
-        <field name="startCurrency"/>
-        <field name="endCurrency"/>
+        <field name="startCurrency" form-view="currency-form" grid-view="currency-grid"/>
+        <field name="endCurrency" form-view="currency-form" grid-view="currency-grid"/>
         <field name="exchangeRate"/>
         <field name="variations" />
         <field name="fromDate"/>
@@ -15,10 +15,10 @@
     </grid>
     
     <form name="currency-conversion-line-form" title="Currency conversion line" model="com.axelor.apps.base.db.CurrencyConversionLine"  
-    onNew="action-currency-conversion-line-default-record">
+    onNew="action-currency-conversion-line-default-record" width="large">
         <panel>
-		  <field name="startCurrency" widget="SuggestBox"/>
-		  <field name="endCurrency" widget="SuggestBox"/>
+		  <field name="startCurrency" widget="SuggestBox" form-view="currency-form" grid-view="currency-grid"/>
+		  <field name="endCurrency" widget="SuggestBox" form-view="currency-form" grid-view="currency-grid"/>
 		  <button name="getRate" title="Get rate" readonlyIf="startCurrency == null || endCurrency == null || toDate != null"   onClick="action-group-base-currencyconversionline-getrate-click"/>
 		</panel> 
 		<panel title="Applicable dates" readonlyIf="startCurrency == null || endCurrency == null">
@@ -34,8 +34,8 @@
     <form onNew="action-group-base-checkcurrencyrate-wizard-onnew" 
     name="wizard-check-currency-rate-form" title="Check currency exhange rates" model="com.axelor.apps.base.db.Wizard"  >
       <panel>
-    	<field name="startCurrency" title="Source Currency" widget="SuggestBox" target="com.axelor.apps.base.db.Currency" type="many-to-one"/>
-    	<field name="endCurrency" title="Destination Currency" widget="SuggestBox" target="com.axelor.apps.base.db.Currency" type="many-to-one"/>
+    	<field name="startCurrency" title="Source Currency" widget="SuggestBox" target="com.axelor.apps.base.db.Currency" type="many-to-one" form-view="currency-form" grid-view="currency-grid"/>
+    	<field name="endCurrency" title="Destination Currency" widget="SuggestBox" target="com.axelor.apps.base.db.Currency" type="many-to-one" form-view="currency-form" grid-view="currency-grid"/>
     	<field name="general" title="General" hidden="true" target="com.axelor.apps.base.db.General" type="many-to-one"/>
   	  </panel>    
 	  <panel title="System active rate" colSpan="12">
@@ -60,10 +60,10 @@
     	<action name="action-currency-conversion-line-set-exchange-rate"/>
     	<action name="action-currency-conversion-line-method-convert"/>
     </action-group>
-    
-    <action-method name="action-currency-conversion-line-method-getTodayDate">
-    	<call class="com.axelor.apps.base.service.administration.GeneralService" method="getTodayDate()"/>
-   	</action-method>
+   	
+   	<action-record name="action-currency-conversion-line-method-getTodayDate" model="com.axelor.apps.base.db.CurrencyConversionLine">
+    	<field name="fromDate" expr="eval: __config__.generalService.getTodayDate()"/>
+   	</action-record>
     
     <action-method name="action-currency-conversion-line-method-check-date">
     	<call class="com.axelor.apps.base.web.CurrencyConversionLineController" method="checkDate"/>
@@ -100,6 +100,7 @@
 	    <view-param name="width" value="800" />
 	    <view-param name="show-confirm" value="false" />
 	    <view-param name="show-toolbar" value="false"/>
+ 	  	<view-param name="popup-save" value="false"/>
 	    <context name="_startCurrency" expr="eval:startCurrency" if="startCurrency != null" />
 	    <context name="_endCurrency" expr="eval:endCurrency" if="endCurrency != null" />
 	    <context name="_general" expr="eval:general"/>

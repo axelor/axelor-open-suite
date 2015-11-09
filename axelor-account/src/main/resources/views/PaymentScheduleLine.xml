@@ -1,41 +1,41 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
 
 	<grid name="payment-schedule-line-grid" title="Schedule lines"
 		model="com.axelor.apps.account.db.PaymentScheduleLine" orderBy="scheduleDate">
-		<field name="paymentSchedule" />
+		<field name="paymentSchedule" form-view="payment-schedule-form" grid-view="payment-schedule-grid" />
 		<field name="scheduleLineSeq" />
 		<field name="inTaxAmount" />
 		<field name="inTaxAmountPaid" />
 		<field name="scheduleDate" />
 		<field name="debitBlockingOk" />
 		<field name="rejectDate" />
-		<field name="interbankCodeLine" />
+		<field name="interbankCodeLine" form-view="interbank-code-line-form" grid-view="interbank-code-line-grid"/>
 		<field name="statusSelect" />
 		<field name="debitNumber" />
 		<field name="fromReject" />
 	</grid>
 
 	<form name="payment-schedule-line-form" title="Schedule line"
-		model="com.axelor.apps.account.db.PaymentScheduleLine"  >
-		<panel >
-		<field name="paymentSchedule" />
-		<field name="scheduleLineSeq" />
-		<field name="inTaxAmount" readonlyIf="fromReject"/>
-		<field name="inTaxAmountPaid" />
-		<field name="scheduleDate" />
-		<field name="debitBlockingOk" />
-		<field name="rejectDate" />
-		<field name="interbankCodeLine" />
-		<field name="statusSelect" />
-		<field name="debitNumber" />
-		<field name="directDebitManagement" form-view="direct-debit-management-form-payment-schedule-line"/>
-		<field name="rejectMoveLine" />
-		<field name="advanceOrPaymentMove" />
-		<field name="advanceMoveLine" />
-		<field name="fromReject" />
+		model="com.axelor.apps.account.db.PaymentScheduleLine" width="large">
+		<panel>
+			<field name="paymentSchedule" form-view="payment-schedule-form" grid-view="payment-schedule-grid" />
+			<field name="scheduleLineSeq" />
+			<field name="inTaxAmount" readonlyIf="fromReject"/>
+			<field name="inTaxAmountPaid" />
+			<field name="scheduleDate" />
+			<field name="debitBlockingOk" />
+			<field name="rejectDate" />
+			<field name="interbankCodeLine" form-view="interbank-code-line-form" grid-view="interbank-code-line-grid"/>
+			<field name="statusSelect" />
+			<field name="debitNumber" />
+			<field name="directDebitManagement" form-view="direct-debit-management-form-payment-schedule-line" grid-view="direct-debit-management-grid"/>
+			<field name="rejectMoveLine" form-view="move-line-form" grid-view="move-line-grid"/>
+			<field name="advanceOrPaymentMove" form-view="move-form" grid-view="move-grid"/>
+			<field name="advanceMoveLine" form-view="move-line-form" grid-view="move-line-grid"/>
+			<field name="fromReject" />
 		</panel>
 	</form>
 
@@ -46,29 +46,28 @@
 		<field name="scheduleDate" />
 		<field name="debitBlockingOk" />
 		<field name="rejectDate" />
-		<field name="interbankCodeLine" />
+		<field name="interbankCodeLine" form-view="interbank-code-line-form" grid-view="interbank-code-line-grid"/>
 		<field name="fromReject" />
 		<field name="statusSelect" />
 	</grid>
 
 	<form name="payment-schedule-line-payment-schedule-form" title="Schedule line"
-		model="com.axelor.apps.account.db.PaymentScheduleLine"  >
-		
-		<panel >
-		<field name="invoice" grid-view="invoice-grid" form-view="invoice-form"/>
-		<field name="scheduleLineSeq" />
-		<field name="inTaxAmount" readonlyIf="fromReject"/>
-		<field name="scheduleDate" />
-		<field name="debitBlockingOk" />
-		<field name="rejectDate" />
-		<field name="interbankCodeLine" />
-		<field name="debitNumber" />
-		<field name="directDebitManagement" form-view="direct-debit-management-form-payment-schedule-line"/>
-		<field name="rejectMoveLine" />
-		<field name="advanceOrPaymentMove" />
-		<field name="advanceMoveLine" />
-		<field name="fromReject" />
-		<field name="statusSelect" readonly="true" />
+		model="com.axelor.apps.account.db.PaymentScheduleLine" width="large">
+		<panel>
+			<field name="invoice" grid-view="invoice-grid" form-view="invoice-form"/>
+			<field name="scheduleLineSeq" />
+			<field name="inTaxAmount" readonlyIf="fromReject"/>
+			<field name="scheduleDate" />
+			<field name="debitBlockingOk" />
+			<field name="rejectDate" />
+			<field name="interbankCodeLine" form-view="interbank-code-line-form" grid-view="interbank-code-line-grid"/>
+			<field name="debitNumber" />
+			<field name="directDebitManagement" form-view="direct-debit-management-form-payment-schedule-line" grid-view="direct-debit-management-grid"/>
+			<field name="rejectMoveLine" form-view="move-line-form" grid-view="move-line-grid"/>
+			<field name="advanceOrPaymentMove" form-view="move-form" grid-view="move-grid"/>
+			<field name="advanceMoveLine" form-view="move-line-form" grid-view="move-line-grid"/>
+			<field name="fromReject" />
+			<field name="statusSelect" readonly="true" />
 		</panel>
 		
 	</form>

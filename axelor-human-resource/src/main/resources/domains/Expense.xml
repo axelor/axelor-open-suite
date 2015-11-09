@@ -1,0 +1,38 @@
+<?xml version="1.0" ?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_4.0.xsd">
+
+  <module name="human-resource" package="com.axelor.apps.hr.db"/>
+
+  <entity name="Expense" cachable="true">
+      
+      <date name="sentDate" title="Sent Date" readonly="true"  />
+      <many-to-one name="period" ref="com.axelor.apps.base.db.Period" title="Period"/>
+      <integer name="statusSelect" title="Status" selection="hrs.expenses.status.select" default="1"/>
+      <many-to-one name="user" ref="com.axelor.auth.db.User" title="User" column="user_id" readonly="true"/>
+      <one-to-many name="expenseLineList" ref="com.axelor.apps.hr.db.ExpenseLine" title="Expense lines" mappedBy="expense"/>
+      <decimal name="exTaxTotal" title="Total W.T." scale="2" precision="20" readonly="true"/>
+   	  <decimal name="taxTotal" title="Total tax" scale="2" precision="20" readonly="true"/>
+      <decimal name="inTaxTotal" title="Total A.T.I." scale="2" precision="20" readonly="true"/>
+      <many-to-one name="company" ref="com.axelor.apps.base.db.Company"/>
+      <date name="moveDate" title="Move Date"/>
+      <many-to-one name="move" ref="com.axelor.apps.account.db.Move"/>
+      <many-to-one name="validatedBy" ref="com.axelor.auth.db.User" title="Validated by" readonly="true"/>
+      <many-to-one name="refusedBy" ref="com.axelor.auth.db.User" title="Refused By" readonly="true"/>
+      <date name="validationDate" title="Validation Date" readonly="true"  />
+      <date name="refusalDate" title="Refusal Date" readonly="true"  />
+      <boolean name="ventilated"/>
+      <boolean name="expenseCompanyCb" title="Expense paied with company's credit card"/>
+      <many-to-one name="payrollPreparation" ref="com.axelor.apps.hr.db.PayrollPreparation"/>
+      <one-to-many name="kilometricAllowanceList" ref="com.axelor.apps.hr.db.KilometricAllowance" title="Kilometric allowance" mappedBy="expense"/>
+      
+      <string name="fullName" namecolumn="true" readonly="true">
+      <![CDATA[
+	  		return this.getUser().getFullName()+" "+this.getCreatedOn().getDayOfMonth()+"/"+this.getCreatedOn().getMonthOfYear()
+	  				+"/"+this.getCreatedOn().getYear()+"  "+this.getCreatedOn().getHourOfDay()+":"+this.getCreatedOn().getMinuteOfHour();
+	  ]]>
+      </string>
+  </entity>
+  
+</domain-models>

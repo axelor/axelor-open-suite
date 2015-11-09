@@ -17,7 +17,7 @@
  */
 package com.axelor.apps.account.web;
 
-import java.io.File;
+//import java.io.File;
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -28,14 +28,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
-import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PartnerList;
 import com.axelor.apps.base.db.repo.AddressRepository;
 import com.axelor.apps.base.service.MapService;
+import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -46,35 +47,36 @@ import com.google.inject.persist.Transactional;
 
 public class AddressController {
 
+	@Inject
+	protected GeneralService generalService;
 
 	private static final Logger LOG = LoggerFactory.getLogger(AddressController.class);
-	
+
 	@Inject
 	private AddressRepository addressRepo;
-	
+
 	@Inject
-	private InvoiceService invoiceService;
+	private InvoiceRepository invoiceRepo;
 
 
 	@SuppressWarnings("unchecked")
 	@Transactional
 	public void viewSalesMap(ActionRequest request, ActionResponse response)  {
 		// Only allowed for google maps to prevent overloading OSM
-		if (GeneralService.getGeneral().getMapApiSelect() == IAdministration.MAP_API_GOOGLE) {
+		if (generalService.getGeneral().getMapApiSelect() == IAdministration.MAP_API_GOOGLE) {
 			PartnerList partnerList = request.getContext().asType(PartnerList.class);
 
-			File file = new File("/home/axelor/www/HTML/latlng_"+partnerList.getId()+".csv");
+//			File file = new File("/home/axelor/www/HTML/latlng_"+partnerList.getId()+".csv");
 			//file.write("latitude,longitude,fullName,turnover\n");
 
-			Iterator<Partner> it = (Iterator<Partner>) partnerList.getPartnerSet().iterator();
+			Iterator<Partner> it = partnerList.getPartnerSet().iterator();
 
 			while(it.hasNext()) {
 
 				Partner partner = it.next();
-				//def address = partner.mainInvoicingAddress
-				if (partner.getMainInvoicingAddress() != null) {
-					partner.getMainInvoicingAddress().getId();
-					Address address = addressRepo.find(partner.getMainInvoicingAddress().getId());
+				Address address = Beans.get(PartnerService.class).getInvoicingAddress(partner);
+				if (address != null) {
+				    address = addressRepo.find(address.getId());
 					if (!(address.getLatit() != null && address.getLongit() != null)) {
 						String qString = address.getAddressL4()+" ,"+address.getAddressL6();
 						LOG.debug("qString = {}", qString);
@@ -86,7 +88,7 @@ public class AddressController {
 					}
 					if (address.getLatit() != null && address.getLongit() != null) {
 						//def turnover = Invoice.all().filter("self.partner.id = ? AND self.statusSelect = 'val'", partner.id).fetch().sum{ it.inTaxTotal }
-						List<Invoice> listInvoice = (List<Invoice>) invoiceService.all().filter("self.partner.id = ?", partner.getId()).fetch();
+						List<Invoice> listInvoice = invoiceRepo.all().filter("self.partner.id = ?", partner.getId()).fetch();
 						BigDecimal turnover = BigDecimal.ZERO;
 						for(Invoice invoice: listInvoice) {
 							turnover.add(invoice.getInTaxTotal());

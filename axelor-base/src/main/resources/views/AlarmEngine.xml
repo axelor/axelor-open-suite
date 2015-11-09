@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
 	
 	<selection name="alarm.engine.manager.type">
 		<option value="0"></option>
@@ -13,21 +13,21 @@
 
     <grid name="alarm-engine-grid" title="Alarm engines" model="com.axelor.apps.base.db.AlarmEngine">
         <field name="code"/>
-        <field name="metaModel"/>
+        <field name="metaModel" form-view="meta-model-form" grid-view="meta-model-grid"/>
         <field name="managerTypeSelect"/>
         <field name="activeOk"/>
         <field name="lockingOk"/>
         <field name="externalOk"/>
     </grid>
 
-    <form   onLoad="action-alarm-engine-attrs-external" 
+    <form onLoad="action-alarm-engine-attrs-external" 
     	onSave="action-alarm-engine-method-validate-query" 
     	onNew="action-alarm-engine-attrs-external" 
-    	name="alarm-engine-form" title="Alarm engine" model="com.axelor.apps.base.db.AlarmEngine">
+    	name="alarm-engine-form" title="Alarm engine" model="com.axelor.apps.base.db.AlarmEngine" width="large">
 	    <panel>
 		    <field name="code" x-bind="{{code|uppercase}}"/>
-		    <field name="metaModel"/>
-		    <field name="alarmMessage"/>
+		    <field name="metaModel" form-view="meta-model-form" grid-view="meta-model-grid"/>
+		    <field name="alarmMessage" grid-view="alarm-message-grid" form-view="alarm-message-form"/>
 		    <field name="managerTypeSelect"/>
 	  	</panel>
 	  	<panel>

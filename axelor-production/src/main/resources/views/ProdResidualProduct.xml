@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
+    
+    <grid name="prod-residual-product-grid" title="Residual products" model="com.axelor.apps.production.db.ProdResidualProduct" editable="true">
+        <field name="product" form-view="product-form" grid-view="product-grid" onChange="action-prod-residual-product-record-product" domain="self.productTypeSelect = 'storable'"/>
+        <field name="qty"/>
+        <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
+    </grid>
+    
+    <form name="prod-residual-product-form" title="Residual product" model="com.axelor.apps.production.db.ProdResidualProduct">
+		<panel>        
+	        <field name="product" form-view="product-form" grid-view="product-grid" onChange="action-prod-residual-product-record-product" domain="self.productTypeSelect = 'storable'"/>
+	        <field name="qty"/>
+	        <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
+        </panel>
+    </form>
+    
+    <action-record name="action-prod-residual-product-record-product" model="com.axelor.apps.production.db.ProdResidualProduct">
+    	<field name="unit" expr="eval: product?.unit"/>
+    </action-record>
+    
+</object-views>

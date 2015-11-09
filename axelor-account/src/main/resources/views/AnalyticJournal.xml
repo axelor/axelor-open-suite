@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
     <grid name="analytic-journal-grid" title="Analytic Journal" model="com.axelor.apps.account.db.AnalyticJournal">
         <field name="name"/>
-        <field name="type"/>
-        <field name="company"/>
+        <field name="type" form-view="analytic-journal-type-form" grid-view="analytic-journal-type-grid"/>
+        <field name="company" form-view="company-form" grid-view="company-grid"/>
     </grid>
     <form name="analytic-journal-form" title="Analytic Journal" model="com.axelor.apps.account.db.AnalyticJournal" onNew="action-analytic-journal-set-default" >
         <panel >
         	<field name="name"/>
-        	<field name="type"/>
-        	<field name="company" widget="SuggestBox"/>
+        	<field name="type" form-view="analytic-journal-type-form" grid-view="analytic-journal-type-grid"/>
+        	<field name="company" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
         </panel>
     </form>
     

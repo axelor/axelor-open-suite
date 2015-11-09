@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_4.0.xsd">
+
+  <module name="production" package="com.axelor.apps.production.db"/>
+
+  <entity name="ProdResidualProduct" lang="java">
+  	
+  	<integer name="importId"/>
+  
+  	<many-to-one name="billOfMaterial" ref="com.axelor.apps.production.db.BillOfMaterial" title="BoM"/>
+	<many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"/>
+    <decimal name="qty" title="Qty"/>
+    <many-to-one name="unit" ref="com.axelor.apps.base.db.Unit" title="Unit"/>
+    
+  </entity>
+</domain-models>

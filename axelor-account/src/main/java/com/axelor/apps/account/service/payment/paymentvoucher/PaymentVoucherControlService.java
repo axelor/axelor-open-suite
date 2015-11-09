@@ -26,19 +26,25 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentInvoiceToPay;
 import com.axelor.apps.account.db.PaymentVoucher;
 import com.axelor.apps.account.exception.IExceptionMessage;
-import com.axelor.apps.account.service.administration.GeneralServiceAccount;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.service.administration.GeneralServiceImpl;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 
 public class PaymentVoucherControlService  {
+
+	protected PaymentVoucherSequenceService paymentVoucherSequenceService;
 	
 	@Inject
-	private PaymentVoucherSequenceService paymentVoucherSequenceService;
-	
-	
+	public PaymentVoucherControlService(PaymentVoucherSequenceService paymentVoucherSequenceService)  {
+		
+		this.paymentVoucherSequenceService = paymentVoucherSequenceService;
+		
+	}
+
+
 	/**
 	 * Procédure permettant de vérifier le remplissage et le bon contenu des champs de la saisie paiement et de la société
 	 * @param paymentVoucher
@@ -51,34 +57,34 @@ public class PaymentVoucherControlService  {
 	 */
 	public void checkPaymentVoucherField(PaymentVoucher paymentVoucher, Company company, Account paymentModeAccount, Journal journal) throws AxelorException  {
 		if(paymentVoucher.getRemainingAmount().compareTo(BigDecimal.ZERO) < 0)  {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.PAYMENT_VOUCHER_CONTROL_1), 
-					GeneralServiceAccount.getExceptionAccountingMsg(), paymentVoucher.getRef()), IException.INCONSISTENCY);
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.PAYMENT_VOUCHER_CONTROL_1),
+					GeneralServiceImpl.EXCEPTION, paymentVoucher.getRef()), IException.INCONSISTENCY);
 		}
-		
+
 		// Si on a des lignes à payer (dans le deuxième tableau)
 		if(!paymentVoucher.getHasAutoInput() && (paymentVoucher.getPaymentInvoiceToPayList() == null || paymentVoucher.getPaymentInvoiceToPayList().size() == 0))  {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.PAYMENT_VOUCHER_CONTROL_2),  GeneralServiceAccount.getExceptionAccountingMsg()), IException.INCONSISTENCY);
-		}	
-		
-		if(journal == null || paymentModeAccount == null)  {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.PAYMENT_VOUCHER_CONTROL_3), 
-					GeneralServiceAccount.getExceptionAccountingMsg()), IException.CONFIGURATION_ERROR);
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.PAYMENT_VOUCHER_CONTROL_2),  GeneralServiceImpl.EXCEPTION), IException.INCONSISTENCY);
 		}
-		
+
+		if(journal == null || paymentModeAccount == null)  {
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.PAYMENT_VOUCHER_CONTROL_3),
+					GeneralServiceImpl.EXCEPTION), IException.CONFIGURATION_ERROR);
+		}
+
 		if(journal.getEditReceiptOk())  {
 			paymentVoucherSequenceService.checkReceipt(paymentVoucher);
 		}
 	}
-	
-	
+
+
 	public void checkPayboxAmount(PaymentVoucher paymentVoucher) throws AxelorException  {
 		if(paymentVoucher.getPayboxAmountPaid() != null && paymentVoucher.getPayboxAmountPaid().compareTo(paymentVoucher.getPaidAmount()) != 0)  {
 				throw new AxelorException(String.format(I18n.get(IExceptionMessage.PAYMENT_VOUCHER_CONTROL_4),
-						GeneralServiceAccount.getExceptionAccountingMsg(),paymentVoucher.getPaidAmount(),paymentVoucher.getPayboxAmountPaid()), IException.INCONSISTENCY);
+						GeneralServiceImpl.EXCEPTION,paymentVoucher.getPaidAmount(),paymentVoucher.getPayboxAmountPaid()), IException.INCONSISTENCY);
 		}
 	}
-	
-	
+
+
 	/**
 	 * Fonction vérifiant si l'ensemble des lignes à payer ont le même compte et que ce compte est le même que celui du trop-perçu
 	 * @param paymentInvoiceToPayList
@@ -99,7 +105,7 @@ public class PaymentVoucherControlService  {
 		}
 		return false;
 	}
-	
-	
-	
+
+
+
 }

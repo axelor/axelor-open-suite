@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_4.0.xsd">
+
+  <module name="production" package="com.axelor.apps.production.db"/>
+
+  <entity name="CostSheet" lang="java">
+  
+  	<many-to-one name="billOfMaterial" ref="com.axelor.apps.production.db.BillOfMaterial" title="BillOfMaterial"/>
+  	<one-to-many name="costSheetLineList" ref="com.axelor.apps.production.db.CostSheetLine" mappedBy="costSheet" title="Cost sheet lines"/>
+    <decimal name="costPrice" title="Cost price"/>
+  	
+  </entity>
+</domain-models>

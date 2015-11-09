@@ -1,36 +1,37 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
     
     <grid name="bill-of-material-grid" title="Bills of material" model="com.axelor.apps.production.db.BillOfMaterial">
     	<field name="name"/>
-        <field name="product" domain="self.productTypeSelect = 'storable'"  onChange="action-bill-of-material-record-product"/>
+        <field name="product" domain="self.productTypeSelect = 'storable'"  onChange="action-bill-of-material-record-product" form-view="product-form" grid-view="product-grid"/>
         <field name="qty"/>
-        <field name="unit"/>
-        <field name="prodProcess"/>
+        <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
+        <field name="prodProcess" grid-view="prod-process-grid" form-view="prod-process-form"/>
     </grid>
 
 	<form name="bill-of-material-form" title="Bill of material"
 		model="com.axelor.apps.production.db.BillOfMaterial" onSave="action-bill-of-material-record-name"
-		onNew="action-bill-of-material-default-record">
+		onNew="action-bill-of-material-default-record" width="large">
 		<panel>
 			<field name="name"/>
-			<field name="company" widget="SuggestBox" form-view="company-form"/>
-			<field name="product" onChange="action-bill-of-material-record-product" domain="self.productTypeSelect = 'storable'"/>
+			<field name="company" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
+			<field name="product" onChange="action-bill-of-material-record-product" domain="self.productTypeSelect = 'storable'" form-view="product-form" grid-view="product-grid"/>
 			<field name="qty" colSpan="3"/>
-			<field name="unit" colSpan="3"/>
-			<field name="prodProcess"/>
+			<field name="unit" colSpan="3" form-view="unit-form" grid-view="unit-grid"/>
+			<field name="prodProcess" grid-view="prod-process-grid" form-view="prod-process-form"/>
 		</panel>
 	  
 		<panel-tabs>
 			<panel-related field="billOfMaterialList" title="Components" colSpan="12" domain="self.isRawMaterial = false AND self.personalized = false" form-view="bill-of-material-line-form" grid-view="bill-of-material-line-grid"/>
-			<panel-related field="prodRemainsList" title="Remains" colSpan="12"/>	    
+			<panel-related field="prodResidualProductList" title="Residual products" colSpan="12" grid-view="prod-residual-product-grid" form-view="prod-residual-product-form" if="__config__.general.manageResidualProductOnBom"/>	    
 			<panel-dashlet title="BOM tree" action="action-bill-of-material-view-tree"/>
 			<panel title="Cost">
 				<button name="computeCostPrice" title="Compute cost price"   onClick="save,action-bill-of-material-method-compute-cost-price"/>
 				<field name="costPrice" readonly="true"/>
 				<button name="updateProductCostPrice" title="Update product cost price"  onClick="save,action-bill-of-material-method-update-product-cost-price"/>
+				<panel-related field="costSheetList" colSpan="12" readonly="true" form-view="cost-sheet-bill-of-material-form" grid-view="cost-sheet-bill-of-material-grid"/>
 			</panel>
 		</panel-tabs>
 	  
@@ -38,33 +39,32 @@
     
     
     <grid name="bill-of-material-line-grid" title="Bills of material" model="com.axelor.apps.production.db.BillOfMaterial">
-        <field name="priority" readonlyIf="isRawMaterial"/>
-        <field name="product" domain="self.productTypeSelect = 'storable'"  onChange="action-bill-of-material-record-product"/>
+        <field name="priority" readonlyIf="isRawMaterial" width="20"/>
+        <field name="product" domain="self.productTypeSelect = 'storable'"  onChange="action-bill-of-material-record-product" form-view="product-form" grid-view="product-grid"/>
         <field name="qty"/>
-        <field name="unit"/>
+        <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
         <field name="isRawMaterial"/>
         <field name="hasNoManageStock"/>
-        <field name="prodProcess" readonlyIf="isRawMaterial"/>
+        <field name="prodProcess" readonlyIf="isRawMaterial" grid-view="prod-process-grid" form-view="prod-process-form"/>
     </grid>
 
 
 	<form name="bill-of-material-line-form" title="Bill of material"
 		model="com.axelor.apps.production.db.BillOfMaterial" onSave="action-bill-of-material-record-name"
-		onNew="action-bill-of-material-line-default-record">
+		onNew="action-bill-of-material-line-default-record" width="large">
 		<panel>
-			<field name="product" onChange="action-bill-of-material-record-product" domain="self.productTypeSelect = 'storable'"/>
+			<field name="product" onChange="action-bill-of-material-record-product" domain="self.productTypeSelect = 'storable'"  form-view="product-form" grid-view="product-grid"/>
 			<field name="isRawMaterial" colSpan="3"/>
 			<field name="hasNoManageStock" colSpan="3"/>
 			<field name="qty" colSpan="3"/>
-			<field name="unit" colSpan="3"/>
+			<field name="unit" colSpan="3" form-view="unit-form" grid-view="unit-grid"/>
 			<panel title="Sub-process configuration" hideIf="isRawMaterial" colSpan="12">
-				<field name="prodProcess"/>
+				<field name="prodProcess" grid-view="prod-process-grid" form-view="prod-process-form"/>
 				<field name="priority"/>
 			</panel>
 		</panel>
 		<panel-tabs hideIf="isRawMaterial">
 			<panel-related title="Bill of material" field="billOfMaterialList" domain="self.isRawMaterial = false AND self.personalized = false" form-view="bill-of-material-line-form" grid-view="bill-of-material-line-grid"/>
-			<panel-related title="Remains" field="prodRemainsList"/>
 		</panel-tabs>
 	</form>
     
@@ -104,6 +104,7 @@
         <view-param name="popup" value="reload"/>
         <view-param name="show-toolbar" value="false"/>
   		<view-param name="show-confirm" value="false" />
+ 	  	<view-param name="popup-save" value="false"/>
     	<context name="_showRecord" expr="eval: id"/>
     </action-view>
     

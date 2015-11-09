@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_3.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_4.0.xsd">
 
   <module name="stock" package="com.axelor.apps.stock.db"/>
 
@@ -15,7 +15,6 @@
 	<decimal name="qty" title="Expected Qty"/>
 	<decimal name="realQty" title="Real Qty"/>
     <many-to-one name="unit" ref="com.axelor.apps.base.db.Unit" title="Unit"/>
-    <decimal name="price" title="Unit price" precision="20" scale="5"/>
     
     <many-to-one name="trackingNumber" ref="com.axelor.apps.base.db.TrackingNumber" title="Tracking Nbr."/>
     
@@ -26,6 +25,13 @@
     <date name="shippedDate" title="Shipped date"/>
     
     <many-to-one name="productModel" ref="com.axelor.apps.base.db.Product" title="Product model"/>
+    
+    <string name="productName" title="Title" />
+    <string name="description" title="Description" />
+    
+    <decimal name="unitPriceUntaxed" precision="20" scale="5" title="Unit price"/>
+    
+    <decimal name="unitPriceTaxed" precision="20" scale="5" title="Unit price"/>
     
   </entity>
 </domain-models>

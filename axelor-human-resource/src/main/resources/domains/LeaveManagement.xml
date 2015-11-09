@@ -1,0 +1,20 @@
+<?xml version="1.0" ?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_4.0.xsd">
+
+  <module name="human-resource" package="com.axelor.apps.hr.db"/>
+
+  <entity name="LeaveManagement" cachable="true">
+	<many-to-one name="leaveLine" ref="com.axelor.apps.hr.db.LeaveLine"/>
+    <decimal name="value" title="Value" scale="1" precision="5"/>
+    <decimal name="oldValue" scale="1" precision="5"/>
+    <date name="date" column="date_val" title="Date" required="true"/>
+    <date name="dateFrom" title="Date from" />
+    <date name="dateTo" title="Date to (Included)" />
+    <string name="comments" title="Comments" large="true" multiline="true"/>
+    <many-to-one name="user" ref="com.axelor.auth.db.User" title="User" required="true" column="user_id"/>
+    <boolean name="counted"/>
+  </entity>
+  
+</domain-models>

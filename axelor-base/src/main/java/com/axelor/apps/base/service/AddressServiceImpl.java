@@ -37,8 +37,10 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
 
-public class AddressServiceImpl extends AddressRepository implements AddressService  {
+public class AddressServiceImpl implements AddressService  {
 	
+	@Inject
+	private AddressRepository addressRepo;
 	
 	@Inject
 	private com.axelor.apps.tool.address.AddressTool ads;
@@ -61,7 +63,7 @@ public class AddressServiceImpl extends AddressRepository implements AddressServ
 	}
 	
 	public int export(String path) throws IOException {
-		List<Address> addresses = (List<Address>) all().filter("self.certifiedOk IS FALSE").fetch();
+		List<Address> addresses = (List<Address>) addressRepo.all().filter("self.certifiedOk IS FALSE").fetch();
 		
 		CSVWriter csv = new CSVWriter(new java.io.FileWriter(path), "|".charAt(0), CSVWriter.NO_QUOTE_CHARACTER);
 		List<String> header = new ArrayList<String>();
@@ -112,7 +114,7 @@ public class AddressServiceImpl extends AddressRepository implements AddressServ
 	
 	public Address getAddress(String addressL2, String addressL3, String addressL4, String addressL5, String addressL6, Country addressL7Country)  {
 		
-		return all().filter("self.addressL2 = ?1 AND self.addressL3 = ?2 AND self.addressL4 = ?3 " +
+		return addressRepo.all().filter("self.addressL2 = ?1 AND self.addressL3 = ?2 AND self.addressL4 = ?3 " +
 				"AND self.addressL5 = ?4 AND self.addressL6 = ?5 AND self.addressL7Country = ?6",
 				addressL2,
 				addressL3,
@@ -135,7 +137,7 @@ public class AddressServiceImpl extends AddressRepository implements AddressServ
 	@Transactional
 	public Address checkLatLang(Address address, boolean forceUpdate){
 		
-		address = find(address.getId());
+		address = addressRepo.find(address.getId());
 		BigDecimal latit = address.getLatit();
 		BigDecimal longit = address.getLongit();
 		
@@ -144,7 +146,7 @@ public class AddressServiceImpl extends AddressRepository implements AddressServ
 			if(result != null){
 				address.setLatit((BigDecimal) result.get("latitude"));
 				address.setLongit((BigDecimal) result.get("longitude"));
-				address = save(address);
+				address = addressRepo.save(address);
 			}
 		}
 		

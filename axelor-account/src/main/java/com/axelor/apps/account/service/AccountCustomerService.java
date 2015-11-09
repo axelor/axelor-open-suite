@@ -18,7 +18,6 @@
 package com.axelor.apps.account.service;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.Query;
@@ -31,16 +30,16 @@ import org.slf4j.LoggerFactory;
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.AccountingSituation;
-import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.account.db.repo.AccountingSituationRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
-import com.axelor.apps.account.service.administration.GeneralServiceAccount;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.administration.GeneralService;
+import com.axelor.apps.base.service.administration.GeneralServiceImpl;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
@@ -50,25 +49,26 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
 public class AccountCustomerService {
-	private static final Logger LOG = LoggerFactory.getLogger(AccountCustomerService.class); 
 
-	
-	private LocalDate today;
-	
-	private AccountingSituationService  accountingSituationService;
+	private final Logger log = LoggerFactory.getLogger( getClass() );
+
+	protected AccountingSituationService  accountingSituationService;
+	protected AccountingSituationRepository accSituationRepo;
+	protected LocalDate today;
 	
 	@Inject
-	public AccountCustomerService(AccountingSituationService  accountingSituationService) {
+	public AccountCustomerService(AccountingSituationService  accountingSituationService, AccountingSituationRepository accSituationRepo, GeneralService generalService) {
 
-		this.today = GeneralService.getTodayDate();
-		this.accountingSituationService = accountingSituationService;
+		this.accountingSituationService =accountingSituationService;
+		this.accSituationRepo = accSituationRepo;
+		this.today = generalService.getTodayDate();
 	}
-	
+
 	public AccountingSituationService getAccountingSituationService()  {
 		return this.accountingSituationService;
 	}
-	
-	
+
+
 	/**
 	 * Fonction permettant de calculer le solde total d'un tiers
 	 * @param partner
@@ -79,7 +79,7 @@ public class AccountCustomerService {
 	 * 			Le solde total
 	 */
 	public BigDecimal getBalance (Partner partner, Company company)  {
-		LOG.debug("Compute balance (Partner : {}, Company : {})",partner.getName(),company.getName());
+		log.debug("Compute balance (Partner : {}, Company : {})",partner.getName(),company.getName());
 
 		Query query = JPA.em().createNativeQuery("SELECT SUM(COALESCE(m1.sum_remaining,0) - COALESCE(m2.sum_remaining,0) ) "+
 												"FROM public.account_move_line AS ml  "+
@@ -98,43 +98,43 @@ public class AccountCustomerService {
 												.setParameter(1, partner)
 												.setParameter(2, company)
 												.setParameter(3, MoveRepository.STATUS_VALIDATED);
-		
+
 		BigDecimal balance = (BigDecimal)query.getSingleResult();
-		
+
 		if(balance == null)  {
 			balance = BigDecimal.ZERO;
 		}
-		
-		LOG.debug("Balance : {}", balance);	
-		
+
+		log.debug("Balance : {}", balance);
+
 		return balance;
 	}
-	
-	
+
+
 	/**
 	 * Fonction permettant de calculer le solde exigible d'un tiers
-	 * 
+	 *
 	 * Calcul du solde exigible du tiers :
 	 * Montant Total des factures et des échéances rejetées échues (date du jour >= date de l’échéance)
-	 * 
+	 *
 	 * @param partner
 	 * 			Un tiers
 	 * @param company
 	 * 			Une société
-	 * 
+	 *
 	 * @return
 	 * 			Le solde exigible
 	 */
 	public BigDecimal getBalanceDue (Partner partner, Company company)  {
-		LOG.debug("Compute balance due (Partner : {}, Company : {})",partner.getName(),company.getName());
-		
+		log.debug("Compute balance due (Partner : {}, Company : {})",partner.getName(),company.getName());
+
 		Query query = JPA.em().createNativeQuery("SELECT SUM( COALESCE(m1.sum_remaining,0) - COALESCE(m2.sum_remaining,0) ) "+
 				"FROM public.account_move_line AS ml  "+
 				"LEFT OUTER JOIN ( "+
 					"SELECT moveline.amount_remaining AS sum_remaining, moveline.id AS moveline_id "+
 					"FROM public.account_move_line AS moveline "+
 					"WHERE moveline.debit > 0 " +
-					"AND ((moveline.due_date IS NULL AND moveline.date <= ?1) OR (moveline.due_date IS NOT NULL AND moveline.due_date <= ?1)) " +
+					"AND ((moveline.due_date IS NULL AND moveline.date_val <= ?1) OR (moveline.due_date IS NOT NULL AND moveline.due_date <= ?1)) " +
 					"GROUP BY moveline.id, moveline.amount_remaining) AS m1 on (m1.moveline_id = ml.id) "+
 				"LEFT OUTER JOIN ( "+
 					"SELECT moveline.amount_remaining AS sum_remaining, moveline.id AS moveline_id "+
@@ -152,42 +152,42 @@ public class AccountCustomerService {
 				.setParameter(4, MoveRepository.STATUS_VALIDATED);
 
 		BigDecimal balance = (BigDecimal)query.getSingleResult();
-		
+
 		if(balance == null)  {
 			balance = BigDecimal.ZERO;
 		}
-		
-		LOG.debug("Balance due : {}", balance);	
-		
+
+		log.debug("Balance due : {}", balance);
+
 		return balance;
 	}
-	
-	
-	
+
+
+
 	/******************************************  2. Calcul du solde exigible (relançable) du tiers  ******************************************/
-	/** solde des factures exigibles non bloquées en relance et dont « la date de facture » + « délai d’acheminement(X) » <« date du jour » 
+	/** solde des factures exigibles non bloquées en relance et dont « la date de facture » + « délai d’acheminement(X) » <« date du jour »
 	 *  si la date de facture = date d'échéance de facture, sinon pas de prise en compte du délai d'acheminement ***/
 	/** solde des échéances rejetées qui ne sont pas bloqués ******************************************************/
-	
+
 	public BigDecimal getBalanceDueReminder(Partner partner, Company company)  {
-		LOG.debug("Compute balance due reminder (Partner : {}, Company : {})",partner.getName(),company.getName());
-		
+		log.debug("Compute balance due reminder (Partner : {}, Company : {})",partner.getName(),company.getName());
+
 		int mailTransitTime = 0;
-		
+
 		AccountConfig accountConfig = company.getAccountConfig();
-		
+
 		if(accountConfig != null)  {
 			mailTransitTime = accountConfig.getMailTransitTime();
 		}
-		
+
 		Query query = JPA.em().createNativeQuery("SELECT SUM( COALESCE(m1.sum_remaining,0) - COALESCE(m2.sum_remaining,0) ) "+
 				"FROM public.account_move_line as ml  "+
 				"LEFT OUTER JOIN ( "+
 					"SELECT moveline.amount_remaining AS sum_remaining, moveline.id AS moveline_id "+
 					"FROM public.account_move_line AS moveline "+
-					"WHERE moveline.debit > 0 AND (( moveline.date = moveline.due_date AND (moveline.due_date + ?1 ) < ?2 ) " +
-					"OR (moveline.due_date IS NOT NULL AND moveline.date != moveline.due_date AND moveline.due_date < ?2)" +
-					"OR (moveline.due_date IS NULL AND moveline.date < ?2)) " +
+					"WHERE moveline.debit > 0 AND (( moveline.date_val = moveline.due_date AND (moveline.due_date + ?1 ) < ?2 ) " +
+					"OR (moveline.due_date IS NOT NULL AND moveline.date_val != moveline.due_date AND moveline.due_date < ?2)" +
+					"OR (moveline.due_date IS NULL AND moveline.date_val < ?2)) " +
 					"GROUP BY moveline.id, moveline.amount_remaining) AS m1 ON (m1.moveline_id = ml.id) "+
 				"LEFT OUTER JOIN ( "+
 					"SELECT moveline.amount_remaining AS sum_remaining, moveline.id AS moveline_id "+
@@ -204,19 +204,19 @@ public class AccountCustomerService {
 				.setParameter(3, partner)
 				.setParameter(4, company)
 				.setParameter(5, MoveRepository.STATUS_VALIDATED);
-		
+
 		BigDecimal balance = (BigDecimal)query.getSingleResult();
-		
+
 		if(balance == null)  {
 			balance = BigDecimal.ZERO;
 		}
-		
-		LOG.debug("Balance due reminder : {}", balance);	
-		
+
+		log.debug("Balance due reminder : {}", balance);
+
 		return balance;
 	}
-	
-	
+
+
 	/**
 	 * Méthode permettant de récupérer l'ensemble des lignes d'écriture pour une société et un tiers
 	 * @param partner
@@ -226,12 +226,12 @@ public class AccountCustomerService {
 	 * @return
 	 */
 	public List<? extends MoveLine> getMoveLine(Partner partner, Company company)  {
-		
+
 		return Beans.get(MoveLineRepository.class).all().filter("self.partner = ?1 AND self.move.company = ?2", partner, company).fetch();
 
 	}
-	
-	
+
+
 	/**
 	 * Procédure mettant à jour les soldes du compte client des tiers pour une société
 	 * @param partnerList
@@ -247,36 +247,18 @@ public class AccountCustomerService {
 			}
 		}
 	}
-	
-	
-	/**
-	 * Méthode permettant de récupérer la liste des tiers distincts impactés par l'écriture
-	 * @param move
-	 * 			Une écriture
-	 * @return
-	 */
-	public List<Partner> getPartnerOfMove(Move move)  {
-		List<Partner> partnerList = new ArrayList<Partner>();
-		for(MoveLine moveLine : move.getMoveLineList())  {
-			if(moveLine.getAccount() != null && moveLine.getAccount().getReconcileOk() && moveLine.getPartner() != null
-					&& !partnerList.contains(moveLine.getPartner()))  {
-				partnerList.add(moveLine.getPartner());
-			}
-		}
-		return partnerList;
-	}
-	
-	
+
+
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void flagPartners(List<Partner> partnerList, Company company)  {
 		for(Partner partner : partnerList)  {
 			AccountingSituation accountingSituation = accountingSituationService.getAccountingSituation(partner, company);
 			accountingSituation.setCustAccountMustBeUpdateOk(true);
-			accountingSituationService.save(accountingSituation);
+			accSituationRepo.save(accountingSituation);
 		}
 	}
-	
-	
+
+
 	/**
 	 * Méthode permettant de mettre à jour les soldes du compte client d'un tiers.
 	 * @param accountingSituation
@@ -284,115 +266,116 @@ public class AccountCustomerService {
 	 */
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void updateCustomerAccount(AccountingSituation accountingSituation)  {
-		
-		LOG.debug("Begin updateCustomerAccount service ...");
-		
+
+		log.debug("Begin updateCustomerAccount service ...");
+
 		Partner partner = accountingSituation.getPartner();
 		Company company = accountingSituation.getCompany();
-		
+
 		accountingSituation.setBalanceCustAccount(this.getBalance(partner, company));
 		accountingSituation.setBalanceDueCustAccount(this.getBalanceDue(partner, company));
 		accountingSituation.setBalanceDueReminderCustAccount(this.getBalanceDueReminder(partner, company));
-		
-		accountingSituationService.save(accountingSituation);
-		
-		LOG.debug("End updateCustomerAccount service");
+
+		accSituationRepo.save(accountingSituation);
+
+		log.debug("End updateCustomerAccount service");
 	}
-	
-	
+
+
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public AccountingSituation updateAccountingSituationCustomerAccount(AccountingSituation accountingSituation, boolean updateCustAccount, boolean updateDueCustAccount, boolean updateDueReminderCustAccount)  {
 		Partner partner = accountingSituation.getPartner();
 		Company company = accountingSituation.getCompany();
-		
-		LOG.debug("Update customer account (Partner : {}, Company : {}, Update balance : {}, balance due : {}, balance due reminder : {})",
+
+		log.debug("Update customer account (Partner : {}, Company : {}, Update balance : {}, balance due : {}, balance due reminder : {})",
 				partner.getName(), company.getName(), updateCustAccount, updateDueReminderCustAccount);
-		
+
 		if(updateCustAccount)  {
 			accountingSituation.setBalanceCustAccount(this.getBalance(partner, company));
 		}
-		if(updateDueCustAccount)  {	
+		if(updateDueCustAccount)  {
 			accountingSituation.setBalanceDueCustAccount(this.getBalanceDue(partner, company));
 		}
-		if(updateDueReminderCustAccount)  {	
+		if(updateDueReminderCustAccount)  {
 			accountingSituation.setBalanceDueReminderCustAccount(this.getBalanceDueReminder(partner, company));
-		}	
+		}
 		accountingSituation.setCustAccountMustBeUpdateOk(false);
-		accountingSituationService.save(accountingSituation);
+		accSituationRepo.save(accountingSituation);
+		
 		return accountingSituation;
 	}
-	
-	
+
+
 
 	public Account getPartnerAccount(Partner partner, Company company, boolean isSupplierInvoice) throws AxelorException  {
-			
+
 		if(isSupplierInvoice)  {  return this.getSupplierAccount(partner, company);  }
-		
+
 		else  {  return this.getCustomerAccount(partner, company);  }
-			
+
 	}
-	
-	
+
+
 	protected Account getCustomerAccount(Partner partner, Company company) throws AxelorException  {
-		
+
 		Account customerAccount = null;
-		
+
 		AccountingSituation accountingSituation = accountingSituationService.getAccountingSituation(partner, company);
-		
+
 		if(accountingSituation != null)   {
-			
+
 			customerAccount = accountingSituation.getCustomerAccount();
 		}
-		
+
 		if(customerAccount == null)  {
-			
+
 			AccountConfigService accountConfigService = new AccountConfigService();
-			
+
 			customerAccount = accountConfigService.getCustomerAccount(accountConfigService.getAccountConfig(company));
-			
+
 		}
-		
+
 		if(customerAccount == null)  {
-			
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.ACCOUNT_CUSTOMER_1), 
-					GeneralServiceAccount.getExceptionInvoiceMsg(), company.getName()), IException.MISSING_FIELD);			
-			
+
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.ACCOUNT_CUSTOMER_1),
+					GeneralServiceImpl.EXCEPTION, company.getName()), IException.MISSING_FIELD);
+
 		}
-		
+
 		return customerAccount;
-			
+
 	}
-	
-	
+
+
 	protected Account getSupplierAccount(Partner partner, Company company) throws AxelorException  {
-		
+
 		Account supplierAccount = null;
-		
+
 		AccountingSituation accountingSituation = accountingSituationService.getAccountingSituation(partner, company);
-		
+
 		if(accountingSituation != null)   {
-			
+
 			supplierAccount = accountingSituation.getSupplierAccount();
 		}
-		
+
 		if(supplierAccount == null)  {
-			
+
 			AccountConfigService accountConfigService = new AccountConfigService();
-			
+
 			supplierAccount = accountConfigService.getSupplierAccount(accountConfigService.getAccountConfig(company));
-			
+
 		}
-		
+
 		if(supplierAccount == null)  {
-			
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.ACCOUNT_CUSTOMER_2), 
-					GeneralServiceAccount.getExceptionInvoiceMsg(), company.getName()), IException.MISSING_FIELD);			
-			
+
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.ACCOUNT_CUSTOMER_2),
+					GeneralServiceImpl.EXCEPTION, company.getName()), IException.MISSING_FIELD);
+
 		}
-		
+
 		return supplierAccount;
-			
+
 	}
-	
-	
+
+
 }

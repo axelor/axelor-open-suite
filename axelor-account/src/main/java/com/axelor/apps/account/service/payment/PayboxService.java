@@ -47,63 +47,65 @@ import org.slf4j.LoggerFactory;
 import com.axelor.apps.account.db.AccountingSituation;
 import com.axelor.apps.account.db.PayboxConfig;
 import com.axelor.apps.account.db.PaymentVoucher;
-import com.axelor.apps.account.db.repo.PayboxRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.AccountingSituationService;
-import com.axelor.apps.account.service.administration.GeneralServiceAccount;
 import com.axelor.apps.account.service.config.PayboxConfigService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.PartnerService;
+import com.axelor.apps.base.service.administration.GeneralServiceImpl;
 import com.axelor.apps.tool.StringTool;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
-public class PayboxService extends PayboxRepository {
+public class PayboxService {
+
+	private final Logger log = LoggerFactory.getLogger( getClass() );
+
+	protected PayboxConfigService payboxConfigService;
+	protected PartnerService partnerService;
+	protected PartnerRepository partnerRepository;
 	
-	private static final Logger LOG = LoggerFactory.getLogger(PayboxService.class);
-	
-	
-	@Inject
-	private PayboxConfigService payboxConfigService;
-	
-	@Inject
-	private PartnerService partnerService;
-	
-	private final String CHARSET = "UTF-8";
-	
-	private final String HASH_ENCRYPTION_ALGORITHM = "SHA1withRSA";
-	
-	private final String ENCRYPTION_ALGORITHM = "RSA";
+	protected final String CHARSET = "UTF-8";
+	protected final String HASH_ENCRYPTION_ALGORITHM = "SHA1withRSA";
+	protected final String ENCRYPTION_ALGORITHM = "RSA";
+
+	public PayboxService(PayboxConfigService payboxConfigService, PartnerService partnerService, PartnerRepository partnerRepository)  {
 		
+		this.payboxConfigService = payboxConfigService;
+		this.partnerService = partnerService;
+		this.partnerRepository = partnerRepository;
+	}
+	
+	
 	/**
 	 * Procédure permettant de réaliser un paiement avec Paybox
 	 * @param paymentVoucher
 	 * 				Une saisie paiement
 	 * @throws AxelorException
-	 * @throws UnsupportedEncodingException 
+	 * @throws UnsupportedEncodingException
 	 */
 	public String paybox(PaymentVoucher paymentVoucher) throws AxelorException, UnsupportedEncodingException  {
-		
+
 		this.checkPayboxPaymentVoucherFields(paymentVoucher);
-		
+
 		Company company = paymentVoucher.getCompany();
-		
+
 		BigDecimal paidAmount = paymentVoucher.getPaidAmount();
 		Partner payerPartner = paymentVoucher.getPartner();
 //		this.checkPayboxPartnerFields(payerPartner);
 		this.checkPaidAmount(payerPartner, company, paidAmount);
 		this.checkPaidAmount(paymentVoucher);
-		
+
 		PayboxConfig payboxConfig = payboxConfigService.getPayboxConfig(company);
-		
+
 		// Vérification du remplissage du chemin de la clé publique Paybox
 		payboxConfigService.getPayboxPublicKeyPath(payboxConfig);
-		
+
 		String payboxUrl = payboxConfigService.getPayboxUrl(payboxConfig);
 		String pbxSite = payboxConfigService.getPayboxSite(payboxConfig);
 		String pbxRang = payboxConfigService.getPayboxRang(payboxConfig);
@@ -119,51 +121,51 @@ public class PayboxService extends PayboxRepository {
 		String pbxIdentifiant = payboxConfigService.getPayboxIdentifiant(payboxConfig);
 		String pbxHash = payboxConfigService.getPayboxHashSelect(payboxConfig);
 		String pbxHmac = payboxConfigService.getPayboxHmac(payboxConfig);
-		
+
 		//Date à laquelle l'empreinte HMAC a été calculée (format ISO8601)
 		String pbxTime = ISODateTimeFormat.dateHourMinuteSecond().print(new DateTime());
-		
+
 		// Permet de restreindre les modes de paiement
 		String pbxTypepaiement = "CARTE";
 		String pbxTypecarte = "CB";
-		
-		String message = this.buildMessage(pbxSite, pbxRang, pbxIdentifiant, pbxTotal, pbxDevise, pbxCmd, pbxPorteur, 
+
+		String message = this.buildMessage(pbxSite, pbxRang, pbxIdentifiant, pbxTotal, pbxDevise, pbxCmd, pbxPorteur,
 				pbxRetour, pbxEffectue, pbxRefuse, pbxAnnule, pbxHash, pbxTime, pbxTypepaiement, pbxTypecarte);
-				
-		
-		LOG.debug("Message : {}",message);
-		
+
+
+		log.debug("Message : {}",message);
+
 		String messageHmac = this.getHmacSignature(message, pbxHmac, pbxHash);
-		
-		LOG.debug("Message HMAC : {}",messageHmac);
+
+		log.debug("Message HMAC : {}",messageHmac);
 
 		String messageEncode = this.buildMessage(
-				URLEncoder.encode(pbxSite, this.CHARSET), 
-				URLEncoder.encode(pbxRang, this.CHARSET), 
-				URLEncoder.encode(pbxIdentifiant, this.CHARSET), 
-				pbxTotal, 
-				URLEncoder.encode(pbxDevise, this.CHARSET), 
-				URLEncoder.encode(pbxCmd, this.CHARSET), 
-				URLEncoder.encode(pbxPorteur, this.CHARSET), 
-				URLEncoder.encode(pbxRetour, this.CHARSET), 
-				URLEncoder.encode(pbxEffectue, this.CHARSET), 
-				URLEncoder.encode(pbxRefuse, this.CHARSET), 
-				URLEncoder.encode(pbxAnnule, this.CHARSET), 
-				URLEncoder.encode(pbxHash, this.CHARSET), 
-				URLEncoder.encode(pbxTime, this.CHARSET), 
-				URLEncoder.encode(pbxTypepaiement, this.CHARSET), 
+				URLEncoder.encode(pbxSite, this.CHARSET),
+				URLEncoder.encode(pbxRang, this.CHARSET),
+				URLEncoder.encode(pbxIdentifiant, this.CHARSET),
+				pbxTotal,
+				URLEncoder.encode(pbxDevise, this.CHARSET),
+				URLEncoder.encode(pbxCmd, this.CHARSET),
+				URLEncoder.encode(pbxPorteur, this.CHARSET),
+				URLEncoder.encode(pbxRetour, this.CHARSET),
+				URLEncoder.encode(pbxEffectue, this.CHARSET),
+				URLEncoder.encode(pbxRefuse, this.CHARSET),
+				URLEncoder.encode(pbxAnnule, this.CHARSET),
+				URLEncoder.encode(pbxHash, this.CHARSET),
+				URLEncoder.encode(pbxTime, this.CHARSET),
+				URLEncoder.encode(pbxTypepaiement, this.CHARSET),
 				URLEncoder.encode(pbxTypecarte, this.CHARSET));
-		
-		
+
+
 		String url = payboxUrl + messageEncode + "&PBX_HMAC="+ messageHmac;
-		
-		LOG.debug("Url : {}",url);
-		
-		return url;		
+
+		log.debug("Url : {}",url);
+
+		return url;
 	}
-	
-	
-	
+
+
+
 	public String buildMessage(String pbxSite, String pbxRang,String pbxIdentifiant,String pbxTotal,String pbxDevise,String pbxCmd,String pbxPorteur,String pbxRetour,
 			String pbxEffectue,String pbxRefuse,String pbxAnnule,String pbxHash,String pbxTime,String pbxTypepaiement,String pbxTypecarte)  {
 		return String.format("PBX_SITE=%s&PBX_RANG=%s&PBX_IDENTIFIANT=%s&PBX_TOTAL=%s&PBX_DEVISE=%s" +
@@ -184,8 +186,8 @@ public class PayboxService extends PayboxRepository {
 				pbxTypepaiement,
 				pbxTypecarte);
 	}
-	
-	
+
+
 	/**
 	 * Fonction remplaçant le paramètre %id par le numéro d'id de la saisie paiement
 	 * @param url
@@ -193,11 +195,11 @@ public class PayboxService extends PayboxRepository {
 	 * @return
 	 */
 	public String replaceVariableInUrl(String url, PaymentVoucher paymentVoucher)  {
-		
+
 		return url.replaceAll("%idPV", paymentVoucher.getId().toString());
-		
+
 	}
-	
+
 	/**
 	 * Fonction convertissant l'url en url encodé
 	 * @param url
@@ -222,15 +224,15 @@ public class PayboxService extends PayboxRepository {
 		newUrl = newUrl.replaceAll("\\.", "%2E");
 		return newUrl;
 //		return url;
-		
+
 	}
-	
-	
+
+
 	public String getPartnerEmail(PaymentVoucher paymentVoucher) throws AxelorException  {
-		
+
 		Partner partner = paymentVoucher.getPartner();
 		Company company = paymentVoucher.getCompany();
-		
+
 		if(partner.getEmailAddress().getAddress() != null && !partner.getEmailAddress().getAddress().isEmpty())  {
 			return partner.getEmailAddress().getAddress();
 		}
@@ -241,8 +243,8 @@ public class PayboxService extends PayboxRepository {
 			return payboxConfigService.getPayboxDefaultEmail(payboxConfigService.getPayboxConfig(company));
 		}
 	}
-	
-	
+
+
 	/**
 	 * Procédure permettant de vérifier que les champs de la saisie paiement necessaire à Paybox sont bien remplis
 	 * @param paymentVoucher
@@ -250,14 +252,14 @@ public class PayboxService extends PayboxRepository {
 	 */
 	public void checkPayboxPaymentVoucherFields(PaymentVoucher paymentVoucher) throws AxelorException  {
 		if (paymentVoucher.getPaidAmount() == null || paymentVoucher.getPaidAmount().compareTo(BigDecimal.ZERO) > 1)  {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.PAYBOX_1), 
-					GeneralServiceAccount.getExceptionAccountingMsg(), paymentVoucher.getRef()), IException.CONFIGURATION_ERROR);
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.PAYBOX_1),
+					GeneralServiceImpl.EXCEPTION, paymentVoucher.getRef()), IException.CONFIGURATION_ERROR);
 		}
 	}
-	
-	
-	
-	
+
+
+
+
 	/**
 	 * Procédure permettant de vérifier que le montant réglé par Paybox n'est pas supérieur au solde du payeur
 	 * @param partner
@@ -266,28 +268,28 @@ public class PayboxService extends PayboxRepository {
 	 */
 	public void checkPaidAmount(Partner partner, Company company, BigDecimal paidAmount) throws AxelorException  {
 		AccountingSituation accountingSituation = Beans.get(AccountingSituationService.class).getAccountingSituation(partner, company);
-			
+
 		BigDecimal partnerBalance = accountingSituation.getBalanceCustAccount();
-		
+
 		if(paidAmount.compareTo(partnerBalance) > 0)  {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.PAYBOX_2), 
-					GeneralServiceAccount.getExceptionAccountingMsg()), IException.CONFIGURATION_ERROR);
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.PAYBOX_2),
+					GeneralServiceImpl.EXCEPTION), IException.CONFIGURATION_ERROR);
 		}
 
 	}
-	
-	
+
+
 	public void checkPaidAmount(PaymentVoucher paymentVoucher) throws AxelorException  {
-		
+
 		if(paymentVoucher.getRemainingAmount().compareTo(BigDecimal.ZERO) > 0 )  {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.PAYBOX_3), 
-					GeneralServiceAccount.getExceptionAccountingMsg()), IException.INCONSISTENCY);
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.PAYBOX_3),
+					GeneralServiceImpl.EXCEPTION), IException.INCONSISTENCY);
 		}
-	
+
 
 	}
-	
-	
+
+
 	/**
 	 * Procédure permettant de vérifier que le paramétrage des champs necessaire à Paybox d'un tiers est bien réalisé
 	 * @param partner
@@ -295,12 +297,12 @@ public class PayboxService extends PayboxRepository {
 	 */
 	public void checkPayboxPartnerFields(Partner partner) throws AxelorException  {
 		if (partner.getEmailAddress().getAddress() == null || partner.getEmailAddress().getAddress().isEmpty())  {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.PAYBOX_4), 
-					GeneralServiceAccount.getExceptionAccountingMsg(), partner.getName()), IException.CONFIGURATION_ERROR);
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.PAYBOX_4),
+					GeneralServiceImpl.EXCEPTION, partner.getName()), IException.CONFIGURATION_ERROR);
 		}
 	}
-	
-	
+
+
 	/**
 	 * Fonction calculant la signature HMAC des paramètres
 	 * @param data
@@ -310,36 +312,36 @@ public class PayboxService extends PayboxRepository {
 	 * @param algorithm
 	 * 			L'algorithme utilisé (SHA512, ...)
 	 * @return
-	 * @throws AxelorException 
+	 * @throws AxelorException
 	 */
 	public String getHmacSignature(String data, String hmacKey, String algorithm) throws AxelorException  {
 		try {
-			
+
 			byte[] bytesKey = DatatypeConverter.parseHexBinary(hmacKey);
 			SecretKeySpec secretKey = new SecretKeySpec(bytesKey, "Hmac"+algorithm);
 			Mac mac = Mac.getInstance("Hmac"+algorithm);
 			mac.init(secretKey);
-			
+
 			byte[] macData = mac.doFinal( data.getBytes(this.CHARSET) );
-	
+
 //			final byte[] hex = new Hex().encode( macData );
 //			return new String( hex, this.CHARSET );
 //			LOG.debug("Message HMAC 2 : {}",new String( hex, this.CHARSET ));
-			
+
 	        String s =  StringTool.getHexString(macData);
-			
+
 			return s.toUpperCase();
-			
+
 		} catch (InvalidKeyException e) {
-			throw new AxelorException(String.format("%s :\n %s", GeneralServiceAccount.getExceptionAccountingMsg(),e), IException.INCONSISTENCY);
+			throw new AxelorException(String.format("%s :\n %s", GeneralServiceImpl.EXCEPTION,e), IException.INCONSISTENCY);
 		} catch (NoSuchAlgorithmException e) {
-			throw new AxelorException(String.format("%s :\n %s", GeneralServiceAccount.getExceptionAccountingMsg(),e), IException.INCONSISTENCY);
+			throw new AxelorException(String.format("%s :\n %s", GeneralServiceImpl.EXCEPTION,e), IException.INCONSISTENCY);
 		} catch (UnsupportedEncodingException e) {
-			throw new AxelorException(String.format("%s :\n %s", GeneralServiceAccount.getExceptionAccountingMsg(),e), IException.INCONSISTENCY);
+			throw new AxelorException(String.format("%s :\n %s", GeneralServiceImpl.EXCEPTION,e), IException.INCONSISTENCY);
 		}
 	}
-	
-	
+
+
 	/**
 	 * Méthode permettant d'ajouter une adresse email à un contact
 	 * @param contact
@@ -352,15 +354,15 @@ public class PayboxService extends PayboxRepository {
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void addPayboxEmail(Partner partner, String email, boolean toSaveOk)  {
 		if(toSaveOk)  {
-			
+
 			partner.getEmailAddress().setAddress(email);
-			partnerService.save(partner);
+			partnerRepository.save(partner);
 		}
 	}
-	
-	
+
+
 	/**
-	 * 
+	 *
 	 * @param signature
 	 * 			La signture contenu dans l'url
 	 * @param varUrl
@@ -373,15 +375,15 @@ public class PayboxService extends PayboxRepository {
 	public boolean checkPaybox(String signature, List<String> varUrl, Company company) throws Exception  {
 
 		boolean result =  this.checkPaybox(signature, varUrl, company.getAccountConfig().getPayboxConfig().getPayboxPublicKeyPath());
-		
-		LOG.debug("Resultat de la verification de signature : {}",result);
-		
+
+		log.debug("Resultat de la verification de signature : {}",result);
+
 		return result;
 	}
-	
+
 
 	/**
-	 * 
+	 *
 	 * @param signature
 	 * 			La signature contenu dans l'url
 	 * @param urlParam
@@ -394,30 +396,30 @@ public class PayboxService extends PayboxRepository {
 	public boolean checkPaybox(String signature, List<String> urlParam, String pubKeyPath) throws Exception {
 
     	String payboxParams = StringUtils.join(urlParam, "&");
-     	LOG.debug("Liste des variables Paybox signées : {}",payboxParams);
+    	log.debug("Liste des variables Paybox signées : {}",payboxParams);
 
 //	 		Déjà décodée par le framework
 //	     	String decoded = URLDecoder.decode(sign, this.CHARSET);
-     	
+
         byte[] sigBytes = Base64.decode(signature.getBytes(this.CHARSET));
 
         // lecture de la cle publique
         PublicKey pubKey = this.getPubKey(pubKeyPath);
-        
-        /** 
+
+        /**
          * Dans le cas où le clé est au format .der
          *
          * PublicKey pubKey = this.getPubKeyDer(pubKeyPath);
- 		 */	
-        
+ 		 */
+
         // verification signature
         return this.verify(payboxParams.getBytes(), sigBytes, this.HASH_ENCRYPTION_ALGORITHM, pubKey);
-        
+
      }
-	 
-	 
-	 
-    
+
+
+
+
     /** Chargement de la cle AU FORMAT pem
      * Alors ajouter la dépendance dans le fichier pom.xml :
      * <dependency>
@@ -427,56 +429,56 @@ public class PayboxService extends PayboxRepository {
 	 *	</dependency>
 	 *
 	 * Ainsi que l'import : import org.bouncycastle.util.io.pem.PemReader;
-     * 
+     *
      * @param pubKeyFile
      * @return
      * @throws Exception
      */
      private PublicKey getPubKey(String pubKeyPath) throws Exception  {
-        
+
  		PemReader reader = new PemReader(new FileReader(pubKeyPath));
- 	
+
  		byte[] pubKey = reader.readPemObject().getContent();
- 		
+
  		reader.close();
- 		
+
  		KeyFactory keyFactory = KeyFactory.getInstance(this.ENCRYPTION_ALGORITHM);
- 		
+
  		X509EncodedKeySpec pubKeySpec = new X509EncodedKeySpec(pubKey);
-         
+
  		return keyFactory.generatePublic(pubKeySpec);
- 		
+
      }
-    
-    
+
+
    /** Chargement de la cle AU FORMAT der
      * Utliser la commande suivante pour 'convertir' la clé 'pem' en 'der'
      * openssl rsa -inform PEM -in pubkey.pem -outform DER -pubin -out pubkey.der
-     * 
+     *
      * @param pubKeyFile
      * @return
      * @throws Exception
      */
     @Deprecated
 	private PublicKey getPubKeyDer(String pubKeyPath) throws Exception  {
-    	
+
         FileInputStream fis = new FileInputStream(pubKeyPath);
         DataInputStream dis = new DataInputStream(fis);
-        
+
         byte[] pubKeyBytes = new byte[fis.available()];
-        
+
         dis.readFully(pubKeyBytes);
         fis.close();
         dis.close();
-        
+
         KeyFactory keyFactory = KeyFactory.getInstance(this.ENCRYPTION_ALGORITHM);
-        
+
         // extraction cle
         X509EncodedKeySpec pubSpec = new X509EncodedKeySpec(pubKeyBytes);
         return keyFactory.generatePublic(pubSpec);
-        
+
     }
-    
+
 
      /**
       * verification signature RSA des donnees avec cle publique
@@ -492,7 +494,7 @@ public class PayboxService extends PayboxRepository {
          signature.update(dataBytes);
          return signature.verify(sigBytes);
      }
-     
-     
-     
+
+
+
 }

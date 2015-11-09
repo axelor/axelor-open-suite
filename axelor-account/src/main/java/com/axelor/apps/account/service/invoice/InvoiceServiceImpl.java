@@ -17,31 +17,36 @@
  */
 package com.axelor.apps.account.service.invoice;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.axelor.apps.account.db.BudgetDistribution;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
+import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
-import com.axelor.apps.account.db.PaymentCondition;
+import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
-import com.axelor.apps.account.db.repo.PaymentConditionRepository;
 import com.axelor.apps.account.service.invoice.factory.CancelFactory;
 import com.axelor.apps.account.service.invoice.factory.ValidateFactory;
 import com.axelor.apps.account.service.invoice.factory.VentilateFactory;
 import com.axelor.apps.account.service.invoice.generator.InvoiceGenerator;
 import com.axelor.apps.account.service.invoice.generator.invoice.RefundInvoice;
 import com.axelor.apps.base.db.Alarm;
+import com.axelor.apps.base.db.Currency;
+import com.axelor.apps.base.service.CurrencyService;
+import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.base.service.alarm.AlarmEngineService;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
+import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -50,22 +55,27 @@ import com.google.inject.persist.Transactional;
  * facturations.
  * 
  */
-public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceService  {
+public class InvoiceServiceImpl implements InvoiceService  {
 
-	private static final Logger LOG = LoggerFactory.getLogger(InvoiceServiceImpl.class);
+	private final Logger log = LoggerFactory.getLogger( getClass() );
 	
 	private ValidateFactory validateFactory;
 	private VentilateFactory ventilateFactory;
 	private CancelFactory cancelFactory;
 	private AlarmEngineService<Invoice> alarmEngineService;
+	private InvoiceRepository invoiceRepo;
+	private GeneralService generalService;
 	
 	@Inject
-	public InvoiceServiceImpl(ValidateFactory validateFactory, VentilateFactory ventilateFactory, CancelFactory cancelFactory, AlarmEngineService<Invoice> alarmEngineService) {
+	public InvoiceServiceImpl(ValidateFactory validateFactory, VentilateFactory ventilateFactory, CancelFactory cancelFactory,
+			AlarmEngineService<Invoice> alarmEngineService, InvoiceRepository invoiceRepo, GeneralService generalService) {
 
 		this.validateFactory = validateFactory;
 		this.ventilateFactory = ventilateFactory;
 		this.cancelFactory = cancelFactory;
 		this.alarmEngineService = alarmEngineService;
+		this.invoiceRepo = invoiceRepo;
+		this.generalService = generalService;
 	}
 	
 	
@@ -113,9 +123,9 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 	 * @throws AxelorException
 	 */
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void compute(final Invoice invoice) throws AxelorException {
+	public Invoice compute(final Invoice invoice) throws AxelorException {
 
-		LOG.debug("Calcule de la facture");
+		log.debug("Calcule de la facture");
 		
 		InvoiceGenerator invoiceGenerator = new InvoiceGenerator() {
 			
@@ -132,7 +142,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 			
 		};
 		
-		save(invoiceGenerator.generate());
+		return invoiceGenerator.generate();
 		
 	}
 	
@@ -149,13 +159,30 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void validate(Invoice invoice) throws AxelorException {
 
-		LOG.debug("Validation de la facture");
+		log.debug("Validation de la facture");
 		
 		validateFactory.getValidator(invoice).process( );
-		save(invoice);
+		if(generalService.getGeneral().getManageBudget() && !generalService.getGeneral().getManageMultiBudget()){
+			this.generateBudgetDistribution(invoice);
+		}
+		invoiceRepo.save(invoice);
 		
 	}
-
+	
+	@Override
+	public void generateBudgetDistribution(Invoice invoice){
+		if(invoice.getInvoiceLineList() != null){
+			for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
+				if(invoiceLine.getBudget() != null && invoiceLine.getBudgetDistributionList().isEmpty()){
+					BudgetDistribution budgetDistribution = new BudgetDistribution();
+					budgetDistribution.setBudget(invoiceLine.getBudget());
+					budgetDistribution.setAmount(invoiceLine.getExTaxTotal());
+					invoiceLine.addBudgetDistributionListItem(budgetDistribution);
+				}
+			}
+		}
+	}
+	
 	/**
 	 * Ventilation comptable d'une facture.
 	 * (Transaction)
@@ -168,11 +195,11 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void ventilate( Invoice invoice ) throws AxelorException {
 
-		LOG.debug("Ventilation de la facture {}", invoice.getInvoiceId());
+		log.debug("Ventilation de la facture {}", invoice.getInvoiceId());
 		
 		ventilateFactory.getVentilator(invoice).process();
 		
-		save(invoice);
+		invoiceRepo.save(invoice);
 		
 	}
 
@@ -188,11 +215,11 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void cancel(Invoice invoice) throws AxelorException {
 
-		LOG.debug("Annulation de la facture {}", invoice.getInvoiceId());
+		log.debug("Annulation de la facture {}", invoice.getInvoiceId());
 		
 		cancelFactory.getCanceller(invoice).process();
 		
-		save(invoice);
+		invoiceRepo.save(invoice);
 		
 	}
 	
@@ -239,38 +266,61 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public Invoice createRefund(Invoice invoice) throws AxelorException {
 		
-		LOG.debug("Créer un avoir pour la facture {}", new Object[] { invoice.getInvoiceId() });
+		log.debug("Créer un avoir pour la facture {}", new Object[] { invoice.getInvoiceId() });
 		Invoice refund = new RefundInvoice(invoice).generate();
 		invoice.addRefundInvoiceListItem( refund );
-		save(invoice);
+		invoiceRepo.save(invoice);
 		
 		return refund;
 		
 	}
 	
-	public static LocalDate getDueDate(PaymentCondition paymentCondition, LocalDate invoiceDate)  {
+	protected String getDraftSequence(Invoice invoice)  {
+		return "*" + invoice.getId();
+	}
+	
+	public void setDraftSequence(Invoice invoice)  {
 		
-		switch (paymentCondition.getTypeSelect()) {
-		case PaymentConditionRepository.TYPE_NET:
-			
-			return invoiceDate.plusDays(paymentCondition.getPaymentTime());
-			
-		case PaymentConditionRepository.TYPE_END_OF_MONTH_N_DAYS:
-					
-			return invoiceDate.dayOfMonth().withMaximumValue().plusDays(paymentCondition.getPaymentTime());
-					
-		case PaymentConditionRepository.TYPE_N_DAYS_END_OF_MONTH:
-			
-			return invoiceDate.plusDays(paymentCondition.getPaymentTime()).dayOfMonth().withMaximumValue();
-			
-		case PaymentConditionRepository.TYPE_N_DAYS_END_OF_MONTH_AT:
-			
-			return invoiceDate.plusDays(paymentCondition.getPaymentTime()).dayOfMonth().withMaximumValue().plusDays(paymentCondition.getDaySelect());
-
-		default:
-			return invoiceDate;
+		if (invoice.getId() != null && Strings.isNullOrEmpty(invoice.getInvoiceId()))  {
+			invoice.setInvoiceId(this.getDraftSequence(invoice));
 		}
 		
 	}
 	
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
+	public void updateAmountPaid(Invoice invoice) throws AxelorException  {
+		
+		invoice.setAmountPaid(this.computeAmountPaid(invoice));
+		invoiceRepo.save(invoice);
+		
+	}
+	
+	
+	protected BigDecimal computeAmountPaid(Invoice invoice) throws AxelorException  {
+		
+		BigDecimal amountPaid = BigDecimal.ZERO;
+		
+		if(invoice.getInvoicePaymentList() == null)  {  return amountPaid;  }
+		
+		CurrencyService currencyService = Beans.get(CurrencyService.class);
+		
+		Currency invoiceCurrency = invoice.getCurrency();
+		
+		for(InvoicePayment invoicePayment : invoice.getInvoicePaymentList())  {
+			
+			if(invoicePayment.getStatusSelect() == InvoicePaymentRepository.STATUS_VALIDATED)  {
+				amountPaid = amountPaid.add(currencyService.getAmountCurrencyConverted(invoicePayment.getCurrency(), invoiceCurrency, invoicePayment.getAmount(), invoicePayment.getPaymentDate()));
+			}
+			
+		}
+		
+		return amountPaid;
+	}
+	
+	
+	
 }
+
+
+
+

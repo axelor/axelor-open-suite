@@ -18,6 +18,7 @@
 package com.axelor.apps.account.web;
 
 import com.axelor.apps.account.db.Reconcile;
+import com.axelor.apps.account.db.repo.ReconcileRepository;
 import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.rpc.ActionRequest;
@@ -27,16 +28,19 @@ import com.google.inject.Inject;
 public class ReconcileController {
 
 	@Inject
-	private ReconcileService rs;	
+	private ReconcileService reconcileService;
+	
+	@Inject
+	private ReconcileRepository reconcileRepo;
 		
 	// Unreconcile button
 	public void unreconcile(ActionRequest request, ActionResponse response) {
 		
 		Reconcile reconcile = request.getContext().asType(Reconcile.class);
-		reconcile = rs.find(reconcile.getId());
+		reconcile = reconcileRepo.find(reconcile.getId());
 				
 		try {	
-			rs.unreconcile(reconcile);
+			reconcileService.unreconcile(reconcile);
 			response.setReload(true);
 		}
 		catch(Exception e)  { TraceBackService.trace(response, e); }
@@ -48,7 +52,7 @@ public class ReconcileController {
 		Reconcile reconcile = request.getContext().asType(Reconcile.class);
 			
 		try {
-			rs.confirmReconcile(reconcile);
+			reconcileService.confirmReconcile(reconcile);
 			response.setReload(true);
 		}
 		catch(Exception e)  { TraceBackService.trace(response, e); }		

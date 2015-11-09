@@ -1,0 +1,16 @@
+<?xml version="1.0" ?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_4.0.xsd">
+  
+	<module name="base" package="com.axelor.apps.base.db"/>
+	
+	<entity name="ICalendar" table="ICAL_CALENDAR" sequential="true">
+	  <string name="name" required="true" title="Name" />
+	  <string name="cid" title="CID"/>
+	  <boolean name="keepRemote" default="false" help="Keep remote values when syncing." title="Keep remote"/>
+	  <one-to-many name="events" ref="com.axelor.apps.base.db.ICalendarEvent" mappedBy="calendar" title="Events"/>
+	  <many-to-one name="user" column="user_id" ref="com.axelor.auth.db.User" title="User"/>
+	</entity>
+  
+</domain-models>

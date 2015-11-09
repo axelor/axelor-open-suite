@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.axelor.apps.account.db.InvoiceBatch;
+import com.axelor.apps.account.db.repo.InvoiceBatchRepository;
 import com.axelor.apps.account.service.invoice.InvoiceBatchService;
 import com.axelor.apps.account.service.invoice.generator.batch.BatchWkf;
 import com.axelor.apps.base.db.Batch;
@@ -35,51 +36,54 @@ public class InvoiceBatchController {
 	@Inject
 	private InvoiceBatchService invoiceBatchService;
 	
+	@Inject
+	private InvoiceBatchRepository invoiceBatchRepo;
+
 	/**
 	 * Lancer le batch de mise à jour de statut.
-	 * 
+	 *
 	 * @param request
 	 * @param response
-	 * @throws AxelorException 
+	 * @throws AxelorException
 	 */
 	public void actionStatus(ActionRequest request, ActionResponse response) throws AxelorException{
-		
+
 		InvoiceBatch invoiceBatch = request.getContext().asType(InvoiceBatch.class);
-		
-		Batch batch = invoiceBatchService.wkf(invoiceBatchService.find(invoiceBatch.getId()));
-		
-		response.setFlash(batch.getComment());
+
+		Batch batch = invoiceBatchService.wkf(invoiceBatchRepo.find(invoiceBatch.getId()));
+
+		response.setFlash(batch.getComments());
 		response.setReload(true);
 	}
-	
+
 	/**
 	  * Lancer le batch à travers un web service.
 	  *
 	  * @param request
 	  * @param response
-	 * @throws AxelorException 
+	 * @throws AxelorException
 	  */
 	public void run(ActionRequest request, ActionResponse response) throws AxelorException{
-		 
+
 		Context context = request.getContext();
-				
+
 		Batch batch = invoiceBatchService.run((String) context.get("code"));
-		
+
 		Map<String,Object> mapData = new HashMap<String,Object>();
 		mapData.put("anomaly", batch.getAnomaly());
-		response.setData(mapData);				 
+		response.setData(mapData);
 	 }
-	
+
 	/**
 	  * Appliquer le domaine à la liste de facture à ventiler ou valider.
-	  * 
+	  *
 	  * @param request
 	  * @param response
 	  */
 	public void invoiceSetDomain(ActionRequest request, ActionResponse response){
-		
+
 		InvoiceBatch invoiceBatch = request.getContext().asType(InvoiceBatch.class);
-		 
+
 		 switch (invoiceBatch.getActionSelect()) {
 		 case 1:
 			response.setAttr("invoiceSet", "domain", BatchWkf.invoiceQuery(invoiceBatch, true));

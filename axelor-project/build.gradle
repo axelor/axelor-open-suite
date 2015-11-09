@@ -1,0 +1,10 @@
+apply plugin: 'axelor-module'
+
+module {
+	name "axelor-project"
+	version "4.0.0"
+	title "Axelor project"
+
+	// module dependencies
+	module "modules:axelor-base"
+}

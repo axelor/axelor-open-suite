@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_3.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_4.0.xsd">
 
   <module name="production" package="com.axelor.apps.production.db"/>
 
@@ -19,8 +19,8 @@
   
 <!--   	<decimal name="qty" title="Quantity"/> -->
   
-  	<many-to-one name="prodResource" ref="com.axelor.apps.production.db.ProdResource" title="Resource" initParam="true"/>
-  	<many-to-one name="machineProdResource" ref="com.axelor.apps.production.db.ProdResource" title="Machine" initParam="true"/>
+  	<many-to-one name="workCenter" ref="com.axelor.apps.production.db.WorkCenter" title="Work center" initParam="true"/>
+  	<many-to-one name="machineWorkCenter" ref="com.axelor.apps.production.db.WorkCenter" title="Machine" initParam="true"/>
   
   	<one-to-many name="prodHumanResourceList" ref="com.axelor.apps.production.db.ProdHumanResource" mappedBy="operationOrder" title="Human resources"/>
   
@@ -32,11 +32,11 @@
     
     <many-to-one name="prodProcessLine" ref="com.axelor.apps.production.db.ProdProcessLine" title="Operation" initParam="true"/> 
   
-    <datetime name="plannedStartDateT" title="Planned start date"/>
-  	<datetime name="plannedEndDateT" title="Planned end date"/>
+    <datetime name="plannedStartDateT" title="Start date"/>
+  	<datetime name="plannedEndDateT" title="End date"/>
   	
- 	<datetime name="realStartDateT" title="Real start date"/>
-  	<datetime name="realEndDateT" title="Real end date"/>
+ 	<datetime name="realStartDateT" title="Start date"/>
+  	<datetime name="realEndDateT" title="End date"/>
     
     <many-to-one name="inStockMove" ref="com.axelor.apps.stock.db.StockMove" title="Stock move in"/>
     
@@ -50,8 +50,15 @@
     	return true;
 	    ]]>
     </boolean>
+    
+    <many-to-one name="startedBy" ref="com.axelor.auth.db.User" title="Started by" readonly="true"/>
+    <many-to-one name="stoppedBy" ref="com.axelor.auth.db.User" title="Stopped by" readonly="true"/>
+    <datetime name="startingDateTime" title="Starting Date" readonly="true"  />
+    <datetime name="stoppingDateTime" title="Stoppping Date" readonly="true"  />
 
     <string name="comments" title="Comments" large="true"/>
+    
+    <many-to-one name="barCode" ref="com.axelor.meta.db.MetaFile" title="Barcode" readonly="true"/>
     
   </entity>
 </domain-models>

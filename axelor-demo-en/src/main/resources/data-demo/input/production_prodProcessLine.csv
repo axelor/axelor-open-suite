@@ -1,4 +1,4 @@
-"importId";"prodProcess.importId";"name";"priority";"prodResource.importId";"description"
+"importId";"prodProcess.importId";"name";"priority";"workCenter.importId";"description"
 1;1;"Assembly MB – Proc. – Mem.";10;10;
 2;1;"Mount elements on the rack";10;20;
 4;1;"Cables plugging";30;30;

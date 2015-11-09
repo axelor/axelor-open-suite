@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package com.axelor.apps.crm.exception;
 
@@ -8,42 +8,42 @@ package com.axelor.apps.crm.exception;
  *
  */
 public interface IExceptionMessage {
-	
+
 	/**
 	 * Target service
 	 */
 	static final String TARGET_1 = /*$$(*/ "L'objectif %s est en contradiction avec la configuration d'objectif %s" /*)*/;
-	
+
 	/**
-	 * Batch event reminder 
+	 * Batch event reminder
 	 */
 	static final String BATCH_EVENT_REMINDER_1 = /*$$(*/ "Event reminder %s" /*)*/;
 	static final String BATCH_EVENT_REMINDER_2 = /*$$(*/ "Compte rendu de la génération de rappel des évènements :\n" /*)*/;
 	static final String BATCH_EVENT_REMINDER_3 = /*$$(*/ "Rappel(s) traité(s)" /*)*/;
-	
+
 	/**
 	 * Batch event reminder message
 	 */
 	static final String BATCH_EVENT_REMINDER_MESSAGE_1 = /*$$(*/ "Rappel(s) traité(s)" /*)*/;
-	
+
 	/**
 	 * Batch target
 	 */
 	static final String BATCH_TARGET_1 = /*$$(*/ "Event reminder %s" /*)*/;
 	static final String BATCH_TARGET_2 = /*$$(*/ "Compte rendu de la génération des objectifs :\n" /*)*/;
 	static final String BATCH_TARGET_3 = /*$$(*/ "Configuration des objectifs(s) traité(s)" /*)*/;
-	
+
 	/**
 	 * Convert lead wizard controller
 	 */
 	static final String CONVERT_LEAD_1 = /*$$(*/ "Prospect converti" /*)*/;
-	
+
 	/**
 	 * Event controller
 	 */
 	static final String EVENT_1 = /*$$(*/ "Aucune séquence configurée pour les tickets" /*)*/;
 	static final String EVENT_2 = /*$$(*/ "Input location please" /*)*/;
-	
+
 	/**
 	 * Lead controller
 	 */
@@ -52,4 +52,22 @@ public interface IExceptionMessage {
 	static final String LEAD_3 = /*$$(*/ "Can not open map, Please Check your Internet connection." /*)*/;
 	static final String LEAD_4 = /*$$(*/ "No lead import configuration found" /*)*/;
 	static final String LEAD_5 = /*$$(*/ "Import lead" /*)*/;
+
+	/**
+	 * Opportunity
+	 */
+	static final String LEAD_PARTNER = /*$$(*/ "Veuillez selectionner une piste" /*)*/;
+
+	/**
+	 * Configuration
+	 */
+	static final String CRM_CONFIG_1 = /*$$(*/ "Please configure informations for CRM for company %s" /*)*/;
+	static final String CRM_CONFIG_TEMPLATES = /*$$(*/ "Please configure all templates in CRM configuration for company %s" /*)*/;
+	static final String CRM_CONFIG_TEMPLATES_NONE = /*$$(*/ "No template created in CRM configuration for company %s, emails have not been sent" /*)*/;
+	
+	
+	/**
+	 * Calendar
+	 */
+	static final String CALENDAR_NOT_VALID = /*$$(*/ "Calendar configuration not valid" /*)*/;
 }

@@ -24,10 +24,8 @@ import java.util.Map;
 
 import com.axelor.apps.base.db.TemplateRule;
 import com.axelor.apps.base.db.TemplateRuleLine;
-import com.axelor.apps.base.db.repo.TemplateRuleRepository;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.message.db.Template;
-import com.axelor.apps.message.service.TemplateService;
 import com.axelor.db.Model;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.ActionHandler;
@@ -40,13 +38,10 @@ import com.axelor.rpc.Resource;
 import com.google.common.collect.Maps;
 import com.google.inject.Inject;
 
-public class TemplateRuleService extends TemplateRuleRepository{
+public class TemplateRuleService {
 	
 	@Inject
 	private TemplateBaseService ts;
-	
-	@Inject
-	private ActionHandler ac;
 	
 	public Map<String, Object> getContext(TemplateRule templateRule, Model bean) {
 		Template template = this.getTemplate(bean, templateRule);
@@ -140,7 +135,7 @@ public class TemplateRuleService extends TemplateRuleRepository{
 		request.setModel(model);
 		request.setAction(action);
 
-		return ac.forRequest(request);
+		return new ActionHandler(request);
 	}
 
 }

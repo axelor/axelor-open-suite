@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.base.web;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -26,17 +27,19 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.axelor.app.AppSettings;
 import com.axelor.apps.ReportSettings;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.CompanyRepository;
+import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.report.IReport;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.user.UserService;
+import com.axelor.apps.message.db.Message;
+import com.axelor.apps.message.db.repo.MessageRepository;
 import com.axelor.apps.tool.net.URLService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
@@ -45,7 +48,6 @@ import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
-import com.axelor.meta.db.MetaFile;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
@@ -54,21 +56,24 @@ public class PartnerController {
 
 	@Inject
 	private SequenceService sequenceService;
-	
+
 	@Inject
 	private UserService userService;
+
+	@Inject
+	private PartnerService partnerService;
 	
 	@Inject
-	private PartnerService partnerService; 
-	
+	private PartnerRepository partnerRepo;
+
 	private static final Logger LOG = LoggerFactory.getLogger(PartnerController.class);
 
 	public void setPartnerSequence(ActionRequest request, ActionResponse response) throws AxelorException {
 		Partner partner = request.getContext().asType(Partner.class);
-		partner = partnerService.find(partner.getId());
+		partner = partnerRepo.find(partner.getId());
 		if(partner.getPartnerSeq() ==  null) {
 			String seq = sequenceService.getSequenceNumber(IAdministration.PARTNER);
-			if (seq == null)  
+			if (seq == null)
 				throw new AxelorException(I18n.get(IExceptionMessage.PARTNER_1),
 						IException.CONFIGURATION_ERROR);
 			else
@@ -89,14 +94,14 @@ public class PartnerController {
 		User user = AuthUtils.getUser();
 
 		StringBuilder url = new StringBuilder();
-		String language = (partner.getLanguageSelect() == null || partner.getLanguageSelect().equals(""))? user != null? (user.getLanguage() == null || user.getLanguage().equals(""))? "en" : user.getLanguage() : "en" : partner.getLanguageSelect(); 
-		
+		String language = (partner.getLanguageSelect() == null || partner.getLanguageSelect().equals(""))? user != null? (user.getLanguage() == null || user.getLanguage().equals(""))? "en" : user.getLanguage() : "en" : partner.getLanguageSelect();
+
 		url.append(new ReportSettings(IReport.PARTNER)
 					.addParam("Locale", language)
 					.addParam("__locale", "fr_FR")
 					.addParam("PartnerId", partner.getId().toString())
 					.getUrl());
-		
+
 		LOG.debug("URL : {}", url);
 
 		String urlNotExist = URLService.notExist(url.toString());
@@ -108,7 +113,7 @@ public class PartnerController {
 			mapView.put("title", "Partenaire "+partner.getPartnerSeq());
 			mapView.put("resource", url);
 			mapView.put("viewType", "html");
-			response.setView(mapView);	
+			response.setView(mapView);
 		}
 		else {
 			response.setFlash(urlNotExist);
@@ -126,14 +131,14 @@ public class PartnerController {
 
 		StringBuilder url = new StringBuilder();
 		User user = AuthUtils.getUser();
-		String language = user != null? (user.getLanguage() == null || user.getLanguage().equals(""))? "en" : user.getLanguage() : "en"; 
-		
+		String language = user != null? (user.getLanguage() == null || user.getLanguage().equals(""))? "en" : user.getLanguage() : "en";
+
 		url.append(new ReportSettings(IReport.PHONE_BOOK)
 					.addParam("Locale", language)
 					.addParam("__locale", "fr_FR")
 					.addParam("UserId", user.getId().toString())
 					.getUrl());
-		
+
 		LOG.debug("URL : {}", url);
 		String urlNotExist = URLService.notExist(url.toString());
 		if (urlNotExist == null){
@@ -144,13 +149,13 @@ public class PartnerController {
 			mapView.put("title", "Phone Book");
 			mapView.put("resource", url);
 			mapView.put("viewType", "html");
-			response.setView(mapView);		   
+			response.setView(mapView);
 		}
 		else {
 			response.setFlash(urlNotExist);
 		}
 	}
-	
+
 	/**
 	 * Fonction appeler par le bouton imprimer
 	 *
@@ -170,7 +175,7 @@ public class PartnerController {
 					.addParam("__locale", "fr_FR")
 					.addParam("UserId", user.getId().toString())
 					.getUrl());
-		
+
 		LOG.debug("URL : {}", url);
 		String urlNotExist = URLService.notExist(url.toString());
 		if (urlNotExist == null){
@@ -181,13 +186,13 @@ public class PartnerController {
 			mapView.put("title", "Company PhoneBook");
 			mapView.put("resource", url);
 			mapView.put("viewType", "html");
-			response.setView(mapView);		   
+			response.setView(mapView);
 		}
 		else {
 			response.setFlash(urlNotExist);
 		}
 	}
-	
+
 
 	/* Fonction appeler par le bouton imprimer
 	 *
@@ -201,8 +206,8 @@ public class PartnerController {
 
 		StringBuilder url = new StringBuilder();
 		User user = AuthUtils.getUser();
-		String language = (partner.getLanguageSelect() == null || partner.getLanguageSelect().equals(""))? user != null? (user.getLanguage() == null || user.getLanguage().equals(""))? "en" : user.getLanguage() : "en" : partner.getLanguageSelect(); 
-		
+		String language = (partner.getLanguageSelect() == null || partner.getLanguageSelect().equals(""))? user != null? (user.getLanguage() == null || user.getLanguage().equals(""))? "en" : user.getLanguage() : "en" : partner.getLanguageSelect();
+
 		url.append(new ReportSettings(IReport.CLIENT_SITUATION)
 		.addParam("Locale", language)
 		.addParam("__locale", "fr_FR")
@@ -210,7 +215,7 @@ public class PartnerController {
 		.addParam("PartnerId", partner.getId().toString())
 		.addParam("PartnerPic",partner.getPicture() != null ? MetaFiles.getPath(partner.getPicture()).toString() : "")
 		.getUrl());
-		
+
 		LOG.debug("URL : {}", url);
 		String urlNotExist = URLService.notExist(url.toString());
 		if (urlNotExist == null){
@@ -221,13 +226,13 @@ public class PartnerController {
 			mapView.put("title", "Client Situation");
 			mapView.put("resource", url);
 			mapView.put("viewType", "html");
-			response.setView(mapView);		   
+			response.setView(mapView);
 		}
 		else {
 			response.setFlash(urlNotExist);
 		}
 	}
-	
+
 	public Set<Company> getActiveCompany(){
 		Set<Company> companySet = new HashSet<Company>();
 		Company company = userService.getUser().getActiveCompany();
@@ -237,10 +242,10 @@ public class PartnerController {
 				company = companyList.get(0);
 			}
 		}
-		companySet.add(company);	
+		companySet.add(company);
 		return companySet;
 	}
-	
+
 	public void setSocialNetworkUrl(ActionRequest request, ActionResponse response) {
 		Partner partner = request.getContext().asType(Partner.class);
 		Map<String,String> urlMap = partnerService.getSocialNetworkUrl(partner.getName(),partner.getFirstName(),partner.getPartnerTypeSelect());
@@ -249,6 +254,41 @@ public class PartnerController {
 		response.setAttr("twitter", "title", urlMap.get("twitter"));
 		response.setAttr("linkedin", "title", urlMap.get("linkedin"));
 		response.setAttr("youtube", "title", urlMap.get("youtube"));
+
+	}
+
+	public void findPartnerMails(ActionRequest request, ActionResponse response) {
+		Partner partner = request.getContext().asType(Partner.class);
+		List<Long> idList = partnerService.findPartnerMails(partner);
+
+		List<Message> emailsList = new ArrayList<Message>();
+		for (Long id : idList) {
+			Message message = Beans.get(MessageRepository.class).find(id);
+			if(!emailsList.contains(message)){
+				emailsList.add(message);
+			}
+		}
+
+		response.setValue("$emailsList",emailsList);
+	}
+
+	public void findContactMails(ActionRequest request, ActionResponse response) {
+		Partner partner = request.getContext().asType(Partner.class);
+		List<Long> idList = partnerService.findContactMails(partner);
+
+		List<Message> emailsList = new ArrayList<Message>();
+		for (Long id : idList) {
+			Message message = Beans.get(MessageRepository.class).find(id);
+			if(!emailsList.contains(message)){
+				emailsList.add(message);
+			}
+		}
+
+		response.setValue("$emailsList",emailsList);
+	}
+	
+	public void partnerAddressListChange(ActionRequest request, ActionResponse response) {
+		LOG.debug("Called..............");
 		
 	}
 }

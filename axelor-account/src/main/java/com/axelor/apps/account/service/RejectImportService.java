@@ -36,61 +36,63 @@ import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 
 public class RejectImportService{
-	
-	private static final Logger LOG = LoggerFactory.getLogger(RejectImportService.class); 
 
-	private DateTime todayTime;
+	private final Logger log = LoggerFactory.getLogger( getClass() );
+
+	protected GeneralService generalService;
+	protected CfonbImportService cfonbImportService;
+	protected InterbankCodeLineRepository interbankCodeLineRepo;
+	
+	protected DateTime todayTime;
 
 	@Inject
-	private CfonbImportService cfonbImportService;
-	
-	@Inject
-	private InterbankCodeLineRepository interbankCodeLineRepo; 
+	public RejectImportService(GeneralService generalService, CfonbImportService cfonbImportService, InterbankCodeLineRepository interbankCodeLineRepo) {
 		
-	@Inject
-	public RejectImportService() {
-		
-		this.todayTime = GeneralService.getTodayDateTime();
-		
+		this.generalService = generalService;
+		this.cfonbImportService = cfonbImportService;
+		this.interbankCodeLineRepo = interbankCodeLineRepo;
+		this.todayTime = this.generalService.getTodayDateTime();
+
 	}
+
 	
 	public String getDestFilename(String src, String dest)  {
 		// chemin du fichier de destination :
-		LOG.debug("Chemin de destination : {}", dest);
+		log.debug("Chemin de destination : {}", dest);
 		String newDest = ((dest).split("\\."))[0];
 		String timeString = this.todayTime.toString();
 		timeString = timeString.replace("-", "");
 		timeString = timeString.replace(":", "");
 		timeString = timeString.replace(".", "");
 		timeString = timeString.replace("+", "");
-		
+
 		newDest += "_"+timeString+".";
-		
+
 		if(dest.split("\\.").length == 2)  {
 			newDest += dest.split("\\.")[1];
 		}
 		else  {
 			newDest += src.split("\\.")[1];
 		}
-		
-		LOG.debug("Chemin de destination généré : {}", newDest);
-		
+
+		log.debug("Chemin de destination généré : {}", newDest);
+
 		return newDest;
 	}
-	
-	
+
+
 	public String getDestCFONBFile(String src, String temp) throws AxelorException, IOException  {
 		String dest = this.getDestFilename(src, temp);
-		
+
 		// copie du fichier d'import dans un repetoire temporaire
 		FileTool.copy(src, dest);
-		
-		return dest; 
+
+		return dest;
 	}
 
-	
+
 	/**
-	 * 
+	 *
 	 * @param src
 	 * @param temp
 	 * @param company
@@ -108,16 +110,16 @@ public class RejectImportService{
 	 * @throws IOException
 	 */
 	public List<String[]> getCFONBFile(String src, String temp, Company company, int operation) throws AxelorException, IOException  {
-		
+
 		String dest = this.getDestCFONBFile(src, temp);
-		
+
 		return cfonbImportService.importCFONB(dest, company, operation);
 	}
-	
-	
-	
+
+
+
 	/**
-	 * 
+	 *
 	 * @param src
 	 * @param temp
 	 * @param company
@@ -135,14 +137,14 @@ public class RejectImportService{
 	 * @throws IOException
 	 */
 	public Map<List<String[]>,String> getCFONBFileByLot(String src, String temp, Company company, int operation) throws AxelorException, IOException  {
-		
+
 		String dest = this.getDestCFONBFile(src, temp);
-		
+
 		return cfonbImportService.importCFONBByLot(dest, company, operation);
 	}
-	
-	
-	
+
+
+
 	/**
 	 * Fonction permettant de récupérer le motif de rejet/retour
 	 * @param reasonCode
@@ -162,21 +164,21 @@ public class RejectImportService{
 	public InterbankCodeLine getInterbankCodeLine(String reasonCode, int interbankCodeOperation)  {
 		switch(interbankCodeOperation)  {
 		case 0:
-			return interbankCodeLineRepo.all().filter("self.code = ?1 AND self.interbankCode = ?2 AND self.transferCfonbOk = 'true'", reasonCode, GeneralService.getGeneral().getTransferAndDirectDebitInterbankCode()).fetchOne();
+			return interbankCodeLineRepo.all().filter("self.code = ?1 AND self.interbankCode = ?2 AND self.transferCfonbOk = 'true'", reasonCode, generalService.getGeneral().getTransferAndDirectDebitInterbankCode()).fetchOne();
 		case 1:
-			return interbankCodeLineRepo.all().filter("self.code = ?1 AND self.interbankCode = ?2 AND self.directDebitAndTipCfonbOk = 'true'", reasonCode, GeneralService.getGeneral().getTransferAndDirectDebitInterbankCode()).fetchOne();
+			return interbankCodeLineRepo.all().filter("self.code = ?1 AND self.interbankCode = ?2 AND self.directDebitAndTipCfonbOk = 'true'", reasonCode, generalService.getGeneral().getTransferAndDirectDebitInterbankCode()).fetchOne();
 		case 2:
-			return interbankCodeLineRepo.all().filter("self.code = ?1 AND self.interbankCode = ?2 AND self.directDebitSepaOk = 'true'", reasonCode, GeneralService.getGeneral().getTransferAndDirectDebitInterbankCode()).fetchOne();
+			return interbankCodeLineRepo.all().filter("self.code = ?1 AND self.interbankCode = ?2 AND self.directDebitSepaOk = 'true'", reasonCode, generalService.getGeneral().getTransferAndDirectDebitInterbankCode()).fetchOne();
 		case 3:
-			return interbankCodeLineRepo.all().filter("self.code = ?1 AND self.interbankCode = ?2 AND self.lcrBorOk = 'true'", reasonCode, GeneralService.getGeneral().getTransferAndDirectDebitInterbankCode()).fetchOne();
+			return interbankCodeLineRepo.all().filter("self.code = ?1 AND self.interbankCode = ?2 AND self.lcrBorOk = 'true'", reasonCode, generalService.getGeneral().getTransferAndDirectDebitInterbankCode()).fetchOne();
 		case 4:
-			return interbankCodeLineRepo.all().filter("self.code = ?1 AND self.interbankCode = ?2 AND self.chequeOk = 'true'", reasonCode, GeneralService.getGeneral().getChequeInterbankCode()).fetchOne();
+			return interbankCodeLineRepo.all().filter("self.code = ?1 AND self.interbankCode = ?2 AND self.chequeOk = 'true'", reasonCode, generalService.getGeneral().getChequeInterbankCode()).fetchOne();
 		default:
 			return null;
 		}
 	}
-	
-	
+
+
 	/**
 	 * Méthode permettant de construire une date de rejet depuis le texte récupéré du fichier CFONB
 	 * @param dateReject
@@ -184,8 +186,8 @@ public class RejectImportService{
 	 */
 	public LocalDate createRejectDate(String dateReject)  {
 		return new LocalDate(
-				Integer.parseInt(dateReject.substring(4, 6))+2000, 
-				Integer.parseInt(dateReject.substring(2, 4)), 
+				Integer.parseInt(dateReject.substring(4, 6))+2000,
+				Integer.parseInt(dateReject.substring(2, 4)),
 				Integer.parseInt(dateReject.substring(0, 2)));
 	}
 }

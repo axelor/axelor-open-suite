@@ -23,12 +23,11 @@ import java.util.Set;
 import com.axelor.apps.message.db.Message;
 import com.axelor.apps.message.db.Template;
 import com.axelor.db.Model;
-import com.axelor.db.Repository;
 import com.axelor.exception.AxelorException;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.tool.template.TemplateMaker;
 
-public interface TemplateMessageService extends Repository<Template> {
+public interface TemplateMessageService {
 
 	public Message generateMessage(Model model, Template template) throws ClassNotFoundException, InstantiationException, IllegalAccessException, AxelorException, IOException;
 	

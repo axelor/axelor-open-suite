@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
+
+	<selection name="project.task.type.select">
+		<option value="project">Project</option>
+		<option value="task">Task</option>
+	</selection>
+	
+	<selection name="project.task.status.select">
+		<option value="1">Planned</option>
+		<option value="2">In Progress</option>
+		<option value="3">Finished</option>
+	</selection>
+	
+	<selection name="message.related.to.select" id="project.message.related.to.select">
+	    <option value="com.axelor.apps.project.db.ProjectTask">Project/Task</option>
+	</selection>
+	
+	<selection name="crm.event.related.to.select" id="project.crm.event.related.to.select">
+		<option value="com.axelor.apps.project.db.ProjectTask">Project/Business/Task (Project)</option>
+	</selection>
+	
+</object-views>

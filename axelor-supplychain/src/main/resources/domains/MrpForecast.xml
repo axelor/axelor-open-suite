@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_4.0.xsd">
+ 
+  <module name="supplychain" package="com.axelor.apps.supplychain.db"/>
+ 
+  <entity name="MrpForecast" lang="java">
+  
+	<date name="forecastDate" title="Forecast date" required="true"/>      
+	<decimal name="qty" title="Qty"/>
+	<many-to-one name="unit" ref="com.axelor.apps.base.db.Unit" title="Unit"/>
+	<many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product" required="true"/>
+	<many-to-one name="location" ref="com.axelor.apps.stock.db.Location" title="Location" required="true"/>
+	<string name="note" title="Note" large="true" multiline="true"/>
+	<many-to-one name="partner" ref="com.axelor.apps.base.db.Partner" title="Partner"/>
+      
+  </entity>
+
+</domain-models>

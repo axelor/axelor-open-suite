@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_4.0.xsd">
+  
+  <module name="cash-management" package="com.axelor.apps.cash.management.db"/>
+  
+  <entity name="ForecastRecap" lang="java">
+	
+	<many-to-one name="company" ref="com.axelor.apps.base.db.Company" required="true" title="Company" />
+	<many-to-one name="bankDetails" ref="com.axelor.apps.base.db.BankDetails" title="Bank"/>
+	<decimal name="startingBalance" title="Starting Balance" required="true"/>
+	<decimal name="endingBalance" title="Ending Balance"/>
+	<decimal name="currentBalance"/>
+	<date name="fromDate" title="From"/>
+	<date name="toDate" title="To"/>
+	<one-to-many name="forecastRecapLineList" ref="com.axelor.apps.cash.management.db.ForecastRecapLine" title="Details" mappedBy="forecastRecap"/>
+	<integer name="opportunitiesTypeSelect" title="Take into account opportunies" selection="forecast.opportunities.type.select"/>
+	<many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" title="Currency" massUpdate="true"/>
+	<many-to-one name="salesMan" ref="com.axelor.auth.db.User" title="SalesMan"/>
+	<integer name="displayTypeSelect" title="Display" selection="display.type.select" default="3"/>
+	<boolean name="isReport"/>
+	<extra-code><![CDATA[
+	
+	   
+		public static final int OPPORTUNITY_TYPE_NO = 1;
+		public static final int OPPORTUNITY_TYPE_BASE = 2;
+		public static final int OPPORTUNITY_TYPE_WORST = 3;
+		public static final int OPPORTUNITY_TYPE_BEST = 4;
+	
+	]]></extra-code>
+  </entity>
+  
+</domain-models>

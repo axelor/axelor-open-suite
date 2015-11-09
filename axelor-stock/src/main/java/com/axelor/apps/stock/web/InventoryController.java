@@ -20,7 +20,6 @@ package com.axelor.apps.stock.web;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.slf4j.Logger;
@@ -28,13 +27,12 @@ import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.ReportSettings;
 import com.axelor.apps.base.db.Product;
-import com.axelor.apps.base.service.ProductServiceImpl;
 import com.axelor.apps.stock.service.InventoryService;
 import com.axelor.apps.stock.service.LocationLineService;
 import com.axelor.apps.stock.db.Inventory;
-import com.axelor.apps.stock.db.InventoryLine;
 import com.axelor.apps.stock.db.Location;
 import com.axelor.apps.stock.db.LocationLine;
+import com.axelor.apps.stock.db.repo.InventoryRepository;
 import com.axelor.apps.stock.exception.IExceptionMessage;
 import com.axelor.apps.stock.report.IReport;
 import com.axelor.apps.tool.net.URLService;
@@ -45,13 +43,15 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.axelor.rpc.Context;
 import com.google.inject.Inject;
 
 public class InventoryController {
 
 	@Inject
 	InventoryService inventoryService;
+	
+	@Inject
+	InventoryRepository inventoryRepo;
 	
 	private static final Logger LOG = LoggerFactory.getLogger(InventoryController.class);
 	
@@ -111,14 +111,15 @@ public class InventoryController {
 	
 	public void fillInventoryLineList(ActionRequest request, ActionResponse response) throws AxelorException {
 		
-		Inventory inventory = request.getContext().asType(Inventory.class);
-		if(inventory != null) {
-			List<InventoryLine> inventoryLineList = inventoryService.fillInventoryLineList(inventory);
-			if(inventoryLineList == null)  {
+		Long inventoryId  = (Long) request.getContext().get("id");
+		if(inventoryId != null) {
+			Inventory inventory = inventoryRepo.find(inventoryId);
+			Boolean succeed = inventoryService.fillInventoryLineList(inventory);
+			if(succeed == null)  {
 				response.setFlash(I18n.get(IExceptionMessage.INVENTORY_9));
 			}
 			else {
-				if(inventoryLineList.size() > 0) {
+				if(succeed) {
 					response.setFlash(I18n.get(IExceptionMessage.INVENTORY_10));
 				}
 				else  {

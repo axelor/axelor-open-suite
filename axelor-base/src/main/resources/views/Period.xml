@@ -1,26 +1,26 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
     
     <grid name="period-grid" title="Period" model="com.axelor.apps.base.db.Period" orderBy="-fromDate">
         <field name="name"/>
         <field name="code" />
-        <field name="year" title="Fiscal year"/>
+        <field name="year" title="Fiscal year" form-view="year-form" grid-view="year-grid"/>
         <field name="fromDate"/>
         <field name="toDate"/>
-        <field name="company"/>
+        <field name="company" form-view="company-form" grid-view="company-grid"/>
         <field name="statusSelect"/>
     </grid>
     
-    <form name="period-form" title="Period" model="com.axelor.apps.base.db.Period" onNew="action-period-record-default">
+    <form name="period-form" title="Period" model="com.axelor.apps.base.db.Period" onNew="action-period-record-default" width="large">
 	    <panel readonlyIf="statusSelect == 2">
 	        <field name="name"/>
 	    	<field name="code" x-bind="{{code|uppercase}}" colSpan="3"/>
-			<field name="company" widget="SuggestBox" colSpan="3"/>
+			<field name="company" widget="SuggestBox" colSpan="3" form-view="company-form" grid-view="company-grid"/>
 	    	<field name="fromDate" colSpan="3"/>
 	    	<field name="toDate" colSpan="3"/>
-	    	<field name="year" title="Fiscal year"/>   
+	    	<field name="year" title="Fiscal year" form-view="year-form" grid-view="year-grid"/>   
     	</panel>
     	<panel>
         	<panel colSpan="6">

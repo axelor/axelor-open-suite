@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
 
     <grid name="journal-grid" title="Journal" model="com.axelor.apps.account.db.Journal">
         <field name="name"/>
@@ -13,7 +13,7 @@
         <field name="notExportOk"/>
         <field name="isObsolete"/>
         <field name="statusSelect"/>
-        <field name="company"/>
+        <field name="company" form-view="company-form" grid-view="company-grid"/>
     </grid>
     
 	<form name="journal-form" title="Journal" model="com.axelor.apps.account.db.Journal"   
@@ -22,8 +22,8 @@
 		<panel>
 			<field name="name"/>
 			<field name="code" x-bind="{{code|uppercase}}"/>
-			<field name="company" readonlyIf="statusSelect == 1 || statusSelect == 2 "/>
-			<field name="type"/>
+			<field name="company" readonlyIf="statusSelect == 1 || statusSelect == 2" form-view="company-form" grid-view="company-grid"/>
+			<field name="type" grid-view="journal-type-grid" form-view="journal-type-form"/>
 		</panel>
 		
 		<panel-tabs>
@@ -32,7 +32,7 @@
 		
 			<panel title="Configurations" hideIf="$popup()">
 				<panel title="MoveLine" colSpan="12">
-					<field name="sequence" domain="self.code = 'move' and self.company = :company"/>
+					<field name="sequence" domain="self.code = 'move' and self.company = :company" form-view="sequence-form" grid-view="sequence-grid"/>
 					<field name="descriptionModel"/>
 					<field name="descriptionIdentificationOk"/>
 				</panel>  
@@ -42,8 +42,8 @@
 					<field name="excessPaymentOk" colSpan="6"/>
 				</panel>
 				<panel title="Move lines security settings" colSpan="12">
-					<field name="validAccountTypeSet" canNew="false" colSpan="6"/>
-					<field name="validAccountSet" domain="self.company = :company" canNew="false" grid-view="account-simple-grid" colSpan="6"/>
+					<field name="validAccountTypeSet" canNew="false" colSpan="6" form-view="account-type-form" grid-view="account-type-grid"/>
+					<field name="validAccountSet" domain="self.company = :company" canNew="false" grid-view="account-simple-grid" colSpan="6" form-view="account-form"/>
 				</panel>
 			</panel>
 			
@@ -66,7 +66,7 @@
     	<view type="grid" name="move-line-journal-grid"/>
     	<view type="form" name="move-line-form"/>
     	<domain>self.move.journal.id = :id and self.move.ignoreInAccountingOk IN ('false', null) and self.move.period.year.fromDate &lt; :todayDate and self.move.period.year.toDate &gt; :todayDate </domain>	
-    	<context name="todayDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()" />
+    	<context name="todayDate" expr="eval:__config__.generalService.getTodayDate()" />
     </action-view>
     
     

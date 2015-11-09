@@ -24,15 +24,17 @@ import java.util.Map;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
-import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.crm.db.Event;
 import com.axelor.apps.crm.db.ILead;
 import com.axelor.apps.crm.db.Lead;
 import com.axelor.apps.crm.db.Opportunity;
+import com.axelor.apps.crm.db.repo.EventRepository;
 import com.axelor.apps.crm.db.repo.LeadRepository;
+import com.axelor.apps.crm.db.repo.OpportunityRepository;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
@@ -41,24 +43,27 @@ import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
-public class LeadService extends LeadRepository {
+public class LeadService {
 
 	@Inject
 	private SequenceService sequenceService;
-	
+
 	@Inject
 	private UserService userService;
+
+	@Inject
+	private PartnerRepository partnerRepo;
+
+	@Inject
+	private OpportunityRepository opportunityRepo;
+
+	@Inject
+	private EventRepository eventRepo;
 	
 	@Inject
-	private PartnerService partnerService;
-	
-	@Inject
-	private OpportunityService opportunityService;
-	
-	@Inject
-	private EventService  eventService;
-	
-	
+	private LeadRepository leadRepo;
+
+
 	/**
 	 * Convert lead into a partner
 	 * @param lead
@@ -67,59 +72,60 @@ public class LeadService extends LeadRepository {
 	 */
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public Lead convertLead(Lead lead, Partner partner, Partner contactPartner, Opportunity opportunity, Event callEvent, Event meetingEvent, Event taskEvent) throws AxelorException  {
-		
+
 //		lead.setEvent(meeting);
 //		lead.setCall(call);
 //		lead.setOpportunity(opportunity);
 //		lead.setContactPartner(contact);
-		
+
 		if(partner != null && contactPartner != null)  {
 			if(partner.getContactPartnerSet()==null)  {
 				partner.setContactPartnerSet(new HashSet<Partner>());
 			}
 			partner.getContactPartnerSet().add(contactPartner);
+			contactPartner.setMainPartner(partner);
 		}
-		
+
 		if(opportunity != null && partner != null)  {
 			opportunity.setPartner(partner);
 		}
-		
+
 		if(partner != null)  {
 			lead.setPartner(partner);
-			partnerService.save(partner);
+			partnerRepo.save(partner);
 		}
 		if(contactPartner!=null)  {
-			partnerService.save(contactPartner);
+			partnerRepo.save(contactPartner);
 		}
 		if(opportunity!=null)  {
-			opportunityService.save(opportunity);
+			opportunityRepo.save(opportunity);
 		}
 		if(callEvent!=null)  {
-			eventService.save(callEvent);
+			eventRepo.save(callEvent);
 		}
 		if(meetingEvent!=null)  {
-			eventService.save(meetingEvent);
+			eventRepo.save(meetingEvent);
 		}
 		if(taskEvent!=null)  {
-			eventService.save(taskEvent);
+			eventRepo.save(taskEvent);
 		}
-		
+
 		lead.setPartner(partner);
 		lead.setStatusSelect(ILead.STATUS_CONVERTED);
-		save(lead);
-		
+		leadRepo.save(lead);
+
 		return lead;
-		
+
 	}
-	
-	
+
+
 	/**
 	 * Get sequence for partner
 	 * @return
 	 * @throws AxelorException
 	 */
 	public String getSequence() throws AxelorException  {
-		
+
 		String seq = sequenceService.getSequenceNumber(IAdministration.PARTNER);
 		if (seq == null)  {
 			throw new AxelorException(I18n.get(IExceptionMessage.PARTNER_1),
@@ -127,28 +133,28 @@ public class LeadService extends LeadRepository {
 		}
 		return seq;
 	}
-	
-	
+
+
 	/**
 	 * Assign user company to partner
 	 * @param partner
 	 * @return
 	 */
 	public Partner setPartnerCompany(Partner partner)  {
-		
-		
+
+
 		if(userService.getUserActiveCompany() != null)  {
 			partner.setCompanySet(new HashSet<Company>());
 			partner.getCompanySet().add(userService.getUserActiveCompany());
 		}
-		
+
 		return partner;
 	}
-	
+
 	public Map<String,String> getSocialNetworkUrl(String name,String firstName, String companyName){
-		
+
 		Map<String,String> urlMap = new HashMap<String,String>();
-		String searchName = firstName != null && name != null ? firstName+"+"+name : name == null ? firstName : name;  
+		String searchName = firstName != null && name != null ? firstName+"+"+name : name == null ? firstName : name;
 		searchName = searchName == null ? "" : searchName;
 		urlMap.put("facebook","<a class='fa fa-facebook' href='https://www.facebook.com/search/more/?q="+searchName+"&init=public"+"' target='_blank'/>");
 		urlMap.put("twitter", "<a class='fa fa-twitter' href='https://twitter.com/search?q="+searchName+"' target='_blank' />");
@@ -166,10 +172,10 @@ public class LeadService extends LeadRepository {
 
 	@Transactional
 	public void saveLead(Lead lead){
-		save(lead);
+		leadRepo.save(lead);
 	}
-	
-	
+
+
 	public Object importLead(Object bean, Map values) {
 
 		assert bean instanceof Lead;

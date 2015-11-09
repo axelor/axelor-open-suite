@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
     
     <grid name="batch-grid" title="Batches" model="com.axelor.apps.base.db.Batch" orderBy="-id"
     canEdit="false" canDelete="false" canNew="false" canSave="false">
     	<field name="id" />
-		<field name="createdBy"/>
+		<field name="createdBy" form-view="user-form" grid-view="user-grid"/>
 		<field name="duration" />
 		<field name="startDate" />
 		<field name="endDate" />
@@ -15,15 +15,15 @@
     </grid>
     
     <form name="batch-form" title="Batch" model="com.axelor.apps.base.db.Batch" onNew="action-batch-attrs" onLoad="action-batch-attrs" 
-    canEdit="false" canDelete="false" canNew="false" canCopy="false" canSave="false">
+    canEdit="false" canDelete="false" canNew="false" canCopy="false" canSave="false" width="large">
 		<panel>
-		    <field name="createdBy"/>
+		    <field name="createdBy" form-view="user-form" grid-view="user-grid"/>
 		    <field name="duration"/>
-		    <field name="startDate"/>
+		    <field name="startDate" requirded="true"/>
 		    <field name="endDate"/>
 		    <field name="done"/>
 		    <field name="anomaly"/>
-		    <field name="comment" showTitle="false" colSpan="12"/>
+		    <field name="comments" showTitle="false" colSpan="12"/>
 		    <button name="showTraceBack" title="Anomalies" colSpan="2" onClick="save,action-batch-show-trace-back"/>
 		    <button name="showInvoice" title="Invoices" hidden="true" colSpan="2" onClick="save,action-batch-show-invoice"/>
 		    <button name="showReimbursement" title="Reimbursements" hidden="true" colSpan="2" onClick="save,action-batch-show-reimbursement"/>

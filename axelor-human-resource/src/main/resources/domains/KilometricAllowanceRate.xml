@@ -1,0 +1,19 @@
+<?xml version="1.0" ?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_4.0.xsd">
+
+     <module name="human-resource" package="com.axelor.apps.hr.db"/>
+
+    <entity sequential="true" name="KilometricAllowanceRate" lang="java" >
+    
+        <many-to-one name="general" ref="com.axelor.apps.base.db.General" title="Administration"/>
+        
+        <integer name="vehicleFiscalPower" selection="hr.employee.vehicleFiscalPower.number.select" title="Fiscal power" required="true" unique="true"/>
+        <decimal name="rate" title="Rate" required="true" precision="20" scale="3" />
+        
+        <finder-method name="findByVehicleFiscalPower" using="vehicleFiscalPower"/>
+        
+    </entity>
+
+</domain-models>

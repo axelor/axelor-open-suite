@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_4.0.xsd">
+
+  <module name="human-resource" package="com.axelor.apps.hr.db"/>
+
+  <entity name="HRConfig" lang="java" cachable="true">
+  	<integer name="importId"/>
+    
+    <one-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company" required="true" unique="true"/>
+  	<many-to-one name="sentLeaveTemplate" ref="com.axelor.apps.message.db.Template" title="Sent Leave Request Template"/>
+  	<many-to-one name="validatedLeaveTemplate" ref="com.axelor.apps.message.db.Template" title="Validated Leave Request Template"/>
+  	<many-to-one name="refusedLeaveTemplate" ref="com.axelor.apps.message.db.Template" title="Refused Leave Request Template"/>
+  	<many-to-one name="publicHolidayPlanning" ref="com.axelor.apps.hr.db.PublicHolidayPlanning" title="Public Holiday Planning"/>
+  	
+  </entity>
+  
+</domain-models>

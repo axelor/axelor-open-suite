@@ -25,6 +25,7 @@ import java.util.Map;
 import com.axelor.app.AppSettings;
 import com.axelor.apps.base.service.MapService;
 import com.axelor.apps.crm.db.Opportunity;
+import com.axelor.apps.crm.db.repo.OpportunityRepository;
 import com.axelor.apps.crm.exception.IExceptionMessage;
 import com.axelor.apps.crm.service.OpportunityService;
 import com.axelor.auth.AuthUtils;
@@ -34,28 +35,34 @@ import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.common.base.Strings;
+import com.google.inject.Inject;
 
 public class OpportunityController {
+	
+	@Inject
+	private OpportunityRepository opportunityRepo;
+	
+	@Inject
+	private OpportunityService opportunityService;
 	
 	public void saveOpportunitySalesStage(ActionRequest request, ActionResponse response) throws AxelorException {
 		
 		Opportunity opportunity = request.getContext().asType(Opportunity.class);
-		OpportunityService opportunityService = Beans.get(OpportunityService.class);
-		Opportunity persistOpportunity = opportunityService.find(opportunity.getId());
+		Opportunity persistOpportunity = opportunityRepo.find(opportunity.getId());
 		persistOpportunity.setSalesStageSelect(opportunity.getSalesStageSelect());
 		opportunityService.saveOpportunity(persistOpportunity);
 		
 	}
 	
 	public void assignToMe(ActionRequest request, ActionResponse response)  {
-		OpportunityService opportunityService = Beans.get(OpportunityService.class);
+		
 		if(request.getContext().get("id") != null){
-			Opportunity opportunity = opportunityService.find((Long)request.getContext().get("id"));
+			Opportunity opportunity = opportunityRepo.find((Long)request.getContext().get("id"));
 			opportunity.setUser(AuthUtils.getUser());
 			opportunityService.saveOpportunity(opportunity);
 		}
 		else if(!((List)request.getContext().get("_ids")).isEmpty()){
-			for(Opportunity opportunity : opportunityService.all().filter("id in ?1",request.getContext().get("_ids")).fetch()){
+			for(Opportunity opportunity : opportunityRepo.all().filter("id in ?1",request.getContext().get("_ids")).fetch()){
 				opportunity.setUser(AuthUtils.getUser());
 				opportunityService.saveOpportunity(opportunity);
 			}
@@ -81,4 +88,11 @@ public class OpportunityController {
 		mapView.put("viewType", "html");		
 		response.setView(mapView);
 	}	
+	
+	public void createClient(ActionRequest request, ActionResponse response) throws AxelorException{
+		Opportunity opportunity = request.getContext().asType(Opportunity.class);
+		opportunity = opportunityRepo.find(opportunity.getId());
+		opportunityService.createClientFromLead(opportunity);
+		response.setReload(true);
+	}
 }

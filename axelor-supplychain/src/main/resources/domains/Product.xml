@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_4.0.xsd">
+ 
+  <module name="base" package="com.axelor.apps.base.db"/>
+ 
+  <entity name="Product" lang="java">
+  
+    <integer name="periodicitySelect" title="Periodicity" selection="product.periodicity.subscription.select" default="1"/>
+  	<many-to-one name="mrpFamily" ref="com.axelor.apps.supplychain.db.MrpFamily" title="MRP family"/>
+    <boolean name="excludeFromMrp" title="Exclude from MRP"/>
+  	
+  </entity>
+
+</domain-models>

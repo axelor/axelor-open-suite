@@ -1,0 +1,16 @@
+<?xml version="1.0" ?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_4.0.xsd">
+
+  <module name="human-resource" package="com.axelor.apps.hr.db"/>
+
+  <entity name="LeaveReason" cachable="true">
+      
+      <string name="leaveReason" namecolumn="true" title="Leave reason" required="true"/>
+      <boolean name="manageAccumulation" title="Manage Accumulation"/>
+      <boolean name="allowNegativeValue" title="Allow Negative Value for leaves"/>
+      <boolean name="allowInjection" title="Allow Injection"/>
+  </entity>
+  
+</domain-models>

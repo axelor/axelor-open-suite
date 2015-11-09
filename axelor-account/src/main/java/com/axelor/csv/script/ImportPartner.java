@@ -26,14 +26,14 @@ import com.axelor.apps.account.db.AccountingSituation;
 import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.service.PartnerService;
+import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.google.inject.Inject;
 
 
 public class ImportPartner {
 		
 		@Inject
-		private PartnerService partnerService;
+		private PartnerRepository partnerRepo;
 		
 		@Inject
 		private AccountRepository accountRepo;
@@ -43,7 +43,7 @@ public class ImportPartner {
 	        try{
 	            Partner partner = (Partner) bean;
 				partner.setContactPartnerSet(new HashSet<Partner>());
-				List<? extends Partner> partnerList = partnerService.all().filter("self.mainPartner.id = ?1",partner.getId()).fetch();
+				List<? extends Partner> partnerList = partnerRepo.all().filter("self.mainPartner.id = ?1",partner.getId()).fetch();
 				for(Partner pt : partnerList)
 					partner.getContactPartnerSet().add(pt);
 				for(Company company : partner.getCompanySet())  {

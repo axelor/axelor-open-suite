@@ -35,24 +35,24 @@ public class AlarmEngineBatchController {
 
 	@Inject
 	private AlarmEngineBatchService alarmEngineBatchService;
-	
+
 	@Inject
 	private AlarmEngineBatchRepository alarmEngineBatchRepo;
-	
+
 	public void launch(ActionRequest request, ActionResponse response) {
-		
+
 		AlarmEngineBatch alarmEngineBatch = request.getContext().asType(AlarmEngineBatch.class);
 		alarmEngineBatch = alarmEngineBatchRepo.find(alarmEngineBatch.getId());
-		
-		response.setFlash(alarmEngineBatchService.run(alarmEngineBatch).getComment());
-		response.setReload(true);	
+
+		response.setFlash(alarmEngineBatchService.run(alarmEngineBatch).getComments());
+		response.setReload(true);
 	}
-	
+
 	// WS
 	public void run(ActionRequest request, ActionResponse response) throws AxelorException {
-		
+
 		AlarmEngineBatch alarmEngineBatch = alarmEngineBatchRepo.findByCode("code");
-		
+
 		if (alarmEngineBatch == null) {
 			TraceBackService.trace(new AxelorException(I18n.get(IExceptionMessage.ALARM_ENGINE_BATCH_5)+" "+request.getContext().get("code"), 3));
 		}
@@ -60,6 +60,6 @@ public class AlarmEngineBatchController {
 			Map<String,Object> mapData = new HashMap<String,Object>();
 			mapData.put("anomaly", alarmEngineBatchService.run(alarmEngineBatch).getAnomaly());
 			response.setData(mapData);
-		}		
+		}
 	}
 }

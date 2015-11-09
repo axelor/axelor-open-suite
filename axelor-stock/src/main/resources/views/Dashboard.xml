@@ -1,63 +1,63 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_3.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
 	
 	
 	<action-view title="Customer deliveries by country" name="dashlet.stockMove.nbr.delivery.by.country">
 	  <view type="chart" name="chart.stockMove.nbr.delivery.by.country"/>
 	  <context name="activeCompany" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveCompany()" />
-	  <context name="todayDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()" />
+	  <context name="todayDate" expr="eval:__config__.generalService.getTodayDate()" />
 	</action-view>
 	
 	<action-view title="Product deliveries in qty by country" name="dashlet.stockMoveLine.product.delivery.by.country">
 	  <view type="chart" name="chart.stockMoveLine.product.delivery.by.country"/>
 	  <context name="activeCompany" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveCompany()" />
-	  <context name="todayDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()" />
+	  <context name="todayDate" expr="eval:__config__.generalService.getTodayDate()" />
 	</action-view>
 	
 	<action-view title="Product deliveries in qty by country by family" name="dashlet.stockMoveLine.product.delivery.by.country.by.family">
 	  <view type="chart" name="chart.stockMoveLine.product.delivery.by.country.by.family"/>
 	  <context name="activeCompany" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveCompany()" />
-	  <context name="todayDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()" />
+	  <context name="todayDate" expr="eval:__config__.generalService.getTodayDate()" />
 	</action-view>
 	
 	<action-view title="Customer deliveries statistics" name="dashlet.stockMove.deliveries.time.delay.in.nbr">
 	  <view type="chart" name="chart.stockMove.deliveries.time.delay.in.nbr"/>  
-	  <context name="todayDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()" />
+	  <context name="todayDate" expr="eval:__config__.generalService.getTodayDate()" />
 	  <context name="userId" expr="eval:__user__.id" />
 	</action-view>
 	
 	<action-view title="Customer average delivery delay" name="dashlet.stockMove.average.delivery.time.delay">
 	  <view type="chart" name="chart.stockMove.average.delivery.time.delay"/>  
-	  <context name="todayDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()" />
+	  <context name="todayDate" expr="eval:__config__.generalService.getTodayDate()" />
 	  <context name="userId" expr="eval:__user__.id" />
 	</action-view>
 
 <!-- 	Stock Dashboard -->
 	
 	<dashboard title="Dashboard" name="stock.dashboard.sample"  >		
-		<dashlet action="dashlet.stock.dashboard.upcoming.deliveries" canSearch="true" height="350" />
-		<dashlet action="dashlet.stock.move.late.cust.late.deliveries" canSearch="true" height="350" />
-		<dashlet action="dashlet.stock.move.upcoming.suppl.arrivals" height="350" canSearch="true" />
-		<dashlet action="dashlet.stock.move.late.suppl.arrivals" canSearch="true" height="350" />
+		<dashlet action="dashlet.stock.dashboard.upcoming.deliveries" canSearch="true" height="350" colSpan="12"/>
+		<dashlet action="dashlet.stock.move.late.cust.late.deliveries" canSearch="true" height="350" colSpan="12"/>
+		<dashlet action="dashlet.stock.move.upcoming.suppl.arrivals" height="350" canSearch="true" colSpan="12"/>
+		<dashlet action="dashlet.stock.move.late.suppl.arrivals" canSearch="true" height="350" colSpan="12"/>
 		<dashlet action="dashlet.location.line.product.out.stock.bylocation" canSearch="true" height="350" />
-	    <dashlet action="dashlet.production.stock.move.in.planned"  height="350" canSearch="true"/>    
-	    <dashlet action="dashlet.production.stock.move.out.planned" height="350" canSearch="true"/>       			
-	    <dashlet action="dashlet.production.stock.move.in.realized" height="350" canSearch="true"/>
-	    <dashlet action="dashlet.production.stock.move.out.realized" height="350" canSearch="true"/>  
+	    <dashlet action="dashlet.production.stock.move.in.planned"  height="350" canSearch="true" colSpan="12"/>    
+	    <dashlet action="dashlet.production.stock.move.out.planned" height="350" canSearch="true" colSpan="12"/>       			
+	    <dashlet action="dashlet.production.stock.move.in.realized" height="350" canSearch="true" colSpan="12"/>
+	    <dashlet action="dashlet.production.stock.move.out.realized" height="350" canSearch="true" colSpan="12"/>  
 	    <dashlet action="dashlet.nbr.product.per.family" height="350" canSearch="true" if-module="axelor-supplychain"/>       			
 	</dashboard>
 
 	<dashboard title="Dashboard" name="stock.dashboard.one"  >	
-		<dashlet action="dashlet.stock.dashboard.upcoming.deliveries" canSearch="true" height="350" />	
-		<dashlet action="dashlet.stock.move.late.cust.late.deliveries" canSearch="true" height="350" />	
-		<dashlet action="dashlet.stock.move.upcoming.suppl.arrivals" canSearch="true" height="350" />	
-		<dashlet action="dashlet.stock.move.late.suppl.arrivals" canSearch="true" height="350" />	
-		<dashlet action="dashlet.production.stock.move.in.planned" canSearch="true" height="350" />	
-		<dashlet action="dashlet.production.stock.move.in.realized" canSearch="true" height="350" />	
-		<dashlet action="dashlet.production.stock.move.out.planned" canSearch="true" height="350" />	
-		<dashlet action="dashlet.production.stock.move.out.realized" canSearch="true" height="350" />	
+		<dashlet action="dashlet.stock.dashboard.upcoming.deliveries" canSearch="true" height="350" colSpan="12"/>	
+		<dashlet action="dashlet.stock.move.late.cust.late.deliveries" canSearch="true" height="350" colSpan="12"/>	
+		<dashlet action="dashlet.stock.move.upcoming.suppl.arrivals" canSearch="true" height="350" colSpan="12"/>	
+		<dashlet action="dashlet.stock.move.late.suppl.arrivals" canSearch="true" height="350" colSpan="12"/>	
+		<dashlet action="dashlet.production.stock.move.in.planned" canSearch="true" height="350" colSpan="12"/>	
+		<dashlet action="dashlet.production.stock.move.in.realized" canSearch="true" height="350" colSpan="12"/>	
+		<dashlet action="dashlet.production.stock.move.out.planned" canSearch="true" height="350" colSpan="12"/>	
+		<dashlet action="dashlet.production.stock.move.out.realized" canSearch="true" height="350" colSpan="12"/>	
 		<dashlet action="dashlet.location.line.product.out.stock.bylocation" canSearch="true" height="350" />
 	</dashboard>
 

@@ -19,9 +19,8 @@ package com.axelor.apps.base.service.tax;
 
 import com.axelor.apps.account.db.FiscalPosition;
 import com.axelor.apps.account.db.Tax;
-import com.axelor.db.Repository;
 
-public interface FiscalPositionService extends Repository<FiscalPosition>{
+public interface FiscalPositionService {
 	
 
 	public Tax getTax(FiscalPosition fiscalPosition, Tax tax);

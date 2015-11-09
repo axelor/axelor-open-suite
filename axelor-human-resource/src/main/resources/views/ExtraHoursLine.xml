@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
+	
+	<grid name="extra-hours-line-grid" title="Extra Hours" model="com.axelor.apps.hr.db.ExtraHoursLine" editable="true" onNew="action-extra-hours-line-record-default">
+		<field name="date"/>
+		<field name="qty" onChange="action-extra-hours-line-validate-qty"/>
+		<field name="projectTask"/>
+		<field name="description"/>
+		<field name="user" hidden="true"/>
+	</grid>
+
+	<form name="extra-hours-line-form" title="Extra Hours" model="com.axelor.apps.hr.db.ExtraHoursLine" cols="12" width="large"
+	    onNew="action-group-extra-hours-line-onnew"
+	    onLoad="action-extra-hours-line-attrs-title-project-task">
+
+		<panel name="head">
+			<field name="date"/>
+			<field name="qty" onChange="action-extra-hours-line-validate-qty"/>
+			<field name="projectTask"/>
+			<field name="description" colSpan="12"/>
+			<field name="user" hidden="true" form-view="user-form" grid-view="user-grid"/>
+		</panel>
+	</form>
+	
+	
+	<action-attrs name="action-extra-hours-line-attrs-title-project-task">
+		<attribute name="title" for="projectTask" expr="eval: __config__.general.getProjectTaskLabel()" if="!com.google.common.base.Strings.isNullOrEmpty(__config__.general.getProjectTaskLabel())"/>
+	</action-attrs>
+	
+
+	<action-record name="action-extra-hours-line-record-default" model="com.axelor.apps.hr.db.ExtraHoursLine">
+	    <field name="user" expr="eval: __user__"/>
+	</action-record>
+	
+	<action-group name="action-group-extra-hours-line-onnew">
+		<action name="action-extra-hours-line-record-default"/>
+		<action name="action-extra-hours-line-attrs-title-project-task"/>
+	</action-group>
+	
+	<action-validate name="action-extra-hours-line-validate-qty">
+		<error message="Maximum value for hours exceeded (configure daily work hours in employee)" if="user?.employee == null || user?.employee?.dailyWorkHours &lt; qty" action="action-extra-hours-line-record-qty"/>
+	</action-validate>
+	
+	<action-record name="action-extra-hours-line-record-qty" model="com.axelor.apps.hr.db.ExtraHoursLine">
+		<field name="qty" expr="eval: user?.employee != null ? user?.employee?.dailyWorkHours : 0"/>
+	</action-record>
+
+</object-views>

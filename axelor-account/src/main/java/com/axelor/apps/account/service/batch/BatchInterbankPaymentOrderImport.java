@@ -29,6 +29,7 @@ import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.PaymentVoucher;
 import com.axelor.apps.account.db.repo.PaymentVoucherRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.service.AccountingService;
 import com.axelor.apps.account.service.InterbankPaymentOrderImportService;
 import com.axelor.apps.account.service.RejectImportService;
 import com.axelor.apps.account.service.cfonb.CfonbImportService;
@@ -41,23 +42,26 @@ import com.axelor.i18n.I18n;
 
 public class BatchInterbankPaymentOrderImport extends BatchStrategy {
 
-	private static final Logger LOG = LoggerFactory.getLogger(BatchInterbankPaymentOrderImport.class);
+	private final Logger log = LoggerFactory.getLogger( getClass() );
 
-	private boolean stop = false;
+	protected boolean stop = false;
 	
-	private BigDecimal totalAmount = BigDecimal.ZERO;
+	protected BigDecimal totalAmount = BigDecimal.ZERO;
 	
-	private String updateCustomerAccountLog = "";
+	protected String updateCustomerAccountLog = "";
 	
-	@Inject
-	private PaymentVoucherRepository paymentVoucherRepo;
+	protected PaymentVoucherRepository paymentVoucherRepo;
 
 	
 	@Inject
 	public BatchInterbankPaymentOrderImport(InterbankPaymentOrderImportService interbankPaymentOrderImportService, CfonbImportService cfonbImportService, 
-			RejectImportService rejectImportService, BatchAccountCustomer batchAccountCustomer) {
+			RejectImportService rejectImportService, BatchAccountCustomer batchAccountCustomer, PaymentVoucherRepository paymentVoucherRepo) {
 		
 		super(interbankPaymentOrderImportService, cfonbImportService, rejectImportService, batchAccountCustomer);
+		
+		this.paymentVoucherRepo = paymentVoucherRepo;
+		
+		AccountingService.setUpdateCustomerAccount(false);
 		
 	}
 
@@ -114,7 +118,7 @@ public class BatchInterbankPaymentOrderImport extends BatchStrategy {
 				
 				incrementAnomaly();
 				
-				LOG.error("Bug(Anomalie) généré(e) pour le batch d'import des paiements par TIP et TIP chèque {}", batch.getId());
+				log.error("Bug(Anomalie) généré(e) pour le batch d'import des paiements par TIP et TIP chèque {}", batch.getId());
 				
 			}
 			
@@ -148,7 +152,7 @@ public class BatchInterbankPaymentOrderImport extends BatchStrategy {
 				
 				incrementAnomaly();
 				
-				LOG.error("Bug(Anomalie) généré(e) pour le paiement de la facture {}", payment[1]);
+				log.error("Bug(Anomalie) généré(e) pour le paiement de la facture {}", payment[1]);
 				
 			} finally {
 				

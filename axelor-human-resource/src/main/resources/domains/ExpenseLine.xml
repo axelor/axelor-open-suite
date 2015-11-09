@@ -1,0 +1,27 @@
+<?xml version="1.0" ?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_4.0.xsd">
+
+  <module name="human-resource" package="com.axelor.apps.hr.db"/>
+
+  <entity name="ExpenseLine" cachable="true">
+      
+      <many-to-one name="user" ref="com.axelor.auth.db.User" title="User" column="user_id" readonly="true"/>
+      <many-to-one name="projectTask" ref="com.axelor.apps.project.db.ProjectTask" title="Project/Task" />
+      <many-to-one name="expenseType" ref="com.axelor.apps.base.db.Product" title="Expense Type" required="true" />
+      <date name="expenseDate" title="Expense date" required="true" default="now"/>
+      <decimal name="untaxedAmount" title="Untaxed amount" readonly="true"/>
+      <decimal name="totalTax" title="Total tax" />
+      <decimal name="totalAmount" title="Total amount with tax" required="true"/>
+      <string name="comments" title="Comments" large="true"/>
+      <boolean name="toInvoice"/>
+	  <boolean name="invoiced" readonly="true"/>
+	  <many-to-one name="expense" ref="com.axelor.apps.hr.db.Expense" title="Expense" />
+	  <one-to-many name="analyticDistributionLineList" ref="com.axelor.apps.account.db.AnalyticDistributionLine" title="Analytic distribution lines" mappedBy="expenseLine"/>
+	  <many-to-one name="analyticDistributionTemplate" title="Analytic distribution template" ref="com.axelor.apps.account.db.AnalyticDistributionTemplate"/>
+  	  <binary name="justification" image="true" title="Justification"/>
+  
+  </entity>
+  
+</domain-models>
