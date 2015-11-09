@@ -47,7 +47,6 @@
 		    	<field name="manageMultiBanks"/>
 		    	<field name="manageBudget" if-module="axelor-account"/>
 		    	<field name="manageMultiBudget" showIf="manageBudget" if-module="axelor-account"/>
-		    	<field name="clientPortalManagement"/>
 		    </panel>
 		    <panel title="Accounting">
 				<field name="defaultExemptionTax" form-view="tax-form" grid-view="tax-grid"/>
@@ -87,6 +86,15 @@
 				</panel>
 		    </panel>
 		    <panel-related field="kilometricAllowanceRateList"/>
+		    <panel title="Portal" if-module="axelor-client-portal">
+		    	<field name="clientPortalManagement" colSpan="12"/>
+		    	<field name="manageSaleOrders" showIf="clientPortalManagement"/>
+		    	<field name="canConfirmOnline" showIf="manageSaleOrders"/>
+		    	<field name="manageInvoices" showIf="clientPortalManagement"/>
+		    	<field name="canPayOnline" showIf="manageInvoices"/>
+		    	<field name="manageTickets" showIf="clientPortalManagement"/>
+		    	<panel-related field="onlinePaymentMethodSet" colSpan="12" showIf="manageInvoices &amp;&amp; canPayOnline"/>
+		    </panel>
 		</panel-tabs>
 	</form>
 	

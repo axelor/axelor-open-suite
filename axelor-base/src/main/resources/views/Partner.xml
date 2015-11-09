@@ -200,7 +200,7 @@
 			<panel title="Purchase Order" if-module="axelor-purchase" showIf="isSupplier">
 				<field name="purchaseOrderInformation" colSpan="12"/>
 			</panel>
-			<panel title="Client portal access" if="__config__.general.getClientPortalManagement()">
+			<panel title="Client portal access" if-module="axelor-client-portal" if="__config__.general.getClientPortalManagement()">
 				<field name="password" widget="password"/>
 			</panel>
 		</panel-tabs>
