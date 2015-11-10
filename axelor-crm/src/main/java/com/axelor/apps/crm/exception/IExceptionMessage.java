@@ -70,4 +70,13 @@ public interface IExceptionMessage {
 	 * Calendar
 	 */
 	static final String CALENDAR_NOT_VALID = /*$$(*/ "Calendar configuration not valid" /*)*/;
+	
+	/*
+	 * Recurrence
+	 */
+	static final String RECURRENCE_RECURRENCE_TYPE = /*$$(*/ "You must choose a recurrence type" /*)*/;
+	static final String RECURRENCE_PERIODICITY = /*$$(*/ "Periodicity must be greater than 0" /*)*/;
+	static final String RECURRENCE_DAYS_CHECKED = /*$$(*/ "You must choose at least one day in the week" /*)*/;
+	static final String RECURRENCE_REPETITION_NUMBER = /*$$(*/ "The number of repetitions must be greater than 0" /*)*/;
+	static final String RECURRENCE_END_DATE = /*$$(*/ "The end date must be after the start date" /*)*/;
 }

@@ -23,8 +23,10 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.mail.MessagingException;
@@ -35,6 +37,7 @@ import net.fortuna.ical4j.model.property.Method;
 
 import org.joda.time.Duration;
 import org.joda.time.Interval;
+import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
 
 import com.axelor.apps.base.db.Address;
@@ -424,5 +427,356 @@ public class EventService {
 			Beans.get(MessageService.class).attachMetaFiles(message, fileSet);
 		}
 		message = Beans.get(MessageService.class).sendByEmail(message);
+	}
+	
+	@Transactional
+	public void addRecurrentEventsByDays(Event event, int periodicity, int endType, int repetitionsNumber, LocalDate endDate){
+		Event lastEvent = event;
+		if(endType == 1){
+			int repeated = 0;
+			while(repeated != repetitionsNumber){
+				Event copy = eventRepo.copy(lastEvent, false);
+				copy.setParentEvent(lastEvent);
+				copy.setStartDateTime(copy.getStartDateTime().plusDays(periodicity));
+				copy.setEndDateTime(copy.getEndDateTime().plusDays(periodicity));
+				eventRepo.save(copy);
+				repeated++;
+				lastEvent = copy;
+			}
+		}
+		else{
+			while(!lastEvent.getStartDateTime().plusDays(periodicity).isAfter(endDate)){
+				Event copy = eventRepo.copy(lastEvent, false);
+				copy.setParentEvent(lastEvent);
+				copy.setStartDateTime(copy.getStartDateTime().plusDays(periodicity));
+				copy.setEndDateTime(copy.getEndDateTime().plusDays(periodicity));
+				eventRepo.save(copy);
+				lastEvent = copy;
+			}
+		}
+	}
+	
+	@Transactional
+	public void addRecurrentEventsByWeeks(Event event, int periodicity, int endType, int repetitionsNumber, LocalDate endDate, Map<Integer, Boolean> daysCheckedMap){
+		Event lastEvent = event;
+		List<Integer> list = new ArrayList<Integer>();
+		for (int day : daysCheckedMap.keySet()) {
+			list.add(day);
+		}
+		Collections.sort(list);
+		if(endType == 1){
+			int repeated = 0;
+			Event copy = eventRepo.copy(lastEvent, false);
+			copy.setParentEvent(lastEvent);
+			int dayOfWeek = copy.getStartDateTime().getDayOfWeek();
+			LocalDateTime nextDateTime = new LocalDateTime();
+			if(dayOfWeek < list.get(0)){
+				nextDateTime = new LocalDateTime(copy.getStartDateTime().plusDays(list.get(0) - dayOfWeek));
+			}
+			else if(dayOfWeek > list.get(0)){
+				nextDateTime = new LocalDateTime(copy.getStartDateTime().plusDays((7-dayOfWeek)+list.get(0)));
+			}
+			Duration dur = new Duration(copy.getStartDateTime().toDateTime(), copy.getEndDateTime().toDateTime());
+			
+			for (Integer integer : list) {
+				nextDateTime.plusDays(integer - nextDateTime.getDayOfWeek());
+				copy.setStartDateTime(nextDateTime);
+				copy.setEndDateTime(nextDateTime.plus(dur));
+				eventRepo.save(copy);
+				lastEvent = copy;
+				repeated++;
+			}
+			
+			while(repeated < repetitionsNumber){
+				copy = eventRepo.copy(lastEvent, false);
+				copy.setParentEvent(lastEvent);
+				copy.setStartDateTime(copy.getStartDateTime().plusWeeks(periodicity));
+				copy.setEndDateTime(copy.getEndDateTime().plusWeeks(periodicity));
+				
+				dayOfWeek = copy.getStartDateTime().getDayOfWeek();
+				nextDateTime = new LocalDateTime();
+				if(dayOfWeek < list.get(0)){
+					nextDateTime = new LocalDateTime(copy.getStartDateTime().plusDays(list.get(0) - dayOfWeek));
+				}
+				else if(dayOfWeek > list.get(0)){
+					nextDateTime = new LocalDateTime(copy.getStartDateTime().plusDays((7-dayOfWeek)+list.get(0)));
+				}
+				dur = new Duration(copy.getStartDateTime().toDateTime(), copy.getEndDateTime().toDateTime());
+				
+				for (Integer integer : list) {
+					nextDateTime.plusDays(integer - nextDateTime.getDayOfWeek());
+					copy.setStartDateTime(nextDateTime);
+					copy.setEndDateTime(nextDateTime.plus(dur));
+					eventRepo.save(copy);
+					lastEvent = copy;
+					repeated++;
+				}
+			}
+		}
+		else{
+			
+			Event copy = eventRepo.copy(lastEvent, false);
+			copy.setParentEvent(lastEvent);
+			int dayOfWeek = copy.getStartDateTime().getDayOfWeek();
+			LocalDateTime nextDateTime = new LocalDateTime();
+			if(dayOfWeek < list.get(0)){
+				nextDateTime = new LocalDateTime(copy.getStartDateTime().plusDays(list.get(0) - dayOfWeek));
+			}
+			else if(dayOfWeek > list.get(0)){
+				nextDateTime = new LocalDateTime(copy.getStartDateTime().plusDays((7-dayOfWeek)+list.get(0)));
+			}
+			Duration dur = new Duration(copy.getStartDateTime().toDateTime(), copy.getEndDateTime().toDateTime());
+			
+			for (Integer integer : list) {
+				nextDateTime.plusDays(integer - nextDateTime.getDayOfWeek());
+				copy.setStartDateTime(nextDateTime);
+				copy.setEndDateTime(nextDateTime.plus(dur));
+				eventRepo.save(copy);
+				lastEvent = copy;
+			}
+			
+			while(!copy.getStartDateTime().plusWeeks(periodicity).isAfter(endDate)){
+				copy = eventRepo.copy(lastEvent, false);
+				copy.setParentEvent(lastEvent);
+				copy.setStartDateTime(copy.getStartDateTime().plusWeeks(periodicity));
+				copy.setEndDateTime(copy.getEndDateTime().plusWeeks(periodicity));
+				
+				dayOfWeek = copy.getStartDateTime().getDayOfWeek();
+				nextDateTime = new LocalDateTime();
+				if(dayOfWeek < list.get(0)){
+					nextDateTime = new LocalDateTime(copy.getStartDateTime().plusDays(list.get(0) - dayOfWeek));
+				}
+				else if(dayOfWeek > list.get(0)){
+					nextDateTime = new LocalDateTime(copy.getStartDateTime().plusDays((7-dayOfWeek)+list.get(0)));
+				}
+				dur = new Duration(copy.getStartDateTime().toDateTime(), copy.getEndDateTime().toDateTime());
+				
+				for (Integer integer : list) {
+					nextDateTime.plusDays(integer - nextDateTime.getDayOfWeek());
+					copy.setStartDateTime(nextDateTime);
+					copy.setEndDateTime(nextDateTime.plus(dur));
+					eventRepo.save(copy);
+					lastEvent = copy;
+				}
+			}
+		}
+	}
+	
+	@Transactional
+	public void addRecurrentEventsByMonths(Event event, int periodicity, int endType, int repetitionsNumber, LocalDate endDate, int monthRepeatType){
+		Event lastEvent = event;
+		if(monthRepeatType == 1){
+			int dayOfMonth = event.getStartDateTime().getDayOfMonth();
+			if(endType == 1){
+				int repeated = 0;
+				while(repeated != repetitionsNumber){
+					Event copy = eventRepo.copy(lastEvent, false);
+					copy.setParentEvent(lastEvent);
+					if(copy.getStartDateTime().plusMonths(periodicity).dayOfMonth().getMaximumValue() >= dayOfMonth){
+						copy.setStartDateTime(copy.getStartDateTime().plusMonths(periodicity));
+						copy.setEndDateTime(copy.getEndDateTime().plusMonths(periodicity));
+						eventRepo.save(copy);
+						repeated++;
+						lastEvent = copy;
+					}
+				}
+			}
+			else{
+				while(!lastEvent.getStartDateTime().plusMonths(periodicity).isAfter(endDate)){
+					Event copy = eventRepo.copy(lastEvent, false);
+					copy.setParentEvent(lastEvent);
+					if(copy.getStartDateTime().plusMonths(periodicity).dayOfMonth().getMaximumValue() >= dayOfMonth){
+						copy.setStartDateTime(copy.getStartDateTime().plusMonths(periodicity));
+						copy.setEndDateTime(copy.getEndDateTime().plusMonths(periodicity));
+						eventRepo.save(copy);
+						lastEvent = copy;
+					}
+				}
+			}
+		}
+		
+		else{
+			int dayOfWeek = event.getStartDateTime().getDayOfWeek();
+			int positionInMonth = 0;
+			if(event.getStartDateTime().getDayOfMonth() % 7 == 0){
+				positionInMonth = event.getStartDateTime().getDayOfMonth() / 7;
+			}
+			else{
+				positionInMonth = (event.getStartDateTime().getDayOfMonth() / 7) + 1;
+			}
+			
+			if(endType == 1){
+				int repeated = 0;
+				while(repeated != repetitionsNumber){
+					Event copy = eventRepo.copy(lastEvent, false);
+					copy.setParentEvent(lastEvent);
+					LocalDateTime nextDateTime = new LocalDateTime(copy.getStartDateTime());
+					nextDateTime.plusMonths(periodicity);
+					int nextDayOfWeek = nextDateTime.getDayOfWeek();
+					if(nextDayOfWeek > dayOfWeek){
+						nextDateTime.minusDays(nextDayOfWeek - dayOfWeek);
+					}
+					else{
+						nextDateTime.plusDays(dayOfWeek - nextDayOfWeek);
+					}
+					int nextPositionInMonth = 0;
+					if(event.getStartDateTime().getDayOfMonth() % 7 == 0){
+						nextPositionInMonth = event.getStartDateTime().getDayOfMonth() / 7;
+					}
+					else{
+						nextPositionInMonth = (event.getStartDateTime().getDayOfMonth() / 7) + 1;
+					}
+					if(nextPositionInMonth > positionInMonth){
+						nextDateTime.minusWeeks(nextPositionInMonth - positionInMonth);
+					}
+					else{
+						nextDateTime.plusWeeks(positionInMonth - nextPositionInMonth);
+					}
+					Duration dur = new Duration(copy.getStartDateTime().toDateTime(), copy.getEndDateTime().toDateTime());
+					copy.setStartDateTime(nextDateTime);
+					copy.setEndDateTime(nextDateTime.plus(dur));
+					eventRepo.save(copy);
+					repeated++;
+					lastEvent = copy;
+				}
+			}
+			else{
+				LocalDateTime nextDateTime = new LocalDateTime(lastEvent.getStartDateTime());
+				nextDateTime.plusMonths(periodicity);
+				int nextDayOfWeek = nextDateTime.getDayOfWeek();
+				if(nextDayOfWeek > dayOfWeek){
+					nextDateTime.minusDays(nextDayOfWeek - dayOfWeek);
+				}
+				else{
+					nextDateTime.plusDays(dayOfWeek - nextDayOfWeek);
+				}
+				int nextPositionInMonth = 0;
+				if(event.getStartDateTime().getDayOfMonth() % 7 == 0){
+					nextPositionInMonth = event.getStartDateTime().getDayOfMonth() / 7;
+				}
+				else{
+					nextPositionInMonth = (event.getStartDateTime().getDayOfMonth() / 7) + 1;
+				}
+				if(nextPositionInMonth > positionInMonth){
+					nextDateTime.minusWeeks(nextPositionInMonth - positionInMonth);
+				}
+				else{
+					nextDateTime.plusWeeks(positionInMonth - nextPositionInMonth);
+				}
+				while(!nextDateTime.isAfter(endDate)){
+					Event copy = eventRepo.copy(lastEvent, false);
+					copy.setParentEvent(lastEvent);
+					
+					Duration dur = new Duration(copy.getStartDateTime().toDateTime(), copy.getEndDateTime().toDateTime());
+					copy.setStartDateTime(nextDateTime);
+					copy.setEndDateTime(nextDateTime.plus(dur));
+					eventRepo.save(copy);
+					lastEvent = copy;
+					
+					nextDateTime = new LocalDateTime(lastEvent.getStartDateTime());
+					nextDateTime.plusMonths(periodicity);
+					nextDayOfWeek = nextDateTime.getDayOfWeek();
+					if(nextDayOfWeek > dayOfWeek){
+						nextDateTime.minusDays(nextDayOfWeek - dayOfWeek);
+					}
+					else{
+						nextDateTime.plusDays(dayOfWeek - nextDayOfWeek);
+					}
+					nextPositionInMonth = 0;
+					if(event.getStartDateTime().getDayOfMonth() % 7 == 0){
+						nextPositionInMonth = event.getStartDateTime().getDayOfMonth() / 7;
+					}
+					else{
+						nextPositionInMonth = (event.getStartDateTime().getDayOfMonth() / 7) + 1;
+					}
+					if(nextPositionInMonth > positionInMonth){
+						nextDateTime.minusWeeks(nextPositionInMonth - positionInMonth);
+					}
+					else{
+						nextDateTime.plusWeeks(positionInMonth - nextPositionInMonth);
+					}
+				}
+			}
+		}
+	}
+	
+	@Transactional
+	public void addRecurrentEventsByYears(Event event, int periodicity, int endType, int repetitionsNumber, LocalDate endDate){
+		Event lastEvent = event;
+		if(endType == 1){
+			int repeated = 0;
+			while(repeated != repetitionsNumber){
+				Event copy = eventRepo.copy(lastEvent, false);
+				copy.setParentEvent(lastEvent);
+				copy.setStartDateTime(copy.getStartDateTime().plusYears(periodicity));
+				copy.setEndDateTime(copy.getEndDateTime().plusYears(periodicity));
+				
+				eventRepo.save(copy);
+				repeated++;
+				lastEvent = copy;
+			}
+		}
+		else{
+			while(!lastEvent.getStartDateTime().plusYears(periodicity).isAfter(endDate)){
+				Event copy = eventRepo.copy(lastEvent, false);
+				copy.setParentEvent(lastEvent);
+				copy.setStartDateTime(copy.getStartDateTime().plusYears(periodicity));
+				copy.setEndDateTime(copy.getEndDateTime().plusYears(periodicity));
+				eventRepo.save(copy);
+				lastEvent = copy;
+			}
+		}
+	}
+	
+	@Transactional
+	public void applyChangesToAll(Event event){
+		
+		Event child = eventRepo.all().filter("self.parentEvent.id = ?1", event.getId()).fetchOne();
+		Event parent = event.getParentEvent();
+		Event copyEvent = eventRepo.copy(event, false);
+		while(child != null){
+			child.setSubject(event.getSubject());
+			child.setCalendar(event.getCalendar());
+			child.setStartDateTime(child.getStartDateTime().withHourOfDay(event.getStartDateTime().getHourOfDay()));
+			child.setStartDateTime(child.getStartDateTime().withMinuteOfHour(event.getStartDateTime().getMinuteOfHour()));
+			child.setEndDateTime(child.getEndDateTime().withHourOfDay(event.getEndDateTime().getHourOfDay()));
+			child.setEndDateTime(child.getEndDateTime().withMinuteOfHour(event.getEndDateTime().getMinuteOfHour()));
+			child.setDuration(event.getDuration());
+			child.setUser(event.getUser());
+			child.setTeam(event.getTeam());
+			child.setDisponibilitySelect(event.getDisponibilitySelect());
+			child.setVisibilitySelect(event.getVisibilitySelect());
+			child.setDescription(event.getDescription());
+			child.setClientPartner(event.getClientPartner());
+			child.setContactPartner(event.getContactPartner());
+			child.setLead(event.getLead());
+			child.setTypeSelect(event.getTypeSelect());
+			child.setLocation(event.getLocation());
+			eventRepo.save(child);
+			copyEvent = child;
+			child = eventRepo.all().filter("self.parentEvent.id = ?1", copyEvent.getId()).fetchOne();
+		}
+		while(parent != null){
+			Event nextParent = parent.getParentEvent();
+			parent.setSubject(event.getSubject());
+			parent.setCalendar(event.getCalendar());
+			parent.setStartDateTime(parent.getStartDateTime().withHourOfDay(event.getStartDateTime().getHourOfDay()));
+			parent.setStartDateTime(parent.getStartDateTime().withMinuteOfHour(event.getStartDateTime().getMinuteOfHour()));
+			parent.setEndDateTime(parent.getEndDateTime().withHourOfDay(event.getEndDateTime().getHourOfDay()));
+			parent.setEndDateTime(parent.getEndDateTime().withMinuteOfHour(event.getEndDateTime().getMinuteOfHour()));
+			parent.setDuration(event.getDuration());
+			parent.setUser(event.getUser());
+			parent.setTeam(event.getTeam());
+			parent.setDisponibilitySelect(event.getDisponibilitySelect());
+			parent.setVisibilitySelect(event.getVisibilitySelect());
+			parent.setDescription(event.getDescription());
+			parent.setClientPartner(event.getClientPartner());
+			parent.setContactPartner(event.getContactPartner());
+			parent.setLead(event.getLead());
+			parent.setTypeSelect(event.getTypeSelect());
+			parent.setLocation(event.getLocation());
+			eventRepo.save(parent);
+			parent = nextParent;
+		}
 	}
 }

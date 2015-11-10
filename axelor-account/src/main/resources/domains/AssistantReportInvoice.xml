@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_4.0.xsd">
+
+  <module name="account" package="com.axelor.apps.account.db"/>
+
+  <entity name="AssistantReportInvoice">
+  
+  	<date name="fromDate" title="From"/>
+	<date name="toDate" title="To"/>
+	<many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"/>
+	<many-to-many name="partnerSet" ref="com.axelor.apps.base.db.Partner" title="Partners"/>
+	<many-to-many name="productSet" ref="com.axelor.apps.base.db.Product" title="Products"/>
+	<many-to-many name="productCategorySet" ref="com.axelor.apps.base.db.ProductCategory" title="Product categories"/>
+	<boolean name="graph" title="Graph" default="true"/>
+	<boolean name="chart" title="Chart" default="false"/>
+	<boolean name="pdf" title="PDF" default="true"/>
+	<boolean name="xls" title="XLS" default="false"/>
+	<integer name="type"/>
+    
+  </entity>
+
+</domain-models>

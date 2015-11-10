@@ -24,6 +24,8 @@ public interface IReport {
 	public static final String PAYMENT_VOUCHER = "PaymentVoucher.rptdesign";
 	public static final String IRRECOVERABLE = "Irrecoverable.rptdesign";
 	public static final String INVOICE = "Invoice.rptdesign";
+	public static final String SALE_INVOICES_DETAILS = "SaleInvoicesDetails.rptdesign";
+	public static final String PURCHASE_INVOICES_DETAILS = "PurchaseInvoicesDetails.rptdesign";
 	
 	
 }
