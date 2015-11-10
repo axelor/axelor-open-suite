@@ -38,6 +38,7 @@
 		<domain>self.isContact != true</domain>
 		<context name="user_id" expr="eval:__user__" />
 		<context name="searchFields" expr="name;firstName"/>
+		<context name="json-enhance" expr="eval:true" />
 	</action-view>
 	
 	<menuitem name="referential-root-contacts" parent="referential-root"

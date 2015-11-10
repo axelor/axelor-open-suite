@@ -12,15 +12,6 @@
 	    <field name="inTaxTotal"/>
     </grid>
     
-    <grid name="invoice-line-drag-drop-grid" title="Invoice lines" model="com.axelor.apps.account.db.InvoiceLine">
-        <field name="productName"/>
-        <field name="qty"/>
-        <field name="price"/>
-        <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
-        <field name="exTaxTotal"/>
-	    <field name="inTaxTotal"/>
-    </grid>
-    
     <form name="invoice-line-form" title="Invoice line" model="com.axelor.apps.account.db.InvoiceLine"   
     onNew="action-account-invoice-line-onnew-group"
     onLoad="action-account-invoice-line-onload-group" width="large">

@@ -232,6 +232,12 @@ public class PartnerService {
 		return getAddress(partner, "self.partner.id = ?1 AND self.isDeliveryAddr = true AND self.isInvoicingAddr = false AND self.isDefaultAddr = true",
 				"self.partner.id = ?1 AND self.isDeliveryAddr = true");
 	}
+	
+	public Address getDefaultAddress(Partner partner){
+		
+		return getAddress(partner, "self.partner.id = ?1 AND self.isDeliveryAddr = true AND self.isInvoicingAddr = true AND self.isDefaultAddr = true",
+				"self.partner.id = ?1 AND self.isDefaultAddr = true");
+	}
 
 	@Transactional
 	public Partner savePartner(Partner partner){

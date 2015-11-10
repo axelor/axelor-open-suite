@@ -68,6 +68,7 @@ public class MoveTemplateController {
 		}
 		
 		LOG.debug("Credit percent: {}, Debit percent: {}",new Object[]{creditPercent,debitPercent});
+		moveTemplate.setPartnerInputSelect(0);
 		if(creditPercent.compareTo(BigDecimal.ZERO) != 0 && debitPercent.compareTo(BigDecimal.ZERO) != 0 && creditPercent.compareTo(debitPercent) == 0){
 			if(partnerCredit && partnerDebit)
 				moveTemplate.setPartnerInputSelect(3);
