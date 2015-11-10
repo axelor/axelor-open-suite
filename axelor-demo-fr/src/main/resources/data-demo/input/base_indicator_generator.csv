@@ -46,7 +46,7 @@ FROM
 "Nombre d'événements",0,"SELECT
 		COUNT(*)
 FROM
-		crm_event;",51
+		ical_event;",51
 "Nombre de factures fournisseurs",0,"SELECT
 		COUNT(*)
 FROM
@@ -62,25 +62,25 @@ WHERE
 "Nombre d'appels",0,"SELECT
 		COUNT(*)
 FROM
-		crm_event
+		ical_event
 WHERE
 		type_select = 1",14
 "Nombre de réunions",0,"SELECT
 		COUNT(*)
 FROM
-		crm_event
+		ical_event
 WHERE
 		type_select = 2",25
 "Nombre de tâches",0,"SELECT
 		COUNT(*)
 FROM
-		crm_event
+		ical_event
 WHERE
 		type_select = 3",6
 "Nombre de billets",0,"SELECT
 		COUNT(*)
 FROM
-		crm_event
+		ical_event
 WHERE
 		type_select = 6",0
 "Nombre d'ordres de fabrication",0,"SELECT

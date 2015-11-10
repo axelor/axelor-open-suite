@@ -1520,7 +1520,7 @@ ORDER BY SaleOrder.order_date desc
             </list-property>
             <xml-property name="queryText"><![CDATA[select Event.id, Event.created_on, Event.end_date_time, Event.start_date_time, AuthUser.full_name, Event.type_select
 from base_partner as Partner
-inner join crm_event as Event on(Event.client_partner = Partner.id)
+inner join ical_event as Event on(Event.client_partner = Partner.id)
 left join auth_user as AuthUser on (AuthUser.id = Event.user_id)
 where Partner.id = ?
 AND Event.type_select = ?

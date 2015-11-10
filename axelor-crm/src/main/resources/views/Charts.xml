@@ -328,7 +328,7 @@
 					_user.full_name AS _user_name,
 					_meta._select_title AS _call_type
 				FROM
-					crm_event AS _event
+					ical_event AS _event
 				LEFT JOIN
 					auth_user AS _user
 					ON _event.user_id = _user.id
@@ -370,7 +370,7 @@
 					_user.full_name AS _user_name,
 					_meta._select_title AS _call_type
 				FROM
-					crm_event AS _event
+					ical_event AS _event
 				LEFT JOIN
 					auth_user AS _user
 					ON _event.user_id = _user.id
@@ -412,7 +412,7 @@
 					_team.name AS _team_name,
 					_meta._select_title AS _call_type
 				FROM
-					crm_event AS _event
+					ical_event AS _event
 				LEFT JOIN
 					base_team AS _team
 					ON _event.team = _team.id
@@ -454,7 +454,7 @@
 					_team.name AS _team_name,
 					_meta._select_title AS _call_type
 				FROM
-					crm_event AS _event
+					ical_event AS _event
 				LEFT JOIN
 					base_team AS _team
 					ON _event.team = _team.id
@@ -549,7 +549,7 @@
 				    COUNT(self.id)  AS _tickets,
 				    selection_item.title AS _priority
 				FROM
-				    crm_event as self
+				    ical_event as self
 				RIGHT JOIN 
 				    meta_select_item as selection_item     
 				ON 
@@ -572,10 +572,10 @@
 		<dataset type="sql">
 		    <![CDATA[
 			    select
-			        (count(self.id)*100/(select CASE WHEN count(*)=0 THEN 1 ELSE count(*) END from crm_event where ticket_status_select!=5 and priority_select is not null)) as _tickets,
+			        (count(self.id)*100/(select CASE WHEN count(*)=0 THEN 1 ELSE count(*) END from ical_event where ticket_status_select!=5 and priority_select is not null)) as _tickets,
 			        selection_item.title as _priority
 			    from
-			        crm_event self
+			        ical_event self
 			    RIGHT JOIN
 			        meta_select_item selection_item
 			    ON
@@ -601,7 +601,7 @@
 			      COUNT(self.id)    AS     _tickets,
 			      selection_item.title     AS     _status
 			    FROM
-			        crm_event as self
+			        ical_event as self
 			    RIGHT JOIN 
 			        meta_select_item as selection_item     
 			    ON 
@@ -630,7 +630,7 @@
 	      sale_man.full_name AS _sale_man,
 	      selection_item.title   AS   _status
 	    FROM
-	        crm_event as self
+	        ical_event as self
 	    JOIN
 	      auth_user as sale_man ON self.user_id = sale_man.id
 	    JOIN
@@ -743,9 +743,9 @@
 		    <![CDATA[
 		    SELECT
 			    COUNT(self.id)    		AS 	_total_ticket,
-			    (select Count(id) from crm_event as open_ticket where open_ticket.ticket_status_select != 5) as _open_ticket
+			    (select Count(id) from ical_event as open_ticket where open_ticket.ticket_status_select != 5) as _open_ticket
 			FROM
-			  	crm_event as self
+			  	ical_event as self
 			  ]]>	
 	    </dataset>
 	   	<category key="_total_ticket" type="text"/>
@@ -762,7 +762,7 @@
 			   	_meta_status.status_title AS _priority,
 			   	to_char(_ticket.created_on,'yyyy-MM') AS _month
 			FROM
-			   	crm_event AS _ticket  
+			   	ical_event AS _ticket  
 			JOIN
 			   	(SELECT    
 			     		cast(_item.value as int) AS status_value,
@@ -795,7 +795,7 @@
 		    	_meta_status.status_title AS _status,
 		     	to_char(_ticket.created_on,'yyyy-MM') AS _month
 			FROM
-		    	crm_event AS _ticket    
+		    	ical_event AS _ticket    
 		  	JOIN
 		    	(SELECT    
 		      		cast(_item.value as int) AS status_value,
@@ -828,7 +828,7 @@
 	    		_user.full_name AS _agent,
 	  			to_char(_ticket.created_on,'yyyy-MM') AS _month
 			FROM
-				crm_event AS _ticket    
+				ical_event AS _ticket    
 			LEFT JOIN
 				auth_user AS _user
 			ON
@@ -1509,7 +1509,7 @@
 		      JOIN 
 		            meta_select_item as selection_item   ON selection_item.select_id = selection.id
 		      LEFT JOIN 
-		           crm_event as _event 
+		           ical_event as _event 
 		             ON _event.type_select=cast(selection_item.value as int) AND _event.contact_partner=:id  
 		      WHERE 
 		            selection.name = 'crm.event.type.select'
