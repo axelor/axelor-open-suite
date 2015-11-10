@@ -381,13 +381,10 @@
 	<action-method name="action-sale-order-method-generate-project">
 		<call class="com.axelor.apps.business.project.web.SaleOrderProjectController" method="generateProject"/>
 	</action-method>
-<<<<<<< HEAD
 	
 	<action-record name="action-sale-order-record-first-execution-date" model="com.axelor.apps.sale.db.SaleOrder">
 		<field name="schedulerInstance" expr="action: action-scheduler-instance-record-first-execution-date" if="schedulerInstance != null"/>
 	</action-record>
-=======
->>>>>>> 3.0-dev
 	
 	<action-record name="action-sale-order-record-subscription-start-date" model="com.axelor.apps.sale.db.SaleOrder">
 		<field name="nextInvPeriodStartDate" expr="eval: subscriptionStartDate"/>
@@ -596,7 +593,6 @@
  		<attribute for="contactPartner" if="clientPartner == null" name="domain" expr="eval: &quot;self.isContact = true&quot;"/>
 	</action-attrs>
     
-<<<<<<< HEAD
 	<action-attrs name="action-sale-order-attrs-contact-partner-domain">
         <attribute name="domain" expr="eval: &quot;self.isContact = true AND self.id IN (${(clientPartner?.contactPartnerSet?.collect{it.id}+[null]).join(',')})&quot;"  for="contactPartner"/>
     </action-attrs>
@@ -609,8 +605,6 @@
 		<attribute name="domain" for="deliveryAddress" expr="eval: &quot;self.id IN (${(clientPartner?.partnerAddressList?.findAll{it.isDeliveryAddr}.collect{it.address.id}+[null]).join(',')})&quot;"/>
     </action-attrs>
 
-=======
->>>>>>> 3.0-dev
 	<search-filters name="sale-order-filters" model="com.axelor.apps.sale.db.SaleOrder" title="Sales Order filters">
 		<field name="saleOrderLineList.product.name" title="Product Name"/>
 		<filter title="My Proposals">
