@@ -209,12 +209,6 @@
     	<context name="_productId" expr="eval: id"/>
     </action-view>
     
-   <action-view name="action-product-view-stock-product-variant" title="Stock" model="com.axelor.apps.stock.db.LocationLine">
-    	<view type="grid" name="location-line-product-group-by-variant-grid"/>
-    	<view type="form" name="location-line-product-form"/>
-    	<domain>self.product.parentProduct.id = :id and self.location.typeSelect = 1</domain>
-    </action-view>
-    
     <action-group name="action-group-base-product-onnew">
    	 	<action name="action-product-attrs-scale-and-precision"/>
     	<action name="action-product-record-default-new"/>

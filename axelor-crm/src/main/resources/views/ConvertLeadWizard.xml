@@ -389,7 +389,6 @@
 	
 	<action-group name="action-group-crm-convlead-partnertype-onchange">
 		<action name="action-partner-attrs-change-name"/>
-		<action name="action-partner-attrs-hide-tabs"/>
 	</action-group>
 	
 	<action-record name="action-convert-lead-wizard-record-default-partner" model="com.axelor.apps.base.db.Partner">

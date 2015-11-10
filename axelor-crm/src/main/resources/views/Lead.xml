@@ -199,11 +199,6 @@
 		<call method="print" class="com.axelor.apps.crm.web.LeadController"/>
 	</action-method>
     
-    <action-record name="action-lead-record-new" model="com.axelor.apps.crm.db.Lead">
-    	<field name="company"  expr="eval:__user__.activeCompany" if="__user__.activeCompany != null"/>
-    	<field name="company"  expr="eval:__repo__.of(Company).all().fetchOne()" if="__user__.activeCompany == null &amp;&amp; __repo__.of(Company).all().fetch().size == 1"/>
-    </action-record>
-    
     <action-record name="action-lead-default-record-new" model="com.axelor.apps.crm.db.Lead">
     	<field name="statusSelect" expr="2"/>
     	<field name="contactDate" expr="eval:__config__.generalService.getTodayDate()" if="contactDate == null"/>

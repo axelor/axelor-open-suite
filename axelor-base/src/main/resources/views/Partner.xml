@@ -419,7 +419,6 @@
 		<field name="name" expr="#{__repo__(Lead).find(_parent._lead).name}"/>
 	</action-record>
 	
-    
     <action-method name="action-partner-method-show-partner-info">
 		<call class="com.axelor.apps.base.web.PartnerController" method="showPartnerInfo"/>
 	</action-method>

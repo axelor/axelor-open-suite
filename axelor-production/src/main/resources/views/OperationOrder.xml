@@ -171,14 +171,6 @@
 		<call class="com.axelor.apps.production.web.OperationOrderController" method="print"/>
 	</action-method>
     
-    <action-method name="action-operation-order-method-copy-to-consume">
-    	<call class="com.axelor.apps.production.web.OperationOrderController" method="copyToConsume"/>
-    </action-method>
-    
-    <action-method name="action-operation-order-method-copy-to-produce">
-    	<call class="com.axelor.apps.production.web.OperationOrderController" method="copyToProduce"/>
-    </action-method>
-    
     <action-method name="action-operation-order-method-compute-duration">
     	<call class="com.axelor.apps.production.web.OperationOrderController" method="computeDuration"/>
     </action-method>

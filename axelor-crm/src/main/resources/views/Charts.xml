@@ -341,7 +341,7 @@
 						meta_select AS _selection		
 					JOIN
 						meta_select_item AS _item
-						ON _selection.name = 'crm.event.call.status.select'
+						ON _selection.name = 'crm.event.call.type.select'
 						AND _item.select_id = _selection.id	
 					) AS _meta
 				ON
@@ -383,7 +383,7 @@
 						meta_select AS _selection		
 					JOIN
 						meta_select_item AS _item
-						ON _selection.name = 'crm.event.call.status.select'
+						ON _selection.name = 'crm.event.call.type.select'
 						AND _item.select_id = _selection.id	
 					) AS _meta
 				ON
@@ -425,7 +425,7 @@
 						meta_select AS _selection		
 					JOIN
 						meta_select_item AS _item
-						ON _selection.name = 'crm.event.call.status.select'
+						ON _selection.name = 'crm.event.call.type.select'
 						AND _item.select_id = _selection.id	
 					) AS _meta
 				ON
@@ -467,7 +467,7 @@
 						meta_select AS _selection		
 					JOIN
 						meta_select_item AS _item
-						ON _selection.name = 'crm.event.call.status.select'
+						ON _selection.name = 'crm.event.call.type.select'
 						AND _item.select_id = _selection.id	
 					) AS _meta
 				ON

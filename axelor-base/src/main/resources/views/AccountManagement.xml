@@ -92,6 +92,5 @@
     	<attribute name="hidden" for="saleAccount" expr="eval: !_parent?._parent?.sellable || _parent?._parent?.expense" if="!_parent?._model == 'com.axelor.apps.base.db.Partner'"/>
     	<attribute name="hidden" for="saleTax" expr="eval: !_parent?._parent?.sellable || _parent?._parent?.expense" if="!_parent?._model == 'com.axelor.apps.base.db.Partner'"/>
     </action-attrs>
-    
-    
+
 </object-views>

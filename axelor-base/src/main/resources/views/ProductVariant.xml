@@ -28,11 +28,6 @@
         </panel>
     </form>
     
-    <action-group name="action-group-base-productvariant-onnew">
-    	<action name="action-product-variant-record-on-new"/>
-    	<action name="action-product-variant-attrs-domain"/>
-    </action-group>
-    
     <!-- ACTION ATTRS -->
     
     <action-attrs name="action-product-variant-attrs-domain">

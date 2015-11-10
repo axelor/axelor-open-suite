@@ -244,10 +244,6 @@
 		<attribute name="readonly" for="paidGroup" expr="eval: statusSelect == 2 || payboxPaidOk"/>
 	</action-attrs>
 	
-	<action-method name="action-pv-get-payment-schedule-to-pay">
-		<call class="com.axelor.apps.account.web.PaymentVoucherController" method="getPaymentScheduleLine" if="operationTypeSelect == 3"/>
-	</action-method>
-	
 	<action-attrs name="action-pv-attrs-hidden-bankCardTransactionNumber">
 		<attribute name="hidden" for="bankCardTransactionNumber" expr="eval: paymentMode?.typeSelect != 6 || operationTypeSelect != 3"/>
 		<attribute name="hidden" for="paybox" expr="eval: paymentMode?.typeSelect != 6 || operationTypeSelect != 3"/>
@@ -271,11 +267,6 @@
     	<field name="paymentDateTime" expr="eval: __config__.generalService.getTodayDateTime()"/>
    	</action-record>
    	
-   	<action-view name="account.root.periodic.processing.account.voucher.paybox.email" title="Email used by Paybox"
-		model="com.axelor.apps.account.db.PayboxEmail">
-		<view type="form" />
-	</action-view>
-	
 	<action-attrs name="action-payment-voucher-attrs-hidden-paybox-email">
 		<attribute name="hidden" for="payboxEmail" expr="eval: ((email == null || email.isEmpty()) &amp;&amp; payboxPaidOk) || paymentMode?.typeSelect != 6|| operationTypeSelect != 3 || (partner.email != null &amp;&amp; !partner.email.isEmpty())"/>
 	</action-attrs>
