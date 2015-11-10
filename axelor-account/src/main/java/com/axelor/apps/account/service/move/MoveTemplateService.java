@@ -42,6 +42,8 @@ public class MoveTemplateService {
 	protected MoveRepository moveRepo;
 	protected MoveLineService moveLineService;
 	protected PartnerRepository partnerRepo;
+	
+	@Inject
 	protected MoveTemplateRepository moveTemplateRepo;
 	
 	@Inject
@@ -90,7 +92,7 @@ public class MoveTemplateService {
 						move.getMoveLineList().add(moveLine);
 					}
 					else{
-						if(line.getHasPartnerToDebit())
+						if(line.getHasPartnerToCredit())
 							partner = creditPartner;
 						MoveLine moveLine = moveLineService.createMoveLine(move, partner, line.getAccount(), moveBalance.multiply(line.getPercentage()).divide(hundred), false, moveDate, moveDate, 0, line.getName());
 						move.getMoveLineList().add(moveLine);

@@ -166,6 +166,7 @@ public class SaleOrderController{
 									.param("popup", "true")
 									.param("show-toolbar", "false")
 									.param("show-confirm", "false")
+									.param("popup-save", "false")
 									.param("forceEdit", "true")
 									.context("_showRecord", String.valueOf(saleOrder.getId()))
 									.context("supplierPartnerId", ((supplierPartner != null) ? String.valueOf(supplierPartner.getId()) : "NULL"))

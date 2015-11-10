@@ -349,7 +349,7 @@
 	     </panel>
 	</form>
 	
-	<cards name="partner-cards" model="com.axelor.apps.base.db.Partner" title="Partners">
+	<cards name="partner-cards" model="com.axelor.apps.base.db.Partner" title="Partners" css="rect-image">
 		<field name="fullName" />
 		<field name="picture" />
 		<field name="fixedPhone"/>
@@ -358,11 +358,15 @@
 		<template><![CDATA[
 		    <div class="span12"><strong>{{fullName}}</strong></div>
 			<div>
-			  <div class="span4 rectangle-image">
+			  <div class="span4 card-image">
 			    <img ng-src="{{$image('picture', 'content')}}" />
 			  </div>
 			  <div class="span8">
-			    <span>{{fixedPhone}}<br/>
+			  	<address>
+			  	{{address.fullName}}
+			  	</address>
+			    <span>
+			    {{fixedPhone}}<br/>
 			    {{emailAddress.address}}<br/>
 			    {{partnerCategory.name}}</span>
 			  </div>
@@ -371,7 +375,7 @@
 		</template>
 	</cards>
 	
-	<cards name="partner-contact-cards" model="com.axelor.apps.base.db.Partner" title="Contacts">
+	<cards name="partner-contact-cards" model="com.axelor.apps.base.db.Partner" title="Contacts" css="rect-image">
 		<field name="fullName" />
 		<field name="picture" />
 		<field name="fixedPhone"/>
@@ -381,7 +385,7 @@
 		<template><![CDATA[
 		    <div class="span12"><strong>{{fullName}}</strong></div>
 			<div>
-			  <div class="span4 rectangle-image">
+			  <div class="span4 card-image">
 			    <img ng-src="{{$image('picture', 'content')}}" />
 			  </div>
 			  <div class="span8">

@@ -39,10 +39,10 @@
         <button name="sendByEmail" title="Send email" icon="fa-envelope" onClick="action-send-by-email-with-template"/>
     </grid>
     
-    <form name="sale-order-subscription-cancel-form" model="com.axelor.apps.sale.db.SaleOrder" title="Cancellation confirmation" >
+    <form name="sale-order-cancel-wizard-form" model="com.axelor.apps.sale.db.SaleOrder" title="Cancellation confirmation" >
 		<panel>
 			<field name="cancelReason" colSpan="12" width="200px" widget="SuggestBox" canNew="true"/>
-			<button name="cancelConfirm" title="Confirm cancellation" onClick="action-sale-order-cancel-reason-check, action-sale-order-method-confirm-cancel" colSpan="12" width="200px"/>
+			<button name="cancelConfirm" title="Confirm cancellation" onClick="action-sale-order-cancel-reason-check,action-sale-order-method-confirm-cancel" colSpan="12" width="200px"/>
 		</panel>
     </form>
     
@@ -149,7 +149,7 @@
 	    <button name="generatePO" title="Generate purchase order"  colSpan="12" if="__config__.general.getPurchaseOrderManagement() &amp;&amp; !__config__.general.getPurchaseOrderGenerationAuto()" showIf="statusSelect == 2 || statusSelect == 3" onClick="action-supplychain-sale-order-generate-purchase-orders-from-selected-SOLines" hidden="true"/>
 	    <button name="generateProductionOrder" title="Generate production order"  colSpan="12" if="__config__.general.getProductionOrderManagement() &amp;&amp; !__config__.general.getProductionOrderGenerationAuto()" showIf="statusSelect == 3" onClick="action-supplychain-sale-order-create-production-order" hidden="true"/>
 		<spacer/>
-	    <button name="cancel" title="Cancel" showIf="id &amp;&amp; (statusSelect == 1 || statusSelect == 2)" colSpan="12" onClick="save,action-sale-order-record-cancel"/>
+	    <button name="cancel" title="Cancel" showIf="id &amp;&amp; (statusSelect == 1 || statusSelect == 2)" colSpan="12" onClick="save,action-sale-order-view-cancel"/>
 	  	<button name="addAdvancePayment" title="Register a deposit" showIf="statusSelect == 3 &amp;&amp; amountInvoiced == 0" colSpan="12" onClick="save,action-sale-order-view-register-advance-payment"/>
 	  </panel>
 	  
@@ -499,15 +499,16 @@
     	<field name="versionNumber" expr="eval: versionNumber + 1"/>
     </action-record>
     
-    <action-view name="action-sale-order-record-cancel" title="Annulation" model="com.axelor.apps.sale.db.SaleOrder">
-	  <view type="form" name="sale-order-subscription-cancel-form"/>
-	  <view-param name="popup" value="reload"/>
-	  <view-param name="show-toolbar" value="false"/>
-	  <view-param name="show-confirm" value="false" />
-	  <view-param name="forceEdit" value="true" />
-	  <context name="_showRecord" expr="eval: __this__.id" />
+    <action-view name="action-sale-order-view-cancel" title="Cancellation" model="com.axelor.apps.sale.db.SaleOrder">
+	  	<view type="form" name="sale-order-cancel-wizard-form"/>
+	  	<view-param name="popup" value="reload"/>
+	  	<view-param name="show-toolbar" value="false"/>
+	  	<view-param name="show-confirm" value="false" />
+  	  	<view-param name="popup-save" value="false"/>
+	  	<view-param name="forceEdit" value="true" />
+	  	<context name="_showRecord" expr="eval: __this__.id" />
 	</action-view>
-    
+	
     <action-condition name="action-sale-order-cancel-reason-check">
 		<check error="A cancel reason must be selected" field="cancelReason" if="cancelReason == null || cancelReason == 0"/>
 	</action-condition>

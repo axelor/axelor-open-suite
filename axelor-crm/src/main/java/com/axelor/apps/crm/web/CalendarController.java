@@ -100,6 +100,7 @@ public class CalendarController {
 					  		.param("forceEdit", "true")
 					  		.param("show-toolbar", "false")
 					  		.param("show-confirm", "false")
+					  		.param("popup-save", "false")
 					  		.context("_id", cal.getId())
 					  		.map());
 	}

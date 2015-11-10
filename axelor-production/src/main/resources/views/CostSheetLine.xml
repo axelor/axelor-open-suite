@@ -28,7 +28,7 @@
 	</form>
 	
     <tree name="cost-sheet-line-tree" title="Cost sheets tree">
-        <column name="typeSelect" type="integer" />
+        <column name="typeSelect" type="integer" widget="ImageSelect" x-labels="false"/>
         <column name="code" type="string"/>
         <column name="name" type="string"/>
         <column name="bomLevel" type="integer"/>
@@ -68,6 +68,7 @@
         <view-param name="popup" value="reload"/>
         <view-param name="show-toolbar" value="false"/>
   		<view-param name="show-confirm" value="false" />
+	  	<view-param name="popup-save" value="false"/>
     	<context name="_showRecord" expr="eval: id"/>
     </action-view>
 	

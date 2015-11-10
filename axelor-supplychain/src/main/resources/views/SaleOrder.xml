@@ -29,13 +29,14 @@
 		<panel-include view="sale-order-template-form" from="axelor-sale"/>
 	</form>
 	
-	<action-view name="action-sale-order-view-select-supplier-partner" title="Annulation" model="com.axelor.apps.sale.db.SaleOrder">
-	  <view type="form" name="sale-order-generate-po-select-supplierpartner-form"/>
-	  <view-param name="popup" value="reload"/>
-	  <view-param name="show-toolbar" value="false"/>
-	  <view-param name="show-confirm" value="false" />
-	  <view-param name="forceEdit" value="true" />
-	  <context name="_showRecord" expr="eval: __this__.id" />
+	<action-view name="action-sale-order-view-select-supplier-partner" title="Confirm Purchase order generation" model="com.axelor.apps.sale.db.SaleOrder">
+	  	<view type="form" name="sale-order-generate-po-select-supplierpartner-form"/>
+	  	<view-param name="popup" value="reload"/>
+	  	<view-param name="show-toolbar" value="false"/>
+	  	<view-param name="show-confirm" value="false" />
+      	<view-param name="popup-save" value="false"/>
+	  	<view-param name="forceEdit" value="true" />
+	  	<context name="_showRecord" expr="eval: __this__.id" />
 	</action-view>
 	
 	<action-group name="action-group-supplychain-saleorder-onnew">

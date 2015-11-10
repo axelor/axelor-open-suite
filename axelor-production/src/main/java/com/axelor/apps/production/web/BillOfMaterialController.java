@@ -53,6 +53,7 @@ public class BillOfMaterialController {
 				.param("popup", "true")
 				.param("show-toolbar", "false")
 				.param("show-confirm", "false")
+				.param("popup-save", "false")
 				.add("grid", "cost-sheet-bill-of-material-grid")
 				.add("form", "cost-sheet-bill-of-material-form")
 				.context("_showRecord", String.valueOf(costSheet.getId())).map());

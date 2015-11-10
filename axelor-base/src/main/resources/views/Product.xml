@@ -40,7 +40,7 @@
 	                <button name="$futureQty" title="Future qty" widget="info-button" colSpan="12" onClick="action-stock-move-line-product-default-planned"/>
                 </panel>
                 <field name="versionSelect" colSpan="12"/>
-                <button name="$totalVariants" title="Total variants" widget="info-button" colSpan="12" onClick="action-product-view-total-variants" showIf="$totalVariants &gt; 0"/>
+                <button name="$totalVariants" title="Total variants" widget="info-button" colSpan="12" onClick="action-product-view-total-variants" showIf="isModel"/>
 	        </panel>
             <panel colSpan="8">
 				<field name="name" showTitle="false" css="label-bold bold" placeholder="Name"	colSpan="8"/>
@@ -175,7 +175,7 @@
 	  	</panel-tabs>
 	</form>    
 	
-	<cards name="product-cards" title="Product" model="com.axelor.apps.base.db.Product" cardWidth="25%">
+	<cards name="product-cards" title="Product" model="com.axelor.apps.base.db.Product" cardWidth="25%" css="rect-image">
 		<field name="picture" />
 		<field name="fullName" />
 		<field name="salePrice" />
@@ -185,7 +185,7 @@
 		<template><![CDATA[
 		    <div class="span12"><strong>{{fullName}}</strong></div>
 			<div>
-			  <div class="span4 rectangle-image">
+			  <div class="span4 card-image">
 			    <img ng-src="{{$image('picture', 'content')}}" />
 			  </div>
 			  <div class="span8">
@@ -205,6 +205,7 @@
 	    <view-param name="width" value="800" />
 	    <view-param name="show-confirm" value="false" />
 	    <view-param name="show-toolbar" value="false" />
+   	  	<view-param name="popup-save" value="false"/>
     	<context name="_productId" expr="eval: id"/>
     </action-view>
     
