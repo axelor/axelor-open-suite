@@ -56,6 +56,11 @@
     <many-to-one name="responsibleUser" ref="com.axelor.auth.db.User" title="User in charge of the issue"/>
 <!--   	<one-to-many name="messageList" ref="com.axelor.apps.message.db.Message" mappedBy="event" title="Comments"/> -->
   	
+  	<boolean name="isRecurrent" title="Recurrent"/>
+  	<many-to-one name="parentEvent" ref="com.axelor.apps.crm.db.Event"/>
+  	
+  	<many-to-one name="recurrenceConfiguration" ref="com.axelor.apps.crm.db.RecurrenceConfiguration"/>
+  	
   	<extra-code>
       	<![CDATA[
 	  		public static final Integer TYPE_CALL = 1;

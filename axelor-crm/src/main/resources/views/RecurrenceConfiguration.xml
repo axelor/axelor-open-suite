@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
+
+	<form model="com.axelor.apps.crm.db.RecurrenceConfiguration" title="Recurrence assistant" name="recurrence-assistant-form" 
+    	onNew="action-recurrence-assistant-on-new">
+    	<panel>
+    		<field name="recurrenceType" title="Recurrence" colSpan="12" width="25%" onChange="action-recurrence-assistant-attrs-title-period"/>
+    		<field name="periodicity" title="Repeat every" colSpan="3"/>
+    		<label name="period" title="Days" colSpan="9"/>
+    		<label title="Repeat the:" colSpan="2" hidden="true" showIf="recurrenceType == 2"/>
+    		<field name="sunday" title="Su" css="small center" hidden="true" showIf="recurrenceType == 2" colSpan="1"/>
+    		<field name="monday" title="Mo" css="small center" hidden="true" showIf="recurrenceType == 2" colSpan="1"/>
+    		<field name="tuesday" title="Tu" css="small center" hidden="true" showIf="recurrenceType == 2" colSpan="1"/>
+    		<field name="wednesday" title="We" css="small center" hidden="true" showIf="recurrenceType == 2" colSpan="1"/>
+    		<field name="thursday" title="Th" css="small center" hidden="true" showIf="recurrenceType == 2" colSpan="1"/>
+    		<field name="friday" title="Fr" css="small center" hidden="true" showIf="recurrenceType == 2" colSpan="1"/>
+    		<field name="saturday" title="Sa" css="small center" hidden="true" showIf="recurrenceType == 2" colSpan="1"/>
+    		<field name="monthRepeatType" title="Repeat every:" selection="crm.event.recurrence.month.repeat.type" hidden="true" showIf="recurrenceType == 3" widget="RadioSelect" css="small" colSpan="12"/>
+    		<panel colSpan="6">
+    			<field name="startDate" title="Start date" readonly="true"/>
+    			<field name="endType" title="End" selection="crm.event.recurrence.end.type" widget="RadioSelect" css="small"/>
+    		</panel>
+    		<panel colSpan="6">
+    			<field name="repetitionsNumber" title="Repetitions number" hidden="true" showIf="endType == 1" colSpan="12"/>
+    			<field name="endDate" title="End date" hidden="true" showIf="endType == 2" colSpan="12"/>
+    		</panel>
+    		<button name="applyButton" title="Apply" onClick="action-recurrence-assistant-method-generate" hideIf="id &gt; 0"/>
+    	</panel>
+    	<panel sidebar="true" hidden="true" showIf="id &gt; 0">
+    		<button name="modifToAll" title="Apply modifications for all" help="All events will be deleted and new events will be created" onClick="save, action-recurrence-assistant-method-change-all"/>
+    		<button name="deleteThis" title="Delete only this event" onClick="action-recurrence-assistant-method-delete-this"/>
+    		<button name="deleteNext" title="Delete this and next events" onClick="action-recurrence-assistant-method-delete-next"/>
+    		<button name="deleteAll" title="Delete all events" onClick="action-recurrence-assistant-method-delete-all"/>
+    	</panel>
+    </form>
+	
+	<action-record name="action-recurrence-assistant-on-new" model="com.axelor.apps.crm.db.RecurrenceConfiguration">
+		<field name="recurrenceType" expr="1"/>
+		<field name="periodicity" expr="1"/>
+		<field name="endType" expr="1"/>
+		<field name="startDate" expr="eval: _startDate"/>
+		<field name="monthRepeatType" expr="1"/>
+	</action-record>
+	
+	<action-attrs name="action-recurrence-assistant-attrs-title-period">
+		<attribute name="title" for="period" expr="eval: com.axelor.i18n.I18n.get('Days')" if="recurrenceType == 1"/>
+		<attribute name="title" for="period" expr="eval: com.axelor.i18n.I18n.get('Weeks')" if="recurrenceType == 2"/>
+		<attribute name="title" for="period" expr="eval: com.axelor.i18n.I18n.get('Months')" if="recurrenceType == 3"/>
+		<attribute name="title" for="period" expr="eval: com.axelor.i18n.I18n.get('Years')" if="recurrenceType == 4"/>
+	</action-attrs>
+	
+	<action-method name="action-recurrence-assistant-method-generate">
+		<call class="com.axelor.apps.crm.web.EventController" method="generateRecurrentEvents"/>
+	</action-method>
+	
+	<action-method name="action-recurrence-assistant-method-delete-this">
+		<call class="com.axelor.apps.crm.web.EventController" method="deleteThis"/>
+	</action-method>
+	
+	<action-method name="action-recurrence-assistant-method-delete-next">
+		<call class="com.axelor.apps.crm.web.EventController" method="deleteNext"/>
+	</action-method>
+	
+	<action-method name="action-recurrence-assistant-method-delete-all">
+		<call class="com.axelor.apps.crm.web.EventController" method="deleteAll"/>
+	</action-method>
+	
+	<action-method name="action-recurrence-assistant-method-change-all">
+		<call class="com.axelor.apps.crm.web.EventController" method="changeAll"/>
+	</action-method>
+	
+</object-views>

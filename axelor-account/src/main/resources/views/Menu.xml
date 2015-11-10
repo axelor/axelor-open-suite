@@ -678,7 +678,32 @@
     <action-view name="account.purchase.invoice.dashboard.2.view" title="Purchase Invoices Details">
         <view type="dashboard" name="account.purchase.invoice.dashboard.1" />        
     </action-view>
-	   
+    
+    <menuitem name="menu-account-invoice-advanced" parent="invoice-root-report" 
+    title="Advanced" />
+    
+    <menuitem name="menu-account-sale-invoice-advanced" parent="menu-account-invoice-advanced" 
+    title="Sale Invoices"  action="account.sale.invoice.advanced.view" />
+    
+    <action-view name="account.sale.invoice.advanced.view" title="Sale Invoices Details" model="com.axelor.apps.account.db.AssistantReportInvoice">
+        <view type="grid" name="print-sale-invoices-details-grid"/>
+        <view type="form" name="print-sale-invoices-details-form"/>
+        <domain>self.type = 1</domain> 
+    </action-view>
+    
+    <menuitem name="menu-account-purchase-invoice-advanced" parent="menu-account-invoice-advanced"
+    title="Purchase Invoices"  action="account.purchase.invoice.advanced.view"/>
+    
+    <action-view name="account.purchase.invoice.advanced.view" title="Purchase Invoices Details" model="com.axelor.apps.account.db.AssistantReportInvoice">
+        <view type="grid" name="print-purchase-invoices-details-grid"/>
+        <view type="form" name="print-purchase-invoices-details-form" /> 
+        <domain>self.type = 2</domain> 
+    </action-view>
+    
+    
+    
+    
+    
 	
 	<menuitem name="menu-accounting-dashboard-1" parent="account-root-report" 
 	       title="Accounting"  action="accounting.dashboard.view" />    

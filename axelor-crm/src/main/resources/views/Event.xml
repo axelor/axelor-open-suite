@@ -32,9 +32,12 @@
 	</grid>
     
 	<form  onLoad="action-group-crm-event-onload" onNew="action-group-crm-event-onnew" name="event-form" title="Events" model="com.axelor.apps.crm.db.Event"
-			onSave="action-event-record-subjectTeam">
+			onSave="action-event-group-on-save">
 		<panel colSpan="12">
 			<field name="calendarCrm" widget="SuggestBox"/>
+			<field name="isRecurrent" readonlyIf="isRecurrent" onChange="save, action-event-view-recurrence-assistant" />
+			<button name="changeRecurrence" title="Change recurrence" hidden="true" showIf="isRecurrent" onClick="save, action-event-view-change-recurrence"/>
+			<field name="recurrenceConfiguration" hidden="true"/>
 		</panel>
 		<panel colSpan="12">
 			<field name="subject" colSpan="6"/>
@@ -189,10 +192,16 @@
 	</grid>
     
     <form onNew="action-event-new-record" name="meeting-form" title="Meeting" model="com.axelor.apps.crm.db.Event" 
-        onLoad="action-partner-attrs-hide-contact-partner,action-event-hide-private" onSave="action-event-record-subjectTeam,action-event-validate-emails-sent,action-event-method-check-modifications">
+        onLoad="action-partner-attrs-hide-contact-partner,action-event-hide-private" onSave="action-event-group-on-save">
 		<toolbar>
 			<button name="viewOnMap" icon="fa-map-marker" onClick="com.axelor.apps.crm.web.EventController:viewMap"/>
 		</toolbar>
+		<panel colSpan="12">
+			<field name="calendarCrm" widget="SuggestBox"/>
+			<field name="isRecurrent" readonlyIf="isRecurrent" onChange="save, action-event-view-recurrence-assistant" />
+			<button name="changeRecurrence" title="Change recurrence" hidden="true" showIf="isRecurrent" onClick="save, action-event-view-change-recurrence"/>
+			<field name="recurrenceConfiguration" hidden="true"/>
+		</panel>
 		<panel name="meetingGeneral" colSpan="12">
 			<field name="subject" colSpan="6"/>
 			<field name="location" colSpan="6"/>
@@ -416,8 +425,54 @@
 			<field name="description" colSpan="12"/>
 		</panel>
 	</form>
+	
+	<action-group name="action-event-group-on-save">
+    	<action name="action-event-record-subjectTeam"/>
+    	<action name="save"/>
+    	<action name="action-event-view-modifications-recurrence" if="isRecurrent &amp;&amp; id > 0"/>
+    </action-group>
+	
+	<action-view name="action-event-view-recurrence-assistant" title="Recurrence assistant" model="com.axelor.apps.crm.db.RecurrenceConfiguration">
+		<view type="form" name="recurrence-assistant-form"/>
+		<view-param name="popup" value="reload"/>
+	    <view-param name="forceEdit" value="true"/> 
+	    <view-param name="width" value="800" />
+	    <view-param name="show-toolbar" value="false" />
+	    <view-param name="popup-save" value="false" />
+	    <context name="_idEvent" expr="eval: id"/>
+	    <context name="_startDate" expr="eval: startDateTime"/>
+	</action-view>
+	
+	<action-view name="action-event-view-change-recurrence" title="Recurrence assistant" model="com.axelor.apps.crm.db.RecurrenceConfiguration">
+		<view type="form" name="recurrence-assistant-form"/>
+		<view-param name="popup" value="reload"/>
+	    <view-param name="forceEdit" value="true"/> 
+	    <view-param name="width" value="800" />
+	    <view-param name="show-toolbar" value="false" />
+	    <view-param name="popup-save" value="false" />
+	    <context name="_idEvent" expr="eval: id"/>
+	    <context name="_showRecord" expr="eval: recurrenceConfiguration?.id"/>
+	</action-view>
+	
+	<action-view name="action-event-view-modifications-recurrence" title="Apply modifications" model="com.axelor.apps.base.db.Wizard">
+		<view type="form" name="modifications-assistant-form"/>
+		<view-param name="popup" value="reload"/>
+	    <view-param name="forceEdit" value="true"/> 
+	    <view-param name="width" value="800" />
+	    <view-param name="show-toolbar" value="false" />
+	    <view-param name="popup-save" value="false" />
+	    <context name="_idEvent" expr="eval: id"/>
+	</action-view>
+	
+	<form model="com.axelor.apps.base.db.Wizard" title="Apply modifications" name="modifications-assistant-form">
+		<button name="applyToThis" title="Apply changes to this event only" onClick="close" colSpan="12" width="50%"/>
+		<button name="applyToAll" title="Apply changes to all recurrence's events" onClick="action-event-method-apply-changes-to-all" colSpan="12" width="50%"/>
+	</form>
     
-
+    <action-method name="action-event-method-apply-changes-to-all">
+    	<call class="com.axelor.apps.crm.web.EventController" method="applyChangesToAll"/>
+    </action-method>
+    
    
 <!--    ACTION GROUP -->
     
