@@ -210,6 +210,45 @@
 		</panel>
 	</form>
 	
+	<kanban columnBy="statusSelect" sequenceBy="id" limit="10"
+	 name="project-kanban" title="Projects" model="com.axelor.apps.project.db.ProjectTask">
+		<field name="fullName"/>
+		<field name="description"/>
+		<field name="progress"/>
+		<field name="dueDate"/>
+		<field name="leadDelay"/>
+		<field name="statusSelect"/>
+		<hilite color="danger" if="dueDate &gt; __datetime__ &amp;&amp; statusSelect &lt; 3"/>
+		<hilite color="success" if="dueDate &lt;= __datetime__ &amp;&amp; leadDelay &gt;= 0 &amp;&amp; statusSelect &lt; 3"/>
+		<hilite color="warning" if="dueDate &lt;= __datetime__ &amp;&amp; leadDelay &lt; 0 &amp;&amp; statusSelect &lt; 3"/>
+		<template>
+		&lt;h4&gt;{{fullName}}&lt;/h4&gt;
+		&lt;div class="card-body"&gt;{{description}}&lt;/div&gt;
+		&lt;div class="card-footer"&gt;
+		  &lt;i class='fa fa-clock-o'&gt;&lt;/i&gt; &lt;span&gt;{{dueDate|date:'dd/MM/yyyy'}}&lt;/span&gt;
+		&lt;/div&gt;
+		</template>
+	</kanban>
+	
+	<kanban columnBy="statusSelect" sequenceBy="id" limit="10"
+	 name="task-kanban" title="Tasks" model="com.axelor.apps.project.db.ProjectTask">
+		<field name="fullName"/>
+		<field name="description"/>
+		<field name="progress"/>
+		<field name="dueDate"/>
+		<field name="leadDelay"/>
+		<field name="statusSelect"/>
+		<hilite color="danger" if="dueDate &gt; __datetime__ &amp;&amp; statusSelect &lt; 3"/>
+		<hilite color="success" if="dueDate &lt;= __datetime__ &amp;&amp; leadDelay &gt;= 0 &amp;&amp; statusSelect &lt; 3"/>
+		<hilite color="warning" if="dueDate &lt;= __datetime__ &amp;&amp; leadDelay &lt; 0 &amp;&amp; statusSelect &lt; 3"/>
+		<template>
+		&lt;h4&gt;{{fullName}}&lt;/h4&gt;
+		&lt;div class="card-body"&gt;{{description}}&lt;/div&gt;
+		&lt;div class="card-footer"&gt;
+		  &lt;i class='fa fa-clock-o'&gt;&lt;/i&gt; &lt;span&gt;{{dueDate|date:'dd/MM/yyyy'}}&lt;/span&gt;
+		&lt;/div&gt;
+		</template>
+	</kanban>
 	
 	<action-group name="action-project-task-group-on-new-project">
 		<action name="action-project-task-generate-project-from-partner" if="_idPartner != null"/>
@@ -218,6 +257,11 @@
 		<action name="action-project-task-attrs-duration-title"/>
 		<action name="action-project-attrs-scale-and-precision"/>
 	</action-group>
+	
+	<action-record name="opportunity.kanban.on.new" model="com.axelor.apps.crm.db.Opportunity">
+		<field name="name" expr="#{_value}"/>
+		<field name="user" expr="#{__user__}"/>
+	</action-record>
 	
 	<action-method name="action-project-task-generate-project-from-partner">
 		<call class="com.axelor.apps.project.web.ProjectTaskController" method="generateProjectFromPartner"/>
