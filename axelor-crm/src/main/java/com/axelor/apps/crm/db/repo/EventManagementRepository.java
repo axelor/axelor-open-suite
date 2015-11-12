@@ -12,6 +12,7 @@ import com.axelor.auth.db.User;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.google.common.base.Strings;
 import com.google.inject.Inject;
 
 public class EventManagementRepository extends EventRepository {
@@ -51,14 +52,16 @@ public class EventManagementRepository extends EventRepository {
 		if(entity.getOrganizer() == null && creator != null){
 			if(creator.getPartner() != null && creator.getPartner().getEmailAddress() != null){
 				String email = creator.getPartner().getEmailAddress().getAddress();
-				ICalendarUser organizer = Beans.get(ICalendarUserRepository.class).all().filter("self.email = ?1 AND self.user.id = ?2",email, creator.getId()).fetchOne();
-				if(organizer == null){
-					organizer = new ICalendarUser();
-					organizer.setEmail(email);
-					organizer.setName(creator.getFullName());
-					organizer.setUser(creator);
+				if(!Strings.isNullOrEmpty(email)){
+					ICalendarUser organizer = Beans.get(ICalendarUserRepository.class).all().filter("self.email = ?1 AND self.user.id = ?2",email, creator.getId()).fetchOne();
+					if(organizer == null){
+						organizer = new ICalendarUser();
+						organizer.setEmail(email);
+						organizer.setName(creator.getFullName());
+						organizer.setUser(creator);
+					}
+					entity.setOrganizer(organizer);
 				}
-				entity.setOrganizer(organizer);
 			}
 		}
 		
