@@ -186,7 +186,7 @@ public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceServ
 		}
 
 		BigDecimal invoicedAmount = (BigDecimal) q.getSingleResult();
-		if(invoicedAmount != null){
+		if(invoicedAmount != null && purchaseOrder.getCompanyExTaxTotal().compareTo(BigDecimal.ZERO) != 0){
 			if (!purchaseOrder.getCurrency().equals(purchaseOrder.getCompany().getCurrency())){
 				BigDecimal rate = invoicedAmount.divide(purchaseOrder.getCompanyExTaxTotal(), 4, RoundingMode.HALF_UP);
 				invoicedAmount = purchaseOrder.getExTaxTotal().multiply(rate);

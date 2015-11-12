@@ -320,7 +320,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 
 		BigDecimal invoicedAmount = (BigDecimal) q.getSingleResult();
 		if(invoicedAmount != null){
-			if (!saleOrder.getCurrency().equals(saleOrder.getCompany().getCurrency())){
+			if (!saleOrder.getCurrency().equals(saleOrder.getCompany().getCurrency()) && saleOrder.getCompanyExTaxTotal().compareTo(BigDecimal.ZERO) != 0){
 				BigDecimal rate = invoicedAmount.divide(saleOrder.getCompanyExTaxTotal(), 4, RoundingMode.HALF_UP);
 				invoicedAmount = saleOrder.getExTaxTotal().multiply(rate);
 			}

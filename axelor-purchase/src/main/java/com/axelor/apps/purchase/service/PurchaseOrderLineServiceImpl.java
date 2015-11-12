@@ -294,7 +294,7 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
 		if(purchaseOrderLine.getDiscountTypeSelect() == IPriceListLine.AMOUNT_TYPE_FIXED){
 			discountAmount = purchaseOrderLine.getProduct().getPurchasePrice().subtract(this.computeDiscount(purchaseOrderLine));
 		}
-		else{
+		else if(purchaseOrderLine.getProduct().getPurchasePrice().compareTo(BigDecimal.ZERO) != 0){
 			discountAmount = (purchaseOrderLine.getProduct().getPurchasePrice().subtract(this.computeDiscount(purchaseOrderLine))).multiply(new BigDecimal(100)).divide(purchaseOrderLine.getProduct().getPurchasePrice(), 2, BigDecimal.ROUND_HALF_UP);
 		}
 		if(purchaseOrderLine.getProduct().getInAti() && !purchaseOrder.getInAti()){

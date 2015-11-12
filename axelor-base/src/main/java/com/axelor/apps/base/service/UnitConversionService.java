@@ -80,7 +80,7 @@ public class UnitConversionService {
 		/* The endUnit become the start unit and the startUnit become the end unit */
 		for (UnitConversion unitConversion : unitConversionList){
 
-			if (unitConversion.getStartUnit().equals(endUnit) && unitConversion.getEndUnit().equals(startUnit)) { return BigDecimal.ONE.divide(unitConversion.getCoef(), generalService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_EVEN); }
+			if (unitConversion.getStartUnit().equals(endUnit) && unitConversion.getEndUnit().equals(startUnit) && unitConversion.getCoef().compareTo(BigDecimal.ZERO) != 0) { return BigDecimal.ONE.divide(unitConversion.getCoef(), generalService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_EVEN); }
 
 		}
 		/* If there is no startUnit and endUnit in the UnitConversion list so we throw an exception */
@@ -204,7 +204,7 @@ public class UnitConversionService {
 		for (UnitConversion unitConversion : unitConversionList){
 
 			if (unitConversion.getStartUnit().equals(endUnit) && unitConversion.getEndUnit().equals(startUnit)) { 
-				if(unitConversion.getTypeSelect() == UnitConversionRepository.TYPE_COEFF){
+				if(unitConversion.getTypeSelect() == UnitConversionRepository.TYPE_COEFF && unitConversion.getCoef().compareTo(BigDecimal.ZERO) != 0){
 					return BigDecimal.ONE.divide(unitConversion.getCoef(), generalService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_EVEN);  
 				}
 				else{
@@ -216,8 +216,10 @@ public class UnitConversionService {
 					conf.addCompilationCustomizers(customizer);
 					Binding binding = new Binding();                                 
 					GroovyShell shell = new GroovyShell(binding,conf);
-					BigDecimal result = new BigDecimal(shell.evaluate(eval).toString());    
-					return BigDecimal.ONE.divide(result, generalService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_EVEN);
+					BigDecimal result = new BigDecimal(shell.evaluate(eval).toString()); 
+					if(result.compareTo(BigDecimal.ZERO) != 0){
+						return BigDecimal.ONE.divide(result, generalService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_EVEN);
+					}
 				}
 			}
 

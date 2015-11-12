@@ -69,7 +69,7 @@ public class CancelStateSupplyChain extends CancelState {
 								currentSaleOrder = invoiceLine.getSaleOrderLine().getSaleOrder();
 								//Update invoiced amount on sale order line
 								BigDecimal invoicedAmountToAdd = invoiceLine.getExTaxTotal();
-								if (!invoice.getCurrency().equals(invoiceLine.getSaleOrderLine().getSaleOrder().getCurrency())){
+								if (!invoice.getCurrency().equals(invoiceLine.getSaleOrderLine().getSaleOrder().getCurrency()) && invoiceLine.getSaleOrderLine().getCompanyExTaxTotal().compareTo(BigDecimal.ZERO) != 0){
 									//If the sale order currency is different from the invoice currency, use company currency to calculate a rate. This rate will be applied to sale order line
 									BigDecimal currentCompanyInvoicedAmount = invoiceLine.getCompanyExTaxTotal();
 									BigDecimal rate = currentCompanyInvoicedAmount.divide(invoiceLine.getSaleOrderLine().getCompanyExTaxTotal(), 4, RoundingMode.HALF_UP);
@@ -104,7 +104,7 @@ public class CancelStateSupplyChain extends CancelState {
 						}
 						//Update invoiced amount on purchase order line
 						BigDecimal invoicedAmountToAdd = invoiceLine.getExTaxTotal();
-						if (!invoice.getCurrency().equals(invoiceLine.getPurchaseOrderLine().getPurchaseOrder().getCurrency())){
+						if (!invoice.getCurrency().equals(invoiceLine.getPurchaseOrderLine().getPurchaseOrder().getCurrency()) && invoiceLine.getPurchaseOrderLine().getCompanyExTaxTotal().compareTo(BigDecimal.ZERO) != 0){
 							//If the purchase order currency is different from the invoice currency, use company currency to calculate a rate. This rate will be applied to purchase order line
 							BigDecimal currentCompanyInvoicedAmount = invoiceLine.getCompanyExTaxTotal();
 							BigDecimal rate = currentCompanyInvoicedAmount.divide(invoiceLine.getPurchaseOrderLine().getCompanyExTaxTotal(), 4, RoundingMode.HALF_UP);

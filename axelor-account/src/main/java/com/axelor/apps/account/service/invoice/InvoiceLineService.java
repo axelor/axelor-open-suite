@@ -176,9 +176,9 @@ public class InvoiceLineService {
 				discountAmount = invoiceLine.getProduct().getPurchasePrice().subtract(this.computeDiscount(invoiceLine,invoice));
 			}
 		}
-		else{
+		else if(invoiceLine.getProduct().getSalePrice().compareTo(BigDecimal.ZERO) != 0){
 			discountAmount = (invoiceLine.getProduct().getSalePrice().subtract(this.computeDiscount(invoiceLine,invoice))).multiply(new BigDecimal(100)).divide(invoiceLine.getProduct().getSalePrice());
-			if(invoice.getOperationTypeSelect()<2){
+			if(invoice.getOperationTypeSelect()<2 && invoiceLine.getProduct().getPurchasePrice().compareTo(BigDecimal.ZERO) != 0){
 				discountAmount = (invoiceLine.getProduct().getPurchasePrice().subtract(this.computeDiscount(invoiceLine,invoice))).multiply(new BigDecimal(100)).divide(invoiceLine.getProduct().getPurchasePrice());
 			}
 		}

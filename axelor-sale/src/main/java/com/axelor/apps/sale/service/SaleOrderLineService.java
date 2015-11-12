@@ -152,7 +152,7 @@ public class SaleOrderLineService {
 		if(saleOrderLine.getDiscountTypeSelect() == IPriceListLine.AMOUNT_TYPE_FIXED){
 			discountAmount = saleOrderLine.getProduct().getSalePrice().subtract(this.computeDiscount(saleOrderLine));
 		}
-		else{
+		else if(saleOrderLine.getProduct().getSalePrice().compareTo(BigDecimal.ZERO) != 0){
 			discountAmount = (saleOrderLine.getProduct().getSalePrice().subtract(this.computeDiscount(saleOrderLine))).multiply(new BigDecimal(100)).divide(saleOrderLine.getProduct().getSalePrice());
 		}
 		if(saleOrderLine.getProduct().getInAti() && !saleOrder.getInAti()){
