@@ -75,11 +75,12 @@
 	</selection>
 	
 	<selection name="crm.opportunity.sales.stage.select">
-		<option value="1">Prospection</option>
-		<option value="2">Analysis</option>
-		<option value="3">Negociation</option>
-		<option value="4">Closed won</option>
-		<option value="5">Closed lost</option>
+		<option value="1">New</option>
+		<option value="2">Qualification</option>
+		<option value="3">Proposition</option>
+		<option value="4">Negotiation</option>
+		<option value="5">Closed won</option>
+		<option value="6">Closed lost</option>
 	</selection>
 	
 	<selection name="crm.event.call.type.select">
