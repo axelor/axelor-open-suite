@@ -9,6 +9,7 @@ import com.axelor.apps.base.db.WeeklyPlanning;
 import com.axelor.apps.base.service.weeklyplanning.WeeklyPlanningService;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.PublicHolidayDay;
+import com.axelor.apps.hr.db.PublicHolidayPlanning;
 import com.axelor.apps.hr.db.repo.PublicHolidayDayRepository;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
@@ -21,10 +22,10 @@ public class PublicHolidayService {
 	@Inject
 	protected PublicHolidayDayRepository publicHolidayDayRepo;
 
-	public BigDecimal computePublicHolidayDays(LocalDate dateFrom, LocalDate dateTo, WeeklyPlanning weeklyPlanning, Employee employee) throws AxelorException{
+	public BigDecimal computePublicHolidayDays(LocalDate dateFrom, LocalDate dateTo, WeeklyPlanning weeklyPlanning, PublicHolidayPlanning publicHolidayPlanning) throws AxelorException{
 		BigDecimal publicHolidayDays = BigDecimal.ZERO;
 
-		List<PublicHolidayDay> publicHolidayDayList= publicHolidayDayRepo.all().filter("self.publicHolidayPlann = ?1 AND self.date BETWEEN ?2 AND ?3", employee.getPublicHolidayPlanning(), dateFrom, dateTo).fetch();
+		List<PublicHolidayDay> publicHolidayDayList= publicHolidayDayRepo.all().filter("self.publicHolidayPlann = ?1 AND self.date BETWEEN ?2 AND ?3", publicHolidayPlanning, dateFrom, dateTo).fetch();
 		for (PublicHolidayDay publicHolidayDay : publicHolidayDayList) {
 			publicHolidayDays = publicHolidayDays.add(new BigDecimal(weeklyPlanningService.workingDayValue(weeklyPlanning, publicHolidayDay.getDate())));
 		}

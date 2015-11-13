@@ -13,10 +13,8 @@
 	<many-to-many name="partnerSet" ref="com.axelor.apps.base.db.Partner" title="Partners"/>
 	<many-to-many name="productSet" ref="com.axelor.apps.base.db.Product" title="Products"/>
 	<many-to-many name="productCategorySet" ref="com.axelor.apps.base.db.ProductCategory" title="Product categories"/>
-	<boolean name="graph" title="Graph" default="true"/>
-	<boolean name="chart" title="Chart" default="false"/>
-	<boolean name="pdf" title="PDF" default="true"/>
-	<boolean name="xls" title="XLS" default="false"/>
+	<integer name="graphTypeSelect" title="Graph type" selection="assistant.report.invoice.graph.type.select" default="1"/>
+	<integer name="formatSelect" title="Format" selection="assistant.report.invoice.format.select" default="1"/>
 	<integer name="type"/>
     
   </entity>
