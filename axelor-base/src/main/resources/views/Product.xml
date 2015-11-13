@@ -159,7 +159,7 @@
 		    	    </editor>
 	            </field>
 	        		<field name="parentProduct" form-view="product-form" grid-view="product-grid"/>
-	        		<panel-dashlet action="action-product-view-other-product-variant" />
+	        		<panel-dashlet action="action-product-view-other-product-variant" colSpan="12"/>
 	            </panel>
             	<button name="updateProductsPrices" title="Update products prices"  onClick="save,action-product-method-update-products-prices" help="Update current product prices and variants"/>
 	        </panel>
