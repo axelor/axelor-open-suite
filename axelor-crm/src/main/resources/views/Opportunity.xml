@@ -69,7 +69,7 @@
         <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
         <field name="amount" aggregate="sum"/>
     </grid>
-	 
+	
     <form   name="opportunity-form" title="Opportunity" model="com.axelor.apps.crm.db.Opportunity" onNew="action-opportunity-group-new" 
         onLoad="action-test-parameters">
 		<toolbar>
@@ -128,7 +128,7 @@
  	<field name="subject" expr="eval: myparameter"/>
  </action-record>	
  
-	<kanban columnBy="salesStageSelect" sequenceBy="id" onNew="project.task.kanban.on.new" limit="10"
+	<kanban columnBy="salesStageSelect" sequenceBy="id" onNew="opportunity.kanban.on.new , action-opportunity-group-new" limit="10"
 	 name="opportunity-kanban" title="Opportunities" model="com.axelor.apps.crm.db.Opportunity">
 		<field name="name"/>
 		<field name="description"/>
@@ -156,6 +156,11 @@
     	<action name="action-opportunity-record-from-lead" if="_lead != null"/>
     	<action name="action-opportunity-record-from-partner" if="_partner != null"/>
     </action-group>
+    
+    <action-record name="opportunity.kanban.on.new" model="com.axelor.apps.crm.db.Opportunity">
+		<field name="name" expr="#{_value}"/>
+		<field name="user" expr="#{__user__}"/>
+	</action-record>
     
     <action-group name="action-group-crm-opportunity-nextstage-click">
     	<action name="action-opportunity-set-next-stage"/>

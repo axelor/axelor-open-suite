@@ -13,6 +13,7 @@
   	<many-to-one name="validatedLeaveTemplate" ref="com.axelor.apps.message.db.Template" title="Validated Leave Request Template"/>
   	<many-to-one name="refusedLeaveTemplate" ref="com.axelor.apps.message.db.Template" title="Refused Leave Request Template"/>
   	<many-to-one name="publicHolidayPlanning" ref="com.axelor.apps.hr.db.PublicHolidayPlanning" title="Public Holiday Planning"/>
+  	<many-to-one name="weeklyPlanning" ref="com.axelor.apps.base.db.WeeklyPlanning" title="Weekly Planning"/>
   	
   </entity>
   

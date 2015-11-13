@@ -271,4 +271,14 @@
 		<option value="2">Canceled</option>
 	</selection>
 	
+	<selection name="assistant.report.invoice.graph.type.select">
+		<option value="1">Graph</option>
+		<option value="2">Table</option>
+	</selection>
+	
+	<selection name="assistant.report.invoice.format.select">
+		<option value="1">PDF</option>
+		<option value="2">XLS</option>
+	</selection>
+	
 </object-views>

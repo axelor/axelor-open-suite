@@ -9,6 +9,7 @@
     	action="project.all"/>
 
 	<action-view name="project.all" title="Projects" model="com.axelor.apps.project.db.ProjectTask">
+    	<view type="kanban" name="project-kanban"/>
     	<view type="grid" name="project-grid"/>
 	    <view type="form" name="project-form"/>
 	    <domain>self.typeSelect = 'project'</domain>
@@ -28,6 +29,7 @@
     	action="task.all"/>
 
 	<action-view name="task.all" title="Tasks" model="com.axelor.apps.project.db.ProjectTask">
+    	<view type="kanban" name="task-kanban"/>
     	<view type="grid" name="task-grid"/>
 	    <view type="form" name="task-form"/>
 	    <domain>self.typeSelect = 'task'</domain>

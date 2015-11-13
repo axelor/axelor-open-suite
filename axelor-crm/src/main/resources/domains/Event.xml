@@ -73,7 +73,7 @@
       </extra-code>
       
     <track>
-      <field name="subject" />
+      <field name="subject"/>
       <field name="startDateTime"/>
       <field name="endDateTime" on="UPDATE"/>
       <field name="internalGuestSet"/>

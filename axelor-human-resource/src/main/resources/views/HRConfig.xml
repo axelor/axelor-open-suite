@@ -13,6 +13,7 @@
 	  	</panel>
 	  	<panel title="General">
 	  		<field name="publicHolidayPlanning" canNew="true"/>
+	  		<field name="weeklyPlanning" canNew="true"/>
 	  	</panel>
 	  	<panel title="Leaves Templates">
 	    	<field name="sentLeaveTemplate" canNew="true" form-view="template-form" grid-view="template-grid"/>

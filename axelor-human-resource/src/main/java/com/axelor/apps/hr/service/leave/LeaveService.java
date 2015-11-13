@@ -1,7 +1,10 @@
 package com.axelor.apps.hr.service.leave;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
@@ -9,14 +12,19 @@ import org.joda.time.LocalDateTime;
 import com.axelor.apps.base.db.DayPlanning;
 import com.axelor.apps.base.db.WeeklyPlanning;
 import com.axelor.apps.base.service.DurationServiceImpl;
+import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.base.service.weeklyplanning.WeeklyPlanningService;
 import com.axelor.apps.crm.db.Event;
 import com.axelor.apps.crm.db.repo.EventRepository;
 import com.axelor.apps.crm.service.EventService;
 import com.axelor.apps.hr.db.Employee;
+import com.axelor.apps.hr.db.HRConfig;
 import com.axelor.apps.hr.db.LeaveLine;
+import com.axelor.apps.hr.db.LeaveReason;
 import com.axelor.apps.hr.db.LeaveRequest;
+import com.axelor.apps.hr.db.PublicHolidayPlanning;
 import com.axelor.apps.hr.db.repo.LeaveLineRepository;
+import com.axelor.apps.hr.db.repo.LeaveReasonRepository;
 import com.axelor.apps.hr.db.repo.LeaveRequestRepository;
 import com.axelor.apps.hr.exception.IExceptionMessage;
 import com.axelor.apps.hr.service.config.HRConfigService;
@@ -25,12 +33,15 @@ import com.axelor.apps.message.db.Message;
 import com.axelor.apps.message.db.Template;
 import com.axelor.apps.message.service.MessageServiceImpl;
 import com.axelor.apps.message.service.TemplateMessageService;
+import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.rpc.ActionRequest;
+import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -74,12 +85,23 @@ public class LeaveService {
 			}
 
 			WeeklyPlanning weeklyPlanning = employee.getPlanning();
-
+			if(weeklyPlanning == null){
+				HRConfig conf = leave.getCompany().getHrConfig();
+				if(conf != null){
+					weeklyPlanning = conf.getWeeklyPlanning();
+				}
+			}
 			if(weeklyPlanning == null){
 				throw new AxelorException(String.format(I18n.get(IExceptionMessage.EMPLOYEE_PLANNING),employee.getName()), IException.CONFIGURATION_ERROR);
 			}
-
-			if(employee.getPublicHolidayPlanning() == null){
+			PublicHolidayPlanning publicHolidayPlanning = employee.getPublicHolidayPlanning();
+			if(publicHolidayPlanning == null){
+				HRConfig conf = leave.getCompany().getHrConfig();
+				if(conf != null){
+					publicHolidayPlanning = conf.getPublicHolidayPlanning();
+				}
+			}
+			if(publicHolidayPlanning == null){
 				throw new AxelorException(String.format(I18n.get(IExceptionMessage.EMPLOYEE_PUBLIC_HOLIDAY),employee.getName()), IException.CONFIGURATION_ERROR);
 			}
 
@@ -97,7 +119,7 @@ public class LeaveService {
 				duration = duration.add(new BigDecimal(this.computeEndDateWithSelect(leave.getDateTo(), leave.getEndOnSelect(), weeklyPlanning)));
 			}
 
-			duration = duration.subtract(Beans.get(PublicHolidayService.class).computePublicHolidayDays(leave.getDateFrom(),leave.getDateTo(), weeklyPlanning, employee));
+			duration = duration.subtract(Beans.get(PublicHolidayService.class).computePublicHolidayDays(leave.getDateFrom(),leave.getDateTo(), weeklyPlanning, publicHolidayPlanning));
 			return duration;
 		}
 		else{
@@ -373,5 +395,38 @@ public class LeaveService {
 		}
 	
 		return leaveDays;
+	}
+	
+	public void getLeaveReason(ActionRequest request, ActionResponse response){
+		List<Map<String,String>> dataList = new ArrayList<Map<String,String>>();
+		List<LeaveReason> leaveReasonList = Beans.get(LeaveReasonRepository.class).all().fetch();
+		for (LeaveReason leaveReason : leaveReasonList) {
+			Map<String, String> map = new HashMap<String,String>();
+			map.put("name", leaveReason.getLeaveReason());
+			map.put("id", leaveReason.getId().toString());
+			dataList.add(map);
+		}
+		response.setData(dataList);
+	}
+	
+	@Transactional
+	public void insertLeave(ActionRequest request, ActionResponse response) throws AxelorException{
+		User user = AuthUtils.getUser();
+		LeaveReason leaveReason = Beans.get(LeaveReasonRepository.class).find(new Long(request.getData().get("reason").toString()));
+		
+		if(user != null){
+			LeaveRequest leave = new LeaveRequest();
+			leave.setUser(user);
+			leave.setCompany(user.getActiveCompany());
+			leave.setReason(leaveReason);
+			leave.setRequestDate(Beans.get(GeneralService.class).getTodayDate());
+			leave.setDateFrom(new LocalDate(request.getData().get("fromDate").toString()));
+			leave.setStartOnSelect(new Integer(request.getData().get("startOn").toString()));
+			leave.setDateTo(new LocalDate(request.getData().get("toDate").toString()));
+			leave.setEndOnSelect(new Integer(request.getData().get("endOn").toString()));
+			leave.setDuration(this.computeDuration(leave));
+			leave.setStatusSelect(LeaveRequestRepository.STATUS_SELECT_AWAITING_VALIDATION);
+			Beans.get(LeaveRequestRepository.class).save(leave);
+		}
 	}
 }

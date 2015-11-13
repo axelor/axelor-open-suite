@@ -37,7 +37,7 @@ public class AssistantReportInvoiceController {
 		language = language.equals("")? "en": language;
 
 		String format = ReportSettings.FORMAT_PDF;
-		if(assistant.getXls()){
+		if(assistant.getFormatSelect() == 2){
 			format = ReportSettings.FORMAT_XLS;
 		}
 		Set<Long> partnerIds = new HashSet<Long>();
@@ -55,6 +55,11 @@ public class AssistantReportInvoiceController {
 			productCategoriesIds.add(productCategory.getId());
 		}
 		
+		String table = "false";
+		if(assistant.getGraphTypeSelect() == 2){
+			table = "true";
+		}
+		
 		url.append( new ReportSettings(IReport.SALE_INVOICES_DETAILS, format)
 							.addParam("Locale", language)
 							.addParam("__locale", "fr_FR")
@@ -63,7 +68,7 @@ public class AssistantReportInvoiceController {
 							.addParam("partnersIds", Joiner.on(",").join(partnerIds))
 							.addParam("productsIds", Joiner.on(",").join(productsIds))
 							.addParam("productCategoriesIds", Joiner.on(",").join(productCategoriesIds))
-							.addParam("chart", assistant.getChart().toString())
+							.addParam("chart", table)
 							.getUrl());
 		
 		String urlNotExist = URLService.notExist(url.toString());
@@ -94,7 +99,7 @@ public class AssistantReportInvoiceController {
 		language = language.equals("")? "en": language;
 
 		String format = ReportSettings.FORMAT_PDF;
-		if(assistant.getXls()){
+		if(assistant.getFormatSelect() == 2){
 			format = ReportSettings.FORMAT_XLS;
 		}
 		Set<Long> partnerIds = new HashSet<Long>();
@@ -112,6 +117,11 @@ public class AssistantReportInvoiceController {
 			productCategoriesIds.add(productCategory.getId());
 		}
 		
+		String table = "false";
+		if(assistant.getGraphTypeSelect() == 2){
+			table = "true";
+		}
+		
 		url.append( new ReportSettings(IReport.PURCHASE_INVOICES_DETAILS, format)
 							.addParam("Locale", language)
 							.addParam("__locale", "fr_FR")
@@ -120,7 +130,7 @@ public class AssistantReportInvoiceController {
 							.addParam("partnersIds", Joiner.on(",").join(partnerIds))
 							.addParam("productsIds", Joiner.on(",").join(productsIds))
 							.addParam("productCategoriesIds", Joiner.on(",").join(productCategoriesIds))
-							.addParam("chart", assistant.getChart().toString())
+							.addParam("chart", table)
 							.getUrl());
 		
 		String urlNotExist = URLService.notExist(url.toString());
