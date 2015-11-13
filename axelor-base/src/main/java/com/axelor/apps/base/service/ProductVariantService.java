@@ -30,7 +30,6 @@ import com.axelor.apps.base.db.ProductVariantAttr;
 import com.axelor.apps.base.db.ProductVariantValue;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.db.repo.ProductVariantRepository;
-import com.axelor.apps.base.service.administration.SequenceService;
 import com.google.inject.Inject;
 
 public class ProductVariantService {
