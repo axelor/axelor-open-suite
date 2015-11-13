@@ -191,6 +191,10 @@ public class ProductServiceImpl implements ProductService  {
 		product.setIsModel(false);
 		product.setParentProduct(productModel);
 		product.setProductVariant(productVariant);
+		
+		product.setCostPrice(productModel.getCostPrice());
+		product.setSalePrice(productModel.getSalePrice());
+		product.setManagPriceCoef(productModel.getManagPriceCoef());
 
 		this.updateSalePrice(product);
 
