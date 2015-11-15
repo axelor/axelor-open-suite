@@ -43,8 +43,8 @@
                 <button name="$totalVariants" title="Total variants" widget="info-button" colSpan="12" onClick="action-product-view-total-variants" showIf="isModel"/>
 	        </panel>
             <panel colSpan="8">
-				<field name="name" showTitle="false" css="label-bold bold" placeholder="Name"	colSpan="8"/>
-				<field name="code" x-bind="{{code|uppercase}}" showTitle="false" css="label-bold bold" placeholder="Code" colSpan="4"/>
+				<field name="name" showTitle="false" css="label-bold bold large" placeholder="Name"	colSpan="8"/>
+				<field name="code" x-bind="{{code|uppercase}}" showTitle="false" css="label-bold bold large" placeholder="Code" colSpan="4"/>
 				<panel title="Product typology" colSpan="6" colWidths="30%,70%">
 					<field name="productTypeSelect" onChange="action-group-base-product-producttype-onchange" colSpan="12"/>
 					<field name="isActivity" showIf="productTypeSelect == 'service'"/>
@@ -159,7 +159,7 @@
 		    	    </editor>
 	            </field>
 	        		<field name="parentProduct" form-view="product-form" grid-view="product-grid"/>
-	        		<panel-dashlet action="action-product-view-other-product-variant" />
+	        		<panel-dashlet action="action-product-view-other-product-variant" colSpan="12"/>
 	            </panel>
             	<button name="updateProductsPrices" title="Update products prices"  onClick="save,action-product-method-update-products-prices" help="Update current product prices and variants"/>
 	        </panel>

@@ -156,11 +156,23 @@ public class ProductServiceImpl implements ProductService  {
 	@Override
 	public Product createProduct(Product productModel, ProductVariant productVariant)  {
 
+		String description = "";
+		String internalDescription = "";
+		
+		if(productModel.getDescription() != null)  {
+			description = productModel.getDescription();
+		}
+		if(productModel.getInternalDescription() != null)  {
+			internalDescription = productModel.getInternalDescription();
+		}
+		description += "<br>"+productVariant.getName();
+		internalDescription += "<br>"+productVariant.getName();
+
 		Product product = new Product(
 				productModel.getName()+" ("+productVariant.getName()+")",
 				productModel.getCode()+"-"+productVariant.getId(),
-				productModel.getDescription()+"<br>"+productVariant.getName(),
-				productModel.getInternalDescription()+"<br>"+productVariant.getName(),
+				description,
+				internalDescription,
 				productModel.getPicture(),
 				productModel.getProductCategory(),
 				productModel.getProductFamily(),
@@ -179,6 +191,10 @@ public class ProductServiceImpl implements ProductService  {
 		product.setIsModel(false);
 		product.setParentProduct(productModel);
 		product.setProductVariant(productVariant);
+		
+		product.setCostPrice(productModel.getCostPrice());
+		product.setSalePrice(productModel.getSalePrice());
+		product.setManagPriceCoef(productModel.getManagPriceCoef());
 
 		this.updateSalePrice(product);
 
