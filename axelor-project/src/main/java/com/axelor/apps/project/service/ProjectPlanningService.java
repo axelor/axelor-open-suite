@@ -128,7 +128,7 @@ public class ProjectPlanningService {
 		LocalDate todayDate = Beans.get(GeneralService.class).getTodayDate();
 		List<ProjectPlanningLine> linesList = Beans.get(ProjectPlanningLineRepository.class).all().
 				filter("self.user.id = ?1 AND self.year >= ?2 AND self.week >= ?3", 
-				AuthUtils.getUser(), todayDate.getYear(), todayDate.getWeekOfWeekyear()).fetch();
+				AuthUtils.getUser().getId(), todayDate.getYear(), todayDate.getWeekOfWeekyear()).fetch();
 		
 		for (ProjectPlanningLine line : linesList) {
 			if(line.getMonday().compareTo(BigDecimal.ZERO) != 0){

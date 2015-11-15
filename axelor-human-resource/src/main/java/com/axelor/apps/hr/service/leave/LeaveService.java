@@ -414,7 +414,7 @@ public class LeaveService {
 		User user = AuthUtils.getUser();
 		LeaveReason leaveReason = Beans.get(LeaveReasonRepository.class).find(new Long(request.getData().get("reason").toString()));
 		
-		if(user != null){
+		if(user != null && leaveReason != null){
 			LeaveRequest leave = new LeaveRequest();
 			leave.setUser(user);
 			leave.setCompany(user.getActiveCompany());
