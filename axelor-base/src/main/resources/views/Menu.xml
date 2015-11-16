@@ -543,7 +543,7 @@
 
 	<menuitem name="top-menu-create-partner" order="-100" parent="top-menu-utility" title="Create Partner" action="top.new.partner.view" top="true" left="false"/> 	
 		
-	<action-view name="top.new.partner.view" title="Create Account" model="com.axelor.apps.base.db.Partner" >
+	<action-view name="top.new.partner.view" title="Create Partner" model="com.axelor.apps.base.db.Partner" >
 		<view type="form" name="partner-form"/>
 		<view type="grid" name="partner-grid" />
 		<domain>self.isContact = false</domain>
