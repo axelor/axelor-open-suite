@@ -60,9 +60,9 @@
 
 	<action-view name="product.root.product" title="Products"
 		model="com.axelor.apps.base.db.Product" >
+		<view type="cards" name="product-cards" />
 		<view type="grid" name="product-grid" />
 		<view type="form" name="product-form" />
-		<view type="cards" name="product-cards" />
 		<view-param name="search-filters" value="products-filters"/>
 		<domain>self.isModel = false </domain>
 		<context name="_activeCompany" expr="eval:__user__.activeCompany"/>
@@ -74,6 +74,7 @@
 
 	<action-view name="product.root.product.model" title="Products models"
 		model="com.axelor.apps.base.db.Product" >
+		<view type="cards" name="product-cards" />
 		<view type="grid" name="product-grid" />
 		<view type="form" name="product-form" />
 		<view-param name="search-filters" value="products-filters"/>
