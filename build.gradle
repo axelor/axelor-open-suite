@@ -63,6 +63,7 @@ task("dataImport", type: JavaExec) {
 
 build.doLast{
 	archiveReports.execute()
+	archiveImages.execute()
 }
 
 task archiveReports(type: Zip){
@@ -74,4 +75,16 @@ task archiveReports(type: Zip){
 	}
 	includeEmptyDirs = false
 	destinationDir = new File("$buildDir/libs")
+}
+
+task archiveImages(type: Zip){
+	from 'modules/abs'
+    include '*/src/main/resources/data-demo/img/**'
+	include '*/src/main/resources/data-init/img/**'
+	classifier 'img'
+	eachFile { fileCopyDetails ->
+		fileCopyDetails.path = fileCopyDetails.path.replaceAll(".*/src/main/resources/data-demo/img/", '').replaceAll(".*/src/main/resources/data-init/img/", "")
+	}
+	destinationDir = new File("$buildDir/libs")
+	includeEmptyDirs = false
 }
