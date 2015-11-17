@@ -1,25 +1,25 @@
 "fileName";"filePath";"mime";"size";"sizeText";"description"
-"20_120px.png";"partner/20_120px.png";;0;"0 Bytes";
-"44_120px.png";"partner/44_120px.png";;0;"0 Bytes";
-"88_120px.png";"partner/88_120px.png";;0;"0 Bytes";
-"132_120px.png";"partner/132_120px.png";;0;"0 Byte";
-"185_120px.png";"partner/185_120px.png";;0;"0 Bytes";
-"197_120px.png";"partner/197_120px.png";;0;"0 Bytes";
-"205_120px.png";"partner/205_120px.png";;0;"0 Bytes";
-"136_120px.png";"partner/136_120px.png";;0;"0 Bytes";
-"70_120px.png";"partner/70_120px.png";;0;"0 Bytes";
-"77_128px.png";"partner/77_128px.png";;0;"0 Bytes";
-"148_128px.png";"partner/148_128px.png";;0;"0 Byte";
-"152_128px.png";"partner/152_128px.png";;0;"0 Bytes";
-"170_128px.png";"partner/170_128px.png";;0;"0 Bytes";
-"224_128px.png";"partner/224_128px.png";;0;"0 Bytes";
-"237_128px.png";"partner/237_128px.png";;0;"0 Bytes";
-"1012_128px.png";"partner/1012_128px.png";;0;"0 Bytes";
-"1033_128px.png";"partner/1033_128px.png";;0;"0 Bytes";
-"1039_128px.png";"partner/1039_128px.png";;0;"0 Bytes";
-"1045_128px.png";"partner/1045_128px.png";;0;"0 Bytes";
-"90000_128px.png";"partner/90000_128px.png";;0;"0 Bytes";
-"axelor-logo.png";"axelor-logo.png";;0;"0 Bytes";
+"20_120px_fr.png";"partner/20_120px_fr.png";;0;"0 Bytes";
+"44_120px_fr.png";"partner/44_120px_fr.png";;0;"0 Bytes";
+"88_120px_fr.png";"partner/88_120px_fr.png";;0;"0 Bytes";
+"132_120px_fr.png";"partner/132_120px_fr.png";;0;"0 Byte";
+"185_120px_fr.png";"partner185_120px_fr.png";;0;"0 Bytes";
+"197_120px_fr.png";"partner/197_120px_fr.png";;0;"0 Bytes";
+"205_120px_fr.png";"partner/205_120px_fr.png";;0;"0 Bytes";
+"136_120px_fr.png";"partner/136_120px_fr.png";;0;"0 Bytes";
+"70_120px_fr.png";"partner/70_120px_fr.png";;0;"0 Bytes";
+"77_128px_fr.png";"partner/77_128px_fr.png";;0;"0 Bytes";
+"148_128px_fr.png";"partner/148_128px_fr.png";;0;"0 Byte";
+"152_128px_fr.png";"partner/152_128px_fr.png";;0;"0 Bytes";
+"170_128px_fr.png";"partner/170_128px_fr.png";;0;"0 Bytes";
+"224_128px_fr.png";"partner/224_128px_fr.png";;0;"0 Bytes";
+"237_128px_fr.png";"partner/237_128px_fr.png";;0;"0 Bytes";
+"1012_128px_fr.png";"partner/1012_128px_fr.png";;0;"0 Bytes";
+"1033_128px_fr.png";"partner/1033_128px_fr.png";;0;"0 Bytes";
+"1039_128px_fr.png";"partner/1039_128px_fr.png";;0;"0 Bytes";
+"1045_128px_fr.png";"partner/1045_128px_fr.png";;0;"0 Bytes";
+"90000_128px_fr.png";"partner/90000_128px_fr.png";;0;"0 Bytes";
+"axelor-logo_fr.png";"axelor-logo_fr.png";;0;"0 Bytes";
 "import-config-address.xml";"import-config-address.xml";"text/xml";417;"417 Bytes";"Configuration file to import Addresss based on import-data-address.csv datasource."
 "import-data-address.csv";"import-data-address.csv";"text/csv";96;"96 Bytes";"File containing the address data to import using the import-config-address.xml config file as import settings."
 "import-config-bank-details.xml";"import-config-bank-details.xml";"text/xml";579;"579 Bytes";"Configuration file to import BankDetails based on import-data-bank-detail.csv datasource."

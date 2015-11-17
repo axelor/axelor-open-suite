@@ -83,7 +83,7 @@ public class MoveTemplateService {
 					partner = creditPartner;
 				}
 				Move move = moveService.getMoveCreateService().createMove(moveTemplate.getJournal(), moveTemplate.getJournal().getCompany(), null, partner,moveDate, null);
-				int counter = 0;
+				int counter = 1;
 				for(MoveTemplateLine line : moveTemplate.getMoveTemplateLineList()){
 					partner = null;
 					if(line.getDebitCreditSelect().equals("0")){
