@@ -79,7 +79,7 @@
 	<grid name="task-grid" title="Tasks" model="com.axelor.apps.project.db.ProjectTask">
 		<field name="name"/>
 		<field name="assignedTo" form-view="user-form" grid-view="user-grid"/>
-		<field name="fromDate" />
+		<field name="fromDate"/>
 		<field name="toDate" />
 		<field name="dueDate" />
 		<field name="statusSelect"/>
