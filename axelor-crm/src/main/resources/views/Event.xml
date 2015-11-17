@@ -478,7 +478,8 @@
     <action-group name="action-event-new-record">
     	<action name="action-event-default-record"/>
     	<action name="action-event-record-default-duration" if="typeSelect != 5"/>
-    	<action name="action-event-method-compute-from-duration" />
+    	<action name="action-event-method-compute-from-duration" if="endDateTime == null"/>
+    	<action name="action-event-method-compute-from-start-date-time" if="endDateTime != null"/>
     	<action name="action-ticket-record-new" if="typeSelect == 5"/> <!-- typeSelect == 5: ticket -->
     	<action name="action-event-default-record-user" if="_lead == null &amp;&amp; _partner == null"/>
     	<action name="action-event-record-event-from-lead" if="_lead != null"/>
@@ -549,7 +550,7 @@
     </action-record>
     
     <action-record name="action-event-record-default-duration" model="com.axelor.apps.crm.db.Event">
-    	<field name="duration" expr="3600"/>
+    	<field name="duration" expr="3600" if="endDateTime == null"/>
     </action-record>
     
     <action-record name="action-event-default-record-user" model="com.axelor.apps.crm.db.Event">
