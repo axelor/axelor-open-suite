@@ -24,15 +24,19 @@ import com.google.inject.Inject;
 public class TimesheetController {
 	@Inject
 	private TimesheetService timesheetService;
+	@Inject
+	private TimesheetRepository timesheetRepository;
 
 	public void getTimeFromTask(ActionRequest request, ActionResponse response){
 		Timesheet timesheet = request.getContext().asType(Timesheet.class);
+		timesheet = timesheetRepository.find(timesheet.getId());
 		timesheetService.getTimeFromTask(timesheet);
 		response.setReload(true);
 	}
 
 	public void cancelTimesheet(ActionRequest request, ActionResponse response){
 		Timesheet timesheet = request.getContext().asType(Timesheet.class);
+		timesheet = timesheetRepository.find(timesheet.getId());
 		timesheetService.cancelTimesheet(timesheet);
 		response.setReload(true);
 	}
