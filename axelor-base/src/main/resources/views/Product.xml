@@ -257,7 +257,7 @@
     
     <action-record name="action-product-record-default-new" model="com.axelor.apps.base.db.Product">
     	<field name="expense" expr="false"/>
-    	<field name="productTypeSelect" expr="storable"/>
+    	<field name="productTypeSelect" expr="eval: _productTypeSelect"/>
     	<field name="procurementMethodSelect" expr="buy"/>
     	<field name="startDate" expr="eval:__config__.generalService.getTodayDate()" if="startDate == null"/>
     	<field name="salePrice" expr="0"/>
