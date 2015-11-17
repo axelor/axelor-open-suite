@@ -1,0 +1,2 @@
+"name";"object";"canRead";"canWrite";"canCreate";"canRemove";"canExport";"readCondition";"readParams";"writeCondition";"writeParams";"createCondition";"createParams";"removeCondition";"removeParams"
+"perm.cash.management.all";"com.axelor.apps.cash.management.db.*";"true";"true";"true";"true";"true";;;;;;;;
