@@ -87,7 +87,7 @@ public class EventController {
 		LOG.debug("event : {}", event);
 
 		if(event.getStartDateTime() != null) {
-			if(event.getDuration() != null) {
+			if(event.getDuration() != null && event.getDuration() != 0) {
 				response.setValue("endDateTime", eventService.computeEndDateTime(event.getStartDateTime(), event.getDuration().intValue()));
 			}
 			else if(event.getEndDateTime() != null && event.getEndDateTime().isAfter(event.getStartDateTime())) {
