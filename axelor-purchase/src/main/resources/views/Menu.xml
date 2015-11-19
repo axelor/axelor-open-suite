@@ -12,6 +12,7 @@
 
 	<action-view name="sc.root.purchase.suppliers" title="Suppliers"
 		model="com.axelor.apps.base.db.Partner" >
+		<view type="cards" name="partner-cards" />
 		<view type="grid" name="partner-supplier-grid" />
 		<view type="form" name="partner-supplier-form" />
 		<view-param name="search-filters" value="partner-filters"/>
@@ -27,6 +28,7 @@
 
 	<action-view name="sc.root.purchase.contacts" title="Contacts"
 		model="com.axelor.apps.base.db.Partner" >
+		<view type="cards" name="partner-contact-cards" />
 		<view type="grid" name="partner-contact-grid" />
 		<view type="form" name="partner-contact-form" />
 		<domain>self.isContact = true AND self.mainPartner.isSupplier = true</domain>

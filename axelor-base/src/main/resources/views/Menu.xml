@@ -30,9 +30,9 @@
 
 	<action-view name="referential.root.partners" title="Partners"
 		model="com.axelor.apps.base.db.Partner" >
+		<view type="cards" name="partner-cards" />
 		<view type="grid" name="partner-grid" />
 		<view type="form" name="partner-form" />
-		<view type="cards" name="partner-cards" />
 		<view-param name="search-filters" value="partner-filters"/>
 		<!-- <domain>self.curUser = null OR self.curUser = :user_id</domain> -->
 		<domain>self.isContact != true</domain>
@@ -46,9 +46,9 @@
 
 	<action-view name="referential.root.contacts" title="Contacts"
 		model="com.axelor.apps.base.db.Partner" >
+		<view type="cards" name="partner-contact-cards" />
 		<view type="grid" name="partner-contact-grid" />
 		<view type="form" name="partner-contact-form" />
-		<view type="cards" name="partner-contact-cards" />
 		<domain>self.isContact = true</domain>
 	</action-view>
 	
