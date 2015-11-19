@@ -117,9 +117,9 @@
   		<panel-tabs>
   			<panel name="information" title="Informations">
 				<panel hideIf="isContact" colSpan="12">
-					<field name="isCustomer" hideIf="isContact"/>
-					<field name="hasOrdered" showIf="isCustomer" hideIf="isContact"/>
-					<field name="isSupplier" hideIf="isContact"/>
+					<field name="isCustomer"/>
+					<field name="hasOrdered" showIf="isCustomer"/>
+					<field name="isSupplier"/>
 				</panel>
 				<panel title="Postal addresses" colSpan="12">
 					<field name="partnerAddressList" colSpan="12" onChange="action-partner-address-list-change">
