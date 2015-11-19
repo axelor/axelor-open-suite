@@ -36,8 +36,8 @@
 "CONS-0003_fr.jpg";"product/CONS-0003_fr.jpg";;0;"0 Bytes";
 "CONS-0004_fr.jpg";"product/CONS-0004_fr.jpg";;0;"0 Bytes";
 "CONS-0005_fr.jpg";"product/CONS-0005_fr.jpg";;0;"0 Bytes";
-"CONS-0006_fr.png";"product/CONS-0006_fr.jpg";;0;"0 Bytes";
-"CONS-0007_fr.png";"product/CONS-0007_fr.jpg";;0;"0 Bytes";
+"CONS-0006_fr.png";"product/CONS-0006_fr.png";;0;"0 Bytes";
+"CONS-0007_fr.png";"product/CONS-0007_fr.png";;0;"0 Bytes";
 "CONS-0008_fr.jpg";"product/CONS-0008_fr.jpg";;0;"0 Bytes";
 "EQPT-0001_fr.jpg";"product/EQPT-0001_fr.jpg";;0;"0 Bytes";
 "EQPT-0002_fr.jpg";"product/EQPT-0002_fr.jpg";;0;"0 Bytes";
@@ -54,13 +54,13 @@
 "SERV-0005_fr.jpg";"product/SERV-0005_fr.jpg";;0;"0 Bytes";
 "SERV-0006_fr.jpg";"product/SERV-0006_fr.jpg";;0;"0 Bytes";
 "SERV-0007_fr.jpg";"product/SERV-0007_fr.jpg";;0;"0 Bytes";
-"SERV-0008_fr.jpg";"product/SERV-0008_fr.jpg";;0;"0 Bytes";
+"SERV-0008_fr.png";"product/SERV-0008_fr.png";;0;"0 Bytes";
 "SERV-0009_fr.jpg";"product/SERV-0009_fr.jpg";;0;"0 Bytes";
+"SERV-0010_fr.png";"product/SERV-0010_fr.png";;0;"0 Bytes";
 "NDF-0001_fr.jpg";"product/NDF-0001_fr.jpg";;0;"0 Bytes";
 "NDF-0002_fr.jpg";"product/NDF-0002_fr.jpg";;0;"0 Bytes";
 "NDF-0005_fr.jpg";"product/NDF-0005_fr.jpg";;0;"0 Bytes";
 "NDF-0006_fr.jpg";"product/NDF-0006_fr.jpg";;0;"0 Bytes";
-"SERV-00010_fr.jpg";"product/SERV-00010_fr.jpg";;0;"0 Bytes";
 "axelor-logo_fr.png";"axelor-logo_fr.png";;0;"0 Bytes";
 "import-config-address.xml";"import-config-address.xml";"text/xml";417;"417 Bytes";"Configuration file to import Addresss based on import-data-address.csv datasource."
 "import-data-address.csv";"import-data-address.csv";"text/csv";96;"96 Bytes";"File containing the address data to import using the import-config-address.xml config file as import settings."
