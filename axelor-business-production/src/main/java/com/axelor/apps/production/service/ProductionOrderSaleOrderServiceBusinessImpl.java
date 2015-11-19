@@ -34,7 +34,6 @@ import com.axelor.apps.production.exceptions.IExceptionMessage;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
-import com.axelor.apps.supplychain.service.SaleOrderServiceStockImpl;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
@@ -43,19 +42,16 @@ import com.google.inject.persist.Transactional;
 
 public class ProductionOrderSaleOrderServiceBusinessImpl extends ProductionOrderSaleOrderServiceImpl {
 
-
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 
-	@Inject
-	protected SaleOrderServiceStockImpl saleOrderServiceStockImpl;
-
-	@Inject
 	protected ProductionOrderServiceBusinessImpl productionOrderService;
 
 	@Inject
 	public ProductionOrderSaleOrderServiceBusinessImpl(
-			UserService userInfoService) {
+			UserService userInfoService, ProductionOrderServiceBusinessImpl productionOrderService) {
 		super(userInfoService);
+		
+		this.productionOrderService = productionOrderService;
 	}
 
 	@Override

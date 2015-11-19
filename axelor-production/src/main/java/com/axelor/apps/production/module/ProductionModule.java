@@ -23,8 +23,10 @@ import com.axelor.apps.production.service.ProductionOrderService;
 import com.axelor.apps.production.service.ProductionOrderServiceImpl;
 import com.axelor.apps.production.service.ProductionOrderWizardService;
 import com.axelor.apps.production.service.ProductionOrderWizardServiceImpl;
+import com.axelor.apps.production.service.SaleOrderServiceProductionImpl;
 import com.axelor.apps.supplychain.service.MrpLineServiceImpl;
 import com.axelor.apps.supplychain.service.MrpServiceImpl;
+import com.axelor.apps.supplychain.service.SaleOrderServiceSupplychainImpl;
 
 public class ProductionModule extends AxelorModule {
 
@@ -43,7 +45,7 @@ public class ProductionModule extends AxelorModule {
 		bind(MrpServiceImpl.class).to(MrpServiceProductionImpl.class);
 		bind(CostSheetService.class).to(CostSheetServiceImpl.class);
 		bind(CostSheetLineService.class).to(CostSheetLineServiceImpl.class);
-
+		bind(SaleOrderServiceSupplychainImpl.class).to(SaleOrderServiceProductionImpl.class);
 	}
 
 }

@@ -41,6 +41,7 @@ import com.axelor.apps.base.service.DurationService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.base.service.administration.SequenceService;
+import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.sale.db.ISaleOrder;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
@@ -65,29 +66,35 @@ import com.google.inject.persist.Transactional;
 
 public class SaleOrderServiceImpl implements SaleOrderService {
 
-	private static final Logger LOG = LoggerFactory.getLogger(SaleOrderServiceImpl.class);
+	private final Logger logger = LoggerFactory.getLogger(getClass());
 
-	@Inject
-	private SaleOrderLineService saleOrderLineService;
-
-	@Inject
-	private SaleOrderLineTaxService saleOrderLineTaxService;
-
-	@Inject
-	private SequenceService sequenceService;
-
-	@Inject
-	private PartnerService partnerService;
+	protected SaleOrderLineService saleOrderLineService;
+	protected SaleOrderLineTaxService saleOrderLineTaxService;
+	protected SequenceService sequenceService;
+	protected PartnerService partnerService;
+	protected PartnerRepository partnerRepo;
+	protected SaleOrderRepository saleOrderRepo;
+	protected GeneralService generalService;
+	protected User currentUser;
+	
+	protected LocalDate today;
 	
 	@Inject
-	private PartnerRepository partnerRepo;
+	public SaleOrderServiceImpl(SaleOrderLineService saleOrderLineService, SaleOrderLineTaxService saleOrderLineTaxService, SequenceService sequenceService,
+			PartnerService partnerService, PartnerRepository partnerRepo, SaleOrderRepository saleOrderRepo, GeneralService generalService, UserService userService)  {
+		
+		this.saleOrderLineService = saleOrderLineService;
+		this.saleOrderLineTaxService = saleOrderLineTaxService;
+		this.sequenceService = sequenceService;
+		this.partnerService = partnerService;
+		this.partnerRepo = partnerRepo;
+		this.saleOrderRepo = saleOrderRepo;
+		this.generalService = generalService;
 
-	@Inject
-	protected SaleOrderRepository saleOrderRepo;
-
-	@Inject
-	protected GeneralService generalService;
-
+		this.today = generalService.getTodayDate();
+		this.currentUser = userService.getUser();
+	}
+	
 
 	@Override
 	public SaleOrder _computeSaleOrderLineList(SaleOrder saleOrder) throws AxelorException  {
@@ -131,7 +138,7 @@ public class SaleOrderServiceImpl implements SaleOrderService {
 	@Override
 	public void _populateSaleOrder(SaleOrder saleOrder) throws AxelorException {
 
-		LOG.debug("Peupler un devis => lignes de devis: {} ", new Object[] { saleOrder.getSaleOrderLineList().size() });
+		logger.debug("Peupler un devis => lignes de devis: {} ", new Object[] { saleOrder.getSaleOrderLineList().size() });
 
 		// create Tva lines
 		saleOrder.getSaleOrderLineTaxList().addAll(saleOrderLineTaxService.createsSaleOrderLineTax(saleOrder, saleOrder.getSaleOrderLineList()));
@@ -169,7 +176,7 @@ public class SaleOrderServiceImpl implements SaleOrderService {
 			saleOrder.setCompanyExTaxTotal(saleOrder.getCompanyExTaxTotal().add( saleOrderLine.getCompanyExTaxTotal() ));
 		}
 
-		LOG.debug("Montant de la facture: HTT = {},  HT = {}, Taxe = {}, TTC = {}",
+		logger.debug("Montant de la facture: HTT = {},  HT = {}, Taxe = {}, TTC = {}",
 				new Object[] { saleOrder.getExTaxTotal(), saleOrder.getTaxTotal(), saleOrder.getInTaxTotal() });
 
 	}
@@ -233,7 +240,7 @@ public class SaleOrderServiceImpl implements SaleOrderService {
 			LocalDate deliveryDate, String internalReference, String externalReference, LocalDate orderDate,
 			PriceList priceList, Partner clientPartner, Team team) throws AxelorException  {
 
-		LOG.debug("Création d'un devis client : Société = {},  Reference externe = {}, Client = {}",
+		logger.debug("Création d'un devis client : Société = {},  Reference externe = {}, Client = {}",
 				new Object[] { company, externalReference, clientPartner.getFullName() });
 
 		SaleOrder saleOrder = new SaleOrder();
@@ -302,6 +309,19 @@ public class SaleOrderServiceImpl implements SaleOrderService {
 			this.saveSaleOrderPDFAsAttachment(saleOrder);
 		}
 	}
+	
+	@Override
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
+	public void confirmSaleOrder(SaleOrder saleOrder) throws Exception  {
+		saleOrder.setStatusSelect(ISaleOrder.STATUS_ORDER_CONFIRMED);
+		saleOrder.setConfirmationDate(this.today);
+		saleOrder.setConfirmedByUser(this.currentUser);
+		
+		this.validateCustomer(saleOrder);
+		
+		saleOrderRepo.save(saleOrder);
+	}
+
 
 	@Override
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})

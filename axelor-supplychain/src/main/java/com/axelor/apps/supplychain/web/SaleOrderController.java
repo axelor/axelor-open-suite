@@ -35,7 +35,7 @@ import com.axelor.apps.supplychain.db.repo.SubscriptionRepository;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;
 import com.axelor.apps.supplychain.service.SaleOrderInvoiceServiceImpl;
 import com.axelor.apps.supplychain.service.SaleOrderPurchaseService;
-import com.axelor.apps.supplychain.service.SaleOrderServiceStockImpl;
+import com.axelor.apps.supplychain.service.SaleOrderStockService;
 import com.axelor.apps.supplychain.service.TimetableService;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
@@ -67,22 +67,20 @@ public class SaleOrderController{
 
 		if(saleOrder.getId() != null) {
 
-			SaleOrderServiceStockImpl saleOrderServiceStock = Beans.get(SaleOrderServiceStockImpl.class);
-			if (saleOrderServiceStock.existActiveStockMoveForSaleOrder(saleOrder.getId())){
-				if (!generalService.getGeneral().getCustomerStockMoveGenerationAuto()){
-					response.setFlash(I18n.get("An active stockMove already exists for this saleOrder"));
-				}
-			}else{
-				Long stockMoveId = saleOrderServiceStock.createStocksMovesFromSaleOrder(saleOrderRepo.find(saleOrder.getId()));
-				if (!generalService.getGeneral().getCustomerStockMoveGenerationAuto()){
-					response.setView(ActionView
-							.define(I18n.get("Stock Move"))
-							.model(StockMove.class.getName())
-							.add("grid", "stock-move-grid")
-							.add("form", "stock-move-form")
-							.param("forceEdit", "true")
-							.context("_showRecord", String.valueOf(stockMoveId)).map());
-				}
+			SaleOrderStockService saleOrderStockService = Beans.get(SaleOrderStockService.class);
+			StockMove stockMove = saleOrderStockService.createStocksMovesFromSaleOrder(saleOrderRepo.find(saleOrder.getId()));
+			
+			if(stockMove != null)  {
+				response.setView(ActionView
+					.define(I18n.get("Stock Move"))
+					.model(StockMove.class.getName())
+					.add("grid", "stock-move-grid")
+					.add("form", "stock-move-form")
+					.param("forceEdit", "true")
+					.context("_showRecord", String.valueOf(stockMove.getId())).map());
+			}
+			else  {
+				response.setFlash(I18n.get(IExceptionMessage.SO_NO_DELIVERY_STOCK_MOVE_TO_GENERATE));
 			}
 		}
 	}
@@ -93,23 +91,11 @@ public class SaleOrderController{
 
 		if(saleOrder != null) {
 
-			Location location = Beans.get(SaleOrderServiceStockImpl.class).getLocation(saleOrder.getCompany());
+			Location location = Beans.get(SaleOrderStockService.class).getLocation(saleOrder.getCompany());
 
 			if(location != null) {
 				response.setValue("location", location);
 			}
-		}
-	}
-
-
-	public void createPurchaseOrders(ActionRequest request, ActionResponse response) throws AxelorException {
-
-		SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
-
-		if(saleOrder.getId() != null) {
-
-			Beans.get(SaleOrderPurchaseService.class).createPurchaseOrders(saleOrderRepo.find(saleOrder.getId()));
-
 		}
 	}
 

@@ -23,32 +23,80 @@ import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
+import com.axelor.apps.base.db.General;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.Team;
+import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.PartnerService;
+import com.axelor.apps.base.service.administration.GeneralService;
+import com.axelor.apps.base.service.administration.SequenceService;
+import com.axelor.apps.base.service.user.UserService;
+import com.axelor.apps.sale.db.ISaleOrder;
 import com.axelor.apps.sale.db.SaleOrder;
+import com.axelor.apps.sale.db.repo.SaleOrderRepository;
+import com.axelor.apps.sale.service.SaleOrderLineService;
+import com.axelor.apps.sale.service.SaleOrderLineTaxService;
+import com.axelor.apps.sale.service.SaleOrderServiceImpl;
 import com.axelor.apps.stock.db.Location;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
+import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 
-public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceStockImpl {
+public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl {
+	
+	private final Logger logger = LoggerFactory.getLogger(getClass());
+	
+	protected SaleOrderStockService saleOrderStockService;
+	protected SaleOrderPurchaseService saleOrderPurchaseService;
+	protected General general;
 
-	private static final Logger LOG = LoggerFactory.getLogger(SaleOrderServiceSupplychainImpl.class);
 
+	@Inject
+	public SaleOrderServiceSupplychainImpl(SaleOrderLineService saleOrderLineService, SaleOrderLineTaxService saleOrderLineTaxService, 	
+			SequenceService sequenceService, PartnerService partnerService, PartnerRepository partnerRepo, SaleOrderRepository saleOrderRepo,
+			GeneralService generalService, UserService userService, SaleOrderStockService saleOrderStockService, SaleOrderPurchaseService saleOrderPurchaseService) {
+		
+		super(saleOrderLineService, saleOrderLineTaxService, sequenceService,
+				partnerService, partnerRepo, saleOrderRepo, generalService, userService);
+		
+		this.saleOrderStockService = saleOrderStockService;
+		this.saleOrderPurchaseService = saleOrderPurchaseService;
+		this.general = generalService.getGeneral();
+		
+	}
+	
+	
+	@Override
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
+	public void confirmSaleOrder(SaleOrder saleOrder) throws Exception  {
+
+		super.confirmSaleOrder(saleOrder);
+		
+		if(general.getPurchaseOrderGenerationAuto())  {
+			saleOrderPurchaseService.createPurchaseOrders(saleOrder);
+		}
+		if(general.getCustomerStockMoveGenerationAuto())  {
+			saleOrderStockService.createStocksMovesFromSaleOrder(saleOrder);
+		}
+		
+	}
+	
+	
 	public SaleOrder createSaleOrder(User buyerUser, Company company, Partner contactPartner, Currency currency,
 			LocalDate deliveryDate, String internalReference, String externalReference, Location location, LocalDate orderDate,
 			PriceList priceList, Partner clientPartner, Team team) throws AxelorException  {
 
-		LOG.debug("Création d'une commande fournisseur : Société = {},  Reference externe = {}, Client = {}",
+		logger.debug("Création d'une commande fournisseur : Société = {},  Reference externe = {}, Client = {}",
 				new Object[] { company.getName(), externalReference, clientPartner.getFullName() });
 
 		SaleOrder saleOrder = super.createSaleOrder(buyerUser, company, contactPartner, currency, deliveryDate, internalReference,
 				externalReference, orderDate, priceList, clientPartner, team);
 
 		if(location == null)  {
-			location = this.getLocation(company);
+			location = saleOrderStockService.getLocation(company);
 		}
 		
 		saleOrder.setLocation(location);
@@ -72,6 +120,8 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceStockImpl {
 		return saleOrder;
 	}
 }
+
+
 
 
 

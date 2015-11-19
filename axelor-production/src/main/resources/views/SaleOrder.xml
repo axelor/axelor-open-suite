@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
+    
+	<action-method name="action-sale-order-method-create-production-order" if-module="axelor-production">
+		<call class="com.axelor.apps.production.web.ProductionOrderSaleOrderController" method="createProductionOrders"/>
+	</action-method>
+
+	
+</object-views>

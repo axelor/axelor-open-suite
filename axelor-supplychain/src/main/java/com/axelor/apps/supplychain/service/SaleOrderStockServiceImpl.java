@@ -27,7 +27,6 @@ import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
-import com.axelor.apps.sale.service.SaleOrderServiceImpl;
 import com.axelor.apps.stock.db.Location;
 import com.axelor.apps.stock.db.StockConfig;
 import com.axelor.apps.stock.db.StockMove;
@@ -37,28 +36,33 @@ import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.service.StockMoveLineService;
 import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.apps.stock.service.config.StockConfigService;
+import com.axelor.apps.supplychain.exception.IExceptionMessage;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.IException;
+import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 
-public class SaleOrderServiceStockImpl extends SaleOrderServiceImpl {
+public class SaleOrderStockServiceImpl implements SaleOrderStockService  {
 
-	@Inject
-	private StockMoveService stockMoveService;
-
-	@Inject
-	private StockMoveLineService stockMoveLineService;
-
-	@Inject
-	private StockConfigService stockConfigService;
-
-	@Inject
-	private LocationRepository locationRepo;
-	
-	@Inject
+	protected StockMoveService stockMoveService;
+	protected StockMoveLineService stockMoveLineService;
+	protected StockConfigService stockConfigService;
+	protected LocationRepository locationRepo;
 	protected StockMoveRepository stockMoveRepo;
+	protected UnitConversionService unitConversionService;
 	
 	@Inject
-	protected UnitConversionService unitConversionService;
+	public SaleOrderStockServiceImpl(StockMoveService stockMoveService, StockMoveLineService stockMoveLineService, StockConfigService stockConfigService,
+			LocationRepository locationRepo, StockMoveRepository stockMoveRepo, UnitConversionService unitConversionService)  {
+		
+		this.stockMoveService = stockMoveService;
+		this.stockMoveLineService = stockMoveLineService;
+		this.stockConfigService = stockConfigService;
+		this.locationRepo = locationRepo;
+		this.stockMoveRepo = stockMoveRepo;
+		this.unitConversionService = unitConversionService;
+		
+	}
 
 
 	public Location getLocation(Company company)  {
@@ -69,12 +73,17 @@ public class SaleOrderServiceStockImpl extends SaleOrderServiceImpl {
 
 
 	/**
-	 * Méthode permettant de créer un StockMove à partir d'un SaleOrder.
-	 * @param saleOrder l'objet saleOrder
-	 * @throws AxelorException Aucune séquence de StockMove (Livraison) n'a été configurée
+	 * Method that create a delivery StockMove from a SaleOrder.
+	 * @param saleOrder
+	 * @throws AxelorException No sequence for StockMove (delivery) has been set.
 	 */
-	public Long createStocksMovesFromSaleOrder(SaleOrder saleOrder) throws AxelorException {
+	public StockMove createStocksMovesFromSaleOrder(SaleOrder saleOrder) throws AxelorException {
 
+		if (this.existActiveStockMoveForSaleOrder(saleOrder)){
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.SO_ACTIVE_DELIVERY_STOCK_MOVE_ALREADY_EXIST),
+					saleOrder.getSaleOrderSeq()), IException.CONFIGURATION_ERROR); 
+		}
+		
 		Company company = saleOrder.getCompany();
 
 		if(saleOrder.getSaleOrderLineList() != null && company != null) {
@@ -90,11 +99,12 @@ public class SaleOrderServiceStockImpl extends SaleOrderServiceImpl {
 			if(stockMove.getStockMoveLineList() != null && !stockMove.getStockMoveLineList().isEmpty()){
 				stockMove.setExTaxTotal(stockMoveService.compute(stockMove));
 				stockMoveService.plan(stockMove);
+				return stockMove;
 			}
-
-			return stockMove.getId();
 		}
+		
 		return null;
+		
 	}
 
 
@@ -179,8 +189,8 @@ public class SaleOrderServiceStockImpl extends SaleOrderServiceImpl {
 	}
 
 	//Check if existing at least one stockMove not canceled for the saleOrder
-	public boolean existActiveStockMoveForSaleOrder(Long saleOrderId){
-		long nbStockMove = stockMoveRepo.all().filter("self.saleOrder.id = ? AND self.statusSelect <> ?", saleOrderId, StockMoveRepository.STATUS_CANCELED).count();
+	public boolean existActiveStockMoveForSaleOrder(SaleOrder saleOrder){
+		long nbStockMove = stockMoveRepo.all().filter("self.saleOrder = ? AND self.statusSelect <> ?", saleOrder, StockMoveRepository.STATUS_CANCELED).count();
 		return nbStockMove > 0;
 	}
 }

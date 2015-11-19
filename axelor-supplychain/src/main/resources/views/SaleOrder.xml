@@ -60,12 +60,6 @@
 		<action name="save"/>
 	</action-group>
 	
-	<action-group name="action-group-supplychain-sale-order-confirmed" if-module="axelor-supplychain">
-		<action name="action-supplychain-sale-order-create-purchase-order" if="eval: __config__.general.getPurchaseOrderGenerationAuto()"/>
-    	<action name="action-supplychain-sale-order-create-stock-move" if="eval: __config__.general.getCustomerStockMoveGenerationAuto()"/>
-    	<action name="action-supplychain-sale-order-create-production-order" if="eval: __config__.general.getProductionOrderGenerationAuto()"/>
-	</action-group>
-	
 	<action-method name="action-sale-order-method-update-timetable" if-module="axelor-supplychain">
 		<call class="com.axelor.apps.supplychain.web.SaleOrderController" method="updateTimetable"/>
 	</action-method>
@@ -82,18 +76,10 @@
 		<call class="com.axelor.apps.supplychain.web.SaleOrderController" method="createStockMove"/>
 	</action-method>
 	
-	<action-method name="action-supplychain-sale-order-create-purchase-order" >
-		<call class="com.axelor.apps.supplychain.web.SaleOrderController" method="createPurchaseOrders" />
-	</action-method>
-	
 	<action-method name="action-sale-order-method-get-location" >
     	<call class="com.axelor.apps.supplychain.web.SaleOrderController" method="getLocation"/>
     </action-method>
 	
-	<action-method name="action-supplychain-sale-order-create-production-order" if-module="axelor-production">
-		<call class="com.axelor.apps.production.web.ProductionOrderSaleOrderController" method="createProductionOrders"/>
-	</action-method>
-
 	<action-method name="action-supplychain-sale-order-generate-purchase-orders-from-selected-SOLines" >
 		<call class="com.axelor.apps.supplychain.web.SaleOrderController" method="generatePurchaseOrdersFromSelectedSOLines"/>
 	</action-method>

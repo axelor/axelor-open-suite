@@ -26,7 +26,7 @@ import com.axelor.apps.supplychain.service.PurchaseOrderInvoiceService;
 import com.axelor.apps.supplychain.service.PurchaseOrderServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.SaleOrderInvoiceService;
 import com.axelor.apps.supplychain.service.SaleOrderPurchaseService;
-import com.axelor.apps.supplychain.service.SaleOrderServiceStockImpl;
+import com.axelor.apps.supplychain.service.SaleOrderStockService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.db.JPA;
 import com.axelor.inject.Beans;
@@ -44,7 +44,7 @@ public class ValidateSupplyChain {
 	InvoiceService invoiceService;
 
 	@Inject
-	SaleOrderServiceStockImpl saleOrderServiceStockImpl;
+	SaleOrderStockService saleOrderStockService;
 
 	@Inject
 	SaleOrderLineService saleOrderLineService;
@@ -142,7 +142,7 @@ public class ValidateSupplyChain {
 			saleOrderService.computeSaleOrder(saleOrder);
 			if(saleOrder.getStatusSelect() == ISaleOrder.STATUS_ORDER_CONFIRMED){
 				//taskSaleOrderService.createTasks(saleOrder); TODO once we will have done the generation of tasks in project module
-				saleOrderServiceStockImpl.createStocksMovesFromSaleOrder(saleOrder);
+				saleOrderStockService.createStocksMovesFromSaleOrder(saleOrder);
 				Beans.get(SaleOrderPurchaseService.class).createPurchaseOrders(saleOrder);
 //				productionOrderSaleOrderService.generateProductionOrder(saleOrder);
 				saleOrder.setClientPartner(saleOrderService.validateCustomer(saleOrder));

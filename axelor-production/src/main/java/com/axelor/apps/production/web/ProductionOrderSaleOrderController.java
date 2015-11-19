@@ -46,8 +46,7 @@ public class ProductionOrderSaleOrderController {
 		SaleOrder saleOrder = request.getContext().asType( SaleOrder.class );
 
 		List<Long> productionOrderIdList = productionOrderSaleOrderService.generateProductionOrder(saleOrder);
-		if (generalService.getGeneral().getProductionOrderGenerationAuto()
-				&& !productionOrderIdList.isEmpty()){
+		if (!productionOrderIdList.isEmpty()){
 			response.setView(ActionView
 							.define(I18n.get("Production order"))
 				            .model(ProductionOrder.class.getName())
@@ -56,7 +55,7 @@ public class ProductionOrderSaleOrderController {
 				            .domain("self.id in ("+Joiner.on(",").join(productionOrderIdList)+")")
 				            .map());
 		}else{
-			response.setFlash(IExceptionMessage.PRODUCTION_ORDER_NO_GENERATION);
+			response.setFlash(I18n.get(IExceptionMessage.PRODUCTION_ORDER_NO_GENERATION));
 		}
 
 	}

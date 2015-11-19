@@ -187,14 +187,6 @@ public class SaleOrderController {
 		}
 	}
 
-	public void validateCustomer(ActionRequest request, ActionResponse response) {
-
-		SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
-
-		response.setValue("clientPartner", saleOrderService.validateCustomer(saleOrder));
-
-	}
-
 	public void cancelSaleOrder(ActionRequest request, ActionResponse response) {
 
 		SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
@@ -211,6 +203,16 @@ public class SaleOrderController {
 		SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
 
 		saleOrderService.finalizeSaleOrder(saleOrderRepo.find(saleOrder.getId()));
+
+		response.setReload(true);
+
+	}
+	
+	public void confirmSaleOrder(ActionRequest request, ActionResponse response) throws Exception {
+
+		SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+
+		saleOrderService.confirmSaleOrder(saleOrderRepo.find(saleOrder.getId()));
 
 		response.setReload(true);
 
