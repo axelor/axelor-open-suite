@@ -60,13 +60,45 @@
 
 	<action-view name="product.root.product" title="Products"
 		model="com.axelor.apps.base.db.Product" >
+		<view type="cards" name="product-cards" />
 		<view type="grid" name="product-grid" />
 		<view type="form" name="product-form" />
-		<view type="cards" name="product-cards" />
 		<view-param name="search-filters" value="products-filters"/>
-		<domain>self.isModel = false </domain>
+		<domain>self.isModel = :_isModel AND self.productTypeSelect = :_productTypeSelect </domain>
 		<context name="_activeCompany" expr="eval:__user__.activeCompany"/>
 		<context name="_isModel" expr="false"/>
+		<context name="_productTypeSelect" expr="storable"/>
+	</action-view>
+
+
+	<menuitem name="product-root-subscription" parent="referential-root-product-root"
+		title="Subscriptions" action="product.root.subscription" />
+
+	<action-view name="product.root.subscription" title="Subscriptions"
+		model="com.axelor.apps.base.db.Product" >
+		<view type="cards" name="product-cards" />
+		<view type="grid" name="product-grid" />
+		<view type="form" name="product-form" />
+		<view-param name="search-filters" value="products-filters"/>
+		<domain>self.isModel = :_isModel AND self.productTypeSelect = :_productTypeSelect </domain>
+		<context name="_activeCompany" expr="eval:__user__.activeCompany"/>
+		<context name="_isModel" expr="false"/>
+		<context name="_productTypeSelect" expr="subscriptable"/>
+	</action-view>
+
+	<menuitem name="product-root-service" parent="referential-root-product-root"
+		title="Services" action="product.root.service" />
+
+	<action-view name="product.root.service" title="Services"
+		model="com.axelor.apps.base.db.Product" >
+		<view type="cards" name="product-cards" />
+		<view type="grid" name="product-grid" />
+		<view type="form" name="product-form" />
+		<view-param name="search-filters" value="products-filters"/>
+		<domain>self.isModel = :_isModel AND self.productTypeSelect = :_productTypeSelect </domain>
+		<context name="_activeCompany" expr="eval:__user__.activeCompany"/>
+		<context name="_isModel" expr="false"/>
+		<context name="_productTypeSelect" expr="service"/>
 	</action-view>
 	
 	<menuitem name="product-root-product-model" parent="referential-root-product-root"
@@ -74,10 +106,11 @@
 
 	<action-view name="product.root.product.model" title="Products models"
 		model="com.axelor.apps.base.db.Product" >
+		<view type="cards" name="product-cards" />
 		<view type="grid" name="product-grid" />
 		<view type="form" name="product-form" />
 		<view-param name="search-filters" value="products-filters"/>
-		<domain>self.isModel = true</domain>
+		<domain>self.isModel = :_isModel</domain>
 		<context name="_activeCompany" expr="eval:__user__.activeCompany"/>
 		<context name="_isModel" expr="true"/>
 	</action-view>
@@ -543,7 +576,7 @@
 
 	<menuitem name="top-menu-create-partner" order="-100" parent="top-menu-utility" title="Create Partner" action="top.new.partner.view" top="true" left="false"/> 	
 		
-	<action-view name="top.new.partner.view" title="Create Account" model="com.axelor.apps.base.db.Partner" >
+	<action-view name="top.new.partner.view" title="Create Partner" model="com.axelor.apps.base.db.Partner" >
 		<view type="form" name="partner-form"/>
 		<view type="grid" name="partner-grid" />
 		<domain>self.isContact = false</domain>
@@ -567,9 +600,7 @@
 
 	<menuitem name="top-relations" title="Relations" groups="admins,ERP" top="true" left="false" order="-190"/>
 
-	<menuitem name="top-relations-create-partner" order="-100" parent="top-relations" title="Create Account" action="top.new.partner.view" top="true" left="false"/> 	
 	<menuitem name="top-relations-partners" order="-90" title="View Accounts" action="referential.root.partners" parent="top-relations" groups="admins,ERP" top="true" left="false"/>
-	<menuitem name="top-relations-create-contact" order="-80" parent="top-relations" title="Create Contact" action="top.new.contact.view"  /> 	
 	<menuitem name="top-relations-contacts" order="-70" title="View Contacts" action="referential.root.contacts" parent="top-relations" groups="admins,ERP" top="true" left="false"/>		  
 
 </object-views>

@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2014 Axelor (<http://axelor.com>).
+ * Copyright (C) 2015 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -83,20 +83,22 @@ public class MoveTemplateService {
 					partner = creditPartner;
 				}
 				Move move = moveService.getMoveCreateService().createMove(moveTemplate.getJournal(), moveTemplate.getJournal().getCompany(), null, partner,moveDate, null);
+				int counter = 1;
 				for(MoveTemplateLine line : moveTemplate.getMoveTemplateLineList()){
 					partner = null;
 					if(line.getDebitCreditSelect().equals("0")){
 						if(line.getHasPartnerToDebit())
 							partner = debitPartner;
-						MoveLine moveLine = moveLineService.createMoveLine(move, partner, line.getAccount(), moveBalance.multiply(line.getPercentage()).divide(hundred), true, moveDate, moveDate, 0, line.getName());
+						MoveLine moveLine = moveLineService.createMoveLine(move, partner, line.getAccount(), moveBalance.multiply(line.getPercentage()).divide(hundred), true, moveDate, moveDate, counter, line.getName());
 						move.getMoveLineList().add(moveLine);
 					}
 					else{
 						if(line.getHasPartnerToCredit())
 							partner = creditPartner;
-						MoveLine moveLine = moveLineService.createMoveLine(move, partner, line.getAccount(), moveBalance.multiply(line.getPercentage()).divide(hundred), false, moveDate, moveDate, 0, line.getName());
+						MoveLine moveLine = moveLineService.createMoveLine(move, partner, line.getAccount(), moveBalance.multiply(line.getPercentage()).divide(hundred), false, moveDate, moveDate, counter, line.getName());
 						move.getMoveLineList().add(moveLine);
 					}
+					counter++;
 				}
 				moveRepo.save(move);
 				moveList.add(move.getId());

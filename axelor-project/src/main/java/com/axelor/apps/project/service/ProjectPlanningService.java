@@ -1,3 +1,20 @@
+/**
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2015 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or  modify
+ * it under the terms of the GNU Affero General Public License, version 3,
+ * as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package com.axelor.apps.project.service;
 
 import java.math.BigDecimal;
@@ -128,7 +145,7 @@ public class ProjectPlanningService {
 		LocalDate todayDate = Beans.get(GeneralService.class).getTodayDate();
 		List<ProjectPlanningLine> linesList = Beans.get(ProjectPlanningLineRepository.class).all().
 				filter("self.user.id = ?1 AND self.year >= ?2 AND self.week >= ?3", 
-				AuthUtils.getUser(), todayDate.getYear(), todayDate.getWeekOfWeekyear()).fetch();
+				AuthUtils.getUser().getId(), todayDate.getYear(), todayDate.getWeekOfWeekyear()).fetch();
 		
 		for (ProjectPlanningLine line : linesList) {
 			if(line.getMonday().compareTo(BigDecimal.ZERO) != 0){

@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2014 Axelor (<http://axelor.com>).
+ * Copyright (C) 2015 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -87,7 +87,7 @@ public class EventController {
 		LOG.debug("event : {}", event);
 
 		if(event.getStartDateTime() != null) {
-			if(event.getDuration() != null) {
+			if(event.getDuration() != null && event.getDuration() != 0) {
 				response.setValue("endDateTime", eventService.computeEndDateTime(event.getStartDateTime(), event.getDuration().intValue()));
 			}
 			else if(event.getEndDateTime() != null && event.getEndDateTime().isAfter(event.getStartDateTime())) {

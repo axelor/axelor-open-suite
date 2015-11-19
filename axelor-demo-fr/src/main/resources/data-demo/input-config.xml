@@ -117,6 +117,8 @@
  		<bind column="code" to="code"/>
  		<bind column="name" to="name"/>
  	</input>
+ 	
+	<input file="base_productFamily.csv" separator=";" type="com.axelor.apps.base.db.ProductFamily" search="self.code = :code" />
 	
 	<input file="base_productCategory.csv" separator=";" type="com.axelor.apps.base.db.ProductCategory" search="self.code = :code" />
 	
@@ -129,11 +131,10 @@
 	<input file="base_supplierCatalog.csv" separator=";" type="com.axelor.apps.base.db.SupplierCatalog"/>
 	
  	<input file="base_partner.csv" separator=";" search="self.importId = :importId" update="true" type="com.axelor.apps.base.db.Partner">
-		<bind column="companySet_importId" to="companySet" search="self.importId in :companySet_importId" update="true"/>
+		<bind column="companySet_importId" to="companySet" search="self.importId in :companySet_importId" eval="companySet_importId.split('\\|') as List" update="true"/>
 		<bind to="mainPartner" search="self.importId = :mainPartner_importId" update="true" />
 	</input>
 	
-
 <!--     IMPORT DU PACKAGE 'ACCOUNT' -->
      
 	<input file="account_paymentMode.csv" separator=";" type="com.axelor.apps.account.db.PaymentMode"  search="self.importId = :importId" />
@@ -192,9 +193,6 @@
 	
 	<input file="account_reminderConfigLine.csv" separator=";" type="com.axelor.apps.account.db.ReminderConfigLine" />
 	
-	
-	
-	
 <!-- 	Deuxième passe sur le package 'base' pour prendre en compte les éléments du package account  -->
 
 	<input file="base_general.csv" separator=";" type="com.axelor.apps.base.db.General"  search="self.importId = :importId" update="true">
@@ -241,6 +239,7 @@
 	
 	<input file="crm_meetingType.csv" separator=";" type="com.axelor.apps.crm.db.MeetingType" search="self.importId = :importId"/>
 	
+
  	<input file="project_project_task.csv" type="com.axelor.apps.project.db.ProjectTask" separator=";" search="self.importId = :importId"/>
  	
 <!--  	<input file="hr_timeActivity.csv" type="com.axelor.apps.hr.db.TimeActivity" separator=";" search="self.importId = :importId"/> -->
@@ -274,6 +273,7 @@
 	</input>
 	
 	
+	
 	<input file="hr_weeklyPlanning.csv" separator=";" type="com.axelor.apps.base.db.WeeklyPlanning" search="self.importId  = :importId"/>
   
   	<input file="hr_dayPlanning.csv" separator=";" type="com.axelor.apps.base.db.DayPlanning" search="self.importId  = :importId"/>
@@ -289,9 +289,7 @@
 	<input file="stock_minStockRules.csv" separator=";" type="com.axelor.apps.stock.db.MinStockRules"/>
 	
 <!--     IMPORT DU PACKAGE 'SUPPLY CHAIN' -->
-	
-	<input file="supplychain_mrpLineType.csv" separator=";" type="com.axelor.apps.supplychain.db.MrpLineType" search="self.code = :code"/>
-	
+
 	<input file="sale_cancelReason.csv" separator=";" type="com.axelor.apps.sale.db.CancelReason" />
 	
 	<input file="base_company.csv" separator=";" type="com.axelor.apps.base.db.Company" search="self.importId = :importId" update="true"/> 	
