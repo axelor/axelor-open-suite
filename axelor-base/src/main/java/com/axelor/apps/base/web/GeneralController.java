@@ -22,10 +22,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
-
-import javax.persistence.Query;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -71,24 +71,30 @@ public class GeneralController {
 
 	@SuppressWarnings("unchecked")
 	public void showDuplicate(ActionRequest request, ActionResponse response){
+		
 		String model = (String)request.getContext().get("object");
-		List<String> fieldList = new ArrayList<String>();
-		String searchFields;
-		if(model==null){
-			model=request.getModel();
-			searchFields=(String) request.getContext().get("searchFields");
-			fieldList.addAll(Arrays.asList(searchFields.split(";")));
-
+		List<String> fields = new ArrayList<String>();
+		
+		if(model == null){
+			model = request.getModel();
+			String searchFields = (String)request.getContext().get("searchFields");
+			if(searchFields != null){
+				fields.addAll(Arrays.asList(searchFields.split(";")));
+			}
 		}else{
-			for(HashMap<String,Object> field:(List<HashMap<String,Object>>) request.getContext().get("fieldsSet")){
-				if((Boolean)field.get("selected"))
-					fieldList.add(field.get("name").toString());
+			List<HashMap<String,Object>> fieldsSet = (List<HashMap<String,Object>>)request.getContext().get("fieldsSet");
+			for(HashMap<String,Object> field : fieldsSet){
+				if((Boolean)field.get("selected")){
+					fields.add(field.get("name").toString());
+				}
 			}
 		}
+		
 		LOG.debug("Duplicate record model: {}",model);
-		if(fieldList.size() > 0){
-			LOG.debug("Duplicate record joinList: {}",fieldList);
-			String ids =findDuplicateRecords(fieldList,model);
+		
+		if(fields.size() > 0){
+			LOG.debug("Duplicate record joinList: {}", fields);
+			String ids = findDuplicateRecords(fields,model);
 			if(ids.isEmpty())
 				response.setFlash(I18n.get(IExceptionMessage.GENERAL_1));
 			else
@@ -118,36 +124,74 @@ public class GeneralController {
 					  .map());
 		}
 	}
+	
 	private String findDuplicateRecords(List<String> fieldList,String object){
-		List<String> joinList=new ArrayList<>();
-
-		for(String field:fieldList){
-			joinList.add("m."+field);
-		}
-		Query query = JPA.em().createQuery("SELECT new List( CAST ( m.id AS string ), "+Joiner.on(",").join(joinList)+") FROM "+object+" m");
-
-		List<List<String>> stringLists = query.getResultList();
-		List<String> idList = new ArrayList<String>();
-		List<List<String>> newStringLists = new ArrayList<List<String>>();
-		for (List<String> list : stringLists){
-			List<String> newList = new ArrayList<String>();
-			for (String string : list) {
-				newList.add(StringTool.deleteAccent(string.toLowerCase()));
-			}
-			newStringLists.add(newList);
-		}
-
-		for (List<String> list : newStringLists){
-			List<String> testList = new ArrayList<String>();
-			for(int i = 1; i<fieldList.size()+1; i++){
-				testList.add(list.get(i));
-			}
-			for (List<String> listIt : newStringLists){
-				if(!listIt.get(0).equals(list.get(0)) && listIt.containsAll(testList)){
-					idList.add(listIt.get(0));
+		
+		
+		List<List<String>> allRecords = getAllRecords(fieldList, object);
+		
+		Map<String, List<String>> recordMap = new HashMap<String, List<String>>();
+		
+		for(List<String> rec : allRecords){
+			
+			List<String> record = new ArrayList<String>();
+			for(String field : rec) {
+				if(field != null){
+					record.add(StringTool.deleteAccent(field.toLowerCase()));
 				}
 			}
+			
+			String recId = record.get(0);
+			record.remove(0);
+			recordMap.put(recId, record);
 		}
-		return Joiner.on(",").join(idList);
+		
+		Iterator<String> keys = recordMap.keySet().iterator();
+		
+		List<String> ids = getDuplicateIds(keys, recordMap, new ArrayList<String>());
+
+		return Joiner.on(",").join(ids);
+	}
+	
+	private List<List<String>> getAllRecords(List<String> fieldList,String object){
+		
+		String query = "SELECT new List( CAST ( m.id AS string )";
+		
+		for(String field : fieldList){
+			query += ", m."+field;
+		}
+		
+		@SuppressWarnings("unchecked")
+		List<List<String>> records = JPA.em().createQuery(query + ") FROM "+ object + " m").getResultList();
+		
+		return records;
+	}
+	
+	private List<String> getDuplicateIds(Iterator<String> keys, Map<String, List<String>> recordMap, List<String> ids){
+		
+		if(!keys.hasNext()){
+			return ids;
+		}
+		
+		String recId = keys.next();
+		List<String> record = recordMap.get(recId);
+		keys.remove();
+		recordMap.remove(recId);
+		
+		Iterator<String> compareKeys = recordMap.keySet().iterator();
+		
+		while(compareKeys.hasNext()){
+			String compareId = compareKeys.next();
+			List<String> value = recordMap.get(compareId);
+			if(value.containsAll(record)){
+				ids.add(recId);
+				ids.add(compareId);
+				compareKeys.remove();
+				recordMap.remove(compareId);
+				keys = recordMap.keySet().iterator();
+			}
+		}
+		
+		return getDuplicateIds(keys, recordMap, ids);
 	}
 }

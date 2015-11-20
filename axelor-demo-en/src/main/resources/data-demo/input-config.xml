@@ -296,6 +296,10 @@
 	
 	<input file="sale_saleBatch.csv" separator=";" type="com.axelor.apps.sale.db.SaleBatch" />
 	
+	<input file="supplychain_mrpForecast.csv" separator=";" type="com.axelor.apps.supplychain.db.MrpForecast">
+		<bind column="forecastDate" to="forecastDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(forecastDate)"/>
+	</input>
+	
 	<input file="stock_inventory.csv" separator=";" type="com.axelor.apps.stock.db.Inventory">
 		<bind to="inventorySeq" eval="call:com.axelor.apps.base.service.administration.SequenceService:getSequenceNumber(com.axelor.apps.base.db.IAdministration.INVENTORY)" />
 	    <bind to="statusSelect" eval="3" />
@@ -377,9 +381,27 @@
 	<input file="crm_event.csv" separator=";" type="com.axelor.apps.crm.db.Event" search="self.importId = :importId" update="true"/>
 	
 <!-- 	Update default BOM -->
+
 	<input file="base_product.csv" separator=";" type="com.axelor.apps.base.db.Product" search="self.importId = :importId" update="true">
 	    <bind to="startDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(startDate)" column="startDate"/>
 		<bind to="createdOn" eval="call:com.axelor.csv.script.ImportDateTime:importDate(startDate)" column="startDate"/>
+	</input>
+
+	<input file="base_productVariantAttr.csv" separator=";" type="com.axelor.apps.base.db.ProductVariantAttr" search="self.code = :code" />
+	
+	<input file="base_productVariantValue.csv" separator=";" type="com.axelor.apps.base.db.ProductVariantValue" search="self.code = :code" />
+	
+	<input file="base_productVariantConfig.csv" separator=";" type="com.axelor.apps.base.db.Product" search="self.importId = :importId" call="com.axelor.csv.script.ImportProduct:importProduct">
+	   	<bind to="productVariantConfig">
+	   	    <bind to="productVariantAttr1" column="productVariantAttr1" search="self.code = :productVariantAttr1" update="true" if="productVariantAttr1 != null"/>
+	   	    <bind to="productVariantAttr2" column="productVariantAttr2" search="self.code = :productVariantAttr2" update="true" if="productVariantAttr2 != null"/>
+	   	    <bind to="productVariantAttr3" column="productVariantAttr3" search="self.code = :productVariantAttr3" update="true" if="productVariantAttr3 != null"/>
+	   	    <bind to="productVariantAttr4" column="productVariantAttr4" search="self.code = :productVariantAttr4" update="true" if="productVariantAttr4 != null"/>
+	   		<bind column="productVariantValue1" to="productVariantValue1Set" search="self.code in :productVariantValue1" eval="productVariantValue1.split('\\|') as List" if="productVariantValue1 != null" />
+		   	<bind column="productVariantValue2" to="productVariantValue2Set" search="self.code in :productVariantValue2" eval="productVariantValue2.split('\\|') as List" if="productVariantValue2 != null" />
+		   	<bind column="productVariantValue3" to="productVariantValue3Set" search="self.code in :productVariantValue3" eval="productVariantValue3.split('\\|') as List" if="productVariantValue3 != null" />
+		   	<bind column="productVariantValue4" to="productVariantValue4Set" search="self.code in :productVariantValue4" eval="productVariantValue4.split('\\|') as List" if="productVariantValue4 != null" />    
+	   	</bind>
 	</input>
 	
 	<input file="meta_menuGroup.csv" separator=";" type="com.axelor.meta.db.MetaMenu" search="self.name = :name" update="true">
