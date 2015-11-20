@@ -2,11 +2,6 @@
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
-
-	<selection name="business.project.business.folder.status.select">
-		<option value="1">Open</option>
-		<option value="2">Closed</option>
-	</selection>
 	
 	<selection name="project.task.invoicing.type.select">
 		<option value="1">None</option>
