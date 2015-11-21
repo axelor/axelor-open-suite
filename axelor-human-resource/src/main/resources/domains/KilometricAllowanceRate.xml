@@ -9,10 +9,10 @@
     
         <many-to-one name="general" ref="com.axelor.apps.base.db.General" title="Administration"/>
         
-        <integer name="vehicleFiscalPower" selection="hr.employee.vehicleFiscalPower.number.select" title="Fiscal power" required="true" unique="true"/>
+        <many-to-one name="fiscalPower" ref="com.axelor.apps.hr.db.FiscalPower" title="Fiscal power" required="true"/>
         <decimal name="rate" title="Rate" required="true" precision="20" scale="3" />
         
-        <finder-method name="findByVehicleFiscalPower" using="vehicleFiscalPower"/>
+        <finder-method name="findByVehicleFiscalPower" using="fiscalPower"/>
         
     </entity>
 

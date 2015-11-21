@@ -3,13 +3,13 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
 
 	<grid editable="true" name="kilometric-allowance-rate-grid" title="Kilometric allowance rates" model="com.axelor.apps.hr.db.KilometricAllowanceRate" >
-	    <field name="vehicleFiscalPower" />
+	    <field name="fiscalPower" />
         <field name="rate"/>
     </grid>
 
     <form name="kilometric-allowance-rate-form" title="Kilometric allowance rate" model="com.axelor.apps.hr.db.KilometricAllowanceRate">
     	<panel>
-		    <field name="vehicleFiscalPower" />
+		    <field name="fiscalPower" />
 	        <field name="rate"/>
         </panel>
     </form>
