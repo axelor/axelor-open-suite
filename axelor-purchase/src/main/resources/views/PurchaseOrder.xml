@@ -241,7 +241,7 @@
     	<field name="statusSelect" expr="5"/>
     </action-record>
     
-    <action-record name="action-record-po-contact-partner-change" model="com.axelor.apps.sale.db.SaleOrder">
+    <action-record name="action-record-po-contact-partner-change" model="com.axelor.apps.purchase.db.PurchaseOrder">
     	<field name="supplierPartner" expr="eval: contactPartner.mainPartner" if="contactPartner.mainPartner != null"/>
     </action-record>
     
@@ -285,7 +285,7 @@
 		<info message="${supplierPartner.purchaseOrderInformation}" if="supplierPartner.purchaseOrderInformation != null"/>
 	</action-validate>
 	
-	<action-record name="action-purchase-record-newVersion" model="com.axelor.apps.sale.db.SaleOrder">
+	<action-record name="action-purchase-record-newVersion" model="com.axelor.apps.purchase.db.PurchaseOrder">
     	<field name="statusSelect" expr="eval: 1"/>
     	<field name="versionNumber" expr="eval: versionNumber + 1"/>
     </action-record>
