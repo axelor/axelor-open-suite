@@ -368,9 +368,9 @@ public class ExpenseService  {
 			kmAllowance.setTypeSelect(new Integer(request.getData().get("allowanceTypeSelect").toString()));
 			kmAllowance.setToInvoice(new Boolean(request.getData().get("toInvoice").toString()));
 			kmAllowance.setReason(request.getData().get("comments").toString());
-			if(user.getEmployee() != null && user.getEmployee().getVehicleFiscalPower() != null){
-				kmAllowance.setVehicleFiscalPower(user.getEmployee().getVehicleFiscalPower());
-				KilometricAllowanceRate kilometricAllowanceRate = Beans.get(KilometricAllowanceRateRepository.class).findByVehicleFiscalPower(user.getEmployee().getVehicleFiscalPower());
+			if(user.getEmployee() != null && user.getEmployee().getFiscalPower() != null){
+				kmAllowance.setFiscalPower(user.getEmployee().getFiscalPower());
+				KilometricAllowanceRate kilometricAllowanceRate = Beans.get(KilometricAllowanceRateRepository.class).findByVehicleFiscalPower(user.getEmployee().getFiscalPower());
 				if(kilometricAllowanceRate != null){
 					BigDecimal rate = kilometricAllowanceRate.getRate();
 					if(rate != null){

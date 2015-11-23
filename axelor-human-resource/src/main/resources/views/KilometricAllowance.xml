@@ -4,7 +4,7 @@
 
 	<grid editable="true" name="kilometric-allowance-grid" title="Kilometric allowances" model="com.axelor.apps.hr.db.KilometricAllowance" 
 		onNew="action-kilometric-allowance-record-default,action-kilometric-allowance-record-rate">
-		<field name="vehicleFiscalPower" onChange="action-kilometric-allowance-record-rate"/>
+		<field name="fiscalPower" onChange="action-kilometric-allowance-record-rate"/>
         <field name="rate" onChange="action-kilometric-allowance-record-in-tax-total" />
         <field name="typeSelect" />
         <field name="distance" onChange="action-kilometric-allowance-record-in-tax-total" />
@@ -17,7 +17,7 @@
 
     <form name="kilometric-allowance-form" title="Kilometric allowance" model="com.axelor.apps.hr.db.KilometricAllowance" onNew="action-kilometric-allowance-record-default,action-kilometric-allowance-record-rate">
     	<panel>
-			<field name="vehicleFiscalPower" onChange="action-kilometric-allowance-record-rate"/>
+			<field name="fiscalPower" onChange="action-kilometric-allowance-record-rate"/>
 	        <field name="rate" onChange="action-kilometric-allowance-record-in-tax-total" />
 	        <field name="typeSelect" />
 	        <field name="distance" onChange="action-kilometric-allowance-record-in-tax-total" />
@@ -30,11 +30,11 @@
     </form>
 
     <action-record name="action-kilometric-allowance-record-default" model="com.axelor.apps.hr.db.KilometricAllowance">
-    	<field name="vehicleFiscalPower" expr="eval:  _parent?.employee?.vehicleFiscalPower"/>
+    	<field name="fiscalPower" expr="eval:  _parent?.employee?.fiscalPower"/>
     </action-record>
 
     <action-record name="action-kilometric-allowance-record-rate" model="com.axelor.apps.hr.db.KilometricAllowance">
-        <field name="rate" expr="eval: __repo__.of(KilometricAllowanceRate).findByVehicleFiscalPower( vehicleFiscalPower )?.rate"/>
+        <field name="rate" expr="eval: __repo__.of(KilometricAllowanceRate).findByVehicleFiscalPower( fiscalPower )?.rate"/>
     </action-record>
 
     <action-record name="action-kilometric-allowance-record-in-tax-total" model="com.axelor.apps.hr.db.KilometricAllowance">
