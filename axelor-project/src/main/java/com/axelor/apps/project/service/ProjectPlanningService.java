@@ -152,6 +152,7 @@ public class ProjectPlanningService {
 				LocalDate date = new LocalDate().withYear(line.getYear()).withWeekOfWeekyear(line.getWeek()).withDayOfWeek(DateTimeConstants.MONDAY);
 				if(date.isAfter(todayDate) || date.isEqual(todayDate)){
 					Map<String, String> map = new HashMap<String,String>();
+					map.put("taskId", line.getProjectTask().getId().toString());
 					map.put("name", line.getProjectTask().getFullName());
 					if(line.getProjectTask().getProject() != null){
 						map.put("projectName", line.getProjectTask().getProject().getFullName());
@@ -168,6 +169,7 @@ public class ProjectPlanningService {
 				LocalDate date = new LocalDate().withYear(line.getYear()).withWeekOfWeekyear(line.getWeek()).withDayOfWeek(DateTimeConstants.TUESDAY);
 				if(date.isAfter(todayDate) || date.isEqual(todayDate)){
 					Map<String, String> map = new HashMap<String,String>();
+					map.put("taskId", line.getProjectTask().getId().toString());
 					map.put("name", line.getProjectTask().getFullName());
 					if(line.getProjectTask().getProject() != null){
 						map.put("projectName", line.getProjectTask().getProject().getFullName());
@@ -184,6 +186,7 @@ public class ProjectPlanningService {
 				LocalDate date = new LocalDate().withYear(line.getYear()).withWeekOfWeekyear(line.getWeek()).withDayOfWeek(DateTimeConstants.WEDNESDAY);
 				if(date.isAfter(todayDate) || date.isEqual(todayDate)){
 					Map<String, String> map = new HashMap<String,String>();
+					map.put("taskId", line.getProjectTask().getId().toString());
 					map.put("name", line.getProjectTask().getFullName());
 					if(line.getProjectTask().getProject() != null){
 						map.put("projectName", line.getProjectTask().getProject().getFullName());
@@ -200,6 +203,7 @@ public class ProjectPlanningService {
 				LocalDate date = new LocalDate().withYear(line.getYear()).withWeekOfWeekyear(line.getWeek()).withDayOfWeek(DateTimeConstants.THURSDAY);
 				if(date.isAfter(todayDate) || date.isEqual(todayDate)){
 					Map<String, String> map = new HashMap<String,String>();
+					map.put("taskId", line.getProjectTask().getId().toString());
 					map.put("name", line.getProjectTask().getFullName());
 					if(line.getProjectTask().getProject() != null){
 						map.put("projectName", line.getProjectTask().getProject().getFullName());
@@ -216,6 +220,7 @@ public class ProjectPlanningService {
 				LocalDate date = new LocalDate().withYear(line.getYear()).withWeekOfWeekyear(line.getWeek()).withDayOfWeek(DateTimeConstants.FRIDAY);
 				if(date.isAfter(todayDate) || date.isEqual(todayDate)){
 					Map<String, String> map = new HashMap<String,String>();
+					map.put("taskId", line.getProjectTask().getId().toString());
 					map.put("name", line.getProjectTask().getFullName());
 					if(line.getProjectTask().getProject() != null){
 						map.put("projectName", line.getProjectTask().getProject().getFullName());
@@ -232,6 +237,7 @@ public class ProjectPlanningService {
 				LocalDate date = new LocalDate().withYear(line.getYear()).withWeekOfWeekyear(line.getWeek()).withDayOfWeek(DateTimeConstants.SATURDAY);
 				if(date.isAfter(todayDate) || date.isEqual(todayDate)){
 					Map<String, String> map = new HashMap<String,String>();
+					map.put("taskId", line.getProjectTask().getId().toString());
 					map.put("name", line.getProjectTask().getFullName());
 					if(line.getProjectTask().getProject() != null){
 						map.put("projectName", line.getProjectTask().getProject().getFullName());
@@ -248,6 +254,7 @@ public class ProjectPlanningService {
 				LocalDate date = new LocalDate().withYear(line.getYear()).withWeekOfWeekyear(line.getWeek()).withDayOfWeek(DateTimeConstants.SUNDAY);
 				if(date.isAfter(todayDate) || date.isEqual(todayDate)){
 					Map<String, String> map = new HashMap<String,String>();
+					map.put("taskId", line.getProjectTask().getId().toString());
 					map.put("name", line.getProjectTask().getFullName());
 					if(line.getProjectTask().getProject() != null){
 						map.put("projectName", line.getProjectTask().getProject().getFullName());
