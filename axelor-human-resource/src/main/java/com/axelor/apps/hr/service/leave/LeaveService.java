@@ -443,6 +443,9 @@ public class LeaveService {
 			leave.setEndOnSelect(new Integer(request.getData().get("endOn").toString()));
 			leave.setDuration(this.computeDuration(leave));
 			leave.setStatusSelect(LeaveRequestRepository.STATUS_SELECT_AWAITING_VALIDATION);
+			if(request.getData().get("comment") != null){
+				leave.setComments(request.getData().get("comment").toString());
+			}
 			Beans.get(LeaveRequestRepository.class).save(leave);
 		}
 	}

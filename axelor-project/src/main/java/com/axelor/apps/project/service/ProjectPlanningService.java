@@ -153,7 +153,12 @@ public class ProjectPlanningService {
 				if(date.isAfter(todayDate) || date.isEqual(todayDate)){
 					Map<String, String> map = new HashMap<String,String>();
 					map.put("name", line.getProjectTask().getFullName());
-					map.put("projectName", line.getProjectTask().getProject().getFullName());
+					if(line.getProjectTask().getProject() != null){
+						map.put("projectName", line.getProjectTask().getProject().getFullName());
+					}
+					else{
+						map.put("projectName", "");
+					}
 					map.put("date", date.toString());
 					map.put("duration", line.getMonday().toString());
 					dataList.add(map);
@@ -164,7 +169,12 @@ public class ProjectPlanningService {
 				if(date.isAfter(todayDate) || date.isEqual(todayDate)){
 					Map<String, String> map = new HashMap<String,String>();
 					map.put("name", line.getProjectTask().getFullName());
-					map.put("projectName", line.getProjectTask().getProject().getFullName());
+					if(line.getProjectTask().getProject() != null){
+						map.put("projectName", line.getProjectTask().getProject().getFullName());
+					}
+					else{
+						map.put("projectName", "");
+					}
 					map.put("date", date.toString());
 					map.put("duration", line.getTuesday().toString());
 					dataList.add(map);
@@ -175,7 +185,12 @@ public class ProjectPlanningService {
 				if(date.isAfter(todayDate) || date.isEqual(todayDate)){
 					Map<String, String> map = new HashMap<String,String>();
 					map.put("name", line.getProjectTask().getFullName());
-					map.put("projectName", line.getProjectTask().getProject().getFullName());
+					if(line.getProjectTask().getProject() != null){
+						map.put("projectName", line.getProjectTask().getProject().getFullName());
+					}
+					else{
+						map.put("projectName", "");
+					}
 					map.put("date", date.toString());
 					map.put("duration", line.getWednesday().toString());
 					dataList.add(map);
@@ -186,7 +201,12 @@ public class ProjectPlanningService {
 				if(date.isAfter(todayDate) || date.isEqual(todayDate)){
 					Map<String, String> map = new HashMap<String,String>();
 					map.put("name", line.getProjectTask().getFullName());
-					map.put("projectName", line.getProjectTask().getProject().getFullName());
+					if(line.getProjectTask().getProject() != null){
+						map.put("projectName", line.getProjectTask().getProject().getFullName());
+					}
+					else{
+						map.put("projectName", "");
+					}
 					map.put("date", date.toString());
 					map.put("duration", line.getThursday().toString());
 					dataList.add(map);
@@ -197,7 +217,12 @@ public class ProjectPlanningService {
 				if(date.isAfter(todayDate) || date.isEqual(todayDate)){
 					Map<String, String> map = new HashMap<String,String>();
 					map.put("name", line.getProjectTask().getFullName());
-					map.put("projectName", line.getProjectTask().getProject().getFullName());
+					if(line.getProjectTask().getProject() != null){
+						map.put("projectName", line.getProjectTask().getProject().getFullName());
+					}
+					else{
+						map.put("projectName", "");
+					}
 					map.put("date", date.toString());
 					map.put("duration", line.getFriday().toString());
 					dataList.add(map);
@@ -208,7 +233,12 @@ public class ProjectPlanningService {
 				if(date.isAfter(todayDate) || date.isEqual(todayDate)){
 					Map<String, String> map = new HashMap<String,String>();
 					map.put("name", line.getProjectTask().getFullName());
-					map.put("projectName", line.getProjectTask().getProject().getFullName());
+					if(line.getProjectTask().getProject() != null){
+						map.put("projectName", line.getProjectTask().getProject().getFullName());
+					}
+					else{
+						map.put("projectName", "");
+					}
 					map.put("date", date.toString());
 					map.put("duration", line.getSaturday().toString());
 					dataList.add(map);
@@ -219,7 +249,12 @@ public class ProjectPlanningService {
 				if(date.isAfter(todayDate) || date.isEqual(todayDate)){
 					Map<String, String> map = new HashMap<String,String>();
 					map.put("name", line.getProjectTask().getFullName());
-					map.put("projectName", line.getProjectTask().getProject().getFullName());
+					if(line.getProjectTask().getProject() != null){
+						map.put("projectName", line.getProjectTask().getProject().getFullName());
+					}
+					else{
+						map.put("projectName", "");
+					}
 					map.put("date", date.toString());
 					map.put("duration", line.getSunday().toString());
 					dataList.add(map);
