@@ -301,7 +301,7 @@ public class ReimbursementExportService {
 		Reimbursement reimbursement = new Reimbursement();
 		reimbursement.setPartner(partner);
 
-		BankDetails bankDetails = partner.getBankDetails();
+		BankDetails bankDetails = partnerService.getDefaultBankDetails(partner);
 
 		reimbursement.setBankDetails(bankDetails);
 
@@ -333,9 +333,13 @@ public class ReimbursementExportService {
 	public void updatePartnerCurrentRIB(Reimbursement reimbursement)  {
 		BankDetails bankDetails = reimbursement.getBankDetails();
 		Partner partner = reimbursement.getPartner();
-
-		if(partner != null && bankDetails != null && !bankDetails.equals(partner.getBankDetails()))  {
-			partner.setBankDetails(bankDetails);
+		BankDetails defaultBankDetails = partnerService.getDefaultBankDetails(partner);
+		
+		if(partner != null && bankDetails != null && !bankDetails.equals(defaultBankDetails))  {
+			bankDetails.setIsDefault(true);
+			defaultBankDetails.setIsDefault(false);
+			partner.addBankDetailsListItem(bankDetails);
+			
 			partnerRepository.save(partner);
 		}
 	}

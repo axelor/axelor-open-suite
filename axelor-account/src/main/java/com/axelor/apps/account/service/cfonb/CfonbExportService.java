@@ -43,6 +43,7 @@ import com.axelor.apps.account.service.config.CfonbConfigService;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.administration.GeneralServiceImpl;
 import com.axelor.apps.tool.StringTool;
 import com.axelor.apps.tool.file.FileTool;
@@ -59,17 +60,20 @@ public class CfonbExportService {
 	protected ReimbursementRepository reimbursementRepo;
 	protected PaymentScheduleLineRepository paymentScheduleLineRepo;
 	protected InvoiceRepository invoiceRepo;
+	protected PartnerService partnerService;
 	private boolean sepa;
 
 	@Inject
 	public CfonbExportService(CfonbToolService cfonbToolService, CfonbConfigService cfonbConfigService,
-			ReimbursementRepository reimbursementRepo, PaymentScheduleLineRepository paymentScheduleLineRepo, InvoiceRepository invoiceRepo)  {
+			ReimbursementRepository reimbursementRepo, PaymentScheduleLineRepository paymentScheduleLineRepo, InvoiceRepository invoiceRepo,
+			PartnerService partnerService)  {
 
 		this.cfonbToolService = cfonbToolService;
 		this.cfonbConfigService = cfonbConfigService;
 		this.reimbursementRepo = reimbursementRepo;
 		this.paymentScheduleLineRepo = paymentScheduleLineRepo;
 		this.invoiceRepo = invoiceRepo;
+		this.partnerService = partnerService;
 		
 	}
 	
@@ -518,7 +522,7 @@ public class CfonbExportService {
 		Partner partner = paymentScheduleLine.getPaymentSchedule().getPartner();
 		BankDetails bankDetails = paymentScheduleLine.getPaymentSchedule().getBankDetails();
 		if(bankDetails == null)  {
-			bankDetails = partner.getBankDetails();
+			bankDetails = partnerService.getDefaultBankDetails(partner);
 		}
 
 		if(bankDetails == null) {
@@ -553,7 +557,7 @@ public class CfonbExportService {
 		if(isForInvoice)  {
 			Invoice invoice = (Invoice) directDebitManagement.getInvoiceSet().toArray()[0];
 			Partner partner = invoice.getPartner();
-			bankDetails = partner.getBankDetails();
+			bankDetails = partnerService.getDefaultBankDetails(partner);
 			partnerName = this.getPayeurPartnerName(invoice.getPartner());			// Nom/Raison sociale du débiteur
 			if(bankDetails == null) {
 				throw new AxelorException(String.format(I18n.get(IExceptionMessage.PAYMENT_SCHEDULE_2),
@@ -567,7 +571,7 @@ public class CfonbExportService {
 
 			bankDetails = paymentSchedule.getBankDetails();
 			if(bankDetails == null)  {
-				bankDetails = partner.getBankDetails();
+				bankDetails = partnerService.getDefaultBankDetails(partner);
 			}
 			if(bankDetails == null) {
 				throw new AxelorException(String.format(I18n.get(IExceptionMessage.PAYMENT_SCHEDULE_2),
@@ -615,7 +619,7 @@ public class CfonbExportService {
 	 */
 	private String createRecipientCFONB(Company company, Invoice invoice) throws AxelorException  {
 		Partner partner = invoice.getPartner();
-		BankDetails bankDetails = partner.getBankDetails();
+		BankDetails bankDetails = partnerService.getDefaultBankDetails(partner);
 		if(bankDetails == null)  {
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.PAYMENT_SCHEDULE_2),
 					GeneralServiceImpl.EXCEPTION,partner.getName()), IException.CONFIGURATION_ERROR);

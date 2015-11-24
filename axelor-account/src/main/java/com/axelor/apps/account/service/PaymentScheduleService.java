@@ -39,6 +39,7 @@ import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.base.service.administration.GeneralServiceImpl;
 import com.axelor.apps.base.service.administration.SequenceService;
@@ -56,16 +57,18 @@ public class PaymentScheduleService {
 	protected PaymentScheduleLineRepository paymentScheduleLineRepo;
 	protected SequenceService sequenceService;
 	protected PaymentScheduleRepository paymentScheduleRepo;
+	protected PartnerService partnerService;
 
 	protected LocalDate date;
 
 	@Inject
 	public PaymentScheduleService(GeneralService generalService, PaymentScheduleLineService paymentScheduleLineService, PaymentScheduleLineRepository paymentScheduleLineRepo,
-			SequenceService sequenceService, PaymentScheduleRepository paymentScheduleRepo) {
+			SequenceService sequenceService, PaymentScheduleRepository paymentScheduleRepo, PartnerService partnerService) {
 		this.paymentScheduleLineService = paymentScheduleLineService;
 		this.paymentScheduleLineRepo = paymentScheduleLineRepo;
 		this.sequenceService = sequenceService;
 		this.paymentScheduleRepo = paymentScheduleRepo;
+		this.partnerService = partnerService;
 		
 		date = generalService.getTodayDate();
 	}
@@ -93,7 +96,7 @@ public class PaymentScheduleService {
 		Invoice invoice = null;
 
 		PaymentSchedule paymentSchedule = this.createPaymentSchedule(partner, invoice, company, date, startDate,
-				nbrTerm, partner.getBankDetails(), partner.getPaymentMode());
+				nbrTerm, partnerService.getDefaultBankDetails(partner), partner.getPaymentMode());
 
 		paymentSchedule.getInvoiceSet().addAll(invoices);
 

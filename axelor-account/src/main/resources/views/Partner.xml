@@ -11,7 +11,6 @@
 	        <field name="currency" requiredIf="!isContact &amp;&amp; partnerTypeSelect != 2" form-view="currency-form" grid-view="currency-grid"/>
 	        <field name="fiscalPosition" form-view="fiscal-position-form" grid-view="fiscal-position-grid"/>
 	        <field name="payerQuality"/>
-	        <field name="bankDetails" widget="SuggestBox" domain="self.partner.id = :id" grid-view="bank-details-grid" form-view="bank-details-form"/>
 	        <field name="chargeBackPurchaseSelect" colSpan="3" if-module="axelor-business-project"/>
 	        <field name="chargeBackPurchase" colSpan="3" if-module="axelor-business-project" showIf="chargeBackPurchaseSelect == 3"/>
 	        <field name="analyticDistributionTemplate" canNew="true"/>
@@ -20,8 +19,23 @@
         		<button name="showUnpaidInvoice" title="View all unpaid invoices"  onClick="save,action-partner-view-show-unpaid-invoice"/>
 	    	</panel>
 	    </panel>
-	    <panel-related field="bankDetailsList" showTitle="false"  form-view="bank-details-form" grid-view="bank-details-grid" colSpan="12"/>
-	    
+	    <panel title="Bank details" colSpan="12">
+	        <field name="bankDetailsList" colSpan="12" showTitle="false" >
+			    <editor layout="table" x-show-titles="false" onNew="action-set-default-partner">
+					<field name="bankAddress" />
+					<field name="iban" onChange="action-group-account-bankdetails-iban-onchange" />
+					<field name="bic" />
+					<field name="isDefault" widget="toggle" x-icon="fa-star-o" x-icon-active="fa-star" x-exclusive="true" />
+					<field name="ownerName" hidden="true" />
+					<field name="ibanBic" hidden="true"/>
+					<field name="countryCode" hidden="true"/>
+					<field name="bankCode" hidden="true"/>
+					<field name="sortCode" hidden="true"/>
+					<field name="accountNbr" hidden="true"/>
+					<field name="bbanKey" hidden="true"/>
+			    </editor>
+			</field>
+	    </panel>
 	    <panel title="Sale Price List" colSpan="12" hideIf="!isCustomer">
 	    	<field name="salePriceList" canNew="true" domain="self.typeSelect = 1" form-view="sale-price-list-form" grid-view="price-list-grid"/>
 	    </panel>
