@@ -658,7 +658,7 @@
 "Invoice.tax","TAX",,
 "Invoice.taxAmount","Tax Amount",,
 "Invoice.totalExclTax","Total excl. Tax",,
-"Invoice.totalInclTax","Total incl. V.A.T.",,
+"Invoice.totalInclTax","Total incl. Tax",,
 "Invoice.totalTax","Total Tax",,
 "Invoice.unitPrice","Unit price",,
 "Invoice/Refund",,,
