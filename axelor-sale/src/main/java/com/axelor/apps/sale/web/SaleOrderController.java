@@ -57,7 +57,6 @@ public class SaleOrderController {
 	
 	
 	/**
-	 * Fonction appeler par le bouton imprimer
 	 *
 	 * @param request
 	 * @param response
@@ -199,18 +198,20 @@ public class SaleOrderController {
 	}
 	
 	
-	
 	public void setSequence(ActionRequest request, ActionResponse response) throws AxelorException {
 		
 		SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
 
 		if(saleOrder != null &&  saleOrder.getCompany() != null) {
 			
-			response.setValue("saleOrderSeq", Beans.get(SaleOrderService.class).getSequence(saleOrder.getCompany()));
+			SaleOrderService saleOrderService = Beans.get(SaleOrderService.class);
+			
+			saleOrderService.assignSequence(saleOrderService.find(saleOrder.getId()));
+			
+			response.setReload(true);
 			
 		}
 	}
-	
 	
 	
 	public void validateCustomer(ActionRequest request, ActionResponse response) {
@@ -220,6 +221,7 @@ public class SaleOrderController {
 		response.setValue("clientPartner", Beans.get(SaleOrderService.class).validateCustomer(saleOrder));
 		
 	}
+	
 	public void setDraftSequence(ActionRequest request,ActionResponse response){
 		SaleOrder saleOrder=request.getContext().asType(SaleOrder.class);
 		if(saleOrder.getSaleOrderSeq()!=null){

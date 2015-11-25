@@ -77,7 +77,7 @@ public interface SaleOrderService extends Repository<SaleOrder>{
 	public Partner validateCustomer(SaleOrder saleOrder);
 	
 	
-	public String getSequence(Company company) throws AxelorException; 
+	public void assignSequence(SaleOrder saleOrder) throws AxelorException; 
 	
 
 	public SaleOrder createSaleOrder(User buyerUser, Company company, Partner contactPartner, Currency currency, 

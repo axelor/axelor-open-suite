@@ -164,13 +164,22 @@ public class SaleOrderServiceImpl extends SaleOrderRepository  implements SaleOr
 	
 	
 	
-	public String getSequence(Company company) throws AxelorException  {
+	private String getSequence(Company company) throws AxelorException  {
 		String seq = sequenceService.getSequenceNumber(IAdministration.SALES_ORDER, company);
 		if (seq == null)  {
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.SALES_ORDER_1),company.getName()),
 							IException.CONFIGURATION_ERROR);
 		}
 		return seq;
+	}
+	
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
+	public void assignSequence(SaleOrder saleOrder) throws AxelorException  {
+		
+		saleOrder.setSaleOrderSeq(this.getSequence(saleOrder.getCompany()));
+		
+		save(saleOrder);
+		
 	}
 	
 
