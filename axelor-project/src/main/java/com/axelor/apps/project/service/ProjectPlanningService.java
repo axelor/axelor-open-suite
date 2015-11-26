@@ -142,134 +142,139 @@ public class ProjectPlanningService {
 	
 	public void getTasksForUser(ActionRequest request, ActionResponse response){
 		List<Map<String,String>> dataList = new ArrayList<Map<String,String>>();
-		LocalDate todayDate = Beans.get(GeneralService.class).getTodayDate();
-		List<ProjectPlanningLine> linesList = Beans.get(ProjectPlanningLineRepository.class).all().
-				filter("self.user.id = ?1 AND self.year >= ?2 AND self.week >= ?3", 
-				AuthUtils.getUser().getId(), todayDate.getYear(), todayDate.getWeekOfWeekyear()).fetch();
-		
-		for (ProjectPlanningLine line : linesList) {
-			if(line.getMonday().compareTo(BigDecimal.ZERO) != 0){
-				LocalDate date = new LocalDate().withYear(line.getYear()).withWeekOfWeekyear(line.getWeek()).withDayOfWeek(DateTimeConstants.MONDAY);
-				if(date.isAfter(todayDate) || date.isEqual(todayDate)){
-					Map<String, String> map = new HashMap<String,String>();
-					map.put("taskId", line.getProjectTask().getId().toString());
-					map.put("name", line.getProjectTask().getFullName());
-					if(line.getProjectTask().getProject() != null){
-						map.put("projectName", line.getProjectTask().getProject().getFullName());
-					}
-					else{
-						map.put("projectName", "");
-					}
-					map.put("date", date.toString());
-					map.put("duration", line.getMonday().toString());
-					dataList.add(map);
-				}
-			}
-			if(line.getTuesday().compareTo(BigDecimal.ZERO) != 0){
-				LocalDate date = new LocalDate().withYear(line.getYear()).withWeekOfWeekyear(line.getWeek()).withDayOfWeek(DateTimeConstants.TUESDAY);
-				if(date.isAfter(todayDate) || date.isEqual(todayDate)){
-					Map<String, String> map = new HashMap<String,String>();
-					map.put("taskId", line.getProjectTask().getId().toString());
-					map.put("name", line.getProjectTask().getFullName());
-					if(line.getProjectTask().getProject() != null){
-						map.put("projectName", line.getProjectTask().getProject().getFullName());
-					}
-					else{
-						map.put("projectName", "");
-					}
-					map.put("date", date.toString());
-					map.put("duration", line.getTuesday().toString());
-					dataList.add(map);
-				}
-			}
-			if(line.getWednesday().compareTo(BigDecimal.ZERO) != 0){
-				LocalDate date = new LocalDate().withYear(line.getYear()).withWeekOfWeekyear(line.getWeek()).withDayOfWeek(DateTimeConstants.WEDNESDAY);
-				if(date.isAfter(todayDate) || date.isEqual(todayDate)){
-					Map<String, String> map = new HashMap<String,String>();
-					map.put("taskId", line.getProjectTask().getId().toString());
-					map.put("name", line.getProjectTask().getFullName());
-					if(line.getProjectTask().getProject() != null){
-						map.put("projectName", line.getProjectTask().getProject().getFullName());
-					}
-					else{
-						map.put("projectName", "");
-					}
-					map.put("date", date.toString());
-					map.put("duration", line.getWednesday().toString());
-					dataList.add(map);
-				}
-			}
-			if(line.getThursday().compareTo(BigDecimal.ZERO) != 0){
-				LocalDate date = new LocalDate().withYear(line.getYear()).withWeekOfWeekyear(line.getWeek()).withDayOfWeek(DateTimeConstants.THURSDAY);
-				if(date.isAfter(todayDate) || date.isEqual(todayDate)){
-					Map<String, String> map = new HashMap<String,String>();
-					map.put("taskId", line.getProjectTask().getId().toString());
-					map.put("name", line.getProjectTask().getFullName());
-					if(line.getProjectTask().getProject() != null){
-						map.put("projectName", line.getProjectTask().getProject().getFullName());
-					}
-					else{
-						map.put("projectName", "");
-					}
-					map.put("date", date.toString());
-					map.put("duration", line.getThursday().toString());
-					dataList.add(map);
-				}
-			}
-			if(line.getFriday().compareTo(BigDecimal.ZERO) != 0){
-				LocalDate date = new LocalDate().withYear(line.getYear()).withWeekOfWeekyear(line.getWeek()).withDayOfWeek(DateTimeConstants.FRIDAY);
-				if(date.isAfter(todayDate) || date.isEqual(todayDate)){
-					Map<String, String> map = new HashMap<String,String>();
-					map.put("taskId", line.getProjectTask().getId().toString());
-					map.put("name", line.getProjectTask().getFullName());
-					if(line.getProjectTask().getProject() != null){
-						map.put("projectName", line.getProjectTask().getProject().getFullName());
-					}
-					else{
-						map.put("projectName", "");
-					}
-					map.put("date", date.toString());
-					map.put("duration", line.getFriday().toString());
-					dataList.add(map);
-				}
-			}
-			if(line.getSaturday().compareTo(BigDecimal.ZERO) != 0){
-				LocalDate date = new LocalDate().withYear(line.getYear()).withWeekOfWeekyear(line.getWeek()).withDayOfWeek(DateTimeConstants.SATURDAY);
-				if(date.isAfter(todayDate) || date.isEqual(todayDate)){
-					Map<String, String> map = new HashMap<String,String>();
-					map.put("taskId", line.getProjectTask().getId().toString());
-					map.put("name", line.getProjectTask().getFullName());
-					if(line.getProjectTask().getProject() != null){
-						map.put("projectName", line.getProjectTask().getProject().getFullName());
-					}
-					else{
-						map.put("projectName", "");
-					}
-					map.put("date", date.toString());
-					map.put("duration", line.getSaturday().toString());
-					dataList.add(map);
-				}
-			}
-			if(line.getSunday().compareTo(BigDecimal.ZERO) != 0){
-				LocalDate date = new LocalDate().withYear(line.getYear()).withWeekOfWeekyear(line.getWeek()).withDayOfWeek(DateTimeConstants.SUNDAY);
-				if(date.isAfter(todayDate) || date.isEqual(todayDate)){
-					Map<String, String> map = new HashMap<String,String>();
-					map.put("taskId", line.getProjectTask().getId().toString());
-					map.put("name", line.getProjectTask().getFullName());
-					if(line.getProjectTask().getProject() != null){
-						map.put("projectName", line.getProjectTask().getProject().getFullName());
-					}
-					else{
-						map.put("projectName", "");
-					}
-					map.put("date", date.toString());
-					map.put("duration", line.getSunday().toString());
-					dataList.add(map);
-				}
-			}
+		try{
+			LocalDate todayDate = Beans.get(GeneralService.class).getTodayDate();
+			List<ProjectPlanningLine> linesList = Beans.get(ProjectPlanningLineRepository.class).all().
+					filter("self.user.id = ?1 AND self.year >= ?2 AND self.week >= ?3", 
+					AuthUtils.getUser().getId(), todayDate.getYear(), todayDate.getWeekOfWeekyear()).fetch();
 			
+			for (ProjectPlanningLine line : linesList) {
+				if(line.getMonday().compareTo(BigDecimal.ZERO) != 0){
+					LocalDate date = new LocalDate().withYear(line.getYear()).withWeekOfWeekyear(line.getWeek()).withDayOfWeek(DateTimeConstants.MONDAY);
+					if(date.isAfter(todayDate) || date.isEqual(todayDate)){
+						Map<String, String> map = new HashMap<String,String>();
+						map.put("taskId", line.getProjectTask().getId().toString());
+						map.put("name", line.getProjectTask().getFullName());
+						if(line.getProjectTask().getProject() != null){
+							map.put("projectName", line.getProjectTask().getProject().getFullName());
+						}
+						else{
+							map.put("projectName", "");
+						}
+						map.put("date", date.toString());
+						map.put("duration", line.getMonday().toString());
+						dataList.add(map);
+					}
+				}
+				if(line.getTuesday().compareTo(BigDecimal.ZERO) != 0){
+					LocalDate date = new LocalDate().withYear(line.getYear()).withWeekOfWeekyear(line.getWeek()).withDayOfWeek(DateTimeConstants.TUESDAY);
+					if(date.isAfter(todayDate) || date.isEqual(todayDate)){
+						Map<String, String> map = new HashMap<String,String>();
+						map.put("taskId", line.getProjectTask().getId().toString());
+						map.put("name", line.getProjectTask().getFullName());
+						if(line.getProjectTask().getProject() != null){
+							map.put("projectName", line.getProjectTask().getProject().getFullName());
+						}
+						else{
+							map.put("projectName", "");
+						}
+						map.put("date", date.toString());
+						map.put("duration", line.getTuesday().toString());
+						dataList.add(map);
+					}
+				}
+				if(line.getWednesday().compareTo(BigDecimal.ZERO) != 0){
+					LocalDate date = new LocalDate().withYear(line.getYear()).withWeekOfWeekyear(line.getWeek()).withDayOfWeek(DateTimeConstants.WEDNESDAY);
+					if(date.isAfter(todayDate) || date.isEqual(todayDate)){
+						Map<String, String> map = new HashMap<String,String>();
+						map.put("taskId", line.getProjectTask().getId().toString());
+						map.put("name", line.getProjectTask().getFullName());
+						if(line.getProjectTask().getProject() != null){
+							map.put("projectName", line.getProjectTask().getProject().getFullName());
+						}
+						else{
+							map.put("projectName", "");
+						}
+						map.put("date", date.toString());
+						map.put("duration", line.getWednesday().toString());
+						dataList.add(map);
+					}
+				}
+				if(line.getThursday().compareTo(BigDecimal.ZERO) != 0){
+					LocalDate date = new LocalDate().withYear(line.getYear()).withWeekOfWeekyear(line.getWeek()).withDayOfWeek(DateTimeConstants.THURSDAY);
+					if(date.isAfter(todayDate) || date.isEqual(todayDate)){
+						Map<String, String> map = new HashMap<String,String>();
+						map.put("taskId", line.getProjectTask().getId().toString());
+						map.put("name", line.getProjectTask().getFullName());
+						if(line.getProjectTask().getProject() != null){
+							map.put("projectName", line.getProjectTask().getProject().getFullName());
+						}
+						else{
+							map.put("projectName", "");
+						}
+						map.put("date", date.toString());
+						map.put("duration", line.getThursday().toString());
+						dataList.add(map);
+					}
+				}
+				if(line.getFriday().compareTo(BigDecimal.ZERO) != 0){
+					LocalDate date = new LocalDate().withYear(line.getYear()).withWeekOfWeekyear(line.getWeek()).withDayOfWeek(DateTimeConstants.FRIDAY);
+					if(date.isAfter(todayDate) || date.isEqual(todayDate)){
+						Map<String, String> map = new HashMap<String,String>();
+						map.put("taskId", line.getProjectTask().getId().toString());
+						map.put("name", line.getProjectTask().getFullName());
+						if(line.getProjectTask().getProject() != null){
+							map.put("projectName", line.getProjectTask().getProject().getFullName());
+						}
+						else{
+							map.put("projectName", "");
+						}
+						map.put("date", date.toString());
+						map.put("duration", line.getFriday().toString());
+						dataList.add(map);
+					}
+				}
+				if(line.getSaturday().compareTo(BigDecimal.ZERO) != 0){
+					LocalDate date = new LocalDate().withYear(line.getYear()).withWeekOfWeekyear(line.getWeek()).withDayOfWeek(DateTimeConstants.SATURDAY);
+					if(date.isAfter(todayDate) || date.isEqual(todayDate)){
+						Map<String, String> map = new HashMap<String,String>();
+						map.put("taskId", line.getProjectTask().getId().toString());
+						map.put("name", line.getProjectTask().getFullName());
+						if(line.getProjectTask().getProject() != null){
+							map.put("projectName", line.getProjectTask().getProject().getFullName());
+						}
+						else{
+							map.put("projectName", "");
+						}
+						map.put("date", date.toString());
+						map.put("duration", line.getSaturday().toString());
+						dataList.add(map);
+					}
+				}
+				if(line.getSunday().compareTo(BigDecimal.ZERO) != 0){
+					LocalDate date = new LocalDate().withYear(line.getYear()).withWeekOfWeekyear(line.getWeek()).withDayOfWeek(DateTimeConstants.SUNDAY);
+					if(date.isAfter(todayDate) || date.isEqual(todayDate)){
+						Map<String, String> map = new HashMap<String,String>();
+						map.put("taskId", line.getProjectTask().getId().toString());
+						map.put("name", line.getProjectTask().getFullName());
+						if(line.getProjectTask().getProject() != null){
+							map.put("projectName", line.getProjectTask().getProject().getFullName());
+						}
+						else{
+							map.put("projectName", "");
+						}
+						map.put("date", date.toString());
+						map.put("duration", line.getSunday().toString());
+						dataList.add(map);
+					}
+				}
+			}
+			response.setData(dataList);
 		}
-		response.setData(dataList);
+		catch(Exception e){
+			response.setStatus(-1);
+			response.setError(e.getMessage());
+		}
 	}
 
 }
