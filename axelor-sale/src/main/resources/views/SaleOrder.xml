@@ -528,7 +528,7 @@
 		<field name="deliveryAddress" expr="call:com.axelor.apps.base.service.PartnerService:getDeliveryAddress(clientPartner)" if="clientPartner != null"/>
 		<field name="priceList" expr="eval: clientPartner?.salePriceList"/>
 		<field name="hideDiscount" expr="eval: priceList?.hideDiscount"/>
-		<field name="bankDetails" expr="eval: partner?.bankDetails" if="partner?.bankDetails != null"/>
+		<field name="bankDetails" expr="eval: clientPartner?.bankDetailsList.find{ it -&gt; it.isDefault } ? clientPartner?.bankDetailsList.find{ it -&gt; it.isDefault } : bankDetails" />
     </action-record>
     
     <action-record name="action-sale-order-record-hide-discount" model="com.axelor.apps.sale.db.SaleOrder">

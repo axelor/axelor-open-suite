@@ -27,6 +27,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.base.db.Address;
+import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.IPartner;
 import com.axelor.apps.base.db.Partner;
@@ -242,6 +243,17 @@ public class PartnerService {
 	@Transactional
 	public Partner savePartner(Partner partner){
 		return partnerRepo.save(partner);
+	}
+	
+	public BankDetails getDefaultBankDetails(Partner partner){
+		
+		for(BankDetails bankDetails : partner.getBankDetailsList()){
+			if(bankDetails.getIsDefault()){
+				return bankDetails;
+			}
+		}
+		
+		return null;
 	}
 
 }

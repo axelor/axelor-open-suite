@@ -57,6 +57,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.BlockingService;
+import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.base.service.administration.GeneralServiceImpl;
 import com.axelor.apps.base.service.administration.SequenceService;
@@ -86,14 +87,16 @@ public class PaymentScheduleExportService{
 	protected DirectDebitManagementRepository directDebitManagementRepo;
 	protected InvoiceService invoiceService;
 	protected InvoiceRepository invoiceRepo;
+	protected PartnerService  partnerService;
 	protected LocalDate today;
 	protected boolean sepa;
+	
 
 	@Inject
 	public PaymentScheduleExportService(MoveService moveService, MoveRepository moveRepo, MoveLineService moveLineServices, MoveLineRepository moveLineRepo, ReconcileService reconcileService,
 			SequenceService sequenceService, PaymentModeService paymentModeService, CfonbExportService cfonbExportService, PaymentService paymentService,
 			BlockingService blockingService, AccountConfigService accountConfigService, PaymentScheduleLineRepository paymentScheduleLineRepo,
-			DirectDebitManagementRepository directDebitManagementRepo, InvoiceService invoiceService, InvoiceRepository invoiceRepo, GeneralService generalService) {
+			DirectDebitManagementRepository directDebitManagementRepo, InvoiceService invoiceService, InvoiceRepository invoiceRepo, GeneralService generalService, PartnerService partnerService) {
 		
 		this.moveService = moveService;
 		this.moveRepo = moveRepo;
@@ -110,6 +113,7 @@ public class PaymentScheduleExportService{
 		this.directDebitManagementRepo = directDebitManagementRepo;
 		this.invoiceService = invoiceService;
 		this.invoiceRepo = invoiceRepo;
+		this.partnerService = partnerService;
 
 		this.today = generalService.getTodayDate();
 
@@ -145,7 +149,7 @@ public class PaymentScheduleExportService{
 		Partner partner = paymentSchedule.getPartner();
 		BankDetails bankDetails = paymentSchedule.getBankDetails();
 		if(bankDetails == null)  {
-			bankDetails = partner.getBankDetails();
+			bankDetails = partnerService.getDefaultBankDetails(partner);
 		}
 		if(bankDetails == null) {
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.PAYMENT_SCHEDULE_1),
@@ -158,7 +162,7 @@ public class PaymentScheduleExportService{
 
 
 	public void testBankDetails(Invoice invoice) throws AxelorException  {
-		BankDetails bankDetails = invoice.getPartner().getBankDetails();
+		BankDetails bankDetails = partnerService.getDefaultBankDetails(invoice.getPartner());
 
 		if(bankDetails == null) {
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.PAYMENT_SCHEDULE_2),
@@ -171,7 +175,7 @@ public class PaymentScheduleExportService{
 
 
 	public void testBankDetails(Partner partner) throws AxelorException  {
-		BankDetails bankDetails = partner.getBankDetails();
+		BankDetails bankDetails = partnerService.getDefaultBankDetails(partner);
 
 		if(bankDetails == null) {
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.PAYMENT_SCHEDULE_2),

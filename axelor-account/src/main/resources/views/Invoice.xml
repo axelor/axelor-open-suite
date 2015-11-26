@@ -333,11 +333,11 @@
     	<field name="paymentCondition" expr="eval: partner?.paymentCondition"/>
     	<field name="partnerAccount" expr="eval: __repo__.of(AccountingSituation).all().filter(&quot;self.partner = ?1 AND self.company = ?2&quot;,partner,company).fetchOne()?.supplierAccount"  if="operationTypeSelect == 1 || operationTypeSelect == 2" />
     	<field name="partnerAccount" expr="eval: __repo__.of(AccountingSituation).all().filter(&quot;self.partner = ?1 AND self.company = ?2&quot;,partner,company).fetchOne()?.customerAccount"  if="operationTypeSelect == 3 || operationTypeSelect == 4" />
-	<field name="address" expr="call:com.axelor.apps.base.service.PartnerService:getInvoicingAddress(partner)"/>
+		<field name="address" expr="call:com.axelor.apps.base.service.PartnerService:getInvoicingAddress(partner)"/>
     	<field name="currency" expr="eval: partner?.currency"/>
 		<field name="priceList" expr="eval: partner?.salePriceList" if="operationTypeSelect == 3 || operationTypeSelect == 4"/>
 		<field name="priceList" expr="eval: partner?.purchasePriceList" if="operationTypeSelect == 1 || operationTypeSelect == 2"/>
-		<field name="bankDetails" expr="eval: partner?.bankDetails" if="partner?.bankDetails != null"/>
+		<field name="bankDetails" expr="eval: partner?.bankDetailsList.find{ it -&gt; it.isDefault } ? partner?.bankDetailsList.find{ it -&gt; it.isDefault } : bankDetails" />
     </action-record>
     
     
