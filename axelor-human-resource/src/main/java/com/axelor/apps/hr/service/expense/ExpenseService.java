@@ -357,7 +357,6 @@ public class ExpenseService  {
 	@Transactional
 	public void insertKMExpenses(ActionRequest request, ActionResponse response){
 		User user = AuthUtils.getUser();
-		ProjectTask projectTask = Beans.get(ProjectTaskRepository.class).find(new Long(request.getData().get("project").toString()));
 		if(user != null){
 			Expense expense = Beans.get(ExpenseRepository.class).all().filter("self.statusSelect = 1 AND self.user.id = ?1", user.getId()).order("-id").fetchOne();
 			if(expense == null){
@@ -370,10 +369,9 @@ public class ExpenseService  {
 			kmAllowance.setDistance(new BigDecimal(request.getData().get("kmNumber").toString()));
 			kmAllowance.setCityFrom(request.getData().get("locationFrom").toString());
 			kmAllowance.setCityTo(request.getData().get("locationTo").toString());
-			kmAllowance.setProjectTask(projectTask);
 			kmAllowance.setTypeSelect(new Integer(request.getData().get("allowanceTypeSelect").toString()));
-			kmAllowance.setToInvoice(new Boolean(request.getData().get("toInvoice").toString()));
 			kmAllowance.setReason(request.getData().get("comments").toString());
+			kmAllowance.setDate(new LocalDate(request.getData().get("date").toString()));
 			if(user.getEmployee() != null && user.getEmployee().getFiscalPower() != null){
 				kmAllowance.setFiscalPower(user.getEmployee().getFiscalPower());
 				KilometricAllowanceRate kilometricAllowanceRate = Beans.get(KilometricAllowanceRateRepository.class).findByVehicleFiscalPower(user.getEmployee().getFiscalPower());
