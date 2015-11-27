@@ -194,312 +194,364 @@
                     <property name="columnName">id</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">id</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">id</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">saleOrderSeq</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">saleOrderSeq</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">saleOrderSeq</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">CreationDate</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">CreationDate</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">CreationDate</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">SalemanName</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">SalemanName</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">SalemanName</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">SalemanPhone</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">SalemanPhone</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">SalemanPhone</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">SalemanEmail</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">SalemanEmail</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">SalemanEmail</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">DisplaySaleman</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">DisplaySaleman</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">DisplaySaleman</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">ShipmentDate</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">ShipmentDate</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">ShipmentDate</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">ClientBox</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">ClientBox</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">ClientBox</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">DisplayDeliveryCondition</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">DisplayDeliveryCondition</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">DisplayDeliveryCondition</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">CompanyName</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">CompanyName</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">CompanyName</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">logo_path</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">logo_path</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">logo_path</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">partner_type_select</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">partner_type_select</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">partner_type_select</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">ClientPartName</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">ClientPartName</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">ClientPartName</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">ClientPartFirstName</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">ClientPartFirstName</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">ClientPartFirstName</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">ClientTitle</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">ClientTitle</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">ClientTitle</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">ContactName</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">ContactName</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">ContactName</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">ContactFirstName</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">ContactFirstName</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">ContactFirstName</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">invAddress2</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">invAddress2</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">invAddress2</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">invAddress3</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">invAddress3</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">invAddress3</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">invAddress4</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">invAddress4</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">invAddress4</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">invAddress5</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">invAddress5</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">invAddress5</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">invAddress6</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">invAddress6</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">invAddress6</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">invoicecountry</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">invoicecountry</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">invoicecountry</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">PaymentCondName</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">PaymentCondName</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">PaymentCondName</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">PaymentMode</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">PaymentMode</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">PaymentMode</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">delAddress2</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">delAddress2</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">delAddress2</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">delAddress3</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">delAddress3</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">delAddress3</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">delAddress4</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">delAddress4</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">delAddress4</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">delAddress5</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">delAddress5</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">delAddress5</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">delAddress6</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">delAddress6</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">delAddress6</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">DeliveryCountry</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">DeliveryCountry</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">DeliveryCountry</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">ex_tax_total</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">ex_tax_total</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">ex_tax_total</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">tax_total</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">tax_total</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">tax_total</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">in_tax_total</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">in_tax_total</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">in_tax_total</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">bank_address</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">bank_address</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">bank_address</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">iban</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">iban</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">iban</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">bic</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">bic</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">bic</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">CurrencyCode</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">CurrencyCode</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">CurrencyCode</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">external_reference</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">external_reference</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">external_reference</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">header</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">header</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">header</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">footer</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">footer</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">footer</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">description</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">description</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">description</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">invAddressId</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">invAddressId</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">invAddressId</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">delAddressId</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">delAddressId</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">delAddressId</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">durationName</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">durationName</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">durationName</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">deliveryDate</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">deliveryDate</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">deliveryDate</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">deliveryCondition</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">deliveryCondition</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">deliveryCondition</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">hideDiscount</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">hideDiscount</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">hideDiscount</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">displayProductCodeOnPrinting</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">displayProductCodeOnPrinting</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">displayProductCodeOnPrinting</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">displayTaxDetailOnPrinting</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">displayTaxDetailOnPrinting</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">displayTaxDetailOnPrinting</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">subscription</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">subscription</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">subscription</text-property>
                 </structure>
             </list-property>
@@ -511,6 +563,7 @@
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">-1</property>
                     <property name="position">1</property>
+                    <property name="isOptional">false</property>
                     <property name="isInput">true</property>
                     <property name="isOutput">false</property>
                 </structure>
@@ -1181,7 +1234,7 @@ left outer join account_payment_condition as PaymentCondition on (SaleOrder.paym
 left outer join account_payment_mode as PaymentMode on (SaleOrder.payment_mode = PaymentMode.id)
 left outer join base_address as DeliveryAddress on (SaleOrder.delivery_address = DeliveryAddress.id)
 left outer join base_country as DeliveryCountry on (DeliveryAddress.addressl7country = DeliveryCountry.id)
-left outer join base_bank_details as BankDetail on (Company.default_bank_details = BankDetail.id)
+left outer join base_bank_details as BankDetail on (SaleOrder.company_bank_details = BankDetail.id)
 left outer join base_currency as Currency on (SaleOrder.currency = Currency.id)
 left outer join base_printing_settings as PrintingSettings on (Company.printing_settings = PrintingSettings.id)
 left outer join auth_user as SalemanUser on (SaleOrder.saleman_user = SalemanUser.id) 
@@ -1207,6 +1260,9 @@ where SaleOrder.id = ? ]]></xml-property>
           <design:scale>0</design:scale>
           <design:nullability>Unknown</design:nullability>
         </design:attributes>
+        <design:inputAttributes>
+          <design:elementAttributes/>
+        </design:inputAttributes>
       </design:ParameterDefinition>
     </parameter>
   </DataSetParameters>

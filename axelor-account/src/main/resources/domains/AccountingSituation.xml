@@ -23,6 +23,7 @@
 	<!--  PAGE Relance -->
 	<one-to-one name="reminder" ref="com.axelor.apps.account.db.Reminder" mappedBy="accountingSituation" title="Reminder"/>
 	
+	<many-to-one name="companyBankDetails" ref="com.axelor.apps.base.db.BankDetails" title="Company bank"/>
 	
 	<many-to-many name="batchSet" ref="com.axelor.apps.base.db.Batch" title="Batchs"/>
 	

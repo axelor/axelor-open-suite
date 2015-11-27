@@ -183,7 +183,7 @@ public class ForecastRecapService {
 	public void populateWithInvoices(ForecastRecap forecastRecap){
 		List<Invoice> invoiceList = new ArrayList<Invoice>();
 		if(forecastRecap.getBankDetails() != null){
-			invoiceList = Beans.get(InvoiceRepository.class).all().filter("self.company = ?1 AND self.bankDetails = ?2 AND self.statusSelect = 3 AND self.estimatedPaymentDate BETWEEN ?3 AND ?4 AND self.companyInTaxTotalRemaining != 0",
+			invoiceList = Beans.get(InvoiceRepository.class).all().filter("self.company = ?1 AND self.companyBankDetails = ?2 AND self.statusSelect = 3 AND self.estimatedPaymentDate BETWEEN ?3 AND ?4 AND self.companyInTaxTotalRemaining != 0",
 								forecastRecap.getCompany(),forecastRecap.getBankDetails(), forecastRecap.getFromDate(), forecastRecap.getToDate()).fetch();
 		}
 		else{
@@ -209,7 +209,7 @@ public class ForecastRecapService {
 	public void getInvoices(ForecastRecap forecastRecap, Map<LocalDate, BigDecimal> mapExpected, Map<LocalDate, BigDecimal> mapConfirmed){
 		List<Invoice> invoiceList = new ArrayList<Invoice>();
 		if(forecastRecap.getBankDetails() != null){
-			invoiceList = Beans.get(InvoiceRepository.class).all().filter("self.company = ?1 AND self.bankDetails = ?2 AND self.statusSelect = 3 AND self.estimatedPaymentDate BETWEEN ?3 AND ?4 AND self.companyInTaxTotalRemaining != 0",
+			invoiceList = Beans.get(InvoiceRepository.class).all().filter("self.company = ?1 AND self.companyBankDetails = ?2 AND self.statusSelect = 3 AND self.estimatedPaymentDate BETWEEN ?3 AND ?4 AND self.companyInTaxTotalRemaining != 0",
 								forecastRecap.getCompany(),forecastRecap.getBankDetails(), forecastRecap.getFromDate(), forecastRecap.getToDate()).fetch();
 		}
 		else{
@@ -259,9 +259,9 @@ public class ForecastRecapService {
 		List<Timetable> timetablePurchaseOrderList = new ArrayList<Timetable>();
 		if(forecastRecap.getBankDetails() != null){
 			timetableSaleOrderList = Beans.get(TimetableRepository.class).all().filter("self.estimatedDate BETWEEN ?1 AND ?2 AND self.saleOrder.company = ?3 AND"
-					+ " self.saleOrder.bankDetails = ?4 AND self.saleOrder.statusSelect = 3 AND self.amountToInvoice != 0", forecastRecap.getFromDate(), forecastRecap.getToDate(), forecastRecap.getCompany(),forecastRecap.getBankDetails()).fetch();
+					+ " self.saleOrder.companyBankDetails = ?4 AND self.saleOrder.statusSelect = 3 AND self.amountToInvoice != 0", forecastRecap.getFromDate(), forecastRecap.getToDate(), forecastRecap.getCompany(),forecastRecap.getBankDetails()).fetch();
 			timetablePurchaseOrderList = Beans.get(TimetableRepository.class).all().filter("self.estimatedDate BETWEEN ?1 AND ?2 AND self.purchaseOrder.company = ?3 AND"
-					+ " self.purchaseOrder.bankDetails = ?4 AND self.purchaseOrder.statusSelect = 3 AND self.amountToInvoice != 0", forecastRecap.getFromDate(), forecastRecap.getToDate(), forecastRecap.getCompany(),forecastRecap.getBankDetails()).fetch();
+					+ " self.purchaseOrder.companyBankDetails = ?4 AND self.purchaseOrder.statusSelect = 3 AND self.amountToInvoice != 0", forecastRecap.getFromDate(), forecastRecap.getToDate(), forecastRecap.getCompany(),forecastRecap.getBankDetails()).fetch();
 		}
 		else{
 			timetableSaleOrderList = Beans.get(TimetableRepository.class).all().filter("self.estimatedDate BETWEEN ?1 AND ?2 AND self.saleOrder.company = ?3 AND"
@@ -294,9 +294,9 @@ public class ForecastRecapService {
 		List<PurchaseOrder> purchaseOrderList = new ArrayList<PurchaseOrder>();
 		if(forecastRecap.getBankDetails() != null){
 			timetableSaleOrderList = Beans.get(TimetableRepository.class).all().filter("self.estimatedDate BETWEEN ?1 AND ?2 AND self.saleOrder.company = ?3 AND"
-					+ " self.saleOrder.bankDetails = ?4 AND self.saleOrder.statusSelect = 3 AND self.amountToInvoice != 0", forecastRecap.getFromDate(), forecastRecap.getToDate(), forecastRecap.getCompany(),forecastRecap.getBankDetails()).fetch();
+					+ " self.saleOrder.companyBankDetails = ?4 AND self.saleOrder.statusSelect = 3 AND self.amountToInvoice != 0", forecastRecap.getFromDate(), forecastRecap.getToDate(), forecastRecap.getCompany(),forecastRecap.getBankDetails()).fetch();
 			timetablePurchaseOrderList = Beans.get(TimetableRepository.class).all().filter("self.estimatedDate BETWEEN ?1 AND ?2 AND self.purchaseOrder.company = ?3 AND"
-					+ " self.purchaseOrder.bankDetails = ?4 AND self.purchaseOrder.statusSelect = 3 AND self.amountToInvoice != 0", forecastRecap.getFromDate(), forecastRecap.getToDate(), forecastRecap.getCompany(),forecastRecap.getBankDetails()).fetch();
+					+ " self.purchaseOrder.companyBankDetails = ?4 AND self.purchaseOrder.statusSelect = 3 AND self.amountToInvoice != 0", forecastRecap.getFromDate(), forecastRecap.getToDate(), forecastRecap.getCompany(),forecastRecap.getBankDetails()).fetch();
 		}
 		else{
 			timetableSaleOrderList = Beans.get(TimetableRepository.class).all().filter("self.estimatedDate BETWEEN ?1 AND ?2 AND self.saleOrder.company = ?3 AND"
@@ -326,9 +326,9 @@ public class ForecastRecapService {
 		List<PurchaseOrder> purchaseOrderNoTimetableList = new ArrayList<PurchaseOrder>();
 		if(forecastRecap.getBankDetails() != null){
 			saleOrderNoTimeTableList = Beans.get(SaleOrderRepository.class).all().filter("self.expectedRealisationDate BETWEEN ?1 AND ?2 AND self.company = ?3 AND"
-					+ " self.bankDetails = ?4 AND (self.statusSelect = 2 OR self.statusSelect = 3)", forecastRecap.getFromDate(), forecastRecap.getToDate(), forecastRecap.getCompany(),forecastRecap.getBankDetails()).fetch();
+					+ " self.companyBankDetails = ?4 AND (self.statusSelect = 2 OR self.statusSelect = 3)", forecastRecap.getFromDate(), forecastRecap.getToDate(), forecastRecap.getCompany(),forecastRecap.getBankDetails()).fetch();
 			purchaseOrderNoTimetableList = Beans.get(PurchaseOrderRepository.class).all().filter("self.expectedRealisationDate BETWEEN ?1 AND ?2 AND self.company = ?3 AND"
-					+ " self.bankDetails = ?4 AND self.statusSelect = 3", forecastRecap.getFromDate(), forecastRecap.getToDate(), forecastRecap.getCompany(),forecastRecap.getBankDetails()).fetch();
+					+ " self.companyBankDetails = ?4 AND self.statusSelect = 3", forecastRecap.getFromDate(), forecastRecap.getToDate(), forecastRecap.getCompany(),forecastRecap.getBankDetails()).fetch();
 		}
 		else{
 			saleOrderNoTimeTableList = Beans.get(SaleOrderRepository.class).all().filter("self.expectedRealisationDate BETWEEN ?1 AND ?2 AND self.company = ?3 AND"
@@ -361,7 +361,7 @@ public class ForecastRecapService {
 		List<SaleOrder> saleOrderList = new ArrayList<SaleOrder>();
 		if(forecastRecap.getBankDetails() != null){
 			timetableSaleOrderList = Beans.get(TimetableRepository.class).all().filter("self.estimatedDate BETWEEN ?1 AND ?2 AND self.saleOrder.company = ?3 AND"
-					+ " self.saleOrder.bankDetails = ?4 AND (self.saleOrder.statusSelect = 2 OR self.saleOrder.statusSelect = 3) AND self.amountToInvoice != 0", forecastRecap.getFromDate(), forecastRecap.getToDate(), forecastRecap.getCompany(),forecastRecap.getBankDetails()).fetch();
+					+ " self.saleOrder.companyBankDetails = ?4 AND (self.saleOrder.statusSelect = 2 OR self.saleOrder.statusSelect = 3) AND self.amountToInvoice != 0", forecastRecap.getFromDate(), forecastRecap.getToDate(), forecastRecap.getCompany(),forecastRecap.getBankDetails()).fetch();
 		}
 		else{
 			timetableSaleOrderList = Beans.get(TimetableRepository.class).all().filter("self.estimatedDate BETWEEN ?1 AND ?2 AND self.saleOrder.company = ?3 AND"
@@ -393,7 +393,7 @@ public class ForecastRecapService {
 		List<SaleOrder> saleOrderNoTimeTableList = new ArrayList<SaleOrder>();
 		if(forecastRecap.getBankDetails() != null){
 			saleOrderNoTimeTableList = Beans.get(SaleOrderRepository.class).all().filter("self.expectedRealisationDate BETWEEN ?1 AND ?2 AND self.company = ?3 AND"
-					+ " self.bankDetails = ?4 AND (self.statusSelect = 2 OR self.statusSelect = 3)", forecastRecap.getFromDate(), forecastRecap.getToDate(), forecastRecap.getCompany(),forecastRecap.getBankDetails()).fetch();
+					+ " self.companyBankDetails = ?4 AND (self.statusSelect = 2 OR self.statusSelect = 3)", forecastRecap.getFromDate(), forecastRecap.getToDate(), forecastRecap.getCompany(),forecastRecap.getBankDetails()).fetch();
 		}
 		else{
 			saleOrderNoTimeTableList = Beans.get(SaleOrderRepository.class).all().filter("self.expectedRealisationDate BETWEEN ?1 AND ?2 AND self.company = ?3 AND"
