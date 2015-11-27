@@ -183,7 +183,9 @@
                 </ex-property>
             </list-property>
             <property name="odaDriverClass">org.postgresql.Driver</property>
-            <property name="odaURL">jdbc:postgresql://localhost:5432/</property>
+            <property name="odaURL">jdbc:postgresql://localhost:5432/axelor-business-suite</property>
+            <property name="odaUser">axelor</property>
+            <encrypted-property name="odaPassword" encryptionID="base64">bG1kcGRsYWE=</encrypted-property>
         </oda-data-source>
     </data-sources>
     <data-sets>
@@ -3407,6 +3409,27 @@ else row["Column Binding_tot_sub"]</expression>
                                 <expression name="expression" type="javascript">dataSetRow["is_title_line"]</expression>
                                 <property name="dataType">integer</property>
                             </structure>
+                            <structure>
+                                <property name="name">Aggregation_tot_disc_no_sub</property>
+                                <text-property name="displayName">tot_disc_no_sub</text-property>
+                                <property name="dataType">float</property>
+                                <property name="aggregateFunction">SUM</property>
+                                <list-property name="arguments">
+                                    <structure>
+                                        <property name="name">Expression</property>
+                                        <expression name="value" type="javascript">dataSetRow["totalDiscountAmount"]</expression>
+                                    </structure>
+                                </list-property>
+                                <expression name="filterExpr" type="javascript">dataSetRow["product_type_select"] != 'subscriptable'</expression>
+                                <property name="allowExport">true</property>
+                            </structure>
+                            <structure>
+                                <property name="name">Column Binding_tot_all_sub</property>
+                                <text-property name="displayName">tot_all_sub</text-property>
+                                <expression name="expression" type="javascript">row["Aggregation_tot_disc_no_sub"]+row["Aggregation_total_discount_sub"]</expression>
+                                <property name="dataType">decimal</property>
+                                <property name="allowExport">true</property>
+                            </structure>
                         </list-property>
                         <column id="3713">
                             <list-property name="visibility">
@@ -3437,7 +3460,7 @@ else row["Column Binding_tot_sub"]</expression>
                             <list-property name="visibility">
                                 <structure>
                                     <property name="format">all</property>
-                                    <expression name="valueExpr" type="javascript">row._outer["hideDiscount"] == 1 || row["totalDiscountAmount"] >= -0.1 || row["product_type_select"]=='subscriptable'</expression>
+                                    <expression name="valueExpr" type="javascript">row._outer["hideDiscount"] == 1 || (row["Column Binding_tot_all_sub"]== 0)</expression>
                                 </structure>
                             </list-property>
                             <property name="width">0.6in</property>
@@ -4455,42 +4478,53 @@ else 'Subscriptions'</value>
                     <property name="borderLeftWidth">thin</property>
                     <property name="borderRightStyle">solid</property>
                     <property name="borderRightWidth">thin</property>
-                    <text id="4175">
-                        <property name="fontSize">9pt</property>
-                        <property name="fontWeight">normal</property>
-                        <property name="textAlign">left</property>
-                        <property name="dataSet">TranslateDS</property>
-                        <list-property name="visibility">
-                            <structure>
-                                <property name="format">all</property>
-                                <expression name="valueExpr" type="javascript">row._outer["hideDiscount"]== 1 || row._outer["subscription"]</expression>
-                            </structure>
-                        </list-property>
-                        <list-property name="paramBindings">
-                            <structure>
-                                <property name="paramName">param_1</property>
-                                <simple-property-list name="expression">
-                                    <value type="javascript">'SaleOrder.totalDiscount'</value>
-                                </simple-property-list>
-                            </structure>
-                        </list-property>
-                        <list-property name="boundDataColumns">
-                            <structure>
-                                <property name="name">key</property>
-                                <text-property name="displayName">key</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
-                                <property name="dataType">string</property>
-                            </structure>
-                            <structure>
-                                <property name="name">translation</property>
-                                <text-property name="displayName">translation</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
-                                <property name="dataType">string</property>
-                            </structure>
-                        </list-property>
-                        <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
-                    </text>
+                    <table id="4293">
+                        <property name="dataBindingRef">SaleOrderLines</property>
+                        <column id="4300"/>
+                        <header>
+                            <row id="4294">
+                                <cell id="4295">
+                                    <text id="4175">
+                                        <property name="fontSize">9pt</property>
+                                        <property name="fontWeight">normal</property>
+                                        <property name="textAlign">left</property>
+                                        <property name="dataSet">TranslateDS</property>
+                                        <list-property name="visibility">
+                                            <structure>
+                                                <property name="format">all</property>
+                                                <expression name="valueExpr" type="javascript">row._outer._outer["hideDiscount"]== 1 || row._outer._outer["subscription"] || row._outer["Aggregation_tot_disc_no_sub"] == 0</expression>
+                                            </structure>
+                                        </list-property>
+                                        <list-property name="paramBindings">
+                                            <structure>
+                                                <property name="paramName">param_1</property>
+                                                <simple-property-list name="expression">
+                                                    <value type="javascript">'SaleOrder.totalDiscount'</value>
+                                                </simple-property-list>
+                                            </structure>
+                                        </list-property>
+                                        <list-property name="boundDataColumns">
+                                            <structure>
+                                                <property name="name">key</property>
+                                                <text-property name="displayName">key</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                                <property name="dataType">string</property>
+                                            </structure>
+                                            <structure>
+                                                <property name="name">translation</property>
+                                                <text-property name="displayName">translation</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                                <property name="dataType">string</property>
+                                            </structure>
+                                        </list-property>
+                                        <property name="contentType">html</property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+                                    </text>
+                                </cell>
+                            </row>
+                        </header>
+                        <group id="4301"/>
+                    </table>
                 </cell>
                 <cell id="4164">
                     <property name="borderLeftStyle">solid</property>
@@ -4507,7 +4541,7 @@ else 'Subscriptions'</value>
                         <list-property name="visibility">
                             <structure>
                                 <property name="format">all</property>
-                                <expression name="valueExpr" type="javascript">row._outer["hideDiscount"]== 1 || row._outer["subscription"]</expression>
+                                <expression name="valueExpr" type="javascript">row._outer["hideDiscount"]== 1 || row._outer["subscription"] || row["Aggregation_tot_disc_no_sub"] == 0</expression>
                             </structure>
                         </list-property>
                         <property name="resultSetColumn">totalDiscount</property>
@@ -4520,10 +4554,11 @@ else 'Subscriptions'</value>
                         <property name="fontSize">9pt</property>
                         <property name="fontWeight">normal</property>
                         <property name="textAlign">left</property>
+                        <property name="dataBindingRef">SaleOrderLines</property>
                         <list-property name="visibility">
                             <structure>
                                 <property name="format">all</property>
-                                <expression name="valueExpr" type="javascript">row["hideDiscount"] == 1 || row["subscription"]</expression>
+                                <expression name="valueExpr" type="javascript">row._outer["hideDiscount"] == 1 || row._outer["subscription"] || row["Aggregation_tot_disc_no_sub"] == 0</expression>
                             </structure>
                         </list-property>
                         <property name="contentType">html</property>
@@ -5652,6 +5687,12 @@ else 'Subscriptions'</value>
                 <cell id="4251"/>
             </row>
             <row id="4005">
+                <list-property name="visibility">
+                    <structure>
+                        <property name="format">all</property>
+                        <expression name="valueExpr" type="javascript">row["bank_address"] == null || row["bank_address"]==""</expression>
+                    </structure>
+                </list-property>
                 <cell id="4006"/>
                 <cell id="4007"/>
                 <cell id="4008"/>
@@ -5697,6 +5738,12 @@ else 'Subscriptions'</value>
                 </cell>
             </row>
             <row id="4012">
+                <list-property name="visibility">
+                    <structure>
+                        <property name="format">all</property>
+                        <expression name="valueExpr" type="javascript">row["iban"] == null || row["iban"] == ""</expression>
+                    </structure>
+                </list-property>
                 <cell id="4013"/>
                 <cell id="4014"/>
                 <cell id="4015"/>
@@ -5719,6 +5766,12 @@ else 'Subscriptions'</value>
                 </cell>
             </row>
             <row id="4019">
+                <list-property name="visibility">
+                    <structure>
+                        <property name="format">all</property>
+                        <expression name="valueExpr" type="javascript">row["bic"] == null || row["bic"] == ""</expression>
+                    </structure>
+                </list-property>
                 <cell id="4020"/>
                 <cell id="4021"/>
                 <cell id="4022"/>
