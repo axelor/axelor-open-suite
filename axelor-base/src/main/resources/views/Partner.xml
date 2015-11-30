@@ -90,7 +90,7 @@
 	    <panel>
 	    	<panel colSpan="3">
 	        	<field name="picture" showTitle="false" widget="Image" colSpan="12"/>
-	        	<panel colSpan="12" showIf="fullName != null">
+	        	<panel colSpan="8" showIf="fullName != null">
 				    <label name="google" title="&lt;a class='fa fa-google-plus' href='http://www.google.com' target='_blank' /&gt;" colSpan="2"/>
 				    <label name="facebook" title="&lt;a class='fa fa-facebook' href='http://www.facebook.com' target='_blank' /&gt;" colSpan="2"/>
 				    <label name="twitter" title="&lt;a class='fa fa-twitter' href='http://www.twitter.com' target='_blank' /&gt;" colSpan="2"/>
