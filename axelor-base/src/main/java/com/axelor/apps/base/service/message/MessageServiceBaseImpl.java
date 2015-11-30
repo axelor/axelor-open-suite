@@ -37,7 +37,6 @@ import com.axelor.apps.message.db.repo.MessageRepository;
 import com.axelor.apps.message.service.MailAccountService;
 import com.axelor.apps.message.service.MessageServiceImpl;
 import com.axelor.auth.AuthUtils;
-import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.meta.db.repo.MetaAttachmentRepository;
@@ -54,6 +53,7 @@ public class MessageServiceBaseImpl extends MessageServiceImpl {
 
 	@Inject
 	protected GeneralService generalService;
+	
 
 	@Inject
 	public MessageServiceBaseImpl( MetaAttachmentRepository metaAttachmentRepository, MailAccountService mailAccountService, UserService userService ) {
@@ -89,7 +89,7 @@ public class MessageServiceBaseImpl extends MessageServiceImpl {
 		LOG.debug("Default BirtTemplate : {}",birtTemplate);
 
 		TemplateMaker maker = new TemplateMaker( new Locale( AuthUtils.getUser().getLanguage() ), '$', '$');
-		maker.setContext( JPA.find( message.getClass(), message.getId() ), "Message" );
+		maker.setContext( messageRepo.find(message.getId()), "Message" );
 
 		ReportSettings reportSettings = new ReportSettings(birtTemplate.getTemplateLink(), birtTemplate.getFormat());
 

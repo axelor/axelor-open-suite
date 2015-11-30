@@ -27,7 +27,6 @@
 		</toolbar>
 		<panel>
 		    <field name="today"/>
-		    <field name="logOk"/>
 		</panel>
 		<panel-tabs>
 		    <panel title="Configuration">

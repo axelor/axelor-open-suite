@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.2.0.v20120611 Build &lt;4.2.0.v20120612-1721></property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.4.2.v201410272105 Build &lt;4.4.2.v20150217-1805></property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -25,6 +25,7 @@
     <property name="imageDPI">96</property>
     <parameters>
         <scalar-parameter name="MoveLineReportId" id="884">
+            <property name="hidden">true</property>
             <property name="valueType">static</property>
             <property name="isRequired">true</property>
             <property name="dataType">integer</property>
@@ -40,6 +41,7 @@
             </structure>
         </scalar-parameter>
         <scalar-parameter name="DBName" id="2479">
+            <property name="hidden">true</property>
             <property name="valueType">static</property>
             <property name="dataType">string</property>
             <property name="distinct">true</property>
@@ -51,6 +53,7 @@
             </structure>
         </scalar-parameter>
         <scalar-parameter name="UserName" id="2480">
+            <property name="hidden">true</property>
             <property name="valueType">static</property>
             <property name="dataType">string</property>
             <property name="distinct">true</property>
@@ -62,6 +65,7 @@
             </structure>
         </scalar-parameter>
         <scalar-parameter name="Password" id="2481">
+            <property name="hidden">true</property>
             <property name="valueType">static</property>
             <property name="dataType">string</property>
             <property name="distinct">true</property>
@@ -94,7 +98,6 @@
             <property name="odaDriverClass">org.postgresql.Driver</property>
             <property name="odaURL">jdbc:postgresql://localhost:5432/evolutis_fr</property>
             <property name="odaUser">axelor</property>
-            
         </oda-data-source>
     </data-sources>
     <data-sets>
@@ -943,8 +946,8 @@ row["credit"]
             </column>
             <header>
                 <row id="3017">
-                    <property name="height">0.3229166666666667in</property>
                     <property name="backgroundColor">#E6E6FA</property>
+                    <property name="height">0.3229166666666667in</property>
                     <cell id="3018">
                         <property name="borderBottomColor">#000000</property>
                         <property name="borderBottomStyle">solid</property>
@@ -999,8 +1002,8 @@ row["credit"]
                     </cell>
                 </row>
                 <row id="2905">
-                    <property name="height">0.3229166666666667in</property>
                     <property name="backgroundColor">#E6E6FA</property>
+                    <property name="height">0.3229166666666667in</property>
                     <cell id="2906">
                         <property name="borderLeftColor">#000000</property>
                         <property name="borderLeftStyle">solid</property>
@@ -1270,8 +1273,8 @@ row["credit"]
             </group>
             <footer>
                 <row id="2913">
-                    <property name="height">0.23958333333333334in</property>
                     <property name="backgroundColor">#E5E5E5</property>
+                    <property name="height">0.23958333333333334in</property>
                     <cell id="2914">
                         <property name="colSpan">3</property>
                         <property name="rowSpan">2</property>
@@ -1371,8 +1374,8 @@ Total.sum(row["credit"]) - Total.sum(row["debit"])
                     </cell>
                 </row>
                 <row id="3043">
-                    <property name="height">0.25in</property>
                     <property name="backgroundColor">#E5E5E5</property>
+                    <property name="height">0.25in</property>
                     <cell id="3047">
                         <property name="borderBottomColor">#000000</property>
                         <property name="borderBottomStyle">solid</property>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.2.2.v201301221637 Build &lt;4.2.2.v20130206-1509></property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.4.2.v201410272105 Build &lt;4.4.2.v20150217-1805></property>
     <list-property name="userProperties">
         <structure>
             <property name="name">Data Cube.MoveLineDS.x</property>
@@ -76,6 +76,7 @@
     <property name="locale">fr_FR</property>
     <parameters>
         <scalar-parameter name="MoveLineReportId" id="3544">
+            <property name="hidden">true</property>
             <property name="valueType">static</property>
             <property name="isRequired">true</property>
             <property name="dataType">string</property>
@@ -92,6 +93,7 @@
             </structure>
         </scalar-parameter>
         <scalar-parameter name="DBName" id="3545">
+            <property name="hidden">true</property>
             <property name="valueType">static</property>
             <property name="dataType">string</property>
             <property name="distinct">true</property>
@@ -103,6 +105,7 @@
             </structure>
         </scalar-parameter>
         <scalar-parameter name="UserName" id="3546">
+            <property name="hidden">true</property>
             <property name="valueType">static</property>
             <property name="dataType">string</property>
             <property name="distinct">true</property>
@@ -114,6 +117,7 @@
             </structure>
         </scalar-parameter>
         <scalar-parameter name="Password" id="3547">
+            <property name="hidden">true</property>
             <property name="valueType">static</property>
             <property name="dataType">string</property>
             <property name="distinct">true</property>
@@ -918,7 +922,6 @@ where MoveLineReport.id = ?
                                     <property name="height">0.8571428571428571in</property>
                                     <column id="3895"/>
                                     <row id="3896">
-                                        <property name="height">0.3in</property>
                                         <property name="borderBottomColor">#000000</property>
                                         <property name="borderBottomStyle">solid</property>
                                         <property name="borderBottomWidth">thin</property>
@@ -929,6 +932,7 @@ where MoveLineReport.id = ?
                                         <property name="borderTopStyle">solid</property>
                                         <property name="borderTopWidth">thin</property>
                                         <property name="verticalAlign">middle</property>
+                                        <property name="height">0.3in</property>
                                         <cell id="3897">
                                             <property name="paddingTop">0pt</property>
                                             <property name="paddingLeft">0pt</property>
@@ -1032,7 +1036,6 @@ where MoveLineReport.id = ?
                                     <property name="height">0.8571428571428571in</property>
                                     <column id="3901"/>
                                     <row id="3902">
-                                        <property name="height">0.3in</property>
                                         <property name="borderBottomColor">#000000</property>
                                         <property name="borderBottomStyle">solid</property>
                                         <property name="borderBottomWidth">thin</property>
@@ -1043,6 +1046,7 @@ where MoveLineReport.id = ?
                                         <property name="borderTopStyle">solid</property>
                                         <property name="borderTopWidth">thin</property>
                                         <property name="verticalAlign">middle</property>
+                                        <property name="height">0.3in</property>
                                         <cell id="3903">
                                             <property name="paddingTop">0pt</property>
                                             <property name="paddingLeft">0pt</property>
@@ -1147,7 +1151,6 @@ where MoveLineReport.id = ?
                                     <property name="height">0.8487394957983193in</property>
                                     <column id="3907"/>
                                     <row id="3908">
-                                        <property name="height">0.3in</property>
                                         <property name="borderBottomColor">#000000</property>
                                         <property name="borderBottomStyle">solid</property>
                                         <property name="borderBottomWidth">thin</property>
@@ -1158,6 +1161,7 @@ where MoveLineReport.id = ?
                                         <property name="borderTopStyle">solid</property>
                                         <property name="borderTopWidth">thin</property>
                                         <property name="verticalAlign">middle</property>
+                                        <property name="height">0.3in</property>
                                         <cell id="3909">
                                             <property name="paddingTop">0pt</property>
                                             <property name="paddingLeft">0pt</property>
@@ -1256,7 +1260,6 @@ where MoveLineReport.id = ?
                                     <property name="height">0.8487394957983193in</property>
                                     <column id="3699"/>
                                     <row id="3712">
-                                        <property name="height">0.3in</property>
                                         <property name="borderBottomColor">#000000</property>
                                         <property name="borderBottomStyle">solid</property>
                                         <property name="borderBottomWidth">thin</property>
@@ -1264,6 +1267,7 @@ where MoveLineReport.id = ?
                                         <property name="borderTopStyle">solid</property>
                                         <property name="borderTopWidth">thin</property>
                                         <property name="verticalAlign">middle</property>
+                                        <property name="height">0.3in</property>
                                         <cell id="3713">
                                             <property name="paddingTop">0pt</property>
                                             <property name="paddingLeft">0pt</property>
@@ -1291,11 +1295,11 @@ false;
                                         </cell>
                                     </row>
                                     <row id="3702">
-                                        <property name="height">0.35in</property>
                                         <property name="borderBottomColor">#000000</property>
                                         <property name="borderBottomStyle">solid</property>
                                         <property name="borderBottomWidth">thin</property>
                                         <property name="verticalAlign">middle</property>
+                                        <property name="height">0.35in</property>
                                         <cell id="3703">
                                             <property name="paddingTop">0pt</property>
                                             <property name="paddingLeft">0pt</property>
@@ -1323,8 +1327,8 @@ false;
                                         </cell>
                                     </row>
                                     <row id="3912">
-                                        <property name="height">0.35in</property>
                                         <property name="verticalAlign">middle</property>
+                                        <property name="height">0.35in</property>
                                         <cell id="3913">
                                             <property name="paddingTop">0pt</property>
                                             <property name="paddingLeft">0pt</property>
@@ -1405,10 +1409,10 @@ false;
                                         <property name="width">2in</property>
                                     </column>
                                     <row id="3921">
-                                        <property name="height">0.3in</property>
                                         <property name="borderTopColor">#000000</property>
                                         <property name="borderTopStyle">solid</property>
                                         <property name="borderTopWidth">thin</property>
+                                        <property name="height">0.3in</property>
                                         <cell id="3922">
                                             <property name="colSpan">2</property>
                                             <property name="rowSpan">1</property>
@@ -1679,8 +1683,8 @@ false;
                                 <property name="width">2in</property>
                             </column>
                             <row id="3718">
-                                <property name="height">0.3in</property>
                                 <property name="verticalAlign">middle</property>
+                                <property name="height">0.3in</property>
                                 <cell id="3719">
                                     <property name="colSpan">2</property>
                                     <property name="rowSpan">1</property>
@@ -1698,8 +1702,8 @@ false;
                                 </cell>
                             </row>
                             <row id="3721">
-                                <property name="height">0.5in</property>
                                 <property name="verticalAlign">middle</property>
+                                <property name="height">0.5in</property>
                                 <cell id="3722">
                                     <property name="borderRightColor">#000000</property>
                                     <property name="borderRightStyle">solid</property>
