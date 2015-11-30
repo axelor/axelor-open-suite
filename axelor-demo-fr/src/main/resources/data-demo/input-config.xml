@@ -253,6 +253,12 @@
 	<input file="hr_publicHolidayPlanning.csv" type="com.axelor.apps.hr.db.PublicHolidayPlanning" separator=";" search="self.importId = :importId"/>
 	
 	<input file="hr_publicHolidayDay.csv" type="com.axelor.apps.hr.db.PublicHolidayDay" separator=";" search="self.importId = :importId"/>
+	
+	<input file="hr_hrConfig.csv" type="com.axelor.apps.hr.db.HRConfig" separator=";" search="self.importId = :importId"/>
+	
+	<input file="hr_kilometricAllowParam.csv" type="com.axelor.apps.hr.db.KilometricAllowParam" separator=";" search="self.code = :code"/>
+	
+	<input file="hr_kilometricAllowanceRate.csv" type="com.axelor.apps.hr.db.KilometricAllowanceRate" separator=";"/>
  	    
 	<input file="crm_event.csv" separator=";" type="com.axelor.apps.crm.db.Event" search="self.importId = :importId">
 		<bind to="startDateTime" eval="call:com.axelor.csv.script.ImportDateTime:importDateTime(startDateTimeNow)" column="startDateTimeNow"/>

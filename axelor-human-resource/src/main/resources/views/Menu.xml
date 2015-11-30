@@ -224,5 +224,14 @@
 		<context name="_isModel" expr="false"/>
 		<context name="_productTypeSelect" expr="storable"/>
 	</action-view>
+	
+	<menuitem name="kilometric-allow-param-all" parent="hr-conf"
+    	title="Kilometric Allowance Params"
+    	action="kilometric.allow.param.all"/>
+
+	<action-view name="kilometric.allow.param.all" title="Kilometric Allowance Params" model="com.axelor.apps.hr.db.KilometricAllowParam">
+    	<view type="grid" name="kilometric-allow-param-grid"/>
+	    <view type="form" name="kilometric-allow-param-form"/>
+	</action-view>
 
 </object-views>

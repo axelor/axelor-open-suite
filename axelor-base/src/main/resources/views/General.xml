@@ -85,7 +85,6 @@
 					<field name="currencyWsURL" colSpan="12"/>
 				</panel>
 		    </panel>
-		    <panel-related field="kilometricAllowanceRateList"/>
 		    <panel title="Portal" if-module="axelor-client-portal">
 		    	<field name="clientPortalManagement" colSpan="12"/>
 		    	<field name="manageSaleOrders" showIf="clientPortalManagement"/>
