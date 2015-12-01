@@ -23,6 +23,7 @@ import com.axelor.apps.base.db.Team;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.auth.db.repo.UserRepository;
+import com.axelor.meta.db.MetaFile;
 import com.google.inject.Inject;
 
 /**
@@ -79,6 +80,17 @@ public class UserServiceImpl implements UserService  {
 		}
 	
 		return null;
+	}
+	
+	
+	public MetaFile getUserActiveCompanyLogo() {
+
+		final User user = getUser();
+		
+		if(user == null || user.getActiveCompany() == null)  {  return null;  }
+		
+		return user.getActiveCompany().getLogo();
+		
 	}
     
 

@@ -21,6 +21,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Team;
 import com.axelor.auth.db.User;
+import com.axelor.meta.db.MetaFile;
 
 /**
  * UserService est une classe implémentant l'ensemble des services pour
@@ -55,6 +56,9 @@ public interface UserService {
 	 * 		La société
 	 */
 	public Long getUserActiveCompanyId(); 
+	
+	
+	public MetaFile getUserActiveCompanyLogo();
 	
 	/**
 	 * Méthode qui retourne l'équipe active de l'utilisateur connecté

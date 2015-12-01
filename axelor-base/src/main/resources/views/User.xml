@@ -56,6 +56,24 @@
         </panel-tabs>
     </form>
     
+    
+    <form name="user-preferences-form" id="base-user-preferences-form" title="Preferences" model="com.axelor.auth.db.User"
+        onNew="com.axelor.auth.AuthService:preferences" onSave="com.axelor.auth.AuthService:validate">
+		<panel title="User preferences" itemSpan="12">
+			<field name="image" showTitle="false"/>
+			<field name="language"/>
+	        <field name="activeCompany" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
+			<field name="singleTab" widget="inline-checkbox"/>
+			<field name="change" title="Change password?" widget="inline-checkbox"/>
+			<panel showIf="change">
+				<field name="newPassword" title="Password" placeholder="new password" widget="password" requiredIf="change" validIf="(!change) || (newPassword.length &gt;= 4 &amp;&amp; confirm == newPassword)"/>
+				<field name="confirm" title="Confirm" placeholder="confirm password" widget="password"/>
+			</panel>
+		</panel>
+	</form>
+    
+    
+    
     <action-attrs name="action-user-attrs-domain-followers">
     	<attribute name="domain" for="followersCalUserSet" expr="eval: &quot; self.id IN 
     	(${__repo__.of(CalendarManagement).all().filter('self.user.id = ?1', id).fetch().collect{it.parentUser.id}.join(',')}) &quot;" 
