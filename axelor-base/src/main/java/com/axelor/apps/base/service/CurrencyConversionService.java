@@ -21,7 +21,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.net.URL;
 
-import org.joda.time.LocalDate;
+import org.joda.time.LocalDateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -106,7 +106,7 @@ public class CurrencyConversionService {
 	}
 
 	@Transactional
-	public void createCurrencyConversionLine(Currency currencyFrom, Currency currencyTo, LocalDate fromDate, BigDecimal rate, General general, String variations){
+	public void createCurrencyConversionLine(Currency currencyFrom, Currency currencyTo, LocalDateTime fromDate, BigDecimal rate, General general, String variations){
 		LOG.debug("Create new currency conversion line CurrencyFrom: {}, CurrencyTo: {},FromDate: {},ConversionRate: {}, General: {}, Variations: {}",
 				   new Object[]{currencyFrom,currencyTo,fromDate,rate,general,variations});
 
@@ -127,7 +127,7 @@ public class CurrencyConversionService {
 	}
 
 
-	public BigDecimal getRate(Currency currencyFrom, Currency currencyTo, LocalDate rateDate){
+	public BigDecimal getRate(Currency currencyFrom, Currency currencyTo, LocalDateTime rateDate){
 
 		LOG.debug("Get Last rate for CurrencyFrom: {} CurrencyTo: {} RateDate: {}",new Object[]{currencyFrom,currencyTo,rateDate});
 
@@ -145,4 +145,5 @@ public class CurrencyConversionService {
 
 		return rate;
 	}
+	
 }

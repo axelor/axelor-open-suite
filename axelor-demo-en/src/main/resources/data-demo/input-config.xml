@@ -107,7 +107,10 @@
 	
 	<input file="auth_user.csv" separator=";" search="self.importId = :importId" type="com.axelor.auth.db.User" update="true"/>
 
-	<input file="base_currencyConversionLine.csv" separator=";" type="com.axelor.apps.base.db.CurrencyConversionLine" search="self.importId = :importId"  />
+	<input file="base_currencyConversionLine.csv" separator=";" type="com.axelor.apps.base.db.CurrencyConversionLine" search="self.importId = :importId">
+	    <bind to="fromDate" eval="call:com.axelor.csv.script.ImportDateTime:importDateTime(fromDate)" column="fromDate"/>
+		<bind to="toDate" eval="call:com.axelor.csv.script.ImportDateTime:importDateTime(toDate)" column="toDate" />
+	</input>	    
 	
 	<input file="account_journalType.csv" separator=";" type="com.axelor.apps.account.db.JournalType" search="self.importId = :importId" />
 	
