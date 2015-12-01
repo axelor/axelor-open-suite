@@ -21,7 +21,7 @@ import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.joda.time.LocalDate;
+import org.joda.time.LocalDateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -93,7 +93,7 @@ public class CurrencyConversionLineController {
 		if(currencyFrom.get("id") != null && currencyTo.get("id") != null){
 			Currency fromCurrency = currencyRepo.find(Long.parseLong(currencyFrom.get("id").toString()));
 			Currency toCurrency  = currencyRepo.find(Long.parseLong(currencyTo.get("id").toString()));
-			LocalDate today = gs.getTodayDate();
+			LocalDateTime today = gs.getTodayDateTime().toLocalDateTime();
 			CurrencyConversionLine cclCoverd = cclRepo.all().filter("startCurrency = ?1 AND endCurrency = ?2 AND fromDate >= ?3 AND (toDate <= ?3 OR toDate = null)",fromCurrency,toCurrency,today).fetchOne();
 			
 			if(cclCoverd == null){
@@ -101,7 +101,7 @@ public class CurrencyConversionLineController {
 				LOG.debug("Last conversion line {}",ccl);
 				
 				if(ccl != null && ccl.getToDate() == null){
-					ccl.setToDate(today.minusDays(1));
+					ccl.setToDate(today.minusMinutes(1));
 					ccs.saveCurrencyConversionLine(ccl);
 				}
 				
@@ -163,7 +163,7 @@ public class CurrencyConversionLineController {
 					response.setValue("newExchangeRate", rate);
 				else
 					response.setValue("exchangeRate", rate);
-				response.setValue("fromDate", gs.getTodayDate());
+				response.setValue("fromDate", gs.getTodayDateTime());
 				if(prevLine != null)
 					response.setValue("variations", ccs.getVariations(rate, prevLine.getExchangeRate()));
 			}

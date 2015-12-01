@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.5.0.v201506092134 Build &lt;@BUILD@></property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.4.2.v201410272105 Build &lt;4.4.2.v20150217-1805></property>
     <list-property name="userProperties">
         <structure>
             <property name="name">test</property>
@@ -79,13 +79,11 @@
     <property name="imageDPI">96</property>
     <parameters>
         <scalar-parameter name="SaleOrderId" id="3265">
+            <property name="hidden">true</property>
             <property name="valueType">static</property>
             <property name="isRequired">true</property>
             <property name="dataType">decimal</property>
             <property name="distinct">true</property>
-            <simple-property-list name="defaultValue">
-                <value type="constant">6</value>
-            </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
             <property name="controlType">text-box</property>
@@ -94,6 +92,7 @@
             </structure>
         </scalar-parameter>
         <scalar-parameter name="UserName" id="3796">
+            <property name="hidden">true</property>
             <property name="valueType">static</property>
             <property name="dataType">string</property>
             <property name="distinct">true</property>
@@ -105,6 +104,7 @@
             </structure>
         </scalar-parameter>
         <scalar-parameter name="DBName" id="3797">
+            <property name="hidden">true</property>
             <property name="valueType">static</property>
             <property name="dataType">string</property>
             <property name="distinct">true</property>
@@ -116,6 +116,7 @@
             </structure>
         </scalar-parameter>
         <scalar-parameter name="Password" id="3798">
+            <property name="hidden">true</property>
             <property name="valueType">static</property>
             <property name="dataType">string</property>
             <property name="distinct">true</property>
@@ -127,8 +128,9 @@
             </structure>
         </scalar-parameter>
         <scalar-parameter name="Locale" id="3740">
+            <property name="hidden">true</property>
             <property name="valueType">static</property>
-            <property name="isRequired">true</property>
+            <property name="isRequired">false</property>
             <property name="dataType">string</property>
             <property name="distinct">true</property>
             <simple-property-list name="defaultValue">
@@ -142,9 +144,14 @@
             </structure>
         </scalar-parameter>
         <scalar-parameter name="AttachmentPath" id="3849">
+            <property name="hidden">true</property>
             <property name="valueType">static</property>
+            <property name="isRequired">false</property>
             <property name="dataType">string</property>
             <property name="distinct">true</property>
+            <simple-property-list name="defaultValue">
+                <value type="constant"></value>
+            </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
             <property name="controlType">text-box</property>
@@ -153,9 +160,14 @@
             </structure>
         </scalar-parameter>
         <scalar-parameter name="DefaultDriver" id="3819">
+            <property name="hidden">true</property>
             <property name="valueType">static</property>
+            <property name="isRequired">true</property>
             <property name="dataType">string</property>
             <property name="distinct">true</property>
+            <simple-property-list name="defaultValue">
+                <value type="constant">org.postgresql.Driver</value>
+            </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
             <property name="controlType">text-box</property>
@@ -183,7 +195,9 @@
                 </ex-property>
             </list-property>
             <property name="odaDriverClass">org.postgresql.Driver</property>
-            <property name="odaURL">jdbc:postgresql://localhost:5432/</property>
+            <property name="odaURL">jdbc:postgresql://localhost:5432/axelor-business-suite</property>
+            <property name="odaUser">axelor</property>
+            <encrypted-property name="odaPassword" encryptionID="base64">bG1kcGRsYWE=</encrypted-property>
         </oda-data-source>
     </data-sources>
     <data-sets>
@@ -194,312 +208,364 @@
                     <property name="columnName">id</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">id</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">id</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">saleOrderSeq</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">saleOrderSeq</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">saleOrderSeq</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">CreationDate</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">CreationDate</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">CreationDate</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">SalemanName</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">SalemanName</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">SalemanName</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">SalemanPhone</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">SalemanPhone</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">SalemanPhone</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">SalemanEmail</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">SalemanEmail</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">SalemanEmail</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">DisplaySaleman</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">DisplaySaleman</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">DisplaySaleman</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">ShipmentDate</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">ShipmentDate</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">ShipmentDate</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">ClientBox</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">ClientBox</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">ClientBox</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">DisplayDeliveryCondition</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">DisplayDeliveryCondition</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">DisplayDeliveryCondition</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">CompanyName</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">CompanyName</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">CompanyName</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">logo_path</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">logo_path</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">logo_path</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">partner_type_select</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">partner_type_select</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">partner_type_select</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">ClientPartName</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">ClientPartName</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">ClientPartName</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">ClientPartFirstName</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">ClientPartFirstName</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">ClientPartFirstName</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">ClientTitle</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">ClientTitle</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">ClientTitle</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">ContactName</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">ContactName</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">ContactName</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">ContactFirstName</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">ContactFirstName</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">ContactFirstName</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">invAddress2</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">invAddress2</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">invAddress2</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">invAddress3</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">invAddress3</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">invAddress3</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">invAddress4</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">invAddress4</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">invAddress4</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">invAddress5</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">invAddress5</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">invAddress5</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">invAddress6</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">invAddress6</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">invAddress6</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">invoicecountry</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">invoicecountry</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">invoicecountry</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">PaymentCondName</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">PaymentCondName</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">PaymentCondName</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">PaymentMode</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">PaymentMode</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">PaymentMode</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">delAddress2</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">delAddress2</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">delAddress2</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">delAddress3</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">delAddress3</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">delAddress3</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">delAddress4</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">delAddress4</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">delAddress4</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">delAddress5</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">delAddress5</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">delAddress5</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">delAddress6</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">delAddress6</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">delAddress6</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">DeliveryCountry</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">DeliveryCountry</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">DeliveryCountry</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">ex_tax_total</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">ex_tax_total</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">ex_tax_total</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">tax_total</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">tax_total</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">tax_total</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">in_tax_total</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">in_tax_total</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">in_tax_total</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">bank_address</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">bank_address</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">bank_address</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">iban</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">iban</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">iban</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">bic</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">bic</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">bic</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">CurrencyCode</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">CurrencyCode</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">CurrencyCode</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">external_reference</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">external_reference</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">external_reference</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">header</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">header</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">header</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">footer</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">footer</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">footer</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">description</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">description</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">description</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">invAddressId</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">invAddressId</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">invAddressId</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">delAddressId</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">delAddressId</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">delAddressId</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">durationName</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">durationName</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">durationName</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">deliveryDate</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">deliveryDate</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">deliveryDate</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">deliveryCondition</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">deliveryCondition</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">deliveryCondition</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">hideDiscount</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">hideDiscount</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">hideDiscount</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">displayProductCodeOnPrinting</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">displayProductCodeOnPrinting</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">displayProductCodeOnPrinting</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">displayTaxDetailOnPrinting</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">displayTaxDetailOnPrinting</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">displayTaxDetailOnPrinting</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">subscription</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">subscription</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">subscription</text-property>
                 </structure>
             </list-property>
@@ -511,6 +577,7 @@
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">-1</property>
                     <property name="position">1</property>
+                    <property name="isOptional">false</property>
                     <property name="isInput">true</property>
                     <property name="isOutput">false</property>
                 </structure>
@@ -1181,7 +1248,7 @@ left outer join account_payment_condition as PaymentCondition on (SaleOrder.paym
 left outer join account_payment_mode as PaymentMode on (SaleOrder.payment_mode = PaymentMode.id)
 left outer join base_address as DeliveryAddress on (SaleOrder.delivery_address = DeliveryAddress.id)
 left outer join base_country as DeliveryCountry on (DeliveryAddress.addressl7country = DeliveryCountry.id)
-left outer join base_bank_details as BankDetail on (Company.default_bank_details = BankDetail.id)
+left outer join base_bank_details as BankDetail on (SaleOrder.company_bank_details = BankDetail.id)
 left outer join base_currency as Currency on (SaleOrder.currency = Currency.id)
 left outer join base_printing_settings as PrintingSettings on (Company.printing_settings = PrintingSettings.id)
 left outer join auth_user as SalemanUser on (SaleOrder.saleman_user = SalemanUser.id) 
@@ -1207,6 +1274,9 @@ where SaleOrder.id = ? ]]></xml-property>
           <design:scale>0</design:scale>
           <design:nullability>Unknown</design:nullability>
         </design:attributes>
+        <design:inputAttributes>
+          <design:elementAttributes/>
+        </design:inputAttributes>
       </design:ParameterDefinition>
     </parameter>
   </DataSetParameters>
@@ -3351,6 +3421,27 @@ else row["Column Binding_tot_sub"]</expression>
                                 <expression name="expression" type="javascript">dataSetRow["is_title_line"]</expression>
                                 <property name="dataType">integer</property>
                             </structure>
+                            <structure>
+                                <property name="name">Aggregation_tot_disc_no_sub</property>
+                                <text-property name="displayName">tot_disc_no_sub</text-property>
+                                <property name="dataType">float</property>
+                                <property name="aggregateFunction">SUM</property>
+                                <list-property name="arguments">
+                                    <structure>
+                                        <property name="name">Expression</property>
+                                        <expression name="value" type="javascript">dataSetRow["totalDiscountAmount"]</expression>
+                                    </structure>
+                                </list-property>
+                                <expression name="filterExpr" type="javascript">dataSetRow["product_type_select"] != 'subscriptable'</expression>
+                                <property name="allowExport">true</property>
+                            </structure>
+                            <structure>
+                                <property name="name">Column Binding_tot_all_sub</property>
+                                <text-property name="displayName">tot_all_sub</text-property>
+                                <expression name="expression" type="javascript">row["Aggregation_tot_disc_no_sub"]+row["Aggregation_total_discount_sub"]</expression>
+                                <property name="dataType">decimal</property>
+                                <property name="allowExport">true</property>
+                            </structure>
                         </list-property>
                         <column id="3713">
                             <list-property name="visibility">
@@ -3381,7 +3472,7 @@ else row["Column Binding_tot_sub"]</expression>
                             <list-property name="visibility">
                                 <structure>
                                     <property name="format">all</property>
-                                    <expression name="valueExpr" type="javascript">row._outer["hideDiscount"] == 1 || row["totalDiscountAmount"] >= -0.1 || row["product_type_select"]=='subscriptable'</expression>
+                                    <expression name="valueExpr" type="javascript">row._outer["hideDiscount"] == 1 || (row["Column Binding_tot_all_sub"]== 0)</expression>
                                 </structure>
                             </list-property>
                             <property name="width">0.6in</property>
@@ -4399,42 +4490,55 @@ else 'Subscriptions'</value>
                     <property name="borderLeftWidth">thin</property>
                     <property name="borderRightStyle">solid</property>
                     <property name="borderRightWidth">thin</property>
-                    <text id="4175">
-                        <property name="fontSize">9pt</property>
-                        <property name="fontWeight">normal</property>
-                        <property name="textAlign">left</property>
-                        <property name="dataSet">TranslateDS</property>
-                        <list-property name="visibility">
-                            <structure>
-                                <property name="format">all</property>
-                                <expression name="valueExpr" type="javascript">row._outer["hideDiscount"]== 1 || row._outer["subscription"]</expression>
-                            </structure>
-                        </list-property>
-                        <list-property name="paramBindings">
-                            <structure>
-                                <property name="paramName">param_1</property>
-                                <simple-property-list name="expression">
-                                    <value type="javascript">'SaleOrder.totalDiscount'</value>
-                                </simple-property-list>
-                            </structure>
-                        </list-property>
-                        <list-property name="boundDataColumns">
-                            <structure>
-                                <property name="name">key</property>
-                                <text-property name="displayName">key</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
-                                <property name="dataType">string</property>
-                            </structure>
-                            <structure>
-                                <property name="name">translation</property>
-                                <text-property name="displayName">translation</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
-                                <property name="dataType">string</property>
-                            </structure>
-                        </list-property>
-                        <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
-                    </text>
+                    <table id="4293">
+                        <property name="dataBindingRef">SaleOrderLines</property>
+                        <column id="4300"/>
+                        <header>
+                            <row id="4294">
+                                <cell id="4295">
+                                    <text id="4175">
+                                        <property name="fontSize">9pt</property>
+                                        <property name="fontWeight">normal</property>
+                                        <property name="textAlign">left</property>
+                                        <property name="dataSet">TranslateDS</property>
+                                        <list-property name="visibility">
+                                            <structure>
+                                                <property name="format">all</property>
+                                                <expression name="valueExpr" type="javascript">row._outer._outer["hideDiscount"]== 1 || row._outer._outer["subscription"] || row._outer["Aggregation_tot_disc_no_sub"] == 0</expression>
+                                            </structure>
+                                        </list-property>
+                                        <list-property name="paramBindings">
+                                            <structure>
+                                                <property name="paramName">param_1</property>
+                                                <simple-property-list name="expression">
+                                                    <value type="javascript">'SaleOrder.totalDiscount'</value>
+                                                </simple-property-list>
+                                            </structure>
+                                        </list-property>
+                                        <list-property name="boundDataColumns">
+                                            <structure>
+                                                <property name="name">key</property>
+                                                <text-property name="displayName">key</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                                <property name="dataType">string</property>
+                                            </structure>
+                                            <structure>
+                                                <property name="name">translation</property>
+                                                <text-property name="displayName">translation</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                                <property name="dataType">string</property>
+                                            </structure>
+                                        </list-property>
+                                        <property name="contentType">html</property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+                                    </text>
+                                </cell>
+                            </row>
+                        </header>
+                        <group id="4301">
+                            <property name="groupName">NewTableGroup1</property>
+                        </group>
+                    </table>
                 </cell>
                 <cell id="4164">
                     <property name="borderLeftStyle">solid</property>
@@ -4451,7 +4555,7 @@ else 'Subscriptions'</value>
                         <list-property name="visibility">
                             <structure>
                                 <property name="format">all</property>
-                                <expression name="valueExpr" type="javascript">row._outer["hideDiscount"]== 1 || row._outer["subscription"]</expression>
+                                <expression name="valueExpr" type="javascript">row._outer["hideDiscount"]== 1 || row._outer["subscription"] || row["Aggregation_tot_disc_no_sub"] == 0</expression>
                             </structure>
                         </list-property>
                         <property name="resultSetColumn">totalDiscount</property>
@@ -4464,10 +4568,11 @@ else 'Subscriptions'</value>
                         <property name="fontSize">9pt</property>
                         <property name="fontWeight">normal</property>
                         <property name="textAlign">left</property>
+                        <property name="dataBindingRef">SaleOrderLines</property>
                         <list-property name="visibility">
                             <structure>
                                 <property name="format">all</property>
-                                <expression name="valueExpr" type="javascript">row["hideDiscount"] == 1 || row["subscription"]</expression>
+                                <expression name="valueExpr" type="javascript">row._outer["hideDiscount"] == 1 || row._outer["subscription"] || row["Aggregation_tot_disc_no_sub"] == 0</expression>
                             </structure>
                         </list-property>
                         <property name="contentType">html</property>
@@ -5596,6 +5701,12 @@ else 'Subscriptions'</value>
                 <cell id="4251"/>
             </row>
             <row id="4005">
+                <list-property name="visibility">
+                    <structure>
+                        <property name="format">all</property>
+                        <expression name="valueExpr" type="javascript">row["bank_address"] == null || row["bank_address"]==""</expression>
+                    </structure>
+                </list-property>
                 <cell id="4006"/>
                 <cell id="4007"/>
                 <cell id="4008"/>
@@ -5641,6 +5752,12 @@ else 'Subscriptions'</value>
                 </cell>
             </row>
             <row id="4012">
+                <list-property name="visibility">
+                    <structure>
+                        <property name="format">all</property>
+                        <expression name="valueExpr" type="javascript">row["iban"] == null || row["iban"] == ""</expression>
+                    </structure>
+                </list-property>
                 <cell id="4013"/>
                 <cell id="4014"/>
                 <cell id="4015"/>
@@ -5663,6 +5780,12 @@ else 'Subscriptions'</value>
                 </cell>
             </row>
             <row id="4019">
+                <list-property name="visibility">
+                    <structure>
+                        <property name="format">all</property>
+                        <expression name="valueExpr" type="javascript">row["bic"] == null || row["bic"] == ""</expression>
+                    </structure>
+                </list-property>
                 <cell id="4020"/>
                 <cell id="4021"/>
                 <cell id="4022"/>

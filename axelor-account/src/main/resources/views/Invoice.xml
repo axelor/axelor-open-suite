@@ -61,6 +61,7 @@
 			<field name="invoiceId"/>
 			<field name="operationTypeSelect" onChange="action-group-account-invoice-operationtype-onchange" readonlyIf="statusSelect != 1"/>
 			<field name="company" widget="SuggestBox" onChange="action-group-account-invoice-company-onchange" form-view="company-form" grid-view="company-grid" readonlyIf="statusSelect != 1"/>
+			<field name="companyBankDetails" widget="SuggestBox" onSelect="action-accounting-batch-attrs-company-bank-details-domain" form-view="bank-details-form" grid-view="bank-details-grid"/>
 			<field name="currency" onChange="action-invoice-attrs-change-total-title" readonlyIf="statusSelect != 1" form-view="currency-form" grid-view="currency-grid"/>
 			<field name="project" if-module="axelor-business-project" onSelect="action-invoice-attrs-domain-project" form-view="project-form" grid-view="project-grid"/>
 			<field name="inAti" onChange="action-invoice-attrs-in-ati"/>
@@ -75,7 +76,7 @@
 			<field name="address" onSelect="action-invoice-attrs-domain-address" form-view="address-partner-address-form" canNew="true" />
 			<field name="paymentMode" grid-view="payment-mode-grid" form-view="payment-mode-form" widget="SuggestBox" onSelect="action-set-payment-mode-domain"/>
 			<field name="paymentCondition" readonlyIf="statusSelect == 3" widget="SuggestBox" onChange="action-invoice-record-due-date" form-view="payment-condition-form" grid-view="payment-condition-grid"/>
-			<field name="bankDetails" hideIf="operationTypeSelect &gt;= 3" widget="SuggestBox" onSelect="action-accounting-batch-attrs-bank-details-domain" form-view="bank-details-form" grid-view="bank-details-grid"/>
+			<field name="bankDetails" hideIf="operationTypeSelect &gt;= 3" widget="SuggestBox" onSelect="action-invoice-attrs-bank-details-from-partner-domain" form-view="bank-details-form" grid-view="bank-details-grid"/>
 			<field name="priceList" onChange="action-invoice-record-hide-discount" readonlyIf="statusSelect != 1" onSelect="action-invoice-attrs-domain-priceList" form-view="price-list-form" grid-view="price-list-grid"/>
 			<field name="saleOrder" if="!__config__.general.getManageInvoicedAmountByLine()" if-module="axelor-supplychain" onChange="action-invoice-method-fill-in-lines" form-view="sale-order-form" grid-view="sale-order-grid"/>
 			<field name="message" />
@@ -171,27 +172,27 @@
 		<panel sidebar="true" title="Totals" itemSpan="6">
 		    <field name="currency.symbol" hidden="true"/>
 			<field name="inTaxTotal" css="order-subtotal" showTitle="false" colSpan="12">
-		       <viewer>
-		         &lt;dl class="dl-horizontal"&gt;
-		           &lt;dt x-translate&gt;Total W.T.&lt;/dt&gt;
-		           &lt;dd&gt;{{record.exTaxTotal}} {{record.currency.symbol}}&lt;/dd&gt;
-		           &lt;dt x-translate&gt;Total tax&lt;/dt&gt;
-		           &lt;dd&gt;{{record.taxTotal}} {{record.currency.symbol}}&lt;/dd&gt;
-		           &lt;dt class="order-subtotal-total" x-translate&gt;Total A.T.I.&lt;/dt&gt;
-		           &lt;dd class="order-subtotal-total"&gt;{{record.inTaxTotal}} {{record.currency.symbol}}&lt;/dd&gt;
-		           &lt;dt x-translate&gt;Amount paid &lt;/dt&gt;
-		           &lt;dd&gt;{{record.amountPaid}} {{record.currency.symbol}}&lt;/dd&gt;
-		         &lt;/dl&gt;
+		       <viewer><![CDATA[ 
+		         <dl class="dl-horizontal">
+		           <dt x-translate>Total W.T.</dt>
+		           <dd>{{record.exTaxTotal}} {{record.currency.symbol}}</dd>
+		           <dt x-translate>Total tax</dt>
+		           <dd>{{record.taxTotal}} {{record.currency.symbol}}</dd>
+		           <dt class="order-subtotal-total" x-translate>Total A.T.I.</dt>
+		           <dd class="order-subtotal-total">{{record.inTaxTotal}} {{record.currency.symbol}}</dd>
+		           <dt x-translate>Amount paid </dt>
+		           <dd>{{record.amountPaid}} {{record.currency.symbol}}</dd>
+		         </dl>]]>
 		       </viewer>
 		     </field>
 		     <field name="invoicePaymentList" colSpan="12" showTitle="false" readonly="true" css="order-subtotal">
-              	<viewer> 
-				  &lt;span class="form-item-container"&gt;
-         			&lt;dl class="dl-horizontal"&gt;
-	           		 &lt;dt x-translate&gt;Paid on {{record.paymentDate}}&lt;/dt&gt;
-	           		 &lt;dd&gt;-{{record.amount}} {{record.currency.symbol}}&lt;/dd&gt;
-	           		&lt;/dl&gt; 
-           	      &lt;/span&gt;   
+              	<viewer><![CDATA[ 
+				  <span class="form-item-container">
+         			<dl class="dl-horizontal">
+	           		 <dt x-translate>Paid on {{record.paymentDate}}</dt>
+	           		 <dd>-{{record.amount}} {{record.currency.symbol}}</dd>
+	           		</dl> 
+           	      </span>]]>   
       			</viewer>
       			<editor layout="table" x-show-titles="false"> <label title="Paid on"/>
                      <field name="paymentDate"/>
@@ -202,11 +203,11 @@
 		         </editor>
 		     </field>
 		     <field name="inTaxTotal" css="order-subtotal" showTitle="false" colSpan="12">
-		       <viewer>
-		         &lt;dl class="dl-horizontal"&gt;
-		           &lt;dt class="order-subtotal-total" x-translate&gt;Amount due&lt;/dt&gt;
-		           &lt;dd class="order-subtotal-total"&gt;{{record.inTaxTotal - record.amountPaid}} {{record.currency.symbol}}&lt;/dd&gt;
-		         &lt;/dl&gt;
+		       <viewer><![CDATA[
+		         <dl class="dl-horizontal">
+		           <dt class="order-subtotal-total" x-translate>Amount due</dt>
+		           <dd class="order-subtotal-total">{{record.inTaxTotal - record.amountPaid}} {{record.currency.symbol}}</dd>
+		         </dl>]]>
 		       </viewer>
 		     </field>
 		</panel>
@@ -258,6 +259,7 @@
     
     <action-group name="action-account-invoice-onnew-group">
 	    <action name="action-invoice-record-default"/>
+	    <action name="action-invoice-record-company-change"/>
 	    <action name="action-invoice-attrs-collapse-irrecoverable-group"/>
 	    <action name="action-invoice-method-get-journal" if="operationTypeSelect != null &amp;&amp; operationTypeSelect != 0"/>
 	    <action name="action-invoice-record-in-ati"/>
@@ -325,7 +327,10 @@
     </action-record>
     
     <action-record name="action-invoice-record-company-change" model="com.axelor.apps.account.db.Invoice">
-        <field name="bankDetails" expr="eval: company?.defaultBankDetails"/>
+        <field name="companyBankDetails" expr="eval: __repo__.of(AccountingSituation).all().filter('self.company.id = ?1 AND self.partner.id = ?2', company?.id, partner?.id).fetchOne()?.companyBankDetails" 
+    		if="partner != null &amp;&amp; __repo__.of(AccountingSituation).all().filter('self.company.id = ?1 AND self.partner.id = ?2', company?.id, partner?.id).fetchOne()?.companyBankDetails != null"/>
+    	<field name="companyBankDetails" expr="eval: company?.defaultBankDetails"
+    		if="partner == null || __repo__.of(AccountingSituation).all().filter('self.company.id = ?1 AND self.partner.id = ?2', company?.id, partner?.id).fetchOne()?.companyBankDetails == null"/>
     </action-record>
     
     <action-record name="action-invoice-record-partner-change" model="com.axelor.apps.account.db.Invoice">
@@ -338,6 +343,10 @@
 		<field name="priceList" expr="eval: partner?.salePriceList" if="operationTypeSelect == 3 || operationTypeSelect == 4"/>
 		<field name="priceList" expr="eval: partner?.purchasePriceList" if="operationTypeSelect == 1 || operationTypeSelect == 2"/>
 		<field name="bankDetails" expr="eval: partner?.bankDetailsList.find{ it -&gt; it.isDefault } ? partner?.bankDetailsList.find{ it -&gt; it.isDefault } : bankDetails" />
+    	<field name="companyBankDetails" expr="eval: __repo__.of(AccountingSituation).all().filter('self.company.id = ?1 AND self.partner.id = ?2', company?.id, partner?.id).fetchOne()?.companyBankDetails" 
+    		if="partner != null &amp;&amp; __repo__.of(AccountingSituation).all().filter('self.company.id = ?1 AND self.partner.id = ?2', company?.id, partner?.id).fetchOne()?.companyBankDetails != null"/>
+    	<field name="companyBankDetails" expr="eval: company?.defaultBankDetails"
+    		if="partner == null || __repo__.of(AccountingSituation).all().filter('self.company.id = ?1 AND self.partner.id = ?2', company?.id, partner?.id).fetchOne()?.companyBankDetails == null"/>
     </action-record>
     
     
@@ -351,6 +360,10 @@
     
     
     <!-- ACTION ATTRS -->
+    
+    <action-attrs name="action-invoice-attrs-bank-details-from-partner-domain">
+    	<attribute name="domain" for="bankDetails" expr="&quot; self.id IN (${clientPartner?.bankDetailsList?.collect{it.id}.join(',')}) &quot;"/>
+    </action-attrs>
     
     <action-attrs name="action-invoice-attrs-hide-cancel-button">
     	<attribute name="hidden" for="cancel" expr="statusSelect == 4 || (statusSelect == 3 &amp;&amp; !company?.accountConfig?.allowCancelVentilatedInvoice)"/>

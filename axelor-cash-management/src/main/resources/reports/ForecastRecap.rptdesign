@@ -29,12 +29,10 @@
     <property name="imageDPI">96</property>
     <parameters>
         <scalar-parameter name="ForecastRecapId" id="211">
+            <property name="hidden">true</property>
             <property name="valueType">static</property>
             <property name="dataType">string</property>
             <property name="distinct">true</property>
-            <simple-property-list name="defaultValue">
-                <value type="constant">1</value>
-            </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
             <property name="controlType">text-box</property>
@@ -43,6 +41,7 @@
             </structure>
         </scalar-parameter>
         <scalar-parameter name="UserName" id="3796">
+            <property name="hidden">true</property>
             <property name="valueType">static</property>
             <property name="dataType">string</property>
             <property name="distinct">true</property>
@@ -54,6 +53,7 @@
             </structure>
         </scalar-parameter>
         <scalar-parameter name="DBName" id="3797">
+            <property name="hidden">true</property>
             <property name="valueType">static</property>
             <property name="dataType">string</property>
             <property name="distinct">true</property>
@@ -65,6 +65,7 @@
             </structure>
         </scalar-parameter>
         <scalar-parameter name="Password" id="3798">
+            <property name="hidden">true</property>
             <property name="valueType">static</property>
             <property name="dataType">string</property>
             <property name="distinct">true</property>
@@ -76,12 +77,13 @@
             </structure>
         </scalar-parameter>
         <scalar-parameter name="Locale" id="3740">
+            <property name="hidden">true</property>
             <property name="valueType">static</property>
-            <property name="isRequired">true</property>
+            <property name="isRequired">false</property>
             <property name="dataType">string</property>
             <property name="distinct">true</property>
             <simple-property-list name="defaultValue">
-                <value type="constant">fr</value>
+                <value type="constant">en</value>
             </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
@@ -91,9 +93,14 @@
             </structure>
         </scalar-parameter>
         <scalar-parameter name="AttachmentPath" id="3849">
+            <property name="hidden">true</property>
             <property name="valueType">static</property>
+            <property name="isRequired">false</property>
             <property name="dataType">string</property>
             <property name="distinct">true</property>
+            <simple-property-list name="defaultValue">
+                <value type="constant"></value>
+            </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
             <property name="controlType">text-box</property>
@@ -102,9 +109,14 @@
             </structure>
         </scalar-parameter>
         <scalar-parameter name="DefaultDriver" id="3819">
+            <property name="hidden">true</property>
             <property name="valueType">static</property>
+            <property name="isRequired">true</property>
             <property name="dataType">string</property>
             <property name="distinct">true</property>
+            <simple-property-list name="defaultValue">
+                <value type="constant">org.postgresql.Driver</value>
+            </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
             <property name="controlType">text-box</property>
@@ -133,8 +145,6 @@
             </list-property>
             <property name="odaDriverClass">org.postgresql.Driver</property>
             <property name="odaURL">jdbc:postgresql://localhost:5432/axelor-business-suite</property>
-            <property name="odaUser">axelor</property>
-            <encrypted-property name="odaPassword" encryptionID="base64">Z3VpdGFyZTAzMDc5Mg==</encrypted-property>
         </oda-data-source>
     </data-sources>
     <data-sets>

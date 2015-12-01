@@ -20,6 +20,7 @@
 	    	<field name="validatedLeaveTemplate" canNew="true" form-view="template-form" grid-view="template-grid"/>
 	    	<field name="refusedLeaveTemplate" canNew="true" form-view="template-form" grid-view="template-grid"/>
 	  	</panel>
+	  	<panel-related field="kilometricAllowanceRateList" colSpan="12"/>
 	</form>
 	
 	<action-record name="action-hr-config-record-default" model="com.axelor.apps.hr.db.HRConfig">

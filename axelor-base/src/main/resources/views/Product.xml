@@ -50,6 +50,7 @@
       		</panel>
     		<panel colSpan="2">
       			<field name="picture" showTitle="false" colSpan="12" widget="Image"/>
+      			<field name="barCode" showTitle="false" colSpan="12" widget="Image" readonly="true" x-height="50"/>
     		</panel>
     		<panel colSpan="10">
       

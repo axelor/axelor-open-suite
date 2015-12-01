@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.2.2.v201301221637 Build &lt;4.2.2.v20130206-1509></property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.4.2.v201410272105 Build &lt;4.4.2.v20150217-1805></property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -25,6 +25,7 @@
     <property name="imageDPI">96</property>
     <parameters>
         <scalar-parameter name="MoveLineReportId" id="570">
+            <property name="hidden">true</property>
             <property name="valueType">static</property>
             <property name="isRequired">true</property>
             <property name="dataType">string</property>
@@ -41,6 +42,7 @@
             </structure>
         </scalar-parameter>
         <scalar-parameter name="DBName" id="3033">
+            <property name="hidden">true</property>
             <property name="valueType">static</property>
             <property name="dataType">string</property>
             <property name="distinct">true</property>
@@ -52,6 +54,7 @@
             </structure>
         </scalar-parameter>
         <scalar-parameter name="UserName" id="3034">
+            <property name="hidden">true</property>
             <property name="valueType">static</property>
             <property name="dataType">string</property>
             <property name="distinct">true</property>
@@ -63,6 +66,7 @@
             </structure>
         </scalar-parameter>
         <scalar-parameter name="Password" id="3035">
+            <property name="hidden">true</property>
             <property name="valueType">static</property>
             <property name="dataType">string</property>
             <property name="distinct">true</property>
@@ -1577,10 +1581,10 @@ row["amount_remaining"]
             </header>
             <detail>
                 <row id="223">
-                    <property name="height">0.26in</property>
                     <property name="borderTopColor">#000000</property>
                     <property name="borderTopStyle">solid</property>
                     <property name="borderTopWidth">thin</property>
+                    <property name="height">0.26in</property>
                     <cell id="224">
                         <property name="borderLeftColor">#000000</property>
                         <property name="borderLeftStyle">solid</property>
@@ -1706,10 +1710,10 @@ row["amount_remaining"]
                     </cell>
                 </row>
                 <row id="2488">
-                    <property name="height">0.2604166666666667in</property>
                     <property name="borderBottomColor">#000000</property>
                     <property name="borderBottomStyle">solid</property>
                     <property name="borderBottomWidth">thin</property>
+                    <property name="height">0.2604166666666667in</property>
                     <list-property name="visibility">
                         <structure>
                             <property name="format">all</property>
@@ -3827,9 +3831,9 @@ row["amount_remaining"]
                 <property name="width">11.010416666666666in</property>
             </column>
             <row id="1021">
-                <property name="height">0.5833333333333334in</property>
                 <property name="pageBreakAfter">auto</property>
                 <property name="pageBreakInside">avoid</property>
+                <property name="height">0.5833333333333334in</property>
                 <cell id="1022">
                     <label id="1023"/>
                     <label id="1024">
@@ -4056,8 +4060,8 @@ dataSetRow["amount_paid"]
             </group>
             <footer>
                 <row id="1038">
-                    <property name="height">0.20833333333333334in</property>
                     <property name="pageBreakAfter">always</property>
+                    <property name="height">0.20833333333333334in</property>
                     <cell id="1039">
                         <property name="fontFamily">"Arial Black"</property>
                         <property name="borderBottomColor">#000000</property>

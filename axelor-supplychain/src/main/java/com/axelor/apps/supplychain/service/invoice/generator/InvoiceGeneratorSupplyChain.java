@@ -17,9 +17,11 @@
  */
 package com.axelor.apps.supplychain.service.invoice.generator;
 
+import com.axelor.apps.account.db.AccountingSituation;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.PaymentCondition;
 import com.axelor.apps.account.db.PaymentMode;
+import com.axelor.apps.account.db.repo.AccountingSituationRepository;
 import com.axelor.apps.account.service.invoice.generator.InvoiceGenerator;
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.Company;
@@ -83,11 +85,44 @@ public abstract class InvoiceGeneratorSupplyChain extends InvoiceGenerator {
 		if (!Beans.get(GeneralService.class).getGeneral().getManageInvoicedAmountByLine()){
 			if(saleOrder != null){
 				invoice.setSaleOrder(saleOrder);
+				
 			}else{
 				invoice.setPurchaseOrder(purchaseOrder);
 			}
 		}
-
+		if(saleOrder != null){
+			if(saleOrder.getCompanyBankDetails() != null){
+				invoice.setCompanyBankDetails(saleOrder.getCompanyBankDetails());
+			}
+			else{
+				AccountingSituation accountingSituation = Beans.get(AccountingSituationRepository.class)
+						.all()
+						.filter("self.company.id = ?1 AND self.partner.id = ?2", saleOrder.getCompany().getId(), saleOrder.getClientPartner().getId())
+						.fetchOne();
+				if(accountingSituation != null){
+					invoice.setCompanyBankDetails(accountingSituation.getCompanyBankDetails());
+				}
+				else{
+					invoice.setCompanyBankDetails(saleOrder.getCompany().getDefaultBankDetails());
+				}
+			}
+		}else{
+			if(purchaseOrder.getCompanyBankDetails() != null){
+				invoice.setCompanyBankDetails(purchaseOrder.getCompanyBankDetails());
+			}
+			else{
+				AccountingSituation accountingSituation = Beans.get(AccountingSituationRepository.class)
+						.all()
+						.filter("self.company.id = ?1 AND self.partner.id = ?2", purchaseOrder.getCompany().getId(), purchaseOrder.getSupplierPartner().getId())
+						.fetchOne();
+				if(accountingSituation != null && accountingSituation.getCompanyBankDetails() != null){
+					invoice.setCompanyBankDetails(accountingSituation.getCompanyBankDetails());
+				}
+				else{
+					invoice.setCompanyBankDetails(purchaseOrder.getCompany().getDefaultBankDetails());
+				}
+			}
+		}
 		return invoice;
 	}
 

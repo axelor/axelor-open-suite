@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.2.2.v201301221637 Build &lt;4.2.2.v20130206-1509></property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.4.2.v201410272105 Build &lt;4.4.2.v20150217-1805></property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -26,6 +26,7 @@
     <property name="locale">fr_FR</property>
     <parameters>
         <scalar-parameter name="MoveLineReportId" id="896">
+            <property name="hidden">true</property>
             <property name="valueType">static</property>
             <property name="isRequired">true</property>
             <property name="dataType">string</property>
@@ -41,6 +42,7 @@
             </structure>
         </scalar-parameter>
         <scalar-parameter name="DBName" id="2479">
+            <property name="hidden">true</property>
             <property name="valueType">static</property>
             <property name="dataType">string</property>
             <property name="distinct">true</property>
@@ -52,6 +54,7 @@
             </structure>
         </scalar-parameter>
         <scalar-parameter name="UserName" id="2480">
+            <property name="hidden">true</property>
             <property name="valueType">static</property>
             <property name="dataType">string</property>
             <property name="distinct">true</property>
@@ -63,6 +66,7 @@
             </structure>
         </scalar-parameter>
         <scalar-parameter name="Password" id="2481">
+            <property name="hidden">true</property>
             <property name="valueType">static</property>
             <property name="dataType">string</property>
             <property name="distinct">true</property>
@@ -2010,8 +2014,8 @@ row["ReportedBalanceAmount"]
                         </group>
                         <footer>
                             <row id="1160">
-                                <property name="height">0.20833333333333334in</property>
                                 <property name="backgroundColor">#EFEFEF</property>
+                                <property name="height">0.20833333333333334in</property>
                                 <cell id="1161">
                                     <property name="colSpan">2</property>
                                     <property name="rowSpan">2</property>
@@ -2160,8 +2164,8 @@ row["ReportedBalanceAmount"]
                                 </cell>
                             </row>
                             <row id="1356">
-                                <property name="height">0.2916666666666667in</property>
                                 <property name="backgroundColor">#EFEFEF</property>
+                                <property name="height">0.2916666666666667in</property>
                                 <cell id="1359">
                                     <property name="colSpan">3</property>
                                     <property name="rowSpan">1</property>
@@ -3728,8 +3732,8 @@ true
                         </group>
                         <footer>
                             <row id="1422">
-                                <property name="height">0.22916666666666666in</property>
                                 <property name="backgroundColor">#EFEFEF</property>
+                                <property name="height">0.22916666666666666in</property>
                                 <cell id="1423">
                                     <property name="colSpan">3</property>
                                     <property name="rowSpan">2</property>
@@ -3893,8 +3897,8 @@ true
                                 </cell>
                             </row>
                             <row id="1435">
-                                <property name="height">0.23958333333333334in</property>
                                 <property name="backgroundColor">#EFEFEF</property>
+                                <property name="height">0.23958333333333334in</property>
                                 <cell id="1438">
                                     <property name="colSpan">4</property>
                                     <property name="rowSpan">1</property>

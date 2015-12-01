@@ -84,7 +84,7 @@
 	    <field name="company" widget="SuggestBox" onChange="action-sale-group-onchange-company" form-view="company-form" grid-view="company-grid" readonlyIf="statusSelect == 3"/>
 	    <field name="currency" form-view="currency-form" grid-view="currency-grid" readonlyIf="statusSelect == 3"/>
 	    <field name="versionNumber" if="__config__.general.getManageSaleOrderVersion()"/>
-	    <field name="bankDetails" widget="SuggestBox" onSelect="action-accounting-batch-attrs-bank-details-domain" form-view="bank-details-form" grid-view="bank-details-grid" if="__config__.general.getManageMultiBanks()"/>
+	    <field name="companyBankDetails" widget="SuggestBox" onSelect="action-accounting-batch-attrs-company-bank-details-domain" form-view="bank-details-form" grid-view="bank-details-grid"/>
 	    <field name="inAti" onChange="action-sale-order-attrs-in-ati"/>
 	    <field name="subscription" if-module="axelor-supplychain" if="__config__.general.getAllowSusbcriptionSaleOrder()"/>
 	  </panel>
@@ -518,6 +518,10 @@
     
     <action-record name="action-sale-order-record-company-configuration" model="com.axelor.apps.sale.db.SaleOrder">
     	<field name="duration" expr="eval: company?.saleConfig?.defaultValidityDuration"/>
+    	<field name="companyBankDetails" expr="eval: __repo__.of(AccountingSituation).all().filter('self.company.id = ?1 AND self.partner.id = ?2', company?.id, partner?.id).fetchOne()?.companyBankDetails" 
+    		if="clientPartner != null &amp;&amp; __repo__.of(AccountingSituation).all().filter('self.company.id = ?1 AND self.partner.id = ?2', company?.id, clientPartner?.id).fetchOne()?.companyBankDetails != null"/>
+    	<field name="companyBankDetails" expr="eval: company?.defaultBankDetails"
+    		if="clientPartner == null || __repo__.of(AccountingSituation).all().filter('self.company.id = ?1 AND self.partner.id = ?2', company?.id, clientPartner?.id).fetchOne()?.companyBankDetails == null"/>
     </action-record>
     
     <action-record name="action-sale-order-record-partner" model="com.axelor.apps.sale.db.SaleOrder">
@@ -528,7 +532,10 @@
 		<field name="deliveryAddress" expr="call:com.axelor.apps.base.service.PartnerService:getDeliveryAddress(clientPartner)" if="clientPartner != null"/>
 		<field name="priceList" expr="eval: clientPartner?.salePriceList"/>
 		<field name="hideDiscount" expr="eval: priceList?.hideDiscount"/>
-		<field name="bankDetails" expr="eval: clientPartner?.bankDetailsList.find{ it -&gt; it.isDefault } ? clientPartner?.bankDetailsList.find{ it -&gt; it.isDefault } : bankDetails" />
+		<field name="companyBankDetails" expr="eval: __repo__.of(AccountingSituation).all().filter('self.company.id = ?1 AND self.partner.id = ?2', company?.id, clientPartner?.id).fetchOne()?.companyBankDetails" 
+    		if="clientPartner != null &amp;&amp; __repo__.of(AccountingSituation).all().filter('self.company.id = ?1 AND self.partner.id = ?2', company?.id, clientPartner?.id).fetchOne()?.companyBankDetails != null"/>
+    	<field name="companyBankDetails" expr="eval: company?.defaultBankDetails"
+    		if="clientPartner == null || __repo__.of(AccountingSituation).all().filter('self.company.id = ?1 AND self.partner.id = ?2', company?.id, clientPartner?.id).fetchOne()?.companyBankDetails == null"/>
     </action-record>
     
     <action-record name="action-sale-order-record-hide-discount" model="com.axelor.apps.sale.db.SaleOrder">

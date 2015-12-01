@@ -24,7 +24,7 @@
       <many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Default Activity Product"/>
       <many-to-one name="publicHolidayPlanning" ref="com.axelor.apps.hr.db.PublicHolidayPlanning" title="Public Holiday Planning"/>
       <one-to-many name="employmentContractList" ref="com.axelor.apps.hr.db.EmploymentContract" title="Employment contracts" mappedBy="employee"/>
-      <many-to-one name="fiscalPower" ref="com.axelor.apps.hr.db.FiscalPower" title="Fiscal power" />
+      <many-to-one name="kilometricAllowParam" ref="com.axelor.apps.hr.db.KilometricAllowParam" title="Kilometric Allowance Param" />
       
       <string name="name" title="Name" search="contactPartner">
           

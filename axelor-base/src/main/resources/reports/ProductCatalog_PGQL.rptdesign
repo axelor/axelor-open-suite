@@ -62,12 +62,15 @@
     <property name="imageDPI">96</property>
     <parameters>
         <scalar-parameter name="ProductIds" id="211">
-            <property name="hidden">false</property>
+            <property name="hidden">true</property>
             <text-property name="promptText">Product ID</text-property>
             <property name="valueType">static</property>
             <property name="isRequired">false</property>
             <property name="dataType">string</property>
             <property name="distinct">true</property>
+            <simple-property-list name="defaultValue">
+                <value type="constant"></value>
+            </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
             <property name="concealValue">false</property>
@@ -77,13 +80,11 @@
             </structure>
         </scalar-parameter>
         <scalar-parameter name="UserId" id="3437">
+            <property name="hidden">true</property>
             <property name="valueType">static</property>
             <property name="isRequired">true</property>
             <property name="dataType">decimal</property>
             <property name="distinct">true</property>
-            <simple-property-list name="defaultValue">
-                <value type="constant">2</value>
-            </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
             <property name="controlType">text-box</property>
@@ -92,12 +93,10 @@
             </structure>
         </scalar-parameter>
         <scalar-parameter name="CurrYear" id="3438">
+            <property name="hidden">true</property>
             <property name="valueType">static</property>
             <property name="dataType">string</property>
             <property name="distinct">true</property>
-            <simple-property-list name="defaultValue">
-                <value type="constant">2013</value>
-            </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
             <property name="controlType">text-box</property>
@@ -106,6 +105,7 @@
             </structure>
         </scalar-parameter>
         <scalar-parameter name="DBName" id="3673">
+            <property name="hidden">true</property>
             <property name="valueType">static</property>
             <property name="dataType">string</property>
             <property name="distinct">true</property>
@@ -117,6 +117,7 @@
             </structure>
         </scalar-parameter>
         <scalar-parameter name="UserName" id="3674">
+            <property name="hidden">true</property>
             <property name="valueType">static</property>
             <property name="dataType">string</property>
             <property name="distinct">true</property>
@@ -128,6 +129,7 @@
             </structure>
         </scalar-parameter>
         <scalar-parameter name="Password" id="3675">
+            <property name="hidden">true</property>
             <property name="valueType">static</property>
             <property name="dataType">string</property>
             <property name="distinct">true</property>
@@ -139,11 +141,13 @@
             </structure>
         </scalar-parameter>
         <scalar-parameter name="Locale" id="3740">
+            <property name="hidden">true</property>
             <property name="valueType">static</property>
+            <property name="isRequired">false</property>
             <property name="dataType">string</property>
             <property name="distinct">true</property>
             <simple-property-list name="defaultValue">
-                <value type="constant">fr</value>
+                <value type="constant">en</value>
             </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
@@ -153,6 +157,7 @@
             </structure>
         </scalar-parameter>
         <scalar-parameter name="AttachmentPath" id="3746">
+            <property name="hidden">true</property>
             <property name="valueType">static</property>
             <property name="isRequired">false</property>
             <property name="dataType">string</property>
@@ -168,9 +173,13 @@
             </structure>
         </scalar-parameter>
         <scalar-parameter name="DefaultDriver" id="3819">
+            <property name="hidden">true</property>
             <property name="valueType">static</property>
             <property name="dataType">string</property>
             <property name="distinct">true</property>
+            <simple-property-list name="defaultValue">
+                <value type="constant">org.postgresql.Driver</value>
+            </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
             <property name="controlType">text-box</property>
@@ -198,7 +207,7 @@
                 </ex-property>
             </list-property>
             <property name="odaDriverClass">org.postgresql.Driver</property>
-            <property name="odaURL">jdbc:postgresql://localhost:5432/</property>
+            <property name="odaURL">jdbc:postgresql://localhost:5432</property>
         </oda-data-source>
     </data-sources>
     <data-sets>
@@ -213,7 +222,7 @@
                 </structure>
                 <structure>
                     <property name="columnName">picture</property>
-                    <property name="analysis">measure</property>
+                    <property name="analysis">dimension</property>
                     <text-property name="displayName">picture</text-property>
                     <text-property name="heading">picture</text-property>
                 </structure>
@@ -290,7 +299,7 @@ params["ProductIds"].value.split(",")
                     <structure>
                         <property name="position">2</property>
                         <property name="name">picture</property>
-                        <property name="dataType">decimal</property>
+                        <property name="dataType">string</property>
                     </structure>
                     <structure>
                         <property name="position">3</property>
@@ -347,8 +356,8 @@ params["ProductIds"].value.split(",")
                     <property name="position">2</property>
                     <property name="name">picture</property>
                     <property name="nativeName">picture</property>
-                    <property name="dataType">decimal</property>
-                    <property name="nativeDataType">-5</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">3</property>
@@ -407,7 +416,7 @@ params["ProductIds"].value.split(",")
                     <property name="nativeDataType">12</property>
                 </structure>
             </list-property>
-            <xml-property name="queryText"><![CDATA[select distinct Product.id, Product.picture, Product.name as "ProductName", Product.code as "ProductCode",
+            <xml-property name="queryText"><![CDATA[select distinct Product.id, MetaFile.file_path as picture, Product.name as "ProductName", Product.code as "ProductCode",
 Product.sale_price, Currency.name as currency, Product.description, ProductFamily.name as "ProductFamily",
 ProductCategory.name as "ProductCategory", Unit.name as "Unit"
 from base_product as Product
@@ -415,6 +424,7 @@ left outer join base_currency as Currency on (Product.sale_currency = Currency.i
 left outer join base_product_family as ProductFamily on (Product.product_family = ProductFamily.id)
 left outer join base_product_category as ProductCategory on (Product.product_category = ProductCategory.id)
 left outer join base_unit as Unit on (Product.unit = Unit.id)
+left outer join meta_file as MetaFile on (MetaFile.id = Product.picture)
 order by ProductFamily.name, ProductCategory.name
 ]]></xml-property>
         </oda-data-set>
@@ -871,7 +881,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
             <property name="masterPage">NewSimpleMasterPage</property>
             <property name="pageBreakAfter">auto</property>
             <property name="height">10.072916666666666in</property>
-            <property name="width">7.697916666666667in</property>
+            <property name="width">7.854166666666667in</property>
             <property name="dataSet">CompanyDS</property>
             <list-property name="boundDataColumns">
                 <structure>
@@ -928,7 +938,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                 <property name="width">0.9375in</property>
             </column>
             <column id="3424">
-                <property name="width">2.8958333333333335in</property>
+                <property name="width">2.5416666666666665in</property>
             </column>
             <row id="3425">
                 <property name="height">1in</property>
@@ -1114,15 +1124,15 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
         <grid id="3696">
             <property name="masterPage">BlankMP</property>
             <property name="height">1.9479166666666667in</property>
-            <property name="width">7.6875in</property>
+            <property name="width">7.864583333333333in</property>
             <column id="3697">
                 <property name="width">2.5729166666666665in</property>
             </column>
             <column id="3698">
-                <property name="width">2.5729166666666665in</property>
+                <property name="width">2.8645833333333335in</property>
             </column>
             <column id="3699">
-                <property name="width">2.5416666666666665in</property>
+                <property name="width">2.1354166666666665in</property>
             </column>
             <row id="3700">
                 <cell id="3701">
@@ -1181,12 +1191,6 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                 <property name="name">id</property>
                                 <text-property name="displayName">id</text-property>
                                 <expression name="expression" type="javascript">dataSetRow["id"]</expression>
-                                <property name="dataType">decimal</property>
-                            </structure>
-                            <structure>
-                                <property name="name">picture</property>
-                                <text-property name="displayName">picture</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["picture"]</expression>
                                 <property name="dataType">decimal</property>
                             </structure>
                             <structure>
@@ -1298,6 +1302,12 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                 </list-property>
                                 <property name="allowExport">true</property>
                             </structure>
+                            <structure>
+                                <property name="name">picture</property>
+                                <text-property name="displayName">picture</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["picture"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
                         </list-property>
                         <column id="345">
                             <property name="width">1.7395833333333333in</property>
@@ -1379,7 +1389,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                                     <property name="name">picture</property>
                                                     <text-property name="displayName">picture</text-property>
                                                     <expression name="expression" type="javascript">dataSetRow["picture"]</expression>
-                                                    <property name="dataType">decimal</property>
+                                                    <property name="dataType">string</property>
                                                 </structure>
                                                 <structure>
                                                     <property name="name">ProductName</property>
@@ -1512,19 +1522,13 @@ BirtMath.roundDown(BirtMath.divide(row["PrevCategoryCount"], 5), 0) + 2
         <table id="231">
             <property name="masterPage">BlankMP</property>
             <property name="pageBreakAfter">always</property>
-            <property name="width">7.625in</property>
+            <property name="width">8.552083333333334in</property>
             <property name="dataSet">ProductDS</property>
             <list-property name="boundDataColumns">
                 <structure>
                     <property name="name">id</property>
                     <text-property name="displayName">id</text-property>
                     <expression name="expression" type="javascript">dataSetRow["id"]</expression>
-                    <property name="dataType">decimal</property>
-                </structure>
-                <structure>
-                    <property name="name">picture</property>
-                    <text-property name="displayName">picture</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["picture"]</expression>
                     <property name="dataType">decimal</property>
                 </structure>
                 <structure>
@@ -1576,9 +1580,21 @@ BirtMath.roundDown(BirtMath.divide(row["PrevCategoryCount"], 5), 0) + 2
                     <expression name="expression" type="javascript">dataSetRow["Unit"]</expression>
                     <property name="dataType">string</property>
                 </structure>
+                <structure>
+                    <property name="name">ProductFamily_1</property>
+                    <text-property name="displayName">ProductFamily</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["ProductFamily"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">picture</property>
+                    <text-property name="displayName">picture</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["picture"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
             </list-property>
             <column id="238">
-                <property name="width">7.625in</property>
+                <property name="width">8.552083333333334in</property>
             </column>
             <group id="273">
                 <property name="groupName">ProductFamily</property>
@@ -1631,29 +1647,35 @@ BirtMath.roundDown(BirtMath.divide(row["PrevCategoryCount"], 5), 0) + 2
                     <cell id="235">
                         <grid id="239">
                             <property name="height">1.40625in</property>
-                            <property name="width">7.875in</property>
+                            <property name="width">8.479166666666666in</property>
                             <column id="240">
-                                <property name="width">2.5625in</property>
+                                <property name="width">1.9895833333333333in</property>
                             </column>
                             <column id="241">
-                                <property name="width">2.6875in</property>
-                            </column>
-                            <column id="242">
-                                <property name="width">2.625in</property>
+                                <property name="width">6.489583333333333in</property>
                             </column>
                             <row id="243">
                                 <property name="backgroundColor">#F5F5F5</property>
                                 <property name="height">1.0729166666666667in</property>
                                 <cell id="244">
-                                    <property name="colSpan">3</property>
+                                    <property name="colSpan">1</property>
                                     <property name="rowSpan">1</property>
+                                    <property name="textAlign">left</property>
+                                    <image id="3822">
+                                        <property name="height">93px</property>
+                                        <property name="width">177px</property>
+                                        <property name="source">file</property>
+                                        <expression name="uri" type="javascript">params["AttachmentPath"].value+row["picture"]</expression>
+                                    </image>
+                                </cell>
+                                <cell id="3820">
                                     <property name="textAlign">left</property>
                                     <grid id="256">
                                         <property name="marginTop">10pt</property>
-                                        <property name="marginLeft">6.4cm</property>
-                                        <property name="width">4.927083333333333in</property>
+                                        <property name="marginLeft">auto</property>
+                                        <property name="width">6.395833333333333in</property>
                                         <column id="257">
-                                            <property name="width">4.458333333333333in</property>
+                                            <property name="width">6.395833333333333in</property>
                                         </column>
                                         <row id="259">
                                             <cell id="260">
@@ -1766,7 +1788,6 @@ BirtMath.roundDown(BirtMath.divide(row["PrevCategoryCount"], 5), 0) + 2
                                         <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF> :</B><VALUE-OF format="^">"  "</VALUE-OF><VALUE-OF>row._outer["sale_price"]</VALUE-OF><VALUE-OF format="^">" "</VALUE-OF><VALUE-OF>row._outer["currency"]</VALUE-OF> / <VALUE-OF>row._outer["Unit"]</VALUE-OF>]]></text-property>
                                     </text>
                                 </cell>
-                                <cell id="288"/>
                             </row>
                         </grid>
                     </cell>

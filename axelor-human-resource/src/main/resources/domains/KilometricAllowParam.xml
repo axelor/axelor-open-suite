@@ -5,7 +5,7 @@
 
      <module name="human-resource" package="com.axelor.apps.hr.db"/>
 
-    <entity name="FiscalPower" lang="java" >
+    <entity name="KilometricAllowParam" lang="java" >
     
         <string name="name" title="Name"/>
         <string name="code" title="Code" unique="true"/>

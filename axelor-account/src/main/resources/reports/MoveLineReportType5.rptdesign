@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.2.2.v201301221637 Build &lt;4.2.2.v20130206-1509></property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.4.2.v201410272105 Build &lt;4.4.2.v20150217-1805></property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">queryText</property>
@@ -37,6 +37,7 @@
     <property name="imageDPI">96</property>
     <parameters>
         <scalar-parameter name="MoveLineReportId" id="896">
+            <property name="hidden">true</property>
             <property name="valueType">static</property>
             <property name="isRequired">true</property>
             <property name="dataType">integer</property>
@@ -52,6 +53,7 @@
             </structure>
         </scalar-parameter>
         <scalar-parameter name="DBName" id="1046">
+            <property name="hidden">true</property>
             <property name="valueType">static</property>
             <property name="dataType">string</property>
             <property name="distinct">true</property>
@@ -63,6 +65,7 @@
             </structure>
         </scalar-parameter>
         <scalar-parameter name="UserName" id="1047">
+            <property name="hidden">true</property>
             <property name="valueType">static</property>
             <property name="dataType">string</property>
             <property name="distinct">true</property>
@@ -74,6 +77,7 @@
             </structure>
         </scalar-parameter>
         <scalar-parameter name="Password" id="1048">
+            <property name="hidden">true</property>
             <property name="valueType">static</property>
             <property name="dataType">string</property>
             <property name="distinct">true</property>
@@ -1235,8 +1239,8 @@ row["agency_name"]
             </detail>
             <footer>
                 <row id="929">
-                    <property name="height">0.3958333333333333in</property>
                     <property name="backgroundColor">#EFEFEF</property>
+                    <property name="height">0.3958333333333333in</property>
                     <cell id="930">
                         <property name="backgroundColor">#FFFFFF</property>
                         <property name="borderBottomColor">#000000</property>
@@ -1299,8 +1303,8 @@ row["agency_name"]
                     </cell>
                 </row>
                 <row id="2663">
-                    <property name="height">0.2in</property>
                     <property name="backgroundColor">#EFEFEF</property>
+                    <property name="height">0.2in</property>
                     <cell id="2664">
                         <property name="colSpan">4</property>
                         <property name="rowSpan">1</property>
@@ -1312,8 +1316,8 @@ row["agency_name"]
                     </cell>
                 </row>
                 <row id="936">
-                    <property name="height">0.3958333333333333in</property>
                     <property name="backgroundColor">#EFEFEF</property>
+                    <property name="height">0.3958333333333333in</property>
                     <cell id="937">
                         <property name="colSpan">3</property>
                         <property name="rowSpan">1</property>

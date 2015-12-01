@@ -369,14 +369,20 @@ public class TimesheetServiceImp implements TimesheetService{
 	
 	public void getActivities(ActionRequest request, ActionResponse response){
 		List<Map<String,String>> dataList = new ArrayList<Map<String,String>>();
-		List<Product> productList = Beans.get(ProductRepository.class).all().filter("self.isActivity = true").fetch();
-		for (Product product : productList) {
-			Map<String, String> map = new HashMap<String,String>();
-			map.put("name", product.getName());
-			map.put("id", product.getId().toString());
-			dataList.add(map);
+		try{
+			List<Product> productList = Beans.get(ProductRepository.class).all().filter("self.isActivity = true").fetch();
+			for (Product product : productList) {
+				Map<String, String> map = new HashMap<String,String>();
+				map.put("name", product.getName());
+				map.put("id", product.getId().toString());
+				dataList.add(map);
+			}
+			response.setData(dataList);
 		}
-		response.setData(dataList);
+		catch(Exception e){
+			response.setStatus(-1);
+			response.setError(e.getMessage());
+		}
 	}
 	
 	@Transactional

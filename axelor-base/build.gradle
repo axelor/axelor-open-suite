@@ -17,4 +17,5 @@ dependencies {
 	compile "org.mnode.ical4j:ical4j:1.0.6"
 	compile "org.mnode.ical4j:ical4j-extensions:0.9.2"
 	compile "org.mnode.ical4j:ical4j-connector:0.9.4.3"
+	compile "net.sourceforge.barbecue:barbecue:1.5-beta1"
 }

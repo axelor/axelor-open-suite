@@ -29,13 +29,11 @@
     <property name="imageDPI">96</property>
     <parameters>
         <scalar-parameter name="StockLocationId" id="3265">
+            <property name="hidden">true</property>
             <property name="valueType">static</property>
             <property name="isRequired">true</property>
             <property name="dataType">string</property>
             <property name="distinct">true</property>
-            <simple-property-list name="defaultValue">
-                <value type="constant">6,7</value>
-            </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
             <property name="concealValue">false</property>
@@ -45,8 +43,9 @@
             </structure>
         </scalar-parameter>
         <scalar-parameter name="Locale" id="3740">
+            <property name="hidden">true</property>
             <property name="valueType">static</property>
-            <property name="isRequired">true</property>
+            <property name="isRequired">false</property>
             <property name="dataType">string</property>
             <property name="distinct">true</property>
             <simple-property-list name="defaultValue">
@@ -61,7 +60,9 @@
             </structure>
         </scalar-parameter>
         <scalar-parameter name="DBName" id="3946">
+            <property name="hidden">true</property>
             <property name="valueType">static</property>
+            <property name="isRequired">true</property>
             <property name="dataType">string</property>
             <property name="distinct">true</property>
             <list-property name="selectionList"/>
@@ -72,6 +73,7 @@
             </structure>
         </scalar-parameter>
         <scalar-parameter name="UserName" id="3947">
+            <property name="hidden">true</property>
             <property name="valueType">static</property>
             <property name="dataType">string</property>
             <property name="distinct">true</property>
@@ -83,6 +85,7 @@
             </structure>
         </scalar-parameter>
         <scalar-parameter name="Password" id="3675">
+            <property name="hidden">true</property>
             <property name="valueType">static</property>
             <property name="dataType">string</property>
             <property name="distinct">true</property>
@@ -94,6 +97,7 @@
             </structure>
         </scalar-parameter>
         <scalar-parameter name="AttachmentPath" id="4629">
+            <property name="hidden">true</property>
             <property name="valueType">static</property>
             <property name="isRequired">false</property>
             <property name="dataType">string</property>
@@ -109,9 +113,13 @@
             </structure>
         </scalar-parameter>
         <scalar-parameter name="DefaultDriver" id="3819">
+            <property name="hidden">true</property>
             <property name="valueType">static</property>
             <property name="dataType">string</property>
             <property name="distinct">true</property>
+            <simple-property-list name="defaultValue">
+                <value type="constant">org.postgresql.Driver</value>
+            </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
             <property name="controlType">text-box</property>

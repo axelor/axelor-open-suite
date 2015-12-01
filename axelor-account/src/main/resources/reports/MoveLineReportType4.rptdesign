@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.2.2.v201301221637 Build &lt;4.2.2.v20130206-1509></property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.4.2.v201410272105 Build &lt;4.4.2.v20150217-1805></property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -25,6 +25,7 @@
     <property name="imageDPI">96</property>
     <parameters>
         <scalar-parameter name="MoveLineReportId" id="896">
+            <property name="hidden">true</property>
             <property name="valueType">static</property>
             <property name="isRequired">true</property>
             <property name="dataType">decimal</property>
@@ -40,6 +41,7 @@
             </structure>
         </scalar-parameter>
         <scalar-parameter name="DBName" id="2479">
+            <property name="hidden">true</property>
             <property name="valueType">static</property>
             <property name="dataType">string</property>
             <property name="distinct">true</property>
@@ -51,6 +53,7 @@
             </structure>
         </scalar-parameter>
         <scalar-parameter name="UserName" id="2480">
+            <property name="hidden">true</property>
             <property name="valueType">static</property>
             <property name="dataType">string</property>
             <property name="distinct">true</property>
@@ -62,6 +65,7 @@
             </structure>
         </scalar-parameter>
         <scalar-parameter name="Password" id="2481">
+            <property name="hidden">true</property>
             <property name="valueType">static</property>
             <property name="dataType">string</property>
             <property name="distinct">true</property>
@@ -2198,8 +2202,8 @@ row["180&lt;days"]
                         </group>
                         <footer>
                             <row id="1160">
-                                <property name="height">0.28125in</property>
                                 <property name="backgroundColor">#EFEFEF</property>
+                                <property name="height">0.28125in</property>
                                 <cell id="1161">
                                     <property name="colSpan">3</property>
                                     <property name="rowSpan">2</property>
@@ -2407,8 +2411,8 @@ row["180&lt;days"]
                                 </cell>
                             </row>
                             <row id="1356">
-                                <property name="height">0.28125in</property>
                                 <property name="backgroundColor">#EFEFEF</property>
+                                <property name="height">0.28125in</property>
                                 <cell id="1359">
                                     <property name="backgroundColor">#FFFFFF</property>
                                     <property name="borderBottomColor">#000000</property>
@@ -3636,8 +3640,8 @@ row["amount_remaining"]
                         </group>
                         <footer>
                             <row id="1686">
-                                <property name="height">0.28125in</property>
                                 <property name="backgroundColor">#EFEFEF</property>
+                                <property name="height">0.28125in</property>
                                 <cell id="1687">
                                     <property name="colSpan">3</property>
                                     <property name="rowSpan">2</property>
@@ -3860,8 +3864,8 @@ row["amount_remaining"]
                                 </cell>
                             </row>
                             <row id="1704">
-                                <property name="height">0.28125in</property>
                                 <property name="backgroundColor">#EFEFEF</property>
+                                <property name="height">0.28125in</property>
                                 <cell id="2681">
                                     <property name="colSpan">2</property>
                                     <property name="rowSpan">1</property>

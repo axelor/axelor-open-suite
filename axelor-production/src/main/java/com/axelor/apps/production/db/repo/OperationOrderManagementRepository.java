@@ -40,12 +40,17 @@ public class OperationOrderManagementRepository extends OperationOrderRepository
 				barcode.setBarHeight(86);
 			    barcode.setBarWidth(1);
 			    barcode.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 10));
-
-			    File imgFile = new File(AppSettings.get().get("file.upload.dir")+String.format("/barCode%d.png",entity.getId()));
-
-			    BarcodeImageHandler.savePNG(barcode, imgFile);
 			    
-			    entity.setBarCode(Beans.get(MetaFiles.class).upload(imgFile));
+			    File uploadDir = new File(AppSettings.get().get("file.upload.dir"));
+			    
+			    if(uploadDir.exists()){
+			    	
+			    	File imgFile = new File(uploadDir, String.format("/barCode%d.png",entity.getId()));
+			    	
+			    	BarcodeImageHandler.savePNG(barcode, imgFile);
+			    
+			    	entity.setBarCode(Beans.get(MetaFiles.class).upload(imgFile));
+			    }
 			}
 			catch(Exception e){
 				
