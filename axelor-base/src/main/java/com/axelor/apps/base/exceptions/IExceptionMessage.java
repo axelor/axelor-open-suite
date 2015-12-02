@@ -106,7 +106,7 @@ public interface IExceptionMessage {
 	/**
 	 * Importer
 	 */
-	static final public String IMPORTER_1 = /*$$(*/ "%s :\n Erreur : Fichier de mapping inacessible." /*)*/;
+	static final public String IMPORTER_1 = /*$$(*/ "Erreur : Fichier de mapping inacessible." /*)*/;
 	
 	/**
 	 * Importer Listener 
