@@ -124,7 +124,7 @@
 				<panel title="Postal addresses" colSpan="12">
 					<field name="partnerAddressList" colSpan="12" onChange="action-partner-address-list-change">
 				        <editor layout="table" x-show-titles="false">
-							<field name="address"/>
+							<field name="address" canNew="true"/>
 							<field name="isInvoicingAddr" widget="toggle" x-icon="fa-list-alt" colSpan="1" hideIf="$readonly()"/>
 							<field name="isDeliveryAddr" widget="toggle" x-icon="fa-shopping-cart" colSpan="1" hideIf="$readonly()"/>
 							<field name="isDefaultAddr" widget="toggle" x-icon="fa-star-o" colSpan="1" hideIf="$readonly()"/>
@@ -242,7 +242,7 @@
 	            <panel colSpan="12" title="Postal addresses" hideIf="isContact">
 	                <field name="partnerAddressList" colSpan="12" onChange="action-partner-address-list-change">
 				        <editor layout="table" x-show-titles="false">
-							<field name="address"/>
+							<field name="address" canNew="true"/>
 							<field name="isInvoicingAddr" widget="toggle" x-icon="fa-list-alt" colSpan="1"/>
 							<field name="isDeliveryAddr" widget="toggle" x-icon="fa-shopping-cart" colSpan="1"/>
 							<field name="isDefaultAddr" widget="toggle" x-icon="fa-star-o" colSpan="1"/>

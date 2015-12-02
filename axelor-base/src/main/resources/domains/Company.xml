@@ -13,7 +13,6 @@
     
     <many-to-one name="partner" ref="com.axelor.apps.base.db.Partner" title="Partner"/>
     <many-to-one name="parent" ref="Company" title="Parent company" help="true"/>
-    <many-to-one name="administration" ref="com.axelor.apps.base.db.General" title="Administration" help="true"/>
     
     <string name="notes" large="true" title="Notes"/>
     <many-to-one name="logo" ref="com.axelor.meta.db.MetaFile" title="Logo" help="true"/>

@@ -72,8 +72,9 @@ public class AddressController {
 	
 	@Inject
 	private PartnerRepository partnerRepo;
-
-
+	
+	
+	
 	private static final Logger LOG = LoggerFactory.getLogger(AddressController.class);
 
 	public void check(ActionRequest request, ActionResponse response) {
@@ -263,10 +264,6 @@ public class AddressController {
 		response.setView(mapView);
 		response.setReload(true);
 
-	}
-
-	public void checkMapApi(ActionRequest request, ActionResponse response)  {
-		response.setFlash(I18n.get(IExceptionMessage.NOT_IMPLEMENTED_METHOD));
 	}
 
 	public void checkLatLang(ActionRequest request, ActionResponse response) {

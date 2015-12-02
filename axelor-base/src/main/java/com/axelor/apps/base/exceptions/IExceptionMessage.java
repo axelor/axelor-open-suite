@@ -169,6 +169,8 @@ public interface IExceptionMessage {
 	static final public String GENERAL_3 = /*$$(*/ "Please select key fields to check duplicate" /*)*/;
 	static final public String GENERAL_4 = /*$$(*/ "Attachment directory OR Application source does not exist" /*)*/;
 	static final public String GENERAL_5 = /*$$(*/ "Export Object" /*)*/;
+	static final public String GENERAL_6 = /*$$(*/ "Connection successful" /*)*/;
+	static final public String GENERAL_7 = /*$$(*/ "Error in Connection" /*)*/;
 	
 	/**
 	 * Messsage controller 
