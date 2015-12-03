@@ -18,6 +18,8 @@
 package com.axelor.apps.account.service;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.persistence.Query;
 
@@ -57,6 +59,9 @@ public class MoveLineReportService {
 	protected String query;
 
 	protected AccountRepository accountRepo;
+	
+	protected List<Object> params = new ArrayList<Object>();
+	protected int paramNumber = 1;
 
 
 	@Inject
@@ -79,8 +84,8 @@ public class MoveLineReportService {
 		return this.query;
 
 	}
-
-
+	
+	
 	public void initQuery()  {
 
 		this.query = "";
@@ -91,75 +96,59 @@ public class MoveLineReportService {
 	public String buildQuery(MoveLineReport moveLineReport) throws AxelorException  {
 
 		if(moveLineReport.getCompany() != null)  {
-			this.addParams("self.move.company = %s", moveLineReport.getCompany().getId().toString());
+			this.addParams("self.move.company = %d", moveLineReport.getCompany());
 		}
 
 		if(moveLineReport.getCashRegister() != null)	{
-			this.addParams("self.move.agency = %s", moveLineReport.getCashRegister().getId().toString());
+			this.addParams("self.move.agency = %d", moveLineReport.getCashRegister());
 		}
 
 		if(moveLineReport.getDateFrom() != null)  {
-			this.addParams("self.date >='%s'", moveLineReport.getDateFrom().toString());
+			this.addParams("self.date >= %d", moveLineReport.getDateFrom());
 		}
 
 		if(moveLineReport.getDateTo() != null)  {
-			this.addParams("self.date <= '%s'", moveLineReport.getDateTo().toString());
+			this.addParams("self.date <= %d", moveLineReport.getDateTo());
 		}
 
 		if(moveLineReport.getDate() != null)  {
-			this.addParams("self.date <= '%s'", moveLineReport.getDate().toString());
+			this.addParams("self.date <= %d", moveLineReport.getDate());
 		}
 
 		if(moveLineReport.getJournal() != null)	{
-			this.addParams("self.move.journal = %s", moveLineReport.getJournal().getId().toString());
+			this.addParams("self.move.journal = %d", moveLineReport.getJournal());
 		}
 
 		if(moveLineReport.getPeriod() != null)	{
-			this.addParams("self.move.period = %s", moveLineReport.getPeriod().getId().toString());
+			this.addParams("self.move.period = %d", moveLineReport.getPeriod());
 		}
 
-		if(moveLineReport.getAccount() != null)	{
-			this.addParams("self.account = %s", moveLineReport.getAccount().getId().toString());
+		if(moveLineReport.getAccountSet() != null)	{
+			this.addParams("self.account in (%d)", moveLineReport.getAccountSet());
 		}
 
-		if(moveLineReport.getFromPartner() != null)	{
-			this.addParams("self.partner.name >= '%s'", moveLineReport.getFromPartner().getName().replace("'", " "));
-		}
-
-		if(moveLineReport.getToPartner() != null)	{
-			this.addParams("self.partner.name <= '%s'", moveLineReport.getToPartner().getName().replace("'", " "));
-		}
-
-		if(moveLineReport.getPartner() != null)	{
-			this.addParams("self.partner = %s", moveLineReport.getPartner().getId().toString());
+		if(moveLineReport.getPartnerSet() != null)	{
+			this.addParams("self.partner in (%d)", moveLineReport.getPartnerSet());
 		}
 
 		if(moveLineReport.getYear() != null)  {
-			this.addParams("self.move.period.year = %s", moveLineReport.getYear().getId().toString());
+			this.addParams("self.move.period.year = %d", moveLineReport.getYear());
 		}
 
 		if(moveLineReport.getPaymentMode() != null)	{
-			this.addParams("self.move.paymentMode = %s", moveLineReport.getPaymentMode().getId().toString());
+			this.addParams("self.move.paymentMode = %d", moveLineReport.getPaymentMode());
 		}
 
 		if(moveLineReport.getTypeSelect() > 5 && moveLineReport.getTypeSelect() < 10)  {
-			this.addParams("self.move.journal.type = %s", this.getJournalType(moveLineReport).getId().toString());
+			this.addParams("self.move.journal.type = %d", this.getJournalType(moveLineReport));
 		}
 
 		if(moveLineReport.getTypeSelect() > 5 && moveLineReport.getTypeSelect() < 10)  {
-			this.addParams("(self.move.accountingOk = false OR (self.move.accountingOk = true and self.move.moveLineReport = %s))", moveLineReport.getId().toString());
+			this.addParams("(self.move.accountingOk = false OR (self.move.accountingOk = true and self.move.moveLineReport = %d))", moveLineReport);
 		}
 
 		if(moveLineReport.getTypeSelect() > 5 && moveLineReport.getTypeSelect() < 10)  {
 			this.addParams("self.move.journal.notExportOk = false ");
-		}
-
-		if(moveLineReport.getTypeSelect() == 5)	{
-			this.addParams("self.move.paymentMode.code = 'CHQ'");
-		}
-
-		if(moveLineReport.getTypeSelect() == 10)	{
-			this.addParams("self.move.paymentMode.code = 'ESP'");
 		}
 
 		if(moveLineReport.getTypeSelect() == 5)	{
@@ -178,10 +167,6 @@ public class MoveLineReportService {
 			this.addParams("self.credit > 0");
 		}
 
-		if(moveLineReport.getTypeSelect() == 12)  {
-			this.addParams("self.account.code LIKE '7%'");
-		}
-
 		if(moveLineReport.getTypeSelect() == 4)  {
 			this.addParams("self.amountRemaining > 0 AND self.debit > 0");
 		}
@@ -194,9 +179,11 @@ public class MoveLineReportService {
 
 
 
-	public String addParams(String paramQuery, String param)  {
+	public String addParams(String paramQuery, Object param)  {
 
-		this.addParams(String.format(paramQuery, param));
+		this.addParams(String.format(paramQuery, paramNumber++));
+		this.params.add(param);
+		
 		return this.query;
 
 	}
@@ -302,12 +289,18 @@ public class MoveLineReportService {
 	 * @param queryFilter
 	 * @return
 	 */
-	public BigDecimal getDebitBalance(String queryFilter)  {
+	public BigDecimal getDebitBalance()  {
 
-		Query q = JPA.em().createQuery("select SUM(self.debit) FROM MoveLine as self WHERE " + queryFilter, BigDecimal.class);
+		Query q = JPA.em().createQuery("select SUM(self.debit) FROM MoveLine as self WHERE " + query, BigDecimal.class);
 
 		BigDecimal result = (BigDecimal) q.getSingleResult();
 		log.debug("Total debit : {}", result);
+		
+		int i = 1;
+		
+		for(Object param : params.toArray())  {
+			q.setParameter(i++, param);
+		}
 
 		if(result != null)  {
 			return result;
@@ -323,13 +316,19 @@ public class MoveLineReportService {
 	 * @param queryFilter
 	 * @return
 	 */
-	public BigDecimal getCreditBalance(String queryFilter)  {
+	public BigDecimal getCreditBalance()  {
 
-		Query q = JPA.em().createQuery("select SUM(self.credit) FROM MoveLine as self WHERE " + queryFilter, BigDecimal.class);
+		Query q = JPA.em().createQuery("select SUM(self.credit) FROM MoveLine as self WHERE " + query, BigDecimal.class);
 
 		BigDecimal result = (BigDecimal) q.getSingleResult();
 		log.debug("Total debit : {}", result);
 
+		int i = 1;
+		
+		for(Object param : params.toArray())  {
+			q.setParameter(i++, param);
+		}
+		
 		if(result != null)  {
 			return result;
 		}
@@ -340,13 +339,19 @@ public class MoveLineReportService {
 	}
 
 
-	public BigDecimal getDebitBalanceType4(String queryFilter) {
+	public BigDecimal getDebitBalanceType4() {
 
-		Query q = JPA.em().createQuery("select SUM(self.amountRemaining) FROM MoveLine as self WHERE " + queryFilter, BigDecimal.class);
+		Query q = JPA.em().createQuery("select SUM(self.amountRemaining) FROM MoveLine as self WHERE " + query, BigDecimal.class);
 
 		BigDecimal result = (BigDecimal) q.getSingleResult();
 		log.debug("Total debit : {}", result);
 
+		int i = 1;
+		
+		for(Object param : params.toArray())  {
+			q.setParameter(i++, param);
+		}
+		
 		if(result != null) {
 			return result;
 		}
@@ -360,18 +365,18 @@ public class MoveLineReportService {
 	public BigDecimal getCreditBalance(MoveLineReport moveLineReport, String queryFilter) {
 
 		if(moveLineReport.getTypeSelect() == 4) {
-			return this.getCreditBalanceType4(queryFilter);
+			return this.getCreditBalanceType4();
 		}
 
 		else {
-			return this.getCreditBalance(queryFilter);
+			return this.getCreditBalance();
 		}
 
 	}
 
-	public BigDecimal getCreditBalanceType4(String queryFilter) {
+	public BigDecimal getCreditBalanceType4() {
 
-		return this.getDebitBalance(queryFilter).subtract(this.getDebitBalanceType4(queryFilter));
+		return this.getDebitBalance().subtract(this.getDebitBalanceType4());
 
 	}
 

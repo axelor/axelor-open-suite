@@ -48,11 +48,9 @@
 				<field name="dateFrom" onChange="action-move-Live-report-record-set-date-to" requiredIf="typeSelect == 12" />
 				<field name="dateTo" requiredIf="typeSelect == 12" />
 				<field name="journal" hideIf="!typeSelect || [0,2,3,4,5,10,12,13].indexOf(typeSelect) != -1" domain="self.statusSelect = 1 AND self.company = :company" form-view="journal-form" grid-view="journal-grid"/>
-				<field name="account" hideIf="!typeSelect || [0,5,10,12].indexOf(typeSelect) != -1" requiredIf="typeSelect == 13" form-view="account-form" grid-view="account-grid"/>
+				<field name="accountSet" colSpan="12" form-view="account-form" grid-view="account-grid"/>
 				<field name="paymentMode" grid-view="payment-mode-grid" form-view="payment-mode-form" hideIf="!typeSelect || [2,3,4,5,10,12,13].indexOf(typeSelect) != -1"/>
-				<field name="partner" form-view="partner-form" grid-view="partner-grid" hideIf="!typeSelect || [0,5,10,12,13].indexOf(typeSelect) != -1" domain="self.isContact = false" />
-				<field name="fromPartner" hideIf="!typeSelect || [0,1,5,10,11,12,13].indexOf(typeSelect) != -1"	form-view="partner-form" grid-view="partner-grid" />
-				<field name="toPartner" hideIf="!typeSelect || [0,1,5,10,11,12,13].indexOf(typeSelect) != -1" form-view="partner-form" grid-view="partner-grid" />
+				<field name="partnerSet" colSpan="12" form-view="partner-form" grid-view="partner-grid" domain="self.isContact = false" />
 			</panel>
 			<panel title="Printing informations">
 				<field name="global" hideIf="!typeSelect || [0,3,4,10,12,13].indexOf(typeSelect) != -1"	onChange="action-move-line-report-record-global" />
@@ -200,11 +198,9 @@
 	
 	<action-record name="action-move-line-report-record" model="com.axelor.apps.account.db.MoveLineReport">
 		<field name="cashRegister" expr="eval: null"/>
-		<field name="account" expr="eval: null"/>
+		<field name="accountSet" expr="eval: null"/>
 		<field name="paymentMode" expr="eval: null"/>
-		<field name="partner" expr="eval: null"/>
-		<field name="fromPartner" expr="eval: null"/>
-		<field name="toPartner" expr="eval: null"/>
+		<field name="partnerSet" expr="eval: null"/>
 		<field name="global" expr="eval: null"/>
 		<field name="globalByPost" expr="eval: null"/>
 		<field name="globalByDate" expr="eval: null"/>

@@ -19,33 +19,37 @@ package com.axelor.apps.stock.web;
 
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.util.HashMap;
-import java.util.Map;
 
+import org.eclipse.birt.core.exception.BirtException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.axelor.apps.ReportSettings;
+import com.axelor.apps.ReportFactory;
 import com.axelor.apps.base.db.Product;
-import com.axelor.apps.stock.service.InventoryService;
-import com.axelor.apps.stock.service.LocationLineService;
 import com.axelor.apps.stock.db.Inventory;
 import com.axelor.apps.stock.db.Location;
 import com.axelor.apps.stock.db.LocationLine;
 import com.axelor.apps.stock.db.repo.InventoryRepository;
 import com.axelor.apps.stock.exception.IExceptionMessage;
 import com.axelor.apps.stock.report.IReport;
-import com.axelor.apps.tool.net.URLService;
+import com.axelor.apps.stock.service.InventoryService;
+import com.axelor.apps.stock.service.LocationLineService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
 
 public class InventoryController {
+	
+	private final Logger logger = LoggerFactory.getLogger(getClass());
+
+	@Inject
+	private ReportFactory reportFactory;
 
 	@Inject
 	InventoryService inventoryService;
@@ -61,36 +65,30 @@ public class InventoryController {
 	 * @param request
 	 * @param response
 	 * @return
+	 * @throws BirtException 
+	 * @throws IOException 
 	 */
-	public void showInventory(ActionRequest request, ActionResponse response) {
+	public void showInventory(ActionRequest request, ActionResponse response) throws IOException, BirtException {
 
 		Inventory inventory = request.getContext().asType(Inventory.class);
-		int format = inventory.getFormatSelect();
-
-		StringBuilder url = new StringBuilder();
 
 		User user = AuthUtils.getUser();
 		String language = user != null? (user.getLanguage() == null || user.getLanguage().equals(""))? "en" : user.getLanguage() : "en"; 
 
-		url.append(
-				new ReportSettings(IReport.INVENTORY, ((format == 1) ? "pdf":(format == 2) ? "xls":"pdf"))
-				.addParam("Locale", language)
-				.addParam("InventoryId", inventory.getId().toString())
-				.getUrl());
+		String name = I18n.get("Inventory")+" "+inventory.getInventorySeq();
 		
-		LOG.debug("URL : {}", url);
-		String urlNotExist = URLService.notExist(url.toString());
-		if (urlNotExist == null){
-			
-			Map<String,Object> mapView = new HashMap<String,Object>();
-			mapView.put("title", I18n.get("Inventory")+" "+inventory.getInventorySeq());
-			mapView.put("resource", url);
-			mapView.put("viewType", "html");
-			response.setView(mapView);
-		}
-		else {
-			response.setFlash(urlNotExist);
-		}
+		String fileLink = reportFactory.createReport(IReport.INVENTORY, name+"-${date}")
+				.addParam("InventoryId", inventory.getId())
+				.addParam("Locale", language)
+				.addFormat(inventory.getFormatSelect())
+				.generate()
+				.getFileLink();
+
+		logger.debug("Printing "+name);
+	
+		response.setView(ActionView
+				.define(name)
+				.add("html", fileLink).map());	
 	}
 	
 	public void importFile(ActionRequest request, ActionResponse response) throws IOException, AxelorException {

@@ -17,61 +17,58 @@
  */
 package com.axelor.apps.business.project.web;
 
+import java.io.IOException;
 import java.math.BigDecimal;
-import java.util.HashMap;
-import java.util.Map;
 
+import org.eclipse.birt.core.exception.BirtException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.axelor.apps.ReportSettings;
+import com.axelor.apps.ReportFactory;
 import com.axelor.apps.business.project.report.IReport;
 import com.axelor.apps.hr.service.employee.EmployeeService;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.service.ProjectTaskService;
-import com.axelor.apps.tool.net.URLService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
 
 public class ProjectTaskController {
 
-	private static final Logger LOG = LoggerFactory.getLogger(ProjectTaskController.class);
-
+	private final Logger logger = LoggerFactory.getLogger(getClass());
+	
+	@Inject
+	private ReportFactory reportFactory;
+	
 	@Inject
 	private ProjectTaskService projectTaskService;
 
-	public void printProjectTask(ActionRequest request,ActionResponse response){
+	public void printProjectTask(ActionRequest request,ActionResponse response) throws IOException, BirtException{
 
 		ProjectTask projectTask = request.getContext().asType(ProjectTask.class);
 
-		StringBuilder url = new StringBuilder();
 		User user = AuthUtils.getUser();
 		String language = user != null? (user.getLanguage() == null || user.getLanguage().equals(""))? "en" : user.getLanguage() : "en";
 
-		url.append(new ReportSettings(IReport.PROJECT_TASK)
-		.addParam("Locale", language)
-		.addParam("__locale", "fr_FR")
-		.addParam("ProjectTaskId", projectTask.getId().toString())
-		.getUrl());
+		String name = I18n.get("Project Task") + " " + projectTask.getCode();
+		
+		String fileLink = reportFactory.createReport(IReport.PROJECT_TASK, name+"-${date}")
+				.addParam("ProjectTaskId", projectTask.getId())
+				.addParam("Locale", language)
+				.addModel(projectTask)
+				.generate()
+				.getFileLink();
 
-		LOG.debug("URL : {}", url);
-		String urlNotExist = URLService.notExist(url.toString());
-
-		if (urlNotExist == null){
-			Map<String,Object> mapView = new HashMap<String,Object>();
-			mapView.put("title", I18n.get("Project Task"));
-			mapView.put("resource", url);
-			mapView.put("viewType", "html");
-			response.setView(mapView);
-		}
-		else {
-			response.setFlash(urlNotExist);
-		}
+		logger.debug("Printing "+name);
+	
+		response.setView(ActionView
+				.define(name)
+				.add("html", fileLink).map());	
 	}
 
 	public void computeProgress(ActionRequest request,ActionResponse response){
@@ -88,7 +85,7 @@ public class ProjectTaskController {
 
 	}
 
-	public void computeDurationFromChildren(ActionRequest request, ActionResponse response){
+	public void computeDurationFromChildren(ActionRequest request, ActionResponse response)  {
 		ProjectTask projectTask = request.getContext().asType(ProjectTask.class);
 
 		BigDecimal duration = projectTaskService.computeDurationFromChildren(projectTask.getId());

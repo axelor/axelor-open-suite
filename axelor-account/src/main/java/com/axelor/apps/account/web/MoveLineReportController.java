@@ -24,7 +24,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.axelor.apps.ReportSettings;
+import com.axelor.apps.ReportFactory;
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.JournalType;
 import com.axelor.apps.account.db.Move;
@@ -38,6 +38,7 @@ import com.axelor.apps.account.service.MoveLineReportService;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.common.collect.Maps;
@@ -45,7 +46,10 @@ import com.google.inject.Inject;
 
 public class MoveLineReportController {
 
-	private static final Logger LOG = LoggerFactory.getLogger(MoveLineReportController.class);
+	private final Logger logger = LoggerFactory.getLogger(getClass());
+	
+	@Inject
+	private ReportFactory reportFactory;
 	
 	@Inject
 	MoveLineReportService moveLineReportService;
@@ -63,9 +67,9 @@ public class MoveLineReportController {
 		try  {
 			moveLineReport = moveLineReportRepo.find(moveLineReport.getId());
 			
-			String queryFilter = moveLineReportService.getMoveLineList(moveLineReport);
-			BigDecimal debitBalance = moveLineReportService.getDebitBalance(queryFilter);
-			BigDecimal creditBalance = moveLineReportService.getCreditBalance(moveLineReport, queryFilter);
+			moveLineReportService.buildQuery(moveLineReport);
+			BigDecimal debitBalance = moveLineReportService.getDebitBalance();
+			BigDecimal creditBalance = moveLineReportService.getCreditBalance();
 			
 			if (moveLineReport.getRef() == null) {
 				response.setValue("ref", moveLineReportService.getSequence(moveLineReport));
@@ -79,7 +83,7 @@ public class MoveLineReportController {
 			
 			view.put("title", I18n.get(IExceptionMessage.MOVE_LINE_REPORT_3));
 			view.put("resource", MoveLine.class.getName());
-			view.put("domain", queryFilter);
+//			view.put("domain", queryFilter); //TODO
 			
 			response.setView(view);
 		}
@@ -134,7 +138,7 @@ public class MoveLineReportController {
 
 		try  {
 			Account account = Beans.get(MoveLineReportService.class).getAccount(moveLineReport);
-			LOG.debug("Compte : {}", account);
+			logger.debug("Compte : {}", account);
 			response.setValue("account", account);			
 		}
 		catch(Exception e) { TraceBackService.trace(response, e); }
@@ -197,7 +201,7 @@ public class MoveLineReportController {
 				return;
 			}
 
-			LOG.debug("Type selected : {}" , moveLineReport.getTypeSelect());
+			logger.debug("Type selected : {}" , moveLineReport.getTypeSelect());
 
 			if (moveLineReport.getRef() == null) {
 
@@ -232,21 +236,22 @@ public class MoveLineReportController {
 
 				if (moveLineReport.getId() != null) {
 
-					StringBuilder url = new StringBuilder();
 					moveLineReportService.setPublicationDateTime(moveLineReport);
 
-					url.append(new ReportSettings(String.format(IReport.MOVE_LINE_REPORT_TYPE, moveLineReport.getTypeSelect()), moveLineReport.getExportTypeSelect())
-								.addParam("__locale", "fr_FR")
-								.addParam("MoveLineReportId", moveLineReport.getId().toString())
-								.getUrl());
+					String name = I18n.get("Accounting reporting") + " " + moveLineReport.getRef();
+					
+					String fileLink = reportFactory.createReport(String.format(IReport.MOVE_LINE_REPORT_TYPE, moveLineReport.getTypeSelect()), name+"-${date}")
+							.addParam("MoveLineReportId", moveLineReport.getId())
+							.addFormat(moveLineReport.getExportTypeSelect())
+							.addModel(moveLineReport)
+							.generate()
+							.getFileLink();
 
-					LOG.debug("URL : {}", url);
-
-					Map<String,Object> viewMap = new HashMap<String,Object>();
-					viewMap.put("title", I18n.get(IExceptionMessage.MOVE_LINE_REPORT_5)+" "+moveLineReport.getRef());
-					viewMap.put("resource", url);
-					viewMap.put("viewType", "html");
-					response.setView(viewMap);						
+					logger.debug("Printing "+name);
+				
+					response.setView(ActionView
+							.define(name)
+							.add("html", fileLink).map());
 				}
 			}
 		}

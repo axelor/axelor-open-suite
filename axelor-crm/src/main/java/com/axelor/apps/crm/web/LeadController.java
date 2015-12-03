@@ -22,11 +22,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.birt.core.exception.BirtException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.app.AppSettings;
-import com.axelor.apps.ReportSettings;
+import com.axelor.apps.ReportFactory;
 import com.axelor.apps.base.db.ImportConfiguration;
 import com.axelor.apps.base.db.repo.ImportConfigurationRepository;
 import com.axelor.apps.base.service.MapService;
@@ -35,7 +36,6 @@ import com.axelor.apps.crm.db.repo.LeadRepository;
 import com.axelor.apps.crm.db.report.IReport;
 import com.axelor.apps.crm.exception.IExceptionMessage;
 import com.axelor.apps.crm.service.LeadService;
-import com.axelor.apps.tool.net.URLService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.i18n.I18n;
@@ -49,22 +49,27 @@ import com.google.inject.Inject;
 
 public class LeadController {
 
-	private static final Logger LOG = LoggerFactory.getLogger(LeadController.class);
+	private final Logger logger = LoggerFactory.getLogger(getClass());
 	
 	@Inject
-	private LeadService ls;
+	private ReportFactory reportFactory;
+	
+	@Inject
+	private LeadService leadService;
 	
 	@Inject
 	private LeadRepository leadRepo;
 	
 	/**
-	 * Fonction appeler par le bouton imprimer
+	 * Method to generate Lead as a Pdf
 	 *
 	 * @param request
 	 * @param response
 	 * @return
+	 * @throws BirtException 
+	 * @throws IOException 
 	 */
-	public void print(ActionRequest request, ActionResponse response) {
+	public void print(ActionRequest request, ActionResponse response) throws IOException, BirtException {
 
 
 		Lead lead = request.getContext().asType(Lead.class );
@@ -86,7 +91,6 @@ public class LeadController {
 		}
 		
 		if(!leadIds.equals("")){
-			StringBuilder url = new StringBuilder();			
 			
 			User user = AuthUtils.getUser();
 			String language = "en";
@@ -100,34 +104,23 @@ public class LeadController {
 				} 
 			}catch(Exception e){}
 			
-			url.append(
-					new ReportSettings(IReport.LEAD)
-					.addParam("Locale", language)
-					.addParam("__locale", "fr_FR")
+			String title = " ";
+			if(lead.getFirstName() != null)  {
+				title += lstSelectedleads == null ? "Lead "+lead.getFirstName():"Leads";
+			}
+
+			String fileLink = reportFactory.createReport(IReport.LEAD, title+"-${date}")
 					.addParam("LeadId", leadIds)
-					.getUrl());
-			
-			LOG.debug("URL : {}", url);
-			
-			String urlNotExist = URLService.notExist(url.toString());
-			if (urlNotExist == null){
-				LOG.debug("Impression de l'O.F.  "+lead.getFullName()+" : "+url.toString());
+					.addParam("Locale", language)
+					.generate()
+					.getFileLink();
+
+			logger.debug("Printing "+title);
+		
+			response.setView(ActionView
+					.define(title)
+					.add("html", fileLink).map());		
 				
-				String title = " ";
-				if(lead.getFirstName() != null)  {
-					title += lstSelectedleads == null ? "Lead "+lead.getFirstName():"Leads";
-				}
-				
-				Map<String,Object> mapView = new HashMap<String,Object>();
-				mapView.put("title", title);
-				mapView.put("resource", url);
-				mapView.put("viewType", "html");
-				response.setView(mapView);	
-					
-			}
-			else {
-				response.setFlash(urlNotExist);
-			}
 		}else{
 			response.setFlash(I18n.get(IExceptionMessage.LEAD_1));
 		}	
@@ -156,7 +149,7 @@ public class LeadController {
 	public void setSocialNetworkUrl(ActionRequest request, ActionResponse response) throws IOException {
 		
 		Lead lead = request.getContext().asType(Lead.class );
-		Map<String,String> urlMap = ls.getSocialNetworkUrl(lead.getName(), lead.getFirstName(), lead.getEnterpriseName());
+		Map<String,String> urlMap = leadService.getSocialNetworkUrl(lead.getName(), lead.getFirstName(), lead.getEnterpriseName());
 		response.setAttr("google", "title", urlMap.get("google"));
 		response.setAttr("facebook", "title", urlMap.get("facebook"));
 		response.setAttr("twitter", "title", urlMap.get("twitter"));
@@ -167,7 +160,7 @@ public class LeadController {
 	
 	public void getLeadImportConfig(ActionRequest request, ActionResponse response){
 		ImportConfiguration leadImportConfig  = Beans.get(ImportConfigurationRepository.class).all().filter("self.bindMetaFile.fileName = ?1","import-config-lead.xml").fetchOne();
-		LOG.debug("ImportConfig for lead: {}",leadImportConfig);
+		logger.debug("ImportConfig for lead: {}",leadImportConfig);
 		if(leadImportConfig == null){
 			response.setFlash(I18n.get(IExceptionMessage.LEAD_4));
 		}

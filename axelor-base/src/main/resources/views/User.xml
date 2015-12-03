@@ -13,7 +13,7 @@
     
     
     <form name="user-form" id="user-form-base" title="User" model="com.axelor.auth.db.User" 
-    onNew="action-user-default-record,action-user-check-company" onLoad="com.axelor.auth.AuthService:preferences" onSave="com.axelor.auth.AuthService:validate">
+    onNew="action-user-default-record,action-user-check-company" onSave="com.axelor.auth.AuthService:validate">
     	<panel sidebar="true">
 	        <field name="activeCompany" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
 	        <field name="activeCashRegister" form-view="cash-register-form" grid-view="cash-register-grid"/>
@@ -58,7 +58,7 @@
     
     
     <form name="user-preferences-form" id="base-user-preferences-form" title="Preferences" model="com.axelor.auth.db.User"
-        onNew="com.axelor.auth.AuthService:preferences" onSave="com.axelor.auth.AuthService:validate">
+        onSave="com.axelor.auth.AuthService:validate">
 		<panel title="User preferences" itemSpan="12">
 			<field name="image" showTitle="false"/>
 			<field name="language"/>

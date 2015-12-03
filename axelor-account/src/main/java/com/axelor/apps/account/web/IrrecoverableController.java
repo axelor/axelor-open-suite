@@ -17,13 +17,13 @@
  */
 package com.axelor.apps.account.web;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.io.IOException;
 
+import org.eclipse.birt.core.exception.BirtException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.axelor.apps.ReportSettings;
+import com.axelor.apps.ReportFactory;
 import com.axelor.apps.account.db.Irrecoverable;
 import com.axelor.apps.account.db.repo.IrrecoverableRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
@@ -31,19 +31,23 @@ import com.axelor.apps.account.report.IReport;
 import com.axelor.apps.account.service.IrrecoverableService;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
+import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
 
 public class IrrecoverableController {
+	
+	private final Logger logger = LoggerFactory.getLogger(getClass());
+	
+	@Inject
+	private ReportFactory reportFactory;
 
 	@Inject 
 	private IrrecoverableService irrecoverableService;
 	
 	@Inject
 	private IrrecoverableRepository irrecoverableRepo;
-
-	private static final Logger LOG = LoggerFactory.getLogger(IrrecoverableController.class);
 
 	public void getIrrecoverable(ActionRequest request, ActionResponse response)  {
 
@@ -84,7 +88,8 @@ public class IrrecoverableController {
 		catch(Exception e)  { TraceBackService.trace(response, e); }
 	}
 
-	public void printIrrecoverable(ActionRequest request, ActionResponse response)  {
+	
+	public void printIrrecoverable(ActionRequest request, ActionResponse response) throws IOException, BirtException  {
 
 		Irrecoverable irrecoverable = request.getContext().asType(Irrecoverable.class);
 
@@ -92,19 +97,21 @@ public class IrrecoverableController {
 			response.setFlash(I18n.get(IExceptionMessage.IRRECOVERABLE_7)); 
 		} 
 		else {
-			StringBuilder url = new StringBuilder();
-			
-			url.append(new ReportSettings(IReport.IRRECOVERABLE, irrecoverable.getExportTypeSelect())
-						.addParam("IrrecoverableID", irrecoverable.getId().toString())
-						.getUrl());
-			
-			LOG.debug("URL : {}", url);
 
-			Map<String,Object> mapView = new HashMap<String,Object>();
-			mapView.put("title", I18n.get(IExceptionMessage.IRRECOVERABLE_8)+" "+irrecoverable.getName());
-			mapView.put("resource", url);
-			mapView.put("viewType", "html");
-			response.setView(mapView);			
+			String name = I18n.get("Irrecouverable reporting")+" "+irrecoverable.getName();
+			
+			String fileLink = reportFactory.createReport(IReport.IRRECOVERABLE, name+"-${date}")
+					.addParam("IrrecoverableID", irrecoverable.getId())
+					.addFormat(irrecoverable.getExportTypeSelect())
+					.addModel(irrecoverable)
+					.generate()
+					.getFileLink();
+
+			logger.debug("Printing "+name);
+		
+			response.setView(ActionView
+					.define(name)
+					.add("html", fileLink).map());
 		}	
 	}
 }

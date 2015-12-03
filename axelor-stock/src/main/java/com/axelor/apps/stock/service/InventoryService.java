@@ -99,7 +99,7 @@ public class InventoryService {
 
 		inventory.setDescription(description);
 
-		inventory.setFormatSelect(InventoryRepository.FORMAT_PDF);
+		inventory.setFormatSelect(IAdministration.PDF);
 
 		inventory.setLocation(location);
 

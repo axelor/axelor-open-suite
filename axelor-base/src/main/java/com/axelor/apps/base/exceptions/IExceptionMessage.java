@@ -120,7 +120,8 @@ public interface IExceptionMessage {
 	 * Template message service base impl
 	 */
 	static final public String TEMPLATE_MESSAGE_BASE_1 = /*$$(*/ "%s : Le chemin vers le template Birt est incorrect" /*)*/;
-	static final public String TEMPLATE_MESSAGE_BASE_2 = /*$$(*/ "Erreur lors de l'édition du fichier : \n %s" /*)*/;
+	static final public String TEMPLATE_MESSAGE_BASE_2 = /*$$(*/ "Unable to generate Birt report file" /*)*/;
+
 	
 	/**
 	 * Querie Service and controller
@@ -186,6 +187,4 @@ public interface IExceptionMessage {
 	 */
 	static final public String PRODUCT_1 = /*$$(*/ "Variants generated" /*)*/;
 	static final public String PRODUCT_2 = /*$$(*/ "Prices updated" /*)*/;
-	static final public String PRODUCT_3 = /*$$(*/ "Product Catalog" /*)*/;
-	static final public String PRODUCT_4 = /*$$(*/ "Product" /*)*/;
 }

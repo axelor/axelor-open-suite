@@ -17,15 +17,16 @@
  */
 package com.axelor.apps.purchase.web;
 
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.birt.core.exception.BirtException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.axelor.apps.ReportSettings;
+import com.axelor.apps.ReportFactory;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
@@ -36,7 +37,6 @@ import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.purchase.exception.IExceptionMessage;
 import com.axelor.apps.purchase.report.IReport;
 import com.axelor.apps.purchase.service.PurchaseOrderService;
-import com.axelor.apps.tool.net.URLService;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
@@ -51,8 +51,11 @@ import com.google.inject.Inject;
 
 public class PurchaseOrderController {
 
-	private static final Logger LOG = LoggerFactory.getLogger(PurchaseOrderController.class);
-
+	private final Logger logger = LoggerFactory.getLogger(getClass());
+	
+	@Inject
+	private ReportFactory reportFactory;
+	
 	@Inject
 	private PurchaseOrderService purchaseOrderService;
 	
@@ -99,12 +102,13 @@ public class PurchaseOrderController {
 	 * @param request
 	 * @param response
 	 * @return
+	 * @throws BirtException 
+	 * @throws IOException 
 	 */
-	public void showPurchaseOrder(ActionRequest request, ActionResponse response) {
+	public void showPurchaseOrder(ActionRequest request, ActionResponse response) throws IOException, BirtException {
 
 		PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
 
-		StringBuilder url = new StringBuilder();
 		String purchaseOrderIds = "";
 
 		@SuppressWarnings("unchecked")
@@ -129,34 +133,23 @@ public class PurchaseOrderController {
 		}
 		language = language.equals("")? "en": language;
 
-		url.append(
-				new ReportSettings(IReport.PURCHASE_ORDER)
-				.addParam("Locale", language)
-				.addParam("__locale", "fr_FR")
+		String title = I18n.get("Purchase order");
+		if(purchaseOrder.getPurchaseOrderSeq() != null)  {
+			title += purchaseOrder.getPurchaseOrderSeq();
+		}
+
+		String fileLink = reportFactory.createReport(IReport.PURCHASE_ORDER, title+"-${date}")
 				.addParam("PurchaseOrderId", purchaseOrderIds)
-				.getUrl());
+				.addParam("Locale", language)
+				.generate()
+				.getFileLink();
 
-		LOG.debug("URL : {}", url);
-		String urlNotExist = URLService.notExist(url.toString());
-
-		if(urlNotExist == null) {
-
-			LOG.debug("Impression du devis "+purchaseOrder.getPurchaseOrderSeq() +" : "+url.toString());
-
-			String title = I18n.get("Devis");
-			if(purchaseOrder.getPurchaseOrderSeq() != null)  {
-				title += purchaseOrder.getPurchaseOrderSeq();
-			}
-
-			Map<String,Object> mapView = new HashMap<String,Object>();
-			mapView.put("title", title);
-			mapView.put("resource", url);
-			mapView.put("viewType", "html");
-			response.setView(mapView);
-		}
-		else {
-			response.setFlash(urlNotExist);
-		}
+		logger.debug("Printing "+title);
+	
+		response.setView(ActionView
+				.define(title)
+				.add("html", fileLink).map());	
+			
 	}
 
 	public void requestPurchaseOrder(ActionRequest request, ActionResponse response) throws Exception {

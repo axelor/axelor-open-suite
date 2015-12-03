@@ -21,6 +21,7 @@ import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.axelor.apps.ReportFactory;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.General;
@@ -56,10 +57,11 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl {
 	@Inject
 	public SaleOrderServiceSupplychainImpl(SaleOrderLineService saleOrderLineService, SaleOrderLineTaxService saleOrderLineTaxService, 	
 			SequenceService sequenceService, PartnerService partnerService, PartnerRepository partnerRepo, SaleOrderRepository saleOrderRepo,
-			GeneralService generalService, UserService userService, SaleOrderStockService saleOrderStockService, SaleOrderPurchaseService saleOrderPurchaseService) {
+			GeneralService generalService, UserService userService, SaleOrderStockService saleOrderStockService, 
+			SaleOrderPurchaseService saleOrderPurchaseService, ReportFactory reportFactory) {
 		
 		super(saleOrderLineService, saleOrderLineTaxService, sequenceService,
-				partnerService, partnerRepo, saleOrderRepo, generalService, userService);
+				partnerService, partnerRepo, saleOrderRepo, generalService, userService, reportFactory);
 		
 		this.saleOrderStockService = saleOrderStockService;
 		this.saleOrderPurchaseService = saleOrderPurchaseService;

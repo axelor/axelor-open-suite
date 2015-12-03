@@ -19,19 +19,16 @@ package com.axelor.apps.base.service.message;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.List;
-import java.util.Random;
 import java.util.Set;
 
 import javax.inject.Inject;
 
+import org.eclipse.birt.core.exception.BirtException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.axelor.app.AppSettings;
-import com.axelor.apps.ReportSettings;
+import com.axelor.apps.ReportFactory;
 import com.axelor.apps.base.db.BirtTemplate;
 import com.axelor.apps.base.db.BirtTemplateParameter;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
@@ -39,20 +36,22 @@ import com.axelor.apps.message.db.Template;
 import com.axelor.apps.message.db.repo.EmailAddressRepository;
 import com.axelor.apps.message.service.MessageService;
 import com.axelor.apps.message.service.TemplateMessageServiceImpl;
-import com.axelor.apps.tool.net.URLService;
+import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
+import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.tool.template.TemplateMaker;
 
 public class TemplateMessageServiceBaseImpl extends TemplateMessageServiceImpl {
 
-	private final Logger log = LoggerFactory.getLogger(getClass());
-
-	private static final String DEFAULT_UPLOAD_PATH = "{java.io.tmpdir}/axelor/attachments";
-	private static final String UPLOAD_PATH = AppSettings.get().getPath("file.upload.dir", DEFAULT_UPLOAD_PATH);
-
+	private final Logger logger = LoggerFactory.getLogger(getClass());
+	
+	@Inject
+	private ReportFactory reportFactory;
+	
 	@Inject
 	public TemplateMessageServiceBaseImpl(MessageService messageService, EmailAddressRepository emailAddressRepo) {
 		super(messageService, emailAddressRepo);
@@ -68,7 +67,7 @@ public class TemplateMessageServiceBaseImpl extends TemplateMessageServiceImpl {
 		if ( birtMetaFile == null ) { return metaFiles; }
 
 		metaFiles.add(birtMetaFile);
-		log.debug("Metafile to attach: {}", metaFiles);
+		logger.debug("Metafile to attach: {}", metaFiles);
 
 		return metaFiles;
 
@@ -76,7 +75,7 @@ public class TemplateMessageServiceBaseImpl extends TemplateMessageServiceImpl {
 
 	public MetaFile generateMetaFile( TemplateMaker maker, BirtTemplate birtTemplate ) throws AxelorException, IOException {
 
-		log.debug("Generate birt metafile: {}", birtTemplate.getName());
+		logger.debug("Generate birt metafile: {}", birtTemplate.getName());
 
 		File file =  generateFile( maker,
 				birtTemplate.getName(),
@@ -86,44 +85,27 @@ public class TemplateMessageServiceBaseImpl extends TemplateMessageServiceImpl {
 
 		if (file == null) { return null; }
 
-		Path filePath = file.toPath();
+		return Beans.get(MetaFiles.class).upload(file);
 
-		MetaFile metaFile = new MetaFile();
-		metaFile.setFileName( file.getName() );
-		metaFile.setFileType( Files.probeContentType( filePath ) );
-		metaFile.setFileSize( Files.size( filePath ) );
-		metaFile.setFilePath( file.getName() );
-
-		return metaFile;
 	}
 
 	public File generateFile( TemplateMaker maker, String name, String modelPath, String format, List<BirtTemplateParameter> birtTemplateParameterList ) throws AxelorException {
 
 		if ( modelPath == null || modelPath.isEmpty() ) { return null; }
 
-		ReportSettings reportSettings = new ReportSettings(modelPath, format);
-
+		ReportSettings reportSettings = reportFactory.createReport(modelPath, name+"-${date}${time}").addFormat(format);
+		
 		for(BirtTemplateParameter birtTemplateParameter : birtTemplateParameterList)  {
 			maker.setTemplate(birtTemplateParameter.getValue());
 			reportSettings.addParam(birtTemplateParameter.getName(), maker.make());
 		}
 
-		String url = reportSettings.getUrl();
-
-		log.debug("Dowload file from: {}", url);
-		String urlNotExist = URLService.notExist(url.toString());
-		if (urlNotExist != null){
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.TEMPLATE_MESSAGE_BASE_1)), IException.CONFIGURATION_ERROR);
-		}
-
-		final int random = new Random().nextInt();
-		String fileName = name + "_" + random + "." + format;
-
 		try {
-			return URLService.fileDownload(url, UPLOAD_PATH, fileName);
-		} catch (IOException e) {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.TEMPLATE_MESSAGE_BASE_2), e), IException.CONFIGURATION_ERROR);
+			return reportSettings.generate().getFile();
+		} catch (IOException | BirtException e) {
+			throw new AxelorException(I18n.get(IExceptionMessage.TEMPLATE_MESSAGE_BASE_2), e, IException.CONFIGURATION_ERROR);
 		}
+
 	}
 
 }

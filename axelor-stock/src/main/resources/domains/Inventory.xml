@@ -14,7 +14,7 @@
   	<datetime name="dateT" title="Date" required="true" tz="true"/>
   	<string name="description" title="Description" large="true"/>
   	<one-to-many name="inventoryLineList" ref="com.axelor.apps.stock.db.InventoryLine" mappedBy="inventory" title="Inventory lines"/>
-  	<integer name="formatSelect" title="File Format" selection="stock.inventory.format.select"/>
+  	<string name="formatSelect" title="File Format" selection="iadministration.export.type.select"/>
   	<string name="importFilePath" title="File Path"/>
   	
   	<many-to-one name="productFamily" ref="com.axelor.apps.base.db.ProductFamily" title="Product family"/>
@@ -30,10 +30,6 @@
 		public static final int STATUS_REALIZED = 3;
 		public static final int STATUS_CANCELED = 4;
 
-		// FORMAT SELECT
-		public static final int FORMAT_PDF = 1;
-		public static final int FORMAT_XLS = 2;
-	
 	]]></extra-code>
   	
   </entity>

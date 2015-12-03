@@ -15,46 +15,79 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps;
+package com.axelor.apps.report.engine;
 
-import java.io.File;
+import java.io.IOException;
+import java.nio.file.Path;
+
+import org.eclipse.birt.core.exception.BirtException;
 
 import com.axelor.app.AppSettings;
+import com.axelor.app.internal.AppFilter;
+import com.axelor.apps.tool.net.URLService;
+import com.axelor.meta.MetaFiles;
 
-public class ReportSettings {
+public class ExternalReportSettings  extends ReportSettings  {
 	
-	public static String FORMAT_PDF = "pdf";
-	public static String FORMAT_XLS = "xls";
-	public static String FORMAT_DOC = "doc";
-	public static String FORMAT_HTML = "html";
-	
-	private static String BIRT_PATH = "birt";
+	protected static String BIRT_PATH = "birt";
+	protected String url = "";
 
-	private String url = "";
-	
-	public ReportSettings(String rptdesign, String format)  {
+	public ExternalReportSettings(String rptdesign, String outputName)  {
+		
+		super(rptdesign, outputName);
 		
 		this.addAxelorReportPath(rptdesign)
-		.addDataBaseConnection()
-		.addAttachmentPath()
-		.addParam("__format", format);
+		.addParam("__locale", AppFilter.getLocale().toString());
+		
 		
 	}
 	
-	public ReportSettings(String rptdesign)  {
+
+	@Override
+	public ExternalReportSettings generate() throws IOException, BirtException  {
 		
-		this.addAxelorReportPath(rptdesign)
-		.addDataBaseConnection()
-		.addAttachmentPath()
-		.addParam("__format", FORMAT_PDF);
+		super.generate();
 		
+		this.getUrl();
+		
+    	String urlNotExist = URLService.notExist(url.toString());
+		if (urlNotExist != null){
+			
+			// manage exception
+			return null;
+		}
+		
+		final Path tmpFile = MetaFiles.createTempFile(null, "");
+		
+		this.output = tmpFile.toFile();
+				
+		URLService.fileDownload(this.output, url, "", outputName);
+		
+		this.attach();
+		
+		return this;
 	}
 	
 	public String getUrl()  {
 		
+		addParam("__format", format);
+		
+		for(String param : params.keySet())  {
+			
+			this.url +=  this.computeParam(param);
+			
+		}
+		
 		return this.url;
 		
 	}	
+	
+	private String computeParam(String param)  {
+		
+		return "&" + param + "=" + params.get(param);
+		
+	}
+	
 	
 	private ReportSettings addAxelorReportPath(String rptdesign)  {
 		
@@ -74,35 +107,7 @@ public class ReportSettings {
 		
 	}	
 	
-	private ReportSettings addDataBaseConnection()  {
-		
-		AppSettings appSettings = AppSettings.get();
-		
-		return this.addParam("DefaultDriver", appSettings.get("db.default.driver"))
-		.addParam("DBName", appSettings.get("db.default.url"))
-		.addParam("UserName", appSettings.get("db.default.user"))
-		.addParam("Password", appSettings.get("db.default.password"));
-		
-	}	
 
-	public ReportSettings addParam(String param, String value)  {
-		
-		this.url +=  "&" + param + "=" + value;
-		return this;
-		
-	}
 	
-	public ReportSettings addAttachmentPath(){
-		
-		String attachmentPath = AppSettings.get().getPath("file.upload.dir","");
-		if(attachmentPath == null){
-			return this;
-		}
-		
-		attachmentPath = attachmentPath.endsWith(File.separator) ? attachmentPath : attachmentPath+File.separator;
-		
-		return this.addParam("AttachmentPath",attachmentPath);
-		
-	}
 }
 

@@ -23,6 +23,7 @@ import java.util.Set;
 
 import javax.mail.MessagingException;
 
+import org.eclipse.birt.core.exception.BirtException;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDateTime;
 import org.slf4j.Logger;
@@ -37,6 +38,7 @@ import com.axelor.auth.AuthUtils;
 import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
+import com.axelor.inject.Beans;
 import com.axelor.mail.MailBuilder;
 import com.axelor.mail.MailSender;
 import com.axelor.mail.SmtpAccount;
@@ -101,17 +103,14 @@ public class MessageServiceImpl implements MessageService {
 		
 		if ( metaFiles == null || metaFiles.isEmpty() ){ return; }
 
-		Long messageId = message.getId();
-		String messageObjectName = Message.class.getName();
+		log.debug("Add metafiles to object {}:{}", Message.class.getName(), message.getId());
 		
-		log.debug("Add metafiles to object {}:{}", messageObjectName, messageId);
+		MetaFiles metaFilesService = Beans.get(MetaFiles.class);
 		
 		for ( MetaFile metaFile: metaFiles ){
-			MetaAttachment metaAttachment = new MetaAttachment();
-			metaAttachment.setObjectId(messageId);
-			metaAttachment.setObjectName(messageObjectName);
-			metaAttachment.setMetaFile(metaFile);
-			metaAttachmentRepository.save(metaAttachment);
+			
+			metaFilesService.attach(metaFile, message);
+			
 		}
 		
 	}
@@ -265,6 +264,6 @@ public class MessageServiceImpl implements MessageService {
 
 
 	@Override
-	public String printMessage(Message message) { return null; }
+	public String printMessage(Message message)  throws IOException, BirtException  { return null; }
 
 }
