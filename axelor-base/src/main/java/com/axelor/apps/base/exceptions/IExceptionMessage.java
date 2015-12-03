@@ -106,7 +106,7 @@ public interface IExceptionMessage {
 	/**
 	 * Importer
 	 */
-	static final public String IMPORTER_1 = /*$$(*/ "%s :\n Erreur : Fichier de mapping inacessible." /*)*/;
+	static final public String IMPORTER_1 = /*$$(*/ "Erreur : Fichier de mapping inacessible." /*)*/;
 	
 	/**
 	 * Importer Listener 
@@ -170,6 +170,8 @@ public interface IExceptionMessage {
 	static final public String GENERAL_3 = /*$$(*/ "Please select key fields to check duplicate" /*)*/;
 	static final public String GENERAL_4 = /*$$(*/ "Attachment directory OR Application source does not exist" /*)*/;
 	static final public String GENERAL_5 = /*$$(*/ "Export Object" /*)*/;
+	static final public String GENERAL_6 = /*$$(*/ "Connection successful" /*)*/;
+	static final public String GENERAL_7 = /*$$(*/ "Error in Connection" /*)*/;
 	
 	/**
 	 * Messsage controller 

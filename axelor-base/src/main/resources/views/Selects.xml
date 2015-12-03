@@ -434,7 +434,6 @@
 
 	<selection name="base.general.map.api.select">
 		<option value="1">Google</option>
-		<option value="2">OSM</option>
 	</selection>
 	
 	<selection name="base.tracking.number.configuration.sale.tracking.order.select">

@@ -73,7 +73,7 @@
 		    <panel title="Interfaces">
 				<panel name="map" title="Mapping"  colSpan="12">
 					<field name="mapApiSelect"/>
-					<button name="checkMapApi" title="Test mapping service connection"   onClick="com.axelor.apps.base.web.AddressController:checkMapApi"/>
+					<button name="checkMapApi" title="Test mapping service connection"   onClick="com.axelor.apps.base.web.GeneralController:checkMapApi"/>
 				</panel>
 				<panel name="qas" title="Addresses validation"  colSpan="12">
 					<field name="qasWsdlUrl"/>
@@ -160,8 +160,8 @@
 	</form>
 	
 	
-	<form model="com.axelor.apps.base.db.Wizard" title="Check duplicate" name="wizard-check-duplicate-form" onNew="action-general-check-duplicate-set-fields-set">
-		<panel-related field="fieldsSet" title="Fields" help="Key fields to check duplicate records" readonly="true" colSpan="12" type="many-to-many" target="com.axelor.meta.db.MetaField" grid-view="meta-field-light-grid"/>
+	<form model="com.axelor.apps.base.db.Wizard" title="Check duplicate" name="wizard-check-duplicate-form" onNew="action-check-duplicate-on-new-attrs">
+		<panel-related field="$fieldsSet" title="Fields" help="Key fields to check duplicate records" readonly="true" colSpan="12" type="many-to-many" target="com.axelor.meta.db.MetaField" grid-view="meta-field-light-grid"/>
   		<panel>
     		<button name="showDuplicate" title="Show" colSpan="6" onClick="action-general-method-show-duplicate"/>
   		</panel>
@@ -199,9 +199,9 @@
 		<action if="addressL6 != null &amp;&amp; !addressL6.matches('^[A-Z \\-,.;_0-9]*')"  name="action-check-string-capital-case-name-addressL6"/>
 	</action-group>
 	
-	<action-record name="action-general-check-duplicate-set-fields-set" model="com.axelor.apps.base.db.Wizard">
-    		<field name="fieldsSet" expr="call:com.axelor.apps.base.web.GeneralController:setFields(object)" />
-    </action-record>
+	<action-attrs name="action-check-duplicate-on-new-attrs" model="com.axelor.apps.base.db.Wizard">
+    	<attribute name="value" for="$fieldsSet" expr="call:com.axelor.apps.base.web.GeneralController:setFields(object)" />
+    </action-attrs>
     
 	<action-record name="action-check-string-camel-case-first-name-clear" model="com.axelor.apps.base.db.General">
 		<field name="firstName"  expr="eval:com.axelor.apps.tool.StringTool.deleteAccent(com.axelor.apps.tool.StringTool.toFirstUpper(firstName))"/>
@@ -229,6 +229,7 @@
 		<view type="form" name="wizard-check-duplicate-form" />
 		<view-param name="show-toolbar" value="false"/>
 		<view-param name="width" value="500" />
+		<view-param name="popup" value="true" />  
 		<context name="object" expr="eval:_model"/>
 	</action-view>
 	

@@ -30,11 +30,14 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.axelor.apps.base.db.General;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.service.CurrencyService;
+import com.axelor.apps.base.service.MapService;
 import com.axelor.apps.base.service.administration.ExportDbObjectService;
 import com.axelor.apps.tool.StringTool;
 import com.axelor.db.JPA;
+import com.axelor.db.Model;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaField;
@@ -52,6 +55,12 @@ public class GeneralController {
 
 	@Inject
 	private ExportDbObjectService eos;
+	
+	@Inject
+	private MapService mapService;
+	
+	@Inject
+	private MetaFieldRepository metaFieldRepo;
 
 	public Set<MetaField> setFields(String model) throws IOException {
 		LOG.debug("Model: {}",model);
@@ -85,7 +94,8 @@ public class GeneralController {
 			List<HashMap<String,Object>> fieldsSet = (List<HashMap<String,Object>>)request.getContext().get("fieldsSet");
 			for(HashMap<String,Object> field : fieldsSet){
 				if((Boolean)field.get("selected")){
-					fields.add(field.get("name").toString());
+					MetaField metaField = metaFieldRepo.find(Long.parseLong(field.get("id").toString()));
+					fields.add(metaField.getName());
 				}
 			}
 		}
@@ -97,12 +107,14 @@ public class GeneralController {
 			String ids = findDuplicateRecords(fields,model);
 			if(ids.isEmpty())
 				response.setFlash(I18n.get(IExceptionMessage.GENERAL_1));
-			else
+			else{
 				response.setView(ActionView
 						  .define(I18n.get(IExceptionMessage.GENERAL_2))
 						  .model(model)
 						  .domain("self.id in ("+ids+")")
 						  .map());
+				response.setCanClose(true);
+			}
 		}
 		else
 			response.setFlash(I18n.get(IExceptionMessage.GENERAL_3));
@@ -143,7 +155,9 @@ public class GeneralController {
 			
 			String recId = record.get(0);
 			record.remove(0);
-			recordMap.put(recId, record);
+			if(!record.isEmpty()){
+				recordMap.put(recId, record);
+			}
 		}
 		
 		Iterator<String> keys = recordMap.keySet().iterator();
@@ -161,8 +175,28 @@ public class GeneralController {
 			query += ", m."+field;
 		}
 		
-		@SuppressWarnings("unchecked")
-		List<List<String>> records = JPA.em().createQuery(query + ") FROM "+ object + " m").getResultList();
+		List<List<Object>> resultList = JPA.em().createQuery(query + ") FROM "+ object + " m").getResultList();
+		
+		List<List<String>> records = new ArrayList<List<String>>();
+		
+		
+		for(List<Object> result : resultList){
+			
+			List<String> record = new ArrayList<String>();
+			for(Object field : result){
+				if(field == null){
+					continue;
+				}
+				if(field instanceof Model){
+					record.add(((Model)field).getId().toString());
+				}
+				else{
+					record.add(field.toString());
+				}
+			}
+			
+			records.add(record);
+		}
 		
 		return records;
 	}
@@ -194,4 +228,25 @@ public class GeneralController {
 		
 		return getDuplicateIds(keys, recordMap, ids);
 	}
+	
+	public void checkMapApi(ActionRequest request, ActionResponse response)  {
+		
+		General general = request.getContext().asType(General.class);;
+		
+		boolean connected = false;
+		
+		Integer apiType = general.getMapApiSelect();
+		
+		if(apiType == 1){
+			connected = mapService.testGMapService();
+		}
+		
+		if(connected){
+			response.setFlash(IExceptionMessage.GENERAL_6);
+		}
+		else{
+			response.setFlash(IExceptionMessage.GENERAL_7);
+		}
+	}
+
 }

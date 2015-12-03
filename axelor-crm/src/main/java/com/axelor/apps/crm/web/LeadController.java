@@ -172,6 +172,7 @@ public class LeadController {
 							  .param("popup", "reload")
 							  .param("forceEdit", "true")
   					  		  .param("popup-save", "false")
+  					  		  .param("show-toolbar", "false")
 							  .context("_showRecord", leadImportConfig.getId().toString())
 							  .map());
 		}

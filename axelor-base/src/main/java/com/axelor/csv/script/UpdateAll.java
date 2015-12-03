@@ -51,7 +51,6 @@ public class UpdateAll {
 				assert bean instanceof Company;
 				Company company = (Company) bean;
 				General general = generalRepo.all().fetchOne();
-				company.setAdministration(general);
 				List<? extends Period> periods = periodRepo.all().filter("self.company.id = ?1",company.getId()).fetch();
 				if(periods == null || periods.isEmpty()) {
 					for(Year year : yearRepo.all().filter("self.company.id = ?1 AND self.typeSelect = 1",company.getId()).fetch()) {
