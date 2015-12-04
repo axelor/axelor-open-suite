@@ -47,9 +47,6 @@ public class InvoiceController {
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 	
 	@Inject
-	private ReportFactory reportFactory;
-
-	@Inject
 	private InvoiceService invoiceService;
 	
 	@Inject
@@ -259,7 +256,7 @@ public class InvoiceController {
 				title += invoice.getInvoiceId();
 			}
 			
-			String fileLink = reportFactory.createReport(IReport.INVOICE, title+"-${date}")
+			String fileLink = ReportFactory.createReport(IReport.INVOICE, title+"-${date}")
 					.addParam("InvoiceId", invoiceIds)
 					.addParam("Locale", language)
 					.addModel(invoice)

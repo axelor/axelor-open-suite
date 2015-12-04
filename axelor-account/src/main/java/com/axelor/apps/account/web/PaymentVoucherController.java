@@ -50,9 +50,6 @@ public class PaymentVoucherController {
 	@Inject
 	private PaymentVoucherLoadService paymentVoucherLoadService; 
 	
-	@Inject
-	private ReportFactory reportFactory;
-	
 	
 	//Called on onSave event
 	public void paymentVoucherSetNum(ActionRequest request, ActionResponse response) throws AxelorException{
@@ -112,7 +109,7 @@ public class PaymentVoucherController {
 		
 		String name = I18n.get("Payment voucher")+" "+paymentVoucher.getReceiptNo();
 		
-		String fileLink = reportFactory.createReport(IReport.PAYMENT_VOUCHER, name+"-${date}")
+		String fileLink = ReportFactory.createReport(IReport.PAYMENT_VOUCHER, name+"-${date}")
 				.addParam("PaymentVoucherId", paymentVoucher.getId())
 				.generate()
 				.getFileLink();

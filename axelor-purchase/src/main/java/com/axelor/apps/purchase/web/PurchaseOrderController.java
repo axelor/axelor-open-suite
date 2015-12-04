@@ -54,9 +54,6 @@ public class PurchaseOrderController {
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 	
 	@Inject
-	private ReportFactory reportFactory;
-	
-	@Inject
 	private PurchaseOrderService purchaseOrderService;
 	
 	@Inject
@@ -138,7 +135,7 @@ public class PurchaseOrderController {
 			title += purchaseOrder.getPurchaseOrderSeq();
 		}
 
-		String fileLink = reportFactory.createReport(IReport.PURCHASE_ORDER, title+"-${date}")
+		String fileLink = ReportFactory.createReport(IReport.PURCHASE_ORDER, title+"-${date}")
 				.addParam("PurchaseOrderId", purchaseOrderIds)
 				.addParam("Locale", language)
 				.generate()

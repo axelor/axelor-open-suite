@@ -51,8 +51,6 @@ public class MessageController extends com.axelor.apps.message.web.MessageContro
 	@Inject
 	private MessageService messageService;
 	
-	@Inject
-	private ReportFactory reportFactory;
 	
 	/**
 	 * Method that generate message as a pdf
@@ -117,7 +115,7 @@ public class MessageController extends com.axelor.apps.message.web.MessageContro
 				title += lstSelectedMessages == null ? "Message "+message.getSubject():"Messages";
 			}
 			
-			String fileLink = reportFactory.createReport(IReport.MESSAGE_PDF, title+"-${date}")
+			String fileLink = ReportFactory.createReport(IReport.MESSAGE_PDF, title+"-${date}")
 						.addParam("Locale", language)
 						.addParam("MessageId", messageIds)
 						.addFormat(ReportSettings.FORMAT_XLS)

@@ -49,9 +49,6 @@ public class MoveLineReportController {
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 	
 	@Inject
-	private ReportFactory reportFactory;
-	
-	@Inject
 	MoveLineReportService moveLineReportService;
 	
 	@Inject
@@ -240,7 +237,7 @@ public class MoveLineReportController {
 
 					String name = I18n.get("Accounting reporting") + " " + moveLineReport.getRef();
 					
-					String fileLink = reportFactory.createReport(String.format(IReport.MOVE_LINE_REPORT_TYPE, moveLineReport.getTypeSelect()), name+"-${date}")
+					String fileLink = ReportFactory.createReport(String.format(IReport.MOVE_LINE_REPORT_TYPE, moveLineReport.getTypeSelect()), name+"-${date}")
 							.addParam("MoveLineReportId", moveLineReport.getId())
 							.addFormat(moveLineReport.getExportTypeSelect())
 							.addModel(moveLineReport)

@@ -42,8 +42,6 @@ public class ProjectTaskController {
 
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 	
-	@Inject
-	private ReportFactory reportFactory;
 	
 	@Inject
 	private ProjectTaskService projectTaskService;
@@ -57,7 +55,7 @@ public class ProjectTaskController {
 
 		String name = I18n.get("Project Task") + " " + projectTask.getCode();
 		
-		String fileLink = reportFactory.createReport(IReport.PROJECT_TASK, name+"-${date}")
+		String fileLink = ReportFactory.createReport(IReport.PROJECT_TASK, name+"-${date}")
 				.addParam("ProjectTaskId", projectTask.getId())
 				.addParam("Locale", language)
 				.addModel(projectTask)

@@ -53,8 +53,6 @@ public class ManufOrderController {
 	@Inject
 	private ManufOrderRepository manufOrderRepo;
 	
-	@Inject
-	private ReportFactory reportFactory;
 	
 //	public void copyToConsume (ActionRequest request, ActionResponse response) {
 //
@@ -182,7 +180,7 @@ public class ManufOrderController {
 				name += lstSelectedManufOrder == null ? "OF "+manufOrder.getManufOrderSeq():"OFs";
 			}
 			
-			String fileLink = reportFactory.createReport(IReport.MANUF_ORDER, name+"-${date}")
+			String fileLink = ReportFactory.createReport(IReport.MANUF_ORDER, name+"-${date}")
 					.addParam("Locale", manufOrderService.getLanguageToPrinting(manufOrder))
 					.addParam("ManufOrderId", manufOrderIds)
 					.generate()

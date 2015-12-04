@@ -46,9 +46,6 @@ public class ProductController {
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 	
 	@Inject
-	private ReportFactory reportFactory;
-
-	@Inject
 	private GeneralService generalService;
 	
 	@Inject
@@ -102,7 +99,7 @@ public class ProductController {
 
 		String name = I18n.get("Product Catalog");
 		
-		String fileLink = reportFactory.createReport(IReport.PRODUCT_CATALOG, name+"-${date}")
+		String fileLink = ReportFactory.createReport(IReport.PRODUCT_CATALOG, name+"-${date}")
 				.addParam("UserId", user.getId())
 				.addParam("CurrYear", Integer.toString(currentYear))
 				.addParam("ProductIds", productIds)
@@ -126,7 +123,7 @@ public class ProductController {
 
 		String name = I18n.get("Product") + " " + product.getCode();
 		
-		String fileLink = reportFactory.createReport(IReport.PRODUCT_SHEET, name+"-${date}")
+		String fileLink = ReportFactory.createReport(IReport.PRODUCT_SHEET, name+"-${date}")
 				.addParam("ProductId", product.getId())
 				.addParam("CompanyId", user.getActiveCompany().getId())
 				.addParam("Locale", language)

@@ -52,9 +52,6 @@ public class LeadController {
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 	
 	@Inject
-	private ReportFactory reportFactory;
-	
-	@Inject
 	private LeadService leadService;
 	
 	@Inject
@@ -109,7 +106,7 @@ public class LeadController {
 				title += lstSelectedleads == null ? "Lead "+lead.getFirstName():"Leads";
 			}
 
-			String fileLink = reportFactory.createReport(IReport.LEAD, title+"-${date}")
+			String fileLink = ReportFactory.createReport(IReport.LEAD, title+"-${date}")
 					.addParam("LeadId", leadIds)
 					.addParam("Locale", language)
 					.generate()

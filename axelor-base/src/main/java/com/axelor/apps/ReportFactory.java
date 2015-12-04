@@ -23,7 +23,7 @@ import com.axelor.apps.report.engine.ReportSettings;
 
 public class ReportFactory {
 	
-	public ReportSettings createReport(String rptdesign, String outputName)  {
+	public static ReportSettings createReport(String rptdesign, String outputName)  {
 		
 		if(ReportSettings.useIntegratedEngine())  {
 			

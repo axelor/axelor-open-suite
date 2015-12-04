@@ -33,9 +33,6 @@ import com.google.inject.persist.Transactional;
 public class EmploymentContractService {
 	
 	@Inject
-	private ReportFactory reportFactory;
-	
-	@Inject
 	private EmploymentContractRepository employmentContractRepo;
 	
 	@Transactional
@@ -46,7 +43,7 @@ public class EmploymentContractService {
     	
     	String name = EmploymentContract.getFullName() + "_" + EmploymentContract.getEmploymentContractVersion();
 		
-		reportFactory.createReport(IReport.EMPLYOMENT_CONTRACT, name+"-${date}")
+    	ReportFactory.createReport(IReport.EMPLYOMENT_CONTRACT, name+"-${date}")
 				.addParam("ContractId", EmploymentContract.getId())
 				.addParam("Locale", language)
 				.addModel(EmploymentContract)

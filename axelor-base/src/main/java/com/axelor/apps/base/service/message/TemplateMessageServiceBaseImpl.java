@@ -50,9 +50,6 @@ public class TemplateMessageServiceBaseImpl extends TemplateMessageServiceImpl {
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 	
 	@Inject
-	private ReportFactory reportFactory;
-	
-	@Inject
 	public TemplateMessageServiceBaseImpl(MessageService messageService, EmailAddressRepository emailAddressRepo) {
 		super(messageService, emailAddressRepo);
 	}
@@ -93,7 +90,7 @@ public class TemplateMessageServiceBaseImpl extends TemplateMessageServiceImpl {
 
 		if ( modelPath == null || modelPath.isEmpty() ) { return null; }
 
-		ReportSettings reportSettings = reportFactory.createReport(modelPath, name+"-${date}${time}").addFormat(format);
+		ReportSettings reportSettings = ReportFactory.createReport(modelPath, name+"-${date}${time}").addFormat(format);
 		
 		for(BirtTemplateParameter birtTemplateParameter : birtTemplateParameterList)  {
 			maker.setTemplate(birtTemplateParameter.getValue());

@@ -53,9 +53,6 @@ public class ExpenseController {
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 	
 	@Inject
-	private ReportFactory reportFactory;
-	
-	@Inject
 	private ExpenseService expenseService;
 
 	@Inject
@@ -281,7 +278,7 @@ public class ExpenseController {
 		
 		String name = I18n.get("Expense") + " " + expense.getFullName();
 		
-		String fileLink = reportFactory.createReport(IReport.EXPENSE, name+"-${date}")
+		String fileLink = ReportFactory.createReport(IReport.EXPENSE, name+"-${date}")
 				.addParam("ExpenseId", expense.getId())
 				.addParam("Locale", language)
 				.addModel(expense)

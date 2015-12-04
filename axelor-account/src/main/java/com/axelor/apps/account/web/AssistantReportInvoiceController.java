@@ -33,14 +33,10 @@ import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.common.base.Joiner;
-import com.google.inject.Inject;
 
 public class AssistantReportInvoiceController {
 	
 	private final Logger logger = LoggerFactory.getLogger(getClass());
-	
-	@Inject
-	private ReportFactory reportFactory;
 	
 	public void printSales(ActionRequest request, ActionResponse response) throws IOException, BirtException{
 		
@@ -48,7 +44,7 @@ public class AssistantReportInvoiceController {
 
 		String name = I18n.get("SaleInvoicesDetails-")+assistant.getFromDate().toString("dd/MM/yyyy-")+assistant.getToDate().toString("dd/MM/yyyy");
 		
-		String fileLink = reportFactory.createReport(IReport.SALE_INVOICES_DETAILS, name+"-${date}")
+		String fileLink = ReportFactory.createReport(IReport.SALE_INVOICES_DETAILS, name+"-${date}")
 				.addParam("Locale", this.getLanguageToPrinting())
 				.addParam("assistantId", assistant.getId())
 				.addParam("companyId", assistant.getCompany().getId())
@@ -75,7 +71,7 @@ public class AssistantReportInvoiceController {
 		
 		String name = I18n.get("PurchaseInvoicesDetails-")+assistant.getFromDate().toString("dd/MM/yyyy-")+assistant.getToDate().toString("dd/MM/yyyy");
 		
-		String fileLink = reportFactory.createReport(IReport.PURCHASE_INVOICES_DETAILS, name+"-${date}")
+		String fileLink = ReportFactory.createReport(IReport.PURCHASE_INVOICES_DETAILS, name+"-${date}")
 				.addParam("Locale", this.getLanguageToPrinting())
 				.addParam("assistantId", assistant.getId())
 				.addParam("companyId", assistant.getCompany().getId())

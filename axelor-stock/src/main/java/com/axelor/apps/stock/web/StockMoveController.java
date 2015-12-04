@@ -51,9 +51,6 @@ public class StockMoveController {
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 	
 	@Inject
-	private ReportFactory reportFactory;
-	
-	@Inject
 	private StockMoveService stockMoveService;
 	
 	@Inject
@@ -152,7 +149,7 @@ public class StockMoveController {
 				title = lstSelectedMove == null ? I18n.get("StockMove") + " " + stockMove.getStockMoveSeq() : I18n.get("StockMove(s)");
 			}
 
-			String fileLink = reportFactory.createReport(IReport.STOCK_MOVE, title+"-${date}")
+			String fileLink = ReportFactory.createReport(IReport.STOCK_MOVE, title+"-${date}")
 					.addParam("StockMoveId", stockMoveIds)
 					.addParam("Locale", language)
 					.generate()

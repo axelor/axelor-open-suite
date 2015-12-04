@@ -52,9 +52,6 @@ public class MessageServiceBaseImpl extends MessageServiceImpl {
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 	
 	@Inject
-	private ReportFactory reportFactory;
-	
-	@Inject
 	private UserService userService;
 
 	@Inject
@@ -101,7 +98,7 @@ public class MessageServiceBaseImpl extends MessageServiceImpl {
 
 		String name = "Message " + message.getSubject();
 		
-		ReportSettings reportSettings = reportFactory.createReport(birtTemplate.getTemplateLink(), name+"-${date}")
+		ReportSettings reportSettings = ReportFactory.createReport(birtTemplate.getTemplateLink(), name+"-${date}")
 				.addFormat(birtTemplate.getFormat())
 				.addParam("Locale", language);
 				

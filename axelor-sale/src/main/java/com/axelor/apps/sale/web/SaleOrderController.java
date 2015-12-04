@@ -45,9 +45,6 @@ public class SaleOrderController {
 	@Inject
 	private SaleOrderRepository saleOrderRepo;
 	
-	@Inject
-	private ReportFactory reportFactory;
-	
 	public void compute(ActionRequest request, ActionResponse response)  {
 
 		SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
@@ -77,7 +74,7 @@ public class SaleOrderController {
 		
 		String name = saleOrderService.getFileName(saleOrder);
 		
-		String fileLink = reportFactory.createReport(IReport.SALES_ORDER, name+"-${date}")
+		String fileLink = ReportFactory.createReport(IReport.SALES_ORDER, name+"-${date}")
 				.addParam("Locale", language)
 				.addParam("SaleOrderId", saleOrder.getId())
 				.generate()
@@ -98,7 +95,7 @@ public class SaleOrderController {
 
 		String name = saleOrderService.getFileName(saleOrder);
 		
-		String fileLink = reportFactory.createReport(IReport.SALES_ORDER, name+"-${date}")
+		String fileLink = ReportFactory.createReport(IReport.SALES_ORDER, name+"-${date}")
 					.addParam("Locale", language)
 					.addParam("SaleOrderId", saleOrder.getId())
 					.addFormat(ReportSettings.FORMAT_XLS)
@@ -122,7 +119,7 @@ public class SaleOrderController {
 
 		String name = saleOrderService.getFileName(saleOrder);
 		
-		String fileLink = reportFactory.createReport(IReport.SALES_ORDER, name+"-${date}")
+		String fileLink = ReportFactory.createReport(IReport.SALES_ORDER, name+"-${date}")
 					.addParam("Locale", language)
 					.addParam("SaleOrderId", saleOrder.getId())
 					.addFormat(ReportSettings.FORMAT_DOC)

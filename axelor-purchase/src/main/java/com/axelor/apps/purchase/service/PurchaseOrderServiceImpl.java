@@ -60,9 +60,6 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 	
 	@Inject
-	private ReportFactory reportFactory;
-	
-	@Inject
 	private PurchaseOrderLineTaxService purchaseOrderLineVatService;
 
 	@Inject
@@ -256,7 +253,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 		
 		String title = I18n.get("Purchase order") + purchaseOrder.getPurchaseOrderSeq() + ((purchaseOrder.getVersionNumber() > 1) ? "-V" + purchaseOrder.getVersionNumber() : "");
 
-		reportFactory.createReport(IReport.PURCHASE_ORDER, title+"-${date}")
+		ReportFactory.createReport(IReport.PURCHASE_ORDER, title+"-${date}")
 				.addParam("PurchaseOrderId", purchaseOrder.getId())
 				.addParam("Locale", language)
 				.addModel(purchaseOrder)

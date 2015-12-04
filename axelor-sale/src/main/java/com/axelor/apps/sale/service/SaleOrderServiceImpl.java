@@ -326,7 +326,7 @@ public class SaleOrderServiceImpl implements SaleOrderService {
 		
 		String name = I18n.get("Sale order")+" "+saleOrder.getSaleOrderSeq();
 		
-		reportFactory.createReport(IReport.SALES_ORDER, name+"-${date}")
+		ReportFactory.createReport(IReport.SALES_ORDER, name+"-${date}")
 				.addParam("Locale", language)
 				.addParam("SaleOrderId", saleOrder.getId())
 				.addModel(saleOrder)

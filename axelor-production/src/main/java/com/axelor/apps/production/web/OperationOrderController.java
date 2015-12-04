@@ -72,8 +72,6 @@ public class OperationOrderController {
 	@Inject
 	protected WeeklyPlanningService weeklyPlanningService;
 	
-	@Inject
-	private ReportFactory reportFactory;
 
 	private static final Logger LOG = LoggerFactory.getLogger(ManufOrderController.class);
 	
@@ -194,7 +192,7 @@ public class OperationOrderController {
 				name += lstSelectedOperationOrder == null ? "Op "+operationOrder.getName():"Ops";
 			}
 			
-			String fileLink = reportFactory.createReport(IReport.OPERATION_ORDER, name+"-${date}")
+			String fileLink = ReportFactory.createReport(IReport.OPERATION_ORDER, name+"-${date}")
 					.addParam("Locale", manufOrderService.getLanguageToPrinting(operationOrder.getManufOrder()))
 					.addParam("OperationOrderId", operationOrderIds)
 					.generate()

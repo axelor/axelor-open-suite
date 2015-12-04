@@ -49,9 +49,6 @@ public class InventoryController {
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 
 	@Inject
-	private ReportFactory reportFactory;
-
-	@Inject
 	InventoryService inventoryService;
 	
 	@Inject
@@ -77,7 +74,7 @@ public class InventoryController {
 
 		String name = I18n.get("Inventory")+" "+inventory.getInventorySeq();
 		
-		String fileLink = reportFactory.createReport(IReport.INVENTORY, name+"-${date}")
+		String fileLink = ReportFactory.createReport(IReport.INVENTORY, name+"-${date}")
 				.addParam("InventoryId", inventory.getId())
 				.addParam("Locale", language)
 				.addFormat(inventory.getFormatSelect())

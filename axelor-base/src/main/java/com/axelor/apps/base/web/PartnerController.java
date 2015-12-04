@@ -67,9 +67,6 @@ public class PartnerController {
 	@Inject
 	private PartnerRepository partnerRepo;
 	
-	@Inject
-	private ReportFactory reportFactory;
-
 	private static final Logger LOG = LoggerFactory.getLogger(PartnerController.class);
 
 	public void setPartnerSequence(ActionRequest request, ActionResponse response) throws AxelorException {
@@ -105,7 +102,7 @@ public class PartnerController {
 		
 		String name = I18n.get("Partner")+" "+partner.getPartnerSeq();
 		
-		String fileLink = reportFactory.createReport(IReport.PARTNER, name+"-${date}")
+		String fileLink = ReportFactory.createReport(IReport.PARTNER, name+"-${date}")
 					.addParam("Locale", language)
 					.addParam("PartnerId", partner.getId())
 					.generate()
@@ -135,7 +132,7 @@ public class PartnerController {
 
 		String name = I18n.get("Phone Book");
 		
-		String fileLink = reportFactory.createReport(IReport.PHONE_BOOK, name+"-${date}")
+		String fileLink = ReportFactory.createReport(IReport.PHONE_BOOK, name+"-${date}")
 					.addParam("Locale", language)
 					.addParam("UserId", user.getId())
 					.generate()
@@ -164,7 +161,7 @@ public class PartnerController {
 
 		String name = I18n.get("Company PhoneBook");
 		
-		String fileLink = reportFactory.createReport(IReport.COMPANY_PHONE_BOOK, name+"-${date}")
+		String fileLink = ReportFactory.createReport(IReport.COMPANY_PHONE_BOOK, name+"-${date}")
 					.addParam("Locale", language)
 					.addParam("UserId", user.getId())
 					.generate()
@@ -193,7 +190,7 @@ public class PartnerController {
 
 		String name = I18n.get("Client Situation");
 		
-		String fileLink = reportFactory.createReport(IReport.CLIENT_SITUATION, name+"-${date}")
+		String fileLink = ReportFactory.createReport(IReport.CLIENT_SITUATION, name+"-${date}")
 				.addParam("Locale", language)
 				.addParam("UserId", user.getId())
 				.addParam("PartnerId", partner.getId())

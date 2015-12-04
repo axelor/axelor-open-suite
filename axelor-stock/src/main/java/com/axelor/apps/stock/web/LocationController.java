@@ -53,8 +53,6 @@ public class LocationController {
 
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 	
-	@Inject
-	private ReportFactory reportFactory;
 	
 	@Inject
 	private InventoryService inventoryService;
@@ -166,7 +164,7 @@ public class LocationController {
 				title = lstSelectedLocations == null ? I18n.get("Location") + " " + location.getName() : I18n.get("Location(s)");
 			}
 		
-			String fileLink = reportFactory.createReport(IReport.STOCK_LOCATION, title+"-${date}")
+			String fileLink = ReportFactory.createReport(IReport.STOCK_LOCATION, title+"-${date}")
 					.addParam("StockLocationId", locationIds)
 					.addParam("Locale", language)
 					.generate()

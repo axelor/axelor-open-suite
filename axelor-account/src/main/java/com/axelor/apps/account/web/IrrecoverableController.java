@@ -40,9 +40,6 @@ public class IrrecoverableController {
 	
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 	
-	@Inject
-	private ReportFactory reportFactory;
-
 	@Inject 
 	private IrrecoverableService irrecoverableService;
 	
@@ -100,7 +97,7 @@ public class IrrecoverableController {
 
 			String name = I18n.get("Irrecouverable reporting")+" "+irrecoverable.getName();
 			
-			String fileLink = reportFactory.createReport(IReport.IRRECOVERABLE, name+"-${date}")
+			String fileLink = ReportFactory.createReport(IReport.IRRECOVERABLE, name+"-${date}")
 					.addParam("IrrecoverableID", irrecoverable.getId())
 					.addFormat(irrecoverable.getExportTypeSelect())
 					.addModel(irrecoverable)
