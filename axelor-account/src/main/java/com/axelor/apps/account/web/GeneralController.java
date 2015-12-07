@@ -21,7 +21,7 @@ import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.joda.time.LocalDateTime;
+import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -70,7 +70,7 @@ public class GeneralController {
 	
 	public void updateCurrencyConversion(ActionRequest request, ActionResponse response){
 		 General general = request.getContext().asType(General.class);
-		 LocalDateTime today = generalService.getTodayDateTime().toLocalDateTime();
+		 LocalDate today = generalService.getTodayDate();
 		 
 		 Map<Long, Long> currencyMap = new HashMap<Long, Long>();
 		 
@@ -102,7 +102,7 @@ public class GeneralController {
 					break;
 				}
 				ccl = cclRepo.find(ccl.getId());
-				ccl.setToDate(today.minusMinutes(1));
+				ccl.setToDate(today.minusDays(1));
 				ccs.saveCurrencyConversionLine(ccl);
 				BigDecimal previousRate = ccl.getExchangeRate();
 				String variations = ccs.getVariations(currentRate, previousRate);

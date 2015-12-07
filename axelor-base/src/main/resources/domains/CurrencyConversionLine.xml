@@ -12,8 +12,8 @@
     <many-to-one name="startCurrency" ref="com.axelor.apps.base.db.Currency" title="Source Currency" required="true"/>
     <many-to-one name="endCurrency" ref="com.axelor.apps.base.db.Currency" title="Destination Currency" required="true"/>
     <decimal name="exchangeRate" scale="4" precision="20" title="Exchange rate"/>
-    <datetime name="fromDate" title="From Date" required="true"/>
-    <datetime name="toDate" title="To Date"/>
+    <date name="fromDate" title="From Date" required="true"/>
+    <date name="toDate" title="To Date"/>
     <string name="variations"  title="Variation" help="true"/>
   </entity>
   

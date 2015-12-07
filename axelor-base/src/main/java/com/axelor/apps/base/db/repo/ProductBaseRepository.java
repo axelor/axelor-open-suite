@@ -36,6 +36,8 @@ public class ProductBaseRepository extends ProductRepository{
 		
 		product.setFullName("["+product.getCode()+"]"+product.getName());
 		
+		product = super.save(product);
+		
 		if(product.getBarCode() == null){
 			try{
 				Barcode barcode  = BarcodeFactory.createEAN13(String.format("%012d", product.getId()));
