@@ -8,7 +8,7 @@
     onNew="action-generate-product-variant-wizard-record-default">
     	<panel>
 			<field name="qty" widget="decimal" title="Quantity"/>
-			<field name="billOfMaterial" widget="ManyToOne[target=com.axelor.apps.production.db.BillOfMaterial]" title="BOM" domain="self.isRawMaterial = 'false' and self.product.id = :product_id" form-view="bill-of-material-form" grid-view="bill-of-material-grid"/>
+			<field name="billOfMaterial" widget="ManyToOne[target=com.axelor.apps.production.db.BillOfMaterial]" title="BOM" domain="self.isRawMaterial = false and self.product.id = :product_id and self.parentBillOfMaterial is null" form-view="bill-of-material-form" grid-view="bill-of-material-grid"/>
 			<button name="generate" title="Generate" onClick="com.axelor.apps.base.web.GenerateProductVariantWizardController"/>
 		</panel>
 	</form>
