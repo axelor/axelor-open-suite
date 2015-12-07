@@ -17,9 +17,12 @@
  */
 package com.axelor.apps.crm.service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.IAdministration;
@@ -37,6 +40,7 @@ import com.axelor.apps.crm.db.repo.LeadRepository;
 import com.axelor.apps.crm.db.repo.OpportunityRepository;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
+import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
@@ -184,5 +188,18 @@ public class LeadService {
 		lead.setUser(user);
 		lead.setTeam(user.getActiveTeam());
 		return lead;
+	}
+	
+	public List<Long> findLeadMails(Lead lead){
+		String query = "SELECT DISTINCT(email.id) FROM Message as email WHERE email.mediaTypeSelect = 2 AND ("+
+				"(email.relatedTo1Select = 'com.axelor.apps.crm.db.Lead' AND email.relatedTo1SelectId = "+lead.getId()+") "+
+				"OR (email.relatedTo2Select = 'com.axelor.apps.crm.db.Lead' AND email.relatedTo2SelectId = "+lead.getId()+")";
+		if(lead.getEmailAddress() != null){
+			query += "OR (email.fromEmailAddress.id = "+lead.getEmailAddress().getId()+"))";
+		}
+		else{
+			query += ")";
+		}
+		return JPA.em().createQuery(query).getResultList();
 	}
 }
