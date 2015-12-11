@@ -29,6 +29,7 @@
     <property name="imageDPI">96</property>
     <parameters>
         <scalar-parameter name="companyId" id="3265">
+            <property name="hidden">true</property>
             <property name="valueType">static</property>
             <property name="isRequired">true</property>
             <property name="dataType">decimal</property>
@@ -44,6 +45,7 @@
             </structure>
         </scalar-parameter>
         <scalar-parameter name="DBName" id="3673">
+            <property name="hidden">true</property>
             <property name="valueType">static</property>
             <property name="dataType">string</property>
             <property name="distinct">true</property>
@@ -55,6 +57,7 @@
             </structure>
         </scalar-parameter>
         <scalar-parameter name="UserName" id="3674">
+            <property name="hidden">true</property>
             <property name="valueType">static</property>
             <property name="dataType">string</property>
             <property name="distinct">true</property>
@@ -66,6 +69,7 @@
             </structure>
         </scalar-parameter>
         <scalar-parameter name="Password" id="3675">
+            <property name="hidden">true</property>
             <property name="valueType">static</property>
             <property name="dataType">string</property>
             <property name="distinct">true</property>
@@ -77,8 +81,9 @@
             </structure>
         </scalar-parameter>
         <scalar-parameter name="Locale" id="3676">
+            <property name="hidden">true</property>
             <property name="valueType">static</property>
-            <property name="isRequired">true</property>
+            <property name="isRequired">false</property>
             <property name="dataType">string</property>
             <property name="distinct">true</property>
             <simple-property-list name="defaultValue">
@@ -93,6 +98,7 @@
             </structure>
         </scalar-parameter>
         <scalar-parameter name="AttachmentPath" id="3818">
+            <property name="hidden">true</property>
             <property name="valueType">static</property>
             <property name="isRequired">false</property>
             <property name="dataType">string</property>
@@ -108,10 +114,14 @@
             </structure>
         </scalar-parameter>
         <scalar-parameter name="DefaultDriver" id="4003">
+            <property name="hidden">true</property>
             <property name="valueType">static</property>
-            <property name="isRequired">true</property>
+            <property name="isRequired">false</property>
             <property name="dataType">string</property>
             <property name="distinct">true</property>
+            <simple-property-list name="defaultValue">
+                <value type="constant">org.postgresql.Driver</value>
+            </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
             <property name="controlType">text-box</property>
@@ -120,6 +130,7 @@
             </structure>
         </scalar-parameter>
         <scalar-parameter name="partnersIds" id="4006">
+            <property name="hidden">true</property>
             <property name="valueType">static</property>
             <property name="isRequired">false</property>
             <property name="dataType">string</property>
@@ -135,6 +146,7 @@
             </structure>
         </scalar-parameter>
         <scalar-parameter name="productsIds" id="4007">
+            <property name="hidden">true</property>
             <property name="valueType">static</property>
             <property name="isRequired">false</property>
             <property name="dataType">string</property>
@@ -150,6 +162,7 @@
             </structure>
         </scalar-parameter>
         <scalar-parameter name="productCategoriesIds" id="4008">
+            <property name="hidden">true</property>
             <property name="valueType">static</property>
             <property name="isRequired">false</property>
             <property name="dataType">string</property>
@@ -166,6 +179,7 @@
             </structure>
         </scalar-parameter>
         <scalar-parameter name="chart" id="4009">
+            <property name="hidden">true</property>
             <property name="valueType">static</property>
             <property name="isRequired">false</property>
             <property name="dataType">string</property>
@@ -181,8 +195,9 @@
             </structure>
         </scalar-parameter>
         <scalar-parameter name="assistantId" id="4011">
+            <property name="hidden">true</property>
             <property name="valueType">static</property>
-            <property name="isRequired">true</property>
+            <property name="isRequired">false</property>
             <property name="dataType">decimal</property>
             <property name="distinct">true</property>
             <simple-property-list name="defaultValue">
@@ -216,8 +231,6 @@
             </list-property>
             <property name="odaDriverClass">org.postgresql.Driver</property>
             <property name="odaURL">jdbc:postgresql://localhost:5432/axelor-business-suite</property>
-            <property name="odaUser">axelor</property>
-            <encrypted-property name="odaPassword" encryptionID="base64">Z3VpdGFyZTAzMDc5Mg==</encrypted-property>
         </oda-data-source>
     </data-sources>
     <data-sets>

@@ -17,6 +17,8 @@
  */
 package com.axelor.apps.cash.management.web;
 
+import java.io.IOException;
+
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -33,17 +35,23 @@ import com.axelor.apps.cash.management.exception.IExceptionMessage;
 import com.axelor.apps.cash.management.service.ForecastRecapService;
 import com.axelor.apps.tool.net.URLService;
 import com.axelor.exception.AxelorException;
+import org.eclipse.birt.core.exception.BirtException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
+import com.axelor.meta.schema.actions.ActionView;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ForecastRecapController {
 	
+	private final Logger logger = LoggerFactory.getLogger(getClass());
+
 	@Inject
-	protected ForecastRecapService forecastRecapService;
+	private ForecastRecapService forecastRecapService;
 	
 	public void populate(ActionRequest request, ActionResponse response) throws AxelorException{
 		ForecastRecap forecastRecap = request.getContext().asType(ForecastRecap.class);
@@ -55,31 +63,20 @@ public class ForecastRecapController {
 		
 	}
 	
-	public void showReport(ActionRequest request, ActionResponse response) {
+	public void showReport(ActionRequest request, ActionResponse response)  throws IOException, BirtException  {
 
 		ForecastRecap forecastRecap = request.getContext().asType(ForecastRecap.class);
 
-		StringBuilder url = new StringBuilder();
+		String url = forecastRecapService.getURLForecastRecapPDF(forecastRecap);
 
-		url.append(forecastRecapService.getURLForecastRecapPDF(forecastRecap));
+		String title = I18n.get("ForecastRecap");
+		title += forecastRecap.getId();
 
-		
-		String urlNotExist = URLService.notExist(url.toString());
-
-		if(urlNotExist == null) {
-
-			String title = I18n.get("ForecastRecap");
-			title += forecastRecap.getId();
-
-			Map<String,Object> mapView = new HashMap<String,Object>();
-			mapView.put("title", title);
-			mapView.put("resource", url);
-			mapView.put("viewType", "html");
-			response.setView(mapView);
-		}
-		else {
-			response.setFlash(urlNotExist);
-		}
+		logger.debug("Printing "+title);
+	
+		response.setView(ActionView
+				.define(title)
+				.add("html", url).map());	
 	}
 	
 	public void sales(ActionRequest request, ActionResponse response) throws AxelorException {

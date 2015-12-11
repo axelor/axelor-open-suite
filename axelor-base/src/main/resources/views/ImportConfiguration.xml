@@ -13,14 +13,12 @@
 	</grid>
 	
 	<form name="import-configuration-form" title="Import" model="com.axelor.apps.base.db.ImportConfiguration" onNew="action-import-record-default" width="large">
-        <toolbar>
-          <button name="import" title="Importer" colSpan="4" onClick="save,action-import-configuration-method-run,save" prompt="Are you sure you want to start the import?" />
-        </toolbar>
         <panel>
         	<field name="name"/>
 	        <field name="typeSelect"/>
-	        <field name="bindMetaFile" domain="self.mime='text/xml'" canNew="true" form-view="meta-file-form" grid-view="meta-file-grid"/>
+	        <field name="bindMetaFile" domain="self.fileType = 'text/xml'" canNew="true" form-view="meta-file-form" grid-view="meta-file-grid"/>
 			<field name="dataMetaFile" onSelect="action-attar-set-data-meta-file-domain" canNew="true" form-view="meta-file-form" grid-view="meta-file-grid"/>
+			<button name="import" title="Importer" colSpan="4" onClick="save,action-import-configuration-method-run,save" prompt="Are you sure you want to start the import?" />
         </panel>
         <panel-tabs>
         	<panel title="Description"> 
@@ -46,8 +44,8 @@
     </action-record>
     
    <action-attrs model="com.axelor.apps.base.db.ImportConfiguration" name="action-attar-set-data-meta-file-domain">
-     <attribute name="domain" for="dataMetaFile" expr="eval: &quot;self.id != ${bindMetaFile?.id} and self.mime='text/csv'&quot;" if="typeSelect=='csv'"/>
-     <attribute name="domain" for="dataMetaFile" expr="eval: &quot;self.id != ${bindMetaFile?.id} and self.mime='text/xml'&quot;" if="typeSelect=='xml'"/>
+     <attribute name="domain" for="dataMetaFile" expr="eval: &quot;self.id != ${bindMetaFile?.id} and self.fileType='text/csv'&quot;" if="typeSelect=='csv'"/>
+     <attribute name="domain" for="dataMetaFile" expr="eval: &quot;self.id != ${bindMetaFile?.id} and self.fileType='text/xml'&quot;" if="typeSelect=='xml'"/>
    </action-attrs>
    
    <action-attrs model="com.axelor.apps.base.db.ImportConfiguration" name="action-attrs-calendar-type-file">

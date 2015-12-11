@@ -21,62 +21,75 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Team;
 import com.axelor.auth.db.User;
+import com.axelor.meta.db.MetaFile;
 
 /**
- * UserService est une classe implémentant l'ensemble des services pour
- * les informations utilisateur.
+ * UserService is a class that implement all methods for user informations
  * 
  */
 public interface UserService {
 
 	/**
-	 * Méthode qui retourne le user de l'utilisateur connecté
+	 * Method that return the current connected user
 	 * 
 	 * @return user
-	 * 		Le user de l'utilisateur
+	 * 		the current connected user
 	 */
 	public User getUser();
 	
+	/**
+	 * Method that return the id of the current connected user
+	 * 
+	 * @return user
+	 * 		the id of current connected user
+	 */
 	public Long getUserId();
 	
 	/**
-	 * Méthode qui retourne la société active de l'utilisateur connecté
+	 * Method that return the active company of the current connected user
 	 * 
 	 * @return Company
-	 * 		La société
+	 * 		the active company
 	 */
 	public Company getUserActiveCompany();
-    
 
 	/**
-	 * Méthode qui retourne la société active de l'utilisateur connecté
+	 * Method that return the active company id of the current connected user
 	 * 
 	 * @return Company
-	 * 		La société
+	 * 		the active company id
 	 */
 	public Long getUserActiveCompanyId(); 
 	
 	/**
-	 * Méthode qui retourne l'équipe active de l'utilisateur connecté
+	 * Method that return the active team of the current connected user
 	 * 
 	 * @return Team
-	 * 		L'équipe
+	 * 		the active team
+	 */
+	public MetaFile getUserActiveCompanyLogo();
+	
+	/**
+	 * Method that return the active team of the current connected user
+	 * 
+	 * @return Team
+	 * 		the active team
 	 */
 	public Team getUserActiveTeam();
 	
 	/**
-	 * Méthode qui retourne l'équipe active de l'utilisateur connecté
+	 * Method that return the active team of the current connected user
 	 * 
 	 * @return Team
-	 * 		L'équipe
+	 * 		the active team id
 	 */
 	public Long getUserActiveTeamId();
 	
 	/**
-	 * Méthode qui retourne le tiers de l'utilisateur connecté
+	 * Method that return the partner of the current connected user
 	 * 
 	 * @return Partner
-	 * 		Le tiers
+	 * 		the user partner
 	 */
 	public Partner getUserPartner();
 }

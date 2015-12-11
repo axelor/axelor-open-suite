@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.2.0.v20120611 Build &lt;4.2.0.v20120612-1721></property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.4.2.v201410272105 Build &lt;4.4.2.v20150217-1805></property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -25,6 +25,7 @@
     <property name="imageDPI">96</property>
     <parameters>
         <scalar-parameter name="MoveLineReportId" id="570">
+            <property name="hidden">true</property>
             <property name="valueType">static</property>
             <property name="isRequired">true</property>
             <property name="dataType">decimal</property>
@@ -41,6 +42,7 @@
             </structure>
         </scalar-parameter>
         <scalar-parameter name="DBName" id="2479">
+            <property name="hidden">true</property>
             <property name="valueType">static</property>
             <property name="dataType">string</property>
             <property name="distinct">true</property>
@@ -52,6 +54,7 @@
             </structure>
         </scalar-parameter>
         <scalar-parameter name="UserName" id="2480">
+            <property name="hidden">true</property>
             <property name="valueType">static</property>
             <property name="dataType">string</property>
             <property name="distinct">true</property>
@@ -63,6 +66,7 @@
             </structure>
         </scalar-parameter>
         <scalar-parameter name="Password" id="2481">
+            <property name="hidden">true</property>
             <property name="valueType">static</property>
             <property name="dataType">string</property>
             <property name="distinct">true</property>
@@ -95,7 +99,6 @@
             <property name="odaDriverClass">org.postgresql.Driver</property>
             <property name="odaURL">jdbc:postgresql://localhost:5432/evolutis_fr</property>
             <property name="odaUser">axelor</property>
-            
         </oda-data-source>
     </data-sources>
     <data-sets>
@@ -1306,8 +1309,8 @@ dataSetRow["account_label"]
             </column>
             <header>
                 <row id="3183">
-                    <property name="height">0.2604166666666667in</property>
                     <property name="backgroundColor">#E6E6FA</property>
+                    <property name="height">0.2604166666666667in</property>
                     <cell id="3184">
                         <property name="borderBottomColor">#000000</property>
                         <property name="borderBottomStyle">solid</property>
@@ -1362,11 +1365,11 @@ dataSetRow["account_label"]
                     </cell>
                 </row>
                 <row id="3008">
-                    <property name="height">0.4270833333333333in</property>
                     <property name="backgroundColor">#E6E6FA</property>
                     <property name="borderBottomColor">#000000</property>
                     <property name="borderBottomStyle">solid</property>
                     <property name="borderBottomWidth">thin</property>
+                    <property name="height">0.4270833333333333in</property>
                     <cell id="3009">
                         <property name="borderBottomColor">#000000</property>
                         <property name="borderBottomStyle">solid</property>
@@ -1516,8 +1519,8 @@ dataSetRow["account_label"]
                 <property name="hideDetail">false</property>
                 <footer>
                     <row id="3053">
-                        <property name="height">0.22916666666666666in</property>
                         <property name="backgroundColor">#BFBFBF</property>
+                        <property name="height">0.22916666666666666in</property>
                         <cell id="3054">
                             <property name="borderBottomColor">#000000</property>
                             <property name="borderBottomStyle">solid</property>
@@ -2323,7 +2326,6 @@ dataSetRow["account_label"]
             </group>
             <footer>
                 <row id="3366">
-                    <property name="height">0.21875in</property>
                     <property name="backgroundColor">#E6E6FA</property>
                     <property name="borderBottomColor">#000000</property>
                     <property name="borderBottomStyle">solid</property>
@@ -2337,6 +2339,7 @@ dataSetRow["account_label"]
                     <property name="borderTopColor">#000000</property>
                     <property name="borderTopStyle">solid</property>
                     <property name="borderTopWidth">thin</property>
+                    <property name="height">0.21875in</property>
                     <cell id="3367">
                         <property name="borderBottomColor">#000000</property>
                         <property name="borderBottomStyle">solid</property>
@@ -2866,11 +2869,11 @@ dataSetRow["account_label"]
                             </column>
                             <header>
                                 <row id="3455">
-                                    <property name="height">0.23958333333333334in</property>
                                     <property name="backgroundColor">#BFBFBF</property>
                                     <property name="borderLeftColor">#000000</property>
                                     <property name="borderLeftStyle">solid</property>
                                     <property name="borderLeftWidth">thin</property>
+                                    <property name="height">0.23958333333333334in</property>
                                     <cell id="3465">
                                         <property name="colSpan">3</property>
                                         <property name="rowSpan">1</property>
@@ -2955,8 +2958,8 @@ dataSetRow["account_label"]
                     </cell>
                 </row>
                 <row id="461">
-                    <property name="height">0.23958333333333334in</property>
                     <property name="backgroundColor">#E6E6FA</property>
+                    <property name="height">0.23958333333333334in</property>
                     <cell id="462">
                         <property name="borderBottomColor">#000000</property>
                         <property name="borderBottomStyle">solid</property>

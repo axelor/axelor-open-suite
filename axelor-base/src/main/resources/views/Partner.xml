@@ -90,7 +90,7 @@
 	    <panel>
 	    	<panel colSpan="3">
 	        	<field name="picture" showTitle="false" widget="Image" colSpan="12"/>
-	        	<panel colSpan="12" showIf="fullName != null">
+	        	<panel colSpan="8" showIf="fullName != null">
 				    <label name="google" title="&lt;a class='fa fa-google-plus' href='http://www.google.com' target='_blank' /&gt;" colSpan="2"/>
 				    <label name="facebook" title="&lt;a class='fa fa-facebook' href='http://www.facebook.com' target='_blank' /&gt;" colSpan="2"/>
 				    <label name="twitter" title="&lt;a class='fa fa-twitter' href='http://www.twitter.com' target='_blank' /&gt;" colSpan="2"/>
@@ -124,10 +124,10 @@
 				<panel title="Postal addresses" colSpan="12">
 					<field name="partnerAddressList" colSpan="12" onChange="action-partner-address-list-change">
 				        <editor layout="table" x-show-titles="false">
-							<field name="address"/>
-							<field name="isInvoicingAddr" widget="toggle" x-icon="fa-list-alt" colSpan="1"/>
-							<field name="isDeliveryAddr" widget="toggle" x-icon="fa-shopping-cart" colSpan="1"/>
-							<field name="isDefaultAddr" widget="toggle" x-icon="fa-star-o" colSpan="1"/>
+							<field name="address" canNew="true"/>
+							<field name="isInvoicingAddr" widget="toggle" x-icon="fa-list-alt" colSpan="1" hideIf="$readonly()"/>
+							<field name="isDeliveryAddr" widget="toggle" x-icon="fa-shopping-cart" colSpan="1" hideIf="$readonly()"/>
+							<field name="isDefaultAddr" widget="toggle" x-icon="fa-star-o" colSpan="1" hideIf="$readonly()"/>
 				        </editor>
 					</field>
 					<field name="deliveryDelay" showIf="isSupplier"/>
@@ -242,7 +242,7 @@
 	            <panel colSpan="12" title="Postal addresses" hideIf="isContact">
 	                <field name="partnerAddressList" colSpan="12" onChange="action-partner-address-list-change">
 				        <editor layout="table" x-show-titles="false">
-							<field name="address"/>
+							<field name="address" canNew="true"/>
 							<field name="isInvoicingAddr" widget="toggle" x-icon="fa-list-alt" colSpan="1"/>
 							<field name="isDeliveryAddr" widget="toggle" x-icon="fa-shopping-cart" colSpan="1"/>
 							<field name="isDefaultAddr" widget="toggle" x-icon="fa-star-o" colSpan="1"/>
@@ -315,6 +315,7 @@
 		        <panel-include if-module="axelor-supplychain" view="incl-sales-contact-form" from="axelor-supplychain"/>
 		        <field name="$emailsList" colSpan="12" type="many-to-many" target="com.axelor.apps.message.db.Message" title="Emails" canNew="false" canSelect="false" canRemove="false"/>
 			</panel>
+			<panel-dashlet action="action-contact-partner-dashlet" title="Partners"/>
 		</panel-tabs>
         <panel sidebar="true" title="Settings">
             <field name="partnerSeq"/>
@@ -520,6 +521,13 @@
 		<view type="grid" name="project-grid"/>
     	<context name="_idPartner" expr="eval: id"/>
     </action-view>
+    
+	<action-view name="action-contact-partner-dashlet" title="Partners"  model="com.axelor.apps.base.db.Partner">
+		<view type="grid" name="partner-grid"/>
+		<view type="form" name="partner-form"/>
+		<domain>self.contactPartnerSet.id = :_contactId</domain>
+		<context name="_contactId" expr="eval: id"/>
+	</action-view>
 	
 	<search-filters name="partner-filters" model="com.axelor.apps.base.db.Partner" title="Partner filters">
 		<filter title="All Enterprises">

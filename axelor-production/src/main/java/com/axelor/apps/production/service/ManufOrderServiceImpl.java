@@ -41,9 +41,12 @@ import com.axelor.apps.production.db.ProdProduct;
 import com.axelor.apps.production.db.ProdResidualProduct;
 import com.axelor.apps.production.db.repo.ManufOrderRepository;
 import com.axelor.apps.production.exceptions.IExceptionMessage;
+import com.axelor.auth.AuthUtils;
+import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
+import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -292,6 +295,27 @@ public class ManufOrderServiceImpl implements  ManufOrderService  {
 		}
 		return billOfMaterial;
 		
+	}
+	
+	@Override
+	public String getLanguageToPrinting(ManufOrder manufOrder)  {
+		
+		User user = AuthUtils.getUser();
+		
+		String language = "en";
+		
+		if(user != null && !Strings.isNullOrEmpty(user.getLanguage()))  {
+			return user.getLanguage();
+		}
+		
+		if(manufOrder == null)  {  return language;  }
+		Company company = manufOrder.getCompany();
+		
+		if(company != null && company.getPrintingSettings() != null && !Strings.isNullOrEmpty(company.getPrintingSettings().getLanguageSelect())) {
+			language = company.getPrintingSettings().getLanguageSelect();
+		}
+		
+		return language;
 	}
 
 }

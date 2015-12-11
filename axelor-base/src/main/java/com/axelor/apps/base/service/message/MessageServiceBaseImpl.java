@@ -17,14 +17,16 @@
  */
 package com.axelor.apps.base.service.message;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
+import org.eclipse.birt.core.exception.BirtException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.axelor.apps.ReportSettings;
+import com.axelor.apps.ReportFactory;
 import com.axelor.apps.base.db.BirtTemplate;
 import com.axelor.apps.base.db.BirtTemplateParameter;
 import com.axelor.apps.base.db.Company;
@@ -36,8 +38,8 @@ import com.axelor.apps.message.db.Message;
 import com.axelor.apps.message.db.repo.MessageRepository;
 import com.axelor.apps.message.service.MailAccountService;
 import com.axelor.apps.message.service.MessageServiceImpl;
+import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.auth.AuthUtils;
-import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.meta.db.repo.MetaAttachmentRepository;
@@ -47,13 +49,14 @@ import com.google.inject.persist.Transactional;
 
 public class MessageServiceBaseImpl extends MessageServiceImpl {
 
-	private final Logger LOG = LoggerFactory.getLogger( getClass() );
-
+	private final Logger logger = LoggerFactory.getLogger(getClass());
+	
 	@Inject
 	private UserService userService;
 
 	@Inject
 	protected GeneralService generalService;
+	
 
 	@Inject
 	public MessageServiceBaseImpl( MetaAttachmentRepository metaAttachmentRepository, MailAccountService mailAccountService, UserService userService ) {
@@ -76,7 +79,7 @@ public class MessageServiceBaseImpl extends MessageServiceImpl {
 	}
 
 	@Override
-	public String printMessage(Message message){
+	public String printMessage(Message message) throws IOException, BirtException  {
 
 		Company company = message.getCompany();
 		if(company == null){ return null; }
@@ -86,19 +89,25 @@ public class MessageServiceBaseImpl extends MessageServiceImpl {
 
 		BirtTemplate birtTemplate = printSettings.getDefaultMailBirtTemplate();
 
-		LOG.debug("Default BirtTemplate : {}",birtTemplate);
+		logger.debug("Default BirtTemplate : {}",birtTemplate);
+		
+		String language = AuthUtils.getUser().getLanguage();
 
-		TemplateMaker maker = new TemplateMaker( new Locale( AuthUtils.getUser().getLanguage() ), '$', '$');
-		maker.setContext( JPA.find( message.getClass(), message.getId() ), "Message" );
+		TemplateMaker maker = new TemplateMaker( new Locale(language), '$', '$');
+		maker.setContext( messageRepo.find(message.getId()), "Message" );
 
-		ReportSettings reportSettings = new ReportSettings(birtTemplate.getTemplateLink(), birtTemplate.getFormat());
-
+		String name = "Message " + message.getSubject();
+		
+		ReportSettings reportSettings = ReportFactory.createReport(birtTemplate.getTemplateLink(), name+"-${date}")
+				.addFormat(birtTemplate.getFormat())
+				.addParam("Locale", language);
+				
 		for ( BirtTemplateParameter birtTemplateParameter : birtTemplate.getBirtTemplateParameterList() )  {
 			maker.setTemplate(birtTemplateParameter.getValue());
 			reportSettings.addParam(birtTemplateParameter.getName(), maker.make());
 		}
 
-		return reportSettings.getUrl();
+		return reportSettings.generate().getFileLink();
 
 	}
 

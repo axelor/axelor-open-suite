@@ -308,14 +308,20 @@ public class ExpenseService  {
 	
 	public void getExpensesTypes(ActionRequest request, ActionResponse response){
 		List<Map<String,String>> dataList = new ArrayList<Map<String,String>>();
-		List<Product> productList = Beans.get(ProductRepository.class).all().filter("self.expense = true").fetch();
-		for (Product product : productList) {
-			Map<String, String> map = new HashMap<String,String>();
-			map.put("name", product.getName());
-			map.put("id", product.getId().toString());
-			dataList.add(map);
+		try{
+			List<Product> productList = Beans.get(ProductRepository.class).all().filter("self.expense = true").fetch();
+			for (Product product : productList) {
+				Map<String, String> map = new HashMap<String,String>();
+				map.put("name", product.getName());
+				map.put("id", product.getId().toString());
+				dataList.add(map);
+			}
+			response.setData(dataList);
 		}
-		response.setData(dataList);
+		catch(Exception e){
+			response.setStatus(-1);
+			response.setError(e.getMessage());
+		}
 	}
 	
 	@Transactional
@@ -351,7 +357,6 @@ public class ExpenseService  {
 	@Transactional
 	public void insertKMExpenses(ActionRequest request, ActionResponse response){
 		User user = AuthUtils.getUser();
-		ProjectTask projectTask = Beans.get(ProjectTaskRepository.class).find(new Long(request.getData().get("project").toString()));
 		if(user != null){
 			Expense expense = Beans.get(ExpenseRepository.class).all().filter("self.statusSelect = 1 AND self.user.id = ?1", user.getId()).order("-id").fetchOne();
 			if(expense == null){
@@ -364,13 +369,12 @@ public class ExpenseService  {
 			kmAllowance.setDistance(new BigDecimal(request.getData().get("kmNumber").toString()));
 			kmAllowance.setCityFrom(request.getData().get("locationFrom").toString());
 			kmAllowance.setCityTo(request.getData().get("locationTo").toString());
-			kmAllowance.setProjectTask(projectTask);
 			kmAllowance.setTypeSelect(new Integer(request.getData().get("allowanceTypeSelect").toString()));
-			kmAllowance.setToInvoice(new Boolean(request.getData().get("toInvoice").toString()));
 			kmAllowance.setReason(request.getData().get("comments").toString());
-			if(user.getEmployee() != null && user.getEmployee().getFiscalPower() != null){
-				kmAllowance.setFiscalPower(user.getEmployee().getFiscalPower());
-				KilometricAllowanceRate kilometricAllowanceRate = Beans.get(KilometricAllowanceRateRepository.class).findByVehicleFiscalPower(user.getEmployee().getFiscalPower());
+			kmAllowance.setDate(new LocalDate(request.getData().get("date").toString()));
+			if(user.getEmployee() != null && user.getEmployee().getKilometricAllowParam() != null){
+				kmAllowance.setKilometricAllowParam(user.getEmployee().getKilometricAllowParam());
+				KilometricAllowanceRate kilometricAllowanceRate = Beans.get(KilometricAllowanceRateRepository.class).findByVehicleKillometricAllowanceParam(user.getEmployee().getKilometricAllowParam());
 				if(kilometricAllowanceRate != null){
 					BigDecimal rate = kilometricAllowanceRate.getRate();
 					if(rate != null){

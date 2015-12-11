@@ -23,25 +23,24 @@ import com.axelor.apps.base.db.Team;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.auth.db.repo.UserRepository;
+import com.axelor.meta.db.MetaFile;
 import com.google.inject.Inject;
 
 /**
- * UserService est une classe implémentant l'ensemble des services pour
- * les informations utilisateur.
+ * UserService is a class that implement all methods for user informations
  * 
  */
 public class UserServiceImpl implements UserService  {
 
-	/**
-	 * Méthode qui retourne le User de l'utilisateur connecté
-	 * 
-	 * @return User
-	 * 		Le user de l'utilisateur
-	 */
-	
 	@Inject
 	private UserRepository userRepo;
 	
+	/**
+	 * Method that return the current connected user
+	 * 
+	 * @return user
+	 * 		the current connected user
+	 */
 	public User getUser() {
 		User user = null;
 		try{
@@ -54,97 +53,110 @@ public class UserServiceImpl implements UserService  {
 		return user;
 	}
 	
+	/**
+	 * Method that return the id of the current connected user
+	 * 
+	 * @return user
+	 * 		the id of current connected user
+	 */
 	public Long getUserId() {
-		User user = this.getUser();
-	
-		if(user != null)  {
-			return user.getId();
-		}
 		
-		return null;
+		final User user = this.getUser();
+	
+		if(user == null)  {  return null;  }
+		
+		return user.getId();
 	}
 	
-	
 	/**
-	 * Méthode qui retourne la société active de l'utilisateur connecté
+	 * Method that return the active company of the current connected user
 	 * 
 	 * @return Company
-	 * 		La société
+	 * 		the active company
 	 */
 	public Company getUserActiveCompany() {
 		
 		User user = getUser();
-		if (user != null && user.getActiveCompany() != null){
-			return user.getActiveCompany();
-		}
-	
-		return null;
+		
+		if(user == null)  {  return null;  }
+		
+		return user.getActiveCompany();
 	}
-    
-
+	
 	/**
-	 * Méthode qui retourne la société active de l'utilisateur connecté
+	 * Method that return the active company id of the current connected user
 	 * 
 	 * @return Company
-	 * 		La société
+	 * 		the active company id
 	 */
 	public Long getUserActiveCompanyId() {
 		
-		User user = getUser();
-		if (user != null && user.getActiveCompany() != null){
-			return user.getActiveCompany().getId();
-		}
+		final Company company = this.getUserActiveCompany();
+		
+		if(company == null)  {  return null;  }
 	
-		return null;
+		return company.getId();
 	}
 	
-	
 	/**
-	 * Méthode qui retourne l'équipe active de l'utilisateur connecté
+	 * Method that return the active team of the current connected user
 	 * 
 	 * @return Team
-	 * 		L'équipe
+	 * 		the active team
+	 */
+	public MetaFile getUserActiveCompanyLogo() {
+
+		final Company company = this.getUserActiveCompany();
+		
+		if(company == null)  {  return null;  }
+		
+		return company.getLogo();
+		
+	}
+	
+	/**
+	 * Method that return the active team of the current connected user
+	 * 
+	 * @return Team
+	 * 		the active team
 	 */
 	public Team getUserActiveTeam() {
 		
-		User user = getUser();
-		if (user != null && user.getActiveTeam() != null){
-			return user.getActiveTeam();
-		}
+		final User user = getUser();
+		
+		if(user == null)  {  return null;  }
 	
-		return null;
+		return user.getActiveTeam();
 	}
 	
 	/**
-	 * Méthode qui retourne l'équipe active de l'utilisateur connecté
+	 * Method that return the active team of the current connected user
 	 * 
 	 * @return Team
-	 * 		L'équipe
+	 * 		the active team id
 	 */
 	public Long getUserActiveTeamId() {
 		
-		User user = getUser();
-		if (user != null && user.getActiveTeam() != null){
-			return user.getActiveTeam().getId();
-		}
-	
-		return null;
+		final Team team = this.getUserActiveTeam();
+		
+		if(team == null)  {  return null;  }
+		
+		return team.getId();
 	}
 	
 	/**
-	 * Méthode qui retourne le tiers de l'utilisateur connecté
+	 * Method that return the partner of the current connected user
 	 * 
 	 * @return Partner
-	 * 		Le tiers
+	 * 		the user partner
 	 */
 	public Partner getUserPartner() {
 		
-		User user = getUser();
-		if (user != null && user.getPartner() != null){
-			return user.getPartner();
-		}
-	
-		return null;
+		final User user = getUser();
+
+		if (user == null)  {  return null;  }
+			
+		return user.getPartner();
 	}
 }
  

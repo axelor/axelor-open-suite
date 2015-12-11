@@ -394,7 +394,7 @@ public class MoveService {
 																amount,
 																isDebit,
 																null,
-																0,
+																line.getCounter(),
 																null);
 			newMove.addMoveLineListItem(newMoveLine);
 		}

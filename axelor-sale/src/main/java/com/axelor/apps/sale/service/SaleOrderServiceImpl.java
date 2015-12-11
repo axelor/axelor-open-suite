@@ -17,19 +17,18 @@
  */
 package com.axelor.apps.sale.service;
 
-import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 
 import javax.persistence.Query;
 
+import org.eclipse.birt.core.exception.BirtException;
 import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.axelor.app.AppSettings;
-import com.axelor.apps.ReportSettings;
+import com.axelor.apps.ReportFactory;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.IAdministration;
@@ -49,18 +48,13 @@ import com.axelor.apps.sale.db.SaleOrderLineTax;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.exception.IExceptionMessage;
 import com.axelor.apps.sale.report.IReport;
-import com.axelor.apps.tool.net.URLService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.db.JPA;
-import com.axelor.dms.db.DMSFile;
-import com.axelor.dms.db.repo.DMSFileRepository;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.axelor.meta.MetaFiles;
-import com.axelor.meta.db.MetaFile;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -76,12 +70,13 @@ public class SaleOrderServiceImpl implements SaleOrderService {
 	protected SaleOrderRepository saleOrderRepo;
 	protected GeneralService generalService;
 	protected User currentUser;
+	protected ReportFactory reportFactory;
 	
 	protected LocalDate today;
 	
 	@Inject
 	public SaleOrderServiceImpl(SaleOrderLineService saleOrderLineService, SaleOrderLineTaxService saleOrderLineTaxService, SequenceService sequenceService,
-			PartnerService partnerService, PartnerRepository partnerRepo, SaleOrderRepository saleOrderRepo, GeneralService generalService, UserService userService)  {
+			PartnerService partnerService, PartnerRepository partnerRepo, SaleOrderRepository saleOrderRepo, GeneralService generalService, UserService userService, ReportFactory reportFactory)  {
 		
 		this.saleOrderLineService = saleOrderLineService;
 		this.saleOrderLineTaxService = saleOrderLineTaxService;
@@ -90,6 +85,7 @@ public class SaleOrderServiceImpl implements SaleOrderService {
 		this.partnerRepo = partnerRepo;
 		this.saleOrderRepo = saleOrderRepo;
 		this.generalService = generalService;
+		this.reportFactory = reportFactory;
 
 		this.today = generalService.getTodayDate();
 		this.currentUser = userService.getUser();
@@ -299,7 +295,7 @@ public class SaleOrderServiceImpl implements SaleOrderService {
 
 	@Override
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void finalizeSaleOrder(SaleOrder saleOrder) throws AxelorException, IOException {
+	public void finalizeSaleOrder(SaleOrder saleOrder) throws AxelorException, IOException, BirtException {
 		saleOrder.setStatusSelect(ISaleOrder.STATUS_FINALIZE);
 		if (saleOrder.getVersionNumber() == 1){
 			saleOrder.setSaleOrderSeq(this.getSequence(saleOrder.getCompany()));
@@ -324,39 +320,25 @@ public class SaleOrderServiceImpl implements SaleOrderService {
 
 
 	@Override
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void saveSaleOrderPDFAsAttachment(SaleOrder saleOrder) throws IOException{
-		String
-	    		filePath = AppSettings.get().get("file.upload.dir") + "/tmp",
-	    		fileName = saleOrder.getSaleOrderSeq() + ((saleOrder.getVersionNumber() > 1) ? "-V" + saleOrder.getVersionNumber() : "") + "." + ReportSettings.FORMAT_PDF,
-	    		birtReportURL = this.getURLSaleOrderPDF(saleOrder);
+	public void saveSaleOrderPDFAsAttachment(SaleOrder saleOrder) throws IOException, BirtException  {
 		
-		String urlNotExist = URLService.notExist(birtReportURL.toString());
-		if(urlNotExist == null) {
-		    File file = URLService.fileDownload(birtReportURL, filePath, fileName);
-	
-			if (file != null){
-				MetaFiles metaFiles = Beans.get(MetaFiles.class);
-				MetaFile metaFile = metaFiles.upload(file);
-				String relatedModel = generalService.getPersistentClass(saleOrder).getCanonicalName();
-				//Search if there is a parent directory
-				DMSFile dmsDirectory = Beans.get(DMSFileRepository.class).all().filter("self.relatedId = ?1 AND self.relatedModel = ?2 and self.isDirectory = true",
-															saleOrder.getId(), relatedModel).fetchOne();
-				DMSFile dmsFile = new DMSFile();
-				if (dmsDirectory != null){
-					dmsFile.setParent(dmsDirectory);
-				}
-				dmsFile.setFileName(fileName);
-				dmsFile.setRelatedModel(relatedModel);
-				dmsFile.setRelatedId(saleOrder.getId());
-				dmsFile.setMetaFile(metaFile);
-				Beans.get(DMSFileRepository.class).save(dmsFile);
-			}
-		}
+		String language = this.getLanguageForPrinting(saleOrder);
+		
+		String name = I18n.get("Sale order")+" "+saleOrder.getSaleOrderSeq();
+		
+		ReportFactory.createReport(IReport.SALES_ORDER, name+"-${date}")
+				.addParam("Locale", language)
+				.addParam("SaleOrderId", saleOrder.getId())
+				.addModel(saleOrder)
+				.generate()
+				.getFileLink();
+		
+//		String relatedModel = generalService.getPersistentClass(saleOrder).getCanonicalName(); required ?
+		
 	}
 
 	@Override
-	public String getURLSaleOrderPDF(SaleOrder saleOrder){
+	public String getLanguageForPrinting(SaleOrder saleOrder)  {
 		String language="";
 		try{
 			language = saleOrder.getClientPartner().getLanguageSelect() != null? saleOrder.getClientPartner().getLanguageSelect() : saleOrder.getCompany().getPrintingSettings().getLanguageSelect() != null ? saleOrder.getCompany().getPrintingSettings().getLanguageSelect() : "en" ;
@@ -364,15 +346,16 @@ public class SaleOrderServiceImpl implements SaleOrderService {
 			language = "en";
 		}
 		language = language.equals("")? "en": language;
-
-
-		return new ReportSettings(IReport.SALES_ORDER, ReportSettings.FORMAT_PDF)
-							.addParam("Locale", language)
-							.addParam("__locale", "fr_FR")
-							.addParam("SaleOrderId", saleOrder.getId().toString())
-							.getUrl();
+		
+		return language;
 	}
-
+	
+	@Override
+	public String getFileName(SaleOrder saleOrder)  {
+		
+		return I18n.get("Sale order") + " " + saleOrder.getSaleOrderSeq() + ((saleOrder.getVersionNumber() > 1) ? "-V" + saleOrder.getVersionNumber() : "");
+	}
+	
 	@Override
 	@Transactional
 	public SaleOrder createSaleOrder(SaleOrder context){

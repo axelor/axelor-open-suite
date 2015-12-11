@@ -54,6 +54,8 @@
 	
 	<boolean name="inAti" title="In ATI"/>
 	
+	<many-to-one name="companyBankDetails" ref="com.axelor.apps.base.db.BankDetails" title="Company bank"/>
+	
 	<track>
       <field name="purchaseOrderSeq" />
       <field name="supplierPartner" />

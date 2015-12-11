@@ -58,5 +58,6 @@ public interface ManufOrderService {
 	
 	public boolean isManagedConsumedProduct(BillOfMaterial billOfMaterial);
 	
-	
+	public String getLanguageToPrinting(ManufOrder manufOrder);
+
 }

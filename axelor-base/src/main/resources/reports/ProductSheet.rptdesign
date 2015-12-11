@@ -18,29 +18,9 @@
             <expression name="value" type="javascript">params["DefaultDriver"].value</expression>
         </structure>
         <structure>
-            <property name="name">odaAutoCommit</property>
-            <property name="id">209</property>
-        </structure>
-        <structure>
-            <property name="name">odaIsolationMode</property>
-            <property name="id">209</property>
-        </structure>
-        <structure>
             <property name="name">odaPassword</property>
             <property name="id">209</property>
             <expression name="value" type="javascript">params["Password"].value</expression>
-        </structure>
-        <structure>
-            <property name="name">odaJndiName</property>
-            <property name="id">209</property>
-        </structure>
-        <structure>
-            <property name="name">OdaConnProfileName</property>
-            <property name="id">209</property>
-        </structure>
-        <structure>
-            <property name="name">OdaConnProfileStorePath</property>
-            <property name="id">209</property>
         </structure>
     </list-property>
     <property name="units">cm</property>
@@ -49,13 +29,11 @@
     <property name="imageDPI">96</property>
     <parameters>
         <scalar-parameter name="ProductId" id="3265">
+            <property name="hidden">true</property>
             <property name="valueType">static</property>
             <property name="isRequired">true</property>
             <property name="dataType">decimal</property>
             <property name="distinct">true</property>
-            <simple-property-list name="defaultValue">
-                <value type="constant">1</value>
-            </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
             <property name="concealValue">false</property>
@@ -65,8 +43,9 @@
             </structure>
         </scalar-parameter>
         <scalar-parameter name="Locale" id="3740">
+            <property name="hidden">true</property>
             <property name="valueType">static</property>
-            <property name="isRequired">true</property>
+            <property name="isRequired">false</property>
             <property name="dataType">string</property>
             <property name="distinct">true</property>
             <simple-property-list name="defaultValue">
@@ -81,6 +60,7 @@
             </structure>
         </scalar-parameter>
         <scalar-parameter name="DBName" id="3946">
+            <property name="hidden">true</property>
             <property name="valueType">static</property>
             <property name="dataType">string</property>
             <property name="distinct">true</property>
@@ -92,6 +72,7 @@
             </structure>
         </scalar-parameter>
         <scalar-parameter name="UserName" id="3947">
+            <property name="hidden">true</property>
             <property name="valueType">static</property>
             <property name="dataType">string</property>
             <property name="distinct">true</property>
@@ -103,13 +84,11 @@
             </structure>
         </scalar-parameter>
         <scalar-parameter name="CompanyId" id="4030">
+            <property name="hidden">true</property>
             <property name="valueType">static</property>
             <property name="isRequired">true</property>
             <property name="dataType">decimal</property>
             <property name="distinct">true</property>
-            <simple-property-list name="defaultValue">
-                <value type="constant">1</value>
-            </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
             <property name="controlType">text-box</property>
@@ -118,6 +97,7 @@
             </structure>
         </scalar-parameter>
         <scalar-parameter name="Password" id="3675">
+            <property name="hidden">true</property>
             <property name="valueType">static</property>
             <property name="dataType">string</property>
             <property name="distinct">true</property>
@@ -129,6 +109,7 @@
             </structure>
         </scalar-parameter>
         <scalar-parameter name="AttachmentPath" id="4115">
+            <property name="hidden">true</property>
             <property name="valueType">static</property>
             <property name="isRequired">false</property>
             <property name="dataType">string</property>
@@ -144,38 +125,12 @@
             </structure>
         </scalar-parameter>
         <scalar-parameter name="DefaultDriver" id="3819">
+            <property name="hidden">true</property>
             <property name="valueType">static</property>
-            <property name="dataType">string</property>
-            <property name="distinct">true</property>
-            <list-property name="selectionList"/>
-            <property name="paramType">simple</property>
-            <property name="controlType">text-box</property>
-            <structure name="format">
-                <property name="category">Unformatted</property>
-            </structure>
-        </scalar-parameter>
-        <scalar-parameter name="-o" id="4116">
-            <property name="valueType">static</property>
-            <property name="isRequired">false</property>
             <property name="dataType">string</property>
             <property name="distinct">true</property>
             <simple-property-list name="defaultValue">
-                <value type="constant">Prod.pdf</value>
-            </simple-property-list>
-            <list-property name="selectionList"/>
-            <property name="paramType">simple</property>
-            <property name="controlType">text-box</property>
-            <structure name="format">
-                <property name="category">Unformatted</property>
-            </structure>
-        </scalar-parameter>
-        <scalar-parameter name="outputFileName" id="4117">
-            <property name="valueType">static</property>
-            <property name="isRequired">false</property>
-            <property name="dataType">string</property>
-            <property name="distinct">true</property>
-            <simple-property-list name="defaultValue">
-                <value type="constant">TestPdf.pdf</value>
+                <value type="constant">org.postgresql.Driver</value>
             </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
@@ -203,8 +158,8 @@
                     <value>ILYNN</value>
                 </ex-property>
             </list-property>
-            <property name="odaDriverClass">com.mysql.jdbc.Driver</property>
-            <property name="odaURL">jdbc:mysql://localhost:3306/</property>
+            <property name="odaDriverClass">org.postgresql.Driver</property>
+            <property name="odaURL">jdbc:postgresql://localhost:5432</property>
         </oda-data-source>
     </data-sources>
     <data-sets>
@@ -237,7 +192,7 @@
                 </structure>
                 <structure>
                     <property name="columnName">product_picture</property>
-                    <property name="analysis">measure</property>
+                    <property name="analysis">dimension</property>
                     <text-property name="displayName">product_picture</text-property>
                     <text-property name="heading">product_picture</text-property>
                 </structure>
@@ -270,6 +225,12 @@
                     <property name="analysis">measure</property>
                     <text-property name="displayName">warranty_nbr_of_months</text-property>
                     <text-property name="heading">warranty_nbr_of_months</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">bar_code</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">bar_code</text-property>
+                    <text-property name="heading">bar_code</text-property>
                 </structure>
             </list-property>
             <list-property name="parameters">
@@ -320,7 +281,7 @@
                     <structure>
                         <property name="position">5</property>
                         <property name="name">product_picture</property>
-                        <property name="dataType">decimal</property>
+                        <property name="dataType">string</property>
                     </structure>
                     <structure>
                         <property name="position">6</property>
@@ -346,6 +307,11 @@
                         <property name="position">10</property>
                         <property name="name">warranty_nbr_of_months</property>
                         <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">11</property>
+                        <property name="name">bar_code</property>
+                        <property name="dataType">decimal</property>
                     </structure>
                 </list-property>
             </structure>
@@ -383,8 +349,8 @@
                     <property name="position">5</property>
                     <property name="name">product_picture</property>
                     <property name="nativeName">product_picture</property>
-                    <property name="dataType">decimal</property>
-                    <property name="nativeDataType">-5</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">6</property>
@@ -421,13 +387,22 @@
                     <property name="dataType">integer</property>
                     <property name="nativeDataType">4</property>
                 </structure>
+                <structure>
+                    <property name="position">11</property>
+                    <property name="name">bar_code</property>
+                    <property name="nativeName">bar_code</property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">-5</property>
+                </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[select Product.id, MetaFile.file_path as logo_path, Product.name as product_name, Product.code as product_code,
-Product.picture as product_picture, Product.description as product_description, Product.sale_price,
-Currency.symbol as currency_symbol, Product.has_warranty, Product.warranty_nbr_of_months
+BarCodeFile.file_path as product_picture, Product.description as product_description, Product.sale_price,
+Currency.symbol as currency_symbol, Product.has_warranty, Product.warranty_nbr_of_months,
+Product.bar_code as bar_code
 from base_product as Product
 left join base_company as Company on (Company.id = ?)
 left join meta_file as MetaFile on (MetaFile.id = Company.logo)
+left join meta_file as BarCodeFile on (BarCodeFile.id = Product.bar_code)
 left join base_currency as Currency on (Product.sale_currency = Currency.id)
 where Product.id = ?
 ]]></xml-property>
@@ -764,12 +739,6 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     <property name="dataType">string</property>
                 </structure>
                 <structure>
-                    <property name="name">product_picture</property>
-                    <text-property name="displayName">product_picture</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["product_picture"]</expression>
-                    <property name="dataType">decimal</property>
-                </structure>
-                <structure>
                     <property name="name">product_description</property>
                     <text-property name="displayName">product_description</text-property>
                     <expression name="expression" type="javascript">dataSetRow["product_description"]</expression>
@@ -798,6 +767,18 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     <text-property name="displayName">warranty_nbr_of_months</text-property>
                     <expression name="expression" type="javascript">dataSetRow["warranty_nbr_of_months"]</expression>
                     <property name="dataType">integer</property>
+                </structure>
+                <structure>
+                    <property name="name">bar_code</property>
+                    <text-property name="displayName">bar_code</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["bar_code"]</expression>
+                    <property name="dataType">decimal</property>
+                </structure>
+                <structure>
+                    <property name="name">product_picture</property>
+                    <text-property name="displayName">product_picture</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["product_picture"]</expression>
+                    <property name="dataType">string</property>
                 </structure>
             </list-property>
             <column id="3343">
@@ -951,8 +932,8 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                         <property name="borderTopWidth">thin</property>
                         <property name="height">48px</property>
                         <property name="width">330px</property>
-                        <property name="source">url</property>
-                        <expression name="uri" type="constant">http://localhost:8080/barbecue/BarcodeServlet?data=1212312356&amp;type=Code128B</expression>
+                        <property name="source">file</property>
+                        <expression name="uri" type="javascript">params["AttachmentPath"].value+row["product_picture"]</expression>
                     </image>
                 </cell>
                 <cell id="4110">

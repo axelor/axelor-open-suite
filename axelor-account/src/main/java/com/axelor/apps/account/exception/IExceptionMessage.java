@@ -106,7 +106,6 @@ public interface IExceptionMessage {
 	static final String IRRECOVERABLE_5 = /*$$(*/ "Traitement terminé" /*)*/ ;
 	static final String IRRECOVERABLE_6 = /*$$(*/ "anomalies générées" /*)*/ ;
 	static final String IRRECOVERABLE_7 = /*$$(*/ "Veuillez selectionner un type d'impression" /*)*/ ;
-	static final String IRRECOVERABLE_8 = /*$$(*/ "Passage en irrécouvrable" /*)*/ ;
 
 	/**
 	 * Journal service
@@ -128,7 +127,6 @@ public interface IExceptionMessage {
 	static final String MOVE_LINE_REPORT_2 = /*$$(*/ "%s :\n Erreur : Veuillez configurer une séquence Export comptable pour la société %s" /*)*/ ;
 	static final String MOVE_LINE_REPORT_3 = /*$$(*/ "Lignes d'écritures récupérées" /*)*/ ;
 	static final String MOVE_LINE_REPORT_4 = /*$$(*/ "Veuillez selectionner un type d'export" /*)*/ ;
-	static final String MOVE_LINE_REPORT_5 = /*$$(*/ "Reporting comptable" /*)*/ ;
 	static final String MOVE_LINE_REPORT_6 = /*$$(*/ "Ecritures exportées" /*)*/ ;
 
 	/**
@@ -528,10 +526,6 @@ public interface IExceptionMessage {
 	static final String MOVE_TEMPLATE_3 = /*$$(*/ "Generated moves" /*)*/;
 	static final String MOVE_TEMPLATE_4 = /*$$(*/ "Please fill input lines" /*)*/;
 
-	/**
-	 * Payment voucher controller
-	 */
-	static final String PAYMENT_VOUCHER_1 = /*$$(*/ "Reçu saisie paiement" /*)*/;
 
 	/**
 	 *  Expense service

@@ -19,6 +19,7 @@
     <string name="bbanKey" title="BBan Key" max="255" help="true"/>
     <string name="countryCode" title="Country Code" max="255" help="true"/>
     <string name="ibanBic" title="IBAN + BIC" max="255"/>
+    <boolean name="isDefault" title="Default" />
     <string name="fullName" title="Bank Details" search="ownerName" namecolumn="true">
         <![CDATA[
             String str = "";

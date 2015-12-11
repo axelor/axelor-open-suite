@@ -20,6 +20,7 @@ package com.axelor.apps.purchase.service;
 import java.io.IOException;
 import java.util.List;
 
+import org.eclipse.birt.core.exception.BirtException;
 import org.joda.time.LocalDate;
 
 import com.axelor.apps.base.db.Company;
@@ -90,8 +91,7 @@ public interface PurchaseOrderService {
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public Partner validateSupplier(PurchaseOrder purchaseOrder);
 
-	@Transactional
-	public void savePurchaseOrderPDFAsAttachment(PurchaseOrder purchaseOrder) throws IOException;
+	public void savePurchaseOrderPDFAsAttachment(PurchaseOrder purchaseOrder) throws IOException, BirtException;
 
 	public void requestPurchaseOrder(PurchaseOrder purchaseOrder) throws Exception;
 

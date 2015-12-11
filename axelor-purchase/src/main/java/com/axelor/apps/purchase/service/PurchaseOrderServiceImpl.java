@@ -17,19 +17,17 @@
  */
 package com.axelor.apps.purchase.service;
 
-import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.birt.core.exception.BirtException;
 import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.axelor.app.AppSettings;
-import com.axelor.apps.MetaFilesTemp;
-import com.axelor.apps.ReportSettings;
+import com.axelor.apps.ReportFactory;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.IAdministration;
@@ -47,24 +45,20 @@ import com.axelor.apps.purchase.db.PurchaseOrderLineTax;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.purchase.exception.IExceptionMessage;
 import com.axelor.apps.purchase.report.IReport;
-import com.axelor.apps.tool.net.URLService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
-import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.axelor.meta.db.MetaAttachment;
-import com.axelor.meta.db.MetaFile;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
 public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 
-	private static final Logger LOG = LoggerFactory.getLogger(PurchaseOrderServiceImpl.class);
-
+	private final Logger logger = LoggerFactory.getLogger(getClass());
+	
 	@Inject
 	private PurchaseOrderLineTaxService purchaseOrderLineVatService;
 
@@ -122,7 +116,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 	@Override
 	public void _populatePurchaseOrder(PurchaseOrder purchaseOrder) throws AxelorException {
 
-		LOG.debug("Peupler une facture => lignes de devis: {} ", new Object[] { purchaseOrder.getPurchaseOrderLineList().size() });
+		logger.debug("Peupler une facture => lignes de devis: {} ", new Object[] { purchaseOrder.getPurchaseOrderLineList().size() });
 
 		// create Tva lines
 		purchaseOrder.getPurchaseOrderLineTaxList().addAll(purchaseOrderLineVatService.createsPurchaseOrderLineTax(purchaseOrder, purchaseOrder.getPurchaseOrderLineList()));
@@ -159,7 +153,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 			purchaseOrder.setCompanyExTaxTotal(purchaseOrder.getCompanyExTaxTotal().add( purchaseOrderLine.getCompanyExTaxTotal() ));
 		}
 
-		LOG.debug("Montant de la facture: HTT = {},  HT = {}, TVA = {}, TTC = {}",
+		logger.debug("Montant de la facture: HTT = {},  HT = {}, TVA = {}, TTC = {}",
 			new Object[] { purchaseOrder.getExTaxTotal(), purchaseOrder.getTaxTotal(), purchaseOrder.getInTaxTotal() });
 
 	}
@@ -185,7 +179,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 			LocalDate deliveryDate, String internalReference, String externalReference, LocalDate orderDate,
 			PriceList priceList, Partner supplierPartner) throws AxelorException  {
 
-		LOG.debug("Création d'une commande fournisseur : Société = {},  Reference externe = {}, Fournisseur = {}",
+		logger.debug("Création d'une commande fournisseur : Société = {},  Reference externe = {}, Fournisseur = {}",
 				new Object[] { company.getName(), externalReference, supplierPartner.getFullName() });
 
 		PurchaseOrder purchaseOrder = new PurchaseOrder();
@@ -247,24 +241,8 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 //	}
 
 	@Override
-	@Transactional
-	public void savePurchaseOrderPDFAsAttachment(PurchaseOrder purchaseOrder) throws IOException{
-		String
-	    		filePath = AppSettings.get().get("file.upload.dir"),
-	    		fileName = purchaseOrder.getPurchaseOrderSeq() + ((purchaseOrder.getVersionNumber() > 1) ? "-V" + purchaseOrder.getVersionNumber() : "") + "." + ReportSettings.FORMAT_PDF,
-	    		birtReportURL = this.getURLPurchaseOrderPDF(purchaseOrder);
+	public void savePurchaseOrderPDFAsAttachment(PurchaseOrder purchaseOrder) throws IOException, BirtException{
 
-	    File file = URLService.fileDownload(birtReportURL, filePath, fileName);
-
-		if (file != null){
-			MetaFilesTemp metaFilesTemp = Beans.get(MetaFilesTemp.class);
-			MetaFile metaFile = metaFilesTemp.upload(file, new MetaFile());
-			MetaAttachment metaAttachment = metaFilesTemp.attach(metaFile, purchaseOrder);
-			JPA.save(metaAttachment);
-		}
-	}
-
-	public String getURLPurchaseOrderPDF(PurchaseOrder purchaseOrder){
 		String language="";
 		try{
 			language = purchaseOrder.getSupplierPartner().getLanguageSelect() != null? purchaseOrder.getSupplierPartner().getLanguageSelect() : purchaseOrder.getCompany().getPrintingSettings().getLanguageSelect() != null ? purchaseOrder.getCompany().getPrintingSettings().getLanguageSelect() : "en" ;
@@ -272,13 +250,18 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 			language = "en";
 		}
 		language = language.equals("")? "en": language;
+		
+		String title = I18n.get("Purchase order") + purchaseOrder.getPurchaseOrderSeq() + ((purchaseOrder.getVersionNumber() > 1) ? "-V" + purchaseOrder.getVersionNumber() : "");
 
-		return new ReportSettings(IReport.PURCHASE_ORDER, ReportSettings.FORMAT_PDF)
-							.addParam("Locale", language)
-							.addParam("__locale", "fr_FR")
-							.addParam("PurchaseOrderId", purchaseOrder.getId().toString())
-							.getUrl();
+		ReportFactory.createReport(IReport.PURCHASE_ORDER, title+"-${date}")
+				.addParam("PurchaseOrderId", purchaseOrder.getId())
+				.addParam("Locale", language)
+				.addModel(purchaseOrder)
+				.generate()
+				.getFileLink();
+
 	}
+
 
 	@Override
 	@Transactional(rollbackOn = {Exception.class})

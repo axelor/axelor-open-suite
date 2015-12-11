@@ -17,12 +17,16 @@
  */
 package com.axelor.apps.hr.web.expense;
 
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.axelor.apps.ReportSettings;
+import org.eclipse.birt.core.exception.BirtException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.axelor.apps.ReportFactory;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.base.db.Wizard;
 import com.axelor.apps.base.service.administration.GeneralService;
@@ -31,7 +35,6 @@ import com.axelor.apps.hr.db.ExpenseLine;
 import com.axelor.apps.hr.db.repo.ExpenseRepository;
 import com.axelor.apps.hr.report.IReport;
 import com.axelor.apps.hr.service.expense.ExpenseService;
-import com.axelor.apps.tool.net.URLService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.db.Query;
@@ -47,6 +50,8 @@ import com.google.inject.Inject;
 
 public class ExpenseController {
 
+	private final Logger logger = LoggerFactory.getLogger(getClass());
+	
 	@Inject
 	private ExpenseService expenseService;
 
@@ -264,29 +269,27 @@ public class ExpenseController {
 		}
 	}
 	
-	public void printExpense(ActionRequest request, ActionResponse response) {
+	public void printExpense(ActionRequest request, ActionResponse response) throws IOException, BirtException {
+		
 		Expense expense = request.getContext().asType(Expense.class);
-		StringBuilder url = new StringBuilder();
+		
 		User user = AuthUtils.getUser();
 		String language = user != null? (user.getLanguage() == null || user.getLanguage().equals(""))? "en" : user.getLanguage() : "en"; 
-		url.append(
-				new ReportSettings(IReport.EXPENSE)
-				.addParam("Locale", language)
-				.addParam("__locale", "fr_FR")
-				.addParam("ExpenseId", expense.getId().toString())
-				.getUrl());
 		
-		String urlNotExist = URLService.notExist(url.toString());
-		if (urlNotExist == null){
-			Map<String,Object> mapView = new HashMap<String,Object>();
-			mapView.put("title", I18n.get("Expense"));
-			mapView.put("resource", url);
-			mapView.put("viewType", "html");
-			response.setView(mapView);	
-		}
-		else {
-			response.setFlash(urlNotExist);
-		}
+		String name = I18n.get("Expense") + " " + expense.getFullName();
+		
+		String fileLink = ReportFactory.createReport(IReport.EXPENSE, name+"-${date}")
+				.addParam("ExpenseId", expense.getId())
+				.addParam("Locale", language)
+				.addModel(expense)
+				.generate()
+				.getFileLink();
+
+		logger.debug("Printing "+name);
+	
+		response.setView(ActionView
+				.define(name)
+				.add("html", fileLink).map());	
 	}
 	
 

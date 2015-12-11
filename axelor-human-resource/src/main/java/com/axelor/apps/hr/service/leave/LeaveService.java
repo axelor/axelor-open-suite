@@ -416,14 +416,20 @@ public class LeaveService {
 	
 	public void getLeaveReason(ActionRequest request, ActionResponse response){
 		List<Map<String,String>> dataList = new ArrayList<Map<String,String>>();
-		List<LeaveReason> leaveReasonList = Beans.get(LeaveReasonRepository.class).all().fetch();
-		for (LeaveReason leaveReason : leaveReasonList) {
-			Map<String, String> map = new HashMap<String,String>();
-			map.put("name", leaveReason.getLeaveReason());
-			map.put("id", leaveReason.getId().toString());
-			dataList.add(map);
+		try{
+			List<LeaveReason> leaveReasonList = Beans.get(LeaveReasonRepository.class).all().fetch();
+			for (LeaveReason leaveReason : leaveReasonList) {
+				Map<String, String> map = new HashMap<String,String>();
+				map.put("name", leaveReason.getLeaveReason());
+				map.put("id", leaveReason.getId().toString());
+				dataList.add(map);
+			}
+			response.setData(dataList);
 		}
-		response.setData(dataList);
+		catch(Exception e){
+			response.setStatus(-1);
+			response.setError(e.getMessage());
+		}
 	}
 	
 	@Transactional
@@ -443,6 +449,9 @@ public class LeaveService {
 			leave.setEndOnSelect(new Integer(request.getData().get("endOn").toString()));
 			leave.setDuration(this.computeDuration(leave));
 			leave.setStatusSelect(LeaveRequestRepository.STATUS_SELECT_AWAITING_VALIDATION);
+			if(request.getData().get("comment") != null){
+				leave.setComments(request.getData().get("comment").toString());
+			}
 			Beans.get(LeaveRequestRepository.class).save(leave);
 		}
 	}

@@ -17,26 +17,27 @@
  */
 package com.axelor.apps.sale.web;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.io.IOException;
 
+import org.eclipse.birt.core.exception.BirtException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.axelor.apps.ReportSettings;
+import com.axelor.apps.ReportFactory;
+import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.report.IReport;
 import com.axelor.apps.sale.service.SaleOrderService;
-import com.axelor.apps.tool.net.URLService;
 import com.axelor.exception.service.TraceBackService;
-import com.axelor.i18n.I18n;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
 
 public class SaleOrderController {
+	
+	private final Logger logger = LoggerFactory.getLogger(getClass());
 
 	@Inject
 	private SaleOrderService saleOrderService;
@@ -44,9 +45,6 @@ public class SaleOrderController {
 	@Inject
 	private SaleOrderRepository saleOrderRepo;
 	
-
-	private static final Logger LOG = LoggerFactory.getLogger(SaleOrderController.class);
-
 	public void compute(ActionRequest request, ActionResponse response)  {
 
 		SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
@@ -60,131 +58,79 @@ public class SaleOrderController {
 
 
 	/**
-	 * Fonction appeler par le bouton imprimer
+	 * Method that print the sale order as a Pdf
 	 *
 	 * @param request
 	 * @param response
 	 * @return
+	 * @throws BirtException 
+	 * @throws IOException 
 	 */
-	public void showSaleOrder(ActionRequest request, ActionResponse response) {
+	public void showSaleOrder(ActionRequest request, ActionResponse response) throws IOException, BirtException {
 
 		SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
 
-		StringBuilder url = new StringBuilder();
+		String language = saleOrderService.getLanguageForPrinting(saleOrder);
+		
+		String name = saleOrderService.getFileName(saleOrder);
+		
+		String fileLink = ReportFactory.createReport(IReport.SALES_ORDER, name+"-${date}")
+				.addParam("Locale", language)
+				.addParam("SaleOrderId", saleOrder.getId())
+				.generate()
+				.getFileLink();
 
-		url.append(saleOrderService.getURLSaleOrderPDF(saleOrder));
-
-		LOG.debug("URL : {}", url);
-		String urlNotExist = URLService.notExist(url.toString());
-
-		if(urlNotExist == null) {
-
-			LOG.debug("Impression du devis "+saleOrder.getSaleOrderSeq()+" : "+url.toString());
-
-			String title = I18n.get("Devis");
-			if(saleOrder.getSaleOrderSeq() != null)  {
-				title += saleOrder.getSaleOrderSeq();
-			}
-
-			Map<String,Object> mapView = new HashMap<String,Object>();
-			mapView.put("title", title);
-			mapView.put("resource", url);
-			mapView.put("viewType", "html");
-			response.setView(mapView);
-		}
-		else {
-			response.setFlash(urlNotExist);
-		}
+		logger.debug("Printing "+name);
+	
+		response.setView(ActionView
+				.define(name)
+				.add("html", fileLink).map());
 	}
 
-	public void exportSaleOrderExcel(ActionRequest request, ActionResponse response) {
+	public void exportSaleOrderExcel(ActionRequest request, ActionResponse response) throws IOException, BirtException {
 
 		SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
 
-		StringBuilder url = new StringBuilder();
+		String language = saleOrderService.getLanguageForPrinting(saleOrder);
 
-		String language="";
-		try{
-			language = saleOrder.getClientPartner().getLanguageSelect() != null? saleOrder.getClientPartner().getLanguageSelect() : saleOrder.getCompany().getPrintingSettings().getLanguageSelect() != null ? saleOrder.getCompany().getPrintingSettings().getLanguageSelect() : "en" ;
-		}catch (NullPointerException e) {
-			language = "en";
-		}
-		language = language.equals("")? "en": language;
+		String name = saleOrderService.getFileName(saleOrder);
+		
+		String fileLink = ReportFactory.createReport(IReport.SALES_ORDER, name+"-${date}")
+					.addParam("Locale", language)
+					.addParam("SaleOrderId", saleOrder.getId())
+					.addFormat(ReportSettings.FORMAT_XLS)
+					.generate()
+					.getFileLink();
 
-		url.append(
-				new ReportSettings(IReport.SALES_ORDER, ReportSettings.FORMAT_XLS)
-				.addParam("Locale", language)
-				.addParam("__locale", "fr_FR")
-				.addParam("SaleOrderId", saleOrder.getId().toString())
-				.getUrl());
+		logger.debug("Printing "+name);
 
-		LOG.debug("URL : {}", url);
-		String urlNotExist = URLService.notExist(url.toString());
-
-		if(urlNotExist == null) {
-
-			LOG.debug("Impression du devis "+saleOrder.getSaleOrderSeq()+" : "+url.toString());
-
-			String title = I18n.get("Devis");
-			if(saleOrder.getSaleOrderSeq() != null)  {
-				title += saleOrder.getSaleOrderSeq();
-			}
-
-			Map<String,Object> mapView = new HashMap<String,Object>();
-			mapView.put("title", title);
-			mapView.put("resource", url);
-			mapView.put("viewType", "html");
-			response.setView(mapView);
-		}
-		else {
-			response.setFlash(urlNotExist);
-		}
+		response.setView(ActionView
+				.define(name)
+				.add("html", fileLink).map());
 	}
 
 
 
-	public void exportSaleOrderWord(ActionRequest request, ActionResponse response) {
+	public void exportSaleOrderWord(ActionRequest request, ActionResponse response) throws IOException, BirtException {
 
 		SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
 
-		StringBuilder url = new StringBuilder();
+		String language = saleOrderService.getLanguageForPrinting(saleOrder);
 
-		String language="";
-		try{
-			language = saleOrder.getClientPartner().getLanguageSelect() != null? saleOrder.getClientPartner().getLanguageSelect() : saleOrder.getCompany().getPrintingSettings().getLanguageSelect() != null ? saleOrder.getCompany().getPrintingSettings().getLanguageSelect() : "en" ;
-		}catch (NullPointerException e) {
-			language = "en";
-		}
-		language = language.equals("")? "en": language;
+		String name = saleOrderService.getFileName(saleOrder);
+		
+		String fileLink = ReportFactory.createReport(IReport.SALES_ORDER, name+"-${date}")
+					.addParam("Locale", language)
+					.addParam("SaleOrderId", saleOrder.getId())
+					.addFormat(ReportSettings.FORMAT_DOC)
+					.generate()
+					.getFileLink();
 
-		url.append(
-				new ReportSettings(IReport.SALES_ORDER, ReportSettings.FORMAT_DOC)
-				.addParam("Locale", language)
-				.addParam("__locale", "fr_FR")
-				.addParam("SaleOrderId", saleOrder.getId().toString())
-				.getUrl());
+		logger.debug("Printing "+name);
 
-		LOG.debug("URL : {}", url);
-		String urlNotExist = URLService.notExist(url.toString());
-
-		if(urlNotExist == null) {
-
-			LOG.debug("Impression du devis "+saleOrder.getSaleOrderSeq()+" : "+url.toString());
-
-			String title = I18n.get("Devis");
-			if(saleOrder.getSaleOrderSeq() != null)  {
-				title += saleOrder.getSaleOrderSeq();
-			}
-
-			Map<String,Object> mapView = new HashMap<String,Object>();
-			mapView.put("title", title);
-			mapView.put("resource", url);
-			mapView.put("viewType", "html");
-			response.setView(mapView);
-		}
-		else {
-			response.setFlash(urlNotExist);
-		}
+		response.setView(ActionView
+				.define(name)
+				.add("html", fileLink).map());
 	}
 
 	public void cancelSaleOrder(ActionRequest request, ActionResponse response) {

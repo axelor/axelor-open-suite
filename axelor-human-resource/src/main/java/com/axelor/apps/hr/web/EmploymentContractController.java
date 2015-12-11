@@ -17,8 +17,6 @@
  */
 package com.axelor.apps.hr.web;
 
-import java.io.IOException;
-
 import com.axelor.apps.hr.db.EmploymentContract;
 import com.axelor.apps.hr.db.repo.EmploymentContractRepository;
 import com.axelor.apps.hr.service.EmploymentContractService;
@@ -35,7 +33,7 @@ public class EmploymentContractController {
 	@Inject
 	private EmploymentContractRepository employmentContractRepo;
 
-    public void addAmendment(ActionRequest request, ActionResponse response){
+    public void addAmendment(ActionRequest request, ActionResponse response)  {
 
     	EmploymentContract employmentContract = request.getContext().asType(EmploymentContract.class);
 
@@ -45,9 +43,8 @@ public class EmploymentContractController {
 	    	response.setFlash( String.format( "Contrat %s - avenant %s", employmentContract.getFullName(), employmentContract.getEmploymentContractVersion() ) );
 			response.setReload(true);
 
-		} catch (IOException e) {
+		} catch (Exception e) {
 			TraceBackService.trace(response, e);
 		}
-
     }
 }

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.2.2.v201301221637 Build &lt;4.2.2.v20130206-1509></property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.4.2.v201410272105 Build &lt;4.4.2.v20150217-1805></property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -25,6 +25,7 @@
     <property name="imageDPI">96</property>
     <parameters>
         <scalar-parameter name="MoveLineReportId" id="570">
+            <property name="hidden">true</property>
             <property name="valueType">static</property>
             <property name="isRequired">true</property>
             <property name="dataType">decimal</property>
@@ -41,6 +42,7 @@
             </structure>
         </scalar-parameter>
         <scalar-parameter name="DBName" id="2479">
+            <property name="hidden">true</property>
             <property name="valueType">static</property>
             <property name="dataType">string</property>
             <property name="distinct">true</property>
@@ -52,6 +54,7 @@
             </structure>
         </scalar-parameter>
         <scalar-parameter name="UserName" id="2480">
+            <property name="hidden">true</property>
             <property name="valueType">static</property>
             <property name="dataType">string</property>
             <property name="distinct">true</property>
@@ -63,6 +66,7 @@
             </structure>
         </scalar-parameter>
         <scalar-parameter name="Password" id="2481">
+            <property name="hidden">true</property>
             <property name="valueType">static</property>
             <property name="dataType">string</property>
             <property name="distinct">true</property>
@@ -1867,8 +1871,8 @@ left outer join public.account_journal as Journal on (MoveLineReport.journal = J
                 <property name="width">11.104166666666666in</property>
             </column>
             <row id="1086">
-                <property name="height">0.5520833333333334in</property>
                 <property name="pageBreakInside">avoid</property>
+                <property name="height">0.5520833333333334in</property>
                 <cell id="1087">
                     <label id="482"/>
                     <label id="483">

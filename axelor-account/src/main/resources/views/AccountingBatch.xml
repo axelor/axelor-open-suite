@@ -117,9 +117,19 @@
 	</action-method>
 	
     <!-- ACTION ATTRS -->
-	
-	<action-attrs name="action-accounting-batch-attrs-bank-details-domain">
-        <attribute name="domain" expr="eval: &quot;self.id IN (${company?.bankDetailsSet?.collect{it.id}.join(',')},null)&quot;" for="bankDetails"/>
+    
+    <action-attrs name="action-accounting-batch-attrs-bank-details-domain">
+        <attribute name="domain" expr="eval: &quot;self.id IN (${company?.bankDetailsSet?.collect{it.id}.join(',')},${company?.defaultBankDetails?.id})&quot;" for="bankDetails"
+        	if="!company?.bankDetailsSet?.isEmpty()"/>
+       	<attribute name="domain" expr="eval: &quot;self.id = ${company?.defaultBankDetails?.id}&quot;" for="bankDetails"
+        	if="company?.bankDetailsSet?.isEmpty()"/>
+    </action-attrs>
+    
+    <action-attrs name="action-accounting-batch-attrs-company-bank-details-domain">
+        <attribute name="domain" expr="eval: &quot;self.id IN (${company?.bankDetailsSet?.collect{it.id}.join(',')},${company?.defaultBankDetails?.id})&quot;" for="companyBankDetails"
+        	if="!company?.bankDetailsSet?.isEmpty()"/>
+       	<attribute name="domain" expr="eval: &quot;self.id = ${company?.defaultBankDetails?.id}&quot;" for="companyBankDetails"
+        	if="company?.bankDetailsSet?.isEmpty()"/>
     </action-attrs>
 	
 </object-views>

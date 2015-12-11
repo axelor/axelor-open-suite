@@ -17,31 +17,32 @@
  */
 package com.axelor.apps.stock.web;
 
-import java.util.HashMap;
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.birt.core.exception.BirtException;
 import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.axelor.apps.ReportSettings;
+import com.axelor.apps.ReportFactory;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.ProductCategory;
 import com.axelor.apps.base.db.ProductFamily;
 import com.axelor.apps.base.db.repo.ProductCategoryRepository;
 import com.axelor.apps.base.db.repo.ProductFamilyRepository;
-import com.axelor.apps.stock.service.InventoryService;
 import com.axelor.apps.stock.db.Inventory;
 import com.axelor.apps.stock.db.Location;
 import com.axelor.apps.stock.db.repo.LocationRepository;
 import com.axelor.apps.stock.exception.IExceptionMessage;
 import com.axelor.apps.stock.report.IReport;
-import com.axelor.apps.tool.net.URLService;
+import com.axelor.apps.stock.service.InventoryService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
@@ -50,9 +51,11 @@ import com.google.inject.Inject;
 
 public class LocationController {
 
+	private final Logger logger = LoggerFactory.getLogger(getClass());
+	
+	
 	@Inject
 	private InventoryService inventoryService;
-	private static final Logger LOG = LoggerFactory.getLogger(LocationController.class);
 	
 	@Inject
 	private LocationRepository locationRepo;
@@ -114,13 +117,15 @@ public class LocationController {
 	}
 	
 	/**
-	 * Fonction appeler par le bouton imprimer
+	 * Method that generate inventory as a pdf
 	 *
 	 * @param request
 	 * @param response
 	 * @return
+	 * @throws BirtException 
+	 * @throws IOException 
 	 */
-	public void print(ActionRequest request, ActionResponse response) {
+	public void print(ActionRequest request, ActionResponse response) throws IOException, BirtException {
 
 
 		Location location = request.getContext().asType(Location.class );
@@ -142,7 +147,6 @@ public class LocationController {
 		}
 		
 		if(!locationIds.equals("")){
-			StringBuilder url = new StringBuilder();			
 			
 			User user = AuthUtils.getUser();
 			Company company = location.getCompany();
@@ -155,34 +159,23 @@ public class LocationController {
 				language = company.getPrintingSettings().getLanguageSelect();
 			}
 
-			url.append(
-					new ReportSettings(IReport.STOCK_LOCATION)
-					.addParam("Locale", language)
-					.addParam("__locale", "fr_FR")
+			String title = I18n.get("Location");
+			if(location.getName() != null)  {
+				title = lstSelectedLocations == null ? I18n.get("Location") + " " + location.getName() : I18n.get("Location(s)");
+			}
+		
+			String fileLink = ReportFactory.createReport(IReport.STOCK_LOCATION, title+"-${date}")
 					.addParam("StockLocationId", locationIds)
-					.getUrl());
-			
-			LOG.debug("URL : {}", url);
-			
-			String urlNotExist = URLService.notExist(url.toString());
-			if (urlNotExist == null){
-				LOG.debug("Impression de l'O.F.  "+location.getName()+" : "+url.toString());
+					.addParam("Locale", language)
+					.generate()
+					.getFileLink();
+
+			logger.debug("Printing "+title);
+		
+			response.setView(ActionView
+					.define(title)
+					.add("html", fileLink).map());	
 				
-				String title = " ";
-				if(location.getName() != null)  {
-					title += lstSelectedLocations == null ? I18n.get("Stock")+" "+location.getName():I18n.get("Stocks");
-				}
-				
-				Map<String,Object> mapView = new HashMap<String,Object>();
-				mapView.put("title", title);
-				mapView.put("resource", url);
-				mapView.put("viewType", "html");
-				response.setView(mapView);	
-					
-			}
-			else {
-				response.setFlash(urlNotExist);
-			}
 		}else{
 			response.setFlash(I18n.get(IExceptionMessage.LOCATION_2));
 		}	

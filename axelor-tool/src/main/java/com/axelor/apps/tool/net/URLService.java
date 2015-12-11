@@ -70,12 +70,12 @@ public final class URLService {
 
 	}
 
-	public static File fileUrl(String fAddress, String localFileName, String destinationDir) throws IOException {
+	
+	public static void fileUrl(File file, String fAddress, String localFileName, String destinationDir) throws IOException {
 		int ByteRead, ByteWritten = 0;
 		byte[] buf = new byte[size];
 
 		URL Url = new URL(fAddress);
-		File file = FileTool.create(destinationDir, localFileName);
 		OutputStream outputStream = new BufferedOutputStream(new FileOutputStream(file));
 		URLConnection urlConnection = Url.openConnection();
 		InputStream inputStream = urlConnection.getInputStream();
@@ -91,8 +91,8 @@ public final class URLService {
 		if ( inputStream != null )  { inputStream.close(); }
 		if ( outputStream != null ) { outputStream.close(); }
 
-		return file;
 	}
+	
 
 	public static File fileDownload(String fAddress, String destinationDir, String fileName) throws IOException {
 
@@ -101,10 +101,29 @@ public final class URLService {
 
 		if ( periodIndex >= 1 && slashIndex >= 0 && slashIndex < fAddress.length() - 1 ) {
 			LOG.debug("Downloading file {} from {} to {}", fileName, fAddress, destinationDir);
-			return fileUrl(fAddress, fileName, destinationDir);
+			
+			File file = FileTool.create(destinationDir, fileName);
+			
+			fileUrl(file, fAddress, fileName, destinationDir);
+			
+			return file;
+			
 		}  else {
 			LOG.error("Destination path or filename is not well formatted.");
 			return null;
+		}
+	}
+	
+	public static void fileDownload(File file, String fAddress, String destinationDir, String fileName) throws IOException {
+
+		int slashIndex = fAddress.lastIndexOf('/');
+		int periodIndex = fAddress.lastIndexOf('.');
+
+		if ( periodIndex >= 1 && slashIndex >= 0 && slashIndex < fAddress.length() - 1 ) {
+			LOG.debug("Downloading file {} from {} to {}", fileName, fAddress, destinationDir);
+			fileUrl(file, fAddress, fileName, destinationDir);
+		}  else {
+			LOG.error("Destination path or filename is not well formatted.");
 		}
 	}
 

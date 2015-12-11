@@ -21,19 +21,20 @@ import com.axelor.apps.account.db.Reimbursement;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
+import com.axelor.apps.base.service.PartnerService;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
 public class ReimbursementService {
 	
 	protected PartnerRepository partnerRepository;
-	
+	protected PartnerService partnerService;
 
 	@Inject
-	public ReimbursementService(PartnerRepository partnerRepository)  {
+	public ReimbursementService(PartnerRepository partnerRepository, PartnerService partnerService)  {
 		
 		this.partnerRepository = partnerRepository;
-		
+		this.partnerService = partnerService;
 	}
 	
 	/**
@@ -45,9 +46,12 @@ public class ReimbursementService {
 	public void updatePartnerCurrentRIB(Reimbursement reimbursement)  {
 		BankDetails bankDetails = reimbursement.getBankDetails();
 		Partner partner = reimbursement.getPartner();
-
-		if(bankDetails != null && partner != null && !bankDetails.equals(partner.getBankDetails()))  {
-			partner.setBankDetails(bankDetails);
+		BankDetails defaultBankDetails = partnerService.getDefaultBankDetails(partner);
+		
+		if(bankDetails != null && partner != null && !bankDetails.equals(defaultBankDetails))  {
+			defaultBankDetails.setIsDefault(false);
+			bankDetails.setIsDefault(true);
+			partner.addBankDetailsListItem(bankDetails);
 			partnerRepository.save(partner);
 		}
 	}

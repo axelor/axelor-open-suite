@@ -17,16 +17,15 @@
  */
 package com.axelor.apps.account.web;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.io.IOException;
 
+import org.eclipse.birt.core.exception.BirtException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.axelor.apps.ReportSettings;
+import com.axelor.apps.ReportFactory;
 import com.axelor.apps.account.db.PaymentVoucher;
 import com.axelor.apps.account.db.repo.PaymentVoucherRepository;
-import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.report.IReport;
 import com.axelor.apps.account.service.payment.paymentvoucher.PaymentVoucherConfirmService;
 import com.axelor.apps.account.service.payment.paymentvoucher.PaymentVoucherLoadService;
@@ -35,6 +34,7 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.common.base.Strings;
@@ -42,7 +42,7 @@ import com.google.inject.Inject;
 
 public class PaymentVoucherController {
 
-	private static final Logger LOG = LoggerFactory.getLogger(PaymentVoucherController.class);
+	private final Logger logger = LoggerFactory.getLogger(getClass());
 	
 	@Inject
 	private PaymentVoucherRepository paymentVoucherRepo;
@@ -103,21 +103,24 @@ public class PaymentVoucherController {
 	}
 	
 	
-	public void printPaymentVoucher(ActionRequest request, ActionResponse response) {
+	public void printPaymentVoucher(ActionRequest request, ActionResponse response) throws IOException, BirtException {
 		
 		PaymentVoucher paymentVoucher = request.getContext().asType(PaymentVoucher.class);
-		StringBuilder url = new StringBuilder();
 		
-		url.append(new ReportSettings(IReport.PAYMENT_VOUCHER)
-					.addParam("PaymentVoucherId", paymentVoucher.getId().toString())
-					.getUrl());
+		String name = I18n.get("Payment voucher")+" "+paymentVoucher.getReceiptNo();
 		
-		LOG.debug("Follow the URL: "+url);
+		String fileLink = ReportFactory.createReport(IReport.PAYMENT_VOUCHER, name+"-${date}")
+				.addParam("PaymentVoucherId", paymentVoucher.getId())
+				.generate()
+				.getFileLink();
+
+		logger.debug("Printing "+name);
+	
+		response.setView(ActionView
+				.define(name)
+				.add("html", fileLink).map());
 		
-		Map<String,Object> mapView = new HashMap<String,Object>();
-		mapView.put("title", I18n.get(IExceptionMessage.PAYMENT_VOUCHER_1)+" "+paymentVoucher.getReceiptNo());
-		mapView.put("resource", url);
-		mapView.put("viewType", "html");
-		response.setView(mapView);	
 	}	
+	
+	
 }

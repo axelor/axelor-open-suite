@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.production.web;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
@@ -26,6 +27,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.eclipse.birt.core.exception.BirtException;
 import org.joda.time.Days;
 import org.joda.time.Hours;
 import org.joda.time.LocalDate;
@@ -37,46 +39,39 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.app.production.db.IOperationOrder;
-import com.axelor.apps.ReportSettings;
-import com.axelor.apps.base.db.Company;
+import com.axelor.apps.ReportFactory;
 import com.axelor.apps.base.db.DayPlanning;
-import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.base.service.weeklyplanning.WeeklyPlanningService;
 import com.axelor.apps.production.db.OperationOrder;
-import com.axelor.apps.production.db.repo.MachineRepository;
 import com.axelor.apps.production.db.repo.OperationOrderRepository;
 import com.axelor.apps.production.exceptions.IExceptionMessage;
 import com.axelor.apps.production.report.IReport;
+import com.axelor.apps.production.service.ManufOrderService;
 import com.axelor.apps.production.service.ManufOrderWorkflowService;
 import com.axelor.apps.production.service.OperationOrderWorkflowService;
-import com.axelor.apps.tool.net.URLService;
-import com.axelor.auth.AuthUtils;
-import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.google.common.base.Strings;
 import com.google.inject.Inject;
 
 public class OperationOrderController {
 	
 	@Inject
-	protected MachineRepository machineRepo;
-	
-	@Inject
 	protected OperationOrderRepository operationOrderRepo;
-	
-	@Inject
-	protected GeneralService generalService;
 	
 	@Inject
 	protected OperationOrderWorkflowService operationOrderWorkflowService;
 	
 	@Inject
+	protected ManufOrderService manufOrderService;
+	
+	@Inject
 	protected WeeklyPlanningService weeklyPlanningService;
+	
 
 	private static final Logger LOG = LoggerFactory.getLogger(ManufOrderController.class);
 	
@@ -162,14 +157,15 @@ public class OperationOrderController {
 	
 	
 	/**
-	 * Fonction appeler par le bouton imprimer
+	 * Method that generate a Pdf file for an operation order
 	 *
 	 * @param request
 	 * @param response
 	 * @return
+	 * @throws BirtException 
+	 * @throws IOException 
 	 */
-	public void print(ActionRequest request, ActionResponse response) {
-
+	public void print(ActionRequest request, ActionResponse response) throws IOException, BirtException {
 
 		OperationOrder operationOrder = request.getContext().asType( OperationOrder.class );
 		String operationOrderIds = "";
@@ -190,50 +186,25 @@ public class OperationOrderController {
 		}
 		
 		if(!operationOrderIds.equals("")){
-			StringBuilder url = new StringBuilder();			
-			User user = AuthUtils.getUser();
 			
-			Company company = null;
-			if(operationOrder.getManufOrder() != null)  {
-				company = operationOrder.getManufOrder().getCompany();
+			String name = " ";
+			if(operationOrder.getName() != null)  {
+				name += lstSelectedOperationOrder == null ? "Op "+operationOrder.getName():"Ops";
 			}
 			
-			String language = "en";
-			if(user != null && !Strings.isNullOrEmpty(user.getLanguage()))  {
-				language = user.getLanguage();
-			}
-			else if(company != null && company.getPrintingSettings() != null && !Strings.isNullOrEmpty(company.getPrintingSettings().getLanguageSelect())) {
-				language = company.getPrintingSettings().getLanguageSelect();
-			}
+			String fileLink = ReportFactory.createReport(IReport.OPERATION_ORDER, name+"-${date}")
+					.addParam("Locale", manufOrderService.getLanguageToPrinting(operationOrder.getManufOrder()))
+					.addParam("OperationOrderId", operationOrderIds)
+					.generate()
+					.getFileLink();
 
-			url.append(new ReportSettings(IReport.OPERATION_ORDER)
-						.addParam("Locale", language)
-						.addParam("__locale", "fr_FR")
-						.addParam("OperationOrderId", operationOrderIds)
-						.getUrl());
-			
-			LOG.debug("URL : {}", url);
-			
-			String urlNotExist = URLService.notExist(url.toString());
-			if (urlNotExist == null){
-				LOG.debug("Impression de l'Opération de production "+operationOrder.getName()+" : "+url.toString());
-				
-				String title = " ";
-				if(operationOrder.getName() != null)  {
-					title += lstSelectedOperationOrder == null ? "Op "+operationOrder.getName():"Ops";
-				}
-				
-				Map<String,Object> mapView = new HashMap<String,Object>();
-				mapView.put("title", title);
-				mapView.put("resource", url);
-				mapView.put("viewType", "html");
-				response.setView(mapView);	
-					
-			}
-			else {
-				response.setFlash(urlNotExist);
-			}
-		}else{
+			LOG.debug("Printing "+name);
+		
+			response.setView(ActionView
+					.define(name)
+					.add("html", fileLink).map());
+		}
+		else{
 			response.setFlash(I18n.get(IExceptionMessage.OPERATION_ORDER_1));
 		}	
 	}

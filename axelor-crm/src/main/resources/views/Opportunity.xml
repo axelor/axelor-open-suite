@@ -69,6 +69,15 @@
         <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
         <field name="amount" aggregate="sum"/>
     </grid>
+    
+    <grid name="opportunity-dashlet-grid" title="Opportunities" model="com.axelor.apps.crm.db.Opportunity" orderBy="amount">
+        <field name="name"/>
+        <field name="salesStageSelect"/>
+        <field name="amount" aggregate="sum"/>
+        <field name="probability"/>
+        <field name="expectedCloseDate"/>
+        <field name="user" form-view="user-form" grid-view="user-grid"/>
+    </grid>
 	
     <form   name="opportunity-form" title="Opportunity" model="com.axelor.apps.crm.db.Opportunity" onNew="action-opportunity-group-new">
 		<toolbar>

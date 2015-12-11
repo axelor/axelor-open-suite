@@ -17,14 +17,14 @@
  */
 package com.axelor.apps.account.web;
 
-import java.util.HashMap;
+import java.io.IOException;
 import java.util.List;
-import java.util.Map;
 
+import org.eclipse.birt.core.exception.BirtException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.axelor.apps.ReportSettings;
+import com.axelor.apps.ReportFactory;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
@@ -32,7 +32,6 @@ import com.axelor.apps.account.report.IReport;
 import com.axelor.apps.account.service.IrrecoverableService;
 import com.axelor.apps.account.service.JournalService;
 import com.axelor.apps.account.service.invoice.InvoiceService;
-import com.axelor.apps.tool.net.URLService;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
@@ -45,8 +44,8 @@ import com.google.inject.Inject;
 
 public class InvoiceController {
 
-	private static final Logger LOG = LoggerFactory.getLogger(InvoiceController.class);
-
+	private final Logger logger = LoggerFactory.getLogger(getClass());
+	
 	@Inject
 	private InvoiceService invoiceService;
 	
@@ -216,13 +215,15 @@ public class InvoiceController {
 
 
 	/**
-	 * Fonction appeler par le bouton imprimer
+	 * Method to generate invoice as a Pdf
 	 *
 	 * @param request
 	 * @param response
 	 * @return
+	 * @throws BirtException 
+	 * @throws IOException 
 	 */
-	public void showInvoice(ActionRequest request, ActionResponse response) {
+	public void showInvoice(ActionRequest request, ActionResponse response) throws IOException, BirtException {
 
 		Invoice invoice = request.getContext().asType(Invoice.class);
 		String invoiceIds = "";
@@ -243,7 +244,6 @@ public class InvoiceController {
 		}
 
 		if(!invoiceIds.equals("")){
-			StringBuilder url = new StringBuilder();
 			String language;
 			try{
 				language = invoice.getPartner().getLanguageSelect() != null? invoice.getPartner().getLanguageSelect() : invoice.getCompany().getPrintingSettings().getLanguageSelect() != null ? invoice.getCompany().getPrintingSettings().getLanguageSelect() : "en" ;
@@ -251,34 +251,24 @@ public class InvoiceController {
 				language = "en";
 			}
 
-			url.append(new ReportSettings(IReport.INVOICE)
-						.addParam("InvoiceId", invoiceIds)
-						.addParam("Locale", language)
-						.addParam("__locale", "fr_FR")
-						.getUrl());
-
-			LOG.debug("URL : {}", url);
-
-			String urlNotExist = URLService.notExist(url.toString());
-			if (urlNotExist == null){
-
-				LOG.debug("Impression de la facture "+invoice.getInvoiceId()+" : "+url.toString());
-
-				String title = I18n.get("Invoice");
-				if(invoice.getInvoiceId() != null)  {
-					title += invoice.getInvoiceId();
-				}
-
-				Map<String,Object> mapView = new HashMap<String,Object>();
-				mapView.put("title", title);
-				mapView.put("resource", url);
-				mapView.put("viewType", "html");
-				mapView.put("target", "new");
-				response.setView(mapView);
+			String title = I18n.get("Invoice");
+			if(invoice.getInvoiceId() != null)  {
+				title += invoice.getInvoiceId();
 			}
-			else {
-				response.setFlash(urlNotExist);
-			}
+			
+			String fileLink = ReportFactory.createReport(IReport.INVOICE, title+"-${date}")
+					.addParam("InvoiceId", invoiceIds)
+					.addParam("Locale", language)
+					.addModel(invoice)
+					.generate()
+					.getFileLink();
+
+			logger.debug("Printing "+title);
+		
+			response.setView(ActionView
+					.define(title)
+					.add("html", fileLink).map());
+			
 		}else{
 			response.setFlash(I18n.get(IExceptionMessage.INVOICE_3));
 		}

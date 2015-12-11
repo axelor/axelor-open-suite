@@ -6,7 +6,8 @@
   <entity sequential="true" name="Invoice" lang="java">
     
     <date name="estimatedPaymentDate" title="Estimated payment date"/>
-
+	
+	
   </entity>
   
 </domain-models>

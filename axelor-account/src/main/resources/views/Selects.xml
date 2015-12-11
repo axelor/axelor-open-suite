@@ -276,9 +276,4 @@
 		<option value="2">Table</option>
 	</selection>
 	
-	<selection name="assistant.report.invoice.format.select">
-		<option value="1">PDF</option>
-		<option value="2">XLS</option>
-	</selection>
-	
 </object-views>

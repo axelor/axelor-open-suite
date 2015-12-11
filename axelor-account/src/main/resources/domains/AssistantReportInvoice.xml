@@ -14,9 +14,17 @@
 	<many-to-many name="productSet" ref="com.axelor.apps.base.db.Product" title="Products"/>
 	<many-to-many name="productCategorySet" ref="com.axelor.apps.base.db.ProductCategory" title="Product categories"/>
 	<integer name="graphTypeSelect" title="Graph type" selection="assistant.report.invoice.graph.type.select" default="1"/>
-	<integer name="formatSelect" title="Format" selection="assistant.report.invoice.format.select" default="1"/>
+	<string name="formatSelect" title="Format" selection="iadministration.export.type.select" default="pdf"/>
 	<integer name="type"/>
-    
+	
+ 	<extra-code><![CDATA[
+	
+	   	// GRAPH TYPE SELECT
+		public static final int GRAPH_TYPE_GRAPH = 1;
+		public static final int GRAPH_TYPE_TABLE = 2;
+	
+	]]></extra-code>
+	
   </entity>
 
 </domain-models>

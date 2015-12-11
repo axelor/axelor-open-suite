@@ -18,6 +18,8 @@
 package com.axelor.apps.account.web;
 
 import java.math.BigDecimal;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.joda.time.LocalDate;
 import org.slf4j.Logger;
@@ -65,15 +67,35 @@ public class GeneralController {
 		}
 		catch (Exception e) { TraceBackService.trace(response, e); }
 	}
-
+	
 	public void updateCurrencyConversion(ActionRequest request, ActionResponse response){
 		 General general = request.getContext().asType(General.class);
 		 LocalDate today = generalService.getTodayDate();
-
+		 
+		 Map<Long, Long> currencyMap = new HashMap<Long, Long>();
+		 
 		 for(CurrencyConversionLine ccl : general.getCurrencyConversionLineList()){
-			CurrencyConversionLine cclCoverd = cclRepo.all().filter("startCurrency = ?1 AND endCurrency = ?2 AND fromDate >= ?3 AND (toDate <= ?3 OR toDate = null)",ccl.getStartCurrency(),ccl.getEndCurrency(),today).fetchOne();
-			LOG.info("Currency Conversion Line for {} already covered : {}",today,ccl);
-			if(ccl.isSelected() && ccl.getToDate() == null & cclCoverd == null){
+			 currencyMap.put(ccl.getEndCurrency().getId(), ccl.getStartCurrency().getId());
+		 }
+		 
+		 for(Long key  : currencyMap.keySet()){
+			
+			CurrencyConversionLine ccl = cclRepo.all().filter("startCurrency.id = ?1 AND endCurrency.id = ?2 AND fromDate <= ?3 AND toDate is null", currencyMap.get(key), key, today).fetchOne();
+			
+			LOG.info("Currency Conversion Line without toDate : {}", ccl);
+
+			if(ccl == null){
+				ccl = cclRepo.all().filter("startCurrency.id = ?1 AND endCurrency.id = ?2 AND fromDate <= ?3 AND toDate > ?3", currencyMap.get(key), key, today).fetchOne();
+				if(ccl != null){
+					LOG.info("Already convered Currency Conversion Line  found : {}", ccl);
+					continue;
+				}
+				ccl = cclRepo.all().filter("startCurrency.id = ?1 AND endCurrency.id = ?2 AND fromDate <= ?3 AND (toDate not null AND toDate <= ?3)", currencyMap.get(key), key, today).order("-toDate").fetchOne();
+				LOG.info("Currency Conversion Line found with toDate : {}", ccl);
+			}
+			
+			
+			if(ccl != null){
 				BigDecimal currentRate = ccs.convert(ccl.getStartCurrency(), ccl.getEndCurrency());
 				if(currentRate.compareTo(new BigDecimal(-1)) == 0){
 					response.setFlash(I18n.get(IExceptionMessage.CURRENCY_6));
@@ -86,7 +108,10 @@ public class GeneralController {
 				String variations = ccs.getVariations(currentRate, previousRate);
 				ccs.createCurrencyConversionLine(ccl.getStartCurrency(), ccl.getEndCurrency(), today, currentRate, gs.getGeneral(), variations);
 			}
+			
 		 }
+		 
 		 response.setReload(true);
 	}
+	
 }

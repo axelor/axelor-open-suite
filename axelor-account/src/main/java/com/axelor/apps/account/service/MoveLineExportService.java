@@ -1158,10 +1158,11 @@ public class MoveLineExportService {
 		moveLineReport.setStatusSelect(MoveLineReportRepository.STATUS_DRAFT);
 		moveLineReport.setDate(todayTime.toLocalDate());
 		moveLineReport.setRef(moveLineReportService.getSequence(moveLineReport));
+		
+		moveLineReportService.buildQuery(moveLineReport);
 
-		String queryFilter = moveLineReportService.getMoveLineList(moveLineReport);
-		BigDecimal debitBalance = moveLineReportService.getDebitBalance(queryFilter);
-		BigDecimal creditBalance = moveLineReportService.getCreditBalance(queryFilter);
+		BigDecimal debitBalance = moveLineReportService.getDebitBalance();
+		BigDecimal creditBalance = moveLineReportService.getCreditBalance();
 
 		moveLineReport.setTotalDebit(debitBalance);
 		moveLineReport.setTotalCredit(creditBalance);

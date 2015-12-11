@@ -63,6 +63,8 @@
   	
   	<integer name="supplierDeliveryTime" title="Supplier delivery time (days)"/>
   	
+  	<many-to-one name="barCode" title="Barcode" ref="com.axelor.meta.db.MetaFile" />
+  	
   	<string name="fullName" title="Full name" namecolumn="true"/>
   	
   	<extra-code>

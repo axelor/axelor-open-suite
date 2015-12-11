@@ -17,21 +17,25 @@
  */
 package com.axelor.apps.base.web;
 
-import java.util.HashMap;
+import java.io.IOException;
 import java.util.List;
-import java.util.Map;
 
+import org.eclipse.birt.core.exception.BirtException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.axelor.apps.ReportSettings;
+import com.axelor.apps.ReportFactory;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.report.IReport;
 import com.axelor.apps.message.db.Message;
 import com.axelor.apps.message.db.repo.MessageRepository;
 import com.axelor.apps.message.service.MessageService;
-import com.axelor.apps.tool.net.URLService;
+import com.axelor.apps.report.engine.ReportSettings;
+import com.axelor.auth.AuthUtils;
+import com.axelor.auth.db.User;
 import com.axelor.i18n.I18n;
+import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
@@ -39,7 +43,7 @@ import com.google.inject.Inject;
 public class MessageController extends com.axelor.apps.message.web.MessageController {
 
 	
-	private static final Logger LOG = LoggerFactory.getLogger(MessageController.class);
+	private final Logger logger = LoggerFactory.getLogger(getClass());
 	
 	@Inject
 	private MessageRepository messageRepo;
@@ -47,30 +51,33 @@ public class MessageController extends com.axelor.apps.message.web.MessageContro
 	@Inject
 	private MessageService messageService;
 	
+	
 	/**
-	 * Fonction appeler par le bouton imprimer
+	 * Method that generate message as a pdf
 	 *
 	 * @param request
 	 * @param response
 	 * @return
+	 * @throws BirtException 
+	 * @throws IOException 
 	 */
-	public void printMessage(ActionRequest request, ActionResponse response) {
+	public void printMessage(ActionRequest request, ActionResponse response) throws IOException, BirtException {
 		
 		Message message = request.getContext().asType(Message.class);
 		String pdfPath = messageService.printMessage(message);
 		
 		if(pdfPath != null){
-			Map<String,Object> mapView = new HashMap<String,Object>();
-			mapView.put("title", "Message "+message.getSubject());
-			mapView.put("resource", pdfPath);
-			mapView.put("viewType", "html");
-			response.setView(mapView);	
+
+			response.setView(ActionView
+					.define("Message "+message.getSubject())
+					.add("html", pdfPath).map());	
+
 		}
 		else
 			response.setFlash(I18n.get(IExceptionMessage.MESSAGE_1));
 	}
 	
-	public void print(ActionRequest request, ActionResponse response) {
+	public void print(ActionRequest request, ActionResponse response) throws IOException, BirtException {
 
 
 		Message message = request.getContext().asType(Message.class );
@@ -92,47 +99,36 @@ public class MessageController extends com.axelor.apps.message.web.MessageContro
 		}
 		
 		if(!messageIds.equals("")){
-			StringBuilder url = new StringBuilder();			
-			
-//			User user = AuthUtils.getUser();
-//			Company company = message.getCompany();
+			User user = AuthUtils.getUser();
+			Company company = message.getCompany();
 			
 			String language = "en";
-//			if(user != null && user.getLanguage() != null && !user.getLanguage().isEmpty())  {
-//				language = user.getLanguage();
-//			}
-//			else if(company != null && company.getPrintingSettings() != null && company.getPrintingSettings().getLanguageSelect() !=null && !company.getPrintingSettings().getLanguageSelect().isEmpty() ) {
-//				language = company.getPrintingSettings().getLanguageSelect();
-//			}
+			if(user != null && user.getLanguage() != null && !user.getLanguage().isEmpty())  {
+				language = user.getLanguage();
+			}
+			else if(company != null && company.getPrintingSettings() != null && company.getPrintingSettings().getLanguageSelect() !=null && !company.getPrintingSettings().getLanguageSelect().isEmpty() ) {
+				language = company.getPrintingSettings().getLanguageSelect();
+			}
 
-			url.append(
-					new ReportSettings(IReport.MESSAGE_PDF)
-					.addParam("Locale", language)
-					.addParam("__locale", "fr_FR")
-					.addParam("MessageId", messageIds)
-					.getUrl());
-			
-			LOG.debug("URL : {}", url);
-			
-			String urlNotExist = URLService.notExist(url.toString());
-			if (urlNotExist == null){
-				LOG.debug("Impression de Message "+message.getSubject()+" : "+url.toString());
-				
-				String title = " ";
-				if(message.getSubject() != null)  {
-					title += lstSelectedMessages == null ? "Message "+message.getSubject():"Messages";
-				}
-				
-				Map<String,Object> mapView = new HashMap<String,Object>();
-				mapView.put("title", title);
-				mapView.put("resource", url);
-				mapView.put("viewType", "html");
-				response.setView(mapView);	
-					
+			String title = " ";
+			if(message.getSubject() != null)  {
+				title += lstSelectedMessages == null ? "Message "+message.getSubject():"Messages";
 			}
-			else {
-				response.setFlash(urlNotExist);
-			}
+			
+			String fileLink = ReportFactory.createReport(IReport.MESSAGE_PDF, title+"-${date}")
+						.addParam("Locale", language)
+						.addParam("MessageId", messageIds)
+						.addFormat(ReportSettings.FORMAT_XLS)
+						.generate()
+						.getFileLink();
+
+			logger.debug("Printing "+title);
+
+			response.setView(ActionView
+					.define(title)
+					.add("html", fileLink).map());
+			
+			
 		}else{
 			response.setFlash(I18n.get(IExceptionMessage.MESSAGE_2));
 		}	

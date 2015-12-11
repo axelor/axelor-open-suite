@@ -4,7 +4,7 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
 	
 	<grid name="partner-address-grid" title="Address list" model="com.axelor.apps.base.db.PartnerAddress" editable="true">
-		<field name="address" />
+		<field name="address" canNew="true" />
 		<field name="isInvoicingAddr" />
 		<field name="isDeliveryAddr" />
 		<field name="isDefaultAddr" />
@@ -12,7 +12,7 @@
 	
 	<form name="partner-address-form" title="Address" model="com.axelor.apps.base.db.PartnerAddress">
 		<panel>
-			<field name="address" />
+			<field name="address" canNew="true" />
 			<field name="isInvoicingAddr" widget="toggle" x-icon="fa-exclamation-circle" />
 			<field name="isDeliveryAddr" widget="toggle" x-icon="fa-ban" />
 			<field name="isDefaultAddr" widget="toggle" x-icon="fa-star-o" x-icon-active="fa-star" />							

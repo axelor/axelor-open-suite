@@ -17,30 +17,26 @@
  */
 package com.axelor.apps.production.web;
 
-import java.util.HashMap;
+import java.io.IOException;
 import java.util.List;
-import java.util.Map;
 
+import org.eclipse.birt.core.exception.BirtException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.axelor.apps.ReportSettings;
-import com.axelor.apps.base.db.Company;
+import com.axelor.apps.ReportFactory;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.repo.ManufOrderRepository;
 import com.axelor.apps.production.exceptions.IExceptionMessage;
 import com.axelor.apps.production.report.IReport;
 import com.axelor.apps.production.service.ManufOrderService;
 import com.axelor.apps.production.service.ManufOrderWorkflowService;
-import com.axelor.apps.tool.net.URLService;
-import com.axelor.auth.AuthUtils;
-import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.google.common.base.Strings;
 import com.google.inject.Inject;
 
 public class ManufOrderController {
@@ -52,7 +48,11 @@ public class ManufOrderController {
 	private ManufOrderWorkflowService manufOrderWorkflowService;
 	
 	@Inject
+	private ManufOrderService manufOrderService;
+	
+	@Inject
 	private ManufOrderRepository manufOrderRepo;
+	
 	
 //	public void copyToConsume (ActionRequest request, ActionResponse response) {
 //
@@ -145,14 +145,15 @@ public class ManufOrderController {
 	
 	
 	/**
-	 * Fonction appeler par le bouton imprimer
+	 * Method that generate a Pdf file for an manufacturing order
 	 *
 	 * @param request
 	 * @param response
 	 * @return
+	 * @throws BirtException 
+	 * @throws IOException 
 	 */
-	public void print(ActionRequest request, ActionResponse response) {
-
+	public void print(ActionRequest request, ActionResponse response) throws IOException, BirtException {
 
 		ManufOrder manufOrder = request.getContext().asType( ManufOrder.class );
 		String manufOrderIds = "";
@@ -165,55 +166,34 @@ public class ManufOrderController {
 			}
 		}	
 			
-		if(!manufOrderIds.equals("")){
+		if(!manufOrderIds.equals(""))  {
 			manufOrderIds = manufOrderIds.substring(0, manufOrderIds.length()-1);	
 			manufOrder = manufOrderRepo.find(new Long(lstSelectedManufOrder.get(0)));
-		}else if(manufOrder.getId() != null){
+		}else if(manufOrder.getId() != null)  {
 			manufOrderIds = manufOrder.getId().toString();			
 		}
 		
-		if(!manufOrderIds.equals("")){
-			StringBuilder url = new StringBuilder();			
+		if(!manufOrderIds.equals(""))  {
 			
-			User user = AuthUtils.getUser();
-			Company company = manufOrder.getCompany();
+			String name = I18n.get("Print");
+			if(manufOrder.getManufOrderSeq() != null)  {
+				name += lstSelectedManufOrder == null ? "OF "+manufOrder.getManufOrderSeq():"OFs";
+			}
 			
-			String language = "en";
-			if(user != null && !Strings.isNullOrEmpty(user.getLanguage()))  {
-				language = user.getLanguage();
-			}
-			else if(company != null && company.getPrintingSettings() != null && !Strings.isNullOrEmpty(company.getPrintingSettings().getLanguageSelect())) {
-				language = company.getPrintingSettings().getLanguageSelect();
-			}
+			String fileLink = ReportFactory.createReport(IReport.MANUF_ORDER, name+"-${date}")
+					.addParam("Locale", manufOrderService.getLanguageToPrinting(manufOrder))
+					.addParam("ManufOrderId", manufOrderIds)
+					.generate()
+					.getFileLink();
 
-			url.append(new ReportSettings(IReport.MANUF_ORDER)
-						.addParam("Locale", language)
-						.addParam("__locale", "fr_FR")
-						.addParam("ManufOrderId", manufOrderIds)
-						.getUrl());
+			LOG.debug("Printing "+name);
+		
+			response.setView(ActionView
+					.define(name)
+					.add("html", fileLink).map());
 			
-			LOG.debug("URL : {}", url);
-			
-			String urlNotExist = URLService.notExist(url.toString());
-			if (urlNotExist == null){
-				LOG.debug("Impression de l'O.F.  "+manufOrder.getManufOrderSeq()+" : "+url.toString());
-				
-				String title = I18n.get("Print");
-				if(manufOrder.getManufOrderSeq() != null)  {
-					title += lstSelectedManufOrder == null ? "OF "+manufOrder.getManufOrderSeq():"OFs";
-				}
-				
-				Map<String,Object> mapView = new HashMap<String,Object>();
-				mapView.put("title", title);
-				mapView.put("resource", url);
-				mapView.put("viewType", "html");
-				response.setView(mapView);	
-					
-			}
-			else {
-				response.setFlash(urlNotExist);
-			}
-		}else{
+		}  
+		else  {
 			response.setFlash(I18n.get(IExceptionMessage.MANUF_ORDER_1));
 		}	
 	}

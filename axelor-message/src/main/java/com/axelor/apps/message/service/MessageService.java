@@ -23,6 +23,8 @@ import java.util.Set;
 
 import javax.mail.MessagingException;
 
+import org.eclipse.birt.core.exception.BirtException;
+
 import com.axelor.apps.message.db.EmailAddress;
 import com.axelor.apps.message.db.Message;
 import com.axelor.exception.AxelorException;
@@ -52,6 +54,6 @@ public interface MessageService {
 	@Transactional(rollbackOn = Exception.class)
 	public Message sendByMail(Message message);
 	
-	public String printMessage(Message message);
+	public String printMessage(Message message) throws IOException, BirtException;
 	
 }

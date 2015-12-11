@@ -393,9 +393,8 @@
 
 	<action-view name="admin.root.general.general" title="General admin"
 		model="com.axelor.apps.base.db.General" >
-		<view type="grid" name="general-grid"/>
 		<view type="form" name="general-form"/>
-		<context name="_showSingle" expr="true" />
+		<context name="_showRecord" expr="eval:__config__.general?.id" />
 	</action-view>
 
 	<menuitem name="admin-conf-general" parent="admin-root-general"

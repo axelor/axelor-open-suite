@@ -123,10 +123,10 @@
     	</toolbar>
 	    <field name="subject"/>
 	    <field name="callTypeSelect"/>
-	    <field name="contact"/>
 	    <field name="startDateTime"/>
 	    <field name="endDateTime"/>
-	    <field name="user" form-view="user-form" grid-view="user-grid"/>
+	    <field name="team" form-view="team-form" grid-view="team-grid" />
+	    <field name="user" form-view="user-form" grid-view="user-grid" />
 	    <button name="grabEvent" help="Assign to me" icon="fa-suitcase" onClick="action-method-crm-event-assign-tome" readonlyIf="user != null" />
 	</grid>
     
@@ -184,9 +184,10 @@
     	<hilite color="warning" if="startDateTime > __time__"/>
     	<field name="subject"/>
 	    <field name="meetingType" form-view="meeting-type-form" grid-view="meeting-type-grid"/>
-	    <field name="relatedToSelect"/>
 	    <field name="startDateTime"/>
 	    <field name="endDateTime"/>
+	    <field name="location"/>
+	    <field name="team" form-view="team-form" grid-view="team-grid" />
 	    <field name="user" form-view="user-form" grid-view="user-grid"/>
 	</grid>
     
@@ -279,11 +280,11 @@
     
     <grid name="crm-task-grid" title="Tasks" model="com.axelor.apps.crm.db.Event" orderBy="-startDateTime">
 	    <field name="subject"/>
-	    <field name="contactPartner" form-view="partner-contact-form" grid-view="partner-contact-grid"/>
-		<field name="startDateTime"/>
+	    <field name="startDateTime"/>
 	    <field name="limitDateT"/>
-	    <field name="taskStatusSelect"/>    
+	    <field name="taskStatusSelect"/>
 	    <field name="prioritySelect"/>
+	    <field name="team" form-view="team-form" grid-view="team-grid"/>
 	    <field name="user" form-view="user-form" grid-view="user-grid"/>
 	    <button name="start" icon="fa-play" help="Start" onClick="action-group-crm-task-start-click,save" readonlyIf="taskStatusSelect == 2 || taskStatusSelect == 4"/>
 	    <button name="pause" icon="fa-pause" help="Pause" onClick="action-group-crm-task-pause-click,save" readonlyIf="taskStatusSelect == 4 || taskStatusSelect == 3"/>

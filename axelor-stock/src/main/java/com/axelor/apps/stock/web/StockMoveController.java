@@ -17,15 +17,17 @@
  */
 package com.axelor.apps.stock.web;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.birt.core.exception.BirtException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.axelor.apps.ReportSettings;
+import com.axelor.apps.ReportFactory;
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.service.MapService;
@@ -36,7 +38,6 @@ import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.exception.IExceptionMessage;
 import com.axelor.apps.stock.report.IReport;
 import com.axelor.apps.stock.service.StockMoveService;
-import com.axelor.apps.tool.net.URLService;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -47,8 +48,8 @@ import com.google.inject.Inject;
 
 public class StockMoveController {
 
-	private static final Logger LOG = LoggerFactory.getLogger(StockMoveController.class);
-
+	private final Logger logger = LoggerFactory.getLogger(getClass());
+	
 	@Inject
 	private StockMoveService stockMoveService;
 	
@@ -104,13 +105,15 @@ public class StockMoveController {
 
 
 	/**
-	 * Fonction appeler par le bouton imprimer
+	 * Method to generate stock move as a pdf
 	 *
 	 * @param request
 	 * @param response
 	 * @return
+	 * @throws BirtException 
+	 * @throws IOException 
 	 */
-	public void printStockMove(ActionRequest request, ActionResponse response) {
+	public void printStockMove(ActionRequest request, ActionResponse response) throws IOException, BirtException {
 
 
 		StockMove stockMove = request.getContext().asType(StockMove.class);
@@ -132,7 +135,6 @@ public class StockMoveController {
 		}
 
 		if(!stockMoveIds.equals("")){
-			StringBuilder url = new StringBuilder();
 
 			String language="";
 			try{
@@ -142,34 +144,23 @@ public class StockMoveController {
 			}
 			language = language.equals("")? "en": language;
 
-			url.append(
-					new ReportSettings(IReport.STOCK_MOVE)
-					.addParam("Locale", language)
-					.addParam("__locale", "fr_FR")
+			String title = I18n.get("Stock move");
+			if(stockMove.getStockMoveSeq() != null)  {
+				title = lstSelectedMove == null ? I18n.get("StockMove") + " " + stockMove.getStockMoveSeq() : I18n.get("StockMove(s)");
+			}
+
+			String fileLink = ReportFactory.createReport(IReport.STOCK_MOVE, title+"-${date}")
 					.addParam("StockMoveId", stockMoveIds)
-					.getUrl());
+					.addParam("Locale", language)
+					.generate()
+					.getFileLink();
 
-			LOG.debug("URL : {}", url);
-
-			String urlNotExist = URLService.notExist(url.toString());
-			if (urlNotExist == null){
-				LOG.debug("Impression du stock move "+stockMove.getStockMoveSeq()+" : "+url.toString());
-
-				String title = " ";
-				if(stockMove.getStockMoveSeq() != null)  {
-					title += lstSelectedMove == null ? I18n.get("StockMove")+" "+stockMove.getStockMoveSeq():I18n.get("StockMove(s)");
-				}
-
-				Map<String,Object> mapView = new HashMap<String,Object>();
-				mapView.put("title", title);
-				mapView.put("resource", url);
-				mapView.put("viewType", "html");
-				response.setView(mapView);
-
-			}
-			else {
-				response.setFlash(urlNotExist);
-			}
+			logger.debug("Printing "+title);
+		
+			response.setView(ActionView
+					.define(title)
+					.add("html", fileLink).map());
+				
 		}else{
 			response.setFlash(I18n.get(IExceptionMessage.STOCK_MOVE_10));
 		}

@@ -38,8 +38,8 @@
     </action-method>
     
     <action-attrs name="action-production-order-wizard-attrs-bill-of-material-domain">
-		<attribute name="domain" for="billOfMaterial" expr="eval: &quot;(self.product.id = ${product?.parentProduct?.id} OR self.product.id = ${product.id}) AND self.isRawMaterial = 'false' &quot;" if="product"/>
-		<attribute name="domain" for="billOfMaterial" expr="eval: &quot;self.isRawMaterial = 'false' &quot;" if="!product"/>
+		<attribute name="domain" for="billOfMaterial" expr="eval: &quot;(self.product.id = ${product?.parentProduct?.id} OR self.product.id = ${product.id}) AND self.isRawMaterial = false  AND self.parentBillOfMaterial IS NULL &quot;" if="product"/>
+		<attribute name="domain" for="billOfMaterial" expr="eval: &quot;self.isRawMaterial = false AND self.parentBillOfMaterial IS NULL &quot;" if="!product"/>
 	</action-attrs>
     
     

@@ -163,7 +163,7 @@ public class CurrencyConversionLineController {
 					response.setValue("newExchangeRate", rate);
 				else
 					response.setValue("exchangeRate", rate);
-				response.setValue("fromDate", gs.getTodayDate());
+				response.setValue("fromDate", gs.getTodayDateTime());
 				if(prevLine != null)
 					response.setValue("variations", ccs.getVariations(rate, prevLine.getExchangeRate()));
 			}

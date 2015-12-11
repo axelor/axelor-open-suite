@@ -188,6 +188,9 @@ public class MapService {
 						longitude = new BigDecimal(node.attributes().get("lon").toString());
 				}
 			}
+			
+			LOG.debug("OSMap qString: {}, latitude: {}, longitude: {}", qString, latitude, longitude);
+			
 			if(BigDecimal.ZERO.compareTo(latitude) != 0 && BigDecimal.ZERO.compareTo(longitude) != 0){
 				result.put("url","map/oneMarker.html?x="+latitude+"&y="+longitude+"&z=18");
 				result.put("latitude", latitude);
@@ -308,4 +311,30 @@ public class MapService {
 
 		return addressString.toString();
 	}
+	
+	public boolean testGMapService(){
+		
+		RESTClient restClient = new RESTClient("https://maps.googleapis.com");
+		
+		Map<String,Object> responseMap = new HashMap<String,Object>();
+		responseMap.put("path", "/maps/api/geocode/json");
+		responseMap.put("accept", ContentType.JSON);
+
+		responseMap.put("connectTimeout", 5000);
+		responseMap.put("readTimeout", 10000);
+		responseMap.put("followRedirects", false);
+		responseMap.put("useCaches", false);
+		responseMap.put("sslTrustAllCerts", true);
+		
+		Response response = restClient.get(responseMap);
+		
+		LOG.debug("Gmap connection status code: {}, message: {}", response.getStatusCode(), response.getStatusMessage());
+		
+		if(response.getStatusCode() == 200){
+			return true;
+		}
+		
+		return false;
+	}
+	
 }

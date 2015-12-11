@@ -17,17 +17,18 @@
  */
 package com.axelor.apps.base.web;
 
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.eclipse.birt.core.exception.BirtException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.axelor.apps.ReportSettings;
+import com.axelor.apps.ReportFactory;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.Partner;
@@ -40,7 +41,6 @@ import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.message.db.Message;
 import com.axelor.apps.message.db.repo.MessageRepository;
-import com.axelor.apps.tool.net.URLService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
@@ -48,6 +48,7 @@ import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
+import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
@@ -65,7 +66,7 @@ public class PartnerController {
 	
 	@Inject
 	private PartnerRepository partnerRepo;
-
+	
 	private static final Logger LOG = LoggerFactory.getLogger(PartnerController.class);
 
 	public void setPartnerSequence(ActionRequest request, ActionResponse response) throws AxelorException {
@@ -81,43 +82,38 @@ public class PartnerController {
 		}
 	}
 
+	
 	/**
 	 * Fonction appeler par le bouton imprimer
 	 *
 	 * @param request
 	 * @param response
 	 * @return
+	 * @throws BirtException 
+	 * @throws IOException 
 	 */
-	public void showPartnerInfo(ActionRequest request, ActionResponse response) {
+	public void showPartnerInfo(ActionRequest request, ActionResponse response) throws IOException, BirtException {
 
+		
 		Partner partner = request.getContext().asType(Partner.class);
 		User user = AuthUtils.getUser();
 
-		StringBuilder url = new StringBuilder();
 		String language = (partner.getLanguageSelect() == null || partner.getLanguageSelect().equals(""))? user != null? (user.getLanguage() == null || user.getLanguage().equals(""))? "en" : user.getLanguage() : "en" : partner.getLanguageSelect();
-
-		url.append(new ReportSettings(IReport.PARTNER)
+		
+		String name = I18n.get("Partner")+" "+partner.getPartnerSeq();
+		
+		String fileLink = ReportFactory.createReport(IReport.PARTNER, name+"-${date}")
 					.addParam("Locale", language)
-					.addParam("__locale", "fr_FR")
-					.addParam("PartnerId", partner.getId().toString())
-					.getUrl());
+					.addParam("PartnerId", partner.getId())
+					.generate()
+					.getFileLink();
 
-		LOG.debug("URL : {}", url);
+		LOG.debug("Printing "+name);
 
-		String urlNotExist = URLService.notExist(url.toString());
-		if (urlNotExist == null){
+		response.setView(ActionView
+				.define(name)
+				.add("html", fileLink).map());
 
-			LOG.debug("Impression des informations sur le partenaire "+partner.getPartnerSeq()+" : "+url.toString());
-
-			Map<String,Object> mapView = new HashMap<String,Object>();
-			mapView.put("title", "Partenaire "+partner.getPartnerSeq());
-			mapView.put("resource", url);
-			mapView.put("viewType", "html");
-			response.setView(mapView);
-		}
-		else {
-			response.setFlash(urlNotExist);
-		}
 	}
 
 	/**
@@ -126,34 +122,27 @@ public class PartnerController {
 	 * @param request
 	 * @param response
 	 * @return
+	 * @throws BirtException 
+	 * @throws IOException 
 	 */
-	public void printContactPhonebook(ActionRequest request, ActionResponse response) {
+	public void printContactPhonebook(ActionRequest request, ActionResponse response) throws IOException, BirtException {
 
-		StringBuilder url = new StringBuilder();
 		User user = AuthUtils.getUser();
 		String language = user != null? (user.getLanguage() == null || user.getLanguage().equals(""))? "en" : user.getLanguage() : "en";
 
-		url.append(new ReportSettings(IReport.PHONE_BOOK)
+		String name = I18n.get("Phone Book");
+		
+		String fileLink = ReportFactory.createReport(IReport.PHONE_BOOK, name+"-${date}")
 					.addParam("Locale", language)
-					.addParam("__locale", "fr_FR")
-					.addParam("UserId", user.getId().toString())
-					.getUrl());
+					.addParam("UserId", user.getId())
+					.generate()
+					.getFileLink();
 
-		LOG.debug("URL : {}", url);
-		String urlNotExist = URLService.notExist(url.toString());
-		if (urlNotExist == null){
+		LOG.debug("Printing "+name);
 
-			LOG.debug("Impression des informations sur le partenaire Employee PhoneBook");
-
-			Map<String,Object> mapView = new HashMap<String,Object>();
-			mapView.put("title", "Phone Book");
-			mapView.put("resource", url);
-			mapView.put("viewType", "html");
-			response.setView(mapView);
-		}
-		else {
-			response.setFlash(urlNotExist);
-		}
+		response.setView(ActionView
+				.define(name)
+				.add("html", fileLink).map());
 	}
 
 	/**
@@ -162,35 +151,27 @@ public class PartnerController {
 	 * @param request
 	 * @param response
 	 * @return
+	 * @throws BirtException 
+	 * @throws IOException 
 	 */
-	public void printCompanyPhonebook(ActionRequest request, ActionResponse response) {
-
-		StringBuilder url = new StringBuilder();
+	public void printCompanyPhonebook(ActionRequest request, ActionResponse response) throws IOException, BirtException {
 
 		User user = AuthUtils.getUser();
 		String language = user != null? (user.getLanguage() == null || user.getLanguage().equals(""))? "en" : user.getLanguage() : "en";
 
-		url.append(new ReportSettings(IReport.COMPANY_PHONE_BOOK)
+		String name = I18n.get("Company PhoneBook");
+		
+		String fileLink = ReportFactory.createReport(IReport.COMPANY_PHONE_BOOK, name+"-${date}")
 					.addParam("Locale", language)
-					.addParam("__locale", "fr_FR")
-					.addParam("UserId", user.getId().toString())
-					.getUrl());
+					.addParam("UserId", user.getId())
+					.generate()
+					.getFileLink();
 
-		LOG.debug("URL : {}", url);
-		String urlNotExist = URLService.notExist(url.toString());
-		if (urlNotExist == null){
+		LOG.debug("Printing "+name);
 
-			LOG.debug("Impression des informations sur le partenaire Company PhoneBook");
-
-			Map<String,Object> mapView = new HashMap<String,Object>();
-			mapView.put("title", "Company PhoneBook");
-			mapView.put("resource", url);
-			mapView.put("viewType", "html");
-			response.setView(mapView);
-		}
-		else {
-			response.setFlash(urlNotExist);
-		}
+		response.setView(ActionView
+				.define(name)
+				.add("html", fileLink).map());
 	}
 
 
@@ -200,37 +181,28 @@ public class PartnerController {
 	 * @param response
 	 * @return
 	 */
-	public void printClientSituation(ActionRequest request, ActionResponse response) {
+	public void printClientSituation(ActionRequest request, ActionResponse response) throws IOException, BirtException {
 
 		Partner partner = request.getContext().asType(Partner.class);
 
-		StringBuilder url = new StringBuilder();
 		User user = AuthUtils.getUser();
 		String language = (partner.getLanguageSelect() == null || partner.getLanguageSelect().equals(""))? user != null? (user.getLanguage() == null || user.getLanguage().equals(""))? "en" : user.getLanguage() : "en" : partner.getLanguageSelect();
 
-		url.append(new ReportSettings(IReport.CLIENT_SITUATION)
-		.addParam("Locale", language)
-		.addParam("__locale", "fr_FR")
-		.addParam("UserId", user.getId().toString())
-		.addParam("PartnerId", partner.getId().toString())
-		.addParam("PartnerPic",partner.getPicture() != null ? MetaFiles.getPath(partner.getPicture()).toString() : "")
-		.getUrl());
+		String name = I18n.get("Client Situation");
+		
+		String fileLink = ReportFactory.createReport(IReport.CLIENT_SITUATION, name+"-${date}")
+				.addParam("Locale", language)
+				.addParam("UserId", user.getId())
+				.addParam("PartnerId", partner.getId())
+				.addParam("PartnerPic",partner.getPicture() != null ? MetaFiles.getPath(partner.getPicture()).toString() : "")
+				.generate()
+				.getFileLink();
 
-		LOG.debug("URL : {}", url);
-		String urlNotExist = URLService.notExist(url.toString());
-		if (urlNotExist == null){
-
-			LOG.debug("Impression de ma situation client");
-
-			Map<String,Object> mapView = new HashMap<String,Object>();
-			mapView.put("title", "Client Situation");
-			mapView.put("resource", url);
-			mapView.put("viewType", "html");
-			response.setView(mapView);
-		}
-		else {
-			response.setFlash(urlNotExist);
-		}
+		LOG.debug("Printing "+name);
+	
+		response.setView(ActionView
+				.define(name)
+				.add("html", fileLink).map());
 	}
 
 	public Set<Company> getActiveCompany(){
