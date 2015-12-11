@@ -58,10 +58,10 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl {
 	public SaleOrderServiceSupplychainImpl(SaleOrderLineService saleOrderLineService, SaleOrderLineTaxService saleOrderLineTaxService, 	
 			SequenceService sequenceService, PartnerService partnerService, PartnerRepository partnerRepo, SaleOrderRepository saleOrderRepo,
 			GeneralService generalService, UserService userService, SaleOrderStockService saleOrderStockService, 
-			SaleOrderPurchaseService saleOrderPurchaseService, ReportFactory reportFactory) {
+			SaleOrderPurchaseService saleOrderPurchaseService) {
 		
 		super(saleOrderLineService, saleOrderLineTaxService, sequenceService,
-				partnerService, partnerRepo, saleOrderRepo, generalService, userService, reportFactory);
+				partnerService, partnerRepo, saleOrderRepo, generalService, userService);
 		
 		this.saleOrderStockService = saleOrderStockService;
 		this.saleOrderPurchaseService = saleOrderPurchaseService;
