@@ -87,8 +87,9 @@ public class MailServiceBaseImpl extends MailServiceMessageImpl{
 		final List<InternetAddress> addresses = new ArrayList<>();
 		for (User user : query.fetch(maxResult)) {
 			try {
-				final InternetAddress item = new InternetAddress(user.getPartner().getEmailAddress().getAddress(), user.getPartner().getFullName());
+				final InternetAddress item = new InternetAddress(user.getPartner().getEmailAddress().getAddress(), user.getFullName());
 				addresses.add(item);
+				selected.add(user.getPartner().getEmailAddress().getAddress());
 			} catch (UnsupportedEncodingException e) {
 			}
 		}

@@ -20,14 +20,14 @@ package com.axelor.apps.production.db.repo;
 import java.awt.Font;
 import java.io.File;
 
-import net.sourceforge.barbecue.Barcode;
-import net.sourceforge.barbecue.BarcodeFactory;
-import net.sourceforge.barbecue.BarcodeImageHandler;
-
 import com.axelor.app.AppSettings;
 import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
+
+import net.sourceforge.barbecue.Barcode;
+import net.sourceforge.barbecue.BarcodeFactory;
+import net.sourceforge.barbecue.BarcodeImageHandler;
 
 public class OperationOrderManagementRepository extends OperationOrderRepository{
 	@Override
