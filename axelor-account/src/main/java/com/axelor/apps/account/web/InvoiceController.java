@@ -223,7 +223,7 @@ public class InvoiceController {
 	 * @throws BirtException 
 	 * @throws IOException 
 	 */
-	public void showInvoice(ActionRequest request, ActionResponse response) throws IOException, BirtException {
+	public void showInvoice(ActionRequest request, ActionResponse response) throws AxelorException {
 
 		Invoice invoice = request.getContext().asType(Invoice.class);
 		String invoiceIds = "";

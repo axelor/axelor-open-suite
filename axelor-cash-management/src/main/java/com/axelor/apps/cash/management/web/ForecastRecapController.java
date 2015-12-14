@@ -35,7 +35,6 @@ import com.axelor.apps.cash.management.exception.IExceptionMessage;
 import com.axelor.apps.cash.management.service.ForecastRecapService;
 import com.axelor.apps.tool.net.URLService;
 import com.axelor.exception.AxelorException;
-import org.eclipse.birt.core.exception.BirtException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -53,7 +52,7 @@ public class ForecastRecapController {
 	@Inject
 	private ForecastRecapService forecastRecapService;
 	
-	public void populate(ActionRequest request, ActionResponse response) throws AxelorException{
+	public void populate(ActionRequest request, ActionResponse response) throws AxelorException  {
 		ForecastRecap forecastRecap = request.getContext().asType(ForecastRecap.class);
 		if(forecastRecap.getCompany() == null){
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.FORECAST_COMPANY)), IException.CONFIGURATION_ERROR);
@@ -63,7 +62,7 @@ public class ForecastRecapController {
 		
 	}
 	
-	public void showReport(ActionRequest request, ActionResponse response)  throws IOException, BirtException  {
+	public void showReport(ActionRequest request, ActionResponse response)  throws AxelorException  {
 
 		ForecastRecap forecastRecap = request.getContext().asType(ForecastRecap.class);
 

@@ -92,7 +92,7 @@ public class PartnerController {
 	 * @throws BirtException 
 	 * @throws IOException 
 	 */
-	public void showPartnerInfo(ActionRequest request, ActionResponse response) throws IOException, BirtException {
+	public void showPartnerInfo(ActionRequest request, ActionResponse response) throws AxelorException {
 
 		
 		Partner partner = request.getContext().asType(Partner.class);
@@ -125,7 +125,7 @@ public class PartnerController {
 	 * @throws BirtException 
 	 * @throws IOException 
 	 */
-	public void printContactPhonebook(ActionRequest request, ActionResponse response) throws IOException, BirtException {
+	public void printContactPhonebook(ActionRequest request, ActionResponse response) throws AxelorException {
 
 		User user = AuthUtils.getUser();
 		String language = user != null? (user.getLanguage() == null || user.getLanguage().equals(""))? "en" : user.getLanguage() : "en";
@@ -154,7 +154,7 @@ public class PartnerController {
 	 * @throws BirtException 
 	 * @throws IOException 
 	 */
-	public void printCompanyPhonebook(ActionRequest request, ActionResponse response) throws IOException, BirtException {
+	public void printCompanyPhonebook(ActionRequest request, ActionResponse response) throws AxelorException {
 
 		User user = AuthUtils.getUser();
 		String language = user != null? (user.getLanguage() == null || user.getLanguage().equals(""))? "en" : user.getLanguage() : "en";
@@ -181,7 +181,7 @@ public class PartnerController {
 	 * @param response
 	 * @return
 	 */
-	public void printClientSituation(ActionRequest request, ActionResponse response) throws IOException, BirtException {
+	public void printClientSituation(ActionRequest request, ActionResponse response) throws AxelorException {
 
 		Partner partner = request.getContext().asType(Partner.class);
 

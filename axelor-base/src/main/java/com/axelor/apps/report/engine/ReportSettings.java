@@ -31,6 +31,7 @@ import org.slf4j.LoggerFactory;
 
 import com.axelor.app.AppSettings;
 import com.axelor.db.Model;
+import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
 import com.beust.jcommander.internal.Maps;
@@ -64,7 +65,7 @@ public class ReportSettings {
 	}
 	
 
-	public ReportSettings generate() throws IOException, BirtException  {
+	public ReportSettings generate() throws AxelorException  {
 		
 		this.computeFileName();
 

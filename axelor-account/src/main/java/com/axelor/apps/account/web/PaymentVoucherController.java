@@ -17,9 +17,6 @@
  */
 package com.axelor.apps.account.web;
 
-import java.io.IOException;
-
-import org.eclipse.birt.core.exception.BirtException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -103,7 +100,7 @@ public class PaymentVoucherController {
 	}
 	
 	
-	public void printPaymentVoucher(ActionRequest request, ActionResponse response) throws IOException, BirtException {
+	public void printPaymentVoucher(ActionRequest request, ActionResponse response) throws AxelorException {
 		
 		PaymentVoucher paymentVoucher = request.getContext().asType(PaymentVoucher.class);
 		

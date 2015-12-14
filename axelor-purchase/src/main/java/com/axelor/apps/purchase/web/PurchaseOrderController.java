@@ -102,7 +102,7 @@ public class PurchaseOrderController {
 	 * @throws BirtException 
 	 * @throws IOException 
 	 */
-	public void showPurchaseOrder(ActionRequest request, ActionResponse response) throws IOException, BirtException {
+	public void showPurchaseOrder(ActionRequest request, ActionResponse response) throws AxelorException {
 
 		PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
 

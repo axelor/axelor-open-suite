@@ -27,6 +27,9 @@ public interface IExceptionMessage {
 
 	static final public String NOT_IMPLEMENTED_METHOD = /*$$(*/ "Not implemented yet!" /*)*/;
 	
+	static final String BIRT_EXTERNAL_REPORT_NO_URL = /*$$(*/ "Impossible to generate report, url toward Birt viewer is not correclty configured (%s)" /*)*/;
+	
+	
 	/**
 	 * Currency service and controller
 	 */

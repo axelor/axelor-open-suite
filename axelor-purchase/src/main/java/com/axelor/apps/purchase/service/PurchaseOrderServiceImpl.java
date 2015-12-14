@@ -17,12 +17,10 @@
  */
 package com.axelor.apps.purchase.service;
 
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.birt.core.exception.BirtException;
 import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -241,7 +239,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 //	}
 
 	@Override
-	public void savePurchaseOrderPDFAsAttachment(PurchaseOrder purchaseOrder) throws IOException, BirtException{
+	public void savePurchaseOrderPDFAsAttachment(PurchaseOrder purchaseOrder) throws AxelorException  {
 
 		String language="";
 		try{

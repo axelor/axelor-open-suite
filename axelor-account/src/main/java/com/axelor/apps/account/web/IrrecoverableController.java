@@ -17,9 +17,6 @@
  */
 package com.axelor.apps.account.web;
 
-import java.io.IOException;
-
-import org.eclipse.birt.core.exception.BirtException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,6 +26,7 @@ import com.axelor.apps.account.db.repo.IrrecoverableRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.report.IReport;
 import com.axelor.apps.account.service.IrrecoverableService;
+import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.schema.actions.ActionView;
@@ -86,7 +84,7 @@ public class IrrecoverableController {
 	}
 
 	
-	public void printIrrecoverable(ActionRequest request, ActionResponse response) throws IOException, BirtException  {
+	public void printIrrecoverable(ActionRequest request, ActionResponse response) throws AxelorException  {
 
 		Irrecoverable irrecoverable = request.getContext().asType(Irrecoverable.class);
 

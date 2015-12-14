@@ -17,10 +17,8 @@
  */
 package com.axelor.apps.business.project.web;
 
-import java.io.IOException;
 import java.math.BigDecimal;
 
-import org.eclipse.birt.core.exception.BirtException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,6 +29,7 @@ import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.service.ProjectTaskService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
+import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
@@ -46,7 +45,7 @@ public class ProjectTaskController {
 	@Inject
 	private ProjectTaskService projectTaskService;
 
-	public void printProjectTask(ActionRequest request,ActionResponse response) throws IOException, BirtException{
+	public void printProjectTask(ActionRequest request,ActionResponse response) throws AxelorException  {
 
 		ProjectTask projectTask = request.getContext().asType(ProjectTask.class);
 

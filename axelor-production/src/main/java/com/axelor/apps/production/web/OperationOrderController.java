@@ -165,8 +165,7 @@ public class OperationOrderController {
 	 * @throws BirtException 
 	 * @throws IOException 
 	 */
-	public void print(ActionRequest request, ActionResponse response) throws IOException, BirtException {
-
+	public void print(ActionRequest request, ActionResponse response) throws AxelorException  {
 		OperationOrder operationOrder = request.getContext().asType( OperationOrder.class );
 		String operationOrderIds = "";
 

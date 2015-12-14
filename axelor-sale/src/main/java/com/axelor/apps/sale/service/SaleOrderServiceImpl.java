@@ -320,7 +320,7 @@ public class SaleOrderServiceImpl implements SaleOrderService {
 
 
 	@Override
-	public void saveSaleOrderPDFAsAttachment(SaleOrder saleOrder) throws IOException, BirtException  {
+	public void saveSaleOrderPDFAsAttachment(SaleOrder saleOrder) throws AxelorException  {
 		
 		String language = this.getLanguageForPrinting(saleOrder);
 		

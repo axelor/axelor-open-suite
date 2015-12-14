@@ -17,9 +17,6 @@
  */
 package com.axelor.apps.account.web;
 
-import java.io.IOException;
-
-import org.eclipse.birt.core.exception.BirtException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -28,6 +25,7 @@ import com.axelor.apps.account.db.AssistantReportInvoice;
 import com.axelor.apps.account.db.repo.AssistantReportInvoiceRepository;
 import com.axelor.apps.account.report.IReport;
 import com.axelor.auth.AuthUtils;
+import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
@@ -38,7 +36,7 @@ public class AssistantReportInvoiceController {
 	
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 	
-	public void printSales(ActionRequest request, ActionResponse response) throws IOException, BirtException{
+	public void printSales(ActionRequest request, ActionResponse response) throws AxelorException  {
 		
 		AssistantReportInvoice assistant = request.getContext().asType(AssistantReportInvoice.class);
 
@@ -65,7 +63,7 @@ public class AssistantReportInvoiceController {
 	
 	
 	
-	public void printPurchases(ActionRequest request, ActionResponse response) throws IOException, BirtException{
+	public void printPurchases(ActionRequest request, ActionResponse response) throws AxelorException  {
 		
 		AssistantReportInvoice assistant = request.getContext().asType(AssistantReportInvoice.class);
 		

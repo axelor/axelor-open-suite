@@ -22,6 +22,8 @@ import java.io.IOException;
 import org.eclipse.birt.core.exception.BirtException;
 
 import com.axelor.app.internal.AppFilter;
+import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.IException;
 import com.axelor.inject.Beans;
 import com.axelor.report.ReportGenerator;
 
@@ -36,16 +38,22 @@ public class EmbeddedReportSettings  extends ReportSettings  {
 	
 	
 	@Override
-	public EmbeddedReportSettings generate() throws IOException, BirtException  {
+	public EmbeddedReportSettings generate() throws AxelorException  {
 		
 		super.generate();
 		
-		final ReportGenerator generator = Beans.get(ReportGenerator.class);
+		try  {
+			
+			final ReportGenerator generator = Beans.get(ReportGenerator.class);
 
-		this.output = generator.generate(rptdesign, format, params, AppFilter.getLocale());
+			this.output = generator.generate(rptdesign, format, params, AppFilter.getLocale());
 
-		this.attach();
-        
+			this.attach();
+		
+		} catch(IOException | BirtException e)  {
+			throw new AxelorException(e.getCause(), IException.CONFIGURATION_ERROR);
+		}
+		
 		return this;
         
 	}

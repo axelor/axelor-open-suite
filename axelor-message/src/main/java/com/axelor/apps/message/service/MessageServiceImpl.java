@@ -23,7 +23,6 @@ import java.util.Set;
 
 import javax.mail.MessagingException;
 
-import org.eclipse.birt.core.exception.BirtException;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDateTime;
 import org.slf4j.Logger;
@@ -264,6 +263,6 @@ public class MessageServiceImpl implements MessageService {
 
 
 	@Override
-	public String printMessage(Message message)  throws IOException, BirtException  { return null; }
+	public String printMessage(Message message)  throws AxelorException  { return null; }
 
 }
