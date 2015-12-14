@@ -70,13 +70,12 @@ public class SaleOrderServiceImpl implements SaleOrderService {
 	protected SaleOrderRepository saleOrderRepo;
 	protected GeneralService generalService;
 	protected User currentUser;
-	protected ReportFactory reportFactory;
 	
 	protected LocalDate today;
 	
 	@Inject
 	public SaleOrderServiceImpl(SaleOrderLineService saleOrderLineService, SaleOrderLineTaxService saleOrderLineTaxService, SequenceService sequenceService,
-			PartnerService partnerService, PartnerRepository partnerRepo, SaleOrderRepository saleOrderRepo, GeneralService generalService, UserService userService, ReportFactory reportFactory)  {
+			PartnerService partnerService, PartnerRepository partnerRepo, SaleOrderRepository saleOrderRepo, GeneralService generalService, UserService userService)  {
 		
 		this.saleOrderLineService = saleOrderLineService;
 		this.saleOrderLineTaxService = saleOrderLineTaxService;
@@ -85,7 +84,6 @@ public class SaleOrderServiceImpl implements SaleOrderService {
 		this.partnerRepo = partnerRepo;
 		this.saleOrderRepo = saleOrderRepo;
 		this.generalService = generalService;
-		this.reportFactory = reportFactory;
 
 		this.today = generalService.getTodayDate();
 		this.currentUser = userService.getUser();
@@ -324,9 +322,7 @@ public class SaleOrderServiceImpl implements SaleOrderService {
 		
 		String language = this.getLanguageForPrinting(saleOrder);
 		
-		String name = I18n.get("Sale order")+" "+saleOrder.getSaleOrderSeq();
-		
-		ReportFactory.createReport(IReport.SALES_ORDER, name+"-${date}")
+		ReportFactory.createReport(IReport.SALES_ORDER, this.getFileName(saleOrder)+"-${date}")
 				.addParam("Locale", language)
 				.addParam("SaleOrderId", saleOrder.getId())
 				.addModel(saleOrder)
