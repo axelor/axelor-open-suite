@@ -147,15 +147,6 @@
 		<context name="todayDate" expr="eval:__config__.generalService.getTodayDate()" />
 	</action-view>
 	
-	<menuitem name="crm-root-leave" parent="crm-root"
-		title="Leaves" action="crm.root.leave" />
-
-	<action-view name="crm.root.leave" title="Leaves"
-		model="com.axelor.apps.crm.db.Event" >
-		<view type="grid" name="leave-grid"/>
-		<view type="form" name="leave-form"/>
-		<domain>self.typeSelect = 4</domain>
-	</action-view>
 		
 	<menuitem name="crm-root-meeting-my-calendar" parent="crm-root"
 		title="My Calendar" action="crm.root.meeting.my.calendar" />

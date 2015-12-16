@@ -122,6 +122,17 @@
 		<call class="com.axelor.apps.hr.web.leave.LeaveController" method="historicLeave"/>
 	</action-method>
 	
+	<menuitem name="leave-request-root-leave-calender" parent="leave-request-root"
+		title="Leaves calendar" action="leave.request.root.leave.calender" />
+
+	<action-view name="leave.request.root.leave.calender" title="Leaves calendar"
+		model="com.axelor.apps.crm.db.Event" >
+		<view type="calendar" name="event-calendar-color-by-user"/>
+		<view type="grid" name="leave-grid"/>
+		<view type="form" name="leave-form"/>
+		<domain>self.typeSelect = 4</domain>
+	</action-view>
+	
 	<menuitem name="all-payroll-preparation" parent="hr-root" title="Payroll Preparations" action="payroll.preparation.all"/>
 	
 	<action-view name="payroll.preparation.all" title="Payroll Preparations" model="com.axelor.apps.hr.db.PayrollPreparation">
