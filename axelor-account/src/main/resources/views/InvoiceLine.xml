@@ -150,6 +150,7 @@
 	
 	<action-attrs name="action-invoice-line-attrs-scale-and-precision">
 		<attribute name="scale" for="price" expr="eval: __config__.generalService.getNbDecimalDigitForUnitPrice()"/>
+		<attribute name="scale" for="priceDiscounted" expr="eval: __config__.generalService.getNbDecimalDigitForUnitPrice()"/>
 		<attribute name="scale" for="discountAmount" expr="eval: __config__.generalService.getNbDecimalDigitForUnitPrice()"/>
 	</action-attrs>
 	
