@@ -84,9 +84,12 @@ public class ProductController {
 		int currentYear = generalService.getTodayDateTime().getYear();
 		String productIds = "";
 
-		List<Integer> lstSelectedPartner = (List<Integer>) request.getContext().get("_ids");
-		for(Integer it : lstSelectedPartner) {
-			productIds+= it.toString()+",";
+		List<Integer> lstSelectedProduct = (List<Integer>) request.getContext().get("_ids");
+		
+		if(lstSelectedProduct != null)  {
+			for(Integer it : lstSelectedProduct) {
+				productIds+= it.toString()+",";
+			}
 		}
 
 		if(!productIds.equals("")){
