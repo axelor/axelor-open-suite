@@ -29,6 +29,7 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.report.IReport;
 import com.axelor.apps.sale.service.SaleOrderService;
+import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
@@ -66,7 +67,7 @@ public class SaleOrderController {
 	 * @throws BirtException 
 	 * @throws IOException 
 	 */
-	public void showSaleOrder(ActionRequest request, ActionResponse response) throws IOException, BirtException {
+	public void showSaleOrder(ActionRequest request, ActionResponse response) throws AxelorException {
 
 		SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
 
@@ -87,7 +88,7 @@ public class SaleOrderController {
 				.add("html", fileLink).map());
 	}
 
-	public void exportSaleOrderExcel(ActionRequest request, ActionResponse response) throws IOException, BirtException {
+	public void exportSaleOrderExcel(ActionRequest request, ActionResponse response) throws AxelorException {
 
 		SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
 
@@ -111,7 +112,7 @@ public class SaleOrderController {
 
 
 
-	public void exportSaleOrderWord(ActionRequest request, ActionResponse response) throws IOException, BirtException {
+	public void exportSaleOrderWord(ActionRequest request, ActionResponse response) throws AxelorException {
 
 		SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
 

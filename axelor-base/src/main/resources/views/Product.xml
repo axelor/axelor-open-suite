@@ -190,6 +190,9 @@
 	</form>    
 	
 	<cards name="product-cards" title="Product" model="com.axelor.apps.base.db.Product" cardWidth="25%" css="rect-image">
+	    <toolbar>
+        	<button name="catalog" title="Catalog" onClick="action-print-product-catalog" icon="fa-book"/>
+	    </toolbar>
 		<field name="picture" />
 		<field name="fullName" />
 		<field name="salePrice" />

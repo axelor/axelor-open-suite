@@ -351,6 +351,11 @@
 	</form>
 	
 	<cards name="partner-cards" model="com.axelor.apps.base.db.Partner" title="Partners" css="rect-image">
+	     <toolbar>
+	        <button name="printPhoneBook" title="PhoneBook" icon="fa-print" onClick="action-print-phonebook"/>
+	        <button name="printCompanyPhoneBook" title="Company phoneBook" icon="fa-print" onClick="action-print-compnay-phonebook"/>
+	        <button name="checkDuplicate" title="Check Duplicate" onClick="action-general-method-show-duplicate"/>
+	    </toolbar>
 		<field name="fullName" />
 		<field name="picture" />
 		<field name="fixedPhone"/>

@@ -30,7 +30,6 @@ import org.slf4j.LoggerFactory;
 import com.axelor.app.AppSettings;
 import com.axelor.apps.ReportFactory;
 import com.axelor.apps.base.db.ImportConfiguration;
-import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.ImportConfigurationRepository;
 import com.axelor.apps.base.service.MapService;
 import com.axelor.apps.crm.db.Lead;
@@ -42,6 +41,7 @@ import com.axelor.apps.message.db.Message;
 import com.axelor.apps.message.db.repo.MessageRepository;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
+import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
@@ -70,7 +70,7 @@ public class LeadController {
 	 * @throws BirtException 
 	 * @throws IOException 
 	 */
-	public void print(ActionRequest request, ActionResponse response) throws IOException, BirtException {
+	public void print(ActionRequest request, ActionResponse response) throws AxelorException  {
 
 
 		Lead lead = request.getContext().asType(Lead.class );

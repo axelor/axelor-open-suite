@@ -17,10 +17,8 @@
  */
 package com.axelor.apps.base.web;
 
-import java.io.IOException;
 import java.util.List;
 
-import org.eclipse.birt.core.exception.BirtException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -79,16 +77,19 @@ public class ProductController {
 
 
 
-	public void printProductCatelog(ActionRequest request, ActionResponse response) throws IOException, BirtException {
+	public void printProductCatelog(ActionRequest request, ActionResponse response) throws AxelorException {
 
 		User user =  Beans.get(UserService.class).getUser();
 
 		int currentYear = generalService.getTodayDateTime().getYear();
 		String productIds = "";
 
-		List<Integer> lstSelectedPartner = (List<Integer>) request.getContext().get("_ids");
-		for(Integer it : lstSelectedPartner) {
-			productIds+= it.toString()+",";
+		List<Integer> lstSelectedProduct = (List<Integer>) request.getContext().get("_ids");
+		
+		if(lstSelectedProduct != null)  {
+			for(Integer it : lstSelectedProduct) {
+				productIds+= it.toString()+",";
+			}
 		}
 
 		if(!productIds.equals("")){
@@ -114,7 +115,7 @@ public class ProductController {
 				.add("html", fileLink).map());	
 	}
 
-	public void printProductSheet(ActionRequest request, ActionResponse response) throws IOException, BirtException {
+	public void printProductSheet(ActionRequest request, ActionResponse response) throws AxelorException {
 
 		Product product = request.getContext().asType(Product.class);
 		User user =  Beans.get(UserService.class).getUser();

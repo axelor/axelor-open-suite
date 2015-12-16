@@ -24,7 +24,6 @@ import java.util.Set;
 
 import javax.inject.Inject;
 
-import org.eclipse.birt.core.exception.BirtException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -99,7 +98,7 @@ public class TemplateMessageServiceBaseImpl extends TemplateMessageServiceImpl {
 
 		try {
 			return reportSettings.generate().getFile();
-		} catch (IOException | BirtException e) {
+		} catch (AxelorException e) {
 			throw new AxelorException(I18n.get(IExceptionMessage.TEMPLATE_MESSAGE_BASE_2), e, IException.CONFIGURATION_ERROR);
 		}
 

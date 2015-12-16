@@ -17,12 +17,10 @@
  */
 package com.axelor.apps.hr.web.expense;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.birt.core.exception.BirtException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -269,7 +267,7 @@ public class ExpenseController {
 		}
 	}
 	
-	public void printExpense(ActionRequest request, ActionResponse response) throws IOException, BirtException {
+	public void printExpense(ActionRequest request, ActionResponse response) throws AxelorException {
 		
 		Expense expense = request.getContext().asType(Expense.class);
 		

@@ -38,6 +38,7 @@ import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.exception.IExceptionMessage;
 import com.axelor.apps.stock.report.IReport;
 import com.axelor.apps.stock.service.StockMoveService;
+import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -113,7 +114,7 @@ public class StockMoveController {
 	 * @throws BirtException 
 	 * @throws IOException 
 	 */
-	public void printStockMove(ActionRequest request, ActionResponse response) throws IOException, BirtException {
+	public void printStockMove(ActionRequest request, ActionResponse response) throws AxelorException {
 
 
 		StockMove stockMove = request.getContext().asType(StockMove.class);

@@ -65,7 +65,7 @@ public class InventoryController {
 	 * @throws BirtException 
 	 * @throws IOException 
 	 */
-	public void showInventory(ActionRequest request, ActionResponse response) throws IOException, BirtException {
+	public void showInventory(ActionRequest request, ActionResponse response) throws AxelorException {
 
 		Inventory inventory = request.getContext().asType(Inventory.class);
 

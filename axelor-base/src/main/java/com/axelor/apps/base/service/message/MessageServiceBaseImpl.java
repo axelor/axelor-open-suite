@@ -17,12 +17,10 @@
  */
 package com.axelor.apps.base.service.message;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
-import org.eclipse.birt.core.exception.BirtException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -79,7 +77,7 @@ public class MessageServiceBaseImpl extends MessageServiceImpl {
 	}
 
 	@Override
-	public String printMessage(Message message) throws IOException, BirtException  {
+	public String printMessage(Message message) throws AxelorException  {
 
 		Company company = message.getCompany();
 		if(company == null){ return null; }

@@ -17,9 +17,6 @@
  */
 package com.axelor.apps.sale.service;
 
-import java.io.IOException;
-
-import org.eclipse.birt.core.exception.BirtException;
 import org.joda.time.LocalDate;
 
 import com.axelor.apps.base.db.Company;
@@ -95,7 +92,7 @@ public interface SaleOrderService {
 	
 	public void confirmSaleOrder(SaleOrder saleOrder) throws Exception;
 
-	public void saveSaleOrderPDFAsAttachment(SaleOrder saleOrder) throws IOException, BirtException;
+	public void saveSaleOrderPDFAsAttachment(SaleOrder saleOrder) throws AxelorException;
 
 	public String getLanguageForPrinting(SaleOrder saleOrder);
 	

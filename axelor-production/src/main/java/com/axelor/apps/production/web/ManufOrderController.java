@@ -153,7 +153,7 @@ public class ManufOrderController {
 	 * @throws BirtException 
 	 * @throws IOException 
 	 */
-	public void print(ActionRequest request, ActionResponse response) throws IOException, BirtException {
+	public void print(ActionRequest request, ActionResponse response) throws AxelorException {
 
 		ManufOrder manufOrder = request.getContext().asType( ManufOrder.class );
 		String manufOrderIds = "";

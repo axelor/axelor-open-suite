@@ -17,16 +17,13 @@
  */
 package com.axelor.apps.hr.service;
 
-import java.io.IOException;
-
-import org.eclipse.birt.core.exception.BirtException;
-
 import com.axelor.apps.ReportFactory;
 import com.axelor.apps.hr.db.EmploymentContract;
 import com.axelor.apps.hr.db.repo.EmploymentContractRepository;
 import com.axelor.apps.hr.report.IReport;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
+import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -36,7 +33,7 @@ public class EmploymentContractService {
 	private EmploymentContractRepository employmentContractRepo;
 	
 	@Transactional
-    public int addAmendment( EmploymentContract EmploymentContract ) throws IOException, BirtException{
+    public int addAmendment( EmploymentContract EmploymentContract ) throws AxelorException  {
 
     	User user = AuthUtils.getUser();
 		String language = user != null? (user.getLanguage() == null || user.getLanguage().equals(""))? "en" : user.getLanguage() : "en";

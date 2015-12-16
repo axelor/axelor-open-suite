@@ -34,6 +34,7 @@ import com.axelor.apps.message.service.MessageService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
+import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
@@ -61,7 +62,7 @@ public class MessageController extends com.axelor.apps.message.web.MessageContro
 	 * @throws BirtException 
 	 * @throws IOException 
 	 */
-	public void printMessage(ActionRequest request, ActionResponse response) throws IOException, BirtException {
+	public void printMessage(ActionRequest request, ActionResponse response) throws AxelorException {
 		
 		Message message = request.getContext().asType(Message.class);
 		String pdfPath = messageService.printMessage(message);
@@ -77,7 +78,7 @@ public class MessageController extends com.axelor.apps.message.web.MessageContro
 			response.setFlash(I18n.get(IExceptionMessage.MESSAGE_1));
 	}
 	
-	public void print(ActionRequest request, ActionResponse response) throws IOException, BirtException {
+	public void print(ActionRequest request, ActionResponse response) throws AxelorException {
 
 
 		Message message = request.getContext().asType(Message.class );

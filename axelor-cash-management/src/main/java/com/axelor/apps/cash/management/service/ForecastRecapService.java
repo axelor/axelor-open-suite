@@ -60,7 +60,7 @@ import com.google.inject.persist.Transactional;
 import com.axelor.i18n.I18n;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.eclipse.birt.core.exception.BirtException;
+
 
 
 public class ForecastRecapService {
@@ -540,7 +540,7 @@ public class ForecastRecapService {
 		return forecastRecapLine;
 	}
 	
-	public String getURLForecastRecapPDF(ForecastRecap forecastRecap) throws IOException, BirtException  {
+	public String getURLForecastRecapPDF(ForecastRecap forecastRecap) throws AxelorException  {
 		String language="";
 		try{
 			language = forecastRecap.getCompany().getPrintingSettings().getLanguageSelect() != null ? forecastRecap.getCompany().getPrintingSettings().getLanguageSelect() : "en" ;

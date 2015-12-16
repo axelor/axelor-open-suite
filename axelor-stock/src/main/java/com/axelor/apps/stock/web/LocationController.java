@@ -40,6 +40,7 @@ import com.axelor.apps.stock.report.IReport;
 import com.axelor.apps.stock.service.InventoryService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
+import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
@@ -125,7 +126,7 @@ public class LocationController {
 	 * @throws BirtException 
 	 * @throws IOException 
 	 */
-	public void print(ActionRequest request, ActionResponse response) throws IOException, BirtException {
+	public void print(ActionRequest request, ActionResponse response) throws AxelorException {
 
 
 		Location location = request.getContext().asType(Location.class );
