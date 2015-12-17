@@ -47,7 +47,7 @@ public class ClearMessage {
 		}
 	}
 	
-	public Object clearAllMailMessages(Object bean, Map values) {
+	public Object clearAllMailMessages(Object bean, Map<String,Object> values) {
 		
 		deleteMailMessages();
 		return bean;

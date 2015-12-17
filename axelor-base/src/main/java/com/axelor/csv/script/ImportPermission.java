@@ -38,7 +38,7 @@ public class ImportPermission {
 	PermissionRepository permissionRepo;
 		
 	@Transactional
-	public Object importPermission(Object bean, Map values) {
+	public Object importPermission(Object bean, Map<String,Object> values) {
 		assert bean instanceof Permission;
         try{
         	

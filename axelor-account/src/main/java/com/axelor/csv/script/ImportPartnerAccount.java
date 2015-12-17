@@ -30,7 +30,7 @@ import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.google.inject.Inject;
 
 
-public class ImportPartner {
+public class ImportPartnerAccount {
 		
 		@Inject
 		private PartnerRepository partnerRepo;
@@ -38,7 +38,7 @@ public class ImportPartner {
 		@Inject
 		private AccountRepository accountRepo;
 	
-		public Object importAccountingSituation(Object bean, Map values) {
+		public Object importAccountingSituation(Object bean, Map<String,Object> values) {
 			assert bean instanceof Partner;
 	        try{
 	            Partner partner = (Partner) bean;
