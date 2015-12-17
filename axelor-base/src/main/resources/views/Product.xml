@@ -279,8 +279,8 @@
     	<field name="startDate" expr="eval:__config__.generalService.getTodayDate()" if="startDate == null"/>
     	<field name="salePrice" expr="0"/>
     	<field name="purchasePrice" expr="0"/>
-    	<field name="saleCurrency" expr="eval: _activeCompany.currency"/>
-    	<field name="purchaseCurrency" expr="eval: _activeCompany.currency"/>
+    	<field name="saleCurrency" expr="eval: _activeCompany?.currency"/>
+    	<field name="purchaseCurrency" expr="eval: _activeCompany?.currency"/>
     	<field name="managPriceCoef" expr="1"/>
     	<field name="isModel" expr="eval: _isModel"/>
     </action-record>

@@ -286,9 +286,9 @@
 		<attribute name="value" for="product" expr="eval: __config__.general.getProductInvoicingProjectTask()"/>
 		<attribute name="value" for="assignedTo" expr="eval: __user__"/>
 		<attribute name="value:add" for="membersUserSet" expr="eval: __user__"/>
-		<attribute name="value" for="price" expr="eval: __config__.general.getProductInvoicingProjectTask().salePrice"/>
-		<attribute name="value" for="unit" expr="eval: __config__.general.getProductInvoicingProjectTask().unit"/>
-		<attribute name="value" for="exTaxTotal" expr="eval: __config__.general.getProductInvoicingProjectTask().salePrice"/>
+		<attribute name="value" for="price" expr="eval: __config__.general.getProductInvoicingProjectTask()?.salePrice"/>
+		<attribute name="value" for="unit" expr="eval: __config__.general.getProductInvoicingProjectTask()?.unit"/>
+		<attribute name="value" for="exTaxTotal" expr="eval: __config__.general.getProductInvoicingProjectTask()?.salePrice"/>
 	</action-attrs>
 	
 	<action-record name="action-project-task-default" model="com.axelor.apps.project.db.ProjectTask">
@@ -297,9 +297,9 @@
 		<field name="product" expr="eval: __config__.general.getProductInvoicingProjectTask()" if="projTaskInvTypeSelect != 3 &amp;&amp; project?.projTaskInvTypeSelect != 3"/>
 		<field name="fromDate" expr="eval: __date__"/>
 		<field name="assignedTo" expr="eval: __user__"/>
-		<field name="price" expr="eval: __config__.general.getProductInvoicingProjectTask().salePrice"/>
-		<field name="unit" expr="eval: __config__.general.getProductInvoicingProjectTask().unit"/>
-		<field name="exTaxTotal" expr="eval: __config__.general.getProductInvoicingProjectTask().salePrice"/>
+		<field name="price" expr="eval: __config__.general.getProductInvoicingProjectTask()?.salePrice"/>
+		<field name="unit" expr="eval: __config__.general.getProductInvoicingProjectTask()?.unit"/>
+		<field name="exTaxTotal" expr="eval: __config__.general.getProductInvoicingProjectTask()?.salePrice"/>
 	</action-record>
 	
 	<action-attrs name="action-attrs-project-add-member" model="com.axelor.apps.project.db.ProjectTask">

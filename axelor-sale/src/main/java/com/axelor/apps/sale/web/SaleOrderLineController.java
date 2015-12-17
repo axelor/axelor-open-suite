@@ -120,7 +120,7 @@ public class SaleOrderLineController {
 				response.setValue("priceDiscounted", priceDiscounted);
 
 			}
-			response.setAttr("priceDiscounted", "hidden", priceDiscounted.equals(saleOrderLine.getPrice()));
+			response.setAttr("priceDiscounted", "hidden", priceDiscounted.compareTo(saleOrderLine.getPrice()) == 0);
 		}
 		catch(Exception e) {
 			response.setFlash(e.getMessage());

@@ -151,7 +151,7 @@ public class InvoiceLineController {
 			response.setValue("priceDiscounted", priceDiscounted);
 
 		}
-		response.setAttr("priceDiscounted", "hidden", priceDiscounted.equals(invoiceLine.getPrice()));
+		response.setAttr("priceDiscounted", "hidden", priceDiscounted.compareTo(invoiceLine.getPrice()) == 0);
 	}
 
 	public void getProductInformation(ActionRequest request, ActionResponse response) throws AxelorException {

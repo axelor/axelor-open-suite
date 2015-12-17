@@ -137,7 +137,7 @@ public class PurchaseOrderLineController {
 				response.setValue("priceDiscounted", priceDiscounted);
 
 			}
-			response.setAttr("priceDiscounted", "hidden", priceDiscounted.equals(purchaseOrderLine.getPrice()));
+			response.setAttr("priceDiscounted", "hidden", priceDiscounted.compareTo(purchaseOrderLine.getPrice()) == 0);
 		}
 		catch(Exception e)  {
 			response.setFlash(e.getMessage());

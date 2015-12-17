@@ -45,15 +45,6 @@ public class OpportunityController {
 	@Inject
 	private OpportunityService opportunityService;
 	
-	public void saveOpportunitySalesStage(ActionRequest request, ActionResponse response) throws AxelorException {
-		
-		Opportunity opportunity = request.getContext().asType(Opportunity.class);
-		Opportunity persistOpportunity = opportunityRepo.find(opportunity.getId());
-		persistOpportunity.setSalesStageSelect(opportunity.getSalesStageSelect());
-		opportunityService.saveOpportunity(persistOpportunity);
-		
-	}
-	
 	public void assignToMe(ActionRequest request, ActionResponse response)  {
 		
 		if(request.getContext().get("id") != null){
