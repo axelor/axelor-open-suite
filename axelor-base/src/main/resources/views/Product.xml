@@ -233,6 +233,7 @@
     	<action name="action-product-record-in-ati"/>
     	<action name="action-product-attrs-in-ati"/>
     	<action name="action-product-record-default-production"/>
+    	<action name="action-product-attrs-readonly-unit"/>
     </action-group>
     
     <action-group name="action-group-base-product-producttype-onchange">
