@@ -24,10 +24,8 @@ import java.util.Map;
 import org.joda.time.LocalDate;
 
 import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.db.General;
 import com.axelor.apps.base.db.Period;
 import com.axelor.apps.base.db.Year;
-import com.axelor.apps.base.db.repo.GeneralRepository;
 import com.axelor.apps.base.db.repo.PeriodRepository;
 import com.axelor.apps.base.db.repo.YearRepository;
 import com.google.inject.Inject;
@@ -37,20 +35,16 @@ import com.google.inject.persist.Transactional;
 public class UpdateAll {
 	
 		@Inject
-		private GeneralRepository generalRepo;
-		
-		@Inject
 		private YearRepository yearRepo;
 		
 		@Inject
 		private PeriodRepository periodRepo;
 		
 		@Transactional
-		public Object updatePeriod(Object bean, Map values) {
+		public Object updatePeriod(Object bean, Map<String,Object> values) {
 			try {
 				assert bean instanceof Company;
 				Company company = (Company) bean;
-				General general = generalRepo.all().fetchOne();
 				List<? extends Period> periods = periodRepo.all().filter("self.company.id = ?1",company.getId()).fetch();
 				if(periods == null || periods.isEmpty()) {
 					for(Year year : yearRepo.all().filter("self.company.id = ?1 AND self.typeSelect = 1",company.getId()).fetch()) {

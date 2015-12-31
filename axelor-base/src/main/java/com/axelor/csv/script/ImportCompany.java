@@ -17,41 +17,38 @@
  */
 package com.axelor.csv.script;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Path;
 import java.util.Map;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.axelor.mail.db.MailMessage;
-import com.axelor.mail.db.repo.MailMessageRepository;
+import com.axelor.apps.base.db.Company;
+import com.axelor.meta.MetaFiles;
+import com.axelor.meta.db.MetaFile;
 import com.google.inject.Inject;
-import com.google.inject.persist.Transactional;
 
-public class ClearMessage {
+public class ImportCompany {
 	
 	@Inject
-	MailMessageRepository mailRepo;
-
-	private static final Logger LOG = LoggerFactory.getLogger(ClearMessage.class); 
-			
-	//Delete all mail messages generated on import
-	@Transactional
-	private void deleteMailMessages(){
-		
-		for(MailMessage mailMessage : mailRepo.all().fetch()){
-			try{
-				mailRepo.remove(mailMessage);
-			}catch(Exception e){
-				LOG.debug("MailMessage: {}, Exception: {}",mailMessage.getId(),e.getMessage());
-			}
-		}
-	}
+	MetaFiles metaFiles;
 	
-	public Object clearAllMailMessages(Object bean, Map<String,Object> values) {
+	public Object importCompany(Object bean, Map<String,Object> values) {
 		
-		deleteMailMessages();
+		assert bean instanceof Company;
+		
+		Company company = (Company) bean;
+		
+		final Path path = (Path) values.get("__path__");
+	    final File image = path.resolve((String) values.get("logo_fileName")).toFile(); 
+
+		try {
+			final MetaFile metaFile = metaFiles.upload(image);
+			company.setLogo(metaFile);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
 		return bean;
-		
 	}
 
 }

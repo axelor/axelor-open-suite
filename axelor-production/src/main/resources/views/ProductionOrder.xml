@@ -18,9 +18,9 @@
 	    <button name="showManufOrderWizard" title="Add Manuf. Order" width="50%"   onClick="save,action-production-order-attrs-add-manuf-order-wizard,action-production-order-record-default-wizard"/>
 	  </panel>  
 	  <panel name="addManufOrderWizard" title="Add Manuf. Order" hidden="true">
-	    <field name="product" title="Product" widget="ManyToOne" target="com.axelor.apps.base.db.Product" domain="self.expense = false and self.productTypeSelect = 'storable' and self.procurementMethodSelect = 'produce'" form-view="product-form" grid-view="product-grid"/>
-	    <field name="billOfMaterial" title="BOM" widget="ManyToOne" onChange="action-production-order-wizard-record-product" onSelect="action-production-order-wizard-attrs-bill-of-material-domain" target="com.axelor.apps.production.db.BillOfMaterial" form-view="bill-of-material-form" grid-view="bill-of-material-grid" />
-	    <field name="qty" title="Quantity" widget="decimal"/>
+	    <field name="product" title="Product" type="many-to-one" target="com.axelor.apps.base.db.Product" domain="self.expense = false and self.productTypeSelect = 'storable' and self.procurementMethodSelect = 'produce'" form-view="product-form" grid-view="product-grid"/>
+	    <field name="billOfMaterial" title="BOM" type="many-to-one" onChange="action-production-order-wizard-record-product" onSelect="action-production-order-wizard-attrs-bill-of-material-domain" target="com.axelor.apps.production.db.BillOfMaterial" form-view="bill-of-material-form" grid-view="bill-of-material-grid" />
+	    <field name="$qty" title="Quantity" type="decimal"/>
 	    <button name="AddManufOrder" title="Add Manuf. Order"   onClick="action-production-order-method-add-manuf-order"/>
 	  </panel>
 	<!--         <button name="generateSaleOrder" title="Generate sale order" colSpan="2" onClick="action-production-order-method-generate-sale-order" showIf="businessProject"/> -->
@@ -38,6 +38,7 @@
     
     <action-attrs name="action-production-order-attrs-title-project-task">
 		<attribute name="title" for="projectTask" expr="eval: __config__.general.getProjectTaskLabel()" if="!com.google.common.base.Strings.isNullOrEmpty(__config__.general.getProjectTaskLabel())"/>
+		<attribute name="value" for="$qty" expr="1"/>
 	</action-attrs>
     
    	<action-method name="action-production-order-method-add-manuf-order">
@@ -45,7 +46,7 @@
     </action-method>
     
     <action-record name="action-production-order-record-default-wizard" model="com.axelor.apps.base.db.Wizard">
-		<field name="qty" expr="eval: 1.0"/>
+		<field name="$qty" expr="eval: 1.0"/>
 	</action-record>
     
     <action-attrs name="action-production-order-attrs-add-manuf-order-wizard">

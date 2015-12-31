@@ -261,24 +261,14 @@ public class OperationOrderController {
 			for (String key : machineNameList) {
 				if(keyList.contains(key)){
 					Map<String, Object> dataMap = new HashMap<String, Object>();
-					if(Hours.hoursBetween(fromDateTime, toDateTime).getHours()>24){
-						dataMap.put("dateTime",(Object)itDateTime.toString("dd/MM/yyyy HH:mm"));
-					}
-					else{
-						dataMap.put("dateTime",(Object)itDateTime.toString("HH:mm"));
-					}
+					dataMap.put("dateTime",(Object)itDateTime.toString("dd/MM/yyyy HH:mm"));
 					dataMap.put("charge", (Object)map.get(key));
 					dataMap.put("machine", (Object) key);
 					dataList.add(dataMap);
 				}
 				else{
 					Map<String, Object> dataMap = new HashMap<String, Object>();
-					if(Hours.hoursBetween(fromDateTime, toDateTime).getHours()>24){
-						dataMap.put("dateTime",(Object)itDateTime.toString("dd/MM/yyyy HH:mm"));
-					}
-					else{
-						dataMap.put("dateTime",(Object)itDateTime.toString("HH:mm"));
-					}
+					dataMap.put("dateTime",(Object)itDateTime.toString("dd/MM/yyyy HH:mm"));
 					dataMap.put("charge", (Object)BigDecimal.ZERO);
 					dataMap.put("machine", (Object) key);
 					dataList.add(dataMap);
