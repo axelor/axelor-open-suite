@@ -35,6 +35,7 @@ import com.axelor.auth.db.User;
 import com.axelor.auth.db.repo.UserRepository;
 import com.axelor.db.Model;
 import com.axelor.db.Query;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.google.common.base.Joiner;
 
@@ -65,7 +66,7 @@ public class MailServiceBaseImpl extends MailServiceMessageImpl{
 		final List<String> where = new ArrayList<>();
 		final Map<String, Object> params = new HashMap<>();
 		
-		where.add("self.partner is not null AND self.partner.emailAddress is not null");
+		where.add("self.partner is not null AND (self.partner.emailAddress is not null OR self.email is not null)");
 
 		if (!isBlank(matching)) {
 			where.add("(LOWER(self.partner.emailAddress.address) like LOWER(:email) OR LOWER(self.partner.fullName) like LOWER(:email))");
@@ -87,10 +88,19 @@ public class MailServiceBaseImpl extends MailServiceMessageImpl{
 		final List<InternetAddress> addresses = new ArrayList<>();
 		for (User user : query.fetch(maxResult)) {
 			try {
-				final InternetAddress item = new InternetAddress(user.getPartner().getEmailAddress().getAddress(), user.getFullName());
-				addresses.add(item);
-				selected.add(user.getPartner().getEmailAddress().getAddress());
+				if(user.getPartner().getEmailAddress() != null){
+					final InternetAddress item = new InternetAddress(user.getPartner().getEmailAddress().getAddress(), user.getFullName());
+					addresses.add(item);
+					selected.add(user.getPartner().getEmailAddress().getAddress());
+				}
+				else{
+					final InternetAddress item = new InternetAddress(user.getEmail(), user.getFullName());
+					addresses.add(item);
+					selected.add(user.getEmail());
+				}
+				
 			} catch (UnsupportedEncodingException e) {
+				TraceBackService.trace(e);
 			}
 		}
 		
