@@ -84,18 +84,11 @@ public class SaleOrderLineController {
 						companyInTaxTotal = companyExTaxTotal.add(companyExTaxTotal.multiply(saleOrderLine.getTaxLine().getValue()));
 					}
 				}
-
-				response.setValue("exTaxTotal", exTaxTotal);
-				response.setValue("inTaxTotal", inTaxTotal);
-				response.setValue("companyExTaxTotal", companyExTaxTotal);
-				response.setValue("companyInTaxTotal", companyInTaxTotal);
-				response.setValue("priceDiscounted", priceDiscounted);
-
 			}
 			else{
 				if (saleOrderLine.getPrice() != null && saleOrderLine.getQty() != null) {
 					inTaxTotal = saleOrderLineService.computeAmount(saleOrderLine);
-					exTaxTotal = inTaxTotal.divide(saleOrderLine.getTaxLine().getValue().add(new BigDecimal(1)), 2, BigDecimal.ROUND_HALF_UP);
+					exTaxTotal = inTaxTotal.divide(saleOrderLine.getTaxLine().getValue().add(BigDecimal.ONE), 2, BigDecimal.ROUND_HALF_UP);
 					priceDiscounted = saleOrderLineService.computeDiscount(saleOrderLine);
 				}
 
@@ -109,17 +102,16 @@ public class SaleOrderLineController {
 					if(saleOrder != null) {
 
 						companyInTaxTotal = saleOrderLineService.getAmountInCompanyCurrency(inTaxTotal, saleOrder);
-						companyExTaxTotal = companyInTaxTotal.divide(saleOrderLine.getTaxLine().getValue().add(new BigDecimal(1)), 2, BigDecimal.ROUND_HALF_UP);
+						companyExTaxTotal = companyInTaxTotal.divide(saleOrderLine.getTaxLine().getValue().add(BigDecimal.ONE), 2, BigDecimal.ROUND_HALF_UP);
 					}
 				}
-
-				response.setValue("exTaxTotal", exTaxTotal);
-				response.setValue("inTaxTotal", inTaxTotal);
-				response.setValue("companyInTaxTotal", companyInTaxTotal);
-				response.setValue("companyExTaxTotal", companyExTaxTotal);
-				response.setValue("priceDiscounted", priceDiscounted);
-
 			}
+			
+			response.setValue("exTaxTotal", exTaxTotal);
+			response.setValue("inTaxTotal", inTaxTotal);
+			response.setValue("companyInTaxTotal", companyInTaxTotal);
+			response.setValue("companyExTaxTotal", companyExTaxTotal);
+			response.setValue("priceDiscounted", priceDiscounted);
 			response.setAttr("priceDiscounted", "hidden", priceDiscounted.compareTo(saleOrderLine.getPrice()) == 0);
 		}
 		catch(Exception e) {
