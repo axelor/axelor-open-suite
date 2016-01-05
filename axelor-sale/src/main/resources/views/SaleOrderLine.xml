@@ -120,7 +120,6 @@
     </action-group>
 
     <action-group name="action-group-sale-saleorderline-product-onchange">
-    	<action name="action-sale-order-line-record-product-variant"/>
     	<action name="action-sale-order-line-method-get-product-information"/>
     	<action name="action-sale-order-line-method-convert-tax"/>
     	<action name="action-sale-order-line-method-compute"/>
