@@ -3,8 +3,10 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/data-import http://axelor.com/xml/ns/data-import/data-import_4.0.xsd">
   	
-  	<input file="account_accountType.csv" separator=";" type="com.axelor.apps.account.db.AccountType" search="self.name = :name"/>
-  	
+  	<input file="account_accountType.csv" separator=";" type="com.axelor.apps.account.db.AccountType">
+  		<bind to="nameSelect" column="name" />
+  	</input>
+  	  	
   	<input file="account_fiscalPosition.csv" separator=";" type="com.axelor.apps.account.db.FiscalPosition" search="self.code = :code" />
   	
 	<input file="account_account.csv" separator=";" type="com.axelor.apps.account.db.Account" >
@@ -33,7 +35,7 @@
 	</input>
 	
 	<input file="account_tax.csv" separator=";" update="true" search="self.code = :code" type="com.axelor.apps.account.db.Tax">
-		<bind to="activeTaxLine" search="self.importId = :_activeTaxLine AND self.tax.code = :tax_code" update="true" />
+		<bind to="activeTaxLine" search="self.importId = :_activeTaxLine AND self.tax.code = :code" update="true" />
 	</input>
 	
 	

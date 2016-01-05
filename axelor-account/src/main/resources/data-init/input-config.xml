@@ -51,7 +51,7 @@
 	
 <!-- 	<input file="account_accountConfig.csv" separator=";" type="com.axelor.apps.account.db.AccountConfig" search="self.importId = :importId" /> -->
 	
-<!--     <input file="account_accountChart.csv" separator=";" type="com.axelor.apps.account.db.AccountChart" search="self.code = :code" /> -->
+    <input file="account_accountChart.csv" separator=";" type="com.axelor.apps.account.db.AccountChart" search="self.code = :code" />
     
 	
 	
