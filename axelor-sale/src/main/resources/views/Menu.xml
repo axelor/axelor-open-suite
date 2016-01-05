@@ -8,7 +8,7 @@
 		icon="fa-line-chart" groups="admins,ERP,CRM"/>
 		
 	<menuitem name="sale-templates-new-template" title="Create a template"  groups="admins,ERP"
-		 action="sale.templates.new.template" parent="sc-root-sale-templates"/>
+		 action="sale.templates.new.template" parent="sc-root-sale-templates" order="10"/>
 		 
 	<action-view name="sale.templates.new.template" title="New Template"
 		model="com.axelor.apps.sale.db.SaleOrder">
@@ -22,7 +22,7 @@
 	</action-view>
 	
 	<menuitem name="sale-templates-all-templates" title="All Templates" groups="admins,ERP"
-		 action="sale.templates.all.templates" parent="sc-root-sale-templates"/>
+		 action="sale.templates.all.templates" parent="sc-root-sale-templates" order="30"/>
 		 
 	<action-view name="sale.templates.all.templates" title="All Templates"
 		model="com.axelor.apps.sale.db.SaleOrder">
@@ -35,7 +35,7 @@
 	</action-view>
 	
 	<menuitem name="sale-templates-my-templates" title="My Templates" groups="admins,ERP"
-		 action="sale.templates.my.templates" parent="sc-root-sale-templates"/>
+		 action="sale.templates.my.templates" parent="sc-root-sale-templates" order="20"/>
 		 
 	<action-view name="sale.templates.my.templates" title="My Templates"
 		model="com.axelor.apps.sale.db.SaleOrder">
