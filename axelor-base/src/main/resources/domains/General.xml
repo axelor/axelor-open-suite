@@ -26,7 +26,7 @@
 		<boolean name="hasQasValidation" title="Use QAS Validation ?" help="true" />
 		
 		<integer name="productInAtiSelect" title="Products ATI/WT" selection="base.in.ati.select" default="1"/>
-		<integer name="nbDecimalDigitForUnitPrice" title="Nb of digits for unit prices" max="5" default="2"/>
+		<integer name="nbDecimalDigitForUnitPrice" title="Nb of digits for unit prices" max="10" default="2"/>
 		
 		<integer name="computeMethodDiscountSelect" title="Compute Method for Discounts" selection="base.compute.method.discount.select" default="1"/>
 

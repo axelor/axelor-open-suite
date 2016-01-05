@@ -11,15 +11,15 @@
 
     <many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"/>
     <string name="productName"  title="Product Name"/>
-    <decimal name="price" title="Unit price" precision="20" scale="5"/>
-    <decimal name="priceDiscounted" title="Unit price discounted" precision="20" scale="5"/>
+    <decimal name="price" title="Unit price" precision="20" scale="10"/>
+    <decimal name="priceDiscounted" title="Unit price discounted" precision="20" scale="10"/>
     <many-to-one name="unit" ref="com.axelor.apps.base.db.Unit" title="Unit"/>
     <decimal name="qty" title="Qty" precision="20" scale="2"/>
     <decimal name="exTaxTotal" title="Total W.T." precision="20" scale="2" readonly="true"/>
     <decimal name="inTaxTotal" title="Total A.T.I."/>
     <many-to-one name="taxLine" ref="com.axelor.apps.account.db.TaxLine" title="Tax"/>
     
-    <decimal name="discountAmount" title="Discount amount" precision="20" scale="5"/>
+    <decimal name="discountAmount" title="Discount amount" precision="20" scale="10"/>
   	<integer name="discountTypeSelect" title="Discount Type" selection="base.price.list.line.amount.type.select" default="3"/>
     
     <string name="description" title="Description" large="true"/>
