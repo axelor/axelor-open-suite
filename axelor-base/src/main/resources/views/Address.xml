@@ -19,7 +19,7 @@
 			<field name="addressL3"  placeholder="e.g. Building A, Entry 2, 2nd Floor, Door 2E"/>
 			<field name="addressL4" />
 			<field name="addressL5"  placeholder="e.g. POB 254"/>
-			<field name="commune" onChange="action-address-change-commune" form-view="commune-form" grid-view="commune-grid"/>
+			<field name="commune" canNew="true" onChange="action-address-change-commune" form-view="commune-form" grid-view="commune-grid"/>
 			<field name="addressL6"  required="true"/>
 			<field name="addressL7Country" required="true" form-view="country-form" grid-view="country-grid"/>
 			<button-group colSpan="6">
@@ -45,7 +45,7 @@
 			<field name="addressL3"  placeholder="e.g. Building A, Entry 2, 2nd Floor, Door 2E"/>
 			<field name="addressL4" />
 			<field name="addressL5"  placeholder="e.g. POB 254"/>
-			<field name="commune" onChange="action-address-change-commune" form-view="commune-form" grid-view="commune-grid"/>
+			<field name="commune" canNew="true" onChange="action-address-change-commune" form-view="commune-form" grid-view="commune-grid"/>
 			<field name="addressL6"  required="true"/>
 			<field name="addressL7Country" required="true" form-view="country-form" grid-view="country-grid"/>
 			<field name="isInvoicingAddr" type="boolean" showIf="$popup() &amp;&amp; id == null" title="Invoicing address" />
