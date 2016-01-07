@@ -29,10 +29,11 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.sale.db.ISaleOrder;
 import com.axelor.apps.sale.db.SaleOrder;
-import com.axelor.apps.sale.db.repo.SaleConfigRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
+import com.axelor.apps.sale.service.config.SaleConfigService;
 import com.axelor.apps.supplychain.db.CustomerCreditLine;
 import com.axelor.apps.supplychain.db.repo.CustomerCreditLineRepository;
+import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
@@ -41,10 +42,13 @@ import com.google.inject.persist.Transactional;
 public class CustomerCreditLineServiceImpl implements CustomerCreditLineService{
 	
 	@Inject
-	private CustomerCreditLineRepository customerCreditLineRepo;
+	protected CustomerCreditLineRepository customerCreditLineRepo;
 
+	@Inject
+	protected SaleConfigService saleConfigService;
+	
 	@Override
-	public Partner generateLines(Partner partner){
+	public Partner generateLines(Partner partner) throws AxelorException  {
 		List<Company> companyList = new ArrayList<Company>(partner.getCompanySet());
 		List<CustomerCreditLine> customerCreditLineList = new ArrayList<CustomerCreditLine>();
 		if(partner.getCustomerCreditLineList()!= null && !partner.getCustomerCreditLineList().isEmpty()){
@@ -61,8 +65,7 @@ public class CustomerCreditLineServiceImpl implements CustomerCreditLineService{
 		for (Company company : companyList) {
 			CustomerCreditLine customerCreditLine = new CustomerCreditLine();
 			customerCreditLine.setCompany(company);
-			customerCreditLine.setAcceptedCredit(Beans.get(SaleConfigRepository.class).all().filter("self.company = ?", company).fetchOne().getAcceptedCredit());
-
+			customerCreditLine.setAcceptedCredit(saleConfigService.getSaleConfig(company).getAcceptedCredit());
 			partner.addCustomerCreditLineListItem(customerCreditLine);
 		}
 
@@ -70,7 +73,7 @@ public class CustomerCreditLineServiceImpl implements CustomerCreditLineService{
 	}
 
 	@Override
-	public Map<String,Object> updateLines(Partner partner){
+	public Map<String,Object> updateLines(Partner partner) throws AxelorException{
 		if(partner.getCustomerCreditLineList() == null || partner.getCustomerCreditLineList().isEmpty()){
 			partner = generateLines(partner);
 		}
@@ -84,7 +87,7 @@ public class CustomerCreditLineServiceImpl implements CustomerCreditLineService{
 	}
 
 	@Override
-	public Map<String,Object> updateLinesFromOrder(Partner partner,SaleOrder saleOrder){
+	public Map<String,Object> updateLinesFromOrder(Partner partner,SaleOrder saleOrder) throws AxelorException{
 
 		Map<String,Object> map = new HashMap<String,Object>();
 
@@ -140,8 +143,8 @@ public class CustomerCreditLineServiceImpl implements CustomerCreditLineService{
 	}
 	
 	@Override
-	@Transactional
-	public boolean checkBlockedPartner(Partner partner, Company company){
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
+	public boolean checkBlockedPartner(Partner partner, Company company) throws AxelorException{
 		CustomerCreditLine customerCreditLine = customerCreditLineRepo.all().filter("self.company = ?1 AND self.partner = ?2", company, partner).fetchOne();
 		if(customerCreditLine == null){
 			partner = generateLines(partner);

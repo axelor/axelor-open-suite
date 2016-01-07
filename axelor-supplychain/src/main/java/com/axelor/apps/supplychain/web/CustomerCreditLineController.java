@@ -24,6 +24,7 @@ import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.supplychain.db.CustomerCreditLine;
 import com.axelor.apps.supplychain.service.CustomerCreditLineService;
+import com.axelor.exception.AxelorException;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
@@ -42,13 +43,13 @@ public class CustomerCreditLineController {
 		response.setValues(customerCreditLine);
 	}
 	
-	public void generateLines(ActionRequest request, ActionResponse response)  {
+	public void generateLines(ActionRequest request, ActionResponse response) throws AxelorException  {
 		Partner partner = request.getContext().asType(Partner.class);
 		partner = customerCreditLineService.generateLines(partnerRepo.find(partner.getId()));
 		response.setValues(partner);
 	}
 	
-	public void updateLinesFromPartner(ActionRequest request, ActionResponse response)  {
+	public void updateLinesFromPartner(ActionRequest request, ActionResponse response) throws AxelorException  {
 		Partner partnerView = request.getContext().asType(Partner.class);
 		if(partnerView.getId() != null && partnerView.getId() > 0){
 			Partner partner = partnerRepo.find(partnerView.getId());
@@ -57,7 +58,7 @@ public class CustomerCreditLineController {
 		}
 	}
 	
-	public void updateLinesFromSaleOrder(ActionRequest request, ActionResponse response)  {
+	public void updateLinesFromSaleOrder(ActionRequest request, ActionResponse response) throws AxelorException  {
 		SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
 		if(saleOrder.getClientPartner() != null){
 			Partner partner = saleOrder.getClientPartner();
