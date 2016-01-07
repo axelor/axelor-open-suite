@@ -48,7 +48,7 @@
 						<label title="Settings"/>
 					  	<field name="languageSelect"/>
 					  	<label title="Assigned to"/>
-					    <field name="companySet"  widget="TagSelect" onChange="action-partner-company-set-validate" canNew="false" grid-view="company-grid" form-view="company-form"/>
+					    <field name="companySet"  widget="TagSelect" canNew="false" grid-view="company-grid" form-view="company-form"/>
 					    <field name="user" form-view="user-form" grid-view="user-grid"/>
 					    <field name="team" form-view="team-form" grid-view="team-grid" if="__config__.general.getTeamManagement()"/>
 		
@@ -111,7 +111,7 @@
 					  	<field name="languageSelect"/>
 					  	
 					  	<label title="Assigned to" colSpan="12"/>
-					    <field name="companySet"  widget="TagSelect" onChange="action-partner-company-set-validate" canNew="false" form-view="company-form" grid-view="company-grid"/>
+					    <field name="companySet"  widget="TagSelect" canNew="false" form-view="company-form" grid-view="company-grid"/>
 					    <field name="user" form-view="user-form" grid-view="user-grid"/>
 					    <field name="team" form-view="team-form" grid-view="team-grid" if="__config__.general.getTeamManagement()"/>
 					</editor>
@@ -315,7 +315,7 @@
 			<panel title="Settings"  >
 			  <field name="languageSelect"/>
 			  <panel title="Assigned to">
-			    <field name="companySet"  widget="TagSelect" onChange="action-partner-company-set-validate" canNew="false"/>
+			    <field name="companySet"  widget="TagSelect" canNew="false"/>
 			    <field name="user"/>
 			    <field name="team" if="__config__.general.getTeamManagement()"/>
 			  </panel>
@@ -379,7 +379,7 @@
 		  <panel title="Settings" >
 		    <field name="languageSelect" colSpan="12"/>
 		    <panel title="Assigned to" colSpan="12" >
-		      <field name="companySet" widget="TagSelect" onChange="action-partner-company-set-validate" canNew="false"/>
+		      <field name="companySet" widget="TagSelect" canNew="false"/>
 		      <field name="user"/>
 		      <field name="team" if="__config__.general.getTeamManagement()"/>
 		    </panel>
