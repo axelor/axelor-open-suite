@@ -149,10 +149,12 @@ public class InvoiceController {
 
 			response.setView ( ActionView.define( String.format(I18n.get(IExceptionMessage.INVOICE_4), invoice.getInvoiceId() ) )
 			.model(Invoice.class.getName())
-			.add("grid", "invoice-grid")
 			.add("form", "invoice-form")
+			.add("grid", "invoice-grid")
+			.param("forceTitle", "true")
 			.context("_showRecord", refund.getId().toString())
-			.domain("self.originalInvoice.id = " + invoice.getId()).map() );
+			.domain("self.originalInvoice.id = " + invoice.getId())
+			.map() );
 		}
 		catch(Exception e)  {
 			TraceBackService.trace(response, e);
