@@ -291,6 +291,9 @@ public class MoveLineService {
 				if(map.containsKey(keys)){
 					MoveLine moveLineIt =  map.get(keys);
 					int count = 0;
+					if(moveLineIt.getAnalyticDistributionLineList() == null || moveLine.getAnalyticDistributionLineList() == null){
+						return null;
+					}
 					List<AnalyticDistributionLine> list1 = moveLineIt.getAnalyticDistributionLineList();
 					List<AnalyticDistributionLine> list2 = moveLine.getAnalyticDistributionLineList();
 					List<AnalyticDistributionLine> copyList = new ArrayList<AnalyticDistributionLine>(list1);

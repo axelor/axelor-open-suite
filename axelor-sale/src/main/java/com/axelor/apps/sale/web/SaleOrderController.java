@@ -75,11 +75,7 @@ public class SaleOrderController {
 		
 		String name = saleOrderService.getFileName(saleOrder);
 		
-		String fileLink = ReportFactory.createReport(IReport.SALES_ORDER, name+"-${date}")
-				.addParam("Locale", language)
-				.addParam("SaleOrderId", saleOrder.getId())
-				.generate()
-				.getFileLink();
+		String fileLink = saleOrderService.getReportLink(saleOrder, name, language, ReportSettings.FORMAT_PDF); 
 
 		logger.debug("Printing "+name);
 	
@@ -96,12 +92,7 @@ public class SaleOrderController {
 
 		String name = saleOrderService.getFileName(saleOrder);
 		
-		String fileLink = ReportFactory.createReport(IReport.SALES_ORDER, name+"-${date}")
-					.addParam("Locale", language)
-					.addParam("SaleOrderId", saleOrder.getId())
-					.addFormat(ReportSettings.FORMAT_XLS)
-					.generate()
-					.getFileLink();
+		String fileLink = saleOrderService.getReportLink(saleOrder, name, language, ReportSettings.FORMAT_XLS); 
 
 		logger.debug("Printing "+name);
 
@@ -120,12 +111,8 @@ public class SaleOrderController {
 
 		String name = saleOrderService.getFileName(saleOrder);
 		
-		String fileLink = ReportFactory.createReport(IReport.SALES_ORDER, name+"-${date}")
-					.addParam("Locale", language)
-					.addParam("SaleOrderId", saleOrder.getId())
-					.addFormat(ReportSettings.FORMAT_DOC)
-					.generate()
-					.getFileLink();
+		String fileLink = saleOrderService.getReportLink(saleOrder, name, language, ReportSettings.FORMAT_DOC);
+		
 
 		logger.debug("Printing "+name);
 
@@ -209,8 +196,6 @@ public class SaleOrderController {
 		}
 		catch(Exception e)  { TraceBackService.trace(response, e); }
 	}
-	
-	
 	
 	
 }

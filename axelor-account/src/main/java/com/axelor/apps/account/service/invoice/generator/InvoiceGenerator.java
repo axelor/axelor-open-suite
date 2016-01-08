@@ -51,6 +51,7 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 
 public abstract class InvoiceGenerator  {
+	
 
 	// Logger
 	private static final Logger LOG = LoggerFactory.getLogger(InvoiceGenerator.class);
@@ -228,6 +229,12 @@ public abstract class InvoiceGenerator  {
 		invoice.setExternalReference(externalReference);
 
 		invoice.setInAti(inAti);
+		
+		invoice.setInvoiceDate(today);
+		
+		if(invoice.getPaymentCondition() != null){
+			invoice.setDueDate(InvoiceToolService.getDueDate(invoice.getPaymentCondition(),invoice.getInvoiceDate()));
+		}
 
 		initCollections(invoice);
 

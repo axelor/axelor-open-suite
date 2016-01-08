@@ -105,6 +105,8 @@ public interface SaleOrderService {
 	public SaleOrder createSaleOrder(SaleOrder context);
 
 	public SaleOrder computeEndOfValidityDate(SaleOrder saleOrder);
+	
+	public String getReportLink(SaleOrder saleOrder, String name, String language, String format) throws AxelorException;
 }
 
 

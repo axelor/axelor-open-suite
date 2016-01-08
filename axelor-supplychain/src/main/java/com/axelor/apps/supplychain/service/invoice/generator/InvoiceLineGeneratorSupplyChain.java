@@ -84,8 +84,18 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
 			this.priceDiscounted = saleOrderLine.getPriceDiscounted();
 			this.taxLine = saleOrderLine.getTaxLine();
 			this.discountTypeSelect = saleOrderLine.getDiscountTypeSelect();
-			this.exTaxTotal = saleOrderLine.getExTaxTotal().setScale(2, RoundingMode.HALF_EVEN);
-			this.inTaxTotal = saleOrderLine.getInTaxTotal().setScale(2, RoundingMode.HALF_EVEN);
+			if(!invoice.getInAti()){
+				this.exTaxTotal = this.qty.multiply(this.priceDiscounted).setScale(2, RoundingMode.HALF_EVEN);
+				if(taxLine != null){
+					this.inTaxTotal = exTaxTotal.add(exTaxTotal.multiply(taxLine.getValue())).setScale(2, RoundingMode.HALF_EVEN);
+				}
+			}
+			else{
+				this.inTaxTotal = this.qty.multiply(this.priceDiscounted).setScale(2, RoundingMode.HALF_EVEN);
+				if(taxLine != null){
+					this.exTaxTotal = inTaxTotal.divide(taxLine.getValue().add(BigDecimal.ONE), 2, BigDecimal.ROUND_HALF_UP);
+				}
+			}
 			if (saleOrderLine.getProduct() != null && ProductRepository.PRODUCT_TYPE_SUBSCRIPTABLE.equals(saleOrderLine.getProduct().getProductTypeSelect())
 					&& saleOrderLine.getSubscriptionList() != null
 					&& !saleOrderLine.getSubscriptionList().isEmpty()){
@@ -108,8 +118,18 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
 			this.priceDiscounted = purchaseOrderLine.getPriceDiscounted();
 			this.taxLine = purchaseOrderLine.getTaxLine();
 			this.discountTypeSelect = purchaseOrderLine.getDiscountTypeSelect();
-			this.exTaxTotal = purchaseOrderLine.getExTaxTotal().setScale(2, RoundingMode.HALF_EVEN);
-			this.inTaxTotal = purchaseOrderLine.getInTaxTotal().setScale(2, RoundingMode.HALF_EVEN);
+			if(!invoice.getInAti()){
+				this.exTaxTotal = this.qty.multiply(this.priceDiscounted).setScale(2, RoundingMode.HALF_EVEN);
+				if(taxLine != null){
+					this.inTaxTotal = exTaxTotal.add(exTaxTotal.multiply(taxLine.getValue())).setScale(2, RoundingMode.HALF_EVEN);
+				}
+			}
+			else{
+				this.inTaxTotal = this.qty.multiply(this.priceDiscounted).setScale(2, RoundingMode.HALF_EVEN);
+				if(taxLine != null){
+					this.exTaxTotal = inTaxTotal.divide(taxLine.getValue().add(BigDecimal.ONE), 2, BigDecimal.ROUND_HALF_UP);
+				}
+			}
 			analyticDistributionLineList = new ArrayList<AnalyticDistributionLine>();
 			if(purchaseOrderLine.getAnalyticDistributionLineList() != null){
 				for (AnalyticDistributionLine analyticDistributionLineIt : purchaseOrderLine.getAnalyticDistributionLineList()) {
