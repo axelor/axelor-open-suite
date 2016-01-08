@@ -31,7 +31,7 @@ public interface CustomerCreditLineService {
 	
 	public CustomerCreditLine computeUsedCredit(CustomerCreditLine customerCreditLine);
 	public Partner generateLines(Partner partner) throws AxelorException;
-	public Map<String,Object> updateLines(Partner partner) throws AxelorException;
+	public void updateLines(Partner partner) throws AxelorException;
 	public Map<String,Object> updateLinesFromOrder(Partner partner,SaleOrder saleOrder) throws AxelorException;
 	public boolean testUsedCredit(CustomerCreditLine customerCreditLine);
 	

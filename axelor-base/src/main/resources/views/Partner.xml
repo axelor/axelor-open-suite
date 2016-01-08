@@ -406,7 +406,7 @@
 	</cards>
 		
 	<action-group name="action-group-partner-onload">
-    	<action name="action-partner-method-update-customer-credit-line-from-partner"/>
+    	<action name="action-partner-method-update-customer-credit-line-from-partner" if="!isContact &amp;&amp; isCustomer &amp;&amp; __config__.general.getManageCustomerCredit()"/>
     	<action name="save"/>
     	<action name="action-partner-attrs-change-name"/>
     	<action name="action-partner-method-set-social-network-url"/>
@@ -498,7 +498,7 @@
 	<action-method name="action-print-phonebook" >
 		<call class="com.axelor.apps.base.web.PartnerController" method="printContactPhonebook"/>
 	</action-method>
-	
+
 	<action-method name="action-partner-method-generate-customer-credit-line" if-module="axelor-supplychain">
 		<call class="com.axelor.apps.supplychain.web.CustomerCreditLineController" method="generateLines"/>
 	</action-method>

@@ -45,7 +45,7 @@ public class CustomerCreditLineController {
 	
 	public void generateLines(ActionRequest request, ActionResponse response) throws AxelorException  {
 		Partner partner = request.getContext().asType(Partner.class);
-		partner = customerCreditLineService.generateLines(partnerRepo.find(partner.getId()));
+		partner.setCustomerCreditLineList(customerCreditLineService.generateLines(partner).getCustomerCreditLineList());
 		response.setValues(partner);
 	}
 	
@@ -53,8 +53,8 @@ public class CustomerCreditLineController {
 		Partner partnerView = request.getContext().asType(Partner.class);
 		if(partnerView.getId() != null && partnerView.getId() > 0){
 			Partner partner = partnerRepo.find(partnerView.getId());
-			Map<String,Object> map = customerCreditLineService.updateLines(partner);
-			response.setValues(map);
+			customerCreditLineService.updateLines(partner);
+			response.setValue("customerCreditLineList", partner.getCustomerCreditLineList());
 		}
 	}
 	

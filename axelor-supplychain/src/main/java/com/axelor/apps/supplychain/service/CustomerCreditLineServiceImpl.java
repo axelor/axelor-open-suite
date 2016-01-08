@@ -27,6 +27,7 @@ import com.axelor.apps.account.db.AccountingSituation;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
+import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.sale.db.ISaleOrder;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
@@ -47,10 +48,17 @@ public class CustomerCreditLineServiceImpl implements CustomerCreditLineService{
 	@Inject
 	protected SaleConfigService saleConfigService;
 	
+	@Inject
+	protected PartnerRepository partnerRepo;
+	
 	@Override
 	public Partner generateLines(Partner partner) throws AxelorException  {
+		
+		if(partner.getIsContact() || !partner.getIsCustomer() || !Beans.get(GeneralService.class).getGeneral().getManageCustomerCredit() || partner.getCompanySet() == null)  {  return partner;  }
+		
 		List<Company> companyList = new ArrayList<Company>(partner.getCompanySet());
 		List<CustomerCreditLine> customerCreditLineList = new ArrayList<CustomerCreditLine>();
+		
 		if(partner.getCustomerCreditLineList()!= null && !partner.getCustomerCreditLineList().isEmpty()){
 			customerCreditLineList = new ArrayList<CustomerCreditLine>(partner.getCustomerCreditLineList());
 			for (CustomerCreditLine customerCreditLine : customerCreditLineList) {
@@ -62,6 +70,7 @@ public class CustomerCreditLineServiceImpl implements CustomerCreditLineService{
 				}
 			}
 		}
+		
 		for (Company company : companyList) {
 			CustomerCreditLine customerCreditLine = new CustomerCreditLine();
 			customerCreditLine.setCompany(company);
@@ -73,7 +82,7 @@ public class CustomerCreditLineServiceImpl implements CustomerCreditLineService{
 	}
 
 	@Override
-	public Map<String,Object> updateLines(Partner partner) throws AxelorException{
+	public void updateLines(Partner partner) throws AxelorException{
 		if(partner.getCustomerCreditLineList() == null || partner.getCustomerCreditLineList().isEmpty()){
 			partner = generateLines(partner);
 		}
@@ -81,9 +90,6 @@ public class CustomerCreditLineServiceImpl implements CustomerCreditLineService{
 		for (CustomerCreditLine customerCreditLine : customerCreditLineList) {
 			customerCreditLine = this.computeUsedCredit(customerCreditLine);
 		}
-		Map<String,Object> map = new HashMap<String,Object>();
-		map.put("customerCreditLineList", customerCreditLineList);
-		return map;
 	}
 
 	@Override
