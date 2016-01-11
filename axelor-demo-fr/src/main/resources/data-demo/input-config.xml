@@ -62,7 +62,9 @@
 	   <bind to="country" search="self.code = 'FRA'" update="true" />
 	</input>
 	
-	<input file="base_address.csv" separator=";" type="com.axelor.apps.base.db.Address" search="self.importId = :importId"  />
+	<input file="base_address.csv" separator=";" type="com.axelor.apps.base.db.Address" search="self.importId = :importId">
+	  	<bind to="commune" search="concat(self.zip,' ',self.name) = :addressL6" update="true" />
+	</input>
 	
 	<input file="base_currency.csv" separator=";" type="com.axelor.apps.base.db.Currency" search="self.code = :code"  />
 	
