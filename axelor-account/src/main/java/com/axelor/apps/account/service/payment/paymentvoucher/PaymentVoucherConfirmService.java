@@ -53,6 +53,7 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -219,10 +220,37 @@ public class PaymentVoucherConfirmService  {
 		}
 		paymentVoucher.setStatusSelect(PaymentVoucherRepository.STATUS_CONFIRMED);
 		paymentVoucherSequenceService.setReceiptNo(paymentVoucher, company, journal);
+		
+		this.deleteUnPaidLines(paymentVoucher);
+		
 		paymentVoucherRepository.save(paymentVoucher);
 	}
 
 
+	public void deleteUnPaidLines(PaymentVoucher paymentVoucher)  {
+		
+		if(paymentVoucher.getPaymentInvoiceList() == null)  {   return;  }
+		
+		paymentVoucher.getPaymentInvoiceList().clear();
+		
+		List<PaymentInvoiceToPay> paymentInvoiceToPayToRemove = Lists.newArrayList();
+		
+		for(PaymentInvoiceToPay paymentInvoiceToPay : paymentVoucher.getPaymentInvoiceToPayList())  {
+			
+			if(paymentInvoiceToPay.getAmountToPay().compareTo(BigDecimal.ZERO) == 0  && paymentInvoiceToPay.getMoveLineGenerated() == null)  {
+				
+				paymentInvoiceToPayToRemove.add(paymentInvoiceToPay);
+				
+			}
+			
+		}
+		
+		paymentVoucher.getPaymentInvoiceToPayList().removeAll(paymentInvoiceToPayToRemove);
+		
+	}
+	
+	
+	
 	/**
 	 * Récupérer les éléments à payer dans le bon ordre
 	 * @return
