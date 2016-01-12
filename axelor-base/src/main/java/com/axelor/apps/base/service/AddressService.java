@@ -43,5 +43,6 @@ public interface AddressService {
 	
 	public Address checkLatLang(Address address, boolean forceUpdate);
 	
+	public String computeFullName(Address address);
 	
 }

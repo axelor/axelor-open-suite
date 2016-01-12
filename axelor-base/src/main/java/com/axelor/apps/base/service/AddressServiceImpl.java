@@ -33,6 +33,7 @@ import com.axelor.apps.base.db.Country;
 import com.axelor.apps.base.db.repo.AddressRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.inject.Beans;
+import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -151,6 +152,19 @@ public class AddressServiceImpl implements AddressService  {
 		}
 		
 		return address;
+		
+	}
+	
+	public String computeFullName(Address address)  {
+		
+		String l2 = address.getAddressL2();
+    	String l3 = address.getAddressL3();
+    	String l4 = address.getAddressL4();
+    	String l5 = address.getAddressL5();
+    	String l6 = address.getAddressL6();
+
+    	return (!Strings.isNullOrEmpty(l2) ? l2 : "") + (!Strings.isNullOrEmpty(l3) ? " "+l3 : "") + (!Strings.isNullOrEmpty(l4) ? " "+l4 : "")
+    			+ (!Strings.isNullOrEmpty(l5) ? " "+l5 : "") + (!Strings.isNullOrEmpty(l6) ? " "+l6 : "");
 		
 	}
 	
