@@ -18,7 +18,7 @@
 package com.axelor.exception;
 
 /**
- * Exception spécifique Axelor.
+ * Exception specific to Axelor.
  */
 public class AxelorException extends Exception {
 	
@@ -27,42 +27,63 @@ public class AxelorException extends Exception {
 	private int category;
 
 	/**
-	 * Constructeur par défaut.
+	 * Default constructor
 	 */
 	public AxelorException() {
 	}
 
 	/**
-	 * Créer une exception avec son message et son type.
+	 * Create an exception with his message and his type.
 	 * 
 	 * @param message
-	 * 		Le message de l'exception
+	 * 		The exception message
 	 * @param category
 	 * <ul>
-	 * <li>1: Champ manquant</li>
-	 * <li>2: Clef non unique</li>
-	 * <li>3: Aucune valeur retournée</li>
-	 * <li>4: Problème de configuration</li>
-	 * <li>5: Incohérence</li>
+	 * <li>1: Missing field</li>
+	 * <li>2: No unique key</li>
+	 * <li>3: No value</li>
+	 * <li>4: configuration error</li>
+	 * <li>5: Inconsistency</li>
 	 * </ul>
 	 */
 	public AxelorException(String message, int category, Object... messageArgs) {
-		super( String.format(message, messageArgs) );
+		super(formatMessage(message, messageArgs));
+		
 		this.category = category;
 	}
 
+	
 	/**
-	 * Créer une exception avec sa cause et son type.
+	 * Format the message with the arguments passed in parameters
 	 * 
+	 * @param message
+	 * 			The message to format
+	 * @param messageArgs
+	 * 			The arguments
+	 * @return
+	 */
+	public static String formatMessage(String message, Object... messageArgs)  {
+		
+		if(messageArgs.length > 0)  {
+			return String.format(message, messageArgs);
+		}
+		
+		return message;
+	}
+	
+	
+	/**
+	 *  Create an exception with his cause and his type.	
+	 *    
 	 * @param cause
-	 * 		La cause de l'exception 
+	 * 		The exception cause
 	 * @param category
 	 * <ul>
-	 * <li>1: Champ manquant</li>
-	 * <li>2: Clef non unique</li>
-	 * <li>3: Aucune valeur retournée</li>
-	 * <li>4: Problème de configuration</li>
-	 * <li>5: Incohérence</li>
+	 * <li>1: Missing field</li>
+	 * <li>2: No unique key</li>
+	 * <li>3: No value</li>
+	 * <li>4: configuration error</li>
+	 * <li>5: Inconsistency</li>
 	 * </ul>
 	 * 
 	 * @see Throwable
@@ -73,19 +94,20 @@ public class AxelorException extends Exception {
 	}
 
 	/**
-	 * Créer une exception avec son message, sa cause et son type.
+	 *  Create an exception with his message, his cause and his type.	  
 	 * 
 	 * @param message
-	 * 		Le message de l'exception
+	 * 		The exception message
 	 * @param cause
-	 * 		La cause de l'exception 
+	 * 		The exception cause
 	 * @param category
+	 * 		The exception category
 	 * <ul>
-	 * <li>1: Champ manquant</li>
-	 * <li>2: Clef non unique</li>
-	 * <li>3: Aucune valeur retournée</li>
-	 * <li>4: Problème de configuration</li>
-	 * <li>5: Incohérence</li>
+	 * <li>1: Missing field</li>
+	 * <li>2: No unique key</li>
+	 * <li>3: No value</li>
+	 * <li>4: configuration error</li>
+	 * <li>5: Inconsistency</li>
 	 * </ul>
 	 * 
 	 * @see Throwable
@@ -96,16 +118,15 @@ public class AxelorException extends Exception {
 	}
 	
 	/**
-	 * Récupérer la catégorie de l'exception
+	 * Get the category of exception
 	 * 
 	 * @return
-	 * Un entier correspondant à l'une des catégories suivantes :
 	 * <ul>
-	 * <li>1: Champ manquant</li>
-	 * <li>2: Clef non unique</li>
-	 * <li>3: Aucune valeur retournée</li>
-	 * <li>4: Problème de configuration</li>
-	 * <li>5: Incohérence</li>
+	 * <li>1: Missing field</li>
+	 * <li>2: No unique key</li>
+	 * <li>3: No value</li>
+	 * <li>4: configuration error</li>
+	 * <li>5: Inconsistency</li>
 	 * </ul>
 	 */
 	public int getcategory(){
