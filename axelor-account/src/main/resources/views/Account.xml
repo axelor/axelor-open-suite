@@ -6,7 +6,7 @@
     <grid name="account-grid" title="Accounts" model="com.axelor.apps.account.db.Account">
         <field name="code"/>
         <field name="name"/>
-        <field name="accountType"/>
+        <field name="accountType.nameSelect"/>
         <field name="reconcileOk"/>
         <field name="parent" form-view="account-form" grid-view="account-grid"/>
         <field name="company" form-view="company-form" grid-view="company-grid"/>
@@ -30,19 +30,21 @@
         </node>
     </tree>
 
-	<form  onNew="action-account-record-new" name="account-form" title="Account" model="com.axelor.apps.account.db.Account" width="large">
+	<form name="account-form" title="Account" model="com.axelor.apps.account.db.Account" width="large" onNew="action-account-record-new">
 		<panel>
 			<field name="code" colSpan="3" css="bold"/>
 			<field name="name" colSpan="9" css="bold"/>
 			<panel title="Settings" colSpan="12">
-				<field name="accountType"/>
+				<field name="accountType" x-show-icons="edit,select"> 
+					<editor x-viewer="true" x-show-titles="false"><field name="nameSelect" readonly="true"/></editor>
+				</field>
 				<field name="company" widget="SuggestBox" onChange="action-group-account-account-onchange-common" form-view="company-form" grid-view="company-grid"/>
 				<field name="parent" onChange="action-group-account-account-onchange-common" domain="self.company = :company" form-view="account-form" grid-view="account-grid"/>
 				<field name="reconcileOk"/>
 			</panel>
 	   </panel>
 	</form>
-    
+	
     <action-group name="action-group-account-account-onchange-common">
     	<action name="action-account-clean-company"/>
     	<action name="action-account-validate"/>
