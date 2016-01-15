@@ -31,11 +31,11 @@ import com.axelor.apps.base.db.repo.GeneralRepository;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.sale.db.SaleOrderLine;
-import com.axelor.apps.sale.service.SaleOrderLineService;
+import com.axelor.apps.sale.service.SaleOrderLineServiceImpl;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 
-public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineService{
+public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImpl  {
 
 	private static final Logger LOG = LoggerFactory.getLogger(SaleOrderLineServiceSupplyChainImpl.class);
 
@@ -59,7 +59,7 @@ public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineService{
 				&& !saleOrderLine.getSubscriptionList().isEmpty()){
 				amount = amount.multiply(new BigDecimal(saleOrderLine.getSubscriptionList().size())).setScale(IAdministration.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_EVEN);
 			}
-			else{
+			else  {
 				amount = BigDecimal.ZERO;
 			}
 		}
