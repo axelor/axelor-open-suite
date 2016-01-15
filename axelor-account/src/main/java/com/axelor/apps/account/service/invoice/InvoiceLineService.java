@@ -20,42 +20,52 @@ package com.axelor.apps.account.service.invoice;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
+import java.util.Map;
 
 import com.axelor.apps.account.db.AnalyticDistributionLine;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.TaxLine;
+import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.AnalyticDistributionLineService;
+import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.IPriceListLine;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.PriceListLine;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.SupplierCatalog;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.GeneralRepository;
+import com.axelor.apps.base.db.repo.SupplierCatalogRepository;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.PriceListService;
+import com.axelor.apps.base.service.ProductService;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.base.service.tax.AccountManagementService;
 import com.axelor.exception.AxelorException;
+import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 
 public class InvoiceLineService {
 
-	private AccountManagementService accountManagementService;
-	private CurrencyService currencyService;
-	private PriceListService priceListService;
+	protected AccountManagementService accountManagementService;
+	protected CurrencyService currencyService;
+	protected PriceListService priceListService;
 	protected GeneralService generalService;
 	protected AnalyticDistributionLineService analyticDistributionLineService;
+	protected ProductService productService;
 
 	@Inject
-	public InvoiceLineService(AccountManagementService accountManagementService, CurrencyService currencyService, PriceListService priceListService, GeneralService generalService, AnalyticDistributionLineService analyticDistributionLineService)  {
+	public InvoiceLineService(AccountManagementService accountManagementService, CurrencyService currencyService, PriceListService priceListService, 
+			GeneralService generalService, AnalyticDistributionLineService analyticDistributionLineService, ProductService productService)  {
 		
 		this.accountManagementService = accountManagementService;
 		this.currencyService = currencyService;
 		this.priceListService = priceListService;
 		this.generalService = generalService;
 		this.analyticDistributionLineService = analyticDistributionLineService;
+		this.productService = productService;
 		
 	}
 	
@@ -103,18 +113,24 @@ public class InvoiceLineService {
 	}
 
 
-	public BigDecimal getUnitPrice(Invoice invoice, InvoiceLine invoiceLine, boolean isPurchase) throws AxelorException  {
+	public BigDecimal getUnitPrice(Invoice invoice, InvoiceLine invoiceLine, TaxLine taxLine, boolean isPurchase) throws AxelorException  {
 
 		Product product = invoiceLine.getProduct();
-
+		
+		BigDecimal price = null;
+		Currency productCurrency;
+		
 		if(isPurchase)  {
-			return currencyService.getAmountCurrencyConverted(
-				product.getPurchaseCurrency(), invoice.getCurrency(), product.getPurchasePrice(), invoice.getInvoiceDate()).setScale(generalService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
+			price = this.convertUnitPrice(product, taxLine, product.getPurchasePrice(), invoice);
+			productCurrency = product.getPurchaseCurrency();
 		}
 		else  {
-			return currencyService.getAmountCurrencyConverted(
-				product.getSaleCurrency(), invoice.getCurrency(), product.getSalePrice(), invoice.getInvoiceDate()).setScale(generalService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
+			price = this.convertUnitPrice(product, taxLine, product.getSalePrice(), invoice);
+			productCurrency = product.getSaleCurrency();
 		}
+		
+		return currencyService.getAmountCurrencyConverted(
+				productCurrency, invoice.getCurrency(), price, invoice.getInvoiceDate()).setScale(generalService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
 	}
 
 
@@ -156,42 +172,65 @@ public class InvoiceLineService {
 		return priceListService.computeDiscount(unitPrice,discountTypeSelect, discountAmount);
 	}
 
-	public BigDecimal convertUnitPrice(InvoiceLine invoiceLine, Invoice invoice){
-		BigDecimal price = invoiceLine.getPrice();
+	public BigDecimal convertUnitPrice(Product product, TaxLine taxLine, BigDecimal price, Invoice invoice){
+		
+		if(taxLine == null)  {  return price;  }
 
-		if(invoiceLine.getProduct().getInAti() && !invoice.getInAti()){
-			price = price.divide(invoiceLine.getTaxLine().getValue().add(new BigDecimal(1)), 2, BigDecimal.ROUND_HALF_UP);
+		if(product.getInAti() && !invoice.getInAti()){
+			price = price.divide(taxLine.getValue().add(BigDecimal.ONE), 2, BigDecimal.ROUND_HALF_UP);
 		}
-		else if(!invoiceLine.getProduct().getInAti() && invoice.getInAti()){
-			price = price.add(price.multiply(invoiceLine.getTaxLine().getValue()));
+		else if(!product.getInAti() && invoice.getInAti()){
+			price = price.add(price.multiply(taxLine.getValue()));
 		}
 		return price;
 	}
-
-	public BigDecimal convertDiscountAmount(InvoiceLine invoiceLine, Invoice invoice){
+	
+	
+	public Map<String,Object> getDiscount(Invoice invoice, InvoiceLine invoiceLine, BigDecimal price)  {
+		
+		PriceList priceList = invoice.getPriceList();
 		BigDecimal discountAmount = BigDecimal.ZERO;
-		if(invoiceLine.getDiscountTypeSelect() == IPriceListLine.AMOUNT_TYPE_FIXED){
-			discountAmount = invoiceLine.getProduct().getSalePrice().subtract(this.computeDiscount(invoiceLine,invoice));
-			if(invoice.getOperationTypeSelect()<2){
-				discountAmount = invoiceLine.getProduct().getPurchasePrice().subtract(this.computeDiscount(invoiceLine,invoice));
+		Map<String, Object> discounts = null;
+		
+		int computeMethodDiscountSelect = generalService.getGeneral().getComputeMethodDiscountSelect();
+
+		if(priceList != null)  {
+			int discountTypeSelect = 0;
+			
+			PriceListLine priceListLine = this.getPriceListLine(invoiceLine, priceList);
+			if(priceListLine!=null){
+				discountTypeSelect = priceListLine.getTypeSelect();
 			}
-		}
-		else if(invoiceLine.getProduct().getSalePrice().compareTo(BigDecimal.ZERO) != 0){
-			discountAmount = (invoiceLine.getProduct().getSalePrice().subtract(this.computeDiscount(invoiceLine,invoice))).multiply(new BigDecimal(100)).divide(invoiceLine.getProduct().getSalePrice());
-			if(invoice.getOperationTypeSelect()<2 && invoiceLine.getProduct().getPurchasePrice().compareTo(BigDecimal.ZERO) != 0){
-				discountAmount = (invoiceLine.getProduct().getPurchasePrice().subtract(this.computeDiscount(invoiceLine,invoice))).multiply(new BigDecimal(100)).divide(invoiceLine.getProduct().getPurchasePrice());
+
+			discounts = priceListService.getDiscounts(priceList, priceListLine, price);
+			discountAmount = (BigDecimal) discounts.get("discountAmount");
+			
+			if((computeMethodDiscountSelect == GeneralRepository.INCLUDE_DISCOUNT_REPLACE_ONLY && discountTypeSelect == IPriceListLine.TYPE_REPLACE) 
+					|| computeMethodDiscountSelect == GeneralRepository.INCLUDE_DISCOUNT)  {
+				discounts.put("price", priceListService.computeDiscount(price, (int) discounts.get("discountTypeSelect"), discountAmount));
+
 			}
 		}
 
-		if(invoiceLine.getProduct().getInAti() && !invoice.getInAti()){
-			discountAmount = discountAmount.divide(invoiceLine.getTaxLine().getValue().add(new BigDecimal(1)), 2, BigDecimal.ROUND_HALF_UP);
+		if (invoice.getOperationTypeSelect() < InvoiceRepository.OPERATION_TYPE_CLIENT_SALE && discountAmount.compareTo(BigDecimal.ZERO) == 0){
+			List<SupplierCatalog> supplierCatalogList = invoiceLine.getProduct().getSupplierCatalogList();
+			if(supplierCatalogList != null && !supplierCatalogList.isEmpty()){
+				SupplierCatalog supplierCatalog = Beans.get(SupplierCatalogRepository.class).all().filter("self.product = ?1 AND self.minQty <= ?2 AND self.supplierPartner = ?3 ORDER BY self.minQty DESC",invoiceLine.getProduct(),invoiceLine.getQty(),invoice.getPartner()).fetchOne();
+				if(supplierCatalog != null){
+					
+					discounts = productService.getDiscountsFromCatalog(supplierCatalog,price);
+
+					if(computeMethodDiscountSelect != GeneralRepository.DISCOUNT_SEPARATE){
+						discounts.put("price", priceListService.computeDiscount(price, (int) discounts.get("discountTypeSelect"), (BigDecimal) discounts.get("discountAmount")));
+					}
+				}
+			}
 		}
-		else if(!invoiceLine.getProduct().getInAti() && invoice.getInAti()){
-			discountAmount = discountAmount.add(discountAmount.multiply(invoiceLine.getTaxLine().getValue()));
-		}
-		return discountAmount;
+		
+		return discounts;
 	}
-
+	
+	
 	public int getDiscountTypeSelect(Invoice invoice, InvoiceLine invoiceLine){
 		PriceList priceList = invoice.getPriceList();
 		if(priceList != null)  {
@@ -204,5 +243,14 @@ public class InvoiceLineService {
 	
 	public Unit getUnit(Product product, boolean isPurchase){
 		return product.getUnit();
+	}
+	
+	public boolean unitPriceShouldBeUpdate(Invoice invoice, Product product)  {
+		
+		if(product != null && product.getInAti() != invoice.getInAti())  {
+			return true;
+		}
+		return false;
+		
 	}
 }

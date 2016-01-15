@@ -23,16 +23,18 @@ import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.PriceListService;
+import com.axelor.apps.base.service.ProductService;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.base.service.tax.AccountManagementService;
 import com.google.inject.Inject;
 
-public class InvoiceLineSupplychainService extends InvoiceLineService{
+public class InvoiceLineSupplychainService extends InvoiceLineService  {
 	
 	@Inject
-	public InvoiceLineSupplychainService(AccountManagementService accountManagementService, CurrencyService currencyService, PriceListService priceListService, GeneralService generalService, AnalyticDistributionLineService analyticDistributionLineService)  {
+	public InvoiceLineSupplychainService(AccountManagementService accountManagementService, CurrencyService currencyService, PriceListService priceListService, 
+			GeneralService generalService, AnalyticDistributionLineService analyticDistributionLineService, ProductService productService)  {
 		
-		super(accountManagementService, currencyService, priceListService, generalService, analyticDistributionLineService);
+		super(accountManagementService, currencyService, priceListService, generalService, analyticDistributionLineService, productService);
 		
 	}
 	

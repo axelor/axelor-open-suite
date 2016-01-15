@@ -26,7 +26,7 @@
     			<field name="purchaseOrderLine" if-module="axelor-supplychain" form-view="purchase-order-line-form" grid-view="purchase-order-line-grid"/>
 		        <field name="product" onChange="action-group-account-invoice-line-product-onchange" form-view="product-form" grid-view="product-grid"/>
 		        <field name="productName" requiredIf="!isTitleLine"/>
-		        <field name="qty" required="true" onChange="action-invoice-line-method-get-discount,action-invoice-line-method-convert-tax,action-invoice-line-method-compute,action-invoice-line-method-compute-analytic-distribution"/>
+		        <field name="qty" required="true" onChange="action-group-account-invoice-line-qty-onchange"/>
 		        <field name="price" required="true"  onChange="action-invoice-line-method-compute,action-invoice-line-method-compute-analytic-distribution"/>
 		        <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
 		        <field name="priceDiscounted" hidden="true"/>
@@ -34,7 +34,7 @@
 		    	<field name="exTaxTotal" readonly="true"/>
 	    		<field name="inTaxTotal" readonly="true"/>
 				 <panel name="discount" title="Discount" colSpan="12">
-			        <field name="discountTypeSelect" onChange="action-invoice-line-method-compute,action-invoice-line-attrs-discountamount-title,action-invoice-line-attrs-scale-and-precision,action-invoice-line-method-compute-analytic-distribution"/>
+			        <field name="discountTypeSelect" onChange="action-invoice-line-method-compute,action-invoice-line-attrs-discountamount-title,action-invoice-line-method-compute-analytic-distribution"/>
 			        <field name="discountAmount" onChange="action-invoice-line-method-compute,action-invoice-line-method-compute-analytic-distribution" hideIf="discountTypeSelect == 3"/>
 			    </panel>
     		</panel>
@@ -95,11 +95,16 @@
     
     <action-group name="action-group-account-invoice-line-product-onchange">
     	<action name="action-invoice-line-method-get-product-information"/>
-    	<action name="action-invoice-line-method-convert-tax"/>
     	<action name="action-invoice-line-method-compute"/>
     	<action name="action-invoice-line-method-compute-analytic-distribution"/>
     </action-group>
     
+    <action-group name="action-group-account-invoice-line-qty-onchange">
+		<action name="action-invoice-line-method-get-discount"/>
+		<action name="action-invoice-line-method-compute"/>
+		<action name="action-invoice-line-method-compute-analytic-distribution"/>
+	</action-group>
+	
     
     <!--     ACTION RECORDS -->
     
