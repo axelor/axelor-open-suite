@@ -327,7 +327,7 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
 			}
 		}
 
-		if(discountAmount.equals(BigDecimal.ZERO))  {
+		if(discountAmount.compareTo(BigDecimal.ZERO) == 0)  {
 			List<SupplierCatalog> supplierCatalogList = purchaseOrderLine.getProduct().getSupplierCatalogList();
 			if(supplierCatalogList != null && !supplierCatalogList.isEmpty()){
 				SupplierCatalog supplierCatalog = Beans.get(SupplierCatalogRepository.class).all().filter("self.product = ?1 AND self.minQty <= ?2 AND self.supplierPartner = ?3 ORDER BY self.minQty DESC",purchaseOrderLine.getProduct(),purchaseOrderLine.getQty(),purchaseOrder.getSupplierPartner()).fetchOne();

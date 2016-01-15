@@ -169,11 +169,14 @@ public class PurchaseOrderLineController {
 
 			Map<String, Object> discounts = purchaseOrderLineService.getDiscount(purchaseOrder, purchaseOrderLine, price);
 			
-			response.setValue("discountAmount", discounts.get("discountAmount"));
-			response.setValue("discountTypeSelect", discounts.get("discountTypeSelect"));
-			
-			if(discounts.get("price") != null)  {
-				response.setValue("price", (BigDecimal) discounts.get("price"));
+			if(discounts != null)  {
+
+				response.setValue("discountAmount", discounts.get("discountAmount"));
+				response.setValue("discountTypeSelect", discounts.get("discountTypeSelect"));
+				
+				if(discounts.get("price") != null)  {
+					response.setValue("price", (BigDecimal) discounts.get("price"));
+				}
 			}
 		}
 		catch(Exception e) {

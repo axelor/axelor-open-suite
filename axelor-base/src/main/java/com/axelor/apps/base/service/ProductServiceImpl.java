@@ -22,9 +22,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.axelor.apps.base.db.IProductVariant;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.ProductVariant;
@@ -41,8 +38,6 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
 public class ProductServiceImpl implements ProductService  {
-
-	private static final Logger LOG = LoggerFactory.getLogger(ProductServiceImpl.class);
 
 	@Inject
 	private ProductVariantService productVariantService;

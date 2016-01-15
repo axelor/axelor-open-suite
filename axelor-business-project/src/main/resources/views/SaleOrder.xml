@@ -19,7 +19,6 @@
 	
 	<action-group name="action-group-businness-project-saleorder-onload">
 		<action name="action-group-supplychain-saleorder-onload"/>
-		<action name="action-sale-order-attrs-show-project-panel"/>
 	</action-group>
 	
 </object-views>	
