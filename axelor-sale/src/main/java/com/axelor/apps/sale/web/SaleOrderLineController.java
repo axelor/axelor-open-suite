@@ -21,13 +21,7 @@ import java.math.BigDecimal;
 import java.util.Map;
 
 import com.axelor.apps.account.db.TaxLine;
-import com.axelor.apps.base.db.IPriceListLine;
-import com.axelor.apps.base.db.PriceList;
-import com.axelor.apps.base.db.PriceListLine;
 import com.axelor.apps.base.db.Product;
-import com.axelor.apps.base.db.repo.GeneralRepository;
-import com.axelor.apps.base.service.PriceListService;
-import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.service.SaleOrderLineService;
@@ -41,12 +35,6 @@ public class SaleOrderLineController {
 
 	@Inject
 	private SaleOrderLineService saleOrderLineService;
-
-	@Inject
-	private PriceListService priceListService;
-
-	@Inject
-	protected GeneralService generalService;
 
 
 	public void compute(ActionRequest request, ActionResponse response) throws AxelorException {
@@ -125,7 +113,7 @@ public class SaleOrderLineController {
 			response.setValue("unit", saleOrderLineService.getSaleUnit(saleOrderLine));
 			response.setValue("companyCostPrice", saleOrderLineService.getCompanyCostPrice(saleOrder, saleOrderLine));
 
-			Map<String,Object> discounts = this.getDiscount(saleOrder, saleOrderLine, price);
+			Map<String,Object> discounts = saleOrderLineService.getDiscount(saleOrder, saleOrderLine, price);
 			
 			if(discounts != null)  {
 				response.setValue("discountAmount", discounts.get("discountAmount"));
@@ -143,33 +131,6 @@ public class SaleOrderLineController {
 		}
 	}
 	
-	public Map<String,Object> getDiscount(SaleOrder saleOrder, SaleOrderLine saleOrderLine, BigDecimal price)  {
-		
-		PriceList priceList = saleOrder.getPriceList();
-		if(priceList != null)  {
-			int discountTypeSelect = 0;
-			
-			PriceListLine priceListLine = saleOrderLineService.getPriceListLine(saleOrderLine, priceList);
-			if(priceListLine != null){
-				discountTypeSelect = priceListLine.getTypeSelect();
-			}
-			
-			Map<String, Object> discounts = priceListService.getDiscounts(priceList, priceListLine, price);
-			
-			int computeMethodDiscountSelect = generalService.getGeneral().getComputeMethodDiscountSelect();
-			if((computeMethodDiscountSelect == GeneralRepository.INCLUDE_DISCOUNT_REPLACE_ONLY && discountTypeSelect == IPriceListLine.TYPE_REPLACE) 
-					|| computeMethodDiscountSelect == GeneralRepository.INCLUDE_DISCOUNT)  {
-				
-				price = priceListService.computeDiscount(price, (int) discounts.get("discountTypeSelect"), (BigDecimal) discounts.get("discountAmount"));
-				discounts.put("price", price);
-			}
-			return discounts;
-		}
-		
-		return null;
-		
-	}
-
 
 	public void resetProductInformation(ActionResponse response)  {
 
@@ -185,7 +146,6 @@ public class SaleOrderLineController {
 		response.setValue("inTaxTotal", null);
 		response.setValue("companyInTaxTotal", null);
 		response.setValue("companyExTaxTotal", null);
-
 
 	}
 
@@ -203,7 +163,7 @@ public class SaleOrderLineController {
 		try  {
 			BigDecimal price = saleOrderLine.getPrice();
 
-			Map<String,Object> discounts = this.getDiscount(saleOrder, saleOrderLine, price);
+			Map<String,Object> discounts = saleOrderLineService.getDiscount(saleOrder, saleOrderLine, price);
 			
 			if(discounts == null)  {  return;  }
 			
@@ -227,13 +187,13 @@ public class SaleOrderLineController {
 
 		SaleOrder saleOrder = this.getSaleOrder(context);
 
-		if(saleOrder == null || saleOrderLine.getProduct() == null || !this.unitPriceShouldBeUpdate(saleOrder, saleOrderLine.getProduct())) {  return;  }
+		if(saleOrder == null || saleOrderLine.getProduct() == null || !saleOrderLineService.unitPriceShouldBeUpdate(saleOrder, saleOrderLine.getProduct())) {  return;  }
 
 		try  {
 
 			BigDecimal price = saleOrderLineService.getUnitPrice(saleOrder, saleOrderLine, saleOrderLine.getTaxLine());
 
-			Map<String,Object> discounts = this.getDiscount(saleOrder, saleOrderLine, price);
+			Map<String,Object> discounts = saleOrderLineService.getDiscount(saleOrder, saleOrderLine, price);
 			
 			if(discounts != null)  {  
 			
@@ -250,15 +210,6 @@ public class SaleOrderLineController {
 		catch(Exception e)  {
 			response.setFlash(e.getMessage());
 		}
-	}
-	
-	public boolean unitPriceShouldBeUpdate(SaleOrder saleOrder, Product product)  {
-		
-		if(product != null && product.getInAti() != saleOrder.getInAti())  {
-			return true;
-		}
-		return false;
-		
 	}
 	
 	public void emptyLine(ActionRequest request, ActionResponse response){

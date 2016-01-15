@@ -18,6 +18,7 @@
 package com.axelor.apps.sale.service;
 
 import java.math.BigDecimal;
+import java.util.Map;
 
 import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.base.db.PriceList;
@@ -59,9 +60,11 @@ public interface SaleOrderLineService {
 
 	public BigDecimal convertUnitPrice(Product product, TaxLine taxLine, BigDecimal price, SaleOrder saleOrder);
 
-	public BigDecimal convertDiscountAmount(SaleOrderLine saleOrderLine, SaleOrder saleOrder);
+	public Map<String,Object> getDiscount(SaleOrder saleOrder, SaleOrderLine saleOrderLine, BigDecimal price);
 
 	public int getDiscountTypeSelect(SaleOrder saleOrder, SaleOrderLine saleOrderLine);
 	
 	public Unit getSaleUnit(SaleOrderLine saleOrderLine);
+	
+	public boolean unitPriceShouldBeUpdate(SaleOrder saleOrder, Product product);
 }
