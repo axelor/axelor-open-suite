@@ -53,8 +53,7 @@
 		onNew="action-group-purchase-purchase-orderline-onnew"
 		onLoad="action-group-purchase-purchase-orderline-onload" width="large">
 	  <panel>
-		<field name="product"
-			onChange="action-group-purchase-purchase-orderline-product-onchange"
+		<field name="product" onChange="action-group-purchase-purchase-orderline-product-onchange"
 			domain="self.expense = false and (self.endDate = null or self.endDate &gt; :__date__) and self.purchasable = true"  form-view="product-form" grid-view="product-grid"/>
 	    <field name="productName"/>
 	    <field name="qty" onChange="action-group-purchase-purchase-orderline-qty-onchange"/>
@@ -84,9 +83,7 @@
 	    <panel name="deliveryPanel" title="Delivery" hidden="true">
 	      <field name="desiredDelivDate"/>
 	      <field name="estimatedDelivDate"/>	      
-	      <!-- TODO: remove this comment if portlet works well in panel
-	      <dashlet   action="action-purchase-order-line-view-stock-move-line"/>
-	      -->
+	      <panel-dashlet action="action-purchase-order-line-view-stock-move-line" colSpan="12"/>
 	    </panel>
 	    <panel name="projectTaskPanel" if="__config__.general.getProjectTaskPurchaseOrderLines()" title="Project/Task" if-module="axelor-business-project">
 	      <field name="projectTask" form-view="project-task-form" grid-view="project-task-grid"/>
@@ -148,15 +145,12 @@
 	<action-group name="action-group-purchase-purchase-orderline-product-onchange">
 		<action name="action-purchase-order-line-attrs-delivery-panel"/>
 		<action name="action-purchase-order-line-method-get-product-information"/>
-		<action name="action-purchase-order-line-method-convert-tax"/>
 		<action name="action-purchase-order-line-method-compute"/>
-		<action name="action-purchase-order-line-record-in-tax-total"/>
 		<action name="action-purchase-order-line-method-compute-analytic-distribution" if="__config__.general.getManageAnalyticAccounting()"/>
 	</action-group>
 	
 	<action-group name="action-group-purchase-purchase-orderline-qty-onchange">
 		<action name="action-purchase-order-line-method-get-discount"/>
-		<action name="action-purchase-order-line-method-convert-tax"/>
 		<action name="action-purchase-order-line-method-compute"/>
 		<action name="action-purchase-order-line-method-compute-analytic-distribution" if="__config__.general.getManageAnalyticAccounting()"/>
 	</action-group>
