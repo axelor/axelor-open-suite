@@ -140,7 +140,7 @@ public class AccountChartService{
 
 		});
 		importer.setContext(context);
-		importer.run(null);
+		importer.run();
 	}
 
 
