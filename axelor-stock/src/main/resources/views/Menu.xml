@@ -4,7 +4,7 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
 	
 	<menuitem name="stock-root" title="Stock management"  order="-85"
-	icon="fa-cubes" groups="admins,ERP"/>
+	icon="fa-cubes" groups="admins,ERP" icon-background="#b6473f"/>
 		
 	<menuitem name="stock-root-custdeliveries" parent="stock-root"
 		title="Customer Deliveries" action="stock.root.custdeliveries" />

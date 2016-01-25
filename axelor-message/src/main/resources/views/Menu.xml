@@ -7,8 +7,8 @@
 <!-- 		 groups="admins,ERP"/> -->
 
 <!-- 	title-f="Messagerie" -->
-	<menuitem name="mail-root" title="Messaging" order="-70" icon="fa-envelope-o"
-		 groups="admins,ERP"/>
+	<menuitem name="mail-root" title="Messaging" order="-70"
+	icon="fa-envelope-o" groups="admins,ERP" icon-background="#3f6bb9"/>
 
 	<menuitem name="mail-conf" parent="mail-root"
 		title="Configuration"  order="-80" />

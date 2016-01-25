@@ -5,7 +5,7 @@
 	
 	
 	<menuitem name="sc-root-purchase" title="Purchases" order="-105" 
-		icon="fa-shopping-cart" groups="admins,ERP"/>
+		icon="fa-shopping-cart" groups="admins,ERP" icon-background="#b6473f"/>
 		
 	<menuitem name="sc-root-purchase-suppliers" parent="sc-root-purchase" order="-200"
 		title="Suppliers" action="sc.root.purchase.suppliers" />

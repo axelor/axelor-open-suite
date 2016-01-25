@@ -2,7 +2,8 @@
 <object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
 
-	<menuitem name="hr-root" order="-104" title="Human resources" icon="fa-sitemap" groups="admins,ERP"/> 
+	<menuitem name="hr-root" order="-104" title="Human resources" icon="fa-sitemap" 
+	    groups="admins,ERP" icon-background="#84429f"/> 
 	
 	<menuitem name="timesheet-root" parent="hr-root"
     	title="Timesheets"/>

@@ -21,9 +21,18 @@
 <!-- 		<view type="grid" name="partner-list-map-grid" /> -->
 <!-- 		<view type="form" name="partner-list-map-form" /> -->
 <!-- 	</action-view> -->
+	
+	<menuitem id="abs-menu-mail" name="menu-mail" order="-110"
+    title="Messaging" icon="fa-envelope" icon-background="#84429f"/>
+	
+	<menuitem id="abs-menu-dms" name="menu-dms" order="-109"
+    title="Documents" icon="fa-archive" icon-background="#3f6bb9"/>
+	
+	<menuitem id="abs-menu-admin" name="menu-admin" title="Administration" order="100" 
+	    groups="admins" icon="fa-wrench" icon-background="#2fa042" />
 
 	<menuitem name="referential-root" title="Referential" order="-109"
-		icon="fa-cube" groups="admins,ERP,CRM"/>
+		icon="fa-cube" groups="admins,ERP,CRM" icon-background="#31b4a9"/>
 		
 	<menuitem name="referential-root-partners" parent="referential-root"
 		title="Partners" action="referential.root.partners" order="10"/>
@@ -240,7 +249,7 @@
 	</action-view>
 
 	<menuitem name="admin-root" title="Application Config" order="-60"
-		icon="fa-gear" groups="admins,ERP,CRM"/>
+		icon="fa-gear" groups="admins,ERP,CRM" icon-background="#31b4a9"/>
 
 	<menuitem name="admin-root-organisation" parent="admin-root" title="Organization"/>
 

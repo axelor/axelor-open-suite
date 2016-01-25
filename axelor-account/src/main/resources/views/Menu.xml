@@ -3,10 +3,8 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
 
-
-
 	<menuitem name="invoice-root" title="Invoicing" order="-100"
-		icon="fa-list-alt" groups="admins,ERP"/>
+		icon="fa-list-alt" groups="admins,ERP" icon-background="#31b4a9"/>
 		
 	<menuitem name="invoice-root-cust-invoice" parent="invoice-root-sale"
 		title="New cust. invoice" action="invoice.root.cust.invoice" />
@@ -123,7 +121,7 @@
 		title="Reportings"/>
 
 	<menuitem name="account-root" title="Accounting" order="-90"
-		icon="fa-calculator" groups="admins,ERP"/>
+		icon="fa-calculator" groups="admins,ERP" icon-background="#2fa042"/>
 
 
 	<menuitem name="account-root-move" parent="account-root"
