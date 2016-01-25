@@ -6,9 +6,9 @@
 	<form name="wizard-client-form" title="My space" model="com.axelor.apps.base.db.Wizard">
 		<field name="id" hidden="true"/>
 	    <break/>
-		<button name="mySaleOrder"   title="My sale orders" onClick="wizard-client-form-open-my-sale-order" css="img-button client-img-menu" icon="img/128px/clientMenuSo_128px.jpg"/>
-	    <button name="myInvoices"   title="My invoices" onClick="wizard-client-form-open-my-invoices" css="img-button client-img-menu" icon="img/128px/clientMenuInvoice_128px.jpg"/>
-		<button name="myTickets"   title="My tickets" onClick="wizard-client-form-open-my-tickets" css="img-button client-img-menu" icon="img/128px/clientMenuTicket_128px.jpg"/>
+		<button name="mySaleOrder"   title="My sale orders" onClick="wizard-client-form-open-my-sale-order" css="img-button client-img-menu" icon="img/128px/clientMenuSo_128px.jpg" if-module="axelor-sale"/>
+	    <button name="myInvoices"   title="My invoices" onClick="wizard-client-form-open-my-invoices" css="img-button client-img-menu" icon="img/128px/clientMenuInvoice_128px.jpg" if-module="axelor-account"/>
+		<button name="myTickets"   title="My tickets" onClick="wizard-client-form-open-my-tickets" css="img-button client-img-menu" icon="img/128px/clientMenuTicket_128px.jpg" if-module="axelor-crm"/>
 	</form>
 	
 	<action-view name="wizard-client-form-open-my-sale-order" title="My sale orders"
@@ -39,4 +39,8 @@
 		<context name="_myPartner" expr="eval:__user__.partner"/>
 	</action-view>
 	
+	<action-view name="wizard-client-view" title="My space" model="com.axelor.apps.base.db.Wizard">
+ 		<view type="form" name="wizard-client-form"/>
+ 	</action-view>
+ 	
 </object-views>
