@@ -14,7 +14,7 @@
     <string name="addressL5" title="Distribution precisions (POB, Village...)"/>
     <string name="addressL6" title="Zip/City"/>
     <many-to-one name="addressL7Country" ref="com.axelor.apps.base.db.Country" title="Country"/>
-    <many-to-one name="commune" ref="Commune" title="Commune"/>
+    <many-to-one name="city" ref="City" title="City"/>
     <decimal name="latit" title="Latitude" precision="38" scale="18" />
     <decimal name="longit" title="Longitude" precision="38" scale="18" />
     <integer name="zoom" title="Default zoom"/>

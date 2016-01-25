@@ -5,9 +5,9 @@
 
   <module name="base" package="com.axelor.apps.base.db"/>
 
-  <entity name="Commune" lang="java" cachable="true">
+  <entity name="City" lang="java" cachable="true">
   
-    <string name="name" title="Commune name" required="true"/>
+    <string name="name" title="Name" required="true"/>
     <string name="artmin" title="Artmin" selection="iterritory.artmin.select"/>
     <many-to-one name="canton" ref="Canton" title="Canton Code"/>
     <string name="inseeCode" title="National Code" index="true" />

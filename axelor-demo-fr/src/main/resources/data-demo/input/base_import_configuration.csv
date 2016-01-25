@@ -2,7 +2,7 @@ name;typeSelect;bindMetaFile.fileName;dataMetaFile.fileName
 Import Addresses;csv;import-config-address.xml;import-data-address.csv
 Impot BankDetails;csv;import-config-bank-details.xml;import-data-bank-details.csv
 Import Candidates;csv;import-config-candidate.xml;import-data-candidate.csv
-Import Communes;csv;import-config-commune.xml;import-data-commune.csv
+Import Cities;csv;import-config-city.xml;import-data-city.csv
 Import Degrees;csv;import-config-degree.xml;import-data-degree.csv
 Import Groups;csv;import-config-group.xml;import-data-group.csv
 Importing Keywords;csv;import-config-keyword.xml;import-data-keyword.csv

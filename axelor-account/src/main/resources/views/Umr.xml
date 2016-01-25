@@ -9,7 +9,7 @@
         <field name="debtorAddress" form-view="address-form" grid-view="address-grid"/>
         <field name="creationDate"/>
         <field name="mandateSignatureDate"/>
-        <field name="mandateSignatureCommune" form-view="commune-form" grid-view="commune-grid"/>
+        <field name="mandateSignatureCity" form-view="city-form" grid-view="city-grid"/>
     </grid>
     
     <form name="umr-form" title="Unique Mandate References" model="com.axelor.apps.account.db.Umr"  
@@ -20,7 +20,7 @@
 	        <field name="debtorAddress" form-view="address-form" grid-view="address-grid"/>
 	        <field name="creationDate"/>
 	        <field name="mandateSignatureDate"/>
-	        <field name="mandateSignatureCommune" form-view="commune-form" grid-view="commune-grid"/>
+	        <field name="mandateSignatureCity" form-view="city-form" grid-view="city-grid"/>
        </panel>
     </form>
     

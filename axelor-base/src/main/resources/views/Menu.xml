@@ -263,14 +263,14 @@
 		<view type="form" name="territory-form"/>
 	</action-view>
 
-	<menuitem name="admin-root-organisation-territory-commune"
-		parent="admin-root-organisation" title="Cities/Communes"
-		action="admin.root.organisation.territory.commune" />
+	<menuitem name="admin-root-organisation-territory-city"
+		parent="admin-root-organisation" title="Cities"
+		action="admin.root.organisation.territory.city" />
 
-	<action-view name="admin.root.organisation.territory.commune"
-		title="Cities/Communes" model="com.axelor.apps.base.db.Commune" >
-		<view type="grid" name="commune-grid"/>
-		<view type="form" name="commune-form"/>
+	<action-view name="admin.root.organisation.territory.city"
+		title="Cities" model="com.axelor.apps.base.db.City" >
+		<view type="grid" name="city-grid"/>
+		<view type="form" name="city-form"/>
 		<context name="searchFields" expr="name"/>
 	</action-view>
 

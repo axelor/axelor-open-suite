@@ -12,7 +12,7 @@
     <many-to-one name="debtorAddress" ref="com.axelor.apps.base.db.Address" title="Debtor address" initParam="true"/>
     <date name="creationDate" title="Creation date" initParam="true"/>
     <date name="mandateSignatureDate" title="Mandate signature date" initParam="true"/>
-    <many-to-one name="mandateSignatureCommune" ref="com.axelor.apps.base.db.Commune" title="Mandate signature city" initParam="true"/>
+    <many-to-one name="mandateSignatureCity" ref="com.axelor.apps.base.db.City" title="Mandate signature city" initParam="true"/>
     <many-to-one name="partner" ref="com.axelor.apps.base.db.Partner" title="Partner" initParam="true"/>
     
     <string name="lastNumberIbanBic" hidden="true" />

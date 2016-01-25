@@ -15,7 +15,7 @@
 	        <field name="name"/>
 	        <field name="region" grid-view="region-grid" form-view="region-form"/>
         </panel>
-        <panel-related field="communeList" colSpan="12" form-view="commune-form" grid-view="commune-grid"/>
+        <panel-related field="cityList" colSpan="12" form-view="city-form" grid-view="city-grid"/>
         <panel-related field="cantonList" colSpan="12" form-view="canton-form" grid-view="canton-grid"/>
     </form>
     
