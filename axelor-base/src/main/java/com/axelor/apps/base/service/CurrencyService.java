@@ -22,6 +22,8 @@ import java.math.RoundingMode;
 import java.util.List;
 
 import org.joda.time.LocalDate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.CurrencyConversionLine;
@@ -34,6 +36,8 @@ import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 
 public class CurrencyService {
+	
+	private final Logger log = LoggerFactory.getLogger(getClass());
 
 	protected GeneralService generalService;
 
@@ -77,14 +81,29 @@ public class CurrencyService {
 
 		List<CurrencyConversionLine> currencyConversionLineList = generalService.getCurrencyConfigurationLineList();
 
-		if(currencyConversionLineList != null)  {
-			for(CurrencyConversionLine currencyConversionLine : currencyConversionLineList)  {
-				if(currencyConversionLine.getStartCurrency().equals(startCurrency) && currencyConversionLine.getEndCurrency().equals(endCurrency) &&
-						currencyConversionLine.getFromDate().isBefore(localDate) && (currencyConversionLine.getToDate() == null || currencyConversionLine.getToDate().isAfter(localDate)))  {
-					return currencyConversionLine;
-				}
+		if(currencyConversionLineList == null)  {
+			return null;
+		}
+		
+		log.debug("Currency from: {}, Currency to: {}, localDate: {}", startCurrency, endCurrency, localDate);
+		
+		for(CurrencyConversionLine ccl : currencyConversionLineList)  {
+			
+			String cclStartCode = ccl.getStartCurrency().getCode();
+			String cclEndCode = ccl.getEndCurrency().getCode();
+			String startCode = startCurrency.getCode();
+			String endCode = endCurrency.getCode();
+			LocalDate fromDate = ccl.getFromDate();
+			LocalDate toDate = ccl.getToDate();
+			
+			if(cclStartCode.equals(startCode) && cclEndCode.equals(endCode)){
+					if((fromDate.isBefore(localDate) || fromDate.equals(localDate)) 
+					&& (toDate == null || toDate.isAfter(localDate) || toDate.isEqual(localDate)))  {
+						return ccl;
+					}
 			}
 		}
+		
 		return null;
 	}
 

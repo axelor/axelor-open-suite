@@ -258,18 +258,18 @@
     	
     </action-record>
     
-	<action-record name="action-convert-lead-wizard-address" model="com.axelor.apps.base.db.Wizard">
-	    <field name="$primaryAddress" expr="eval: _lead.primaryAddress"/>
-    	<field name="$primaryCity" expr="eval: _lead.primaryCity"/>
-    	<field name="$primaryState" expr="eval: _lead.primaryState"/>
-    	<field name="$primaryPostalCode" expr="eval: _lead.primaryPostalCode"/>
-    	<field name="$primaryCountry" expr="eval: _lead.primaryCountry"/>
-    	<field name="$otherAddress" expr="eval: _lead.otherAddress"/>
-    	<field name="$otherCity" expr="eval: _lead.otherCity"/>
-    	<field name="$otherState" expr="eval: _lead.otherState"/>
-    	<field name="$otherPostalCode" expr="eval: _lead.otherPostalCode"/>
-    	<field name="$otherCountry" expr="eval: _lead.otherCountry"/>
-	</action-record>
+<!-- 	<action-record name="action-convert-lead-wizard-address" model="com.axelor.apps.base.db.Wizard"> -->
+<!-- 	    <field name="$primaryAddress" expr="eval: _lead.primaryAddress"/> -->
+<!--     	<field name="$primaryCity" expr="eval: _lead.primaryCity"/> -->
+<!--     	<field name="$primaryState" expr="eval: _lead.primaryState"/> -->
+<!--     	<field name="$primaryPostalCode" expr="eval: _lead.primaryPostalCode"/> -->
+<!--     	<field name="$primaryCountry" expr="eval: _lead.primaryCountry"/> -->
+<!--     	<field name="$otherAddress" expr="eval: _lead.otherAddress"/> -->
+<!--     	<field name="$otherCity" expr="eval: _lead.otherCity"/> -->
+<!--     	<field name="$otherState" expr="eval: _lead.otherState"/> -->
+<!--     	<field name="$otherPostalCode" expr="eval: _lead.otherPostalCode"/> -->
+<!--     	<field name="$otherCountry" expr="eval: _lead.otherCountry"/> -->
+<!-- 	</action-record> -->
 	
 	<form name="contact-lead-converted-form" title="Contact" model="com.axelor.apps.base.db.Partner"
 		onNew="action-partner-contact-record-default"

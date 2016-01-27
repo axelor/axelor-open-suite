@@ -4,7 +4,7 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
 
 	<menuitem name="crm-root" title="CRM" order="-108"
-		icon="fa-users" groups="admins,ERP,CRM" icon-background="#2fa042"/>
+		icon="fa-user" groups="admins,ERP,CRM" icon-background="#2fa042"/>
 
 	<menuitem name="crm-root-create" parent="crm-root"
 		title="Create"/>

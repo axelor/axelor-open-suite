@@ -165,8 +165,8 @@
 	 
 	    <panel sidebar="true" title="Actions" >
 	        <button name="validate" title="Validate" showIf="statusSelect == 1" onClick="save,action-invoice-method-compute,action-invoice-method-validate,save"/>
-	        <button name="cancel" title="Cancel" onClick="save,action-invoice-method-cancel,save"/>
-	        <button name="ventilate" title="Ventilate" showIf="statusSelect == 2" onClick="save,action-invoice-method-ventilate,save"/>
+	        <button name="cancel" title="Cancel" onClick="save,action-invoice-method-cancel,save" prompt="Are you sure you want to cancel the invoice ?"/>
+	        <button name="ventilate" title="Ventilate" showIf="statusSelect == 2" onClick="save,action-invoice-method-ventilate,save" prompt="Are you sure you want to ventilate the invoice ?"/>
 	        <button name="draft" title="Draft" showIf="statusSelect == 4" onClick="save,action-invoice-record-draft,save"/>
       	  	<button name="addPayment" title="Register payment" showIf="statusSelect == 3 &amp;&amp; companyInTaxTotalRemaining &gt; 0" colSpan="12" onClick="save,action-invoice-view-register-payment"/>
 	        <field name="statusSelect"/>
@@ -444,7 +444,6 @@
     <action-method name="action-invoice-method-get-journal">
         <call class="com.axelor.apps.account.web.InvoiceController" method="getJournal"/>
     </action-method>
-    
     
     <action-view name="action-invoice-view-register-payment" title="Register a payment" model="com.axelor.apps.account.db.InvoicePayment">
     	<view type="form" name="invoice-payment-form"/>

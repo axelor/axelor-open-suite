@@ -1,8 +1,8 @@
 "importId";"general.id";"startCurrency.code";"endCurrency.code";"exchangeRate";"fromDate";"toDate"
-1;1;"EUR";"USD";"1.3008";"TODAY";"TODAY[+1M]"
-2;1;"EUR";"GBP";"0.8533";"TODAY";"TODAY[+1M]"
-3;1;"EUR";"CNY";"8.0321";"TODAY";"TODAY[+1M]"
-4;1;"EUR";"JPY";"129.167";"TODAY";"TODAY[+1M]"
+1;1;"EUR";"USD";"1.3008";"TODAY[-6M]";"TODAY[-1D]"
+2;1;"EUR";"GBP";"0.8533";"TODAY[-6M]";"TODAY[-1D]"
+3;1;"EUR";"CNY";"8.0321";"TODAY[-6M]";"TODAY[-1D]"
+4;1;"EUR";"JPY";"129.167";"TODAY[-6M]";"TODAY[-1D]"
 5;1;"EUR";"USD";"1.3168";"TODAY";
 6;1;"EUR";"GBP";"0.8412";"TODAY";
 7;1;"EUR";"CNY";"8.0406";"TODAY";

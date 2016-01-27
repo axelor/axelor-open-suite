@@ -30,9 +30,9 @@
 	<input file="account_taxEquiv.csv" separator=";" type="com.axelor.apps.account.db.TaxEquiv" search="self.fiscalPosition.code = :fiscalPosition_code AND self.fromTax.code = :fromTax_code AND self.toTax.code = :toTax_code" />
 	
 	<input file="account_taxAccount.csv" separator=";" type="com.axelor.apps.account.db.TaxAccount">
-		<bind to="company" search="self.id = :_companyId" update="true" />
+		<bind to="company" search="self.importId = :company_id" update="true" />
        	<bind to="tax" search="self.code = :tax_code" update="true" />
-		<bind to="account" search="self.code = :account_code and self.company.id = :_companyId" update="true" />
+		<bind to="account" search="self.code = :account_code and self.company.id = :company_id" update="true" />
 	</input>
 	
 	<input file="account_tax.csv" separator=";" update="true" search="self.importId = :importId" type="com.axelor.apps.account.db.Tax">

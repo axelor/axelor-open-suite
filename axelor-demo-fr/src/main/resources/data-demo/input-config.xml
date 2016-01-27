@@ -31,9 +31,10 @@
     	<bind to="toBeAdded" column="toBeAdded" eval="toBeAdded?.empty ? '1' : toBeAdded"/>
     </input>
 	
-	<input file="base_import_configuration.csv" separator=";" type="com.axelor.apps.base.db.ImportConfiguration">
-		<bind to="user" search="self.code = 'admin' " update="true" />
-	</input>	
+<!-- 	<input file="base_import_configuration.csv" separator=";" type="com.axelor.apps.base.db.ImportConfiguration"> -->
+<!-- 		<bind to="user" search="self.code = 'admin' " update="true" /> -->
+<!-- 	</input>	 -->
+
 	<input file="base_birtTemplate.csv" separator=";" type="com.axelor.apps.base.db.BirtTemplate" search="self.importId = :importId" />
 	
 	<input file="base_birtTemplateParameter.csv" separator=";" type="com.axelor.apps.base.db.BirtTemplateParameter" search="self.importId = :importId"  />

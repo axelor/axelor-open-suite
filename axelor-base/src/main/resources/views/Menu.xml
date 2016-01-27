@@ -23,7 +23,7 @@
 <!-- 	</action-view> -->
 	
 	<menuitem id="abs-menu-mail" name="menu-mail" order="-110"
-    title="Messaging" icon="fa-envelope" icon-background="#84429f"/>
+    title="Messaging" icon="fa-users" icon-background="#84429f"/>
 	
 	<menuitem id="abs-menu-dms" name="menu-dms" order="-109"
     title="Documents" icon="fa-archive" icon-background="#3f6bb9"/>
