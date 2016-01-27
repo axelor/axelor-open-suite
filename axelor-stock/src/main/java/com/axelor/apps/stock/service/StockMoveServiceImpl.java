@@ -283,16 +283,21 @@ public class StockMoveServiceImpl implements StockMoveService {
 		stockMoveRepo.save(stockMove);
 		if(!stockMove.getIsWithBackorder() && !stockMove.getIsWithReturnSurplus())
 			return null;
+
 		if(stockMove.getIsWithBackorder() && this.mustBeSplit(stockMove.getStockMoveLineList()))  {
 			StockMove newStockMove = this.copyAndSplitStockMove(stockMove);
-			newStockSeq = newStockMove.getStockMoveSeq();
+			if (newStockMove != null)
+				newStockSeq = newStockMove.getStockMoveSeq();
 		}
+	
 		if(stockMove.getIsWithReturnSurplus() && this.mustBeSplit(stockMove.getStockMoveLineList()))  {
 			StockMove newStockMove = this.copyAndSplitStockMoveReverse(stockMove, true);
-			if(newStockSeq != null)
-				newStockSeq = newStockSeq+" "+newStockMove.getStockMoveSeq();
-			else
-				newStockSeq = newStockMove.getStockMoveSeq();
+			if (newStockMove != null){
+				if(newStockSeq != null)
+					newStockSeq = newStockSeq+" "+newStockMove.getStockMoveSeq();
+				else
+					newStockSeq = newStockMove.getStockMoveSeq();
+			}
 		}
 
 		return newStockSeq;
@@ -332,41 +337,31 @@ public class StockMoveServiceImpl implements StockMoveService {
 				newStockMove.addStockMoveLineListItem(newStockMoveLine);
 			}
 		}
-
-		newStockMove.setStatusSelect(StockMoveRepository.STATUS_PLANNED);
-		newStockMove.setRealDate(null);
-		newStockMove.setStockMoveSeq(this.getSequenceStockMove(newStockMove.getTypeSelect(), newStockMove.getCompany()));
-		newStockMove.setName(newStockMove.getStockMoveSeq() + " " + I18n.get(IExceptionMessage.STOCK_MOVE_7) + " " + stockMove.getStockMoveSeq() + " )" );
-
-		return stockMoveRepo.save(newStockMove);
-
+		
+		if (newStockMove.getStockMoveLineList() != null && !newStockMove.getStockMoveLineList().isEmpty()){
+			newStockMove.setStatusSelect(StockMoveRepository.STATUS_PLANNED);
+			newStockMove.setRealDate(null);
+			newStockMove.setStockMoveSeq(this.getSequenceStockMove(newStockMove.getTypeSelect(), newStockMove.getCompany()));
+			newStockMove.setName(newStockMove.getStockMoveSeq() + " " + I18n.get(IExceptionMessage.STOCK_MOVE_7) + " " + stockMove.getStockMoveSeq() + " )" );
+	
+			return stockMoveRepo.save(newStockMove);
+		}
+		
+		return null;
+			
 	}
 
 
 	@Override
 	public StockMove copyAndSplitStockMoveReverse(StockMove stockMove, boolean split) throws AxelorException  {
 
+		//Creates a new reversed StockMove
 		StockMove newStockMove = new StockMove();
 
-		newStockMove.setCompany(stockMove.getCompany());
-		newStockMove.setPartner(stockMove.getPartner());
-		newStockMove.setFromLocation(stockMove.getToLocation());
-		newStockMove.setToLocation(stockMove.getFromLocation());
-		newStockMove.setEstimatedDate(stockMove.getEstimatedDate());
-		newStockMove.setFromAddress(stockMove.getFromAddress());
-		if(stockMove.getToAddress() != null)
-			newStockMove.setFromAddress(stockMove.getToAddress());
-		if(stockMove.getTypeSelect() == 3)
-			newStockMove.setTypeSelect(2);
-		if(stockMove.getTypeSelect() == 2)
-			newStockMove.setTypeSelect(3);
-		if(stockMove.getTypeSelect() == 1)
-			newStockMove.setTypeSelect(1);
-		newStockMove.setStatusSelect(1);
-		newStockMove.setStockMoveSeq(getSequenceStockMove(newStockMove.getTypeSelect(),newStockMove.getCompany()));
 
+		//Generates every line for the reversed StockMove
 		for(StockMoveLine stockMoveLine : stockMove.getStockMoveLineList())  {
-
+			
 			if(stockMoveLine.getRealQty().compareTo(stockMoveLine.getQty()) > 0)   {
 				StockMoveLine newStockMoveLine = JPA.copy(stockMoveLine, false);
 
@@ -379,13 +374,32 @@ public class StockMoveServiceImpl implements StockMoveService {
 				newStockMove.addStockMoveLineListItem(newStockMoveLine);
 			}
 		}
+		
+		//If lines have been generated, adds them to the reversed StockMove and returns it
+		if (newStockMove.getStockMoveLineList() != null &&!newStockMove.getStockMoveLineList().isEmpty()){
+			newStockMove.setCompany(stockMove.getCompany());
+			newStockMove.setPartner(stockMove.getPartner());
+			newStockMove.setFromLocation(stockMove.getToLocation());
+			newStockMove.setToLocation(stockMove.getFromLocation());
+			newStockMove.setEstimatedDate(stockMove.getEstimatedDate());
+			newStockMove.setFromAddress(stockMove.getFromAddress());
+			if(stockMove.getToAddress() != null)
+				newStockMove.setFromAddress(stockMove.getToAddress());
+			if(stockMove.getTypeSelect() == 3)
+				newStockMove.setTypeSelect(2);
+			if(stockMove.getTypeSelect() == 2)
+				newStockMove.setTypeSelect(3);
+			if(stockMove.getTypeSelect() == 1)
+				newStockMove.setTypeSelect(1);
+			newStockMove.setStatusSelect(StockMoveRepository.STATUS_PLANNED);
+			newStockMove.setRealDate(null);
+			newStockMove.setStockMoveSeq(this.getSequenceStockMove(newStockMove.getTypeSelect(), newStockMove.getCompany()));
+			newStockMove.setName(newStockMove.getStockMoveSeq() + " " + I18n.get(IExceptionMessage.STOCK_MOVE_8) + " " + stockMove.getStockMoveSeq() + " )" );
+			
+			return stockMoveRepo.save(newStockMove);
+		}
 
-		newStockMove.setStatusSelect(StockMoveRepository.STATUS_PLANNED);
-		newStockMove.setRealDate(null);
-		newStockMove.setStockMoveSeq(this.getSequenceStockMove(newStockMove.getTypeSelect(), newStockMove.getCompany()));
-		newStockMove.setName(newStockMove.getStockMoveSeq() + " " + I18n.get(IExceptionMessage.STOCK_MOVE_8) + " " + stockMove.getStockMoveSeq() + " )" );
-
-		return stockMoveRepo.save(newStockMove);
+		return null;
 
 	}
 
@@ -550,8 +564,10 @@ public class StockMoveServiceImpl implements StockMoveService {
 	public void generateReversion(StockMove stockMove) throws AxelorException  {
 
 		LOG.debug("Creation d'un mouvement de stock inverse pour le mouvement de stock: {} ", new Object[] { stockMove.getStockMoveSeq() });
-
-		stockMoveRepo.save(this.copyAndSplitStockMoveReverse(stockMove, false));
+		StockMove newStockMove = this.copyAndSplitStockMoveReverse(stockMove, false);
+		
+		if (newStockMove != null)
+			stockMoveRepo.save(newStockMove);
 
 	}
 
