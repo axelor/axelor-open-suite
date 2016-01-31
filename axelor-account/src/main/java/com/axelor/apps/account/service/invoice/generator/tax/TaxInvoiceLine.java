@@ -18,6 +18,7 @@
 package com.axelor.apps.account.service.invoice.generator.tax;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -77,7 +78,7 @@ public class TaxInvoiceLine extends TaxGenerator {
 						invoiceLineTax.setExTaxBase(invoiceLineTax.getExTaxBase().add(invoiceLine.getExTaxTotal()));
 
 						// Dans la devise de la société
-						invoiceLineTax.setCompanyExTaxBase(invoiceLineTax.getCompanyExTaxBase().add(invoiceLine.getCompanyExTaxTotal()));
+						invoiceLineTax.setCompanyExTaxBase(invoiceLineTax.getCompanyExTaxBase().add(invoiceLine.getCompanyExTaxTotal()).setScale(2, RoundingMode.HALF_UP));
 
 					}
 					else {
@@ -89,7 +90,7 @@ public class TaxInvoiceLine extends TaxGenerator {
 						invoiceLineTax.setExTaxBase(invoiceLine.getExTaxTotal());
 
 						// Dans la devise de la comptabilité du tiers
-						invoiceLineTax.setCompanyExTaxBase(invoiceLine.getCompanyExTaxTotal());
+						invoiceLineTax.setCompanyExTaxBase(invoiceLine.getCompanyExTaxTotal().setScale(2, RoundingMode.HALF_UP));
 
 						invoiceLineTax.setTaxLine(taxLine);
 						map.put(taxLine, invoiceLineTax);
