@@ -64,7 +64,7 @@ public class MoveLineReportController {
 		try  {
 			moveLineReport = moveLineReportRepo.find(moveLineReport.getId());
 			
-			moveLineReportService.buildQuery(moveLineReport);
+			moveLineReportService.getMoveLineList(moveLineReport);
 			BigDecimal debitBalance = moveLineReportService.getDebitBalance();
 			BigDecimal creditBalance = moveLineReportService.getCreditBalance();
 			
