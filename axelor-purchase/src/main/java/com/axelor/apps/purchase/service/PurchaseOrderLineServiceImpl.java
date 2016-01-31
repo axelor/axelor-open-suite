@@ -199,13 +199,15 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
 		BigDecimal price = this.getUnitPrice(purchaseOrder, purchaseOrderLine, taxLine);
 
 		Map<String, Object> discounts = this.getDiscount(purchaseOrder, purchaseOrderLine, price);
-
-		purchaseOrderLine.setDiscountAmount((BigDecimal) discounts.get("discountAmount"));
-		purchaseOrderLine.setDiscountTypeSelect((Integer) discounts.get("discountTypeSelect"));
-
-		if(discounts.get("price") != null)  {
-			price = (BigDecimal) discounts.get("price");
+		
+		if(discounts != null){
+			purchaseOrderLine.setDiscountAmount((BigDecimal) discounts.get("discountAmount"));
+			purchaseOrderLine.setDiscountTypeSelect((Integer) discounts.get("discountTypeSelect"));
+			if(discounts.get("price") != null)  {
+				price = (BigDecimal) discounts.get("price");
+			}
 		}
+
 		purchaseOrderLine.setPrice(price);
 
 		purchaseOrderLine.setPriceDiscounted(this.computeDiscount(purchaseOrderLine));

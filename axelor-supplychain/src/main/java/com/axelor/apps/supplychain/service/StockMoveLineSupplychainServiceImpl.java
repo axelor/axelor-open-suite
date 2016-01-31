@@ -66,8 +66,10 @@ public class StockMoveLineSupplychainServiceImpl extends StockMoveLineServiceImp
 				if(priceList != null)  {
 					PriceListLine priceListLine = priceListService.getPriceListLine(stockMoveLine.getProduct(), stockMoveLine.getQty(), priceList);
 					Map<String, Object> discounts = priceListService.getDiscounts(priceList, priceListLine, unitPriceUntaxed);
-					discountAmount = (BigDecimal) discounts.get("discountAmount");
-					unitPriceUntaxed = priceListService.computeDiscount(unitPriceUntaxed, (int) discounts.get("discountTypeSelect"), discountAmount);
+					if(discounts != null){
+						discountAmount = (BigDecimal) discounts.get("discountAmount");
+						unitPriceUntaxed = priceListService.computeDiscount(unitPriceUntaxed, (int) discounts.get("discountTypeSelect"), discountAmount);
+					}
 				}
 			}
 			else{
@@ -79,8 +81,10 @@ public class StockMoveLineSupplychainServiceImpl extends StockMoveLineServiceImp
 				if(priceList != null)  {
 					PriceListLine priceListLine = priceListService.getPriceListLine(stockMoveLine.getProduct(), stockMoveLine.getQty(), priceList);
 					Map<String, Object> discounts = priceListService.getDiscounts(priceList, priceListLine, unitPriceUntaxed);
-					discountAmount = (BigDecimal) discounts.get("discountAmount");
-					unitPriceUntaxed = priceListService.computeDiscount(unitPriceUntaxed, (int) discounts.get("discountTypeSelect"), discountAmount);
+					if(discounts != null){
+						discountAmount = (BigDecimal) discounts.get("discountAmount");
+						unitPriceUntaxed = priceListService.computeDiscount(unitPriceUntaxed, (int) discounts.get("discountTypeSelect"), discountAmount);
+					}
 				}
 				if (discountAmount.equals(BigDecimal.ZERO)){
 					List<SupplierCatalog> supplierCatalogList = stockMoveLine.getProduct().getSupplierCatalogList();
@@ -88,7 +92,9 @@ public class StockMoveLineSupplychainServiceImpl extends StockMoveLineServiceImp
 						SupplierCatalog supplierCatalog = Beans.get(SupplierCatalogRepository.class).all().filter("self.product = ?1 AND self.minQty <= ?2 AND self.supplierPartner = ?3 ORDER BY self.minQty DESC",stockMoveLine.getProduct(),unitPriceUntaxed,stockMove.getPurchaseOrder().getSupplierPartner()).fetchOne();
 						if(supplierCatalog!=null){
 							Map<String, Object> discounts = productService.getDiscountsFromCatalog(supplierCatalog,unitPriceUntaxed);
-							unitPriceUntaxed = priceListService.computeDiscount(unitPriceUntaxed, (int) discounts.get("discountTypeSelect"), (BigDecimal) discounts.get("discountAmount"));
+							if(discounts != null){
+								unitPriceUntaxed = priceListService.computeDiscount(unitPriceUntaxed, (int) discounts.get("discountTypeSelect"), (BigDecimal) discounts.get("discountAmount"));
+							}
 						}
 					}
 				}

@@ -53,7 +53,9 @@ public class ElementsToInvoiceController {
 					PriceListLine priceListLine = priceListService.getPriceListLine(product, elementToInvoice.getQty(), priceList);
 
 					Map<String, Object> discounts = priceListService.getDiscounts(priceList, priceListLine, price);
-					price = priceListService.computeDiscount(price, (int) discounts.get("discountTypeSelect"), (BigDecimal) discounts.get("discountAmount"));
+					if(discounts != null){
+						price = priceListService.computeDiscount(price, (int) discounts.get("discountTypeSelect"), (BigDecimal) discounts.get("discountAmount"));
+					}
 				}
 			}
 			elementToInvoice.setSalePrice(price);
