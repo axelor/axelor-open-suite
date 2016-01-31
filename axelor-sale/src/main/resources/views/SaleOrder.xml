@@ -649,7 +649,7 @@
     </action-view>
 	
 	<action-validate name="action-sale-order-validate-information">
-		<info message="${clientPartner.saleOrderInformation}" if="clientPartner.saleOrderInformation != null"/>
+		<info message="${clientPartner.saleOrderInformation}" if="clientPartner.saleOrderInformation != null &amp;&amp; !clientPartner.saleOrderInformation.isEmpty()"/>
 	</action-validate>
 	
 	<action-record name="action-saleorder-record-template" model="com.axelor.apps.sale.db.SaleOrder">
