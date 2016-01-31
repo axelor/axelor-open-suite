@@ -18,6 +18,7 @@
 package com.axelor.apps.base.web;
 
 import com.axelor.apps.base.db.PriceList;
+import com.axelor.apps.base.db.repo.PriceListRepository;
 import com.axelor.apps.base.service.PriceListService;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -28,8 +29,12 @@ public class PriceListController {
 	@Inject 
 	private PriceListService priceListService;
 	
+	@Inject
+	protected PriceListRepository priceListRepo;
+	
 	public void historizePriceList(ActionRequest request, ActionResponse response){
 		PriceList priceList = request.getContext().asType(PriceList.class);
+		priceList = priceListRepo.find(priceList.getId());
 		priceList = priceListService.historizePriceList(priceList);
 		response.setReload(true);
 	}
