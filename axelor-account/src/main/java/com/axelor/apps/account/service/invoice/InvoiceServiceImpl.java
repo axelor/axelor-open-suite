@@ -55,16 +55,16 @@ import com.google.inject.persist.Transactional;
  * facturations.
  * 
  */
-public class InvoiceServiceImpl implements InvoiceService  {
+public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceService  {
 
 	private final Logger log = LoggerFactory.getLogger( getClass() );
 	
-	private ValidateFactory validateFactory;
-	private VentilateFactory ventilateFactory;
-	private CancelFactory cancelFactory;
-	private AlarmEngineService<Invoice> alarmEngineService;
-	private InvoiceRepository invoiceRepo;
-	private GeneralService generalService;
+	protected ValidateFactory validateFactory;
+	protected VentilateFactory ventilateFactory;
+	protected CancelFactory cancelFactory;
+	protected AlarmEngineService<Invoice> alarmEngineService;
+	protected InvoiceRepository invoiceRepo;
+	protected GeneralService generalService;
 	
 	@Inject
 	public InvoiceServiceImpl(ValidateFactory validateFactory, VentilateFactory ventilateFactory, CancelFactory cancelFactory,
