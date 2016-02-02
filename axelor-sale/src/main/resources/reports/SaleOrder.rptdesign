@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.4.2.v201410272105 Build &lt;4.4.2.v20150217-1805></property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.5.0.v201506092134 Build &lt;@BUILD@></property>
     <list-property name="userProperties">
         <structure>
             <property name="name">test</property>
@@ -197,7 +197,6 @@
             <property name="odaDriverClass">org.postgresql.Driver</property>
             <property name="odaURL">jdbc:postgresql://localhost:5432/axelor-business-suite</property>
             <property name="odaUser">axelor</property>
-            <encrypted-property name="odaPassword" encryptionID="base64">bG1kcGRsYWE=</encrypted-property>
         </oda-data-source>
     </data-sources>
     <data-sets>
@@ -5867,7 +5866,7 @@ else 'Subscriptions'</value>
                         <list-property name="visibility">
                             <structure>
                                 <property name="format">all</property>
-                                <expression name="valueExpr" type="javascript">row._outer["description"] == null</expression>
+                                <expression name="valueExpr" type="javascript">row["description"] == null</expression>
                             </structure>
                         </list-property>
                         <list-property name="paramBindings">
@@ -5913,7 +5912,7 @@ else 'Subscriptions'</value>
                         <list-property name="visibility">
                             <structure>
                                 <property name="format">all</property>
-                                <expression name="valueExpr" type="javascript">row._outer["description"] == null</expression>
+                                <expression name="valueExpr" type="javascript">row["description"] == null</expression>
                             </structure>
                         </list-property>
                         <property name="contentType">html</property>
