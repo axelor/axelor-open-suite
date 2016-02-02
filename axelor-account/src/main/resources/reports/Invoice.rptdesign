@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.4.2.v201410272105 Build &lt;4.4.2.v20150217-1805></property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.5.0.v201506092134 Build &lt;@BUILD@></property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -2822,6 +2822,18 @@ row["partnerFirstName"]
                                                 <expression name="expression" type="javascript">dataSetRow["discount"]</expression>
                                                 <property name="dataType">decimal</property>
                                             </structure>
+                                            <structure>
+                                                <property name="name">total_discount_amount</property>
+                                                <property name="dataType">float</property>
+                                                <property name="aggregateFunction">AVE</property>
+                                                <list-property name="arguments">
+                                                    <structure>
+                                                        <property name="name">Expression</property>
+                                                        <expression name="value" type="javascript">row["discount"]</expression>
+                                                    </structure>
+                                                </list-property>
+                                                <property name="allowExport">true</property>
+                                            </structure>
                                         </list-property>
                                         <list-property name="sort">
                                             <structure>
@@ -2865,7 +2877,7 @@ row["partnerFirstName"]
                                             <list-property name="visibility">
                                                 <structure>
                                                     <property name="format">all</property>
-                                                    <expression name="valueExpr" type="javascript">row._outer["hideDiscount"] == 1</expression>
+                                                    <expression name="valueExpr" type="javascript">row._outer["hideDiscount"] == 1 || row["total_discount_amount"] == null || row["total_discount_amount"] == 0</expression>
                                                 </structure>
                                             </list-property>
                                             <property name="width">0.6in</property>
