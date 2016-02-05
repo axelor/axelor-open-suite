@@ -23,14 +23,9 @@ import java.net.MalformedURLException;
 import java.net.SocketException;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
-import net.fortuna.ical4j.connector.ObjectNotFoundException;
-import net.fortuna.ical4j.connector.ObjectStoreException;
-import net.fortuna.ical4j.data.ParserException;
-import net.fortuna.ical4j.model.ConstraintViolationException;
-import net.fortuna.ical4j.model.ValidationException;
 
 import com.axelor.apps.base.db.ICalendarUser;
 import com.axelor.apps.base.db.ImportConfiguration;
@@ -54,6 +49,12 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.common.base.Joiner;
 import com.google.inject.Inject;
+
+import net.fortuna.ical4j.connector.ObjectNotFoundException;
+import net.fortuna.ical4j.connector.ObjectStoreException;
+import net.fortuna.ical4j.data.ParserException;
+import net.fortuna.ical4j.model.ConstraintViolationException;
+import net.fortuna.ical4j.model.ValidationException;
 
 public class CalendarController {
 
@@ -153,10 +154,17 @@ public class CalendarController {
 		Team team = user.getActiveTeam();
 		List<Long> eventIdlist = new ArrayList<Long>();
 		
-		List<Event> eventList = Beans.get(EventRepository.class).all().filter("self.team.id = ?1",
-				team.getId()).fetch();
+		List<Event> eventList = null;
 		
-		for (User userIt : team.getUserSet()) {
+		Set<User> userSet = new HashSet<User>();
+		if(team == null || team.getUserSet() == null || team.getUserSet().isEmpty()){
+			userSet.add(user);
+		}
+		else{
+			userSet = team.getUserSet();
+		}
+		
+		for (User userIt : userSet) {
 			List<ICalendarUser> userList = Beans.get(ICalendarUserRepository.class).all().filter("self.user.id = ?1", userIt.getId()).fetch();
 			
 			eventList = Beans.get(EventRepository.class).all().filter("self.user.id = ?1",
