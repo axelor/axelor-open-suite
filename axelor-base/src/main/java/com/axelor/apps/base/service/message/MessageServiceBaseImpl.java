@@ -50,7 +50,7 @@ public class MessageServiceBaseImpl extends MessageServiceImpl {
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 	
 	@Inject
-	private UserService userService;
+	protected UserService userService;
 
 	@Inject
 	protected GeneralService generalService;
@@ -111,7 +111,7 @@ public class MessageServiceBaseImpl extends MessageServiceImpl {
 
 	@Override
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public Message sendMessage(Message message)  {
+	public Message sendMessage(Message message) throws AxelorException  {
 
 		super.sendMessage(message);
 
