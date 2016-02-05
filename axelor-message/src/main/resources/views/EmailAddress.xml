@@ -7,8 +7,8 @@
 		<toolbar>
 			<button name="checkDuplicate" title="Check Duplicate" onClick="action-general-method-show-duplicate"/>
 		</toolbar>
-		<field name="address" title="Email"/>
-		<field name="partner"/>
+		<field name="address"/>
+		<field name="partner.fullName"/>
 	</grid>
     
     <form name="email-address-form" title="Email address" model="com.axelor.apps.message.db.EmailAddress">
