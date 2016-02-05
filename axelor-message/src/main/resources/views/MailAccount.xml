@@ -27,7 +27,7 @@
         	<field name="password" widget="password"/>
         </panel>
 		<panel sidebar="true">
-			<field name="isValid"/>
+			<field name="isValid" readonly="true"/>
 			<button name="testConnection" onClick="save,action-method-mail-account-validate,save" title="Test connection"/>
 		</panel>
     </form>
