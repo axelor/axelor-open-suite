@@ -25,13 +25,11 @@ import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.axelor.apps.account.db.AnalyticDistributionLine;
-import com.axelor.apps.account.db.BudgetDistribution;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.TaxLine;
-import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.invoice.generator.line.InvoiceLineManagement;
 import com.axelor.apps.base.db.Alarm;
 import com.axelor.apps.base.db.Company;
@@ -59,14 +57,12 @@ import com.google.inject.Inject;
  */
 public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
 
-	// Logger
 	private static final Logger LOG = LoggerFactory.getLogger(InvoiceLineGenerator.class);
 
 	protected AccountManagementServiceImpl accountManagementServiceImpl;
 	protected CurrencyService currencyService;
 
 	protected Invoice invoice;
-	protected int type;
 	protected Product product;
 	protected String productName;
 	protected BigDecimal price;
@@ -82,11 +78,9 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
 	protected int discountTypeSelect;
 	protected BigDecimal exTaxTotal;
 	protected BigDecimal inTaxTotal;
-	protected List<AnalyticDistributionLine> analyticDistributionLineList;
-	protected List<BudgetDistribution> budgetDistributionList;
 	protected boolean isTitleLine;
 
-	public static final int DEFAULT_SEQUENCE = 10;
+	public static final int DEFAULT_SEQUENCE = 1;
 
 	@Inject
 	protected UnitConversionRepository unitConversionRepo;
@@ -97,52 +91,17 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
 
 	protected InvoiceLineGenerator() { }
 
-	protected InvoiceLineGenerator(int type) {
-
-		this.type = type;
-
-	}
-
 	protected InvoiceLineGenerator( Invoice invoice ) {
 
         this.invoice = invoice;
 
     }
 
-	protected InvoiceLineGenerator( Invoice invoice, int type ) {
-
-        this.invoice = invoice;
-        this.type = type;
-
-    }
-
-	protected InvoiceLineGenerator( Invoice invoice, Product product, String productName, BigDecimal price, BigDecimal priceDiscounted, String description, BigDecimal qty,
-			Unit unit, TaxLine taxLine, int sequence, BigDecimal discountAmount, int discountTypeSelect, BigDecimal exTaxTotal,
-			BigDecimal inTaxTotal, boolean isTaxInvoice) {
-
-        this.invoice = invoice;
-        this.product = product;
-        this.productName = productName;
-        this.price = price;
-        this.priceDiscounted = priceDiscounted;
-        this.description = description;
-        this.qty = qty;
-        this.unit = unit;
-        this.taxLine = taxLine;
-        this.discountTypeSelect = discountTypeSelect;
-        this.discountAmount = discountAmount;
-        this.sequence = sequence;
-        this.exTaxTotal = exTaxTotal;
-        this.inTaxTotal = inTaxTotal;
-        this.isTaxInvoice = isTaxInvoice;
-        this.today = Beans.get(GeneralService.class).getTodayDate();
-        this.currencyService = new CurrencyService(this.today);
-        this.accountManagementServiceImpl = new AccountManagementServiceImpl();
-    }
-
 	protected InvoiceLineGenerator( Invoice invoice, Product product, String productName, String description, BigDecimal qty,
 			Unit unit, int sequence, boolean isTaxInvoice) {
-		this.invoice = invoice;
+		
+		this(invoice);
+		
         this.product = product;
         this.productName = productName;
         this.description = description;
@@ -154,6 +113,23 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
         this.currencyService = new CurrencyService(this.today);
         this.accountManagementServiceImpl = new AccountManagementServiceImpl();
 	}
+	
+	protected InvoiceLineGenerator( Invoice invoice, Product product, String productName, BigDecimal price, BigDecimal priceDiscounted, String description, BigDecimal qty,
+			Unit unit, TaxLine taxLine, int sequence, BigDecimal discountAmount, int discountTypeSelect, BigDecimal exTaxTotal,
+			BigDecimal inTaxTotal, boolean isTaxInvoice) {
+
+        this(invoice, product, productName, description, qty, unit, sequence, isTaxInvoice);
+		
+        this.price = price;
+        this.priceDiscounted = priceDiscounted;
+        this.taxLine = taxLine;
+        this.discountTypeSelect = discountTypeSelect;
+        this.discountAmount = discountAmount;
+        this.exTaxTotal = exTaxTotal;
+        this.inTaxTotal = inTaxTotal;
+        
+    }
+
 
 	public Invoice getInvoice() {
 		return invoice;
@@ -161,14 +137,6 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
 
 	public void setInvoice(Invoice invoice) {
 		this.invoice = invoice;
-	}
-
-	public int getType() {
-		return type;
-	}
-
-	public void setType(int type) {
-		this.type = type;
 	}
 
 
@@ -184,51 +152,37 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
 
 		InvoiceLine invoiceLine = new InvoiceLine();
 
+		Company company = invoice.getCompany();
+		Partner partner = invoice.getPartner();
+		
 		invoiceLine.setInvoice(invoice);
 
 		invoiceLine.setProduct(product);
 		invoiceLine.setProductName(productName);
 		invoiceLine.setDescription(description);
-		Partner partner = invoice.getPartner();
-		if(taxLine == null && product != null)  {
-			boolean isPurchase = false;
-			if(invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE || invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND)  {
-				isPurchase = true;
-			}
-			taxLine =  accountManagementServiceImpl.getTaxLine(today, product, invoice.getCompany(), partner.getFiscalPosition(), isPurchase);
-		}
-		invoiceLine.setTaxLine(taxLine);
-
 		invoiceLine.setPrice(price);
 
-		if(priceDiscounted!=null)
 		invoiceLine.setPriceDiscounted(priceDiscounted);
 		invoiceLine.setQty(qty);
 		invoiceLine.setUnit(unit);
+		
+		
+		if(taxLine == null && product != null)  {
+			taxLine =  accountManagementServiceImpl.getTaxLine(today, product, company, partner.getFiscalPosition(), InvoiceToolService.isPurchase(invoice));
+		}
+		invoiceLine.setTaxLine(taxLine);
 
 		if(exTaxTotal == null || inTaxTotal == null)  {
-//			price = this.convertUnitPrice(invoiceLine, invoice).setScale(GeneralService.getNbDecimalDigitForUnitPrice(),BigDecimal.ROUND_HALF_UP); TODO RM3611
-			invoiceLine.setPrice(price);
-			if(!invoice.getInAti()){
-				exTaxTotal = computeAmount(qty, price);
-				inTaxTotal = exTaxTotal.add(exTaxTotal.multiply(invoiceLine.getTaxLine().getValue()));
-			}
-			else{
-				inTaxTotal = computeAmount(qty, price);
-				exTaxTotal = inTaxTotal.divide(invoiceLine.getTaxLine().getValue().add(new BigDecimal(1)), 2, BigDecimal.ROUND_HALF_UP);
-			}
+			this.computeTotal();
 		}
 
 		invoiceLine.setExTaxTotal(exTaxTotal);
 		invoiceLine.setInTaxTotal(inTaxTotal);
 
-		Company company = invoice.getCompany();
-
 		Currency companyCurrency = company.getCurrency();
 
 		if(companyCurrency == null)  {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.INVOICE_LINE_GENERATOR_2),
-					company.getName()), IException.CONFIGURATION_ERROR);
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.INVOICE_LINE_GENERATOR_2),  company.getName()), IException.CONFIGURATION_ERROR);
 		}
 
 		invoiceLine.setCompanyExTaxTotal(
@@ -239,14 +193,6 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
 				currencyService.getAmountCurrencyConverted(
 						invoice.getCurrency(), companyCurrency, inTaxTotal, today).setScale(IAdministration.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP));
 
-		if(taxLine == null && product != null)  {
-			boolean isPurchase = false;
-			if(invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE || invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND)  {
-				isPurchase = true;
-			}
-			taxLine =  accountManagementServiceImpl.getTaxLine(today, product, invoice.getCompany(), partner.getFiscalPosition(), isPurchase);
-		}
-		invoiceLine.setTaxLine(taxLine);
 		invoiceLine.setSequence(sequence);
 
 		invoiceLine.setDiscountTypeSelect(discountTypeSelect);
@@ -258,6 +204,22 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
 
 	}
 
+	public void computeTotal()  {
+		
+		BigDecimal taxRate = BigDecimal.ZERO;
+		if(taxLine != null)  {  taxRate = taxLine.getValue();  }
+		
+		if(!invoice.getInAti())  {
+			exTaxTotal = computeAmount(this.qty, this.priceDiscounted, 2);
+			inTaxTotal = exTaxTotal.add(exTaxTotal.multiply(taxRate)).setScale(2, RoundingMode.HALF_EVEN);
+		}
+		else  {
+			inTaxTotal = computeAmount(this.qty, this.priceDiscounted, 2);
+			exTaxTotal = inTaxTotal.divide(taxRate.add(BigDecimal.ONE), 2, BigDecimal.ROUND_HALF_EVEN);
+		}
+	}
+	
+	
 
 	/**
 	 * Rembourser une ligne de facture.
@@ -395,22 +357,6 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
 
 		}
 
-	}
-
-	public BigDecimal convertUnitPrice(InvoiceLine invoiceLine, Invoice invoice){
-		BigDecimal price = invoiceLine.getPrice();
-		if(invoice.getOperationTypeSelect()<2){
-			price = invoiceLine.getProduct().getPurchasePrice();
-		}
-
-		if(invoiceLine.getProduct().getInAti() && !invoice.getInAti()){
-			price = price.subtract(price.multiply(invoiceLine.getTaxLine().getValue()));
-
-		}
-		else if(!invoiceLine.getProduct().getInAti() && invoice.getInAti()){
-			price = price.add(price.multiply(invoiceLine.getTaxLine().getValue()));
-		}
-		return price;
 	}
 
 }

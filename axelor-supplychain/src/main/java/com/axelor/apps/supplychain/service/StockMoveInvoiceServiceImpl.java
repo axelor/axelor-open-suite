@@ -43,6 +43,7 @@ import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;
+import com.axelor.apps.supplychain.service.invoice.generator.InvoiceGeneratorSupplyChain;
 import com.axelor.apps.supplychain.service.invoice.generator.InvoiceLineGeneratorSupplyChain;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
@@ -118,6 +119,54 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
 		}
 		return invoice;
 	}
+	
+	@Override
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
+	public Invoice createInvoiceFromStockMove(StockMove stockMove) throws AxelorException  {
+		
+		int stockMoveType = stockMove.getTypeSelect();
+		Invoice invoice = stockMove.getInvoice();
+		int invoiceOperationType;
+		
+		if(stockMoveType == StockMoveRepository.TYPE_INCOMING)  {  invoiceOperationType = InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE;  }
+		else if(stockMoveType == StockMoveRepository.TYPE_OUTGOING)  {  invoiceOperationType = InvoiceRepository.OPERATION_TYPE_CLIENT_SALE;  }
+		else  {  return null;  }
+		
+		if (invoice != null && invoice.getStatusSelect() != InvoiceRepository.STATUS_CANCELED){
+			if(stockMoveType == StockMoveRepository.TYPE_INCOMING)  {
+				throw new AxelorException(String.format(I18n.get(IExceptionMessage.INCOMING_STOCK_MOVE_INVOICE_EXISTS), stockMove.getName()), IException.CONFIGURATION_ERROR);
+			}
+			else  { 
+				throw new AxelorException(String.format(I18n.get(IExceptionMessage.OUTGOING_STOCK_MOVE_INVOICE_EXISTS), stockMove.getName()), IException.CONFIGURATION_ERROR);
+			}
+		}
+		
+		InvoiceGenerator invoiceGenerator = new InvoiceGeneratorSupplyChain(stockMove, invoiceOperationType) {
+
+			@Override
+			public Invoice generate() throws AxelorException {
+
+				return super.createInvoiceHeader();
+			}
+		};
+
+		invoice = invoiceGenerator.generate();
+
+		invoiceGenerator.populate(invoice, this.createInvoiceLines(invoice, stockMove.getStockMoveLineList()));
+
+		if (invoice != null) {
+			saleOrderInvoiceService.fillInLines(invoice);
+			this.extendInternalReference(stockMove, invoice);
+
+			invoiceRepository.save(invoice);
+
+			stockMove.setInvoice(invoice);
+			stockMoveRepo.save(stockMove);
+		}
+		return invoice;
+		
+	}
+	
 
 	@Override
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
@@ -321,10 +370,10 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
 
 			stockMoveIdList.add(stockMoveLocal.getId());
 		}
-
-		InvoiceGenerator invoiceGenerator = new InvoiceGenerator(InvoiceRepository.OPERATION_TYPE_CLIENT_SALE, invoiceCompany,invoicePaymentCondition,
+		
+		InvoiceGenerator invoiceGenerator = new InvoiceGenerator(InvoiceRepository.OPERATION_TYPE_CLIENT_SALE, invoiceCompany, invoicePaymentCondition,
 				invoicePaymentMode, invoiceMainInvoicingAddress, invoiceClientPartner, invoiceContactPartner,
-				invoiceCurrency, invoicePriceList, numSeq, externalRef) {
+				invoiceCurrency, invoicePriceList, numSeq, externalRef, null, null) {
 
 			@Override
 			public Invoice generate() throws AxelorException {
@@ -486,7 +535,7 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
 		}
 
 		InvoiceGenerator invoiceGenerator = new InvoiceGenerator(InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE, invoiceCompany, invoiceSupplierPartner,
-				invoiceContactPartner, invoicePriceList, numSeq, externalRef) {
+				invoiceContactPartner, invoicePriceList, numSeq, externalRef, null) {
 
 			@Override
 			public Invoice generate() throws AxelorException {
@@ -551,14 +600,15 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
 	public List<InvoiceLine> createInvoiceLine(Invoice invoice, StockMoveLine stockMoveLine) throws AxelorException {
 
 		Product product = stockMoveLine.getProduct();
-
+		
 		if (product == null) {
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.STOCK_MOVE_INVOICE_1), stockMoveLine.getStockMove().getStockMoveSeq()), IException.CONFIGURATION_ERROR);
 		}
 
+		//TODO add a sequence to keep the same order as on sale order or purchase order and then on invoice
 		InvoiceLineGenerator invoiceLineGenerator = new InvoiceLineGeneratorSupplyChain(invoice, product, product.getName(),
 				stockMoveLine.getDescription(), stockMoveLine.getRealQty(), stockMoveLine.getUnit(),
-				InvoiceLineGenerator.DEFAULT_SEQUENCE, false, stockMoveLine.getSaleOrderLine(), stockMoveLine.getPurchaseOrderLine(), stockMoveLine.getStockMove(), stockMoveLine)  {
+				InvoiceLineGenerator.DEFAULT_SEQUENCE, false, stockMoveLine.getSaleOrderLine(), stockMoveLine.getPurchaseOrderLine(), stockMoveLine)  {
 			@Override
 			public List<InvoiceLine> creates() throws AxelorException {
 

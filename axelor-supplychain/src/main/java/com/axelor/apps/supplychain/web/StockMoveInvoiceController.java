@@ -56,9 +56,11 @@ public class StockMoveInvoiceController {
 			if(stockMove.getSaleOrder() != null) {
 				invoice = stockMoveInvoiceService.createInvoiceFromSaleOrder(stockMove, stockMove.getSaleOrder());
 			}
-
-			if(stockMove.getPurchaseOrder() != null) {
+			else if(stockMove.getPurchaseOrder() != null) {
 				invoice = stockMoveInvoiceService.createInvoiceFromPurchaseOrder(stockMove, stockMove.getPurchaseOrder());
+			}
+			else  {
+				invoice = stockMoveInvoiceService.createInvoiceFromStockMove(stockMove);
 			}
 
 			if(invoice != null)  {

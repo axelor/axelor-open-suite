@@ -29,21 +29,19 @@ import com.axelor.exception.AxelorException;
 
 public abstract class InvoiceLineManagement {
 
-	// Logger
 	private static final Logger LOG = LoggerFactory.getLogger(InvoiceLineManagement.class);
 	
 	abstract public List<?> creates() throws AxelorException ;
 	
 	/**
-	 * Calculer le montant HT d'une ligne de facture.
-	 * 
+	 * Compute the quantity per the unit price
+	 *  
 	 * @param quantity
-	 *          Quantité à facturer.
 	 * @param price
-	 *          Le prix.
+	 *          The unit price.
 	 * 
 	 * @return 
-	 * 			Le montant HT de la ligne.
+	 * 			The Excluded tax total amount.
 	 */
 	public static BigDecimal computeAmount(BigDecimal quantity, BigDecimal price) {
 
@@ -54,4 +52,24 @@ public abstract class InvoiceLineManagement {
 		return amount;
 	}
 	
+	/**
+	 * Compute the quantity per the unit price
+	 *  
+	 * @param quantity
+	 * @param price
+	 *          The unit price.
+	 *  @param scale
+	 *  		Scale to apply on the result
+	 * 
+	 * @return 
+	 * 			The Excluded tax total amount.
+	 */
+	public static BigDecimal computeAmount(BigDecimal quantity, BigDecimal price, int scale) {
+
+		BigDecimal amount = quantity.multiply(price).setScale(scale, RoundingMode.HALF_EVEN);
+
+		LOG.debug("Calcul du montant HT avec une quantité de {} pour {} : {}", new Object[] { quantity, price, amount });
+
+		return amount;
+	}
 }

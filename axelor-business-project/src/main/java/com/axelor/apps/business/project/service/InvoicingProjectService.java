@@ -102,7 +102,7 @@ public class InvoicingProjectService {
 		projectTask.getAssignedTo();
 		InvoiceGenerator invoiceGenerator = new InvoiceGenerator(InvoiceRepository.OPERATION_TYPE_CLIENT_SALE, company, customer.getPaymentCondition(),
 				customer.getPaymentMode(), partnerService.getInvoicingAddress(customer), customer, null,
-				customer.getCurrency(), customer.getSalePriceList(), null, null){
+				customer.getCurrency(), customer.getSalePriceList(), null, null, null, null){
 
 			@Override
 			public Invoice generate() throws AxelorException {
@@ -206,7 +206,7 @@ public class InvoicingProjectService {
 
 		InvoiceLineGeneratorSupplyChain invoiceLineGenerator = new InvoiceLineGeneratorSupplyChain(invoice, product, purchaseOrderLine.getProductName(),
 				purchaseOrderLine.getDescription(), purchaseOrderLine.getQty(), purchaseOrderLine.getUnit(),
-				priority, false, null, purchaseOrderLine, null, null)  {
+				priority, false, null, purchaseOrderLine, null)  {
 			@Override
 			public List<InvoiceLine> creates() throws AxelorException {
 

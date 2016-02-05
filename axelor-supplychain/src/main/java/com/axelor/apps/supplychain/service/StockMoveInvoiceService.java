@@ -39,6 +39,9 @@ public interface StockMoveInvoiceService {
 
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public Invoice createInvoiceFromPurchaseOrder(StockMove stockMove, PurchaseOrder purchaseOrder) throws AxelorException;
+	
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
+	public Invoice createInvoiceFromStockMove(StockMove stockMove) throws AxelorException;
 
 	@Transactional
 	public Map<String,Object> createInvoiceFromMultiOutgoingStockMove(List<StockMove> stockMoveList, PaymentCondition paymentCondition, PaymentMode paymentMode, Partner contactPartner) throws AxelorException;

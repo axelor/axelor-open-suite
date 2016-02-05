@@ -25,6 +25,8 @@ import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.axelor.apps.account.db.AccountConfig;
+import com.axelor.apps.account.db.AccountingSituation;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.InvoiceLineTax;
@@ -34,11 +36,13 @@ import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.AccountCustomerService;
+import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.account.service.JournalService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.invoice.generator.tax.TaxInvoiceLine;
 import com.axelor.apps.base.db.Address;
+import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
@@ -71,10 +75,12 @@ public abstract class InvoiceGenerator  {
 	protected PriceList priceList;
 	protected String internalReference;
 	protected String externalReference;
-	protected boolean inAti;
+	protected Boolean inAti;
+	protected BankDetails companyBankDetails;
 
-	protected InvoiceGenerator(int operationType, Company company,PaymentCondition paymentCondition, PaymentMode paymentMode, Address mainInvoicingAddress,
-			Partner partner, Partner contactPartner, Currency currency, PriceList priceList, String internalReference, String externalReference) throws AxelorException {
+	protected InvoiceGenerator(int operationType, Company company, PaymentCondition paymentCondition, PaymentMode paymentMode, Address mainInvoicingAddress,
+			Partner partner, Partner contactPartner, Currency currency, PriceList priceList, String internalReference, String externalReference, Boolean inAti, 
+			BankDetails companyBankDetails) throws AxelorException {
 
 		this.operationType = operationType;
 		this.company = company;
@@ -87,7 +93,8 @@ public abstract class InvoiceGenerator  {
 		this.priceList = priceList;
 		this.internalReference = internalReference;
 		this.externalReference = externalReference;
-		this.inAti = this.isInvoiceInAti();
+		this.inAti = inAti;
+		this.companyBankDetails = companyBankDetails;
 		this.today = Beans.get(GeneralService.class).getTodayDate();
 		this.journalService = new JournalService();
 
@@ -103,7 +110,7 @@ public abstract class InvoiceGenerator  {
 	 * @throws AxelorException
 	 */
 	protected InvoiceGenerator(int operationType, Company company, Partner partner, Partner contactPartner, PriceList priceList,
-			String internalReference, String externalReference) throws AxelorException {
+			String internalReference, String externalReference, Boolean inAti) throws AxelorException {
 
 		this.operationType = operationType;
 		this.company = company;
@@ -112,7 +119,7 @@ public abstract class InvoiceGenerator  {
 		this.priceList = priceList;
 		this.internalReference = internalReference;
 		this.externalReference = externalReference;
-		this.inAti = this.isInvoiceInAti();
+		this.inAti = inAti;
 		this.today = Beans.get(GeneralService.class).getTodayDate();
 		this.journalService = new JournalService();
 
@@ -144,24 +151,14 @@ public abstract class InvoiceGenerator  {
 	}
 
 	
-	protected boolean isInvoiceInAti() throws AxelorException  {
-		
-		int atiChoice = Beans.get(AccountConfigService.class).getAccountConfig(company).getInvoiceInAtiSelect();
-		if(atiChoice == AccountConfigRepository.INVOICE_ATI_ALWAYS || atiChoice == AccountConfigRepository.INVOICE_ATI_DEFAULT){
-			return true;
-		}
-		else{
-			return false;
-		}
-		
-	}
-
 	abstract public Invoice generate() throws AxelorException;
 
 
 	protected Invoice createInvoiceHeader() throws AxelorException  {
 
 		Invoice invoice = new Invoice();
+		
+		invoice.setCompany(company);
 
 		invoice.setOperationTypeSelect(operationType);
 
@@ -205,8 +202,6 @@ public abstract class InvoiceGenerator  {
 		}
 		invoice.setCurrency(currency);
 
-		invoice.setCompany(company);
-
 		invoice.setPartnerAccount(Beans.get(AccountCustomerService.class).getPartnerAccount(partner, company, operationType == InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE || operationType == InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND));
 
 		invoice.setJournal(journalService.getJournal(invoice));
@@ -228,18 +223,49 @@ public abstract class InvoiceGenerator  {
 
 		invoice.setExternalReference(externalReference);
 
-		invoice.setInAti(inAti);
+		// Set ATI mode on invoice
+		AccountConfigService accountConfigService = Beans.get(AccountConfigService.class);
+		AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
+		
+		int atiChoice = accountConfig.getInvoiceInAtiSelect();
+		
+		if(inAti == null)  {  
+			invoice.setInAti(accountConfigService.getInvoiceInAti(accountConfig));
+		}
+		else if(atiChoice == AccountConfigRepository.INVOICE_ATI_DEFAULT || atiChoice == AccountConfigRepository.INVOICE_WT_DEFAULT)  {
+			invoice.setInAti(inAti);
+		}
+		else if(atiChoice == AccountConfigRepository.INVOICE_ATI_ALWAYS)  {
+			invoice.setInAti(true);
+		}
+		else {
+			invoice.setInAti(false);
+		}
 		
 		invoice.setInvoiceDate(today);
 		
 		if(invoice.getPaymentCondition() != null){
 			invoice.setDueDate(InvoiceToolService.getDueDate(invoice.getPaymentCondition(),invoice.getInvoiceDate()));
 		}
-
+		
+		
+		// Set Company bank details
+		if(companyBankDetails == null)  {
+			AccountingSituation accountingSituation = Beans.get(AccountingSituationService.class).getAccountingSituation(partner, company);
+			if(accountingSituation != null)  {
+				companyBankDetails = accountingSituation.getCompanyBankDetails();
+			}
+			else  {
+				companyBankDetails = company.getDefaultBankDetails();
+			}
+		}
+		invoice.setCompanyBankDetails(companyBankDetails);
+		
 		initCollections(invoice);
 
 		return invoice;
 	}
+
 
 
 

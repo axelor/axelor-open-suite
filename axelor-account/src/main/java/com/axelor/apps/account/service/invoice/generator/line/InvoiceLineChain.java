@@ -29,13 +29,6 @@ public abstract class InvoiceLineChain extends InvoiceLineGenerator {
 	protected InvoiceLineChain next;
 	
 	protected InvoiceLineChain() { }
-	
-	protected InvoiceLineChain(int type) {
-		
-		super(type);
-		
-	}
-
 
 	
 	public InvoiceLineChain setNext(InvoiceLineChain abstractInvoiceLine){

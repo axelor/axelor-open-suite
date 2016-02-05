@@ -166,9 +166,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.SO_INVOICE_6), saleOrder.getSaleOrderSeq()), IException.CONFIGURATION_ERROR);
 		}
 
-		InvoiceGenerator invoiceGenerator = new InvoiceGeneratorSupplyChain(InvoiceRepository.OPERATION_TYPE_CLIENT_SALE, saleOrder.getCompany(),saleOrder.getPaymentCondition(),
-				saleOrder.getPaymentMode(), saleOrder.getMainInvoicingAddress(), saleOrder.getClientPartner(), saleOrder.getContactPartner(),
-				saleOrder.getCurrency(), saleOrder.getPriceList(), saleOrder.getSaleOrderSeq(), saleOrder.getExternalReference(), saleOrder) {
+		InvoiceGenerator invoiceGenerator = new InvoiceGeneratorSupplyChain(saleOrder) {
 
 			@Override
 			public Invoice generate() throws AxelorException {
@@ -254,7 +252,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 
 		InvoiceLineGenerator invoiceLineGenerator = new InvoiceLineGeneratorSupplyChain(invoice, product, saleOrderLine.getProductName()+"("+saleOrderLine.getPeriodicity()+" "+I18n.get("month(s)")+")",
 				saleOrderLine.getDescription(), saleOrderLine.getQty(), saleOrderLine.getUnit(),
-				sequence, false, saleOrderLine, null, null, subscription, null)  {
+				sequence, false, saleOrderLine, null, null, subscription)  {
 
 			@Override
 			public List<InvoiceLine> creates() throws AxelorException {
