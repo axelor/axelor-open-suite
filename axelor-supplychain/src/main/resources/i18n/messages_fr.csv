@@ -19,6 +19,7 @@
 "An active stockMove already exists for this saleOrder","Un BL actif existe déjà pour cette commande client",,
 "An invoice not canceled already exists for the incoming stock move %s","Une facture non annulée existe déjà pour le BR %s",,
 "An invoice not canceled already exists for the outgoing stock move %s","Une facture non annulée existe déjà pour le BL %s",,
+"An active stock move already exists for the sale order %s","Un BL actif existe déjà pour le devis %s",,
 "Analytic distribution lines",,,
 "Analytic distribution template",,,
 "Archived ?","Archivé ?",,

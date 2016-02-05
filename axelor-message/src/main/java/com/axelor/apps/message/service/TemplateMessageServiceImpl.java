@@ -56,9 +56,9 @@ public class TemplateMessageServiceImpl implements TemplateMessageService {
 
 	protected TemplateMaker maker;
 	
-	private MessageService messageService;
+	protected MessageService messageService;
 	
-	private EmailAddressRepository emailAddressRepo;
+	protected EmailAddressRepository emailAddressRepo;
 
 	@Inject
 	public TemplateMessageServiceImpl( MessageService messageService, EmailAddressRepository emailAddressRepo ){

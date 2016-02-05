@@ -41,10 +41,10 @@ public interface MessageService {
 	
 	public Set<MetaAttachment> getMetaAttachments( Message message );
 	
-	public Message sendMessage(Message message);
+	public Message sendMessage(Message message) throws AxelorException;
 	
 	@Transactional(rollbackOn = { MessagingException.class, IOException.class, Exception.class })
-	public Message sendByEmail(Message message) throws MessagingException, IOException;
+	public Message sendByEmail(Message message) throws MessagingException, IOException, AxelorException;
 	
 	@Transactional(rollbackOn = Exception.class)
 	public Message sendToUser(Message message);

@@ -25,7 +25,7 @@
 		</panel>
 		<panel sidebar="true" >
 			<button name="testConnection" onClick="save,action-method-mail-account-validate,save" title="Test connection" colSpan="10"/>
-			<field name="isValid" colSpan="2"/>
+			<field name="isValid" colSpan="2" readonly="true"/>
 		</panel>
     </form>
     

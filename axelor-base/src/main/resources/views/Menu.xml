@@ -264,7 +264,7 @@
 	</action-view>
 
 	<menuitem name="admin-root-organisation-territory-city"
-		parent="admin-root-organisation" title="Cities"
+		parent="admin-root-organisation-territory" title="Cities"
 		action="admin.root.organisation.territory.city" />
 
 	<action-view name="admin.root.organisation.territory.city"
@@ -285,7 +285,7 @@
 	</action-view>
 
 	<menuitem name="admin-root-organisation-region"
-		parent="admin-root-organisation" title="Regions"
+		parent="admin-root-organisation-territory" title="Regions"
 		action="admin.root.organisation.region" />
 
 	<action-view name="admin.root.organisation.region"
@@ -295,7 +295,7 @@
 	</action-view>
 
 	<menuitem name="admin-root-organisation-country"
-		parent="admin-root-organisation" title="Countries"
+		parent="admin-root-organisation-territory" title="Countries"
 		action="admin.root.organisation.country" />
 
 	<action-view name="admin.root.organisation.country"

@@ -60,7 +60,7 @@
     </action-group>
     
     <action-group name="action-group-message-message-send-click">
-	<action name="action-validate-message-content-onsave"/>
+		<action name="action-validate-message-content-onsave"/>
     	<action name="save"/>
     	<action name="action-message-method-send-by-email"/>
     	<action name="save"/>
@@ -85,7 +85,8 @@
     </action-record>
     
     <action-record name="action-message-record-mail-account" model="com.axelor.apps.message.db.Message">
-    	<field name="mailAccount" expr="eval: __repo__.of(MailAccount).all().filter('self.isDefault = true and self.user = ?1',senderUser).fetchOne()"/>
+    	<field name="mailAccount" expr="eval: __repo__.of(MailAccount).all().filter('self.isDefault = true and self.user = ?1',senderUser).fetchOne()" if="__config__.general.getMailAccountByUser()"/>
+    	<field name="mailAccount" expr="eval: __repo__.of(MailAccount).all().filter('self.isDefault = true').fetchOne()" if="!__config__.general.getMailAccountByUser()"/>
     </action-record>
     
     <action-record name="action-message-record-get-signature" model="com.axelor.apps.message.db.Message">

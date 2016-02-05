@@ -33,9 +33,11 @@ import com.axelor.apps.message.db.MailAccount;
 import com.axelor.apps.message.db.Message;
 import com.axelor.apps.message.db.repo.MailAccountRepository;
 import com.axelor.apps.message.db.repo.MessageRepository;
+import com.axelor.apps.message.exception.IExceptionMessage;
 import com.axelor.auth.AuthUtils;
 import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.IException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.mail.MailBuilder;
@@ -61,7 +63,7 @@ public class MessageServiceImpl implements MessageService {
 	
 	private MetaAttachmentRepository metaAttachmentRepository;
 
-	private MailAccountService mailAccountService;
+	protected MailAccountService mailAccountService;
 	
 	@Inject
 	protected MailAccountRepository mailAccountRepo;
@@ -126,7 +128,7 @@ public class MessageServiceImpl implements MessageService {
 		
 		if ( mediaTypeSelect == MessageRepository.MEDIA_TYPE_EMAIL ) {
 			
-			if ( replyToEmailAddressSet != null) { replyToEmailAddressSet.addAll(bccEmailAddressList); }
+			if ( replyToEmailAddressList != null) { replyToEmailAddressSet.addAll(replyToEmailAddressList); }
 			if ( bccEmailAddressList != null) { bccEmailAddressSet.addAll(bccEmailAddressList); }
 			if ( toEmailAddressList != null ) { toEmailAddressSet.addAll(toEmailAddressList); }
 			if ( ccEmailAddressList != null ) { ccEmailAddressSet.addAll(ccEmailAddressList); }
@@ -150,7 +152,7 @@ public class MessageServiceImpl implements MessageService {
 		return message;
 	}	
 	
-	public Message sendMessage ( Message message )  {
+	public Message sendMessage ( Message message ) throws AxelorException  {
 		
 		try {
 
@@ -191,7 +193,7 @@ public class MessageServiceImpl implements MessageService {
 	}
 
 	@Transactional(rollbackOn = { MessagingException.class, IOException.class, Exception.class })
-	public Message sendByEmail(Message message) throws MessagingException, IOException  {
+	public Message sendByEmail(Message message) throws MessagingException, IOException, AxelorException  {
 		
 		MailAccount mailAccount = message.getMailAccount();
 		
@@ -211,12 +213,16 @@ public class MessageServiceImpl implements MessageService {
 
 		mailBuilder.subject(message.getSubject());
 		
-		if ( message.getFromEmailAddress() != null ) {
-			log.debug( "Override from :::  {}", message.getFromEmailAddress().getAddress() );
-			mailBuilder.from( message.getFromEmailAddress().getAddress() );
+		if ( message.getFromEmailAddress() != null){
+			if(!Strings.isNullOrEmpty(message.getFromEmailAddress().getAddress())) {
+				log.debug( "Override from :::  {}", message.getFromEmailAddress().getAddress() );
+				mailBuilder.from( message.getFromEmailAddress().getAddress() );
+			}
+			else{
+				throw new AxelorException(IExceptionMessage.MESSAGE_7, IException.CONFIGURATION_ERROR);
+			}
 		}
-		
-		if ( replytoRecipients != null && !replytoRecipients.isEmpty() ) { mailBuilder.replyTo(Joiner.on(",").join(toRecipients)); }
+		if ( replytoRecipients != null && !replytoRecipients.isEmpty() ) { mailBuilder.replyTo(Joiner.on(",").join(replytoRecipients)); }
 		if ( toRecipients != null && !toRecipients.isEmpty() ) { mailBuilder.to(Joiner.on(",").join(toRecipients));	}
 		if ( ccRecipients != null && !ccRecipients.isEmpty() ) { mailBuilder.cc(Joiner.on(",").join(ccRecipients)); }
 		if ( bccRecipients != null && !bccRecipients.isEmpty() ) { mailBuilder.bcc(Joiner.on(",").join(bccRecipients)); }
@@ -232,6 +238,7 @@ public class MessageServiceImpl implements MessageService {
 		message.setSentByEmail(true);
 		message.setStatusSelect(MessageRepository.STATUS_SENT);
 		message.setSentDateT(LocalDateTime.now());
+		message.setSenderUser(AuthUtils.getUser());
 		
 		return messageRepo.save(message);
 	

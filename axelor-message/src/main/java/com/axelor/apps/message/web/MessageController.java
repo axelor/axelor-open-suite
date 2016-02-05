@@ -25,6 +25,7 @@ import com.axelor.apps.message.db.Message;
 import com.axelor.apps.message.db.repo.MessageRepository;
 import com.axelor.apps.message.exception.IExceptionMessage;
 import com.axelor.apps.message.service.MessageService;
+import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.rpc.ActionRequest;
@@ -39,7 +40,7 @@ public class MessageController {
 	@Inject
 	private MessageService messageService;
 	
-	public void sendByEmail(ActionRequest request, ActionResponse response) {
+	public void sendByEmail(ActionRequest request, ActionResponse response) throws AxelorException {
 
 		Message message = request.getContext().asType(Message.class);
 

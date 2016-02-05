@@ -51,5 +51,6 @@ public interface IExceptionMessage {
 	static final String MESSAGE_4 = /*$$(*/ "Email envoyé" /*)*/;
 	static final String MESSAGE_5 = /*$$(*/ "Message envoyé" /*)*/;
 	static final String MESSAGE_6 = /*$$(*/ "Echec envoie email" /*)*/;
+	static final String MESSAGE_7 = /*$$(*/ "Sender's email address is null or empty" /*)*/;
 	
 }
