@@ -193,7 +193,7 @@
               	<viewer><![CDATA[ 
 				  <span class="form-item-container">
          			<dl class="dl-horizontal">
-	           		 <dt x-translate>Paid on {{record.paymentDate}}</dt>
+	           		 <dt x-translate>Paid on {{record.paymentDate | date : 'dd/MM/yyyy'}}</dt>
 	           		 <dd>-{{record.amount}} {{record.currency.symbol}}</dd>
 	           		</dl> 
            	      </span>]]>   
