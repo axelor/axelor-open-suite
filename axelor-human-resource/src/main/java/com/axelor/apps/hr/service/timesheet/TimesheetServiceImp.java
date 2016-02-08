@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2015 Axelor (<http://axelor.com>).
+ * Copyright (C) 2016 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -287,15 +287,18 @@ public class TimesheetServiceImp implements TimesheetService{
 			if((generalService.getGeneral().getComputeMethodDiscountSelect() == GeneralRepository.INCLUDE_DISCOUNT_REPLACE_ONLY && discountTypeSelect == IPriceListLine.TYPE_REPLACE) || generalService.getGeneral().getComputeMethodDiscountSelect() == GeneralRepository.INCLUDE_DISCOUNT)
 			{
 				Map<String, Object> discounts = priceListService.getDiscounts(priceList, priceListLine, price);
-				discountAmount = (BigDecimal) discounts.get("discountAmount");
-				price = priceListService.computeDiscount(price, (int) discounts.get("discountTypeSelect"), discountAmount);
-
+				if(discounts != null){
+					discountAmount = (BigDecimal) discounts.get("discountAmount");
+					price = priceListService.computeDiscount(price, (int) discounts.get("discountTypeSelect"), discountAmount);
+				}
 			}
 			else{
 				Map<String, Object> discounts = priceListService.getDiscounts(priceList, priceListLine, price);
-				discountAmount = (BigDecimal) discounts.get("discountAmount");
-				if(discounts.get("price") != null)  {
-					price = (BigDecimal) discounts.get("price");
+				if(discounts != null){
+					discountAmount = (BigDecimal) discounts.get("discountAmount");
+					if(discounts.get("price") != null)  {
+						price = (BigDecimal) discounts.get("price");
+					}
 				}
 			}
 

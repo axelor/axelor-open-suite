@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2015 Axelor (<http://axelor.com>).
+ * Copyright (C) 2016 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -291,8 +291,11 @@ public class MoveLineService {
 				if(map.containsKey(keys)){
 					MoveLine moveLineIt =  map.get(keys);
 					int count = 0;
-					if(moveLineIt.getAnalyticDistributionLineList() == null || moveLine.getAnalyticDistributionLineList() == null){
-						return null;
+					if(moveLineIt.getAnalyticDistributionLineList() == null && moveLine.getAnalyticDistributionLineList() == null){
+						return moveLineIt;
+					}
+					else if(moveLineIt.getAnalyticDistributionLineList() == null || moveLine.getAnalyticDistributionLineList() == null){
+						break;
 					}
 					List<AnalyticDistributionLine> list1 = moveLineIt.getAnalyticDistributionLineList();
 					List<AnalyticDistributionLine> list2 = moveLine.getAnalyticDistributionLineList();
@@ -303,7 +306,8 @@ public class MoveLineService {
 								if(analyticDistributionLine.getAnalyticAxis().equals(analyticDistributionLineIt.getAnalyticAxis()) &&
 										analyticDistributionLine.getAnalyticAccount().equals(analyticDistributionLineIt.getAnalyticAccount()) &&
 										analyticDistributionLine.getPercentage().equals(analyticDistributionLineIt.getPercentage()) &&
-										analyticDistributionLine.getAnalyticJournal().equals(analyticDistributionLineIt.getAnalyticJournal())){
+										((analyticDistributionLine.getAnalyticJournal() == null && analyticDistributionLineIt.getAnalyticJournal() == null)
+												|| analyticDistributionLine.getAnalyticJournal().equals(analyticDistributionLineIt.getAnalyticJournal()))){
 									copyList.remove(analyticDistributionLineIt);
 									count++;
 									break;
@@ -346,14 +350,17 @@ public class MoveLineService {
 				
 				consolidateMoveLine.setCredit(consolidateMoveLine.getCredit().add(moveLine.getCredit()));
 				consolidateMoveLine.setDebit(consolidateMoveLine.getDebit().add(moveLine.getDebit()));
-				for (AnalyticDistributionLine analyticDistributionLine : consolidateMoveLine.getAnalyticDistributionLineList()) {
-					for (AnalyticDistributionLine analyticDistributionLineIt : moveLine.getAnalyticDistributionLineList()) {
-						if(analyticDistributionLine.getAnalyticAxis().equals(analyticDistributionLineIt.getAnalyticAxis()) &&
-								analyticDistributionLine.getAnalyticAccount().equals(analyticDistributionLineIt.getAnalyticAccount()) &&
-								analyticDistributionLine.getPercentage().equals(analyticDistributionLineIt.getPercentage()) &&
-								analyticDistributionLine.getAnalyticJournal().equals(analyticDistributionLineIt.getAnalyticJournal())){
-							analyticDistributionLine.setAmount(analyticDistributionLine.getAmount().add(analyticDistributionLineIt.getAmount()));
-							break;
+				if(consolidateMoveLine.getAnalyticDistributionLineList() != null && !consolidateMoveLine.getAnalyticDistributionLineList().isEmpty()){
+					for (AnalyticDistributionLine analyticDistributionLine : consolidateMoveLine.getAnalyticDistributionLineList()) {
+						for (AnalyticDistributionLine analyticDistributionLineIt : moveLine.getAnalyticDistributionLineList()) {
+							if(analyticDistributionLine.getAnalyticAxis().equals(analyticDistributionLineIt.getAnalyticAxis()) &&
+									analyticDistributionLine.getAnalyticAccount().equals(analyticDistributionLineIt.getAnalyticAccount()) &&
+									analyticDistributionLine.getPercentage().equals(analyticDistributionLineIt.getPercentage()) &&
+									((analyticDistributionLine.getAnalyticJournal() == null && analyticDistributionLineIt.getAnalyticJournal() == null)
+											|| analyticDistributionLine.getAnalyticJournal().equals(analyticDistributionLineIt.getAnalyticJournal()))){
+								analyticDistributionLine.setAmount(analyticDistributionLine.getAmount().add(analyticDistributionLineIt.getAmount()));
+								break;
+							}
 						}
 					}
 				}

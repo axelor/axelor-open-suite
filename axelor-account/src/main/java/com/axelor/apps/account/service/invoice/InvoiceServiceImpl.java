@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2015 Axelor (<http://axelor.com>).
+ * Copyright (C) 2016 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -55,16 +55,16 @@ import com.google.inject.persist.Transactional;
  * facturations.
  * 
  */
-public class InvoiceServiceImpl implements InvoiceService  {
+public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceService  {
 
 	private final Logger log = LoggerFactory.getLogger( getClass() );
 	
-	private ValidateFactory validateFactory;
-	private VentilateFactory ventilateFactory;
-	private CancelFactory cancelFactory;
-	private AlarmEngineService<Invoice> alarmEngineService;
-	private InvoiceRepository invoiceRepo;
-	private GeneralService generalService;
+	protected ValidateFactory validateFactory;
+	protected VentilateFactory ventilateFactory;
+	protected CancelFactory cancelFactory;
+	protected AlarmEngineService<Invoice> alarmEngineService;
+	protected InvoiceRepository invoiceRepo;
+	protected GeneralService generalService;
 	
 	@Inject
 	public InvoiceServiceImpl(ValidateFactory validateFactory, VentilateFactory ventilateFactory, CancelFactory cancelFactory,

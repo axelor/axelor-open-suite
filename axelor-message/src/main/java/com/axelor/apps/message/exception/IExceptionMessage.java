@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2015 Axelor (<http://axelor.com>).
+ * Copyright (C) 2016 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -51,5 +51,6 @@ public interface IExceptionMessage {
 	static final String MESSAGE_4 = /*$$(*/ "Email envoyé" /*)*/;
 	static final String MESSAGE_5 = /*$$(*/ "Message envoyé" /*)*/;
 	static final String MESSAGE_6 = /*$$(*/ "Echec envoie email" /*)*/;
+	static final String MESSAGE_7 = /*$$(*/ "Sender's email address is null or empty" /*)*/;
 	
 }

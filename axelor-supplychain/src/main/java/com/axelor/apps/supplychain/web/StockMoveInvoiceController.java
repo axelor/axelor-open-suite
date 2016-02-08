@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2015 Axelor (<http://axelor.com>).
+ * Copyright (C) 2016 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -56,9 +56,11 @@ public class StockMoveInvoiceController {
 			if(stockMove.getSaleOrder() != null) {
 				invoice = stockMoveInvoiceService.createInvoiceFromSaleOrder(stockMove, stockMove.getSaleOrder());
 			}
-
-			if(stockMove.getPurchaseOrder() != null) {
+			else if(stockMove.getPurchaseOrder() != null) {
 				invoice = stockMoveInvoiceService.createInvoiceFromPurchaseOrder(stockMove, stockMove.getPurchaseOrder());
+			}
+			else  {
+				invoice = stockMoveInvoiceService.createInvoiceFromStockMove(stockMove);
 			}
 
 			if(invoice != null)  {

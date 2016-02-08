@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2015 Axelor (<http://axelor.com>).
+ * Copyright (C) 2016 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -162,13 +162,14 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
 			}
 			
 			Map<String, Object> discounts = priceListService.getDiscounts(priceList, priceListLine, price);
-			
-			int computeMethodDiscountSelect = generalService.getGeneral().getComputeMethodDiscountSelect();
-			if((computeMethodDiscountSelect == GeneralRepository.INCLUDE_DISCOUNT_REPLACE_ONLY && discountTypeSelect == IPriceListLine.TYPE_REPLACE) 
-					|| computeMethodDiscountSelect == GeneralRepository.INCLUDE_DISCOUNT)  {
-				
-				price = priceListService.computeDiscount(price, (int) discounts.get("discountTypeSelect"), (BigDecimal) discounts.get("discountAmount"));
-				discounts.put("price", price);
+			if(discounts != null){
+				int computeMethodDiscountSelect = generalService.getGeneral().getComputeMethodDiscountSelect();
+				if((computeMethodDiscountSelect == GeneralRepository.INCLUDE_DISCOUNT_REPLACE_ONLY && discountTypeSelect == IPriceListLine.TYPE_REPLACE) 
+						|| computeMethodDiscountSelect == GeneralRepository.INCLUDE_DISCOUNT)  {
+					
+					price = priceListService.computeDiscount(price, (int) discounts.get("discountTypeSelect"), (BigDecimal) discounts.get("discountAmount"));
+					discounts.put("price", price);
+				}
 			}
 			return discounts;
 		}

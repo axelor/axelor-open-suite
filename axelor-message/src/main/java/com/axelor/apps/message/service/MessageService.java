@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2015 Axelor (<http://axelor.com>).
+ * Copyright (C) 2016 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -41,10 +41,10 @@ public interface MessageService {
 	
 	public Set<MetaAttachment> getMetaAttachments( Message message );
 	
-	public Message sendMessage(Message message);
+	public Message sendMessage(Message message) throws AxelorException;
 	
 	@Transactional(rollbackOn = { MessagingException.class, IOException.class, Exception.class })
-	public Message sendByEmail(Message message) throws MessagingException, IOException;
+	public Message sendByEmail(Message message) throws MessagingException, IOException, AxelorException;
 	
 	@Transactional(rollbackOn = Exception.class)
 	public Message sendToUser(Message message);

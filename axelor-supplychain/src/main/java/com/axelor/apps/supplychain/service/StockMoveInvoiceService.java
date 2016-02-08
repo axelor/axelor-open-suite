@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2015 Axelor (<http://axelor.com>).
+ * Copyright (C) 2016 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -39,6 +39,9 @@ public interface StockMoveInvoiceService {
 
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public Invoice createInvoiceFromPurchaseOrder(StockMove stockMove, PurchaseOrder purchaseOrder) throws AxelorException;
+	
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
+	public Invoice createInvoiceFromStockMove(StockMove stockMove) throws AxelorException;
 
 	@Transactional
 	public Map<String,Object> createInvoiceFromMultiOutgoingStockMove(List<StockMove> stockMoveList, PaymentCondition paymentCondition, PaymentMode paymentMode, Partner contactPartner) throws AxelorException;

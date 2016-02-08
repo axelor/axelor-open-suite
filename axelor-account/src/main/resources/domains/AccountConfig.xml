@@ -122,8 +122,16 @@
  	<boolean name="displayTaxDetailOnPrinting" title="Display tax detail on printing ?"/>
   	<string name="invoiceClientBox" large="true" multiline="true" title="Client box in invoice"/>
   	
-  	
+  	<extra-code><![CDATA[
 	
+	   	// TYPE SELECT
+		public static final int INVOICE_WT_ALWAYS = 1;
+		public static final int INVOICE_ATI_ALWAYS = 2;
+		public static final int INVOICE_WT_DEFAULT = 3;
+		public static final int INVOICE_ATI_DEFAULT = 4;
+	
+	
+	]]></extra-code>
 	
 	
   </entity>

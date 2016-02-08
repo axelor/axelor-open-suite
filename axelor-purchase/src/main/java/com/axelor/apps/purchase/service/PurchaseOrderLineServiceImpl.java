@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2015 Axelor (<http://axelor.com>).
+ * Copyright (C) 2016 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -199,13 +199,15 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
 		BigDecimal price = this.getUnitPrice(purchaseOrder, purchaseOrderLine, taxLine);
 
 		Map<String, Object> discounts = this.getDiscount(purchaseOrder, purchaseOrderLine, price);
-
-		purchaseOrderLine.setDiscountAmount((BigDecimal) discounts.get("discountAmount"));
-		purchaseOrderLine.setDiscountTypeSelect((Integer) discounts.get("discountTypeSelect"));
-
-		if(discounts.get("price") != null)  {
-			price = (BigDecimal) discounts.get("price");
+		
+		if(discounts != null){
+			purchaseOrderLine.setDiscountAmount((BigDecimal) discounts.get("discountAmount"));
+			purchaseOrderLine.setDiscountTypeSelect((Integer) discounts.get("discountTypeSelect"));
+			if(discounts.get("price") != null)  {
+				price = (BigDecimal) discounts.get("price");
+			}
 		}
+
 		purchaseOrderLine.setPrice(price);
 
 		purchaseOrderLine.setPriceDiscounted(this.computeDiscount(purchaseOrderLine));

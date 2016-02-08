@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2015 Axelor (<http://axelor.com>).
+ * Copyright (C) 2016 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -56,9 +56,9 @@ public class TemplateMessageServiceImpl implements TemplateMessageService {
 
 	protected TemplateMaker maker;
 	
-	private MessageService messageService;
+	protected MessageService messageService;
 	
-	private EmailAddressRepository emailAddressRepo;
+	protected EmailAddressRepository emailAddressRepo;
 
 	@Inject
 	public TemplateMessageServiceImpl( MessageService messageService, EmailAddressRepository emailAddressRepo ){

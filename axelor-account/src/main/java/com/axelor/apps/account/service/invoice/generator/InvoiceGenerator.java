@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2015 Axelor (<http://axelor.com>).
+ * Copyright (C) 2016 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -25,6 +25,8 @@ import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.axelor.apps.account.db.AccountConfig;
+import com.axelor.apps.account.db.AccountingSituation;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.InvoiceLineTax;
@@ -34,10 +36,13 @@ import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.AccountCustomerService;
+import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.account.service.JournalService;
+import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.invoice.generator.tax.TaxInvoiceLine;
 import com.axelor.apps.base.db.Address;
+import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
@@ -53,8 +58,7 @@ import com.axelor.inject.Beans;
 public abstract class InvoiceGenerator  {
 	
 
-	// Logger
-	private static final Logger LOG = LoggerFactory.getLogger(InvoiceGenerator.class);
+	private final Logger logger = LoggerFactory.getLogger(getClass());
 
 	protected JournalService journalService;
 
@@ -71,10 +75,12 @@ public abstract class InvoiceGenerator  {
 	protected PriceList priceList;
 	protected String internalReference;
 	protected String externalReference;
-	protected boolean inAti;
+	protected Boolean inAti;
+	protected BankDetails companyBankDetails;
 
-	protected InvoiceGenerator(int operationType, Company company,PaymentCondition paymentCondition, PaymentMode paymentMode, Address mainInvoicingAddress,
-			Partner partner, Partner contactPartner, Currency currency, PriceList priceList, String internalReference, String externalReference) throws AxelorException {
+	protected InvoiceGenerator(int operationType, Company company, PaymentCondition paymentCondition, PaymentMode paymentMode, Address mainInvoicingAddress,
+			Partner partner, Partner contactPartner, Currency currency, PriceList priceList, String internalReference, String externalReference, Boolean inAti, 
+			BankDetails companyBankDetails) throws AxelorException {
 
 		this.operationType = operationType;
 		this.company = company;
@@ -87,13 +93,8 @@ public abstract class InvoiceGenerator  {
 		this.priceList = priceList;
 		this.internalReference = internalReference;
 		this.externalReference = externalReference;
-		Integer atiChoice = Beans.get(AccountConfigRepository.class).all().filter("self.company = ?1", company).fetchOne().getInvoiceInAtiSelect();
-		if(atiChoice == 2 || atiChoice == 4){
-			this.inAti = true;
-		}
-		else{
-			this.inAti = false;
-		}
+		this.inAti = inAti;
+		this.companyBankDetails = companyBankDetails;
 		this.today = Beans.get(GeneralService.class).getTodayDate();
 		this.journalService = new JournalService();
 
@@ -109,7 +110,7 @@ public abstract class InvoiceGenerator  {
 	 * @throws AxelorException
 	 */
 	protected InvoiceGenerator(int operationType, Company company, Partner partner, Partner contactPartner, PriceList priceList,
-			String internalReference, String externalReference) throws AxelorException {
+			String internalReference, String externalReference, Boolean inAti) throws AxelorException {
 
 		this.operationType = operationType;
 		this.company = company;
@@ -118,13 +119,7 @@ public abstract class InvoiceGenerator  {
 		this.priceList = priceList;
 		this.internalReference = internalReference;
 		this.externalReference = externalReference;
-		Integer atiChoice = Beans.get(AccountConfigRepository.class).all().filter("self.company = ?1", company).fetchOne().getInvoiceInAtiSelect();
-		if(atiChoice == 2 || atiChoice == 4){
-			this.inAti = true;
-		}
-		else{
-			this.inAti = false;
-		}
+		this.inAti = inAti;
 		this.today = Beans.get(GeneralService.class).getTodayDate();
 		this.journalService = new JournalService();
 
@@ -155,13 +150,15 @@ public abstract class InvoiceGenerator  {
 
 	}
 
-
+	
 	abstract public Invoice generate() throws AxelorException;
 
 
 	protected Invoice createInvoiceHeader() throws AxelorException  {
 
 		Invoice invoice = new Invoice();
+		
+		invoice.setCompany(company);
 
 		invoice.setOperationTypeSelect(operationType);
 
@@ -205,8 +202,6 @@ public abstract class InvoiceGenerator  {
 		}
 		invoice.setCurrency(currency);
 
-		invoice.setCompany(company);
-
 		invoice.setPartnerAccount(Beans.get(AccountCustomerService.class).getPartnerAccount(partner, company, operationType == InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE || operationType == InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND));
 
 		invoice.setJournal(journalService.getJournal(invoice));
@@ -228,18 +223,49 @@ public abstract class InvoiceGenerator  {
 
 		invoice.setExternalReference(externalReference);
 
-		invoice.setInAti(inAti);
+		// Set ATI mode on invoice
+		AccountConfigService accountConfigService = Beans.get(AccountConfigService.class);
+		AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
+		
+		int atiChoice = accountConfig.getInvoiceInAtiSelect();
+		
+		if(inAti == null)  {  
+			invoice.setInAti(accountConfigService.getInvoiceInAti(accountConfig));
+		}
+		else if(atiChoice == AccountConfigRepository.INVOICE_ATI_DEFAULT || atiChoice == AccountConfigRepository.INVOICE_WT_DEFAULT)  {
+			invoice.setInAti(inAti);
+		}
+		else if(atiChoice == AccountConfigRepository.INVOICE_ATI_ALWAYS)  {
+			invoice.setInAti(true);
+		}
+		else {
+			invoice.setInAti(false);
+		}
 		
 		invoice.setInvoiceDate(today);
 		
 		if(invoice.getPaymentCondition() != null){
 			invoice.setDueDate(InvoiceToolService.getDueDate(invoice.getPaymentCondition(),invoice.getInvoiceDate()));
 		}
-
+		
+		
+		// Set Company bank details
+		if(companyBankDetails == null)  {
+			AccountingSituation accountingSituation = Beans.get(AccountingSituationService.class).getAccountingSituation(partner, company);
+			if(accountingSituation != null)  {
+				companyBankDetails = accountingSituation.getCompanyBankDetails();
+			}
+			else  {
+				companyBankDetails = company.getDefaultBankDetails();
+			}
+		}
+		invoice.setCompanyBankDetails(companyBankDetails);
+		
 		initCollections(invoice);
 
 		return invoice;
 	}
+
 
 
 
@@ -256,7 +282,7 @@ public abstract class InvoiceGenerator  {
 	 */
 	public void populate(Invoice invoice, List<InvoiceLine> invoiceLines) throws AxelorException {
 
-		LOG.debug("Peupler une facture => lignes de factures: {} ", new Object[] {  invoiceLines.size() });
+		logger.debug("Peupler une facture => lignes de factures: {} ", new Object[] {  invoiceLines.size() });
 
 		initCollections( invoice );
 
@@ -342,7 +368,7 @@ public abstract class InvoiceGenerator  {
 
 		}
 
-		LOG.debug("Montant de la facture: HT = {}, TVA = {}, TTC = {}",
+		logger.debug("Montant de la facture: HT = {}, TVA = {}, TTC = {}",
 			new Object[] { invoice.getExTaxTotal(), invoice.getTaxTotal(), invoice.getInTaxTotal() });
 
 	}

@@ -60,7 +60,7 @@
 		<panel >
 			<field name="invoiceId"/>
 			<panel colSpan="6">
-				<field name="operationTypeSelect" colSpan="12" onChange="action-group-account-invoice-operationtype-onchange" readonlyIf="statusSelect != 1" showIf="operationTypeSelect == null"/>
+				<field name="operationTypeSelect" colSpan="12" onChange="action-group-account-invoice-operationtype-onchange" readonlyIf="statusSelect != 1" showIf="!operationTypeSelect"/>
 				<field name="operationTypeSelect" colSpan="12" onChange="action-group-account-invoice-operationtype-onchange" readonlyIf="statusSelect != 1" selection='iinvoice.operation.type.select' selection-in="[1, 2]" showIf="operationTypeSelect == 1 || operationTypeSelect == 2"/>
 				<field name="operationTypeSelect" colSpan="12" onChange="action-group-account-invoice-operationtype-onchange" readonlyIf="statusSelect != 1" selection='iinvoice.operation.type.select' selection-in="[3, 4]" showIf="operationTypeSelect == 3 || operationTypeSelect == 4"/>
 			</panel>	
@@ -193,7 +193,7 @@
               	<viewer><![CDATA[ 
 				  <span class="form-item-container">
          			<dl class="dl-horizontal">
-	           		 <dt x-translate>Paid on {{record.paymentDate}}</dt>
+	           		 <dt x-translate>Paid on {{record.paymentDate | date : 'dd/MM/yyyy'}}</dt>
 	           		 <dd>-{{record.amount}} {{record.currency.symbol}}</dd>
 	           		</dl> 
            	      </span>]]>   
