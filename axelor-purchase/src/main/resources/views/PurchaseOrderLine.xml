@@ -13,7 +13,7 @@
     	<field name="estimatedDelivDate"/>
         <field name="qty"/>
         <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
-        <field name="price"/>
+        <field name="price" x-scale="2"/>
         <field name="exTaxTotal"/>
 	    <field name="inTaxTotal"/>
         <field name="saleMinPrice"/>

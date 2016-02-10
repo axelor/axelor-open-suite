@@ -6,7 +6,7 @@
     <grid name="invoice-line-grid" title="Invoice lines" model="com.axelor.apps.account.db.InvoiceLine" >
         <field name="productName"/>
         <field name="qty"/>
-        <field name="price"/>
+        <field name="price" x-scale="2"/>
         <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
         <field name="exTaxTotal"/>
 	    <field name="inTaxTotal"/>
