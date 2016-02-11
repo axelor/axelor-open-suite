@@ -38,6 +38,7 @@ import com.axelor.db.Query;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.google.common.base.Joiner;
+import com.google.common.base.Strings;
 
 @Singleton
 public class MailServiceBaseImpl extends MailServiceMessageImpl{
@@ -62,6 +63,10 @@ public class MailServiceBaseImpl extends MailServiceMessageImpl{
 	public List<InternetAddress> findEmails(String matching, List<String> selected, int maxResult) {
 		
 		//Users
+		List<String> selectedWithoutNull = new ArrayList<String>(selected);
+		for (int i = 0; i < selected.size() ; i++) {
+			if(Strings.isNullOrEmpty(selected.get(i))) selectedWithoutNull.remove(i);
+		}
 		
 		final List<String> where = new ArrayList<>();
 		final Map<String, Object> params = new HashMap<>();
@@ -72,9 +77,9 @@ public class MailServiceBaseImpl extends MailServiceMessageImpl{
 			where.add("(LOWER(self.partner.emailAddress.address) like LOWER(:email) OR LOWER(self.partner.fullName) like LOWER(:email))");
 			params.put("email", "%" + matching + "%");
 		}
-		if (selected != null && !selected.isEmpty()) {
+		if (selectedWithoutNull != null && !selectedWithoutNull.isEmpty()) {
 			where.add("self.partner.emailAddress.address not in (:selected)");
-			params.put("selected", selected);
+			params.put("selected", selectedWithoutNull);
 		}
 
 		final String filter = Joiner.on(" AND ").join(where);
@@ -88,15 +93,15 @@ public class MailServiceBaseImpl extends MailServiceMessageImpl{
 		final List<InternetAddress> addresses = new ArrayList<>();
 		for (User user : query.fetch(maxResult)) {
 			try {
-				if(user.getPartner().getEmailAddress() != null){
+				if(user.getPartner().getEmailAddress() != null && !Strings.isNullOrEmpty(user.getPartner().getEmailAddress().getAddress())){
 					final InternetAddress item = new InternetAddress(user.getPartner().getEmailAddress().getAddress(), user.getFullName());
 					addresses.add(item);
-					selected.add(user.getPartner().getEmailAddress().getAddress());
+					selectedWithoutNull.add(user.getPartner().getEmailAddress().getAddress());
 				}
-				else{
+				else if(!Strings.isNullOrEmpty(user.getEmail())){
 					final InternetAddress item = new InternetAddress(user.getEmail(), user.getFullName());
 					addresses.add(item);
-					selected.add(user.getEmail());
+					selectedWithoutNull.add(user.getEmail());
 				}
 				
 			} catch (UnsupportedEncodingException e) {
@@ -115,9 +120,9 @@ public class MailServiceBaseImpl extends MailServiceMessageImpl{
 			where2.add("(LOWER(self.emailAddress.address) like LOWER(:email) OR LOWER(self.fullName) like LOWER(:email))");
 			params2.put("email", "%" + matching + "%");
 		}
-		if (selected != null && !selected.isEmpty()) {
+		if (selectedWithoutNull != null && !selectedWithoutNull.isEmpty()) {
 			where2.add("self.emailAddress.address not in (:selected)");
-			params2.put("selected", selected);
+			params2.put("selected", selectedWithoutNull);
 		}
 
 		final String filter2 = Joiner.on(" AND ").join(where2);
@@ -130,8 +135,10 @@ public class MailServiceBaseImpl extends MailServiceMessageImpl{
 
 		for (Partner partner : query2.fetch(maxResult)) {
 			try {
-				final InternetAddress item = new InternetAddress(partner.getEmailAddress().getAddress(), partner.getFullName());
-				addresses.add(item);
+				if(partner.getEmailAddress() != null && !Strings.isNullOrEmpty(partner.getEmailAddress().getAddress())){
+					final InternetAddress item = new InternetAddress(partner.getEmailAddress().getAddress(), partner.getFullName());
+					addresses.add(item);
+				}
 			} catch (UnsupportedEncodingException e) {
 			}
 		}
