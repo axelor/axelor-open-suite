@@ -172,7 +172,7 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
 		}
 		invoiceLine.setTaxLine(taxLine);
 
-		if(exTaxTotal == null || inTaxTotal == null)  {
+		if(invoiceLine.getTaxLine() != null && (exTaxTotal == null || inTaxTotal == null))  {
 			this.computeTotal();
 		}
 
@@ -184,14 +184,15 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
 		if(companyCurrency == null)  {
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.INVOICE_LINE_GENERATOR_2),  company.getName()), IException.CONFIGURATION_ERROR);
 		}
+		if(!isTitleLine){
+			invoiceLine.setCompanyExTaxTotal(
+					currencyService.getAmountCurrencyConverted(
+							invoice.getCurrency(), companyCurrency, exTaxTotal, today).setScale(IAdministration.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP));
 
-		invoiceLine.setCompanyExTaxTotal(
-				currencyService.getAmountCurrencyConverted(
-						invoice.getCurrency(), companyCurrency, exTaxTotal, today).setScale(IAdministration.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP));
-
-		invoiceLine.setCompanyInTaxTotal(
-				currencyService.getAmountCurrencyConverted(
-						invoice.getCurrency(), companyCurrency, inTaxTotal, today).setScale(IAdministration.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP));
+			invoiceLine.setCompanyInTaxTotal(
+					currencyService.getAmountCurrencyConverted(
+							invoice.getCurrency(), companyCurrency, inTaxTotal, today).setScale(IAdministration.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP));
+		}
 
 		invoiceLine.setSequence(sequence);
 

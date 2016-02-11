@@ -582,14 +582,14 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
 		List<InvoiceLine> invoiceLineList = new ArrayList<InvoiceLine>();
 
 		for (StockMoveLine stockMoveLine : stockMoveLineList) {
-			if (stockMoveLine.getRealQty().compareTo(BigDecimal.ZERO) == 1){
-				invoiceLineList.addAll(this.createInvoiceLine(invoice, stockMoveLine));
-				//Depending on stockMove type
-				if (stockMoveLine.getSaleOrderLine() != null){
-					stockMoveLine.getSaleOrderLine().setInvoiced(true);
-				}else if(stockMoveLine.getPurchaseOrderLine() != null){
-					stockMoveLine.getPurchaseOrderLine().setInvoiced(true);
-				}
+			List<InvoiceLine> invoiceLineListCreated = this.createInvoiceLine(invoice, stockMoveLine);
+			if(invoiceLineListCreated != null)
+				invoiceLineList.addAll(invoiceLineListCreated);
+			//Depending on stockMove type
+			if (stockMoveLine.getSaleOrderLine() != null){
+				stockMoveLine.getSaleOrderLine().setInvoiced(true);
+			}else if(stockMoveLine.getPurchaseOrderLine() != null){
+				stockMoveLine.getPurchaseOrderLine().setInvoiced(true);
 			}
 		}
 
@@ -600,13 +600,18 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
 	public List<InvoiceLine> createInvoiceLine(Invoice invoice, StockMoveLine stockMoveLine) throws AxelorException {
 
 		Product product = stockMoveLine.getProduct();
-		
-		if (product == null) {
+		boolean isTitleLine = false;
+		if(stockMoveLine.getSaleOrderLine() != null && stockMoveLine.getSaleOrderLine().getIsTitleLine()) isTitleLine = true;
+		if(stockMoveLine.getPurchaseOrderLine() != null && stockMoveLine.getPurchaseOrderLine().getIsTitleLine()) isTitleLine = true;
+		if(stockMoveLine.getRealQty().compareTo(BigDecimal.ZERO) == 0 && !isTitleLine){
+			return null;
+		}
+		if (product == null && !isTitleLine) {
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.STOCK_MOVE_INVOICE_1), stockMoveLine.getStockMove().getStockMoveSeq()), IException.CONFIGURATION_ERROR);
 		}
-
+		
 		//TODO add a sequence to keep the same order as on sale order or purchase order and then on invoice
-		InvoiceLineGenerator invoiceLineGenerator = new InvoiceLineGeneratorSupplyChain(invoice, product, product.getName(),
+		InvoiceLineGenerator invoiceLineGenerator = new InvoiceLineGeneratorSupplyChain(invoice, product, stockMoveLine.getProductName(),
 				stockMoveLine.getDescription(), stockMoveLine.getRealQty(), stockMoveLine.getUnit(),
 				InvoiceLineGenerator.DEFAULT_SEQUENCE, false, stockMoveLine.getSaleOrderLine(), stockMoveLine.getPurchaseOrderLine(), stockMoveLine)  {
 			@Override

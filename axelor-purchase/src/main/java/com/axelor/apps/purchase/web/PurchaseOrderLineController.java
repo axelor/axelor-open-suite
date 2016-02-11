@@ -233,4 +233,16 @@ public class PurchaseOrderLineController {
 		
 		return purchaseOrder;
 	}
+	
+	public void emptyLine(ActionRequest request, ActionResponse response){
+		PurchaseOrderLine purchaseOrderLine = request.getContext().asType(PurchaseOrderLine.class);
+		if(purchaseOrderLine.getIsTitleLine()){
+			PurchaseOrderLine newPurchaseOrderLine = new PurchaseOrderLine();
+			newPurchaseOrderLine.setIsTitleLine(true);
+			newPurchaseOrderLine.setQty(BigDecimal.ZERO);
+			newPurchaseOrderLine.setId(purchaseOrderLine.getId());
+			newPurchaseOrderLine.setVersion(purchaseOrderLine.getVersion());
+			response.setValues(purchaseOrderLine);
+		}
+	}
 }

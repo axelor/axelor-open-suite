@@ -243,6 +243,8 @@ public class InvoiceLineController {
 			InvoiceLine newInvoiceLine = new InvoiceLine();
 			newInvoiceLine.setIsTitleLine(true);
 			newInvoiceLine.setQty(BigDecimal.ZERO);
+			newInvoiceLine.setId(invoiceLine.getId());
+			newInvoiceLine.setVersion(invoiceLine.getVersion());
 			response.setValues(newInvoiceLine);
 		}
 	}

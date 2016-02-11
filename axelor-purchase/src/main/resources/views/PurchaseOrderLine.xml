@@ -52,30 +52,34 @@
 		model="com.axelor.apps.purchase.db.PurchaseOrderLine" 
 		onNew="action-group-purchase-purchase-orderline-onnew"
 		onLoad="action-group-purchase-purchase-orderline-onload" width="large">
-	  <panel>
-		<field name="product" onChange="action-group-purchase-purchase-orderline-product-onchange"
-			domain="self.expense = false and (self.endDate = null or self.endDate &gt; :__date__) and self.purchasable = true"  form-view="product-form" grid-view="product-grid"/>
-	    <field name="productName"/>
-	    <field name="qty" onChange="action-group-purchase-purchase-orderline-qty-onchange"/>
-	    <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
-	    <field name="taxLine" onChange="action-purchase-order-line-method-convert-tax,action-purchase-order-line-method-compute,action-purchase-order-line-method-compute-analytic-distribution" domain="self.endDate = null or self.endDate &gt; :__date__" grid-view="tax-line-grid" form-view="tax-line-form"/>
-	    <field name="price" onChange="action-purchase-order-line-method-compute,action-purchase-order-line-method-compute-analytic-distribution">
-	      <hilite color="danger" if="salePrice &lt; saleMinPrice"/>
-	    </field>
-	    <field name="priceDiscounted" colSpan="4" readonly="true" hidden="true"/>
-	    <field name="exTaxTotal" readonly="true"/>
-	    <field name="inTaxTotal" readonly="true"/>
-	    <field name="saleMinPrice" readonly="true"/>
-	    <field name="salePrice" hidden="true"/>
-	    <field name="toInvoice"/>
-		<field name="invoiced" showIf="toInvoice"/>
-	  </panel>  
+		<panel>
+			<field name="isTitleLine" onChange="action-purchase-order-line-method-empty-line"/>
+			<field name="productName" showIf="isTitleLine" title="Title"/>
+		</panel>
+		<panel hideIf="isTitleLine">
+			<field name="product" onChange="action-group-purchase-purchase-orderline-product-onchange"
+				domain="self.expense = false and (self.endDate = null or self.endDate &gt; :__date__) and self.purchasable = true"  form-view="product-form" grid-view="product-grid"/>
+			   <field name="productName"/>
+			   <field name="qty" onChange="action-group-purchase-purchase-orderline-qty-onchange"/>
+			   <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
+			   <field name="taxLine" onChange="action-purchase-order-line-method-convert-tax,action-purchase-order-line-method-compute,action-purchase-order-line-method-compute-analytic-distribution" domain="self.endDate = null or self.endDate &gt; :__date__" grid-view="tax-line-grid" form-view="tax-line-form"/>
+			   <field name="price" onChange="action-purchase-order-line-method-compute,action-purchase-order-line-method-compute-analytic-distribution">
+			     <hilite color="danger" if="salePrice &lt; saleMinPrice"/>
+			   </field>
+			   <field name="priceDiscounted" colSpan="4" readonly="true" hidden="true"/>
+			   <field name="exTaxTotal" readonly="true"/>
+			   <field name="inTaxTotal" readonly="true"/>
+			   <field name="saleMinPrice" readonly="true"/>
+			   <field name="salePrice" hidden="true"/>
+			   <field name="toInvoice"/>
+			<field name="invoiced" showIf="toInvoice"/>
+		</panel>  
 	  
-	  <panel name="discount" title="Discount" canCollapse="true">
+	  <panel name="discount" title="Discount" canCollapse="true" hideIf="isTitleLine">
 	    <field name="discountTypeSelect" onChange="action-purchase-order-line-method-compute,action-purchase-order-line-attrs-discountamount-title,action-purchase-order-line-method-compute-analytic-distribution"/>
 	    <field name="discountAmount" onChange="action-purchase-order-line-method-compute,action-purchase-order-line-method-compute-analytic-distribution" hideIf="discountTypeSelect == 3"/>
 	  </panel>
-	  <panel-tabs>
+	  <panel-tabs hideIf="isTitleLine">
 	    <panel title="Details">
 	      <field name="createdBy" form-view="user-form" grid-view="user-grid"/>
 	      <field name="createdOn"/>
@@ -108,6 +112,10 @@
 		</panel>
 	  </panel-tabs>
 	</form>
+	
+	<action-method name="action-purchase-order-line-method-empty-line">
+		<call class="com.axelor.apps.purchase.web.PurchaseOrderLineController" method="emptyLine"/>
+	</action-method>
 	
 	<action-method name="action-purchase-order-line-method-create-distribution">
 		<call class="com.axelor.apps.supplychain.web.PurchaseOrderLineController" method="createAnalyticDistributionWithTemplate"/>
