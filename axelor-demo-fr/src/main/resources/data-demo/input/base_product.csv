@@ -36,7 +36,7 @@
 413;"Technicien/Opérateur Niv 2";"SERV-0007";;5;12;"false";;"false";103;"service";500;"EUR";380;"EUR";;;;2;400;"false";;"false";;;"1.40";"img/product/SERV-0007_fr.jpg"
 414;"Commercial";"SERV-0008";;5;12;"false";;"false";103;"service";700;"EUR";525;"EUR";;;;2;560;"false";;"false";;;"1.40";"img/product/SERV-0008_fr.png"
 415;"Manager";"SERV-0009";;5;12;"false";;"false";103;"service";1100;"EUR";781;"EUR";;;;2;880;"false";;"false";;;"1.40";"img/product/SERV-0009_fr.jpg"
-416;"Dirigeant";"SERV-0010";;5;12;"false";;"false";103;"service";1500;"EUR";1110;"EUR";;;;2;1200;"false";;"false";;;"1.40";"img/product/SERV-00010_fr.png"
+416;"Dirigeant";"SERV-0010";;5;12;"false";;"false";103;"service";1500;"EUR";1110;"EUR";;;;2;1200;"false";;"false";;;"1.40";"img/product/SERV-0010_fr.png"
 500;"Billets de train/metro/tramway";"NDF-0001";"Remboursement des frais de transport liés au déplacement du personnel à l'extérieur de l'entreprise par Train, Métro ou Tramway.";6;14;"true";;"false";1;"service";80;"EUR";"63.2";"EUR";;;;3;72;"false";;"false";;;"1.40";"img/product/NDF-0001_fr.jpg"
 501;"Billets d'avion";"NDF-0002";"Remboursement des frais de transport liés au déplacement du personnel à l'extérieur de l'entreprise par avion.";6;14;"true";;"false";1;"service";150;"EUR";"106.5";"EUR";;;;3;135;"false";;"false";;;"1.40";"img/product/NDF-0002_fr.jpg"
 502;"Taxi/Location voiture";"NDF-0003";"Remboursement des frais de transport liés au déplacement du personnel à l'extérieur de l'entreprise par taxi ou via un véhicule loué.";6;14;"true";;"false";1;"service";1;"EUR";"0.78";"EUR";;;;3;1;"false";;"false";;;"1.40";
