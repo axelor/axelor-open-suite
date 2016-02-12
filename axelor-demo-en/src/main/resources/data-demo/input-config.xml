@@ -134,7 +134,6 @@
 	<input file="base_product.csv" separator=";" type="com.axelor.apps.base.db.Product" search="self.importId = :importId" call="com.axelor.csv.script.ImportProduct:importProduct">
 		<bind to="startDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(startDate)" column="startDate"/>
 		<bind to="createdOn" eval="call:com.axelor.csv.script.ImportDateTime:importDate(startDate)" column="startDate"/>
-		<bind to="fullName" eval="'['+code+']'+name" />
 	</input>
 	
 	<input file="base_supplierCatalog.csv" separator=";" type="com.axelor.apps.base.db.SupplierCatalog"/>
@@ -348,7 +347,9 @@
 		<bind to="shipmentDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(shipmentDate)" column="shipmentDate"/>
 	</input>
 	
-	<input file="sale_saleOrderLine.csv" separator=";" type="com.axelor.apps.sale.db.SaleOrderLine" search="self.importId = :importId"/>
+	<input file="sale_saleOrderLine.csv" separator=";" type="com.axelor.apps.sale.db.SaleOrderLine" search="self.importId = :importId">
+		<bind to="priceDiscounted" eval="price" />
+	</input>
 	
 	<input file="base_general.csv" separator=";" type="com.axelor.apps.base.db.General" update="true" search="self.importId = :importId" call="com.axelor.csv.script.ValidateSupplyChain:validateSupplyChain" />
 	
@@ -372,7 +373,7 @@
 		<bind to="stockMoveSeq" eval="call:com.axelor.apps.base.service.administration.SequenceService:getSequenceNumber(com.axelor.apps.base.db.IAdministration.OUTGOING)" />
 	</input>
 	
-	<input file="stock_stockMoveLine.csv" separator=";" type="com.axelor.apps.stock.db.StockMoveLine"/>
+	<input file="stock_stockMoveLine.csv" separator=";" type="com.axelor.apps.stock.db.StockMoveLine" />
 	
 	
 <!-- 	  	PRODUCTION -->

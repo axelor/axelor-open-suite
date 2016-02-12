@@ -26,6 +26,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.ProductService;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
@@ -38,6 +39,9 @@ public class ImportProduct {
 	
 	@Inject
 	ProductService productService;
+	
+	@Inject
+	ProductRepository productRepo;
 	
 	@Inject
 	MetaFiles metaFiles;
@@ -60,8 +64,8 @@ public class ImportProduct {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
-		return bean;
+		
+		return productRepo.save(product);
 	}
 	
 	public Object generateVariant(Object bean, Map<String,Object> values) {

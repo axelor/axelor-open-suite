@@ -576,7 +576,7 @@
 	<chart onInit="action.sale.chart.set.from.date.and.saleman.6m" name="chart.turnover.per.month.per.saleman.over.6mth" title="Turnover per month per saleman (6 month)">
 		<search-fields>
 			<field type="date" name="fromDate" title="From Date"/>
-			<field type="reference" target="com.axelor.auth.db.User" name="salemanUser" title="SalesMan" widget="[required=true]"/>
+			<field type="reference" target="com.axelor.auth.db.User" name="salemanUser" title="SalesMan" x-required="true"/>
 		</search-fields>
 		<dataset type="jpql">
 			SELECT
@@ -607,7 +607,7 @@
 	<chart onInit="action.sale.chart.set.from.date.and.saleman.4m" name="chart.turnover.per.month.per.saleman.over.4mth" title="Turnover per month per saleman (4 month)">
 		<search-fields>
 			<field type="date" name="fromDate" title="From Date"/>
-			<field type="reference" target="com.axelor.auth.db.User" name="salemanUser" title="Salesman" widget="[required=true]"/>
+			<field type="reference" target="com.axelor.auth.db.User" name="salemanUser" title="Salesman" x-required="true"/>
 		</search-fields>
 		<dataset type="jpql">
 			SELECT
