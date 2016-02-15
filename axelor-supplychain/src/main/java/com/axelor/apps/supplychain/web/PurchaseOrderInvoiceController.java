@@ -25,6 +25,7 @@ import com.axelor.apps.supplychain.service.PurchaseOrderInvoiceService;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
@@ -45,7 +46,14 @@ public class PurchaseOrderInvoiceController {
 			
 			if(invoice != null)  {
 				response.setReload(true);
-				response.setFlash(I18n.get(IExceptionMessage.PO_INVOICE_2));
+				response.setView(ActionView
+			            .define(I18n.get(IExceptionMessage.PO_INVOICE_2))
+			            .model(Invoice.class.getName())
+			            .add("form", "invoice-form")
+			            .add("grid", "invoice-grid")
+			            .domain("self.purchaseOrder.id = "+String.valueOf(invoice.getId()))
+			            .context("_showRecord",String.valueOf(invoice.getId()))
+			            .map());
 			}
 		}
 		catch(Exception e)  { TraceBackService.trace(response, e); }

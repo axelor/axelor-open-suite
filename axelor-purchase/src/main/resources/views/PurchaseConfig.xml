@@ -11,6 +11,8 @@
 		<panel >
 		  <field name="company" form-view="company-form" colSpan="4" grid-view="company-grid"/>
 		  <field name="purchaseOrderInAtiSelect"/>
+		  <field name="priceDisplay"/>
+		  <field name="priceRequest" colSpan="12"/>
 		</panel>
     </form>
 	
