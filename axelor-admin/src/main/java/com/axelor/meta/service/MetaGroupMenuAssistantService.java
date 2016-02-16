@@ -22,6 +22,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -199,7 +200,7 @@ public class MetaGroupMenuAssistantService {
 	}
 
 
-	public void importMenus(CSVReader csvReader, String[] groupRow,
+	private void importMenus(CSVReader csvReader, String[] groupRow,
 			Map<String, Group> groupMap) throws IOException {
 
 		String[] row = csvReader.readNext();
@@ -207,34 +208,41 @@ public class MetaGroupMenuAssistantService {
 			return;
 		}
 
-		MetaMenu menu =  menuRepository.all().filter("self.name = ?1", row[0]).fetchOne();
+		List<MetaMenu>  menus =  menuRepository.all().filter("self.name = ?1", row[0]).fetch();
 
-		if(menu == null){
+		if(menus.isEmpty()){
 			errorLog += "\n"+String.format(I18n.get(IMessage.NO_MENU), row[0]);
 			return;
 		}
-
-		for(Integer mIndex = 2; mIndex < row.length; mIndex++ ){
-
-			String groupCode = groupRow[mIndex];
-
-			if(groupMap.containsKey(groupCode)){
-				Group group = groupMap.get(groupCode);
-				if(row[mIndex].equalsIgnoreCase("x")){
-					menu.addGroup(group);
-					if(!updatedMenu.contains(menu)){
-						updatedMenu.add(menu);
+		
+		Iterator<MetaMenu> menuIter = menus.iterator();
+		
+		while(menuIter.hasNext()){
+			
+			MetaMenu menu = menuIter.next();
+			
+			for(Integer mIndex = 2; mIndex < row.length; mIndex++ ){
+	
+				String groupCode = groupRow[mIndex];
+	
+				if(groupMap.containsKey(groupCode)){
+					Group group = groupMap.get(groupCode);
+					if(row[mIndex].equalsIgnoreCase("x")){
+						menu.addGroup(group);
+						if(!updatedMenu.contains(menu)){
+							updatedMenu.add(menu);
+						}
 					}
-				}
-				else if(menu.getGroups().contains(group)){
-					menu.removeGroup(group);
-					if(!updatedMenu.contains(menu)){
-						updatedMenu.add(menu);
+					else if(menu.getGroups().contains(group)){
+						menu.removeGroup(group);
+						if(!updatedMenu.contains(menu)){
+							updatedMenu.add(menu);
+						}
 					}
+	
 				}
-
+	
 			}
-
 		}
 
 		importMenus(csvReader, groupRow, groupMap);
