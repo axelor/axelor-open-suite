@@ -19,8 +19,6 @@ package com.axelor.apps.supplychain.service;
 
 import java.math.BigDecimal;
 
-import org.joda.time.LocalDate;
-
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
@@ -48,8 +46,6 @@ public class MinStockRulesServiceSupplychainImpl extends MinStockRulesServiceImp
 
 	@Inject
 	protected PurchaseConfigService purchaseConfigService;
-
-	protected LocalDate today;
 
 	protected User user;
 

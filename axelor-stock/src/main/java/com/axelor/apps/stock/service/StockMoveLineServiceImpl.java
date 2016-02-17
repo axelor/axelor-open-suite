@@ -112,10 +112,12 @@ public class StockMoveLineServiceImpl implements StockMoveLineService  {
 						break;
 				}
 			}
-
 			return stockMoveLine;
 		}
-		return null;
+		else{
+			StockMoveLine stockMoveLine = this.createStockMoveLine(product, productName, description, quantity, BigDecimal.ZERO, BigDecimal.ZERO, unit, stockMove, null);
+			return stockMoveLine;
+		}
 	}
 
 

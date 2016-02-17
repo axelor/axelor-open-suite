@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.5.0.v201506092134 Build &lt;@BUILD@></property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.4.2.v201410272105 Build &lt;4.4.2.v20150217-1805></property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -2254,6 +2254,12 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                                 <text id="3425">
                                                     <property name="marginLeft">2pt</property>
                                                     <property name="dataSet">TranslateDS</property>
+                                                    <list-property name="visibility">
+                                                        <structure>
+                                                            <property name="format">all</property>
+                                                            <expression name="valueExpr" type="javascript">row._outer["invoice_date"] == null</expression>
+                                                        </structure>
+                                                    </list-property>
                                                     <list-property name="paramBindings">
                                                         <structure>
                                                             <property name="paramName">param_1</property>
@@ -2286,6 +2292,12 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                                 <text id="3645">
                                                     <property name="marginLeft">2pt</property>
                                                     <property name="dataSet">TranslateDS</property>
+                                                    <list-property name="visibility">
+                                                        <structure>
+                                                            <property name="format">all</property>
+                                                            <expression name="valueExpr" type="javascript">row._outer["paymentConditionName"] == null</expression>
+                                                        </structure>
+                                                    </list-property>
                                                     <list-property name="paramBindings">
                                                         <structure>
                                                             <property name="paramName">param_1</property>
@@ -2318,6 +2330,12 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                                 <text id="3646">
                                                     <property name="marginLeft">2pt</property>
                                                     <property name="dataSet">TranslateDS</property>
+                                                    <list-property name="visibility">
+                                                        <structure>
+                                                            <property name="format">all</property>
+                                                            <expression name="valueExpr" type="javascript">row._outer["due_date"] == null</expression>
+                                                        </structure>
+                                                    </list-property>
                                                     <list-property name="paramBindings">
                                                         <structure>
                                                             <property name="paramName">param_1</property>
@@ -2350,6 +2368,12 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                                 <text id="3647">
                                                     <property name="marginLeft">2pt</property>
                                                     <property name="dataSet">TranslateDS</property>
+                                                    <list-property name="visibility">
+                                                        <structure>
+                                                            <property name="format">all</property>
+                                                            <expression name="valueExpr" type="javascript">row._outer["internal_reference"] == null</expression>
+                                                        </structure>
+                                                    </list-property>
                                                     <list-property name="paramBindings">
                                                         <structure>
                                                             <property name="paramName">param_1</property>
@@ -2382,6 +2406,12 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                                 <text id="3648">
                                                     <property name="marginLeft">2pt</property>
                                                     <property name="dataSet">TranslateDS</property>
+                                                    <list-property name="visibility">
+                                                        <structure>
+                                                            <property name="format">all</property>
+                                                            <expression name="valueExpr" type="javascript">row._outer["external_reference"] == null</expression>
+                                                        </structure>
+                                                    </list-property>
                                                     <list-property name="paramBindings">
                                                         <structure>
                                                             <property name="paramName">param_1</property>
@@ -2441,6 +2471,12 @@ row["partnerFirstName"]
                                     <text id="3662">
                                         <property name="fontWeight">bold</property>
                                         <property name="dataSet">InvoiceDB</property>
+                                        <list-property name="visibility">
+                                            <structure>
+                                                <property name="format">all</property>
+                                                <expression name="valueExpr" type="javascript">row._outer["contactName"] == null &amp;&amp; row._outer["contactFirstName"] == null</expression>
+                                            </structure>
+                                        </list-property>
                                         <list-property name="boundDataColumns">
                                             <structure>
                                                 <property name="name">inv_id</property>
@@ -3856,6 +3892,12 @@ row["partnerFirstName"]
                                     <text id="3594">
                                         <property name="fontSize">9pt</property>
                                         <property name="dataSet">TranslateDS</property>
+                                        <list-property name="visibility">
+                                            <structure>
+                                                <property name="format">all</property>
+                                                <expression name="valueExpr" type="javascript">row._outer["bank_address"] == null</expression>
+                                            </structure>
+                                        </list-property>
                                         <list-property name="paramBindings">
                                             <structure>
                                                 <property name="paramName">param_1</property>
@@ -3900,6 +3942,12 @@ row["partnerFirstName"]
                                 <cell id="3866">
                                     <text id="3582">
                                         <property name="fontSize">9pt</property>
+                                        <list-property name="visibility">
+                                            <structure>
+                                                <property name="format">all</property>
+                                                <expression name="valueExpr" type="javascript">row["iban"] == null</expression>
+                                            </structure>
+                                        </list-property>
                                         <property name="contentType">auto</property>
                                         <text-property name="content"><![CDATA[IBAN :]]></text-property>
                                     </text>
@@ -3922,6 +3970,12 @@ row["partnerFirstName"]
                                 <cell id="3859">
                                     <text id="3593">
                                         <property name="fontSize">9pt</property>
+                                        <list-property name="visibility">
+                                            <structure>
+                                                <property name="format">all</property>
+                                                <expression name="valueExpr" type="javascript">row["bic"] == null</expression>
+                                            </structure>
+                                        </list-property>
                                         <property name="contentType">auto</property>
                                         <text-property name="content"><![CDATA[BIC :]]></text-property>
                                     </text>

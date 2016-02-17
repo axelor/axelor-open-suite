@@ -18,5 +18,8 @@
     	<field name="costSheetGroup" expr="eval: __config__?.general?.productCostSheetGroup"/>
     </action-record>
     
+    <action-attrs name="action-product-attrs-scale-and-precision-production" if-module="axelor-production">
+		<attribute name="scale" for="lastProductionPrice" expr="eval: __config__.generalService.getNbDecimalDigitForUnitPrice()"/>
+	</action-attrs>
 	
 </object-views>

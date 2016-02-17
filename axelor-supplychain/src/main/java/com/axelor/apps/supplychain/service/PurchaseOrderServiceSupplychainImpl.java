@@ -143,6 +143,19 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
 						stockMove.getStockMoveLineList().add(stockMoveLine);
 					}
 				}
+				else if(purchaseOrderLine.getIsTitleLine()){
+					StockMoveLine stockMoveLine = Beans.get(StockMoveLineService.class).createStockMoveLine(
+							product, purchaseOrderLine.getProductName(), 
+							purchaseOrderLine.getDescription(), BigDecimal.ZERO, 
+							BigDecimal.ZERO,null, 
+							stockMove, 2, purchaseOrder.getInAti(), null);
+					if(stockMoveLine != null) {
+
+						stockMoveLine.setPurchaseOrderLine(purchaseOrderLine);
+
+						stockMove.getStockMoveLineList().add(stockMoveLine);
+					}
+				}
 			}
 			if(stockMove.getStockMoveLineList() != null && !stockMove.getStockMoveLineList().isEmpty()){
 				stockMove.setExTaxTotal(Beans.get(StockMoveService.class).compute(stockMove));

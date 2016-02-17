@@ -90,6 +90,10 @@
 				<panel title="Invoicing" readonlyIf="statusSelect == 4" colSpan="6">
 					<field name="invoice" if-module="axelor-account" form-view="invoice-form" grid-view="invoice-grid"/>
 				</panel>
+				<panel hideIf="statusSelect &gt; 2" colSpan="12">
+					<field name="priceDisplay" colSpan="12" />
+					<field name="priceRequest" colSpan="12" hideIf="priceDisplay" x-height="5" />
+				</panel>
 			</panel>
 			<panel title="Notes">
 				<field name="notes" showTitle="false" colSpan="12" widget="Html" x-lite="true"/>
@@ -110,7 +114,7 @@
 			<button name="validate" title="Validate" showIf="statusSelect == 2"   onClick="action-group-purchase-order-on-validate-actions"/>
 			<button name="completed" title="Completed" showIf="statusSelect == 3"   onClick="action-purchase-order-record-completed,save"/>
 			<button name="newVersion" title="New version" if="__config__.general.getManagePurchaseOrderVersion()" showIf="statusSelect == 2" colSpan="12" onClick="save,action-purchase-record-newVersion,save"/>
-			<button name="showInvoice" title="Show invoice" showIf="statusSelect == 3 || statusSelect == 4"   onClick="action-purchase-order-show-invoice"/>
+			<button name="showInvoice" title="Show invoice" showIf="statusSelect == 3 || statusSelect == 4"   onClick="action-purchase-order-show-invoice" if-module="axelor-supplychain"/>
 			<button name="generateControlInvoice" title="Generate control invoice" showIf="statusSelect == 3"   onClick="save,action-purchase-order-method-generate-control-invoice"/>
 			<button name="clearPurchaseOrder" title="Clear purchase order" showIf="statusSelect &gt;= 3"   onClick="save,action-purchase-order-method-clear-purchase-order"/>
 			<button name="generateSupplierStockMove" title="Generate supplier arrival" showIf="statusSelect == 3 || statusSelect == 4" if="__config__.general.getSupplierStockMoveManagement() &amp;&amp; !__config__.general.getSupplierStockMoveGenerationAuto()" onClick="action-purchase-order-create-stock-move" if-module="axelor-supplychain"/>
@@ -161,6 +165,7 @@
     	<action name="action-purchase-order-method-get-location"/>
     	<action name="action-purchase-order-record-in-ati"/>
     	<action name="action-purchase-order-attrs-in-ati"/>
+    	<action name="action-purchase-order-dispaly-price"/>
     </action-group>
     
     <action-group name="action-group-purchase-order-company-change-actions">
@@ -195,6 +200,11 @@
     	<field name="inAti" expr="eval: __repo__.of(PurchaseConfig).all().filter('self.company = ?',company).fetchOne()?.purchaseOrderInAtiSelect == 2
     									|| __repo__.of(PurchaseConfig).all().filter('self.company = ?',company).fetchOne()?.purchaseOrderInAtiSelect == 4"/>
     </action-record>
+    
+    <action-record name="action-purchase-order-dispaly-price" model="com.axelor.apps.purchase.db.PurchaseOrder">
+    	<field name="priceDisplay" expr="eval: __repo__.of(PurchaseConfig).all().filter('self.company = ?',company).fetchOne()?.priceDisplay"/>
+    	<field name="priceRequest" expr="eval: __repo__.of(PurchaseConfig).all().filter('self.company = ?',company).fetchOne()?.priceRequest"/>
+    </action-record> 
      
     <action-record name="action-purchase-order-record-new" model="com.axelor.apps.purchase.db.PurchaseOrder">
     	<field name="exTaxTotal" expr="eval: 0"/>
@@ -225,6 +235,7 @@
     		if="supplierPartner != null &amp;&amp; __repo__.of(AccountingSituation).all().filter('self.company.id = ?1 AND self.partner.id = ?2', company?.id, supplierPartner?.id).fetchOne()?.companyBankDetails != null"/>
     	<field name="companyBankDetails" expr="eval: company?.defaultBankDetails"
     		if="supplierPartner == null || __repo__.of(AccountingSituation).all().filter('self.company.id = ?1 AND self.partner.id = ?2', company?.id, supplierPartner?.id).fetchOne()?.companyBankDetails == null"/>
+ 		<field name="contactPartner" expr="eval:null" />
  	</action-record>
     
     <action-record name="action-purchase-order-record-validate" model="com.axelor.apps.purchase.db.PurchaseOrder">
@@ -281,8 +292,9 @@
 		model="com.axelor.apps.account.db.Invoice">
 		<view type="grid" name="invoice-grid"/>
 		<view type="form" name="invoice-form"/>
-		<domain>self.operationTypeSelect = 1</domain>
+		<domain>self.operationTypeSelect = 1 and self.purchaseOrder.id = :poId</domain>
 		<context name="operationTypeSelect" expr="1"/>
+		<context name="poId" expr="eval:id"/>
 	</action-view>
   
   	<action-validate name="action-purchase-order-validate-location">

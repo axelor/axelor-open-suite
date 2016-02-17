@@ -224,8 +224,8 @@
 	
 	 <chart name="chart.stock.history.report.for.product" title="Stock History" onInit="action-product-set-today-date">
 		<search-fields>
-		  <field name="fromDate" type="date" title="From" widget="[required=true]"/>
-		  <field name="toDate" type="date" title="To" widget="[required=true]"/>
+		  <field name="fromDate" type="date" title="From" x-required="true"/>
+		  <field name="toDate" type="date" title="To" x-required="true"/>
 		</search-fields>
 		<dataset type="sql">
 		 <![CDATA[
@@ -373,8 +373,8 @@
 	
 	<chart name="chart.stock.history.report.for.product.variant" title="Stock History" onInit="action-product-set-today-date">
 		<search-fields>
-			<field name="fromDate" type="date" title="From" widget="[required=true]"/>
-			<field name="toDate" type="date" title="To" widget="[required=true]"/>
+			<field name="fromDate" type="date" title="From" x-required="true"/>
+			<field name="toDate" type="date" title="To" x-required="true"/>
 		</search-fields>
 		<dataset type="sql">
 		 <![CDATA[

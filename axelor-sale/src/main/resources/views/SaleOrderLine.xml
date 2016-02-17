@@ -7,7 +7,7 @@
 	    <field name="productName"/>
 	    <field name="qty"/>
 	    <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
-	    <field name="price"/>
+	    <field name="price" x-scale="2"/>
 	    <field name="exTaxTotal"/>
 	    <field name="inTaxTotal"/>
 	</grid>
@@ -220,8 +220,8 @@
 	</action-attrs>
 	
 	<action-attrs name="action-sale-order-line-attrs-domain-product">
-		<attribute name="domain" for="product" expr="self.expense = false and (self.endDate = null or self.endDate &gt; :__date__) and self.sellable = true" if="_parent.subscription"/>
-		<attribute name="domain" for="product" expr="self.expense = false and (self.endDate = null or self.endDate &gt; :__date__) and self.sellable = true and self.productTypeSelect != 'subscriptable'" if="!_parent.subscription"/>
+		<attribute name="domain" for="product" expr="(self.endDate = null or self.endDate &gt; :__date__) and self.sellable = true" if="_parent.subscription"/>
+		<attribute name="domain" for="product" expr="(self.endDate = null or self.endDate &gt; :__date__) and self.sellable = true and self.productTypeSelect != 'subscriptable'" if="!_parent.subscription"/>
 	</action-attrs>
 	
 	<action-attrs name="action-supplychain-attrs-readonly-invoice-subscription" if-module="axelor-supplychain">

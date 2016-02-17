@@ -195,7 +195,7 @@
 	    </toolbar>
 		<field name="picture" />
 		<field name="fullName" />
-		<field name="salePrice" />
+		<field name="salePrice" x-scale="2" />
 		<field name="saleCurrency.symbol" />
 		<field name="productFamily" />
 		<field name="productCategory" />
@@ -206,7 +206,7 @@
 			    <img ng-src="{{$image('picture', 'content')}}" />
 			  </div>
 			  <div class="span8">
-			    <span>{{salePrice}} {{saleCurrency.symbol}}<br/>
+			    <span>{{$fmt('salePrice')}} {{saleCurrency.symbol}}<br/>
 			    {{productFamily.name}}<br/>
 			    {{productCategory.name}}</span>
 			  </div>
@@ -228,6 +228,7 @@
     
     <action-group name="action-group-base-product-onnew">
    	 	<action name="action-product-attrs-scale-and-precision"/>
+   	 	<action name="action-product-attrs-scale-and-precision-production"/>
     	<action name="action-product-record-default-new"/>
     	<action name="action-product-record-sale-supply-select"/>
     	<action name="action-product-record-in-ati"/>
@@ -250,13 +251,14 @@
     <action-group name="action-group-product-onload">
     	<action name="action-product-attrs-readonly-unit"/>
         <action name="action-product-attrs-scale-and-precision"/>
+        <action name="action-product-attrs-scale-and-precision-production"/>
         <action name="action-product-attrs-title-sale-price"/>
         <action name="action-product-set-stock"/>
         <action name="action-product-set-total-variants"/>
     </action-group>
     
     <action-attrs name="action-product-attrs-readonly-unit" if-module="axelor-stock">
-    	<attribute name="readonly" for="unit" expr="eval: __repo__.of(LocationLine).all().filter('self.product.id = ?1 AND (self.currentQty != 0 OR self.futureQty != 0)', id).fetch().size &gt; 0"/>
+    	<attribute name="readonly" for="unit" expr="eval: __repo__.of(LocationLine).all().filter('self.product.id = ?1 AND (self.currentQty != 0 OR self.futureQty != 0)', id).fetch().size &gt; 0" if="id != null"/>
     </action-attrs>
     
     <action-record name="action-product-record-in-ati" model="com.axelor.apps.base.db.Product">

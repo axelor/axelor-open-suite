@@ -93,7 +93,7 @@ public class GeneralController {
 		}else{
 			List<HashMap<String,Object>> fieldsSet = (List<HashMap<String,Object>>)request.getContext().get("fieldsSet");
 			for(HashMap<String,Object> field : fieldsSet){
-				if((Boolean)field.get("selected")){
+				if(field.get("selected") != null && (Boolean)field.get("selected")){
 					MetaField metaField = metaFieldRepo.find(Long.parseLong(field.get("id").toString()));
 					fields.add(metaField.getName());
 				}

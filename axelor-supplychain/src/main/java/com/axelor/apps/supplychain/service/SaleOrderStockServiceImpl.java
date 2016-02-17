@@ -91,7 +91,7 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService  {
 			StockMove stockMove = this.createStockMove(saleOrder, company);
 
 			for(SaleOrderLine saleOrderLine: saleOrder.getSaleOrderLineList()) {
-				if(saleOrderLine.getProduct() != null){
+				if(saleOrderLine.getProduct() != null || saleOrderLine.getIsTitleLine()){
 					this.createStockMoveLine(stockMove, saleOrderLine, company);
 				}
 			}
@@ -157,6 +157,24 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService  {
 					unit,
 					stockMove,
 					1, saleOrderLine.getSaleOrder().getInAti(), saleOrderLine.getTaxLine().getValue());
+
+			stockMoveLine.setSaleOrderLine(saleOrderLine);
+
+			if(stockMoveLine != null) {
+				stockMove.addStockMoveLineListItem(stockMoveLine);
+			}
+			return stockMoveLine;
+		}
+		else if(saleOrderLine.getIsTitleLine()){
+			StockMoveLine stockMoveLine = stockMoveLineService.createStockMoveLine(
+					null,
+					saleOrderLine.getProductName(),
+					saleOrderLine.getDescription(),
+					BigDecimal.ZERO,
+					BigDecimal.ZERO,
+					null,
+					stockMove,
+					1, saleOrderLine.getSaleOrder().getInAti(), null);
 
 			stockMoveLine.setSaleOrderLine(saleOrderLine);
 

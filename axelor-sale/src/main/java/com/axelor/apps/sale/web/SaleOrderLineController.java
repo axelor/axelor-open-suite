@@ -218,6 +218,8 @@ public class SaleOrderLineController {
 			SaleOrderLine newSaleOrderLine = new SaleOrderLine();
 			newSaleOrderLine.setIsTitleLine(true);
 			newSaleOrderLine.setQty(BigDecimal.ZERO);
+			newSaleOrderLine.setId(saleOrderLine.getId());
+			newSaleOrderLine.setVersion(saleOrderLine.getVersion());
 			response.setValues(newSaleOrderLine);
 		}
 	}

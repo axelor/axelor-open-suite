@@ -556,6 +556,7 @@
     		if="clientPartner != null &amp;&amp; __repo__.of(AccountingSituation).all().filter('self.company.id = ?1 AND self.partner.id = ?2', company?.id, clientPartner?.id).fetchOne()?.companyBankDetails != null"/>
     	<field name="companyBankDetails" expr="eval: company?.defaultBankDetails"
     		if="clientPartner == null || __repo__.of(AccountingSituation).all().filter('self.company.id = ?1 AND self.partner.id = ?2', company?.id, clientPartner?.id).fetchOne()?.companyBankDetails == null"/>
+    	<field name="contactPartner" expr="eval:null" />	
     </action-record>
     
     <action-record name="action-sale-order-record-hide-discount" model="com.axelor.apps.sale.db.SaleOrder">

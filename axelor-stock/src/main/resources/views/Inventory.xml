@@ -34,7 +34,7 @@
 		</panel>
 		<panel title="Export" showIf="statusSelect == 2 || statusSelect == 3" sidebar="true">
 			<field name="formatSelect" colSpan="6"/>
-			<button name="showInventory" title="Print" showIf="formatSelect != null" colSpan="6" icon="fa-print" onClick="save,action-inventory-method-show-inventory"/>
+			<button name="showInventory" title="Export" readonlyIf="formatSelect == null" colSpan="6" onClick="save,action-inventory-method-show-inventory"/>
 		</panel>
 		<panel title="Import" showIf="statusSelect == 2" sidebar="true">
 			<field name="importFilePath"/>    

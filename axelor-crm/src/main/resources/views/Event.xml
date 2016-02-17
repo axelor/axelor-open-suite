@@ -98,7 +98,6 @@
 	</action-group>
 	
 	<action-group name="action-group-crm-event-onload">
-		<action name="action-event-record-current-user"/>
 		<action name="action-partner-attrs-hide-contact-partner" />
 	</action-group>
 	

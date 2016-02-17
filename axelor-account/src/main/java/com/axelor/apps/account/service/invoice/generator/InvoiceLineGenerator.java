@@ -150,9 +150,6 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
 
 		InvoiceLine invoiceLine = new InvoiceLine();
 
-		Company company = invoice.getCompany();
-		Partner partner = invoice.getPartner();
-
 		invoiceLine.setInvoice(invoice);
 
 		invoiceLine.setProduct(product);
@@ -162,35 +159,20 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
 		invoiceLine.setPriceDiscounted(priceDiscounted);
 		invoiceLine.setQty(qty);
 		invoiceLine.setUnit(unit);
-
-		if (taxLine == null && product != null) {
-			taxLine = accountManagementServiceImpl.getTaxLine(today, product, company, partner.getFiscalPosition(),
-					InvoiceToolService.isPurchase(invoice));
+		
+		if(taxLine == null)  {
+			this.determineTaxLine();
 		}
 		invoiceLine.setTaxLine(taxLine);
 
-		if (exTaxTotal == null || inTaxTotal == null) {
+		if((exTaxTotal == null || inTaxTotal == null))  {
 			this.computeTotal();
 		}
 
 		invoiceLine.setExTaxTotal(exTaxTotal);
 		invoiceLine.setInTaxTotal(inTaxTotal);
-
-		Currency companyCurrency = company.getCurrency();
-
-		if (companyCurrency == null) {
-			throw new AxelorException(
-					String.format(I18n.get(IExceptionMessage.INVOICE_LINE_GENERATOR_2), company.getName()),
-					IException.CONFIGURATION_ERROR);
-		}
-
-		invoiceLine.setCompanyExTaxTotal(
-				currencyService.getAmountCurrencyConverted(invoice.getCurrency(), companyCurrency, exTaxTotal, today)
-						.setScale(IAdministration.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP));
-
-		invoiceLine.setCompanyInTaxTotal(
-				currencyService.getAmountCurrencyConverted(invoice.getCurrency(), companyCurrency, inTaxTotal, today)
-						.setScale(IAdministration.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP));
+		
+		this.computeCompanyTotal(invoiceLine);
 
 		invoiceLine.setSequence(sequence);
 
@@ -202,9 +184,23 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
 		return invoiceLine;
 
 	}
+	
+	public void determineTaxLine() throws AxelorException  {
+		
+		if(product != null)  {
+			
+			Company company = invoice.getCompany();
+			Partner partner = invoice.getPartner();
+			
+			taxLine =  accountManagementServiceImpl.getTaxLine(today, product, company, partner.getFiscalPosition(), InvoiceToolService.isPurchase(invoice));
+		}
+		
+	}
 
-	public void computeTotal() {
-
+	public void computeTotal()  {
+		
+		if(isTitleLine)  {  return;  }
+		
 		BigDecimal taxRate = BigDecimal.ZERO;
 		if (taxLine != null) {
 			taxRate = taxLine.getValue();
@@ -218,6 +214,29 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
 			exTaxTotal = inTaxTotal.divide(taxRate.add(BigDecimal.ONE), 2, BigDecimal.ROUND_HALF_EVEN);
 		}
 	}
+	
+	public void computeCompanyTotal(InvoiceLine invoiceLine) throws AxelorException  {
+		
+		if(isTitleLine)  {  return;  }
+		
+		Company company = invoice.getCompany();
+
+		Currency companyCurrency = company.getCurrency();
+
+		if(companyCurrency == null)  {
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.INVOICE_LINE_GENERATOR_2),  company.getName()), IException.CONFIGURATION_ERROR);
+		}
+		
+		invoiceLine.setCompanyExTaxTotal(
+				currencyService.getAmountCurrencyConverted(
+						invoice.getCurrency(), companyCurrency, exTaxTotal, today).setScale(IAdministration.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP));
+
+		invoiceLine.setCompanyInTaxTotal(
+				currencyService.getAmountCurrencyConverted(
+						invoice.getCurrency(), companyCurrency, inTaxTotal, today).setScale(IAdministration.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP));
+	}
+	
+	
 
 	/**
 	 * Rembourser une ligne de facture.

@@ -36,7 +36,7 @@ import com.google.inject.persist.Transactional;
 
 public class MinStockRulesServiceImpl implements MinStockRulesService  {
 
-	private LocalDate today;
+	protected LocalDate today;
 
 	protected User user;
 	

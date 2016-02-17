@@ -351,6 +351,7 @@
     		if="partner != null &amp;&amp; __repo__.of(AccountingSituation).all().filter('self.company.id = ?1 AND self.partner.id = ?2', company?.id, partner?.id).fetchOne()?.companyBankDetails != null"/>
     	<field name="companyBankDetails" expr="eval: company?.defaultBankDetails"
     		if="partner == null || __repo__.of(AccountingSituation).all().filter('self.company.id = ?1 AND self.partner.id = ?2', company?.id, partner?.id).fetchOne()?.companyBankDetails == null"/>
+    	<field name="contactPartner" expr="eval:null" />
     </action-record>
     
     
