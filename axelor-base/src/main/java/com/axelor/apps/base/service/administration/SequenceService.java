@@ -34,25 +34,20 @@ import com.google.inject.persist.Transactional;
 
 public class SequenceService {
 
-	private final static String
-		PATTERN_YEAR = "%Y",
-		PATTERN_MONTH = "%M",
-		PATTERN_FULL_MONTH ="%FM",
-		PATTERN_DAY = "%D",
-		PATTERN_WEEK = "%WY",
-		PADDING_STRING = "0";
+	private final static String PATTERN_YEAR = "%Y", PATTERN_MONTH = "%M", PATTERN_FULL_MONTH = "%FM",
+			PATTERN_DAY = "%D", PATTERN_WEEK = "%WY", PADDING_STRING = "0";
 
-	private final Logger log = LoggerFactory.getLogger( getClass() );
+	private final Logger log = LoggerFactory.getLogger(getClass());
 
 	private SequenceVersionRepository sequenceVersionRepository;
 
 	private LocalDate today, refDate;
-	
+
 	@Inject
 	private SequenceRepository sequenceRepo;
 
 	@Inject
-	public SequenceService( SequenceVersionRepository sequenceVersionRepository ) {
+	public SequenceService(SequenceVersionRepository sequenceVersionRepository) {
 
 		this.sequenceVersionRepository = sequenceVersionRepository;
 
@@ -66,7 +61,7 @@ public class SequenceService {
 		this.refDate = this.today;
 	}
 
-	public SequenceService setRefDate( LocalDate refDate ){
+	public SequenceService setRefDate(LocalDate refDate) {
 		this.refDate = refDate;
 		return this;
 	}
@@ -78,8 +73,12 @@ public class SequenceService {
 	 */
 	public Sequence getSequence(String code, Company company) {
 
-		if (code == null)  { return null; }
-		if (company == null)  { return sequenceRepo.findByCode(code); }
+		if (code == null) {
+			return null;
+		}
+		if (company == null) {
+			return sequenceRepo.findByCode(code);
+		}
 
 		return sequenceRepo.find(code, company);
 
@@ -105,7 +104,9 @@ public class SequenceService {
 
 		Sequence sequence = getSequence(code, company);
 
-		if (sequence == null)  {  return null;  }
+		if (sequence == null) {
+			return null;
+		}
 
 		return this.getSequenceNumber(sequence);
 
@@ -122,28 +123,32 @@ public class SequenceService {
 
 	}
 
-	public static boolean isValid( Sequence sequence ){
+	public static boolean isValid(Sequence sequence) {
 
-		boolean
-			monthlyResetOk = sequence.getMonthlyResetOk(),
-			yearlyResetOk = sequence.getYearlyResetOk();
+		boolean monthlyResetOk = sequence.getMonthlyResetOk(), yearlyResetOk = sequence.getYearlyResetOk();
 
-		if ( !monthlyResetOk && !yearlyResetOk ){ return true; }
+		if (!monthlyResetOk && !yearlyResetOk) {
+			return true;
+		}
 
-		String
-			seqPrefixe = StringUtils.defaultString(sequence.getPrefixe(), ""),
-			seqSuffixe = StringUtils.defaultString(sequence.getSuffixe(), ""),
-			seq = seqPrefixe + seqSuffixe;
+		String seqPrefixe = StringUtils.defaultString(sequence.getPrefixe(), ""),
+				seqSuffixe = StringUtils.defaultString(sequence.getSuffixe(), ""), seq = seqPrefixe + seqSuffixe;
 
-		if ( yearlyResetOk && !seq.contains(PATTERN_YEAR) ){ return false; }
-		if ( monthlyResetOk && !seq.contains(PATTERN_MONTH) && !seq.contains(PATTERN_FULL_MONTH) && !seq.contains(PATTERN_YEAR) ){ return false; }
+		if (yearlyResetOk && !seq.contains(PATTERN_YEAR)) {
+			return false;
+		}
+		if (monthlyResetOk && !seq.contains(PATTERN_MONTH) && !seq.contains(PATTERN_FULL_MONTH)
+				&& !seq.contains(PATTERN_YEAR)) {
+			return false;
+		}
 
 		return true;
 
 	}
 
 	/**
-	 * Fonction retournant une numéro de séquence depuis une séquence générique, et une date
+	 * Fonction retournant une numéro de séquence depuis une séquence générique,
+	 * et une date
 	 *
 	 * @param seq
 	 * @param todayYear
@@ -152,68 +157,78 @@ public class SequenceService {
 	 * @param todayWoy
 	 * @return
 	 */
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public String getSequenceNumber( Sequence sequence )  {
+	@Transactional(rollbackOn = { AxelorException.class, Exception.class })
+	public String getSequenceNumber(Sequence sequence) {
 
 		SequenceVersion sequenceVersion = getVersion(sequence);
 
-		String
-			seqPrefixe = StringUtils.defaultString(sequence.getPrefixe(), ""),
-			seqSuffixe = StringUtils.defaultString(sequence.getSuffixe(), ""),
-			padLeft = StringUtils.leftPad( sequenceVersion.getNextNum().toString(), sequence.getPadding(), PADDING_STRING );
+		String seqPrefixe = StringUtils.defaultString(sequence.getPrefixe(), ""),
+				seqSuffixe = StringUtils.defaultString(sequence.getSuffixe(), ""), padLeft = StringUtils
+						.leftPad(sequenceVersion.getNextNum().toString(), sequence.getPadding(), PADDING_STRING);
 
+		String nextSeq = (seqPrefixe + padLeft + seqSuffixe)
+				.replaceAll(PATTERN_YEAR, Integer.toString(refDate.getYearOfCentury()))
+				.replaceAll(PATTERN_MONTH, Integer.toString(refDate.getMonthOfYear()))
+				.replaceAll(PATTERN_FULL_MONTH, refDate.toString("MM"))
+				.replaceAll(PATTERN_DAY, Integer.toString(refDate.getDayOfMonth()))
+				.replaceAll(PATTERN_WEEK, Integer.toString(refDate.getWeekOfWeekyear()));
 
-		String nextSeq = ( seqPrefixe + padLeft + seqSuffixe )
-				.replaceAll( PATTERN_YEAR, Integer.toString( refDate.getYearOfCentury() ) )
-				.replaceAll( PATTERN_MONTH, Integer.toString( refDate.getMonthOfYear() ) )
-				.replaceAll( PATTERN_FULL_MONTH, refDate.toString("MM") )
-				.replaceAll( PATTERN_DAY, Integer.toString( refDate.getDayOfMonth() ) )
-				.replaceAll( PATTERN_WEEK, Integer.toString( refDate.getWeekOfWeekyear() ) ) ;
+		log.debug("nextSeq : : : : {}", nextSeq);
 
-		log.debug( "nextSeq : : : : {}" ,nextSeq );
-
-		sequenceVersion.setNextNum( sequenceVersion.getNextNum() + sequence.getToBeAdded() );
-		sequenceVersionRepository.save( sequenceVersion );
+		sequenceVersion.setNextNum(sequenceVersion.getNextNum() + sequence.getToBeAdded());
+		sequenceVersionRepository.save(sequenceVersion);
 		return nextSeq;
 	}
 
-	protected SequenceVersion getVersion( Sequence sequence ){
+	protected SequenceVersion getVersion(Sequence sequence) {
 
-		log.debug( "Reference date : : : : {}" , refDate );
+		log.debug("Reference date : : : : {}", refDate);
 
-		if ( sequence.getMonthlyResetOk() ){ return getVersionByMonth(sequence); }
-		if ( sequence.getYearlyResetOk() ){ return getVersionByYear(sequence); }
+		if (sequence.getMonthlyResetOk()) {
+			return getVersionByMonth(sequence);
+		}
+		if (sequence.getYearlyResetOk()) {
+			return getVersionByYear(sequence);
+		}
 		return getVersionByDate(sequence);
 
 	}
 
-	protected SequenceVersion getVersionByDate( Sequence sequence ){
+	protected SequenceVersion getVersionByDate(Sequence sequence) {
 
 		SequenceVersion sequenceVersion = sequenceVersionRepository.findByDate(sequence, refDate);
-		if ( sequenceVersion == null ){ sequenceVersion = new SequenceVersion(sequence, refDate, null, 1L); }
-
-		return sequenceVersion ;
-
-	}
-
-	protected SequenceVersion getVersionByMonth( Sequence sequence ){
-
-		SequenceVersion sequenceVersion = sequenceVersionRepository.findByMonth(sequence, refDate.getMonthOfYear(), refDate.getYear());
-		if ( sequenceVersion == null ){ sequenceVersion = new SequenceVersion(sequence, refDate.dayOfMonth().withMinimumValue(), refDate.dayOfMonth().withMaximumValue(), 1L); }
-
-		return sequenceVersion;
-
-	}
-
-	protected SequenceVersion getVersionByYear( Sequence sequence ){
-
-		SequenceVersion sequenceVersion = sequenceVersionRepository.findByYear(sequence, refDate.getYear());
-		if ( sequenceVersion == null ){
-			sequenceVersion = new SequenceVersion(sequence, refDate.monthOfYear().withMinimumValue().dayOfMonth().withMinimumValue(), refDate.monthOfYear().withMaximumValue().dayOfMonth().withMaximumValue(), 1L);
+		if (sequenceVersion == null) {
+			sequenceVersion = new SequenceVersion(sequence, refDate, null, 1L);
 		}
 
 		return sequenceVersion;
 
 	}
-	
+
+	protected SequenceVersion getVersionByMonth(Sequence sequence) {
+
+		SequenceVersion sequenceVersion = sequenceVersionRepository.findByMonth(sequence, refDate.getMonthOfYear(),
+				refDate.getYear());
+		if (sequenceVersion == null) {
+			sequenceVersion = new SequenceVersion(sequence, refDate.dayOfMonth().withMinimumValue(),
+					refDate.dayOfMonth().withMaximumValue(), 1L);
+		}
+
+		return sequenceVersion;
+
+	}
+
+	protected SequenceVersion getVersionByYear(Sequence sequence) {
+
+		SequenceVersion sequenceVersion = sequenceVersionRepository.findByYear(sequence, refDate.getYear());
+		if (sequenceVersion == null) {
+			sequenceVersion = new SequenceVersion(sequence,
+					refDate.monthOfYear().withMinimumValue().dayOfMonth().withMinimumValue(),
+					refDate.monthOfYear().withMaximumValue().dayOfMonth().withMaximumValue(), 1L);
+		}
+
+		return sequenceVersion;
+
+	}
+
 }

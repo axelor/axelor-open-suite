@@ -61,7 +61,7 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
 	protected Subscription subscription;
 	
 	
-	protected InvoiceLineGeneratorSupplyChain( Invoice invoice, Product product, String productName, String description, BigDecimal qty,
+	protected InvoiceLineGeneratorSupplyChain(Invoice invoice, Product product, String productName, String description, BigDecimal qty,
 			Unit unit, int sequence, boolean isTaxInvoice, SaleOrderLine saleOrderLine, PurchaseOrderLine purchaseOrderLine, StockMoveLine stockMoveLine) throws AxelorException {
 
 		super(invoice, product, productName, description, qty, unit, sequence, isTaxInvoice);

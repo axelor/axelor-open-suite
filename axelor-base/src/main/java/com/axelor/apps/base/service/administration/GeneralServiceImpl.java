@@ -46,7 +46,7 @@ public class GeneralServiceImpl implements GeneralService {
 	private static GeneralServiceImpl INSTANCE;
 
 	private Long administrationId;
-	
+
 	@Inject
 	private GeneralRepository generalRepo;
 
@@ -54,11 +54,12 @@ public class GeneralServiceImpl implements GeneralService {
 	public GeneralServiceImpl() {
 
 		Query q = JPA.em().createQuery("FROM General");
-		General general = (General)q.setMaxResults(1).getSingleResult();
-		if(general != null)  {
+
+		General general = (General) q.setMaxResults(1).getSingleResult();
+
+		if (general != null) {
 			administrationId = general.getId();
-		}
-		else  {
+		} else {
 			throw new RuntimeException("Veuillez configurer l'administration générale.");
 		}
 
@@ -66,12 +67,14 @@ public class GeneralServiceImpl implements GeneralService {
 
 	private static GeneralServiceImpl get() {
 
-		if (INSTANCE == null) { INSTANCE = new GeneralServiceImpl(); }
+		if (INSTANCE == null) {
+			INSTANCE = new GeneralServiceImpl();
+		}
 
 		return INSTANCE;
 	}
 
-// Accesseur
+	// Accesseur
 
 	/**
 	 * Récupérer l'administration générale
@@ -83,75 +86,68 @@ public class GeneralServiceImpl implements GeneralService {
 		return generalRepo.find(administrationId);
 	}
 
-// Date du jour
+	// Date du jour
 
 	/**
-	 * Récupérer la date du jour avec l'heure.
-	 * Retourne la date du jour paramétré dans l'utilisateur si existe,
-	 * sinon récupère celle de l'administration générale,
-	 * sinon date du jour.
-	 * private
+	 * Récupérer la date du jour avec l'heure. Retourne la date du jour
+	 * paramétré dans l'utilisateur si existe, sinon récupère celle de
+	 * l'administration générale, sinon date du jour. private
+	 * 
 	 * @return
 	 */
 	@Override
-	public DateTime getTodayDateTime(){
+	public DateTime getTodayDateTime() {
 
 		DateTime todayDateTime = new DateTime();
 
 		User user = AuthUtils.getUser();
 
-		if (user != null && user.getToday() != null){
+		if (user != null && user.getToday() != null) {
 			todayDateTime = user.getToday();
-		}
-		else if (getGeneral() != null && getGeneral().getToday() != null){
+		} else if (getGeneral() != null && getGeneral().getToday() != null) {
 			todayDateTime = getGeneral().getToday();
 		}
-		
+
 		return todayDateTime;
 	}
 
 	/**
-	 * Récupérer la date du jour.
-	 * Retourne la date du jour paramétré dans l'utilisateur si existe,
-	 * sinon récupère celle de l'administration générale,
-	 * sinon date du jour.
+	 * Récupérer la date du jour. Retourne la date du jour paramétré dans
+	 * l'utilisateur si existe, sinon récupère celle de l'administration
+	 * générale, sinon date du jour.
 	 *
 	 * @return
 	 */
 	@Override
-	public LocalDate getTodayDate(){
+	public LocalDate getTodayDate() {
 
 		return getTodayDateTime().toLocalDate();
 
 	}
 
-
-
-// Log
+	// Log
 
 	@Override
-	public Unit getUnit(){
+	public Unit getUnit() {
 
-		if (getGeneral() != null){
+		if (getGeneral() != null) {
 			return getGeneral().getDefaultProjectUnit();
 		}
 
 		return null;
 	}
 
-
 	@Override
-	public int getNbDecimalDigitForUnitPrice(){
+	public int getNbDecimalDigitForUnitPrice() {
 
-		if (getGeneral() != null){
+		if (getGeneral() != null) {
 			return getGeneral().getNbDecimalDigitForUnitPrice();
 		}
 
 		return IAdministration.DEFAULT_NB_DECIMAL_DIGITS;
 	}
 
-
-// Conversion de devise
+	// Conversion de devise
 
 	/**
 	 * Obtenir la tva à 0%
@@ -159,36 +155,41 @@ public class GeneralServiceImpl implements GeneralService {
 	 * @return
 	 */
 	@Override
-	public List<CurrencyConversionLine> getCurrencyConfigurationLineList(){
-		if (getGeneral() != null) { return getGeneral().getCurrencyConversionLineList(); }
-		else { return null; }
+	public List<CurrencyConversionLine> getCurrencyConfigurationLineList() {
+		if (getGeneral() != null) {
+			return getGeneral().getCurrencyConversionLineList();
+		} else {
+			return null;
+		}
 	}
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public Class<? extends Model> getPersistentClass(Model model){
+	public Class<? extends Model> getPersistentClass(Model model) {
 
 		if (model instanceof HibernateProxy) {
-		      return ((HibernateProxy) model).getHibernateLazyInitializer().getPersistentClass();
+			return ((HibernateProxy) model).getHibernateLazyInitializer().getPersistentClass();
+		} else {
+			return model.getClass();
 		}
-		else { return model.getClass(); }
 
 	}
 
 	@Override
-	public BigDecimal getDurationHours(BigDecimal duration){
+	public BigDecimal getDurationHours(BigDecimal duration) {
 
-		if(duration == null) { return null; }
+		if (duration == null) {
+			return null;
+		}
 
 		General general = this.getGeneral();
 
-		if(general != null){
+		if (general != null) {
 			String timePref = general.getTimeLoggingPreferenceSelect();
 
-			if(timePref.equals("days")){
+			if (timePref.equals("days")) {
 				duration = duration.multiply(general.getDailyWorkHours());
-			}
-			else if (timePref.equals("minutes")) {
+			} else if (timePref.equals("minutes")) {
 				duration = duration.divide(new BigDecimal(60));
 			}
 		}
@@ -197,21 +198,22 @@ public class GeneralServiceImpl implements GeneralService {
 	}
 
 	@Override
-	public BigDecimal getGeneralDuration(BigDecimal duration){
+	public BigDecimal getGeneralDuration(BigDecimal duration) {
 
-		if(duration == null) { return null; }
+		if (duration == null) {
+			return null;
+		}
 
 		General general = this.getGeneral();
 
-		if(general != null){
+		if (general != null) {
 			String timePref = general.getTimeLoggingPreferenceSelect();
 
 			BigDecimal dailyWorkHrs = general.getDailyWorkHours();
 
-			if(timePref.equals("days") && dailyWorkHrs != null && dailyWorkHrs.compareTo(BigDecimal.ZERO) != 0){
+			if (timePref.equals("days") && dailyWorkHrs != null && dailyWorkHrs.compareTo(BigDecimal.ZERO) != 0) {
 				duration = duration.divide(dailyWorkHrs);
-			}
-			else if (timePref.equals("minutes")) {
+			} else if (timePref.equals("minutes")) {
 				duration = duration.multiply(new BigDecimal(60));
 			}
 		}

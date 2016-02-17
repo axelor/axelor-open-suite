@@ -320,7 +320,6 @@ public class StockMoveServiceImpl implements StockMoveService {
 
 	}
 
-
 	@Override
 	public StockMove copyAndSplitStockMove(StockMove stockMove) throws AxelorException  {
 
@@ -350,7 +349,6 @@ public class StockMoveServiceImpl implements StockMoveService {
 		return null;
 			
 	}
-
 
 	@Override
 	public StockMove copyAndSplitStockMoveReverse(StockMove stockMove, boolean split) throws AxelorException  {
@@ -402,7 +400,6 @@ public class StockMoveServiceImpl implements StockMoveService {
 		return null;
 
 	}
-
 
 	@Override
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})

@@ -112,7 +112,6 @@ public class InvoiceLineController {
 
 	}
 	
-	
 	public void getProductInformation(ActionRequest request, ActionResponse response) throws AxelorException {
 
 		Context context = request.getContext();

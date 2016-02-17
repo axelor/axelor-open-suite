@@ -78,7 +78,7 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
 		InvoiceGenerator invoiceGenerator = saleOrderInvoiceService.createInvoiceGenerator(saleOrder);
 
 		Invoice invoice = invoiceGenerator.generate();
-
+		
 		invoiceGenerator.populate(invoice, this.createInvoiceLines(invoice, stockMove.getStockMoveLineList()));
 
 		if (invoice != null) {

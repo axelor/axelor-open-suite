@@ -33,18 +33,16 @@ public class PartnerAccountRepository extends PartnerBaseRepository {
 	@Override
 	public Partner save(Partner partner) {
 		try {
-
-			if(partner.getId() == null){
+			if (partner.getId() == null) {
 				return super.save(partner);
 			}
-			if(!partner.getIsContact()){
-				List<AccountingSituation> accountingSituationList = Beans.get(AccountingSituationService.class).createAccountingSituation(Beans.get(PartnerRepository.class).find(partner.getId()));
-
-				if(accountingSituationList != null) {
+			if (!partner.getIsContact()) {
+				List<AccountingSituation> accountingSituationList = Beans.get(AccountingSituationService.class)
+						.createAccountingSituation(Beans.get(PartnerRepository.class).find(partner.getId()));
+				if (accountingSituationList != null) {
 					partner.setAccountingSituationList(accountingSituationList);
 				}
 			}
-			
 
 			return super.save(partner);
 		} catch (Exception e) {
