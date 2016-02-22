@@ -274,9 +274,10 @@ public class ExpenseController {
 		User user = AuthUtils.getUser();
 		String language = user != null? (user.getLanguage() == null || user.getLanguage().equals(""))? "en" : user.getLanguage() : "en"; 
 		
-		String name = I18n.get("Expense") + " " + expense.getFullName();
+		String name = I18n.get("Expense") + " " + expense.getFullName()
+												.replace("/", "-");
 		
-		String fileLink = ReportFactory.createReport(IReport.EXPENSE, name+"-${date}")
+		String fileLink = ReportFactory.createReport(IReport.EXPENSE, name)
 				.addParam("ExpenseId", expense.getId())
 				.addParam("Locale", language)
 				.addModel(expense)
