@@ -225,8 +225,8 @@
 	
 	<chart onInit="action.crm.chart.set.date" name="chart.leads.by.source.bar" title="Leads by Source">
 		<search-fields> 	        
-		    <field type="datetime" name="fromDateT" title="From Date" />
-		    <field type="datetime" name="toDateT" title="To Date" />
+		    <field type="datetime" name="fromDateT" title="From Date" x-required="true"/>
+		    <field type="datetime" name="toDateT" title="To Date" x-required="true"/>
 		</search-fields>
 	
 		<dataset type="jpql">
@@ -250,8 +250,8 @@
 	
 	 <chart onInit="action.crm.chart.set.date" name="chart.leads.by.team.by.status.bar" title="Leads by Team by Status" stacked="true">
 		<search-fields> 	        
-		    <field type="datetime" name="fromDateT" title="From Date" />
-		    <field type="datetime" name="toDateT" title="To Date" />
+		    <field type="datetime" name="fromDateT" title="From Date" x-required="true"/>
+		    <field type="datetime" name="toDateT" title="To Date" x-required="true"/>
 		</search-fields>
 		<dataset type="sql">
 		    <![CDATA[
@@ -284,8 +284,8 @@
 	
 	<chart onInit="action.crm.chart.set.date" name="chart.leads.by.saleman.by.status.bar" title="Leads by Salesman by Status" stacked="true">
 		<search-fields> 	        
-		    <field type="datetime" name="fromDateT" title="From Date" />
-		    <field type="datetime" name="toDateT" title="To Date" />
+		    <field type="datetime" name="fromDateT" title="From Date" x-required="true"/>
+		    <field type="datetime" name="toDateT" title="To Date" x-required="true"/>
 		</search-fields>
 		<dataset type="sql">
 		    <![CDATA[
@@ -318,8 +318,8 @@
 	
 	<chart onInit="action.crm.chart.set.date" name="chart.calls.types.by.user.bar" title="Calls type by user" stacked="true">
 		<search-fields> 	        
-		    <field type="datetime" name="fromDateT" title="From Date" />
-		    <field type="datetime" name="toDateT" title="To Date" />
+		    <field type="datetime" name="fromDateT" title="From Date" x-required="true"/>
+		    <field type="datetime" name="toDateT" title="To Date" x-required="true"/>
 		</search-fields>
 		<dataset type="sql">
 		    <![CDATA[
@@ -360,8 +360,8 @@
 	</chart>
 	<chart onInit="action.crm.chart.set.date" name="chart.held.calls.types.by.user.bar" title="Calls held by type by user" stacked="true">
 		<search-fields> 	        
-		    <field type="datetime" name="fromDateT" title="From Date" />
-		    <field type="datetime" name="toDateT" title="To Date" />
+		    <field type="datetime" name="fromDateT" title="From Date" x-required="true"/>
+		    <field type="datetime" name="toDateT" title="To Date" x-required="true"/>
 		</search-fields>
 		<dataset type="sql">
 		    <![CDATA[
@@ -402,8 +402,8 @@
 	</chart>  	
 	<chart onInit="action.crm.chart.set.date" name="chart.calls.types.by.team.bar" title="Calls type by team" stacked="true">
 		<search-fields> 	        
-		    <field type="datetime" name="fromDateT" title="From Date" />
-		    <field type="datetime" name="toDateT" title="To Date" />
+		    <field type="datetime" name="fromDateT" title="From Date" x-required="true"/>
+		    <field type="datetime" name="toDateT" title="To Date" x-required="true"/>
 		</search-fields>
 		<dataset type="sql">
 		    <![CDATA[
@@ -444,8 +444,8 @@
 	</chart>
 <chart onInit="action.crm.chart.set.date" name="chart.held.calls.types.by.team.bar" title="Calls held by team by type" stacked="true">
 		<search-fields> 	        
-		    <field type="datetime" name="fromDateT" title="From Date" />
-		    <field type="datetime" name="toDateT" title="To Date" />
+		    <field type="datetime" name="fromDateT" title="From Date" x-required="true"/>
+		    <field type="datetime" name="toDateT" title="To Date" x-required="true"/>
 		</search-fields>
 		<dataset type="sql">
 		    <![CDATA[
@@ -487,7 +487,7 @@
 	  	
 	<chart onInit="action.crm.chart.set.date" name="chart.calls.types.by.team.by.user.bar" title="Calls by user(of a team)">
 		<search-fields> 	        
-		    <field type="datetime" name="fromDateT" title="From Date" />
+		    <field type="datetime" name="fromDateT" title="From Date" x-required="true"/>
 		    <field type="reference" name="team" target="com.axelor.apps.base.db.Team" x-required="true" title="Team" />
 		</search-fields>
 		<dataset type="jpql">
@@ -515,7 +515,7 @@
 	</chart> 
 	<chart onInit="action.crm.chart.set.date,action.chart.crm.chart.set.active.team" name="chart.daily.team.calls.summary.by.user.bar" title="Daily team call summary by user" stacked="false">
 	<search-fields>
-	<field name="toDateT" title="From Date" type="date"/>
+	<field name="toDateT" title="From Date" type="date" x-required="true"/>
 	<field name="activeTeam" title="Team" type="reference" x-required="true" target="com.axelor.apps.base.db.Team"/>
 	</search-fields>
 	<dataset type="jpql">
@@ -655,8 +655,8 @@
 	
 	<chart onInit="action.crm.chart.set.date" name="chart.customer.by.open.cases.bar" title="New Cases by Customer" stacked="true">
 		<search-fields> 	        
-		    <field type="datetime" name="fromDateT" title="From Date" />
-		    <field type="datetime" name="toDateT" title="To Date" />
+		    <field type="datetime" name="fromDateT" title="From Date" x-required="true"/>
+		    <field type="datetime" name="toDateT" title="To Date" x-required="true"/>
 		</search-fields>
 	  <dataset type="jpql">
 	    
@@ -687,8 +687,8 @@
 	
 	<chart onInit="action.crm.chart.set.date" name="chart.leads.by.country.bar" title="Leads by Country">
 		<search-fields> 	        
-		    <field type="datetime" name="fromDateT" title="From Date" />
-		    <field type="datetime" name="toDateT" title="To Date" />
+		    <field type="datetime" name="fromDateT" title="From Date" x-required="true"/>
+		    <field type="datetime" name="toDateT" title="To Date" x-required="true"/>
 		</search-fields>
 		<dataset type="sql">
 		    <![CDATA[
@@ -717,7 +717,7 @@
 	
 	<chart onInit="action.crm.chart.default.month.value.6m" name="chart.created.leads.per.month" title="Created leads per month">
 	  <search-fields>
-	    <field type="string" name="monthSelect" title="Historical Period" selection="account.year.period.duration.select"/>
+	    <field type="string" name="monthSelect" title="Historical Period" selection="account.year.period.duration.select" x-required="true"/>
 	  </search-fields>
 	  <dataset type="sql">  
 	  SELECT

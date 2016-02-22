@@ -36,8 +36,8 @@
 	
 	<chart onInit="action.sale.chart.set.dates.this.last.year" name="chart.sale.turnover.ytd.vs.previous.years.by.month" title="Sales turnover comparison per month this year vs past years">
 		<search-fields>
-			<field name="toDateLY" type="date" title="Year 1 To Date"/>
-			<field name="toDate" type="date" title="Year 2 To Date"/>
+			<field name="toDateLY" type="date" title="Year 1 To Date" x-required="true"/>
+			<field name="toDate" type="date" title="Year 2 To Date" x-required="true"/>
 		</search-fields>
 		<dataset type="sql">
 			SELECT
@@ -160,8 +160,8 @@
 	
 	<chart onInit="action.sale.chart.set.dates.this.last.year" name="chart.sale.turnover.ytd.vs.past.year" title="Sales turnover this year vs past years">
 		<search-fields>
-			<field name="toDate" type="date" title="This Year To Date"/>
-			<field name="toDateLY" type="date" title="Last Year To Date"/>
+			<field name="toDate" type="date" title="This Year To Date" x-required="true"/>
+			<field name="toDateLY" type="date" title="Last Year To Date" x-required="true"/>
 		</search-fields>
 		<dataset type="sql">
 			SELECT
@@ -236,8 +236,8 @@
 	
 	<chart onInit="action.sale.chart.set.date.1m" name="chart.sale.manager.dashboard.turnover.per.team" title="Turnover (excl. Tax) per team">
 		<search-fields>
-			<field type="date" name="fromDate" title="From Date"/>
-			<field type="date" name="toDate" title="To Date"/>
+			<field type="date" name="fromDate" title="From Date" x-required="true"/>
+			<field type="date" name="toDate" title="To Date" x-required="true"/>
 		</search-fields>
 		<dataset type="sql">
 	  		SELECT
@@ -262,8 +262,8 @@
 	  
 	<chart onInit="action.sale.chart.set.date.1m" name="chart.sale.manager.dashboard.turnover.per.saleman" title="Turnover (excl. Tax) per saleman">
 		<search-fields>
-			<field type="date" name="fromDate" title="From Date"/>
-			<field type="date" name="toDate" title="To Date"/>
+			<field type="date" name="fromDate" title="From Date" x-required="true"/>
+			<field type="date" name="toDate" title="To Date" x-required="true"/>
 		</search-fields>
 		<dataset type="sql">
 			SELECT
@@ -292,8 +292,8 @@
 	
 	<chart onInit="action.sale.chart.set.date" name="chart.sale.manager.dashboard.sale.distribution.per.family" title="Sales distribution per product family">
 		<search-fields>
-			<field type="date" name="fromDate" title="From Date"/>
-			<field type="date" name="toDate" title="To Date"/>
+			<field type="date" name="fromDate" title="From Date" x-required="true"/>
+			<field type="date" name="toDate" title="To Date" x-required="true"/>
 		</search-fields>
 	  	<dataset type="sql">
 			SELECT
@@ -327,8 +327,8 @@
 
 	<chart onInit="action.sale.chart.set.date" name="chart.sale.manager.dashboard.product.sale.per.category" title="Sales distribution per product category">
 		<search-fields>
-			<field type="date" name="fromDate" title="From Date"/>
-			<field type="date" name="toDate" title="To Date"/>
+			<field type="date" name="fromDate" title="From Date" x-required="true"/>
+			<field type="date" name="toDate" title="To Date" x-required="true"/>
 		</search-fields>
 		<dataset type="sql">
 			SELECT
@@ -360,8 +360,8 @@
 	  
 	<chart onInit="action.sale.chart.set.date" name="chart.sale.manager.dashboard.sale.per.country" title="Sales per country">
 		<search-fields>
-			<field type="date" name="fromDate" title="From Date"/>
-			<field type="date" name="toDate" title="To Date"/>
+			<field type="date" name="fromDate" title="From Date" x-required="true"/>
+			<field type="date" name="toDate" title="To Date" x-required="true"/>
 		</search-fields>
 		<dataset type="sql">
 			SELECT
@@ -393,8 +393,8 @@
 	   
 	<chart stacked="true" onInit="action.general.chart.set.date.6m" name="chart.my.turnover.per.month" title="My Turnover per month">
   <search-fields>
-    <field name="fromDate" title="From Date" type="date"/>
-    <field name="toDate" title="To Date" type="date"/>
+    <field name="fromDate" title="From Date" type="date" x-required="true"/>
+    <field name="toDate" title="To Date" type="date" x-required="true"/>
   </search-fields>
   <dataset type="sql">
           SELECT
@@ -422,8 +422,8 @@
 
 	<chart stacked="true" onInit="action.sale.chart.set.date" name="chart.turnover.sale.by.month.by.category" title="Sales Turnover (Orders) by month by category">
 		<search-fields>
-			<field type="date" name="fromDate" title="From Date"/>
-			<field type="date" name="toDate" title="To Date"/>
+			<field type="date" name="fromDate" title="From Date" x-required="true"/>
+			<field type="date" name="toDate" title="To Date" x-required="true"/>
 		</search-fields>
 		<dataset type="sql">
 			SELECT 
@@ -471,8 +471,8 @@
 	
 	<chart stacked="true" onInit="action.sale.chart.set.date" name="chart.units.sold.on.cust.sale.by.category" title="Nbr of Units sold (Orders) by category">
 		<search-fields>
-			<field type="date" name="fromDate" title="From Date"/>
-			<field type="date" name="toDate" title="To Date"/>
+			<field type="date" name="fromDate" title="From Date" x-required="true"/>
+			<field type="date" name="toDate" title="To Date" x-required="true"/>
 		</search-fields>
 		<dataset type="sql">
 			SELECT 
@@ -523,8 +523,8 @@
 	
 	<chart onInit="action.general.chart.set.date.6m" name="chart.product.sale.turnover.per.month" title="Product sale turnover (Excl. Tax) per month">
 		<search-fields>
-			<field type="date" name="fromDate" title="From Date"/>
-			<field type="date" name="toDate" title="To Date"/>
+			<field type="date" name="fromDate" title="From Date" x-required="true"/>
+			<field type="date" name="toDate" title="To Date" x-required="true"/>
 		</search-fields>
  		<dataset type="jpql">
 			SELECT
@@ -550,8 +550,8 @@
 		
 	<chart onInit="action.general.chart.set.date.6m" name="chart.product.sale.turnover.last.12.month" title="Product sale turnover (Excl. Tax) last 12 month">
 		<search-fields>
-			<field type="date" name="toDate" title="To Date"/>
-			<field type="reference" target="com.axelor.apps.base.db.Product" name="product" title="Product"/>
+			<field type="date" name="toDate" title="To Date" x-required="true"/>
+			<field type="reference" target="com.axelor.apps.base.db.Product" name="product" title="Product" x-required="true"/>
 		</search-fields>
 		<dataset type="jpql">
 			SELECT
@@ -575,7 +575,7 @@
 	
 	<chart onInit="action.sale.chart.set.from.date.and.saleman.6m" name="chart.turnover.per.month.per.saleman.over.6mth" title="Turnover per month per saleman (6 month)">
 		<search-fields>
-			<field type="date" name="fromDate" title="From Date"/>
+			<field type="date" name="fromDate" title="From Date" x-required="true"/>
 			<field type="reference" target="com.axelor.auth.db.User" name="salemanUser" title="SalesMan" x-required="true"/>
 		</search-fields>
 		<dataset type="jpql">
@@ -606,7 +606,7 @@
 	
 	<chart onInit="action.sale.chart.set.from.date.and.saleman.4m" name="chart.turnover.per.month.per.saleman.over.4mth" title="Turnover per month per saleman (4 month)">
 		<search-fields>
-			<field type="date" name="fromDate" title="From Date"/>
+			<field type="date" name="fromDate" title="From Date" x-required="true"/>
 			<field type="reference" target="com.axelor.auth.db.User" name="salemanUser" title="Salesman" x-required="true"/>
 		</search-fields>
 		<dataset type="jpql">
@@ -637,8 +637,8 @@
 	
 	<chart onInit="action.sale.chart.set.date" name="chart.sale.turnover.per.customer.type" title="Turnover per customer type">
 		<search-fields>
-			<field type="date" name="fromDate" title="From Date"/>
-			<field type="date" name="toDate" title="To Date" />
+			<field type="date" name="fromDate" title="From Date" x-required="true"/>
+			<field type="date" name="toDate" title="To Date" x-required="true"/>
 		</search-fields>
 		<dataset type="jpql">
 			SELECT
@@ -662,8 +662,8 @@
 	
 	<chart onInit="action.sale.chart.set.date" name="chart.sale.turnover.per.customer.category" title="Turnover per customer category">
 		<search-fields>
-			<field type="date" name="fromDate" title="From Date"/>
-			<field type="date" name="toDate" title="To Date"/>
+			<field type="date" name="fromDate" title="From Date" x-required="true"/>
+			<field type="date" name="toDate" title="To Date" x-required="true"/>
 		</search-fields>
 		<dataset type="jpql">
 		    SELECT
@@ -684,8 +684,8 @@
 	
 	<chart onInit="action.sale.chart.set.date" name="chart.sale.turnover.per.customer.sector" title="Turnover per customer sector">
 		<search-fields>
-			<field type="date" name="fromDate" title="From Date"/>
-			<field type="date" name="toDate" title="To Date" />
+			<field type="date" name="fromDate" title="From Date" x-required="true"/>
+			<field type="date" name="toDate" title="To Date" x-required="true"/>
 		</search-fields>
 		<dataset type="jpql">
 			SELECT
@@ -736,8 +736,8 @@
 	<chart onInit="action.sale.chart.set.dates.this.last.year" name="chart.customer.sale.lastYear.vs.ytd.by.family" 
 			title="Sales turnover comparison per month this year vs past years by family" stacked="true">
 		<search-fields>
-			<field type="date" name="toDateLY" title="Year 1 To Date"/>
-			<field type="date" name="toDate" title="Year 2 To Date"/>
+			<field type="date" name="toDateLY" title="Year 1 To Date" x-required="true"/>
+			<field type="date" name="toDate" title="Year 2 To Date" x-required="true"/>
 		</search-fields>
 		<dataset type="jpql">
 			SELECT
