@@ -65,7 +65,7 @@
     
 	<action-view name="action-cost-sheet-line-view-form" title="Cost sheet line detail" model="com.axelor.apps.production.db.CostSheetLine">
     	<view type="form" name="cost-sheet-line-form"/>
-        <view-param name="popup" value="reload"/>
+        <view-param name="popup" value="true"/>
         <view-param name="show-toolbar" value="false"/>
   		<view-param name="show-confirm" value="false" />
 	  	<view-param name="popup-save" value="false"/>
