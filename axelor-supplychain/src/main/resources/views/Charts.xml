@@ -66,8 +66,8 @@
 	
 	<chart onInit="action.general.chart.set.date.6m" name="chart.product.launches.withdrawal.each.month" title="Product launches/withdrawal each month">
 		<search-fields>
-			<field type="date" name="fromDate" title="From Date"/>
-			<field type="date" name="toDate" title="To Date"/>
+			<field type="date" name="fromDate" title="From Date" x-required="true"/>
+			<field type="date" name="toDate" title="To Date" x-required="true"/>
 		</search-fields>
 	  	<dataset type="sql">
 			SELECT

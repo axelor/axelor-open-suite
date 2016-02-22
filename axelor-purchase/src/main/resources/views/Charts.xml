@@ -17,8 +17,8 @@
 	  
 	<chart onInit="action.purchase.chart.set.date.6m" name="chart.my.purchase.per.product.family.volume" title="My purchased qty by product family">
 	  <search-fields>
-	    <field type="date" name="fromDate" title="From Date"/>
-	    <field type="date" name="toDate" title="To Date"/>
+	    <field type="date" name="fromDate" title="From Date" x-required="true"/>
+	    <field type="date" name="toDate" title="To Date" x-required="true"/>
 	  </search-fields>
 	  <dataset type="jpql">
 	  
@@ -50,8 +50,8 @@
 	  
 	<chart onInit="action.purchase.chart.set.date.6m" name="chart.my.purchase.amount.per.product.family" title="My purchased amount by product family">
 	  <search-fields>
-	    <field type="date" name="fromDate" title="From Date"/>
-	    <field type="date" name="toDate" title="To Date"/>
+	    <field type="date" name="fromDate" title="From Date" x-required="true"/>
+	    <field type="date" name="toDate" title="To Date" x-required="true"/>
 	  </search-fields>
 	  <dataset type="jpql">
 	  
@@ -83,8 +83,8 @@
 	<chart onInit="action.purchase.chart.set.date.6m" name="chart.purchase.order.volume.by.buyer.by.family" title="POs Volume by buyer by family">
 	
 	  <search-fields>
-	    <field name="fromDate" type="date" title="From Date" />
-	    <field name="toDate" type="date" title="To Date" />
+	    <field name="fromDate" type="date" title="From Date" x-required="true"/>
+	    <field name="toDate" type="date" title="To Date" x-required="true"/>
 	  </search-fields>
 	  
 	  <dataset type="sql">
@@ -117,8 +117,8 @@
 	  
 	<chart onInit="action.purchase.chart.set.date.6m" name="chart.purchase.order.amount.by.family" title="Purchased amount by family">
 	  <search-fields>
-	    <field name="fromDate" type="date" title="From Date" />
-	    <field name="toDate" type="date" title="To Date" />
+	    <field name="fromDate" type="date" title="From Date" x-required="true"/>
+	    <field name="toDate" type="date" title="To Date" x-required="true"/>
 	  </search-fields>
 	
 	  <dataset type="sql">
@@ -155,8 +155,8 @@
 	  
 	<chart onInit="action.purchase.chart.set.date.6m" name="chart.purchase.order.amount.distribution.by.family" title="Purchased amount distribution by family">
 	  <search-fields>
-	    <field name="fromDate" type="date" title="From Date" />
-	    <field name="toDate" type="date" title="To Date" />
+	    <field name="fromDate" type="date" title="From Date" x-required="true"/>
+	    <field name="toDate" type="date" title="To Date" x-required="true"/>
 	  </search-fields>
 	
 	  <dataset type="sql">
@@ -206,8 +206,8 @@
 	
 	<chart onInit="action.purchase.chart.set.date" name="chart.total.purchase.amount" title="Total Purchased Amount by month">
 		<search-fields>
-			<field type="date" name="fromDate" title="From Date"/>
-			<field name="monthSelect" selection="account.year.period.duration.select" title="Historical Period"/>
+			<field type="date" name="fromDate" title="From Date" x-required="true"/>
+			<field name="monthSelect" selection="account.year.period.duration.select" title="Historical Period" x-required="true"/>
 		</search-fields>
 		<dataset type="sql">
 			SELECT
@@ -235,8 +235,8 @@
 	
 	<chart onInit="action.purchase.chart.set.date" name="chart.total.purchase.qty" title="Total Purchased Qty by month">
 		<search-fields>
-			<field type="date" name="fromDate" title="From Date"/>
-			<field name="monthSelect" selection="account.year.period.duration.select" title="Historical Period"/>
+			<field type="date" name="fromDate" title="From Date" x-required="true"/>
+			<field name="monthSelect" selection="account.year.period.duration.select" title="Historical Period" x-required="true"/>
 		</search-fields>
 		<dataset type="sql">
 			SELECT
@@ -267,8 +267,8 @@
 	  
 	<chart onInit="action.purchase.chart.set.date.6m" name="chart.nbr.of.po.per.month" title="Nbr of PO by month">
 		<search-fields>
-			<field type="date" name="fromDate" title="From Date"/>
-			<field name="monthSelect" selection="account.year.period.duration.select" title="Historical Period"/>
+			<field type="date" name="fromDate" title="From Date" x-required="true"/>
+			<field name="monthSelect" selection="account.year.period.duration.select" title="Historical Period" x-required="true"/>
 		</search-fields>
 		<dataset type="sql">
 			SELECT
@@ -296,8 +296,8 @@
 	
 	<chart onInit="action.purchase.chart.set.date.6m" name="chart.purchase.amount.per.product.family" title="Purchased amount by product family">
 		<search-fields>
-			<field type="date" name="fromDate" title="From Date"/>
-			<field type="date" name="toDate" title="To Date"/>
+			<field type="date" name="fromDate" title="From Date" x-required="true"/>
+			<field type="date" name="toDate" title="To Date" x-required="true"/>
 		</search-fields>
 		<dataset type="jpql">
 			SELECT

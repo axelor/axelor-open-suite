@@ -54,8 +54,8 @@
 	
 	<chart stacked="true" name="chart.invoice.turnover.cust.history" title="Customer Turnover history by month (on invoices)" onInit="action.account.chart.set.from.to.date.month">	
 	  	    <search-fields>
-			  <field type="date" name="fromDate" title="From Date"/>
-	 	        <field type="string" name="monthSelect" title="Historical Period" selection="account.year.period.duration.select"/>
+			  <field type="date" name="fromDate" title="From Date" x-required="true"/>
+	 	        <field type="string" name="monthSelect" title="Historical Period" selection="account.year.period.duration.select" x-required="true"/>
 	 	    </search-fields>	 
 	
 		 <dataset type="sql">
@@ -113,8 +113,8 @@
 	
 	<chart stacked="true" name="chart.invoice.prod.qty.sold.history" title="Total Product Qty sold history by month by category" onInit="action.account.chart.set.from.to.date.month">
 	   <search-fields>
-			<field type="date" name="fromDate" title="From Date"/>
- 	        <field type="string" name="monthSelect" title="Historical Period" selection="account.year.period.duration.select"/>
+			<field type="date" name="fromDate" title="From Date" x-required="true"/>
+ 	        <field type="string" name="monthSelect" title="Historical Period" selection="account.year.period.duration.select" x-required="true"/>
  	    </search-fields>	
 	  <dataset type="sql">
 	  
@@ -170,8 +170,8 @@
       
 	<chart name="chart.invoice.total.revenue.by.product" title="Total Revenue Distribution by Product" onInit="action.account.chart.set.from.to.date.month">
 	 <search-fields>
-		<field type="date" name="fromDate" title="From Date"/>
-		<field type="date" name="toDate" title="To Date"/>
+		<field type="date" name="fromDate" title="From Date" x-required="true"/>
+		<field type="date" name="toDate" title="To Date" x-required="true"/>
 	 </search-fields>	 
  	<dataset type="sql">
 	  <![CDATA[
@@ -346,7 +346,7 @@
 	  
  	  <chart name="chart.paymentVoucher.customer.paymentMode.distribution.nbr" onInit="action.account.chart.default.month.value" title="Customer Payment mode distribution by transactions">
  	    <search-fields>
- 	        <field type="string" name="monthSelect" title="Historical Period" selection="account.year.period.duration.select"/>
+ 	        <field type="string" name="monthSelect" title="Historical Period" selection="account.year.period.duration.select" x-required="true"/>
  	    </search-fields>
 	    <dataset type="jpql">
 	     <![CDATA[
@@ -389,7 +389,7 @@
  	  
  	  <chart name="chart.paymentVoucher.customer.paymentMode.distribution.amount" onInit="action.account.chart.default.month.value" title="Customer Payment mode distribution by amount">
  	    <search-fields> 	        
- 	         <field type="string" name="monthSelect" title="Historical Period" selection="account.year.period.duration.select"/>
+ 	         <field type="string" name="monthSelect" title="Historical Period" selection="account.year.period.duration.select" x-required="true"/>
  	    </search-fields>
 	    <dataset type="jpql">
 	     <![CDATA[
@@ -418,7 +418,7 @@
  	  
  	  <chart name="chart.paymentVoucher.customer.paymentMode.by.amount" onInit="action.account.chart.default.month.value" title="Customer Payment mode by amount">
  	    <search-fields>
- 	        <field type="string" name="monthSelect" title="Historical Period" selection="account.year.period.duration.select"/>
+ 	        <field type="string" name="monthSelect" title="Historical Period" selection="account.year.period.duration.select" x-required="true"/>
  	    </search-fields>
 	    <dataset type="jpql">
 	     <![CDATA[
@@ -451,8 +451,8 @@
 	<chart onInit="action.account.active.fiscal.year" name="chart.moveLines.revenues.vs.expenses" title="Revenues vs Expenses">
 	  
 	  <search-fields>
-	    <field name="year" type="reference" target="com.axelor.apps.base.db.Year" widget="many-to-one" title="Year" />
-	    <field name="period" type="reference" target="com.axelor.apps.base.db.Period" widget="many-to-one" title="Period" domain="self.year=:year"/>    
+	    <field name="year" type="reference" target="com.axelor.apps.base.db.Year" widget="many-to-one" title="Year" x-required="true"/>
+	    <field name="period" type="reference" target="com.axelor.apps.base.db.Period" widget="many-to-one" title="Period" domain="self.year=:year" x-required="true"/>  
 	  </search-fields>
 	  
 	  <dataset type="jpql">
@@ -490,7 +490,7 @@
 	     
 	 <chart onInit="action.account.chart.default.month.value" name="chart.invoice.sale.amount.by.month" title="Invoice Sale by month (tax excl.)">
 	  <search-fields>
-	    <field type="string" name="monthSelect" title="Historical Period" selection="account.year.period.duration.select"/>
+	    <field type="string" name="monthSelect" title="Historical Period" selection="account.year.period.duration.select" x-required="true"/>
 	  </search-fields>
 	  <dataset type="sql">
 	    SELECT
@@ -519,7 +519,7 @@
 
 	<chart onInit="action.account.chart.default.month.value"  name="chart.invoice.sale.amount.by.currency" title="Invoice Sale by currency (tax excl.)">
 	  <search-fields>
-	    <field type="string" name="monthSelect" title="Historical Period" selection="account.year.period.duration.select"/>
+	    <field type="string" name="monthSelect" title="Historical Period" selection="account.year.period.duration.select" x-required="true"/>
 	  </search-fields>
 	  <dataset type="sql">
 	    SELECT
@@ -550,7 +550,7 @@
 	
 	<chart onInit="action.account.chart.default.month.value"  name="chart.invoice.sale.paymentCondition.distribution" title="Invoice Sale Payment Condition distribution">
 	  <search-fields>
-	    <field type="string" name="monthSelect" title="Historical Period" selection="account.year.period.duration.select"/>
+	    <field type="string" name="monthSelect" title="Historical Period" selection="account.year.period.duration.select" x-required="true"/>
 	  </search-fields>
 	  <dataset type="sql">
 	    SELECT
@@ -584,7 +584,7 @@
 	
 	<chart onInit="action.account.chart.default.month.value" name="chart.invoice.purchase.amount.by.month" title="Invoice Purchase by month (tax excl.)">
 	  <search-fields>
-	    <field type="string" name="monthSelect" title="Historical Period" selection="account.year.period.duration.select"/>
+	    <field type="string" name="monthSelect" title="Historical Period" selection="account.year.period.duration.select" x-required="true"/>
 	  </search-fields>
 	  <dataset type="sql">
 	    
@@ -615,7 +615,7 @@
 	
 	<chart onInit="action.account.chart.default.month.value"  name="chart.invoice.purchase.amount.by.currency" title="Invoice Purchase by currency (tax excl.)">
 	  <search-fields>
-	    <field type="string" name="monthSelect" title="Historical Period" selection="account.year.period.duration.select"/>
+	    <field type="string" name="monthSelect" title="Historical Period" selection="account.year.period.duration.select" x-required="true"/>
 	  </search-fields>
 	  <dataset type="sql">
 	      
@@ -647,7 +647,7 @@
 	
 	<chart onInit="action.account.chart.default.month.value" name="chart.invoice.purchase.paymentCondition.distribution" title="Invoice Purchase Payment Condition distribution">
 	  <search-fields>
-	    <field type="string" name="monthSelect" title="Historical Period" selection="account.year.period.duration.select"/>
+	    <field type="string" name="monthSelect" title="Historical Period" selection="account.year.period.duration.select" x-required="true"/>
 	  </search-fields>
 	  <dataset type="sql">
 	    SELECT
@@ -679,7 +679,7 @@
 	<chart onInit="action.account.chart.default.month.value" name="chart.invoice.sale.refund.situation" title="Invoice and Refunds Sale situation (tax incl.)">
 	
 	  <search-fields>
-	    <field type="string" name="monthSelect" title="Historical Period" selection="account.year.period.duration.select"/>
+	    <field type="string" name="monthSelect" title="Historical Period" selection="account.year.period.duration.select" x-required="true"/>
 	  </search-fields>
 	  
 	  <dataset type="sql">
@@ -771,7 +771,7 @@
 	<chart onInit="action.account.chart.default.month.value" name="chart.invoice.sale.situation" title="Invoice Sale situation (tax incl.)">
 	
 	  <search-fields>
-	    <field type="string" name="monthSelect" title="Historical Period" selection="account.year.period.duration.select"/>
+	    <field type="string" name="monthSelect" title="Historical Period" selection="account.year.period.duration.select" x-required="true"/>
 	  </search-fields>
 	  
 	  <dataset type="sql">
@@ -847,7 +847,7 @@
 	<chart onInit="action.account.chart.default.month.value" name="chart.invoice.purchase.situation" title="Invoice Purchase situation (tax incl.)">
 	
 	  <search-fields>
-	    <field type="string" name="monthSelect" title="Historical Period" selection="account.year.period.duration.select"/>
+	    <field type="string" name="monthSelect" title="Historical Period" selection="account.year.period.duration.select" x-required="true"/>
 	  </search-fields>
 	  
 	  <dataset type="sql">
