@@ -32,13 +32,17 @@ import com.axelor.apps.message.db.EmailAddress;
 import com.axelor.apps.message.db.Message;
 import com.axelor.apps.message.db.Template;
 import com.axelor.apps.message.db.repo.EmailAddressRepository;
+import com.axelor.apps.message.db.repo.MessageRepository;
 import com.axelor.apps.message.exception.IExceptionMessage;
+import com.axelor.db.EntityHelper;
 import com.axelor.db.JPA;
 import com.axelor.db.Model;
 import com.axelor.db.Query;
+import com.axelor.dms.db.DMSFile;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaAttachment;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.tool.template.TemplateMaker;
@@ -46,6 +50,7 @@ import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 
 public class TemplateMessageServiceImpl implements TemplateMessageService {
 
@@ -76,6 +81,7 @@ public class TemplateMessageServiceImpl implements TemplateMessageService {
 	}
 	
 	@Override
+	@Transactional
 	public Message generateMessage( long objectId, String model, String tag, Template template ) throws ClassNotFoundException, InstantiationException, IllegalAccessException, AxelorException, IOException  {
 		
 		if ( !model.equals( template.getMetaModel().getFullName() ) ){
@@ -144,16 +150,25 @@ public class TemplateMessageServiceImpl implements TemplateMessageService {
 		log.debug( "Media :::", mediaTypeSelect );
 		log.debug( "Content :::", content );
 		
-		return messageService.createMessage( model, Long.valueOf(objectId).intValue(), subject,  content, getEmailAddress(from), getEmailAddresses(replyToRecipients),
+		Message message = messageService.createMessage( model, Long.valueOf(objectId).intValue(), subject,  content, getEmailAddress(from), getEmailAddresses(replyToRecipients),
 				getEmailAddresses(toRecipients), getEmailAddresses(ccRecipients), getEmailAddresses(bccRecipients),
-				getMetaFiles(template), addressBlock, mediaTypeSelect );		
+				null, addressBlock, mediaTypeSelect );	
+		
+		message = Beans.get(MessageRepository.class).save(message);
+		
+		messageService.attachMetaFiles(message, getMetaFiles(template));
+		
+		return message;
 	}
 	
 	public Set<MetaFile> getMetaFiles( Template template ) throws AxelorException, IOException {
 		
-		List<MetaAttachment> metaAttachments = Query.of( MetaAttachment.class ).filter( "self.objectId = ?1 AND self.objectName = ?2", template.getId(), Template.class.getName() ).fetch();
+		List<DMSFile> metaAttachments = Query.of( DMSFile.class ).filter( "self.relatedId = ?1 AND self.relatedModel = ?2", template.getId(), EntityHelper.getEntityClass(template).getName() ).fetch();
 		Set<MetaFile> metaFiles = Sets.newHashSet();
-		for ( MetaAttachment metaAttachment: metaAttachments ){ metaFiles.add( metaAttachment.getMetaFile() ); }
+		for ( DMSFile metaAttachment: metaAttachments )
+		{ 
+			if(!metaAttachment.getIsDirectory()) metaFiles.add( metaAttachment.getMetaFile() ); 
+		}
 		
 		log.debug("Metafile to attach: {}", metaFiles);
 		return metaFiles;
