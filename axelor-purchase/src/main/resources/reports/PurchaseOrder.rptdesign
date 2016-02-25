@@ -2169,7 +2169,7 @@ row["first_name"]
                                         <text id="3457">
                                             <property name="contentType">html</property>
                                             <text-property name="content"><![CDATA[<VALUE-OF>row["product_name"]</VALUE-OF><br>
-<VALUE-OF>row["description"].replace(/\<p|\<P/g, '<p style="margin-top: 0; margin-bottom:1em;"')</VALUE-OF>]]></text-property>
+<VALUE-OF>if(row["description"] != null ) row["description"].replace(/\<p|\<P/g, '<p style="margin-top: 0; margin-bottom:1em;" ')</VALUE-OF>]]></text-property>
                                         </text>
                                     </cell>
                                     <cell id="3436">
