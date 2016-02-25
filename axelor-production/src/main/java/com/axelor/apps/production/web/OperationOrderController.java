@@ -29,7 +29,6 @@ import java.util.Set;
 
 import org.eclipse.birt.core.exception.BirtException;
 import org.joda.time.Days;
-import org.joda.time.Hours;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
 import org.joda.time.Minutes;
