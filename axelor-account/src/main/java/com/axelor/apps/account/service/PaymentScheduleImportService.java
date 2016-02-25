@@ -433,7 +433,7 @@ public class PaymentScheduleImportService {
 
 		//On récupère l'objet mode de paiement pour pouvoir retrouver le numéro de compte associé
 		PaymentMode paymentMode = company.getAccountConfig().getRejectionPaymentMode();
-		Account paymentModeAccount = paymentModeService.getCompanyAccount(paymentMode, company);
+		Account paymentModeAccount = paymentModeService.getPaymentModeAccount(paymentMode, company);
 
 		// Création d'une seule contrepartie
 		log.debug("Création d'une seule contrepartie");

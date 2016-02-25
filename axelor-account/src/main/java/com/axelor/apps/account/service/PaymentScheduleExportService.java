@@ -279,7 +279,7 @@ public class PaymentScheduleExportService{
 			PaymentScheduleLine rejectedPaymentScheduleLine = this.getPaymentScheduleLineRejectOrigin(paymentScheduleLine);
 			if(rejectedPaymentScheduleLine.getRejectMoveLine() != null
 					&& rejectedPaymentScheduleLine.getRejectMoveLine().getAmountRemaining().compareTo(BigDecimal.ZERO) == 1)  {
-				reconcileService.reconcile(rejectedPaymentScheduleLine.getRejectMoveLine(), moveLine);
+				reconcileService.reconcile(rejectedPaymentScheduleLine.getRejectMoveLine(), moveLine, false);
 			}
 		}
 		else  {
@@ -288,7 +288,7 @@ public class PaymentScheduleExportService{
 		}
 
 		move.addMoveLineListItem(
-				moveLineServices.createMoveLine(move, partner,	paymentModeService.getCompanyAccount(paymentMode, company), amount, true, today, 2, null));
+				moveLineServices.createMoveLine(move, partner,	paymentModeService.getPaymentModeAccount(paymentMode, company), amount, true, today, 2, null));
 
 		this.validateMove(move);
 
@@ -719,7 +719,7 @@ public class PaymentScheduleExportService{
 
 		log.debug("Create payment move line");
 
-		Account paymentModeAccount = paymentModeService.getCompanyAccount(paymentMode, company);
+		Account paymentModeAccount = paymentModeService.getPaymentModeAccount(paymentMode, company);
 
 		String invoiceName = "";
 		if(moveLine.getMove().getInvoice()!=null)  {
@@ -761,7 +761,7 @@ public class PaymentScheduleExportService{
 		// Lettrage de la ligne 411 avec la ligne 411 de la facture
 		log.debug("Creation du lettrage de la ligne 411 avec la ligne 411 de la facture");
 
-		reconcileService.reconcile(moveLine, moveLineGenerated);
+		reconcileService.reconcile(moveLine, moveLineGenerated, false);
 
 		log.debug("generateAllExportInvoice - Sauvegarde de l'écriture");
 

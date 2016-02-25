@@ -158,7 +158,7 @@ public class AccountClearanceService{
 		MoveLine creditMoveLine2 = moveLineService.createMoveLine(move, partner, taxAccount, taxAmount, false, todayTime.toLocalDate(), 3, null);
 		move.getMoveLineList().add(creditMoveLine2);
 
-		Reconcile reconcile = reconcileService.createReconcile(debitMoveLine, moveLine, amount);
+		Reconcile reconcile = reconcileService.createReconcile(debitMoveLine, moveLine, amount, false);
 		reconcileService.confirmReconcile(reconcile);
 
 		debitMoveLine.setAccountClearance(accountClearance);
@@ -166,8 +166,6 @@ public class AccountClearanceService{
 		creditMoveLine2.setAccountClearance(accountClearance);
 		return move;
 	}
-
-
 
 
 	public AccountClearance createAccountClearance(Company company, String name,BigDecimal amountThreshold, LocalDate dateThreshold, List<MoveLine> moveLineSet)  {

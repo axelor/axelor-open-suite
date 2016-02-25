@@ -115,7 +115,7 @@ public class PaymentVoucherConfirmService  {
 		LocalDate paymentDate = paymentVoucher.getPaymentDateTime().toLocalDate();
 
 		boolean scheduleToBePaid = false;
-		Account paymentModeAccount = paymentModeService.getCompanyAccount(paymentMode, company);
+		Account paymentModeAccount = paymentModeService.getPaymentModeAccount(paymentMode, company);
 
 		paymentVoucherControlService.checkPaymentVoucherField(paymentVoucher, company, paymentModeAccount, journal);
 
@@ -323,7 +323,9 @@ public class PaymentVoucherConfirmService  {
 		paymentMove.addMoveLineListItem(moveLine);
 		paymentInvoiceToPay.setMoveLineGenerated(moveLine);
 
-		Reconcile reconcile = reconcileService.createReconcile(moveLineToPay, moveLine, amountToPay, true, false, !isDebitToPay);
+		// Should be replaced per InvoicePayment
+		
+		Reconcile reconcile = reconcileService.createReconcile(moveLineToPay, moveLine, amountToPay, true);
 		log.debug("Reconcile : : : {}", reconcile);
 		reconcileService.confirmReconcile(reconcile);
 		return moveLine;

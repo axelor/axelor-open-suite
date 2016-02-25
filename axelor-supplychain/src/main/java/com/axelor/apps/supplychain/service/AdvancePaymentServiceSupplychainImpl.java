@@ -150,7 +150,7 @@ public class AdvancePaymentServiceSupplychainImpl extends AdvancePaymentServiceI
 		
 		BigDecimal amountConverted = currencyService.getAmountCurrencyConverted(advancePayment.getCurrency(), saleOrder.getCurrency(), advancePayment.getAmount(), advancePaymentDate);
 		
-		move.addMoveLineListItem(moveLineService.createMoveLine(move, clientPartner, paymentModeService.getCompanyAccount(paymentMode, company), 
+		move.addMoveLineListItem(moveLineService.createMoveLine(move, clientPartner, paymentModeService.getPaymentModeAccount(paymentMode, company), 
 				amountConverted, true, advancePaymentDate, null, 1, ""));
 		
 		move.addMoveLineListItem(moveLineService.createMoveLine(move, clientPartner, accountConfigService.getAdvancePaymentAccount(accountConfig), 

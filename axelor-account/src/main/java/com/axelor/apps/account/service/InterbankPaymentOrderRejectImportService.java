@@ -115,7 +115,7 @@ public class InterbankPaymentOrderRejectImportService {
 						GeneralServiceImpl.EXCEPTION, refReject), IException.INCONSISTENCY);
 			}
 
-			Account bankAccount = paymentModeService.getCompanyAccount(invoice.getPaymentMode(), company);
+			Account bankAccount = paymentModeService.getPaymentModeAccount(invoice.getPaymentMode(), company);
 
 			AccountConfig accountConfig = company.getAccountConfig();
 
@@ -162,7 +162,7 @@ public class InterbankPaymentOrderRejectImportService {
 						GeneralServiceImpl.EXCEPTION), IException.CONFIGURATION_ERROR);
 			}
 		}
-		return paymentModeService.getCompanyAccount(paymentMode, company);
+		return paymentModeService.getPaymentModeAccount(paymentMode, company);
 	}
 
 

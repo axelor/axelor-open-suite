@@ -184,8 +184,6 @@
 		           <dd>{{record.taxTotal}} {{record.currency.symbol}}</dd>
 		           <dt class="order-subtotal-total" x-translate>Total A.T.I.</dt>
 		           <dd class="order-subtotal-total">{{record.inTaxTotal}} {{record.currency.symbol}}</dd>
-		           <dt x-translate>Amount paid </dt>
-		           <dd>{{record.amountPaid}} {{record.currency.symbol}}</dd>
 		         </dl>]]>
 		       </viewer>
 		     </field>
@@ -193,10 +191,13 @@
               	<viewer><![CDATA[ 
 				  <span class="form-item-container">
          			<dl class="dl-horizontal">
-	           		 <dt x-translate>Paid on {{record.paymentDate | date : 'dd/MM/yyyy'}}</dt>
-	           		 <dd>-{{record.amount}} {{record.currency.symbol}}</dd>
+               			<dt ng-if="record.statusSelect == 1"><i class="fa fa-link"></i> <font x-translate>Paid on</font><font> {{record.paymentDate | date : 'dd/MM/yyyy'}}<font/></dt>
+ 	           		 	<dt ng-if="record.statusSelect == 1 class="hilite-info-text"> <i class="fa fa-chain-broken"></i> <font x-translate>Paid on</font><font> {{record.paymentDate | date : 'dd/MM/yyyy'}}<font/></dt>
+	           		 	
+	           		 	<dd ng-if="record.statusSelect == 1">-{{record.amount}} {{record.currency.symbol}}</dd>
+	           		 	<dd ng-if="record.statusSelect == 2" class="hilite-danger-text">(-{{record.amount}} {{record.currency.symbol}})</dd>
 	           		</dl> 
-           	      </span>]]>   
+           	      </span>]]>  
       			</viewer>
       			<editor layout="table" x-show-titles="false"> <label title="Paid on"/>
                      <field name="paymentDate"/>
