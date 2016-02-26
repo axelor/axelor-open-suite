@@ -237,25 +237,25 @@ public class StockMoveLineServiceImpl implements StockMoveLineService  {
 			LocalDate lastFutureStockMoveDate, boolean realQty) throws AxelorException  {
 
 		for(StockMoveLine stockMoveLine : stockMoveLineList)  {
+			if(stockMoveLine.getProduct() != null){
+				Unit productUnit = stockMoveLine.getProduct().getUnit();
+				Unit stockMoveLineUnit = stockMoveLine.getUnit();
 
-			Unit productUnit = stockMoveLine.getProduct().getUnit();
-			Unit stockMoveLineUnit = stockMoveLine.getUnit();
+				BigDecimal qty = null;
+				if(realQty)  {
+					qty = stockMoveLine.getRealQty();
+				}
+				else  {
+					qty = stockMoveLine.getQty();
+				}
+				
+				if(productUnit != null && !productUnit.equals(stockMoveLineUnit))  {
+					qty = Beans.get(UnitConversionService.class).convertWithProduct(stockMoveLineUnit, productUnit, qty, stockMoveLine.getProduct());
+				}
 
-			BigDecimal qty = null;
-			if(realQty)  {
-				qty = stockMoveLine.getRealQty();
+				this.updateLocations(fromLocation, toLocation, stockMoveLine.getProduct(), qty, fromStatus, toStatus,
+						lastFutureStockMoveDate, stockMoveLine.getTrackingNumber());
 			}
-			else  {
-				qty = stockMoveLine.getQty();
-			}
-			
-			if(productUnit != null && !productUnit.equals(stockMoveLineUnit))  {
-				qty = Beans.get(UnitConversionService.class).convertWithProduct(stockMoveLineUnit, productUnit, qty, stockMoveLine.getProduct());
-			}
-
-			this.updateLocations(fromLocation, toLocation, stockMoveLine.getProduct(), qty, fromStatus, toStatus,
-					lastFutureStockMoveDate, stockMoveLine.getTrackingNumber());
-
 		}
 
 	}
