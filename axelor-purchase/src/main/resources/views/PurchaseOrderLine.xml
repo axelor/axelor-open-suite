@@ -142,12 +142,14 @@
 		<action name="action-purchase-order-line-attrs-scale-and-precision"/>
 		<action name="action-purchase-order-line-record-new"/>
 		<action name="action-purchase-order-attrs-hide-ati"/>
+		<action name="action-purchase-order-line-attrs-show-priceDiscounted"/>
 	</action-group>
 	
 	<action-group name="action-group-purchase-purchase-orderline-onload">
 		<action name="action-purchase-order-line-attrs-title-project-task"/>
 		<action name="action-purchase-order-line-attrs-scale-and-precision"/>
 		<action name="action-purchase-order-attrs-hide-ati"/>
+		<action name="action-purchase-order-line-attrs-show-priceDiscounted"/>
 	</action-group>
 	
 	<action-group name="action-group-purchase-purchase-orderline-product-onchange">
@@ -182,6 +184,10 @@
 		<attribute name="title" for="projectTask" expr="eval: __config__.general.getProjectTaskLabel()" if="!com.google.common.base.Strings.isNullOrEmpty(__config__.general.getProjectTaskLabel())"/>
 		<attribute name="title" for="projectTaskPanel" expr="eval: __config__.general.getProjectTaskLabel()" if="!com.google.common.base.Strings.isNullOrEmpty(__config__.general.getProjectTaskLabel())"/>
 	
+	</action-attrs>
+	
+	<action-attrs name="action-purchase-order-line-attrs-show-priceDiscounted">
+		<attribute name="hidden" for="priceDiscounted" expr="eval: priceDiscounted == price"/>
 	</action-attrs>
 	
 	<!-- ACTION RECORD -->
