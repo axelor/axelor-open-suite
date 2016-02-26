@@ -242,8 +242,6 @@ public abstract class InvoiceGenerator  {
 			invoice.setInAti(false);
 		}
 		
-		invoice.setInvoiceDate(today);
-		
 		if(invoice.getPaymentCondition() != null){
 			invoice.setDueDate(InvoiceToolService.getDueDate(invoice.getPaymentCondition(),invoice.getInvoiceDate()));
 		}
