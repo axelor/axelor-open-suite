@@ -33,7 +33,7 @@
 	       	    <field name="timeLoggingPreferenceSelect" />
 	       	    <field name="weeklyWorkHours" />
 	       	    <field name="dailyWorkHours" />
-	       	    <field name="$dailySalaryCost" x-bind="{{hourlyRate*dailyWorkHours}}"/>
+	       	    <field name="$dailySalaryCost" x-bind="{{hourlyRate*dailyWorkHours}}" title="Daily cost"/>
 	       	    <field name="product" domain="self.isActivity = true" form-view="product-form" grid-view="product-grid"/>
 	       	    <field name="manager" form-view="user-form" grid-view="user-grid" />
 	       	    <field name="department" form-view="department-form" grid-view="department-grid"/>
