@@ -26,8 +26,6 @@ import java.util.Map;
 
 import javax.mail.MessagingException;
 
-import net.fortuna.ical4j.model.ValidationException;
-
 import org.joda.time.DateTimeConstants;
 import org.joda.time.Duration;
 import org.joda.time.LocalDate;
@@ -36,6 +34,7 @@ import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.ical.ICalendarException;
 import com.axelor.apps.base.service.MapService;
 import com.axelor.apps.base.service.administration.SequenceService;
@@ -55,6 +54,7 @@ import com.axelor.apps.message.db.Template;
 import com.axelor.apps.message.db.repo.EmailAddressRepository;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
+import com.axelor.auth.db.repo.UserRepository;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
@@ -63,6 +63,8 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+
+import net.fortuna.ical4j.model.ValidationException;
 
 public class EventController {
 
@@ -281,10 +283,11 @@ public class EventController {
 		
 	}
 	
+	@SuppressWarnings("unchecked")
 	public void addUserGuest(ActionRequest request, ActionResponse response) throws ClassNotFoundException, InstantiationException, IllegalAccessException, AxelorException, MessagingException, IOException, ICalendarException, ValidationException, ParseException{
 		Event event = request.getContext().asType(Event.class);
 		if(request.getContext().containsKey("guestPartner")){
-			User user = (User) request.getContext().get("guestUser");
+			User user = Beans.get(UserRepository.class).find(new Long(((Map<String, Object>) request.getContext().get("guestUser")).get("id").toString()));
 			if(user != null){
 				event = eventRepo.find(event.getId());
 				eventService.addUserGuest(user, event);
@@ -294,10 +297,11 @@ public class EventController {
 		response.setReload(true);
 	}
 	
+	@SuppressWarnings("unchecked")
 	public void addPartnerGuest(ActionRequest request, ActionResponse response) throws ClassNotFoundException, InstantiationException, IllegalAccessException, AxelorException, MessagingException, IOException, ICalendarException, ValidationException, ParseException{
 		Event event = request.getContext().asType(Event.class);
 		if(request.getContext().containsKey("guestPartner")){
-			Partner partner = (Partner) request.getContext().get("guestPartner");
+			Partner partner = Beans.get(PartnerRepository.class).find(new Long(((Map<String, Object>) request.getContext().get("guestPartner")).get("id").toString()));
 			if(partner != null){
 				event = eventRepo.find(event.getId());
 				eventService.addPartnerGuest(partner, event);
@@ -307,14 +311,12 @@ public class EventController {
 		response.setReload(true);
 	}
 	
+	@SuppressWarnings("unchecked")
 	public void addEmailGuest(ActionRequest request, ActionResponse response) throws ClassNotFoundException, InstantiationException, IllegalAccessException, AxelorException, MessagingException, IOException, ICalendarException, ValidationException, ParseException{
 		Event event = request.getContext().asType(Event.class);
 		if(request.getContext().containsKey("guestEmail")){
-			Map<String,Object> email = (LinkedHashMap<String,Object>) request.getContext().get("guestEmail");
-			String id = email.get("id").toString();
-			if(email != null){
-				EmailAddressRepository emailAddressRepo = Beans.get(EmailAddressRepository.class);
-				EmailAddress emailAddress = emailAddressRepo.find(new Long(id));
+			EmailAddress emailAddress = Beans.get(EmailAddressRepository.class).find(new Long(((Map<String, Object>) request.getContext().get("guestEmail")).get("id").toString()));
+			if(emailAddress != null){
 				event = eventRepo.find(event.getId());
 				eventService.addEmailGuest(emailAddress, event);
 			}
