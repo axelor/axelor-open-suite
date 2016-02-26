@@ -191,7 +191,7 @@
 		        <panel-include if-module="axelor-supplychain" view="incl-sales-partner-form" from="axelor-supplychain"/>
 		        <field name="$emailsList" colSpan="12" type="many-to-many" target="com.axelor.apps.message.db.Message" title="Emails" canNew="false" canSelect="false" canRemove="false"/>
 			</panel>
-			<panel name="customerCredit" title="Encours Client" if-module="axelor-supplychain" colSpan="12" hideIf="isContact || !isCustomer" if="__config__.general.getManageCustomerCredit()">
+			<panel name="customerCredit" title="Customer Credit" if-module="axelor-supplychain" colSpan="12" hideIf="isContact || !isCustomer" if="__config__.general.getManageCustomerCredit()">
 				<panel-include if-module="axelor-supplychain" view="incl-customer-credit-partner-form" from="axelor-supplychain" />
 			</panel>
 			<panel title="Sale Order" if-module="axelor-sale" showIf="isCustomer">
