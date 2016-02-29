@@ -123,7 +123,10 @@ public class LeaveService {
 			}
 
 			BigDecimal duration = BigDecimal.ZERO;
-
+			if(leave.getDateFrom().isEqual(leave.getDateTo())){
+				if(leave.getStartOnSelect() == leave.getEndOnSelect()) return new BigDecimal(0.5);
+				else return new BigDecimal(1);
+			}
 			duration = duration.add(new BigDecimal(this.computeStartDateWithSelect(leave.getDateFrom(), leave.getStartOnSelect(), weeklyPlanning)));
 			LocalDate itDate = new LocalDate(leave.getDateFrom().plusDays(1));
 
