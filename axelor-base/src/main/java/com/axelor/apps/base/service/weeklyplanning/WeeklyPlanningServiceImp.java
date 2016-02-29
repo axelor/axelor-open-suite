@@ -96,6 +96,19 @@ public class WeeklyPlanningServiceImp implements WeeklyPlanningService{
 		return value;
 	}
 	
+	@Override
+	public double workingDayValueWithSelect(WeeklyPlanning planning, LocalDate date, boolean morning, boolean afternoon){
+		double value = 0;
+		DayPlanning dayPlanning = findDayPlanning(planning,date);
+		if(morning && dayPlanning.getMorningFrom()!= null && dayPlanning.getMorningTo()!= null){
+			value+=0.5;
+		}
+		if(afternoon && dayPlanning.getAfternoonFrom()!= null && dayPlanning.getAfternoonTo()!= null){
+			value+=0.5;
+		}
+		return value;
+	}
+	
 	public DayPlanning findDayPlanning(WeeklyPlanning planning, LocalDate date){
 		int dayOfWeek = date.getDayOfWeek();
 		switch (dayOfWeek) {

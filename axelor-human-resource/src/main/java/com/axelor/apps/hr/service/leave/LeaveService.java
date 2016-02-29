@@ -123,23 +123,39 @@ public class LeaveService {
 			}
 
 			BigDecimal duration = BigDecimal.ZERO;
+			
+			//If the leave request is only for 1 day
 			if(leave.getDateFrom().isEqual(leave.getDateTo())){
-				if(leave.getStartOnSelect() == leave.getEndOnSelect()) return new BigDecimal(0.5);
-				else return new BigDecimal(1);
+				if(leave.getStartOnSelect() == leave.getEndOnSelect()){
+					if(leave.getStartOnSelect() == LeaveRequestRepository.SELECT_MORNING){
+						duration = duration.add(new BigDecimal(weeklyPlanningService.workingDayValueWithSelect(weeklyPlanning, leave.getDateFrom(), true, false)));
+					}
+					else{
+						duration = duration.add(new BigDecimal(weeklyPlanningService.workingDayValueWithSelect(weeklyPlanning, leave.getDateFrom(), false, true)));
+					}
+				}
+				else{
+					duration = duration.add(new BigDecimal(weeklyPlanningService.workingDayValueWithSelect(weeklyPlanning, leave.getDateFrom(), true, true)));
+				}
 			}
-			duration = duration.add(new BigDecimal(this.computeStartDateWithSelect(leave.getDateFrom(), leave.getStartOnSelect(), weeklyPlanning)));
-			LocalDate itDate = new LocalDate(leave.getDateFrom().plusDays(1));
+			
+			//Else if it's on several days
+			else{
+				duration = duration.add(new BigDecimal(this.computeStartDateWithSelect(leave.getDateFrom(), leave.getStartOnSelect(), weeklyPlanning)));
+				LocalDate itDate = new LocalDate(leave.getDateFrom().plusDays(1));
 
-			while(!itDate.isEqual(leave.getDateTo()) && !itDate.isAfter(leave.getDateTo())){
-				duration = duration.add(new BigDecimal(weeklyPlanningService.workingDayValue(weeklyPlanning, itDate)));
-				itDate = itDate.plusDays(1);
-			}
+				while(!itDate.isEqual(leave.getDateTo()) && !itDate.isAfter(leave.getDateTo())){
+					duration = duration.add(new BigDecimal(weeklyPlanningService.workingDayValue(weeklyPlanning, itDate)));
+					itDate = itDate.plusDays(1);
+				}
 
-			if(!leave.getDateFrom().isEqual(leave.getDateTo())){
 				duration = duration.add(new BigDecimal(this.computeEndDateWithSelect(leave.getDateTo(), leave.getEndOnSelect(), weeklyPlanning)));
 			}
 
 			duration = duration.subtract(Beans.get(PublicHolidayService.class).computePublicHolidayDays(leave.getDateFrom(),leave.getDateTo(), weeklyPlanning, publicHolidayPlanning));
+			if(duration.compareTo(BigDecimal.ZERO) < 0){
+				duration.equals(BigDecimal.ZERO);
+			}
 			return duration;
 		}
 		else{
