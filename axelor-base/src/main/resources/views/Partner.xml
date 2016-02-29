@@ -68,19 +68,19 @@
     
      <form name="partner-customer-form"  title="Customer" model="com.axelor.apps.base.db.Partner"    
     onNew="action-group-base-partner-onnew" 
-    onLoad="action-group-partner-onload" width="large" >
+    onLoad="action-group-partner-onload" width="large" canCopy="false">
     	<panel-include view="partner-form" from="axelor-base"/>
     </form>
     
     <form name="partner-supplier-form"  title="Supplier" model="com.axelor.apps.base.db.Partner"    
     onNew="action-group-base-partner-onnew" 
-    onLoad="action-group-partner-onload" width="large">
+    onLoad="action-group-partner-onload" width="large" canCopy="false">
     	<panel-include view="partner-form" from="axelor-base"/>
     </form>
     
     <form name="partner-form"  title="Partner" model="com.axelor.apps.base.db.Partner"    
     onNew="action-group-base-partner-onnew" 
-    onLoad="action-group-partner-onload" width="large">
+    onLoad="action-group-partner-onload" width="large" canCopy="false">
 	    <toolbar>
 	        <button name="sendByEmail" title="Send email" icon="fa-envelope" onClick="save,action-send-by-email-with-template" readonlyIf="id == null" if-module="axelor-message"/>
 	        <button name="showPartnerInfo" title="Print Informations" icon="fa-print" onClick="save,action-partner-method-show-partner-info" readonlyIf="id == null"/>
@@ -215,7 +215,7 @@
     
     <form name="partner-light-form" title="Partner" model="com.axelor.apps.base.db.Partner"
 	    onNew="action-group-base-partner-onnew" 
-    	onLoad="action-group-partner-onload" width="large">
+    	onLoad="action-group-partner-onload" width="large" canCopy="false">
 	    <toolbar>
     		<button name="sendByEmail" title="Send email" onClick="save,action-send-by-email-with-template"   readonlyIf="id == null"/>
     	</toolbar>
@@ -267,7 +267,7 @@
 
 	<form name="partner-contact-form" title="Contact" model="com.axelor.apps.base.db.Partner" 
 	onNew="action-partner-contact-record-default" 
-	onLoad="action-partner-attrs-change-name,action-partner-method-set-social-network-url">
+	onLoad="action-partner-attrs-change-name,action-partner-method-set-social-network-url" canCopy="false">
 	    <toolbar>
 	        <button name="sendByEmail" title="Send email" icon="fa-envelope" onClick="save,action-send-by-email-with-template" readonlyIf="id == null"/>
 	        <button name="showPartnerInfo" title="Print Informations" icon="fa-print" onClick="save,action-partner-method-show-partner-info"  readonlyIf="id == null"/>
@@ -336,7 +336,7 @@
 <!-- 		</panel> -->
 	</form>
 	
-	<form name="partner-contact-summary-form" title="Contact" model="com.axelor.apps.base.db.Partner"> 
+	<form name="partner-contact-summary-form" title="Contact" model="com.axelor.apps.base.db.Partner" canCopy="false"> 
 	    <panel>
 	        <field name="emailAddress" canSelect="false" form-view="email-address-simple-form" x-show-icons="false">
 				<editor>
