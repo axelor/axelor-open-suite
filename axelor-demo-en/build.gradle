@@ -12,4 +12,5 @@ module {
 	module "modules:axelor-production"
 	module "modules:axelor-supplychain"
 	module "modules:axelor-l10n-en"
+	module "modules:axelor-business-project"
 }

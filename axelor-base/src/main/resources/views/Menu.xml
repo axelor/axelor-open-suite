@@ -606,7 +606,7 @@
 		<domain>self.isContact = true</domain>
 	</action-view>
 
-	<menuitem name="top-relations" title="Relations" groups="admins,ERP" top="true" left="false" order="-190"/>
+	<menuitem name="top-relations" title="Relations" top="true" left="false" order="-190"/>
 
 	<menuitem name="top-relations-partners" order="-90" title="View Accounts" action="referential.root.partners" parent="top-relations" groups="admins,ERP" top="true" left="false"/>
 	<menuitem name="top-relations-contacts" order="-70" title="View Contacts" action="referential.root.contacts" parent="top-relations" groups="admins,ERP" top="true" left="false"/>		  
