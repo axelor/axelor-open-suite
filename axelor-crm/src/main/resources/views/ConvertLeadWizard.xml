@@ -207,7 +207,7 @@
 					  	<label title="Informations" css="label-bold"/>
 					  	<spacer/>
 					    <field name="subject" colSpan="12" css="bold"/>
-					    <field name="taskStatusSelect"/>
+					    <field name="statusSelect"/>
 					    <field name="prioritySelect"/>
 					    <spacer/>
 					    <label title="Description" css="label-bold"/>
@@ -589,7 +589,7 @@
 	<form   name="crm-task-lead-converted-form" title="Task" model="com.axelor.apps.crm.db.Event">
 	  <panel title="Informations">
 	    <field name="subject" />
-	    <field name="taskStatusSelect"/>
+	    <field name="statusSelect"/>
 	    <field name="prioritySelect"/>
 	  </panel>
 	    <panel title="Description" css="groupTitle">
@@ -613,7 +613,7 @@
     	<field name="description" expr="eval: _lead.description"/>
     	<field name="user" expr="eval: __repo__.of(User).find(_lead.user?.id)"/>
     	<field name="team" expr="eval: _lead.team"/>
-    	<field name="taskStatusSelect" expr="1"/>
+    	<field name="statusSelect" expr="11"/>
     	<field name="startDateTime" expr="eval: __time__"/>
     	<field name="progressSelect" expr="0"/>
     	<field name="duration" expr="0"/>
