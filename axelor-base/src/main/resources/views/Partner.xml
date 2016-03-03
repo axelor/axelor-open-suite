@@ -109,7 +109,6 @@
 		            <field name="titleSelect" showTitle="false" hideIf="partnerTypeSelect != 2" placeholder="Civility" colSpan="2"/>
 		        </editor>
 		    </field>
-		    <button name="generateProject" readonlyIf="id == null || id &lt; 1" title="Generate Project" colSpan="3" if-module="axelor-project" onClick="action-partner-view-generate-project"/>
 			<field name="isContact" hidden="true" colSpan="12" />
 		</panel>
   		</panel>
@@ -132,7 +131,7 @@
 					</field>
 					<field name="deliveryDelay" showIf="isSupplier"/>
 				</panel>
-				<panel title="Contact details" colSpan="12">
+				<panel title="General contact details" colSpan="12">
 					<field name="fixedPhone" colSpan="3" placeholder="+33100000000" pattern="^\+?\d{8,11}$"/>
 					<field name="fax" colSpan="3" pattern="^\+?\d{8,11}$" placeholder="+33000000000"/>
 					<field name="mobilePhone" colSpan="3" hideIf="partnerTypeSelect == 1" placeholder="+33100000000" pattern="^\+?\d{8,11}$"/>
