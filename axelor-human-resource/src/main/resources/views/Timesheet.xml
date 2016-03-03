@@ -126,7 +126,7 @@
 	</action-attrs>
 	
 	<action-record name="action-timesheet-record-from-period-date" model="com.axelor.apps.hr.db.Timesheet">
-		<field name="fromDate" expr="eval: __repo__.of(Timesheet).all().filter('self.user = ?1 ORDER BY self.toDate DESC', __user__).fetchOne()?.toDate"/>
+		<field name="fromDate" expr="eval: __repo__.of(Timesheet).all().filter('self.user = ?1 AND self.statusSelect != ?2 ORDER BY self.toDate DESC', __user__, TimesheetRepository.STATUS_CANCELED).fetchOne()?.toDate"/>
 	</action-record>
 	
 	<action-validate name="action-timesheet-validate-toDate">
@@ -178,7 +178,7 @@
 	</action-group>
 	
 	<action-attrs name="action-timesheet-attrs-from-date-on-new">
-		<attribute name="readonly" for="fromDate" expr="eval: __repo__.of(Timesheet).all().filter('self.user = ?1 ORDER BY self.toDate DESC', __user__).fetchOne() != null"/>
+		<attribute name="readonly" for="fromDate" expr="eval: __repo__.of(Timesheet).all().filter('self.user = ?1 AND self.statusSelect != ?2 ORDER BY self.toDate DESC', __user__, TimesheetRepository.STATUS_CANCELED).fetchOne() != null"/>
 	</action-attrs>
 	
 	<action-attrs name="action-timesheet-attrs-from-date">
