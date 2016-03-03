@@ -51,18 +51,24 @@ public class PurchaseOrderLineServiceSupplychainImpl extends PurchaseOrderLineSe
 		LOG.debug("Création d'une ligne de commande fournisseur pour le produit : {}",
 				new Object[] { saleOrderLine.getProductName() });
 		
-		Unit unit = saleOrderLine.getProduct().getPurchasesUnit();
-		BigDecimal qty = saleOrderLine.getQty();
-		if(unit == null){
-			unit = saleOrderLine.getUnit();
-		}
-		else{
-			qty = unitConversionService.convertWithProduct(saleOrderLine.getUnit(), unit, qty, saleOrderLine.getProduct());
+		Unit unit = null;
+		BigDecimal qty = BigDecimal.ZERO;
+		
+		if(!saleOrderLine.getIsTitleLine())  {
+			unit = saleOrderLine.getProduct().getPurchasesUnit();
+			qty = saleOrderLine.getQty();
+			if(unit == null){
+				unit = saleOrderLine.getUnit();
+			}
+			else{
+				qty = unitConversionService.convertWithProduct(saleOrderLine.getUnit(), unit, qty, saleOrderLine.getProduct());
+			}
 		}
 		
 		PurchaseOrderLine purchaseOrderLine = super.createPurchaseOrderLine(
 														purchaseOrder, 
 														saleOrderLine.getProduct(), 
+														saleOrderLine.getProductName(),
 														saleOrderLine.getDescription(), 
 														qty, 
 														unit);
@@ -72,9 +78,9 @@ public class PurchaseOrderLineServiceSupplychainImpl extends PurchaseOrderLineSe
 	}
 	
 	@Override
-	public PurchaseOrderLine createPurchaseOrderLine(PurchaseOrder purchaseOrder, Product product, String description, BigDecimal qty, Unit unit) throws AxelorException  {
+	public PurchaseOrderLine createPurchaseOrderLine(PurchaseOrder purchaseOrder, Product product, String productName, String description, BigDecimal qty, Unit unit) throws AxelorException  {
 		
-		PurchaseOrderLine purchaseOrderLine = super.createPurchaseOrderLine(purchaseOrder, product, description, qty, unit);
+		PurchaseOrderLine purchaseOrderLine = super.createPurchaseOrderLine(purchaseOrder, product, productName, description, qty, unit);
 		
 //		purchaseOrderLine.setAmountInvoiced(BigDecimal.ZERO);
 //		

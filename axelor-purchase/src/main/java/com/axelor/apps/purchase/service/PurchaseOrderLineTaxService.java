@@ -65,25 +65,28 @@ public class PurchaseOrderLineTaxService {
 			for (PurchaseOrderLine purchaseOrderLine : purchaseOrderLineList) {
 				
 				TaxLine taxLine = purchaseOrderLine.getTaxLine();
-				LOG.debug("TVA {}", taxLine);
-				
-				if (map.containsKey(taxLine)) {
-				
-					PurchaseOrderLineTax purchaseOrderLineVat = map.get(taxLine);
+
+				if(taxLine != null)  {
+					LOG.debug("TVA {}", taxLine);
 					
-					purchaseOrderLineVat.setExTaxBase(purchaseOrderLineVat.getExTaxBase().add(purchaseOrderLine.getExTaxTotal()));
+					if (map.containsKey(taxLine)) {
 					
-				}
-				else {
-					
-					PurchaseOrderLineTax purchaseOrderLineTax = new PurchaseOrderLineTax();
-					purchaseOrderLineTax.setPurchaseOrder(purchaseOrder);
-					
-					purchaseOrderLineTax.setExTaxBase(purchaseOrderLine.getExTaxTotal());
-					
-					purchaseOrderLineTax.setTaxLine(taxLine);
-					map.put(taxLine, purchaseOrderLineTax);
-					
+						PurchaseOrderLineTax purchaseOrderLineVat = map.get(taxLine);
+						
+						purchaseOrderLineVat.setExTaxBase(purchaseOrderLineVat.getExTaxBase().add(purchaseOrderLine.getExTaxTotal()));
+						
+					}
+					else {
+						
+						PurchaseOrderLineTax purchaseOrderLineTax = new PurchaseOrderLineTax();
+						purchaseOrderLineTax.setPurchaseOrder(purchaseOrder);
+						
+						purchaseOrderLineTax.setExTaxBase(purchaseOrderLine.getExTaxTotal());
+						
+						purchaseOrderLineTax.setTaxLine(taxLine);
+						map.put(taxLine, purchaseOrderLineTax);
+						
+					}
 				}
 			}
 		}
