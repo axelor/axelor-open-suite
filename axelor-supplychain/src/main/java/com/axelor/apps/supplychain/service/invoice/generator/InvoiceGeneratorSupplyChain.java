@@ -20,7 +20,6 @@ package com.axelor.apps.supplychain.service.invoice.generator;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.invoice.generator.InvoiceGenerator;
-import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.sale.db.SaleOrder;

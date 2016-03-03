@@ -66,8 +66,9 @@ public class TaxInvoiceLine extends TaxGenerator {
 			LOG.debug("Création des lignes de tva pour les lignes de factures.");
 
 			for (InvoiceLine invoiceLine : invoiceLines) {
-				if(!invoiceLine.getIsTitleLine()){
-					TaxLine taxLine = invoiceLine.getTaxLine();
+					
+				TaxLine taxLine = invoiceLine.getTaxLine();
+				if(taxLine != null)  {
 					LOG.debug("TVA {}", taxLine);
 
 					if (map.containsKey(taxLine)) {

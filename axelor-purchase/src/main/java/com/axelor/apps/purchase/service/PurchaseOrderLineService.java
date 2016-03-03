@@ -50,7 +50,7 @@ public interface PurchaseOrderLineService{
 
 	public BigDecimal computeDiscount(PurchaseOrderLine purchaseOrderLine);
 
-	public PurchaseOrderLine createPurchaseOrderLine(PurchaseOrder purchaseOrder, Product product, String description,
+	public PurchaseOrderLine createPurchaseOrderLine(PurchaseOrder purchaseOrder, Product product, String productName, String description,
 			BigDecimal qty, Unit unit) throws AxelorException;
 
 	public BigDecimal getQty(PurchaseOrder purchaseOrder, PurchaseOrderLine purchaseOrderLine);

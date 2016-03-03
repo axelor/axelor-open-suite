@@ -70,7 +70,7 @@ public interface PurchaseOrderService {
 	 * @param purchaseOrder
 	 * 			Une commande.
 	 */
-	void initPurchaseOrderLineVats(PurchaseOrder purchaseOrder);
+	void initPurchaseOrderLineTax(PurchaseOrder purchaseOrder);
 
 
 
