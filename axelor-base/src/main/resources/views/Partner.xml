@@ -141,7 +141,7 @@
 							<field name="address" colSpan="12" placeholder="whatever@example.com" pattern="^[a-z0-9A-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ!#$%&amp;'*+/=?^_`{|}~-]+(?:\.[a-z0-9A-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ!#$%&amp;'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+(?:[a-z]{2,})$"/>
 						</editor>
 					</field>
-					<field name="webSite"/>
+					<field name="webSite" placeholder="www.url.com" pattern="(https?:\/\/(?:www\.|(?!www))[^\s\.]+\.[^\s]{2,}|www\.[^\s]+\.[^\s]{2,})"/>
 				</panel>
 				<panel title="Partner Details" hideIf="partnerTypeSelect == 2" colSpan="12" >
 					<panel colSpan="6">
@@ -346,7 +346,7 @@
 			<field name="fax" pattern="^\+?\d{8,11}$" placeholder="+33000000000"/>
 			<field name="fixedPhone" placeholder="+33100000000" pattern="^\+?\d{8,11}$"/>
 			<field name="mobilePhone" placeholder="+33100000000" pattern="^\+?\d{8,11}$"/>
-           <field name="webSite"/>
+           <field name="webSite" placeholder="www.url.com" pattern="(https?:\/\/(?:www\.|(?!www))[^\s\.]+\.[^\s]{2,}|www\.[^\s]+\.[^\s]{2,})"/>
 	     </panel>
 	</form>
 	
