@@ -485,10 +485,10 @@
 	    <series key="_total_calls" groupBy="_call_type" type="bar" title="Calls"/>
 	</chart>  	  	
 	  	
-	<chart onInit="action.crm.chart.set.date" name="chart.calls.types.by.team.by.user.bar" title="Calls by user(of a team)">
+	<chart onInit="action.crm.chart.set.date,action.chart.crm.chart.set.active.team" name="chart.calls.types.by.team.by.user.bar" title="Calls by user(of a team)">
 		<search-fields> 	        
 		    <field type="datetime" name="fromDateT" title="From Date" x-required="true"/>
-		    <field type="reference" name="team" target="com.axelor.apps.base.db.Team" x-required="true" title="Team" />
+		    <field type="reference" name="activeTeam" target="com.axelor.apps.base.db.Team" x-required="true" title="Team" />
 		</search-fields>
 		<dataset type="jpql">
 		    <![CDATA[
@@ -502,7 +502,7 @@
 			    WHERE
 			      self.typeSelect = 1 AND
 			      self.user = saleMan AND
-			      self.team = :team AND
+			      self.team = :activeTeam AND
 			      self.startDateTime BETWEEN DATE(:fromDateT) AND DATE(:todayDate)
 			    GROUP BY        
 			        saleMan.fullName
