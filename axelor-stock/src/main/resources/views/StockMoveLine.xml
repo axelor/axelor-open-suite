@@ -54,7 +54,7 @@
         <field name="productName" />
         <field name="product" form-view="product-form" grid-view="product-grid"/>
         <field name="realQty"/>
-        <field name="unitPriceUntaxed"/>
+        <field name="unitPriceUntaxed" x-scale="2"/>
         <field name="unitPriceTaxed" hidden="true"/>
         <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
         <field name="trackingNumber"/>
