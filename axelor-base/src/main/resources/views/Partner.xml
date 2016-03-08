@@ -80,7 +80,8 @@
     
     <form name="partner-form"  title="Partner" model="com.axelor.apps.base.db.Partner"    
     onNew="action-group-base-partner-onnew" 
-    onLoad="action-group-partner-onload" width="large">
+    onLoad="action-group-partner-onload"
+    onSave="action-partner-iban-check-on-save" width="large">
 	    <toolbar>
 	        <button name="sendByEmail" title="Send email" icon="fa-envelope" onClick="save,action-send-by-email-with-template" readonlyIf="id == null" if-module="axelor-message"/>
 	        <button name="showPartnerInfo" title="Print Informations" icon="fa-print" onClick="save,action-partner-method-show-partner-info" readonlyIf="id == null"/>
@@ -517,6 +518,10 @@
 	
 	<action-method name="action-partner-address-list-change">
 	    <call class="com.axelor.apps.base.web.PartnerController" method="partnerAddressListChange"/>
+	</action-method>
+	
+	<action-method name="action-partner-iban-check-on-save">
+		<call class="com.axelor.apps.base.web.PartnerController" method="checkIbanValidity"/>
 	</action-method>
 
 	

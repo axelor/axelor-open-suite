@@ -216,6 +216,7 @@
 "Area name","Nom zone",,
 "Artmin","Artmin",,
 "Assigned to","Assigné à",,
+"At least one iban code you have entered for this partner is not valid. Here is the list of invalid codes : %s","Au moins un iban entré pour ce tiers n'est pas valide. Voici la liste des codes non valides : %s",,
 "Attached files","Fichiers attachés",,
 "Attachment directory OR Application source does not exist",,,
 "Attendees","Invités",,
