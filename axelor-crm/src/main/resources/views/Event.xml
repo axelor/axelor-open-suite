@@ -324,9 +324,9 @@
 			<field name="subjectTeam" hidden="true"/>
 		</panel>
 		
-		<panel sidebar="true" title="Attributes" readonlyIf="statusSelect == 14">
+		<panel sidebar="true" title="Attributes">
 			<field name="statusSelect" selection-in="[11, 12, 13, 14, 15]"/>
-			<field name="prioritySelect"/>	
+			<field name="prioritySelect" readonlyIf="statusSelect == 14"/>	
 		</panel>
 		
 		<panel sidebar="true" title="Linked to" readonlyIf="statusSelect == 14" >
@@ -402,11 +402,11 @@
 			<field name="description" showTitle="false" colSpan="12" widget="html"/>
 		</panel>
 	</panel>
-	<panel sidebar="true" title="Attributes" readonlyIf="statusSelect == 25">
+	<panel sidebar="true" title="Attributes">
 		<field name="statusSelect" colSpan="3" selection-in="[21, 22, 23, 24, 25]"/>
-		<field name="prioritySelect" colSpan="3" />
-		<field name="eventCategory" colSpan="6" widget="SuggestBox" domain="self.typeSelect = :typeSelect" form-view="event-category-form" grid-view="event-category-grid"/>
-		<field name="progressSelect" colSpan="12" readonlyIf="statusSelect == 21" widget="SelectProgress"/>
+		<field name="prioritySelect" colSpan="3" readonlyIf="statusSelect == 25" />
+		<field name="eventCategory" colSpan="6" widget="SuggestBox" domain="self.typeSelect = :typeSelect" form-view="event-category-form" grid-view="event-category-grid" readonlyIf="statusSelect == 25"/>
+		<field name="progressSelect" colSpan="12" readonlyIf="statusSelect == 21 || statusSelect == 25" widget="SelectProgress" />
     </panel>
     <panel-mail>
 		<mail-messages limit="4" />
