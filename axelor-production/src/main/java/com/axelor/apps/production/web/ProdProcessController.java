@@ -36,7 +36,7 @@ public class ProdProcessController {
 		ProdProcess prodProcess = request.getContext().asType(ProdProcess.class);
 		if(prodProcess.getIsConsProOnOperation()){
 			BillOfMaterial bom = null;
-			if(request.getContext().getParentContext().getContextClass().getName().equals(BillOfMaterial.class.getName())){
+			if(request.getContext().getParentContext() != null && request.getContext().getParentContext().getContextClass().getName().equals(BillOfMaterial.class.getName())){
 				bom = request.getContext().getParentContext().asType(BillOfMaterial.class);
 			}
 			else{

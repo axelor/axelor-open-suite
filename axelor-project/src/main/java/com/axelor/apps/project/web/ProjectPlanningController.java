@@ -26,11 +26,13 @@ import com.axelor.apps.project.db.ProjectPlanning;
 import com.axelor.apps.project.db.ProjectPlanningLine;
 import com.axelor.apps.project.db.repo.ProjectPlanningLineRepository;
 import com.axelor.apps.project.db.repo.ProjectPlanningRepository;
+import com.axelor.apps.project.exception.IExceptionMessage;
 import com.axelor.apps.project.service.ProjectPlanningService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.db.EntityHelper;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.IException;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -205,7 +207,11 @@ public class ProjectPlanningController {
 			projectPlanningLineList = projectPlanningService.populateMyPlanning(planning, user);
 		}
 		else{
-			projectPlanningLineList = projectPlanningService.populateMyTeamPlanning(planning, user.getActiveTeam());
+			if (user.getActiveTeam() == null){
+				throw new AxelorException(IExceptionMessage.PROJECT_NO_ACTIVE_TEAM, IException.CONFIGURATION_ERROR);
+			}else{
+				projectPlanningLineList = projectPlanningService.populateMyTeamPlanning(planning, user.getActiveTeam());
+			}
 		}
 		response.setValue("$projectPlanningLineList", projectPlanningLineList);
 	}
