@@ -71,7 +71,7 @@ import com.google.inject.persist.Transactional;
 public class TimesheetServiceImp implements TimesheetService{
 
 	@Inject
-	private EmployeeService employeeService;
+	protected EmployeeService employeeService;
 
 	@Inject
 	private PriceListService priceListService;

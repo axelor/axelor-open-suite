@@ -21,7 +21,7 @@
   	
   	<string name="relatedToSelect" title="Related to" selection="crm.event.related.to.select"/>
   	<integer name="relatedToSelectId"/>
-  	
+  	<integer name="statusSelect" title="Status" selection="crm.event.status.select"/>
     
     <many-to-one name="user" column="user_id" ref="com.axelor.auth.db.User" title="Assigned to"/>
   	<many-to-one name="team" ref="com.axelor.apps.base.db.Team" title="Team"/>
@@ -46,10 +46,8 @@
 	<many-to-many name="externalGuestSet" ref="com.axelor.apps.base.db.Partner" title="External Guests"/>
 
 <!-- Task -->
-	<integer name="taskStatusSelect" title="Status" selection="crm.event.task.status.select"/>
     
 <!-- Ticket -->
-	<integer name="ticketStatusSelect" title="Status" selection="crm.event.ticket.status.select"/>
     <integer name="progressSelect" title="Progress" selection="crm.event.ticket.progress.select" help="true"/>
     <string name="ticketNumberSeq" title="Ticket N°" help="true"/>
     <many-to-many name="userSet" ref="com.axelor.auth.db.User" title="Watchers"/>
@@ -78,10 +76,10 @@
       <field name="endDateTime" on="UPDATE"/>
       <field name="internalGuestSet"/>
 	   <field name="externalGuestSet"/>
-      <message if="typeSelect == 5 &amp;&amp; ticketStatusSelect == 2" tag="important">Ticket In Progress</message>
-      <message if="typeSelect == 5 &amp;&amp; ticketStatusSelect == 3" tag="important">Ticket Resolved</message>
-      <message if="typeSelect == 5 &amp;&amp; ticketStatusSelect == 4" tag="important">Ticket in Feedback status</message>
-      <message if="typeSelect == 5 &amp;&amp; ticketStatusSelect == 5" tag="important">Ticket Closed</message> 
+      <message if="typeSelect == 5 &amp;&amp; statusSelect == 22" tag="important">Ticket In Progress</message>
+      <message if="typeSelect == 5 &amp;&amp; statusSelect == 23" tag="important">Ticket Resolved</message>
+      <message if="typeSelect == 5 &amp;&amp; statusSelect == 24" tag="important">Ticket in Feedback status</message>
+      <message if="typeSelect == 5 &amp;&amp; statusSelect == 25" tag="important">Ticket Closed</message> 
     </track>
       
 

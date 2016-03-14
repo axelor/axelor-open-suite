@@ -308,7 +308,7 @@ public class LeaveService {
 		}
 		else {
 			DayPlanning dayPlanning = weeklyPlanningService.findDayPlanning(weeklyPlanning,date);
-			if(dayPlanning.getAfternoonFrom()!= null && dayPlanning.getAfternoonTo()!= null){
+			if(dayPlanning != null && dayPlanning.getAfternoonFrom()!= null && dayPlanning.getAfternoonTo()!= null){
 				value = 0.5;
 			}
 		}
@@ -322,7 +322,7 @@ public class LeaveService {
 		}
 		else {
 			DayPlanning dayPlanning = weeklyPlanningService.findDayPlanning(weeklyPlanning,date);
-			if(dayPlanning.getMorningFrom()!= null && dayPlanning.getMorningTo()!= null){
+			if(dayPlanning != null && dayPlanning.getMorningFrom()!= null && dayPlanning.getMorningTo()!= null){
 				value = 0.5;
 			}
 		}
@@ -348,7 +348,7 @@ public class LeaveService {
 		DayPlanning startDay = weeklyPlanningService.findDayPlanning(weeklyPlanning,leave.getDateFrom());
 		DayPlanning endDay = weeklyPlanningService.findDayPlanning(weeklyPlanning,leave.getDateTo());
 		if(leave.getStartOnSelect() == LeaveRequestRepository.SELECT_MORNING){
-			if(startDay.getMorningFrom() != null){
+			if(startDay != null && startDay.getMorningFrom() != null){
 				startTimeHour = startDay.getMorningFrom().getHourOfDay();
 				startTimeMin = startDay.getMorningFrom().getMinuteOfHour();
 			}
@@ -358,7 +358,7 @@ public class LeaveService {
 			}
 		}
 		else{
-			if(startDay.getAfternoonFrom() != null){
+			if(startDay != null && startDay.getAfternoonFrom() != null){
 				startTimeHour = startDay.getAfternoonFrom().getHourOfDay();
 				startTimeMin = startDay.getAfternoonFrom().getMinuteOfHour();
 			}
@@ -372,7 +372,7 @@ public class LeaveService {
 		int endTimeHour = 0;
 		int endTimeMin = 0;
 		if(leave.getEndOnSelect() == LeaveRequestRepository.SELECT_MORNING){
-			if(endDay.getMorningTo() != null){
+			if(endDay != null && endDay.getMorningTo() != null){
 				endTimeHour = endDay.getMorningTo().getHourOfDay();
 				endTimeMin = endDay.getMorningTo().getMinuteOfHour();
 			}
@@ -382,7 +382,7 @@ public class LeaveService {
 			}
 		}
 		else{
-			if(endDay.getAfternoonTo() != null){
+			if(endDay != null && endDay.getAfternoonTo() != null){
 				endTimeHour = endDay.getAfternoonTo().getHourOfDay();
 				endTimeMin = endDay.getAfternoonTo().getMinuteOfHour();
 			}

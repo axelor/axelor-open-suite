@@ -24,14 +24,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.validator.routines.checkdigit.IBANCheckDigit;
 import org.eclipse.birt.core.exception.BirtException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.ReportFactory;
+import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.PartnerAddress;
 import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
@@ -51,6 +54,10 @@ import com.axelor.meta.MetaFiles;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.google.common.base.Function;
+import com.google.common.base.Joiner;
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 
 public class PartnerController {
@@ -262,5 +269,31 @@ public class PartnerController {
 	public void partnerAddressListChange(ActionRequest request, ActionResponse response) {
 		LOG.debug("Called..............");
 		
+	}
+	
+	public void checkIbanValidity(ActionRequest request, ActionResponse response) throws AxelorException{
+		
+		List<BankDetails> bankDetailsList = request.getContext().asType(Partner.class).getBankDetailsList();
+		List<String> ibanInError = Lists.newArrayList();
+		
+		for (BankDetails bankDetails : bankDetailsList) {
+			
+			if(bankDetails.getIban() != null) {
+				LOG.debug("checking iban code : {}", bankDetails.getIban());
+				if (!IBANCheckDigit.IBAN_CHECK_DIGIT.isValid(bankDetails.getIban())) {	
+					ibanInError.add(bankDetails.getIban());
+					}
+			}
+		}
+		if (!ibanInError.isEmpty()){
+			
+			Function<String,String> addLi = new Function<String,String>() {
+				  @Override public String apply(String s) {
+				    return "<li>".concat(s).concat("</li>").toString();
+				  }
+				};
+			
+			response.setAlert(String.format(IExceptionMessage.BANK_DETAILS_2, "<ul>" + Joiner.on("").join(Iterables.transform(ibanInError, addLi)) + "<ul>"));
+		}
 	}
 }

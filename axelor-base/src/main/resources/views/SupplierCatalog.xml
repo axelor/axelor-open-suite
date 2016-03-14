@@ -9,7 +9,7 @@
         <field name="productSupplierCode"/>
         <field name="updateDate"/>
         <field name="minQty"/>
-        <field name="price"/>
+        <field name="price" x-scale="2" />
     </grid>
     
     <form name="supplier-catalog-form" title="Supplier Catalog" model="com.axelor.apps.base.db.SupplierCatalog" 

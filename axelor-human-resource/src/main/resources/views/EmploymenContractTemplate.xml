@@ -11,7 +11,7 @@
 
     <form name="employment-contract-template-form" title="Employment contract templates" model="com.axelor.apps.hr.db.EmploymentContractTemplate" >
     	<panel>
-			<field name="metaFile" onChange="action-employment-contract-template-record-name" canNew="true" />
+			<field name="metaFile" widget="binary-link" onChange="action-employment-contract-template-record-name" canNew="true" />
 			<field name="name" />
 			<field name="description" colSpan="12" showTitle="false" widget="html"/>
     	</panel>

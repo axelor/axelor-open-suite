@@ -80,7 +80,8 @@
     
     <form name="partner-form"  title="Partner" model="com.axelor.apps.base.db.Partner"    
     onNew="action-group-base-partner-onnew" 
-    onLoad="action-group-partner-onload" width="large">
+    onLoad="action-group-partner-onload"
+    onSave="action-partner-iban-check-on-save" width="large">
 	    <toolbar>
 	        <button name="sendByEmail" title="Send email" icon="fa-envelope" onClick="save,action-send-by-email-with-template" readonlyIf="id == null" if-module="axelor-message"/>
 	        <button name="showPartnerInfo" title="Print Informations" icon="fa-print" onClick="save,action-partner-method-show-partner-info" readonlyIf="id == null"/>
@@ -109,7 +110,6 @@
 		            <field name="titleSelect" showTitle="false" hideIf="partnerTypeSelect != 2" placeholder="Civility" colSpan="2"/>
 		        </editor>
 		    </field>
-		    <button name="generateProject" readonlyIf="id == null || id &lt; 1" title="Generate Project" colSpan="3" if-module="axelor-project" onClick="action-partner-view-generate-project"/>
 			<field name="isContact" hidden="true" colSpan="12" />
 		</panel>
   		</panel>
@@ -132,7 +132,7 @@
 					</field>
 					<field name="deliveryDelay" showIf="isSupplier"/>
 				</panel>
-				<panel title="Contact details" colSpan="12">
+				<panel title="General contact details" colSpan="12">
 					<field name="fixedPhone" colSpan="3" placeholder="+33100000000" pattern="^\+?\d{8,11}$"/>
 					<field name="fax" colSpan="3" pattern="^\+?\d{8,11}$" placeholder="+33000000000"/>
 					<field name="mobilePhone" colSpan="3" hideIf="partnerTypeSelect == 1" placeholder="+33100000000" pattern="^\+?\d{8,11}$"/>
@@ -518,6 +518,10 @@
 	
 	<action-method name="action-partner-address-list-change">
 	    <call class="com.axelor.apps.base.web.PartnerController" method="partnerAddressListChange"/>
+	</action-method>
+	
+	<action-method name="action-partner-iban-check-on-save">
+		<call class="com.axelor.apps.base.web.PartnerController" method="checkIbanValidity"/>
 	</action-method>
 
 	

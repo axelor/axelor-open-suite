@@ -40,6 +40,7 @@ import com.axelor.apps.base.service.MapService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.crm.db.Event;
 import com.axelor.apps.crm.db.IEvent;
+import com.axelor.apps.crm.db.ILead;
 import com.axelor.apps.crm.db.Lead;
 import com.axelor.apps.crm.db.RecurrenceConfiguration;
 import com.axelor.apps.crm.db.repo.EventRepository;
@@ -165,7 +166,7 @@ public class EventController {
 
 		Event event = request.getContext().asType(Event.class);
 		Event persistEvent = eventRepo.find(event.getId());
-		persistEvent.setTaskStatusSelect(event.getTaskStatusSelect());
+		persistEvent.setStatusSelect(event.getStatusSelect());
 		eventService.saveEvent(persistEvent);
 
 	}
@@ -175,7 +176,7 @@ public class EventController {
 
 		Event event = request.getContext().asType(Event.class);
 		Event persistEvent = eventRepo.find(event.getId());
-		persistEvent.setTicketStatusSelect(event.getTicketStatusSelect());
+		persistEvent.setStatusSelect(event.getStatusSelect());
 		eventService.saveEvent(persistEvent);
 
 	}
@@ -221,15 +222,15 @@ public class EventController {
 		if(request.getContext().get("id") != null){
 			Lead lead = leadRepo.find((Long)request.getContext().get("id"));
 			lead.setUser(AuthUtils.getUser());
-			if(lead.getStatusSelect() == 1)
-				lead.setStatusSelect(2);
+			if(lead.getStatusSelect() == ILead.STATUS_NEW)
+				lead.setStatusSelect(ILead.STATUS_ASSIGNED);
 			leadService.saveLead(lead);
 		}
 		else if(!((List)request.getContext().get("_ids")).isEmpty()){
 			for(Lead lead : leadRepo.all().filter("id in ?1",request.getContext().get("_ids")).fetch()){
 				lead.setUser(AuthUtils.getUser());
-				if(lead.getStatusSelect() == 1)
-					lead.setStatusSelect(2);
+				if(lead.getStatusSelect() == ILead.STATUS_NEW)
+					lead.setStatusSelect(ILead.STATUS_ASSIGNED);
 				leadService.saveLead(lead);
 			}
 		}
