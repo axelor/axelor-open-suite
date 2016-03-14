@@ -61,7 +61,7 @@ public class TimesheetController {
 	public void generateLines(ActionRequest request, ActionResponse response) throws AxelorException{
 		Timesheet timesheet = request.getContext().asType(Timesheet.class);
 		timesheet = timesheetService.generateLines(timesheet);
-		response.setValues(timesheet);
+		response.setValue("timesheetLineList",timesheet.getTimesheetLineList());
 	}
 
 	public void editTimesheet(ActionRequest request, ActionResponse response){
