@@ -9,10 +9,18 @@
   
   	<string name="fullName" namecolumn="true">
 	  	<![CDATA[
-	  		if(saleOrder == null){
-	  			return " ";
+	  		String fullName = "";
+	  		if(saleOrder != null && saleOrder.getSaleOrderSeq() != null){
+	  			fullName += saleOrder.getSaleOrderSeq();
 	  		}
-	  		return saleOrder.getSaleOrderSeq() + "-" + productName;
+	  		if(productName != null)  {
+	  			fullName += "-";
+	  			if(productName.length() > 100)  {
+	  				fullName += productName.substring(1, 100);
+	  			}
+	  			else  {  fullName += productName;  }
+	  		}
+	  		return fullName;
 	  	]]>
   	</string>
   	<many-to-one name="saleOrder" ref="com.axelor.apps.sale.db.SaleOrder" title="Sale order"/>
