@@ -92,7 +92,7 @@
 	</action-record>
 	
 	<action-record name="action-timesheet-record-to-date" model="com.axelor.apps.hr.db.Timesheet">
-		<field name="toDate" expr="eval: __date__"/>
+		<field name="toDate" expr="eval: __date__" if="toDate == null"/>
 	</action-record>
 	
 	<action-record name="action-timesheet-record-refuse" model="com.axelor.apps.hr.db.Timesheet">

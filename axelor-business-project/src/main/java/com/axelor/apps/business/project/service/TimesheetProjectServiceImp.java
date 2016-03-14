@@ -23,17 +23,28 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import org.eclipse.core.resources.IProject;
 import org.joda.time.LocalDate;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
+import com.axelor.apps.base.db.DayPlanning;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.WeeklyPlanning;
+import com.axelor.apps.hr.db.LeaveRequest;
+import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.db.TimesheetLine;
+import com.axelor.apps.hr.db.repo.LeaveRequestRepository;
+import com.axelor.apps.hr.exception.IExceptionMessage;
 import com.axelor.apps.hr.service.timesheet.TimesheetServiceImp;
 import com.axelor.apps.project.db.ProjectTask;
+import com.axelor.apps.project.db.repo.ProjectTaskRepository;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.IException;
+import com.axelor.i18n.I18n;
 
 public class TimesheetProjectServiceImp extends TimesheetServiceImp{
 	@Override
@@ -106,5 +117,78 @@ public class TimesheetProjectServiceImp extends TimesheetServiceImp{
 
 		return invoiceLineList;
 
+	}
+	
+	@Override
+	public Timesheet generateLines(Timesheet timesheet) throws AxelorException{
+
+		if(timesheet.getFromGenerationDate() == null) {
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.TIMESHEET_FROM_DATE)), IException.CONFIGURATION_ERROR);
+		}
+		if(timesheet.getToGenerationDate() == null) {
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.TIMESHEET_TO_DATE)), IException.CONFIGURATION_ERROR);
+		}
+		if(timesheet.getProduct() == null) {
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.TIMESHEET_PRODUCT)), IException.CONFIGURATION_ERROR);
+		}
+		if(timesheet.getUser().getEmployee() == null){
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.LEAVE_USER_EMPLOYEE),timesheet.getUser().getName()), IException.CONFIGURATION_ERROR);
+		}
+		WeeklyPlanning planning = timesheet.getUser().getEmployee().getPlanning();
+		if(planning == null){
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.TIMESHEET_EMPLOYEE_DAY_PLANNING),timesheet.getUser().getName()), IException.CONFIGURATION_ERROR);
+		}
+		List<DayPlanning> dayPlanningList = planning.getWeekDays();
+
+		LocalDate fromDate = timesheet.getFromGenerationDate();
+		LocalDate toDate = timesheet.getToGenerationDate();
+		Map<Integer,String> correspMap = new HashMap<Integer,String>();
+		correspMap.put(1, "monday");
+		correspMap.put(2, "tuesday");
+		correspMap.put(3, "wednesday");
+		correspMap.put(4, "thursday");
+		correspMap.put(5, "friday");
+		correspMap.put(6, "saturday");
+		correspMap.put(7, "sunday");
+		List<LeaveRequest> leaveList = LeaveRequestRepository.of(LeaveRequest.class).all().filter("self.user = ?1 AND (self.statusSelect = 2 OR self.statusSelect = 3)", timesheet.getUser()).fetch();
+		while(!fromDate.isAfter(toDate)){
+			DayPlanning dayPlanningCurr = new DayPlanning();
+			for (DayPlanning dayPlanning : dayPlanningList) {
+				if(dayPlanning.getName().equals(correspMap.get(fromDate.getDayOfWeek()))){
+					dayPlanningCurr = dayPlanning;
+					break;
+				}
+			}
+			if(dayPlanningCurr.getMorningFrom() != null || dayPlanningCurr.getMorningTo() != null || dayPlanningCurr.getAfternoonFrom() != null || dayPlanningCurr.getAfternoonTo() != null)
+			{
+				boolean noLeave = true;
+				if(leaveList != null){
+					for (LeaveRequest leave : leaveList) {
+						if((leave.getDateFrom().isBefore(fromDate) && leave.getDateTo().isAfter(fromDate))
+							|| leave.getDateFrom().isEqual(fromDate) || leave.getDateTo().isEqual(fromDate))
+						{
+							noLeave = false;
+							break;
+						}
+					}
+				}
+				if(noLeave){
+					TimesheetLine timesheetLine = new TimesheetLine();
+					timesheetLine.setDate(fromDate);
+					timesheetLine.setUser(timesheet.getUser());
+					timesheetLine.setProjectTask(timesheet.getProjectTask());
+					timesheetLine.setVisibleDuration(timesheet.getLogTime());
+					timesheetLine.setDurationStored(employeeService.getDurationHours(timesheet.getLogTime()));
+					timesheetLine.setProduct(timesheet.getProduct());
+					if(timesheet.getProjectTask().getProjTaskInvTypeSelect() == ProjectTaskRepository.INVOICING_TYPE_TIME_BASED
+							|| (timesheet.getProjectTask().getProject() != null && timesheet.getProjectTask().getProject().getProjTaskInvTypeSelect() == ProjectTaskRepository.INVOICING_TYPE_TIME_BASED)){
+						timesheetLine.setToInvoice(true);
+					}
+					timesheet.addTimesheetLineListItem(timesheetLine);
+				}
+			}
+			fromDate=fromDate.plusDays(1);
+		}
+		return timesheet;
 	}
 }
