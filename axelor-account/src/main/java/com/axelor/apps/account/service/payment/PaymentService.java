@@ -122,10 +122,10 @@ public class PaymentService {
 							if(nextDebitTotalRemaining.compareTo(BigDecimal.ZERO) <= 0
 									|| nextCreditTotalRemaining.compareTo(BigDecimal.ZERO) <= 0)  {
 								log.debug("last loop");
-								reconcile = reconcileService.createReconcile(debitMoveLine, creditMoveLine, amount, true, false, false);
+								reconcile = reconcileService.createReconcile(debitMoveLine, creditMoveLine, amount, true);
 							}
 							else  {
-								reconcile = reconcileService.createReconcile(debitMoveLine, creditMoveLine, amount, false, false, false);
+								reconcile = reconcileService.createReconcile(debitMoveLine, creditMoveLine, amount, false);
 							}
 							// End gestion du passage en 580
 
@@ -208,10 +208,10 @@ public class PaymentService {
 			// Gestion du passage en 580
 			if(i == 0 )  {
 				log.debug("last loop");
-				reconcile = reconcileService.createReconcile(debitMoveLine, creditMoveLine, amountToPay, true, false, false);
+				reconcile = reconcileService.createReconcile(debitMoveLine, creditMoveLine, amountToPay, true);
 			}
 			else  {
-				reconcile = reconcileService.createReconcile(debitMoveLine, creditMoveLine, amountToPay, false, false, false);
+				reconcile = reconcileService.createReconcile(debitMoveLine, creditMoveLine, amountToPay, false);
 			}
 			// End gestion du passage en 580
 
@@ -298,10 +298,10 @@ public class PaymentService {
 
 							// Gestion du passage en 580
 							if(i == 0 )  {
-								reconcile = reconcileService.createReconcile(debitMoveLine, creditMoveLine, amountToPay, true, false, false);
+								reconcile = reconcileService.createReconcile(debitMoveLine, creditMoveLine, amountToPay, true);
 							}
 							else  {
-								reconcile = reconcileService.createReconcile(debitMoveLine, creditMoveLine, amountToPay, false, false, false);
+								reconcile = reconcileService.createReconcile(debitMoveLine, creditMoveLine, amountToPay, false);
 							}
 							// End gestion du passage en 580
 

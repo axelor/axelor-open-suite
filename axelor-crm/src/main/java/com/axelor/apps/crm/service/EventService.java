@@ -329,6 +329,9 @@ public class EventService {
 				}
 			}
 		}
+		else{
+			throw new AxelorException(I18n.get("This user doesn't have any partner or email address"),IException.CONFIGURATION_ERROR);
+		}
 	}
 	
 	@Transactional
@@ -359,6 +362,9 @@ public class EventService {
 					
 				}
 			}
+		}
+		else{
+			throw new AxelorException(I18n.get("This partner doesn't have any email address"),IException.CONFIGURATION_ERROR);
 		}
 	}
 	

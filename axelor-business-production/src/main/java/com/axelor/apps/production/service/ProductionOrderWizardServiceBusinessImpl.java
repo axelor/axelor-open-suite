@@ -20,6 +20,8 @@ package com.axelor.apps.production.service;
 import java.math.BigDecimal;
 import java.util.Map;
 
+import org.joda.time.DateTime;
+import org.joda.time.LocalDateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -62,12 +64,19 @@ public class ProductionOrderWizardServiceBusinessImpl extends ProductionOrderWiz
 			product = billOfMaterial.getProduct();
 		}
 
+		DateTime startDate;
+		if (context.containsKey("_startDate") && context.get("_startDate") != null ){
+			startDate = new DateTime(context.get("_startDate") );
+		}else{
+			startDate = generalService.getTodayDateTime().toDateTime();
+		}
+
 		ProjectTask projectTask = null;
 		if(context.get("business_id") != null)  {
 			projectTask = Beans.get(ProjectTaskRepository.class).find(((Integer) context.get("business_id")).longValue());
 		}
 
-		ProductionOrder productionOrder = productionOrderServiceBusinessImpl.generateProductionOrder(product, billOfMaterial, qty, projectTask);
+		ProductionOrder productionOrder = productionOrderServiceBusinessImpl.generateProductionOrder(product, billOfMaterial, qty, projectTask, startDate.toLocalDateTime());
 
 		if(productionOrder != null)  {
 			return productionOrder.getId();

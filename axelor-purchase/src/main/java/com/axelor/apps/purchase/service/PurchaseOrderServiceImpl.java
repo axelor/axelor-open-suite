@@ -90,7 +90,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public PurchaseOrder computePurchaseOrder(PurchaseOrder purchaseOrder) throws AxelorException  {
 
-		this.initPurchaseOrderLineVats(purchaseOrder);
+		this.initPurchaseOrderLineTax(purchaseOrder);
 
 		this._computePurchaseOrderLines(purchaseOrder);
 
@@ -163,7 +163,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 	 * 			Une commande.
 	 */
 	@Override
-	public void initPurchaseOrderLineVats(PurchaseOrder purchaseOrder) {
+	public void initPurchaseOrderLineTax(PurchaseOrder purchaseOrder) {
 
 		if (purchaseOrder.getPurchaseOrderLineTaxList() == null) { purchaseOrder.setPurchaseOrderLineTaxList(new ArrayList<PurchaseOrderLineTax>()); }
 

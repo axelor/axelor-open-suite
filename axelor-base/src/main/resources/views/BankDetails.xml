@@ -19,7 +19,7 @@
 		<panel title="IBAN">
 			<field name="iban" onChange="action-group-account-bankdetails-iban-onchange" />
 			<field name="bic" />
-			<field name="ibanBic" readonly="true" />
+			<field name="ibanBic" readonly="true" x-bind="{{iban+' '+bic}}"/>
 		</panel>
 		<panel title="Bank">
 			<field name="countryCode" />

@@ -7,7 +7,7 @@
 
     <entity name="EmploymentContract" lang="java">
     
-        <many-to-one name="employee" ref="com.axelor.apps.hr.db.Employee" required="true" title="Employee"/>
+        <many-to-one name="employee" ref="com.axelor.apps.hr.db.Employee" title="Employee"/>
         <many-to-one name="payCompany" ref="com.axelor.apps.base.db.Company" title="Pay Company" required="true"/>
         
         <integer name="employmentContractVersion" title="Amendment" default="0"/>

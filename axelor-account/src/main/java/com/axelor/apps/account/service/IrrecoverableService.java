@@ -798,7 +798,7 @@ public class IrrecoverableService{
 		MoveLine creditMoveLine = moveLineService.createMoveLine(move, payerPartner, customerMoveLine.getAccount(), creditAmount, false, date, seq, null);
 		move.getMoveLineList().add(creditMoveLine);
 
-		Reconcile reconcile = reconcileService.createReconcile(customerMoveLine, creditMoveLine, creditAmount);
+		Reconcile reconcile = reconcileService.createReconcile(customerMoveLine, creditMoveLine, creditAmount, false);
 		reconcileService.confirmReconcile(reconcile);
 
 		return move;
@@ -829,7 +829,7 @@ public class IrrecoverableService{
 		MoveLine creditMoveLine = moveLineService.createMoveLine(move, payerPartner, moveLine.getAccount(), amount, false, date, seq, null);
 		move.getMoveLineList().add(creditMoveLine);
 
-		Reconcile reconcile = reconcileService.createReconcile(moveLine, creditMoveLine, amount);
+		Reconcile reconcile = reconcileService.createReconcile(moveLine, creditMoveLine, amount, false);
 		reconcileService.confirmReconcile(reconcile);
 
 		Tax tax = accountConfig.getIrrecoverableStandardRateTax();

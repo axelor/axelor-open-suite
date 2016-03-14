@@ -12,7 +12,7 @@
 	    <field name="productCategory" form-view="product-category-form" grid-view="product-category-grid"/>
 	    <field name="productFamily" form-view="product-family-form" grid-view="product-family-grid"/>
 	    <field name="productTypeSelect" width="100"/>
-	    <field name="saleSupplySelect"/>
+	   	<field name="salePrice" x-scale="2" />
 	    <field name="unit" width="70" form-view="unit-form" grid-view="unit-grid"/>
 	    <button name="sendByEmail" title="Send Email" icon="fa-envelope" onClick="action-send-by-email-with-template"/>
     </grid>

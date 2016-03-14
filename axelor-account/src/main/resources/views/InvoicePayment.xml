@@ -15,7 +15,7 @@
 	</grid>
     
 	<form name="invoice-payment-form" title="Payment" model="com.axelor.apps.account.db.InvoicePayment" onNew="action-invoice-payment-record-new">
-        <panel>
+        <panel readonlyIf="statusSelect == 2">
 			<field name="amount"/>
 			<field name="currency" form-view="currency-form" grid-view="currency-grid"/>
    			<field name="paymentDate"/>
@@ -24,7 +24,7 @@
  		<panel showIf="id">
  		    <field name="move" form-view="move-form" grid-view="move-grid"/>
 			<field name="statusSelect"/>
-			<button name="cancel" icon="fa-times-circle" help="Cancel" onClick="action-advance-payment-method-cancel" readonlyIf="statusSelect == 2"/>
+			<button name="cancel" icon="fa-times-circle" title="Cancel" onClick="action-advance-payment-method-cancel" readonlyIf="statusSelect == 2"/>
  		</panel>
 	</form>
 	

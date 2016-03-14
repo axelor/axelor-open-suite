@@ -19,6 +19,8 @@ package com.axelor.apps.production.service;
 
 import java.math.BigDecimal;
 
+import org.joda.time.LocalDateTime;
+
 import com.axelor.apps.base.db.Product;
 //import com.axelor.apps.organisation.db.Project;
 import com.axelor.apps.production.db.BillOfMaterial;
@@ -40,13 +42,14 @@ public interface ProductionOrderService {
 	 * @param billOfMaterial
 	 * @param qtyRequested
 	 * @param businessProject
+	 * @param startDate
 	 * @return
 	 * @throws AxelorException
 	 */
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public ProductionOrder generateProductionOrder(Product product, BillOfMaterial billOfMaterial, BigDecimal qtyRequested) throws AxelorException;
+	public ProductionOrder generateProductionOrder(Product product, BillOfMaterial billOfMaterial, BigDecimal qtyRequested, LocalDateTime startDate) throws AxelorException;
 	
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public ProductionOrder addManufOrder(ProductionOrder productionOrder, Product product, BillOfMaterial billOfMaterial, BigDecimal qtyRequested) throws AxelorException;
+	public ProductionOrder addManufOrder(ProductionOrder productionOrder, Product product, BillOfMaterial billOfMaterial, BigDecimal qtyRequested, LocalDateTime startDate) throws AxelorException;
 	
 }

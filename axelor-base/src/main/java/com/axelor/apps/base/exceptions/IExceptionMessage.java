@@ -34,10 +34,10 @@ public interface IExceptionMessage {
 	 * Currency service and controller
 	 */
 	
-	static final String CURRENCY_1 = /*$$(*/ "Aucune conversion trouvée de la devise '%s' à la devise '%s' à la date du %s" /*)*/ ;
-	static final String CURRENCY_2 = /*$$(*/ "Le taux de conversion de la devise '%s' à la devise '%s' à la date du %s doit être différent de zéro" /*)*/ ;
-	static final String CURRENCY_3 = /*$$(*/ "ATTENTION : Veuillez clôturer la période actuelle de conversion pour en créer une nouvelle." /*)*/ ;
-	static final String CURRENCY_4 = /*$$(*/ "La date de fin doit impérativement être égale ou supérieur à la date de début." /*)*/ ;
+	static final String CURRENCY_1 = /*$$(*/ "No currency conversion found from '%s' to '%s' for date %s" /*)*/ ;
+	static final String CURRENCY_2 = /*$$(*/ "The currency exchange rate from '%s' to '%s' for date %s must be different from zero." /*)*/ ;
+	static final String CURRENCY_3 = /*$$(*/ "WARNING : please close the current conversion period to create a new one." /*)*/ ;
+	static final String CURRENCY_4 = /*$$(*/ "The end date has to be greater than or equal to the start date." /*)*/ ;
 	static final String CURRENCY_5 = /*$$(*/ "Both currencies must be saved before currency rate apply" /*)*/ ;
 	static final String CURRENCY_6 = /*$$(*/ "Currency conversion webservice not working" /*)*/ ;
 	
@@ -47,8 +47,8 @@ public interface IExceptionMessage {
 	 * Unit conversion service
 	 */
 	
-	static final String UNIT_CONVERSION_1 = /*$$(*/ "Veuillez configurer les conversions d'unités de '%s' à '%s'." /*)*/ ;
-	static final String UNIT_CONVERSION_2 = /*$$(*/ "Veuillez configurer les unités." /*)*/ ;
+	static final String UNIT_CONVERSION_1 = /*$$(*/ "Please configure unit conversion from '%s' to '%s'." /*)*/ ;
+	static final String UNIT_CONVERSION_2 = /*$$(*/ "Please configure units." /*)*/ ;
 	
 	static final String CURRENCY_CONVERSION_1 = /*$$(*/ "WARNING : Please close the current conversion period before creating new one" /*)*/ ;
 	static final String CURRENCY_CONVERSION_2 = /*$$(*/ "WARNING : To Date must be after or equals to From Date" /*)*/ ;
@@ -59,7 +59,7 @@ public interface IExceptionMessage {
 	 */
 	
 	static final public  String ACCOUNT_MANAGEMENT_1 = /*$$(*/ "Tax configuration is missing for Product: %s (company: %s)" /*)*/ ;
-	static final public  String ACCOUNT_MANAGEMENT_2 = /*$$(*/ "Aucune taxe trouvée pour le produit %s" /*)*/ ;
+	static final public  String ACCOUNT_MANAGEMENT_2 = /*$$(*/ "No tax found for product %s" /*)*/ ;
 	static final public  String ACCOUNT_MANAGEMENT_3 = /*$$(*/ "Tax is missing for Product: %s (company: %s)" /*)*/ ;
 
 	
@@ -67,8 +67,8 @@ public interface IExceptionMessage {
 	 * Period service
 	 */
 	
-	static final public String PERIOD_1 = /*$$(*/ "Aucune période trouvée ou celle-ci clôturée pour la société: %s" /*)*/ ;
-	static final public String PERIOD_2 = /*$$(*/ "Période clôturée" /*)*/ ;
+	static final public String PERIOD_1 = /*$$(*/ "No period found or it has been closed for the company %s" /*)*/ ;
+	static final public String PERIOD_2 = /*$$(*/ "Period closed" /*)*/ ;
 	
 	/**
 	 * Abstract batch
@@ -79,50 +79,50 @@ public interface IExceptionMessage {
 	/**
 	 * Indicator generator grouping service
 	 */
-	static final public String INDICATOR_GENERATOR_GROUPING_1 = /*$$(*/ "\nErreur : Aucun chemin d'export de paramétré" /*)*/;
-	static final public String INDICATOR_GENERATOR_GROUPING_2 = /*$$(*/ "\nErreur : Aucun code de paramétré" /*)*/;
-	static final public String INDICATOR_GENERATOR_GROUPING_3 = /*$$(*/ "Erreur lors de l'écriture du fichier" /*)*/;
-	static final public String INDICATOR_GENERATOR_GROUPING_4 = /*$$(*/ "Resultat exporté" /*)*/;
+	static final public String INDICATOR_GENERATOR_GROUPING_1 = /*$$(*/ "\nError : no export path has been set" /*)*/;
+	static final public String INDICATOR_GENERATOR_GROUPING_2 = /*$$(*/ "\nError : no code has been set" /*)*/;
+	static final public String INDICATOR_GENERATOR_GROUPING_3 = /*$$(*/ "Error while creating the file" /*)*/;
+	static final public String INDICATOR_GENERATOR_GROUPING_4 = /*$$(*/ "Result exported" /*)*/;
 	/**
 	 * Indicator generator service 
 	 */
-	static final public String INDICATOR_GENERATOR_1 = /*$$(*/ "Erreur : Aucun requête de paramêtrée pour le générateur d'indicateur %s" /*)*/;
-	static final public String INDICATOR_GENERATOR_2 = /*$$(*/ "Erreur : Requête incorrect pour le générateur d'indicateur %s" /*)*/;
-	static final public String INDICATOR_GENERATOR_3 = /*$$(*/ "Requête exécutée" /*)*/;
+	static final public String INDICATOR_GENERATOR_1 = /*$$(*/ "Error : a request has to be set for the indicatior generator %s" /*)*/;
+	static final public String INDICATOR_GENERATOR_2 = /*$$(*/ "Error : incorrrect request for the indicatior generator %s" /*)*/;
+	static final public String INDICATOR_GENERATOR_3 = /*$$(*/ "Request performed" /*)*/;
 	
 	
 	/**
 	 * Alarm engine batch service
 	 */
-	static final public String ALARM_ENGINE_BATCH_1 = /*$$(*/ "Moteur d'alarme %s" /*)*/;
-	static final public String ALARM_ENGINE_BATCH_2 = /*$$(*/ "Compte rendu de la relève des alarmes :\n" /*)*/;
-	static final public String ALARM_ENGINE_BATCH_3 = /*$$(*/ "\t* %s objet(s) en alarme(s)\n" /*)*/;
-	static final public String ALARM_ENGINE_BATCH_4 = /*$$(*/ "\t* %s anomalie(s)" /*)*/;
-	static final public String ALARM_ENGINE_BATCH_5 = /*$$(*/ "Batch d'alarme" /*)*/;
+	static final public String ALARM_ENGINE_BATCH_1 = /*$$(*/ "Alarm Engine %s" /*)*/;
+	static final public String ALARM_ENGINE_BATCH_2 = /*$$(*/ "Alarms report :\n" /*)*/;
+	static final public String ALARM_ENGINE_BATCH_3 = /*$$(*/ "\t* %s object(s) into alarm\n" /*)*/;
+	static final public String ALARM_ENGINE_BATCH_4 = /*$$(*/ "\t* %s anomaly(ies)" /*)*/;
+	static final public String ALARM_ENGINE_BATCH_5 = /*$$(*/ "Alarm batch" /*)*/;
 
 	/**
 	 * Base batch service
 	 */
-	static final public String BASE_BATCH_1 = /*$$(*/ "Action %s inconnu pour le traitement %s" /*)*/;
-	static final public String BASE_BATCH_2 = /*$$(*/ "Batch %s inconnu" /*)*/;
+	static final public String BASE_BATCH_1 = /*$$(*/ "Unknown action %s for the %s treatment" /*)*/;
+	static final public String BASE_BATCH_2 = /*$$(*/ "Batch %s unknown" /*)*/;
 	
 	/**
 	 * Importer
 	 */
-	static final public String IMPORTER_1 = /*$$(*/ "Erreur : Fichier de mapping inacessible." /*)*/;
+	static final public String IMPORTER_1 = /*$$(*/ "Error : Mapping file is unreachable." /*)*/;
 	
 	/**
 	 * Importer Listener 
 	 */
 	static final public String IMPORTER_LISTERNER_1 = /*$$(*/ "\nTotal : " /*)*/;
-	static final public String IMPORTER_LISTERNER_2 = /*$$(*/ " - Réussi : " /*)*/;
-	static final public String IMPORTER_LISTERNER_3 = /*$$(*/ "\nAnomalies générées : " /*)*/;
-	static final public String IMPORTER_LISTERNER_4 = /*$$(*/ "La ligne ne peut être importée (import : %s)" /*)*/;
+	static final public String IMPORTER_LISTERNER_2 = /*$$(*/ " - Succeeded : " /*)*/;
+	static final public String IMPORTER_LISTERNER_3 = /*$$(*/ "\nGenerated anomalies :" /*)*/;
+	static final public String IMPORTER_LISTERNER_4 = /*$$(*/ "The line cannot be imported (import : %s)" /*)*/;
 	
 	/**
 	 * Template message service base impl
 	 */
-	static final public String TEMPLATE_MESSAGE_BASE_1 = /*$$(*/ "%s : Le chemin vers le template Birt est incorrect" /*)*/;
+	static final public String TEMPLATE_MESSAGE_BASE_1 = /*$$(*/ "%s : Path to Birt template is incorrect" /*)*/;
 	static final public String TEMPLATE_MESSAGE_BASE_2 = /*$$(*/ "Unable to generate Birt report file" /*)*/;
 
 	
@@ -136,12 +136,12 @@ public interface IExceptionMessage {
 	/**
 	 * Scheduler service
 	 */
-	static final public String SCHEDULER_1 = /*$$(*/ "Veuillez saisir une périodicité pour le planificateur %s" /*)*/;
+	static final public String SCHEDULER_1 = /*$$(*/ "Please enter a periodicity for the scheduler %s" /*)*/;
 	
 	/**
 	 * Tax service
 	 */
-	static final public String TAX_1 = /*$$(*/ "Veuillez configurer une version de taxe pour la taxe %s" /*)*/;
+	static final public String TAX_1 = /*$$(*/ "Please enter a tax version for the tax %s" /*)*/;
 	static final public String TAX_2 = /*$$(*/ "Tax is missing" /*)*/;
 	
 	/**
@@ -153,8 +153,8 @@ public interface IExceptionMessage {
 	 * Address controller
 	 */
 	static final public String ADDRESS_1 = /*$$(*/ "OK" /*)*/;
-	static final public String ADDRESS_2 = /*$$(*/ "Service indisponible, veuillez contacter votre adminstrateur" /*)*/;
-	static final public String ADDRESS_3 = /*$$(*/ "Aucune addresse correspondante dans la base QAS" /*)*/;
+	static final public String ADDRESS_2 = /*$$(*/ "Service unavailable, please contact a administrator" /*)*/;
+	static final public String ADDRESS_3 = /*$$(*/ "There is no matching address in the QAS base" /*)*/;
 	static final public String ADDRESS_4 = /*$$(*/ "NA" /*)*/;
 	static final public String ADDRESS_5 = /*$$(*/ "<B>%s</B> not found" /*)*/;
 	static final public String ADDRESS_6 = /*$$(*/ "Feature currently not available with Open Street Maps." /*)*/;
@@ -163,7 +163,8 @@ public interface IExceptionMessage {
 	/**
 	 * Bank details controller
 	 */
-	static final public String BANK_DETAILS_1 = /*$$(*/ "L'IBAN saisi est invalide. <br> Soit l'IBAN ne respecte pas la norme, soit le format de saisie n'est pas correct. L'IBAN doit être saisi sans espaces tel que présenté ci-dessous: <br> FR0000000000000000000000000" /*)*/;
+	static final public String BANK_DETAILS_1 = /*$$(*/ "The entered IBAN code is not valid . <br> Either the code doesn't respect the norm, or the format you have entered is not correct. It has to be without any blank space, as the following : <br> FR0000000000000000000000000" /*)*/;
+	static final public String BANK_DETAILS_2 = /*$$(*/ "At least one iban code you have entered for this partner is not valid. Here is the list of invalid codes : %s" /*)*/;
 	
 	/**
 	 * General controller
@@ -185,7 +186,7 @@ public interface IExceptionMessage {
 	/**
 	 * Partner controller
 	 */
-	static final public String PARTNER_1 = /*$$(*/ "Aucune séquence configurée pour les tiers" /*)*/;
+	static final public String PARTNER_1 = /*$$(*/ "There is no sequence set for the partners" /*)*/;
 	
 	/**
 	 * Product controller

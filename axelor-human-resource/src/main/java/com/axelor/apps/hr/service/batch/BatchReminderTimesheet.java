@@ -51,13 +51,13 @@ public class BatchReminderTimesheet extends AbstractBatch{
 	
 	@Override 
 	protected void process() {
-		if(batch.getMailBatch().getCode() == MailBatchRepository.CODE_BATCH_EMAIL_TIME_SHEET){
+		if(batch.getMailBatch().getCode().equals(MailBatchRepository.CODE_BATCH_EMAIL_TIME_SHEET)){
 			if(batch.getMailBatch().getTemplate() != null)
 				this.generateEmailTemplate();
 			else
 				this.generateEmail();
 		}
-		else if(batch.getMailBatch().getCode() == MailBatchRepository.CODE_BATCH_EMAIL_ALL_TIME_SHEET){
+		else if(batch.getMailBatch().getCode().equals(MailBatchRepository.CODE_BATCH_EMAIL_ALL_TIME_SHEET)){
 			if(batch.getMailBatch().getTemplate() != null)
 				this.generateAllEmailTemplate();
 			else
@@ -81,7 +81,7 @@ public class BatchReminderTimesheet extends AbstractBatch{
 		for (Timesheet timesheet : timesheetList) {
 			Message message = new Message();
 			try{
-				message = templateMessageService.generateMessage(timesheet.getId(), model, tag, template);
+				message = templateMessageService.generateMessage(timesheet.getUser().getEmployee().getId(), model, tag, template);
 				message = messageServiceImpl.sendByEmail(message);
 				incrementDone();
 			}

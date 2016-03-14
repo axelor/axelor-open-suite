@@ -26,8 +26,6 @@ import java.util.Map;
 
 import javax.mail.MessagingException;
 
-import net.fortuna.ical4j.model.ValidationException;
-
 import org.joda.time.DateTimeConstants;
 import org.joda.time.Duration;
 import org.joda.time.LocalDate;
@@ -36,11 +34,13 @@ import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.ical.ICalendarException;
 import com.axelor.apps.base.service.MapService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.crm.db.Event;
 import com.axelor.apps.crm.db.IEvent;
+import com.axelor.apps.crm.db.ILead;
 import com.axelor.apps.crm.db.Lead;
 import com.axelor.apps.crm.db.RecurrenceConfiguration;
 import com.axelor.apps.crm.db.repo.EventRepository;
@@ -55,6 +55,7 @@ import com.axelor.apps.message.db.Template;
 import com.axelor.apps.message.db.repo.EmailAddressRepository;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
+import com.axelor.auth.db.repo.UserRepository;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
@@ -63,6 +64,8 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+
+import net.fortuna.ical4j.model.ValidationException;
 
 public class EventController {
 
@@ -163,7 +166,7 @@ public class EventController {
 
 		Event event = request.getContext().asType(Event.class);
 		Event persistEvent = eventRepo.find(event.getId());
-		persistEvent.setTaskStatusSelect(event.getTaskStatusSelect());
+		persistEvent.setStatusSelect(event.getStatusSelect());
 		eventService.saveEvent(persistEvent);
 
 	}
@@ -173,7 +176,7 @@ public class EventController {
 
 		Event event = request.getContext().asType(Event.class);
 		Event persistEvent = eventRepo.find(event.getId());
-		persistEvent.setTicketStatusSelect(event.getTicketStatusSelect());
+		persistEvent.setStatusSelect(event.getStatusSelect());
 		eventService.saveEvent(persistEvent);
 
 	}
@@ -219,15 +222,15 @@ public class EventController {
 		if(request.getContext().get("id") != null){
 			Lead lead = leadRepo.find((Long)request.getContext().get("id"));
 			lead.setUser(AuthUtils.getUser());
-			if(lead.getStatusSelect() == 1)
-				lead.setStatusSelect(2);
+			if(lead.getStatusSelect() == ILead.STATUS_NEW)
+				lead.setStatusSelect(ILead.STATUS_ASSIGNED);
 			leadService.saveLead(lead);
 		}
 		else if(!((List)request.getContext().get("_ids")).isEmpty()){
 			for(Lead lead : leadRepo.all().filter("id in ?1",request.getContext().get("_ids")).fetch()){
 				lead.setUser(AuthUtils.getUser());
-				if(lead.getStatusSelect() == 1)
-					lead.setStatusSelect(2);
+				if(lead.getStatusSelect() == ILead.STATUS_NEW)
+					lead.setStatusSelect(ILead.STATUS_ASSIGNED);
 				leadService.saveLead(lead);
 			}
 		}
@@ -281,10 +284,11 @@ public class EventController {
 		
 	}
 	
+	@SuppressWarnings("unchecked")
 	public void addUserGuest(ActionRequest request, ActionResponse response) throws ClassNotFoundException, InstantiationException, IllegalAccessException, AxelorException, MessagingException, IOException, ICalendarException, ValidationException, ParseException{
 		Event event = request.getContext().asType(Event.class);
 		if(request.getContext().containsKey("guestPartner")){
-			User user = (User) request.getContext().get("guestUser");
+			User user = Beans.get(UserRepository.class).find(new Long(((Map<String, Object>) request.getContext().get("guestUser")).get("id").toString()));
 			if(user != null){
 				event = eventRepo.find(event.getId());
 				eventService.addUserGuest(user, event);
@@ -294,10 +298,11 @@ public class EventController {
 		response.setReload(true);
 	}
 	
+	@SuppressWarnings("unchecked")
 	public void addPartnerGuest(ActionRequest request, ActionResponse response) throws ClassNotFoundException, InstantiationException, IllegalAccessException, AxelorException, MessagingException, IOException, ICalendarException, ValidationException, ParseException{
 		Event event = request.getContext().asType(Event.class);
 		if(request.getContext().containsKey("guestPartner")){
-			Partner partner = (Partner) request.getContext().get("guestPartner");
+			Partner partner = Beans.get(PartnerRepository.class).find(new Long(((Map<String, Object>) request.getContext().get("guestPartner")).get("id").toString()));
 			if(partner != null){
 				event = eventRepo.find(event.getId());
 				eventService.addPartnerGuest(partner, event);
@@ -307,14 +312,12 @@ public class EventController {
 		response.setReload(true);
 	}
 	
+	@SuppressWarnings("unchecked")
 	public void addEmailGuest(ActionRequest request, ActionResponse response) throws ClassNotFoundException, InstantiationException, IllegalAccessException, AxelorException, MessagingException, IOException, ICalendarException, ValidationException, ParseException{
 		Event event = request.getContext().asType(Event.class);
 		if(request.getContext().containsKey("guestEmail")){
-			Map<String,Object> email = (LinkedHashMap<String,Object>) request.getContext().get("guestEmail");
-			String id = email.get("id").toString();
-			if(email != null){
-				EmailAddressRepository emailAddressRepo = Beans.get(EmailAddressRepository.class);
-				EmailAddress emailAddress = emailAddressRepo.find(new Long(id));
+			EmailAddress emailAddress = Beans.get(EmailAddressRepository.class).find(new Long(((Map<String, Object>) request.getContext().get("guestEmail")).get("id").toString()));
+			if(emailAddress != null){
 				event = eventRepo.find(event.getId());
 				eventService.addEmailGuest(emailAddress, event);
 			}

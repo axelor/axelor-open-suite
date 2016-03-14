@@ -118,7 +118,9 @@ public class ReportSettings {
 	
 	public ReportSettings addFormat(String format)  {
 		
-		this.format = format;
+		if(format != null)  {
+			this.format = format;
+		}
 		
 		return this;
 		

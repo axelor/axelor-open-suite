@@ -850,7 +850,6 @@
 "Owner deceased",,,
 "PDF",,,
 "Paid on",,,
-"Paid on {{record.paymentDate}}",,,
 "Paid through paybox",,,
 "Paiement annulé",,,
 "Paiement de la facture %s",,,

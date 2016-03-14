@@ -196,6 +196,7 @@ public class PurchaseOrderSupplierService {
 		return purchaseOrderLineService.createPurchaseOrderLine(
 				purchaseOrder,
 				purchaseOrderLine.getProduct(),
+				purchaseOrderLine.getProductName(),
 				purchaseOrderLine.getDescription(),
 				purchaseOrderLine.getQty(),
 				purchaseOrderLine.getUnit());

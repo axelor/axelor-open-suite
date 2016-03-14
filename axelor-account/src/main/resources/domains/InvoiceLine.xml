@@ -11,6 +11,7 @@
 
     <many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"/>
     <string name="productName"  title="Product Name"/>
+    
     <decimal name="price" title="Unit price" precision="20" scale="10"/>
     <decimal name="priceDiscounted" title="Unit price discounted" precision="20" scale="10"/>
     <many-to-one name="unit" ref="com.axelor.apps.base.db.Unit" title="Unit"/>
@@ -41,11 +42,18 @@
     
     <string name="name" title="Name" search="invoice,productName">
    	    <![CDATA[
-   	    	String name = productName;
-	    	
-	    	if (invoice != null) { name = invoice.getInvoiceId() + " - " + name; } 
-	    	
-	    	return name;
+   	    	String name = "";
+	  		if(invoice != null && invoice.getInvoiceId() != null){
+	  			name += invoice.getInvoiceId();
+	  		}
+	  		if(productName != null)  {
+	  			name += "-";
+	  			if(productName.length() > 100)  {
+	  				name += productName.substring(1, 100);
+	  			}
+	  			else  {  name += productName;  }
+	  		}
+	  		return name;
 	    ]]>
     </string>
   

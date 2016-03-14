@@ -22,6 +22,7 @@ import com.axelor.apps.base.db.repo.ICalendarEventRepository;
 import com.axelor.apps.base.db.repo.ICalendarUserRepository;
 import com.axelor.apps.crm.db.Calendar;
 import com.axelor.apps.crm.db.Event;
+import com.axelor.apps.crm.db.IEvent;
 import com.axelor.apps.crm.service.CalendarService;
 import com.axelor.apps.crm.service.EventService;
 import com.axelor.auth.AuthUtils;
@@ -45,10 +46,10 @@ public class EventManagementRepository extends EventRepository {
 			case 2: //metting
 				break;
 			case 3: //task s
-				entity.setTaskStatusSelect(1);
+				entity.setStatusSelect(IEvent.STATUS_NOT_STARTED);
 				break;
 			case 5: //tickets
-				entity.setTicketStatusSelect(1);
+				entity.setStatusSelect(IEvent.STATUS_NEW);
 				entity.setProgressSelect(0);
 				break;
 

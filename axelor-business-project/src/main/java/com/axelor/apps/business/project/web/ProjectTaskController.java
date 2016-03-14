@@ -71,9 +71,12 @@ public class ProjectTaskController {
 	public void computeProgress(ActionRequest request,ActionResponse response){
 
 		ProjectTask projectTask = request.getContext().asType(ProjectTask.class);
-
-		BigDecimal duration = projectTask.getTimeSpent().add(projectTask.getLeadDelay()).divide(projectTask.getDuration(), 2, java.math.RoundingMode.HALF_UP).multiply(new BigDecimal(100));
-
+		
+		BigDecimal duration = BigDecimal.ZERO;
+		if(BigDecimal.ZERO.compareTo(projectTask.getDuration()) != 0){
+			duration = projectTask.getTimeSpent().add(projectTask.getLeadDelay()).divide(projectTask.getDuration(), 2, java.math.RoundingMode.HALF_UP).multiply(new BigDecimal(100));
+		}
+		
 		if(duration.compareTo(BigDecimal.ZERO) == -1 || duration.compareTo(new BigDecimal(100)) == 1){
 			duration = BigDecimal.ZERO;
 		}

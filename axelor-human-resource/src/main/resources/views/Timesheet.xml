@@ -44,12 +44,13 @@
 		<panel name="generateLinesPanel" title="Generate Lines automatically" hidden="true">
 		    <field name="fromGenerationDate"/>
 			<field name="toGenerationDate"/>
-			<field name="projectTask" domain="self.imputable=true" form-view="project-task-form" grid-view="project-task-grid"/>
+			<field name="projectTask" domain="self.imputable=true" onSelect="action-timesheet-line-attrs-domain-project-task" form-view="project-task-form" grid-view="project-task-grid"/>
 			<field name="product" domain="self.isActivity = true" form-view="product-form" grid-view="product-grid"/>
 			<field name="logTime"/>
 			<button name="generateLines" title="Generate lines" onClick="com.axelor.apps.hr.web.timesheet.TimesheetController:generateLines,action-timesheet-attrs-generale-lines-panel-hidden-true"/>
 		</panel>
-		<panel-related field="timesheetLineList" grid-view="timesheet-line-timesheet-grid" editable="true" form-view="timesheet-line-timesheet-form"/>
+		<panel-related field="timesheetLineList" grid-view="timesheet-line-timesheet-grid" editable="true" form-view="timesheet-line-timesheet-form" hidden="true" showIf="!$readonly()"/>
+		<panel-related field="timesheetLineList" grid-view="timesheet-line-timesheet-readonly-grid" editable="true" form-view="timesheet-line-timesheet-form" hidden="true" showIf="$readonly()" />
 		<panel>
 			<field name="validatedBy" form-view="user-form" grid-view="user-grid"/>
 			<field name="refusedBy" form-view="user-form" grid-view="user-grid"/>
@@ -91,7 +92,7 @@
 	</action-record>
 	
 	<action-record name="action-timesheet-record-to-date" model="com.axelor.apps.hr.db.Timesheet">
-		<field name="toDate" expr="eval: __date__"/>
+		<field name="toDate" expr="eval: __date__" if="toDate == null"/>
 	</action-record>
 	
 	<action-record name="action-timesheet-record-refuse" model="com.axelor.apps.hr.db.Timesheet">
@@ -126,7 +127,7 @@
 	</action-attrs>
 	
 	<action-record name="action-timesheet-record-from-period-date" model="com.axelor.apps.hr.db.Timesheet">
-		<field name="fromDate" expr="eval: __repo__.of(Timesheet).all().filter('self.user = ?1 ORDER BY self.toDate DESC', __user__).fetchOne()?.toDate"/>
+		<field name="fromDate" expr="eval: __repo__.of(Timesheet).all().filter('self.user = ?1 AND self.statusSelect != ?2 ORDER BY self.toDate DESC', __user__, TimesheetRepository.STATUS_CANCELED).fetchOne()?.toDate"/>
 	</action-record>
 	
 	<action-validate name="action-timesheet-validate-toDate">
@@ -178,7 +179,7 @@
 	</action-group>
 	
 	<action-attrs name="action-timesheet-attrs-from-date-on-new">
-		<attribute name="readonly" for="fromDate" expr="eval: __repo__.of(Timesheet).all().filter('self.user = ?1 ORDER BY self.toDate DESC', __user__).fetchOne() != null"/>
+		<attribute name="readonly" for="fromDate" expr="eval: __repo__.of(Timesheet).all().filter('self.user = ?1 AND self.statusSelect != ?2 ORDER BY self.toDate DESC', __user__, TimesheetRepository.STATUS_CANCELED).fetchOne() != null"/>
 	</action-attrs>
 	
 	<action-attrs name="action-timesheet-attrs-from-date">

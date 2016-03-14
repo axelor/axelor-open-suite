@@ -123,20 +123,39 @@ public class LeaveService {
 			}
 
 			BigDecimal duration = BigDecimal.ZERO;
-
-			duration = duration.add(new BigDecimal(this.computeStartDateWithSelect(leave.getDateFrom(), leave.getStartOnSelect(), weeklyPlanning)));
-			LocalDate itDate = new LocalDate(leave.getDateFrom().plusDays(1));
-
-			while(!itDate.isEqual(leave.getDateTo()) && !itDate.isAfter(leave.getDateTo())){
-				duration = duration.add(new BigDecimal(weeklyPlanningService.workingDayValue(weeklyPlanning, itDate)));
-				itDate = itDate.plusDays(1);
+			
+			//If the leave request is only for 1 day
+			if(leave.getDateFrom().isEqual(leave.getDateTo())){
+				if(leave.getStartOnSelect() == leave.getEndOnSelect()){
+					if(leave.getStartOnSelect() == LeaveRequestRepository.SELECT_MORNING){
+						duration = duration.add(new BigDecimal(weeklyPlanningService.workingDayValueWithSelect(weeklyPlanning, leave.getDateFrom(), true, false)));
+					}
+					else{
+						duration = duration.add(new BigDecimal(weeklyPlanningService.workingDayValueWithSelect(weeklyPlanning, leave.getDateFrom(), false, true)));
+					}
+				}
+				else{
+					duration = duration.add(new BigDecimal(weeklyPlanningService.workingDayValueWithSelect(weeklyPlanning, leave.getDateFrom(), true, true)));
+				}
 			}
+			
+			//Else if it's on several days
+			else{
+				duration = duration.add(new BigDecimal(this.computeStartDateWithSelect(leave.getDateFrom(), leave.getStartOnSelect(), weeklyPlanning)));
+				LocalDate itDate = new LocalDate(leave.getDateFrom().plusDays(1));
 
-			if(!leave.getDateFrom().isEqual(leave.getDateTo())){
+				while(!itDate.isEqual(leave.getDateTo()) && !itDate.isAfter(leave.getDateTo())){
+					duration = duration.add(new BigDecimal(weeklyPlanningService.workingDayValue(weeklyPlanning, itDate)));
+					itDate = itDate.plusDays(1);
+				}
+
 				duration = duration.add(new BigDecimal(this.computeEndDateWithSelect(leave.getDateTo(), leave.getEndOnSelect(), weeklyPlanning)));
 			}
 
 			duration = duration.subtract(Beans.get(PublicHolidayService.class).computePublicHolidayDays(leave.getDateFrom(),leave.getDateTo(), weeklyPlanning, publicHolidayPlanning));
+			if(duration.compareTo(BigDecimal.ZERO) < 0){
+				duration.equals(BigDecimal.ZERO);
+			}
 			return duration;
 		}
 		else{
@@ -289,7 +308,7 @@ public class LeaveService {
 		}
 		else {
 			DayPlanning dayPlanning = weeklyPlanningService.findDayPlanning(weeklyPlanning,date);
-			if(dayPlanning.getAfternoonFrom()!= null && dayPlanning.getAfternoonTo()!= null){
+			if(dayPlanning != null && dayPlanning.getAfternoonFrom()!= null && dayPlanning.getAfternoonTo()!= null){
 				value = 0.5;
 			}
 		}
@@ -303,7 +322,7 @@ public class LeaveService {
 		}
 		else {
 			DayPlanning dayPlanning = weeklyPlanningService.findDayPlanning(weeklyPlanning,date);
-			if(dayPlanning.getMorningFrom()!= null && dayPlanning.getMorningTo()!= null){
+			if(dayPlanning != null && dayPlanning.getMorningFrom()!= null && dayPlanning.getMorningTo()!= null){
 				value = 0.5;
 			}
 		}
@@ -329,7 +348,7 @@ public class LeaveService {
 		DayPlanning startDay = weeklyPlanningService.findDayPlanning(weeklyPlanning,leave.getDateFrom());
 		DayPlanning endDay = weeklyPlanningService.findDayPlanning(weeklyPlanning,leave.getDateTo());
 		if(leave.getStartOnSelect() == LeaveRequestRepository.SELECT_MORNING){
-			if(startDay.getMorningFrom() != null){
+			if(startDay != null && startDay.getMorningFrom() != null){
 				startTimeHour = startDay.getMorningFrom().getHourOfDay();
 				startTimeMin = startDay.getMorningFrom().getMinuteOfHour();
 			}
@@ -339,7 +358,7 @@ public class LeaveService {
 			}
 		}
 		else{
-			if(startDay.getAfternoonFrom() != null){
+			if(startDay != null && startDay.getAfternoonFrom() != null){
 				startTimeHour = startDay.getAfternoonFrom().getHourOfDay();
 				startTimeMin = startDay.getAfternoonFrom().getMinuteOfHour();
 			}
@@ -353,7 +372,7 @@ public class LeaveService {
 		int endTimeHour = 0;
 		int endTimeMin = 0;
 		if(leave.getEndOnSelect() == LeaveRequestRepository.SELECT_MORNING){
-			if(endDay.getMorningTo() != null){
+			if(endDay != null && endDay.getMorningTo() != null){
 				endTimeHour = endDay.getMorningTo().getHourOfDay();
 				endTimeMin = endDay.getMorningTo().getMinuteOfHour();
 			}
@@ -363,7 +382,7 @@ public class LeaveService {
 			}
 		}
 		else{
-			if(endDay.getAfternoonTo() != null){
+			if(endDay != null && endDay.getAfternoonTo() != null){
 				endTimeHour = endDay.getAfternoonTo().getHourOfDay();
 				endTimeMin = endDay.getAfternoonTo().getMinuteOfHour();
 			}

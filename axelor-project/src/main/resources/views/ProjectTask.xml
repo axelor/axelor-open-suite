@@ -195,6 +195,9 @@
 			<panel title="Project Tree" hideIf="typeSelect == 'task'">
 				<panel-dashlet action="action-view-show-project-tree" colSpan="12" title="Project Tree"/>
 			</panel>
+			<panel title="Activities">
+				<panel-related field="productList" grid-view="product-activity-grid" form-view="product-activity-form" domain="self.isActivity = true" colSpan="12"/>
+			</panel>
 			<panel title="Description">
 				<field name="description" showTitle="false" colSpan="12" widget="html"/>
 				<field name="duration" hidden="true"/>
@@ -421,8 +424,8 @@
 	    <attribute name="value" for="$visibleLeadDelay" expr="eval: new BigDecimal(visibleTimeSpent).subtract(new BigDecimal(visibleDuration).multiply(progress).divide(100))"/>
 	</action-attrs>
 	
-	<action-view name="action-show-reporting-folder" title="Folder">  		
+	<action-view name="action-show-reporting-folder" title="Business folder">  		
  		<view type="html" name="http://localhost:8080/abs-webapp/Exemple_report_Affaire.pdf" /> 
 	</action-view>
-
+	
 </object-views>

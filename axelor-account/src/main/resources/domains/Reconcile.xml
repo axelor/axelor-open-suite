@@ -14,7 +14,9 @@
     <boolean name="canBeZeroBalanceOk" title="Clear remaining amount" default="false" initParam="true"/>
     
     <!--  Will be fully reconciled if there is a currency delta amount -->
-    <boolean name="mustBeZeroBalanceOk" title="Must be solded out" default="false" initParam="true"/>
+    <boolean name="mustBeZeroBalanceOk" title="Must be solded out" default="false"/>
+    
+    <finder-method name="findByMoveLines" using="debitMoveLine,creditMoveLine"/>
     
      <extra-code><![CDATA[
 	
