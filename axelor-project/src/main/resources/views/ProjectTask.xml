@@ -424,7 +424,7 @@
 	    <attribute name="value" for="$visibleLeadDelay" expr="eval: new BigDecimal(visibleTimeSpent).subtract(new BigDecimal(visibleDuration).multiply(progress).divide(100))"/>
 	</action-attrs>
 	
-	<action-view name="action-show-reporting-folder" title="Folder">  		
+	<action-view name="action-show-reporting-folder" title="Business folder">  		
  		<view type="html" name="http://localhost:8080/abs-webapp/Exemple_report_Affaire.pdf" /> 
 	</action-view>
 	
