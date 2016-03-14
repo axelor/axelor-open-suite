@@ -72,6 +72,8 @@ public class PurchaseOrderLineServiceSupplychainImpl extends PurchaseOrderLineSe
 														saleOrderLine.getDescription(), 
 														qty, 
 														unit);
+		
+		purchaseOrderLine.setIsTitleLine(saleOrderLine.getIsTitleLine());
 		this.computeAnalyticDistribution(purchaseOrderLine);
 		return purchaseOrderLine;
 		
