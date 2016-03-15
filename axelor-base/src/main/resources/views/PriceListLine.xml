@@ -22,8 +22,8 @@
 			<field name="productCategory" colSpan="5" form-view="product-category-form" grid-view="product-category-grid" requiredIf="product == null" hideIf="product != null"/>
 		</panel>
 		<panel title="Calculation method" colSpan="12" >
-			<field name="typeSelect" colSpan="12" onChange="action-price-list-line-record-type-select, action-amount-title" />
-			<field name="amountTypeSelect" colSpan="12" hideIf="typeSelect == 3" onChange="action-amount-pourcent-title"/>
+			<field name="typeSelect" colSpan="12" onChange="action-price-list-line-record-type-select, action-price-list-line-attrs-amount-title-change" />
+			<field name="amountTypeSelect" colSpan="12" hideIf="typeSelect == 3" onChange="action-price-list-line-attrs-amount-percent-title-change"/>
 			<field name="amount" colSpan="12" hideIf="amountTypeSelect == 3"/>
 			<field name="minQty" colSpan="12"/>
 		</panel>
@@ -52,12 +52,12 @@
 		<attribute name="scale" for="amount" expr="eval: __config__.generalService.getNbDecimalDigitForUnitPrice()"/>
 	</action-attrs>
 	
-	<action-attrs name="action-amount-pourcent-title">
+	<action-attrs name="action-price-list-line-attrs-amount-percent-title-change">
 		<attribute name="title" for="amount" expr="%" if="amountTypeSelect == 1"/>	
 		<attribute name="title" for="amount" expr="Amount" if="amountTypeSelect == 2"/>
 	</action-attrs>
 	
-	<action-attrs name="action-amount-title">
+	<action-attrs name="action-price-list-line-attrs-amount-title-change">
 		<attribute name="title" for="amount" expr="Amount" if="typeSelect == 3"/>
 	</action-attrs>
 	

@@ -80,12 +80,8 @@
     
     <form name="partner-form"  title="Partner" model="com.axelor.apps.base.db.Partner"    
     onNew="action-group-base-partner-onnew" 
-<<<<<<< HEAD
-    onLoad="action-group-partner-onload" width="large" canCopy="false">
-=======
     onLoad="action-group-partner-onload"
     onSave="action-partner-iban-check-on-save" width="large">
->>>>>>> upstream/dev
 	    <toolbar>
 	        <button name="sendByEmail" title="Send email" icon="fa-envelope" onClick="save,action-send-by-email-with-template" readonlyIf="id == null" if-module="axelor-message"/>
 	        <button name="showPartnerInfo" title="Print Informations" icon="fa-print" onClick="save,action-partner-method-show-partner-info" readonlyIf="id == null"/>
@@ -441,7 +437,8 @@
 	<action-attrs name="action-partner-attrs-change-name">
 		<attribute name="title" for="name" expr="Raison sociale" if="partnerTypeSelect != 2"/>
     	<attribute name="title" for="name" expr="Nom" if="partnerTypeSelect == 2"/>
-		<attribute name="required" for="name" expr="true"/>	
+		<attribute name="required" for="name" expr="true"/>
+		<attribute name="value" for="firstName" expr="eval:null" if="partnerTypeSelect != 2"/>
 	</action-attrs>
 	
 	<action-attrs name="action-partner-attrs-hide-contact-partner">
