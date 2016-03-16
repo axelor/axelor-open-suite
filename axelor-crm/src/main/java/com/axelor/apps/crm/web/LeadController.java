@@ -18,7 +18,6 @@
 package com.axelor.apps.crm.web;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -37,8 +36,6 @@ import com.axelor.apps.crm.db.repo.LeadRepository;
 import com.axelor.apps.crm.db.report.IReport;
 import com.axelor.apps.crm.exception.IExceptionMessage;
 import com.axelor.apps.crm.service.LeadService;
-import com.axelor.apps.message.db.Message;
-import com.axelor.apps.message.db.repo.MessageRepository;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
@@ -179,18 +176,4 @@ public class LeadController {
 		}
 	}
 	
-	public void findLeadMails(ActionRequest request, ActionResponse response) {
-		Lead lead = request.getContext().asType(Lead.class);
-		List<Long> idList = leadService.findLeadMails(lead);
-
-		List<Message> emailsList = new ArrayList<Message>();
-		for (Long id : idList) {
-			Message message = Beans.get(MessageRepository.class).find(id);
-			if(!emailsList.contains(message)){
-				emailsList.add(message);
-			}
-		}
-
-		response.setValue("$emailsList",emailsList);
-	}
 }
