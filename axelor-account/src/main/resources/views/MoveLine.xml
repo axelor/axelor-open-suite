@@ -60,7 +60,7 @@
     
     <form name="move-line-form" title="Move line" model="com.axelor.apps.account.db.MoveLine" canDelete="false"
     onLoad="action-move-line-attrs-collapse-irrecoverable-group" 
-    onNew="action-account-move-line-onnew-group" width="large">
+    onNew="action-account-move-line-onnew-group" width="large" canNew="false">
     	
     	<panel title="Informations" readonly="true" >
    			<field name="name"/>
@@ -87,7 +87,7 @@
 	        
 	    	
 	    	<panel name="irrecoverable" title="Irrecoverable">
-	        	<field name="irrecoverablestatusSelect" /> 
+	        	<field name="irrecoverableStatusSelect" /> 
         		<field name="managementObject" form-view="management-object-form" grid-view="management-object-grid"/>
         		<button name="passInIrrecoverable" title="Shift to irrecoverable"   onClick="com.axelor.apps.account.web.MoveLineController:passInIrrecoverable"/>
         		<button name="notPassInIrrecoverable" title="Do not shift to irrecoverable"   onClick="com.axelor.apps.account.web.MoveLineController:notPassInIrrecoverable"/>
