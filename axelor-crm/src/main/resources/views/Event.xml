@@ -277,11 +277,11 @@
     </action-group>
     
     <action-attrs name="action-event-hide-private">
-    	<attribute name="hidden" for="meetingGeneral" expr="eval: (__user__ != user &amp;&amp; !internalGuestSet.contains(__user__)) &amp;&amp; visibilitySelect == 2"/>
-    	<attribute name="hidden" for="meetingAttributes" expr="eval: (__user__ != user &amp;&amp; !internalGuestSet.contains(__user__)) &amp;&amp; visibilitySelect == 2"/>
-    	<attribute name="hidden" for="meetingGuests" expr="eval: (__user__ != user &amp;&amp; !internalGuestSet.contains(__user__)) &amp;&amp; visibilitySelect == 2"/>
-    	<attribute name="hidden" for="meetingLinked" expr="eval: (__user__ != user &amp;&amp; !internalGuestSet.contains(__user__)) &amp;&amp; visibilitySelect == 2"/>
-    	<attribute name="hidden" for="panelMail" expr="eval: (__user__ != user &amp;&amp; !internalGuestSet.contains(__user__)) &amp;&amp; visibilitySelect == 2"/>
+    	<attribute name="hidden" for="meetingGeneral" expr="eval: (__user__ != user &amp;&amp; !internalGuestSet?.contains(__user__)) &amp;&amp; visibilitySelect == 2"/>
+    	<attribute name="hidden" for="meetingAttributes" expr="eval: (__user__ != user &amp;&amp; !internalGuestSet?.contains(__user__)) &amp;&amp; visibilitySelect == 2"/>
+    	<attribute name="hidden" for="meetingGuests" expr="eval: (__user__ != user &amp;&amp; !internalGuestSet?.contains(__user__)) &amp;&amp; visibilitySelect == 2"/>
+    	<attribute name="hidden" for="meetingLinked" expr="eval: (__user__ != user &amp;&amp; !internalGuestSet?.contains(__user__)) &amp;&amp; visibilitySelect == 2"/>
+    	<attribute name="hidden" for="panelMail" expr="eval: (__user__ != user &amp;&amp; !internalGuestSet?.contains(__user__)) &amp;&amp; visibilitySelect == 2"/>
     </action-attrs>
     
     <grid name="crm-task-grid" title="Tasks" model="com.axelor.apps.crm.db.Event" orderBy="-startDateTime">
@@ -458,6 +458,7 @@
 	    <view-param name="show-toolbar" value="false" />
 	    <view-param name="popup-save" value="false" />
 	    <context name="_idEvent" expr="eval: id"/>
+	    <context name="_startDate" expr="eval: startDateTime"/>
 	    <context name="_showRecord" expr="eval: recurrenceConfiguration?.id"/>
 	</action-view>
 	
