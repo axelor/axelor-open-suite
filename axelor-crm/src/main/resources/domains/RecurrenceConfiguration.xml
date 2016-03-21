@@ -21,6 +21,21 @@
 	<integer name="endType" title="End" selection="crm.event.recurrence.end.type"/>
 	<integer name="repetitionsNumber" title="Repetitions number" />
 	<date name="endDate" title="End date" />
+	
+	<extra-code>
+      	<![CDATA[
+	  		public static final int TYPE_DAY = 1;
+	  		public static final int TYPE_WEEK = 2;
+	  		public static final int TYPE_MONTH = 3;
+	  		public static final int TYPE_YEAR = 4;
+	  		
+	  		public static final int REPEAT_TYPE_MONTH = 1;
+	  		public static final int REPEAT_TYPE_WEEK = 2;
+	  		
+	  		public static final int END_TYPE_REPET = 1;
+	  		public static final int END_TYPE_DATE = 2;
+	  ]]>
+    </extra-code>
 
   </entity>
 
