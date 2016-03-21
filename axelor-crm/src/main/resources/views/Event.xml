@@ -403,7 +403,7 @@
 		</panel>
 	</panel>
 	<panel sidebar="true" title="Attributes">
-		<field name="statusSelect" colSpan="3" selection-in="[21, 22, 23, 24, 25]"/>
+		<field name="statusSelect" colSpan="3" selection-in="[21, 22, 23, 24, 25]" onChange="action-record-set-tickets-resolved-progress-select"/>
 		<field name="prioritySelect" colSpan="3" readonlyIf="statusSelect == 25" />
 		<field name="eventCategory" colSpan="6" widget="SuggestBox" domain="self.typeSelect = :typeSelect" form-view="event-category-form" grid-view="event-category-grid" readonlyIf="statusSelect == 25"/>
 		<field name="progressSelect" colSpan="12" readonlyIf="statusSelect == 21 || statusSelect == 25" widget="SelectProgress" />
@@ -640,6 +640,10 @@
 		<field name="subjectTeam" expr="eval: com.axelor.i18n.I18n.get('Busy')" if="visibilitySelect == 2 &amp;&amp; disponibilitySelect == 1"/>
 		<field name="subjectTeam" expr="eval: com.axelor.i18n.I18n.get('Available')" if="visibilitySelect == 2 &amp;&amp; disponibilitySelect == 2"/>
 	</action-record>
+	
+	<action-record name="action-record-set-tickets-resolved-progress-select" model="com.axelor.apps.crm.db.Event">
+    	<field name="progressSelect" expr="100" if="eval:statusSelect == 23"/>
+    </action-record>
 	
 <!-- 	ACTION METHOD -->
 	
