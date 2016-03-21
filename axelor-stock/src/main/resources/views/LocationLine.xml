@@ -3,7 +3,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
     
-    <grid name="location-line-grid" title="Stock Locations content" model="com.axelor.apps.stock.db.LocationLine">
+    <grid name="location-line-grid" title="Stock Locations content" model="com.axelor.apps.stock.db.LocationLine" orderBy="product">
         <field name="product" form-view="product-form" grid-view="product-grid"/>
         <field name="currentQty"/>
         <field name="futureQty"/>
@@ -40,7 +40,7 @@
         <field name="lastFutureStockMoveDate"/>
     </grid>
     
-    <grid name="location-line-details-grid" title="Stock Locations content" model="com.axelor.apps.stock.db.LocationLine">
+    <grid name="location-line-details-grid" title="Stock Locations content" model="com.axelor.apps.stock.db.LocationLine" orderBy="product, trackingNumber">
         <field name="product" form-view="product-form" grid-view="product-grid"/>
         <field name="currentQty"/>
         <field name="futureQty"/>
