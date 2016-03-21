@@ -14,7 +14,8 @@
 		<option value="1">Draft</option>
 		<option value="2">Finalize</option>
 		<option value="3">Order confirmed</option>
-		<option value="4">Canceled</option>
+		<option value="4">Finished</option>
+		<option value="5">Canceled</option>
 	</selection>
 	
 	<selection name="sale.order.delivery.state">
