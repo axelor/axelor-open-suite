@@ -34,6 +34,7 @@ import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
+import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -52,6 +53,8 @@ public class BillOfMaterialServiceImpl implements BillOfMaterialService {
 	
 	@Inject
 	protected BillOfMaterialRepository billOfMaterialRepo;
+	
+	private final Logger log = LoggerFactory.getLogger(getClass());
 
 	@Override
 	public List<BillOfMaterial> getBillOfMaterialList(Product product)  {
@@ -93,5 +96,40 @@ public class BillOfMaterialServiceImpl implements BillOfMaterialService {
 
 	}
 
+	@Transactional
+	public BillOfMaterial generateNewVersion(BillOfMaterial billOfMaterial){
+		
+		BillOfMaterial copy = billOfMaterialRepo.copy(billOfMaterial, true);
+		
+		copy.setOriginalBillOfMaterial(billOfMaterial);
+		copy.clearCostSheetList();
+		copy.setCostPrice(BigDecimal.ZERO);
+		copy.setOriginalBillOfMaterial(billOfMaterial);
+		copy.setVersionNumber(this.getLatestBillOfMaterialVersion(billOfMaterial, billOfMaterial.getVersionNumber(), true) + 1);
+		
+		return billOfMaterialRepo.save(copy);
+	}
+	
+	public int getLatestBillOfMaterialVersion(BillOfMaterial billOfMaterial, int latestVersion, boolean deep){
+		
+		List<BillOfMaterial> billOfMaterialList = Lists.newArrayList();
+		BillOfMaterial up = billOfMaterial;
+		Long previousId = Long.valueOf(0);
+		do{
+			billOfMaterialList = billOfMaterialRepo.all().filter("self.originalBillOfMaterial = :origin AND self.id != :id").bind("origin", up).bind("id", previousId).order("-versionNumber").fetch();
+			if (!billOfMaterialList.isEmpty()){
+				latestVersion = (billOfMaterialList.get(0).getVersionNumber() > latestVersion) ? billOfMaterialList.get(0).getVersionNumber() : latestVersion;
+				for (BillOfMaterial billOfMaterialIterator : billOfMaterialList) {
+					int search = this.getLatestBillOfMaterialVersion(billOfMaterialIterator, latestVersion, false);
+					latestVersion = (search > latestVersion) ?  search : latestVersion;
+				}
+			}
+			previousId = up.getId(); 
+			up = up.getOriginalBillOfMaterial();
+		}while(up != null && deep);
+		
+		return latestVersion;
+	}
+	
 
 }
