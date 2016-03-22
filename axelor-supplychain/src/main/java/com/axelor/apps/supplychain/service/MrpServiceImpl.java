@@ -468,7 +468,7 @@ public class MrpServiceImpl implements MrpService  {
 			
 			LocalDate maturityDate = purchaseOrderLine.getEstimatedDelivDate();
 			
-			if(maturityDate == null)  {  maturityDate = purchaseOrder.getDeliveryDate();  }
+			if(maturityDate == null)  {  maturityDate = purchaseOrder.getReceiptDate();  }
 			if(maturityDate == null)  {  maturityDate = purchaseOrder.getOrderDate();  }
 			
 			if(this.isBeforeEndDate(maturityDate))  {

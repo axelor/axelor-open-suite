@@ -13,7 +13,7 @@
         <field name="team" form-view="team-form" grid-view="team-grid" if="__config__.general.getTeamManagement()"/>
     </grid>
     
-    <calendar name="event-calendar-color-by-user" title="Meetings" mode="month" colorBy="user" 
+    <calendar name="event-calendar-color-by-user" title="Meetings" mode="month" colorBy="user"
     	eventStart="startDateTime" eventStop="endDateTime" eventLength="1" model="com.axelor.apps.crm.db.Event"
     	onChange="action-event-method-compute-from-calendar">
     	<field name="subjectTeam" />
@@ -25,14 +25,14 @@
     	<field name="subject" />
  	</calendar>
     
-    <grid orderBy="startDateTime"  name="my-event-grid" title="Events" model="com.axelor.apps.crm.db.Event">
+    <grid name="my-event-grid" orderBy="startDateTime" title="Events" model="com.axelor.apps.crm.db.Event">
 		<field name="subject"/>
 		<field name="typeSelect"/>
 		<field name="startDateTime"/>
 		<field name="duration" widget="duration" x-big="true"/>
 	</grid>
     
-	<form  onLoad="action-group-crm-event-onload" onNew="action-group-crm-event-onnew" name="event-form" title="Events" model="com.axelor.apps.crm.db.Event"
+	<form name="event-form" onLoad="action-group-crm-event-onload" onNew="action-group-crm-event-onnew" title="Events" model="com.axelor.apps.crm.db.Event"
 			onSave="action-event-group-on-save">
 		<panel colSpan="12">
 			<field name="calendarCrm" widget="SuggestBox"/>
@@ -76,14 +76,17 @@
 		</panel>
 		
 		<panel sidebar="true" title="Attributes">
-			<field name="typeSelect" domain="self.value IN ('1','2','3')"/>
+			<field name="typeSelect" domain="self.value IN ('1','2','3','5')"/>
 			<field name="callTypeSelect"  showIf="typeSelect == 1"/>
 			<field name="meetingType" showIf="typeSelect == 2" widget="SuggestBox" form-view="meeting-type-form" grid-view="meeting-type-grid"/>
-			<field name="prioritySelect" showIf="typeSelect == 3"/>
+			<field name="prioritySelect" showIf="typeSelect == 3 || typeSelect == 5"/>
 			<field name="statusSelect" hidden="true" showIf="!typeSelect"/>
 			<field name="statusSelect" selection-in="[1, 2, 3]"  hidden="true" showIf="typeSelect == 1 || typeSelect == 2" />
 			<field name="statusSelect" selection-in="[11, 12, 13, 14, 15]" hidden="true" showIf="typeSelect == 3"/>
-			<field name="statusSelect" selection-in="[21, 22, 23, 24, 25]" hidden="true" showIf="typeSelect == 5"/>
+			<field name="statusSelect" selection-in="[21, 22, 23, 24, 25]" hidden="true" showIf="typeSelect == 5" onChange="action-record-set-tickets-resolved-progress-select"/>
+			<field name="eventCategory" showIf="typeSelect == 5" widget="SuggestBox"/>
+			<field name="progressSelect" showIf="typeSelect == 5"/>
+			<field name="limitDateT" showIf="typeSelect == 5"/>
 		</panel>
 		
 		<panel sidebar="true" title="Linked to" >
@@ -133,7 +136,7 @@
 	    <button name="grabEvent" help="Assign to me" icon="fa-suitcase" onClick="action-method-crm-event-assign-tome" readonlyIf="user != null" />
 	</grid>
     
-	<form  name="call-form" title="Call" model="com.axelor.apps.crm.db.Event" onLoad="action-partner-attrs-hide-contact-partner"
+	<form name="call-form" title="Call" model="com.axelor.apps.crm.db.Event" onLoad="action-partner-attrs-hide-contact-partner"
 		onNew="action-event-new-record" onSave="action-event-record-subjectTeam">
 		<toolbar>
 			<button name="grabEvent" help="Assign to me" icon="fa-suitcase" onClick="save,action-method-crm-event-assign-tome" readonlyIf="user != null"/>
@@ -196,7 +199,7 @@
 	    <field name="user" form-view="user-form" grid-view="user-grid"/>
 	</grid>
     
-    <form onNew="action-event-new-record" name="meeting-form" title="Meeting" model="com.axelor.apps.crm.db.Event" 
+    <form name="meeting-form" onNew="action-event-new-record" title="Meeting" model="com.axelor.apps.crm.db.Event" 
         onLoad="action-partner-attrs-hide-contact-partner,action-event-hide-private" onSave="action-event-group-on-save">
 		<toolbar>
 			<button name="viewOnMap" icon="fa-map-marker" onClick="com.axelor.apps.crm.web.EventController:viewMap"/>
@@ -368,7 +371,7 @@
 	    <field name="progressSelect" widget="SelectProgress"/>
 	    <button name="grabEvent" help="Assign to me" icon="fa-suitcase" readonlyIf="statusSelect == 5 || user != null" onClick="action-method-crm-event-assign-tome" />
 	    <button name="start" icon="fa-play" help="Start" onClick="action-group-crm-ticket-start-click,save" readonlyIf="statusSelect &gt; 21 &amp;&amp; statusSelect &lt; 29"/>
-	    <button name="accept" icon="fa-check" help="Validate" onClick="action-group-crm-ticket-accept-click,save" readonlyIf="statusSelect &gt; 22 &amp;&amp; statusSelect &lt; 29"/>
+	    <button name="accept" icon="fa-check" help="Validate" onClick="action-group-crm-ticket-accept-click,action-record-set-tickets-resolved-progress-select,save" readonlyIf="statusSelect &gt; 22 &amp;&amp; statusSelect &lt; 29"/>
 	    <button name="stop" icon="fa-power-off" help="Finish" onClick="action-group-crm-ticket-stop-click,save" readonlyIf="statusSelect &gt; 24 &amp;&amp; statusSelect &lt; 29" />
 	</grid>
     

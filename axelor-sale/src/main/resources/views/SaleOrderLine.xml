@@ -3,7 +3,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
     
-    <grid name="sale-order-line-grid" title="SO lines" model="com.axelor.apps.sale.db.SaleOrderLine">
+    <grid name="sale-order-line-menu-grid" title="SO lines" model="com.axelor.apps.sale.db.SaleOrderLine">
 	    <field name="productName"/>
 	    <field name="qty"/>
 	    <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
@@ -12,7 +12,7 @@
 	    <field name="inTaxTotal"/>
 	</grid>
 	
-    <grid name="sale-order-line-menu-grid" title="SO lines" model="com.axelor.apps.sale.db.SaleOrderLine">
+    <grid name="sale-order-line-grid" title="SO lines" model="com.axelor.apps.sale.db.SaleOrderLine">
       	<field name="saleOrder"/>
   		<field name="saleOrder.clientPartner"/>
   		<field name="saleOrder.inTaxTotal"/>
@@ -24,7 +24,7 @@
 	    <field name="inTaxTotal"/>
 	</grid>
     
-	<form name="sale-order-line-form" title="SO line" model="com.axelor.apps.sale.db.SaleOrderLine" 
+	<form name="sale-order-line-menu-form" title="SO line" model="com.axelor.apps.sale.db.SaleOrderLine" 
 	onLoad="action-group-sale-saleorderline-onload" onNew="action-group-sale-saleorderline-onnew" width="large">
 		<panel>
 			<field name="isTitleLine" onChange="action-sale-order-line-method-empty-line"/>
@@ -80,65 +80,13 @@
 			</panel>
 		</panel-tabs>
 	</form>
-	
-	<form name="sale-order-line-menu-form" title="SO line" model="com.axelor.apps.sale.db.SaleOrderLine" 
+
+	<form name="sale-order-line-form" title="SO line" model="com.axelor.apps.sale.db.SaleOrderLine" 
 	onLoad="action-group-sale-saleorderline-onload" onNew="action-group-sale-saleorderline-onnew" width="large">
 		<panel>
-			<field name="isTitleLine" onChange="action-sale-order-line-method-empty-line"/>
-			<field name="productName" showIf="isTitleLine" title="Title"/>
+			<field name="saleOrder" grid-view="sale-order-grid" form-view="sale-order-form"/>
 		</panel>
-		<panel hideIf="isTitleLine">
-		    <field name="saleOrder"/>
-  			<field name="saleOrder.clientPartner"/>
-  			<field name="saleOrder.inTaxTotal"/>
-		   	<field name="product" onChange="action-group-sale-saleorderline-product-onchange" onSelect="action-sale-order-line-attrs-domain-product" form-view="product-form" grid-view="product-grid"/>
-		   	<field name="productName"/>
-		   	<field name="qty" onChange="action-group-sale-saleorderline-qty-onchange"/>
-		   	<field name="unit" form-view="unit-form" grid-view="unit-grid"/>
-		   	<field name="taxLine" colSpan="4" onChange="action-sale-order-line-method-convert-tax,action-sale-order-line-method-compute,action-sale-order-line-method-compute-analytic-distribution" domain="self.endDate = null or self.endDate &gt; :__date__" grid-view="tax-line-grid" form-view="tax-line-form"/>
-		   	<field name="price" onChange="action-sale-order-line-method-compute,action-sale-order-line-method-compute-analytic-distribution" colSpan="4"/>
-		   	<field name="priceDiscounted" colSpan="4" hidden="true"/>
-		   	<field name="exTaxTotal" readonly="true"/>
-		   	<field name="inTaxTotal" readonly="true"/>
-		   	<field name="toInvoice"/>
-			<field name="invoiced" showIf="toInvoice"/>
-		</panel>
-		<panel name="discount" title="Discount" hideIf="isTitleLine">
-		   	<field name="discountTypeSelect" onChange="action-sale-order-line-method-compute,action-sale-order-line-attrs-discountamount-title,action-sale-order-line-method-compute-analytic-distribution"/>
-		   	<field name="discountAmount" onChange="action-sale-order-line-method-compute,action-sale-order-line-method-compute-analytic-distribution" hideIf="discountTypeSelect == 3"/>
-		</panel>
-		<panel-tabs hideIf="isTitleLine">
-			<panel name="subscription" title="Subscription">
-				<panel-include view="subscription-sale-order-line-form" from="axelor-supplychain" if-module="axelor-supplychain"/>
-			</panel>
-		   	<panel name="settingsPanel" title="Settings">
-		      	<field name="saleSupplySelect" onChange="action-group-sale-saleorderline-salesupplyselect-onchange" if-module="axelor-supplychain"/>        
-		       	<field name="supplierPartner" showIf="saleSupplySelect == 2" domain="self.isContact = false AND self.isSupplier = true" form-view="partner-form" grid-view="partner-grid"/>
-		       	<field name="billOfMaterial" onSelect="action-sale-order-line-attrs-bill-of-material-domain" if-module="axelor-production" form-view="bill-of-material-form" grid-view="bill-of-material-grid"/>
-		       	<button name="customizeBOM" title="Customize BOM" onClick="action-production-method-customize-bill-of-material" if-module="axelor-production"/>
-		   	</panel>
-		   	<panel title="Notes">
-		   		<field name="description" showTitle="false" colSpan="12" widget="Html" x-lite="true"/>
-		   	</panel>
-		   	<panel name="deliveryPanel" title="Delivery">
-		   		<field name="estimatedDelivDate"/>
-		   		<panel-dashlet name="sale.order.line.dashboard" title="Stock Moves" action="action-sale-order-line-view-stock-move-line" colSpan="12"/>
-		   	</panel>
-		   	<panel title="Invoicing follow-up" if-module="axelor-supplychain">
-		   		<field name="invoicingDate"/>
-		  		<field name="amountInvoiced" if="__config__.general.getManageInvoicedAmountByLine()"/>
-		  		<panel-dashlet action="action-sale-order-line-view-show-invoice-lines" if="__config__.general.getManageInvoicedAmountByLine()" colSpan="12"/>
-		   	</panel>
-			<panel name="projectTaskPanel" if="__config__.general.getProjectTaskSaleOrderLines()" title="Project/Task" if-module="axelor-business-project">
-				<field name="project" onSelect="action-sale-order-line-attrs-domain-project" onChange="action-sale-order-line-record-progress" form-view="project-task-form" grid-view="project-task-grid"/>
-				<field name="progress" readonly="true" widget="SelectProgress"/>
-			</panel>
-			<panel title="Analytic distribution" if-module="axelor-supplychain" if="__config__.general.getManageAnalyticAccounting()" onTabSelect="action-sale-order-line-attrs-read-only-distribution-lines">
-				<field name="analyticDistributionTemplate" if="__config__.general.getAnalyticDistributionTypeSelect() == 1"/>
-				<button name="generateDistributionLinesButton" onClick="action-sale-order-line-method-create-distribution" title="Generate distribution lines" showIf="analyticDistributionTemplate != null" if="__config__.general.getAnalyticDistributionTypeSelect() == 1"/>
-				<panel-related field="analyticDistributionLineList" grid-view="analytic-distribution-line-grid" form-view="analytic-distribution-line-form" colSpan="12"/>
-			</panel>
-		</panel-tabs>
+		<panel-include view="sale-order-line-menu-form"/>
 	</form>	
 	
 	<action-method name="action-sale-order-line-method-empty-line">
