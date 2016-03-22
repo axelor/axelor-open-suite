@@ -432,7 +432,7 @@
 	<action-group name="action-event-group-on-save">
     	<action name="action-event-record-subjectTeam"/>
     	<action name="save"/>
-    	<action name="action-event-view-modifications-recurrence" if="isRecurrent &amp;&amp; id > 0"/>
+    	<action name="action-event-view-modifications-recurrence" if="recurrenceConfiguration &amp;&amp; id > 0"/>
     </action-group>
 	
 	<action-view name="action-event-view-recurrence-assistant" title="Recurrence assistant" model="com.axelor.apps.crm.db.RecurrenceConfiguration">
