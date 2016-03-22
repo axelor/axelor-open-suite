@@ -36,9 +36,7 @@
 			onSave="action-event-group-on-save">
 		<panel colSpan="12">
 			<field name="calendarCrm" widget="SuggestBox"/>
-			<field name="isRecurrent" readonlyIf="isRecurrent" onChange="save, action-event-view-recurrence-assistant" />
-			<button name="changeRecurrence" title="Change recurrence" hidden="true" showIf="isRecurrent" onClick="save, action-event-view-change-recurrence"/>
-			<field name="recurrenceConfiguration" hidden="true"/>
+			<field name="recurrenceConfiguration" title="Recurrence" canNew="true" canSelect="false"/>
 		</panel>
 		<panel colSpan="12">
 			<field name="subject" colSpan="6"/>
@@ -203,9 +201,7 @@
 		</toolbar>
 		<panel colSpan="12">
 			<field name="calendarCrm" widget="SuggestBox"/>
-			<field name="isRecurrent" readonlyIf="isRecurrent" onChange="save, action-event-view-recurrence-assistant" />
-			<button name="changeRecurrence" title="Change recurrence" hidden="true" showIf="isRecurrent" onClick="save, action-event-view-change-recurrence"/>
-			<field name="recurrenceConfiguration" hidden="true"/>
+			<field name="recurrenceConfiguration" title="Recurrence" canNew="true" canSelect="false"/>
 		</panel>
 		<panel name="meetingGeneral" colSpan="12">
 			<field name="subject" colSpan="6"/>

@@ -25,7 +25,7 @@
     			<field name="repetitionsNumber" min="1" title="Repetitions number" hidden="true" showIf="endType == 1" colSpan="12" onChange="action-recurrence-assistant-method-compute-recurrence-name"/>
     			<field name="endDate" title="End date" hidden="true" showIf="endType == 2" colSpan="12" onChange="action-recurrence-assistant-method-compute-recurrence-name"/>
     		</panel>
-    		<label name="recurrenceName" colSpan="12" css="bold"/>
+    		<field name="recurrenceName" showTitle="false" colSpan="12" css="bold" readonly="true"/>
     		<button name="applyButton" title="Apply" onClick="action-recurrence-assistant-method-generate" hideIf="id &gt; 0"/>
     	</panel>
     	<panel sidebar="true" hidden="true" showIf="id &gt; 0">
@@ -40,7 +40,7 @@
 		<field name="recurrenceType" expr="1"/>
 		<field name="periodicity" expr="1"/>
 		<field name="endType" expr="1"/>
-		<field name="startDate" expr="eval: _startDate"/>
+		<field name="startDate" expr="eval: _parent?.startDateTime.toDate()"/>
 		<field name="monthRepeatType" expr="1"/>
 		<field name="repetitionsNumber" expr="1"/>
 	</action-record>

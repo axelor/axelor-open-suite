@@ -632,6 +632,6 @@ public class EventController {
 	public void computeRecurrenceName(ActionRequest request, ActionResponse response){
 		RecurrenceConfiguration recurrConf = request.getContext().asType(RecurrenceConfiguration.class);
 		
-		response.setAttr("recurrenceName", "title", eventService.computeRecurrenceName(recurrConf));
+		response.setValue("recurrenceName", eventService.computeRecurrenceName(recurrConf));
 	}
 }
