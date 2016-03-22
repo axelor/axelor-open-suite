@@ -28,6 +28,7 @@ import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.purchase.db.IPurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
+import com.axelor.apps.purchase.service.PurchaseOrderServiceImpl;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.SaleOrderServiceImpl;
@@ -91,7 +92,7 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl  {
 			}else{
 				purchaseOrder.setReceiptState(IPurchaseOrder.STATE_RECEIVED);
 				if (general.getTerminatePurchaseOrderOnReceipt()){
-					purchaseOrder.setStatusSelect(IPurchaseOrder.STATUS_FINISHED);
+					Beans.get(PurchaseOrderServiceImpl.class).finishPurchaseOrder(purchaseOrder);
 				}
 			}
 
