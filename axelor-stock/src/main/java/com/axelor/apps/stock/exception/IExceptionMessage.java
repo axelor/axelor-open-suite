@@ -40,6 +40,7 @@ public interface IExceptionMessage {
 	static final String INVENTORY_9 = /*$$(*/ "Il n'y a aucun produit contenu dans l'emplacement de stock." /*)*/;
 	static final String INVENTORY_10 = /*$$(*/ "La liste des lignes d'inventaire a été rempli." /*)*/;
 	static final String INVENTORY_11 = /*$$(*/ "Aucune lignes d'inventaire n'a été créée." /*)*/;
+	static final String INVENTORY_12 = /*$$(*/ "An error occurred while importing the file data, there are multiple products with code :" /*)*/;
 
 	/**
 	 * Location Line Service Impl
