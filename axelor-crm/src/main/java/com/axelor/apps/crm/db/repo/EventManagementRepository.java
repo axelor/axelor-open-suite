@@ -17,6 +17,8 @@
  */
 package com.axelor.apps.crm.db.repo;
 
+import java.util.List;
+
 import com.axelor.apps.base.db.ICalendarUser;
 import com.axelor.apps.base.db.repo.ICalendarEventRepository;
 import com.axelor.apps.base.db.repo.ICalendarUserRepository;
@@ -27,6 +29,8 @@ import com.axelor.apps.crm.service.CalendarService;
 import com.axelor.apps.crm.service.EventService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
+import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.IException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -97,8 +101,14 @@ public class EventManagementRepository extends EventRepository {
 	
 	
 	@Override
-	public void remove(Event entity) {
+	public void remove(Event entity){
 		try{
+			User user = AuthUtils.getUser();
+			List<Long> calendarIdlist = Beans.get(CalendarService.class).showSharedCalendars(user);
+			if(calendarIdlist.isEmpty() || !calendarIdlist.contains(entity.getCalendarCrm().getId())){
+				throw new AxelorException(I18n.get("You don't have the rights to delete this event"), IException.CONFIGURATION_ERROR);
+			}
+		
 			calendarService.removeEventFromIcal(entity);
 		}
 		catch(Exception e){

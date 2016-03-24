@@ -46,6 +46,7 @@ import com.axelor.apps.crm.db.repo.EventRepository;
 import com.axelor.apps.crm.db.repo.LeadRepository;
 import com.axelor.apps.crm.db.repo.RecurrenceConfigurationRepository;
 import com.axelor.apps.crm.exception.IExceptionMessage;
+import com.axelor.apps.crm.service.CalendarService;
 import com.axelor.apps.crm.service.EventService;
 import com.axelor.apps.crm.service.LeadService;
 import com.axelor.apps.crm.service.config.CrmConfigService;
@@ -61,6 +62,7 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.google.common.base.Joiner;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -81,6 +83,9 @@ public class EventController {
 	
 	@Inject
 	private LeadService leadService;
+	
+	@Inject
+	protected CalendarService calendarService;
 
 	public void computeFromStartDateTime(ActionRequest request, ActionResponse response) {
 
@@ -216,6 +221,7 @@ public class EventController {
 
 	}
 
+	@SuppressWarnings("rawtypes")
 	public void assignToMeLead(ActionRequest request, ActionResponse response)  {
 
 		if(request.getContext().get("id") != null){
@@ -237,6 +243,7 @@ public class EventController {
 
 	}
 
+	@SuppressWarnings("rawtypes")
 	public void assignToMeEvent(ActionRequest request, ActionResponse response)  {
 
 		if(request.getContext().get("id") != null){
@@ -286,7 +293,7 @@ public class EventController {
 	@SuppressWarnings("unchecked")
 	public void addUserGuest(ActionRequest request, ActionResponse response) throws ClassNotFoundException, InstantiationException, IllegalAccessException, AxelorException, MessagingException, IOException, ICalendarException, ValidationException, ParseException{
 		Event event = request.getContext().asType(Event.class);
-		if(request.getContext().containsKey("guestPartner")){
+		if(request.getContext().containsKey("guestUser")){
 			User user = Beans.get(UserRepository.class).find(new Long(((Map<String, Object>) request.getContext().get("guestUser")).get("id").toString()));
 			if(user != null){
 				event = eventRepo.find(event.getId());
@@ -633,5 +640,34 @@ public class EventController {
 		RecurrenceConfiguration recurrConf = request.getContext().asType(RecurrenceConfiguration.class);
 		
 		response.setValue("recurrenceName", eventService.computeRecurrenceName(recurrConf));
+	}
+	
+	public void setCalendarCrmDomain(ActionRequest request, ActionResponse response){
+		User user = AuthUtils.getUser();
+		List<Long> calendarIdlist = calendarService.showSharedCalendars(user);
+		if(calendarIdlist.isEmpty()){
+			response.setAttr("calendarCrm", "domain", "self.id is null");
+		}
+		else{
+			response.setAttr("calendarCrm", "domain", "self.id in (" + Joiner.on(",").join(calendarIdlist) + ")");
+		}
+	}
+	
+	public void checkRights(ActionRequest request, ActionResponse response){
+		Event event = request.getContext().asType(Event.class);
+		User user = AuthUtils.getUser();
+		List<Long> calendarIdlist = calendarService.showSharedCalendars(user);
+		if(calendarIdlist.isEmpty() || !calendarIdlist.contains(event.getCalendarCrm().getId())){
+			response.setAttr("calendarConfig", "readonly", "true");
+			response.setAttr("meetingGeneral", "readonly", "true");
+			response.setAttr("addGuests", "readonly", "true");
+			response.setAttr("meetingAttributes", "readonly", "true");
+			response.setAttr("meetingLinked", "readonly", "true");
+		}
+	}
+	
+	public void changeCreator(ActionRequest request, ActionResponse response){
+		User user = AuthUtils.getUser();
+		response.setValue("organizer", calendarService.findOrCreateUser(user));
 	}
 }
