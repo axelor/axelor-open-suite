@@ -78,4 +78,8 @@
 		<option value="2">Round trip</option>
 	</selection>
 	
+	<selection name="hr.timer.status.select">
+		<option value="1">start</option>
+		<option value="2">stop</option>
+	</selection>
 </object-views>

@@ -32,6 +32,11 @@
 		<call class="com.axelor.apps.hr.web.timesheet.TimesheetController" method="historicTimesheet"/>
 	</action-method>
 	
+	<menuitem title="TimeSheet Timer" name="time-sheet-timer" parent="timesheet-root" action="time.sheet.timer"/>
+	
+	<action-view name="time.sheet.timer" title="TimeSheet Timer" model="com.axelor.apps.hr.db.TSTimer">
+		<view type="form" name="ts-timer-form"/>
+	</action-view>
 	
 	<menuitem name="extra-hours-root" parent="hr-root"
     	title="Extra hours"/>
