@@ -92,9 +92,12 @@
     </panel>
     
     <panel title="Real" colSpan="6">
+   		<label/>
         <field name="opportunityAmountWon" showTitle="false" colSpan="12"/>
+        <label/>
         <field name="opportunityCreatedNumber" showTitle="false" colSpan="12"/>
-      <field name="opportunityCreatedWon" showTitle="false" colSpan="12"/>
+        <label/>
+      	<field name="opportunityCreatedWon" showTitle="false" colSpan="12"/>
     </panel>
   </panel>  
   
@@ -102,12 +105,14 @@
     <panel title="Target" colSpan="6">
         <field name="callEmittedNumberTarget" colSpan="10"/>
         <label title="Vs" colSpan="2"/>
-      <field name="meetingNumberTarget" colSpan="10"/>
+    	<field name="meetingNumberTarget" colSpan="10"/>
       <label title="Vs" colSpan="2"/>
     </panel>
     <panel title="Real" colSpan="6">
+    	<label/>
         <field name="callEmittedNumber" showTitle="false" colSpan="12"/>
-       <field name="meetingNumber" showTitle="false" colSpan="12"/>
+        <label/>
+       	<field name="meetingNumber" showTitle="false" colSpan="12"/>
     </panel>
     
    </panel>
