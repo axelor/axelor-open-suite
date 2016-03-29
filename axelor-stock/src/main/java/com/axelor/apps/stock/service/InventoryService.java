@@ -167,7 +167,13 @@ public class InventoryService {
 				}
 
 				InventoryLine inventoryLine = new InventoryLine();
-				Product product = productRepo.findByCode(code);
+				List<Product> productList = productRepo.all().filter("self.code = :code").bind("code", code).fetch();
+				if (productList != null && !productList.isEmpty()){
+					if (productList.size() > 1){
+						throw new AxelorException(I18n.get(IExceptionMessage.INVENTORY_12)+" "+code, IException.CONFIGURATION_ERROR);
+					}
+				}
+				Product product = productList.get(0);
 				if (product == null || !product.getProductTypeSelect().equals(ProductRepository.PRODUCT_TYPE_STORABLE))
 					throw new AxelorException(I18n.get(IExceptionMessage.INVENTORY_4)+" "+code, IException.CONFIGURATION_ERROR);
 				inventoryLine.setProduct(product);
@@ -190,6 +196,7 @@ public class InventoryService {
 		List<String[]> data = null;
 		try {
 			data = CsvTool.cSVFileReader(filePath, separator);
+			
 		} catch(Exception e) {
 			throw new AxelorException(I18n.get(IExceptionMessage.INVENTORY_5), IException.CONFIGURATION_ERROR);
 		}

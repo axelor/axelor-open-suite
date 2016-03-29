@@ -7,7 +7,7 @@
 
   <entity name="ProjectTask">
 
-	  <one-to-many name="timesheetLineList" ref="com.axelor.apps.hr.db.TimesheetLine" title="Logged Time" mappedBy="projectTask"/>
+	  <one-to-many name="timesheetLineList" orphanRemoval="false" ref="com.axelor.apps.hr.db.TimesheetLine" title="Logged Time" mappedBy="projectTask"/>
 	          
   </entity>
   

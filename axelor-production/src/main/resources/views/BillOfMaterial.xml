@@ -4,7 +4,7 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
     
     <grid name="bill-of-material-grid" title="Bills of material" model="com.axelor.apps.production.db.BillOfMaterial">
-    	<field name="fullname"/>
+    	<field name="fullName"/>
         <field name="product" domain="self.productTypeSelect = 'storable'"  onChange="action-bill-of-material-record-product" form-view="product-form" grid-view="product-grid"/>
         <field name="qty"/>
         <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
@@ -21,12 +21,10 @@
 			<field name="fullName" hidden="true" showIf="$readonly()" colSpan="12"/>
 			<field name="name" hidden="true" showIf="!$readonly()" colSpan="12"/>
 			<field name="company" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
-			<field name="prodProcess" grid-view="prod-process-grid" form-view="prod-process-form"/>
+			<field name="prodProcess" grid-view="prod-process-grid" form-view="prod-process-form" canNew="true"/>
 			<field name="product" onChange="action-bill-of-material-record-product" domain="self.productTypeSelect = 'storable'" form-view="product-form" grid-view="product-grid"/>
 			<field name="qty" colSpan="3"/>
 			<field name="unit" colSpan="3" form-view="unit-form" grid-view="unit-grid"/>
-			<field name="versionNumber" colSpan="3" hidden="true" showIf="versionNumber &gt; 1" readonly="true"/>
-			<field name="originalBillOfMaterial" grid-view="bill-of-material-grid" form-view="bill-of-material-form" colSpan="3" hidden="true" showIf="versionNumber &gt; 1" readonly="true"/>
 		</panel>
 	  
 		<panel-tabs>
@@ -38,6 +36,11 @@
 				<field name="costPrice" readonly="true"/>
 				<button name="updateProductCostPrice" title="Update product cost price"  onClick="save,action-bill-of-material-method-update-product-cost-price"/>
 				<panel-related field="costSheetList" colSpan="12" readonly="true" form-view="cost-sheet-bill-of-material-form" grid-view="cost-sheet-bill-of-material-grid"/>
+			</panel>
+			<panel title="Version management">
+				<field name="versionNumber" colSpan="3" hidden="true" showIf="versionNumber &gt; 1"/>
+				<field name="originalBillOfMaterial" grid-view="bill-of-material-grid" form-view="bill-of-material-form" colSpan="3" hidden="true" showIf="versionNumber &gt; 1" readonly="true"/>
+		
 			</panel>
 		</panel-tabs>
 	  

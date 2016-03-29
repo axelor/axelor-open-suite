@@ -27,6 +27,8 @@ import org.joda.time.LocalDateTime;
 import com.axelor.apps.base.db.ITarget;
 import com.axelor.apps.base.db.Team;
 import com.axelor.auth.db.User;
+import com.axelor.apps.crm.db.IEvent;
+import com.axelor.apps.crm.db.IOpportunity;
 import com.axelor.apps.crm.db.Target;
 import com.axelor.apps.crm.db.TargetConfiguration;
 import com.axelor.apps.crm.db.repo.EventRepository;
@@ -62,9 +64,10 @@ public class TargetService {
 		else  {
 			
 			LocalDate oldDate = targetConfiguration.getFromDate();
-			
-			for(LocalDate date = oldDate ; date.isBefore(targetConfiguration.getToDate()) || date.isEqual(targetConfiguration.getToDate()); date = this.getNextDate(targetConfiguration.getPeriodTypeSelect(), date))  {
-			
+			LocalDate date = oldDate ;
+			while(date.isBefore(targetConfiguration.getToDate()) || date.isEqual(targetConfiguration.getToDate()))  {
+		
+				date = this.getNextDate(targetConfiguration.getPeriodTypeSelect(), date);
 				Target target2 = targetRepo.all().filter("self.user = ?1 AND self.team = ?2 AND self.periodTypeSelect = ?3 AND self.fromDate >= ?4 AND self.toDate <= ?5 AND " +
 						"((self.callEmittedNumberTarget > 0 AND ?6 > 0) OR (self.meetingNumberTarget > 0 AND ?7 > 0) OR " +
 						"(self.opportunityAmountWonTarget > 0.00 AND ?8 > 0.00) OR (self.opportunityCreatedNumberTarget > 0 AND ?9 > 0) OR (self.opportunityCreatedWonTarget > 0 AND ?10 > 0))", 
@@ -73,7 +76,7 @@ public class TargetService {
 						targetConfiguration.getOpportunityAmountWon().doubleValue(), targetConfiguration.getOpportunityCreatedNumber(), targetConfiguration.getOpportunityCreatedWon()).fetchOne(); 
 				
 				if(target2 == null)  {
-					Target target = this.createTarget(targetConfiguration, oldDate, date.minusDays(1));
+					Target target = this.createTarget(targetConfiguration, oldDate, (date.isBefore(targetConfiguration.getToDate())) ? date.minusDays(1) : targetConfiguration.getToDate());
 				
 					this.update(target);
 				
@@ -139,20 +142,21 @@ public class TargetService {
 		LocalDateTime toDateTime = new LocalDateTime(toDate.getYear(), toDate.getMonthOfYear(), toDate.getDayOfMonth(), 23, 59);
 		
 		if(user != null)  {
-			Query q = JPA.em().createQuery("select SUM(op.amount) FROM Opportunity as op WHERE op.user = ?1 AND op.salesStageSelect = 9 AND op.createdOn >= ?2 AND op.createdOn <= ?3 ");
+			Query q = JPA.em().createQuery("select SUM(op.amount) FROM Opportunity as op WHERE op.user = ?1 AND op.salesStageSelect = ?2 AND op.createdOn >= ?3 AND op.createdOn <= ?4 ");
 			q.setParameter(1, user);
-			q.setParameter(2, fromDateTime);
-			q.setParameter(3, toDateTime);
+			q.setParameter(2, IOpportunity.STAGE_CLOSED_WON);
+			q.setParameter(3, fromDateTime);
+			q.setParameter(4, toDateTime);
 					
 			BigDecimal opportunityAmountWon = (BigDecimal) q.getSingleResult();
 			
 			Long callEmittedNumber = eventRepo.all().filter("self.typeSelect = ?1 AND self.user = ?2 AND self.startDateTime >= ?3 AND self.endDateTime <= ?4 AND self.callTypeSelect = 2",
-					1, user, fromDateTime, toDateTime).count();
+					IEvent.CALL, user, fromDateTime, toDateTime).count();
 			
 			target.setCallEmittedNumber(callEmittedNumber.intValue());
 			
 			Long meetingNumber = eventRepo.all().filter("self.typeSelect = ?1 AND self.user = ?2 AND self.startDateTime >= ?3 AND self.endDateTime <= ?4",
-					1, user, fromDateTime, toDateTime).count();
+					IEvent.MEETING, user, fromDateTime, toDateTime).count();
 			
 			target.setMeetingNumber(meetingNumber.intValue());
 			
@@ -164,27 +168,28 @@ public class TargetService {
 			
 			target.setOpportunityCreatedNumber(opportunityCreatedNumber.intValue());
 			
-			Long opportunityCreatedWon = opportunityRepo.all().filter("self.user = ?1 AND self.createdOn >= ?2 AND self.createdOn <= ?3 AND self.salesStageSelect = 9",
-					user, fromDateTime, toDateTime).count();
+			Long opportunityCreatedWon = opportunityRepo.all().filter("self.user = ?1 AND self.createdOn >= ?2 AND self.createdOn <= ?3 AND self.salesStageSelect = ?4",
+					user, fromDateTime, toDateTime, IOpportunity.STAGE_CLOSED_WON).count();
 			
 			target.setOpportunityCreatedWon(opportunityCreatedWon.intValue());
 		}
 		else if(team != null)  {
 			
-			Query q = JPA.em().createQuery("select SUM(op.amount) FROM Opportunity as op WHERE op.team = ?1 AND op.salesStageSelect = 9  AND op.createdOn >= ?2 AND op.createdOn <= ?3 ");
+			Query q = JPA.em().createQuery("select SUM(op.amount) FROM Opportunity as op WHERE op.team = ?1 AND op.salesStageSelect = ?2  AND op.createdOn >= ?3 AND op.createdOn <= ?4 ");
 			q.setParameter(1, team);
-			q.setParameter(2, fromDateTime);
-			q.setParameter(3, toDateTime);
+			q.setParameter(2, IOpportunity.STAGE_CLOSED_WON);
+			q.setParameter(3, fromDateTime);
+			q.setParameter(4, toDateTime);
 					
 			BigDecimal opportunityAmountWon = (BigDecimal) q.getSingleResult();
 			
 			Long callEmittedNumber = eventRepo.all().filter("self.typeSelect = ?1 AND self.team = ?2 AND self.startDateTime >= ?3 AND self.endDateTime <= ?4 AND self.callTypeSelect = 2",
-					1, team, fromDateTime, toDateTime).count();
+					IEvent.CALL, team, fromDateTime, toDateTime).count();
 			
 			target.setCallEmittedNumber(callEmittedNumber.intValue());
 			
 			Long meetingNumber = eventRepo.all().filter("self.typeSelect = ?1 AND self.team = ?2 AND self.startDateTime >= ?3 AND self.endDateTime <= ?4",
-					1, team, fromDateTime, toDateTime).count();
+					IEvent.MEETING, team, fromDateTime, toDateTime).count();
 			
 			target.setMeetingNumber(meetingNumber.intValue());
 			
@@ -196,8 +201,8 @@ public class TargetService {
 			
 			target.setOpportunityCreatedNumber(opportunityCreatedNumber.intValue());
 			
-			Long opportunityCreatedWon = opportunityRepo.all().filter("self.team = ?1 AND self.createdOn >= ?2 AND self.createdOn <= ?3 AND self.salesStageSelect = 9",
-					team, fromDateTime, toDateTime).count();
+			Long opportunityCreatedWon = opportunityRepo.all().filter("self.team = ?1 AND self.createdOn >= ?2 AND self.createdOn <= ?3 AND self.salesStageSelect = ?4",
+					team, fromDateTime, toDateTime, IOpportunity.STAGE_CLOSED_WON).count();
 			
 			target.setOpportunityCreatedWon(opportunityCreatedWon.intValue());
 		}

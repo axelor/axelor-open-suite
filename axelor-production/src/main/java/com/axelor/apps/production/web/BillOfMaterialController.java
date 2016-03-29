@@ -110,6 +110,7 @@ public class BillOfMaterialController {
 				.model(BillOfMaterial.class.getName())
 				   .add("form","bill-of-material-form")
 				   .add("grid","bill-of-material-grid")
+				   .domain("self.isRawMaterial = false AND self.personalized = false AND self.parentBillOfMaterial IS NULL")
 				   .context("_showRecord", String.valueOf(copy.getId()))
 				   .map());
 	}
