@@ -18,6 +18,7 @@
 package com.axelor.apps.hr.service.employee;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -68,7 +69,7 @@ public class EmployeeServiceImp extends UserServiceImpl implements EmployeeServi
 				duration = duration.multiply(employee.getDailyWorkHours());
 			}
 			else if (timePref.equals("minutes")) {
-				duration = duration.divide(new BigDecimal(60));
+				duration = duration.divide(new BigDecimal(60),2, RoundingMode.HALF_UP);
 			}
 		}
 
@@ -98,7 +99,7 @@ public class EmployeeServiceImp extends UserServiceImpl implements EmployeeServi
 			LOG.debug("Employee's time pref: {}, Daily Working hours: {}",timePref,dailyWorkHrs);
 
 			if(timePref.equals("days") && dailyWorkHrs != null && dailyWorkHrs.compareTo(BigDecimal.ZERO) != 0){
-				duration = duration.divide(dailyWorkHrs);
+				duration = duration.divide(dailyWorkHrs,2, RoundingMode.HALF_UP);
 			}
 			else if (timePref.equals("minutes")) {
 				duration = duration.multiply(new BigDecimal(60));

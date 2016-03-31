@@ -100,24 +100,24 @@ public class OperationOrderWorkflowService {
 		if(lastOperationOrder != null)  {
 
 			if(lastOperationOrder.getPriority() == operationOrder.getPriority())  {
-				if(lastOperationOrder.getPlannedStartDateT() != null && lastOperationOrder.getPlannedStartDateT().isAfter(today))  {
+				if(lastOperationOrder.getPlannedStartDateT() != null && lastOperationOrder.getPlannedStartDateT().isAfter(operationOrder.getManufOrder().getPlannedStartDateT()))  {
 					return lastOperationOrder.getPlannedStartDateT();
 				}
 				else  {
-					return today;
+					return operationOrder.getManufOrder().getPlannedStartDateT();
 				}
 			}
 			else  {
-				if(lastOperationOrder.getPlannedEndDateT() != null && lastOperationOrder.getPlannedEndDateT().isAfter(today))  {
+				if(lastOperationOrder.getPlannedEndDateT() != null && lastOperationOrder.getPlannedEndDateT().isAfter(operationOrder.getManufOrder().getPlannedStartDateT()))  {
 					return lastOperationOrder.getPlannedEndDateT();
 				}
 				else  {
-					return today;
+					return operationOrder.getManufOrder().getPlannedStartDateT();
 				}
 			}
 		}
 
-		return today;
+		return operationOrder.getManufOrder().getPlannedStartDateT();
 
 	}
 	

@@ -389,7 +389,20 @@ public class MoveToolService {
 			}
 		});
 
-	return list;
-}
+		return list;
+	}
+	
+	
+	public boolean isDebitMoveLine(MoveLine moveLine)  {
+		
+		if(moveLine.getDebit().compareTo(BigDecimal.ZERO) == 1)  {
+			return true;
+		}
+		else  {
+			return false;
+		}
+		
+	}
+	
 		
 }

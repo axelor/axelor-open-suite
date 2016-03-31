@@ -3,7 +3,19 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
     
+    <grid name="sale-order-line-menu-grid" title="SO lines" model="com.axelor.apps.sale.db.SaleOrderLine">
+	    <field name="productName"/>
+	    <field name="qty"/>
+	    <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
+	    <field name="price" x-scale="2"/>
+	    <field name="exTaxTotal"/>
+	    <field name="inTaxTotal"/>
+	</grid>
+	
     <grid name="sale-order-line-grid" title="SO lines" model="com.axelor.apps.sale.db.SaleOrderLine">
+      	<field name="saleOrder"/>
+  		<field name="saleOrder.clientPartner"/>
+  		<field name="saleOrder.inTaxTotal"/>
 	    <field name="productName"/>
 	    <field name="qty"/>
 	    <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
@@ -12,7 +24,7 @@
 	    <field name="inTaxTotal"/>
 	</grid>
     
-	<form name="sale-order-line-form" title="SO line" model="com.axelor.apps.sale.db.SaleOrderLine" 
+	<form name="sale-order-line-menu-form" title="SO line" model="com.axelor.apps.sale.db.SaleOrderLine" 
 	onLoad="action-group-sale-saleorderline-onload" onNew="action-group-sale-saleorderline-onnew" width="large">
 		<panel>
 			<field name="isTitleLine" onChange="action-sale-order-line-method-empty-line"/>
@@ -68,6 +80,14 @@
 			</panel>
 		</panel-tabs>
 	</form>
+
+	<form name="sale-order-line-form" title="SO line" model="com.axelor.apps.sale.db.SaleOrderLine" 
+	onLoad="action-group-sale-saleorderline-onload" onNew="action-group-sale-saleorderline-onnew" width="large">
+		<panel>
+			<field name="saleOrder" grid-view="sale-order-grid" form-view="sale-order-form"/>
+		</panel>
+		<panel-include view="sale-order-line-menu-form"/>
+	</form>	
 	
 	<action-method name="action-sale-order-line-method-empty-line">
 		<call class="com.axelor.apps.sale.web.SaleOrderLineController" method="emptyLine"/>
@@ -98,6 +118,7 @@
     
     <action-group name="action-group-sale-saleorderline-onnew">
     	<action name="action-sale-order-line-attrs-title-project-task"/>
+    	<action name="action-sale-order-line-attrs-show-priceDiscounted"/>
     	<action name="action-sale-order-line-attrs-scale-and-precision"/>
     	<action name="action-sale-order-line-record-new"/>
     	<action name="action-sale-order-line-attrs-hide-bill-of-material"/>
@@ -109,6 +130,7 @@
     
     <action-group name="action-group-sale-saleorderline-onload">
     	<action name="action-sale-order-line-attrs-title-project-task"/>
+    	<action name="action-sale-order-line-attrs-show-priceDiscounted"/>
     	<action name="action-sale-order-line-attrs-ressources-planning"/>
     	<action name="action-sale-order-line-attrs-scale-and-precision"/>
     	<action name="action-sale-order-line-attrs-hide-bill-of-material"/>
@@ -150,6 +172,10 @@
 		<attribute name="title" for="project" expr="eval: __config__.general.getProjectTaskLabel()" if="!com.google.common.base.Strings.isNullOrEmpty(__config__.general.getProjectTaskLabel())"/>
 		<attribute name="title" for="projectTaskPanel" expr="eval: __config__.general.getProjectTaskLabel()" if="!com.google.common.base.Strings.isNullOrEmpty(__config__.general.getProjectTaskLabel())"/>
 	
+	</action-attrs>
+	
+	<action-attrs name="action-sale-order-line-attrs-show-priceDiscounted">
+		<attribute name="hidden" for="priceDiscounted" expr="eval: priceDiscounted == price"/>
 	</action-attrs>
 
     <!-- ACTION RECORD -->

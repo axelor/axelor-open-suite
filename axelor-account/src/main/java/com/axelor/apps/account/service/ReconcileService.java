@@ -80,19 +80,18 @@ public class ReconcileService {
 	 * 			Une reconciliation
 	 */
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public Reconcile createReconcile(MoveLine debitMoveLine, MoveLine creditMoveLine, BigDecimal amount,
-			boolean canBeZeroBalanceOk, boolean mustBeZeroBalanceOk, boolean inverse){
+	public Reconcile createReconcile(MoveLine debitMoveLine, MoveLine creditMoveLine, BigDecimal amount, boolean canBeZeroBalanceOk)  {
 
-		log.debug("Create Reconcile (Debit MoveLine : {}, Credit MoveLine : {}, Amount : {}, Can be zero balance ? {}, Must be zero balance ? {}, Inverse debit/credit ? {} ",
-				new Object[]{debitMoveLine.getName(), creditMoveLine.getName(), amount, canBeZeroBalanceOk, mustBeZeroBalanceOk, inverse});
+		log.debug("Create Reconcile (Debit MoveLine : {}, Credit MoveLine : {}, Amount : {}, Can be zero balance ? {} ",
+				new Object[]{debitMoveLine.getName(), creditMoveLine.getName(), amount, canBeZeroBalanceOk});
 
 		Reconcile reconcile =  new Reconcile(
 				amount.setScale(2, RoundingMode.HALF_EVEN),
 				debitMoveLine, creditMoveLine,
 				ReconcileRepository.STATUS_DRAFT,
-				canBeZeroBalanceOk, mustBeZeroBalanceOk);
+				canBeZeroBalanceOk);
 
-		if(inverse)  {
+		if(!moveToolService.isDebitMoveLine(debitMoveLine))  {
 
 			reconcile.setDebitMoveLine(creditMoveLine);
 			reconcile.setCreditMoveLine(debitMoveLine);
@@ -102,41 +101,7 @@ public class ReconcileService {
 
 	}
 
-
-	/**
-	 * Permet de créer une réconciliation
-	 * @param lineDebit
-	 * 			Une ligne d'écriture au débit
-	 * @param lineCredit
-	 * 			Une ligne d'écriture au crédit
-	 * @param amount
-	 * 			Le montant à reconciler
-	 * @return
-	 * 			Une reconciliation
-	 */
-	public Reconcile createReconcile(MoveLine lineDebit, MoveLine lineCredit, BigDecimal amount){
-		return createReconcile(lineDebit, lineCredit, amount, false, false, false);
-	}
-
-
-	/**
-	 * Permet de créer une réconciliation
-	 * @param lineDebit
-	 * 			Une ligne d'écriture au débit
-	 * @param lineCredit
-	 * 			Une ligne d'écriture au crédit
-	 * @param amount
-	 * 			Le montant à reconciler
-	 * @return
-	 * 			Une reconciliation
-	 */
-	public Reconcile createReconcile(MoveLine lineDebit, MoveLine lineCredit, BigDecimal amount, boolean inverse){
-
-		return createReconcile(lineCredit, lineDebit, amount, false, false, inverse);
-
-	}
-
-
+	
 	/**
 	 * Permet de confirmer une  réconciliation
 	 * On ne peut réconcilier que des moveLine ayant le même compte
@@ -233,7 +198,7 @@ public class ReconcileService {
 	}
 	
 	
-	public List<Partner> getPartners(Reconcile reconcile)  {
+	protected List<Partner> getPartners(Reconcile reconcile)  {
 		
 		List<Partner> partnerList = Lists.newArrayList();
 		Partner debitPartner = reconcile.getDebitMoveLine().getPartner();
@@ -248,7 +213,7 @@ public class ReconcileService {
 	} 
 
 
-	public void updateInvoiceRemainingAmount(Reconcile reconcile) throws AxelorException  {
+	protected void updateInvoiceRemainingAmount(Reconcile reconcile) throws AxelorException  {
 
 		Invoice debitInvoice = reconcile.getDebitMoveLine().getMove().getInvoice();
 		Invoice creditInvoice = reconcile.getCreditMoveLine().getMove().getInvoice();
@@ -270,12 +235,15 @@ public class ReconcileService {
 	 * @param creditMoveLine
 	 * @throws AxelorException
 	 */
-	public void reconcile(MoveLine debitMoveLine, MoveLine creditMoveLine) throws AxelorException  {
+	public Reconcile reconcile(MoveLine debitMoveLine, MoveLine creditMoveLine, boolean canBeZeroBalanceOk) throws AxelorException  {
 
 		BigDecimal amount = debitMoveLine.getAmountRemaining().min(creditMoveLine.getAmountRemaining());
-		Reconcile reconcile = this.createReconcile(debitMoveLine, creditMoveLine, amount);
+		Reconcile reconcile = this.createReconcile(debitMoveLine, creditMoveLine, amount, canBeZeroBalanceOk);
+		
 		this.confirmReconcile(reconcile);
-
+		
+		return reconcile;
+		
 	}
 
 
@@ -289,7 +257,7 @@ public class ReconcileService {
 	 * @throws AxelorException
 	 */
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public int unreconcile(Reconcile reconcile) throws AxelorException  {
+	public void unreconcile(Reconcile reconcile) throws AxelorException  {
 
 		MoveLine debitMoveLine = reconcile.getDebitMoveLine();
 		MoveLine creditMoveLine = reconcile.getCreditMoveLine();
@@ -306,8 +274,6 @@ public class ReconcileService {
 
 		reconcileRepository.save(reconcile);
 
-		return reconcile.getStatusSelect();
-
 	}
 
 
@@ -320,7 +286,7 @@ public class ReconcileService {
 	 * @throws AxelorException
 	 */
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void canBeZeroBalance(Reconcile reconcile) throws AxelorException  {
+	protected void canBeZeroBalance(Reconcile reconcile) throws AxelorException  {
 
 		MoveLine debitMoveLine = reconcile.getDebitMoveLine();
 
@@ -338,7 +304,7 @@ public class ReconcileService {
 				MoveLine creditAdjustMoveLine = moveAdjustementService.createAdjustmentCreditMove(debitMoveLine);
 				
 				//Création de la réconciliation
-				Reconcile newReconcile = this.createReconcile(debitMoveLine, creditAdjustMoveLine, debitAmountRemaining);
+				Reconcile newReconcile = this.createReconcile(debitMoveLine, creditAdjustMoveLine, debitAmountRemaining, false);
 				this.confirmReconcile(newReconcile);
 				reconcileRepository.save(newReconcile);
 			}
@@ -370,7 +336,7 @@ public class ReconcileService {
 					MoveLine debitAdjustmentMoveLine = moveAdjustementService.createAdjustmentCreditMove(creditMoveLine);
 					
 					//Création de la réconciliation
-					Reconcile newReconcile = this.createReconcile(debitAdjustmentMoveLine, creditMoveLine, creditAmountRemaining);
+					Reconcile newReconcile = this.createReconcile(debitAdjustmentMoveLine, creditMoveLine, creditAmountRemaining, false);
 					this.confirmReconcile(newReconcile);
 					reconcileRepository.save(newReconcile);
 				}
@@ -378,4 +344,19 @@ public class ReconcileService {
 		}
 	}
 
+	
+	public List<Reconcile> getReconciles(MoveLine moveLine)  {
+		
+		List<Reconcile> reconcileList1 = moveLine.getReconcileList1();
+		List<Reconcile> reconcileList2 = moveLine.getReconcileList2();
+		
+		if(moveToolService.isDebitMoveLine(moveLine))  {
+			return reconcileList1;
+		}
+		else if(reconcileList1 != null && !reconcileList2.isEmpty()) {
+			return reconcileList2;
+		}
+		return Lists.newArrayList();
+	}
+	
 }

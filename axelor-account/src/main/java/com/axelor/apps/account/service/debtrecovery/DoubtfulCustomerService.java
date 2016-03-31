@@ -148,7 +148,7 @@ public class DoubtfulCustomerService {
 					MoveLine creditMoveLine = moveLineService.createMoveLine(newMove , moveLine.getPartner(), moveLine.getAccount(), amountRemaining, false, today, ref, null);
 					newMove.getMoveLineList().add(creditMoveLine);
 
-					Reconcile reconcile = reconcileService.createReconcile(moveLine, creditMoveLine, amountRemaining);
+					Reconcile reconcile = reconcileService.createReconcile(moveLine, creditMoveLine, amountRemaining, false);
 					reconcileList.add(reconcile);
 
 					totalAmountRemaining = totalAmountRemaining.add(amountRemaining);
@@ -213,7 +213,7 @@ public class DoubtfulCustomerService {
 		MoveLine creditMoveLine = moveLineService.createMoveLine(newMove , partner, moveLine.getAccount(), amountRemaining, false, today, 1, null);
 		newMove.addMoveLineListItem(creditMoveLine);
 
-		Reconcile reconcile = reconcileService.createReconcile(moveLine, creditMoveLine, amountRemaining);
+		Reconcile reconcile = reconcileService.createReconcile(moveLine, creditMoveLine, amountRemaining, false);
 		reconcileList.add(reconcile);
 		reconcileService.confirmReconcile(reconcile);
 

@@ -19,7 +19,6 @@ package com.axelor.apps.stock.service;
 
 import java.math.BigDecimal;
 
-import com.axelor.apps.base.db.Product;
 import com.axelor.apps.stock.db.Location;
 
 public interface LocationService {

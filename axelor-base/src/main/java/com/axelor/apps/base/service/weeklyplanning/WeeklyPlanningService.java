@@ -28,6 +28,7 @@ public interface WeeklyPlanningService {
 	public WeeklyPlanning initPlanning(WeeklyPlanning planning);
 	public WeeklyPlanning checkPlanning(WeeklyPlanning planning) throws AxelorException;
 	public double workingDayValue(WeeklyPlanning planning, LocalDate date);
+	public double workingDayValueWithSelect(WeeklyPlanning planning, LocalDate date, boolean morning, boolean afternoon);
 	public DayPlanning findDayPlanning(WeeklyPlanning planning, LocalDate date);
 	public DayPlanning findDayWithName(WeeklyPlanning planning, String name);
 }

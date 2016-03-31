@@ -85,12 +85,14 @@
 	    <action name="action-invoice-line-record-new"/>
 	    <action name="action-invoice-attrs-hide-ati"/>
 	    <action name="action-invoice-line-record-project"/>
+	    <action name="action-invoice-line-attrs-show-priceDiscounted"/>
     </action-group>
     
     <action-group name="action-account-invoice-line-onload-group">
     	<action name="action-invoice-line-attrs-show-elements"/>
     	<action name="action-invoice-line-attrs-scale-and-precision"/>
 	    <action name="action-invoice-attrs-hide-ati"/>
+	    <action name="action-invoice-line-attrs-show-priceDiscounted"/>
     </action-group>
     
     <action-group name="action-group-account-invoice-line-product-onchange">
@@ -134,6 +136,11 @@
 	</action-method>
 	
 	<!-- ACTION ATTRS -->
+	<action-attrs name="action-invoice-line-attrs-show-priceDiscounted">
+		<attribute name="hidden" for="priceDiscounted" expr="eval: priceDiscounted == price"/>
+	</action-attrs>
+	
+	
 	<action-attrs name="action-invoice-line-attrs-show-elements">
 		<attribute name="title" for="projectTaskPanel" expr="eval: __config__.general.getProjectTaskLabel()" if="!com.google.common.base.Strings.isNullOrEmpty(__config__.general.getProjectTaskLabel())"/>
 		<attribute name="title" for="project" expr="eval: __config__.general.getProjectTaskLabel()" if="!com.google.common.base.Strings.isNullOrEmpty(__config__.general.getProjectTaskLabel())"/>

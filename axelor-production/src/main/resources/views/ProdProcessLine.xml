@@ -11,7 +11,8 @@
     </grid>
     
     <form name="prod-process-line-form" title="Phase" model="com.axelor.apps.production.db.ProdProcessLine"
-    onNew="action-prod-process-line-record-default" width="large">
+    onNew="action-prod-process-line-record-default, action-prod-process-line-attrs-default"
+    onLoad="action-prod-process-line-attrs-default" width="large">
     	<panel>
 	    	<field name="name"/>
 	    	<field name="priority" colSpan="3"/>
@@ -26,7 +27,7 @@
     		</panel>
     	</panel>
     	<panel-tabs>
-    		<panel-related  field="toConsumeProdProductList" title="To consume products" colSpan="12" form-view="prod-product-form" grid-view="prod-product-grid"/>
+    		<panel-related name="toConsumeProdProductList"  field="toConsumeProdProductList" title="To consume products" colSpan="12" form-view="prod-product-form" grid-view="prod-product-grid"/>
     		<panel-related  field="objectDescriptionList" colSpan="12"/>
     	</panel-tabs>
     	        
@@ -41,6 +42,10 @@
     <action-record name="action-prod-process-line-record-default" model="com.axelor.apps.production.db.ProdProcessLine">
     	<field name="priority" expr="eval: (__parent?.prodProcessLineList?.size() + 1) * 10"/>
     </action-record>
+    
+    <action-attrs name="action-prod-process-line-attrs-default">
+    	<attribute name="hidden" for="toConsumeProdProductList" expr="eval: _parent != null ? !_parent.isConsProOnOperation : !prodProcess.isConsProOnOperation"/>
+    </action-attrs>
     
 </object-views>
 

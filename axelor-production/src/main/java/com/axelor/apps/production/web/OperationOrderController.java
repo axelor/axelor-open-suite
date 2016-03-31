@@ -29,7 +29,6 @@ import java.util.Set;
 
 import org.eclipse.birt.core.exception.BirtException;
 import org.joda.time.Days;
-import org.joda.time.Hours;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
 import org.joda.time.Minutes;
@@ -328,18 +327,25 @@ public class OperationOrderController {
 					int numberOfMinutesPerDay = 0;
 					if(operationOrder.getWorkCenter().getMachine().getWeeklyPlanning() != null){
 						DayPlanning dayPlanning = weeklyPlanningService.findDayPlanning(operationOrder.getWorkCenter().getMachine().getWeeklyPlanning(), new LocalDate(itDateTime));
-						numberOfMinutesPerDay = Minutes.minutesBetween(dayPlanning.getMorningFrom(), dayPlanning.getMorningTo()).getMinutes();
-						numberOfMinutesPerDay += Minutes.minutesBetween(dayPlanning.getAfternoonFrom(), dayPlanning.getAfternoonTo()).getMinutes();
+						if(dayPlanning != null){
+							numberOfMinutesPerDay = Minutes.minutesBetween(dayPlanning.getMorningFrom(), dayPlanning.getMorningTo()).getMinutes();
+							numberOfMinutesPerDay += Minutes.minutesBetween(dayPlanning.getAfternoonFrom(), dayPlanning.getAfternoonTo()).getMinutes();
+						}
+						else{
+							numberOfMinutesPerDay = 0;
+						}
 					}
 					else{
 						numberOfMinutesPerDay = 60*8;
 					}
-					BigDecimal percentage = new BigDecimal(numberOfMinutes).multiply(new BigDecimal(100)).divide(new BigDecimal(numberOfMinutesPerDay), 2, RoundingMode.HALF_UP);
-					if(map.containsKey(machine)){
-						map.put(machine, map.get(machine).add(percentage));
-					}
-					else{
-						map.put(machine, percentage);
+					if(numberOfMinutesPerDay != 0){
+						BigDecimal percentage = new BigDecimal(numberOfMinutes).multiply(new BigDecimal(100)).divide(new BigDecimal(numberOfMinutesPerDay), 2, RoundingMode.HALF_UP);
+						if(map.containsKey(machine)){
+							map.put(machine, map.get(machine).add(percentage));
+						}
+						else{
+							map.put(machine, percentage);
+						}
 					}
 				}
 			}

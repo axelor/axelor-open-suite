@@ -21,13 +21,15 @@ import java.math.BigDecimal;
 
 import org.joda.time.LocalDate;
 
-import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
+import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentMode;
+import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
+import com.axelor.apps.account.db.repo.ReconcileRepository;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.move.MoveCancelService;
@@ -43,31 +45,46 @@ import com.google.inject.persist.Transactional;
 
 public class InvoicePaymentServiceImpl  implements  InvoicePaymentService {
 	
-	@Inject
 	protected PaymentModeService paymentModeService;
-	
-	@Inject
 	protected MoveService moveService;
-	
-	@Inject
 	protected MoveLineService moveLineService;
-	
-	@Inject
 	protected CurrencyService currencyService;
-	
-	@Inject
 	protected AccountConfigService accountConfigService;
-	
-	@Inject
 	protected InvoicePaymentRepository invoicePaymentRepository;
-	
-	@Inject
 	protected MoveCancelService moveCancelService;
+	protected InvoiceService invoiceService;
+	protected ReconcileService reconcileService;
 	
 	@Inject
-	protected InvoiceService invoiceService;
+	public InvoicePaymentServiceImpl(PaymentModeService paymentModeService, MoveService moveService, MoveLineService moveLineService, 
+			CurrencyService currencyService, AccountConfigService accountConfigService, InvoicePaymentRepository invoicePaymentRepository, 
+			MoveCancelService moveCancelService, InvoiceService invoiceService, ReconcileService reconcileService)  {
+		
+		this.paymentModeService = paymentModeService;
+		this.moveService = moveService;
+		this.moveLineService = moveLineService;
+		this.currencyService = currencyService;
+		this.accountConfigService = accountConfigService;
+		this.invoicePaymentRepository = invoicePaymentRepository;
+		this.moveCancelService = moveCancelService;
+		this.invoiceService = invoiceService;
+		this.reconcileService = reconcileService;
+		
+	}
 	
-	
+	/**
+	 * Method to validate an invoice Payment
+	 * 
+	 * Create the eventual move (depending general configuration) and reconcile it with the invoice move
+	 * Compute the amount paid on invoice
+	 * Change the status to validated
+	 * 
+	 * @param invoicePayment
+	 * 			An invoice payment
+	 * 
+	 * @throws AxelorException
+	 * 		
+	 */
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void validate(InvoicePayment invoicePayment) throws AxelorException  {
 		
@@ -82,10 +99,21 @@ public class InvoicePaymentServiceImpl  implements  InvoicePaymentService {
 		}
 		
 		invoiceService.updateAmountPaid(invoicePayment.getInvoice());
-
 		invoicePaymentRepository.save(invoicePayment);
 	}
 	
+	
+	/**
+	 * Method to create a payment move for an invoice Payment
+	 * 
+	 * Create a move and reconcile it with the invoice move
+	 * 
+	 * @param invoicePayment
+	 * 			An invoice payment
+	 * 
+	 * @throws AxelorException
+	 * 		
+	 */
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public Move createMoveForInvoicePayment(InvoicePayment invoicePayment) throws AxelorException  {
 		
@@ -95,37 +123,68 @@ public class InvoicePaymentServiceImpl  implements  InvoicePaymentService {
 		Partner partner = invoice.getPartner();
 		LocalDate paymentDate = invoicePayment.getPaymentDate();
 		
-		AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
-		
 		Journal journal = paymentModeService.getPaymentModeJournal(paymentMode, company);
 		
 		boolean isDebitInvoice = moveService.getMoveToolService().isDebitCustomer(invoice);
+		
+		MoveLine invoiceMoveLine = moveService.getMoveToolService().getInvoiceCustomerMoveLineByLoop(invoice);
 		
 		Move move = moveService.getMoveCreateService().createMove(journal, company, null, partner, paymentDate, paymentMode);
 		
 		BigDecimal amountConverted = currencyService.getAmountCurrencyConverted(invoicePayment.getCurrency(), invoice.getCurrency(), invoicePayment.getAmount(), paymentDate);
 		
-		move.addMoveLineListItem(moveLineService.createMoveLine(move, partner, paymentModeService.getCompanyAccount(paymentMode, company), 
+		move.addMoveLineListItem(moveLineService.createMoveLine(move, partner, paymentModeService.getPaymentModeAccount(paymentMode, company), 
 				amountConverted, isDebitInvoice, paymentDate, null, 1, ""));
 		
-		move.addMoveLineListItem(moveLineService.createMoveLine(move, partner, accountConfigService.getAdvancePaymentAccount(accountConfig), 
-				amountConverted, !isDebitInvoice, paymentDate, null, 2, ""));
+		MoveLine customerMoveLine = moveLineService.createMoveLine(move, partner, invoiceMoveLine.getAccount(), 
+				amountConverted, !isDebitInvoice, paymentDate, null, 2, "");
+		
+		move.addMoveLineListItem(customerMoveLine);
 		
 		moveService.getMoveValidateService().validate(move);
 		
+		Reconcile reconcile = reconcileService.reconcile(invoiceMoveLine, customerMoveLine, true);
+		
+		invoicePayment.setReconcile(reconcile);
 		invoicePayment.setMove(move);
+		
 		invoicePaymentRepository.save(invoicePayment);
 		
 		return move;
 	}
 	
+	
+	/**
+	 * Method to cancel an invoice Payment
+	 * 
+	 * Cancel the eventual Move and Reconcile
+	 * Compute the total amount paid on the linked invoice
+  	 * Change the status to cancel
+	 * 
+	 * @param invoicePayment
+	 * 			An invoice payment
+	 * 
+	 * @throws AxelorException
+	 * 		
+	 */
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void cancel(InvoicePayment invoicePayment) throws AxelorException  {
 		
-		moveCancelService.cancel(invoicePayment.getMove());
+		Move paymentMove = invoicePayment.getMove();
+		Reconcile reconcile = invoicePayment.getReconcile();
+		
+		if(reconcile != null && reconcile.getStatusSelect() == ReconcileRepository.STATUS_CONFIRMED)  {
+			reconcileService.unreconcile(reconcile);
+		}
+		
+		if(paymentMove != null)  {
+			moveCancelService.cancel(paymentMove);
+		}
+		
 		invoicePayment.setStatusSelect(InvoicePaymentRepository.STATUS_CANCELED);
-		invoicePaymentRepository.save(invoicePayment);
 		invoiceService.updateAmountPaid(invoicePayment.getInvoice());
+		
+		invoicePaymentRepository.save(invoicePayment);
 			
 	}
 	

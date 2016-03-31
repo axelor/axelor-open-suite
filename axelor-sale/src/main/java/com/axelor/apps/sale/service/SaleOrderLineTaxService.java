@@ -69,8 +69,11 @@ public class SaleOrderLineTaxService {
 			LOG.debug("Création des lignes de tva pour les lignes de factures.");
 			
 			for (SaleOrderLine saleOrderLine : saleOrderLineList) {
-				if(!saleOrderLine.getIsTitleLine()){
-					TaxLine taxLine = saleOrderLine.getTaxLine();
+				
+				TaxLine taxLine = saleOrderLine.getTaxLine();
+				
+				if(taxLine != null)  {
+					
 					LOG.debug("Tax {}", taxLine);
 					
 					if (map.containsKey(taxLine)) {

@@ -174,30 +174,36 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
 
 
 	@Override
-	public PurchaseOrderLine createPurchaseOrderLine(PurchaseOrder purchaseOrder, Product product, String description, BigDecimal qty, Unit unit) throws AxelorException  {
+	public PurchaseOrderLine createPurchaseOrderLine(PurchaseOrder purchaseOrder, Product product, String productName, String description, BigDecimal qty, Unit unit) throws AxelorException  {
 
 		PurchaseOrderLine purchaseOrderLine = new PurchaseOrderLine();
 		purchaseOrderLine.setPurchaseOrder(purchaseOrder);
 
-		purchaseOrderLine.setEstimatedDelivDate(purchaseOrder.getDeliveryDate());
+		purchaseOrderLine.setEstimatedDelivDate(purchaseOrder.getReceiptDate());
 		purchaseOrderLine.setDescription(description);
 
 		purchaseOrderLine.setIsOrdered(false);
-
-		purchaseOrderLine.setProduct(product);
-		purchaseOrderLine.setProductName(product.getName());
 
 		purchaseOrderLine.setQty(qty);
 		purchaseOrderLine.setSequence(sequence);
 		sequence++;
 
 		purchaseOrderLine.setUnit(unit);
+		purchaseOrderLine.setProductName(productName);
+		
+		if(product == null)  {	 return purchaseOrderLine; 	}
+		
+		purchaseOrderLine.setProduct(product);
+		
+		if(productName == null)  {
+			purchaseOrderLine.setProductName(product.getName());
+		}
 		
 		TaxLine taxLine = this.getTaxLine(purchaseOrder, purchaseOrderLine);
 		purchaseOrderLine.setTaxLine(taxLine);
-
+		
 		BigDecimal price = this.getUnitPrice(purchaseOrder, purchaseOrderLine, taxLine);
-
+		
 		Map<String, Object> discounts = this.getDiscount(purchaseOrder, purchaseOrderLine, price);
 		
 		if(discounts != null){

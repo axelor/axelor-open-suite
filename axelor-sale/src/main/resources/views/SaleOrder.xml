@@ -169,6 +169,7 @@
 		<spacer/>
 	    <button name="cancel" title="Cancel" showIf="id &amp;&amp; (statusSelect == 1 || statusSelect == 2)" colSpan="12" onClick="save,action-sale-order-view-cancel"/>
 	  	<button name="addAdvancePayment" title="Register a deposit" showIf="statusSelect == 3 &amp;&amp; amountInvoiced == 0" colSpan="12" onClick="save,action-sale-order-view-register-advance-payment"/>
+	  	<field name="message" hidden="true" type="string"/>
 	  </panel>
 	  
 	  <panel sidebar="true" title="Info.">
@@ -675,7 +676,7 @@
 	</action-method>
 	
 	<action-validate name="action-sale-order-validate-bloqued" model="com.axelor.apps.sale.db.SaleOrder">
-		<error message="${company.orderBloquedMessage}" if="bloqued &amp;&amp; !manualUnblock"/>
+		<error message="${message}" if="bloqued &amp;&amp; !manualUnblock"/>
 	</action-validate>
 	
 	<action-method name="action-sale-order-method-advance-payment-delete-line">

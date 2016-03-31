@@ -128,7 +128,8 @@ public class MrpLineServiceImpl implements MrpLineService  {
 				purchaseOrderLineService.createPurchaseOrderLine(
 						purchaseOrder,
 						product,
-						product.getName(),
+						null,
+						null,
 						qty,
 						unit));
 

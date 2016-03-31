@@ -67,7 +67,7 @@ public class PaymentModeService {
 //	}
 
 
-	public Account getCompanyAccount(PaymentMode paymentMode, Company company) throws AxelorException{
+	public Account getPaymentModeAccount(PaymentMode paymentMode, Company company) throws AxelorException{
 
 		log.debug("Récupération du compte comptable du mode de paiement associé à la société :" +
 			" Société : {}, Mode de paiement : {}", new Object[]{ company.getName(),paymentMode.getName() });
