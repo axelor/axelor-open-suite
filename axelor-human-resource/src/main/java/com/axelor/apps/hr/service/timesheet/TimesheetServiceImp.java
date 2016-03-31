@@ -28,6 +28,7 @@ import java.util.Map;
 import org.joda.time.Hours;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalTime;
+import org.joda.time.Minutes;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
@@ -181,6 +182,33 @@ public class TimesheetServiceImp implements TimesheetService{
 		else{
 			return null;
 		}
+	}
+	
+	public Timesheet createTimesheet(User user, LocalDate date){
+		Timesheet timesheet = new Timesheet();
+		
+		timesheet.setUser(user);
+		timesheet.setCompany(user.getActiveCompany());
+		timesheet.setFromDate(date);
+		timesheet.setToDate(date);
+		timesheet.setStatusSelect(TimesheetRepository.STATUS_DRAFT);
+		
+		return timesheet;
+	}	
+	
+	public TimesheetLine createTimesheetLine(ProjectTask project, Product product, User user, LocalDate date, Timesheet timesheet, BigDecimal minutes, String comment){
+		TimesheetLine timesheetLine = new TimesheetLine();
+		
+		timesheetLine.setDate(date);
+		timesheetLine.setComments(comment);
+		timesheetLine.setProduct(product);
+		timesheetLine.setProjectTask(project);
+		timesheetLine.setUser(user);
+		timesheetLine.setToInvoice(true);
+		timesheetLine.setDurationStored(minutes);
+		timesheet.addTimesheetLineListItem(timesheetLine);
+		
+		return timesheetLine;
 	}
 
 	public List<InvoiceLine> createInvoiceLines(Invoice invoice, List<TimesheetLine> timesheetLineList, int priority) throws AxelorException  {

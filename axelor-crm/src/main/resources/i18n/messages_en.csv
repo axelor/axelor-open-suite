@@ -1,5 +1,7 @@
 "key","message","comment","context"
 "%d times","%d fois",,
+", %d times",,,
+", until the",,,
 "0 %",,,
 "00",,,
 "10 %",,,
@@ -209,7 +211,6 @@
 "Every month",,,
 "Every month the",,,
 "Every week",,,
-"Every week on",,,
 "Every year",,,
 "Every year the",,,
 "Existing business",,,
@@ -574,6 +575,7 @@
 "Weeks",,,
 "Worst case",,,
 "Years",,,
+"You don't have the rights to delete this event",,,
 "You must choose a recurrence type",,,
 "You must choose at least one day in the week",,,
 "ZIMBRA",,,

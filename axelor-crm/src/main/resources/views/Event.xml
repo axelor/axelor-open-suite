@@ -72,14 +72,9 @@
 			<field name="$guestEmail" title="Email address" colSpan="9" type="many-to-one" target="com.axelor.apps.message.db.EmailAddress" canNew="true"/>
 			<button name="addNewGuestEmail" title="Add" colSpan="3" onClick="save, action-event-method-add-email-guest"/>
 		</panel>
-		
-<<<<<<< HEAD
-		<panel sidebar="true" title="Attributes">
-			<field name="typeSelect" domain="self.value IN ('1','2','3','5')"/>
-=======
+
 		<panel sidebar="true" title="Attributes" name="meetingAttributes">
 			<field name="typeSelect" domain="self.value IN ('1','2','3')"/>
->>>>>>> upstream/dev
 			<field name="callTypeSelect"  showIf="typeSelect == 1"/>
 			<field name="meetingType" showIf="typeSelect == 2" widget="SuggestBox" form-view="meeting-type-form" grid-view="meeting-type-grid"/>
 			<field name="prioritySelect" showIf="typeSelect == 3 || typeSelect == 5"/>
@@ -214,14 +209,9 @@
 	    <field name="team" form-view="team-form" grid-view="team-grid" />
 	    <field name="user" form-view="user-form" grid-view="user-grid"/>
 	</grid>
-    
-<<<<<<< HEAD
-    <form name="meeting-form" onNew="action-event-new-record" title="Meeting" model="com.axelor.apps.crm.db.Event" 
-        onLoad="action-partner-attrs-hide-contact-partner,action-event-hide-private" onSave="action-event-group-on-save">
-=======
+
     <form onNew="action-event-new-record" name="meeting-form" title="Meeting" model="com.axelor.apps.crm.db.Event" 
         onLoad="action-group-crm-event-onload,action-event-hide-private" onSave="action-event-group-on-save">
->>>>>>> upstream/dev
 		<toolbar>
 			<button name="viewOnMap" icon="fa-map-marker" onClick="com.axelor.apps.crm.web.EventController:viewMap"/>
 		</toolbar>

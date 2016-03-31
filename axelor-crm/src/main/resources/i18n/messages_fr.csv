@@ -1,5 +1,7 @@
 "key","message","comment","context"
 "%d times","%d fois",,
+", %d times",,,
+", until the",,,
 "0 %","0 %",,
 "00",,,
 "10 %","10 %",,
@@ -209,7 +211,6 @@
 "Every month","Chaque mois",,
 "Every month the","Tous les mois le",,
 "Every week","Chaque semaine",,
-"Every week on",,,
 "Every year","Chaque année",,
 "Every year the","Tous les ans le",,
 "Existing business","Client existant",,
@@ -574,6 +575,7 @@
 "Weeks","Semaines",,
 "Worst case","Au pire",,
 "Years","Années",,
+"You don't have the rights to delete this event",,,
 "You must choose a recurrence type","Vous devez choisir un type de récurrence",,
 "You must choose at least one day in the week","Vous devez choisir au moins un jour de la semaine",,
 "ZIMBRA",,,

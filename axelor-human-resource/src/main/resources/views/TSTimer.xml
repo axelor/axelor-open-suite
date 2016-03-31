@@ -19,7 +19,7 @@
 		<panel title="TimeSheet Timer">
 			<field name="user" form-view="user-form" grid-view="user-grid"/>
 			<field name="projectTask" form-view="project-task-form" grid-view="project-task-grid"/>
-			<field name="product" domain="self.isActivity = true" widget="SuggestBox" form-view="product-activity-form" grid-view="product-activity-grid"/>
+			<field name="product" domain="self.isActivity = true" widget="SuggestBox" form-view="product-activity-form" grid-view="product-activity-grid" onChange="action-ts-timer-record-stop" readonlyIf="status == 1"/>
 			<field name="startTime"/>
 			<field name="duration" widget="duration" colSpan="3"/>
 			<label name="durationLabel" title="Hours" colSpan="1"/>
@@ -27,8 +27,8 @@
 			<field name="comments" />
 		</panel>
 		<panel sidebar="true" title="Actions" stacked="true">
-			<button name="start" title="Start" onClick="action-TSTimer-record-start-startTime,save" readonlyIf="status == 1"/>
-			<button name="stop" title="Stop" onClick="action-TSTimer-record-stop,action-TSTimer-method-calculate-duration,action-TSTimer-method-generate-timesheet-line,save" readonlyIf="status == 2"/>		
+			<button name="start" title="Start" onClick="action-ts-timer-record-start-startTime,save" readonlyIf="status == 1 || product == null"/>
+			<button name="stop" title="Stop" onClick="action-ts-timer-record-stop,action-ts-timer-method-calculate-duration,action-ts-timer-method-generate-timesheet-line,save" readonlyIf="status == 2 || product == null"/>		
 		</panel>
 	</form>
 	
@@ -37,16 +37,16 @@
 	    <field name="product" expr="eval:__user__.employee?.product" />
 	</action-record>
 	
-	<action-record name="action-TSTimer-record-start-startTime" model="com.axelor.apps.hr.db.TSTimer">
+	<action-record name="action-ts-timer-record-start-startTime" model="com.axelor.apps.hr.db.TSTimer">
 		<field name="status" expr="1"/>
 		<field name="startTime" expr="eval:__datetime__"/>
 	</action-record>
 	
-	<action-record name="action-TSTimer-record-stop" model="com.axelor.apps.hr.db.TSTimer">
+	<action-record name="action-ts-timer-record-stop" model="com.axelor.apps.hr.db.TSTimer">
 		<field name="status" expr="2"/>
 	</action-record>
 	
-	<action-method name="action-TSTimer-method-calculate-duration">
+	<action-method name="action-ts-timer-method-calculate-duration">
     	<call class="com.axelor.apps.hr.web.timesheet.timer.TSTimerController" method="calculateDuration" />
     </action-method>
 	
