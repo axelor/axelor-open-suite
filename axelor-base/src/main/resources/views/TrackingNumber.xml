@@ -4,6 +4,9 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
     
     <grid name="tracking-number-grid" title="Tracking Number" model="com.axelor.apps.base.db.TrackingNumber">
+		<hilite if="$moment(perishableExpirationDate).isBefore(__date__) || $moment(warrantyExpirationDate).isBefore(__date__)" color="danger" />
+		<hilite if="$moment(perishableExpirationDate).isBefore($moment(_datePlusTwoMonths)) || $moment(warrantyExpirationDate).isBefore($moment(_datePlusTwoMonths))" color="warning" />
+		<hilite if="$moment(perishableExpirationDate).isAfter($moment(_datePlusTwoMonths)) || $moment(warrantyExpirationDate).isAfter($moment(_datePlusTwoMonths))" color="success" />
     	<field name="trackingNumberSeq"/>
     	<field name="product" form-view="product-form" grid-view="product-grid"/>
         <field name="warrantyExpirationDate"/>

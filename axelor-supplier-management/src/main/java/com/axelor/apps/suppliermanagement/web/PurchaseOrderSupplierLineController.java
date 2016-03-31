@@ -17,9 +17,13 @@
  */
 package com.axelor.apps.suppliermanagement.web;
 
+import com.axelor.apps.purchase.db.PurchaseOrderLine;
+import com.axelor.apps.purchase.db.repo.PurchaseOrderLineRepository;
 import com.axelor.apps.suppliermanagement.db.PurchaseOrderSupplierLine;
+import com.axelor.apps.suppliermanagement.db.repo.PurchaseOrderSupplierLineRepository;
 import com.axelor.apps.suppliermanagement.service.PurchaseOrderSupplierLineService;
 import com.axelor.exception.service.TraceBackService;
+import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
@@ -27,11 +31,18 @@ import com.google.inject.Inject;
 public class PurchaseOrderSupplierLineController {
 
 	@Inject
+	private PurchaseOrderSupplierLineRepository purchaseOrderSupplierLineRepo;
+	
+	@Inject
 	private PurchaseOrderSupplierLineService purchaseOrderSupplierLineService;
 	
 	public void accept(ActionRequest request, ActionResponse response){
 		
-		PurchaseOrderSupplierLine purchaseOrderSupplierLine = request.getContext().asType(PurchaseOrderSupplierLine.class);
+		PurchaseOrderSupplierLine purchaseOrderSupplierLine = purchaseOrderSupplierLineRepo.find( request.getContext().asType(PurchaseOrderSupplierLine.class).getId() );
+		
+		if (purchaseOrderSupplierLine.getPurchaseOrderLine() == null && request.getContext().getParentContext() != null){
+			purchaseOrderSupplierLine.setPurchaseOrderLine( Beans.get(PurchaseOrderLineRepository.class).find(request.getContext().getParentContext().asType(PurchaseOrderLine.class).getId()) );
+		}
 		
 		try {
 			purchaseOrderSupplierLineService.accept(purchaseOrderSupplierLine);

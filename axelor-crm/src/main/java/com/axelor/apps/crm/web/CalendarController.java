@@ -33,7 +33,6 @@ import com.axelor.apps.base.db.Team;
 import com.axelor.apps.base.db.repo.ICalendarUserRepository;
 import com.axelor.apps.base.ical.ICalendarException;
 import com.axelor.apps.crm.db.Calendar;
-import com.axelor.apps.crm.db.CalendarManagement;
 import com.axelor.apps.crm.db.Event;
 import com.axelor.apps.crm.db.repo.CalendarRepository;
 import com.axelor.apps.crm.db.repo.EventRepository;
@@ -201,83 +200,7 @@ public class CalendarController {
 	
 	public void showSharedEvents(ActionRequest request, ActionResponse response){
 		User user = AuthUtils.getUser();
-		Team team = user.getActiveTeam();
-		Set<User> followedUsers = user.getFollowersCalUserSet();
-		List<Long> eventIdlist = new ArrayList<Long>();
-		
-		for (User userIt : followedUsers) {
-			for (CalendarManagement calendarManagement : userIt.getCalendarManagementList()) {
-				if((user.equals(calendarManagement.getUser())) || (team != null && team.equals(calendarManagement.getTeam()))){
-					if(calendarManagement.getAllCalendars()){
-						List<ICalendarUser> userList = Beans.get(ICalendarUserRepository.class).all().filter("self.user.id = ?1", userIt.getId()).fetch();
-						
-						List<Event> eventList = Beans.get(EventRepository.class).all().filter("self.user.id = ?1",
-								userIt.getId()).fetch();
-						for (Event event : eventList) {
-							eventIdlist.add(event.getId());
-						}
-						List<Calendar> calList = Beans.get(CalendarRepository.class).all().filter("self.user.id = ?1", userIt.getId()).fetch();
-						for (Calendar calendar : calList) {
-							for (Event event : calendar.getEventsCrm()) {
-								eventIdlist.add(event.getId());
-							}
-						}
-						for (ICalendarUser iCalendarUser : userList) {
-							eventList = Beans.get(EventRepository.class).all().filter("?1 MEMBER OF self.attendees OR self.organizer.id = ?1",
-									iCalendarUser.getId()).fetch();
-							for (Event event : eventList) {
-								eventIdlist.add(event.getId());
-							}
-						}
-					}
-					else{
-						if(calendarManagement.getErpCalendars()){
-							List<ICalendarUser> userList = Beans.get(ICalendarUserRepository.class).all().filter("self.user.id = ?1", userIt.getId()).fetch();
-							
-							List<Event> eventList = Beans.get(EventRepository.class).all().filter("self.user.id = ?1 AND self.calendarCrm is NULL",
-									userIt.getId()).fetch();
-							for (Event event : eventList) {
-								eventIdlist.add(event.getId());
-							}
-							for (ICalendarUser iCalendarUser : userList) {
-								eventList = Beans.get(EventRepository.class).all().filter("(?1 MEMBER OF self.attendees OR self.organizer.id = ?1) AND self.calendarCrm is NULL",
-										iCalendarUser.getId()).fetch();
-								for (Event event : eventList) {
-									eventIdlist.add(event.getId());
-								}
-							}
-						}
-						if(calendarManagement.getIcalCalendars()){
-							for (Calendar calendar : calendarManagement.getCalendarSet()) {
-								for (Event event : calendar.getEventsCrm()) {
-									eventIdlist.add(event.getId());
-								}
-							}
-						}
-					}
-				}
-			}
-		}	
-		
-		List<ICalendarUser> userList = Beans.get(ICalendarUserRepository.class).all().filter("self.user.id = ?1", user.getId()).fetch();
-		
-		List<Event> eventList = Beans.get(EventRepository.class).all().filter("self.user.id = ?1",
-				user.getId()).fetch();
-		for (Event event : eventList) {
-			eventIdlist.add(event.getId());
-		}
-		List<Calendar> calList = Beans.get(CalendarRepository.class).all().filter("self.user.id = ?1", user.getId()).fetch();
-		for (Calendar calendar : calList) {
-			for (Event event : calendar.getEventsCrm()) {
-				eventIdlist.add(event.getId());
-			}
-		}
-		for (ICalendarUser iCalendarUser : userList) {
-			eventList = Beans.get(EventRepository.class).all().filter("?1 MEMBER OF self.attendees OR self.organizer.id = ?1", iCalendarUser.getId()).fetch();
-			for (Event event : eventList) {
-				eventIdlist.add(event.getId());
-			}
-		}
+		List<Long> eventIdlist = calendarService.showSharedEvents(user);
 		response.setView(ActionView
 	            .define(I18n.get("Shared Calendar"))
 	            .model(Event.class.getName())

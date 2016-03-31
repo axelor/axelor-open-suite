@@ -17,12 +17,13 @@
  */
 package com.axelor.apps.production.db.repo;
 
+import com.axelor.app.production.db.IManufOrder;
 import com.axelor.apps.production.db.ManufOrder;
 
 public class ManufOrderManagementRepository extends ManufOrderRepository {
 	@Override
 	public ManufOrder copy(ManufOrder entity, boolean deep) {
-		entity.setStatusSelect(1);
+		entity.setStatusSelect(IManufOrder.STATUS_DRAFT);
 		entity.setManufOrderSeq(null);
 		entity.setRealEndDateT(null);
 		entity.setRealEndDateT(null);

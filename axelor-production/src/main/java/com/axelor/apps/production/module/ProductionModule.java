@@ -18,6 +18,8 @@
 package com.axelor.apps.production.module;
 
 import com.axelor.app.AxelorModule;
+import com.axelor.apps.production.db.repo.BillOfMaterialManagementRepository;
+import com.axelor.apps.production.db.repo.BillOfMaterialRepository;
 import com.axelor.apps.production.db.repo.ManufOrderManagementRepository;
 import com.axelor.apps.production.db.repo.ManufOrderRepository;
 import com.axelor.apps.production.db.repo.OperationOrderManagementRepository;
@@ -63,6 +65,7 @@ public class ProductionModule extends AxelorModule {
 		bind(CostSheetService.class).to(CostSheetServiceImpl.class);
 		bind(CostSheetLineService.class).to(CostSheetLineServiceImpl.class);
 		bind(SaleOrderServiceSupplychainImpl.class).to(SaleOrderServiceProductionImpl.class);
+		bind(BillOfMaterialRepository.class).to(BillOfMaterialManagementRepository.class);
 	}
 
 }

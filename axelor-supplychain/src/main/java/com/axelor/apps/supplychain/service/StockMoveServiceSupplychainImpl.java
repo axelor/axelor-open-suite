@@ -23,22 +23,29 @@ import java.math.RoundingMode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.axelor.apps.base.db.General;
+import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.purchase.db.IPurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
+import com.axelor.apps.purchase.service.PurchaseOrderServiceImpl;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
+import com.axelor.apps.sale.service.SaleOrderServiceImpl;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.service.StockMoveServiceImpl;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
+import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
 public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl  {
 
 	private static final Logger LOG = LoggerFactory.getLogger(StockMoveServiceSupplychainImpl.class);
 	
+	@Inject
+	GeneralService generalService;
 	
 	@Override
 	public BigDecimal compute(StockMove stockMove){
@@ -63,7 +70,7 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl  {
 	public String realize(StockMove stockMove) throws AxelorException  {
 		LOG.debug("Réalisation du mouvement de stock : {} ", new Object[] { stockMove.getStockMoveSeq() });
 		String newStockSeq = super.realize(stockMove);
-
+		General general = generalService.getGeneral();
 		if (stockMove.getSaleOrder() != null){
 			//Update linked saleOrder delivery state depending on BackOrder's existence
 			SaleOrder saleOrder = stockMove.getSaleOrder();
@@ -71,6 +78,9 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl  {
 				saleOrder.setDeliveryState(SaleOrderRepository.STATE_PARTIALLY_DELIVERED);
 			}else{
 				saleOrder.setDeliveryState(SaleOrderRepository.STATE_DELIVERED);
+				if (general.getTerminateSaleOrderOnDelivery()){
+					Beans.get(SaleOrderServiceImpl.class).finishSaleOrder(saleOrder);
+				}
 			}
 
 			Beans.get(SaleOrderRepository.class).save(saleOrder);
@@ -81,6 +91,9 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl  {
 				purchaseOrder.setReceiptState(IPurchaseOrder.STATE_PARTIALLY_RECEIVED);
 			}else{
 				purchaseOrder.setReceiptState(IPurchaseOrder.STATE_RECEIVED);
+				if (general.getTerminatePurchaseOrderOnReceipt()){
+					Beans.get(PurchaseOrderServiceImpl.class).finishPurchaseOrder(purchaseOrder);
+				}
 			}
 
 			Beans.get(PurchaseOrderRepository.class).save(purchaseOrder);

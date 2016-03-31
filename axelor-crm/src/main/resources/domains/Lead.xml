@@ -43,7 +43,7 @@
 	<string name="description" title="Description" large="true"/>
 	<date name="contactDate" title="Contact date" />
 	
-	<integer name="statusSelect" title="Status" selection="crm.lead.status.select" default="1" required="true" help="true"/>  
+	<integer name="statusSelect" title="Status" selection="crm.lead.status.select" default="1" required="true" help="true" massUpdate="true"/>  
 	<many-to-one name="source" ref="com.axelor.apps.base.db.Source" title="Source" help="true"/>
   	<string name="statusDescription" title="Status description" large="true"/>
     <decimal name="opportunityAmount" title="Opportunity amount"/>
@@ -55,9 +55,9 @@
     <many-to-one name="partner" ref="com.axelor.apps.base.db.Partner" title="Contact" readonly="true"/>
     
     
-    <many-to-one name="user" column="user_id" ref="com.axelor.auth.db.User" title="Assigned to" />
-  	<many-to-one name="team" ref="com.axelor.apps.base.db.Team" title="Team"  />
-  	<many-to-one name="industrySector" title="Industry" ref="com.axelor.apps.base.db.IndustrySector"/>
+    <many-to-one name="user" column="user_id" ref="com.axelor.auth.db.User" title="Assigned to" massUpdate="true"/>
+  	<many-to-one name="team" ref="com.axelor.apps.base.db.Team" title="Team"  massUpdate="true" />
+  	<many-to-one name="industrySector" title="Industry" ref="com.axelor.apps.base.db.IndustrySector" massUpdate="true"/>
     
     <string name="fullName" title="Contact name" namecolumn="true">
 	    <![CDATA[

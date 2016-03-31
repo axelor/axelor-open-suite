@@ -46,6 +46,7 @@ import com.axelor.apps.crm.db.repo.EventRepository;
 import com.axelor.apps.crm.db.repo.LeadRepository;
 import com.axelor.apps.crm.db.repo.RecurrenceConfigurationRepository;
 import com.axelor.apps.crm.exception.IExceptionMessage;
+import com.axelor.apps.crm.service.CalendarService;
 import com.axelor.apps.crm.service.EventService;
 import com.axelor.apps.crm.service.LeadService;
 import com.axelor.apps.crm.service.config.CrmConfigService;
@@ -61,6 +62,7 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.google.common.base.Joiner;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -81,6 +83,9 @@ public class EventController {
 	
 	@Inject
 	private LeadService leadService;
+	
+	@Inject
+	protected CalendarService calendarService;
 
 	public void computeFromStartDateTime(ActionRequest request, ActionResponse response) {
 
@@ -216,6 +221,7 @@ public class EventController {
 
 	}
 
+	@SuppressWarnings("rawtypes")
 	public void assignToMeLead(ActionRequest request, ActionResponse response)  {
 
 		if(request.getContext().get("id") != null){
@@ -237,6 +243,7 @@ public class EventController {
 
 	}
 
+	@SuppressWarnings("rawtypes")
 	public void assignToMeEvent(ActionRequest request, ActionResponse response)  {
 
 		if(request.getContext().get("id") != null){
@@ -286,7 +293,7 @@ public class EventController {
 	@SuppressWarnings("unchecked")
 	public void addUserGuest(ActionRequest request, ActionResponse response) throws ClassNotFoundException, InstantiationException, IllegalAccessException, AxelorException, MessagingException, IOException, ICalendarException, ValidationException, ParseException{
 		Event event = request.getContext().asType(Event.class);
-		if(request.getContext().containsKey("guestPartner")){
+		if(request.getContext().containsKey("guestUser")){
 			User user = Beans.get(UserRepository.class).find(new Long(((Map<String, Object>) request.getContext().get("guestUser")).get("id").toString()));
 			if(user != null){
 				event = eventRepo.find(event.getId());
@@ -631,97 +638,36 @@ public class EventController {
 	
 	public void computeRecurrenceName(ActionRequest request, ActionResponse response){
 		RecurrenceConfiguration recurrConf = request.getContext().asType(RecurrenceConfiguration.class);
-		String recurrName = "";
-		switch (recurrConf.getRecurrenceType()) {
-		case RecurrenceConfigurationRepository.TYPE_DAY:
-			if(recurrConf.getPeriodicity() == 1){
-				recurrName += I18n.get("Every day");
-			}
-			else{
-				recurrName += I18n.get(String.format("Every %d days", recurrConf.getPeriodicity()));
-			}
-			
-			if(recurrConf.getEndType() == RecurrenceConfigurationRepository.END_TYPE_REPET){
-				recurrName += I18n.get(String.format(", %d times", recurrConf.getRepetitionsNumber()));
-			}
-			else if(recurrConf.getEndDate() != null){
-				recurrName += I18n.get(", until the ") + recurrConf.getEndDate().toString("dd/MM/yyyy");
-			}
-			break;
 		
-		case RecurrenceConfigurationRepository.TYPE_WEEK:
-			if(recurrConf.getPeriodicity() == 1){
-				recurrName += I18n.get("Every week on ");
-			}
-			else{
-				recurrName += I18n.get(String.format("Every %d weeks on ", recurrConf.getPeriodicity()));
-			}
-			if(recurrConf.getMonday()){
-				recurrName += I18n.get("mon,");
-			}
-			if(recurrConf.getTuesday()){
-				recurrName += I18n.get("tues,");
-			}
-			if(recurrConf.getWednesday()){
-				recurrName += I18n.get("wed,");
-			}
-			if(recurrConf.getThursday()){
-				recurrName += I18n.get("thur,");
-			}
-			if(recurrConf.getFriday()){
-				recurrName += I18n.get("fri,");
-			}
-			if(recurrConf.getSaturday()){
-				recurrName += I18n.get("sat,");
-			}
-			if(recurrConf.getSunday()){
-				recurrName += I18n.get("sun,");
-			}
-			
-			if(recurrConf.getEndType() == RecurrenceConfigurationRepository.END_TYPE_REPET){
-				recurrName += I18n.get(String.format(" %d times", recurrConf.getRepetitionsNumber()));
-			}
-			else if(recurrConf.getEndDate() != null){
-				recurrName += I18n.get(" until the ") + recurrConf.getEndDate().toString("dd/MM/yyyy");
-			}
-			break;
-		
-		case RecurrenceConfigurationRepository.TYPE_MONTH:
-			if(recurrConf.getPeriodicity() == 1){
-				recurrName += I18n.get("Every month the ") + recurrConf.getStartDate().getDayOfMonth();
-			}
-			else{
-				recurrName += I18n.get(String.format("Every %d months the %d", recurrConf.getPeriodicity(), recurrConf.getStartDate().getDayOfMonth()));
-			}
-			
-			if(recurrConf.getEndType() == RecurrenceConfigurationRepository.END_TYPE_REPET){
-				recurrName += I18n.get(String.format(", %d times", recurrConf.getRepetitionsNumber()));
-			}
-			else if(recurrConf.getEndDate() != null){
-				recurrName += I18n.get(", until the ") + recurrConf.getEndDate().toString("dd/MM/yyyy");
-			}
-			break;
-			
-		case RecurrenceConfigurationRepository.TYPE_YEAR:
-			if(recurrConf.getPeriodicity() == 1){
-				recurrName += I18n.get("Every year the ") + recurrConf.getStartDate().toString("dd/MM/yyyy");
-			}
-			else{
-				recurrName += I18n.get(String.format("Every %d years the %s", recurrConf.getPeriodicity(), recurrConf.getStartDate().toString("dd/MM/yyyy")));
-			}
-			
-			if(recurrConf.getEndType() == RecurrenceConfigurationRepository.END_TYPE_REPET){
-				recurrName += I18n.get(String.format(", %d times", recurrConf.getRepetitionsNumber()));
-			}
-			else if(recurrConf.getEndDate() != null){
-				recurrName += I18n.get(", until the ") + recurrConf.getEndDate().toString("dd/MM/yyyy");
-			}
-			break;
-
-		default:
-			break;
+		response.setValue("recurrenceName", eventService.computeRecurrenceName(recurrConf));
+	}
+	
+	public void setCalendarCrmDomain(ActionRequest request, ActionResponse response){
+		User user = AuthUtils.getUser();
+		List<Long> calendarIdlist = calendarService.showSharedCalendars(user);
+		if(calendarIdlist.isEmpty()){
+			response.setAttr("calendarCrm", "domain", "self.id is null");
 		}
-		
-		response.setAttr("recurrenceName", "title", recurrName);
+		else{
+			response.setAttr("calendarCrm", "domain", "self.id in (" + Joiner.on(",").join(calendarIdlist) + ")");
+		}
+	}
+	
+	public void checkRights(ActionRequest request, ActionResponse response){
+		Event event = request.getContext().asType(Event.class);
+		User user = AuthUtils.getUser();
+		List<Long> calendarIdlist = calendarService.showSharedCalendars(user);
+		if(calendarIdlist.isEmpty() || !calendarIdlist.contains(event.getCalendarCrm().getId())){
+			response.setAttr("calendarConfig", "readonly", "true");
+			response.setAttr("meetingGeneral", "readonly", "true");
+			response.setAttr("addGuests", "readonly", "true");
+			response.setAttr("meetingAttributes", "readonly", "true");
+			response.setAttr("meetingLinked", "readonly", "true");
+		}
+	}
+	
+	public void changeCreator(ActionRequest request, ActionResponse response){
+		User user = AuthUtils.getUser();
+		response.setValue("organizer", calendarService.findOrCreateUser(user));
 	}
 }

@@ -688,6 +688,7 @@
 "Invoice.description","Description",,
 "Invoice.discountAmount","Discount",,
 "Invoice.documentRef","Reference document",,
+"Invoice.draftInvoiceNo","PROFORMA INVOICE N°",,
 "Invoice.dueDate","Due Date",,
 "Invoice.invoiceNo","INVOICE N°",,
 "Invoice.law",,,

@@ -37,6 +37,40 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.httpclient.protocol.Protocol;
+import org.apache.jackrabbit.webdav.client.methods.DeleteMethod;
+import org.joda.time.LocalDateTime;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.axelor.app.AppSettings;
+import com.axelor.apps.base.db.ICalendarEvent;
+import com.axelor.apps.base.db.ICalendarUser;
+import com.axelor.apps.base.db.Team;
+import com.axelor.apps.base.db.repo.ICalendarEventRepository;
+import com.axelor.apps.base.db.repo.ICalendarUserRepository;
+import com.axelor.apps.base.ical.ICalendarException;
+import com.axelor.apps.base.ical.ICalendarService;
+import com.axelor.apps.base.ical.ICalendarStore;
+import com.axelor.apps.crm.db.Calendar;
+import com.axelor.apps.crm.db.CalendarManagement;
+import com.axelor.apps.crm.db.Event;
+import com.axelor.apps.crm.db.ICalendar;
+import com.axelor.apps.crm.db.repo.CalendarRepository;
+import com.axelor.apps.crm.db.repo.EventRepository;
+import com.axelor.apps.crm.exception.IExceptionMessage;
+import com.axelor.apps.message.db.EmailAddress;
+import com.axelor.apps.message.db.repo.EmailAddressRepository;
+import com.axelor.auth.db.User;
+import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.IException;
+import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
+import com.google.common.base.Preconditions;
+import com.google.common.base.Strings;
+import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
+
 import net.fortuna.ical4j.connector.FailedOperationException;
 import net.fortuna.ical4j.connector.ObjectStoreException;
 import net.fortuna.ical4j.connector.dav.CalDavCalendarCollection;
@@ -59,37 +93,6 @@ import net.fortuna.ical4j.model.property.DtStart;
 import net.fortuna.ical4j.model.property.Organizer;
 import net.fortuna.ical4j.model.property.Transp;
 import net.fortuna.ical4j.model.property.XProperty;
-
-import org.apache.commons.httpclient.protocol.Protocol;
-import org.apache.jackrabbit.webdav.client.methods.DeleteMethod;
-import org.joda.time.LocalDateTime;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.axelor.app.AppSettings;
-import com.axelor.apps.base.db.ICalendarEvent;
-import com.axelor.apps.base.db.ICalendarUser;
-import com.axelor.apps.base.db.repo.ICalendarEventRepository;
-import com.axelor.apps.base.db.repo.ICalendarUserRepository;
-import com.axelor.apps.base.ical.ICalendarException;
-import com.axelor.apps.base.ical.ICalendarService;
-import com.axelor.apps.base.ical.ICalendarStore;
-import com.axelor.apps.crm.db.Calendar;
-import com.axelor.apps.crm.db.Event;
-import com.axelor.apps.crm.db.ICalendar;
-import com.axelor.apps.crm.db.repo.CalendarRepository;
-import com.axelor.apps.crm.db.repo.EventRepository;
-import com.axelor.apps.crm.exception.IExceptionMessage;
-import com.axelor.apps.message.db.EmailAddress;
-import com.axelor.apps.message.db.repo.EmailAddressRepository;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
-import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
-import com.google.common.base.Preconditions;
-import com.google.common.base.Strings;
-import com.google.inject.Inject;
-import com.google.inject.persist.Transactional;
 
 public class CalendarService extends ICalendarService{
 
@@ -326,6 +329,41 @@ public class CalendarService extends ICalendarService{
 
 		return user;
 	}
+	
+	public ICalendarUser findOrCreateUser(User user) {
+		String email = null;
+		if (user.getPartner() != null && user.getPartner().getEmailAddress() != null
+				&& !Strings.isNullOrEmpty(user.getPartner().getEmailAddress().getAddress())) {
+			email = user.getPartner().getEmailAddress().getAddress();
+		}
+		else if (!Strings.isNullOrEmpty(user.getEmail())) {
+			email = user.getEmail();
+		}
+		else {
+			return null;
+		}
+
+		ICalendarUserRepository repo = Beans.get(ICalendarUserRepository.class);
+		ICalendarUser icalUser = null;
+		icalUser = repo.all().filter("self.email = ?1 AND self.user.id = ?2", email, user.getId()).fetchOne();
+		if (icalUser == null) {
+			icalUser = repo.all().filter("self.user.id = ?1", user.getId()).fetchOne();
+		}
+		if (icalUser == null) {
+			icalUser = repo.all().filter("self.email = ?1", email).fetchOne();
+		}
+		if (icalUser == null) {
+			icalUser = new ICalendarUser();
+			icalUser.setEmail(email);
+			icalUser.setName(user.getFullName());
+			EmailAddress emailAddress = Beans.get(EmailAddressRepository.class).findByAddress(email);
+			if(emailAddress != null && emailAddress.getPartner() != null && emailAddress.getPartner().getUser() != null){
+				icalUser.setUser(emailAddress.getPartner().getUser());
+			}
+		}
+
+		return icalUser;
+	}
 
 	
 	
@@ -420,7 +458,7 @@ public class CalendarService extends ICalendarService{
 		URL url = new URL(protocol.getScheme(), calendar.getUrl(), calendar.getPort(), "");
 		ICalendarStore store = new ICalendarStore(url, RESOLVER);
 		try {
-			if(store.connect(calendar.getLogin(), calendar.getPassword())){
+			if(calendar.getLogin() != null && calendar.getPassword() != null && store.connect(calendar.getLogin(), calendar.getPassword())){
 				List<CalDavCalendarCollection> colList = store.getCollections();
 				if(!colList.isEmpty()){
 					calendar = doSync(calendar, colList.get(0));
@@ -438,6 +476,7 @@ public class CalendarService extends ICalendarService{
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	protected Calendar doSync(Calendar calendar, CalDavCalendarCollection collection)
 			throws IOException, URISyntaxException, ParseException, ObjectStoreException, ConstraintViolationException {
 
@@ -633,5 +672,117 @@ public class CalendarService extends ICalendarService{
 			store.disconnect();
 		}
 		return cal;
+	}
+	
+	public List<Long> showSharedEvents(User user){
+		Team team = user.getActiveTeam();
+		Set<User> followedUsers = user.getFollowersCalUserSet();
+		List<Long> eventIdlist = new ArrayList<Long>();
+		
+		for (User userIt : followedUsers) {
+			for (CalendarManagement calendarManagement : userIt.getCalendarManagementList()) {
+				if((user.equals(calendarManagement.getUser())) || (team != null && team.equals(calendarManagement.getTeam()))){
+					if(calendarManagement.getAllCalendars()){
+						List<ICalendarUser> userList = Beans.get(ICalendarUserRepository.class).all().filter("self.user.id = ?1", userIt.getId()).fetch();
+						
+						List<Event> eventList = Beans.get(EventRepository.class).all().filter("self.user.id = ?1",
+								userIt.getId()).fetch();
+						for (Event event : eventList) {
+							eventIdlist.add(event.getId());
+						}
+						List<Calendar> calList = Beans.get(CalendarRepository.class).all().filter("self.user.id = ?1", userIt.getId()).fetch();
+						for (Calendar calendar : calList) {
+							for (Event event : calendar.getEventsCrm()) {
+								eventIdlist.add(event.getId());
+							}
+						}
+						for (ICalendarUser iCalendarUser : userList) {
+							eventList = Beans.get(EventRepository.class).all().filter("?1 MEMBER OF self.attendees OR self.organizer.id = ?1",
+									iCalendarUser.getId()).fetch();
+							for (Event event : eventList) {
+								eventIdlist.add(event.getId());
+							}
+						}
+					}
+					else{
+						if(calendarManagement.getErpCalendars()){
+							List<ICalendarUser> userList = Beans.get(ICalendarUserRepository.class).all().filter("self.user.id = ?1", userIt.getId()).fetch();
+							
+							List<Event> eventList = Beans.get(EventRepository.class).all().filter("self.user.id = ?1 AND self.calendarCrm is NULL",
+									userIt.getId()).fetch();
+							for (Event event : eventList) {
+								eventIdlist.add(event.getId());
+							}
+							for (ICalendarUser iCalendarUser : userList) {
+								eventList = Beans.get(EventRepository.class).all().filter("(?1 MEMBER OF self.attendees OR self.organizer.id = ?1) AND self.calendarCrm is NULL",
+										iCalendarUser.getId()).fetch();
+								for (Event event : eventList) {
+									eventIdlist.add(event.getId());
+								}
+							}
+						}
+						if(calendarManagement.getIcalCalendars()){
+							for (Calendar calendar : calendarManagement.getCalendarSet()) {
+								for (Event event : calendar.getEventsCrm()) {
+									eventIdlist.add(event.getId());
+								}
+							}
+						}
+					}
+				}
+			}
+		}	
+		
+		List<ICalendarUser> userList = Beans.get(ICalendarUserRepository.class).all().filter("self.user.id = ?1", user.getId()).fetch();
+		
+		List<Event> eventList = Beans.get(EventRepository.class).all().filter("self.user.id = ?1",
+				user.getId()).fetch();
+		for (Event event : eventList) {
+			eventIdlist.add(event.getId());
+		}
+		List<Calendar> calList = Beans.get(CalendarRepository.class).all().filter("self.user.id = ?1", user.getId()).fetch();
+		for (Calendar calendar : calList) {
+			for (Event event : calendar.getEventsCrm()) {
+				eventIdlist.add(event.getId());
+			}
+		}
+		for (ICalendarUser iCalendarUser : userList) {
+			eventList = Beans.get(EventRepository.class).all().filter("?1 MEMBER OF self.attendees OR self.organizer.id = ?1", iCalendarUser.getId()).fetch();
+			for (Event event : eventList) {
+				eventIdlist.add(event.getId());
+			}
+		}
+		return eventIdlist;
+	}
+	
+	public List<Long> showSharedCalendars(User user){
+		Team team = user.getActiveTeam();
+		Set<User> followedUsers = user.getFollowersCalUserSet();
+		List<Long> calendarIdlist = new ArrayList<Long>();
+		
+		for (User userIt : followedUsers) {
+			for (CalendarManagement calendarManagement : userIt.getCalendarManagementList()) {
+				if((user.equals(calendarManagement.getUser())) || (team != null && team.equals(calendarManagement.getTeam()))){
+					if(calendarManagement.getAllCalendars()){
+						List<Calendar> calendarList = Beans.get(CalendarRepository.class).all().filter("self.user.id = ?1",
+								userIt.getId()).fetch();
+						for (Calendar calendar : calendarList) {
+							calendarIdlist.add(calendar.getId());
+						}
+					}
+					else if(calendarManagement.getIcalCalendars()){
+						for (Calendar calendar : calendarManagement.getCalendarSet()) {
+							calendarIdlist.add(calendar.getId());
+						}
+					}
+				}
+			}
+		}	
+		
+		List<Calendar> calList = Beans.get(CalendarRepository.class).all().filter("self.user.id = ?1", user.getId()).fetch();
+		for (Calendar calendar : calList) {
+			calendarIdlist.add(calendar.getId());
+		}
+		return calendarIdlist;
 	}
 }

@@ -356,13 +356,13 @@ public class StockMoveServiceImpl implements StockMoveService {
 		newStockMove.setFromAddress(stockMove.getFromAddress());
 		if(stockMove.getToAddress() != null)
 			newStockMove.setFromAddress(stockMove.getToAddress());
-		if(stockMove.getTypeSelect() == 3)
-			newStockMove.setTypeSelect(2);
-		if(stockMove.getTypeSelect() == 2)
-			newStockMove.setTypeSelect(3);
-		if(stockMove.getTypeSelect() == 1)
-			newStockMove.setTypeSelect(1);
-		newStockMove.setStatusSelect(1);
+		if(stockMove.getTypeSelect() == StockMoveRepository.TYPE_INCOMING)
+			newStockMove.setTypeSelect(StockMoveRepository.TYPE_OUTGOING);
+		if(stockMove.getTypeSelect() == StockMoveRepository.TYPE_OUTGOING)
+			newStockMove.setTypeSelect(StockMoveRepository.TYPE_INCOMING);
+		if(stockMove.getTypeSelect() == StockMoveRepository.TYPE_INTERNAL)
+			newStockMove.setTypeSelect(StockMoveRepository.TYPE_INTERNAL);
+		newStockMove.setStatusSelect(StockMoveRepository.STATUS_DRAFT);
 		newStockMove.setStockMoveSeq(getSequenceStockMove(newStockMove.getTypeSelect(),newStockMove.getCompany()));
 
 		for(StockMoveLine stockMoveLine : stockMove.getStockMoveLineList())  {

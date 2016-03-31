@@ -25,6 +25,9 @@
     <boolean name="personalized" title="Personalized"/>
   	<one-to-many name="costSheetList" ref="com.axelor.apps.production.db.CostSheet" title="Cost sheets"/>
 
+	<string name="fullName" namecolumn="true" title="Label"/>
+	<integer name="versionNumber" title="Version number" default="1"/>
+	<many-to-one name="originalBillOfMaterial" ref="com.axelor.apps.production.db.BillOfMaterial" title="Original bill of material" />
      	
   </entity>
 </domain-models>
