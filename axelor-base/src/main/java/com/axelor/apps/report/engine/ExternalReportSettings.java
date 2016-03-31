@@ -68,7 +68,7 @@ public class ExternalReportSettings extends ReportSettings  {
 			this.attach();
 			
 		}  catch(IOException ioe)  {
-			throw new AxelorException(ioe.getCause(), IException.CONFIGURATION_ERROR);
+			throw new AxelorException(ioe, IException.CONFIGURATION_ERROR);
 		}
 		
 		return this;
