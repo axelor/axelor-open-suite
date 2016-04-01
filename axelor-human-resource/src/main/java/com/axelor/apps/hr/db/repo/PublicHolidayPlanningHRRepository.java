@@ -17,6 +17,15 @@
  */
 package com.axelor.apps.hr.db.repo;
 
-public class PublicHolidayPlanningHRRepository {
+import com.axelor.apps.hr.db.TSTimer;
 
+public class PublicHolidayPlanningHRRepository extends TSTimerRepository {
+
+	@Override
+	public TSTimer save(TSTimer tsTimer){
+		
+		return super.save(tsTimer);
+	}
+	
+	//computeFullName
 }

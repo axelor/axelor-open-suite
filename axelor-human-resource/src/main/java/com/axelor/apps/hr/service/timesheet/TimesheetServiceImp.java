@@ -184,13 +184,13 @@ public class TimesheetServiceImp implements TimesheetService{
 		}
 	}
 	
-	public Timesheet createTimesheet(User user, LocalDate date){
+	public Timesheet createTimesheet(User user, LocalDate fromDate, LocalDate toDate){
 		Timesheet timesheet = new Timesheet();
 		
 		timesheet.setUser(user);
 		timesheet.setCompany(user.getActiveCompany());
-		timesheet.setFromDate(date);
-		timesheet.setToDate(date);
+		timesheet.setFromDate(fromDate);
+		timesheet.setToDate(toDate);
 		timesheet.setStatusSelect(TimesheetRepository.STATUS_DRAFT);
 		
 		return timesheet;

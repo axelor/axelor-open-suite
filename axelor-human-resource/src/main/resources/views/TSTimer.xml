@@ -28,7 +28,7 @@
 		</panel>
 		<panel sidebar="true" title="Actions" stacked="true">
 			<button name="start" title="Start" onClick="action-ts-timer-record-start-startTime,save" readonlyIf="status == 1 || product == null"/>
-			<button name="stop" title="Stop" onClick="action-ts-timer-record-stop,action-ts-timer-method-calculate-duration,action-ts-timer-method-generate-timesheet-line,save" readonlyIf="status == 2 || product == null"/>		
+			<button name="stop" title="Stop" onClick="action-ts-timer-record-stop,action-ts-timer-method-calculate-duration,save" readonlyIf="status == 2 || product == null"/>		
 		</panel>
 	</form>
 	

@@ -55,7 +55,6 @@ public class SaleOrderManagementRepository extends SaleOrderRepository {
 	@Override
 	public SaleOrder save(SaleOrder saleOrder) {
 		try {
-//			saleOrder = super.save(saleOrder);
 			
 			if((saleOrder.getSaleOrderSeq() == null || Strings.isNullOrEmpty(saleOrder.getSaleOrderSeq())) && !saleOrder.getTemplate()){
 				saleOrder.setSaleOrderSeq(Beans.get(SaleOrderService.class).getSequence(saleOrder.getCompany()));
@@ -66,7 +65,7 @@ public class SaleOrderManagementRepository extends SaleOrderRepository {
 			else{
 				saleOrder.setFullName(saleOrder.getClientPartner().getName());
 			}
-			return JPA.save(saleOrder);
+			return super.save(saleOrder);
 		} catch (Exception e) {
 			throw new PersistenceException(e.getLocalizedMessage());
 		}

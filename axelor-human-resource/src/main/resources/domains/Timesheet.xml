@@ -40,6 +40,8 @@
 	  ]]>
       </string>
       
+      <finder-method name="findByUserAndStatus" using="user,statusSelect"/>
+      
       <extra-code>
       	<![CDATA[
 	  		public static final Integer STATUS_DRAFT = 1;
