@@ -38,7 +38,7 @@ public class PurchaseOrderSupplierLineService {
 	public void accept(PurchaseOrderSupplierLine purchaseOrderSupplierLine)  {
 		
 		PurchaseOrderLine purchaseOrderLine = purchaseOrderSupplierLine.getPurchaseOrderLine();
-		
+
 		purchaseOrderLine.setEstimatedDelivDate(purchaseOrderSupplierLine.getEstimatedDelivDate());
 		purchaseOrderLine.setSupplierPartner(purchaseOrderSupplierLine.getSupplierPartner());
 		

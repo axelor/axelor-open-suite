@@ -65,6 +65,9 @@
 				<field name="timeSpent" hidden="true"/>
 				<field name="leadDelay" hidden="true"/>
 			</panel>
+			<panel title="Activities">
+				<panel-related field="productList" grid-view="product-activity-grid" form-view="product-activity-form" domain="self.isActivity = true" colSpan="12"/>
+			</panel>
 		</panel-tabs>
 		<panel sidebar="true" title="Actions" stacked="true" showIf="childProjectTaskList.length > 0">
 	    	<button name="computeDurationFromChildren" title="Compute duration" showIf="childProjectTaskList.length > 0" colSpan="12" onClick="save,action-method-project-task-compute-duration-fromchildren,save"/>
@@ -135,6 +138,9 @@
 				<field name="timeSpent" hidden="true"/>
 				<field name="leadDelay" hidden="true"/>
 				<field name="company" hidden="true" />
+			</panel>
+			<panel title="Activities">
+				<panel-related field="productList" grid-view="product-activity-grid" form-view="product-activity-form" domain="self.isActivity = true" colSpan="12"/>
 			</panel>
 		</panel-tabs>
 	</form>

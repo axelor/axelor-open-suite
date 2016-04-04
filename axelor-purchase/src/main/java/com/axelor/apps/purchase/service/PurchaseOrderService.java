@@ -96,4 +96,10 @@ public interface PurchaseOrderService {
 	public PurchaseOrder mergePurchaseOrders(List<PurchaseOrder> purchaseOrderList, Currency currency, Partner supplierPartner, Company company, Partner contactPartner, PriceList priceList) throws AxelorException;
 	
 	public void updateCostPrice(PurchaseOrder purchaseOrder);
+	
+	public void draftPurchaseOrder(PurchaseOrder purchaseOrder);
+	public void validatePurchaseOrder(PurchaseOrder purchaseOrder);
+	public void finishPurchaseOrder(PurchaseOrder purchaseOrder);
+	public void cancelPurchaseOrder(PurchaseOrder purchaseOrder);
+	
 }

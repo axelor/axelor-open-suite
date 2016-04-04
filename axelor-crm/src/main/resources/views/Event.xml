@@ -34,13 +34,11 @@
     
 	<form  onLoad="action-group-crm-event-onload" onNew="action-group-crm-event-onnew" name="event-form" title="Events" model="com.axelor.apps.crm.db.Event"
 			onSave="action-event-group-on-save">
-		<panel colSpan="12">
-			<field name="calendarCrm" widget="SuggestBox"/>
-			<field name="isRecurrent" readonlyIf="isRecurrent" onChange="save, action-event-view-recurrence-assistant" />
-			<button name="changeRecurrence" title="Change recurrence" hidden="true" showIf="isRecurrent" onClick="save, action-event-view-change-recurrence"/>
-			<field name="recurrenceConfiguration" hidden="true"/>
+		<panel colSpan="12" name="calendarConfig">
+			<field name="calendarCrm" widget="SuggestBox" onSelect="action-event-method-domain-calendar-crm" onChange="action-event-method-change-creator"/>
+			<field name="recurrenceConfiguration" title="Recurrence" canNew="true" canSelect="false"/>
 		</panel>
-		<panel colSpan="12">
+		<panel colSpan="12" name="meetingGeneral">
 			<field name="subject" colSpan="6"/>
 			<field name="location" colSpan="5" css="highlight" showIf="typeSelect == 2"/>
 			<button name="viewOnMap" colSpan="1" icon="fa-map-marker" showIf="typeSelect == 2" onClick="com.axelor.apps.crm.web.EventController:viewMap"/>
@@ -66,7 +64,7 @@
 			<panel-related field="eventReminderList" colSpan="12" showTitle="false" form-view="event-reminder-form" grid-view="event-reminder-grid"/>
 			<field name="subjectTeam" hidden="true"/>
 		</panel>
-		<panel title="Add Guests" sidebar="true">
+		<panel title="Add Guests" name="addGuests" sidebar="true">
 			<field name="$guestUser" title="Existing user" colSpan="9" type="many-to-one" target="com.axelor.auth.db.User"/>
 			<button name="addNewGuestUser" title="Add" colSpan="3" onClick="save, action-event-method-add-user-guest"/>
 			<field name="$guestPartner" title="Existing customer/supplier/contact" colSpan="9" type="many-to-one" target="com.axelor.apps.base.db.Partner"/>
@@ -75,7 +73,7 @@
 			<button name="addNewGuestEmail" title="Add" colSpan="3" onClick="save, action-event-method-add-email-guest"/>
 		</panel>
 		
-		<panel sidebar="true" title="Attributes">
+		<panel sidebar="true" title="Attributes" name="meetingAttributes">
 			<field name="typeSelect" domain="self.value IN ('1','2','3')"/>
 			<field name="callTypeSelect"  showIf="typeSelect == 1"/>
 			<field name="meetingType" showIf="typeSelect == 2" widget="SuggestBox" form-view="meeting-type-form" grid-view="meeting-type-grid"/>
@@ -86,7 +84,7 @@
 			<field name="statusSelect" selection-in="[21, 22, 23, 24, 25]" hidden="true" showIf="typeSelect == 5"/>
 		</panel>
 		
-		<panel sidebar="true" title="Linked to" >
+		<panel sidebar="true" title="Linked to" name="meetingLinked">
 			<field name="clientPartner" onChange="action-meeting-set-location-partner,action-partner-attrs-hide-contact-partner" form-view="partner-form" grid-view="partner-grid"/>
 			<field name="contactPartner" onChange="action-group-crm-meeting-contactpartner-onchange" onSelect="action-event-attrs-contact-partner-domain" domain="self.isContact = true" form-view="partner-contact-form" grid-view="partner-contact-grid"/>
 			<field name="lead" onChange="action-meeting-set-location-lead" form-view="lead-form" grid-view="lead-grid"/>
@@ -102,6 +100,7 @@
 	
 	<action-group name="action-group-crm-event-onload">
 		<action name="action-partner-attrs-hide-contact-partner" />
+		<action name="action-partner-method-check-rights" if="calendarCrm != null"/>
 	</action-group>
 	
 	<action-record name="action-event-record-current-user" model="com.axelor.apps.crm.db.Event">
@@ -118,6 +117,18 @@
     	<view type="form" name="contact-event-form"/>
     	<domain>self.isContact = true</domain>
     </action-view>
+    
+    <action-method name="action-event-method-domain-calendar-crm">
+    	<call class="com.axelor.apps.crm.web.EventController" method="setCalendarCrmDomain"/>
+    </action-method>
+    
+    <action-method name="action-partner-method-check-rights">
+    	<call class="com.axelor.apps.crm.web.EventController" method="checkRights"/>
+    </action-method>
+    
+    <action-method name="action-event-method-change-creator">
+    	<call class="com.axelor.apps.crm.web.EventController" method="changeCreator"/>
+    </action-method>
     
     <grid name="call-grid" title="Calls" model="com.axelor.apps.crm.db.Event" orderBy="-startDateTime">
     	<toolbar>
@@ -197,15 +208,13 @@
 	</grid>
     
     <form onNew="action-event-new-record" name="meeting-form" title="Meeting" model="com.axelor.apps.crm.db.Event" 
-        onLoad="action-partner-attrs-hide-contact-partner,action-event-hide-private" onSave="action-event-group-on-save">
+        onLoad="action-group-crm-event-onload,action-event-hide-private" onSave="action-event-group-on-save">
 		<toolbar>
 			<button name="viewOnMap" icon="fa-map-marker" onClick="com.axelor.apps.crm.web.EventController:viewMap"/>
 		</toolbar>
-		<panel colSpan="12">
-			<field name="calendarCrm" widget="SuggestBox"/>
-			<field name="isRecurrent" readonlyIf="isRecurrent" onChange="save, action-event-view-recurrence-assistant" />
-			<button name="changeRecurrence" title="Change recurrence" hidden="true" showIf="isRecurrent" onClick="save, action-event-view-change-recurrence"/>
-			<field name="recurrenceConfiguration" hidden="true"/>
+		<panel colSpan="12" name="calendarConfig">
+			<field name="calendarCrm" widget="SuggestBox" onSelect="action-event-method-domain-calendar-crm" onChange="action-event-method-change-creator"/>
+			<field name="recurrenceConfiguration" title="Recurrence" canNew="true" canSelect="false"/>
 		</panel>
 		<panel name="meetingGeneral" colSpan="12">
 			<field name="subject" colSpan="6"/>
@@ -233,7 +242,7 @@
 			<panel-related field="eventReminderList" colSpan="12" showTitle="false" form-view="event-reminder-form" grid-view="event-reminder-grid"/>
 			<field name="subjectTeam" hidden="true"/>
 		</panel>
-		<panel title="Add Guests" sidebar="true">
+		<panel title="Add Guests" name="addGuests" sidebar="true">
 			<field name="$guestUser" title="Existing user" colSpan="9" type="many-to-one" target="com.axelor.auth.db.User"/>
 			<button name="addNewGuestUser" title="Add" colSpan="3" onClick="save, action-event-method-add-user-guest"/>
 			<field name="$guestPartner" title="Existing customer/supplier/contact" colSpan="9" type="many-to-one" target="com.axelor.apps.base.db.Partner"/>
@@ -277,11 +286,11 @@
     </action-group>
     
     <action-attrs name="action-event-hide-private">
-    	<attribute name="hidden" for="meetingGeneral" expr="eval: (__user__ != user &amp;&amp; !internalGuestSet.contains(__user__)) &amp;&amp; visibilitySelect == 2"/>
-    	<attribute name="hidden" for="meetingAttributes" expr="eval: (__user__ != user &amp;&amp; !internalGuestSet.contains(__user__)) &amp;&amp; visibilitySelect == 2"/>
-    	<attribute name="hidden" for="meetingGuests" expr="eval: (__user__ != user &amp;&amp; !internalGuestSet.contains(__user__)) &amp;&amp; visibilitySelect == 2"/>
-    	<attribute name="hidden" for="meetingLinked" expr="eval: (__user__ != user &amp;&amp; !internalGuestSet.contains(__user__)) &amp;&amp; visibilitySelect == 2"/>
-    	<attribute name="hidden" for="panelMail" expr="eval: (__user__ != user &amp;&amp; !internalGuestSet.contains(__user__)) &amp;&amp; visibilitySelect == 2"/>
+    	<attribute name="hidden" for="meetingGeneral" expr="eval: (__user__ != user &amp;&amp; !internalGuestSet?.contains(__user__)) &amp;&amp; visibilitySelect == 2"/>
+    	<attribute name="hidden" for="meetingAttributes" expr="eval: (__user__ != user &amp;&amp; !internalGuestSet?.contains(__user__)) &amp;&amp; visibilitySelect == 2"/>
+    	<attribute name="hidden" for="meetingGuests" expr="eval: (__user__ != user &amp;&amp; !internalGuestSet?.contains(__user__)) &amp;&amp; visibilitySelect == 2"/>
+    	<attribute name="hidden" for="meetingLinked" expr="eval: (__user__ != user &amp;&amp; !internalGuestSet?.contains(__user__)) &amp;&amp; visibilitySelect == 2"/>
+    	<attribute name="hidden" for="panelMail" expr="eval: (__user__ != user &amp;&amp; !internalGuestSet?.contains(__user__)) &amp;&amp; visibilitySelect == 2"/>
     </action-attrs>
     
     <grid name="crm-task-grid" title="Tasks" model="com.axelor.apps.crm.db.Event" orderBy="-startDateTime">
@@ -436,7 +445,7 @@
 	<action-group name="action-event-group-on-save">
     	<action name="action-event-record-subjectTeam"/>
     	<action name="save"/>
-    	<action name="action-event-view-modifications-recurrence" if="isRecurrent &amp;&amp; id > 0"/>
+    	<action name="action-event-view-modifications-recurrence" if="recurrenceConfiguration &amp;&amp; id > 0"/>
     </action-group>
 	
 	<action-view name="action-event-view-recurrence-assistant" title="Recurrence assistant" model="com.axelor.apps.crm.db.RecurrenceConfiguration">
@@ -458,6 +467,7 @@
 	    <view-param name="show-toolbar" value="false" />
 	    <view-param name="popup-save" value="false" />
 	    <context name="_idEvent" expr="eval: id"/>
+	    <context name="_startDate" expr="eval: startDateTime"/>
 	    <context name="_showRecord" expr="eval: recurrenceConfiguration?.id"/>
 	</action-view>
 	

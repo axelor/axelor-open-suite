@@ -315,6 +315,13 @@ public class SaleOrderServiceImpl implements SaleOrderService {
 		
 		saleOrderRepo.save(saleOrder);
 	}
+	
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
+	public void finishSaleOrder(SaleOrder saleOrder) throws AxelorException {
+		saleOrder.setStatusSelect(ISaleOrder.STATUS_FINISHED);
+
+		saleOrderRepo.save(saleOrder);
+	}
 
 
 	@Override

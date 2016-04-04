@@ -71,10 +71,10 @@ public class MailServiceBaseImpl extends MailServiceMessageImpl{
 		final List<String> where = new ArrayList<>();
 		final Map<String, Object> params = new HashMap<>();
 		
-		where.add("self.partner is not null AND (self.partner.emailAddress is not null OR self.email is not null)");
+		where.add("((self.partner is not null AND self.partner.emailAddress is not null) OR (self.email is not null))");
 
 		if (!isBlank(matching)) {
-			where.add("(LOWER(self.partner.emailAddress.address) like LOWER(:email) OR LOWER(self.partner.fullName) like LOWER(:email))");
+			where.add("(LOWER(self.partner.emailAddress.address) like LOWER(:email) OR LOWER(self.partner.fullName) like LOWER(:email) OR LOWER(self.email) like LOWER(:email) OR LOWER(self.name) like LOWER(:email))");
 			params.put("email", "%" + matching + "%");
 		}
 		if (selectedWithoutNull != null && !selectedWithoutNull.isEmpty()) {
@@ -140,6 +140,7 @@ public class MailServiceBaseImpl extends MailServiceMessageImpl{
 					addresses.add(item);
 				}
 			} catch (UnsupportedEncodingException e) {
+				TraceBackService.trace(e);
 			}
 		}
 
