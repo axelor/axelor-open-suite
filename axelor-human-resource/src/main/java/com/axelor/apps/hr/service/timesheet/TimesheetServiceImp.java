@@ -25,10 +25,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.joda.time.Hours;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalTime;
 import org.joda.time.Minutes;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
@@ -68,7 +69,6 @@ import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
-
 public class TimesheetServiceImp implements TimesheetService{
 
 	@Inject
@@ -79,7 +79,7 @@ public class TimesheetServiceImp implements TimesheetService{
 
 	@Inject
 	protected GeneralService generalService;
-
+	
 	@Override
 	@Transactional(rollbackOn={Exception.class})
 	public void getTimeFromTask(Timesheet timesheet){
@@ -158,14 +158,7 @@ public class TimesheetServiceImp implements TimesheetService{
 					}
 				}
 				if(noLeave){
-					TimesheetLine timesheetLine = new TimesheetLine();
-					timesheetLine.setDate(fromDate);
-					timesheetLine.setUser(timesheet.getUser());
-					timesheetLine.setProjectTask(timesheet.getProjectTask());
-					timesheetLine.setVisibleDuration(timesheet.getLogTime());
-					timesheetLine.setDurationStored(employeeService.getDurationHours(timesheet.getLogTime()));
-					timesheetLine.setProduct(timesheet.getProduct());
-					timesheet.addTimesheetLineListItem(timesheetLine);
+					createTimesheetLine(timesheet.getProjectTask(), timesheet.getProduct(), timesheet.getUser(), fromDate, timesheet, timesheet.getLogTime(), "");
 				}
 			}
 			fromDate=fromDate.plusDays(1);
@@ -192,19 +185,19 @@ public class TimesheetServiceImp implements TimesheetService{
 		timesheet.setFromDate(fromDate);
 		timesheet.setToDate(toDate);
 		timesheet.setStatusSelect(TimesheetRepository.STATUS_DRAFT);
+		timesheet.setFullName(computeFullName(timesheet));
 		
 		return timesheet;
 	}	
 	
-	public TimesheetLine createTimesheetLine(ProjectTask project, Product product, User user, LocalDate date, Timesheet timesheet, BigDecimal minutes, String comment){
+	public TimesheetLine createTimesheetLine(ProjectTask project, Product product, User user, LocalDate date, Timesheet timesheet, BigDecimal minutes, String comments){
 		TimesheetLine timesheetLine = new TimesheetLine();
 		
 		timesheetLine.setDate(date);
-		timesheetLine.setComments(comment);
+		timesheetLine.setComments(comments);
 		timesheetLine.setProduct(product);
 		timesheetLine.setProjectTask(project);
 		timesheetLine.setUser(user);
-		timesheetLine.setToInvoice(true);
 		timesheetLine.setDurationStored(minutes);
 		timesheet.addTimesheetLineListItem(timesheetLine);
 		
@@ -426,27 +419,26 @@ public class TimesheetServiceImp implements TimesheetService{
 		if(user != null){
 			Timesheet timesheet = Beans.get(TimesheetRepository.class).all().filter("self.statusSelect = 1 AND self.user.id = ?1", user.getId()).order("-id").fetchOne();
 			if(timesheet == null){
-				timesheet = new Timesheet();
-				timesheet.setUser(user);
-				timesheet.setCompany(user.getActiveCompany());
-				timesheet.setFromDate(date);
-				timesheet.setToDate(date);
-				timesheet.setStatusSelect(TimesheetRepository.STATUS_DRAFT);
+				timesheet = createTimesheet(user, date, date);
 			}
-			TimesheetLine timesheetLine = new TimesheetLine();
-			timesheetLine.setDate(date);
-			timesheetLine.setComments(request.getData().get("comments").toString());
-			timesheetLine.setProduct(product);
-			timesheetLine.setProjectTask(projectTask);
-			timesheetLine.setUser(user);
-			timesheetLine.setToInvoice(new Boolean(request.getData().get("toInvoice").toString()));
-			BigDecimal durationHours = new BigDecimal(Hours.hoursBetween(new LocalTime(0,0), new LocalTime(request.getData().get("duration").toString())).getHours());
-			timesheetLine.setDurationStored(durationHours);
-			timesheetLine.setVisibleDuration(durationHours);
-			timesheet.addTimesheetLineListItem(timesheetLine);
+			BigDecimal minutes = new BigDecimal(Minutes.minutesBetween(new LocalTime(0,0), new LocalTime(request.getData().get("duration").toString())).getMinutes());
+			createTimesheetLine(projectTask, product, user, date, timesheet, minutes, request.getData().get("comments").toString());
 			
 			Beans.get(TimesheetRepository.class).save(timesheet);
 		}
+	}
+	
+	public String computeFullName(Timesheet timeSheet){
+  		if(timeSheet.getUser() != null && timeSheet.getCreatedOn() != null){
+  			return timeSheet.getUser().getFullName()+" "+timeSheet.getCreatedOn().getDayOfMonth()+"/"+timeSheet.getCreatedOn().getMonthOfYear()
+  				+"/"+timeSheet.getCreatedOn().getYear()+"  "+timeSheet.getCreatedOn().getHourOfDay()+":"+timeSheet.getCreatedOn().getMinuteOfHour();
+  		}
+  		else if (timeSheet.getUser() != null){
+  			return timeSheet.getUser().getFullName()+" N°"+timeSheet.getId();
+  		}
+  		else{
+  			return "N°"+timeSheet.getId();
+  		}
 	}
 }
 

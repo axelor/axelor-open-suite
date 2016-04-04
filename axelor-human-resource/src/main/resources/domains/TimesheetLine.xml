@@ -18,7 +18,7 @@
       <string name="comments" large="true"/>
       <boolean name="toInvoice"/>
       <boolean name="invoiced" title="Invoiced" readonly="true"/>
-	          
+	  <string name="fullName" namecolumn="true"></string>        
   </entity>
   
 </domain-models>
