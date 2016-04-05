@@ -64,13 +64,9 @@ public class MoveLineReportController {
 		try  {
 			moveLineReport = moveLineReportRepo.find(moveLineReport.getId());
 			
-			moveLineReportService.getMoveLineList(moveLineReport);
+			String query = moveLineReportService.getMoveLineList(moveLineReport);
 			BigDecimal debitBalance = moveLineReportService.getDebitBalance();
 			BigDecimal creditBalance = moveLineReportService.getCreditBalance();
-			
-			if (moveLineReport.getRef() == null) {
-				response.setValue("ref", moveLineReportService.getSequence(moveLineReport));
-			}
 
 			response.setValue("totalDebit", debitBalance);
 			response.setValue("totalCredit", creditBalance);
@@ -80,31 +76,13 @@ public class MoveLineReportController {
 			
 			view.put("title", I18n.get(IExceptionMessage.MOVE_LINE_REPORT_3));
 			view.put("resource", MoveLine.class.getName());
-//			view.put("domain", queryFilter); //TODO
+			view.put("domain", query); 
 			
 			response.setView(view);
 		}
 		catch(Exception e)  { TraceBackService.trace(response, e); }
 	}
 
-	/**
-	 * @param request
-	 * @param response
-	 */
-	public void getSequence(ActionRequest request, ActionResponse response) {
-
-		MoveLineReport moveLineReport = request.getContext().asType(MoveLineReport.class);
-
-		try  {
-			if (moveLineReport.getRef() == null) {
-
-				response.setValue(
-						"ref", 
-						Beans.get(MoveLineReportService.class).getSequence(moveLineReport));				
-			}
-		}
-		catch(Exception e) { TraceBackService.trace(response, e); }
-	}
 
 	/**
 	 * @param request
@@ -199,12 +177,6 @@ public class MoveLineReportController {
 			}
 
 			logger.debug("Type selected : {}" , moveLineReport.getTypeSelect());
-
-			if (moveLineReport.getRef() == null) {
-
-				String seq = moveLineReportService.getSequence(moveLineReport);
-				moveLineReportService.setSequence(moveLineReport, seq);
-			}
 
 			moveLineReportService.setStatus(moveLineReport);
 

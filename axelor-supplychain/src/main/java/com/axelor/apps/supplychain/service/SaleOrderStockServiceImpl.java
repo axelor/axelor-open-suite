@@ -20,6 +20,7 @@ package com.axelor.apps.supplychain.service;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 
+import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
@@ -148,6 +149,13 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService  {
 				priceDiscounted = unitConversionService.convertWithProduct(saleOrderLine.getUnit(), unit, priceDiscounted, saleOrderLine.getProduct());
 			}
 			
+			BigDecimal taxRate = BigDecimal.ZERO;
+			TaxLine taxLine = saleOrderLine.getTaxLine();
+			if(taxLine != null)  {
+				taxRate = taxLine.getValue();
+			}
+			
+			
 			StockMoveLine stockMoveLine = stockMoveLineService.createStockMoveLine(
 					product,
 					saleOrderLine.getProductName(),
@@ -156,7 +164,7 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService  {
 					priceDiscounted,
 					unit,
 					stockMove,
-					1, saleOrderLine.getSaleOrder().getInAti(), saleOrderLine.getTaxLine().getValue());
+					1, saleOrderLine.getSaleOrder().getInAti(), taxRate);
 
 			stockMoveLine.setSaleOrderLine(saleOrderLine);
 
