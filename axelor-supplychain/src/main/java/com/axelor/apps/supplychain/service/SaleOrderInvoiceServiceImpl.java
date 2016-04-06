@@ -206,7 +206,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 
 		List<InvoiceLine> invoiceLineList = new ArrayList<InvoiceLine>();
 
-		Integer sequence = 10;
+		int sequence = 1;
 
 		for(Subscription subscription : subscriptionList)  {
 
@@ -214,7 +214,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 
 			subscription.setInvoiced(true);
 
-			sequence += 10;
+			sequence++;
 		}
 
 		return invoiceLineList;

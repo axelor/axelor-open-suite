@@ -80,7 +80,7 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
 	protected BigDecimal inTaxTotal;
 	protected boolean isTitleLine;
 
-	public static final int DEFAULT_SEQUENCE = 1;
+	public static final int DEFAULT_SEQUENCE = 0;
 
 	@Inject
 	protected UnitConversionRepository unitConversionRepo;
