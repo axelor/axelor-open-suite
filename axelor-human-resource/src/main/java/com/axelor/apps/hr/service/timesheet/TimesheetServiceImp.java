@@ -177,6 +177,24 @@ public class TimesheetServiceImp implements TimesheetService{
 		}
 	}
 	
+	public Timesheet getCurrentTimesheet(){
+		Timesheet timesheet = Beans.get(TimesheetRepository.class).all().filter("self.statusSelect = 1 AND self.user.id = ?1", AuthUtils.getUser().getId()).order("-id").fetchOne();
+		if(timesheet != null){
+			return timesheet;
+		}
+		else{
+			return null;
+		}
+	}
+	
+	public Timesheet getCurrentOrCreateTimesheet(){
+		Timesheet timesheet = Beans.get(TimesheetRepository.class).all().filter("self.statusSelect = 1 AND self.user.id = ?1", AuthUtils.getUser().getId()).order("-id").fetchOne();
+		if(timesheet == null){
+			timesheet = createTimesheet(AuthUtils.getUser(), generalService.getTodayDateTime().toLocalDate(), null);
+		}
+		return timesheet;
+	}
+	
 	public Timesheet createTimesheet(User user, LocalDate fromDate, LocalDate toDate){
 		Timesheet timesheet = new Timesheet();
 		
@@ -188,7 +206,7 @@ public class TimesheetServiceImp implements TimesheetService{
 		timesheet.setFullName(computeFullName(timesheet));
 		
 		return timesheet;
-	}	
+	}
 	
 	public TimesheetLine createTimesheetLine(ProjectTask project, Product product, User user, LocalDate date, Timesheet timesheet, BigDecimal minutes, String comments){
 		TimesheetLine timesheetLine = new TimesheetLine();

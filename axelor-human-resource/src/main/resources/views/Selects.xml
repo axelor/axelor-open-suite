@@ -79,7 +79,8 @@
 	</selection>
 	
 	<selection name="hr.timer.status.select">
-		<option value="1">start</option>
-		<option value="2">stop</option>
+		<option value="1">Start</option>
+		<option value="2">Pause</option>
+		<option value="3">Stop</option>
 	</selection>
 </object-views>

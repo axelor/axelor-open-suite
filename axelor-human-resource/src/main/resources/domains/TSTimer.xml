@@ -12,7 +12,7 @@
       	<many-to-one name="projectTask" ref="com.axelor.apps.project.db.ProjectTask" title="Project/Task"/>
       	<many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Activity" required="true"/>
       	<string name="comments" title="Comments" large="true"/>
-		<datetime name="startTime" title="Start Time" default="now" readonly="true"/>
+		<datetime name="startTime" title="Start Time" readonly="true"/>
       	<long name="duration" title="Duration" required="true" default="0"/>
      	<many-to-one name="affectedToTimeSheetLine" ref="com.axelor.apps.hr.db.TimesheetLine" title="Time Sheet Line" readonly="true"/>
       	<integer name="status" title="Status Timer" default="2" selection="hr.timer.status.select" readonly="true"></integer>

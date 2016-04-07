@@ -2,37 +2,38 @@
 <object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
 
-	<grid name="ts-timer-grid" title="Log Times" model="com.axelor.apps.hr.db.TSTimer" editable="true"
-	onNew="action-hr-default-timesheet-line-project">
+	<grid name="ts-timer-grid" title="Timesheet Timer" model="com.axelor.apps.hr.db.TSTimer" editable="true"
+	onNew="action-hr-default-timesheet-timer">
 		<field name="user" form-view="user-form" grid-view="user-grid"/>
 		<field name="projectTask" form-view="project-task-form" grid-view="project-task-grid"/>
-		<field name="product" domain="self.isActivity = true" widget="SuggestBox" form-view="product-activity-form" grid-view="product-activity-grid"/>
+		<field name="product" domain="self.isActivity = true AND EXISTS(SELECT p FROM ProjectTask p WHERE p = :projectTask AND self MEMBER OF p.productList)" widget="SuggestBox" form-view="product-activity-form" grid-view="product-activity-grid"/>
 		<field name="startTime"/>
 		<field name="visibleDuration"/>
 		<field name="durationStored" hidden="true"/>
-		<field name="affectedToTimeSheetLine" grid-view="timesheet-line-project-grid" form-view="timesheet-line-project-form"/>
-		<field name="comments" />
+		<field name="affectedToTimeSheetLine" grid-view="timesheet-line-timesheet-project-grid" form-view="timesheet-line-timesheet-project-form" showIf="affectedToTimeSheetLine != null"/>
+		<field name="comments" colSpan="12"/>
 	</grid>
 
-	<form name="ts-timer-form" title="Log Time" model="com.axelor.apps.hr.db.TSTimer"
-	onNew="action-hr-default-timesheet-line-project" width="large">
+	<form name="ts-timer-form" title="Timesheet Timer" model="com.axelor.apps.hr.db.TSTimer"
+	onNew="action-hr-default-timesheet-timer" width="large" readonlyIf="status == 3">
 		<panel title="TimeSheet Timer">
 			<field name="user" form-view="user-form" grid-view="user-grid"/>
-			<field name="projectTask" form-view="project-task-form" grid-view="project-task-grid"/>
-			<field name="product" domain="self.isActivity = true" widget="SuggestBox" form-view="product-activity-form" grid-view="product-activity-grid" onChange="action-ts-timer-record-stop" readonlyIf="status == 1"/>
+			<field name="projectTask" form-view="project-task-form" grid-view="project-task-grid" domain="self.imputable = true"/>
 			<field name="startTime"/>
-			<field name="duration" widget="duration" colSpan="3"/>
+			<field name="product" domain="self.isActivity = true AND EXISTS(SELECT p FROM ProjectTask p WHERE p = :projectTask AND self MEMBER OF p.productList)" widget="SuggestBox" form-view="product-activity-form" grid-view="product-activity-grid" onChange="action-ts-timer-record-pause" readonlyIf="status == 1"/>
+			<field name="duration" widget="duration" colSpan="2"/>
 			<label name="durationLabel" title="Hours" colSpan="1"/>
-			<field name="affectedToTimeSheetLine" grid-view="timesheet-line-project-grid" form-view="timesheet-line-project-form"/>
-			<field name="comments" />
+			<field name="affectedToTimeSheetLine" grid-view="timesheet-line-timesheet-project-grid" form-view="timesheet-line-timesheet-project-form" hideIf="affectedToTimeSheetLine == null" colOffset="3"/>
+			<field name="comments" colSpan="12"/>
 		</panel>
 		<panel sidebar="true" title="Actions" stacked="true">
 			<button name="start" title="Start" onClick="action-ts-timer-record-start-startTime,save" readonlyIf="status == 1 || product == null"/>
-			<button name="stop" title="Stop" onClick="action-ts-timer-record-stop,save,action-ts-timer-method-calculate-duration" readonlyIf="status == 2 || product == null"/>		
+			<button name="pause" title="Pause" onClick="action-ts-timer-record-pause,save,action-ts-timer-method-calculate-duration" readonlyIf="status == 2 || product == null"/>
+			<button name="stop" title="Stop" onClick="action-ts-timer-record-stop,save,action-ts-timer-method-calculate-duration" readonlyIf="status == 2 || product == null"/>
 		</panel>
 	</form>
 	
-	<action-record name="action-hr-default-timesheet-line-project" model="com.axelor.apps.hr.db.TSTimer">
+	<action-record name="action-hr-default-timesheet-timer" model="com.axelor.apps.hr.db.TSTimer">
 	    <field name="user" expr="eval:__user__" />
 	    <field name="product" expr="eval:__user__.employee?.product" />
 	</action-record>
@@ -42,8 +43,12 @@
 		<field name="startTime" expr="eval:__datetime__"/>
 	</action-record>
 	
-	<action-record name="action-ts-timer-record-stop" model="com.axelor.apps.hr.db.TSTimer">
+	<action-record name="action-ts-timer-record-pause" model="com.axelor.apps.hr.db.TSTimer">
 		<field name="status" expr="2"/>
+	</action-record>
+	
+	<action-record name="action-ts-timer-record-stop" model="com.axelor.apps.hr.db.TSTimer">
+		<field name="status" expr="3"/>
 	</action-record>
 	
 	<action-method name="action-ts-timer-method-calculate-duration">
