@@ -38,7 +38,9 @@ import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
+import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.sale.db.SaleOrder;
+import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
@@ -601,8 +603,20 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
 
 		Product product = stockMoveLine.getProduct();
 		boolean isTitleLine = false;
-		if(stockMoveLine.getSaleOrderLine() != null && stockMoveLine.getSaleOrderLine().getIsTitleLine()) isTitleLine = true;
-		if(stockMoveLine.getPurchaseOrderLine() != null && stockMoveLine.getPurchaseOrderLine().getIsTitleLine()) isTitleLine = true;
+		
+		int sequence = InvoiceLineGenerator.DEFAULT_SEQUENCE;
+		SaleOrderLine saleOrderLine = stockMoveLine.getSaleOrderLine();
+		PurchaseOrderLine purchaseOrderLine = stockMoveLine.getPurchaseOrderLine();
+		
+		if(saleOrderLine != null)  {
+			if(saleOrderLine.getIsTitleLine())  {  isTitleLine = true;  }
+			sequence = saleOrderLine.getSequence();
+		}
+		else if(purchaseOrderLine != null)  {
+			if(purchaseOrderLine.getIsTitleLine())  {  isTitleLine = true;  }
+			sequence = purchaseOrderLine.getSequence();
+		}
+		
 		if(stockMoveLine.getRealQty().compareTo(BigDecimal.ZERO) == 0 && !isTitleLine){
 			return null;
 		}
@@ -610,10 +624,9 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.STOCK_MOVE_INVOICE_1), stockMoveLine.getStockMove().getStockMoveSeq()), IException.CONFIGURATION_ERROR);
 		}
 		
-		//TODO add a sequence to keep the same order as on sale order or purchase order and then on invoice
 		InvoiceLineGenerator invoiceLineGenerator = new InvoiceLineGeneratorSupplyChain(invoice, product, stockMoveLine.getProductName(),
 				stockMoveLine.getDescription(), stockMoveLine.getRealQty(), stockMoveLine.getUnit(),
-				InvoiceLineGenerator.DEFAULT_SEQUENCE, false, stockMoveLine.getSaleOrderLine(), stockMoveLine.getPurchaseOrderLine(), stockMoveLine)  {
+				sequence, false, stockMoveLine.getSaleOrderLine(), stockMoveLine.getPurchaseOrderLine(), stockMoveLine)  {
 			@Override
 			public List<InvoiceLine> creates() throws AxelorException {
 

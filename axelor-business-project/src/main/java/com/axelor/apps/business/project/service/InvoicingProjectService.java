@@ -89,7 +89,7 @@ public class InvoicingProjectService {
 
 	protected int MAX_LEVEL_OF_PROJECT = 10;
 
-	protected int sequence = 10;
+	protected int sequence = 0;
 
 	@Transactional
 	public Invoice generateInvoice(InvoicingProject invoicingProject) throws AxelorException{
@@ -130,18 +130,18 @@ public class InvoicingProjectService {
 		List<ProjectTask> projectTaskList = new ArrayList<ProjectTask>(folder.getProjectTaskSet());
 
 		List<InvoiceLine> invoiceLineList = new ArrayList<InvoiceLine>();
-		invoiceLineList.addAll( this.createSaleOrderInvoiceLines(invoice, saleOrderLineList,folder.getSaleOrderLineSetPrioritySelect()));
-		invoiceLineList.addAll(this.createPurchaseOrderInvoiceLines(invoice, purchaseOrderLineList,folder.getPurchaseOrderLineSetPrioritySelect()));
-		invoiceLineList.addAll(timesheetServiceImp.createInvoiceLines(invoice, timesheetLineList,folder.getLogTimesSetPrioritySelect()));
-		invoiceLineList.addAll(expenseService.createInvoiceLines(invoice, expenseLineList,folder.getExpenseLineSetPrioritySelect()));
+		invoiceLineList.addAll(this.createSaleOrderInvoiceLines(invoice, saleOrderLineList, folder.getSaleOrderLineSetPrioritySelect()));
+		invoiceLineList.addAll(this.createPurchaseOrderInvoiceLines(invoice, purchaseOrderLineList, folder.getPurchaseOrderLineSetPrioritySelect()));
+		invoiceLineList.addAll(timesheetServiceImp.createInvoiceLines(invoice, timesheetLineList, folder.getLogTimesSetPrioritySelect()));
+		invoiceLineList.addAll(expenseService.createInvoiceLines(invoice, expenseLineList, folder.getExpenseLineSetPrioritySelect()));
 		invoiceLineList.addAll(elementsToInvoiceService.createInvoiceLines(invoice, elementsToInvoiceList, folder.getElementsToInvoiceSetPrioritySelect()));
-		invoiceLineList.addAll(this.createInvoiceLines(invoice, projectTaskList,folder.getProjectTaskSetPrioritySelect()));
+		invoiceLineList.addAll(this.createInvoiceLines(invoice, projectTaskList, folder.getProjectTaskSetPrioritySelect()));
 
 		Collections.sort(invoiceLineList, new InvoiceLineComparator());
 
 		for (InvoiceLine invoiceLine : invoiceLineList) {
 			invoiceLine.setSequence(sequence);
-			sequence+=10;
+			sequence++;
 			invoiceLine.setSaleOrder(invoiceLine.getInvoice().getSaleOrder());
 		}
 
@@ -152,7 +152,7 @@ public class InvoicingProjectService {
 	public List<InvoiceLine> createSaleOrderInvoiceLines(Invoice invoice, List<SaleOrderLine> saleOrderLineList, int priority) throws AxelorException  {
 
 		List<InvoiceLine> invoiceLineList = new ArrayList<InvoiceLine>();
-		int count = 0;
+		int count = 1;
 		for(SaleOrderLine saleOrderLine : saleOrderLineList)  {
 
 			invoiceLineList.addAll(this.createInvoiceLine(invoice, saleOrderLine,priority*100+count));
