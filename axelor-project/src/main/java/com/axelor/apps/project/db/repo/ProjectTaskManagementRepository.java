@@ -9,13 +9,13 @@ public class ProjectTaskManagementRepository extends ProjectTaskRepository {
 	@Override
 	public ProjectTask save(ProjectTask projectTask){
 		
-		projectTask.setFullName(projectTask.getCode() + " " + projectTask.getName());
+		projectTask.setFullName(projectTask.getCode() + " - " + projectTask.getName());
 		
 		if (projectTask.getChildProjectTaskList() != null && !projectTask.getChildProjectTaskList().isEmpty()){
 			for (ProjectTask child : projectTask.getChildProjectTaskList()) {
-				String code = ( Strings.isNullOrEmpty(child.getCode()) ) ? "" : child.getCode() + " ";
+				String code = ( Strings.isNullOrEmpty(child.getCode()) ) ? "" : child.getCode();
 				String name = ( Strings.isNullOrEmpty(child.getName()) ) ? "" : child.getName();
-				child.setFullName(code + name);
+				child.setFullName(code + " - " + name);
 			}
 		}
 		
