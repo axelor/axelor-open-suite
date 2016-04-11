@@ -38,24 +38,24 @@ public class TSTimerController{
 	@Inject
 	private TSTimerRepository TsTimerRepo;
 	
-//	public void editTimesheetTimer(ActionRequest request, ActionResponse response){
-//		List<TSTimer> tsTimerList = Beans.get(TSTimerRepository.class).all().filter("self.user = ?1 AND self.company = ?2 AND self.statusSelect = 1",AuthUtils.getUser(),AuthUtils.getUser().getActiveCompany()).fetch();
-//		if(timesheetList.isEmpty()){
-//			response.setView(ActionView
-//									.define(I18n.get("Timesheet"))
-//									.model(Timesheet.class.getName())
-//									.add("form", "timesheet-form")
-//									.map());
-//		}
-//		else if(timesheetList.size() == 1){
-//			response.setView(ActionView
-//					.define(I18n.get("Timesheet"))
-//					.model(Timesheet.class.getName())
-//					.add("form", "timesheet-form")
-//					.param("forceEdit", "true")
-//					.context("_showRecord", String.valueOf(timesheetList.get(0).getId())).map());
-//		}
-//	}
+	public void editTimesheetTimer(ActionRequest request, ActionResponse response){
+		List<TSTimer> tsTimerList = Beans.get(TSTimerRepository.class).all().filter("self.user = ?1 AND self.statusSelect < 3",AuthUtils.getUser()).fetch();
+		if(tsTimerList.isEmpty()){
+			response.setView(ActionView
+									.define(I18n.get("TSTimer"))
+									.model(TSTimer.class.getName())
+									.add("form", "ts-timer-form")
+									.map());
+		}
+		else{
+			response.setView(ActionView
+					.define(I18n.get("TSTimer"))
+					.model(TSTimer.class.getName())
+					.add("form", "ts-timer-form")
+					.param("forceEdit", "true")
+					.context("_showRecord", String.valueOf(tsTimerList.get(0).getId())).map());
+		}
+	}
 	
 	@Transactional
 	public void calculateDuration(ActionRequest request, ActionResponse response){

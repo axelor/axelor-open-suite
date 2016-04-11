@@ -201,7 +201,6 @@ public class TimesheetServiceImp implements TimesheetService{
 		timesheet.setUser(user);
 		timesheet.setCompany(user.getActiveCompany());
 		timesheet.setFromDate(fromDate);
-		timesheet.setToDate(toDate);
 		timesheet.setStatusSelect(TimesheetRepository.STATUS_DRAFT);
 		timesheet.setFullName(computeFullName(timesheet));
 		
