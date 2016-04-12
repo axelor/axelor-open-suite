@@ -157,7 +157,7 @@ public class ExpenseController {
 		List<Expense> expenseList = Lists.newArrayList();
 		
 		if(AuthUtils.getUser().getEmployee() != null && AuthUtils.getUser().getEmployee().getHrManager()){
-			expenseList = Query.of(Expense.class).filter("self.company = ?2 AND  self.statusSelect = 2",AuthUtils.getUser(),AuthUtils.getUser().getActiveCompany()).fetch();
+			expenseList = Query.of(Expense.class).filter("self.company = ?1 AND  self.statusSelect = 2",AuthUtils.getUser().getActiveCompany()).fetch();
 		}else{
 			expenseList = Query.of(Expense.class).filter("self.user.employee.manager = ?1 AND self.company = ?2 AND  self.statusSelect = 2",AuthUtils.getUser(),AuthUtils.getUser().getActiveCompany()).fetch();
 		}
@@ -186,7 +186,15 @@ public class ExpenseController {
 	}
 
 	public void historicExpense(ActionRequest request, ActionResponse response){
-		List<Expense> expenseList = Beans.get(ExpenseRepository.class).all().filter("self.user.employee.manager = ?1 AND self.company = ?2 AND self.statusSelect = 3 OR self.statusSelect = 4",AuthUtils.getUser(),AuthUtils.getUser().getActiveCompany()).fetch();
+		
+		List<Expense> expenseList = Lists.newArrayList();
+		
+		if(AuthUtils.getUser().getEmployee() != null && AuthUtils.getUser().getEmployee().getHrManager()){
+			expenseList = Query.of(Expense.class).filter("self.company = ?1 AND self.statusSelect = 3 OR self.statusSelect = 4",AuthUtils.getUser().getActiveCompany()).fetch();
+		}else{
+			expenseList = Query.of(Expense.class).filter("self.user.employee.manager = ?1 AND self.company = ?2 AND self.statusSelect = 3 OR self.statusSelect = 4",AuthUtils.getUser(),AuthUtils.getUser().getActiveCompany()).fetch();
+		}
+		
 		List<Long> expenseListId = new ArrayList<Long>();
 		for (Expense expense : expenseList) {
 			expenseListId.add(expense.getId());

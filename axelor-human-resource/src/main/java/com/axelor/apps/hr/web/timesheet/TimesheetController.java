@@ -119,13 +119,9 @@ public class TimesheetController {
 
 	public void validateTimesheet(ActionRequest request, ActionResponse response){
 		
-		if(AuthUtils.getUser().getEmployee() == null){
-			response.setAlert("No employee for the current user");
-			return;
-		}
 		List<Timesheet> timesheetList = Lists.newArrayList();
-		if (AuthUtils.getUser().getEmployee().getHrManager()){
-			timesheetList = Query.of(Timesheet.class).filter("self.company = ?2 AND self.statusSelect = 2",AuthUtils.getUser(),AuthUtils.getUser().getActiveCompany()).fetch();
+		if (AuthUtils.getUser().getEmployee() != null && AuthUtils.getUser().getEmployee().getHrManager()){
+			timesheetList = Query.of(Timesheet.class).filter("self.company = ?1 AND self.statusSelect = 2",AuthUtils.getUser().getActiveCompany()).fetch();
 		}else{
 			 timesheetList = Query.of(Timesheet.class).filter("self.user.employee.manager = ?1 AND self.company = ?2 AND self.statusSelect = 2",AuthUtils.getUser(),AuthUtils.getUser().getActiveCompany()).fetch();
 		}
@@ -166,7 +162,15 @@ public class TimesheetController {
 	}
 
 	public void historicTimesheet(ActionRequest request, ActionResponse response){
-		List<Timesheet> timesheetList = Beans.get(TimesheetRepository.class).all().filter("self.user.employee.manager = ?1 AND self.company = ?2 AND self.statusSelect = 3 OR self.statusSelect = 4",AuthUtils.getUser(),AuthUtils.getUser().getActiveCompany()).fetch();
+		
+		List<Timesheet> timesheetList = Lists.newArrayList();
+		
+		if (AuthUtils.getUser().getEmployee() != null && AuthUtils.getUser().getEmployee().getHrManager()){
+			timesheetList = Query.of(Timesheet.class).filter("self.company = ?1 AND self.statusSelect = 3 OR self.statusSelect = 4",AuthUtils.getUser().getActiveCompany()).fetch();
+		}else{
+			 timesheetList = Query.of(Timesheet.class).filter("self.user.employee.manager = ?1 AND self.company = ?2 AND self.statusSelect = 3 OR self.statusSelect = 4",AuthUtils.getUser(),AuthUtils.getUser().getActiveCompany()).fetch();
+		}
+		
 		List<Long> timesheetListId = new ArrayList<Long>();
 		for (Timesheet timesheet : timesheetList) {
 			timesheetListId.add(timesheet.getId());
