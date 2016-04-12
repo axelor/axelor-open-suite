@@ -30,6 +30,8 @@ import com.axelor.apps.hr.service.employee.EmployeeService;
 import com.axelor.apps.hr.service.employee.EmployeeServiceImp;
 import com.axelor.apps.hr.service.timesheet.TimesheetService;
 import com.axelor.apps.hr.service.timesheet.TimesheetServiceImp;
+import com.axelor.apps.hr.service.timesheetTimer.TimesheetTimerService;
+import com.axelor.apps.hr.service.timesheetTimer.TimesheetTimerServiceImp;
 
 
 public class HumanResourceModule extends AxelorModule {
@@ -39,6 +41,7 @@ public class HumanResourceModule extends AxelorModule {
 		
 		bind(EmployeeService.class).to(EmployeeServiceImp.class);
 		bind(TimesheetService.class).to(TimesheetServiceImp.class);
+		bind(TimesheetTimerService.class).to(TimesheetTimerServiceImp.class);
 		bind(TimesheetRepository.class).to(TimesheetHRRepository.class);
 		bind(TimesheetLineRepository.class).to(TimesheetLineHRRepository.class);
 		bind(MailBatchService.class).to(MailBatchServiceHR.class);
