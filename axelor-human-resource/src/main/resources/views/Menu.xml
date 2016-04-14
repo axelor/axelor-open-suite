@@ -177,7 +177,7 @@
     	title="Departments"
     	action="company.department.all"/>
 
-	<action-view name="company.department.all" title="Departments" model="com.axelor.apps.base.db.CompanyDepartment">
+	<action-view name="company.department.all" title="Company departments" model="com.axelor.apps.base.db.CompanyDepartment">
     	<view type="grid" name="company-department-grid"/>
 	    <view type="form" name="company-department-form"/>
 	</action-view>
