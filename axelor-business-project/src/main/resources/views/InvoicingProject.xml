@@ -12,8 +12,7 @@
 			<field name="projectTask" form-view="project-task-form" grid-view="project-task-grid" onChange="action-invoicing-project-method-fill-in" colSpan="12" readonlyIf="invoice != null"/>
 			<button name="automaticFillIn" title="Automatically Fill in" onClick="action-invoicing-project-method-fill-in" readonlyIf="invoice != null"/>
 			<button name="generateInvoice" title="Generate Invoice" onClick="save,action-invoicing-project-method-generate-invoice" readonlyIf="invoice != null"/>
-			<field name="invoice" readonly="true" form-view="invoice-form" grid-view="invoice-grid"/>
-			<button name="seeInvoice" title="See Invoice Generated" onClick="action-invoicing-project-view-see-invoice" showIf="invoice != null"/>
+			<field name="invoice" readonly="true" form-view="invoice-form" grid-view="invoice-grid" edit-window="blank"/>
 			<button name="seeLinkedTimesheetLines" title="See Linked Timesheet Lines" onClick="action-invoicing-project-task-show-timesheet-lines" hidden="true" showIf="invoice != null"/>
 		
 		</panel>
