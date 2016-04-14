@@ -128,7 +128,11 @@
 					<field name="reminderBlockingReason" form-view="stop-reason-form" grid-view="stop-reason-grid" />
 				</panel>
 			</panel>
-			<panel  title="Payment" showIf="statusSelect == 3" showTitle="false">
+			<panel title="Notes" colSpan="12">
+				<field name="note" showTitle="false" colSpan="12"/>
+			</panel>
+			<panel-related title="Payments details" field="invoicePaymentList" colSpan="12" grid-view="invoice-payment-grid" form-view="invoice-payment-form" canNew="false" canRemove="false"/>
+			<panel  title="Direct debit" showIf="statusSelect == 3" showTitle="false">
 				<panel  title="Payment schedule" colSpan="12" >
 					<field name="schedulePaymentOk" readonly="true" showIf="schedulePaymentOk"/>
 					<field name="paymentSchedule" readonly="true" showIf="schedulePaymentOk" domain="self.company = :company AND self.partner = :partner" form-view="payment-schedule-form" grid-view="payment-schedule-grid"/>
@@ -144,10 +148,6 @@
 					<field name="interbankCodeLine" grid-view="interbank-code-line-grid" form-view="interbank-code-line-form"/>
 				</panel>
 			</panel>
-			<panel title="Notes" colSpan="12">
-				<field name="note" showTitle="false" colSpan="12"/>
-			</panel>
-			<panel-related title="Payments details" field="invoicePaymentList" colSpan="12" grid-view="invoice-payment-grid" form-view="invoice-payment-form" canNew="false" canRemove="false"/>
 		</panel-tabs>
 	
 		<panel-stack sidebar="true">

@@ -3821,6 +3821,24 @@ else row["Column Binding_tot_sub"]</expression>
                                         <property name="borderRightWidth">thin</property>
                                         <text id="3457">
                                             <property name="fontSize">8pt</property>
+                                            <list-property name="visibility">
+                                                <structure>
+                                                    <property name="format">all</property>
+                                                    <expression name="valueExpr" type="javascript">row["is_title_line"]  == true</expression>
+                                                </structure>
+                                            </list-property>
+                                            <property name="contentType">html</property>
+                                            <text-property name="content"><![CDATA[<VALUE-OF>row["ProductName"]</VALUE-OF>]]></text-property>
+                                        </text>
+                                        <text id="4302">
+                                            <property name="fontSize">8pt</property>
+                                            <property name="fontWeight">bold</property>
+                                            <list-property name="visibility">
+                                                <structure>
+                                                    <property name="format">all</property>
+                                                    <expression name="valueExpr" type="javascript">row["is_title_line"] != true</expression>
+                                                </structure>
+                                            </list-property>
                                             <property name="contentType">html</property>
                                             <text-property name="content"><![CDATA[<VALUE-OF>row["ProductName"]</VALUE-OF>]]></text-property>
                                         </text>
