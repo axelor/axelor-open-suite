@@ -44,6 +44,7 @@
 			<field name="projTaskInvTypeSelect" if-module="axelor-business-project"/>
 			<field name="invoiced" showIf="projTaskInvTypeSelect == 2 || projTaskInvTypeSelect == 3" if-module="axelor-business-project"/>
 			<button name="seeReportingFolder" title="See Reporting Folder" onClick="action-show-reporting-folder"/>
+			<button name="seeLinkedTimesheetLines" title="See Linked Timesheet Lines" onClick="action-project-task-show-timesheet-lines" hidden="true" showIf="invoiced"/>
 		</panel>
 		<panel-tabs>
 			<panel title="Invoicing" if-module="axelor-business-project" showIf="projTaskInvTypeSelect == 3">
@@ -124,6 +125,7 @@
 			<field name="invoiced" showIf="projTaskInvTypeSelect == 2 || projTaskInvTypeSelect == 3" if-module="axelor-business-project"/>
 			<field name="sequence" />
 			<field name="typeSelect"/>
+			<button name="seeLinkedTimesheetLines" title="See Linked Timesheet Lines" onClick="action-project-task-show-timesheet-lines" hidden="true" showIf="invoiced"/>
 		</panel>
 		<panel-tabs>
 			<panel name="invoicingPanel" title="Invoicing" if-module="axelor-business-project" hidden="true">
@@ -189,6 +191,7 @@
 			<field name="imputable" if-module="axelor-business-project"/>
 			<field name="projTaskInvTypeSelect" onChange="action-project-task-attrs-hide-invoicing-panel" if-module="axelor-business-project"/>
 			<field name="invoiced" showIf="projTaskInvTypeSelect == 2 || projTaskInvTypeSelect == 3" if-module="axelor-business-project"/>
+			<button name="seeLinkedTimesheetLines" title="See Linked Timesheet Lines" onClick="action-project-task-show-timesheet-lines" hidden="true" showIf="invoiced"/>
 		</panel>
 		<panel-tabs>
 			<panel name="invoicingPanel" title="Invoicing" if-module="axelor-business-project" hidden="true">
@@ -442,5 +445,13 @@
 	<action-view name="action-show-reporting-folder" title="Business folder">  		
  		<view type="html" name="http://localhost:8080/abs-webapp/Exemple_report_Affaire.pdf" /> 
 	</action-view>
+	
+	<action-view name="action-project-task-show-timesheet-lines" title="Timesheet lines" model="com.axelor.apps.hr.db.TimesheetLine">
+		<view name="timesheet-line-project-grid" type="grid"/>
+		<view name="timesheet-line-project-form" type="form"/>
+		<domain>self.projectTask = :project</domain>
+		<context name="project" expr="eval: __self__"/>
+	</action-view>
+
 	
 </object-views>
