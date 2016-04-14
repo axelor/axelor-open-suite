@@ -48,12 +48,6 @@
 		<attribute name="title" for="projectTaskSet" expr="eval: __config__.general.getProjectTaskLabel()" if="!com.google.common.base.Strings.isNullOrEmpty(__config__.general.getProjectTaskLabel())"/>
 	</action-attrs>
 	
-	<action-view name="action-invoicing-project-view-see-invoice" title="Invoice" model="com.axelor.apps.account.db.Invoice">
-		<view type="form"/>
-		<view type="grid"/>
-		<context name="_showRecord" expr="eval: invoice?.id"/>
-	</action-view>
-	
 	<action-view name="action-invoicing-project-task-show-timesheet-lines" title="Timesheet lines" model="com.axelor.apps.hr.db.TimesheetLine">
 		<view name="timesheet-line-project-grid" type="grid"/>
 		<view name="timesheet-line-project-form" type="form"/>
