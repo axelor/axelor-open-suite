@@ -51,8 +51,8 @@
 	<action-view name="action-invoicing-project-task-show-timesheet-lines" title="Timesheet lines" model="com.axelor.apps.hr.db.TimesheetLine">
 		<view name="timesheet-line-project-grid" type="grid"/>
 		<view name="timesheet-line-project-form" type="form"/>
-		<domain>self.id IN :list </domain>
-  		<context name="list" expr="eval: ( logTimesSet.collect{it.id}.join(','))"/>
+		<domain>self.id IN (:list) </domain>
+  		<context name="list" expr="eval: logTimesSet.collect{it.id}"/>
 	</action-view>
 	    
 </object-views>
