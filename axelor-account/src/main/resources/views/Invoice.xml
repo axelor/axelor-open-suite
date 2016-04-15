@@ -25,6 +25,7 @@
         <field name="inTaxTotal"/>
         <field name="amountPaid"/>
         <field name="statusSelect"/>
+        <field name="companyInTaxTotalRemaining" hidden="true"/>
         <button name="showInvoice" title="Print" icon="fa-print" onClick="action-invoice-method-show-invoice"/>
         <button name="sendByEmail" title="Send email" icon="fa-envelope" onClick="action-send-by-email-with-template"/>
     </grid>
@@ -45,6 +46,7 @@
         <field name="exTaxTotal"/>
         <field name="amountPaid"/>
         <field name="statusSelect"/>
+        <field name="companyInTaxTotalRemaining" hidden="true"/>
         <button name="showInvoice" title="Print" icon="fa-print" onClick="action-invoice-method-show-invoice"/>
         <button name="sendByEmail" title="Send email" icon="fa-envelope" onClick="action-send-by-email-with-template"/>
     </grid>
