@@ -24,7 +24,7 @@
     </grid>
 
 	<form name="move-line-report-form" title="Accounting report" model="com.axelor.apps.account.db.MoveLineReport"   
-		onSave="action-move-line-report-method-get-sequence" onNew="action-move-line-report-default-record">
+		onNew="action-move-line-report-record-default">
 		<panel >
 			<field name="ref" readonly="true" />
 			<field name="date" readonlyIf="statusSelect == 2"/>
@@ -88,8 +88,7 @@
     </grid>
     
 	<form name="move-line-report-export-form" title="Accounting export" model="com.axelor.apps.account.db.MoveLineReport"   
-	onNew="action-move-line-report-default-record"
-	onSave="action-move-line-report-method-get-sequence">
+	onNew="action-move-line-report-record-default">
 		
 		<panel title="Search">
 			<field name="ref" readonly="true"/>
@@ -122,9 +121,9 @@
 <!-- 	ACTION GROUPs -->    
     
     <action-group name="action-group-account-moveline-report-typeselect-onchange">
-    	<action name="action-move-line-report-record"/>
+    	<action name="action-move-line-report-record-reset"/>
     	<action name="action-move-line-report-method-get-journal-type"/>
-    	<action name="action-move-line-report-record-default"/>
+    	<action name="action-move-line-report-record-default-global"/>
     	<action name="action-move-line-report-method-get-account"/>
     </action-group>
     
@@ -196,7 +195,7 @@
 		<field name="dateTo" expr="eval: period.toDate" if="eval : period != null"/>
 	</action-record>
 	
-	<action-record name="action-move-line-report-record" model="com.axelor.apps.account.db.MoveLineReport">
+	<action-record name="action-move-line-report-record-reset" model="com.axelor.apps.account.db.MoveLineReport">
 		<field name="cashRegister" expr="eval: null"/>
 		<field name="accountSet" expr="eval: null"/>
 		<field name="paymentMode" expr="eval: null"/>
@@ -210,7 +209,7 @@
 		<field name="exportTypeSelect" expr="eval: null"/>
 	</action-record>
 	
-	<action-record name="action-move-line-report-record-default" model="com.axelor.apps.account.db.MoveLineReport">
+	<action-record name="action-move-line-report-record-default-global" model="com.axelor.apps.account.db.MoveLineReport">
 		<field name="global" expr="eval: true" if="typeSelect in [1,2,5,11]"/>
 		<field name="globalByPartner" expr="eval: true" if="typeSelect in [3]"/>
 		<field name="detailed" expr="eval: true" if="typeSelect in [4]"/>
@@ -218,7 +217,7 @@
 		<field name="exportTypeSelect" expr="eval: 'pdf'"/>
 	</action-record>
 	
-	<action-record name="action-move-line-report-default-record" model="com.axelor.apps.account.db.MoveLineReport">
+	<action-record name="action-move-line-report-record-default" model="com.axelor.apps.account.db.MoveLineReport">
 		<field name="date" expr="eval:__config__.generalService.getTodayDate()"/>
 		<field name="company"  expr="eval:__user__.activeCompany" if="__user__.activeCompany != null"/>
     	<field name="company"  expr="eval:__repo__.of(Company).all().fetchOne()" if="__user__.activeCompany == null &amp;&amp; __repo__.of(Company).all().fetch().size == 1"/>
@@ -252,10 +251,6 @@
 	
 	<action-method name="action-move-line-report-method-search-move-line">
 		<call class="com.axelor.apps.account.web.MoveLineReportController" method="searchMoveLine"/>
-	</action-method>
-	
-	<action-method name="action-move-line-report-method-get-sequence">
-		<call class="com.axelor.apps.account.web.MoveLineReportController" method="getSequence"/>
 	</action-method>
 	
 	<action-method name="action-move-line-report-method-get-journal-type">

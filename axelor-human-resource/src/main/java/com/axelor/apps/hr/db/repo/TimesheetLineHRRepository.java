@@ -17,6 +17,26 @@
  */
 package com.axelor.apps.hr.db.repo;
 
-public class PublicHolidayPlanningHRRepository {
+import javax.persistence.PersistenceException;
 
+import com.axelor.apps.hr.db.TimesheetLine;
+
+public class TimesheetLineHRRepository extends TimesheetLineRepository {
+
+	@Override
+	public TimesheetLine save(TimesheetLine timesheetLine){
+		
+		computeFullName(timesheetLine);
+		
+		return super.save(timesheetLine);
+	}
+	
+	public void computeFullName(TimesheetLine timesheetLine){
+		try{
+			timesheetLine.setFullName(timesheetLine.getAffectedToTimeSheet().getFullName() + " " + timesheetLine.getDate() + " " + timesheetLine.getId());
+		}
+		catch (Exception e) {
+			throw new PersistenceException(e.getLocalizedMessage());
+		}
+	}
 }

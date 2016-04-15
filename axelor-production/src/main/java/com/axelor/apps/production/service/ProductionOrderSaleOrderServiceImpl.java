@@ -21,7 +21,9 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
+import org.joda.time.LocalDateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -102,7 +104,7 @@ public class ProductionOrderSaleOrderServiceImpl implements ProductionOrderSaleO
 				qty = unitConversionService.convertWithProduct(saleOrderLine.getUnit(), unit, qty, saleOrderLine.getProduct());
 			}
 			return productionOrderRepo.save(productionOrderService.generateProductionOrder(product, 
-					saleOrderLine.getBillOfMaterial(), qty));
+					saleOrderLine.getBillOfMaterial(), qty, new LocalDateTime()));
 
 		}
 

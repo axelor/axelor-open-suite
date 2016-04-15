@@ -29,6 +29,8 @@ import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.JournalManagementRepository;
 import com.axelor.apps.account.db.repo.JournalRepository;
+import com.axelor.apps.account.db.repo.MoveLineReportManagementRepository;
+import com.axelor.apps.account.db.repo.MoveLineReportRepository;
 import com.axelor.apps.account.db.repo.MoveManagementRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.PartnerAccountRepository;
@@ -41,6 +43,8 @@ import com.axelor.apps.account.service.AnalyticDistributionLineServiceImpl;
 import com.axelor.apps.account.service.FiscalPositionServiceAccountImpl;
 import com.axelor.apps.account.service.InvoicePaymentService;
 import com.axelor.apps.account.service.InvoicePaymentServiceImpl;
+import com.axelor.apps.account.service.MoveLineReportService;
+import com.axelor.apps.account.service.MoveLineReportServiceImpl;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.InvoiceServiceImpl;
 import com.axelor.apps.base.db.IPartner;
@@ -67,6 +71,10 @@ public class AccountModule extends AxelorModule {
         bind(InvoiceRepository.class).to(InvoiceManagementRepository.class);
 
         bind(MoveRepository.class).to(MoveManagementRepository.class);
+        
+        bind(MoveLineReportRepository.class).to(MoveLineReportManagementRepository.class);
+        
+        bind(MoveLineReportService.class).to(MoveLineReportServiceImpl.class);
         
         bind(JournalRepository.class).to(JournalManagementRepository.class);
 

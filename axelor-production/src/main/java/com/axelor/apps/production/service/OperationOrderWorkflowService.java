@@ -31,6 +31,7 @@ import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.db.ProdHumanResource;
 import com.axelor.apps.production.db.WorkCenter;
 import com.axelor.apps.production.db.repo.OperationOrderRepository;
+import com.axelor.apps.production.web.ManufOrderController;
 import com.axelor.auth.AuthUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
@@ -49,7 +50,7 @@ public class OperationOrderWorkflowService {
 	protected OperationOrderRepository operationOrderRepo;
 
 	private LocalDateTime today;
-
+	
 	@Inject
 	public OperationOrderWorkflowService(GeneralService generalService) {
 		this.generalService = generalService;
@@ -96,29 +97,30 @@ public class OperationOrderWorkflowService {
 
 		OperationOrder lastOperationOrder = operationOrderRepo.all().filter("self.manufOrder = ?1 AND self.priority <= ?2 AND self.statusSelect >= 3 AND self.statusSelect < 6 AND self.id != ?3",
 				operationOrder.getManufOrder(), operationOrder.getPriority(), operationOrder.getId()).order("-self.priority").order("-self.plannedEndDateT").fetchOne();
-
+		
 		if(lastOperationOrder != null)  {
-
 			if(lastOperationOrder.getPriority() == operationOrder.getPriority())  {
-				if(lastOperationOrder.getPlannedStartDateT() != null && lastOperationOrder.getPlannedStartDateT().isAfter(today))  {
+				if(lastOperationOrder.getPlannedStartDateT() != null && lastOperationOrder.getPlannedStartDateT().isAfter(operationOrder.getManufOrder().getPlannedStartDateT()))  {
+					if(lastOperationOrder.getMachineWorkCenter().equals(operationOrder.getMachineWorkCenter())){
+						return lastOperationOrder.getPlannedEndDateT();
+					}
 					return lastOperationOrder.getPlannedStartDateT();
 				}
 				else  {
-					return today;
+					return operationOrder.getManufOrder().getPlannedStartDateT();
 				}
 			}
 			else  {
-				if(lastOperationOrder.getPlannedEndDateT() != null && lastOperationOrder.getPlannedEndDateT().isAfter(today))  {
+				if(lastOperationOrder.getPlannedEndDateT() != null && lastOperationOrder.getPlannedEndDateT().isAfter(operationOrder.getManufOrder().getPlannedStartDateT()))  {
 					return lastOperationOrder.getPlannedEndDateT();
 				}
 				else  {
-					return today;
+					return operationOrder.getManufOrder().getPlannedStartDateT();
 				}
 			}
 		}
 
-		return today;
-
+		return operationOrder.getManufOrder().getPlannedStartDateT();
 	}
 	
 

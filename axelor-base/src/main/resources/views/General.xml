@@ -114,19 +114,22 @@
 				<field name="purchaseOrderGenerationAuto" showIf="purchaseOrderManagement" if-module="axelor-purchase"/>
 			</panel>
 			
-			<panel title="Stock Move configuration">
-				<field name="customerStockMoveManagement" if-module="axelor-supplychain" readonlyIf="customerStockMoveGenerationAuto"/>
+			<panel title="Stock Move configuration" itemSpan="4">
+				<field name="customerStockMoveManagement" if-module="axelor-supplychain" readonlyIf="customerStockMoveGenerationAuto || terminateSaleOrderOnDelivery"/>
 				<field name="customerStockMoveGenerationAuto" showIf="customerStockMoveManagement" if-module="axelor-supplychain"/>
+				<field name="terminateSaleOrderOnDelivery" if-module="axelor-sale" showIf="customerStockMoveManagement"/>
 				
-				<field name="supplierStockMoveManagement" if-module="axelor-supplychain" readonlyIf="supplierStockMoveGenerationAuto"/>
+				<field name="supplierStockMoveManagement" if-module="axelor-supplychain" readonlyIf="supplierStockMoveGenerationAuto || terminatePurchaseOrderOnReceipt"/>
 				<field name="supplierStockMoveGenerationAuto" showIf="supplierStockMoveManagement" if-module="axelor-supplychain"/>
+				<field name="terminatePurchaseOrderOnReceipt" if-module="axelor-supplychain" showIf="supplierStockMoveManagement"/>
 				
 				<field name="generateInvoiceFromStockMove"/>
 			</panel>
 			
 			<panel title="Production configuration" if-module="axelor-production">
-				<field name="productionOrderManagement" readonlyIf="productionOrderGenerationAuto"/>
-				<field name="productionOrderGenerationAuto" showIf="productionOrderManagement"/>
+				<field name="productionOrderManagement" readonlyIf="productionOrderGenerationAuto" colSpan="4"/>
+				<field name="productionOrderGenerationAuto" showIf="productionOrderManagement" colSpan="4"/>
+				<field name="manageBillOfMaterialVersion" if-module="axelor-production" colSpan="4"/>
 				<panel title="Bill of material">
 				    <field name="manageResidualProductOnBom"/>
 				</panel>

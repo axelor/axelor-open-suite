@@ -24,6 +24,7 @@ import org.eclipse.birt.core.exception.BirtException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.axelor.app.AppSettings;
 import com.axelor.apps.ReportFactory;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.stock.db.Inventory;
@@ -39,6 +40,7 @@ import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.meta.db.MetaFile;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -55,6 +57,8 @@ public class InventoryController {
 	InventoryRepository inventoryRepo;
 	
 	private static final Logger LOG = LoggerFactory.getLogger(InventoryController.class);
+	
+	private static final String PATH = AppSettings.get().get("file.upload.dir");
 	
 	/**
 	 * Fonction appeler par le bouton imprimer
@@ -90,12 +94,12 @@ public class InventoryController {
 	
 	public void importFile(ActionRequest request, ActionResponse response) throws IOException, AxelorException {
 		
-		Inventory inventory = request.getContext().asType(Inventory.class);
-		String filePath = inventory.getImportFilePath();
+		Inventory inventory = inventoryRepo.find( request.getContext().asType(Inventory.class).getId() );
+		MetaFile importFile = inventory.getImportFile();
 		char separator = ',';
 		
-		inventoryService.importFile(filePath, separator, inventory);
-		response.setFlash(String.format(I18n.get(IExceptionMessage.INVENTORY_8),filePath));
+		inventoryService.importFile(PATH + System.getProperty("file.separator") + importFile.getFilePath() , separator, inventory);
+		response.setFlash(String.format(I18n.get(IExceptionMessage.INVENTORY_8),importFile.getFilePath()));
 	}
 	
 	public void generateStockMove(ActionRequest request, ActionResponse response) throws AxelorException {

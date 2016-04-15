@@ -73,7 +73,7 @@
 	      	<field name="priceList" domain="self.typeSelect = 2 and self.isActive = true" form-view="price-list-form" grid-view="price-list-grid" /> 
 		</panel>
 		<panel title="Delivery" colSpan="12">
-			<field name="deliveryDate" colSpan="3"/>
+			<field name="receiptDate" colSpan="3"/>
 	        <field name="location" domain="self.company = :company and self.typeSelect = 1" if-module="axelor-supplychain" colSpan="3" form-view="location-form" grid-view="location-grid"/>
 	        <field name="location.address" if-module="axelor-supplychain" form-view="address-form" grid-view="address-grid"/>
 	    </panel>	  

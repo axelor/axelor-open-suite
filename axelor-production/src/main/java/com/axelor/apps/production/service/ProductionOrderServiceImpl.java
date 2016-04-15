@@ -19,6 +19,7 @@ package com.axelor.apps.production.service;
 
 import java.math.BigDecimal;
 
+import org.joda.time.DateTime;
 import org.joda.time.LocalDateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -84,11 +85,11 @@ public class ProductionOrderServiceImpl implements ProductionOrderService {
 	 * @throws AxelorException
 	 */
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public ProductionOrder generateProductionOrder(Product product, BillOfMaterial billOfMaterial, BigDecimal qtyRequested) throws AxelorException  {
+	public ProductionOrder generateProductionOrder(Product product, BillOfMaterial billOfMaterial, BigDecimal qtyRequested, LocalDateTime startDate) throws AxelorException  {
 		
 		ProductionOrder productionOrder = this.createProductionOrder();
 		
-		this.addManufOrder(productionOrder, product, billOfMaterial, qtyRequested);
+		this.addManufOrder(productionOrder, product, billOfMaterial, qtyRequested, startDate);
 		
 		return productionOrderRepo.save(productionOrder);
 		
@@ -96,7 +97,7 @@ public class ProductionOrderServiceImpl implements ProductionOrderService {
 	
 	
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public ProductionOrder addManufOrder(ProductionOrder productionOrder, Product product, BillOfMaterial billOfMaterial, BigDecimal qtyRequested) throws AxelorException  {
+	public ProductionOrder addManufOrder(ProductionOrder productionOrder, Product product, BillOfMaterial billOfMaterial, BigDecimal qtyRequested, LocalDateTime startDate) throws AxelorException  {
 		
 		ManufOrder manufOrder = manufOrderService.generateManufOrder(
 				product, 
@@ -104,12 +105,11 @@ public class ProductionOrderServiceImpl implements ProductionOrderService {
 				ManufOrderService.DEFAULT_PRIORITY, 
 				ManufOrderService.IS_TO_INVOICE, 
 				billOfMaterial, 
-				new LocalDateTime());
+				startDate);
 		
 		productionOrder.addManufOrderListItem(manufOrder);
 		
 		return productionOrderRepo.save(productionOrder);
 		
 	}
-	
 }

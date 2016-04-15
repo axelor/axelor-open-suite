@@ -32,7 +32,7 @@
     </grid>
     
    	<form name="lead-form" title="Lead" model="com.axelor.apps.crm.db.Lead" 
-		onLoad="action-lead-attrs-readonly-other-address,action-lead-method-set-social-network-url, action-lead-method-view-emails" 
+		onLoad="action-lead-attrs-readonly-other-address,action-lead-method-set-social-network-url" 
 		onNew="action-group-crm-lead-onnew" >
 		
 		<toolbar>
@@ -141,7 +141,7 @@
 			<panel-dashlet action="action-lead-view-historical-events-completed"/>
 			<panel-dashlet action="action-lead-view-opportunity"/>
 			<panel-dashlet action="action-lead-view-event-ticket"/>
-			<field name="$emailsList" colSpan="12" type="many-to-many" target="com.axelor.apps.message.db.Message" title="Emails" canNew="false" canSelect="false" canRemove="false"/>
+			<panel-dashlet action="action-lead-view-emails"/>
  		</panel>
  		
  		<panel-mail>
@@ -286,6 +286,16 @@
 		<context name="id" expr="eval: id"/>
 	</action-view>
 	
+	<action-view name="action-lead-view-emails" title="Emails" model="com.axelor.apps.message.db.Message">
+		<view type="grid" name="message-grid"/>
+		<view type="form" name="message-form"/>
+		<domain>self.mediaTypeSelect = 2 AND ((self.relatedTo1Select = 'com.axelor.apps.crm.db.Lead' AND self.relatedTo1SelectId = :id)
+					OR (self.relatedTo2Select = 'com.axelor.apps.crm.db.Lead' AND self.relatedTo2SelectId = :id)
+					OR (self.fromEmailAddress.id = :idEmail))</domain>
+		<context name="id" expr="eval: id"/>
+		<context name="idEmail" expr="eval: emailAddress?.id"/>
+	</action-view>
+	
 	<action-method name="action-show-leads-on-map-page">
 	  <call method="showLeadsOnMap" class="com.axelor.apps.crm.web.LeadController"/>
 	</action-method>	
@@ -296,10 +306,6 @@
     
 	<action-method name="action-crm-method-lead-import-leads">
 	    <call class="com.axelor.apps.crm.web.LeadController" method="getLeadImportConfig" />
-	</action-method>
-	
-	<action-method name="action-lead-method-view-emails">
-		<call class="com.axelor.apps.crm.web.LeadController" method="findLeadMails"/>
 	</action-method>
 	
    	<search-filters name="lead-filters" model="com.axelor.apps.crm.db.Lead" title="Lead filters">

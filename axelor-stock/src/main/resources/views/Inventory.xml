@@ -37,8 +37,8 @@
 			<button name="showInventory" title="Export" readonlyIf="formatSelect == null" colSpan="6" onClick="save,action-inventory-method-show-inventory"/>
 		</panel>
 		<panel title="Import" showIf="statusSelect == 2" sidebar="true">
-			<field name="importFilePath"/>    
-			<button name="importFile" title="Import" readonlyIf="importFilePath != null" colSpan="6" onClick="action-group-stock-inventory-importfile-click"/>
+			<field name="importFile" widget="binary-link"/>
+			<button name="importFile" title="Import" readonlyIf="importFile == null" colSpan="6" onClick="action-group-stock-inventory-importfile-click"/>
 		</panel>
 	</form>
     

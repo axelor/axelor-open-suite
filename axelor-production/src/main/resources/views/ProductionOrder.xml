@@ -21,6 +21,7 @@
 	    <field name="product" title="Product" type="many-to-one" target="com.axelor.apps.base.db.Product" domain="self.expense = false and self.productTypeSelect = 'storable' and self.procurementMethodSelect = 'produce'" form-view="product-form" grid-view="product-grid"/>
 	    <field name="billOfMaterial" title="BOM" type="many-to-one" onChange="action-production-order-wizard-record-product" onSelect="action-production-order-wizard-attrs-bill-of-material-domain" target="com.axelor.apps.production.db.BillOfMaterial" form-view="bill-of-material-form" grid-view="bill-of-material-grid" />
 	    <field name="$qty" title="Quantity" type="decimal"/>
+	    <field name="$_startDate" widget="dateTime" title="Planned start date" />
 	    <button name="AddManufOrder" title="Add Manuf. Order"   onClick="action-production-order-method-add-manuf-order"/>
 	  </panel>
 	<!--         <button name="generateSaleOrder" title="Generate sale order" colSpan="2" onClick="action-production-order-method-generate-sale-order" showIf="businessProject"/> -->
@@ -28,8 +29,8 @@
         <field name="manufOrderSeq"/>      
         <field name="product" form-view="product-form" grid-view="product-grid"/>
         <field name="qty"/>
-        <field name="plannedStartDate"/>    
-        <field name="plannedEndDate"/>    
+        <field name="plannedStartDateT"/>
+        <field name="plannedEndDateT"/>
         <field name="priority"/>
         <field name="statusSelect"/>	  	
 	  </panel-related>
@@ -38,7 +39,6 @@
     
     <action-attrs name="action-production-order-attrs-title-project-task">
 		<attribute name="title" for="projectTask" expr="eval: __config__.general.getProjectTaskLabel()" if="!com.google.common.base.Strings.isNullOrEmpty(__config__.general.getProjectTaskLabel())"/>
-		<attribute name="value" for="$qty" expr="1"/>
 	</action-attrs>
     
    	<action-method name="action-production-order-method-add-manuf-order">
@@ -52,6 +52,8 @@
     <action-attrs name="action-production-order-attrs-add-manuf-order-wizard">
     	<attribute name="hidden" for="addManufOrderWizard" expr="eval: false"/>
     	<attribute name="hidden" for="showManufOrderWizard" expr="eval: true"/>
+    	<attribute name="value" for="$qty" expr="1"/>
+		<attribute name="value" for="$_startDate" expr="eval: __datetime__"/>
     </action-attrs>
     
     <action-view name="action-production-order-view-operation-order" title="Operation orders" model="com.axelor.apps.production.db.OperationOrder">

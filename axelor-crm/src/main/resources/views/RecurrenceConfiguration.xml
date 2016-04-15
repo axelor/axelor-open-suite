@@ -4,28 +4,28 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
 
 	<form model="com.axelor.apps.crm.db.RecurrenceConfiguration" title="Recurrence assistant" name="recurrence-assistant-form" 
-    	onNew="action-recurrence-assistant-on-new">
+    	onNew="action-recurrence-assistant-on-new, action-recurrence-assistant-method-compute-recurrence-name"
+    	onLoad="action-recurrence-assistant-method-compute-recurrence-name">
     	<panel>
-    		<field name="recurrenceType" title="Recurrence" colSpan="12" width="25%" onChange="action-recurrence-assistant-attrs-title-period"/>
-    		<field name="periodicity" title="Repeat every" colSpan="3"/>
+    		<field name="recurrenceType" title="Recurrence" colSpan="12" width="25%" onChange="action-recurrence-assistant-attrs-title-period, action-recurrence-assistant-method-compute-recurrence-name"/>
+    		<field name="periodicity" title="Repeat every" colSpan="3" onChange="action-recurrence-assistant-method-compute-recurrence-name"/>
     		<label name="period" title="Days" colSpan="9"/>
     		<label title="Repeat the:" colSpan="2" hidden="true" showIf="recurrenceType == 2"/>
-    		<field name="sunday" title="Su" css="small center" hidden="true" showIf="recurrenceType == 2" colSpan="1"/>
-    		<field name="monday" title="Mo" css="small center" hidden="true" showIf="recurrenceType == 2" colSpan="1"/>
-    		<field name="tuesday" title="Tu" css="small center" hidden="true" showIf="recurrenceType == 2" colSpan="1"/>
-    		<field name="wednesday" title="We" css="small center" hidden="true" showIf="recurrenceType == 2" colSpan="1"/>
-    		<field name="thursday" title="Th" css="small center" hidden="true" showIf="recurrenceType == 2" colSpan="1"/>
-    		<field name="friday" title="Fr" css="small center" hidden="true" showIf="recurrenceType == 2" colSpan="1"/>
-    		<field name="saturday" title="Sa" css="small center" hidden="true" showIf="recurrenceType == 2" colSpan="1"/>
-    		<field name="monthRepeatType" title="Repeat every:" selection="crm.event.recurrence.month.repeat.type" hidden="true" showIf="recurrenceType == 3" widget="RadioSelect" css="small" colSpan="12"/>
+    		<field name="sunday" title="Su" css="small center" hidden="true" showIf="recurrenceType == 2" colSpan="1" onChange="action-recurrence-assistant-method-compute-recurrence-name"/>
+    		<field name="monday" title="Mo" css="small center" hidden="true" showIf="recurrenceType == 2" colSpan="1" onChange="action-recurrence-assistant-method-compute-recurrence-name"/>
+    		<field name="tuesday" title="Tu" css="small center" hidden="true" showIf="recurrenceType == 2" colSpan="1" onChange="action-recurrence-assistant-method-compute-recurrence-name"/>
+    		<field name="wednesday" title="We" css="small center" hidden="true" showIf="recurrenceType == 2" colSpan="1" onChange="action-recurrence-assistant-method-compute-recurrence-name"/>
+    		<field name="thursday" title="Th" css="small center" hidden="true" showIf="recurrenceType == 2" colSpan="1" onChange="action-recurrence-assistant-method-compute-recurrence-name"/>
+    		<field name="friday" title="Fr" css="small center" hidden="true" showIf="recurrenceType == 2" colSpan="1" onChange="action-recurrence-assistant-method-compute-recurrence-name"/>
+    		<field name="saturday" title="Sa" css="small center" hidden="true" showIf="recurrenceType == 2" colSpan="1" onChange="action-recurrence-assistant-method-compute-recurrence-name"/>
+    		<field name="monthRepeatType" title="Repeat every:" selection="crm.event.recurrence.month.repeat.type" hidden="true" showIf="recurrenceType == 3" widget="RadioSelect" css="small" colSpan="12" onChange="action-recurrence-assistant-method-compute-recurrence-name"/>
+    		<field name="startDate" title="Start date" readonly="true" colSpan="12"/>
+    		<field name="endType" colSpan="3" title="End" selection="crm.event.recurrence.end.type" widget="RadioSelect" css="small" onChange="action-recurrence-assistant-method-compute-recurrence-name"/>
     		<panel colSpan="6">
-    			<field name="startDate" title="Start date" readonly="true"/>
-    			<field name="endType" title="End" selection="crm.event.recurrence.end.type" widget="RadioSelect" css="small"/>
+    			<field name="repetitionsNumber" min="1" title="Repetitions number" hidden="true" showIf="endType == 1" colSpan="12" onChange="action-recurrence-assistant-method-compute-recurrence-name"/>
+    			<field name="endDate" title="End date" hidden="true" showIf="endType == 2" colSpan="12" onChange="action-recurrence-assistant-method-compute-recurrence-name"/>
     		</panel>
-    		<panel colSpan="6">
-    			<field name="repetitionsNumber" title="Repetitions number" hidden="true" showIf="endType == 1" colSpan="12"/>
-    			<field name="endDate" title="End date" hidden="true" showIf="endType == 2" colSpan="12"/>
-    		</panel>
+    		<field name="recurrenceName" showTitle="false" colSpan="12" css="bold" readonly="true"/>
     		<button name="applyButton" title="Apply" onClick="action-recurrence-assistant-method-generate" hideIf="id &gt; 0"/>
     	</panel>
     	<panel sidebar="true" hidden="true" showIf="id &gt; 0">
@@ -40,8 +40,9 @@
 		<field name="recurrenceType" expr="1"/>
 		<field name="periodicity" expr="1"/>
 		<field name="endType" expr="1"/>
-		<field name="startDate" expr="eval: _startDate"/>
+		<field name="startDate" expr="eval: _parent?.startDateTime.toDate()"/>
 		<field name="monthRepeatType" expr="1"/>
+		<field name="repetitionsNumber" expr="1"/>
 	</action-record>
 	
 	<action-attrs name="action-recurrence-assistant-attrs-title-period">
@@ -69,6 +70,10 @@
 	
 	<action-method name="action-recurrence-assistant-method-change-all">
 		<call class="com.axelor.apps.crm.web.EventController" method="changeAll"/>
+	</action-method>
+	
+	<action-method name="action-recurrence-assistant-method-compute-recurrence-name">
+		<call class="com.axelor.apps.crm.web.EventController" method="computeRecurrenceName"/>
 	</action-method>
 	
 </object-views>

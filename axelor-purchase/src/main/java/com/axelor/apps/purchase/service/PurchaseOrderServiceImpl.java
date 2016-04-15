@@ -185,7 +185,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 		purchaseOrder.setCompany(company);
 		purchaseOrder.setContactPartner(contactPartner);
 		purchaseOrder.setCurrency(currency);
-		purchaseOrder.setDeliveryDate(deliveryDate);
+		purchaseOrder.setReceiptDate(deliveryDate);
 		purchaseOrder.setInternalReference(internalReference);
 		purchaseOrder.setExternalReference(externalReference);
 		purchaseOrder.setOrderDate(orderDate);
@@ -351,5 +351,36 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 			purchaseOrderRepo.save(purchaseOrder);
 		}
 	}
-
+	
+	@Override
+	@Transactional
+	public void draftPurchaseOrder(PurchaseOrder purchaseOrder){
+		
+		purchaseOrder.setStatusSelect(IPurchaseOrder.STATUS_DRAFT);
+		purchaseOrderRepo.save(purchaseOrder);
+	}
+	
+	@Override
+	@Transactional
+	public void validatePurchaseOrder(PurchaseOrder purchaseOrder){
+		
+		purchaseOrder.setStatusSelect(IPurchaseOrder.STATUS_VALIDATED);
+		purchaseOrderRepo.save(purchaseOrder);
+	}
+	
+	@Override
+	@Transactional
+	public void finishPurchaseOrder(PurchaseOrder purchaseOrder){
+		
+		purchaseOrder.setStatusSelect(IPurchaseOrder.STATUS_FINISHED);
+		purchaseOrderRepo.save(purchaseOrder);
+	}
+	
+	@Override
+	@Transactional
+	public void cancelPurchaseOrder(PurchaseOrder purchaseOrder){
+		
+		purchaseOrder.setStatusSelect(IPurchaseOrder.STATUS_CANCELED);
+		purchaseOrderRepo.save(purchaseOrder);
+	}
 }

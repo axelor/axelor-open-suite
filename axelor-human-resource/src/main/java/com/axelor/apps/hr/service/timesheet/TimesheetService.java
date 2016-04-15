@@ -17,9 +17,18 @@
  */
 package com.axelor.apps.hr.service.timesheet;
 
+import java.math.BigDecimal;
+import java.util.List;
+
 import org.joda.time.LocalDate;
 
+import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.InvoiceLine;
+import com.axelor.apps.base.db.Product;
 import com.axelor.apps.hr.db.Timesheet;
+import com.axelor.apps.hr.db.TimesheetLine;
+import com.axelor.apps.project.db.ProjectTask;
+import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -30,9 +39,19 @@ public interface TimesheetService {
 	public void cancelTimesheet(Timesheet timesheet);
 	public Timesheet generateLines(Timesheet timesheet) throws AxelorException;
 	public LocalDate getFromPeriodDate();
+	public Timesheet getCurrentTimesheet();
+	public Timesheet getCurrentOrCreateTimesheet();
+	public Timesheet createTimesheet(User user, LocalDate fromDate, LocalDate toDate);
+	public TimesheetLine createTimesheetLine(ProjectTask project, Product product, User user, LocalDate date, Timesheet timesheet, BigDecimal minutes, String comments);
+	public List<InvoiceLine> createInvoiceLines(Invoice invoice, List<TimesheetLine> timesheetLineList, int priority) throws AxelorException;
+	public List<InvoiceLine> createInvoiceLine(Invoice invoice, Product product, User user, String date, BigDecimal visibleDuration, int priority) throws AxelorException;
 	@Transactional
 	public void computeTimeSpent(Timesheet timesheet);
+	public BigDecimal computeSubTimeSpent(ProjectTask projectTask);
+	public void computeParentTimeSpent(ProjectTask projectTask);
+	public BigDecimal computeTimeSpent(ProjectTask projectTask);
 	public void getActivities(ActionRequest request, ActionResponse response);
 	@Transactional
 	public void insertTSLine(ActionRequest request, ActionResponse response);
+	public String computeFullName(Timesheet timeSheet);
 }

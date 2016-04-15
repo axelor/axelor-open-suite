@@ -20,7 +20,6 @@ package com.axelor.apps.crm.web;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -40,12 +39,14 @@ import com.axelor.apps.base.service.MapService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.crm.db.Event;
 import com.axelor.apps.crm.db.IEvent;
+import com.axelor.apps.crm.db.ILead;
 import com.axelor.apps.crm.db.Lead;
 import com.axelor.apps.crm.db.RecurrenceConfiguration;
 import com.axelor.apps.crm.db.repo.EventRepository;
 import com.axelor.apps.crm.db.repo.LeadRepository;
 import com.axelor.apps.crm.db.repo.RecurrenceConfigurationRepository;
 import com.axelor.apps.crm.exception.IExceptionMessage;
+import com.axelor.apps.crm.service.CalendarService;
 import com.axelor.apps.crm.service.EventService;
 import com.axelor.apps.crm.service.LeadService;
 import com.axelor.apps.crm.service.config.CrmConfigService;
@@ -61,6 +62,7 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.google.common.base.Joiner;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -81,6 +83,9 @@ public class EventController {
 	
 	@Inject
 	private LeadService leadService;
+	
+	@Inject
+	protected CalendarService calendarService;
 
 	public void computeFromStartDateTime(ActionRequest request, ActionResponse response) {
 
@@ -165,7 +170,7 @@ public class EventController {
 
 		Event event = request.getContext().asType(Event.class);
 		Event persistEvent = eventRepo.find(event.getId());
-		persistEvent.setTaskStatusSelect(event.getTaskStatusSelect());
+		persistEvent.setStatusSelect(event.getStatusSelect());
 		eventService.saveEvent(persistEvent);
 
 	}
@@ -175,7 +180,7 @@ public class EventController {
 
 		Event event = request.getContext().asType(Event.class);
 		Event persistEvent = eventRepo.find(event.getId());
-		persistEvent.setTicketStatusSelect(event.getTicketStatusSelect());
+		persistEvent.setStatusSelect(event.getStatusSelect());
 		eventService.saveEvent(persistEvent);
 
 	}
@@ -216,20 +221,21 @@ public class EventController {
 
 	}
 
+	@SuppressWarnings("rawtypes")
 	public void assignToMeLead(ActionRequest request, ActionResponse response)  {
 
 		if(request.getContext().get("id") != null){
 			Lead lead = leadRepo.find((Long)request.getContext().get("id"));
 			lead.setUser(AuthUtils.getUser());
-			if(lead.getStatusSelect() == 1)
-				lead.setStatusSelect(2);
+			if(lead.getStatusSelect() == ILead.STATUS_NEW)
+				lead.setStatusSelect(ILead.STATUS_ASSIGNED);
 			leadService.saveLead(lead);
 		}
 		else if(!((List)request.getContext().get("_ids")).isEmpty()){
 			for(Lead lead : leadRepo.all().filter("id in ?1",request.getContext().get("_ids")).fetch()){
 				lead.setUser(AuthUtils.getUser());
-				if(lead.getStatusSelect() == 1)
-					lead.setStatusSelect(2);
+				if(lead.getStatusSelect() == ILead.STATUS_NEW)
+					lead.setStatusSelect(ILead.STATUS_ASSIGNED);
 				leadService.saveLead(lead);
 			}
 		}
@@ -237,6 +243,7 @@ public class EventController {
 
 	}
 
+	@SuppressWarnings("rawtypes")
 	public void assignToMeEvent(ActionRequest request, ActionResponse response)  {
 
 		if(request.getContext().get("id") != null){
@@ -286,7 +293,7 @@ public class EventController {
 	@SuppressWarnings("unchecked")
 	public void addUserGuest(ActionRequest request, ActionResponse response) throws ClassNotFoundException, InstantiationException, IllegalAccessException, AxelorException, MessagingException, IOException, ICalendarException, ValidationException, ParseException{
 		Event event = request.getContext().asType(Event.class);
-		if(request.getContext().containsKey("guestPartner")){
+		if(request.getContext().containsKey("guestUser")){
 			User user = Beans.get(UserRepository.class).find(new Long(((Map<String, Object>) request.getContext().get("guestUser")).get("id").toString()));
 			if(user != null){
 				event = eventRepo.find(event.getId());
@@ -627,5 +634,40 @@ public class EventController {
 		eventService.applyChangesToAll(event);
 		response.setCanClose(true);
 		response.setReload(true);
+	}
+	
+	public void computeRecurrenceName(ActionRequest request, ActionResponse response){
+		RecurrenceConfiguration recurrConf = request.getContext().asType(RecurrenceConfiguration.class);
+		
+		response.setValue("recurrenceName", eventService.computeRecurrenceName(recurrConf));
+	}
+	
+	public void setCalendarCrmDomain(ActionRequest request, ActionResponse response){
+		User user = AuthUtils.getUser();
+		List<Long> calendarIdlist = calendarService.showSharedCalendars(user);
+		if(calendarIdlist.isEmpty()){
+			response.setAttr("calendarCrm", "domain", "self.id is null");
+		}
+		else{
+			response.setAttr("calendarCrm", "domain", "self.id in (" + Joiner.on(",").join(calendarIdlist) + ")");
+		}
+	}
+	
+	public void checkRights(ActionRequest request, ActionResponse response){
+		Event event = request.getContext().asType(Event.class);
+		User user = AuthUtils.getUser();
+		List<Long> calendarIdlist = calendarService.showSharedCalendars(user);
+		if(calendarIdlist.isEmpty() || !calendarIdlist.contains(event.getCalendarCrm().getId())){
+			response.setAttr("calendarConfig", "readonly", "true");
+			response.setAttr("meetingGeneral", "readonly", "true");
+			response.setAttr("addGuests", "readonly", "true");
+			response.setAttr("meetingAttributes", "readonly", "true");
+			response.setAttr("meetingLinked", "readonly", "true");
+		}
+	}
+	
+	public void changeCreator(ActionRequest request, ActionResponse response){
+		User user = AuthUtils.getUser();
+		response.setValue("organizer", calendarService.findOrCreateUser(user));
 	}
 }

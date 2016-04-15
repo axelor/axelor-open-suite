@@ -165,6 +165,7 @@
 		model="com.axelor.apps.base.db.TrackingNumber" >
 		<view type="grid" name="tracking-number-grid" />
 		<view type="form" name="tracking-number-form"/>
+		<context name="_datePlusTwoMonths" expr="eval: __date__.plusMonths(2)"/>
 	</action-view>
 	
 <!-- ADMINISTRATION -->

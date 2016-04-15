@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
+
+	<grid name="ts-timer-grid" title="Timesheet Timer" model="com.axelor.apps.hr.db.TSTimer" editable="true"
+	onNew="action-hr-default-timesheet-timer" canNew="statusSelect == 3">
+		<field name="user" form-view="user-form" grid-view="user-grid"/>
+		<field name="projectTask" form-view="project-task-form" grid-view="project-task-grid"/>
+		<field name="product" domain="self.isActivity = true AND EXISTS(SELECT p FROM ProjectTask p WHERE p = :projectTask AND self MEMBER OF p.productList)" widget="SuggestBox" form-view="product-activity-form" grid-view="product-activity-grid"/>
+		<field name="startDaTime"/>
+		<field name="duration"/>
+		<field name="timeSheetLine" grid-view="timesheet-line-timesheet-project-grid" form-view="timesheet-line-timesheet-project-form" showIf="timeSheetLine != null"/>
+		<field name="comments" colSpan="12"/>
+	</grid>
+
+	<form name="ts-timer-form" title="Timesheet Timer" model="com.axelor.apps.hr.db.TSTimer"
+	onNew="action-hr-ts-timer-record-default" width="large" readonlyIf="statusSelect == 3" canNew="statusSelect == 3">
+		<panel title="TimeSheet Timer">
+			<field name="user" form-view="user-form" grid-view="user-grid"/>
+			<field name="projectTask" form-view="project-task-form" grid-view="project-task-grid" domain="self.imputable = true" onChange="action-hr-ts-timer-record-empty-product"/>
+			<field name="startDateTime"/>
+			<field name="product" domain="self.isActivity = true AND EXISTS(SELECT p FROM ProjectTask p WHERE p = :projectTask AND self MEMBER OF p.productList)" widget="SuggestBox" form-view="product-activity-form" grid-view="product-activity-grid"/>
+			<field name="duration" widget="duration" colSpan="2"/>
+			<label name="durationLabel" title="Hours" colSpan="1"/>
+			<field name="timeSheetLine" grid-view="timesheet-line-timesheet-project-grid" form-view="timesheet-line-timesheet-project-form" hideIf="timeSheetLine == null" colOffset="3"/>
+			<field name="comments" colSpan="12"/>
+		</panel>
+		<panel sidebar="true" title="Actions" stacked="true">
+			<button name="start" title="Start" onClick="action-hr-ts-timer-record-start-startTime,save" readonlyIf="statusSelect == 1 || product == null" icon="fa-play" css="btn-success"/>
+			<button name="pause" title="Pause" onClick="save,action-ts-timer-method-pause,save" readonlyIf="statusSelect != 1" icon="fa-pause" css="btn-warning"/>
+			<button name="stop" title="Stop" onClick="save,action-ts-timer-method-stop,save" readonlyIf="statusSelect != 1" icon="fa-stop" css="btn-danger"/>
+		</panel>
+	</form>
+	
+	<action-record name="action-hr-ts-timer-record-default" model="com.axelor.apps.hr.db.TSTimer">
+	    <field name="user" expr="eval:__user__" />
+	    <field name="product" expr="eval:__user__.employee?.product" />
+	</action-record>
+	
+	<action-record name="action-hr-ts-timer-record-start-startTime" model="com.axelor.apps.hr.db.TSTimer">
+		<field name="statusSelect" expr="eval:TSTimerRepository.STATUS_START"/>
+		<field name="startDateTime" expr="eval:__config__.generalService.getTodayDateTime()"/>
+	</action-record>
+	
+	<action-record name="action-hr-ts-timer-record-empty-product" model="com.axelor.apps.hr.db.TSTimer">
+		<field name="product" expr="eval:null" if="!projectTask?.productList?.contains(product)"/>
+	</action-record>
+	
+	<action-method name="action-ts-timer-method-pause">
+		<call class="com.axelor.apps.hr.web.timesheet.timer.TSTimerController" method="pause"/>
+	</action-method>
+	
+	<action-method name="action-ts-timer-method-stop">
+    	<call class="com.axelor.apps.hr.web.timesheet.timer.TSTimerController" method="stop"/>
+    </action-method>
+	
+</object-views>

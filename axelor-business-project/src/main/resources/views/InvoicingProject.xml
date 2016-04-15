@@ -3,7 +3,7 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
 
 	<grid name="invoicing-project-grid" title="Invoicing Project" model="com.axelor.apps.businessproject.db.InvoicingProject">
-		<field name="projectTask" form-view="project-form" grid-view="project-grid" />
+		<field name="projectTask" form-view="project-form" grid-view="project-grid"/>
 	</grid>
 
 	<form name="invoicing-project-form" title="Invoicing Project" model="com.axelor.apps.businessproject.db.InvoicingProject" 

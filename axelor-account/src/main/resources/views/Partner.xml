@@ -23,7 +23,7 @@
 	        <field name="bankDetailsList" colSpan="12" showTitle="false" >
 			    <editor layout="table" x-show-titles="false" onNew="action-set-default-partner">
 					<field name="bankAddress" />
-					<field name="iban" onChange="action-group-account-bankdetails-iban-onchange" />
+					<field name="iban" onChange="action-group-account-bankdetails-iban-onchange" min="14" max="34" />
 					<field name="bic" />
 					<field name="isDefault" widget="toggle" x-icon="fa-star-o" x-icon-active="fa-star" x-exclusive="true" />
 					<field name="ownerName" hidden="true" />
