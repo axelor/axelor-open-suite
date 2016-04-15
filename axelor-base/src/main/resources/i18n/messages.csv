@@ -1180,6 +1180,7 @@
 "The currency exchange rate from '%s' to '%s' for date %s must be different from zero.",,,
 "The end date has to be greater than or equal to the start date.",,,
 "The entered IBAN code is not valid . <br> Either the code doesn't respect the norm, or the format you have entered is not correct. It has to be without any blank space, as the following : <br> FR0000000000000000000000000",,,
+"The following address is invalid. Please use '+' button to create a new one :",,,
 "The line cannot be imported (import : %s)",,,
 "The product pulled-off date must be greater than the launch date.",,,
 "The quantity by lot must be greater than 0",,,

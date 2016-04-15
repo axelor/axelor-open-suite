@@ -43,6 +43,7 @@
 	       	    <field name="publicHolidayPlanning" grid-view="public-holiday-planning-grid" form-view="public-holiday-planning-form"/>
 	       	    <field name="negativeValueLeave"/>
 	       	    <field name="kilometricAllowParam"/>
+	       	    <field name="hrManager" />
 	       	    <panel-related field="leaveLineList" grid-view="leave-line-grid" form-view="leave-line-form" colSpan="12"/>
 	       	</panel>
 	       	<panel-related field="employmentContractList" grid-view="employment-contract-employee-grid" form-view="employment-contract-form"/>

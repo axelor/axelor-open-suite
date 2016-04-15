@@ -20,10 +20,15 @@
 			<button name="printProjectTask" title="Print" onClick="save,action-project-task-method-print-project-task" if-module="axelor-business-project"/>
 		</toolbar>
 		<panel title="Overview">
-			<field name="statusSelect" widget="NavSelect" colSpan="12"/>
-			<field name="project" onChange="action-project-task-record-inv-type-select" colSpan="12" title="Parent Project" domain="self.typeSelect = 'project'" form-view="project-form" grid-view="project-grid"/>
-			<field name="name"/>
-			<field name="code"/>
+		
+			<field name="fullName" showTitle="false" colSpan="12" css="label-bold bold large">
+				<editor x-show-titles="false">
+					<field name="code" showTitle="false" css="label-bold bold large" colSpan="3"/>
+					<field name="name" showTitle="false" css="label-bold bold large" colSpan="9"/>
+				</editor>
+			</field>
+			<field name="statusSelect" widget="NavSelect" colSpan="6"/>
+			<field name="project" onChange="action-project-task-record-inv-type-select" colSpan="6" title="Parent Project" domain="self.typeSelect = 'project'" form-view="project-form" grid-view="project-grid"/>
 			<field name="company" requiredIf="project == null" hideIf="project != null" form-view="company-form" grid-view="company-grid"/>
 			<field name="clientPartner" requiredIf="project == null &amp;&amp; typeSelect == 'project'" domain="self.isCustomer = true" form-view="partner-form" grid-view="partner-grid" />
 			<field name="assignedTo" title="Person In Charge" onChange="action-attrs-project-add-member" form-view="user-form" grid-view="user-grid"/>
@@ -103,8 +108,8 @@
 			<button name="printProjectTask" title="Print" onClick="save,action-project-task-method-print-project-task" if-module="axelor-business-project"/>
 		</toolbar>
 	    <panel>
-	    	<field name="statusSelect" widget="NavSelect" colSpan="12"/>
-	        <field name="project" onChange="action-project-task-attrs-hide-invoicing-panel,action-project-task-record-inv-type-select" requiredIf="!$popup()" title="Project" hideIf="$popup()" domain="self.typeSelect = 'project'" form-view="project-form" grid-view="project-grid"/>
+	    	<field name="statusSelect" widget="NavSelect" colSpan="6"/>
+	        <field name="project" onChange="action-project-task-attrs-hide-invoicing-panel,action-project-task-record-inv-type-select" colSpan="6" requiredIf="!$popup()" title="Project" hideIf="$popup()" domain="self.typeSelect = 'project'" form-view="project-form" grid-view="project-grid"/>
 		    <field name="name" colSpan="12" />
 			<field name="assignedTo" colSpan="12" title="Assigned To" onSelect="action-task-attrs-assigned-to-domain" onChange="action-attrs-project-add-member" form-view="user-form" grid-view="user-grid"/>
 			<field name="fromDate" />
@@ -161,11 +166,15 @@
 	onNew="action-project-task-attrs-hide-invoicing-panel,action-project-project-default,action-project-task-attrs-duration-title,action-project-attrs-scale-and-precision"
 	onLoad="action-project-task-attrs-hide-invoicing-panel,action-project-task-record-set-visible-duration,action-project-task-attrs-duration-title,action-project-attrs-scale-and-precision">
 		<panel title="Overview">
+			<field name="fullName" showTitle="false" colSpan="12" css="label-bold bold large">
+				<editor x-show-titles="false">
+					<field name="code" showTitle="false" css="label-bold bold large" colSpan="3"/>
+					<field name="name" showTitle="false" css="label-bold bold large" colSpan="9"/>
+				</editor>
+			</field>
 			<field name="typeSelect"/>
-			<field name="statusSelect" widget="NavSelect" colSpan="12"/>
-			<field name="project" requiredIf="typeSelect == 'task' &amp;&amp; !$popup()"  hideIf="$popup()" onChange="action-project-task-attrs-hide-invoicing-panel,action-project-task-record-inv-type-select" title="Parent Project" domain="self.typeSelect = 'project'" form-view="project-form" grid-view="project-grid" colSpan="12" width="50%"/>
-			<field name="name"/>
-			<field name="code"/>
+			<field name="statusSelect" widget="NavSelect" colSpan="6"/>
+			<field name="project" requiredIf="typeSelect == 'task' &amp;&amp; !$popup()"  hideIf="$popup()" onChange="action-project-task-attrs-hide-invoicing-panel,action-project-task-record-inv-type-select" title="Parent Project" domain="self.typeSelect = 'project'" form-view="project-form" grid-view="project-grid" colSpan="6" width="50%"/>
 			<field name="company" requiredIf="project == null &amp;&amp; typeSelect == 'project'" hideIf="typeSelect == 'task' || project != null"/>
 			<field name="clientPartner" requiredIf="project == null &amp;&amp; typeSelect == 'project'" domain="self.isCustomer = true" hideIf="typeSelect == 'task'"/>
 			<field name="assignedTo" title="Person In Charge" onSelect="action-task-attrs-assigned-to-domain" onChange="action-attrs-project-add-member" form-view="user-form" grid-view="user-grid"/>

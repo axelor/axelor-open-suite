@@ -40,16 +40,8 @@
 	  
 	  <many-to-many name="productList" ref="com.axelor.apps.base.db.Product" title="Activities"/>
 	  
-	  <string name="fullName" namecolumn="true" title="Name">
-	  <![CDATA[
-		  if(this.getCode() != null && !this.getCode().isEmpty()) {
-				return this.getCode() + " " + this.getName();
-			}
-			else{
-				return this.getName();
-			}
-	  ]]>
-	  </string>
+	  <string name="fullName" namecolumn="true" title="Name"/>
+	 
 
 	   <extra-code>
    		<![CDATA[

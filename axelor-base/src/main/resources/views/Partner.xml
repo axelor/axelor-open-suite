@@ -124,7 +124,9 @@
 				<panel title="Postal addresses" colSpan="12">
 					<field name="partnerAddressList" colSpan="12" onChange="action-partner-address-list-change">
 				        <editor layout="table" x-show-titles="false">
-							<field name="address" canNew="true"/>
+				        	<label title="The following address is invalid. Please use '+' button to create a new one :" colSpan="12" css="label-bold" name="addressHelper" hidden="true" showIf="address == null || address.addressL4 == null" />
+            				<field name="address.addressL4" hidden="true" colSpan="12"/>
+							<field name="address" colSpan="3" onChange="action-partner-address-wrong-creation" canNew="true"/>
 							<field name="isInvoicingAddr" widget="toggle" x-icon="fa-list-alt" colSpan="1" hideIf="$readonly()"/>
 							<field name="isDeliveryAddr" widget="toggle" x-icon="fa-shopping-cart" colSpan="1" hideIf="$readonly()"/>
 							<field name="isDefaultAddr" widget="toggle" x-icon="fa-star-o" colSpan="1" hideIf="$readonly()"/>
@@ -538,6 +540,10 @@
 		<domain>self.contactPartnerSet.id = :_contactId</domain>
 		<context name="_contactId" expr="eval: id"/>
 	</action-view>
+	
+	<action-attrs name="action-partner-address-wrong-creation">
+		<attribute name="hidden" for="AddressHelper" expr="address?.addressL4 == null"/>
+	</action-attrs>
 	
 	<search-filters name="partner-filters" model="com.axelor.apps.base.db.Partner" title="Partner filters">
 		<filter title="All Enterprises">
