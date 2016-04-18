@@ -19,6 +19,7 @@ package com.axelor.apps.purchase.db.repo;
 
 import javax.persistence.PersistenceException;
 
+import com.axelor.apps.purchase.db.IPurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.service.PurchaseOrderService;
 import com.axelor.inject.Beans;
@@ -27,7 +28,7 @@ public class PurchaseOrderManagementRepository extends PurchaseOrderRepository {
 
 	@Override
 	public PurchaseOrder copy(PurchaseOrder entity, boolean deep) {
-		entity.setStatusSelect(1);
+		entity.setStatusSelect(IPurchaseOrder.STATUS_DRAFT);
 		entity.setPurchaseOrderSeq(null);
 		return super.copy(entity, deep);
  	}

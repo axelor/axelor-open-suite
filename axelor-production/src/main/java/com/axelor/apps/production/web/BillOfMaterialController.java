@@ -17,6 +17,8 @@
  */
 package com.axelor.apps.production.web;
 
+import java.util.List;
+
 import javax.inject.Inject;
 
 import com.axelor.apps.production.db.BillOfMaterial;
@@ -29,6 +31,7 @@ import com.axelor.i18n.I18n;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.google.common.collect.Lists;
 
 public class BillOfMaterialController {
 
@@ -71,6 +74,45 @@ public class BillOfMaterialController {
 		
 		response.setReload(true);
 		
+	}
+	
+	public void checkOriginalBillOfMaterial(ActionRequest request, ActionResponse response){
+		
+		BillOfMaterial billOfMaterial = billOfMaterialRepo.find( request.getContext().asType(BillOfMaterial.class).getId() );
+		
+		List<BillOfMaterial> billOfMaterialList = Lists.newArrayList();
+		billOfMaterialList = billOfMaterialRepo.all().filter("self.originalBillOfMaterial = :origin").bind("origin", billOfMaterial).fetch();
+		String message;
+		
+		if(!billOfMaterialList.isEmpty()){
+			
+			String existingVersions = "";
+			for (BillOfMaterial billOfMaterialVersion : billOfMaterialList) {
+				existingVersions += "<li>" + billOfMaterialVersion.getFullName() + "</li>";
+			}
+			message = String.format(I18n.get("This bill of material already has the following versions : <br/><ul> %s </ul>And these versions may also have ones. Do you still wish to create a new one ?"), existingVersions);
+		}
+		else{
+			message = I18n.get("Do you really wish to create a new version of this bill of material ?");
+		}
+		
+		response.setAlert(message);
+		
+	}
+	
+	public void generateNewVersion(ActionRequest request, ActionResponse response){
+		
+		BillOfMaterial billOfMaterial = billOfMaterialRepo.find( request.getContext().asType(BillOfMaterial.class).getId() );
+		
+		BillOfMaterial copy = billOfMaterialService.generateNewVersion(billOfMaterial);
+		
+		response.setView(ActionView.define("Bill of material")
+				.model(BillOfMaterial.class.getName())
+				   .add("form","bill-of-material-form")
+				   .add("grid","bill-of-material-grid")
+				   .domain("self.isRawMaterial = false AND self.personalized = false AND self.parentBillOfMaterial IS NULL")
+				   .context("_showRecord", String.valueOf(copy.getId()))
+				   .map());
 	}
 	
 }

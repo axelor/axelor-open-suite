@@ -688,6 +688,7 @@
 "Invoice.description",,,
 "Invoice.discountAmount",,,
 "Invoice.documentRef",,,
+"Invoice.draftInvoiceNo",,,
 "Invoice.dueDate",,,
 "Invoice.invoiceNo",,,
 "Invoice.law",,,

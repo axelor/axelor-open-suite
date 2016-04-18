@@ -16,9 +16,9 @@
     	<panel>
     		<field name="user" showIf="team == null"/>
 	        <field name="team" showIf="user == null" if="__config__.general.getTeamManagement()"/>
-	        <field name="allCalendars" colSpan="4"/>
-	        <field name="erpCalendars" hideIf="allCalendars" colSpan="4"/>
-	        <field name="icalCalendars" hideIf="allCalendars" colSpan="4"/>
+	        <field name="allCalendars" onChange="action-calendar-management-record-all-calendars-checked" colSpan="4"/>
+	        <field name="erpCalendars" onChange="action-calendar-management-record-erp-calendars-checked" colSpan="4"/>
+	        <field name="icalCalendars" onChange="action-calendar-management-record-ical-calendars-checked" colSpan="4"/>
     	</panel>
     	<panel-related field="calendarSet" domain="" hideIf="!icalCalendars" onSelect="action-calendar-management-attrs-domain-calendar-set" canNew="false" canSelect="true"/>
     </form>
@@ -26,4 +26,20 @@
     <action-attrs name="action-calendar-management-attrs-domain-calendar-set">
     	<attribute name="domain" for="calendarSet" expr="eval: &quot; self.user.id = ${__user__.id} &quot;"/>
     </action-attrs>
+    
+    <action-record name="action-calendar-management-record-all-calendars-checked" model="com.axelor.apps.crm.db.CalendarManagement">
+    	<field name="erpCalendars" expr="false"/>
+    	<field name="icalCalendars" expr="false"/>
+    </action-record>
+    
+    <action-record name="action-calendar-management-record-erp-calendars-checked" model="com.axelor.apps.crm.db.CalendarManagement">
+    	<field name="allCalendars" expr="false"/>
+    	<field name="icalCalendars" expr="false"/>
+    </action-record>
+    
+    <action-record name="action-calendar-management-record-ical-calendars-checked" model="com.axelor.apps.crm.db.CalendarManagement">
+    	<field name="erpCalendars" expr="false"/>
+    	<field name="allCalendars" expr="false"/>
+    </action-record>
+    
 </object-views>

@@ -4,6 +4,8 @@
 
 	<grid name="timesheet-grid" title="Timesheet" model="com.axelor.apps.hr.db.Timesheet" canNew="false">
 		<field name="company" form-view="company-form" grid-view="company-grid"/>
+		<field name="fromDate"></field>
+		<field name="toDate"></field>
 		<field name="sentDate"/>
 		<field name="statusSelect"/>
 		<field name="user" form-view="user-form" grid-view="user-grid"/>
@@ -14,6 +16,8 @@
 			<button name="showSubordinateTimesheetToValidate" title="Show timesheets to be validated by my subordinates" onClick="com.axelor.apps.hr.web.timesheet.TimesheetController:showSubordinateTimesheets"/>
 		</toolbar>
 		<field name="company" form-view="company-form" grid-view="company-grid"/>
+		<field name="fromDate"></field>
+		<field name="toDate"></field>
 		<field name="sentDate"/>
 		<field name="statusSelect"/>
 		<field name="user" form-view="user-form" grid-view="user-grid"/>
@@ -35,9 +39,8 @@
 	    </panel>
 		<panel name="head">
 		    <field name="statusSelect" colSpan="12" widget="NavSelect"/>
-			<field name="sentDate" colSpan="4"/>
-			<field name="company" colSpan="3" form-view="company-form" grid-view="company-grid"/>
-			<field name="user" colSpan="4" form-view="user-form" grid-view="user-grid"/>
+			<field name="company" colSpan="6" form-view="company-form" grid-view="company-grid"/>
+			<field name="user" colSpan="6" form-view="user-form" grid-view="user-grid"/>
 			<field name="fromDate" onChange="action-timesheet-validate-fromDate"/>
 			<field name="toDate" onChange="action-timesheet-validate-toDate,action-timesheet-method-valid-to-date"/>
 		</panel>
@@ -51,10 +54,11 @@
 		</panel>
 		<panel-related field="timesheetLineList" grid-view="timesheet-line-timesheet-grid" editable="true" form-view="timesheet-line-timesheet-form" hidden="true" showIf="!$readonly()"/>
 		<panel-related field="timesheetLineList" grid-view="timesheet-line-timesheet-readonly-grid" editable="true" form-view="timesheet-line-timesheet-form" hidden="true" showIf="$readonly()" />
-		<panel>
+		<panel itemSpan="4">
+		 	<field name="sentDate"/>
 			<field name="validatedBy" form-view="user-form" grid-view="user-grid"/>
 			<field name="refusedBy" form-view="user-form" grid-view="user-grid"/>
-			<field name="validationDate"/>
+			<field name="validationDate" colOffset="4"/>
 			<field name="refusalDate"/>
 		</panel>
 	</form>

@@ -347,14 +347,14 @@ public class ReconcileService {
 	
 	public List<Reconcile> getReconciles(MoveLine moveLine)  {
 		
-		List<Reconcile> reconcileList1 = moveLine.getReconcileList1();
-		List<Reconcile> reconcileList2 = moveLine.getReconcileList2();
+		List<Reconcile> debitReconcileList = moveLine.getDebitReconcileList();
+		List<Reconcile> creditReconcileList = moveLine.getCreditReconcileList();
 		
 		if(moveToolService.isDebitMoveLine(moveLine))  {
-			return reconcileList1;
+			return debitReconcileList;
 		}
-		else if(reconcileList1 != null && !reconcileList2.isEmpty()) {
-			return reconcileList2;
+		else if(debitReconcileList != null && !creditReconcileList.isEmpty()) {
+			return creditReconcileList;
 		}
 		return Lists.newArrayList();
 	}

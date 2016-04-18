@@ -3,19 +3,20 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
 
 	<grid name="timesheet-line-project-grid" title="Log Times" model="com.axelor.apps.hr.db.TimesheetLine" editable="true"
-	onNew="action-hr-default-timesheet-line-project,action-timesheet-line-record-to-invoice-parent">
+	onNew="action-hr-default-timesheet-line-project,action-timesheet-line-record-to-invoice-parent,action-timesheet-line-default-project-task" orderBy="date">
 		<field name="user" form-view="user-form" grid-view="user-grid"/>
 		<field name="date" />
-		<field name="product" domain="self.isActivity = true" widget="SuggestBox" form-view="product-activity-form" grid-view="product-activity-grid"/>
+		<field name="product" domain="self.isActivity = true AND EXISTS(SELECT p FROM ProjectTask p WHERE p = :projectTask AND self MEMBER OF p.productList)" widget="SuggestBox" form-view="product-activity-form" grid-view="product-activity-grid"/>
 		<field name="visibleDuration" onChange="action-timesheet-line-record-set-stored-duration"/>
 		<field name="durationStored" hidden="true"/>
 		<field name="affectedToTimeSheet" grid-view="timesheet-grid" form-view="timesheet-form"/>
 		<field name="toInvoice" if-module="axelor-business-project"/>
 		<field name="comments" />
+		<field name="projectTask" hidden="true" />
 	</grid>
 	
 	<grid name="timesheet-line-timesheet-grid" title="Timesheet Lines" model="com.axelor.apps.hr.db.TimesheetLine" editable="true" 
-	onNew="action-hr-default-timesheet-line-timesheet">
+	onNew="action-hr-default-timesheet-line-timesheet" orderBy="date" >
 		<field name="projectTask" onChange="action-timesheet-line-record-to-invoice" requiredIf="toInvoice" onSelect="action-timesheet-line-attrs-domain-project-task" form-view="project-task-form" grid-view="project-task-grid"/>
 		<field name="date" onChange="action-timesheet-line-validate-date"/>
 		<field name="product" domain="self.isActivity = true AND EXISTS(SELECT p FROM ProjectTask p WHERE p = :projectTask AND self MEMBER OF p.productList)" widget="SuggestBox" form-view="product-activity-form" grid-view="product-activity-grid"/>
@@ -25,8 +26,21 @@
 		<field name="comments" />
 	</grid>
 
+	<grid name="timesheet-line-timesheet-project-grid" title="Timesheet Lines" model="com.axelor.apps.hr.db.TimesheetLine" editable="true" 
+	onNew="action-hr-default-timesheet-line-timesheet" orderBy="date" >
+		<field name="user" form-view="user-form" grid-view="user-grid"/>
+		<field name="projectTask" onChange="action-timesheet-line-record-to-invoice" requiredIf="toInvoice" onSelect="action-timesheet-line-attrs-domain-project-task" form-view="project-task-form" grid-view="project-task-grid"/>
+		<field name="date" onChange="action-timesheet-line-validate-date"/>
+		<field name="product" domain="self.isActivity = true AND EXISTS(SELECT p FROM ProjectTask p WHERE p = :projectTask AND self MEMBER OF p.productList)" widget="SuggestBox" form-view="product-activity-form" grid-view="product-activity-grid"/>
+		<field name="visibleDuration" onChange="action-timesheet-line-record-set-stored-duration"  aggregate="sum"/>
+		<field name="durationStored" hidden="true" />
+		<field name="affectedToTimeSheet" grid-view="timesheet-grid" form-view="timesheet-form"/>
+		<field name="toInvoice" if-module="axelor-business-project"/>
+		<field name="comments" />
+	</grid>
+
 	<grid name="timesheet-line-timesheet-readonly-grid" title="Timesheet Lines" model="com.axelor.apps.hr.db.TimesheetLine" editable="true" 
-	onNew="action-hr-default-timesheet-line-timesheet" groupBy="date">
+	onNew="action-hr-default-timesheet-line-timesheet" groupBy="date" orderBy="date">
 		<field name="projectTask" onChange="action-timesheet-line-record-to-invoice" requiredIf="toInvoice" onSelect="action-timesheet-line-attrs-domain-project-task" form-view="project-task-form" grid-view="project-task-grid"/>
 		<field name="date" onChange="action-timesheet-line-validate-date"/>
 		<field name="product" domain="self.isActivity = true AND EXISTS(SELECT p FROM ProjectTask p WHERE p = :projectTask AND self MEMBER OF p.productList)" widget="SuggestBox" form-view="product-activity-form" grid-view="product-activity-grid"/>
@@ -62,6 +76,22 @@
 			<field name="visibleDuration" colSpan="3" onChange="action-timesheet-line-record-set-stored-duration"/>
 			<label name="durationLabel" title="Hours" colSpan="1"/>
 			<field name="durationStored" hidden="true" />
+			<field name="toInvoice" if-module="axelor-business-project"/>
+			<field name="comments" />
+		</panel>
+	</form>
+	
+	<form name="timesheet-line-timesheet-project-form" title="Timesheet Line" model="com.axelor.apps.hr.db.TimesheetLine" 
+	onNew="action-hr-default-timesheet-line-timesheet,action-timesheet-line-attrs-set-duration-label,action-timesheet-line-attrs-title-project-task"
+	onLoad="action-timesheet-line-attrs-set-duration-label,action-timesheet-line-record-set-visible-duration,action-timesheet-line-attrs-title-project-task" width="large">
+		<panel title="Overview">
+			<field name="projectTask" onChange="action-timesheet-line-record-to-invoice" onSelect="action-timesheet-line-attrs-domain-project-task" form-view="project-task-form" grid-view="project-task-grid"/>
+			<field name="date" />
+			<field name="product" domain="self.isActivity = true" widget="SuggestBox" form-view="product-activity-form" grid-view="product-activity-grid"/>
+			<field name="visibleDuration" colSpan="2" onChange="action-timesheet-line-record-set-stored-duration"/>
+			<label name="durationLabel" title="Hours" colSpan="1"/>
+			<field name="durationStored" hidden="true" />
+			<field name="affectedToTimeSheet" grid-view="timesheet-grid" form-view="timesheet-form"/>
 			<field name="toInvoice" if-module="axelor-business-project"/>
 			<field name="comments" />
 		</panel>
@@ -115,6 +145,10 @@
 	
 	<action-record name="action-timesheet-line-null-date" model="com.axelor.apps.hr.db.TimesheetLine">
 		<field name="date" expr="eval: null"/>
+	</action-record>
+	
+	<action-record name="action-timesheet-line-default-project-task" model="com.axelor.apps.hr.db.TimesheetLine">
+		<field name="projectTask" expr="eval: __parent__"/>
 	</action-record>
 	
 </object-views>

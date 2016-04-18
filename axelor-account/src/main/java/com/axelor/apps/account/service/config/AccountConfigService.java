@@ -312,7 +312,7 @@ public class AccountConfigService {
 					GeneralServiceImpl.EXCEPTION,accountConfig.getCompany().getName()), IException.CONFIGURATION_ERROR);
 		}
 
-		return accountConfig.getCustomerAccount();
+		return accountConfig.getSupplierAccount();
 
 	}
 	

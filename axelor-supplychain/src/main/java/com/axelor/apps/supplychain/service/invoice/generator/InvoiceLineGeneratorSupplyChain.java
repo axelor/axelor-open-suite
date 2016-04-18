@@ -60,7 +60,6 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
 	protected StockMoveLine stockMoveLine;
 	protected Subscription subscription;
 	
-	
 	protected InvoiceLineGeneratorSupplyChain( Invoice invoice, Product product, String productName, String description, BigDecimal qty,
 			Unit unit, int sequence, boolean isTaxInvoice, SaleOrderLine saleOrderLine, PurchaseOrderLine purchaseOrderLine, StockMoveLine stockMoveLine) throws AxelorException {
 
@@ -118,6 +117,8 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
 	@Override
 	protected InvoiceLine createInvoiceLine() throws AxelorException  {
 
+		InvoiceLine invoiceLine = super.createInvoiceLine();
+		
 		// Update for subscription SaleOrderLine
 		if (saleOrderLine != null && product != null && ProductRepository.PRODUCT_TYPE_SUBSCRIPTABLE.equals(product.getProductTypeSelect())
 				&& saleOrderLine.getSubscriptionList() != null && !saleOrderLine.getSubscriptionList().isEmpty())  {
@@ -125,8 +126,6 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
 			this.exTaxTotal = this.exTaxTotal.divide(subscriptionListSize).setScale(2, RoundingMode.HALF_EVEN);
 			this.inTaxTotal = this.inTaxTotal.divide(subscriptionListSize).setScale(2, RoundingMode.HALF_EVEN);
 		}
-			
-		InvoiceLine invoiceLine = super.createInvoiceLine();
 
 		this.assignOriginElements(invoiceLine);
 		

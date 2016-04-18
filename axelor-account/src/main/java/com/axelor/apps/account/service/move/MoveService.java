@@ -41,6 +41,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.exception.AxelorException;
+import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -192,12 +193,18 @@ public class MoveService {
 
 		Move move = null;
 
-		// Récupération des dûs
-		MoveLine invoiceCustomerMoveLine = moveToolService.getCustomerMoveLineByLoop(invoice);
-
-		List<MoveLine> debitMoveLines = moveDueService.getInvoiceDue(invoice, true); //TODO ajouter parametrage general
+		List<MoveLine> debitMoveLines = Lists.newArrayList();
+		
+		AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
+		
+		if(accountConfig.getAutoReconcileOnInvoice())  {		
+			// Récupération des dûs
+			debitMoveLines.addAll(moveDueService.getInvoiceDue(invoice, true));
+		}
 
 		if(debitMoveLines != null && debitMoveLines.size() != 0)  {
+			MoveLine invoiceCustomerMoveLine = moveToolService.getCustomerMoveLineByLoop(invoice);
+			
 			// Si c'est le même compte sur les trop-perçus et sur la facture, alors on lettre directement
 			if(moveToolService.isSameAccount(debitMoveLines, invoice.getPartnerAccount()))  {
 				List<MoveLine> creditMoveLineList = new ArrayList<MoveLine>();
@@ -225,7 +232,7 @@ public class MoveService {
 	}
 
 
-	public Move createMoveUseExcessPayment(Invoice invoice) throws AxelorException{
+	public void createMoveUseExcessPayment(Invoice invoice) throws AxelorException{
 
 		Company company = invoice.getCompany();
 		
@@ -237,7 +244,7 @@ public class MoveService {
 		if(accountConfig.getAutoReconcileOnInvoice())
 		{
 			// Récupération des trop-perçus
-			moveExcessPaymentService.getExcessPayment(invoice, moveToolService.getCustomerAccount(invoice.getPartner(), company, InvoiceToolService.isPurchase(invoice)));
+			creditMoveLineList.addAll(moveExcessPaymentService.getExcessPayment(invoice, moveToolService.getCustomerAccount(invoice.getPartner(), company, InvoiceToolService.isPurchase(invoice))));
 		}
 		if(creditMoveLineList != null && creditMoveLineList.size() != 0)  {
 
@@ -260,7 +267,7 @@ public class MoveService {
 
 				Move move = moveCreateService.createMove(journal, company, null, partner, invoice.getInvoiceDate(), null);
 
-				if (move != null){
+				if (move != null)  {
 					BigDecimal totalCreditAmount = moveToolService.getTotalCreditAmount(creditMoveLineList);
 					BigDecimal amount = totalCreditAmount.min(invoiceCustomerMoveLine.getDebit());
 
@@ -282,7 +289,6 @@ public class MoveService {
 
 			invoice.setCompanyInTaxTotalRemaining(moveToolService.getInTaxTotalRemaining(invoice));
 		}
-		return null;
 	}
 
 	

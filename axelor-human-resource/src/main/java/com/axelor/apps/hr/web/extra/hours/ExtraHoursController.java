@@ -24,15 +24,19 @@ import java.util.Map;
 import com.axelor.apps.base.db.Wizard;
 import com.axelor.apps.hr.db.ExtraHours;
 import com.axelor.apps.hr.db.repo.ExtraHoursRepository;
+import com.axelor.apps.hr.exception.IExceptionMessage;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.db.Query;
+import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.common.base.Joiner;
+import com.google.common.collect.Lists;
 
 
 public class ExtraHoursController {
@@ -90,13 +94,21 @@ public class ExtraHoursController {
 				   .map());
 	}
 
-	public void validateExtraHours(ActionRequest request, ActionResponse response){
-		List<ExtraHours> extraHoursList = Query.of(ExtraHours.class).filter("self.user.employee.manager = ?1 AND self.company = ?2 AND self.statusSelect = 2",AuthUtils.getUser(),AuthUtils.getUser().getActiveCompany()).fetch();
+	public void validateExtraHours(ActionRequest request, ActionResponse response) throws AxelorException{
+		
+		List<ExtraHours> extraHoursList = Lists.newArrayList();
+				
+		if(AuthUtils.getUser().getEmployee() != null && AuthUtils.getUser().getEmployee().getHrManager()){
+			extraHoursList = Query.of(ExtraHours.class).filter("self.company = ?1 AND self.statusSelect = 2",AuthUtils.getUser().getActiveCompany()).fetch();
+		}else{
+			extraHoursList = Query.of(ExtraHours.class).filter("self.user.employee.manager = ?1 AND self.company = ?2 AND self.statusSelect = 2",AuthUtils.getUser(),AuthUtils.getUser().getActiveCompany()).fetch();
+		}
+		
 		List<Long> extraHoursListId = new ArrayList<Long>();
 		for (ExtraHours extraHours : extraHoursList) {
 			extraHoursListId.add(extraHours.getId());
 		}
-		if(AuthUtils.getUser().getEmployee() != null && AuthUtils.getUser().getEmployee().getManager() == null){
+		if(AuthUtils.getUser().getEmployee() != null && AuthUtils.getUser().getEmployee().getManager() == null && !AuthUtils.getUser().getEmployee().getHrManager()){
 			extraHoursList = Query.of(ExtraHours.class).filter("self.user = ?1 AND self.company = ?2 AND self.statusSelect = 2",AuthUtils.getUser(),AuthUtils.getUser().getActiveCompany()).fetch();
 		}
 		for (ExtraHours extraHours : extraHoursList) {
@@ -128,7 +140,15 @@ public class ExtraHoursController {
 	}
 
 	public void historicExtraHours(ActionRequest request, ActionResponse response){
-		List<ExtraHours> extraHoursList = Beans.get(ExtraHoursRepository.class).all().filter("self.user.employee.manager = ?1 AND self.company = ?2 AND self.statusSelect = 3 OR self.statusSelect = 4",AuthUtils.getUser(),AuthUtils.getUser().getActiveCompany()).fetch();
+		
+		List<ExtraHours> extraHoursList = Lists.newArrayList();
+		
+		if(AuthUtils.getUser().getEmployee() != null && AuthUtils.getUser().getEmployee().getHrManager()){
+			extraHoursList = Query.of(ExtraHours.class).filter("self.company = ?1 AND self.statusSelect = 3 OR self.statusSelect = 4", AuthUtils.getUser().getActiveCompany()).fetch();
+		}else{
+			extraHoursList = Query.of(ExtraHours.class).filter("self.user.employee.manager = ?1 AND self.company = ?2 AND self.statusSelect = 3 OR self.statusSelect = 4",AuthUtils.getUser(),AuthUtils.getUser().getActiveCompany()).fetch();
+		}
+		
 		List<Long> extraHoursListId = new ArrayList<Long>();
 		for (ExtraHours extraHours : extraHoursList) {
 			extraHoursListId.add(extraHours.getId());

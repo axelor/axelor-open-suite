@@ -42,5 +42,6 @@ public interface BillOfMaterialService {
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public BillOfMaterial customizeBillOfMaterial(SaleOrderLine saleOrderLine);
 	
+	public BillOfMaterial generateNewVersion(BillOfMaterial billOfMaterial);
 	
 }

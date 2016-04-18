@@ -12,6 +12,9 @@
 		<boolean name="supplierStockMoveGenerationAuto" title="Generate supplier arrivals automatically" default="false"/>
 		<boolean name="allowSusbcriptionSaleOrder" title="Allow Subscriptions for Sale Orders" default="false"/>
 		<boolean name="generateInvoiceFromStockMove" title="Generate invoice from stock move" default="false"/>
+		
+		<boolean name="terminateSaleOrderOnDelivery" title="Terminate sale order on delivery" default="false" help="Automatically finish a sale order when all of the stock moves bound to it are realised"/>
+		<boolean name="terminatePurchaseOrderOnReceipt" title="Terminate purchase order on Receipt" default="false" help="Automatically finish a purchase order when all of the stock moves bound to it are realised"/>
 	</entity>
 
 </domain-models>

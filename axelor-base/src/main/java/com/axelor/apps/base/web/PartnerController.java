@@ -276,13 +276,15 @@ public class PartnerController {
 		List<BankDetails> bankDetailsList = request.getContext().asType(Partner.class).getBankDetailsList();
 		List<String> ibanInError = Lists.newArrayList();
 		
-		for (BankDetails bankDetails : bankDetailsList) {
-			
-			if(bankDetails.getIban() != null) {
-				LOG.debug("checking iban code : {}", bankDetails.getIban());
-				if (!IBANCheckDigit.IBAN_CHECK_DIGIT.isValid(bankDetails.getIban())) {	
-					ibanInError.add(bankDetails.getIban());
-					}
+		if (bankDetailsList !=null && !bankDetailsList.isEmpty()){
+			for (BankDetails bankDetails : bankDetailsList) {
+				
+				if(bankDetails.getIban() != null) {
+					LOG.debug("checking iban code : {}", bankDetails.getIban());
+					if (!IBANCheckDigit.IBAN_CHECK_DIGIT.isValid(bankDetails.getIban())) {	
+						ibanInError.add(bankDetails.getIban());
+						}
+				}
 			}
 		}
 		if (!ibanInError.isEmpty()){

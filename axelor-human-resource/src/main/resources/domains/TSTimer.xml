@@ -1,0 +1,31 @@
+<?xml version="1.0" ?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_4.0.xsd">
+
+  <module name="human-resource" package="com.axelor.apps.hr.db"/>
+
+  <entity name="TSTimer" cachable="true">
+  		
+  		<integer name="importId"/>
+      	<many-to-one name="user" title="User" ref="com.axelor.auth.db.User" readonly="true" column="user_id"/>
+      	<many-to-one name="projectTask" ref="com.axelor.apps.project.db.ProjectTask" title="Project/Task"/>
+      	<many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Activity" required="true"/>
+      	<string name="comments" title="Comments" large="true"/>
+		<datetime name="startDateTime" title="Start Time" readonly="true"/>
+      	<long name="duration" title="Duration" required="true"/>
+     	<many-to-one name="timeSheetLine" ref="com.axelor.apps.hr.db.TimesheetLine" title="Time Sheet Line" readonly="true"/>
+      	<integer name="statusSelect" title="Status Timer" default="2" selection="hr.timer.status.select" readonly="true"></integer>
+      
+    <extra-code><![CDATA[
+	
+	   	// STATUS SELECT
+		public static final int STATUS_START = 1;
+		public static final int STATUS_PAUSE = 2;
+		public static final int STATUS_STOP = 3;
+	
+	]]></extra-code>
+      
+  </entity>
+  
+</domain-models>

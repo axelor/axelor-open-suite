@@ -16,7 +16,7 @@
         <field name="price" x-scale="2"/>
         <field name="exTaxTotal"/>
 	    <field name="inTaxTotal"/>
-        <field name="saleMinPrice"/>
+        <field name="saleMinPrice"  x-scale="2"/>
         <field name="createdBy" form-view="user-form" grid-view="user-grid"/>
         <field name="createdOn"/>
         <field name="salePrice" hidden="true"/>
@@ -29,10 +29,10 @@
     	<field name="estimatedDelivDate"/>
         <field name="qty"/>
         <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
-        <field name="price"/>
+        <field name="price"  x-scale="2"/>
         <field name="exTaxTotal"/>
 	    <field name="inTaxTotal"/>
-        <field name="saleMinPrice"/>
+        <field name="saleMinPrice"  x-scale="2"/>
         <field name="salePrice" hidden="true"/>
     </grid>
     
@@ -233,6 +233,7 @@
 		<attribute name="scale" for="price" expr="eval: __config__.generalService.getNbDecimalDigitForUnitPrice()"/>
 		<attribute name="scale" for="priceDiscounted" expr="eval: __config__.generalService.getNbDecimalDigitForUnitPrice()"/>
 		<attribute name="scale" for="discountAmount" expr="eval: __config__.generalService.getNbDecimalDigitForUnitPrice()"/>
+		<attribute name="scale" for="saleMinPrice" expr="eval: __config__.generalService.getNbDecimalDigitForUnitPrice()"/>
 	</action-attrs>
     
 <!--     ACTION VIEW -->

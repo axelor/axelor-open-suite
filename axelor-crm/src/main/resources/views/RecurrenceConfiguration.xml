@@ -19,15 +19,13 @@
     		<field name="friday" title="Fr" css="small center" hidden="true" showIf="recurrenceType == 2" colSpan="1" onChange="action-recurrence-assistant-method-compute-recurrence-name"/>
     		<field name="saturday" title="Sa" css="small center" hidden="true" showIf="recurrenceType == 2" colSpan="1" onChange="action-recurrence-assistant-method-compute-recurrence-name"/>
     		<field name="monthRepeatType" title="Repeat every:" selection="crm.event.recurrence.month.repeat.type" hidden="true" showIf="recurrenceType == 3" widget="RadioSelect" css="small" colSpan="12" onChange="action-recurrence-assistant-method-compute-recurrence-name"/>
-    		<panel colSpan="6">
-    			<field name="startDate" title="Start date" readonly="true"/>
-    			<field name="endType" title="End" selection="crm.event.recurrence.end.type" widget="RadioSelect" css="small" onChange="action-recurrence-assistant-method-compute-recurrence-name"/>
-    		</panel>
+    		<field name="startDate" title="Start date" readonly="true" colSpan="12"/>
+    		<field name="endType" colSpan="3" title="End" selection="crm.event.recurrence.end.type" widget="RadioSelect" css="small" onChange="action-recurrence-assistant-method-compute-recurrence-name"/>
     		<panel colSpan="6">
     			<field name="repetitionsNumber" min="1" title="Repetitions number" hidden="true" showIf="endType == 1" colSpan="12" onChange="action-recurrence-assistant-method-compute-recurrence-name"/>
     			<field name="endDate" title="End date" hidden="true" showIf="endType == 2" colSpan="12" onChange="action-recurrence-assistant-method-compute-recurrence-name"/>
     		</panel>
-    		<label name="recurrenceName" colSpan="12" css="bold"/>
+    		<field name="recurrenceName" showTitle="false" colSpan="12" css="bold" readonly="true"/>
     		<button name="applyButton" title="Apply" onClick="action-recurrence-assistant-method-generate" hideIf="id &gt; 0"/>
     	</panel>
     	<panel sidebar="true" hidden="true" showIf="id &gt; 0">
@@ -42,7 +40,7 @@
 		<field name="recurrenceType" expr="1"/>
 		<field name="periodicity" expr="1"/>
 		<field name="endType" expr="1"/>
-		<field name="startDate" expr="eval: _startDate"/>
+		<field name="startDate" expr="eval: _parent?.startDateTime.toDate()"/>
 		<field name="monthRepeatType" expr="1"/>
 		<field name="repetitionsNumber" expr="1"/>
 	</action-record>
