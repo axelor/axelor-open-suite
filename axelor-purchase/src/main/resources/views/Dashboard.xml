@@ -157,19 +157,19 @@
 	<action-view title="My Ongoing Purchase Orders" model="com.axelor.apps.purchase.db.PurchaseOrder" name="dashlet.my.ongoing.purchase.orders">
 	    <view type="grid" name="my-purchase-order-grid"/>
 	    <view type="form" name="purchase-order-form"/>
-	    <domain>self.statusSelect=4 AND self.buyerUser =:__user__</domain>
+	    <domain>self.statusSelect = 4 AND self.buyerUser = :__user__</domain>
 	</action-view>
 	
 	<action-view title="Closed Purchase orders" model="com.axelor.apps.purchase.db.PurchaseOrder" name="dashlet.closed.purchase.orders">
 	    <view type="grid" name="purchase-order-grid"/>
 	    <view type="form" name="purchase-order-form"/>
-	    <domain>self.statusSelect=5</domain>    
+	    <domain>self.statusSelect = 4</domain>    
 	</action-view>
 	
 	<action-view title="My Closed Purchase Orders" model="com.axelor.apps.purchase.db.PurchaseOrder" name="dashlet.my.closed.purchase.orders">
 	    <view type="grid" name="my-purchase-order-grid"/>
 	    <view type="form" name="purchase-order-form"/>
-	    <domain>self.statusSelect=5 AND self.buyerUser =:__user__</domain>
+	    <domain>self.statusSelect = 4 AND self.buyerUser = :__user__</domain>
 	</action-view>
 	
 	

@@ -126,7 +126,7 @@
 			FROM
     			crm_opportunity self
  			JOIN
-    			base_source as Source ON self.source = Source.id and self.sales_stage_select = 9
+    			base_source as Source ON self.source = Source.id and self.sales_stage_select = 5
 			GROUP BY
     			_source
 			ORDER BY
