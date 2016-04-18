@@ -139,7 +139,7 @@
 					<field name="schedulePaymentOk" readonly="true" showIf="schedulePaymentOk"/>
 					<field name="paymentSchedule" readonly="true" showIf="schedulePaymentOk" domain="self.company = :company AND self.partner = :partner" form-view="payment-schedule-form" grid-view="payment-schedule-grid"/>
 				</panel>
-				<panel title="Direct debit" colSpan="12">
+				<panel title="Direct debit" colSpan="12" if="__config__.general.getManageDirectDebitPayment()" >
 					<field name="debitNumber"/>
 					<field name="directDebitManagement" form-view="direct-debit-management-form-invoice" grid-view="direct-debit-management-grid"/>
 					<field name="paymentMove" form-view="move-form" grid-view="move-grid"/>

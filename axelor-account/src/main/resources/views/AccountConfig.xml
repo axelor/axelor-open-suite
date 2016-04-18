@@ -84,7 +84,7 @@
    				    <field name="suppRefSequence" domain="self.code = 'invoice' and self.company = :company" form-view="sequence-form" grid-view="sequence-grid"/>
 				</panel>
 			</panel>
-			<panel title="CFONB">
+			<panel title="CFONB" if="__config__.general.getManageDirectDebitPayment()">
 			  <field name="cfonbConfig" showTitle="false" colSpan="4" grid-view="cfonb-config-grid" form-view="cfonb-config-form"/>
 			</panel>
 			<panel title="Receivables recovery" >
@@ -121,7 +121,7 @@
 				<field name="sixMonthDebtPassReason"/>
 				<field name="threeMonthDebtPassReason"/>
 			</panel>
-			<panel title="Direct debit">
+			<panel title="Direct debit" if="__config__.general.getManageDirectDebitPayment()" >
 				<panel title="Direct debits" colSpan="12">
 					<field name="paymentScheduleExportFolderPathCFONB"/>
 					<field name="directDebitPaymentMode" grid-view="payment-mode-grid" form-view="payment-mode-form"/>
