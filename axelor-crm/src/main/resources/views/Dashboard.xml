@@ -121,7 +121,7 @@
 		model="com.axelor.apps.crm.db.Opportunity">
 		<view type="grid" name="opportunity-grid" />
 		<view type="form" name="opportunity-form" />
-		<domain>self.updatedOn &gt; date(now())-30 and self.salesStageSelect = 10</domain>
+		<domain>self.updatedOn &gt; date(now())-30 and self.salesStageSelect = 6</domain>
 		<context name="_internalUserId" expr="eval:__user__.id"/>
 	</action-view>
 	<action-view title="My Closed Opportunities" model="com.axelor.apps.crm.db.Opportunity"
@@ -239,6 +239,12 @@
 		<dashlet action="dashlet.team.leads" height="350" if="__config__.general.getTeamManagement()"/>		
 		<dashlet action="dashlet.created.leads.per.month" height="350" />
 	</dashboard>
+
+	<action-view name="dashlet.salesman.dashboard.leads" title="My Current Leads" model="com.axelor.apps.crm.db.Lead">
+	  	<view type="grid" name="my-lead-grid"/>
+	  	<view type="form" name="lead-form"/>
+  		<domain>self.user= :__user__ AND (self.statusSelect = 2 OR self.statusSelect = 3)</domain>
+	</action-view>
 
 	<action-view name="dashlet.leads.by.source" title="Leads by Source">
 		<view type="chart" name="chart.leads.by.source.bar" />
@@ -456,7 +462,8 @@
 		name="dashlet.my.today.support.activities">
 		<view type="grid" name="my-event-grid" />
 		<view type="form" name="event-form" />
-		<domain>self.typeSelect=5 AND self.updatedOn=date(now())</domain>
+  		<domain>self.typeSelect = 5 AND self.user = :__user__ AND DATE(self.updatedOn) = DATE(:todayDate)</domain>
+		<context name="todayDate" expr="eval:__config__.generalService.getTodayDate()"/>
 	</action-view>
 
 

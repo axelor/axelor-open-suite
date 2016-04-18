@@ -18,7 +18,7 @@
     
 	<form name="location-form" title="Stock Location" model="com.axelor.apps.stock.db.Location" onNew="action-location-record-new" width="large">
 		<toolbar>
-			<button name="createInventory" title="Create inventory"   onClick="action-location-view-create-inventory"/>
+			<button name="createInventory" title="Create inventory" onClick="action-location-view-create-inventory"/>
 			<button name="print" title="Print" icon="fa-print" onClick="action-stock-location-method-print"/>
 		</toolbar>
 		<panel>
@@ -32,10 +32,9 @@
 		</panel>    
 		<panel-tabs>
 			<panel title="Location Content">
-				<button name="viewContent" title="View location content" onClick="action-location-view-location-content"/>
-				<panel-related title="Location Lines" field="locationLineList" canNew="false" colSpan="12" form-view="location-line-form" grid-view="location-line-grid"/>
+				<panel-dashlet title="Location Lines" field="locationLineList" canNew="false" colSpan="12" action="action-location-view-location-content" canSearch="true"/>
 			</panel> 
-			<panel-related title="Stock Details" field="detailsLocationLineList" form-view="location-line-details-form" grid-view="location-line-details-grid"/>
+			<panel-dashlet title="Stock Details" field="detailsLocationLineList" action="action-location-details-view-location-content" canSearch="true"/>
 		</panel-tabs>   
 		<panel-dashlet height="350" hideIf="$popup()" colSpan="12" action="dashlet.locationLine.location.value"/>      
 	</form>
@@ -59,11 +58,18 @@
 		<context name="_location" expr="eval: __self__"/>
 	</action-view>
 	
-    <action-view name="action-location-view-location-content" title="Location content" model="com.axelor.apps.stock.db.LocationLine">
-		<view type="grid" name="location-line-grid" />
-		<view type="form" name="location-line-form" />
-		<domain>self.location.id =:locationId AND self.currentQty != 0</domain>
-  		<context name="locationId" expr="eval:__self__.id" />
-    </action-view>
+     <action-view name="action-location-view-location-content" title="Location content" model="com.axelor.apps.stock.db.LocationLine">
+ 		<view type="grid" name="location-line-grid" />
+ 		<view type="form" name="location-line-form" />
+ 		<domain>self.location.id = :locationId</domain>
+   		<context name="locationId" expr="eval:__self__.id" />
+     </action-view>
+
+     <action-view name="action-location-details-view-location-content" title="Location content details" model="com.axelor.apps.stock.db.LocationLine">
+ 		<view type="grid" name="location-line-details-grid" />
+ 		<view type="form" name="location-line-details-form" />
+ 		<domain>self.detailsLocation.id = :locationId</domain>
+   		<context name="locationId" expr="eval:__self__.id" />
+     </action-view>
 
 </object-views>
