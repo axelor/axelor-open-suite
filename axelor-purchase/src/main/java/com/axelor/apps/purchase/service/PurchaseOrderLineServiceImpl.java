@@ -179,7 +179,7 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
 		PurchaseOrderLine purchaseOrderLine = new PurchaseOrderLine();
 		purchaseOrderLine.setPurchaseOrder(purchaseOrder);
 
-		purchaseOrderLine.setEstimatedDelivDate(purchaseOrder.getReceiptDate());
+		purchaseOrderLine.setEstimatedDelivDate(purchaseOrder.getDeliveryDate());
 		purchaseOrderLine.setDescription(description);
 
 		purchaseOrderLine.setIsOrdered(false);

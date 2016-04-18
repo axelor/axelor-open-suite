@@ -125,7 +125,7 @@ public class ValidateSupplyChain {
 				if(stockMove != null){
 					stockMoveService.copyQtyToRealQty(stockMove);
 					stockMoveService.realize(stockMove);
-					stockMove.setRealDate(purchaseOrder.getReceiptDate());
+					stockMove.setRealDate(purchaseOrder.getDeliveryDate());
 				}
 				purchaseOrder.setValidationDate(purchaseOrder.getOrderDate());
 				purchaseOrder.setValidatedByUser(AuthUtils.getUser());

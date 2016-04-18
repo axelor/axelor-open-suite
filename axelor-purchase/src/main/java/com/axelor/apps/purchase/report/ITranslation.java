@@ -20,7 +20,7 @@ package com.axelor.apps.purchase.report;
 public interface ITranslation {
 
 	public static final String PURCHASE_ORDER_PURCHASE_INFO = /*$$(*/ "PurchaseOrder.purchaseInfo"; /*)*/
-	public static final String PURCHASE_ORDER_RECEIPT_DATE = /*$$(*/ "PurchaseOrder.receiptDate"; /*)*/
+	public static final String PURCHASE_ORDER_DELIVERY_DATE = /*$$(*/ "PurchaseOrder.deliveryDate"; /*)*/
 	public static final String PURCHASE_ORDER_PAYMENT_CONDITION = /*$$(*/ "PurchaseOrder.paymentCondition"; /*)*/
 	public static final String PURCHASE_ORDER_PAYMENT_MODE = /*$$(*/ "PurchaseOrder.paymentMode"; /*)*/
 	public static final String PURCHASE_ORDER_SUPPLY_REF = /*$$(*/ "PurchaseOrder.supplyRef"; /*)*/

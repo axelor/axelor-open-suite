@@ -3,7 +3,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
     
-    <grid name="sale-order-line-menu-grid" title="SO lines" model="com.axelor.apps.sale.db.SaleOrderLine">
+    <grid name="sale-order-line-grid" title="SO lines" model="com.axelor.apps.sale.db.SaleOrderLine">
 	    <field name="productName"/>
 	    <field name="qty"/>
 	    <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
@@ -12,7 +12,7 @@
 	    <field name="inTaxTotal"/>
 	</grid>
 	
-    <grid name="sale-order-line-grid" title="SO lines" model="com.axelor.apps.sale.db.SaleOrderLine">
+    <grid name="sale-order-line-menu-grid" title="SO lines" model="com.axelor.apps.sale.db.SaleOrderLine">
       	<field name="saleOrder"/>
   		<field name="saleOrder.clientPartner"/>
   		<field name="saleOrder.inTaxTotal"/>
@@ -24,7 +24,7 @@
 	    <field name="inTaxTotal"/>
 	</grid>
     
-	<form name="sale-order-line-menu-form" title="SO line" model="com.axelor.apps.sale.db.SaleOrderLine" 
+	<form name="sale-order-line-form" title="SO line" model="com.axelor.apps.sale.db.SaleOrderLine" 
 	onLoad="action-group-sale-saleorderline-onload" onNew="action-group-sale-saleorderline-onnew" width="large">
 		<panel>
 			<field name="isTitleLine" onChange="action-sale-order-line-method-empty-line"/>
@@ -80,13 +80,13 @@
 			</panel>
 		</panel-tabs>
 	</form>
-
-	<form name="sale-order-line-form" title="SO line" model="com.axelor.apps.sale.db.SaleOrderLine" 
+	
+	<form name="sale-order-line-menu-form" title="SO line" model="com.axelor.apps.sale.db.SaleOrderLine" 
 	onLoad="action-group-sale-saleorderline-onload" onNew="action-group-sale-saleorderline-onnew" width="large">
 		<panel>
 			<field name="saleOrder" grid-view="sale-order-grid" form-view="sale-order-form"/>
 		</panel>
-		<panel-include view="sale-order-line-menu-form"/>
+		<panel-include view="sale-order-line-form"/>
 	</form>	
 	
 	<action-method name="action-sale-order-line-method-empty-line">
