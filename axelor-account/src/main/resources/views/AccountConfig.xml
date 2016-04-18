@@ -84,8 +84,43 @@
    				    <field name="suppRefSequence" domain="self.code = 'invoice' and self.company = :company" form-view="sequence-form" grid-view="sequence-grid"/>
 				</panel>
 			</panel>
+
 			<panel title="CFONB" if="__config__.general.getManageDirectDebitPayment()">
-			  <field name="cfonbConfig" showTitle="false" colSpan="4" grid-view="cfonb-config-grid" form-view="cfonb-config-form"/>
+				<field name="cfonbConfig" showTitle="false" colSpan="12" >
+					<editor itemSpan="6">
+						<field name="name" colSpan="8"/>
+						<field name="code" colSpan="4"/>
+					</editor>
+				</field>
+				<panel title="CFONB Export" hidden="true" showIf="!$readonly()" >
+				<field name="cfonbConfig" showTitle="false" colSpan="12" canRemove="false" canView="false" canNew="false" canSelect="false">
+					<editor itemSpan="6">
+						<field name="senderRecordCodeExportCFONB"/>
+						<field name="senderNumExportCFONB"/>
+						<field name="senderNameCodeExportCFONB"/>
+						<field name="recipientRecordCodeExportCFONB"/>
+						<field name="totalRecordCodeExportCFONB"/>
+						<field name="transferOperationCodeExportCFONB"/>
+						<field name="directDebitOperationCodeExportCFONB"/>
+					</editor>
+				</field>
+				</panel>
+				
+				<panel title="CFONB Import" hidden="true" showIf="!$readonly()">
+				
+				<field name="cfonbConfig" showTitle="false" colSpan="12"  canRemove="false" canView="false" canNew="false" canSelect="false">
+					<editor itemSpan="6">
+						<field name="headerRecordCodeImportCFONB"/>
+						<field name="detailRecordCodeImportCFONB"/>
+						<field name="endingRecordCodeImportCFONB"/>
+						<field name="transferOperationCodeImportCFONB"/>
+						<field name="directDebitOperationCodeImportCFONB"/>
+						<field name="ipoRejectOperationCodeImportCFONB"/>
+						<field name="ipoOperationCodeImportCFONB"/>
+						<field name="ipoAndChequeOperationCodeImportCFONB"/>
+					</editor>
+				</field>
+				</panel>
 			</panel>
 			<panel title="Receivables recovery" >
 				<field name="mailTransitTime" colSpan="12"/>
