@@ -1,7 +1,5 @@
 "key","message","comment","context"
 "%d times",,,
-", %d times",,,
-", until the",,,
 "0 %",,,
 "00",,,
 "10 %",,,
@@ -332,6 +330,7 @@
 "My Calendar",,,
 "My Calls",,,
 "My Closed Opportunities",,,
+"My Current Leads",,,
 "My ERP calendars",,,
 "My Key accounts",,,
 "My Late Tickets",,,
@@ -574,6 +573,7 @@
 "Weeks",,,
 "Worst case",,,
 "Years",,,
+"You don't have the rights to delete this event",,,
 "You must choose a recurrence type",,,
 "You must choose at least one day in the week",,,
 "ZIMBRA",,,

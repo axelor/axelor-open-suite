@@ -109,10 +109,10 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
 
 			Address address = Beans.get(PartnerService.class).getDeliveryAddress(supplierPartner);
 
-			StockMove stockMove = Beans.get(StockMoveService.class).createStockMove(address, null, company, supplierPartner, startLocation, purchaseOrder.getLocation(), purchaseOrder.getDeliveryDate(), purchaseOrder.getNotes());
+			StockMove stockMove = Beans.get(StockMoveService.class).createStockMove(address, null, company, supplierPartner, startLocation, purchaseOrder.getLocation(), purchaseOrder.getReceiptDate(), purchaseOrder.getNotes());
 			stockMove.setPurchaseOrder(purchaseOrder);
 			stockMove.setStockMoveLineList(new ArrayList<StockMoveLine>());
-			stockMove.setEstimatedDate(purchaseOrder.getDeliveryDate());
+			stockMove.setEstimatedDate(purchaseOrder.getReceiptDate());
 
 			for(PurchaseOrderLine purchaseOrderLine: purchaseOrder.getPurchaseOrderLineList()) {
 

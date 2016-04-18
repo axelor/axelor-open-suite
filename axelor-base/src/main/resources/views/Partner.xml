@@ -68,20 +68,20 @@
     
      <form name="partner-customer-form"  title="Customer" model="com.axelor.apps.base.db.Partner"    
     onNew="action-group-base-partner-onnew" 
-    onLoad="action-group-partner-onload" width="large" >
+    onLoad="action-group-partner-onload" width="large" canCopy="false">
     	<panel-include view="partner-form" from="axelor-base"/>
     </form>
     
     <form name="partner-supplier-form"  title="Supplier" model="com.axelor.apps.base.db.Partner"    
     onNew="action-group-base-partner-onnew" 
-    onLoad="action-group-partner-onload" width="large">
+    onLoad="action-group-partner-onload" width="large" canCopy="false">
     	<panel-include view="partner-form" from="axelor-base"/>
     </form>
     
     <form name="partner-form"  title="Partner" model="com.axelor.apps.base.db.Partner"    
     onNew="action-group-base-partner-onnew" 
-    onLoad="action-group-partner-onload"
-    onSave="action-partner-iban-check-on-save" width="large">
+    onLoad="action-group-partner-onload" 
+    onSave="action-partner-iban-check-on-save" width="large" canCopy="false">
 	    <toolbar>
 	        <button name="sendByEmail" title="Send email" icon="fa-envelope" onClick="save,action-send-by-email-with-template" readonlyIf="id == null" if-module="axelor-message"/>
 	        <button name="showPartnerInfo" title="Print Informations" icon="fa-print" onClick="save,action-partner-method-show-partner-info" readonlyIf="id == null"/>
@@ -143,7 +143,7 @@
 							<field name="address" colSpan="12" placeholder="whatever@example.com" pattern="^[a-z0-9A-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ!#$%&amp;'*+/=?^_`{|}~-]+(?:\.[a-z0-9A-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ!#$%&amp;'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+(?:[a-z]{2,})$"/>
 						</editor>
 					</field>
-					<field name="webSite"/>
+					<field name="webSite" placeholder="www.url.com" pattern="(https?:\/\/(?:www\.|(?!www))[^\s\.]+\.[^\s]{2,}|www\.[^\s]+\.[^\s]{2,})"/>
 				</panel>
 				<panel title="Partner Details" hideIf="partnerTypeSelect == 2" colSpan="12" >
 					<panel colSpan="6">
@@ -217,7 +217,7 @@
     
     <form name="partner-light-form" title="Partner" model="com.axelor.apps.base.db.Partner"
 	    onNew="action-group-base-partner-onnew" 
-    	onLoad="action-group-partner-onload" width="large">
+    	onLoad="action-group-partner-onload" width="large" canCopy="false">
 	    <toolbar>
     		<button name="sendByEmail" title="Send email" onClick="save,action-send-by-email-with-template"   readonlyIf="id == null"/>
     	</toolbar>
@@ -269,7 +269,7 @@
 
 	<form name="partner-contact-form" title="Contact" model="com.axelor.apps.base.db.Partner" 
 	onNew="action-partner-contact-record-default" 
-	onLoad="action-partner-attrs-change-name,action-partner-method-set-social-network-url">
+	onLoad="action-partner-attrs-change-name,action-partner-method-set-social-network-url" canCopy="false">
 	    <toolbar>
 	        <button name="sendByEmail" title="Send email" icon="fa-envelope" onClick="save,action-send-by-email-with-template" readonlyIf="id == null"/>
 	        <button name="showPartnerInfo" title="Print Informations" icon="fa-print" onClick="save,action-partner-method-show-partner-info"  readonlyIf="id == null"/>
@@ -338,7 +338,7 @@
 <!-- 		</panel> -->
 	</form>
 	
-	<form name="partner-contact-summary-form" title="Contact" model="com.axelor.apps.base.db.Partner"> 
+	<form name="partner-contact-summary-form" title="Contact" model="com.axelor.apps.base.db.Partner" canCopy="false"> 
 	    <panel>
 	        <field name="emailAddress" canSelect="false" form-view="email-address-simple-form" x-show-icons="false">
 				<editor>
@@ -348,7 +348,7 @@
 			<field name="fax" pattern="^\+?\d{8,11}$" placeholder="+33000000000"/>
 			<field name="fixedPhone" placeholder="+33100000000" pattern="^\+?\d{8,11}$"/>
 			<field name="mobilePhone" placeholder="+33100000000" pattern="^\+?\d{8,11}$"/>
-           <field name="webSite"/>
+           <field name="webSite" placeholder="www.url.com" pattern="(https?:\/\/(?:www\.|(?!www))[^\s\.]+\.[^\s]{2,}|www\.[^\s]+\.[^\s]{2,})"/>
 	     </panel>
 	</form>
 	
@@ -439,7 +439,8 @@
 	<action-attrs name="action-partner-attrs-change-name">
 		<attribute name="title" for="name" expr="Raison sociale" if="partnerTypeSelect != 2"/>
     	<attribute name="title" for="name" expr="Nom" if="partnerTypeSelect == 2"/>
-		<attribute name="required" for="name" expr="true"/>	
+		<attribute name="required" for="name" expr="true"/>
+		<attribute name="value" for="firstName" expr="eval:null" if="partnerTypeSelect != 2"/>
 	</action-attrs>
 	
 	<action-attrs name="action-partner-attrs-hide-contact-partner">

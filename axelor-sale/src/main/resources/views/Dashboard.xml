@@ -26,14 +26,6 @@
 	  <context name="_user_id" expr="eval:__user__.id" />
 	</action-view>
 	
-	<action-view name="dashlet.salesman.dashboard.leads" title="My Current Leads" model="com.axelor.apps.crm.db.Lead">
-	  <view type="grid" name="my-lead-grid"/>
-	  <view type="form" name="lead-form"/>
-	  <domain>self.user= :__user__ and self.updatedOn >= :fromDate and self.updatedOn &lt;= :todayDate</domain>
-	  <context name="_todayDate" expr="eval:__config__.generalService.getTodayDate()"/>
-	  <context name="fromDate" expr="eval:_todayDate.minusMonths(1)"/>  
-	</action-view>
-	
 	<action-view name="dashlet.salesman.dashboard.activities" title="My Today Activities"
 		model="com.axelor.apps.crm.db.Event">
 		<view type="grid" name="my-event-grid"/>

@@ -4,7 +4,7 @@
 
 	<menuitem name="invoicing-project-all" parent="menu-project-root"
     	title="Invoicing Projects"
-    	action="invoicing.project.all"/>
+    	action="invoicing.project.all" />
 
 	<action-view name="invoicing.project.all" title="Invoicing Projects" model="com.axelor.apps.businessproject.db.InvoicingProject">
     	<view type="grid" name="invoicing-project-grid"/>
