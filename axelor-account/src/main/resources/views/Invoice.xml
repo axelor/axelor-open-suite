@@ -193,7 +193,7 @@
 				  <span class="form-item-container">
          			<dl class="dl-horizontal">
                			<dt ng-if="record.statusSelect == 1"><i class="fa fa-link"></i> <font x-translate>Paid on</font><font> {{record.paymentDate | date : 'dd/MM/yyyy'}}<font/></dt>
- 	           		 	<dt ng-if="record.statusSelect == 1 class="hilite-info-text"> <i class="fa fa-chain-broken"></i> <font x-translate>Paid on</font><font> {{record.paymentDate | date : 'dd/MM/yyyy'}}<font/></dt>
+           		 		<dt ng-if="record.statusSelect == 2" class="hilite-danger-text"> <i class="fa fa-chain-broken"></i> <font x-translate>Paid on</font><font> {{record.paymentDate | date : 'dd/MM/yyyy'}}<font/></dt>
 	           		 	
 	           		 	<dd ng-if="record.statusSelect == 1">-{{record.amount}} {{record.currency.symbol}}</dd>
 	           		 	<dd ng-if="record.statusSelect == 2" class="hilite-danger-text">(-{{record.amount}} {{record.currency.symbol}})</dd>
