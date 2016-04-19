@@ -19,7 +19,7 @@
 			<field name="user" form-view="user-form" grid-view="user-grid"/>
 			<field name="projectTask" form-view="project-task-form" grid-view="project-task-grid" domain="self.imputable = true" onChange="action-hr-ts-timer-record-empty-product"/>
 			<field name="startDateTime"/>
-			<field name="product" domain="self.isActivity = true AND EXISTS(SELECT p FROM ProjectTask p WHERE p = :projectTask AND self MEMBER OF p.productList)" widget="SuggestBox" form-view="product-activity-form" grid-view="product-activity-grid"/>
+			<field name="product" onSelect="action-hr-timesheet-timer-attrs-domain-product" widget="SuggestBox" form-view="product-activity-form" grid-view="product-activity-grid"/>
 			<field name="duration" widget="duration" colSpan="2"/>
 			<label name="durationLabel" title="Hours" colSpan="1"/>
 			<field name="timeSheetLine" grid-view="timesheet-line-timesheet-project-grid" form-view="timesheet-line-timesheet-project-form" hideIf="timeSheetLine == null" colOffset="3"/>
@@ -31,6 +31,10 @@
 			<button name="stop" title="Stop" onClick="save,action-ts-timer-method-stop,save" readonlyIf="statusSelect != 1" icon="fa-stop" css="btn-danger"/>
 		</panel>
 	</form>
+	
+	<action-attrs name="action-hr-timesheet-timer-attrs-domain-product">
+		<attribute name="domain" for="product" expr="eval:projectTask == null || projectTask?.productList.empty ? &quot;self.isActivity = true&quot; : &quot;self.isActivity = true AND EXISTS(SELECT p FROM ProjectTask p WHERE p = :projectTask AND self MEMBER OF p.productList)&quot;"/>
+	</action-attrs>
 	
 	<action-record name="action-hr-ts-timer-record-default" model="com.axelor.apps.hr.db.TSTimer">
 	    <field name="user" expr="eval:__user__" />

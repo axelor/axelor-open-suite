@@ -113,7 +113,7 @@
 			<field name="isContact" hidden="true" colSpan="12" />
 		</panel>
   		</panel>
-  		<panel-related field="contactPartnerSet" hideIf="isContact || partnerTypeSelect == 2"    domain="self.isContact = 'true'" form-view="partner-contact-form" grid-view="partner-contact-grid" />
+  		<panel-related field="contactPartnerSet" hideIf="isContact || partnerTypeSelect == 2" domain="self.isContact = 'true'" form-view="partner-contact-form" grid-view="partner-contact-grid" />
   		<panel-tabs>
   			<panel name="information" title="Informations">
 				<panel hideIf="isContact" colSpan="12">
@@ -122,14 +122,14 @@
 					<field name="isSupplier"/>
 				</panel>
 				<panel title="Postal addresses" colSpan="12">
-					<field name="partnerAddressList" colSpan="12" onChange="action-partner-address-list-change">
-				        <editor layout="table" x-show-titles="false">
+					<field name="partnerAddressList" colSpan="12" onChange="action-partner-address-list-change" x-can-reload="true" >
+				        <editor layout="table" x-show-titles="false" >
 				        	<label title="The following address is invalid. Please use '+' button to create a new one :" colSpan="12" css="label-bold" name="addressHelper" hidden="true" showIf="address == null || address.addressL4 == null" />
             				<field name="address.addressL4" hidden="true" colSpan="12"/>
-							<field name="address" colSpan="3" onChange="action-partner-address-wrong-creation" canNew="true"/>
+							<field name="address" colSpan="3" canNew="true"/>
 							<field name="isInvoicingAddr" widget="toggle" x-icon="fa-list-alt" colSpan="1" hideIf="$readonly()"/>
-							<field name="isDeliveryAddr" widget="toggle" x-icon="fa-shopping-cart" colSpan="1" hideIf="$readonly()"/>
-							<field name="isDefaultAddr" widget="toggle" x-icon="fa-star-o" colSpan="1" hideIf="$readonly()"/>
+							<field name="isDeliveryAddr" widget="toggle" x-icon="fa-shopping-cart" colSpan="1" hideIf="$readonly()" />
+							<field name="isDefaultAddr" widget="toggle" x-icon="fa-star-o" colSpan="1" hideIf="$readonly()"  x-can-reload="true" onChange="action-partner-address-set-default"/>
 				        </editor>
 					</field>
 					<field name="deliveryDelay" showIf="isSupplier"/>
@@ -179,7 +179,7 @@
 					<field name="bankDetails"/>
 				</panel>
 		    	<panel-include view="incl-invoice-payment-partner-form" from="axelor-account"/>
-				<panel-include if-module="axelor-account" view="incl-sepa-direct-debit-partner-form" from="axelor-account"/>
+				<panel-include if-module="axelor-account" if="__config__.general.getManageDirectDebitPayment()"  view="incl-sepa-direct-debit-partner-form" from="axelor-account"/>
 		    </panel>
 			<panel name="balance" title="Accounting balance" hideIf="isContact" if-module="axelor-account" colSpan="12">
 				<panel-include if-module="axelor-account" view="incl-customer-balance-partner-form" from="axelor-account" />
@@ -541,9 +541,9 @@
 		<context name="_contactId" expr="eval: id"/>
 	</action-view>
 	
-	<action-attrs name="action-partner-address-wrong-creation">
-		<attribute name="hidden" for="AddressHelper" expr="address?.addressL4 == null"/>
-	</action-attrs>
+	<action-method name="action-partner-address-set-default">
+		<call class="com.axelor.apps.base.web.PartnerController" method="setAddressDefault"/>	
+	</action-method>
 	
 	<search-filters name="partner-filters" model="com.axelor.apps.base.db.Partner" title="Partner filters">
 		<filter title="All Enterprises">
