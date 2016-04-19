@@ -17,7 +17,10 @@
  */
 package com.axelor.apps.account.service.invoice.workflow.cancel;
 
+import java.math.BigDecimal;
+
 import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.invoice.workflow.WorkflowInvoice;
@@ -57,9 +60,12 @@ public class CancelState extends WorkflowInvoice {
 
 			throw new AxelorException(I18n.get(IExceptionMessage.INVOICE_CANCEL_1), IException.CONFIGURATION_ERROR);
 		}
-
-		Beans.get(MoveCancelService.class).cancel(invoice.getMove());
-
+		
+		Move move = invoice.getMove();
+		
+		invoice.setMove(null);
+		
+		Beans.get(MoveCancelService.class).cancel(move);
 	}
 
 }
