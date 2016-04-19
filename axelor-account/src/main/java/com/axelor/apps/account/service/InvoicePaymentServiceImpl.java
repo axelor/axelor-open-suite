@@ -40,6 +40,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.exception.AxelorException;
+import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -175,16 +176,22 @@ public class InvoicePaymentServiceImpl  implements  InvoicePaymentService {
 		
 		if(reconcile != null && reconcile.getStatusSelect() == ReconcileRepository.STATUS_CONFIRMED)  {
 			reconcileService.unreconcile(reconcile);
+			if(accountConfigService.getAccountConfig(invoicePayment.getInvoice().getCompany()).getAllowRemovalValidatedMove())  {
+				invoicePayment.setReconcile(null);
+				Beans.get(ReconcileRepository.class).remove(reconcile);
+			}
+
 		}
 		
 		if(paymentMove != null)  {
+			invoicePayment.setMove(null);
 			moveCancelService.cancel(paymentMove);
 		}
 		
 		invoicePayment.setStatusSelect(InvoicePaymentRepository.STATUS_CANCELED);
-		invoiceService.updateAmountPaid(invoicePayment.getInvoice());
-		
 		invoicePaymentRepository.save(invoicePayment);
+
+		invoiceService.updateAmountPaid(invoicePayment.getInvoice());
 			
 	}
 	
