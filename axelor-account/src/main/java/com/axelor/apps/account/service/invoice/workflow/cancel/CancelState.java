@@ -17,8 +17,6 @@
  */
 package com.axelor.apps.account.service.invoice.workflow.cancel;
 
-import java.math.BigDecimal;
-
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
