@@ -47,8 +47,8 @@
 		<panel name="generateLinesPanel" title="Generate Lines automatically" hidden="true">
 		    <field name="fromGenerationDate"/>
 			<field name="toGenerationDate"/>
-			<field name="projectTask" domain="self.imputable=true" onSelect="action-timesheet-line-attrs-domain-project-task" form-view="project-task-form" grid-view="project-task-grid"/>
-			<field name="product" onSelect="action-hr-timesheet-attrs-domain-product" form-view="product-form" grid-view="product-grid"/>
+			<field name="projectTask" domain="self.imputable=true" form-view="project-task-form" grid-view="project-task-grid"/>
+			<field name="product" onSelect="action-hr-timesheet-attrs-domain-product" widget="SuggestBox" form-view="product-form" grid-view="product-grid"/>
 			<field name="logTime"/>
 			<button name="generateLines" title="Generate lines" onClick="com.axelor.apps.hr.web.timesheet.TimesheetController:generateLines,action-timesheet-attrs-generale-lines-panel-hidden-true"/>
 		</panel>
