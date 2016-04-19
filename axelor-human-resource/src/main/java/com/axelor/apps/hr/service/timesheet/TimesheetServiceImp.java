@@ -178,7 +178,7 @@ public class TimesheetServiceImp implements TimesheetService{
 	}
 	
 	public Timesheet getCurrentTimesheet(){
-		Timesheet timesheet = Beans.get(TimesheetRepository.class).all().filter("self.statusSelect = 1 AND self.user.id = ?1", AuthUtils.getUser().getId()).order("-id").fetchOne();
+		Timesheet timesheet = Beans.get(TimesheetRepository.class).all().filter("self.statusSelect = ?1 AND self.user.id = ?2", TimesheetRepository.STATUS_DRAFT, AuthUtils.getUser().getId()).order("-id").fetchOne();
 		if(timesheet != null){
 			return timesheet;
 		}
@@ -188,10 +188,9 @@ public class TimesheetServiceImp implements TimesheetService{
 	}
 	
 	public Timesheet getCurrentOrCreateTimesheet(){
-		Timesheet timesheet = Beans.get(TimesheetRepository.class).all().filter("self.statusSelect = 1 AND self.user.id = ?1", AuthUtils.getUser().getId()).order("-id").fetchOne();
-		if(timesheet == null){
+		Timesheet timesheet = getCurrentTimesheet();
+		if(timesheet == null)
 			timesheet = createTimesheet(AuthUtils.getUser(), generalService.getTodayDateTime().toLocalDate(), null);
-		}
 		return timesheet;
 	}
 	
