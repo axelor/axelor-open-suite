@@ -11,7 +11,7 @@
         <field name="maturityDate" width="100"/>
         <field name="cumulativeQty" css="bold"/>
         <field name="product.unit"/>
-        <field name="minQty"/>
+        <field name="minQty" aggregate="min"/>
         <field name="location"/>
         <field name="maxLevel"/>
         <field name="relatedToSelectName"/>

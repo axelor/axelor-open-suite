@@ -5,11 +5,11 @@
    
     <grid name="invoice-line-grid" title="Invoice lines" model="com.axelor.apps.account.db.InvoiceLine" >
         <field name="productName"/>
-        <field name="qty"/>
+        <field name="qty" aggregate="sum"/>
         <field name="price" x-scale="2"/>
         <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
-        <field name="exTaxTotal"/>
-	    <field name="inTaxTotal"/>
+        <field name="exTaxTotal" aggregate="sum"/>
+	    <field name="inTaxTotal" aggregate="sum"/>
     </grid>
     
     <form name="invoice-line-form" title="Invoice line" model="com.axelor.apps.account.db.InvoiceLine"   

@@ -21,9 +21,9 @@
         <field name="paymentMode" grid-view="payment-mode-grid" form-view="payment-mode-form"/>
         <field name="invoiceDate"/>
         <field name="dueDate"/>
-        <field name="exTaxTotal"/>
-        <field name="inTaxTotal"/>
-        <field name="amountPaid"/>
+        <field name="exTaxTotal" aggregate="sum"/>
+        <field name="inTaxTotal" aggregate="sum"/>
+        <field name="amountPaid" aggregate="sum"/>
         <field name="statusSelect"/>
         <field name="companyInTaxTotalRemaining" hidden="true"/>
         <button name="showInvoice" title="Print" icon="fa-print" onClick="action-invoice-method-show-invoice"/>
@@ -43,8 +43,8 @@
         <field name="invoiceId"/>
         <field name="operationTypeSelect" />
         <field name="invoiceDate"/>
-        <field name="exTaxTotal"/>
-        <field name="amountPaid"/>
+        <field name="exTaxTotal" aggregate="sum"/>
+        <field name="amountPaid" aggregate="sum"/>
         <field name="statusSelect"/>
         <field name="companyInTaxTotalRemaining" hidden="true"/>
         <button name="showInvoice" title="Print" icon="fa-print" onClick="action-invoice-method-show-invoice"/>
@@ -231,8 +231,8 @@
 		<field name="paymentMode" grid-view="payment-mode-grid" form-view="payment-mode-form" />
 		<field name="invoiceDate"/>
 		<field name="dueDate"/>
-		<field name="inTaxTotal"/>
-		<field name="amountPaid"/>
+		<field name="inTaxTotal" aggregate="sum"/>
+		<field name="amountPaid" aggregate="sum"/>
 		<field name="statusSelect"/>
     </grid>
     
@@ -244,8 +244,8 @@
 		<field name="paymentMode" grid-view="payment-mode-grid" form-view="payment-mode-form" />
 		<field name="invoiceDate"/>
 		<field name="dueDate"/>
-		<field name="inTaxTotal"/>
-		<field name="directDebitAmount"/>
+		<field name="inTaxTotal" aggregate="sum"/>
+		<field name="directDebitAmount" aggregate="sum"/>
 		<field name="statusSelect"/>
     </grid>
     
