@@ -18,11 +18,11 @@
 	<grid name="timesheet-line-timesheet-grid" title="Timesheet Lines" model="com.axelor.apps.hr.db.TimesheetLine" editable="true" 
 	onNew="action-hr-default-timesheet-line-timesheet" orderBy="date" >
 		<field name="projectTask" onChange="action-timesheet-line-record-to-invoice" requiredIf="toInvoice" onSelect="action-timesheet-line-attrs-domain-project-task" form-view="project-task-form" grid-view="project-task-grid"/>
-		<field name="date" onChange="action-timesheet-line-validate-date"/>
+		<field name="date" width="85%" onChange="action-timesheet-line-validate-date"/>
 		<field name="product" onSelect="action-hr-timesheet-line-attrs-domain-product" widget="SuggestBox" form-view="product-activity-form" grid-view="product-activity-grid"/>
-		<field name="visibleDuration" onChange="action-timesheet-line-record-set-stored-duration"  aggregate="sum"/>
+		<field name="visibleDuration" width="62%" onChange="action-timesheet-line-record-set-stored-duration"  aggregate="sum"/>
 		<field name="durationStored" hidden="true" />
-		<field name="toInvoice" if-module="axelor-business-project"/>
+		<field name="toInvoice" width="88%" if-module="axelor-business-project"/>
 		<field name="comments" />
 	</grid>
 
@@ -42,11 +42,11 @@
 	<grid name="timesheet-line-timesheet-readonly-grid" title="Timesheet Lines" model="com.axelor.apps.hr.db.TimesheetLine" editable="true" 
 	onNew="action-hr-default-timesheet-line-timesheet" groupBy="date" orderBy="date">
 		<field name="projectTask" onChange="action-timesheet-line-record-to-invoice" requiredIf="toInvoice" onSelect="action-timesheet-line-attrs-domain-project-task" form-view="project-task-form" grid-view="project-task-grid"/>
-		<field name="date" onChange="action-timesheet-line-validate-date"/>
+		<field name="date" width="85%" onChange="action-timesheet-line-validate-date"/>
 		<field name="product" onSelect="action-hr-timesheet-line-attrs-domain-product" widget="SuggestBox" form-view="product-activity-form" grid-view="product-activity-grid"/>
-		<field name="visibleDuration" onChange="action-timesheet-line-record-set-stored-duration"  aggregate="sum"/>
+		<field name="visibleDuration" width="62%" onChange="action-timesheet-line-record-set-stored-duration"  aggregate="sum"/>
 		<field name="durationStored" hidden="true" />
-		<field name="toInvoice" if-module="axelor-business-project"/>
+		<field name="toInvoice" width="88%" if-module="axelor-business-project"/>
 		<field name="comments" />
 	</grid>
 
