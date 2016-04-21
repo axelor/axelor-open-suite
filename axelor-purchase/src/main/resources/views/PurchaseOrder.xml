@@ -12,7 +12,7 @@
         <field name="externalReference"/>
         <field name="orderDate"/>
         <field name="buyerUser" form-view="user-form" grid-view="user-grid"/>
-        <field name="inTaxTotal"/>
+        <field name="inTaxTotal" aggregate="sum"/>
         <field name="statusSelect"/>
         <button name="print" title="Print" icon="fa-print" onClick="action-purchase-order-method-show-purchase-order"/>
 		<button name="sendByEmail" title="Send Email" icon="fa-envelope" onClick="action-send-by-email-with-template"/>
@@ -23,7 +23,7 @@
 		  <field name="supplierPartner" form-view="partner-form" grid-view="partner-grid"/>
 		  <field name="externalReference"/>
 		  <field name="orderDate"/>
-		  <field name="inTaxTotal"/>
+		  <field name="inTaxTotal" aggregate="sum"/>
 		  <field name="statusSelect"/>
 		  <button name="print" title="Print" icon="fa-print" onClick="action-purchase-order-method-show-purchase-order"/>
 		  <button name="sendByEmail" title="Send Email" icon="fa-envelope" onClick="action-send-by-email-with-template"/>

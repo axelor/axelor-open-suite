@@ -7,10 +7,10 @@
         <field name="moveLine.move.invoice" grid-view="invoice-grid" form-view="invoice-form"/>
         <field name="moveLine" form-view="move-line-form" grid-view="move-line-grid"/>
         <field name="currency" form-view="currency-form" grid-view="currency-grid"/>
-        <field name="totalAmount"/>
-        <field name="remainingAmount"/>
-        <field name="remainingAmountAfterPayment"/>
-        <field name="amountToPay"/>  
+        <field name="totalAmount" aggregate="sum"/>
+        <field name="remainingAmount" aggregate="sum"/>
+        <field name="remainingAmountAfterPayment" aggregate="sum"/>
+        <field name="amountToPay" aggregate="sum"/>  
     </grid>
     <form name="payment-invoice-to-pay-form" title="Payment voucher invoices to pay" model="com.axelor.apps.account.db.PaymentInvoiceToPay"  >
         <panel >

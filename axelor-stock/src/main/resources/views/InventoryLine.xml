@@ -5,8 +5,8 @@
     
     <grid name="inventory-line-grid" title="Inventory lines" model="com.axelor.apps.stock.db.InventoryLine" editable="true">
         <field name="product" onChange="action-inventory-line-attrs-tracking-number" form-view="product-form" grid-view="product-grid"/>
-        <field name="currentQty" readonly="true"/>
-        <field name="realQty"/>
+        <field name="currentQty" readonly="true" aggregate="sum"/>
+        <field name="realQty" aggregate="sum"/>
         <field name="description"/>
         <field name="trackingNumber"/>
     </grid>

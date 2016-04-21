@@ -5,8 +5,8 @@
     
     <grid name="location-line-grid" title="Stock Locations content" model="com.axelor.apps.stock.db.LocationLine" orderBy="product">
         <field name="product" form-view="product-form" grid-view="product-grid"/>
-        <field name="currentQty"/>
-        <field name="futureQty"/>
+        <field name="currentQty" aggregate="sum"/>
+        <field name="futureQty" aggregate="sum"/>
     </grid>
     
     <form name="location-line-form" title="Stock Location content" model="com.axelor.apps.stock.db.LocationLine">
@@ -19,8 +19,8 @@
     
     <grid name="location-line-product-grid" title="Stock Locations content" model="com.axelor.apps.stock.db.LocationLine">
         <field name="location" form-view="location-form" grid-view="location-grid"/>
-        <field name="currentQty"/>
-        <field name="futureQty"/>
+        <field name="currentQty" aggregate="sum"/>
+        <field name="futureQty" aggregate="sum"/>
         <field name="lastFutureStockMoveDate"/>
     </grid>
     
@@ -35,15 +35,15 @@
     
      <grid name="location-line-product-group-by-variant-grid" title="Stock Locations content" model="com.axelor.apps.stock.db.LocationLine" groupBy="product">
         <field name="location" form-view="location-form" grid-view="location-grid"/>
-        <field name="currentQty"/>
-        <field name="futureQty"/>
+        <field name="currentQty" aggregate="sum"/>
+        <field name="futureQty" aggregate="sum"/>
         <field name="lastFutureStockMoveDate"/>
     </grid>
     
     <grid name="location-line-details-grid" title="Stock Locations content" model="com.axelor.apps.stock.db.LocationLine" orderBy="product, trackingNumber">
         <field name="product" form-view="product-form" grid-view="product-grid"/>
-        <field name="currentQty"/>
-        <field name="futureQty"/>
+        <field name="currentQty" aggregate="sum"/>
+        <field name="futureQty" aggregate="sum"/>
         <field name="trackingNumber"/>
     </grid>
     

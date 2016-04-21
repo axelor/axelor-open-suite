@@ -6,7 +6,7 @@
     <grid name="invoice-line-tax-grid" title="Tax Lines" model="com.axelor.apps.account.db.InvoiceLineTax">
 		<field name="taxLine" width="400%" grid-view="tax-line-grid" form-view="tax-line-form"/>
 		<field name="exTaxBase"/>
-		<field name="taxTotal"/>
+		<field name="taxTotal" aggregate="sum"/>
     </grid>
     
     <form name="invoice-line-tax-form" title="Tax Line" model="com.axelor.apps.account.db.InvoiceLineTax"  >

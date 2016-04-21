@@ -7,8 +7,8 @@
         <field name="productName" required="true" />
         <field name="product" onChange="action-group-stock-stockmoveline-product-onchange" onSelect="action-stock-move-line-product-domain" form-view="product-form" grid-view="product-grid"/>
         <field name="productModel" form-view="product-form" grid-view="product-grid"/>
-        <field name="qty" onChange="action-stock-move-line-record-qty, action-stock-move-line-compute-price"/>
-        <field name="realQty"/>
+        <field name="qty"  aggregate="sum" onChange="action-stock-move-line-record-qty, action-stock-move-line-compute-price"/>
+        <field name="realQty" aggregate="sum"/>
         <field name="unitPriceUntaxed"/>
         <field name="unitPriceTaxed" hidden="true"/>
         <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
@@ -20,7 +20,7 @@
         <field name="productName" readonly="true" />
         <field name="product" readonly="true" form-view="product-form" grid-view="product-grid"/>
         <field name="productModel" readonly="true" form-view="product-form" grid-view="product-grid"/>
-        <field name="qty"/>
+        <field name="qty" aggregate="sum"/>
         <field name="unitPriceUntaxed"/>
         <field name="unitPriceTaxed" hidden="true"/>
         <field name="unit" readonly="true" form-view="unit-form" grid-view="unit-grid"/>
@@ -54,7 +54,7 @@
         <field name="productName" />
         <field name="product" form-view="product-form" grid-view="product-grid"/>
         <field name="stockMove.partner"/>
-        <field name="realQty"/>
+        <field name="realQty" aggregate="sum"/>
         <field name="unitPriceUntaxed" x-scale="2"/>
         <field name="unitPriceTaxed" hidden="true"/>
         <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
@@ -92,7 +92,7 @@
     <grid name="stock-move-line-production-grid" title="Stock move lines" model="com.axelor.apps.stock.db.StockMoveLine">
         <field name="product" form-view="product-form" grid-view="product-grid"/>
         <field name="productModel" form-view="product-form" grid-view="product-grid"/>
-        <field name="qty" title="Consumed quantity"/>
+        <field name="qty" title="Consumed quantity" aggregate="sum"/>
         <field name="unitPriceUntaxed"/>
         <field name="unitPriceTaxed" hidden="true"/>
         <field name="unit" form-view="unit-form" grid-view="unit-grid"/>

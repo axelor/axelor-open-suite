@@ -9,8 +9,8 @@
         </toolbar>
         <field name="location" form-view="location-form" grid-view="location-grid"/>
         <field name="product" form-view="product-form" grid-view="product-grid"/>
-        <field name="minQty"/>
-        <field name="reOrderQty"/>
+        <field name="minQty" aggregate="min"/>
+        <field name="reOrderQty" aggregate="sum"/>
         <field name="typeSelect"/>
         <field name="orderAlertSelect"/>
     </grid>

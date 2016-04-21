@@ -7,9 +7,9 @@
         <field name="moveLine" form-view="move-line-form" grid-view="move-line-grid"/>
         <field name="moveLine.move.invoice"/>
         <field name="currency" form-view="currency-form" grid-view="currency-grid"/>
-        <field name="invoiceAmount"/>
-        <field name="paidAmount"/>
-        <field name="moveLine.amountRemaining"/>
+        <field name="invoiceAmount" aggregate="sum"/>
+        <field name="paidAmount" aggregate="sum"/>
+        <field name="moveLine.amountRemaining" aggregate="sum"/>
     </grid>
     <form name="payment-invoice-form" title="Invoices to pay" model="com.axelor.apps.account.db.PaymentInvoice"  >
         <panel >
