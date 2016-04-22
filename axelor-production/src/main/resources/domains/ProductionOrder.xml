@@ -8,7 +8,7 @@
   <entity name="ProductionOrder" lang="java">
   
   	<integer name="importId"/>
-  
+  	<integer name="prioritySelect" title="Priority" selection="production.order.priority.select"/>
   	<string name="productionOrderSeq" title="Name" namecolumn="true" initParam="true" required="true"/>
     <one-to-many name="manufOrderList" ref="com.axelor.apps.production.db.ManufOrder" mappedBy="productionOrder" title="Manufacturing orders"/>
     <boolean name="isClosed" >
