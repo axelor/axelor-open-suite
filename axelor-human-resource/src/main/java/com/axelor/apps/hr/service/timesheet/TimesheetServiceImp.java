@@ -59,13 +59,14 @@ import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
-import com.axelor.db.JPA;
+import com.axelor.db.mapper.Mapper;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.beust.jcommander.internal.Lists;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -80,6 +81,8 @@ public class TimesheetServiceImp implements TimesheetService{
 	@Inject
 	protected GeneralService generalService;
 	
+	private final Logger logger = LoggerFactory.getLogger(getClass());
+	
 	@Override
 	@Transactional(rollbackOn={Exception.class})
 	public void getTimeFromTask(Timesheet timesheet){
@@ -88,20 +91,19 @@ public class TimesheetServiceImp implements TimesheetService{
 		for (TimesheetLine timesheetLine : timesheetLineList) {
 			timesheet.addTimesheetLineListItem(timesheetLine);
 		}
-		JPA.save(timesheet);
+		Beans.get(TimesheetRepository.class).save(timesheet);
 	}
 
 	@Override
 	@Transactional(rollbackOn={Exception.class})
 	public void cancelTimesheet(Timesheet timesheet){
-		timesheet.setStatusSelect(5);
+		timesheet.setStatusSelect(TimesheetRepository.STATUS_CANCELED);
 		List<TimesheetLine> timesheetLineList = timesheet.getTimesheetLineList();
 		for (TimesheetLine timesheetLine : timesheetLineList) {
-			if(timesheetLine.getProjectTask() != null){
+			if(timesheetLine.getProjectTask() != null)
 				timesheetLine.setAffectedToTimeSheet(null);
-				JPA.save(timesheetLine);
-			}
 		}
+		Beans.get(TimesheetRepository.class).save(timesheet);
 	}
 
 	@Override
@@ -206,7 +208,7 @@ public class TimesheetServiceImp implements TimesheetService{
 		return timesheet;
 	}
 	
-	public TimesheetLine createTimesheetLine(ProjectTask project, Product product, User user, LocalDate date, Timesheet timesheet, BigDecimal minutes, String comments){
+	public TimesheetLine createTimesheetLine(ProjectTask project, Product product, User user, LocalDate date, Timesheet timesheet, BigDecimal hours, String comments){
 		TimesheetLine timesheetLine = new TimesheetLine();
 		
 		timesheetLine.setDate(date);
@@ -214,7 +216,7 @@ public class TimesheetServiceImp implements TimesheetService{
 		timesheetLine.setProduct(product);
 		timesheetLine.setProjectTask(project);
 		timesheetLine.setUser(user);
-		timesheetLine.setDurationStored(minutes);
+		timesheetLine.setDurationStored(hours);
 		timesheet.addTimesheetLineListItem(timesheetLine);
 		
 		return timesheetLine;
@@ -237,7 +239,7 @@ public class TimesheetServiceImp implements TimesheetService{
 			tabInformations[2] = timesheetLine.getDate();
 			//End date, useful only for consolidation
 			tabInformations[3] = timesheetLine.getDate();
-			tabInformations[4] = timesheetLine.getVisibleDuration();
+			tabInformations[4] = timesheetLine.getDurationStored();
 
 			String key = null;
 			if(consolidate){
@@ -252,7 +254,7 @@ public class TimesheetServiceImp implements TimesheetService{
 						//If date is upper than end date then replace end date by this one
 						tabInformations[3] = timesheetLine.getDate();
 					}
-					tabInformations[4] = ((BigDecimal)tabInformations[4]).add(timesheetLine.getVisibleDuration());
+					tabInformations[4] = ((BigDecimal)tabInformations[4]).add(timesheetLine.getDurationStored());
 				}else{
 					timeSheetInformationsMap.put(key, tabInformations);
 				}
@@ -455,6 +457,22 @@ public class TimesheetServiceImp implements TimesheetService{
   		else{
   			return "N°"+timeSheet.getId();
   		}
+	}
+	
+	public List<Map<String,Object>> computeVisibleDuration(Timesheet timesheet){
+		List<TimesheetLine> timesheetLineList = timesheet.getTimesheetLineList();
+		List<Map<String,Object>> response = Lists.newArrayList();
+		
+		for(TimesheetLine timesheetLine : timesheetLineList){
+			Map<String,Object> timesheetLineMap = Mapper.toMap(timesheetLine);
+			logger.debug("----------------------timesheetLineMap avant put: {}", timesheetLineMap);
+			timesheetLineMap.put("visibleDuration", Beans.get(EmployeeService.class).getUserDuration(timesheetLine.getDurationStored()).floatValue());
+			timesheetLineMap.put("date", new LocalDate());
+			logger.debug("*****************************timesheetLineMap après put: {}", timesheetLineMap);
+			response.add(timesheetLineMap);
+		}
+		logger.debug("Map : {}", response);
+		return response;
 	}
 }
 

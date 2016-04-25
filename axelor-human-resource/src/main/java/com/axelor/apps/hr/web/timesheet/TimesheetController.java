@@ -21,7 +21,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.axelor.apps.base.db.Wizard;
+import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.db.repo.TimesheetRepository;
@@ -35,8 +39,8 @@ import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.axelor.rpc.Context;
 import com.google.common.base.Joiner;
-import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 
 public class TimesheetController {
@@ -44,7 +48,11 @@ public class TimesheetController {
 	private TimesheetService timesheetService;
 	@Inject
 	private TimesheetRepository timesheetRepository;
-
+	@Inject
+	private GeneralService generalService;
+	
+	private final Logger logger = LoggerFactory.getLogger(getClass());
+	
 	public void getTimeFromTask(ActionRequest request, ActionResponse response){
 		Timesheet timesheet = request.getContext().asType(Timesheet.class);
 		timesheet = timesheetRepository.find(timesheet.getId());
@@ -118,19 +126,12 @@ public class TimesheetController {
 	}
 
 	public void validateTimesheet(ActionRequest request, ActionResponse response){
-		
-		List<Timesheet> timesheetList = Lists.newArrayList();
-		if (AuthUtils.getUser().getEmployee() != null && AuthUtils.getUser().getEmployee().getHrManager()){
-			timesheetList = Query.of(Timesheet.class).filter("self.company = ?1 AND self.statusSelect = 2",AuthUtils.getUser().getActiveCompany()).fetch();
-		}else{
-			 timesheetList = Query.of(Timesheet.class).filter("self.user.employee.manager = ?1 AND self.company = ?2 AND self.statusSelect = 2",AuthUtils.getUser(),AuthUtils.getUser().getActiveCompany()).fetch();
-		}
-		
+		List<Timesheet> timesheetList = Query.of(Timesheet.class).filter("self.user.employee.manager = ?1 AND self.company = ?2 AND self.statusSelect = 2",AuthUtils.getUser(),AuthUtils.getUser().getActiveCompany()).fetch();
 		List<Long> timesheetListId = new ArrayList<Long>();
 		for (Timesheet timesheet : timesheetList) {
 			timesheetListId.add(timesheet.getId());
 		}
-		if(AuthUtils.getUser().getEmployee() != null && AuthUtils.getUser().getEmployee().getManager() == null && !AuthUtils.getUser().getEmployee().getHrManager()){
+		if(AuthUtils.getUser().getEmployee() != null && AuthUtils.getUser().getEmployee().getManager() == null){
 			timesheetList = Query.of(Timesheet.class).filter("self.user = ?1 AND self.company = ?2 AND self.statusSelect = 2",AuthUtils.getUser(),AuthUtils.getUser().getActiveCompany()).fetch();
 		}
 		for (Timesheet timesheet : timesheetList) {
@@ -162,15 +163,7 @@ public class TimesheetController {
 	}
 
 	public void historicTimesheet(ActionRequest request, ActionResponse response){
-		
-		List<Timesheet> timesheetList = Lists.newArrayList();
-		
-		if (AuthUtils.getUser().getEmployee() != null && AuthUtils.getUser().getEmployee().getHrManager()){
-			timesheetList = Query.of(Timesheet.class).filter("self.company = ?1 AND self.statusSelect = 3 OR self.statusSelect = 4",AuthUtils.getUser().getActiveCompany()).fetch();
-		}else{
-			 timesheetList = Query.of(Timesheet.class).filter("self.user.employee.manager = ?1 AND self.company = ?2 AND self.statusSelect = 3 OR self.statusSelect = 4",AuthUtils.getUser(),AuthUtils.getUser().getActiveCompany()).fetch();
-		}
-		
+		List<Timesheet> timesheetList = Beans.get(TimesheetRepository.class).all().filter("self.user.employee.manager = ?1 AND self.company = ?2 AND self.statusSelect = 3 OR self.statusSelect = 4",AuthUtils.getUser(),AuthUtils.getUser().getActiveCompany()).fetch();
 		List<Long> timesheetListId = new ArrayList<Long>();
 		for (Timesheet timesheet : timesheetList) {
 			timesheetListId.add(timesheet.getId());
@@ -216,11 +209,24 @@ public class TimesheetController {
 		}
 	}
 
+	public void confirm(ActionRequest request, ActionResponse response){
+		Timesheet timesheet = request.getContext().asType(Timesheet.class);
+		
+		if(timesheet.getToDate() == null)
+			response.setValue("toDate", generalService.getTodayDate());
+		
+		validToDate(request, response);
+		
+		response.setValue("statusSelect", TimesheetRepository.STATUS_CONFIRMED);
+		response.setValue("sentDate", generalService.getTodayDate());
+	}
+	
 	public void validToDate(ActionRequest request, ActionResponse response){
 		Timesheet timesheet = request.getContext().asType(Timesheet.class);
 		List<TimesheetLine> timesheetLineList = timesheet.getTimesheetLineList();
 		List<Integer> listId = new ArrayList<Integer>();
 		int count = 0;
+		
 		if(timesheet.getFromDate() == null){
 			response.setError(I18n.get("From date can't be empty"));
 		}
@@ -255,11 +261,30 @@ public class TimesheetController {
 		}
 	}
 
+	public void valid(ActionRequest request, ActionResponse response){
+		response.setValue("statusSelect", TimesheetRepository.STATUS_VALIDATED);
+		response.setValue("validatedBy", AuthUtils.getUser());
+		response.setValue("validationDate", generalService.getTodayDate());
+	}
+	
+	public void refuse(ActionRequest request, ActionResponse response){
+		response.setValue("statusSelect", TimesheetRepository.STATUS_REFUSED);
+		response.setValue("validatedBy", AuthUtils.getUser());
+		response.setValue("validationDate", generalService.getTodayDate());
+	}
+	
 	public void computeTimeSpent(ActionRequest request, ActionResponse response){
 		Timesheet timesheet = request.getContext().asType(Timesheet.class);
 		timesheet = Beans.get(TimesheetRepository.class).find(timesheet.getId());
 		if(timesheet.getTimesheetLineList() != null && !timesheet.getTimesheetLineList().isEmpty()){
 			timesheetService.computeTimeSpent(timesheet);
 		}
+	}
+	
+	public void setVisibleDuration(ActionRequest request, ActionResponse response){
+		Timesheet timesheet = request.getContext().asType(Timesheet.class);
+		timesheet = Beans.get(TimesheetRepository.class).find(timesheet.getId());
+		
+		response.setValue("timesheetLineList", timesheetService.computeVisibleDuration(timesheet));
 	}
 }

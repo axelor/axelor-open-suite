@@ -7,7 +7,7 @@
 		<field name="user" form-view="user-form" grid-view="user-grid"/>
 		<field name="date" />
 		<field name="product" onSelect="action-hr-timesheet-line-attrs-domain-product" widget="SuggestBox" form-view="product-activity-form" grid-view="product-activity-grid"/>
-		<field name="visibleDuration" onChange="action-timesheet-line-record-set-stored-duration"/>
+		<field name="$visibleDuration" type="decimal" onChange="action-timesheet-line-record-set-stored-duration"/>
 		<field name="durationStored" hidden="true"/>
 		<field name="affectedToTimeSheet" grid-view="timesheet-grid" form-view="timesheet-form"/>
 		<field name="toInvoice" if-module="axelor-business-project"/>
@@ -20,7 +20,7 @@
 		<field name="projectTask" onChange="action-timesheet-line-record-to-invoice" requiredIf="toInvoice" onSelect="action-timesheet-line-attrs-domain-project-task" form-view="project-task-form" grid-view="project-task-grid"/>
 		<field name="date" onChange="action-timesheet-line-validate-date"/>
 		<field name="product" onSelect="action-hr-timesheet-line-attrs-domain-product" widget="SuggestBox" form-view="product-activity-form" grid-view="product-activity-grid"/>
-		<field name="visibleDuration" onChange="action-timesheet-line-record-set-stored-duration"  aggregate="sum"/>
+		<field name="visibleDuration" type="decimal" onChange="action-timesheet-line-record-set-stored-duration" aggregate="sum"/>
 		<field name="durationStored" hidden="true" />
 		<field name="toInvoice" if-module="axelor-business-project"/>
 		<field name="comments" />
@@ -32,7 +32,7 @@
 		<field name="projectTask" onChange="action-timesheet-line-record-to-invoice" requiredIf="toInvoice" onSelect="action-timesheet-line-attrs-domain-project-task" form-view="project-task-form" grid-view="project-task-grid"/>
 		<field name="date" onChange="action-timesheet-line-validate-date"/>
 		<field name="product" onSelect="action-hr-timesheet-line-attrs-domain-product" widget="SuggestBox" form-view="product-activity-form" grid-view="product-activity-grid"/>
-		<field name="visibleDuration" onChange="action-timesheet-line-record-set-stored-duration"  aggregate="sum"/>
+		<field name="$visibleDuration" type="decimal" onChange="action-timesheet-line-record-set-stored-duration" aggregate="sum"/>
 		<field name="durationStored" hidden="true" />
 		<field name="affectedToTimeSheet" grid-view="timesheet-grid" form-view="timesheet-form"/>
 		<field name="toInvoice" if-module="axelor-business-project"/>
@@ -44,7 +44,7 @@
 		<field name="projectTask" onChange="action-timesheet-line-record-to-invoice" requiredIf="toInvoice" onSelect="action-timesheet-line-attrs-domain-project-task" form-view="project-task-form" grid-view="project-task-grid"/>
 		<field name="date" onChange="action-timesheet-line-validate-date"/>
 		<field name="product" onSelect="action-hr-timesheet-line-attrs-domain-product" widget="SuggestBox" form-view="product-activity-form" grid-view="product-activity-grid"/>
-		<field name="visibleDuration" onChange="action-timesheet-line-record-set-stored-duration"  aggregate="sum"/>
+		<field name="$visibleDuration" type="decimal" onChange="action-timesheet-line-record-set-stored-duration" aggregate="sum"/>
 		<field name="durationStored" hidden="true" />
 		<field name="toInvoice" if-module="axelor-business-project"/>
 		<field name="comments" />
@@ -57,7 +57,7 @@
 			<field name="user" form-view="user-form" grid-view="user-grid"/>
 			<field name="date" />
 			<field name="product" onSelect="action-hr-timesheet-line-attrs-domain-product" widget="SuggestBox" form-view="product-activity-form" grid-view="product-activity-grid"/>
-			<field name="visibleDuration" colSpan="3" onChange="action-timesheet-line-record-set-stored-duration"/>
+			<field name="$visibleDuration" type="decimal" colSpan="3" onChange="action-timesheet-line-record-set-stored-duration"/>
 			<label name="durationLabel" title="Hours" colSpan="1"/>
 			<field name="durationStored" hidden="true" />
 			<field name="affectedToTimeSheet" grid-view="timesheet-grid" form-view="timesheet-form"/>
@@ -70,10 +70,10 @@
 	onNew="action-hr-default-timesheet-line-timesheet,action-timesheet-line-attrs-set-duration-label,action-timesheet-line-attrs-title-project-task"
 	onLoad="action-timesheet-line-attrs-set-duration-label,action-timesheet-line-record-set-visible-duration,action-timesheet-line-attrs-title-project-task" width="large">
 		<panel title="Overview">
-			<field name="projectTask" onChange="action-timesheet-line-record-to-invoice" onSelect="action-timesheet-line-attrs-domain-project-task" form-view="project-task-form" grid-view="project-task-grid"/>
+			<field name="projectTask" onChange="action-timesheet-line-record-to-invoice,action-hr-timesheet-line-record-empty-product" onSelect="action-timesheet-line-attrs-domain-project-task" form-view="project-task-form" grid-view="project-task-grid"/>
 			<field name="date" />
 			<field name="product" onSelect="action-hr-timesheet-line-attrs-domain-product" widget="SuggestBox" form-view="product-activity-form" grid-view="product-activity-grid"/>
-			<field name="visibleDuration" colSpan="3" onChange="action-timesheet-line-record-set-stored-duration"/>
+			<field name="visibleDuration" type="decimal" colSpan="3" onChange="action-timesheet-line-record-set-stored-duration"/>
 			<label name="durationLabel" title="Hours" colSpan="1"/>
 			<field name="durationStored" hidden="true" />
 			<field name="toInvoice" if-module="axelor-business-project"/>
@@ -85,13 +85,13 @@
 	onNew="action-hr-default-timesheet-line-timesheet,action-timesheet-line-attrs-set-duration-label,action-timesheet-line-attrs-title-project-task"
 	onLoad="action-timesheet-line-attrs-set-duration-label,action-timesheet-line-record-set-visible-duration,action-timesheet-line-attrs-title-project-task" width="large">
 		<panel title="Overview">
-			<field name="projectTask" onChange="action-timesheet-line-record-to-invoice" onSelect="action-timesheet-line-attrs-domain-project-task" form-view="project-task-form" grid-view="project-task-grid"/>
+			<field name="projectTask" onChange="action-timesheet-line-record-to-invoice,action-hr-timesheet-line-record-empty-product" onSelect="action-timesheet-line-attrs-domain-project-task" form-view="project-task-form" grid-view="project-task-grid"/>
 			<field name="date" />
 			<field name="product" onSelect="action-hr-timesheet-line-attrs-domain-product" widget="SuggestBox" form-view="product-activity-form" grid-view="product-activity-grid"/>
-			<field name="visibleDuration" colSpan="2" onChange="action-timesheet-line-record-set-stored-duration"/>
+			<field name="$visibleDuration" type="decimal" colSpan="2" onChange="action-timesheet-line-record-set-stored-duration"/>
 			<label name="durationLabel" title="Hours" colSpan="1"/>
-			<field name="durationStored" hidden="true" />
 			<field name="affectedToTimeSheet" grid-view="timesheet-grid" form-view="timesheet-form"/>
+			<field name="durationStored" hidden="true" />
 			<field name="toInvoice" if-module="axelor-business-project"/>
 			<field name="comments" />
 		</panel>
@@ -128,7 +128,7 @@
 	</action-record>
 	
 	<action-record name="action-timesheet-line-record-set-visible-duration" model="com.axelor.apps.hr.db.TimesheetLine">
-	    <field name="visibleDuration" expr="call:com.axelor.apps.hr.service.employee.EmployeeService:getUserDuration(durationStored)"/>
+	    <field name="$visibleDuration" expr="call:com.axelor.apps.hr.service.employee.EmployeeService:getUserDuration(durationStored)"/>
 	</action-record>
 	
 	<action-record name="action-timesheet-line-record-set-stored-duration" model="com.axelor.apps.hr.db.TimesheetLine">
@@ -141,6 +141,10 @@
 	
 	<action-record name="action-timesheet-line-record-to-invoice-parent" model="com.axelor.apps.hr.db.TimesheetLine">
 		<field name="toInvoice" expr="eval: _parent?.projectTask?.projTaskInvTypeSelect == 2 || _parent?.projectTask?.project?.projTaskInvTypeSelect == 2"/>
+	</action-record>
+	
+	<action-record name="action-hr-timesheet-line-record-empty-product" model="com.axelor.apps.hr.db.TimesheetLine">
+		<field name="product" expr="eval:null" if="!projectTask?.productList?.contains(product)"/>
 	</action-record>
 	
 	<action-validate name="action-timesheet-line-validate-date">

@@ -15,7 +15,7 @@
 	</grid>
 
 	<form name="project-form" title="Project" model="com.axelor.apps.project.db.ProjectTask" onNew="action-project-task-group-on-new-project"
-	onLoad="action-project-task-record-set-visible-duration,action-project-task-attrs-duration-title,action-project-attrs-scale-and-precision">
+	onLoad="action-project-task-record-set-visible-duration,action-project-task-attrs-duration-title,action-project-task-method-set-visible-duration-log-times,action-project-attrs-scale-and-precision">
 		<toolbar>
 			<button name="printProjectTask" title="Print" onClick="save,action-project-task-method-print-project-task" if-module="axelor-business-project"/>
 		</toolbar>
@@ -272,7 +272,6 @@
 		<action name="action-project-task-generate-project-from-partner" if="_idPartner != null"/>
 		<action name="action-project-project-default"/>
 		<action name="action-project-task-attrs-duration-title"/>
-		<action name="action-project-task-attrs-duration-title"/>
 		<action name="action-project-attrs-scale-and-precision"/>
 	</action-group>
 	
@@ -422,6 +421,10 @@
 	<action-record name="action-record-project-task-compute-progress" model="com.axelor.apps.project.db.ProjectTask">
 	    <field name="progress" expr="call:com.axelor.apps.project.service.ProjectTaskService:computeProgress(__this__)"/>
 	</action-record>
+	
+	<action-method name="action-project-task-method-set-visible-duration-log-times" if-module="axelor-human-resource">
+		<call class="com.axelor.apps.hr.web.project.ProjectTaskController" method="setVisibleDuration"/>
+	</action-method>
 	
 	<action-method name="action-method-project-task-compute-progress">
 		<call class="com.axelor.apps.business.project.web.ProjectTaskController" method="computeProgress"/>

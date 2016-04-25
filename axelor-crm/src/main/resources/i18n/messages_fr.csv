@@ -1,5 +1,8 @@
 "key","message","comment","context"
 "%d times","%d fois",,
+"+33100000000",,,
+", %d times",,,
+", until the",,,
 "0 %","0 %",,
 0,,,
 "10 %","10 %",,
@@ -603,3 +606,4 @@
 "until the","jusqu'au",,
 "warning",,,
 "wed,","mer,",,
+"whatever@example.com",,,

@@ -25,14 +25,14 @@
 
 	<form name="timesheet-form" title="Timesheet" model="com.axelor.apps.hr.db.Timesheet" cols="12" width="large"
 	    onNew="action-group-timesheet-onnew"
-	    onLoad="action-timesheet-attrs-buttons,action-timesheet-line-attrs-set-visible-duration-title,action-timesheet-attrs-title-project-task,action-timesheet-attrs-from-date" canNew="false"
+	    onLoad="action-timesheet-attrs-buttons,action-timesheet-line-attrs-set-visible-duration-title,action-timesheet-method-set-visible-duration,action-timesheet-attrs-title-project-task,action-timesheet-attrs-from-date" canNew="false"
 	    onSave="action-timesheet-validate-toDate,action-timesheet-method-valid-to-date" canCopy="false">
 
 	    <panel sidebar="true" title="Actions" stacked="true">
-	    	<button name="confirmButton" onClick="action-timesheet-record-to-date,action-timesheet-method-valid-to-date,action-timesheet-record-confirm,save,action-timesheet-attrs-buttons,action-timesheet-attrs-from-date" title="Confirm" hideIf="statusSelect &gt; 1" icon="fa-check-square-o"/>
-	    	<button name="validButton" onClick="action-timesheet-record-valid,save,action-timesheet-attrs-buttons,action-timesheet-method-compute-timespent-project-task" title="Valid"/>
-	    	<button name="refuseButton" onClick="action-timesheet-record-refuse,save,action-timesheet-attrs-buttons" title="Refuse"/>
-	    	<button name="cancelButton" onClick="action-timesheet-record-cancel,save,com.axelor.apps.hr.web.timesheet.TimesheetController:cancelTimesheet,action-timesheet-attrs-buttons" hideIf="statusSelect == 5" title="Cancel" icon="fa-close"/>
+	    	<button name="confirmButton" onClick="action-timesheet-method-confirm,save,action-timesheet-attrs-buttons,action-timesheet-attrs-from-date" title="Confirm" hideIf="statusSelect &gt; 1" icon="fa-check-square-o"/>
+	    	<button name="validButton" onClick="action-timesheet-method-valid,save,action-timesheet-attrs-buttons,action-timesheet-method-compute-timespent-project-task" title="Valid"/>
+	    	<button name="refuseButton" onClick="action-timesheet-method-refuse,save,action-timesheet-attrs-buttons" title="Refuse"/>
+	    	<button name="cancelButton" onClick="action-timesheet-method-cancel,action-timesheet-attrs-buttons" hideIf="statusSelect == 5" title="Cancel" icon="fa-close"/>
 	    	<button name="draftButton" onClick="action-timesheet-record-draft,save,action-timesheet-attrs-buttons" title="Return to draft status" showIf="statusSelect &gt; 3 "/>
 	    	<button name="getTimeFromTask" title="Get time from Tasks" colSpan="4" onClick="action-timesheet-validate-tasks,save,com.axelor.apps.hr.web.timesheet.TimesheetController:getTimeFromTask"/>
 	    	<button name="generateLinesButton" onClick="action-timesheet-attrs-generale-lines-panel-hidden-false" title="Generate Lines Automatically"/>
@@ -75,7 +75,6 @@
 	<action-attrs name="action-timesheet-attrs-title-project-task">
 		<attribute name="title" for="projectTask" expr="eval: __config__.general.getProjectTaskLabel()" if="!com.google.common.base.Strings.isNullOrEmpty(__config__.general.getProjectTaskLabel())"/>
 		<attribute name="title" for="timesheetLineList.projectTask" expr="eval: __config__.general.getProjectTaskLabel()" if="!com.google.common.base.Strings.isNullOrEmpty(__config__.general.getProjectTaskLabel())"/>
-	
 	</action-attrs>
 	
 	<action-attrs name="action-timesheet-attrs-domain-timesheet-select">
@@ -87,33 +86,12 @@
 	    <field name="company" expr="eval: __user__.activeCompany"/>
 	</action-record>
 	
-	<action-record name="action-timesheet-record-confirm" model="com.axelor.apps.hr.db.Timesheet">
-	    <field name="statusSelect" expr="2"/>
-	    <field name="sentDate" expr="eval: __date__"/>
-	</action-record>
-	
-	<action-record name="action-timesheet-record-valid" model="com.axelor.apps.hr.db.Timesheet">
-	    <field name="statusSelect" expr="3"/>
-	    <field name="validatedBy" expr="eval: __user__"/>
-	    <field name="validationDate" expr="eval: __date__"/>
-	</action-record>
-	
-	<action-record name="action-timesheet-record-to-date" model="com.axelor.apps.hr.db.Timesheet">
-		<field name="toDate" expr="eval: __date__" if="toDate == null"/>
-	</action-record>
-	
-	<action-record name="action-timesheet-record-refuse" model="com.axelor.apps.hr.db.Timesheet">
-	    <field name="statusSelect" expr="4"/>
-	    <field name="refusedBy" expr="eval: __user__"/>
-	    <field name="refusalDate" expr="eval: __date__"/>
-	</action-record>
-	
-	<action-record name="action-timesheet-record-cancel" model="com.axelor.apps.hr.db.Timesheet">
-	    <field name="statusSelect" expr="5"/>
-	</action-record>
-	
 	<action-record name="action-timesheet-record-draft" model="com.axelor.apps.hr.db.Timesheet">
 	    <field name="statusSelect" expr="1"/>
+	</action-record>
+
+	<action-record name="action-hr-timesheet-record-empty-product" model="com.axelor.apps.hr.db.Timesheet">
+		<field name="product" expr="eval:null" if="!projectTask?.productList?.contains(product)"/>
 	</action-record>
 
 	<action-validate name="action-timesheet-validate-tasks">
@@ -130,7 +108,7 @@
 	</action-attrs>
 	
 	<action-attrs name="action-timesheet-line-attrs-set-visible-duration-title">
-	    <attribute name="title" for="timesheetLineList.visibleDuration" expr="eval:__user__.employee?.timeLoggingPreferenceSelect == 'days' ? com.axelor.i18n.I18n.get('Days') : __user__.employee?.timeLoggingPreferenceSelect == 'minutes' ? com.axelor.i18n.I18n.get('Minutes') : com.axelor.i18n.I18n.get('Hours')"/>
+	    <attribute name="title" for="timesheetLineList.visibleDuration" expr="eval:__user__.employee?.timeLoggingPreferenceSelect == 'days' ? com.axelor.i18n.I18n.get('Days') : __user__.employee?.timeLoggingPreferenceSelect == 'minutes' ? com.axelor.i18n.I18n.get('Minutes') : com.axelor.i18n.I18n.get('Hours')" />
 	</action-attrs>
 	
 	<action-record name="action-timesheet-record-from-period-date" model="com.axelor.apps.hr.db.Timesheet">
@@ -160,6 +138,26 @@
 	
 	<action-method name="action-timesheet-method-valid-to-date">
 		<call class="com.axelor.apps.hr.web.timesheet.TimesheetController" method="validToDate"/>
+	</action-method>
+	
+	<action-method name="action-timesheet-method-confirm">
+		<call class="com.axelor.apps.hr.web.timesheet.TimesheetController" method="confirm"/>
+	</action-method>
+	
+	<action-method name="action-timesheet-method-valid">
+		<call class="com.axelor.apps.hr.web.timesheet.TimesheetController" method="valid"/>
+	</action-method>
+	
+	<action-method name="action-timesheet-method-refuse">
+		<call class="com.axelor.apps.hr.web.timesheet.TimesheetController" method="refuse"/>
+	</action-method>
+	
+	<action-method name="action-timesheet-method-cancel">
+		<call class="com.axelor.apps.hr.web.timesheet.TimesheetController" method="cancelTimesheet"/>
+	</action-method>
+	
+	<action-method name="action-timesheet-method-set-visible-duration">
+		<call class="com.axelor.apps.hr.web.timesheet.TimesheetController" method="setVisibleDuration"/>
 	</action-method>
 	
 	<action-attrs name="action-timesheet-attrs-generale-lines-panel-hidden-true">

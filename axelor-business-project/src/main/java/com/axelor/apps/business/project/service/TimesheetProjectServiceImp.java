@@ -65,7 +65,7 @@ public class TimesheetProjectServiceImp extends TimesheetServiceImp{
 			tabInformations[2] = timesheetLine.getDate();
 			//End date, useful only for consolidation
 			tabInformations[3] = timesheetLine.getDate();
-			tabInformations[4] = timesheetLine.getVisibleDuration();
+			tabInformations[4] = timesheetLine.getDurationStored();
 			tabInformations[5] = timesheetLine.getProjectTask();
 
 			String key = null;
@@ -81,7 +81,7 @@ public class TimesheetProjectServiceImp extends TimesheetServiceImp{
 						//If date is upper than end date then replace end date by this one
 						tabInformations[3] = timesheetLine.getDate();
 					}
-					tabInformations[4] = ((BigDecimal)tabInformations[4]).add(timesheetLine.getVisibleDuration());
+					tabInformations[4] = ((BigDecimal)tabInformations[4]).add(timesheetLine.getDurationStored());
 				}else{
 					timeSheetInformationsMap.put(key, tabInformations);
 				}
@@ -177,7 +177,7 @@ public class TimesheetProjectServiceImp extends TimesheetServiceImp{
 					timesheetLine.setDate(fromDate);
 					timesheetLine.setUser(timesheet.getUser());
 					timesheetLine.setProjectTask(timesheet.getProjectTask());
-					timesheetLine.setVisibleDuration(timesheet.getLogTime());
+					timesheetLine.setDurationStored(timesheet.getLogTime());
 					timesheetLine.setDurationStored(employeeService.getDurationHours(timesheet.getLogTime()));
 					timesheetLine.setProduct(timesheet.getProduct());
 					if(timesheet.getProjectTask().getProjTaskInvTypeSelect() == ProjectTaskRepository.INVOICING_TYPE_TIME_BASED
