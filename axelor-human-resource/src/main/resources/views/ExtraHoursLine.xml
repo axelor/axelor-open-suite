@@ -4,7 +4,7 @@
 	
 	<grid name="extra-hours-line-grid" title="Extra Hours" model="com.axelor.apps.hr.db.ExtraHoursLine" editable="true" onNew="action-extra-hours-line-record-default">
 		<field name="date"/>
-		<field name="qty" onChange="action-extra-hours-line-validate-qty"/>
+		<field name="qty" onChange="action-extra-hours-line-validate-qty" aggregate="sum"/>
 		<field name="projectTask"/>
 		<field name="description"/>
 		<field name="user" hidden="true"/>

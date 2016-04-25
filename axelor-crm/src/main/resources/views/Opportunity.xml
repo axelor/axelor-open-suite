@@ -18,8 +18,8 @@
         <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
 		<field name="lead" form-view="lead-form" grid-view="lead-grid"/>
 		<field name="salesStageSelect"/>
-		<field name="amount"/>
-		<field name="probability"/>
+		<field name="amount" aggregate="sum"/>
+		<field name="probability" aggregate="avg"/>
         <field name="expectedCloseDate"/>
         <field name="user" form-view="user-form" grid-view="user-grid"/>
         <button name="grabOpportunity" help="Assign to me" icon="fa-suitcase" onClick="com.axelor.apps.crm.web.OpportunityController:assignToMe" readonlyIf="user != null" />
@@ -39,8 +39,8 @@
 		<field name="partner" form-view="partner-form" grid-view="partner-grid"/>
 		<field name="lead" form-view="lead-form" grid-view="lead-grid"/>
 		<field name="salesStageSelect"/>
-		<field name="amount"/>
-		<field name="probability"/>
+		<field name="amount" aggregate="sum"/>
+		<field name="probability" aggregate="avg"/>
 		<field name="expectedCloseDate"/>
 		<button name="next-stage" help="Next Stage" readonlyIf="salesStageSelect &gt; 3" icon="fa-chevron-circle-right" onClick="action-group-crm-opportunity-nextstage-click"/>
 		<button name="closed-won" help="Closed won" readonlyIf="salesStageSelect &gt; 4" icon="fa-check-circle" onClick="action-group-crm-opportunity-closedwon-click"/>
@@ -61,7 +61,7 @@
 	<grid name="opportunity-top-deal-grid" title="Opportunities" model="com.axelor.apps.crm.db.Opportunity" orderBy="-amount" >
         <field name="name"/>
         <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
-        <field name="amount"/>
+        <field name="amount" aggregate="sum"/>
     </grid>
     
     <grid groupBy="partner" name="opportunity-key-account-grid" title="Opportunities" model="com.axelor.apps.crm.db.Opportunity" orderBy="amount">
@@ -74,7 +74,7 @@
         <field name="name"/>
         <field name="salesStageSelect"/>
         <field name="amount" aggregate="sum"/>
-        <field name="probability"/>
+        <field name="probability" aggregate="avg"/>
         <field name="expectedCloseDate"/>
         <field name="user" form-view="user-form" grid-view="user-grid"/>
     </grid>

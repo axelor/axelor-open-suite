@@ -8,7 +8,7 @@
      	<field name="id" title="Ref"/>
        	<field name="forecastDate"/>
        	<field name="product"/>
-        <field name="qty"/>
+        <field name="qty" aggregate="sum"/>
         <field name="unit"/>
        	<field name="location"/>
        	<field name="partner"/>

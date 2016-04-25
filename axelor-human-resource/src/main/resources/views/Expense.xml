@@ -13,7 +13,7 @@
 	<grid name="expense-payroll-preparation-grid" title="Expenses" model="com.axelor.apps.hr.db.Expense">
 		<field name="sentDate"/>
 		<field name="period" form-view="period-form" grid-view="period-grid"/>
-		<field name="inTaxTotal"/>
+		<field name="inTaxTotal" aggregate="sum"/>
 	</grid>
 	
 	<grid name="expense-validate-grid" title="Expenses" model="com.axelor.apps.hr.db.Expense">

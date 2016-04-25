@@ -7,7 +7,7 @@
        	<field name="estimatedDate"/>
 	   	<field name="typeSelect"/>
 	   	<field name="forecastReason"/>
-	   	<field name="amount"/>
+	   	<field name="amount" aggregate="sum"/>
 	   	<field name="balance"/>
     </grid>
  

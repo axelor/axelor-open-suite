@@ -10,7 +10,7 @@
         <field name="toDate"/>
         <field name="company"/>
         <field name="inChargeUser"/>
-        <field name="totalAmountExpected"/>
+        <field name="totalAmountExpected" aggregate="sum"/>
     </grid>
     
     <form name="budget-form" title="Budget" model="com.axelor.apps.account.db.Budget" width="large"

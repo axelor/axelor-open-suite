@@ -11,7 +11,7 @@
         <field name="paymentMode" grid-view="payment-mode-grid" form-view="payment-mode-form"/>
         <field name="paymentDateTime"/>
         <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
-        <field name="paidAmount"/>
+        <field name="paidAmount" aggregate="sum"/>
         <field name="generatedMove" form-view="move-form" grid-view="move-grid"/>
         <field name="currency" form-view="currency-form" grid-view="currency-grid"/>
         <field name="statusSelect"/>

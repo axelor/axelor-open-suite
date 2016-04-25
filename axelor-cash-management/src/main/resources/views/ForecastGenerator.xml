@@ -7,7 +7,7 @@
        <field name="company"/>
        <field name="bankDetails"/>
        <field name="typeSelect"/>
-       <field name="amount"/>
+       <field name="amount" aggregate="sum"/>
        <field name="fromDate"/>
        <field name="toDate"/>
        <field name="periodicitySelect"/>
