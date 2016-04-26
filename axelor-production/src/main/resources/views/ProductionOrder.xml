@@ -14,7 +14,7 @@
          -->
     </grid>
     
-	<form name="production-order-form" title="Production order" model="com.axelor.apps.production.db.ProductionOrder" onNew="action-group-production-order-onnew"
+	<form name="production-order-form" title="Production order" model="com.axelor.apps.production.db.ProductionOrder" onNew="action-production-order-attrs-title-project-task"
 		onLoad="action-production-order-attrs-title-project-task" width="large">
 	  <panel>
 	    <field name="productionOrderSeq"/>
@@ -42,11 +42,6 @@
 	  <panel-dashlet   action="action-production-order-view-operation-order"/>
 	</form>
     
-    <action-group name="action-group-production-order-onnew">
-    	<action name="action-production-order-attrs-title-project-task"/>
-    	<action name="action-production-order-record-default-priority"/>
-    </action-group>
-    
     <action-attrs name="action-production-order-attrs-title-project-task">
 		<attribute name="title" for="projectTask" expr="eval: __config__.general.getProjectTaskLabel()" if="!com.google.common.base.Strings.isNullOrEmpty(__config__.general.getProjectTaskLabel())"/>
 	</action-attrs>
@@ -54,10 +49,6 @@
    	<action-method name="action-production-order-method-add-manuf-order">
     	<call class="com.axelor.apps.production.web.ProductionOrderController" method="addManufOrder"/>
     </action-method>
-    
-    <action-record name="action-production-order-record-default-priority" model="com.axelor.apps.production.db.ProductionOrder">
-    	<field name="prioritySelect" expr="2"/>
-    </action-record>
     
     <action-record name="action-production-order-record-default-wizard" model="com.axelor.apps.base.db.Wizard">
 		<field name="$qty" expr="eval: 1.0"/>
