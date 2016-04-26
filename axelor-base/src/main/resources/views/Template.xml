@@ -41,7 +41,7 @@
         </panel>
 		<panel name="subjectContent" title="Content" colSpan="12">
 			<field name="subject" colSpan="12" height="2"/>
-			<field name="content" showTitle="false" widget="Html" x-lite="false" colSpan="12"/>
+			<field name="content" showTitle="false" widget="html"colSpan="12"/>
 		</panel>
 	</form>
 	
