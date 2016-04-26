@@ -2,8 +2,8 @@
 <object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
 
-	<grid name="ts-timer-grid" title="Timesheet Timer" model="com.axelor.apps.hr.db.TSTimer" editable="true"
-	onNew="action-hr-default-timesheet-timer" canNew="statusSelect == 3">
+	<grid name="ts-timer-grid" title="Start&amp;Stop Timer" model="com.axelor.apps.hr.db.TSTimer" editable="true"
+	onNew="action-hr-ts-timer-record-default" canNew="false">
 		<field name="user" form-view="user-form" grid-view="user-grid"/>
 		<field name="projectTask" form-view="project-task-form" grid-view="project-task-grid"/>
 		<field name="product" domain="self.isActivity = true AND EXISTS(SELECT p FROM ProjectTask p WHERE p = :projectTask AND self MEMBER OF p.productList)" widget="SuggestBox" form-view="product-activity-form" grid-view="product-activity-grid"/>
@@ -13,9 +13,9 @@
 		<field name="comments" colSpan="12"/>
 	</grid>
 
-	<form name="ts-timer-form" title="Timesheet Timer" model="com.axelor.apps.hr.db.TSTimer"
-	onNew="action-hr-ts-timer-record-default" width="large" readonlyIf="statusSelect == 3" canNew="statusSelect == 3">
-		<panel title="TimeSheet Timer">
+	<form name="ts-timer-form" title="Start&amp;Stop Timer" model="com.axelor.apps.hr.db.TSTimer"
+	width="large" onNew="action-hr-ts-timer-record-default" canNew="false">
+		<panel name="startAndStop" title="Start&amp;Stop Timer">
 			<field name="user" form-view="user-form" grid-view="user-grid"/>
 			<field name="projectTask" form-view="project-task-form" grid-view="project-task-grid" domain="self.imputable = true" onChange="action-hr-ts-timer-record-empty-product"/>
 			<field name="startDateTime"/>
@@ -26,9 +26,10 @@
 			<field name="comments" colSpan="12"/>
 		</panel>
 		<panel sidebar="true" title="Actions" stacked="true">
-			<button name="start" title="Start" onClick="action-hr-ts-timer-record-start-startTime,save" readonlyIf="statusSelect == 1 || product == null" icon="fa-play" css="btn-success"/>
-			<button name="pause" title="Pause" onClick="save,action-ts-timer-method-pause,save" readonlyIf="statusSelect != 1" icon="fa-pause" css="btn-warning"/>
-			<button name="stop" title="Stop" onClick="save,action-ts-timer-method-stop,save" readonlyIf="statusSelect != 1" icon="fa-stop" css="btn-danger"/>
+			<button name="start" title="Start" onClick="action-hr-ts-timer-record-start-startTime,save" hideIf="statusSelect == 1 || statusSelect == 3" readonlyIf="product == null" icon="fa-play" css="btn-success"/>
+			<button name="pause" title="Pause" onClick="save,action-ts-timer-method-pause,save" hideIf="statusSelect != 1" icon="fa-pause" css="btn-warning"/>
+			<button name="stop" title="Stop" onClick="save,action-hr-ts-timer-validate-duration,action-ts-timer-method-stop,action-ts-timer-attrs-readonly-panel,save" hideIf="statusSelect != 1" icon="fa-stop" css="btn-danger"/>
+			<button name="new" title="New" onClick="action-hr-ts-timer-record-new" hideIf="statusSelect != 3" icon="fa-plus" css="btn-primary"/>
 		</panel>
 	</form>
 	
@@ -39,6 +40,16 @@
 	<action-record name="action-hr-ts-timer-record-default" model="com.axelor.apps.hr.db.TSTimer">
 	    <field name="user" expr="eval:__user__" />
 	    <field name="product" expr="eval:__user__.employee?.product" />
+	</action-record>
+	
+	<action-record name="action-hr-ts-timer-record-new" model="com.axelor.apps.hr.db.TSTimer">
+	    <field name="projectTask" expr="eval:null" if="!__config__.general.getKeepProjectTask()"/>
+	    <field name="product" expr="eval:null" if="!__config__.general.getKeepProjectTask()"/>
+	    <field name="startDateTime" expr="eval:null"/>
+	    <field name="duration" expr="eval:null"/>
+	    <field name="timeSheetLine" expr="eval:null"/>
+	    <field name="comments" expr="eval:null"/>
+	    <field name="statusSelect" expr="eval:null"/>
 	</action-record>
 	
 	<action-record name="action-hr-ts-timer-record-start-startTime" model="com.axelor.apps.hr.db.TSTimer">
@@ -57,5 +68,9 @@
 	<action-method name="action-ts-timer-method-stop">
     	<call class="com.axelor.apps.hr.web.timesheet.timer.TSTimerController" method="stop"/>
     </action-method>
+    
+	<action-attrs name="action-ts-timer-attrs-readonly-panel">
+		<attribute name="readonly" for="startAndStop" expr="eval:statusSelect == TSTimerRepository.STATUS_STOP &amp;&amp; !__config__.general.getEditModeTSTimer()"/>
+	</action-attrs>
 	
 </object-views>

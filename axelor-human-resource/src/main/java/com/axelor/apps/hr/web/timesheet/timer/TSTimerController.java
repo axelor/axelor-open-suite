@@ -4,7 +4,7 @@ import java.util.List;
 
 import com.axelor.apps.hr.db.TSTimer;
 import com.axelor.apps.hr.db.repo.TSTimerRepository;
-import com.axelor.apps.hr.service.timesheetTimer.TimesheetTimerService;
+import com.axelor.apps.hr.service.timesheet.timer.TimesheetTimerService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -22,7 +22,7 @@ public class TSTimerController{
 	private TimesheetTimerService tsTimerService;
 	
 	public void editTimesheetTimer(ActionRequest request, ActionResponse response){
-		List<TSTimer> tsTimerList = Beans.get(TSTimerRepository.class).all().filter("self.user = ?1 AND self.statusSelect < ?2",AuthUtils.getUser(),TSTimerRepository.STATUS_STOP).fetch();
+		List<TSTimer> tsTimerList = Beans.get(TSTimerRepository.class).all().filter("self.user = ?1",AuthUtils.getUser()).fetch();
 		if(tsTimerList.isEmpty()){
 			response.setView(ActionView
 									.define(I18n.get("TSTimer"))
@@ -55,6 +55,8 @@ public class TSTimerController{
 		
 		tsTimerService.stop(timer);
 		
+		if(timer.getDuration() < 60)
+			response.setFlash(I18n.get("No timesheet line has been created because the duration is less than 1 minute"));
 		response.setReload(true);
 	}
 	
