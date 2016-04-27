@@ -24,7 +24,7 @@
 	<action-view name="invoice.root.sup.invoice" title="New sup. invoice"
 		model="com.axelor.apps.account.db.Invoice">
 		<view type="form" name="invoice-form"/>
-		<view type="grid" name="invoice-grid"/>
+		<view type="grid" name="invoice-supplier-grid"/>
 		<domain>self.operationTypeSelect = 1 OR self.operationTypeSelect = 2</domain>
 		<context name="_operationTypeSelect" expr="eval:1"/>
 		<context name="todayDate" expr="eval:__config__.generalService.getTodayDate()" />
@@ -68,7 +68,7 @@
 
 	<action-view name="invoice.root.purchase.supinvoices" title="Suppl. Invoices"
 		model="com.axelor.apps.account.db.Invoice" >
-		<view type="grid" name="invoice-grid"/>
+		<view type="grid" name="invoice-supplier-grid"/>
 		<view type="form" name="invoice-form"/>
 		<view-param name="search-filters" value="supplier-invoices-filters"/>
 		<domain>self.operationTypeSelect = 1</domain>
@@ -81,7 +81,7 @@
 
 	<action-view name="invoice.root.purchase.suprefunds" title="Suppl. Refunds"
 		model="com.axelor.apps.account.db.Invoice">
-		<view type="grid" name="invoice-grid"/>
+		<view type="grid" name="invoice-supplier-grid"/>
 		<view type="form" name="invoice-form"/>
 		<view-param name="search-filters" value="supplier-refunds-filters"/>
 		<domain>self.operationTypeSelect = 2</domain>
@@ -637,7 +637,7 @@
 	
 	<action-view name="top.invoice.supplinvoices" title="Suppl. Invoices"
 		model="com.axelor.apps.account.db.Invoice" >
-		<view type="grid" name="invoice-grid" />
+		<view type="grid" name="invoice-supplier-grid" />
 		<view type="form" name="invoice-form" />
 		<view-param name="search-filters" value="supplier-invoices-filters"/>
 		<domain>self.operationTypeSelect = 1</domain>
@@ -648,7 +648,7 @@
 	
 	<action-view name="top.invoice.supplrefunds" title="Suppl. Refunds"
 		model="com.axelor.apps.account.db.Invoice" >
-		<view type="grid" name="invoice-grid" />
+		<view type="grid" name="invoice-supplier-grid" />
 		<view type="form" name="invoice-form" />
 		<view-param name="search-filters" value="supplier-refunds-filters"/>
 		<domain>self.operationTypeSelect = 2</domain>
