@@ -17,16 +17,16 @@ import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
-public class TimesheetTimerServiceImp implements TimesheetTimerService {
+public class TimesheetTimerServiceImpl implements TimesheetTimerService {
 	
 	@Inject
-	private EventService eventService;
+	protected EventService eventService;
 	
 	@Inject
-	private GeneralService generalService;
+	protected GeneralService generalService;
 	
 	@Inject
-	private TimesheetService timesheetService;
+	protected TimesheetService timesheetService;
 	
 	@Transactional(rollbackOn = {Exception.class})
 	public void pause(TSTimer timer){
@@ -50,14 +50,17 @@ public class TimesheetTimerServiceImp implements TimesheetTimerService {
 	}
 
 	@Transactional(rollbackOn = {Exception.class})
-	public void generateTimesheetLine(TSTimer timer) {
-		BigDecimal hours = BigDecimal.valueOf(timer.getDuration() / 3600);
-		Timesheet newTimesheet = timesheetService.getCurrentOrCreateTimesheet();
-		TimesheetLine newTimesheetline = timesheetService.createTimesheetLine(timer.getProjectTask(), timer.getProduct(), timer.getUser(), timer.getStartDateTime().toLocalDate(), newTimesheet, hours, timer.getComments());
+	public TimesheetLine generateTimesheetLine(TSTimer timer) {
+		BigDecimal durationHours = BigDecimal.valueOf(timer.getDuration() / 3600);
+		Timesheet timesheet = timesheetService.getCurrentOrCreateTimesheet();
+		TimesheetLine timesheetLine = timesheetService.createTimesheetLine(timer.getProjectTask(), timer.getProduct(), timer.getUser(), 
+				timer.getStartDateTime().toLocalDate(), timesheet, durationHours, timer.getComments());
 		
-		Beans.get(TimesheetRepository.class).save(newTimesheet);
-		Beans.get(TimesheetLineRepository.class).save(newTimesheetline);
-		timer.setTimeSheetLine(newTimesheetline);
+		Beans.get(TimesheetRepository.class).save(timesheet);
+		Beans.get(TimesheetLineRepository.class).save(timesheetLine);
+		timer.setTimeSheetLine(timesheetLine);
+		
+		return timesheetLine;
 	}
 	
 }
