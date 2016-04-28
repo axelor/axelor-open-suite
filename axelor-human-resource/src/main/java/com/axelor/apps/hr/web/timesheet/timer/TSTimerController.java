@@ -16,14 +16,14 @@ import com.google.inject.Inject;
 public class TSTimerController{
 	
 	@Inject
-	private TSTimerRepository TsTimerRepo;
+	protected TSTimerRepository TsTimerRepo;
 	
 	@Inject
-	private TimesheetTimerService tsTimerService;
+	protected TimesheetTimerService tsTimerService;
 	
 	public void editTimesheetTimer(ActionRequest request, ActionResponse response){
-		List<TSTimer> tsTimerList = Beans.get(TSTimerRepository.class).all().filter("self.user = ?1",AuthUtils.getUser()).fetch();
-		if(tsTimerList.isEmpty()){
+		TSTimer tsTimer = tsTimerService.getCurrentTSTimer();
+		if(tsTimer == null){
 			response.setView(ActionView
 									.define(I18n.get("TSTimer"))
 									.model(TSTimer.class.getName())
@@ -36,7 +36,37 @@ public class TSTimerController{
 					.model(TSTimer.class.getName())
 					.add("form", "ts-timer-form")
 					.param("forceEdit", "true")
-					.context("_showRecord", String.valueOf(tsTimerList.get(0).getId())).map());
+					.context("_showRecord", String.valueOf(tsTimer.getId())).map());
+		}
+	}
+	
+	public void editTimesheetTimerFromTimesheet(ActionRequest request, ActionResponse response){
+		TSTimer tsTimer = tsTimerService.getCurrentTSTimer();
+		if(tsTimer == null){
+			response.setView(ActionView
+									.define(I18n.get("TSTimer"))
+									.model(TSTimer.class.getName())
+									.add("form", "ts-timer-form")
+									.param("popup", "reload")
+									.param("forceEdit", "true")
+									.param("width", "800")
+									.param("show-confirm", "true")
+									.param("show-toolbar", "false")
+									.param("popup-save", "true")
+									.map());
+		}
+		else{
+			response.setView(ActionView
+					.define(I18n.get("TSTimer"))
+					.model(TSTimer.class.getName())
+					.add("form", "ts-timer-form")
+					.param("popup", "reload")
+					.param("forceEdit", "true")
+					.param("width", "800")
+					.param("show-confirm", "true")
+					.param("show-toolbar", "false")
+					.param("popup-save", "true")
+					.context("_showRecord", String.valueOf(tsTimer.getId())).map());
 		}
 	}
 	

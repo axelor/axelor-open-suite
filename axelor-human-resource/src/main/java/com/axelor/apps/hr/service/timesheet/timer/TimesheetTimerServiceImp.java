@@ -1,6 +1,7 @@
 package com.axelor.apps.hr.service.timesheet.timer;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 import org.joda.time.Duration;
 
@@ -13,6 +14,7 @@ import com.axelor.apps.hr.db.repo.TSTimerRepository;
 import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
 import com.axelor.apps.hr.db.repo.TimesheetRepository;
 import com.axelor.apps.hr.service.timesheet.TimesheetService;
+import com.axelor.auth.AuthUtils;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -59,6 +61,10 @@ public class TimesheetTimerServiceImp implements TimesheetTimerService {
 		Beans.get(TimesheetRepository.class).save(newTimesheet);
 		Beans.get(TimesheetLineRepository.class).save(newTimesheetline);
 		timer.setTimeSheetLine(newTimesheetline);
+	}
+	
+	public TSTimer getCurrentTSTimer(){
+		return Beans.get(TSTimerRepository.class).all().filter("self.user = ?1",AuthUtils.getUser()).fetchOne();
 	}
 	
 }

@@ -12,8 +12,8 @@
 		<boolean name="consolidateTSLine" title="Consolidate timesheet line on invoice"/>
 		
 		<!-- Timesheet Timer configuration -->
-		<boolean name="editModeTSTimer" title="Edit Timesheet Timer On Stop" default="true"/>
-		<boolean name="keepProjectTask" title="Keep Project/Task" default="true"/>
+		<boolean name="editModeTSTimer" title="Edit Start&amp;Stop Timer On Stop" default="true"/>
+		<boolean name="keepProjectTask" title="Keep Project/Task for Start&amp;Stop Timer" default="true"/>
 		
 		<extra-code>
    		<![CDATA[

@@ -8,5 +8,5 @@ public interface TimesheetTimerService {
 	public void stop(TSTimer timer);
 	public void calculateDuration(TSTimer timer);
 	public void generateTimesheetLine(TSTimer timer);
-	
+	public TSTimer getCurrentTSTimer();
 }
