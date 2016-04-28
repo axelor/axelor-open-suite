@@ -1,4 +1,4 @@
-package com.axelor.apps.hr.service.timesheet.timer;
+package com.axelor.apps.hr.service.timesheetTimer;
 
 import java.math.BigDecimal;
 
@@ -13,21 +13,20 @@ import com.axelor.apps.hr.db.repo.TSTimerRepository;
 import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
 import com.axelor.apps.hr.db.repo.TimesheetRepository;
 import com.axelor.apps.hr.service.timesheet.TimesheetService;
-import com.axelor.auth.AuthUtils;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
-public class TimesheetTimerServiceImp implements TimesheetTimerService {
+public class TimesheetTimerServiceImpl implements TimesheetTimerService {
 	
 	@Inject
-	private EventService eventService;
+	protected EventService eventService;
 	
 	@Inject
-	private GeneralService generalService;
+	protected GeneralService generalService;
 	
 	@Inject
-	private TimesheetService timesheetService;
+	protected TimesheetService timesheetService;
 	
 	@Transactional(rollbackOn = {Exception.class})
 	public void pause(TSTimer timer){
@@ -39,8 +38,7 @@ public class TimesheetTimerServiceImp implements TimesheetTimerService {
 	public void stop(TSTimer timer) {
 		timer.setStatusSelect(TSTimerRepository.STATUS_STOP);
 		calculateDuration(timer);
-		if(timer.getDuration() > 59)
-			generateTimesheetLine(timer);
+		generateTimesheetLine(timer);
 	}
 	
 	@Transactional(rollbackOn = {Exception.class})
@@ -52,18 +50,17 @@ public class TimesheetTimerServiceImp implements TimesheetTimerService {
 	}
 
 	@Transactional(rollbackOn = {Exception.class})
-	public void generateTimesheetLine(TSTimer timer) {
-		BigDecimal hours = BigDecimal.valueOf(timer.getDuration() / 3600);
-		Timesheet newTimesheet = timesheetService.getCurrentOrCreateTimesheet();
-		TimesheetLine newTimesheetline = timesheetService.createTimesheetLine(timer.getProjectTask(), timer.getProduct(), timer.getUser(), timer.getStartDateTime().toLocalDate(), newTimesheet, hours, timer.getComments());
+	public TimesheetLine generateTimesheetLine(TSTimer timer) {
+		BigDecimal durationHours = BigDecimal.valueOf(timer.getDuration() / 3600);
+		Timesheet timesheet = timesheetService.getCurrentOrCreateTimesheet();
+		TimesheetLine timesheetLine = timesheetService.createTimesheetLine(timer.getProjectTask(), timer.getProduct(), timer.getUser(), 
+				timer.getStartDateTime().toLocalDate(), timesheet, durationHours, timer.getComments());
 		
-		Beans.get(TimesheetRepository.class).save(newTimesheet);
-		Beans.get(TimesheetLineRepository.class).save(newTimesheetline);
-		timer.setTimeSheetLine(newTimesheetline);
-	}
-	
-	public TSTimer getCurrentTSTimer(){
-		return Beans.get(TSTimerRepository.class).all().filter("self.user = ?1",AuthUtils.getUser()).fetchOne();
+		Beans.get(TimesheetRepository.class).save(timesheet);
+		Beans.get(TimesheetLineRepository.class).save(timesheetLine);
+		timer.setTimeSheetLine(timesheetLine);
+		
+		return timesheetLine;
 	}
 	
 }
