@@ -3,6 +3,9 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
 
 	<grid name="timesheet-grid" title="Timesheet" model="com.axelor.apps.hr.db.Timesheet" canNew="false">
+		<hilite color="danger" if="statusSelect == 4"/>
+		<hilite color="success" if="statusSelect == 3"/>
+		<hilite color="warning" if="statusSelect == 2"/>
 		<field name="company" form-view="company-form" grid-view="company-grid"/>
 		<field name="fromDate"></field>
 		<field name="toDate"></field>
@@ -15,6 +18,8 @@
 		<toolbar>
 			<button name="showSubordinateTimesheetToValidate" title="Show timesheets to be validated by my subordinates" onClick="com.axelor.apps.hr.web.timesheet.TimesheetController:showSubordinateTimesheets"/>
 		</toolbar>
+		<hilite background="danger" if="$moment(fromDate).diff(todayDate,'days') &lt;= 0"/>
+  		<hilite background="warning" if="$moment(todayDate).diff(sentDate,'days') &gt;= 7 || $moment(todayDate).diff(fromDate,'days') &gt;= 15"/> 
 		<field name="company" form-view="company-form" grid-view="company-grid"/>
 		<field name="fromDate"></field>
 		<field name="toDate"></field>

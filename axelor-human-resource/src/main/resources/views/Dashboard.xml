@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
+	
+	
+	<!-- Dashboard Manager -->
+	<dashboard title="Dashboard" name="hr.manager.dashboard.sample"  >
+		<dashlet action="hr.dashboard.timesheets.to.validate" height="450" canSearch="true"/>
+		<dashlet action="hr.dashboard.extrahours.to.validate" height="450" canSearch="true"/>
+		<dashlet action="hr.dashboard.expenses.to.validate" height="450" canSearch="true"/>
+		<dashlet action="hr.dashboard.leave.requests.to.validate" height="450" canSearch="true"/>
+	</dashboard>
+	
+	<action-view name="hr.dashboard.timesheets.to.validate" title="Timesheets to validate"
+		model="com.axelor.apps.hr.db.Timesheet">
+		<view type="grid" name="timesheet-validate-grid"/>
+		<view type="form" name="timesheet-form"/>
+		 <domain>self.statusSelect = 2</domain>
+	</action-view>
+	
+	<action-view name="hr.dashboard.extrahours.to.validate" title="Extra Hours to validate"
+		model="com.axelor.apps.hr.db.ExtraHours">
+		<view type="grid" name="extra-hours-validate-grid"/>
+		<view type="form" name="extra-hours-form"/>
+		 <domain>self.statusSelect = 2</domain>
+	</action-view>
+	
+	<action-view name="hr.dashboard.expenses.to.validate" title="Expenses to validate"
+		model="com.axelor.apps.hr.db.Expense">
+		<view type="grid" name="expense-validate-grid"/>
+		<view type="form" name="expense-form"/>
+		 <domain>self.statusSelect = 2</domain>
+	</action-view>
+	
+	<action-view name="hr.dashboard.leave.requests.to.validate" title="Leave Requests to validate"
+		model="com.axelor.apps.hr.db.LeaveRequest">
+		<view type="grid" name="leave-request-validate-grid"/>
+		<view type="form" name="leave-request-form"/>
+		 <domain>self.statusSelect = 2</domain>
+	</action-view>
+
+
+	<!-- Dashboard User -->
+	<dashboard title="Dashboard" name="hr.user.dashboard.sample"  >
+		<dashlet action="hr.dashboard.my.timesheets" height="350" canSearch="true"/>
+		<dashlet action="hr.dashboard.my.extrahours" height="350" canSearch="true"/>
+		<dashlet action="hr.dashboard.my.expenses" height="350" canSearch="true"/>
+		<dashlet action="hr.dashboard.my.leave.requests" height="350" canSearch="true"/>
+	</dashboard>
+	
+	<action-method name="hr.dashboard.my.timesheets" model="com.axelor.apps.hr.db.Timesheet">
+		<call class="com.axelor.apps.hr.web.timesheet.TimesheetController" method="allTimesheet"/>
+	</action-method>
+	
+	<action-method name="hr.dashboard.my.extrahours" model="com.axelor.apps.hr.db.ExtraHours">
+		<call class="com.axelor.apps.hr.web.extra.hours.ExtraHoursController" method="allExtraHours"/>
+	</action-method>
+	
+	<action-method name="hr.dashboard.my.expenses"	model="com.axelor.apps.hr.db.Expense">
+		<call class="com.axelor.apps.hr.web.expense.ExpenseController" method="allExpense"/>
+	</action-method>
+	
+	<action-method name="hr.dashboard.my.leave.requests" model="com.axelor.apps.hr.db.LeaveRequest">
+		<call class="com.axelor.apps.hr.web.leave.LeaveController" method="allLeave"/>
+	</action-method>
+
+
+
+</object-views>
+

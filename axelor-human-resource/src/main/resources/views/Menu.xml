@@ -251,4 +251,21 @@
 	    <view type="form" name="kilometric-allow-param-form"/>
 	</action-view>
 
+	<menuitem name="hr-report-root" parent="hr-root" title="Reportings"/>
+    	
+    <menuitem name="menu-hr-manager-dashboard" parent="hr-report-root" title="Human Resources Manager" groups="MNGT,admins"
+    	action="hr.manager.dashboard.view"/>
+    	
+	<action-view name="hr.manager.dashboard.view" title="Human Resource Manager">
+		<view type="dashboard" name="hr.manager.dashboard.sample" />
+	</action-view>	
+    	
+    <menuitem name="menu-hr-user-dashboard" parent="hr-report-root" title="Human Resources User"
+    	action="hr.user.dashboard.view"/>
+    	
+	<action-view name="hr.user.dashboard.view" title="Human Resources User">
+		<view type="dashboard" name="hr.user.dashboard.sample" />
+	</action-view>	
+
+	
 </object-views>
