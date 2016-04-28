@@ -5,7 +5,7 @@
 	<grid editable="true" name="kilometric-allowance-grid" title="Kilometric allowances" model="com.axelor.apps.hr.db.KilometricAllowance" 
 		onNew="action-kilometric-allowance-record-default,action-kilometric-allowance-record-rate">
 		<field name="kilometricAllowParam" onChange="action-kilometric-allowance-record-rate,action-kilometric-allowance-record-in-tax-total" canEdit="false"/>
-        <field name="rate" eadonly="true" />
+        <field name="rate" readonly="true" />
         <field name="typeSelect" onChange="action-kilometric-allowance-record-in-tax-total"/>
         <field name="distance" onChange="action-kilometric-allowance-record-in-tax-total" />
         <field name="cityFrom"/>
