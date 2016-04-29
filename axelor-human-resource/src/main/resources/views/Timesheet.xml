@@ -36,6 +36,7 @@
 	    	<button name="draftButton" onClick="action-timesheet-record-draft,save,action-timesheet-attrs-buttons" title="Return to draft status" showIf="statusSelect &gt; 3 "/>
 	    	<button name="getTimeFromTask" title="Get time from Tasks" colSpan="4" onClick="action-timesheet-validate-tasks,save,com.axelor.apps.hr.web.timesheet.TimesheetController:getTimeFromTask"/>
 	    	<button name="generateLinesButton" onClick="action-timesheet-attrs-generale-lines-panel-hidden-false" title="Generate Lines Automatically"/>
+	    	<button name="startStopForm" title="Start&amp;Stop Timer" onClick="action-timesheet-method-timesheet-timer"/>
 	    </panel>
 		<panel name="head">
 		    <field name="statusSelect" colSpan="12" widget="NavSelect"/>
@@ -162,6 +163,14 @@
 		<call class="com.axelor.apps.hr.web.timesheet.TimesheetController" method="validToDate"/>
 	</action-method>
 	
+	<action-method name="action-timesheet-method-timesheet-timer">
+		<call class="com.axelor.apps.hr.web.timesheet.TSTimerController" method="editTimesheetTimerFromTimesheet"/>
+	</action-method>
+	
+	<action-method name="action-timesheet-method-compute-timespent-project-task">
+		<call class="com.axelor.apps.hr.web.timesheet.TimesheetController" method="computeTimeSpent"/>
+	</action-method>
+	
 	<action-attrs name="action-timesheet-attrs-generale-lines-panel-hidden-true">
 		<attribute name="hidden" for="generateLinesPanel" expr="true"/>
 		<attribute name="hidden" for="generateLinesButton" expr="false"/>
@@ -171,10 +180,6 @@
 		<attribute name="hidden" for="generateLinesPanel" expr="false"/>
 		<attribute name="hidden" for="generateLinesButton" expr="true"/>
 	</action-attrs>
-	
-	<action-method name="action-timesheet-method-compute-timespent-project-task">
-		<call class="com.axelor.apps.hr.web.timesheet.TimesheetController" method="computeTimeSpent"/>
-	</action-method>
 	
 	<action-group name="action-group-timesheet-onnew">
 		<action name="action-timesheet-record-default"/>
