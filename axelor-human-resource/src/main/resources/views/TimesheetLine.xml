@@ -39,7 +39,7 @@
 		<field name="comments" />
 	</grid>
 
-	<grid name="timesheet-line-timesheet-readonly-grid" title="Timesheet Lines" model="com.axelor.apps.hr.db.TimesheetLine" editable="true" 
+	<grid name="timesheet-line-timesheet-readonly-grid" title="Timesheet Lines" model="com.axelor.apps.hr.db.TimesheetLine" 
 	onNew="action-hr-default-timesheet-line-timesheet" groupBy="date" orderBy="date">
 		<field name="projectTask" onChange="action-timesheet-line-record-to-invoice" requiredIf="toInvoice" onSelect="action-timesheet-line-attrs-domain-project-task" form-view="project-task-form" grid-view="project-task-grid"/>
 		<field name="date" width="85%" onChange="action-timesheet-line-validate-date"/>

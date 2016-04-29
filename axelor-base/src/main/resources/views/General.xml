@@ -146,9 +146,7 @@
 			</panel>
 			
 			<panel title="Human Resource configuration" if-module="axelor-human-resource">
-				<field name="allowNegativeLeaveEmployees"/>
-				<field name="invoicingTypeLogTimesSelect"/>  <!-- TODO jamais utilisé  -->
-				<field name="consolidateTSLine"/>
+				<panel-include view="human-ressource-general-form" if-module="axelor-human-resource" from="axelor-human-resource"/>
 			</panel>
 			
 			<panel title="Project/Task configuration" if-module="axelor-project">

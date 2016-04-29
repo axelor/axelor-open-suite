@@ -262,7 +262,10 @@
 "Profile",,,
 "Qty",,,
 "Quantity",,,
+<<<<<<< HEAD
 "Quantity Wasted per Product",,,
+=======
+>>>>>>> upstream/dev
 "Rate",,,
 "Rate type",,,
 "Raw material",,,

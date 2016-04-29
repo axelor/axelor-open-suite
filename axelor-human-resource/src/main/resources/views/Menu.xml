@@ -32,7 +32,7 @@
 		<call class="com.axelor.apps.hr.web.timesheet.TimesheetController" method="historicTimesheet"/>
 	</action-method>
 	
-	<menuitem title="TimeSheet Timer" name="time-sheet-timer" parent="timesheet-root" action="time.sheet.timer"/>
+	<menuitem title="Start&amp;Stop Timer" name="time-sheet-timer" parent="timesheet-root" action="time.sheet.timer"/>
 	
 	<action-method name="time.sheet.timer">
 		<call class="com.axelor.apps.hr.web.timesheet.timer.TSTimerController" method="editTimesheetTimer"/>

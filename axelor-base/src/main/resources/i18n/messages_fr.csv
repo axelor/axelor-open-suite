@@ -695,6 +695,7 @@
 "Mail batch",,,
 "Mail batches",,,
 "Main company","Entreprise principale",,
+"Manage direct debit payment","Gérer les paiements par prélèvement",,
 "Manage mail account by user ?","Gérer les comptes mail par user ?",,
 "Manage production tracking Nbr. ?","Gérer N° de suivi de production ? ",,
 "Manage purchase tracking Nbr. ?","Gérer N° suivi à l'achat ? ",,
@@ -1411,4 +1412,5 @@
 "v5",,,
 "week(s)","semaine(s)",,
 "whatever@example.com",,,
+"www.url.com",,,
 "year(s)","année(s)",,
