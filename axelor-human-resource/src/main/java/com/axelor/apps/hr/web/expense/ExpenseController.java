@@ -190,9 +190,9 @@ public class ExpenseController {
 		List<Expense> expenseList = Lists.newArrayList();
 		
 		if(AuthUtils.getUser().getEmployee() != null && AuthUtils.getUser().getEmployee().getHrManager()){
-			expenseList = Query.of(Expense.class).filter("self.company = ?1 AND self.statusSelect = 3 OR self.statusSelect = 4",AuthUtils.getUser().getActiveCompany()).fetch();
+			expenseList = Query.of(Expense.class).filter("self.company = ?1 AND (self.statusSelect = 3 OR self.statusSelect = 4)",AuthUtils.getUser().getActiveCompany()).fetch();
 		}else{
-			expenseList = Query.of(Expense.class).filter("self.user.employee.manager = ?1 AND self.company = ?2 AND self.statusSelect = 3 OR self.statusSelect = 4",AuthUtils.getUser(),AuthUtils.getUser().getActiveCompany()).fetch();
+			expenseList = Query.of(Expense.class).filter("self.user.employee.manager = ?1 AND self.company = ?2 AND (self.statusSelect = 3 OR self.statusSelect = 4)",AuthUtils.getUser(),AuthUtils.getUser().getActiveCompany()).fetch();
 		}
 		
 		List<Long> expenseListId = new ArrayList<Long>();
