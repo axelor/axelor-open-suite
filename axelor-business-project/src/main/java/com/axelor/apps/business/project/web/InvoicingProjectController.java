@@ -21,6 +21,8 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
+import org.joda.time.LocalDate;
+
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.business.project.exception.IExceptionMessage;
 import com.axelor.apps.business.project.service.InvoicingProjectService;
@@ -77,6 +79,7 @@ public class InvoicingProjectController {
 	public void fillIn(ActionRequest request, ActionResponse response) throws AxelorException{
 		InvoicingProject invoicingProject = request.getContext().asType(InvoicingProject.class);
 		ProjectTask projectTask = invoicingProject.getProjectTask();
+		LocalDate deadLine = invoicingProject.getDeadlineDate();
 		if(projectTask == null){
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.INVOICING_PROJECT_PROJECT_TASK)), IException.CONFIGURATION_ERROR);
 		}
@@ -86,10 +89,14 @@ public class InvoicingProjectController {
 		List<ExpenseLine> expenseLineList = new ArrayList<ExpenseLine>();
 		List<ElementsToInvoice> elementsToInvoiceList = new ArrayList<ElementsToInvoice>();
 		List<ProjectTask> projectTaskList = new ArrayList<ProjectTask>();
-
-		invoicingProjectService.getLines(projectTask, saleOrderLineList, purchaseOrderLineList,
-				timesheetLineList, expenseLineList, elementsToInvoiceList, projectTaskList, 0);
-
+		
+		if (deadLine == null)
+			invoicingProjectService.getLines(projectTask, saleOrderLineList, purchaseOrderLineList,
+					timesheetLineList, expenseLineList, elementsToInvoiceList, projectTaskList, 0);
+		else
+			invoicingProjectService.getLinesWithDeadline(projectTask, deadLine, saleOrderLineList, purchaseOrderLineList,
+					timesheetLineList, expenseLineList, elementsToInvoiceList, projectTaskList, 0);
+			
 		invoicingProject.setSaleOrderLineSet(new HashSet<SaleOrderLine>(saleOrderLineList));
 		invoicingProject.setPurchaseOrderLineSet(new HashSet<PurchaseOrderLine>(purchaseOrderLineList));
 		invoicingProject.setLogTimesSet(new HashSet<TimesheetLine>(timesheetLineList));
