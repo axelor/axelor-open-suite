@@ -9,11 +9,11 @@
         <field name="product" form-view="product-form" grid-view="product-grid"/>
         <field name="startDate"/>
         <field name="endDate"/>
-        <field name="qty"/>
+        <field name="qty" aggregate="sum"/>
         <field name="qtyUnit" form-view="unit-form" grid-view="unit-grid"/>
         <field name="price"/>
         <field name="priceUnit" form-view="unit-form" grid-view="unit-grid"/>
-        <field name="amount"/>
+        <field name="amount" aggregate="sum"/>
     </grid>
     
     <form name="invoice-line-event-form" title="Invoice line" model="com.axelor.apps.account.db.InvoiceLineEvent"  >

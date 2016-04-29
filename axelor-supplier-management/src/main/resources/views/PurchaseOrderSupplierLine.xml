@@ -5,7 +5,7 @@
 	
 	<grid name="purchase-order-supplier-line-grid" title="suppliers requests" canNew="false" model="com.axelor.apps.suppliermanagement.db.PurchaseOrderSupplierLine">
 		<field name="supplierPartner" form-view="partner-form" grid-view="partner-grid"/>
-		<field name="availableQty"/>
+		<field name="availableQty" aggregate="sum"/>
 		<field name="purchaseOrderLine.unit" form-view="unit-form" grid-view="unit-grid"/>
 		<field name="price"/>
 		<field name="estimatedDelivDate"/>
@@ -39,7 +39,7 @@
 		<field name="purchaseOrderLine.product" form-view="product-form" grid-view="product-grid"/>
 		<field name="purchaseOrderLine.qty"/>
 		<field name="purchaseOrderLine.desiredDelivDate"/>
-		<field name="availableQty"/>
+		<field name="availableQty" aggregate="sum"/>
 		<field name="purchaseOrderLine.unit" form-view="unit-form" grid-view="unit-grid"/>
 		<field name="price"/>
 		<field name="estimatedDelivDate"/>

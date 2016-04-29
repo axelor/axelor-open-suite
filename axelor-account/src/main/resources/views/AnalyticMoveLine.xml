@@ -8,7 +8,7 @@
         <field name="analyticAccount" form-view="analytic-account-form" grid-view="analytic-account-grid"/>
         <field name="date"/>
         <field name="product" form-view="product-form" grid-view="product-grid"/>
-        <field name="amount"/>
+        <field name="amount" aggregate="sum"/>
         <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
         <field name="toInvoice"/>
         <field name="invoiced"/>

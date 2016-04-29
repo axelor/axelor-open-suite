@@ -7,6 +7,10 @@
     	<toolbar>
     		<button name="print" title="Print" icon="fa-print" onClick="action-manuf-order-method-print"/>
     	</toolbar>
+    	<hilite color="danger" if="$get('productionOrder.prioritySelect') == 3"/>
+  		<hilite color="warning" if="$get('productionOrder.prioritySelect') == 2"/>
+  		<hilite color="primary" if="$get('productionOrder.prioritySelect') == 1"/>
+  		<field name="productionOrder.prioritySelect" hidden="true"/>
         <field name="manufOrderSeq"/>
         <field name="company" form-view="company-form" grid-view="company-grid"/>
         <field name="product" form-view="product-form" grid-view="product-grid"/>

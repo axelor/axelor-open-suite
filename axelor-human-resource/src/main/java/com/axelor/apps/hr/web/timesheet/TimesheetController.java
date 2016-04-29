@@ -166,9 +166,9 @@ public class TimesheetController {
 		List<Timesheet> timesheetList = Lists.newArrayList();
 		
 		if (AuthUtils.getUser().getEmployee() != null && AuthUtils.getUser().getEmployee().getHrManager()){
-			timesheetList = Query.of(Timesheet.class).filter("self.company = ?1 AND self.statusSelect = 3 OR self.statusSelect = 4",AuthUtils.getUser().getActiveCompany()).fetch();
+			timesheetList = Query.of(Timesheet.class).filter("self.company = ?1 AND (self.statusSelect = 3 OR self.statusSelect = 4)",AuthUtils.getUser().getActiveCompany()).fetch();
 		}else{
-			 timesheetList = Query.of(Timesheet.class).filter("self.user.employee.manager = ?1 AND self.company = ?2 AND self.statusSelect = 3 OR self.statusSelect = 4",AuthUtils.getUser(),AuthUtils.getUser().getActiveCompany()).fetch();
+			 timesheetList = Query.of(Timesheet.class).filter("self.user.employee.manager = ?1 AND self.company = ?2 AND (self.statusSelect = 3 OR self.statusSelect = 4)",AuthUtils.getUser(),AuthUtils.getUser().getActiveCompany()).fetch();
 		}
 		
 		List<Long> timesheetListId = new ArrayList<Long>();

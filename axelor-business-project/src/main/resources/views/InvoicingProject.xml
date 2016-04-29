@@ -4,6 +4,8 @@
 
 	<grid name="invoicing-project-grid" title="Invoicing Project" model="com.axelor.apps.businessproject.db.InvoicingProject">
 		<field name="projectTask" form-view="project-form" grid-view="project-grid"/>
+		<field name="invoice"/>
+		<field name="createdOn"/>		
 	</grid>
 
 	<form name="invoicing-project-form" title="Invoicing Project" model="com.axelor.apps.businessproject.db.InvoicingProject" 

@@ -5,11 +5,11 @@
     
     <grid name="sale-order-line-grid" title="SO lines" model="com.axelor.apps.sale.db.SaleOrderLine">
 	    <field name="productName"/>
-	    <field name="qty"/>
+	    <field name="qty" aggregate="sum"/>
 	    <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
 	    <field name="price" x-scale="2"/>
-	    <field name="exTaxTotal"/>
-	    <field name="inTaxTotal"/>
+	    <field name="exTaxTotal" aggregate="sum"/>
+	    <field name="inTaxTotal" aggregate="sum"/>
 	</grid>
 	
     <grid name="sale-order-line-menu-grid" title="SO lines" model="com.axelor.apps.sale.db.SaleOrderLine">
@@ -17,11 +17,11 @@
   		<field name="saleOrder.clientPartner"/>
   		<field name="saleOrder.inTaxTotal"/>
 	    <field name="productName"/>
-	    <field name="qty"/>
+	    <field name="qty" aggregate="sum"/>
 	    <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
 	    <field name="price" x-scale="2"/>
-	    <field name="exTaxTotal"/>
-	    <field name="inTaxTotal"/>
+	    <field name="exTaxTotal" aggregate="sum"/>
+	    <field name="inTaxTotal" aggregate="sum"/>
 	</grid>
     
 	<form name="sale-order-line-form" title="SO line" model="com.axelor.apps.sale.db.SaleOrderLine" 

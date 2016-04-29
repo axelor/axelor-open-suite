@@ -11,7 +11,7 @@
 		<field name="toDate" />
 		<field name="dueDate" />
 		<field name="statusSelect"/>
-		<field name="progress" widget="Progress"/>
+		<field name="progress" widget="Progress" aggregate="avg"/>
 	</grid>
 
 	<form name="project-form" title="Project" model="com.axelor.apps.project.db.ProjectTask" onNew="action-project-task-group-on-new-project"
@@ -91,7 +91,7 @@
 		<field name="toDate" />
 		<field name="dueDate" />
 		<field name="statusSelect"/>
-		<field name="progress" />
+		<field name="progress" aggregate="avg"/>
 	</grid>
 	
 	<gantt name="project-gantt" title="Project gantt" model="com.axelor.apps.project.db.ProjectTask" taskStart="fromDate" taskDuration="duration" taskParent="project" 

@@ -10,7 +10,7 @@
         <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
         <field name="typeSelect"/>
         <field name="account" form-view="account-form" grid-view="account-grid"/>
-        <field name="amount"/>
+        <field name="amount" aggregate="sum"/>
     </grid>
   
      <form name="bank-statement-line-form" title="Bank Statement Line" model="com.axelor.apps.account.db.BankStatementLine" width="large">
