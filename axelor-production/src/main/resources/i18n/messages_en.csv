@@ -42,7 +42,6 @@
 "Cost",,,
 "Cost (W.T.)",,,
 "Cost price",,,
-<<<<<<< HEAD
 "Cost sheet","Feuille de coût",,
 "Cost sheet - %s","Feuille de coût - %s",,
 "Cost sheet group","Groupe de feuille de coût",,
@@ -100,13 +99,8 @@
 "Human resources",,,
 "Import",,,
 "In progress",,,
-<<<<<<< HEAD
 "Indirect","Indirect",,
 "Indirect cost","""Coût indirect",,
-=======
-"Indirect",,,
-"Indirect cost",,,
->>>>>>> upstream/dev
 "Information",,,
 "Is closed",,,
 "Is with difference",,,
@@ -116,10 +110,7 @@
 "Late Planned Operations",,,
 "Les pièces sont classées dans l'ordre allant du coté opposé au raccord tournant vers le raccord.",,,
 "Level",,,
-<<<<<<< HEAD
 "List of Wastes Per Product",,,
-=======
->>>>>>> upstream/dev
 "Location",,,
 "Low",,,
 "MO",,,
@@ -128,11 +119,7 @@
 "MOs In Standby",,,
 "MOs to invoice",,,
 "Machine",,,
-<<<<<<< HEAD
 "Machine's planning","Planning machine",,
-=======
-"Machine's planning",,,
->>>>>>> upstream/dev
 "Machines",,,
 "Manage bill of material versions",,,
 "Manage consumed products on operations?",,,
@@ -275,27 +262,17 @@
 "Profile",,,
 "Qty",,,
 "Quantity",,,
-<<<<<<< HEAD
 "Quantity Wasted per Product",,,
 "Rate",,,
 "Rate type","Type de taux",,
-=======
-"Rate",,,
-"Rate type",,,
->>>>>>> upstream/dev
 "Raw material",,,
 "Real dates",,,
 "Real duration",,,
 "Real operations",,,
 "Replacement machines",,,
 "Reportings",,,
-<<<<<<< HEAD
 "Residual product","Produits résiduel",,
 "Residual products","Produits résiduels",,
-=======
-"Residual product",,,
-"Residual products",,,
->>>>>>> upstream/dev
 "Resources",,,
 "Resume",,,
 "Sequence",,,
