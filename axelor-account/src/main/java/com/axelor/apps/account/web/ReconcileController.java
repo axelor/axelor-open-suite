@@ -37,10 +37,9 @@ public class ReconcileController {
 	public void unreconcile(ActionRequest request, ActionResponse response) {
 		
 		Reconcile reconcile = request.getContext().asType(Reconcile.class);
-		reconcile = reconcileRepo.find(reconcile.getId());
 				
 		try {	
-			reconcileService.unreconcile(reconcile);
+			reconcileService.unreconcile(reconcileRepo.find(reconcile.getId()));
 			response.setReload(true);
 		}
 		catch(Exception e)  { TraceBackService.trace(response, e); }
@@ -52,7 +51,7 @@ public class ReconcileController {
 		Reconcile reconcile = request.getContext().asType(Reconcile.class);
 			
 		try {
-			reconcileService.confirmReconcile(reconcile);
+			reconcileService.confirmReconcile(reconcileRepo.find(reconcile.getId()));
 			response.setReload(true);
 		}
 		catch(Exception e)  { TraceBackService.trace(response, e); }		
