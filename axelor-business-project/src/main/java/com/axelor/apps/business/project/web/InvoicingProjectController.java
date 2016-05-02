@@ -71,7 +71,7 @@ public class InvoicingProjectController {
 		if(projectTask == null){
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.INVOICING_PROJECT_PROJECT_TASK)), IException.CONFIGURATION_ERROR);
 		}
-		
+		invoicingProjectService.clearLines(invoicingProject);
 		invoicingProjectService.setLines(invoicingProject,projectTask,0);
 		response.setValues(invoicingProject);
 	}
