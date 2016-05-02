@@ -1,13 +1,9 @@
 package com.axelor.apps.hr.web.timesheet.timer;
 
-import java.util.List;
-
 import com.axelor.apps.hr.db.TSTimer;
 import com.axelor.apps.hr.db.repo.TSTimerRepository;
 import com.axelor.apps.hr.service.timesheet.timer.TimesheetTimerService;
-import com.axelor.auth.AuthUtils;
 import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;

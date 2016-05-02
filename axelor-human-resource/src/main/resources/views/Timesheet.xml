@@ -59,7 +59,7 @@
 			<button name="generateLines" title="Generate lines" onClick="com.axelor.apps.hr.web.timesheet.TimesheetController:generateLines,action-timesheet-attrs-generale-lines-panel-hidden-true"/>
 		</panel>
 		<panel-related field="timesheetLineList" grid-view="timesheet-line-timesheet-grid" editable="true" form-view="timesheet-line-timesheet-form" hidden="true" showIf="!$readonly()"/>
-		<panel-related field="timesheetLineList" grid-view="timesheet-line-timesheet-readonly-grid" form-view="timesheet-line-timesheet-form" hidden="true" showIf="$readonly()" />
+		<panel-related field="timesheetLineList" grid-view="timesheet-line-timesheet-readonly-grid" editable="true" form-view="timesheet-line-timesheet-form" hidden="true" showIf="$readonly()" />
 		<panel itemSpan="4">
 		 	<field name="sentDate"/>
 			<field name="validatedBy" form-view="user-form" grid-view="user-grid"/>
@@ -169,7 +169,7 @@
 	</action-method>
 	
 	<action-method name="action-timesheet-method-timesheet-timer">
-		<call class="com.axelor.apps.hr.web.timesheet.TSTimerController" method="editTimesheetTimerFromTimesheet"/>
+		<call class="com.axelor.apps.hr.web.timesheet.timer.TSTimerController" method="editTimesheetTimerFromTimesheet"/>
 	</action-method>
 	
 	<action-method name="action-timesheet-method-compute-timespent-project-task">

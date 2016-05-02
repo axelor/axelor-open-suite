@@ -14,17 +14,23 @@
 
 	<form name="purchase-order-supplier-line-form" title="Supplier request" model="com.axelor.apps.suppliermanagement.db.PurchaseOrderSupplierLine"
 		onNew="action-purchase-order-supplier-line-record-request,action-purchase-order-supplier-line-attrs-new" canNew="false">
+	   <panel>
+    	 <field name="stateSelect" showTitle="false" readonly="true" colSpan="12" widget="NavSelect"/>
+    	 <field name="supplierPartner" domain="self.isSupplier = true" form-view="partner-form" grid-view="partner-grid"/>
+    	 <field name="availableQty"/>
+    	 <field name="purchaseOrderLine.unit" form-view="unit-form" grid-view="unit-grid"/>
+    	 <field name="price"/>
+    	 <field name="estimatedDelivDate"/>
+  	   </panel>
+  	   <panel title="Purchase Order Details" readOnly="true">
+  		 <field name="purchaseOrderLine.product"/>
+    	 <field name="purchaseOrderLine.purchaseOrder" />
+    	 <field name="purchaseOrderLine.qty" title="Ordered quantity"/>
+    	 <field name="purchaseOrderLine.price"/>
+    	 <field name="purchaseOrderLine.desiredDelivDate"/>
+  	  </panel>
 	  <panel>
-	    <field name="stateSelect" showTitle="false" readonly="true" colSpan="12" widget="NavSelect"/>
-	    <field name="supplierPartner" domain="self.isSupplier = true" form-view="partner-form" grid-view="partner-grid"/>
-	    <field name="availableQty"/>
-	    <field name="purchaseOrderLine.unit" form-view="unit-form" grid-view="unit-grid"/>
-	    <field name="price"/>
-	    <field name="estimatedDelivDate"/>
-	    <field name="purchaseOrderLine" title="PO Line" showIf="purchaseOrderLine"/>
-	  </panel>
-	  <panel>
-	    <field name="comments" colSpan="12"/>
+	     <field name="comments" colSpan="12"/>
 	  </panel>  
 	  <panel sidebar="true" title="Actions">
 	    <button name="accept" title="Accept" showIf="stateSelect == 1 || stateSelect == 2"   onClick="save,action-purchase-order-supplier-line-method-accept,save"/>
