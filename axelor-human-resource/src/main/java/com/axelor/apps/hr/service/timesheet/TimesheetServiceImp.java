@@ -76,7 +76,7 @@ public class TimesheetServiceImp implements TimesheetService{
 	protected EmployeeService employeeService;
 
 	@Inject
-	private PriceListService priceListService;
+	protected PriceListService priceListService;
 
 	@Inject
 	protected GeneralService generalService;

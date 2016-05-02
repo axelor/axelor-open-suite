@@ -5,7 +5,7 @@
     
     <grid name="prod-residual-product-grid" title="Residual products" model="com.axelor.apps.production.db.ProdResidualProduct" editable="true">
         <field name="product" form-view="product-form" grid-view="product-grid" onChange="action-prod-residual-product-record-product" domain="self.productTypeSelect = 'storable'"/>
-        <field name="qty"/>
+        <field name="qty" aggregate="sum"/>
         <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
     </grid>
     

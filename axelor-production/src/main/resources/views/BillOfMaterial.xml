@@ -6,7 +6,7 @@
     <grid name="bill-of-material-grid" title="Bills of material" model="com.axelor.apps.production.db.BillOfMaterial">
     	<field name="fullName"/>
         <field name="product" domain="self.productTypeSelect = 'storable'"  onChange="action-bill-of-material-record-product" form-view="product-form" grid-view="product-grid"/>
-        <field name="qty"/>
+        <field name="qty" aggregate="sum"/>
         <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
         <field name="prodProcess" grid-view="prod-process-grid" form-view="prod-process-form"/>
     </grid>
@@ -50,7 +50,7 @@
     <grid name="bill-of-material-line-grid" title="Bills of material" model="com.axelor.apps.production.db.BillOfMaterial">
         <field name="priority" readonlyIf="isRawMaterial" width="20"/>
         <field name="product" domain="self.productTypeSelect = 'storable'"  onChange="action-bill-of-material-record-product" form-view="product-form" grid-view="product-grid"/>
-        <field name="qty"/>
+        <field name="qty" aggregate="sum"/>
         <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
         <field name="isRawMaterial"/>
         <field name="hasNoManageStock"/>

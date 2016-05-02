@@ -4,7 +4,11 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
     
     <grid name="production-order-grid" title="Production orders" model="com.axelor.apps.production.db.ProductionOrder" orderBy="-productionOrderSeq">
+    <hilite color="danger" if="prioritySelect == 3"/>
+    <hilite color="warning" if="prioritySelect == 2"/>
+    <hilite color="primary" if="prioritySelect == 1"/>
         <field name="productionOrderSeq"/>
+        <field name="prioritySelect" hidden="true"/>
         <!--  TODO: this field is commented in domain
         <field name="businessProject"/>
          -->
@@ -15,6 +19,7 @@
 	  <panel>
 	    <field name="productionOrderSeq"/>
 	    <field name="projectTask" if-module="axelor-business-production" form-view="project-task-form" grid-view="project-task-grid"/>
+	    <field name="prioritySelect"/>
 	    <button name="showManufOrderWizard" title="Add Manuf. Order" width="50%"   onClick="save,action-production-order-attrs-add-manuf-order-wizard,action-production-order-record-default-wizard"/>
 	  </panel>  
 	  <panel name="addManufOrderWizard" title="Add Manuf. Order" hidden="true">

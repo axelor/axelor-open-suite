@@ -7,7 +7,7 @@
 		 <field name="employee"/>
 		 <field name="employmentContract"/> 
 		 <field name="payrollPeriod" />
-		 <field name="total"/>
+		 <field name="total" aggregate="sum"/>
 	</grid>
 	
 	<form name="payroll-preparation-form" title="Payroll preparation" model="com.axelor.apps.hr.db.PayrollPreparation" 

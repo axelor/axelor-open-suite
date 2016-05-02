@@ -11,12 +11,12 @@
     	<field name="productName"/>
     	<field name="desiredDelivDate"/>
     	<field name="estimatedDelivDate"/>
-        <field name="qty"/>
+        <field name="qty" aggregate="sum"/>
         <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
         <field name="price" x-scale="2"/>
-        <field name="exTaxTotal"/>
-	    <field name="inTaxTotal"/>
-        <field name="saleMinPrice"  x-scale="2"/>
+        <field name="exTaxTotal" aggregate="sum"/>
+	    <field name="inTaxTotal" aggregate="sum"/>
+        <field name="saleMinPrice"  x-scale="2" aggregate="min"/>
         <field name="createdBy" form-view="user-form" grid-view="user-grid"/>
         <field name="createdOn"/>
         <field name="salePrice" hidden="true"/>
@@ -27,12 +27,12 @@
     	<field name="productName"/>
     	<field name="desiredDelivDate"/>
     	<field name="estimatedDelivDate"/>
-        <field name="qty"/>
+        <field name="qty" aggregate="sum"/>
         <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
         <field name="price"  x-scale="2"/>
-        <field name="exTaxTotal"/>
-	    <field name="inTaxTotal"/>
-        <field name="saleMinPrice"  x-scale="2"/>
+        <field name="exTaxTotal" aggregate="sum"/>
+	    <field name="inTaxTotal" aggregate="sum"/>
+        <field name="saleMinPrice"  x-scale="2" aggregate="min"/>
         <field name="salePrice" hidden="true"/>
     </grid>
     
@@ -41,11 +41,11 @@
        	<field name="purchaseOrder" form-view="purchase-order-form" grid-view="purchase-order-grid"/>
     	<field name="supplierPartner" form-view="partner-form" grid-view="partner-grid"/>
     	<field name="productName"/>
-        <field name="qty"/>
+        <field name="qty" aggregate="sum"/>
         <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
         <field name="price"/>
-        <field name="exTaxTotal"/>
-	    <field name="inTaxTotal"/>
+        <field name="exTaxTotal" aggregate="sum"/>
+	    <field name="inTaxTotal" aggregate="sum"/>
     </grid>
 
 	<form name="purchase-order-line-form" title="PO line" 
@@ -150,6 +150,7 @@
 		<action name="action-purchase-order-line-attrs-scale-and-precision"/>
 		<action name="action-purchase-order-attrs-hide-ati"/>
 		<action name="action-purchase-order-line-attrs-show-priceDiscounted"/>
+		<action name="action-purchase-order-line-attrs-delivery-panel"/>
 	</action-group>
 	
 	<action-group name="action-group-purchase-purchase-orderline-product-onchange">

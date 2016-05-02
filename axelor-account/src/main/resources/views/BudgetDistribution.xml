@@ -5,7 +5,7 @@
     
     <grid name="budget-distribution-grid" title="Budget distributions" model="com.axelor.apps.account.db.BudgetDistribution">
         <field name="budget"/>
-        <field name="amount"/>
+        <field name="amount" aggregate="sum"/>
     </grid>
     
     <form name="budget-distribution-form" title="Budget distribution" model="com.axelor.apps.account.db.BudgetDistribution" width="large">

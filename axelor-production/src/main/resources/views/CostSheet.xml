@@ -8,7 +8,7 @@
 		<field name="createdBy"/>
  		<field name="billOfMaterial" form-view="bill-of-material-form" grid-view="bill-of-material-grid"/>
   		<field name="billOfMaterial.product" form-view="product-form" grid-view="product-grid"/>
-  		<field name="billOfMaterial.qty"/>
+  		<field name="billOfMaterial.qty" aggregate="sum"/>
   		<field name="costPrice" readonly="true"/>
     </grid>
     

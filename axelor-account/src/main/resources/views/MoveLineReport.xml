@@ -16,8 +16,8 @@
         <field name="period" form-view="period-form" grid-view="period-grid"/>
         <field name="journal" form-view="journal-form" grid-view="journal-grid"/>
         <field name="account" form-view="account-form" grid-view="account-grid"/>
-        <field name="totalDebit"/>
-		<field name="totalCredit"/>
+        <field name="totalDebit" aggregate="sum"/>
+		<field name="totalCredit" aggregate="sum"/>
 		<field name="balance"/>
 		<field name="statusSelect"/>
 		<field name="publicationDateTime"/>
@@ -81,8 +81,8 @@
         <field name="dateTo"/>
         <field name="period" form-view="period-form" grid-view="period-grid"/>
         <field name="journal" form-view="journal-form" grid-view="journal-grid"/>
-        <field name="totalDebit"/>
-		<field name="totalCredit"/>
+        <field name="totalDebit" aggregate="sum"/>
+		<field name="totalCredit" aggregate="sum"/>
 		<field name="balance"/>
 		<field name="statusSelect"/>
     </grid>
