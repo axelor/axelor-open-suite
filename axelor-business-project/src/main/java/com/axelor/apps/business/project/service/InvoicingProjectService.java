@@ -293,6 +293,18 @@ public class InvoicingProjectService {
 		if(counter > ProjectTaskService.MAX_LEVEL_OF_PROJECT)  {  return;  }
 		counter++;
 		
+		this.fillLines(invoicingProject, projectTask);
+
+		List<ProjectTask> projectTaskChildrenList = Beans.get(ProjectTaskRepository.class).all().filter("self.project = ?1", projectTask).fetch();
+
+		for (ProjectTask projectTaskChild : projectTaskChildrenList) {
+			this.setLines(invoicingProject, projectTaskChild, counter);
+		}
+
+		return;
+	}
+	
+	public void fillLines(InvoicingProject invoicingProject,ProjectTask projectTask){
 		if(projectTask.getProjTaskInvTypeSelect() == ProjectTaskRepository.INVOICING_TYPE_FLAT_RATE || projectTask.getProjTaskInvTypeSelect() == ProjectTaskRepository.INVOICING_TYPE_TIME_BASED)  {
 
 			invoicingProject.getSaleOrderLineSet().addAll(Beans.get(SaleOrderLineRepository.class)
@@ -302,7 +314,7 @@ public class InvoicingProjectService {
 					.all().filter("self.projectTask = ?1 AND self.toInvoice = true AND self.invoiced = false AND (self.purchaseOrder.orderDate < ?2 or ?2 is null)", projectTask, invoicingProject.getDeadlineDate()).fetch());
 			
 			invoicingProject.getLogTimesSet().addAll(Beans.get(TimesheetLineRepository.class)
-					.all().filter("self.affectedToTimeSheet.statusSelect = 3 AND self.projectTask = ?1 AND self.toInvoice = true AND (self.invoiced = false AND self.date < ?2 or ?2 is null)", projectTask, invoicingProject.getDeadlineDate()).fetch());
+					.all().filter("self.affectedToTimeSheet.statusSelect = 3 AND self.projectTask = ?1 AND self.toInvoice = true AND self.invoiced = false AND (self.date < ?2 or ?2 is null)", projectTask, invoicingProject.getDeadlineDate()).fetch());
 			
 			invoicingProject.getExpenseLineSet().addAll(Beans.get(ExpenseLineRepository.class)
 					.all().filter("self.projectTask = ?1 AND self.toInvoice = true AND self.invoiced = false AND (self.expenseDate < ?2 or ?2 is null)", projectTask, invoicingProject.getDeadlineDate()).fetch());
@@ -313,14 +325,6 @@ public class InvoicingProjectService {
 			if(projectTask.getProjTaskInvTypeSelect() == ProjectTaskRepository.INVOICING_TYPE_FLAT_RATE && !projectTask.getInvoiced())
 				invoicingProject.addProjectTaskSetItem(projectTask);
 		}
-
-		List<ProjectTask> projectTaskChildrenList = Beans.get(ProjectTaskRepository.class).all().filter("self.project = ?1", projectTask).fetch();
-
-		for (ProjectTask projectTaskChild : projectTaskChildrenList) {
-			this.setLines(invoicingProject, projectTaskChild, counter);
-		}
-
-		return;
 	}
 	
 	public void clearLines(InvoicingProject invoicingProject){
