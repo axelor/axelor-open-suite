@@ -70,7 +70,7 @@ import com.beust.jcommander.internal.Lists;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
-public class TimesheetServiceImp implements TimesheetService{
+public class TimesheetServiceImpl implements TimesheetService{
 
 	@Inject
 	protected EmployeeService employeeService;
@@ -466,14 +466,23 @@ public class TimesheetServiceImp implements TimesheetService{
 		for(TimesheetLine timesheetLine : timesheetLineList){
 			Map<String,Object> timesheetLineMap = Mapper.toMap(timesheetLine);
 			logger.debug("----------------------timesheetLineMap avant put: {}", timesheetLineMap);
-			timesheetLineMap.put("visibleDuration", Beans.get(EmployeeService.class).getUserDuration(timesheetLine.getDurationStored()).floatValue());
-			timesheetLineMap.put("date", new LocalDate());
+			timesheetLineMap.put("$visibleDuration", Beans.get(EmployeeService.class).getUserDuration(timesheetLine.getDurationStored()).floatValue());
 			logger.debug("*****************************timesheetLineMap après put: {}", timesheetLineMap);
 			response.add(timesheetLineMap);
 		}
 		logger.debug("Map : {}", response);
 		return response;
 	}
+	
+//	public List<TimesheetLine> computeVisibleDuration(Timesheet timesheet){
+//		List<TimesheetLine> timesheetLineList = timesheet.getTimesheetLineList();
+//		
+//		for(TimesheetLine timesheetLine : timesheetLineList){
+//			timesheetLine.setComments("test");
+//		}
+//		
+//		return timesheetLineList;
+//	}
 }
 
 
