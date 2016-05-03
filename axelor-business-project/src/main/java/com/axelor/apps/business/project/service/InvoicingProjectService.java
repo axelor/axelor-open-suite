@@ -44,7 +44,7 @@ import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.db.repo.ExpenseLineRepository;
 import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
 import com.axelor.apps.hr.service.expense.ExpenseService;
-import com.axelor.apps.hr.service.timesheet.TimesheetServiceImp;
+import com.axelor.apps.hr.service.timesheet.TimesheetServiceImpl;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
 import com.axelor.apps.project.service.ProjectTaskService;
@@ -71,7 +71,7 @@ public class InvoicingProjectService {
 	protected PurchaseOrderInvoiceServiceImpl purchaseOrderInvoiceServiceImpl;
 
 	@Inject
-	protected TimesheetServiceImp timesheetServiceImp;
+	protected TimesheetServiceImpl timesheetServiceImpl;
 
 	@Inject
 	protected ExpenseService expenseService;
@@ -132,7 +132,7 @@ public class InvoicingProjectService {
 		List<InvoiceLine> invoiceLineList = new ArrayList<InvoiceLine>();
 		invoiceLineList.addAll(this.createSaleOrderInvoiceLines(invoice, saleOrderLineList, folder.getSaleOrderLineSetPrioritySelect()));
 		invoiceLineList.addAll(this.createPurchaseOrderInvoiceLines(invoice, purchaseOrderLineList, folder.getPurchaseOrderLineSetPrioritySelect()));
-		invoiceLineList.addAll(timesheetServiceImp.createInvoiceLines(invoice, timesheetLineList, folder.getLogTimesSetPrioritySelect()));
+		invoiceLineList.addAll(timesheetServiceImpl.createInvoiceLines(invoice, timesheetLineList, folder.getLogTimesSetPrioritySelect()));
 		invoiceLineList.addAll(expenseService.createInvoiceLines(invoice, expenseLineList, folder.getExpenseLineSetPrioritySelect()));
 		invoiceLineList.addAll(elementsToInvoiceService.createInvoiceLines(invoice, elementsToInvoiceList, folder.getElementsToInvoiceSetPrioritySelect()));
 		invoiceLineList.addAll(this.createInvoiceLines(invoice, projectTaskList, folder.getProjectTaskSetPrioritySelect()));
