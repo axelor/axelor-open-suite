@@ -40,6 +40,7 @@
 		<boolean name="teamManagement" title="Team Management" default="true"/>
 		
 		<boolean name="manageDirectDebitPayment" title="Manage direct debit payment" default="true" />
+		<string name="statusSelectBudget" title="Status considered to calculate the engaged amount " selection="purchase.purchase.order.status.select"/>
 		
 		<extra-code>
 	   		<![CDATA[
