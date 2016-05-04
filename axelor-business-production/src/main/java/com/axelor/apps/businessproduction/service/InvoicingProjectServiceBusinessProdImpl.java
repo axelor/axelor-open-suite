@@ -2,6 +2,8 @@ package com.axelor.apps.businessproduction.service;
 
 import java.util.List;
 
+import org.joda.time.LocalDateTime;
+
 import com.axelor.apps.businessproject.service.InvoicingProjectService;
 import com.axelor.apps.businessproject.db.InvoicingProject;
 import com.axelor.apps.businessproject.db.repo.ElementsToInvoiceRepository;
@@ -16,7 +18,7 @@ import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.inject.Beans;
 
 public class InvoicingProjectServiceBusinessProdImpl extends InvoicingProjectService{
-
+	
 	
 	@Override
 	public void setLines(InvoicingProject invoicingProject,ProjectTask projectTask, int counter){
@@ -37,7 +39,6 @@ public class InvoicingProjectServiceBusinessProdImpl extends InvoicingProjectSer
 	@Override
 	public void fillLines(InvoicingProject invoicingProject,ProjectTask projectTask){
 		if(projectTask.getProjTaskInvTypeSelect() == ProjectTaskRepository.INVOICING_TYPE_FLAT_RATE || projectTask.getProjTaskInvTypeSelect() == ProjectTaskRepository.INVOICING_TYPE_TIME_BASED)  {
-
 			
 			invoicingProject.getSaleOrderLineSet().addAll(Beans.get(SaleOrderLineRepository.class)
 					.all().filter("self.saleOrder.project = ?1 AND self.toInvoice = true AND self.invoiced = false AND (self.saleOrder.creationDate < ?2 or ?3 is null)", projectTask, invoicingProject.getDeadlineDate(),invoicingProject.getDeadlineDate()).fetch());
@@ -54,9 +55,12 @@ public class InvoicingProjectServiceBusinessProdImpl extends InvoicingProjectSer
 			invoicingProject.getElementsToInvoiceSet().addAll(Beans.get(ElementsToInvoiceRepository.class)
 					.all().filter("self.project = ?1 AND self.toInvoice = true AND self.invoiced = false AND (self.date < ?2 or ?3 is null)", projectTask, invoicingProject.getDeadlineDate(),invoicingProject.getDeadlineDate()).fetch());
 			
+			LocalDateTime deadlineDateToDateTime = null;
+			if (invoicingProject.getDeadlineDate() != null){
+				deadlineDateToDateTime = LocalDateTime.fromDateFields(invoicingProject.getDeadlineDate().toDate());
+			}
 			invoicingProject.getManufOrderSet().addAll(Beans.get(ManufOrderRepository.class)
-					.all().filter("self.productionOrder.projectTask = ?1 AND (self.realStartDateT < ?2 or ?3 is null)", projectTask, invoicingProject.getDeadlineDate(), invoicingProject.getDeadlineDate()).fetch());
-			
+					.all().filter("self.productionOrder.projectTask = ?1 AND (self.realStartDateT < ?2 or ?3 is null)", projectTask, deadlineDateToDateTime, invoicingProject.getDeadlineDate()).fetch());
 			if(projectTask.getProjTaskInvTypeSelect() == ProjectTaskRepository.INVOICING_TYPE_FLAT_RATE && !projectTask.getInvoiced())
 				invoicingProject.addProjectTaskSetItem(projectTask);
 		}
