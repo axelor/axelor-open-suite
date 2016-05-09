@@ -25,7 +25,7 @@
 		<field name="contactDate"/>
 		<field name="user" form-view="user-form" grid-view="user-grid"/>
         <field name="statusSelect"/>
-        <button name="grabLead" help="Assign to me" icon="fa-suitcase" onClick="com.axelor.apps.crm.web.EventController:assignToMeLead" readonlyIf="user != null"/>
+        <button name="grabLead" help="Assign to me" icon="fa-suitcase" onClick="com.axelor.apps.crm.web.EventController:assignToMeLead"/>
 		<button name="logCall" title="Log Call" icon="fa-phone" onClick="action-lead-view-create-call"/>
 		<button name="scheduleMeeting" title="Schedule Meeting" icon="fa-group" onClick="action-lead-view-create-meeting"/>
 		<button name="sendByEmail" title="Send Email" icon="fa-envelope" onClick="action-send-by-email-with-template"/>

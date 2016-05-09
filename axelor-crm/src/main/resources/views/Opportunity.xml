@@ -22,7 +22,7 @@
 		<field name="probability" aggregate="avg"/>
         <field name="expectedCloseDate"/>
         <field name="user" form-view="user-form" grid-view="user-grid"/>
-        <button name="grabOpportunity" help="Assign to me" icon="fa-suitcase" onClick="com.axelor.apps.crm.web.OpportunityController:assignToMe" readonlyIf="user != null" />
+        <button name="grabOpportunity" help="Assign to me" icon="fa-suitcase" onClick="com.axelor.apps.crm.web.OpportunityController:assignToMe" />
         <button name="next-stage" icon="fa-chevron-circle-right" help="Next Stage" onClick="action-group-crm-opportunity-nextstage-click" readonlyIf="salesStageSelect &gt; 3" />
         <button name="closed-won" icon="fa-check-circle" help="Closed won" onClick="action-group-crm-opportunity-closedwon-click" readonlyIf="salesStageSelect &gt; 4" />
         <button name="closed-lost" icon="fa-minus-circle" help="Closed lost" onClick="action-group-crm-opportunity-closedlost-click" readonlyIf="salesStageSelect &gt; 4" />
