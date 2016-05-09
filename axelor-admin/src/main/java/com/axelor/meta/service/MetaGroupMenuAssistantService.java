@@ -21,12 +21,16 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.Set;
 
 import org.apache.commons.io.output.FileWriterWithEncoding;
 import org.joda.time.LocalDateTime;
@@ -80,42 +84,18 @@ public class MetaGroupMenuAssistantService {
 
 		AppSettings appSettings = AppSettings.get();
 		File groupMenuFile = new File(appSettings.get("file.upload.dir"), getFileName(groupMenuAssistant));
-
+		
 		try {
 			
 			FileWriterWithEncoding fileWriter = new FileWriterWithEncoding(groupMenuFile, "utf-8");
 			CSVWriter csvWriter =  new CSVWriter(fileWriter, ';');
-			String language = groupMenuAssistant.getLanguage();
-			language = language != null ? language : "en";
 
-			ResourceBundle bundle = I18n.getBundle(new Locale(language));
-
-			List<String> groupList = new ArrayList<String>();
-			groupList.add(I18n.get("Name"));
-			groupList.add(I18n.get("Title"));
-
-			for(Group group : groupMenuAssistant.getGroupSet()){
-				groupList.add(group.getCode());
-			}
-
-			String[] groupRow = groupList.toArray(new String[groupList.size()]);
-			csvWriter.writeNext(groupRow);
-
-			for(MetaMenu menu : groupMenuAssistant.getMenuSet()){
-
-				String title = menu.getTitle();
-				String translation = bundle.getString(title);
-
-				if(!Strings.isNullOrEmpty(translation)){
-					title = translation;
-				}
-
-				String[] menus = new String[groupRow.length];
-				menus[0] = menu.getName();
-				menus[1] = title;
-				csvWriter.writeNext(menus);
-
-			}
+			List<String[]> rows = createHeader(groupMenuAssistant);
+			
+			addMenuRows(groupMenuAssistant, rows);
+			
+			csvWriter.writeAll(rows);
+			
 			csvWriter.close();
 
 			createMetaFile(groupMenuFile, groupMenuAssistant);
@@ -123,6 +103,95 @@ public class MetaGroupMenuAssistantService {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+	
+	private List<String[]> createHeader(MetaGroupMenuAssistant groupMenuAssistant) throws IOException{
+		
+		CSVReader csvReader = null;
+		MetaFile metaFile = groupMenuAssistant.getMetaFile();
+		List<String[]> rows = new ArrayList<String[]>();
+		if(metaFile != null){
+			File csvFile = MetaFiles.getPath(metaFile).toFile();
+			csvReader = new CSVReader(new FileReader(csvFile), ';');
+			rows = csvReader.readAll();
+			csvReader.close();
+		}
+		if(!rows.isEmpty()){
+			rows.set(0, getGroupRow(rows.get(0), groupMenuAssistant.getGroupSet()));
+		}
+		else{
+			rows.add(getGroupRow(null, groupMenuAssistant.getGroupSet()));
+		}
+		
+		return rows;
+		
+	}
+	
+	private String[] getGroupRow(String[] row, Set<Group> groupSet) throws IOException{
+		
+		List<String> groupList = new ArrayList<String>();
+		if(row != null){
+			groupList.addAll(Arrays.asList(row));
+		}
+		else{
+			groupList.add(I18n.get("Name"));
+			groupList.add(I18n.get("Title"));
+		}
+
+		for(Group group : groupSet){
+			String code = group.getCode();
+			if(!groupList.contains(code)){
+				groupList.add(code);
+			}
+		}
+
+		return groupList.toArray(new String[groupList.size()]);
+	}
+	
+	private void addMenuRows(MetaGroupMenuAssistant groupMenuAssistant, List<String[]> rows){
+		
+		String language = groupMenuAssistant.getLanguage();
+		language = language != null ? language : "en";
+		ResourceBundle bundle = I18n.getBundle(new Locale(language));
+		
+		List<String> names = new ArrayList<String>();
+		String[] groupRow = rows.get(0);
+		rows.remove(0);
+		
+		for(String[] row : rows){
+			names.add(row[0]);
+		}
+		
+		
+		for(MetaMenu metaMenu : groupMenuAssistant.getMenuSet()){
+
+			String title = metaMenu.getTitle();
+			String translation = bundle.getString(title);
+
+			if(!Strings.isNullOrEmpty(translation)){
+				title = translation;
+			}
+			
+			String name = metaMenu.getName();
+			if(!names.contains(name)){
+				String[] menu = new String[groupRow.length];
+				menu[0] = name;
+				menu[1] = title;
+				rows.add(menu);
+			}
+		}
+		
+		Collections.sort(rows, new Comparator<String[]>() {
+
+			@Override
+			public int compare(String[] first, String[] second) {
+				return first[0].compareTo(second[0]);
+			}
+			
+		});
+		
+		rows.add(0, groupRow);
+		
 	}
 
 	@Transactional
@@ -176,7 +245,8 @@ public class MetaGroupMenuAssistantService {
 			}
 
 			Map<String,Group> groupMap = checkGroups(groupRow);
-			importMenus(csvReader, groupRow, groupMap);
+			Group admin = groupRepository.findByCode("admins");
+			importMenus(csvReader, groupRow, groupMap, admin);
 
 			csvReader.close();
 
@@ -201,7 +271,7 @@ public class MetaGroupMenuAssistantService {
 
 
 	private void importMenus(CSVReader csvReader, String[] groupRow,
-			Map<String, Group> groupMap) throws IOException {
+			Map<String, Group> groupMap, Group admin) throws IOException {
 
 		String[] row = csvReader.readNext();
 		if(row == null){
@@ -221,6 +291,8 @@ public class MetaGroupMenuAssistantService {
 			
 			MetaMenu menu = menuIter.next();
 			
+			boolean noAccess = true;
+			
 			for(Integer mIndex = 2; mIndex < row.length; mIndex++ ){
 	
 				String groupCode = groupRow[mIndex];
@@ -228,6 +300,7 @@ public class MetaGroupMenuAssistantService {
 				if(groupMap.containsKey(groupCode)){
 					Group group = groupMap.get(groupCode);
 					if(row[mIndex].equalsIgnoreCase("x")){
+						noAccess = false;
 						menu.addGroup(group);
 						if(!updatedMenu.contains(menu)){
 							updatedMenu.add(menu);
@@ -243,9 +316,16 @@ public class MetaGroupMenuAssistantService {
 				}
 	
 			}
+			
+			if(noAccess && admin != null){
+				menu.addGroup(admin);
+			}
 		}
 
-		importMenus(csvReader, groupRow, groupMap);
+		importMenus(csvReader, groupRow, groupMap, admin);
 
 	}
+	
+	
+	
 }
