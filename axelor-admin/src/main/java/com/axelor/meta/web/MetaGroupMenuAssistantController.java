@@ -36,7 +36,7 @@ public class MetaGroupMenuAssistantController{
 	private MetaGroupMenuAssistantRepository groupMenuAssistantRepo;
 
 
-	public void createGroupMenuFile(ActionRequest request, ActionResponse response) {
+	public void createGroupMenuFile(ActionRequest request, ActionResponse response){
 
 		Long groupMenuAssistantId = (Long)request.getContext().get("id");
 		groupMenuAssistantService.createGroupMenuFile(groupMenuAssistantRepo.find(groupMenuAssistantId));
@@ -47,13 +47,13 @@ public class MetaGroupMenuAssistantController{
 
 		Long groupMenuAssistantId = (Long)request.getContext().get("id");
 		String errorLog = groupMenuAssistantService.importGroupMenu(groupMenuAssistantRepo.find(groupMenuAssistantId));
-
+		
+		response.setValue("log", errorLog);
 		if(errorLog.equals("")){
 			response.setFlash(I18n.get(IMessage.IMPORT_OK));
 			response.setValue("importDate", LocalDateTime.now());
 		}
 		else{
-			response.setValue("log", errorLog);
 			response.setFlash(I18n.get(IMessage.ERR_IMPORT));
 		}
 
