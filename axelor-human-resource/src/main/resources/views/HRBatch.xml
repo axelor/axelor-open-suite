@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
+
+
+	<grid name="hr-batch-grid" title="HR batches" model="com.axelor.apps.hr.db.HrBatch">
+		<field name="code"/>
+		<field name="actionSelect"/>
+		<field name="company"/>
+		<field name="description"/>
+		<field name="leaveReason"/>
+		<field name="dayNumber"/>
+    </grid>
+ 
+	<form name="hr-batch-form" title="HR Batch" model="com.axelor.apps.hr.db.HrBatch" width="large">
+	  	<panel>
+		    <field name="actionSelect"/>
+		    <field name="code"/>
+		    <field name="company"/>
+		</panel>
+		<panel-tabs>
+			<panel title="Leave management page" hidden="true" showIf="actionSelect == 1">
+			    <field name="leaveReason" colSpan="4"/>
+			    <field name="comments" colSpan="8"/>
+			    <field name="dayNumber" colSpan="4"/>
+			    <field name="startDate" colSpan="4"/>
+			    <field name="endDate" colSpan="4"/>
+		   		<panel-related field="employeeSet" target="com.axelor.apps.hr.db.Employee" grid-view="employee-lite-grid" form-view="employee-form" canNew="false"/>
+				<panel-related field="planningSet" target="com.axelor.apps.base.db.WeeklyPlanning" grid-view="weekly-planning-grid" form-view="weekly-planning-form" canNew="false"/>
+				<button name="leaveManagementBatch" title="Leave management batch" onClick="save,action-hrbatch-method-leave-management"/>
+			</panel>
+			<panel title="Informations">
+				<field name="createdOn" title="Created on"/>
+				<field name="createdBy" title="Created by" form-view="user-form" grid-view="user-grid"/>
+				<field name="description" colSpan="12" />
+				<panel-related field="batchList" colSpan="12" form-view="batch-form" grid-view="batch-grid" readonly="true"/>
+			</panel>
+			</panel-tabs>
+	</form>
+
+
+	<action-method name="action-hrbatch-method-leave-management">
+		<call class="com.axelor.apps.hr.web.HrBatchController" method="actionLeaveManagement"/>
+	</action-method>
+
+
+
+
+</object-views>

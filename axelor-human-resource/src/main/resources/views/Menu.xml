@@ -250,5 +250,14 @@
     	<view type="grid" name="kilometric-allow-param-grid"/>
 	    <view type="form" name="kilometric-allow-param-form"/>
 	</action-view>
+	
+	<menuitem name="admin-root-batch-hr" parent="admin-root-batch"
+		title="HR batches" action="admin.root.batch.hr" />
+
+	<action-view name="admin.root.batch.hr" title="HR batches"
+		model="com.axelor.apps.hr.db.HrBatch" >
+		<view type="grid" name="hr-batch-grid"/>
+		<view type="form" name="hr-batch-form"/>
+	</action-view>
 
 </object-views>
