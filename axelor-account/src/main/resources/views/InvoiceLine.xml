@@ -14,7 +14,7 @@
     
     <grid name="invoice-line-menu-grid" title="Invoice lines" model="com.axelor.apps.account.db.InvoiceLine" >
     	<field name="invoice.partner"/>
-    	<field name="sequence"/>
+    	<field name="invoice.invoiceId"/>
         <field name="productName"/>
         <field name="qty" aggregate="sum"/>
         <field name="price" x-scale="2"/>
@@ -78,7 +78,7 @@
     onLoad="action-account-invoice-line-onload-group" width="large">
     	<panel>
 	    	<field name="invoice.partner"/>
-	    	<field name="sequence"/>
+			<field name="invoice.invoiceId"/>
 		</panel>
     	<panel-include view="invoice-line-form"/>
 	</form>
