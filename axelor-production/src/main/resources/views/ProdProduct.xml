@@ -9,6 +9,17 @@
         <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
     </grid>
     
+    <grid name="prod-product-detailed-grid" title="Products" model="com.axelor.apps.production.db.ProdProduct" groupBy="product">
+    	<field name="product" form-view="product-form" grid-view="product-grid"/>
+    	<field name="wasteManufOrder"/>
+        <field name="wasteManufOrder.billOfMaterial"/>
+        <field name="wasteManufOrder.prodProcess"/>
+    	<field name="qty" aggregate="sum"/>
+        <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
+       
+        
+    </grid>
+    
     <form name="prod-product-form" title="Product" model="com.axelor.apps.production.db.ProdProduct"
     onNew="action-product-record-default">
     	<panel>

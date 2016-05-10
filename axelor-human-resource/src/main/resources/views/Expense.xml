@@ -3,6 +3,9 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
 
 	<grid name="expense-grid" title="Expenses" model="com.axelor.apps.hr.db.Expense">
+		<hilite color="danger" if="statusSelect == 4"/>
+		<hilite color="success" if="statusSelect == 3"/>
+		<hilite color="warning" if="statusSelect == 2"/>
 		<field name="company" form-view="company-form" grid-view="company-grid"/>
 		<field name="sentDate"/>
 		<field name="period" form-view="period-form" grid-view="period-grid"/>
@@ -20,6 +23,8 @@
 		<toolbar>
 			<button name="showSubordinateExpenseToValidate" title="Show expenses to be validated by my subordinates" onClick="com.axelor.apps.hr.web.expense.ExpenseController:showSubordinateExpenses"/>
 		</toolbar>
+		<hilite background="danger" if="$moment(sentDate).diff(todayDate,'days') &lt;= 0"/>
+		<hilite background="warning" if="$moment(todayDate).diff(sentDate,'days') &gt;= 7"/>
 		<field name="company" form-view="company-form" grid-view="company-grid"/>
 		<field name="sentDate"/>
 		<field name="period" form-view="period-form" grid-view="period-grid"/>

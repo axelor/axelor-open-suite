@@ -6,6 +6,11 @@
 	<dashboard title="Dashboard" name="manufacturing.dashboard.sample"  >
 		<dashlet action="manufacturing.dashboard.upcoming.production.orders" height="350" canSearch="true" colSpan="12"/>
 		<dashlet action="manufacturing.dashboard.current.production.orders" canSearch="true" height="350" colSpan="12"/>
+		<dashlet action="manufacturing.dashboard.standby.manuf.orders" canSearch="true" height="350" colSpan="12"/>
+		<dashlet action="manufacturing.dashboard.hr.assigned.manuf.orders" canSearch="true" height="350"/>
+		<dashlet action="dashlet.wastes.by.product" height="350"/>
+		<dashlet action="manufacturing.dashboard.wasted.products" canSearch="true" height="350" colSpan="12"/>
+		
 	</dashboard>
 
 	<action-view name="manufacturing.dashboard.upcoming.production.orders" title="All Upcoming Manufacturing Orders"
@@ -23,6 +28,33 @@
 		<domain>self.realStartDateT &lt;= :_today and self.realEndDateT &gt;= :_today</domain>
  		<context name="_today" expr="eval: __date__.toDateTimeAtStartOfDay()" />
 	</action-view>
+	
+	<action-view name="manufacturing.dashboard.standby.manuf.orders" title="Manufacturing orders on StandBy"
+		model="com.axelor.apps.production.db.ManufOrder">
+		<view type="grid" name="manuf-order-grid"/>
+		<view type="form" name="manuf-order-form"/>
+		<domain>self.statusSelect = 5</domain>
+	</action-view>
+	
+	<action-view name="manufacturing.dashboard.hr.assigned.manuf.orders" title="Human Ressources Assigned per Manufacturing order"
+		model="com.axelor.apps.production.db.ProdHumanResource">
+		<view type="grid" name="prod-human-resource-group-grid"/>
+		<view type="form" name="prod-human-resource-form"/>
+		 <domain>(self.operationOrder.manufOrder.statusSelect) not in (1,2)</domain>
+	</action-view>
+	
+	<action-view name="manufacturing.dashboard.wasted.products" title="List of Wastes Per Product"
+		model="com.axelor.apps.production.db.ProdProduct">
+		<view type="grid" name="prod-product-detailed-grid"/>
+		<view type="form" name="prod-product-form"/>
+		 <domain>self.wasteManufOrder != null</domain>
+	</action-view>
+	
+	<action-view name="dashlet.wastes.by.product" title="Quantity Wasted per Product">
+		<view type="chart" name="chart.wastes.by.product"/>
+	</action-view>
+	
+	
 
 </object-views>
 

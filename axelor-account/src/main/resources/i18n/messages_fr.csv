@@ -1146,6 +1146,7 @@
 "Start date","Date de début",,
 "Starting Balance","Balance début",,
 "Status","Statut",,
+"Status considered to calculate the engaged amount","Statuts pris en compte pour le calcul du montant engagé",,
 "Statut %s inconnu pour le traitement %s",,,
 "Subscription","Abonnement",,
 "Subscription ?","Abonnement ?",,
