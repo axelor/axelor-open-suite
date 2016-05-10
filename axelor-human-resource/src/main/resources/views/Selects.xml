@@ -83,4 +83,8 @@
 		<option value="2">Pause</option>
 		<option value="3">Stop</option>
 	</selection>
+	
+	<selection name="ihr.batch.action.select">
+		<option value="1">Leave Management</option>
+	</selection>
 </object-views>

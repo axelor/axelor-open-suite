@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_4.0.xsd">
+
+  <module name="human-resource" package="com.axelor.apps.hr.db"/>
+
+  <entity name="HrBatch" lang="java" cachable="true">
+  	
+  	<!-- HEADER -->
+  	<string name="code" title="Code" namecolumn="true" unique="true"/>
+    <integer name="actionSelect" title="Action" required="true" selection="ihr.batch.action.select"/>
+    <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company" />
+    
+    <!-- OTHERS INFORMATIONS   -->
+    <string name="description" title="Description" large="true" />
+    <one-to-many name="batchList" ref="com.axelor.apps.base.db.Batch" mappedBy="hrBatch" title="Batchs" />
+    
+    
+ 	<!--  Leave Management  -->
+  	<many-to-one name="leaveReason" ref="com.axelor.apps.hr.db.LeaveReason" title="Leave Reason" required="true" />
+  	<decimal name="dayNumber" title="Number of days" required="true"  />
+  	<date name="startDate" title="Start date"/>
+  	<date name="endDate" title="End date"/>
+ 	<string name="comments" title="Comment" />
+	<many-to-many name="employeeSet" ref="com.axelor.apps.hr.db.Employee" title="Employees" help="Leave empty to select every employee"/>
+	<many-to-many name="planningSet" ref="com.axelor.apps.base.db.WeeklyPlanning" title="Plannings" help="Leave empty to select every planning"/>
+	
+	
+	
+  	
+  	
+  	<extra-code><![CDATA[
+	
+	   	// ACTION TYPE
+		public static final int ACTION_LEAVE_MANAGEMENT = 1;
+	]]></extra-code>
+  	
+  </entity>
+  
+</domain-models>
