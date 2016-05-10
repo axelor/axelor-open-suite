@@ -23,10 +23,8 @@
     </grid>
     
     <grid name="purchase-order-line-menu-grid" title="PO lines" model="com.axelor.apps.purchase.db.PurchaseOrderLine">
-    	<hilite background="danger" if="salePrice &lt; saleMinPrice"/>
     	<field name="purchaseOrder.contactPartner"></field>
     	<field name="purchaseOrder.purchaseOrderSeq"></field>
-    	<field name="purchaseOrder" form-view="purchase-order-form" grid-view="purchase-order-grid"/>
     	<field name="supplierPartner" form-view="partner-form" grid-view="partner-grid"/>
     	<field name="productName"/>
     	<field name="desiredDelivDate"/>
@@ -36,10 +34,6 @@
         <field name="price" x-scale="2"/>
         <field name="exTaxTotal" aggregate="sum"/>
 	    <field name="inTaxTotal" aggregate="sum"/>
-        <field name="saleMinPrice"  x-scale="2" aggregate="min"/>
-        <field name="createdBy" form-view="user-form" grid-view="user-grid"/>
-        <field name="createdOn"/>
-        <field name="salePrice" hidden="true"/>
     </grid>
     
     <grid name="purchase-order-line-purchase-order-grid" title="PO lines" model="com.axelor.apps.purchase.db.PurchaseOrderLine">
