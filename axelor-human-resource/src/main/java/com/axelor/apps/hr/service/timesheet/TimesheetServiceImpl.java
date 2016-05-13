@@ -459,30 +459,14 @@ public class TimesheetServiceImpl implements TimesheetService{
   		}
 	}
 	
-	public List<Map<String,Object>> computeVisibleDuration(Timesheet timesheet){
+	public List<TimesheetLine> computeVisibleDuration(Timesheet timesheet){
 		List<TimesheetLine> timesheetLineList = timesheet.getTimesheetLineList();
-		List<Map<String,Object>> response = Lists.newArrayList();
 		
-		for(TimesheetLine timesheetLine : timesheetLineList){
-			Map<String,Object> timesheetLineMap = Mapper.toMap(timesheetLine);
-			logger.debug("----------------------timesheetLineMap avant put: {}", timesheetLineMap);
-			timesheetLineMap.put("$visibleDuration", Beans.get(EmployeeService.class).getUserDuration(timesheetLine.getDurationStored()).floatValue());
-			logger.debug("*****************************timesheetLineMap après put: {}", timesheetLineMap);
-			response.add(timesheetLineMap);
-		}
-		logger.debug("Map : {}", response);
-		return response;
+		for(TimesheetLine timesheetLine : timesheetLineList)
+			timesheetLine.setVisibleDuration(Beans.get(EmployeeService.class).getUserDuration(timesheetLine.getDurationStored()));
+
+		return timesheetLineList;
 	}
-	
-//	public List<TimesheetLine> computeVisibleDuration(Timesheet timesheet){
-//		List<TimesheetLine> timesheetLineList = timesheet.getTimesheetLineList();
-//		
-//		for(TimesheetLine timesheetLine : timesheetLineList){
-//			timesheetLine.setComments("test");
-//		}
-//		
-//		return timesheetLineList;
-//	}
 }
 
 

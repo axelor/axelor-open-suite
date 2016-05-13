@@ -14,6 +14,7 @@
       <date name="date" column="date_val" default="now"/>
       <many-to-one name="affectedToTimeSheet" ref="com.axelor.apps.hr.db.Timesheet" title="Time Sheet" readonly="true"/>
 	  <decimal name="durationStored" title="Duration" />
+	  <decimal name="visibleDuration" title="Duration" transient="true"/>
       <string name="comments" large="true"/>
       <boolean name="toInvoice"/>
       <boolean name="invoiced" title="Invoiced" readonly="true"/>
