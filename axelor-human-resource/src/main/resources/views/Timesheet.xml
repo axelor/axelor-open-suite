@@ -40,7 +40,7 @@
 	    	<button name="cancelButton" onClick="action-timesheet-record-cancel,save,com.axelor.apps.hr.web.timesheet.TimesheetController:cancelTimesheet,action-timesheet-attrs-buttons" hideIf="statusSelect == 5" title="Cancel" icon="fa-close"/>
 	    	<button name="draftButton" onClick="action-timesheet-record-draft,save,action-timesheet-attrs-buttons" title="Return to draft status" showIf="statusSelect &gt; 3 "/>
 	    	<button name="getTimeFromTask" title="Get time from Tasks" colSpan="4" onClick="action-timesheet-validate-tasks,save,com.axelor.apps.hr.web.timesheet.TimesheetController:getTimeFromTask"/>
-	    	<button name="generateLinesButton" onClick="action-timesheet-attrs-generale-lines-panel-hidden-false" title="Generate Lines Automatically"/>
+	    	<button name="generateLinesButton" onClick="action-timesheet-record-default-generation-date,action-timesheet-attrs-generale-lines-panel-hidden-false" title="Generate Lines Automatically"/>
 	    	<button name="startStopForm" title="Start&amp;Stop Timer" onClick="action-timesheet-method-timesheet-timer"/>
 	    </panel>
 	    <panel sidebar="true" showTitle="false">
@@ -124,6 +124,11 @@
 	
 	<action-record name="action-timesheet-record-draft" model="com.axelor.apps.hr.db.Timesheet">
 	    <field name="statusSelect" expr="1"/>
+	</action-record>
+
+	<action-record name="action-timesheet-record-default-generation-date" model="com.axelor.apps.hr.db.Timesheet">
+	    <field name="fromGenerationDate" expr="eval:fromDate"/>
+	    <field name="toGenerationDate" expr="eval:toDate" if="toDate != null"/>
 	</action-record>
 
 	<action-validate name="action-timesheet-validate-tasks">
