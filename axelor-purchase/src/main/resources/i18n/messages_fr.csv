@@ -2,7 +2,6 @@
 "${supplierPartner.purchaseOrderInformation}",,,
 "%s :\n Veuillez configurer le module Achat pour la société %s",,,
 "50 Latest Supplier Orders","50 dernières commandes clients",,
-"Account","Tiers",,
 "Actions",,,
 "Amount","Montant",,
 "Amount A.T.I.","Montant T.T.C.",,
