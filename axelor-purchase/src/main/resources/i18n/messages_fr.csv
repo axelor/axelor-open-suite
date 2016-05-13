@@ -120,6 +120,7 @@
 "Purchase order","Commande Fournisseur",,
 "Purchase order information","Information à la commande",,
 "Purchase orders","Devis/Cmdes Fournisseurs",,
+"Purchase orders lines",,,
 "Purchase orders to merge","Commandes fournisseurs à fusionner",,
 "PurchaseOrder.bankDetails",,,
 "PurchaseOrder.bankingInfo",,,

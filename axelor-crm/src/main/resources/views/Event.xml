@@ -144,13 +144,13 @@
 	    <field name="statusSelect" />
 	    <field name="team" form-view="team-form" grid-view="team-grid" />
 	    <field name="user" form-view="user-form" grid-view="user-grid" />
-	    <button name="grabEvent" help="Assign to me" icon="fa-suitcase" onClick="action-method-crm-event-assign-tome" readonlyIf="user != null" />
+	    <button name="grabEvent" help="Assign to me" icon="fa-suitcase" onClick="action-method-crm-event-assign-tome" />
 	</grid>
     
 	<form name="call-form" title="Call" model="com.axelor.apps.crm.db.Event" onLoad="action-partner-attrs-hide-contact-partner"
 		onNew="action-event-new-record" onSave="action-event-record-subjectTeam">
 		<toolbar>
-			<button name="grabEvent" help="Assign to me" icon="fa-suitcase" onClick="save,action-method-crm-event-assign-tome" readonlyIf="user != null"/>
+			<button name="grabEvent" help="Assign to me" icon="fa-suitcase" onClick="save,action-method-crm-event-assign-tome"/>
 		</toolbar>
 
 		<panel colSpan="12">
@@ -378,7 +378,7 @@
 	    <field name="prioritySelect"/>
 	    <field name="statusSelect"/>
 	    <field name="progressSelect" widget="SelectProgress"/>
-	    <button name="grabEvent" help="Assign to me" icon="fa-suitcase" readonlyIf="statusSelect == 5 || user != null" onClick="action-method-crm-event-assign-tome" />
+	    <button name="grabEvent" help="Assign to me" icon="fa-suitcase" readonlyIf="statusSelect == 25  || user.id == _internalUserId" onClick="action-method-crm-event-assign-tome" />
 	    <button name="start" icon="fa-play" help="Start" onClick="action-group-crm-ticket-start-click,save" readonlyIf="statusSelect &gt; 21 &amp;&amp; statusSelect &lt; 29"/>
 	    <button name="accept" icon="fa-check" help="Validate" onClick="action-group-crm-ticket-accept-click,action-record-set-tickets-resolved-progress-select,save" readonlyIf="statusSelect &gt; 22 &amp;&amp; statusSelect &lt; 29"/>
 	    <button name="stop" icon="fa-power-off" help="Finish" onClick="action-group-crm-ticket-stop-click,save" readonlyIf="statusSelect &gt; 24 &amp;&amp; statusSelect &lt; 29" />
@@ -386,7 +386,7 @@
     
     <form name="ticket-form" title="Ticket" model="com.axelor.apps.crm.db.Event" onLoad="action-event-ticket-attrs-default,action-partner-attrs-hide-contact-partner" onSave="action-event-record-subjectTeam,action-event-set-sequence" onNew="action-group-crm-ticket-onnew">
 	<toolbar>
-		<button name="grabEvent" help="Assign to me" icon="fa-suitcase" onClick="save,action-method-crm-event-assign-tome,action-event-set-sequence" readonlyIf="statusSelect == 25 || user != null" />
+		<button name="grabEvent" help="Assign to me" icon="fa-suitcase" onClick="save,action-method-crm-event-assign-tome,action-event-set-sequence,save" readonlyIf="statusSelect == 25  || user.id == _internalUserId" />
 		<button name="start" help="Start" readonlyIf="statusSelect &gt; 21 &amp;&amp; statusSelect &lt; 29" icon="fa-play" onClick="action-set-ticket-status-select-2,save"/>
 		<button name="accept" help="Validate" readonlyIf="statusSelect &gt; 22 &amp;&amp; statusSelect &lt; 29" icon="fa-check" onClick="action-set-ticket-status-select-3,save"/>
 		<button name="stop" help="Finish" readonlyIf="statusSelect &gt; 24 &amp;&amp; statusSelect &lt; 29" icon="fa-power-off" onClick="action-set-ticket-status-select-5,save"/>

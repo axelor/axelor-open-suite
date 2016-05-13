@@ -34,7 +34,7 @@
 		<domain>self.isContact = true AND self.mainPartner.isSupplier = true</domain>
 	</action-view>
 		
-	<menuitem name="sc-root-purchase-order-new" title="New Purchase order" order="-2" 
+	<menuitem name="sc-root-purchase-order-new" title="New Purchase order" order="-3" 
 		groups="admins,ERP" action="sc.root.purchase.order.new" parent="sc-root-purchase"/>
 		
 	<action-view name="sc.root.purchase.order.new" title="New Purchase order"
@@ -43,7 +43,7 @@
 		<view type="grid" name="purchase-order-grid" />
 	</action-view>	
 	
-	<menuitem name="sc-root-purchase-orders" title="Purchase orders" order="-1" 
+	<menuitem name="sc-root-purchase-orders" title="Purchase orders" order="-2" 
 		groups="admins,ERP" action="sc.root.purchase.orders" parent="sc-root-purchase"/>
 
 	<action-view name="sc.root.purchase.orders" title="Purchase orders"
@@ -53,6 +53,15 @@
 		<view-param name="search-filters" value="purchase-order-filters"/>
 		<context name="_internalUser" expr="eval: __user__.id"/>
 	</action-view>
+	
+	<menuitem name="sc-root-purchase-orders-lines" title="Purchase orders lines" order="-1" 
+		groups="admins,ERP" action="sc.root.purchase.orders.lines" parent="sc-root-purchase"/>
+
+	<action-view name="sc.root.purchase.orders.lines" title="Purchase orders lines"
+		model="com.axelor.apps.purchase.db.PurchaseOrderLine" >
+		<view type="grid" name="purchase-order-line-menu-grid" />
+		<view type="form" name="purchase-order-line-menu-form" />
+	</action-view>	
 	
 	<menuitem name="purchase-order-merge" parent="sc-root-purchase"
     	title="Merge purchase orders" action="purchase.order.merge" groups="admins,ERP"/> 

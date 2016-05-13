@@ -2,7 +2,7 @@
 <object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
 
-	<grid name="timesheet-grid" title="Timesheet" model="com.axelor.apps.hr.db.Timesheet" canNew="false">
+	<grid name="timesheet-grid" title="Timesheet" model="com.axelor.apps.hr.db.Timesheet" canNew="false" groupBy="user" orderBy="user,fromDate">
 		<hilite color="danger" if="statusSelect == 4"/>
 		<hilite color="success" if="statusSelect == 3"/>
 		<hilite color="warning" if="statusSelect == 2"/>
@@ -40,7 +40,7 @@
 	    	<button name="cancelButton" onClick="action-timesheet-record-cancel,save,com.axelor.apps.hr.web.timesheet.TimesheetController:cancelTimesheet,action-timesheet-attrs-buttons" hideIf="statusSelect == 5" title="Cancel" icon="fa-close"/>
 	    	<button name="draftButton" onClick="action-timesheet-record-draft,save,action-timesheet-attrs-buttons" title="Return to draft status" showIf="statusSelect &gt; 3 "/>
 	    	<button name="getTimeFromTask" title="Get time from Tasks" colSpan="4" onClick="action-timesheet-validate-tasks,save,com.axelor.apps.hr.web.timesheet.TimesheetController:getTimeFromTask"/>
-	    	<button name="generateLinesButton" onClick="action-timesheet-attrs-generale-lines-panel-hidden-false" title="Generate Lines Automatically"/>
+	    	<button name="generateLinesButton" onClick="action-timesheet-record-default-generation-date,action-timesheet-attrs-generale-lines-panel-hidden-false" title="Generate Lines Automatically"/>
 	    	<button name="startStopForm" title="Start&amp;Stop Timer" onClick="action-timesheet-method-timesheet-timer"/>
 	    </panel>
 	    <panel sidebar="true" showTitle="false">
@@ -63,7 +63,7 @@
 			<button name="generateLines" title="Generate lines" onClick="com.axelor.apps.hr.web.timesheet.TimesheetController:generateLines,action-timesheet-attrs-generale-lines-panel-hidden-true"/>
 		</panel>
 		<panel-related field="timesheetLineList" grid-view="timesheet-line-timesheet-grid" editable="true" form-view="timesheet-line-timesheet-form" hidden="true" showIf="!$readonly()"/>
-		<panel-related field="timesheetLineList" grid-view="timesheet-line-timesheet-readonly-grid" editable="true" form-view="timesheet-line-timesheet-form" hidden="true" showIf="$readonly()" />
+		<panel-related field="timesheetLineList" grid-view="timesheet-line-timesheet-readonly-grid" form-view="timesheet-line-timesheet-form" hidden="true" showIf="$readonly()" />
 		<panel itemSpan="4">
 		 	<field name="sentDate"/>
 			<field name="validatedBy" form-view="user-form" grid-view="user-grid"/>
@@ -75,7 +75,7 @@
 	
 	<form name="popup-timesheet-form" title="Select the timesheet you want to edit" model="com.axelor.apps.base.db.Wizard" onNew="action-timesheet-attrs-domain-timesheet-select">
 		<field name="$timesheetSelect" title="Select Timesheet" type="many-to-one" target="com.axelor.apps.hr.db.Timesheet" widget="SuggestBox" />
-		<button name="editTimesheetSelected" title="Edit Timesheet Selected" onClick="com.axelor.apps.hr.web.timesheet.TimesheetController:editTimesheetSelected"/>
+		<button name="editTimesheetSelected" title="Edit Timesheet Selected" onClick="action-timesheet-validate-timesheet-selected,action-timesheet-method-edit-timesheet-selected"/>
 	</form>
 	
 	<action-attrs name="action-hr-timesheet-attrs-domain-product">
@@ -126,8 +126,17 @@
 	    <field name="statusSelect" expr="1"/>
 	</action-record>
 
+	<action-record name="action-timesheet-record-default-generation-date" model="com.axelor.apps.hr.db.Timesheet">
+	    <field name="fromGenerationDate" expr="eval:fromDate"/>
+	    <field name="toGenerationDate" expr="eval:toDate" if="toDate != null"/>
+	</action-record>
+
 	<action-validate name="action-timesheet-validate-tasks">
 		<error message="No log time found or all log times already added" if="__repo__.of(TimesheetLine).all().filter('self.user = ?1 AND self.affectedToTimeSheet = null',__user__).fetchOne() == null"/>
+	</action-validate>
+	
+	<action-validate name="action-timesheet-validate-timesheet-selected">
+		<error message="You have to choose at least one timesheet" if="timesheetSelect == null"/>
 	</action-validate>
 	
 	<action-attrs name="action-timesheet-attrs-buttons">
@@ -144,7 +153,7 @@
 	</action-attrs>
 	
 	<action-record name="action-timesheet-record-from-period-date" model="com.axelor.apps.hr.db.Timesheet">
-		<field name="fromDate" expr="eval: __repo__.of(Timesheet).all().filter('self.user = ?1 AND self.statusSelect != ?2 ORDER BY self.toDate DESC', __user__, TimesheetRepository.STATUS_CANCELED).fetchOne()?.toDate"/>
+		<field name="fromDate" expr="eval: __repo__.of(Timesheet).all().filter('self.user = ?1 AND self.statusSelect != ?2 ORDER BY self.toDate DESC', __user__, TimesheetRepository.STATUS_CANCELED).fetchOne()?.toDate.plusDays(1)"/>
 	</action-record>
 	
 	<action-validate name="action-timesheet-validate-toDate">
@@ -179,7 +188,10 @@
 	<action-method name="action-timesheet-method-compute-timespent-project-task">
 		<call class="com.axelor.apps.hr.web.timesheet.TimesheetController" method="computeTimeSpent"/>
 	</action-method>
-	
+
+	<action-method name="action-timesheet-method-edit-timesheet-selected">
+		<call class="com.axelor.apps.hr.web.timesheet.TimesheetController" method="editTimesheetSelected"/>
+	</action-method>
 	<action-attrs name="action-timesheet-attrs-generale-lines-panel-hidden-true">
 		<attribute name="hidden" for="generateLinesPanel" expr="true"/>
 		<attribute name="hidden" for="generateLinesButton" expr="false"/>
