@@ -3,6 +3,9 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
 
 	<grid name="timesheet-grid" title="Timesheet" model="com.axelor.apps.hr.db.Timesheet" canNew="false" groupBy="user" orderBy="user,fromDate">
+		<hilite color="danger" if="statusSelect == 4"/>
+		<hilite color="success" if="statusSelect == 3"/>
+		<hilite color="warning" if="statusSelect == 2"/>
 		<field name="company" form-view="company-form" grid-view="company-grid"/>
 		<field name="fromDate"></field>
 		<field name="toDate"></field>
@@ -15,6 +18,8 @@
 		<toolbar>
 			<button name="showSubordinateTimesheetToValidate" title="Show timesheets to be validated by my subordinates" onClick="com.axelor.apps.hr.web.timesheet.TimesheetController:showSubordinateTimesheets"/>
 		</toolbar>
+		<hilite background="danger" if="$moment(fromDate).diff(todayDate,'days') &lt;= 0"/>
+  		<hilite background="warning" if="$moment(todayDate).diff(sentDate,'days') &gt;= 7 || $moment(todayDate).diff(fromDate,'days') &gt;= 15"/> 
 		<field name="company" form-view="company-form" grid-view="company-grid"/>
 		<field name="fromDate"></field>
 		<field name="toDate"></field>
@@ -38,6 +43,10 @@
 	    	<button name="generateLinesButton" onClick="action-timesheet-attrs-generale-lines-panel-hidden-false" title="Generate Lines Automatically"/>
 	    	<button name="startStopForm" title="Start&amp;Stop Timer" onClick="action-timesheet-method-timesheet-timer"/>
 	    </panel>
+	    <panel sidebar="true" showTitle="false">
+	    	<panel-dashlet name="timesheet.dashboard" action="action-timesheet-view-total-hours-per-day"/>
+	    	<panel-dashlet name="timesheet.dashboard" action="action-timesheet-view-total-duration-per-project"/>
+	    </panel> 
 		<panel name="head">
 		    <field name="statusSelect" colSpan="12" widget="NavSelect"/>
 			<field name="company" colSpan="6" form-view="company-form" grid-view="company-grid"/>
@@ -66,7 +75,7 @@
 	
 	<form name="popup-timesheet-form" title="Select the timesheet you want to edit" model="com.axelor.apps.base.db.Wizard" onNew="action-timesheet-attrs-domain-timesheet-select">
 		<field name="$timesheetSelect" title="Select Timesheet" type="many-to-one" target="com.axelor.apps.hr.db.Timesheet" widget="SuggestBox" />
-		<button name="editTimesheetSelected" title="Edit Timesheet Selected" onClick="com.axelor.apps.hr.web.timesheet.TimesheetController:editTimesheetSelected"/>
+		<button name="editTimesheetSelected" title="Edit Timesheet Selected" onClick="action-timesheet-validate-timesheet-selected,action-timesheet-method-edit-timesheet-selected"/>
 	</form>
 	
 	<action-attrs name="action-hr-timesheet-attrs-domain-product">
@@ -121,6 +130,10 @@
 		<error message="No log time found or all log times already added" if="__repo__.of(TimesheetLine).all().filter('self.user = ?1 AND self.affectedToTimeSheet = null',__user__).fetchOne() == null"/>
 	</action-validate>
 	
+	<action-validate name="action-timesheet-validate-timesheet-selected">
+		<error message="You have to choose at least one timesheet" if="timesheetSelect == null"/>
+	</action-validate>
+	
 	<action-attrs name="action-timesheet-attrs-buttons">
 		<attribute name="hidden" for="validButton" expr="eval: !(statusSelect == 2 &amp;&amp; (__user__ == user?.employee?.manager || (__user__ == user &amp;&amp; user?.employee?.manager == null) || __user__.employee?.hrManager))"/>
 		<attribute name="hidden" for="refuseButton" expr="eval: !(statusSelect == 2 &amp;&amp; (__user__ == user?.employee?.manager || (__user__ == user &amp;&amp; user?.employee?.manager == null) || __user__.employee?.hrManager))"/>
@@ -170,7 +183,10 @@
 	<action-method name="action-timesheet-method-compute-timespent-project-task">
 		<call class="com.axelor.apps.hr.web.timesheet.TimesheetController" method="computeTimeSpent"/>
 	</action-method>
-	
+
+	<action-method name="action-timesheet-method-edit-timesheet-selected">
+		<call class="com.axelor.apps.hr.web.timesheet.TimesheetController" method="editTimesheetSelected"/>
+	</action-method>
 	<action-attrs name="action-timesheet-attrs-generale-lines-panel-hidden-true">
 		<attribute name="hidden" for="generateLinesPanel" expr="true"/>
 		<attribute name="hidden" for="generateLinesButton" expr="false"/>
@@ -197,5 +213,17 @@
 	<action-attrs name="action-timesheet-attrs-from-date">
 		<attribute name="readonly" for="fromDate" expr="eval: fromDate != null"/>
 	</action-attrs>
+	
+	<action-view name="action-timesheet-view-total-hours-per-day" title="Total Hours per Day">
+  		<view name="chart.total.hours.per.day" type="chart"/>
+  		<context name="id" expr="eval: __user__.id"/>
+    	<context name="timesheet" expr="eval: __self__.id"/>
+	</action-view>
+	
+	<action-view name="action-timesheet-view-total-duration-per-project" title="Total Duration per Project">
+  		<view name="chart.total.duration.per.project" type="chart"/>
+  		<context name="id" expr="eval: __user__.id"/>
+    	<context name="timesheet" expr="eval: __self__.id"/>
+	</action-view>
 
 </object-views>

@@ -250,5 +250,31 @@
     	<view type="grid" name="kilometric-allow-param-grid"/>
 	    <view type="form" name="kilometric-allow-param-form"/>
 	</action-view>
+	
+	<menuitem name="admin-root-batch-hr" parent="admin-root-batch"
+		title="HR batches" action="admin.root.batch.hr" />
 
+	<action-view name="admin.root.batch.hr" title="HR batches"
+		model="com.axelor.apps.hr.db.HrBatch" >
+		<view type="grid" name="hr-batch-grid"/>
+		<view type="form" name="hr-batch-form"/>
+	</action-view>
+
+	<menuitem name="hr-report-root" parent="hr-root" title="Reportings"/>
+    	
+    <menuitem name="menu-hr-manager-dashboard" parent="hr-report-root" title="Human Resources Manager" groups="MNGT,admins"
+    	action="hr.manager.dashboard.view"/>
+    	
+	<action-view name="hr.manager.dashboard.view" title="Human Resource Manager">
+		<view type="dashboard" name="hr.manager.dashboard.sample" />
+	</action-view>	
+    	
+    <menuitem name="menu-hr-user-dashboard" parent="hr-report-root" title="Human Resources User"
+    	action="hr.user.dashboard.view"/>
+    	
+	<action-view name="hr.user.dashboard.view" title="Human Resources User">
+		<view type="dashboard" name="hr.user.dashboard.sample" />
+	</action-view>	
+
+	
 </object-views>

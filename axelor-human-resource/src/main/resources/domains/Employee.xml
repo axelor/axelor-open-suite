@@ -26,6 +26,7 @@
       <one-to-many name="employmentContractList" ref="com.axelor.apps.hr.db.EmploymentContract" title="Employment contracts" mappedBy="employee"/>
       <many-to-one name="kilometricAllowParam" ref="com.axelor.apps.hr.db.KilometricAllowParam" title="Kilometric Allowance Param" />
       <boolean name="hrManager" title="HR manager" />
+      <many-to-many name="batchSet" ref="com.axelor.apps.base.db.Batch" title="Batches"/>
       
       <string name="name" title="Name" search="contactPartner">
           

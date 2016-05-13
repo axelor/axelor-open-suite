@@ -4,9 +4,9 @@
 
 	<grid editable="true" name="kilometric-allowance-grid" title="Kilometric allowances" model="com.axelor.apps.hr.db.KilometricAllowance" 
 		onNew="action-kilometric-allowance-record-default,action-kilometric-allowance-record-rate">
-		<field name="kilometricAllowParam" onChange="action-kilometric-allowance-record-rate"/>
-        <field name="rate" onChange="action-kilometric-allowance-record-in-tax-total" />
-        <field name="typeSelect" />
+		<field name="kilometricAllowParam" onChange="action-kilometric-allowance-record-rate,action-kilometric-allowance-record-in-tax-total" canEdit="false"/>
+        <field name="rate" readonly="true" />
+        <field name="typeSelect" onChange="action-kilometric-allowance-record-in-tax-total"/>
         <field name="distance" onChange="action-kilometric-allowance-record-in-tax-total" />
         <field name="cityFrom"/>
         <field name="cityTo" />
@@ -17,7 +17,7 @@
 
     <form name="kilometric-allowance-form" title="Kilometric allowance" model="com.axelor.apps.hr.db.KilometricAllowance" onNew="action-kilometric-allowance-record-default,action-kilometric-allowance-record-rate">
     	<panel>
-			<field name="kilometricAllowParam" onChange="action-kilometric-allowance-record-rate"/>
+			<field name="kilometricAllowParam" onChange="action-kilometric-allowance-record-rate,action-kilometric-allowance-record-in-tax-total"/>
 	        <field name="rate" onChange="action-kilometric-allowance-record-in-tax-total" />
 	        <field name="typeSelect" />
 	        <field name="distance" onChange="action-kilometric-allowance-record-in-tax-total" />
@@ -34,11 +34,12 @@
     </action-record>
 
     <action-record name="action-kilometric-allowance-record-rate" model="com.axelor.apps.hr.db.KilometricAllowance">
-        <field name="rate" expr="eval: __repo__.of(KilometricAllowanceRate).kilometricAllowParam( kilometricAllowParam )?.rate"/>
+        <field name="rate" if="kilometricAllowParam" expr="eval: __repo__.of(KilometricAllowanceRate).all().filter('self.kilometricAllowParam = ?1',kilometricAllowParam).fetchOne()?.rate"/>
     </action-record>
 
     <action-record name="action-kilometric-allowance-record-in-tax-total" model="com.axelor.apps.hr.db.KilometricAllowance">
-        <field name="inTaxTotal" expr="eval: rate * distance"/>
+        <field name="inTaxTotal" if="typeSelect == 1"  expr="eval: rate * distance"/>
+        <field name="inTaxTotal" if="typeSelect == 2"  expr="eval: rate * distance * 2"/>
     </action-record>
 
 </object-views>

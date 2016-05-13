@@ -203,7 +203,7 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
 					purchaseOrderLine.addBudgetDistributionListItem(budgetDistribution);
 				}
 			}
-			purchaseOrderRepo.save(purchaseOrder);
+			//purchaseOrderRepo.save(purchaseOrder);
 		}
 	}
 }
