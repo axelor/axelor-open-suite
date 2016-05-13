@@ -42,6 +42,17 @@ public interface IExceptionMessage {
 
 	static final String EMPLOYEE_PLANNING = /*$$(*/ "Please, add a planning for employee : %s"/*)*/ ;
 	static final String EMPLOYEE_PUBLIC_HOLIDAY = /*$$(*/ "Please, add a public holiday planning for employee : %s"/*)*/ ;
+	
+	static final String BATCH_MISSING_FIELD = /*$$(*/ "Leave reason and day number have to be defined"/*)*/ ;
+	static final String EMPLOYEE_DOUBLE_LEAVE_MANAGEMENT = /*$$(*/ "The employee %s has multiple %s leave lines"/*)*/ ;
+	static final String EMPLOYEE_NO_LEAVE_MANAGEMENT = /*$$(*/ "The employee %s has no %s leave line"/*)*/ ;
+	
+	static final String BATCH_LEAVE_MANAGEMENT_ENDING_0 = /*$$(*/ "Employees' leaves attempted to be computed : %s"/*)*/ ;
+	static final String BATCH_LEAVE_MANAGEMENT_ENDING_1 = /*$$(*/ "Employees' leaves successfully computed : %s"/*)*/ ;
+	static final String BATCH_LEAVE_MANAGEMENT_ENDING_2 = /*$$(*/ "Employees' leaves failed to be computed due to configuration anomaly : %s"/*)*/ ;
+	static final String BATCH_LEAVE_MANAGEMENT_ENDING_3 = /*$$(*/ "Employees' leaves failed to be computed due to missing data : %s"/*)*/ ;
+	
+	
 
 
 }

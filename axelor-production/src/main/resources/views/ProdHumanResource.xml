@@ -7,9 +7,18 @@
         onNew="action-prod-human-resource-record-default">
         <field name="product" form-view="product-form" grid-view="product-grid"/>
         <field name="employee" form-view="employee-form" grid-view="employee-grid"/>
-        <field name="duration" widget="duration" x-big="true" x-seconds="true"/>
+        <field name="duration" widget="duration" x-big="true" x-seconds="true" aggregate="sum"/>
 	  	<field name="costSheetGroup" form-view="cost-sheet-group-form" grid-view="cost-sheet-group-grid" domain="self.costTypeSelect = 2"/>
     </grid>
+    
+    <grid name="prod-human-resource-group-grid" title="Prod. Human resources" model="com.axelor.apps.production.db.ProdHumanResource" groupBy="operationOrder.manufOrder" edit-icon="true">
+		<field name="product" form-view="product-form" grid-view="product-grid"/>
+		<field name="employee" form-view="employee-form" grid-view="employee-grid"/>
+		<field name="operationOrder.operationName"/>
+		<field name="duration" widget="duration" aggregate="sum" x-big="true" x-seconds="true"/>
+		<field name="operationOrder.manufOrder" hidden="true"/>
+		<field name="costSheetGroup" domain="self.costTypeSelect = 2" form-view="cost-sheet-group-form" grid-view="cost-sheet-group-grid"/>
+	</grid>
     
     <form name="prod-human-resource-form" title="Prod. Human resource" model="com.axelor.apps.production.db.ProdHumanResource"
         onNew="action-prod-human-resource-record-default">
