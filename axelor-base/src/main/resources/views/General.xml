@@ -97,8 +97,8 @@
 	
 	<form name="general-settings-form" title="General Settings" model="com.axelor.apps.base.db.General" width="large">
 		<panel-tabs colSpan="12">
-	    	<panel title="Invoice configuration">
-				<field name="manageInvoicedAmountByLine" if-module="axelor-supplychain" widget="Boolean-switch"/>
+	    	<panel title="Invoice configuration" if-module="axelor-supplychain">
+	    		<panel-include view="supplychain-invoice-general-form" if-module="axelor-supplychain" from="axelor-supplychain"/>
 			</panel>
 			
 			<panel title="Sale order configuration">
@@ -107,10 +107,8 @@
 				<field name="allowSusbcriptionSaleOrder" if-module="axelor-supplychain" widget="Boolean-switch"/>
 			</panel>
 			
-			<panel title="Purchase order configuration">
-				<field name="purchaseOrderManagement" if-module="axelor-purchase" readonlyIf="managePurchaseOrderVersion || purchaseOrderGenerationAuto" widget="Boolean-switch"/>
-				<field name="managePurchaseOrderVersion" showIf="purchaseOrderManagement" if-module="axelor-purchase" widget="Boolean-switch"/>
-				<field name="purchaseOrderGenerationAuto" showIf="purchaseOrderManagement" if-module="axelor-purchase" widget="Boolean-switch"/>
+			<panel title="Purchase order configuration" if-module="axelor-purchase">
+				<panel-include view="purchase-general-form" if-module="axelor-purchase" from="axelor-purchase"/>
 			</panel>
 			
 			<panel title="Stock Move configuration" itemSpan="4">
@@ -158,10 +156,7 @@
 			</panel>
 			
 			<panel title="Budget Configuration" if-module="axelor-account">
-				<field name="manageBudget" widget="Boolean-switch"/>
-		    	<field name="manageMultiBudget" showIf="manageBudget" widget="Boolean-switch"/>
-		    	<field name="statusSelectBudget" widget="MultiSelect" showIf="manageBudget"/>
-			
+				<panel-include view="account-general-form" if-module="axelor-account" from="axelor-account"/>
 			</panel>
 		</panel-tabs>				
 	</form>
