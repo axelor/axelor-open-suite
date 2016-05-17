@@ -5,7 +5,7 @@
 		<form name="account-general-form" title="account-general-form" model="com.axelor.apps.base.db.General">
 			<field name="manageBudget" widget="Boolean-switch"/>
 		    <field name="manageMultiBudget" showIf="manageBudget" widget="Boolean-switch"/>
-		   	<field name="statusSelect" widget="MultiSelect" showIf="manageBudget"/>
+		   	<field name="budgetStatusSelect" widget="MultiSelect" showIf="manageBudget"/>
 		</form>
 				
 </object-views>

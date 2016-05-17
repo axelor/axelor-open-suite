@@ -47,8 +47,8 @@ public class BudgetSupplychainService extends BudgetService{
 			}
 			List<Integer> statusList= new ArrayList<Integer>();
 			if (generalservice.getGeneral().getManageBudget()){
-				if(!generalservice.getGeneral().getStatusSelect().isEmpty()){
-					String str= generalservice.getGeneral().getStatusSelect();
+				if(!generalservice.getGeneral().getBudgetStatusSelect().isEmpty()){
+					String str= generalservice.getGeneral().getBudgetStatusSelect();
 					String[] numbers = str.split(", ");
 					for(int c = 0; c < numbers.length; c++) 
 						statusList.add(Integer.parseInt(numbers[c]));
