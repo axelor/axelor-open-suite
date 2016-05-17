@@ -9,7 +9,7 @@
     	<field name="productCategory" form-view="product-category-form" grid-view="product-category-grid"/>
    	 	<field name="typeSelect"/>
     	<field name="amountTypeSelect"/>
-    	<field name="amount"/>
+    	<field name="amount" x-scale="2"/>
     	<field name="minQty"/>
 	</grid>
     
