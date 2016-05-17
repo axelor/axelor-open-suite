@@ -3,7 +3,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
 
-	<chart name="chart.total.hours.per.day" title="Total Hours per Day">
+	<chart name="chart.total.hours.per.day" title="">
   		<dataset type="jpql"><![CDATA[
 		SELECT
 			SUM(self.visibleDuration) AS _duration,
@@ -11,9 +11,9 @@
 		FROM
 			TimesheetLine self
 		WHERE
-			self.affectedToTimeSheet.user.id= :id
+			self.affectedToTimeSheet.user.id= :user_id
 		AND
-			self.affectedToTimeSheet.id= :timesheet
+			self.affectedToTimeSheet.id= :timesheet_id
 		GROUP BY
 			self.date
 		ORDER BY 
@@ -23,7 +23,7 @@
   		<series key="_duration" type="bar" title="Total"/>
 	</chart>
 	
-	<chart name="chart.total.duration.per.project" title="Total Duration per Project">
+	<chart name="chart.total.duration.per.project" title="">
   		<dataset type="jpql"><![CDATA[
 		SELECT
 			SUM(self.visibleDuration) AS _duration,
@@ -31,9 +31,9 @@
 		FROM
 			TimesheetLine self
 		WHERE
-			self.affectedToTimeSheet.user.id= :id
+			self.affectedToTimeSheet.user.id= :user_id
 		AND
-			self.affectedToTimeSheet.id= :timesheet
+			self.affectedToTimeSheet.id= :timesheet_id
 		GROUP BY
 			self.projectTask.fullName
 		]]></dataset>
