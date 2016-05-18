@@ -3,11 +3,11 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">		
 		
 		<form name="human-ressource-general-form" title="human-ressource-general-form" model="com.axelor.apps.base.db.General">
-			<field name="allowNegativeLeaveEmployees"/>
+			<field name="allowNegativeLeaveEmployees" widget="Boolean-switch"/>
 			<field name="invoicingTypeLogTimesSelect"/>  <!-- TODO jamais utilisé  -->
-			<field name="consolidateTSLine"/>
-			<field name="editModeTSTimer"/>
-			<field name="keepProjectTask"/>
+			<field name="consolidateTSLine" widget="Boolean-switch"/>
+			<field name="editModeTSTimer" widget="Boolean-switch"/>
+			<field name="keepProjectTask" widget="Boolean-switch"/>
 		</form>
 				
 </object-views>

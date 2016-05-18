@@ -31,7 +31,7 @@
 		<panel-tabs>
 		    <panel title="Configuration">
 		    	<field name="defaultPartnerLanguage" />
-		    	<field name="mailAccountByUser" />
+		    	<field name="mailAccountByUser" widget="Boolean-switch"/>
 		    	<field name="productInAtiSelect"/>
 		    	<field name="nbDecimalDigitForUnitPrice"/>
 		    	<field name="computeMethodDiscountSelect"/>
@@ -40,19 +40,19 @@
 		    	<field name="unitDays" form-view="unit-form" grid-view="unit-grid"/>
 		    	<field name="unitHours" form-view="unit-form" grid-view="unit-grid"/>
 		    	<field name="unitMinutes" form-view="unit-form" grid-view="unit-grid"/>
-		    	<field name="manageSalesUnits" if-module="axelor-sale"/>
-		    	<field name="managePurchasesUnits" if-module="axelor-purchase"/>
-		    	<field name="teamManagement"/>
-		    	<field name="manageMultiBanks"/>
-		    	<field name="manageDirectDebitPayment"/>
+		    	<field name="manageSalesUnits" if-module="axelor-sale" widget="Boolean-switch"/>
+		    	<field name="managePurchasesUnits" if-module="axelor-purchase" widget="Boolean-switch"/>
+		    	<field name="teamManagement" widget="Boolean-switch"/>
+		    	<field name="manageMultiBanks" widget="Boolean-switch"/>
+		    	<field name="manageDirectDebitPayment" widget="Boolean-switch"/>
 		    </panel>
 		    <panel title="Accounting">
 				<field name="defaultExemptionTax" form-view="tax-form" grid-view="tax-grid"/>
-				<field name="isInvoiceMoveConsolidated"/>
-				<field name="manageAnalyticAccounting" if-module="axelor-account"/>
+				<field name="isInvoiceMoveConsolidated" widget="Boolean-switch"/>
+				<field name="manageAnalyticAccounting" if-module="axelor-account" widget="Boolean-switch"/>
 				<field name="analyticDistributionTypeSelect" if-module="axelor-account" showIf="manageAnalyticAccounting"/>
-				<field name="manageCustomerCredit" if-module="axelor-account"/>
-				<field name="allowTimetableInvoicing" if-module="axelor-supplychain"/>
+				<field name="manageCustomerCredit" if-module="axelor-account" widget="Boolean-switch"/>
+				<field name="allowTimetableInvoicing" if-module="axelor-supplychain" widget="Boolean-switch"/>
 				<panel title="Rejects reasons and codes list" colSpan="12">
 					<field name="transferAndDirectDebitInterbankCode" grid-view="interbank-code-grid" form-view="interbank-code-form"/>
 					<field name="chequeInterbankCode" grid-view="interbank-code-grid" form-view="interbank-code-form"/>
@@ -77,19 +77,19 @@
 				<panel name="qas" title="Addresses validation"  colSpan="12">
 					<field name="qasWsdlUrl"/>
 					<button name="checkQasWsdl" title="Test connection to QAS webservice"   onClick="com.axelor.apps.base.web.AddressController:check"/>
-					<field name="hasQasValidation" />
+					<field name="hasQasValidation" widget="Boolean-switch"/>
 				</panel>
 				<panel name="ws" title="Webservices"  colSpan="12">
 					<field name="currencyWsURL" colSpan="12"/>
 				</panel>
 		    </panel>
 		    <panel title="Portal" if-module="axelor-client-portal">
-		    	<field name="clientPortalManagement" colSpan="12"/>
-		    	<field name="manageSaleOrders" showIf="clientPortalManagement"/>
-		    	<field name="canConfirmOnline" showIf="manageSaleOrders"/>
-		    	<field name="manageInvoices" showIf="clientPortalManagement"/>
-		    	<field name="canPayOnline" showIf="manageInvoices"/>
-		    	<field name="manageTickets" showIf="clientPortalManagement"/>
+		    	<field name="clientPortalManagement" colSpan="12" widget="Boolean-switch"/>
+		    	<field name="manageSaleOrders" showIf="clientPortalManagement" widget="Boolean-switch"/>
+		    	<field name="canConfirmOnline" showIf="manageSaleOrders" widget="Boolean-switch"/>
+		    	<field name="manageInvoices" showIf="clientPortalManagement" widget="Boolean-switch"/>
+		    	<field name="canPayOnline" showIf="manageInvoices" widget="Boolean-switch"/>
+		    	<field name="manageTickets" showIf="clientPortalManagement" widget="Boolean-switch"/>
 		    	<panel-related field="onlinePaymentMethodSet" colSpan="12" showIf="manageInvoices &amp;&amp; canPayOnline"/>
 		    </panel>
 		</panel-tabs>
@@ -97,40 +97,38 @@
 	
 	<form name="general-settings-form" title="General Settings" model="com.axelor.apps.base.db.General" width="large">
 		<panel-tabs colSpan="12">
-	    	<panel title="Invoice configuration">
-				<field name="manageInvoicedAmountByLine" if-module="axelor-supplychain"/>
+	    	<panel title="Invoice configuration" if-module="axelor-supplychain">
+	    		<panel-include view="supplychain-invoice-general-form" if-module="axelor-supplychain" from="axelor-supplychain"/>
 			</panel>
 			
 			<panel title="Sale order configuration">
-				<field name="manageSaleOrderVersion" if-module="axelor-sale"/>
-				<field name="generateInvoiceFromSaleOrder" if-module="axelor-sale"/>
-				<field name="allowSusbcriptionSaleOrder" if-module="axelor-supplychain"/>
+				<field name="manageSaleOrderVersion" if-module="axelor-sale" widget="Boolean-switch"/>
+				<field name="generateInvoiceFromSaleOrder" if-module="axelor-sale" widget="Boolean-switch"/>
+				<field name="allowSusbcriptionSaleOrder" if-module="axelor-supplychain" widget="Boolean-switch"/>
 			</panel>
 			
-			<panel title="Purchase order configuration">
-				<field name="purchaseOrderManagement" if-module="axelor-purchase" readonlyIf="managePurchaseOrderVersion || purchaseOrderGenerationAuto"/>
-				<field name="managePurchaseOrderVersion" showIf="purchaseOrderManagement" if-module="axelor-purchase"/>
-				<field name="purchaseOrderGenerationAuto" showIf="purchaseOrderManagement" if-module="axelor-purchase"/>
+			<panel title="Purchase order configuration" if-module="axelor-purchase">
+				<panel-include view="purchase-general-form" if-module="axelor-purchase" from="axelor-purchase"/>
 			</panel>
 			
 			<panel title="Stock Move configuration" itemSpan="4">
-				<field name="customerStockMoveManagement" if-module="axelor-supplychain" readonlyIf="customerStockMoveGenerationAuto || terminateSaleOrderOnDelivery"/>
-				<field name="customerStockMoveGenerationAuto" showIf="customerStockMoveManagement" if-module="axelor-supplychain"/>
-				<field name="terminateSaleOrderOnDelivery" if-module="axelor-sale" showIf="customerStockMoveManagement"/>
+				<field name="customerStockMoveManagement" if-module="axelor-supplychain" readonlyIf="customerStockMoveGenerationAuto || terminateSaleOrderOnDelivery" widget="Boolean-switch"/>
+				<field name="customerStockMoveGenerationAuto" showIf="customerStockMoveManagement" if-module="axelor-supplychain" widget="Boolean-switch"/>
+				<field name="terminateSaleOrderOnDelivery" if-module="axelor-sale" showIf="customerStockMoveManagement" widget="Boolean-switch"/>
 				
-				<field name="supplierStockMoveManagement" if-module="axelor-supplychain" readonlyIf="supplierStockMoveGenerationAuto || terminatePurchaseOrderOnReceipt"/>
-				<field name="supplierStockMoveGenerationAuto" showIf="supplierStockMoveManagement" if-module="axelor-supplychain"/>
-				<field name="terminatePurchaseOrderOnReceipt" if-module="axelor-supplychain" showIf="supplierStockMoveManagement"/>
+				<field name="supplierStockMoveManagement" if-module="axelor-supplychain" readonlyIf="supplierStockMoveGenerationAuto || terminatePurchaseOrderOnReceipt" widget="Boolean-switch"/>
+				<field name="supplierStockMoveGenerationAuto" showIf="supplierStockMoveManagement" if-module="axelor-supplychain" widget="Boolean-switch"/>
+				<field name="terminatePurchaseOrderOnReceipt" if-module="axelor-supplychain" showIf="supplierStockMoveManagement" widget="Boolean-switch"/>
 				
-				<field name="generateInvoiceFromStockMove"/>
+				<field name="generateInvoiceFromStockMove" widget="Boolean-switch"/>
 			</panel>
 			
 			<panel title="Production configuration" if-module="axelor-production">
-				<field name="productionOrderManagement" readonlyIf="productionOrderGenerationAuto" colSpan="4"/>
-				<field name="productionOrderGenerationAuto" showIf="productionOrderManagement" colSpan="4"/>
-				<field name="manageBillOfMaterialVersion" if-module="axelor-production" colSpan="4"/>
+				<field name="productionOrderManagement" readonlyIf="productionOrderGenerationAuto" colSpan="4" widget="Boolean-switch"/>
+				<field name="productionOrderGenerationAuto" showIf="productionOrderManagement" colSpan="4" widget="Boolean-switch"/>
+				<field name="manageBillOfMaterialVersion" if-module="axelor-production" colSpan="4" widget="Boolean-switch"/>
 				<panel title="Bill of material">
-				    <field name="manageResidualProductOnBom"/>
+				    <field name="manageResidualProductOnBom" widget="Boolean-switch"/>
 				</panel>
 				<panel title="Manufacturing process">
     				<field name="workCenterProduct" form-view="product-form" grid-view="product-grid"/>
@@ -139,7 +137,7 @@
 				    <field name="productCostSheetGroup" form-view="cost-sheet-group-form" grid-view="cost-sheet-group-grid" domain="self.costTypeSelect = 1"/>
 	  				<field name="workCenterCostSheetGroup" form-view="cost-sheet-group-form" grid-view="cost-sheet-group-grid" domain="self.costTypeSelect = 2"/>
 	  				<field name="cycleUnit" form-view="unit-form" grid-view="unit-grid"/>
-					<field name="subtractProdResidualOnCostSheet" showIf="manageResidualProductOnBom"/>
+					<field name="subtractProdResidualOnCostSheet" showIf="manageResidualProductOnBom" widget="Boolean-switch"/>
 				</panel>
 			</panel>
 			
@@ -148,20 +146,17 @@
 			</panel>
 			
 			<panel title="Project/Task configuration" if-module="axelor-project">
-				<field name="generateProjectOrder" />
-				<field name="automaticProject" />
-				<field name="projectTaskSaleOrderLines" />
-				<field name="projectTaskPurchaseOrderLines" />
-				<field name="projectTaskInvoiceLines" />
+				<field name="generateProjectOrder" widget="Boolean-switch"/>
+				<field name="automaticProject" widget="Boolean-switch"/>
+				<field name="projectTaskSaleOrderLines" widget="Boolean-switch"/>
+				<field name="projectTaskPurchaseOrderLines" widget="Boolean-switch"/>
+				<field name="projectTaskInvoiceLines" widget="Boolean-switch"/>
 				<field name="projectTaskLabel"/>
 				<field name="productInvoicingProjectTask" canNew="true"/>
 			</panel>
 			
 			<panel title="Budget Configuration" if-module="axelor-account">
-				<field name="manageBudget"/>
-		    	<field name="manageMultiBudget" showIf="manageBudget"/>
-		    	<field name="statusSelectBudget" widget="MultiSelect" showIf="manageBudget"/>
-			
+				<panel-include view="account-general-form" if-module="axelor-account" from="axelor-account"/>
 			</panel>
 		</panel-tabs>				
 	</form>
