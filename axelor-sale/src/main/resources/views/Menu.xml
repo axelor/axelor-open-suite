@@ -56,6 +56,7 @@
 		<view type="cards" name="partner-cards" />
 		<view type="grid" name="partner-customer-grid" />
 		<view type="form" name="partner-customer-form" />
+	  	<view-param name="limit" value="39"/>
 		<view-param name="search-filters" value="partner-filters"/>
 		<!-- <domain>self.curUser = null OR self.curUser = :user_id</domain> -->
 		<domain>self.isContact = false AND self.isCustomer = true</domain>
@@ -72,6 +73,7 @@
 		<view type="cards" name="partner-contact-cards" />
 		<view type="grid" name="partner-contact-grid" />
 		<view type="form" name="partner-contact-form" />
+	  	<view-param name="limit" value="39"/>
 		<domain>self.isContact = true AND self.mainPartner.isCustomer = true</domain>
 	</action-view>
 			
