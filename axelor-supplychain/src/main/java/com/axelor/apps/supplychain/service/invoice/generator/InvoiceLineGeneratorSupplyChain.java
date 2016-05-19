@@ -123,8 +123,8 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
 		if (saleOrderLine != null && product != null && ProductRepository.PRODUCT_TYPE_SUBSCRIPTABLE.equals(product.getProductTypeSelect())
 				&& saleOrderLine.getSubscriptionList() != null && !saleOrderLine.getSubscriptionList().isEmpty())  {
 			BigDecimal subscriptionListSize = new BigDecimal(saleOrderLine.getSubscriptionList().size());
-			this.exTaxTotal = this.exTaxTotal.divide(subscriptionListSize).setScale(2, RoundingMode.HALF_EVEN);
-			this.inTaxTotal = this.inTaxTotal.divide(subscriptionListSize).setScale(2, RoundingMode.HALF_EVEN);
+			this.exTaxTotal = this.exTaxTotal.divide(subscriptionListSize, 2, RoundingMode.HALF_EVEN);
+			this.inTaxTotal = this.inTaxTotal.divide(subscriptionListSize, 2, RoundingMode.HALF_EVEN);
 		}
 
 		this.assignOriginElements(invoiceLine);

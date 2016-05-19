@@ -17,7 +17,7 @@
 		<view type="form" name="crm-task-form"/>
 		<view type="grid" name="crm-task-grid"/>
 		<context name="_typeSelect" expr="3"/>
-		<context name="_internalUser" expr="eval: __user__.id"/>
+		<context name="_internalUserId" expr="eval: __user__.id"/>
 	</action-view>
 	
 	<menuitem name="crm-root-create-meeting" parent="crm-root-create"
@@ -28,7 +28,7 @@
 		<view type="form" name="meeting-form"/>
 		<view type="grid" name="meeting-grid"/>
 		<context name="_typeSelect" expr="2"/>
-		<context name="_internalUser" expr="eval: __user__.id"/>
+		<context name="_internalUserId" expr="eval: __user__.id"/>
 	</action-view>
 	
 	<menuitem name="crm-root-create-call" parent="crm-root-create"
@@ -39,7 +39,7 @@
 		<view type="form" name="call-form"/>
 		<view type="grid" name="call-grid"/>
 		<context name="_typeSelect" expr="1"/>
-		<context name="_internalUser" expr="eval: __user__.id"/>
+		<context name="_internalUserId" expr="eval: __user__.id"/>
 	</action-view>
 	
 	<menuitem name="crm-root-create-ticket" parent="crm-root-create"
@@ -51,7 +51,7 @@
 		<view type="grid" name="ticket-grid"/>
 		<context name="_typeSelect" expr="5"/>
 		<context name="_prioritySelect" expr="2"/>
-		<context name="_internalUser" expr="eval: __user__.id"/>
+		<context name="_internalUserId" expr="eval: __user__.id"/>
 	</action-view>
 	
 	<menuitem name="crm-root-task" parent="crm-root"
@@ -64,7 +64,7 @@
 		<view-param name="search-filters" value="tasks-filters"/>
 		<domain>self.typeSelect = 3</domain>
 		<context name="_typeSelect" expr="3"/>
-		<context name="_internalUser" expr="eval: __user__.id"/>
+		<context name="_internalUserId" expr="eval: __user__.id"/>
 		<context name="_myActiveTeam" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"/>
 		<context name="_todayDateTime" expr="eval:__config__.generalService.getTodayDateTime()"/>
 		<context name="_newDate" expr="eval: __datetime__.plusDays(5)"/>
@@ -81,7 +81,7 @@
 		<view-param name="search-filters" value="meeting-filters"/>
 		<domain>self.typeSelect = 2</domain>
 		<context name="_typeSelect" expr="2"/>
-		<context name="_internalUser" expr="eval: __user__.id"/>
+		<context name="_internalUserId" expr="eval: __user__.id"/>
 		<context name="_myActiveTeam" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"/>
 		<context name="_newDate" expr="eval: __datetime__.plusDays(5)"/>
 	</action-view>
@@ -96,7 +96,7 @@
 		<view-param name="search-filters" value="call-filters"/>
 		<domain>self.typeSelect = 1</domain>
 		<context name="_typeSelect" expr="1"/>
-		<context name="_internalUser" expr="eval: __user__.id"/>
+		<context name="_internalUserId" expr="eval: __user__.id"/>
 		<context name="_myActiveTeam" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"/>
 		<context name="_todayDateTime" expr="eval:__config__.generalService.getTodayDateTime()"/>
 	</action-view>
@@ -112,7 +112,7 @@
 		<domain>self.typeSelect = 5</domain>
 		<context name="_typeSelect" expr="5"/>
 		<context name="_prioritySelect" expr="2"/>
-		<context name="_internalUser" expr="eval: __user__.id"/>
+		<context name="_internalUserId" expr="eval: __user__.id"/>
 		<context name="_myActiveTeam" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"/>
 	</action-view>
 	
@@ -124,7 +124,6 @@
 		<view type="grid" name="lead-grid"/>
 		<view type="form" name="lead-form"/>
 		<view-param name="search-filters" value="lead-filters"/>
-		<context name="_internalUser" expr="eval: __user__.id"/>
 		<context name="_myActiveTeam" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"/>
 		<context name="todayDate" expr="eval:__config__.generalService.getTodayDate()" />
 		<context name="_internalUserId" expr="eval:__user__.id"/>
@@ -140,7 +139,6 @@
 		<view type="form" name="opportunity-form"/>
 		<view-param name="search-filters" value="opportunity-filters"/>
 		<context name="_internalUserId" expr="eval:__user__.id"/>
-		<context name="_internalUser" expr="eval: __user__.id"/>
 		<context name="_myActiveTeam" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"/>
 		<context name="todayDate" expr="eval:__config__.generalService.getTodayDate()" />
 	</action-view>

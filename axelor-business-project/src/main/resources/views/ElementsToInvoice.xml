@@ -29,7 +29,7 @@
 	</form>
 	
 	<action-method name="action-elements-to-invoice-method-get-product-information">
-		<call class="com.axelor.apps.business.project.web.ElementsToInvoiceController" method="getProductInformation"/>
+		<call class="com.axelor.apps.businessproject.web.ElementsToInvoiceController" method="getProductInformation"/>
 	</action-method>
 	
  	<action-record name="action-element-to-invoice-record-default" model="com.axelor.apps.businessproject.db.ElementsToInvoice">

@@ -54,5 +54,6 @@ public interface IException {
 	public static final String IRRECOVERABLE = "irrecoverable";
 	public static final String CRM = "crm";
 	public static final String IMPORT = "import";
+	public static final String LEAVE_MANAGEMENT = "leaveManagement";
 	
 }

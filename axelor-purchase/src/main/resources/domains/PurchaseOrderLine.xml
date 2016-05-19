@@ -6,7 +6,23 @@
   <module name="purchase" package="com.axelor.apps.purchase.db"/>
 
   <entity name="PurchaseOrderLine" lang="java">
-  
+  	<integer name="importId"/>
+  	<string name="fullName" namecolumn="true">
+	  	<![CDATA[
+	  		String fullName = "";
+	  		if(purchaseOrder != null && purchaseOrder.getPurchaseOrderSeq() != null){
+	  			fullName += purchaseOrder.getPurchaseOrderSeq();
+	  		}
+	  		if(productName != null)  {
+	  			fullName += "-";
+	  			if(productName.length() > 100)  {
+	  				fullName += productName.substring(1, 100);
+	  			}
+	  			else  {  fullName += productName;  }
+	  		}
+	  		return fullName;
+	  	]]>
+  	</string>
   	<many-to-one name="purchaseOrder" ref="com.axelor.apps.purchase.db.PurchaseOrder" title="Purchase order"/>
   	<integer name="sequence" title="Seq."/>
   	<many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"/>

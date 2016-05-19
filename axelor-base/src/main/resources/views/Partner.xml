@@ -143,7 +143,7 @@
 							<field name="address" colSpan="12" placeholder="whatever@example.com" pattern="^[a-z0-9A-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ!#$%&amp;'*+/=?^_`{|}~-]+(?:\.[a-z0-9A-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ!#$%&amp;'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+(?:[a-z]{2,})$"/>
 						</editor>
 					</field>
-					<field name="webSite" placeholder="www.url.com" pattern="(https?:\/\/(?:www\.|(?!www))[^\s\.]+\.[^\s]{2,}|www\.[^\s]+\.[^\s]{2,})"/>
+					<field name="webSite" placeholder="www.url.com" pattern="([^\s]+\.[^\s]+\.[^\s]{2,})"/>
 				</panel>
 				<panel title="Partner Details" hideIf="partnerTypeSelect == 2" colSpan="12" >
 					<panel colSpan="6">
@@ -269,7 +269,7 @@
 
 	<form name="partner-contact-form" title="Contact" model="com.axelor.apps.base.db.Partner" 
 	onNew="action-partner-contact-record-default" 
-	onLoad="action-partner-attrs-change-name,action-partner-method-set-social-network-url" canCopy="false">
+	onLoad="action-partner-attrs-change-name,action-partner-method-set-social-network-url" onSave="save,action-partner-method-set-user-partner" canCopy="false">
 	    <toolbar>
 	        <button name="sendByEmail" title="Send email" icon="fa-envelope" onClick="save,action-send-by-email-with-template" readonlyIf="id == null"/>
 	        <button name="showPartnerInfo" title="Print Informations" icon="fa-print" onClick="save,action-partner-method-show-partner-info"  readonlyIf="id == null"/>
@@ -348,7 +348,7 @@
 			<field name="fax" pattern="^\+?\d{8,11}$" placeholder="+33000000000"/>
 			<field name="fixedPhone" placeholder="+33100000000" pattern="^\+?\d{8,11}$"/>
 			<field name="mobilePhone" placeholder="+33100000000" pattern="^\+?\d{8,11}$"/>
-           <field name="webSite" placeholder="www.url.com" pattern="(https?:\/\/(?:www\.|(?!www))[^\s\.]+\.[^\s]{2,}|www\.[^\s]+\.[^\s]{2,})"/>
+           <field name="webSite" placeholder="www.url.com" pattern="([^\s]+\.[^\s]+\.[^\s]{2,})"/>
 	     </panel>
 	</form>
 	
@@ -430,12 +430,15 @@
     <action-method name="action-partner-method-show-partner-info">
 		<call class="com.axelor.apps.base.web.PartnerController" method="showPartnerInfo"/>
 	</action-method>
-    
-    
+	
     <action-method name="action-partner-method-set-social-network-url">
     	<call class="com.axelor.apps.base.web.PartnerController" method="setSocialNetworkUrl" />
     </action-method>
     
+     <action-method name="action-partner-method-set-user-partner">
+		<call class="com.axelor.apps.base.web.UserController" method="setUserPartner"/>
+	</action-method>
+	
 	<action-attrs name="action-partner-attrs-change-name">
 		<attribute name="title" for="name" expr="Raison sociale" if="partnerTypeSelect != 2"/>
     	<attribute name="title" for="name" expr="Nom" if="partnerTypeSelect == 2"/>

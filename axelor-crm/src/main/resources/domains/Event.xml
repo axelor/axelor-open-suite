@@ -61,6 +61,7 @@
   	
   	<extra-code>
       	<![CDATA[
+      		// TYPE SELECT
 	  		public static final Integer TYPE_CALL = 1;
 	  		public static final Integer TYPE_MEETING = 2;
 	  		public static final Integer TYPE_TASK = 3;

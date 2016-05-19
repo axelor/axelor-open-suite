@@ -20,10 +20,20 @@ package com.axelor.apps.hr.service.leave.management;
 import java.math.BigDecimal;
 import java.util.List;
 
+import org.joda.time.LocalDate;
+
+import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.hr.db.LeaveLine;
 import com.axelor.apps.hr.db.LeaveManagement;
+import com.axelor.auth.db.User;
+import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 
 public class LeaveManagementService {
+	
+	@Inject
+	GeneralService generalService;
+	
 	
 	public LeaveLine computeQuantityAvailable (LeaveLine leaveLine){
 		List<LeaveManagement> leaveManagementList = leaveLine.getLeaveManagementList();
@@ -34,6 +44,27 @@ public class LeaveManagementService {
 			}
 		}
 		return leaveLine;
+	}
+	
+	
+	@Transactional
+	public LeaveManagement createLeaveManagement(LeaveLine leaveLine, User user, String comments, LocalDate date, LocalDate fromDate, LocalDate toDate,  BigDecimal value){
+		
+		LeaveManagement leaveManagement = new LeaveManagement();
+		
+		leaveManagement.setLeaveLine(leaveLine);
+		leaveManagement.setUser(user);
+		leaveManagement.setComments(comments);
+		if (date == null){
+			leaveManagement.setDate(generalService.getTodayDate());
+		}else{
+			leaveManagement.setDate(date);
+		}
+		leaveManagement.setDateFrom(fromDate);
+		leaveManagement.setDateTo(toDate);
+		leaveManagement.setValue(value);
+		
+		return leaveManagement;
 	}
 
 }

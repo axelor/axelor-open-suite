@@ -18,6 +18,7 @@
 package com.axelor.apps.base.service.administration;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 
 import javax.inject.Singleton;
@@ -189,7 +190,7 @@ public class GeneralServiceImpl implements GeneralService {
 				duration = duration.multiply(general.getDailyWorkHours());
 			}
 			else if (timePref.equals("minutes")) {
-				duration = duration.divide(new BigDecimal(60));
+				duration = duration.divide(new BigDecimal(60), 2, RoundingMode.HALF_EVEN);
 			}
 		}
 
@@ -209,7 +210,7 @@ public class GeneralServiceImpl implements GeneralService {
 			BigDecimal dailyWorkHrs = general.getDailyWorkHours();
 
 			if(timePref.equals("days") && dailyWorkHrs != null && dailyWorkHrs.compareTo(BigDecimal.ZERO) != 0){
-				duration = duration.divide(dailyWorkHrs);
+				duration = duration.divide(dailyWorkHrs, 2, RoundingMode.HALF_EVEN);
 			}
 			else if (timePref.equals("minutes")) {
 				duration = duration.multiply(new BigDecimal(60));
