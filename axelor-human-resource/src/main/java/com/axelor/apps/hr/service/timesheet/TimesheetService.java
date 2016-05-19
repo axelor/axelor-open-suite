@@ -21,6 +21,7 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
+import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 
 import com.axelor.apps.account.db.Invoice;
@@ -38,7 +39,7 @@ import com.google.inject.persist.Transactional;
 public interface TimesheetService {
 	public void getTimeFromTask(Timesheet timesheet);
 	public void cancelTimesheet(Timesheet timesheet);
-	public Timesheet generateLines(Timesheet timesheet) throws AxelorException;
+	public Timesheet generateLines(Timesheet timesheet, LocalDate fromGenerationDate, LocalDate toGenerationDate, BigDecimal logTime, ProjectTask projectTask, Product product) throws AxelorException;
 	public LocalDate getFromPeriodDate();
 	public Timesheet getCurrentTimesheet();
 	public Timesheet getCurrentOrCreateTimesheet();

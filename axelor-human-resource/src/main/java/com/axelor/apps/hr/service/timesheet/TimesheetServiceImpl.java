@@ -25,6 +25,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalTime;
 import org.joda.time.Minutes;
@@ -107,15 +108,15 @@ public class TimesheetServiceImpl implements TimesheetService{
 	}
 
 	@Override
-	public Timesheet generateLines(Timesheet timesheet) throws AxelorException{
+	public Timesheet generateLines(Timesheet timesheet, LocalDate fromGenerationDate, LocalDate toGenerationDate, BigDecimal logTime, ProjectTask projectTask, Product product) throws AxelorException{
 
-		if(timesheet.getFromGenerationDate() == null) {
+		if(fromGenerationDate == null) {
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.TIMESHEET_FROM_DATE)), IException.CONFIGURATION_ERROR);
 		}
-		if(timesheet.getToGenerationDate() == null) {
+		if(toGenerationDate == null) {
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.TIMESHEET_TO_DATE)), IException.CONFIGURATION_ERROR);
 		}
-		if(timesheet.getProduct() == null) {
+		if(product == null) {
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.TIMESHEET_PRODUCT)), IException.CONFIGURATION_ERROR);
 		}
 		if(timesheet.getUser().getEmployee() == null){
@@ -127,8 +128,8 @@ public class TimesheetServiceImpl implements TimesheetService{
 		}
 		List<DayPlanning> dayPlanningList = planning.getWeekDays();
 
-		LocalDate fromDate = timesheet.getFromGenerationDate();
-		LocalDate toDate = timesheet.getToGenerationDate();
+		LocalDate fromDate = fromGenerationDate;
+		LocalDate toDate = toGenerationDate;
 		Map<Integer,String> correspMap = new HashMap<Integer,String>();
 		correspMap.put(1, "monday");
 		correspMap.put(2, "tuesday");
@@ -160,7 +161,8 @@ public class TimesheetServiceImpl implements TimesheetService{
 					}
 				}
 				if(noLeave){
-					createTimesheetLine(timesheet.getProjectTask(), timesheet.getProduct(), timesheet.getUser(), fromDate, timesheet, timesheet.getLogTime(), "");
+					TimesheetLine timesheetLine = createTimesheetLine(projectTask, product, timesheet.getUser(), fromDate, timesheet, employeeService.getDurationHours(logTime), "");
+					timesheetLine.setVisibleDuration(logTime);
 				}
 			}
 			fromDate=fromDate.plusDays(1);

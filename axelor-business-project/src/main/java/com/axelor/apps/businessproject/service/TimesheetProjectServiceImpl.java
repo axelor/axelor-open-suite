@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.business.project.service;
+package com.axelor.apps.businessproject.service;
 
 import java.math.BigDecimal;
 import java.text.DateFormat;
@@ -25,7 +25,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.core.resources.IProject;
 import org.joda.time.LocalDate;
 
 import com.axelor.apps.account.db.Invoice;
@@ -65,7 +64,7 @@ public class TimesheetProjectServiceImpl extends TimesheetServiceImpl{
 			tabInformations[2] = timesheetLine.getDate();
 			//End date, useful only for consolidation
 			tabInformations[3] = timesheetLine.getDate();
-			tabInformations[4] = timesheetLine.getDurationStored();
+			tabInformations[4] = timesheetLine.getVisibleDuration();
 			tabInformations[5] = timesheetLine.getProjectTask();
 
 			String key = null;
@@ -81,7 +80,7 @@ public class TimesheetProjectServiceImpl extends TimesheetServiceImpl{
 						//If date is upper than end date then replace end date by this one
 						tabInformations[3] = timesheetLine.getDate();
 					}
-					tabInformations[4] = ((BigDecimal)tabInformations[4]).add(timesheetLine.getDurationStored());
+					tabInformations[4] = ((BigDecimal)tabInformations[4]).add(timesheetLine.getVisibleDuration());
 				}else{
 					timeSheetInformationsMap.put(key, tabInformations);
 				}
@@ -120,75 +119,13 @@ public class TimesheetProjectServiceImpl extends TimesheetServiceImpl{
 	}
 	
 	@Override
-	public Timesheet generateLines(Timesheet timesheet) throws AxelorException{
-
-		if(timesheet.getFromGenerationDate() == null) {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.TIMESHEET_FROM_DATE)), IException.CONFIGURATION_ERROR);
-		}
-		if(timesheet.getToGenerationDate() == null) {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.TIMESHEET_TO_DATE)), IException.CONFIGURATION_ERROR);
-		}
-		if(timesheet.getProduct() == null) {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.TIMESHEET_PRODUCT)), IException.CONFIGURATION_ERROR);
-		}
-		if(timesheet.getUser().getEmployee() == null){
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.LEAVE_USER_EMPLOYEE),timesheet.getUser().getName()), IException.CONFIGURATION_ERROR);
-		}
-		WeeklyPlanning planning = timesheet.getUser().getEmployee().getPlanning();
-		if(planning == null){
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.TIMESHEET_EMPLOYEE_DAY_PLANNING),timesheet.getUser().getName()), IException.CONFIGURATION_ERROR);
-		}
-		List<DayPlanning> dayPlanningList = planning.getWeekDays();
-
-		LocalDate fromDate = timesheet.getFromGenerationDate();
-		LocalDate toDate = timesheet.getToGenerationDate();
-		Map<Integer,String> correspMap = new HashMap<Integer,String>();
-		correspMap.put(1, "monday");
-		correspMap.put(2, "tuesday");
-		correspMap.put(3, "wednesday");
-		correspMap.put(4, "thursday");
-		correspMap.put(5, "friday");
-		correspMap.put(6, "saturday");
-		correspMap.put(7, "sunday");
-		List<LeaveRequest> leaveList = LeaveRequestRepository.of(LeaveRequest.class).all().filter("self.user = ?1 AND (self.statusSelect = 2 OR self.statusSelect = 3)", timesheet.getUser()).fetch();
-		while(!fromDate.isAfter(toDate)){
-			DayPlanning dayPlanningCurr = new DayPlanning();
-			for (DayPlanning dayPlanning : dayPlanningList) {
-				if(dayPlanning.getName().equals(correspMap.get(fromDate.getDayOfWeek()))){
-					dayPlanningCurr = dayPlanning;
-					break;
-				}
-			}
-			if(dayPlanningCurr.getMorningFrom() != null || dayPlanningCurr.getMorningTo() != null || dayPlanningCurr.getAfternoonFrom() != null || dayPlanningCurr.getAfternoonTo() != null)
-			{
-				boolean noLeave = true;
-				if(leaveList != null){
-					for (LeaveRequest leave : leaveList) {
-						if((leave.getDateFrom().isBefore(fromDate) && leave.getDateTo().isAfter(fromDate))
-							|| leave.getDateFrom().isEqual(fromDate) || leave.getDateTo().isEqual(fromDate))
-						{
-							noLeave = false;
-							break;
-						}
-					}
-				}
-				if(noLeave){
-					TimesheetLine timesheetLine = new TimesheetLine();
-					timesheetLine.setDate(fromDate);
-					timesheetLine.setUser(timesheet.getUser());
-					timesheetLine.setProjectTask(timesheet.getProjectTask());
-					timesheetLine.setDurationStored(timesheet.getLogTime());
-					timesheetLine.setDurationStored(employeeService.getDurationHours(timesheet.getLogTime()));
-					timesheetLine.setProduct(timesheet.getProduct());
-					if(timesheet.getProjectTask().getProjTaskInvTypeSelect() == ProjectTaskRepository.INVOICING_TYPE_TIME_BASED
-							|| (timesheet.getProjectTask().getProject() != null && timesheet.getProjectTask().getProject().getProjTaskInvTypeSelect() == ProjectTaskRepository.INVOICING_TYPE_TIME_BASED)){
-						timesheetLine.setToInvoice(true);
-					}
-					timesheet.addTimesheetLineListItem(timesheetLine);
-				}
-			}
-			fromDate=fromDate.plusDays(1);
-		}
-		return timesheet;
+	public TimesheetLine createTimesheetLine(ProjectTask project, Product product, User user, LocalDate date, Timesheet timesheet, BigDecimal hours, String comments){
+		TimesheetLine timesheetLine = super.createTimesheetLine(project, product, user, date, timesheet, hours, comments);
+		
+		if(project.getProjTaskInvTypeSelect() == ProjectTaskRepository.INVOICING_TYPE_TIME_BASED || (project.getProject() != null && project.getProject().getProjTaskInvTypeSelect() == ProjectTaskRepository.INVOICING_TYPE_TIME_BASED))
+				timesheetLine.setToInvoice(true);
+		
+		return timesheetLine;
 	}
+
 }
