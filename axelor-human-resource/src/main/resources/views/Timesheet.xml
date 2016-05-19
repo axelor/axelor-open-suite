@@ -72,6 +72,7 @@
 			<field name="refusedBy" form-view="user-form" grid-view="user-grid"/>
 			<field name="validationDate" colOffset="4"/>
 			<field name="refusalDate"/>
+			<field name="groundForRefusal" showIf="refusalDate != null" colSpan="12"></field>
 		</panel>
 	</form>
 	
