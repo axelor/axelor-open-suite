@@ -32,7 +32,6 @@
 	    onNew="action-group-timesheet-onnew"
 	    onLoad="action-timesheet-attrs-buttons,action-timesheet-attrs-set-visible-duration-title,action-timesheet-method-set-visible-duration,action-timesheet-attrs-title-project-task,action-timesheet-attrs-from-date" canNew="false"
 	    onSave="action-timesheet-validate-toDate,action-timesheet-method-valid-to-date" canCopy="false">
-
 	    <panel sidebar="true" title="Actions" stacked="true">
 	    	<button name="confirmButton" onClick="action-timesheet-method-confirm,save,action-timesheet-attrs-buttons,action-timesheet-attrs-from-date" title="Confirm" hideIf="statusSelect &gt; 1" icon="fa-check-square-o"/>
 	    	<button name="validButton" onClick="action-timesheet-method-valid,save,action-timesheet-attrs-buttons,action-timesheet-method-compute-timespent-project-task" title="Valid"/>
@@ -43,10 +42,12 @@
 	    	<button name="generateLinesButton" onClick="action-timesheet-record-default-generation-date,action-timesheet-attrs-generale-lines-panel-hidden-false" title="Generate Lines Automatically"/>
 	    	<button name="startStopForm" title="Start&amp;Stop Timer" onClick="action-timesheet-method-timesheet-timer"/>
 	    </panel>
-	    <panel sidebar="true" showTitle="false">
-	    	<panel-dashlet name="timesheet.dashboard" action="action-timesheet-view-total-hours-per-day"/>
-	    	<panel-dashlet name="timesheet.dashboard" action="action-timesheet-view-total-duration-per-project"/>
+	    <panel sidebar="true" name="panelDashboard" title="Total Hours per Day">
+	    	<panel-dashlet action="action-timesheet-view-total-hours-per-day"/>
 	    </panel> 
+	    <panel sidebar="true" title="Total Duration per Project">
+	    	<panel-dashlet action="action-timesheet-view-total-duration-per-project"/>
+	    </panel>
 		<panel name="head">
 		    <field name="statusSelect" colSpan="12" widget="NavSelect"/>
 			<field name="company" colSpan="6" form-view="company-form" grid-view="company-grid"/>
@@ -77,6 +78,10 @@
 		<field name="$timesheetSelect" title="Select Timesheet" type="many-to-one" target="com.axelor.apps.hr.db.Timesheet" widget="SuggestBox" />
 		<button name="editTimesheetSelected" title="Edit Timesheet Selected" onClick="action-timesheet-validate-timesheet-selected,action-timesheet-method-edit-timesheet-selected"/>
 	</form>
+	
+	<action-attrs name="action-timesheet-attrs-title">
+		<attribute name="title" for="panelDashboard" expr="eval:__user__.employee?.timeLoggingPreferenceSelect == 'days' ? com.axelor.i18n.I18n.get('Total Days in the period') : __user__.employee?.timeLoggingPreferenceSelect == 'minutes' ? com.axelor.i18n.I18n.get('Total Minutes per Day') : com.axelor.i18n.I18n.get('Total Hours per Day')"/>
+	</action-attrs>
 	
 	<action-attrs name="action-hr-timesheet-attrs-domain-product">
 		<attribute name="domain" for="product" expr="eval:projectTask == null || projectTask?.productList.empty ? &quot;self.isActivity = true&quot; : &quot;self.isActivity = true AND EXISTS(SELECT p FROM ProjectTask p WHERE p = :projectTask AND self MEMBER OF p.productList)&quot;"/>
@@ -217,16 +222,16 @@
 		<attribute name="readonly" for="fromDate" expr="eval: fromDate != null"/>
 	</action-attrs>
 	
-	<action-view name="action-timesheet-view-total-hours-per-day" title="Total Hours per Day">
+	<action-view name="action-timesheet-view-total-hours-per-day" title="">
   		<view name="chart.total.hours.per.day" type="chart"/>
-  		<context name="id" expr="eval: __user__.id"/>
-    	<context name="timesheet" expr="eval: __self__.id"/>
+  		<context name="user_id" expr="eval: __user__.id"/>
+    	<context name="timesheet_id" expr="eval: __self__.id"/>
 	</action-view>
 	
-	<action-view name="action-timesheet-view-total-duration-per-project" title="Total Duration per Project">
+	<action-view name="action-timesheet-view-total-duration-per-project" title="">
   		<view name="chart.total.duration.per.project" type="chart"/>
-  		<context name="id" expr="eval: __user__.id"/>
-    	<context name="timesheet" expr="eval: __self__.id"/>
+  		<context name="user_id" expr="eval: __user__.id"/>
+    	<context name="timesheet_id" expr="eval: __self__.id"/>
 	</action-view>
-
+	
 </object-views>
