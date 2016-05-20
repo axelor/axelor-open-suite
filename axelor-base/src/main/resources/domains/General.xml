@@ -39,6 +39,8 @@
 		
 		<boolean name="teamManagement" title="Team Management" default="true"/>
 		
+		<boolean name="manageDirectDebitPayment" title="Manage direct debit payment" default="true" />
+		
 		<extra-code>
 	   		<![CDATA[
 	   			public static final Integer DISCOUNT_SEPARATE = 1;

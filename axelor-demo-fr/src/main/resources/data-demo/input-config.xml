@@ -202,6 +202,15 @@
 	
 	<input file="account_reminderConfigLine.csv" separator=";" type="com.axelor.apps.account.db.ReminderConfigLine" />
 	
+	<input file="account_budget.csv" separator=";" type="com.axelor.apps.account.db.Budget" search="self.importId = :importId" update="true">
+		<bind to="fromDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(fromDate)" column="fromDate"/>
+		<bind to="toDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(toDate)" column="toDate"/>
+	</input>
+	
+	<input file="account_budgetDistribution.csv" separator=";" type="com.axelor.apps.account.db.BudgetDistribution" search="self.importId = :importId" update="true">
+		<bind to="createdOn" eval="call:com.axelor.csv.script.ImportDateTime:importDate(createdOn)" column="createdOn"/>
+	</input>
+	
 <!-- 	Deuxième passe sur le package 'base' pour prendre en compte les éléments du package account  -->
 
 	<input file="base_general.csv" separator=";" type="com.axelor.apps.base.db.General"  search="self.importId = :importId" update="true">
@@ -209,6 +218,9 @@
           	<bind column="defaultExemptionTax_code" to="code"/>
       	</bind>
 		<bind to="qasWsdlUrl" column="qas_url"/>
+		<bind to="manageBudget" column="manageBudget"/>
+		<bind to="manageMultiBudget" column="manageMultiBudget"/>
+        <bind to="statusSelectBudget" column="statusSelectBudget"/>
 	</input>
 
 	<input file="base_partner.csv" separator=";" type="com.axelor.apps.base.db.Partner" search="self.importId = :importId" 
@@ -268,6 +280,10 @@
 	<input file="hr_kilometricAllowParam.csv" type="com.axelor.apps.hr.db.KilometricAllowParam" separator=";" search="self.code = :code"/>
 	
 	<input file="hr_kilometricAllowanceRate.csv" type="com.axelor.apps.hr.db.KilometricAllowanceRate" separator=";"/>
+	
+	<input file="hr_hrBatch.csv" type="com.axelor.apps.hr.db.HrBatch" separator=";"/>
+	
+	<input file="hr_leaveReason.csv" type="com.axelor.apps.hr.db.LeaveReason" separator=";"/>
  	    
 	<input file="crm_event.csv" separator=";" type="com.axelor.apps.crm.db.Event" search="self.importId = :importId">
 		<bind to="startDateTime" eval="call:com.axelor.csv.script.ImportDateTime:importDateTime(startDateTimeNow)" column="startDateTimeNow"/>
@@ -432,6 +448,9 @@
           	<bind column="defaultExemptionTax_code" to="code"/>
       	</bind>
 		<bind to="qasWsdlUrl" column="qas_url"/>
+		<bind to="manageBudget" column="manageBudget"/>
+		<bind to="manageMultiBudget" column="manageMultiBudget"/>
+        <bind to="statusSelectBudget" column="statusSelectBudget"/>
 	</input>
 	
 	<input file="supplychain_mrpLineType.csv" separator=";" type="com.axelor.apps.supplychain.db.MrpLineType" search="self.importId = :importId"/>

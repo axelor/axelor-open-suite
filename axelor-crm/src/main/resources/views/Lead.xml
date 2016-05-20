@@ -25,7 +25,7 @@
 		<field name="contactDate"/>
 		<field name="user" form-view="user-form" grid-view="user-grid"/>
         <field name="statusSelect"/>
-        <button name="grabLead" help="Assign to me" icon="fa-suitcase" onClick="com.axelor.apps.crm.web.EventController:assignToMeLead" readonlyIf="user != null"/>
+        <button name="grabLead" help="Assign to me" icon="fa-suitcase" onClick="com.axelor.apps.crm.web.EventController:assignToMeLead" readonlyIf="user.id == _internalUserId"/>
 		<button name="logCall" title="Log Call" icon="fa-phone" onClick="action-lead-view-create-call"/>
 		<button name="scheduleMeeting" title="Schedule Meeting" icon="fa-group" onClick="action-lead-view-create-meeting"/>
 		<button name="sendByEmail" title="Send Email" icon="fa-envelope" onClick="action-send-by-email-with-template"/>
@@ -85,12 +85,12 @@
 				<field name="isDoNotCall" colSpan="2"/>
 				<field name="emailAddress" canSelect="false" form-view="email-address-simple-form" x-show-icons="false" colSpan="4">
 					<editor x-show-titles="false">
-						<field name="address" colSpan="12"/>
+						<field name="address" colSpan="12" placeholder="whatever@example.com" pattern="^[a-z0-9A-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ!#$%&amp;'*+/=?^_`{|}~-]+(?:\.[a-z0-9A-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ!#$%&amp;'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+(?:[a-z]{2,})$"/>
 					</editor>
 				</field>
 				<field name="isDoNotSendEmail" colSpan="2"/>
-				<field name="fixedPhone"/>
-				<field name="fax"/>
+				<field name="fixedPhone" placeholder="+33100000000" pattern="^\+?\d{8,11}$"/>
+				<field name="fax" placeholder="+33100000000" pattern="^\+?\d{8,11}$"/>
 				<field name="webSite"/>
 				<spacer colSpan="6"/>
 			</panel>

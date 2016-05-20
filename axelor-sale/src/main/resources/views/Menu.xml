@@ -56,6 +56,7 @@
 		<view type="cards" name="partner-cards" />
 		<view type="grid" name="partner-customer-grid" />
 		<view type="form" name="partner-customer-form" />
+	  	<view-param name="limit" value="39"/>
 		<view-param name="search-filters" value="partner-filters"/>
 		<!-- <domain>self.curUser = null OR self.curUser = :user_id</domain> -->
 		<domain>self.isContact = false AND self.isCustomer = true</domain>
@@ -72,6 +73,7 @@
 		<view type="cards" name="partner-contact-cards" />
 		<view type="grid" name="partner-contact-grid" />
 		<view type="form" name="partner-contact-form" />
+	  	<view-param name="limit" value="39"/>
 		<domain>self.isContact = true AND self.mainPartner.isCustomer = true</domain>
 	</action-view>
 			
@@ -103,6 +105,15 @@
 		<context name="_template" expr="eval:false" />
 	</action-view>	
 	
+	<menuitem name="sc-root-sale-order-lines" parent="sc-root-sale" order="-70"
+		groups="admins,ERP" title="Sale orderLines" action="sc.root.sale.order.lines" />
+	
+	<action-view name="sc.root.sale.order.lines" title="SO lines"
+		model="com.axelor.apps.sale.db.SaleOrderLine" >
+		<view type="grid" name="sale-order-line-menu-grid" />
+		<view type="form" name="sale-order-line-menu-form" />
+	</action-view>	
+	
 	<menuitem name="sc-root-sale-templates" title="Templates" parent="sc-root-sale" order="-50" groups="admins,ERP"/>
 	
 	<menuitem name="sc-root-sale-report" parent="sc-root-sale"
@@ -112,14 +123,11 @@
 		
 	<menuitem name="sale-maps-partner-customers" parent="sc-root-sale-maps" 
 		title="Customers" action="action-show-customers-on-map-page"/>
-		
-		
+			
 	
 	<menuitem name="sale-maps-partner-prospects" parent="sc-root-sale-maps" 
 		title="Prospects" action="action-show-prospects-on-map-page"/>
 	
-	
-		
 	
 	<menuitem name="sc-root-sale-conf" parent="sc-root-sale"
 		title="Configuration"  order="-25"/>

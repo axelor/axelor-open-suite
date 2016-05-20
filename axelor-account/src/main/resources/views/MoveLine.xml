@@ -11,9 +11,9 @@
         <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
         <field name="account" form-view="account-form" grid-view="account-grid"/>
         <field name="move.company" form-view="company-form" grid-view="company-grid"/>
-        <field name="debit"/>
-        <field name="credit"/>
-        <field name="amountRemaining"/>
+        <field name="debit" aggregate="sum"/>
+        <field name="credit" aggregate="sum"/>
+        <field name="amountRemaining" aggregate="sum"/>
     </grid>
     
     <grid name="move-line-move-grid" model="com.axelor.apps.account.db.MoveLine" title="Move lines">
@@ -21,9 +21,9 @@
 		<field name="date"/>
 		<field name="partner" form-view="partner-form" grid-view="partner-grid" domain="self.isContact = false"/>
 		<field name="account" form-view="account-form" grid-view="account-grid"/>
-		<field name="debit"/>
-		<field name="credit"/>
-		<field name="amountRemaining"/>
+		<field name="debit" aggregate="sum"/>
+		<field name="credit" aggregate="sum"/>
+		<field name="amountRemaining" aggregate="sum"/>
 	</grid>
     
     <grid name="move-line-journal-grid" orderBy="account,-date" title="Move lines" model="com.axelor.apps.account.db.MoveLine" canDelete="false"
@@ -47,9 +47,9 @@
         <field name="date"/>
         <field name="description"/>
         <field name="account" form-view="account-form" grid-view="account-grid"/>
-        <field name="debit"/>
-        <field name="credit"/>
-        <field name="amountRemaining"/>
+        <field name="debit" aggregate="sum"/>
+        <field name="credit" aggregate="sum"/>
+        <field name="amountRemaining" aggregate="sum"/>
     </grid>
     
     <form name="incl-analytic-distribution-move-line-form" model="com.axelor.apps.account.db.MoveLine" title="Move line">
@@ -123,8 +123,8 @@
 		</panel>
 			
 		<panel-tabs>	
-			<panel-related field="debitReconcileList" canRemove="false" canNew="false" showIf="$number(debit) &gt; 0.00" form-view="reconcile-form" grid-view="reconcile-grid"/>
-	        <panel-related field="creditReconcileList"  canRemove="false" canNew="false" showIf="$number(credit) &gt; 0.00" form-view="reconcile-form" grid-view="reconcile-grid"/>
+			<panel-related field="debitReconcileList" canRemove="false" canNew="false" showIf="$number(debit) &gt; 0.00" form-view="reconcile-form" grid-view="move-line-reconcile-grid"/>
+	        <panel-related field="creditReconcileList"  canRemove="false" canNew="false" showIf="$number(credit) &gt; 0.00" form-view="reconcile-form" grid-view="move-line-reconcile-grid"/>
 			
 			
 			<panel title="Others" >
@@ -161,8 +161,8 @@
         
     	<panel-tabs>
 	        
-	        <panel-related field="debitReconcileList" canRemove="false" canNew="false" showIf="$number(debit) &gt; 0.00" form-view="reconcile-form" grid-view="reconcile-grid"/>
-	        <panel-related field="creditReconcileList"  canRemove="false" canNew="false" showIf="$number(credit) &gt; 0.00" form-view="reconcile-form" grid-view="reconcile-grid"/>
+	        <panel-related field="debitReconcileList" canRemove="false" canNew="false" showIf="$number(debit) &gt; 0.00" form-view="reconcile-form" grid-view="move-line-reconcile-grid"/>
+	        <panel-related field="creditReconcileList"  canRemove="false" canNew="false" showIf="$number(credit) &gt; 0.00" form-view="reconcile-form" grid-view="move-line-reconcile-grid"/>
 			
 			
 			<panel name="irrecoverable" title="Irrecoverable" >

@@ -25,7 +25,31 @@
 		<series key="charge" groupBy="machine" type="bar"/>
 	</chart>
 	
-	
+	<chart name="chart.wastes.by.product" title="Products Wastes ">
+		<search-fields>
+			<field name="name" title="Product" type="reference" target="com.axelor.apps.base.db.Product" x-required="true"/>
+		</search-fields>
+		<dataset type="jpql">
+			<![CDATA[
+				SELECT
+					prod.name AS _product,
+					SUM(self.qty) AS _quantity
+				FROM
+					ProdProduct self,
+					Product prod
+				WHERE
+					self.wasteManufOrder != null
+				AND
+					prod.id = self.product
+				AND 
+					self.product = :name
+				GROUP BY
+					prod.name
+			]]></dataset>
+		<category key="_product" type="text" title="Product"/>
+		<series key="_quantity" type="bar" title="Quantity"/>
+	</chart> 
+		
 	<action-record name="action.production.chart.set.from.date.to.date" model="com.axelor.apps.production.db.Machine">
  	    <field name="toDateTime" expr="eval:__datetime__.plusDays(1)" />
  	    <field name="fromDateTime" expr="eval:__datetime__"/>

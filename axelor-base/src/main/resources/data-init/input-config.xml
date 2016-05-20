@@ -76,6 +76,10 @@
           	<bind column="defaultExemptionTax_code" to="code"/>
       	</bind>
 		<bind to="qasWsdlUrl" column="qas_url"/>
+		<bind to="manageBudget" column="manageBudget"/>
+		<bind to="manageMultiBudget" column="manageMultiBudget"/>
+        <bind to="statusSelectBudget" column="statusSelectBudget"/>
+		
 	</input>
     
     <input file="base_company.csv" separator=";" type="com.axelor.apps.base.db.Company" search="self.importId = :importId"/>

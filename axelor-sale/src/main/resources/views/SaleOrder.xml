@@ -17,7 +17,7 @@
         <field name="clientPartner" form-view="partner-form" grid-view="partner-grid"/>
         <field name="externalReference"/>
         <field name="creationDate"/>
-        <field name="inTaxTotal"/>
+        <field name="inTaxTotal" aggregate="sum"/>
         <field name="statusSelect"/>
         <button name="print" title="Print" icon="fa-print" onClick="action-sale-order-method-show-sale-order"/>
         <button name="sendByEmail" title="Send email" icon="fa-envelope" onClick="action-send-by-email-with-template"/>
@@ -33,7 +33,7 @@
         <field name="clientPartner" form-view="partner-form" grid-view="partner-grid"/>
         <field name="externalReference"/>
         <field name="creationDate"/>
-        <field name="inTaxTotal"/>
+        <field name="inTaxTotal" aggregate="sum"/>
         <field name="statusSelect"/>
         <button name="print" title="Print" icon="fa-print" onClick="action-sale-order-method-show-sale-order"/>
         <button name="sendByEmail" title="Send email" icon="fa-envelope" onClick="action-send-by-email-with-template"/>
@@ -52,7 +52,7 @@
         <field name="currency" form-view="currency-form" grid-view="currency-grid"/>
         <field name="externalReference"/>
         <field name="creationDate"/>
-        <field name="inTaxTotal"/>
+        <field name="inTaxTotal" aggregate="sum"/>
         <field name="statusSelect"/>
         <button name="print" title="Print" icon="fa-print" onClick="action-sale-order-method-show-sale-order"/>
         <button name="sendByEmail" title="Send email" icon="fa-envelope" onClick="action-send-by-email-with-template"/>
@@ -230,7 +230,7 @@
         <field name="clientPartner" form-view="partner-form" grid-view="partner-grid"/>
         <field name="externalReference"/>
         <field name="creationDate"/>
-        <field name="inTaxTotal"/>
+        <field name="inTaxTotal" aggregate="sum"/>
     </grid>
     
     <form name="sale-order-template-form-wizard" title="Template" model="com.axelor.apps.sale.db.SaleOrder"
@@ -337,7 +337,7 @@
         <field name="clientPartner" form-view="partner-form" grid-view="partner-grid"/>
         <field name="externalReference"/>
         <field name="creationDate"/>
-        <field name="inTaxTotal"/>
+        <field name="inTaxTotal" aggregate="sum"/>
         <field name="statusSelect"/>
         <button name="print" title="Print" icon="fa-print" onClick="action-sale-order-method-show-sale-order"/>
     </grid>

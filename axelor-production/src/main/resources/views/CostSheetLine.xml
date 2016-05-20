@@ -9,7 +9,7 @@
 		<field name="name"/>
 		<field name="bomLevel"/>
 		<field name="costSheetGroup" form-view="cost-sheet-group-form" grid-view="cost-sheet-group-grid"/>
-		<field name="consumptionQty"/>
+		<field name="consumptionQty" aggregate="sum"/>
 		<field name="unit" form-view="unit-form" grid-view="unit-grid" />
 		<field name="costPrice"/>
     </grid>

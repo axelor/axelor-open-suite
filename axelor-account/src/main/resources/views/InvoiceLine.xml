@@ -5,11 +5,22 @@
    
     <grid name="invoice-line-grid" title="Invoice lines" model="com.axelor.apps.account.db.InvoiceLine" >
         <field name="productName"/>
-        <field name="qty"/>
+        <field name="qty" aggregate="sum"/>
         <field name="price" x-scale="2"/>
         <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
-        <field name="exTaxTotal"/>
-	    <field name="inTaxTotal"/>
+        <field name="exTaxTotal" aggregate="sum"/>
+	    <field name="inTaxTotal" aggregate="sum"/>
+    </grid>
+    
+    <grid name="invoice-line-menu-grid" title="Invoice lines" model="com.axelor.apps.account.db.InvoiceLine" >
+    	<field name="invoice.partner"/>
+    	<field name="invoice.invoiceId"/>
+        <field name="productName"/>
+        <field name="qty" aggregate="sum"/>
+        <field name="price" x-scale="2"/>
+        <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
+        <field name="exTaxTotal" aggregate="sum"/>
+	    <field name="inTaxTotal" aggregate="sum"/>
     </grid>
     
     <form name="invoice-line-form" title="Invoice line" model="com.axelor.apps.account.db.InvoiceLine"   
@@ -22,7 +33,7 @@
     	<panel-tabs hideIf="isTitleLine">
     		<panel title="Informations">
     			<field name="saleOrder" if="!__config__.general.getManageInvoicedAmountByLine()" if-module="axelor-supplychain" form-view="sale-order-form" grid-view="sale-order-grid"/>
-    			<field name="saleOrderLine" if="__config__.general.getManageInvoicedAmountByLine()" if-module="axelor-supplychain" form-view="sale-order-line-form" grid-view="sale-order-line-grid"/>
+    			<field name="saleOrderLine" if="__config__.general.getManageInvoicedAmountByLine()" if-module="axelor-supplychain" form-view="sale-order-line-invoice-form" grid-view="sale-order-line-invoice-grid" domain="(self.saleOrder.statusSelect = 3 OR self.saleOrder.statusSelect = 4 ) AND EXISTS(SELECT i FROM Invoice i WHERE i = :invoice AND self.saleOrder.clientPartner = i.partner )"/>
     			<field name="purchaseOrderLine" if-module="axelor-supplychain" form-view="purchase-order-line-form" grid-view="purchase-order-line-grid"/>
 		        <field name="product" onChange="action-group-account-invoice-line-product-onchange" form-view="product-form" grid-view="product-grid"/>
 		        <field name="productName" requiredIf="!isTitleLine"/>
@@ -33,6 +44,7 @@
 		        <field name="taxLine" onChange="action-invoice-line-method-convert-tax,action-invoice-line-method-compute,action-invoice-line-method-compute-analytic-distribution" grid-view="tax-line-grid" form-view="tax-line-form"/>
 		    	<field name="exTaxTotal" readonly="true"/>
 	    		<field name="inTaxTotal" readonly="true"/>
+	    		<field name="invoice" hidden="true" />
 				 <panel name="discount" title="Discount" colSpan="12">
 			        <field name="discountTypeSelect" onChange="action-invoice-line-method-compute,action-invoice-line-attrs-discountamount-title,action-invoice-line-method-compute-analytic-distribution"/>
 			        <field name="discountAmount" onChange="action-invoice-line-method-compute,action-invoice-line-method-compute-analytic-distribution" hideIf="discountTypeSelect == 3"/>
@@ -61,6 +73,16 @@
         
     </form>
     
+    <form name="invoice-line-menu-form" title="Invoice line" model="com.axelor.apps.account.db.InvoiceLine"   
+   	onNew="action-account-invoice-line-onnew-group"
+    onLoad="action-account-invoice-line-onload-group" width="large">
+    	<panel>
+	    	<field name="invoice.partner"/>
+			<field name="invoice.invoiceId"/>
+		</panel>
+    	<panel-include view="invoice-line-form"/>
+	</form>
+	        
     <action-method name="action-invoice-line-method-empty-line">
 		<call class="com.axelor.apps.account.web.InvoiceLineController" method="emptyLine"/>
 	</action-method>

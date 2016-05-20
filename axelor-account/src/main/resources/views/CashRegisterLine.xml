@@ -8,8 +8,8 @@
         <field name="cashRegister" form-view="cash-register-form" grid-view="cash-register-grid"/>
         <field name="createDateTime"/>
         <field name="cashRegisterDate"/>
-        <field name="cashRegisterAmount"/>
-        <field name="depositedAmount"/>
+        <field name="cashRegisterAmount" aggregate="sum"/>
+        <field name="depositedAmount" aggregate="sum"/>
         <field name="statusSelect"/>
     </grid>
     

@@ -3272,6 +3272,13 @@ row["partnerFirstName"]
                                                     <property name="borderRightStyle">solid</property>
                                                     <property name="borderRightWidth">thin</property>
                                                     <text id="4002">
+                                                        <property name="fontStyle">normal</property>
+                                                        <list-property name="visibility">
+                                                            <structure>
+                                                                <property name="format">all</property>
+                                                                <expression name="valueExpr" type="javascript">row["is_title_line"]</expression>
+                                                            </structure>
+                                                        </list-property>
                                                         <property name="contentType">html</property>
                                                         <text-property name="content"><![CDATA[<VALUE-OF>row["productCode"]</VALUE-OF>]]></text-property>
                                                     </text>
@@ -3282,6 +3289,24 @@ row["partnerFirstName"]
                                                     <property name="borderRightStyle">solid</property>
                                                     <property name="borderRightWidth">thin</property>
                                                     <text id="3457">
+                                                        <list-property name="visibility">
+                                                            <structure>
+                                                                <property name="format">all</property>
+                                                                <expression name="valueExpr" type="javascript">row["is_title_line"]</expression>
+                                                            </structure>
+                                                        </list-property>
+                                                        <property name="contentType">html</property>
+                                                        <text-property name="content"><![CDATA[<VALUE-OF>row["product_name"]</VALUE-OF><br>
+<SUB><I><VALUE-OF format="HTML">if(row["description"] != null ) row["description"].replace(/\<p|\<P/g, '<p style="margin-top: 0; margin-bottom:1em;" ')</VALUE-OF></I></SUB>]]></text-property>
+                                                    </text>
+                                                    <text id="4005">
+                                                        <property name="fontWeight">bold</property>
+                                                        <list-property name="visibility">
+                                                            <structure>
+                                                                <property name="format">all</property>
+                                                                <expression name="valueExpr" type="javascript">!row["is_title_line"]</expression>
+                                                            </structure>
+                                                        </list-property>
                                                         <property name="contentType">html</property>
                                                         <text-property name="content"><![CDATA[<VALUE-OF>row["product_name"]</VALUE-OF><br>
 <SUB><I><VALUE-OF format="HTML">if(row["description"] != null ) row["description"].replace(/\<p|\<P/g, '<p style="margin-top: 0; margin-bottom:1em;" ')</VALUE-OF></I></SUB>]]></text-property>
@@ -3334,7 +3359,7 @@ row["partnerFirstName"]
                                                             </structure>
                                                         </list-property>
                                                         <property name="contentType">html</property>
-                                                        <text-property name="content"><![CDATA[<VALUE-OF format="#,###.00">row["price"]</VALUE-OF>]]></text-property>
+                                                        <text-property name="content"><![CDATA[<VALUE-OF format="#,##0.00">row["price"]</VALUE-OF>]]></text-property>
                                                     </text>
                                                 </cell>
                                                 <cell id="3991">
@@ -3352,7 +3377,7 @@ row["partnerFirstName"]
                                                             </structure>
                                                         </list-property>
                                                         <property name="contentType">html</property>
-                                                        <text-property name="content"><![CDATA[<VALUE-OF format="#,###.00">row["discount"]</VALUE-OF>]]></text-property>
+                                                        <text-property name="content"><![CDATA[<VALUE-OF format="#,##0.00">row["discount"]</VALUE-OF>]]></text-property>
                                                     </text>
                                                 </cell>
                                                 <cell id="3439">
@@ -3370,7 +3395,7 @@ row["partnerFirstName"]
                                                             </structure>
                                                         </list-property>
                                                         <property name="contentType">html</property>
-                                                        <text-property name="content"><![CDATA[<VALUE-OF format="#,###.00">row["ex_tax_total"]</VALUE-OF>]]></text-property>
+                                                        <text-property name="content"><![CDATA[<VALUE-OF format="#,##0.00">row["ex_tax_total"]</VALUE-OF>]]></text-property>
                                                     </text>
                                                 </cell>
                                                 <cell id="3664">
@@ -3667,7 +3692,7 @@ row["partnerFirstName"]
                                                     <text id="3540">
                                                         <property name="textAlign">right</property>
                                                         <property name="contentType">html</property>
-                                                        <text-property name="content"><![CDATA[<VALUE-OF format="#,###.00">row["ex_tax_base"]</VALUE-OF>]]></text-property>
+                                                        <text-property name="content"><![CDATA[<VALUE-OF format="#,##0.00">row["ex_tax_base"]</VALUE-OF>]]></text-property>
                                                     </text>
                                                 </cell>
                                                 <cell id="3501">
@@ -3686,7 +3711,7 @@ row["partnerFirstName"]
                                                     <text id="3541">
                                                         <property name="textAlign">right</property>
                                                         <property name="contentType">html</property>
-                                                        <text-property name="content"><![CDATA[<VALUE-OF format="#,###.00">row["tax_total"]</VALUE-OF>]]></text-property>
+                                                        <text-property name="content"><![CDATA[<VALUE-OF format="#,##0.00">row["tax_total"]</VALUE-OF>]]></text-property>
                                                     </text>
                                                 </cell>
                                             </row>
@@ -3751,7 +3776,7 @@ row["partnerFirstName"]
                                         <property name="fontWeight">normal</property>
                                         <property name="textAlign">right</property>
                                         <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<VALUE-OF format="#,###.00">row["invoice_ex_tax_total"]</VALUE-OF>]]></text-property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF format="#,##0.00">row["invoice_ex_tax_total"]</VALUE-OF>]]></text-property>
                                     </text>
                                 </cell>
                                 <cell id="3902">
@@ -3818,7 +3843,7 @@ row["partnerFirstName"]
                                         <property name="fontWeight">normal</property>
                                         <property name="textAlign">right</property>
                                         <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<VALUE-OF format="#,###.00">row["invoice_tax_total"]</VALUE-OF>]]></text-property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF format="#,##0.00">row["invoice_tax_total"]</VALUE-OF>]]></text-property>
                                     </text>
                                 </cell>
                                 <cell id="3895">
@@ -3893,7 +3918,7 @@ row["partnerFirstName"]
                                         <property name="fontWeight">bold</property>
                                         <property name="textAlign">right</property>
                                         <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<VALUE-OF format="#,###.00">row["invoice_in_tax_total"]</VALUE-OF>]]></text-property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF format="#,##0.00">row["invoice_in_tax_total"]</VALUE-OF>]]></text-property>
                                     </text>
                                 </cell>
                                 <cell id="3888">

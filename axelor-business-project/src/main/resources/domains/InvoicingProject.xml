@@ -21,6 +21,7 @@
 	<integer name="elementsToInvoiceSetPrioritySelect" selection="invoicing.project.priority.select" title="Elements To Invoice Priority" default="6"/>
 	<integer name="projectTaskSetPrioritySelect" selection="invoicing.project.priority.select" title="Project/Task Priority" default="5"/>
     <many-to-one name="invoice" ref="com.axelor.apps.account.db.Invoice" title="Invoice generated" />
+    <date name="deadlineDate" title="Deadline"/>
     
   </entity>
   

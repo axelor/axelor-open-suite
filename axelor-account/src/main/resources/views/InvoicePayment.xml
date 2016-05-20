@@ -5,7 +5,7 @@
     
     <grid name="invoice-payment-grid" title="Payments" model="com.axelor.apps.account.db.InvoicePayment" orderBy="paymentDate">
 	    <field name="paymentDate"/>
-	    <field name="amount"/>
+	    <field name="amount" aggregate="sum"/>
 		<field name="currency" form-view="currency-form" grid-view="currency-grid"/>
     	<field name="paymentMode" form-view="payment-mode-form" grid-view="payment-mode-grid"/>
 	    <field name="typeSelect"/>
@@ -15,7 +15,7 @@
 	</grid>
     
 	<form name="invoice-payment-form" title="Payment" model="com.axelor.apps.account.db.InvoicePayment" onNew="action-invoice-payment-record-new">
-        <panel readonlyIf="statusSelect == 2">
+        <panel readonlyIf="statusSelect == 1">
 			<field name="amount"/>
 			<field name="currency" form-view="currency-form" grid-view="currency-grid"/>
    			<field name="paymentDate"/>

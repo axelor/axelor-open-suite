@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.axelor.apps.base.db.Wizard;
+import com.axelor.apps.hr.db.Expense;
 import com.axelor.apps.hr.db.LeaveRequest;
 import com.axelor.apps.hr.db.repo.LeaveRequestRepository;
 import com.axelor.apps.hr.exception.IExceptionMessage;
@@ -37,6 +38,7 @@ import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.common.base.Joiner;
+import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 
 public class LeaveController {
@@ -108,13 +110,21 @@ public class LeaveController {
 				   .map());
 	}
 
-	public void validateLeave(ActionRequest request, ActionResponse response){
-		List<LeaveRequest> leaveList = Query.of(LeaveRequest.class).filter("self.user.employee.manager = ?1 AND self.company = ?2 AND  self.statusSelect = 2",AuthUtils.getUser(),AuthUtils.getUser().getActiveCompany()).fetch();
+	public void validateLeave(ActionRequest request, ActionResponse response) throws AxelorException{
+		
+		List<LeaveRequest> leaveList = Lists.newArrayList();
+		
+		if(AuthUtils.getUser().getEmployee() != null && AuthUtils.getUser().getEmployee().getHrManager()){
+			leaveList = Query.of(LeaveRequest.class).filter("self.company = ?1 AND  self.statusSelect = 2", AuthUtils.getUser().getActiveCompany()).fetch();
+		}else{
+			leaveList = Query.of(LeaveRequest.class).filter("self.user.employee.manager = ?1 AND self.company = ?2 AND  self.statusSelect = 2",AuthUtils.getUser(),AuthUtils.getUser().getActiveCompany()).fetch();
+		}
+		
 		List<Long> leaveListId = new ArrayList<Long>();
 		for (LeaveRequest leave : leaveList) {
 			leaveListId.add(leave.getId());
 		}
-		if(AuthUtils.getUser().getEmployee() != null && AuthUtils.getUser().getEmployee().getManager() == null){
+		if(AuthUtils.getUser().getEmployee() != null && AuthUtils.getUser().getEmployee().getManager() == null && !AuthUtils.getUser().getEmployee().getHrManager()){
 			leaveList = Query.of(LeaveRequest.class).filter("self.user = ?1 AND self.company = ?2 AND self.statusSelect = 2 ",AuthUtils.getUser(),AuthUtils.getUser().getActiveCompany()).fetch();
 		}
 		for (LeaveRequest leave : leaveList) {
@@ -134,7 +144,16 @@ public class LeaveController {
 	}
 
 	public void historicLeave(ActionRequest request, ActionResponse response){
-		List<LeaveRequest> leaveList = Beans.get(LeaveRequestRepository.class).all().filter("self.user.employee.manager = ?1 AND self.company = ?2 AND self.statusSelect = 3 OR self.statusSelect = 4",AuthUtils.getUser(),AuthUtils.getUser().getActiveCompany()).fetch();
+		
+		List<LeaveRequest> leaveList = Lists.newArrayList();
+		
+		if(AuthUtils.getUser().getEmployee() != null && AuthUtils.getUser().getEmployee().getHrManager()){
+			leaveList = Query.of(LeaveRequest.class).filter("self.company = ?1 AND (self.statusSelect = 3 OR self.statusSelect = 4)", AuthUtils.getUser().getActiveCompany()).fetch();
+		}else{
+			leaveList = Query.of(LeaveRequest.class).filter("self.user.employee.manager = ?1 AND self.company = ?2 AND (self.statusSelect = 3 OR self.statusSelect = 4)",AuthUtils.getUser(),AuthUtils.getUser().getActiveCompany()).fetch();
+		}
+		
+		
 		List<Long> leaveListId = new ArrayList<Long>();
 		for (LeaveRequest leave : leaveList) {
 			leaveListId.add(leave.getId());
