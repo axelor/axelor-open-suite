@@ -89,27 +89,27 @@ public class MoveToolService {
 	 * @param invoice
 	 *
 	 * OperationTypeSelect
-	 *  1 : Achat fournisseur
-	 *	2 : Avoir fournisseur
-	 *	3 : Vente client
-	 *	4 : Avoir client
+	 *  1 : Supplier invoice
+	 *	2 : Supplier refund
+	 *	3 : Customer invoice
+	 *	4 : Customer refund
 	 * @return
 	 * @throws AxelorException
 	 */
-	public boolean isDebitCustomer(Invoice invoice) throws AxelorException  {
+	public boolean isDebitCustomer(Invoice invoice, boolean reverseDirectionForNegativeAmount) throws AxelorException  {
 		boolean isDebitCustomer;
 
 		switch(invoice.getOperationTypeSelect())  {
-		case 1:
+		case InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE:
 			isDebitCustomer = false;
 			break;
-		case 2:
+		case InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND:
 			isDebitCustomer = true;
 			break;
-		case 3:
+		case InvoiceRepository.OPERATION_TYPE_CLIENT_SALE:
 			isDebitCustomer = true;
 			break;
-		case 4:
+		case InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND:
 			isDebitCustomer = false;
 			break;
 
@@ -118,7 +118,7 @@ public class MoveToolService {
 		}
 
 		// Si le montant est négatif, alors on inverse le sens
-		if(this.isMinus(invoice))  {
+		if(reverseDirectionForNegativeAmount && this.isMinus(invoice))  {
 			isDebitCustomer = !isDebitCustomer;
 		}
 
@@ -137,7 +137,7 @@ public class MoveToolService {
 	 * @throws AxelorException
 	 */
 	public MoveLine getInvoiceCustomerMoveLineByLoop(Invoice invoice) throws AxelorException  {
-		if(this.isDebitCustomer(invoice))  {
+		if(this.isDebitCustomer(invoice, true))  {
 			return moveLineService.getDebitCustomerMoveLine(invoice);
 		}
 		else  {
@@ -157,7 +157,7 @@ public class MoveToolService {
 	 */
 	public MoveLine getInvoiceCustomerMoveLineByQuery(Invoice invoice) throws AxelorException  {
 
-		if(this.isDebitCustomer(invoice))  {
+		if(this.isDebitCustomer(invoice, true))  {
 			return moveLineRepository.all().filter("self.move = ?1 AND self.account = ?2 AND self.debit > 0 AND self.amountRemaining > 0",
 					invoice.getMove(), invoice.getPartnerAccount()).fetchOne();
 		}
