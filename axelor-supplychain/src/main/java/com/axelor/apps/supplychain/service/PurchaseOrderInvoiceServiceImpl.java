@@ -24,6 +24,9 @@ import java.util.List;
 
 import javax.persistence.Query;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
@@ -46,6 +49,8 @@ import com.google.inject.persist.Transactional;
 
 public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceService {
 
+	private final Logger log = LoggerFactory.getLogger( getClass() );
+	
 	@Inject
 	private InvoiceService invoiceService;
 	
@@ -140,8 +145,8 @@ public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceServ
 	}
 
 	@Override
-	public BigDecimal getAmountInvoiced(PurchaseOrder purchaseOrder){
-		return this.getAmountInvoiced(purchaseOrder, null, false);
+	public BigDecimal getInvoicedAmount(PurchaseOrder purchaseOrder){
+		return this.getInvoicedAmount(purchaseOrder, null, true);
 	}
 
 	/**
@@ -158,41 +163,60 @@ public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceServ
 	 * To know if the invoice should be or not integrated in calculation
 	 */
 	@Override
-	public BigDecimal getAmountInvoiced(PurchaseOrder purchaseOrder, Long currentInvoiceId, boolean includeInvoice){
+	public BigDecimal getInvoicedAmount(PurchaseOrder purchaseOrder, Long currentInvoiceId, boolean excludeCurrentInvoice)  {
 
-		Query q = null;
-		String query;
-		query = "SELECT SUM(self.companyExTaxTotal)"
-				+ " FROM InvoiceLine as self"
-				+ " WHERE ( (self.purchaseOrderLine.id IN (SELECT id FROM PurchaseOrderLine WHERE purchaseOrder.id = :purchaseOrderId)"
-							+ " AND self.invoice.purchaseOrder IS NULL)"
-						+ " OR self.invoice.purchaseOrder.id = :purchaseOrderId )"
-					+ " AND self.invoice.statusSelect = :statusVentilated";
-		if (currentInvoiceId != null){
-			if (includeInvoice){
-				query += " OR self.invoice.id = :invoiceId";
-			}else{
-				query += " AND self.invoice.id <> :invoiceId";
+		BigDecimal invoicedAmount = BigDecimal.ZERO;
+		
+		BigDecimal purchaseAmount = this.getAmountVentilated(purchaseOrder, currentInvoiceId, excludeCurrentInvoice, InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE);
+		BigDecimal refundAmount = this.getAmountVentilated(purchaseOrder, currentInvoiceId, excludeCurrentInvoice, InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND);
+		
+		if(purchaseAmount != null)  {  invoicedAmount = invoicedAmount.add(purchaseAmount);  }
+		if(refundAmount != null)  {  invoicedAmount = invoicedAmount.subtract(refundAmount);  }
+		
+		if (!purchaseOrder.getCurrency().equals(purchaseOrder.getCompany().getCurrency()) && purchaseOrder.getCompanyExTaxTotal().compareTo(BigDecimal.ZERO) != 0){
+			BigDecimal rate = invoicedAmount.divide(purchaseOrder.getCompanyExTaxTotal(), 4, RoundingMode.HALF_UP);
+			invoicedAmount = purchaseOrder.getExTaxTotal().multiply(rate);
+		}
+		
+		log.debug("Compute the invoiced amount ({}) of the purchase order : {}", invoicedAmount, purchaseOrder.getPurchaseOrderSeq());
+		
+		return invoicedAmount;
+
+	}
+	
+	
+	private BigDecimal getAmountVentilated(PurchaseOrder purchaseOrder, Long currentInvoiceId, boolean excludeCurrentInvoice, int invoiceOperationTypeSelect)  {
+		
+		String query = "SELECT SUM(self.companyExTaxTotal)"
+					+ " FROM InvoiceLine as self"
+					+ " WHERE ((self.purchaseOrderLine.purchaseOrder.id = :purchaseOrderId AND self.invoice.purchaseOrder IS NULL)"
+							+ " OR self.invoice.purchaseOrder.id = :purchaseOrderId )"
+							+ " AND self.invoice.operationTypeSelect = :invoiceOperationTypeSelect"
+							+ " AND self.invoice.statusSelect = :statusVentilated";
+		
+		if (currentInvoiceId != null)  {
+			if(excludeCurrentInvoice)  {
+				query += " AND self.invoice.id <> :invoiceId"; 
+			}  else  {
+				query += " OR (self.invoice.id = :invoiceId AND self.invoice.operationTypeSelect = :invoiceOperationTypeSelect) ";
 			}
 		}
-		q = JPA.em().createQuery(query, BigDecimal.class);
+		
+		Query q = JPA.em().createQuery(query, BigDecimal.class);
 
 		q.setParameter("purchaseOrderId", purchaseOrder.getId());
 		q.setParameter("statusVentilated", InvoiceRepository.STATUS_VENTILATED);
+		q.setParameter("invoiceOperationTypeSelect", invoiceOperationTypeSelect);
 		if (currentInvoiceId != null){
 			q.setParameter("invoiceId", currentInvoiceId);
 		}
 
 		BigDecimal invoicedAmount = (BigDecimal) q.getSingleResult();
-		if(invoicedAmount != null && purchaseOrder.getCompanyExTaxTotal().compareTo(BigDecimal.ZERO) != 0){
-			if (!purchaseOrder.getCurrency().equals(purchaseOrder.getCompany().getCurrency())){
-				BigDecimal rate = invoicedAmount.divide(purchaseOrder.getCompanyExTaxTotal(), 4, RoundingMode.HALF_UP);
-				invoicedAmount = purchaseOrder.getExTaxTotal().multiply(rate);
-			}
-		}
-
-		return invoicedAmount;
-
+		
+		if(invoicedAmount != null)  {  return invoicedAmount;  }
+		else  {  return BigDecimal.ZERO;  }
+		
 	}
+	
 
 }
