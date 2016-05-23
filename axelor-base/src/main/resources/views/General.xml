@@ -226,8 +226,8 @@
 	<action-record name="action-check-string-capital-case-name-addressL6" model="com.axelor.apps.base.db.General">
 		<field name="addressL6" expr="eval:com.axelor.apps.tool.StringTool.deleteAccent(addressL6.toUpperCase())"/>
 	</action-record>
-	<action-record name="action-record-general-budget-check-status" model="com.axelor.apps.base.db.General">
- 	 	<field if="manageBudget &amp;&amp; !statusSelectBudget" name="statusSelectBudget" expr="4"/>
+	<action-record name="action-record-general-budget-check-status" model="com.axelor.apps.base.db.General" if-module="axelor-account">
+ 	 	<field if="manageBudget &amp;&amp; !budgetStatusSelect" name="budgetStatusSelect" expr="4"/>
 	</action-record>
 	
 	<action-view name="action-general-check-duplicate-records" title="Check duplicate" model="com.axelor.apps.base.db.Wizard">
