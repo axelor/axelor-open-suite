@@ -51,9 +51,9 @@ public interface SaleOrderInvoiceService {
 
 	public List<InvoiceLine> createInvoiceLine(Invoice invoice, SaleOrderLine saleOrderLine) throws AxelorException;
 
-	public BigDecimal getAmountInvoiced(SaleOrder saleOrder);
+	public BigDecimal getInvoicedAmount(SaleOrder saleOrder);
 
-	public BigDecimal getAmountInvoiced(SaleOrder saleOrder, Long exceptInvoiceId, boolean includeInvoice);
+	public BigDecimal getInvoicedAmount(SaleOrder saleOrder, Long currentInvoiceId, boolean excludeCurrentInvoice);
 
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public Invoice generateSubscriptionInvoice(List<Subscription> subscriptionList, SaleOrder saleOrder) throws AxelorException;

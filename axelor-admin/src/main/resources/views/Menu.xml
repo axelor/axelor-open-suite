@@ -30,11 +30,13 @@
     <view type="form" name="meta-group-menu-assistant-form" />
   </action-view>
   
-  <menuitem name="menu-view-doc-export" parent="menu-view-management" title="Export for doc"
-    action="action-view-doc-export" />
+  <menuitem name="menu-view-doc" parent="menu-view-management" title="Export for doc"
+    action="action.view.doc" />
   
-  <action-view name="action-view-doc-export" title="Export for doc">
-    <view type="html" name="ws/viewDocExport" />
+  <action-view name="action.view.doc" title="Export for doc"
+    model="com.axelor.apps.admin.db.ViewDoc">
+    <view type="grid" name="view-doc-grid" />
+    <view type="form" name="view-doc-form" />
   </action-view>
   
 </object-views>

@@ -21,6 +21,7 @@ import org.joda.time.LocalDate;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.PaymentCondition;
+import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.PaymentConditionRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.exception.AxelorException;
@@ -76,16 +77,16 @@ public class InvoiceToolService {
 		boolean isPurchase;
 		
 		switch(invoice.getOperationTypeSelect())  {
-		case 1:
+		case InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE :
 			isPurchase = true;
 			break;
-		case 2:
+		case InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND :
 			isPurchase = true;
 			break;
-		case 3:
+		case InvoiceRepository.OPERATION_TYPE_CLIENT_SALE :
 			isPurchase = false;
 			break;
-		case 4:
+		case InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND :
 			isPurchase = false;
 			break;
 		
@@ -94,6 +95,44 @@ public class InvoiceToolService {
 		}	
 		
 		return isPurchase;
+	}
+	
+	
+	/**
+	 * 
+	 * @param invoice
+	 * 
+	 * OperationTypeSelect
+	 *  1 : Achat fournisseur
+	 *	2 : Avoir fournisseur
+	 *	3 : Vente client
+	 *	4 : Avoir client
+	 * @return
+	 * @throws AxelorException
+	 */
+	public static boolean isRefund(Invoice invoice) throws AxelorException  {
+		
+		boolean isRefund;
+		
+		switch(invoice.getOperationTypeSelect())  {
+		case InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE :
+			isRefund = false;
+			break;
+		case InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND :
+			isRefund = true;
+			break;
+		case InvoiceRepository.OPERATION_TYPE_CLIENT_SALE :
+			isRefund = false;
+			break;
+		case InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND :
+			isRefund = true;
+			break;
+		
+		default:
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.MOVE_1), invoice.getInvoiceId()), IException.MISSING_FIELD);
+		}	
+		
+		return isRefund;
 	}
 	
 }

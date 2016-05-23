@@ -116,7 +116,7 @@ public class MoveService {
 
 				boolean isPurchase = InvoiceToolService.isPurchase(invoice);
 
-				boolean isDebitCustomer = moveToolService.isDebitCustomer(invoice);
+				boolean isDebitCustomer = moveToolService.isDebitCustomer(invoice, false);
 
 				boolean consolidate = moveToolService.toDoConsolidate();
 
@@ -155,7 +155,7 @@ public class MoveService {
 
 		if (invoice != null) {
 
-			if(moveToolService.isDebitCustomer(invoice))  {
+			if(moveToolService.isDebitCustomer(invoice, true))  {
 
 				// Emploie du trop perçu
 				this.createMoveUseExcessPayment(invoice);

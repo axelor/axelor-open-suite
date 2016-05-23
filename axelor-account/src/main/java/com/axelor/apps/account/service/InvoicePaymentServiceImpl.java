@@ -126,7 +126,7 @@ public class InvoicePaymentServiceImpl  implements  InvoicePaymentService {
 		
 		Journal journal = paymentModeService.getPaymentModeJournal(paymentMode, company);
 		
-		boolean isDebitInvoice = moveService.getMoveToolService().isDebitCustomer(invoice);
+		boolean isDebitInvoice = moveService.getMoveToolService().isDebitCustomer(invoice, true);
 		
 		MoveLine invoiceMoveLine = moveService.getMoveToolService().getInvoiceCustomerMoveLineByLoop(invoice);
 		
