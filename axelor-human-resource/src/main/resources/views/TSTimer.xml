@@ -28,7 +28,7 @@
 		<panel sidebar="true" title="Actions" stacked="true">
 			<button name="start" title="Start" onClick="action-hr-ts-timer-record-start-startTime,save" hideIf="statusSelect == 1 || statusSelect == 3" readonlyIf="product == null" icon="fa-play" css="btn-success"/>
 			<button name="pause" title="Pause" onClick="save,action-ts-timer-method-pause,save" hideIf="statusSelect != 1" icon="fa-pause" css="btn-warning"/>
-			<button name="stop" title="Stop" onClick="save,action-hr-ts-timer-validate-duration,action-ts-timer-method-stop,action-ts-timer-attrs-readonly-panel,save" hideIf="statusSelect != 1" icon="fa-stop" css="btn-danger"/>
+			<button name="stop" title="Stop" onClick="save,action-ts-timer-method-stop,action-ts-timer-attrs-readonly-panel,save" hideIf="statusSelect != 1" icon="fa-stop" css="btn-danger"/>
 			<button name="new" title="New" onClick="action-hr-ts-timer-record-new" hideIf="statusSelect != 3" icon="fa-plus" css="btn-primary"/>
 		</panel>
 	</form>
