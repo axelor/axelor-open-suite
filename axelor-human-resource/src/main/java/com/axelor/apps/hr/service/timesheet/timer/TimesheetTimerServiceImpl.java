@@ -18,7 +18,7 @@ import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
-public class TimesheetTimerServiceImp implements TimesheetTimerService {
+public class TimesheetTimerServiceImpl implements TimesheetTimerService {
 	
 	@Inject
 	protected EventService eventService;

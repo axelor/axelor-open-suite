@@ -30,7 +30,7 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 
-public class EmployeeServiceImp extends UserServiceImpl implements EmployeeService {
+public class EmployeeServiceImpl extends UserServiceImpl implements EmployeeService {
 
 	private static final Logger LOG = LoggerFactory.getLogger(EmployeeService.class);
 

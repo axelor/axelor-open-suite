@@ -19,7 +19,9 @@ package com.axelor.apps.hr.service.timesheet;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 
+import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 
 import com.axelor.apps.account.db.Invoice;
@@ -37,12 +39,12 @@ import com.google.inject.persist.Transactional;
 public interface TimesheetService {
 	public void getTimeFromTask(Timesheet timesheet);
 	public void cancelTimesheet(Timesheet timesheet);
-	public Timesheet generateLines(Timesheet timesheet) throws AxelorException;
+	public Timesheet generateLines(Timesheet timesheet, LocalDate fromGenerationDate, LocalDate toGenerationDate, BigDecimal logTime, ProjectTask projectTask, Product product) throws AxelorException;
 	public LocalDate getFromPeriodDate();
 	public Timesheet getCurrentTimesheet();
 	public Timesheet getCurrentOrCreateTimesheet();
 	public Timesheet createTimesheet(User user, LocalDate fromDate, LocalDate toDate);
-	public TimesheetLine createTimesheetLine(ProjectTask project, Product product, User user, LocalDate date, Timesheet timesheet, BigDecimal minutes, String comments);
+	public TimesheetLine createTimesheetLine(ProjectTask project, Product product, User user, LocalDate date, Timesheet timesheet, BigDecimal hours, String comments);
 	public List<InvoiceLine> createInvoiceLines(Invoice invoice, List<TimesheetLine> timesheetLineList, int priority) throws AxelorException;
 	public List<InvoiceLine> createInvoiceLine(Invoice invoice, Product product, User user, String date, BigDecimal visibleDuration, int priority) throws AxelorException;
 	@Transactional
@@ -54,4 +56,5 @@ public interface TimesheetService {
 	@Transactional
 	public void insertTSLine(ActionRequest request, ActionResponse response);
 	public String computeFullName(Timesheet timeSheet);
+	public List<TimesheetLine> computeVisibleDuration(Timesheet timesheet);
 }
