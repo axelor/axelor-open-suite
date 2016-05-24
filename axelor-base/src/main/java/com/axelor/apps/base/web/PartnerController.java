@@ -298,4 +298,8 @@ public class PartnerController {
 			response.setAlert(String.format(IExceptionMessage.BANK_DETAILS_2, "<ul>" + Joiner.on("").join(Iterables.transform(ibanInError, addLi)) + "<ul>"));
 		}
 	}
+	
+	public String normalizePhoneNumber(String phoneNumber){
+		return phoneNumber.replaceAll("\\s|\\.", "");
+	}
 }
