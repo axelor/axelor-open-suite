@@ -55,6 +55,7 @@ import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
 import com.axelor.apps.hr.db.repo.TimesheetRepository;
 import com.axelor.apps.hr.exception.IExceptionMessage;
 import com.axelor.apps.hr.service.employee.EmployeeService;
+import com.axelor.apps.hr.service.project.ProjectTaskService;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
 import com.axelor.auth.AuthUtils;
@@ -78,6 +79,9 @@ public class TimesheetServiceImpl implements TimesheetService{
 
 	@Inject
 	protected GeneralService generalService;
+	
+	@Inject
+	protected ProjectTaskService projectTaskService; 
 	
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 	
@@ -464,6 +468,8 @@ public class TimesheetServiceImpl implements TimesheetService{
 		for(TimesheetLine timesheetLine : timesheetLineList)
 			timesheetLine.setVisibleDuration(Beans.get(EmployeeService.class).getUserDuration(timesheetLine.getDurationStored()));
 
+		timesheetLineList = projectTaskService._sortTimesheetLineByDate(timesheetLineList);
+		
 		return timesheetLineList;
 	}
 }

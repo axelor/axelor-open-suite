@@ -11,5 +11,5 @@ public interface ProjectTaskService {
 
 	@Transactional
 	public List<TimesheetLine> computeVisibleDuration(ProjectTask project);
-	
+	public List<TimesheetLine> _sortTimesheetLineByDate(List<TimesheetLine> timesheetLineList);
 }
