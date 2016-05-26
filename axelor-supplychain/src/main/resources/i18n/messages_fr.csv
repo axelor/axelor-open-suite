@@ -241,3 +241,4 @@
 "help:SaleOrderScheduleLine.nbOfDay","Si facturation en fonction de nb de jours",,
 "help:SaleOrderScheduleLine.saleOrderLine","Si facturation à la tâche",,
 "month(s)","mois",,
+"supplychain-invoice-general-form",,,
