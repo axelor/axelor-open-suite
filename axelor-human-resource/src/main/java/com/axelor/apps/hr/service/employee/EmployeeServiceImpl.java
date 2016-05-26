@@ -23,15 +23,20 @@ import java.math.RoundingMode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.base.service.user.UserServiceImpl;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.auth.AuthUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
+import com.google.inject.Inject;
 
 public class EmployeeServiceImpl extends UserServiceImpl implements EmployeeService {
 
+	@Inject
+	private GeneralService generalService;  
+	
 	private static final Logger LOG = LoggerFactory.getLogger(EmployeeService.class);
 
 	/**
@@ -83,7 +88,7 @@ public class EmployeeServiceImpl extends UserServiceImpl implements EmployeeServ
 	 * @return
 	 */
 	@Override
-	public BigDecimal getUserDuration(BigDecimal duration){
+	public BigDecimal getUserDuration(BigDecimal duration, BigDecimal dailyWorkHrs){
 
 		LOG.debug("Get user duration for duration: {}",duration);
 
@@ -95,7 +100,8 @@ public class EmployeeServiceImpl extends UserServiceImpl implements EmployeeServ
 		if(employee != null){
 			String timePref = employee.getTimeLoggingPreferenceSelect();
 
-			BigDecimal dailyWorkHrs = employee.getDailyWorkHours();
+			if(dailyWorkHrs == null || dailyWorkHrs.compareTo(BigDecimal.ZERO) == 0)
+				dailyWorkHrs = generalService.getGeneral().getDailyWorkHours();
 			LOG.debug("Employee's time pref: {}, Daily Working hours: {}",timePref,dailyWorkHrs);
 
 			if(timePref.equals("days") && dailyWorkHrs != null && dailyWorkHrs.compareTo(BigDecimal.ZERO) != 0){

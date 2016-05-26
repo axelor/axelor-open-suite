@@ -17,7 +17,7 @@ public class ProjectTaskServiceImpl implements ProjectTaskService {
 		List<TimesheetLine> timesheetLineList = project.getTimesheetLineList();
 		
 		for(TimesheetLine timesheetLine : timesheetLineList)
-			timesheetLine.setVisibleDuration(Beans.get(EmployeeService.class).getUserDuration(timesheetLine.getDurationStored()));
+			timesheetLine.setVisibleDuration(Beans.get(EmployeeService.class).getUserDuration(timesheetLine.getDurationStored(), timesheetLine.getUser().getEmployee().getDailyWorkHours()));
 
 		timesheetLineList = _sortTimesheetLineByDate(timesheetLineList);
 

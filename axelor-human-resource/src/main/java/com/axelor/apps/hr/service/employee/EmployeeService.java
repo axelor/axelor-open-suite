@@ -26,6 +26,6 @@ public interface EmployeeService extends UserService{
 
 	public BigDecimal getDurationHours(Object object) throws AxelorException;
 
-	public BigDecimal getUserDuration(BigDecimal hourDuration);
+	public BigDecimal getUserDuration(BigDecimal hourDuration, BigDecimal dailyWorkHrs);
 
 }

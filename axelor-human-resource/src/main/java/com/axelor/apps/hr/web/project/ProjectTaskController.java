@@ -1,5 +1,7 @@
 package com.axelor.apps.hr.web.project;
 
+import com.axelor.apps.base.service.administration.GeneralService;
+import com.axelor.apps.hr.service.employee.EmployeeService;
 import com.axelor.apps.hr.service.project.ProjectTaskService;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
@@ -13,11 +15,26 @@ public class ProjectTaskController {
 	@Inject
 	private ProjectTaskService projectTaskService;
 	
+	@Inject
+	private EmployeeService employeeService;
+	
+	@Inject
+	private GeneralService generalService;
+	
 	public void setVisibleDuration(ActionRequest request, ActionResponse response){
 		ProjectTask project = request.getContext().asType(ProjectTask.class);
 		project = Beans.get(ProjectTaskRepository.class).find(project.getId());
 
 		response.setValue("timesheetLineList", projectTaskService.computeVisibleDuration(project));
+	}
+	
+	public void setProjectVisibleDuration(ActionRequest request, ActionResponse response){
+		ProjectTask project = request.getContext().asType(ProjectTask.class);
+		project = Beans.get(ProjectTaskRepository.class).find(project.getId());
+		
+		response.setValue("$visibleDuration", employeeService.getUserDuration(project.getDuration(),generalService.getGeneral().getDailyWorkHours()));
+		response.setValue("$visibleTimeSpent", employeeService.getUserDuration(project.getTimeSpent(),generalService.getGeneral().getDailyWorkHours()));
+		response.setValue("$visibleLeadDelay", employeeService.getUserDuration(project.getLeadDelay(),generalService.getGeneral().getDailyWorkHours()));
 	}
 	
 }

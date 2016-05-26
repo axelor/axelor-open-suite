@@ -466,7 +466,7 @@ public class TimesheetServiceImpl implements TimesheetService{
 		List<TimesheetLine> timesheetLineList = timesheet.getTimesheetLineList();
 		
 		for(TimesheetLine timesheetLine : timesheetLineList)
-			timesheetLine.setVisibleDuration(Beans.get(EmployeeService.class).getUserDuration(timesheetLine.getDurationStored()));
+			timesheetLine.setVisibleDuration(Beans.get(EmployeeService.class).getUserDuration(timesheetLine.getDurationStored(), timesheetLine.getUser().getEmployee().getDailyWorkHours()));
 
 		timesheetLineList = projectTaskService._sortTimesheetLineByDate(timesheetLineList);
 		

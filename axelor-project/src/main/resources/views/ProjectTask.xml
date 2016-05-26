@@ -15,7 +15,7 @@
 	</grid>
 
 	<form name="project-form" title="Project" model="com.axelor.apps.project.db.ProjectTask" onNew="action-project-task-group-on-new-project"
-	onLoad="action-project-task-record-set-visible-duration,action-project-task-attrs-duration-title,action-project-task-method-set-visible-duration-log-times,action-project-attrs-scale-and-precision,save">
+	onLoad="action-project-task-method-set-visible-duration,action-project-task-attrs-duration-title,action-project-task-method-set-visible-duration-log-times,action-project-attrs-scale-and-precision,save">
 		<toolbar>
 			<button name="printProjectTask" title="Print" onClick="save,action-project-task-method-print-project-task" if-module="axelor-business-project"/>
 		</toolbar>
@@ -103,7 +103,7 @@
 
 	<form name="task-form" title="Task" model="com.axelor.apps.project.db.ProjectTask" 
 	onNew="action-project-task-attrs-hide-invoicing-panel,action-project-task-default,action-project-task-attrs-duration-title,action-project-attrs-scale-and-precision"
-	onLoad="action-project-task-attrs-hide-invoicing-panel,action-project-task-record-set-visible-duration,action-project-task-attrs-duration-title,action-project-attrs-scale-and-precision" width="large">
+	onLoad="action-project-task-attrs-hide-invoicing-panel,action-project-task-method-set-visible-duration,action-project-task-attrs-duration-title,action-project-attrs-scale-and-precision" width="large">
 		<toolbar>
 			<button name="printProjectTask" title="Print" onClick="save,action-project-task-method-print-project-task" if-module="axelor-business-project"/>
 		</toolbar>
@@ -164,7 +164,7 @@
 
 	<form name="project-task-form" title="Project/Task" model="com.axelor.apps.project.db.ProjectTask" 
 	onNew="action-project-task-attrs-hide-invoicing-panel,action-project-project-default,action-project-task-attrs-duration-title,action-project-attrs-scale-and-precision"
-	onLoad="action-project-task-attrs-hide-invoicing-panel,action-project-task-record-set-visible-duration,action-project-task-attrs-duration-title,action-project-attrs-scale-and-precision">
+	onLoad="action-project-task-attrs-hide-invoicing-panel,action-project-task-method-set-visible-duration,action-project-task-attrs-duration-title,action-project-attrs-scale-and-precision">
 		<panel title="Overview">
 			<field name="fullName" showTitle="false" colSpan="12" css="label-bold bold large">
 				<editor x-show-titles="false">
@@ -397,12 +397,6 @@
 	    <field name="leadDelay" expr="call:com.axelor.apps.hr.service.employee.EmployeeService:getDurationHours(visibleLeadDelay)"/>
 	</action-record>
 	
-	<action-record name="action-project-task-record-set-visible-duration" model="com.axelor.apps.project.db.ProjectTask">
-	    <field name="$visibleDuration" expr="call:com.axelor.apps.hr.service.employee.EmployeeService:getUserDuration(duration)"/>
-	    <field name="$visibleTimeSpent" expr="call:com.axelor.apps.hr.service.employee.EmployeeService:getUserDuration(timeSpent)"/>
-	    <field name="$visibleLeadDelay" expr="call:com.axelor.apps.hr.service.employee.EmployeeService:getUserDuration(leadDelay)"/>
-	</action-record>
-	
 	<action-record name="action-project-task-record-compute-exTaxTotal" model="com.axelor.apps.project.db.ProjectTask">
 		<field name="exTaxTotal" expr="eval: price*qty"/>
 	</action-record>
@@ -421,6 +415,10 @@
 	<action-record name="action-record-project-task-compute-progress" model="com.axelor.apps.project.db.ProjectTask">
 	    <field name="progress" expr="call:com.axelor.apps.project.service.ProjectTaskService:computeProgress(__this__)"/>
 	</action-record>
+	
+	<action-method name="action-project-task-method-set-visible-duration" model="com.axelor.apps.project.db.ProjectTask">
+	    <call class="com.axelor.apps.hr.web.project.ProjectTaskController" method="setProjectVisibleDuration"/>
+	</action-method>
 	
 	<action-method name="action-project-task-method-set-visible-duration-log-times" if-module="axelor-human-resource">
 		<call class="com.axelor.apps.hr.web.project.ProjectTaskController" method="setVisibleDuration"/>
