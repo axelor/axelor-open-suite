@@ -241,3 +241,4 @@
 "help:SaleOrderScheduleLine.nbOfDay","If invoicing based on Nbr. of days",,
 "help:SaleOrderScheduleLine.saleOrderLine","If invoicing based on task(s).",,
 "month(s)",,,
+"supplychain-invoice-general-form",,,
