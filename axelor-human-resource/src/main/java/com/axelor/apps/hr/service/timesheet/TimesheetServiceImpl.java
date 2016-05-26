@@ -25,7 +25,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalTime;
 import org.joda.time.Minutes;
@@ -56,18 +55,17 @@ import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
 import com.axelor.apps.hr.db.repo.TimesheetRepository;
 import com.axelor.apps.hr.exception.IExceptionMessage;
 import com.axelor.apps.hr.service.employee.EmployeeService;
+import com.axelor.apps.hr.service.project.ProjectTaskService;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
-import com.axelor.db.mapper.Mapper;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.beust.jcommander.internal.Lists;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -81,6 +79,9 @@ public class TimesheetServiceImpl implements TimesheetService{
 
 	@Inject
 	protected GeneralService generalService;
+	
+	@Inject
+	protected ProjectTaskService projectTaskService; 
 	
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 	
@@ -467,6 +468,8 @@ public class TimesheetServiceImpl implements TimesheetService{
 		for(TimesheetLine timesheetLine : timesheetLineList)
 			timesheetLine.setVisibleDuration(Beans.get(EmployeeService.class).getUserDuration(timesheetLine.getDurationStored()));
 
+		timesheetLineList = projectTaskService._sortTimesheetLineByDate(timesheetLineList);
+		
 		return timesheetLineList;
 	}
 }

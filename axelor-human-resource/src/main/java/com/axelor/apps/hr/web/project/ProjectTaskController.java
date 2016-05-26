@@ -11,7 +11,7 @@ import com.google.inject.Inject;
 public class ProjectTaskController {
 
 	@Inject
-	private ProjectTaskService projectTaskService; 
+	private ProjectTaskService projectTaskService;
 	
 	public void setVisibleDuration(ActionRequest request, ActionResponse response){
 		ProjectTask project = request.getContext().asType(ProjectTask.class);
