@@ -15,7 +15,7 @@
 	</grid>
 
 	<form name="project-form" title="Project" model="com.axelor.apps.project.db.ProjectTask" onNew="action-project-task-group-on-new-project"
-	onLoad="action-project-task-record-set-visible-duration,action-project-task-attrs-duration-title,action-project-task-method-set-visible-duration-log-times,action-project-attrs-scale-and-precision">
+	onLoad="action-project-task-record-set-visible-duration,action-project-task-attrs-duration-title,action-project-task-method-set-visible-duration-log-times,action-project-attrs-scale-and-precision,save">
 		<toolbar>
 			<button name="printProjectTask" title="Print" onClick="save,action-project-task-method-print-project-task" if-module="axelor-business-project"/>
 		</toolbar>
