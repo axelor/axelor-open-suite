@@ -7,7 +7,9 @@
     	<field name="priority"/>
 		<field name="name"/>
         <field name="workCenter" grid-view="work-center-grid" form-view="work-center-form"/>
+        <field name="outsourcing"/>
         <field name="description"/>
+        
     </grid>
     
     <form name="prod-process-line-form" title="Phase" model="com.axelor.apps.production.db.ProdProcessLine"
@@ -17,6 +19,7 @@
 	    	<field name="name"/>
 	    	<field name="priority" colSpan="3"/>
 	    	<field name="workCenter" grid-view="work-center-grid" form-view="work-center-form" onChange="action-prod-process-line-record-capacity-settings"/>
+	    	<field name="outsourcing"/>
 	    	<panel title="Capacity settings" colSpan="12">
 	          <field name="capacityPerCycle" colSpan="3"/>
 	          <field name="maxCapacityPerCycle" colSpan="3"/>
