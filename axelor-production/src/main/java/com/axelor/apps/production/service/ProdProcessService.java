@@ -63,5 +63,12 @@ public class ProdProcessService {
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.PROD_PROCESS_MISS_PRODUCT), Joiner.on(",").join(nameProductList)), IException.CONFIGURATION_ERROR);
 		}
 	}
+
+	public ProdProcess changeProdProcessListOutsourcing(ProdProcess prodProcess) {
+		for (ProdProcessLine prodProcessLine : prodProcess.getProdProcessLineList()){
+			prodProcessLine.setOutsourcing(prodProcess.getOutsourcing());
+		}
+		return prodProcess;
+	}
 	
 }
