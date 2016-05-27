@@ -78,7 +78,7 @@
 			<field name="company" readonlyIf="statusSelect &gt; 1" colSpan="3" form-view="company-form" grid-view="company-grid"/>
 			<field name="statusSelect" showTitle="false" readonly="true" colSpan="12" widget="NavSelect"/>
 			<field name="billOfMaterial" colSPan="3" readonlyIf="statusSelect > 1" onChange="action-manuf-order-on-change-bill-of-material" domain="self.isRawMaterial = false AND self.parentBillOfMaterial IS NULL" required="true" form-view="bill-of-material-form" grid-view="bill-of-material-grid"/>
-    		<field name="prodProcess" colSpan="3" readonlyIf="statusSelect > 1" onChange="action-manuf-order-record-isConsProOnOperation" form-view="prod-process-form" grid-view="prod-process-grid"/>
+    		<field name="prodProcess" domain="self.product = :product" colSpan="3" readonlyIf="statusSelect > 1" onChange="action-manuf-order-record-isConsProOnOperation" form-view="prod-process-form" grid-view="prod-process-grid"/>
     		<field name="prodProcess.outsourcing" colSpan="3"/>
 			<field name="product" required="true" readonlyIf="statusSelect &gt; 1" form-view="product-form" grid-view="product-grid"/>
 			<field name="qty" readonlyIf="statusSelect &gt; 1"/>
