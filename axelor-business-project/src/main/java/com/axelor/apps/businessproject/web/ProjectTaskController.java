@@ -94,7 +94,7 @@ public class ProjectTaskController {
 
 		BigDecimal duration = projectTaskService.computeDurationFromChildren(projectTask.getId());
 
-		BigDecimal visibleDuration = Beans.get(EmployeeService.class).getUserDuration(duration,generalService.getGeneral().getDailyWorkHours());
+		BigDecimal visibleDuration = Beans.get(EmployeeService.class).getUserDuration(duration,generalService.getGeneral().getDailyWorkHours(),false);
 
 		response.setValue("duration", duration);
 		response.setValue("$visibleDuration", visibleDuration);

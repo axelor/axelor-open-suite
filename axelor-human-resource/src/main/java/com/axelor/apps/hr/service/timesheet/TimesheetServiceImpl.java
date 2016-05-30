@@ -162,7 +162,7 @@ public class TimesheetServiceImpl implements TimesheetService{
 					}
 				}
 				if(noLeave){
-					TimesheetLine timesheetLine = createTimesheetLine(projectTask, product, timesheet.getUser(), fromDate, timesheet, employeeService.getDurationHours(logTime), "");
+					TimesheetLine timesheetLine = createTimesheetLine(projectTask, product, timesheet.getUser(), fromDate, timesheet, employeeService.getUserDuration(logTime,timesheet.getUser().getEmployee().getDailyWorkHours(),true), "");
 					timesheetLine.setVisibleDuration(logTime);
 				}
 			}
@@ -466,7 +466,7 @@ public class TimesheetServiceImpl implements TimesheetService{
 		List<TimesheetLine> timesheetLineList = timesheet.getTimesheetLineList();
 		
 		for(TimesheetLine timesheetLine : timesheetLineList)
-			timesheetLine.setVisibleDuration(Beans.get(EmployeeService.class).getUserDuration(timesheetLine.getDurationStored(), timesheetLine.getUser().getEmployee().getDailyWorkHours()));
+			timesheetLine.setVisibleDuration(Beans.get(EmployeeService.class).getUserDuration(timesheetLine.getDurationStored(), timesheetLine.getUser().getEmployee().getDailyWorkHours(), false));
 
 		timesheetLineList = projectTaskService._sortTimesheetLineByDate(timesheetLineList);
 		

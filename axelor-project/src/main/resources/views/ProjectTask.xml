@@ -385,18 +385,6 @@
 		<domain>self.typeSelect = 'task' AND self.project.id = :id</domain>
 	</action-view>
 	
-	<action-record name="action-project-task-record-set-stored-duration" model="com.axelor.apps.project.db.ProjectTask">
-	    <field name="duration" expr="call:com.axelor.apps.hr.service.employee.EmployeeService:getDurationHours(visibleDuration)"/>
-	</action-record>
-	
-	<action-record name="action-project-task-record-set-stored-time-spent" model="com.axelor.apps.project.db.ProjectTask">
-	    <field name="timeSpent" expr="call:com.axelor.apps.hr.service.employee.EmployeeService:getDurationHours(visibleTimeSpent)"/>
-	</action-record>
-	
-	<action-record name="action-project-task-record-set-stored-lead-delay" model="com.axelor.apps.project.db.ProjectTask">
-	    <field name="leadDelay" expr="call:com.axelor.apps.hr.service.employee.EmployeeService:getDurationHours(visibleLeadDelay)"/>
-	</action-record>
-	
 	<action-record name="action-project-task-record-compute-exTaxTotal" model="com.axelor.apps.project.db.ProjectTask">
 		<field name="exTaxTotal" expr="eval: price*qty"/>
 	</action-record>
@@ -408,13 +396,21 @@
 		<field name="exTaxTotal" expr="eval: product?.salePrice"/>
 	</action-record>
 	
-	<action-record name="action-attrs-project-task-compute-totalDuration" model="com.axelor.apps.project.db.ProjectTask">
-	    <field name="duration" expr="call:com.axelor.apps.hr.service.employee.EmployeeService:getDurationHours($visibleDuration)"/>
-	</action-record>
-	
 	<action-record name="action-record-project-task-compute-progress" model="com.axelor.apps.project.db.ProjectTask">
 	    <field name="progress" expr="call:com.axelor.apps.project.service.ProjectTaskService:computeProgress(__this__)"/>
 	</action-record>
+	
+	<action-method name="action-project-task-method-set-stored-duration" model="com.axelor.apps.project.db.ProjectTask">
+		<call class="com.axelor.apps.hr.web.project.ProjectTaskController" method="setStoredDuration"/>
+	</action-method>
+	
+	<action-method name="action-project-task-method-set-stored-time-spent" model="com.axelor.apps.project.db.ProjectTask">
+		<call class="com.axelor.apps.hr.web.project.ProjectTaskController" method="setStoredTimeSpent"/>
+	</action-method>
+	
+	<action-method name="action-project-task-method-set-stored-lead-delay" model="com.axelor.apps.project.db.ProjectTask">
+		<call class="com.axelor.apps.hr.web.project.ProjectTaskController" method="setStoredLeadDelay"/>
+	</action-method>	
 	
 	<action-method name="action-project-task-method-set-visible-duration" model="com.axelor.apps.project.db.ProjectTask">
 	    <call class="com.axelor.apps.hr.web.project.ProjectTaskController" method="setProjectVisibleDuration"/>
@@ -425,11 +421,11 @@
 	</action-method>
 	
 	<action-method name="action-method-project-task-compute-progress">
-		<call class="com.axelor.apps.business.project.web.ProjectTaskController" method="computeProgress"/>
+		<call class="com.axelor.apps.businessproject.web.ProjectTaskController" method="computeProgress"/>
 	</action-method>
 	
 	<action-method name="action-method-project-task-compute-duration-fromchildren">
-		<call class="com.axelor.apps.business.project.web.ProjectTaskController" method="computeDurationFromChildren"/>
+		<call class="com.axelor.apps.businessproject.web.ProjectTaskController" method="computeDurationFromChildren"/>
 	</action-method>
 	
   	<action-attrs name="action-project-attrs-scale-and-precision">
