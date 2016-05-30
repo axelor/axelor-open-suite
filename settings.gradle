@@ -1,0 +1,9 @@
+//Include all modules
+def modules = new File('modules/abs').listFiles().findAll { dir ->
+	new File(dir, 'build.gradle').exists()
+}
+
+modules.each { dir ->
+	include "modules:$dir.name"
+	project(":modules:$dir.name").projectDir = dir
+}

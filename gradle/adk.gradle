@@ -1,0 +1,27 @@
+def searchPath = [
+	System.getenv("AXELOR_HOME"),
+	"../axelor-development-kit/build/install/axelor-development-kit"]
+
+def findADK = {
+	for (def path : searchPath) {
+		if (file("${path}/gradle/repo.gradle").exists()) {
+			return file(path)
+		}
+	}
+}
+
+def adkHome = findADK()
+if (adkHome == null) {
+	throw new GradleException("AXELOR_HOME is not set properly")
+}
+
+allprojects {
+
+	apply from: "${adkHome}/gradle/repo.gradle"
+	apply from: "${adkHome}/gradle/libs.gradle"
+	apply from: "${adkHome}/gradle/common.gradle"
+	apply from: "${adkHome}/gradle/eclipse.gradle"
+	apply from: "${adkHome}/gradle/license.gradle"
+
+	repositories adkRepos
+}
