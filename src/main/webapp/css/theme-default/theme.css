@@ -652,3 +652,18 @@
 .content-yellow input{
 	color: yellow !important;
 }
+
+
+/* Modifications for project abs */
+
+.button-item.client-img-menu img {
+	width:80%;
+}
+
+.button-item.client-img-menu img:hover {
+	width:100%;
+}
+
+.button-item.client-img-menu span {
+	color: #000;
+}
