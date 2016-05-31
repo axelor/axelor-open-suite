@@ -81,7 +81,7 @@
 		
 		<panel title="Contact details">
 			<panel colSpan="12" readonlyIf="statusSelect == 4 || statusSelect == 6">
-				<field name="mobilePhone" colSpan="4"/>
+				<field name="mobilePhone" colSpan="4" placeholder="+33100000000" pattern="^\+?(?:[0-9]{2,3}(?:\s|\.)?){3,6}[0-9]{2,3}$" onChange="action-partner-record-normalize-mobile-phone-number"/>
 				<field name="isDoNotCall" colSpan="2"/>
 				<field name="emailAddress" canSelect="false" form-view="email-address-simple-form" x-show-icons="false" colSpan="4">
 					<editor x-show-titles="false">
@@ -89,8 +89,8 @@
 					</editor>
 				</field>
 				<field name="isDoNotSendEmail" colSpan="2"/>
-				<field name="fixedPhone" placeholder="+33100000000" pattern="^\+?\d{8,11}$"/>
-				<field name="fax" placeholder="+33100000000" pattern="^\+?\d{8,11}$"/>
+				<field name="fixedPhone" placeholder="+33100000000" pattern="^\+?(?:[0-9]{2,3}(?:\s|\.)?){3,6}[0-9]{2,3}$" onChange="action-partner-record-normalize-fixed-phone-number"/>
+				<field name="fax" placeholder="+33100000000" pattern="^\+?(?:[0-9]{2,3}(?:\s|\.)?){3,6}[0-9]{2,3}$" onChange="action-partner-record-normalize-fax-phone-number"/>
 				<field name="webSite"/>
 				<spacer colSpan="6"/>
 			</panel>
@@ -214,6 +214,18 @@
     	<field name="otherPostalCode" expr="eval: primaryPostalCode" if="isCopyAddress"/>
     	<field name="otherCountry" expr="eval: primaryCountry" if="isCopyAddress"/>
     </action-record>
+    
+    <action-record name="action-partner-record-normalize-fixed-phone-number" model="com.axelor.apps.base.db.Partner">
+		<field name="fixedPhone" expr="call:com.axelor.apps.base.web.PartnerController:normalizePhoneNumber(fixedPhone)"/>
+	</action-record>
+
+	<action-record name="action-partner-record-normalize-fax-phone-number" model="com.axelor.apps.base.db.Partner">
+		<field name="fax" expr="call:com.axelor.apps.base.web.PartnerController:normalizePhoneNumber(fax)"/>
+	</action-record>
+
+	<action-record name="action-partner-record-normalize-mobile-phone-number" model="com.axelor.apps.base.db.Partner">
+		<field name="mobilePhone" expr="call:com.axelor.apps.base.web.PartnerController:normalizePhoneNumber(mobilePhone)"/>
+	</action-record>
     
    	<action-attrs name="action-lead-attrs-readonly-other-address">
    		<attribute name="readonly" for="otherAddress" expr="isCopyAddress"/>

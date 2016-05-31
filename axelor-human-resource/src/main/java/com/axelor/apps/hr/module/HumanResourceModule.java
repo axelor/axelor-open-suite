@@ -29,11 +29,13 @@ import com.axelor.apps.hr.db.repo.TimesheetTimerHRRepository;
 import com.axelor.apps.hr.service.batch.MailBatchServiceHR;
 import com.axelor.apps.hr.service.config.AccountConfigHRService;
 import com.axelor.apps.hr.service.employee.EmployeeService;
-import com.axelor.apps.hr.service.employee.EmployeeServiceImp;
+import com.axelor.apps.hr.service.employee.EmployeeServiceImpl;
+import com.axelor.apps.hr.service.project.ProjectTaskService;
+import com.axelor.apps.hr.service.project.ProjectTaskServiceImpl;
 import com.axelor.apps.hr.service.timesheet.TimesheetService;
-import com.axelor.apps.hr.service.timesheet.TimesheetServiceImp;
+import com.axelor.apps.hr.service.timesheet.TimesheetServiceImpl;
 import com.axelor.apps.hr.service.timesheet.timer.TimesheetTimerService;
-import com.axelor.apps.hr.service.timesheet.timer.TimesheetTimerServiceImp;
+import com.axelor.apps.hr.service.timesheet.timer.TimesheetTimerServiceImpl;
 
 
 public class HumanResourceModule extends AxelorModule {
@@ -41,14 +43,15 @@ public class HumanResourceModule extends AxelorModule {
 	@Override
 	protected void configure() {
 		
-		bind(EmployeeService.class).to(EmployeeServiceImp.class);
-		bind(TimesheetService.class).to(TimesheetServiceImp.class);
-		bind(TimesheetTimerService.class).to(TimesheetTimerServiceImp.class);
+		bind(EmployeeService.class).to(EmployeeServiceImpl.class);
+		bind(TimesheetService.class).to(TimesheetServiceImpl.class);
+		bind(TimesheetTimerService.class).to(TimesheetTimerServiceImpl.class);
 		bind(TimesheetRepository.class).to(TimesheetHRRepository.class);
 		bind(TimesheetLineRepository.class).to(TimesheetLineHRRepository.class);
 		bind(TSTimerRepository.class).to(TimesheetTimerHRRepository.class);
 		bind(MailBatchService.class).to(MailBatchServiceHR.class);
 		bind(AccountConfigService.class).to(AccountConfigHRService.class);
+		bind(ProjectTaskService.class).to(ProjectTaskServiceImpl.class);
 	}
 
 }

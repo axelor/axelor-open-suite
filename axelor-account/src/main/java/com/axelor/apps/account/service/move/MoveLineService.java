@@ -244,9 +244,11 @@ public class MoveLineService {
 
 				
 					MoveLine moveLine = this.createMoveLine(move, partner, account2, exTaxTotal, !isDebitCustomer, invoice.getInvoiceDate(), null, moveLineId++, invoice.getInvoiceId());
-					for (AnalyticDistributionLine analyticDistributionLineIt : invoiceLine.getAnalyticDistributionLineList()) {
-						AnalyticDistributionLine analyticDistributionLine = Beans.get(AnalyticDistributionLineRepository.class).copy(analyticDistributionLineIt, false);
-						moveLine.addAnalyticDistributionLineListItem(analyticDistributionLine);
+					if(invoiceLine.getAnalyticDistributionLineList() != null)  {
+						for (AnalyticDistributionLine analyticDistributionLineIt : invoiceLine.getAnalyticDistributionLineList()) {
+							AnalyticDistributionLine analyticDistributionLine = Beans.get(AnalyticDistributionLineRepository.class).copy(analyticDistributionLineIt, false);
+							moveLine.addAnalyticDistributionLineListItem(analyticDistributionLine);
+						}
 					}
 					moveLine.setTaxLine(invoiceLine.getTaxLine());
 					moveLines.add(moveLine);

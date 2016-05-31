@@ -41,8 +41,8 @@ public interface PurchaseOrderInvoiceService {
 
 	public List<InvoiceLine> createInvoiceLine(Invoice invoice, PurchaseOrderLine purchaseOrderLine) throws AxelorException;
 
-	public BigDecimal getAmountInvoiced(PurchaseOrder purchaseOrder);
+	public BigDecimal getInvoicedAmount(PurchaseOrder purchaseOrder);
 
-	public BigDecimal getAmountInvoiced(PurchaseOrder purchaseOrder, Long currentInvoiceId, boolean includeInvoice);
+	public BigDecimal getInvoicedAmount(PurchaseOrder purchaseOrder, Long currentInvoiceId, boolean excludeCurrentInvoice);
 
 }

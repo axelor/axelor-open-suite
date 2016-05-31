@@ -65,4 +65,8 @@
     	<field name="company"  expr="eval:__repo__.of(Company).all().fetchOne()" if="__user__.activeCompany == null &amp;&amp; __repo__.of(Company).all().fetch().size == 1"/>
     </action-record>
     
+   	<action-method name="action-message-method-print-pdf-email">
+		<call class="com.axelor.apps.base.web.MessageController" method="printMessage"/>
+	</action-method>
+    
 </object-views>

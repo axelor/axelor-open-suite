@@ -54,7 +54,7 @@ import com.google.inject.persist.Transactional;
 
 public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 
-	private static final Logger LOG = LoggerFactory.getLogger(SaleOrderInvoiceServiceImpl.class);
+	private final Logger log = LoggerFactory.getLogger( getClass() );
 
 	private LocalDate today;
 
@@ -151,7 +151,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 
 		invoiceGenerator.populate(invoice, this.createInvoiceLines(invoice, saleOrderLineList));
 //		advancePaymentService.fillAdvancePayment(invoice, saleOrder, saleOrderLineList);  //TODO
-		LOG.debug("fillAdvancePayment : methode terminée");
+		log.debug("fillAdvancePayment : methode terminée");
 		this.fillInLines(invoice);
 
 		return invoice;
@@ -274,8 +274,8 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 
 
 	@Override
-	public BigDecimal getAmountInvoiced(SaleOrder saleOrder){
-		return this.getAmountInvoiced(saleOrder, null, false);
+	public BigDecimal getInvoicedAmount(SaleOrder saleOrder)  {
+		return this.getInvoicedAmount(saleOrder, null, true);
 	}
 
 	/**
@@ -286,47 +286,66 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 	 * @param currentInvoiceId
 	 * In the case of invoice ventilation or cancellation, the invoice status isn't modify in database but it will be integrated in calculation
 	 * For ventilation, the invoice should be integrated in calculation
-	 * For cancellation,  the invoice shouldn't be integrated in calculation
+	 * For cancellation, the invoice shouldn't be integrated in calculation
 	 *
 	 * @param includeInvoice
 	 * To know if the invoice should be or not integrated in calculation
 	 */
 	@Override
-	public BigDecimal getAmountInvoiced(SaleOrder saleOrder, Long currentInvoiceId, boolean includeInvoice){
+	public BigDecimal getInvoicedAmount(SaleOrder saleOrder, Long currentInvoiceId, boolean excludeCurrentInvoice)  {
 
-		Query q = null;
-		String query;
-		query = "SELECT SUM(self.companyExTaxTotal)"
-				+ " FROM InvoiceLine as self"
-				+ " WHERE ( self.saleOrderLine.id IN (SELECT id FROM SaleOrderLine WHERE saleOrder.id = :saleOrderId)"
-						+ " OR self.saleOrder.id = :saleOrderId )"
-					+ " AND self.invoice.statusSelect = :statusVentilated";
-		if (currentInvoiceId != null){
-			if (includeInvoice){
-				query += " OR self.invoice.id = :invoiceId";
-			}else{
+		BigDecimal invoicedAmount = BigDecimal.ZERO;
+		
+		BigDecimal saleAmount = this.getAmountVentilated(saleOrder, currentInvoiceId, excludeCurrentInvoice, InvoiceRepository.OPERATION_TYPE_CLIENT_SALE);
+		BigDecimal refundAmount = this.getAmountVentilated(saleOrder, currentInvoiceId, excludeCurrentInvoice, InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND);
+
+		if(saleAmount != null)  {  invoicedAmount = invoicedAmount.add(saleAmount);  }
+		if(refundAmount != null)  {  invoicedAmount = invoicedAmount.subtract(refundAmount);  }
+		
+		if (!saleOrder.getCurrency().equals(saleOrder.getCompany().getCurrency()) && saleOrder.getCompanyExTaxTotal().compareTo(BigDecimal.ZERO) != 0){
+			BigDecimal rate = invoicedAmount.divide(saleOrder.getCompanyExTaxTotal(), 4, RoundingMode.HALF_UP);
+			invoicedAmount = saleOrder.getExTaxTotal().multiply(rate);
+		}
+
+		log.debug("Compute the invoiced amount ({}) of the sale order : {}", invoicedAmount, saleOrder.getSaleOrderSeq());
+		
+		return invoicedAmount;
+
+	}
+	
+	
+	private BigDecimal getAmountVentilated(SaleOrder saleOrder, Long currentInvoiceId, boolean excludeCurrentInvoice, int invoiceOperationTypeSelect)  {
+		
+		String query = "SELECT SUM(self.companyExTaxTotal)"
+					+ " FROM InvoiceLine as self"
+					+ " WHERE (self.saleOrderLine.saleOrder.id = :saleOrderId OR self.saleOrder.id = :saleOrderId )"
+						+ " AND self.invoice.operationTypeSelect = :invoiceOperationTypeSelect"
+						+ " AND self.invoice.statusSelect = :statusVentilated";
+		
+		if (currentInvoiceId != null)  {
+			if(excludeCurrentInvoice)  {
 				query += " AND self.invoice.id <> :invoiceId";
+			}  else  {
+				query += " OR (self.invoice.id = :invoiceId AND self.invoice.operationTypeSelect = :invoiceOperationTypeSelect) ";
 			}
 		}
-		q = JPA.em().createQuery(query, BigDecimal.class);
+			
+		Query q = JPA.em().createQuery(query, BigDecimal.class);
 
 		q.setParameter("saleOrderId", saleOrder.getId());
 		q.setParameter("statusVentilated", InvoiceRepository.STATUS_VENTILATED);
+		q.setParameter("invoiceOperationTypeSelect", invoiceOperationTypeSelect);
 		if (currentInvoiceId != null){
 			q.setParameter("invoiceId", currentInvoiceId);
 		}
 
 		BigDecimal invoicedAmount = (BigDecimal) q.getSingleResult();
-		if(invoicedAmount != null){
-			if (!saleOrder.getCurrency().equals(saleOrder.getCompany().getCurrency()) && saleOrder.getCompanyExTaxTotal().compareTo(BigDecimal.ZERO) != 0){
-				BigDecimal rate = invoicedAmount.divide(saleOrder.getCompanyExTaxTotal(), 4, RoundingMode.HALF_UP);
-				invoicedAmount = saleOrder.getExTaxTotal().multiply(rate);
-			}
-		}
-
-		return invoicedAmount;
-
+		
+		if(invoicedAmount != null)  {  return invoicedAmount;  }
+		else  {  return BigDecimal.ZERO;  }
+		
 	}
+	
 
 	@Override
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
@@ -388,6 +407,8 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 		}
 		return null;
 	}
+
+
 }
 
 

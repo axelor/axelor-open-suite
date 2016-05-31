@@ -46,7 +46,7 @@ import com.google.inject.Inject;
 
 public class VentilateState extends WorkflowInvoice {
 	
-	private static final Logger LOG = LoggerFactory.getLogger(VentilateState.class);
+	private final Logger log = LoggerFactory.getLogger( getClass() );
 
 	@Inject
 	private SequenceService sequenceService;
@@ -86,7 +86,6 @@ public class VentilateState extends WorkflowInvoice {
 
 		setInvoiceId(sequence);
 		updatePaymentSchedule( );
-		LOG.debug("Set Move incomming");
 		setMove( );
 		setStatus( );
 	}
@@ -163,7 +162,7 @@ public class VentilateState extends WorkflowInvoice {
 
 		if(invoice.getInTaxTotal().compareTo(BigDecimal.ZERO) == 0)  {  return;  }
 
-		LOG.debug("In Set Move");
+		log.debug("In Set Move");
 		// Création de l'écriture comptable
 		Move move = moveService.createMove(invoice);
 		if (move != null)  {
