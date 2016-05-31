@@ -32,15 +32,16 @@
 	<form name="purchase-order-merge-form" model="com.axelor.apps.base.db.Wizard" title="Merge purchase orders" width="large">
 		<panel-related field="$purchaseOrderToMerge" form-view="purchase-order-form" title="Purchase orders to merge" colSpan="12" type="many-to-many" target="com.axelor.apps.purchase.db.PurchaseOrder" domain="self.statusSelect = 1" canNew="false" canEdit="false" grid-view="purchase-order-grid"/>
 		<panel sidebar="true" title="Actions">
-			<button name="generateMergedPurchaseOrder" title="Merge into single purchase order" onClick="action-validate-purchase-order-check-selection,action-purchase-order-method-merge"/>			
+			<button name="generateMergedPurchaseOrder" title="Merge into single purchase order" onClick="action-validate-purchase-order-check-selection,action-group-purchase-order-merge-action"/>			
 	  	</panel>
     </form>
-    
-    <form name="purchase-order-merge-confirm-form" model="com.axelor.apps.base.db.Wizard" title="Confirmation" onNew="action-record-load-dummy-field-confirm-merge-purchaseorder">
+	
+	<form name="purchase-order-merge-confirm-form" model="com.axelor.apps.base.db.Wizard" title="Confirmation" onNew="action-record-load-dummy-field-confirm-merge-purchaseorder">
 		<panel colSpan="6" colOffset="3">
 			<field name="$priceList" title="Price List" type="many-to-one" target="com.axelor.apps.base.db.PriceList" domain="self.typeSelect = 2 and self.isActive = true" colSpan="6" colOffset="3" width="200px" showIf="priceListToCheck" canSelect="true" form-view="price-list-form" grid-view="price-list-grid"/>
+			<field name="$location" title="Location" showIf="locationToCheck" if-module="axelor-supplychain" colSpan="6" colOffset="3" width="200px" type="many-to-one" canSelect="true" target="com.axelor.apps.stock.db.Location" domain="self.company = company and self.typeSelect = 1" form-view="location-form" grid-view="location-grid"/>
 			<field name="$contactPartner" title="Contact partner" type="many-to-one" target="com.axelor.apps.base.db.Partner" domain="self.isContact IS TRUE AND EXISTS (SELECT 1 FROM Partner part WHERE part.id = :partnerId AND self.id IN (SELECT id FROM part.contactPartnerSet))" colSpan="6" colOffset="3" width="200px" widget="SuggestBox" showIf="contactPartnerToCheck" form-view="partner-contact-form" grid-view="partner-contact-grid"/>
-			<button name="confirm" title="Confirmer" onClick="action-purchase-order-method-merge" colSpan="12" width="200px"/>
+			<button name="confirm" title="Confirmer" onClick="action-group-purchase-order-merge-action" colSpan="12" width="200px"/>
 		</panel>
     </form>
 	
@@ -185,6 +186,11 @@
     	<action name="action-purchase-order-method-generate-budget-distribution"/>
     </action-group>
     
+    <action-group name="action-group-purchase-order-merge-action">
+	    <action name="action-purchase-order-method-merge-purchase" if="__repo__.of(MetaModule).all().filter('self.name = ?','axelor-supplychain').fetchOne()?.installed == false"/>
+	    <action name="action-purchase-order-method-merge-supplychain"/>
+	</action-group>
+    
     <action-method name="action-purchase-order-method-update-cost-price">
     	<call class="com.axelor.apps.purchase.web.PurchaseOrderController" method="updateCostPrice"/>
     </action-method>
@@ -314,13 +320,18 @@
 		<error message="You have to choose at least one purchase order" if="purchaseOrderToMerge == null || purchaseOrderToMerge.size() == 0"/>
 	</action-validate>
 	
-	<action-method name="action-purchase-order-method-merge">
+	<action-method name="action-purchase-order-method-merge-purchase">
 		<call class="com.axelor.apps.purchase.web.PurchaseOrderController" method="mergePurchaseOrder"/>
+	</action-method>
+	
+	<action-method name="action-purchase-order-method-merge-supplychain" if-module="axelor-supplychain">
+		<call class="com.axelor.apps.supplychain.web.PurchaseOrderController" method="mergePurchaseOrder"/>
 	</action-method>
 	
 	<action-record name="action-record-load-dummy-field-confirm-merge-purchaseorder" model="com.axelor.apps.base.db.Wizard">
 		<field name="priceListToCheck" expr="eval: contextPriceListToCheck"/>
 		<field name="contactPartnerToCheck" expr="eval: contextContactPartnerToCheck"/>
+		<field name="locationToCheck" expr="eval: contextLocationToCheck"/>
 		<field name="partnerId" expr="eval: contextPartnerId"/>
 	</action-record>
 	
