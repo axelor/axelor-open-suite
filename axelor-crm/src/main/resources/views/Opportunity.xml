@@ -87,37 +87,37 @@
 			<button name="closed-lost" help="Closed lost" readonlyIf="salesStageSelect &gt; 4" icon="fa-minus-circle" onClick="action-opportunity-set-closed-lost,save"/>
 		</toolbar>
 	  
-		<panel readonlyIf="salesStageSelect == 5 || salesStageSelect == 6">
+		<panel name="main" readonlyIf="salesStageSelect == 5 || salesStageSelect == 6">
 			<field name="name" css="label-bold bold"/>
 			<field name="opportunityType" widget="SuggestBox" colSpan="3" grid-view="opportunity-type-grid" form-view="opportunity-type-form"/>
 			<field name="source" colSpan="3" form-view="source-form" grid-view="source-grid"/>
 		</panel>
 		
-		<panel title="Follow-up">
+		<panel name="followUp" title="Follow-up">
 			<field name="salesStageSelect"/>
 			<field name="nextStep" readonlyIf="salesStageSelect == 5 || salesStageSelect == 6"/>
 			<field name="expectedCloseDate" readonlyIf="salesStageSelect == 5 || salesStageSelect == 6"/>
 			<field name="probability" readonlyIf="salesStageSelect == 5 || salesStageSelect == 6"/>
 		</panel>
 		
-		<panel title="Financial terms" readonlyIf="salesStageSelect == 5 || salesStageSelect == 6">
+		<panel name="financialTerms" title="Financial terms" readonlyIf="salesStageSelect == 5 || salesStageSelect == 6">
 			<field name="amount" colSpan="3"/>
 			<field name="currency" colSpan="3" form-view="currency-form" grid-view="currency-grid"/>
 			<field name="bestCase" colSpan="3"/>
 			<field name="worstCase" colSpan="3"/>
 		</panel>
 		
-		<panel title="Description">
+		<panel name="description" title="Description">
 			<field name="description" colSpan="12" showTitle="false" readonlyIf="salesStageSelect == 5 || salesStageSelect == 6" />
 		</panel>
 		
-		<panel title="Linked to" sidebar="true">
+		<panel name="linkedTo" title="Linked to" sidebar="true">
 			<field name="partner" domain="self.isContact = false" form-view="partner-form" grid-view="partner-grid" readonlyIf="salesStageSelect == 5 || salesStageSelect == 6"/>
 			<field name="lead" readonlyIf="salesStageSelect == 5 || salesStageSelect == 6" form-view="lead-form" grid-view="lead-grid"/>
 			<panel-include view="convert-opportunity-form" from="axelor-sale" if-module="axelor-sale"/>
 		</panel>
 		
-		<panel title="Assigned to" readonlyIf="salesStageSelect == 5 || salesStageSelect == 6" sidebar="true">
+		<panel name="assignedTo" title="Assigned to" readonlyIf="salesStageSelect == 5 || salesStageSelect == 6" sidebar="true">
 		  <field name="user" form-view="user-form" grid-view="user-grid"/>
 		  <button name="grabOpportunity" title="Assign to me" hideIf="user.id == _internalUserId"   icon="fa-suitcase" onClick="save,com.axelor.apps.crm.web.OpportunityController:assignToMe"/>
 		  <field name="team" form-view="team-form" grid-view="team-grid" if="__config__.general.getTeamManagement()"/>

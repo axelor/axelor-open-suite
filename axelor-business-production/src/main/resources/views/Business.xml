@@ -4,7 +4,7 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
     
     <form name="business-project-production-form" title="Business" model="com.axelor.apps.project.db.ProjectTask">
-       	<panel>
+       	<panel name="main" >
        		<field name="prodInvTypeSelect"/>
        	</panel>
    		<panel-dashlet colSpan="12" action="action-business-project-view-production-manuf-order"/>

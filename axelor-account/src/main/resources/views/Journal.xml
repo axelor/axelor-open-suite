@@ -19,7 +19,7 @@
 	<form name="journal-form" title="Journal" model="com.axelor.apps.account.db.Journal"   
 		onNew="account-journal-record-default" >
 		
-		<panel>
+		<panel name="main" >
 			<field name="name"/>
 			<field name="code" x-bind="{{code|uppercase}}"/>
 			<field name="company" readonlyIf="statusSelect == 1 || statusSelect == 2" form-view="company-form" grid-view="company-grid"/>
@@ -30,18 +30,18 @@
 		
 			<panel-dashlet title="General" action="action-journal-view-move-line" height="400" hideIf="$popup()"/>
 		
-			<panel title="Configurations" hideIf="$popup()">
-				<panel title="MoveLine" colSpan="12">
+			<panel name="configurations" title="Configurations" hideIf="$popup()">
+				<panel name="moveLine" title="MoveLine" colSpan="12">
 					<field name="sequence" domain="self.code = 'move' and self.company = :company" form-view="sequence-form" grid-view="sequence-grid"/>
 					<field name="descriptionModel"/>
 					<field name="descriptionIdentificationOk"/>
 				</panel>  
 				<spacer/>
-				<panel title="Payments" colSpan="12">
+				<panel name="payments" title="Payments" colSpan="12">
 					<field name="editReceiptOk" colSpan="6"/>
 					<field name="excessPaymentOk" colSpan="6"/>
 				</panel>
-				<panel title="Move lines security settings" colSpan="12">
+				<panel name="moveLinesSecuritySettings" title="Move lines security settings" colSpan="12">
 					<field name="validAccountTypeSet" canNew="false" colSpan="6" form-view="account-type-form" grid-view="account-type-grid"/>
 					<field name="validAccountSet" domain="self.company = :company" canNew="false" grid-view="account-simple-grid" colSpan="6" form-view="account-form"/>
 				</panel>
@@ -49,13 +49,13 @@
 			
 		</panel-tabs>
 		
-		<panel sidebar="true" title="Status" itemSpan="12">
+		<panel sidebar="true" name="status" title="Status" itemSpan="12">
 			<field name="statusSelect" showTitle="false" readonly="true" widget="NavSelect" colSpan="12"/>
 			<field name="isObsolete" onChange="account-journal-record-status-archived"/>
 			<button name="activeStatus" title="Active" hideIf="statusSelect == 1" onClick="account-journal-record-status-active,save"/>
 		</panel>
 		
-		<panel sidebar="true" title="Exports" itemSpan="12">
+		<panel sidebar="true" name="exports" title="Exports" itemSpan="12">
 			<field name="exportCode" readonlyIf="notExportOk"/>
 			<field name="notExportOk" onChange="account-journal-on-change-not-export-ok"/>
 		</panel>

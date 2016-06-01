@@ -14,11 +14,11 @@
     </grid>
     
     <form onSave="action-year-check-date" onNew="action-year-account-record-new" name="year-account-form" title="Fiscal year" model="com.axelor.apps.base.db.Year">
-		<panel readonlyIf="statusSelect == 2">
+		<panel name="main" readonlyIf="statusSelect == 2">
 			<field name="name"/>
 			<field name="code" colSpan="3"/>
 			<field name="company" widget="SuggestBox" form-view="company-form" required="true" colSpan="3" grid-view="company-grid"/>
-			<panel title="Dates" colSpan="12">
+			<panel name="dates" title="Dates" colSpan="12">
 				<field name="fromDate" colSpan="3"/>
 				<field name="toDate" colSpan="3"/>
 				<field name="reportedBalanceDate" colSpan="3"/>
@@ -30,7 +30,7 @@
 			<field name="statusSelect" colSpan="6"/>
 			<button name="close" title="Close fiscal year" onClick="action-group-account-year-close-click"/>
 		</panel>
-		<panel sidebar="true" title="Periods generation assistant" hideIf="statusSelect == 2">
+		<panel sidebar="true" name="periodsGenerationAssistant" title="Periods generation assistant" hideIf="statusSelect == 2">
 			<field name="periodDurationSelect"/>
 			<button name="generatePeriods" title="Generate periods" onClick="action-group-account-year-generateperiod-click" />    
 		</panel>

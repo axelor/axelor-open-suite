@@ -16,7 +16,7 @@
 
 	<form name="cheque-rejection-form" title="Cheque Rejection"	model="com.axelor.apps.account.db.ChequeRejection"  
 		onNew="default-cheque-rejection-record">
-		<panel>
+		<panel name="main" >
 			<field name="statusSelect" />
 			<field name="move" form-view="move-form" grid-view="move-grid" />
 			<field name="name" />
@@ -25,14 +25,14 @@
 			<field name="paymentMode" grid-view="payment-mode-grid" form-view="payment-mode-form" />
 			<field name="partner" form-view="partner-form" grid-view="partner-grid" domain="self.isContact = false" />
 		</panel>
-		<panel title="Reject Information">
+		<panel name="rejectInformation" title="Reject Information">
 			<field name="rejectionDate" />
 			<field name="interbankCodeLine" domain="self.chequeOk = 't'"  form-view="interbank-code-line-form" grid-view="interbank-code-line-grid"/>
 			<field name="description" />
 			<field name="amountRejected" />
 		</panel>
 
-		<panel title="Payment Rejected">
+		<panel name="paymentRejected" title="Payment Rejected">
 			<!-- TODO:check weather this Editor is working or not -->
 			<field name="paymentVoucher"
 				onChange="action-group-account-cheque-rejection-paymentvoucher-onchange"
@@ -50,7 +50,7 @@
 				</editor>
 			</field>
 		</panel>
-		<panel sidebar="true" title="Action">
+		<panel sidebar="true" name="action" title="Action">
 			<button name="validateChequeRejection" title="Validate reject"
 				  onClick="save,action-method-account-cheque-rejection-validate"
 				hideIf="statusSelect == 2" />

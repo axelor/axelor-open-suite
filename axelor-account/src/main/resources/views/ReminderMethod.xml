@@ -7,7 +7,7 @@
     	<field name="code"/>
     </grid>
     <form name="reminder-method-form" title="Reminder method" model="com.axelor.apps.account.db.ReminderMethod" width="large">
-    	<panel >
+    	<panel name="main" >
     		<field name="name"/>
     		<field name="code"/>
        	</panel>

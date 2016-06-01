@@ -10,7 +10,7 @@
     </grid>
     
     <form name="product-variant-attr-form" title="Product variant attribute" model="com.axelor.apps.base.db.ProductVariantAttr" width="large">
-    	<panel>
+    	<panel name="main" >
         	<field name="name" />
         	<field name="code" x-bind="{{code|uppercase}}" />
         </panel>

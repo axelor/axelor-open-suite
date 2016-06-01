@@ -6,7 +6,7 @@
 	<form model="com.axelor.apps.crm.db.RecurrenceConfiguration" title="Recurrence assistant" name="recurrence-assistant-form" 
     	onNew="action-recurrence-assistant-on-new, action-recurrence-assistant-method-compute-recurrence-name"
     	onLoad="action-recurrence-assistant-method-compute-recurrence-name">
-    	<panel>
+    	<panel name="main" >
     		<field name="recurrenceType" title="Recurrence" colSpan="12" width="25%" onChange="action-recurrence-assistant-attrs-title-period, action-recurrence-assistant-method-compute-recurrence-name"/>
     		<field name="periodicity" title="Repeat every" colSpan="3" onChange="action-recurrence-assistant-method-compute-recurrence-name"/>
     		<label name="period" title="Days" colSpan="9"/>

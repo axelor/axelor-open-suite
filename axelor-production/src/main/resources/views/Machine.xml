@@ -10,7 +10,7 @@
     </grid>
     
 	<form name="machine-form" title="Machine" model="com.axelor.apps.production.db.Machine" width="large">
-	  <panel>
+	  <panel name="main">
 	    <field name="name"/>
 	    <field name="serialNumber"/>
 		<field name="brand"/>

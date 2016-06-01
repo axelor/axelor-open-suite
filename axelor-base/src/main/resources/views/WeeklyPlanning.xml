@@ -9,7 +9,7 @@
 	<form name="weekly-planning-form" title="Weekly Planning" model="com.axelor.apps.base.db.WeeklyPlanning" 
 		  onNew="com.axelor.apps.base.web.weeklyplanning.WeeklyPlanningController:initPlanning" 
 		  onSave="com.axelor.apps.base.web.weeklyplanning.WeeklyPlanningController:checkPlanning">
-		<panel>
+		<panel name="main">
 			<field name="name"/>
 		</panel>
 	    <panel-related field="weekDays" editable="true" grid-view="day-planning-grid" form-view="day-planning-form"/>
@@ -24,7 +24,7 @@
 	</grid>
 	
 	<form name="day-planning-form" title="Day" model="com.axelor.apps.base.db.DayPlanning">
-		<panel>
+		<panel name="main">
 			<field name="name" readonly="true"/>
 			<field name="morningFrom"/>
 		    <field name="morningTo"/>

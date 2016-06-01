@@ -8,7 +8,7 @@
     </grid>
 
     <form name="kilometric-allowance-rate-form" title="Kilometric allowance rate" model="com.axelor.apps.hr.db.KilometricAllowanceRate">
-    	<panel>
+    	<panel name="main">
 		    <field name="kilometricAllowParam" />
 	        <field name="rate"/>
         </panel>

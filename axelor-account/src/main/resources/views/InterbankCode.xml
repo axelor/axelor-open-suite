@@ -17,12 +17,12 @@
 	</grid>
 	
     <form name="interbank-code-form" title="Blocking reason/reject codes lists" model="com.axelor.apps.account.db.InterbankCode" width="large">
-		<panel >
+		<panel name="main">
 			<field name="code"/>
 			<field name="name"/>
 			<field name="endDate"/>
 		</panel>
-		<panel title="Description" >
+		<panel name="description" title="Description" >
 			<field name="description" showTitle="false" colSpan="12"/>
 		</panel> 
 		<panel-related field="interbankCodeLineList" form-view="interbank-code-line-custom-form" grid-view="interbank-code-line-grid"/>

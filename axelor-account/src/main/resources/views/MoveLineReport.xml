@@ -25,7 +25,7 @@
 
 	<form name="move-line-report-form" title="Accounting report" model="com.axelor.apps.account.db.MoveLineReport"   
 		onNew="action-move-line-report-record-default">
-		<panel >
+		<panel name="main" >
 			<field name="ref" readonly="true" />
 			<field name="date" readonlyIf="statusSelect == 2"/>
 			<field name="typeSelect" onChange="action-group-account-moveline-report-typeselect-onchange" selection="move.line.report.type.select" />
@@ -33,7 +33,7 @@
 			<field name="company" readonlyIf="ref != null" widget="SuggestBox" onChange="action-move-line-report-method-get-account" form-view="company-form" grid-view="company-grid"/>
 		</panel>
 		
-		<panel sidebar="true" title="Info">
+		<panel sidebar="true" name="info" title="Info">
 			<button name="search" title="Search" hideIf="typeSelect == 12 || statusSelect == 2" onClick="save,action-move-line-report-method-search-move-line,save" />
 			<button name="export" title="Print" icon="fa-print" hideIf="statusSelect == 2"	onClick="action-group-account-moveline-report-export-click" />
 			<field name="statusSelect" />
@@ -41,7 +41,7 @@
 		</panel>
 
 		<panel-tabs>
-			<panel title="Filter">
+			<panel name="filter" title="Filter">
 				<field name="cashRegister" hideIf="!typeSelect || [0,2,3,4,12].indexOf(typeSelect) != -1" grid-view="cash-register-grid" form-view="cash-register-form"/>
 				<field name="period" onChange="action-group-account-moveline-report-period-onchange" onSelect="action-move-line-report-attrs-period-domain" form-view="period-form" grid-view="period-grid" />
 				<field name="year" hideIf="typeSelect != 12" onSelect="action-move-line-report-attrs-year-domain" requiredIf="typeSelect == 12" grid-view="year-account-grid" form-view="year-account-form" />
@@ -52,7 +52,7 @@
 				<field name="paymentMode" grid-view="payment-mode-grid" form-view="payment-mode-form" hideIf="!typeSelect || [2,3,4,5,10,12,13].indexOf(typeSelect) != -1"/>
 				<field name="partnerSet" colSpan="12" form-view="partner-form" grid-view="partner-grid" domain="self.isContact = false" />
 			</panel>
-			<panel title="Printing informations">
+			<panel name="printingInformations" title="Printing informations">
 				<field name="global" hideIf="!typeSelect || [0,3,4,10,12,13].indexOf(typeSelect) != -1"	onChange="action-move-line-report-record-global" />
 				<field name="globalByPost" hideIf="!typeSelect || [0,2,3,4,11,12,13].indexOf(typeSelect) != -1"	onChange="action-move-line-report-record-global-by-post" />
 				<field name="globalByDate" hideIf="!typeSelect || [2,3,4,5,10,11,12,13].indexOf(typeSelect) != -1" onChange="action-move-line-report-record-global-by-date" />
@@ -61,7 +61,7 @@
 			</panel>
 		</panel-tabs>
 		
-		<panel sidebar="true" title="Balance">
+		<panel sidebar="true" name="balance" title="Balance">
 			<field name="totalDebit" />
 			<field name="totalCredit" />
 			<field name="balance" />
@@ -90,7 +90,7 @@
 	<form name="move-line-report-export-form" title="Accounting export" model="com.axelor.apps.account.db.MoveLineReport"   
 	onNew="action-move-line-report-record-default">
 		
-		<panel title="Search">
+		<panel name="search" title="Search">
 			<field name="ref" readonly="true"/>
 			<field name="date" readonlyIf="statusSelect == 2"/>
 			<field name="typeSelect" onChange="action-group-account-moveline-report-typeselect-onchange" selection="move.line.report.type.select.export"/>
@@ -101,7 +101,7 @@
 			<field name="journal" form-view="journal-form" grid-view="journal-grid"/>
 		</panel>
 		
-		<panel sidebar="true" title="Info">
+		<panel sidebar="true" name="info" title="Info">
 			<field name="statusSelect"/>
 			<button name="search" title="Search"   hideIf="statusSelect == 2" onClick="save,action-move-line-report-method-search-move-line,save"/>
 			<button name="export" title="Export"   hideIf="statusSelect == 2" onClick="action-group-account-moveline-report-export-click"/>
@@ -109,7 +109,7 @@
 			<button name="replayExport" title="Run export again"   showIf="statusSelect == 2" onClick="save,action-move-line-report-method-replay-export"/>
 		</panel>
 		
-		<panel sidebar="true" title="Balance">
+		<panel sidebar="true" name="balance" title="Balance">
 			<field name="totalDebit"/>
 			<field name="totalCredit"/>
 			<field name="balance"/>

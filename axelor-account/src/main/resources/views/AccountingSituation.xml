@@ -15,18 +15,18 @@
 	 <form name="accounting-situation-partner-form" title="Accounting situation" model="com.axelor.apps.account.db.AccountingSituation" 
 	     onLoad="action-account-accounting-situation-method-update-customer-account" 
 	     onNew="action-account-accounting-situation-default-set" width="large">
-		<panel>
+		<panel name="main" >
 			<field name="company" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
 			<field name="companyBankDetails" widget="SuggestBox" onSelect="action-accounting-batch-attrs-company-bank-details-domain" form-view="bank-details-form" grid-view="bank-details-grid"/>
 			<field name="customerAccount" form-view="account-form" grid-view="account-grid"/>
        		<field name="supplierAccount" form-view="account-form" grid-view="account-grid"/>
 		</panel>
-		<panel title="Customer balance" itemSpan="4">
+		<panel name="customerBalance" title="Customer balance" itemSpan="4">
 			<field name="balanceCustAccount"/>
 			<field name="balanceDueCustAccount"/>
 			<field name="balanceDueReminderCustAccount"/>
 		</panel>
-	    <panel title="Reminder process">
+	    <panel name="reminderProcess" title="Reminder process">
 	    	<field name="reminder" form-view="reminder-form" grid-view="reminder-grid"/>
 	    </panel>
 	    <panel-dashlet action="action-accounting-situation-view-move-lines"/>
@@ -46,19 +46,19 @@
 	 <form name="accounting-situation-form" title="Accounting situation" model="com.axelor.apps.account.db.AccountingSituation" 
 	     onLoad="action-account-accounting-situation-method-update-customer-account"  
 	     onNew="action-account-accounting-situation-default-set" >
-		<panel >
+		<panel name="main" >
 			<field name="company" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
 			<field name="partner" form-view="partner-form" grid-view="partner-grid"/>
 			<field name="customerAccount" form-view="account-form" grid-view="account-grid"/>
        		<field name="supplierAccount" form-view="account-form" grid-view="account-grid"/>
 		</panel>
 	    	
-		<panel title="Customer balance"  itemSpan="4" >
+		<panel name="customerBalance" title="Customer balance"  itemSpan="4" >
 			<field name="balanceCustAccount"/>
 			<field name="balanceDueCustAccount"/>
 			<field name="balanceDueReminderCustAccount"/>
 		</panel>
-	    <panel title="Reminder process"  >
+	    <panel name="reminderProcess" title="Reminder process"  >
 	    	<field name="reminder" form-view="reminder-form" grid-view="reminder-grid"/>
 	    </panel>
 	     <panel-dashlet action="action-accounting-situation-view-move-lines"/>

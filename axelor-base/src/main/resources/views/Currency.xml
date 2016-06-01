@@ -10,7 +10,7 @@
     </grid>
     
     <form name="currency-form" title="Currency" model="com.axelor.apps.base.db.Currency">
-    	<panel>
+    	<panel name="main">
 	        <field name="name"/>
 	        <field name="code" colSpan="3" x-bind="{{code|uppercase}}"/>
 	        <field name="symbol" colSpan="3"/>

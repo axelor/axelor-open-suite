@@ -19,7 +19,7 @@
         		<button name="showUnpaidInvoice" title="View all unpaid invoices"  onClick="save,action-partner-view-show-unpaid-invoice"/>
 	    	</panel>
 	    </panel>
-	    <panel title="Bank details" colSpan="12">
+	    <panel name="bankDetails" title="Bank details" colSpan="12">
 	        <field name="bankDetailsList" colSpan="12" showTitle="false" >
 			    <editor layout="table" x-show-titles="false" onNew="action-set-default-partner">
 					<field name="bankAddress" />
@@ -36,11 +36,11 @@
 			    </editor>
 			</field>
 	    </panel>
-	    <panel title="Sale Price List" colSpan="12" hideIf="!isCustomer">
+	    <panel name="salePriceList" title="Sale Price List" colSpan="12" hideIf="!isCustomer">
 	    	<field name="salePriceList" canNew="true" domain="self.typeSelect = 1" form-view="sale-price-list-form" grid-view="price-list-grid"/>
 	    </panel>
 	    
-	    <panel title="Purchase Price List" colSpan="12" hideIf="!isSupplier">
+	    <panel name="purchasePriceList" title="Purchase Price List" colSpan="12" hideIf="!isSupplier">
 	    	<field name="purchasePriceList" canNew="true" domain="self.typeSelect = 2" form-view="purchase-price-list-form" grid-view="price-list-grid"/>
 	    </panel>
 	    
@@ -78,7 +78,7 @@
 <!--              </form> -->
 	
 	<form name="incl-sepa-direct-debit-partner-form" title="Partner" model="com.axelor.apps.base.db.Partner">
-         <panel title="SEPA Direct Debit" colSpan="12" >
+         <panel name="sepaDirectDebit" title="SEPA Direct Debit" colSpan="12" >
 		 	<field name="activeUmr" colSpan="3" canNew="false" domain="self.partner.id = :id"/>
          	<panel-related field="umrList" title="History" colSpan="12"/>
          </panel>

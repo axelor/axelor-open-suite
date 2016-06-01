@@ -5,7 +5,7 @@
 
 	<form name="product-family-form" title="Product family" model="com.axelor.apps.base.db.ProductFamily" id="product-faimly-form"  width="large">
 	  <panel-include view="product-family-form" from="axelor-base"/>
-	  <panel title="Sales Turnover" hideIf="fromMenu == null" >    
+	  <panel name="salesTurnover" title="Sales Turnover" hideIf="fromMenu == null" >    
 		<panel-dashlet height="350" action="dashlet.family.sales.turnover.per.month" colSpan="12"/>
 	  </panel>
 	</form>

@@ -11,7 +11,7 @@
 
 	<form name="invoicing-project-form" title="Invoicing Project" model="com.axelor.apps.businessproject.db.InvoicingProject" 
 		onNew="action-invoicing-project-attrs-title-project-task" onLoad="action-invoicing-project-attrs-title-project-task">
-		<panel>
+		<panel name="main" >
 			<field name="projectTask" form-view="project-task-form" grid-view="project-task-grid" onChange="save,action-invoicing-project-method-fill-in" readonlyIf="invoice != null"/>
 			<field name="deadlineDate" readonlyIf="invoice != null" onChange="save,action-invoicing-project-method-fill-in"/>
 			<button name="automaticFillIn" title="Automatically Fill in" onClick="action-invoicing-project-method-fill-in" readonlyIf="invoice != null"/>
@@ -27,7 +27,7 @@
 		<panel-related field="projectTaskSet" canNew="false" canEdit="false" canSelect="false" form-view="project-task-form" grid-view="project-task-grid"/>
 		<panel-related field="elementsToInvoiceSet" canNew="false" canEdit="false" canSelect="false" grid-view="elements-to-invoice-grid" form-view="elements-to-invoice-form"/>
 		<panel-related field="manufOrderSet" canNew="false" canEdit="false" canSelect="false" if-module="axelor-business-production" grid-view="manuf-order-invoicing-project-grid" form-view="manuf-order-form"/>
-		<panel sidebar="true" title="Priority">
+		<panel sidebar="true" name="priority" title="Priority">
 			
 			<field name="saleOrderLineSetPrioritySelect" width="30%"/>
 			<field name="purchaseOrderLineSetPrioritySelect" width="30%"/>

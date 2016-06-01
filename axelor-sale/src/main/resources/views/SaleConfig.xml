@@ -8,15 +8,15 @@
     </grid>
 
 	<form name="sale-config-form" title="Sale configuration" model="com.axelor.apps.sale.db.SaleConfig" onNew="action-sale-config-record-default" width="large">
-	  	<panel>
+	  	<panel name="main" >
 	    	<field name="company" form-view="company-form" colSpan="4" grid-view="company-grid"/>
 	    	<field name="saleOrderInAtiSelect"/>
 	    	<field name="defaultValidityDuration" form-view="duration-form" grid-view="duration-grid"/>
 	  	</panel>
-	  	<panel title="Customer Credit" if-module="axelor-supplychain">
+	  	<panel name="customerCredit" title="Customer Credit" if-module="axelor-supplychain">
 	  		<field name="acceptedCredit"/>
 	  	</panel>
-  		<panel title="Printing settings">
+  		<panel name="printingSettings" title="Printing settings">
   			<field name="displaySalemanOnPrinting"/>
   			<field name="displayDelCondOnPrinting"/>
   			<field name="displayProductCodeOnPrinting"/>

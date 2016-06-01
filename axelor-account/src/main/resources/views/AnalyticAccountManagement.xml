@@ -7,7 +7,7 @@
         <field name="analyticAccount" grid-view="analytic-account-grid" form-view="analytic-account-form"/>
     </grid>
     <form name="analytic-account-management-form" title="Analytic Acc. Mngmt" model="com.axelor.apps.account.db.AnalyticAccountManagement"  >
-        <panel >
+        <panel name="main" >
 	        <field name="analyticAxis" form-view="analytic-axis-form" grid-view="analytic-axis-grid"/>
 	        <field name="analyticAccount" grid-view="analytic-account-grid" form-view="analytic-account-form"/>
         </panel>      

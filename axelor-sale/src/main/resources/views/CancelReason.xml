@@ -6,7 +6,7 @@
         <field name="name"/>
     </grid>
     <form name="cancel-reason-form" title="Cancel Reason" model="com.axelor.apps.sale.db.CancelReason">
-    	<panel>
+    	<panel name="main" >
         	<field name="name"/>
         </panel>
     </form>

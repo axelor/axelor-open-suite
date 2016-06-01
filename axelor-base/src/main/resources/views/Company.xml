@@ -10,7 +10,7 @@
     </grid>
 
 	<form name="company-form" title="Company" model="com.axelor.apps.base.db.Company" >
-		<panel readonlyIf="$popup()">
+		<panel name="main" readonlyIf="$popup()">
 		    <panel colSpan="4">
 				<field name="logo" widget="Image"/>
 			</panel>
@@ -23,7 +23,7 @@
 		    <field name="address" canNew="true" colSpan="12" form-view="address-form" grid-view="address-grid"/>
 	  	</panel>
 	  
-	  	<panel sidebar="true" title="Modules configurations" hideIf="$popup()">
+	  	<panel sidebar="true" name="modulesConfigurations" title="Modules configurations" hideIf="$popup()">
 	  		<button name="accountConfigButton" title="Account config" width="100%" colSpan="6" onClick="action-company-view-account-config" if-module="axelor-account"/>
 	    	<button name="saleConfigButton" title="Sale config" width="100%" colSpan="6" onClick="action-company-view-sale-config" if-module="axelor-sale"/>
 	    	<button name="stockConfigButton" title="Stock config" width="100%" colSpan="6" onClick="action-company-view-stock-config" if-module="axelor-stock"/>
@@ -34,26 +34,26 @@
     		<button name="crmConfigButton" title="CRM config" width="100%" colSpan="6" onClick="action-company-view-crm-config" if-module="axelor-crm"/>
     	</panel>
 	  
-	  	<panel title="Notes" showIf="$popup()" readonly="true">
+	  	<panel name="notes" title="Notes" showIf="$popup()" readonly="true">
       		<field name="notes" showTitle="false" colSpan="12"/>
     	</panel>
 	  
 	  	<panel-tabs hideIf="$popup()">
-	    	<panel title="Notes">
+	    	<panel name="notes" title="Notes">
 	      		<field name="notes" showTitle="false" colSpan="12"/>
 	    	</panel>
-	    	<panel title="Configurations">
+	    	<panel name="configurations" title="Configurations">
 	  			<field name="currency" form-view="currency-form" grid-view="currency-grid"/>
 	  			<field name="printingSettings" canNew="true" form-view="printing-setting-form" grid-view="printing-setting-grid"/>
 	  			<field name="defaultPartnerTypeSelect"/>
 	  			<field name="customerPaymentDelay" if-module="axelor-cash-management"/>
 	  			<field name="supplierPaymentDelay" if-module="axelor-cash-management"/>
 	  		</panel>
-	    	<panel title="Bank details">
+	    	<panel name="bankDetails" title="Bank details">
 	      		<field name="defaultBankDetails"/>
 	      		<panel-related field="bankDetailsSet" showTitle="false" colSpan="12" form-view="bank-details-form" grid-view="bank-details-grid"/>
 	    	</panel>
-	    	<panel title="Order Bloqued Message" if-module="axelor-sale">
+	    	<panel name="orderBloquedMessage" title="Order Bloqued Message" if-module="axelor-sale">
 	      		<field name="orderBloquedMessage"/>
 	    	</panel>
 	  	</panel-tabs>

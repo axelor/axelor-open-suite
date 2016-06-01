@@ -21,7 +21,7 @@
 		onLoad="action-payment-schedule-attrs-collapse-irrecoverable-group"
 		onSave="action-payment-schedule-payment-schedule-id">
 		
-		<panel>
+		<panel name="main">
 			<field name="scheduleId" readonlyIf="statusSelect != 1" />
 			<field name="creationDate" readonlyIf="statusSelect != 1" />
 			<field name="startDate" readonlyIf="statusSelect != 1" required="true" />
@@ -42,12 +42,12 @@
 		<panel-related title="Payment Schedule Line" field="paymentScheduleLineList" grid-view="payment-schedule-line-payment-schedule-grid" form-view="payment-schedule-line-payment-schedule-form"
 			readonlyIf="statusSelect != 3" />
 
-		<panel title="actions" sidebar="true">
+		<panel name="actions" title="Actions" sidebar="true">
 			<button name="validate" title="Validate" onClick="action-group-account-payment-schedule-validate-click" readonlyIf="statusSelect != 1" colSpan="6" />
 			<button name="cancel" title="Cancel" onClick="action-payment-schedule-method-cancel,save" readonlyIf="statusSelect == 4" colSpan="6" />
 			<button name="createPaymentScheduleLines" title="Create schedule lines" onClick="action-group-account-payment-schedule-create-click" showIf="statusSelect == 1" colSpan="12" />
 		</panel>
-		<panel title="Irrecoverable" sidebar="true">
+		<panel name="irrecoverable" title="Irrecoverable" sidebar="true">
 			<field name="irrecoverableStatusSelect" />
 			<field name="managementObject" form-view="management-object-form" grid-view="management-object-grid" />
 			<button name="passInIrrecoverable" title="Shift to irrecoverablePassage en irrécouvrable" onClick="com.axelor.apps.account.web.PaymentScheduleController:passInIrrecoverable" colSpan="6" />

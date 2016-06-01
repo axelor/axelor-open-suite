@@ -27,11 +27,14 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFCell;
+import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -68,9 +71,47 @@ public class ViewDocExportService {
 		"Menu(FR)",
 	};
 	
+	private static final String[] PANEL_HEADERS = new String[]{
+		"Module", 
+		"Object", 
+		"View", 
+		"",
+		"Panel name",
+		"Panel title(EN)", 
+		"Panel title(FR)"
+	};
+	
+	private static final Set<String>fieldTypes = new TreeSet<String>(String.CASE_INSENSITIVE_ORDER);{
+		fieldTypes.add("Toolbar Menu");
+		fieldTypes.add("Toolbar MenuItem");
+		fieldTypes.add("Panel");
+		fieldTypes.add("Button");
+		fieldTypes.add("Label");
+		fieldTypes.add("Dashlet");
+		fieldTypes.add("STRING");
+		fieldTypes.add("INTEGER");
+		fieldTypes.add("DECIMAL");
+		fieldTypes.add("BOOLEAN");
+		fieldTypes.add("TEXT");
+		fieldTypes.add("DATE");
+		fieldTypes.add("DATETIME");
+		fieldTypes.add("LOCALDATETIME");
+		fieldTypes.add("LOCALDATE");
+		fieldTypes.add("LOCALTIME");
+		fieldTypes.add("ONE_TO_MANY");
+		fieldTypes.add("MANY_TO_ONE");
+		fieldTypes.add("ONE_TO_ONE");
+		fieldTypes.add("MANY_TO_MANY");
+		fieldTypes.add("BINARY");
+	};
+	
 	private XSSFWorkbook workBook;
 	
+	private XSSFWorkbook oldBook;
+	
 	private XSSFSheet sheet;
+	
+	private XSSFSheet oldSheet;
 	
 	private CellStyle style;
 	
@@ -80,9 +121,13 @@ public class ViewDocExportService {
 	
 	private String rootMenu;
 	
+	private boolean onlyPanel;
+	
 	private List<String> processedMenus = new ArrayList<String>();
 	
-	private Map<String, String[]> docMap = new HashMap<String, String[]>();
+	private Map<String, Integer> docMap = new HashMap<String, Integer>();
+	
+	private Map<String, List<Integer>> commentMap = new HashMap<String, List<Integer>>();
 	
 	@Inject
 	private MetaMenuRepository metaMenuRepo;
@@ -96,14 +141,16 @@ public class ViewDocExportService {
 	@Inject
 	private ViewDocXmlProcessor viewDocXmlProcessor;
 	
-	public MetaFile export(MetaFile docFile){
+	public MetaFile export(MetaFile docFile, boolean onlyPanel){
+		
+		this.onlyPanel = onlyPanel;
 		
 		List<MetaMenu> menus = metaMenuRepo.all().filter("self.parent is null and self.left = true").order("order").fetch();
 		
 		workBook = new XSSFWorkbook();
 		addStyle();
 		
-		if(docFile != null){
+		if(docFile != null && !onlyPanel){
 			updateDocMap(docFile);
 		}
 		
@@ -122,6 +169,10 @@ public class ViewDocExportService {
 		style.setBorderLeft(CellStyle.BORDER_THIN);
 		style.setBorderRight(CellStyle.BORDER_THIN);
 		
+	}
+	
+	public boolean getOnlyPanel(){
+		return onlyPanel;
 	}
 	
 	private void processRootMenu(Iterator<MetaMenu> rootMenuIter){
@@ -173,9 +224,17 @@ public class ViewDocExportService {
 		
 		sheet = workBook.createSheet(I18n.get(rootMenu));
 		rowCount = -1;
-
-		writeRow(HEADERS);
 		
+		if(oldBook != null){
+			oldSheet = oldBook.getSheet(sheet.getSheetName());
+		}
+
+		if(onlyPanel){
+			writeRow(PANEL_HEADERS);
+		}
+		else{
+			writeRow(HEADERS);
+		}
 	}
 	
 	protected void writeRow(String[] values){
@@ -186,7 +245,7 @@ public class ViewDocExportService {
 		int count = 0;
 		count = writeCell(row, values, count, true);
 		
-		if(rowCount > 0){
+		if(rowCount > 0 && !onlyPanel){
 			count = writeCell(row, menuPath, count, true);
 		}
 		
@@ -196,9 +255,30 @@ public class ViewDocExportService {
 		
 	}
 	
+	protected void writeRow(Integer rowIndex){
+		
+		rowCount += 1;
+		XSSFRow row = sheet.createRow(rowCount);
+		
+		writeCell(row, rowIndex, 0, true);
+		
+		menuPath = new String[]{"",""};
+		
+	}
+	
 	private int writeCell(XSSFRow row, String[] values,  int count, boolean addStyle){
 		
+		int cellCount = 0;
 		for(String value : values){
+			cellCount++;
+			if(onlyPanel){
+				if(cellCount == 4){
+					continue;
+				}
+				if(cellCount > 7){
+					break;
+				}
+			}
 			XSSFCell cell = row.createCell(count);
 			if(addStyle){
 				cell.setCellStyle(style);
@@ -210,6 +290,29 @@ public class ViewDocExportService {
 		return count;
 	}
 	
+	private void writeCell(XSSFRow row, Integer oldRowIndex,  int count, boolean addStyle){
+		
+		XSSFRow oldRow = oldSheet.getRow(oldRowIndex);
+		
+		while(count < oldRow.getLastCellNum()){
+			XSSFCell oldCell = oldRow.getCell(count);
+
+			XSSFCellStyle oldStyle = oldCell.getCellStyle();
+			XSSFCellStyle newStyle = workBook.createCellStyle();
+			newStyle.setFillBackgroundColor(oldStyle.getFillBackgroundXSSFColor());
+			newStyle.setBorderBottom(oldStyle.getBorderBottom());
+			newStyle.setBorderLeft(oldStyle.getBorderLeft());
+			newStyle.setBorderRight(oldStyle.getBorderRight());
+			newStyle.setBorderTop(oldStyle.getBorderTop());
+			
+			Cell cell = row.createCell(count);
+			cell.setCellValue(oldCell.getStringCellValue());
+			cell.setCellStyle(newStyle);
+			count++;
+		}
+		
+	}
+	
 	private void addDoc(XSSFRow row, String[] values, int count){
 		
 		 String name = values[4];
@@ -217,22 +320,23 @@ public class ViewDocExportService {
 			 name = values[5];
 		 }
 		 
-		 String[] obj = values[1].split("\\.");
-		 if(obj[0].isEmpty()){
-			 obj = new String[]{values[2]};
-		 }
-		 
 		 String key = null;
 		 if(row.getRowNum() == 0){
 			 key = sheet.getSheetName();
 		 }
 		 else{
-			 key =  obj[obj.length - 1] + "," + values[3] + "," + name;
+			 key =  values[2] + "," + values[3] + "," + name;
 		 }
 		 
-		 String[] docs = docMap.get(key);
-		 if(docs != null){
-			 writeCell(row, docs, count, false);
+		 if(docMap.containsKey(key) && oldSheet != null){
+			 writeCell(row, docMap.get(key), count, false);	
+		 }
+
+		 if(commentMap.containsKey(key) && oldSheet != null){
+			log.debug("Comment map rows: {}", commentMap.get(key).size());
+			for(Integer rowIndex : commentMap.get(key)){
+				writeRow(rowIndex);
+			}
 		 }
 	}
 	
@@ -328,10 +432,14 @@ public class ViewDocExportService {
 			FileInputStream inSteam = new FileInputStream(doc);
 			XSSFWorkbook book = new XSSFWorkbook(inSteam);
 			
-			for(XSSFSheet sheet : book){
+			oldBook = book;
 
-				for(Row row : sheet){
-					
+			for(XSSFSheet sheet : book){
+				String lastKey = sheet.getSheetName();
+				Iterator<Row> rowIter = sheet.rowIterator();
+				while(rowIter.hasNext()){
+					Row row = rowIter.next();
+
 					String key = null;
 					if(row.getRowNum() == 0){
 						key = sheet.getSheetName();
@@ -342,24 +450,23 @@ public class ViewDocExportService {
 							name =  getCellValue(row.getCell(5));
 						}
 						
-						String[] obj = getCellValue(row.getCell(1)).split("\\.");
-						if(obj[0].isEmpty()){
-							obj = new String[]{getCellValue(row.getCell(2))};
+						String type = getCellValue(row.getCell(3));
+						if(type == null){
+							continue;
 						}
+						key =  getCellValue(row.getCell(2)) 
+							   + "," + type 
+							   + "," +  name;
 						
-						key =  obj[obj.length-1] + "," + getCellValue(row.getCell(3)) +  "," +  name;
+						if(addComment(lastKey, type, row)){
+							continue;
+						}
+						else{
+							lastKey = key;
+						}
 					}
 					
-					List<String> values = new ArrayList<String>();
-					int count = 11;
-					short lastCellNo = row.getLastCellNum();
-					while(count < lastCellNo){
-						values.add(getCellValue(row.getCell(count)));
-						count++;
-					};
-
-					String[] vals = new String[]{};
-					docMap.put(key, values.toArray(vals));
+					docMap.put(key, row.getRowNum());
 				}
 			}
 			
@@ -408,5 +515,29 @@ public class ViewDocExportService {
 		return metaFile;
 	}
 	
+	
+	private boolean addComment(String lastKey, String type, Row row){
+		
+		String mType = type;
+		if(type.contains("(")){
+			mType = type.substring(0, type.indexOf("("));
+			mType = mType.replace("-", "_");
+		}
+		
+		if(!fieldTypes.contains(mType)){
+			List<Integer> rowIndexs = new ArrayList<Integer>();
+			if(commentMap.containsKey(lastKey)){
+				rowIndexs = commentMap.get(lastKey);
+			}
+			
+			rowIndexs.add(row.getRowNum());
+			
+			commentMap.put(lastKey, rowIndexs);
+			
+			return true;
+		}
+		
+		return false;
+	}
 	
 }

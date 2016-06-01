@@ -18,7 +18,7 @@
 
 	<form name="employee-form" title="Employee" model="com.axelor.apps.hr.db.Employee"
 		onNew="action-employee-record-default" width="large">
-	    <panel title="Contact">
+	    <panel name="contact" title="Contact">
             <field name="contactPartner" domain="self.partnerTypeSelect = 2 OR self.isContact = true" grid-view="partner-contact-grid" form-view="partner-contact-form" colSpan="12" showTitle="false">
 	            <editor x-viewer="true">
 	                <field name="titleSelect" colSpan="2" />
@@ -33,7 +33,7 @@
             </field>
         </panel>
         <panel-tabs>
-        	<panel title="Information">
+        	<panel name="information" title="Information">
 	       	    <field name="hourlyRate" />
 	       	    <field name="bankDetails" widget="SuggestBox" onSelect="action-accounting-batch-attrs-bank-details-domain" form-view="bank-details-form" grid-view="bank-details-grid" if="__config__.general.getManageMultiBanks()"/>
 	       	    <field name="timeLoggingPreferenceSelect" />

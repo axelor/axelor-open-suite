@@ -252,7 +252,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 		String title = I18n.get("Purchase order") + purchaseOrder.getPurchaseOrderSeq() + ((purchaseOrder.getVersionNumber() > 1) ? "-V" + purchaseOrder.getVersionNumber() : "");
 
 		ReportFactory.createReport(IReport.PURCHASE_ORDER, title+"-${date}")
-				.addParam("PurchaseOrderId", purchaseOrder.getId())
+				.addParam("PurchaseOrderId", purchaseOrder.getId().toString())
 				.addParam("Locale", language)
 				.addModel(purchaseOrder)
 				.generate()

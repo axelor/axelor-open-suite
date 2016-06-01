@@ -16,7 +16,7 @@
     </grid>
 
     <form name="kilometric-allowance-form" title="Kilometric allowance" model="com.axelor.apps.hr.db.KilometricAllowance" onNew="action-kilometric-allowance-record-default,action-kilometric-allowance-record-rate">
-    	<panel>
+    	<panel name="main">
 			<field name="kilometricAllowParam" onChange="action-kilometric-allowance-record-rate,action-kilometric-allowance-record-in-tax-total"/>
 	        <field name="rate" onChange="action-kilometric-allowance-record-in-tax-total" />
 	        <field name="typeSelect" />

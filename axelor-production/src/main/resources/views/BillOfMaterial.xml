@@ -17,7 +17,7 @@
 		<toolbar>
 			<button name="newVersion" title="Generate new version"  if="__config__.general.manageBillOfMaterialVersion" onClick="action-bill-of-material-check-other-version,action-bill-of-material-generate-new-version"/>
 		</toolbar>
-		<panel>
+		<panel name="main">
 			<field name="fullName" hidden="true" showIf="$readonly()" colSpan="12"/>
 			<field name="name" hidden="true" showIf="!$readonly()" colSpan="12"/>
 			<field name="company" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
@@ -31,13 +31,13 @@
 			<panel-related field="billOfMaterialList" title="Components" colSpan="12" domain="self.isRawMaterial = false AND self.personalized = false" form-view="bill-of-material-line-form" grid-view="bill-of-material-line-grid"/>
 			<panel-related field="prodResidualProductList" title="Residual products" colSpan="12" grid-view="prod-residual-product-grid" form-view="prod-residual-product-form" if="__config__.general.manageResidualProductOnBom"/>	    
 			<panel-dashlet title="BOM tree" action="action-bill-of-material-view-tree"/>
-			<panel title="Cost">
+			<panel name="cost" title="Cost">
 				<button name="computeCostPrice" title="Compute cost price"   onClick="save,action-bill-of-material-method-compute-cost-price"/>
 				<field name="costPrice" readonly="true"/>
 				<button name="updateProductCostPrice" title="Update product cost price"  onClick="save,action-bill-of-material-method-update-product-cost-price"/>
 				<panel-related field="costSheetList" colSpan="12" readonly="true" form-view="cost-sheet-bill-of-material-form" grid-view="cost-sheet-bill-of-material-grid"/>
 			</panel>
-			<panel title="Version management">
+			<panel name="versionManagement" title="Version management">
 				<field name="versionNumber" colSpan="3" hidden="true" showIf="versionNumber &gt; 1"/>
 				<field name="originalBillOfMaterial" grid-view="bill-of-material-grid" form-view="bill-of-material-form" colSpan="3" hidden="true" showIf="versionNumber &gt; 1" readonly="true"/>
 		
@@ -61,13 +61,13 @@
 	<form name="bill-of-material-line-form" title="Bill of material"
 		model="com.axelor.apps.production.db.BillOfMaterial" onSave="action-bill-of-material-record-name"
 		onNew="action-bill-of-material-line-default-record" width="large">
-		<panel>
+		<panel name="main">
 			<field name="product" onChange="action-bill-of-material-record-product" domain="self.productTypeSelect = 'storable'"  form-view="product-form" grid-view="product-grid"/>
 			<field name="isRawMaterial" colSpan="3"/>
 			<field name="hasNoManageStock" colSpan="3"/>
 			<field name="qty" colSpan="3"/>
 			<field name="unit" colSpan="3" form-view="unit-form" grid-view="unit-grid"/>
-			<panel title="Sub-process configuration" hideIf="isRawMaterial" colSpan="12">
+			<panel name="subProcessConfiguration" title="Sub-process configuration" hideIf="isRawMaterial" colSpan="12">
 				<field name="prodProcess" grid-view="prod-process-grid" form-view="prod-process-form"/>
 				<field name="priority"/>
 			</panel>

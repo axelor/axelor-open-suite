@@ -9,7 +9,7 @@
     </grid>
     
     <form name="online-payment-method-form" title="Online payment method" model="com.axelor.apps.client.portal.db.OnlinePaymentMethod">
-    	<panel>
+    	<panel name="main" >
         	<field name="name"/>
         	<field name="code"/>
         </panel>
