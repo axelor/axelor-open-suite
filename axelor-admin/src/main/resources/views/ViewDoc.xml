@@ -11,9 +11,8 @@
    <form title="Export for doc" name="view-doc-form" model="com.axelor.apps.admin.db.ViewDoc" canSave="false">
    		<panel>
 			<field name="exportDate" />
-			<spacer/>
-			<field name="exportFile" widget="binary-link" />
-			<spacer/>
+			<field name="exportOnlyPanel" onChange="action-export-only-panel-change" />
+			<field name="exportFile" widget="binary-link" readonlyIf="exportOnlyPanel"/>
 			<button name="export" title="Export" icon="fa-reply" onClick="save,action-view-doc-export,save" colSpan="3" />
 		</panel>
    </form>  
@@ -21,5 +20,9 @@
    <action-method name="action-view-doc-export">
    		<call class="com.axelor.apps.admin.web.ViewDocController" method="export"/>
    </action-method>
-
+   
+   <action-attrs name="action-export-only-panel-change" model="com.axelor.apps.admin.db.ViewDoc">
+   		<attribute name="value" for="exportFile" expr="eval:null"/>
+   </action-attrs>
+   
 </object-views>

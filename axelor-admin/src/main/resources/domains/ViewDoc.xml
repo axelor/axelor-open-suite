@@ -11,6 +11,7 @@
     ]]>
     <datetime name="exportDate" title="Export date" readonly="true" />
     <many-to-one name="exportFile" ref="com.axelor.meta.db.MetaFile" title="File" />
+    <boolean name="exportOnlyPanel" title="Export only panel?" />
   </entity>
 
 </domain-models>

@@ -116,9 +116,9 @@ public class ViewDocXmlProcessor {
 						"self.type = ? and self.model = ? and self.name = ?", 
 						view[0], model, view[1]).fetch();
 				
-				if(!itemCheckMap.containsKey(model)){
+				if(!itemCheckMap.containsKey(view[1])){
 					Map<String, List<String>> map = new HashMap<String, List<String>>();
-					itemCheckMap.put(model, map);
+					itemCheckMap.put(view[1], map);
 				}
 			}
 			else{
@@ -157,15 +157,15 @@ public class ViewDocXmlProcessor {
 	}
 	
 	
-	private boolean isChecked(String model, String type, String item){
+	private boolean isChecked(String view, String type, String item){
 		
-		if(!itemCheckMap.containsKey(model)){
+		if(!itemCheckMap.containsKey(view)){
 			Map<String, List<String>> map = new HashMap<String, List<String>>();
 			map.put(type, new ArrayList<String>());
-			itemCheckMap.put(model, map);
+			itemCheckMap.put(view, map);
 		}
 		
-		Map<String, List<String>> map = itemCheckMap.get(model);
+		Map<String, List<String>> map = itemCheckMap.get(view);
 		if(!map.containsKey(type)){
 			map.put(type, new ArrayList<String>());
 		}
@@ -229,8 +229,10 @@ public class ViewDocXmlProcessor {
 						processForm(form, view.getModule(), mapper, true);
 						break;
 					case "dashboard":
-						Dashboard dashboard = (Dashboard) views.getViews().get(0);
-						processDashboard(dashboard, view.getModule());
+						if(!exportService.getOnlyPanel()){
+							Dashboard dashboard = (Dashboard) views.getViews().get(0);
+							processDashboard(dashboard, view.getModule());
+						}
 						break;
 				}
 				
@@ -276,18 +278,20 @@ public class ViewDocXmlProcessor {
 		String name = form.getName();
 		log.debug("Processing form: {}", name);
 		
-		List<Button> buttons = form.getToolbar();
-		if(buttons != null){
-			for(Button button : buttons){
-				processButton(button, name, module, mapper, false);
+		if(!exportService.getOnlyPanel()){
+			List<Button> buttons = form.getToolbar();
+			if(buttons != null){
+				for(Button button : buttons){
+					processButton(button, name, module, mapper, false);
+				}
+			}
+		
+			List<Menu> menus = form.getMenubar();
+			if(menus != null){
+				processMenuBarMenu(menus.iterator(), name, module, mapper);
 			}
 		}
-		
-		List<Menu> menus = form.getMenubar();
-		if(menus != null){
-			processMenuBarMenu(menus.iterator(), name, module, mapper);
-		}
-		
+			
 		List<AbstractWidget> items = form.getItems();
 		if(items != null){
 			processItems(items.iterator(), name, module, mapper, addPanel);
@@ -308,8 +312,7 @@ public class ViewDocXmlProcessor {
 		String className = mapper.getBeanClass().getName();
 		String title = menu.getTitle();
 
-		if(title != null && !isChecked(className, "menu", title)){
-			
+		if(!Strings.isNullOrEmpty(title) && !isChecked(view, "menu", title)){
 			String[] values = new String[]{
 					getModuleName(menu, module), 
 					className, 
@@ -340,10 +343,10 @@ public class ViewDocXmlProcessor {
 		}
 		
 		String name = dashboard.getName();
-		if(!itemCheckMap.containsKey(name)){
-			Map<String, List<String>> map = new HashMap<String, List<String>>();
-			itemCheckMap.put(name, map);
-		}
+//		if(!itemCheckMap.containsKey(name)){
+//			Map<String, List<String>> map = new HashMap<String, List<String>>();
+//			itemCheckMap.put(name, map);
+//		}
 		viewProcessed.add(name);
 	}
 	
@@ -376,7 +379,14 @@ public class ViewDocXmlProcessor {
 			String module, Mapper mapper, boolean addPanel) {
 		
 		Class<? extends AbstractWidget> klass = item.getClass();
-		String methodName = "process" + klass.getSimpleName();
+		String name = klass.getSimpleName();
+		if(exportService.getOnlyPanel() 
+				&& !name.equals("Panel") 
+				&& !name.equals("PanelTabs") 
+				&& !name.equals("PanelInclude")){
+			return;
+		}
+		String methodName = "process" + name;
 		
 		try {
 			Method method = getClass().getDeclaredMethod(methodName, 
@@ -398,8 +408,7 @@ public class ViewDocXmlProcessor {
 			String className = mapper.getBeanClass().getName();
 			String title = panel.getTitle();
 	
-			if(title != null && !isChecked(className, "panel", title)){
-				
+			if(!Strings.isNullOrEmpty(title) && !isChecked(view, "panel", title)){
 				String[] values = new String[]{
 						getModuleName(panel, module), 
 						className, 
@@ -442,7 +451,7 @@ public class ViewDocXmlProcessor {
 		String title = field.getTitle();
 		String className = mapper.getBeanClass().getName();
 		
-		if(isChecked(className, "field", name)){
+		if(isChecked(view, "field", name)){
 			return;
 		}
 		
@@ -585,7 +594,7 @@ public class ViewDocXmlProcessor {
 		String name = button.getName();
 		String className = mapper.getBeanClass().getName();
 		
-		if(!isChecked(className, "button", name)){
+		if(!isChecked(view, "button", name)){
 			String title = button.getTitle();
 			String[] values = new String[]{getModuleName(button, module), 
 					className, 
@@ -607,7 +616,7 @@ public class ViewDocXmlProcessor {
 		String title = panelRelated.getTitle();
 		String className = mapper.getBeanClass().getName();
 		
-		if(isChecked(className, "field", name)){
+		if(isChecked(view, "field", name)){
 			return;
 		}
 		
@@ -657,7 +666,7 @@ public class ViewDocXmlProcessor {
 		
 		String className = mapper.getBeanClass().getName();
 		String title = label.getTitle();
-		if(isChecked(className, "label", title)){
+		if(isChecked(view, "label", title)){
 			return;
 		}
 		
@@ -687,19 +696,11 @@ public class ViewDocXmlProcessor {
 			title = actionView.getTitle();
 		}
 		
-		if(mapper != null){
-			className = mapper.getBeanClass().getName();
-			if(isChecked(className, "dashlet", title)){
-				return;
-			}
-		}
-		else{
-			if(isChecked(view, "dashlet", title)){
-				return;
-			}
+		if(isChecked(view, "dashlet", title)){
+			return;
 		}
 
-		if(title != null){
+		if(!Strings.isNullOrEmpty(title)){
 			
 			String[] values = new String[]{
 					getModuleName(dashlet, module), 
@@ -724,8 +725,7 @@ public class ViewDocXmlProcessor {
 		String className = mapper.getBeanClass().getName();
 		String title = item.getTitle();
 		
-		if(title != null && !isChecked(className, "menuItem", title)){
-			
+		if(!Strings.isNullOrEmpty(title) && !isChecked(view, "menuItem", title)){
 			String[] values = new String[]{
 					getModuleName(item, module), 
 					className, 

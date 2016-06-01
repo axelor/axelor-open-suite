@@ -42,10 +42,10 @@ public class ViewDocController {
 		MetaFile exportFile = viewDoc.getExportFile();
 		if(exportFile != null && exportFile.getId() != null){
 			exportFile = metaFileRepo.find(exportFile.getId());
-			exportFile = exportService.export(exportFile);
+			exportFile = exportService.export(exportFile, viewDoc.getExportOnlyPanel());
 		}
 		else{
-			exportFile = exportService.export(null);
+			exportFile = exportService.export(null, viewDoc.getExportOnlyPanel());
 		}
 		
 		response.setValue("exportFile", exportFile);
