@@ -24,12 +24,11 @@ import java.util.Map;
 import com.axelor.apps.base.db.Wizard;
 import com.axelor.apps.hr.db.ExtraHours;
 import com.axelor.apps.hr.db.repo.ExtraHoursRepository;
-import com.axelor.apps.hr.exception.IExceptionMessage;
+import com.axelor.apps.hr.service.HRMenuTagService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
@@ -37,11 +36,14 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
+import com.google.inject.Inject;
 
 
 public class ExtraHoursController {
-
-
+	
+	@Inject
+	private HRMenuTagService hrMenuTagService;
+	
 	public void editExtraHours(ActionRequest request, ActionResponse response){
 		List<ExtraHours> extraHoursList = Beans.get(ExtraHoursRepository.class).all().filter("self.user = ?1 AND self.company = ?2 AND self.statusSelect = 1",AuthUtils.getUser(),AuthUtils.getUser().getActiveCompany()).fetch();
 		if(extraHoursList.isEmpty()){
@@ -192,6 +194,13 @@ public class ExtraHoursController {
 				   .domain("self.id in ("+extraHoursListIdStr+")")
 				   .map());
 		}
+	}
+	
+/* Count Tags displayed on the menu items */
+	
+	public String extraHoursValidateTag() { 
+		ExtraHours extraHours = new ExtraHours();
+		return hrMenuTagService.CountRecordsTag(extraHours);
 	}
 
 }

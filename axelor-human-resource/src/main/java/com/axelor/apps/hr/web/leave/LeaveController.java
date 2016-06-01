@@ -22,10 +22,10 @@ import java.util.List;
 import java.util.Map;
 
 import com.axelor.apps.base.db.Wizard;
-import com.axelor.apps.hr.db.Expense;
 import com.axelor.apps.hr.db.LeaveRequest;
 import com.axelor.apps.hr.db.repo.LeaveRequestRepository;
 import com.axelor.apps.hr.exception.IExceptionMessage;
+import com.axelor.apps.hr.service.HRMenuTagService;
 import com.axelor.apps.hr.service.leave.LeaveService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
@@ -42,7 +42,10 @@ import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 
 public class LeaveController {
-
+	
+	@Inject
+	private HRMenuTagService hrMenuTagService;
+	
 	@Inject
 	protected LeaveService leaveService;
 
@@ -282,5 +285,12 @@ public class LeaveController {
 	public void createEvents(ActionRequest request, ActionResponse response) throws AxelorException{
 		LeaveRequest leave = request.getContext().asType(LeaveRequest.class);
 		leaveService.createEvents(leave);
+	}
+	
+	/* Count Tags displayed on the menu items */
+	
+	public String leaveValidateTag() { 
+		LeaveRequest leaveRequest = new LeaveRequest();
+		return hrMenuTagService.CountRecordsTag(leaveRequest);
 	}
 }
