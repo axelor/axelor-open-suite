@@ -16,7 +16,7 @@
     <form name="budget-form" title="Budget" model="com.axelor.apps.account.db.Budget" width="large"
     	onNew="action-budget-record-on-new"
     	onLoad="action-budget-method-update-lines, save">
-       <panel>
+       <panel name="main" >
 	       <field name="name" required="true"/>
 	       <field name="code" required="true"/>
 	       <field name="fromDate"/>
@@ -25,7 +25,7 @@
 	       <field name="inChargeUser"/>
        </panel>
        <panel-related field="budgetLineList" onChange="action-budget-method-compute-total-amount"/>
-       <panel sidebar="true" title="Periods generation assistant" hideIf="statusSelect == 2">
+       <panel sidebar="true" name="periodsGenerationAssistant" title="Periods generation assistant" hideIf="statusSelect == 2">
 			<field name="periodDurationSelect"/>
 			<field name="amountForGeneration"/>
 			<button name="generatePeriods" title="Generate periods" onClick="action-group-account-budget-generateperiod-click" />    

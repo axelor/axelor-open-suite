@@ -9,12 +9,12 @@
     </grid>
     
 	<form name="tax-form" title="Tax" model="com.axelor.apps.account.db.Tax" width="large">
-		<panel>
+		<panel name="main">
 			<field name="code" x-bind="{{code|uppercase}}"/>
 			<field name="name"/>
 		</panel>
 	    <panel-tabs>
-			<panel title="Tax rate list">
+			<panel name="taxRateList" title="Tax rate list">
 				<field name="activeTaxLine" onSelect="action-base-attrs-domain-active-tax-line" canNew="false" form-view="tax-line-tax-form" grid-view="tax-line-tax-grid"/>
 			 	<panel-related field="taxLineList" colSpan="12" canNew="true" form-view="tax-line-tax-form" grid-view="tax-line-tax-grid"/>
 			</panel>

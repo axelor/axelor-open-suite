@@ -16,7 +16,7 @@
 	<form name="cash-register-line-form" title="Cash register closing" model="com.axelor.apps.account.db.CashRegisterLine"   
 	onNew="action-cash-register-line-record-new">
 	 
-		<panel  readonlyIf="emailSentOk">
+		<panel name="main" readonlyIf="emailSentOk">
 			<field name="statusSelect"/>
 			<field name="user" form-view="user-form" grid-view="user-grid"/>
 			<field name="createDateTime"/>
@@ -24,16 +24,16 @@
 			<field name="cashRegisterDate"/>
 		</panel> 
 		
-		<panel title="Amounts to register"  readonlyIf="emailSentOk">
+		<panel name="amountsToRegister" title="Amounts to register"  readonlyIf="emailSentOk">
 			<field name="cashRegisterAmount"/>
 			<field name="depositedAmount"/>
 		</panel>
 		
-		<panel title="Follow-up" >
+		<panel name="followUp" title="Follow-up" >
 			<field name="emailSentOk"/>
 		</panel>
 		
-		<panel sidebar="true" title="Actions" showIf="!emailSentOk">
+		<panel sidebar="true" name="actions" title="Actions" showIf="!emailSentOk">
 			<button name="closeCashRegister" title="Close cashier" onClick="save,action-group-account-cash-registerline-close,save" showIf="statusSelect != 1" colSpan="12"/>
 			<button name="openCashRegister" title="Open cashier" onClick="save,action-method-account-cash-registerline-open,save" showIf="statusSelect != 0" colSpan="12"/>
 		</panel>

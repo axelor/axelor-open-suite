@@ -7,7 +7,7 @@
         <field name="code"/>
     </grid>
     <form name="journal-type-form" title="Journal Type" model="com.axelor.apps.account.db.JournalType"  >
-        <panel >
+        <panel name="main" >
         	<field name="name"/>
         	<field name="code"/>
         </panel>

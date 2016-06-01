@@ -13,15 +13,15 @@
 		<toolbar>
 			<button name="run" title="Run" onClick="save,alarm-engine-batch-method-run" />
 		</toolbar>
-		<panel x-stack="true">
+		<panel name="main" x-stack="true">
 			<field name="code" x-bind="{{code|uppercase}}" colSpan="4" />
 		</panel>
 		<panel-tabs>
-			<panel title="Configuration">
+			<panel name="configuration" title="Configuration">
 				<panel-related field="metaModelSet" colSpan="12" form-view="meta-model-form" grid-view="meta-model-grid"/>
 				<panel-related field="alarmEngineSet" onSelect="alarm-engine-batch-attrs-alarm-engine-domain" colSpan="12" grid-view="alarm-engine-grid" form-view="alarm-engine-form" />
 			</panel>
-			<panel title="Batches">
+			<panel name="batches" title="Batches">
 				<field name="description" showTitle="false" colSpan="12" />
 				<panel-related field="batchList" colSpan="12" form-view="batch-form" grid-view="batch-grid" readonly="true" />
 			</panel>

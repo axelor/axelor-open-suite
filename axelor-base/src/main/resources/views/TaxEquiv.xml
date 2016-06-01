@@ -9,7 +9,7 @@
     </grid>
 
     <form name="tax-equiv-form" title="Tax equivalence" model="com.axelor.apps.account.db.TaxEquiv"  >
-        <panel>
+        <panel name="main">
         	<field name="fromTax" form-view="tax-form" grid-view="tax-grid"/>
         	<field name="toTax" form-view="tax-form" grid-view="tax-grid"/>
         </panel>

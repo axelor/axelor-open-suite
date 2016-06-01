@@ -5,18 +5,18 @@
     
     
 	<form onNew="action-create-inventory-wizard-record-default" name="create-inventory-wizard-form" title="Create inventory" model="com.axelor.apps.base.db.Wizard">
-	  <panel title="Basic">
+	  <panel name="basic" title="Basic">
 	    <field name="location" title="Location" widget="ManyToOne" target="com.axelor.apps.stock.db.Location" form-view="location-form" grid-view="location-grid"/>
 	    <field name="inventoryDate" title="Inventory date" widget="Date"/>        
 	    <field name="description" title="Description" colSpan="12" max="600"/>
 	  </panel>
-	  <panel title="Fill inventory with">
+	  <panel name="fillInventoryWith" title="Fill inventory with">
 	    <field name="productFamily" title="Product family" widget="ManyToOne" target="com.axelor.apps.base.db.ProductFamily" form-view="product-family-form" grid-view="product-family-grid"/>
 	    <field name="productCategory" title="Product category" widget="ManyToOne" target="com.axelor.apps.base.db.ProductCategory" form-view="product-category-form" grid-view="product-category-grid"/>
 	    <field name="excludeOutOfStock" title="Exclude out of stock products ?" widget="Boolean"/>
 	    <field name="includeObsolete" title="Include obsolete products ?" widget="Boolean"/>
 	  </panel>
-	  <panel sidebar="true" title="Actions">
+	  <panel sidebar="true" name="actions" title="Actions">
 	    <button name="validate" title="Validate"   onClick="action-group-stock-createinventory-wizard-validate-click"/>
 	  </panel>
 	</form>

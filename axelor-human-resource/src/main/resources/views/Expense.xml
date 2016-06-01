@@ -38,7 +38,7 @@
 		<toolbar>
 			<button name="printExpense" title="Print" colSpan="2" icon="fa-print" onClick="save,action-print-expense"/>
 		</toolbar>
-	    <panel sidebar="true" title="Actions" stacked="true">
+	    <panel sidebar="true" name="actions" title="Actions" stacked="true">
 	    	<button name="sendExpenses" colSpan="4" title="Send Expenses" onClick="action-expense-record-status-confirmed, save,action-expense-attrs-buttons, action-expense-view-new-expense" readonlyIf="statusSelect &gt; 1"/>
 			<button name="ventilate" colSpan="4" title="Ventilate" onClick="action-expense-method-ventilate" readonlyIf="statusSelect != 3 || ventilated"/>
 	    	<button name="validButton" onClick="action-expense-record-valid,save,action-expense-attrs-buttons" title="Valid"/>

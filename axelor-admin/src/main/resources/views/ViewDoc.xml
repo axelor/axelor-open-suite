@@ -9,7 +9,7 @@
    </grid>
    
    <form title="Export for doc" name="view-doc-form" model="com.axelor.apps.admin.db.ViewDoc" canSave="false">
-   		<panel>
+   		<panel name="main">
 			<field name="exportDate" />
 			<field name="exportOnlyPanel" onChange="action-export-only-panel-change" />
 			<field name="exportFile" widget="binary-link" readonlyIf="exportOnlyPanel"/>

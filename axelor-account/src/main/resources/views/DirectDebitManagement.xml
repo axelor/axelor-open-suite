@@ -8,7 +8,7 @@
     </grid>
     
     <form name="direct-debit-management-form-payment-schedule-line" title="Direct debits management" model="com.axelor.apps.account.db.DirectDebitManagement"  onNew="action-direct-debit-managemen-set-default" width="large">
-        <panel >
+        <panel name="main" >
         	<field name="company" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
         	<field name="debitNumber"/>
         </panel>
@@ -16,7 +16,7 @@
     </form>
     
     <form name="direct-debit-management-form-invoice" title="Direct debit management" model="com.axelor.apps.account.db.DirectDebitManagement"  onNew="action-direct-debit-managemen-set-default" width="large">
-        <panel >
+        <panel name="main" >
         	<field name="company" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
         	<field name="debitNumber"/>
         </panel>

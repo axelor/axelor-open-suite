@@ -14,7 +14,7 @@
     <form name="base-batch-form" title="Base Batch" model="com.axelor.apps.base.db.BaseBatch"  
     onLoad="action-base-batch-attrs-action-select" 
     onNew="action-group-base-basebatch-onnew" width="large">
-    	<panel>
+    	<panel name="main">
 		    <field name="actionSelect" onChange="action-base-batch-attrs-action-select"/>
 		    <field name="code" x-bind="{{code|uppercase}}"/>
 		    <field name="company" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
@@ -24,7 +24,7 @@
 <!-- 	      		<panel-related field="targetConfigurationSet" colSpan="12"/> -->
 	      		<button name="targetBatch" title="Target batch" onClick="save,action-base-batch-method-action-target"/>
 	    	</panel>
-	    	<panel title="Information">
+	    	<panel name="information" title="Information">
 		      <field name="createdOn" title="Created on"/>
 		      <field name="createdBy" title="Created by" form-view="user-form" grid-view="user-grid"/>
 		      <field name="description" showTitle="false" colSpan="12"/>

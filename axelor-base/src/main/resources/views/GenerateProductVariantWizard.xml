@@ -6,7 +6,7 @@
     
     <form name="generate-product-variant-wizard-form" title="Generate product variant wizard" model="com.axelor.apps.base.db.Wizard" 
     onNew="action-generate-product-variant-wizard-record-default">
-    	<panel>
+    	<panel name="main" >
 			<field name="qty" widget="decimal" title="Quantity"/>
 			<field name="billOfMaterial" widget="ManyToOne[target=com.axelor.apps.production.db.BillOfMaterial]" title="BOM" domain="self.isRawMaterial = false and self.product.id = :product_id and self.parentBillOfMaterial is null" form-view="bill-of-material-form" grid-view="bill-of-material-grid"/>
 			<button name="generate" title="Generate" onClick="com.axelor.apps.base.web.GenerateProductVariantWizardController"/>

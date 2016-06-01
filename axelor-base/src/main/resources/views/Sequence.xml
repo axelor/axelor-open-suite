@@ -13,19 +13,19 @@ xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/
     </grid>
     
     <form name="sequence-form" title="Sequence" model="com.axelor.apps.base.db.Sequence" onNew="action-group-base-sequence-onnew" onLoad="action-sequence-attrs" onSave="action-sequence-validate">
-		<panel itemSpan="12">
+		<panel name="main" itemSpan="12">
 			<field name="code" onChange="action-sequence-attrs"/>
 			<field name="company" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
 			<field name="name"/>
 		</panel>
-		<panel title="Tips" sidebar="true" itemSpan="12">
+		<panel name="tips" title="Tips" sidebar="true" itemSpan="12">
 			<label title="The tags below can be used as a prefix or a suffix :" />
 			<label title="%Y  : Year" />
 			<label title="%M  : Month" />
 			<label title="%D  : Day" />
 			<label title="%WY : Week number" />
 		</panel>
-		<panel title="Sequence Definition" colSpan="12">
+		<panel name="sequenceDefinition" title="Sequence Definition" colSpan="12">
 			<field name="prefixe"/>
 			<field name="suffixe"/>
 			<field name="padding"/>
@@ -43,7 +43,7 @@ xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/
     </grid>
 	
     <form name="sequence-version-form" title="Version" model="com.axelor.apps.base.db.SequenceVersion" >
-    	<panel itemSpan="4">
+    	<panel name="main" itemSpan="4">
 	    	<field name="startDate" />
 	    	<field name="endDate" />
 	    	<field name="nextNum" />

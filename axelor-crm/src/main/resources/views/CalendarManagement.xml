@@ -13,7 +13,7 @@
     
     
     <form name="calendar-management-form" title="Calendar permission" model="com.axelor.apps.crm.db.CalendarManagement">
-    	<panel>
+    	<panel name="main" >
     		<field name="user" showIf="team == null"/>
 	        <field name="team" showIf="user == null" if="__config__.general.getTeamManagement()"/>
 	        <field name="allCalendars" onChange="action-calendar-management-record-all-calendars-checked" colSpan="4"/>

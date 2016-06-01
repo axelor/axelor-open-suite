@@ -14,13 +14,13 @@
     </grid>
  
 	<form name="hr-batch-form" title="HR Batch" model="com.axelor.apps.hr.db.HrBatch" width="large">
-	  	<panel>
+	  	<panel name="main">
 		    <field name="actionSelect"/>
 		    <field name="code"/>
 		    <field name="company"/>
 		</panel>
 		<panel-tabs>
-			<panel title="Leave management page" hidden="true" showIf="actionSelect == 1">
+			<panel name="leaveManagementPage" title="Leave management page" hidden="true" showIf="actionSelect == 1">
 			    <field name="leaveReason" colSpan="4"/>
 			    <field name="comments" colSpan="8"/>
 			    <field name="dayNumber" colSpan="4"/>
@@ -30,7 +30,7 @@
 				<panel-related field="planningSet" target="com.axelor.apps.base.db.WeeklyPlanning" grid-view="weekly-planning-grid" form-view="weekly-planning-form" canNew="false"/>
 				<button name="leaveManagementBatch" title="Leave management batch" onClick="save,action-hrbatch-method-leave-management"/>
 			</panel>
-			<panel title="Informations">
+			<panel name="informations" title="Informations">
 				<field name="createdOn" title="Created on"/>
 				<field name="createdBy" title="Created by" form-view="user-form" grid-view="user-grid"/>
 				<field name="description" colSpan="12" />

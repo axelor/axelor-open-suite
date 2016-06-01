@@ -22,7 +22,7 @@
     
     <form name="prod-human-resource-form" title="Prod. Human resource" model="com.axelor.apps.production.db.ProdHumanResource"
         onNew="action-prod-human-resource-record-default">
-		<panel>
+		<panel name="main">
 	        <field name="product" form-view="product-form" grid-view="product-grid"/>
 	        <field name="employee" form-view="employee-form" grid-view="employee-grid"/>
 	        <field name="duration" widget="duration" x-big="true" x-seconds="true"/>

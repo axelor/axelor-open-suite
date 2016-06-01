@@ -10,7 +10,7 @@
     </grid>
     
     <form name="reminder-level-form" title="Reminder level" model="com.axelor.apps.account.db.ReminderLevel"  >
-     	<panel >
+     	<panel name="main" >
      		<field name="name"/>
     		<field name="code"/>
     		<field name="label"/>

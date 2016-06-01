@@ -11,7 +11,7 @@
     
     <form name="querie-form" title="Querie" model="com.axelor.apps.base.db.Querie" 
     	onNew="action-querie-record-new">
-    	<panel>
+    	<panel name="main">
 	        <field name="name"/>
 	        <field name="metaModel" form-view="meta-model-form" grid-view="meta-model-grid"/>
 	        <field name="type"/>

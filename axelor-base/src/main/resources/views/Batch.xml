@@ -16,7 +16,7 @@
     
     <form name="batch-form" title="Batch" model="com.axelor.apps.base.db.Batch" onNew="action-batch-attrs" onLoad="action-batch-attrs" 
     canEdit="false" canDelete="false" canNew="false" canCopy="false" canSave="false" width="large">
-		<panel>
+		<panel name="main">
 		    <field name="createdBy" form-view="user-form" grid-view="user-grid"/>
 		    <field name="duration"/>
 		    <field name="startDate" requirded="true"/>

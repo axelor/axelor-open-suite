@@ -14,7 +14,7 @@
     
     <form name="supplier-catalog-form" title="Supplier Catalog" model="com.axelor.apps.base.db.SupplierCatalog" 
     onNew="action-supplier-catalog-attrs-scale-and-precision" onLoad="action-supplier-catalog-attrs-scale-and-precision" width="large">
-    	<panel colSpan="12">
+    	<panel name="main" colSpan="12">
 			<field name="supplierPartner" domain="self.isContact = false AND self.isSupplier = true" form-view="partner-form" grid-view="partner-grid"/>
 			<field name="updateDate"/>
         	<field name="productSupplierName"/>
@@ -22,7 +22,7 @@
         	<field name="minQty"/>
         	<field name="price"/>
        	</panel>
-		<panel title="Description" colSpan="12">
+		<panel name="description" title="Description" colSpan="12">
 			<field name="description" showTitle="false" colSpan="12"/>
 		</panel>
     </form>
