@@ -23,8 +23,8 @@
     	 <field name="estimatedDelivDate"/>
   	   </panel>
   	   <panel name="purchaseOrderDetails" title="Purchase Order Details" readOnly="true">
+  	   	 <field name="purchaseOrderLine"/>
   		 <field name="purchaseOrderLine.product"/>
-    	 <field name="purchaseOrderLine.purchaseOrder.purchaseOrderSeq" />
     	 <field name="purchaseOrderLine.qty" title="Ordered quantity"/>
     	 <field name="purchaseOrderLine.price"/>
     	 <field name="purchaseOrderLine.desiredDelivDate"/>

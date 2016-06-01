@@ -306,7 +306,19 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 				priceList,
 				supplierPartner);
 
-		//Attachment of all purchase order lines to new purchase order
+		this.attachToNewPurchaseOrder(purchaseOrderList,purchaseOrderMerged);
+		
+		this.computePurchaseOrder(purchaseOrderMerged);
+
+		purchaseOrderRepo.save(purchaseOrderMerged);
+		
+		this.removeOldPurchaseOrders(purchaseOrderList);
+
+		return purchaseOrderMerged;
+	}
+	
+	//Attachment of all purchase order lines to new purchase order
+	public void attachToNewPurchaseOrder(List<PurchaseOrder> purchaseOrderList, PurchaseOrder purchaseOrderMerged) {
 		for(PurchaseOrder purchaseOrder : purchaseOrderList)  {
 			int countLine = 1;
 			for (PurchaseOrderLine purchaseOrderLine : purchaseOrder.getPurchaseOrderLineList()) {
@@ -315,17 +327,13 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 				countLine++;
 			}
 		}
+	}
 
-		this.computePurchaseOrder(purchaseOrderMerged);
-
-		purchaseOrderRepo.save(purchaseOrderMerged);
-
-		//Remove old purchase orders
+	//Remove old purchase orders after merge
+	public void removeOldPurchaseOrders(List<PurchaseOrder> purchaseOrderList) {
 		for(PurchaseOrder purchaseOrder : purchaseOrderList)  {
 			purchaseOrderRepo.remove(purchaseOrder);
 		}
-
-		return purchaseOrderMerged;
 	}
 
 	@Override
