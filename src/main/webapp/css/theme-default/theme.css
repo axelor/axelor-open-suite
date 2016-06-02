@@ -652,3 +652,20 @@
 .content-yellow input{
 	color: yellow !important;
 }
+
+
+/* */
+
+.button-item.client-img-menu img{
+	width: 50%;	
+}
+
+.button-item.client-img-menu img:hover{
+	width: 80%;	
+}
+
+.button-item.client-img-menu span{
+	color: #000;	
+}
+
+
