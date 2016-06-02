@@ -18,7 +18,7 @@
 	        <field name="activeCompany" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
 	        <field name="activeCashRegister" form-view="cash-register-form" grid-view="cash-register-grid"/>
 <!-- 	        <field name="timesheetPeriodConfig"/> -->
-	        <field name="employee" if-module="axelor-human-resource" form-view="employee-form" grid-view="employee-grid" onSelect="action-user-attrs-domain-employees"/>
+	        <field name="employee" if-module="axelor-human-resource" form-view="employee-form" grid-view="employee-grid" domain="self.user = null"/>
 	        <button name="createEmployee"  onClick="check-action-user-group-partner,action-user-group-employee" title="Create employee" if-module="axelor-human-resource" showIf="employee == null &amp;&amp; id != null &amp;&amp; id>0"/>
         </panel>
 		<panel name="testing" title="Testing" sidebar="true">
@@ -76,10 +76,6 @@
     	if="__repo__.of(CalendarManagement).all().filter('self.user.id = ?1', id).fetch().isEmpty()"/>
     </action-attrs>
     
-  	<action-attrs name="action-user-attrs-domain-employees">
-  		<attribute name="domain" expr="eval:'self.user = null'" for="employee"/>
-	</action-attrs>
-
     <action-record name="action-user-default-record" model="com.axelor.auth.db.User">
     	<field name="language" expr="fr"/>
     	<field name="activeCompany" if="__repo__.of(Company).all().fetch().size == 1"  expr="eval:__repo__.of(Company).all().fetchOne()" />
