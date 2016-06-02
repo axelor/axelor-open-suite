@@ -13,7 +13,7 @@
     
     
     <form name="user-form" id="user-form-base" title="User" model="com.axelor.auth.db.User" 
-    onNew="action-user-default-record,action-user-check-company" onSave="com.axelor.auth.AuthService:validate">
+    onNew="action-user-default-record,action-user-check-company,action-user-attrs-domain-employees" onLoad="action-user-attrs-domain-employees" onSave="com.axelor.auth.AuthService:validate">
     	<panel name="main" sidebar="true">
 	        <field name="activeCompany" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
 	        <field name="activeCashRegister" form-view="cash-register-form" grid-view="cash-register-grid"/>
@@ -75,6 +75,11 @@
     	<attribute name="domain" for="followersCalUserSet" expr="eval: &quot; self.id = 0 &quot;" 
     	if="__repo__.of(CalendarManagement).all().filter('self.user.id = ?1', id).fetch().isEmpty()"/>
     </action-attrs>
+  	<action-attrs name="action-user-attrs-domain-employees">
+ 		 <attribute name="domain" expr="eval: &quot; self.id NOT IN 
+    	(${__repo__.of(User).all().filter('self.employee != null').fetch().collect{it.employee.id}.join(',')}) &quot;" for="employee"/>
+	</action-attrs>
+
     
     <action-record name="action-user-default-record" model="com.axelor.auth.db.User">
     	<field name="language" expr="fr"/>
