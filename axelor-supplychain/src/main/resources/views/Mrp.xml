@@ -21,10 +21,10 @@
 	        <field name="createdOn"/>
 	        <field name="location" form-view="location-form" grid-view="location-grid" colSpan="6"/>
 	        <field name="endDate" colSpan="6"/>
-	        <panel-related field="productSet" form-view="product-form" grid-view="product-grid" colSpan="12" domain="self.productTypeSelect = 'storable' AND self.excludeFromMrp = false"/>
-	        <panel-related field="productCategorySet" form-view="product-category-form" grid-view="product-category-grid" colSpan="12"/>
-	        <panel-related field="productFamilySet" form-view="product-family-form" grid-view="product-family-grid" colSpan="12"/>
-	        <panel-related field="saleOrderLineSet" form-view="sale-order-line-form" grid-view="sale-order-line-grid" colSpan="12" domain="self.product.productTypeSelect = 'storable' AND self.product.excludeFromMrp = false AND self.creationDate &gt; :__date__"/>
+	        <panel-related field="productSet" form-view="product-form" grid-view="product-grid" canNew="false" colSpan="12" domain="self.productTypeSelect = 'storable' AND self.excludeFromMrp = false"/>
+	        <panel-related field="productCategorySet" form-view="product-category-form" grid-view="product-category-grid" canNew="false" colSpan="12"/>
+	        <panel-related field="productFamilySet" form-view="product-family-form" grid-view="product-family-grid" canNew="false" colSpan="12"/>
+	        <panel-related field="saleOrderLineSet" form-view="sale-order-line-form" grid-view="sale-order-line-grid" canNew="false" colSpan="12" domain="self.product.productTypeSelect = 'storable' AND self.product.excludeFromMrp = false AND self.creationDate &gt; :__date__"/>
 	        <panel-related field="mrpForecastSet" form-view="mrp-forecast-form" grid-view="mrp-forecast-grid" colSpan="12" domain="self.product.productTypeSelect = 'storable' AND self.product.excludeFromMrp = false AND self.forecastDate &gt;= :__date__"/>
 	    </panel>
 	    <panel showIf="statusSelect == 1" colSpan="12">
