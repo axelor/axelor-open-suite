@@ -23,7 +23,6 @@ import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.sale.db.ISaleOrder;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.service.SaleOrderService;
-import com.axelor.db.JPA;
 import com.axelor.inject.Beans;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
