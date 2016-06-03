@@ -15,17 +15,17 @@
     <form name="prod-process-line-form" title="Phase" model="com.axelor.apps.production.db.ProdProcessLine"
     onNew="action-prod-process-line-record-default, action-prod-process-line-attrs-default"
     onLoad="action-prod-process-line-attrs-default" width="large">
-    	<panel>
+    	<panel name="main"> 
 	    	<field name="name"/>
 	    	<field name="priority" colSpan="3"/>
 	    	<field name="workCenter" grid-view="work-center-grid" form-view="work-center-form" onChange="action-prod-process-line-record-capacity-settings"/>
 	    	<field name="outsourcing"/>
-	    	<panel title="Capacity settings" colSpan="12">
+	    	<panel name="capacitySettings" title="Capacity settings" colSpan="12">
 	          <field name="capacityPerCycle" colSpan="3"/>
 	          <field name="maxCapacityPerCycle" colSpan="3"/>
 	          <field name="durationPerCycle" colSpan="3" widget="duration" x-big="true" x-seconds="true"/>
 	        </panel>
-			<panel title="Description" colSpan="12">
+			<panel name="description" title="Description" colSpan="12">
     			<field name="description" showTitle="false" height="5" colSpan="12"/>
     		</panel>
     	</panel>

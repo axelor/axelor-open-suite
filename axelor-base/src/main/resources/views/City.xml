@@ -12,19 +12,19 @@
     </grid>
     
     <form name="city-form" title="City" model="com.axelor.apps.base.db.City" width="large">
-    	<panel>
+    	<panel name="main">
 			<field name="name"/>
 			<field name="artmin" colSpan="2"/>
 			<field name="zip" colSpan="4"/>
 			<field name="inseeCode"/>
 			<field name="hasZipOnRight"/>
 		</panel>
-		<panel title="Localization">
+		<panel name="localization" title="Localization">
 			<field name="country" form-view="country-form" grid-view="country-grid" />
 			<field name="department" form-view="department-form" grid-view="department-grid"/>
 			<field name="canton" form-view="canton-form" grid-view="canton-grid"/>
 		</panel>  
-		<panel title="Demography">
+		<panel name="demography" title="Demography">
 			<field name="nbInhCommune"/>
 		</panel> 
     </form>

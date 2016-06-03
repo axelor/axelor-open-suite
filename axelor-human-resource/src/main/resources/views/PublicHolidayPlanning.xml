@@ -7,7 +7,7 @@
 	</grid>
 	
 	<form name="public-holiday-planning-form" title="Public Holiday Planning" model="com.axelor.apps.hr.db.PublicHolidayPlanning">
-		<panel>
+		<panel name="main" >
 			<field name="name"/>
 		</panel>
 	    <panel-related field="publicHolidayDayList" editable="true" grid-view="public-holiday-day-grid" form-view="public-holiday-day-form"/>

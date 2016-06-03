@@ -17,7 +17,7 @@
     
     <form name="min-stock-rules-form" title="Minimum stock rule" model="com.axelor.apps.stock.db.MinStockRules"
     	onNew="action-min-stock-rules-record-new" width="large">
-    	<panel>
+    	<panel name="main" >
 	        <field name="location" form-view="location-form" grid-view="location-grid"/>
 			<field name="typeSelect"/>
 	        <field name="product" domain="self.productTypeSelect = 'storable'" form-view="product-form" grid-view="product-grid"/>
@@ -25,7 +25,7 @@
 	        <field name="minQty"/>
 	        <field name="reOrderQty"/>
         </panel>
-		<panel title="Reordering managed by">
+		<panel name="reorderingManagedBy" title="Reordering managed by">
 			<field name="user" form-view="user-form" grid-view="user-grid"/>
 	        <field name="team" form-view="team-form" grid-view="team-grid" if="__config__.general.getTeamManagement()"/>
 		</panel>

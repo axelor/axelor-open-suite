@@ -15,7 +15,7 @@
 	</grid>
     
 	<form name="invoice-payment-form" title="Payment" model="com.axelor.apps.account.db.InvoicePayment" onNew="action-invoice-payment-record-new">
-        <panel readonlyIf="statusSelect == 1">
+        <panel name="main" readonlyIf="statusSelect == 1">
 			<field name="amount"/>
 			<field name="currency" form-view="currency-form" grid-view="currency-grid"/>
    			<field name="paymentDate"/>

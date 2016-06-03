@@ -11,7 +11,7 @@
     </grid>
 
     <form   name="reminder-method-line-form" title="Reminder method line" model="com.axelor.apps.account.db.ReminderMethodLine" width="large">
-		<panel title="Reminder level" colSpan="6">
+		<panel name="reminderLevel" title="Reminder level" colSpan="6">
 <!-- 			<field name="reminderLevel" widget="NestedEditor" canSelect="true" onChange="action-reminder-level-selected" edit-window="self" form-view="matrix-line-reminder-form" summary-view="true"> -->
 			<field name="reminderLevel" canSelect="true" onChange="action-reminder-level-selected">
 			 <!-- TODO: DONT KNOW WHHERE TO ADD THIS FORM ! -->
@@ -20,12 +20,12 @@
 			</form>-->
 			</field>
 		</panel>
-		<panel title="Conditions" colSpan="6">
+		<panel name="conditions" title="Conditions" colSpan="6">
 		  <field name="standardDeadline"/>
 		  <field name="minThreshold"/>
 		  <field name="manualValidationOk"/>
 		</panel>
-		<panel title="Actions">
+		<panel name="actions" title="Actions">
 		  <field name="messageTemplate"/>
 		</panel>
 </form>

@@ -30,7 +30,7 @@
     
     <form name="stock-move-line-form" title="Stock move line" model="com.axelor.apps.stock.db.StockMoveLine"
     	onNew="action-stock-move-line-record-new" onLoad="action-inventory-line-attrs-tracking-number, action-stock-move-line-attrs-show-unit-price-taxed" width="large">
-        <panel>
+        <panel name="main" >
             <field name="productName" />
 	        <field name="product" domain="self.expense = false" onChange="action-group-stock-stockmoveline-product-onchange" onSelect="action-stock-move-line-product-domain" form-view="product-form" grid-view="product-grid"/>
 	        <field name="productModel" form-view="product-form" grid-view="product-grid"/>
@@ -64,7 +64,7 @@
     
     <form name="stock-move-line-all-form" title="Stock move line" model="com.axelor.apps.stock.db.StockMoveLine"
     	onNew="action-stock-move-line-record-new" onLoad="action-stock-move-line-attrs-scale-and-precision,action-inventory-line-attrs-tracking-number, action-stock-move-line-attrs-show-unit-price-taxed" readonlyIf="stockMove.statusSelect == 3" width="large">
-        <panel title="Stock Move">
+        <panel name="stockMove" title="Stock Move">
 	    	<field name="stockMove.stockMoveSeq"/>
 	    	<field name="stockMove" form-view="stock-move-form" grid-view="stock-move-grid"/>
 	    	<field name="stockMove.estimatedDate"/>
@@ -72,7 +72,7 @@
 	        <field name="stockMove.fromLocation" form-view="location-form" grid-view="location-grid"/>
 	        <field name="stockMove.toLocation" form-view="location-form" grid-view="location-grid"/>
         </panel>
-        <panel title="Move details">
+        <panel name="moveDetails" title="Move details">
             <field name="productName" required="true"/>
 	        <field name="product" domain="self.expense = false" onChange="action-group-stock-stockmoveline-product-onchange" onSelect="action-stock-move-line-product-domain" form-view="product-form" grid-view="product-grid"/>
 	        <field name="productModel" form-view="product-form" grid-view="product-grid"/>
@@ -101,7 +101,7 @@
     
     <form name="stock-move-line-production-form" title="Stock move line" model="com.axelor.apps.stock.db.StockMoveLine"
     	onNew="action-group-stock-stockmoveline-production-onnew" onLoad="action-stock-move-line-attrs-scale-and-precision" width="large">
-		<panel>
+		<panel name="main">
 		    <field name="productName" required="true" />
 	        <field name="product" domain="self.expense = false" onChange="action-stock-move-line-set-product-info" onSelect="action-stock-move-line-product-domain" form-view="product-form" grid-view="product-grid"/>
 	        <field name="productModel" form-view="product-form" grid-view="product-grid"/>

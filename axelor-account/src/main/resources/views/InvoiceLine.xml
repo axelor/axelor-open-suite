@@ -31,7 +31,7 @@
 			<field name="productName" showIf="isTitleLine" title="Title" requiredIf="isTitleLine"/>
 		</panel>
     	<panel-tabs hideIf="isTitleLine">
-    		<panel title="Informations">
+    		<panel name="informations" title="Informations">
     			<field name="saleOrder" if="!__config__.general.getManageInvoicedAmountByLine()" if-module="axelor-supplychain" form-view="sale-order-form" grid-view="sale-order-grid"/>
     			<field name="saleOrderLine" if="__config__.general.getManageInvoicedAmountByLine()" if-module="axelor-supplychain" form-view="sale-order-line-invoice-form" grid-view="sale-order-line-invoice-grid" domain="(self.saleOrder.statusSelect = 3 OR self.saleOrder.statusSelect = 4 ) AND EXISTS(SELECT i FROM Invoice i WHERE i = :invoice AND self.saleOrder.clientPartner = i.partner )"/>
     			<field name="purchaseOrderLine" if-module="axelor-supplychain" form-view="purchase-order-line-form" grid-view="purchase-order-line-grid"/>
@@ -50,7 +50,7 @@
 			        <field name="discountAmount" onChange="action-invoice-line-method-compute,action-invoice-line-method-compute-analytic-distribution" hideIf="discountTypeSelect == 3"/>
 			    </panel>
     		</panel>
-    		<panel title="Description">
+    		<panel name="description" title="Description">
     			<field name="description" colSpan="12" widget="html"/>
     		</panel>
     		<panel name="projectTaskPanel" if="__config__.general.getProjectTaskInvoiceLines()" title="Project/Task" if-module="axelor-business-project">
@@ -60,7 +60,7 @@
 				<field name="subscriptionFromDate"/>
 				<field name="subscriptionToDate"/>
 			</panel>
-			<panel title="Analytic distribution" if-module="axelor-supplychain" if="__config__.general.getManageAnalyticAccounting()" onTabSelect="action-invoice-line-attrs-read-only-distribution-lines">
+			<panel name="analyticDistribution" title="Analytic distribution" if-module="axelor-supplychain" if="__config__.general.getManageAnalyticAccounting()" onTabSelect="action-invoice-line-attrs-read-only-distribution-lines">
 				<field name="analyticDistributionTemplate" if="__config__.general.getAnalyticDistributionTypeSelect() == 1"/>
 				<button name="generateDistributionLinesButton" onClick="action-invoice-line-method-create-distribution" title="Generate distribution lines" showIf="analyticDistributionTemplate != null" if="__config__.general.getAnalyticDistributionTypeSelect() == 1"/>
 				<panel-related field="analyticDistributionLineList" grid-view="analytic-distribution-line-grid" form-view="analytic-distribution-line-form" colSpan="12"/>
@@ -76,7 +76,7 @@
     <form name="invoice-line-menu-form" title="Invoice line" model="com.axelor.apps.account.db.InvoiceLine"   
    	onNew="action-account-invoice-line-onnew-group"
     onLoad="action-account-invoice-line-onload-group" width="large">
-    	<panel>
+    	<panel name="main" >
 	    	<field name="invoice.partner"/>
 			<field name="invoice.invoiceId"/>
 		</panel>

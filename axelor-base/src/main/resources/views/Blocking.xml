@@ -12,7 +12,7 @@
     </grid>
     
     <form name="blocking-form" title="Blocking" model="com.axelor.apps.base.db.Blocking" width="large">
-     	<panel>
+     	<panel name="main">
      		<field name="company" colSpan="12" onSelect="action-base-attrs-domain-company"/>
 		    <field name="invoicingBlockingOk" colSpan="4"/>
 		    <field name="debitBlockingOk" if="__config__.general.getManageDirectDebitPayment()" colSpan="4"/>
@@ -20,25 +20,25 @@
 		    <field name="reminderBlockingOk" colSpan="4"/>
 		</panel>
 		
-		<panel title="Invoicing blocking" showIf="invoicingBlockingOk" colSpan="12">
+		<panel name="invoicingBlocking" title="Invoicing blocking" showIf="invoicingBlockingOk" colSpan="12">
 			<field name="invoicingBlockingToDate" colSpan="4"/>
 			<field name="invoicingBlockingReason" colSpan="4"/>
 			<field name="invoicingBlockingByUser" colSpan="4"/>
 		</panel>
 		
-		<panel title="Direct debit blocking" if="__config__.general.getManageDirectDebitPayment()"  showIf="debitBlockingOk" colSpan="12">
+		<panel name="directDebitBlocking" title="Direct debit blocking" if="__config__.general.getManageDirectDebitPayment()"  showIf="debitBlockingOk" colSpan="12">
 		  <field name="debitBlockingToDate" colSpan="4"/>
 		  <field name="debitBlockingReason" colSpan="4" form-view="stop-reason-form" grid-view="stop-reason-grid"/>
 		  <field name="debitBlockingByUser" colSpan="4" form-view="user-form" grid-view="user-grid"/>
 		</panel>
 		
-		<panel title="Reimbursement blocking" showIf="reimbursementBlockingOk" colSpan="12">
+		<panel name="reimbursementBlocking" title="Reimbursement blocking" showIf="reimbursementBlockingOk" colSpan="12">
 		  <field name="reimbursementBlockingToDate" colSpan="4"/>
 		  <field name="reimbursementBlockingReason" colSpan="4" form-view="stop-reason-form" grid-view="stop-reason-grid"/>
 		  <field name="reimbursementBlockingByUser" colSpan="4" form-view="user-form" grid-view="user-grid"/>
 		</panel>
 		
-		<panel title="Reminder blocking" showIf="reminderBlockingOk" colSpan="12">
+		<panel name="reminderBlocking" title="Reminder blocking" showIf="reminderBlockingOk" colSpan="12">
 		  <field name="reminderBlockingToDate" colSpan="4"/>
 		  <field name="reminderBlockingReason" colSpan="4" form-view="stop-reason-form" grid-view="stop-reason-grid"/>
 		  <field name="reminderBlockingByUser" colSpan="4" form-view="user-form" grid-view="user-grid"/>

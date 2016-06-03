@@ -1,7 +1,5 @@
 package com.axelor.apps.hr.db.repo;
 
-import java.math.BigDecimal;
-
 import com.axelor.apps.hr.db.TSTimer;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.service.timesheet.timer.TimesheetTimerService;
@@ -16,7 +14,7 @@ public class TimesheetTimerHRRepository extends TSTimerRepository{
 	@Override
 	public TSTimer save(TSTimer tsTimer){
 		if(tsTimer.getStatusSelect() == TSTimerRepository.STATUS_STOP){
-			if(tsTimer.getTimeSheetLine() != null)
+			if(tsTimer.getTimesheetLine() != null)
 				updateTimesheetLine(tsTimer);
 			else
 				tsTimerService.generateTimesheetLine(tsTimer);
@@ -26,11 +24,11 @@ public class TimesheetTimerHRRepository extends TSTimerRepository{
 	}
 	
 	public void updateTimesheetLine(TSTimer tsTimer){
-		TimesheetLine timesheetLine = tsTimer.getTimeSheetLine();
+		TimesheetLine timesheetLine = tsTimer.getTimesheetLine();
 		
 		timesheetLine.setProjectTask(tsTimer.getProjectTask());
 		timesheetLine.setProduct(tsTimer.getProduct());
-		timesheetLine.setDurationStored(BigDecimal.valueOf(tsTimer.getDuration() / 3600));
+		timesheetLine.setDurationStored(tsTimerService.convertSecondDurationInHours(tsTimer.getDuration()));
 		timesheetLine.setComments(tsTimer.getComments());
 		
 		Beans.get(TimesheetLineRepository.class).save(timesheetLine);

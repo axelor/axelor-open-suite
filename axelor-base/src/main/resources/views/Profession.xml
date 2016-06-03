@@ -8,7 +8,7 @@
     </grid>
     
     <form name="profession-form" title="Profession" model="com.axelor.apps.base.db.Profession" width="large">
-       <panel>
+       <panel name="main" >
 	       <field name="name"/>
        </panel>
     </form>

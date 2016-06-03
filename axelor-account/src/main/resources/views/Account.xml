@@ -31,10 +31,10 @@
     </tree>
 
 	<form name="account-form" title="Account" model="com.axelor.apps.account.db.Account" width="large" onNew="action-account-record-new">
-		<panel>
+		<panel name="main">
 			<field name="code" colSpan="3" css="bold"/>
 			<field name="name" colSpan="9" css="bold"/>
-			<panel title="Settings" colSpan="12">
+			<panel name="settings" title="Settings" colSpan="12">
 				<field name="accountType" x-show-icons="edit,select"> 
 					<editor x-viewer="true" x-show-titles="false"><field name="nameSelect" readonly="true"/></editor>
 				</field>

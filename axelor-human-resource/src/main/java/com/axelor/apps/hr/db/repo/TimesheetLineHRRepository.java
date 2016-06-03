@@ -25,18 +25,19 @@ public class TimesheetLineHRRepository extends TimesheetLineRepository {
 
 	@Override
 	public TimesheetLine save(TimesheetLine timesheetLine){
-		
-		computeFullName(timesheetLine);
-		
-		return super.save(timesheetLine);
-	}
-	
-	public void computeFullName(TimesheetLine timesheetLine){
 		try{
-			timesheetLine.setFullName(timesheetLine.getAffectedToTimeSheet().getFullName() + " " + timesheetLine.getDate() + " " + timesheetLine.getId());
+			computeFullName(timesheetLine);
+			
+			return super.save(timesheetLine);
 		}
 		catch (Exception e) {
 			throw new PersistenceException(e.getLocalizedMessage());
 		}
+	}
+	
+	public void computeFullName(TimesheetLine timesheetLine){
+		
+		timesheetLine.setFullName(timesheetLine.getAffectedToTimeSheet().getFullName() + " " + timesheetLine.getDate() + " " + timesheetLine.getId());
+		
 	}
 }

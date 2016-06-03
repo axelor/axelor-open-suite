@@ -16,7 +16,7 @@
     </grid>
  
 	 <form name="timetable-form" title="Timetable" model="com.axelor.apps.supplychain.db.Timetable">
-	 	<panel >
+	 	<panel name="main" >
 			<field name="estimatedDate" colSpan="4"/>
       		<field name="amount" colSpan="4"/>
       		<field name="amountToInvoice" colSpan="4" readonly="true"/>

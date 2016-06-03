@@ -14,7 +14,7 @@
     </grid>
   
      <form name="bank-statement-line-form" title="Bank Statement Line" model="com.axelor.apps.account.db.BankStatementLine" width="large">
-	  <panel>
+	  <panel name="main" >
 	    <field name="name"/>
 	    <field name="reference"/>
 	    <field name="effectDate"/>
@@ -24,7 +24,7 @@
 	    <field name="amount"/>
 	  </panel>
   
-	  <panel title="Associated MoveLine">
+	  <panel name="associatedMoveLine" title="Associated MoveLine">
 	    <field name="moveLine" onSelect="action-bank-statement-line-move-line-domain" form-view="move-line-form" grid-view="move-line-grid"/>
 	    <field name="isPosted"/>
 	  </panel>

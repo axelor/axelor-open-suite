@@ -30,9 +30,9 @@
 
 	<form name="timesheet-form" title="Timesheet" model="com.axelor.apps.hr.db.Timesheet" cols="12" width="large"
 	    onNew="action-group-timesheet-onnew"
-	    onLoad="action-timesheet-attrs-buttons,action-timesheet-attrs-set-visible-duration-panel-dashboard-title,action-timesheet-method-set-visible-duration,action-timesheet-attrs-title-project-task,action-timesheet-attrs-from-date,save" canNew="false"
+	    onLoad="action-timesheet-attrs-buttons,action-timesheet-attrs-set-visible-duration-title,action-timesheet-method-set-visible-duration,action-timesheet-attrs-title-project-task,action-timesheet-attrs-from-date,save" canNew="false"
 	    onSave="action-timesheet-validate-toDate,action-timesheet-method-valid-to-date" canCopy="false">
-	    <panel sidebar="true" title="Actions" stacked="true">
+	    <panel sidebar="true" name="actions" title="Actions" stacked="true">
 	    	<button name="confirmButton" onClick="action-timesheet-method-confirm,save,action-timesheet-attrs-buttons,action-timesheet-attrs-from-date" title="Confirm" hideIf="statusSelect &gt; 1" icon="fa-check-square-o"/>
 	    	<button name="validButton" onClick="action-timesheet-method-valid,save,action-timesheet-attrs-buttons,action-timesheet-method-compute-timespent-project-task" title="Valid"/>
 	    	<button name="refuseButton" onClick="action-timesheet-method-refuse,save,action-timesheet-attrs-buttons" title="Refuse"/>
@@ -45,7 +45,7 @@
 	    <panel sidebar="true" name="panelDashboard" title="Total Hours per Day" showIf="id">
 	    	<panel-dashlet action="action-timesheet-view-total-hours-per-day"/>
 	    </panel> 
-	    <panel sidebar="true" title="Total Duration per Project" showIf="id">
+	    <panel sidebar="true" name="totalDurationPerProject" title="Total Duration per Project" showIf="id">
 	    	<panel-dashlet action="action-timesheet-view-total-duration-per-project"/>
 	    </panel>
 		<panel name="head">
@@ -128,11 +128,16 @@
 		<attribute name="readonly" for="timesheetLineList" expr="eval: (statusSelect == 2 &amp;&amp; !(__user__ == user?.employee?.manager || (__user__ == user &amp;&amp; user?.employee?.manager == null)|| __user__.employee?.hrManager)) || statusSelect &gt; 2"/>
 	</action-attrs>
 	
-	<action-attrs name="action-timesheet-attrs-set-visible-duration-panel-dashboard-title">
-	    <attribute name="title" for="timesheetLineList.visibleDuration" expr="eval:__user__.employee?.timeLoggingPreferenceSelect == 'days' ? com.axelor.i18n.I18n.get('Days') : __user__.employee?.timeLoggingPreferenceSelect == 'minutes' ? com.axelor.i18n.I18n.get('Minutes') : com.axelor.i18n.I18n.get('Hours')" />
-	     <attribute name="title" for="panelDashboard" expr="eval:__user__.employee?.timeLoggingPreferenceSelect == 'days' ? com.axelor.i18n.I18n.get('Total Days in the period') : __user__.employee?.timeLoggingPreferenceSelect == 'minutes' ? com.axelor.i18n.I18n.get('Total Minutes per Day') : com.axelor.i18n.I18n.get('Total Hours per Day')"/>
+	<action-attrs name="action-timesheet-attrs-set-visible-duration-title">
+	    	<attribute name="title" for="timesheetLineList.visibleDuration" expr="eval:__user__.employee?.timeLoggingPreferenceSelect == 'days' ? com.axelor.i18n.I18n.get('Days') : __user__.employee?.timeLoggingPreferenceSelect == 'minutes' ? com.axelor.i18n.I18n.get('Minutes') : com.axelor.i18n.I18n.get('Hours')" />
+	     	<attribute name="title" for="panelDashboard" expr="eval:__user__.employee?.timeLoggingPreferenceSelect == 'days' ? com.axelor.i18n.I18n.get('Total Days in the period') : __user__.employee?.timeLoggingPreferenceSelect == 'minutes' ? com.axelor.i18n.I18n.get('Total Minutes per Day') : com.axelor.i18n.I18n.get('Total Hours per Day')"/>
 	</action-attrs>
 	
+	<action-attrs name="action-timesheet-attrs-paneldashboard-title">
+		<attribute name="title" for="panelDashboard" expr="eval:__user__.employee?.timeLoggingPreferenceSelect == 'days' ? com.axelor.i18n.I18n.get('Total Days in the period') : __user__.employee?.timeLoggingPreferenceSelect == 'minutes' ? com.axelor.i18n.I18n.get('Total Minutes per Day') : com.axelor.i18n.I18n.get('Total Hours per Day')"/>
+	</action-attrs>
+
+
 	<action-attrs name="action-timesheet-attrs-set-log-time-title">
 	    <attribute name="title" for="$logTime" expr="eval:__user__.employee?.timeLoggingPreferenceSelect == 'days' ? com.axelor.i18n.I18n.get('Duration(in day per day)') : __user__.employee?.timeLoggingPreferenceSelect == 'minutes' ? com.axelor.i18n.I18n.get('Duration(minutes by day)') : com.axelor.i18n.I18n.get('Duration(hours by day)')" />
 	</action-attrs>

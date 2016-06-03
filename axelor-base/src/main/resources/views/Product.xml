@@ -32,7 +32,7 @@
     		<button name="sendByEmail" title="Send Email" icon="fa-envelope" onClick="action-send-by-email-with-template"/>
     		<button name="showProductSheet" title="Product sheet" icon="fa-print" onClick="save,action-product-method-show-product-sheet"/>
   		</toolbar>
-  		<panel>
+  		<panel name="main" >
    			<panel colSpan="7">
     			<field name="fullName" showTitle="false" css="label-bold bold large" colSpan="12">
         			<editor x-show-titles="false">
@@ -54,13 +54,13 @@
     		</panel>
     		<panel colSpan="10">
       
-      			<panel title="Product typology" colSpan="6" colWidths="30%,70%">
+      			<panel name="productTypology" title="Product typology" colSpan="6" colWidths="30%,70%">
 			        <field name="productTypeSelect" colSpan="12" onChange="action-group-base-product-producttype-onchange"/>
 			        <field name="isActivity" showIf="productTypeSelect == 'service'"/>
 			        <field name="periodicitySelect" showIf="productTypeSelect == 'subscriptable'" if-module="axelor-supplychain"/>
 			        <field name="saleSupplySelect" colSpan="12" onChange="action-product-validate-sale-supply-select"/>
       			</panel>
-		      	<panel title="Categorization" colSpan="6" colWidths="30%,70%">
+		      	<panel name="categorization" title="Categorization" colSpan="6" colWidths="30%,70%">
 		        	<field name="productFamily" colSpan="12" form-view="product-family-form" grid-view="product-family-grid"/>
 		        	<field name="productCategory" colSpan="12" domain="self.productFamily = :productFamily" form-view="product-category-form" grid-view="product-category-grid"/>
 		      	</panel>
@@ -72,40 +72,40 @@
     		</panel>
   		</panel>
   		<panel-tabs title="Product specific attributes">
-    		<panel title="Sale" showTitle="false">
+    		<panel name="sale" title="Sale" showTitle="false">
 	      		<panel title="Sales" colSpan="6">
 			        <field name="sellable" colSpan="12"/>
 			        <field name="salePrice" hideIf="!sellable" colSpan="12"/>
 			        <field name="saleCurrency" hideIf="!sellable" colSpan="12" form-view="currency-form" grid-view="currency-grid"/>
-	        		<panel title="Units" colSpan="6">
+	        		<panel name="units" title="Units" colSpan="6">
 			          	<field name="unit" colSpan="12" form-view="unit-form" grid-view="unit-grid"/>
 			          	<field name="salesUnit" hideIf="!sellable" colSpan="12" form-view="unit-form" grid-view="unit-grid" if="__config__.general.getManageSalesUnits()"/>
 			         	<field name="purchasesUnit" hideIf="!purchasable" colSpan="12" form-view="unit-form" grid-view="unit-grid" if="__config__.general.getManagePurchasesUnits()"/>
 	        		</panel>
 	      		</panel>
 	      		<panel colSpan="6">
-			      	<panel title="Product dates" colSpan="12">
+			      	<panel name="productDates" title="Product dates" colSpan="12">
 			        	<field name="startDate" colSpan="12"/>
 			        	<field name="endDate" colSpan="12" onChange="action-group-base-product-enddate-onchange"/>
 			      	</panel>
 		        	<field name="versionSelect" colSpan="12"/>
 				</panel>
-	      		<panel title="Description" colSpan="6">
+	      		<panel name="description" title="Description" colSpan="6">
 	        		<field name="description" showTitle="false" colSpan="12" widget="html"/>
 	      		</panel>
-	      		<panel title="Internal description" colSpan="6">
+	      		<panel name="internalDescription" title="Internal description" colSpan="6">
 	        		<field name="internalDescription" showTitle="false" colSpan="12" widget="html"/>
 	      		</panel>
 	    	</panel>
-	    	<panel title="Purchase/Costs" showTitle="false">
-		      	<panel title="Purchases" colSpan="6">
+	    	<panel name="purchaseCosts" title="Purchase/Costs" showTitle="false">
+		      	<panel name="purchase" title="Purchases" colSpan="6">
 			        <field name="purchasable" colSpan="12"/>
 			        <field name="purchasePrice" showIf="purchasable" colSpan="6"/>
 			        <field name="purchaseCurrency" showIf="purchasable" colSpan="6" form-view="currency-form" grid-view="currency-grid"/>
 			        <field name="defaultSupplierPartner" showIf="purchasable" colSpan="6" domain="self.isContact = false AND self.isSupplier = true" form-view="partner-form" grid-view="partner-grid"/>
 			        <field name="supplierDeliveryTime" showIf="purchasable" colSpan="6"/>
 		      	</panel>
-	      		<panel title="Costs" colSpan="6">
+	      		<panel name="costs" title="Costs" colSpan="6">
 			        <field name="costPrice" colSpan="6" onChange="action-product-record-compute-sale-price"/>
 			        <field name="costTypeSelect" colSpan="6"/>
 			        <field name="managPriceCoef" colSpan="12" onChange="action-product-record-compute-sale-price"/>
@@ -113,8 +113,8 @@
 	      		<panel-related field="supplierCatalogList" form-view="supplier-catalog-form" grid-view="supplier-catalog-grid" title="Suppliers catalog" showIf="purchasable" colSpan="12"/>
 	    	</panel>
 	    	<panel-related field="accountManagementList" form-view="account-management-product-form" grid-view="account-management-product-grid" domain="self.typeSelect = 1" title="Accounting" showTitle="false" colSpan="12"/>
-	    		<panel title="Stock" showTitle="false" showIf="productTypeSelect == 'storable'" if-module="axelor-stock">
-	     			<panel title="Procurement settings" colSpan="12" if-module="axelor-supplychain">
+	    		<panel name="stock" title="Stock" showTitle="false" showIf="productTypeSelect == 'storable'" if-module="axelor-stock">
+	     			<panel name="procurementSettings" title="Procurement settings" colSpan="12" if-module="axelor-supplychain">
 				        <field name="procurementMethodSelect" colSpan="6" requiredIf="productTypeSelect == 'storable'"/>
 				        <field name="isRawMaterial" showIf="productTypeSelect != 'service'" colSpan="6"/>
 				        <field name="excludeFromMrp" showIf="productTypeSelect == 'storable'" colSpan="6"/>
@@ -128,11 +128,11 @@
 				        <panel-dashlet colSpan="12" action="action-stock-history-report-for-product"/>
 	      			</panel>
 	    		</panel>
-	    		<panel title="Production informations" showTitle="false" showIf="productTypeSelect != 'service'" onTabSelect="action-product-attrs-readonly-create-production-order" if-module="axelor-production">
+	    		<panel name="productionInformations" title="Production informations" showTitle="false" showIf="productTypeSelect != 'service'" onTabSelect="action-product-attrs-readonly-create-production-order" if-module="axelor-production">
 	      			<panel-include view="product-production-form"/>
 	      			<panel-dashlet colSpan="12" action="action-product-view-production-process"/>
 	    		</panel>
-	    		<panel title="Tracking number" showTitle="false" showIf="productTypeSelect != 'service'">
+	    		<panel name="trackingNumber" title="Tracking number" showTitle="false" showIf="productTypeSelect != 'service'">
 	      			<panel colSpan="12">
 				        <field name="hasWarranty"/>
 				        <field name="warrantyNbrOfMonths" showIf="hasWarranty"/>
@@ -143,7 +143,7 @@
 	        			<field name="trackingNumberConfiguration" canNew="true" form-view="tracking-number-configuration-form" grid-view="tracking-number-configuration-grid"/>
 	      			</panel>
 	    		</panel>
-	    		<panel title="Variants" showTitle="false">
+	    		<panel name="variants" title="Variants" showTitle="false">
 	      			<panel name="parentVariant" showIf="!parentProduct" colSpan="12">
 	        			<field name="productVariantConfig" colSpan="12" canSelect="false" canNew="true">
 				        	<editor x-show-titles="false">
@@ -178,7 +178,7 @@
 	      			</panel>
 	      			<button name="updateProductsPrices" title="Update products prices" help="Update current product prices and variants" onClick="save,action-product-method-update-products-prices"/>
 	    		</panel>
-	    	<panel title="Links" if-module="axelor-stock">
+	    	<panel name="links" title="Links" if-module="axelor-stock">
 				<panel-dashlet colSpan="12" action="action-product-view-stock-move-line-incoming-planned"/>
 				<panel-dashlet colSpan="12" action="action-product-view-stock-move-line-consumption-planned"/>
 				<panel-dashlet colSpan="12" action="action-product-view-stock-move-line"/>

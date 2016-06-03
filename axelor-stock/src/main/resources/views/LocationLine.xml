@@ -10,7 +10,7 @@
     </grid>
     
     <form name="location-line-form" title="Stock Location content" model="com.axelor.apps.stock.db.LocationLine">
-    	<panel>
+    	<panel name="main">
 	        <field name="product" form-view="product-form" grid-view="product-grid"/>
 	        <field name="currentQty"/>
 	        <field name="futureQty"/>
@@ -25,7 +25,7 @@
     </grid>
     
     <form name="location-line-product-form" title="Stock Location content" model="com.axelor.apps.stock.db.LocationLine">
-		<panel>
+		<panel name="main">
 	        <field name="location" form-view="location-form" grid-view="location-grid"/>
 	        <field name="currentQty"/>
 	        <field name="futureQty"/>
@@ -48,7 +48,7 @@
     </grid>
     
     <form name="location-line-details-form" title="Stock Location content" model="com.axelor.apps.stock.db.LocationLine">
-		<panel>
+		<panel name="main">
 	        <field name="product" form-view="product-form" grid-view="product-grid"/>
 	        <field name="currentQty"/>
 	        <field name="futureQty"/>

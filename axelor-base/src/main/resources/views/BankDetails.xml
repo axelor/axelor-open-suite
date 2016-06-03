@@ -12,20 +12,20 @@
 
 	<form onSave="action-validate-bank-details-bbanKey" onNew="action-set-default-partner" name="bank-details-form" title="Bank details" 
 	model="com.axelor.apps.base.db.BankDetails" id="bank-details-form" width="large">
-		<panel title="Owner">
+		<panel name="owner" title="Owner">
 			<field name="partner" onChange="action-set-owner-name" domain="self.isContact = false" form-view="partner-form" grid-view="partner-grid" />
 			<field name="ownerName" />
 		</panel>
-		<panel title="IBAN">
+		<panel name="iban" title="IBAN">
 			<field name="iban" onChange="action-group-account-bankdetails-iban-onchange" />
 			<field name="bic" />
 			<field name="ibanBic" readonly="true" x-bind="{{iban+' '+bic}}"/>
 		</panel>
-		<panel title="Bank">
+		<panel name="bank" title="Bank">
 			<field name="countryCode" />
 			<field name="bankAddress" />
 		</panel>
-		<panel title="BBAN">
+		<panel name="bban" title="BBAN">
 			<field name="bankCode" colSpan="3" />
 			<field name="sortCode" colSpan="3"/>
 			<field name="accountNbr" colSpan="3"/>

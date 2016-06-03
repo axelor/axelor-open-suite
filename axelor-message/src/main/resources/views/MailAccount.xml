@@ -11,7 +11,7 @@
     </grid>
     
     <form name="mail-account-form" title="Mail account" model="com.axelor.apps.message.db.MailAccount">
-    	<panel title="Informations">
+    	<panel name="informations" title="Informations">
             <field name="name"/>
 			<field name="isDefault" onChange="action-mail-account-validate-is-default"/>
         	<field name="signature" widget="Html" x-lite="true" height="7" colSpan="12"/>

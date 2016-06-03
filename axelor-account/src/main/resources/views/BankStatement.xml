@@ -14,7 +14,7 @@
      </grid>
   
 	<form onNew="action-account-bank-statement-onnew-group" readonlyIf="statusSelect == 2" name="bank-statement-form" title="Bank Statement" model="com.axelor.apps.account.db.BankStatement" width="large">
-		<panel >
+		<panel name="main" >
 			<field name="name"/>
 			<field name="company" widget="SuggestBox" onChange="action-bank-statement-set-currency" form-view="company-form" grid-view="company-grid"/>
 			<field name="currency" form-view="currency-form" grid-view="currency-grid"/>
@@ -24,12 +24,12 @@
 			<field name="cashAccount" domain="self.company = :company AND self.accountType.nameSelect='cash'" form-view="account-form" grid-view="account-grid"/>
 		</panel>
 		
-		<panel title="Status" >
+		<panel name="status" title="Status" >
 			<field name="statusSelect" title="Status"/>
 			<button name="validated" title="Validated" hideIf="statusSelect == 2" onClick="action-group-account-bankstatement-validate-click"/>
 		</panel>
 		
-		<panel title="Balance" >
+		<panel name="balance" title="Balance" >
 			<field name="startingBalance"/>
 			<field name="endingBalance"/>
 			<field name="computedBalance"/>

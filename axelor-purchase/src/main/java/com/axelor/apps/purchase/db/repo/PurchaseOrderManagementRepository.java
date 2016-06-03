@@ -30,6 +30,7 @@ public class PurchaseOrderManagementRepository extends PurchaseOrderRepository {
 	public PurchaseOrder copy(PurchaseOrder entity, boolean deep) {
 		entity.setStatusSelect(IPurchaseOrder.STATUS_DRAFT);
 		entity.setPurchaseOrderSeq(null);
+		entity.setVersionNumber(1);
 		return super.copy(entity, deep);
  	}
 

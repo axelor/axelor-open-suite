@@ -5,7 +5,7 @@
 	
     <form name="mail-account-form" id="base-mail-account-form" title="Mail account" model="com.axelor.apps.message.db.MailAccount" 
     	onNew="action-mail-account-default-record">
-    	<panel title="Informations" >
+    	<panel name="informations" title="Informations" >
             <field name="name" />
 			<field name="isDefault" onChange="action-mail-account-validate-is-default" />
         	<field name="signature" widget="Html" x-lite="true" height="7" colSpan="12"/>
@@ -20,7 +20,7 @@
        	 	<field name="login"/>
         	<field name="password" widget="password"/>
         </panel>
-		<panel title="User" sidebar="true" if="__config__.general.getMailAccountByUser()">
+		<panel name="user" title="User" sidebar="true" if="__config__.general.getMailAccountByUser()">
         	<field name="user" required="true" showTitle="false" colSpan="12" form-view="user-form" grid-view="user-grid"/>
 		</panel>
 		<panel sidebar="true" >

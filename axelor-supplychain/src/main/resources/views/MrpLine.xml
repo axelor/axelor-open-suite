@@ -20,7 +20,7 @@
     </grid>
     
 	<form name="mrp-line-form" model="com.axelor.apps.supplychain.db.MrpLine" title="Result">
-	    <panel readonly="true">
+	    <panel name="main" readonly="true">
 	        <field name="product"/>
 	        <field name="mrpLineType"/>
         	<field name="qty"/>

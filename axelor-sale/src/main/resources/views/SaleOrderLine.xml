@@ -68,14 +68,14 @@
 		       	<field name="billOfMaterial" onSelect="action-sale-order-line-attrs-bill-of-material-domain" if-module="axelor-production" form-view="bill-of-material-form" grid-view="bill-of-material-grid"/>
 		       	<button name="customizeBOM" title="Customize BOM" onClick="action-production-method-customize-bill-of-material" if-module="axelor-production"/>
 		   	</panel>
-		   	<panel title="Notes">
+		   	<panel name="notes" title="Notes">
 		   		<field name="description" showTitle="false" colSpan="12" widget="Html" x-lite="true"/>
 		   	</panel>
 		   	<panel name="deliveryPanel" title="Delivery">
 		   		<field name="estimatedDelivDate"/>
 		   		<panel-dashlet name="sale.order.line.dashboard" title="Stock Moves" action="action-sale-order-line-view-stock-move-line" colSpan="12"/>
 		   	</panel>
-		   	<panel title="Invoicing follow-up" if-module="axelor-supplychain">
+		   	<panel name="invoicingFollowUp" title="Invoicing follow-up" if-module="axelor-supplychain">
 		   		<field name="invoicingDate"/>
 		  		<field name="amountInvoiced" if="__config__.general.getManageInvoicedAmountByLine()"/>
 		  		<panel-dashlet action="action-sale-order-line-view-show-invoice-lines" if="__config__.general.getManageInvoicedAmountByLine()" colSpan="12"/>
@@ -84,7 +84,7 @@
 				<field name="project" onSelect="action-sale-order-line-attrs-domain-project" onChange="action-sale-order-line-record-progress" form-view="project-task-form" grid-view="project-task-grid"/>
 				<field name="progress" readonly="true" widget="SelectProgress"/>
 			</panel>
-			<panel title="Analytic distribution" if-module="axelor-supplychain" if="__config__.general.getManageAnalyticAccounting()" onTabSelect="action-sale-order-line-attrs-read-only-distribution-lines">
+			<panel name="analyticDistribution" title="Analytic distribution" if-module="axelor-supplychain" if="__config__.general.getManageAnalyticAccounting()" onTabSelect="action-sale-order-line-attrs-read-only-distribution-lines">
 				<field name="analyticDistributionTemplate" if="__config__.general.getAnalyticDistributionTypeSelect() == 1"/>
 				<button name="generateDistributionLinesButton" onClick="action-sale-order-line-method-create-distribution" title="Generate distribution lines" showIf="analyticDistributionTemplate != null" if="__config__.general.getAnalyticDistributionTypeSelect() == 1"/>
 				<panel-related field="analyticDistributionLineList" grid-view="analytic-distribution-line-grid" form-view="analytic-distribution-line-form" colSpan="12"/>
@@ -94,7 +94,7 @@
 	
 	<form name="sale-order-line-menu-form" title="SO line" model="com.axelor.apps.sale.db.SaleOrderLine" 
 	onLoad="action-group-sale-saleorderline-onload" onNew="action-group-sale-saleorderline-onnew" width="large">
-		<panel>
+		<panel name="main" >
 			<field name="saleOrder.clientPartner"></field>
 			<field name="saleOrder" grid-view="sale-order-grid" form-view="sale-order-form"/>
 		</panel>
@@ -103,7 +103,7 @@
 	
 		<form name="sale-order-line-invoice-form" title="SO line" model="com.axelor.apps.sale.db.SaleOrderLine" 
 	onLoad="action-group-sale-saleorderline-onload" onNew="action-group-sale-saleorderline-onnew" width="large">
-		<panel>
+		<panel name="main" >
 			<field name="saleOrder" grid-view="sale-order-grid" form-view="sale-order-form"/>
 		</panel>
 		<panel-include view="sale-order-line-form"/>

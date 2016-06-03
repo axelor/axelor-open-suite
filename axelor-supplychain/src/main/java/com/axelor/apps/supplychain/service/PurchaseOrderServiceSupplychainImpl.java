@@ -49,6 +49,7 @@ import com.axelor.apps.stock.service.StockMoveLineService;
 import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.apps.stock.service.config.StockConfigService;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;
+import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
@@ -205,5 +206,49 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
 			}
 			//purchaseOrderRepo.save(purchaseOrder);
 		}
+	}
+	
+	@Transactional
+	public PurchaseOrder mergePurchaseOrders(List<PurchaseOrder> purchaseOrderList, Currency currency,
+			Partner supplierPartner, Company company, Location location, Partner contactPartner,
+			PriceList priceList) throws AxelorException{
+		String numSeq = "";
+		String externalRef = "";
+		for (PurchaseOrder purchaseOrderLocal : purchaseOrderList) {
+			if (!numSeq.isEmpty()){
+				numSeq += "-";
+			}
+			numSeq += purchaseOrderLocal.getPurchaseOrderSeq();
+
+			if (!externalRef.isEmpty()){
+				externalRef += "|";
+			}
+			if (purchaseOrderLocal.getExternalReference() != null){
+				externalRef += purchaseOrderLocal.getExternalReference();
+			}
+		}
+		
+		PurchaseOrder purchaseOrderMerged = this.createPurchaseOrder(
+				AuthUtils.getUser(),
+				company,
+				contactPartner,
+				currency,
+				null,
+				numSeq,
+				externalRef,
+				location,
+				LocalDate.now(),
+				priceList,
+				supplierPartner);
+		
+		super.attachToNewPurchaseOrder(purchaseOrderList, purchaseOrderMerged);
+
+		this.computePurchaseOrder(purchaseOrderMerged);
+
+		purchaseOrderRepo.save(purchaseOrderMerged);
+		
+		super.removeOldPurchaseOrders(purchaseOrderList);
+
+		return purchaseOrderMerged;
 	}
 }

@@ -13,7 +13,7 @@
     
     <form name="prod-process-form" title="Production process" model="com.axelor.apps.production.db.ProdProcess"
     	onSave="action-prod-process-method-validate-prod-process" width="large">
-		<panel>
+		<panel name="main">
 	    	<field name="name"/>
 	    	<field name="code"/>
 	        <field name="location" required="true" grid-view="location-grid" form-view="location-form"/>
