@@ -9,7 +9,7 @@
 		<field name="product" onSelect="action-hr-timesheet-line-attrs-domain-product" widget="SuggestBox" form-view="product-activity-form" grid-view="product-activity-grid"/>
 		<field name="visibleDuration" width="62%" onChange="action-timesheet-line-record-set-stored-duration"/>
 		<field name="durationStored" hidden="true"/>
-		<field name="affectedToTimeSheet" grid-view="timesheet-grid" form-view="timesheet-form"/>
+		<field name="timesheet" grid-view="timesheet-grid" form-view="timesheet-form"/>
 		<field name="toInvoice" if-module="axelor-business-project"/>
 		<field name="comments" />
 		<field name="projectTask" hidden="true" />
@@ -34,7 +34,7 @@
 		<field name="product" onSelect="action-hr-timesheet-line-attrs-domain-product" widget="SuggestBox" form-view="product-activity-form" grid-view="product-activity-grid"/>
 		<field name="visibleDuration" width="62%" onChange="action-timesheet-line-record-set-stored-duration" aggregate="sum"/>
 		<field name="durationStored" hidden="true" />
-		<field name="affectedToTimeSheet" grid-view="timesheet-grid" form-view="timesheet-form"/>
+		<field name="timesheet" grid-view="timesheet-grid" form-view="timesheet-form"/>
 		<field name="toInvoice" if-module="axelor-business-project"/>
 		<field name="comments" />
 	</grid>
@@ -60,7 +60,7 @@
 			<field name="visibleDuration" width="62%" colSpan="3" onChange="action-timesheet-line-record-set-stored-duration"/>
 			<label name="durationLabel" colSpan="1"/>
 			<field name="durationStored" hidden="true" />
-			<field name="affectedToTimeSheet" grid-view="timesheet-grid" form-view="timesheet-form"/>
+			<field name="timesheet" grid-view="timesheet-grid" form-view="timesheet-form"/>
 			<field name="toInvoice" if-module="axelor-business-project"/>
 			<field name="comments" />
 		</panel>
@@ -90,7 +90,7 @@
 			<field name="product" onSelect="action-hr-timesheet-line-attrs-domain-product" widget="SuggestBox" form-view="product-activity-form" grid-view="product-activity-grid"/>
 			<field name="visibleDuration" width="62%" colSpan="2" onChange="action-timesheet-line-record-set-stored-duration"/>
 			<label name="durationLabel" colSpan="1"/>
-			<field name="affectedToTimeSheet" grid-view="timesheet-grid" form-view="timesheet-form"/>
+			<field name="timesheet" grid-view="timesheet-grid" form-view="timesheet-form"/>
 			<field name="durationStored" hidden="true" />
 			<field name="toInvoice" if-module="axelor-business-project"/>
 			<field name="comments" />
