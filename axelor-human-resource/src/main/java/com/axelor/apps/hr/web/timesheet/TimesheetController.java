@@ -26,13 +26,16 @@ import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.axelor.apps.ReportFactory;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Wizard;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.administration.GeneralService;
+import com.axelor.apps.hr.db.Expense;
 import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.db.repo.TimesheetRepository;
+import com.axelor.apps.hr.report.IReport;
 import com.axelor.apps.hr.service.HRMenuTagService;
 import com.axelor.apps.hr.service.timesheet.TimesheetService;
 import com.axelor.apps.project.db.ProjectTask;
@@ -343,5 +346,29 @@ public class TimesheetController {
 		Timesheet timesheet= new Timesheet();
 		logger.debug("Timesheet methode {}",timesheet.getClass());
 		return hrMenuTagService.CountRecordsTag(timesheet);
+	}
+	
+	public void printTimesheet(ActionRequest request, ActionResponse response) throws AxelorException {
+		
+		Timesheet timesheet = request.getContext().asType(Timesheet.class);
+		
+		User user = AuthUtils.getUser();
+		String language = user != null? (user.getLanguage() == null || user.getLanguage().equals(""))? "en" : user.getLanguage() : "en"; 
+		
+		String name = I18n.get("Timesheet") + " " + timesheet.getFullName()
+												.replace("/", "-");
+		
+		String fileLink = ReportFactory.createReport(IReport.TIMESHEET, name)
+				.addParam("TimesheetId", timesheet.getId())
+				.addParam("Locale", language)
+				.addModel(timesheet)
+				.generate()
+				.getFileLink();
+
+		logger.debug("Printing "+name);
+	
+		response.setView(ActionView
+				.define(name)
+				.add("html", fileLink).map());	
 	}
 }

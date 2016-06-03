@@ -21,4 +21,5 @@ public interface IReport {
 	
 	public static final String EMPLYOMENT_CONTRACT = "EmploymentContract.rptdesign";
 	public static final String EXPENSE="Expense.rptdesign";
+	public static final String TIMESHEET = "Timesheet.rptdesign";
 }
