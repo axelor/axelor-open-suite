@@ -100,11 +100,6 @@ public class TimesheetServiceImpl implements TimesheetService{
 	@Transactional(rollbackOn={Exception.class})
 	public void cancelTimesheet(Timesheet timesheet){
 		timesheet.setStatusSelect(TimesheetRepository.STATUS_CANCELED);
-		List<TimesheetLine> timesheetLineList = timesheet.getTimesheetLineList();
-		for (TimesheetLine timesheetLine : timesheetLineList) {
-			if(timesheetLine.getProjectTask() != null)
-				timesheetLine.setAffectedToTimeSheet(null);
-		}
 		Beans.get(TimesheetRepository.class).save(timesheet);
 	}
 
