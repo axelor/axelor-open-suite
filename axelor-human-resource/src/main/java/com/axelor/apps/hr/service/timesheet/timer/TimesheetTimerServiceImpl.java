@@ -1,8 +1,11 @@
 package com.axelor.apps.hr.service.timesheet.timer;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 import org.joda.time.Duration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.crm.service.EventService;
@@ -19,6 +22,8 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
 public class TimesheetTimerServiceImpl implements TimesheetTimerService {
+	
+	private final Logger logger = LoggerFactory.getLogger(getClass());
 	
 	@Inject
 	protected EventService eventService;
@@ -53,15 +58,25 @@ public class TimesheetTimerServiceImpl implements TimesheetTimerService {
 
 	@Transactional(rollbackOn = {Exception.class})
 	public TimesheetLine generateTimesheetLine(TSTimer timer) {
-		BigDecimal durationHours = BigDecimal.valueOf(timer.getDuration() / 3600);
+		
+		BigDecimal durationHours = this.convertSecondDurationInHours(timer.getDuration());
 		Timesheet timesheet = timesheetService.getCurrentOrCreateTimesheet();
 		TimesheetLine timesheetLine = timesheetService.createTimesheetLine(timer.getProjectTask(), timer.getProduct(), timer.getUser(), timer.getStartDateTime().toLocalDate(), timesheet, durationHours, timer.getComments());
 		
 		Beans.get(TimesheetRepository.class).save(timesheet);
 		Beans.get(TimesheetLineRepository.class).save(timesheetLine);
-		timer.setTimeSheetLine(timesheetLine);
+		timer.setTimesheetLine(timesheetLine);
 		
 		return timesheetLine;
+	}
+	
+	public BigDecimal convertSecondDurationInHours(long durationInSeconds)   {
+		logger.debug("Duration in seconds : {}", durationInSeconds);
+		
+		BigDecimal durationHours = new BigDecimal(durationInSeconds).divide(new BigDecimal(3600), 2, RoundingMode.HALF_EVEN);
+		logger.debug("Duration in hours : {}", durationHours);
+		
+		return durationHours;
 	}
 	
 	public TSTimer getCurrentTSTimer(){

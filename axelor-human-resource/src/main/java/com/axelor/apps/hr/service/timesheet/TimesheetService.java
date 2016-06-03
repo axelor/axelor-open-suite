@@ -55,6 +55,6 @@ public interface TimesheetService {
 	public void getActivities(ActionRequest request, ActionResponse response);
 	@Transactional
 	public void insertTSLine(ActionRequest request, ActionResponse response);
-	public String computeFullName(Timesheet timeSheet);
+	public String computeFullName(Timesheet timesheet);
 	public List<TimesheetLine> computeVisibleDuration(Timesheet timesheet);
 }
