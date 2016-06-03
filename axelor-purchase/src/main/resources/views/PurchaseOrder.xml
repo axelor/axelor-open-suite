@@ -32,15 +32,16 @@
 	<form name="purchase-order-merge-form" model="com.axelor.apps.base.db.Wizard" title="Merge purchase orders" width="large">
 		<panel-related field="$purchaseOrderToMerge" form-view="purchase-order-form" title="Purchase orders to merge" colSpan="12" type="many-to-many" target="com.axelor.apps.purchase.db.PurchaseOrder" domain="self.statusSelect = 1" canNew="false" canEdit="false" grid-view="purchase-order-grid"/>
 		<panel sidebar="true" title="Actions">
-			<button name="generateMergedPurchaseOrder" title="Merge into single purchase order" onClick="action-validate-purchase-order-check-selection,action-purchase-order-method-merge"/>			
+			<button name="generateMergedPurchaseOrder" title="Merge into single purchase order" onClick="action-validate-purchase-order-check-selection,action-group-purchase-order-merge-action"/>			
 	  	</panel>
     </form>
-    
-    <form name="purchase-order-merge-confirm-form" model="com.axelor.apps.base.db.Wizard" title="Confirmation" onNew="action-record-load-dummy-field-confirm-merge-purchaseorder">
+	
+	<form name="purchase-order-merge-confirm-form" model="com.axelor.apps.base.db.Wizard" title="Confirmation" onNew="action-record-load-dummy-field-confirm-merge-purchaseorder">
 		<panel colSpan="6" colOffset="3">
 			<field name="$priceList" title="Price List" type="many-to-one" target="com.axelor.apps.base.db.PriceList" domain="self.typeSelect = 2 and self.isActive = true" colSpan="6" colOffset="3" width="200px" showIf="priceListToCheck" canSelect="true" form-view="price-list-form" grid-view="price-list-grid"/>
+			<field name="$location" title="Location" showIf="locationToCheck" if-module="axelor-supplychain" colSpan="6" colOffset="3" width="200px" type="many-to-one" canSelect="true" target="com.axelor.apps.stock.db.Location" domain="self.company = company and self.typeSelect = 1" form-view="location-form" grid-view="location-grid"/>
 			<field name="$contactPartner" title="Contact partner" type="many-to-one" target="com.axelor.apps.base.db.Partner" domain="self.isContact IS TRUE AND EXISTS (SELECT 1 FROM Partner part WHERE part.id = :partnerId AND self.id IN (SELECT id FROM part.contactPartnerSet))" colSpan="6" colOffset="3" width="200px" widget="SuggestBox" showIf="contactPartnerToCheck" form-view="partner-contact-form" grid-view="partner-contact-grid"/>
-			<button name="confirm" title="Confirmer" onClick="action-purchase-order-method-merge" colSpan="12" width="200px"/>
+			<button name="confirm" title="Confirmer" onClick="action-group-purchase-order-merge-action" colSpan="12" width="200px"/>
 		</panel>
     </form>
 	
@@ -51,7 +52,7 @@
 			<button name="sendByEmail" title="Send email" icon="fa-envelope" onClick="save,action-send-by-email-with-template"/>
 		</toolbar>
 	  
-		<panel readonlyIf="statusSelect == 4">
+		<panel name="main" readonlyIf="statusSelect == 4">
 			<field name="supplierPartner.purchaseOrderInformation" css="bold red" colSpan="12" showTitle="false" hideIf="supplierPartner == null || supplierPartner.purchaseOrderInformation == null"/>
 			<field name="statusSelect" showTitle="false" widget="NavSelect" colSpan="12"/>
 			<field name="purchaseOrderSeq" css="label-bold bold" colSpan="6"/>
@@ -64,7 +65,7 @@
 			<field name="inAti" onChange="action-purchase-order-attrs-in-ati"/>   
 		</panel>
 		
-		<panel title="Supplier information">
+		<panel name="supplierInformation" title="Supplier information">
 			<field name="supplierPartner" onChange="action-purchase-order-record-partner,action-purchase-order-attrs-hide-contact-partner,action-purchase-order-validate-information" domain="self.isContact = false AND self.isSupplier = true" form-view="partner-form" grid-view="partner-grid"/>
 			<field name="contactPartner" onChange="action-record-po-contact-partner-change" onSelect="action-attrs-po-domain-on-contact-partner"
 				domain="self.isContact = true"
@@ -72,22 +73,22 @@
 			<field name="externalReference"/>
 	      	<field name="priceList" domain="self.typeSelect = 2 and self.isActive = true" form-view="price-list-form" grid-view="price-list-grid" /> 
 		</panel>
-		<panel title="Delivery" colSpan="12">
+		<panel name="delivery" title="Delivery" colSpan="12">
 			<field name="deliveryDate" colSpan="3"/>
 	        <field name="location" domain="self.company = :company and self.typeSelect = 1" if-module="axelor-supplychain" colSpan="3" form-view="location-form" grid-view="location-grid"/>
 	        <field name="location.address" if-module="axelor-supplychain" form-view="address-form" grid-view="address-grid"/>
 	    </panel>	  
 		<panel-tabs>
-			<panel title="Content" colSpan="12">
+			<panel name="content" title="Content" colSpan="12">
 				<panel-related field="purchaseOrderLineList" grid-view="purchase-order-line-purchase-order-grid" title="PO Lines" colSpan="12" onChange="action-purchase-order-method-compute" form-view="purchase-order-line-form" canMove="true" orderBy="sequence"/>    
 				<panel-related field="purchaseOrderLineTaxList" title="Tax Lines" colSpan="12" grid-view="purchase-order-line-tax-grid" form-view="purchase-order-line-tax-form"/>
 			</panel>
-			<panel title="Other information">
-				<panel title="Financial terms">
+			<panel name="otherInformation" title="Other information">
+				<panel name="financialTerms" title="Financial terms">
 					<field name="paymentMode" domain="self.inOutSelect = 2" if-module="axelor-account" form-view="payment-mode-form" grid-view="payment-mode-grid"/>
 					<field name="paymentCondition" if-module="axelor-account" form-view="payment-condition-form" grid-view="payment-condition-grid"/>
 				</panel>
-				<panel title="Invoicing" readonlyIf="statusSelect == 4" colSpan="6">
+				<panel name="invoicing" title="Invoicing" readonlyIf="statusSelect == 4" colSpan="6">
 					<field name="invoice" if-module="axelor-account" form-view="invoice-form" grid-view="invoice-grid"/>
 				</panel>
 				<panel hideIf="statusSelect &gt; 2" colSpan="12">
@@ -95,20 +96,20 @@
 					<field name="priceRequest" colSpan="12" hideIf="priceDisplay" x-height="5" />
 				</panel>
 			</panel>
-			<panel title="Notes">
+			<panel name="notes" title="Notes">
 				<field name="notes" showTitle="false" colSpan="12" widget="Html" x-lite="true"/>
 			</panel>
-			<panel title="PO Management" if-module="axelor-supplier-management" colSpan="12">
+			<panel name="POManagement" title="PO Management" if-module="axelor-supplier-management" colSpan="12">
 				<panel-include view="purchase-order-supplier-form" from="axelor-supplier-management" if-module="axelor-supplier-management"/>
 			</panel>
-			<panel title="Timetable" if-module="axelor-supplychain">
+			<panel name="timetable" title="Timetable" if-module="axelor-supplychain">
 				<field name="expectedRealisationDate" colSpan="12" width="50%"/>
 				<label title="OR"/>
 				<panel-related field="timetableList" colSpan="12" grid-view="timetable-grid" form-view="timetable-form" if-module="axelor-supplychain"/>
 			</panel>		
 		</panel-tabs>
 	  
-		<panel sidebar="true" title="Actions">
+		<panel sidebar="true" name="actions" title="Actions">
 			<button name="draft" title="Draft" showIf="statusSelect == 5"   onClick="action-purchase-order-record-draft,save"/>
 			<button name="requested" title="Requested" showIf="statusSelect == 1"   onClick="save,action-purchase-order-method-requested"/>
 			<button name="validate" title="Validate" showIf="statusSelect == 2"   onClick="action-group-purchase-order-on-validate-actions"/>
@@ -122,17 +123,17 @@
 			<button name="cancel" title="Cancel" showIf="statusSelect == 1 || statusSelect == 2"   onClick="save,action-purchase-order-record-cancel"/>
 		</panel>
 	  
-		<panel sidebar="true" title="Info.">
+		<panel sidebar="true" name="info" title="Info.">
 			<panel readonlyIf="statusSelect == 4">
 				<field name="orderDate"/>
 				<field name="internalReference"/> 
+			</panel>
+			<panel readonly="true">
+				<field name="validatedByUser" form-view="user-form" grid-view="user-grid"/>
+				<field name="validationDate"/>
+	    	</panel>
 		</panel>
-		<panel readonly="true">
-			<field name="validatedByUser" form-view="user-form" grid-view="user-grid"/>
-			<field name="validationDate"/>
-	    </panel>
-		</panel>
-			<panel sidebar="true">
+		<panel sidebar="true">
 			<field name="inTaxTotal" css="order-subtotal" showTitle="false" colSpan="12">
 				<viewer>
 					&lt;dl class="dl-horizontal"&gt;
@@ -184,6 +185,11 @@
     	<action name="action-purchase-order-method-update-cost-price"/>
     	<action name="action-purchase-order-method-generate-budget-distribution"/>
     </action-group>
+    
+    <action-group name="action-group-purchase-order-merge-action">
+	    <action name="action-purchase-order-method-merge-purchase" if="__repo__.of(MetaModule).all().filter('self.name = ?','axelor-supplychain').fetchOne()?.installed == false"/>
+	    <action name="action-purchase-order-method-merge-supplychain"/>
+	</action-group>
     
     <action-method name="action-purchase-order-method-update-cost-price">
     	<call class="com.axelor.apps.purchase.web.PurchaseOrderController" method="updateCostPrice"/>
@@ -314,13 +320,18 @@
 		<error message="You have to choose at least one purchase order" if="purchaseOrderToMerge == null || purchaseOrderToMerge.size() == 0"/>
 	</action-validate>
 	
-	<action-method name="action-purchase-order-method-merge">
+	<action-method name="action-purchase-order-method-merge-purchase">
 		<call class="com.axelor.apps.purchase.web.PurchaseOrderController" method="mergePurchaseOrder"/>
+	</action-method>
+	
+	<action-method name="action-purchase-order-method-merge-supplychain" if-module="axelor-supplychain">
+		<call class="com.axelor.apps.supplychain.web.PurchaseOrderController" method="mergePurchaseOrder"/>
 	</action-method>
 	
 	<action-record name="action-record-load-dummy-field-confirm-merge-purchaseorder" model="com.axelor.apps.base.db.Wizard">
 		<field name="priceListToCheck" expr="eval: contextPriceListToCheck"/>
 		<field name="contactPartnerToCheck" expr="eval: contextContactPartnerToCheck"/>
+		<field name="locationToCheck" expr="eval: contextLocationToCheck"/>
 		<field name="partnerId" expr="eval: contextPartnerId"/>
 	</action-record>
 	

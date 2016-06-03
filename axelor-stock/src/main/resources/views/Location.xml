@@ -21,7 +21,7 @@
 			<button name="createInventory" title="Create inventory" onClick="action-location-view-create-inventory"/>
 			<button name="print" title="Print" icon="fa-print" onClick="action-stock-location-method-print"/>
 		</toolbar>
-		<panel>
+		<panel name="main">
 			<field name="name"/>
 			<field name="typeSelect" onChange="action-location-is-default-location" colSpan="3"/>
 			<field name="isDefaultLocation" onChange="action-location-is-default-location" colSpan="3"/>
@@ -31,7 +31,7 @@
 			<field name="address" form-view="address-form" grid-view="address-grid"/>
 		</panel>    
 		<panel-tabs>
-			<panel title="Location Content">
+			<panel name="locationContent" title="Location Content">
 				<panel-dashlet title="Location Lines" field="locationLineList" canNew="false" colSpan="12" action="action-location-view-location-content" canSearch="true"/>
 			</panel> 
 			<panel-dashlet title="Stock Details" field="detailsLocationLineList" action="action-location-details-view-location-content" canSearch="true"/>

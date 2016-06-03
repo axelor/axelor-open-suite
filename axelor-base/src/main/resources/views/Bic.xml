@@ -12,7 +12,7 @@
     </grid>
     
     <form name="bic-form" title="Bank Identifier Code" model="com.axelor.apps.base.db.Bic"  >
-    	<panel>
+    	<panel name="main">
 	        <field name="countryCode"/>
 	        <field name="sortCode" />
 	        <field name="bankName"/>

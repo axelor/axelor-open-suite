@@ -12,7 +12,7 @@
     
     <form name="event-reminder-form" title="Event reminder" model="com.axelor.apps.crm.db.EventReminder"   
     onNew="action-event-reminder-record-default">
-        <panel >
+        <panel name="main" >
 	        <field name="typeSelect" readonly="true"/>
 			<field name="assignToSelect"/>
 	        <field name="duration"/>

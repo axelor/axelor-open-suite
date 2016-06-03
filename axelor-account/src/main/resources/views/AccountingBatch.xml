@@ -12,7 +12,7 @@
     </grid>
  
 <form  onNew="action-accounting-batch-record-on-new" name="accounting-batch-form" title="Accounting Batch" model="com.axelor.apps.account.db.AccountingBatch">
-	<panel >
+	<panel name="main" >
 		<field name="actionSelect" onChange="action-accounting-batch-record-default-currency"/>
 		<field name="code"/>
 		<field name="company" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
@@ -56,14 +56,14 @@
 			<field name="startDate"/>
 			<field name="endDate"/>
 		</panel>
-		<panel title="Information"  >
+		<panel name="information" title="Information"  >
 			<field name="createdOn" title="Created on"/>
 			<field name="createdBy" title="Created by" form-view="user-form" grid-view="user-grid"/>
 			<field name="description" showTitle="false"  />
 	      	<panel-related field="batchList" colSpan="12" form-view="batch-form" grid-view="batch-grid" readonly="true"/>
 		</panel>
 	</panel-tabs>
-	<panel sidebar="true" title="Actions">
+	<panel name="actions" sidebar="true" title="Actions">
 	    <button name="reimbursementBatch" title="Reimbursement Batch" showIf="actionSelect == 11"  onClick="save,action-accounting-batch-method-action-reimbursement" colSpan="12"/>
 	    <button name="directDebitBatch" title="Direct Debit Batch" showIf="actionSelect == 12"  onClick="save,action-accounting-batch-method-action-direct-debit" colSpan="12"/>
 	    <button name="reminderBatch" title="Reminder Batch" showIf="actionSelect == 14" onClick="save,action-accounting-batch-method-action-reminder" colSpan="12"/>

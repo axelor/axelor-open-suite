@@ -9,7 +9,7 @@
 	</action-view>
 	
 	<form name="wizard-supplier-form" title="My space" model="com.axelor.apps.base.db.Wizard">
-		<panel hidden="true">
+		<panel name="main" hidden="true">
 			<field name="id"/>
 	    </panel>
 	    <panel>
@@ -64,7 +64,7 @@
     </grid>
     
 	<form name="stock-move-supplier-form" title="Stock move" model="com.axelor.apps.stock.db.StockMove" canNew="false" canDelete="false" canCopy="false">
-	  <panel>
+	  <panel name="main" >
 	    <field name="statusSelect" readonly="true" widget="NavSelect" colSpan="12"/>
 	  </panel>
 	  <panel readonly="true">
@@ -74,7 +74,7 @@
 	      <field name="company" widget="SuggestBox" form-view="company-form" colSpan="12"/>
 	      <field name="partner" domain="self.isContact = false" form-view="partner-form" grid-view="partner-grid" colSpan="12"/>
 	    </panel>
-	    <panel title="Stock move informations">
+	    <panel name="stockMoveInformations" title="Stock move informations">
 	      <field name="estimatedDate" colSpan="12"/>
 	      <field name="realDate" title="Receipt date" colSpan="12"/>
 	      <field name="fromAddress" showIf="typeSelect == 3" colSpan="12"/>
@@ -91,7 +91,7 @@
     </grid>
     
     <form name="stock-move-line-supplier-form" title="Stock move line" model="com.axelor.apps.stock.db.StockMoveLine">
-    	<panel>
+    	<panel name="main" >
 	        <field name="product" readonly="true"/>
 	        <field name="shippedQty"/>
 	        <field name="unit" readonly="true"/>

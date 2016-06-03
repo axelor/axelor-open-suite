@@ -22,7 +22,7 @@
 	onLoad="action-account-payment-voucher-onload-group" 
 	onSave="com.axelor.apps.account.web.PaymentVoucherController:paymentVoucherSetNum">
 	
-		<panel  readonlyIf="statusSelect == 2" itemSpan="12">
+		<panel name="main" readonlyIf="statusSelect == 2" itemSpan="12">
 			 <field name="ref" readonly="true" colSpan="4"/>
 			 <field name="operationTypeSelect" colSpan="4" onChange="action-payment-voucher-hidden-fields-if-purchase"/>
 			 <field name="user" colSpan="4" form-view="user-form" grid-view="user-grid"/>
@@ -47,26 +47,26 @@
 			</panel>
 		</panel>
 		
-		<panel sidebar="true" title="Info" itemSpan="6" readonly="true">
+		<panel sidebar="true" name="info" title="Info" itemSpan="6" readonly="true">
 			<field name="statusSelect"/>
 			<field name="generatedMove" showIf="statusSelect == 2" form-view="move-form" grid-view="move-grid"/>
 			<field name="receiptNo" showIf="statusSelect == 2"/>
 		</panel>
 		
-		<panel sidebar="true" title="Actions" stacked="true">
+		<panel sidebar="true" name="actions" title="Actions" stacked="true">
 			<button name="confirmPaymentVoucher" title="Confirm payment" onClick="action-group-account-payment-voucher-confirm-click" showIf="statusSelect == 1"/>
 			<button name="printPaymentVoucher" title="Print receipt" icon="fa-print" onClick="save,com.axelor.apps.account.web.PaymentVoucherController:printPaymentVoucher" showIf="statusSelect == 2"/>
 			<button name="loadMoveLines" title="Load invoice and display other invoices to pay"   onClick="save,com.axelor.apps.account.web.PaymentVoucherController:loadMoveLines,save" showIf="statusSelect == 1"/>
 			<button name="loadSelectedLines" title="Load selected lines"   onClick="com.axelor.apps.account.web.PaymentVoucherController:loadSelectedLines,save" showIf="statusSelect == 1"/>
 		</panel>
 		
-		<panel title="Payer" itemSpan="12" readonlyIf="statusSelect == 2">
+		<panel name="payer" title="Payer" itemSpan="12" readonlyIf="statusSelect == 2">
 			<field name="partner" form-view="partner-form" grid-view="partner-grid" colSpan="4" onChange="action-pv-moveLine-domain-4, action-pv-record-default-partner-inf" onSelect="action-payment-voucher-set-partner-domain" />
 			<field name="paymentMode" grid-view="payment-mode-grid" form-view="payment-mode-form" colSpan="4" widget="SuggestBox" onChange="action-group-account-payment-voucher-paymentmode-onchange" onSelect="action-set-payment-mode-domain"/>
 			<field name="currency" colSpan="4" form-view="currency-form" grid-view="currency-grid"/>
 		</panel>
 		
-		<panel title="To pay" itemSpan="12" readonlyIf="statusSelect == 2">
+		<panel name="toPay" title="To pay" itemSpan="12" readonlyIf="statusSelect == 2">
 		    <field name="invoiceToPay" onChange="action-group-account-payment-voucher-invoicetopay-onchange" onSelect="action-payment-voucher-domain-on-invoice-to-pay" form-view="invoice-form" grid-view="invoice-grid" colSpan="5"/>
 		    <label title="&lt;font color=#953B39&gt; OR &lt;/font&gt;" colSpan="2"/>
 		    <field name="rejectToPay" title="Reject to pay" onChange="action-group-account-payment-voucher-rejecttopay-onchange" onSelect="action-payment-voucher-domain-on-reject-to-pay" colSpan="5" form-view="move-line-form" grid-view="move-line-grid"/>

@@ -53,7 +53,7 @@
 	<form name="timesheet-line-project-form" title="Log Time" model="com.axelor.apps.hr.db.TimesheetLine" 
 	onNew="action-hr-default-timesheet-line-project,action-timesheet-line-attrs-set-duration-label,action-timesheet-line-record-to-invoice-parent"
 	onLoad="action-timesheet-line-attrs-set-duration-label,action-timesheet-line-record-set-visible-duration,action-timesheet-line-attrs-set-visible-duration-title" width="large">
-		<panel title="Overview">
+		<panel name="overview" title="Overview">
 			<field name="user" form-view="user-form" grid-view="user-grid"/>
 			<field name="date" />
 			<field name="product" onSelect="action-hr-timesheet-line-attrs-domain-product" widget="SuggestBox" form-view="product-activity-form" grid-view="product-activity-grid"/>
@@ -69,7 +69,7 @@
 	<form name="timesheet-line-timesheet-form" title="Timesheet Line" model="com.axelor.apps.hr.db.TimesheetLine" 
 	onNew="action-hr-default-timesheet-line-timesheet,action-timesheet-line-attrs-set-duration-label,action-timesheet-line-attrs-title-project-task"
 	onLoad="action-timesheet-line-attrs-set-duration-label,action-timesheet-line-record-set-visible-duration,action-timesheet-line-attrs-set-visible-duration-title,action-timesheet-line-attrs-title-project-task" width="large">
-		<panel title="Overview">
+		<panel name="overview" title="Overview">
 			<field name="projectTask" onChange="action-timesheet-line-record-to-invoice,action-hr-timesheet-line-record-empty-product" onSelect="action-timesheet-line-attrs-domain-project-task" form-view="project-task-form" grid-view="project-task-grid"/>
 			<field name="date" />
 			<field name="product" onSelect="action-hr-timesheet-line-attrs-domain-product" widget="SuggestBox" form-view="product-activity-form" grid-view="product-activity-grid"/>
@@ -84,7 +84,7 @@
 	<form name="timesheet-line-timesheet-project-form" title="Timesheet Line" model="com.axelor.apps.hr.db.TimesheetLine" 
 	onNew="action-hr-default-timesheet-line-timesheet,action-timesheet-line-attrs-set-duration-label,action-timesheet-line-attrs-title-project-task"
 	onLoad="action-timesheet-line-attrs-set-duration-label,action-timesheet-line-record-set-visible-duration,action-timesheet-line-attrs-set-visible-duration-title,action-timesheet-line-attrs-title-project-task" width="large">
-		<panel title="Overview">
+		<panel name="overview" title="Overview">
 			<field name="projectTask" onChange="action-timesheet-line-record-to-invoice,action-hr-timesheet-line-record-empty-product" onSelect="action-timesheet-line-attrs-domain-project-task" form-view="project-task-form" grid-view="project-task-grid"/>
 			<field name="date" />
 			<field name="product" onSelect="action-hr-timesheet-line-attrs-domain-product" widget="SuggestBox" form-view="product-activity-form" grid-view="product-activity-grid"/>
@@ -132,11 +132,11 @@
 	</action-record>
 	
 	<action-record name="action-timesheet-line-record-set-visible-duration" model="com.axelor.apps.hr.db.TimesheetLine">
-	    <field name="visibleDuration" expr="call:com.axelor.apps.hr.service.employee.EmployeeService:getUserDuration(durationStored)"/>
+	    <field name="visibleDuration" expr="call:com.axelor.apps.hr.service.employee.EmployeeService:getUserDuration(durationStored,user.employee.dailyWorkHours,false)"/>
 	</action-record>
 	
 	<action-record name="action-timesheet-line-record-set-stored-duration" model="com.axelor.apps.hr.db.TimesheetLine">
-	    <field name="durationStored" expr="call:com.axelor.apps.hr.service.employee.EmployeeService:getDurationHours(visibleDuration)"/>
+	    <field name="durationStored" expr="call:com.axelor.apps.hr.service.employee.EmployeeService:getUserDuration(visibleDuration,user.employee.dailyWorkHours,true)"/>
 	</action-record>
 	
 	<action-record name="action-timesheet-line-record-to-invoice" model="com.axelor.apps.hr.db.TimesheetLine">

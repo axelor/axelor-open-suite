@@ -8,7 +8,7 @@
     </grid>
     
     <form name="management-object-form" title="Management" model="com.axelor.apps.account.db.ManagementObject"  >
-        <panel>
+        <panel name="main" >
         	<field name="code"/>
         	<field name="name"/>
         </panel>    

@@ -24,7 +24,7 @@
     	onSave="action-alarm-engine-method-validate-query" 
     	onNew="action-alarm-engine-attrs-external" 
     	name="alarm-engine-form" title="Alarm engine" model="com.axelor.apps.base.db.AlarmEngine" width="large">
-	    <panel>
+	    <panel name="main" >
 		    <field name="code" x-bind="{{code|uppercase}}"/>
 		    <field name="metaModel" form-view="meta-model-form" grid-view="meta-model-grid"/>
 		    <field name="alarmMessage" grid-view="alarm-message-grid" form-view="alarm-message-form"/>
@@ -39,7 +39,7 @@
 		    <panel name="queryPage" title="Query">
 		      <field name="query" showTitle="false" colSpan="12" widget="CodeEditor" x-syntax="sql"/>
 		    </panel>
-		    <panel title="Description">
+		    <panel name="description" title="Description">
 		      <field name="description" showTitle="false" colSpan="12"/>
 		    </panel>
 	  </panel-tabs>    

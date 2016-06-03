@@ -11,7 +11,7 @@
 		<toolbar>
 		  <button name="showInvoice" title="Invoices" onClick="save,action-company-view-invoice"/>
 		</toolbar>
-		<panel >
+		<panel name="main" >
 		  <field name="company" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
 	
 		  <field name="accountChart" readonlyIf="hasChartImported" colSpan="8" form-view="account-chart-form" grid-view="account-chart-grid"/>
@@ -27,8 +27,8 @@
 		</panel>
 		
 		<panel-tabs>
-			<panel title="Accounting">
-				<panel title="Journals" colSpan="12">
+			<panel name="accounting" title="Accounting">
+				<panel name="journals" title="Journals" colSpan="12">
 					<field name="saleJournalType" grid-view="journal-type-grid" form-view="journal-type-form"/>
 					<field name="purchaseJournalType" grid-view="journal-type-grid" form-view="journal-type-form"/>
 					<field name="cashJournalType" grid-view="journal-type-grid" form-view="journal-type-form"/>
@@ -44,40 +44,40 @@
 					<field name="miscOperationJournal" domain="self.statusSelect = 1 AND self.company = :company" grid-view="journal-grid" form-view="journal-form"/>
 					<field name="expenseJournal" domain="self.statusSelect = 1 AND self.company = :company" if-module="axelor-human-resource" grid-view="journal-grid" form-view="journal-form"/>
 				</panel>
-				<panel title="Accounts" colSpan="12">
+				<panel name="accounts" title="Accounts" colSpan="12">
 					<field name="customerAccount" domain="self.company = :company" grid-view="account-grid" form-view="account-form"/>
 					<field name="supplierAccount" domain="self.company = :company" grid-view="account-grid" form-view="account-form"/>
 					<field name="doubtfulCustomerAccount" domain="self.company = :company" grid-view="account-grid" form-view="account-form"/>
 					<field name="irrecoverableAccount" domain="self.company = :company" grid-view="account-grid" form-view="account-form"/>
 					<field name="advancePaymentAccount"/>
 				</panel>
-				<panel title="Payment differences" colSpan="12">
+				<panel name="paymentDifferences" title="Payment differences" colSpan="12">
 					<field name="thresholdDistanceFromRegulation"/>
 					<field name="cashPositionVariationAccount" domain="self.company = :company" grid-view="account-grid" form-view="account-form"/>
 				</panel>
-				<panel title="Authorize auto reconcile" colSpan="12">
+				<panel name="authorizeAutoReconcile" title="Authorize auto reconcile" colSpan="12">
 					<field name="autoReconcileOnInvoice"/>
 					<field name="autoReconcileOnPayment"/>
 				</panel>
-				<panel title="Exports" colSpan="12">
+				<panel name="exports" title="Exports" colSpan="12">
 					<field name="exportPath"/>
 				</panel>
-				<panel title="Cashiers" colSpan="12">
+				<panel name="cashiers" title="Cashiers" colSpan="12">
 					<field name="cashRegisterTemplate" form-view="template-form" grid-view="template-grid"/>
 					<field name="cashRegisterAddressEmail"/>
 				</panel>
-				<panel title="Shift to irrecoverable" colSpan="12">
+				<panel name="shiftToIrrecoverable" title="Shift to irrecoverable" colSpan="12">
 					<field name="irrecoverableReasonPassage"/>
 					<field name="irrecoverableStandardRateTax" grid-view="tax-grid" form-view="tax-form"/>
 				</panel>
-				 <panel title="Tax payment" colSpan="12">
+				 <panel name="taxPayment" title="Tax payment" colSpan="12">
 				    <field name="payingBackTax" grid-view="tax-grid" form-view="tax-form"/>
 				</panel>
-				<panel	title="Expense" colSpan="12">
+				<panel	name="expense" title="Expense" colSpan="12">
 					<field name="expenseEmployeeAccount" domain="self.company = :company" if-module="axelor-human-resource" grid-view="account-grid" form-view="account-form"/>
 					<field name="expenseTaxAccount" domain="self.company = :company" if-module="axelor-human-resource" grid-view="account-grid" form-view="account-form"/>
 				</panel>
-				<panel title="Invoices sequences" colSpan="12">
+				<panel name="invoicesSequences" title="Invoices sequences" colSpan="12">
 				    <field name="custInvSequence" domain="self.code = 'invoice' and self.company = :company" form-view="sequence-form" grid-view="sequence-grid"/>
    				    <field name="custRefSequence" domain="self.code = 'invoice' and self.company = :company" form-view="sequence-form" grid-view="sequence-grid"/>
    				    <field name="suppInvSequence" domain="self.code = 'invoice' and self.company = :company" form-view="sequence-form" grid-view="sequence-grid"/>
@@ -85,14 +85,14 @@
 				</panel>
 			</panel>
 
-			<panel title="CFONB" if="__config__.general.getManageDirectDebitPayment()">
+			<panel name="cfonb" title="CFONB" if="__config__.general.getManageDirectDebitPayment()">
 				<field name="cfonbConfig" showTitle="false" colSpan="12" >
 					<editor itemSpan="6">
 						<field name="name" colSpan="8"/>
 						<field name="code" colSpan="4"/>
 					</editor>
 				</field>
-				<panel title="CFONB Export" hidden="true" showIf="!$readonly()" >
+				<panel name="cfonbExport" title="CFONB Export" hidden="true" showIf="!$readonly()" >
 				<field name="cfonbConfig" showTitle="false" colSpan="12" canRemove="false" canView="false" canNew="false" canSelect="false">
 					<editor itemSpan="6">
 						<field name="senderRecordCodeExportCFONB"/>
@@ -106,7 +106,7 @@
 				</field>
 				</panel>
 				
-				<panel title="CFONB Import" hidden="true" showIf="!$readonly()">
+				<panel name="cfonbImport" title="CFONB Import" hidden="true" showIf="!$readonly()">
 				
 				<field name="cfonbConfig" showTitle="false" colSpan="12"  canRemove="false" canView="false" canNew="false" canSelect="false">
 					<editor itemSpan="6">
@@ -122,7 +122,7 @@
 				</field>
 				</panel>
 			</panel>
-			<panel title="Receivables recovery" >
+			<panel name="receivablesRecovery" title="Receivables recovery" >
 				<field name="mailTransitTime" colSpan="12"/>
 				<field name="reminderConfigLineList" showTitle="false" colSpan="12" grid-view="reminder-config-line-grid" form-view="reminder-config-line-form">
 				<!-- TODO:Check weather editor works or not -->
@@ -132,12 +132,12 @@
 				</editor>
 				</field>
 			</panel>
-			<panel title="Paybox">
+			<panel name="paybox" title="Paybox">
 			  <field name="payboxConfig" showTitle="false" grid-view="paybox-config-grid" form-view="paybox-config-form"/>
 			</panel>
 		
-			<panel title="Reimbursement">
-				<panel title="Reimbursements" colSpan="12">
+			<panel name="reimbursement" title="Reimbursement">
+				<panel name="reimbursements" title="Reimbursements" colSpan="12">
 					<field name="reimbursementExportFolderPath" />
 					<field name="reimbursementExportFolderPathCFONB"/>
 					<field name="lowerThresholdReimbursement"/>
@@ -145,23 +145,23 @@
 					<field name="reimbursementAccount" domain="self.company = :company" grid-view="account-grid" form-view="account-form"/>
 					<field name="reimbursementTemplate" form-view="template-form" grid-view="template-grid"/>
 				</panel>
-				<panel title="Reimbursement rejects" colSpan="12">
+				<panel name="reimbursementRejects" title="Reimbursement rejects" colSpan="12">
 					<field name="reimbursementImportFolderPathCFONB"/>
 					<field name="tempReimbImportFolderPathCFONB"/>
 				</panel>
 			</panel>
-			<panel title="Doubtful receivables">
+			<panel name="doubtfulReceivables" title="Doubtful receivables">
 				<field name="sixMonthDebtMonthNumber"/>
 				<field name="threeMonthDebtMontsNumber"/>
 				<field name="sixMonthDebtPassReason"/>
 				<field name="threeMonthDebtPassReason"/>
 			</panel>
-			<panel title="Direct debit" if="__config__.general.getManageDirectDebitPayment()" >
-				<panel title="Direct debits" colSpan="12">
+			<panel name="directDebit" title="Direct debit" if="__config__.general.getManageDirectDebitPayment()" >
+				<panel name="directDebits" title="Direct debits" colSpan="12">
 					<field name="paymentScheduleExportFolderPathCFONB"/>
 					<field name="directDebitPaymentMode" grid-view="payment-mode-grid" form-view="payment-mode-form"/>
 				</panel>
-				<panel title="Direct debit rejects" colSpan="12">
+				<panel name="directDebitRejects" title="Direct debit rejects" colSpan="12">
 					<field name="rejectionPaymentMode" grid-view="payment-mode-grid" form-view="payment-mode-form"/>
 					<field name="paymentScheduleRejectNumLimit"/>
 					<field name="invoiceRejectNumLimit"/>
@@ -170,7 +170,7 @@
 					<field name="tempImportPathAndFileName"/>
 				</panel>
 		   </panel>
-			<panel title="Acc. Clearance">
+			<panel name="accClearance" title="Acc. Clearance">
 				<field name="profitAccount" domain="self.company = :company" grid-view="account-grid" form-view="account-form"/>
 				<field name="standardRateTax" grid-view="tax-grid" form-view="tax-form"/>
 				<field name="clearanceAccountSet" domain="self.reconcileOk = 'true' AND self.company = :company" colSpan="12" grid-view="account-grid" form-view="account-form">
@@ -185,17 +185,17 @@
 				    </editor>
 				</field>
 			</panel>
-			<panel title="IPO Payments and IPO Cheque">
-				<panel title="Payments by IPO and IPO Cheque" colSpan="12">
+			<panel name="ipoPaymentsAndIpoCheque" title="IPO Payments and IPO Cheque">
+				<panel name="paymentsByIpoAndIpoCheque" title="Payments by IPO and IPO Cheque" colSpan="12">
 					<field name="interbankPaymentOrderImportPathCFONB" />
 					<field name="tempInterbankPaymentOrderImportPathCFONB" />
 				</panel>
-				<panel title="Payments rejects by IPO and IPO Cheque" colSpan="12">
+				<panel name="paymentsRejectsByIpoAndIpoCheque" title="Payments rejects by IPO and IPO Cheque" colSpan="12">
 					<field name="interbankPaymentOrderRejectImportPathCFONB" colSpan="4"/>
 					<field name="tempInterbankPaymentOrderRejectImportPathCFONB" colSpan="4"/>
 				</panel>
 			</panel>
-			<panel title="Printing settings">
+			<panel name="printingSettings" title="Printing settings">
 	  			<field name="displayDelAddrOnPrinting"/>
 	  			<field name="displayProductCodeOnPrinting"/>
 	  			<field name="displayTaxDetailOnPrinting"/>

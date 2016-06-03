@@ -8,14 +8,14 @@
     </grid>
 
 	<form name="hr-config-form" title="Human Resources configuration" model="com.axelor.apps.hr.db.HRConfig" onNew="action-hr-config-record-default" width="large">
-	  	<panel>
+	  	<panel name="main">
 	    	<field name="company" form-view="company-form" colSpan="4" grid-view="company-grid"/>
 	  	</panel>
-	  	<panel title="General">
+	  	<panel name="general" title="General">
 	  		<field name="publicHolidayPlanning" canNew="true"/>
 	  		<field name="weeklyPlanning" canNew="true"/>
 	  	</panel>
-	  	<panel title="Leaves Templates">
+	  	<panel name="leavesTemplates" title="Leaves Templates">
 	    	<field name="sentLeaveTemplate" canNew="true" form-view="template-form" grid-view="template-grid"/>
 	    	<field name="validatedLeaveTemplate" canNew="true" form-view="template-form" grid-view="template-grid"/>
 	    	<field name="refusedLeaveTemplate" canNew="true" form-view="template-form" grid-view="template-grid"/>

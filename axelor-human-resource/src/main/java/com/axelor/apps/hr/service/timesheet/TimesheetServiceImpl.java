@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.joda.time.LocalDate;
+import org.joda.time.LocalDateTime;
 import org.joda.time.LocalTime;
 import org.joda.time.Minutes;
 import org.slf4j.Logger;
@@ -100,11 +101,6 @@ public class TimesheetServiceImpl implements TimesheetService{
 	@Transactional(rollbackOn={Exception.class})
 	public void cancelTimesheet(Timesheet timesheet){
 		timesheet.setStatusSelect(TimesheetRepository.STATUS_CANCELED);
-		List<TimesheetLine> timesheetLineList = timesheet.getTimesheetLineList();
-		for (TimesheetLine timesheetLine : timesheetLineList) {
-			if(timesheetLine.getProjectTask() != null)
-				timesheetLine.setTimesheet(null);
-		}
 		Beans.get(TimesheetRepository.class).save(timesheet);
 	}
 
@@ -162,7 +158,7 @@ public class TimesheetServiceImpl implements TimesheetService{
 					}
 				}
 				if(noLeave){
-					TimesheetLine timesheetLine = createTimesheetLine(projectTask, product, timesheet.getUser(), fromDate, timesheet, employeeService.getDurationHours(logTime), "");
+					TimesheetLine timesheetLine = createTimesheetLine(projectTask, product, timesheet.getUser(), fromDate, timesheet, employeeService.getUserDuration(logTime,timesheet.getUser().getEmployee().getDailyWorkHours(),true), "");
 					timesheetLine.setVisibleDuration(logTime);
 				}
 			}
@@ -449,25 +445,33 @@ public class TimesheetServiceImpl implements TimesheetService{
 		}
 	}
 	
-	public String computeFullName(Timesheet timeSheet){
-  		if(timeSheet.getUser() != null && timeSheet.getCreatedOn() != null){
-  			return timeSheet.getUser().getFullName()+" "+timeSheet.getCreatedOn().getDayOfMonth()+"/"+timeSheet.getCreatedOn().getMonthOfYear()
-  				+"/"+timeSheet.getCreatedOn().getYear()+"  "+timeSheet.getCreatedOn().getHourOfDay()+":"+timeSheet.getCreatedOn().getMinuteOfHour();
+	public String computeFullName(Timesheet timesheet){
+		
+		User timesheetUser = timesheet.getUser();
+		LocalDateTime createdOn = timesheet.getCreatedOn();
+		
+  		if(timesheetUser != null && createdOn != null){
+  			return timesheetUser.getFullName() + " " + createdOn.getDayOfMonth() + "/" + createdOn.getMonthOfYear()
+  				+ "/" + timesheet.getCreatedOn().getYear() + " " + createdOn.getHourOfDay() + ":" + createdOn.getMinuteOfHour();
   		}
-  		else if (timeSheet.getUser() != null){
-  			return timeSheet.getUser().getFullName()+" N°"+timeSheet.getId();
+  		else if (timesheetUser != null){
+  			return timesheetUser.getFullName()+" N°"+timesheet.getId();
   		}
   		else{
-  			return "N°"+timeSheet.getId();
+  			return "N°"+timesheet.getId();
   		}
 	}
 	
 	public List<TimesheetLine> computeVisibleDuration(Timesheet timesheet){
 		List<TimesheetLine> timesheetLineList = timesheet.getTimesheetLineList();
 		
-		for(TimesheetLine timesheetLine : timesheetLineList)
-			timesheetLine.setVisibleDuration(Beans.get(EmployeeService.class).getUserDuration(timesheetLine.getDurationStored()));
-
+		Employee timesheetEmployee = timesheet.getUser().getEmployee();
+		BigDecimal employeeDailyWorkHours = timesheetEmployee.getDailyWorkHours();
+		
+		for(TimesheetLine timesheetLine : timesheetLineList)  {
+			timesheetLine.setVisibleDuration(employeeService.getUserDuration(timesheetLine.getDurationStored(), employeeDailyWorkHours, false));
+		}
+		
 		timesheetLineList = projectTaskService._sortTimesheetLineByDate(timesheetLineList);
 		
 		return timesheetLineList;

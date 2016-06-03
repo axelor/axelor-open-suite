@@ -12,21 +12,21 @@
     </grid>
  
 	<form  onNew="action-supplychain-batch-record-on-new" name="supplychain-batch-form" title="Supplychain Batch" model="com.axelor.apps.supplychain.db.SupplychainBatch">
-		<panel >
+		<panel name="main" >
 			<field name="actionSelect"/>
 			<field name="code"/>
 			<field name="company" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
 			<field name="archived" title="Archived ?"/>
 		</panel>
 		<panel-tabs>
-			<panel title="Information"  >
+			<panel name="information" title="Information"  >
 				<field name="createdOn" title="Created on"/>
 				<field name="createdBy" title="Created by"  form-view="user-form" grid-view="user-grid"/>
 				<field name="description" showTitle="false"  />
 		      	<panel-related field="batchList" colSpan="12" form-view="batch-form" grid-view="batch-grid" readonly="true"/>
 			</panel>
 		</panel-tabs>
-		<panel sidebar="true" title="Actions">
+		<panel sidebar="true" name="actions" title="Actions">
 		    <button name="billSubBatch" title="Bill Late Subscriptions Batch" showIf="actionSelect == 1"  onClick="save,action-supplychain-batch-method-bill-sub" colSpan="12"/>
 		</panel>
 	</form>

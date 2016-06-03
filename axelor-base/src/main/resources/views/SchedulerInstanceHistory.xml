@@ -8,7 +8,7 @@
     </grid>
 	
 	<form name="scheduler-instance-history-form" title="Scheduler history" model="com.axelor.apps.base.db.SchedulerInstanceHistory" >
-	   <panel>
+	   <panel name="main">
 	   		<field name="lastExecutionDate"/>
 		    <field name="lastThoereticalExecutionDate"/>
        </panel>

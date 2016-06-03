@@ -19,14 +19,14 @@
     </grid>
     
 	<form name="reminder-history-form" title="Reminder history" model="com.axelor.apps.account.db.ReminderHistory" width="large">
-		<panel title="Reminder settings">
+		<panel name="reminderSettings" title="Reminder settings">
         	<field name="reminder" form-view="reminder-form" grid-view="reminder-grid"/>
         	<field name="reminderMethod" widget="SuggestBox" grid-view="reminder-method-grid" form-view="reminder-method-form"/>
         	<field name="userReminder" grid-view="user-grid" form-view="user-form"/>
         	<field name="unknownAddressOK"/>
         	<field name="setToIrrecoverableOK"/>
     	</panel>
-    	<panel title="Partner information">
+    	<panel name="partnerInformation" title="Partner information">
         	<field name="reminder.accountingSituation.partner" form-view="partner-form" grid-view="partner-grid"/>
         	<field name="balanceDue"/>
         	<field name="balanceDueReminder"/>
@@ -34,7 +34,7 @@
         	<field name="reminderMethodLine" grid-view="reminder-method-line-grid" form-view="reminder-method-line-form"/>
         	<field name="reminderDate"/>
     	</panel>
-    	<panel title="Reminder content">
+    	<panel name="reminderContent" title="Reminder content">
         	<field name="reminderMessage" grid-view="message-grid" form-view="message-form"/>
     	</panel>
 	</form>
@@ -52,7 +52,7 @@
         <field name="reminderMethodLine" grid-view="reminder-method-line-grid" form-view="reminder-method-line-form"/>
     </grid>
     <form name="reminder-history-contract-line-form" title="Reminders history" model="com.axelor.apps.account.db.ReminderHistory"  >
-	    <panel >
+	    <panel name="main" >
 	    	<field name="reminderMethod" widget="SuggestBox" grid-view="reminder-method-grid" form-view="reminder-method-form"/>
 	        <field name="referenceDate"/>
 	        <field name="balanceDue"/>

@@ -16,7 +16,7 @@
     <form name="invoice-batch-form" title="Invoice batch" model="com.axelor.apps.account.db.InvoiceBatch"  
     onLoad="action-account-invoice-batch-onload-group" 
     onNew="action-account-invoice-batch-onnew-group">
-    	<panel >
+    	<panel name="main" >
     		<field name="actionSelect" onChange="action-invoice-batch-attrs-action-select"/>
     		<field name="code" />
     		<field name="company" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
@@ -33,14 +33,14 @@
 				<field name="onSelectOk" onChange="action-invoice-batch-attrs-on-select-ok"/>
     		</panel>
     		<panel-related field="invoiceSet"  onSelect="action-invoice-batch-method-invoice-set-domain" grid-view="invoice-grid" form-view="invoice-form"/>
-    		<panel title="Informations"  >
+    		<panel name="informations" title="Informations"  >
     			<field name="createdOn" title="Created on"/>
 				<field name="createdBy" title="Created by" />
 		    	<field name="description" showTitle="false" colSpan="12"/>
     		</panel>
 	      	<panel-related field="batchList" colSpan="12" form-view="batch-form" grid-view="batch-grid" readonly="true"/>
     	</panel-tabs>
-    	<panel sidebar="true" title="Actions">
+    	<panel sidebar="true" name="actions" title="Actions">
     		<button name="statusBatch" title="Run"  onClick="save,action-invoice-batch-method-action-status" colSpan="12"/>
     	</panel>
     </form>

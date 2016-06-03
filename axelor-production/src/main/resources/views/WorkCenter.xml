@@ -11,20 +11,20 @@
     </grid>
     
 	<form name="work-center-form" title="Work center" model="com.axelor.apps.production.db.WorkCenter" width="large" onNew="action-work-center-record-default">
-	  <panel>
+	  <panel name="main" >
 	    <field name="name"/>
 	    <field name="code" colSpan="3"/>
 	    <field name="workCenterTypeSelect" required="true"/>
 		<field name="machine" requiredIf="workCenterTypeSelect == 2 || workCenterTypeSelect == 3" showIf="workCenterTypeSelect == 2 || workCenterTypeSelect == 3" form-view="machine-form" grid-view="machine-grid"/>
 	  </panel>  
 	  <panel-tabs>
-	    <panel title="Default Machine settings" readonlyIf="!machine" showIf="workCenterTypeSelect == 2 || workCenterTypeSelect == 3">
+	    <panel name="defaultMachineSettings" title="Default Machine settings" readonlyIf="!machine" showIf="workCenterTypeSelect == 2 || workCenterTypeSelect == 3">
 	        <panel title="Capacity settings" colSpan="12">
 	          <field name="capacityPerCycle" colSpan="3"/>
 	          <field name="maxCapacityPerCycle" colSpan="3"/>
 	          <field name="durationPerCycle" colSpan="3" widget="duration" x-big="true" x-seconds="true"/>
 	        </panel>
-	        <panel title="Costing settings" colSpan="12">
+	        <panel name="costingSettings" title="Costing settings" colSpan="12">
 	          <field name="product" form-view="product-form" grid-view="product-grid"/>
 	          <field name="costTypeSelect" colSpan="3"/>
 	          <field name="costAmount" colSpan="3"/>
@@ -43,18 +43,18 @@
     </grid>
     
     <form name="work-center-machine-form" title="Machine" model="com.axelor.apps.production.db.WorkCenter" width="large" onNew="action-work-center-record-default">
-    	<panel>
+    	<panel name="main" >
 	        <field name="name"/>
 	        <field name="code"/>
 	        <field name="machine"/>
         </panel>
-        <panel title="Production and cost settings">
+        <panel name="productionAndCostSettings" title="Production and cost settings">
 	        <panel title="Capacity settings" colSpan="12">
 	          <field name="capacityPerCycle" colSpan="3"/>
 	          <field name="maxCapacityPerCycle" colSpan="3"/>
 	          <field name="durationPerCycle" colSpan="3" widget="duration" x-big="true" x-seconds="true"/>
 	        </panel>
-	        <panel title="Costing settings" colSpan="12">
+	        <panel name="costingSettings" title="Costing settings" colSpan="12">
 	          <field name="product"/>
 	          <field name="costTypeSelect" colSpan="3"/>
 	          <field name="costAmount" colSpan="3"/>

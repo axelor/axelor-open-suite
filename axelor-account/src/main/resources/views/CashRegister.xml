@@ -8,7 +8,7 @@
         <field name="company" form-view="company-form" grid-view="company-grid"/>
     </grid>
     <form name="cash-register-form" title="Cash register" model="com.axelor.apps.account.db.CashRegister" onNew="action-cash-register-set-default" >
-       <panel >
+       <panel name="main" >
        		<field name="name"/>
         	<field name="num"/>
         	<field name="company" form-view="company-form" widget="SuggestBox" grid-view="company-grid"/>

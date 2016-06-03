@@ -22,7 +22,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,6 +33,7 @@ import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.db.repo.TimesheetRepository;
+import com.axelor.apps.hr.service.HRMenuTagService;
 import com.axelor.apps.hr.service.timesheet.TimesheetService;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
@@ -62,6 +62,8 @@ public class TimesheetController {
 	private ProductRepository productRepo;
 	@Inject
 	private ProjectTaskRepository ProjectTaskRepo;
+	@Inject
+	private HRMenuTagService hrMenuTagService;
 	
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 	
@@ -334,5 +336,12 @@ public class TimesheetController {
 		timesheet = Beans.get(TimesheetRepository.class).find(timesheet.getId());
 		
 		response.setValue("timesheetLineList", timesheetService.computeVisibleDuration(timesheet));
+	}
+	
+	/* Count Tags displayed on the menu items */
+	public String timesheetValidateTag() { 
+		Timesheet timesheet= new Timesheet();
+		logger.debug("Timesheet methode {}",timesheet.getClass());
+		return hrMenuTagService.CountRecordsTag(timesheet);
 	}
 }

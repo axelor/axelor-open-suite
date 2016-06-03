@@ -19,7 +19,7 @@
     
     <form name="tracking-number-configuration-form" title="Tracking Number Configuration" model="com.axelor.apps.base.db.TrackingNumberConfiguration"
     	onNew="action-tracking-number-config-record-default" onSave="action-tracking-number-validate-qty" width="large">
-    	<panel>
+    	<panel name="main" >
 	        <field name="isPurchaseTrackingManaged" onChange="action-tracking-number-set-default-purchase-qty"/>
 		    <panel title="Purchase tracking management" showIf="isPurchaseTrackingManaged" colSpan="12">
 		        <field name="generatePurchaseAutoTrackingNbr" colSpan="12"/>
@@ -28,14 +28,14 @@
 	   </panel>
 	   <panel>
 		    <field name="isProductionTrackingManaged" onChange="action-tracking-number-set-default-production-qty" />
-		    <panel title="Production tracking management" showIf="isProductionTrackingManaged" colSpan="12">
+		    <panel name="productionTrackingManagement" title="Production tracking management" showIf="isProductionTrackingManaged" colSpan="12">
 		        <field name="generateProductionAutoTrackingNbr" colSpan="12"/>
 		        <field name="productionQtyByTracking" help="0 --&gt; infinite" colSpan="12"/>
 		    </panel>
 		</panel>
 		<panel>
 		    <field name="isSaleTrackingManaged" onChange="action-tracking-number-set-default-sale-qty"/>
-		    <panel title="Sale tracking management" showIf="isSaleTrackingManaged" colSpan="12">
+		    <panel name="saleTrackingManagement" title="Sale tracking management" showIf="isSaleTrackingManaged" colSpan="12">
 		        <field name="generateSaleAutoTrackingNbr"  colSpan="12"/>
 		        <field name="hasSaleAutoSelectTrackingNbr" showIf="isSaleTrackingManaged" colSpan="12"/>
 		        <field name="saleAutoTrackingNbrOrderSelect" showIf="hasSaleAutoSelectTrackingNbr" colSpan="12"/>

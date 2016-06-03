@@ -6,7 +6,7 @@
         <field name="nameSelect"/>
     </grid>
     <form name="account-type-form" title="Account type" model="com.axelor.apps.account.db.AccountType"  >
-        <panel type="Overview">
+        <panel name="overView" title="Overview">
         	<field name="nameSelect"/>
         </panel>
         

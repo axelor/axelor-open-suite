@@ -28,7 +28,7 @@
 			</button-group>
 			<field name="isUsed" hidden="true" type="boolean"/>
 		</panel>
-		<panel title="QAS certification" colSpan="12" if="__config__.general.getHasQasValidation()">
+		<panel name="qasCertification" title="QAS certification" colSpan="12" if="__config__.general.getHasQasValidation()">
 			<field name="certifiedOk" colSpan="4"/>
 			<panel colSpan="4">
 				<button name="validate" title="Validate"  onClick="com.axelor.apps.base.web.AddressController:validate,save"/>
@@ -57,7 +57,7 @@
 			</button-group>
 			<field name="isUsed" hidden="true" type="boolean"/>
 		</panel>
-		<panel title="QAS certification" colSpan="12" if="__config__.general.getHasQasValidation()">
+		<panel name="qasCertification" title="QAS certification" colSpan="12" if="__config__.general.getHasQasValidation()">
 			<field name="certifiedOk" colSpan="4"/>
 			<panel colSpan="4">
 				<button name="validate" title="Validate"  onClick="com.axelor.apps.base.web.AddressController:validate,save"/>

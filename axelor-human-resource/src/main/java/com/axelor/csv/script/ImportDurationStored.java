@@ -20,7 +20,10 @@ package com.axelor.csv.script;
 import java.math.BigDecimal;
 
 import com.axelor.apps.hr.service.employee.EmployeeService;
+import com.axelor.auth.db.User;
+import com.axelor.auth.db.repo.UserRepository;
 import com.axelor.exception.AxelorException;
+import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 
 public class ImportDurationStored {
@@ -28,9 +31,11 @@ public class ImportDurationStored {
 	@Inject
 	protected EmployeeService employeeService;
 
-	public String getDurationHoursImport(String duration) throws AxelorException{
+	public String getDurationHoursImport(String duration, String userImp) throws AxelorException{
 		BigDecimal visibleDuration = new BigDecimal(duration);
-		BigDecimal durationStored = employeeService.getDurationHours(visibleDuration);
+		long userId = Long.parseLong(userImp);
+		User user = Beans.get(UserRepository.class).find(userId);
+		BigDecimal durationStored = employeeService.getUserDuration(visibleDuration, user.getEmployee().getDailyWorkHours(), true);
 		return durationStored.toString();
 	}
 }

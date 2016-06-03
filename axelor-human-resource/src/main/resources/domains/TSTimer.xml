@@ -14,7 +14,7 @@
       	<string name="comments" title="Comments" large="true"/>
 		<datetime name="startDateTime" title="Start Time" readonly="true"/>
       	<long name="duration" title="Duration" required="true"/>
-     	<many-to-one name="timeSheetLine" ref="com.axelor.apps.hr.db.TimesheetLine" title="Time Sheet Line" readonly="true"/>
+     	<many-to-one name="timesheetLine" ref="com.axelor.apps.hr.db.TimesheetLine" title="Timesheet Line" readonly="true"/>
       	<integer name="statusSelect" title="Status Timer" default="2" selection="hr.timer.status.select" readonly="true"></integer>
       
     <extra-code><![CDATA[

@@ -7,7 +7,7 @@
         <field name="labelToPrinting"/>
     </grid>
     <form name="unit-form" title="Unit" model="com.axelor.apps.base.db.Unit">
-    	<panel>
+    	<panel name="main" >
         	<field name="name"/>
         	<field name="labelToPrinting"/>
         </panel>

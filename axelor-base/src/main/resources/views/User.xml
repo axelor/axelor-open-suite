@@ -14,19 +14,19 @@
     
     <form name="user-form" id="user-form-base" title="User" model="com.axelor.auth.db.User" 
     onNew="action-user-default-record,action-user-check-company" onSave="com.axelor.auth.AuthService:validate">
-    	<panel sidebar="true">
+    	<panel name="main" sidebar="true">
 	        <field name="activeCompany" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
 	        <field name="activeCashRegister" form-view="cash-register-form" grid-view="cash-register-grid"/>
 <!-- 	        <field name="timesheetPeriodConfig"/> -->
-	        <field name="employee" if-module="axelor-human-resource" form-view="employee-form" grid-view="employee-grid"/>
+	        <field name="employee" if-module="axelor-human-resource" form-view="employee-form" grid-view="employee-grid" domain="self.user = null"/>
 	        <button name="createEmployee"  onClick="check-action-user-group-partner,action-user-group-employee" title="Create employee" if-module="axelor-human-resource" showIf="employee == null &amp;&amp; id != null &amp;&amp; id>0"/>
         </panel>
-		<panel title="Testing" sidebar="true">
+		<panel name="testing" title="Testing" sidebar="true">
 			<field name="today"/>
 		</panel>
         <panel-include view="user-form" from="axelor-core"/>
         <panel-tabs>
-			 <panel title="Contact Informations">
+			 <panel name="contactInformations" title="Contact Informations">
       			<button name="partner" title="Create Partner" colSpan="12" showIf="partner == null &amp;&amp; id != null &amp;&amp; id>0" onClick="action-user-record-form-partner-contact"/>
       			<field name="partner" showTitle="false" colSpan="12" canNew="true" domain="self.partnerTypeSelect = 2 OR self.isContact = true" form-view="partner-contact-form" grid-view="partner-contact-grid">
         			<editor x-viewer="true">
@@ -38,11 +38,11 @@
       			</field>
     		 </panel>
         	 <panel-related title="Internal companies" field="companySet" showTitle="false" canNew="false"/>
-        	 <panel title="Teams" if="__config__.general.getTeamManagement()">
+        	 <panel name="teams" title="Teams" if="__config__.general.getTeamManagement()">
         		<field name="activeTeam" form-view="team-form" grid-view="team-grid"/>
         		<panel-related field="teamSet" canNew="false" colSpan="12" form-view="team-form" grid-view="team-grid"/>
         	 </panel>
-        	<panel title="Calendars Configuration" if-module="axelor-crm">
+        	<panel name="calendarsConfiguration" title="Calendars Configuration" if-module="axelor-crm">
         		<panel-related field="followersCalUserSet" colSpan="12" form-view="user-form" grid-view="user-grid" onSelect="action-user-attrs-domain-followers"/>
         		<panel-related field="calendarManagementList" colSpan="12"/>
         	</panel>
@@ -52,7 +52,7 @@
     
     <form name="user-preferences-form" id="base-user-preferences-form" title="Preferences" model="com.axelor.auth.db.User"
         onSave="com.axelor.auth.AuthService:validate">
-		<panel title="User preferences" itemSpan="12">
+		<panel name="userPreferences" title="User preferences" itemSpan="12">
 			<field name="image" showTitle="false"/>
 			<field name="language"/>
 	        <field name="activeCompany" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>

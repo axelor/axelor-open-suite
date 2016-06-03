@@ -12,7 +12,7 @@
     <form name="irrecoverable-form" title="Irrecoverable" model="com.axelor.apps.account.db.Irrecoverable"   
     onNew="action-record-irrecoverable-default-record">
   
-		<panel  itemSpan="12">
+		<panel name="main" itemSpan="12">
 			 <field name="name"/>
 			 <field name="user" form-view="user-form" grid-view="user-grid"/>
 			 <field name="dateTime"/>

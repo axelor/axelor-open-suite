@@ -28,7 +28,7 @@
 	    onNew="action-group-extra-hours-onnew"
 	    onLoad="action-extra-hours-attrs-buttons,action-extra-hours-attrs-title-project-task" canNew="false" canCopy="false">
 
-	    <panel sidebar="true" title="Actions" stacked="true">
+	    <panel sidebar="true" name="actions" title="Actions" stacked="true">
 	    	<button name="confirmButton" onClick="action-extra-hours-record-confirm,save,action-extra-hours-attrs-buttons" title="Confirm" hideIf="statusSelect &gt; 1" icon="fa-check-square-o"/>
 	    	<button name="validButton" onClick="action-extra-hours-record-valid,save,action-extra-hours-attrs-buttons" title="Valid"/>
 	    	<button name="refuseButton" onClick="action-extra-hours-record-refuse,save,action-extra-hours-attrs-buttons" title="Refuse"/>

@@ -53,7 +53,7 @@
     </grid>
     
     <form name="incl-analytic-distribution-move-line-form" model="com.axelor.apps.account.db.MoveLine" title="Move line">
-    	<panel title="Analytic distribution" if="__config__.general.getManageAnalyticAccounting()" onTabSelect="action-move-line-attrs-read-only-distribution-lines">
+    	<panel name="analyticDistribution" title="Analytic distribution" if="__config__.general.getManageAnalyticAccounting()" onTabSelect="action-move-line-attrs-read-only-distribution-lines">
 			<panel-related field="analyticDistributionLineList" grid-view="analytic-distribution-line-grid" form-view="analytic-distribution-line-form" colSpan="12"/>
 		</panel>
     </form>
@@ -62,7 +62,7 @@
     onLoad="action-move-line-attrs-collapse-irrecoverable-group" 
     onNew="action-account-move-line-onnew-group" width="large" canNew="false">
     	
-    	<panel title="Informations" readonly="true" >
+    	<panel name="informations" title="Informations" readonly="true" >
    			<field name="name"/>
 	        <field name="move" form-view="move-form" grid-view="move-grid"/>
 	        <field name="date"/>
@@ -93,7 +93,7 @@
         		<button name="notPassInIrrecoverable" title="Do not shift to irrecoverable"   onClick="com.axelor.apps.account.web.MoveLineController:notPassInIrrecoverable"/>
 	        </panel>
 	    	
-		    <panel title="Others" readonly="true">
+		    <panel name="others" title="Others" readonly="true">
 		        <field name="taxLine" grid-view="tax-line-grid" form-view="tax-line-form"/>
 		        <field name="exportedDirectDebitOk"/>
 		        <field name="reimbursementstatusSelect"/>
@@ -104,11 +104,11 @@
     
     <form name="move-line-move-form" title="Move line" model="com.axelor.apps.account.db.MoveLine" 
 	onNew="action-account-move-line-onnew-group" onLoad="action-account-move-moveline-onload-group" width="large">
-		<panel>
+		<panel name="main" >
 			<field name="name" css="bold"/>
 			<field name="date" colSpan="3"/>
 			<field name="dueDate" colSpan="3"/>
-			<panel title="Informations" colSpan="12">
+			<panel name="informations" title="Informations" colSpan="12">
 				<field name="account" form-view="account-form" grid-view="account-grid" onSelect="action-move-line-attrs-domain-account"/>
 				<field name="debit" onChange="action-group-account-moveline-debitcredit-onchange" readonlyIf="credit &gt; 0" css="label-bold bold" colSpan="3"/>
 				<field name="credit" onChange="action-group-account-moveline-debitcredit-onchange" readonlyIf="debit &gt; 0" css="label-bold bold" colSpan="3"/>
@@ -117,7 +117,7 @@
 				<field name="amountPaid" colSpan="3"/>
 				<field name="description" colSpan="12" />
 			</panel>
-			<panel title="Reject reason" colSpan="12" showIf="interbankCodeLine">
+			<panel name="rejectReason" title="Reject reason" colSpan="12" showIf="interbankCodeLine">
 				<field name="interbankCodeLine" showTitle="false" grid-view="interbank-code-line-grid" form-view="interbank-code-line-form"/>
 			</panel>
 		</panel>
@@ -127,7 +127,7 @@
 	        <panel-related field="creditReconcileList"  canRemove="false" canNew="false" showIf="$number(credit) &gt; 0.00" form-view="reconcile-form" grid-view="move-line-reconcile-grid"/>
 			
 			
-			<panel title="Others" >
+			<panel name="others" title="Others" >
 				<field name="exportedDirectDebitOk" colSpan="12"/>
 			</panel>
 			<panel-include view="incl-analytic-distribution-move-line-form" />
@@ -172,7 +172,7 @@
         		<button name="notPassInIrrecoverable" title="Do not shift to irrecoverable"   onClick="com.axelor.apps.account.web.MoveLineController:notPassInIrrecoverable"/>
 	        </panel>
 			
-		    <panel title="Others"  readonly="true">
+		    <panel name="others" title="Others"  readonly="true">
 		        <field name="taxLine" grid-view="tax-line-grid" form-view="tax-line-form"/>
 		        <field name="exportedDirectDebitOk"/>
 		    </panel>

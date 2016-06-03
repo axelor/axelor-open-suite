@@ -13,7 +13,7 @@
 	<form name="payroll-preparation-form" title="Payroll preparation" model="com.axelor.apps.hr.db.PayrollPreparation" 
 		onNew="action-payroll-preparation-group-on-new"
 		onLoad="action-payroll-preparation-method-fill-in-leaves">
-		<panel>
+		<panel name="main" >
 			<field name="company" form-view="company-form" grid-view="company-grid" colSpan="4"/>
 			 <field name="employee" colSpan="4" onChange="action-payroll-preparation-record-delete-contract, action-payroll-preparation-group-fill-in"/>
 			 <field name="employmentContract" colSpan="4" domain="self.employee = :employee" onChange="action-payroll-preparation-group-fill-in"/> 

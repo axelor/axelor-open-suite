@@ -30,9 +30,9 @@
 
 	<form name="timesheet-form" title="Timesheet" model="com.axelor.apps.hr.db.Timesheet" cols="12" width="large"
 	    onNew="action-group-timesheet-onnew"
-	    onLoad="action-timesheet-attrs-buttons,action-timesheet-attrs-set-visible-duration-title,action-timesheet-method-set-visible-duration,action-timesheet-attrs-title-project-task,action-timesheet-attrs-from-date,save" canNew="false"
+	    onLoad="action-timesheet-attrs-buttons,action-group-timesheet-change-title,action-timesheet-method-set-visible-duration,action-timesheet-attrs-title-project-task,action-timesheet-attrs-from-date,save" canNew="false"
 	    onSave="action-timesheet-validate-toDate,action-timesheet-method-valid-to-date" canCopy="false">
-	    <panel sidebar="true" title="Actions" stacked="true">
+	    <panel sidebar="true" name="actions" title="Actions" stacked="true">
 	    	<button name="confirmButton" onClick="action-timesheet-method-confirm,save,action-timesheet-attrs-buttons,action-timesheet-attrs-from-date" title="Confirm" hideIf="statusSelect &gt; 1" icon="fa-check-square-o"/>
 	    	<button name="validButton" onClick="action-timesheet-method-valid,save,action-timesheet-attrs-buttons,action-timesheet-method-compute-timespent-project-task" title="Valid"/>
 	    	<button name="refuseButton" onClick="action-timesheet-method-refuse,save,action-timesheet-attrs-buttons" title="Refuse"/>
@@ -42,10 +42,10 @@
 	    	<button name="generateLinesButton" onClick="action-timesheet-record-default-generation-date,action-timesheet-attrs-set-log-time-title,action-timesheet-attrs-generale-lines-panel-hidden-false" title="Generate Lines Automatically"/>
 	    	<button name="startStopForm" title="Start&amp;Stop Timer" onClick="action-timesheet-method-timesheet-timer"/>
 	    </panel>
-	    <panel sidebar="true" name="panelDashboard" title="Total Hours per Day" showIf="self.id">
+	    <panel sidebar="true" name="panelDashboard" title="Total Hours per Day" showIf="id">
 	    	<panel-dashlet action="action-timesheet-view-total-hours-per-day"/>
 	    </panel> 
-	    <panel sidebar="true" title="Total Duration per Project" showIf="self.id">
+	    <panel sidebar="true" name="totalDurationPerProject" title="Total Duration per Project" showIf="id">
 	    	<panel-dashlet action="action-timesheet-view-total-duration-per-project"/>
 	    </panel>
 		<panel name="head">
@@ -80,7 +80,7 @@
 		<button name="editTimesheetSelected" title="Edit Timesheet Selected" onClick="action-timesheet-validate-timesheet-selected,action-timesheet-method-edit-timesheet-selected"/>
 	</form>
 	
-	<action-attrs name="action-timesheet-attrs-title">
+	<action-attrs name="action-timesheet-attrs-paneldashboard-title">
 		<attribute name="title" for="panelDashboard" expr="eval:__user__.employee?.timeLoggingPreferenceSelect == 'days' ? com.axelor.i18n.I18n.get('Total Days in the period') : __user__.employee?.timeLoggingPreferenceSelect == 'minutes' ? com.axelor.i18n.I18n.get('Total Minutes per Day') : com.axelor.i18n.I18n.get('Total Hours per Day')"/>
 	</action-attrs>
 	
@@ -217,6 +217,11 @@
 		<action name="action-timesheet-record-from-period-date"/>
 		<action name="action-timesheet-attrs-title-project-task"/>
 		<action name="action-timesheet-attrs-from-date-on-new"/>
+	</action-group>
+	
+	<action-group name="action-group-timesheet-change-title">
+		<action name="action-timesheet-attrs-set-visible-duration-title"/>
+		<action name="action-timesheet-attrs-paneldashboard-title"/>
 	</action-group>
 	
 	<action-attrs name="action-timesheet-attrs-from-date-on-new">

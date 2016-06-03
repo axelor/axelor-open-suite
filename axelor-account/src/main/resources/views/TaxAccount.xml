@@ -10,7 +10,7 @@
     
     <form name="tax-account-form" title="Tax accounting configuration" model="com.axelor.apps.account.db.TaxAccount"  
     onNew="action-tax-account-record-new">
-       <panel >
+       <panel name="main" >
        	 <field name="company" widget="SuggestBox" onChange="action-group-account-tax-account-common-onchange" form-view="company-form" grid-view="company-grid"/>
        	 <field name="account" domain="self.company = :company" onChange="action-group-account-tax-account-common-onchange" form-view="account-form" grid-view="account-grid"/>
        </panel>
