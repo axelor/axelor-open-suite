@@ -466,7 +466,13 @@ public class TimesheetServiceImpl implements TimesheetService{
 		List<TimesheetLine> timesheetLineList = timesheet.getTimesheetLineList();
 		
 		Employee timesheetEmployee = timesheet.getUser().getEmployee();
-		BigDecimal employeeDailyWorkHours = timesheetEmployee.getDailyWorkHours();
+		BigDecimal employeeDailyWorkHours;
+		
+		if (timesheetEmployee == null || timesheetEmployee.getDailyWorkHours() == null){
+			employeeDailyWorkHours = generalService.getGeneral().getDailyWorkHours();
+		}else{
+			employeeDailyWorkHours = timesheetEmployee.getDailyWorkHours();
+		}
 		
 		for(TimesheetLine timesheetLine : timesheetLineList)  {
 			timesheetLine.setVisibleDuration(employeeService.getUserDuration(timesheetLine.getDurationStored(), employeeDailyWorkHours, false));
