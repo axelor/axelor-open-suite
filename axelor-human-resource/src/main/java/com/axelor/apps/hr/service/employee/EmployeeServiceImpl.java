@@ -105,10 +105,10 @@ public class EmployeeServiceImpl extends UserServiceImpl implements EmployeeServ
 				if(timePref.equals("days"))
 					duration = duration.multiply(dailyWorkHrs);
 				else if (timePref.equals("minutes"))
-					duration = duration.divide(new BigDecimal(60),2, RoundingMode.HALF_UP);
+					duration = duration.divide(new BigDecimal(60),4, RoundingMode.HALF_UP);
 			}else{
 				if(timePref.equals("days") && dailyWorkHrs != null && dailyWorkHrs.compareTo(BigDecimal.ZERO) != 0)
-					duration = duration.divide(dailyWorkHrs,2, RoundingMode.HALF_UP);
+					duration = duration.divide(dailyWorkHrs,4, RoundingMode.HALF_UP);
 				else if (timePref.equals("minutes"))
 					duration = duration.multiply(new BigDecimal(60));			
 			}
