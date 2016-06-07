@@ -1,23 +1,39 @@
 package com.axelor.apps.hr.service.project;
 
+import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import com.axelor.apps.base.service.administration.GeneralService;
+import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.service.employee.EmployeeService;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.inject.Beans;
+import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
 public class ProjectTaskServiceImpl implements ProjectTaskService {
 	
+	@Inject
+	protected GeneralService generalService;
+	
 	@Transactional(rollbackOn={Exception.class})
 	public List<TimesheetLine> computeVisibleDuration(ProjectTask project){
 		List<TimesheetLine> timesheetLineList = project.getTimesheetLineList();
+		Employee timesheetEmployee;
+		BigDecimal employeeDailyWorkHours;
 		
-		for(TimesheetLine timesheetLine : timesheetLineList)
-			timesheetLine.setVisibleDuration(Beans.get(EmployeeService.class).getUserDuration(timesheetLine.getDurationStored(), timesheetLine.getUser().getEmployee().getDailyWorkHours(), false));
+		for(TimesheetLine timesheetLine : timesheetLineList){
+			timesheetEmployee = timesheetLine.getUser().getEmployee();
+			if (timesheetEmployee == null || timesheetEmployee.getDailyWorkHours() == null)
+				employeeDailyWorkHours = generalService.getGeneral().getDailyWorkHours();
+			else
+				employeeDailyWorkHours = timesheetEmployee.getDailyWorkHours();
+			timesheetLine.setVisibleDuration(Beans.get(EmployeeService.class).getUserDuration(timesheetLine.getDurationStored(), employeeDailyWorkHours, false));
+		}
+			
 
 		timesheetLineList = _sortTimesheetLineByDate(timesheetLineList);
 
