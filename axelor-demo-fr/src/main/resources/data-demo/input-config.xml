@@ -267,10 +267,14 @@
  	
 <!--  	<input file="hr_timeActivity.csv" type="com.axelor.apps.hr.db.TimeActivity" separator=";" search="self.importId = :importId"/> -->
  	
- 	<input file="hr_timesheet.csv" type="com.axelor.apps.hr.db.Timesheet" separator=";" search="self.importId = :importId"/>
+ 	<input file="hr_timesheet.csv" type="com.axelor.apps.hr.db.Timesheet" separator=";" search="self.importId = :importId">
+		<bind to="fromDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(fromDate)" column="fromDate"/>
+		<bind to="toDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(toDate)" column="toDate"/>
+	</input>
  	
  	<input file="hr_timesheetLine.csv" type="com.axelor.apps.hr.db.TimesheetLine" separator=";" search="self.importId = :importId">
 		<bind to="durationStored" eval="call:com.axelor.csv.script.ImportDurationStored:getDurationHoursImport(visibleDuration,user.importId)"/>
+		<bind to="date" eval="call:com.axelor.csv.script.ImportDateTime:importDate(date)" column="date"/>
 	</input>
 	
 	<input file="hr_publicHolidayPlanning.csv" type="com.axelor.apps.hr.db.PublicHolidayPlanning" separator=";" search="self.importId = :importId"/>
