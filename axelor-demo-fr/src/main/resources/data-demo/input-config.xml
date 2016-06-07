@@ -416,6 +416,8 @@
 	
 	<input file="production_productionConfig.csv" separator=";" type="com.axelor.apps.production.db.ProductionConfig" search="self.importId = :importId"/>
 	
+	<input file="production_costSheetGroup.csv" separator=";" type="com.axelor.apps.production.db.CostSheetGroup" search="self.importId = :importId"/>
+	
 	<input file="crm_event.csv" separator=";" type="com.axelor.apps.crm.db.Event" search="self.importId = :importId" update="true"/>
 	
 <!-- 	Update default BOM -->
