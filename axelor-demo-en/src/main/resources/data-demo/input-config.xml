@@ -18,7 +18,7 @@
       <bind column="roles" to="roles" search="self.name in :roles" eval="roles.split('\\|') as List"/>
     </input>
     
-    <input file="auth_user.csv" separator=";" type="com.axelor.auth.db.User"  search="self.code = :code" />
+    <input file="auth_user.csv" separator=";" type="com.axelor.auth.db.User"  search="self.code = :code" call="com.axelor.csv.script.ImportUser:importUser"/>
     
 <!--     IMPORT DU PACKAGE 'BASE' -->
 
@@ -369,8 +369,10 @@
 		<bind to="priceDiscounted" eval="price" />
 	</input>
 	
-	<input file="base_general.csv" separator=";" type="com.axelor.apps.base.db.General" update="true" search="self.importId = :importId" call="com.axelor.csv.script.ValidateSupplyChain:validateSupplyChain" />
-	
+	<input file="base_general.csv" separator=";" type="com.axelor.apps.base.db.General" update="true" search="self.importId = :importId" call="com.axelor.csv.script.ValidateSupplyChain:validateSupplyChain">
+		<bind to="allowSusbcriptionSaleOrder" column="allowSusbcriptionSaleOrder"/>
+	</input>
+		
  	<input file="account_invoice.csv" separator=";" type="com.axelor.apps.account.db.Invoice">
  		<bind to="invoiceDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(invoiceDate)" column="invoiceDate"/>
  		<bind to="dueDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(dueDate)" column="dueDate"/>
