@@ -214,7 +214,7 @@ public class ViewDocExportService {
 			}
 			rootMenu = title;
 			sheet = null;
-			processMenu(name);
+			processMenu(name, 0);
 			processedMenus.add(name);
 		}
 		
@@ -415,7 +415,7 @@ public class ViewDocExportService {
 		return key;
 	}
 	
-	private void processMenu(String parentMenu){
+	private int processMenu(String parentMenu, int count){
 		
 		List<MetaMenu> subMenus = metaMenuRepo.all().filter("self.parent.name = ?", parentMenu).order("order").fetch();
 		
@@ -423,15 +423,20 @@ public class ViewDocExportService {
 			createSheet();
 		}
 		
-		Integer count = 1;
 		for(MetaMenu subMenu : subMenus){
 			
+			count++;
 //			log.debug("Processing sub menu: {}", subMenu.getName());
 			
 			MetaAction action = subMenu.getAction();
 			
+			
 			if(action == null){
-				processMenu(subMenu.getName());
+				if(!onlyPanel){
+					String[] paths = updateMenuPath(subMenu);
+					count = addMenu(subMenu, "", paths, count);
+				}
+				count = processMenu(subMenu.getName(), count);
 				continue;
 			}	
 			
@@ -446,9 +451,9 @@ public class ViewDocExportService {
 				count = addMenu(subMenu, model, paths, count);
 			}
 			
-			count++;
 		}
 		
+		return count;
 	}
 	
 	private int addMenu(MetaMenu subMenu, String model, String[] paths, int rowCount){
