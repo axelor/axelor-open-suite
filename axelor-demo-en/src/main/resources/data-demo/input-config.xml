@@ -18,7 +18,7 @@
       <bind column="roles" to="roles" search="self.name in :roles" eval="roles.split('\\|') as List"/>
     </input>
     
-    <input file="auth_user.csv" separator=";" type="com.axelor.auth.db.User"  search="self.code = :code" />
+    <input file="auth_user.csv" separator=";" type="com.axelor.auth.db.User"  search="self.code = :code" call="com.axelor.csv.script.ImportUser:importUser"/>
     
 <!--     IMPORT DU PACKAGE 'BASE' -->
 
