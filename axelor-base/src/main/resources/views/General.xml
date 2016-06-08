@@ -31,6 +31,7 @@
 		<panel-tabs>
 		    <panel name="configuration" title="Configuration">
 		    	<field name="defaultPartnerLanguage" />
+		    	<field name="activateSendingEmail" widget="Boolean-switch"/>
 		    	<field name="mailAccountByUser" widget="Boolean-switch"/>
 		    	<field name="productInAtiSelect"/>
 		    	<field name="nbDecimalDigitForUnitPrice"/>
