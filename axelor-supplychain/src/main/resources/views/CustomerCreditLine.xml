@@ -10,7 +10,7 @@
     </grid>
     
     <form name="customer-credit-line-form" title="Customer Credits" model="com.axelor.apps.supplychain.db.CustomerCreditLine">
-        <panel>
+        <panel name="main">
 	        <field name="company" onChange="action-account-method-compute-used-credit" form-view="company-form" grid-view="company-grid"/>
 	        <field name="acceptedCredit"/>
 	        <field name="usedCredit"/>

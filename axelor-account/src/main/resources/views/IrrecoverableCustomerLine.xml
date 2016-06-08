@@ -8,7 +8,7 @@
     </grid>
     
     <form name="irrecoverable-customer-line-form" title="Customer" model="com.axelor.apps.account.db.IrrecoverableCustomerLine" width="large">
-        <panel >
+        <panel name="main">
         	<field name="partner" form-view="partner-form" grid-view="partner-grid" domain="self.isContact = false" colSpan="12"/>
         </panel>
         <panel-tabs>

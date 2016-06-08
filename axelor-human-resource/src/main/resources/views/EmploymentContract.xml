@@ -38,11 +38,11 @@
 			  <field name="amendmentDate" colSpan="4"/>
 			</panel>  
 		</panel-stack>  
-		<panel>
+		<panel name="main">
 			<field name="signatureDate" colSpan="4"/>
 			<field name="contractTypeSelect" onChange="action-employment-contract-record-contract-type-on-change" colSpan="4"/>
 			<field name="executiveStatusSelect" colSpan="4"/>
-			<panel title="Organization" colSpan="12">
+			<panel name="organization" title="Organization" colSpan="12">
 				<field name="startDate" colSpan="3"/>
 				<field name="trialPeriodDuration" colSpan="3"/>
 				<field name="endDate" colSpan="3"/>
@@ -51,7 +51,7 @@
 				<field name="duration" colSpan="3"/>
 				<field name="hoursDistribution" colSpan="12" height="5"/>
 			</panel>
-			<panel title="Position / Salary" colSpan="12">
+			<panel name="positionSalary" title="Position / Salary" colSpan="12">
 				<field name="position" colSpan="4"/>
 				<field name="coefficient" colSpan="4"/>
 				<field name="hourlyGrossSalary" colSpan="4"/>
@@ -61,7 +61,7 @@
 				<panel-related field="otherCostsEmployeeSet" colSpan="12"/>
 			</panel>     
 		</panel>
-		<panel title="End of contract">
+		<panel name="endOfContract" title="End of contract">
 			<field name="endOfContractReason" canNew="true"/>
 			<field name="endContractDetails"/>
 		</panel>

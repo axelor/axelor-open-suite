@@ -40,12 +40,13 @@ public class ViewDocController {
 		ViewDoc viewDoc = request.getContext().asType(ViewDoc.class);
 		
 		MetaFile exportFile = viewDoc.getExportFile();
-		if(exportFile != null && exportFile.getId() != null){
+		Boolean panelOnly = viewDoc.getExportOnlyPanel();
+		if(exportFile != null && exportFile.getId() != null && !panelOnly){
 			exportFile = metaFileRepo.find(exportFile.getId());
-			exportFile = exportService.export(exportFile);
+			exportFile = exportService.export(exportFile, false);
 		}
 		else{
-			exportFile = exportService.export(null);
+			exportFile = exportService.export(null, panelOnly);
 		}
 		
 		response.setValue("exportFile", exportFile);

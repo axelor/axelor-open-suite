@@ -30,13 +30,14 @@ import com.axelor.apps.base.db.Wizard;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.hr.db.Expense;
 import com.axelor.apps.hr.db.ExpenseLine;
-import com.axelor.apps.hr.db.ExtraHours;
+import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.db.repo.ExpenseRepository;
-import com.axelor.apps.hr.exception.IExceptionMessage;
 import com.axelor.apps.hr.report.IReport;
+import com.axelor.apps.hr.service.HRMenuTagService;
 import com.axelor.apps.hr.service.expense.ExpenseService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
+import com.axelor.db.JPA;
 import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
@@ -52,6 +53,9 @@ import com.google.inject.Inject;
 public class ExpenseController {
 
 	private final Logger logger = LoggerFactory.getLogger(getClass());
+	
+	@Inject
+	private HRMenuTagService hrMenuTagService;
 	
 	@Inject
 	private ExpenseService expenseService;
@@ -310,5 +314,16 @@ public class ExpenseController {
 				.add("html", fileLink).map());	
 	}
 	
-
+	/* Count Tags displayed on the menu items */
+	
+	public String expenseValidateTag() { 
+		Expense expense = new Expense();
+		return hrMenuTagService.CountRecordsTag(expense);
+	}
+	
+	public String expenseVentilateTag() { 
+		Long total = JPA.all(Expense.class).filter("self.statusSelect = 3 AND self.ventilated = false").count();
+		
+		return String.format("%s", total);
+	}
 }

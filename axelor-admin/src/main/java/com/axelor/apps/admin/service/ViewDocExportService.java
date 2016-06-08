@@ -1,3 +1,20 @@
+/**
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or  modify
+ * it under the terms of the GNU Affero General Public License, version 3,
+ * as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package com.axelor.apps.admin.service;
 
 import java.io.File;
@@ -7,19 +24,19 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
-
-import javax.xml.bind.JAXBException;
+import java.util.TreeSet;
 
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.FillPatternType;
+import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFCell;
+import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -27,41 +44,14 @@ import org.joda.time.LocalDateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.axelor.common.ClassUtils;
-import com.axelor.common.Inflector;
-import com.axelor.db.mapper.Mapper;
-import com.axelor.db.mapper.Property;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.MetaFiles;
-import com.axelor.meta.MetaStore;
 import com.axelor.meta.db.MetaAction;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.meta.db.MetaMenu;
 import com.axelor.meta.db.MetaTranslation;
-import com.axelor.meta.db.MetaView;
 import com.axelor.meta.db.repo.MetaMenuRepository;
 import com.axelor.meta.db.repo.MetaTranslationRepository;
-import com.axelor.meta.db.repo.MetaViewRepository;
-import com.axelor.meta.loader.XMLViews;
-import com.axelor.meta.schema.ObjectViews;
-import com.axelor.meta.schema.actions.ActionView;
-import com.axelor.meta.schema.actions.ActionView.View;
-import com.axelor.meta.schema.views.AbstractView;
-import com.axelor.meta.schema.views.AbstractWidget;
-import com.axelor.meta.schema.views.Button;
-import com.axelor.meta.schema.views.Dashlet;
-import com.axelor.meta.schema.views.Field;
-import com.axelor.meta.schema.views.FormView;
-import com.axelor.meta.schema.views.Label;
-import com.axelor.meta.schema.views.Panel;
-import com.axelor.meta.schema.views.PanelEditor;
-import com.axelor.meta.schema.views.PanelField;
-import com.axelor.meta.schema.views.PanelInclude;
-import com.axelor.meta.schema.views.PanelRelated;
-import com.axelor.meta.schema.views.PanelTabs;
-import com.axelor.meta.schema.views.Selection;
-import com.axelor.meta.schema.views.Selection.Option;
-import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 
@@ -83,35 +73,74 @@ public class ViewDocExportService {
 		"Menu(FR)",
 	};
 	
-	private Map<String, Map<String,List<String>>> itemCheckMap = new HashMap<String, Map<String, List<String>>>();
+	private static final String[] PANEL_HEADERS = new String[]{
+		"Module", 
+		"Object", 
+		"View", 
+		"",
+		"Panel name",
+		"Panel title(EN)", 
+		"Panel title(FR)"
+	};
 	
-	private List<String> viewProcessed = new  ArrayList<String>(); 
-	
-	private Map<String, List<String[]>> o2mViewMap = new HashMap<String, List<String[]>>();
+	private static final Set<String>fieldTypes = new TreeSet<String>(String.CASE_INSENSITIVE_ORDER);{
+		fieldTypes.add("Toolbar Menu");
+		fieldTypes.add("Toolbar MenuItem");
+		fieldTypes.add("Panel");
+		fieldTypes.add("SubPanel");
+		fieldTypes.add("Button");
+		fieldTypes.add("Label");
+		fieldTypes.add("Dashlet");
+		fieldTypes.add("STRING");
+		fieldTypes.add("INTEGER");
+		fieldTypes.add("DECIMAL");
+		fieldTypes.add("BOOLEAN");
+		fieldTypes.add("TEXT");
+		fieldTypes.add("DATE");
+		fieldTypes.add("DATETIME");
+		fieldTypes.add("LOCALDATETIME");
+		fieldTypes.add("LOCALDATE");
+		fieldTypes.add("LOCALTIME");
+		fieldTypes.add("ONE_TO_MANY");
+		fieldTypes.add("MANY_TO_ONE");
+		fieldTypes.add("ONE_TO_ONE");
+		fieldTypes.add("MANY_TO_MANY");
+		fieldTypes.add("BINARY");
+		fieldTypes.add("general");
+		fieldTypes.add("EMPTY");
+		fieldTypes.add("MENU");
+	};
 	
 	private XSSFWorkbook workBook;
 	
+	private XSSFWorkbook oldBook;
+	
 	private XSSFSheet sheet;
 	
-	private CellStyle style;
+	private XSSFSheet oldSheet;
 	
-	private int rowCount;
+	private XSSFCellStyle style;
 	
-	private String[] menuPath;
+	private XSSFCellStyle green;
+	
+	private XSSFCellStyle lavender;
+	
+	private XSSFCellStyle violet;
+	
+	private String[] menuPath = null;
 	
 	private String rootMenu;
 	
+	private boolean onlyPanel = false;
+	
 	private List<String> processedMenus = new ArrayList<String>();
 	
-	private Inflector inflector;
+	private Map<String, Integer> docMap = new HashMap<String, Integer>();
 	
-	private Map<String, String[]> docMap = new HashMap<String, String[]>();
+	private Map<String, List<Integer>> commentMap = new HashMap<String, List<Integer>>();
 	
 	@Inject
 	private MetaMenuRepository metaMenuRepo;
-	
-	@Inject
-	private MetaViewRepository metaViewRepo;
 	
 	@Inject
 	private MetaTranslationRepository translationRepo; 
@@ -119,22 +148,25 @@ public class ViewDocExportService {
 	@Inject
 	private MetaFiles metaFiles;
 	
-	public MetaFile export(MetaFile docFile){
+	@Inject
+	private ViewDocXmlProcessor viewDocXmlProcessor;
+	
+	public MetaFile export(MetaFile docFile, boolean onlyPanel){
 		
-		inflector = Inflector.getInstance();
+		this.onlyPanel = onlyPanel;
 		
 		List<MetaMenu> menus = metaMenuRepo.all().filter("self.parent is null and self.left = true").order("order").fetch();
 		
 		workBook = new XSSFWorkbook();
 		addStyle();
 		
-		if(docFile != null){
+		if(docFile != null && !onlyPanel){
 			updateDocMap(docFile);
 		}
 		
 		processRootMenu(menus.iterator());
 		
-		updateColumnWidth();
+		setColumnWidth();
 
 		return createExportFile(docFile);
 	}
@@ -147,6 +179,23 @@ public class ViewDocExportService {
 		style.setBorderLeft(CellStyle.BORDER_THIN);
 		style.setBorderRight(CellStyle.BORDER_THIN);
 		
+		green = workBook.createCellStyle();
+		green.cloneStyleFrom(style);
+		green.setFillForegroundColor(IndexedColors.BRIGHT_GREEN.index);
+		green.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+		
+		lavender = workBook.createCellStyle();
+		lavender.cloneStyleFrom(green);
+		lavender.setFillForegroundColor(IndexedColors.LAVENDER.index);
+		
+		violet = workBook.createCellStyle();
+		violet.cloneStyleFrom(green);
+		violet.setFillForegroundColor(IndexedColors.VIOLET.index);
+		
+	}
+	
+	public boolean getOnlyPanel(){
+		return onlyPanel;
 	}
 	
 	private void processRootMenu(Iterator<MetaMenu> rootMenuIter){
@@ -165,19 +214,24 @@ public class ViewDocExportService {
 			}
 			rootMenu = title;
 			sheet = null;
-			processMenu(name);
+			processMenu(name, 0);
 			processedMenus.add(name);
 		}
 		
 		processRootMenu(rootMenuIter);
 	}
 	
-	private void updateColumnWidth(){
+	protected void setMenuPath(String[] menuPath){
+		this.menuPath = menuPath;
+	}
+	
+	private void setColumnWidth(){
 		
 		Iterator<XSSFSheet> sheets = workBook.iterator();
-		
+
 		while(sheets.hasNext()){
 			sheet = sheets.next();
+			sheet.createFreezePane(0, 1, 0, 1);
 			int count = 0;
 			while(count < HEADERS.length){
 				sheet.autoSizeColumn(count);
@@ -186,67 +240,168 @@ public class ViewDocExportService {
 		}
 	}
 	
-	private void createSheet(){
+	private void addGeneralRow(String[] values){
+			
+		XSSFRow row = sheet.createRow(sheet.getPhysicalNumberOfRows());
+		String[] vals = { 
+			values[0],
+			values[1],
+			values[2],
+			"general","", "", "", "", "", "", ""
+		};
+			
+		int count = writeCell(row, vals, 0, green);
 		
-		sheet = workBook.createSheet(I18n.get(rootMenu));
-		rowCount = -1;
-
-		writeRow(HEADERS);
+		addDoc(row, vals, count, green, null);
 		
 	}
 	
-	private void writeRow(String[] values){
+	private void createSheet(){
 		
-		rowCount += 1;
-		XSSFRow row = sheet.createRow(rowCount);
+		log.debug("Root menu: {}", rootMenu);
+		menuPath = null;
+		sheet = workBook.createSheet(I18n.get(rootMenu));
 		
-		int count = 0;
-		count = writeCell(row, values, count, true);
-		
-		if(rowCount > 0){
-			count = writeCell(row, menuPath, count, true);
+		if(oldBook != null){
+			oldSheet = oldBook.getSheet(sheet.getSheetName());
 		}
 		
-		addDoc(row, values, count);
+		if(onlyPanel){
+			writeRow(PANEL_HEADERS, false, false, false);
+		}
+		else{
+			writeRow(HEADERS, false, false, false);
+		}
+		
+	}
+	
+	protected void writeRow(String[] values, boolean newForm, boolean newPanel, boolean newSubPanel){
+		
+		if(newForm){
+			addGeneralRow(values);
+		}
+		
+		XSSFRow row = sheet.createRow(sheet.getPhysicalNumberOfRows());
+		XSSFCellStyle cellStyle = style;
+		 
+		if(!onlyPanel){
+			if(newPanel){
+				cellStyle = violet;
+			}
+			else if (newSubPanel) {
+				cellStyle = lavender;
+			}
+		}
+		
+		int count = writeCell(row, values, 0, cellStyle);
+		
+		if(!onlyPanel && menuPath != null){
+			writeCell(row, menuPath, count, cellStyle);
+		}
+		
+		addDoc(row, values, count, cellStyle, null);
 		
 		menuPath = new String[]{"",""};
 		
 	}
 	
-	private int writeCell(XSSFRow row, String[] values,  int count, boolean addStyle){
+	protected Integer writeRow(Integer rowIndex, XSSFCellStyle cellStyle, int count, Integer rowCount){
+		
+		XSSFRow row = null;
+		
+		int totalRows = sheet.getPhysicalNumberOfRows();
+		if(rowCount == null){
+			row = sheet.createRow(totalRows);
+		}
+		else{
+			rowCount++;
+			if(rowCount < totalRows){
+				sheet.shiftRows(rowCount, totalRows, 1);
+			}
+			row = sheet.createRow(rowCount);
+		}
+		
+		writeCell(row, rowIndex, count, cellStyle);
+		
+		menuPath = new String[]{"",""};
+		
+		return rowCount;
+	}
+	
+	private int writeCell(XSSFRow row, String[] values, int count,  XSSFCellStyle cellStyle){
+		
+		int cellCount = 0;
 		
 		for(String value : values){
-			XSSFCell cell = row.createCell(count);
-			if(addStyle){
-				cell.setCellStyle(style);
+			
+			if(onlyPanel){
+				cellCount++;
+				if(cellCount == 4){
+					continue;
+				}
+				if(cellCount > 7){
+					break;
+				}
 			}
+			
+			XSSFCell cell = row.createCell(count);
+			cell.setCellStyle(cellStyle);
+			
 			cell.setCellValue(value);
+			
 			count++;
 		}
 		
 		return count;
+		
 	}
 	
-	private void addDoc(XSSFRow row, String[] values, int count){
+	private void writeCell(XSSFRow row, Integer oldRowIndex, int count, XSSFCellStyle cellStyle){
+		
+		XSSFRow oldRow = oldSheet.getRow(oldRowIndex);
+		
+		while(count < oldRow.getLastCellNum()){
+			XSSFCell oldCell = oldRow.getCell(count);
+			Cell cell = row.createCell(count);
+			cell.setCellStyle(cellStyle);
+			cell.setCellValue(oldCell.getStringCellValue());
+			count++;
+		}
+		
+	}
+	
+	private Integer addDoc(XSSFRow row, String[] values, int count, XSSFCellStyle cellStyle, Integer rowCount){
 		
 		 String name = values[4];
 		 if(name == null){
 			 name = values[5];
 		 }
 		 
-		 String[] obj = values[1].split("\\.");
-		 String key = obj[obj.length - 1] + "," + values[3] + "," + name;
+		 String key = null;
 		 if(row.getRowNum() == 0){
 			 key = sheet.getSheetName();
 		 }
-		 
-		 String[] docs = docMap.get(key);
-		 if(docs != null){
-			 writeCell(row, docs, count, false);
+		 else{
+			 key =  values[1] 
+					+ "," + values[2] 
+				    + "," + values[3] 
+				    + "," + name;
 		 }
+		 
+		 if(docMap.containsKey(key) && oldSheet != null){
+			 writeCell(row, docMap.get(key), count, cellStyle);	
+		 }
+
+		 if(commentMap.containsKey(key) && oldSheet != null){
+			for(Integer rowIndex : commentMap.get(key)){
+				rowCount = writeRow(rowIndex, style, 0, rowCount);
+			}
+		 }
+		 
+		 return rowCount;
 	}
 	
-	private String translate(String key, String lang){
+	protected String translate(String key, String lang){
 		
 		MetaTranslation translation = translationRepo.findByKey(key, lang);
 		
@@ -260,80 +415,76 @@ public class ViewDocExportService {
 		return key;
 	}
 	
-	private boolean isChecked(String model, String type, String item){
-		
-		if(!itemCheckMap.containsKey(model)){
-			Map<String, List<String>> map = new HashMap<String, List<String>>();
-			map.put(type, new ArrayList<String>());
-			itemCheckMap.put(model, map);
-		}
-		
-		Map<String, List<String>> map = itemCheckMap.get(model);
-		if(!map.containsKey(type)){
-			map.put(type, new ArrayList<String>());
-		}
-		
-		List<String> checkList = map.get(type);
-		
-		if(!checkList.contains(item)){
-			checkList.add(item);
-			return false;
-		}
-		else{
-			return true;
-		}
-	}
-	
-	private void processMenu(String parentMenu){
+	private int processMenu(String parentMenu, int count){
 		
 		List<MetaMenu> subMenus = metaMenuRepo.all().filter("self.parent.name = ?", parentMenu).order("order").fetch();
 		
-		if(subMenus.isEmpty()){
-			log.debug("No sub menus for parent : {}", parentMenu);
+		if(sheet == null){
+			createSheet();
 		}
 		
 		for(MetaMenu subMenu : subMenus){
 			
-			log.debug("Processing sub menu: {}", subMenu.getName());
+			count++;
+//			log.debug("Processing sub menu: {}", subMenu.getName());
 			
 			MetaAction action = subMenu.getAction();
 			
+			
 			if(action == null){
-				processMenu(subMenu.getName());
+				if(!onlyPanel){
+					String[] paths = updateMenuPath(subMenu);
+					count = addMenu(subMenu, "", paths, count);
+				}
+				count = processMenu(subMenu.getName(), count);
 				continue;
 			}	
 			
 			String model = action.getModel();
 			
-			if(model != null){
-				if(sheet == null){
-					log.debug("Creating sheet: {}, model: {}", rootMenu, model);
-					createSheet();
-				}
-				updateMenuPath(subMenu);
-				String form = getForm(action);
-				if(form != null){
-					processModel(model, form);
-				}
-				else{
-					log.debug("No form view specified for action: {}", action.getName());
-					processModel(model, getFormName(model));
-				}
+			String[] paths = updateMenuPath(subMenu);
+			if(action.getType().equals("action-view")){
+				viewDocXmlProcessor.processModel(model, action);
 			}
+			
+			if(!onlyPanel){
+				count = addMenu(subMenu, model, paths, count);
+			}
+			
 		}
 		
+		return count;
 	}
 	
-	private String getFormName(String model){
+	private int addMenu(MetaMenu subMenu, String model, String[] paths, int rowCount){
 		
-		String viewName = model.substring(model.lastIndexOf(".")+1);
-		viewName = inflector.underscore(viewName);
-		viewName = inflector.dasherize(viewName);
+		sheet.shiftRows(rowCount, sheet.getPhysicalNumberOfRows(), 1);
 		
-		return viewName + "-form";
+		XSSFRow row = sheet.createRow(rowCount);
+		
+		String[] menuEn = paths[0].split("/");
+		String[] menuFr = paths[1].split("/");
+		
+		String[] values = new String[]{
+		    subMenu.getModule(),
+		    model,
+		    "",
+		    "MENU",
+		    subMenu.getName(),
+		    menuEn[menuEn.length - 1],
+		    menuFr[menuFr.length - 1],
+		    "",
+		    "",
+		    paths[0],
+		    paths[1]
+		};
+		
+		int count = writeCell(row, values, 0, style);
+		
+		return addDoc(row, values, count, style, rowCount);
 	}
 	
-	private void updateMenuPath(MetaMenu metaMenu){
+	private String[] updateMenuPath(MetaMenu metaMenu){
 		
 		List<String> menus = new ArrayList<String>();
 		menus.add(metaMenu.getTitle());
@@ -357,7 +508,10 @@ public class ViewDocExportService {
 			}
 		}
 		
-		menuPath = new String[]{menuEN,menuFR};
+		String[] paths = new String[]{menuEN,menuFR};
+		menuPath = paths;
+		
+		return paths;
 	}
 	
 	private void addParentMenus(List<String> menus, MetaMenu metaMenu){
@@ -370,460 +524,6 @@ public class ViewDocExportService {
 		}
 	}
 	
-	private String getForm(MetaAction action){
-		
-		try {
-			ObjectViews objectViews = XMLViews.fromXML(action.getXml());
-			ActionView actionView = (ActionView) objectViews.getActions().get(0);
-			for(View view : actionView.getViews()){
-				if(view.getType().equals("form")){
-					return view.getName();
-				}
-			}
-		} catch (JAXBException e) {
-			e.printStackTrace();
-		}
-		
-		return null;
-	}
-	
-	private void processModel(String model, String form){
-		
-		try{
-
-			if(viewProcessed.contains(form)){
-				return;
-			}
-			
-			Mapper mapper = Mapper.of(ClassUtils.findClass(model));
-			List<MetaView> metaViews =  metaViewRepo.all().filter(
-					"self.type = 'form' and self.model = ? and self.name = ?", 
-					model, form).fetch();
-			
-			if(!itemCheckMap.containsKey(model)){
-				Map<String, List<String>> map = new HashMap<String, List<String>>();
-				itemCheckMap.put(model, map);
-			}
-			
-			if(metaViews.isEmpty()){
-				log.debug("No view found: {}, model: {}", form, model);
-			}
-			else{
-				processView(metaViews.iterator(), mapper);
-				
-				addO2MViews(model);
-			}
-			
-			o2mViewMap = new HashMap<String, List<String[]>>();
-		}
-		catch(IllegalArgumentException e){
-			log.debug("Model not found: {}", model);
-		}
-	}
-	
-	private void processView(Iterator<MetaView> viewIter, Mapper mapper){
-		
-		if(!viewIter.hasNext()){
-			return;
-		}
-		
-		MetaView view = viewIter.next();
-		String name = view.getName();
-		
-		if(!viewProcessed.contains(name)){
-			
-			try {
-				ObjectViews views = XMLViews.fromXML(view.getXml());
-				
-				FormView form = (FormView) views.getViews().get(0);
-				
-				processForm(form, view.getModule(), mapper, false);
-				
-			} catch (JAXBException e) {
-				e.printStackTrace();
-			}
-		}
-		
-		processView(viewIter, mapper);
-	}
-	
-	private void addO2MViews(String model){
-		
-		o2mViewMap.remove(model);
-		
-		Set<Entry<String, List<String[]>>> entrySet = new HashSet<Map.Entry<String,List<String[]>>>();
-		entrySet.addAll(o2mViewMap.entrySet());
-		
-		for(Entry<String, List<String[]>> entry : entrySet){
-			List<String[]> views = entry.getValue();
-			String key = entry.getKey();
-			
-			for(String[] view : views){
-				if(view[0] != null){
-					menuPath = view[0].split(",");
-				}
-				if(view[1] == null){
-					view[1] = getFormName(key);
-				}
-				
-				processModel(key, view[1]);
-				if(menuPath != null){
-					menuPath = new String[]{"",""};
-				}
-			}
-		}
-		
-	}
-	
-	private void processForm(FormView form, String module, Mapper mapper, boolean addPanel){
-		
-		String name = form.getName();
-		log.debug("Processing form: {}", name);
-		
-		List<Button> buttons = form.getToolbar();
-		if(buttons != null){
-			for(Button button : buttons){
-				processButton(button, name, module, mapper);
-			}
-		}
-		
-		List<AbstractWidget> items = form.getItems();
-		if(items != null){
-			processItems(items.iterator(), name, module, mapper, addPanel);
-		}
-		
-		viewProcessed.add(name);
-	}
-	
-	private String getModuleName(AbstractWidget item, String module){
-		
-		String moduleName = item.getModuleToCheck();
-		
-		if(Strings.isNullOrEmpty(moduleName)){
-			moduleName = module;
-		}
-		
-		return moduleName;
-	}
-	
-	private void processItems(Iterator<AbstractWidget> itemIter, String view, String module, Mapper mapper, boolean addPanel){
-		
-		if(!itemIter.hasNext()){
-			return;
-		}
-		
-		AbstractWidget item = itemIter.next();
-		
-		if(item instanceof Panel){
-			processPanel((Panel) item, view, module, mapper, addPanel);
-		}
-		else if(item instanceof PanelField) {
-			processField((Field) item, view, module, mapper);
-			processPanelEditor((PanelField) item, view, module, mapper);
-		}
-		else if(item instanceof PanelInclude){
-			processPanelInclude((PanelInclude)item, module, mapper, addPanel);
-		}
-		else if(item instanceof Button){
-			processButton((Button) item, view, module, mapper);
-		}
-		else if(item instanceof PanelRelated){
-			processPanelRelated((PanelRelated) item, view, module, mapper);
-		}
-		else if (item instanceof Label) {
-			processLabel((Label) item, view, module, mapper);
-		}
-		else if (item instanceof PanelTabs) {
-			PanelTabs panelTabs = (PanelTabs)item;
-			processItems(panelTabs.getItems().iterator(), view, getModuleName(panelTabs, module), mapper, true);
-		}
-		else if (item instanceof Field){
-			processField((Field)item, view, module, mapper);
-		}
-		else if (item instanceof Dashlet){
-			processDashlet((Dashlet)item, view, module, mapper);
-		}
-		
-		processItems(itemIter, view, module, mapper, addPanel);
-	}
-	
-	private void processPanel(Panel panel, String view, String module, Mapper mapper, boolean addPanel){
-		
-		if(addPanel){
-			String className = mapper.getBeanClass().getName();
-			String title = panel.getTitle();
-	
-			if(title != null && !isChecked(className, "panel", title)){
-				
-				String[] values = new String[]{
-						getModuleName(panel, module), 
-						className, 
-						view, "Panel", 
-						panel.getName(), 
-						translate(title, "en"), 
-						translate(title, "fr"),
-						"",
-						""
-				};
-	
-				writeRow(values);
-			}
-		}
-		
-		processItems(panel.getItems().iterator(), view, module, mapper, false);
-	}
-	
-	private void processField(Field field, String view, String module, Mapper mapper){
-		
-		String name = field.getName();
-		if(name.contains(".")){
-			return;
-		}
-		String title = field.getTitle();
-		String className = mapper.getBeanClass().getName();
-		
-		if(isChecked(className, "field", name)){
-			return;
-		}
-		
-		Property property = mapper.getProperty(name);
-		String type = field.getServerType();
-		String target = field.getTarget();
-		List<?> selectionList = field.getSelectionList();
-		
-		if(property != null){
-			type = property.getType().name();
-			if(title == null){
-				title = property.getTitle();
-			}
-			String selection = property.getSelection();
-			if(selection != null && selectionList == null){
-				selectionList = MetaStore.getSelectionList(selection);
-			}
-			
-			Class<?> targetClass = property.getTarget();
-			if(targetClass != null){
-				target = targetClass.getName();
-			}
-		}
-		
-		if(target != null && type != null){
-			if(type.equals("ONE_TO_MANY") || type.equals("one-to-many")){
-				String parentView = view + "(" + translate(title, "en") + "),"
-						  			+ view + "(" + translate(title, "fr") + ")"; 
-				updateO2MViewMap(target, field.getFormView(), parentView);
-			}
-			String[] targets = target.split("\\.");
-			type = type + "(" + targets[targets.length - 1] + ")";
-		}
-		
-		String moduleName = getModuleName(field, module);
-		if(name != null){
-			String selectEN = "";
-			String selectFR = "";
-			if(selectionList != null){
-				selectEN = updateSelect(selectionList, "en");
-				selectFR = updateSelect(selectionList, "fr");
-			}
-			
-			String[] values = new String[]{moduleName, 
-					className, 
-					view, 
-					type, 
-					name, 
-					translate(title,"en"), 
-					translate(title, "fr"), 
-					selectEN, 
-					selectFR
-			};
-			
-			writeRow(values);
-		}
-
-	}
-	
-	private void updateO2MViewMap(String className, String o2mView, String parentView){
-		
-		List<String[]> views = o2mViewMap.get(className);
-		if(views == null){
-			views = new ArrayList<String[]>();
-			o2mViewMap.put(className, views);
-		}
-		if(!Strings.isNullOrEmpty(o2mView) 
-				&& !views.contains(o2mView)
-				&& !viewProcessed.contains(o2mView)){
-			views.add(new String[]{parentView, o2mView});
-		}
-		else{
-			views.add(new String[]{parentView, null});
-		}
-		
-		o2mViewMap.put(className, views);
-	}
-	
-	private String updateSelect(List<?> selection, String lang){
-		
-		List<String> titles = new ArrayList<String>();
-		for(Object object : selection){
-			Selection.Option option = (Option) object;
-			titles.add(translate(option.getTitle(), lang));
-		}
-		
-		return Joiner.on(":").join(titles);
-	}
-	
-	
-	private void processPanelEditor(PanelField panelField, String view, String module, Mapper mapper) {
-		
-		PanelEditor panelEditor = panelField.getEditor();
-
-		if(panelEditor != null){
-			String target = panelField.getTarget();
-		
-			if(target != null){
-				try{
-					Mapper targetMapper = Mapper.of(ClassUtils.findClass(target));
-					processItems(panelEditor.getItems().iterator(), view, getModuleName(panelField, module), targetMapper, false);
-				}catch(IllegalArgumentException e){
-					log.debug("Model not found: {}", target);
-				}
-			}
-			else{
-				processItems(panelEditor.getItems().iterator(), view, getModuleName(panelField, module), mapper, false);
-			}
-		}
-	}
-	
-	private void processPanelInclude(PanelInclude panelInclude, String module, Mapper mapper, boolean addPanel){
-		
-		AbstractView view = panelInclude.getView();
-		if(view != null){
-			String name = view.getName();
-			if(!viewProcessed.contains(name)){
-				processForm((FormView)view, getModuleName(panelInclude, module), mapper, addPanel);
-			}
-		}
-		else{
-			log.debug("Issue in panel include: {}", panelInclude.getName());
-		}
-	}
-	
-	private void processButton(Button button, String view, String module, Mapper mapper){
-		
-		String name = button.getName();
-		String className = mapper.getBeanClass().getName();
-		
-		if(!isChecked(className, "button", name)){
-			String title = button.getTitle();
-			String[] values = new String[]{getModuleName(button, module), 
-					className, 
-					view, 
-					"Button", 
-					name, 
-					translate(title, "en"), 
-					translate(title, "fr"),
-					"", ""
-			};
-			writeRow(values);
-		}
-	}
-	
-	private void processPanelRelated(PanelRelated panelRelated, String view, String module, Mapper mapper){
-		
-		String name = panelRelated.getName();
-		String title = panelRelated.getTitle();
-		String className = mapper.getBeanClass().getName();
-		
-		if(isChecked(className, "field", name)){
-			return;
-		}
-		
-		Property property = mapper.getProperty(name);
-		String type = panelRelated.getServerType();
-		String target = panelRelated.getTarget();
-		if(property != null){
-			type = property.getType().name();
-			if(title == null){
-				title = property.getTitle();
-			}
-			Class<?> targetClass = property.getTarget();
-			if(targetClass != null){
-				target = targetClass.getName();
-			}
-		}
-		else{
-			log.debug("No property found: {}, class: {}", name, className);
-		}
-		
-		if(target != null && type != null){
-			if(type.equals("ONE_TO_MANY") || type.equals("one-to-many")){
-				String parentView = view + "(" + translate(title, "en") + "),"
-								  + view + "(" + translate(title, "fr") + ")"; 
-				updateO2MViewMap(target, panelRelated.getFormView(), parentView);
-			}
-			String[] targets = target.split("\\.");
-			type = type + "(" + targets[targets.length - 1] + ")";
-		}
-		
-		String[] values = new String[]{getModuleName(panelRelated, module), 
-				className, 
-				view, 
-				type, 
-				name, 
-				translate(title,"en"), 
-				translate(title, "fr"), 
-				"", 
-				""
-		};
-		
-		writeRow(values);
-	}
-	
-	private void processLabel(Label label, String view, String module, Mapper mapper){
-		
-		String className = mapper.getBeanClass().getName();
-		String title = label.getTitle();
-		if(isChecked(className, "label", title)){
-			return;
-		}
-		
-		String[] values = new String[]{getModuleName(label, module), 
-				className, 
-				view, 
-				"Label", 
-				label.getName(), 
-				translate(title,"en"), 
-				translate(title, "fr"), 
-				"", 
-				""
-		};
-		
-		writeRow(values);
-	}
-	
-	
-	private void processDashlet(Dashlet dashlet, String view, String module, Mapper mapper){
-		
-		String className = mapper.getBeanClass().getName();
-		String title = dashlet.getTitle();
-
-		if(title != null && !isChecked(className, "dashlet", title)){
-			
-			String[] values = new String[]{
-					getModuleName(dashlet, module), 
-					className, 
-					view, "Dashlet", 
-					dashlet.getName(), 
-					translate(title, "en"), 
-					translate(title, "fr"),
-					"",
-					""
-			};
-
-			writeRow(values);
-		}
-		
-	}
 
 	private void updateDocMap(MetaFile docFile){
 		
@@ -832,10 +532,14 @@ public class ViewDocExportService {
 			FileInputStream inSteam = new FileInputStream(doc);
 			XSSFWorkbook book = new XSSFWorkbook(inSteam);
 			
-			for(XSSFSheet sheet : book){
+			oldBook = book;
 
-				for(Row row : sheet){
-					
+			for(XSSFSheet sheet : book){
+				String lastKey = sheet.getSheetName();
+				Iterator<Row> rowIter = sheet.rowIterator();
+				while(rowIter.hasNext()){
+					Row row = rowIter.next();
+
 					String key = null;
 					if(row.getRowNum() == 0){
 						key = sheet.getSheetName();
@@ -845,20 +549,26 @@ public class ViewDocExportService {
 						if(Strings.isNullOrEmpty(name)){
 							name =  getCellValue(row.getCell(5));
 						}
-						String[] obj = getCellValue(row.getCell(1)).split("\\.");
-						key =  obj[obj.length-1] + "," + getCellValue(row.getCell(3)) +  "," +  name;
+						
+						String type = getCellValue(row.getCell(3));
+						if(type == null){
+							continue;
+						}
+						type = type.trim();
+						key =  getCellValue(row.getCell(1))
+							   + "," + getCellValue(row.getCell(2)) 
+							   + "," + type 
+							   + "," +  name;
+						
+						if(addComment(lastKey, type, row)){
+							continue;
+						}
+						else{
+							lastKey = key;
+						}
 					}
 					
-					List<String> values = new ArrayList<String>();
-					int count = 11;
-					short lastCellNo = row.getLastCellNum();
-					while(count < lastCellNo){
-						values.add(getCellValue(row.getCell(count)));
-						count++;
-					};
-
-					String[] vals = new String[]{};
-					docMap.put(key, values.toArray(vals));
+					docMap.put(key, row.getRowNum());
 				}
 			}
 			
@@ -907,5 +617,32 @@ public class ViewDocExportService {
 		return metaFile;
 	}
 	
+	
+	private boolean addComment(String lastKey, String type, Row row){
+		
+		String mType = type;
+		if(type.contains("(")){
+			mType = type.substring(0, type.indexOf("("));
+			mType = mType.replace("-", "_");
+		}
+		
+		if(!fieldTypes.contains(mType)){
+			Cell firstCell = row.getCell(0);
+			if(firstCell != null){
+				List<Integer> rowIndexs = new ArrayList<Integer>();
+				if(commentMap.containsKey(lastKey)){
+					rowIndexs = commentMap.get(lastKey);
+				}
+				
+				rowIndexs.add(row.getRowNum());
+				
+				commentMap.put(lastKey, rowIndexs);
+				
+				return true;
+			}
+		}
+		
+		return false;
+	}
 	
 }

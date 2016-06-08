@@ -8,7 +8,7 @@
     </grid>
 
     <form name="purchase-config-form" title="Purchase configuration" model="com.axelor.apps.purchase.db.PurchaseConfig" onNew="action-purchase-config-record-default">
-		<panel >
+		<panel name="main" >
 		  <field name="company" form-view="company-form" colSpan="4" grid-view="company-grid"/>
 		  <field name="purchaseOrderInAtiSelect"/>
 		  <field name="priceDisplay"/>

@@ -10,7 +10,7 @@
     </grid>
     
     <form name="account-chart-form" title="Account Chart" model="com.axelor.apps.account.db.AccountChart">
-        <panel title="General">
+        <panel name="general" title="General">
 	        <field name="name" />
 	        <field name="code" readonly="true"/>
 	        <field name="countryCode" readonly="true"/>

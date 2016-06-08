@@ -12,7 +12,7 @@
 	    <toolbar>
 			<button name="viewProducts" title="View Products" onClick="action-view-product-by-family"/>
 		</toolbar>
-		<panel>
+		<panel name="main" >
 	        <field name="name"/>
 	        <field name="code" x-bind="{{code|uppercase}}"/>
 	        <panel-related field="accountManagementList" grid-view="account-management-product-grid" form-view="account-management-product-form"

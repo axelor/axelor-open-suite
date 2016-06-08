@@ -10,7 +10,7 @@
     </grid>
     
 	<form name="cost-sheet-group-form" title="Cost sheet group" model="com.axelor.apps.production.db.CostSheetGroup" width="large">
-	  <panel>
+	  <panel name="main">
 	    <field name="code"/>
   		<field name="name"/>
   		<field name="costTypeSelect"/>

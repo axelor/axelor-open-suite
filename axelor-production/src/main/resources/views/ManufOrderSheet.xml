@@ -9,10 +9,10 @@
     </grid>
     
 	<form name="manuf-order-sheet-form" title="Manufacturing order" model="com.axelor.apps.production.db.OperationOrder" width="large">
-	  <panel colSpan="12">
+	  <panel name="main" colSpan="12">
 	    <field name="picture" showTitle="false" widget="Image"/>
 	  </panel>  
-	  <panel title="Observations (état des filetages, aspect général, état des surfaces d'appuis...) :" colSpan="12">
+	  <panel name="observation" title="Observations (état des filetages, aspect général, état des surfaces d'appuis...) :" colSpan="12">
 	    <field name="observation" showTitle="false" colSpan="12"/>
 	  </panel>
 	  <panel-related field="manufOrderSheetLineList" title="Conformité" form-view="manuf-order-sheet-line-form" grid-view="manuf-order-sheet-line-grid" />
@@ -22,7 +22,7 @@
 	</form>
     
     <form name="manuf-order-sheet-line-form" model="com.axelor.apps.production.db.ManufOrderSheetLine" title="ManufOrderSheetLine">
-		<panel>
+		<panel name="main">
 			<field name="operationOrder" form-view="operation-order-form" grid-view="operation-order-grid"/>
 			<field name="product" form-view="product-form"  grid-view="product-grid"/>
 			<field name="diameter"/>

@@ -22,18 +22,21 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.axelor.apps.ReportFactory;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Wizard;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.administration.GeneralService;
+import com.axelor.apps.hr.db.Expense;
 import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.db.repo.TimesheetRepository;
+import com.axelor.apps.hr.report.IReport;
+import com.axelor.apps.hr.service.HRMenuTagService;
 import com.axelor.apps.hr.service.timesheet.TimesheetService;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
@@ -62,6 +65,8 @@ public class TimesheetController {
 	private ProductRepository productRepo;
 	@Inject
 	private ProjectTaskRepository ProjectTaskRepo;
+	@Inject
+	private HRMenuTagService hrMenuTagService;
 	
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 	
@@ -159,12 +164,19 @@ public class TimesheetController {
 	}
 
 	public void validateTimesheet(ActionRequest request, ActionResponse response){
-		List<Timesheet> timesheetList = Query.of(Timesheet.class).filter("self.user.employee.manager = ?1 AND self.company = ?2 AND self.statusSelect = 2",AuthUtils.getUser(),AuthUtils.getUser().getActiveCompany()).fetch();
+		
+		List<Timesheet> timesheetList = Lists.newArrayList();
+		if (AuthUtils.getUser().getEmployee() != null && AuthUtils.getUser().getEmployee().getHrManager()){
+			timesheetList = Query.of(Timesheet.class).filter("self.company = ?1 AND self.statusSelect = 2",AuthUtils.getUser().getActiveCompany()).fetch();
+		}else{
+			 timesheetList = Query.of(Timesheet.class).filter("self.user.employee.manager = ?1 AND self.company = ?2 AND self.statusSelect = 2",AuthUtils.getUser(),AuthUtils.getUser().getActiveCompany()).fetch();
+		}
+		
 		List<Long> timesheetListId = new ArrayList<Long>();
 		for (Timesheet timesheet : timesheetList) {
 			timesheetListId.add(timesheet.getId());
 		}
-		if(AuthUtils.getUser().getEmployee() != null && AuthUtils.getUser().getEmployee().getManager() == null){
+		if(AuthUtils.getUser().getEmployee() != null && AuthUtils.getUser().getEmployee().getManager() == null && !AuthUtils.getUser().getEmployee().getHrManager()){
 			timesheetList = Query.of(Timesheet.class).filter("self.user = ?1 AND self.company = ?2 AND self.statusSelect = 2",AuthUtils.getUser(),AuthUtils.getUser().getActiveCompany()).fetch();
 		}
 		for (Timesheet timesheet : timesheetList) {
@@ -327,5 +339,36 @@ public class TimesheetController {
 		timesheet = Beans.get(TimesheetRepository.class).find(timesheet.getId());
 		
 		response.setValue("timesheetLineList", timesheetService.computeVisibleDuration(timesheet));
+	}
+	
+	/* Count Tags displayed on the menu items */
+	public String timesheetValidateTag() { 
+		Timesheet timesheet= new Timesheet();
+		logger.debug("Timesheet methode {}",timesheet.getClass());
+		return hrMenuTagService.CountRecordsTag(timesheet);
+	}
+	
+	public void printTimesheet(ActionRequest request, ActionResponse response) throws AxelorException {
+		
+		Timesheet timesheet = request.getContext().asType(Timesheet.class);
+		
+		User user = AuthUtils.getUser();
+		String language = user != null? (user.getLanguage() == null || user.getLanguage().equals(""))? "en" : user.getLanguage() : "en"; 
+		
+		String name = I18n.get("Timesheet") + " " + timesheet.getFullName()
+												.replace("/", "-");
+		
+		String fileLink = ReportFactory.createReport(IReport.TIMESHEET, name)
+				.addParam("TimesheetId", timesheet.getId())
+				.addParam("Locale", language)
+				.addModel(timesheet)
+				.generate()
+				.getFileLink();
+
+		logger.debug("Printing "+name);
+	
+		response.setView(ActionView
+				.define(name)
+				.add("html", fileLink).map());	
 	}
 }

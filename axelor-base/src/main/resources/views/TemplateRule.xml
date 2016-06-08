@@ -9,7 +9,7 @@
     </grid>
     
     <form name="template-rule-form" title="Template rule" model="com.axelor.apps.base.db.TemplateRule" onNew="action-template-rule-record-new" width="large">
-    	<panel>
+    	<panel name="main">
 	        <field name="name"/>
 	        <field name="metaModel" form-view="meta-model-form" grid-view="meta-model-grid"/>
 	        <panel-related field="templateRuleLineList" colSpan="12" form-view="template-rule-line-form" grid-view="template-rule-line-grid"/>

@@ -14,7 +14,7 @@
 	    <toolbar>
 			<button name="viewProducts" title="View Products" onClick="action-view-product-by-category"/>
 		</toolbar>
-		<panel>
+		<panel name="main" >
         	<field name="name"/>
         	<field name="code" x-bind="{{code|uppercase}}"/>
 	        <field name="productFamily"  form-view="product-family-form" grid-view="product-family-grid"/>

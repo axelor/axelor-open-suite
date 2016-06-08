@@ -14,7 +14,7 @@
     </grid>
     
     <form name="period-form" title="Period" model="com.axelor.apps.base.db.Period" onNew="action-period-record-default" width="large">
-	    <panel readonlyIf="statusSelect == 2">
+	    <panel name="main" readonlyIf="statusSelect == 2">
 	        <field name="name"/>
 	    	<field name="code" x-bind="{{code|uppercase}}" colSpan="3"/>
 			<field name="company" widget="SuggestBox" colSpan="3" form-view="company-form" grid-view="company-grid"/>

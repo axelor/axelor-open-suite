@@ -10,7 +10,7 @@
     </grid>
     
     <form name="account-category-line-form" title="Account Category Line" model="com.axelor.apps.account.db.AccountCategoryLine">
-        <panel title="General">
+        <panel name="general" title="General">
 	        <field name="accountCategory" form-view="account-category-form" grid-view="account-category-grid"/>
 	        <field name="sign"/>
 	        <field name="category" form-view="account-category-form" grid-view="account-category-grid"/>

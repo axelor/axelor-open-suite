@@ -11,7 +11,7 @@
 	<form name="project-my-planning-form" title="Project Planning" model="com.axelor.apps.project.db.ProjectPlanning" 
 		onLoad="action-project-planning-record-default,action-project-planning-attrs-title-columns,action-project-planning-method-populate"
 		canNew="false" canCopy="false" width="large">
-		<panel>
+		<panel name="main" >
 			<field name="year"/>
 			<field name="week"/>
 			<button-group colOffset="10" colSpan="2">
@@ -34,7 +34,7 @@
 	<form name="project-my-team-planning-form" title="Project Planning" model="com.axelor.apps.project.db.ProjectPlanning"
 		onLoad="action-project-planning-record-default,action-project-planning-attrs-title-columns,action-project-planning-method-populate" 
 		canNew="false" canCopy="false" width="large">
-		<panel>
+		<panel name="main" >
 			<field name="year"/>
 			<field name="week"/>
 			<button-group colOffset="10" colSpan="2">

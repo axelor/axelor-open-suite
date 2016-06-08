@@ -8,10 +8,10 @@
 	
 	<form name="scheduler-form" title="Scheduler" model="com.axelor.apps.base.db.Scheduler" 
 		onSave="scheduler-validate-infos" width="large">
-		<panel>
+		<panel name="main">
 	    	<field name="name"/>
 	    	<spacer/>
-    		<panel title="Frequency" colSpan="12">
+    		<panel name="frequency" title="Frequency" colSpan="12">
 	    		<field name="daily"  onChange="scheduler-onChange-daily" colSpan="3"/>
 	    		<field name="weekly" onChange="scheduler-onChange-weekly" colSpan="3"/>
 	    		<field name="monthly" onChange="scheduler-onChange-monthly" colSpan="3"/>

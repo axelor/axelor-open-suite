@@ -77,6 +77,7 @@ public class AccountingSituationService	{
 
 					AccountingSituation accountingSituation = this.createAccountingSituation(company);
 					accountingSituation.setPartner(partner);
+					accountingSituation.setCompanyBankDetails(company.getDefaultBankDetails());
 					accountingSituationList.add(accountingSituation);
 					
 				}

@@ -17,7 +17,7 @@
     
      <form model="com.axelor.apps.account.db.AssistantReportInvoice" title="Sale Invoices Details" name="print-sale-invoices-details-form"
     	onNew="action-print-invoices-details-record-on-new-sales">
-    	<panel>
+    	<panel name="main" >
     		<field name="fromDate" required="true"/>
     		<field name="toDate" required="true"/>
     		<field name="company" required="true"/>
@@ -26,7 +26,7 @@
     		<label title="OR"/>
     		<field name="productCategorySet" colSpan="12" widget="TagSelect"/>
     	</panel>
-    	<panel title="Options" sidebar="true">
+    	<panel name="options" title="Options" sidebar="true">
     		<field name="graphTypeSelect" widget="RadioSelect"/>
     		<field name="formatSelect" widget="RadioSelect"/>
     		<button name="printReport" title="Print" onClick="save,action-print-invoices-details-method-print-sales"/>
@@ -36,7 +36,7 @@
     
     <form model="com.axelor.apps.account.db.AssistantReportInvoice" title="Purchase Invoices Details" name="print-purchase-invoices-details-form"
     	onNew="action-print-invoices-details-record-on-new-purchases">
-    	<panel>
+    	<panel name="main" >
     		<field name="fromDate" required="true"/>
     		<field name="toDate" required="true"/>
     		<field name="company" required="true"/>
@@ -45,7 +45,7 @@
     		<label title="OR"/>
     		<field name="productCategorySet" colSpan="12" widget="TagSelect"/>
     	</panel>
-    	<panel title="Options" sidebar="true">
+    	<panel name="options" title="Options" sidebar="true">
     		<field name="graph" colSpan="5"/>
     		<label title="OR" colSpan="2"/>
     		<field name="chart" colSpan="5" title="Table"/>

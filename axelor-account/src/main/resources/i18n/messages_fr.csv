@@ -1317,6 +1317,7 @@
 "\n (Débit %s compte %s - Crédit %s compte %s)",,,
 "\t* %s Facture(s) traitée(s)\n",,,
 "\t* %s Situation(s) compable(s) traitée(s)\n",,,
+"account-general-form",,,
 "actions","actions",,
 "anomalies générées",,,
 "facture(s) validée(s)",,,

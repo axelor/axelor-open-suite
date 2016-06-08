@@ -5,8 +5,7 @@
 	
 	<form name="sale-order-form" title="Sale order" model="com.axelor.apps.sale.db.SaleOrder" id="business-project-sale-order-form"
 	onNew="action-group-supplychain-saleorder-onnew" onSave="action-sale-order-method-advance-payment-change"
-	onLoad="action-group-businness-project-saleorder-onload">
-		
+	onLoad="action-group-businness-project-saleorder-onload">		
 		<panel-include view="sale-order-form" from="axelor-sale"/>
 	</form>
 	

@@ -23,7 +23,6 @@ import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.sale.db.ISaleOrder;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.service.SaleOrderService;
-import com.axelor.db.JPA;
 import com.axelor.inject.Beans;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
@@ -65,8 +64,16 @@ public class SaleOrderManagementRepository extends SaleOrderRepository {
 	
 	public void computeSeq(SaleOrder saleOrder){
 		try{
-			if((saleOrder.getSaleOrderSeq() == null || Strings.isNullOrEmpty(saleOrder.getSaleOrderSeq())) && !saleOrder.getTemplate())
-				saleOrder.setSaleOrderSeq(Beans.get(SaleOrderService.class).getSequence(saleOrder.getCompany()));
+			
+			if((saleOrder.getSaleOrderSeq() == null || Strings.isNullOrEmpty(saleOrder.getSaleOrderSeq())) && !saleOrder.getTemplate()){
+				
+				if ( saleOrder.getStatusSelect() == ISaleOrder.STATUS_DRAFT || saleOrder.getStatusSelect() == ISaleOrder.STATUS_FINALIZE ){
+					saleOrder.setSaleOrderSeq("*" + saleOrder.getId().toString());
+				}else if(saleOrder.getVersionNumber() == 1) {
+					saleOrder.setSaleOrderSeq(Beans.get(SaleOrderService.class).getSequence(saleOrder.getCompany()));
+				}
+			}
+				
 		}
 		catch (Exception e) {
 			throw new PersistenceException(e.getLocalizedMessage());

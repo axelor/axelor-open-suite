@@ -5,7 +5,7 @@
 
 	<form name="stock-move-multi-sale-invoicing-form" model="com.axelor.apps.stock.db.StockMove" title="Mass Cust. Stock Move Invoicing" >
 		<panel-related field="$customerStockMoveToInvoice" title="Customer Stock Move to invoice" colSpan="12" type="many-to-many" target="com.axelor.apps.stock.db.StockMove" domain="self.statusSelect = 3 AND self.typeSelect = 2" canNew="false" canEdit="false"/>
-		<panel sidebar="true" title="Actions">
+		<panel sidebar="true" name="actions" title="Actions">
 			<button name="generateInvoiceConcatStockMove" title="Generate single invoice" onClick="action-validate-supplychain-outgoing-stock-move-check-selection,action-supplychain-stock-move-method-generate-concat-invoice"/>
 			<button name="generateMultiInvoice" title="Generate one invoice per outgoing stockMove" onClick="action-validate-supplychain-outgoing-stock-move-check-selection,action-supplychain-stock-move-method-generate-multi-invoice"/>
 	  	</panel>
@@ -13,14 +13,14 @@
     
     <form name="stock-move-multi-purchase-invoicing-form" model="com.axelor.apps.stock.db.StockMove" title="Mass Suppl. Stock Move Invoicing" >
 		<panel-related field="$supplierStockMoveToInvoice" title="Supplier Stock Move to invoice" colSpan="12" type="many-to-many" target="com.axelor.apps.stock.db.StockMove" domain="self.statusSelect = 3 AND self.typeSelect = 3" canNew="false" canEdit="false"/>
-		<panel sidebar="true" title="Actions">
+		<panel sidebar="true" name="actions" title="Actions">
 			<button name="generateInvoiceConcatStockMove" title="Generate single invoice" onClick="action-validate-supplychain-incoming-stock-move-check-selection,action-supplychain-stock-move-method-generate-concat-invoice"/>
 			<button name="generateMultiInvoice" title="Generate one invoice per incoming stockMove" onClick="action-validate-supplychain-incoming-stock-move-check-selection,action-supplychain-stock-move-method-generate-multi-invoice"/>
 	  	</panel>
     </form>
     
     <form name="stock-move-supplychain-concat-invoice-confirm-form" model="com.axelor.apps.stock.db.StockMove" title="Confirmation" onNew="action-record-load-dummy-field-generate-invoice">
-		<panel>
+		<panel name="main" >
 			<field name="$paymentCondition" title="Payment condition" target="com.axelor.apps.account.db.PaymentCondition" colSpan="12" width="200px" widget="SuggestBox" showIf="paymentConditionToCheck"/>
 			<field name="$paymentMode" title="Payment mode" target="com.axelor.apps.account.db.PaymentMode" colSpan="12" width="200px" widget="SuggestBox" showIf="paymentModeToCheck"/>
 			<field name="$contactPartner" title="Contact partner" target="com.axelor.apps.base.db.Partner" domain="self.isContact IS TRUE AND EXISTS (SELECT 1 FROM Partner part WHERE part.id = :partnerId AND self.id IN (SELECT id FROM part.contactPartnerSet))" colSpan="12" width="200px" widget="SuggestBox" showIf="contactPartnerToCheck"/>

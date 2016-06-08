@@ -30,7 +30,7 @@
 		    <button name="copy" title="" hidden="true"/>
 		    <button name="cancel" title="" hidden="true"/>
 		</toolbar>
-		<panel>
+		<panel name="main" >
 	        <field name="date"/>
 	        <field name="internalUser"/>
 	        <field name="origin" />

@@ -13,7 +13,7 @@
     
     <form name="year-form" title="Year" model="com.axelor.apps.base.db.Year"
     onNew="action-year-record-new" onSave="action-year-check-date,action-civil-year-check-date">
-    	<panel>
+    	<panel name="main" >
 	        <field name="name"/>
 	        <field name="code" x-bind="{{code|uppercase}}"/>
 	        <field name="fromDate"/>

@@ -58,7 +58,7 @@
     
 	<form name="stock-move-form" title="Stock move" model="com.axelor.apps.stock.db.StockMove"
 		 onLoad="action-stock-move-attrs-typeselect-change" onNew="action-group-stock-stockmove-onnew">
-	  <panel>
+	  <panel name="main">
 		  <field name="typeSelect" title="Type" colSpan="4" onChange="action-stock-move-set-default-locations, action-stock-move-attrs-typeselect-change" readonlyIf="statusSelect != 1"/>
 		  <field name="statusSelect" widget="NavSelect" colSpan="8"/>
 	  </panel>
@@ -89,14 +89,14 @@
 	  <panel-tabs>
 	   
 	    <panel-related name="stockMoveLineListPanel" title="Stock move line" field="stockMoveLineList" onChange="action-stock-move-method-compute" readonlyIf="statusSelect == 3" form-view="stock-move-line-form" grid-view="stock-move-line-grid"/>
-	    <panel title="Configuration">
+	    <panel name="configuration" title="Configuration">
 	      <field name="saleOrder" onChange="action-stock-move-attrs-typeselect-change" if-module="axelor-supplychain" readonlyIf="statusSelect == 3 || statusSelect == 4" form-view="sale-order-form" grid-view="sale-order-grid"/>
 	      <field name="purchaseOrder" if-module="axelor-supplychain" readonlyIf="statusSelect == 3 || statusSelect == 4" form-view="purchase-order-form" grid-view="purchase-order-grid"/>
 	      <field name="invoice" if-module="axelor-supplychain" readonlyIf="statusSelect == 3 || statusSelect == 4" form-view="invoice-form" grid-view="invoice-grid"/>
 	    </panel>
 	  </panel-tabs>
 	  
-	  <panel sidebar="true" title="Actions">
+	  <panel sidebar="true" name="actions" title="Actions">
 			<button name="plan" title="Plan" icon="fa-calendar" showIf="statusSelect == 1" onClick="action-group-stock-stockmove-plan-click"/>
 			<button name="realize" title="Realize" icon="fa-check" showIf="statusSelect == 2" prompt="Are you sure you want to realize this stock move?" onClick="action-group-stock-stockmove-realize-click"/>
 			<button name="cancel" title="Cancel" icon="fa-times-circle" showIf="statusSelect == 1 || statusSelect == 2" onClick="action-group-stock-stockmove-cancel-click"/>
@@ -107,7 +107,7 @@
 			<button name="viewDirection" title="View Direction" help="View Direction" showIf="typeSelect == 2 &amp;&amp; statusSelect!=4"   icon="fa-location-arrow" onClick="action-stock-move-validate-address,action-stock-move-method-view-direction"/>
 	  </panel>
 	  
-	   <panel sidebar="true" title="Split/Ship/Receive" showIf="statusSelect == 1 || statusSelect == 2" >
+	   <panel sidebar="true" name="splitShipReceive" title="Split/Ship/Receive" showIf="statusSelect == 1 || statusSelect == 2" >
 		  <button name="splitInto2" title="Split into 2" onClick="save,action-stock-move-split-into-2"/>
 	      <button name="splitByUnit" title="Split by unit" onClick="save,action-stock-move-method-split-stock-move-lines-unit"/>
 	      <button name="specialSplit" title="Special split"  onClick="save,action-stock-move-wizard-special-split"/>
@@ -127,7 +127,7 @@
 	</form>
     
     <form name="stock-move-wizard-special-split-form" title="Special split" model="com.axelor.apps.base.db.Wizard">
-    	<panel>
+    	<panel name="main">
 	        <field name="splitQty" widget="INTEGER" title="Split in Qty of"/>
 	        <button name="split" title="Split" onClick="action-stock-move-method-split-stock-move-lines-speical"/>
         </panel>
@@ -145,7 +145,7 @@
 	</action-view>
 	
 	<form name="stock-move-split-into-2-form" title="Split into 2" model="com.axelor.apps.stock.db.StockMove" width="large">
-    	<panel>
+    	<panel name="main">
 	        <panel-related field="stockMoveLineList" colSpan="12" grid-view="stock-move-line-split-grid" canEdit="true" form-view="stock-move-line-form"/>
 	        <button name="split" title="Split" onClick="action-stock-move-method-split-into-2"/>
         </panel>

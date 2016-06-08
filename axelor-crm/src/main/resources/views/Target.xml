@@ -69,20 +69,20 @@
 <!-- 	</form> -->
 	
 <form onLoad="action-target-method-update,save" onSave="action-target-validate" name="target-form" title="Target" model="com.axelor.apps.crm.db.Target" width="large">
-  <panel title="Information">
+  <panel name="information" title="Information">
     <field name="name"/>
     <field name="code"/>
     <field name="user" showIf="team == null" form-view="user-form" grid-view="user-grid"/>
     <field name="team" showIf="user == null" form-view="team-form" grid-view="team-grid" if="__config__.general.getTeamManagement()"/>
   </panel>
-  <panel title="Period">
+  <panel name="period" title="Period">
     <field name="periodTypeSelect"/>
     <field name="fromDate"/>
     <field name="toDate"/>
   </panel>
   <panel-tabs>
-    <panel title="Opportunity">
-    <panel title="Target" colSpan="6">
+    <panel name="opportunity" title="Opportunity">
+    <panel name="target" title="Target" colSpan="6">
      <field name="opportunityAmountWonTarget" colSpan="10"/>
      <label title="Vs" colSpan="2"/>
      <field name="opportunityCreatedNumberTarget" colSpan="10"/>
@@ -91,7 +91,7 @@
       <label title="Vs" colSpan="2"/>
     </panel>
     
-    <panel title="Real" colSpan="6">
+    <panel name="real" title="Real" colSpan="6">
    		<label/>
         <field name="opportunityAmountWon" showTitle="false" colSpan="12"/>
         <label/>
@@ -101,14 +101,14 @@
     </panel>
   </panel>  
   
-  <panel title="Events">
+  <panel name="events" title="Events">
     <panel title="Target" colSpan="6">
         <field name="callEmittedNumberTarget" colSpan="10"/>
         <label title="Vs" colSpan="2"/>
     	<field name="meetingNumberTarget" colSpan="10"/>
       <label title="Vs" colSpan="2"/>
     </panel>
-    <panel title="Real" colSpan="6">
+    <panel name="real" title="Real" colSpan="6">
     	<label/>
         <field name="callEmittedNumber" showTitle="false" colSpan="12"/>
         <label/>

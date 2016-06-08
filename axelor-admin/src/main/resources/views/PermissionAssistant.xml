@@ -11,14 +11,14 @@
    </grid> 
     
    <form name="permission-assistant-form" title="Permission Assistant" model="com.axelor.auth.db.PermissionAssistant">
-    <panel>
+    <panel name="main" >
       <panel-related field="groupSet"/>
       <panel-related field="objectSet"/>
       <field name="metaFile" colSpan="6" widget="binary-link" />
       <field name="language" />
       <button name="createFile" title="Create file" colSpan="3" onClick="save,action-permission-method-create-file"/>
       <button name="importPermissions" title="Import permissions" readonlyIf="metaFile == null" colSpan="3" onClick="save,action-permission-method-import-permissions,save"/>
-      <panel title="Details" readonly="true" colSpan="12">
+      <panel name="details" title="Details" readonly="true" colSpan="12">
         <field name="importDate" colSpan="4"/>
         <field name="createdBy" colSpan="4"/>
         <field name="updatedBy" colSpan="4"/>

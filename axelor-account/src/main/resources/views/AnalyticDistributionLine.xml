@@ -14,7 +14,7 @@
     </grid>
     
     <form name="analytic-distribution-line-form" title="Analytic distribution line" model="com.axelor.apps.account.db.AnalyticDistributionLine"  >
-        <panel >
+        <panel name="main" >
 	        <field name="analyticAxis" form-view="analytic-axis-form" grid-view="analytic-axis-grid"/>
 	        <field name="analyticAccount" grid-view="analytic-account-grid" form-view="analytic-account-form"/>
 	        <field name="percentage" colSpan="4" onChange="action-analytic-distribution-line-method-compute-amount"/>
@@ -33,7 +33,7 @@
     </grid>
     
     <form name="analytic-distribution-line-model-form" title="Analytic distribution line" model="com.axelor.apps.account.db.AnalyticDistributionLine"  >
-        <panel >
+        <panel name="main" >
 	        <field name="analyticAxis" form-view="analytic-axis-form" grid-view="analytic-axis-grid"/>
 	        <field name="analyticAccount" grid-view="analytic-account-grid" form-view="analytic-account-form"/>
 	        <field name="percentage"/>

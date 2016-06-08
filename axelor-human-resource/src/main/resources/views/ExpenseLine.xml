@@ -17,7 +17,7 @@
 	<form name="expense-line-form" title="Expense line" model="com.axelor.apps.hr.db.ExpenseLine"
 		onNew="action-expense-line-default"
 		onSave="action-expense-line-validate-expenseDate" width="large">
-		<panel>
+		<panel name="main">
 			<field name="projectTask" requiredIf="toInvoice" domain="self.imputable = true" form-view="project-task-form" grid-view="project-task-grid"/>
 			<field name="expenseType" domain="self.expense = true" widget="SuggestBox" form-view="product-expense-form" grid-view="product-expense-grid"/>
 			<field name="expenseDate" onChange="action-expense-line-validate-expenseDate"/>
@@ -30,7 +30,7 @@
 			<field name="comments" colSpan="12"/>
 			<field name="user" hidden="true" form-view="user-form" grid-view="user-grid"/>
 		</panel>
-		<panel title="Analytic distribution" if="__config__.general.getManageAnalyticAccounting()" onTabSelect="action-expense-line-attrs-read-only-distribution-lines">
+		<panel name="analyticDistribution" title="Analytic distribution" if="__config__.general.getManageAnalyticAccounting()" onTabSelect="action-expense-line-attrs-read-only-distribution-lines">
 			<field name="analyticDistributionTemplate" if="__config__.general.getAnalyticDistributionTypeSelect() == 1"/>
 			<button name="generateDistributionLinesButton" onClick="action-expense-line-method-create-distribution" title="Generate distribution lines" showIf="analyticDistributionTemplate != null" if="__config__.general.getAnalyticDistributionTypeSelect() == 1"/>
 			<panel-related field="analyticDistributionLineList" grid-view="analytic-distribution-line-grid" form-view="analytic-distribution-line-form" colSpan="12"/>

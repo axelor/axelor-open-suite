@@ -21,7 +21,7 @@
 			<label name="or" title="Or" colSpan="1" hideIf="product != null || productCategory != null"/>
 			<field name="productCategory" colSpan="5" form-view="product-category-form" grid-view="product-category-grid" requiredIf="product == null" hideIf="product != null"/>
 		</panel>
-		<panel title="Calculation method" colSpan="12" >
+		<panel name="calculationMethod" title="Calculation method" colSpan="12" >
 			<field name="typeSelect" colSpan="12" onChange="action-price-list-line-record-type-select, action-price-list-line-attrs-amount-title-change" />
 			<field name="amountTypeSelect" colSpan="12" hideIf="typeSelect == 3" onChange="action-price-list-line-attrs-amount-percent-title-change"/>
 			<field name="amount" colSpan="12" hideIf="amountTypeSelect == 3"/>
