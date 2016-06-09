@@ -17,10 +17,14 @@
  */
 package com.axelor.apps.base.service.message;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
+import javax.mail.MessagingException;
+
+import org.joda.time.LocalDateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -109,16 +113,20 @@ public class MessageServiceBaseImpl extends MessageServiceImpl {
 
 	}
 
+	
 	@Override
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public Message sendMessage(Message message) throws AxelorException  {
-
-		super.sendMessage(message);
-
-		if( !message.getStatusSelect().equals( MessageRepository.STATUS_SENT ) ){ return message; }
-
-		message.setSentDateT( generalService.getTodayDateTime().toLocalDateTime() );
+	@Transactional(rollbackOn = { MessagingException.class, IOException.class, Exception.class })
+	public Message sendByEmail(Message message) throws MessagingException, IOException, AxelorException  {
+				
+		if(generalService.getGeneral().getActivateSendingEmail())  {  return super.sendByEmail(message);  }
+		
+		message.setSentByEmail(true);
+		message.setStatusSelect(MessageRepository.STATUS_SENT);
+		message.setSentDateT(LocalDateTime.now());
+		message.setSenderUser(AuthUtils.getUser());
+		
 		return messageRepo.save(message);
+		
 	}
 
 }

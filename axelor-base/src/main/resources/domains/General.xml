@@ -41,6 +41,8 @@
 		
 		<boolean name="manageDirectDebitPayment" title="Manage direct debit payment" default="true" />
 		
+		<boolean name="activateSendingEmail" title="Activate sending email" default="true"/>
+		
 		<extra-code>
 	   		<![CDATA[
 	   			public static final Integer DISCOUNT_SEPARATE = 1;
