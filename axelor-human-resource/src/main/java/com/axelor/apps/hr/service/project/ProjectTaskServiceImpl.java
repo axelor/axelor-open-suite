@@ -18,20 +18,24 @@ public class ProjectTaskServiceImpl implements ProjectTaskService {
 	
 	@Inject
 	protected GeneralService generalService;
+
+	@Inject
+	protected EmployeeService employeeService;	
 	
 	@Transactional(rollbackOn={Exception.class})
 	public List<TimesheetLine> computeVisibleDuration(ProjectTask project){
 		List<TimesheetLine> timesheetLineList = project.getTimesheetLineList();
 		Employee timesheetEmployee;
 		BigDecimal employeeDailyWorkHours;
+		BigDecimal employeeDailyWorkHoursGeneral = generalService.getGeneral().getDailyWorkHours();
 		
 		for(TimesheetLine timesheetLine : timesheetLineList){
 			timesheetEmployee = timesheetLine.getUser().getEmployee();
 			if (timesheetEmployee == null || timesheetEmployee.getDailyWorkHours() == null)
-				employeeDailyWorkHours = generalService.getGeneral().getDailyWorkHours();
+				employeeDailyWorkHours = employeeDailyWorkHoursGeneral;
 			else
 				employeeDailyWorkHours = timesheetEmployee.getDailyWorkHours();
-			timesheetLine.setVisibleDuration(Beans.get(EmployeeService.class).getUserDuration(timesheetLine.getDurationStored(), employeeDailyWorkHours, false));
+			timesheetLine.setVisibleDuration(employeeService.getUserDuration(timesheetLine.getDurationStored(), employeeDailyWorkHours, false));
 		}
 			
 
