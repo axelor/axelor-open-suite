@@ -26,7 +26,8 @@ package com.axelor.apps.hr.exception;
 public interface IExceptionMessage {
 
 	static final String HR_CONFIG_1 = /*$$(*/ "Please configure informations for human resources for company %s" /*)*/;
-
+	static final String HR_CONFIG_TEMPLATES = /*$$(*/ "No email sent, please configure HR config for company %s"/*)*/ ;
+	
 	static final String TIMESHEET_FROM_DATE = /*$$(*/ "Merci de rentrer une date de début pour la génération"/*)*/ ;
 	static final String TIMESHEET_TO_DATE = /*$$(*/ "Merci de rentrer une date de fin pour la génération"/*)*/ ;
 	static final String TIMESHEET_PRODUCT = /*$$(*/ "Merci de rentrer un produit"/*)*/ ;
@@ -38,7 +39,6 @@ public interface IExceptionMessage {
 	static final String LEAVE_LINE = /*$$(*/ "il n'y a pas de ligne de créée sur l'employé %s pour la raison %s"/*)*/ ;
 	static final String LEAVE_ALLOW_NEGATIVE_VALUE_EMPLOYEE = /*$$(*/ "L'employé %s n'est pas autorisé à prendre des congés en avance"/*)*/ ;
 	static final String LEAVE_ALLOW_NEGATIVE_VALUE_REASON = /*$$(*/ "Il n'est pas possible de prendre des congés en avance pour le motif %s"/*)*/ ;
-	static final String LEAVE_HR_CONFIG_TEMPLATES = /*$$(*/ "No email sent, please configure HR config for company %s"/*)*/ ;
 
 	static final String EMPLOYEE_PLANNING = /*$$(*/ "Please, add a planning for employee : %s"/*)*/ ;
 	static final String EMPLOYEE_PUBLIC_HOLIDAY = /*$$(*/ "Please, add a public holiday planning for employee : %s"/*)*/ ;

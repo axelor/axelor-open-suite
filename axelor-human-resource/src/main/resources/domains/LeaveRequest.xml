@@ -8,7 +8,7 @@
   <entity name="LeaveRequest" cachable="true">
       
       <many-to-one name="user" ref="com.axelor.auth.db.User" title="User" required="true" column="user_id"/>
-      <integer name="statusSelect" title="Status" selection="hrs.expenses.status.select" default="1" />
+      <integer name="statusSelect" title="Status" selection="hrs.expenses.status.select" default="1" readonly="true"/>
       <date name="requestDate" title="Request date" readonly="true" />
       <date name="dateFrom" title="Date from" required="true"/>
       <integer name="startOnSelect" title="Start On" selection="hr.start.on.select" required="true" default="1"/>
