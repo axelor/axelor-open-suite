@@ -44,17 +44,11 @@ import com.axelor.apps.hr.db.repo.LeaveLineRepository;
 import com.axelor.apps.hr.db.repo.LeaveReasonRepository;
 import com.axelor.apps.hr.db.repo.LeaveRequestRepository;
 import com.axelor.apps.hr.exception.IExceptionMessage;
-import com.axelor.apps.hr.service.config.HRConfigService;
 import com.axelor.apps.hr.service.publicHoliday.PublicHolidayService;
-import com.axelor.apps.message.db.Message;
-import com.axelor.apps.message.db.Template;
-import com.axelor.apps.message.service.MessageService;
-import com.axelor.apps.message.service.TemplateMessageService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
@@ -69,15 +63,6 @@ public class LeaveService {
 
 	@Inject
 	protected LeaveLineRepository leaveLineRepo;
-
-	@Inject
-	protected MessageService messageService;
-
-	@Inject
-	protected TemplateMessageService templateMessageService;
-
-	@Inject
-	protected HRConfigService hRConfigService;
 
 	@Inject
 	protected WeeklyPlanningService weeklyPlanningService;
@@ -261,45 +246,6 @@ public class LeaveService {
 
 	}
 
-	public boolean sendEmailToManager(LeaveRequest leave) throws AxelorException{
-		Template template = hRConfigService.getHRConfig(leave.getUser().getActiveCompany()).getSentLeaveTemplate();
-		if(template!=null){
-			sendEmailTemplate(leave,template);
-			return true;
-		}
-		return false;
-	}
-
-	public boolean sendEmailValidationToApplicant(LeaveRequest leave) throws AxelorException{
-		Template template =  hRConfigService.getHRConfig(leave.getUser().getActiveCompany()).getValidatedLeaveTemplate();
-		if(template!=null){
-			sendEmailTemplate(leave,template);
-			return true;
-		}
-		return false;
-	}
-
-	public boolean sendEmailRefusalToApplicant(LeaveRequest leave) throws AxelorException{
-		Template template =  hRConfigService.getHRConfig(leave.getUser().getActiveCompany()).getRefusedLeaveTemplate();
-		if(template!=null){
-			sendEmailTemplate(leave,template);
-			return true;
-		}
-		return false;
-	}
-
-	public void sendEmailTemplate(LeaveRequest leave, Template template){
-		String model = template.getMetaModel().getFullName();
-		String tag = template.getMetaModel().getName();
-		Message message = new Message();
-		try{
-			message = templateMessageService.generateMessage(leave.getId(), model, tag, template);
-			message = messageService.sendByEmail(message);
-		}
-		catch(Exception e){
-			TraceBackService.trace(new Exception(e));
-		}
-	}
 
 	public double computeStartDateWithSelect(LocalDate date, int select, WeeklyPlanning weeklyPlanning){
 		double value = 0;

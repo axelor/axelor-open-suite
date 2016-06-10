@@ -15,11 +15,32 @@
 	  		<field name="publicHolidayPlanning" canNew="true"/>
 	  		<field name="weeklyPlanning" canNew="true"/>
 	  	</panel>
-	  	<panel name="leavesTemplates" title="Leaves Templates">
-	    	<field name="sentLeaveTemplate" canNew="true" form-view="template-form" grid-view="template-grid"/>
-	    	<field name="validatedLeaveTemplate" canNew="true" form-view="template-form" grid-view="template-grid"/>
-	    	<field name="refusedLeaveTemplate" canNew="true" form-view="template-form" grid-view="template-grid"/>
-	  	</panel>
+	  	<panel-tabs>
+    <panel name="timesheetTemplates" title="Timesheet Templates">
+    	<field name="timesheetMailNotification"/>
+    	<field name="sentTimesheetTemplate" canNew="true" form-view="template-form" grid-view="template-grid" hideIf="!timesheetMailNotification"/>
+    	<field name="validatedTimesheetTemplate" canNew="true" form-view="template-form" grid-view="template-grid" hideIf="!timesheetMailNotification"/>
+    	<field name="refusedTimesheetTemplate" canNew="true" form-view="template-form" grid-view="template-grid" hideIf="!timesheetMailNotification"/>
+  	</panel>
+    <panel name="extraHoursTemplates" title="Extra Hours Templates">
+    	<field name="extraHoursMailNotification"/>
+    	<field name="sentExtraHoursTemplate" canNew="true" form-view="template-form" grid-view="template-grid" hideIf="!extraHoursMailNotification"/>
+    	<field name="validatedExtraHoursTemplate" canNew="true" form-view="template-form" grid-view="template-grid" hideIf="!extraHoursMailNotification"/>
+    	<field name="refusedExtraHoursTemplate" canNew="true" form-view="template-form" grid-view="template-grid" hideIf="!extraHoursMailNotification"/>
+  	</panel>
+     <panel name="expenseTemplates" title="Expense Templates">
+    	<field name="expenseMailNotification"/>
+    	<field name="sentExpenseTemplate" canNew="true" form-view="template-form" grid-view="template-grid" hideIf="!expenseMailNotification"/>
+    	<field name="validatedExpenseTemplate" canNew="true" form-view="template-form" grid-view="template-grid" hideIf="!expenseMailNotification"/>
+    	<field name="refusedExpenseTemplate" canNew="true" form-view="template-form" grid-view="template-grid" hideIf="!expenseMailNotification"/>
+  	</panel>
+  	<panel name="leavesTemplates" title="Leaves Templates">
+    	<field name="leaveMailNotification"/>
+    	<field name="sentLeaveTemplate" canNew="true" form-view="template-form" grid-view="template-grid" hideIf="!leaveMailNotification"/>
+    	<field name="validatedLeaveTemplate" canNew="true" form-view="template-form" grid-view="template-grid" hideIf="!leaveMailNotification"/>
+    	<field name="refusedLeaveTemplate" canNew="true" form-view="template-form" grid-view="template-grid" hideIf="!leaveMailNotification"/>
+  	</panel>
+   </panel-tabs>
 	  	<panel-related field="kilometricAllowanceRateList" colSpan="12"/>
 	</form>
 	

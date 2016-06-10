@@ -24,14 +24,12 @@ import java.util.Map;
 import com.axelor.apps.base.db.Wizard;
 import com.axelor.apps.hr.db.LeaveRequest;
 import com.axelor.apps.hr.db.repo.LeaveRequestRepository;
-import com.axelor.apps.hr.exception.IExceptionMessage;
 import com.axelor.apps.hr.service.HRMenuTagService;
 import com.axelor.apps.hr.service.leave.LeaveService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
@@ -48,6 +46,7 @@ public class LeaveController {
 	
 	@Inject
 	protected LeaveService leaveService;
+
 
 	public void editLeave(ActionRequest request, ActionResponse response){
 		List<LeaveRequest> leaveList = Beans.get(LeaveRequestRepository.class).all().filter("self.user = ?1 AND self.company = ?2 AND self.statusSelect = 1",AuthUtils.getUser(),AuthUtils.getUser().getActiveCompany()).fetch();
@@ -240,48 +239,6 @@ public class LeaveController {
 		leaveService.manageCancelLeaves(leave);
 	}
 
-	public void sendEmailToManager(ActionRequest request, ActionResponse response) throws AxelorException{
-		LeaveRequest leave = request.getContext().asType(LeaveRequest.class);
-		User manager = leave.getUser().getEmployee().getManager();
-		if(manager!=null){
-			if(leaveService.sendEmailToManager(leave)){
-				String message = "Email sent to";
-				response.setFlash(I18n.get(message)+" "+manager.getFullName());
-			}
-			else{
-				throw new AxelorException(String.format(I18n.get(IExceptionMessage.LEAVE_HR_CONFIG_TEMPLATES), leave.getUser().getActiveCompany().getName()), IException.CONFIGURATION_ERROR);
-			}
-		}
-	}
-
-	public void sendEmailValidationToApplicant(ActionRequest request, ActionResponse response) throws AxelorException{
-		LeaveRequest leave = request.getContext().asType(LeaveRequest.class);
-		User manager = leave.getUser().getEmployee().getManager();
-		if(manager!=null){
-			if(leaveService.sendEmailValidationToApplicant(leave)){
-				String message = "Email sent to";
-				response.setFlash(I18n.get(message)+" "+leave.getUser().getFullName());
-			}
-			else{
-				throw new AxelorException(String.format(I18n.get(IExceptionMessage.LEAVE_HR_CONFIG_TEMPLATES), leave.getUser().getActiveCompany().getName()), IException.CONFIGURATION_ERROR);
-			}
-		}
-	}
-
-	public void sendEmailRefusalToApplicant(ActionRequest request, ActionResponse response) throws AxelorException{
-		LeaveRequest leave = request.getContext().asType(LeaveRequest.class);
-		User manager = leave.getUser().getEmployee().getManager();
-		if(manager!=null){
-			if(leaveService.sendEmailRefusalToApplicant(leave)){
-				String message = "Email sent to";
-				response.setFlash(I18n.get(message)+" "+leave.getUser().getFullName());
-			}
-			else{
-				throw new AxelorException(String.format(I18n.get(IExceptionMessage.LEAVE_HR_CONFIG_TEMPLATES), leave.getUser().getActiveCompany().getName()), IException.CONFIGURATION_ERROR);
-			}
-		}
-	}
-
 	public void createEvents(ActionRequest request, ActionResponse response) throws AxelorException{
 		LeaveRequest leave = request.getContext().asType(LeaveRequest.class);
 		leaveService.createEvents(leave);
@@ -293,4 +250,5 @@ public class LeaveController {
 		LeaveRequest leaveRequest = new LeaveRequest();
 		return hrMenuTagService.CountRecordsTag(leaveRequest);
 	}
+	
 }
