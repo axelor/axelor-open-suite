@@ -1,8 +1,5 @@
 package com.axelor.apps.hr.service;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.axelor.apps.message.db.Message;
 import com.axelor.apps.message.db.Template;
 import com.axelor.apps.message.service.MessageService;
@@ -19,15 +16,12 @@ public class MailManagementService {
 	@Inject
 	protected TemplateMessageService templateMessageService;
 	
-	private final Logger log = LoggerFactory.getLogger(getClass());
 	
 	public boolean sendEmail(Template template,long objectId) throws AxelorException{
 		if(template!=null){
-			log.debug("sendEmail if : {}", objectId);
 			sendEmailTemplate(template,objectId);
 			return true;
 		}
-		log.debug("sendEmail out if : {}", objectId);
 		return false;
 	}
 
@@ -36,12 +30,10 @@ public class MailManagementService {
 		String tag = template.getMetaModel().getName();
 		Message message = new Message();
 		try{
-			log.debug("sendEmailTemplate try : {}", objectId);
-//			message = templateMessageService.generateMessage(objectId, model, tag, template);
-//			message = messageService.sendByEmail(message);
+			message = templateMessageService.generateMessage(objectId, model, tag, template);
+			message = messageService.sendByEmail(message);
 		}
 		catch(Exception e){
-			log.debug("sendEmailTemplate  catch : {}", objectId);
 			TraceBackService.trace(new Exception(e));
 		}
 	}
