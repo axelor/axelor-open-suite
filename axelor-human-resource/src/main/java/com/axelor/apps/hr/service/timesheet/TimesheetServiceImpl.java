@@ -90,7 +90,7 @@ public class TimesheetServiceImpl implements TimesheetService{
 	@Transactional(rollbackOn={Exception.class})
 	public void getTimeFromTask(Timesheet timesheet){
 
-		List<TimesheetLine> timesheetLineList = TimesheetLineRepository.of(TimesheetLine.class).all().filter("self.user = ?1 AND self.affectedToTimeSheet = null AND self.projectTask != null", timesheet.getUser()).fetch();
+		List<TimesheetLine> timesheetLineList = TimesheetLineRepository.of(TimesheetLine.class).all().filter("self.user = ?1 AND self.timesheet = null AND self.projectTask != null", timesheet.getUser()).fetch();
 		for (TimesheetLine timesheetLine : timesheetLineList) {
 			timesheet.addTimesheetLineListItem(timesheetLine);
 		}
@@ -401,7 +401,7 @@ public class TimesheetServiceImpl implements TimesheetService{
 
 	public BigDecimal computeTimeSpent(ProjectTask projectTask){
 		BigDecimal sum = BigDecimal.ZERO;
-		List<TimesheetLine> timesheetLineList = Beans.get(TimesheetLineRepository.class).all().filter("self.projectTask = ?1 AND self.affectedToTimeSheet.statusSelect = ?2", projectTask, TimesheetRepository.STATUS_VALIDATED).fetch();
+		List<TimesheetLine> timesheetLineList = Beans.get(TimesheetLineRepository.class).all().filter("self.projectTask = ?1 AND self.timesheet.statusSelect = ?2", projectTask, TimesheetRepository.STATUS_VALIDATED).fetch();
 		for (TimesheetLine timesheetLine : timesheetLineList) {
 			sum = sum.add(timesheetLine.getDurationStored());
 		}

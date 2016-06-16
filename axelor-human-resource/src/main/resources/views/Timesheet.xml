@@ -119,7 +119,7 @@
 	</action-record>
 
 	<action-validate name="action-timesheet-validate-tasks">
-		<error message="No log time found or all log times already added" if="__repo__.of(TimesheetLine).all().filter('self.user = ?1 AND self.affectedToTimeSheet = null',__user__).fetchOne() == null"/>
+		<error message="No log time found or all log times already added" if="__repo__.of(TimesheetLine).all().filter('self.user = ?1 AND self.timesheet = null',__user__).fetchOne() == null"/>
 	</action-validate>
 	
 	<action-validate name="action-timesheet-validate-timesheet-selected">

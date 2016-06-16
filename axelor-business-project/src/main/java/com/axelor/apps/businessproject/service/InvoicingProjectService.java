@@ -314,7 +314,7 @@ public class InvoicingProjectService {
 					.all().filter("self.projectTask = ?1 AND self.toInvoice = true AND self.invoiced = false AND (self.purchaseOrder.orderDate < ?2 or ?3 is null)", projectTask, invoicingProject.getDeadlineDate(),invoicingProject.getDeadlineDate()).fetch());
 			
 			invoicingProject.getLogTimesSet().addAll(Beans.get(TimesheetLineRepository.class)
-					.all().filter("self.affectedToTimeSheet.statusSelect = 3 AND self.projectTask = ?1 AND self.toInvoice = true AND self.invoiced = false AND (self.date < ?2 or ?3 is null)", projectTask, invoicingProject.getDeadlineDate(),invoicingProject.getDeadlineDate()).fetch());
+					.all().filter("self.timesheet.statusSelect = 3 AND self.projectTask = ?1 AND self.toInvoice = true AND self.invoiced = false AND (self.date < ?2 or ?3 is null)", projectTask, invoicingProject.getDeadlineDate(),invoicingProject.getDeadlineDate()).fetch());
 			
 			invoicingProject.getExpenseLineSet().addAll(Beans.get(ExpenseLineRepository.class)
 					.all().filter("self.projectTask = ?1 AND self.toInvoice = true AND self.invoiced = false AND (self.expenseDate < ?2 or ?3 is null)", projectTask, invoicingProject.getDeadlineDate(),invoicingProject.getDeadlineDate()).fetch());
