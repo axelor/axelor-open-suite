@@ -11,14 +11,24 @@
    <form title="Export for doc" name="view-doc-form" model="com.axelor.apps.admin.db.ViewDoc" canSave="false">
    		<panel name="main">
 			<field name="exportDate" />
-			<field name="exportOnlyPanel" />
-			<field name="exportFile" widget="binary-link" readonlyIf="exportOnlyPanel"/>
+			<spacer/>
+			<field name="exportOnlyPanel"  colSpan="4" />
 			<button name="export" title="Export" icon="fa-reply" onClick="save,action-view-doc-export,save" colSpan="3" />
+			<field name="exportFile" widget="binary-link" readonlyIf="exportOnlyPanel"/>
+			<panel colSpan="12" title="Asciidoc">
+				<field name="languageSelect" colSpan="4" />
+				<button name="generateAsciidoc" title="Generate Asciidoc"  colSpan="3"  showIf="exportFile != null &amp;&amp; languageSelect != null" onClick="action-view-doc-generate-asciidoc,save"/>
+				<field name="asciidocFile" widget="binary-link"  readonly="true"/>
+			</panel>
 		</panel>
    </form>  
     
    <action-method name="action-view-doc-export">
    		<call class="com.axelor.apps.admin.web.ViewDocController" method="export"/>
+   </action-method>
+   
+   <action-method name="action-view-doc-generate-asciidoc">
+   		<call class="com.axelor.apps.admin.web.ViewDocController" method="generateAsciidoc"/>
    </action-method>
    
 </object-views>

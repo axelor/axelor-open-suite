@@ -17,9 +17,12 @@
  */
 package com.axelor.apps.admin.web;
 
+import java.io.IOException;
+
 import org.joda.time.LocalDateTime;
 
 import com.axelor.apps.admin.db.ViewDoc;
+import com.axelor.apps.admin.service.AsciiDocExportService;
 import com.axelor.apps.admin.service.ViewDocExportService;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.meta.db.repo.MetaFileRepository;
@@ -31,6 +34,9 @@ public class ViewDocController {
 	
 	@Inject
 	private ViewDocExportService exportService;
+	
+	@Inject
+	private AsciiDocExportService asciiDocExport;
 	
 	@Inject
 	private MetaFileRepository metaFileRepo;
@@ -53,5 +59,20 @@ public class ViewDocController {
 		
 		response.setValue("exportDate", LocalDateTime.now());
 		
+	}
+	
+	public void generateAsciidoc(ActionRequest request, ActionResponse response) {
+		
+		ViewDoc viewDoc = request.getContext().asType(ViewDoc.class);
+		
+		MetaFile exportFile = viewDoc.getExportFile();
+		
+		try {
+			MetaFile asciidocFile = asciiDocExport.export(exportFile, 
+					viewDoc.getLanguageSelect());
+			response.setValue("asciidocFile", asciidocFile);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 }

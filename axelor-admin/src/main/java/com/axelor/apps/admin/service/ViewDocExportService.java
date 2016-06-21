@@ -57,6 +57,36 @@ import com.google.inject.Inject;
 
 public class ViewDocExportService {
 	
+	protected Set<String>fieldTypes = new TreeSet<String>(String.CASE_INSENSITIVE_ORDER);{
+		fieldTypes.add("Toolbar Menu");
+		fieldTypes.add("Toolbar MenuItem");
+		fieldTypes.add("Panel");
+		fieldTypes.add("SubPanel");
+		fieldTypes.add("Button");
+		fieldTypes.add("Label");
+		fieldTypes.add("Dashlet");
+		fieldTypes.add("STRING");
+		fieldTypes.add("INTEGER");
+		fieldTypes.add("DECIMAL");
+		fieldTypes.add("BOOLEAN");
+		fieldTypes.add("TEXT");
+		fieldTypes.add("DATE");
+		fieldTypes.add("LONG");
+		fieldTypes.add("TIME");
+		fieldTypes.add("DATETIME");
+		fieldTypes.add("LOCALDATETIME");
+		fieldTypes.add("LOCALDATE");
+		fieldTypes.add("LOCALTIME");
+		fieldTypes.add("ONE_TO_MANY");
+		fieldTypes.add("MANY_TO_ONE");
+		fieldTypes.add("ONE_TO_ONE");
+		fieldTypes.add("MANY_TO_MANY");
+		fieldTypes.add("BINARY");
+		fieldTypes.add("general");
+		fieldTypes.add("EMPTY");
+		fieldTypes.add("MENU");
+	};
+	
 	private final Logger log = LoggerFactory.getLogger(getClass());
 	
 	private static final String[] HEADERS = new String[]{
@@ -81,34 +111,6 @@ public class ViewDocExportService {
 		"Panel name",
 		"Panel title(EN)", 
 		"Panel title(FR)"
-	};
-	
-	private static final Set<String>fieldTypes = new TreeSet<String>(String.CASE_INSENSITIVE_ORDER);{
-		fieldTypes.add("Toolbar Menu");
-		fieldTypes.add("Toolbar MenuItem");
-		fieldTypes.add("Panel");
-		fieldTypes.add("SubPanel");
-		fieldTypes.add("Button");
-		fieldTypes.add("Label");
-		fieldTypes.add("Dashlet");
-		fieldTypes.add("STRING");
-		fieldTypes.add("INTEGER");
-		fieldTypes.add("DECIMAL");
-		fieldTypes.add("BOOLEAN");
-		fieldTypes.add("TEXT");
-		fieldTypes.add("DATE");
-		fieldTypes.add("DATETIME");
-		fieldTypes.add("LOCALDATETIME");
-		fieldTypes.add("LOCALDATE");
-		fieldTypes.add("LOCALTIME");
-		fieldTypes.add("ONE_TO_MANY");
-		fieldTypes.add("MANY_TO_ONE");
-		fieldTypes.add("ONE_TO_ONE");
-		fieldTypes.add("MANY_TO_MANY");
-		fieldTypes.add("BINARY");
-		fieldTypes.add("general");
-		fieldTypes.add("EMPTY");
-		fieldTypes.add("MENU");
 	};
 	
 	private XSSFWorkbook workBook;
@@ -155,7 +157,8 @@ public class ViewDocExportService {
 		
 		this.onlyPanel = onlyPanel;
 		
-		List<MetaMenu> menus = metaMenuRepo.all().filter("self.parent is null and self.left = true").order("order").fetch();
+		List<MetaMenu> menus = metaMenuRepo.all().filter("self.parent is null "
+				+ "and self.left = true and self.action is null").order("order").fetch();
 		
 		workBook = new XSSFWorkbook();
 		addStyle();
@@ -249,6 +252,11 @@ public class ViewDocExportService {
 			values[2],
 			"general","", "", "", "", "", "", ""
 		};
+		
+		if(menuPath != null){
+			vals[9] = menuPath[0];
+			vals[10] = menuPath[1];
+		}
 			
 		int count = writeCell(row, vals, 0, green);
 		
@@ -279,6 +287,7 @@ public class ViewDocExportService {
 		
 		if(newForm){
 			addGeneralRow(values);
+			menuPath = new String[]{"",""};
 		}
 		
 		XSSFRow row = sheet.createRow(sheet.getPhysicalNumberOfRows());
@@ -295,11 +304,14 @@ public class ViewDocExportService {
 		
 		int count = writeCell(row, values, 0, cellStyle);
 		
-		if(!onlyPanel && menuPath != null){
-			writeCell(row, menuPath, count, cellStyle);
+		if(!onlyPanel){ 
+			if(menuPath != null){
+				count = writeCell(row, menuPath, count, cellStyle);
+				log.debug("Count after menu: {}", count);
+			}
+			
+			addDoc(row, values, count, cellStyle, null);
 		}
-		
-		addDoc(row, values, count, cellStyle, null);
 		
 		menuPath = new String[]{"",""};
 		
@@ -429,7 +441,6 @@ public class ViewDocExportService {
 //			log.debug("Processing sub menu: {}", subMenu.getName());
 			
 			MetaAction action = subMenu.getAction();
-			
 			
 			if(action == null){
 				if(!onlyPanel){
@@ -577,7 +588,7 @@ public class ViewDocExportService {
 		}
 	}
 	
-	private String getCellValue(Cell cell){
+	public static String getCellValue(Cell cell){
 		
 		if(cell != null){
 			return cell.getStringCellValue();
@@ -616,7 +627,6 @@ public class ViewDocExportService {
 		
 		return metaFile;
 	}
-	
 	
 	private boolean addComment(String lastKey, String type, Row row){
 		
