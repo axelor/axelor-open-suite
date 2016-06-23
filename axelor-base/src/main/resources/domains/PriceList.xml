@@ -15,7 +15,7 @@
 			
 			<integer name="typeSelect" title="Type" selection="base.price.list.type.select" required="true" help="true"/>
 			<integer name="basedOnSelect" title="Based on" selection="base.price.list.based.on.select" help="true"/>
-			<one-to-many name="historizedPriceLists" ref="com.axelor.apps.base.db.HistorizedPriceList" mappedBy="priceList" title="Historized Price Lists"/>
+			<one-to-many name="historizedPriceList" ref="com.axelor.apps.base.db.PriceList" title="Historized Price Lists"/>
 		</entity>
 		
 </domain-models>

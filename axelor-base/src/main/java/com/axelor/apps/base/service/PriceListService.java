@@ -23,9 +23,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.joda.time.LocalDateTime;
 
-import com.axelor.apps.base.db.HistorizedPriceList;
 import com.axelor.apps.base.db.IPriceListLine;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.PriceListLine;
@@ -171,17 +169,20 @@ public class PriceListService {
 
 	@Transactional
 	public PriceList historizePriceList (PriceList priceList){
-		HistorizedPriceList historizedPriceList = new HistorizedPriceList();
-		historizedPriceList.setDate(new LocalDateTime());
+		PriceList historizedPriceList = priceListRepo.copy(priceList, false);
+		historizedPriceList.setIsActive(false);
 		List<PriceListLine> priceListLineList = priceList.getPriceListLineList();
 		for (PriceListLine priceListLine : priceListLineList) {
 			PriceListLine newPriceListLine = priceListLineRepo.copy(priceListLine, false);
 			newPriceListLine.setPriceList(null);
 			historizedPriceList.addPriceListLineListItem(newPriceListLine);
 		}
-		priceList.addHistorizedPriceList(historizedPriceList);
+		priceListRepo.save(historizedPriceList);
+		priceList.addHistorizedPriceListItem(historizedPriceList);
 		priceListRepo.save(priceList);
 		return priceList;
 	}
+	
+	
 
 }
