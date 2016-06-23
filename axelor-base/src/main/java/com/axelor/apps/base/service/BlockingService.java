@@ -54,40 +54,6 @@ public class BlockingService {
 
 
 	/**
-	 * Le tiers est t'il bloqué en prélèvement
-	 *
-	 * @return
-	 */
-	public boolean isDebitBlockingBlocking(Blocking blocking){
-
-		if (blocking != null && blocking.getDebitBlockingOk()){
-
-			if (blocking.getDebitBlockingToDate() != null && blocking.getDebitBlockingToDate().isBefore(today)){
-				return false;
-			}
-			else {
-				return true;
-			}
-
-		}
-
-		return false;
-	}
-
-
-	/**
-	 * Le tiers est t'il bloqué en prélèvement
-	 *
-	 * @return
-	 */
-	public boolean isDebitBlockingBlocking(Partner partner, Company company){
-
-		return this.isDebitBlockingBlocking(
-				this.getBlocking(partner, company));
-	}
-
-
-	/**
 	 * Le tiers est t'il bloqué en remboursement
 	 *
 	 * @return
