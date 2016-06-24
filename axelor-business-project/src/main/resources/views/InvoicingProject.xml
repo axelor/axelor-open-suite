@@ -11,6 +11,9 @@
 
 	<form name="invoicing-project-form" title="Invoicing Project" model="com.axelor.apps.businessproject.db.InvoicingProject" 
 		onNew="action-invoicing-project-attrs-title-project-task" onLoad="action-invoicing-project-attrs-title-project-task">
+		<toolbar>
+  			<button name="delete" hidden="true" showIf="invoice == null" title="Delete"/>
+  		</toolbar>
 		<panel name="main" >
 			<field name="projectTask" form-view="project-task-form" grid-view="project-task-grid" onChange="save,action-invoicing-project-method-fill-in" readonlyIf="invoice != null"/>
 			<field name="deadlineDate" readonlyIf="invoice != null" onChange="save,action-invoicing-project-method-fill-in"/>
