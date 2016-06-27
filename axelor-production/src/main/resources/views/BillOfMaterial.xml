@@ -16,6 +16,7 @@
 		onNew="action-bill-of-material-default-record" onLoad="action-bill-of-material-attrs-price-digits" width="large">
 		<toolbar>
 			<button name="newVersion" title="Generate new version"  if="__config__.general.manageBillOfMaterialVersion" onClick="action-bill-of-material-check-other-version,action-bill-of-material-generate-new-version"/>
+			<button name="archive" prompt="Do you really wish to archive this bill of material ?" title="Archive" if="__config__.general.manageBillOfMaterialVersion" onClick="action-bill-of-material-archive,save" />
 		</toolbar>
 		<panel name="main">
 			<field name="fullName" hidden="true" showIf="$readonly()" colSpan="12"/>
@@ -157,6 +158,10 @@
     <action-attrs name="action-bill-of-material-attrs-price-digits">
     	<attribute name="scale" for="costPrice" expr="eval: __config__.generalService.getNbDecimalDigitForUnitPrice()"/>
     </action-attrs>
+    
+    <action-record name="action-bill-of-material-archive" model="com.axelor.apps.production.db.BillOfMaterial">
+    	<field name="archived" expr="eval: true"/>
+    </action-record>
 
 </object-views>
 

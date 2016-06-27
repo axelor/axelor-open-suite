@@ -26,6 +26,8 @@
 		<boolean name="manageMultiBudget" title="Manage multi budgets on lines"/>
 		<string name="budgetStatusSelect" title="Status considered to calculate the engaged amount" selection="purchase.purchase.order.status.select"/>
 		
+		<boolean name="manageDirectDebitPayment" title="Manage direct debit payment" default="false" />
+		
 		<extra-code><![CDATA[
 	
 	   

@@ -22,10 +22,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.AnalyticMoveLineService;
+import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.generator.InvoiceGenerator;
 import com.axelor.apps.account.service.invoice.generator.InvoiceLineGenerator;
 import com.axelor.apps.account.util.InvoiceLineComparator;
@@ -111,6 +113,10 @@ public class InvoicingProjectService {
 			}
 		};
 		Invoice invoice = invoiceGenerator.generate();
+		AccountConfigService accountConfigService = Beans.get(AccountConfigService.class);
+		AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
+		invoice.setDisplayTimesheetOnPrinting(accountConfig.getDisplayTimesheetOnPrinting());
+		invoice.setDisplayExpenseOnPrinting(accountConfig.getDisplayExpenseOnPrinting());
 
 		invoiceGenerator.populate(invoice,this.populate(invoice,invoicingProject));
 		Beans.get(InvoiceRepository.class).save(invoice);
