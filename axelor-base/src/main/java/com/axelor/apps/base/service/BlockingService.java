@@ -51,40 +51,4 @@ public class BlockingService {
 		return null;
 
 	}
-
-
-	/**
-	 * Le tiers est t'il bloqué en remboursement
-	 *
-	 * @return
-	 */
-	public boolean isReminderBlocking(Blocking blocking){
-
-		if (blocking != null && blocking.getReimbursementBlockingOk()){
-
-			if (blocking.getReimbursementBlockingToDate() != null && blocking.getReimbursementBlockingToDate().isBefore(today)){
-				return false;
-			}
-			else {
-				return true;
-			}
-
-		}
-
-		return false;
-	}
-
-
-	/**
-	 * Le tiers est t'il bloqué en remboursement
-	 *
-	 * @return
-	 */
-	public boolean isReminderBlocking(Partner partner, Company company){
-
-		return this.isReminderBlocking(
-				this.getBlocking(partner, company));
-	}
-
-
 }
