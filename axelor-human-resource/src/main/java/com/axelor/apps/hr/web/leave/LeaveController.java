@@ -237,7 +237,12 @@ public class LeaveController {
 	public void manageCancelLeaves(ActionRequest request, ActionResponse response) throws AxelorException{
 		LeaveRequest leave = request.getContext().asType(LeaveRequest.class);
 		leave = Beans.get(LeaveRequestRepository.class).find(leave.getId());
-		leaveService.manageCancelLeaves(leave);
+		if (leave.getReason().getManageAccumulation()){
+			leaveService.manageCancelLeaves(leave);
+		}
+		leaveService.cancelLeave(leave);
+		response.setReload(true);
+		
 	}
 
 	public void sendEmailToManager(ActionRequest request, ActionResponse response) throws AxelorException{
@@ -292,11 +297,5 @@ public class LeaveController {
 	public String leaveValidateTag() { 
 		LeaveRequest leaveRequest = new LeaveRequest();
 		return hrMenuTagService.CountRecordsTag(leaveRequest);
-	}
-	
-	public void cancelEvent(ActionRequest request, ActionResponse response) throws AxelorException{
-		LeaveRequest leave = request.getContext().asType(LeaveRequest.class);
-		leaveService.cancelEvents(leave);
-		response.setReload(true);
 	}
 }

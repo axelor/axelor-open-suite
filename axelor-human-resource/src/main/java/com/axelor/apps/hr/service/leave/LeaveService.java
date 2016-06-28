@@ -478,14 +478,14 @@ public class LeaveService {
 	}
 	
 	@Transactional
-	public void cancelEvents(LeaveRequest leave){
+	public void cancelLeave(LeaveRequest leave){
 		
 		if (leave.getEvent() != null){
 			Event event = leave.getEvent();
-			LeaveRequest leaveRequest = leaveRequestRepo.find(leave.getId());
-			leaveRequest.setEvent(null);
-			leaveRequestRepo.save(leaveRequest);
+			leave.setEvent(null);
 			eventRepo.remove(eventRepo.find(event.getId()));
 		}
+		leave.setStatusSelect(LeaveRequestRepository.STATUS_SELECT_CANCELED);
+		leaveRequestRepo.save(leave);
 	}
 }
