@@ -284,7 +284,7 @@ public class LeaveController {
 
 	public void createEvents(ActionRequest request, ActionResponse response) throws AxelorException{
 		LeaveRequest leave = request.getContext().asType(LeaveRequest.class);
-		leaveService.createEvents(leave);
+		response.setValues(leaveService.createEvents(leave));
 	}
 	
 	/* Count Tags displayed on the menu items */
@@ -292,5 +292,11 @@ public class LeaveController {
 	public String leaveValidateTag() { 
 		LeaveRequest leaveRequest = new LeaveRequest();
 		return hrMenuTagService.CountRecordsTag(leaveRequest);
+	}
+	
+	public void cancelEvent(ActionRequest request, ActionResponse response) throws AxelorException{
+		LeaveRequest leave = request.getContext().asType(LeaveRequest.class);
+		leaveService.cancelEvents(leave);
+		response.setReload(true);
 	}
 }
