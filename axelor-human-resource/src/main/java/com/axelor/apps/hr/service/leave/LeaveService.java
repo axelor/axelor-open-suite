@@ -330,7 +330,7 @@ public class LeaveService {
 	}
 
 	@Transactional
-	public void createEvents(LeaveRequest leave) throws AxelorException{
+	public LeaveRequest createEvents(LeaveRequest leave) throws AxelorException{
 		Employee employee = leave.getUser().getEmployee();
 		if(employee == null){
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.LEAVE_USER_EMPLOYEE),leave.getUser().getName()), IException.CONFIGURATION_ERROR);
@@ -395,6 +395,8 @@ public class LeaveService {
 
 		Event event = eventService.createEvent(fromDateTime, toDateTime, leave.getUser(), leave.getComments(), EventRepository.TYPE_LEAVE, leave.getReason().getLeaveReason()+" "+leave.getUser().getFullName());
 		eventRepo.save(event);
+		leave.setEvent(event);
+		return leave;
 	}
 	
 	public BigDecimal computeLeaveDays(LocalDate fromDate, LocalDate toDate, User user) throws AxelorException{
@@ -473,5 +475,17 @@ public class LeaveService {
 			}
 			Beans.get(LeaveRequestRepository.class).save(leave);
 		}
+	}
+	
+	@Transactional
+	public void cancelLeave(LeaveRequest leave){
+		
+		if (leave.getEvent() != null){
+			Event event = leave.getEvent();
+			leave.setEvent(null);
+			eventRepo.remove(eventRepo.find(event.getId()));
+		}
+		leave.setStatusSelect(LeaveRequestRepository.STATUS_SELECT_CANCELED);
+		leaveRequestRepo.save(leave);
 	}
 }
