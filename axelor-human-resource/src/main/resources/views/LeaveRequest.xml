@@ -53,7 +53,7 @@
 			<field name="dateTo" onChange="action-leave-request-validate-dates,action-leave-request-methode-compute-duration"/>
 			<field name="endOnSelect" onChange="action-leave-request-validate-dates,action-leave-request-methode-compute-duration"/>
 			<field name="duration" readonly="true" onChange="action-leave-request-methode-duration"/>
-			<field name="reason" canNew="true" required="true" onChange="action-leave-request-attrs-select" form-view="leave-request-reason-form" grid-view="leave-request-reason-grid"/>
+			<field name="reason" canNew="false" widget="SuggestBox" required="true" onChange="action-leave-request-attrs-select" form-view="leave-request-reason-form" grid-view="leave-request-reason-grid"/>
 			<field name="injectConsumeSelect" hidden="true"/>
 			<field name="comments" colSpan="12" />
 		</panel>
@@ -101,7 +101,6 @@
 	<action-group name="action-leave-request-group-cancel">
 		<action name="save"/>
 		<action name="action-leave-request-method-manage-cancel-leave-requests"/>
-		<action name="action-leave-request-record-cancel"/>
 		<action name="save"/>
 		<action name="action-leave-request-attrs-buttons"/>
 		<action name="action-leave-request-attrs-draft-cancel"/>
@@ -199,7 +198,7 @@
 	</action-method>
 	
 	<action-method name="action-leave-request-method-manage-cancel-leave-requests">
-		<call class="com.axelor.apps.hr.web.leave.LeaveController" method="manageCancelLeaves" if="reason.manageAccumulation"/>
+		<call class="com.axelor.apps.hr.web.leave.LeaveController" method="manageCancelLeaves"/>
 	</action-method>
 	
 	<action-method name="action-leave-request-method-send-mail-leave-request-sent">
