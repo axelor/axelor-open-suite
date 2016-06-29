@@ -399,7 +399,7 @@
 	</form>
 	
 	<action-method name="action-sale-order-method-generate-project">
-		<call class="com.axelor.apps.business.project.web.SaleOrderProjectController" method="generateProject"/>
+		<call class="com.axelor.apps.businessproject.web.SaleOrderProjectController" method="generateProject"/>
 	</action-method>
 	
 	<action-record name="action-sale-order-record-first-execution-date" model="com.axelor.apps.sale.db.SaleOrder">
@@ -488,7 +488,7 @@
 	</action-method>
 	
 	<action-method name="action-sale-order-method-generate-tasks">
-		<call class="com.axelor.apps.business.project.web.SaleOrderProjectController" method="generateTasks"/>
+		<call class="com.axelor.apps.businessproject.web.SaleOrderProjectController" method="generateTasks"/>
 	</action-method>
     
     <action-record name="action-sale-order-record-finalize" model="com.axelor.apps.sale.db.SaleOrder">
