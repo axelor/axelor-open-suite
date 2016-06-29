@@ -56,7 +56,7 @@ import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.service.BlockingService;
+import com.axelor.apps.account.service.AccountBlockingService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.base.service.administration.GeneralServiceImpl;
@@ -81,7 +81,7 @@ public class PaymentScheduleExportService{
 	protected PaymentModeService paymentModeService;
 	protected CfonbExportService cfonbExportService;
 	protected PaymentService paymentService;
-	protected BlockingService blockingService;
+	protected AccountBlockingService blockingService;
 	protected AccountConfigService accountConfigService;
 	protected PaymentScheduleLineRepository paymentScheduleLineRepo;
 	protected DirectDebitManagementRepository directDebitManagementRepo;
@@ -95,7 +95,7 @@ public class PaymentScheduleExportService{
 	@Inject
 	public PaymentScheduleExportService(MoveService moveService, MoveRepository moveRepo, MoveLineService moveLineServices, MoveLineRepository moveLineRepo, ReconcileService reconcileService,
 			SequenceService sequenceService, PaymentModeService paymentModeService, CfonbExportService cfonbExportService, PaymentService paymentService,
-			BlockingService blockingService, AccountConfigService accountConfigService, PaymentScheduleLineRepository paymentScheduleLineRepo,
+			AccountBlockingService blockingService, AccountConfigService accountConfigService, PaymentScheduleLineRepository paymentScheduleLineRepo,
 			DirectDebitManagementRepository directDebitManagementRepo, InvoiceService invoiceService, InvoiceRepository invoiceRepo, GeneralService generalService, PartnerService partnerService) {
 		
 		this.moveService = moveService;
