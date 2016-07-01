@@ -31,6 +31,8 @@ import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.account.db.PaymentCondition;
+import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
@@ -40,8 +42,12 @@ import com.axelor.apps.account.service.invoice.factory.VentilateFactory;
 import com.axelor.apps.account.service.invoice.generator.InvoiceGenerator;
 import com.axelor.apps.account.service.invoice.generator.invoice.RefundInvoice;
 import com.axelor.apps.base.db.Alarm;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
+import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.service.CurrencyService;
+import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.base.service.alarm.AlarmEngineService;
 import com.axelor.exception.AxelorException;
@@ -56,7 +62,10 @@ import com.google.inject.persist.Transactional;
  * 
  */
 public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceService  {
-
+	
+	@Inject
+	protected PartnerService partnerService;
+	
 	private final Logger log = LoggerFactory.getLogger( getClass() );
 	
 	protected ValidateFactory validateFactory;
@@ -316,8 +325,78 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 		
 		return amountPaid;
 	}
+
+
+	@Override
+	@Transactional
+	public Invoice mergeInvoice(List<Invoice> invoiceList, Company company, Currency currency,
+			Partner partner, Partner contactPartner, PriceList priceList,
+			PaymentMode paymentMode, PaymentCondition paymentCondition)throws AxelorException {
+		String numSeq = "";
+		String externalRef = "";
+		for (Invoice invoiceLocal : invoiceList) {
+			if (!numSeq.isEmpty()){
+				numSeq += "-";
+			}
+			if (invoiceLocal.getInternalReference() != null){
+				numSeq += invoiceLocal.getInternalReference();
+			}
+
+			if (!externalRef.isEmpty()){
+				externalRef += "|";
+			}
+			if (invoiceLocal.getExternalReference() != null){
+				externalRef += invoiceLocal.getExternalReference();
+			}
+		}
+		
+		InvoiceGenerator invoiceGenerator = new InvoiceGenerator(InvoiceRepository.OPERATION_TYPE_CLIENT_SALE, company, paymentCondition,
+				paymentMode, partnerService.getInvoicingAddress(partner), partner, contactPartner,
+				currency, priceList, numSeq, externalRef, null, company.getDefaultBankDetails()){
+		
+					@Override
+					public Invoice generate() throws AxelorException {
+						
+						return super.createInvoiceHeader();
+					}
+		};
+		Invoice invoiceMerged = invoiceGenerator.generate();
+		List<InvoiceLine> invoiceLines = this.getInvoiceLinesFromInvoiceList(invoiceList);
+		invoiceGenerator.populate(invoiceMerged, invoiceLines);
+		this.setInvoiceForInvoiceLines(invoiceLines, invoiceMerged);
+		Beans.get(InvoiceRepository.class).save(invoiceMerged);
+		deleteOldInvoices(invoiceList);
+		return invoiceMerged;
+	}
 	
+	@Override
+	public void deleteOldInvoices(List<Invoice> invoiceList) {
+		for(Invoice invoicetemp : invoiceList) {
+			invoiceRepo.remove(invoicetemp);
+		}
+	}
+
+
+	@Override
+	public List<InvoiceLine>  getInvoiceLinesFromInvoiceList(List<Invoice> invoiceList) {
+		List<InvoiceLine> invoiceLines = new ArrayList<InvoiceLine>();
+		for(Invoice invoice : invoiceList)  {
+			int countLine = 1;
+			for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
+				invoiceLine.setSequence(countLine * 10);
+				invoiceLines.add(invoiceLine);
+				countLine++;
+			}
+		}
+		return invoiceLines;
+	}
 	
+	@Override
+	public void setInvoiceForInvoiceLines(List<InvoiceLine> invoiceLines, Invoice invoice) {
+		for(InvoiceLine invoiceLine : invoiceLines)  {
+			invoiceLine.setInvoice(invoice);
+		}
+	}
 	
 }
 

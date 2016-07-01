@@ -22,16 +22,28 @@ import java.util.List;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
+import com.axelor.apps.account.db.PaymentCondition;
+import com.axelor.apps.account.db.PaymentMode;
+import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Currency;
+import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.administration.GeneralService;
+import com.axelor.apps.project.db.ProjectTask;
+import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.supplychain.db.Subscription;
 import com.axelor.apps.supplychain.service.SaleOrderInvoiceServiceImpl;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 
 public class SaleOrderInvoiceProjectServiceImpl extends SaleOrderInvoiceServiceImpl{
-
+	
+	@Inject
+	public GeneralService generalService;
+	
 	@Inject
 	public SaleOrderInvoiceProjectServiceImpl(GeneralService generalService) {
 		super(generalService);
@@ -75,5 +87,22 @@ public class SaleOrderInvoiceProjectServiceImpl extends SaleOrderInvoiceServiceI
 
 		return invoiceLineList;
 
+	}
+
+	@Transactional
+	public Invoice mergeInvoice(List<Invoice> invoiceList, Company company, Currency currency,
+			Partner partner, Partner contactPartner, PriceList priceList,
+			PaymentMode paymentMode, PaymentCondition paymentCondition, SaleOrder saleOrder,ProjectTask project)
+					throws AxelorException {
+		Invoice invoiceMerged = super.mergeInvoice(invoiceList,company,currency,partner,contactPartner,priceList,paymentMode,paymentCondition,saleOrder);
+		if (project != null){
+			if(!generalService.getGeneral().getProjectTaskInvoiceLines()){
+				invoiceMerged.setProject(project);
+				for (InvoiceLine invoiceLine : invoiceMerged.getInvoiceLineList()){
+					invoiceLine.setProject(project);
+				}
+			}
+		}
+		return invoiceMerged;
 	}
 }
