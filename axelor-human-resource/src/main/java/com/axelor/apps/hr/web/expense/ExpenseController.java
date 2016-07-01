@@ -30,11 +30,16 @@ import com.axelor.apps.base.db.Wizard;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.hr.db.Expense;
 import com.axelor.apps.hr.db.ExpenseLine;
-import com.axelor.apps.hr.db.Timesheet;
+import com.axelor.apps.hr.db.ExtraHours;
 import com.axelor.apps.hr.db.repo.ExpenseRepository;
+import com.axelor.apps.hr.db.repo.TimesheetRepository;
+import com.axelor.apps.hr.exception.IExceptionMessage;
 import com.axelor.apps.hr.report.IReport;
 import com.axelor.apps.hr.service.HRMenuTagService;
+import com.axelor.apps.hr.service.MailManagementService;
+import com.axelor.apps.hr.service.config.HRConfigService;
 import com.axelor.apps.hr.service.expense.ExpenseService;
+import com.axelor.apps.message.db.Template;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.db.JPA;
@@ -55,11 +60,13 @@ public class ExpenseController {
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 	
 	@Inject
+	private HRConfigService  hrConfigService;
+	@Inject
 	private HRMenuTagService hrMenuTagService;
-	
+	@Inject
+	private MailManagementService  mailManagementService;
 	@Inject
 	private ExpenseService expenseService;
-
 	@Inject
 	protected GeneralService generalService;
 	
@@ -325,5 +332,91 @@ public class ExpenseController {
 		Long total = JPA.all(Expense.class).filter("self.statusSelect = 3 AND self.ventilated = false").count();
 		
 		return String.format("%s", total);
+	}
+	
+	//sending expense and sending mail to manager
+	public void send(ActionRequest request, ActionResponse response) throws AxelorException{
+		Expense expense = request.getContext().asType(Expense.class);
+		if(!hrConfigService.getHRConfig(expense.getUser().getActiveCompany()).getExpenseMailNotification()){
+			response.setValue("statusSelect", TimesheetRepository.STATUS_CONFIRMED);
+			response.setValue("sentDate", generalService.getTodayDate());
+			response.setView(ActionView
+					.define(I18n.get("Expense"))
+					.model(Expense.class.getName())
+					.add("form", "expense-form")
+					.map());
+		}
+		else{
+			User manager = expense.getUser().getEmployee().getManager();
+			if(manager!=null){
+				Template template =  hrConfigService.getHRConfig(expense.getUser().getActiveCompany()).getSentExpenseTemplate();
+				if(mailManagementService.sendEmail(template,expense.getId())){
+					String message = "Email sent to";
+					response.setFlash(I18n.get(message)+" "+manager.getFullName());
+					response.setValue("statusSelect", TimesheetRepository.STATUS_CONFIRMED);
+					response.setValue("sentDate", generalService.getTodayDate());
+					response.setView(ActionView
+							.define(I18n.get("Expense"))
+							.model(Expense.class.getName())
+							.add("form", "expense-form")
+							.map());
+				}
+				else{
+					throw new AxelorException(String.format(I18n.get(IExceptionMessage.HR_CONFIG_TEMPLATES), expense.getUser().getActiveCompany().getName()), IException.CONFIGURATION_ERROR);
+				}
+			}
+		}
+	}
+	
+	//validating expense and sending mail to applicant
+	public void valid(ActionRequest request, ActionResponse response) throws AxelorException{
+		Expense expense = request.getContext().asType(Expense.class);
+		if(!hrConfigService.getHRConfig(expense.getUser().getActiveCompany()).getExpenseMailNotification()){
+			response.setValue("statusSelect", TimesheetRepository.STATUS_VALIDATED);
+			response.setValue("validatedBy", AuthUtils.getUser());
+			response.setValue("validationDate", generalService.getTodayDate());
+		}
+		else{
+			User manager = expense.getUser().getEmployee().getManager();
+			if(manager!=null){
+				Template template =  hrConfigService.getHRConfig(expense.getUser().getActiveCompany()).getValidatedExpenseTemplate();
+				if(mailManagementService.sendEmail(template,expense.getId())){
+					String message = "Email sent to";
+					response.setFlash(I18n.get(message)+" "+expense.getUser().getFullName());
+					response.setValue("statusSelect", TimesheetRepository.STATUS_VALIDATED);
+					response.setValue("validatedBy", AuthUtils.getUser());
+					response.setValue("validationDate", generalService.getTodayDate());
+				}
+				else{
+					throw new AxelorException(String.format(I18n.get(IExceptionMessage.HR_CONFIG_TEMPLATES), expense.getUser().getActiveCompany().getName()), IException.CONFIGURATION_ERROR);
+				}
+			}
+		}
+	}
+	
+	//refusing expense and sending mail to applicant
+	public void refuse(ActionRequest request, ActionResponse response) throws AxelorException{
+		Expense expense = request.getContext().asType(Expense.class);
+		if(!hrConfigService.getHRConfig(expense.getUser().getActiveCompany()).getExpenseMailNotification()){
+			response.setValue("statusSelect", TimesheetRepository.STATUS_REFUSED);
+			response.setValue("refusedBy", AuthUtils.getUser());
+			response.setValue("refusalDate", generalService.getTodayDate());
+		}
+		else{
+			User manager = expense.getUser().getEmployee().getManager();
+			if(manager!=null){
+				Template template =  hrConfigService.getHRConfig(expense.getUser().getActiveCompany()).getRefusedExpenseTemplate();
+				if(mailManagementService.sendEmail(template,expense.getId())){
+					String message = "Email sent to";
+					response.setFlash(I18n.get(message)+" "+expense.getUser().getFullName());
+					response.setValue("statusSelect", TimesheetRepository.STATUS_REFUSED);
+					response.setValue("refusedBy", AuthUtils.getUser());
+					response.setValue("refusalDate", generalService.getTodayDate());
+				}
+				else{
+					throw new AxelorException(String.format(I18n.get(IExceptionMessage.HR_CONFIG_TEMPLATES), expense.getUser().getActiveCompany().getName()), IException.CONFIGURATION_ERROR);
+				}
+			}
+		}
 	}
 }

@@ -62,46 +62,27 @@
 	</action-group>
 
 	<action-group name="action-extra-hours-group-confirm">
-		<action name="action-extra-hours-record-confirm"/>
+		<action name="save"/>
+		<action name="action-extra-hours-method-record-confirm"/>
 		<action name="action-extra-hours-attrs-buttons"/>
 		<action name="save"/>
-		<action name="action-extra-hours-method-send-mail-extra-hours-confirm"/>
 	</action-group>
 	
 	<action-group name="action-extra-hours-group-validate">
-		<action name="action-extra-hours-record-valid"/>
+		<action name="action-extra-hours-method-record-valid"/>
 		<action name="action-extra-hours-attrs-buttons"/>
 		<action name="save"/>
-		<action name="action-extra-hours-method-send-mail-extra-hours-validated"/>
 	</action-group>
 	
 	<action-group name="action-extra-hours-group-refuse">
-		<action name="action-extra-hours-record-refuse"/>
+		<action name="action-extra-hours-method-record-refuse"/>
 		<action name="action-extra-hours-attrs-buttons"/>
 		<action name="save"/>
-		<action name="action-extra-hours-method-send-mail-extra-hours-refused"/>
 	</action-group>
 	
 	<action-record name="action-extra-hours-record-default" model="com.axelor.apps.hr.db.ExtraHours">
 	    <field name="user" expr="eval:__user__"/>
 	    <field name="company" expr="eval: __user__.activeCompany"/>
-	</action-record>
-	
-	<action-record name="action-extra-hours-record-confirm" model="com.axelor.apps.hr.db.ExtraHours">
-	    <field name="statusSelect" expr="2"/>
-	    <field name="sentDate" expr="eval: __date__"/>
-	</action-record>
-	
-	<action-record name="action-extra-hours-record-valid" model="com.axelor.apps.hr.db.ExtraHours">
-	    <field name="statusSelect" expr="3"/>
-	    <field name="validatedBy" expr="eval: __user__"/>
-	    <field name="validationDate" expr="eval: __date__"/>
-	</action-record>
-	
-	<action-record name="action-extra-hours-record-refuse" model="com.axelor.apps.hr.db.ExtraHours">
-	    <field name="statusSelect" expr="4"/>
-	    <field name="refusedBy" expr="eval: __user__"/>
-	    <field name="refusalDate" expr="eval: __date__"/>
 	</action-record>
 	
 	<action-record name="action-extra-hours-record-cancel" model="com.axelor.apps.hr.db.ExtraHours">
@@ -126,16 +107,16 @@
 		<attribute name="domain" for="$extraHoursSelect" expr="eval: &quot; self.statusSelect = 1 AND self.user = ${__user__.id} &quot;"/>
 	</action-attrs>
 	
-	<action-method name="action-extra-hours-method-send-mail-extra-hours-confirm">
-		<call class="com.axelor.apps.hr.web.MailManagementController" method="sendEmailToManager"/>
+	<action-method name="action-extra-hours-method-record-confirm">
+		<call class="com.axelor.apps.hr.web.extra.hours.ExtraHoursController" method="confirm"/>
 	</action-method>
 	
-	<action-method name="action-extra-hours-method-send-mail-extra-hours-validated">
-		<call class="com.axelor.apps.hr.web.MailManagementController" method="sendEmailValidationToApplicant"/>
+	<action-method name="action-extra-hours-method-record-valid">
+		<call class="com.axelor.apps.hr.web.extra.hours.ExtraHoursController" method="valid"/>
 	</action-method>
 	
-	<action-method name="action-extra-hours-method-send-mail-extra-hours-refused">
-		<call class="com.axelor.apps.hr.web.MailManagementController" method="sendEmailRefusalToApplicant"/>
+	<action-method name="action-extra-hours-method-record-refuse">
+		<call class="com.axelor.apps.hr.web.extra.hours.ExtraHoursController" method="refuse"/>
 	</action-method>
 	
 </object-views>

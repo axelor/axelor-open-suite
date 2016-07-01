@@ -84,26 +84,22 @@
 	</form>
 	
 	<action-group name="action-timesheet-group-confirm">
+		<action name="save"/>
 		<action name="action-timesheet-method-confirm"/>
 		<action name="action-timesheet-attrs-buttons"/>
 		<action name="save"/>
-		<action name="action-timesheet-attrs-from-date"/>
-		<action name="action-timesheet-method-send-mail-timesheet-confirm"/>
 	</action-group>
 	
 	<action-group name="action-timesheet-group-validate">
 		<action name="action-timesheet-method-valid"/>
 		<action name="action-timesheet-attrs-buttons"/>
 		<action name="save"/>
-		<action name="action-timesheet-method-compute-timespent-project-task"/>
-		<action name="action-timesheet-method-send-mail-timesheet-validated"/>
 	</action-group>
 	
 	<action-group name="action-timesheet-group-refuse">
 		<action name="action-timesheet-method-refuse"/>
 		<action name="action-timesheet-attrs-buttons"/>
 		<action name="save"/>
-		<action name="action-timesheet-method-send-mail-timesheet-refused"/>
 	</action-group>
 	
 	<action-group name="action-group-timesheet-onnew">
@@ -251,10 +247,6 @@
 		<call class="com.axelor.apps.hr.web.timesheet.timer.TSTimerController" method="editTimesheetTimerFromTimesheet"/>
 	</action-method>
 	
-	<action-method name="action-timesheet-method-compute-timespent-project-task">
-		<call class="com.axelor.apps.hr.web.timesheet.TimesheetController" method="computeTimeSpent"/>
-	</action-method>
-
 	<action-method name="action-timesheet-method-edit-timesheet-selected">
 		<call class="com.axelor.apps.hr.web.timesheet.TimesheetController" method="editTimesheetSelected"/>
 	</action-method>
@@ -262,18 +254,6 @@
 	<action-method name="action-print-timesheet">
     	<call class="com.axelor.apps.hr.web.timesheet.TimesheetController" method="printTimesheet"/>
     </action-method>
-    
-    <action-method name="action-timesheet-method-send-mail-timesheet-confirm">
-		<call class="com.axelor.apps.hr.web.MailManagementController" method="sendEmailToManager"/>
-	</action-method>
-	
-	<action-method name="action-timesheet-method-send-mail-timesheet-validated">
-		<call class="com.axelor.apps.hr.web.MailManagementController" method="sendEmailValidationToApplicant"/>
-	</action-method>
-	
-	<action-method name="action-timesheet-method-send-mail-timesheet-refused">
-		<call class="com.axelor.apps.hr.web.MailManagementController" method="sendEmailRefusalToApplicant"/>
-	</action-method>
 	
 	<action-view name="action-timesheet-view-total-hours-per-day" title="">
   		<view name="chart.total.hours.per.day" type="chart"/>
