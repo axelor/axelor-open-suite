@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="utf-8"?>
+<workflows xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  
+  	<Wkf>
+		<bpmnXml>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+		&lt;definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:x="http://axelor.com" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn"&gt;
+		  &lt;process id="Process_1" name="undefined" isExecutable="false" x:id="undefined"&gt;
+		    &lt;startEvent id="StartEvent_1" name="Draft"&gt;
+		      &lt;incoming&gt;SequenceFlow_0tnkxqz&lt;/incoming&gt;
+		      &lt;outgoing&gt;SequenceFlow_1h9dop4&lt;/outgoing&gt;
+		    &lt;/startEvent&gt;
+		    &lt;endEvent id="EndEvent_1" name="Closed"&gt;
+		      &lt;incoming&gt;SequenceFlow_08xrd4r&lt;/incoming&gt;
+		      &lt;outgoing&gt;SequenceFlow_0tnkxqz&lt;/outgoing&gt;
+		    &lt;/endEvent&gt;
+		    &lt;task id="Task_188ck4v" name="Confirm"&gt;
+		      &lt;incoming&gt;SequenceFlow_1h9dop4&lt;/incoming&gt;
+		      &lt;outgoing&gt;SequenceFlow_1vz9evg&lt;/outgoing&gt;
+		    &lt;/task&gt;
+		    &lt;sequenceFlow id="SequenceFlow_1h9dop4" name="Confirm Order" sourceRef="StartEvent_1" targetRef="Task_188ck4v" /&gt;
+		    &lt;task id="Task_1q41ts7" name="Validate"&gt;
+		      &lt;incoming&gt;SequenceFlow_1vz9evg&lt;/incoming&gt;
+		      &lt;outgoing&gt;SequenceFlow_08xrd4r&lt;/outgoing&gt;
+		    &lt;/task&gt;
+		    &lt;sequenceFlow id="SequenceFlow_1vz9evg" name="Validate order" sourceRef="Task_188ck4v" targetRef="Task_1q41ts7" /&gt;
+		    &lt;sequenceFlow id="SequenceFlow_08xrd4r" name="Close Order" sourceRef="Task_1q41ts7" targetRef="EndEvent_1" /&gt;
+		    &lt;sequenceFlow id="SequenceFlow_0tnkxqz" name="Reset to Draft" sourceRef="EndEvent_1" targetRef="StartEvent_1" /&gt;
+		  &lt;/process&gt;
+		  &lt;bpmndi:BPMNDiagram id="BPMNDiagram_1"&gt;
+		    &lt;bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_1"&gt;
+		      &lt;bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1"&gt;
+		        &lt;dc:Bounds x="181" y="147" width="36" height="36" /&gt;
+		        &lt;bpmndi:BPMNLabel&gt;
+		          &lt;dc:Bounds x="113" y="155" width="90" height="20" /&gt;
+		        &lt;/bpmndi:BPMNLabel&gt;
+		      &lt;/bpmndi:BPMNShape&gt;
+		      &lt;bpmndi:BPMNShape id="_BPMNShape_EndEvent_2" bpmnElement="EndEvent_1"&gt;
+		        &lt;dc:Bounds x="745" y="147" width="36" height="36" /&gt;
+		        &lt;bpmndi:BPMNLabel&gt;
+		          &lt;dc:Bounds x="768" y="163" width="90" height="20" /&gt;
+		        &lt;/bpmndi:BPMNLabel&gt;
+		      &lt;/bpmndi:BPMNShape&gt;
+		      &lt;bpmndi:BPMNShape id="Task_188ck4v_di" bpmnElement="Task_188ck4v"&gt;
+		        &lt;dc:Bounds x="316" y="54" width="100" height="80" /&gt;
+		      &lt;/bpmndi:BPMNShape&gt;
+		      &lt;bpmndi:BPMNEdge id="SequenceFlow_1h9dop4_di" bpmnElement="SequenceFlow_1h9dop4"&gt;
+		        &lt;di:waypoint xsi:type="dc:Point" x="217" y="165" /&gt;
+		        &lt;di:waypoint xsi:type="dc:Point" x="267" y="165" /&gt;
+		        &lt;di:waypoint xsi:type="dc:Point" x="267" y="94" /&gt;
+		        &lt;di:waypoint xsi:type="dc:Point" x="316" y="94" /&gt;
+		        &lt;bpmndi:BPMNLabel&gt;
+		          &lt;dc:Bounds x="162" y="111.5" width="90" height="20" /&gt;
+		        &lt;/bpmndi:BPMNLabel&gt;
+		      &lt;/bpmndi:BPMNEdge&gt;
+		      &lt;bpmndi:BPMNShape id="Task_1q41ts7_di" bpmnElement="Task_1q41ts7"&gt;
+		        &lt;dc:Bounds x="552" y="42" width="100" height="80" /&gt;
+		      &lt;/bpmndi:BPMNShape&gt;
+		      &lt;bpmndi:BPMNEdge id="SequenceFlow_1vz9evg_di" bpmnElement="SequenceFlow_1vz9evg"&gt;
+		        &lt;di:waypoint xsi:type="dc:Point" x="416" y="94" /&gt;
+		        &lt;di:waypoint xsi:type="dc:Point" x="484" y="94" /&gt;
+		        &lt;di:waypoint xsi:type="dc:Point" x="484" y="82" /&gt;
+		        &lt;di:waypoint xsi:type="dc:Point" x="552" y="82" /&gt;
+		        &lt;bpmndi:BPMNLabel&gt;
+		          &lt;dc:Bounds x="422" y="62" width="90" height="20" /&gt;
+		        &lt;/bpmndi:BPMNLabel&gt;
+		      &lt;/bpmndi:BPMNEdge&gt;
+		      &lt;bpmndi:BPMNEdge id="SequenceFlow_08xrd4r_di" bpmnElement="SequenceFlow_08xrd4r"&gt;
+		        &lt;di:waypoint xsi:type="dc:Point" x="652" y="82" /&gt;
+		        &lt;di:waypoint xsi:type="dc:Point" x="686" y="82" /&gt;
+		        &lt;di:waypoint xsi:type="dc:Point" x="686" y="165" /&gt;
+		        &lt;di:waypoint xsi:type="dc:Point" x="745" y="165" /&gt;
+		        &lt;bpmndi:BPMNLabel&gt;
+		          &lt;dc:Bounds x="700" y="102.5" width="90" height="20" /&gt;
+		        &lt;/bpmndi:BPMNLabel&gt;
+		      &lt;/bpmndi:BPMNEdge&gt;
+		      &lt;bpmndi:BPMNEdge id="SequenceFlow_0tnkxqz_di" bpmnElement="SequenceFlow_0tnkxqz"&gt;
+		        &lt;di:waypoint xsi:type="dc:Point" x="763" y="183" /&gt;
+		        &lt;di:waypoint xsi:type="dc:Point" x="763" y="226" /&gt;
+		        &lt;di:waypoint xsi:type="dc:Point" x="199" y="226" /&gt;
+		        &lt;di:waypoint xsi:type="dc:Point" x="199" y="183" /&gt;
+		        &lt;bpmndi:BPMNLabel&gt;
+		          &lt;dc:Bounds x="426" y="232" width="90" height="20" /&gt;
+		        &lt;/bpmndi:BPMNLabel&gt;
+		      &lt;/bpmndi:BPMNEdge&gt;
+		    &lt;/bpmndi:BPMNPlane&gt;
+		  &lt;/bpmndi:BPMNDiagram&gt;
+		&lt;/definitions&gt;
+		</bpmnXml>
+		<edited>true</edited>
+		<name>Order flow</name>
+		<viewBuilder>order-form</viewBuilder>
+		<displayTypeSelect>1</displayTypeSelect>
+		<metaModel>Order</metaModel>
+		<selected>false</selected>
+	</Wkf>
+	
+	<WkfNode>
+		<startNode>true</startNode>
+		<myMenuEntry>false</myMenuEntry>
+		<selected>false</selected>
+		<statusMenuEntry>false</statusMenuEntry>
+		<title>Draft</title>
+		<wkf>Order flow</wkf>
+		<name>Draft</name>
+		<xmlId>StartEvent_1</xmlId>
+		<endNode>false</endNode>
+		<sequence>1</sequence>
+	</WkfNode>
+	<WkfNode>
+		<startNode>false</startNode>
+		<myMenuEntry>false</myMenuEntry>
+		<selected>false</selected>
+		<statusMenuEntry>false</statusMenuEntry>
+		<title>Closed</title>
+		<wkf>Order flow</wkf>
+		<name>Closed</name>
+		<xmlId>EndEvent_1</xmlId>
+		<endNode>true</endNode>
+		<sequence>4</sequence>
+	</WkfNode>
+	<WkfNode>
+		<statusMenuLabel>Confirmed Orders</statusMenuLabel>
+		<startNode>false</startNode>
+		<myMenuEntry>false</myMenuEntry>
+		<selected>false</selected>
+		<statusMenuEntry>true</statusMenuEntry>
+		<title>Confirm</title>
+		<wkf>Order flow</wkf>
+		<name>Confirm</name>
+		<xmlId>Task_188ck4v</xmlId>
+		<endNode>false</endNode>
+		<parentMenuBuilder>menu-root-sales</parentMenuBuilder>
+		<sequence>2</sequence>
+		<importId>0</importId>
+		<statusMenu>menu-order-confirm</statusMenu>
+	</WkfNode>
+	<WkfNode>
+		<statusMenuLabel>Validated Orders</statusMenuLabel>
+		<startNode>false</startNode>
+		<myMenuEntry>true</myMenuEntry>
+		<selected>false</selected>
+		<statusMenuEntry>true</statusMenuEntry>
+		<title>Validate</title>
+		<wkf>Order flow</wkf>
+		<name>Validate</name>
+		<myMenuLabel>My validated orders</myMenuLabel>
+		<metaField>salesman</metaField>
+		<xmlId>Task_1q41ts7</xmlId>
+		<endNode>false</endNode>
+		<parentMenuBuilder>menu-root-sales</parentMenuBuilder>
+		<sequence>3</sequence>
+		<importId>0</importId>
+		<statusMenu>my-menu-order-validate</statusMenu>
+	</WkfNode>
+	
+	<WkfTransition>
+		<xmlId>SequenceFlow_0tnkxqz</xmlId>
+		<metaModel>Order</metaModel>
+		<conditions>
+			<item>
+				<filterOperator>equals</filterOperator>
+				<metaField>total</metaField>
+				<selected>false</selected>
+				<logicOp>0</logicOp>
+				<value>0</value>
+				<isParameter>false</isParameter>
+				<importId>0</importId>
+			</item>
+		</conditions>
+		<isButton>false</isButton>
+		<selected>false</selected>
+		<source>Closed</source>
+		<wkf>Order flow</wkf>
+		<name>Reset to Draft</name>
+		<target>Draft</target>
+		<alertTypeSelect>0</alertTypeSelect>
+    </WkfTransition>
+	<WkfTransition>
+		<xmlId>SequenceFlow_08xrd4r</xmlId>
+		<buttonTitle>Close</buttonTitle>
+		<isButton>true</isButton>
+		<selected>false</selected>
+		<source>Validate</source>
+		<wkf>Order flow</wkf>
+		<name>Close Order</name>
+		<target>Closed</target>
+		<alertTypeSelect>0</alertTypeSelect>
+	</WkfTransition>
+	<WkfTransition>
+		<roleSet>
+			<name>role.manager</name>
+		</roleSet>
+		<xmlId>SequenceFlow_1vz9evg</xmlId>
+		<buttonTitle>Validate</buttonTitle>
+		<isButton>true</isButton>
+		<selected>false</selected>
+		<source>Confirm</source>
+		<wkf>Order flow</wkf>
+		<name>Validate order</name>
+		<target>Validate</target>
+		<alertMsg>Are you sure to validate order ?</alertMsg>
+		<alertTypeSelect>1</alertTypeSelect>
+	</WkfTransition>
+	<WkfTransition>
+		<roleSet>
+			<name>role.manager</name>
+		</roleSet>
+		<xmlId>SequenceFlow_1h9dop4</xmlId>
+		<buttonTitle>Confirm</buttonTitle>
+		<isButton>true</isButton>
+		<successMsg>Order confirmed</successMsg>
+		<selected>false</selected>
+		<source>Draft</source>
+		<wkf>Order flow</wkf>
+		<name>Confirm Order</name>
+		<target>Confirm</target>
+		<alertTypeSelect>0</alertTypeSelect>
+	</WkfTransition>
+	
+	
+</workflows>

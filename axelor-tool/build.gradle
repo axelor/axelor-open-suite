@@ -1,0 +1,16 @@
+apply plugin: 'axelor-module'
+
+module {
+	name "axelor-tool"
+	version "4.0.0"
+	title "Axelor :: Tool"
+}
+
+dependencies {
+	compile "commons-net:commons-net:2.0"
+	compile "org.apache.commons:commons-io:1.3.2"
+	compile "org.apache.commons:commons-lang3:3.1"
+	compile "com.sun.xml.bind:jaxb-impl:2.2.2"
+	compile libs.ST4
+}
+

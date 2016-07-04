@@ -1,0 +1,7 @@
+"key","message","comment","context"
+"An error occurs while opening the connection. Please verify the following URL : %s.",,,
+"Années sur 360 jours",,,
+"Can not opening the connection to a empty URL.",,,
+"No such template",,,
+"Templating can not be empty",,,
+"Url %s is malformed.",,,

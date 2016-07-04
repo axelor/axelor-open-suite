@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
+	
+    <grid name="mail-account-grid" title="Mail accounts" model="com.axelor.apps.message.db.MailAccount">
+        <field name="name"/>
+        <field name="login"/>
+        <field name="host"/>
+        <field name="isDefault"/>
+    </grid>
+    
+    <form name="mail-account-form" title="Mail account" model="com.axelor.apps.message.db.MailAccount">
+    	<panel name="informations" title="Informations">
+            <field name="name"/>
+			<field name="isDefault" onChange="action-mail-account-validate-is-default"/>
+        	<field name="signature" widget="Html" x-lite="true" height="7" colSpan="12"/>
+        </panel>
+        <panel name="configPanel" title="Configurations" readonlyIf="isValid">
+        	<field name="serverTypeSelect"/>
+        	<field name="host"/>
+        	<field name="securitySelect" onChange="action-mail-account-onchange-security-select"/>
+        	<field name="port"/>
+        </panel>
+        <panel name="loginPanel" title="Login" readonlyIf="isValid" >
+       	 	<field name="login"/>
+        	<field name="password" widget="password"/>
+        </panel>
+		<panel sidebar="true">
+			<field name="isValid" readonly="true"/>
+			<button name="testConnection" onClick="save,action-method-mail-account-validate,save" title="Test connection"/>
+		</panel>
+    </form>
+    
+	<action-method name="action-method-mail-account-validate">
+		<call class="com.axelor.apps.message.web.MailAccountController" method="validateSmtpAccount"/>
+	</action-method>
+    
+	<action-method name="action-mail-account-validate-is-default">
+		<call class="com.axelor.apps.message.web.MailAccountController" method="checkDefaultMailAccount"/>
+	</action-method>
+	
+	<action-attrs name="action-mail-account-onchange-security-select" model="com.axelor.apps.message.db.MailAccount">
+		<attribute for="port" name="value" expr="#{securitySelect == 1 ? 465 : securitySelect == 2 ? 587 : 25}"/>
+	</action-attrs>
+	
+    
+</object-views>

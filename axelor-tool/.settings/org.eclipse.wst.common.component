@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project-modules id="moduleCoreId" project-version="2.0">
+	<wb-module deploy-name="axelor-tool">
+		<wb-resource deploy-path="/" source-path="src/main/resources"/>
+		<wb-resource deploy-path="/" source-path="src/main/java"/>
+		<wb-resource deploy-path="/" source-path="build/src-gen"/>
+		<dependent-module deploy-path="../" handle="module:/classpath/lib//home/axelor/.gradle/caches/modules-2/files-2.1/junit/junit/3.7/e64f01b90744bda704f21ac10c5f16deba64e4b4/junit-3.7.jar">
+			<dependency-type>uses</dependency-type>
+		</dependent-module>
+	</wb-module>
+</project-modules>

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
+    
+    
+    <form name="generate-message-wizard-form"  model="com.axelor.apps.base.db.Wizard" title="Generate message" onNew="action-generate-message-group-on-new">
+    	<panel name="main" >
+	      	<field name="template" title="Template" widget="SuggestBox" type="MANY_TO_ONE" target="com.axelor.apps.message.db.Template" target-name="name" form-view="template-form" grid-view="template-grid"/>
+	      	<spacer/>
+	      	<button name="validate" title="Validate" onClick="action-generate-message-method-generate-message"/>
+      	</panel>
+	</form>
+	
+	<action-group name="action-generate-message-group-on-new">
+		<action name="action-generate-message-record-on-new"/>
+		<action name="action-generate-message-attrs-template-domain"/>
+	</action-group>
+    
+    <action-record name="action-generate-message-record-on-new" model="com.axelor.apps.base.db.Wizard">
+    	<field name="template" expr="eval:__repo__.of(Template).all().filter('self.metaModel.fullName = ?1 and self.isDefault = true and self.isSystem != true',_templateContextModel).fetchOne()"/> 
+   	</action-record>
+    
+    <action-method name="action-generate-message-method-generate-message">
+    	<call class="com.axelor.apps.message.web.GenerateMessageController" method="generateMessage"/>
+    </action-method>
+    
+    <action-attrs name="action-generate-message-attrs-template-domain">
+    	<attribute name="domain" for="template" expr="eval: &quot;self.metaModel.fullName = '${_templateContextModel}' and self.isSystem != true&quot;"/>
+    </action-attrs>
+    
+</object-views>

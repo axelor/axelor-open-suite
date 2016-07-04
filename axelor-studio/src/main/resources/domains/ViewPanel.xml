@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_4.0.xsd">
+
+  <module name="studio" package="com.axelor.studio.db" />
+  
+  <entity name="ViewPanel" cachable="true">
+    <![CDATA[
+    This object store panels of form view.
+    ]]>
+    <string name="name" title="Name"/>
+    <string name="title" title="Title"/>
+    <one-to-many name="viewItemList" ref="ViewItem" title="Items" mappedBy="viewPanel" orderBy="sequence"/>
+    <integer name="place" title="Place" selection="form.view.builder.place.select" />
+    <many-to-one name="viewBuilder" ref="ViewBuilder" />
+    <many-to-one name="viewBuilderSideBar" ref="ViewBuilder" />
+    <string name="panelLevel" title="Level" namecolumn="true"  required="true"/>
+    <boolean name="isPanelTab" title="Panel tab ?" />
+    <boolean name="isNotebook" title="Notebook ?" />
+  </entity>
+    
+    
+ </domain-models>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menus xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  
+  <menu name="menu-root-sales" title="Sales" isParent="T" icon="fa-line-chart" iconBackground="blue" order="-80"/>
+  <menu name="menu-dashboard" title="Dashboard" parent="menu-root-sales"  order="1" dashboard="sales-dashboard" />
+  <menu name="menu-customer" title="Customers" parent="menu-root-sales"  order="2" model="com.axelor.apps.custom.db.Customer" />
+  <menu name="menu-product" title="Products" parent="menu-root-sales"  order="3" model="com.axelor.apps.custom.db.Product" />
+  <menu name="menu-order" title="Order" parent="menu-root-sales"  order="4" model="com.axelor.apps.custom.db.Order" />
+  <menu name="menu-invoice" title="Invoice" parent="menu-root-sales"  order="5" model="com.axelor.apps.custom.db.Invoice" />
+  <menu name="menu-config-sales" title="Configuration" parent="menu-root-sales"  order="6" isParent="T"/>
+  <menu name="menu-product-category" title="Product catogry" parent="menu-config-sales" order="1" model="com.axelor.apps.custom.db.ProductCategory" />
+  <menu name="menu-order-policy" title="Order policy" parent="menu-config-sales" order="2" model="com.axelor.apps.custom.db.OrderPolicy" />
+
+</menus>

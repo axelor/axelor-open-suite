@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_4.0.xsd">
+
+  <module name="message" package="com.axelor.apps.message.db"/>
+
+  <entity name="Template" lang="java">
+  	
+  	<string name="name" title="Name" required="true" namecolumn="true"/>
+  	<string name="content" large="true" multiline="true" title="Content"/>
+  	<string name="subject" large="true" multiline="true" title="Suject"/>
+  	<string name="fromAdress" large="true" multiline="true" title="From" />
+  	<string name="replyToRecipients" large="true" multiline="true" title="Reply to" />
+  	<string name="toRecipients" large="true" multiline="true" title="To"/>
+  	<string name="ccRecipients" large="true" multiline="true" title="Cc"/>
+  	<string name="bccRecipients" large="true" multiline="true" title="Bcc"/>
+  	<string name="target" title="Target receptor"/>
+  	<integer name="mediaTypeSelect" title="Media Type" required="true" selection="message.media.type.select" help="true"/>
+  	<string name="addressBlock" large="true" multiline="true" title="Address Block" help="true"/>
+	<many-to-one name="metaModel" ref="com.axelor.meta.db.MetaModel" title="Model" help="true"/>
+	<boolean name="isDefault" title="Default ?" help="true"/>
+	<boolean name="isSystem" title="System ?" help="true"/>
+    
+  </entity>
+
+</domain-models>
