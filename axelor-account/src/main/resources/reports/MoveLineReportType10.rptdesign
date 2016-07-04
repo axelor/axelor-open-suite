@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.4.2.v201410272105 Build &lt;4.4.2.v20150217-1805></property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.5.0.v201506092134 Génération &lt;@BUILD@></property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -97,7 +97,7 @@
                 </ex-property>
             </list-property>
             <property name="odaDriverClass">org.postgresql.Driver</property>
-            <property name="odaURL">jdbc:postgresql://localhost:5432/axelor-erp</property>
+            <property name="odaURL">jdbc:postgresql://localhost:5432/axelor-business-suite</property>
             <property name="odaUser">axelor</property>
         </oda-data-source>
     </data-sources>
@@ -189,10 +189,9 @@
                     <property name="name">param_1</property>
                     <property name="paramName">MoveLineReportId</property>
                     <property name="nativeName"></property>
-                    <property name="dataType">integer</property>
+                    <property name="dataType">decimal</property>
                     <property name="nativeDataType">-5</property>
                     <property name="position">1</property>
-                    <property name="isOptional">false</property>
                     <property name="isInput">true</property>
                     <property name="isOutput">false</property>
                 </structure>
@@ -362,17 +361,19 @@
                 </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[select MoveLine.name as move_line_name, MoveLineReport.global, MoveLineReport.global_by_date, MoveLineReport.global_by_post, 
-MoveLine.date, Partner.name as partner_name, Partner.first_name as partner_first_name, Partner.partner_seq as partner_seq, MoveLine.credit, 
-Invoice.invoice_id, MoveLineAccount.code as account_code, CashRegister.num as cash_register_num, 
+MoveLine.date_val as "date", Partner.name as partner_name, Partner.first_name as partner_first_name, Partner.partner_seq as partner_seq, MoveLine.credit, 
+Invoice.invoice_id, Account.code as account_code, CashRegister.num as cash_register_num, 
 CashRegister.name as cash_register_name 
 from public.account_move_line_report as MoveLineReport 
 left outer join public.account_move_line as MoveLine on (MoveLineReport.id = ?) 
 left outer join public.account_move as Move on (MoveLine.move = Move.id)
-left outer join public.account_account as Account on (MoveLineReport.account  = Account.id )
-left outer join public.account_account as MoveLineAccount on (MoveLine.account  = MoveLineAccount.id )
-left outer join public.base_partner as Partner on (MoveLine.partner = Partner.id)
-left outer join public.base_partner as FromPartner on (MoveLineReport.from_partner = FromPartner.id)
-left outer join public.base_partner as ToPartner on (MoveLineReport.to_partner = ToPartner.id)
+
+left outer join public.account_account as Account on (MoveLine.account  = Account.id )
+left outer join public.base_partner as Partner on (MoveLine.partner  = Partner.id)
+
+left outer join public.account_move_line_report_account_set as AccountSet on (AccountSet.account_move_line_report = MoveLineReport.id)
+left outer join public.account_move_line_report_partner_set as PartnerSet on (PartnerSet.account_move_line_report = MoveLineReport.id)
+
 left outer join public.base_company as Company on (MoveLineReport.company = Company.id)
 left outer join public.account_cash_register as CashRegister on (Move.cash_register = CashRegister.id)
 left outer join public.base_period as Period on (Move.period = Period.id)
@@ -384,22 +385,21 @@ left outer join public.account_move as MoveReconciled on (MoveLineReconciled.mov
 left outer join public.account_invoice as Invoice on (MoveReconciled.invoice = Invoice.id)
 
 where 
-(MoveLineReport.date_from IS NULL OR MoveLine.date >= MoveLineReport.date_from) AND 
-(MoveLineReport.date_to IS NULL OR MoveLine.date <= MoveLineReport.date_to) AND
-MoveLine.date <= MoveLineReport.date AND 
+(MoveLineReport.date_from IS NULL OR MoveLine.date_val >= MoveLineReport.date_from) AND 
+(MoveLineReport.date_to IS NULL OR MoveLine.date_val <= MoveLineReport.date_to) AND
+MoveLine.date_val <= MoveLineReport.date_val AND 
 Move.company = MoveLineReport.company  AND
-(MoveLineReport.partner IS NULL OR MoveLineReport.partner = MoveLine.partner) AND
-(MoveLineReport.from_partner IS NULL OR (MoveLine.partner IS NULL OR (FromPartner.name <= Partner.name))) AND 
-(MoveLineReport.to_partner IS NULL OR (MoveLine.partner IS NULL OR (ToPartner.name >= Partner.name))) AND
-(MoveLineReport.account IS NULL OR (MoveLineReport.account = MoveLine.account)) AND
-(MoveLine.account IS NULL OR (MoveLineAccount.reconcile_ok = true )) AND
+(AccountSet.account_set IS NULL OR AccountSet.account_set = Account.id) AND
+(PartnerSet.partner_set IS NULL OR PartnerSet.partner_set = Partner.id) AND
+(MoveLine.account IS NULL OR (Account.reconcile_ok = true )) AND
 (MoveLineReport.cash_register IS NULL OR MoveLineReport.cash_register = Move.cash_register) AND 
 (MoveLineReport.period IS NULL OR MoveLineReport.period  = Move.period) AND 
 (MoveLineReport.journal IS NULL OR MoveLineReport.journal  = Move.journal) AND 
 (MoveLineReport.payment_mode IS  NULL OR (MoveLineReport.payment_mode = Move.payment_mode)) AND
 Move.ignore_in_accounting_ok = false AND
 MoveLine.credit > 0.00 AND 
-PaymentMode.type_select = 5]]></xml-property>
+PaymentMode.type_select = 5
+]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
   <Version>2.0</Version>
@@ -429,54 +429,63 @@ PaymentMode.type_select = 5]]></xml-property>
                     <property name="columnName">company_name</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">company_name</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">company_name</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">ReportDate</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">ReportDate</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">ReportDate</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">PeriodCode</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">PeriodCode</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">PeriodCode</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">PaymentMode</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">PaymentMode</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">PaymentMode</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">JournalCode</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">JournalCode</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">JournalCode</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">ReportDateEdition</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">ReportDateEdition</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">ReportDateEdition</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">date_to</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">date_to</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">date_to</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">date_from</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">date_from</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">date_from</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">period_name</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">period_name</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">period_name</text-property>
                 </structure>
             </list-property>
@@ -608,13 +617,12 @@ PaymentMode.type_select = 5]]></xml-property>
                     <property name="nativeDataType">12</property>
                 </structure>
             </list-property>
-            <xml-property name="queryText"><![CDATA[select Company.name as company_name, MoveLineReport.date as "ReportDate", Period.code as "PeriodCode",
+            <xml-property name="queryText"><![CDATA[select Company.name as company_name, MoveLineReport.date_val as "ReportDate", Period.code as "PeriodCode",
 PaymentMode.name as "PaymentMode", Journal.code as "JournalCode", MoveLineReport.publication_date_time as "ReportDateEdition", 
 MoveLineReport.date_to, MoveLineReport.date_from, Period.name as period_name 
 from public.account_move_line_report as MoveLineReport 
 inner join public.base_company as Company on (MoveLineReport.id = ? and MoveLineReport.company = Company.id)
 left outer join public.base_period as Period on (MoveLineReport.period = Period.id)
-left outer join public.account_account as Account on (MoveLineReport.account = Account.id)
 left outer join public.account_payment_mode as PaymentMode on (MoveLineReport.payment_mode = PaymentMode.id)
 left outer join public.account_journal as Journal on (MoveLineReport.journal = Journal.id)]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
@@ -1256,7 +1264,7 @@ left outer join public.account_journal as Journal on (MoveLineReport.journal = J
                         <property name="borderTopStyle">solid</property>
                         <property name="borderTopWidth">thin</property>
                         <label id="1132">
-                            <text-property name="text">Tiers Payeur</text-property>
+                            <text-property name="text">Tiers</text-property>
                         </label>
                     </cell>
                     <cell id="2666">

@@ -887,7 +887,7 @@ left outer join public.base_period as Period on (MoveLineReport.period = Period.
                         <property name="fontSize">13pt</property>
                         <property name="fontWeight">bold</property>
                         <property name="textAlign">center</property>
-                        <text-property name="text">GRAND LIVRE CLIENT</text-property>
+                        <text-property name="text">GRAND LIVRE</text-property>
                     </label>
                 </cell>
             </row>
