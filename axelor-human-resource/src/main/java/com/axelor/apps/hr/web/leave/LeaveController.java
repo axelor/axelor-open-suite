@@ -103,26 +103,6 @@ public class LeaveController {
 				.context("_showRecord", String.valueOf(leave.getId())).map());
 	}
 
-	public void allLeave(ActionRequest request, ActionResponse response){
-		List<LeaveRequest> leaveList = Beans.get(LeaveRequestRepository.class).all().filter("self.user = ?1 AND self.company = ?2",AuthUtils.getUser(),AuthUtils.getUser().getActiveCompany()).fetch();
-		List<Long> leaveListId = new ArrayList<Long>();
-		for (LeaveRequest leave : leaveList) {
-			leaveListId.add(leave.getId());
-		}
-
-		String leaveListIdStr = "-2";
-		if(!leaveListId.isEmpty()){
-			leaveListIdStr = Joiner.on(",").join(leaveListId);
-		}
-
-		response.setView(ActionView.define(I18n.get("All my Leave Requests"))
-				   .model(LeaveRequest.class.getName())
-				   .add("grid","leave-request-grid")
-				   .add("form","leave-request-form")
-				   .domain("self.id in ("+leaveListIdStr+")")
-				   .map());
-	}
-
 	public void validateLeave(ActionRequest request, ActionResponse response) throws AxelorException{
 		
 		List<LeaveRequest> leaveList = Lists.newArrayList();

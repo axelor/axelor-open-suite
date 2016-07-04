@@ -143,26 +143,6 @@ public class ExpenseController {
 				.context("_showRecord", String.valueOf(expense.getId())).map());
 	}
 
-	public void allExpense(ActionRequest request, ActionResponse response){
-		List<Expense> expenseList = Beans.get(ExpenseRepository.class).all().filter("self.user = ?1 AND self.company = ?2",AuthUtils.getUser(),AuthUtils.getUser().getActiveCompany()).fetch();
-		List<Long> expenseListId = new ArrayList<Long>();
-		for (Expense expense : expenseList) {
-			expenseListId.add(expense.getId());
-		}
-
-		String expenseListIdStr = "-2";
-		if(!expenseListId.isEmpty()){
-			expenseListIdStr = Joiner.on(",").join(expenseListId);
-		}
-
-		response.setView(ActionView.define(I18n.get("My Expenses"))
-				   .model(Expense.class.getName())
-				   .add("grid","expense-grid")
-				   .add("form","expense-form")
-				   .domain("self.id in ("+expenseListIdStr+")")
-				   .map());
-	}
-
 	public void validateExpense(ActionRequest request, ActionResponse response) throws AxelorException{
 		
 		List<Expense> expenseList = Lists.newArrayList();

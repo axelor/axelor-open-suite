@@ -151,26 +151,6 @@ public class TimesheetController {
 		}
 	}
 
-	public void allTimesheet(ActionRequest request, ActionResponse response){
-		List<Timesheet> timesheetList = Beans.get(TimesheetRepository.class).all().filter("self.user = ?1 AND self.company = ?2",AuthUtils.getUser(),AuthUtils.getUser().getActiveCompany()).fetch();
-		List<Long> timesheetListId = new ArrayList<Long>();
-		for (Timesheet timesheet : timesheetList) {
-			timesheetListId.add(timesheet.getId());
-		}
-
-		String timesheetListIdStr = "-2";
-		if(!timesheetListId.isEmpty()){
-			timesheetListIdStr = Joiner.on(",").join(timesheetListId);
-		}
-
-		response.setView(ActionView.define(I18n.get("My Timesheets"))
-				   .model(Timesheet.class.getName())
-				   .add("grid","timesheet-grid")
-				   .add("form","timesheet-form")
-				   .domain("self.id in ("+timesheetListIdStr+")")
-				   .map());
-	}
-
 	public void validateTimesheet(ActionRequest request, ActionResponse response){
 		
 		List<Timesheet> timesheetList = Lists.newArrayList();

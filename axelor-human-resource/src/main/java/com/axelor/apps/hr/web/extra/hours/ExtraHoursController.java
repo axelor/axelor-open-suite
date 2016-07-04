@@ -89,26 +89,6 @@ public class ExtraHoursController {
 		}
 	}
 
-	public void allExtraHours(ActionRequest request, ActionResponse response){
-		List<ExtraHours> extraHoursList = Beans.get(ExtraHoursRepository.class).all().filter("self.user = ?1 AND self.company = ?2",AuthUtils.getUser(),AuthUtils.getUser().getActiveCompany()).fetch();
-		List<Long> extraHoursListId = new ArrayList<Long>();
-		for (ExtraHours extraHours : extraHoursList) {
-			extraHoursListId.add(extraHours.getId());
-		}
-
-		String extraHoursListIdStr = "-2";
-		if(!extraHoursListId.isEmpty()){
-			extraHoursListIdStr = Joiner.on(",").join(extraHoursListId);
-		}
-
-		response.setView(ActionView.define(I18n.get("My Extra hours"))
-				   .model(ExtraHours.class.getName())
-				   .add("grid","extra-hours-grid")
-				   .add("form","extra-hours-form")
-				   .domain("self.id in ("+extraHoursListIdStr+")")
-				   .map());
-	}
-
 	public void validateExtraHours(ActionRequest request, ActionResponse response) throws AxelorException{
 		
 		List<ExtraHours> extraHoursList = Lists.newArrayList();
