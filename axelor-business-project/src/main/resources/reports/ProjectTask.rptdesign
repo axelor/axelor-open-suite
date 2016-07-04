@@ -103,6 +103,9 @@
             <property name="isRequired">true</property>
             <property name="dataType">decimal</property>
             <property name="distinct">true</property>
+            <simple-property-list name="defaultValue">
+                <value type="constant">1</value>
+            </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
             <property name="concealValue">false</property>
@@ -146,7 +149,7 @@
                 </ex-property>
             </list-property>
             <property name="odaDriverClass">org.postgresql.Driver</property>
-            <property name="odaURL">jdbc:postgresql://localhost:5432</property>
+            <property name="odaURL">jdbc:postgresql://localhost:5432/</property>
         </oda-data-source>
     </data-sources>
     <data-sets>
@@ -921,7 +924,7 @@ group by invoice.invoice_id,invoice.invoice_date]]></xml-property>
                     <property name="paramName">ProjectTaskId</property>
                     <property name="nativeName"></property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">-1</property>
+                    <property name="nativeDataType">-5</property>
                     <property name="position">1</property>
                     <property name="isInput">true</property>
                     <property name="isOutput">false</property>
@@ -931,7 +934,7 @@ group by invoice.invoice_id,invoice.invoice_date]]></xml-property>
                     <property name="paramName">ProjectTaskId</property>
                     <property name="nativeName"></property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">-1</property>
+                    <property name="nativeDataType">-5</property>
                     <property name="position">2</property>
                     <property name="isInput">true</property>
                     <property name="isOutput">false</property>
@@ -977,7 +980,7 @@ group by invoice.invoice_id,invoice.invoice_date]]></xml-property>
                     <property name="name">exp_amt</property>
                     <property name="nativeName">exp_amt</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">3</property>
+                    <property name="nativeDataType">2</property>
                 </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[select emp.id as emp_id,
@@ -986,7 +989,7 @@ group by invoice.invoice_id,invoice.invoice_date]]></xml-property>
 from hr_expense_line expl
 left join hr_expense expense on (expense.id = expl.expense)
 left join auth_user authuser on (authuser.id = expense.user_id)
-left join hr_employee emp on (emp.user_id = authuser.id)
+left join hr_employee emp on (emp.id = authuser.employee)
 left join project_project_task task on (task.id = expl.project_task)
 where (task.project = ? or task.id = ?)
 and expense.status_select = 3
@@ -1003,7 +1006,7 @@ group by emp.id,emp.name]]></xml-property>
             <design:name></design:name>
             <design:position>1</design:position>
           </design:identifier>
-          <design:nativeDataTypeCode>-1</design:nativeDataTypeCode>
+          <design:nativeDataTypeCode>-5</design:nativeDataTypeCode>
           <design:precision>0</design:precision>
           <design:scale>0</design:scale>
           <design:nullability>Unknown</design:nullability>
@@ -1018,7 +1021,7 @@ group by emp.id,emp.name]]></xml-property>
             <design:name></design:name>
             <design:position>2</design:position>
           </design:identifier>
-          <design:nativeDataTypeCode>-1</design:nativeDataTypeCode>
+          <design:nativeDataTypeCode>-5</design:nativeDataTypeCode>
           <design:precision>0</design:precision>
           <design:scale>0</design:scale>
           <design:nullability>Unknown</design:nullability>
@@ -1158,7 +1161,7 @@ group by emp.id,emp.name]]></xml-property>
 from hr_timesheet_line tml
 left join hr_timesheet tm on (tm.id = tml.timesheet)
 left join auth_user usr on (usr.id = tm.user_id)
-left join hr_employee emp on (emp.user_id = usr.id)
+left join hr_employee emp on (emp.id = usr.employee)
 left join project_project_task task on (task.id = tml.project_task)
 where tm.status_select = 3 and (task.id = ? or task.project = ?)
 group by emp.id,emp.name,emp.hourly_rate]]></xml-property>
@@ -1761,7 +1764,7 @@ select to_char(date_val,'YYYY-MM') as month,sum(tml.duration_stored*emp.hourly_r
 from hr_timesheet_line tml
 left join hr_timesheet tm on (tm.id = tml.timesheet)
 left join auth_user usr on (usr.id = tm.user_id)
-left join hr_employee emp on (emp.user_id = usr.id)
+left join hr_employee emp on (emp.id = usr.employee)
 left join project_project_task task on (task.id = tml.project_task)
 where tm.status_select = 3 and (task.id = ? or task.project = ?)
 group by month
