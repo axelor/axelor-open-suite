@@ -149,8 +149,8 @@ public class TimesheetServiceImpl implements TimesheetService{
 				boolean noLeave = true;
 				if(leaveList != null){
 					for (LeaveRequest leave : leaveList) {
-						if((leave.getDateFrom().isBefore(fromDate) && leave.getDateTo().isAfter(fromDate))
-							|| leave.getDateFrom().isEqual(fromDate) || leave.getDateTo().isEqual(fromDate))
+						if((leave.getFromDate().isBefore(fromDate) && leave.getToDate().isAfter(fromDate))
+							|| leave.getFromDate().isEqual(fromDate) || leave.getToDate().isEqual(fromDate))
 						{
 							noLeave = false;
 							break;

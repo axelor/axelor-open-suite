@@ -2,32 +2,32 @@
 <object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
 
-	<grid name="leave-request-grid" title="Leave Requests" model="com.axelor.apps.hr.db.LeaveRequest" orderBy="dateFrom,startOnSelect">
+	<grid name="leave-request-grid" title="Leave Requests" model="com.axelor.apps.hr.db.LeaveRequest" orderBy="fromDate,startOnSelect">
 		 <hilite color="danger" if="statusSelect == 4"/>
 		 <hilite color="success" if="statusSelect == 3"/>
 		 <hilite color="warning" if="statusSelect == 2"/>
 		 <field name="company" form-view="company-form" grid-view="company-grid"/>
 		 <field name="user" form-view="user-form" grid-view="user-grid"/>
 		 <field name="requestDate" />
-		 <field name="dateFrom" />
+		 <field name="fromDate" />
 		 <field name="startOnSelect" />
-		 <field name="dateTo" />
+		 <field name="toDate" />
 		 <field name="endOnSelect" />
 		 <field name="statusSelect" />
 	</grid>
 	
-	<grid name="leave-request-validate-grid" title="Leave Requests" model="com.axelor.apps.hr.db.LeaveRequest" orderBy="dateFrom,startOnSelect">
+	<grid name="leave-request-validate-grid" title="Leave Requests" model="com.axelor.apps.hr.db.LeaveRequest" orderBy="fromDate,startOnSelect">
 		 <toolbar>
 			<button name="showSubordinateLeaveToValidate" title="Show leaves to be validated by my subordinates" onClick="com.axelor.apps.hr.web.leave.LeaveController:showSubordinateLeaves"/>
 		 </toolbar>
-		<hilite background="danger" if="$moment(dateFrom).diff(todayDate,'days') &lt;= 0"/>
+		<hilite background="danger" if="$moment(fromDate).diff(todayDate,'days') &lt;= 0"/>
   		<hilite background="warning" if="$moment(todayDate).diff(requestDate,'days') &gt;= 7 || $moment(todayDate).diff(requestDate,'days') &gt;= 15"/> 
 		 <field name="company" form-view="company-form" grid-view="company-grid"/>
 		 <field name="user" form-view="user-form" grid-view="user-grid" onChange="action-leave-request-validate-dates"/>
 		 <field name="requestDate" />
-		 <field name="dateFrom" onChange="action-leave-request-validate-dates"/>
+		 <field name="fromDate" onChange="action-leave-request-validate-dates"/>
 		 <field name="startOnSelect" />
-		 <field name="dateTo" onChange="action-leave-request-validate-dates"/>
+		 <field name="toDate" onChange="action-leave-request-validate-dates"/>
 		 <field name="endOnSelect" />
 		 <field name="statusSelect" />
 	</grid>
@@ -48,12 +48,12 @@
 			<field name="company" form-view="company-form" grid-view="company-grid"/>
 			<field name="user" form-view="user-form" grid-view="user-grid" onChange="action-leave-request-validate-dates,action-leave-request-methode-compute-duration"/>
 			<field name="requestDate" colSpan="12" width="50%"/>
-			<field name="dateFrom" onChange="action-leave-request-validate-dates,action-leave-request-methode-compute-duration"/>
+			<field name="fromDate" onChange="action-leave-request-validate-dates,action-leave-request-methode-compute-duration"/>
 			<field name="startOnSelect" onChange="action-leave-request-validate-dates,action-leave-request-methode-compute-duration"/>
-			<field name="dateTo" onChange="action-leave-request-validate-dates,action-leave-request-methode-compute-duration"/>
+			<field name="toDate" onChange="action-leave-request-validate-dates,action-leave-request-methode-compute-duration"/>
 			<field name="endOnSelect" onChange="action-leave-request-validate-dates,action-leave-request-methode-compute-duration"/>
 			<field name="duration" readonly="true" onChange="action-leave-request-methode-duration"/>
-			<field name="reason" canNew="false" widget="SuggestBox" required="true" onChange="action-leave-request-attrs-select" form-view="leave-reason-form" grid-view="leave-reason-grid"/>
+			<field name="leaveReason" canNew="false" widget="SuggestBox" required="true" onChange="action-leave-request-attrs-select" form-view="leave-reason-form" grid-view="leave-reason-grid"/>
 			<field name="injectConsumeSelect" hidden="true"/>
 			<field name="comments" colSpan="12" />
 		</panel>
@@ -124,8 +124,8 @@
 	</action-attrs>
 	
 	<action-attrs name="action-leave-request-attrs-select">
-		<attribute name="hidden" for="injectConsumeSelect" expr="!reason.manageAccumulation"/>
-		<attribute name="readonly" for="injectConsumeSelect" expr="!reason.allowInjection"/>
+		<attribute name="hidden" for="injectConsumeSelect" expr="!leaveReason.manageAccumulation"/>
+		<attribute name="readonly" for="injectConsumeSelect" expr="!leaveReason.allowInjection"/>
 	</action-attrs>
 	
 	<action-attrs name="action-leave-request-attrs-send">
@@ -141,12 +141,12 @@
 	</action-attrs>
 	
 	<action-validate name="action-leave-request-validate-dates">
-  		<error if="( dateTo &lt; dateFrom || (dateTo == dateFrom &amp;&amp; startOnSelect > endOnSelect)) &amp;&amp; (dateFrom != null &amp;&amp; dateTo != null)" message="Invalide dates"/>
+  		<error if="( toDate &lt; fromDate || toDate == fromDate &amp;&amp; startOnSelect > endOnSelect)) &amp;&amp; fromDate != null &amp;&amp; toDate != null)" message="Invalide dates"/>
 	</action-validate>
 	
 	<action-validate name="action-leave-request-validate-dates-on-save">
-		<error message="You don't have the permission to create a leave request for this user" if="((!(__user__ == user?.employee?.manager || (__user__ == user &amp;&amp; user?.employee?.manager == null) || __user__ == user?.employee?.manager?.employee?.manager || __user__.employee?.hrManager) &amp;&amp; dateFrom &lt; __date__))"/>
-		<error message="Invalide dates" if="dateTo &lt; dateFrom || (dateTo == dateFrom &amp;&amp; startOnSelect &gt; endOnSelect)"/>
+		<error message="You don't have the permission to create a leave request for this user" if="((!(__user__ == user?.employee?.manager || (__user__ == user &amp;&amp; user?.employee?.manager == null) || __user__ == user?.employee?.manager?.employee?.manager || __user__.employee?.hrManager) &amp;&amp; fromDate &lt; __date__))"/>
+		<error message="Invalide dates" if="toDate &lt; fromDate || (toDate == fromDate &amp;&amp; startOnSelect &gt; endOnSelect)"/>
 		<error message="Duration equals 0" if="duration == 0"/>
 	</action-validate>
 	

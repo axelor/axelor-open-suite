@@ -19,9 +19,7 @@ package com.axelor.apps.hr.service.timesheet;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.Map;
 
-import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 
 import com.axelor.apps.account.db.Invoice;

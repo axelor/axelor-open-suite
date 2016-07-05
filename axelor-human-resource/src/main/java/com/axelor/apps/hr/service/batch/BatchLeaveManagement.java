@@ -17,7 +17,6 @@ import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.HrBatch;
 import com.axelor.apps.hr.db.LeaveLine;
 import com.axelor.apps.hr.db.LeaveManagement;
-import com.axelor.apps.hr.db.repo.EmployeeRepository;
 import com.axelor.apps.hr.db.repo.LeaveLineRepository;
 import com.axelor.apps.hr.db.repo.LeaveManagementRepository;
 import com.axelor.exception.AxelorException;
@@ -145,7 +144,7 @@ public class BatchLeaveManagement extends BatchStrategy {
 		if (!employee.getLeaveLineList().isEmpty()){
 			for (LeaveLine line : employee.getLeaveLineList()) {
 				
-				if(line.getReason().equals(batch.getHrBatch().getLeaveReason())){
+				if(line.getLeaveReason().equals(batch.getHrBatch().getLeaveReason())){
 					count ++;
 					leaveLine = line;
 				}

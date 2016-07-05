@@ -210,7 +210,7 @@ public class LeaveController {
 	public void send(ActionRequest request, ActionResponse response) throws AxelorException{
 		LeaveRequest leave = request.getContext().asType(LeaveRequest.class);
 		leave = Beans.get(LeaveRequestRepository.class).find(leave.getId());
-		if (leave.getReason().getManageAccumulation()){
+		if (leave.getLeaveReason().getManageAccumulation()){
 			leaveService.manageSentLeaves(leave);
 		}
 		if(!hrConfigService.getHRConfig(leave.getUser().getActiveCompany()).getLeaveMailNotification()){
@@ -237,7 +237,7 @@ public class LeaveController {
 	public void valid(ActionRequest request, ActionResponse response) throws AxelorException{
 		LeaveRequest leave = request.getContext().asType(LeaveRequest.class);
 		leave = Beans.get(LeaveRequestRepository.class).find(leave.getId());
-		if (leave.getReason().getManageAccumulation()){
+		if (leave.getLeaveReason().getManageAccumulation()){
 			leaveService.manageValidLeaves(leave);
 		}
 		if(!hrConfigService.getHRConfig(leave.getUser().getActiveCompany()).getLeaveMailNotification()){
@@ -266,7 +266,7 @@ public class LeaveController {
 		public void refuse(ActionRequest request, ActionResponse response) throws AxelorException{
 			LeaveRequest leave = request.getContext().asType(LeaveRequest.class);
 			leave = Beans.get(LeaveRequestRepository.class).find(leave.getId());
-			if (leave.getReason().getManageAccumulation()){
+			if (leave.getLeaveReason().getManageAccumulation()){
 				leaveService.manageRefuseLeaves(leave);
 			}
 			if(!hrConfigService.getHRConfig(leave.getUser().getActiveCompany()).getLeaveMailNotification()){
@@ -294,7 +294,7 @@ public class LeaveController {
 	public void manageCancelLeaves(ActionRequest request, ActionResponse response) throws AxelorException{
 		LeaveRequest leave = request.getContext().asType(LeaveRequest.class);
 		leave = Beans.get(LeaveRequestRepository.class).find(leave.getId());
-		if (leave.getReason().getManageAccumulation()){
+		if (leave.getLeaveReason().getManageAccumulation()){
 			leaveService.manageCancelLeaves(leave);
 		}
 		leaveService.cancelLeave(leave);
