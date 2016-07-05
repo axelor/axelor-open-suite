@@ -92,9 +92,15 @@ public class ViewBuilderService {
 
 	@Inject
 	private ConfigurationService configService;
-
-	public String build(File viewDir, boolean updateMetaViews) {
-
+	
+	private boolean autoCreate = false;
+	
+	public String build(File viewDir, boolean updateMetaViews, 
+			boolean autoCreate, boolean updateAll) {
+		
+		log.debug("Update all views: {}", updateAll);
+		this.autoCreate = autoCreate;
+		
 		if (viewDir == null) {
 			return "View directory not found please check the configuration";
 		}
@@ -113,13 +119,18 @@ public class ViewBuilderService {
 				return error;
 			}
 			// eventRecorderService.record();
-
-			String query = "self.edited = true";
-			if (!updateMetaViews) {
-				query += " OR self.recorded = false";
+			List<ViewBuilder> viewBuilders;
+			if (updateAll) {
+				viewBuilders = viewBuilderRepo.all().fetch();
 			}
-			List<ViewBuilder> viewBuilders = viewBuilderRepo.all()
-					.filter(query).fetch();
+			else {
+				String query = "self.edited = true";
+				if (!updateMetaViews) {
+					query += " OR self.recorded = false";
+				}
+				viewBuilders = viewBuilderRepo.all()
+						.filter(query).fetch();
+			}
 
 			splitByModel(viewBuilders.iterator());
 
@@ -314,7 +325,7 @@ public class ViewBuilderService {
 
 			switch (viewBuilder.getViewType()) {
 			case "form":
-				view = formBuilderService.getView(viewBuilder);
+				view = formBuilderService.getView(viewBuilder, autoCreate);
 				actions.addAll(formBuilderService.getActionRecords());
 				break;
 			case "grid":

@@ -11,6 +11,8 @@
     ]]>
     <string name="logText" title="Log" large="true" />
     <boolean name="lastRunOk" default="true" />
+    <boolean name="autoCreate" title="Automatic create" />
+    <boolean name="allViewUpdate" title="Update all views" />
   </entity>
     
     

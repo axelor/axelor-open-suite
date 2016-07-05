@@ -73,6 +73,8 @@ public class FormBuilderService {
 
 	@Inject
 	private FilterService filterService;
+	
+	private boolean autoCreate = false;
 
 	/**
 	 * Root method to access the service. It will generate FormView from
@@ -83,8 +85,9 @@ public class FormBuilderService {
 	 * @return FormView
 	 * @throws JAXBException
 	 */
-	public FormView getView(ViewBuilder viewBuilder) throws JAXBException {
-
+	public FormView getView(ViewBuilder viewBuilder, boolean autoCreate) throws JAXBException {
+		
+		this.autoCreate = autoCreate;
 		log.debug("View builder toolbar: {}", viewBuilder.getToolbar().size());
 
 		this.viewBuilder = viewBuilder;
@@ -634,6 +637,12 @@ public class FormBuilderService {
 				widget = "url";
 			} else if (metaField.getLarge()) {
 				field.setColSpan(12);
+			}
+			String relationship = metaField.getRelationship();
+			if (autoCreate 
+					&& relationship != null 
+					&& "ManyToOne,ManyToMany".contains(relationship)) {
+				field.setCanNew("true");
 			}
 		}
 

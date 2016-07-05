@@ -17,8 +17,15 @@ import com.axelor.app.AppSettings;
 import com.axelor.common.FileUtils;
 import com.axelor.db.JPA;
 import com.axelor.i18n.I18n;
+import com.axelor.meta.db.MetaModel;
+import com.axelor.meta.db.repo.MetaModelRepository;
+import com.axelor.studio.db.ModuleRecorder;
 import com.axelor.studio.db.StudioConfiguration;
+import com.axelor.studio.db.repo.ModuleRecorderRepository;
 import com.axelor.studio.db.repo.StudioConfigurationRepository;
+import com.axelor.studio.service.builder.ModelBuilderService;
+import com.axelor.studio.service.builder.ViewBuilderService;
+import com.axelor.studio.service.wkf.WkfService;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -28,15 +35,95 @@ import com.google.inject.persist.Transactional;
  * @author axelor
  *
  */
-public class UpdateAppService {
+public class ModuleRecorderService {
 
 	private final Logger log = LoggerFactory.getLogger(getClass());
 
-	private String logText;
-
 	@Inject
 	private StudioConfigurationRepository configRepo;
+	
+	@Inject
+	private ModuleRecorderRepository moduleRecorderRepo;
+	
+	@Inject
+	private ConfigurationService configService;
+	
+	@Inject
+	private WkfService wkfService;
+	
+	@Inject
+	private MetaModelRepository metaModelRepo;
+	
+	@Inject
+	private ModelBuilderService modelBuilderService;
+	
+	@Inject
+	private ViewBuilderService viewBuilderService;
+	
+	public String update(ModuleRecorder recorder){
+		
+		if (configService == null) {
+			return I18n.get("Error in configuration. Please check configuration properties");
+		}
+		
+		String wkfProcess = wkfService.processWkfs();
+		if (wkfProcess != null) {
+			return I18n.get(String.format("Error in workflow processing: \n%s", wkfProcess));
+		}
+		
+		MetaModel metaModel = metaModelRepo.all()
+				.filter("self.edited = true and self.customised = true")
+				.fetchOne();
+		
+		boolean record = metaModel != null || !recorder.getLastRunOk();
+		if (record) {
+			File domainDir = configService.getDomainDir();
 
+			if (!modelBuilderService.build(domainDir)) {
+				return I18n.get("Error in model recording. Please check the log");
+			}
+			
+			if (!buildApp(recorder)) {
+				return I18n.get("Error in build. Please check the log");
+			}
+		}
+		
+		String viewUpdate =  viewBuilderService.build(configService.getViewDir(), 
+				record, recorder.getAutoCreate(), recorder.getAllViewUpdate());
+		if (viewUpdate != null) {
+			updateModuleRecorder(recorder, viewUpdate, true);
+			return I18n.get("Error in view update. Please check the log");
+		}
+		
+		if (record) {
+			return updateApp(false);
+		}
+		
+		updateModuleRecorder(recorder, null, true);
+		
+		return I18n.get("Views updated successfuly");
+		
+	}
+	
+	public String reset(ModuleRecorder moduleRecorder) throws IOException {
+		
+		if (configService == null) {
+			return I18n.get("Error in configuration. Please check configuration properties");
+		}
+		
+		File moduleDir = configService.getModuleDir();
+		log.debug("Deleting directory: {}",moduleDir.getPath());
+		
+		if (moduleDir.exists()) {
+			FileUtils.deleteDirectory(moduleDir);
+		}
+		if (!buildApp(moduleRecorder)) {
+			return I18n.get("Error in build. Please check the log");
+		}
+		
+		return updateApp(true);
+	}
+	
 	/**
 	 * Method call process to build application.
 	 * 
@@ -46,10 +133,10 @@ public class UpdateAppService {
 	 * @return String array with first element as '0' if success and '-1' for
 	 *         error. Second element is log from build process.
 	 */
-	public String[] buildApp() {
+	public boolean buildApp(ModuleRecorder moduleRecorder) {
 
-		logText = "";
-
+		String logText = "";
+		boolean build = true;
 		try {
 			AppSettings settings = AppSettings.get();
 			String buildDir = checkParams("Build directory",
@@ -80,7 +167,7 @@ public class UpdateAppService {
 
 			String line = "";
 			while ((line = reader.readLine()) != null) {
-				logText = logText + line + "\n";
+				logText +=  line + "\n";
 			}
 
 			process.waitFor();
@@ -90,7 +177,7 @@ public class UpdateAppService {
 //			log.debug("Exit status: {}, Log text: {}", exitStatus, logText);
 
 			if (exitStatus != 0) {
-				return new String[] { "-1", logText };
+				build =  false;
 			}
 			
 		} catch (ValidationException | IOException | InterruptedException e) {
@@ -98,10 +185,12 @@ public class UpdateAppService {
 			PrintWriter pw = new PrintWriter(sw);
 			e.printStackTrace(pw);
 			logText = sw.toString();
-			return new String[] { "-1", logText };
+			build =  false;
 		}
-
-		return new String[] { "0", logText };
+		
+		updateModuleRecorder(moduleRecorder, logText, build);
+		
+		return build;
 	}
 
 	/**
@@ -111,7 +200,7 @@ public class UpdateAppService {
 	 *            Configuration record.
 	 * @throws InterruptedException 
 	 */
-	public String updateApp(boolean reset) throws InterruptedException {
+	public String updateApp(boolean reset){
 
 		try {
 			AppSettings settings = AppSettings.get();
@@ -151,9 +240,6 @@ public class UpdateAppService {
 				log.debug("War file: {}", warFile.getAbsolutePath());
 				JarHelper jarHelper = new JarHelper();
 				jarHelper.unjarDir(warFile, appDir);
-				log.debug("Sleep start");
-				Thread.sleep(1000);
-				log.debug("Sleep end");
 			}
 			
 		} catch (ValidationException | IOException e) {
@@ -166,7 +252,9 @@ public class UpdateAppService {
 		}
 		
 		if (reset) {
-			return I18n.get("App reset successfully");
+			String msg = I18n.get("App reset successfully");
+			clearDatabase();
+			return msg;
 		}
 		
 		return I18n.get("App updated successfully");
@@ -212,5 +300,17 @@ public class UpdateAppService {
 		JPA.em().createNativeQuery("create schema public").executeUpdate();
 		
 	}
-
+	
+	@Transactional
+	public void updateModuleRecorder(ModuleRecorder moduleRecorder, String logText, boolean updateOk) {
+		
+		moduleRecorder = moduleRecorderRepo.find(moduleRecorder.getId());
+		moduleRecorder.setLogText(logText);
+		moduleRecorder.setLastRunOk(updateOk);
+		
+		moduleRecorderRepo.save(moduleRecorder);
+	}
+	
+	
+	
 }

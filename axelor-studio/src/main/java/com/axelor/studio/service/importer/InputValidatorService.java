@@ -428,7 +428,7 @@ public class InputValidatorService extends ImporterService {
 		
 	}
 	
-	private void checkViewPanelType(String type, String refernce, Row row) throws IOException{
+	private void checkViewPanelType(String type, String reference, Row row) throws IOException{
 		
 		if ("error,warning,menu".contains(type)) {
 			return;
@@ -454,7 +454,7 @@ public class InputValidatorService extends ImporterService {
 				}
 			}
 			else if (type.equals("button") 
-					&& !refernce.equals("toolbar") 
+					&& (reference != null && !reference.equals("toolbar")) 
 					|| !type.equals("button")) {
 				viewPanelMap.put(view, new Object[]{"main", row});
 			}

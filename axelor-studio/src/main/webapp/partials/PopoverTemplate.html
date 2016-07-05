@@ -62,11 +62,11 @@
     <div class="form-group" ng-show="isView &amp;&amp; (component == 'integer' || component == 'string' || component == 'many-to-one')">
         <span>Widget</span>
         <select ng-model="widget"  class="form-control">
+            <option value="binary-link" ng-show="refModel == 'MetaFile'">Link</option>
         	<option value="normal" >Normal</option>
         	<option value="RadioSelect" ng-show="metaSelect || selection">Radio</option>
         	<option value="NavSelect" ng-show="metaSelect || selection">Navigation Select</option>
         	<option value="multi-select" ng-show="metaSelect || selection">Multi Select</option>
-        	<option value="binary-link" ng-show="refModel == 'MetaFile'">Link</option>
         	<option value="Image" ng-show="refModel == 'MetaFile'">Image</option>
         </select>
     </div>

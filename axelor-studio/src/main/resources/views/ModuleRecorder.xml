@@ -4,10 +4,13 @@
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
 
   <form model="com.axelor.studio.db.ModuleRecorder" title="Apply updates" name="module-recorder-form"
-       canNew="false" canCopy="false" canAttach="false" canDelete="false" canSave="false">
+       canNew="false" canCopy="false" canAttach="false" canDelete="false" canSave="false" >
 		<panel>
-	   		<button name="update" title="Update" onClick="action-check-edited-models,action-meta-module-method-clear-cache,action-module-recorder-method-update,save" colSpan="4" />
-	   		<button name="update" title="Reset" onClick="action-studio-validate-reset,action-studio-method-reset" colSpan="4" />
+	   		<button name="update" title="Update" onClick="action-set-module-recorder-default,save,action-check-edited-models,action-meta-module-method-clear-cache,action-module-recorder-method-update,save" colSpan="4" />
+	   		<button name="update" title="Reset" onClick="action-set-module-recorder-default,save,action-studio-validate-reset,action-studio-method-reset" colSpan="4" />
+	   		<spacer colSpan="4"/>
+	   		<field name="autoCreate" colSpan="4" />
+	   		<field name="allViewUpdate" colSpan="4" />
 	   	</panel>
 	   	<panel title="Log">
 	   	   <field name="logText" colSpan="12" showTitle="false" />
@@ -33,5 +36,9 @@
   <action-method name="action-studio-method-reset">
   	<call class="com.axelor.studio.web.ModuleRecorderController" method="reset"/>
   </action-method>
+  
+  <action-record name="action-set-module-recorder-default"  model="com.axelor.studio.db.ModuleRecorder">
+  	<field name="logText" expr="eval:''" />
+  </action-record>
   
 </object-views>

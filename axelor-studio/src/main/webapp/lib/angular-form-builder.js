@@ -35,7 +35,7 @@
         				hideIf, hidden, min, max, defaultString, defaultInteger, \
         				defaultBoolean, defaultDecimal, options, refModel, mappedBy, \
         				validation, domainCondition, onChange, progressBar, htmlWidget,\
-        				metaSelect, widget, icon, promptMsg, onClick, onSave, panelTop]', 
+        				metaSelect, widget, icon, promptMsg, onClick, onSave, panelTop, metaFieldId]', 
         function() {
           formObject.label = $scope.label;
           formObject.fieldName = $scope.fieldName;
@@ -69,6 +69,7 @@
           formObject.onSave = $scope.onSave;
           formObject.place = $scope.place;
           formObject.panelTop = $scope.panelTop;
+          formObject.metaFieldId = $scope.metaFieldId;
           return formObject.validation = $scope.validation;
         }, true);
         $scope.$watch('optionsText', function(text) {
@@ -128,7 +129,8 @@
             onClick:$scope.onClick,
             onSave:$scope.onSave,
             place:$scope.place,
-            panelTop:$scope.panelTop
+            panelTop:$scope.panelTop,
+            metaFieldId: $scope.metaFieldId
           };
         },
         rollback: function() {
@@ -170,6 +172,7 @@
           $scope.place = this.model.place;
           $scope.promptMsg = this.model.promptMsg;
           $scope.panelTop = this.model.panelTop;
+          $scope.metaFieldId = this.model.metaFieldId;
           return $scope.validation = this.model.validation;
         }
       };
@@ -370,6 +373,7 @@
                               panelLevel: formObject.panelLevel,
                               isPanelTab: formObject.isPanelTab,
                               fieldName: formObject.fieldName,
+                              metaFieldId: formObject.metaFieldId,
                               editable:true
                           }
                 		  var emptyIndex = $(element).find('.empty').index();
@@ -481,7 +485,6 @@
               if($builder.components[scope.component].group != 'Panel'){
             	  
             	  var formObject = scope.formObject;
-
             	  var attCopy = {
                       component: formObject.component,
                       id: formObject.id,
@@ -493,6 +496,7 @@
                       panelLevel: formObject.panelLevel,
                       isPanelTab: formObject.isPanelTab,
                       fieldName: formObject.fieldName,
+                      metaFieldId: formObject.metaFieldId,
                       editable:false
                   }
             	  
@@ -1319,6 +1323,7 @@
         place: formObject.place,
         selection: formObject.selection,
         panelTop: formObject.panelTop,
+        metaFieldId: formObject.metaFieldId,
         panelLevel: formObject.panelLevel != null ? formObject.panelLevel : component.panelLevel,
         isPanelTab: formObject.isPanelTab != null ? formObject.isPanelTab : component.isPanelTab,
         editable: (_ref = formObject.editable) != null ? _ref : component.editable,

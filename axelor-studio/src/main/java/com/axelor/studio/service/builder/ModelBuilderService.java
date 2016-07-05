@@ -15,7 +15,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.common.Inflector;
-import com.axelor.common.StringUtils;
 import com.axelor.common.VersionUtils;
 import com.axelor.meta.db.MetaField;
 import com.axelor.meta.db.MetaModel;
@@ -26,7 +25,6 @@ import com.axelor.meta.db.MetaTranslation;
 import com.axelor.meta.db.repo.MetaFieldRepository;
 import com.axelor.meta.db.repo.MetaModelRepository;
 import com.axelor.meta.db.repo.MetaTranslationRepository;
-import com.axelor.meta.loader.XMLViews;
 import com.axelor.meta.schema.ObjectViews;
 import com.axelor.studio.utils.Namming;
 import com.google.common.base.Strings;

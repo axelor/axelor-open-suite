@@ -13,7 +13,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.axelor.common.FileUtils;
-import com.axelor.studio.service.UpdateAppService;
 import com.axelor.test.GuiceModules;
 import com.axelor.test.GuiceRunner;
 import com.google.common.base.Joiner;

@@ -386,15 +386,15 @@ public class ViewLoaderService {
 	 * @return Default viewBuilder searched or newly created.
 	 */
 
-	public ViewBuilder getDefaultForm(MetaModel metaModel) {
+	public ViewBuilder getDefaultForm(MetaModel metaModel, boolean addParent) {
 
 		String formName = getDefaultViewName(metaModel.getName(), "form");
 
-		return getViewBuilderForm(metaModel, formName);
+		return getViewBuilderForm(metaModel, formName, addParent);
 	}
 
 	@Transactional
-	public ViewBuilder getViewBuilderForm(MetaModel metaModel, String formName) {
+	public ViewBuilder getViewBuilderForm(MetaModel metaModel, String formName, boolean addParent) {
 		String modelName = metaModel.getFullName();
 
 		log.debug("Get default form name: {} model: {}", formName, modelName);
@@ -427,7 +427,7 @@ public class ViewLoaderService {
 
 			log.debug("MetaView found: {}", metaView);
 
-			if (metaView != null) {
+			if (metaView != null && addParent) {
 				viewBuilder.setMetaView(metaView);
 				viewBuilder.setTitle(metaView.getTitle());
 				viewBuilder = loadMetaView(viewBuilder);

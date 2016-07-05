@@ -73,6 +73,7 @@
 			    selection:field.metaSelect != null,
 			    refModel: field.typeName,
 			    options:[],
+			    metaFieldId: field.id,
 			    editable: false
 			};
 			
@@ -141,7 +142,8 @@
 			    promptMsg: item.promptMsg,
 			    onClick: item.onClick,
 			    refModel: item.refModel,
-			    panelTop: item.panelTop
+			    panelTop: item.panelTop,
+			    metaFieldId: item.metaFieldId
 			};
 			
 			if(item.typeSelect === 1){
@@ -185,7 +187,7 @@
 				function(metaField){
 					var viewField = _.find($scope.viewItems, 
 						function(viewItem){
-							return viewItem.name == metaField.name;
+							return viewItem.typeSelect == 0 && viewItem.name == metaField.name;
 					});
 					
 					if(viewField){
@@ -193,6 +195,7 @@
 						viewField.label = metaField.label;
 						viewField.selection = metaField.metaSelect != null;
 						viewField.refModel = metaField.typeName;
+						viewField.metaFieldId = metaField.id;
 						return true;
 					}
 					return false;
@@ -394,10 +397,13 @@
 					'viewItemList': []
 				};
 				
-				if(formObject.id){
+				if (formObject.id) {
 					data['id'] = formObject.id;
 				}
-				
+				else if(formObject.refModel == 'MetaFile' && !formObject.widget) {
+					formObject.widget = 'binary-link';
+				}
+
 				if(formObject.version != null){
 					data['version'] = formObject.version;
 				}
@@ -496,7 +502,12 @@
 							
 							data['metaSelect']  = null;
 							if(formObject.metaSelect){
-								data['metaSelect'] = { id : formObject.metaSelect.id}
+								data['metaSelect'] = { id : formObject.metaSelect.id }
+							}
+							
+							data["metaField"] = null;
+							if (formObject.metaFieldId) {
+								data["metaField"] = { id : formObject.metaFieldId }
 							}
 							
 							if(toolbar){

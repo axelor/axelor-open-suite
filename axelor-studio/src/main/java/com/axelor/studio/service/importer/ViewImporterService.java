@@ -143,9 +143,9 @@ public class ViewImporterService extends ModelImporterService {
 
 		ViewBuilder viewBuilder = null;
 		if (viewName != null) {
-			viewBuilder = viewLoaderService.getViewBuilderForm(model, viewName);
+			viewBuilder = viewLoaderService.getViewBuilderForm(model, viewName, false);
 		} else {
-			viewBuilder = viewLoaderService.getDefaultForm(model);
+			viewBuilder = viewLoaderService.getDefaultForm(model, false);
 		}
 
 		viewBuilder.setEdited(true);
@@ -270,7 +270,7 @@ public class ViewImporterService extends ModelImporterService {
 
 		ViewBuilder targetView = null;
 		if (metaModel != null) {
-			targetView = viewLoaderService.getDefaultForm(metaModel);
+			targetView = viewLoaderService.getDefaultForm(metaModel, true);
 		}
 
 		String actionName = "action-" + inflector.dasherize(basic[2]);
@@ -317,6 +317,9 @@ public class ViewImporterService extends ModelImporterService {
 		setAttributes(viewBuilder, viewItem);
 		if (basic[0].equals("html")) {
 			viewItem.setWidget("html");
+		}
+		if (metaField != null && metaField.getTypeName().equals("MetaFile")) {
+			viewItem.setWidget("binary-link");
 		}
 		viewItemRepo.save(viewItem);
 

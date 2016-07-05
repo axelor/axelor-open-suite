@@ -27,7 +27,7 @@ public class MetaModelController {
 		MetaModel model = request.getContext().asType(MetaModel.class);
 
 		ViewBuilder viewBuilder = viewLoaderService
-				.getDefaultForm(metaModelRepo.find(model.getId()));
+				.getDefaultForm(metaModelRepo.find(model.getId()), true);
 
 		response.setView(ActionView.define(model.getName())
 				.model("com.axelor.studio.db.ViewBuilder")
