@@ -14,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.app.AppSettings;
+import com.axelor.common.FileUtils;
 import com.axelor.db.JPA;
 import com.axelor.i18n.I18n;
 import com.axelor.studio.db.StudioConfiguration;
@@ -86,7 +87,7 @@ public class UpdateAppService {
 
 			Integer exitStatus = process.exitValue();
 			
-			log.debug("Exit status: {}, Log text: {}", exitStatus, logText);
+//			log.debug("Exit status: {}, Log text: {}", exitStatus, logText);
 
 			if (exitStatus != 0) {
 				return new String[] { "-1", logText };
@@ -108,8 +109,9 @@ public class UpdateAppService {
 	 * 
 	 * @param moduleRecorder
 	 *            Configuration record.
+	 * @throws InterruptedException 
 	 */
-	public String updateApp(boolean reset) {
+	public String updateApp(boolean reset) throws InterruptedException {
 
 		try {
 			AppSettings settings = AppSettings.get();
@@ -141,13 +143,17 @@ public class UpdateAppService {
 				String appName = warFile.getName();
 				appName = appName.substring(0, appName.length() - 4);
 				File appDir = new File(webappDir, appName);
-				if (!appDir.exists()) {
-					appDir.mkdir();
+				if (appDir.exists()) {
+					FileUtils.deleteDirectory(appDir);
 				}
+				appDir.mkdir();
 				log.debug("Webapp app directory: {}", appDir.getAbsolutePath());
 				log.debug("War file: {}", warFile.getAbsolutePath());
 				JarHelper jarHelper = new JarHelper();
 				jarHelper.unjarDir(warFile, appDir);
+				log.debug("Sleep start");
+				Thread.sleep(1000);
+				log.debug("Sleep end");
 			}
 			
 		} catch (ValidationException | IOException e) {

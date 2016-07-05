@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 
 import com.axelor.app.AppSettings;
 import com.axelor.common.FileUtils;
+import com.axelor.db.JPA;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.db.repo.MetaModelRepository;
 import com.axelor.meta.db.MetaModel;
@@ -45,7 +46,7 @@ public class ModuleRecorderController {
 	@Inject
 	private WkfService wkfService;
 
-	public void update(ActionRequest request, ActionResponse response) {
+	public void update(ActionRequest request, ActionResponse response) throws InterruptedException {
 		
 		if (configService == null) {
 			response.setFlash("Error in configuration. Please check configuration properties");
@@ -80,7 +81,6 @@ public class ModuleRecorderController {
 
 			String[] result = updateAppService.buildApp();
 			response.setValue("logText", result[1]);
-			log.debug("Update app result: {}, {}", result[0], result[1]);
 			if (!result[0].equals("0")) {
 				response.setFlash(I18n
 						.get("Error in build. Please check the log"));
@@ -92,7 +92,6 @@ public class ModuleRecorderController {
 			if (Strings.isNullOrEmpty(errors)) {
 				response.setSignal("refresh-app", true);
 				response.setFlash(updateAppService.updateApp(false));
-				response.setValue("lastRunOk", true);
 			}
 			else{
 				response.setValue("logText", errors);
@@ -100,9 +99,10 @@ public class ModuleRecorderController {
 			}
 		} else {
 			response.setValue("logText", null);
-			response.setValue("lastRunOk", true);
 			updateView(response, true);
 		}
+
+		response.setValue("lastRunOk", true);
 
 	}
 
@@ -172,17 +172,17 @@ public class ModuleRecorderController {
 
 	}
 	
-	public void reset(ActionRequest request, ActionResponse response) throws IOException {
+	public void reset(ActionRequest request, ActionResponse response) throws IOException, InterruptedException {
 		
 		if (configService == null) {
 			response.setFlash("Error in configuration. Please check configuration properties");
 			return;
 		}
 		
-		log.debug("Deleting directory: {}", configService.getModuleDir().getPath());
-		FileUtils.deleteDirectory(configService.getModuleDir());
+		File moduleDir = configService.getModuleDir();
+		log.debug("Deleting directory: {}",moduleDir.getPath());
+		FileUtils.deleteDirectory(moduleDir);
 		String[] result = updateAppService.buildApp();
-		log.debug("Update app result: {}, {}", result[0], result[1]);
 		if (!result[0].equals("0")) {
 			response.setFlash(I18n
 					.get("Error in build. Please check the log"));
@@ -193,6 +193,7 @@ public class ModuleRecorderController {
 		response.setSignal("refresh-app", true);
 		
 		updateAppService.clearDatabase();
+		
 	}
 	
 }

@@ -88,7 +88,7 @@ public class ConfigurationService {
 	}
 	
 	public File getModuleDir() {
-		return this.domainDir;
+		return this.moduleDir;
 	}
 
 	public String getModuleName() {
