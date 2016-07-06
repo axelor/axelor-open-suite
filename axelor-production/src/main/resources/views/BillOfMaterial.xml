@@ -12,7 +12,7 @@
     </grid>
 
 	<form name="bill-of-material-form" title="Bill of material"
-		model="com.axelor.apps.production.db.BillOfMaterial" onSave="action-bill-of-material-record-name"
+		model="com.axelor.apps.production.db.BillOfMaterial" onSave="action-bill-of-material-record-name,action-bill-of-material-method-validate-prod-process"
 		onNew="action-bill-of-material-default-record" onLoad="action-bill-of-material-attrs-price-digits" width="large">
 		<toolbar>
 			<button name="newVersion" title="Generate new version"  if="__config__.general.manageBillOfMaterialVersion" onClick="action-bill-of-material-check-other-version,action-bill-of-material-generate-new-version"/>
@@ -22,7 +22,7 @@
 			<field name="fullName" hidden="true" showIf="$readonly()" colSpan="12"/>
 			<field name="name" hidden="true" showIf="!$readonly()" colSpan="12"/>
 			<field name="company" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
-			<field name="prodProcess" grid-view="prod-process-grid" form-view="prod-process-form" canNew="true"/>
+			<field name="prodProcess" grid-view="prod-process-grid" form-view="prod-process-form" canNew="true" onChange="action-bill-of-material-method-validate-prod-process"/>
 			<field name="product" onChange="action-bill-of-material-record-product" domain="self.productTypeSelect = 'storable'" form-view="product-form" grid-view="product-grid"/>
 			<field name="qty" colSpan="3"/>
 			<field name="unit" colSpan="3" form-view="unit-form" grid-view="unit-grid"/>
@@ -139,6 +139,10 @@
     	<field name="name" expr="eval: product.name + ' - ' + qty + unit.code + ' - ' + id" if="name == null"/>
     </action-record>
     
+    <action-record name="action-bill-of-material-archive" model="com.axelor.apps.production.db.BillOfMaterial">
+    	<field name="archived" expr="eval: true"/>
+    </action-record>
+    
     <action-method name="action-bill-of-material-method-compute-cost-price">
     	<call class="com.axelor.apps.production.web.BillOfMaterialController" method="computeCostPrice"/>
     </action-method>
@@ -155,14 +159,14 @@
     	<call class="com.axelor.apps.production.web.BillOfMaterialController" method="generateNewVersion"/>
     </action-method>
     
+     <action-method name="action-bill-of-material-method-validate-prod-process">
+    	<call class="com.axelor.apps.production.web.BillOfMaterialController" method="validateProdProcess" if="id != null"/>
+    </action-method>
+    
     <action-attrs name="action-bill-of-material-attrs-price-digits">
     	<attribute name="scale" for="costPrice" expr="eval: __config__.generalService.getNbDecimalDigitForUnitPrice()"/>
     </action-attrs>
     
-    <action-record name="action-bill-of-material-archive" model="com.axelor.apps.production.db.BillOfMaterial">
-    	<field name="archived" expr="eval: true"/>
-    </action-record>
-
 </object-views>
 
 
