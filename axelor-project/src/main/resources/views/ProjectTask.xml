@@ -17,7 +17,7 @@
 	<form name="project-form" title="Project" model="com.axelor.apps.project.db.ProjectTask" onNew="action-project-task-group-on-new-project"
 	onLoad="action-project-task-method-set-visible-duration,action-project-task-attrs-duration-title,action-project-task-method-set-visible-duration-log-times,action-project-attrs-scale-and-precision,save">
 		<toolbar>
-			<button name="printProjectTask" title="Print" onClick="save,action-project-task-method-print-project-task" if-module="axelor-business-project"/>
+			<button name="printProjectTask" title="See Reporting Folder" onClick="save,action-project-task-method-print-project-task" if-module="axelor-business-project"/>
 		</toolbar>
 		<panel name="overview" title="Overview">
 		
@@ -43,7 +43,6 @@
 			<field name="imputable" if-module="axelor-business-project"/>
 			<field name="projTaskInvTypeSelect" if-module="axelor-business-project"/>
 			<field name="invoiced" showIf="projTaskInvTypeSelect == 2 || projTaskInvTypeSelect == 3" if-module="axelor-business-project"/>
-			<button name="seeReportingFolder" title="See Reporting Folder" onClick="action-show-reporting-folder"/>
 		</panel>
 		<panel-tabs>
 			<panel name="invoicing" title="Invoicing" if-module="axelor-business-project" showIf="projTaskInvTypeSelect == 3">
@@ -53,6 +52,12 @@
   				<field name="unit" requiredIf="projTaskInvTypeSelect == 3"/>
   				<field name="exTaxTotal" readonly="true"/>
 			</panel>
+			<panel title="Related elements">
+				<panel-related field="purchaseOrderLineList" form-view="purchase-order-line-form" grid-view="purchase-order-line-invoicing-project-grid" if-module="axelor-business-project" canSelect="true" canNew="false"  canEdit="false" colSpan="12" if="eval: __config__.general.getShowPurchaseOrderLineRelatedToProject()"/>
+				<panel-related field="saleOrderLineList" canSelect="true" canNew="false" canEdit="false" colSpan="12" if-module="axelor-business-project" if="eval: __config__.general.getShowSaleOrderLineRelatedToProject()" />
+				<panel-related field="expensesLineList" canSelect="true" canNew="false" canEdit="false" colSpan="12" if-module="axelor-business-project" if="eval: __config__.general.getShowExpenseLineRelatedToProject()" />
+				<panel-related field="productionOrderList" canSelect="true" canNew="false" canEdit="false" colSpan="12" if-module="axelor-business-production" if="eval: __config__.general.getShowProductionOrderRelatedToProject()" />
+			</panel>
 			<panel name="relatedProjectsTasks" title="Related Projects/Tasks">
 				<panel-related field="childProjectTaskList" colSpan="12" form-view="project-task-form" grid-view="project-task-grid"/>
 			</panel>
@@ -60,6 +65,8 @@
 				<panel-related field="elementsToInvoiceList" colSpan="12"/>
 			</panel>
 			<panel name="logTimes" title="Log Times">
+				<!-- <field name="unitOnPrinting" if-module="axelor-business-project"/> -->
+
 				<panel-related field="timesheetLineList" colSpan="12" grid-view="timesheet-line-project-grid" form-view="timesheet-line-project-form" if-module="axelor-human-resource"/>
 			</panel>
 			<panel name="projectTree" title="Project Tree">
@@ -105,7 +112,7 @@
 	onNew="action-project-task-attrs-hide-invoicing-panel,action-project-task-default,action-project-task-attrs-duration-title,action-project-attrs-scale-and-precision"
 	onLoad="action-project-task-attrs-hide-invoicing-panel,action-project-task-method-set-visible-duration,action-project-task-attrs-duration-title,action-project-attrs-scale-and-precision" width="large">
 		<toolbar>
-			<button name="printProjectTask" title="Print" onClick="save,action-project-task-method-print-project-task" if-module="axelor-business-project"/>
+			<button name="printProjectTask" title="See Reporting Folder" onClick="save,action-project-task-method-print-project-task" if-module="axelor-business-project"/>
 		</toolbar>
 	    <panel name="main" >
 	    	<field name="statusSelect" widget="NavSelect" colSpan="6"/>
@@ -133,7 +140,14 @@
   				<field name="unit" requiredIf="product != null"/>
   				<field name="exTaxTotal" readonly="true"/>
 			</panel>
+			<panel title="Related elements">
+				<panel-related field="purchaseOrderLineList" form-view="purchase-order-line-form" if-module="axelor-business-project" grid-view="purchase-order-line-invoicing-project-grid" canSelect="true" canNew="false"  canEdit="false" colSpan="12" if="eval: __config__.general.getShowPurchaseOrderLineRelatedToProject()"/>
+				<panel-related field="saleOrderLineList" canSelect="true" canNew="false" canEdit="false" if-module="axelor-business-project" colSpan="12" if="eval: __config__.general.getShowSaleOrderLineRelatedToProject()" />
+				<panel-related field="expensesLineList" canSelect="true" canNew="false" canEdit="false" if-module="axelor-business-project" colSpan="12" if="eval: __config__.general.getShowExpenseLineRelatedToProject()" />
+				<panel-related field="productionOrderList" canSelect="true" canNew="false" canEdit="false" colSpan="12" if-module="axelor-business-production" if="eval: __config__.general.getShowProductionOrderRelatedToProject()" />
+			</panel>
 			<panel name="logTimes" title="Log Times">
+				<!-- <field name="unitOnPrinting" if-module="axelor-business-project"/>--> 
 				<panel-related field="timesheetLineList" colSpan="12" grid-view="timesheet-line-project-grid" form-view="timesheet-line-project-form" if-module="axelor-human-resource"/>
 			</panel>
 			<panel name="description" title="Description">
@@ -198,10 +212,17 @@
   				<field name="unit" requiredIf="product != null"/>
   				<field name="exTaxTotal" readonly="true"/>
 			</panel>
+			<panel title="Related elements">
+				<panel-related field="purchaseOrderLineList" form-view="purchase-order-line-form" grid-view="purchase-order-line-invoicing-project-grid" if-module="axelor-business-project" canSelect="true" canNew="false"  canEdit="false" colSpan="12" if="eval: __config__.general.getShowPurchaseOrderLineRelatedToProject()"/>
+				<panel-related field="saleOrderLineList" canSelect="true" canNew="false" canEdit="false" colSpan="12" if-module="axelor-business-project" if="eval: __config__.general.getShowSaleOrderLineRelatedToProject()" />
+				<panel-related field="expensesLineList" canSelect="true" canNew="false" canEdit="false" colSpan="12" if-module="axelor-business-project" if="eval: __config__.general.getShowExpenseLineRelatedToProject()" />
+				<panel-related field="productionOrderList" canSelect="true" canNew="false" canEdit="false" colSpan="12" if-module="axelor-business-production" if="eval: __config__.general.getShowProductionOrderRelatedToProject()" />
+			</panel>
 			<panel name="related ProjectsTasks" title="Related Projects/Tasks" hideIf="typeSelect == 'task'">
 				<panel-related field="childProjectTaskList" colSpan="12" form-view="project-task-form" grid-view="project-task-grid"/>
 			</panel>
 			<panel name="logTimes" title="Log Times">
+				<!--   <field name="unitOnPrinting" if-module="axelor-business-project" />-->
 				<panel-related field="timesheetLineList" colSpan="12" grid-view="timesheet-line-project-grid" form-view="timesheet-line-project-form" if-module="axelor-human-resource"/>
 			</panel>
 			<panel name="otherElementsToInvoice" title="Other elements to invoice" if-module="axelor-business-project" hideIf="typeSelect == 'task'">
@@ -435,9 +456,5 @@
 	<action-attrs name="action-attrs-project-task-compute-leadDelay" model="com.axelor.apps.project.db.ProjectTask">
 	    <attribute name="value" for="$visibleLeadDelay" expr="eval: new BigDecimal(visibleTimeSpent).subtract(new BigDecimal(visibleDuration).multiply(progress).divide(100))"/>
 	</action-attrs>
-	
-	<action-view name="action-show-reporting-folder" title="Business folder">  		
- 		<view type="html" name="http://localhost:8080/abs-webapp/Exemple_report_Affaire.pdf" /> 
-	</action-view>
 	
 </object-views>
