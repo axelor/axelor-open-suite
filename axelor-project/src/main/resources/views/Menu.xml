@@ -53,5 +53,14 @@
 	<action-method name="my.team.planning">
 		<call class="com.axelor.apps.project.web.ProjectPlanningController" method="myTeamPlanning"/>
 	</action-method>
+	
+	<menuitem name="project-calendar" parent="menu-project-root"
+			  title="Project Calendar" 
+			  action="project-calendar"/>
+			  
+	<action-view name="project-calendar" title="Project Calendar" model="com.axelor.apps.project.db.ProjectTask">
+		<view type="calendar" name="project-calendar"/>
+	</action-view>
+	
 
 </object-views>
