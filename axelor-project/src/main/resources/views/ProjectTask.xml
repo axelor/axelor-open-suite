@@ -296,7 +296,7 @@
 			  eventStop="toDate"
 			  eventLength="1"
 			  colorBy="statusSelect"
-			  mode="week"
+			  mode="month"
 			  >
 			  <field name="name"/>
 	</calendar>

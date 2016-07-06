@@ -10,9 +10,9 @@
     	action="project.all"/>
 
 	<action-view name="project.all" title="Projects" model="com.axelor.apps.project.db.ProjectTask">
-    	<view type="kanban" name="project-kanban"/>
     	<view type="grid" name="project-grid"/>
 	    <view type="form" name="project-form"/>
+	    <view type="calendar" name="project-calendar"/>
 	    <domain>self.typeSelect = 'project'</domain>
 	</action-view>
 	
@@ -53,14 +53,5 @@
 	<action-method name="my.team.planning">
 		<call class="com.axelor.apps.project.web.ProjectPlanningController" method="myTeamPlanning"/>
 	</action-method>
-	
-	<menuitem name="project-calendar" parent="menu-project-root"
-			  title="Project Calendar" 
-			  action="project-calendar"/>
-			  
-	<action-view name="project-calendar" title="Project Calendar" model="com.axelor.apps.project.db.ProjectTask">
-		<view type="calendar" name="project-calendar"/>
-	</action-view>
-	
 
 </object-views>
