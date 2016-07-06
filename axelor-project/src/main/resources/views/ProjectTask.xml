@@ -53,10 +53,10 @@
   				<field name="exTaxTotal" readonly="true"/>
 			</panel>
 			<panel title="Related elements">
-				<panel-related field="purchaseOrderLineList" form-view="purchase-order-line-form" grid-view="purchase-order-line-invoicing-project-grid" canSelect="true" canNew="false"  canEdit="false" colSpan="12" if="eval: __config__.general.getShowPurchaseOrderLineRelatedToProject()"/>
-				<panel-related field="saleOrderLineList" canSelect="true" canNew="false" canEdit="false" colSpan="12" if="eval: __config__.general.getShowSaleOrderLineRelatedToProject()" />
-				<panel-related field="expensesLineList" canSelect="true" canNew="false" canEdit="false" colSpan="12" if="eval: __config__.general.getShowExpenseLineRelatedToProject()" />
-				<panel-related field="productionOrderList" canSelect="true" canNew="false" canEdit="false" colSpan="12" if="eval: __config__.general.getShowProductionOrderRelatedToProject()" />
+				<panel-related field="purchaseOrderLineList" form-view="purchase-order-line-form" grid-view="purchase-order-line-invoicing-project-grid" if-module="axelor-business-project" canSelect="true" canNew="false"  canEdit="false" colSpan="12" if="eval: __config__.general.getShowPurchaseOrderLineRelatedToProject()"/>
+				<panel-related field="saleOrderLineList" canSelect="true" canNew="false" canEdit="false" colSpan="12" if-module="axelor-business-project" if="eval: __config__.general.getShowSaleOrderLineRelatedToProject()" />
+				<panel-related field="expensesLineList" canSelect="true" canNew="false" canEdit="false" colSpan="12" if-module="axelor-business-project" if="eval: __config__.general.getShowExpenseLineRelatedToProject()" />
+				<panel-related field="productionOrderList" canSelect="true" canNew="false" canEdit="false" colSpan="12" if-module="axelor-business-production" if="eval: __config__.general.getShowProductionOrderRelatedToProject()" />
 			</panel>
 			<panel name="relatedProjectsTasks" title="Related Projects/Tasks">
 				<panel-related field="childProjectTaskList" colSpan="12" form-view="project-task-form" grid-view="project-task-grid"/>
@@ -141,10 +141,10 @@
   				<field name="exTaxTotal" readonly="true"/>
 			</panel>
 			<panel title="Related elements">
-				<panel-related field="purchaseOrderLineList" form-view="purchase-order-line-form" grid-view="purchase-order-line-invoicing-project-grid" canSelect="true" canNew="false"  canEdit="false" colSpan="12" if="eval: __config__.general.getShowPurchaseOrderLineRelatedToProject()"/>
-				<panel-related field="saleOrderLineList" canSelect="true" canNew="false" canEdit="false" colSpan="12" if="eval: __config__.general.getShowSaleOrderLineRelatedToProject()" />
-				<panel-related field="expensesLineList" canSelect="true" canNew="false" canEdit="false" colSpan="12" if="eval: __config__.general.getShowExpenseLineRelatedToProject()" />
-				<panel-related field="productionOrderList" canSelect="true" canNew="false" canEdit="false" colSpan="12" if="eval: __config__.general.getShowProductionOrderRelatedToProject()" />
+				<panel-related field="purchaseOrderLineList" form-view="purchase-order-line-form" if-module="axelor-business-project" grid-view="purchase-order-line-invoicing-project-grid" canSelect="true" canNew="false"  canEdit="false" colSpan="12" if="eval: __config__.general.getShowPurchaseOrderLineRelatedToProject()"/>
+				<panel-related field="saleOrderLineList" canSelect="true" canNew="false" canEdit="false" if-module="axelor-business-project" colSpan="12" if="eval: __config__.general.getShowSaleOrderLineRelatedToProject()" />
+				<panel-related field="expensesLineList" canSelect="true" canNew="false" canEdit="false" if-module="axelor-business-project" colSpan="12" if="eval: __config__.general.getShowExpenseLineRelatedToProject()" />
+				<panel-related field="productionOrderList" canSelect="true" canNew="false" canEdit="false" colSpan="12" if-module="axelor-business-production" if="eval: __config__.general.getShowProductionOrderRelatedToProject()" />
 			</panel>
 			<panel name="logTimes" title="Log Times">
 				<!-- <field name="unitOnPrinting" if-module="axelor-business-project"/>--> 
@@ -213,10 +213,10 @@
   				<field name="exTaxTotal" readonly="true"/>
 			</panel>
 			<panel title="Related elements">
-				<panel-related field="purchaseOrderLineList" form-view="purchase-order-line-form" grid-view="purchase-order-line-invoicing-project-grid" canSelect="true" canNew="false"  canEdit="false" colSpan="12" if="eval: __config__.general.getShowPurchaseOrderLineRelatedToProject()"/>
-				<panel-related field="saleOrderLineList" canSelect="true" canNew="false" canEdit="false" colSpan="12" if="eval: __config__.general.getShowSaleOrderLineRelatedToProject()" />
-				<panel-related field="expensesLineList" canSelect="true" canNew="false" canEdit="false" colSpan="12" if="eval: __config__.general.getShowExpenseLineRelatedToProject()" />
-				<panel-related field="productionOrderList" canSelect="true" canNew="false" canEdit="false" colSpan="12" if="eval: __config__.general.getShowProductionOrderRelatedToProject()" />
+				<panel-related field="purchaseOrderLineList" form-view="purchase-order-line-form" grid-view="purchase-order-line-invoicing-project-grid" if-module="axelor-business-project" canSelect="true" canNew="false"  canEdit="false" colSpan="12" if="eval: __config__.general.getShowPurchaseOrderLineRelatedToProject()"/>
+				<panel-related field="saleOrderLineList" canSelect="true" canNew="false" canEdit="false" colSpan="12" if-module="axelor-business-project" if="eval: __config__.general.getShowSaleOrderLineRelatedToProject()" />
+				<panel-related field="expensesLineList" canSelect="true" canNew="false" canEdit="false" colSpan="12" if-module="axelor-business-project" if="eval: __config__.general.getShowExpenseLineRelatedToProject()" />
+				<panel-related field="productionOrderList" canSelect="true" canNew="false" canEdit="false" colSpan="12" if-module="axelor-business-production" if="eval: __config__.general.getShowProductionOrderRelatedToProject()" />
 			</panel>
 			<panel name="related ProjectsTasks" title="Related Projects/Tasks" hideIf="typeSelect == 'task'">
 				<panel-related field="childProjectTaskList" colSpan="12" form-view="project-task-form" grid-view="project-task-grid"/>
