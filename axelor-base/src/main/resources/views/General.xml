@@ -154,6 +154,11 @@
 				<field name="projectTaskInvoiceLines" widget="Boolean-switch"/>
 				<field name="projectTaskLabel"/>
 				<field name="productInvoicingProjectTask" canNew="true"/>
+				
+				<field name="showPurchaseOrderLineRelatedToProject" if-module="axelor-business-project"/>
+				<field name="showSaleOrderLineRelatedToProject" if-module="axelor-business-project" />
+				<field name="showExpenseLineRelatedToProject" if-module="axelor-business-project" />
+				<field name="showProductionOrderRelatedToProject" if-module="axelor-business-production" />
 			</panel>
 			
 			<panel name="budgetConfiguration" title="Budget Configuration" if-module="axelor-account">
