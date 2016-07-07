@@ -118,7 +118,10 @@ public class ViewRemovalService {
 				continue;
 			}
 			model = model.substring(model.lastIndexOf(".") + 1);
-
+			
+			String viewName = metaView.getName();
+			metaViewRepo.remove(metaView);
+			
 			ObjectViews objectViews = getObjectViews(model);
 			if (objectViews == null) {
 				continue;
@@ -132,12 +135,11 @@ public class ViewRemovalService {
 			Iterator<AbstractView> viewIter = views.iterator();
 			while (viewIter.hasNext()) {
 				AbstractView view = viewIter.next();
-				if (metaView.getName().equals(view.getName())) {
+				if (viewName.equals(view.getName())) {
 					viewIter.remove();
 				}
 			}
 
-			metaViewRepo.remove(metaView);
 		}
 
 	}

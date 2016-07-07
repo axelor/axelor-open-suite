@@ -16,6 +16,8 @@ import org.slf4j.LoggerFactory;
 
 import com.axelor.common.Inflector;
 import com.axelor.common.VersionUtils;
+import com.axelor.exception.AxelorException;
+import com.axelor.i18n.I18n;
 import com.axelor.meta.db.MetaField;
 import com.axelor.meta.db.MetaModel;
 import com.axelor.meta.db.MetaSelect;
@@ -39,7 +41,20 @@ import com.google.inject.persist.Transactional;
  *
  */
 public class ModelBuilderService {
-
+	
+	public final static List<String> reserveFields;
+	
+	static {
+		List<String> fields = new ArrayList<String>();
+		fields.add("id");
+		fields.add("version");
+		fields.add("createdBy");
+		fields.add("updatedBy");
+		fields.add("createdOn");
+		fields.add("updatedOn");
+		reserveFields = Collections.unmodifiableList(fields);
+	}
+	
 	private static final String NAMESPACE = "http://axelor.com/xml/ns/domain-models";
 
 	private static final String VERSION = VersionUtils.getVersion().feature;
@@ -68,12 +83,12 @@ public class ModelBuilderService {
 	/**
 	 * Root method to accesss the service. It will find all edited and
 	 * customised MetaModels. Call other methods to process MetaModel founds.
+	 * @throws AxelorException 
 	 */
-	public boolean build(File domainDir) {
+	public boolean build(File domainDir) throws AxelorException {
 
 		if (domainDir == null) {
-			log.debug("Model directory not found please check the configuratoin");
-			return false;
+			throw new AxelorException(I18n.get("Model directory not found please check the configuration"), 4);
 		}
 		this.domainDir = domainDir;
 
@@ -107,11 +122,10 @@ public class ModelBuilderService {
 			return true;
 
 		} catch (Exception e) {
-			log.error("Error in model recording. Please check the log");
 			e.printStackTrace();
+			throw new AxelorException(I18n.get("Error in model recording: %s"), 4, e.getMessage());
 		}
 
-		return false;
 	}
 
 	/**
@@ -140,9 +154,10 @@ public class ModelBuilderService {
 	 *            MetaModel iterator
 	 * @throws IOException
 	 *             Exception thrown by file handling of domain xml file.
+	 * @throws AxelorException 
 	 */
 	private void recordModel(Iterator<MetaModel> modelIterator)
-			throws IOException {
+			throws IOException, AxelorException {
 
 		if (!modelIterator.hasNext()) {
 			return;
@@ -199,8 +214,9 @@ public class ModelBuilderService {
 	 * 
 	 * @param fieldIterator
 	 *            MetaField iterator
+	 * @throws AxelorException 
 	 */
-	private void writeFields(Iterator<MetaField> fieldIterator) {
+	private void writeFields(Iterator<MetaField> fieldIterator) throws AxelorException {
 
 		if (!fieldIterator.hasNext()) {
 			return;
@@ -213,6 +229,13 @@ public class ModelBuilderService {
 		fieldXml.append("\t\t<" + fieldType + " ");
 
 		String name = field.getName();
+		
+		if (reserveFields.contains(name)) {
+			throw new AxelorException(I18n.get("In model '%s' field name '%s' is reserve word. "
+					+ "Please use different one"),
+					5, field.getMetaModel().getName(), name);
+		}
+		
 		if (field.getTrack()) {
 			trackFields.add(name);
 		}

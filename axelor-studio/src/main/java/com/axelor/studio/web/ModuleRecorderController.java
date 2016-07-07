@@ -2,6 +2,7 @@ package com.axelor.studio.web;
 
 import java.io.IOException;
 
+import com.axelor.exception.AxelorException;
 import com.axelor.meta.db.repo.MetaModelRepository;
 import com.axelor.meta.db.MetaModel;
 import com.axelor.rpc.ActionRequest;
@@ -18,7 +19,7 @@ public class ModuleRecorderController {
 	@Inject
 	private MetaModelRepository metaModelRepo;
 
-	public void update(ActionRequest request, ActionResponse response) {
+	public void update(ActionRequest request, ActionResponse response) throws AxelorException {
 		
 		ModuleRecorder moduleRecorder = request.getContext().asType(
 				ModuleRecorder.class);
@@ -41,7 +42,8 @@ public class ModuleRecorderController {
 
 	}
 	
-	public void reset(ActionRequest request, ActionResponse response) throws IOException {
+	public void reset(ActionRequest request, ActionResponse response) 
+			throws IOException, AxelorException {
 		
 		ModuleRecorder moduleRecorder = request.getContext().asType(
 				ModuleRecorder.class);

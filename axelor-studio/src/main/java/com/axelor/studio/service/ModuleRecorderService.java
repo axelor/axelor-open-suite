@@ -16,6 +16,7 @@ import org.slf4j.LoggerFactory;
 import com.axelor.app.AppSettings;
 import com.axelor.common.FileUtils;
 import com.axelor.db.JPA;
+import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.db.MetaModel;
 import com.axelor.meta.db.repo.MetaModelRepository;
@@ -60,11 +61,7 @@ public class ModuleRecorderService {
 	@Inject
 	private ViewBuilderService viewBuilderService;
 	
-	public String update(ModuleRecorder recorder){
-		
-		if (configService == null) {
-			return I18n.get("Error in configuration. Please check configuration properties");
-		}
+	public String update(ModuleRecorder recorder) throws AxelorException{
 		
 		String wkfProcess = wkfService.processWkfs();
 		if (wkfProcess != null) {
@@ -77,6 +74,7 @@ public class ModuleRecorderService {
 		
 		boolean record = metaModel != null || !recorder.getLastRunOk();
 		if (record) {
+			configService.config();
 			File domainDir = configService.getDomainDir();
 
 			if (!modelBuilderService.build(domainDir)) {
@@ -89,7 +87,7 @@ public class ModuleRecorderService {
 		}
 		
 		String viewUpdate =  viewBuilderService.build(configService.getViewDir(), 
-				record, recorder.getAutoCreate(), recorder.getAllViewUpdate());
+				!record, recorder.getAutoCreate(), recorder.getAllViewUpdate());
 		if (viewUpdate != null) {
 			updateModuleRecorder(recorder, viewUpdate, true);
 			return I18n.get("Error in view update. Please check the log");
@@ -105,11 +103,9 @@ public class ModuleRecorderService {
 		
 	}
 	
-	public String reset(ModuleRecorder moduleRecorder) throws IOException {
+	public String reset(ModuleRecorder moduleRecorder) throws IOException, AxelorException {
 		
-		if (configService == null) {
-			return I18n.get("Error in configuration. Please check configuration properties");
-		}
+		configService.config();
 		
 		File moduleDir = configService.getModuleDir();
 		log.debug("Deleting directory: {}",moduleDir.getPath());

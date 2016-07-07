@@ -98,10 +98,10 @@ public class ViewBuilderService {
 	public String build(File viewDir, boolean updateMetaViews, 
 			boolean autoCreate, boolean updateAll) {
 		
-		log.debug("Update all views: {}", updateAll);
+		log.debug("Update all views: {}, update metaViews: {}", updateAll, updateMetaViews);
 		this.autoCreate = autoCreate;
 		
-		if (viewDir == null) {
+		if (!updateMetaViews && viewDir == null) {
 			return "View directory not found please check the configuration";
 		}
 

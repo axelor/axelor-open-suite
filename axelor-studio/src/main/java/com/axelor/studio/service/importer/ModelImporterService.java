@@ -10,14 +10,13 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import javax.validation.ValidationException;
-
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaField;
@@ -29,6 +28,7 @@ import com.axelor.meta.db.repo.MetaSelectRepository;
 import com.axelor.studio.db.ModelImporter;
 import com.axelor.studio.db.ViewBuilder;
 import com.axelor.studio.db.ViewItem;
+import com.axelor.studio.service.builder.ModelBuilderService;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -70,14 +70,15 @@ public class ModelImporterService extends ImporterService {
 	 * @param modelImporter
 	 *            ModelImporter class that store all import meta file.
 	 * @return Return true if import done successfully else false.
+	 * @throws AxelorException 
 	 */
-	public File importModels(ModelImporter modelImporter) {
+	public File importModels(ModelImporter modelImporter) throws AxelorException {
 
 		File inputFile = MetaFiles.getPath(modelImporter.getMetaFile())
 				.toFile();
 
 		if (!inputFile.exists()) {
-			throw new ValidationException(I18n.get("Input file not exist"));
+			throw new AxelorException(I18n.get("Input file not exist"), 4);
 		}
 
 		i18nMap = new HashMap<String, String>();
@@ -99,9 +100,8 @@ public class ModelImporterService extends ImporterService {
 			proccessSheet(workBook);
 
 			if (!viewImporterService.getViewActionMap().isEmpty()) {
-				throw new ValidationException(String.format(
-						I18n.get("Wizard views not found: %s"),
-						viewImporterService.getViewActionMap().keySet()));
+				throw new AxelorException(I18n.get("Wizard views not found: %s"), 1,
+						viewImporterService.getViewActionMap().keySet());
 			}
 
 			log.debug("List view specified for models: {}",
@@ -123,8 +123,7 @@ public class ModelImporterService extends ImporterService {
 			viewImporterService.clear();
 
 		} catch (IOException e) {
-			e.printStackTrace();
-			throw new ValidationException(e.getMessage());
+			throw new AxelorException(e, 5);
 		}
 		
 		return null;
@@ -159,8 +158,9 @@ public class ModelImporterService extends ImporterService {
 	 * @return List of MetaModels created.
 	 * @throws IOException
 	 *             Exception in file handling.
+	 * @throws AxelorException 
 	 */
-	private void proccessSheet(XSSFWorkbook workBook) throws IOException {
+	private void proccessSheet(XSSFWorkbook workBook) throws IOException, AxelorException {
 
 		Iterator<XSSFSheet> sheetIter = workBook.iterator();
 		while (sheetIter.hasNext()) {
@@ -180,9 +180,10 @@ public class ModelImporterService extends ImporterService {
 	 * @param sheet
 	 *            Excel sheet to process
 	 * @return MetaModel created
+	 * @throws AxelorException 
 	 */
 
-	private void extractRow(Iterator<Row> rowIter) {
+	private void extractRow(Iterator<Row> rowIter) throws AxelorException {
 
 		if (!rowIter.hasNext()) {
 			return;
@@ -247,18 +248,24 @@ public class ModelImporterService extends ImporterService {
 
 	@Transactional
 	public MetaField createMetaField(MetaModel metaModel, String[] basic,
-			Row row) {
+			Row row) throws AxelorException {
 
 		log.debug("Create field with basic: {}", Arrays.asList(basic));
 
 		String name = basic[2];
+		
 		if (Strings.isNullOrEmpty(name)) {
-			throw new ValidationException(
-					String.format(
-							I18n.get("No title or name for field row number: %s, model: %s"),
-							row.getRowNum() + 1, metaModel.getName()));
+			throw new AxelorException(
+							I18n.get("No title or name for field row number: %s, model: %s"), 
+							1, row.getRowNum() + 1, metaModel.getName());
 		}
-
+		
+		if (ModelBuilderService.reserveFields.contains(name)) {
+			throw new AxelorException(
+					I18n.get("Can't use reserve word for name. Row number: %s, model: %s"), 
+					1, row.getRowNum() + 1, metaModel.getName());
+		}
+		
 		String objName = metaModel.getName();
 		log.debug("Create Meta field: {}", name);
 
@@ -456,9 +463,10 @@ public class ModelImporterService extends ImporterService {
 	 * @param row
 	 *            Excel sheet row containing data.
 	 * @return Updated MetaField.
+	 * @throws AxelorException 
 	 */
 	private MetaField setSelectionField(String modelName, MetaField field,
-			Row row) {
+			Row row) throws AxelorException {
 
 		String selectName = getString(row.getCell(SELECT));
 		String selectTr = getString(row.getCell(SELECT_TR));
@@ -471,9 +479,9 @@ public class ModelImporterService extends ImporterService {
 		}
 
 		if (Strings.isNullOrEmpty(selectName)) {
-			throw new ValidationException(String.format(I18n
-					.get("Blank selection for object: %s, field: %s, row: %s"),
-					modelName, field.getLabel(), row.getRowNum() + 1));
+			throw new AxelorException(I18n
+					.get("Blank selection for object: %s, field: %s, row: %s"), 1,
+					modelName, field.getLabel(), row.getRowNum() + 1);
 		}
 
 		selectName = selectName.trim();
@@ -536,9 +544,10 @@ public class ModelImporterService extends ImporterService {
 	 *            Excel sheet row to find reference model in case of relational
 	 *            field.
 	 * @return Updated MetaField.
+	 * @throws AxelorException 
 	 */
 	private MetaField updateFieldTypeName(String fieldType, String refModel,
-			MetaField field) {
+			MetaField field) throws AxelorException {
 		
 		log.debug("Field type: {}", fieldType);
 		if ("m2m,o2m,m2o,file".contains(fieldType)) {
@@ -546,21 +555,19 @@ public class ModelImporterService extends ImporterService {
 				refModel = "MetaFile";
 			} else {
 				if (Strings.isNullOrEmpty(refModel)) {
-					throw new ValidationException(
-							String.format(
-									I18n.get("No reference model found for field : %s model: %s"),
-									field.getLabel(), field.getMetaModel()
-											.getName()));
+					throw new AxelorException(
+							I18n.get("No reference model found for field : %s model: %s"),
+									1, field.getLabel(), field.getMetaModel()
+											.getName());
 				}
 				refModel = refModel.trim();
 				refModel = inflector.camelize(refModel);
 				if (!modelMap.containsKey(refModel)
 						&& metaModelRepo.findByName(refModel) == null) {
-					throw new ValidationException(
-							String.format(
-									I18n.get("No reference model: %s found for field : %s model: %s"),
-									refModel, field.getLabel(), field
-											.getMetaModel().getName()));
+					throw new AxelorException(
+							I18n.get("No reference model: %s found for field : %s model: %s"),
+									1, refModel, field.getLabel(), field
+											.getMetaModel().getName());
 				}
 			}
 			field.setTypeName(refModel);

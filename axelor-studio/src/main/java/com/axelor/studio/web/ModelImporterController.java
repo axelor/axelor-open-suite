@@ -5,13 +5,13 @@ import java.io.IOException;
 
 import javax.validation.ValidationException;
 
+import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.MetaFiles;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.studio.db.ModelImporter;
 import com.axelor.studio.db.repo.ModelImporterRepository;
-import com.axelor.studio.service.importer.InputValidatorService;
 import com.axelor.studio.service.importer.ModelImporterService;
 import com.google.inject.Inject;
 
@@ -26,7 +26,8 @@ public class ModelImporterController {
 	@Inject
 	private MetaFiles metaFiles;
 
-	public void importModels(ActionRequest request, ActionResponse response) throws IOException {
+	public void importModels(ActionRequest request, ActionResponse response)
+			throws IOException, AxelorException {
 
 		ModelImporter modelImporter = request.getContext().asType(
 				ModelImporter.class);

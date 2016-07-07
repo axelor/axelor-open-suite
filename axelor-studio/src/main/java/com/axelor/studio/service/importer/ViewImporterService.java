@@ -5,12 +5,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.validation.ValidationException;
-
 import org.apache.poi.ss.usermodel.Row;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.db.MetaField;
 import com.axelor.meta.db.MetaModel;
@@ -78,7 +77,7 @@ public class ViewImporterService extends ModelImporterService {
 	}
 
 	public void addViewElement(MetaModel model, String[] basic, Row row,
-			MetaField metaField) {
+			MetaField metaField) throws AxelorException {
 		
 		if (basic[0].equals("menu")) {
 			addMenu(model, basic);
@@ -86,9 +85,8 @@ public class ViewImporterService extends ModelImporterService {
 		}
 
 		if (model == null) {
-			throw new ValidationException(String.format(
-					I18n.get("No object defind for row : %s sheet: %s"),
-					row.getRowNum() + 1, row.getSheet().getSheetName()));
+			throw new AxelorException(I18n.get("No object defind for row : %s sheet: %s"),
+					1, row.getRowNum() + 1, row.getSheet().getSheetName());
 		}
 
 		this.row = row;
@@ -326,7 +324,7 @@ public class ViewImporterService extends ModelImporterService {
 	}
 
 	@Transactional
-	public void addMenu(MetaModel model, String[] basic) {
+	public void addMenu(MetaModel model, String[] basic) throws AxelorException {
 
 		String name = "menu-" + inflector.dasherize(basic[2]);
 
@@ -351,9 +349,8 @@ public class ViewImporterService extends ModelImporterService {
 				menuBuilder.setParent(parent.getName());
 				menuBuilder.setMenuBuilder(parent);
 			} else {
-				throw new ValidationException(String.format(
-						I18n.get("No parent menu found %s for menu %s"),
-						basic[1], basic[3]));
+				throw new AxelorException(I18n.get("No parent menu found %s for menu %s"),
+						1, basic[1], basic[3]);
 			}
 		}
 
