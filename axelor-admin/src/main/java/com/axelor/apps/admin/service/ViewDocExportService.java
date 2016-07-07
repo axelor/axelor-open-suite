@@ -32,6 +32,8 @@ import java.util.TreeSet;
 
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.FillPatternType;
+import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFCellStyle;
@@ -54,6 +56,36 @@ import com.google.common.base.Strings;
 import com.google.inject.Inject;
 
 public class ViewDocExportService {
+	
+	protected Set<String>fieldTypes = new TreeSet<String>(String.CASE_INSENSITIVE_ORDER);{
+		fieldTypes.add("Toolbar Menu");
+		fieldTypes.add("Toolbar MenuItem");
+		fieldTypes.add("Panel");
+		fieldTypes.add("SubPanel");
+		fieldTypes.add("Button");
+		fieldTypes.add("Label");
+		fieldTypes.add("Dashlet");
+		fieldTypes.add("STRING");
+		fieldTypes.add("INTEGER");
+		fieldTypes.add("DECIMAL");
+		fieldTypes.add("BOOLEAN");
+		fieldTypes.add("TEXT");
+		fieldTypes.add("DATE");
+		fieldTypes.add("LONG");
+		fieldTypes.add("TIME");
+		fieldTypes.add("DATETIME");
+		fieldTypes.add("LOCALDATETIME");
+		fieldTypes.add("LOCALDATE");
+		fieldTypes.add("LOCALTIME");
+		fieldTypes.add("ONE_TO_MANY");
+		fieldTypes.add("MANY_TO_ONE");
+		fieldTypes.add("ONE_TO_ONE");
+		fieldTypes.add("MANY_TO_MANY");
+		fieldTypes.add("BINARY");
+		fieldTypes.add("general");
+		fieldTypes.add("EMPTY");
+		fieldTypes.add("MENU");
+	};
 	
 	private final Logger log = LoggerFactory.getLogger(getClass());
 	
@@ -81,30 +113,6 @@ public class ViewDocExportService {
 		"Panel title(FR)"
 	};
 	
-	private static final Set<String>fieldTypes = new TreeSet<String>(String.CASE_INSENSITIVE_ORDER);{
-		fieldTypes.add("Toolbar Menu");
-		fieldTypes.add("Toolbar MenuItem");
-		fieldTypes.add("Panel");
-		fieldTypes.add("Button");
-		fieldTypes.add("Label");
-		fieldTypes.add("Dashlet");
-		fieldTypes.add("STRING");
-		fieldTypes.add("INTEGER");
-		fieldTypes.add("DECIMAL");
-		fieldTypes.add("BOOLEAN");
-		fieldTypes.add("TEXT");
-		fieldTypes.add("DATE");
-		fieldTypes.add("DATETIME");
-		fieldTypes.add("LOCALDATETIME");
-		fieldTypes.add("LOCALDATE");
-		fieldTypes.add("LOCALTIME");
-		fieldTypes.add("ONE_TO_MANY");
-		fieldTypes.add("MANY_TO_ONE");
-		fieldTypes.add("ONE_TO_ONE");
-		fieldTypes.add("MANY_TO_MANY");
-		fieldTypes.add("BINARY");
-	};
-	
 	private XSSFWorkbook workBook;
 	
 	private XSSFWorkbook oldBook;
@@ -113,15 +121,19 @@ public class ViewDocExportService {
 	
 	private XSSFSheet oldSheet;
 	
-	private CellStyle style;
+	private XSSFCellStyle style;
 	
-	private int rowCount;
+	private XSSFCellStyle green;
 	
-	private String[] menuPath;
+	private XSSFCellStyle lavender;
+	
+	private XSSFCellStyle violet;
+	
+	private String[] menuPath = null;
 	
 	private String rootMenu;
 	
-	private boolean onlyPanel;
+	private boolean onlyPanel = false;
 	
 	private List<String> processedMenus = new ArrayList<String>();
 	
@@ -145,7 +157,8 @@ public class ViewDocExportService {
 		
 		this.onlyPanel = onlyPanel;
 		
-		List<MetaMenu> menus = metaMenuRepo.all().filter("self.parent is null and self.left = true").order("order").fetch();
+		List<MetaMenu> menus = metaMenuRepo.all().filter("self.parent is null "
+				+ "and self.left = true and self.action is null").order("order").fetch();
 		
 		workBook = new XSSFWorkbook();
 		addStyle();
@@ -156,7 +169,7 @@ public class ViewDocExportService {
 		
 		processRootMenu(menus.iterator());
 		
-		updateColumnWidth();
+		setColumnWidth();
 
 		return createExportFile(docFile);
 	}
@@ -168,6 +181,19 @@ public class ViewDocExportService {
 		style.setBorderTop(CellStyle.BORDER_THIN);
 		style.setBorderLeft(CellStyle.BORDER_THIN);
 		style.setBorderRight(CellStyle.BORDER_THIN);
+		
+		green = workBook.createCellStyle();
+		green.cloneStyleFrom(style);
+		green.setFillForegroundColor(IndexedColors.BRIGHT_GREEN.index);
+		green.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+		
+		lavender = workBook.createCellStyle();
+		lavender.cloneStyleFrom(green);
+		lavender.setFillForegroundColor(IndexedColors.LAVENDER.index);
+		
+		violet = workBook.createCellStyle();
+		violet.cloneStyleFrom(green);
+		violet.setFillForegroundColor(IndexedColors.VIOLET.index);
 		
 	}
 	
@@ -191,7 +217,7 @@ public class ViewDocExportService {
 			}
 			rootMenu = title;
 			sheet = null;
-			processMenu(name);
+			processMenu(name, 0);
 			processedMenus.add(name);
 		}
 		
@@ -202,16 +228,13 @@ public class ViewDocExportService {
 		this.menuPath = menuPath;
 	}
 	
-	protected String[] getMenuPath(){
-		return menuPath;
-	}
-	
-	private void updateColumnWidth(){
+	private void setColumnWidth(){
 		
 		Iterator<XSSFSheet> sheets = workBook.iterator();
-		
+
 		while(sheets.hasNext()){
 			sheet = sheets.next();
+			sheet.createFreezePane(0, 1, 0, 1);
 			int count = 0;
 			while(count < HEADERS.length){
 				sheet.autoSizeColumn(count);
@@ -220,58 +243,111 @@ public class ViewDocExportService {
 		}
 	}
 	
+	private void addGeneralRow(String[] values){
+			
+		XSSFRow row = sheet.createRow(sheet.getPhysicalNumberOfRows());
+		String[] vals = { 
+			values[0],
+			values[1],
+			values[2],
+			"general","", "", "", "", "", "", ""
+		};
+		
+		if(menuPath != null){
+			vals[9] = menuPath[0];
+			vals[10] = menuPath[1];
+		}
+			
+		int count = writeCell(row, vals, 0, green);
+		
+		addDoc(row, vals, count, green, null);
+		
+	}
+	
 	private void createSheet(){
 		
+		log.debug("Root menu: {}", rootMenu);
+		menuPath = null;
 		sheet = workBook.createSheet(I18n.get(rootMenu));
-		rowCount = -1;
 		
 		if(oldBook != null){
 			oldSheet = oldBook.getSheet(sheet.getSheetName());
 		}
-
+		
 		if(onlyPanel){
-			writeRow(PANEL_HEADERS);
+			writeRow(PANEL_HEADERS, false, false, false);
 		}
 		else{
-			writeRow(HEADERS);
+			writeRow(HEADERS, false, false, false);
 		}
+		
 	}
 	
-	protected void writeRow(String[] values){
+	protected void writeRow(String[] values, boolean newForm, boolean newPanel, boolean newSubPanel){
 		
-		rowCount += 1;
-		XSSFRow row = sheet.createRow(rowCount);
-		
-		int count = 0;
-		count = writeCell(row, values, count, true);
-		
-		if(rowCount > 0 && !onlyPanel){
-			count = writeCell(row, menuPath, count, true);
+		if(newForm){
+			addGeneralRow(values);
+			menuPath = new String[]{"",""};
 		}
 		
-		addDoc(row, values, count);
+		XSSFRow row = sheet.createRow(sheet.getPhysicalNumberOfRows());
+		XSSFCellStyle cellStyle = style;
+		 
+		if(!onlyPanel){
+			if(newPanel){
+				cellStyle = violet;
+			}
+			else if (newSubPanel) {
+				cellStyle = lavender;
+			}
+		}
+		
+		int count = writeCell(row, values, 0, cellStyle);
+		
+		if(!onlyPanel){ 
+			if(menuPath != null){
+				count = writeCell(row, menuPath, count, cellStyle);
+				log.debug("Count after menu: {}", count);
+			}
+			
+			addDoc(row, values, count, cellStyle, null);
+		}
 		
 		menuPath = new String[]{"",""};
 		
 	}
 	
-	protected void writeRow(Integer rowIndex){
+	protected Integer writeRow(Integer rowIndex, XSSFCellStyle cellStyle, int count, Integer rowCount){
 		
-		rowCount += 1;
-		XSSFRow row = sheet.createRow(rowCount);
+		XSSFRow row = null;
 		
-		writeCell(row, rowIndex, 0, true);
+		int totalRows = sheet.getPhysicalNumberOfRows();
+		if(rowCount == null){
+			row = sheet.createRow(totalRows);
+		}
+		else{
+			rowCount++;
+			if(rowCount < totalRows){
+				sheet.shiftRows(rowCount, totalRows, 1);
+			}
+			row = sheet.createRow(rowCount);
+		}
+		
+		writeCell(row, rowIndex, count, cellStyle);
 		
 		menuPath = new String[]{"",""};
 		
+		return rowCount;
 	}
 	
-	private int writeCell(XSSFRow row, String[] values,  int count, boolean addStyle){
+	private int writeCell(XSSFRow row, String[] values, int count,  XSSFCellStyle cellStyle){
 		
 		int cellCount = 0;
+		
 		for(String value : values){
-			cellCount++;
+			
 			if(onlyPanel){
+				cellCount++;
 				if(cellCount == 4){
 					continue;
 				}
@@ -279,41 +355,34 @@ public class ViewDocExportService {
 					break;
 				}
 			}
+			
 			XSSFCell cell = row.createCell(count);
-			if(addStyle){
-				cell.setCellStyle(style);
-			}
+			cell.setCellStyle(cellStyle);
+			
 			cell.setCellValue(value);
+			
 			count++;
 		}
 		
 		return count;
+		
 	}
 	
-	private void writeCell(XSSFRow row, Integer oldRowIndex,  int count, boolean addStyle){
+	private void writeCell(XSSFRow row, Integer oldRowIndex, int count, XSSFCellStyle cellStyle){
 		
 		XSSFRow oldRow = oldSheet.getRow(oldRowIndex);
 		
 		while(count < oldRow.getLastCellNum()){
 			XSSFCell oldCell = oldRow.getCell(count);
-
-			XSSFCellStyle oldStyle = oldCell.getCellStyle();
-			XSSFCellStyle newStyle = workBook.createCellStyle();
-			newStyle.setFillBackgroundColor(oldStyle.getFillBackgroundXSSFColor());
-			newStyle.setBorderBottom(oldStyle.getBorderBottom());
-			newStyle.setBorderLeft(oldStyle.getBorderLeft());
-			newStyle.setBorderRight(oldStyle.getBorderRight());
-			newStyle.setBorderTop(oldStyle.getBorderTop());
-			
 			Cell cell = row.createCell(count);
+			cell.setCellStyle(cellStyle);
 			cell.setCellValue(oldCell.getStringCellValue());
-			cell.setCellStyle(newStyle);
 			count++;
 		}
 		
 	}
 	
-	private void addDoc(XSSFRow row, String[] values, int count){
+	private Integer addDoc(XSSFRow row, String[] values, int count, XSSFCellStyle cellStyle, Integer rowCount){
 		
 		 String name = values[4];
 		 if(name == null){
@@ -325,19 +394,23 @@ public class ViewDocExportService {
 			 key = sheet.getSheetName();
 		 }
 		 else{
-			 key =  values[2] + "," + values[3] + "," + name;
+			 key =  values[1] 
+					+ "," + values[2] 
+				    + "," + values[3] 
+				    + "," + name;
 		 }
 		 
 		 if(docMap.containsKey(key) && oldSheet != null){
-			 writeCell(row, docMap.get(key), count, false);	
+			 writeCell(row, docMap.get(key), count, cellStyle);	
 		 }
 
 		 if(commentMap.containsKey(key) && oldSheet != null){
-			log.debug("Comment map rows: {}", commentMap.get(key).size());
 			for(Integer rowIndex : commentMap.get(key)){
-				writeRow(rowIndex);
+				rowCount = writeRow(rowIndex, style, 0, rowCount);
 			}
 		 }
+		 
+		 return rowCount;
 	}
 	
 	protected String translate(String key, String lang){
@@ -354,40 +427,75 @@ public class ViewDocExportService {
 		return key;
 	}
 	
-	private void processMenu(String parentMenu){
+	private int processMenu(String parentMenu, int count){
 		
 		List<MetaMenu> subMenus = metaMenuRepo.all().filter("self.parent.name = ?", parentMenu).order("order").fetch();
 		
-		if(subMenus.isEmpty()){
-			log.debug("No sub menus for parent : {}", parentMenu);
+		if(sheet == null){
+			createSheet();
 		}
 		
 		for(MetaMenu subMenu : subMenus){
 			
-			log.debug("Processing sub menu: {}", subMenu.getName());
+			count++;
+//			log.debug("Processing sub menu: {}", subMenu.getName());
 			
 			MetaAction action = subMenu.getAction();
 			
 			if(action == null){
-				processMenu(subMenu.getName());
+				if(!onlyPanel){
+					String[] paths = updateMenuPath(subMenu);
+					count = addMenu(subMenu, "", paths, count);
+				}
+				count = processMenu(subMenu.getName(), count);
 				continue;
 			}	
 			
 			String model = action.getModel();
 			
+			String[] paths = updateMenuPath(subMenu);
 			if(action.getType().equals("action-view")){
-				if(sheet == null){
-					log.debug("Creating sheet: {}, model: {}", rootMenu, model);
-					createSheet();
-				}
-				updateMenuPath(subMenu);
 				viewDocXmlProcessor.processModel(model, action);
 			}
+			
+			if(!onlyPanel){
+				count = addMenu(subMenu, model, paths, count);
+			}
+			
 		}
 		
+		return count;
 	}
 	
-	private void updateMenuPath(MetaMenu metaMenu){
+	private int addMenu(MetaMenu subMenu, String model, String[] paths, int rowCount){
+		
+		sheet.shiftRows(rowCount, sheet.getPhysicalNumberOfRows(), 1);
+		
+		XSSFRow row = sheet.createRow(rowCount);
+		
+		String[] menuEn = paths[0].split("/");
+		String[] menuFr = paths[1].split("/");
+		
+		String[] values = new String[]{
+		    subMenu.getModule(),
+		    model,
+		    "",
+		    "MENU",
+		    subMenu.getName(),
+		    menuEn[menuEn.length - 1],
+		    menuFr[menuFr.length - 1],
+		    "",
+		    "",
+		    paths[0],
+		    paths[1]
+		};
+		
+		int count = writeCell(row, values, 0, style);
+		
+		return addDoc(row, values, count, style, rowCount);
+	}
+	
+	private String[] updateMenuPath(MetaMenu metaMenu){
 		
 		List<String> menus = new ArrayList<String>();
 		menus.add(metaMenu.getTitle());
@@ -411,7 +519,10 @@ public class ViewDocExportService {
 			}
 		}
 		
-		menuPath = new String[]{menuEN,menuFR};
+		String[] paths = new String[]{menuEN,menuFR};
+		menuPath = paths;
+		
+		return paths;
 	}
 	
 	private void addParentMenus(List<String> menus, MetaMenu metaMenu){
@@ -454,7 +565,9 @@ public class ViewDocExportService {
 						if(type == null){
 							continue;
 						}
-						key =  getCellValue(row.getCell(2)) 
+						type = type.trim();
+						key =  getCellValue(row.getCell(1))
+							   + "," + getCellValue(row.getCell(2)) 
 							   + "," + type 
 							   + "," +  name;
 						
@@ -475,7 +588,7 @@ public class ViewDocExportService {
 		}
 	}
 	
-	private String getCellValue(Cell cell){
+	public static String getCellValue(Cell cell){
 		
 		if(cell != null){
 			return cell.getStringCellValue();
@@ -515,7 +628,6 @@ public class ViewDocExportService {
 		return metaFile;
 	}
 	
-	
 	private boolean addComment(String lastKey, String type, Row row){
 		
 		String mType = type;
@@ -525,16 +637,19 @@ public class ViewDocExportService {
 		}
 		
 		if(!fieldTypes.contains(mType)){
-			List<Integer> rowIndexs = new ArrayList<Integer>();
-			if(commentMap.containsKey(lastKey)){
-				rowIndexs = commentMap.get(lastKey);
+			Cell firstCell = row.getCell(0);
+			if(firstCell != null){
+				List<Integer> rowIndexs = new ArrayList<Integer>();
+				if(commentMap.containsKey(lastKey)){
+					rowIndexs = commentMap.get(lastKey);
+				}
+				
+				rowIndexs.add(row.getRowNum());
+				
+				commentMap.put(lastKey, rowIndexs);
+				
+				return true;
 			}
-			
-			rowIndexs.add(row.getRowNum());
-			
-			commentMap.put(lastKey, rowIndexs);
-			
-			return true;
 		}
 		
 		return false;
