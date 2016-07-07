@@ -427,11 +427,11 @@
 		<field name="exTaxTotal" expr="eval: price*qty"/>
 	</action-record>
 	
-	<action-record name="action-project-change-client-task" model="com.axelor.apps.base.db.ProjectTask">
-		<field name="clientPartner" expr="eval: project?.clientPartner"/>
+	<action-record name="action-project-change-client-task" model="com.axelor.apps.project.db.ProjectTask">
+		<field name="clientPartner" expr="eval: project.clientPartner"/>
 	</action-record>
 	
-	<action-record name="action-project-bind-project-client" model="com.axelor.apps.base.db.ProjectTask">
+	<action-record name="action-project-bind-project-client" model="com.axelor.apps.project.db.ProjectTask">
 		<field name="clientPartner" expr="eval: _parent?.clientPartner"/>
 	</action-record>
 	
