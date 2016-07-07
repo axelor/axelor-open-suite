@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
+   
+   <grid title="Export for doc" name="view-doc-grid" model="com.axelor.apps.admin.db.ViewDoc"> 
+		<field name="exportDate" />
+		<field name="exportFile" widget="binary-link" />
+   </grid>
+   
+   <form title="Export for doc" name="view-doc-form" model="com.axelor.apps.admin.db.ViewDoc" canSave="false">
+   		<panel name="main">
+			<field name="exportDate" />
+			<field name="exportOnlyPanel" onChange="action-export-only-panel-change" />
+			<field name="exportFile" widget="binary-link" readonlyIf="exportOnlyPanel"/>
+			<button name="export" title="Export" icon="fa-reply" onClick="save,action-view-doc-export,save" colSpan="3" />
+		</panel>
+   </form>  
+    
+   <action-method name="action-view-doc-export">
+   		<call class="com.axelor.apps.admin.web.ViewDocController" method="export"/>
+   </action-method>
+   
+   <action-attrs name="action-export-only-panel-change" model="com.axelor.apps.admin.db.ViewDoc">
+   		<attribute name="value" for="exportFile" expr="eval:null"/>
+   </action-attrs>
+   
+</object-views>

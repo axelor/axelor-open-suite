@@ -1,0 +1,12 @@
+apply plugin: 'axelor-module'
+
+module {
+	name "axelor-admin"
+	version "4.0.0"
+	title "Axelor :: Admin"
+
+	removable false
+	
+	module "modules:axelor-exception"
+}
+

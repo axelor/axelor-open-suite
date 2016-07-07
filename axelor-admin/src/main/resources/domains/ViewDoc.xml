@@ -1,0 +1,17 @@
+<?xml version="1.0" ?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_4.0.xsd">
+
+  <module name="admin" package="com.axelor.apps.admin.db"/>
+
+  <entity name="ViewDoc" cachable="true">
+    <![CDATA[
+    This object keep record of exported view docs. 
+    ]]>
+    <datetime name="exportDate" title="Export date" readonly="true" />
+    <many-to-one name="exportFile" ref="com.axelor.meta.db.MetaFile" title="File" />
+    <boolean name="exportOnlyPanel" title="Export only panel?" />
+  </entity>
+
+</domain-models>

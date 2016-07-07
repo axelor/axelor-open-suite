@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
+
+  <menuitem name="menu-auth-permission-assistant" parent="menu-auth" title="Permission Assistant"
+    action="action-auth-permission-assistant"/>
+
+  <action-view name="action-auth-permission-assistant" title="Permission Assistant"
+    model="com.axelor.auth.db.PermissionAssistant">
+    <view type="grid" name="permission-assistant-grid" />
+    <view type="form" name="permission-assistant-form" />
+  </action-view>
+  
+  <menuitem name="menu-meta-group-menu-assistant" parent="menu-auth" title="Group Menu Assistant"
+    action="action-group-menu-assistant" />
+
+  <action-view name="action-group-menu-assistant" title="Group Menu Assistant"
+    model="com.axelor.meta.db.MetaGroupMenuAssistant">
+    <view type="grid" name="meta-group-menu-assistant-grid" />
+    <view type="form" name="meta-group-menu-assistant-form" />
+  </action-view>
+  
+  <menuitem name="menu-meta-group-menu-assistant" parent="menu-auth" title="Group Menu Assistant"
+    action="action-group-menu-assistant" />
+
+  <action-view name="action-group-menu-assistant" title="Group Menu Assistant"
+    model="com.axelor.meta.db.MetaGroupMenuAssistant">
+    <view type="grid" name="meta-group-menu-assistant-grid" />
+    <view type="form" name="meta-group-menu-assistant-form" />
+  </action-view>
+  
+  <menuitem name="menu-view-doc" parent="menu-view-management" title="Export for doc"
+    action="action.view.doc" />
+  
+  <action-view name="action.view.doc" title="Export for doc"
+    model="com.axelor.apps.admin.db.ViewDoc">
+    <view type="grid" name="view-doc-grid" />
+    <view type="form" name="view-doc-form" />
+  </action-view>
+  
+</object-views>
