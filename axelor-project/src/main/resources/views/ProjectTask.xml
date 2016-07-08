@@ -28,9 +28,9 @@
 				</editor>
 			</field>
 			<field name="statusSelect" widget="NavSelect" colSpan="6"/>
-			<field name="project" onChange="action-project-task-record-inv-type-select,action-projectTask-bind-customer-task" colSpan="6" title="Parent Project" domain="self.typeSelect = 'project'" form-view="project-form" grid-view="project-grid"/>
+			<field name="project" onChange="action-project-task-record-inv-type-select,action-projectTask-record-bindCustomerProject" colSpan="6" title="Parent Project" domain="self.typeSelect = 'project'" form-view="project-form" grid-view="project-grid"/>
 			<field name="company" requiredIf="project == null" hideIf="project != null" form-view="company-form" grid-view="company-grid"/>
-			<field name="clientPartner" requiredIf="project == null &amp;&amp; typeSelect == 'project'" readonlyIf="typeSelect == 'task'" domain="self.isCustomer = true" form-view="partner-form" grid-view="partner-grid" />
+			<field name="clientPartner" requiredIf="project == null &amp;&amp; typeSelect == 'project'" readonlyIf="project != null" domain="self.isCustomer = true" form-view="partner-form" grid-view="partner-grid" />
 			<field name="assignedTo" title="Person In Charge" onChange="action-attrs-project-add-member" form-view="user-form" grid-view="user-grid"/>
 			<field name="saleOrder" domain="self.clientPartner = :clientPartner" if-module="axelor-business-project" form-view="sale-order-form" grid-view="sale-order-grid"/>
 			<field name="fromDate" />
@@ -116,7 +116,7 @@
 		</toolbar>
 	    <panel name="main" >
 	    	<field name="statusSelect" widget="NavSelect" colSpan="6"/>
-	        <field name="project" onChange="action-project-task-attrs-hide-invoicing-panel,action-project-task-record-inv-type-select,action-projectTask-bind-customer-task" colSpan="6" requiredIf="!$popup()" title="Project" hideIf="$popup()" domain="self.typeSelect = 'project'" form-view="project-form" grid-view="project-grid"/>
+	        <field name="project" onChange="action-project-task-attrs-hide-invoicing-panel,action-project-task-record-inv-type-select,action-projectTask-record-bindCustomerProject" colSpan="6" requiredIf="!$popup()" title="Project" hideIf="$popup()" domain="self.typeSelect = 'project'" form-view="project-form" grid-view="project-grid"/>
 		    <field name="name" colSpan="12" />
 			<field name="assignedTo" colSpan="12" title="Assigned To" onSelect="action-task-attrs-assigned-to-domain" onChange="action-attrs-project-add-member" form-view="user-form" grid-view="user-grid"/>
 			<field name="clientPartner" readonly="true"/>
@@ -179,7 +179,7 @@
 
 
 	<form name="project-task-form" title="Project/Task" model="com.axelor.apps.project.db.ProjectTask" 
-	onNew="action-project-task-attrs-hide-invoicing-panel,action-project-project-default,action-project-task-attrs-duration-title,action-project-attrs-scale-and-precision,action-projectTask-bind-customer-task-from-parent-project"
+	onNew="action-project-task-attrs-hide-invoicing-panel,action-project-project-default,action-project-task-attrs-duration-title,action-project-attrs-scale-and-precision,action-projectTask-record-bindCustomerParent"
 	onLoad="action-project-task-attrs-hide-invoicing-panel,action-project-task-method-set-visible-duration,action-project-task-attrs-duration-title,action-project-attrs-scale-and-precision">
 		<panel name="overview" title="Overview">
 			<field name="fullName" showTitle="false" colSpan="12" css="label-bold bold large">
@@ -193,9 +193,9 @@
 			<field name="project" requiredIf="typeSelect == 'task' &amp;&amp; !$popup()"  readonlyIf="$popup()" 
 				   onChange="action-project-task-attrs-hide-invoicing-panel,action-project-task-record-inv-type-select" 
 				   title="Parent Project"  form-view="project-form" grid-view="project-grid" domain="self.typeSelect = 'project'" 
-				   colSpan="6" width="50%"/>
+				   colSpan="6" width="50%" hide="true"/>
 			<field name="company" requiredIf="project == null &amp;&amp; typeSelect == 'project'" hideIf="typeSelect == 'task' || project != null"/>
-			<field name="clientPartner" requiredIf="project == null &amp;&amp; typeSelect == 'project'" domain="self.isCustomer = true" readonlyIf="typeSelect == 'task'"/>
+			<field name="clientPartner" requiredIf="project == null &amp;&amp; typeSelect == 'project'" domain="self.isCustomer = true" readonly="true"/>
 			<field name="assignedTo" title="Person In Charge" onSelect="action-task-attrs-assigned-to-domain" onChange="action-attrs-project-add-member" form-view="user-form" grid-view="user-grid"/>
 			<field name="saleOrder" domain="self.clientPartner.id = :clientPartner.id" if-module="axelor-business-project" readonlyIf="typeSelect == 'task'" form-view="sale-order-form" grid-view="sale-order-grid"/>
 			<field name="fromDate" />
@@ -427,11 +427,11 @@
 		<field name="exTaxTotal" expr="eval: price*qty"/>
 	</action-record>
 	
-	<action-record name="action-projectTask-bind-customer-task" model="com.axelor.apps.project.db.ProjectTask">
+	<action-record name="action-projectTask-record-bindCustomerProject" model="com.axelor.apps.project.db.ProjectTask">
 		<field name="clientPartner" expr="eval: project?.clientPartner"/>
 	</action-record>
 	
-	<action-record name="action-projectTask-bind-customer-task-from-parent-project" model="com.axelor.apps.project.db.ProjectTask">
+	<action-record name="action-projectTask-record-bindCustomerParent" model="com.axelor.apps.project.db.ProjectTask">
 		<field name="clientPartner" expr="eval: _parent?.clientPartner"/>
 	</action-record>
 	
