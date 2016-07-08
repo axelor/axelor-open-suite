@@ -402,8 +402,12 @@ public class ViewDocExportService {
 				 String[] modelSplit = values[1].split("\\.");
 				 model = modelSplit[modelSplit.length - 1];
 			 }
+			 String type = values[6].toUpperCase();
+			 if (type != null && type.contains("PANEL")) {
+				 type = "PANEL";
+			 }
 			 key =  model
-					+ "," + values[6].toUpperCase() 
+					+ "," + type 
 				    + "," + name;
 			 
 		 }
@@ -437,7 +441,9 @@ public class ViewDocExportService {
 	
 	private int processMenu(String parentMenu, int count){
 		
-		List<MetaMenu> subMenus = metaMenuRepo.all().filter("self.parent.name = ?", parentMenu).order("order").fetch();
+		List<MetaMenu> subMenus = metaMenuRepo.all()
+				.filter("self.parent.name = ?", parentMenu)
+				.order("order").fetch();
 		
 		if(sheet == null){
 			createSheet();
@@ -688,6 +694,10 @@ public class ViewDocExportService {
 		}
 		
 		type = type.toUpperCase();
+		
+		if (type.startsWith("PANEL")) {
+			return "PANEL";
+		}
 		
 		return type;
 	}

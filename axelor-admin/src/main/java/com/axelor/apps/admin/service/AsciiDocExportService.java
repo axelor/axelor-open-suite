@@ -253,7 +253,13 @@ public class AsciiDocExportService {
 				currentMenu = null;
 				fw.write("\n\n[horizontal]");
 			}
-			fw.write("\n" + title + ":: "+ doc);
+			if (type.toUpperCase().contains("PANEL")) {
+				fw.write("\n[red]#" + title + "#:: " + doc );
+			}
+			else {
+				fw.write("\n" + title + ":: "+ doc);
+			}
+			
 		}
 		else{
 			fw.write("\n" + title + ": "+ doc + " +");
