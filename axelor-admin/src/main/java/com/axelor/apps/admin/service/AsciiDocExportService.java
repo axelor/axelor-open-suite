@@ -31,7 +31,10 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import com.axelor.app.AppSettings;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
 import com.google.common.base.Strings;
@@ -39,17 +42,22 @@ import com.google.inject.Inject;
 
 public class AsciiDocExportService {
 	
-	private int docIndex = 12;
-	private int titleIndex = 5;
+	private static final Logger log = LoggerFactory.getLogger(AsciiDocExportService.class);
+	
+	private int docIndex = 20;
+	private int titleIndex = 4;
 	private int menuIndex = 9;
+	private int typeIndex = 6;
 	
 	private Map<String, String> menuMap = new HashMap<String, String>();
 	
 	private boolean hasMenu = false;
 	
-	private boolean firstRow = false;
-	
 	private List<String> processedMenu = new ArrayList<String>();
+	
+	private File imgDir = null;
+	
+	private String currentMenu = null;
 	
 	@Inject
 	private ViewDocExportService viewDocExportService = new ViewDocExportService();
@@ -58,6 +66,12 @@ public class AsciiDocExportService {
 	private MetaFiles metaFiles;
 	
 	public MetaFile export(MetaFile metaFile, String lang) throws IOException{
+		
+		String docImgPath = AppSettings.get().get("doc.images.path");
+		
+		if (docImgPath != null) {
+			imgDir = new File(docImgPath);
+		}
 		
 		if(metaFile == null){
 			return null;
@@ -80,8 +94,8 @@ public class AsciiDocExportService {
 		}
 		
 		if(lang != null && lang.equals("fr")){
-			docIndex = 11;
-			titleIndex = 6;
+			docIndex = 20;
+			titleIndex = 5;
 			menuIndex = 10;
 		}
 		
@@ -91,7 +105,8 @@ public class AsciiDocExportService {
 			XSSFWorkbook workbook = new XSSFWorkbook(inStream);
 			
 			if(asciiDoc == null){
-				asciiDoc = File.createTempFile(excelFile.getName().replace(".xlsx", ""), ".txt");
+				String fileName = excelFile.getName().replace(".xlsx", "");
+				asciiDoc = File.createTempFile(fileName, ".txt");
 			}
 			
 			FileWriter fw = new FileWriter(asciiDoc);
@@ -136,17 +151,21 @@ public class AsciiDocExportService {
 		
 		Row row = rowIterator.next();
 		
-		String type = ViewDocExportService.getCellValue(row.getCell(3));
+		String type = getValue(row, typeIndex);
+		
 		if(type != null){
-			String menu = ViewDocExportService.getCellValue(row.getCell(menuIndex));
-			if(type.equals("MENU")){
-				String doc = ViewDocExportService.getCellValue(row.getCell(docIndex));
-				if(menu != null && doc != null){
+			String menu = getValue(row, menuIndex);
+			if(menu != null && type.equals("MENU")){
+				String doc = getValue(row, docIndex);
+				if(doc != null){
 					menuMap.put(menu, doc);
 				}
 			}
-			else if(!Strings.isNullOrEmpty(menu) && type.equals("general") && !menu.contains("-form(")){
-				menu = processMenu(menu, fw);
+			else if(!Strings.isNullOrEmpty(menu) 
+					&& type.equals("general") 
+					&& !menu.contains("-form(")){
+				menu = processMenu(menu);
+				hasMenu = true;
 			}
 			else{
 				menu = null;
@@ -161,27 +180,27 @@ public class AsciiDocExportService {
 		
 	}
 	
-	private String processMenu(String menu, FileWriter fw) throws IOException{
+	private String processMenu(String menu) throws IOException{
 		
-		hasMenu = true;
 		String[] menus = menu.split("/", 4);
 		int count = -1;
 		
+		currentMenu = "";
 		String checkMenu = "";
 		for(String mn : menus){
 			count++;
 			checkMenu += mn + "/";
 			if(!processedMenu.contains(checkMenu)){
-				fw.write("\n\n==" 
+				currentMenu += "\n\n==" 
 				+ StringUtils.repeat("=", count)
 				+ " " 
-				+ mn);
+				+ mn;
 				processedMenu.add(checkMenu);
 			}
 		}
 			
 		if(menuMap.containsKey(menu)){
-			fw.write("\n" + menuMap.get(menu));
+			currentMenu += "\n" + menuMap.get(menu);
 		}
 		
 		return menus[menus.length-1];
@@ -190,22 +209,23 @@ public class AsciiDocExportService {
 	
 	private void processView(Row row, String type, String menu, FileWriter fw) throws IOException{
 		
-		String modelVal = ViewDocExportService.getCellValue(row.getCell(1));
-		String viewVal = ViewDocExportService.getCellValue(row.getCell(2));
+		String modelVal = getValue(row, 1);
+		String viewVal = getValue(row, 2);
 		
-		if(Strings.isNullOrEmpty(modelVal) || Strings.isNullOrEmpty(viewVal)){
+		if(Strings.isNullOrEmpty(modelVal) && Strings.isNullOrEmpty(viewVal)){
 			return;
 		}
 		
-		String doc = ViewDocExportService.getCellValue(row.getCell(docIndex));
+		String doc = getValue(row, docIndex);
 		
-		if(menu != null && !processedMenu.contains(menu)){
+		if(menu != null && !processedMenu.contains(menu) && viewVal != null){
 			processedMenu.add(menu);
-			fw.write("\nimage::" + viewVal + ".png[" + menu + ", align=\"center\"]");
-			if(type.equals("general") && !Strings.isNullOrEmpty(doc)){
-				fw.write("\n" + doc);
+			if (imgDir != null && new File(imgDir, viewVal + ".png").exists()) {
+				currentMenu += "\nimage::" + viewVal + ".png[" + menu + ", align=\"center\"]";
 			}
-			firstRow = true;
+			if(type.equals("general") && !Strings.isNullOrEmpty(doc)){
+				currentMenu += "\n" + doc;
+			}
 			return;
 		}
 		
@@ -213,9 +233,9 @@ public class AsciiDocExportService {
 			return;
 		}
 		
-		String title = ViewDocExportService.getCellValue(row.getCell(titleIndex));
+		String title = getValue(row, titleIndex);
 		if(Strings.isNullOrEmpty(title)){
-			title = ViewDocExportService.getCellValue(row.getCell(4));
+			title = getValue(row, 4);
 		}
 		if(Strings.isNullOrEmpty(title)){
 			title = type.replace("tip", "TIP");
@@ -227,11 +247,12 @@ public class AsciiDocExportService {
 		if(type.contains("(")){
 			type = type.substring(0, type.indexOf("(")).replace("-", "_");
 		} 
-		if(viewDocExportService.fieldTypes.contains(type) || firstRow){
-			if(firstRow){
+		if(viewDocExportService.fieldTypes.contains(type) || currentMenu != null){
+			if(currentMenu != null){
+				fw.write(currentMenu);
+				currentMenu = null;
 				fw.write("\n\n[horizontal]");
 			}
-			firstRow = false;
 			fw.write("\n" + title + ":: "+ doc);
 		}
 		else{
@@ -240,6 +261,11 @@ public class AsciiDocExportService {
 	
 	}
 	
+	
+	private String getValue(Row row, Integer cell) {
+		
+		return ViewDocExportService.getCellValue(row.getCell(cell));
+	}
 
 	
 }

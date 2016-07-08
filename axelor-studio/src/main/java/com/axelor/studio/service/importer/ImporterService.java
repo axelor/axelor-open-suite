@@ -21,7 +21,7 @@ import com.google.inject.Inject;
 
 public abstract class ImporterService {
 
-	protected final static Map<String, String> typeMap;
+	public final static Map<String, String> typeMap;
 
 	static {
 		Map<String, String> map = new HashMap<String, String>();
@@ -149,7 +149,7 @@ public abstract class ImporterService {
 	@Inject
 	protected MetaTranslationRepository metaTranslationRepo;
 
-	protected final Inflector inflector = Inflector.getInstance();
+	public final Inflector inflector = Inflector.getInstance();
 
 	protected String getString(Cell cell) {
 
@@ -172,7 +172,7 @@ public abstract class ImporterService {
 	 *            Title string to process.
 	 * @return Name created from title.
 	 */
-	protected String getFieldName(String title) {
+	public String getFieldName(String title) {
 
 		title = title.replaceAll("[^a-zA-Z0-9\\s]", "").replaceAll("^[0-9]+",
 				"");

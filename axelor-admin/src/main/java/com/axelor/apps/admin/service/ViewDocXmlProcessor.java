@@ -425,10 +425,10 @@ public class ViewDocXmlProcessor {
 					getModuleName(panel, module), 
 					className, 
 					view, 
-					panelType, 
 					name, 
 					exportService.translate(title, "en"), 
 					exportService.translate(title, "fr"),
+					panelType, 
 					"",
 					""
 			};
@@ -517,10 +517,10 @@ public class ViewDocXmlProcessor {
 			String[] values = new String[]{moduleName, 
 					className, 
 					view, 
-					type, 
 					name, 
 					exportService.translate(title,"en"), 
 					exportService.translate(title, "fr"), 
+					type, 
 					selectEN, 
 					selectFR
 			};
@@ -620,10 +620,10 @@ public class ViewDocXmlProcessor {
 			String[] values = new String[]{getModuleName(button, module), 
 					className, 
 					view, 
-					"Button", 
 					name, 
 					exportService.translate(title, "en"), 
 					exportService.translate(title, "fr"),
+					"Button", 
 					"", ""
 			};
 			exportService.writeRow(values, newForm, false, false);
@@ -677,10 +677,10 @@ public class ViewDocXmlProcessor {
 		String[] values = new String[]{getModuleName(panelRelated, module), 
 				className, 
 				view, 
-				type, 
 				name, 
 				exportService.translate(title,"en"), 
 				exportService.translate(title, "fr"), 
+				type, 
 				"", 
 				""
 		};
@@ -701,10 +701,10 @@ public class ViewDocXmlProcessor {
 		String[] values = new String[]{getModuleName(label, module), 
 				className, 
 				view, 
-				"Label", 
 				label.getName(), 
 				exportService.translate(title,"en"), 
 				exportService.translate(title, "fr"), 
+				"Label", 
 				"", 
 				""
 		};
@@ -735,10 +735,10 @@ public class ViewDocXmlProcessor {
 					getModuleName(dashlet, module), 
 					className, 
 					view, 
-					"Dashlet", 
 					dashlet.getName(), 
 					exportService.translate(title, "en"), 
 					exportService.translate(title, "fr"),
+					"Dashlet", 
 					"",
 					""
 			};
@@ -760,10 +760,10 @@ public class ViewDocXmlProcessor {
 					getModuleName(item, module), 
 					className, 
 					view, 
-					"Toolbar MenuItem", 
 					item.getName(), 
 					exportService.translate(title, "en"), 
 					exportService.translate(title, "fr"),
+					"Toolbar MenuItem", 
 					"",
 					""
 			};

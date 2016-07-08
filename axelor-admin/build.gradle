@@ -8,5 +8,6 @@ module {
 	removable false
 	
 	module "modules:axelor-exception"
+	module "modules:axelor-studio"
 }
 
