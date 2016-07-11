@@ -76,7 +76,7 @@ public abstract class ImporterService {
 		ignoreTypes = Collections.unmodifiableList(types);
 	}
 	
-	protected final static Map<String, String> frMap;
+	public final static Map<String, String> frMap;
 
 	static {
 		Map<String, String> map = new HashMap<String, String>();

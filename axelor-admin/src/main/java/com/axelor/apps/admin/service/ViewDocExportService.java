@@ -52,6 +52,7 @@ import com.axelor.meta.db.MetaMenu;
 import com.axelor.meta.db.MetaTranslation;
 import com.axelor.meta.db.repo.MetaMenuRepository;
 import com.axelor.meta.db.repo.MetaTranslationRepository;
+import com.axelor.studio.service.ViewLoaderService;
 import com.axelor.studio.service.importer.ImporterService;
 import com.axelor.studio.service.importer.ModelImporterService;
 import com.google.common.base.Strings;
@@ -375,12 +376,19 @@ public class ViewDocExportService {
 	
 	private void writeCell(XSSFRow row, Row oldRow, int count, XSSFCellStyle cellStyle){
 		
-		while(count < oldRow.getLastCellNum()){
-			Cell oldCell = oldRow.getCell(count);
-			Cell cell = row.createCell(count);
-			cell.setCellStyle(cellStyle);
-			cell.setCellValue(oldCell.getStringCellValue());
+		while(count < oldRow.getLastCellNum()) {
 			count++;
+			Cell oldCell = oldRow.getCell(count-1);
+			if (oldCell == null) {
+				continue;
+			}
+			String val = oldCell.getStringCellValue();
+			if (val == null){
+				continue;
+			}
+			Cell cell = row.createCell(count-1);
+			cell.setCellStyle(cellStyle);
+			cell.setCellValue(val);
 		}
 		
 	}
@@ -402,12 +410,9 @@ public class ViewDocExportService {
 				 String[] modelSplit = values[1].split("\\.");
 				 model = modelSplit[modelSplit.length - 1];
 			 }
-			 String type = values[6].toUpperCase();
-			 if (type != null && type.contains("PANEL")) {
-				 type = "PANEL";
-			 }
 			 key =  model
-					+ "," + type 
+					+ "," + values[2]
+					+ "," + getFieldType(values[6]) 
 				    + "," + name;
 			 
 		 }
@@ -573,7 +578,7 @@ public class ViewDocExportService {
 					}
 					
 					String name = getFieldName(row);
-					String type = getFieldType(row);
+					String type = getFieldType(getCellValue(row.getCell(6)));
 					if (type == null) {
 						continue;
 					}
@@ -582,13 +587,18 @@ public class ViewDocExportService {
 					if (model != null) {
 						model = modelImporterService.inflector.camelize(model);
 					}
-					key =  model + "," + type + "," +  name;
-					 
+					
+					String view = getCellValue(row.getCell(2));
+					if(model != null && view == null){
+						view = ViewLoaderService.getDefaultViewName(model, "form");
+					}
+					
+					key =  model + "," + view + "," + type + "," +  name;
+					
 					if(addComment(lastKey, type, row)){
 						continue;
 					}
 					lastKey = key;
-					log.debug("Put key: {}", key);
 					docMap.put(key, row);
 				}
 			}
@@ -601,7 +611,10 @@ public class ViewDocExportService {
 	public static String getCellValue(Cell cell){
 		
 		if(cell != null){
-			return cell.getStringCellValue();
+			String value = cell.getStringCellValue();
+			if (!Strings.isNullOrEmpty(value)) {
+				return value;
+			}
 		}
 		
 		return null;
@@ -641,13 +654,13 @@ public class ViewDocExportService {
 	private boolean addComment(String lastKey, String type, Row row){
 		
 		String mType = type;
-		if(type.contains("(")){
+		if (type.contains("(")) {
 			mType = type.substring(0, type.indexOf("("));
-			mType = mType.replace("-", "_");
 		}
+		mType = mType.replace("-", "_");
 		
-		if(!fieldTypes.contains(mType)){
-			log.debug("Not contains: {}", mType);
+		if (!fieldTypes.contains(mType)) {
+			log.debug("Not supported doc type: {}", mType);
 //			if(firstCell != null){
 				List<Row> rows = new ArrayList<Row>();
 				if(commentMap.containsKey(lastKey)){
@@ -681,13 +694,20 @@ public class ViewDocExportService {
 		return name;
 	}
 	
-	private String getFieldType(Row row) {
+	private String getFieldType(String type) {
 		
-		String type = getCellValue(row.getCell(6));
 		if(type == null){
 			return type;
 		}
 		type = type.trim();
+		
+		if (type.contains("(")) {
+			type = type.substring(0, type.indexOf("("));
+		}
+		
+		if(ImporterService.frMap.containsKey(type)) {
+			type = ImporterService.frMap.get(type);
+		}
 		
 		if (ImporterService.typeMap.containsKey(type)) {
 			type = ImporterService.typeMap.get(type);
@@ -699,6 +719,10 @@ public class ViewDocExportService {
 			return "PANEL";
 		}
 		
-		return type;
+		if (type.startsWith("WIZARD")) {
+			return "BUTTON";
+		}
+		
+		return type.replace("-", "_");
 	}
 }

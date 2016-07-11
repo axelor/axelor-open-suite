@@ -368,7 +368,7 @@ public class ViewLoaderService {
 	 *            Type of view
 	 * @return View name.
 	 */
-	public String getDefaultViewName(String modelName, String viewType) {
+	public static String getDefaultViewName(String modelName, String viewType) {
 
 		modelName = modelName.trim()
 				.replaceAll("([A-Z]+)([A-Z][a-z])", "$1-$2")
