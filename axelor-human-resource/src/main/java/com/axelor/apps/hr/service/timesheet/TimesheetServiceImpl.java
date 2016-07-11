@@ -273,7 +273,7 @@ public class TimesheetServiceImpl implements TimesheetService{
 			User user = (User)timesheetInformations[1];
 			LocalDate startDate = (LocalDate)timesheetInformations[2];
 			LocalDate endDate = (LocalDate)timesheetInformations[3];
-			BigDecimal visibleDuration = (BigDecimal) timesheetInformations[4];
+			BigDecimal durationStored = (BigDecimal) timesheetInformations[4];
 
 			if (consolidate){
 				strDate = ddmmFormat.format(startDate.toDate()) + " - " + ddmmFormat.format(endDate.toDate());
@@ -281,7 +281,7 @@ public class TimesheetServiceImpl implements TimesheetService{
 				strDate = ddmmFormat.format(startDate.toDate());
 			}
 
-			invoiceLineList.addAll(this.createInvoiceLine(invoice, product, user, strDate, visibleDuration, priority*100+count));
+			invoiceLineList.addAll(this.createInvoiceLine(invoice, product, user, strDate, durationStored, priority*100+count));
 			count++;
 		}
 
@@ -289,7 +289,7 @@ public class TimesheetServiceImpl implements TimesheetService{
 
 	}
 
-	public List<InvoiceLine> createInvoiceLine(Invoice invoice, Product product, User user, String date, BigDecimal visibleDuration, int priority) throws AxelorException  {
+	public List<InvoiceLine> createInvoiceLine(Invoice invoice, Product product, User user, String date, BigDecimal durationStored, int priority) throws AxelorException  {
 
 		Employee employee = user.getEmployee();
 
@@ -301,16 +301,16 @@ public class TimesheetServiceImpl implements TimesheetService{
 		BigDecimal discountAmount = product.getCostPrice();
 
 
-		BigDecimal qtyConverted = visibleDuration;
-		qtyConverted = Beans.get(UnitConversionService.class).convert(generalService.getGeneral().getUnitHours(), product.getUnit(), visibleDuration);
+		BigDecimal qtyConverted = durationStored;
+		qtyConverted = Beans.get(UnitConversionService.class).convert(generalService.getGeneral().getUnitHours(), product.getUnit(), durationStored);
 
 		if(employee != null){
 			if(employee.getTimeLoggingPreferenceSelect().equals(EmployeeRepository.TIME_PREFERENCE_DAYS)){
-				qtyConverted = Beans.get(UnitConversionService.class).convert(generalService.getGeneral().getUnitDays(), product.getUnit(), visibleDuration);
+				qtyConverted = Beans.get(UnitConversionService.class).convert(generalService.getGeneral().getUnitDays(), product.getUnit(), durationStored);
 
 			}
 			else if(employee.getTimeLoggingPreferenceSelect().equals(EmployeeRepository.TIME_PREFERENCE_MINUTES)){
-				qtyConverted = Beans.get(UnitConversionService.class).convert(generalService.getGeneral().getUnitMinutes(), product.getUnit(), visibleDuration);
+				qtyConverted = Beans.get(UnitConversionService.class).convert(generalService.getGeneral().getUnitMinutes(), product.getUnit(), durationStored);
 
 			}
 

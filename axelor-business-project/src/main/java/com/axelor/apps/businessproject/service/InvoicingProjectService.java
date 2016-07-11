@@ -114,9 +114,9 @@ public class InvoicingProjectService {
 		};
 		Invoice invoice = invoiceGenerator.generate();
 		AccountConfigService accountConfigService = Beans.get(AccountConfigService.class);
-		//AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
-		//invoice.setDisplayTimesheetOnPrinting(accountConfig.getDisplayTimesheetOnPrinting());
-		//invoice.setDisplayExpenseOnPrinting(accountConfig.getDisplayExpenseOnPrinting());
+		AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
+		invoice.setDisplayTimesheetOnPrinting(accountConfig.getDisplayTimesheetOnPrinting());
+		invoice.setDisplayExpenseOnPrinting(accountConfig.getDisplayExpenseOnPrinting());
 
 		invoiceGenerator.populate(invoice,this.populate(invoice,invoicingProject));
 		Beans.get(InvoiceRepository.class).save(invoice);
