@@ -57,6 +57,8 @@ import com.axelor.apps.hr.db.repo.TimesheetRepository;
 import com.axelor.apps.hr.exception.IExceptionMessage;
 import com.axelor.apps.hr.service.employee.EmployeeService;
 import com.axelor.apps.hr.service.project.ProjectTaskService;
+import com.axelor.apps.hr.db.repo.PublicHolidayDayRepository;
+import com.axelor.apps.hr.db.PublicHolidayDay;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
 import com.axelor.auth.AuthUtils;
@@ -83,6 +85,9 @@ public class TimesheetServiceImpl implements TimesheetService{
 	
 	@Inject
 	protected ProjectTaskService projectTaskService; 
+	
+	@Inject
+	protected PublicHolidayDayRepository publicHolidayDayRepo;
 	
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 	
@@ -135,7 +140,18 @@ public class TimesheetServiceImpl implements TimesheetService{
 		correspMap.put(5, "friday");
 		correspMap.put(6, "saturday");
 		correspMap.put(7, "sunday");
+		
+		//Leaving list
 		List<LeaveRequest> leaveList = LeaveRequestRepository.of(LeaveRequest.class).all().filter("self.user = ?1 AND (self.statusSelect = 2 OR self.statusSelect = 3)", timesheet.getUser()).fetch();
+		//Public holidays list
+		List<PublicHolidayDay> publicHolidayList = publicHolidayDayRepo.all().fetch();
+		
+		logger.debug("");
+		logger.debug("-----------------------------------------------");
+		logger.debug("publicHolidaysList : {}", publicHolidayList);
+		logger.debug("-----------------------------------------------");
+		logger.debug("");
+		
 		while(!fromDate.isAfter(toDate)){
 			DayPlanning dayPlanningCurr = new DayPlanning();
 			for (DayPlanning dayPlanning : dayPlanningList) {
@@ -146,6 +162,7 @@ public class TimesheetServiceImpl implements TimesheetService{
 			}
 			if(dayPlanningCurr.getMorningFrom() != null || dayPlanningCurr.getMorningTo() != null || dayPlanningCurr.getAfternoonFrom() != null || dayPlanningCurr.getAfternoonTo() != null)
 			{
+				/*Check if the day is not a leaving day */
 				boolean noLeave = true;
 				if(leaveList != null){
 					for (LeaveRequest leave : leaveList) {
@@ -157,10 +174,24 @@ public class TimesheetServiceImpl implements TimesheetService{
 						}
 					}
 				}
-				if(noLeave){
+				
+				/*Check if the day is not a public holiday */
+				boolean noPublicHoliday = true;
+				if(publicHolidayList != null){
+					for (PublicHolidayDay publicHoliday : publicHolidayList) {
+						if(publicHoliday.getDate().isEqual(fromDate))
+						{
+							noPublicHoliday = false;
+							break;
+						}
+					}
+				}
+				
+				if(noLeave && noPublicHoliday){
 					TimesheetLine timesheetLine = createTimesheetLine(projectTask, product, timesheet.getUser(), fromDate, timesheet, employeeService.getUserDuration(logTime,timesheet.getUser().getEmployee().getDailyWorkHours(),true), "");
 					timesheetLine.setVisibleDuration(logTime);
 				}
+				
 			}
 			fromDate=fromDate.plusDays(1);
 		}
