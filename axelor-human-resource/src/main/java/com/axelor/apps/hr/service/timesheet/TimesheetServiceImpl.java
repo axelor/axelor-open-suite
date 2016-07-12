@@ -71,6 +71,8 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import com.axelor.auth.AuthUtils;
+import com.axelor.inject.Beans;
 
 public class TimesheetServiceImpl implements TimesheetService{
 
@@ -88,6 +90,9 @@ public class TimesheetServiceImpl implements TimesheetService{
 	
 	@Inject
 	protected PublicHolidayDayRepository publicHolidayDayRepo;
+	
+	@Inject
+	protected EmployeeRepository employeeRepo;
 	
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 	
@@ -144,7 +149,12 @@ public class TimesheetServiceImpl implements TimesheetService{
 		//Leaving list
 		List<LeaveRequest> leaveList = LeaveRequestRepository.of(LeaveRequest.class).all().filter("self.user = ?1 AND (self.statusSelect = 2 OR self.statusSelect = 3)", timesheet.getUser()).fetch();
 		//Public holidays list
-		List<PublicHolidayDay> publicHolidayList = publicHolidayDayRepo.all().fetch();
+		Employee employee = AuthUtils.getUser().getEmployee();
+		
+		//Employee employee = employeeRepo.find(idEmployee);
+		logger.debug("employee : {}",employee);
+		logger.debug("");
+		List<PublicHolidayDay> publicHolidayList = employee.getPublicHolidayPlanning().getPublicHolidayDayList();
 		
 		logger.debug("");
 		logger.debug("-----------------------------------------------");
