@@ -9,7 +9,6 @@
   	
 	<many-to-one name="location" ref="com.axelor.apps.stock.db.Location" title="Location"/>
 	<date name="shipmentDate" title="Date of shipment" />
-	<integer name="invoicingMomentSelect" title="Invoicing trigger" selection="supplychain.invoicing.moment.select"/>
 	<decimal name="amountInvoiced" title="Amount invoiced W.T." readonly="true"/>
 	<boolean name="subscription" title="Subscription"/>
 	<!-- 	Onglet échéancier -->

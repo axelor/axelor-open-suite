@@ -122,7 +122,7 @@ public class MoveLineReportServiceImpl implements MoveLineReportService  {
 		}
 
 		if(moveLineReport.getCashRegister() != null)	{
-			this.addParams("self.move.agency = ?%d", moveLineReport.getCashRegister());
+			this.addParams("self.move.cashRegister = ?%d", moveLineReport.getCashRegister());
 		}
 
 		if(moveLineReport.getDateFrom() != null)  {

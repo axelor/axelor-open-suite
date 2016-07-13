@@ -28,7 +28,7 @@ import org.joda.time.LocalDateTime;
 
 import com.axelor.apps.base.db.DayPlanning;
 import com.axelor.apps.base.db.WeeklyPlanning;
-import com.axelor.apps.base.service.DurationServiceImpl;
+import com.axelor.apps.base.service.DurationService;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.base.service.weeklyplanning.WeeklyPlanningService;
 import com.axelor.apps.crm.db.Event;
@@ -48,7 +48,7 @@ import com.axelor.apps.hr.service.config.HRConfigService;
 import com.axelor.apps.hr.service.publicHoliday.PublicHolidayService;
 import com.axelor.apps.message.db.Message;
 import com.axelor.apps.message.db.Template;
-import com.axelor.apps.message.service.MessageServiceImpl;
+import com.axelor.apps.message.service.MessageService;
 import com.axelor.apps.message.service.TemplateMessageService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
@@ -65,13 +65,13 @@ import com.google.inject.persist.Transactional;
 public class LeaveService {
 	
 	@Inject
-	protected DurationServiceImpl durationService;
+	protected DurationService durationService;
 
 	@Inject
 	protected LeaveLineRepository leaveLineRepo;
 
 	@Inject
-	protected MessageServiceImpl messageServiceImpl;
+	protected MessageService messageService;
 
 	@Inject
 	protected TemplateMessageService templateMessageService;
@@ -294,7 +294,7 @@ public class LeaveService {
 		Message message = new Message();
 		try{
 			message = templateMessageService.generateMessage(leave.getId(), model, tag, template);
-			message = messageServiceImpl.sendByEmail(message);
+			message = messageService.sendByEmail(message);
 		}
 		catch(Exception e){
 			TraceBackService.trace(new Exception(e));
@@ -330,7 +330,7 @@ public class LeaveService {
 	}
 
 	@Transactional
-	public void createEvents(LeaveRequest leave) throws AxelorException{
+	public LeaveRequest createEvents(LeaveRequest leave) throws AxelorException{
 		Employee employee = leave.getUser().getEmployee();
 		if(employee == null){
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.LEAVE_USER_EMPLOYEE),leave.getUser().getName()), IException.CONFIGURATION_ERROR);
@@ -395,6 +395,8 @@ public class LeaveService {
 
 		Event event = eventService.createEvent(fromDateTime, toDateTime, leave.getUser(), leave.getComments(), EventRepository.TYPE_LEAVE, leave.getReason().getLeaveReason()+" "+leave.getUser().getFullName());
 		eventRepo.save(event);
+		leave.setEvent(event);
+		return leave;
 	}
 	
 	public BigDecimal computeLeaveDays(LocalDate fromDate, LocalDate toDate, User user) throws AxelorException{
@@ -473,5 +475,17 @@ public class LeaveService {
 			}
 			Beans.get(LeaveRequestRepository.class).save(leave);
 		}
+	}
+	
+	@Transactional
+	public void cancelLeave(LeaveRequest leave){
+		
+		if (leave.getEvent() != null){
+			Event event = leave.getEvent();
+			leave.setEvent(null);
+			eventRepo.remove(eventRepo.find(event.getId()));
+		}
+		leave.setStatusSelect(LeaveRequestRepository.STATUS_SELECT_CANCELED);
+		leaveRequestRepo.save(leave);
 	}
 }

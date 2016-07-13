@@ -10,6 +10,7 @@
 		<field name="price"/>
 		<field name="estimatedDelivDate"/>
 		<field name="stateSelect"/>
+		<field name="purchaseOrderLine.product" form-view="product-form" grid-view="product-grid" />
 	</grid>
 
 	<form name="purchase-order-supplier-line-form" title="Supplier request" model="com.axelor.apps.suppliermanagement.db.PurchaseOrderSupplierLine"

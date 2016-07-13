@@ -23,6 +23,7 @@
       <many-to-one name="refusedBy" ref="com.axelor.auth.db.User" title="Refused By" readonly="true"/>
       <date name="validationDate" title="Validation Date" readonly="true"  />
       <date name="refusalDate" title="Refusal Date" readonly="true"  />
+      <many-to-one name="event" ref="com.axelor.apps.crm.db.Event" title="Event" />
       
       <string name="fullName" namecolumn="true" readonly="true">
       <![CDATA[

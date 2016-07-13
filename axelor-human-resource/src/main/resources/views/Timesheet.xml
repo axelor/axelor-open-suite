@@ -32,6 +32,9 @@
 	    onNew="action-group-timesheet-onnew"
 	    onLoad="action-timesheet-attrs-buttons,action-group-timesheet-change-title,action-timesheet-method-set-visible-duration,action-timesheet-attrs-title-project-task,action-timesheet-attrs-from-date,save" canNew="false"
 	    onSave="action-timesheet-validate-toDate,action-timesheet-method-valid-to-date" canCopy="false">
+	    <toolbar>
+	    	<button name="printTimesheet" title="Print" colSpan="2" icon="fa-print" onClick="save,action-print-timesheet"/>
+	    </toolbar>
 	    <panel sidebar="true" name="actions" title="Actions" stacked="true">
 	    	<button name="confirmButton" onClick="action-timesheet-method-confirm,save,action-timesheet-attrs-buttons,action-timesheet-attrs-from-date" title="Confirm" hideIf="statusSelect &gt; 1" icon="fa-check-square-o"/>
 	    	<button name="validButton" onClick="action-timesheet-method-valid,save,action-timesheet-attrs-buttons,action-timesheet-method-compute-timespent-project-task" title="Valid"/>
@@ -116,7 +119,7 @@
 	</action-record>
 
 	<action-validate name="action-timesheet-validate-tasks">
-		<error message="No log time found or all log times already added" if="__repo__.of(TimesheetLine).all().filter('self.user = ?1 AND self.affectedToTimeSheet = null',__user__).fetchOne() == null"/>
+		<error message="No log time found or all log times already added" if="__repo__.of(TimesheetLine).all().filter('self.user = ?1 AND self.timesheet = null',__user__).fetchOne() == null"/>
 	</action-validate>
 	
 	<action-validate name="action-timesheet-validate-timesheet-selected">
@@ -243,5 +246,9 @@
   		<context name="user_id" expr="eval: __user__.id"/>
     	<context name="timesheet_id" expr="eval: __self__.id"/>
 	</action-view>
+	
+	<action-method name="action-print-timesheet">
+    	<call class="com.axelor.apps.hr.web.timesheet.TimesheetController" method="printTimesheet"/>
+    </action-method>
 	
 </object-views>

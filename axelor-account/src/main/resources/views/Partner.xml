@@ -55,7 +55,7 @@
 	</form>
 	
 	<form name="incl-reported-balance-partner-form" title="Partner" model="com.axelor.apps.base.db.Partner" >
-         <panel-related field="reportedBalanceList" colSpan="12" hideIf="isContact || id == null"  title="Reported balance" grid-view="reported-balance-grid" form-view="reported-balance-form"/>
+         <panel-related field="reportedBalanceList" colSpan="12" hideIf="isContact || id == null || reportedBalanceList.length == 0"  title="Reported balance" grid-view="reported-balance-grid" form-view="reported-balance-form" readonly="true"/>
 	</form>
 	
 	<!-- TODO: find the domain of below form and grid and add it in reportedBalanceList in above form-->
