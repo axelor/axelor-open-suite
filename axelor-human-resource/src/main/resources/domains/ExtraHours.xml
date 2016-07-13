@@ -9,7 +9,7 @@
       
       <many-to-one name="user" ref="com.axelor.auth.db.User" title="User" required="true" column="user_id"/>
       <many-to-one name="company" ref="com.axelor.apps.base.db.Company" required="true"/>
-      <integer name="statusSelect" title="Status" selection="hrs.timesheet.status.select" default="1"/>
+      <integer name="statusSelect" title="Status" selection="hrs.timesheet.status.select" default="1" readonly="true"/>
       <date name="sentDate" title="Sent Date" readonly="true"/>
 	  
 	  <many-to-one name="validatedBy" ref="com.axelor.auth.db.User" title="Validated by" readonly="true"/>

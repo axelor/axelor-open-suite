@@ -90,24 +90,24 @@ public class PayrollPreparationService {
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.EMPLOYEE_PLANNING),employee.getName()), IException.CONFIGURATION_ERROR);
 		}
 		
-		List<LeaveRequest> leaveRequestList = leaveRequestRepo.all().filter("self.statusSelect = 3 AND self.user.employee = ?3 AND self.dateFrom <= ?1 AND self.dateTo >= ?2",toDate, fromDate,employee).fetch();
+		List<LeaveRequest> leaveRequestList = leaveRequestRepo.all().filter("self.statusSelect = 3 AND self.user.employee = ?3 AND self.fromDate <= ?1 AND self.toDate >= ?2",toDate, fromDate,employee).fetch();
 		for (LeaveRequest leaveRequest : leaveRequestList) {
 			PayrollLeave payrollLeave = new PayrollLeave();
-			if(leaveRequest.getDateFrom().isBefore(fromDate)){
+			if(leaveRequest.getFromDate().isBefore(fromDate)){
 				payrollLeave.setFromDate(fromDate);
 			}
 			else{
-				payrollLeave.setFromDate(leaveRequest.getDateFrom());
+				payrollLeave.setFromDate(leaveRequest.getFromDate());
 			}
-			if(leaveRequest.getDateTo().isAfter(toDate)){
+			if(leaveRequest.getToDate().isAfter(toDate)){
 				payrollLeave.setToDate(toDate);
 			}
 			else{
-				payrollLeave.setToDate(leaveRequest.getDateTo());
+				payrollLeave.setToDate(leaveRequest.getFromDate());
 			}
 			
 			payrollLeave.setDuration(leaveService.computeLeaveDaysByLeaveRequest(fromDate, toDate, leaveRequest, employee));
-			payrollLeave.setReason(leaveRequest.getReason());
+			payrollLeave.setLeaveReason(leaveRequest.getLeaveReason());
 			payrollLeave.setLeaveRequest(leaveRequest);
 			payrollLeaveList.add(payrollLeave);
 		}

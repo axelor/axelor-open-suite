@@ -29,14 +29,14 @@
 	    onLoad="action-extra-hours-attrs-buttons,action-extra-hours-attrs-title-project-task" canNew="false" canCopy="false">
 
 	    <panel sidebar="true" name="actions" title="Actions" stacked="true">
-	    	<button name="confirmButton" onClick="action-extra-hours-record-confirm,save,action-extra-hours-attrs-buttons" title="Confirm" hideIf="statusSelect &gt; 1" icon="fa-check-square-o"/>
-	    	<button name="validButton" onClick="action-extra-hours-record-valid,save,action-extra-hours-attrs-buttons" title="Valid"/>
-	    	<button name="refuseButton" onClick="action-extra-hours-record-refuse,save,action-extra-hours-attrs-buttons" title="Refuse"/>
+	    	<button name="confirmButton" onClick="action-extra-hours-group-confirm" title="Confirm" hideIf="statusSelect &gt; 1" icon="fa-check-square-o"/>
+	    	<button name="validButton" onClick="action-extra-hours-group-validate" title="Valid"/>
+	    	<button name="refuseButton" onClick="action-extra-hours-group-refuse" title="Refuse"/>
 	    	<button name="cancelButton" onClick="action-extra-hours-record-cancel,save,action-extra-hours-attrs-buttons" hideIf="statusSelect == 5" title="Cancel" icon="fa-close"/>
 	    	<button name="draftButton" onClick="action-extra-hours-record-draft,save,action-extra-hours-attrs-buttons" title="Return to draft status" showIf="statusSelect &gt; 3 "/>
 	    </panel>
 		<panel name="head">
-		    <field name="statusSelect" colSpan="12" widget="NavSelect"/>
+		    <field name="statusSelect" colSpan="12" widget="NavSelect" showTitle="false"/>
 			<field name="sentDate" colSpan="4"/>
 			<field name="company" colSpan="4" form-view="company-form" grid-view="company-grid"/>
 			<field name="user" colSpan="4" form-view="user-form" grid-view="user-grid"/>
@@ -55,35 +55,34 @@
 		<button name="editExtraHoursSelected" title="Edit extra hours selected" onClick="com.axelor.apps.hr.web.extra.hours.ExtraHoursController:editExtraHoursSelected"/>
 	</form>
 	
-	
-	<action-attrs name="action-extra-hours-attrs-title-project-task">
-		<attribute name="title" for="extraHoursLineList.projectTask" expr="eval: __config__.general.getProjectTaskLabel()" if="!com.google.common.base.Strings.isNullOrEmpty(__config__.general.getProjectTaskLabel())"/>
-	</action-attrs>
-	
-	<action-attrs name="action-extra-hours-attrs-domain-extra-hours-select">
-		<attribute name="domain" for="$extraHoursSelect" expr="eval: &quot; self.statusSelect = 1 AND self.user = ${__user__.id} &quot;"/>
-	</action-attrs>
+	<action-group name="action-group-extra-hours-onnew">
+		<action name="action-extra-hours-record-default"/>
+		<action name="action-extra-hours-attrs-buttons"/>
+		<action name="action-extra-hours-attrs-title-project-task"/>
+	</action-group>
 
+	<action-group name="action-extra-hours-group-confirm">
+		<action name="save"/>
+		<action name="action-extra-hours-method-record-confirm"/>
+		<action name="action-extra-hours-attrs-buttons"/>
+		<action name="save"/>
+	</action-group>
+	
+	<action-group name="action-extra-hours-group-validate">
+		<action name="action-extra-hours-method-record-valid"/>
+		<action name="action-extra-hours-attrs-buttons"/>
+		<action name="save"/>
+	</action-group>
+	
+	<action-group name="action-extra-hours-group-refuse">
+		<action name="action-extra-hours-method-record-refuse"/>
+		<action name="action-extra-hours-attrs-buttons"/>
+		<action name="save"/>
+	</action-group>
+	
 	<action-record name="action-extra-hours-record-default" model="com.axelor.apps.hr.db.ExtraHours">
 	    <field name="user" expr="eval:__user__"/>
 	    <field name="company" expr="eval: __user__.activeCompany"/>
-	</action-record>
-	
-	<action-record name="action-extra-hours-record-confirm" model="com.axelor.apps.hr.db.ExtraHours">
-	    <field name="statusSelect" expr="2"/>
-	    <field name="sentDate" expr="eval: __date__"/>
-	</action-record>
-	
-	<action-record name="action-extra-hours-record-valid" model="com.axelor.apps.hr.db.ExtraHours">
-	    <field name="statusSelect" expr="3"/>
-	    <field name="validatedBy" expr="eval: __user__"/>
-	    <field name="validationDate" expr="eval: __date__"/>
-	</action-record>
-	
-	<action-record name="action-extra-hours-record-refuse" model="com.axelor.apps.hr.db.ExtraHours">
-	    <field name="statusSelect" expr="4"/>
-	    <field name="refusedBy" expr="eval: __user__"/>
-	    <field name="refusalDate" expr="eval: __date__"/>
 	</action-record>
 	
 	<action-record name="action-extra-hours-record-cancel" model="com.axelor.apps.hr.db.ExtraHours">
@@ -93,7 +92,6 @@
 	<action-record name="action-extra-hours-record-draft" model="com.axelor.apps.hr.db.ExtraHours">
 	    <field name="statusSelect" expr="1"/>
 	</action-record>
-
 	
 	<action-attrs name="action-extra-hours-attrs-buttons">
 		<attribute name="hidden" for="validButton" expr="eval: !(statusSelect == 2 &amp;&amp; (__user__ == user?.employee?.manager || (__user__ == user &amp;&amp; user?.employee?.manager == null) || __user__.employee?.hrManager))"/>
@@ -101,11 +99,24 @@
 		<attribute name="readonly" for="head" expr="eval: (statusSelect == 2 &amp;&amp; !(__user__ == user?.employee?.manager || (__user__ == user &amp;&amp; user?.employee?.manager == null) || __user__.employee?.hrManager)) || statusSelect &gt; 2"/>
 	</action-attrs>
 	
-	<action-group name="action-group-extra-hours-onnew">
-		<action name="action-extra-hours-record-default"/>
-		<action name="action-extra-hours-attrs-buttons"/>
-		<action name="action-extra-hours-attrs-title-project-task"/>
-	</action-group>
-
-
+	<action-attrs name="action-extra-hours-attrs-title-project-task">
+		<attribute name="title" for="extraHoursLineList.projectTask" expr="eval: __config__.general.getProjectTaskLabel()" if="!com.google.common.base.Strings.isNullOrEmpty(__config__.general.getProjectTaskLabel())"/>
+	</action-attrs>
+	
+	<action-attrs name="action-extra-hours-attrs-domain-extra-hours-select">
+		<attribute name="domain" for="$extraHoursSelect" expr="eval: &quot; self.statusSelect = 1 AND self.user = ${__user__.id} &quot;"/>
+	</action-attrs>
+	
+	<action-method name="action-extra-hours-method-record-confirm">
+		<call class="com.axelor.apps.hr.web.extra.hours.ExtraHoursController" method="confirm"/>
+	</action-method>
+	
+	<action-method name="action-extra-hours-method-record-valid">
+		<call class="com.axelor.apps.hr.web.extra.hours.ExtraHoursController" method="valid"/>
+	</action-method>
+	
+	<action-method name="action-extra-hours-method-record-refuse">
+		<call class="com.axelor.apps.hr.web.extra.hours.ExtraHoursController" method="refuse"/>
+	</action-method>
+	
 </object-views>

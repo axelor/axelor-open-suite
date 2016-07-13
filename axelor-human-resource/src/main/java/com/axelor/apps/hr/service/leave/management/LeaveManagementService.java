@@ -60,8 +60,8 @@ public class LeaveManagementService {
 		}else{
 			leaveManagement.setDate(date);
 		}
-		leaveManagement.setDateFrom(fromDate);
-		leaveManagement.setDateTo(toDate);
+		leaveManagement.setFromDate(fromDate);
+		leaveManagement.setToDate(toDate);
 		leaveManagement.setValue(value);
 		
 		return leaveManagement;
