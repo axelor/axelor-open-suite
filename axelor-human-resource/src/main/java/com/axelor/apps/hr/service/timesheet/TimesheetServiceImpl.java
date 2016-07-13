@@ -304,18 +304,6 @@ public class TimesheetServiceImpl implements TimesheetService{
 		BigDecimal qtyConverted = durationStored;
 		qtyConverted = Beans.get(UnitConversionService.class).convert(generalService.getGeneral().getUnitHours(), product.getUnit(), durationStored);
 
-		if(employee != null){
-			if(employee.getTimeLoggingPreferenceSelect().equals(EmployeeRepository.TIME_PREFERENCE_DAYS)){
-				qtyConverted = Beans.get(UnitConversionService.class).convert(generalService.getGeneral().getUnitDays(), product.getUnit(), durationStored);
-
-			}
-			else if(employee.getTimeLoggingPreferenceSelect().equals(EmployeeRepository.TIME_PREFERENCE_MINUTES)){
-				qtyConverted = Beans.get(UnitConversionService.class).convert(generalService.getGeneral().getUnitMinutes(), product.getUnit(), durationStored);
-
-			}
-
-		}
-
 		PriceList priceList = invoice.getPartner().getSalePriceList();
 		if(priceList != null)  {
 			PriceListLine priceListLine = priceListService.getPriceListLine(product, qtyConverted, priceList);
