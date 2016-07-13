@@ -65,8 +65,7 @@
 				<panel-related field="elementsToInvoiceList" colSpan="12"/>
 			</panel>
 			<panel name="logTimes" title="Log Times">
-				<!-- <field name="unitOnPrinting" if-module="axelor-business-project"/> -->
-
+				<field name="unitOnPrinting" if-module="axelor-business-project"/>
 				<panel-related field="timesheetLineList" colSpan="12" grid-view="timesheet-line-project-grid" form-view="timesheet-line-project-form" if-module="axelor-human-resource"/>
 			</panel>
 			<panel name="projectTree" title="Project Tree">
@@ -148,7 +147,7 @@
 				<panel-related field="productionOrderList" canSelect="true" canNew="false" canEdit="false" colSpan="12" if-module="axelor-business-production" if="eval: __config__.general.getShowProductionOrderRelatedToProject()" />
 			</panel>
 			<panel name="logTimes" title="Log Times">
-				<!-- <field name="unitOnPrinting" if-module="axelor-business-project"/>--> 
+				<field name="unitOnPrinting" if-module="axelor-business-project"/>
 				<panel-related field="timesheetLineList" colSpan="12" grid-view="timesheet-line-project-grid" form-view="timesheet-line-project-form" if-module="axelor-human-resource"/>
 			</panel>
 			<panel name="description" title="Description">
@@ -227,7 +226,7 @@
 				<panel-related field="childProjectTaskList" colSpan="12" form-view="project-task-form" grid-view="project-task-grid"/>
 			</panel>
 			<panel name="logTimes" title="Log Times">
-				<!--   <field name="unitOnPrinting" if-module="axelor-business-project" />-->
+				<field name="unitOnPrinting" if-module="axelor-business-project" />
 				<panel-related field="timesheetLineList" colSpan="12" grid-view="timesheet-line-project-grid" form-view="timesheet-line-project-form" if-module="axelor-human-resource"/>
 			</panel>
 			<panel name="otherElementsToInvoice" title="Other elements to invoice" if-module="axelor-business-project" hideIf="typeSelect == 'task'">

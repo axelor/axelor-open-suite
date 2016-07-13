@@ -39,7 +39,7 @@
 		<one-to-many name="elementsToInvoiceList" ref="com.axelor.apps.businessproject.db.ElementsToInvoice" title="Other Elements To Invoice" mappedBy="project"/>
 		
 	  	<boolean name="invoiced" readonly="true"/>
-	  	<!--  <string name="unitOnPrinting" selection="hr.time.logging.preference.select" title="Invoicing unit"/>  -->
+	  	<string name="unitOnPrinting" selection="hr.time.logging.preference.select" title="Invoicing unit"/>
 	  	
 	  	<one-to-many name="purchaseOrderLineList" ref="com.axelor.apps.purchase.db.PurchaseOrderLine" title="Purchase order lines" mappedBy="projectTask"/>
 	  	<one-to-many name="saleOrderLineList" ref="com.axelor.apps.sale.db.SaleOrderLine" title="Sale order lines" mappedBy="project"/>
