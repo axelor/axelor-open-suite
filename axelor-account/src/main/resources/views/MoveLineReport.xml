@@ -34,23 +34,23 @@
 		</panel>
 		
 		<panel sidebar="true" name="info" title="Info">
-			<button name="search" title="Search" hideIf="typeSelect == 12" onClick="save,action-move-line-report-method-search-move-line,save" />
-			<button name="export" title="Print" icon="fa-print"	onClick="action-group-account-moveline-report-export-click" />
+			<button name="search" title="Search" hideIf="typeSelect == 12 || statusSelect == 2" onClick="save,action-move-line-report-method-search-move-line,save" />
+			<button name="export" title="Print" icon="fa-print" hideIf="statusSelect == 2"	onClick="action-group-account-moveline-report-export-click" />
 			<field name="statusSelect" />
 			<field name="publicationDateTime" />
 		</panel>
 
 		<panel-tabs>
 			<panel name="filter" title="Filter">
-				<field name="year" hideIf="typeSelect != 12" onSelect="action-move-line-report-attrs-year-domain" requiredIf="typeSelect == 12" grid-view="year-account-grid" form-view="year-account-form" />
+				<field name="cashRegister" hideIf="!typeSelect || [0,2,3,4,12].indexOf(typeSelect) != -1" grid-view="cash-register-grid" form-view="cash-register-form"/>
 				<field name="period" onChange="action-group-account-moveline-report-period-onchange" onSelect="action-move-line-report-attrs-period-domain" form-view="period-form" grid-view="period-grid" />
+				<field name="year" hideIf="typeSelect != 12" onSelect="action-move-line-report-attrs-year-domain" requiredIf="typeSelect == 12" grid-view="year-account-grid" form-view="year-account-form" />
 				<field name="dateFrom" onChange="action-move-Live-report-record-set-date-to" requiredIf="typeSelect == 12" />
 				<field name="dateTo" requiredIf="typeSelect == 12" />
 				<field name="journal" hideIf="!typeSelect || [0,2,3,4,5,10,12,13].indexOf(typeSelect) != -1" domain="self.statusSelect = 1 AND self.company = :company" form-view="journal-form" grid-view="journal-grid"/>
+				<field name="accountSet" colSpan="12" form-view="account-form" grid-view="account-grid"/>
 				<field name="paymentMode" grid-view="payment-mode-grid" form-view="payment-mode-form" hideIf="!typeSelect || [2,3,4,5,10,12,13].indexOf(typeSelect) != -1"/>
-				<field name="cashRegister" hideIf="!typeSelect || [0,2,3,4,12].indexOf(typeSelect) != -1" grid-view="cash-register-grid" form-view="cash-register-form"/>
-				<field name="accountSet" colSpan="12" form-view="account-form" grid-view="account-grid" widget="TagSelect" canNew="false"/>
-				<field name="partnerSet" colSpan="12" form-view="partner-form" grid-view="partner-grid" domain="self.isContact = false" widget="TagSelect" canNew="false"/>
+				<field name="partnerSet" colSpan="12" form-view="partner-form" grid-view="partner-grid" domain="self.isContact = false" />
 			</panel>
 			<panel name="printingInformations" title="Printing informations">
 				<field name="global" hideIf="!typeSelect || [0,3,4,10,12,13].indexOf(typeSelect) != -1"	onChange="action-move-line-report-record-global" />

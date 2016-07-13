@@ -176,14 +176,16 @@
 		model="com.axelor.apps.stock.db.StockMoveLine" >
 		<view type="grid" name="stock-move-line-all-grid"/>
 		<view type="form" name="stock-move-line-all-form"/>
-		<domain>self.stockMove.statusSelect = 2 and (self.stockMove.fromLocation.typeSelect = 1 or self.stockMove.toLocation.typeSelect = 1) and self.product.id = :_id</domain>
+		<domain>self.stockMove.statusSelect = 2 and (self.stockMove.fromLocation = :_location or self.stockMove.toLocation =  :_location) and self.product.id = :_id</domain>
+		<context name="_location" expr="call:com.axelor.apps.stock.service.LocationService:getDefaultLocation()"/>
 	</action-view>	
 	
 	<action-view name="action-stock-move-line-product-default-realized" title="${fullName} real st. move"
 		model="com.axelor.apps.stock.db.StockMoveLine" >
 		<view type="grid" name="stock-move-line-all-grid"/>
 		<view type="form" name="stock-move-line-all-form"/>
-		<domain>self.stockMove.statusSelect = 3 and (self.stockMove.fromLocation.typeSelect = 1 or self.stockMove.toLocation.typeSelect = 1) and self.product.id = :_id</domain>
+		<domain>self.stockMove.statusSelect = 3 and (self.stockMove.fromLocation = :_location or self.stockMove.toLocation =  :_location) and self.product.id = :_id</domain>
+		<context name="_location" expr="call:com.axelor.apps.stock.service.LocationService:getDefaultLocation()"/>
 	</action-view>	
 		
 	

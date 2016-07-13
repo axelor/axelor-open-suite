@@ -395,8 +395,8 @@ public class EventService {
 	
 	@Transactional
 	public void sendMail(Event event, String email) throws AxelorException, MessagingException, IOException, ClassNotFoundException, InstantiationException, IllegalAccessException, ValidationException, ParseException, ICalendarException{
- 
-		EmailAddress emailAddress = Beans.get(EmailAddressRepository.class).all().filter("self.address = ?1", email).fetchOne();
+		EmailAddress emailAddress = null;
+		emailAddress = Beans.get(EmailAddressRepository.class).all().filter("self.address = ?1", email).fetchOne();
 		if(emailAddress == null){
 			emailAddress = new EmailAddress(email);
 		}

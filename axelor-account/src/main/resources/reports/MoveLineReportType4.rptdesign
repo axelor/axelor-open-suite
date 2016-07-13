@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.5.0.v201506092134 Génération &lt;@BUILD@></property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.4.2.v201410272105 Build &lt;4.4.2.v20150217-1805></property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -96,7 +96,7 @@
                 </ex-property>
             </list-property>
             <property name="odaDriverClass">org.postgresql.Driver</property>
-            <property name="odaURL">jdbc:postgresql://localhost:5432/axelor-business-suite</property>
+            <property name="odaURL">jdbc:postgresql://localhost:5432/axelor-erp</property>
             <property name="odaUser">axelor</property>
         </oda-data-source>
     </data-sources>
@@ -154,119 +154,102 @@ row["MoveLineDate"]
                     <property name="columnName">MoveLineID</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">MoveLineID</text-property>
-                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">MoveLineID</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">partner_name</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">partner_name</text-property>
-                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">partner_name</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">partner_first_name</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">partner_first_name</text-property>
-                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">partner_first_name</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">partner_seq</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">partner_seq</text-property>
-                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">partner_seq</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">ref</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">ref</text-property>
-                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">ref</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">credit</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">credit</text-property>
-                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">credit</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">debit</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">debit</text-property>
-                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">debit</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">invoice_name</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">invoice_name</text-property>
-                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">invoice_name</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">invoice_reconciled_name</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">invoice_reconciled_name</text-property>
-                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">invoice_reconciled_name</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">invoice_reconciled_date</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">invoice_reconciled_date</text-property>
-                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">invoice_reconciled_date</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">ReportedBalanceAmount</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">ReportedBalanceAmount</text-property>
-                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">ReportedBalanceAmount</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">reported_balance_date</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">reported_balance_date</text-property>
-                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">reported_balance_date</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">report_date</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">report_date</text-property>
-                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">report_date</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">amountreconciled</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">amountreconciled</text-property>
-                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">amountreconciled</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">amount_remaining</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">amount_remaining</text-property>
-                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">amount_remaining</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">countmoveline</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">countmoveline</text-property>
-                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">countmoveline</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">MoveLineDate</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">MoveLineDate</text-property>
-                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">MoveLineDate</text-property>
                 </structure>
             </list-property>
@@ -531,17 +514,13 @@ MoveLineReport.ref, MoveLine.credit, MoveLine.debit,
 Invoice.invoice_id as invoice_name, InvoiceReconciled.invoice_id as "invoice_reconciled_name", InvoiceReconciled.invoice_date as "invoice_reconciled_date", 
 ReportedBalanceLine.amount as "ReportedBalanceAmount", YYear.reported_balance_date, 
 MoveLineReport.date_to as "report_date", Reconcile.amount as amountReconciled, MoveLine.amount_remaining, MoveLine2.countMoveLine,    
-MoveLine.date_val as "MoveLineDate"  
+MoveLine.date as "MoveLineDate"  
 from public.account_move_line_report as MoveLineReport 
 left outer join public.account_move_line as MoveLine on (MoveLineReport.id = ?)
 left outer join public.account_move as Move on (MoveLine.move = Move.id)
-
-left outer join public.account_account as Account on (MoveLine.account  = Account.id )
-left outer join public.base_partner as Partner on (MoveLine.partner  = Partner.id)
-
-left outer join public.account_move_line_report_account_set as AccountSet on (AccountSet.account_move_line_report = MoveLineReport.id)
-left outer join public.account_move_line_report_partner_set as PartnerSet on (PartnerSet.account_move_line_report = MoveLineReport.id)
-
+left outer join public.base_partner as Partner on (MoveLine.partner = Partner.id)
+left outer join public.base_partner as FromPartner on (MoveLineReport.from_partner = FromPartner.id)
+left outer join public.base_partner as ToPartner on (MoveLineReport.to_partner = ToPartner.id)
 left outer join public.account_invoice as Invoice on (Move.invoice = Invoice.id)
 left outer join public.base_company as Company on (MoveLineReport.company = Company.id)
 left outer join public.account_account as MoveLineAccount on (MoveLine.account  = MoveLineAccount.id )
@@ -556,33 +535,32 @@ left outer join (select count(Reconcile2.id) as countMoveLine, MoveLine2.id as m
 				from public.account_move_line_report as MoveLineReport2 
 				left outer join public.account_move_line as MoveLine2 on (MoveLineReport2.id = ?)
 				left outer join public.account_move as Move2 on (Move2.id = MoveLine2.move)
-
-				left outer join public.account_account as Account2 on (MoveLine2.account  = Account2.id )
-				left outer join public.base_partner as Partner2 on (MoveLine2.partner  = Partner2.id)
-
-				left outer join public.account_move_line_report_account_set as AccountSet2 on (AccountSet2.account_move_line_report = MoveLineReport2.id)
-				left outer join public.account_move_line_report_partner_set as PartnerSet2 on (PartnerSet2.account_move_line_report = MoveLineReport2.id)
-
+				left outer join public.base_partner as Partner2 on (MoveLine2.partner = Partner2.id)
+				left outer join public.base_partner as FromPartner2 on (MoveLineReport2.from_partner = FromPartner2.id)
+				left outer join public.base_partner as ToPartner2 on (MoveLineReport2.to_partner = ToPartner2.id)
+				left outer join public.account_account as MoveLineAccount2 on (MoveLineAccount2.id = MoveLine2.account) 
 				left outer join public.account_reconcile as Reconcile2 on (Reconcile2.credit_move_line = MoveLine2.id)
 				where 
-				(MoveLineReport2.date_from IS NULL OR MoveLine2.date_val >= MoveLineReport2.date_from) AND 
-				(MoveLineReport2.date_to IS NULL OR MoveLine2.date_val <= MoveLineReport2.date_to) AND
-				MoveLine2.date_val <= MoveLineReport2.date_val and 
+				(MoveLineReport2.date_from IS NULL OR MoveLine2.date >= MoveLineReport2.date_from) AND 
+				(MoveLineReport2.date_to IS NULL OR MoveLine2.date <= MoveLineReport2.date_to) AND
+				MoveLine2.date <= MoveLineReport2.date and 
 				Move2.company = MoveLineReport2.company AND
-				(AccountSet2.account_set IS NULL OR AccountSet2.account_set = Account2.id) AND
-				(PartnerSet2.partner_set IS NULL OR PartnerSet2.partner_set = Partner2.id) AND
-				Account2.reconcile_ok = true AND 
+				(MoveLineReport2.partner IS NULL OR MoveLineReport2.partner = MoveLine2.partner) AND
+				(MoveLineReport2.from_partner IS NULL OR (MoveLine2.partner IS NULL OR (FromPartner2.name <= Partner2.name))) AND 
+				(MoveLineReport2.to_partner IS NULL OR (MoveLine2.partner IS NULL OR (ToPartner2.name >= Partner2.name))) AND
+				((MoveLineReport2.account IS NULL and MoveLineAccount2.reconcile_ok = true) OR (MoveLine2.account = MoveLineReport2.account and MoveLineAccount2.reconcile_ok = true )) AND 
 				Move2.ignore_in_accounting_ok = false AND Reconcile2.status_select = 2
 				
 				group by MoveLine2.id) as MoveLine2 on (MoveLine2.mlid = MoveLine.id)  
 where 
-(MoveLineReport.date_from IS NULL OR MoveLine.date_val >= MoveLineReport.date_from) AND 
-(MoveLineReport.date_to IS NULL OR MoveLine.date_val <= MoveLineReport.date_to) AND
-MoveLine.date_val <= MoveLineReport.date_val and 
+(MoveLineReport.date_from IS NULL OR MoveLine.date >= MoveLineReport.date_from) AND 
+(MoveLineReport.date_to IS NULL OR MoveLine.date <= MoveLineReport.date_to) AND
+MoveLine.date <= MoveLineReport.date and 
 Move.company = MoveLineReport.company AND
-(AccountSet.account_set IS NULL OR AccountSet.account_set = Account.id) AND
-(PartnerSet.partner_set IS NULL OR PartnerSet.partner_set = Partner.id) AND
-Account.reconcile_ok = true AND 
+(MoveLineReport.partner IS NULL OR MoveLineReport.partner = MoveLine.partner) AND
+(MoveLineReport.from_partner IS NULL OR (MoveLine.partner IS NULL OR (FromPartner.name <= Partner.name))) AND 
+(MoveLineReport.to_partner IS NULL OR (MoveLine.partner IS NULL OR (ToPartner.name >= Partner.name))) AND
+((MoveLineReport.account IS NULL and MoveLineAccount.reconcile_ok = true) OR (MoveLine.account = MoveLineReport.account and MoveLineAccount.reconcile_ok = true )) AND 
 Move.ignore_in_accounting_ok = false]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
@@ -601,9 +579,6 @@ Move.ignore_in_accounting_ok = false]]></xml-property>
           <design:scale>0</design:scale>
           <design:nullability>Unknown</design:nullability>
         </design:attributes>
-        <design:inputAttributes>
-          <design:elementAttributes/>
-        </design:inputAttributes>
       </design:ParameterDefinition>
     </parameter>
     <parameter>
@@ -619,9 +594,6 @@ Move.ignore_in_accounting_ok = false]]></xml-property>
           <design:scale>0</design:scale>
           <design:nullability>Unknown</design:nullability>
         </design:attributes>
-        <design:inputAttributes>
-          <design:elementAttributes/>
-        </design:inputAttributes>
       </design:ParameterDefinition>
     </parameter>
   </DataSetParameters>
@@ -634,49 +606,48 @@ Move.ignore_in_accounting_ok = false]]></xml-property>
                     <property name="columnName">comapny_name</property>
                     <property name="analysis">attribute</property>
                     <text-property name="displayName">comapny_name</text-property>
-                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">comapny_name</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">period_name</property>
                     <property name="analysis">attribute</property>
                     <text-property name="displayName">period_name</text-property>
-                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">period_name</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">detailed</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">detailed</text-property>
-                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">detailed</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">date_to</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">date_to</text-property>
-                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">date_to</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">date_from</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">date_from</text-property>
-                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">date_from</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">date</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">date</text-property>
-                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">date</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">account_code</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">account_code</text-property>
+                    <text-property name="heading">account_code</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">ReportDateEdition</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">ReportDateEdition</text-property>
-                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">ReportDateEdition</text-property>
                 </structure>
             </list-property>
@@ -727,6 +698,11 @@ Move.ignore_in_accounting_ok = false]]></xml-property>
                     </structure>
                     <structure>
                         <property name="position">7</property>
+                        <property name="name">account_code</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">8</property>
                         <property name="name">ReportDateEdition</property>
                         <property name="dataType">date-time</property>
                     </structure>
@@ -778,6 +754,13 @@ Move.ignore_in_accounting_ok = false]]></xml-property>
                 </structure>
                 <structure>
                     <property name="position">7</property>
+                    <property name="name">account_code</property>
+                    <property name="nativeName">account_code</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">8</property>
                     <property name="name">ReportDateEdition</property>
                     <property name="nativeName">ReportDateEdition</property>
                     <property name="dataType">date-time</property>
@@ -785,9 +768,10 @@ Move.ignore_in_accounting_ok = false]]></xml-property>
                 </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[select Company.name as comapny_name, Period.name as period_name, MoveLineReport.detailed , 
-MoveLineReport.date_to, MoveLineReport.date_from, MoveLineReport.date_val as "date", MoveLineReport.publication_date_time as "ReportDateEdition" 
+MoveLineReport.date_to, MoveLineReport.date_from, MoveLineReport.date, Account.code as account_code, MoveLineReport.publication_date_time as "ReportDateEdition" 
 from public.account_move_line_report as MoveLineReport
 inner join public.base_company as Company on (MoveLineReport.id = ? and MoveLineReport.company = Company.id)
+left outer join public.account_account as Account  on (MoveLineReport.account = Account.id)
 left outer join public.base_period as Period on (MoveLineReport.period = Period.id)
 ]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
@@ -893,6 +877,12 @@ left outer join public.base_period as Period on (MoveLineReport.period = Period.
                             <text-property name="displayName">date</text-property>
                             <expression name="expression" type="javascript">dataSetRow["date"]</expression>
                             <property name="dataType">date</property>
+                        </structure>
+                        <structure>
+                            <property name="name">account_code</property>
+                            <text-property name="displayName">account_code</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["account_code"]</expression>
+                            <property name="dataType">string</property>
                         </structure>
                         <structure>
                             <property name="name">ReportDateEdition</property>
@@ -1037,6 +1027,12 @@ left outer join public.base_period as Period on (MoveLineReport.period = Period.
                     <text-property name="displayName">date_from</text-property>
                     <expression name="expression" type="javascript">dataSetRow["date_from"]</expression>
                     <property name="dataType">date</property>
+                </structure>
+                <structure>
+                    <property name="name">account_code</property>
+                    <text-property name="displayName">account_code</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["account_code"]</expression>
+                    <property name="dataType">string</property>
                 </structure>
                 <structure>
                     <property name="name">date</property>
@@ -1251,6 +1247,12 @@ left outer join public.base_period as Period on (MoveLineReport.period = Period.
                     <text-property name="displayName">date_from</text-property>
                     <expression name="expression" type="javascript">dataSetRow["date_from"]</expression>
                     <property name="dataType">date</property>
+                </structure>
+                <structure>
+                    <property name="name">account_code</property>
+                    <text-property name="displayName">account_code</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["account_code"]</expression>
+                    <property name="dataType">string</property>
                 </structure>
             </list-property>
             <column id="971">
@@ -2538,6 +2540,12 @@ row["180&lt;days"]
                     <text-property name="displayName">date_from</text-property>
                     <expression name="expression" type="javascript">dataSetRow["date_from"]</expression>
                     <property name="dataType">date</property>
+                </structure>
+                <structure>
+                    <property name="name">account_code</property>
+                    <text-property name="displayName">account_code</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["account_code"]</expression>
+                    <property name="dataType">string</property>
                 </structure>
             </list-property>
             <column id="1226">

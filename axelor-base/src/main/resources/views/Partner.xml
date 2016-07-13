@@ -149,7 +149,7 @@
 					<panel colSpan="6">
 						<field name="partnerCategory" widget="SuggestBox" colSpan="6" form-view="partner-category-form" grid-view="partner-category-grid"/>
 						<field name="industrySector" colSpan="6" widget="SuggestBox"/>
-						<field name="source" colSpan="6" widget="SuggestBox" form-view="source-form" grid-view="source-grid"/>
+						<field name="source" colSpan="6" form-view="source-form" grid-view="source-grid"/>
 						<field name="department" colSpan="6"/>
 					</panel>
 					<panel  colSpan="6">

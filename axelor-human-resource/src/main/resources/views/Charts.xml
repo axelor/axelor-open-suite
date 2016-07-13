@@ -11,9 +11,9 @@
 		FROM
 			TimesheetLine self
 		WHERE
-			self.timesheet.user.id= :user_id
+			self.affectedToTimeSheet.user.id= :user_id
 		AND
-			self.timesheet.id= :timesheet_id
+			self.affectedToTimeSheet.id= :timesheet_id
 		GROUP BY
 			self.date
 		ORDER BY 
@@ -31,9 +31,9 @@
 		FROM
 			TimesheetLine self
 		WHERE
-			self.timesheet.user.id= :user_id
+			self.affectedToTimeSheet.user.id= :user_id
 		AND
-			self.timesheet.id= :timesheet_id
+			self.affectedToTimeSheet.id= :timesheet_id
 		GROUP BY
 			self.projectTask.fullName
 		]]></dataset>

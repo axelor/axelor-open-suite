@@ -27,7 +27,6 @@ import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.TrackingNumber;
 import com.axelor.apps.base.db.TrackingNumberConfiguration;
 import com.axelor.apps.base.db.Unit;
-import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.stock.db.Location;
@@ -238,10 +237,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService  {
 			LocalDate lastFutureStockMoveDate, boolean realQty) throws AxelorException  {
 
 		for(StockMoveLine stockMoveLine : stockMoveLineList)  {
-			
-			Product product = stockMoveLine.getProduct();
-			
-			if(product != null && product.getProductTypeSelect().equals(ProductRepository.PRODUCT_TYPE_STORABLE))  {
+			if(stockMoveLine.getProduct() != null){
 				Unit productUnit = stockMoveLine.getProduct().getUnit();
 				Unit stockMoveLineUnit = stockMoveLine.getUnit();
 

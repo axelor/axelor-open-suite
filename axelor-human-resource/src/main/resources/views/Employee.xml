@@ -34,11 +34,11 @@
         </panel>
         <panel-tabs>
         	<panel name="information" title="Information">
-	       	    <field name="hourlyRate"/>
+	       	    <field name="hourlyRate" />
 	       	    <field name="bankDetails" widget="SuggestBox" onSelect="action-accounting-batch-attrs-bank-details-domain" form-view="bank-details-form" grid-view="bank-details-grid" if="__config__.general.getManageMultiBanks()"/>
 	       	    <field name="timeLoggingPreferenceSelect" />
-	       	    <field name="weeklyWorkHours"/>
-	       	    <field name="dailyWorkHours"/>
+	       	    <field name="weeklyWorkHours" />
+	       	    <field name="dailyWorkHours" />
 	       	    <field name="$dailySalaryCost" x-bind="{{hourlyRate*dailyWorkHours}}" title="Daily cost"/>
 	       	    <field name="product" domain="self.isActivity = true" form-view="product-form" grid-view="product-grid"/>
 	       	    <field name="manager" form-view="user-form" grid-view="user-grid" />

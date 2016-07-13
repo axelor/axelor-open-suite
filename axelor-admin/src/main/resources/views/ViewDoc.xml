@@ -11,15 +11,9 @@
    <form title="Export for doc" name="view-doc-form" model="com.axelor.apps.admin.db.ViewDoc" canSave="false">
    		<panel name="main">
 			<field name="exportDate" />
-			<spacer/>
-			<field name="exportOnlyPanel"  colSpan="4" />
-			<button name="export" title="Export" icon="fa-reply" onClick="save,action-view-doc-export,save" colSpan="3" />
+			<field name="exportOnlyPanel" onChange="action-export-only-panel-change" />
 			<field name="exportFile" widget="binary-link" readonlyIf="exportOnlyPanel"/>
-			<panel colSpan="12" title="Asciidoc">
-				<field name="languageSelect" colSpan="4" />
-				<button name="generateAsciidoc" title="Generate Asciidoc"  colSpan="3"  showIf="exportFile != null &amp;&amp; languageSelect != null" onClick="action-view-doc-generate-asciidoc,save"/>
-				<field name="asciidocFile" widget="binary-link"  readonly="true"/>
-			</panel>
+			<button name="export" title="Export" icon="fa-reply" onClick="save,action-view-doc-export,save" colSpan="3" />
 		</panel>
    </form>  
     
@@ -27,8 +21,8 @@
    		<call class="com.axelor.apps.admin.web.ViewDocController" method="export"/>
    </action-method>
    
-   <action-method name="action-view-doc-generate-asciidoc">
-   		<call class="com.axelor.apps.admin.web.ViewDocController" method="generateAsciidoc"/>
-   </action-method>
+   <action-attrs name="action-export-only-panel-change" model="com.axelor.apps.admin.db.ViewDoc">
+   		<attribute name="value" for="exportFile" expr="eval:null"/>
+   </action-attrs>
    
 </object-views>

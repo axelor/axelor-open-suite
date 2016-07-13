@@ -33,7 +33,7 @@ import com.axelor.apps.message.db.Message;
 import com.axelor.apps.message.db.Template;
 import com.axelor.apps.message.db.repo.MailAccountRepository;
 import com.axelor.apps.message.db.repo.MessageRepository;
-import com.axelor.apps.message.service.MessageService;
+import com.axelor.apps.message.service.MessageServiceImpl;
 import com.axelor.apps.message.service.TemplateMessageService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.exception.db.IException;
@@ -45,10 +45,9 @@ import com.google.inject.Inject;
 public class BatchReminderTimesheet extends AbstractBatch{
 
 	@Inject
-	protected TemplateMessageService templateMessageService;
+	private TemplateMessageService templateMessageService;
 	
-	@Inject 
-	protected MessageService messageService;
+	@Inject MessageServiceImpl messageServiceImpl;
 	
 	@Override 
 	protected void process() {
@@ -83,7 +82,7 @@ public class BatchReminderTimesheet extends AbstractBatch{
 			Message message = new Message();
 			try{
 				message = templateMessageService.generateMessage(timesheet.getUser().getEmployee().getId(), model, tag, template);
-				message = messageService.sendByEmail(message);
+				message = messageServiceImpl.sendByEmail(message);
 				incrementDone();
 			}
 			catch(Exception e){
@@ -115,7 +114,7 @@ public class BatchReminderTimesheet extends AbstractBatch{
 				message.setContent(batch.getMailBatch().getContent());
 				message.setMailAccount(Beans.get(MailAccountRepository.class).all().filter("self.isDefault = true").fetchOne());
 				
-				message = messageService.sendByEmail(message);
+				message = messageServiceImpl.sendByEmail(message);
 				
 				incrementDone();
 			}
@@ -128,6 +127,7 @@ public class BatchReminderTimesheet extends AbstractBatch{
 	
 	public void generateAllEmailTemplate(){
 		
+		Company company = batch.getMailBatch().getCompany(); 
 		Template template = batch.getMailBatch().getTemplate();
 		List<Employee> employeeList = null;
 		if(Beans.get(CompanyRepository.class).all().fetch().size() >1){
@@ -138,9 +138,10 @@ public class BatchReminderTimesheet extends AbstractBatch{
 		String model = template.getMetaModel().getFullName();
 		String tag = template.getMetaModel().getName();
 		for (Employee employee : employeeList) {
+			Message message = new Message();
 			try{
-				Message message = templateMessageService.generateMessage(employee.getId(), model, tag, template);
-				message = messageService.sendByEmail(message);
+				message = templateMessageService.generateMessage(employee.getId(), model, tag, template);
+				message = messageServiceImpl.sendByEmail(message);
 				incrementDone();
 			}
 			catch(Exception e){
@@ -172,7 +173,7 @@ public class BatchReminderTimesheet extends AbstractBatch{
 				message.setContent(batch.getMailBatch().getContent());
 				message.setMailAccount(Beans.get(MailAccountRepository.class).all().filter("self.isDefault = true").fetchOne());
 				
-				message = messageService.sendByEmail(message);
+				message = messageServiceImpl.sendByEmail(message);
 				
 				incrementDone();
 			}

@@ -262,7 +262,7 @@ public class MrpServiceImpl implements MrpService  {
 			BigDecimal minQty = mrpLine.getMinQty();
 			
 			if(mrpLine.getMrpLineType().getElementSelect() != MrpLineTypeRepository.ELEMENT_AVAILABLE_STOCK 
-					&& (!isProposalElement || mrpLineType.getTypeSelect() == MrpLineTypeRepository.TYPE_OUT)
+					&& (!isProposalElement || (isProposalElement && mrpLineType.getTypeSelect() == MrpLineTypeRepository.TYPE_OUT))
 					&& cumulativeQty.compareTo(mrpLine.getMinQty()) == -1)  {  
 					
 				log.debug("Cumulative qty ({} < {}) is insufficient for product ({}) at the maturity date ({})", cumulativeQty, minQty, product.getFullName(), mrpLine.getMaturityDate());

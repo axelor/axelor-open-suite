@@ -151,15 +151,6 @@
 		<view type="form" name="cancel-reason-form" />
 	</action-view>
 	
-	<menuitem name="sale-conf-duration" parent="sc-root-sale-conf"
-		title="Durations" action="sale.conf.duration" />
-
-	<action-view name="sale.conf.duration"
-		title="Durations" model="com.axelor.apps.base.db.Duration" >
-		<view type="grid" name="duration-grid" />
-		<view type="form" name="duration-form" />
-	</action-view>
-	
 
 <!-- ADMINISTRATION -->
 

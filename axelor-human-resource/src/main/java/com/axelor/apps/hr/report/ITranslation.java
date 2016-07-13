@@ -32,13 +32,4 @@ public class ITranslation {
 	public static final String EXPENSE_EMPLOYEE_SIGNATURE = /*$$(*/ "Expense.employeeSignature"; /*)*/
 	public static final String EXPENSE_EMPLOYER_SIGNATURE = /*$$(*/ "Expense.employerSignature"; /*)*/
 	public static final String EXPENSE_LINE_UNTAXED_AMOUNT = /*$$(*/ "ExpenseLine.untaxedAmount"; /*)*/
-	
-	
-	public static final String TIMESHEET_OF = /*$$(*/ "Timesheet.timesheetOf"; /*)*/
-	
-	public static final String TIMESHEET_PROJECT = /*$$(*/ "TimesheetLine.project"; /*)*/
-	public static final String TIMESHEET_PRODUCT = /*$$(*/ "TimesheetLine.product"; /*)*/
-	public static final String TIMESHEET_DURATION = /*$$(*/ "TimesheetLine.duration"; /*)*/
-	public static final String TIMESHEET_TOTAL_DURATION = /*$$(*/ "Timesheet.totalDuration"; /*)*/
-
 }

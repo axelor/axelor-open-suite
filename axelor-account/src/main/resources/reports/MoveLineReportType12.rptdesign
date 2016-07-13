@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.5.0.v201506092134 Génération &lt;@BUILD@></property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.4.2.v201410272105 Build &lt;4.4.2.v20150217-1805></property>
     <list-property name="userProperties">
         <structure>
             <property name="name">Data Cube.MoveLineDS.x</property>
@@ -79,7 +79,7 @@
             <property name="hidden">true</property>
             <property name="valueType">static</property>
             <property name="isRequired">true</property>
-            <property name="dataType">decimal</property>
+            <property name="dataType">string</property>
             <property name="distinct">true</property>
             <simple-property-list name="defaultValue">
                 <value type="constant">1</value>
@@ -148,8 +148,9 @@
                 </ex-property>
             </list-property>
             <property name="odaDriverClass">org.postgresql.Driver</property>
-            <property name="odaURL">jdbc:postgresql://localhost:5432/axelor-business-suite</property>
+            <property name="odaURL">jdbc:postgresql://localhost:5432/axelor-erp</property>
             <property name="odaUser">axelor</property>
+            <encrypted-property name="odaPassword" encryptionID="base64">bG1kcGRsYWE=</encrypted-property>
         </oda-data-source>
     </data-sources>
     <data-sets>
@@ -193,7 +194,12 @@ row["from_ttl"];
                 </structure>
                 <structure>
                     <property name="name">auto_liquidation</property>
-                    <expression name="expression">false</expression>
+                    <expression name="expression">if(row["company_role"]==0 &amp;&amp; row["customer_role"]==1)  {
+true;
+}
+else  {
+false;
+}</expression>
                     <property name="dataType">boolean</property>
                 </structure>
             </list-property>
@@ -229,165 +235,37 @@ row["from_ttl"];
                     <property name="isOutput">false</property>
                 </structure>
             </list-property>
-            <structure name="cachedMetaData">
-                <list-property name="resultSet">
-                    <structure>
-                        <property name="position">1</property>
-                        <property name="name">vatname</property>
-                        <property name="dataType">string</property>
-                    </structure>
-                    <structure>
-                        <property name="position">2</property>
-                        <property name="name">vatvalue</property>
-                        <property name="dataType">decimal</property>
-                    </structure>
-                    <structure>
-                        <property name="position">3</property>
-                        <property name="name">accountcode</property>
-                        <property name="dataType">string</property>
-                    </structure>
-                    <structure>
-                        <property name="position">4</property>
-                        <property name="name">accountname</property>
-                        <property name="dataType">string</property>
-                    </structure>
-                    <structure>
-                        <property name="position">5</property>
-                        <property name="name">from_ttl</property>
-                        <property name="dataType">decimal</property>
-                    </structure>
-                    <structure>
-                        <property name="position">6</property>
-                        <property name="name">to_ttl</property>
-                        <property name="dataType">decimal</property>
-                    </structure>
-                    <structure>
-                        <property name="position">7</property>
-                        <property name="name">vat_ttl</property>
-                        <property name="dataType">decimal</property>
-                    </structure>
-                    <structure>
-                        <property name="position">8</property>
-                        <property name="name">move_id</property>
-                        <property name="dataType">decimal</property>
-                    </structure>
-                    <structure>
-                        <property name="position">9</property>
-                        <property name="name">vat_line_id</property>
-                        <property name="dataType">decimal</property>
-                    </structure>
-                    <structure>
-                        <property name="position">10</property>
-                        <property name="name">diff</property>
-                        <property name="dataType">float</property>
-                    </structure>
-                    <structure>
-                        <property name="position">11</property>
-                        <property name="name">vat_measure</property>
-                        <property name="dataType">decimal</property>
-                    </structure>
-                    <structure>
-                        <property name="position">12</property>
-                        <property name="name">to_measure</property>
-                        <property name="dataType">decimal</property>
-                    </structure>
-                    <structure>
-                        <property name="position">13</property>
-                        <property name="name">from_measure</property>
-                        <property name="dataType">decimal</property>
-                    </structure>
-                    <structure>
-                        <property name="position">14</property>
-                        <property name="name">auto_liquidation</property>
-                        <property name="dataType">boolean</property>
-                    </structure>
-                </list-property>
-            </structure>
+            <structure name="cachedMetaData"/>
             <property name="rowFetchLimit">0</property>
             <property name="dataSource">Data Source</property>
-            <list-property name="resultSet">
-                <structure>
-                    <property name="position">1</property>
-                    <property name="name">vatname</property>
-                    <property name="nativeName">vatname</property>
-                    <property name="dataType">string</property>
-                </structure>
-                <structure>
-                    <property name="position">2</property>
-                    <property name="name">vatvalue</property>
-                    <property name="nativeName">vatvalue</property>
-                    <property name="dataType">decimal</property>
-                </structure>
-                <structure>
-                    <property name="position">3</property>
-                    <property name="name">accountcode</property>
-                    <property name="nativeName">accountcode</property>
-                    <property name="dataType">string</property>
-                </structure>
-                <structure>
-                    <property name="position">4</property>
-                    <property name="name">accountname</property>
-                    <property name="nativeName">accountname</property>
-                    <property name="dataType">string</property>
-                </structure>
-                <structure>
-                    <property name="position">5</property>
-                    <property name="name">from_ttl</property>
-                    <property name="nativeName">from_ttl</property>
-                    <property name="dataType">decimal</property>
-                </structure>
-                <structure>
-                    <property name="position">6</property>
-                    <property name="name">to_ttl</property>
-                    <property name="nativeName">to_ttl</property>
-                    <property name="dataType">decimal</property>
-                </structure>
-                <structure>
-                    <property name="position">7</property>
-                    <property name="name">vat_ttl</property>
-                    <property name="nativeName">vat_ttl</property>
-                    <property name="dataType">decimal</property>
-                </structure>
-                <structure>
-                    <property name="position">8</property>
-                    <property name="name">move_id</property>
-                    <property name="nativeName">move_id</property>
-                    <property name="dataType">decimal</property>
-                </structure>
-                <structure>
-                    <property name="position">9</property>
-                    <property name="name">vat_line_id</property>
-                    <property name="nativeName">vat_line_id</property>
-                    <property name="dataType">decimal</property>
-                </structure>
-            </list-property>
+            <list-property name="resultSet"/>
             <xml-property name="queryText"><![CDATA[Select Tax.name as VatName, TaxLine.value as VatValue, Account.code as AccountCode, Account.name as AccountName, 
 sum(FromMoveLine.diff_from) as from_ttl, sum(ToMoveLine.diff_to) as to_ttl, 
-sum(TaxMoveLine.diff_vat) as vat_ttl, Move.id as move_id, TaxLine.id as vat_line_id
+sum(VatMoveLine.diff_vat) as vat_ttl, Move.id as move_id, TaxLine.id as vat_line_id, 
 
 from public.account_move_line_report as MoveLineReport 
-left outer join public.account_move_line as MoveLine on (MoveLineReport.id = ?)
+left outer join public.account_move_line as MoveLine on (MoveLineReport.id = 1)
 left outer join public.account_account as Account on (MoveLine.account = Account.id)
 left outer join public.account_move as Move on (MoveLine.move = Move.id)
 left outer join public.base_period as Period on (Move.period = Period.id)
 left outer join public.account_tax_line as TaxLine on (MoveLine.tax_line = TaxLine.id) 
-left outer join public.account_tax as Tax on (TaxLine.tax = Tax.id) 
-left outer join 	(select MoveLine.id as line_id,(MoveLine.credit - MoveLine.debit) as diff_from, MoveLine.date_val 
+left outer join public.account_tax as Tax on (TaxLine.vat = Tax.id) 
+left outer join 	(select MoveLine.id as line_id,(MoveLine.credit - MoveLine.debit) as diff_from, MoveLine.date 
 					from public.account_move_line as MoveLine ) as FromMoveLine
-					on ((MoveLineReport.date_from IS NULL OR FromMoveLine.date_val IS NULL OR (FromMoveLine.date_val < MoveLineReport.date_from)) 
+					on ((MoveLineReport.date_from IS NULL OR FromMoveLine.date IS NULL OR (FromMoveLine.date < MoveLineReport.date_from)) 
 						and MoveLine.id = FromMoveLine.line_id)
-left outer join 	(select MoveLine.id as line_id,(MoveLine.credit - MoveLine.debit) as diff_to, MoveLine.date_val 
+left outer join 	(select MoveLine.id as line_id,(MoveLine.credit - MoveLine.debit) as diff_to, MoveLine.date 
 					from public.account_move_line as MoveLine ) as ToMoveLine
-					on ((MoveLineReport.date_to IS NULL OR ToMoveLine.date_val IS NULL OR (ToMoveLine.date_val <= MoveLineReport.date_to)) 
-						and ToMoveLine.date_val <= MoveLineReport.date_val and MoveLine.id = ToMoveLine.line_id)
+					on ((MoveLineReport.date_to IS NULL OR ToMoveLine.date IS NULL OR (ToMoveLine.date <= MoveLineReport.date_to)) 
+						and ToMoveLine.date <= MoveLineReport.date and MoveLine.id = ToMoveLine.line_id)
 left outer join	(select sum(MoveLine.credit - MoveLine.debit) as diff_vat, MoveLine.tax_line as tax_line2  
 					from public.account_move_line as MoveLine  
 					left outer join public.account_move_line_report as MoveLineReport on (MoveLineReport.id = ?)
 					left outer join public.account_account as TaxMoveLineAccount on (MoveLine.account = TaxMoveLineAccount.id)
-					where TaxMoveLineAccount.code like '4457%' and MoveLine.date_val <= MoveLineReport.date_to and MoveLine.date_val >= MoveLineReport.date_from 
-					and MoveLine.date_val <= MoveLineReport.date_val group by MoveLine.tax_line) as TaxMoveLine 
+					where TaxMoveLineAccount.code like '4457%' and MoveLine.date <= MoveLineReport.date_to and MoveLine.date >= MoveLineReport.date_from 
+					and MoveLine.date <= MoveLineReport.date group by MoveLine.vat_line) as TaxMoveLine 
 					on ( TaxMoveLine.tax_line2 = TaxLine.id) 
-left outer join public.account_invoice as Invoice on (Invoice.id = Move.invoice) 										
+left outer join public.invoice_invoice as Invoice on (Invoice.id = Move.invoice) 										
 where MoveLineReport.year = period.year 
 and ((Account.code like '7%'  or Account.code like '6%' or Account.code like '4%') AND Account.code not like '41%' AND Account.code not like '4457%')
 group by Account.code, Account.name, TaxLine.value, Tax.name, TaxMoveLine, move_id, TaxLine.id

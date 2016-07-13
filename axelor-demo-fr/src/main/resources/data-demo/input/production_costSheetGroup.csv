@@ -1,6 +1,0 @@
-"importId";"code";"name";"costTypeSelect";"rate";"rateTypeSelect";"costSheetGroupSet.importId"
-1;"MAT";"Matière";"1";;;
-2;"MAR";"Marchandise";"1";;;
-3;"FAB";"Fabrication";"2";;;
-4;"IND FAB";"Indirecte fabrication";"3";0.3;"2";3
-5;"IND MAR";"Indirecte marchandise";"3";0.2;"2";2
