@@ -39,10 +39,10 @@ public class PublicHolidayService {
 	@Inject
 	protected PublicHolidayDayRepository publicHolidayDayRepo;
 
-	public BigDecimal computePublicHolidayDays(LocalDate dateFrom, LocalDate dateTo, WeeklyPlanning weeklyPlanning, PublicHolidayPlanning publicHolidayPlanning) throws AxelorException{
+	public BigDecimal computePublicHolidayDays(LocalDate fromDate, LocalDate toDate, WeeklyPlanning weeklyPlanning, PublicHolidayPlanning publicHolidayPlanning) throws AxelorException{
 		BigDecimal publicHolidayDays = BigDecimal.ZERO;
 
-		List<PublicHolidayDay> publicHolidayDayList= publicHolidayDayRepo.all().filter("self.publicHolidayPlann = ?1 AND self.date BETWEEN ?2 AND ?3", publicHolidayPlanning, dateFrom, dateTo).fetch();
+		List<PublicHolidayDay> publicHolidayDayList= publicHolidayDayRepo.all().filter("self.publicHolidayPlann = ?1 AND self.date BETWEEN ?2 AND ?3", publicHolidayPlanning, fromDate, toDate).fetch();
 		for (PublicHolidayDay publicHolidayDay : publicHolidayDayList) {
 			publicHolidayDays = publicHolidayDays.add(new BigDecimal(weeklyPlanningService.workingDayValue(weeklyPlanning, publicHolidayDay.getDate())));
 		}

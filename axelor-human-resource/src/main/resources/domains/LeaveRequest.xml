@@ -8,14 +8,14 @@
   <entity name="LeaveRequest" cachable="true">
       
       <many-to-one name="user" ref="com.axelor.auth.db.User" title="User" required="true" column="user_id"/>
-      <integer name="statusSelect" title="Status" selection="hrs.expenses.status.select" default="1" />
+      <integer name="statusSelect" title="Status" selection="hrs.expenses.status.select" default="1" readonly="true"/>
       <date name="requestDate" title="Request date" readonly="true" />
-      <date name="dateFrom" title="Date from" required="true"/>
+      <date name="fromDate" title="Date from" required="true"/>
       <integer name="startOnSelect" title="Start On" selection="hr.start.on.select" required="true" default="1"/>
-      <date name="dateTo" title="Date to (Included)" />
+      <date name="toDate" title="Date to (Included)" />
       <integer name="endOnSelect" title="End On" selection="hr.start.on.select" required="true" default="2"/>
       <decimal name="duration" title="Duration" scale="1" precision="5"/>
-      <many-to-one name="reason" ref="com.axelor.apps.hr.db.LeaveReason" title="Reason" />
+      <many-to-one name="leaveReason" ref="com.axelor.apps.hr.db.LeaveReason" title="Reason" />
       <string name="comments" title="Comments" large="true"/>
       <many-to-one name="company" ref="com.axelor.apps.base.db.Company"/>
 	  <integer name="injectConsumeSelect" title="Inject/Consume" selection="hrs.leave.reason.inject.consume.select" default="1"/>
@@ -23,6 +23,7 @@
       <many-to-one name="refusedBy" ref="com.axelor.auth.db.User" title="Refused By" readonly="true"/>
       <date name="validationDate" title="Validation Date" readonly="true"  />
       <date name="refusalDate" title="Refusal Date" readonly="true"  />
+      <many-to-one name="event" ref="com.axelor.apps.crm.db.Event" title="Event" />
       
       <string name="fullName" namecolumn="true" readonly="true">
       <![CDATA[

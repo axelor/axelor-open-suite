@@ -107,7 +107,7 @@
     <string name="supplierInvoiceNb" title="Supplier invoice number"/>
     
     <many-to-one name="companyBankDetails" ref="com.axelor.apps.base.db.BankDetails" title="Company bank"/>
-
+    
   	<unique-constraint columns="invoiceId,company"/>
 
 	<extra-code><![CDATA[

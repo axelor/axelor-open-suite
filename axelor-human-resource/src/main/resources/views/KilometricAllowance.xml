@@ -8,8 +8,8 @@
         <field name="rate" readonly="true" />
         <field name="typeSelect" onChange="action-kilometric-allowance-record-in-tax-total"/>
         <field name="distance" onChange="action-kilometric-allowance-record-in-tax-total" />
-        <field name="cityFrom"/>
-        <field name="cityTo" />
+        <field name="fromCity"/>
+        <field name="toCity" />
         <field name="date" />
 	    <field name="reason" />
       	<field name="inTaxTotal" readonly="true" required="true" />
@@ -21,8 +21,8 @@
 	        <field name="rate" onChange="action-kilometric-allowance-record-in-tax-total" />
 	        <field name="typeSelect" />
 	        <field name="distance" onChange="action-kilometric-allowance-record-in-tax-total" />
-	        <field name="cityFrom"/>
-	        <field name="cityTo" />
+	        <field name="fromCity"/>
+	        <field name="toCity" />
 	        <field name="date" />
 	    	<field name="reason" />
       		<field name="inTaxTotal" readonly="true" required="true" />

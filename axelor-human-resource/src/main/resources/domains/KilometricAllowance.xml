@@ -14,8 +14,8 @@
         <decimal name="rate" title="Rate" precision="20" scale="3" />
         <integer name="typeSelect" title="Type" required="true" selection="hr.kilometric.allowance.type.select"/>
         <decimal name="distance" title="KM number" required="true" min="0"/>
-        <string name="cityFrom" title="Starting city with Zip" required="true" />
-        <string name="cityTo" title="Arriving city with Zip" required="true" />
+        <string name="fromCity" title="Starting city with Zip" required="true" />
+        <string name="toCity" title="Arriving city with Zip" required="true" />
         <decimal name="inTaxTotal" title="Total (A.T.I)" />
         <date name="date" title="Date" column="date_val"/>
         <string name="reason" title="Reason" />

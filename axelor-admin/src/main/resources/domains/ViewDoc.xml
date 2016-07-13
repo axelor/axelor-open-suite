@@ -12,6 +12,8 @@
     <datetime name="exportDate" title="Export date" readonly="true" />
     <many-to-one name="exportFile" ref="com.axelor.meta.db.MetaFile" title="File" />
     <boolean name="exportOnlyPanel" title="Export only panel?" />
+    <many-to-one name="asciidocFile" ref="com.axelor.meta.db.MetaFile" title="Asciidoc File" />
+    <string name="languageSelect" title="Language" selection="select.language" default="'en'" />
   </entity>
 
 </domain-models>

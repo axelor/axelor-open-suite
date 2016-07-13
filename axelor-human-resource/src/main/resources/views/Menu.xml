@@ -8,17 +8,22 @@
 	<menuitem name="timesheet-root" parent="hr-root"
     	title="Timesheets"/>
 	
-	<menuitem name="edit-timesheet" parent="timesheet-root" title="Complete my time sheet" action="edit.timesheet"/>
+	<menuitem name="edit-timesheet" parent="timesheet-root" title="Complete my Timesheet" action="edit.timesheet"/>
 	
 	<action-method name="edit.timesheet">
 		<call class="com.axelor.apps.hr.web.timesheet.TimesheetController" method="editTimesheet"/>
 	</action-method>
 	
 	<menuitem name="all-timesheet" parent="timesheet-root" title="All my Timesheets" action="timesheet.all"/>
-	
-	<action-method name="timesheet.all">
-		<call class="com.axelor.apps.hr.web.timesheet.TimesheetController" method="allTimesheet"/>
-	</action-method>
+
+	<action-view name="timesheet.all" model="com.axelor.apps.hr.db.Timesheet"
+		title="My Timesheets">
+		<view name="timesheet-grid" type="grid" />
+		<view name="timesheet-form" type="form" />
+		<domain>self.user = :user_id AND self.company = :company_id</domain>
+		<context name="user_id" expr="eval:__user__" />
+		<context name="company_id" expr="eval:__user__.activeCompany" />
+	</action-view>	
 	
 	<menuitem name="validate-timesheet" groups="MNGT,admins" parent="timesheet-root" title="Timesheets to Validate" action="timesheet.validate" icon="fa-flag"
 		tag-get="com.axelor.apps.hr.web.timesheet.TimesheetController:timesheetValidateTag()" tag-style="default" tag-count="true" order="-3000"/>
@@ -50,9 +55,14 @@
 	
 	<menuitem name="all-extra-hours" parent="extra-hours-root" title="All my extra hours" action="extra.hours.all"/>
 	
-	<action-method name="extra.hours.all">
-		<call class="com.axelor.apps.hr.web.extra.hours.ExtraHoursController" method="allExtraHours"/>
-	</action-method>
+	<action-view name="extra.hours.all" model="com.axelor.apps.hr.db.ExtraHours"
+		title="My Extra Hours">
+		<view name="extra-hours-grid" type="grid" />
+		<view name="extra-hours-form" type="form" />
+		<domain>self.user = :user_id AND self.company = :company_id</domain>
+		<context name="user_id" expr="eval:__user__" />
+		<context name="company_id" expr="eval:__user__.activeCompany" />
+	</action-view>
 	
 	<menuitem name="validate-extra-hours" groups="MNGT,admins" parent="extra-hours-root" title="Extra hours to Validate" action="extra.hours.validate" icon="fa-flag"
 		tag-get="com.axelor.apps.hr.web.extra.hours.ExtraHoursController:extraHoursValidateTag()" tag-style="default" tag-count="true" order="-3000"/>
@@ -79,9 +89,14 @@
 	
 	<menuitem name="all-expense" parent="expense-root" title="All my Expenses" action="expense.all"/>
 	
-	<action-method name="expense.all">
-		<call class="com.axelor.apps.hr.web.expense.ExpenseController" method="allExpense"/>
-	</action-method>
+	<action-view name="expense.all" model="com.axelor.apps.hr.db.Expense"
+		title="My Expenses">
+		<view name="expense-grid" type="grid" />
+		<view name="expense-form" type="form" />
+		<domain>self.user = :user_id AND self.company = :company_id</domain>
+		<context name="user_id" expr="eval:__user__" />
+		<context name="company_id" expr="eval:__user__.activeCompany" />
+	</action-view>
 	
 	<menuitem name="validate-expense" groups="MNGT,admins" parent="expense-root" title="Expenses to Validate" action="expense.validate" icon="fa-flag"
 		tag-get="com.axelor.apps.hr.web.expense.ExpenseController:expenseValidateTag()" tag-style="default" tag-count="true" order="-3000"/>
@@ -116,9 +131,14 @@
 	
 	<menuitem name="all-leave-request" parent="leave-request-root" title="All my Leave Requests" action="leave.all"/>
 	
-	<action-method name="leave.all">
-		<call class="com.axelor.apps.hr.web.leave.LeaveController" method="allLeave"/>
-	</action-method>
+	<action-view name="leave.all" model="com.axelor.apps.hr.db.LeaveRequest"
+		title="My Leave Requests">
+		<view name="leave-request-grid" type="grid" />
+		<view name="leave-request-form" type="form" />
+		<domain>self.user = :user_id AND self.company = :company_id</domain>
+		<context name="user_id" expr="eval:__user__" />
+		<context name="company_id" expr="eval:__user__.activeCompany" />
+	</action-view>
 	
 	<menuitem name="validate-leave-request" groups="MNGT,admins" parent="leave-request-root" title="Leave Requests to Validate" action="leave.validate" icon="fa-flag"
 		tag-get="com.axelor.apps.hr.web.leave.LeaveController:leaveValidateTag()" tag-style="default" tag-count="true" order="-3000"/>

@@ -31,6 +31,7 @@
 		<panel-tabs>
 		    <panel name="configuration" title="Configuration">
 		    	<field name="defaultPartnerLanguage" />
+		    	<field name="activateSendingEmail" widget="Boolean-switch"/>
 		    	<field name="mailAccountByUser" widget="Boolean-switch"/>
 		    	<field name="productInAtiSelect"/>
 		    	<field name="nbDecimalDigitForUnitPrice"/>
@@ -44,7 +45,7 @@
 		    	<field name="managePurchasesUnits" if-module="axelor-purchase" widget="Boolean-switch"/>
 		    	<field name="teamManagement" widget="Boolean-switch"/>
 		    	<field name="manageMultiBanks" widget="Boolean-switch"/>
-		    	<field name="manageDirectDebitPayment" widget="Boolean-switch"/>
+		    	<field name="manageDirectDebitPayment" if-module="axelor-account" widget="Boolean-switch"/>
 		    </panel>
 		    <panel name="accounting" title="Accounting">
 				<field name="defaultExemptionTax" form-view="tax-form" grid-view="tax-grid"/>
@@ -153,6 +154,11 @@
 				<field name="projectTaskInvoiceLines" widget="Boolean-switch"/>
 				<field name="projectTaskLabel"/>
 				<field name="productInvoicingProjectTask" canNew="true"/>
+				
+				<field name="showPurchaseOrderLineRelatedToProject" if-module="axelor-business-project"/>
+				<field name="showSaleOrderLineRelatedToProject" if-module="axelor-business-project" />
+				<field name="showExpenseLineRelatedToProject" if-module="axelor-business-project" />
+				<field name="showProductionOrderRelatedToProject" if-module="axelor-business-production" />
 			</panel>
 			
 			<panel name="budgetConfiguration" title="Budget Configuration" if-module="axelor-account">

@@ -18,6 +18,8 @@
 package com.axelor.apps.businessproject.module;
 
 import com.axelor.app.AxelorModule;
+import com.axelor.apps.businessproject.db.repo.InvoicingProjectManagementRepository;
+import com.axelor.apps.businessproject.db.repo.InvoicingProjectRepository;
 import com.axelor.apps.businessproject.service.ExpenseProjectService;
 import com.axelor.apps.businessproject.service.ProjectTaskBusinessService;
 import com.axelor.apps.businessproject.service.PurchaseOrderInvoiceProjectServiceImpl;
@@ -38,5 +40,6 @@ public class BusinessProjectModule extends AxelorModule{
 	    	 bind(TimesheetServiceImpl.class).to(TimesheetProjectServiceImpl.class);
 	    	 bind(ExpenseService.class).to(ExpenseProjectService.class);
 	    	 bind(ProjectTaskService.class).to(ProjectTaskBusinessService.class);
+	    	 bind(InvoicingProjectRepository.class).to(InvoicingProjectManagementRepository.class);
 	    }
 }

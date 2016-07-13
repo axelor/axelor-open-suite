@@ -367,8 +367,8 @@ public class ExpenseService  {
 			}
 			KilometricAllowance kmAllowance = new KilometricAllowance();
 			kmAllowance.setDistance(new BigDecimal(request.getData().get("kmNumber").toString()));
-			kmAllowance.setCityFrom(request.getData().get("locationFrom").toString());
-			kmAllowance.setCityTo(request.getData().get("locationTo").toString());
+			kmAllowance.setFromCity(request.getData().get("locationFrom").toString());
+			kmAllowance.setToCity(request.getData().get("locationTo").toString());
 			kmAllowance.setTypeSelect(new Integer(request.getData().get("allowanceTypeSelect").toString()));
 			kmAllowance.setReason(request.getData().get("comments").toString());
 			kmAllowance.setDate(new LocalDate(request.getData().get("date").toString()));

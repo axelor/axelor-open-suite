@@ -36,49 +36,6 @@ public class EmployeeServiceImpl extends UserServiceImpl implements EmployeeServ
 	
 	private static final Logger LOG = LoggerFactory.getLogger(EmployeeService.class);
 
-//	/**
-//	 * Convert  user duration to hours using time logging preference of user
-//	 * @param duration
-//	 * @return
-//	 * @throws AxelorException
-//	 */
-//	@Override
-//	public BigDecimal getDurationHours(Object object) throws AxelorException{
-//		BigDecimal duration = BigDecimal.ZERO;
-//		if(object instanceof String){
-//			duration = new BigDecimal(object.toString());
-//		}
-//		else if(object instanceof BigDecimal){
-//			duration = (BigDecimal) object;
-//		}
-//		else{
-//			throw new AxelorException(I18n.get("Wrong type of object passed to the method getDurationHours of EmployeeServiceImp (It must be String or BigDecimal)"),IException.TECHNICAL);
-//		}
-//
-//		LOG.debug("GET duration hours for duration: {}",duration);
-//
-//		if(duration == null) { return null; }
-//
-//		Employee employee = AuthUtils.getUser().getEmployee();
-//
-//		LOG.debug("Employee: {}",employee);
-//
-//		if(employee != null){
-//			String timePref = employee.getTimeLoggingPreferenceSelect();
-//			LOG.debug("Employee's time pref: {}, Daily Working hours: {}",timePref,employee.getDailyWorkHours());
-//
-//			if(timePref.equals("days")){
-//				duration = duration.multiply(employee.getDailyWorkHours());
-//			}
-//			else if (timePref.equals("minutes")) {
-//				duration = duration.divide(new BigDecimal(60),2, RoundingMode.HALF_UP);
-//			}
-//		}
-//
-//		LOG.debug("Calculated duration: {}",duration);
-//		return duration;
-//	}
-
 	/**
 	 * Convert hours duration to user duration using time logging preference of user
 	 * @param duration
@@ -105,10 +62,10 @@ public class EmployeeServiceImpl extends UserServiceImpl implements EmployeeServ
 				if(timePref.equals("days"))
 					duration = duration.multiply(dailyWorkHrs);
 				else if (timePref.equals("minutes"))
-					duration = duration.divide(new BigDecimal(60),2, RoundingMode.HALF_UP);
+					duration = duration.divide(new BigDecimal(60),4, RoundingMode.HALF_UP);
 			}else{
 				if(timePref.equals("days") && dailyWorkHrs != null && dailyWorkHrs.compareTo(BigDecimal.ZERO) != 0)
-					duration = duration.divide(dailyWorkHrs,2, RoundingMode.HALF_UP);
+					duration = duration.divide(dailyWorkHrs,4, RoundingMode.HALF_UP);
 				else if (timePref.equals("minutes"))
 					duration = duration.multiply(new BigDecimal(60));			
 			}

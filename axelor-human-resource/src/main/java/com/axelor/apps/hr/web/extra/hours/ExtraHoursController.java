@@ -22,13 +22,20 @@ import java.util.List;
 import java.util.Map;
 
 import com.axelor.apps.base.db.Wizard;
+import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.hr.db.ExtraHours;
 import com.axelor.apps.hr.db.repo.ExtraHoursRepository;
+import com.axelor.apps.hr.db.repo.TimesheetRepository;
+import com.axelor.apps.hr.exception.IExceptionMessage;
 import com.axelor.apps.hr.service.HRMenuTagService;
+import com.axelor.apps.hr.service.MailManagementService;
+import com.axelor.apps.hr.service.config.HRConfigService;
+import com.axelor.apps.message.db.Template;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
@@ -40,9 +47,15 @@ import com.google.inject.Inject;
 
 
 public class ExtraHoursController {
-	
+
+	@Inject
+	private HRConfigService  hrConfigService;
 	@Inject
 	private HRMenuTagService hrMenuTagService;
+	@Inject
+	private GeneralService generalService;
+	@Inject
+	private MailManagementService  mailManagementService;
 	
 	public void editExtraHours(ActionRequest request, ActionResponse response){
 		List<ExtraHours> extraHoursList = Beans.get(ExtraHoursRepository.class).all().filter("self.user = ?1 AND self.company = ?2 AND self.statusSelect = 1",AuthUtils.getUser(),AuthUtils.getUser().getActiveCompany()).fetch();
@@ -74,26 +87,6 @@ public class ExtraHoursController {
 			  		.param("popup-save", "false")
 					.map());
 		}
-	}
-
-	public void allExtraHours(ActionRequest request, ActionResponse response){
-		List<ExtraHours> extraHoursList = Beans.get(ExtraHoursRepository.class).all().filter("self.user = ?1 AND self.company = ?2",AuthUtils.getUser(),AuthUtils.getUser().getActiveCompany()).fetch();
-		List<Long> extraHoursListId = new ArrayList<Long>();
-		for (ExtraHours extraHours : extraHoursList) {
-			extraHoursListId.add(extraHours.getId());
-		}
-
-		String extraHoursListIdStr = "-2";
-		if(!extraHoursListId.isEmpty()){
-			extraHoursListIdStr = Joiner.on(",").join(extraHoursListId);
-		}
-
-		response.setView(ActionView.define(I18n.get("My Extra hours"))
-				   .model(ExtraHours.class.getName())
-				   .add("grid","extra-hours-grid")
-				   .add("form","extra-hours-form")
-				   .domain("self.id in ("+extraHoursListIdStr+")")
-				   .map());
 	}
 
 	public void validateExtraHours(ActionRequest request, ActionResponse response) throws AxelorException{
@@ -202,5 +195,80 @@ public class ExtraHoursController {
 		ExtraHours extraHours = new ExtraHours();
 		return hrMenuTagService.CountRecordsTag(extraHours);
 	}
-
+	
+	//confirming request and sending mail to manager
+	public void confirm(ActionRequest request, ActionResponse response) throws AxelorException{
+		ExtraHours extraHours = request.getContext().asType(ExtraHours.class);
+		if(!hrConfigService.getHRConfig(extraHours.getUser().getActiveCompany()).getExtraHoursMailNotification()){
+			response.setValue("statusSelect", TimesheetRepository.STATUS_CONFIRMED);
+			response.setValue("sentDate", generalService.getTodayDate());
+		}
+		else{
+			User manager = extraHours.getUser().getEmployee().getManager();
+			if(manager!=null){
+				Template template =  hrConfigService.getHRConfig(extraHours.getUser().getActiveCompany()).getSentExtraHoursTemplate();
+				if(mailManagementService.sendEmail(template,extraHours.getId())){
+					String message = "Email sent to";
+					response.setFlash(I18n.get(message)+" "+manager.getFullName());
+					response.setValue("statusSelect", TimesheetRepository.STATUS_CONFIRMED);
+					response.setValue("sentDate", generalService.getTodayDate());
+				}
+				else{
+					throw new AxelorException(String.format(I18n.get(IExceptionMessage.HR_CONFIG_TEMPLATES), extraHours.getUser().getActiveCompany().getName()), IException.CONFIGURATION_ERROR);
+				}
+			}
+		}
+	}
+	
+	//validating request and sending mail to applicant
+	public void valid(ActionRequest request, ActionResponse response) throws AxelorException{
+		ExtraHours extraHours = request.getContext().asType(ExtraHours.class);
+		if(!hrConfigService.getHRConfig(extraHours.getUser().getActiveCompany()).getExtraHoursMailNotification()){
+			response.setValue("statusSelect", TimesheetRepository.STATUS_VALIDATED);
+			response.setValue("validatedBy", AuthUtils.getUser());
+			response.setValue("validationDate", generalService.getTodayDate());
+		}
+		else{
+			User manager = extraHours.getUser().getEmployee().getManager();
+			if(manager!=null){
+				Template template =  hrConfigService.getHRConfig(extraHours.getUser().getActiveCompany()).getValidatedExtraHoursTemplate();
+				if(mailManagementService.sendEmail(template,extraHours.getId())){
+					String message = "Email sent to";
+					response.setFlash(I18n.get(message)+" "+extraHours.getUser().getFullName());
+					response.setValue("statusSelect", TimesheetRepository.STATUS_VALIDATED);
+					response.setValue("validatedBy", AuthUtils.getUser());
+					response.setValue("validationDate", generalService.getTodayDate());
+				}
+				else{
+					throw new AxelorException(String.format(I18n.get(IExceptionMessage.HR_CONFIG_TEMPLATES), extraHours.getUser().getActiveCompany().getName()), IException.CONFIGURATION_ERROR);
+				}
+			}
+		}
+	}
+	
+	//refusing request and sending mail to applicant
+	public void refuse(ActionRequest request, ActionResponse response) throws AxelorException{
+		ExtraHours extraHours = request.getContext().asType(ExtraHours.class);
+		if(!hrConfigService.getHRConfig(extraHours.getUser().getActiveCompany()).getExtraHoursMailNotification()){
+			response.setValue("statusSelect", TimesheetRepository.STATUS_REFUSED);
+			response.setValue("refusedBy", AuthUtils.getUser());
+			response.setValue("refusalDate", generalService.getTodayDate());
+		}
+		else{
+			User manager = extraHours.getUser().getEmployee().getManager();
+			if(manager!=null){
+				Template template =  hrConfigService.getHRConfig(extraHours.getUser().getActiveCompany()).getRefusedExtraHoursTemplate();
+				if(mailManagementService.sendEmail(template,extraHours.getId())){
+					String message = "Email sent to";
+					response.setFlash(I18n.get(message)+" "+extraHours.getUser().getFullName());
+					response.setValue("statusSelect", TimesheetRepository.STATUS_REFUSED);
+					response.setValue("refusedBy", AuthUtils.getUser());
+					response.setValue("refusalDate", generalService.getTodayDate());
+				}
+				else{
+					throw new AxelorException(String.format(I18n.get(IExceptionMessage.HR_CONFIG_TEMPLATES), extraHours.getUser().getActiveCompany().getName()), IException.CONFIGURATION_ERROR);
+				}
+			}
+		}
+	}
 }

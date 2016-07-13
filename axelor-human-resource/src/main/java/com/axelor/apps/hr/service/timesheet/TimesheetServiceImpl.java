@@ -57,6 +57,8 @@ import com.axelor.apps.hr.db.repo.TimesheetRepository;
 import com.axelor.apps.hr.exception.IExceptionMessage;
 import com.axelor.apps.hr.service.employee.EmployeeService;
 import com.axelor.apps.hr.service.project.ProjectTaskService;
+import com.axelor.apps.hr.db.repo.PublicHolidayDayRepository;
+import com.axelor.apps.hr.db.PublicHolidayDay;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
 import com.axelor.auth.AuthUtils;
@@ -69,6 +71,8 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import com.axelor.auth.AuthUtils;
+import com.axelor.inject.Beans;
 
 public class TimesheetServiceImpl implements TimesheetService{
 
@@ -84,13 +88,19 @@ public class TimesheetServiceImpl implements TimesheetService{
 	@Inject
 	protected ProjectTaskService projectTaskService; 
 	
+	@Inject
+	protected PublicHolidayDayRepository publicHolidayDayRepo;
+	
+	@Inject
+	protected EmployeeRepository employeeRepo;
+	
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 	
 	@Override
 	@Transactional(rollbackOn={Exception.class})
 	public void getTimeFromTask(Timesheet timesheet){
 
-		List<TimesheetLine> timesheetLineList = TimesheetLineRepository.of(TimesheetLine.class).all().filter("self.user = ?1 AND self.affectedToTimeSheet = null AND self.projectTask != null", timesheet.getUser()).fetch();
+		List<TimesheetLine> timesheetLineList = TimesheetLineRepository.of(TimesheetLine.class).all().filter("self.user = ?1 AND self.timesheet = null AND self.projectTask != null", timesheet.getUser()).fetch();
 		for (TimesheetLine timesheetLine : timesheetLineList) {
 			timesheet.addTimesheetLineListItem(timesheetLine);
 		}
@@ -135,7 +145,23 @@ public class TimesheetServiceImpl implements TimesheetService{
 		correspMap.put(5, "friday");
 		correspMap.put(6, "saturday");
 		correspMap.put(7, "sunday");
+		
+		//Leaving list
 		List<LeaveRequest> leaveList = LeaveRequestRepository.of(LeaveRequest.class).all().filter("self.user = ?1 AND (self.statusSelect = 2 OR self.statusSelect = 3)", timesheet.getUser()).fetch();
+		//Public holidays list
+		Employee employee = AuthUtils.getUser().getEmployee();
+		
+		//Employee employee = employeeRepo.find(idEmployee);
+		logger.debug("employee : {}",employee);
+		logger.debug("");
+		List<PublicHolidayDay> publicHolidayList = employee.getPublicHolidayPlanning().getPublicHolidayDayList();
+		
+		logger.debug("");
+		logger.debug("-----------------------------------------------");
+		logger.debug("publicHolidaysList : {}", publicHolidayList);
+		logger.debug("-----------------------------------------------");
+		logger.debug("");
+		
 		while(!fromDate.isAfter(toDate)){
 			DayPlanning dayPlanningCurr = new DayPlanning();
 			for (DayPlanning dayPlanning : dayPlanningList) {
@@ -146,21 +172,36 @@ public class TimesheetServiceImpl implements TimesheetService{
 			}
 			if(dayPlanningCurr.getMorningFrom() != null || dayPlanningCurr.getMorningTo() != null || dayPlanningCurr.getAfternoonFrom() != null || dayPlanningCurr.getAfternoonTo() != null)
 			{
+				/*Check if the day is not a leaving day */
 				boolean noLeave = true;
 				if(leaveList != null){
 					for (LeaveRequest leave : leaveList) {
-						if((leave.getDateFrom().isBefore(fromDate) && leave.getDateTo().isAfter(fromDate))
-							|| leave.getDateFrom().isEqual(fromDate) || leave.getDateTo().isEqual(fromDate))
+						if((leave.getFromDate().isBefore(fromDate) && leave.getToDate().isAfter(fromDate))
+							|| leave.getFromDate().isEqual(fromDate) || leave.getToDate().isEqual(fromDate))
 						{
 							noLeave = false;
 							break;
 						}
 					}
 				}
-				if(noLeave){
+				
+				/*Check if the day is not a public holiday */
+				boolean noPublicHoliday = true;
+				if(publicHolidayList != null){
+					for (PublicHolidayDay publicHoliday : publicHolidayList) {
+						if(publicHoliday.getDate().isEqual(fromDate))
+						{
+							noPublicHoliday = false;
+							break;
+						}
+					}
+				}
+				
+				if(noLeave && noPublicHoliday){
 					TimesheetLine timesheetLine = createTimesheetLine(projectTask, product, timesheet.getUser(), fromDate, timesheet, employeeService.getUserDuration(logTime,timesheet.getUser().getEmployee().getDailyWorkHours(),true), "");
 					timesheetLine.setVisibleDuration(logTime);
 				}
+				
 			}
 			fromDate=fromDate.plusDays(1);
 		}
@@ -273,7 +314,7 @@ public class TimesheetServiceImpl implements TimesheetService{
 			User user = (User)timesheetInformations[1];
 			LocalDate startDate = (LocalDate)timesheetInformations[2];
 			LocalDate endDate = (LocalDate)timesheetInformations[3];
-			BigDecimal visibleDuration = (BigDecimal) timesheetInformations[4];
+			BigDecimal durationStored = (BigDecimal) timesheetInformations[4];
 
 			if (consolidate){
 				strDate = ddmmFormat.format(startDate.toDate()) + " - " + ddmmFormat.format(endDate.toDate());
@@ -281,7 +322,7 @@ public class TimesheetServiceImpl implements TimesheetService{
 				strDate = ddmmFormat.format(startDate.toDate());
 			}
 
-			invoiceLineList.addAll(this.createInvoiceLine(invoice, product, user, strDate, visibleDuration, priority*100+count));
+			invoiceLineList.addAll(this.createInvoiceLine(invoice, product, user, strDate, durationStored, priority*100+count));
 			count++;
 		}
 
@@ -289,7 +330,7 @@ public class TimesheetServiceImpl implements TimesheetService{
 
 	}
 
-	public List<InvoiceLine> createInvoiceLine(Invoice invoice, Product product, User user, String date, BigDecimal visibleDuration, int priority) throws AxelorException  {
+	public List<InvoiceLine> createInvoiceLine(Invoice invoice, Product product, User user, String date, BigDecimal durationStored, int priority) throws AxelorException  {
 
 		Employee employee = user.getEmployee();
 
@@ -301,20 +342,8 @@ public class TimesheetServiceImpl implements TimesheetService{
 		BigDecimal discountAmount = product.getCostPrice();
 
 
-		BigDecimal qtyConverted = visibleDuration;
-		qtyConverted = Beans.get(UnitConversionService.class).convert(generalService.getGeneral().getUnitHours(), product.getUnit(), visibleDuration);
-
-		if(employee != null){
-			if(employee.getTimeLoggingPreferenceSelect().equals(EmployeeRepository.TIME_PREFERENCE_DAYS)){
-				qtyConverted = Beans.get(UnitConversionService.class).convert(generalService.getGeneral().getUnitDays(), product.getUnit(), visibleDuration);
-
-			}
-			else if(employee.getTimeLoggingPreferenceSelect().equals(EmployeeRepository.TIME_PREFERENCE_MINUTES)){
-				qtyConverted = Beans.get(UnitConversionService.class).convert(generalService.getGeneral().getUnitMinutes(), product.getUnit(), visibleDuration);
-
-			}
-
-		}
+		BigDecimal qtyConverted = durationStored;
+		qtyConverted = Beans.get(UnitConversionService.class).convert(generalService.getGeneral().getUnitHours(), product.getUnit(), durationStored);
 
 		PriceList priceList = invoice.getPartner().getSalePriceList();
 		if(priceList != null)  {
@@ -401,7 +430,7 @@ public class TimesheetServiceImpl implements TimesheetService{
 
 	public BigDecimal computeTimeSpent(ProjectTask projectTask){
 		BigDecimal sum = BigDecimal.ZERO;
-		List<TimesheetLine> timesheetLineList = Beans.get(TimesheetLineRepository.class).all().filter("self.projectTask = ?1 AND self.affectedToTimeSheet.statusSelect = ?2", projectTask, TimesheetRepository.STATUS_VALIDATED).fetch();
+		List<TimesheetLine> timesheetLineList = Beans.get(TimesheetLineRepository.class).all().filter("self.projectTask = ?1 AND self.timesheet.statusSelect = ?2", projectTask, TimesheetRepository.STATUS_VALIDATED).fetch();
 		for (TimesheetLine timesheetLine : timesheetLineList) {
 			sum = sum.add(timesheetLine.getDurationStored());
 		}
@@ -466,7 +495,13 @@ public class TimesheetServiceImpl implements TimesheetService{
 		List<TimesheetLine> timesheetLineList = timesheet.getTimesheetLineList();
 		
 		Employee timesheetEmployee = timesheet.getUser().getEmployee();
-		BigDecimal employeeDailyWorkHours = timesheetEmployee.getDailyWorkHours();
+		BigDecimal employeeDailyWorkHours;
+		
+		if (timesheetEmployee == null || timesheetEmployee.getDailyWorkHours() == null){
+			employeeDailyWorkHours = generalService.getGeneral().getDailyWorkHours();
+		}else{
+			employeeDailyWorkHours = timesheetEmployee.getDailyWorkHours();
+		}
 		
 		for(TimesheetLine timesheetLine : timesheetLineList)  {
 			timesheetLine.setVisibleDuration(employeeService.getUserDuration(timesheetLine.getDurationStored(), employeeDailyWorkHours, false));
