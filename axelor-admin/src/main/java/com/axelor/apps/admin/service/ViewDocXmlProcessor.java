@@ -82,8 +82,6 @@ public class ViewDocXmlProcessor {
 	
 	private Inflector inflector;
 	
-	private boolean newForm = false;
-	
 	@Inject
 	private MetaViewRepository metaViewRepo;
 	
@@ -228,7 +226,6 @@ public class ViewDocXmlProcessor {
 				switch(type){
 					case "form":
 						FormView form = (FormView) views.getViews().get(0);
-						newForm = true;
 						processForm(form, view.getModule(), mapper, true);
 						break;
 					case "dashboard":
@@ -267,10 +264,10 @@ public class ViewDocXmlProcessor {
 				}
 				
 				processModel(key, new String[]{"form",view[1]});
-//				String[] menuPath = exportService.getMenuPath();
-//				if(menuPath != null){
-				exportService.setMenuPath(new String[]{"",""});
-//				}
+				String[] menuPath = exportService.getMenuPath();
+				if(menuPath != null){
+					exportService.setMenuPath(new String[]{"",""});
+				}
 			}
 		}
 		
@@ -280,6 +277,7 @@ public class ViewDocXmlProcessor {
 		
 		String name = form.getName();
 		log.debug("Processing form: {}", name);
+		
 		if(!exportService.getOnlyPanel()){
 			List<Button> buttons = form.getToolbar();
 			if(buttons != null){
@@ -313,7 +311,7 @@ public class ViewDocXmlProcessor {
 		
 		String className = mapper.getBeanClass().getName();
 		String title = menu.getTitle();
-		
+
 		if(!Strings.isNullOrEmpty(title) && !isChecked(view, "menu", title)){
 			String[] values = new String[]{
 					getModuleName(menu, module), 
@@ -326,8 +324,7 @@ public class ViewDocXmlProcessor {
 					""
 			};
 		
-			exportService.writeRow(values, newForm, false, false);
-			newForm = false;
+			exportService.writeRow(values);
 		}
 		
 		List<AbstractWidget> items = menu.getItems();
@@ -396,7 +393,6 @@ public class ViewDocXmlProcessor {
 						new Class[] {klass, String.class, String.class, Mapper.class, boolean.class});
 			method.setAccessible(true);
 			method.invoke(this, new Object[]{item, view, module, mapper, addPanel});
-			
 		} catch (NoSuchMethodException | SecurityException
 				| IllegalAccessException | IllegalArgumentException 
 				| InvocationTargetException e) {
@@ -408,33 +404,24 @@ public class ViewDocXmlProcessor {
 	@SuppressWarnings("unused")
 	private void processPanel(Panel panel, String view, String module, Mapper mapper, boolean addPanel){
 		
-		String panelType = "SubPanel";
 		if(addPanel){
-			panelType = "Panel";
-		}
-		String className = mapper.getBeanClass().getName();
-		String title = panel.getTitle();
-		String name = panel.getName();
-		String checkItem = name;
-		if(checkItem == null){
-			checkItem = title;
-		}
-
-		if(!Strings.isNullOrEmpty(checkItem) && !isChecked(view, "panel", checkItem)){
-			String[] values = new String[]{
-					getModuleName(panel, module), 
-					className, 
-					view, 
-					panelType, 
-					name, 
-					exportService.translate(title, "en"), 
-					exportService.translate(title, "fr"),
-					"",
-					""
-			};
-
-			exportService.writeRow(values, newForm, addPanel, !addPanel);
-			newForm = false;
+			String className = mapper.getBeanClass().getName();
+			String title = panel.getTitle();
+	
+			if(!Strings.isNullOrEmpty(title) && !isChecked(view, "panel", title)){
+				String[] values = new String[]{
+						getModuleName(panel, module), 
+						className, 
+						view, "Panel", 
+						panel.getName(), 
+						exportService.translate(title, "en"), 
+						exportService.translate(title, "fr"),
+						"",
+						""
+				};
+	
+				exportService.writeRow(values);
+			}
 		}
 		
 		processItems(panel.getItems().iterator(), view, module, mapper, false);
@@ -444,8 +431,6 @@ public class ViewDocXmlProcessor {
 	private void processPanelField(PanelField panelField, String view, String module, Mapper mapper, boolean addPanel){
 		
 		processField(panelField, view, module, mapper, addPanel);
-		
-		newForm = false; 
 		
 		processPanelEditor(panelField, view, module, mapper);
 	}
@@ -510,10 +495,6 @@ public class ViewDocXmlProcessor {
 				selectFR = updateSelect(selectionList, "fr");
 			}
 			
-			if(Strings.isNullOrEmpty(type)){
-				type = "EMPTY";
-			}
-			
 			String[] values = new String[]{moduleName, 
 					className, 
 					view, 
@@ -525,8 +506,7 @@ public class ViewDocXmlProcessor {
 					selectFR
 			};
 			
-			exportService.writeRow(values, newForm, false, false);
-			newForm = false;
+			exportService.writeRow(values);
 		}
 
 	}
@@ -570,7 +550,6 @@ public class ViewDocXmlProcessor {
 			String target = panelField.getTarget();
 		
 			if(target != null){
-				newForm = true;
 				try{
 					Mapper targetMapper = Mapper.of(ClassUtils.findClass(target));
 					processItems(panelEditor.getItems().iterator(), view, getModuleName(panelField, module), targetMapper, false);
@@ -626,10 +605,8 @@ public class ViewDocXmlProcessor {
 					exportService.translate(title, "fr"),
 					"", ""
 			};
-			exportService.writeRow(values, newForm, false, false);
-			newForm = false;
+			exportService.writeRow(values);
 		}
-		
 	}
 	
 	@SuppressWarnings("unused")
@@ -660,11 +637,7 @@ public class ViewDocXmlProcessor {
 			log.debug("No property found: {}, class: {}", name, className);
 		}
 		
-		if(Strings.isNullOrEmpty(type)){
-			type = "EMPTY";
-		}
-		
-		if(!Strings.isNullOrEmpty(target)){
+		if(target != null && type != null){
 			if(type.equals("ONE_TO_MANY") || type.equals("one-to-many")){
 				String parentView = view + "(" + exportService.translate(title, "en") + "),"
 								  + view + "(" + exportService.translate(title, "fr") + ")"; 
@@ -684,9 +657,8 @@ public class ViewDocXmlProcessor {
 				"", 
 				""
 		};
-	
-		exportService.writeRow(values, newForm, false, false);
-		newForm = false;
+		
+		exportService.writeRow(values);
 	}
 	
 	@SuppressWarnings("unused")
@@ -709,8 +681,7 @@ public class ViewDocXmlProcessor {
 				""
 		};
 		
-		exportService.writeRow(values, newForm, false, false);
-		newForm = false;
+		exportService.writeRow(values);
 	}
 	
 	@SuppressWarnings("unused")
@@ -743,8 +714,7 @@ public class ViewDocXmlProcessor {
 					""
 			};
 
-			exportService.writeRow(values, newForm, false, false);
-			newForm = false;
+			exportService.writeRow(values);
 		}
 		
 	}
@@ -768,8 +738,7 @@ public class ViewDocXmlProcessor {
 					""
 			};
 
-			exportService.writeRow(values, newForm, false, false);
-			newForm = false;
+			exportService.writeRow(values);
 		}
 	}
 }

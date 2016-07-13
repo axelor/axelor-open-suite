@@ -178,6 +178,8 @@ public class MoveLineReportController {
 
 			logger.debug("Type selected : {}" , moveLineReport.getTypeSelect());
 
+			moveLineReportService.setStatus(moveLineReport);
+
 			if(moveLineReport.getTypeSelect() >= 6 && moveLineReport.getTypeSelect() <= 9) {
 				
 				MoveLineExportService moveLineExportService = Beans.get(MoveLineExportService.class);
@@ -221,9 +223,6 @@ public class MoveLineReportController {
 							.add("html", fileLink).map());
 				}
 			}
-			
-			moveLineReportService.setStatus(moveLineReport);
-			
 		}
 		catch(Exception e) { TraceBackService.trace(response, e); }	
 	}

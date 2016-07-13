@@ -106,8 +106,7 @@
       <message if="statusSelect == 1" tag="important">Draft</message>
       <message if="statusSelect == 2" tag="info">Finalize</message>
       <message if="statusSelect == 3" tag="success">Order confirmed</message>
-      <message if="statusSelect == 4" tag="success">Finished</message>
-      <message if="statusSelect == 5" tag="warning">Canceled</message>
+      <message if="statusSelect == 4" tag="warning">Canceled</message>
     </track>
     
   </entity>

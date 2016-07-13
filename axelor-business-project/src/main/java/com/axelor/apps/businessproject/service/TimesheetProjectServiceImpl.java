@@ -122,7 +122,7 @@ public class TimesheetProjectServiceImpl extends TimesheetServiceImpl{
 	public TimesheetLine createTimesheetLine(ProjectTask project, Product product, User user, LocalDate date, Timesheet timesheet, BigDecimal hours, String comments){
 		TimesheetLine timesheetLine = super.createTimesheetLine(project, product, user, date, timesheet, hours, comments);
 		
-		if(project != null && (project.getProjTaskInvTypeSelect() == ProjectTaskRepository.INVOICING_TYPE_TIME_BASED || (project.getProject() != null && project.getProject().getProjTaskInvTypeSelect() == ProjectTaskRepository.INVOICING_TYPE_TIME_BASED)))
+		if(project.getProjTaskInvTypeSelect() == ProjectTaskRepository.INVOICING_TYPE_TIME_BASED || (project.getProject() != null && project.getProject().getProjTaskInvTypeSelect() == ProjectTaskRepository.INVOICING_TYPE_TIME_BASED))
 				timesheetLine.setToInvoice(true);
 		
 		return timesheetLine;

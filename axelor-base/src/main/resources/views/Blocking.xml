@@ -26,7 +26,7 @@
 			<field name="invoicingBlockingByUser" colSpan="4"/>
 		</panel>
 		
-		<panel name="directDebitBlocking" title="Direct debit blocking" if-module="axelor-account" if="__config__.general.getManageDirectDebitPayment()"  showIf="debitBlockingOk" colSpan="12">
+		<panel name="directDebitBlocking" title="Direct debit blocking" if="__config__.general.getManageDirectDebitPayment()"  showIf="debitBlockingOk" colSpan="12">
 		  <field name="debitBlockingToDate" colSpan="4"/>
 		  <field name="debitBlockingReason" colSpan="4" form-view="stop-reason-form" grid-view="stop-reason-grid"/>
 		  <field name="debitBlockingByUser" colSpan="4" form-view="user-form" grid-view="user-grid"/>

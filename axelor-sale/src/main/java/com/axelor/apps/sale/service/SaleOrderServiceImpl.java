@@ -295,6 +295,9 @@ public class SaleOrderServiceImpl implements SaleOrderService {
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void finalizeSaleOrder(SaleOrder saleOrder) throws AxelorException, IOException, BirtException {
 		saleOrder.setStatusSelect(ISaleOrder.STATUS_FINALIZE);
+		if (saleOrder.getVersionNumber() == 1){
+			saleOrder.setSaleOrderSeq(this.getSequence(saleOrder.getCompany()));
+		}
 		saleOrderRepo.save(saleOrder);
 		if (generalService.getGeneral().getManageSaleOrderVersion()){
 			this.saveSaleOrderPDFAsAttachment(saleOrder);
@@ -307,10 +310,6 @@ public class SaleOrderServiceImpl implements SaleOrderService {
 		saleOrder.setStatusSelect(ISaleOrder.STATUS_ORDER_CONFIRMED);
 		saleOrder.setConfirmationDate(this.today);
 		saleOrder.setConfirmedByUser(this.currentUser);
-		if (saleOrder.getVersionNumber() == 1){
-			saleOrder.setSaleOrderSeq(this.getSequence(saleOrder.getCompany()));
-		}
-
 		
 		this.validateCustomer(saleOrder);
 		

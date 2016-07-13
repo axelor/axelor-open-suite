@@ -17,12 +17,9 @@
  */
 package com.axelor.apps.admin.web;
 
-import java.io.IOException;
-
 import org.joda.time.LocalDateTime;
 
 import com.axelor.apps.admin.db.ViewDoc;
-import com.axelor.apps.admin.service.AsciiDocExportService;
 import com.axelor.apps.admin.service.ViewDocExportService;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.meta.db.repo.MetaFileRepository;
@@ -36,9 +33,6 @@ public class ViewDocController {
 	private ViewDocExportService exportService;
 	
 	@Inject
-	private AsciiDocExportService asciiDocExport;
-	
-	@Inject
 	private MetaFileRepository metaFileRepo;
 	
 	public void export(ActionRequest request, ActionResponse response){
@@ -46,33 +40,17 @@ public class ViewDocController {
 		ViewDoc viewDoc = request.getContext().asType(ViewDoc.class);
 		
 		MetaFile exportFile = viewDoc.getExportFile();
-		Boolean panelOnly = viewDoc.getExportOnlyPanel();
-		if(exportFile != null && exportFile.getId() != null && !panelOnly){
+		if(exportFile != null && exportFile.getId() != null){
 			exportFile = metaFileRepo.find(exportFile.getId());
-			exportFile = exportService.export(exportFile, false);
+			exportFile = exportService.export(exportFile, viewDoc.getExportOnlyPanel());
 		}
 		else{
-			exportFile = exportService.export(null, panelOnly);
+			exportFile = exportService.export(null, viewDoc.getExportOnlyPanel());
 		}
 		
 		response.setValue("exportFile", exportFile);
 		
 		response.setValue("exportDate", LocalDateTime.now());
 		
-	}
-	
-	public void generateAsciidoc(ActionRequest request, ActionResponse response) {
-		
-		ViewDoc viewDoc = request.getContext().asType(ViewDoc.class);
-		
-		MetaFile exportFile = viewDoc.getExportFile();
-		
-		try {
-			MetaFile asciidocFile = asciiDocExport.export(exportFile, 
-					viewDoc.getLanguageSelect());
-			response.setValue("asciidocFile", asciidocFile);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
 	}
 }

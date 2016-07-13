@@ -16,7 +16,6 @@
 		onNew="action-bill-of-material-default-record" onLoad="action-bill-of-material-attrs-price-digits" width="large">
 		<toolbar>
 			<button name="newVersion" title="Generate new version"  if="__config__.general.manageBillOfMaterialVersion" onClick="action-bill-of-material-check-other-version,action-bill-of-material-generate-new-version"/>
-			<button name="archive" prompt="Do you really wish to archive this bill of material ?" title="Archive" if="__config__.general.manageBillOfMaterialVersion" onClick="action-bill-of-material-archive,save" />
 		</toolbar>
 		<panel name="main">
 			<field name="fullName" hidden="true" showIf="$readonly()" colSpan="12"/>
@@ -38,9 +37,9 @@
 				<button name="updateProductCostPrice" title="Update product cost price"  onClick="save,action-bill-of-material-method-update-product-cost-price"/>
 				<panel-related field="costSheetList" colSpan="12" readonly="true" form-view="cost-sheet-bill-of-material-form" grid-view="cost-sheet-bill-of-material-grid"/>
 			</panel>
-			<panel name="versionManagement" title="Version management" hidden="true" showIf="versionNumber &gt; 1">
-				<field name="versionNumber" colSpan="3" />
-				<field name="originalBillOfMaterial" grid-view="bill-of-material-grid" form-view="bill-of-material-form" colSpan="3" readonly="true"/>
+			<panel name="versionManagement" title="Version management">
+				<field name="versionNumber" colSpan="3" hidden="true" showIf="versionNumber &gt; 1"/>
+				<field name="originalBillOfMaterial" grid-view="bill-of-material-grid" form-view="bill-of-material-form" colSpan="3" hidden="true" showIf="versionNumber &gt; 1" readonly="true"/>
 		
 			</panel>
 		</panel-tabs>
@@ -158,10 +157,6 @@
     <action-attrs name="action-bill-of-material-attrs-price-digits">
     	<attribute name="scale" for="costPrice" expr="eval: __config__.generalService.getNbDecimalDigitForUnitPrice()"/>
     </action-attrs>
-    
-    <action-record name="action-bill-of-material-archive" model="com.axelor.apps.production.db.BillOfMaterial">
-    	<field name="archived" expr="eval: true"/>
-    </action-record>
 
 </object-views>
 

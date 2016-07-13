@@ -6,6 +6,11 @@
 
 	<!-- Nomenclature : * name : "interfaceName" + "fieldName" + ".select" -->
 	
+	<selection name="supplychain.invoicing.moment.select">
+		<option value="1">When a task is over</option>
+		<option value="2">Draft invoice N days after order validation</option>
+	</selection>
+	
 	<selection name="supplychain.subscription.invoicing.type.select">
 		<option value="1">Period Beginning</option>
 		<option value="2">Period Ending</option>

@@ -94,7 +94,7 @@ public class ReimbursementExportService {
 	protected MoveLineService moveLineService;
 	protected ReconcileService reconcileService;
 	protected SequenceService sequenceService;
-	protected AccountBlockingService accountBlockingService;
+	protected BlockingService blockingService;
 	protected ReimbursementRepository reimbursementRepo;
 	protected AccountConfigService accountConfigService;
 	protected PartnerService partnerService;
@@ -103,7 +103,7 @@ public class ReimbursementExportService {
 
 	@Inject
 	public ReimbursementExportService(MoveService moveService, MoveRepository moveRepo, MoveLineService moveLineService, ReconcileService reconcileService,
-			SequenceService sequenceService, AccountBlockingService accountBlockingService, ReimbursementRepository reimbursementRepo, AccountConfigService accountConfigService,
+			SequenceService sequenceService, BlockingService blockingService, ReimbursementRepository reimbursementRepo, AccountConfigService accountConfigService,
 			PartnerService partnerService, GeneralService generalService, PartnerRepository partnerRepository) {
 
 		this.moveService = moveService;
@@ -111,7 +111,7 @@ public class ReimbursementExportService {
 		this.moveLineService = moveLineService;
 		this.reconcileService = reconcileService;
 		this.sequenceService = sequenceService;
-		this.accountBlockingService = accountBlockingService;
+		this.blockingService = blockingService;
 		this.reimbursementRepo = reimbursementRepo;
 		this.accountConfigService = accountConfigService;
 		this.partnerService = partnerService;
@@ -319,7 +319,7 @@ public class ReimbursementExportService {
 	 */
 	public boolean canBeReimbursed(Partner partner, Company company){
 
-		return !accountBlockingService.isReminderBlocking(partner, company);
+		return !blockingService.isReminderBlocking(partner, company);
 	}
 
 

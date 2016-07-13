@@ -212,6 +212,9 @@
 	        <field name="paymentMode" domain="self.inOutSelect = 1" if-module="axelor-supplychain" form-view="payment-mode-form" grid-view="payment-mode-grid"/>
 	        <field name="paymentCondition" if-module="axelor-supplychain" form-view="payment-condition-form" grid-view="payment-condition-grid"/>
 	    </panel>
+	    <panel name="invoicing" title="Invoicing" if-module="axelor-supplychain" colSpan="12">
+	        <field name="invoicingMomentSelect"/>
+	    </panel>
       </panel>
       
       <panel-mail>

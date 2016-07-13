@@ -69,6 +69,11 @@
   	
   	<extra-code>
 	   		<![CDATA[
+	   			// APPLICATION TYPE SELECT VALUE
+				public static final int APPLICATION_TYPE_PRODUCT = 1;
+				public static final int APPLICATION_TYPE_PROFILE = 2;
+				public static final int APPLICATION_TYPE_EXPENSE = 3;
+			
 				// PRODUCT TYPE SELECT
 				public static final String PRODUCT_TYPE_SERVICE = "service";
 				public static final String PRODUCT_TYPE_STORABLE = "storable";

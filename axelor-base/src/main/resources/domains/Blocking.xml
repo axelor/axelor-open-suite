@@ -12,6 +12,11 @@
     <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"/>
     <many-to-one name="partner" ref="com.axelor.apps.base.db.Partner" title="Partner"/>    
     
+    <!-- GROUP Direct Debit Blocking -->
+    <boolean name="debitBlockingOk" title="Block Direct Debit ?"/>
+    <date name="debitBlockingToDate" title="Block until"/>
+    <many-to-one name="debitBlockingReason" ref="com.axelor.apps.base.db.StopReason" title="Blocking reason"/>
+    <many-to-one name="debitBlockingByUser" ref="com.axelor.auth.db.User" title="Blocking done by"/>
 	<!-- GROUP Reminder Blocking -->
     <boolean name="reminderBlockingOk" title="Block Reminders ?"/>
     <date name="reminderBlockingToDate" title="Block until"/>
