@@ -22,6 +22,7 @@ import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -44,20 +45,26 @@ public class AsciiDocExportService {
 	
 	private static final Logger log = LoggerFactory.getLogger(AsciiDocExportService.class);
 	
+	private static final List<String> COMMENT_TYPES = Arrays.asList(new String[]{"tip", "general", "warn"});
+	
+	private static final List<String> ASCIIDOC_TYPES = Arrays.asList(new String[]{"TIP", "NOTE", "WARNING"});
+	
 	private int docIndex = 20;
 	private int titleIndex = 4;
 	private int menuIndex = 9;
 	private int typeIndex = 6;
 	
-	private Map<String, String> menuMap = new HashMap<String, String>();
-	
 	private boolean hasMenu = false;
 	
-	private List<String> processedMenu = new ArrayList<String>();
+	private List<String> processedMenus = new ArrayList<String>();
 	
 	private File imgDir = null;
 	
-	private String currentMenu = null;
+	private String header = null;
+	
+	private boolean setHorizontal = false;
+	
+	private Map<String, Integer> countMap = new HashMap<String, Integer>();
 	
 	@Inject
 	private ViewDocExportService viewDocExportService = new ViewDocExportService();
@@ -65,9 +72,13 @@ public class AsciiDocExportService {
 	@Inject
 	private MetaFiles metaFiles;
 	
+	
+	
 	public MetaFile export(MetaFile metaFile, String lang) throws IOException{
 		
 		String docImgPath = AppSettings.get().get("doc.images.path");
+		
+		setHorizontal = false;
 		
 		if (docImgPath != null) {
 			imgDir = new File(docImgPath);
@@ -93,11 +104,6 @@ public class AsciiDocExportService {
 			return null;
 		}
 		
-		if(lang != null && lang.equals("fr")){
-			docIndex = 20;
-			titleIndex = 5;
-			menuIndex = 10;
-		}
 		
 		try {
 			FileInputStream inStream = new FileInputStream(excelFile);
@@ -108,10 +114,19 @@ public class AsciiDocExportService {
 				String fileName = excelFile.getName().replace(".xlsx", "");
 				asciiDoc = File.createTempFile(fileName, ".txt");
 			}
-			
 			FileWriter fw = new FileWriter(asciiDoc);
 			
-			fw.write("= Documentation\n:toc:");
+			if(lang != null && lang.equals("fr")){
+				docIndex = 20;
+				titleIndex = 5;
+				menuIndex = 10;
+				fw.write(":warning-caption: Attention\n");
+				fw.write(":tip-caption: Astuce\n");
+			}
+			
+			
+			
+			fw.write("= Specifications Détaillées\n:toc:\n:toclevels: 4");
 			
 			processSheet(workbook.iterator(), fw);
 			
@@ -155,24 +170,15 @@ public class AsciiDocExportService {
 		
 		if(type != null){
 			String menu = getValue(row, menuIndex);
-			if(menu != null && type.equals("MENU")){
-				String doc = getValue(row, docIndex);
-				if(doc != null){
-					menuMap.put(menu, doc);
-				}
-			}
-			else if(!Strings.isNullOrEmpty(menu) 
-					&& type.equals("general") 
-					&& !menu.contains("-form(")){
-				menu = processMenu(menu);
+			String view = getValue(row, 2);
+			if(!Strings.isNullOrEmpty(menu) 
+					&& type.equals("general")){
+				processMenu(menu, view);
 				hasMenu = true;
-			}
-			else{
-				menu = null;
 			}
 
 			if(hasMenu){ 
-				processView(row, type, menu, fw);
+				processView(row, type, fw);
 			}
 		}
 		
@@ -180,89 +186,113 @@ public class AsciiDocExportService {
 		
 	}
 	
-	private String processMenu(String menu) throws IOException{
+	private void processMenu(String menu, String view) throws IOException{
 		
-		String[] menus = menu.split("/", 4);
-		int count = -1;
-		
-		currentMenu = "";
-		String checkMenu = "";
-		for(String mn : menus){
-			count++;
-			checkMenu += mn + "/";
-			if(!processedMenu.contains(checkMenu)){
-				currentMenu += "\n\n==" 
-				+ StringUtils.repeat("=", count)
-				+ " " 
-				+ mn;
-				processedMenu.add(checkMenu);
+		if (menu.contains("-form(")) {
+			String[] menus = menu.split("-form\\(");
+			String parent = menus[0] + "-form";
+			if (countMap.containsKey(parent)) { 
+				menu = menus[menus.length-1];
+				Integer count = countMap.get(parent);
+				header += "\n\n==" 
+					+ StringUtils.repeat("=", count)
+					+ " " 
+					+ menu.substring(0, menu.length()-1);
+				countMap.put(view, count + 1);
+			}
+		}
+		else {
+			String[] menus = menu.split("/", 4);
+			int count = -1;
+			
+			header = "";
+			String checkMenu = "";
+			for(String mn : menus){
+				count++;
+				checkMenu += mn + "/";
+				if(!Strings.isNullOrEmpty(checkMenu)
+						&& !processedMenus.contains(checkMenu)){
+					processedMenus.add(checkMenu);
+					header += "\n\n==" 
+							+ StringUtils.repeat("=", count)
+							+ " " 
+							+ mn;
+					countMap.put(view, count + 1);
+				}
 			}
 		}
 			
-		if(menuMap.containsKey(menu)){
-			currentMenu += "\n" + menuMap.get(menu);
+		if (imgDir != null && new File(imgDir, view + ".png").exists()) {
+			header += "\nimage::" + view + ".png[" + menu + ", align=\"center\"]";
 		}
 		
-		return menus[menus.length-1];
 		
 	}
 	
-	private void processView(Row row, String type, String menu, FileWriter fw) throws IOException{
+	private void processView(Row row, String type, FileWriter fw) throws IOException{
 		
 		String modelVal = getValue(row, 1);
 		String viewVal = getValue(row, 2);
 		
-		if(Strings.isNullOrEmpty(modelVal) && Strings.isNullOrEmpty(viewVal)){
+		if (Strings.isNullOrEmpty(modelVal) 
+				&& Strings.isNullOrEmpty(viewVal)) {
 			return;
 		}
 		
 		String doc = getValue(row, docIndex);
-		
-		if(menu != null && !processedMenu.contains(menu) && viewVal != null){
-			processedMenu.add(menu);
-			if (imgDir != null && new File(imgDir, viewVal + ".png").exists()) {
-				currentMenu += "\nimage::" + viewVal + ".png[" + menu + ", align=\"center\"]";
-			}
-			if(type.equals("general") && !Strings.isNullOrEmpty(doc)){
-				currentMenu += "\n" + doc;
-			}
-			return;
-		}
-		
-		if(Strings.isNullOrEmpty(doc)){
+		if (Strings.isNullOrEmpty(doc)) {
 			return;
 		}
 		
 		String title = getValue(row, titleIndex);
-		if(Strings.isNullOrEmpty(title)){
-			title = getValue(row, 4);
+		if(Strings.isNullOrEmpty(title)) { 
+			title = type;
 		}
-		if(Strings.isNullOrEmpty(title)){
-			title = type.replace("tip", "TIP");
-			title = type.replace("general", "CAUTION");
-			title = title.replace("warn", "WARNING");
-			type = title;
+		
+		if(COMMENT_TYPES.contains(type)) {
+			title = ASCIIDOC_TYPES.get(COMMENT_TYPES.indexOf(type));
+			if(header != null) {
+				fw.write(header);
+				header = null;
+				setHorizontal = true;
+				fw.write("\n\n" + title + ": "+ doc );
+				return;
+			}
 		}
 		
 		if(type.contains("(")){
-			type = type.substring(0, type.indexOf("(")).replace("-", "_");
-		} 
-		if(viewDocExportService.fieldTypes.contains(type) || currentMenu != null){
-			if(currentMenu != null){
-				fw.write(currentMenu);
-				currentMenu = null;
+			type = type.substring(0, type.indexOf("("))
+					.replace("-", "_");
+		}
+		
+		
+		if(viewDocExportService.fieldTypes.contains(type) || header != null){
+			if(header != null){
+				fw.write(header);
+				header = null;
 				fw.write("\n\n[horizontal]");
 			}
+			
+			if (setHorizontal) {
+				fw.write("\n\n[horizontal]");
+				setHorizontal = false;
+			}
+			
 			if (type.toUpperCase().contains("PANEL")) {
 				fw.write("\n[red]#" + title + "#:: " + doc );
 			}
 			else {
-				fw.write("\n" + title + ":: "+ doc);
+				fw.write("\n" + title + ":: " + doc);
 			}
 			
 		}
 		else{
-			fw.write("\n" + title + ": "+ doc + " +");
+			if (!setHorizontal) {
+				fw.write("\n+\n" + title + ": "+ doc );
+			}
+			else {
+				fw.write("\n\n" + title + ": "+ doc );
+			}
 		}
 	
 	}

@@ -257,7 +257,7 @@ public class ViewDocExportService {
 			values[0],
 			values[1],
 			values[2],
-			"", "", "", "general", "", "", "", ""
+			null,null,null, "general", null,null,null,null
 		};
 		
 		if(menuPath != null){
@@ -382,7 +382,13 @@ public class ViewDocExportService {
 			if (oldCell == null) {
 				continue;
 			}
-			String val = oldCell.getStringCellValue();
+			
+			String val = null;
+			
+			if (oldCell.getCellType() == Cell.CELL_TYPE_STRING) {
+				val = oldCell.getStringCellValue();
+			}
+			
 			if (val == null){
 				continue;
 			}

@@ -86,6 +86,10 @@ public abstract class ImporterService {
 		map.put("entier", "int");
 		map.put("fichier", "file");
 		map.put("bouton", "button");
+		map.put("Note", "general");
+		map.put("case à cocher", "boolean");
+		map.put("Astuce", "tip");
+		map.put("Attention", "warn");
 		frMap = Collections.unmodifiableMap(map);
 	}
 
