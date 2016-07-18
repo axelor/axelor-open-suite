@@ -105,6 +105,7 @@
 "Show sale order lines related to the project task",,,
 "Since the invoice has already been generated, it's impossible to delete this record",,,
 "Template",,,
+"There is no customer for this project/task",,,
 "Time-based",,,
 "Timesheet lines",,,
 "To invoice",,,

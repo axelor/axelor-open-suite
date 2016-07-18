@@ -50,6 +50,9 @@ public class InvoicingProjectController {
 		if(invoicingProject.getProjectTask() == null){
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.INVOICING_PROJECT_PROJECT_TASK)), IException.CONFIGURATION_ERROR);
 		}
+		if(invoicingProject.getProjectTask().getClientPartner() == null){
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.INVOICING_PROJECT_PROJECT_TASK_PARTNER)), IException.CONFIGURATION_ERROR);
+		}
 
 		if(invoicingProject.getProjectTask().getAssignedTo() == null){
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.INVOICING_PROJECT_USER)), IException.CONFIGURATION_ERROR);
