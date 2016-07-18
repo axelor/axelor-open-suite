@@ -22,6 +22,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -113,7 +114,59 @@ public class TimesheetServiceImpl implements TimesheetService{
 		timesheet.setStatusSelect(TimesheetRepository.STATUS_CANCELED);
 		Beans.get(TimesheetRepository.class).save(timesheet);
 	}
-
+	
+	public DayPlanning checkDayOfWeek(List<DayPlanning> dayPlanningList,Map<Integer,String> correspMap,LocalDate fromDate){
+		DayPlanning dayPlanningCurr = new DayPlanning();
+		for (DayPlanning dayPlanning : dayPlanningList) {
+			if(dayPlanning.getName().equals(correspMap.get(fromDate.getDayOfWeek()))){
+				dayPlanningCurr = dayPlanning;
+				break;
+			}
+		}
+		return dayPlanningCurr;
+	}
+	
+	public boolean checkLeave(List<LeaveRequest> leaveList,LocalDate fromDate,LocalDate toDate){
+		boolean noLeave = true;
+		if(leaveList != null){
+			for (LeaveRequest leave : leaveList) {
+				if((leave.getDateFrom().isBefore(fromDate) && leave.getDateTo().isAfter(fromDate))
+					|| leave.getDateFrom().isEqual(fromDate) || leave.getDateTo().isEqual(fromDate))
+				{
+					noLeave = false;
+					break;
+				}
+			}
+		}
+		return noLeave;
+	}
+	
+	public List<LocalDate> dateFromPublicHoliday(List<PublicHolidayDay> publicHolidayList){
+		List<LocalDate> datePublicHolidayList = new LinkedList();
+		if(publicHolidayList != null){
+			for(PublicHolidayDay publicHoliday : publicHolidayList){
+				datePublicHolidayList.add(publicHoliday.getDate());
+			}
+		}
+		
+		return datePublicHolidayList;
+	}
+	
+	public boolean checkPublicHoliday(List<LocalDate> datePublicHolidayList,LocalDate fromDate){
+		boolean noPublicHoliday = true;
+		
+		if(datePublicHolidayList != null){	
+			if(datePublicHolidayList.contains(fromDate)){
+				noPublicHoliday = false;
+				logger.debug("-----------------------------------------------");
+				logger.debug("fromDate (Public Holiday) : {}", fromDate );
+				logger.debug("-----------------------------------------------");
+			}
+		}
+		return noPublicHoliday;
+	}
+	
+	
 	@Override
 	public Timesheet generateLines(Timesheet timesheet, LocalDate fromGenerationDate, LocalDate toGenerationDate, BigDecimal logTime, ProjectTask projectTask, Product product) throws AxelorException{
 
@@ -150,58 +203,25 @@ public class TimesheetServiceImpl implements TimesheetService{
 		List<LeaveRequest> leaveList = LeaveRequestRepository.of(LeaveRequest.class).all().filter("self.user = ?1 AND (self.statusSelect = 2 OR self.statusSelect = 3)", timesheet.getUser()).fetch();
 		//Public holidays list
 		Employee employee = AuthUtils.getUser().getEmployee();
-		
-		//Employee employee = employeeRepo.find(idEmployee);
-		logger.debug("employee : {}",employee);
-		logger.debug("");
 		List<PublicHolidayDay> publicHolidayList = employee.getPublicHolidayPlanning().getPublicHolidayDayList();
-		
-		logger.debug("");
-		logger.debug("-----------------------------------------------");
-		logger.debug("publicHolidaysList : {}", publicHolidayList);
-		logger.debug("-----------------------------------------------");
-		logger.debug("");
+		List<LocalDate> datePublicHolidayList = dateFromPublicHoliday(publicHolidayList);
 		
 		while(!fromDate.isAfter(toDate)){
-			DayPlanning dayPlanningCurr = new DayPlanning();
-			for (DayPlanning dayPlanning : dayPlanningList) {
-				if(dayPlanning.getName().equals(correspMap.get(fromDate.getDayOfWeek()))){
-					dayPlanningCurr = dayPlanning;
-					break;
-				}
-			}
+			
+			/*Fill only days from the week (from monday to friday) */
+			DayPlanning dayPlanningCurr = checkDayOfWeek(dayPlanningList,correspMap,fromDate);
+		
 			if(dayPlanningCurr.getMorningFrom() != null || dayPlanningCurr.getMorningTo() != null || dayPlanningCurr.getAfternoonFrom() != null || dayPlanningCurr.getAfternoonTo() != null)
 			{
 				/*Check if the day is not a leaving day */
-				boolean noLeave = true;
-				if(leaveList != null){
-					for (LeaveRequest leave : leaveList) {
-						if((leave.getDateFrom().isBefore(fromDate) && leave.getDateTo().isAfter(fromDate))
-							|| leave.getDateFrom().isEqual(fromDate) || leave.getDateTo().isEqual(fromDate))
-						{
-							noLeave = false;
-							break;
-						}
-					}
-				}
+				boolean noLeave = checkLeave(leaveList,fromDate,toDate);
 				
-				/*Check if the day is not a public holiday */
-				boolean noPublicHoliday = true;
-				if(publicHolidayList != null){
-					for (PublicHolidayDay publicHoliday : publicHolidayList) {
-						if(publicHoliday.getDate().isEqual(fromDate))
-						{
-							noPublicHoliday = false;
-							break;
-						}
-					}
-				}
+				boolean noPublicHoliday = checkPublicHoliday(datePublicHolidayList,fromDate);
 				
 				if(noLeave && noPublicHoliday){
 					TimesheetLine timesheetLine = createTimesheetLine(projectTask, product, timesheet.getUser(), fromDate, timesheet, employeeService.getUserDuration(logTime,timesheet.getUser().getEmployee().getDailyWorkHours(),true), "");
 					timesheetLine.setVisibleDuration(logTime);
-				}
-				
+				}		
 			}
 			fromDate=fromDate.plusDays(1);
 		}
