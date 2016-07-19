@@ -74,7 +74,7 @@
 			</panel>
 		</panel>
 		<panel-tabs hideIf="isRawMaterial">
-			<panel-related title="Bill of material" field="billOfMaterialList" domain="self.isRawMaterial = false AND self.personalized = false" form-view="bill-of-material-line-form" grid-view="bill-of-material-line-grid"/>
+			<panel-related title="Components" field="billOfMaterialList" domain="self.isRawMaterial = false AND self.personalized = false" form-view="bill-of-material-line-form" grid-view="bill-of-material-line-grid"/>
 		</panel-tabs>
 	</form>
     
