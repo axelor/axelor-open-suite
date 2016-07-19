@@ -49,5 +49,16 @@ public interface ITranslation {
 	public static final String INVOICE_LAW = /*$$(*/ "Invoice.law"; /*)*/
 	public static final String INVOICE_DISCOUNT_AMOUNT = /*$$(*/ "Invoice.discountAmount"; /*)*/
 	
+	public static final String INVOICE_TIMESHEET_TITLE = /*$$(*/ "Invoice.timesheetTitle"; /*)*/
+	public static final String INVOICE_EXPENSE_TITLE = /*$$(*/ "Invoice.expenseTitle"; /*)*/
+	
+	public static final String INVOICE_TIMESHEET_USER = /*$$(*/ "Invoice.timesheetUser"; /*)*/
+	public static final String INVOICE_TIMESHEET_ACTIVITY = /*$$(*/ "Invoice.timesheetActivity"; /*)*/
+	public static final String INVOICE_TIMESHEET_DURATION = /*$$(*/ "Invoice.timesheetDuration"; /*)*/
+
+	
+	public static final String INVOICE_EXPENSE_TOTAL_AMOUNT = /*$$(*/ "Invoice.expenseTotalAmount"; /*)*/
+	public static final String INVOICE_EXPENSE_TAX_AMOUNT = /*$$(*/ "Invoice.expenseTaxAmount"; /*)*/
+	public static final String INVOICE_EXPENSE_PRODUCT = /*$$(*/ "Invoice.expenseProduct"; /*)*/
 
 }

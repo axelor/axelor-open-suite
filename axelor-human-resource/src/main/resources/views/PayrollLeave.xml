@@ -6,7 +6,7 @@
 		<field name="fromDate"/>
 		<field name="toDate"/>
 		<field name="duration"/>
-		<field name="reason"/>
+		<field name="leaveReason"/>
 		<field name="leaveRequest"/>
 	</grid>
 
@@ -15,7 +15,7 @@
 			<field name="fromDate" colSpan="4"/>
 			<field name="toDate" colSpan="4"/>
 			<field name="duration" colSpan="4"/>
-			<field name="reason"/>
+			<field name="leaveReason"/>
 			<field name="leaveRequest"/>
 		</panel>
 	</form>

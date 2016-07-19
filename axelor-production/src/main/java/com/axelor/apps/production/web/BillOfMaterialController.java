@@ -26,6 +26,7 @@ import com.axelor.apps.production.db.CostSheet;
 import com.axelor.apps.production.db.repo.BillOfMaterialRepository;
 import com.axelor.apps.production.service.BillOfMaterialService;
 import com.axelor.apps.production.service.CostSheetService;
+import com.axelor.apps.production.service.ProdProcessService;
 import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.schema.actions.ActionView;
@@ -43,6 +44,9 @@ public class BillOfMaterialController {
 	
 	@Inject
 	BillOfMaterialRepository billOfMaterialRepo;
+	
+	@Inject
+	protected ProdProcessService prodProcessService;
 	
 	public void computeCostPrice (ActionRequest request, ActionResponse response) throws AxelorException {
 
@@ -115,4 +119,12 @@ public class BillOfMaterialController {
 				   .map());
 	}
 	
+	public void validateProdProcess(ActionRequest request, ActionResponse response) throws AxelorException{
+		BillOfMaterial billOfMaterial = request.getContext().asType(BillOfMaterial.class);
+		if (billOfMaterial != null && billOfMaterial.getProdProcess() != null){
+			if(billOfMaterial.getProdProcess().getIsConsProOnOperation()){
+				prodProcessService.validateProdProcess(billOfMaterial.getProdProcess(),billOfMaterial);
+			}
+		}
+	}
 }

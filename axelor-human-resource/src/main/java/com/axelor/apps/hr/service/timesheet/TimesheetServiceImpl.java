@@ -115,7 +115,8 @@ public class TimesheetServiceImpl implements TimesheetService{
 		Beans.get(TimesheetRepository.class).save(timesheet);
 	}
 	
-	public DayPlanning checkDayOfWeek(List<DayPlanning> dayPlanningList,Map<Integer,String> correspMap,LocalDate fromDate){
+	public Boolean checkDayOfWeek(List<DayPlanning> dayPlanningList,Map<Integer,String> correspMap,LocalDate fromDate){
+		/* provide true if the date is in the week */
 		DayPlanning dayPlanningCurr = new DayPlanning();
 		for (DayPlanning dayPlanning : dayPlanningList) {
 			if(dayPlanning.getName().equals(correspMap.get(fromDate.getDayOfWeek()))){
@@ -123,26 +124,33 @@ public class TimesheetServiceImpl implements TimesheetService{
 				break;
 			}
 		}
-		return dayPlanningCurr;
+		
+		if(dayPlanningCurr.getMorningFrom() != null || dayPlanningCurr.getMorningTo() != null || dayPlanningCurr.getAfternoonFrom() != null || dayPlanningCurr.getAfternoonTo() != null){
+			return true;
+		}
+		else{
+			return false;
+		}
 	}
 	
 	public boolean checkLeave(List<LeaveRequest> leaveList,LocalDate fromDate,LocalDate toDate){
-		boolean noLeave = true;
-		if(leaveList != null){
+		/* provide true if the date is not leaving day */
+		if(leaveList == null){return false;}
+		else{
 			for (LeaveRequest leave : leaveList) {
-				if((leave.getDateFrom().isBefore(fromDate) && leave.getDateTo().isAfter(fromDate))
-					|| leave.getDateFrom().isEqual(fromDate) || leave.getDateTo().isEqual(fromDate))
+				if((leave.getFromDate().isBefore(fromDate) && leave.getToDate().isAfter(fromDate))
+					|| leave.getFromDate().isEqual(fromDate) || leave.getToDate().isEqual(fromDate))
 				{
-					noLeave = false;
-					break;
+					return false;
 				}
 			}
 		}
-		return noLeave;
+		return true;
 	}
 	
 	public List<LocalDate> dateFromPublicHoliday(List<PublicHolidayDay> publicHolidayList){
-		List<LocalDate> datePublicHolidayList = new LinkedList();
+		/* provide list of date from list of publicHolidayDay */
+		List<LocalDate> datePublicHolidayList = new LinkedList<LocalDate>();
 		if(publicHolidayList != null){
 			for(PublicHolidayDay publicHoliday : publicHolidayList){
 				datePublicHolidayList.add(publicHoliday.getDate());
@@ -153,17 +161,17 @@ public class TimesheetServiceImpl implements TimesheetService{
 	}
 	
 	public boolean checkPublicHoliday(List<LocalDate> datePublicHolidayList,LocalDate fromDate){
-		boolean noPublicHoliday = true;
-		
-		if(datePublicHolidayList != null){	
+		/* provide true if the date is not public Holiday */
+		if(datePublicHolidayList == null){return false;}
+		else{
 			if(datePublicHolidayList.contains(fromDate)){
-				noPublicHoliday = false;
 				logger.debug("-----------------------------------------------");
 				logger.debug("fromDate (Public Holiday) : {}", fromDate );
 				logger.debug("-----------------------------------------------");
+				return false;
 			}
 		}
-		return noPublicHoliday;
+		return true;
 	}
 	
 	
@@ -203,28 +211,54 @@ public class TimesheetServiceImpl implements TimesheetService{
 		List<LeaveRequest> leaveList = LeaveRequestRepository.of(LeaveRequest.class).all().filter("self.user = ?1 AND (self.statusSelect = 2 OR self.statusSelect = 3)", timesheet.getUser()).fetch();
 		//Public holidays list
 		Employee employee = AuthUtils.getUser().getEmployee();
-		List<PublicHolidayDay> publicHolidayList = employee.getPublicHolidayPlanning().getPublicHolidayDayList();
-		List<LocalDate> datePublicHolidayList = dateFromPublicHoliday(publicHolidayList);
 		
-		while(!fromDate.isAfter(toDate)){
-			
-			/*Fill only days from the week (from monday to friday) */
-			DayPlanning dayPlanningCurr = checkDayOfWeek(dayPlanningList,correspMap,fromDate);
+		logger.debug("-----------------------------------------------");
+		logger.debug("employee : {}", employee );
+		logger.debug("-----------------------------------------------");
 		
-			if(dayPlanningCurr.getMorningFrom() != null || dayPlanningCurr.getMorningTo() != null || dayPlanningCurr.getAfternoonFrom() != null || dayPlanningCurr.getAfternoonTo() != null)
-			{
-				/*Check if the day is not a leaving day */
-				boolean noLeave = checkLeave(leaveList,fromDate,toDate);
-				
-				boolean noPublicHoliday = checkPublicHoliday(datePublicHolidayList,fromDate);
-				
-				if(noLeave && noPublicHoliday){
-					TimesheetLine timesheetLine = createTimesheetLine(projectTask, product, timesheet.getUser(), fromDate, timesheet, employeeService.getUserDuration(logTime,timesheet.getUser().getEmployee().getDailyWorkHours(),true), "");
-					timesheetLine.setVisibleDuration(logTime);
-				}		
+		logger.debug("-----------------------------------------------");
+		logger.debug("employee.getPublicHolidayPlanning() : {}", employee.getPublicHolidayPlanning() );
+		logger.debug("-----------------------------------------------");
+		if(employee.getPublicHolidayPlanning() != null){
+			/* Case where employee have public holiday Planning */
+			List<PublicHolidayDay> publicHolidayList = employee.getPublicHolidayPlanning().getPublicHolidayDayList();
+			logger.debug("-----------------------------------------------");
+			logger.debug("publicHolidayList : {}", publicHolidayList );
+			logger.debug("-----------------------------------------------");
+			List<LocalDate> datePublicHolidayList = dateFromPublicHoliday(publicHolidayList);
+			while(!fromDate.isAfter(toDate)){
+				if(checkDayOfWeek(dayPlanningList,correspMap,fromDate))
+				{ 
+					/* Check if the day is not a leaving day */
+					boolean noLeave = checkLeave(leaveList,fromDate,toDate);
+					/* Check if the day is not a public holiday */
+					boolean noPublicHoliday = checkPublicHoliday(datePublicHolidayList,fromDate);
+					
+					if(noLeave && noPublicHoliday){
+						TimesheetLine timesheetLine = createTimesheetLine(projectTask, product, timesheet.getUser(), fromDate, timesheet, employeeService.getUserDuration(logTime,timesheet.getUser().getEmployee().getDailyWorkHours(),true), "");
+						timesheetLine.setVisibleDuration(logTime);
+					}		
+				}
+				fromDate=fromDate.plusDays(1);
 			}
-			fromDate=fromDate.plusDays(1);
 		}
+		else{
+			/* Case where employee haven't public holiday Planning */
+			while(!fromDate.isAfter(toDate)){
+				if(checkDayOfWeek(dayPlanningList,correspMap,fromDate))
+				{ 
+					/* Check if the day is not a leaving day */
+					boolean noLeave = checkLeave(leaveList,fromDate,toDate);
+					if(noLeave){
+						TimesheetLine timesheetLine = createTimesheetLine(projectTask, product, timesheet.getUser(), fromDate, timesheet, employeeService.getUserDuration(logTime,timesheet.getUser().getEmployee().getDailyWorkHours(),true), "");
+						timesheetLine.setVisibleDuration(logTime);
+					}		
+				}
+				fromDate=fromDate.plusDays(1);
+			}
+		}
+		
+		
 		return timesheet;
 	}
 
@@ -334,7 +368,7 @@ public class TimesheetServiceImpl implements TimesheetService{
 			User user = (User)timesheetInformations[1];
 			LocalDate startDate = (LocalDate)timesheetInformations[2];
 			LocalDate endDate = (LocalDate)timesheetInformations[3];
-			BigDecimal visibleDuration = (BigDecimal) timesheetInformations[4];
+			BigDecimal durationStored = (BigDecimal) timesheetInformations[4];
 
 			if (consolidate){
 				strDate = ddmmFormat.format(startDate.toDate()) + " - " + ddmmFormat.format(endDate.toDate());
@@ -342,7 +376,7 @@ public class TimesheetServiceImpl implements TimesheetService{
 				strDate = ddmmFormat.format(startDate.toDate());
 			}
 
-			invoiceLineList.addAll(this.createInvoiceLine(invoice, product, user, strDate, visibleDuration, priority*100+count));
+			invoiceLineList.addAll(this.createInvoiceLine(invoice, product, user, strDate, durationStored, priority*100+count));
 			count++;
 		}
 
@@ -350,7 +384,7 @@ public class TimesheetServiceImpl implements TimesheetService{
 
 	}
 
-	public List<InvoiceLine> createInvoiceLine(Invoice invoice, Product product, User user, String date, BigDecimal visibleDuration, int priority) throws AxelorException  {
+	public List<InvoiceLine> createInvoiceLine(Invoice invoice, Product product, User user, String date, BigDecimal durationStored, int priority) throws AxelorException  {
 
 		Employee employee = user.getEmployee();
 
@@ -362,20 +396,8 @@ public class TimesheetServiceImpl implements TimesheetService{
 		BigDecimal discountAmount = product.getCostPrice();
 
 
-		BigDecimal qtyConverted = visibleDuration;
-		qtyConverted = Beans.get(UnitConversionService.class).convert(generalService.getGeneral().getUnitHours(), product.getUnit(), visibleDuration);
-
-		if(employee != null){
-			if(employee.getTimeLoggingPreferenceSelect().equals(EmployeeRepository.TIME_PREFERENCE_DAYS)){
-				qtyConverted = Beans.get(UnitConversionService.class).convert(generalService.getGeneral().getUnitDays(), product.getUnit(), visibleDuration);
-
-			}
-			else if(employee.getTimeLoggingPreferenceSelect().equals(EmployeeRepository.TIME_PREFERENCE_MINUTES)){
-				qtyConverted = Beans.get(UnitConversionService.class).convert(generalService.getGeneral().getUnitMinutes(), product.getUnit(), visibleDuration);
-
-			}
-
-		}
+		BigDecimal qtyConverted = durationStored;
+		qtyConverted = Beans.get(UnitConversionService.class).convert(generalService.getGeneral().getUnitHours(), product.getUnit(), durationStored);
 
 		PriceList priceList = invoice.getPartner().getSalePriceList();
 		if(priceList != null)  {

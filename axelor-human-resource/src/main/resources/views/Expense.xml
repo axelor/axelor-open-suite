@@ -39,15 +39,15 @@
 			<button name="printExpense" title="Print" colSpan="2" icon="fa-print" onClick="save,action-print-expense"/>
 		</toolbar>
 	    <panel sidebar="true" name="actions" title="Actions" stacked="true">
-	    	<button name="sendExpenses" colSpan="4" title="Send Expenses" onClick="action-expense-record-status-confirmed, save,action-expense-attrs-buttons, action-expense-view-new-expense" readonlyIf="statusSelect &gt; 1"/>
+	    	<button name="sendExpenses" colSpan="4" title="Send Expenses" onClick="action-expense-group-sent" readonlyIf="statusSelect &gt; 1"/>
 			<button name="ventilate" colSpan="4" title="Ventilate" onClick="action-expense-method-ventilate" readonlyIf="statusSelect != 3 || ventilated"/>
-	    	<button name="validButton" onClick="action-expense-record-valid,save,action-expense-attrs-buttons" title="Valid"/>
-	    	<button name="refuseButton" onClick="action-expense-record-refuse,save,action-expense-attrs-buttons" title="Refuse"/>
+	    	<button name="validButton" onClick="action-expense-group-validate" title="Valid"/>
+	    	<button name="refuseButton" onClick="action-expense-group-refuse" title="Refuse"/>
 	    	<button name="cancelButton" onClick="action-expense-validate-period,save,com.axelor.apps.hr.web.expense.ExpenseController:cancelExpense,action-expense-attrs-buttons" hideIf="statusSelect == 5" title="Cancel" icon="fa-close"/>
 	    	<button name="draftButton" onClick="action-expense-record-draft,save,action-expense-attrs-buttons" title="Return to draft status" showIf="statusSelect &gt; 3 "/>
 	    </panel>
 		<panel>
-		    <field name="statusSelect" colSpan="12" widget="NavSelect"/>
+		    <field name="statusSelect" colSpan="12" widget="NavSelect" showTitle="false"/>
 		    <field name="moveDate" colSpan="4"/>
 		    <field name="ventilated" title="Expense Ventilated" readonly="true" colSpan="4"/>
 			<field name="sentDate" colSpan="4"/>
@@ -89,6 +89,25 @@
 		<button name="editExpenseSelected" title="Edit Expense Selected" onClick="com.axelor.apps.hr.web.expense.ExpenseController:editExpenseSelected"/>
 	</form>
 	
+	<action-group name="action-expense-group-sent">
+		<action name="save"/>
+		<action name="action-expense-method-record-sent"/>
+		<action name="action-expense-attrs-buttons"/>
+		<action name="save"/>
+	</action-group>
+	
+	<action-group name="action-expense-group-validate">
+		<action name="action-expense-method-record-valid"/>
+		<action name="action-expense-attrs-buttons"/>
+		<action name="save"/>
+	</action-group>
+	
+	<action-group name="action-expense-group-refuse">
+		<action name="action-expense-method-record-refuse"/>
+		<action name="action-expense-attrs-buttons"/>
+		<action name="save"/>
+	</action-group>
+	
 	<action-record name="action-expense-record-default" model="com.axelor.apps.hr.db.Expense">
 	    <field name="user" expr="eval:__user__"/>
 	    <field name="company" expr="eval: __user__.activeCompany"/>
@@ -97,17 +116,14 @@
     	<field name="taxTotal" expr="eval: 0"/>
     	<field name="inTaxTotal" expr="eval: 0"/>
 	</action-record>
-	
 
-	<action-record name="action-expense-record-status-confirmed" model="com.axelor.apps.hr.db.Expense">
-	    <field name="statusSelect" expr="2"/>
-	    <field name="sentDate" expr="eval: __date__"/>
+	<action-record name="action-expense-record-cancel" model="com.axelor.apps.hr.db.Expense">
+	    <field name="statusSelect" expr="5"/>
 	</action-record>
 	
-	<action-view name="action-expense-view-new-expense" title="Expense" model="com.axelor.apps.hr.db.Expense">
-		<view type="form" name="expense-form"/>
-		<view type="grid" name="expense-grid"/>
-	</action-view>
+	<action-record name="action-expense-record-draft" model="com.axelor.apps.hr.db.Expense">
+	    <field name="statusSelect" expr="1"/>
+	</action-record>
 	
 	<action-attrs name="action-expense-attrs-domain-expense-select">
 		<attribute name="domain" for="$expenseSelect" expr="eval: &quot; self.statusSelect = 1 AND self.user = ${__user__.id} &quot;"/>
@@ -132,35 +148,27 @@
 	<action-method name="action-print-expense">
     	<call class="com.axelor.apps.hr.web.expense.ExpenseController" method="printExpense"/>
     </action-method>
+    
+    <action-method name="action-expense-method-record-sent">
+		<call class="com.axelor.apps.hr.web.expense.ExpenseController" method="send"/>
+	</action-method>
 	
-	<action-record name="action-expense-record-valid" model="com.axelor.apps.hr.db.Expense">
-	    <field name="statusSelect" expr="3"/>
-	    <field name="validatedBy" expr="eval: __user__"/>
-	    <field name="validationDate" expr="eval: __date__"/>
-	</action-record>
+	<action-method name="action-expense-method-record-valid">
+		<call class="com.axelor.apps.hr.web.expense.ExpenseController" method="valid"/>
+	</action-method>
 	
-	<action-record name="action-expense-record-refuse" model="com.axelor.apps.hr.db.Expense">
-	    <field name="statusSelect" expr="4"/>
-	    <field name="refusedBy" expr="eval: __user__"/>
-	    <field name="refusalDate" expr="eval: __date__"/>
-	</action-record>
-	
-	<action-record name="action-expense-record-cancel" model="com.axelor.apps.hr.db.Expense">
-	    <field name="statusSelect" expr="5"/>
-	</action-record>
-	
-	<action-record name="action-expense-record-draft" model="com.axelor.apps.hr.db.Expense">
-	    <field name="statusSelect" expr="1"/>
-	</action-record>
+	<action-method name="action-expense-method-record-refuse">
+		<call class="com.axelor.apps.hr.web.expense.ExpenseController" method="refuse"/>
+	</action-method>
 	
 	<action-attrs name="action-expense-attrs-buttons">
 		<attribute name="hidden" for="validButton" expr="eval: !(statusSelect == 2 &amp;&amp; (__user__ == user?.employee?.manager || (__user__ == user &amp;&amp; user?.employee?.manager == null) || __user__ == user?.employee?.manager?.employee?.manager || __user__.employee?.hrManager))"/>
 		<attribute name="hidden" for="refuseButton" expr="eval: !(statusSelect == 2 &amp;&amp; (__user__ == user?.employee?.manager || (__user__ == user &amp;&amp; user?.employee?.manager == null) || __user__ == user?.employee?.manager?.employee?.manager || __user__.employee?.hrManager))"/>
-		<attribute name="hidden" for="cancelButton" expr="eval: period?.toDate &lt; __date__"/>
+		<attribute name="hidden" for="cancelButton" expr="eval: period?.toDate &lt; __date__ || statusSelect == 5"/>
 	</action-attrs>
 	
 	<action-validate name="action-expense-validate-period">
 		<error message="Period is closed" if="period?.statusSelect == 2"/>
 	</action-validate>
-
+	
 </object-views>

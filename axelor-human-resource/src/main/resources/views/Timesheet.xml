@@ -21,8 +21,8 @@
 		<hilite background="danger" if="$moment(fromDate).diff(todayDate,'days') &lt;= 0"/>
   		<hilite background="warning" if="$moment(todayDate).diff(sentDate,'days') &gt;= 7 || $moment(todayDate).diff(fromDate,'days') &gt;= 15"/> 
 		<field name="company" form-view="company-form" grid-view="company-grid"/>
-		<field name="fromDate"></field>
-		<field name="toDate"></field>
+		<field name="fromDate"/>
+		<field name="toDate"/>
 		<field name="sentDate"/>
 		<field name="statusSelect"/>
 		<field name="user" form-view="user-form" grid-view="user-grid"/>
@@ -36,14 +36,14 @@
 	    	<button name="printTimesheet" title="Print" colSpan="2" icon="fa-print" onClick="save,action-print-timesheet"/>
 	    </toolbar>
 	    <panel sidebar="true" name="actions" title="Actions" stacked="true">
-	    	<button name="confirmButton" onClick="action-timesheet-method-confirm,save,action-timesheet-attrs-buttons,action-timesheet-attrs-from-date" title="Confirm" hideIf="statusSelect &gt; 1" icon="fa-check-square-o"/>
-	    	<button name="validButton" onClick="action-timesheet-method-valid,save,action-timesheet-attrs-buttons,action-timesheet-method-compute-timespent-project-task" title="Valid"/>
-	    	<button name="refuseButton" onClick="action-timesheet-method-refuse,save,action-timesheet-attrs-buttons" title="Refuse"/>
+	    	<button name="confirmButton" onClick="action-timesheet-group-confirm" title="Confirm" hideIf="statusSelect &gt; 1" icon="fa-check-square-o"/>
+	    	<button name="validButton" onClick="action-timesheet-group-validate" title="Valid"/>
+	    	<button name="refuseButton" onClick="action-timesheet-group-refuse" title="Refuse"/>
 	    	<button name="cancelButton" onClick="action-timesheet-method-cancel,action-timesheet-attrs-buttons" hideIf="statusSelect == 5" title="Cancel" icon="fa-close"/>
 	    	<button name="draftButton" onClick="action-timesheet-record-draft,save,action-timesheet-attrs-buttons" title="Return to draft status" showIf="statusSelect &gt; 3 "/>
 	    	<button name="getTimeFromTask" title="Get time from Tasks" colSpan="4" onClick="action-timesheet-validate-tasks,save,com.axelor.apps.hr.web.timesheet.TimesheetController:getTimeFromTask"/>
 	    	<button name="generateLinesButton" onClick="action-timesheet-record-default-generation-date,action-timesheet-attrs-set-log-time-title,action-timesheet-attrs-generale-lines-panel-hidden-false" title="Generate Lines Automatically"/>
-	    	<button name="startStopForm" title="Start&amp;Stop Timer" onClick="action-timesheet-method-timesheet-timer"/>
+	    	<button name="startStopForm" title="Start&amp;Stop Timer" onClick="action-timesheet-method-timesheet-timer" hideIf="statusSelect != 1"/>
 	    </panel>
 	    <panel sidebar="true" name="panelDashboard" title="Total Hours per Day" showIf="id">
 	    	<panel-dashlet action="action-timesheet-view-total-hours-per-day"/>
@@ -52,7 +52,7 @@
 	    	<panel-dashlet action="action-timesheet-view-total-duration-per-project"/>
 	    </panel>
 		<panel name="head">
-		    <field name="statusSelect" colSpan="12" widget="NavSelect"/>
+		    <field name="statusSelect" colSpan="12" widget="NavSelect" showTitle="false"/>
 			<field name="company" colSpan="6" form-view="company-form" grid-view="company-grid"/>
 			<field name="user" colSpan="6" form-view="user-form" grid-view="user-grid"/>
 			<field name="fromDate" onChange="action-timesheet-validate-fromDate"/>
@@ -83,23 +83,39 @@
 		<button name="editTimesheetSelected" title="Edit Timesheet Selected" onClick="action-timesheet-validate-timesheet-selected,action-timesheet-method-edit-timesheet-selected"/>
 	</form>
 	
-	<action-attrs name="action-timesheet-attrs-paneldashboard-title">
-		<attribute name="title" for="panelDashboard" expr="eval:__user__.employee?.timeLoggingPreferenceSelect == 'days' ? com.axelor.i18n.I18n.get('Total Days in the period') : __user__.employee?.timeLoggingPreferenceSelect == 'minutes' ? com.axelor.i18n.I18n.get('Total Minutes per Day') : com.axelor.i18n.I18n.get('Total Hours per Day')"/>
-	</action-attrs>
+	<action-group name="action-timesheet-group-confirm">
+		<action name="save"/>
+		<action name="action-timesheet-method-confirm"/>
+		<action name="action-timesheet-attrs-buttons"/>
+		<action name="save"/>
+	</action-group>
 	
-	<action-attrs name="action-hr-timesheet-attrs-domain-product">
-		<attribute name="domain" expr="eval:projectTask == null || __repo__.of(ProjectTask).find(projectTask.id).productList.empty ? &quot;self.isActivity = true&quot; : &quot;self.isActivity = true AND EXISTS(SELECT p FROM ProjectTask p WHERE p = :projectTask AND self MEMBER OF p.productList)&quot;" for="$product"/>
-	</action-attrs>
+	<action-group name="action-timesheet-group-validate">
+		<action name="action-timesheet-method-valid"/>
+		<action name="action-timesheet-attrs-buttons"/>
+		<action name="save"/>
+	</action-group>
 	
-	<action-attrs name="action-timesheet-attrs-title-project-task">
-		<attribute name="title" for="projectTask" expr="eval: __config__.general.getProjectTaskLabel()" if="!com.google.common.base.Strings.isNullOrEmpty(__config__.general.getProjectTaskLabel())"/>
-		<attribute name="title" for="timesheetLineList.projectTask" expr="eval: __config__.general.getProjectTaskLabel()" if="!com.google.common.base.Strings.isNullOrEmpty(__config__.general.getProjectTaskLabel())"/>
-	</action-attrs>
+	<action-group name="action-timesheet-group-refuse">
+		<action name="action-timesheet-method-refuse"/>
+		<action name="action-timesheet-attrs-buttons"/>
+		<action name="save"/>
+	</action-group>
 	
-	<action-attrs name="action-timesheet-attrs-domain-timesheet-select">
-		<attribute name="domain" for="$timesheetSelect" expr="eval: &quot; self.statusSelect = 1 AND self.user = ${__user__.id} &quot;"/>
-	</action-attrs>
-
+	<action-group name="action-group-timesheet-onnew">
+		<action name="action-timesheet-record-default"/>
+		<action name="action-timesheet-attrs-buttons"/>
+		<action name="action-timesheet-attrs-set-visible-duration-title"/>
+		<action name="action-timesheet-record-from-period-date"/>
+		<action name="action-timesheet-attrs-title-project-task"/>
+		<action name="action-timesheet-attrs-from-date-on-new"/>
+	</action-group>
+	
+	<action-group name="action-group-timesheet-change-title">
+		<action name="action-timesheet-attrs-set-visible-duration-title"/>
+		<action name="action-timesheet-attrs-paneldashboard-title"/>
+	</action-group>
+	
 	<action-record name="action-timesheet-record-default" model="com.axelor.apps.hr.db.Timesheet">
 	    <field name="user" expr="eval:__user__"/>
 	    <field name="company" expr="eval: __user__.activeCompany"/>
@@ -126,6 +142,36 @@
 		<error message="You have to choose at least one timesheet" if="timesheetSelect == null"/>
 	</action-validate>
 	
+	<action-validate name="action-timesheet-validate-toDate">
+		<error message="Invalid date" if="toDate != null &amp;&amp; toDate &lt; fromDate" action="action-timesheet-null-toDate"/>
+	</action-validate>
+	
+	<action-validate name="action-timesheet-validate-fromDate">
+		<error message="Invalid date, it can't be in the future" if="fromDate &gt; __date__" action="action-timesheet-null-fromDate"/>
+	</action-validate>
+	
+	<action-validate name="action-timesheet-validate-dates">
+		<error message="Invalid date" if="startDate == null"/>
+		<error message="Invalid date" if="toDate != null &amp;&amp; toDate &lt; fromDate"/>
+	</action-validate>
+	
+	<action-attrs name="action-timesheet-attrs-paneldashboard-title">
+		<attribute name="title" for="panelDashboard" expr="eval:__user__.employee?.timeLoggingPreferenceSelect == 'days' ? com.axelor.i18n.I18n.get('Total Days in the period') : __user__.employee?.timeLoggingPreferenceSelect == 'minutes' ? com.axelor.i18n.I18n.get('Total Minutes per Day') : com.axelor.i18n.I18n.get('Total Hours per Day')"/>
+	</action-attrs>
+	
+	<action-attrs name="action-hr-timesheet-attrs-domain-product">
+		<attribute name="domain" expr="eval:projectTask == null || __repo__.of(ProjectTask).find(projectTask.id).productList.empty ? &quot;self.isActivity = true&quot; : &quot;self.isActivity = true AND EXISTS(SELECT p FROM ProjectTask p WHERE p = :projectTask AND self MEMBER OF p.productList)&quot;" for="$product"/>
+	</action-attrs>
+	
+	<action-attrs name="action-timesheet-attrs-title-project-task">
+		<attribute name="title" for="projectTask" expr="eval: __config__.general.getProjectTaskLabel()" if="!com.google.common.base.Strings.isNullOrEmpty(__config__.general.getProjectTaskLabel())"/>
+		<attribute name="title" for="timesheetLineList.projectTask" expr="eval: __config__.general.getProjectTaskLabel()" if="!com.google.common.base.Strings.isNullOrEmpty(__config__.general.getProjectTaskLabel())"/>
+	</action-attrs>
+	
+	<action-attrs name="action-timesheet-attrs-domain-timesheet-select">
+		<attribute name="domain" for="$timesheetSelect" expr="eval: &quot; self.statusSelect = 1 AND self.user = ${__user__.id} &quot;"/>
+	</action-attrs>
+	
 	<action-attrs name="action-timesheet-attrs-buttons">
 		<attribute name="hidden" for="validButton" expr="eval: !(statusSelect == 2 &amp;&amp; (__user__ == user?.employee?.manager || (__user__ == user &amp;&amp; user?.employee?.manager == null) || __user__.employee?.hrManager))"/>
 		<attribute name="hidden" for="refuseButton" expr="eval: !(statusSelect == 2 &amp;&amp; (__user__ == user?.employee?.manager || (__user__ == user &amp;&amp; user?.employee?.manager == null) || __user__.employee?.hrManager))"/>
@@ -143,13 +189,27 @@
 	    <attribute name="title" for="$logTime" expr="eval:__user__.employee?.timeLoggingPreferenceSelect == 'days' ? com.axelor.i18n.I18n.get('Duration(in day per day)') : __user__.employee?.timeLoggingPreferenceSelect == 'minutes' ? com.axelor.i18n.I18n.get('Duration(minutes by day)') : com.axelor.i18n.I18n.get('Duration(hours by day)')" />
 	</action-attrs>
 	
+	<action-attrs name="action-timesheet-attrs-generale-lines-panel-hidden-true">
+		<attribute name="hidden" for="generateLinesPanel" expr="true"/>
+		<attribute name="hidden" for="generateLinesButton" expr="false"/>
+	</action-attrs>
+	
+	<action-attrs name="action-timesheet-attrs-generale-lines-panel-hidden-false">
+		<attribute name="hidden" for="generateLinesPanel" expr="false"/>
+		<attribute name="hidden" for="generateLinesButton" expr="true"/>
+	</action-attrs>
+	
+	<action-attrs name="action-timesheet-attrs-from-date-on-new">
+		<attribute name="readonly" for="fromDate" expr="eval: __repo__.of(Timesheet).all().filter('self.user = ?1 AND self.statusSelect != ?2 ORDER BY self.toDate DESC', __user__, TimesheetRepository.STATUS_CANCELED).fetchOne() != null"/>
+	</action-attrs>
+	
+	<action-attrs name="action-timesheet-attrs-from-date">
+		<attribute name="readonly" for="fromDate" expr="eval: fromDate != null"/>
+	</action-attrs>
+	
 	<action-record name="action-timesheet-record-from-period-date" model="com.axelor.apps.hr.db.Timesheet">
 		<field name="fromDate" expr="eval: __repo__.of(Timesheet).all().filter('self.user = ?1 AND self.statusSelect != ?2 ORDER BY self.toDate DESC', __user__, TimesheetRepository.STATUS_CANCELED).fetchOne()?.toDate.plusDays(1)"/>
 	</action-record>
-	
-	<action-validate name="action-timesheet-validate-toDate">
-		<error message="Invalid date" if="toDate != null &amp;&amp; toDate &lt; fromDate" action="action-timesheet-null-toDate"/>
-	</action-validate>
 	
 	<action-record name="action-timesheet-null-fromDate" model="com.axelor.apps.hr.db.Timesheet">
 		<field name="fromDate" expr="eval: null"/>
@@ -158,15 +218,6 @@
 	<action-record name="action-timesheet-null-toDate" model="com.axelor.apps.hr.db.Timesheet">
 		<field name="toDate" expr="eval: null"/>
 	</action-record>
-	
-	<action-validate name="action-timesheet-validate-fromDate">
-		<error message="Invalid date, it can't be in the future" if="fromDate &gt; __date__" action="action-timesheet-null-fromDate"/>
-	</action-validate>
-	
-	<action-validate name="action-timesheet-validate-dates">
-		<error message="Invalid date" if="startDate == null"/>
-		<error message="Invalid date" if="toDate != null &amp;&amp; toDate &lt; fromDate"/>
-	</action-validate>
 	
 	<action-method name="action-timesheet-method-valid-to-date">
 		<call class="com.axelor.apps.hr.web.timesheet.TimesheetController" method="validToDate"/>
@@ -196,44 +247,13 @@
 		<call class="com.axelor.apps.hr.web.timesheet.timer.TSTimerController" method="editTimesheetTimerFromTimesheet"/>
 	</action-method>
 	
-	<action-method name="action-timesheet-method-compute-timespent-project-task">
-		<call class="com.axelor.apps.hr.web.timesheet.TimesheetController" method="computeTimeSpent"/>
-	</action-method>
-
 	<action-method name="action-timesheet-method-edit-timesheet-selected">
 		<call class="com.axelor.apps.hr.web.timesheet.TimesheetController" method="editTimesheetSelected"/>
 	</action-method>
-	<action-attrs name="action-timesheet-attrs-generale-lines-panel-hidden-true">
-		<attribute name="hidden" for="generateLinesPanel" expr="true"/>
-		<attribute name="hidden" for="generateLinesButton" expr="false"/>
-	</action-attrs>
 	
-	<action-attrs name="action-timesheet-attrs-generale-lines-panel-hidden-false">
-		<attribute name="hidden" for="generateLinesPanel" expr="false"/>
-		<attribute name="hidden" for="generateLinesButton" expr="true"/>
-	</action-attrs>
-	
-	<action-group name="action-group-timesheet-onnew">
-		<action name="action-timesheet-record-default"/>
-		<action name="action-timesheet-attrs-buttons"/>
-		<action name="action-timesheet-attrs-set-visible-duration-title"/>
-		<action name="action-timesheet-record-from-period-date"/>
-		<action name="action-timesheet-attrs-title-project-task"/>
-		<action name="action-timesheet-attrs-from-date-on-new"/>
-	</action-group>
-	
-	<action-group name="action-group-timesheet-change-title">
-		<action name="action-timesheet-attrs-set-visible-duration-title"/>
-		<action name="action-timesheet-attrs-paneldashboard-title"/>
-	</action-group>
-	
-	<action-attrs name="action-timesheet-attrs-from-date-on-new">
-		<attribute name="readonly" for="fromDate" expr="eval: __repo__.of(Timesheet).all().filter('self.user = ?1 AND self.statusSelect != ?2 ORDER BY self.toDate DESC', __user__, TimesheetRepository.STATUS_CANCELED).fetchOne() != null"/>
-	</action-attrs>
-	
-	<action-attrs name="action-timesheet-attrs-from-date">
-		<attribute name="readonly" for="fromDate" expr="eval: fromDate != null"/>
-	</action-attrs>
+	<action-method name="action-print-timesheet">
+    	<call class="com.axelor.apps.hr.web.timesheet.TimesheetController" method="printTimesheet"/>
+    </action-method>
 	
 	<action-view name="action-timesheet-view-total-hours-per-day" title="">
   		<view name="chart.total.hours.per.day" type="chart"/>
@@ -246,9 +266,5 @@
   		<context name="user_id" expr="eval: __user__.id"/>
     	<context name="timesheet_id" expr="eval: __self__.id"/>
 	</action-view>
-	
-	<action-method name="action-print-timesheet">
-    	<call class="com.axelor.apps.hr.web.timesheet.TimesheetController" method="printTimesheet"/>
-    </action-method>
 	
 </object-views>
