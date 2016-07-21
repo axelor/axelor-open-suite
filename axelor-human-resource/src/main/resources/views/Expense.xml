@@ -60,7 +60,7 @@
 		</panel>
 		<panel-tabs>
 			<panel-related field="expenseLineList" readonlyIf="statusSelect &gt; 1" onChange="action-expense-method-compute" editable="true" form-view="expense-line-form" grid-view="expense-line-grid"/>
-			<panel-related field="kilometricAllowanceList" grid-view="kilometric-allowance-grid" form-view="kilometric-allowance-form"/>
+			<panel-related field="kilometricAllowanceList" grid-view="kilometric-allowance-grid" form-view="kilometric-allowance-form" onChange="action-expense-line-create"/>
 		</panel-tabs>
 		<panel>
 			<field name="validatedBy" form-view="user-form" grid-view="user-grid"/>

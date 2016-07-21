@@ -17,7 +17,7 @@
         <field name="name"/>
     </grid>
     
-    <tree name="account-tree" title="Comptes Comptables">
+    <tree name="account-tree" title="Accounting Accounts">
         <column name="name" type="string"/>
          <column name="code" type="string"/>
         <node model="com.axelor.apps.account.db.Account" domain="self.parent is null">

@@ -13,10 +13,14 @@
         <field name="date" />
 	    <field name="reason" />
       	<field name="inTaxTotal" readonly="true" required="true" />
+      	<field name="expenseLine" hidden="true"/>
     </grid>
 
-    <form name="kilometric-allowance-form" title="Kilometric allowance" model="com.axelor.apps.hr.db.KilometricAllowance" onNew="action-kilometric-allowance-record-default,action-kilometric-allowance-record-rate">
-    	<panel name="main">
+    <form name="kilometric-allowance-form" 
+    	  title="Kilometric allowance" 
+    	  model="com.axelor.apps.hr.db.KilometricAllowance" 
+    	  onNew="action-kilometric-allowance-record-default,action-kilometric-allowance-record-rate">
+    	<panel name="main" >
 			<field name="kilometricAllowParam" onChange="action-kilometric-allowance-record-rate,action-kilometric-allowance-record-in-tax-total"/>
 	        <field name="rate" onChange="action-kilometric-allowance-record-in-tax-total" />
 	        <field name="typeSelect" />
@@ -25,9 +29,18 @@
 	        <field name="toCity" />
 	        <field name="date" />
 	    	<field name="reason" />
-      		<field name="inTaxTotal" readonly="true" required="true" />
+      		<field name="inTaxTotal" readonly="true" required="true" onChange="action-expense-on-change-amount" />
+      		<field name="expenseLine" hidden="true"/>
         </panel>
     </form>
+
+	<action-method name="action-expense-line-create" >
+		<call class="com.axelor.apps.hr.web.expense.ExpenseController" method="createExpenseLine"/>
+	</action-method>
+	
+	<action-record name="action-expense-on-change-amount" model="com.axelor.apps.hr.db.ExpenseLine">
+		<field name="totalAmount" expr="eval: inTaxTotal"/>
+	</action-record>
 
     <action-record name="action-kilometric-allowance-record-default" model="com.axelor.apps.hr.db.KilometricAllowance">
     	<field name="kilometricAllowParam" expr="eval:  _parent?.employee?.kilometricAllowParam"/>

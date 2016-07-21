@@ -34,4 +34,12 @@ public class HRConfigService {
 		return hrConfig;
 	}
 
+	// Réaliser une méthode pour récupérer le produit 
+//	public Product getKilometricAllowanceProduct(HRConfig hrConfig){
+//		if(hrConfig.getKilometricAllowanceProduct() == null){
+//			throw new AxelorException(String.format(I18n.get(IExceptionMessage.HR_CONFIG_2), hrConfig.getCompany()),IException.CONFIGURATION_ERROR);
+//		}
+//		return hrConfig.getKilometricAllowanceProduct();
+//		
+//	}
 }
