@@ -11,6 +11,8 @@
 	            <item title="Plan a task" action="action-sale-order-view-plan-task"/>
 	        </menu>
 	    </menubar>
+	    <hilite background="warning" if="statusSelect == 3 &amp;&amp; $moment(endOfValidityDate).isBefore(__date__) &amp;&amp; endOfValidityDate != null"/>
+	    <hilite background="danger" if="statusSelect == 2 &amp;&amp; $moment(endOfValidityDate).isBefore(__date__) &amp;&amp; endOfValidityDate != null"/>
         <field name="saleOrderSeq"/>
         <field name="company" form-view="company-form" grid-view="company-grid"/>
         <field name="currency" form-view="currency-form" grid-view="currency-grid"/>
