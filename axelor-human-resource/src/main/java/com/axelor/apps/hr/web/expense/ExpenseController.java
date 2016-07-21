@@ -30,6 +30,7 @@ import com.axelor.apps.base.db.Wizard;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.hr.db.Expense;
 import com.axelor.apps.hr.db.ExpenseLine;
+import com.axelor.apps.hr.db.KilometricAllowance;
 import com.axelor.apps.hr.db.ExtraHours;
 import com.axelor.apps.hr.db.repo.ExpenseRepository;
 import com.axelor.apps.hr.db.repo.TimesheetRepository;
@@ -97,6 +98,15 @@ public class ExpenseController {
 			expenseLine = expenseService.computeAnalyticDistribution(expenseLine);
 			response.setValue("analyticDistributionLineList", expenseLine.getAnalyticDistributionLineList());
 		}
+	}
+	
+	public void createExpenseLine(ActionRequest request, ActionResponse response){
+		ExpenseLine expenseLine = request.getContext().asType(ExpenseLine.class);
+		
+		logger.debug("------------------------------------------------");
+		logger.debug("expense line : {}",expenseLine);
+		logger.debug("------------------------------------------------");
+		response.setValues(expenseLine);
 	}
 	
 	public void editExpense(ActionRequest request, ActionResponse response){
@@ -234,6 +244,7 @@ public class ExpenseController {
 
 	public void compute(ActionRequest request, ActionResponse response){
 		Expense expense = request.getContext().asType(Expense.class);
+		
 		expense = expenseService.compute(expense);
 		response.setValues(expense);
 	}
@@ -316,7 +327,11 @@ public class ExpenseController {
 	
 	//sending expense and sending mail to manager
 	public void send(ActionRequest request, ActionResponse response) throws AxelorException{
+		logger.debug("----------------------------------------");
+		logger.debug("--- Method : send");
 		Expense expense = request.getContext().asType(Expense.class);
+		logger.debug("expense : {}",expense);
+		logger.debug("----------------------------------------");
 		if(!hrConfigService.getHRConfig(expense.getUser().getActiveCompany()).getExpenseMailNotification()){
 			response.setValue("statusSelect", TimesheetRepository.STATUS_CONFIRMED);
 			response.setValue("sentDate", generalService.getTodayDate());

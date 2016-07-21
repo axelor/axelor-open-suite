@@ -134,20 +134,30 @@ public class ExpenseService  {
 		return expenseLine;
 	}
 	
-	public Expense compute (Expense expense){
-
-		BigDecimal exTaxTotal = BigDecimal.ZERO;
-		BigDecimal taxTotal = BigDecimal.ZERO;
-		BigDecimal inTaxTotal = BigDecimal.ZERO;
-		List<ExpenseLine> expenseLineList = expense.getExpenseLineList();
-		for (ExpenseLine expenseLine : expenseLineList) {
-			exTaxTotal = exTaxTotal.add(expenseLine.getUntaxedAmount());
-			taxTotal = taxTotal.add(expenseLine.getTotalTax());
-			inTaxTotal = inTaxTotal.add(expenseLine.getTotalAmount());
+	public Map<String,BigDecimal> totalsFromExpenseLine(List<ExpenseLine> expenseLineList){
+		Map<String,BigDecimal> totals = new HashMap<String,BigDecimal>();
+		BigDecimal untaxedTotal = BigDecimal.ZERO;
+		BigDecimal wholeTax = BigDecimal.ZERO;
+		BigDecimal total = BigDecimal.ZERO;
+		for(ExpenseLine expenseLine : expenseLineList){
+			untaxedTotal = untaxedTotal.add(expenseLine.getUntaxedAmount());
+			wholeTax = wholeTax.add(expenseLine.getTotalTax());
+			total = total.add(expenseLine.getTotalAmount());
 		}
-		expense.setExTaxTotal(exTaxTotal);
-		expense.setTaxTotal(taxTotal);
-		expense.setInTaxTotal(inTaxTotal);
+		
+		totals.put("UntaxedAmount", untaxedTotal);
+		totals.put("TotalTax", wholeTax);
+		totals.put("TotalAmount", total);
+		return totals;
+	}
+	
+	public Expense compute (Expense expense){
+		
+		Map<String,BigDecimal> totals = totalsFromExpenseLine(expense.getExpenseLineList());
+		
+		expense.setExTaxTotal(totals.get("UntaxedAmount"));
+		expense.setTaxTotal(totals.get("TotalTax"));
+		expense.setInTaxTotal(totals.get("TotalAmount"));
 		return expense;
 	}
 
@@ -323,6 +333,7 @@ public class ExpenseService  {
 			response.setError(e.getMessage());
 		}
 	}
+	
 	
 	@Transactional
 	public void insertExpenseLine(ActionRequest request, ActionResponse response){

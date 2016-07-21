@@ -8,8 +8,8 @@
     <entity sequential="true" name="KilometricAllowance" lang="java" >
     
         <many-to-one name="expense" ref="com.axelor.apps.hr.db.Expense" title="Expense"/>
-        <many-to-one name="projectTask" ref="com.axelor.apps.project.db.ProjectTask" title="Project/Task"/>
-        
+        <many-to-one name="expenseLine" ref="com.axelor.apps.hr.db.ExpenseLine" title="ExpenseLine"/>
+       
         <many-to-one name="kilometricAllowParam" ref="com.axelor.apps.hr.db.KilometricAllowParam" title="Kilometric Allowance Param"/>
         <decimal name="rate" title="Rate" precision="20" scale="3" />
         <integer name="typeSelect" title="Type" required="true" selection="hr.kilometric.allowance.type.select"/>
