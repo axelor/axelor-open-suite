@@ -219,7 +219,7 @@ public class OperationOrderWorkflowService {
 
 			BigDecimal durationPerCycle = new BigDecimal(workCenter.getDurationPerCycle());
 
-			duration += (qty.divide(workCenter.getCapacityPerCycle())).multiply(durationPerCycle).longValue();
+			duration += (qty.divide(workCenter.getMinCapacityPerCycle())).multiply(durationPerCycle).longValue();
 
 			duration += machine.getEndingDuration();
 
