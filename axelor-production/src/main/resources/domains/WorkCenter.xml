@@ -13,7 +13,7 @@
     <string name="code" title="Code"/>
     <many-to-one name="machine" ref="com.axelor.apps.production.db.Machine" title="Default Machine"/>
     <integer name="workCenterTypeSelect" title="Work center type" selection="iproduction.work.center.type.select"/>
-    <decimal name="capacityPerCycle" title="Capacity / cycle"/>
+    <decimal name="minCapacityPerCycle" title="Min. capacity / cycle"/>
     <decimal name="maxCapacityPerCycle" title="Max. capacity / cycle"/>
     <long name="durationPerCycle" title="Duration / cycle (hh:mm)"/>
 	

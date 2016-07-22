@@ -14,7 +14,7 @@
     <string name="name" title="Label"/>
     <integer name="priority" title="Priority"/>
     <string name="description" title="Description" large="true"/>
-    <decimal name="capacityPerCycle" title="Capacity / cycle"/>
+    <decimal name="minCapacityPerCycle" title="Min. capacity / cycle"/>
     <decimal name="maxCapacityPerCycle" title="Max. capacity / cycle"/>
     <long name="durationPerCycle" title="Duration / cycle (hh:mm)"/>
     
