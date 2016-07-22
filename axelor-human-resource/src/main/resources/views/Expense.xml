@@ -2,7 +2,7 @@
 <object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
 
-	<grid name="expense-grid" title="Expenses" model="com.axelor.apps.hr.db.Expense">
+	<grid name="expense-grid" title="Expenses" model="com.axelor.apps.hr.db.Expense" >
 		<hilite color="danger" if="statusSelect == 4"/>
 		<hilite color="success" if="statusSelect == 3"/>
 		<hilite color="warning" if="statusSelect == 2"/>
@@ -59,8 +59,8 @@
 			<field name="move" showIf="ventilated" form-view="move-form" grid-view="move-grid"/>
 		</panel>
 		<panel-tabs>
-			<panel-related field="expenseLineList" readonlyIf="statusSelect &gt; 1" onChange="action-expense-method-compute" editable="true" form-view="expense-line-form" grid-view="expense-line-grid"/>
-			<panel-related field="kilometricAllowanceList" grid-view="kilometric-allowance-grid" form-view="kilometric-allowance-form"/>
+			<panel-related field="expenseLineList" readonlyIf="statusSelect &gt; 1" onChange="action-expense-method-compute" editable="true" form-view="expense-line-form" grid-view="expense-line-grid" x-can-copy="true"/>
+			<panel-related field="kilometricAllowanceList" grid-view="kilometric-allowance-grid" form-view="kilometric-allowance-form" x-can-copy="true"/>
 		</panel-tabs>
 		<panel>
 			<field name="validatedBy" form-view="user-form" grid-view="user-grid"/>
