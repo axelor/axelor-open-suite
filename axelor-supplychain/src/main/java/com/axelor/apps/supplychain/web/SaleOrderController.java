@@ -25,11 +25,13 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
+import com.axelor.apps.sale.db.ISaleOrder;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.stock.db.Location;
 import com.axelor.apps.stock.db.StockMove;
+import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.supplychain.db.Subscription;
 import com.axelor.apps.supplychain.db.repo.SubscriptionRepository;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;
@@ -46,8 +48,10 @@ import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.beust.jcommander.internal.Lists;
 import com.google.common.base.Joiner;
 import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 
 public class SaleOrderController{
 	
@@ -59,6 +63,9 @@ public class SaleOrderController{
 
 	@Inject
 	private SaleOrderInvoiceServiceImpl saleOrderInvoiceServiceImpl;
+	
+	@Inject
+	private StockMoveRepository stockMoveRepo;
 	
 
 	public void createStockMove(ActionRequest request, ActionResponse response) throws AxelorException {
@@ -293,5 +300,28 @@ public class SaleOrderController{
 		response.setValues(saleOrder);
 	}
 	
+	@Transactional
+	public void updateSaleOrderOnCancel(ActionRequest request, ActionResponse response) throws AxelorException{
+		
+		StockMove stockMove = request.getContext().asType(StockMove.class);
+		SaleOrder so = saleOrderRepo.find(stockMove.getSaleOrder().getId());
+		
+		List<StockMove> stockMoveList = Lists.newArrayList();
+		stockMoveList = stockMoveRepo.all().filter("self.saleOrder = ?1", so).fetch();
+		so.setDeliveryState(SaleOrderRepository.STATE_NOT_DELIVERED);
+		for (StockMove stock : stockMoveList){
+			if (stock.getStatusSelect() != StockMoveRepository.STATUS_CANCELED && !stock.getId().equals(stockMove.getId())){ 
+				so.setDeliveryState(SaleOrderRepository.STATE_PARTIALLY_DELIVERED);
+				break;
+			}
+		}
+		
+		if (so.getStatusSelect() == ISaleOrder.STATUS_FINISHED  && generalService.getGeneral().getTerminateSaleOrderOnDelivery()){
+			so.setStatusSelect(ISaleOrder.STATUS_ORDER_CONFIRMED);
+		}
+		
+		saleOrderRepo.save(so);
+		
+	}
 	
 }
