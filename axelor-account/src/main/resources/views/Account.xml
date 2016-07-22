@@ -26,7 +26,7 @@
              <field as="code" name="code"/>
         </node>
         
-        <node model="com.axelor.apps.account.db.Account" parent="parent" draggable="true" onClick="action-account.view.account.onchange.view" >
+        <node model="com.axelor.apps.account.db.Account" parent="parent" draggable="true" onClick="action-account-view-account-onchange-view" >
             <field as="name" name="name"/>
             <field as="code" name="code"/>
         </node>
@@ -58,7 +58,7 @@
 		</panel>
 	</form>
 	
-	<action-view name="action-account.view.account.onchange.view" title="Financial Accounts"
+	<action-view name="action-account-view-account-onchange-view" title="Financial Accounts"
 		model="com.axelor.apps.account.db.Account" >
 		<view type="form" name="account-info-form" />
 		<view-param name="popup" value="reload"/>
