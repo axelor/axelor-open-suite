@@ -20,11 +20,13 @@
     <tree name="account-tree" title="Comptes Comptables">
         <column name="name" type="string"/>
          <column name="code" type="string"/>
+         
         <node model="com.axelor.apps.account.db.Account" domain="self.parent is null">
             <field as="name" name="name"/>
              <field as="code" name="code"/>
         </node>
-        <node model="com.axelor.apps.account.db.Account" parent="parent" draggable="true">
+        
+        <node model="com.axelor.apps.account.db.Account" parent="parent" draggable="true" onClick="account.view.account.onchange.view" >
             <field as="name" name="name"/>
             <field as="code" name="code"/>
         </node>
@@ -44,6 +46,27 @@
 			</panel>
 	   </panel>
 	</form>
+	
+	<form name="account-info-form" title="Account" model="com.axelor.apps.account.db.Account" width="large">
+		<panel title="Account details" readonly="true">
+			<field name="code" colSpan="3" css="bold"/>
+			<field name="name" colSpan="9" css="bold"/>
+			<field name="accountType" title="Account Type"/> 
+			<field name="company" widget="SuggestBox" onChange="action-group-account-account-onchange-common" form-view="company-form" grid-view="company-grid"/>
+			<field name="parent" onChange="action-group-account-account-onchange-common" domain="self.company = :company" form-view="account-form" grid-view="account-grid"/>
+			<field name="reconcileOk"/>
+		</panel>
+	</form>
+	
+	<action-view name="account.view.account.onchange.view" title="Financial Accounts"
+		model="com.axelor.apps.account.db.Account" >
+		<view type="form" name="account-info-form" />
+		<view-param name="popup" value="reload"/>
+        <view-param name="show-toolbar" value="false"/>
+  		<view-param name="show-confirm" value="false" />
+ 	  	<view-param name="popup-save" value="false"/>
+    	<context name="_showRecord" expr="eval: id"/>
+	</action-view>
 	
     <action-group name="action-group-account-account-onchange-common">
     	<action name="action-account-clean-company"/>
