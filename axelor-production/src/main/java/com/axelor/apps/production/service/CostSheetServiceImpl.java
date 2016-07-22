@@ -266,12 +266,12 @@ public class CostSheetServiceImpl implements CostSheetService  {
 		if(costType == IWorkCenter.COST_PER_CYCLE)  {
 			
 			costSheetLineService.createWorkCenterCostSheetLine(workCenter, prodProcessLine.getPriority(), bomLevel, parentCostSheetLine, 
-					this.getNbCycle(producedQty, prodProcessLine.getCapacityPerCycle()), workCenter.getCostAmount(), cycleUnit);
+					this.getNbCycle(producedQty, prodProcessLine.getMinCapacityPerCycle()), workCenter.getCostAmount(), cycleUnit);
 
 		}
 		else if(costType == IWorkCenter.COST_PER_HOUR)  {
 
-			BigDecimal qty = new BigDecimal(prodProcessLine.getDurationPerCycle()).divide(new BigDecimal(3600), BigDecimal.ROUND_HALF_EVEN).multiply(this.getNbCycle(producedQty, prodProcessLine.getCapacityPerCycle()));
+			BigDecimal qty = new BigDecimal(prodProcessLine.getDurationPerCycle()).divide(new BigDecimal(3600), BigDecimal.ROUND_HALF_EVEN).multiply(this.getNbCycle(producedQty, prodProcessLine.getMinCapacityPerCycle()));
 			BigDecimal costPrice = workCenter.getCostAmount().multiply(qty);
 			
 			costSheetLineService.createWorkCenterCostSheetLine(workCenter, prodProcessLine.getPriority(), bomLevel, parentCostSheetLine, qty, costPrice, hourUnit);
