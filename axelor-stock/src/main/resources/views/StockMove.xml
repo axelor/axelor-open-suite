@@ -192,6 +192,7 @@
 	<action-group name="action-group-stock-stockmove-cancel-click">
 	  	<action name="save"/>
 	  	<action name="action-supply-chain-method-update-so-on-cancel" if="saleOrder != null &amp;&amp; statusSelect == 3"/>
+	  	<action name="action-supply-chain-method-update-po-on-cancel" if="purchaseOrder != null &amp;&amp; statusSelect == 3"/>
     	<action name="action-stock-move-method-cancel"/>
     	<action name="save"/>
     </action-group>
@@ -270,6 +271,10 @@
 	
 	<action-method name="action-supply-chain-method-update-so-on-cancel" if-module="axelor-supplychain">
 		<call class="com.axelor.apps.supplychain.web.SaleOrderController" method="updateSaleOrderOnCancel"/>
+	</action-method>
+	
+	<action-method name="action-supply-chain-method-update-po-on-cancel" if-module="axelor-supplychain">
+		<call class="com.axelor.apps.supplychain.web.PurchaseOrderController" method="updatePurchaseOrderOnCancel"/>
 	</action-method>
 	
 	<action-method name="action-print-stock-move">
