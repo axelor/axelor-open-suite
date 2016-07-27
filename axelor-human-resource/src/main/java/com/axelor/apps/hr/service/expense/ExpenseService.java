@@ -54,7 +54,6 @@ import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.hr.db.Expense;
 import com.axelor.apps.hr.db.ExpenseLine;
 import com.axelor.apps.hr.db.IExpense;
-import com.axelor.apps.hr.db.KilometricAllowance;
 import com.axelor.apps.hr.db.KilometricAllowanceRate;
 import com.axelor.apps.hr.db.repo.ExpenseRepository;
 import com.axelor.apps.hr.db.repo.KilometricAllowanceRateRepository;
@@ -112,7 +111,7 @@ public class ExpenseService  {
 	public ExpenseLine computeAnalyticDistribution(ExpenseLine expenseLine) throws AxelorException{
 		List<AnalyticDistributionLine> analyticDistributionLineList = expenseLine.getAnalyticDistributionLineList();
 		if((analyticDistributionLineList == null || analyticDistributionLineList.isEmpty()) && generalService.getGeneral().getAnalyticDistributionTypeSelect() != GeneralRepository.DISTRIBUTION_TYPE_FREE){
-			analyticDistributionLineList = analyticDistributionLineService.generateLines(expenseLine.getUser().getPartner(), expenseLine.getExpenseType(), expenseLine.getExpense().getCompany(), expenseLine.getUntaxedAmount());
+			analyticDistributionLineList = analyticDistributionLineService.generateLines(expenseLine.getUser().getPartner(), expenseLine.getExpenseProduct(), expenseLine.getExpense().getCompany(), expenseLine.getUntaxedAmount());
 			if(analyticDistributionLineList != null){
 				for (AnalyticDistributionLine analyticDistributionLine : analyticDistributionLineList) {
 					analyticDistributionLine.setExpenseLine(expenseLine);
@@ -180,7 +179,7 @@ public class ExpenseService  {
 
 		for(ExpenseLine expenseLine : expense.getExpenseLineList()){
 			analyticAccounts.clear();
-			Product product = expenseLine.getExpenseType();
+			Product product = expenseLine.getExpenseProduct();
 			accountManagement = accountManagementService.getAccountManagement(product, expense.getCompany());
 
 			account = accountManagementService.getProductAccount(accountManagement, true);
@@ -265,7 +264,7 @@ public class ExpenseService  {
 
 	public List<InvoiceLine> createInvoiceLine(Invoice invoice, ExpenseLine expenseLine, int priority) throws AxelorException  {
 
-		Product product = expenseLine.getExpenseType();
+		Product product = expenseLine.getExpenseProduct();
 		InvoiceLineGenerator invoiceLineGenerator = null;
 		Integer atiChoice = invoice.getCompany().getAccountConfig().getInvoiceInAtiSelect();
 		if(atiChoice == 1 || atiChoice == 3){
@@ -328,7 +327,7 @@ public class ExpenseService  {
 	public void insertExpenseLine(ActionRequest request, ActionResponse response){
 		User user = AuthUtils.getUser();
 		ProjectTask projectTask = Beans.get(ProjectTaskRepository.class).find(new Long(request.getData().get("project").toString()));
-		Product product = Beans.get(ProductRepository.class).find(new Long(request.getData().get("expenseType").toString()));
+		Product product = Beans.get(ProductRepository.class).find(new Long(request.getData().get("expenseProduct").toString()));
 		if(user != null){
 			Expense expense = Beans.get(ExpenseRepository.class).all().filter("self.statusSelect = 1 AND self.user.id = ?1", user.getId()).order("-id").fetchOne();
 			if(expense == null){
@@ -340,7 +339,7 @@ public class ExpenseService  {
 			ExpenseLine expenseLine = new ExpenseLine();
 			expenseLine.setExpenseDate(new LocalDate(request.getData().get("date").toString()));
 			expenseLine.setComments(request.getData().get("comments").toString());
-			expenseLine.setExpenseType(product);
+			expenseLine.setExpenseProduct(product);
 			expenseLine.setToInvoice(new Boolean(request.getData().get("toInvoice").toString()));
 			expenseLine.setProjectTask(projectTask);
 			expenseLine.setUser(user);
@@ -354,6 +353,7 @@ public class ExpenseService  {
 		}
 	}
 	
+	/*
 	@Transactional
 	public void insertKMExpenses(ActionRequest request, ActionResponse response){
 		User user = AuthUtils.getUser();
@@ -388,4 +388,5 @@ public class ExpenseService  {
 			Beans.get(ExpenseRepository.class).save(expense);
 		}
 	}
+	*/
 }
