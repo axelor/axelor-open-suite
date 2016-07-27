@@ -130,6 +130,7 @@
 	    		</panel>
 	    		<panel name="productionInformations" title="Production informations" showTitle="false" showIf="productTypeSelect != 'service'" onTabSelect="action-product-attrs-readonly-create-production-order" if-module="axelor-production">
 	      			<panel-include view="product-production-form"/>
+	      			<panel-dashlet colSpan="12" action="action-product-view-production-process"/>
 	    		</panel>
 	    		<panel name="trackingNumber" title="Tracking number" showTitle="false" showIf="productTypeSelect != 'service'">
 	      			<panel colSpan="12">
@@ -355,6 +356,13 @@
 		<view type="grid" name="product-product-variant-grid"/>
 		<view type="form" name="product-form"/>
 		<domain>self.parentProduct.id = :_id</domain>
+	</action-view>	
+	
+	<action-view name="action-product-view-production-process" title="Production processes"
+		model="com.axelor.apps.production.db.ProdProcess">
+		<view type="grid" name="prod-process-grid"/>
+		<view type="form" name="prod-process-form"/>
+		<domain>self.product.id = :id </domain>
 	</action-view>	
 	
 	<action-attrs name="action-product-attrs-bill-of-material-domain">

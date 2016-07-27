@@ -417,7 +417,17 @@ public interface IExceptionMessage {
 	static final String INVOICE_GENERATOR_4 = /*$$(*/ "%s :\nMode de paiement absent" /*)*/;
 	static final String INVOICE_GENERATOR_5 = /*$$(*/ "%s :\nAdresse de facturation absente" /*)*/;
 	static final String INVOICE_GENERATOR_6 = /*$$(*/ "%s :\nDevise absente" /*)*/;
+	
+	/**
+	 * Merge Invoice
+	 */
 
+	static final public String INVOICE_MERGE_ERROR_CURRENCY = /*$$(*/ "The currency is required and must be the same for all invoices" /*)*/;
+	static final public String INVOICE_MERGE_ERROR_PARTNER = /*$$(*/ "The partner is required and must be the same for all invoices" /*)*/;
+	static final public String INVOICE_MERGE_ERROR_COMPANY = /*$$(*/ "The company is required and must be the same for all invoices" /*)*/;
+	static final public String INVOICE_MERGE_ERROR_SALEORDER = /*$$(*/ "The sale order must be the same for all invoices" /*)*/;
+	static final public String INVOICE_MERGE_ERROR_PROJECT = /*$$(*/ "The project must be the same for all invoices" /*)*/;
+	
 	/**
 	 * Invoice line generator
 	 */

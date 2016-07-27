@@ -7,6 +7,7 @@
     	<field name="name"/>
     	<field name="code"/>
         <field name="location" grid-view="location-grid" form-view="location-form"/>
+        <field name="product"/>
         <field name="prodProcessLineList" grid-view="prod-process-line-grid" form-view="prod-process-line-form"/>
     </grid>
     
@@ -16,7 +17,9 @@
 	    	<field name="name"/>
 	    	<field name="code"/>
 	        <field name="location" required="true" grid-view="location-grid" form-view="location-form"/>
+	        <field name="product" grid-view="product-grid" form-view="product-form"/>
 	        <field name="isConsProOnOperation" onChange="action-prod-process-validate-is-cons-pro"/>
+	        <field name="outsourcing" onChange="action-prod-process-method-change-prodprocesslist-outsourcing"/>
         </panel>
         <panel-related field="prodProcessLineList" colSpan="12" grid-view="prod-process-line-grid" form-view="prod-process-line-form"/>        
     </form>
@@ -32,6 +35,10 @@
     
     <action-method name="action-prod-process-method-validate-prod-process">
     	<call class="com.axelor.apps.production.web.ProdProcessController" method="validateProdProcess"/>
+    </action-method>
+    
+    <action-method name="action-prod-process-method-change-prodprocesslist-outsourcing">
+    	<call class="com.axelor.apps.production.web.ProdProcessController" method="changeProdProcessListOutsourcing"/>
     </action-method>
     
 </object-views>

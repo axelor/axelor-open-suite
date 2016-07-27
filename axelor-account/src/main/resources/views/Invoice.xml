@@ -293,6 +293,32 @@
         <field name="statusSelect"/>
     </grid>
     
+    
+    <!-- CUSTOMER INVOICES MERGE  -->
+    <form name="customer-invoices-merge-form" model="com.axelor.apps.base.db.Wizard" title="Merge Cust. Invoices" width="large">
+		<panel-related field="$invoiceToMerge" form-view="invoice-form" grid-view="invoice-grid" title="Cust. Invoices to merge" colSpan="12" type="many-to-many" target="com.axelor.apps.account.db.Invoice" domain="self.statusSelect = 1 AND self.operationTypeSelect = 3" canNew="false" canEdit="false" />
+		<panel sidebar="true" title="Actions">
+			<button name="generateMergedCustInvoices" title="Merge into single cust. invoice" onClick="action-validate-invoice-check-selection,action-group-invoice-merge-action"/>			
+	  	</panel>
+    </form>
+    
+    <form name="customer-invoices-merge-confirm-form" model="com.axelor.apps.base.db.Wizard" title="Confirmation" onNew="action-record-load-dummy-field-confirm-merge-invoice">
+		<panel colSpan="6" colOffset="3">
+			<field name="$contactPartner" title="Contact partner" type="many-to-one" target="com.axelor.apps.base.db.Partner" domain="self.isContact IS TRUE AND EXISTS (SELECT 1 FROM Partner part WHERE part.id = :partnerId AND self.id IN (SELECT id FROM part.contactPartnerSet))" colSpan="6" colOffset="3" width="200px" widget="SuggestBox" showIf="contactPartnerToCheck" form-view="partner-contact-form" grid-view="partner-contact-grid"/>
+			<field name="$priceList" title="Price List" type="many-to-one" target="com.axelor.apps.base.db.PriceList" domain="self.typeSelect = 2 and self.isActive = true" colSpan="6" colOffset="3" width="200px" showIf="priceListToCheck" canSelect="true" form-view="price-list-form" grid-view="price-list-grid"/>
+			<field name="$paymentMode" title="Payment Mode" type="many-to-one" target="com.axelor.apps.account.db.PaymentMode"  colSpan="6" colOffset="3" width="200px" widget="SuggestBox" showIf="paymentModeToCheck" form-view="payment-mode-form" grid-view="payment-mode-grid"/>
+			<field name="$paymentCondition" title="Payment Condition" type="many-to-one" target="com.axelor.apps.account.db.PaymentCondition"  colSpan="6" colOffset="3" width="200px" widget="SuggestBox" showIf="paymentConditionToCheck" form-view="payment-condition-form" grid-view="payment-condition-grid"/>
+			<button name="confirm" title="Confirmer" onClick="action-group-invoice-merge-action" colSpan="12" width="200px"/>
+		</panel>
+    </form>
+    
+    <action-group name="action-group-invoice-merge-action">
+	    <action name="action-invoice-method-merge-account" if="__repo__.of(MetaModule).all().filter('self.name = ?','axelor-supplychain').fetchOne()?.installed == false"/>
+	    <action name="action-invoice-method-merge-supplychain" if="__repo__.of(MetaModule).all().filter('self.name = ?','axelor-supplychain').fetchOne()?.installed == true &amp;&amp; __repo__.of(MetaModule).all().filter('self.name = ?','axelor-business-project').fetchOne()?.installed == false"/>
+	    <action name="action-invoice-method-merge-business-project" if="__repo__.of(MetaModule).all().filter('self.name = ?','axelor-business-project').fetchOne()?.installed == true"/>
+	    
+	</action-group>
+	
     <action-group name="action-account-invoice-onnew-group">
 	    <action name="action-invoice-record-default"/>
 	    <action name="action-invoice-record-company-change"/>
@@ -387,7 +413,6 @@
     	<field name="contactPartner" expr="eval:null" />
     </action-record>
     
-    
     <action-record name="action-invoice-record-due-date" model="com.axelor.apps.account.db.Invoice">
     	<field name="dueDate" expr="call: com.axelor.apps.account.service.invoice.InvoiceToolService:getDueDate(paymentCondition,invoiceDate)" if="paymentCondition != null &amp;&amp; invoiceDate!=null"/>
     </action-record>
@@ -396,7 +421,14 @@
     	<field name="statusSelect" expr="eval: __repo__.of(Invoice).STATUS_DRAFT"/>
     </action-record>
     
-    
+	<action-record name="action-record-load-dummy-field-confirm-merge-invoice" model="com.axelor.apps.base.db.Wizard">
+		<field name="contactPartnerToCheck" expr="eval: contextContactPartnerToCheck"/>
+		<field name="partnerId" expr="eval: contextPartnerId"/>
+		<field name="priceListToCheck" expr="eval: contextPriceListToCheck"/>
+		<field name="paymentModeToCheck" expr="eval: contextPaymentModeToCheck"/>
+		<field name="paymentConditionToCheck" expr="eval: contextPaymentConditionToCheck"/>
+	</action-record>
+	
     <!-- ACTION ATTRS -->
     
     <action-attrs name="action-invoice-attrs-bank-details-from-partner-domain">
@@ -440,6 +472,12 @@
 	<action-attrs name="action-invoice-attrs-domain-address">
 		<attribute name="domain" for="address" expr="eval: &quot;self.id IN (${(partner?.partnerAddressList?.findAll{it.isInvoicingAddr}.collect{it.address.id}+[null]).join(',')})&quot;" />
     </action-attrs>
+    
+    <!-- ACTION VALIDATE -->
+    
+    <action-validate name="action-validate-invoice-check-selection">
+		<error message="You have to choose at least one invoice" if="invoiceToMerge == null || invoiceToMerge.size() == 0"/>
+	</action-validate>
 
 	<!-- ACTION METHOD -->
 	
@@ -482,6 +520,18 @@
     <action-method name="action-invoice-method-get-journal">
         <call class="com.axelor.apps.account.web.InvoiceController" method="getJournal"/>
     </action-method>
+    
+	<action-method name="action-invoice-method-merge-account">
+		<call class="com.axelor.apps.account.web.InvoiceController" method="mergeInvoice"/>
+	</action-method>
+	
+	<action-method name="action-invoice-method-merge-supplychain">
+		<call class="com.axelor.apps.supplychain.web.InvoiceController" method="mergeInvoice"/>
+	</action-method>
+	
+	<action-method name="action-invoice-method-merge-business-project">
+		<call class="com.axelor.apps.businessproject.web.InvoiceController" method="mergeInvoice"/>
+	</action-method>
     
     <action-view name="action-invoice-view-register-payment" title="Register a payment" model="com.axelor.apps.account.db.InvoicePayment">
     	<view type="form" name="invoice-payment-form"/>

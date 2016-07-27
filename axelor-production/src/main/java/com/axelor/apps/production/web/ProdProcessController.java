@@ -47,4 +47,12 @@ public class ProdProcessController {
 			}
 		}
 	}
+	
+	public void changeProdProcessListOutsourcing(ActionRequest request, ActionResponse response) throws AxelorException{
+		ProdProcess prodProcess = request.getContext().asType(ProdProcess.class);
+		if (prodProcess.getProdProcessLineList() != null){
+			prodProcessService.changeProdProcessListOutsourcing(prodProcess);
+		}
+		response.setValue("prodProcessLineList", prodProcess.getProdProcessLineList());
+	}
 }

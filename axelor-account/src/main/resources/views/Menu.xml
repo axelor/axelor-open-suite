@@ -6,7 +6,7 @@
 	<menuitem name="invoice-root" title="Invoicing" order="-100"
 		icon="fa-file-text-o" groups="admins,ERP" icon-background="#31b4a9"/>
 		
-	<menuitem name="invoice-root-cust-invoice" parent="invoice-root-sale" order="-40"
+	<menuitem name="invoice-root-cust-invoice" parent="invoice-root-sale" order="-50"
 		title="New cust. invoice" action="invoice.root.cust.invoice" />
 
 	<action-view name="invoice.root.cust.invoice" title="New cust. invoice"
@@ -33,7 +33,7 @@
 	<menuitem name="invoice-root-sale" parent="invoice-root"
 		title="Sales" />
 		
-	<menuitem name="invoice-root-sale-custinvoices" parent="invoice-root-sale" order="-30"
+	<menuitem name="invoice-root-sale-custinvoices" parent="invoice-root-sale" order="-40"
 		title="Cust. Invoices" action="invoice.root.sale.custinvoices" />
 
 	<action-view name="invoice.root.sale.custinvoices" title="Cust. Invoices"
@@ -46,7 +46,7 @@
 		<context name="todayDate" expr="eval:__config__.generalService.getTodayDate()" />
 	</action-view>
 
-	<menuitem name="invoice-root-sale-custinvoices-lines" parent="invoice-root-sale" order="-20"
+	<menuitem name="invoice-root-sale-custinvoices-lines" parent="invoice-root-sale" order="-30"
 		title="Cust. Invoices Lines" action="invoice.root.sale.custinvoices.lines" />
 
 	<action-view name="invoice.root.sale.custinvoices.lines" title="Cust. Invoices Lines"
@@ -55,7 +55,7 @@
 		<view type="form" name="invoice-line-menu-form"/>
 	</action-view>
 
-	<menuitem name="invoice-root-sale-custrefunds" parent="invoice-root-sale" order="-10"
+	<menuitem name="invoice-root-sale-custrefunds" parent="invoice-root-sale" order="-20"
 		title="Cust. Refunds" action="invoice.root.sale.custrefunds" />
 
 	<action-view name="invoice.root.sale.custrefunds" title="Cust. Refunds"
@@ -68,6 +68,12 @@
 		<context name="todayDate" expr="eval:__config__.generalService.getTodayDate()" />
 	</action-view>
 			
+	<menuitem name="invoice-root-sale-mergecustinvoices" parent="invoice-root-sale" order="-10"
+		title="Merge Cust. Invoices" action="invoice.root.sale.mergecustinvoices" />
+		
+	<action-view name="invoice.root.sale.mergecustinvoices" title="Merge Cust. Invoices" model="com.axelor.apps.base.db.Wizard">
+		<view type="form" name="customer-invoices-merge-form"/>
+	</action-view>
 		
 	<menuitem name="invoice-root-purchase" parent="invoice-root"
 		title="Purchases" />	

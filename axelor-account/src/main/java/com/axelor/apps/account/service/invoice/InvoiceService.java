@@ -21,7 +21,14 @@ import java.util.List;
 import java.util.Map;
 
 import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.InvoiceLine;
+import com.axelor.apps.account.db.PaymentCondition;
+import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.base.db.Alarm;
+import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Currency;
+import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.PriceList;
 import com.axelor.exception.AxelorException;
 import com.google.inject.persist.Transactional;
 
@@ -133,5 +140,16 @@ public interface InvoiceService {
 	public void updateAmountPaid(Invoice invoice) throws AxelorException;
 	
 	public void generateBudgetDistribution(Invoice invoice);
+
+	public Invoice mergeInvoice(List<Invoice> invoiceList, Company company, Currency currency,
+			Partner partner, Partner contactPartner, PriceList priceList,
+			PaymentMode paymentMode, PaymentCondition paymentCondition) throws AxelorException  ;
+
+	public List<InvoiceLine> getInvoiceLinesFromInvoiceList(List<Invoice> invoiceList);
+
+	public void setInvoiceForInvoiceLines(List<InvoiceLine> invoiceLines, Invoice invoiceMerged);
+
+	public void deleteOldInvoices(List<Invoice> invoiceList);
+
 
 }
