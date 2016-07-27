@@ -23,14 +23,6 @@
     <view type="form" name="meta-select-form"/>
   </action-view>
   
-  <menuitem name="menu-model-importer" title="Model Importer" parent="menu-studio-model" action="menu.model.importer" order="10"/>
-  
-  <action-view name="menu.model.importer" title="Model Importer" model="com.axelor.studio.db.ModelImporter">
-    <view type="grid" name="model-importer-grid"/>
-    <view type="form" name="model-importer-form"/>
-  </action-view>
-  
-  
   <!-- View menus -->
   <menuitem name="menu-studio-view" title="View" parent="menu-studio-root" order="10"/>
   
@@ -117,6 +109,16 @@
   <action-view name="menu.report.builder" title="Report builders" model="com.axelor.studio.db.ReportBuilder">
     <view type="grid" name="report-builder-grid"/>
     <view type="form" name="report-builder-form"/>
+  </action-view>
+  
+  <!-- Import/Export menus -->
+  <menuitem name="menu-studio-import-export" title="Import/Export" parent="menu-studio-root" order="30"/>
+  
+  <menuitem name="menu-import-export" title="Import/Export" parent="menu-studio-import-export" action="menu.import.export" order="5"/>
+  
+  <action-view name="menu.import.export" title="Import/Export" model="com.axelor.studio.db.DataManager">
+    <view type="grid" name="data-manager-grid"/>
+    <view type="form" name="data-manager-form"/>
   </action-view>
   
   <!-- Configuration menus -->

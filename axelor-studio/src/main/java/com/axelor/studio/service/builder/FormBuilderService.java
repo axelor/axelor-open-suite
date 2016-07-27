@@ -1,7 +1,25 @@
+/**
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or  modify
+ * it under the terms of the GNU Affero General Public License, version 3,
+ * as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package com.axelor.studio.service.builder;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -9,10 +27,10 @@ import java.util.Map;
 
 import javax.xml.bind.JAXBException;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.axelor.common.Inflector;
 import com.axelor.meta.db.MetaField;
 import com.axelor.meta.db.MetaSelect;
 import com.axelor.meta.db.MetaView;
@@ -28,6 +46,7 @@ import com.axelor.meta.schema.views.Button;
 import com.axelor.meta.schema.views.FormView;
 import com.axelor.meta.schema.views.Label;
 import com.axelor.meta.schema.views.Menu;
+import com.axelor.meta.schema.views.PanelEditor;
 import com.axelor.meta.schema.views.Menu.Item;
 import com.axelor.meta.schema.views.Panel;
 import com.axelor.meta.schema.views.PanelField;
@@ -37,6 +56,7 @@ import com.axelor.meta.schema.views.PanelMail.MailFollowers;
 import com.axelor.meta.schema.views.PanelMail.MailMessages;
 import com.axelor.meta.schema.views.PanelRelated;
 import com.axelor.meta.schema.views.PanelTabs;
+import com.axelor.meta.schema.views.Spacer;
 import com.axelor.studio.db.ViewBuilder;
 import com.axelor.studio.db.ViewItem;
 import com.axelor.studio.db.ViewPanel;
@@ -107,6 +127,7 @@ public class FormBuilderService {
 
 		if (!defaultFields.isEmpty()) {
 			addOnNewAction(formView);
+			log.debug("On new actions: {}", formView.getOnNew());
 		}
 
 		return formView;
@@ -120,12 +141,10 @@ public class FormBuilderService {
 	 *            FormView generated from parent view.
 	 */
 	private void processFormView(FormView formView) {
-
-		List<Button> toolbar = formView.getToolbar();
-		toolbar = processToolBar(toolbar);
-		if (!toolbar.isEmpty()) {
-			formView.setToolbar(toolbar);
-		}
+		
+		processToolBar(formView);
+		
+		processMenuBar(formView);
 
 		String onSave = getUpdatedAction(viewBuilder.getOnSave(),
 				formView.getOnSave());
@@ -135,26 +154,71 @@ public class FormBuilderService {
 		String onNew = getUpdatedAction(viewBuilder.getOnNew(),
 				formView.getOnNew());
 		formView.setOnNew(onNew);
+		
+		String onLoad = getUpdatedAction(viewBuilder.getOnLoad(),
+				formView.getOnLoad());
+		formView.setOnLoad(onLoad);
 
 		formView.setWidthSpec("large");
 		log.debug("Process form view: {}", formView.getName());
-
+		
 		formViewItems = formView.getItems();
-
+		
 		if (formViewItems == null) {
 			formViewItems = new ArrayList<AbstractWidget>();
 		}
-
-		List<AbstractWidget> items = new ArrayList<AbstractWidget>();
-		items.addAll(formViewItems);
-
-		updatePanelInclude(items.iterator(), 0);
+		else {
+			addPanelInclude(formViewItems);
+		}
+		
+//		updatePanelInclude(items.iterator(), 0);
 
 		mapPanels(formViewItems.iterator(), null, 0);
+		
+		log.debug("Panel map keys: {}", panelMap.keySet());
 
 		formView.setItems(formViewItems);
 	}
+	
+	
+	private void addPanelInclude(List<AbstractWidget> items) {
+		
+		List<AbstractWidget> copyItems = new ArrayList<AbstractWidget>();
+		copyItems.addAll(items);
+		
+		int index = -1;
 
+		for (AbstractWidget item : copyItems) {
+			index++;
+
+			if (item instanceof PanelInclude) {
+				PanelInclude panel = (PanelInclude) item;
+				FormView form = (FormView) panel.getView();
+				if (form != null && form.getItems() != null) {
+					List<AbstractWidget> subItems  = form.getItems();
+					addPanelInclude(subItems);
+					items.remove(index);
+					items.addAll(index, subItems);
+					index += subItems.size() - 1;
+				}
+			}
+			else if (item instanceof PanelTabs) {
+				PanelTabs tabs = (PanelTabs) item;
+				addPanelInclude(tabs.getItems());
+				items.remove(index);
+				items.add(index, tabs);
+			}
+			else if (item instanceof Panel) {
+				Panel panel = (Panel) item;
+				addPanelInclude(panel.getItems());
+				items.remove(index);
+				items.add(index, panel);
+			}
+			
+		}
+		
+	}
+	
 	/**
 	 * Method generate final list of buttons to keep in formview. It removes old
 	 * button and add new button as per ViewBuilder toolbar.
@@ -163,48 +227,69 @@ public class FormBuilderService {
 	 *            List of buttons of Parent form view.
 	 * @return List of button to keep in formView.
 	 */
-	private List<Button> processToolBar(List<Button> toolbar) {
-
-		List<Button> retainButtons = new ArrayList<Button>();
-
-		if (toolbar != null) {
-			log.debug("Form view toolbar size: {}", toolbar.size());
-		}
-		log.debug("View builder toolbar size: {}", viewBuilder.getToolbar()
-				.size());
+	private void processToolBar(FormView formView) {
+		
+		List<Button> toolbar = new ArrayList<Button>();
 
 		for (ViewItem viewButton : viewBuilder.getToolbar()) {
 			log.debug("Button: {} onClick:{}", viewButton.getName(),
 					viewButton.getOnClick());
 			String name = viewButton.getName();
-			Button button = null;
-			if (toolbar != null) {
-				for (Button toolButton : toolbar) {
-					if (toolButton.getName().equals(name)) {
-						retainButtons.add(toolButton);
-						button = toolButton;
-						break;
-					}
-				}
-			}
-
-			if (button == null) {
-				button = new Button();
-				button.setName(name);
-				retainButtons.add(button);
-			}
+			Button button = new Button();
+			button.setName(name);
+			toolbar.add(button);
 			button.setTitle(viewButton.getTitle());
-			button.setColSpan(viewButton.getColSpan() == 0 ? null : viewButton
-					.getColSpan());
+			if (viewButton.getColSpan() == 0) {
+				button.setColSpan(null);
+			}
+			else {
+				button.setColSpan(viewButton.getColSpan());
+			}
 			button.setShowIf(viewButton.getShowIf());
 			button.setOnClick(viewButton.getOnClick());
-
+			button.setReadonlyIf(viewButton.getReadonlyIf());
+			button.setReadonly(viewButton.getReadonly());
+			button.setHidden(viewButton.getHidden());
+			button.setHideIf(viewButton.getHideIf());
 		}
 
-		log.debug("Retain buttons size: {}", retainButtons.size());
-		return retainButtons;
+		if (!toolbar.isEmpty()) {
+			formView.setToolbar(toolbar);
+		}
 	}
-
+	
+	
+	private void processMenuBar(FormView formView) {
+		
+		List<ViewItem> menuItems = viewBuilder.getMenubar();
+		
+		List<Menu> menubar = new ArrayList<Menu>();
+		
+		for (ViewItem viewItem : menuItems) {
+			
+			Menu menu = new Menu();
+			menu.setIcon(viewItem.getIcon());
+			menu.setTitle(viewItem.getTitle());
+			
+			List<AbstractWidget> items = new ArrayList<AbstractWidget>();
+			log.debug("Total items for menubar: {} is : {}", 
+					menu.getTitle(), viewItem.getMenubarItems().size());
+			for (ViewItem menuItem : viewItem.getMenubarItems()) {
+				Item item = new Item();
+				item.setAction(menuItem.getOnClick());
+				item.setTitle(menuItem.getTitle());
+				items.add(item);
+			}
+			
+			menu.setItems(items);
+			menubar.add(menu);
+		}
+		
+		if (!menubar.isEmpty()) {
+			formView.setMenubar(menubar);
+		}
+	}
+	
 	/**
 	 * Method to update onSave string with new actions.
 	 * 
@@ -234,42 +319,6 @@ public class FormBuilderService {
 	}
 
 	/**
-	 * Method to add items of form view refer by panel include in place of panel
-	 * include in formViewItems.
-	 * 
-	 * @param itemIterator
-	 *            FormView item(AbstractWidget) iterator.
-	 * @param index
-	 *            Index of panel include in formViewItems.
-	 * @return updated index.
-	 */
-	private Integer updatePanelInclude(Iterator<AbstractWidget> itemIterator,
-			Integer index) {
-
-		if (!itemIterator.hasNext()) {
-			return index;
-		}
-
-		AbstractWidget widget = itemIterator.next();
-		if (widget instanceof PanelInclude) {
-			PanelInclude panelInclude = (PanelInclude) widget;
-			FormView formView = (FormView) panelInclude.getView();
-			if (formView != null && formView.getItems() != null) {
-				formViewItems.remove(widget);
-				formViewItems.addAll(index, formView.getItems());
-				index = updatePanelInclude(formView.getItems().iterator(),
-						index);
-			}
-		}
-
-		index++;
-
-		log.debug("Panel include Index: {}", index);
-
-		return updatePanelInclude(itemIterator, index);
-	}
-
-	/**
 	 * Method to get generated ActionRecords, after generating form view.
 	 * 
 	 * @return
@@ -292,26 +341,22 @@ public class FormBuilderService {
 		FormView formView = null;
 
 		MetaView metaView = viewBuilder.getMetaView();
-
+		
+		String viewName = viewBuilder.getName();
 		if (metaView == null) {
 			formView = new FormView();
-			formView.setName(viewBuilder.getName());
+			formView.setName(viewName);
 			formView.setTitle(viewBuilder.getTitle());
 			formView.setModel(viewBuilder.getModel());
-			return formView;
 		}
-
-		ObjectViews objectViews = XMLViews.fromXML(metaView.getXml());
-		List<AbstractView> views = objectViews.getViews();
-		if (!views.isEmpty()) {
-			formView = (FormView) views.get(0);
-			String xmlId = formView.getXmlId();
-			String module = configService.getModuleName() + "-";
-			if (xmlId == null || !xmlId.startsWith(module)) {
-				xmlId = module + formView.getName();
+		else {
+			ObjectViews objectViews = XMLViews.fromXML(metaView.getXml());
+			List<AbstractView> views = objectViews.getViews();
+			if (!views.isEmpty()) {
+				formView = (FormView) views.get(0);
 			}
-			formView.setXmlId(xmlId);
 		}
+		formView.setXmlId(configService.getModuleName() + "-" + viewName);
 
 		return formView;
 	}
@@ -341,20 +386,98 @@ public class FormBuilderService {
 			AbstractPanel panel = null;
 
 			if (panelMap.containsKey(panelLevel)) {
-				panel = panelMap.get(panelLevel);
+				if (viewPanel.getNewPanel() && viewBuilder.getAddOnly()) {
+					adjustPanelLevel(panelLevel);
+					panel = addNewPanel(panelLevel, viewPanel.getIsNotebook());
+				}
+				else {
+					panel = panelMap.get(panelLevel);
+				}
 			} else {
+				if (viewPanel.getNewPanel()) {
+					adjustPanelLevel(panelLevel);
+				}
 				panel = addNewPanel(panelLevel, viewPanel.getIsNotebook());
 			}
 
 			if (sideBar) {
 				panel.setSidebar(sideBar);
 			}
+			
+			if (viewBuilder.getAddOnly()) {
+				
+				if (viewPanel.getNewPanel()) {
+					panel = updatePanel(panel, viewPanel);
+				}
+			}
+			else {
+				panel = updatePanel(panel, viewPanel);
+			}
+			
 
-			panel = updatePanel(panel, viewPanel);
-
-			panelMap.put(panelLevel, panel);
+//			panelMap.put(panelLevel, panel);
 
 		}
+	}
+	
+	private void adjustPanelLevel(String panelLevel) {
+		
+		String[] levels = panelLevel.split("\\.");
+		
+		String[] parentLevels = null;
+		
+		int index = levels.length - 1;
+		
+		Integer upLevel = Integer.parseInt(levels[index]) + 1;
+		
+		String levelUp = upLevel.toString();
+		
+		if (levels.length > 1) {
+			parentLevels = Arrays.copyOf(levels, levels.length -1 );
+		}
+		
+		List<String> updateLevels = new ArrayList<String>();
+		
+		for (String level : panelMap.keySet()) {
+			String[] keyLevels = level.split("\\.");
+			if (keyLevels.length < levels.length) {
+				continue;
+			}
+			
+			if (parentLevels == null) {
+				if (Integer.parseInt(levels[0]) <= Integer.parseInt(keyLevels[0])) {
+					updateLevels.add(level);
+				}
+			}
+			else {
+				String[] checkLevel = Arrays.copyOf(keyLevels, parentLevels.length);
+				if (Arrays.equals(checkLevel, parentLevels) 
+						&& Integer.parseInt(levels[index]) <= Integer.parseInt(keyLevels[index])) {
+					updateLevels.add(level);
+				}
+			}
+			
+		}
+		
+		log.debug("Update levels: {}", updateLevels);
+		Collections.sort(updateLevels);
+		Collections.reverse(updateLevels);
+		
+		for (String level : updateLevels) {
+			
+			AbstractPanel panel = panelMap.get(level);
+			
+			panelMap.remove(level);
+			
+			String[] target = level.split("\\.");
+			target[index] = levelUp;
+			
+			level = Joiner.on(".").join(target);
+			
+			panelMap.put(level, panel);
+		}
+		
+		
 	}
 
 	/**
@@ -367,13 +490,12 @@ public class FormBuilderService {
 	 * @return AbstractPanel
 	 */
 	private AbstractPanel addNewPanel(String panelLevel, Boolean isNotebook) {
-
+		
 		AbstractPanel abstractPanel = new Panel();
 		if (isNotebook) {
 			abstractPanel = new PanelTabs();
 		}
 		abstractPanel.setColSpan(12);
-		log.debug("Panel map:{}", panelMap.keySet());
 
 		if (!panelLevel.contains(".")) {
 			Integer panelIndex = Integer.parseInt(panelLevel);
@@ -394,38 +516,28 @@ public class FormBuilderService {
 			return abstractPanel;
 		}
 
-		Integer childLevel = Integer.parseInt(panelLevel
-				.substring(lastIndex + 1));
-		List<AbstractWidget> panelItems = new ArrayList<AbstractWidget>();
-
+		List<AbstractWidget> panelItems = null;
+		
 		if (panelMap.get(parentLevel) instanceof Panel) {
 			Panel panel = (Panel) panelMap.get(parentLevel);
-			if (panel.getItems() != null) {
-				panelItems = panel.getItems();
+			panelItems = panel.getItems();
+			if (panelItems == null) {
+				panelItems = new ArrayList<AbstractWidget>();
 			}
-			if (childLevel < panelItems.size()) {
-				panelItems.add(childLevel, abstractPanel);
-			} else {
-				panelItems.add(abstractPanel);
-			}
+			panelItems.add(abstractPanel);
 			panel.setItems(panelItems);
 			panelMap.put(parentLevel, panel);
 			panelMap.put(panelLevel, abstractPanel);
 		} else if (panelMap.get(parentLevel) instanceof PanelTabs) {
 			PanelTabs panelTabs = (PanelTabs) panelMap.get(parentLevel);
-			log.debug("Panel tabs: {}", panelTabs);
-			if (panelTabs.getItems() != null) {
-				panelItems = panelTabs.getItems();
+			panelItems = panelTabs.getItems();
+			if (panelItems == null) {
+				panelItems = new ArrayList<AbstractWidget>();
 			}
-			if (childLevel < panelItems.size()) {
-				panelItems.add(childLevel, abstractPanel);
-			} else {
-				panelItems.add(abstractPanel);
-			}
+			panelItems.add(abstractPanel);
 			panelTabs.setItems(panelItems);
 			panelMap.put(parentLevel, panelTabs);
 			panelMap.put(panelLevel, abstractPanel);
-			log.debug("Panel tabs: {}", panelTabs);
 		}
 
 		return abstractPanel;
@@ -470,7 +582,7 @@ public class FormBuilderService {
 		}
 
 	}
-
+	
 	/**
 	 * Method to update AbstractPanel from ViewPanel of formView .
 	 * 
@@ -485,6 +597,11 @@ public class FormBuilderService {
 		// if(!viewPanel.getNoTitle()){
 		abstractPanel.setTitle(viewPanel.getTitle());
 		// }
+		
+		String colspan = viewPanel.getColspan();
+		if (colspan != null && StringUtils.isNumeric(colspan)) {
+			abstractPanel.setColSpan(Integer.parseInt(colspan));
+		}
 
 		abstractPanel.setName(viewPanel.getName());
 
@@ -496,48 +613,73 @@ public class FormBuilderService {
 			}
 
 			List<ViewItem> itemList = viewPanel.getViewItemList();
-			List<AbstractWidget> items = new ArrayList<AbstractWidget>();
-
-			for (ViewItem viewItem : itemList) {
-
-				Integer type = viewItem.getTypeSelect();
-
-				switch (type) {
-				case 0:
-					String fieldType = viewItem.getFieldType();
-					if ("one-to-many,many-to-many".contains(fieldType)) {
-						setPanelRelated(viewItem, items);
-					} else {
-						setField(viewItem, items);
-					}
-					checkDefaultValues(fieldType, viewItem);
-					break;
-				case 1:
-					if (viewItem.getPanelTop()) {
-						setMenuItem(viewItem, panel);
-					} else {
-						setButton(viewItem, items);
-					}
-					break;
-				case 2:
-					setLabel(viewItem, items);
-				}
-				
-
-			}
+			List<AbstractWidget> items = processItems(itemList, panel);
 
 			if (viewPanel.getPlace() == 0) {
 				panelItems.addAll(0, items);
 			} else {
 				panelItems.addAll(items);
 			}
-
+			
+			if (viewPanel.getReadonly()) {
+				panel.setReadonly(true);
+			}
+			panel.setReadonlyIf(viewPanel.getReadonlyIf());
+			
+			if (viewPanel.getHidden()) {
+				panel.setHidden(true);
+			}
+			panel.setHideIf(viewPanel.getHideIf());
+			
 			panel.setItems(panelItems);
 
 			return panel;
 		}
 
 		return abstractPanel;
+	}
+	
+	public List<AbstractWidget> processItems(List<ViewItem> viewItems, Panel panel) {
+		
+		List<AbstractWidget> items = new ArrayList<AbstractWidget>();
+
+		for (ViewItem viewItem : viewItems) {
+
+			Integer type = viewItem.getTypeSelect();
+
+			switch (type) {
+			case 0:
+				String fieldType = viewItem.getFieldType();
+				if (fieldType != null && "one-to-many,many-to-many".contains(fieldType)) {
+					if (!viewItem.getNestedViewItems().isEmpty()) {
+						items.add(createField(viewItem, true));
+					}
+					else {
+						setPanelRelated(viewItem, items);
+					}
+					
+				} else {
+					items.add(createField(viewItem, false));
+				}
+				checkDefaultValues(fieldType, viewItem);
+				break;
+			case 1:
+				if (viewItem.getPanelTop()) {
+					setMenuItem(viewItem, panel);
+				} else {
+					setButton(viewItem, items);
+				}
+				break;
+			case 2:
+				setLabel(viewItem, items);
+				break;
+			case 3:
+				setSpacer(viewItem, items);
+			}
+
+		}
+		
+		return items;
 	}
 
 	/**
@@ -556,7 +698,6 @@ public class FormBuilderService {
 
 		String defaultVal = viewItem.getDefaultValue();
 		String name = viewItem.getName();
-		log.debug("Default field: {} value: {}", name, defaultVal);
 
 		if (defaultVal != null) {
 
@@ -585,7 +726,7 @@ public class FormBuilderService {
 	 * @param panelItems
 	 *            Destination list to update.
 	 */
-	private void setField(ViewItem viewItem, List<AbstractWidget> panelItems) {
+	private PanelField createField(ViewItem viewItem, boolean addEditor) {
 
 		PanelField field = new PanelField();
 		field.setName(viewItem.getName());
@@ -598,11 +739,12 @@ public class FormBuilderService {
 		String selectWidget = viewItem.getWidget();
 		String widget = null;
 		MetaField metaField = viewItem.getMetaField();
-
-		if (viewItem.getColSpan() > 0) {
-			field.setColSpan(viewItem.getColSpan());
+		
+		if (addEditor) {
+			field.setEditor(createEditor(viewItem));
+			field.setColSpan(12);
 		}
-
+		
 		if (viewItem.getHidden()) {
 			field.setHidden(true);
 		} else {
@@ -645,6 +787,10 @@ public class FormBuilderService {
 				field.setCanNew("true");
 			}
 		}
+		
+		if (viewItem.getColSpan() > 0) {
+			field.setColSpan(viewItem.getColSpan());
+		}
 
 		field.setWidget(widget);
 
@@ -654,8 +800,9 @@ public class FormBuilderService {
 		} else {
 			field.setSelection(null);
 		}
+		
+		return field;
 
-		panelItems.add(field);
 	}
 
 	private void setButton(ViewItem viewItem, List<AbstractWidget> panelItems) {
@@ -732,7 +879,14 @@ public class FormBuilderService {
 
 		PanelRelated panelRelated = new PanelRelated();
 		panelRelated.setName(viewItem.getName());
-		panelRelated.setColSpan(12);
+		Integer colspan = viewItem.getColSpan();
+		if (colspan != null && colspan != 0) {
+			panelRelated.setColSpan(colspan);
+		}
+		else {
+			panelRelated.setColSpan(12);
+		}
+		
 		panelRelated.setOnChange(viewItem.getOnChange());
 		panelRelated.setDomain(viewItem.getDomainCondition());
 		panelRelated.setReadonlyIf(viewItem.getReadonlyIf());
@@ -764,8 +918,7 @@ public class FormBuilderService {
 	private void addOnNewAction(FormView formView) {
 
 		String model = viewBuilder.getModel();
-		String actionName = getOnNewActionName(model, formView.getName(),
-				formView.getXmlId());
+		String actionName = "custom-" + formView.getName() + "-default";
 		Action action = XMLViews.findAction(actionName);
 		ActionRecord actionRecord;
 
@@ -784,34 +937,6 @@ public class FormBuilderService {
 		formView.setOnNew(onNew);
 
 		actionRecords.add(actionRecord);
-	}
-
-	/**
-	 * Method create onNew action name.
-	 * 
-	 * @param model
-	 *            Full name of model.
-	 * @param formName
-	 *            Name of form view where onNew will be added.
-	 * @param xmlId
-	 *            of form view
-	 * @return Name of onNew action.
-	 */
-	private String getOnNewActionName(String model, String formName,
-			String xmlId) {
-
-		final Inflector inflector = Inflector.getInstance();
-
-		String klassName = inflector.dasherize(model.substring(model
-				.lastIndexOf(".") + 1));
-
-		String actionName = "custom-" + klassName + "-" + formName;
-		if (xmlId != null && !xmlId.startsWith("custom")) {
-			actionName += "-" + xmlId;
-		}
-		actionName = actionName + "-default";
-
-		return actionName;
 	}
 
 	/**
@@ -835,7 +960,6 @@ public class FormBuilderService {
 				RecordField oldField = toRemove.next();
 
 				if (oldField.getName().equals(recordField.getName())) {
-					log.debug("Old default field: {}", oldField.getName());
 					toRemove.remove();
 					break;
 				}
@@ -873,6 +997,28 @@ public class FormBuilderService {
 		label.setHideIf(item.getHideIf());
 		
 		items.add(label);
+	}
+	
+	
+	private void setSpacer(ViewItem item, List<AbstractWidget> items){
+		
+		Spacer spacer = new Spacer();
+		spacer.setColSpan(item.getColSpan());
+		
+		items.add(spacer);
+	}
+
+	private PanelEditor createEditor(ViewItem viewItem) {
+		
+		List<AbstractWidget> items = processItems(viewItem.getNestedViewItems(), null);
+		
+		if (!items.isEmpty()) {
+			PanelEditor editor = new PanelEditor();
+			editor.setItems(items);
+			return editor;
+		}
+		
+		return null;
 	}
 
 }

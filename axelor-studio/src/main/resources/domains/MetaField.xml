@@ -28,6 +28,7 @@
     <boolean name="multiselect"/>
     <integer name="sequence" title="Sequence"/>
     <boolean name="customised" />
+    <boolean name="existing" />
     <boolean name="isDuration" title="Duration ?" />
     <boolean name="isUrl" title="URL ?" />
     <string name="helpText" title="Help" large="true"/>

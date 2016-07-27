@@ -1,3 +1,20 @@
+/**
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or  modify
+ * it under the terms of the GNU Affero General Public License, version 3,
+ * as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package com.axelor.meta.db.repo;
 
 import java.util.ArrayList;
@@ -10,12 +27,16 @@ import javax.validation.ValidationException;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.db.MetaField;
 import com.axelor.meta.db.MetaModel;
+import com.axelor.studio.service.ModuleRecorderService;
 import com.google.inject.Inject;
 
 public class StudioMetaModelRepository extends MetaModelRepository {
 
 	@Inject
 	private MetaFieldRepository metaFieldRepo;
+	
+	@Inject
+	private ModuleRecorderService recorderService;
 
 	/**
 	 * Extended to validate field name, as it should not contains space and must
@@ -23,11 +44,14 @@ public class StudioMetaModelRepository extends MetaModelRepository {
 	 */
 	@Override
 	public MetaModel save(MetaModel metaModel) throws ValidationException {
+		
 		if (metaModel.getName().equals("Object")) {
 			throw new ValidationException(
 					I18n.get("Invalid model name 'Object'"));
 		}
+		
 		List<MetaField> metaFields = metaModel.getMetaFields();
+		
 		List<String> defaultFields = new ArrayList<String>();
 		defaultFields.add("id");
 		defaultFields.add("createdOn");
@@ -62,6 +86,8 @@ public class StudioMetaModelRepository extends MetaModelRepository {
 		addDefaultFields(metaModel, metaFields, defaultFields);
 
 		metaModel.setMetaFields(metaFields);
+		
+		recorderService.setUpdateServer();
 
 		return super.save(metaModel);
 
@@ -101,6 +127,16 @@ public class StudioMetaModelRepository extends MetaModelRepository {
 			MetaField field = metaFieldRepo.create(values);
 			metaFields.add(field);
 		}
+	}
+	
+	@Override
+	public void remove(MetaModel model) {
+		
+		if (model.getCustomised()) {
+			recorderService.setUpdateServer();
+		}
+		
+		super.remove(model);
 	}
 
 }

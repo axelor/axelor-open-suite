@@ -22,6 +22,7 @@
         <field name="edited" hidden="true" />
         <field name="onSave" colSpan="12" showIf="viewType == 'form'"/>
         <field name="onNew" colSpan="12" showIf="viewType == 'form'"/>
+        <field name="onLoad" colSpan="12" showIf="viewType == 'form'"/>
         <field name="addStream" hideIf="viewType == 'grid'"/>
       </panel>
       <panel hideIf="viewType == 'grid'">

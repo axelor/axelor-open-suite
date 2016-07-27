@@ -18,6 +18,12 @@
     <string name="panelLevel" title="Level" namecolumn="true"  required="true"/>
     <boolean name="isPanelTab" title="Panel tab ?" />
     <boolean name="isNotebook" title="Notebook ?" />
+    <string name="colspan" title="Colspan" />
+    <boolean name="hidden" title="Hidden" />
+    <string name="hideIf" title="Hide If" />
+    <boolean name="readonly" title="Readonly" />
+    <string name="readonlyIf" title="Readonly if" />
+    <boolean name="newPanel" title="New panel ?" />
   </entity>
     
     

@@ -1,3 +1,20 @@
+/**
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or  modify
+ * it under the terms of the GNU Affero General Public License, version 3,
+ * as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package com.axelor.studio.service.builder;
 
 import java.io.File;
@@ -107,7 +124,7 @@ public class MenuBuilderService {
 			File menuFile = new File(parentPath, "Menu.xml");
 			loadFile(menuFile);
 			if (!deletedMenus.isEmpty()) {
-				deleteMenus();
+				deleteMenuItems();
 			}
 			if (!updateMeta) {
 				extractMenu(menuBuilders.iterator());
@@ -470,11 +487,6 @@ public class MenuBuilderService {
 			return;
 		}
 
-		MetaMenu menu = menuBuilder.getMenuGenerated();
-		if (menu != null) {
-			metaMenuRepo.remove(menu);
-		}
-
 		MetaAction action = menuBuilder.getActionGenerated();
 		if (action != null) {
 			metaActionRepo.remove(action);
@@ -484,7 +496,7 @@ public class MenuBuilderService {
 
 	}
 
-	private void deleteMenus() {
+	private void deleteMenuItems() {
 
 		if (menuItems != null) {
 			Iterator<MenuItem> menuIter = menuItems.iterator();

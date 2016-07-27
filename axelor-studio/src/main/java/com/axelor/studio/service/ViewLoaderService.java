@@ -1,3 +1,20 @@
+/**
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or  modify
+ * it under the terms of the GNU Affero General Public License, version 3,
+ * as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package com.axelor.studio.service;
 
 import java.util.Iterator;
@@ -369,7 +386,12 @@ public class ViewLoaderService {
 	 * @return View name.
 	 */
 	public static String getDefaultViewName(String modelName, String viewType) {
-
+		
+		if (modelName.contains(".")) {
+			String[] model = modelName.split("\\.");
+			modelName = model[model.length - 1];
+		}
+		
 		modelName = modelName.trim()
 				.replaceAll("([A-Z]+)([A-Z][a-z])", "$1-$2")
 				.replaceAll("([a-z\\d])([A-Z])", "$1-$2").toLowerCase();
@@ -386,15 +408,33 @@ public class ViewLoaderService {
 	 * @return Default viewBuilder searched or newly created.
 	 */
 
-	public ViewBuilder getDefaultForm(MetaModel metaModel, boolean addParent) {
+	public ViewBuilder getDefaultForm(MetaModel metaModel, String title, boolean addParent) {
 
 		String formName = getDefaultViewName(metaModel.getName(), "form");
 
-		return getViewBuilderForm(metaModel, formName, addParent);
+		return getViewBuilderForm(metaModel, formName, title, addParent);
+	}
+	
+	/**
+	 * Method search default ViewBuilder of type form for a MetaModel with
+	 * default form view name.
+	 * 
+	 * @param metaModel
+	 *            MetaModel to find view for.
+	 * @return Default viewBuilder searched or newly created.
+	 */
+
+	public ViewBuilder getViewBuilder(String formName) {
+
+		ViewBuilder viewBuilder = viewBuilderRepo
+				.all()
+				.filter("self.name = ?1 AND self.viewType = 'form'",
+						formName).fetchOne();
+		return viewBuilder;
 	}
 
 	@Transactional
-	public ViewBuilder getViewBuilderForm(MetaModel metaModel, String formName, boolean addParent) {
+	public ViewBuilder getViewBuilderForm(MetaModel metaModel, String formName, String title, boolean addParent) {
 		String modelName = metaModel.getFullName();
 
 		log.debug("Get default form name: {} model: {}", formName, modelName);
@@ -414,9 +454,12 @@ public class ViewLoaderService {
 			viewBuilder.setViewType("form");
 			viewBuilder.setEdited(true);
 			viewBuilder.setRecorded(false);
-			String title = metaModel.getTitle();
+			
 			if (title == null) {
-				title = metaModel.getName();
+				title = metaModel.getTitle();
+				if (title == null){
+					title = metaModel.getName();
+				}
 			}
 			viewBuilder.setTitle(title);
 

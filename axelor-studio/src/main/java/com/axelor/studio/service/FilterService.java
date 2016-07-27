@@ -1,3 +1,20 @@
+/**
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or  modify
+ * it under the terms of the GNU Affero General Public License, version 3,
+ * as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package com.axelor.studio.service;
 
 import java.util.ArrayList;
@@ -96,13 +113,13 @@ public class FilterService {
 			} else if (relationship.equals("ManyToMany")
 					&& !operator.contains("mpty")) {
 				targetField = targetField.replace(field + "?.", "it?.");
-				String condition = getBasicCondition(operator, targetField,
+				String condition = getConditionExpr(operator, targetField,
 						value);
 				return field + ".findAll{it->" + condition + "}.size() > 0";
 			}
 		}
 
-		return getBasicCondition(operator, field, value);
+		return getConditionExpr(operator, field, value);
 
 	}
 
@@ -171,7 +188,7 @@ public class FilterService {
 		return value;
 	}
 
-	private String getBasicCondition(String operator, String field, String value) {
+	private String getConditionExpr(String operator, String field, String value) {
 
 		switch (operator) {
 		case "=":

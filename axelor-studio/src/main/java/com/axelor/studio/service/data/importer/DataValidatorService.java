@@ -1,9 +1,27 @@
-package com.axelor.studio.service.importer;
+/**
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or  modify
+ * it under the terms of the GNU Affero General Public License, version 3,
+ * as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+package com.axelor.studio.service.data.importer;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -21,9 +39,10 @@ import org.slf4j.LoggerFactory;
 
 import com.axelor.i18n.I18n;
 import com.axelor.meta.db.MetaModel;
+import com.axelor.studio.service.data.DataCommonService;
 import com.google.common.base.Strings;
 
-public class InputValidatorService extends ImporterService {
+public class DataValidatorService extends DataCommonService {
 	
 	private final Logger LOG = LoggerFactory.getLogger(getClass());
 	
@@ -34,11 +53,19 @@ public class InputValidatorService extends ImporterService {
 		ignoreNames.add("panelbook");
 		ignoreNames.add("error");
 		ignoreNames.add("warning");
+		ignoreNames.add("onsave");
+		ignoreNames.add("onnew");
+		ignoreNames.add("onload");
+		ignoreNames.add("spacer");
+		ignoreNames.add("label");
+		ignoreNames.add("dashlet");
 	}
 	
-	private static String sumPattern = "sum\\(([^;^:]+;[^;^:]+(:[^:^;]+)?)\\)";
+	private static final String sumPattern = "sum\\(([^;^:]+;[^;^:]+(:[^:^;]+)?)\\)";
 	
-	private static String seqPattern = "seq\\(([\\d]+(:[^:]+)?(:[^:]+)?)\\)";
+	private static final String seqPattern = "seq\\(([\\d]+(:[^:]+)?(:[^:]+)?)\\)";
+	
+	private static final List<String> panelTabTypes = Arrays.asList(new String[]{"o2m","m2m","dashlet","paneltab"});
 	
 	private File logFile;
 	
@@ -51,6 +78,8 @@ public class InputValidatorService extends ImporterService {
 	private Map<String, Object[]> viewPanelMap;
 	
 	private Map<String, Row> invalidModelMap;
+	
+	private Map<String, String> referenceMap;
 	
 	private Map<String, Map<String, Row>> invalidFieldMap;
 	
@@ -65,6 +94,7 @@ public class InputValidatorService extends ImporterService {
 			viewPanelMap = new HashMap<String, Object[]>();
 			invalidModelMap = new HashMap<String, Row>();
 			invalidFieldMap = new HashMap<String, Map<String,Row>>();
+			referenceMap = new HashMap<String, String>();
 			menus = new ArrayList<String>();
 			Iterator<XSSFSheet> sheetIter = workBook.iterator();
 			
@@ -111,11 +141,15 @@ public class InputValidatorService extends ImporterService {
 	
 	private String validateModel(Row row) throws IOException {
 		
-		String obj = getString(row.getCell(MODEL));
+		String obj = getValue(row, MODEL);
 		if (obj != null) {
 			
 			if (Character.isDigit(obj.charAt(0))) {
 				addLog(I18n.get("Invalid object name"), row);
+			}
+			
+			if (referenceMap.containsKey(obj)) {
+				obj = referenceMap.get(obj);
 			}
 			
 			if (!modelMap.containsKey(obj)) {
@@ -132,17 +166,17 @@ public class InputValidatorService extends ImporterService {
 	
 	private String validateView(String obj, Row row) throws IOException {
 		
-		String view = getString(row.getCell(VIEW));
+		String view = getValue(row, VIEW);
 		
 		if (view != null && obj != null) {
 			if (!viewModelMap.containsKey(view)) {
 				viewModelMap.put(view, obj);
 			}
-			else if (!viewModelMap.get(view).equals(obj)) {
-				addLog(String.format(
-						I18n.get("Same view name can't be used for two objects %s and %s")
-						, viewModelMap.get(view), obj), row);
-			}
+//			else if (!viewModelMap.get(view).equals(obj)) {
+//				addLog(String.format(
+//						I18n.get("Same view name can't be used for two objects %s and %s")
+//						, viewModelMap.get(view), obj), row);
+//			}
 		}
 		
 		return view;
@@ -158,7 +192,7 @@ public class InputValidatorService extends ImporterService {
 			if (ignoreTypes.contains(type)) {
 				return consider;
 			}
-			if(!type.startsWith("menu")) {
+			if(!type.startsWith("menu") && !type.startsWith("dashlet")) {
 				consider = true;
 			}
 		}
@@ -183,14 +217,10 @@ public class InputValidatorService extends ImporterService {
 	private boolean validateName(String type, Row row, String obj,
 			boolean consider) throws IOException {
 		
-		String name = getString(row.getCell(NAME));
-		String title = getString(row.getCell(TITLE));
+		String name = getValue(row, NAME);
+		String title = getValue(row, TITLE);
 		if (name == null) {
 			name = title;
-		}
-		String titleTr = getString(row.getCell(TITLE_TR));
-		if (name == null) {
-			name = titleTr;
 		}
 		if (name != null) {
 			menus.add(name);
@@ -222,17 +252,14 @@ public class InputValidatorService extends ImporterService {
 
 	private boolean checkSelect(Row row, String type, boolean consider) throws IOException {
 		
-		String select = getString(row.getCell(SELECT));
-		String selectTr = getString(row.getCell(SELECT_TR));
+		String select = getValue(row, SELECT);
 		
-		if (select != null || selectTr != null) {
-			
-			if (type != null 
+		if (select != null
+					&& type != null 
 					&& !type.equals("select") 
 					&& !type.equals("multiselect")){
 				addLog(I18n.get("Selection defined for non select field. "
 						+ "Please check the type"), row);
-			}
 			
 			return true;
 		}
@@ -240,22 +267,6 @@ public class InputValidatorService extends ImporterService {
 		return consider;
 	}
 	
-//	private boolean checkExtraAttrs(Row row, String obj, String type, boolean consider) throws IOException {
-//		
-//		String hideIf = getString(row.getCell(HIDE_IF));
-//		String requiredIf = getString(row.getCell(REQUIRED_IF));
-//		String readonlyIf = getString(row.getCell(READONLY_IF));
-//		String list = getString(row.getCell(LIST));
-//		
-//		if(!Strings.isNullOrEmpty(list)){
-//			consider = true;
-//		}
-//		
-//		
-//		return consider;
-//	}
-	
-
 	private void addLog(String log, Row row) throws IOException{
 		
 		if (logFile == null) {
@@ -314,7 +325,7 @@ public class InputValidatorService extends ImporterService {
 	
 	private String validateType(Row row) throws IOException {
 		
-		String type = getString(row.getCell(TYPE));
+		String type = getValue(row, TYPE);
 		if(type == null){
 			return type;
 		}
@@ -327,23 +338,23 @@ public class InputValidatorService extends ImporterService {
 				reference = ref[1].replace(")","");
 			}
 			type = ref[0];
-			
 		}
 		
-		if (!typeMap.containsKey(type) 
-				&& !viewElements.contains(type) 
-				&& !frMap.containsKey(type)) {
+		if (!fieldTypes.containsKey(type) 
+				&& !frMap.containsKey(type) && !viewElements.containsKey(type)) {
 			addLog(I18n.get("Invalid type"), row);
 		}
 		
-		if ("o2m,m2m,m2o,wizard".contains(type)) { 
+		if (referenceTypes.contains(type)) { 
 			if (reference == null) {
 				addLog(I18n.get("Reference is empty for type"), row);
 			}
 			else  if (!modelMap.containsKey(reference) 
 					&& !invalidModelMap.containsKey(reference)) {
 				invalidModelMap.put(reference, row);
+				referenceMap.put(getValue(row, MODEL) + "(" + getValue(row, NAME) + ")" , reference);
 			}
+			
 		}
 		
 		if (type.equals("menu") && reference != null) {
@@ -353,17 +364,19 @@ public class InputValidatorService extends ImporterService {
 			}
 		}
 		
-		if(type != null){
+		if(type != null && !ignoreTypes.contains(type) && !type.equals("menu")){
 			checkViewPanelType(type, reference, row);
 		}
+		
+		
 		
 		return type;
 	}
 	
 	private boolean checkEvents(String obj, Row row, boolean consider) throws IOException {
 		
-		String formula = getString(row.getCell(FORMULA));
-		String event = getString(row.getCell(EVENT));
+		String formula = getValue(row, FORMULA);
+		String event = getValue(row, EVENT);
 		
 		if (event == null) {
 			return consider;
@@ -419,8 +432,8 @@ public class InputValidatorService extends ImporterService {
 			}
 		}
 		
-		for(Object[] panel : viewPanelMap.values()){
-			if(panel[0].equals("panelbook")){
+		for(Object[] panel : viewPanelMap.values()) {
+			if(panel[0].equals("panelbook")) {
 				addLog(I18n.get("Panelbook must follow by paneltab"), 
 						(Row)panel[1]);
 			}
@@ -430,13 +443,9 @@ public class InputValidatorService extends ImporterService {
 	
 	private void checkViewPanelType(String type, String reference, Row row) throws IOException{
 		
-		if ("error,warning,menu".contains(type)) {
-			return;
-		}
-		
-		String view = getString(row.getCell(VIEW));
+		String view = getValue(row, VIEW);
 		if (view == null) {
-			view = getString(row.getCell(MODEL));
+			view = getValue(row, MODEL);
 		}
 		
 		if (view == null) {
@@ -460,15 +469,15 @@ public class InputValidatorService extends ImporterService {
 			}
 		}
 		else if (lastPanel[0].equals("panelbook") 
-				&& !type.equals("paneltab")) {
+				&& !panelTabTypes.contains(type)) {
 			addLog(I18n.get("Panelbook must follow by paneltab"), row);
 		}
 		else if (type.equals("paneltab") 
 				&& !lastPanel[0].equals("panelbook")
-				&& !lastPanel[0].equals("paneltab")) {
+				&& !panelTabTypes.contains(lastPanel[0])) {
 			addLog(I18n.get("Paneltab not allowed without panelbook"), row);
 		}
-		else if (type.startsWith("panel")) {
+		else if (type.startsWith("panel") || panelTabTypes.contains(type)) {
 			viewPanelMap.put(view, new Object[]{type, row});
 		}
 		
@@ -476,7 +485,7 @@ public class InputValidatorService extends ImporterService {
 	
 	private boolean checkFormula(String obj, Row row, boolean consider) throws IOException{
 		
-		String formula = getString(row.getCell(FORMULA));
+		String formula = getValue(row, FORMULA);
 		
 		if (formula == null) {
 			return consider;

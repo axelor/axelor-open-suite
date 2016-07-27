@@ -1,3 +1,20 @@
+/**
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or  modify
+ * it under the terms of the GNU Affero General Public License, version 3,
+ * as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package com.axelor.studio.service.builder;
 
 import groovy.lang.GroovyShell;
@@ -252,7 +269,7 @@ public class ActionBuilderService {
 			field.setName(target[0]);
 			String condition = line.getConditionText();
 			if (!Strings.isNullOrEmpty(condition)
-					&& checkGroovy(condition, true)) {
+					&& !checkGroovy(condition, true)) {
 				addError(builderName, condition, true);
 				continue;
 			}
@@ -267,7 +284,7 @@ public class ActionBuilderService {
 			String expr = getRecordExpression(target, line.getMetaField(),
 					value, line.getFilter());
 			if (!Strings.isNullOrEmpty(expr)
-					&& checkGroovy(expr, true)) {
+					&& !checkGroovy(expr, true)) {
 				addError(builderName, value, false);
 				continue;
 			}

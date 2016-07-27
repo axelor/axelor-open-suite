@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.admin.service;
+package com.axelor.studio.service.data.exporter;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -27,8 +27,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.TreeSet;
 
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
@@ -49,62 +47,18 @@ import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaAction;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.meta.db.MetaMenu;
-import com.axelor.meta.db.MetaTranslation;
 import com.axelor.meta.db.repo.MetaMenuRepository;
-import com.axelor.meta.db.repo.MetaTranslationRepository;
 import com.axelor.studio.service.ViewLoaderService;
-import com.axelor.studio.service.importer.ImporterService;
-import com.axelor.studio.service.importer.ModelImporterService;
+import com.axelor.studio.service.data.DataCommonService;
+import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 
-public class ViewDocExportService {
+public class DataExportService extends DataCommonService {
 	
-	protected Set<String>fieldTypes = new TreeSet<String>(String.CASE_INSENSITIVE_ORDER);{
-		fieldTypes.add("Toolbar Menu");
-		fieldTypes.add("Toolbar MenuItem");
-		fieldTypes.add("Panel");
-		fieldTypes.add("SubPanel");
-		fieldTypes.add("Button");
-		fieldTypes.add("Label");
-		fieldTypes.add("Dashlet");
-		fieldTypes.add("STRING");
-		fieldTypes.add("INTEGER");
-		fieldTypes.add("DECIMAL");
-		fieldTypes.add("BOOLEAN");
-		fieldTypes.add("TEXT");
-		fieldTypes.add("DATE");
-		fieldTypes.add("LONG");
-		fieldTypes.add("TIME");
-		fieldTypes.add("DATETIME");
-		fieldTypes.add("LOCALDATETIME");
-		fieldTypes.add("LOCALDATE");
-		fieldTypes.add("LOCALTIME");
-		fieldTypes.add("ONE_TO_MANY");
-		fieldTypes.add("MANY_TO_ONE");
-		fieldTypes.add("ONE_TO_ONE");
-		fieldTypes.add("MANY_TO_MANY");
-		fieldTypes.add("BINARY");
-		fieldTypes.add("general");
-		fieldTypes.add("EMPTY");
-		fieldTypes.add("MENU");
-	};
+	public int columns = HEADERS.length;
 	
 	private final Logger log = LoggerFactory.getLogger(getClass());
-	
-	private static final String[] HEADERS = new String[]{
-		"Module", 
-		"Object", 
-		"View", 
-		"Field name", 
-		"Field title(EN)", 
-		"Field title(FR)",
-		"Field type", 
-		"Selection(EN)",
-		"Selection(FR)",
-		"Menu(EN)",
-		"Menu(FR)",
-	};
 	
 	private static final String[] PANEL_HEADERS = new String[]{
 		"Module", 
@@ -118,11 +72,7 @@ public class ViewDocExportService {
 	
 	private XSSFWorkbook workBook;
 	
-//	private XSSFWorkbook oldBook;
-	
 	private XSSFSheet sheet;
-	
-//	private XSSFSheet oldSheet;
 	
 	private XSSFCellStyle style;
 	
@@ -132,9 +82,7 @@ public class ViewDocExportService {
 	
 	private XSSFCellStyle violet;
 	
-	private String[] menuPath = null;
-	
-	private String rootMenu;
+	private String menuPath = null;
 	
 	private boolean onlyPanel = false;
 	
@@ -148,29 +96,30 @@ public class ViewDocExportService {
 	private MetaMenuRepository metaMenuRepo;
 	
 	@Inject
-	private MetaTranslationRepository translationRepo; 
-	
-	@Inject
 	private MetaFiles metaFiles;
 	
 	@Inject
-	private ViewDocXmlProcessor viewDocXmlProcessor;
+	private DataXmlService dataXmlService;
 	
-	@Inject
-	private ModelImporterService modelImporterService;
-	
-	public MetaFile export(MetaFile docFile, boolean onlyPanel){
+	public MetaFile export(MetaFile docFile, boolean onlyPanel) {
 		
 		this.onlyPanel = onlyPanel;
+
+		if (onlyPanel) {
+			columns = PANEL_HEADERS.length;
+		}
 		
 		List<MetaMenu> menus = metaMenuRepo.all().filter("self.parent is null "
-				+ "and self.left = true and self.action is null "
-				+ "and self.module != 'axelor-core'").order("order").fetch();
+				+ "and self.left = true "
+				+ "and self.action is null "
+				+ "and self.module != 'axelor-core'")
+				.order("order").fetch();
 		
 		workBook = new XSSFWorkbook();
+		addStudioImport();
 		addStyle();
 		
-		if(docFile != null && !onlyPanel){
+		if  (docFile != null && !onlyPanel) {
 			updateDocMap(docFile);
 		}
 		
@@ -181,7 +130,22 @@ public class ViewDocExportService {
 		return createExportFile(docFile);
 	}
 	
-	private void addStyle(){
+	private void addStudioImport() {
+		
+		XSSFSheet sheet = workBook.createSheet("StudioImport");
+		XSSFRow row = sheet.createRow(0);
+		String[] titles = new String[]{"Object", "View", "Add/Replace"};
+		
+		int count = 0;
+		for (String title : titles) {
+			Cell cell = row.createCell(count);
+			cell.setCellValue(title);
+			count++;
+		}
+		
+	}
+	
+	private void addStyle() {
 		
 		style = workBook.createCellStyle();
 		style.setBorderBottom(CellStyle.BORDER_THIN);
@@ -204,65 +168,65 @@ public class ViewDocExportService {
 		
 	}
 	
-	public boolean getOnlyPanel(){
+	public boolean getOnlyPanel() {
 		return onlyPanel;
 	}
 	
-	private void processRootMenu(Iterator<MetaMenu> rootMenuIter){
+	private void processRootMenu(Iterator<MetaMenu> rootMenuIter) {
 		
-		if(!rootMenuIter.hasNext()){
+		if (!rootMenuIter.hasNext()) {
 			return;
 		}
 		
 		MetaMenu menu = rootMenuIter.next();
 		String name = menu.getName();
 		
-		if(!processedMenus.contains(name)){
+		if (!processedMenus.contains(name)) {
 			String title = menu.getTitle();
-			if(workBook.getSheetIndex(title) >= 0){
+			if (workBook.getSheetIndex(title) >= 0) {
 				title = title + "(" + menu.getId() + ")";
 			}
-			rootMenu = title;
-			sheet = null;
-			processMenu(name, 0);
+			createSheet(title);
+			updateMenuPath(menu);
+			addMenu(menu, null, 1);
+			processMenu(name, 1);
 			processedMenus.add(name);
 		}
 		
 		processRootMenu(rootMenuIter);
 	}
 	
-	protected void setMenuPath(String[] menuPath){
+	protected void setMenuPath(String menuPath) {
 		this.menuPath = menuPath;
 	}
 	
-	private void setColumnWidth(){
+	private void setColumnWidth() {
 		
 		Iterator<XSSFSheet> sheets = workBook.iterator();
 
-		while(sheets.hasNext()){
+		while (sheets.hasNext()) {
 			sheet = sheets.next();
 			sheet.createFreezePane(0, 1, 0, 1);
 			int count = 0;
-			while(count < HEADERS.length){
+			while (count < HEADERS.length) {
 				sheet.autoSizeColumn(count);
 				count++;
 			}
 		}
 	}
 	
-	private void addGeneralRow(String[] values){
+	private void addGeneralRow(String[] values) {
 			
 		XSSFRow row = sheet.createRow(sheet.getPhysicalNumberOfRows());
-		String[] vals = { 
-			values[0],
-			values[1],
-			values[2],
-			null,null,null, "general", null,null,null,null
-		};
+		String[] vals = new String[columns];
+		vals[MODULE] = values[MODULE];
+		vals[MODEL] = values[MODEL];
+		vals[VIEW] = values[VIEW];
+		vals[TYPE] = "general"; 
 		
-		if(menuPath != null){
-			vals[9] = menuPath[0];
-			vals[10] = menuPath[1];
+		if (menuPath != null) {
+			vals[MENU] = menuPath;
+			menuPath = null;
 		}
 			
 		int count = writeCell(row, vals, 0, green);
@@ -271,17 +235,13 @@ public class ViewDocExportService {
 		
 	}
 	
-	private void createSheet(){
+	private void createSheet(String rootMenu) {
 		
 		log.debug("Root menu: {}", rootMenu);
 		menuPath = null;
 		sheet = workBook.createSheet(I18n.get(rootMenu));
 		
-//		if(oldBook != null){
-//			oldSheet = oldBook.getSheet(sheet.getSheetName());
-//		}
-		
-		if(onlyPanel){
+		if (onlyPanel) {
 			writeRow(PANEL_HEADERS, false, false, false);
 		}
 		else{
@@ -290,50 +250,54 @@ public class ViewDocExportService {
 		
 	}
 	
-	protected void writeRow(String[] values, boolean newForm, boolean newPanel, boolean newSubPanel){
+	protected void writeRow(String[] values, boolean newForm, 
+			boolean newPanel, boolean newSubPanel) {
 		
 		if(newForm){
 			addGeneralRow(values);
-			menuPath = new String[]{"",""};
 		}
 		
 		XSSFRow row = sheet.createRow(sheet.getPhysicalNumberOfRows());
 		XSSFCellStyle cellStyle = style;
 		 
-		if(!onlyPanel){
-			if(newPanel){
+		if (!onlyPanel) {
+			if (newPanel) {
 				cellStyle = violet;
 			}
-			else if (newSubPanel) {
-				cellStyle = lavender;
-			}
+//			else if (newSubPanel) {
+//				cellStyle = lavender;
+//			}
 		}
 		
 		int count = writeCell(row, values, 0, cellStyle);
 		
-		if(!onlyPanel){ 
-			if(menuPath != null){
-				count = writeCell(row, menuPath, count, cellStyle);
+		if (!onlyPanel) { 
+			if (menuPath != null) {
+				writeCell(row, 
+						new String[]{menuPath}, 
+						MENU, 
+						cellStyle);
+				menuPath = null;
 			}
 			
 			addDoc(row, values, count, cellStyle, null);
 		}
 		
-		menuPath = new String[]{"",""};
-		
 	}
 	
-	protected Integer writeRow(Row oldRow, XSSFCellStyle cellStyle, int count, Integer rowCount){
+	protected Integer writeRow(Row oldRow, XSSFCellStyle cellStyle, 
+			int count, Integer rowCount) {
 		
 		XSSFRow row = null;
 		
 		int totalRows = sheet.getPhysicalNumberOfRows();
-		if(rowCount == null){
+		
+		if (rowCount == null) {
 			row = sheet.createRow(totalRows);
 		}
-		else{
+		else {
 			rowCount++;
-			if(rowCount < totalRows){
+			if (rowCount < totalRows) {
 				sheet.shiftRows(rowCount, totalRows, 1);
 			}
 			row = sheet.createRow(rowCount);
@@ -341,30 +305,30 @@ public class ViewDocExportService {
 		
 		writeCell(row, oldRow, count, cellStyle);
 		
-		menuPath = new String[]{"",""};
+		menuPath = "";
 		
 		return rowCount;
 	}
 	
-	private int writeCell(XSSFRow row, String[] values, int count,  XSSFCellStyle cellStyle){
+	private int writeCell(XSSFRow row, String[] values,
+			int count,  XSSFCellStyle cellStyle) {
 		
 		int cellCount = 0;
 		
-		for(String value : values){
+		for (String value : values) {
 			
-			if(onlyPanel){
+			if (onlyPanel) {
 				cellCount++;
-				if(cellCount == 4){
+				if (cellCount == 4) {
 					continue;
 				}
-				if(cellCount > 7){
+				if (cellCount > 7) {
 					break;
 				}
 			}
 			
 			XSSFCell cell = row.createCell(count);
 			cell.setCellStyle(cellStyle);
-			
 			cell.setCellValue(value);
 			
 			count++;
@@ -374,22 +338,14 @@ public class ViewDocExportService {
 		
 	}
 	
-	private void writeCell(XSSFRow row, Row oldRow, int count, XSSFCellStyle cellStyle){
+	private void writeCell(XSSFRow row, Row oldRow, int count,
+			XSSFCellStyle cellStyle){
 		
-		while(count < oldRow.getLastCellNum()) {
+		while (count < oldRow.getLastCellNum()) {
 			count++;
-			Cell oldCell = oldRow.getCell(count-1);
-			if (oldCell == null) {
-				continue;
-			}
 			
-			String val = null;
-			
-			if (oldCell.getCellType() == Cell.CELL_TYPE_STRING) {
-				val = oldCell.getStringCellValue();
-			}
-			
-			if (val == null){
+			String val = getValue(oldRow, count-1);
+			if (val == null) {
 				continue;
 			}
 			Cell cell = row.createCell(count-1);
@@ -399,26 +355,27 @@ public class ViewDocExportService {
 		
 	}
 	
-	private Integer addDoc(XSSFRow row, String[] values, int count, XSSFCellStyle cellStyle, Integer rowCount){
+	private Integer addDoc(XSSFRow row, String[] values, int count, 
+			XSSFCellStyle cellStyle, Integer rowCount)  {
 		
-		 String name = values[3];
-		 if(name == null){
-			 name = values[4];
+		 String name = values[NAME];
+		 if (name == null) {
+			 name = values[TITLE];
 		 }
 		 
 		 String key = null;
-		 if(row.getRowNum() == 0){
+		 if (row.getRowNum() == 0) {
 			 key = sheet.getSheetName();
 		 }
-		 else{
-			 String model = values[1];
+		 else {
+			 String model = values[MODEL];
 			 if (model != null) {
-				 String[] modelSplit = values[1].split("\\.");
+				 String[] modelSplit = model.split("\\.");
 				 model = modelSplit[modelSplit.length - 1];
 			 }
 			 key =  model
-					+ "," + values[2]
-					+ "," + getFieldType(values[6]) 
+					+ "," + values[VIEW]
+					+ "," + getFieldType(values[TYPE]) 
 				    + "," + name;
 			 
 		 }
@@ -428,26 +385,12 @@ public class ViewDocExportService {
 		 }
 
 		 if (commentMap.containsKey(key)) {
-			for(Row oldRow : commentMap.get(key)){
+			for (Row oldRow : commentMap.get(key)){
 				rowCount = writeRow(oldRow, style, 0, rowCount);
 			}
 		 }
 		 
 		 return rowCount;
-	}
-	
-	protected String translate(String key, String lang){
-		
-		MetaTranslation translation = translationRepo.findByKey(key, lang);
-		
-		if(translation != null){
-			String msg = translation.getMessage();
-			if(!Strings.isNullOrEmpty(msg)){
-				return msg;
-			}
-		}
-		
-		return key;
 	}
 	
 	private int processMenu(String parentMenu, int count){
@@ -456,21 +399,16 @@ public class ViewDocExportService {
 				.filter("self.parent.name = ?", parentMenu)
 				.order("order").fetch();
 		
-		if(sheet == null){
-			createSheet();
-		}
-		
-		for(MetaMenu subMenu : subMenus){
+		for (MetaMenu subMenu : subMenus) {
 			
 			count++;
-//			log.debug("Processing sub menu: {}", subMenu.getName());
 			
 			MetaAction action = subMenu.getAction();
 			
-			if(action == null){
-				if(!onlyPanel){
-					String[] paths = updateMenuPath(subMenu);
-					count = addMenu(subMenu, "", paths, count);
+			if (action == null) {
+				if (!onlyPanel) {
+					updateMenuPath(subMenu);
+					count = addMenu(subMenu, "", count);
 				}
 				count = processMenu(subMenu.getName(), count);
 				continue;
@@ -478,49 +416,50 @@ public class ViewDocExportService {
 			
 			String model = action.getModel();
 			
-			String[] paths = updateMenuPath(subMenu);
-			if(action.getType().equals("action-view")){
-				viewDocXmlProcessor.processModel(model, action);
+			updateMenuPath(subMenu);
+			
+			if (!onlyPanel) {
+				count = addMenu(subMenu, getModelName(model), count);
 			}
 			
-			if(!onlyPanel){
-				count = addMenu(subMenu, model, paths, count);
+			if (action.getType().equals("action-view")) {
+				dataXmlService.processAction(model, action);
 			}
+			
 			
 		}
 		
 		return count;
 	}
 	
-	private int addMenu(MetaMenu subMenu, String model, String[] paths, int rowCount){
+	private int addMenu(MetaMenu subMenu, String model, int rowCount) {
 		
 		sheet.shiftRows(rowCount, sheet.getPhysicalNumberOfRows(), 1);
 		
 		XSSFRow row = sheet.createRow(rowCount);
 		
-		String[] menuEn = paths[0].split("/");
-		String[] menuFr = paths[1].split("/");
+		String[] menu = menuPath.split("/");
 		
-		String[] values = new String[]{
-		    subMenu.getModule(),
-		    model,
-		    "",
-		    subMenu.getName(),
-		    menuEn[menuEn.length - 1],
-		    menuFr[menuFr.length - 1],
-		    "MENU",
-		    "",
-		    "",
-		    paths[0],
-		    paths[1]
-		};
+		String type = "menu";
+		
+		if (subMenu.getParent() != null) {
+			type += "(" + subMenu.getParent().getName() + ")";
+		}
+		
+		String[] values = new String[columns];
+		values[MODULE] = subMenu.getModule();
+		values[MODEL] = model;
+		values[NAME] = subMenu.getName();
+		values[TITLE] = menu[menu.length - 1];
+		values[TYPE] = type;
+		values[MENU] = menuPath;
 		
 		int count = writeCell(row, values, 0, style);
 		
 		return addDoc(row, values, count, style, rowCount);
 	}
 	
-	private String[] updateMenuPath(MetaMenu metaMenu){
+	private void updateMenuPath(MetaMenu metaMenu) {
 		
 		List<String> menus = new ArrayList<String>();
 		menus.add(metaMenu.getTitle());
@@ -529,32 +468,24 @@ public class ViewDocExportService {
 		
 		Collections.reverse(menus);
 		
-		String menuEN = null;
-		String menuFR = null;
+		menuPath = Joiner.on("/").join(menus);
+//		for (String menu : menus) {
+//			
+//			if (menuPath == null) {
+//				menuPath = menu;
+//			}
+//			else {
+//				menuPath += "/" + menu;
+//			}
+//		}
 		
-		for(String menu : menus){
-			
-			if(menuEN == null){
-				menuEN = translate(menu, "en");
-				menuFR = translate(menu, "fr");
-			}
-			else{
-				menuEN += "/" + translate(menu, "en");
-				menuFR += "/" + translate(menu, "fr");
-			}
-		}
-		
-		String[] paths = new String[]{menuEN,menuFR};
-		menuPath = paths;
-		
-		return paths;
 	}
 	
-	private void addParentMenus(List<String> menus, MetaMenu metaMenu){
+	private void addParentMenus(List<String> menus, MetaMenu metaMenu) {
 		
 		MetaMenu parentMenu = metaMenu.getParent();
 		
-		if(parentMenu != null){
+		if (parentMenu != null) {
 			menus.add(parentMenu.getTitle());
 			addParentMenus(menus, parentMenu);
 		}
@@ -568,9 +499,7 @@ public class ViewDocExportService {
 			FileInputStream inSteam = new FileInputStream(doc);
 			XSSFWorkbook book = new XSSFWorkbook(inSteam);
 			
-//			oldBook = book;
-
-			for(XSSFSheet sheet : book) {
+			for (XSSFSheet sheet : book) {
 				String lastKey = sheet.getSheetName();
 				Iterator<Row> rowIter = sheet.rowIterator();
 				
@@ -578,32 +507,33 @@ public class ViewDocExportService {
 					Row row = rowIter.next();
 
 					String key = null;
-					if(row.getRowNum() == 0){
+					if (row.getRowNum() == 0) {
 						key = sheet.getSheetName();
 						continue;
 					}
 					
 					String name = getFieldName(row);
-					String type = getFieldType(getCellValue(row.getCell(6)));
+					String type = getValue(row, TYPE);
 					if (type == null) {
 						continue;
 					}
 					
-					String model = getCellValue(row.getCell(1));
+					String model = getValue(row, MODEL);
 					if (model != null) {
-						model = modelImporterService.inflector.camelize(model);
+						model = inflector.camelize(model);
 					}
 					
-					String view = getCellValue(row.getCell(2));
-					if(model != null && view == null){
+					String view = getValue(row, VIEW);
+					if (model != null && view == null) {
 						view = ViewLoaderService.getDefaultViewName(model, "form");
 					}
 					
-					key =  model + "," + view + "," + type + "," +  name;
+					key =  model + "," + view + "," + getFieldType(type) + "," +  name;
 					
-					if(addComment(lastKey, type, row)){
+					if (addComment(lastKey, type, row)) {
 						continue;
 					}
+					
 					lastKey = key;
 					docMap.put(key, row);
 				}
@@ -612,21 +542,10 @@ public class ViewDocExportService {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		
 	}
 	
-	public static String getCellValue(Cell cell){
-		
-		if(cell != null){
-			String value = cell.getStringCellValue();
-			if (!Strings.isNullOrEmpty(value)) {
-				return value;
-			}
-		}
-		
-		return null;
-	}
-	
-	private MetaFile createExportFile(MetaFile metaFile){
+	private MetaFile createExportFile(MetaFile metaFile) {
 		
 		String date = LocalDateTime.now().toString("ddMMyyyy HH:mm:ss");
 		String fileName = "Export " + date + ".xlsx";
@@ -638,7 +557,7 @@ public class ViewDocExportService {
 			outStream.close();
 			
 			FileInputStream inStream = new FileInputStream(file);
-			if(metaFile != null){
+			if (metaFile != null) {
 				metaFile.setFileName(fileName);
 				metaFile = metaFiles.upload(inStream, metaFile);
 			}
@@ -657,19 +576,18 @@ public class ViewDocExportService {
 		return metaFile;
 	}
 	
-	private boolean addComment(String lastKey, String type, Row row){
+	private boolean addComment(String lastKey, String type, Row row) {
 		
-		String mType = type;
 		if (type.contains("(")) {
-			mType = type.substring(0, type.indexOf("("));
+			type = type.substring(0, type.indexOf("("));
 		}
-		mType = mType.replace("-", "_");
+//		type = type.replace("-", "_");
 		
-		if (!fieldTypes.contains(mType)) {
-			log.debug("Not supported doc type: {}", mType);
+		if (!fieldTypes.containsKey(type) && !viewElements.containsKey(type)) {
+			log.debug("Not contains type: {}", type);
 //			if(firstCell != null){
 				List<Row> rows = new ArrayList<Row>();
-				if(commentMap.containsKey(lastKey)){
+				if (commentMap.containsKey(lastKey)) {
 					rows = commentMap.get(lastKey);
 				}
 				
@@ -686,14 +604,12 @@ public class ViewDocExportService {
 	
 	private String getFieldName(Row row) {
 		
-		String name = getCellValue(row.getCell(3));
-		if(Strings.isNullOrEmpty(name)){
-			name =  getCellValue(row.getCell(4));
-			if(Strings.isNullOrEmpty(name)){
-				name =  getCellValue(row.getCell(5));
-			}
-			if(!Strings.isNullOrEmpty(name)){
-				name = modelImporterService.getFieldName(name);
+		String name = getValue(row, NAME);
+		
+		if (Strings.isNullOrEmpty(name)) {
+			name =  getValue(row, TITLE);
+			if (!Strings.isNullOrEmpty(name)) {
+				name = getFieldName(name);
 			}
 		}
 		
@@ -702,7 +618,7 @@ public class ViewDocExportService {
 	
 	private String getFieldType(String type) {
 		
-		if(type == null){
+		if (type == null) {
 			return type;
 		}
 		type = type.trim();
@@ -711,12 +627,15 @@ public class ViewDocExportService {
 			type = type.substring(0, type.indexOf("("));
 		}
 		
-		if(ImporterService.frMap.containsKey(type)) {
-			type = ImporterService.frMap.get(type);
+		if(frMap.containsKey(type)) {
+			type = frMap.get(type);
 		}
 		
-		if (ImporterService.typeMap.containsKey(type)) {
-			type = ImporterService.typeMap.get(type);
+		if (fieldTypes.containsKey(type)) {
+			type = fieldTypes.get(type);
+		}
+		else if (viewElements.containsKey(type)) {
+			type = viewElements.get(type);
 		}
 		
 		type = type.toUpperCase();
@@ -730,5 +649,16 @@ public class ViewDocExportService {
 		}
 		
 		return type.replace("-", "_");
+	}
+	
+	private String getModelName(String name) {
+		
+		if (name == null) {
+			return name;
+		}
+		
+		String[] names = name.split("\\.");
+		
+		return names[names.length-1];
 	}
 }

@@ -25,6 +25,7 @@
     <one-to-many name="toolbar" ref="ViewItem" title="Toolbar" mappedBy="viewBuilderToolbar" orderBy="sequence"/>
     <string name="onSave" title="On save" />
     <string name="onNew" title="On new" />
+    <string name="onLoad" title="On load" />
     <boolean name="clearWkf" />
     <boolean name="addStream" title="Add stream" />
 
@@ -43,6 +44,11 @@
     <!-- Dashboard fields -->
     <one-to-many name="dashletBuilderList" ref="com.axelor.studio.db.DashletBuilder" mappedBy="dashboard" orderBy="sequence"/>
     
+    <!-- Menubar builder -->
+    <one-to-many name="menubar" ref="ViewItem" title="Menubar" mappedBy="menubarBuilder" orderBy="sequence"/>
+    
+    <!-- Add only new panels-->
+    <boolean name="addOnly" />
   </entity>
     
     

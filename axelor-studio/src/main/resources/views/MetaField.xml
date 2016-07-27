@@ -45,7 +45,6 @@
           <field name="large" colSpan="4"/>
           <field name="isUrl" colSpan="4"/>
       </panel>
-      <panel-related field="selectionItemList" showIf="selection" />
       <panel-related field="rightManagementList" grid-view="right-management-field-grid" form-view="right-management-field-form"/>
   </form>
   

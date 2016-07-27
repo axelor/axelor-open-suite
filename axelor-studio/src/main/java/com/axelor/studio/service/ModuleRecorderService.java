@@ -1,3 +1,20 @@
+/**
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or  modify
+ * it under the terms of the GNU Affero General Public License, version 3,
+ * as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package com.axelor.studio.service;
 
 import java.io.BufferedReader;
@@ -18,8 +35,6 @@ import com.axelor.common.FileUtils;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
-import com.axelor.meta.db.MetaModel;
-import com.axelor.meta.db.repo.MetaModelRepository;
 import com.axelor.studio.db.ModuleRecorder;
 import com.axelor.studio.db.StudioConfiguration;
 import com.axelor.studio.db.repo.ModuleRecorderRepository;
@@ -53,9 +68,6 @@ public class ModuleRecorderService {
 	private WkfService wkfService;
 	
 	@Inject
-	private MetaModelRepository metaModelRepo;
-	
-	@Inject
 	private ModelBuilderService modelBuilderService;
 	
 	@Inject
@@ -68,13 +80,9 @@ public class ModuleRecorderService {
 			return I18n.get(String.format("Error in workflow processing: \n%s", wkfProcess));
 		}
 		
-		MetaModel metaModel = metaModelRepo.all()
-				.filter("self.edited = true and self.customised = true")
-				.fetchOne();
+		configService.config();
 		
-		boolean record = metaModel != null || !recorder.getLastRunOk();
-		if (record) {
-			configService.config();
+		if (recorder.getUpdateServer()) {
 			File domainDir = configService.getDomainDir();
 
 			if (!modelBuilderService.build(domainDir)) {
@@ -87,17 +95,17 @@ public class ModuleRecorderService {
 		}
 		
 		String viewUpdate =  viewBuilderService.build(configService.getViewDir(), 
-				!record, recorder.getAutoCreate(), recorder.getAllViewUpdate());
+				!recorder.getUpdateServer(), recorder.getAutoCreate(), recorder.getAllViewUpdate());
 		if (viewUpdate != null) {
 			updateModuleRecorder(recorder, viewUpdate, true);
 			return I18n.get("Error in view update. Please check the log");
 		}
 		
-		if (record) {
+		updateModuleRecorder(recorder, null, false);
+		
+		if (recorder.getUpdateServer()) {
 			return updateApp(false);
 		}
-		
-		updateModuleRecorder(recorder, null, true);
 		
 		return I18n.get("Views updated successfuly");
 		
@@ -298,15 +306,23 @@ public class ModuleRecorderService {
 	}
 	
 	@Transactional
-	public void updateModuleRecorder(ModuleRecorder moduleRecorder, String logText, boolean updateOk) {
+	public void updateModuleRecorder(ModuleRecorder moduleRecorder, String logText, boolean update) {
 		
 		moduleRecorder = moduleRecorderRepo.find(moduleRecorder.getId());
 		moduleRecorder.setLogText(logText);
-		moduleRecorder.setLastRunOk(updateOk);
+		moduleRecorder.setUpdateServer(update);
 		
 		moduleRecorderRepo.save(moduleRecorder);
 	}
 	
-	
+	@Transactional
+	public void setUpdateServer() {
+		ModuleRecorder moduleRecorder = moduleRecorderRepo.all().fetchOne();
+		
+		if (moduleRecorder != null) {
+			moduleRecorder.setUpdateServer(true);
+			moduleRecorderRepo.save(moduleRecorder);
+		}
+	}
 	
 }

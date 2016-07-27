@@ -6,9 +6,9 @@
   <form model="com.axelor.studio.db.ModuleRecorder" title="Apply updates" name="module-recorder-form"
        canNew="false" canCopy="false" canAttach="false" canDelete="false" canSave="false" >
 		<panel>
-	   		<button name="update" title="Update" onClick="action-set-module-recorder-default,save,action-check-edited-models,action-meta-module-method-clear-cache,action-module-recorder-method-update,save" colSpan="4" />
-	   		<button name="update" title="Reset" onClick="action-set-module-recorder-default,save,action-studio-validate-reset,action-studio-method-reset" colSpan="4" />
-	   		<spacer colSpan="4"/>
+	   		<button name="update" title="Update" onClick="action-set-module-recorder-default,save,action-module-recorder-confirm-restart,action-meta-module-method-clear-cache,action-module-recorder-method-update,save" colSpan="4" />
+	   		<button name="reset" title="Reset" onClick="action-set-module-recorder-default,save,action-studio-validate-reset,action-studio-method-reset" colSpan="4" />
+	   		<field name="updateServer" colSpan="4" />
 	   		<field name="autoCreate" colSpan="4" />
 	   		<field name="allViewUpdate" colSpan="4" />
 	   	</panel>
@@ -17,9 +17,9 @@
 	   	</panel>
   </form>
   
-  <action-method name="action-check-edited-models">
-  	<call class="com.axelor.studio.web.ModuleRecorderController" method="checkEdited"/>
-  </action-method>
+  <action-validate name="action-module-recorder-confirm-restart">
+  	<alert message="Server will be restarted are you sure wants to continue ?" if="updateServer"/>
+  </action-validate>
   
   <action-method name="action-module-recorder-method-update" model="com.axelor.studio.db.ModuleRecorder">
       <call class="com.axelor.studio.web.ModuleRecorderController" method="update"/>

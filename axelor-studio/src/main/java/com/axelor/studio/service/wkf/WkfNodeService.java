@@ -1,3 +1,20 @@
+/**
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or  modify
+ * it under the terms of the GNU Affero General Public License, version 3,
+ * as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package com.axelor.studio.service.wkf;
 
 import java.util.ArrayList;
@@ -47,8 +64,8 @@ class WkfNodeService {
 
 	private List<String> nodeActions;
 
-	@Inject
-	private MetaSelectItemRepository metaSelectItemRepo;
+//	@Inject
+//	private MetaSelectItemRepository metaSelectItemRepo;
 
 	@Inject
 	private MetaModelRepository metaModelRepo;
@@ -87,7 +104,6 @@ class WkfNodeService {
 		String defaultValue = processNodes(metaSelect);
 		statusField.setDefaultString(defaultValue);
 		wkfService.statusField = statusField;
-		statusField.setDefaultString(defaultValue);
 
 		metaModel = saveModel(metaModel);
 
@@ -123,7 +139,7 @@ class WkfNodeService {
 		statusField.setCustomised(true);
 		statusField.setTypeName("String");
 		statusField.setFieldType("string");
-		statusField.setLabel("Wkf status");
+		statusField.setLabel("Status");
 		metaModel.addMetaField(statusField);
 		metaModel.setCustomised(true);
 		metaModel.setEdited(true);
@@ -196,29 +212,29 @@ class WkfNodeService {
 
 		}
 
-		log.debug("Select Items to remove : {}", itemsToRemove);
+//		log.debug("Select Items to remove : {}", itemsToRemove);
 
-		if (!itemsToRemove.isEmpty()) {
-			removeMetaSelectItems(itemsToRemove);
-		}
+//		if (!itemsToRemove.isEmpty()) {
+//			removeMetaSelectItems(itemsToRemove);
+//		}
 
 		return metaSelect;
 	}
 
-	/**
-	 * Method delete MetaSelect items according to list past. List is old items
-	 * of MetaSelect that is no longer valid.
-	 * 
-	 * @param items
-	 *            List of MetaSelectItem.
-	 */
-	@Transactional
-	public void removeMetaSelectItems(List<MetaSelectItem> items) {
-
-		for (MetaSelectItem item : items) {
-			metaSelectItemRepo.remove(item);
-		}
-	}
+//	/**
+//	 * Method delete MetaSelect items according to list past. List is old items
+//	 * of MetaSelect that is no longer valid.
+//	 * 
+//	 * @param items
+//	 *            List of MetaSelectItem.
+//	 */
+//	@Transactional
+//	public void removeMetaSelectItems(List<MetaSelectItem> items) {
+//
+//		for (MetaSelectItem item : items) {
+//			metaSelectItemRepo.remove(item);
+//		}
+//	}
 
 	@Transactional
 	public void removeOldMenus(String node) {

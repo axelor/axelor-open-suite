@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.admin.service;
+package com.axelor.studio.service.data.exporter;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -38,16 +38,19 @@ import org.slf4j.LoggerFactory;
 import com.axelor.app.AppSettings;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
+import com.axelor.studio.service.data.DataCommonService;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 
-public class AsciiDocExportService {
+public class DataAsciidocService extends DataCommonService {
 	
-	private static final Logger log = LoggerFactory.getLogger(AsciiDocExportService.class);
+	private static final Logger log = LoggerFactory.getLogger(DataAsciidocService.class);
 	
-	private static final List<String> COMMENT_TYPES = Arrays.asList(new String[]{"tip", "general", "warn"});
-	
-	private static final List<String> ASCIIDOC_TYPES = Arrays.asList(new String[]{"TIP", "NOTE", "WARNING"});
+	private static final List<String> COMMENT_TYPES = Arrays.asList(
+			new String[]{"tip", "general", "warn"});
+
+	private static final List<String> ASCIIDOC_TYPES = Arrays.asList(
+			new String[]{"TIP", "NOTE", "WARNING"});
 	
 	private int docIndex = 20;
 	private int titleIndex = 4;
@@ -61,20 +64,15 @@ public class AsciiDocExportService {
 	private File imgDir = null;
 	
 	private String header = null;
-	
+
 	private boolean setHorizontal = false;
 	
 	private Map<String, Integer> countMap = new HashMap<String, Integer>();
 	
 	@Inject
-	private ViewDocExportService viewDocExportService = new ViewDocExportService();
-	
-	@Inject
 	private MetaFiles metaFiles;
 	
-	
-	
-	public MetaFile export(MetaFile metaFile, String lang) throws IOException{
+	public MetaFile export(MetaFile metaFile, String lang) throws IOException {
 		
 		String docImgPath = AppSettings.get().get("doc.images.path");
 		
@@ -84,49 +82,50 @@ public class AsciiDocExportService {
 			imgDir = new File(docImgPath);
 		}
 		
-		if(metaFile == null){
+		log.debug("Doc image path: {}", docImgPath);
+		if (metaFile == null) {
 			return null;
 		}
 		
-		File excelFile = MetaFiles.getPath(metaFile).toFile();
-		if(excelFile == null || !excelFile.exists()){
+		File dataFile = MetaFiles.getPath(metaFile).toFile();
+		if (dataFile == null || !dataFile.exists()) {
 			return null;
 		}
 		
-		File exportFile = export(excelFile, null, lang);
+		File exportFile = export(dataFile, null, lang);
 		
 		return metaFiles.upload(exportFile);
 	}
 	
-	public File export(File excelFile, File asciiDoc, String lang){
+	public File export(File dataFile, File asciiDoc, String lang) {
 		
-		if(excelFile == null){
+		if (dataFile == null) {
 			return null;
 		}
 		
-		
 		try {
-			FileInputStream inStream = new FileInputStream(excelFile);
+			FileInputStream inStream = new FileInputStream(dataFile);
 			
 			XSSFWorkbook workbook = new XSSFWorkbook(inStream);
 			
-			if(asciiDoc == null){
-				String fileName = excelFile.getName().replace(".xlsx", "");
+			if (asciiDoc == null) {
+				String fileName = dataFile.getName().replace(".xlsx", "");
 				asciiDoc = File.createTempFile(fileName, ".txt");
 			}
+			
 			FileWriter fw = new FileWriter(asciiDoc);
 			
-			if(lang != null && lang.equals("fr")){
+			if (lang != null && lang.equals("fr")) {
 				docIndex = 20;
 				titleIndex = 5;
 				menuIndex = 10;
 				fw.write(":warning-caption: Attention\n");
 				fw.write(":tip-caption: Astuce\n");
+				fw.write("= Specifications Détaillées\n:toc:\n:toclevels: 4");
 			}
-			
-			
-			
-			fw.write("= Specifications Détaillées\n:toc:\n:toclevels: 4");
+			else {
+				fw.write("= Documentation\n:toc:\n:toclevels: 4");
+			}
 			
 			processSheet(workbook.iterator(), fw);
 			
@@ -141,15 +140,14 @@ public class AsciiDocExportService {
 		return null;
 	}
 
-	private void processSheet(Iterator<XSSFSheet> iterator, FileWriter fw) throws IOException {
+	private void processSheet(Iterator<XSSFSheet> iterator, FileWriter fw)
+			throws IOException {
 		
-		if(!iterator.hasNext()){
+		if (!iterator.hasNext()) {
 			return;
 		}
 		
 		XSSFSheet sheet = iterator.next();
-		
-//		fw.write("\n\n== " + sheet.getSheetName());
 		
 		hasMenu = false;
 		
@@ -158,9 +156,10 @@ public class AsciiDocExportService {
 		processSheet(iterator, fw);
 	}
 
-	private void processRow(Iterator<Row> rowIterator, FileWriter fw) throws IOException{
+	private void processRow(Iterator<Row> rowIterator, FileWriter fw)
+			throws IOException {
 		
-		if(!rowIterator.hasNext()){
+		if (!rowIterator.hasNext()) {
 			return;
 		}
 		
@@ -168,13 +167,16 @@ public class AsciiDocExportService {
 		
 		String type = getValue(row, typeIndex);
 		
-		if(type != null){
+		if (type != null) {
 			String menu = getValue(row, menuIndex);
 			String view = getValue(row, 2);
-			if(!Strings.isNullOrEmpty(menu) 
+			if (!Strings.isNullOrEmpty(menu) 
 					&& type.equals("general")){
 				processMenu(menu, view);
 				hasMenu = true;
+			}
+			else {
+				menu = null;
 			}
 
 			if(hasMenu){ 
@@ -207,10 +209,10 @@ public class AsciiDocExportService {
 			
 			header = "";
 			String checkMenu = "";
-			for(String mn : menus){
+			for (String mn : menus){
 				count++;
 				checkMenu += mn + "/";
-				if(!Strings.isNullOrEmpty(checkMenu)
+				if (!Strings.isNullOrEmpty(checkMenu)
 						&& !processedMenus.contains(checkMenu)){
 					processedMenus.add(checkMenu);
 					header += "\n\n==" 
@@ -222,14 +224,16 @@ public class AsciiDocExportService {
 			}
 		}
 			
-		if (imgDir != null && new File(imgDir, view + ".png").exists()) {
+		if (imgDir != null 
+				&& new File(imgDir, view + ".png").exists()) {
 			header += "\nimage::" + view + ".png[" + menu + ", align=\"center\"]";
 		}
 		
 		
 	}
 	
-	private void processView(Row row, String type, FileWriter fw) throws IOException{
+	private void processView(Row row, String type, FileWriter fw) 
+			throws IOException{
 		
 		String modelVal = getValue(row, 1);
 		String viewVal = getValue(row, 2);
@@ -245,13 +249,13 @@ public class AsciiDocExportService {
 		}
 		
 		String title = getValue(row, titleIndex);
-		if(Strings.isNullOrEmpty(title)) { 
+		if (Strings.isNullOrEmpty(title)) { 
 			title = type;
 		}
 		
-		if(COMMENT_TYPES.contains(type)) {
+		if (COMMENT_TYPES.contains(type)) {
 			title = ASCIIDOC_TYPES.get(COMMENT_TYPES.indexOf(type));
-			if(header != null) {
+			if (header != null) {
 				fw.write(header);
 				header = null;
 				setHorizontal = true;
@@ -260,14 +264,12 @@ public class AsciiDocExportService {
 			}
 		}
 		
-		if(type.contains("(")){
-			type = type.substring(0, type.indexOf("("))
-					.replace("-", "_");
+		if (type.contains("(")) {
+			type = type.substring(0, type.indexOf("("));
 		}
 		
-		
-		if(viewDocExportService.fieldTypes.contains(type) || header != null){
-			if(header != null){
+		if (fieldTypes.containsKey(type) || viewElements.containsKey(type) || header != null) {
+			if (header != null) {
 				fw.write(header);
 				header = null;
 				fw.write("\n\n[horizontal]");
@@ -286,7 +288,7 @@ public class AsciiDocExportService {
 			}
 			
 		}
-		else{
+		else {
 			if (!setHorizontal) {
 				fw.write("\n+\n" + title + ": "+ doc );
 			}
@@ -296,12 +298,5 @@ public class AsciiDocExportService {
 		}
 	
 	}
-	
-	
-	private String getValue(Row row, Integer cell) {
-		
-		return ViewDocExportService.getCellValue(row.getCell(cell));
-	}
-
 	
 }

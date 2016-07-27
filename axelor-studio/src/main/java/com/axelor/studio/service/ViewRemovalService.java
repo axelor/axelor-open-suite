@@ -1,3 +1,20 @@
+/**
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or  modify
+ * it under the terms of the GNU Affero General Public License, version 3,
+ * as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package com.axelor.studio.service;
 
 import java.io.File;
@@ -35,6 +52,10 @@ public class ViewRemovalService {
 
 	private Logger log = LoggerFactory.getLogger(getClass());
 
+	private Map<String, ObjectViews> modelMap;
+
+	private File viewPath;
+	
 	@Inject
 	private MetaActionRepository metaActionRepo;
 
@@ -44,15 +65,11 @@ public class ViewRemovalService {
 	@Inject
 	private MetaMenuRepository metaMenuRepo;
 
-	private Map<String, ObjectViews> modelMap;
-
-	private File viewPath;
-
-	public void removeDeleted(File viewPath) {
+	public void remove(File viewPath) {
 
 		modelMap = new HashMap<String, ObjectViews>();
 		this.viewPath = viewPath;
-
+		
 		removeActions();
 
 		removeView();
@@ -62,9 +79,9 @@ public class ViewRemovalService {
 		removeDashboard();
 
 		updateViewFile();
-
+		
 	}
-
+	
 	@Transactional
 	public void removeActions() {
 
@@ -100,6 +117,8 @@ public class ViewRemovalService {
 					actionIter.remove();
 				}
 			}
+			
+			modelMap.put(model, objectViews);
 
 		}
 	}
@@ -139,7 +158,8 @@ public class ViewRemovalService {
 					viewIter.remove();
 				}
 			}
-
+			
+			modelMap.put(model, objectViews);
 		}
 
 	}
@@ -160,6 +180,7 @@ public class ViewRemovalService {
 				actionNames.add(metaAction.getName());
 				metaActionRepo.remove(metaAction);
 			}
+			metaMenuRepo.remove(metaMenu);
 		}
 
 		ObjectViews objectViews = getObjectViews("Menu");
@@ -187,8 +208,11 @@ public class ViewRemovalService {
 					}
 				}
 			}
+			
+			modelMap.put("Menu", objectViews);
 
 		}
+		
 
 	}
 
@@ -220,6 +244,8 @@ public class ViewRemovalService {
 				}
 			}
 		}
+		
+		modelMap.put("Dashboard", objectViews);
 
 	}
 
@@ -230,13 +256,16 @@ public class ViewRemovalService {
 
 				ObjectViews objectViews = modelMap.get(model);
 				File viewFile = new File(viewPath, model + ".xml");
-				if (emptyObjectViews(objectViews)) {
+				if (checkEmpty(objectViews)) {
 					viewFile.delete();
 					continue;
 				}
+				else {
+					log.debug("Not empty model : {}", model);
+				}
 
 				StringWriter xmlWriter = new StringWriter();
-				XMLViews.marshal(modelMap.get(model), xmlWriter);
+				XMLViews.marshal(objectViews, xmlWriter);
 
 				FileWriter fileWriter = new FileWriter(viewFile);
 				fileWriter.write(xmlWriter.toString());
@@ -272,25 +301,30 @@ public class ViewRemovalService {
 		return null;
 	}
 
-	private boolean emptyObjectViews(ObjectViews objectViews) {
+	private boolean checkEmpty(ObjectViews objectViews) {
 
-		if (objectViews.getActionMenus() != null) {
+		if (objectViews.getActionMenus() != null && !objectViews.getActionMenus().isEmpty()) {
+			log.debug("Action menu exist");
 			return false;
 		}
 
-		if (objectViews.getActions() != null) {
+		if (objectViews.getActions() != null && !objectViews.getActions().isEmpty()) {
+			log.debug("Actions exist");
 			return false;
 		}
 
-		if (objectViews.getMenus() != null) {
+		if (objectViews.getMenus() != null && !objectViews.getMenus().isEmpty()) {
+			log.debug("Menu exist");
 			return false;
 		}
 
-		if (objectViews.getSelections() != null) {
+		if (objectViews.getSelections() != null && !objectViews.getSelections().isEmpty()) {
+			log.debug("Selection exist");
 			return false;
 		}
 
-		if (objectViews.getViews() != null) {
+		if (objectViews.getViews() != null && !objectViews.getViews().isEmpty()) {
+			log.debug("Views exist");
 			return false;
 		}
 

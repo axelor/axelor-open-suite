@@ -40,6 +40,16 @@
      <boolean name="wkfButton" title="Is workflow button?" />
      <many-to-one name="viewBuilderToolbar" ref="ViewBuilder" />
      <boolean name="panelTop" title="Panel top" />
+     
+     <!-- Menubar builder o2m -->
+     <many-to-one name="menubarMenu" ref="ViewItem" />
+     <one-to-many name="menubarItems" ref="ViewItem" mappedBy="menubarMenu" title="Items"/>
+     <many-to-one name="menubarBuilder" ref="ViewBuilder" />
+     
+     <!-- Nested view -->
+     <many-to-one name="nestedField" ref="ViewItem" />
+     <one-to-many name="nestedViewItems" ref="ViewItem" title="Nested items" mappedBy="nestedField" />
+     
   </entity>
 
 </domain-models>

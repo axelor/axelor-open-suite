@@ -1,3 +1,20 @@
+/**
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or  modify
+ * it under the terms of the GNU Affero General Public License, version 3,
+ * as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package com.axelor.studio.service.builder;
 
 import java.io.File;
@@ -26,6 +43,7 @@ import com.axelor.meta.db.MetaSequence;
 import com.axelor.meta.db.MetaTranslation;
 import com.axelor.meta.db.repo.MetaFieldRepository;
 import com.axelor.meta.db.repo.MetaModelRepository;
+import com.axelor.meta.db.repo.MetaSelectRepository;
 import com.axelor.meta.db.repo.MetaTranslationRepository;
 import com.axelor.meta.schema.ObjectViews;
 import com.axelor.studio.utils.Namming;
@@ -65,8 +83,6 @@ public class ModelBuilderService {
 
 	private StringBuilder sequenceXml;
 
-	private StringBuilder selectionBuilder = new StringBuilder();
-
 	private File domainDir;
 
 	private List<String> trackFields;
@@ -79,6 +95,9 @@ public class ModelBuilderService {
 
 	@Inject
 	private MetaFieldRepository metaFieldRepo;
+	
+	@Inject
+	private MetaSelectRepository metaSelectRepo;
 	
 	/**
 	 * Root method to accesss the service. It will find all edited and
@@ -101,22 +120,10 @@ public class ModelBuilderService {
 			}
 		}
 
-		if (models.isEmpty()) {
-			log.error("No edited models found");
-			return true;
-		}
-
-		log.debug("Total edited models: {}", models.size());
-
 		try {
 			removeDeleted(customizedModels);
 			recordModel(models.iterator());
-			String selectionXml = selectionBuilder.toString();
-
-			if (!Strings.isNullOrEmpty(selectionXml)) {
-				writeSelectionXml(selectionXml);
-			}
-
+			updateSelection();
 			updateEdited(models);
 
 			return true;
@@ -175,6 +182,11 @@ public class ModelBuilderService {
 		List<MetaField> customFields = getCustomisedFields(metaModel, true);
 
 		if (customFields.isEmpty()) {
+			log.debug("Deleting model without custom field : {}", metaModel.getName());
+			File file = new File(domainDir, metaModel.getName() + ".xml");
+			if (file.exists()) {
+				file.delete();
+			}
 			recordModel(modelIterator);
 			return;
 		}
@@ -280,7 +292,6 @@ public class ModelBuilderService {
 		}
 
 		if (field.getMetaSelect() != null) {
-			writeSelection(field);
 			fieldXml.append("selection=\"" + field.getMetaSelect().getName()
 					+ "\"  ");
 		}
@@ -302,13 +313,6 @@ public class ModelBuilderService {
 			help = StringEscapeUtils.escapeJava(help);
 			help = StringEscapeUtils.escapeXml(help);
 			fieldXml.append("help=\"" + help + "\" ");
-//			String key = "help:" + field.getMetaModel().getName() + ":"
-//					+ field.getName();
-//			String lang = AuthUtils.getUser().getLanguage();
-//			if (lang == null) {
-//				lang = "en";
-//			}
-//			updateTranslation(key, field.getHelpText(), lang);
 		}
 
 		if (field.getNameColumn()) {
@@ -455,35 +459,6 @@ public class ModelBuilderService {
 	}
 
 	/**
-	 * Method create selection xml from MetaSelect of MetaField. It append
-	 * selection xml string to selectionBuilder.
-	 * 
-	 * @param field
-	 *            MetaField to process
-	 */
-	@Transactional
-	public void writeSelection(MetaField field) {
-
-		MetaSelect metaSelect = field.getMetaSelect();
-		List<MetaSelectItem> selectionItemList = field.getMetaSelect()
-				.getItems();
-		StringBuilder selectXml = new StringBuilder("\t<selection name=\""
-				+ metaSelect.getName() + "\">\n");
-
-		for (MetaSelectItem item : selectionItemList) {
-			String title = item.getTitle();
-			String value = item.getValue();
-			selectXml.append("\t\t<option value=\"" + value + "\">" + title
-					+ "</option>\n");
-		}
-		selectXml.append("\t</selection>\n");
-
-		log.debug("Saving meta select: {}", metaSelect.getName());
-		
-		selectionBuilder.append(selectXml);
-	}
-
-	/**
 	 * Method to write domain xml file.
 	 * 
 	 * @param file
@@ -516,7 +491,31 @@ public class ModelBuilderService {
 	 * @throws IOException
 	 *             Exception in file writing.
 	 */
-	private void writeSelectionXml(String selectionXml) throws IOException {
+	private void updateSelection() throws IOException {
+		
+		String selectionXml = "";
+		
+		File file = new File(domainDir, "Selection.xml");
+		
+		List<MetaSelect> metaSelects = metaSelectRepo.all()
+				.filter("self.customised = true").fetch();
+		
+		if (metaSelects.isEmpty()) {
+			if (file.exists()) {
+				file.delete();
+			}
+			return;
+		}
+		
+		for (MetaSelect metaSelect : metaSelects) {
+			selectionXml += "\n\t<selection name=\""
+					+ metaSelect.getName() + "\" >";
+			for (MetaSelectItem item : metaSelect.getItems()) {
+				selectionXml += "\n\t\t<option value=\"" + item.getValue() + "\">"
+						     + item.getTitle() + "</option>";
+			}
+			selectionXml += "\n\t</selection>";
+		}
 
 		StringBuilder sb = new StringBuilder(
 				"<?xml version='1.0' encoding='UTF-8'?>\n");
@@ -533,7 +532,7 @@ public class ModelBuilderService {
 				.append(">\n\n").append(selectionXml)
 				.append("\n</object-views>");
 
-		File file = new File(domainDir, "Selection.xml");
+		
 		writeFile(file, sb.toString());
 
 	}
@@ -641,7 +640,7 @@ public class ModelBuilderService {
 		case "date":
 			return "LocalDate";
 		case "datetime":
-			return "LocalDateTime";
+			return "DateTime";
 		default:
 			return null;
 
@@ -656,10 +655,13 @@ public class ModelBuilderService {
 		}
 
 		for (File file : domainDir.listFiles()) {
-			if (!fileNames.contains(file.getName())) {
+			if (!fileNames.contains(file.getName())
+				 && !file.getName().equals("Selection.xml")) {
+				log.debug("Removing file: {}", file.getName());
 				file.delete();
 			}
 		}
+		
 	}
 
 	private String getTrackFields() {
