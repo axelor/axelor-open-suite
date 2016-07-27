@@ -10,6 +10,7 @@
 	<form name="hr-config-form" title="Human Resources configuration" model="com.axelor.apps.hr.db.HRConfig" onNew="action-hr-config-record-default" width="large">
 	  	<panel name="main">
 	    	<field name="company" form-view="company-form" colSpan="4" grid-view="company-grid"/>
+	  		<field name="kilometricExpenseProduct" canView="false" domain="self.expense = true" widget="SuggestBox" grid-view="product-expense-grid" />
 	  	</panel>
 	  	<panel name="general" title="General">
 	  		<field name="publicHolidayPlanning" canNew="true"/>
@@ -28,7 +29,7 @@
     	<field name="validatedExtraHoursTemplate" canNew="true" form-view="template-form" grid-view="template-grid" hideIf="!extraHoursMailNotification"/>
     	<field name="refusedExtraHoursTemplate" canNew="true" form-view="template-form" grid-view="template-grid" hideIf="!extraHoursMailNotification"/>
   	</panel>
-     <panel name="expenseTemplates" title="Expense Templates">
+    <panel name="expenseTemplates" title="Expense Templates">
     	<field name="expenseMailNotification"/>
     	<field name="sentExpenseTemplate" canNew="true" form-view="template-form" grid-view="template-grid" hideIf="!expenseMailNotification"/>
     	<field name="validatedExpenseTemplate" canNew="true" form-view="template-form" grid-view="template-grid" hideIf="!expenseMailNotification"/>

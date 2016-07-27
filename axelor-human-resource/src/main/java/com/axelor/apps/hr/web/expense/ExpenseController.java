@@ -30,7 +30,11 @@ import com.axelor.apps.base.db.Wizard;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.hr.db.Expense;
 import com.axelor.apps.hr.db.ExpenseLine;
+import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.hr.db.ExtraHours;
+import com.axelor.apps.hr.db.HRConfig;
 import com.axelor.apps.hr.db.repo.ExpenseRepository;
 import com.axelor.apps.hr.db.repo.TimesheetRepository;
 import com.axelor.apps.hr.exception.IExceptionMessage;
@@ -69,6 +73,8 @@ public class ExpenseController {
 	private ExpenseService expenseService;
 	@Inject
 	protected GeneralService generalService;
+	@Inject
+	private ProductRepository productRepo;
 	
 	public void createAnalyticDistributionWithTemplate(ActionRequest request, ActionResponse response) throws AxelorException{
 		ExpenseLine expenseLine = request.getContext().asType(ExpenseLine.class);
@@ -398,5 +404,18 @@ public class ExpenseController {
 				}
 			}
 		}
+	}
+	
+	public void fillExpenseProduct(ActionRequest request, ActionResponse response) throws AxelorException{
+		ExpenseLine expenseLine = request.getContext().asType(ExpenseLine.class);
+		Expense expense = request.getContext().getParentContext().asType(Expense.class);
+		Company company = expense.getCompany();
+		HRConfig hrConfig = hrConfigService.getHRConfig(company);
+		Product expenseProduct = hrConfigService.getKilometricExpenseProduct(hrConfig);
+		
+		expenseLine.setExpenseProduct(expenseProduct);
+		logger.debug("expenseLine (expenseProduct) : {}", expenseLine.getExpenseProduct());
+		
+		response.setValues(expenseLine);
 	}
 }

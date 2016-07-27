@@ -11,7 +11,10 @@
       <many-to-one name="period" ref="com.axelor.apps.base.db.Period" title="Period"/>
       <integer name="statusSelect" title="Status" selection="hrs.expenses.status.select" default="1" readonly="true"/>
       <many-to-one name="user" ref="com.axelor.auth.db.User" title="User" column="user_id" readonly="true"/>
-      <one-to-many name="expenseLineList" ref="com.axelor.apps.hr.db.ExpenseLine" title="Expense lines" mappedBy="expense" />
+
+      <one-to-many name="expenseLineList" ref="com.axelor.apps.hr.db.ExpenseLine" title="Expense lines" mappedBy="expense"/>
+      <one-to-many name="kilometricExpenseLineList" ref="com.axelor.apps.hr.db.ExpenseLine" title="Kilometric lines" mappedBy="kilometricExpense"/>
+
       <decimal name="exTaxTotal" title="Total W.T." scale="2" precision="20" readonly="true"/>
    	  <decimal name="taxTotal" title="Total tax" scale="2" precision="20" readonly="true"/>
       <decimal name="inTaxTotal" title="Total A.T.I." scale="2" precision="20" readonly="true"/>
@@ -25,7 +28,6 @@
       <boolean name="ventilated"/>
       <boolean name="expenseCompanyCb" title="Expense paied with company's credit card"/>
       <many-to-one name="payrollPreparation" ref="com.axelor.apps.hr.db.PayrollPreparation"/>
-      <one-to-many name="kilometricAllowanceList" ref="com.axelor.apps.hr.db.KilometricAllowance" title="Kilometric allowance" mappedBy="expense"/>
       
       <string name="fullName" namecolumn="true" readonly="true">
       <![CDATA[
