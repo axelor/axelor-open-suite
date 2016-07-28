@@ -407,15 +407,11 @@ public class ExpenseController {
 	}
 	
 	public void fillExpenseProduct(ActionRequest request, ActionResponse response) throws AxelorException{
-		ExpenseLine expenseLine = request.getContext().asType(ExpenseLine.class);
 		Expense expense = request.getContext().getParentContext().asType(Expense.class);
 		Company company = expense.getCompany();
 		HRConfig hrConfig = hrConfigService.getHRConfig(company);
-		Product expenseProduct = hrConfigService.getKilometricExpenseProduct(hrConfig,company);
-		
-		expenseLine.setExpenseProduct(expenseProduct);
-		logger.debug("expenseLine (expenseProduct) : {}", expenseLine.getExpenseProduct());
-		
-		response.setValues(expenseLine);
+		Product expenseProduct = hrConfigService.getKilometricExpenseProduct(hrConfig);
+		logger.debug("expenseProduct : {}", expenseProduct);
+		response.setValue("expenseProduct",expenseProduct);
 	}
 }

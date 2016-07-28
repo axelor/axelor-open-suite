@@ -35,8 +35,9 @@ public class HRConfigService {
 		return hrConfig;
 	}
 	
-	public Product getKilometricExpenseProduct(HRConfig hrConfig,Company company) throws AxelorException{
+	public Product getKilometricExpenseProduct(HRConfig hrConfig) throws AxelorException{
 		Product kilometricExpenseProduct = hrConfig.getKilometricExpenseProduct();
+		Company company = hrConfig.getCompany();
 		if(kilometricExpenseProduct == null){
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.HR_CONFIG_2),company),IException.CONFIGURATION_ERROR);
 		}

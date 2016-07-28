@@ -353,40 +353,4 @@ public class ExpenseService  {
 		}
 	}
 	
-	/*
-	@Transactional
-	public void insertKMExpenses(ActionRequest request, ActionResponse response){
-		User user = AuthUtils.getUser();
-		if(user != null){
-			Expense expense = Beans.get(ExpenseRepository.class).all().filter("self.statusSelect = 1 AND self.user.id = ?1", user.getId()).order("-id").fetchOne();
-			if(expense == null){
-				expense = new Expense();
-				expense.setUser(user);
-				expense.setCompany(user.getActiveCompany());
-				expense.setStatusSelect(TimesheetRepository.STATUS_DRAFT);
-			}
-			KilometricAllowance kmAllowance = new KilometricAllowance();
-			kmAllowance.setDistance(new BigDecimal(request.getData().get("kmNumber").toString()));
-			kmAllowance.setFromCity(request.getData().get("locationFrom").toString());
-			kmAllowance.setToCity(request.getData().get("locationTo").toString());
-			kmAllowance.setTypeSelect(new Integer(request.getData().get("allowanceTypeSelect").toString()));
-			kmAllowance.setReason(request.getData().get("comments").toString());
-			kmAllowance.setDate(new LocalDate(request.getData().get("date").toString()));
-			if(user.getEmployee() != null && user.getEmployee().getKilometricAllowParam() != null){
-				kmAllowance.setKilometricAllowParam(user.getEmployee().getKilometricAllowParam());
-				KilometricAllowanceRate kilometricAllowanceRate = Beans.get(KilometricAllowanceRateRepository.class).findByVehicleKillometricAllowanceParam(user.getEmployee().getKilometricAllowParam());
-				if(kilometricAllowanceRate != null){
-					BigDecimal rate = kilometricAllowanceRate.getRate();
-					if(rate != null){
-						kmAllowance.setInTaxTotal(rate.multiply(kmAllowance.getDistance()));
-					}
-				}
-			}
-			
-			expense.addKilometricAllowanceListItem(kmAllowance);
-			
-			Beans.get(ExpenseRepository.class).save(expense);
-		}
-	}
-	*/
 }

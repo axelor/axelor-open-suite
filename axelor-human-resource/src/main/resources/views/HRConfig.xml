@@ -5,15 +5,14 @@
     
     <grid name="hr-config-grid" title="Human Resources configurations" model="com.axelor.apps.hr.db.HRConfig">
         <field name="company" form-view="company-form" grid-view="company-grid"/>
-    	<field name="kilometricExpenseProduct" canView="false" domain="self.expense = true" widget="SuggestBox" grid-view="product-expense-grid" />
     </grid>
 
 	<form name="hr-config-form" title="Human Resources configuration" model="com.axelor.apps.hr.db.HRConfig" onNew="action-hr-config-record-default" width="large">
 	  	<panel name="main">
 	    	<field name="company" form-view="company-form" colSpan="4" grid-view="company-grid"/>
-	  		<field name="kilometricExpenseProduct" canView="false" domain="self.expense = true" widget="SuggestBox" grid-view="product-expense-grid" />
 	  	</panel>
 	  	<panel name="general" title="General">
+	  		<field name="kilometricExpenseProduct" canView="false" domain="self.expense = true" widget="SuggestBox" form-view="product-expense-form" grid-view="product-expense-grid" />
 	  		<field name="publicHolidayPlanning" canNew="true"/>
 	  		<field name="weeklyPlanning" canNew="true"/>
 	  	</panel>
