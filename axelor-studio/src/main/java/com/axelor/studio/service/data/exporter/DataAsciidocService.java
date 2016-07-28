@@ -52,11 +52,6 @@ public class DataAsciidocService extends DataCommonService {
 	private static final List<String> ASCIIDOC_TYPES = Arrays.asList(
 			new String[]{"TIP", "NOTE", "WARNING"});
 	
-	private int docIndex = 20;
-	private int titleIndex = 4;
-	private int menuIndex = 9;
-	private int typeIndex = 6;
-	
 	private boolean hasMenu = false;
 	
 	private List<String> processedMenus = new ArrayList<String>();
@@ -116,9 +111,6 @@ public class DataAsciidocService extends DataCommonService {
 			FileWriter fw = new FileWriter(asciiDoc);
 			
 			if (lang != null && lang.equals("fr")) {
-				docIndex = 20;
-				titleIndex = 5;
-				menuIndex = 10;
 				fw.write(":warning-caption: Attention\n");
 				fw.write(":tip-caption: Astuce\n");
 				fw.write("= Specifications Détaillées\n:toc:\n:toclevels: 4");
@@ -165,10 +157,10 @@ public class DataAsciidocService extends DataCommonService {
 		
 		Row row = rowIterator.next();
 		
-		String type = getValue(row, typeIndex);
+		String type = getValue(row, TYPE);
 		
 		if (type != null) {
-			String menu = getValue(row, menuIndex);
+			String menu = getValue(row, MENU);
 			String view = getValue(row, 2);
 			if (!Strings.isNullOrEmpty(menu) 
 					&& type.equals("general")){
@@ -243,12 +235,12 @@ public class DataAsciidocService extends DataCommonService {
 			return;
 		}
 		
-		String doc = getValue(row, docIndex);
+		String doc = getValue(row, HELP);
 		if (Strings.isNullOrEmpty(doc)) {
 			return;
 		}
 		
-		String title = getValue(row, titleIndex);
+		String title = getValue(row, TITLE);
 		if (Strings.isNullOrEmpty(title)) { 
 			title = type;
 		}

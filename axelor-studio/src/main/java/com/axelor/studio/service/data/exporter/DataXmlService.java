@@ -591,7 +591,10 @@ public class DataXmlService extends DataCommonService {
 		}
 		
 		if (property.getHelp() != null) {
-			values[HELP] = property.getHelp();
+			String help = property.getHelp();
+			if (!Boolean.parseBoolean(help)) {
+				values[HELP] = property.getHelp();
+			}
 		}
 		
 	}
@@ -628,7 +631,10 @@ public class DataXmlService extends DataCommonService {
 		}
 		
 		if (field.getHelp() != null) {
-			values[HELP] = field.getHelp();
+			String help = field.getHelp();
+			if (!Boolean.parseBoolean(help)) {
+				values[HELP] = field.getHeight();
+			}
 		}
 		
 		if (field.getColSpan() != null) {

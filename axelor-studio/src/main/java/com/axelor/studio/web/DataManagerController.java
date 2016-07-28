@@ -22,6 +22,7 @@ import java.io.IOException;
 
 import javax.validation.ValidationException;
 
+import com.axelor.auth.AuthUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.MetaFiles;
