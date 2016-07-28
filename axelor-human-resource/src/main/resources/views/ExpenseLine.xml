@@ -24,10 +24,10 @@
 		<field name="expenseProduct" title="Product" readonly="true" /> 
 		<field name="kilometricAllowParam" title="Param" onChange="action-kilometric-allowance-record-rate,action-kilometric-allowance-record-in-tax-total"/>
         <field name="kilometricRate" readonly="true" onChange="action-kilometric-allowance-record-in-tax-total"/>
-        <field name="kilometricTypeSelect" onChange="action-kilometric-allowance-record-in-tax-total"/>
-        <field name="distance" title="KM" onChange="action-kilometric-allowance-record-in-tax-total"/>
-        <field name="fromCity" title="From"/>
-        <field name="toCity" title="To"/>
+        <field name="kilometricTypeSelect" required="true" onChange="action-kilometric-allowance-record-in-tax-total"/>
+        <field name="distance" title="KM" required="true" onChange="action-kilometric-allowance-record-in-tax-total"/>
+        <field name="fromCity" title="From" required="true"/>
+        <field name="toCity" title="To" required="true"/>
         <field name="expenseDate" title="Date"/>
 	    <field name="comments" />
 	    <field name="totalAmount" title="Total ATI" onChange="action-expense-on-change-untaxt-amount, action-expense-line-method-compute-analytic-distribution"/>

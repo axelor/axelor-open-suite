@@ -411,7 +411,7 @@ public class ExpenseController {
 		Expense expense = request.getContext().getParentContext().asType(Expense.class);
 		Company company = expense.getCompany();
 		HRConfig hrConfig = hrConfigService.getHRConfig(company);
-		Product expenseProduct = hrConfigService.getKilometricExpenseProduct(hrConfig);
+		Product expenseProduct = hrConfigService.getKilometricExpenseProduct(hrConfig,company);
 		
 		expenseLine.setExpenseProduct(expenseProduct);
 		logger.debug("expenseLine (expenseProduct) : {}", expenseLine.getExpenseProduct());
