@@ -17,7 +17,7 @@
         <field name="name"/>
     </grid>
     
-    <tree name="account-tree" title="Comptes Comptables">
+    <tree name="account-tree" title="Accounting account">
         <column name="name" type="string"/>
          <column name="code" type="string"/>
          
