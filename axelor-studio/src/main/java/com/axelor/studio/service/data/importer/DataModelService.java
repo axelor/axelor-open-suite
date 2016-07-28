@@ -173,6 +173,7 @@ public class DataModelService extends DataCommonService {
 					}
 					String view = getValue(row, 1);
 					if (view != null) {
+						view = view.split("\\(")[0];
 						updateMap.get(model).add(view);
 					}
 				}
@@ -182,6 +183,7 @@ public class DataModelService extends DataCommonService {
 					}
 					String view = getValue(row, 1);
 					if (view != null) {
+						view = view.split("\\(")[0];
 						replaceMap.get(model).add(view);
 					}
 				}
@@ -235,8 +237,6 @@ public class DataModelService extends DataCommonService {
 
 		Row row = rowIter.next();
 		String name = getValue(row, MODEL);
-		String module = getValue(row, MODULE);
-		String view = getValue(row, VIEW);
 		String parentField = null;
 		
 		String modelName = name;
@@ -247,7 +247,7 @@ public class DataModelService extends DataCommonService {
 		}
 		
 		replace = true;
-		if (noUpdate(module, view, modelName)){
+		if (noUpdate(getValue(row, MODULE), getValue(row, VIEW), modelName)){
 			extractRow(rowIter);
 			return;
 		}
@@ -303,6 +303,7 @@ public class DataModelService extends DataCommonService {
 			return true;
 		}
 		
+		view = view.split("\\(")[0];
 		List<String> modify = updateMap.get(model);
 		
 		if (modify != null && (modify.isEmpty() || modify.contains(view))) {

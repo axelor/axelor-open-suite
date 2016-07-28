@@ -105,9 +105,8 @@ public class DataXmlService extends DataCommonService {
 			
 			for (View view : actionView.getViews()) {
 				String type = view.getType();
-				String name = view.getName();
 				if  (SUPPORTED_TYPES.contains(type)) {
-					views.put(type, name);
+					views.put(type, view.getName());
 				}
 			}
 			
@@ -115,40 +114,79 @@ public class DataXmlService extends DataCommonService {
 			e.printStackTrace();
 		}
 		
-		processModel(model, views);
+		processModel(action.getModule(), model, views);
 		
 	}
 	
-	private void processModel(String model, Map<String, String> views) {
+	private void processModel(String module, String model, Map<String, String> views) {
 		
 		try{
 			
-			MetaView metaView = null;
-			Mapper mapper = null;
-			if (views.containsKey("dashboard")) {
-				String dashboard = views.get("dashboard");
-				if (dashboard != null) {
-					metaView =  metaViewRepo.all().filter(
-							"self.type = 'dashboard'  and self.name = ?", 
-							dashboard).fetchOne();
-					
-					processView(metaView, mapper, "dashboard", null);
+			String dashboard = views.get("dashboard");
+			if (dashboard != null) {
+				if (!viewProcessed.contains(dashboard)) {
+					processDashboard(dashboard);
 				}
-				
 			}
 			else if (model != null && !viewProcessed.contains(views.get("form"))) {
-				mapper = Mapper.of(ClassUtils.findClass(model));
-				MetaView form = getMetaView(model, "form", views.get("form"));
-				MetaView grid = getMetaView(model, "grid", views.get("grid"));
-				processView(form, mapper, "form", getGridFields(grid));
-				addO2MViews(model);
+				
+				MetaView formView = getMetaView(model, "form", views.get("form"));
+				
+				if (formView != null && !viewProcessed.contains(formView.getName())) {
+					
+					MetaView grid = getMetaView(model, "grid", views.get("grid"));
+					
+					/**
+					 * 1. Add new panel.
+					 * 2. Is panelTab.
+					 * 3. Grid view field list.
+					 * 4. Panel level.
+					 */
+					Object[] extra = new Object[]{true, false, getGridFields(grid), null};
+					Mapper mapper = Mapper.of(ClassUtils.findClass(model));
+					ObjectViews objectViews = XMLViews.fromXML(formView.getXml());
+					
+					FormView form = (FormView) objectViews.getViews().get(0);
+					newForm = true;
+					String simpleName = mapper.getBeanClass().getSimpleName();
+					String viewName = form.getName() + "(" + form.getTitle() + ")";
+					
+					processForm(form, module, simpleName, viewName, mapper, extra);
+					
+				}
+				
+				addO2MViews(module, model);
+				
+				o2mViews = new ArrayList<String[]>();
 			}
 			
-			o2mViews = new ArrayList<String[]>();
+			
 		}
-		catch (IllegalArgumentException e) {
-			log.debug("Model not found: {}", model);
+		catch (IllegalArgumentException | JAXBException e) {
+			e.printStackTrace();
 		}
+	}
+	
+	private void processDashboard(String name) throws JAXBException {
+		
+		MetaView view =  metaViewRepo.all().filter(
+				"self.type = 'dashboard'  and self.name = ?", 
+				name).fetchOne();
+		
+		if (view != null) {
+			
+			Object[] extra = new Object[]{true, false, null, null};
+			
+			ObjectViews views = XMLViews.fromXML(view.getXml());
+			
+			Dashboard dashboard = (Dashboard) views.getViews().get(0);
+			
+			processItems(dashboard.getItems(), view.getModule(), null, name, null, extra);
+			
+			viewProcessed.add(name);
+			
+		}
+		
 	}
 	
 	private List<String> getGridFields(MetaView view) {
@@ -186,13 +224,13 @@ public class DataXmlService extends DataCommonService {
 		
 		return fields;
 	}
-	
 
 	private MetaView getMetaView(String model, String type, String name) {
 		
 		if (name == null) {
 			name = ViewLoaderService.getDefaultViewName(model, type);
 		}
+		
 		MetaView view =  metaViewRepo.all().filter(
 				"self.type = ? and self.model = ? and self.name = ?", 
 				 type, model, name).fetchOne();
@@ -201,51 +239,7 @@ public class DataXmlService extends DataCommonService {
 		
 	}
 	
-	private void processView(MetaView view , Mapper mapper, String type, List<String> grid) {
-		
-		if (view ==  null) {
-			return;
-		}
-		
-		String name = view.getName();
-		if (viewProcessed.contains(name)) {
-			return;
-		}
-			
-		try {
-			ObjectViews views = XMLViews.fromXML(view.getXml());
-			
-			/**
-			 * 1. add new panel.
-			 * 2. is panelTab.
-			 * 3. grid list.
-			 * 4. panel level.
-			 */
-			Object[] extra = new Object[]{true, false, grid, null};
-			
-			switch (type) {
-			case "form":
-				FormView form = (FormView) views.getViews().get(0);
-				newForm = true;
-				String model = mapper.getBeanClass().getSimpleName();
-				String viewName = form.getName() + "(" + form.getTitle() + ")";
-				processForm(form, view.getModule(), model, viewName, mapper, extra);
-				break;
-			case "dashboard":
-				if(!exportService.getOnlyPanel()){
-					Dashboard dashboard = (Dashboard) views.getViews().get(0);
-					processDashboard(dashboard, view.getModule(), extra);
-				}
-				break;
-			}
-			
-		} catch (JAXBException e) {
-			e.printStackTrace();
-		}
-		
-	}
-	
-	private void addO2MViews(String model) {
+	private void addO2MViews(String module, String model) {
 		List<String[]> views = new ArrayList<String[]>();
 		views.addAll(o2mViews);
 		o2mViews.clear();
@@ -262,7 +256,7 @@ public class DataXmlService extends DataCommonService {
 			Map<String,String> viewMap = new HashMap<String, String>();
 			viewMap.put("form", view[1]);
 			viewMap.put("grid", view[2]);
-			processModel(view[0], viewMap);
+			processModel(module, view[0], viewMap);
 			exportService.setMenuPath(null);
 		}
 				
@@ -275,7 +269,6 @@ public class DataXmlService extends DataCommonService {
 		
 		String panelLevel = (String) extra[3];
 		
-//		String view = form.getName() + "(" + form.getTitle() + ")";
 		log.debug("Processing form: {}", view);
 		
 		viewProcessed.add(form.getName());
@@ -349,15 +342,6 @@ public class DataXmlService extends DataCommonService {
 			
 			processItems(menu.getItems(), module, model, view, mapper, extra);
 		}
-	}
-	
-	private void processDashboard(Dashboard dashboard, String module, Object[] extra) {
-		
-		processItems(dashboard.getItems(), module, null, dashboard.getName(), null, extra);
-		
-		String name = dashboard.getName();
-
-		viewProcessed.add(name);
 	}
 	
 	private String getModuleName(AbstractWidget item, String module) {

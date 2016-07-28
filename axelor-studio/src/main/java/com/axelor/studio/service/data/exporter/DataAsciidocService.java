@@ -72,7 +72,7 @@ public class DataAsciidocService extends DataCommonService {
 	@Inject
 	private MetaFiles metaFiles;
 	
-	public MetaFile export(MetaFile metaFile, String lang) throws IOException {
+	public MetaFile export(MetaFile dataFile, String lang) throws IOException {
 		
 		String docImgPath = AppSettings.get().get("doc.images.path");
 		
@@ -83,16 +83,16 @@ public class DataAsciidocService extends DataCommonService {
 		}
 		
 		log.debug("Doc image path: {}", docImgPath);
-		if (metaFile == null) {
+		if (dataFile == null) {
 			return null;
 		}
 		
-		File dataFile = MetaFiles.getPath(metaFile).toFile();
-		if (dataFile == null || !dataFile.exists()) {
+		File data = MetaFiles.getPath(dataFile).toFile();
+		if (data == null || !data.exists()) {
 			return null;
 		}
 		
-		File exportFile = export(dataFile, null, lang);
+		File exportFile = export(data, null, lang);
 		
 		return metaFiles.upload(exportFile);
 	}

@@ -72,6 +72,8 @@ public class DataExportService extends DataCommonService {
 	
 	private XSSFWorkbook workBook;
 	
+	private XSSFWorkbook oldBook;
+	
 	private XSSFSheet sheet;
 	
 	private XSSFCellStyle style;
@@ -101,7 +103,7 @@ public class DataExportService extends DataCommonService {
 	@Inject
 	private DataXmlService dataXmlService;
 	
-	public MetaFile export(MetaFile docFile, boolean onlyPanel) {
+	public MetaFile export(MetaFile oldFile, boolean onlyPanel) {
 		
 		this.onlyPanel = onlyPanel;
 
@@ -116,31 +118,54 @@ public class DataExportService extends DataCommonService {
 				.order("order").fetch();
 		
 		workBook = new XSSFWorkbook();
-		addStudioImport();
 		addStyle();
 		
-		if  (docFile != null && !onlyPanel) {
-			updateDocMap(docFile);
+		if  (oldFile != null && !onlyPanel) {
+			updateDocMap(oldFile);
 		}
+		addStudioImport();
 		
 		processRootMenu(menus.iterator());
 		
 		setColumnWidth();
 
-		return createExportFile(docFile);
+		return createExportFile(oldFile);
 	}
 	
 	private void addStudioImport() {
 		
 		XSSFSheet sheet = workBook.createSheet("StudioImport");
-		XSSFRow row = sheet.createRow(0);
-		String[] titles = new String[]{"Object", "View", "Add/Replace"};
 		
-		int count = 0;
-		for (String title : titles) {
-			Cell cell = row.createCell(count);
-			cell.setCellValue(title);
-			count++;
+		XSSFSheet oldSheet = null;
+		
+		if (oldBook != null) {
+			oldSheet = oldBook.getSheetAt(0);
+			log.debug("Old sheet name: {}", oldSheet.getSheetName());
+		}
+		
+		if (oldSheet == null) {
+			XSSFRow row = sheet.createRow(0);
+			String[] titles = new String[]{"Object", "View", "Add/Replace"};
+			
+			int count = 0;
+			for (String title : titles) {
+				Cell cell = row.createCell(count);
+				cell.setCellValue(title);
+				count++;
+			}
+		}
+		else {
+			Iterator<Row> rowIter = oldSheet.rowIterator();
+			while (rowIter.hasNext()) {
+				Row oldRow = rowIter.next();
+				XSSFRow row = sheet.createRow(oldRow.getRowNum());
+				Iterator<Cell> cellIter = oldRow.cellIterator();
+				while (cellIter.hasNext()) {
+					Cell oldCell = cellIter.next();
+					Cell cell = row.createCell(oldCell.getColumnIndex());
+					cell.setCellValue(oldCell.getStringCellValue());
+				}
+			}
 		}
 		
 	}
@@ -497,9 +522,9 @@ public class DataExportService extends DataCommonService {
 		try {
 			File doc = MetaFiles.getPath(docFile).toFile();
 			FileInputStream inSteam = new FileInputStream(doc);
-			XSSFWorkbook book = new XSSFWorkbook(inSteam);
+			oldBook = new XSSFWorkbook(inSteam);
 			
-			for (XSSFSheet sheet : book) {
+			for (XSSFSheet sheet : oldBook) {
 				String lastKey = sheet.getSheetName();
 				Iterator<Row> rowIter = sheet.rowIterator();
 				
