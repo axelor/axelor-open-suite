@@ -2,10 +2,12 @@
 <object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
 
-	<grid name="expense-line-grid" title="Expense lines" model="com.axelor.apps.hr.db.ExpenseLine"
-		onNew="action-expense-line-default">
-		<field name="projectTask" requiredIf="toInvoice" canView="false" domain="self.imputable = true" widget="SuggestBox" />  <!-- form-view="project-task-form" grid-view="project-task-grid" -->
-		<field name="expenseType" canView="false" domain="self.expense = true" widget="SuggestBox" grid-view="product-expense-grid"/> <!-- form-view="product-expense-form"  grid-view="product-expense-grid"-->
+	<grid name="expense-line-grid" 
+		  title="Expense lines" 
+		  model="com.axelor.apps.hr.db.ExpenseLine"
+		  onNew="action-expense-line-default, action-kilometric-allowance-record-default,action-kilometric-allowance-record-rate">
+		<field name="projectTask" requiredIf="toInvoice" canView="false" domain="self.imputable = true" widget="SuggestBox" />  
+		<field name="expenseProduct" canView="false" domain="self.expense = true" widget="SuggestBox" form-view="product-expense-form" grid-view="product-expense-grid"/> 
 		<field name="expenseDate" onChange="action-expense-line-validate-expenseDate"/>
 		<field name="totalAmount" aggregate="sum" onChange="action-expense-on-change-tax-untaxt-amount"/>
 		<field name="totalTax" aggregate="sum" onChange="action-expense-on-change-tax-untaxt-amount, action-expense-line-method-compute-analytic-distribution"/>
@@ -13,13 +15,33 @@
 		<field name="user" hidden="true" form-view="user-form" grid-view="user-grid"/>
 		<field name="untaxedAmount" hidden="true"/>
 	</grid>
+	
+	<grid name="expense-line-kilometric-grid" 
+		  title="Kilometric Allowances" 
+		  model="com.axelor.apps.hr.db.ExpenseLine"
+		  onNew="action-kilometric-allowance-record-default,action-kilometric-allowance-record-rate,action-expensive-line-fill-expense-product">
+		<field name="projectTask" title="Project" requiredIf="toInvoice" canView="false" domain="self.imputable = true" widget="SuggestBox" grid-view="project-task-grid"/>
+		<field name="expenseProduct" title="Product" readonly="true" form-view="product-expense-form" grid-view="product-expense-grid"/> 
+		<field name="kilometricAllowParam" title="Param" onChange="action-kilometric-allowance-record-rate,action-kilometric-allowance-record-in-tax-total"/>
+        <field name="kilometricRate" readonly="true" onChange="action-kilometric-allowance-record-in-tax-total"/>
+        <field name="kilometricTypeSelect" required="true" onChange="action-kilometric-allowance-record-in-tax-total"/>
+        <field name="distance" title="KM" required="true" onChange="action-kilometric-allowance-record-in-tax-total"/>
+        <field name="fromCity" title="From" required="true"/>
+        <field name="toCity" title="To" required="true"/>
+        <field name="expenseDate" title="Date"/>
+	    <field name="comments" />
+	    <field name="user" hidden="true" form-view="user-form" grid-view="user-grid"/>
+	    <field name="totalAmount" title="Total ATI" onChange="action-expense-on-change-untaxt-amount, action-expense-line-method-compute-analytic-distribution"/>
+	</grid>
 
 	<form name="expense-line-form" title="Expense line" model="com.axelor.apps.hr.db.ExpenseLine"
 		onNew="action-expense-line-default"
 		onSave="action-expense-line-validate-expenseDate" width="large">
-		<panel name="main">
+		
+		<panel name="main" title="Main">
+			<field name="user" hidden="true" form-view="user-form" grid-view="user-grid"/>
 			<field name="projectTask" requiredIf="toInvoice" edit-icon="false" canEdit="false" domain="self.imputable = true" widget="SuggestBox" form-view="project-task-form" grid-view="project-task-grid"/>
-			<field name="expenseType" edit-icon="false" canEdit="false" domain="self.expense = true" widget="SuggestBox" form-view="product-expense-form" grid-view="product-expense-grid"/>
+			<field name="expenseProduct" edit-icon="false" canEdit="false" domain="self.expense = true" widget="SuggestBox" form-view="product-expense-form" grid-view="product-expense-grid"/>
 			<field name="expenseDate" onChange="action-expense-line-validate-expenseDate"/>
 			<field name="totalAmount" onChange="action-expense-on-change-untaxt-amount, action-expense-line-method-compute-analytic-distribution"/>
 			<field name="totalTax" onChange="action-expense-on-change-tax-untaxt-amount, action-expense-line-method-compute-analytic-distribution"/>
@@ -28,8 +50,35 @@
 			<field name="invoiced" showIf="toInvoice"/>
 			<field name="justification"/>
 			<field name="comments" colSpan="12"/>
-			<field name="user" hidden="true" form-view="user-form" grid-view="user-grid"/>
 		</panel>
+				
+		<panel name="analyticDistribution" title="Analytic distribution" if="__config__.general.getManageAnalyticAccounting()" onTabSelect="action-expense-line-attrs-read-only-distribution-lines">
+			<field name="analyticDistributionTemplate" if="__config__.general.getAnalyticDistributionTypeSelect() == 1"/>
+			<button name="generateDistributionLinesButton" onClick="action-expense-line-method-create-distribution" title="Generate distribution lines" showIf="analyticDistributionTemplate != null" if="__config__.general.getAnalyticDistributionTypeSelect() == 1"/>
+			<panel-related field="analyticDistributionLineList" grid-view="analytic-distribution-line-grid" form-view="analytic-distribution-line-form" colSpan="12"/>
+		</panel>
+	</form>
+	
+	<form name="expense-line-kilometric-form" title="Kilometric Allowance" model="com.axelor.apps.hr.db.ExpenseLine"
+		onNew="action-expense-line-default,action-kilometric-allowance-record-default,action-kilometric-allowance-record-rate,action-expensive-line-fill-expense-product"
+		onSave="action-expense-line-validate-expenseDate" width="large">
+
+			<panel name="kilometricAllowance" title="Kilometric Allowance">
+				<field name="projectTask" requiredIf="toInvoice" edit-icon="false" canEdit="false" domain="self.imputable = true" widget="SuggestBox" form-view="project-task-form" grid-view="project-task-grid"/>
+				<field name="expenseProduct" readOnly="true" canEdit="false" domain="self.expense = true AND self.isModel = false" form-view="product-expense-form" grid-view="product-expense-grid"/>
+				<field name="kilometricAllowParam" onChange="action-kilometric-allowance-record-rate,action-kilometric-allowance-record-in-tax-total"/>
+		        <field name="kilometricRate" onChange="action-kilometric-allowance-record-in-tax-total" />
+		        <field name="kilometricTypeSelect" required="true"/>
+		        <field name="distance" onChange="action-kilometric-allowance-record-in-tax-total" required="true"/>
+		        <field name="fromCity" required="true"/>
+		        <field name="toCity" required="true"/>
+		        <field name="expenseDate" />
+		    	<field name="comments" />
+		    	<field name="totalAmount" onChange="action-expense-on-change-untaxt-amount, action-expense-line-method-compute-analytic-distribution"/>
+	      		
+				<field name="user" hidden="true" form-view="user-form" grid-view="user-grid"/>
+			</panel>
+		
 		<panel name="analyticDistribution" title="Analytic distribution" if="__config__.general.getManageAnalyticAccounting()" onTabSelect="action-expense-line-attrs-read-only-distribution-lines">
 			<field name="analyticDistributionTemplate" if="__config__.general.getAnalyticDistributionTypeSelect() == 1"/>
 			<button name="generateDistributionLinesButton" onClick="action-expense-line-method-create-distribution" title="Generate distribution lines" showIf="analyticDistributionTemplate != null" if="__config__.general.getAnalyticDistributionTypeSelect() == 1"/>
@@ -45,9 +94,27 @@
 		<call class="com.axelor.apps.hr.web.expense.ExpenseController" method="computeAnalyticDistribution"/>
 	</action-method>
 	
+	
+	<action-method name="action-expensive-line-fill-expense-product">
+		<call class="com.axelor.apps.hr.web.expense.ExpenseController" method="fillExpenseProduct"/>
+	</action-method>
+	
 	<action-attrs name="action-expense-line-attrs-read-only-distribution-lines">
 		<attribute name="readonly" for="analyticDistributionLineList" expr="eval: __config__.general.getAnalyticDistributionTypeSelect() != 1"/>
 	</action-attrs>
+	
+	<action-record name="action-kilometric-allowance-record-default" model="com.axelor.apps.hr.db.ExpenseLine">
+    	<field name="kilometricAllowParam" expr="eval:  _parent?.employee?.kilometricAllowParam"/>
+    </action-record>
+
+    <action-record name="action-kilometric-allowance-record-rate" model="com.axelor.apps.hr.db.ExpenseLine">
+        <field name="kilometricRate" if="kilometricAllowParam" expr="eval: __repo__.of(KilometricAllowanceRate).all().filter('self.kilometricAllowParam = ?1',kilometricAllowParam).fetchOne()?.rate"/>  
+    </action-record>
+
+    <action-record name="action-kilometric-allowance-record-in-tax-total" model="com.axelor.apps.hr.db.ExpenseLine">
+        <field name="totalAmount" if="kilometricTypeSelect == 1"  expr="eval: kilometricRate * distance"/>
+        <field name="totalAmount" if="kilometricTypeSelect == 2"  expr="eval: kilometricRate * distance * 2"/>
+    </action-record>
 	
 	<action-record name="action-expense-line-default" model="com.axelor.apps.hr.db.ExpenseLine">
 		<field name="user" expr="eval: _parent?.user"/>

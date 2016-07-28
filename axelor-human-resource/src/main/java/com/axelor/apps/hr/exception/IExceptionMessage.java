@@ -26,6 +26,7 @@ package com.axelor.apps.hr.exception;
 public interface IExceptionMessage {
 
 	static final String HR_CONFIG_1 = /*$$(*/ "Please configure informations for human resources for company %s" /*)*/;
+	static final String HR_CONFIG_2 = /*$$(*/ "Please configure the expense type for kilometric allowance in HR config %s" /*)*/;
 	static final String HR_CONFIG_TEMPLATES = /*$$(*/ "No email sent, please configure HR config for company %s"/*)*/ ;
 	
 	static final String TIMESHEET_FROM_DATE = /*$$(*/ "Merci de rentrer une date de début pour la génération"/*)*/ ;

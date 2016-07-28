@@ -18,6 +18,7 @@
 package com.axelor.apps.hr.service.config;
 
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Product;
 import com.axelor.apps.hr.db.HRConfig;
 import com.axelor.apps.hr.exception.IExceptionMessage;
 import com.axelor.exception.AxelorException;
@@ -32,6 +33,15 @@ public class HRConfigService {
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.HR_CONFIG_1), company),IException.CONFIGURATION_ERROR);
 		}
 		return hrConfig;
+	}
+	
+	public Product getKilometricExpenseProduct(HRConfig hrConfig) throws AxelorException{
+		Product kilometricExpenseProduct = hrConfig.getKilometricExpenseProduct();
+		Company company = hrConfig.getCompany();
+		if(kilometricExpenseProduct == null){
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.HR_CONFIG_2),company),IException.CONFIGURATION_ERROR);
+		}
+		return kilometricExpenseProduct;
 	}
 
 }

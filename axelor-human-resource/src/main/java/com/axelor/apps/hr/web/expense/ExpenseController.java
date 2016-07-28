@@ -17,10 +17,12 @@
  */
 package com.axelor.apps.hr.web.expense;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,8 +32,14 @@ import com.axelor.apps.base.db.Wizard;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.hr.db.Expense;
 import com.axelor.apps.hr.db.ExpenseLine;
+import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.hr.db.ExtraHours;
+import com.axelor.apps.hr.db.HRConfig;
+import com.axelor.apps.hr.db.KilometricAllowanceRate;
 import com.axelor.apps.hr.db.repo.ExpenseRepository;
+import com.axelor.apps.hr.db.repo.KilometricAllowanceRateRepository;
 import com.axelor.apps.hr.db.repo.TimesheetRepository;
 import com.axelor.apps.hr.exception.IExceptionMessage;
 import com.axelor.apps.hr.report.IReport;
@@ -54,6 +62,7 @@ import com.axelor.rpc.ActionResponse;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 
 public class ExpenseController {
 
@@ -69,6 +78,8 @@ public class ExpenseController {
 	private ExpenseService expenseService;
 	@Inject
 	protected GeneralService generalService;
+	@Inject
+	private ProductRepository productRepo;
 	
 	public void createAnalyticDistributionWithTemplate(ActionRequest request, ActionResponse response) throws AxelorException{
 		ExpenseLine expenseLine = request.getContext().asType(ExpenseLine.class);
@@ -399,4 +410,49 @@ public class ExpenseController {
 			}
 		}
 	}
+	
+	public void fillExpenseProduct(ActionRequest request, ActionResponse response) throws AxelorException{
+		Expense expense = request.getContext().getParentContext().asType(Expense.class);
+		Company company = expense.getCompany();
+		HRConfig hrConfig = hrConfigService.getHRConfig(company);
+		Product expenseProduct = hrConfigService.getKilometricExpenseProduct(hrConfig);
+		logger.debug("expenseProduct : {}", expenseProduct);
+		response.setValue("expenseProduct",expenseProduct);
+	}
+	
+	@Transactional
+	 public void insertKMExpenses(ActionRequest request, ActionResponse response){
+	 	User user = AuthUtils.getUser();
+	 	if(user != null){
+	 		Expense expense = Beans.get(ExpenseRepository.class).all().filter("self.statusSelect = 1 AND self.user.id = ?1", user.getId()).order("-id").fetchOne();
+	 		if(expense == null){
+	 			expense = new Expense();
+	 			expense.setUser(user);
+	 			expense.setCompany(user.getActiveCompany());
+	 			expense.setStatusSelect(TimesheetRepository.STATUS_DRAFT);
+	 		}
+	 		ExpenseLine expenseLine = new ExpenseLine();
+	 		expenseLine.setDistance(new BigDecimal(request.getData().get("kmNumber").toString()));
+	 		expenseLine.setFromCity(request.getData().get("locationFrom").toString());
+	 		expenseLine.setToCity(request.getData().get("locationTo").toString());
+	 		expenseLine.setKilometricTypeSelect(new Integer(request.getData().get("allowanceTypeSelect").toString()));
+	 		expenseLine.setComments(request.getData().get("comments").toString());
+	 		expenseLine.setExpenseDate(new LocalDate(request.getData().get("date").toString()));
+	 		if(user.getEmployee() != null && user.getEmployee().getKilometricAllowParam() != null){
+	 			expenseLine.setKilometricAllowParam(user.getEmployee().getKilometricAllowParam());
+	 			KilometricAllowanceRate kilometricAllowanceRate = Beans.get(KilometricAllowanceRateRepository.class).findByVehicleKillometricAllowanceParam(user.getEmployee().getKilometricAllowParam());
+	 			if(kilometricAllowanceRate != null){
+	 				BigDecimal rate = kilometricAllowanceRate.getRate();
+	 				if(rate != null){
+	 					expenseLine.setTotalAmount(rate.multiply(expenseLine.getDistance()));
+	 				}
+	 			}
+	 		}
+	 			
+	 		expense.addExpenseLineListItem(expenseLine);
+	 			
+	 		Beans.get(ExpenseRepository.class).save(expense);
+	 	}
+	 }
+
 }
