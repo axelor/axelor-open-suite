@@ -520,8 +520,8 @@
 	</action-view>
 	
 	<menuitem name="account-conf-analytic-accounting-plan"
-		parent="account-conf-financial" title="Chart of Analytic Accounts"
-		action="account.conf.financial.accounting.plan" />
+		parent="account-conf-analytic" title="Chart of Analytic Accounts"
+		action="account.conf.analytic.accounting.plan" />
 	
 	<action-view name="account.conf.analytic.accounting.plan"
 		title="Chart of Analytic Accounts" model="com.axelor.apps.account.db.AnalyticAccount" >
