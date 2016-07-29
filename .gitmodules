@@ -1,3 +1,7 @@
 [submodule "modules/abs"]
 	path = modules/abs
 	url = git@github.com:axelor/axelor-business-suite.git
+[submodule "modules/axelor-process-studio"]
+	path = modules/axelor-process-studio
+	url = git@github.com:axelor/axelor-process-studio.git
+
