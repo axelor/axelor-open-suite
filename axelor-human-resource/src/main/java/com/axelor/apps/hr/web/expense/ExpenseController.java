@@ -54,6 +54,7 @@ import com.axelor.db.JPA;
 import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
@@ -77,7 +78,7 @@ public class ExpenseController {
 	@Inject
 	private ExpenseService expenseService;
 	@Inject
-	protected GeneralService generalService;
+	private GeneralService generalService;
 	@Inject
 	private ProductRepository productRepo;
 	
@@ -411,13 +412,18 @@ public class ExpenseController {
 		}
 	}
 	
-	public void fillExpenseProduct(ActionRequest request, ActionResponse response) throws AxelorException{
-		Expense expense = request.getContext().getParentContext().asType(Expense.class);
-		Company company = expense.getCompany();
-		HRConfig hrConfig = hrConfigService.getHRConfig(company);
-		Product expenseProduct = hrConfigService.getKilometricExpenseProduct(hrConfig);
-		logger.debug("expenseProduct : {}", expenseProduct);
-		response.setValue("expenseProduct",expenseProduct);
+	public void fillKilometricExpenseProduct(ActionRequest request, ActionResponse response) throws AxelorException{
+		
+		try  {
+			Expense expense = request.getContext().getParentContext().asType(Expense.class);
+			HRConfig hrConfig = hrConfigService.getHRConfig(expense.getCompany());
+			Product expenseProduct = hrConfigService.getKilometricExpenseProduct(hrConfig);
+			logger.debug("Get Kilometric expense product : {}", expenseProduct);
+			response.setValue("expenseProduct",expenseProduct);
+		}
+		catch(Exception e)  {
+			TraceBackService.trace(response, e);
+		}
 	}
 	
 	@Transactional

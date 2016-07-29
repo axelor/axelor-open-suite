@@ -30,7 +30,7 @@ public class HRConfigService {
 		HRConfig hrConfig = company.getHrConfig();
 
 		if(hrConfig == null)  {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.HR_CONFIG_1), company),IException.CONFIGURATION_ERROR);
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.HR_CONFIG_1), company.getName()),IException.CONFIGURATION_ERROR);
 		}
 		return hrConfig;
 	}
@@ -39,7 +39,7 @@ public class HRConfigService {
 		Product kilometricExpenseProduct = hrConfig.getKilometricExpenseProduct();
 		Company company = hrConfig.getCompany();
 		if(kilometricExpenseProduct == null){
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.HR_CONFIG_2),company),IException.CONFIGURATION_ERROR);
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.HR_CONFIG_2), company.getName()),IException.CONFIGURATION_ERROR);
 		}
 		return kilometricExpenseProduct;
 	}

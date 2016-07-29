@@ -19,7 +19,7 @@
 	<grid name="expense-line-kilometric-grid" 
 		  title="Kilometric Allowances" 
 		  model="com.axelor.apps.hr.db.ExpenseLine"
-		  onNew="action-kilometric-allowance-record-default,action-kilometric-allowance-record-rate,action-expensive-line-fill-expense-product">
+		  onNew="action-kilometric-allowance-record-default,action-kilometric-allowance-record-rate,action-expense-line-method-fill-kilometric-expense-product">
 		<field name="projectTask" title="Project" requiredIf="toInvoice" canView="false" domain="self.imputable = true" widget="SuggestBox" grid-view="project-task-grid"/>
 		<field name="expenseProduct" title="Product" readonly="true" form-view="product-expense-form" grid-view="product-expense-grid"/> 
 		<field name="kilometricAllowParam" title="Param" onChange="action-kilometric-allowance-record-rate,action-kilometric-allowance-record-in-tax-total"/>
@@ -60,7 +60,7 @@
 	</form>
 	
 	<form name="expense-line-kilometric-form" title="Kilometric Allowance" model="com.axelor.apps.hr.db.ExpenseLine"
-		onNew="action-expense-line-default,action-kilometric-allowance-record-default,action-kilometric-allowance-record-rate,action-expensive-line-fill-expense-product"
+		onNew="action-expense-line-default,action-kilometric-allowance-record-default,action-kilometric-allowance-record-rate,action-expense-line-method-fill-kilometric-expense-product"
 		onSave="action-expense-line-validate-expenseDate" width="large">
 
 			<panel name="kilometricAllowance" title="Kilometric Allowance">
@@ -95,8 +95,8 @@
 	</action-method>
 	
 	
-	<action-method name="action-expensive-line-fill-expense-product">
-		<call class="com.axelor.apps.hr.web.expense.ExpenseController" method="fillExpenseProduct"/>
+	<action-method name="action-expense-line-method-fill-kilometric-expense-product">
+		<call class="com.axelor.apps.hr.web.expense.ExpenseController" method="fillKilometricExpenseProduct"/>
 	</action-method>
 	
 	<action-attrs name="action-expense-line-attrs-read-only-distribution-lines">
