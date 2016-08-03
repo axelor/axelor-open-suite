@@ -31,10 +31,12 @@ import java.util.Map;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.FillPatternType;
+import org.apache.poi.ss.usermodel.FontFamily;
 import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFCellStyle;
+import org.apache.poi.xssf.usermodel.XSSFFont;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -42,12 +44,15 @@ import org.joda.time.LocalDateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaAction;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.meta.db.MetaMenu;
+import com.axelor.meta.db.MetaModule;
 import com.axelor.meta.db.repo.MetaMenuRepository;
+import com.axelor.meta.db.repo.MetaModuleRepository;
 import com.axelor.studio.service.ViewLoaderService;
 import com.axelor.studio.service.data.DataCommonService;
 import com.google.common.base.Joiner;
@@ -57,6 +62,8 @@ import com.google.inject.Inject;
 public class DataExportService extends DataCommonService {
 	
 	public int columns = HEADERS.length;
+	
+	public List<String> installed;
 	
 	private final Logger log = LoggerFactory.getLogger(getClass());
 	
@@ -76,6 +83,8 @@ public class DataExportService extends DataCommonService {
 	
 	private XSSFSheet sheet;
 	
+	private XSSFSheet menuSheet;
+	
 	private XSSFCellStyle style;
 	
 	private XSSFCellStyle green;
@@ -83,6 +92,8 @@ public class DataExportService extends DataCommonService {
 	private XSSFCellStyle lavender;
 	
 	private XSSFCellStyle violet;
+	
+	private XSSFCellStyle header;
 	
 	private String menuPath = null;
 	
@@ -103,18 +114,31 @@ public class DataExportService extends DataCommonService {
 	@Inject
 	private DataXmlService dataXmlService;
 	
-	public MetaFile export(MetaFile oldFile, boolean onlyPanel) {
+	@Inject
+	private MetaModuleRepository metaModuleRepo;
+	
+	public MetaFile export(MetaFile oldFile, boolean onlyPanel) throws AxelorException {
 		
 		this.onlyPanel = onlyPanel;
-
+		configService.config();
+		
 		if (onlyPanel) {
 			columns = PANEL_HEADERS.length;
 		}
 		
+		installed = new ArrayList<String>();
+		List<MetaModule> modules = metaModuleRepo.all().filter("self.installed = true").fetch();
+		for (MetaModule module : modules) {
+			installed.add(module.getName());
+		}
+		installed.add(configService.getModuleName());
+		
 		List<MetaMenu> menus = metaMenuRepo.all().filter("self.parent is null "
 				+ "and self.left = true "
 				+ "and self.action is null "
-				+ "and self.module != 'axelor-core'")
+				+ "and self.xmlId is null "
+				+ "and self.module != 'axelor-core' "
+				+ "and self.module in ?1", installed)
 				.order("order").fetch();
 		
 		workBook = new XSSFWorkbook();
@@ -124,6 +148,12 @@ public class DataExportService extends DataCommonService {
 			updateDocMap(oldFile);
 		}
 		addStudioImport();
+		
+		menuSheet = workBook.createSheet("Menus");
+		
+		sheet = menuSheet;
+		
+		writeRow(HEADERS, false, false, false);
 		
 		processRootMenu(menus.iterator());
 		
@@ -190,6 +220,13 @@ public class DataExportService extends DataCommonService {
 		violet = workBook.createCellStyle();
 		violet.cloneStyleFrom(green);
 		violet.setFillForegroundColor(IndexedColors.VIOLET.index);
+		
+		header = workBook.createCellStyle();
+		header.cloneStyleFrom(green);
+		header.setFillForegroundColor(IndexedColors.GREY_25_PERCENT.index);
+		XSSFFont font = workBook.createFont();
+		font.setBold(true);
+		header.setFont(font);
 		
 	}
 	
@@ -282,16 +319,16 @@ public class DataExportService extends DataCommonService {
 			addGeneralRow(values);
 		}
 		
-		XSSFRow row = sheet.createRow(sheet.getPhysicalNumberOfRows());
+		int size = sheet.getPhysicalNumberOfRows();
 		XSSFCellStyle cellStyle = style;
+		if (size == 0){
+			cellStyle = header;
+		}
+		XSSFRow row = sheet.createRow(size);
+		
 		 
-		if (!onlyPanel) {
-			if (newPanel) {
-				cellStyle = violet;
-			}
-//			else if (newSubPanel) {
-//				cellStyle = lavender;
-//			}
+		if (!onlyPanel && newPanel) {
+			cellStyle = violet;
 		}
 		
 		int count = writeCell(row, values, 0, cellStyle);
@@ -459,9 +496,9 @@ public class DataExportService extends DataCommonService {
 	
 	private int addMenu(MetaMenu subMenu, String model, int rowCount) {
 		
-		sheet.shiftRows(rowCount, sheet.getPhysicalNumberOfRows(), 1);
+//		menuSheet.shiftRows(rowCount, menuSheet.getPhysicalNumberOfRows(), 1);
 		
-		XSSFRow row = sheet.createRow(rowCount);
+		XSSFRow row = menuSheet.createRow(menuSheet.getPhysicalNumberOfRows());
 		
 		String[] menu = menuPath.split("/");
 		

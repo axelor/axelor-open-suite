@@ -342,25 +342,25 @@ public class ViewBuilderService {
 			List<Action> actions = new ArrayList<Action>();
 
 			switch (viewBuilder.getViewType()) {
-			case "form":
-				view = formBuilderService.getView(viewBuilder, autoCreate);
-				actions.addAll(formBuilderService.getActionRecords());
-				break;
-			case "grid":
-				view = gridBuilderService.getView(viewBuilder);
-				break;
-			case "chart":
-				view = chartBuilderService.getView(viewBuilder);
-				ActionRecord actionRecord = chartBuilderService
-						.getOnNewAction();
-				if (actionRecord != null) {
-					actions.add(actionRecord);
-				}
-				break;
-			case "dashboard":
-				view = dashboardBuilderService.getView(viewBuilder);
-				actions.addAll(dashboardBuilderService.getActions());
-				break;
+				case "form":
+					view = formBuilderService.getView(viewBuilder, autoCreate);
+					actions.addAll(formBuilderService.getActionRecords());
+					break;
+				case "grid":
+					view = gridBuilderService.getView(viewBuilder);
+					break;
+				case "chart":
+					view = chartBuilderService.getView(viewBuilder);
+					ActionRecord actionRecord = chartBuilderService
+							.getOnNewAction();
+					if (actionRecord != null) {
+						actions.add(actionRecord);
+					}
+					break;
+				case "dashboard":
+					view = dashboardBuilderService.getView(viewBuilder);
+					actions.addAll(dashboardBuilderService.getActions());
+					break;
 			}
 
 			if (view != null) {

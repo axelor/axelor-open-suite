@@ -83,7 +83,7 @@ public class DataManagerController {
 		
 	}
 	
-	public void exportData(ActionRequest request, ActionResponse response){
+	public void exportData(ActionRequest request, ActionResponse response) throws AxelorException{
 		
 		DataManager dataManager = request.getContext().asType(DataManager.class);
 		

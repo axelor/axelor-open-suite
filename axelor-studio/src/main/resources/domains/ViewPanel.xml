@@ -24,6 +24,9 @@
     <boolean name="readonly" title="Readonly" />
     <string name="readonlyIf" title="Readonly if" />
     <boolean name="newPanel" title="New panel ?" />
+    <string name="showIf" title="Show If" />
+    <string name="ifModule" title="If module" />
+    <string name="ifConfig" title="If config" />
   </entity>
     
     

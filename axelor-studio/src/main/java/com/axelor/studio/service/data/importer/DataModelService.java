@@ -97,7 +97,9 @@ public class DataModelService extends DataCommonService {
 	 * @throws AxelorException 
 	 */
 	public File importModels(DataManager dataManager) throws AxelorException {
-
+		
+		configService.config();
+		
 		File inputFile = MetaFiles.getPath(dataManager.getMetaFile())
 				.toFile();
 

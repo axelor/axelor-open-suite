@@ -43,6 +43,7 @@ import com.google.inject.Inject;
 public abstract class DataCommonService {
 	
 	public static final String[] HEADERS = new String[]{
+		"Note",
 		"Module", 
 		"Object", 
 		"View", 
@@ -57,6 +58,8 @@ public abstract class DataCommonService {
 		"Readonly if",
 		"Hidden",
 		"Hide if",
+		"Show if",
+		"If config",
 		"Formula",
 		"Event",
 		"Domain",
@@ -153,29 +156,32 @@ public abstract class DataCommonService {
 		frMap = Collections.unmodifiableMap(map);
 	}
 	
-	protected final static int MODULE = 0;
-	protected final static int MODEL = 1;
-	protected final static int VIEW = 2;
-	protected final static int NAME = 3;
-	protected final static int TITLE = 4;
-	protected final static int TYPE = 5;
-	protected final static int SELECT = 6;
-	protected final static int MENU = 7;
-	protected final static int REQUIRED = 8;
-	protected final static int REQUIRED_IF = 9;
-	protected final static int READONLY = 10;
-	protected final static int READONLY_IF = 11;
-	protected final static int HIDDEN = 12;
-	protected final static int HIDE_IF = 13;
-	protected final static int FORMULA = 14;
-	protected final static int EVENT = 15;
-	protected final static int DOMAIN = 16;
-	protected final static int ON_CHANGE = 17;
-	protected final static int ON_CLICK = 18;
-	protected final static int COLSPAN = 19;
-	protected final static int GRID = 20;
-	protected final static int HELP = 21;
-	protected final static int PANEL_LEVEL = 22;
+	protected final static int NOTE = 0;
+	protected final static int MODULE = 1;
+	protected final static int MODEL = 2;
+	protected final static int VIEW = 3;
+	protected final static int NAME = 4;
+	protected final static int TITLE = 5;
+	protected final static int TYPE = 6;
+	protected final static int SELECT = 7;
+	protected final static int MENU = 8;
+	protected final static int REQUIRED = 9;
+	protected final static int REQUIRED_IF = 10;
+	protected final static int READONLY = 11;
+	protected final static int READONLY_IF = 12;
+	protected final static int HIDDEN = 13;
+	protected final static int HIDE_IF = 14;
+	protected final static int SHOW_IF = 15;
+	protected final static int IF_CONFIG = 16;
+	protected final static int FORMULA = 17;
+	protected final static int EVENT = 18;
+	protected final static int DOMAIN = 19;
+	protected final static int ON_CHANGE = 20;
+	protected final static int ON_CLICK = 21;
+	protected final static int COLSPAN = 22;
+	protected final static int GRID = 23;
+	protected final static int HELP = 24;
+	protected final static int PANEL_LEVEL = 25;
 	
 	protected final static Map<String, String> relationshipMap;
 
@@ -186,6 +192,7 @@ public abstract class DataCommonService {
 		map.put("m2m", "ManyToMany");
 		map.put("m2o", "ManyToOne");
 		map.put("file", "ManyToOne");
+		map.put("o2o", "OneToOne");
 		relationshipMap = Collections.unmodifiableMap(map);
 	}
 	

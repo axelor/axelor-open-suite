@@ -57,7 +57,7 @@ public class DataViewService extends DataCommonService {
 
 	private final static Logger log = LoggerFactory
 			.getLogger(DataViewService.class);
-
+	
 	private Map<String, ViewBuilder> clearedViews = new HashMap<String, ViewBuilder>();
 
 	private Map<Long, Integer> panelSeqMap = new HashMap<Long, Integer>();
@@ -120,8 +120,6 @@ public class DataViewService extends DataCommonService {
 					1, row.getRowNum() + 1, row.getSheet().getSheetName());
 		}
 
-		ViewBuilder viewBuilder = getViewBuilder(model, getValue(row, VIEW), replace);
-		
 		String panelLevel = getValue(row, PANEL_LEVEL);
 		if (!basic[0].startsWith("panel") 
 				&& !replace 
@@ -129,60 +127,62 @@ public class DataViewService extends DataCommonService {
 			return;
 		}
 		
+		ViewBuilder viewBuilder = getViewBuilder(model, getValue(row, VIEW), replace);
+		
 		switch (basic[0]) {
-		case "panelbook":
-			panelLevel = getPanelLevel(panelLevel, viewBuilder, false, false);
-			createPanelBook(panelLevel, viewBuilder, null);
-			break;
-		case "paneltab":
-			panelLevel = getPanelLevel(panelLevel, viewBuilder, false, true);
-			createPanelTab(panelLevel, viewBuilder, basic);
-			break;
-		case "panelside":
-			panelLevel = getPanelLevel(panelLevel, viewBuilder, true, false);
-			createPanelSide(panelLevel, viewBuilder, basic);
-			break;
-		case "panel":
-			panelLevel = getPanelLevel(panelLevel, viewBuilder, false, false);
-			createPanel(panelLevel, viewBuilder, basic, true);
-			break;
-		case "button":
-			addButton(viewBuilder, basic);
-			break;
-		case "label":
-			addLabel(viewBuilder, basic);
-			break;
-		case "wizard":
-			addWizard(viewBuilder, basic);
-		case "stream":
-			viewBuilder.setAddStream(true);
-			break;
-		case "error":
-			createValidation("error", viewBuilder, model);
-			break;
-		case "warning":
-			createValidation("alert", viewBuilder, model);
-			break;
-		case "onsave":
-			addOnSave(viewBuilder);
-			break;
-		case "onnew":
-			addOnNew(viewBuilder);
-			break;
-		case "onload":
-			addOnLoad(viewBuilder);
-			break;	
-		case "spacer":
-			addSpacer(basic, viewBuilder);
-			break;
-		case "menubar":
-			addMenubar(viewBuilder);
-			break;
-		case "menubar.item":
-			addMenubarItem(viewBuilder);
-			break;
-		default:
-			addField(viewBuilder, metaField, basic);
+			case "panelbook":
+				panelLevel = getPanelLevel(panelLevel, viewBuilder, false, false);
+				createPanelBook(panelLevel, viewBuilder, null);
+				break;
+			case "paneltab":
+				panelLevel = getPanelLevel(panelLevel, viewBuilder, false, true);
+				createPanelTab(panelLevel, viewBuilder, basic);
+				break;
+			case "panelside":
+				panelLevel = getPanelLevel(panelLevel, viewBuilder, true, false);
+				createPanelSide(panelLevel, viewBuilder, basic);
+				break;
+			case "panel":
+				panelLevel = getPanelLevel(panelLevel, viewBuilder, false, false);
+				createPanel(panelLevel, viewBuilder, basic, true);
+				break;
+			case "button":
+				addButton(viewBuilder, basic);
+				break;
+			case "label":
+				addLabel(viewBuilder, basic);
+				break;
+			case "wizard":
+				addWizard(viewBuilder, basic);
+			case "stream":
+				viewBuilder.setAddStream(true);
+				break;
+			case "error":
+				createValidation("error", viewBuilder, model);
+				break;
+			case "warning":
+				createValidation("alert", viewBuilder, model);
+				break;
+			case "onsave":
+				addOnSave(viewBuilder);
+				break;
+			case "onnew":
+				addOnNew(viewBuilder);
+				break;
+			case "onload":
+				addOnLoad(viewBuilder);
+				break;	
+			case "spacer":
+				addSpacer(basic, viewBuilder);
+				break;
+			case "menubar":
+				addMenubar(viewBuilder);
+				break;
+			case "menubar.item":
+				addMenubarItem(viewBuilder);
+				break;
+			default:
+				addField(viewBuilder, metaField, basic);
 		}
 
 		processViewAction(viewBuilder);
@@ -200,6 +200,7 @@ public class DataViewService extends DataCommonService {
 		if (viewName == null) {
 			viewName = ViewLoaderService.getDefaultViewName(model.getName(), "form");
 		}
+
 		if (clearedViews.containsKey(viewName)) {
 			return clearedViews.get(viewName);
 		}
@@ -276,7 +277,7 @@ public class DataViewService extends DataCommonService {
 	@Transactional
 	public ViewPanel createPanelCommon(String panelLevel, ViewBuilder viewBuilder,
 			String[] basic, boolean addAttrs) {
-
+		
 		ViewPanel panel = new ViewPanel();
 		panel.setPanelLevel(panelLevel);
 		
@@ -285,11 +286,12 @@ public class DataViewService extends DataCommonService {
 			panel.setTitle(basic[3]);
 		}
 		
-		if (!replace) {
-			String module = getValue(row, MODULE);
-			if (module != null && module.startsWith("*")) {
+		String module = getValue(row, MODULE);
+		if (module != null) {
+			if (!replace && module.startsWith("*")) {
 				panel.setNewPanel(true);
 			}
+			panel.setIfModule(getIfModule(module, viewBuilder));
 		}
 		
 		if (addAttrs) {
@@ -306,6 +308,11 @@ public class DataViewService extends DataCommonService {
 				panel.setHidden(true);
 			}
 			panel.setHideIf(getValue(row, HIDE_IF));
+			
+			panel.setShowIf(getValue(row, SHOW_IF));
+			
+			panel.setIfConfig(getValue(row, IF_CONFIG));
+			
 		}
 
 		return viewPanelRepo.save(panel);
@@ -371,7 +378,6 @@ public class DataViewService extends DataCommonService {
 		}
 		
 		viewItem.setOnClick(getValue(row, ON_CLICK));
-		viewItem = setEvent(viewBuilder, viewItem);
 		setAttributes(viewBuilder, viewItem);
 
 		viewItemRepo.save(viewItem);
@@ -470,6 +476,7 @@ public class DataViewService extends DataCommonService {
 		}
 		
 		viewItem.setOnChange(getValue(row, ON_CHANGE));
+		viewItem.setPanelLevel(getValue(row, PANEL_LEVEL));
 		
 		viewItemRepo.save(viewItem);
 
@@ -493,7 +500,6 @@ public class DataViewService extends DataCommonService {
 		viewItem.setSequence(sequence.intValue());
 		
 	}
-	
 	
 
 	@Transactional
@@ -775,6 +781,10 @@ public class DataViewService extends DataCommonService {
 		}
 		viewItem.setReadonlyIf(getValue(row, READONLY_IF));
 		
+		viewItem.setShowIf(getValue(row, SHOW_IF));
+		viewItem.setIfModule(getIfModule(getValue(row, MODULE), viewBuilder));
+		viewItem.setIfConfig(getValue(row, IF_CONFIG));
+		
 		Integer typeSelect = viewItem.getTypeSelect();
 		if (typeSelect == 0 && viewItem.getFieldType() != null) {
 			if ("many-to-one,many-to-many".contains(viewItem.getFieldType())) {
@@ -1008,6 +1018,21 @@ public class DataViewService extends DataCommonService {
 			
 	}
 	
+	private String getIfModule(String module, ViewBuilder viewBuilder) {
+		
+		module = module.replace("*", "");
+		String viewModule = null;
+		if (viewBuilder.getMetaView() != null ) {
+			viewModule = viewBuilder.getMetaView().getModule();
+		}
+		if (viewModule != null 
+				&& !module.equals(configService.getModuleName()) 
+				&& !module.equals(viewModule)) {
+			return module;
+		}
+		
+		return null;
+	}
 	
 	
 

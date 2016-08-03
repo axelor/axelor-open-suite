@@ -134,15 +134,19 @@ public class DataXmlService extends DataCommonService {
 				
 				if (formView != null && !viewProcessed.contains(formView.getName())) {
 					
+					if (formView.getModule() != null 
+							&& !exportService.installed.contains(formView.getModule())) {
+						return;
+					}
+					
 					MetaView grid = getMetaView(model, "grid", views.get("grid"));
 					
 					/**
-					 * 1. Add new panel.
-					 * 2. Is panelTab.
-					 * 3. Grid view field list.
-					 * 4. Panel level.
+					 * 1. Is panelTab.
+					 * 2. Grid view field list.
+					 * 3. Panel level.
 					 */
-					Object[] extra = new Object[]{true, false, getGridFields(grid), null};
+					Object[] extra = new Object[]{false, getGridFields(grid), null};
 					Mapper mapper = Mapper.of(ClassUtils.findClass(model));
 					ObjectViews objectViews = XMLViews.fromXML(formView.getXml());
 					
@@ -267,7 +271,7 @@ public class DataXmlService extends DataCommonService {
 		
 		toolbar = false;
 		
-		String panelLevel = (String) extra[3];
+		String panelLevel = (String) extra[2];
 		
 		log.debug("Processing form: {}", view);
 		
@@ -300,8 +304,6 @@ public class DataXmlService extends DataCommonService {
 		}
 			
 		panelLevel = processItems(form.getItems(), module, model, view, mapper, extra);
-		
-		
 		
 		return panelLevel;
 	}
@@ -357,13 +359,18 @@ public class DataXmlService extends DataCommonService {
 	
 	private String processItems(List<AbstractWidget> items, String module, String model, String view, Mapper mapper, Object[] extra){
 		
-		String panelLevel = (String) extra[3];
+		String panelLevel = (String) extra[2];
 		if (items == null) {
 			return panelLevel;
 		}
 		
 		for (AbstractWidget item : items) {
 			
+			if (item.getModuleToCheck() != null 
+					&& !exportService.installed.contains(item.getModuleToCheck())) {
+				continue;
+			}
+
 			Class<? extends AbstractWidget> klass = item.getClass();
 			String name = klass.getSimpleName();
 			
@@ -386,7 +393,7 @@ public class DataXmlService extends DataCommonService {
 										 Object[].class});
 				method.setAccessible(true);
 				panelLevel = (String) method.invoke(this, item, module, model, view, mapper, extra);
-				extra[3] = panelLevel;
+				extra[2] = panelLevel;
 				
 			} catch (NoSuchMethodException e) { 			
 				log.debug("No method found: {}", methodName);
@@ -405,7 +412,7 @@ public class DataXmlService extends DataCommonService {
 	private String processPanel(Panel panel, String module, String model, String view, Mapper mapper, Object[] extra) {
 		
 		String panelType = "panel";
-		if ((boolean)extra[1]) {
+		if ((boolean)extra[0]) {
 			panelType = "paneltab";
 		}
 		
@@ -416,12 +423,25 @@ public class DataXmlService extends DataCommonService {
 		values[NAME] = panel.getName(); 
 		values[TITLE] =	panel.getTitle();
 		values[TYPE] =	panelType; 
+		values[IF_CONFIG] = panel.getConditionToCheck();
+		
+		if (panel.getReadonly() != null && panel.getReadonly()) {
+			values[READONLY] = "x";
+		}
+		values[READONLY_IF] = panel.getReadonlyIf();
+		
+		if (panel.getHidden() != null && panel.getHidden()) {
+			values[HIDDEN] = "x";
+		}
+		values[HIDE_IF] = panel.getHideIf();
+		
+		values[SHOW_IF] = panel.getShowIf();
 		
 		if (panel.getColSpan() != null) {
 			values[COLSPAN] = panel.getColSpan().toString();
 		}
 		
-		String panelLevel = (String) extra[3];
+		String panelLevel = (String) extra[2];
 		panelLevel = getPanelLevel(panelLevel);
 		values[PANEL_LEVEL] = panelLevel;
 		
@@ -430,8 +450,7 @@ public class DataXmlService extends DataCommonService {
 		newForm = false;
 		
 		extra[0] = false;
-		extra[1] = false;
-		extra[3] = panelLevel + ".-1";
+		extra[2] = panelLevel + ".-1";
 		
 		processItems(panel.getItems(), module, model, view, mapper, extra);
 		
@@ -463,7 +482,7 @@ public class DataXmlService extends DataCommonService {
 			processPanelEditor(panelField, module, model, view, mapper, extra);
 		}
 		
-		return (String) extra[3];
+		return (String) extra[2];
 	}
 	
 	@SuppressWarnings("unused")
@@ -474,18 +493,30 @@ public class DataXmlService extends DataCommonService {
 		values[MODEL] = model;
 		values[VIEW] =	view; 
 		values[TYPE] = "panelbook";
+		values[IF_CONFIG] = panelTabs.getConditionToCheck();
+		
+		if (panelTabs.getReadonly() != null && panelTabs.getReadonly()) {
+			values[READONLY] = "x";
+		}
+		values[READONLY_IF] = panelTabs.getReadonlyIf();
+		
+		if (panelTabs.getHidden() != null && panelTabs.getHidden()) {
+			values[HIDDEN] = "x";
+		}
+		values[HIDE_IF] = panelTabs.getHideIf();
+		
+		values[SHOW_IF] = panelTabs.getShowIf();
 		
 		Integer colspan = panelTabs.getColSpan();
 		if (colspan != null) {
 			values[COLSPAN] = colspan.toString();
 		}
 		
-		String panelLevel = getPanelLevel((String) extra[3]);
+		String panelLevel = getPanelLevel((String) extra[2]);
 		values[PANEL_LEVEL] = panelLevel;
 		
 		extra[0] = true;
-		extra[1] = true;
-		extra[3] = panelLevel + ".-1";
+		extra[2] = panelLevel + ".-1";
 
 		log.debug("Exporting panel book view: {}", view);
 		exportService.writeRow(values, newForm, false, false);
@@ -503,12 +534,9 @@ public class DataXmlService extends DataCommonService {
 	
 	private String processField(Field field, String module, String model, String view, Mapper mapper, Object[] extra) {
 		
-		String paneLevel = (String) extra[3];
+		String paneLevel = (String) extra[2];
 		
 		String name = field.getName();
-		if (name.contains(".")) {
-			return paneLevel;
-		}
 		
 		String[] values = new String[exportService.columns];
 		values[MODULE] = getModuleName(field, module);
@@ -516,7 +544,10 @@ public class DataXmlService extends DataCommonService {
 		values[VIEW] =	view; 
 		values[NAME] =	name; 
 		values[TITLE] = field.getTitle();
-		values[TYPE] = field.getServerType();
+		if (!name.contains(".")) {
+			values[TYPE] = field.getServerType();
+		}
+		values[IF_CONFIG] = field.getConditionToCheck();
 		
 		String target = field.getTarget();
 		
@@ -524,6 +555,10 @@ public class DataXmlService extends DataCommonService {
 		
 		if (property != null) {
 			addProperties(values, property, target);
+		}
+		else {
+			newForm = false;
+			return paneLevel;
 		}
 		
 		if (target != null && values[TYPE] != null) {
@@ -550,7 +585,7 @@ public class DataXmlService extends DataCommonService {
 		addExtraAttributes(field, values);
 		
 		@SuppressWarnings("unchecked")
-		List<String> grid = (List<String>) extra[2];
+		List<String> grid = (List<String>) extra[1];
 		if (grid.contains(name)) {
 			values[GRID] = grid.get(0);
 		}
@@ -622,6 +657,8 @@ public class DataXmlService extends DataCommonService {
 			values[HIDE_IF] = field.getHideIf();
 		}
 		
+		values[SHOW_IF] = field.getShowIf();
+		
 		if (field.getDomain() != null) {
 			values[DOMAIN] = field.getDomain();
 		}
@@ -666,7 +703,6 @@ public class DataXmlService extends DataCommonService {
 		model = model + "(" + panelField.getName() + ")";
 		
 		extra[0] = false;
-		extra[1] = false;
 		
 		String target = panelField.getTarget();
 		if (target != null) {
@@ -692,7 +728,7 @@ public class DataXmlService extends DataCommonService {
 					extra);
 		}
 		
-		return (String) extra[3];
+		return (String) extra[2];
 	}
 	
 	@SuppressWarnings("unused")
@@ -715,7 +751,7 @@ public class DataXmlService extends DataCommonService {
 			log.debug("Issue in panel include: {}", panelInclude.getName());
 		}
 		
-		return (String) extra[3];
+		return (String) extra[2];
 	}
 	
 	
@@ -728,7 +764,7 @@ public class DataXmlService extends DataCommonService {
 			processItems(items, module, model, view, mapper, extra);
 		}
 		
-		return (String) extra[3];
+		return (String) extra[2];
 	}
 	
 	private String processButton(Button button, String module, String model, String view, Mapper mapper, Object[] extra) {
@@ -740,21 +776,14 @@ public class DataXmlService extends DataCommonService {
 		values[NAME] =	button.getName(); 
 		values[TITLE] =	button.getTitle(); 
 		values[TYPE] = "button"; 
+		values[ON_CLICK] = button.getOnClick();
+		values[READONLY_IF] = button.getReadonlyIf();
+		values[HIDE_IF] = button.getHideIf();
+		values[SHOW_IF] = button.getShowIf();
+		values[IF_CONFIG] = button.getConditionToCheck();
 		
 		if (toolbar) {
 			values[TYPE] = "button(toolbar)";
-		}
-		
-		if (button.getOnClick() != null) {
-			values[ON_CLICK] = button.getOnClick();
-		}
-		
-		if (button.getReadonlyIf() != null) {
-			values[READONLY_IF] = button.getReadonlyIf();
-		}
-		
-		if (button.getHideIf() != null) {
-			values[HIDE_IF] = button.getHideIf();
 		}
 		
 		if (button.getColSpan() != null) {
@@ -765,7 +794,7 @@ public class DataXmlService extends DataCommonService {
 		
 		newForm = false;
 		
-		return (String) extra[3];
+		return (String) extra[2];
 	}
 	
 	@SuppressWarnings("unused")
@@ -779,9 +808,13 @@ public class DataXmlService extends DataCommonService {
 		values[VIEW] = view;
 		values[TITLE] = panelRelated.getTitle();
 		values[TYPE] = panelRelated.getServerType();
+		values[READONLY_IF] = panelRelated.getReadonlyIf();
+		values[HIDE_IF] = panelRelated.getHideIf();
+		values[SHOW_IF] = panelRelated.getShowIf();
+		values[IF_CONFIG] = panelRelated.getConditionToCheck();
 		
 		String target = panelRelated.getTarget();
-		Property property = mapper.getProperty(values[3]);
+		Property property = mapper.getProperty(values[NAME]);
 		
 		if (property != null) {
 			values[TYPE] = property.getType().name();
@@ -794,7 +827,7 @@ public class DataXmlService extends DataCommonService {
 			}
 		}
 		else {
-			log.debug("No property found: {}, class: {}", values[3], values[1]);
+			log.debug("No property found: {}, class: {}", values[NAME], values[MODEL]);
 		}
 		
 		if (values[TYPE] == null) {
@@ -824,15 +857,18 @@ public class DataXmlService extends DataCommonService {
 			values[COLSPAN] = panelRelated.getColSpan().toString();
 		}
 		
-//		values[PANEL_LEVEL] =  getPanelLevel((String) extra[3]);
+		String panelLevel = (String) extra[2];
+		panelLevel = getPanelLevel(panelLevel);
+		values[PANEL_LEVEL] = panelLevel;
+		extra[2] = panelLevel;
 		
 		exportService.writeRow(values, newForm, false, false);
 		
 		newForm = false;
 		
-		extra[1] = false;
+		extra[0] = false;
 		
-		return (String) extra[3];
+		return panelLevel;
 	}
 	
 	@SuppressWarnings("unused")
@@ -845,6 +881,8 @@ public class DataXmlService extends DataCommonService {
 		values[NAME] =	label.getName();
 		values[TITLE] =	label.getTitle();
 		values[TYPE] =	"label"; 
+		values[IF_CONFIG] = label.getConditionToCheck();
+		values[HIDE_IF] = label.getHideIf();
 		
 		if (label.getColSpan() != null) {
 			values[COLSPAN] = label.getColSpan().toString();
@@ -854,7 +892,7 @@ public class DataXmlService extends DataCommonService {
 		
 		newForm = false;
 		
-		return (String) extra[3];
+		return (String) extra[2];
 	}
 	
 	@SuppressWarnings("unused")
@@ -878,7 +916,8 @@ public class DataXmlService extends DataCommonService {
 			values[NAME] = dashlet.getName(); 
 			values[TITLE] = title;
 			values[TYPE] =	"dashlet"; 
-		
+			values[IF_CONFIG] = dashlet.getConditionToCheck();
+			
 			if (dashlet.getColSpan() != null) {
 				values[COLSPAN] = dashlet.getColSpan().toString();
 			}
@@ -886,7 +925,7 @@ public class DataXmlService extends DataCommonService {
 			newForm = false;
 		}
 		
-		return (String) extra[3];
+		return (String) extra[2];
 	}
 	
 	@SuppressWarnings("unused")
@@ -902,6 +941,8 @@ public class DataXmlService extends DataCommonService {
 		values[ON_CLICK] = item.getAction();
 		values[READONLY_IF] = item.getReadonlyIf();
 		values[HIDE_IF] = item.getHideIf();
+		values[SHOW_IF] = item.getShowIf();
+		values[IF_CONFIG] = item.getConditionToCheck();
 		if (item.getHidden() != null && item.getHidden()) {
 			values[HIDDEN] = "x";
 		}
@@ -910,7 +951,7 @@ public class DataXmlService extends DataCommonService {
 		
 		newForm = false;
 		
-		return (String) extra[3];
+		return (String) extra[2];
 	}
 	
 	@SuppressWarnings("unused")
@@ -921,6 +962,7 @@ public class DataXmlService extends DataCommonService {
 		values[MODEL] = model; 
 		values[VIEW] =	view; 
 		values[TYPE] = "spacer";
+		values[IF_CONFIG] = spacer.getConditionToCheck();
 		
 		Integer colSpan =  spacer.getColSpan();
 		if (colSpan != null) {
@@ -931,7 +973,7 @@ public class DataXmlService extends DataCommonService {
 		
 		newForm = false;
 		
-		return (String) extra[3];
+		return (String) extra[2];
 	}
 	
 	private String getType(String type, String widget, String select) {
@@ -988,12 +1030,24 @@ public class DataXmlService extends DataCommonService {
 			case "LOCALTIME":
 				return "time";
 			case "ONE_TO_MANY":
+				if (types.length == 1) {
+					return "o2m";
+				}
 				return "o2m" + "(" + types[1];
 			case "MANY_TO_ONE":
+				if (types.length == 1) {
+					return "m2o";
+				}
 				return "m2o" + "(" + types[1];
 			case "ONE_TO_ONE":
+				if (types.length == 1) {
+					return "o2o";
+				}
 				return "o2o" + "(" + types[1];
 			case "MANY_TO_MANY":
+				if (types.length == 1) {
+					return "m2m";
+				}
 				return "m2m" + "(" + types[1];
 			case "BINARY":
 				return "binary";
