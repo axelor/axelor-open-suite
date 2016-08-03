@@ -35,7 +35,7 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
-import com.axelor.apps.account.service.ReconcileService;
+import com.axelor.apps.account.service.ReconcileServiceImpl;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.move.MoveLineService;
 import com.axelor.apps.account.service.move.MoveService;
@@ -56,13 +56,13 @@ public class DoubtfulCustomerService {
 	protected MoveRepository moveRepo;
 	protected MoveLineService moveLineService;
 	protected MoveLineRepository moveLineRepo;
-	protected ReconcileService reconcileService;
+	protected ReconcileServiceImpl reconcileService;
 	protected AccountConfigService accountConfigService;
 	protected LocalDate today;
 
 	@Inject
 	public DoubtfulCustomerService(MoveService moveService, MoveRepository moveRepo, MoveLineService moveLineService, MoveLineRepository moveLineRepo,
-			ReconcileService reconcileService, AccountConfigService accountConfigService) {
+			ReconcileServiceImpl reconcileService, AccountConfigService accountConfigService) {
 
 		this.moveService = moveService;
 		this.moveRepo = moveRepo;

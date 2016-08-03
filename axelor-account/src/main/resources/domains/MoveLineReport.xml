@@ -51,6 +51,7 @@
 		public static final int EXPORT_REFUNDS = 7;
 		public static final int EXPORT_TREASURY = 8;
 		public static final int EXPORT_PURCHASES = 9;
+		public static final int EXPORT_PAYROLL_JOURNAL_ENTRY = 14; 
 	
 		// STATUS SELECT
 		public static final int STATUS_DRAFT = 1;

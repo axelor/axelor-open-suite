@@ -80,8 +80,9 @@
 	<selection name='move.line.report.type.select.export'>
 		<option value="6">Export sale -> Acc. Soft.</option>
 		<option value="7">Export refunds -> Acc. Soft.</option>
-		<option value="8">Export tresury -> Acc. Soft.</option>
+		<option value="8">Export treasury -> Acc. Soft.</option>
 		<option value="9">Export purchase -> Acc. Soft.</option>
+		<option value="14">Export payroll journal entry -> Acc. Soft.</option>
 	</selection>
 	
 	<selection name='iaccount.move.status.select'>

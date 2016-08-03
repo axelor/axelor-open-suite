@@ -34,8 +34,13 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PartnerAddress;
 import com.axelor.apps.base.db.repo.PartnerAddressRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
+import com.axelor.apps.base.exceptions.IExceptionMessage;
+import com.axelor.apps.base.service.administration.GeneralServiceImpl;
 import com.axelor.apps.message.db.EmailAddress;
 import com.axelor.db.JPA;
+import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.IException;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
@@ -262,5 +267,19 @@ public class PartnerService {
 		
 		return null;
 	}
-
+	
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
+	public String getSIRENNumber(Partner partner)throws AxelorException{
+		char[] Str = new char[9];
+		if (partner.getRegistrationCode() == null || partner.getRegistrationCode().isEmpty() ){
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.PARTNER_2),
+					GeneralServiceImpl.EXCEPTION,partner.getName()), IException.CONFIGURATION_ERROR);
+		}
+		else {
+			partner.getRegistrationCode().getChars(0, 9, Str, 0);
+		}
+		
+		return new String(Str);
+	}
+	
 }

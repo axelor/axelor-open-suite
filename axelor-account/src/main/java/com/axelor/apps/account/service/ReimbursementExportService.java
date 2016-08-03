@@ -92,7 +92,7 @@ public class ReimbursementExportService {
 	protected MoveService moveService;
 	protected MoveRepository moveRepo;
 	protected MoveLineService moveLineService;
-	protected ReconcileService reconcileService;
+	protected ReconcileServiceImpl reconcileService;
 	protected SequenceService sequenceService;
 	protected BlockingService blockingService;
 	protected ReimbursementRepository reimbursementRepo;
@@ -102,7 +102,7 @@ public class ReimbursementExportService {
 	protected LocalDate today;
 
 	@Inject
-	public ReimbursementExportService(MoveService moveService, MoveRepository moveRepo, MoveLineService moveLineService, ReconcileService reconcileService,
+	public ReimbursementExportService(MoveService moveService, MoveRepository moveRepo, MoveLineService moveLineService, ReconcileServiceImpl reconcileService,
 			SequenceService sequenceService, BlockingService blockingService, ReimbursementRepository reimbursementRepo, AccountConfigService accountConfigService,
 			PartnerService partnerService, GeneralService generalService, PartnerRepository partnerRepository) {
 

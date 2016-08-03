@@ -33,7 +33,7 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentInvoiceToPay;
 import com.axelor.apps.account.db.Reconcile;
-import com.axelor.apps.account.service.ReconcileService;
+import com.axelor.apps.account.service.ReconcileServiceImpl;
 import com.axelor.apps.account.service.move.MoveLineService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
@@ -46,13 +46,13 @@ public class PaymentService {
 
 	private final Logger log = LoggerFactory.getLogger( getClass() );
 
-	protected ReconcileService reconcileService;
+	protected ReconcileServiceImpl reconcileService;
 	protected MoveLineService moveLineService;
 
 	protected LocalDate today;
 
 	@Inject
-	public PaymentService(GeneralService generalService, ReconcileService reconcileService, MoveLineService moveLineService)  {
+	public PaymentService(GeneralService generalService, ReconcileServiceImpl reconcileService, MoveLineService moveLineService)  {
 		
 		this.reconcileService = reconcileService;
 		this.moveLineService = moveLineService;

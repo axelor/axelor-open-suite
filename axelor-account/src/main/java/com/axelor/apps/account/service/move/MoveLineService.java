@@ -124,7 +124,7 @@ public class MoveLineService {
 	 * @return
 	 */
 	public MoveLine createMoveLine(Move move, Partner partner, Account account, BigDecimal amount, boolean isDebit, LocalDate date,
-			LocalDate dueDate, int counter, String descriptionOption){
+			LocalDate dueDate, int counter, String origin){
 
 		log.debug("Création d'une ligne d'écriture comptable (compte comptable : {}, montant : {}, debit ? : {}, " +
 			" date d'échéance : {}, référence : {}",  new Object[]{account.getName(), amount, isDebit, dueDate, counter});
@@ -148,7 +148,7 @@ public class MoveLineService {
 			credit = amount;
 		}
 
-		return new MoveLine(move, partner, account, date, dueDate, counter, debit, credit, this.determineDescriptionMoveLine(move.getJournal(), descriptionOption));
+		return new MoveLine(move, partner, account, date, dueDate, counter, debit, credit, this.determineDescriptionMoveLine(move.getJournal(), origin), origin);
 	}
 
 	/**
@@ -176,9 +176,9 @@ public class MoveLineService {
 	 *
 	 * @return
 	 */
-	public MoveLine createMoveLine(Move move, Partner partner, Account account, BigDecimal amount, boolean isDebit, LocalDate dueDate, int ref, String descriptionOption){
+	public MoveLine createMoveLine(Move move, Partner partner, Account account, BigDecimal amount, boolean isDebit, LocalDate dueDate, int ref, String origin){
 
-		return this.createMoveLine(move, partner, account, amount, isDebit, today, dueDate, ref, descriptionOption);
+		return this.createMoveLine(move, partner, account, amount, isDebit, today, dueDate, ref, origin);
 	}
 
 
@@ -602,19 +602,19 @@ public class MoveLineService {
 	 * Fonction permettant de générér automatiquement la description des lignes d'écritures
 	 * @param journal
 	 * 			Le journal de l'écriture
-	 * @param descriptionOption
+	 * @param origin
 	 * 			Le n° pièce réglée, facture, avoir ou de l'opération rejetée
 	 * @return
 	 */
-	public String determineDescriptionMoveLine(Journal journal, String descriptionOption)  {
+	public String determineDescriptionMoveLine(Journal journal, String origin)  {
 		String description = "";
 		if(journal != null)  {
 			if(journal.getDescriptionModel() != null)  {
 
 				description = String.format("%s", journal.getDescriptionModel());
 			}
-			if(journal.getDescriptionIdentificationOk() && descriptionOption != null)  {
-				description += String.format(" %s", descriptionOption);
+			if(journal.getDescriptionIdentificationOk() && origin != null)  {
+				description += String.format(" %s", origin);
 			}
 		}
 		return description;

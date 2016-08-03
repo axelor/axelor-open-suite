@@ -54,12 +54,12 @@ public class InvoicePaymentServiceImpl  implements  InvoicePaymentService {
 	protected InvoicePaymentRepository invoicePaymentRepository;
 	protected MoveCancelService moveCancelService;
 	protected InvoiceService invoiceService;
-	protected ReconcileService reconcileService;
+	protected ReconcileServiceImpl reconcileService;
 	
 	@Inject
 	public InvoicePaymentServiceImpl(PaymentModeService paymentModeService, MoveService moveService, MoveLineService moveLineService, 
 			CurrencyService currencyService, AccountConfigService accountConfigService, InvoicePaymentRepository invoicePaymentRepository, 
-			MoveCancelService moveCancelService, InvoiceService invoiceService, ReconcileService reconcileService)  {
+			MoveCancelService moveCancelService, InvoiceService invoiceService, ReconcileServiceImpl reconcileService)  {
 		
 		this.paymentModeService = paymentModeService;
 		this.moveService = moveService;

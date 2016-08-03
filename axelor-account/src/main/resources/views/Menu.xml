@@ -365,7 +365,7 @@
 		title="Accounting reports" model="com.axelor.apps.account.db.MoveLineReport" >
 		<view type="grid" name="move-line-report-grid" />
 		<view type="form" name="move-line-report-form" />
-		<domain>self.typeSelect in (1,2,3,4,5,10,11,12,13,14,15,16,17,18,19)</domain>
+		<domain>self.typeSelect in (1,2,3,4,5,10,11,12,13,15,16,17,18,19)</domain>
 	</action-view>
 
 	<menuitem name="account-root-accounting-accounting-exports" parent="account-root-accounting"
@@ -375,7 +375,7 @@
 		title="Accounting exports" model="com.axelor.apps.account.db.MoveLineReport" >
 		<view type="grid" name="move-line-report-export-grid" />
 		<view type="form" name="move-line-report-export-form" />
-		<domain>self.typeSelect in (6,7,8,9)</domain>
+		<domain>self.typeSelect in (6,7,8,9,14)</domain>
 	</action-view>
 	
 	<menuitem name="account-root-budget-management" parent="account-root"

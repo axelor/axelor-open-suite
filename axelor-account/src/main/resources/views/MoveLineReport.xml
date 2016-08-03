@@ -95,18 +95,19 @@
 			<field name="date" readonlyIf="statusSelect == 2"/>
 			<field name="typeSelect" onChange="action-group-account-moveline-report-typeselect-onchange" selection="move.line.report.type.select.export"/>
 			<field name="company" readonlyIf="ref != null" widget="SuggestBox" onChange="action-move-line-report-method-get-account" form-view="company-form" grid-view="company-grid"/>
-			<field name="dateFrom" onChange="action-move-Live-report-record-set-date-to"/>
-			<field name="dateTo"/>
+			<field name="year" hideIf="typeSelect != 14" onChange="action-move-line-report-record-period-dates" onSelect="action-move-line-report-attrs-year-domain" requiredIf="typeSelect == 14" grid-view="year-account-grid" form-view="year-account-form" />
 			<field name="period" onChange="action-group-account-moveline-report-period-onchange" onSelect="action-move-line-report-attrs-period-domain" form-view="period-form" grid-view="period-grid"/>
-			<field name="journal" form-view="journal-form" grid-view="journal-grid"/>
+			<field name="dateFrom" onChange="action-move-Live-report-record-set-date-to" readonlyIf="typeSelect == 14 &amp;&amp; period != null "/>
+			<field name="dateTo" readonlyIf="typeSelect == 14 &amp;&amp; period != null "/>
+			<field name="journal" form-view="journal-form" grid-view="journal-grid" hideIf="typeSelect == 14"/>
 		</panel>
 		
 		<panel sidebar="true" name="info" title="Info">
 			<field name="statusSelect"/>
-			<button name="search" title="Search"   hideIf="statusSelect == 2" onClick="save,action-move-line-report-method-search-move-line,save"/>
-			<button name="export" title="Export"   hideIf="statusSelect == 2" onClick="action-group-account-moveline-report-export-click"/>
-			<button name="showMoveExported" title="Exported moves"   showIf="statusSelect == 2" onClick="save,action-move-line-report-method-show-move-exported"/>
-			<button name="replayExport" title="Run export again"   showIf="statusSelect == 2" onClick="save,action-move-line-report-method-replay-export"/>
+			<button name="search" title="Search" showIf="statusSelect != 2 || typeSelect == 14" onClick="save,action-move-line-report-method-search-move-line,save"/>
+			<button name="export" title="Export" showIf="statusSelect != 2 || typeSelect == 14" onClick="action-group-account-moveline-report-export-click"/>
+			<button name="showMoveExported" title="Exported moves" hideIf="statusSelect != 2 || typeSelect == 14" onClick="save,action-move-line-report-method-show-move-exported"/>
+			<button name="replayExport" title="Run export again" hideIf="statusSelect != 2 || typeSelect == 14" onClick="save,action-move-line-report-method-replay-export"/>
 		</panel>
 		
 		<panel sidebar="true" name="balance" title="Balance">
@@ -188,6 +189,12 @@
 	
 	<action-record name="action-move-line-report-record-year" model="com.axelor.apps.account.db.MoveLineReport">
 		<field name="year" expr="eval: period.year" if="eval : period != null"/>
+	</action-record>
+	
+	<action-record name="action-move-line-report-record-period-dates" model="com.axelor.apps.account.db.MoveLineReport">
+		<field name="period" expr="eval: null"/>
+		<field name="dateFrom" expr="eval: year.fromDate"/>
+		<field name="dateTo" expr="eval: year.toDate"/>
 	</action-record>
 	
 	<action-record name="action-move-line-report-record-date-from-and-date-to" model="com.axelor.apps.account.db.MoveLineReport">

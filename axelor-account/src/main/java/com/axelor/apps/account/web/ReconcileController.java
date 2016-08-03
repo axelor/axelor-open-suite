@@ -19,7 +19,7 @@ package com.axelor.apps.account.web;
 
 import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.db.repo.ReconcileRepository;
-import com.axelor.apps.account.service.ReconcileService;
+import com.axelor.apps.account.service.ReconcileServiceImpl;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -28,7 +28,7 @@ import com.google.inject.Inject;
 public class ReconcileController {
 
 	@Inject
-	private ReconcileService reconcileService;
+	private ReconcileServiceImpl reconcileService;
 	
 	@Inject
 	private ReconcileRepository reconcileRepo;

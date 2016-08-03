@@ -94,7 +94,7 @@ public class YearService {
 					GeneralServiceImpl.EXCEPTION,year.getName()), IException.CONFIGURATION_ERROR);
 		}
 
-		Query q = JPA.em().createQuery("select DISTINCT(ml.partner) FROM MoveLine as ml WHERE ml.date >= ?1 AND ml.date <= ?2 AND ml.company = ?3");
+		Query q = JPA.em().createQuery("select DISTINCT(ml.partner) FROM MoveLine as ml WHERE ml.date >= ?1 AND ml.date <= ?2 AND ml.move.company = ?3");
 		q.setParameter(1, year.getFromDate());
 		q.setParameter(2, year.getToDate());
 		q.setParameter(3, year.getCompany());

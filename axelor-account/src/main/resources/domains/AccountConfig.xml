@@ -69,6 +69,7 @@
     <string name="tempReimbImportFolderPathCFONB" title="Filepath for temporary rejected reimbursements import" help="true"/>
    
    	<string name="exportPath" title="Filepath for exported files (Accounting)"/>
+   	<string name="exportFileName" title="File name for payroll journal entries"/>
    	
    	<!-- Onglet Prélèvements -->
    	<string name="paymentScheduleExportFolderPathCFONB" title="Filepath for direct debit exports (CFONB)" help="true"/>

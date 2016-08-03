@@ -88,6 +88,7 @@ public interface IAdministration {
 	static final String PRO_TRAINING = "proTraining";
 	static final String PRODUCTION_ORDER = "productionOrder";
 	static final String MANUF_ORDER = "manufOrder";
+	static final String RECONCILE = "reconcile";
 	
 	
 	/**

@@ -33,7 +33,7 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.db.repo.MoveRepository;
-import com.axelor.apps.account.service.ReconcileService;
+import com.axelor.apps.account.service.ReconcileServiceImpl;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.payment.PaymentService;
@@ -53,7 +53,7 @@ public class MoveService {
 	protected MoveCreateService moveCreateService;
 	protected MoveValidateService moveValidateService;
 	protected MoveToolService moveToolService;
-	protected ReconcileService reconcileService;
+	protected ReconcileServiceImpl reconcileService;
 	protected MoveDueService moveDueService;
 	protected PaymentService paymentService;
 	protected MoveExcessPaymentService moveExcessPaymentService;
@@ -63,7 +63,7 @@ public class MoveService {
 
 	@Inject
 	public MoveService(GeneralService generalService, MoveLineService moveLineService, MoveCreateService moveCreateService, MoveValidateService moveValidateService, MoveToolService moveToolService,
-			ReconcileService reconcileService, MoveDueService moveDueService, PaymentService paymentService, MoveExcessPaymentService moveExcessPaymentService, MoveRepository moveRepository, AccountConfigService accountConfigService) {
+			ReconcileServiceImpl reconcileService, MoveDueService moveDueService, PaymentService paymentService, MoveExcessPaymentService moveExcessPaymentService, MoveRepository moveRepository, AccountConfigService accountConfigService) {
 
 		this.moveLineService = moveLineService;
 		this.moveCreateService = moveCreateService;
@@ -85,7 +85,7 @@ public class MoveService {
 	public MoveCreateService getMoveCreateService()  { return moveCreateService; }
 	public MoveValidateService getMoveValidateService()  { return moveValidateService; }
 	public MoveToolService getMoveToolService()  { return moveToolService; }
-	public ReconcileService getReconcileService()  { return reconcileService; }
+	public ReconcileServiceImpl getReconcileService()  { return reconcileService; }
 
 
 	/**
