@@ -66,7 +66,7 @@
 	</selection>
 	
 	<selection name='move.line.report.type.select'>
-		<option value="1">Payment collection journal</option>
+		<option value="1">General ledger</option>
 		<option value="2">General ledger</option>
 		<option value="3">Balance</option>
 		<option value="4">Aged Balance</option>

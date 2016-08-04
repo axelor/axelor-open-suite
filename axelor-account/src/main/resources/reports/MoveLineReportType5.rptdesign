@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.4.2.v201410272105 Build &lt;4.4.2.v20150217-1805></property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.5.0.v201506092134 Génération &lt;@BUILD@></property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">queryText</property>
@@ -40,7 +40,7 @@
             <property name="hidden">true</property>
             <property name="valueType">static</property>
             <property name="isRequired">true</property>
-            <property name="dataType">integer</property>
+            <property name="dataType">decimal</property>
             <property name="distinct">true</property>
             <simple-property-list name="defaultValue">
                 <value type="constant">1</value>
@@ -108,7 +108,7 @@
                 </ex-property>
             </list-property>
             <property name="odaDriverClass">org.postgresql.Driver</property>
-            <property name="odaURL">jdbc:postgresql://localhost:5432/axelor-erp</property>
+            <property name="odaURL">jdbc:postgresql://localhost:5432/axelor-business-suite</property>
             <property name="odaUser">axelor</property>
         </oda-data-source>
     </data-sources>
@@ -117,95 +117,95 @@
             <property name="nullsOrdering">nulls lowest</property>
             <list-property name="columnHints">
                 <structure>
-                    <property name="columnName">reference</property>
+                    <property name="columnName">PaymentVoucherRef</property>
                     <property name="analysis">dimension</property>
-                    <text-property name="displayName">reference</text-property>
-                    <text-property name="heading">reference</text-property>
+                    <text-property name="displayName">PaymentVoucherRef</text-property>
+                    <text-property name="heading">PaymentVoucherRef</text-property>
                 </structure>
                 <structure>
-                    <property name="columnName">global_by_post</property>
+                    <property name="columnName">PaymentVoucherId</property>
                     <property name="analysis">measure</property>
-                    <text-property name="displayName">global_by_post</text-property>
-                    <text-property name="heading">global_by_post</text-property>
+                    <text-property name="displayName">PaymentVoucherId</text-property>
+                    <text-property name="heading">PaymentVoucherId</text-property>
                 </structure>
                 <structure>
-                    <property name="columnName">id</property>
+                    <property name="columnName">GlobalByPost</property>
                     <property name="analysis">measure</property>
-                    <text-property name="displayName">id</text-property>
-                    <text-property name="heading">id</text-property>
+                    <text-property name="displayName">GlobalByPost</text-property>
+                    <text-property name="heading">GlobalByPost</text-property>
                 </structure>
                 <structure>
-                    <property name="columnName">global</property>
+                    <property name="columnName">Global</property>
                     <property name="analysis">measure</property>
-                    <text-property name="displayName">global</text-property>
-                    <text-property name="heading">global</text-property>
+                    <text-property name="displayName">Global</text-property>
+                    <text-property name="heading">Global</text-property>
                 </structure>
                 <structure>
-                    <property name="columnName">partner_name</property>
+                    <property name="columnName">PartnerFullName</property>
                     <property name="analysis">dimension</property>
-                    <text-property name="displayName">partner_name</text-property>
-                    <text-property name="heading">partner_name</text-property>
+                    <text-property name="displayName">PartnerFullName</text-property>
+                    <text-property name="heading">PartnerFullName</text-property>
                 </structure>
                 <structure>
-                    <property name="columnName">partner_first_name</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">partner_first_name</text-property>
-                    <text-property name="heading">partner_first_name</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">amount_paid</property>
+                    <property name="columnName">AmountPaid</property>
                     <property name="analysis">measure</property>
-                    <text-property name="displayName">amount_paid</text-property>
-                    <text-property name="heading">amount_paid</text-property>
+                    <text-property name="displayName">AmountPaid</text-property>
+                    <text-property name="heading">AmountPaid</text-property>
                 </structure>
                 <structure>
-                    <property name="columnName">agency_name</property>
+                    <property name="columnName">CashRegisterName</property>
                     <property name="analysis">dimension</property>
-                    <text-property name="displayName">agency_name</text-property>
-                    <text-property name="heading">agency_name</text-property>
+                    <text-property name="displayName">CashRegisterName</text-property>
+                    <text-property name="heading">CashRegisterName</text-property>
                 </structure>
             </list-property>
-            <list-property name="parameters"/>
+            <list-property name="parameters">
+                <structure>
+                    <property name="name">param_1</property>
+                    <property name="paramName">MoveLineReportId</property>
+                    <property name="nativeName"></property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">-5</property>
+                    <property name="position">1</property>
+                    <property name="isInput">true</property>
+                    <property name="isOutput">false</property>
+                </structure>
+            </list-property>
             <structure name="cachedMetaData">
                 <list-property name="resultSet">
                     <structure>
                         <property name="position">1</property>
-                        <property name="name">reference</property>
+                        <property name="name">PaymentVoucherRef</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
                         <property name="position">2</property>
-                        <property name="name">global_by_post</property>
-                        <property name="dataType">integer</property>
-                    </structure>
-                    <structure>
-                        <property name="position">3</property>
-                        <property name="name">id</property>
+                        <property name="name">PaymentVoucherId</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
+                        <property name="position">3</property>
+                        <property name="name">GlobalByPost</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
                         <property name="position">4</property>
-                        <property name="name">global</property>
+                        <property name="name">Global</property>
                         <property name="dataType">integer</property>
                     </structure>
                     <structure>
                         <property name="position">5</property>
-                        <property name="name">partner_name</property>
+                        <property name="name">PartnerFullName</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
                         <property name="position">6</property>
-                        <property name="name">partner_first_name</property>
-                        <property name="dataType">string</property>
-                    </structure>
-                    <structure>
-                        <property name="position">7</property>
-                        <property name="name">amount_paid</property>
+                        <property name="name">AmountPaid</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
-                        <property name="position">8</property>
-                        <property name="name">agency_name</property>
+                        <property name="position">7</property>
+                        <property name="name">CashRegisterName</property>
                         <property name="dataType">string</property>
                     </structure>
                 </list-property>
@@ -215,175 +215,200 @@
             <list-property name="resultSet">
                 <structure>
                     <property name="position">1</property>
-                    <property name="name">reference</property>
-                    <property name="nativeName">reference</property>
+                    <property name="name">PaymentVoucherRef</property>
+                    <property name="nativeName">PaymentVoucherRef</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">2</property>
-                    <property name="name">global_by_post</property>
-                    <property name="nativeName">global_by_post</property>
-                    <property name="dataType">integer</property>
-                    <property name="nativeDataType">-7</property>
-                </structure>
-                <structure>
-                    <property name="position">3</property>
-                    <property name="name">id</property>
-                    <property name="nativeName">id</property>
+                    <property name="name">PaymentVoucherId</property>
+                    <property name="nativeName">PaymentVoucherId</property>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">-5</property>
                 </structure>
                 <structure>
+                    <property name="position">3</property>
+                    <property name="name">GlobalByPost</property>
+                    <property name="nativeName">GlobalByPost</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">-7</property>
+                </structure>
+                <structure>
                     <property name="position">4</property>
-                    <property name="name">global</property>
-                    <property name="nativeName">global</property>
+                    <property name="name">Global</property>
+                    <property name="nativeName">Global</property>
                     <property name="dataType">integer</property>
                     <property name="nativeDataType">-7</property>
                 </structure>
                 <structure>
                     <property name="position">5</property>
-                    <property name="name">partner_name</property>
-                    <property name="nativeName">partner_name</property>
+                    <property name="name">PartnerFullName</property>
+                    <property name="nativeName">PartnerFullName</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">6</property>
-                    <property name="name">partner_first_name</property>
-                    <property name="nativeName">partner_first_name</property>
-                    <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
-                </structure>
-                <structure>
-                    <property name="position">7</property>
-                    <property name="name">amount_paid</property>
-                    <property name="nativeName">amount_paid</property>
+                    <property name="name">AmountPaid</property>
+                    <property name="nativeName">AmountPaid</property>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
-                    <property name="position">8</property>
-                    <property name="name">agency_name</property>
-                    <property name="nativeName">agency_name</property>
+                    <property name="position">7</property>
+                    <property name="name">CashRegisterName</property>
+                    <property name="nativeName">CashRegisterName</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
             </list-property>
-            <xml-property name="queryText"><![CDATA[select PaymentVoucher.ref as "reference", MoveLineReport.global_by_post, PaymentVoucher.id, MoveLineReport.global, 
-PaymentVoucherPartner.name as partner_name, PaymentVoucherPartner.first_name as partner_first_name, PaymentVoucher.paid_amount as "amount_paid", 
-CashRegister.name as agency_name
+            <xml-property name="queryText"><![CDATA[select PaymentVoucher.ref as "PaymentVoucherRef", PaymentVoucher.id as "PaymentVoucherId", 
+MoveLineReport.global_by_post as "GlobalByPost",  MoveLineReport.global as "Global", 
+Partner.full_name as "PartnerFullName", PaymentVoucher.paid_amount as "AmountPaid",  
+CashRegister.name as "CashRegisterName"
 -- Récupération des informations de l'en-tête du reporting comptable passé en paramètre
 from public.account_move_line_report as MoveLineReport 
-left outer join public.account_payment_voucher as PaymentVoucher on (MoveLineReport.id = 1) 
-left outer join public.base_partner as Partner on (MoveLineReport.partner = Partner.id) 
-left outer join public.base_partner as FromPartner on (MoveLineReport.from_partner = FromPartner.id) 
-left outer join public.base_partner as ToPartner on (MoveLineReport.to_partner = ToPartner.id) 
+left outer join public.account_payment_voucher as PaymentVoucher on (MoveLineReport.id = ?) 
+left outer join public.base_partner as Partner on (PaymentVoucher.partner  = Partner.id)
+
+left outer join public.account_move_line_report_partner_set as PartnerSet on (PartnerSet.account_move_line_report = MoveLineReport.id)
+
 left outer join public.base_company as Company on (MoveLineReport.company = Company.id) 
 
 -- Récupération des éléments des saisies paiements
 left outer join public.account_payment_mode as PaymentMode on (PaymentVoucher.payment_mode = PaymentMode.id) 
 left outer join public.account_cash_register as CashRegister on (PaymentVoucher.cash_register = CashRegister.id) 
-left outer join public.base_partner as PaymentVoucherPartner on (PaymentVoucher.partner = PaymentVoucherPartner.id) 
 
 where 
 
 -- Filtre sur les paramètres du reporting comptable
 (MoveLineReport.date_from IS NULL OR date(PaymentVoucher.payment_date_time) >= MoveLineReport.date_from) AND 
 (MoveLineReport.date_to IS NULL OR date(PaymentVoucher.payment_date_time)  <= MoveLineReport.date_to) AND
-date(PaymentVoucher.payment_date_time) <= MoveLineReport.date and 
+date(PaymentVoucher.payment_date_time) <= MoveLineReport.date_val and 
 PaymentVoucher.company = Company.id AND
-(Partner.id IS NULL OR Partner.id = PaymentVoucherPartner.id) AND
-(MoveLineReport.from_partner IS NULL OR (FromPartner.name <= PaymentVoucherPartner.name)) AND 
-(MoveLineReport.to_partner IS NULL OR (ToPartner.name >= PaymentVoucherPartner.name)) AND 
+(PartnerSet.partner_set IS NULL OR PartnerSet.partner_set = Partner.id) AND
 (MoveLineReport.cash_register IS NULL OR MoveLineReport.cash_register = CashRegister.id) AND
-PaymentMode.type_select = 7 AND PaymentVoucher.state_select = 2 
+PaymentMode.type_select = 7 AND PaymentVoucher.status_select = 2 AND PaymentVoucher.operation_type_select = 3
 ORDER BY PaymentVoucher.paid_amount]]></xml-property>
+            <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
+  <Version>2.0</Version>
+  <DataSetParameters>
+    <parameter>
+      <design:ParameterDefinition>
+        <design:inOutMode>In</design:inOutMode>
+        <design:attributes>
+          <design:identifier>
+            <design:name></design:name>
+            <design:position>1</design:position>
+          </design:identifier>
+          <design:nativeDataTypeCode>-5</design:nativeDataTypeCode>
+          <design:precision>0</design:precision>
+          <design:scale>0</design:scale>
+          <design:nullability>Unknown</design:nullability>
+        </design:attributes>
+      </design:ParameterDefinition>
+    </parameter>
+  </DataSetParameters>
+</model:DesignValues>]]></xml-property>
         </oda-data-set>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="MoveLineReportDS" id="489">
             <property name="nullsOrdering">nulls lowest</property>
             <list-property name="columnHints">
                 <structure>
-                    <property name="columnName">company_name</property>
+                    <property name="columnName">CompanyName</property>
                     <property name="analysis">dimension</property>
-                    <text-property name="displayName">company_name</text-property>
-                    <text-property name="heading">company_name</text-property>
+                    <text-property name="displayName">CompanyName</text-property>
+                    <text-property name="heading">CompanyName</text-property>
                 </structure>
                 <structure>
-                    <property name="columnName">agency_name</property>
+                    <property name="columnName">CashRegisterName</property>
                     <property name="analysis">dimension</property>
-                    <text-property name="displayName">agency_name</text-property>
-                    <text-property name="heading">agency_name</text-property>
+                    <text-property name="displayName">CashRegisterName</text-property>
+                    <text-property name="heading">CashRegisterName</text-property>
                 </structure>
                 <structure>
-                    <property name="columnName">date</property>
+                    <property name="columnName">ReportDate</property>
                     <property name="analysis">dimension</property>
-                    <text-property name="displayName">date</text-property>
-                    <text-property name="heading">date</text-property>
+                    <text-property name="displayName">ReportDate</text-property>
+                    <text-property name="heading">ReportDate</text-property>
                 </structure>
                 <structure>
-                    <property name="columnName">global</property>
+                    <property name="columnName">Global</property>
                     <property name="analysis">measure</property>
-                    <text-property name="displayName">global</text-property>
-                    <text-property name="heading">global</text-property>
+                    <text-property name="displayName">Global</text-property>
+                    <text-property name="heading">Global</text-property>
                 </structure>
                 <structure>
-                    <property name="columnName">global_by_post</property>
+                    <property name="columnName">GlobalByPost</property>
                     <property name="analysis">measure</property>
-                    <text-property name="displayName">global_by_post</text-property>
-                    <text-property name="heading">global_by_post</text-property>
+                    <text-property name="displayName">GlobalByPost</text-property>
+                    <text-property name="heading">GlobalByPost</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">ReportDateEdition</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">ReportDateEdition</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">ReportDateEdition</text-property>
                 </structure>
                 <structure>
-                    <property name="columnName">period_name</property>
+                    <property name="columnName">PeriodName</property>
                     <property name="analysis">dimension</property>
-                    <text-property name="displayName">period_name</text-property>
-                    <text-property name="heading">period_name</text-property>
+                    <text-property name="displayName">PeriodName</text-property>
+                    <text-property name="heading">PeriodName</text-property>
                 </structure>
                 <structure>
-                    <property name="columnName">date_to</property>
+                    <property name="columnName">DateTo</property>
                     <property name="analysis">dimension</property>
-                    <text-property name="displayName">date_to</text-property>
-                    <text-property name="heading">date_to</text-property>
+                    <text-property name="displayName">DateTo</text-property>
+                    <text-property name="heading">DateTo</text-property>
                 </structure>
                 <structure>
-                    <property name="columnName">date_from</property>
+                    <property name="columnName">DateFrom</property>
                     <property name="analysis">dimension</property>
-                    <text-property name="displayName">date_from</text-property>
-                    <text-property name="heading">date_from</text-property>
+                    <text-property name="displayName">DateFrom</text-property>
+                    <text-property name="heading">DateFrom</text-property>
                 </structure>
             </list-property>
-            <list-property name="parameters"/>
+            <list-property name="parameters">
+                <structure>
+                    <property name="name">param_1</property>
+                    <property name="paramName">MoveLineReportId</property>
+                    <property name="nativeName"></property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">-5</property>
+                    <property name="position">1</property>
+                    <property name="isInput">true</property>
+                    <property name="isOutput">false</property>
+                </structure>
+            </list-property>
             <structure name="cachedMetaData">
                 <list-property name="resultSet">
                     <structure>
                         <property name="position">1</property>
-                        <property name="name">company_name</property>
+                        <property name="name">CompanyName</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
                         <property name="position">2</property>
-                        <property name="name">agency_name</property>
+                        <property name="name">CashRegisterName</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
                         <property name="position">3</property>
-                        <property name="name">date</property>
+                        <property name="name">ReportDate</property>
                         <property name="dataType">date</property>
                     </structure>
                     <structure>
                         <property name="position">4</property>
-                        <property name="name">global</property>
+                        <property name="name">Global</property>
                         <property name="dataType">integer</property>
                     </structure>
                     <structure>
                         <property name="position">5</property>
-                        <property name="name">global_by_post</property>
+                        <property name="name">GlobalByPost</property>
                         <property name="dataType">integer</property>
                     </structure>
                     <structure>
@@ -393,17 +418,17 @@ ORDER BY PaymentVoucher.paid_amount]]></xml-property>
                     </structure>
                     <structure>
                         <property name="position">7</property>
-                        <property name="name">period_name</property>
+                        <property name="name">PeriodName</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
                         <property name="position">8</property>
-                        <property name="name">date_to</property>
+                        <property name="name">DateTo</property>
                         <property name="dataType">date</property>
                     </structure>
                     <structure>
                         <property name="position">9</property>
-                        <property name="name">date_from</property>
+                        <property name="name">DateFrom</property>
                         <property name="dataType">date</property>
                     </structure>
                 </list-property>
@@ -412,36 +437,36 @@ ORDER BY PaymentVoucher.paid_amount]]></xml-property>
             <list-property name="resultSet">
                 <structure>
                     <property name="position">1</property>
-                    <property name="name">company_name</property>
-                    <property name="nativeName">company_name</property>
+                    <property name="name">CompanyName</property>
+                    <property name="nativeName">CompanyName</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">2</property>
-                    <property name="name">agency_name</property>
-                    <property name="nativeName">agency_name</property>
+                    <property name="name">CashRegisterName</property>
+                    <property name="nativeName">CashRegisterName</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">3</property>
-                    <property name="name">date</property>
-                    <property name="nativeName">date</property>
+                    <property name="name">ReportDate</property>
+                    <property name="nativeName">ReportDate</property>
                     <property name="dataType">date</property>
                     <property name="nativeDataType">91</property>
                 </structure>
                 <structure>
                     <property name="position">4</property>
-                    <property name="name">global</property>
-                    <property name="nativeName">global</property>
+                    <property name="name">Global</property>
+                    <property name="nativeName">Global</property>
                     <property name="dataType">integer</property>
                     <property name="nativeDataType">-7</property>
                 </structure>
                 <structure>
                     <property name="position">5</property>
-                    <property name="name">global_by_post</property>
-                    <property name="nativeName">global_by_post</property>
+                    <property name="name">GlobalByPost</property>
+                    <property name="nativeName">GlobalByPost</property>
                     <property name="dataType">integer</property>
                     <property name="nativeDataType">-7</property>
                 </structure>
@@ -454,37 +479,34 @@ ORDER BY PaymentVoucher.paid_amount]]></xml-property>
                 </structure>
                 <structure>
                     <property name="position">7</property>
-                    <property name="name">period_name</property>
-                    <property name="nativeName">period_name</property>
+                    <property name="name">PeriodName</property>
+                    <property name="nativeName">PeriodName</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">8</property>
-                    <property name="name">date_to</property>
-                    <property name="nativeName">date_to</property>
+                    <property name="name">DateTo</property>
+                    <property name="nativeName">DateTo</property>
                     <property name="dataType">date</property>
                     <property name="nativeDataType">91</property>
                 </structure>
                 <structure>
                     <property name="position">9</property>
-                    <property name="name">date_from</property>
-                    <property name="nativeName">date_from</property>
+                    <property name="name">DateFrom</property>
+                    <property name="nativeName">DateFrom</property>
                     <property name="dataType">date</property>
                     <property name="nativeDataType">91</property>
                 </structure>
             </list-property>
-            <xml-property name="queryText"><![CDATA[select Company.name as company_name, CashRegister.name as agency_name, MoveLineReport.date, MoveLineReport.global, MoveLineReport.global_by_post, 
-MoveLineReport.publication_date_time as "ReportDateEdition", Period.name as period_name, MoveLineReport.date_to, MoveLineReport.date_from 
+            <xml-property name="queryText"><![CDATA[select Company.name as "CompanyName", CashRegister.name as "CashRegisterName", MoveLineReport.date_val as "ReportDate", 
+MoveLineReport.global as "Global", MoveLineReport.global_by_post as "GlobalByPost", 
+MoveLineReport.publication_date_time as "ReportDateEdition", Period.name as "PeriodName", 
+MoveLineReport.date_to as "DateTo", MoveLineReport.date_from as "DateFrom"
 from public.account_move_line_report as MoveLineReport
-inner join public.base_company as Company  on (MoveLineReport.id = 1 and MoveLineReport.company = Company.id)
-left outer join public.account_account as Account on (MoveLineReport.account = Account.id)
+inner join public.base_company as Company  on (MoveLineReport.id = ? and MoveLineReport.company = Company.id)
 left outer join public.base_period as Period on (MoveLineReport.period = Period.id)
 left outer join public.account_cash_register as CashRegister on (MoveLineReport.cash_register = CashRegister.id)]]></xml-property>
-            <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
-<model:DesignValues xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
-  <Version>2.0</Version>
-</model:DesignValues>]]></xml-property>
         </oda-data-set>
     </data-sets>
     <styles>
@@ -529,37 +551,37 @@ left outer join public.account_cash_register as CashRegister on (MoveLineReport.
             <property name="footerHeight">0.33in</property>
             <page-header>
                 <grid id="3117">
-                    <property name="width">7.633333333333333in</property>
+                    <property name="width">7.625in</property>
                     <property name="dataSet">MoveLineReportDS</property>
                     <list-property name="boundDataColumns">
                         <structure>
-                            <property name="name">company_name</property>
-                            <text-property name="displayName">company_name</text-property>
-                            <expression name="expression" type="javascript">dataSetRow["company_name"]</expression>
+                            <property name="name">CompanyName</property>
+                            <text-property name="displayName">CompanyName</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["CompanyName"]</expression>
                             <property name="dataType">string</property>
                         </structure>
                         <structure>
-                            <property name="name">agency_name</property>
-                            <text-property name="displayName">agency_name</text-property>
-                            <expression name="expression" type="javascript">dataSetRow["agency_name"]</expression>
+                            <property name="name">CashRegisterName</property>
+                            <text-property name="displayName">CashRegisterName</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["CashRegisterName"]</expression>
                             <property name="dataType">string</property>
                         </structure>
                         <structure>
-                            <property name="name">date</property>
-                            <text-property name="displayName">date</text-property>
-                            <expression name="expression" type="javascript">dataSetRow["date"]</expression>
+                            <property name="name">ReportDate</property>
+                            <text-property name="displayName">ReportDate</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["ReportDate"]</expression>
                             <property name="dataType">date</property>
                         </structure>
                         <structure>
-                            <property name="name">global</property>
-                            <text-property name="displayName">global</text-property>
-                            <expression name="expression" type="javascript">dataSetRow["global"]</expression>
+                            <property name="name">Global</property>
+                            <text-property name="displayName">Global</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["Global"]</expression>
                             <property name="dataType">integer</property>
                         </structure>
                         <structure>
-                            <property name="name">global_by_post</property>
-                            <text-property name="displayName">global_by_post</text-property>
-                            <expression name="expression" type="javascript">dataSetRow["global_by_post"]</expression>
+                            <property name="name">GlobalByPost</property>
+                            <text-property name="displayName">GlobalByPost</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["GlobalByPost"]</expression>
                             <property name="dataType">integer</property>
                         </structure>
                         <structure>
@@ -568,12 +590,30 @@ left outer join public.account_cash_register as CashRegister on (MoveLineReport.
                             <expression name="expression" type="javascript">dataSetRow["ReportDateEdition"]</expression>
                             <property name="dataType">date-time</property>
                         </structure>
+                        <structure>
+                            <property name="name">PeriodName</property>
+                            <text-property name="displayName">PeriodName</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["PeriodName"]</expression>
+                            <property name="dataType">string</property>
+                        </structure>
+                        <structure>
+                            <property name="name">DateTo</property>
+                            <text-property name="displayName">DateTo</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["DateTo"]</expression>
+                            <property name="dataType">date</property>
+                        </structure>
+                        <structure>
+                            <property name="name">DateFrom</property>
+                            <text-property name="displayName">DateFrom</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["DateFrom"]</expression>
+                            <property name="dataType">date</property>
+                        </structure>
                     </list-property>
                     <column id="3118">
-                        <property name="width">6.5in</property>
+                        <property name="width">6.291666666666667in</property>
                     </column>
                     <column id="3119">
-                        <property name="width">1.1333333333333333in</property>
+                        <property name="width">1.3333333333333333in</property>
                     </column>
                     <row id="3120">
                         <cell id="3121">
@@ -584,11 +624,9 @@ left outer join public.account_cash_register as CashRegister on (MoveLineReport.
                             </label>
                         </cell>
                         <cell id="3122">
-                            <text id="3128">
-                                <property name="fontSize">9pt</property>
-                                <property name="contentType">html</property>
-                                <text-property name="content"><![CDATA[<VALUE-OF>row["ReportDateEdition"]</VALUE-OF>]]></text-property>
-                            </text>
+                            <data id="3160">
+                                <property name="resultSetColumn">ReportDateEdition</property>
+                            </data>
                         </cell>
                     </row>
                 </grid>
@@ -676,42 +714,34 @@ left outer join public.account_cash_register as CashRegister on (MoveLineReport.
             <property name="dataSet">MoveLineReportDS</property>
             <list-property name="boundDataColumns">
                 <structure>
-                    <property name="name">agency_name</property>
-                    <text-property name="displayName">agency_name</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["agency_name"]</expression>
+                    <property name="name">CompanyName</property>
+                    <text-property name="displayName">CompanyName</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["CompanyName"]</expression>
                     <property name="dataType">string</property>
                 </structure>
                 <structure>
-                    <property name="name">today</property>
-                    <text-property name="displayName">today</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["date"]</expression>
-                    <property name="dataType">date-time</property>
-                    <property name="allowExport">true</property>
-                </structure>
-                <structure>
-                    <property name="name">global</property>
-                    <text-property name="displayName">global</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["global"]</expression>
-                    <property name="dataType">integer</property>
-                </structure>
-                <structure>
-                    <property name="name">global_by_post</property>
-                    <text-property name="displayName">global_by_post</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["global_by_post"]</expression>
-                    <property name="dataType">integer</property>
-                </structure>
-                <structure>
-                    <property name="name">Company_name</property>
-                    <text-property name="displayName">Company_name</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["company_name"]</expression>
+                    <property name="name">CashRegisterName</property>
+                    <text-property name="displayName">CashRegisterName</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["CashRegisterName"]</expression>
                     <property name="dataType">string</property>
-                    <property name="allowExport">true</property>
                 </structure>
                 <structure>
-                    <property name="name">date</property>
-                    <text-property name="displayName">date</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["date"]</expression>
+                    <property name="name">ReportDate</property>
+                    <text-property name="displayName">ReportDate</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["ReportDate"]</expression>
                     <property name="dataType">date</property>
+                </structure>
+                <structure>
+                    <property name="name">Global</property>
+                    <text-property name="displayName">Global</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["Global"]</expression>
+                    <property name="dataType">integer</property>
+                </structure>
+                <structure>
+                    <property name="name">GlobalByPost</property>
+                    <text-property name="displayName">GlobalByPost</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["GlobalByPost"]</expression>
+                    <property name="dataType">integer</property>
                 </structure>
                 <structure>
                     <property name="name">ReportDateEdition</property>
@@ -720,21 +750,21 @@ left outer join public.account_cash_register as CashRegister on (MoveLineReport.
                     <property name="dataType">date-time</property>
                 </structure>
                 <structure>
-                    <property name="name">period_name</property>
-                    <text-property name="displayName">period_name</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["period_name"]</expression>
+                    <property name="name">PeriodName</property>
+                    <text-property name="displayName">PeriodName</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["PeriodName"]</expression>
                     <property name="dataType">string</property>
                 </structure>
                 <structure>
-                    <property name="name">date_to</property>
-                    <text-property name="displayName">date_to</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["date_to"]</expression>
+                    <property name="name">DateTo</property>
+                    <text-property name="displayName">DateTo</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["DateTo"]</expression>
                     <property name="dataType">date</property>
                 </structure>
                 <structure>
-                    <property name="name">date_from</property>
-                    <text-property name="displayName">date_from</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["date_from"]</expression>
+                    <property name="name">DateFrom</property>
+                    <text-property name="displayName">DateFrom</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["DateFrom"]</expression>
                     <property name="dataType">date</property>
                 </structure>
             </list-property>
@@ -775,10 +805,9 @@ left outer join public.account_cash_register as CashRegister on (MoveLineReport.
                     </label>
                 </cell>
                 <cell id="499">
-                    <text id="523">
-                        <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<VALUE-OF>row["Company_name"]</VALUE-OF>]]></text-property>
-                    </text>
+                    <data id="3150">
+                        <property name="resultSetColumn">CompanyName</property>
+                    </data>
                 </cell>
                 <cell id="500"/>
                 <cell id="501">
@@ -789,14 +818,9 @@ left outer join public.account_cash_register as CashRegister on (MoveLineReport.
                     </label>
                 </cell>
                 <cell id="514">
-                    <text id="525">
-                        <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<VALUE-OF format="dd/MM/yyyy">if(row["today"] != null){
-row["today"]
-}else{
-new Date()
-}</VALUE-OF>]]></text-property>
-                    </text>
+                    <data id="3153">
+                        <property name="resultSetColumn">ReportDate</property>
+                    </data>
                 </cell>
             </row>
             <row id="502">
@@ -812,10 +836,9 @@ new Date()
                     </label>
                 </cell>
                 <cell id="515">
-                    <text id="3140">
-                        <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<VALUE-OF>row["period_name"]</VALUE-OF>]]></text-property>
-                    </text>
+                    <data id="3154">
+                        <property name="resultSetColumn">PeriodName</property>
+                    </data>
                 </cell>
             </row>
             <row id="508">
@@ -828,10 +851,9 @@ new Date()
                     </label>
                 </cell>
                 <cell id="511">
-                    <text id="527">
-                        <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<VALUE-OF>row["agency_name"]</VALUE-OF>]]></text-property>
-                    </text>
+                    <data id="3149">
+                        <property name="resultSetColumn">CashRegisterName</property>
+                    </data>
                 </cell>
                 <cell id="512"/>
                 <cell id="513">
@@ -842,10 +864,9 @@ new Date()
                     </label>
                 </cell>
                 <cell id="516">
-                    <text id="3141">
-                        <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<VALUE-OF format="dd/MM/yyyy">row["date_from"]</VALUE-OF>]]></text-property>
-                    </text>
+                    <data id="3151">
+                        <property name="resultSetColumn">DateFrom</property>
+                    </data>
                 </cell>
             </row>
             <row id="3131">
@@ -861,10 +882,9 @@ new Date()
                     </label>
                 </cell>
                 <cell id="3137">
-                    <text id="3142">
-                        <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<VALUE-OF format="dd/MM/yyyy">row["date_to"]</VALUE-OF>]]></text-property>
-                    </text>
+                    <data id="3152">
+                        <property name="resultSetColumn">DateTo</property>
+                    </data>
                 </cell>
             </row>
             <row id="542">
@@ -895,108 +915,88 @@ new Date()
             <property name="dataSet">PaymentVoucherDS</property>
             <list-property name="boundDataColumns">
                 <structure>
-                    <property name="name">id</property>
-                    <text-property name="displayName">id</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["id"]</expression>
-                    <property name="dataType">decimal</property>
-                </structure>
-                <structure>
-                    <property name="name">global</property>
-                    <text-property name="displayName">global</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["global"]</expression>
-                    <property name="dataType">integer</property>
-                </structure>
-                <structure>
-                    <property name="name">amount_paid</property>
-                    <text-property name="displayName">amount_paid</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["amount_paid"]</expression>
-                    <property name="dataType">decimal</property>
-                </structure>
-                <structure>
-                    <property name="name">agency_name</property>
-                    <text-property name="displayName">agency_name</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["agency_name"]</expression>
+                    <property name="name">PaymentVoucherRef</property>
+                    <text-property name="displayName">PaymentVoucherRef</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["PaymentVoucherRef"]</expression>
                     <property name="dataType">string</property>
                 </structure>
                 <structure>
-                    <property name="name">AgencyViseSum</property>
+                    <property name="name">PaymentVoucherId</property>
+                    <text-property name="displayName">PaymentVoucherId</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["PaymentVoucherId"]</expression>
+                    <property name="dataType">decimal</property>
+                </structure>
+                <structure>
+                    <property name="name">GlobalByPost</property>
+                    <text-property name="displayName">GlobalByPost</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["GlobalByPost"]</expression>
+                    <property name="dataType">integer</property>
+                </structure>
+                <structure>
+                    <property name="name">Global</property>
+                    <text-property name="displayName">Global</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["Global"]</expression>
+                    <property name="dataType">integer</property>
+                </structure>
+                <structure>
+                    <property name="name">PartnerFullName</property>
+                    <text-property name="displayName">PartnerFullName</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["PartnerFullName"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">AmountPaid</property>
+                    <text-property name="displayName">AmountPaid</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["AmountPaid"]</expression>
+                    <property name="dataType">decimal</property>
+                </structure>
+                <structure>
+                    <property name="name">CashRegisterName</property>
+                    <text-property name="displayName">CashRegisterName</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["CashRegisterName"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">SumByCashRegister</property>
+                    <text-property name="displayName">SumByCashRegister</text-property>
                     <property name="dataType">float</property>
                     <simple-property-list name="aggregateOn">
-                        <value>GroupByAgency</value>
+                        <value>GroupByCashRegister</value>
                     </simple-property-list>
                     <property name="aggregateFunction">SUM</property>
                     <list-property name="arguments">
                         <structure>
                             <property name="name">Expression</property>
-                            <expression name="value" type="javascript">dataSetRow["amount_paid"]</expression>
+                            <expression name="value" type="javascript">row["AmountPaid"]</expression>
                         </structure>
                     </list-property>
                     <property name="allowExport">true</property>
                 </structure>
                 <structure>
-                    <property name="name">NoOfRow</property>
+                    <property name="name">Total</property>
+                    <text-property name="displayName">Total</text-property>
+                    <property name="dataType">float</property>
+                    <property name="aggregateFunction">SUM</property>
+                    <list-property name="arguments">
+                        <structure>
+                            <property name="name">Expression</property>
+                            <expression name="value" type="javascript">row["AmountPaid"]</expression>
+                        </structure>
+                    </list-property>
+                    <property name="allowExport">true</property>
+                </structure>
+                <structure>
+                    <property name="name">NbOfRow</property>
+                    <text-property name="displayName">NbOfRow</text-property>
                     <property name="dataType">integer</property>
                     <property name="aggregateFunction">COUNT</property>
                     <list-property name="arguments">
                         <structure>
                             <property name="name">Expression</property>
-                            <expression name="value" type="javascript">dataSetRow["id"]</expression>
+                            <expression name="value" type="javascript">row["PaymentVoucherId"]</expression>
                         </structure>
                     </list-property>
                     <property name="allowExport">true</property>
-                </structure>
-                <structure>
-                    <property name="name">global_by_post</property>
-                    <text-property name="displayName">global_by_post</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["global_by_post"]</expression>
-                    <property name="dataType">integer</property>
-                </structure>
-                <structure>
-                    <property name="name">No Of Rows</property>
-                    <text-property name="displayName">No Of Rows</text-property>
-                    <expression name="expression" type="javascript">row["NoOfRow"]</expression>
-                    <property name="dataType">integer</property>
-                    <property name="allowExport">true</property>
-                </structure>
-                <structure>
-                    <property name="name">amountPaid</property>
-                    <text-property name="displayName">Amount Paid</text-property>
-                    <expression name="expression" type="javascript">row["amount_paid"]</expression>
-                    <property name="dataType">float</property>
-                    <property name="allowExport">true</property>
-                </structure>
-                <structure>
-                    <property name="name">Sum By Agency</property>
-                    <text-property name="displayName">Sum By Agency</text-property>
-                    <expression name="expression" type="javascript">row["AgencyViseSum"]</expression>
-                    <property name="dataType">float</property>
-                    <property name="allowExport">true</property>
-                </structure>
-                <structure>
-                    <property name="name">AmountPaidTotal</property>
-                    <text-property name="displayName">Total Amount Paid</text-property>
-                    <expression name="expression" type="javascript">Total.sum(row["amount_paid"])</expression>
-                    <property name="dataType">float</property>
-                    <property name="allowExport">true</property>
-                </structure>
-                <structure>
-                    <property name="name">reference</property>
-                    <text-property name="displayName">reference</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["reference"]</expression>
-                    <property name="dataType">string</property>
-                    <property name="allowExport">true</property>
-                </structure>
-                <structure>
-                    <property name="name">partner_name</property>
-                    <text-property name="displayName">partner_name</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["partner_name"]</expression>
-                    <property name="dataType">string</property>
-                </structure>
-                <structure>
-                    <property name="name">partner_first_name</property>
-                    <text-property name="displayName">partner_first_name</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["partner_first_name"]</expression>
-                    <property name="dataType">string</property>
                 </structure>
             </list-property>
             <column id="944">
@@ -1102,9 +1102,9 @@ new Date()
                 </row>
             </header>
             <group id="949">
-                <property name="groupName">GroupByAgency</property>
-                <expression name="keyExpr" type="javascript">if(row["global"] == false ){
-row["agency_name"]
+                <property name="groupName">GroupByCashRegister</property>
+                <expression name="keyExpr" type="javascript">if(row["Global"]== false ){
+row["CashRegisterName"]
 }</expression>
                 <property name="hideDetail">false</property>
                 <footer>
@@ -1113,7 +1113,7 @@ row["agency_name"]
                         <list-property name="visibility">
                             <structure>
                                 <property name="format">all</property>
-                                <expression name="valueExpr" type="javascript">row["global_by_post"] == false</expression>
+                                <expression name="valueExpr" type="javascript">row["GlobalByPost"] == false</expression>
                             </structure>
                         </list-property>
                         <cell id="957">
@@ -1143,7 +1143,7 @@ row["agency_name"]
                                 <property name="fontWeight">bold</property>
                                 <property name="textAlign">center</property>
                                 <property name="contentType">html</property>
-                                <text-property name="content"><![CDATA[Sous/Total  <VALUE-OF>row["agency_name"]</VALUE-OF>]]></text-property>
+                                <text-property name="content"><![CDATA[Sous/Total  <VALUE-OF>row["CashRegisterName"]</VALUE-OF>]]></text-property>
                             </text>
                         </cell>
                         <cell id="961">
@@ -1160,16 +1160,14 @@ row["agency_name"]
                             <property name="borderTopColor">#000000</property>
                             <property name="borderTopStyle">solid</property>
                             <property name="borderTopWidth">thin</property>
-                            <data id="2650">
-                                <property name="fontSize">9.5pt</property>
+                            <data id="3158">
                                 <property name="fontWeight">bold</property>
-                                <property name="numberAlign">right</property>
                                 <structure name="numberFormat">
                                     <property name="category">Custom</property>
                                     <property name="pattern">###,##0.00</property>
                                 </structure>
                                 <property name="textAlign">right</property>
-                                <property name="resultSetColumn">Sum By Agency</property>
+                                <property name="resultSetColumn">SumByCashRegister</property>
                             </data>
                         </cell>
                     </row>
@@ -1190,12 +1188,9 @@ row["agency_name"]
                         <property name="borderTopColor">#000000</property>
                         <property name="borderTopStyle">solid</property>
                         <property name="borderTopWidth">thin</property>
-                        <text id="2652">
-                            <property name="fontSize">9.5pt</property>
-                            <property name="textAlign">center</property>
-                            <property name="contentType">html</property>
-                            <text-property name="content"><![CDATA[<VALUE-OF>row["partner_name"]</VALUE-OF> <VALUE-OF format="^">" "</VALUE-OF> <VALUE-OF>row["partner_first_name"]</VALUE-OF>]]></text-property>
-                        </text>
+                        <data id="3156">
+                            <property name="resultSetColumn">PartnerFullName</property>
+                        </data>
                     </cell>
                     <cell id="918">
                         <property name="borderLeftColor">#000000</property>
@@ -1207,12 +1202,10 @@ row["agency_name"]
                         <property name="borderTopColor">#000000</property>
                         <property name="borderTopStyle">solid</property>
                         <property name="borderTopWidth">thin</property>
-                        <text id="1050">
-                            <property name="fontSize">9.5pt</property>
+                        <data id="3157">
                             <property name="textAlign">center</property>
-                            <property name="contentType">html</property>
-                            <text-property name="content"><![CDATA[<VALUE-OF>row["reference"]</VALUE-OF>]]></text-property>
-                        </text>
+                            <property name="resultSetColumn">PaymentVoucherRef</property>
+                        </data>
                     </cell>
                     <cell id="921">
                         <property name="borderLeftColor">#000000</property>
@@ -1224,15 +1217,13 @@ row["agency_name"]
                         <property name="borderTopColor">#000000</property>
                         <property name="borderTopStyle">solid</property>
                         <property name="borderTopWidth">thin</property>
-                        <data id="2649">
-                            <property name="fontSize">9.5pt</property>
-                            <property name="numberAlign">right</property>
+                        <data id="3155">
                             <structure name="numberFormat">
                                 <property name="category">Custom</property>
                                 <property name="pattern">###,##0.00</property>
                             </structure>
                             <property name="textAlign">right</property>
-                            <property name="resultSetColumn">amountPaid</property>
+                            <property name="resultSetColumn">AmountPaid</property>
                         </data>
                     </cell>
                 </row>
@@ -1289,16 +1280,14 @@ row["agency_name"]
                         <property name="borderTopColor">#000000</property>
                         <property name="borderTopStyle">solid</property>
                         <property name="borderTopWidth">thin</property>
-                        <data id="2651">
-                            <property name="fontSize">9.5pt</property>
+                        <data id="3159">
                             <property name="fontWeight">bold</property>
-                            <property name="numberAlign">right</property>
                             <structure name="numberFormat">
                                 <property name="category">Custom</property>
                                 <property name="pattern">###,##0.00</property>
                             </structure>
                             <property name="textAlign">right</property>
-                            <property name="resultSetColumn">AmountPaidTotal</property>
+                            <property name="resultSetColumn">Total</property>
                         </data>
                     </cell>
                 </row>
@@ -1335,23 +1324,11 @@ row["agency_name"]
                         <property name="backgroundColor">#E5E5E5</property>
                         <property name="verticalAlign">middle</property>
                         <property name="whiteSpace">nowrap</property>
-                        <data id="2648">
-                            <property name="fontSize">9.5pt</property>
+                        <data id="3161">
                             <property name="fontWeight">bold</property>
-                            <property name="color">#FF0000</property>
-                            <property name="paddingTop">0pt</property>
-                            <property name="paddingLeft">0pt</property>
-                            <property name="paddingBottom">0pt</property>
-                            <property name="paddingRight">0pt</property>
-                            <property name="numberAlign">center</property>
-                            <structure name="numberFormat">
-                                <property name="category">Custom</property>
-                                <property name="pattern">#####</property>
-                                <property name="locale">fr_BE</property>
-                            </structure>
+                            <property name="color">red</property>
                             <property name="textAlign">center</property>
-                            <property name="whiteSpace">nowrap</property>
-                            <property name="resultSetColumn">No Of Rows</property>
+                            <property name="resultSetColumn">NbOfRow</property>
                         </data>
                     </cell>
                 </row>

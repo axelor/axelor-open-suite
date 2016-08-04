@@ -26,6 +26,7 @@ import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.axelor.apps.ReportFactory;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Wizard;
 import com.axelor.apps.base.db.repo.ProductRepository;
@@ -33,14 +34,20 @@ import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.db.repo.TimesheetRepository;
+import com.axelor.apps.hr.exception.IExceptionMessage;
+import com.axelor.apps.hr.report.IReport;
 import com.axelor.apps.hr.service.HRMenuTagService;
+import com.axelor.apps.hr.service.MailManagementService;
+import com.axelor.apps.hr.service.config.HRConfigService;
 import com.axelor.apps.hr.service.timesheet.TimesheetService;
+import com.axelor.apps.message.db.Template;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
@@ -64,6 +71,10 @@ public class TimesheetController {
 	private ProjectTaskRepository ProjectTaskRepo;
 	@Inject
 	private HRMenuTagService hrMenuTagService;
+	@Inject
+	private HRConfigService  hrConfigService;
+	@Inject
+	private MailManagementService  mailManagementService;
 	
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 	
@@ -138,26 +149,6 @@ public class TimesheetController {
 			  		.param("popup-save", "false")
 					.map());
 		}
-	}
-
-	public void allTimesheet(ActionRequest request, ActionResponse response){
-		List<Timesheet> timesheetList = Beans.get(TimesheetRepository.class).all().filter("self.user = ?1 AND self.company = ?2",AuthUtils.getUser(),AuthUtils.getUser().getActiveCompany()).fetch();
-		List<Long> timesheetListId = new ArrayList<Long>();
-		for (Timesheet timesheet : timesheetList) {
-			timesheetListId.add(timesheet.getId());
-		}
-
-		String timesheetListIdStr = "-2";
-		if(!timesheetListId.isEmpty()){
-			timesheetListIdStr = Joiner.on(",").join(timesheetListId);
-		}
-
-		response.setView(ActionView.define(I18n.get("My Timesheets"))
-				   .model(Timesheet.class.getName())
-				   .add("grid","timesheet-grid")
-				   .add("form","timesheet-form")
-				   .domain("self.id in ("+timesheetListIdStr+")")
-				   .map());
 	}
 
 	public void validateTimesheet(ActionRequest request, ActionResponse response){
@@ -258,8 +249,8 @@ public class TimesheetController {
 				   .map());
 		}
 	}
-
-	public void confirm(ActionRequest request, ActionResponse response){
+	//action called when confirming a timesheet. Changing status + Sending mail to Manager
+	public void confirm(ActionRequest request, ActionResponse response) throws AxelorException{
 		Timesheet timesheet = request.getContext().asType(Timesheet.class);
 		
 		if(timesheet.getToDate() == null)
@@ -267,9 +258,32 @@ public class TimesheetController {
 		
 		validToDate(request, response);
 		
-		response.setValue("statusSelect", TimesheetRepository.STATUS_CONFIRMED);
-		response.setValue("sentDate", generalService.getTodayDate());
+		if(!hrConfigService.getHRConfig(timesheet.getUser().getActiveCompany()).getTimesheetMailNotification()){
+			response.setValue("statusSelect", TimesheetRepository.STATUS_CONFIRMED);
+			response.setValue("sentDate", generalService.getTodayDate());
+			if (timesheet.getFromDate() != null){
+				response.setAttr("fromDate", "readonly", "true");
+			}
+		}else{
+			User manager = timesheet.getUser().getEmployee().getManager();
+			if(manager!=null){
+				Template template =  hrConfigService.getHRConfig(timesheet.getUser().getActiveCompany()).getSentTimesheetTemplate();
+				if(mailManagementService.sendEmail(template,timesheet.getId())){
+					String message = "Email sent to";
+					response.setFlash(I18n.get(message)+" "+manager.getFullName());
+					response.setValue("statusSelect", TimesheetRepository.STATUS_CONFIRMED);
+					response.setValue("sentDate", generalService.getTodayDate());
+					if (timesheet.getFromDate() != null){
+						response.setAttr("fromDate", "readonly", "true");
+					}
+				}
+				else{
+					throw new AxelorException(String.format(I18n.get(IExceptionMessage.HR_CONFIG_TEMPLATES), timesheet.getUser().getActiveCompany().getName()), IException.CONFIGURATION_ERROR);
+				}
+			}
+		}
 	}
+	
 	
 	public void validToDate(ActionRequest request, ActionResponse response){
 		Timesheet timesheet = request.getContext().asType(Timesheet.class);
@@ -310,17 +324,59 @@ public class TimesheetController {
 			}
 		}
 	}
-
-	public void valid(ActionRequest request, ActionResponse response){
-		response.setValue("statusSelect", TimesheetRepository.STATUS_VALIDATED);
-		response.setValue("validatedBy", AuthUtils.getUser());
-		response.setValue("validationDate", generalService.getTodayDate());
+	
+	//action called when validating a timesheet. Changing status + Sending mail to Applicant
+	public void valid(ActionRequest request, ActionResponse response) throws AxelorException{
+		Timesheet timesheet = request.getContext().asType(Timesheet.class);
+		if(!hrConfigService.getHRConfig(timesheet.getUser().getActiveCompany()).getTimesheetMailNotification()){
+			response.setValue("statusSelect", TimesheetRepository.STATUS_VALIDATED);
+			response.setValue("validatedBy", AuthUtils.getUser());
+			response.setValue("validationDate", generalService.getTodayDate());
+			computeTimeSpent(request, response);
+		}
+		else{
+			User manager = timesheet.getUser().getEmployee().getManager();
+			if(manager!=null){
+				Template template =  hrConfigService.getHRConfig(timesheet.getUser().getActiveCompany()).getValidatedTimesheetTemplate();
+				if(mailManagementService.sendEmail(template,timesheet.getId())){
+					String message = "Email sent to";
+					response.setFlash(I18n.get(message)+" "+timesheet.getUser().getFullName());
+					response.setValue("statusSelect", TimesheetRepository.STATUS_VALIDATED);
+					response.setValue("validatedBy", AuthUtils.getUser());
+					response.setValue("validationDate", generalService.getTodayDate());
+					computeTimeSpent(request, response);
+				}
+				else{
+					throw new AxelorException(String.format(I18n.get(IExceptionMessage.HR_CONFIG_TEMPLATES), timesheet.getUser().getActiveCompany().getName()), IException.CONFIGURATION_ERROR);
+				}
+			}
+		}
 	}
 	
-	public void refuse(ActionRequest request, ActionResponse response){
-		response.setValue("statusSelect", TimesheetRepository.STATUS_REFUSED);
-		response.setValue("validatedBy", AuthUtils.getUser());
-		response.setValue("validationDate", generalService.getTodayDate());
+	//action called when refusing a timesheet. Changing status + Sending mail to Applicant
+	public void refuse(ActionRequest request, ActionResponse response) throws AxelorException{
+		Timesheet timesheet = request.getContext().asType(Timesheet.class);
+		if(!hrConfigService.getHRConfig(timesheet.getUser().getActiveCompany()).getTimesheetMailNotification()){
+			response.setValue("statusSelect", TimesheetRepository.STATUS_REFUSED);
+			response.setValue("refusedBy", AuthUtils.getUser());
+			response.setValue("refusalDate", generalService.getTodayDate());
+		}
+		else{
+			User manager = timesheet.getUser().getEmployee().getManager();
+			if(manager!=null){
+				Template template =  hrConfigService.getHRConfig(timesheet.getUser().getActiveCompany()).getRefusedTimesheetTemplate();
+				if(mailManagementService.sendEmail(template,timesheet.getId())){
+					String message = "Email sent to";
+					response.setFlash(I18n.get(message)+" "+timesheet.getUser().getFullName());
+					response.setValue("statusSelect", TimesheetRepository.STATUS_REFUSED);
+					response.setValue("refusedBy", AuthUtils.getUser());
+					response.setValue("refusalDate", generalService.getTodayDate());
+				}
+				else{
+					throw new AxelorException(String.format(I18n.get(IExceptionMessage.HR_CONFIG_TEMPLATES), timesheet.getUser().getActiveCompany().getName()), IException.CONFIGURATION_ERROR);
+				}
+			}
+		}
 	}
 	
 	public void computeTimeSpent(ActionRequest request, ActionResponse response){
@@ -343,5 +399,29 @@ public class TimesheetController {
 		Timesheet timesheet= new Timesheet();
 		logger.debug("Timesheet methode {}",timesheet.getClass());
 		return hrMenuTagService.CountRecordsTag(timesheet);
+	}
+	
+	public void printTimesheet(ActionRequest request, ActionResponse response) throws AxelorException {
+		
+		Timesheet timesheet = request.getContext().asType(Timesheet.class);
+		
+		User user = AuthUtils.getUser();
+		String language = user != null? (user.getLanguage() == null || user.getLanguage().equals(""))? "en" : user.getLanguage() : "en"; 
+		
+		String name = I18n.get("Timesheet") + " " + timesheet.getFullName()
+												.replace("/", "-");
+		
+		String fileLink = ReportFactory.createReport(IReport.TIMESHEET, name)
+				.addParam("TimesheetId", timesheet.getId())
+				.addParam("Locale", language)
+				.addModel(timesheet)
+				.generate()
+				.getFileLink();
+
+		logger.debug("Printing "+name);
+	
+		response.setView(ActionView
+				.define(name)
+				.add("html", fileLink).map());	
 	}
 }

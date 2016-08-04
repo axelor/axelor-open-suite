@@ -7,8 +7,8 @@
 		<field name="value" onChange="action-leave-management-record-counted"/>
 	    <field name="date"/>
 	    <field name="user" form-view="user-form" grid-view="user-grid"/>
-	    <field name="dateFrom"/>
-	    <field name="dateTo"/>
+	    <field name="fromDate"/>
+	    <field name="toDate"/>
 	    <field name="comments"/>
 	    <field name="oldValue" hidden="true"/>
 	    <field name="counted" hidden="true"/>
@@ -20,8 +20,8 @@
 			<field name="value" onChange="action-leave-management-record-counted"/>
 		    <field name="date"/>
 		    <field name="user" form-view="user-form" grid-view="user-grid"/>
-		    <field name="dateFrom"/>
-		    <field name="dateTo"/>
+		    <field name="fromDate"/>
+		    <field name="toDate"/>
 		    <field name="comments"/>
 		</panel>
 	</form>

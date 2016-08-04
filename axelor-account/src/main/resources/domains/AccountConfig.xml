@@ -122,6 +122,8 @@
   	<boolean name="displayProductCodeOnPrinting" title="Display product code on printing ?"/>
  	<boolean name="displayTaxDetailOnPrinting" title="Display tax detail on printing ?"/>
   	<string name="invoiceClientBox" large="true" multiline="true" title="Client box in invoice"/>
+  	<boolean name="displayTimesheetOnPrinting" title="Display timesheet lines on printing"/>
+  	<boolean name="displayExpenseOnPrinting" title="Display expense lines on printing"/>
   	
   	<extra-code><![CDATA[
 	

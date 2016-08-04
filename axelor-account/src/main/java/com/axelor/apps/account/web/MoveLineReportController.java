@@ -178,8 +178,6 @@ public class MoveLineReportController {
 
 			logger.debug("Type selected : {}" , moveLineReport.getTypeSelect());
 
-			
-
 			if((moveLineReport.getTypeSelect() >= 6 && moveLineReport.getTypeSelect() <= 9) || moveLineReport.getTypeSelect() == 14) {
 				
 				MoveLineExportService moveLineExportService = Beans.get(MoveLineExportService.class);
