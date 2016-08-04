@@ -17,6 +17,8 @@
  */
 package com.axelor.studio.service.data.importer;
 
+import groovyjarjarcommonscli.HelpFormatter;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -341,7 +343,11 @@ public class DataModelService extends DataCommonService {
 
 		String name = getValue(row, NAME);
 		String title = getValue(row, TITLE);
-
+		String titleFr = getValue(row, TITLE_FR);
+		if (Strings.isNullOrEmpty(title)) {
+			title = titleFr;
+		}
+		
 		if (Strings.isNullOrEmpty(name) 
 				&& !Strings.isNullOrEmpty(title) 
 				&& !fieldType.equals("label")) {
@@ -396,6 +402,9 @@ public class DataModelService extends DataCommonService {
 						metaModel).fetchOne();
 		
 		log.debug("Field found: {}", field);
+		
+		addTranslation(basic[3], getValue(row, TITLE_FR), "fr");
+		
 		if (field == null) {
 			field = new MetaField();
 			field.setName(name);
@@ -438,7 +447,16 @@ public class DataModelService extends DataCommonService {
 
 		}
 		
-		field.setHelpText(getValue(row, HELP));
+		String help = getValue(row, HELP);
+		String helpFr = getValue(row, HELP_FR);
+		if (help == null) {
+			help = helpFr;
+		}
+		else {
+			addTranslation(help, helpFr, "fr");
+		}
+		
+		field.setHelpText(help);
 		field.setMetaModel(metaModel);
 		field.setSequence(getFieldSequence(metaModel.getId()));
 		field = updateFieldTypeName(basic[0], basic[1], field);
@@ -465,6 +483,9 @@ public class DataModelService extends DataCommonService {
 			Row row) throws AxelorException {
 
 		String selectName = getValue(row, SELECT);
+		if (selectName == null) {
+			selectName = getValue(row, SELECT_FR);
+		}
 
 		if (Strings.isNullOrEmpty(selectName)) {
 			throw new AxelorException(I18n
@@ -475,13 +496,13 @@ public class DataModelService extends DataCommonService {
 
 		if(!selectName.contains(",") && !selectName.contains(":")){
 			 MetaSelect metaSelect = metaSelectRepo.findByName(selectName);
-			 if (metaSelect == null) {
-				 throw new AxelorException(I18n
-							.get("No selection found for object: %s, field: %s, row: %s"), 1,
-					modelName, field.getLabel(), row.getRowNum() + 1);
+			 if (metaSelect != null) {
+//				 throw new AxelorException(I18n
+//							.get("No selection found for object: %s, field: %s, row: %s"), 1,
+//					modelName, field.getLabel(), row.getRowNum() + 1);
+				 field.setMetaSelect(metaSelect);
+				 return field;
 			 }
-			 field.setMetaSelect(metaSelect);
-			 return field;
 		}
 		
 		String name = inflector.dasherize(modelName) + "-"
@@ -515,18 +536,38 @@ public class DataModelService extends DataCommonService {
 			}
 	
 			String[] option = selectName.split(",");
+			String selectFr = getValue(row, SELECT_FR);
+			String[] optionFr = null;
+			if (selectFr != null) {
+				optionFr = selectFr.split(",");
+			}
 	
 			for (Integer count = 0; count < option.length; count++) {
 				MetaSelectItem metaSelectItem = new MetaSelectItem();
 				String title = option[count];
+				String titleFR = null;
+				if (optionFr != null && optionFr.length > count) {
+					titleFR = optionFr[count];
+				}
 				if (title.contains(":")) {
 					String[] values = title.split(":");
-					metaSelectItem.setValue(values[0]);
-					metaSelectItem.setTitle(values[1]);
+					if (values.length > 1) {
+						metaSelectItem.setValue(values[0]);
+						metaSelectItem.setTitle(values[1]);
+						if (titleFR != null && titleFR.contains(":")) {
+							String[] valuesFr = titleFR.split(":");
+							if (valuesFr.length > 1){
+								addTranslation(values[1], valuesFr[1], "fr" );
+							}
+						}
+					}
 				}
 				else {
 					metaSelectItem.setValue(count.toString());
 					metaSelectItem.setTitle(title.trim());
+					if (titleFR != null) {
+						addTranslation(title, titleFR, "fr" );
+					}
 				}
 				metaSelectItem.setOrder(count);
 				metaSelect.addItem(metaSelectItem);

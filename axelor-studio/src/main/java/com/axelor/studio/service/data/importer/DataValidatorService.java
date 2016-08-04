@@ -219,6 +219,9 @@ public class DataValidatorService extends DataCommonService {
 		
 		String name = getValue(row, NAME);
 		String title = getValue(row, TITLE);
+		if (title == null) {
+			title = getValue(row, TITLE_FR);
+		}
 		if (name == null) {
 			name = title;
 		}
@@ -253,6 +256,10 @@ public class DataValidatorService extends DataCommonService {
 	private boolean checkSelect(Row row, String type, boolean consider) throws IOException {
 		
 		String select = getValue(row, SELECT);
+		
+		if (select == null) {
+			select = getValue(row, SELECT_FR);
+		}
 		
 		if (select != null
 					&& type != null 
@@ -472,11 +479,11 @@ public class DataValidatorService extends DataCommonService {
 				&& !panelTabTypes.contains(type)) {
 			addLog(I18n.get("Panelbook must follow by paneltab"), row);
 		}
-		else if (type.equals("paneltab") 
-				&& !lastPanel[0].equals("panelbook")
-				&& !panelTabTypes.contains(lastPanel[0])) {
-			addLog(I18n.get("Paneltab not allowed without panelbook"), row);
-		}
+//		else if (type.equals("paneltab") 
+//				&& !lastPanel[0].equals("panelbook")
+//				&& !panelTabTypes.contains(lastPanel[0])) {
+//			addLog(I18n.get("Paneltab not allowed without panelbook"), row);
+//		}
 		else if (type.startsWith("panel") || panelTabTypes.contains(type)) {
 			viewPanelMap.put(view, new Object[]{type, row});
 		}

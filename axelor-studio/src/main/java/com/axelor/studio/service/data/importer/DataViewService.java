@@ -30,9 +30,11 @@ import org.slf4j.LoggerFactory;
 import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.db.MetaField;
+import com.axelor.meta.db.MetaMenu;
 import com.axelor.meta.db.MetaModel;
 import com.axelor.meta.db.MetaSequence;
 import com.axelor.meta.db.MetaView;
+import com.axelor.meta.db.repo.MetaMenuRepository;
 import com.axelor.meta.db.repo.MetaSequenceRepository;
 import com.axelor.meta.db.repo.MetaViewRepository;
 import com.axelor.studio.db.ActionBuilder;
@@ -93,6 +95,9 @@ public class DataViewService extends DataCommonService {
 	
 	@Inject
 	private MetaViewRepository metaViewRepo;
+	
+	@Inject
+	private MetaMenuRepository metaMenuRepo;
 	
 	public void clear() {
 		clearedViews = new HashMap<String, ViewBuilder>();
@@ -284,6 +289,7 @@ public class DataViewService extends DataCommonService {
 		if (basic != null) {
 			panel.setName(basic[2]);
 			panel.setTitle(basic[3]);
+			addTranslation(basic[3], getValue(row, TITLE_FR), "fr");
 		}
 		
 		String module = getValue(row, MODULE);
@@ -366,6 +372,8 @@ public class DataViewService extends DataCommonService {
 		ViewItem viewItem = new ViewItem(basic[2]);
 		viewItem.setTypeSelect(1);
 		viewItem.setTitle(basic[3]);
+		
+		addTranslation(basic[3], getValue(row, TITLE_FR), "fr");
 
 		if (basic[1] != null && basic[1].startsWith("toolbar")) {
 			viewItem.setViewBuilderToolbar(viewBuilder);
@@ -398,6 +406,8 @@ public class DataViewService extends DataCommonService {
 		}
 		viewItem.setTypeSelect(2);
 		viewItem.setTitle(basic[3]);
+		addTranslation(basic[3], getValue(row, TITLE_FR), "fr");
+		
 		setAttributes(viewBuilder, viewItem);
 
 		viewItemRepo.save(viewItem);
@@ -436,6 +446,7 @@ public class DataViewService extends DataCommonService {
 		ViewItem button = new ViewItem(basic[2]);
 		button.setTypeSelect(1);
 		button.setTitle(basic[3]);
+		addTranslation(basic[3], getValue(row, TITLE_FR), "fr");
 		button.setOnClick(builder.getName());
 		button.setViewPanel(lastPanel);
 		button.setSequence(getPanelSeq(lastPanel.getId()));
@@ -459,6 +470,9 @@ public class DataViewService extends DataCommonService {
 			}
 			viewItem.setMetaField(metaField);
 		}
+		else {
+			addTranslation(basic[3], getValue(row, TITLE_FR), "fr");
+		}
 		
 		if (basic[4] != null) {
 			setNestedField(lastPanel, basic[4], viewItem);
@@ -470,6 +484,7 @@ public class DataViewService extends DataCommonService {
 		
 		
 		viewItem = setEvent(viewBuilder, viewItem);
+		
 		setAttributes(viewBuilder, viewItem);
 		if (basic[0].equals("html")) {
 			viewItem.setWidget("html");
@@ -510,13 +525,16 @@ public class DataViewService extends DataCommonService {
 			return;
 		}
 		
-		String name = "menu-" + inflector.dasherize(basic[2]);
+		String name = inflector.dasherize(basic[2]);
 
 		MenuBuilder menuBuilder = menuBuilderRepo.findByName(name);
 		if (menuBuilder == null) {
 			menuBuilder = new MenuBuilder(name);
 		}
 		menuBuilder.setTitle(basic[3]);
+		
+		addTranslation(basic[3], getValue(row, TITLE_FR), "fr");
+		
 		if (model != null) {
 			menuBuilder.setMetaModel(model);
 			menuBuilder.setModel(model.getFullName());
@@ -527,14 +545,21 @@ public class DataViewService extends DataCommonService {
 
 		MenuBuilder parent = null;
 		if (!Strings.isNullOrEmpty(basic[1])) {
-			parent = menuBuilderRepo.findByName("menu-"
-					+ inflector.dasherize(basic[1]));
+			String parentName = inflector.dasherize(basic[1]);
+			parent = menuBuilderRepo.findByName(parentName);
 			if (parent != null) {
 				menuBuilder.setParent(parent.getName());
 				menuBuilder.setMenuBuilder(parent);
 			} else {
-				throw new AxelorException(I18n.get("No parent menu found %s for menu %s"),
-						1, basic[1], basic[3]);
+				MetaMenu parentMenu = metaMenuRepo.findByName(parentName);
+				if (parentMenu != null) {
+					menuBuilder.setParent(parentMenu.getName());
+					menuBuilder.setMetaMenu(parentMenu);
+				}
+				else {
+					throw new AxelorException(I18n.get("No parent menu found %s for menu %s"),
+						1, parentName, basic[3]);
+				}
 			}
 		}
 
@@ -980,6 +1005,12 @@ public class DataViewService extends DataCommonService {
 	public void addMenubar(ViewBuilder viewBuilder) throws AxelorException {
 		
 		String title = getValue(row, TITLE);
+		String titleFr = getValue(row, TITLE_FR);
+		
+		if (title == null) {
+			title = titleFr;
+		}
+		addTranslation(title, titleFr, "fr");
 		
 		if (title == null) {
 			throw new AxelorException(I18n.get("Menubar must have title. Row: %s"), 1, row.getRowNum());
@@ -998,6 +1029,14 @@ public class DataViewService extends DataCommonService {
 	public void addMenubarItem(ViewBuilder viewBuilder) throws AxelorException {
 		
 		String title = getValue(row, TITLE);
+		String titleFr = getValue(row, TITLE_FR);
+		
+		if (title == null) {
+			title = titleFr;
+		}
+		else if (!title.equals(titleFr)) {
+			addTranslation(title, titleFr, "fr");
+		}
 		
 		if (title == null) {
 			throw new AxelorException(I18n.get("Menubar item must have title. Row: %s"), 1, row.getRowNum());
@@ -1019,6 +1058,10 @@ public class DataViewService extends DataCommonService {
 	}
 	
 	private String getIfModule(String module, ViewBuilder viewBuilder) {
+		
+		if (Strings.isNullOrEmpty(module)) {
+			return null;
+		}
 		
 		module = module.replace("*", "");
 		String viewModule = null;

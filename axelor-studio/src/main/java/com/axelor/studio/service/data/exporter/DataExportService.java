@@ -51,6 +51,7 @@ import com.axelor.meta.db.MetaAction;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.meta.db.MetaMenu;
 import com.axelor.meta.db.MetaModule;
+import com.axelor.meta.db.MetaTranslation;
 import com.axelor.meta.db.repo.MetaMenuRepository;
 import com.axelor.meta.db.repo.MetaModuleRepository;
 import com.axelor.studio.service.ViewLoaderService;
@@ -423,6 +424,9 @@ public class DataExportService extends DataCommonService {
 		 String name = values[NAME];
 		 if (name == null) {
 			 name = values[TITLE];
+			 if (name == null) {
+				 name = values[TITLE_FR];
+			 }
 		 }
 		 
 		 String key = null;
@@ -513,6 +517,7 @@ public class DataExportService extends DataCommonService {
 		values[MODEL] = model;
 		values[NAME] = subMenu.getName();
 		values[TITLE] = menu[menu.length - 1];
+		values[TITLE_FR] = getTranslation(values[TITLE], "fr");
 		values[TYPE] = type;
 		values[MENU] = menuPath;
 		
@@ -670,6 +675,9 @@ public class DataExportService extends DataCommonService {
 		
 		if (Strings.isNullOrEmpty(name)) {
 			name =  getValue(row, TITLE);
+			if (Strings.isNullOrEmpty(name)) {
+				name = getValue(row, TITLE_FR);
+			}
 			if (!Strings.isNullOrEmpty(name)) {
 				name = getFieldName(name);
 			}
@@ -723,4 +731,5 @@ public class DataExportService extends DataCommonService {
 		
 		return names[names.length-1];
 	}
+	
 }

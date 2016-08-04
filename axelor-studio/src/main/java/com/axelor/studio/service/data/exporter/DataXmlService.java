@@ -337,6 +337,7 @@ public class DataXmlService extends DataCommonService {
 			values[MODEL] = model; 
 			values[VIEW] = view; 
 		    values[TITLE] = title;
+		    values[TITLE_FR] = getTranslation(title, "fr");
 		    values[TYPE] = "menubar"; 
 		
 			exportService.writeRow(values, newForm, false, false);
@@ -363,7 +364,7 @@ public class DataXmlService extends DataCommonService {
 		if (items == null) {
 			return panelLevel;
 		}
-		
+		boolean panelTab = (boolean) extra[0];
 		for (AbstractWidget item : items) {
 			
 			if (item.getModuleToCheck() != null 
@@ -384,7 +385,7 @@ public class DataXmlService extends DataCommonService {
 			
 			try {
 				
-				Method method = getClass().getDeclaredMethod(methodName, 
+				Method method = DataXmlService.class.getDeclaredMethod(methodName, 
 							new Class[] {klass, 
 										 String.class, 
 										 String.class,
@@ -392,10 +393,11 @@ public class DataXmlService extends DataCommonService {
 										 Mapper.class, 
 										 Object[].class});
 				method.setAccessible(true);
+				extra[0] = panelTab;
 				panelLevel = (String) method.invoke(this, item, module, model, view, mapper, extra);
 				extra[2] = panelLevel;
 				
-			} catch (NoSuchMethodException e) { 			
+			} catch (NoSuchMethodException e) {
 				log.debug("No method found: {}", methodName);
 			}
 			 catch (SecurityException| IllegalAccessException | IllegalArgumentException 
@@ -422,6 +424,7 @@ public class DataXmlService extends DataCommonService {
 		values[VIEW] =	view;
 		values[NAME] = panel.getName(); 
 		values[TITLE] =	panel.getTitle();
+		values[TITLE_FR] =	getTranslation(panel.getTitle(), "fr");
 		values[TYPE] =	panelType; 
 		values[IF_CONFIG] = panel.getConditionToCheck();
 		
@@ -544,6 +547,7 @@ public class DataXmlService extends DataCommonService {
 		values[VIEW] =	view; 
 		values[NAME] =	name; 
 		values[TITLE] = field.getTitle();
+		values[TITLE_FR] = getTranslation(field.getTitle(), "fr");
 		if (!name.contains(".")) {
 			values[TYPE] = field.getServerType();
 		}
@@ -570,8 +574,12 @@ public class DataXmlService extends DataCommonService {
 			values[SELECT] = field.getSelection();
 		}
 		
-		if (values[SELECT] != null) {
-			values[SELECT] = getSelect(values[SELECT]);
+		if (!Strings.isNullOrEmpty(values[SELECT])) {
+			String[] selects = getSelect(values[SELECT]);
+			if (selects != null) {
+				values[SELECT] = selects[0];
+				values[SELECT_FR] = selects[1];
+			}
 		}
 		
 		if (Strings.isNullOrEmpty(values[TYPE])) {
@@ -604,6 +612,7 @@ public class DataXmlService extends DataCommonService {
 		
 		if (values[TITLE] == null) {
 			values[TITLE] = property.getTitle();
+			values[TITLE_FR] = getTranslation(property.getTitle(), "fr");
 		}
 		
 		values[SELECT] = property.getSelection();
@@ -629,6 +638,7 @@ public class DataXmlService extends DataCommonService {
 			String help = property.getHelp();
 			if (!Boolean.parseBoolean(help)) {
 				values[HELP] = property.getHelp();
+				values[HELP_FR] = getTranslation(property.getHelp(), "fr");
 			}
 		}
 		
@@ -670,7 +680,8 @@ public class DataXmlService extends DataCommonService {
 		if (field.getHelp() != null) {
 			String help = field.getHelp();
 			if (!Boolean.parseBoolean(help)) {
-				values[HELP] = field.getHeight();
+				values[HELP] = field.getHelp();
+				values[HELP_FR] = getTranslation(field.getHelp(), "fr");
 			}
 		}
 		
@@ -680,19 +691,31 @@ public class DataXmlService extends DataCommonService {
 		
 	}
 	
-	private String getSelect(String selection) {
+	private String[] getSelect(String selection) {
 		
 		List<Option> selectionList = MetaStore.getSelectionList(selection);
 		if (selectionList == null) {
-			return "";
+			log.debug("Blank selection list for selection: {}", selection);
+			return null;
 		}
 		
-		List<String> titles = new ArrayList<String>();
+		List<String> select = new ArrayList<String>();
+		List<String> selectFR = new ArrayList<String>();
 		for (Option option : selectionList) {
-			titles.add(option.getValue() + ":" + option.getTitle());
+			select.add(option.getValue() + ":" + option.getTitle());
+			String translation = getTranslation(option.getTitle(), "fr");
+			if (translation != null) {
+				selectFR.add(option.getValue() + ":" + translation);
+			}
 		}
 		
-		return selection + "(" +  Joiner.on(",").join(titles) + ")";
+		String selectionEN = selection + "(" +  Joiner.on(",").join(select) + ")";
+		String selectionFR = null;
+		if (selectFR != null) {
+			selectionFR = selection + "(" +  Joiner.on(",").join(selectFR) + ")";
+		}
+		
+		return new String[]{selectionEN, selectionFR};
 	}
 	
 	
@@ -775,6 +798,7 @@ public class DataXmlService extends DataCommonService {
 		values[VIEW] =	view; 
 		values[NAME] =	button.getName(); 
 		values[TITLE] =	button.getTitle(); 
+		values[TITLE_FR] =	getTranslation(button.getTitle(), "fr");
 		values[TYPE] = "button"; 
 		values[ON_CLICK] = button.getOnClick();
 		values[READONLY_IF] = button.getReadonlyIf();
@@ -830,6 +854,7 @@ public class DataXmlService extends DataCommonService {
 			log.debug("No property found: {}, class: {}", values[NAME], values[MODEL]);
 		}
 		
+		values[TITLE_FR] = getTranslation(values[TITLE], "fr");
 		if (values[TYPE] == null) {
 			values[TYPE] = "o2m";
 		}
@@ -880,6 +905,7 @@ public class DataXmlService extends DataCommonService {
 		values[VIEW] =	view; 
 		values[NAME] =	label.getName();
 		values[TITLE] =	label.getTitle();
+		values[TITLE_FR] =	getTranslation(label.getTitle(), "fr");
 		values[TYPE] =	"label"; 
 		values[IF_CONFIG] = label.getConditionToCheck();
 		values[HIDE_IF] = label.getHideIf();
@@ -915,6 +941,7 @@ public class DataXmlService extends DataCommonService {
 			values[VIEW] =	view; 
 			values[NAME] = dashlet.getName(); 
 			values[TITLE] = title;
+			values[TITLE_FR] =	getTranslation(title, "fr");
 			values[TYPE] =	"dashlet"; 
 			values[IF_CONFIG] = dashlet.getConditionToCheck();
 			
@@ -937,6 +964,7 @@ public class DataXmlService extends DataCommonService {
 		values[VIEW] =	view; 
 		values[NAME] = item.getName();
 		values[TITLE] = item.getTitle();
+		values[TITLE_FR] =	getTranslation(item.getTitle(), "fr");
 		values[TYPE] = "menubar.item";
 		values[ON_CLICK] = item.getAction();
 		values[READONLY_IF] = item.getReadonlyIf();

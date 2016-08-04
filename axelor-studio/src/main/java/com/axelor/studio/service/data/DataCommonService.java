@@ -28,6 +28,7 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 
 import com.axelor.common.Inflector;
+import com.axelor.meta.db.MetaTranslation;
 import com.axelor.meta.db.repo.MetaFieldRepository;
 import com.axelor.meta.db.repo.MetaModelRepository;
 import com.axelor.meta.db.repo.MetaTranslationRepository;
@@ -39,6 +40,7 @@ import com.axelor.studio.service.builder.ModelBuilderService;
 import com.axelor.studio.service.data.importer.DataViewService;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 
 public abstract class DataCommonService {
 	
@@ -47,10 +49,12 @@ public abstract class DataCommonService {
 		"Module", 
 		"Object", 
 		"View", 
-		"Field name", 
-		"Field title",
-		"Field type", 
+		"Name", 
+		"Title",
+		"Title FR",
+		"Type", 
 		"Selection",
+		"Selection FR",
 		"Menu",
 		"Required",
 		"Required if",
@@ -68,6 +72,7 @@ public abstract class DataCommonService {
 		"Colspan",
 		"Grid",
 		"Help",
+		"Help FR",
 		"Panel Level"
 	};
 	
@@ -136,6 +141,7 @@ public abstract class DataCommonService {
 		types.add("tip");
 		types.add("warn");
 		types.add("note");
+		types.add("empty");
 		ignoreTypes = Collections.unmodifiableList(types);
 	}
 	
@@ -162,26 +168,29 @@ public abstract class DataCommonService {
 	protected final static int VIEW = 3;
 	protected final static int NAME = 4;
 	protected final static int TITLE = 5;
-	protected final static int TYPE = 6;
-	protected final static int SELECT = 7;
-	protected final static int MENU = 8;
-	protected final static int REQUIRED = 9;
-	protected final static int REQUIRED_IF = 10;
-	protected final static int READONLY = 11;
-	protected final static int READONLY_IF = 12;
-	protected final static int HIDDEN = 13;
-	protected final static int HIDE_IF = 14;
-	protected final static int SHOW_IF = 15;
-	protected final static int IF_CONFIG = 16;
-	protected final static int FORMULA = 17;
-	protected final static int EVENT = 18;
-	protected final static int DOMAIN = 19;
-	protected final static int ON_CHANGE = 20;
-	protected final static int ON_CLICK = 21;
-	protected final static int COLSPAN = 22;
-	protected final static int GRID = 23;
-	protected final static int HELP = 24;
-	protected final static int PANEL_LEVEL = 25;
+	protected final static int TITLE_FR = 6;
+	protected final static int TYPE = 7;
+	protected final static int SELECT = 8;
+	protected final static int SELECT_FR = 9;
+	protected final static int MENU = 10;
+	protected final static int REQUIRED = 11;
+	protected final static int REQUIRED_IF = 12;
+	protected final static int READONLY = 13;
+	protected final static int READONLY_IF = 14;
+	protected final static int HIDDEN = 15;
+	protected final static int HIDE_IF = 16;
+	protected final static int SHOW_IF = 17;
+	protected final static int IF_CONFIG = 18;
+	protected final static int FORMULA = 19;
+	protected final static int EVENT = 20;
+	protected final static int DOMAIN = 21;
+	protected final static int ON_CHANGE = 22;
+	protected final static int ON_CLICK = 23;
+	protected final static int COLSPAN = 24;
+	protected final static int GRID = 25;
+	protected final static int HELP = 26;
+	protected final static int HELP_FR = 27;
+	protected final static int PANEL_LEVEL = 28;
 	
 	protected final static Map<String, String> relationshipMap;
 
@@ -257,6 +266,42 @@ public abstract class DataCommonService {
 		return inflector.camelize(inflector.simplify(title.trim()), true);
 
 	}
-
+	
+	public String getTranslation(String key, String lang) {
+		
+		if (Strings.isNullOrEmpty(key) || Strings.isNullOrEmpty(lang)) {
+			return null;
+		}
+		
+		MetaTranslation translation = metaTranslationRepo.findByKey(key, lang);
+		if (translation != null) {
+			return translation.getMessage();
+		}
+		
+		return null;
+	}
+	
+	@Transactional
+	public void addTranslation(String key, String message, String lang) {
+		
+		if (Strings.isNullOrEmpty(key) || Strings.isNullOrEmpty(message) || Strings.isNullOrEmpty(lang)) {
+			return;
+		}
+		
+		if (key.equals(message)) {
+			return;
+		}
+		
+		MetaTranslation translation = metaTranslationRepo.findByKey(key, lang);
+		if (translation == null) {
+			translation = new MetaTranslation();
+			translation.setLanguage(lang);
+			translation.setKey(key);
+		}
+		
+		translation.setMessage(message);
+		
+		metaTranslationRepo.save(translation);
+	}
 
 }

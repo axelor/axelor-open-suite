@@ -62,6 +62,8 @@ public class DataAsciidocService extends DataCommonService {
 
 	private boolean setHorizontal = false;
 	
+	private String lang = null;
+	
 	private Map<String, Integer> countMap = new HashMap<String, Integer>();
 	
 	@Inject
@@ -82,6 +84,7 @@ public class DataAsciidocService extends DataCommonService {
 			return null;
 		}
 		
+		this.lang = lang;
 		File data = MetaFiles.getPath(dataFile).toFile();
 		if (data == null || !data.exists()) {
 			return null;
@@ -236,11 +239,18 @@ public class DataAsciidocService extends DataCommonService {
 		}
 		
 		String doc = getValue(row, HELP);
+		if (lang != null && lang.equals("fr")) {
+			doc = getValue(row, HELP_FR);
+		}
 		if (Strings.isNullOrEmpty(doc)) {
 			return;
 		}
 		
 		String title = getValue(row, TITLE);
+		if (lang != null && lang.equals("fr")) {
+			title = getValue(row, TITLE_FR);
+		}
+		
 		if (Strings.isNullOrEmpty(title)) { 
 			title = type;
 		}

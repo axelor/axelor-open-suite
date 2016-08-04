@@ -29,6 +29,7 @@ import java.util.Map;
 
 import javax.xml.bind.JAXBException;
 
+import org.eclipse.persistence.jaxb.xmlmodel.XmlVirtualAccessMethods;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -413,7 +414,9 @@ public class ViewBuilderService {
 			List<AbstractView> views = filterOldViews(view,
 					objectViews.getViews());
 			for (AbstractView viewXml : views) {
-				xmlWriter.write(XMLViews.toXml(viewXml, true));
+				String xml = XMLViews.toXml(viewXml, true);
+				XMLViews.fromXML(xml);
+				xmlWriter.write(xml);
 				xmlWriter.write("\n");
 			}
 		}
@@ -421,7 +424,9 @@ public class ViewBuilderService {
 		if (actions != null && !actions.isEmpty()) {
 			actions = filterOldActions(actions, objectViews.getActions());
 			for (Action action : actions) {
-				xmlWriter.write(XMLViews.toXml(action, true));
+				String xml = XMLViews.toXml(action, true);
+				XMLViews.fromXML(xml);
+				xmlWriter.write(xml);
 				xmlWriter.write("\n");
 			}
 		}
