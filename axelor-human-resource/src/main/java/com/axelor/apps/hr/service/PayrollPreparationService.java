@@ -44,15 +44,18 @@ import com.google.inject.Inject;
 
 public class PayrollPreparationService {
 	
-	@Inject
 	protected LeaveService leaveService;
-	
-	@Inject
 	protected LeaveRequestRepository leaveRequestRepo;
+	protected WeeklyPlanningService weeklyPlanningService;
 	
 	@Inject
-	protected WeeklyPlanningService weeklyPlanningService;
-
+	public PayrollPreparationService(LeaveService leaveService, LeaveRequestRepository leaveRequestRepo, WeeklyPlanningService weeklyPlanningService){
+		
+		this.leaveService = leaveService;
+		this.leaveRequestRepo = leaveRequestRepo;
+		this.weeklyPlanningService = weeklyPlanningService;
+	}
+	
 	public PayrollPreparation generateFromEmploymentContract(PayrollPreparation payrollPreparation, EmploymentContract employmentContract){
 		if(payrollPreparation.getEmployee() == null){
 			payrollPreparation.setEmployee(employmentContract.getEmployee());

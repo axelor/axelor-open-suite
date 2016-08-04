@@ -58,26 +58,27 @@ import com.google.inject.persist.Transactional;
 
 public class LeaveService {
 	
-	@Inject
 	protected DurationService durationService;
-
-	@Inject
 	protected LeaveLineRepository leaveLineRepo;
-
-	@Inject
 	protected WeeklyPlanningService weeklyPlanningService;
-
-	@Inject
 	protected EventService eventService;
-	
-	@Inject
 	protected EventRepository eventRepo;
-	
-	@Inject
 	protected PublicHolidayService publicHolidayService;
+	protected LeaveRequestRepository leaveRequestRepo;
 	
 	@Inject
-	protected LeaveRequestRepository leaveRequestRepo;
+	public LeaveService(DurationService durationService, LeaveLineRepository leaveLineRepo, WeeklyPlanningService weeklyPlanningService, EventService eventService,
+			EventRepository eventRepo,PublicHolidayService publicHolidayService, LeaveRequestRepository leaveRequestRepo ){
+		
+		this.durationService = durationService;
+		this.leaveLineRepo = leaveLineRepo;
+		this.weeklyPlanningService = weeklyPlanningService;
+		this.eventService = eventService;
+		this.eventRepo = eventRepo;
+		this.publicHolidayService = publicHolidayService;
+		this.leaveRequestRepo = leaveRequestRepo;
+	}
+	
 	
 	public BigDecimal computeDuration(LeaveRequest leave) throws AxelorException{
 		if(leave.getFromDate()!=null && leave.getToDate()!=null){

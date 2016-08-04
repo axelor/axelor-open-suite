@@ -10,17 +10,20 @@ import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.service.employee.EmployeeService;
 import com.axelor.apps.project.db.ProjectTask;
-import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
 public class ProjectTaskServiceImpl implements ProjectTaskService {
 	
-	@Inject
 	protected GeneralService generalService;
-
-	@Inject
 	protected EmployeeService employeeService;	
+	
+	@Inject
+	public ProjectTaskServiceImpl(GeneralService generalService, EmployeeService employeeService){
+		
+		this.generalService = generalService;
+		this.employeeService = employeeService;
+	}
 	
 	@Transactional(rollbackOn={Exception.class})
 	public List<TimesheetLine> computeVisibleDuration(ProjectTask project){

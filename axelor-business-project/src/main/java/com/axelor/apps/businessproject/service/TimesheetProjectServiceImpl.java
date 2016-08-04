@@ -23,27 +23,19 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.joda.time.LocalDate;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
-import com.axelor.apps.base.db.DayPlanning;
 import com.axelor.apps.base.db.Product;
-import com.axelor.apps.base.db.WeeklyPlanning;
-import com.axelor.apps.hr.db.LeaveRequest;
 import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.db.TimesheetLine;
-import com.axelor.apps.hr.db.repo.LeaveRequestRepository;
-import com.axelor.apps.hr.exception.IExceptionMessage;
 import com.axelor.apps.hr.service.timesheet.TimesheetServiceImpl;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
-import com.axelor.i18n.I18n;
 
 public class TimesheetProjectServiceImpl extends TimesheetServiceImpl{
 	@Override

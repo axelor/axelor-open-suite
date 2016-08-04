@@ -32,10 +32,8 @@ import com.axelor.apps.base.db.Wizard;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.hr.db.Expense;
 import com.axelor.apps.hr.db.ExpenseLine;
-import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductRepository;
-import com.axelor.apps.hr.db.ExtraHours;
 import com.axelor.apps.hr.db.HRConfig;
 import com.axelor.apps.hr.db.KilometricAllowanceRate;
 import com.axelor.apps.hr.db.repo.ExpenseRepository;
@@ -79,8 +77,7 @@ public class ExpenseController {
 	private ExpenseService expenseService;
 	@Inject
 	private GeneralService generalService;
-	@Inject
-	private ProductRepository productRepo;
+	
 	
 	public void createAnalyticDistributionWithTemplate(ActionRequest request, ActionResponse response) throws AxelorException{
 		ExpenseLine expenseLine = request.getContext().asType(ExpenseLine.class);

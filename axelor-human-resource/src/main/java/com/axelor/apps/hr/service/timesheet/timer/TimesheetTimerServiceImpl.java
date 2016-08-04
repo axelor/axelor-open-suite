@@ -25,14 +25,17 @@ public class TimesheetTimerServiceImpl implements TimesheetTimerService {
 	
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 	
-	@Inject
 	protected EventService eventService;
-	
-	@Inject
 	protected GeneralService generalService;
-	
-	@Inject
 	protected TimesheetService timesheetService;
+	
+	@Inject 
+	public TimesheetTimerServiceImpl(EventService eventService, GeneralService generalService, TimesheetService timesheetService){
+		
+		this.eventService = eventService;
+		this.generalService = generalService;
+		this.timesheetService = timesheetService;
+	}
 	
 	@Transactional(rollbackOn = {Exception.class})
 	public void pause(TSTimer timer){
