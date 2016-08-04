@@ -210,6 +210,48 @@ public class SaleOrderController{
 		}
 		catch(Exception e)  { TraceBackService.trace(response, e); }
 	}
+	
+	
+	public void generateInvoiceFromPopup(ActionRequest request, ActionResponse response)  {
+
+		 String saleOrderId = request.getContext().get("_id").toString();
+
+		try {
+
+			SaleOrder saleOrder = saleOrderRepo.find( Long.valueOf(saleOrderId) );
+			//Check if at least one row is selected. If yes, then invoiced only the selected rows, else invoiced all rows
+			List<Long> saleOrderLineIdSelected = new ArrayList<Long>();
+			for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
+				if (saleOrderLine.isSelected()){
+					saleOrderLineIdSelected.add(saleOrderLine.getId());
+				}
+			}
+			 	
+			Invoice invoice = null;
+
+			if (!saleOrderLineIdSelected.isEmpty()){
+				List<SaleOrderLine> saleOrderLinesSelected = JPA.all(SaleOrderLine.class).filter("self.id IN (:saleOderLineIdList)").bind("saleOderLineIdList", saleOrderLineIdSelected).fetch();
+				invoice = saleOrderInvoiceServiceImpl.generateInvoice(saleOrder, saleOrderLinesSelected);
+			}else{
+				invoice = saleOrderInvoiceServiceImpl.generateInvoice(saleOrder);
+			}
+
+			if(invoice != null)  {
+				
+				response.setCanClose(true);
+				
+				response.setFlash(I18n.get(IExceptionMessage.PO_INVOICE_2));
+				response.setView(ActionView
+		            .define(I18n.get("Invoice generated"))
+		            .model(Invoice.class.getName())
+		            .add("form", "invoice-form")
+		            .add("grid", "invoice-grid")
+		            .context("_showRecord",String.valueOf(invoice.getId()))
+		            .map());
+			}
+		}
+		catch(Exception e)  { TraceBackService.trace(response, e); }
+	}
 
 	public void getSubscriptionSaleOrdersToInvoice(ActionRequest request, ActionResponse response) throws AxelorException  {
 

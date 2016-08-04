@@ -24,4 +24,10 @@
 		<option value="3">With percentage</option>
 	</selection>
 	
+	<selection name="business.project.default.invoice.type.select">
+		<option value="1">Order</option>
+		<option value="2">Timesheet</option>
+		<option value="3">Expense</option>
+	</selection>
+	
 </object-views>

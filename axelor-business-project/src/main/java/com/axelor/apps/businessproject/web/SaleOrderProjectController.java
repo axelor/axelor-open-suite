@@ -19,7 +19,14 @@ package com.axelor.apps.businessproject.web;
 
 import java.util.List;
 
+import org.joda.time.LocalDate;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
+
+import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.businessproject.db.InvoicingProject;
 import com.axelor.apps.businessproject.exception.IExceptionMessage;
+import com.axelor.apps.businessproject.service.InvoicingProjectService;
 import com.axelor.apps.businessproject.service.SaleOrderProjectService;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.sale.db.SaleOrder;
@@ -32,11 +39,15 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.common.base.Joiner;
 import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 
 public class SaleOrderProjectController {
 
 	@Inject
 	protected SaleOrderProjectService saleOrderProjectService;
+	
+	@Inject
+	protected InvoicingProjectService invoicingProjectService;
 	
 	@Inject
 	protected SaleOrderRepository saleOrderRepo;
@@ -86,5 +97,32 @@ public class SaleOrderProjectController {
 					.domain("self.id in ("+Joiner.on(",").join(listId)+")").map());
 		}
 
+	}
+	
+	public void generateInvoicingProject(ActionRequest request, ActionResponse response){
+		
+		SaleOrder saleOrder = saleOrderRepo.find( Long.valueOf( request.getContext().get("_id").toString() ) );
+		
+		final DateTimeFormatter dtf = DateTimeFormat.forPattern("yyyy-MM-dd");
+		LocalDate deadline = dtf.parseLocalDate(request.getContext().get("deadline").toString() );
+		
+		InvoicingProject invoicingProject = invoicingProjectService.createInvoicingProject(saleOrder, deadline, Integer.valueOf( request.getContext().get("invoicingTypeSelect").toString() ));
+		
+		
+		
+		if (invoicingProject != null ){
+			response.setCanClose(true);
+			response.setFlash(I18n.get(IExceptionMessage.INVOICING_PROJECT_GENERATION));
+			response.setView(ActionView
+	            .define(I18n.get("Invoicing project generated"))
+	            .model(InvoicingProject.class.getName())
+	            .add("form", "invoicing-project-form")
+	            .add("grid", "invoicing-project-grid")
+	            .context("_showRecord",String.valueOf(invoicingProject.getId()))
+	            .map());
+		}
+		
+		
+		
 	}
 }

@@ -106,6 +106,9 @@
 				<field name="manageSaleOrderVersion" if-module="axelor-sale" widget="Boolean-switch"/>
 				<field name="generateInvoiceFromSaleOrder" if-module="axelor-sale" widget="Boolean-switch"/>
 				<field name="allowSusbcriptionSaleOrder" if-module="axelor-supplychain" widget="Boolean-switch"/>
+			 	<field name="enableToInvoiceTimesheet" hidden="true" showIf="generateInvoiceFromSaleOrder" if-module="axelor-business-project" widget="Boolean-switch" />
+				<field name="enableToInvoiceExpense" hidden="true" showIf="generateInvoiceFromSaleOrder" if-module="axelor-business-project" widget="Boolean-switch" />
+				<field name="defaultInvoiceTypeSelect" hidden="true" showIf="generateInvoiceFromSaleOrder" if-module="axelor-business-project" />
 			</panel>
 			
 			<panel name="purchaseOrderConfiguration" title="Purchase order configuration" if-module="axelor-purchase">
@@ -244,5 +247,9 @@
 	<action-method name="action-method-general-remind-timesheet">
 		<call class="com.axelor.apps.base.web.MailBatchController" method="remindTimesheetGeneral"/>
 	</action-method>
+	
+	<action-attrs name="action-general-attrs-default-invoice-type-domain">
+		<attribute name="selection-in" for="defaultInvoiceTypeSelect" expr="[1,2]"/>
+	</action-attrs>
 	
 </object-views>
