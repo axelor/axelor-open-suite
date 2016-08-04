@@ -81,7 +81,7 @@ public class IrrecoverableService{
 	protected MoveService moveService;
 	protected MoveLineService moveLineService;
 	protected MoveLineRepository moveLineRepo;
-	protected ReconcileServiceImpl reconcileService;
+	protected ReconcileService reconcileService;
 	protected TaxService taxService;
 	protected TaxAccountService taxAccountService;
 	protected PaymentScheduleService paymentScheduleService;
@@ -97,7 +97,7 @@ public class IrrecoverableService{
 
 	@Inject
 	public IrrecoverableService(GeneralService generalService, SequenceService sequenceService, MoveService moveService, MoveLineService moveLineService, MoveLineRepository moveLineRepo,
-			ReconcileServiceImpl reconcileService, TaxService taxService, TaxAccountService taxAccountService, PaymentScheduleService paymentScheduleService, PaymentScheduleRepository paymentScheduleRepo,
+			ReconcileService reconcileService, TaxService taxService, TaxAccountService taxAccountService, PaymentScheduleService paymentScheduleService, PaymentScheduleRepository paymentScheduleRepo,
 			PaymentScheduleLineRepository paymentScheduleLineRepo, AccountConfigService accountConfigService, IrrecoverableCustomerLineRepository irrecoverableCustomerLineRepo,
 			InvoiceRepository invoiceRepo, ManagementObjectRepository managementObjectRepo, IrrecoverableRepository irrecoverableRepo) {
 

@@ -65,7 +65,7 @@ public class AccountClearanceService{
 	protected MoveLineService moveLineService;
 	protected MoveLineRepository moveLineRepo;
 	protected SequenceService sequenceService;
-	protected ReconcileServiceImpl reconcileService;
+	protected ReconcileService reconcileService;
 	protected TaxService taxService;
 	protected TaxAccountService taxAccountService;
 	protected AccountClearanceRepository accountClearanceRepository;

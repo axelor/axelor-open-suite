@@ -38,7 +38,7 @@ import com.axelor.apps.account.db.repo.PaymentInvoiceToPayRepository;
 import com.axelor.apps.account.db.repo.PaymentVoucherRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.AccountCustomerService;
-import com.axelor.apps.account.service.ReconcileServiceImpl;
+import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.move.MoveLineService;
 import com.axelor.apps.account.service.move.MoveService;
 import com.axelor.apps.account.service.payment.PaymentModeService;
@@ -61,7 +61,7 @@ public class PaymentVoucherConfirmService  {
 
 	private final Logger log = LoggerFactory.getLogger( getClass() );
 
-	protected ReconcileServiceImpl reconcileService;
+	protected ReconcileService reconcileService;
 	protected MoveLineService moveLineService;
 	protected MoveService moveService;
 	protected PaymentService paymentService;
@@ -74,7 +74,7 @@ public class PaymentVoucherConfirmService  {
 	protected PaymentVoucherRepository paymentVoucherRepository;
 	
 	@Inject
-	public PaymentVoucherConfirmService(ReconcileServiceImpl reconcileService, MoveLineService moveLineService, MoveService moveService, PaymentService paymentService,
+	public PaymentVoucherConfirmService(ReconcileService reconcileService, MoveLineService moveLineService, MoveService moveService, PaymentService paymentService,
 			PaymentModeService paymentModeService, PaymentVoucherSequenceService paymentVoucherSequenceService, PaymentVoucherControlService paymentVoucherControlService,
 			PaymentVoucherToolService paymentVoucherToolService, CurrencyService currencyService, PaymentInvoiceToPayRepository paymentInvoiceToPayRepo, PaymentVoucherRepository paymentVoucherRepository)  {
 		

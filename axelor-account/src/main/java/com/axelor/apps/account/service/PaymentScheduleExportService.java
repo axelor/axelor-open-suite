@@ -76,7 +76,7 @@ public class PaymentScheduleExportService{
 	protected MoveRepository moveRepo;
 	protected MoveLineService moveLineServices;
 	protected MoveLineRepository moveLineRepo;
-	protected ReconcileServiceImpl reconcileService;
+	protected ReconcileService reconcileService;
 	protected SequenceService sequenceService;
 	protected PaymentModeService paymentModeService;
 	protected CfonbExportService cfonbExportService;
@@ -93,7 +93,7 @@ public class PaymentScheduleExportService{
 	
 
 	@Inject
-	public PaymentScheduleExportService(MoveService moveService, MoveRepository moveRepo, MoveLineService moveLineServices, MoveLineRepository moveLineRepo, ReconcileServiceImpl reconcileService,
+	public PaymentScheduleExportService(MoveService moveService, MoveRepository moveRepo, MoveLineService moveLineServices, MoveLineRepository moveLineRepo, ReconcileService reconcileService,
 			SequenceService sequenceService, PaymentModeService paymentModeService, CfonbExportService cfonbExportService, PaymentService paymentService,
 			BlockingService blockingService, AccountConfigService accountConfigService, PaymentScheduleLineRepository paymentScheduleLineRepo,
 			DirectDebitManagementRepository directDebitManagementRepo, InvoiceService invoiceService, InvoiceRepository invoiceRepo, GeneralService generalService, PartnerService partnerService) {
