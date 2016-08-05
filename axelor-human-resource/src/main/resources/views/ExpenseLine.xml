@@ -22,16 +22,16 @@
 		  onNew="action-kilometric-allowance-record-default,action-kilometric-allowance-record-rate,action-expense-line-method-fill-kilometric-expense-product">
 		<field name="projectTask" title="Project" requiredIf="toInvoice" canView="false" domain="self.imputable = true" widget="SuggestBox" grid-view="project-task-grid" width="100" hidden="true"/>
         <field name="expenseDate" title="Date" width="95"/>
-		<field name="kilometricAllowParam" title="Fiscal power" onChange="action-kilometric-allowance-record-rate,action-kilometric-allowance-record-in-tax-total" width="70"/>
+		<field name="kilometricAllowParam" onChange="action-kilometric-allowance-record-rate,action-kilometric-allowance-record-in-tax-total" width="70"/>
         <field name="kilometricRate" readonly="true" onChange="action-kilometric-allowance-record-in-tax-total" width="50" hidden="true"/>
         <field name="kilometricTypeSelect" required="true" onChange="action-kilometric-allowance-record-in-tax-total" width="85"/>
-        <field name="distance" title="KM" required="true" onChange="action-kilometric-allowance-record-in-tax-total" width="60"/>
-        <field name="fromCity" title="From" required="true" width="80"/>
-        <field name="toCity" title="To" required="true" width="80"/>
-	    <field name="totalAmount" title="Total ATI" onChange="action-expense-on-change-untaxt-amount, action-expense-line-method-compute-analytic-distribution" width="75" readonly="true"/>
+        <field name="distance" required="true" onChange="action-kilometric-allowance-record-in-tax-total" width="60"/>
+        <field name="fromCity" required="true" width="80"/>
+        <field name="toCity" required="true" width="80"/>
+	    <field name="totalAmount" title="Total A.T.I" onChange="action-expense-on-change-untaxt-amount, action-expense-line-method-compute-analytic-distribution" width="75" readonly="true"/>
    	    <field name="comments" />
    	    <field name="user" hidden="true" form-view="user-form" grid-view="user-grid"/>
-   		<field name="expenseProduct" title="Product" readonly="true" form-view="product-expense-form" grid-view="product-expense-grid" hidden="true"/> 
+   		<field name="expenseProduct" readonly="true" form-view="product-expense-form" grid-view="product-expense-grid" hidden="true"/> 
 	</grid>
 
 	<form name="expense-line-form" title="Expense line" model="com.axelor.apps.hr.db.ExpenseLine"
@@ -66,7 +66,7 @@
 			<panel name="kilometricAllowance" title="Kilometric Allowance">
 				<field name="projectTask" requiredIf="toInvoice" edit-icon="false" canEdit="false" domain="self.imputable = true" widget="SuggestBox" form-view="project-task-form" grid-view="project-task-grid"/>
 		        <field name="expenseDate"/>
-				<field name="kilometricAllowParam" title="Fiscal power" onChange="action-kilometric-allowance-record-rate,action-kilometric-allowance-record-in-tax-total"/>
+				<field name="kilometricAllowParam" onChange="action-kilometric-allowance-record-rate,action-kilometric-allowance-record-in-tax-total"/>
 		        <field name="kilometricRate" onChange="action-kilometric-allowance-record-in-tax-total" />
 		        <field name="kilometricTypeSelect" required="true"/>
 		        <field name="distance" onChange="action-kilometric-allowance-record-in-tax-total" required="true"/>
