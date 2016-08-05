@@ -37,6 +37,7 @@ import com.axelor.auth.db.User;
 import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
@@ -208,86 +209,101 @@ public class LeaveController {
 	
 	//sending leave request and an email to the manager
 	public void send(ActionRequest request, ActionResponse response) throws AxelorException{
-		LeaveRequest leave = request.getContext().asType(LeaveRequest.class);
-		leave = Beans.get(LeaveRequestRepository.class).find(leave.getId());
-		if (leave.getLeaveReason().getManageAccumulation()){
-			leaveService.manageSentLeaves(leave);
-		}
-		if(!hrConfigService.getHRConfig(leave.getUser().getActiveCompany()).getLeaveMailNotification()){
-			response.setValue("statusSelect", TimesheetRepository.STATUS_CONFIRMED);
-			response.setValue("sentDate", generalService.getTodayDate());
-		}else{
-			User manager = leave.getUser().getEmployee().getManager();
-			if(manager!=null){
-				Template template =  hrConfigService.getHRConfig(leave.getUser().getActiveCompany()).getSentLeaveTemplate();
-				if(mailManagementService.sendEmail(template,leave.getId())){
-					String message = "Email sent to";
-					response.setFlash(I18n.get(message)+" "+manager.getFullName());
-					response.setValue("statusSelect", TimesheetRepository.STATUS_CONFIRMED);
-					response.setValue("sentDate", generalService.getTodayDate());
-				}
-				else{
-					throw new AxelorException(String.format(I18n.get(IExceptionMessage.HR_CONFIG_TEMPLATES), leave.getUser().getActiveCompany().getName()), IException.CONFIGURATION_ERROR);
-				}
-			}
-		}
-	}
-	
-	//validating leave request and sending an email to the applicant
-	public void valid(ActionRequest request, ActionResponse response) throws AxelorException{
-		LeaveRequest leave = request.getContext().asType(LeaveRequest.class);
-		leave = Beans.get(LeaveRequestRepository.class).find(leave.getId());
-		if (leave.getLeaveReason().getManageAccumulation()){
-			leaveService.manageValidLeaves(leave);
-		}
-		if(!hrConfigService.getHRConfig(leave.getUser().getActiveCompany()).getLeaveMailNotification()){
-			response.setValue("statusSelect", TimesheetRepository.STATUS_VALIDATED);
-			response.setValue("validatedBy", AuthUtils.getUser());
-			response.setValue("validationDate", generalService.getTodayDate());
-		}else{
-			User manager = leave.getUser().getEmployee().getManager();
-			if(manager!=null){
-				Template template =  hrConfigService.getHRConfig(leave.getUser().getActiveCompany()).getValidatedLeaveTemplate();
-				if(mailManagementService.sendEmail(template,leave.getId())){
-					String message = "Email sent to";
-					response.setFlash(I18n.get(message)+" "+manager.getFullName());
-					response.setValue("statusSelect", TimesheetRepository.STATUS_VALIDATED);
-					response.setValue("validatedBy", AuthUtils.getUser());
-					response.setValue("validationDate", generalService.getTodayDate());
-				}
-				else{
-					throw new AxelorException(String.format(I18n.get(IExceptionMessage.HR_CONFIG_TEMPLATES), leave.getUser().getActiveCompany().getName()), IException.CONFIGURATION_ERROR);
-				}
-			}
-		}
-	}
-	
-	//refusing leave request and sending an email to the applicant
-		public void refuse(ActionRequest request, ActionResponse response) throws AxelorException{
+		
+		try{
 			LeaveRequest leave = request.getContext().asType(LeaveRequest.class);
 			leave = Beans.get(LeaveRequestRepository.class).find(leave.getId());
 			if (leave.getLeaveReason().getManageAccumulation()){
-				leaveService.manageRefuseLeaves(leave);
+				leaveService.manageSentLeaves(leave);
 			}
 			if(!hrConfigService.getHRConfig(leave.getUser().getActiveCompany()).getLeaveMailNotification()){
-				response.setValue("statusSelect", TimesheetRepository.STATUS_REFUSED);
-				response.setValue("refusedBy", AuthUtils.getUser());
-				response.setValue("refusalDate", generalService.getTodayDate());
+				response.setValue("statusSelect", TimesheetRepository.STATUS_CONFIRMED);
+				response.setValue("sentDate", generalService.getTodayDate());
 			}else{
 				User manager = leave.getUser().getEmployee().getManager();
 				if(manager!=null){
-					Template template =  hrConfigService.getHRConfig(leave.getUser().getActiveCompany()).getRefusedLeaveTemplate();
+					Template template =  hrConfigService.getHRConfig(leave.getUser().getActiveCompany()).getSentLeaveTemplate();
 					if(mailManagementService.sendEmail(template,leave.getId())){
 						String message = "Email sent to";
 						response.setFlash(I18n.get(message)+" "+manager.getFullName());
-						response.setValue("statusSelect", TimesheetRepository.STATUS_REFUSED);
-						response.setValue("refusedBy", AuthUtils.getUser());
-						response.setValue("refusalDate", generalService.getTodayDate());
+						response.setValue("statusSelect", TimesheetRepository.STATUS_CONFIRMED);
+						response.setValue("sentDate", generalService.getTodayDate());
 					}
 					else{
 						throw new AxelorException(String.format(I18n.get(IExceptionMessage.HR_CONFIG_TEMPLATES), leave.getUser().getActiveCompany().getName()), IException.CONFIGURATION_ERROR);
 					}
 				}
+			}
+		}catch(Exception e)  {
+			TraceBackService.trace(response, e);
+		}
+	}
+	
+	//validating leave request and sending an email to the applicant
+	public void valid(ActionRequest request, ActionResponse response) throws AxelorException{
+		
+		try{
+			LeaveRequest leave = request.getContext().asType(LeaveRequest.class);
+			leave = Beans.get(LeaveRequestRepository.class).find(leave.getId());
+			if (leave.getLeaveReason().getManageAccumulation()){
+				leaveService.manageValidLeaves(leave);
+			}
+			if(!hrConfigService.getHRConfig(leave.getUser().getActiveCompany()).getLeaveMailNotification()){
+				response.setValue("statusSelect", TimesheetRepository.STATUS_VALIDATED);
+				response.setValue("validatedBy", AuthUtils.getUser());
+				response.setValue("validationDate", generalService.getTodayDate());
+			}else{
+				User manager = leave.getUser().getEmployee().getManager();
+				if(manager!=null){
+					Template template =  hrConfigService.getHRConfig(leave.getUser().getActiveCompany()).getValidatedLeaveTemplate();
+					if(mailManagementService.sendEmail(template,leave.getId())){
+						String message = "Email sent to";
+						response.setFlash(I18n.get(message)+" "+manager.getFullName());
+						response.setValue("statusSelect", TimesheetRepository.STATUS_VALIDATED);
+						response.setValue("validatedBy", AuthUtils.getUser());
+						response.setValue("validationDate", generalService.getTodayDate());
+					}
+					else{
+						throw new AxelorException(String.format(I18n.get(IExceptionMessage.HR_CONFIG_TEMPLATES), leave.getUser().getActiveCompany().getName()), IException.CONFIGURATION_ERROR);
+					}
+				}
+			}
+		}catch(Exception e)  {
+			TraceBackService.trace(response, e);
+		}
+	}
+	
+	//refusing leave request and sending an email to the applicant
+		public void refuse(ActionRequest request, ActionResponse response) throws AxelorException{
+			
+			try{
+				LeaveRequest leave = request.getContext().asType(LeaveRequest.class);
+				leave = Beans.get(LeaveRequestRepository.class).find(leave.getId());
+				if (leave.getLeaveReason().getManageAccumulation()){
+					leaveService.manageRefuseLeaves(leave);
+				}
+				if(!hrConfigService.getHRConfig(leave.getUser().getActiveCompany()).getLeaveMailNotification()){
+					response.setValue("statusSelect", TimesheetRepository.STATUS_REFUSED);
+					response.setValue("refusedBy", AuthUtils.getUser());
+					response.setValue("refusalDate", generalService.getTodayDate());
+				}else{
+					User manager = leave.getUser().getEmployee().getManager();
+					if(manager!=null){
+						Template template =  hrConfigService.getHRConfig(leave.getUser().getActiveCompany()).getRefusedLeaveTemplate();
+						if(mailManagementService.sendEmail(template,leave.getId())){
+							String message = "Email sent to";
+							response.setFlash(I18n.get(message)+" "+manager.getFullName());
+							response.setValue("statusSelect", TimesheetRepository.STATUS_REFUSED);
+							response.setValue("refusedBy", AuthUtils.getUser());
+							response.setValue("refusalDate", generalService.getTodayDate());
+						}
+						else{
+							throw new AxelorException(String.format(I18n.get(IExceptionMessage.HR_CONFIG_TEMPLATES), leave.getUser().getActiveCompany().getName()), IException.CONFIGURATION_ERROR);
+						}
+					}
+				}
+			}catch(Exception e)  {
+				TraceBackService.trace(response, e);
 			}
 		}
 
