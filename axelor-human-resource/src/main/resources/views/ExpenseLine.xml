@@ -5,7 +5,7 @@
 	<grid name="expense-line-grid" 
 		  title="Expense lines" 
 		  model="com.axelor.apps.hr.db.ExpenseLine"
-		  onNew="action-expense-line-default, action-kilometric-allowance-record-default,action-kilometric-allowance-record-rate">
+		  onNew="action-expense-line-default, action-kilometric-allowance-record-default,action-kilometric-allowance-record-rate" orderBy="-expenseDate">
 		<field name="projectTask" requiredIf="toInvoice" canView="false" domain="self.imputable = true" widget="SuggestBox" />  
 		<field name="expenseProduct" canView="false" domain="self.expense = true" widget="SuggestBox" form-view="product-expense-form" grid-view="product-expense-grid"/> 
 		<field name="expenseDate" onChange="action-expense-line-validate-expenseDate"/>
@@ -19,7 +19,7 @@
 	<grid name="expense-line-kilometric-grid" 
 		  title="Kilometric Allowances" 
 		  model="com.axelor.apps.hr.db.ExpenseLine"
-		  onNew="action-kilometric-allowance-record-default,action-kilometric-allowance-record-rate,action-expense-line-method-fill-kilometric-expense-product">
+		  onNew="action-kilometric-allowance-record-default,action-kilometric-allowance-record-rate,action-expense-line-method-fill-kilometric-expense-product" orderBy="-expenseDate">
 		<field name="projectTask" title="Project" requiredIf="toInvoice" canView="false" domain="self.imputable = true" widget="SuggestBox" grid-view="project-task-grid" width="100" hidden="true"/>
         <field name="expenseDate" title="Date" width="95"/>
 		<field name="kilometricAllowParam" onChange="action-kilometric-allowance-record-rate,action-kilometric-allowance-record-in-tax-total" width="70"/>
