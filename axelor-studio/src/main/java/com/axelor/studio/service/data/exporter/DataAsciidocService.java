@@ -239,7 +239,7 @@ public class DataAsciidocService extends DataCommonService {
 		}
 		
 		String doc = getValue(row, HELP);
-		if (lang != null && lang.equals("fr")) {
+		if (Strings.isNullOrEmpty(doc)) {
 			doc = getValue(row, HELP_FR);
 		}
 		if (Strings.isNullOrEmpty(doc)) {

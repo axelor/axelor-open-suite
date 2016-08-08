@@ -17,13 +17,10 @@
  */
 package com.axelor.studio.service.data.importer;
 
-import groovyjarjarcommonscli.HelpFormatter;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -49,6 +46,7 @@ import com.axelor.studio.db.ViewItem;
 import com.axelor.studio.service.ViewLoaderService;
 import com.axelor.studio.service.builder.ModelBuilderService;
 import com.axelor.studio.service.data.DataCommonService;
+import com.axelor.studio.utils.Namming;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -69,19 +67,15 @@ public class DataModelService extends DataCommonService {
 	private final static Logger log = LoggerFactory
 			.getLogger(DataModelService.class);
 	
-	private Map<String, List<String>> updateMap;
-	
-	private Map<String, List<String>> replaceMap;
+	private Map<String, Map<String, List<String>>> moduleMap;
 
-	private Map<String, List<String>> modelMap;
-
-	private Map<String, List<MetaField>> listViewMap;
+	private Map<String, Map<String, List<MetaField>>> gridViewMap;
 	
 	private Map<Long, Integer> fieldSeqMap;
 	
 	private Map<String, MetaModel> nestedModels;
 	
-	private boolean replace = true;
+	private Row row = null;
 	
 	@Inject
 	private MetaSelectRepository metaSelectRepo;
@@ -100,8 +94,6 @@ public class DataModelService extends DataCommonService {
 	 */
 	public File importModels(DataManager dataManager) throws AxelorException {
 		
-		configService.config();
-		
 		File inputFile = MetaFiles.getPath(dataManager.getMetaFile())
 				.toFile();
 
@@ -109,13 +101,11 @@ public class DataModelService extends DataCommonService {
 			throw new AxelorException(I18n.get("Input file not exist"), 4);
 		}
 
-		modelMap = new HashMap<String, List<String>>();
+		moduleMap = new HashMap<String, Map<String,List<String>>>();
 		fieldSeqMap = new HashMap<Long, Integer>();
-		listViewMap = new HashMap<String, List<MetaField>>();
-		updateMap = new HashMap<String, List<String>>();
-		replaceMap  = new HashMap<String, List<String>>();
+		gridViewMap = new HashMap<String, Map<String,List<MetaField>>>();
 		nestedModels = new HashMap<String, MetaModel>();
-		
+
 		try {
 			
 			FileInputStream fis = new FileInputStream(inputFile);
@@ -128,27 +118,11 @@ public class DataModelService extends DataCommonService {
 			
 			viewImporterService.clear();
 			
-			addModelsToUpdate(workBook.getSheetAt(0));
+			log.debug("Non customised modules: {}", configService.getNonCustomizedModules());
+			
 			proccessSheet(workBook);
-
-			if (!viewImporterService.getViewActionMap().isEmpty()) {
-				throw new AxelorException(I18n.get("Wizard views not found: %s"), 1,
-						viewImporterService.getViewActionMap().keySet());
-			}
-
-			log.debug("List view specified for models: {}",
-					listViewMap.keySet());
-			for (String name : modelMap.keySet()) {
-				MetaModel model = metaModelRepo.findByName(name);
-				model = clearModel(model);
-				if (model != null && modelMap.get(name).size() > 1) {
-					if (listViewMap.containsKey(name)) {
-						createListView(model);
-					} else {
-						viewLoaderService.getDefaultGrid(model, true);
-					}
-				}
-			}
+			
+			generateGridView();
 
 		} catch (IOException e) {
 			throw new AxelorException(e, 5);
@@ -156,45 +130,6 @@ public class DataModelService extends DataCommonService {
 		
 		return null;
 
-	}
-
-	private void addModelsToUpdate(XSSFSheet sheet) {
-		
-		Iterator<Row> rowIter = sheet.rowIterator();
-		if (rowIter.hasNext()) {
-			rowIter.next();
-		}
-		
-		while (rowIter.hasNext()) {
-			Row row = rowIter.next();
-			String model = getValue(row, 0);
-			String type = getValue(row, 2);
-			if (model != null && type != null) {
-				
-				if (type.equals("A")) {
-					if (!updateMap.containsKey(model)) {
-						updateMap.put(model, new ArrayList<String>());
-					}
-					String view = getValue(row, 1);
-					if (view != null) {
-						view = view.split("\\(")[0];
-						updateMap.get(model).add(view);
-					}
-				}
-				else if (type.equals("R")){
-					if (!replaceMap.containsKey(model)) {
-						replaceMap.put(model, new ArrayList<String>());
-					}
-					String view = getValue(row, 1);
-					if (view != null) {
-						view = view.split("\\(")[0];
-						replaceMap.get(model).add(view);
-					}
-				}
-				
-			}
-		}
-		
 	}
 
 	/**
@@ -238,11 +173,24 @@ public class DataModelService extends DataCommonService {
 		if (!rowIter.hasNext()) {
 			return;
 		}
-
-		Row row = rowIter.next();
+		
+		boolean replace = true;
+		
+		this.row = rowIter.next();
+		String module = getValue(row, MODULE);
+		if (module == null) {
+			extractRow(rowIter);
+			return;	
+		}
+		
+		if (module.startsWith("*")) {
+			replace = false;
+			module = module.replace("*", "");
+		}
+		
 		String name = getValue(row, MODEL);
 		String parentField = null;
-		
+
 		String modelName = name;
 		if (name != null && name.contains("(")) {
 			String[] names = name.split("\\(");
@@ -250,44 +198,33 @@ public class DataModelService extends DataCommonService {
 			parentField = names[1].replace(")", "");
 		}
 		
-		replace = true;
-		if (noUpdate(getValue(row, MODULE), getValue(row, VIEW), modelName)){
+		if (configService.getNonCustomizedModules().contains(module)){
 			extractRow(rowIter);
 			return;
 		}
 		
 		MetaModel model = null;
 		if (!Strings.isNullOrEmpty(modelName)) {
-			model = getModel(modelName);
+			model = getModel(modelName, module);
 			if (parentField != null && !nestedModels.containsKey(name)) {
-				nestedModels.put(name, getNestedModel(model, parentField));
+				nestedModels.put(name, getNestedModel(module, model, parentField));
 			}
 		}
 
-		String[] basic = getBasic(row, parentField);
+		String[] basic = getBasic(parentField);
 		MetaField metaField = null;
 		if (model != null && fieldTypes.containsKey(basic[0])) {
-			
-			if (!replace && !getValue(row, MODULE).startsWith("*")) {
-				extractRow(rowIter);
-				return;
-			}
-			
 			if (parentField == null) {
-				metaField = createMetaField(model, basic, row);
+				metaField = createMetaField(model, basic, module);
 			}
 			else {
 				MetaModel nestedModel = nestedModels.get(name);
-				metaField = createMetaField(nestedModel, basic, row);
+				metaField = createMetaField(nestedModel, basic, module);
 				modelName = nestedModel.getName();
 			}
-			String addToList = getValue(row, GRID);
-			if (addToList != null && addToList.equalsIgnoreCase("x")) {
-				if (!listViewMap.containsKey(modelName)) {
-					listViewMap.put(modelName, new ArrayList<MetaField>());
-				}
-				listViewMap.get(modelName).add(metaField);
-			}
+			
+			addGridField(module, metaField, getValue(row, GRID), modelName);
+			
 		}
 
 		if (!Strings.isNullOrEmpty(basic[0]) && !ignoreTypes.contains(basic[0])) {
@@ -297,35 +234,8 @@ public class DataModelService extends DataCommonService {
 		extractRow(rowIter);
 	}
 	
-	private boolean noUpdate(String module, String view, String model) {
-		
-		if (module == null || module.equals(configService.getModuleName())) {
-			return false;
-		}
-		
-		if (view == null) {
-			return true;
-		}
-		
-		view = view.split("\\(")[0];
-		List<String> modify = updateMap.get(model);
-		
-		if (modify != null && (modify.isEmpty() || modify.contains(view))) {
-			replace = false;
-			return false;
-		}
-		
-		modify = replaceMap.get(model);
-		
-		if (modify != null && (modify.isEmpty() || modify.contains(view))) {
-			return false;
-		}
-		
-		
-		return true;
-	}
-
-	private String[] getBasic(Row row, String parentField) {
+	
+	private String[] getBasic(String parentField) {
 
 		String fieldType = getValue(row, TYPE);
 		String ref = null;
@@ -357,7 +267,7 @@ public class DataModelService extends DataCommonService {
 		return new String[] { fieldType, ref, name, title, parentField };
 	}
 	
-	private MetaModel getNestedModel(MetaModel parentModel, String nestedField) {
+	private MetaModel getNestedModel(String module, MetaModel parentModel, String nestedField) {
 		
 		log.debug("Search for nested field: {}, model: {}", nestedField, parentModel.getName());
 		
@@ -367,83 +277,68 @@ public class DataModelService extends DataCommonService {
 		
 		if (metaField != null && metaField.getRelationship() != null) {
 			log.debug("Field found with type: {}", metaField.getTypeName());
-			return getModel(metaField.getTypeName());
+			return getModel(metaField.getTypeName(), module);
 		}
 		
 		return parentModel;
 	}
 	
 	@Transactional
-	public MetaField createMetaField(MetaModel metaModel, String[] basic,
-			Row row) throws AxelorException {
+	public MetaField createMetaField(MetaModel metaModel, String[] basic, String module) throws AxelorException {
 
-		log.debug("Create field with basic: {}", Arrays.asList(basic));
-
-		String name = basic[2];
+		String model = metaModel.getName();
 		
-		if (Strings.isNullOrEmpty(name)) {
-			throw new AxelorException(
-							I18n.get("No title or name for field row number: %s, model: %s"), 
-							1, row.getRowNum() + 1, metaModel.getName());
-		}
-		
-		if (ModelBuilderService.reserveFields.contains(name)) {
-			throw new AxelorException(
-					I18n.get("Can't use reserve word for name. Row number: %s, model: %s"), 
-					1, row.getRowNum() + 1, metaModel.getName());
-		}
-		
-		String objName = metaModel.getName();
-		log.debug("Create Meta field: {}", name);
+		validateFieldName(basic[2], row.getRowNum(), model);
 
 		MetaField field = metaFieldRepo
 				.all()
-				.filter("self.name = ?1 and self.metaModel = ?2", name,
+				.filter("self.name = ?1 and self.metaModel = ?2", basic[2],
 						metaModel).fetchOne();
-		
-		log.debug("Field found: {}", field);
 		
 		addTranslation(basic[3], getValue(row, TITLE_FR), "fr");
 		
+		moduleMap.get(module).get(model).add(basic[2]);
+		
 		if (field == null) {
 			field = new MetaField();
-			field.setName(name);
-			field.setLabel(basic[3]);
-			field.setCustomised(true);
+			field.setName(basic[2]);
+			if (!ModelBuilderService.isReserved(basic[2])) {
+				field.setCustomised(true);
+			}
+			field.setMetaModule(configService.getCustomizedModule(module, true));
+		} else if (!field.getCustomised()){
+			return field;
 		}
-		else if (!field.getCustomised()) {
-			field.setCustomised(true);
-			field.setExisting(true);
-		}
+		
 		if (fieldTypes.containsKey(basic[1])) {
 			field.setFieldType(fieldTypes.get(basic[1]));
 		}
 		else {
 			field.setFieldType(fieldTypes.get(basic[0]));
 		}
-		modelMap.get(objName).add(name);
 		
+		field.setLabel(basic[3]);
 
 		switch (basic[0]) {
-		case "text":
-			field.setLarge(true);
-			break;
-		case "html":
-			field.setLarge(true);
-			break;
-		case "url":
-			field.setIsUrl(true);
-			break;
-		case "duration":
-			field.setIsDuration(true);
-			break;
-		case "select":
-			field = setSelectionField(objName, field, row);
-			break;
-		case "multiselect":
-			field = setSelectionField(objName, field, row);
-			field.setMultiselect(true);
-			break;
+			case "text":
+				field.setLarge(true);
+				break;
+			case "html":
+				field.setLarge(true);
+				break;
+			case "url":
+				field.setIsUrl(true);
+				break;
+			case "duration":
+				field.setIsDuration(true);
+				break;
+			case "select":
+				field = setSelectionField(model, field, module);
+				break;
+			case "multiselect":
+				field = setSelectionField(model, field, module);
+				field.setMultiselect(true);
+				break;
 
 		}
 		
@@ -459,10 +354,27 @@ public class DataModelService extends DataCommonService {
 		field.setHelpText(help);
 		field.setMetaModel(metaModel);
 		field.setSequence(getFieldSequence(metaModel.getId()));
-		field = updateFieldTypeName(basic[0], basic[1], field);
+		field = updateFieldTypeName(basic[0], basic[1], field, module);
 
 		return metaFieldRepo.save(field);
 
+	}
+	
+	private void validateFieldName(String name, int rowNum, String model) throws AxelorException {
+		
+		if (Strings.isNullOrEmpty(name)) {
+			throw new AxelorException(
+							I18n.get("No title or name for field row number: %s, model: %s"), 
+							1, rowNum + 1, model);
+		}
+		
+		if (Namming.isKeyword(name) || Namming.isReserved(name)) {
+			throw new AxelorException(
+					I18n.get("Can't use reserve word for name. Row number: %s, model: %s"), 
+					1, rowNum + 1, model);
+		}
+		
+		
 	}
 
 	
@@ -479,63 +391,24 @@ public class DataModelService extends DataCommonService {
 	 * @return Updated MetaField.
 	 * @throws AxelorException 
 	 */
-	private MetaField setSelectionField(String modelName, MetaField field,
-			Row row) throws AxelorException {
+	private MetaField setSelectionField(String modelName, MetaField field, String module) throws AxelorException {
 
-		String selectName = getValue(row, SELECT);
-		if (selectName == null) {
-			selectName = getValue(row, SELECT_FR);
-		}
-
-		if (Strings.isNullOrEmpty(selectName)) {
-			throw new AxelorException(I18n
-					.get("Blank selection for object: %s, field: %s, row: %s"), 1,
-					modelName, field.getLabel(), row.getRowNum() + 1);
-		}
-		selectName = selectName.trim();
-
-		if(!selectName.contains(",") && !selectName.contains(":")){
-			 MetaSelect metaSelect = metaSelectRepo.findByName(selectName);
-			 if (metaSelect != null) {
-//				 throw new AxelorException(I18n
-//							.get("No selection found for object: %s, field: %s, row: %s"), 1,
-//					modelName, field.getLabel(), row.getRowNum() + 1);
-				 field.setMetaSelect(metaSelect);
-				 return field;
-			 }
-		}
+		String[] selection = getSelection(modelName, field.getName());
 		
-		String name = inflector.dasherize(modelName) + "-"
-				+ inflector.dasherize(field.getName()) + "-select";
-		name = name.replace("-", ".");
+		MetaSelect metaSelect = metaSelectRepo.findByName(selection[0]);
 		
-		if (selectName.contains("(")) {
-			String[] select = selectName.split("\\(");
-			name = select[0];
-			if (select.length > 1) {
-				if (select[1].endsWith(")")) {
-					select[1] = select[1].substring(0, select[1].length()-1);
-				}
-				selectName = select[1];
-			}
-			else {
-				selectName = null;
-			}
-		}
-
-		MetaSelect metaSelect = metaSelectRepo.findByName(name);
-		
-		if (selectName != null) {
+		if (selection[1] != null) {
 
 			if(metaSelect == null) {
-				metaSelect = new MetaSelect(name);
+				metaSelect = new MetaSelect(selection[0]);
 				metaSelect.setCustomised(true);
+				metaSelect.setMetaModule(configService.getCustomizedModule(module, true));
 			}
 			else{
 				metaSelect.clearItems();
 			}
 	
-			String[] option = selectName.split(",");
+			String[] option = selection[1].split(",");
 			String selectFr = getValue(row, SELECT_FR);
 			String[] optionFr = null;
 			if (selectFr != null) {
@@ -581,6 +454,44 @@ public class DataModelService extends DataCommonService {
 
 		return field;
 	}
+	
+	private String[] getSelection(String modelName, String fieldName) throws AxelorException {
+		
+		String selection = getValue(row, SELECT);
+		if (selection == null) {
+			selection = getValue(row, SELECT_FR);
+		}
+
+		if (Strings.isNullOrEmpty(selection)) {
+			throw new AxelorException(I18n
+					.get("Blank selection for object: %s, row: %s"), 1,
+					modelName, row.getRowNum() + 1);
+		}
+		selection = selection.trim();
+		
+		String name = null;
+		if (selection.contains("(")) {
+			String[] select = selection.split("\\(");
+			name = select[0];
+			if (select.length > 1) {
+				if (select[1].endsWith(")")) {
+					select[1] = select[1].substring(0, select[1].length()-1);
+				}
+				selection = select[1];
+			}
+			else {
+				selection = null;
+			}
+		}
+		
+		if (name == null) {
+			name = inflector.dasherize(modelName) + "-"
+					+ inflector.dasherize(fieldName) + "-select";
+			name = name.replace("-", ".");
+		}
+		
+		return new String[] {name, selection};
+	}
 
 	/**
 	 * Method set 'typeName' of MetaField, it convert simple type names used in
@@ -598,9 +509,8 @@ public class DataModelService extends DataCommonService {
 	 * @throws AxelorException 
 	 */
 	private MetaField updateFieldTypeName(String fieldType, String refModel,
-			MetaField field) throws AxelorException {
+			MetaField field, String module) throws AxelorException {
 		
-		log.debug("Field type: {}", fieldType);
 		if (referenceTypes.contains(fieldType) || fieldType.equals("file")) {
 			if (fieldType.equals("file")) {
 				refModel = "MetaFile";
@@ -613,9 +523,7 @@ public class DataModelService extends DataCommonService {
 				}
 				refModel = refModel.trim();
 				refModel = inflector.camelize(refModel);
-				if (!modelMap.containsKey(refModel)) {
-					getModel(refModel);
-				}
+				updateModuleMap(refModel, module);
 			}
 			field.setTypeName(refModel);
 			field.setRelationship(relationshipMap.get(fieldType));
@@ -641,46 +549,64 @@ public class DataModelService extends DataCommonService {
 	 * @return List of saved MetaModels.
 	 */
 	@Transactional(rollbackOn = { Exception.class })
-	public MetaModel getModel(String name) {
+	public MetaModel getModel(String name, String module) {
 		
 		name = inflector.camelize(name);
 		
 		MetaModel model = metaModelRepo.findByName(name);
 		
-		if (modelMap.containsKey(name)) {
-			return model;
+		if (!updateModuleMap(name, module)) {
+			model.setCustomised(true);
+			model.setEdited(true);
+			return metaModelRepo.save(model);
 		}
 		
 		if (model == null) {
 			model = new MetaModel(name);
+			model.setMetaModule(configService.getCustomizedModule(module, true));
 			MetaField metaField = new MetaField("wkfStatus", false);
 			metaField.setTypeName("String");
 			metaField.setFieldType("string");
 			metaField.setLabel("Status");
 			metaField.setCustomised(true);
 			model.addMetaField(metaField);
-		}
-
-		if (!modelMap.containsKey(name)) {
-			modelMap.put(name, new ArrayList<String>());
-			modelMap.get(name).add("wkfStatus");
+			moduleMap.get(module).get(name).add("wkfStatus");
 		}
 
 		if (model.getPackageName() == null) {
-			model.setPackageName("com.axelor.apps.custom.db");
-			model.setFullName("com.axelor.apps.custom.db." + model.getName());
+			module = module.replace("axelor-", "");
+			String[] modules = module.split("-");
+			model.setPackageName("com.axelor.apps." + modules[0] + ".db");
+			model.setFullName("com.axelor.apps." + modules[0] + ".db." + model.getName());
 		}
 		model.setCustomised(true);
 		model.setEdited(true);
 
 		return metaModelRepo.save(model);
 	}
+	
+	private boolean updateModuleMap(String name, String module) {
+		
+		if (!moduleMap.containsKey(module)) {
+			moduleMap.put(module, new HashMap<String, List<String>>());
+		}
+
+		Map<String, List<String>> modelMap = moduleMap.get(module);
+		if (!modelMap.containsKey(name)) {
+			modelMap.put(name, new ArrayList<String>());
+			moduleMap.put(module, modelMap);
+			return true;
+		}
+		
+		return false;
+		
+	}
 
 
 	@Transactional
-	public MetaModel clearModel(MetaModel model) {
+	public MetaModel clearModel(String module, MetaModel model) {
 
-		List<String> fieldNames = modelMap.get(model.getName());
+		List<String> fieldNames = moduleMap.get(module).get(model);
 		
 		if (fieldNames == null) {
 			return model;
@@ -696,12 +622,7 @@ public class DataModelService extends DataCommonService {
 				for (ViewItem viewItem : viewItems) {
 					viewItemRepo.remove(viewItem);
 				}
-				if (field.getExisting()) {
-					field.setCustomised(false);
-				}
-				else {
-					fieldIter.remove();
-				}
+				fieldIter.remove();
 			}
 		}
 		
@@ -723,7 +644,7 @@ public class DataModelService extends DataCommonService {
 	}
 
 	@Transactional
-	public void createListView(MetaModel model) {
+	public void createGridView(String module, MetaModel model) {
 
 		String viewName = ViewLoaderService.getDefaultViewName(model.getName(),
 				"grid");
@@ -745,7 +666,7 @@ public class DataModelService extends DataCommonService {
 		viewBuilder.clearViewItemList();
 		
 		int seq = 0;
-		for (MetaField field : listViewMap.get(model.getName())) {
+		for (MetaField field : gridViewMap.get(module).get(model.getName())) {
 			ViewItem viewItem = new ViewItem(field.getName());
 			viewItem.setFieldType(field.getFieldType());
 			viewItem.setMetaField(field);
@@ -758,5 +679,55 @@ public class DataModelService extends DataCommonService {
 		viewBuilderRepo.save(viewBuilder);
 
 	}
+	
+	private void addGridField(String module, MetaField meatField, String addToList, String model) {
+		
+		Map<String, List<MetaField>> gridMap = null; 
+		if (!gridViewMap.containsKey(module)) {
+			gridViewMap.put(module, new HashMap<String, List<MetaField>>());
+		}
+		gridMap = gridViewMap.get(module);
+		if (!gridMap.containsKey(model)) {
+			gridMap.put(model, new ArrayList<MetaField>());
+		}
+		
+		if (addToList != null && addToList.equalsIgnoreCase("x")) {
+			gridMap.get(model).add(meatField);
+			gridViewMap.put(module, gridMap);
+		}
+		
+	}
+	
+	private void generateGridView() throws AxelorException {
+		
+		if (!viewImporterService.getViewActionMap().isEmpty()) {
+			throw new AxelorException(I18n.get("Wizard views not found: %s"), 1,
+					viewImporterService.getViewActionMap().keySet());
+		}
+
+		for (String module : moduleMap.keySet()) {
+			for (String modelName : moduleMap.get(module).keySet()) {
+	 			MetaModel model = metaModelRepo.findByName(modelName);
+				model = clearModel(module, model);
+				if (model == null) {
+					continue;
+				}
+				if (moduleMap.get(module).get(modelName).size() == 1) {
+					continue;
+				}
+				if (gridViewMap.containsKey(module)) {
+					List<MetaField> fields = gridViewMap.get(module).get(model);
+					if (fields != null && !fields.isEmpty()) {
+						createGridView(module, model);
+					}
+					else {
+						viewLoaderService.getDefaultGrid(module, model, true);
+					}
+				}
+		        
+			}
+		}
+	}
+	
 	
 }

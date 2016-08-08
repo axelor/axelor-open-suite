@@ -20,6 +20,8 @@ package com.axelor.studio.service;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,11 +30,12 @@ import com.axelor.app.AppSettings;
 import com.axelor.common.FileUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
-import com.axelor.studio.db.StudioConfiguration;
-import com.axelor.studio.db.repo.StudioConfigurationRepository;
+import com.axelor.meta.db.MetaModule;
+import com.axelor.meta.db.repo.MetaModuleRepository;
+import com.axelor.studio.utils.Namming;
 import com.google.common.base.Strings;
-import com.google.inject.Singleton;
+import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 
 /**
  * Service provide configuration details support. It check build directory path
@@ -41,72 +44,29 @@ import com.google.inject.Singleton;
  * @author axelor
  *
  */
-@Singleton
-public final class ConfigurationService {
-
-	private File domainDir;
-
-	private File viewDir;
-	
-	private File moduleDir;
-
-	private String moduleName;
-
-	private String depends;
+public class ConfigurationService {
 
 	protected Logger log = LoggerFactory.getLogger(getClass());
 	
-	/**
-	 * Root method of service that check build directory,resource directory for
-	 * domain and views. It also call method to create custom module directory .
-	 * 
-	 * @return
-	 * @throws AxelorException 
-	 */
-	public void config() throws AxelorException {
-
-		log.debug("Configuration service called");
-
-		File buildDirectory = getBuildDirectory();
-		if (buildDirectory == null) {
-			throw new AxelorException(I18n.get("Build directory not exist"), 4);
-		}
+	@Inject
+	private MetaModuleRepository moduleRepo;
+	
+	private List<String> nonCustomizedModules = null;
+	
+	public File getDomainDir(String module, boolean create) throws AxelorException {
 		
+		File moduleDir = getModuleDir(module, create);
 		
-		moduleName = "axelor-custom";
-		
-		StudioConfiguration config = Beans
-				.get(StudioConfigurationRepository.class).all().fetchOne();
-		if (config != null) {
-			moduleName = config.getName();
-			depends = config.getDepends();
-		}
-
-		moduleDir = getCustomModule(buildDirectory);
-		File resourceDir = getResourceDir(moduleDir);
-		domainDir = getDir(resourceDir, "domains");
-		viewDir = getDir(resourceDir, "views");
-
-		log.debug("Resource directory found: {}", resourceDir.getPath());
-
-	}
-
-	public File getViewDir() {
-		return this.viewDir;
-	}
-
-	public File getDomainDir() {
-		return this.domainDir;
+		return getDir(getResourceDir(moduleDir, create), "domains");
 	}
 	
-	public File getModuleDir() {
-		return this.moduleDir;
+	public File getViewDir(String module, boolean create) throws AxelorException {
+		
+		File moduleDir = getModuleDir(module, create);
+		
+		return getDir(getResourceDir(moduleDir, create), "views");
 	}
-
-	public String getModuleName() {
-		return this.moduleName;
-	}
-
+	
 	/**
 	 * Method to get build directory from property setting.
 	 * 
@@ -134,10 +94,21 @@ public final class ConfigurationService {
 	 *            Custom module directory.
 	 * @return Resource directory file.
 	 */
-	private File getResourceDir(File moduleDir) {
+	private File getResourceDir(File moduleDir, boolean create) {
+		
+		log.debug("Get resources for module: {}", moduleDir);
+		
+		if (!moduleDir.exists()) {
+			return null;
+		}
 
 		File resourceDir = FileUtils.getFile(moduleDir, "src", "main",
 				"resources");
+		
+		if (!create) {
+			return resourceDir;
+		}
+		
 		if (!resourceDir.exists()) {
 			resourceDir.mkdirs();
 		}
@@ -157,8 +128,12 @@ public final class ConfigurationService {
 	 * @throws IOException
 	 *             Exception thrown in directory creation.
 	 */
-	public File getDir(File resourceDir, String rootName) {
-
+	private File getDir(File resourceDir, String rootName) {
+		
+		if (resourceDir == null || !resourceDir.exists()) {
+			return null;
+		}
+		
 		File rootDir = FileUtils.getFile(resourceDir, rootName);
 
 		if (!rootDir.exists()) {
@@ -177,17 +152,27 @@ public final class ConfigurationService {
 	 * @return Custom module directory created.
 	 * @throws AxelorException 
 	 */
-	private File getCustomModule(File buildDir) throws AxelorException {
-
+	public File getModuleDir(String moduleName, boolean create) throws AxelorException {
+		
+		File buildDir = getBuildDirectory();
+		if (buildDir == null) {
+			throw new AxelorException(I18n.get("Build directory not exist"), 4);
+		}
+		
 		File moduleDir = FileUtils.getFile(buildDir, "modules", moduleName);
+		
+		if (!create) {
+			return moduleDir;
+		}
 
 		if (!moduleDir.exists()) {
+			validateModuleName(moduleName);
 			moduleDir.mkdir();
 		}
 
 		File buildFile = FileUtils.getFile(moduleDir, "build.gradle");
 
-		createBuildFile(buildFile);
+		createBuildFile(buildFile, moduleName);
 
 		return moduleDir;
 	}
@@ -199,7 +184,7 @@ public final class ConfigurationService {
 	 *            Blank buildFile.
 	 * @throws AxelorException 
 	 */
-	private void createBuildFile(File buildFile) throws AxelorException {
+	private void createBuildFile(File buildFile, String moduleName) throws AxelorException {
 
 		try {
 			FileWriter fw = new FileWriter(buildFile);
@@ -208,7 +193,20 @@ public final class ConfigurationService {
 					+ "\t\t title \"" + moduleName.toUpperCase() + " \"\n"
 					+ "\t\t description \"\"\"\\\n"
 					+ "Module generated by axelor studio\n" + "\"\"\"\n";
-
+			
+			
+			
+			MetaModule module = getCustomizedModule(moduleName, true);
+			
+			String depends = module.getDepends();
+			
+			if (Strings.isNullOrEmpty(depends)) {
+				depends =  "axelor-studio";
+			}
+			else if (!depends.contains("axelor-studio")) {
+				depends += ",axelor-studio";
+			}
+			
 			if (!Strings.isNullOrEmpty(depends)) {
 				for (String depend : depends.split(",")) {
 					buildText += "\t\t module \"modules:" + depend + "\"\n";
@@ -223,17 +221,146 @@ public final class ConfigurationService {
 		}
 	}
 	
-//	private String getDepends() {
-//		
-//		List<String> modules = new ArrayList<String>();
-//		
-//		for (MetaModule module : metaModuleRepo.all().fetch()){
-//			if (module.getInstalled()) {
-//				modules.add(module.getName());
-//			}
-//		}
-//		
-//		return Joiner.on(",").join(modules);
-//	}
+	public void removeDomainFile(String fileName, String module) throws AxelorException {
+		
+		if (module != null && fileName != null) {
+			File domainDir = getDomainDir(module, false);
+			if (domainDir != null) {
+				File domainFile = FileUtils.getFile(domainDir, fileName);
+				if (domainFile.exists()) {
+					domainFile.delete();
+				}
+			}
+		}
+		
+	}
+	
+	public void removeDomainFile(String fileName) throws AxelorException {
+		
+		if (fileName == null) {
+			return;
+		}
+		
+		for (MetaModule module : moduleRepo.all().fetch()) {
+			File domainDir = getDomainDir(module.getName(), false);
+			if (domainDir != null) {
+				File domainFile = FileUtils.getFile(domainDir, fileName);
+				if (domainFile.exists()) {
+					domainFile.delete();
+				}
+			}
+		}
+	}
+	
+	public void removeViewFile(String fileName, String module) throws AxelorException {
+		
+		if (module != null && fileName != null) {
+			File viewDir = getViewDir(module, false);
+			if (viewDir != null) {
+				File viewFile = FileUtils.getFile(viewDir, fileName);
+				if (viewFile.exists()) {
+					viewFile.delete();
+				}
+			}
+		}
+		
+	}
+	
+	public void removeViewFile(String fileName) throws AxelorException {
+		
+		if (fileName == null) {
+			return;
+		}
+		
+		for (MetaModule module : moduleRepo.all().fetch()) {
+			File viewDir = getViewDir(module.getName(), false);
+			if (viewDir != null) {
+				File viewFile = FileUtils.getFile(viewDir, fileName);
+				if (viewFile.exists()) {
+					viewFile.delete();
+				}
+			}
+		}
+	}
+	
+	public List<MetaModule> getCustomizedModules() {
+		
+		return moduleRepo.all().filter("self.customised = true").fetch();
+	}
+	
+	@Transactional
+	public MetaModule getCustomizedModule(String name, boolean create) {
+		
+		MetaModule module = null;
+		if (name != null) {
+			module =  moduleRepo.all().filter("self.customised = true and self.name = ?1", name).fetchOne();
+
+		}
+		
+		if (module == null && create) {
+			module = new MetaModule(name);
+			module.setModuleVersion("1.0");
+			module.setTitle(name);
+			module.setCustomised(true);
+			return moduleRepo.save(module);
+		}
+		
+		return module;
+	}
+	
+	public List<String> getNonCustomizedModules() {
+		
+		if (nonCustomizedModules == null) {
+			nonCustomizedModules = new ArrayList<String>();
+			List<MetaModule> modules = moduleRepo.all().filter("self.customised = false").fetch();
+			for (MetaModule module : modules) {
+				nonCustomizedModules.add(module.getName());
+			}
+		}
+		
+		return nonCustomizedModules;
+	}
+	
+	public void validateModuleName(String name) throws AxelorException {
+		
+		if (name == null) {
+			throw new AxelorException(I18n.get("Blank module name not allowed."), 1);
+		}
+		
+		if (!name.startsWith("axelor-")) {
+			throw new AxelorException(I18n.get("Module name must starts with axelor-"), 1);
+		}
+		
+		if (!name.matches("([a-zA-Z0-9]+-[a-zA-Z0-9]+)+")) {
+			throw new AxelorException(I18n.get("Please follow standard module naming convension"), 1);
+		}
+	}
+	
+	public void validateFieldName(String name) throws AxelorException {
+		
+		if (name == null) {
+			throw new AxelorException(I18n.get("Blank field name not allowed."), 1);
+		}
+		
+		if (!name.matches("([a-z][a-zA-Z0-9_]+)|([A-Z][A-Z0-9_]+)")) {
+			throw new AxelorException(I18n.get("Please follow standard field naming convension"), 1);
+		}
+		
+		if (Namming.isKeyword(name) || Namming.isReserved(name)) {
+			throw new AxelorException(I18n.get("Name is either keyword or reserv word. Please use different name"), 1);
+		}
+	}
+	
+	public void validateModelName(String name) throws AxelorException {
+		
+		if (name == null) {
+			throw new AxelorException(I18n.get("Blank model name not allowed."), 1);
+		}
+		
+		if (!name.matches("[A-Z][a-zA-Z0-9_]+")) {
+			throw new AxelorException(I18n.get("Please follow standard model naming convention"), 1);
+		}
+		
+	}
 
 }

@@ -31,7 +31,6 @@ import java.util.Map;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.FillPatternType;
-import org.apache.poi.ss.usermodel.FontFamily;
 import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFCell;
@@ -121,18 +120,16 @@ public class DataExportService extends DataCommonService {
 	public MetaFile export(MetaFile oldFile, boolean onlyPanel) throws AxelorException {
 		
 		this.onlyPanel = onlyPanel;
-		configService.config();
-		
+
 		if (onlyPanel) {
 			columns = PANEL_HEADERS.length;
 		}
 		
 		installed = new ArrayList<String>();
-		List<MetaModule> modules = metaModuleRepo.all().filter("self.installed = true").fetch();
+		List<MetaModule> modules = metaModuleRepo.all().filter("self.installed = true || self.customised = true").fetch();
 		for (MetaModule module : modules) {
 			installed.add(module.getName());
 		}
-		installed.add(configService.getModuleName());
 		
 		List<MetaMenu> menus = metaMenuRepo.all().filter("self.parent is null "
 				+ "and self.left = true "

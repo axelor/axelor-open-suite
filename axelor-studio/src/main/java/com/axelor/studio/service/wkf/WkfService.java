@@ -107,9 +107,6 @@ public class WkfService {
 	@Inject
 	private WkfRepository wkfRepo;
 
-	@Inject
-	private ConfigurationService configService;
-
 	/**
 	 * Method to process workflow. It call node and transition service for nodes
 	 * and transitions linked with workflow.
@@ -126,7 +123,7 @@ public class WkfService {
 			inflector = Inflector.getInstance();
 			MetaModel metaModel = workflow.getMetaModel();
 			modelName = metaModel.getFullName();
-			moduleName = configService.getModuleName();
+			moduleName = wkf.getMetaModule().getName();
 			dasherizeModel = inflector.dasherize(metaModel.getName());
 
 			ActionGroup actionGroup = nodeService.process();

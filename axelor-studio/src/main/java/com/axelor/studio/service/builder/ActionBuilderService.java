@@ -92,22 +92,16 @@ public class ActionBuilderService {
 	
 	private String errors;
 
-	public String build(File viewDir, boolean updateMeta) throws IOException,
+	public String build(String module, File viewDir, boolean updateMeta) throws IOException,
 			JAXBException {
 		
 		errors = null;
-		String query = "self.edited = true";
-		if (!updateMeta) {
-			query += " OR self.recorded = false";
-		}
-		List<ActionBuilder> actionBuilders = actionBuilderRepo.all()
-				.filter(query).fetch();
-
-		log.debug("Total actions to process: {}", actionBuilders.size());
-
+		
+		List<ActionBuilder> actionBuilders = getActionBuilders(module, updateMeta);
 		if (actionBuilders.isEmpty()) {
 			return errors;
 		}
+		
 		scriptBindings = new ScriptBindings(new HashMap<String, Object>());
 		modelActionMap = new HashMap<String, List<Action>>();
 
@@ -117,7 +111,7 @@ public class ActionBuilderService {
 			List<Action> actions = modelActionMap.get(model);
 			log.debug("Model : {}", model);
 			log.debug("Actions: {}", actions.size());
-			viewBuilderService.generateMetaAction(actions);
+			viewBuilderService.generateMetaAction(module, actions);
 			if (!updateMeta) {
 				String[] models = model.split("\\.");
 				viewBuilderService.writeView(viewDir,
@@ -128,6 +122,21 @@ public class ActionBuilderService {
 		updateEdited(actionBuilders, updateMeta);
 		
 		return errors;
+	}
+	
+	private List<ActionBuilder> getActionBuilders(String module, boolean updateMeta) {
+		
+		String query = "self.edited = true";
+		if (!updateMeta) {
+			query += " OR self.recorded = false";
+		}
+		
+		query = "self.metaModule.name = ?1 AND (" + query + ")";
+		
+		return actionBuilderRepo.all()
+				.filter(query, module).fetch();
+
+		
 	}
 
 	@Transactional
@@ -185,7 +194,7 @@ public class ActionBuilderService {
 		if (model != null) {
 			modelName = model.getFullName();
 		}
-		
+
 		updateModelActionMap(modelName, action);
 		processActionBuilder(actionIter);
 	}

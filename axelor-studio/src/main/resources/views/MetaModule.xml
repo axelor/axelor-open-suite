@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
+  
+  <form id="studio-meta-module-form" name="meta-module-form" title="Module" 
+  	model="com.axelor.meta.db.MetaModule" onNew="action-meta-module-set-customized">
+    <panel title="Module">
+      <field name="title"/>
+      <field name="name"/>
+      <field name="moduleVersion"/>
+      <field name="depends"/>
+      <field name="installed" colSpan="4"/>
+      <field name="pending" colSpan="4"/>
+      <field name="removable" colSpan="4"/>
+      <panel stacked="true" showIf="removable">
+        <button name="btnInstall" title="Install" showIf="!installed &amp;&amp; !pending" onClick="com.axelor.meta.web.ModuleController:validInstall(name),com.axelor.meta.web.ModuleController:install(name)"/>
+        <button name="btnUninstall" title="Uninstall" showIf="installed &amp;&amp; !pending &amp;&amp; removable" onClick="com.axelor.meta.web.ModuleController:validUninstall(name),com.axelor.meta.web.ModuleController:uninstall(name)"/>
+      </panel>
+    </panel>
+    <panel title="Description">
+      <field name="description" showTitle="false" colSpan="12"/>
+    </panel>
+  </form>
+  
+  <action-record name="action-meta-module-set-customized" model="com.axelor.meta.db.MetaModule">
+  	<field name="customised" expr="eval:true"/>
+  </action-record>
+  
+</object-views>

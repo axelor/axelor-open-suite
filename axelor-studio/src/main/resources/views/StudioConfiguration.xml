@@ -4,22 +4,13 @@
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
   
   <grid name="studio-configuration-grid" title="Configuration" model="com.axelor.studio.db.StudioConfiguration">
-      <field name="name" />
+     <field name="buildCmd" colSpan="12" />
   </grid>
   
   <form name="studio-configuration-form" title="Configuration" model="com.axelor.studio.db.StudioConfiguration">
       <panel>
-	      <field name="name" onChange="action-studio-config-validate-name"/>
-	      <field name="depends"/>
 	      <field name="buildCmd" colSpan="12" />
 	  </panel>
   </form>
   
-  <action-validate name="action-studio-config-validate-name">
-  	<error message="Module name must be lower case without special characters and space. Only '-' allowed in module name." action="action-studio-config-reset-name" if="!(name ==~ /^[a-z](?:_?[a-z-]+)*[a-z]$/)"/>
-  </action-validate>
-  
-  <action-attrs name="action-studio-config-reset-name">
-  	<attribute name="value" for="name" expr="eval:null"/>
-  </action-attrs>
 </object-views>

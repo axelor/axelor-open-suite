@@ -74,6 +74,9 @@ public class ViewLoaderService {
 
 	@Inject
 	private ModelBuilderService modelBuilderService;
+	
+	@Inject
+	private ConfigurationService configSerivice;
 
 	/**
 	 * Load selected MetaView of ViewBuilder. It create ViewPanel and ViewField
@@ -177,11 +180,6 @@ public class ViewLoaderService {
 			viewPanel.setName(panel.getName());
 			viewPanel.setIsPanelTab(isPanelTab);
 			String title = panel.getTitle();
-			// if(title == null){
-			// viewPanel.setTitle("Undefined "+noTitlePanels++);
-			// viewPanel.setNoTitle(true);
-			// log.debug("No title panels: {}",noTitlePanels);
-			// }
 			if (title != null) {
 				viewPanel.setTitle(title);
 				log.debug("Panel title : {}", title);
@@ -353,26 +351,26 @@ public class ViewLoaderService {
 		}
 
 		switch (metaField.getTypeName()) {
-		case "String":
-			return "string";
-		case "Integer":
-			return "integer";
-		case "Boolean":
-			return "boolean";
-		case "BigDecimal":
-			return "decimal";
-		case "Long":
-			return "long";
-		case "byte[]":
-			return "binary";
-		case "LocalDate":
-			return "date";
-		case "DateTime":
-			return "datetime";
-		case "LocalDateTime":
-			return "datetime";
-		default:
-			return "string";
+			case "String":
+				return "string";
+			case "Integer":
+				return "integer";
+			case "Boolean":
+				return "boolean";
+			case "BigDecimal":
+				return "decimal";
+			case "Long":
+				return "long";
+			case "byte[]":
+				return "binary";
+			case "LocalDate":
+				return "date";
+			case "DateTime":
+				return "datetime";
+			case "LocalDateTime":
+				return "datetime";
+			default:
+				return "string";
 		}
 	}
 
@@ -408,11 +406,11 @@ public class ViewLoaderService {
 	 * @return Default viewBuilder searched or newly created.
 	 */
 
-	public ViewBuilder getDefaultForm(MetaModel metaModel, String title, boolean addParent) {
+	public ViewBuilder getDefaultForm(String module, MetaModel metaModel, String title, boolean addParent) {
 
 		String formName = getDefaultViewName(metaModel.getName(), "form");
 
-		return getViewBuilderForm(metaModel, formName, title, addParent);
+		return getViewBuilderForm(module, metaModel, formName, title, addParent);
 	}
 	
 	/**
@@ -424,17 +422,17 @@ public class ViewLoaderService {
 	 * @return Default viewBuilder searched or newly created.
 	 */
 
-	public ViewBuilder getViewBuilder(String formName) {
+	public ViewBuilder getViewBuilder(String module, String formName) {
 
 		ViewBuilder viewBuilder = viewBuilderRepo
 				.all()
-				.filter("self.name = ?1 AND self.viewType = 'form'",
-						formName).fetchOne();
+				.filter("self.metaModule.name = ?1 AND self.name = ?1 AND self.viewType = 'form'",
+						module, formName).fetchOne();
 		return viewBuilder;
 	}
 
 	@Transactional
-	public ViewBuilder getViewBuilderForm(MetaModel metaModel, String formName, String title, boolean addParent) {
+	public ViewBuilder getViewBuilderForm(String module, MetaModel metaModel, String formName, String title, boolean addParent) {
 		String modelName = metaModel.getFullName();
 
 		log.debug("Get default form name: {} model: {}", formName, modelName);
@@ -451,6 +449,7 @@ public class ViewLoaderService {
 			viewBuilder.setName(formName);
 			viewBuilder.setModel(modelName);
 			viewBuilder.setMetaModel(metaModel);
+			viewBuilder.setMetaModule(configSerivice.getCustomizedModule(module, true));
 			viewBuilder.setViewType("form");
 			viewBuilder.setEdited(true);
 			viewBuilder.setRecorded(false);
@@ -475,7 +474,7 @@ public class ViewLoaderService {
 				viewBuilder.setTitle(metaView.getTitle());
 				viewBuilder = loadMetaView(viewBuilder);
 			}
-
+			
 			viewBuilder = addDefaultPanel(viewBuilder);
 
 			viewBuilder = viewBuilderRepo.save(viewBuilder);
@@ -538,7 +537,7 @@ public class ViewLoaderService {
 	 * @return
 	 */
 	@Transactional
-	public ViewBuilder getDefaultGrid(MetaModel metaModel, boolean reload) {
+	public ViewBuilder getDefaultGrid(String module, MetaModel metaModel, boolean reload) {
 
 		String gridName = getDefaultViewName(metaModel.getName(), "grid");
 		String modelName = metaModel.getFullName();
@@ -557,6 +556,7 @@ public class ViewLoaderService {
 			viewBuilder = new ViewBuilder();
 			viewBuilder.setName(gridName);
 			viewBuilder.setModel(modelName);
+			viewBuilder.setMetaModule(configSerivice.getCustomizedModule(module, true));
 			viewBuilder.setMetaModel(metaModel);
 			viewBuilder.setViewType("grid");
 			viewBuilder.setEdited(true);

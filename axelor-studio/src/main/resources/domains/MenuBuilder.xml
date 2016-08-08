@@ -31,6 +31,7 @@
     <many-to-one name="menuGenerated" ref="com.axelor.meta.db.MetaMenu" title="Menu generated" />
     <many-to-one name="actionGenerated" ref="com.axelor.meta.db.MetaAction" title="Action generated" />
     <boolean name="deleteMenu" />
+    <many-to-one name="metaModule" ref="com.axelor.meta.db.MetaModule" title="Studio module" required="true" />
   </entity>
     
     

@@ -24,8 +24,10 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang.StringEscapeUtils;
 import org.slf4j.Logger;
@@ -37,6 +39,7 @@ import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.db.MetaField;
 import com.axelor.meta.db.MetaModel;
+import com.axelor.meta.db.MetaModule;
 import com.axelor.meta.db.MetaSelect;
 import com.axelor.meta.db.MetaSelectItem;
 import com.axelor.meta.db.MetaSequence;
@@ -46,6 +49,7 @@ import com.axelor.meta.db.repo.MetaModelRepository;
 import com.axelor.meta.db.repo.MetaSelectRepository;
 import com.axelor.meta.db.repo.MetaTranslationRepository;
 import com.axelor.meta.schema.ObjectViews;
+import com.axelor.studio.service.ConfigurationService;
 import com.axelor.studio.utils.Namming;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
@@ -60,7 +64,7 @@ import com.google.inject.persist.Transactional;
  */
 public class ModelBuilderService {
 	
-	public final static List<String> reserveFields;
+	private final static List<String> reserveFields;
 	
 	static {
 		List<String> fields = new ArrayList<String>();
@@ -70,6 +74,7 @@ public class ModelBuilderService {
 		fields.add("updatedBy");
 		fields.add("createdOn");
 		fields.add("updatedOn");
+		fields.add("archived");
 		reserveFields = Collections.unmodifiableList(fields);
 	}
 	
@@ -79,11 +84,10 @@ public class ModelBuilderService {
 
 	private final Logger log = LoggerFactory.getLogger(getClass());
 
-	private StringBuilder fieldXml;
-
-	private StringBuilder sequenceXml;
-
-	private File domainDir;
+	
+	private Map<String, StringBuilder> moduleSequenceMap;
+	
+	private Map<String, StringBuilder> moduleFieldMap;
 
 	private List<String> trackFields;
 
@@ -99,36 +103,37 @@ public class ModelBuilderService {
 	@Inject
 	private MetaSelectRepository metaSelectRepo;
 	
+	@Inject
+	private ConfigurationService configService;
+	
+	public static boolean isReserved(String name) {
+		return reserveFields.contains(name);
+	}
+	
 	/**
 	 * Root method to accesss the service. It will find all edited and
 	 * customised MetaModels. Call other methods to process MetaModel founds.
 	 * @throws AxelorException 
 	 */
-	public boolean build(File domainDir) throws AxelorException {
-
-		if (domainDir == null) {
-			throw new AxelorException(I18n.get("Model directory not found please check the configuration"), 4);
-		}
-		this.domainDir = domainDir;
-
-		List<MetaModel> customizedModels = metaModelRepo.all()
-				.filter("self.customised = true").fetch();
-		List<MetaModel> models = new ArrayList<MetaModel>();
-		for (MetaModel model : customizedModels) {
-			if (model.getEdited()) {
-				models.add(model);
-			}
-		}
-
+	public void build() throws AxelorException {
+		
 		try {
+			List<MetaModel> customizedModels = metaModelRepo.all()
+					.filter("self.customised = true").fetch();
 			removeDeleted(customizedModels);
-			recordModel(models.iterator());
-			updateSelection();
-			updateEdited(models);
+			
+			List<MetaModel> editedModels = new ArrayList<MetaModel>();
+			for (MetaModel model : customizedModels) {
+				if (model.getEdited()) {
+					editedModels.add(model);
+				}
+			}
+			recordModel(editedModels.iterator());
+			updateEdited(editedModels);
+			
+			recordSelection();
 
-			return true;
-
-		} catch (Exception e) {
+		} catch (IOException e) {
 			e.printStackTrace();
 			throw new AxelorException(I18n.get("Error in model recording: %s"), 4, e.getMessage());
 		}
@@ -170,51 +175,59 @@ public class ModelBuilderService {
 			return;
 		}
 
+		moduleSequenceMap = new HashMap<String, StringBuilder>();
+		moduleFieldMap = new HashMap<String, StringBuilder>();
+
 		MetaModel metaModel = modelIterator.next();
 		String packageName = metaModel.getPackageName();
 		String modelName = metaModel.getName();
 		trackFields = new ArrayList<String>();
 
-		sequenceXml = new StringBuilder();
-		updateSequenceXml(metaModel.getMetaSequencList().iterator());
+		updateSequenceXml(metaModel.getMetaSequenceList().iterator());
 
-		fieldXml = new StringBuilder("");
 		List<MetaField> customFields = getCustomisedFields(metaModel, true);
 
 		if (customFields.isEmpty()) {
 			log.debug("Deleting model without custom field : {}", metaModel.getName());
-			File file = new File(domainDir, metaModel.getName() + ".xml");
-			if (file.exists()) {
-				file.delete();
-			}
+			configService.removeDomainFile(metaModel.getName() + ".xml");
 			recordModel(modelIterator);
 			return;
 		}
-
+		
 		sortFieldList(customFields);
-		writeFields(customFields.iterator());
-
-		StringBuilder sb = new StringBuilder(
-				"<?xml version='1.0' encoding='UTF-8'?>\n")
-				.append("<domain-models")
-				.append(" xmlns='")
-				.append(NAMESPACE)
-				.append("'")
-				.append(" xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'")
-				.append(" xsi:schemaLocation='")
-				.append(NAMESPACE)
-				.append(" ")
-				.append(NAMESPACE + "/" + "domain-models_" + VERSION + ".xsd")
-				.append("'")
-				.append(">\n\n")
-				.append("\t<module name=\"custom\" package=\"" + packageName
-						+ "\" />\n\n").append(sequenceXml.toString() + "\n")
-				.append("\t<entity name=\"" + modelName + "\">\n")
-				.append(fieldXml.toString()).append(getTrackFields())
-				.append("\t</entity>\n\n").append("</domain-models>\n");
-
-		File domainFile = new File(domainDir, modelName + ".xml");
-		writeFile(domainFile, sb.toString());
+		addFields(customFields.iterator());
+		
+		for (String module : moduleFieldMap.keySet()) {
+			String sequenceXml = "";
+			StringBuilder sequenceBuilder = moduleSequenceMap.get(module);
+			if (sequenceBuilder == null){
+				sequenceXml = sequenceXml.toString();
+			}
+			
+			String fieldXml = moduleFieldMap.get(module).toString();
+			
+			StringBuilder sb = new StringBuilder(
+					"<?xml version='1.0' encoding='UTF-8'?>\n")
+					.append("<domain-models")
+					.append(" xmlns='")
+					.append(NAMESPACE)
+					.append("'")
+					.append(" xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'")
+					.append(" xsi:schemaLocation='")
+					.append(NAMESPACE)
+					.append(" ")
+					.append(NAMESPACE + "/" + "domain-models_" + VERSION + ".xsd")
+					.append("'")
+					.append(">\n\n")
+					.append("\t<module name=\"" + module.replace("axelor-", "") + "\" package=\"" + packageName
+							+ "\" />\n\n").append(sequenceXml + "\n")
+					.append("\t<entity name=\"" + modelName + "\">\n")
+					.append(fieldXml).append(getTrackFields())
+					.append("\t</entity>\n\n").append("</domain-models>\n");
+	
+			File domainFile = new File(configService.getDomainDir(module, true), modelName + ".xml");
+			writeFile(domainFile, sb.toString());
+		}
 
 		recordModel(modelIterator);
 
@@ -228,16 +241,32 @@ public class ModelBuilderService {
 	 *            MetaField iterator
 	 * @throws AxelorException 
 	 */
-	private void writeFields(Iterator<MetaField> fieldIterator) throws AxelorException {
+	private void addFields(Iterator<MetaField> fieldIterator) throws AxelorException {
 
 		if (!fieldIterator.hasNext()) {
 			return;
 		}
 
 		MetaField field = fieldIterator.next();
+		
+		MetaModule module = field.getMetaModule();
+		if (module == null) {
+			module = field.getMetaModel().getMetaModule();
+		}
+		
+		if (module == null || !module.getCustomised()) {
+			addFields(fieldIterator);
+			return;
+		}
 
 		String fieldType = field.getFieldType();
-
+		
+		StringBuilder fieldXml = moduleFieldMap.get(module.getName());
+		
+		if (fieldXml == null) {
+			fieldXml = new StringBuilder();
+		}
+		
 		fieldXml.append("\t\t<" + fieldType + " ");
 
 		String name = field.getName();
@@ -268,27 +297,27 @@ public class ModelBuilderService {
 		}
 
 		switch (fieldType) {
-		case "integer":
-			writeInteger(field);
-			break;
-		case "decimal":
-			writeDecimal(field);
-			break;
-		case "string":
-			writeString(field);
-			break;
-		case "boolean":
-			writeBoolean(field);
-			break;
-		case "many-to-one":
-			writeRelational(field);
-			break;
-		case "one-to-many":
-			writeRelational(field);
-			break;
-		case "many-to-many":
-			writeRelational(field);
-			break;
+			case "integer":
+				addInteger(fieldXml, field);
+				break;
+			case "decimal":
+				addDecimal(fieldXml, field);
+				break;
+			case "string":
+				addString(fieldXml, field);
+				break;
+			case "boolean":
+				addBoolean(fieldXml, field);
+				break;
+			case "many-to-one":
+				addRelational(fieldXml, field);
+				break;
+			case "one-to-many":
+				addRelational(fieldXml, field);
+				break;
+			case "many-to-many":
+				addRelational(fieldXml, field);
+				break;
 		}
 
 		if (field.getMetaSelect() != null) {
@@ -320,8 +349,10 @@ public class ModelBuilderService {
 		}
 
 		fieldXml.append("/>\n");
+		
+		moduleFieldMap.put(module.getName(), fieldXml);
 
-		writeFields(fieldIterator);
+		addFields(fieldIterator);
 	}
 
 	/**
@@ -331,7 +362,7 @@ public class ModelBuilderService {
 	 * @param field
 	 *            MetaField to process
 	 */
-	private void writeMinMax(MetaField field) {
+	private void addMinMax(StringBuilder fieldXml, MetaField field) {
 
 		Integer min = field.getIntegerMin();
 		if (min != null && min != 0) {
@@ -351,14 +382,14 @@ public class ModelBuilderService {
 	 * @param field
 	 *            MetaField to process
 	 */
-	private void writeInteger(MetaField field) {
+	private void addInteger(StringBuilder fieldXml, MetaField field) {
 
 		Integer defaultInt = field.getDefaultInteger();
 		if (defaultInt != null && defaultInt != 0) {
 			fieldXml.append("default=\"" + defaultInt + "\" ");
 		}
 
-		writeMinMax(field);
+		addMinMax(fieldXml, field);
 	}
 
 	/**
@@ -368,7 +399,7 @@ public class ModelBuilderService {
 	 * @param field
 	 *            MetaField to process
 	 */
-	private void writeDecimal(MetaField field) {
+	private void addDecimal(StringBuilder fieldXml, MetaField field) {
 
 		BigDecimal max = field.getDecimalMax();
 		if (max != null && max.compareTo(BigDecimal.ZERO) != 0) {
@@ -395,7 +426,7 @@ public class ModelBuilderService {
 	 * @param field
 	 *            MetaField to process
 	 */
-	private void writeString(MetaField field) {
+	private void addString(StringBuilder fieldXml, MetaField field) {
 
 		Boolean large = field.getLarge();
 		if (large != null && large) {
@@ -412,7 +443,7 @@ public class ModelBuilderService {
 			fieldXml.append("sequence=\"" + sequence + "\" ");
 		}
 		
-		writeMinMax(field);
+		addMinMax(fieldXml, field);
 	}
 
 	/**
@@ -422,7 +453,7 @@ public class ModelBuilderService {
 	 * @param field
 	 *            MetaField to process
 	 */
-	private void writeBoolean(MetaField field) {
+	private void addBoolean(StringBuilder fieldXml, MetaField field) {
 
 		Boolean defaultBoolean = field.getDefaultBoolean();
 		if (defaultBoolean != null && defaultBoolean) {
@@ -439,7 +470,7 @@ public class ModelBuilderService {
 	 * @param field
 	 *            MetaField to process
 	 */
-	private void writeRelational(MetaField field) {
+	private void addRelational(StringBuilder fieldXml, MetaField field) {
 
 		log.debug("Type name for relational field : {}, typeName: {}",
 				field.getName(), field.getTypeName());
@@ -490,50 +521,62 @@ public class ModelBuilderService {
 	 *            Xml string containing selections.
 	 * @throws IOException
 	 *             Exception in file writing.
+	 * @throws AxelorException 
 	 */
-	private void updateSelection() throws IOException {
+	private void recordSelection() throws IOException, AxelorException {
 		
-		String selectionXml = "";
-		
-		File file = new File(domainDir, "Selection.xml");
 		
 		List<MetaSelect> metaSelects = metaSelectRepo.all()
 				.filter("self.customised = true").fetch();
 		
 		if (metaSelects.isEmpty()) {
-			if (file.exists()) {
-				file.delete();
-			}
+			configService.removeViewFile("Selection.xml");
 			return;
 		}
 		
+		Map<String, StringBuilder> moduleMap = new HashMap<String, StringBuilder>();
+		
 		for (MetaSelect metaSelect : metaSelects) {
-			selectionXml += "\n\t<selection name=\""
-					+ metaSelect.getName() + "\" >";
-			for (MetaSelectItem item : metaSelect.getItems()) {
-				selectionXml += "\n\t\t<option value=\"" + item.getValue() + "\">"
-						     + item.getTitle() + "</option>";
+			MetaModule module = metaSelect.getMetaModule();
+			if (module == null || !module.getCustomised()) {
+				continue;
 			}
-			selectionXml += "\n\t</selection>";
+			StringBuilder builder = moduleMap.get(module);
+			if (builder == null) {
+				builder = new StringBuilder();
+			}
+			builder.append("\n\t<selection name=\"" + metaSelect.getName() + "\" >");
+			for (MetaSelectItem item : metaSelect.getItems()) {
+				builder.append("\n\t\t<option value=\"" + item.getValue() + "\">"
+						     + item.getTitle() + "</option>");
+			}
+			builder.append("\n\t</selection>");
+			
+			moduleMap.put(module.getName(), builder);
+			
+		}
+		
+		for (String module : moduleMap.keySet()) {
+			StringBuilder sb = new StringBuilder(
+					"<?xml version='1.0' encoding='UTF-8'?>\n");
+			sb.append("<object-views")
+					.append(" xmlns='")
+					.append(ObjectViews.NAMESPACE)
+					.append("'")
+					.append(" xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'")
+					.append(" xsi:schemaLocation='")
+					.append(ObjectViews.NAMESPACE)
+					.append(" ")
+					.append(ObjectViews.NAMESPACE + "/" + "object-views_"
+							+ ObjectViews.VERSION + ".xsd").append("'")
+					.append(">\n\n").append(moduleMap.get(module).toString())
+					.append("\n</object-views>");
+			File selectionFile = new File(configService.getViewDir(module, true), "Selection.xml");
+			writeFile(selectionFile, sb.toString());
 		}
 
-		StringBuilder sb = new StringBuilder(
-				"<?xml version='1.0' encoding='UTF-8'?>\n");
-		sb.append("<object-views")
-				.append(" xmlns='")
-				.append(ObjectViews.NAMESPACE)
-				.append("'")
-				.append(" xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'")
-				.append(" xsi:schemaLocation='")
-				.append(ObjectViews.NAMESPACE)
-				.append(" ")
-				.append(ObjectViews.NAMESPACE + "/" + "object-views_"
-						+ ObjectViews.VERSION + ".xsd").append("'")
-				.append(">\n\n").append(selectionXml)
-				.append("\n</object-views>");
-
 		
-		writeFile(file, sb.toString());
+		
 
 	}
 
@@ -647,18 +690,24 @@ public class ModelBuilderService {
 		}
 	}
 
-	private void removeDeleted(List<MetaModel> customizedModels) {
+	private void removeDeleted(List<MetaModel> customizedModels) throws AxelorException {
 
 		List<String> fileNames = new ArrayList<String>();
 		for (MetaModel model : customizedModels) {
 			fileNames.add(model.getName() + ".xml");
 		}
-
-		for (File file : domainDir.listFiles()) {
-			if (!fileNames.contains(file.getName())
-				 && !file.getName().equals("Selection.xml")) {
-				log.debug("Removing file: {}", file.getName());
-				file.delete();
+		
+		for (MetaModule module : configService.getCustomizedModules()) {
+			File moduleDir = configService.getDomainDir(module.getName(), false);
+			if (moduleDir == null) {
+				continue;
+			}
+			for (File file : moduleDir.listFiles()) {
+				if (!fileNames.contains(file.getName())
+					 && !file.getName().equals("Selection.xml")) {
+					log.debug("Removing file: {}", file.getName());
+					file.delete();
+				}
 			}
 		}
 		
@@ -692,6 +741,12 @@ public class ModelBuilderService {
 		
 		MetaSequence sequence = seqIter.next();
 		
+		MetaModule module = sequence.getMetaModule();
+		if (module == null || !module.getCustomised()) {
+			updateSequenceXml(seqIter);
+			return;
+		}
+		
 		String name = sequence.getName();
 		String seqXml = "\t<sequence name=\"" + name + "\" ";
 		
@@ -711,10 +766,18 @@ public class ModelBuilderService {
 		}
 		
 		seqXml += "/>\n";
-
+		
+		StringBuilder sequenceXml = moduleSequenceMap.get(module.getName());
+		
+		if (sequenceXml == null) {
+			sequenceXml = new StringBuilder();
+		}
+		
 		sequenceXml.append(seqXml);
+		
+		moduleSequenceMap.put(module.getName(), sequenceXml);
 
 		updateSequenceXml(seqIter);
 	}
-
+	
 }

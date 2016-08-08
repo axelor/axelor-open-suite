@@ -47,7 +47,6 @@ import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import com.axelor.meta.schema.views.MenuItem;
 import com.axelor.studio.db.MenuBuilder;
 import com.axelor.studio.db.repo.MenuBuilderRepository;
-import com.axelor.studio.service.ConfigurationService;
 import com.google.common.base.Charsets;
 import com.google.common.base.Strings;
 import com.google.common.io.Files;
@@ -81,9 +80,6 @@ public class MenuBuilderService {
 
 	@Inject
 	private MetaActionRepository metaActionRepo;
-
-	@Inject
-	private ConfigurationService configService;
 
 	/**
 	 * Root method to access this service. It generate MetaMenu and save
@@ -378,7 +374,7 @@ public class MenuBuilderService {
 		}
 
 		metaMenu.setOrder(menuBuilder.getOrder());
-		metaMenu.setModule(configService.getModuleName());
+		metaMenu.setModule(menuBuilder.getMetaModule().getName());
 
 		if (menuBuilder.getGroups() != null) {
 			Set<Group> groups = new HashSet<Group>();
@@ -429,7 +425,7 @@ public class MenuBuilderService {
 		if (metaAction == null) {
 			metaAction = new MetaAction(actionName);
 			metaAction.setType("action-view");
-			metaAction.setModule(configService.getModuleName());
+			metaAction.setModule(menuBuilder.getMetaModule().getName());
 		}
 
 		metaAction.setModel(menuBuilder.getModel());

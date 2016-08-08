@@ -37,14 +37,17 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
+import com.axelor.meta.db.MetaMenu;
 import com.axelor.meta.db.MetaModel;
+import com.axelor.meta.db.repo.MetaMenuRepository;
+import com.axelor.studio.service.ConfigurationService;
 import com.axelor.studio.service.data.DataCommonService;
 import com.google.common.base.Strings;
+import com.google.inject.Inject;
 
 public class DataValidatorService extends DataCommonService {
-	
-	private final Logger LOG = LoggerFactory.getLogger(getClass());
 	
 	private final static List<String> ignoreNames = new ArrayList<String>();
 	{	
@@ -73,8 +76,6 @@ public class DataValidatorService extends DataCommonService {
 	
 	private Map<String, List<String>> modelMap;
 	
-	private Map<String, String> viewModelMap;
-	
 	private Map<String, Object[]> viewPanelMap;
 	
 	private Map<String, Row> invalidModelMap;
@@ -85,136 +86,133 @@ public class DataValidatorService extends DataCommonService {
 	
 	private List<String> menus;
 	
-	public File validate(XSSFWorkbook workBook) {
+	private Row row;
+	
+	@Inject
+	private MetaMenuRepository metaMenuRepo;
+	
+	@Inject
+	private ConfigurationService configService;
+	
+	public File validate(XSSFWorkbook workBook) throws IOException {
+	
+		logFile = null;
+		modelMap = new HashMap<String, List<String>>();
+		viewPanelMap = new HashMap<String, Object[]>();
+		invalidModelMap = new HashMap<String, Row>();
+		invalidFieldMap = new HashMap<String, Map<String,Row>>();
+		referenceMap = new HashMap<String, String>();
+		menus = new ArrayList<String>();
+		Iterator<XSSFSheet> sheetIter = workBook.iterator();
+		sheetIter.next();
 		
-		try {
-			logFile = null;
-			modelMap = new HashMap<String, List<String>>();
-			viewModelMap = new HashMap<String, String>();
-			viewPanelMap = new HashMap<String, Object[]>();
-			invalidModelMap = new HashMap<String, Row>();
-			invalidFieldMap = new HashMap<String, Map<String,Row>>();
-			referenceMap = new HashMap<String, String>();
-			menus = new ArrayList<String>();
-			Iterator<XSSFSheet> sheetIter = workBook.iterator();
-			
-			while (sheetIter.hasNext()) {
-				XSSFSheet sheet = sheetIter.next();
-				Iterator<Row> rowIter = sheet.rowIterator();
-				if (rowIter.hasNext()) {
-					rowIter.next();
-				}
-				validateRow(rowIter);
+		while (sheetIter.hasNext()) {
+			XSSFSheet sheet = sheetIter.next();
+			Iterator<Row> rowIter = sheet.rowIterator();
+			if (rowIter.hasNext()) {
+				rowIter.next();
 			}
-			
-			checkInvalid();
-			
-			if (logBook != null) {
-				logBook.write(new FileOutputStream(logFile));
-			}
-			
-		} catch (IOException e) {
-			e.printStackTrace();
+			validateRow(rowIter);
 		}
 		
+		checkInvalid();
+		
+		if (logBook != null) {
+			logBook.write(new FileOutputStream(logFile));
+		}
+			
 		return logFile;
 	}
 	
 	
-	private void validateRow(Iterator<Row> rowIter) throws IOException {
+	private void validateRow(Iterator<Row> rowIter) throws IOException{
 		
 		if(!rowIter.hasNext()){
 			return;
 		}
 		
-		Row row = rowIter.next();
+		this.row = rowIter.next();
 		
-		String obj = validateModel(row);
-		validateView(obj, row);
+		String module = getValue(row, MODULE);
+		module = module.replace("*", "");
+		if (configService.getNonCustomizedModules().contains(module)) {
+			validateRow(rowIter);
+			return;
+		}
 		
-		if(validateField(row, obj) && obj == null) {
-			addLog(I18n.get("No object defined"), row);
+		try {
+			configService.validateModuleName(module);
+		} catch (AxelorException e) {
+			addLog(e.getMessage());
+		}
+		
+		String model = getModel();
+		
+		if (validateField(model)) {
+			try {
+				configService.validateModelName(model);
+			} catch (AxelorException e) {
+				addLog(e.getMessage());
+			}
 		}
 		
 		validateRow(rowIter);
 	}
 	
-	private String validateModel(Row row) throws IOException {
+	private String getModel() throws IOException {
 		
-		String obj = getValue(row, MODEL);
-		if (obj != null) {
-			
-			if (Character.isDigit(obj.charAt(0))) {
-				addLog(I18n.get("Invalid object name"), row);
-			}
-			
-			if (referenceMap.containsKey(obj)) {
-				obj = referenceMap.get(obj);
-			}
-			
-			if (!modelMap.containsKey(obj)) {
-				modelMap.put(obj, new ArrayList<String>());
-			}
-			
-			invalidModelMap.remove(obj);
-			
+		String model = getValue(row, MODEL);
+		
+		if (model == null) {
+			return null;
 		}
 		
-		return obj;
+		if (referenceMap.containsKey(model)) {
+			model = referenceMap.get(model);
+		}
+		
+		if (!modelMap.containsKey(model)) {
+			modelMap.put(model, new ArrayList<String>());
+		}
+		
+		invalidModelMap.remove(model);
+			
+		return model;
 		
 	}
 	
-	private String validateView(String obj, Row row) throws IOException {
+	private boolean validateField(String model) throws IOException {
 		
-		String view = getValue(row, VIEW);
+		boolean modelRequired = false;
 		
-		if (view != null && obj != null) {
-			if (!viewModelMap.containsKey(view)) {
-				viewModelMap.put(view, obj);
-			}
-//			else if (!viewModelMap.get(view).equals(obj)) {
-//				addLog(String.format(
-//						I18n.get("Same view name can't be used for two objects %s and %s")
-//						, viewModelMap.get(view), obj), row);
-//			}
-		}
-		
-		return view;
-		
-	}
-	
-	private boolean validateField(Row row, String obj) throws IOException {
-		
-		boolean consider = false;
-		
-		String type = validateType(row);
+		String type = validateType();
 		if (type != null) {
 			if (ignoreTypes.contains(type)) {
-				return consider;
+				return modelRequired;
 			}
 			if(!type.startsWith("menu") && !type.startsWith("dashlet")) {
-				consider = true;
+				modelRequired = true;
 			}
 		}
 		
-		consider = validateName(type, row, obj, consider);
+		modelRequired = validateName(type, model, modelRequired);
 		
 		if(type != null && type.startsWith("menu")){
 			return false;
 		}
 		
-		consider = checkSelect(row, type, consider);
-		consider = checkFormula(obj, row, consider);
-		consider = checkEvents(obj, row, consider);
+		modelRequired = checkSelect(row, type, modelRequired);
+		modelRequired = checkFormula(modelRequired);
+		modelRequired = checkEvents(model, modelRequired);
 		
-		if (consider && type == null) {
-			addLog(I18n.get("No type defined"), row);
+		if (modelRequired && type == null) {
+			addLog(I18n.get("No type defined"));
 		}
 		
-		return consider;
+		return modelRequired;
 	}
 	
-	private boolean validateName(String type, Row row, String obj,
+	private boolean validateName(String type, String obj,
 			boolean consider) throws IOException {
 		
 		String name = getValue(row, NAME);
@@ -226,7 +224,12 @@ public class DataValidatorService extends DataCommonService {
 			name = title;
 		}
 		if (name != null) {
-			menus.add(name);
+			if (type != null && type.startsWith("menu")) {
+				if (title == null) {
+					addLog(I18n.get("Title required for menu."));
+				}
+				menus.add(name);
+			}
 			name = getFieldName(name);
 		}
 		
@@ -240,13 +243,16 @@ public class DataValidatorService extends DataCommonService {
 			if (invalidFieldMap.containsKey(obj)) {
 				invalidFieldMap.get(obj).remove(name);
 			}
+			try {
+				configService.validateFieldName(name);
+			} catch (AxelorException e) {
+				addLog(e.getMessage());
+			}
 		}
 		else if (type != null 
 				&& !ignoreNames.contains(type) 
 				&& !ignoreTypes.contains(type)) {
-			LOG.debug("Ignore names : {}", ignoreNames);
-			LOG.debug("ignoreTypes : {}", ignoreTypes);
-			addLog(I18n.get("Name and title empty or name is invalid."), row);
+			addLog(I18n.get("Name and title empty or name is invalid."));
 		}
 		
 		return consider;
@@ -266,7 +272,7 @@ public class DataValidatorService extends DataCommonService {
 					&& !type.equals("select") 
 					&& !type.equals("multiselect")){
 				addLog(I18n.get("Selection defined for non select field. "
-						+ "Please check the type"), row);
+						+ "Please check the type"));
 			
 			return true;
 		}
@@ -274,7 +280,17 @@ public class DataValidatorService extends DataCommonService {
 		return consider;
 	}
 	
-	private void addLog(String log, Row row) throws IOException{
+	private void addLog(String log) throws IOException {
+		addLog(log, null);
+	
+	}
+	
+	
+	private void addLog(String log, Row row) throws IOException {
+		
+		if (row == null) {
+			row = this.row;
+		}
 		
 		if (logFile == null) {
 			logFile = File.createTempFile("ModelImportLog", ".xlsx");
@@ -330,7 +346,7 @@ public class DataValidatorService extends DataCommonService {
 		
 	}
 	
-	private String validateType(Row row) throws IOException {
+	private String validateType() throws IOException {
 		
 		String type = getValue(row, TYPE);
 		if(type == null){
@@ -349,12 +365,12 @@ public class DataValidatorService extends DataCommonService {
 		
 		if (!fieldTypes.containsKey(type) 
 				&& !frMap.containsKey(type) && !viewElements.containsKey(type)) {
-			addLog(I18n.get("Invalid type"), row);
+			addLog(I18n.get("Invalid type"));
 		}
 		
 		if (referenceTypes.contains(type)) { 
 			if (reference == null) {
-				addLog(I18n.get("Reference is empty for type"), row);
+				addLog(I18n.get("Reference is empty for type"));
 			}
 			else  if (!modelMap.containsKey(reference) 
 					&& !invalidModelMap.containsKey(reference)) {
@@ -365,22 +381,20 @@ public class DataValidatorService extends DataCommonService {
 		}
 		
 		if (type.equals("menu") && reference != null) {
-			
-			if(!menus.contains(reference)){
-				addLog(I18n.get("No parent menu defined"), row);
+			MetaMenu menu = metaMenuRepo.all().filter("self.name = ?1" , reference).fetchOne();
+			if(!menus.contains(reference) && menu == null){
+				addLog(I18n.get("No parent menu defined"));
 			}
 		}
 		
 		if(type != null && !ignoreTypes.contains(type) && !type.equals("menu")){
-			checkViewPanelType(type, reference, row);
+			checkViewPanelType(type, reference);
 		}
-		
-		
 		
 		return type;
 	}
 	
-	private boolean checkEvents(String obj, Row row, boolean consider) throws IOException {
+	private boolean checkEvents(String obj, boolean consider) throws IOException {
 		
 		String formula = getValue(row, FORMULA);
 		String event = getValue(row, EVENT);
@@ -392,7 +406,7 @@ public class DataValidatorService extends DataCommonService {
 		consider = true;
 		
 		if (formula == null) {
-			addLog(I18n.get("Formula is empty but event specified"), row);
+			addLog(I18n.get("Formula is empty but event specified"));
 		}
 		for (String evt : event.split(",")) {
 			evt = evt.trim();
@@ -441,14 +455,13 @@ public class DataValidatorService extends DataCommonService {
 		
 		for(Object[] panel : viewPanelMap.values()) {
 			if(panel[0].equals("panelbook")) {
-				addLog(I18n.get("Panelbook must follow by paneltab"), 
-						(Row)panel[1]);
+				addLog(I18n.get("Panelbook must follow by paneltab"));
 			}
 		}
 		
 	}
 	
-	private void checkViewPanelType(String type, String reference, Row row) throws IOException{
+	private void checkViewPanelType(String type, String reference) throws IOException{
 		
 		String view = getValue(row, VIEW);
 		if (view == null) {
@@ -463,7 +476,7 @@ public class DataValidatorService extends DataCommonService {
 		if (lastPanel == null) {
 			if (type.startsWith("panel")) {
 				if (type.equals("paneltab")) {
-					addLog(I18n.get("Paneltab not allowed without panelbook"), row);
+					addLog(I18n.get("Paneltab not allowed without panelbook"));
 				}
 				else {
 					viewPanelMap.put(view, new Object[]{type, row});
@@ -477,12 +490,12 @@ public class DataValidatorService extends DataCommonService {
 		}
 		else if (lastPanel[0].equals("panelbook") 
 				&& !panelTabTypes.contains(type)) {
-			addLog(I18n.get("Panelbook must follow by paneltab"), row);
+			addLog(I18n.get("Panelbook must follow by paneltab"));
 		}
 //		else if (type.equals("paneltab") 
 //				&& !lastPanel[0].equals("panelbook")
 //				&& !panelTabTypes.contains(lastPanel[0])) {
-//			addLog(I18n.get("Paneltab not allowed without panelbook"), row);
+//			addLog(I18n.get("Paneltab not allowed without panelbook"));
 //		}
 		else if (type.startsWith("panel") || panelTabTypes.contains(type)) {
 			viewPanelMap.put(view, new Object[]{type, row});
@@ -490,7 +503,7 @@ public class DataValidatorService extends DataCommonService {
 		
 	}
 	
-	private boolean checkFormula(String obj, Row row, boolean consider) throws IOException{
+	private boolean checkFormula(boolean consider) throws IOException{
 		
 		String formula = getValue(row, FORMULA);
 		
@@ -503,11 +516,11 @@ public class DataValidatorService extends DataCommonService {
 			expr = expr.trim();
 			if(expr.startsWith("sum(") 
 					&& !expr.matches(sumPattern)){
-				addLog(I18n.get("Invalid sum formula syntax"), row);
+				addLog(I18n.get("Invalid sum formula syntax"));
 			}
 			else if(expr.startsWith("seq(") 
 					&& !expr.matches(seqPattern)){
-				addLog(I18n.get("Invalid sequence formula syntax"), row);
+				addLog(I18n.get("Invalid sequence formula syntax"));
 			}
 		}
 		

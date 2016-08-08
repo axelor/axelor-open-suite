@@ -19,8 +19,10 @@ package com.axelor.studio.service.data.importer;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.poi.ss.usermodel.Row;
@@ -73,6 +75,8 @@ public class DataViewService extends DataCommonService {
 	private Map<Long, Integer> menuSeqMap = new HashMap<Long, Integer>();
 
 	private Map<String, List<ActionBuilder>> viewActionMap = new HashMap<String, List<ActionBuilder>>();
+	
+	private Map<String, Set<String>> extendViews;
 
 	private Row row = null;
 	
@@ -105,34 +109,33 @@ public class DataViewService extends DataCommonService {
 		viewSeqMap = new HashMap<Long, Integer>();
 		menuSeqMap = new HashMap<Long, Integer>();
 		viewActionMap = new HashMap<String, List<ActionBuilder>>();
+		extendViews= new HashMap<String,  Set<String>>();
 		parentMenuSeq = 0;
 	}
 
 	public void addViewElement(MetaModel model, String[] basic, Row row,
 			MetaField metaField, boolean replace) throws AxelorException {
 		
-		
 		this.row = row;
-		this.replace = replace;
 		
 		if (basic[0].equals("menu")) {
 			addMenu(model, basic);
 			return;
 		}
-
+		
 		if (model == null) {
 			throw new AxelorException(I18n.get("No object defind for row : %s sheet: %s"),
 					1, row.getRowNum() + 1, row.getSheet().getSheetName());
 		}
-
-		String panelLevel = getValue(row, PANEL_LEVEL);
-		if (!basic[0].startsWith("panel") 
-				&& !replace 
-				&& !getValue(row, MODULE).startsWith("*")) {
-			return;
-		}
 		
-		ViewBuilder viewBuilder = getViewBuilder(model, getValue(row, VIEW), replace);
+		String module = getValue(row, MODULE);
+		module = module.replace("*", "");
+		String[] name = getViewName(model.getName());
+		checkReplace(replace, module, name[0]);
+		
+		ViewBuilder viewBuilder = getViewBuilder(module, model, name);
+		
+		String panelLevel = getValue(row, PANEL_LEVEL);
 		
 		switch (basic[0]) {
 			case "panelbook":
@@ -158,7 +161,7 @@ public class DataViewService extends DataCommonService {
 				addLabel(viewBuilder, basic);
 				break;
 			case "wizard":
-				addWizard(viewBuilder, basic);
+				addWizard(module, viewBuilder, basic);
 			case "stream":
 				viewBuilder.setAddStream(true);
 				break;
@@ -193,8 +196,35 @@ public class DataViewService extends DataCommonService {
 		processViewAction(viewBuilder);
 	}
 
-	private ViewBuilder getViewBuilder(MetaModel model, String viewName, boolean replace) {
+	private ViewBuilder getViewBuilder(String module, MetaModel model, String[] name) {
 		
+		if (clearedViews.containsKey(name[0])) {
+			return clearedViews.get(name[0]);
+		}
+
+		ViewBuilder viewBuilder = viewLoaderService.getViewBuilder(module, name[0]);
+		if (viewBuilder == null) {
+			viewBuilder = viewLoaderService.getViewBuilderForm(module, model, name[0], name[1], !replace);
+		}
+		else if (!replace && viewBuilder.getMetaView() == null){
+			MetaView metaView = metaViewRepo
+					.all()
+					.filter("self.name = ?1 and self.model = ?2 AND self.type = 'form'",
+							name[0], model.getFullName()).fetchOne();
+			viewBuilder.setMetaView(metaView);
+		}
+		
+		viewBuilder.setEdited(true);
+		viewBuilder.setRecorded(false);
+		viewBuilder.setAddOnly(!replace);
+		viewBuilder = clearView(viewBuilder);
+
+		return viewBuilder;
+	}
+	
+	private String[] getViewName(String model) {
+		
+		String viewName = getValue(row, VIEW);
 		String title = null;
 		if (viewName != null && viewName.contains("(")) {
 			String[] view = viewName.split("\\(");
@@ -203,34 +233,12 @@ public class DataViewService extends DataCommonService {
 		}
 		
 		if (viewName == null) {
-			viewName = ViewLoaderService.getDefaultViewName(model.getName(), "form");
-		}
-
-		if (clearedViews.containsKey(viewName)) {
-			return clearedViews.get(viewName);
-		}
-
-		ViewBuilder viewBuilder = viewLoaderService.getViewBuilder(viewName);
-		if (viewBuilder == null) {
-			viewBuilder = viewLoaderService.getViewBuilderForm(model, viewName, title, !replace);
-		}
-		else if (!replace && viewBuilder.getMetaView() == null){
-			MetaView metaView = metaViewRepo
-					.all()
-					.filter("self.name = ?1 and self.model = ?2 AND self.type = 'form'",
-							viewName, model.getFullName()).fetchOne();
-			viewBuilder.setMetaView(metaView);
+			viewName = ViewLoaderService.getDefaultViewName(model, "form");
 		}
 		
-		viewBuilder.setEdited(true);
-		viewBuilder.setRecorded(false);
-		viewBuilder.setAddOnly(!replace);
-		viewName = viewBuilder.getName();
-		viewBuilder = clearView(viewBuilder);
-
-		return viewBuilder;
+		return new String[] {viewName, title};
 	}
-
+	
 	public Map<String, List<ActionBuilder>> getViewActionMap() {
 		return viewActionMap;
 	}
@@ -294,7 +302,7 @@ public class DataViewService extends DataCommonService {
 		
 		String module = getValue(row, MODULE);
 		if (module != null) {
-			if (!replace && module.startsWith("*")) {
+			if (replace && module.startsWith("*")) {
 				panel.setNewPanel(true);
 			}
 			panel.setIfModule(getIfModule(module, viewBuilder));
@@ -414,7 +422,7 @@ public class DataViewService extends DataCommonService {
 	}
 
 	@Transactional
-	public void addWizard(ViewBuilder viewBuilder, String[] basic) {
+	public void addWizard(String module, ViewBuilder viewBuilder, String[] basic) {
 
 		ViewPanel lastPanel = getLastPanel(viewBuilder, true);
 		String modelName = inflector.camelize(basic[1]);
@@ -422,7 +430,7 @@ public class DataViewService extends DataCommonService {
 
 		ViewBuilder targetView = null;
 		if (metaModel != null) {
-			targetView = viewLoaderService.getDefaultForm(metaModel, null, true);
+			targetView = viewLoaderService.getDefaultForm(module, metaModel, null, true);
 		}
 
 		String actionName = "action-" + inflector.dasherize(basic[2]);
@@ -430,6 +438,7 @@ public class DataViewService extends DataCommonService {
 		ActionBuilder builder = actionBuilderRepo.findByName(actionName);
 		if (builder == null) {
 			builder = new ActionBuilder(actionName);
+			builder.setMetaModule(viewBuilder.getMetaModule());
 		}
 		builder.setEdited(true);
 		builder.setTypeSelect(2);
@@ -521,15 +530,13 @@ public class DataViewService extends DataCommonService {
 	public void addMenu(MetaModel model, String[] basic) throws AxelorException {
 		
 		String module = getValue(row, MODULE);
-		if (module != null && !module.equals(configService.getModuleName())) {
-			return;
-		}
 		
 		String name = inflector.dasherize(basic[2]);
 
 		MenuBuilder menuBuilder = menuBuilderRepo.findByName(name);
 		if (menuBuilder == null) {
 			menuBuilder = new MenuBuilder(name);
+			menuBuilder.setMetaModule(configService.getCustomizedModule(module, true));
 		}
 		menuBuilder.setTitle(basic[3]);
 		
@@ -680,6 +687,7 @@ public class DataViewService extends DataCommonService {
 		ActionBuilder action = actionBuilderRepo.findByName(name);
 		if (action == null) {
 			action = new ActionBuilder(name);
+			action.setMetaModule(viewBuilder.getMetaModule());
 		} else {
 			action.clearLines();
 		}
@@ -850,6 +858,7 @@ public class DataViewService extends DataCommonService {
 		ActionBuilder actionBuilder = actionBuilderRepo.findByName(name);
 		if (actionBuilder == null) {
 			actionBuilder = new ActionBuilder(name);
+			actionBuilder.setMetaModule(viewBuilder.getMetaModule());
 		}
 		else{
 			actionBuilder.clearLines();
@@ -1069,12 +1078,29 @@ public class DataViewService extends DataCommonService {
 			viewModule = viewBuilder.getMetaView().getModule();
 		}
 		if (viewModule != null 
-				&& !module.equals(configService.getModuleName()) 
+				&& !viewBuilder.getMetaModule().getName().equals(module)
 				&& !module.equals(viewModule)) {
 			return module;
 		}
 		
 		return null;
+	}
+	
+	private void checkReplace(boolean replace, String module, String view) {
+		
+		if (!replace) {
+			if (extendViews.containsKey(module)) {
+				extendViews.put(module, new HashSet<String>());
+			}
+			extendViews.get(module).add(view);
+			this.replace = false;
+		}
+		else if (extendViews.containsKey(module)) {
+			this.replace =  !extendViews.get(module).contains(view);
+		}
+		
+		this.replace =  replace;
+		
 	}
 	
 	

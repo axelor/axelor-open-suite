@@ -123,7 +123,8 @@ public class WkfController {
 			viewBuilder.setMetaModel(metaModel);
 			viewBuilder.setViewType("form");
 			viewBuilder.setModel(metaModel.getFullName());
-			viewBuilder = viewLoaderService.getDefaultForm(metaModel, null, true);
+			String module = wkf.getMetaModule().getName();
+			viewBuilder = viewLoaderService.getDefaultForm(module, wkf.getMetaModel(), null, true);
 		}
 
 		response.setValue("viewBuilder", viewBuilder);

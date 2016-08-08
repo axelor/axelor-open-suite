@@ -49,6 +49,8 @@
     
     <!-- Add only new panels-->
     <boolean name="addOnly" />
+    
+    <many-to-one name="metaModule" ref="com.axelor.meta.db.MetaModule" title="Module" required="true"/>
   </entity>
     
     

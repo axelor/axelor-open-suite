@@ -60,7 +60,6 @@ import com.axelor.meta.schema.views.Spacer;
 import com.axelor.studio.db.ViewBuilder;
 import com.axelor.studio.db.ViewItem;
 import com.axelor.studio.db.ViewPanel;
-import com.axelor.studio.service.ConfigurationService;
 import com.axelor.studio.service.FilterService;
 import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
@@ -87,9 +86,6 @@ public class FormBuilderService {
 	private List<AbstractWidget> formViewItems;
 
 	private ViewBuilder viewBuilder;
-
-	@Inject
-	private ConfigurationService configService;
 
 	@Inject
 	private FilterService filterService;
@@ -342,7 +338,8 @@ public class FormBuilderService {
 				formView = (FormView) views.get(0);
 			}
 		}
-		formView.setXmlId(configService.getModuleName() + "-" + viewName);
+		formView.setXmlId(viewBuilder.getMetaModule().getName()
+				+ "-" + viewName);
 
 		return formView;
 	}

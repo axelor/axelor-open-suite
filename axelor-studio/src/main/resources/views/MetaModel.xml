@@ -19,7 +19,7 @@
     	<panel-related field="metaFields" canMove="true" orderBy="sequence" colSpan="12" grid-view="meta-field-studio-grid" form-view="meta-field-studio-form" readonly="true"/>    
     </panel>
     <panel-related field="rightManagementList" form-view="right-management-model-form" grid-view="right-management-model-grid"/>
-    <panel-related field="metaSequencList" form-view="meta-sequence-form" grid-view="meta-sequence-grid"/>
+    <panel-related field="metaSequenceList" form-view="meta-sequence-form" grid-view="meta-sequence-grid"/>
     <panel sidebar="true">
       <button name="openForm" title="Open form" onClick="save,action-meta-model-method-open-form" colSpan="12" />
       <button name="openGrid" title="Open grid" onClick="save,action-meta-model-method-open-grid" colSpan="12"/>
@@ -39,15 +39,15 @@
       <field name="metaFields" expr="action:action-meta-field-create-wkf-status" />
   </action-record>
   
-  <action-record name="action-meta-field-create-wkf-status" model="com.axelor.meta.db.MetaField">
-  	 <field name="name" expr="eval:'wkfStatus'"/>
-  	 <field name="typeName" expr="eval:'String'"/>
-  	 <field name="fieldType" expr="eval:'string'"/>
-  	 <field name="label" expr="eval:'Status'"/>
-  	 <field name="customised" expr="eval:true" />
-  	 <field name="sequence" expr="eval:1" />
-  	 <field name="readonly" expr="eval:true" />
-  </action-record>
+<!--   <action-record name="action-meta-field-create-wkf-status" model="com.axelor.meta.db.MetaField"> -->
+<!--   	 <field name="name" expr="eval:'wkfStatus'"/> -->
+<!--   	 <field name="typeName" expr="eval:'String'"/> -->
+<!--   	 <field name="fieldType" expr="eval:'string'"/> -->
+<!--   	 <field name="label" expr="eval:'Status'"/> -->
+<!--   	 <field name="customised" expr="eval:true" /> -->
+<!--   	 <field name="sequence" expr="eval:1" /> -->
+<!--   	 <field name="readonly" expr="eval:true" /> -->
+<!--   </action-record> -->
   
   <action-record name="action-meta-model-set-customised" model="com.axelor.meta.db.MetaModel">
       <field name="customised" expr="eval:true" />
@@ -56,6 +56,10 @@
   
   <action-method name="action-meta-model-method-open-form" model="com.axelor.meta.db.MetaModel">
       <call class="com.axelor.meta.web.MetaModelController" method="openForm"/>
+  </action-method>
+  
+  <action-method name="action-meta-model-method-get-default-fields" model="com.axelor.meta.db.MetaModel">
+      <call class="com.axelor.meta.web.MetaModelController" method="getDefaultFields"/>
   </action-method>
   
   <action-method name="action-meta-model-method-open-grid" model="com.axelor.meta.db.MetaModel">

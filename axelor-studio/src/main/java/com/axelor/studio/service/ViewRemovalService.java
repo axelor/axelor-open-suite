@@ -54,7 +54,7 @@ public class ViewRemovalService {
 
 	private Map<String, ObjectViews> modelMap;
 
-	private File viewPath;
+	private File viewDir;
 	
 	@Inject
 	private MetaActionRepository metaActionRepo;
@@ -65,10 +65,10 @@ public class ViewRemovalService {
 	@Inject
 	private MetaMenuRepository metaMenuRepo;
 
-	public void remove(File viewPath) {
+	public void remove(File viewDir) {
 
 		modelMap = new HashMap<String, ObjectViews>();
-		this.viewPath = viewPath;
+		this.viewDir = viewDir;
 		
 		removeActions();
 
@@ -255,7 +255,7 @@ public class ViewRemovalService {
 			for (String model : modelMap.keySet()) {
 
 				ObjectViews objectViews = modelMap.get(model);
-				File viewFile = new File(viewPath, model + ".xml");
+				File viewFile = new File(viewDir, model + ".xml");
 				if (checkEmpty(objectViews)) {
 					viewFile.delete();
 					continue;
@@ -287,7 +287,7 @@ public class ViewRemovalService {
 		}
 
 		try {
-			File viewFile = new File(viewPath, model + ".xml");
+			File viewFile = new File(viewDir, model + ".xml");
 			if (viewFile.exists()) {
 				String xml = Files.toString(viewFile, Charsets.UTF_8);
 				ObjectViews objectViews = XMLViews.fromXML(xml);

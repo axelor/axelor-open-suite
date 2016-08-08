@@ -15,7 +15,8 @@
     <boolean name="customised" />
     <boolean name="edited"/>
     <string name="title" title="Title" />
-    <one-to-many name="metaSequencList" title="Sequences" ref="com.axelor.meta.db.MetaSequence" mappedBy="metaModel" />
+    <one-to-many name="metaSequenceList" title="Sequences" ref="com.axelor.meta.db.MetaSequence" mappedBy="metaModel" />
+  	<many-to-one name="metaModule" ref="com.axelor.meta.db.MetaModule" title="Module"/>
   </entity>
     
  </domain-models>

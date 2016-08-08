@@ -35,10 +35,9 @@ import com.axelor.common.FileUtils;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
+import com.axelor.meta.db.MetaModule;
 import com.axelor.studio.db.ModuleRecorder;
-import com.axelor.studio.db.StudioConfiguration;
 import com.axelor.studio.db.repo.ModuleRecorderRepository;
-import com.axelor.studio.db.repo.StudioConfigurationRepository;
 import com.axelor.studio.service.builder.ModelBuilderService;
 import com.axelor.studio.service.builder.ViewBuilderService;
 import com.axelor.studio.service.wkf.WkfService;
@@ -56,9 +55,6 @@ public class ModuleRecorderService {
 	private final Logger log = LoggerFactory.getLogger(getClass());
 
 	@Inject
-	private StudioConfigurationRepository configRepo;
-	
-	@Inject
 	private ModuleRecorderRepository moduleRecorderRepo;
 	
 	@Inject
@@ -73,31 +69,26 @@ public class ModuleRecorderService {
 	@Inject
 	private ViewBuilderService viewBuilderService;
 	
-	public String update(ModuleRecorder recorder) throws AxelorException{
+	public String update(ModuleRecorder recorder) throws AxelorException {
 		
 		String wkfProcess = wkfService.processWkfs();
 		if (wkfProcess != null) {
 			return I18n.get(String.format("Error in workflow processing: \n%s", wkfProcess));
 		}
 		
-		configService.config();
-		
 		if (recorder.getUpdateServer()) {
-			File domainDir = configService.getDomainDir();
 
-			if (!modelBuilderService.build(domainDir)) {
-				return I18n.get("Error in model recording. Please check the log");
-			}
+			modelBuilderService.build();
 			
 			if (!buildApp(recorder)) {
 				return I18n.get("Error in build. Please check the log");
 			}
 		}
 		
-		String viewUpdate =  viewBuilderService.build(configService.getViewDir(), 
-				!recorder.getUpdateServer(), recorder.getAutoCreate(), recorder.getAllViewUpdate());
-		if (viewUpdate != null) {
-			updateModuleRecorder(recorder, viewUpdate, true);
+		String viewLog = buildView(recorder);
+		
+		if (viewLog != null) {
+			updateModuleRecorder(recorder, viewLog, true);
 			return I18n.get("Error in view update. Please check the log");
 		}
 		
@@ -113,14 +104,14 @@ public class ModuleRecorderService {
 	
 	public String reset(ModuleRecorder moduleRecorder) throws IOException, AxelorException {
 		
-		configService.config();
-		
-		File moduleDir = configService.getModuleDir();
-		log.debug("Deleting directory: {}",moduleDir.getPath());
-		
-		if (moduleDir.exists()) {
-			FileUtils.deleteDirectory(moduleDir);
+		for (MetaModule module : configService.getCustomizedModules()) {
+			File moduleDir = configService.getModuleDir(module.getName(), false);
+			log.debug("Deleting directory: {}",moduleDir.getPath());
+			if (moduleDir.exists()) {
+				FileUtils.deleteDirectory(moduleDir);
+			}
 		}
+		
 		if (!buildApp(moduleRecorder)) {
 			return I18n.get("Error in build. Please check the log");
 		}
@@ -149,18 +140,8 @@ public class ModuleRecorderService {
 					settings.get("axelor.home"), true);
 			File buildDirFile = new File(buildDir);
 
-			StudioConfiguration config = configRepo.all().fetchOne();
-			ProcessBuilder processBuilder = null;
-			if (config != null) {
-				String buildCmd = config.getBuildCmd();
-				if (buildCmd != null) {
-					processBuilder = new ProcessBuilder(buildCmd.split(" "));
-				}
-			}
-			if (processBuilder == null) {
-				processBuilder = new ProcessBuilder("./gradlew", "clean", "-x",
+			ProcessBuilder processBuilder = new ProcessBuilder("./gradlew", "clean", "-x",
 						"test", "build");
-			}
 			processBuilder.directory(buildDirFile);
 			processBuilder.environment().put("AXELOR_HOME", axelorHome);
 
@@ -325,4 +306,18 @@ public class ModuleRecorderService {
 		}
 	}
 	
+	private String buildView(ModuleRecorder recorder) throws AxelorException {
+		
+		String viewLog = null;
+		for (MetaModule module : configService.getCustomizedModules()) {
+			viewLog =  viewBuilderService.build(module.getName(), 
+				!recorder.getUpdateServer(), recorder.getAutoCreate(), recorder.getAllViewUpdate());
+			if (viewLog != null) {
+				break;
+			}
+		}
+		
+		return viewLog;
+		
+	}
 }

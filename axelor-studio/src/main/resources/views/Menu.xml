@@ -124,9 +124,9 @@
   <!-- Configuration menus -->
   <menuitem name="menu-studio-configuration" title="Configuration" parent="menu-studio-root" order="50"/>
   
-  <menuitem name="menu-studio-configuration-configuration" title="Configuration" action="action.studio.configuration.configuration" parent="menu-studio-configuration" order="5"/>
+  <menuitem name="menu-studio-studio-module" title="Studio modules" action="action.studio.studio.module" parent="menu-studio-configuration" order="5"/>
 
-  <action-view name="action.studio.configuration.configuration" title="Configuration" model="com.axelor.studio.db.StudioConfiguration">
+  <action-view name="action.studio.studio.module" title="Studio modules" model="com.axelor.studio.db.StudioModule">
       <view type="grid" name="studio-configuration-grid"/>
       <view type="form" name="studio-configuration-form"/>
       <context name="_showSingle" expr="eval:true"/>

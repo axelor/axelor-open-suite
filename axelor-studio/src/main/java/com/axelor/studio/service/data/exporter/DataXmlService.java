@@ -364,7 +364,7 @@ public class DataXmlService extends DataCommonService {
 		if (items == null) {
 			return panelLevel;
 		}
-		boolean panelTab = (boolean) extra[0];
+		boolean panelTab = (boolean) extra[1];
 		for (AbstractWidget item : items) {
 			
 			if (item.getModuleToCheck() != null 
@@ -393,7 +393,7 @@ public class DataXmlService extends DataCommonService {
 										 Mapper.class, 
 										 Object[].class});
 				method.setAccessible(true);
-				extra[0] = panelTab;
+				extra[1] = panelTab;
 				panelLevel = (String) method.invoke(this, item, module, model, view, mapper, extra);
 				extra[2] = panelLevel;
 				

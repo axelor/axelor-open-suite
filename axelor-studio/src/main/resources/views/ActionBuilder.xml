@@ -16,6 +16,7 @@
 	      <field name="name" />
 	      <field name="typeSelect" onChange="action-action-builder-type-select-change,action-action-builder-line-column-attrs"/>
 	      <field name="metaModel" requiredIf="typeSelect != 2" />
+	      <field name="studioModule" />
 	      <panel colSpan="12" showIf="typeSelect == 0 ||  typeSelect == 1">
 		      <field name="targetModel" />
 		      <field name="targetField" domain="self.metaModel = :metaModel"/>

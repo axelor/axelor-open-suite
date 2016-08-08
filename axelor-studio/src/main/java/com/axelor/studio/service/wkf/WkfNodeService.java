@@ -31,11 +31,11 @@ import com.axelor.auth.db.repo.PermissionRepository;
 import com.axelor.meta.db.MetaField;
 import com.axelor.meta.db.MetaMenu;
 import com.axelor.meta.db.MetaModel;
+import com.axelor.meta.db.MetaModule;
 import com.axelor.meta.db.MetaSelect;
 import com.axelor.meta.db.MetaSelectItem;
 import com.axelor.meta.db.repo.MetaMenuRepository;
 import com.axelor.meta.db.repo.MetaModelRepository;
-import com.axelor.meta.db.repo.MetaSelectItemRepository;
 import com.axelor.meta.db.repo.MetaSelectRepository;
 import com.axelor.meta.schema.actions.ActionGroup;
 import com.axelor.studio.db.ActionSelector;
@@ -81,9 +81,6 @@ class WkfNodeService {
 
 	@Inject
 	private MetaSelectRepository metaSelectRepo;
-
-	@Inject
-	private ConfigurationService configService;
 
 	@Inject
 	protected WkfNodeService(WkfService wkfService) {
@@ -164,7 +161,9 @@ class WkfNodeService {
 			metaSelect = metaSelectRepo.findByName(selectName);
 			if (metaSelect == null) {
 				metaSelect = new MetaSelect(selectName);
-				metaSelect.setModule(configService.getModuleName());
+				MetaModule metaModule = wkfService.workflow.getMetaModule();
+				metaSelect.setModule(metaModule.getName());
+				metaSelect.setMetaModule(metaModule);
 			}
 			statusField.setMetaSelect(metaSelect);
 		}

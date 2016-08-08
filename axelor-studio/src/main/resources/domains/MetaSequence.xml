@@ -7,6 +7,7 @@
   
   <entity name="MetaSequence" cachable="true">
   	<many-to-one name="metaModel" ref="MetaModel" />
+  	<many-to-one name="metaModule" ref="com.axelor.meta.db.MetaModule" title="Module"/>
   </entity>
     
  </domain-models>

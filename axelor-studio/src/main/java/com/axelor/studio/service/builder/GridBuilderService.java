@@ -38,8 +38,6 @@ import com.axelor.meta.schema.views.Field;
 import com.axelor.meta.schema.views.GridView;
 import com.axelor.studio.db.ViewBuilder;
 import com.axelor.studio.db.ViewItem;
-import com.axelor.studio.service.ConfigurationService;
-import com.google.inject.Inject;
 
 /**
  * This service class generate GridView from ViewBuilder.
@@ -50,9 +48,6 @@ import com.google.inject.Inject;
 public class GridBuilderService {
 
 	protected Logger log = LoggerFactory.getLogger(getClass());
-
-	@Inject
-	private ConfigurationService configService;
 
 	/**
 	 * Root method to access the service to get GridView from ViewBuilder
@@ -113,7 +108,7 @@ public class GridBuilderService {
 		if (!views.isEmpty()) {
 			grid = (GridView) views.get(0);
 			String xmlId = grid.getXmlId();
-			String module = configService.getModuleName() + "-";
+			String module = viewBuilder.getMetaModule().getName() + "-";
 			if (xmlId == null || !xmlId.startsWith(module)) {
 				xmlId = module + grid.getName();
 			}
