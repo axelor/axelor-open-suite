@@ -34,8 +34,6 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
@@ -104,7 +102,7 @@ public class DataValidatorService extends DataCommonService {
 		referenceMap = new HashMap<String, String>();
 		menus = new ArrayList<String>();
 		Iterator<XSSFSheet> sheetIter = workBook.iterator();
-		sheetIter.next();
+		validateModules(sheetIter.next());
 		
 		while (sheetIter.hasNext()) {
 			XSSFSheet sheet = sheetIter.next();
@@ -124,6 +122,37 @@ public class DataValidatorService extends DataCommonService {
 		return logFile;
 	}
 	
+	private void validateModules(XSSFSheet sheet) throws IOException {
+		
+		Iterator<Row> rowIterator = sheet.rowIterator();
+		
+		while (rowIterator.hasNext()) {
+			
+			Row row = rowIterator.next();
+			if (row.getRowNum() == 0 ) {
+				continue;
+			}
+			
+			String name = getValue(row, 0);
+			try {
+				configService.validateModuleName(name);
+			} catch (AxelorException e) {
+				addLog(e.getMessage(), row);
+			}
+			
+			String depends = getValue(row, 1);
+			if (depends != null && Arrays.asList(depends.split(",")).contains(name)) {
+				addLog(I18n.get("Module's depends must not contain its name"), row);
+			}
+			
+			String title = getValue(row, 2);
+			String version = getValue(row, 3);
+			if (title == null || version == null) {
+				addLog(I18n.get("Title or module version is empty"), row);
+			}
+		}
+		
+	}
 	
 	private void validateRow(Iterator<Row> rowIter) throws IOException{
 		
@@ -134,6 +163,11 @@ public class DataValidatorService extends DataCommonService {
 		this.row = rowIter.next();
 		
 		String module = getValue(row, MODULE);
+		if (module == null) {
+			validateRow(rowIter);
+			return;
+		}
+		
 		module = module.replace("*", "");
 		if (configService.getNonCustomizedModules().contains(module)) {
 			validateRow(rowIter);
@@ -167,12 +201,22 @@ public class DataValidatorService extends DataCommonService {
 			return null;
 		}
 		
+		String[] models = model.split("\\(");
+		model = models[0];
+		
 		if (referenceMap.containsKey(model)) {
 			model = referenceMap.get(model);
 		}
 		
 		if (!modelMap.containsKey(model)) {
 			modelMap.put(model, new ArrayList<String>());
+		}
+		
+		if (models.length > 1){
+			String reference = models[1].replace(")","");
+			if (!modelMap.get(model).contains(reference)) {
+				addLog("No nested reference field found");
+			}
 		}
 		
 		invalidModelMap.remove(model);
@@ -282,7 +326,6 @@ public class DataValidatorService extends DataCommonService {
 	
 	private void addLog(String log) throws IOException {
 		addLog(log, null);
-	
 	}
 	
 	

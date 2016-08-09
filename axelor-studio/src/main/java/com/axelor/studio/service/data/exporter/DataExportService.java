@@ -50,7 +50,6 @@ import com.axelor.meta.db.MetaAction;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.meta.db.MetaMenu;
 import com.axelor.meta.db.MetaModule;
-import com.axelor.meta.db.MetaTranslation;
 import com.axelor.meta.db.repo.MetaMenuRepository;
 import com.axelor.meta.db.repo.MetaModuleRepository;
 import com.axelor.studio.service.ViewLoaderService;
@@ -126,7 +125,9 @@ public class DataExportService extends DataCommonService {
 		}
 		
 		installed = new ArrayList<String>();
-		List<MetaModule> modules = metaModuleRepo.all().filter("self.installed = true || self.customised = true").fetch();
+		List<MetaModule> modules = metaModuleRepo
+				.all()
+				.filter("(self.installed = true OR self.customised = true) and self.name != 'axelor-core'").fetch();
 		for (MetaModule module : modules) {
 			installed.add(module.getName());
 		}
@@ -145,7 +146,7 @@ public class DataExportService extends DataCommonService {
 		if  (oldFile != null && !onlyPanel) {
 			updateDocMap(oldFile);
 		}
-		addStudioImport();
+		addModules();
 		
 		menuSheet = workBook.createSheet("Menus");
 		
@@ -160,9 +161,9 @@ public class DataExportService extends DataCommonService {
 		return createExportFile(oldFile);
 	}
 	
-	private void addStudioImport() {
+	private void addModules() {
 		
-		XSSFSheet sheet = workBook.createSheet("StudioImport");
+		XSSFSheet sheet = workBook.createSheet("Modules");
 		
 		XSSFSheet oldSheet = null;
 		
@@ -173,10 +174,9 @@ public class DataExportService extends DataCommonService {
 		
 		if (oldSheet == null) {
 			XSSFRow row = sheet.createRow(0);
-			String[] titles = new String[]{"Object", "View", "Add/Replace"};
-			
+
 			int count = 0;
-			for (String title : titles) {
+			for (String title : MODULE_HEADERS) {
 				Cell cell = row.createCell(count);
 				cell.setCellValue(title);
 				count++;

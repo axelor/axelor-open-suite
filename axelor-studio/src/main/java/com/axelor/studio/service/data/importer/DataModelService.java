@@ -37,6 +37,7 @@ import com.axelor.i18n.I18n;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaField;
 import com.axelor.meta.db.MetaModel;
+import com.axelor.meta.db.MetaModule;
 import com.axelor.meta.db.MetaSelect;
 import com.axelor.meta.db.MetaSelectItem;
 import com.axelor.meta.db.repo.MetaSelectRepository;
@@ -75,6 +76,8 @@ public class DataModelService extends DataCommonService {
 	
 	private Map<String, MetaModel> nestedModels;
 	
+	private Map<String, String> modulePriorityMap;
+	
 	private Row row = null;
 	
 	@Inject
@@ -105,6 +108,7 @@ public class DataModelService extends DataCommonService {
 		fieldSeqMap = new HashMap<Long, Integer>();
 		gridViewMap = new HashMap<String, Map<String,List<MetaField>>>();
 		nestedModels = new HashMap<String, MetaModel>();
+		modulePriorityMap = new HashMap<String, String>();
 
 		try {
 			
@@ -145,7 +149,8 @@ public class DataModelService extends DataCommonService {
 	private void proccessSheet(XSSFWorkbook workBook) throws IOException, AxelorException {
 
 		Iterator<XSSFSheet> sheetIter = workBook.iterator();
-		sheetIter.next();
+		
+		createCustomModules(sheetIter.next());
 		
 		while (sheetIter.hasNext()) {
 			XSSFSheet sheet = sheetIter.next();
@@ -158,7 +163,41 @@ public class DataModelService extends DataCommonService {
 		}
 
 	}
-
+	
+	@Transactional
+	public void createCustomModules(XSSFSheet sheet) {
+		
+		Iterator<Row> rowIterator = sheet.rowIterator();
+		
+		while (rowIterator.hasNext()) {
+			Row row = rowIterator.next();
+			if (row.getRowNum() == 0) {
+				continue;
+			}
+			
+			String name = getValue(row, 0);
+			if (name == null) {
+				continue;
+			}
+			if (configService.getNonCustomizedModules().contains(name)) {
+				continue;
+			}
+			MetaModule module = configService.getCustomizedModule(name);
+			if (module == null) {
+				module = new MetaModule(name);
+			}
+			module.setDepends(getValue(row, 1));
+			module.setTitle(getValue(row, 2));
+			module.setModuleVersion(getValue(row, 3));
+			module.setDescription(getValue(row, 4));
+			module.setCustomised(true);
+			
+			modulePriorityMap.put(name, getValue(row, 5));
+			log.debug("Module found/created: {}", module);
+		}
+		
+	}
+	
 	/**
 	 * Create MetaModel from data sheet data.
 	 * 
@@ -175,12 +214,11 @@ public class DataModelService extends DataCommonService {
 		}
 		
 		boolean replace = true;
-		
 		this.row = rowIter.next();
 		String module = getValue(row, MODULE);
 		if (module == null) {
 			extractRow(rowIter);
-			return;	
+			return;
 		}
 		
 		if (module.startsWith("*")) {
@@ -188,6 +226,19 @@ public class DataModelService extends DataCommonService {
 			module = module.replace("*", "");
 		}
 		
+		MetaModule metaModule = getModule(module);
+		if (metaModule == null) {
+			extractRow(rowIter);
+			return;
+		}
+		
+		importModel(metaModule, replace);
+
+		extractRow(rowIter);
+	}
+	
+	private void importModel(MetaModule metaModule, boolean replace) throws AxelorException {
+
 		String name = getValue(row, MODEL);
 		String parentField = null;
 
@@ -198,16 +249,11 @@ public class DataModelService extends DataCommonService {
 			parentField = names[1].replace(")", "");
 		}
 		
-		if (configService.getNonCustomizedModules().contains(module)){
-			extractRow(rowIter);
-			return;
-		}
-		
 		MetaModel model = null;
 		if (!Strings.isNullOrEmpty(modelName)) {
-			model = getModel(modelName, module);
+			model = getModel(modelName, metaModule);
 			if (parentField != null && !nestedModels.containsKey(name)) {
-				nestedModels.put(name, getNestedModel(module, model, parentField));
+				nestedModels.put(name, getNestedModel(metaModule, model, parentField));
 			}
 		}
 
@@ -215,23 +261,36 @@ public class DataModelService extends DataCommonService {
 		MetaField metaField = null;
 		if (model != null && fieldTypes.containsKey(basic[0])) {
 			if (parentField == null) {
-				metaField = createMetaField(model, basic, module);
+				metaField = createMetaField(model, basic, metaModule);
 			}
 			else {
 				MetaModel nestedModel = nestedModels.get(name);
-				metaField = createMetaField(nestedModel, basic, module);
+				metaField = createMetaField(nestedModel, basic, metaModule);
 				modelName = nestedModel.getName();
 			}
 			
-			addGridField(module, metaField, getValue(row, GRID), modelName);
+			addGridField(metaModule.getName(), metaField, getValue(row, GRID), modelName);
 			
 		}
 
 		if (!Strings.isNullOrEmpty(basic[0]) && !ignoreTypes.contains(basic[0])) {
-			viewImporterService.addViewElement(model, basic, row, metaField, replace);
+			viewImporterService.addViewElement(model, basic, row, metaField, replace, modulePriorityMap);
 		}
-
-		extractRow(rowIter);
+	}
+	
+	private MetaModule getModule(String name) {
+		
+		MetaModule metaModule = null;
+		
+		if (configService.getNonCustomizedModules().contains(name)) {
+			return null;
+		}
+		
+		if (!name.isEmpty()) {
+			metaModule = configService.getCustomizedModule(name);
+		}
+			
+		return metaModule;
 	}
 	
 	
@@ -267,7 +326,7 @@ public class DataModelService extends DataCommonService {
 		return new String[] { fieldType, ref, name, title, parentField };
 	}
 	
-	private MetaModel getNestedModel(String module, MetaModel parentModel, String nestedField) {
+	private MetaModel getNestedModel(MetaModule module, MetaModel parentModel, String nestedField) {
 		
 		log.debug("Search for nested field: {}, model: {}", nestedField, parentModel.getName());
 		
@@ -284,12 +343,10 @@ public class DataModelService extends DataCommonService {
 	}
 	
 	@Transactional
-	public MetaField createMetaField(MetaModel metaModel, String[] basic, String module) throws AxelorException {
+	public MetaField createMetaField(MetaModel metaModel, String[] basic, MetaModule metaModule) throws AxelorException {
 
 		String model = metaModel.getName();
 		
-		validateFieldName(basic[2], row.getRowNum(), model);
-
 		MetaField field = metaFieldRepo
 				.all()
 				.filter("self.name = ?1 and self.metaModel = ?2", basic[2],
@@ -297,15 +354,16 @@ public class DataModelService extends DataCommonService {
 		
 		addTranslation(basic[3], getValue(row, TITLE_FR), "fr");
 		
-		moduleMap.get(module).get(model).add(basic[2]);
+		moduleMap.get(metaModule.getName()).get(model).add(basic[2]);
 		
 		if (field == null) {
+			validateFieldName(basic[2], row.getRowNum(), model);
 			field = new MetaField();
 			field.setName(basic[2]);
 			if (!ModelBuilderService.isReserved(basic[2])) {
 				field.setCustomised(true);
 			}
-			field.setMetaModule(configService.getCustomizedModule(module, true));
+			field.setMetaModule(metaModule);
 		} else if (!field.getCustomised()){
 			return field;
 		}
@@ -333,10 +391,10 @@ public class DataModelService extends DataCommonService {
 				field.setIsDuration(true);
 				break;
 			case "select":
-				field = setSelectionField(model, field, module);
+				field = setSelectionField(model, field, metaModule);
 				break;
 			case "multiselect":
-				field = setSelectionField(model, field, module);
+				field = setSelectionField(model, field, metaModule);
 				field.setMultiselect(true);
 				break;
 
@@ -354,7 +412,7 @@ public class DataModelService extends DataCommonService {
 		field.setHelpText(help);
 		field.setMetaModel(metaModel);
 		field.setSequence(getFieldSequence(metaModel.getId()));
-		field = updateFieldTypeName(basic[0], basic[1], field, module);
+		field = updateFieldTypeName(basic[0], basic[1], field, metaModule.getName());
 
 		return metaFieldRepo.save(field);
 
@@ -391,7 +449,7 @@ public class DataModelService extends DataCommonService {
 	 * @return Updated MetaField.
 	 * @throws AxelorException 
 	 */
-	private MetaField setSelectionField(String modelName, MetaField field, String module) throws AxelorException {
+	private MetaField setSelectionField(String modelName, MetaField field, MetaModule module) throws AxelorException {
 
 		String[] selection = getSelection(modelName, field.getName());
 		
@@ -402,7 +460,7 @@ public class DataModelService extends DataCommonService {
 			if(metaSelect == null) {
 				metaSelect = new MetaSelect(selection[0]);
 				metaSelect.setCustomised(true);
-				metaSelect.setMetaModule(configService.getCustomizedModule(module, true));
+				metaSelect.setMetaModule(module);
 			}
 			else{
 				metaSelect.clearItems();
@@ -549,13 +607,13 @@ public class DataModelService extends DataCommonService {
 	 * @return List of saved MetaModels.
 	 */
 	@Transactional(rollbackOn = { Exception.class })
-	public MetaModel getModel(String name, String module) {
+	public MetaModel getModel(String name, MetaModule module) {
 		
 		name = inflector.camelize(name);
 		
 		MetaModel model = metaModelRepo.findByName(name);
 		
-		if (!updateModuleMap(name, module)) {
+		if (!updateModuleMap(name, module.getName())) {
 			model.setCustomised(true);
 			model.setEdited(true);
 			return metaModelRepo.save(model);
@@ -563,19 +621,18 @@ public class DataModelService extends DataCommonService {
 		
 		if (model == null) {
 			model = new MetaModel(name);
-			model.setMetaModule(configService.getCustomizedModule(module, true));
+			model.setMetaModule(module);
 			MetaField metaField = new MetaField("wkfStatus", false);
 			metaField.setTypeName("String");
 			metaField.setFieldType("string");
 			metaField.setLabel("Status");
 			metaField.setCustomised(true);
 			model.addMetaField(metaField);
-			moduleMap.get(module).get(name).add("wkfStatus");
+			moduleMap.get(module.getName()).get(name).add("wkfStatus");
 		}
 
 		if (model.getPackageName() == null) {
-			module = module.replace("axelor-", "");
-			String[] modules = module.split("-");
+			String[] modules =  module.getName().replace("axelor-", "").split("-");
 			model.setPackageName("com.axelor.apps." + modules[0] + ".db");
 			model.setFullName("com.axelor.apps." + modules[0] + ".db." + model.getName());
 		}
@@ -649,9 +706,10 @@ public class DataModelService extends DataCommonService {
 		String viewName = ViewLoaderService.getDefaultViewName(model.getName(),
 				"grid");
 
-		ViewBuilder viewBuilder = viewBuilderRepo.findByName(viewName);
+		ViewBuilder viewBuilder = viewLoaderService.getViewBuilder(module, viewName, "grid");
 		if (viewBuilder == null) {
 			viewBuilder = new ViewBuilder(viewName);
+			viewBuilder.setMetaModule(getModule(module));
 		}
 
 		viewBuilder.setViewType("grid");

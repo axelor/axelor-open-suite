@@ -145,8 +145,9 @@ public class DataXmlService extends DataCommonService {
 					 * 1. Is panelTab.
 					 * 2. Grid view field list.
 					 * 3. Panel level.
+					 * 4. Module to check (if-module).
 					 */
-					Object[] extra = new Object[]{false, getGridFields(grid), null};
+					Object[] extra = new Object[]{false, getGridFields(grid), null, null};
 					Mapper mapper = Mapper.of(ClassUtils.findClass(model));
 					ObjectViews objectViews = XMLViews.fromXML(formView.getXml());
 					
@@ -333,12 +334,13 @@ public class DataXmlService extends DataCommonService {
 			String title = menu.getTitle();
 			
 			String[] values = new String[exportService.columns];
-			values[MODULE] = getModuleName(menu, module); 
+			values[MODULE] = module; 
 			values[MODEL] = model; 
 			values[VIEW] = view; 
 		    values[TITLE] = title;
 		    values[TITLE_FR] = getTranslation(title, "fr");
-		    values[TYPE] = "menubar"; 
+		    values[TYPE] = "menubar";
+		    values[IF_MODULE] = getModuleToCheck(menu, (String) extra[3]);
 		
 			exportService.writeRow(values, newForm, false, false);
 			newForm = false;
@@ -347,7 +349,7 @@ public class DataXmlService extends DataCommonService {
 		}
 	}
 	
-	private String getModuleName(AbstractWidget item, String module) {
+	private String getModuleToCheck(AbstractWidget item, String module) {
 		
 		String moduleName = item.getModuleToCheck();
 		
@@ -364,7 +366,7 @@ public class DataXmlService extends DataCommonService {
 		if (items == null) {
 			return panelLevel;
 		}
-		boolean panelTab = (boolean) extra[1];
+		boolean panelTab = (boolean) extra[0];
 		for (AbstractWidget item : items) {
 			
 			if (item.getModuleToCheck() != null 
@@ -393,7 +395,7 @@ public class DataXmlService extends DataCommonService {
 										 Mapper.class, 
 										 Object[].class});
 				method.setAccessible(true);
-				extra[1] = panelTab;
+				extra[0] = panelTab;
 				panelLevel = (String) method.invoke(this, item, module, model, view, mapper, extra);
 				extra[2] = panelLevel;
 				
@@ -419,7 +421,7 @@ public class DataXmlService extends DataCommonService {
 		}
 		
 		String[] values = new String[exportService.columns];
-		values[MODULE] = getModuleName(panel, module); 
+		values[MODULE] = module;
 		values[MODEL] = model; 
 		values[VIEW] =	view;
 		values[NAME] = panel.getName(); 
@@ -427,6 +429,7 @@ public class DataXmlService extends DataCommonService {
 		values[TITLE_FR] =	getTranslation(panel.getTitle(), "fr");
 		values[TYPE] =	panelType; 
 		values[IF_CONFIG] = panel.getConditionToCheck();
+		values[IF_MODULE] = getModuleToCheck(panel, (String) extra[3]);
 		
 		if (panel.getReadonly() != null && panel.getReadonly()) {
 			values[READONLY] = "x";
@@ -492,11 +495,12 @@ public class DataXmlService extends DataCommonService {
 	private String processPanelTabs(PanelTabs panelTabs, String module, String model, String view, Mapper mapper, Object[] extra) {
 		
 		String[] values = new String[exportService.columns];
-		values[MODULE] = getModuleName(panelTabs, module);
+		values[MODULE] = module;
 		values[MODEL] = model;
 		values[VIEW] =	view; 
 		values[TYPE] = "panelbook";
 		values[IF_CONFIG] = panelTabs.getConditionToCheck();
+		values[IF_MODULE] = getModuleToCheck(panelTabs, (String) extra[3]);
 		
 		if (panelTabs.getReadonly() != null && panelTabs.getReadonly()) {
 			values[READONLY] = "x";
@@ -525,7 +529,7 @@ public class DataXmlService extends DataCommonService {
 		exportService.writeRow(values, newForm, false, false);
 		
 		processItems(panelTabs.getItems(), 
-				getModuleName(panelTabs, module), 
+				module,
 				model,
 				view,
 				mapper,
@@ -542,12 +546,14 @@ public class DataXmlService extends DataCommonService {
 		String name = field.getName();
 		
 		String[] values = new String[exportService.columns];
-		values[MODULE] = getModuleName(field, module);
+		values[MODULE] = module;
 		values[MODEL] = model;
 		values[VIEW] =	view; 
 		values[NAME] =	name; 
 		values[TITLE] = field.getTitle();
 		values[TITLE_FR] = getTranslation(field.getTitle(), "fr");
+		values[IF_MODULE] = getModuleToCheck(field, (String) extra[3]);
+		
 		if (!name.contains(".")) {
 			values[TYPE] = field.getServerType();
 		}
@@ -733,7 +739,7 @@ public class DataXmlService extends DataCommonService {
 			try {
 				Mapper targetMapper = Mapper.of(ClassUtils.findClass(target));
 				processItems(panelEditor.getItems(),
-						getModuleName(panelField, module), 
+						module,
 						model,
 						view,
 						targetMapper, 
@@ -744,7 +750,7 @@ public class DataXmlService extends DataCommonService {
 		}
 		else {
 			processItems(panelEditor.getItems(), 
-					getModuleName(panelField, module), 
+					module,
 					model,
 					view,
 					mapper, 
@@ -762,8 +768,9 @@ public class DataXmlService extends DataCommonService {
 		if  (view != null && panelView != null) {
 			String name = panelView.getName();
 			if (!viewProcessed.contains(name)) {
+				extra[3] = getModuleToCheck(panelInclude, (String)extra[3]);
 				return processForm((FormView) panelView, 
-						getModuleName(panelInclude, module),
+						module,
 						model,
 						view,
 						mapper, 
@@ -793,7 +800,7 @@ public class DataXmlService extends DataCommonService {
 	private String processButton(Button button, String module, String model, String view, Mapper mapper, Object[] extra) {
 		
 		String[] values = new String[exportService.columns];
-		values[MODULE] = getModuleName(button, module); 
+		values[MODULE] = module;
 		values[MODEL] =	model; 
 		values[VIEW] =	view; 
 		values[NAME] =	button.getName(); 
@@ -805,6 +812,7 @@ public class DataXmlService extends DataCommonService {
 		values[HIDE_IF] = button.getHideIf();
 		values[SHOW_IF] = button.getShowIf();
 		values[IF_CONFIG] = button.getConditionToCheck();
+		values[IF_MODULE] = getModuleToCheck(button, (String)extra[3]);
 		
 		if (toolbar) {
 			values[TYPE] = "button(toolbar)";
@@ -827,7 +835,7 @@ public class DataXmlService extends DataCommonService {
 		String[] values = new String[exportService.columns];
 		
 		values[NAME] = panelRelated.getName();
-		values[MODULE] = getModuleName(panelRelated, module); 
+		values[MODULE] = module;
 		values[MODEL] = model;
 		values[VIEW] = view;
 		values[TITLE] = panelRelated.getTitle();
@@ -836,6 +844,7 @@ public class DataXmlService extends DataCommonService {
 		values[HIDE_IF] = panelRelated.getHideIf();
 		values[SHOW_IF] = panelRelated.getShowIf();
 		values[IF_CONFIG] = panelRelated.getConditionToCheck();
+		values[IF_MODULE] = getModuleToCheck(panelRelated, (String)extra[3]);
 		
 		String target = panelRelated.getTarget();
 		Property property = mapper.getProperty(values[NAME]);
@@ -900,7 +909,7 @@ public class DataXmlService extends DataCommonService {
 	private String processLabel(Label label, String module, String model, String view, Mapper mapper, Object[] extra) {
 		
 		String[] values = new String[exportService.columns];
-		values[MODULE] = getModuleName(label, module); 
+		values[MODULE] = module;
 		values[MODEL] =	model; 
 		values[VIEW] =	view; 
 		values[NAME] =	label.getName();
@@ -909,6 +918,7 @@ public class DataXmlService extends DataCommonService {
 		values[TYPE] =	"label"; 
 		values[IF_CONFIG] = label.getConditionToCheck();
 		values[HIDE_IF] = label.getHideIf();
+		values[IF_MODULE] = getModuleToCheck(label, (String)extra[3]);
 		
 		if (label.getColSpan() != null) {
 			values[COLSPAN] = label.getColSpan().toString();
@@ -936,7 +946,7 @@ public class DataXmlService extends DataCommonService {
 		
 		if (title != null || dashlet.getName() != null) {
 			String[] values = new String[exportService.columns];
-			values[MODULE] = getModuleName(dashlet, module); 
+			values[MODULE] = module;
 			values[MODEL] =	null; 
 			values[VIEW] =	view; 
 			values[NAME] = dashlet.getName(); 
@@ -944,6 +954,7 @@ public class DataXmlService extends DataCommonService {
 			values[TITLE_FR] =	getTranslation(title, "fr");
 			values[TYPE] =	"dashlet"; 
 			values[IF_CONFIG] = dashlet.getConditionToCheck();
+			values[IF_MODULE] = getModuleToCheck(dashlet, (String)extra[3]);
 			
 			if (dashlet.getColSpan() != null) {
 				values[COLSPAN] = dashlet.getColSpan().toString();
@@ -959,7 +970,7 @@ public class DataXmlService extends DataCommonService {
 	private String processItem(Item item, String module, String model, String view, Mapper mapper, Object[] extra) {
 		
 		String[] values = new String[exportService.columns];
-		values[MODULE] = getModuleName(item, module); 
+		values[MODULE] = module;
 		values[MODEL] = model; 
 		values[VIEW] =	view; 
 		values[NAME] = item.getName();
@@ -971,6 +982,7 @@ public class DataXmlService extends DataCommonService {
 		values[HIDE_IF] = item.getHideIf();
 		values[SHOW_IF] = item.getShowIf();
 		values[IF_CONFIG] = item.getConditionToCheck();
+		values[IF_MODULE] = getModuleToCheck(item, (String)extra[3]);
 		if (item.getHidden() != null && item.getHidden()) {
 			values[HIDDEN] = "x";
 		}
@@ -986,11 +998,12 @@ public class DataXmlService extends DataCommonService {
 	private String processSpacer(Spacer spacer, String module, String model, String view, Mapper mapper, Object[] extra) {
 		
 		String[] values = new String[exportService.columns];
-		values[MODULE] = getModuleName(spacer, module); 
+		values[MODULE] = module;
 		values[MODEL] = model; 
 		values[VIEW] =	view; 
 		values[TYPE] = "spacer";
 		values[IF_CONFIG] = spacer.getConditionToCheck();
+		values[IF_MODULE] = getModuleToCheck(spacer, (String)extra[3]);
 		
 		Integer colSpan =  spacer.getColSpan();
 		if (colSpan != null) {

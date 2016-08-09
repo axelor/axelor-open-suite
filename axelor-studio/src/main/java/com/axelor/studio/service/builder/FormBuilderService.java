@@ -84,14 +84,15 @@ public class FormBuilderService {
 	private List<ActionRecord> actionRecords;
 
 	private List<AbstractWidget> formViewItems;
-
-	private ViewBuilder viewBuilder;
+	
+	private boolean autoCreate = false;
 
 	@Inject
 	private FilterService filterService;
 	
-	private boolean autoCreate = false;
-
+	@Inject
+	private FormBuilderService builder;
+	
 	/**
 	 * Root method to access the service. It will generate FormView from
 	 * ViewBuilder
@@ -106,23 +107,22 @@ public class FormBuilderService {
 		this.autoCreate = autoCreate;
 		log.debug("View builder toolbar: {}", viewBuilder.getToolbar().size());
 
-		this.viewBuilder = viewBuilder;
 		defaultFields = new ArrayList<RecordField>();
 		panelMap = new HashMap<String, AbstractPanel>();
 		actionRecords = new ArrayList<ActionRecord>();
 
-		FormView formView = getFormView();
-		processFormView(formView);
+		FormView formView = getFormView(viewBuilder);
+		processFormView(formView, viewBuilder);
 
-		processPanels(false);
-		processPanels(true);
+		processPanels(viewBuilder.getViewPanelList().iterator(), false, viewBuilder.getAddOnly());
+		processPanels(viewBuilder.getViewSidePanelList().iterator(), true, viewBuilder.getAddOnly());
 
 		if (viewBuilder.getAddStream()) {
 			addStream();
 		}
 
 		if (!defaultFields.isEmpty()) {
-			addOnNewAction(formView);
+			addOnNewAction(formView, viewBuilder.getModel());
 			log.debug("On new actions: {}", formView.getOnNew());
 		}
 		
@@ -138,11 +138,11 @@ public class FormBuilderService {
 	 * @param formView
 	 *            FormView generated from parent view.
 	 */
-	private void processFormView(FormView formView) {
+	private void processFormView(FormView formView, ViewBuilder viewBuilder) {
 		
-		processToolBar(formView);
+		processToolBar(formView, viewBuilder.getToolbar());
 		
-		processMenuBar(formView);
+		processMenuBar(formView, viewBuilder.getMenubar());
 
 		String onSave = getUpdatedAction(viewBuilder.getOnSave(),
 				formView.getOnSave());
@@ -169,8 +169,6 @@ public class FormBuilderService {
 			addPanelInclude(formViewItems);
 		}
 		
-//		updatePanelInclude(items.iterator(), 0);
-
 		mapPanels(formViewItems.iterator(), null, 0);
 		
 		log.debug("Panel map keys: {}", panelMap.keySet());
@@ -220,16 +218,17 @@ public class FormBuilderService {
 	/**
 	 * Method generate final list of buttons to keep in formview. It removes old
 	 * button and add new button as per ViewBuilder toolbar.
+	 * @param items 
 	 * 
 	 * @param toolbar
 	 *            List of buttons of Parent form view.
 	 * @return List of button to keep in formView.
 	 */
-	private void processToolBar(FormView formView) {
+	private void processToolBar(FormView formView, List<ViewItem> items) {
 		
 		List<Button> toolbar = new ArrayList<Button>();
 
-		for (ViewItem viewButton : viewBuilder.getToolbar()) {
+		for (ViewItem viewButton : items) {
 			log.debug("Button: {} onClick:{}", viewButton.getName(),
 					viewButton.getOnClick());	
 			toolbar.add(getButton(viewButton));
@@ -241,9 +240,7 @@ public class FormBuilderService {
 	}
 	
 	
-	private void processMenuBar(FormView formView) {
-		
-		List<ViewItem> menuItems = viewBuilder.getMenubar();
+	private void processMenuBar(FormView formView, List<ViewItem> menuItems) {
 		
 		List<Menu> menubar = new ArrayList<Menu>();
 		
@@ -318,26 +315,32 @@ public class FormBuilderService {
 	 * @throws JAXBException
 	 *             Exception throws by xml parsing.
 	 */
-	private FormView getFormView() throws JAXBException {
+	private FormView getFormView(ViewBuilder viewBuilder) throws JAXBException {
 
 		FormView formView = null;
 
 		MetaView metaView = viewBuilder.getMetaView();
+		ViewBuilder parent = viewBuilder.getParent();
 		
 		String viewName = viewBuilder.getName();
-		if (metaView == null) {
-			formView = new FormView();
-			formView.setName(viewName);
-			formView.setTitle(viewBuilder.getTitle());
-			formView.setModel(viewBuilder.getModel());
-		}
-		else {
+		if (metaView != null) {
 			ObjectViews objectViews = XMLViews.fromXML(metaView.getXml());
 			List<AbstractView> views = objectViews.getViews();
 			if (!views.isEmpty()) {
 				formView = (FormView) views.get(0);
 			}
 		}
+		else if (parent != null) {
+			formView = builder.getFormView(parent);
+		}
+		else {
+			formView = new FormView();
+			formView.setName(viewName);
+			formView.setTitle(viewBuilder.getTitle());
+			formView.setModel(viewBuilder.getModel());
+			
+		}
+		
 		formView.setXmlId(viewBuilder.getMetaModule().getName()
 				+ "-" + viewName);
 
@@ -351,60 +354,54 @@ public class FormBuilderService {
 	 * @param sideBar
 	 *            boolean to check if panel is side panel or not
 	 */
-	private void processPanels(boolean sideBar) {
-
-		List<ViewPanel> viewPanels;
-
-		if (sideBar) {
-			viewPanels = viewBuilder.getViewSidePanelList();
-		} else {
-			viewPanels = viewBuilder.getViewPanelList();
+	private void processPanels(Iterator<ViewPanel> panelIter, boolean sidebar, boolean addOnly) {
+		
+		if (!panelIter.hasNext()) {
+			return;
 		}
+		
+		ViewPanel viewPanel = panelIter.next();
+		
+		String panelLevel = viewPanel.getPanelLevel();
 
-		for (ViewPanel viewPanel : viewPanels) {
+		log.debug("Panel level to process: {}", panelLevel);
+		AbstractPanel panel = null;
 
-			String panelLevel = viewPanel.getPanelLevel();
-
-			log.debug("Panel level to process: {}", panelLevel);
-			AbstractPanel panel = null;
-
-			if (panelMap.containsKey(panelLevel)) {
-				if (viewPanel.getNewPanel() && viewBuilder.getAddOnly()) {
-					adjustPanelLevel(panelLevel);
-					panel = addNewPanel(panelLevel, viewPanel.getIsNotebook());
-				}
-				else {
-					panel = panelMap.get(panelLevel);
-				}
-			} else {
-				if (viewPanel.getNewPanel()) {
-					adjustPanelLevel(panelLevel);
-				}
+		if (panelMap.containsKey(panelLevel)) {
+			if (viewPanel.getNewPanel() && addOnly)  {
+				adjustPanelLevel(panelLevel);
 				panel = addNewPanel(panelLevel, viewPanel.getIsNotebook());
 			}
-
-			if (sideBar) {
-				panel.setSidebar(sideBar);
-			}
-			
-			if (viewBuilder.getAddOnly()) {
-				
-				if (viewPanel.getNewPanel()) {
-					panel = updatePanel(panel, viewPanel);
-				}
-			}
 			else {
+				panel = panelMap.get(panelLevel);
+			}
+		} else {
+			if (viewPanel.getNewPanel()) {
+				adjustPanelLevel(panelLevel);
+			}
+			panel = addNewPanel(panelLevel, viewPanel.getIsNotebook());
+		}
+
+		if (sidebar) {
+			panel.setSidebar(sidebar);
+		}
+		
+		if (addOnly) {
+			if (viewPanel.getNewPanel()) {
 				panel = updatePanel(panel, viewPanel);
 			}
-			
-
-//			panelMap.put(panelLevel, panel);
-
 		}
+		else {
+			panel = updatePanel(panel, viewPanel);
+		}
+		
+		processPanels(panelIter, sidebar, addOnly);
+			
 	}
 	
 	private void adjustPanelLevel(String panelLevel) {
 		
+		log.debug("Adjust panel level: {}", panelLevel);
 		String[] levels = panelLevel.split("\\.");
 		
 		String[] parentLevels = null;
@@ -926,9 +923,9 @@ public class FormBuilderService {
 	 * @param formView
 	 *            Updated form view with onNew action.
 	 */
-	private void addOnNewAction(FormView formView) {
+	private void addOnNewAction(FormView formView, String model) {
 
-		String model = viewBuilder.getModel();
+//		String model = viewBuilder.getModel();
 		String actionName = "custom-" + formView.getName() + "-default";
 		Action action = XMLViews.findAction(actionName);
 		ActionRecord actionRecord;

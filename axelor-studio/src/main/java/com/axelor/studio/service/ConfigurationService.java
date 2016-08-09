@@ -21,7 +21,9 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,6 +32,7 @@ import com.axelor.app.AppSettings;
 import com.axelor.common.FileUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
+import com.axelor.meta.MetaStore;
 import com.axelor.meta.db.MetaModule;
 import com.axelor.meta.db.repo.MetaModuleRepository;
 import com.axelor.studio.utils.Namming;
@@ -196,7 +199,12 @@ public class ConfigurationService {
 			
 			
 			
-			MetaModule module = getCustomizedModule(moduleName, true);
+			MetaModule module = getCustomizedModule(moduleName);
+			
+			if (module == null) {
+				fw.close();
+				throw new AxelorException(I18n.get("No customised module found with name %s"), 1, moduleName);
+			}
 			
 			String depends = module.getDepends();
 			
@@ -289,20 +297,11 @@ public class ConfigurationService {
 	}
 	
 	@Transactional
-	public MetaModule getCustomizedModule(String name, boolean create) {
+	public MetaModule getCustomizedModule(String name) {
 		
 		MetaModule module = null;
 		if (name != null) {
 			module =  moduleRepo.all().filter("self.customised = true and self.name = ?1", name).fetchOne();
-
-		}
-		
-		if (module == null && create) {
-			module = new MetaModule(name);
-			module.setModuleVersion("1.0");
-			module.setTitle(name);
-			module.setCustomised(true);
-			return moduleRepo.save(module);
 		}
 		
 		return module;
@@ -346,9 +345,9 @@ public class ConfigurationService {
 			throw new AxelorException(I18n.get("Please follow standard field naming convension"), 1);
 		}
 		
-		if (Namming.isKeyword(name) || Namming.isReserved(name)) {
-			throw new AxelorException(I18n.get("Name is either keyword or reserv word. Please use different name"), 1);
-		}
+//		if (Namming.isKeyword(name) || Namming.isReserved(name)) {
+//			throw new AxelorException(I18n.get("Name is either keyword or reserv word. Please use different name"), 1);
+//		}
 	}
 	
 	public void validateModelName(String name) throws AxelorException {

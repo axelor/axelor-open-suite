@@ -17,6 +17,7 @@
  */
 package com.axelor.studio.service;
 
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
@@ -25,8 +26,11 @@ import javax.xml.bind.JAXBException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.axelor.exception.AxelorException;
+import com.axelor.i18n.I18n;
 import com.axelor.meta.db.MetaField;
 import com.axelor.meta.db.MetaModel;
+import com.axelor.meta.db.MetaModule;
 import com.axelor.meta.db.MetaView;
 import com.axelor.meta.db.repo.MetaFieldRepository;
 import com.axelor.meta.db.repo.MetaViewRepository;
@@ -404,9 +408,10 @@ public class ViewLoaderService {
 	 * @param metaModel
 	 *            MetaModel to find view for.
 	 * @return Default viewBuilder searched or newly created.
+	 * @throws AxelorException 
 	 */
 
-	public ViewBuilder getDefaultForm(String module, MetaModel metaModel, String title, boolean addParent) {
+	public ViewBuilder getDefaultForm(String module, MetaModel metaModel, String title, boolean addParent) throws AxelorException {
 
 		String formName = getDefaultViewName(metaModel.getName(), "form");
 
@@ -422,34 +427,39 @@ public class ViewLoaderService {
 	 * @return Default viewBuilder searched or newly created.
 	 */
 
-	public ViewBuilder getViewBuilder(String module, String formName) {
+	public ViewBuilder getViewBuilder(String module, String formName, String type) {
 
 		ViewBuilder viewBuilder = viewBuilderRepo
 				.all()
-				.filter("self.metaModule.name = ?1 AND self.name = ?1 AND self.viewType = 'form'",
-						module, formName).fetchOne();
+				.filter("self.metaModule.name = ?1 AND self.name = ?2 AND self.viewType = ?3",
+						module, formName, type).fetchOne();
 		return viewBuilder;
 	}
 
 	@Transactional
-	public ViewBuilder getViewBuilderForm(String module, MetaModel metaModel, String formName, String title, boolean addParent) {
+	public ViewBuilder getViewBuilderForm(String module, MetaModel metaModel, String formName, String title, boolean addParent) throws AxelorException {
 		String modelName = metaModel.getFullName();
 
 		log.debug("Get default form name: {} model: {}", formName, modelName);
 
 		ViewBuilder viewBuilder = viewBuilderRepo
 				.all()
-				.filter("self.name = ?1 AND self.model = ?2 AND self.viewType = 'form'",
-						formName, modelName).fetchOne();
+				.filter("self.name = ?1 AND self.model = ?2 AND self.viewType = 'form' AND self.metaModule.name = ?3",
+						formName, modelName, module).fetchOne();
 
 		log.debug("ViewBuilder found: {}", viewBuilder);
+		
+		MetaModule metaModule = configSerivice.getCustomizedModule(module);
+		if (metaModule == null) {
+			throw new AxelorException(I18n.get("Customised module not found: %s"), 1, module);
+		}
 
 		if (viewBuilder == null) {
 			viewBuilder = new ViewBuilder();
 			viewBuilder.setName(formName);
 			viewBuilder.setModel(modelName);
 			viewBuilder.setMetaModel(metaModel);
-			viewBuilder.setMetaModule(configSerivice.getCustomizedModule(module, true));
+			viewBuilder.setMetaModule(metaModule);
 			viewBuilder.setViewType("form");
 			viewBuilder.setEdited(true);
 			viewBuilder.setRecorded(false);
@@ -462,25 +472,47 @@ public class ViewLoaderService {
 			}
 			viewBuilder.setTitle(title);
 
-			MetaView metaView = metaViewRepo
-					.all()
-					.filter("self.name = ?1 and self.model = ?2 AND self.type = 'form'",
-							formName, modelName).fetchOne();
-
-			log.debug("MetaView found: {}", metaView);
-
-			if (metaView != null && addParent) {
-				viewBuilder.setMetaView(metaView);
-				viewBuilder.setTitle(metaView.getTitle());
-				viewBuilder = loadMetaView(viewBuilder);
-			}
-			
 			viewBuilder = addDefaultPanel(viewBuilder);
-
-			viewBuilder = viewBuilderRepo.save(viewBuilder);
+			
+			if (addParent && metaModule.getDepends() != null) {
+				viewBuilder = addParentView(viewBuilder, metaModule.getDepends(), formName);
+			}
 		}
 
-		return viewBuilder;
+		return viewBuilderRepo.save(viewBuilder);
+	}
+	
+	@Transactional
+	public ViewBuilder addParentView(ViewBuilder viewBuilder, String parentModules, String name) {
+		
+		log.debug("Search parent view for : {}, model: {}, parent modules: {}", name, viewBuilder.getMetaModel().getName(), parentModules);
+		
+		if (parentModules == null) {
+			return viewBuilder;
+		}
+		
+		List<String> modules = Arrays.asList(parentModules.split(","));
+		MetaView metaView = metaViewRepo
+				.all()
+				.filter("self.name = ?1 AND self.model = ?2 AND self.type = 'form' and self.module in ?3 ",
+						name, viewBuilder.getMetaModel().getFullName(), modules).fetchOne();
+
+		log.debug("Parent View found: {}", metaView);
+		if (metaView != null) {
+			viewBuilder.setMetaView(metaView);
+			viewBuilder.setTitle(metaView.getTitle());
+//				viewBuilder = loadMetaView(viewBuilder);
+		}
+		else {
+			ViewBuilder parent = viewBuilderRepo
+					.all()
+					.filter("self.name = ?1 AND self.metaModel.id = ?2 AND self.metaModule.name in ?3", 
+							name, viewBuilder.getMetaModel().getId(), modules)
+					.fetchOne();
+			viewBuilder.setParent(parent);
+		}
+		
+		return viewBuilderRepo.save(viewBuilder);
 	}
 
 	/**
@@ -535,9 +567,10 @@ public class ViewLoaderService {
 	 * 
 	 * @param metaModel
 	 * @return
+	 * @throws AxelorException 
 	 */
 	@Transactional
-	public ViewBuilder getDefaultGrid(String module, MetaModel metaModel, boolean reload) {
+	public ViewBuilder getDefaultGrid(String module, MetaModel metaModel, boolean reload) throws AxelorException {
 
 		String gridName = getDefaultViewName(metaModel.getName(), "grid");
 		String modelName = metaModel.getFullName();
@@ -546,8 +579,8 @@ public class ViewLoaderService {
 
 		ViewBuilder viewBuilder = viewBuilderRepo
 				.all()
-				.filter("self.name = ?1 AND self.model = ?2 AND self.viewType = 'grid'",
-						gridName, modelName).fetchOne();
+				.filter("self.name = ?1 AND self.model = ?2 AND self.viewType = 'grid' AND self.metaModule.name = ?3",
+						gridName, modelName, module).fetchOne();
 
 		log.debug("ViewBuilder found: {}", viewBuilder);
 
@@ -556,7 +589,11 @@ public class ViewLoaderService {
 			viewBuilder = new ViewBuilder();
 			viewBuilder.setName(gridName);
 			viewBuilder.setModel(modelName);
-			viewBuilder.setMetaModule(configSerivice.getCustomizedModule(module, true));
+			MetaModule metaModule = configSerivice.getCustomizedModule(module);
+			if (metaModule == null) {
+				throw new AxelorException(I18n.get("Customised module not found: %s"), 1, module);
+			}
+			viewBuilder.setMetaModule(metaModule);
 			viewBuilder.setMetaModel(metaModel);
 			viewBuilder.setViewType("grid");
 			viewBuilder.setEdited(true);

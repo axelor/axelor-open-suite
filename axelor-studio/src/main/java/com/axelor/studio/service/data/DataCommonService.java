@@ -73,7 +73,8 @@ public abstract class DataCommonService {
 		"Grid",
 		"Help",
 		"Help FR",
-		"Panel Level"
+		"Panel Level",
+		"If Module"
 	};
 	
 	
@@ -191,6 +192,7 @@ public abstract class DataCommonService {
 	protected final static int HELP = 26;
 	protected final static int HELP_FR = 27;
 	protected final static int PANEL_LEVEL = 28;
+	protected final static int IF_MODULE = 29;
 	
 	protected final static Map<String, String> relationshipMap;
 
@@ -206,6 +208,8 @@ public abstract class DataCommonService {
 	}
 	
 	protected static final List<String> referenceTypes = Arrays.asList(new String[]{"o2m","m2m","m2o","wizard", "o2o"});
+	
+	protected static final String[] MODULE_HEADERS = new String[] {"Module", "Depends", "Title", "Version", "Description", "Parent view priority"};
 	
 	@Inject
 	protected MetaModelRepository metaModelRepo;

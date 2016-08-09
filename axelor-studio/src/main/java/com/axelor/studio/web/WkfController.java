@@ -19,6 +19,7 @@ package com.axelor.studio.web;
 
 import java.util.Map;
 
+import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaModel;
@@ -111,7 +112,7 @@ public class WkfController {
 		}
 	}
 
-	public void setViewBuilder(ActionRequest request, ActionResponse response) {
+	public void setViewBuilder(ActionRequest request, ActionResponse response) throws AxelorException {
 
 		Wkf wkf = request.getContext().asType(Wkf.class);
 		ViewBuilder viewBuilder = wkf.getViewBuilder();

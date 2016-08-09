@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.axelor.app.AppSettings;
+import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.db.MetaField;
 import com.axelor.meta.db.MetaModel;
@@ -42,7 +43,7 @@ public class MetaModelController {
 	@Inject
 	MetaModelRepository metaModelRepo;
 
-	public void openForm(ActionRequest request, ActionResponse response) {
+	public void openForm(ActionRequest request, ActionResponse response) throws AxelorException {
 
 		MetaModel model = request.getContext().asType(MetaModel.class);
 
@@ -60,7 +61,7 @@ public class MetaModelController {
 
 	}
 
-	public void openGrid(ActionRequest request, ActionResponse response) {
+	public void openGrid(ActionRequest request, ActionResponse response) throws AxelorException {
 
 		MetaModel model = request.getContext().asType(MetaModel.class);
 

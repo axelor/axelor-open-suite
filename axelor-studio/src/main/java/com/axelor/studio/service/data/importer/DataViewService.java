@@ -34,11 +34,10 @@ import com.axelor.i18n.I18n;
 import com.axelor.meta.db.MetaField;
 import com.axelor.meta.db.MetaMenu;
 import com.axelor.meta.db.MetaModel;
+import com.axelor.meta.db.MetaModule;
 import com.axelor.meta.db.MetaSequence;
-import com.axelor.meta.db.MetaView;
 import com.axelor.meta.db.repo.MetaMenuRepository;
 import com.axelor.meta.db.repo.MetaSequenceRepository;
-import com.axelor.meta.db.repo.MetaViewRepository;
 import com.axelor.studio.db.ActionBuilder;
 import com.axelor.studio.db.ActionBuilderLine;
 import com.axelor.studio.db.MenuBuilder;
@@ -98,9 +97,6 @@ public class DataViewService extends DataCommonService {
 	private MetaSequenceRepository metaSequenceRepo;
 	
 	@Inject
-	private MetaViewRepository metaViewRepo;
-	
-	@Inject
 	private MetaMenuRepository metaMenuRepo;
 	
 	public void clear() {
@@ -114,12 +110,16 @@ public class DataViewService extends DataCommonService {
 	}
 
 	public void addViewElement(MetaModel model, String[] basic, Row row,
-			MetaField metaField, boolean replace) throws AxelorException {
+			MetaField metaField, boolean replace, Map<String, String> modulePriority) throws AxelorException {
 		
 		this.row = row;
 		
+		String module = getValue(row, MODULE);
+		module = module.replace("*", "");
+		MetaModule metaModule = configService.getCustomizedModule(module);
+		
 		if (basic[0].equals("menu")) {
-			addMenu(model, basic);
+			addMenu(model, basic, metaModule);
 			return;
 		}
 		
@@ -128,12 +128,10 @@ public class DataViewService extends DataCommonService {
 					1, row.getRowNum() + 1, row.getSheet().getSheetName());
 		}
 		
-		String module = getValue(row, MODULE);
-		module = module.replace("*", "");
 		String[] name = getViewName(model.getName());
 		checkReplace(replace, module, name[0]);
 		
-		ViewBuilder viewBuilder = getViewBuilder(module, model, name);
+		ViewBuilder viewBuilder = getViewBuilder(metaModule, model, name, modulePriority);
 		
 		String panelLevel = getValue(row, PANEL_LEVEL);
 		
@@ -196,24 +194,25 @@ public class DataViewService extends DataCommonService {
 		processViewAction(viewBuilder);
 	}
 
-	private ViewBuilder getViewBuilder(String module, MetaModel model, String[] name) {
+	private ViewBuilder getViewBuilder(MetaModule module, MetaModel model, String[] name, Map<String, String> priority) throws AxelorException {
 		
 		if (clearedViews.containsKey(name[0])) {
 			return clearedViews.get(name[0]);
 		}
 
-		ViewBuilder viewBuilder = viewLoaderService.getViewBuilder(module, name[0]);
+		ViewBuilder viewBuilder = viewLoaderService.getViewBuilder(module.getName(), name[0], "form");
 		if (viewBuilder == null) {
-			viewBuilder = viewLoaderService.getViewBuilderForm(module, model, name[0], name[1], !replace);
+			viewBuilder = viewLoaderService.getViewBuilderForm(module.getName(), model, name[0], name[1], !replace);
 		}
-		else if (!replace && viewBuilder.getMetaView() == null){
-			MetaView metaView = metaViewRepo
-					.all()
-					.filter("self.name = ?1 and self.model = ?2 AND self.type = 'form'",
-							name[0], model.getFullName()).fetchOne();
-			viewBuilder.setMetaView(metaView);
+		log.debug("Module priority: {}, module: {}", priority, module.getName());
+		String depends = priority.get(module.getName());
+		if (depends == null) {
+			depends = module.getDepends();
 		}
-		
+		if (depends != null) {
+			viewBuilder = viewLoaderService.addParentView(viewBuilder, depends, name[0]);
+		}
+
 		viewBuilder.setEdited(true);
 		viewBuilder.setRecorded(false);
 		viewBuilder.setAddOnly(!replace);
@@ -300,13 +299,8 @@ public class DataViewService extends DataCommonService {
 			addTranslation(basic[3], getValue(row, TITLE_FR), "fr");
 		}
 		
-		String module = getValue(row, MODULE);
-		if (module != null) {
-			if (replace && module.startsWith("*")) {
-				panel.setNewPanel(true);
-			}
-			panel.setIfModule(getIfModule(module, viewBuilder));
-		}
+		panel.setNewPanel(!replace);
+		panel.setIfModule(getValue(row, IF_MODULE));
 		
 		if (addAttrs) {
 			panel.setColspan(getValue(row, COLSPAN));
@@ -422,7 +416,7 @@ public class DataViewService extends DataCommonService {
 	}
 
 	@Transactional
-	public void addWizard(String module, ViewBuilder viewBuilder, String[] basic) {
+	public void addWizard(String module, ViewBuilder viewBuilder, String[] basic) throws AxelorException {
 
 		ViewPanel lastPanel = getLastPanel(viewBuilder, true);
 		String modelName = inflector.camelize(basic[1]);
@@ -527,16 +521,14 @@ public class DataViewService extends DataCommonService {
 	
 
 	@Transactional
-	public void addMenu(MetaModel model, String[] basic) throws AxelorException {
-		
-		String module = getValue(row, MODULE);
+	public void addMenu(MetaModel model, String[] basic, MetaModule module) throws AxelorException {
 		
 		String name = inflector.dasherize(basic[2]);
 
 		MenuBuilder menuBuilder = menuBuilderRepo.findByName(name);
 		if (menuBuilder == null) {
 			menuBuilder = new MenuBuilder(name);
-			menuBuilder.setMetaModule(configService.getCustomizedModule(module, true));
+			menuBuilder.setMetaModule(module);
 		}
 		menuBuilder.setTitle(basic[3]);
 		
@@ -815,7 +807,7 @@ public class DataViewService extends DataCommonService {
 		viewItem.setReadonlyIf(getValue(row, READONLY_IF));
 		
 		viewItem.setShowIf(getValue(row, SHOW_IF));
-		viewItem.setIfModule(getIfModule(getValue(row, MODULE), viewBuilder));
+		viewItem.setIfModule(getValue(row, IF_MODULE));
 		viewItem.setIfConfig(getValue(row, IF_CONFIG));
 		
 		Integer typeSelect = viewItem.getTypeSelect();
@@ -1064,26 +1056,6 @@ public class DataViewService extends DataCommonService {
 		
 		viewItemRepo.save(viewItem);
 			
-	}
-	
-	private String getIfModule(String module, ViewBuilder viewBuilder) {
-		
-		if (Strings.isNullOrEmpty(module)) {
-			return null;
-		}
-		
-		module = module.replace("*", "");
-		String viewModule = null;
-		if (viewBuilder.getMetaView() != null ) {
-			viewModule = viewBuilder.getMetaView().getModule();
-		}
-		if (viewModule != null 
-				&& !viewBuilder.getMetaModule().getName().equals(module)
-				&& !module.equals(viewModule)) {
-			return module;
-		}
-		
-		return null;
 	}
 	
 	private void checkReplace(boolean replace, String module, String view) {

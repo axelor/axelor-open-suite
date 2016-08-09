@@ -14,6 +14,7 @@
       onSave="action-view-builder-record-set-edited">
       <panel title="Overview">
         <field name="metaView" onChange="action-view-builder-meta-view-change" onSelect="action-view-builder-set-meta-view-domain"/>
+        <field name="parent" onChange="action-view-builder-parent-change" onSelect="action-view-builder-set-parent-domain" hideIf="metaView != null"/>
         <field name="metaModel" onChange="action-view-builder-model-change"/>
         <field name="name" showIf="metaView == null" requiredIf="metaView == null"/>
         <field name="title" showIf="metaView == null" requiredIf="metaView == null"/>
@@ -42,6 +43,13 @@
       <field name="title" expr="eval:metaView?.title" />
       <field name="metaModel" expr="eval:__repo__.of(MetaModel).all().filter(&quot;self.fullName = '${metaView?.model}'&quot;).fetchOne()" />
       <field name="model" expr="eval:metaView?.model" />
+  </action-record>
+  
+  <action-record name="action-view-builder-parent-change" model="com.axelor.studio.db.ViewBuilder">
+      <field name="name" expr="eval:parent?.name" />
+      <field name="title" expr="eval:parent?.title" />
+      <field name="metaModel" expr="eval:parent?.metaModel" />
+      <field name="model" expr="eval:parent?.model" />
   </action-record>
   
   <action-record name="action-view-builder-model-change" model="com.axelor.studio.db.ViewBuilder">
@@ -76,6 +84,13 @@
   <action-attrs name="action-view-builder-set-meta-view-domain" model="com.axelor.studio.db.ViewBuilder">
       <attribute name="domain" for="metaView" expr="eval:&quot;self.type = 'form'&quot;" if="viewType == 'form'"/>
       <attribute name="domain" for="metaView" expr="eval:&quot;self.type = 'grid'&quot;" if="viewType == 'grid'"/>
+  </action-attrs>
+  
+  <action-attrs name="action-view-builder-set-parent-domain" model="com.axelor.studio.db.ViewBuilder">
+      <attribute name="domain" for="parent" expr="eval:&quot;self.viewType = 'form' and self.parent.id != :id &quot;" if="viewType == 'form' &amp;&amp; metaModel == null"/>
+      <attribute name="domain" for="parent" expr="eval:&quot;self.viewType = 'grid' and self.parent.id != :id &quot;" if="viewType == 'grid'  &amp;&amp; metaModel == null"/>
+      <attribute name="domain" for="parent" expr="eval:&quot;self.viewType = 'form' and self.parent.id != :id and self.metaModel = :metaModel &quot;" if="viewType == 'form' &amp;&amp; metaModel != null"/>
+      <attribute name="domain" for="parent" expr="eval:&quot;self.viewType = 'grid' and self.parent.id != :id and self.metaModel = :metaModel &quot;" if="viewType == 'grid'  &amp;&amp; metaModel != null"/>
   </action-attrs>
   
 </object-views>
