@@ -74,8 +74,12 @@
 			<field name="refusedBy" form-view="user-form" grid-view="user-grid"/>
 			<field name="validationDate" colOffset="4"/>
 			<field name="refusalDate"/>
-			<field name="groundForRefusal" showIf="refusalDate != null" colSpan="12"></field>
+			<field name="groundForRefusal" showIf="statusSelect == 4" colSpan="12"/>
 		</panel>
+	</form>
+	
+	<form name="popup-timesheet-refusal-form" title="Ground for refusal" model="com.axelor.apps.hr.db.Timesheet">
+		<field name="groundForRefusal" showTitle="false"/>
 	</form>
 	
 	<form name="popup-timesheet-form" title="Select the timesheet you want to edit" model="com.axelor.apps.base.db.Wizard" onNew="action-timesheet-attrs-domain-timesheet-select">
@@ -102,6 +106,8 @@
 	
 	<action-group name="action-timesheet-group-refuse">
 		<action name="action-timesheet-method-refuse"/>
+		<action name="save"/>
+		<action name="action-timesheet-refusal-popup-form"/>
 		<action name="action-timesheet-attrs-buttons"/>
 		<action name="save"/>
 	</action-group>
@@ -276,5 +282,15 @@
   		<context name="user_id" expr="eval: __user__.id"/>
     	<context name="timesheet_id" expr="eval: __self__.id"/>
 	</action-view>
+	
+	<action-view name="action-timesheet-refusal-popup-form" title="Ground for refusal" model="com.axelor.apps.hr.db.Timesheet">
+    	<view type="form" name="popup-timesheet-refusal-form"/>
+        <view-param name="popup" value="reload"/>
+        <view-param name="show-toolbar" value="false"/>
+  		<view-param name="show-confirm" value="true" />
+	  	<view-param name="popup-save" value="true"/>
+	  	<view-param name="forceEdit" value="true" />
+    	<context name="_showRecord" expr="eval: id"/>
+    </action-view>
 	
 </object-views>
