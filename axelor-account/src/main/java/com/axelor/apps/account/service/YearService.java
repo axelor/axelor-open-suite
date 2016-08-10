@@ -23,6 +23,7 @@ import java.util.List;
 
 import javax.persistence.Query;
 
+import org.joda.time.LocalDateTime;
 import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -150,6 +151,7 @@ public class YearService {
 			partnerRepository.save(partner);
 		}
 		year.setStatusSelect(YearRepository.STATUS_CLOSED);
+		year.setClosureDateTime(LocalDateTime.now());
 		yearRepo.save(year);
 	}
 
