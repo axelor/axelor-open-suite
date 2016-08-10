@@ -62,7 +62,12 @@
 			<field name="refusedBy" form-view="user-form" grid-view="user-grid"/>
 			<field name="validationDate"/>
 			<field name="refusalDate"/>
+			<field name="groundForRefusal" showIf="statusSelect == 4" colSpan="12"/>
 		</panel>
+	</form>
+	
+	<form name="popup-leave-request-refusal-form" title="Ground for refusal" model="com.axelor.apps.hr.db.LeaveRequest">
+		<field name="groundForRefusal" showTitle="false"/>
 	</form>
 	
 	<action-group name="action-leave-request-group-send">
@@ -90,6 +95,7 @@
 		<action name="action-leave-request-attrs-buttons"/>
 		<action name="action-leave-request-attrs-valid-refuse"/>
 		<action name="save"/>
+		<action name="action-leave-request-refusal-popup-form"/>
 	</action-group>
 	
 	<action-group name="action-leave-request-group-cancel">
@@ -181,5 +187,15 @@
 	<action-method name="action-leave-request-method-create-events">
 		<call class="com.axelor.apps.hr.web.leave.LeaveController" method="createEvents"/>
 	</action-method>
+	
+	<action-view name="action-leave-request-refusal-popup-form" title="Ground for refusal" model="com.axelor.apps.hr.db.LeaveRequest">
+    	<view type="form" name="popup-leave-request-refusal-form"/>
+        <view-param name="popup" value="reload"/>
+        <view-param name="show-toolbar" value="false"/>
+  		<view-param name="show-confirm" value="true" />
+	  	<view-param name="popup-save" value="true"/>
+	  	<view-param name="forceEdit" value="true" />
+    	<context name="_showRecord" expr="eval: id"/>
+    </action-view>
 	
 </object-views>

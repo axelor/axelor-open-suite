@@ -67,6 +67,7 @@
 			<field name="refusedBy" form-view="user-form" grid-view="user-grid"/>
 			<field name="validationDate"/>
 			<field name="refusalDate"/>
+			<field name="groundForRefusal" showIf="statusSelect == 4" colSpan="12"/>
 		</panel>
 		<panel sidebar="true" readonly="true"  colSpan="4">  
 	  		<field name="inTaxTotal" css="order-subtotal" showTitle="false" colSpan="12">
@@ -82,6 +83,10 @@
 	          </viewer>
 	        </field>
       </panel>
+	</form>
+	
+	<form name="popup-expense-refusal-form" title="Ground for refusal" model="com.axelor.apps.hr.db.Expense">
+		<field name="groundForRefusal" showTitle="false"/>
 	</form>
 	
 	<form name="popup-expense-form" title="Select the expense you want to edit" model="com.axelor.apps.base.db.Wizard" onNew="action-expense-attrs-domain-expense-select">
@@ -104,6 +109,8 @@
 	
 	<action-group name="action-expense-group-refuse">
 		<action name="action-expense-method-record-refuse"/>
+		<action name="save"/>
+		<action name="action-expense-refusal-popup-form"/>
 		<action name="action-expense-attrs-buttons"/>
 		<action name="save"/>
 	</action-group>
@@ -170,5 +177,15 @@
 	<action-validate name="action-expense-validate-period">
 		<error message="Period is closed" if="period?.statusSelect == 2"/>
 	</action-validate>
+	
+	<action-view name="action-expense-refusal-popup-form" title="Ground for refusal" model="com.axelor.apps.hr.db.Expense">
+    	<view type="form" name="popup-expense-refusal-form"/>
+        <view-param name="popup" value="reload"/>
+        <view-param name="show-toolbar" value="false"/>
+  		<view-param name="show-confirm" value="true" />
+	  	<view-param name="popup-save" value="true"/>
+	  	<view-param name="forceEdit" value="true" />
+    	<context name="_showRecord" expr="eval: id"/>
+    </action-view>
 	
 </object-views>
