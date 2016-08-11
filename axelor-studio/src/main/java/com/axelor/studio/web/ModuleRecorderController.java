@@ -20,8 +20,6 @@ package com.axelor.studio.web;
 import java.io.IOException;
 
 import com.axelor.exception.AxelorException;
-import com.axelor.meta.db.repo.MetaModelRepository;
-import com.axelor.meta.db.MetaModel;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.studio.db.ModuleRecorder;
@@ -32,9 +30,6 @@ public class ModuleRecorderController {
 
 	@Inject
 	private ModuleRecorderService moduleRecorderService;
-
-	@Inject
-	private MetaModelRepository metaModelRepo;
 
 	public void update(ActionRequest request, ActionResponse response) throws AxelorException {
 		

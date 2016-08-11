@@ -40,6 +40,7 @@ import com.axelor.meta.db.MetaModel;
 import com.axelor.meta.db.MetaModule;
 import com.axelor.meta.db.MetaSelect;
 import com.axelor.meta.db.MetaSelectItem;
+import com.axelor.meta.db.repo.MetaModuleRepository;
 import com.axelor.meta.db.repo.MetaSelectRepository;
 import com.axelor.studio.db.DataManager;
 import com.axelor.studio.db.ViewBuilder;
@@ -85,6 +86,9 @@ public class DataModelService extends DataCommonService {
 	
 	@Inject
 	private DataValidatorService validatorService;
+	
+	@Inject
+	private MetaModuleRepository metaModuleRepo;
 	
 	/**
 	 * Root method to access the service. It will call other methods required to
@@ -192,6 +196,7 @@ public class DataModelService extends DataCommonService {
 			module.setDescription(getValue(row, 4));
 			module.setCustomised(true);
 			
+			metaModuleRepo.save(module);
 			modulePriorityMap.put(name, getValue(row, 5));
 			log.debug("Module found/created: {}", module);
 		}
@@ -224,6 +229,11 @@ public class DataModelService extends DataCommonService {
 		if (module.startsWith("*")) {
 			replace = false;
 			module = module.replace("*", "");
+		}
+		
+		String checkModule = getValue(row, IF_MODULE);
+		if (!Strings.isNullOrEmpty(checkModule)) {
+			module = checkModule;
 		}
 		
 		MetaModule metaModule = getModule(module);
@@ -352,9 +362,6 @@ public class DataModelService extends DataCommonService {
 				.filter("self.name = ?1 and self.metaModel = ?2", basic[2],
 						metaModel).fetchOne();
 		
-		addTranslation(basic[3], getValue(row, TITLE_FR), "fr");
-		
-		moduleMap.get(metaModule.getName()).get(model).add(basic[2]);
 		
 		if (field == null) {
 			validateFieldName(basic[2], row.getRowNum(), model);
@@ -363,10 +370,13 @@ public class DataModelService extends DataCommonService {
 			if (!ModelBuilderService.isReserved(basic[2])) {
 				field.setCustomised(true);
 			}
-			field.setMetaModule(metaModule);
 		} else if (!field.getCustomised()){
 			return field;
 		}
+		
+		addTranslation(basic[3], getValue(row, TITLE_FR), "fr");
+		
+		moduleMap.get(metaModule.getName()).get(model).add(basic[2]);
 		
 		if (fieldTypes.containsKey(basic[1])) {
 			field.setFieldType(fieldTypes.get(basic[1]));
@@ -411,6 +421,7 @@ public class DataModelService extends DataCommonService {
 		
 		field.setHelpText(help);
 		field.setMetaModel(metaModel);
+		field.setMetaModule(metaModule);
 		field.setSequence(getFieldSequence(metaModel.getId()));
 		field = updateFieldTypeName(basic[0], basic[1], field, metaModule.getName());
 
@@ -613,11 +624,7 @@ public class DataModelService extends DataCommonService {
 		
 		MetaModel model = metaModelRepo.findByName(name);
 		
-		if (!updateModuleMap(name, module.getName())) {
-			model.setCustomised(true);
-			model.setEdited(true);
-			return metaModelRepo.save(model);
-		}
+		updateModuleMap(name, module.getName());
 		
 		if (model == null) {
 			model = new MetaModel(name);
@@ -766,11 +773,11 @@ public class DataModelService extends DataCommonService {
 		for (String module : moduleMap.keySet()) {
 			for (String modelName : moduleMap.get(module).keySet()) {
 	 			MetaModel model = metaModelRepo.findByName(modelName);
+	 			if (model != null && !model.getCustomised()) {
+	 				continue;
+	 			}
 				model = clearModel(module, model);
-				if (model == null) {
-					continue;
-				}
-				if (moduleMap.get(module).get(modelName).size() == 1) {
+				if (model == null || moduleMap.get(module).get(modelName).size() < 1) {
 					continue;
 				}
 				if (gridViewMap.containsKey(module)) {

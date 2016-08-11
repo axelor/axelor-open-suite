@@ -427,12 +427,12 @@ public class ViewLoaderService {
 	 * @return Default viewBuilder searched or newly created.
 	 */
 
-	public ViewBuilder getViewBuilder(String module, String formName, String type) {
+	public ViewBuilder getViewBuilder(String module, String viewName, String type) {
 
 		ViewBuilder viewBuilder = viewBuilderRepo
 				.all()
 				.filter("self.metaModule.name = ?1 AND self.name = ?2 AND self.viewType = ?3",
-						module, formName, type).fetchOne();
+						module, viewName, type).fetchOne();
 		return viewBuilder;
 	}
 
@@ -579,8 +579,8 @@ public class ViewLoaderService {
 
 		ViewBuilder viewBuilder = viewBuilderRepo
 				.all()
-				.filter("self.name = ?1 AND self.model = ?2 AND self.viewType = 'grid' AND self.metaModule.name = ?3",
-						gridName, modelName, module).fetchOne();
+				.filter("self.name = ?1 AND self.model = ?2 AND self.viewType = 'grid'",
+						gridName, modelName).fetchOne();
 
 		log.debug("ViewBuilder found: {}", viewBuilder);
 

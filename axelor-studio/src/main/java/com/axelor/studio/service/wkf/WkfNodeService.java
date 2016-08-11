@@ -42,7 +42,6 @@ import com.axelor.studio.db.ActionSelector;
 import com.axelor.studio.db.MenuBuilder;
 import com.axelor.studio.db.WkfNode;
 import com.axelor.studio.db.repo.MenuBuilderRepository;
-import com.axelor.studio.service.ConfigurationService;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 

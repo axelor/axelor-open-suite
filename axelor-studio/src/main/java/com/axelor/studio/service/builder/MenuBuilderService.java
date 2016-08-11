@@ -202,13 +202,13 @@ public class MenuBuilderService {
 		}
 
 		MenuBuilder menuBuilder = iterator.next();
-
+		String xmlId = getXmlId(menuBuilder);
 		String name = menuBuilder.getName();
 
 		Iterator<MenuItem> oldMenuIter = menuItems.iterator();
 		while (oldMenuIter.hasNext()) {
 			MenuItem oldMenuItem = oldMenuIter.next();
-			if (oldMenuItem.getName().equals(name)) {
+			if (oldMenuItem.getXmlId().equals(xmlId)) {
 				oldMenuIter.remove();
 			}
 		}
@@ -217,6 +217,8 @@ public class MenuBuilderService {
 		menuItem.setName(name);
 		menuItem.setTitle(menuBuilder.getTitle());
 		menuItem.setTop(menuBuilder.getTop());
+		menuItem.setXmlId(xmlId);
+		
 		String icon = menuBuilder.getIcon();
 		if (menuBuilder.getParent() == null && Strings.isNullOrEmpty(icon)) {
 			menuItem.setIcon("fa-list");
@@ -315,8 +317,11 @@ public class MenuBuilderService {
 			builder.add("grid");
 			builder.add("form");
 		}
-
-		return builder.get();
+		
+		Action action = builder.get();
+		action.setXmlId(getXmlId(menuBuilder));
+		
+		return action;
 
 	}
 
@@ -335,10 +340,12 @@ public class MenuBuilderService {
 		}
 
 		MenuBuilder menuBuilder = menuIterator.next();
-
+		
+		String xmlId = getXmlId(menuBuilder);
+		
 		if (menuBuilder.getDeleteMenu()) {
 			deleteMenu(menuBuilder);
-			deletedMenus.add(menuBuilder.getName());
+			deletedMenus.add(xmlId);
 			menuIterator.remove();
 			generatatMetaMenu(menuIterator);
 			return;
@@ -347,13 +354,14 @@ public class MenuBuilderService {
 		String name = menuBuilder.getName();
 
 		log.debug("Processing meta menu : {}", name);
-
-		MetaMenu metaMenu = metaMenuRepo.all().filter("self.name = ?1", name)
+		
+		MetaMenu metaMenu = metaMenuRepo.all().filter("self.name = ?1 and self.xmlId = ?2", name, xmlId)
 				.fetchOne();
 
 		if (metaMenu == null) {
 			metaMenu = new MetaMenu();
 			metaMenu.setName(name);
+			metaMenu.setXmlId(xmlId);
 		}
 		menuBuilder.setMenuGenerated(metaMenu);
 		metaMenu.setTitle(menuBuilder.getTitle());
@@ -393,10 +401,15 @@ public class MenuBuilderService {
 					parentMenu);
 			metaMenu.setParent(parentMenu);
 		}
-
-		if (!menuBuilder.getIsParent()) {
-			MetaAction action = getMetaAction(menuBuilder);
+		
+		MetaAction action = getParentAction(menuBuilder);
+		
+		if (action == null && !menuBuilder.getIsParent()) {
+			action = getMetaAction(menuBuilder);
 			menuBuilder.setActionGenerated(action);
+		}
+		
+		if (action != null) {
 			metaMenu.setAction(action);
 		}
 
@@ -405,6 +418,20 @@ public class MenuBuilderService {
 
 		generatatMetaMenu(menuIterator);
 
+	}
+	
+	private MetaAction getParentAction(MenuBuilder menuBuilder) {
+		
+		MetaMenu parentMenu = menuBuilder.getMetaMenu();
+		if (parentMenu != null) {
+			MetaAction action = parentMenu.getAction();
+			if (action != null) {
+				return action;
+			}
+		}
+
+		return null;
+		
 	}
 
 	/**
@@ -416,7 +443,7 @@ public class MenuBuilderService {
 	 */
 	@Transactional
 	public MetaAction getMetaAction(MenuBuilder menuBuilder) {
-
+		
 		String actionName = menuBuilder.getName().replace("-", ".");
 
 		MetaAction metaAction = metaActionRepo.all()
@@ -433,6 +460,7 @@ public class MenuBuilderService {
 		Action action = getAction(menuBuilder);
 		String xml = XMLViews.toXml(action, true);
 		metaAction.setXml(xml);
+		metaAction.setXmlId(getXmlId(menuBuilder));
 
 		return metaActionRepo.save(metaAction);
 
@@ -498,11 +526,16 @@ public class MenuBuilderService {
 			Iterator<MenuItem> menuIter = menuItems.iterator();
 			while (menuIter.hasNext()) {
 				MenuItem menuItem = menuIter.next();
-				if (deletedMenus.contains(menuItem.getName())) {
+				if (deletedMenus.contains(menuItem.getXmlId())) {
 					menuIter.remove();
 				}
 			}
 		}
 
+	}
+	
+	private String getXmlId(MenuBuilder menuBuilder) {
+		
+		return menuBuilder.getModuleName() + "-" + menuBuilder.getName();
 	}
 }

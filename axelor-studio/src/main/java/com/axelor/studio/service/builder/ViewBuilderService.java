@@ -125,7 +125,7 @@ public class ViewBuilderService {
 		}
 
 		try {
-			removalService.remove(viewDir);
+			removalService.remove(module, viewDir);
 			reportBuilderService.processReports();
 			
 			String error = actionBuilderService.build(module, viewDir, updateMeta);

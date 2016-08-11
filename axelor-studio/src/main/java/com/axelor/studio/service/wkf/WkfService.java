@@ -44,7 +44,6 @@ import com.axelor.studio.db.Wkf;
 import com.axelor.studio.db.repo.ViewBuilderRepository;
 import com.axelor.studio.db.repo.ViewItemRepository;
 import com.axelor.studio.db.repo.WkfRepository;
-import com.axelor.studio.service.ConfigurationService;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;

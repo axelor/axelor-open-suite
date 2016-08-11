@@ -21,9 +21,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,13 +30,10 @@ import com.axelor.app.AppSettings;
 import com.axelor.common.FileUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
-import com.axelor.meta.MetaStore;
 import com.axelor.meta.db.MetaModule;
 import com.axelor.meta.db.repo.MetaModuleRepository;
-import com.axelor.studio.utils.Namming;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
-import com.google.inject.persist.Transactional;
 
 /**
  * Service provide configuration details support. It check build directory path
@@ -217,7 +212,7 @@ public class ConfigurationService {
 			
 			if (!Strings.isNullOrEmpty(depends)) {
 				for (String depend : depends.split(",")) {
-					buildText += "\t\t module \"modules:" + depend + "\"\n";
+					buildText += "\t\t module \"modules:" + depend.trim() + "\"\n";
 				}
 			}
 
@@ -296,7 +291,6 @@ public class ConfigurationService {
 		return moduleRepo.all().filter("self.customised = true").fetch();
 	}
 	
-	@Transactional
 	public MetaModule getCustomizedModule(String name) {
 		
 		MetaModule module = null;

@@ -318,6 +318,9 @@ public class ModelBuilderService {
 			case "many-to-many":
 				addRelational(fieldXml, field);
 				break;
+			case "one-to-one":
+				addRelational(fieldXml, field);
+				break;
 		}
 
 		if (field.getMetaSelect() != null) {

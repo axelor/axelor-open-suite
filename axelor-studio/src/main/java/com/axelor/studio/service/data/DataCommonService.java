@@ -47,6 +47,7 @@ public abstract class DataCommonService {
 	public static final String[] HEADERS = new String[]{
 		"Note",
 		"Module", 
+		"If Module",
 		"Object", 
 		"View", 
 		"Name", 
@@ -74,7 +75,7 @@ public abstract class DataCommonService {
 		"Help",
 		"Help FR",
 		"Panel Level",
-		"If Module"
+		"Widget"
 	};
 	
 	
@@ -165,35 +166,36 @@ public abstract class DataCommonService {
 	
 	protected final static int NOTE = 0;
 	protected final static int MODULE = 1;
-	protected final static int MODEL = 2;
-	protected final static int VIEW = 3;
-	protected final static int NAME = 4;
-	protected final static int TITLE = 5;
-	protected final static int TITLE_FR = 6;
-	protected final static int TYPE = 7;
-	protected final static int SELECT = 8;
-	protected final static int SELECT_FR = 9;
-	protected final static int MENU = 10;
-	protected final static int REQUIRED = 11;
-	protected final static int REQUIRED_IF = 12;
-	protected final static int READONLY = 13;
-	protected final static int READONLY_IF = 14;
-	protected final static int HIDDEN = 15;
-	protected final static int HIDE_IF = 16;
-	protected final static int SHOW_IF = 17;
-	protected final static int IF_CONFIG = 18;
-	protected final static int FORMULA = 19;
-	protected final static int EVENT = 20;
-	protected final static int DOMAIN = 21;
-	protected final static int ON_CHANGE = 22;
-	protected final static int ON_CLICK = 23;
-	protected final static int COLSPAN = 24;
-	protected final static int GRID = 25;
-	protected final static int HELP = 26;
-	protected final static int HELP_FR = 27;
-	protected final static int PANEL_LEVEL = 28;
-	protected final static int IF_MODULE = 29;
-	
+	protected final static int IF_MODULE = 2;
+	protected final static int MODEL = 3;
+	protected final static int VIEW = 4;
+	protected final static int NAME = 5;
+	protected final static int TITLE = 6;
+	protected final static int TITLE_FR = 7;
+	protected final static int TYPE = 8;
+	protected final static int SELECT = 9;
+	protected final static int SELECT_FR = 10;
+	protected final static int MENU = 11;
+	protected final static int REQUIRED = 12;
+	protected final static int REQUIRED_IF = 13;
+	protected final static int READONLY = 14;
+	protected final static int READONLY_IF = 15;
+	protected final static int HIDDEN = 16;
+	protected final static int HIDE_IF = 17;
+	protected final static int SHOW_IF = 18;
+	protected final static int IF_CONFIG = 19;
+	protected final static int FORMULA = 20;
+	protected final static int EVENT = 21;
+	protected final static int DOMAIN = 22;
+	protected final static int ON_CHANGE = 23;
+	protected final static int ON_CLICK = 24;
+	protected final static int COLSPAN = 25;
+	protected final static int GRID = 26;
+	protected final static int HELP = 27;
+	protected final static int HELP_FR = 28;
+	protected final static int PANEL_LEVEL = 29;
+	protected final static int WIDGET = 30;
+
 	protected final static Map<String, String> relationshipMap;
 
 	static {
@@ -207,7 +209,7 @@ public abstract class DataCommonService {
 		relationshipMap = Collections.unmodifiableMap(map);
 	}
 	
-	protected static final List<String> referenceTypes = Arrays.asList(new String[]{"o2m","m2m","m2o","wizard", "o2o"});
+	protected static final List<String> referenceTypes = Arrays.asList(new String[]{"o2m","m2m","m2o","wizard","o2o"});
 	
 	protected static final String[] MODULE_HEADERS = new String[] {"Module", "Depends", "Title", "Version", "Description", "Parent view priority"};
 	

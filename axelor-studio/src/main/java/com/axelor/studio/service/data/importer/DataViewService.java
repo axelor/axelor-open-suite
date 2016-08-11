@@ -199,23 +199,21 @@ public class DataViewService extends DataCommonService {
 		if (clearedViews.containsKey(name[0])) {
 			return clearedViews.get(name[0]);
 		}
-
+		
 		ViewBuilder viewBuilder = viewLoaderService.getViewBuilder(module.getName(), name[0], "form");
 		if (viewBuilder == null) {
 			viewBuilder = viewLoaderService.getViewBuilderForm(module.getName(), model, name[0], name[1], !replace);
 		}
-		log.debug("Module priority: {}, module: {}", priority, module.getName());
-		String depends = priority.get(module.getName());
-		if (depends == null) {
-			depends = module.getDepends();
-		}
-		if (depends != null) {
-			viewBuilder = viewLoaderService.addParentView(viewBuilder, depends, name[0]);
-		}
 
-		viewBuilder.setEdited(true);
-		viewBuilder.setRecorded(false);
-		viewBuilder.setAddOnly(!replace);
+		log.debug("Module priority: {}, module: {}", priority, module.getName());
+//		String depends = priority.get(module.getName());
+//		if (depends == null) {
+//			depends = module.getDepends();
+//		}
+//		if (depends != null) {
+//			viewBuilder = viewLoaderService.addParentView(viewBuilder, depends, name[0]);
+//		}
+
 		viewBuilder = clearView(viewBuilder);
 
 		return viewBuilder;
@@ -424,12 +422,14 @@ public class DataViewService extends DataCommonService {
 
 		ViewBuilder targetView = null;
 		if (metaModel != null) {
-			targetView = viewLoaderService.getDefaultForm(module, metaModel, null, true);
+			targetView = viewLoaderService.getDefaultForm(module, metaModel, null, !replace);
 		}
 
 		String actionName = "action-" + inflector.dasherize(basic[2]);
 
-		ActionBuilder builder = actionBuilderRepo.findByName(actionName);
+		ActionBuilder builder = actionBuilderRepo.all()
+				.filter("self.name  = ?1 and self.metaModule.name = ?2", actionName, viewBuilder.getMetaModule().getName())
+				.fetchOne();
 		if (builder == null) {
 			builder = new ActionBuilder(actionName);
 			builder.setMetaModule(viewBuilder.getMetaModule());
@@ -525,7 +525,9 @@ public class DataViewService extends DataCommonService {
 		
 		String name = inflector.dasherize(basic[2]);
 
-		MenuBuilder menuBuilder = menuBuilderRepo.findByName(name);
+		MenuBuilder menuBuilder = menuBuilderRepo
+				.all()
+				.filter("self.name = ?1 and self.metaModule.name = ?2" , name, module.getName()).fetchOne();
 		if (menuBuilder == null) {
 			menuBuilder = new MenuBuilder(name);
 			menuBuilder.setMetaModule(module);
@@ -545,7 +547,9 @@ public class DataViewService extends DataCommonService {
 		MenuBuilder parent = null;
 		if (!Strings.isNullOrEmpty(basic[1])) {
 			String parentName = inflector.dasherize(basic[1]);
-			parent = menuBuilderRepo.findByName(parentName);
+			parent = menuBuilderRepo
+					.all()
+					.filter("self.name = ?1 and self.metaModule.name = ?2" , parentName, module.getName()).fetchOne();
 			if (parent != null) {
 				menuBuilder.setParent(parent.getName());
 				menuBuilder.setMenuBuilder(parent);
@@ -631,6 +635,14 @@ public class DataViewService extends DataCommonService {
 		viewBuilder.setOnSave(null);
 		viewBuilder.setOnNew(null);
 		viewBuilder.setOnLoad(null);
+		viewBuilder.setEdited(true);
+		viewBuilder.setRecorded(false);
+		viewBuilder.setAddOnly(!replace);
+		
+		if (replace) {
+			viewBuilder.setMetaView(null);
+			viewBuilder.setParent(null);
+		}
 		
 		viewBuilder = viewBuilderRepo.save(viewBuilder);
 		
@@ -676,7 +688,10 @@ public class DataViewService extends DataCommonService {
 
 		String name = "action-" + viewBuilder.getName() + "-" + type;
 
-		ActionBuilder action = actionBuilderRepo.findByName(name);
+		ActionBuilder action = actionBuilderRepo
+				.all()
+				.filter("self.name = ?1 and self.metaModule.name = ?2", name, viewBuilder.getMetaModule().getName())
+				.fetchOne();
 		if (action == null) {
 			action = new ActionBuilder(name);
 			action.setMetaModule(viewBuilder.getMetaModule());
@@ -823,6 +838,8 @@ public class DataViewService extends DataCommonService {
 		if (StringUtils.isNumeric(colspan)) {
 			viewItem.setColSpan(Integer.parseInt(colspan));
 		}
+		
+		viewItem.setWidget(getValue(row, WIDGET));
 
 		return viewItem;
 	}
@@ -847,7 +864,10 @@ public class DataViewService extends DataCommonService {
 		String name = "action-" + viewBuilder.getName() + "-set-"
 				+ viewItem.getName();
 
-		ActionBuilder actionBuilder = actionBuilderRepo.findByName(name);
+		ActionBuilder actionBuilder = actionBuilderRepo
+				.all()
+				.filter("self.name = ?1 and self.metaModule.name = ?2", name, viewBuilder.getMetaModule().getName())
+				.fetchOne();
 		if (actionBuilder == null) {
 			actionBuilder = new ActionBuilder(name);
 			actionBuilder.setMetaModule(viewBuilder.getMetaModule());
@@ -1070,8 +1090,10 @@ public class DataViewService extends DataCommonService {
 		else if (extendViews.containsKey(module)) {
 			this.replace =  !extendViews.get(module).contains(view);
 		}
+		else {
+			this.replace =  replace;
+		}
 		
-		this.replace =  replace;
 		
 	}
 	

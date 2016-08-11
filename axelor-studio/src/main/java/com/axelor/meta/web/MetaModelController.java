@@ -25,7 +25,6 @@ import java.util.Map;
 import com.axelor.app.AppSettings;
 import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
-import com.axelor.meta.db.MetaField;
 import com.axelor.meta.db.MetaModel;
 import com.axelor.meta.db.repo.MetaModelRepository;
 import com.axelor.meta.schema.actions.ActionView;

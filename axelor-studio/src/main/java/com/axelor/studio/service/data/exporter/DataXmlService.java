@@ -695,6 +695,8 @@ public class DataXmlService extends DataCommonService {
 			values[COLSPAN] = field.getColSpan().toString();
 		}
 		
+		values[WIDGET] = field.getWidget();
+		
 	}
 	
 	private String[] getSelect(String selection) {

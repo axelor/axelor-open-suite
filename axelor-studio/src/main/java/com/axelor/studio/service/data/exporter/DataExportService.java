@@ -138,7 +138,7 @@ public class DataExportService extends DataCommonService {
 				+ "and self.xmlId is null "
 				+ "and self.module != 'axelor-core' "
 				+ "and self.module in ?1", installed)
-				.order("order").fetch();
+				.order("order").order("id").fetch();
 		
 		workBook = new XSSFWorkbook();
 		addStyle();
@@ -157,6 +157,8 @@ public class DataExportService extends DataCommonService {
 		processRootMenu(menus.iterator());
 		
 		setColumnWidth();
+		
+		workBook.setSheetOrder("Menus", workBook.getNumberOfSheets() - 1);
 
 		return createExportFile(oldFile);
 	}
@@ -246,9 +248,9 @@ public class DataExportService extends DataCommonService {
 			if (workBook.getSheetIndex(title) >= 0) {
 				title = title + "(" + menu.getId() + ")";
 			}
-			createSheet(title);
 			updateMenuPath(menu);
 			addMenu(menu, null, 1);
+			createSheet(title);
 			processMenu(name, 1);
 			processedMenus.add(name);
 		}
@@ -299,6 +301,11 @@ public class DataExportService extends DataCommonService {
 		
 		log.debug("Root menu: {}", rootMenu);
 		menuPath = null;
+		if (sheet != null) {
+			if (sheet.getPhysicalNumberOfRows() == 1) {
+				workBook.removeSheetAt(workBook.getSheetIndex(sheet));
+			}
+		}
 		sheet = workBook.createSheet(I18n.get(rootMenu));
 		
 		if (onlyPanel) {
@@ -460,7 +467,7 @@ public class DataExportService extends DataCommonService {
 		
 		List<MetaMenu> subMenus = metaMenuRepo.all()
 				.filter("self.parent.name = ?", parentMenu)
-				.order("order").fetch();
+				.order("order").order("id").fetch();
 		
 		for (MetaMenu subMenu : subMenus) {
 			

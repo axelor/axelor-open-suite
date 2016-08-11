@@ -54,8 +54,6 @@ public class ViewRemovalService {
 
 	private Map<String, ObjectViews> modelMap;
 
-	private File viewDir;
-	
 	@Inject
 	private MetaActionRepository metaActionRepo;
 
@@ -65,28 +63,29 @@ public class ViewRemovalService {
 	@Inject
 	private MetaMenuRepository metaMenuRepo;
 
-	public void remove(File viewDir) {
+	public void remove(String module, File viewDir) {
 
 		modelMap = new HashMap<String, ObjectViews>();
-		this.viewDir = viewDir;
 		
-		removeActions();
+		removeActions(module, viewDir);
 
-		removeView();
+		removeView(module, viewDir);
 
-		removeMenu();
+		removeMenu(module, viewDir);
 
-		removeDashboard();
+		removeDashboard(module, viewDir);
 
-		updateViewFile();
+		updateViewFile(viewDir);
 		
 	}
 	
 	@Transactional
-	public void removeActions() {
+	public void removeActions(String module, File viewDir) {
 
 		List<MetaAction> metaActions = metaActionRepo.all()
-				.filter("self.removeAction = true and model != null").fetch();
+				.filter("self.removeAction = true "
+						+ "and self.model != null "
+						+ "and self.module = ?1", module).fetch();
 		log.debug("Total actions to remove: {}", metaActions.size());
 
 		for (MetaAction metaAction : metaActions) {
@@ -98,7 +97,7 @@ public class ViewRemovalService {
 
 			model = model.substring(model.lastIndexOf(".") + 1);
 
-			ObjectViews objectViews = getObjectViews(model);
+			ObjectViews objectViews = getObjectViews(viewDir, model);
 			if (objectViews == null) {
 				continue;
 			}
@@ -124,10 +123,11 @@ public class ViewRemovalService {
 	}
 
 	@Transactional
-	public void removeView() {
+	public void removeView(String module, File viewDir) {
 
 		List<MetaView> metaViews = metaViewRepo.all()
-				.filter("self.removeView = true").fetch();
+				.filter("self.removeView = true "
+						+ "and self.module = ?1", module).fetch();
 		log.debug("Total views to remove: {}", metaViews.size());
 
 		for (MetaView metaView : metaViews) {
@@ -141,7 +141,7 @@ public class ViewRemovalService {
 			String viewName = metaView.getName();
 			metaViewRepo.remove(metaView);
 			
-			ObjectViews objectViews = getObjectViews(model);
+			ObjectViews objectViews = getObjectViews(viewDir, model);
 			if (objectViews == null) {
 				continue;
 			}
@@ -165,10 +165,11 @@ public class ViewRemovalService {
 	}
 
 	@Transactional
-	public void removeMenu() {
+	public void removeMenu(String module, File viewDir) {
 
 		List<MetaMenu> metaMenus = metaMenuRepo.all()
-				.filter("self.removeMenu = true").fetch();
+				.filter("self.removeMenu = true "
+						+ "and self.module = ?1", module).fetch();
 		log.debug("Total menus to remove: {}", metaMenus.size());
 
 		List<String> menuNames = new ArrayList<String>();
@@ -183,7 +184,7 @@ public class ViewRemovalService {
 			metaMenuRepo.remove(metaMenu);
 		}
 
-		ObjectViews objectViews = getObjectViews("Menu");
+		ObjectViews objectViews = getObjectViews(viewDir, "Menu");
 
 		if (objectViews != null) {
 
@@ -217,10 +218,12 @@ public class ViewRemovalService {
 	}
 
 	@Transactional
-	public void removeDashboard() {
+	public void removeDashboard(String module, File viewDir) {
 
 		List<MetaAction> metaActions = metaActionRepo.all()
-				.filter("self.removeAction = true and model is null").fetch();
+				.filter("self.removeAction = true "
+						+ "and self.model is null "
+						+ "and self.module = ?1", module).fetch();
 		log.debug("Total dashoboard actions to remove: {}", metaActions.size());
 
 		List<String> actionNames = new ArrayList<String>();
@@ -229,7 +232,7 @@ public class ViewRemovalService {
 			metaActionRepo.remove(action);
 		}
 
-		ObjectViews objectViews = getObjectViews("Dashboard");
+		ObjectViews objectViews = getObjectViews(viewDir, "Dashboard");
 		if (objectViews == null) {
 			return;
 		}
@@ -249,7 +252,7 @@ public class ViewRemovalService {
 
 	}
 
-	private void updateViewFile() {
+	private void updateViewFile(File viewDir) {
 
 		try {
 			for (String model : modelMap.keySet()) {
@@ -280,7 +283,7 @@ public class ViewRemovalService {
 
 	}
 
-	private ObjectViews getObjectViews(String model) {
+	private ObjectViews getObjectViews(File viewDir, String model) {
 
 		if (modelMap.containsKey(model)) {
 			return modelMap.get(model);

@@ -179,12 +179,12 @@ public class RightManagementService {
 		MetaField field = rightMgmt.getMetaField();
 		MetaModel model = field.getMetaModel();
 		String fieldName = field.getName();
-		String code = null;
-		if (group != null) {
-			code = group.getCode();
-		} else {
-			code = role.getName();
-		}
+//		String code = null;
+//		if (group != null) {
+//			code = group.getCode();
+//		} else {
+//			code = role.getName();
+//		}
 
 //		String permissionName = getPermissionName(rightMgmt.getName(), code,
 //				model.getName());

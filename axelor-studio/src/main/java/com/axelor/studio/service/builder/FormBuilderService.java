@@ -1005,6 +1005,7 @@ public class FormBuilderService {
 		label.setHideIf(item.getHideIf());
 		label.setConditionToCheck(item.getIfConfig());
 		label.setModuleToCheck(item.getIfModule());
+		label.setColSpan(item.getColSpan());
 		
 		items.add(label);
 	}

@@ -168,26 +168,26 @@ public class ActionBuilderService {
 		Action action = null;
 
 		switch (actionType) {
-		case 0:
-			action = createActionRecord(model, actionBuilder, true);
-			break;
-		case 1:
-			action = createActionRecord(model, actionBuilder, false);
-			break;
-		case 2:
-			action = createActionView(model, actionBuilder);
-			break;
-		case 3:
-			action = createActionReport(model, actionBuilder);
-			break;
-		case 4:
-			action = createActionEmail(model, actionBuilder);
-			break;
-		case 5:
-			action = createActionValidation(actionBuilder);
-			break;
-		default:
-			processActionBuilder(actionIter);
+			case 0:
+				action = createActionRecord(model, actionBuilder, true);
+				break;
+			case 1:
+				action = createActionRecord(model, actionBuilder, false);
+				break;
+			case 2:
+				action = createActionView(model, actionBuilder);
+				break;
+			case 3:
+				action = createActionReport(model, actionBuilder);
+				break;
+			case 4:
+				action = createActionEmail(model, actionBuilder);
+				break;
+			case 5:
+				action = createActionValidation(actionBuilder);
+				break;
+			default:
+				processActionBuilder(actionIter);
 		}
 
 		String modelName = "Dashboard";

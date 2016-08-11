@@ -407,7 +407,9 @@ public class DataValidatorService extends DataCommonService {
 		}
 		
 		if (!fieldTypes.containsKey(type) 
-				&& !frMap.containsKey(type) && !viewElements.containsKey(type)) {
+				&& !frMap.containsKey(type) 
+				&& !viewElements.containsKey(type)
+				&& !ignoreTypes.contains(type)) {
 			addLog(I18n.get("Invalid type"));
 		}
 		
