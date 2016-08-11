@@ -24,15 +24,38 @@
     	</panel>
     	<panel>
         	<panel colSpan="6">
-            	<button name="close" title="Close period" colSpan="6" onClick="action-period-record-close,save" showIf="statusSelect == 1"/>
-            	<button name="reopen" title="Reopen period" colSpan="6" onClick="action-period-record-open,save" showIf="statusSelect == 2"/>
+            	<button name="close" title="Close period" colSpan="6" onClick="action-group-period-year-close" showIf="statusSelect == 1"/>
+            	<button name="reopen" title="Reopen period" colSpan="6" onClick="action-group-period-year-open" showIf="statusSelect == 2"/>
         	</panel>
             <field name="statusSelect"/>
+            <field name="closureDateTime" showIf="statusSelect == 2"/>
     	</panel>
     </form>
     
-    <action-record name="action-period-record-close" model="com.axelor.apps.base.db.Period">
+    <action-group name="action-group-period-year-close">
+    	<action name="action-period-record-status-close"/>
+    	<action name="save"/>
+    	<action name="action-period-record-closure-date-time"/>
+    	<action name="save"/>
+    </action-group>
+    
+    <action-group name="action-group-period-year-open">
+    	<action name="action-period-record-status-open"/>
+    	<action name="save"/>
+    	<action name="action-record-period-closure-date-time"/>
+    	<action name="save"/>
+    </action-group>
+    
+    <action-record name="action-period-record-status-close" model="com.axelor.apps.base.db.Period">
     	<field name="statusSelect" expr="eval: __repo__.of(Period).STATUS_CLOSED"/>
+    </action-record>
+    
+     <action-record name="action-period-record-status-open" model="com.axelor.apps.base.db.Period">
+    	<field name="statusSelect" expr="eval: __repo__.of(Period).STATUS_OPENED"/>
+     </action-record>
+     
+    <action-record name="action-period-record-closure-date-time" model="com.axelor.apps.base.db.Period">
+    	<field name="closureDateTime" expr="__datetime__" if="statusSelect == 2"/>
     </action-record>
     
     <action-record name="action-period-record-default" model="com.axelor.apps.base.db.Period">
@@ -40,8 +63,6 @@
     	<field name="company"  expr="eval:__repo__.of(Company).all().fetchOne()" if="__user__.activeCompany == null &amp;&amp; __repo__.of(Company).all().fetch().size == 1"/>
      </action-record>
     
-     <action-record name="action-period-record-open" model="com.axelor.apps.base.db.Period">
-    	<field name="statusSelect" expr="eval: __repo__.of(Period).STATUS_OPENED"/>
-     </action-record>
+    
     
 </object-views>

@@ -88,6 +88,7 @@ public class YearService {
 
 		for (Period period : year.getPeriodList())  {
 			period.setStatusSelect(PeriodRepository.STATUS_CLOSED);
+			period.setClosureDateTime(LocalDateTime.now());
 		}
 		Company company = year.getCompany();
 		if(company == null)  {
