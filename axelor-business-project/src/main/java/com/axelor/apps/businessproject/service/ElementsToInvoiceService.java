@@ -51,7 +51,7 @@ public class ElementsToInvoiceService {
 
 		Product product = elementsToInvoice.getProduct();
 
-		InvoiceLineGenerator invoiceLineGenerator = new InvoiceLineGenerator(invoice, product, product.getName(), elementsToInvoice.getSalePrice(),
+		InvoiceLineGenerator invoiceLineGenerator = new InvoiceLineGenerator(invoice, product, product.getName(), product.getCode(), elementsToInvoice.getSalePrice(),
 					elementsToInvoice.getSalePrice(),null,elementsToInvoice.getQty(),elementsToInvoice.getUnit(), null,priority,BigDecimal.ZERO,IPriceListLine.AMOUNT_TYPE_NONE,
 					elementsToInvoice.getSalePrice().multiply(elementsToInvoice.getQty()), null,false)  {
 

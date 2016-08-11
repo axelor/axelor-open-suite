@@ -269,7 +269,7 @@ public class ExpenseService  {
 		InvoiceLineGenerator invoiceLineGenerator = null;
 		Integer atiChoice = invoice.getCompany().getAccountConfig().getInvoiceInAtiSelect();
 		if(atiChoice == 1 || atiChoice == 3){
-			invoiceLineGenerator = new InvoiceLineGenerator(invoice, product, product.getName(), expenseLine.getUntaxedAmount(),
+			invoiceLineGenerator = new InvoiceLineGenerator(invoice, product, product.getName(), product.getCode(), expenseLine.getUntaxedAmount(),
 					expenseLine.getUntaxedAmount(),expenseLine.getComments(),BigDecimal.ONE,product.getUnit(), null,priority,BigDecimal.ZERO,IPriceListLine.AMOUNT_TYPE_NONE,
 					expenseLine.getUntaxedAmount(), expenseLine.getTotalAmount(),false)  {
 
@@ -287,7 +287,7 @@ public class ExpenseService  {
 		}
 
 		else{
-			invoiceLineGenerator = new InvoiceLineGenerator(invoice, product, product.getName(), expenseLine.getTotalAmount(),
+			invoiceLineGenerator = new InvoiceLineGenerator(invoice, product, product.getName(), product.getCode(), expenseLine.getTotalAmount(),
 					expenseLine.getTotalAmount(),expenseLine.getComments(),BigDecimal.ONE,product.getUnit(), null,priority,BigDecimal.ZERO,IPriceListLine.AMOUNT_TYPE_NONE,
 					expenseLine.getUntaxedAmount(), expenseLine.getTotalAmount(),false)  {
 
