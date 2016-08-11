@@ -55,7 +55,7 @@
      </action-record>
      
     <action-record name="action-period-record-closure-date-time" model="com.axelor.apps.base.db.Period">
-    	<field name="closureDateTime" expr="__datetime__" if="statusSelect == 2"/>
+    	<field name="closureDateTime" expr="eval:__datetime__" if="statusSelect == 2"/>
     </action-record>
     
     <action-record name="action-period-record-default" model="com.axelor.apps.base.db.Period">
