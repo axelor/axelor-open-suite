@@ -40,26 +40,27 @@ import com.axelor.i18n.I18n;
 import com.axelor.meta.db.MetaMenu;
 import com.axelor.meta.db.MetaModel;
 import com.axelor.meta.db.repo.MetaMenuRepository;
+import com.axelor.meta.db.repo.MetaModelRepository;
 import com.axelor.studio.service.ConfigurationService;
-import com.axelor.studio.service.data.DataCommonService;
+import com.axelor.studio.service.data.DataCommon;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 
-public class DataValidatorService extends DataCommonService {
+public class DataValidatorService {
 	
-	private final static List<String> ignoreNames = new ArrayList<String>();
+	private final static List<String> IGNORE_NAMES = new ArrayList<String>();
 	{	
-		ignoreNames.add("panel");
-		ignoreNames.add("panelside");
-		ignoreNames.add("panelbook");
-		ignoreNames.add("error");
-		ignoreNames.add("warning");
-		ignoreNames.add("onsave");
-		ignoreNames.add("onnew");
-		ignoreNames.add("onload");
-		ignoreNames.add("spacer");
-		ignoreNames.add("label");
-		ignoreNames.add("dashlet");
+		IGNORE_NAMES.add("panel");
+		IGNORE_NAMES.add("panelside");
+		IGNORE_NAMES.add("panelbook");
+		IGNORE_NAMES.add("error");
+		IGNORE_NAMES.add("warning");
+		IGNORE_NAMES.add("onsave");
+		IGNORE_NAMES.add("onnew");
+		IGNORE_NAMES.add("onload");
+		IGNORE_NAMES.add("spacer");
+		IGNORE_NAMES.add("label");
+		IGNORE_NAMES.add("dashlet");
 	}
 	
 	private static final String sumPattern = "sum\\(([^;^:]+;[^;^:]+(:[^:^;]+)?)\\)";
@@ -91,6 +92,12 @@ public class DataValidatorService extends DataCommonService {
 	
 	@Inject
 	private ConfigurationService configService;
+	
+	@Inject
+	private MetaModelRepository metaModelRepo;
+	
+	@Inject
+	private DataCommon common;
 	
 	public File validate(XSSFWorkbook workBook) throws IOException {
 	
@@ -133,20 +140,20 @@ public class DataValidatorService extends DataCommonService {
 				continue;
 			}
 			
-			String name = getValue(row, 0);
+			String name = DataCommon.getValue(row, 0);
 			try {
 				configService.validateModuleName(name);
 			} catch (AxelorException e) {
 				addLog(e.getMessage(), row);
 			}
 			
-			String depends = getValue(row, 1);
+			String depends = DataCommon.getValue(row, 1);
 			if (depends != null && Arrays.asList(depends.split(",")).contains(name)) {
 				addLog(I18n.get("Module's depends must not contain its name"), row);
 			}
 			
-			String title = getValue(row, 2);
-			String version = getValue(row, 3);
+			String title = DataCommon.getValue(row, 2);
+			String version = DataCommon.getValue(row, 3);
 			if (title == null || version == null) {
 				addLog(I18n.get("Title or module version is empty"), row);
 			}
@@ -162,7 +169,7 @@ public class DataValidatorService extends DataCommonService {
 		
 		this.row = rowIter.next();
 		
-		String module = getValue(row, MODULE);
+		String module = DataCommon.getValue(row, DataCommon.MODULE);
 		if (module == null) {
 			validateRow(rowIter);
 			return;
@@ -195,7 +202,7 @@ public class DataValidatorService extends DataCommonService {
 	
 	private String getModel() throws IOException {
 		
-		String model = getValue(row, MODEL);
+		String model = DataCommon.getValue(row, DataCommon.MODEL);
 		
 		if (model == null) {
 			return null;
@@ -231,7 +238,7 @@ public class DataValidatorService extends DataCommonService {
 		
 		String type = validateType();
 		if (type != null) {
-			if (ignoreTypes.contains(type)) {
+			if (DataCommon.IGNORE_TYPES.contains(type)) {
 				return modelRequired;
 			}
 			if(!type.startsWith("menu") && !type.startsWith("dashlet")) {
@@ -259,10 +266,10 @@ public class DataValidatorService extends DataCommonService {
 	private boolean validateName(String type, String obj,
 			boolean consider) throws IOException {
 		
-		String name = getValue(row, NAME);
-		String title = getValue(row, TITLE);
+		String name = DataCommon.getValue(row, DataCommon.NAME);
+		String title = DataCommon.getValue(row, DataCommon.TITLE);
 		if (title == null) {
-			title = getValue(row, TITLE_FR);
+			title = DataCommon.getValue(row, DataCommon.TITLE_FR);
 		}
 		if (name == null) {
 			name = title;
@@ -274,7 +281,7 @@ public class DataValidatorService extends DataCommonService {
 				}
 				menus.add(name);
 			}
-			name = getFieldName(name);
+			name = common.getFieldName(name);
 		}
 		
 		if (!Strings.isNullOrEmpty(name)) {
@@ -294,8 +301,8 @@ public class DataValidatorService extends DataCommonService {
 			}
 		}
 		else if (type != null 
-				&& !ignoreNames.contains(type) 
-				&& !ignoreTypes.contains(type)) {
+				&& !IGNORE_NAMES.contains(type) 
+				&& !DataCommon.IGNORE_TYPES.contains(type)) {
 			addLog(I18n.get("Name and title empty or name is invalid."));
 		}
 		
@@ -305,10 +312,10 @@ public class DataValidatorService extends DataCommonService {
 
 	private boolean checkSelect(Row row, String type, boolean consider) throws IOException {
 		
-		String select = getValue(row, SELECT);
+		String select = DataCommon.getValue(row, DataCommon.SELECT);
 		
 		if (select == null) {
-			select = getValue(row, SELECT_FR);
+			select = DataCommon.getValue(row, DataCommon.SELECT_FR);
 		}
 		
 		if (select != null
@@ -391,7 +398,7 @@ public class DataValidatorService extends DataCommonService {
 	
 	private String validateType() throws IOException {
 		
-		String type = getValue(row, TYPE);
+		String type = DataCommon.getValue(row, DataCommon.TYPE);
 		if(type == null){
 			return type;
 		}
@@ -406,21 +413,21 @@ public class DataValidatorService extends DataCommonService {
 			type = ref[0];
 		}
 		
-		if (!fieldTypes.containsKey(type) 
-				&& !frMap.containsKey(type) 
-				&& !viewElements.containsKey(type)
-				&& !ignoreTypes.contains(type)) {
+		if (!DataCommon.FIELD_TYPES.containsKey(type) 
+				&& !DataCommon.FR_MAP.containsKey(type) 
+				&& !DataCommon.VIEW_ELEMENTS.containsKey(type)
+				&& !DataCommon.IGNORE_TYPES.contains(type)) {
 			addLog(I18n.get("Invalid type"));
 		}
 		
-		if (referenceTypes.contains(type)) { 
+		if (DataCommon.RELATIONAL_TYPES.containsKey(type) && !type.equals("file") || type.equals("wizard")) { 
 			if (reference == null) {
 				addLog(I18n.get("Reference is empty for type"));
 			}
 			else  if (!modelMap.containsKey(reference) 
 					&& !invalidModelMap.containsKey(reference)) {
 				invalidModelMap.put(reference, row);
-				referenceMap.put(getValue(row, MODEL) + "(" + getValue(row, NAME) + ")" , reference);
+				referenceMap.put(DataCommon.getValue(row, DataCommon.MODEL) + "(" + DataCommon.getValue(row, DataCommon.NAME) + ")" , reference);
 			}
 			
 		}
@@ -432,7 +439,7 @@ public class DataValidatorService extends DataCommonService {
 			}
 		}
 		
-		if(type != null && !ignoreTypes.contains(type) && !type.equals("menu")){
+		if(type != null && !DataCommon.IGNORE_TYPES.contains(type) && !type.equals("menu")) {
 			checkViewPanelType(type, reference);
 		}
 		
@@ -441,8 +448,8 @@ public class DataValidatorService extends DataCommonService {
 	
 	private boolean checkEvents(String obj, boolean consider) throws IOException {
 		
-		String formula = getValue(row, FORMULA);
-		String event = getValue(row, EVENT);
+		String formula = DataCommon.getValue(row, DataCommon.FORMULA);
+		String event = DataCommon.getValue(row, DataCommon.EVENT);
 		
 		if (event == null) {
 			return consider;
@@ -508,9 +515,9 @@ public class DataValidatorService extends DataCommonService {
 	
 	private void checkViewPanelType(String type, String reference) throws IOException{
 		
-		String view = getValue(row, VIEW);
+		String view = DataCommon.getValue(row, DataCommon.VIEW);
 		if (view == null) {
-			view = getValue(row, MODEL);
+			view = DataCommon.getValue(row, DataCommon.MODEL);
 		}
 		
 		if (view == null) {
@@ -550,7 +557,7 @@ public class DataValidatorService extends DataCommonService {
 	
 	private boolean checkFormula(boolean consider) throws IOException{
 		
-		String formula = getValue(row, FORMULA);
+		String formula = DataCommon.getValue(row, DataCommon.FORMULA);
 		
 		if (formula == null) {
 			return consider;

@@ -31,9 +31,13 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.studio.db.DataManager;
 import com.axelor.studio.db.repo.DataManagerRepository;
-import com.axelor.studio.service.data.exporter.DataAsciidocService;
+import com.axelor.studio.service.data.exporter.DataExportAsciidoc;
 import com.axelor.studio.service.data.exporter.DataExportService;
+import com.axelor.studio.service.data.exporter.DataWriter;
+import com.axelor.studio.service.data.exporter.DataWriterExcel;
 import com.axelor.studio.service.data.importer.DataModelService;
+import com.axelor.studio.service.data.importer.DataReader;
+import com.axelor.studio.service.data.importer.DataReaderExcel;
 import com.google.inject.Inject;
 
 public class DataManagerController {
@@ -45,7 +49,7 @@ public class DataManagerController {
 	private DataExportService exportService;
 	
 	@Inject
-	private DataAsciidocService asccidocService;
+	private DataExportAsciidoc dataExportAsciidoc;
 	
 	@Inject
 	private MetaFiles metaFiles;
@@ -87,13 +91,14 @@ public class DataManagerController {
 		DataManager dataManager = request.getContext().asType(DataManager.class);
 		
 		MetaFile exportFile = dataManager.getMetaFile();
-		Boolean panelOnly = dataManager.getExportOnlyPanel();
-		if(exportFile != null && exportFile.getId() != null && !panelOnly){
+		DataWriter writer = new DataWriterExcel();
+		DataReader reader = new DataReaderExcel();
+		if(exportFile != null && exportFile.getId() != null){
 			exportFile = metaFileRepo.find(exportFile.getId());
-			exportFile = exportService.export(exportFile, false);
+			exportFile = exportService.export(exportFile, writer, reader);
 		}
 		else{
-			exportFile = exportService.export(null, panelOnly);
+			exportFile = exportService.export(null, writer, reader);
 		}
 		
 		response.setValue("metaFile", exportFile);
@@ -108,7 +113,7 @@ public class DataManagerController {
 		MetaFile exportFile = dataManager.getMetaFile();
 		
 		try {
-			MetaFile asciidocFile = asccidocService.export(exportFile, 
+			MetaFile asciidocFile = dataExportAsciidoc.export(exportFile, 
 					dataManager.getLanguageSelect());
 			response.setValue("asciidocFile", asciidocFile);
 		} catch (IOException e) {

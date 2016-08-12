@@ -218,7 +218,7 @@ public class MenuBuilderService {
 		menuItem.setTitle(menuBuilder.getTitle());
 		menuItem.setTop(menuBuilder.getTop());
 		menuItem.setXmlId(xmlId);
-		
+
 		String icon = menuBuilder.getIcon();
 		if (menuBuilder.getParent() == null && Strings.isNullOrEmpty(icon)) {
 			menuItem.setIcon("fa-list");

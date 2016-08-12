@@ -40,14 +40,20 @@ import com.axelor.meta.db.MetaModel;
 import com.axelor.meta.db.MetaModule;
 import com.axelor.meta.db.MetaSelect;
 import com.axelor.meta.db.MetaSelectItem;
+import com.axelor.meta.db.repo.MetaFieldRepository;
+import com.axelor.meta.db.repo.MetaModelRepository;
 import com.axelor.meta.db.repo.MetaModuleRepository;
 import com.axelor.meta.db.repo.MetaSelectRepository;
 import com.axelor.studio.db.DataManager;
 import com.axelor.studio.db.ViewBuilder;
 import com.axelor.studio.db.ViewItem;
+import com.axelor.studio.db.repo.ViewBuilderRepository;
+import com.axelor.studio.db.repo.ViewItemRepository;
+import com.axelor.studio.service.ConfigurationService;
 import com.axelor.studio.service.ViewLoaderService;
 import com.axelor.studio.service.builder.ModelBuilderService;
-import com.axelor.studio.service.data.DataCommonService;
+import com.axelor.studio.service.data.DataCommon;
+import com.axelor.studio.service.data.DataTranslationService;
 import com.axelor.studio.utils.Namming;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
@@ -64,7 +70,7 @@ import com.google.inject.persist.Transactional;
  * @author axelor
  *
  */
-public class DataModelService extends DataCommonService {
+public class DataModelService extends DataCommon {
 
 	private final static Logger log = LoggerFactory
 			.getLogger(DataModelService.class);
@@ -89,6 +95,34 @@ public class DataModelService extends DataCommonService {
 	
 	@Inject
 	private MetaModuleRepository metaModuleRepo;
+	
+	@Inject
+	private DataViewService dataViewService;
+	
+	@Inject
+	private ConfigurationService configService;
+	
+	@Inject
+	private MetaModelRepository metaModelRepo;
+	
+	@Inject
+	private ViewLoaderService viewLoaderService;
+	
+	@Inject
+	private MetaFieldRepository metaFieldRepo;
+	
+	@Inject
+	private ModelBuilderService modelBuilderService;
+	
+	@Inject
+	private ViewItemRepository viewItemRepo;
+	
+	@Inject
+	private ViewBuilderRepository viewBuilderRepo;
+	
+	@Inject
+	private DataTranslationService translationService;
+	
 	
 	/**
 	 * Root method to access the service. It will call other methods required to
@@ -124,7 +158,7 @@ public class DataModelService extends DataCommonService {
 				return logFile;
 			}
 			
-			viewImporterService.clear();
+			dataViewService.clear();
 			
 			log.debug("Non customised modules: {}", configService.getNonCustomizedModules());
 			
@@ -269,7 +303,7 @@ public class DataModelService extends DataCommonService {
 
 		String[] basic = getBasic(parentField);
 		MetaField metaField = null;
-		if (model != null && fieldTypes.containsKey(basic[0])) {
+		if (model != null && DataCommon.FIELD_TYPES.containsKey(basic[0])) {
 			if (parentField == null) {
 				metaField = createMetaField(model, basic, metaModule);
 			}
@@ -283,8 +317,8 @@ public class DataModelService extends DataCommonService {
 			
 		}
 
-		if (!Strings.isNullOrEmpty(basic[0]) && !ignoreTypes.contains(basic[0])) {
-			viewImporterService.addViewElement(model, basic, row, metaField, replace, modulePriorityMap);
+		if (!Strings.isNullOrEmpty(basic[0]) && !DataCommon.IGNORE_TYPES.contains(basic[0])) {
+			dataViewService.addViewElement(model, basic, row, metaField, replace, modulePriorityMap);
 		}
 	}
 	
@@ -316,8 +350,8 @@ public class DataModelService extends DataCommonService {
 			}
 		}
 		
-		if(frMap.containsKey(fieldType)) {
-			fieldType = frMap.get(fieldType);
+		if(DataCommon.FR_MAP.containsKey(fieldType)) {
+			fieldType = DataCommon.FR_MAP.get(fieldType);
 		}
 
 		String name = getValue(row, NAME);
@@ -374,15 +408,15 @@ public class DataModelService extends DataCommonService {
 			return field;
 		}
 		
-		addTranslation(basic[3], getValue(row, TITLE_FR), "fr");
+		translationService.addTranslation(basic[3], getValue(row, TITLE_FR), "fr");
 		
 		moduleMap.get(metaModule.getName()).get(model).add(basic[2]);
 		
-		if (fieldTypes.containsKey(basic[1])) {
-			field.setFieldType(fieldTypes.get(basic[1]));
+		if (DataCommon.FIELD_TYPES.containsKey(basic[1])) {
+			field.setFieldType(DataCommon.FIELD_TYPES.get(basic[1]));
 		}
 		else {
-			field.setFieldType(fieldTypes.get(basic[0]));
+			field.setFieldType(DataCommon.FIELD_TYPES.get(basic[0]));
 		}
 		
 		field.setLabel(basic[3]);
@@ -416,7 +450,7 @@ public class DataModelService extends DataCommonService {
 			help = helpFr;
 		}
 		else {
-			addTranslation(help, helpFr, "fr");
+			translationService.addTranslation(help, helpFr, "fr");
 		}
 		
 		field.setHelpText(help);
@@ -499,7 +533,7 @@ public class DataModelService extends DataCommonService {
 						if (titleFR != null && titleFR.contains(":")) {
 							String[] valuesFr = titleFR.split(":");
 							if (valuesFr.length > 1){
-								addTranslation(values[1], valuesFr[1], "fr" );
+								translationService.addTranslation(values[1], valuesFr[1], "fr" );
 							}
 						}
 					}
@@ -508,7 +542,7 @@ public class DataModelService extends DataCommonService {
 					metaSelectItem.setValue(count.toString());
 					metaSelectItem.setTitle(title.trim());
 					if (titleFR != null) {
-						addTranslation(title, titleFR, "fr" );
+						translationService.addTranslation(title, titleFR, "fr" );
 					}
 				}
 				metaSelectItem.setOrder(count);
@@ -580,7 +614,7 @@ public class DataModelService extends DataCommonService {
 	private MetaField updateFieldTypeName(String fieldType, String refModel,
 			MetaField field, String module) throws AxelorException {
 		
-		if (referenceTypes.contains(fieldType) || fieldType.equals("file")) {
+		if (DataCommon.RELATIONAL_TYPES.containsKey(fieldType)) {
 			if (fieldType.equals("file")) {
 				refModel = "MetaFile";
 			} else {
@@ -595,9 +629,9 @@ public class DataModelService extends DataCommonService {
 				updateModuleMap(refModel, module);
 			}
 			field.setTypeName(refModel);
-			field.setRelationship(relationshipMap.get(fieldType));
+			field.setRelationship(DataCommon.RELATIONAL_TYPES.get(fieldType));
 		} else {
-			String typeName = modelBuilderService.getFieldTypeName(fieldTypes.get(fieldType));
+			String typeName = modelBuilderService.getFieldTypeName(DataCommon.FIELD_TYPES.get(fieldType));
 			field.setTypeName(typeName);
 			if (typeName.equals("String") 
 					&& refModel != null
@@ -765,9 +799,9 @@ public class DataModelService extends DataCommonService {
 	
 	private void generateGridView() throws AxelorException {
 		
-		if (!viewImporterService.getViewActionMap().isEmpty()) {
+		if (!dataViewService.getViewActionMap().isEmpty()) {
 			throw new AxelorException(I18n.get("Wizard views not found: %s"), 1,
-					viewImporterService.getViewActionMap().keySet());
+					dataViewService.getViewActionMap().keySet());
 		}
 
 		for (String module : moduleMap.keySet()) {

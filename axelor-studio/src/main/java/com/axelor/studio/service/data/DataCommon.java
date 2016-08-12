@@ -18,7 +18,6 @@
 package com.axelor.studio.service.data;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -28,21 +27,9 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 
 import com.axelor.common.Inflector;
-import com.axelor.meta.db.MetaTranslation;
-import com.axelor.meta.db.repo.MetaFieldRepository;
-import com.axelor.meta.db.repo.MetaModelRepository;
-import com.axelor.meta.db.repo.MetaTranslationRepository;
-import com.axelor.studio.db.repo.ViewBuilderRepository;
-import com.axelor.studio.db.repo.ViewItemRepository;
-import com.axelor.studio.service.ConfigurationService;
-import com.axelor.studio.service.ViewLoaderService;
-import com.axelor.studio.service.builder.ModelBuilderService;
-import com.axelor.studio.service.data.importer.DataViewService;
 import com.google.common.base.Strings;
-import com.google.inject.Inject;
-import com.google.inject.persist.Transactional;
 
-public abstract class DataCommonService {
+public class DataCommon {
 	
 	public static final String[] HEADERS = new String[]{
 		"Note",
@@ -79,7 +66,7 @@ public abstract class DataCommonService {
 	};
 	
 	
-	public final static Map<String, String> fieldTypes;
+	public final static Map<String, String> FIELD_TYPES;
 
 	static {
 		Map<String, String> map = new HashMap<String, String>();
@@ -103,10 +90,10 @@ public abstract class DataCommonService {
 		map.put("int", "integer");
 		map.put("decimal", "decimal");
 		map.put("file", "many-to-one");
-		fieldTypes = Collections.unmodifiableMap(map);
+		FIELD_TYPES = Collections.unmodifiableMap(map);
 	}
 	
-	public final static Map<String, String> viewElements;
+	public final static Map<String, String> VIEW_ELEMENTS;
 
 	static {
 		Map<String, String> map = new HashMap<String, String>();
@@ -131,11 +118,11 @@ public abstract class DataCommonService {
 		map.put("onload", "onload");
 		map.put("colspan", "colspan");
 		map.put("spacer", "spacer");
-		viewElements = Collections.unmodifiableMap(map);
+		VIEW_ELEMENTS = Collections.unmodifiableMap(map);
 	}
 	
 	
-	protected final static List<String> ignoreTypes;
+	public final static List<String> IGNORE_TYPES;
 	
 	static {
 		List<String> types = new ArrayList<String>();
@@ -144,10 +131,10 @@ public abstract class DataCommonService {
 		types.add("warn");
 		types.add("note");
 		types.add("empty");
-		ignoreTypes = Collections.unmodifiableList(types);
+		IGNORE_TYPES = Collections.unmodifiableList(types);
 	}
 	
-	public final static Map<String, String> frMap;
+	public final static Map<String, String> FR_MAP;
 
 	static {
 		Map<String, String> map = new HashMap<String, String>();
@@ -161,42 +148,42 @@ public abstract class DataCommonService {
 		map.put("case à cocher", "boolean");
 		map.put("Astuce", "tip");
 		map.put("Attention", "warn");
-		frMap = Collections.unmodifiableMap(map);
+		FR_MAP = Collections.unmodifiableMap(map);
 	}
 	
-	protected final static int NOTE = 0;
-	protected final static int MODULE = 1;
-	protected final static int IF_MODULE = 2;
-	protected final static int MODEL = 3;
-	protected final static int VIEW = 4;
-	protected final static int NAME = 5;
-	protected final static int TITLE = 6;
-	protected final static int TITLE_FR = 7;
-	protected final static int TYPE = 8;
-	protected final static int SELECT = 9;
-	protected final static int SELECT_FR = 10;
-	protected final static int MENU = 11;
-	protected final static int REQUIRED = 12;
-	protected final static int REQUIRED_IF = 13;
-	protected final static int READONLY = 14;
-	protected final static int READONLY_IF = 15;
-	protected final static int HIDDEN = 16;
-	protected final static int HIDE_IF = 17;
-	protected final static int SHOW_IF = 18;
-	protected final static int IF_CONFIG = 19;
-	protected final static int FORMULA = 20;
-	protected final static int EVENT = 21;
-	protected final static int DOMAIN = 22;
-	protected final static int ON_CHANGE = 23;
-	protected final static int ON_CLICK = 24;
-	protected final static int COLSPAN = 25;
-	protected final static int GRID = 26;
-	protected final static int HELP = 27;
-	protected final static int HELP_FR = 28;
-	protected final static int PANEL_LEVEL = 29;
-	protected final static int WIDGET = 30;
+	public final static int NOTE = 0;
+	public final static int MODULE = 1;
+	public final static int IF_MODULE = 2;
+	public final static int MODEL = 3;
+	public final static int VIEW = 4;
+	public final static int NAME = 5;
+	public final static int TITLE = 6;
+	public final static int TITLE_FR = 7;
+	public final static int TYPE = 8;
+	public final static int SELECT = 9;
+	public final static int SELECT_FR = 10;
+	public final static int MENU = 11;
+	public final static int REQUIRED = 12;
+	public final static int REQUIRED_IF = 13;
+	public final static int READONLY = 14;
+	public final static int READONLY_IF = 15;
+	public final static int HIDDEN = 16;
+	public final static int HIDE_IF = 17;
+	public final static int SHOW_IF = 18;
+	public final static int IF_CONFIG = 19;
+	public final static int FORMULA = 20;
+	public final static int EVENT = 21;
+	public final static int DOMAIN = 22;
+	public final static int ON_CHANGE = 23;
+	public final static int ON_CLICK = 24;
+	public final static int COLSPAN = 25;
+	public final static int GRID = 26;
+	public final static int HELP = 27;
+	public final static int HELP_FR = 28;
+	public final static int PANEL_LEVEL = 29;
+	public final static int WIDGET = 30;
 
-	protected final static Map<String, String> relationshipMap;
+	public final static Map<String, String> RELATIONAL_TYPES;
 
 	static {
 		Map<String, String> map = new HashMap<String, String>();
@@ -206,43 +193,14 @@ public abstract class DataCommonService {
 		map.put("m2o", "ManyToOne");
 		map.put("file", "ManyToOne");
 		map.put("o2o", "OneToOne");
-		relationshipMap = Collections.unmodifiableMap(map);
+		RELATIONAL_TYPES = Collections.unmodifiableMap(map);
 	}
 	
-	protected static final List<String> referenceTypes = Arrays.asList(new String[]{"o2m","m2m","m2o","wizard","o2o"});
+	public final static String[] MODULE_HEADERS = new String[] {"Module", "Depends", "Title", "Version", "Description", "Parent view priority"};
 	
-	protected static final String[] MODULE_HEADERS = new String[] {"Module", "Depends", "Title", "Version", "Description", "Parent view priority"};
-	
-	@Inject
-	protected MetaModelRepository metaModelRepo;
-
-	@Inject
-	protected DataViewService viewImporterService;
-
-	@Inject
-	protected ModelBuilderService modelBuilderService;
-
-	@Inject
-	protected MetaFieldRepository metaFieldRepo;
-
-	@Inject
-	protected ViewLoaderService viewLoaderService;
-
-	@Inject
-	protected ViewItemRepository viewItemRepo;
-
-	@Inject
-	protected ViewBuilderRepository viewBuilderRepo;
-
-	@Inject
-	protected MetaTranslationRepository metaTranslationRepo;
-	
-	@Inject
-	protected ConfigurationService configService;
-
 	public final Inflector inflector = Inflector.getInstance();
-
-	protected String getValue(Row row, int index) {
+	
+	public static String getValue(Row row, int index) {
 		
 		Cell cell = row.getCell(index);
 		if (cell != null && cell.getCellType() == Cell.CELL_TYPE_STRING) {
@@ -273,41 +231,5 @@ public abstract class DataCommonService {
 
 	}
 	
-	public String getTranslation(String key, String lang) {
-		
-		if (Strings.isNullOrEmpty(key) || Strings.isNullOrEmpty(lang)) {
-			return null;
-		}
-		
-		MetaTranslation translation = metaTranslationRepo.findByKey(key, lang);
-		if (translation != null) {
-			return translation.getMessage();
-		}
-		
-		return null;
-	}
-	
-	@Transactional
-	public void addTranslation(String key, String message, String lang) {
-		
-		if (Strings.isNullOrEmpty(key) || Strings.isNullOrEmpty(message) || Strings.isNullOrEmpty(lang)) {
-			return;
-		}
-		
-		if (key.equals(message)) {
-			return;
-		}
-		
-		MetaTranslation translation = metaTranslationRepo.findByKey(key, lang);
-		if (translation == null) {
-			translation = new MetaTranslation();
-			translation.setLanguage(lang);
-			translation.setKey(key);
-		}
-		
-		translation.setMessage(message);
-		
-		metaTranslationRepo.save(translation);
-	}
 
 }

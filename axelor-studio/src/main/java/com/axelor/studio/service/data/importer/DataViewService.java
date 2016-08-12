@@ -37,6 +37,7 @@ import com.axelor.meta.db.MetaModel;
 import com.axelor.meta.db.MetaModule;
 import com.axelor.meta.db.MetaSequence;
 import com.axelor.meta.db.repo.MetaMenuRepository;
+import com.axelor.meta.db.repo.MetaModelRepository;
 import com.axelor.meta.db.repo.MetaSequenceRepository;
 import com.axelor.studio.db.ActionBuilder;
 import com.axelor.studio.db.ActionBuilderLine;
@@ -46,17 +47,21 @@ import com.axelor.studio.db.ViewItem;
 import com.axelor.studio.db.ViewPanel;
 import com.axelor.studio.db.repo.ActionBuilderRepository;
 import com.axelor.studio.db.repo.MenuBuilderRepository;
+import com.axelor.studio.db.repo.ViewBuilderRepository;
+import com.axelor.studio.db.repo.ViewItemRepository;
 import com.axelor.studio.db.repo.ViewPanelRepository;
+import com.axelor.studio.service.ConfigurationService;
 import com.axelor.studio.service.FilterService;
 import com.axelor.studio.service.ViewLoaderService;
 import com.axelor.studio.service.builder.FormBuilderService;
-import com.axelor.studio.service.data.DataCommonService;
+import com.axelor.studio.service.data.DataCommon;
+import com.axelor.studio.service.data.DataTranslationService;
 import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
-public class DataViewService extends DataCommonService {
+public class DataViewService extends DataCommon {
 
 	private final static Logger log = LoggerFactory
 			.getLogger(DataViewService.class);
@@ -98,6 +103,24 @@ public class DataViewService extends DataCommonService {
 	
 	@Inject
 	private MetaMenuRepository metaMenuRepo;
+	
+	@Inject
+	private ConfigurationService configService;
+	
+	@Inject
+	private ViewLoaderService viewLoaderService;
+	
+	@Inject
+	private ViewItemRepository viewItemRepo;
+	
+	@Inject
+	private MetaModelRepository metaModelRepo;
+	
+	@Inject
+	private ViewBuilderRepository viewBuilderRepo;
+	
+	@Inject
+	private DataTranslationService translationService;
 	
 	public void clear() {
 		clearedViews = new HashMap<String, ViewBuilder>();
@@ -294,7 +317,7 @@ public class DataViewService extends DataCommonService {
 		if (basic != null) {
 			panel.setName(basic[2]);
 			panel.setTitle(basic[3]);
-			addTranslation(basic[3], getValue(row, TITLE_FR), "fr");
+			translationService.addTranslation(basic[3], getValue(row, TITLE_FR), "fr");
 		}
 		
 		panel.setNewPanel(!replace);
@@ -373,7 +396,7 @@ public class DataViewService extends DataCommonService {
 		viewItem.setTypeSelect(1);
 		viewItem.setTitle(basic[3]);
 		
-		addTranslation(basic[3], getValue(row, TITLE_FR), "fr");
+		translationService.addTranslation(basic[3], getValue(row, TITLE_FR), "fr");
 
 		if (basic[1] != null && basic[1].startsWith("toolbar")) {
 			viewItem.setViewBuilderToolbar(viewBuilder);
@@ -406,7 +429,7 @@ public class DataViewService extends DataCommonService {
 		}
 		viewItem.setTypeSelect(2);
 		viewItem.setTitle(basic[3]);
-		addTranslation(basic[3], getValue(row, TITLE_FR), "fr");
+		translationService.addTranslation(basic[3], getValue(row, TITLE_FR), "fr");
 		
 		setAttributes(viewBuilder, viewItem);
 
@@ -449,7 +472,7 @@ public class DataViewService extends DataCommonService {
 		ViewItem button = new ViewItem(basic[2]);
 		button.setTypeSelect(1);
 		button.setTitle(basic[3]);
-		addTranslation(basic[3], getValue(row, TITLE_FR), "fr");
+		translationService.addTranslation(basic[3], getValue(row, TITLE_FR), "fr");
 		button.setOnClick(builder.getName());
 		button.setViewPanel(lastPanel);
 		button.setSequence(getPanelSeq(lastPanel.getId()));
@@ -474,7 +497,7 @@ public class DataViewService extends DataCommonService {
 			viewItem.setMetaField(metaField);
 		}
 		else {
-			addTranslation(basic[3], getValue(row, TITLE_FR), "fr");
+			translationService.addTranslation(basic[3], getValue(row, TITLE_FR), "fr");
 		}
 		
 		if (basic[4] != null) {
@@ -534,7 +557,7 @@ public class DataViewService extends DataCommonService {
 		}
 		menuBuilder.setTitle(basic[3]);
 		
-		addTranslation(basic[3], getValue(row, TITLE_FR), "fr");
+		translationService.addTranslation(basic[3], getValue(row, TITLE_FR), "fr");
 		
 		if (model != null) {
 			menuBuilder.setMetaModel(model);
@@ -1031,7 +1054,7 @@ public class DataViewService extends DataCommonService {
 		if (title == null) {
 			title = titleFr;
 		}
-		addTranslation(title, titleFr, "fr");
+		translationService.addTranslation(title, titleFr, "fr");
 		
 		if (title == null) {
 			throw new AxelorException(I18n.get("Menubar must have title. Row: %s"), 1, row.getRowNum());
@@ -1056,7 +1079,7 @@ public class DataViewService extends DataCommonService {
 			title = titleFr;
 		}
 		else if (!title.equals(titleFr)) {
-			addTranslation(title, titleFr, "fr");
+			translationService.addTranslation(title, titleFr, "fr");
 		}
 		
 		if (title == null) {
