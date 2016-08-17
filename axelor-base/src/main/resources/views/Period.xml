@@ -28,7 +28,7 @@
             	<button name="reopen" title="Reopen period" colSpan="6" onClick="action-group-period-year-open" showIf="statusSelect == 2"/>
         	</panel>
             <field name="statusSelect"/>
-            <field name="closureDateTime" showIf="statusSelect == 2" readonly="true"/>
+            <field name="closureDateTime" showIf="statusSelect == 2"/>
     	</panel>
     </form>
     
