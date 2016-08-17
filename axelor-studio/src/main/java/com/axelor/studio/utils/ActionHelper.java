@@ -22,6 +22,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.axelor.db.Model;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.meta.ActionHandler;
 import com.axelor.meta.MetaStore;
@@ -43,13 +44,15 @@ public class ActionHelper {
 		} else {
 			context = Mapper.toMap(entity);
 		}
-
+		
 		Action action = MetaStore.getAction(name);
 
 		ActionHandler handler = createHandler(action, context,
 				Mapper.toMap(parent));
-
-		return action.evaluate(handler);
+		
+		Object object = action.evaluate(handler);
+		log.debug("Object id: {}", ((Model) object).getId());
+		return object;
 
 	}
 
@@ -57,7 +60,8 @@ public class ActionHelper {
 			Map<String, Object> context, Map<String, Object> _parent) {
 
 		log.debug("Context : {}, Model: {}", context, action.getModel());
-
+		
+		log.debug("Id in context: {}", context.get("id"));
 		Preconditions.checkArgument(action != null, "action is null");
 
 		ActionRequest request = new ActionRequest();

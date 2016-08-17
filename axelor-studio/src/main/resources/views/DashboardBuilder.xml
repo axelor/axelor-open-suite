@@ -14,6 +14,7 @@
       <panel title="Overview">
         <field name="name"/>
         <field name="title"/>
+        <field name="metaModule" domain="self.customised = true"/> 
         <field name="viewType" hidden="true" />
         <field name="edited" hidden="true" />
 	    <panel-related field="dashletBuilderList" colSpan="12"/>

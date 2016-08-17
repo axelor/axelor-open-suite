@@ -31,19 +31,23 @@ import java.util.Set;
 
 import javax.xml.bind.JAXBException;
 
+import org.hsqldb.View;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.auth.db.Group;
 import com.axelor.meta.db.MetaAction;
 import com.axelor.meta.db.MetaMenu;
+import com.axelor.meta.db.MetaView;
 import com.axelor.meta.db.repo.MetaActionRepository;
 import com.axelor.meta.db.repo.MetaMenuRepository;
+import com.axelor.meta.db.repo.MetaViewRepository;
 import com.axelor.meta.loader.XMLViews;
 import com.axelor.meta.schema.ObjectViews;
 import com.axelor.meta.schema.actions.Action;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
+import com.axelor.meta.schema.actions.ActionView.Context;
 import com.axelor.meta.schema.views.MenuItem;
 import com.axelor.studio.db.MenuBuilder;
 import com.axelor.studio.db.repo.MenuBuilderRepository;
@@ -80,6 +84,9 @@ public class MenuBuilderService {
 
 	@Inject
 	private MetaActionRepository metaActionRepo;
+	
+	@Inject
+	private MetaViewRepository metaViewRepo;
 
 	/**
 	 * Root method to access this service. It generate MetaMenu and save
@@ -298,31 +305,78 @@ public class MenuBuilderService {
 	 * @return New ActionView created.
 	 */
 	private Action getAction(MenuBuilder menuBuilder) {
-
-		String actionName = menuBuilder.getName().replace("-", ".");
-
+		
+		String name = menuBuilder.getName().replace("-", ".");
+		String xmlId = getXmlId(menuBuilder).replace("-", ".");
+		
+		ActionView action = null;
+		if (menuBuilder.getAction() != null) {
+			action = getRelatedAction(menuBuilder.getAction(), xmlId);
+		}
+		
 		ActionViewBuilder builder = ActionView.define(menuBuilder.getTitle());
 		builder.model(menuBuilder.getModel());
-		builder.name(actionName);
-
-		String domain = menuBuilder.getDomain();
-
-		if (domain != null) {
-			builder.domain(domain);
+		builder.name(name);
+		builder.domain(menuBuilder.getDomain());
+		
+		String views = menuBuilder.getViews();
+		if (views != null) {
+			builder = setViews(builder, views);
 		}
-
-		if (menuBuilder.getDashboard() != null) {
-			builder.add("dashboard", menuBuilder.getDashboard().getName());
-		} else {
-			builder.add("grid");
-			builder.add("form");
+		else {
+			if (menuBuilder.getDashboard() != null) {
+				builder.add("dashboard", menuBuilder.getDashboard().getName());
+			} else {
+				builder.add("grid");
+				builder.add("form");
+			}
 		}
 		
-		Action action = builder.get();
-		action.setXmlId(getXmlId(menuBuilder));
+		if (action != null) {
+			builder = setExtra(builder, action);
+		}
 		
+		action = builder.get();
+		action.setXmlId(xmlId);
 		return action;
 
+	}
+	
+	private ActionView getRelatedAction(String name, String xmlId) {
+		
+		MetaAction parentAction = metaActionRepo.all()
+				.filter("self.name = ?1").fetchOne();
+		
+		if (parentAction != null 
+				&& parentAction.getType().equals("action-view") 
+				&& !xmlId.equals(parentAction.getXmlId())) {
+			try {
+				ObjectViews views = XMLViews.fromXML(parentAction.getXml());
+				return (ActionView) views.getActions().get(0);
+			} catch (JAXBException e) {
+				e.printStackTrace();
+			}
+		}
+			
+		return null;
+	}
+	
+	private ActionViewBuilder setViews(ActionViewBuilder builder, String views) {
+		
+		for (String view : views.split(",")) {
+			MetaView metaView = metaViewRepo.findByName(view);
+			if (metaView != null) {
+				builder.add(metaView.getType(), view);
+			}
+		}
+		
+		return builder;
+	}
+	
+	private ActionViewBuilder setExtra(ActionViewBuilder builder, ActionView action) {
+		
+		//TODO 
+		return builder;
 	}
 
 	/**
@@ -395,24 +449,16 @@ public class MenuBuilderService {
 		if (menuMap.containsKey(parent)) {
 			metaMenu.setParent(menuMap.get(parent));
 		} else {
-			MetaMenu parentMenu = metaMenuRepo.all()
-					.filter("self.name = ?1", parent).fetchOne();
-			log.debug("Parent menu searched: {} , menu found: {}", parent,
-					parentMenu);
-			metaMenu.setParent(parentMenu);
+			metaMenu.setParent(menuBuilder.getMetaMenu());
 		}
 		
-		MetaAction action = getParentAction(menuBuilder);
-		
-		if (action == null && !menuBuilder.getIsParent()) {
+		MetaAction action = null;
+		if (!menuBuilder.getIsParent()) {
 			action = getMetaAction(menuBuilder);
 			menuBuilder.setActionGenerated(action);
 		}
 		
-		if (action != null) {
-			metaMenu.setAction(action);
-		}
-
+		metaMenu.setAction(action);
 		metaMenu = metaMenuRepo.save(metaMenu);
 		menuMap.put(name, metaMenu);
 
@@ -420,20 +466,6 @@ public class MenuBuilderService {
 
 	}
 	
-	private MetaAction getParentAction(MenuBuilder menuBuilder) {
-		
-		MetaMenu parentMenu = menuBuilder.getMetaMenu();
-		if (parentMenu != null) {
-			MetaAction action = parentMenu.getAction();
-			if (action != null) {
-				return action;
-			}
-		}
-
-		return null;
-		
-	}
-
 	/**
 	 * Create or Update MetaAction from menuBuilder record and save it.
 	 * 
@@ -444,23 +476,29 @@ public class MenuBuilderService {
 	@Transactional
 	public MetaAction getMetaAction(MenuBuilder menuBuilder) {
 		
-		String actionName = menuBuilder.getName().replace("-", ".");
+		String actionName = menuBuilder.getAction();
+		
+		if (actionName == null) {
+			actionName = menuBuilder.getName().replace("-", ".");
+		}
+		String xmlId = getXmlId(menuBuilder);
+		xmlId = xmlId.replace("-", ".");
 
 		MetaAction metaAction = metaActionRepo.all()
-				.filter("self.name = ?1", actionName).fetchOne();
-
+				.filter("self.xmlId = ?1", xmlId).fetchOne();
+		
 		if (metaAction == null) {
 			metaAction = new MetaAction(actionName);
 			metaAction.setType("action-view");
 			metaAction.setModule(menuBuilder.getMetaModule().getName());
+			metaAction.setXmlId(xmlId);
 		}
-
+		
 		metaAction.setModel(menuBuilder.getModel());
 
 		Action action = getAction(menuBuilder);
 		String xml = XMLViews.toXml(action, true);
 		metaAction.setXml(xml);
-		metaAction.setXmlId(getXmlId(menuBuilder));
 
 		return metaActionRepo.save(metaAction);
 

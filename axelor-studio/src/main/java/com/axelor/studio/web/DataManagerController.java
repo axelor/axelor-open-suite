@@ -35,16 +35,16 @@ import com.axelor.studio.service.data.exporter.DataExportAsciidoc;
 import com.axelor.studio.service.data.exporter.DataExportService;
 import com.axelor.studio.service.data.exporter.DataWriter;
 import com.axelor.studio.service.data.exporter.DataWriterExcel;
-import com.axelor.studio.service.data.importer.DataModelService;
+import com.axelor.studio.service.data.importer.DataImportService;
 import com.axelor.studio.service.data.importer.DataReader;
 import com.axelor.studio.service.data.importer.DataReaderExcel;
 import com.google.inject.Inject;
 
 public class DataManagerController {
-
+	
 	@Inject
-	private DataModelService modelService;
-
+	private DataImportService  importService;
+	
 	@Inject
 	private DataExportService exportService;
 	
@@ -68,7 +68,7 @@ public class DataManagerController {
 		dataManager = dataManagerRepo.find(dataManager.getId());
 
 		try {
-			File logFile = modelService.importModels(dataManager);
+			File logFile = importService.importData(dataManager);
 			if (logFile != null) {
 				response.setFlash(I18n.get("Input file is not valid. "
 						+ "Please check the log file generated"));

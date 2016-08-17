@@ -114,6 +114,7 @@ public class DataExportMenu {
 			values = new String[MENU_HEADERS.length];
 			
 			values[MODULE] = menu.getModule();
+			values[NAME] = menu.getName();
 			values[PARENT] = menu.getParent() != null ? menu.getParent().getName() : null;
 			values[ORDER] = menu.getOrder() != null ? menu.getOrder().toString() : null;
 			values[ICON] = menu.getIcon();

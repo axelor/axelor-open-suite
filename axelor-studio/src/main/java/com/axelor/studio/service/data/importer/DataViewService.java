@@ -32,21 +32,17 @@ import org.slf4j.LoggerFactory;
 import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.db.MetaField;
-import com.axelor.meta.db.MetaMenu;
 import com.axelor.meta.db.MetaModel;
 import com.axelor.meta.db.MetaModule;
 import com.axelor.meta.db.MetaSequence;
-import com.axelor.meta.db.repo.MetaMenuRepository;
 import com.axelor.meta.db.repo.MetaModelRepository;
 import com.axelor.meta.db.repo.MetaSequenceRepository;
 import com.axelor.studio.db.ActionBuilder;
 import com.axelor.studio.db.ActionBuilderLine;
-import com.axelor.studio.db.MenuBuilder;
 import com.axelor.studio.db.ViewBuilder;
 import com.axelor.studio.db.ViewItem;
 import com.axelor.studio.db.ViewPanel;
 import com.axelor.studio.db.repo.ActionBuilderRepository;
-import com.axelor.studio.db.repo.MenuBuilderRepository;
 import com.axelor.studio.db.repo.ViewBuilderRepository;
 import com.axelor.studio.db.repo.ViewItemRepository;
 import com.axelor.studio.db.repo.ViewPanelRepository;
@@ -74,10 +70,6 @@ public class DataViewService extends DataCommon {
 
 	private Map<Long, Map<String, String>> eventMap = new HashMap<Long, Map<String, String>>();
 
-	private Integer parentMenuSeq = 0;
-
-	private Map<Long, Integer> menuSeqMap = new HashMap<Long, Integer>();
-
 	private Map<String, List<ActionBuilder>> viewActionMap = new HashMap<String, List<ActionBuilder>>();
 	
 	private Map<String, Set<String>> extendViews;
@@ -93,16 +85,10 @@ public class DataViewService extends DataCommon {
 	private ActionBuilderRepository actionBuilderRepo;
 
 	@Inject
-	private MenuBuilderRepository menuBuilderRepo;
-
-	@Inject
 	private FilterService filterService;
 	
 	@Inject
 	private MetaSequenceRepository metaSequenceRepo;
-	
-	@Inject
-	private MetaMenuRepository metaMenuRepo;
 	
 	@Inject
 	private ConfigurationService configService;
@@ -126,26 +112,19 @@ public class DataViewService extends DataCommon {
 		clearedViews = new HashMap<String, ViewBuilder>();
 		panelSeqMap = new HashMap<Long, Integer>();
 		viewSeqMap = new HashMap<Long, Integer>();
-		menuSeqMap = new HashMap<Long, Integer>();
 		viewActionMap = new HashMap<String, List<ActionBuilder>>();
 		extendViews= new HashMap<String,  Set<String>>();
-		parentMenuSeq = 0;
 	}
 
 	public void addViewElement(MetaModel model, String[] basic, Row row,
-			MetaField metaField, boolean replace, Map<String, String> modulePriority) throws AxelorException {
+			MetaField metaField, boolean replace) throws AxelorException {
 		
 		this.row = row;
 		
 		String module = getValue(row, MODULE);
 		module = module.replace("*", "");
 		MetaModule metaModule = configService.getCustomizedModule(module);
-		
-		if (basic[0].equals("menu")) {
-			addMenu(model, basic, metaModule);
-			return;
-		}
-		
+
 		if (model == null) {
 			throw new AxelorException(I18n.get("No object defind for row : %s sheet: %s"),
 					1, row.getRowNum() + 1, row.getSheet().getSheetName());
@@ -154,7 +133,7 @@ public class DataViewService extends DataCommon {
 		String[] name = getViewName(model.getName());
 		checkReplace(replace, module, name[0]);
 		
-		ViewBuilder viewBuilder = getViewBuilder(metaModule, model, name, modulePriority);
+		ViewBuilder viewBuilder = getViewBuilder(metaModule, model, name);
 		
 		String panelLevel = getValue(row, PANEL_LEVEL);
 		
@@ -217,7 +196,7 @@ public class DataViewService extends DataCommon {
 		processViewAction(viewBuilder);
 	}
 
-	private ViewBuilder getViewBuilder(MetaModule module, MetaModel model, String[] name, Map<String, String> priority) throws AxelorException {
+	private ViewBuilder getViewBuilder(MetaModule module, MetaModel model, String[] name) throws AxelorException {
 		
 		if (clearedViews.containsKey(name[0])) {
 			return clearedViews.get(name[0]);
@@ -227,15 +206,6 @@ public class DataViewService extends DataCommon {
 		if (viewBuilder == null) {
 			viewBuilder = viewLoaderService.getViewBuilderForm(module.getName(), model, name[0], name[1], !replace);
 		}
-
-		log.debug("Module priority: {}, module: {}", priority, module.getName());
-//		String depends = priority.get(module.getName());
-//		if (depends == null) {
-//			depends = module.getDepends();
-//		}
-//		if (depends != null) {
-//			viewBuilder = viewLoaderService.addParentView(viewBuilder, depends, name[0]);
-//		}
 
 		viewBuilder = clearView(viewBuilder);
 
@@ -330,13 +300,17 @@ public class DataViewService extends DataCommon {
 			if (readonly != null && readonly.equalsIgnoreCase("x")) {
 				panel.setReadonly(true);
 			}
-			panel.setReadonlyIf(getValue(row, READONLY_IF));
-			
+			else {
+				panel.setReadonlyIf(readonly);
+			}
+				
 			String hidden = getValue(row, HIDDEN);
 			if (hidden != null && hidden.equalsIgnoreCase("x")) {
 				panel.setHidden(true);
 			}
-			panel.setHideIf(getValue(row, HIDE_IF));
+			else {
+				panel.setHideIf(hidden);
+			}
 			
 			panel.setShowIf(getValue(row, SHOW_IF));
 			
@@ -408,7 +382,7 @@ public class DataViewService extends DataCommon {
 			viewItem.setViewPanel(lastPanel);
 		}
 		
-		viewItem.setOnClick(getValue(row, ON_CLICK));
+		viewItem.setOnClick(getValue(row, ON_CHANGE));
 		setAttributes(viewBuilder, viewItem);
 
 		viewItemRepo.save(viewItem);
@@ -518,6 +492,8 @@ public class DataViewService extends DataCommon {
 		
 		viewItem.setOnChange(getValue(row, ON_CHANGE));
 		viewItem.setPanelLevel(getValue(row, PANEL_LEVEL));
+		viewItem.setFormView(basic[5]);
+		viewItem.setGridView(basic[6]);
 		
 		viewItemRepo.save(viewItem);
 
@@ -540,60 +516,6 @@ public class DataViewService extends DataCommon {
 		Long sequence = viewItemRepo.all().filter("self.nestedField = ?1", relationalField).count();
 		viewItem.setSequence(sequence.intValue());
 		
-	}
-	
-
-	@Transactional
-	public void addMenu(MetaModel model, String[] basic, MetaModule module) throws AxelorException {
-		
-		String name = inflector.dasherize(basic[2]);
-
-		MenuBuilder menuBuilder = menuBuilderRepo
-				.all()
-				.filter("self.name = ?1 and self.metaModule.name = ?2" , name, module.getName()).fetchOne();
-		if (menuBuilder == null) {
-			menuBuilder = new MenuBuilder(name);
-			menuBuilder.setMetaModule(module);
-		}
-		menuBuilder.setTitle(basic[3]);
-		
-		translationService.addTranslation(basic[3], getValue(row, TITLE_FR), "fr");
-		
-		if (model != null) {
-			menuBuilder.setMetaModel(model);
-			menuBuilder.setModel(model.getFullName());
-			menuBuilder.setIsParent(false);
-		} else {
-			menuBuilder.setIsParent(true);
-		}
-
-		MenuBuilder parent = null;
-		if (!Strings.isNullOrEmpty(basic[1])) {
-			String parentName = inflector.dasherize(basic[1]);
-			parent = menuBuilderRepo
-					.all()
-					.filter("self.name = ?1 and self.metaModule.name = ?2" , parentName, module.getName()).fetchOne();
-			if (parent != null) {
-				menuBuilder.setParent(parent.getName());
-				menuBuilder.setMenuBuilder(parent);
-			} else {
-				MetaMenu parentMenu = metaMenuRepo.findByName(parentName);
-				if (parentMenu != null) {
-					menuBuilder.setParent(parentMenu.getName());
-					menuBuilder.setMetaMenu(parentMenu);
-				}
-				else {
-					throw new AxelorException(I18n.get("No parent menu found %s for menu %s"),
-						1, parentName, basic[3]);
-				}
-			}
-		}
-
-		menuBuilder.setEdited(true);
-		menuBuilder.setOrder(getMenuOrder(parent));
-
-		menuBuilderRepo.save(menuBuilder);
-
 	}
 
 	private void updateViewActionMap(ActionBuilder builder, String model) {
@@ -627,24 +549,6 @@ public class DataViewService extends DataCommon {
 			viewActionMap.remove(viewBuilder.getName());
 
 		}
-	}
-
-	private int getMenuOrder(MenuBuilder parent) {
-
-		Integer seq = 0;
-		if (parent == null) {
-			seq = parentMenuSeq;
-			parentMenuSeq++;
-		} else {
-			Long menuId = parent.getId();
-			if (menuSeqMap.containsKey(menuId)) {
-				seq = menuSeqMap.get(menuId);
-			}
-			menuSeqMap.put(menuId, seq + 1);
-		}
-
-		return seq;
-
 	}
 
 	@Transactional
@@ -709,7 +613,7 @@ public class DataViewService extends DataCommon {
 			return;
 		}
 
-		String name = "action-" + viewBuilder.getName() + "-" + type;
+		String name = "action-" + viewBuilder.getMetaModule().getName() + "-" + viewBuilder.getName() + "-" + type;
 
 		ActionBuilder action = actionBuilderRepo
 				.all()
@@ -780,7 +684,7 @@ public class DataViewService extends DataCommon {
 								.getUpdatedAction(viewItem.getOnChange(),
 										action));
 					} else if (viewItem.getTypeSelect() == 1) {
-						viewItem.setOnChange(FormBuilderService
+						viewItem.setOnClick(FormBuilderService
 								.getUpdatedAction(viewItem.getOnClick(), action));
 					}
 				} else {
@@ -827,7 +731,9 @@ public class DataViewService extends DataCommon {
 			if (required != null && required.equalsIgnoreCase("x")) {
 				viewItem.setRequired(true);
 			}
-			viewItem.setRequiredIf(getValue(row, REQUIRED_IF));
+			else {
+				viewItem.setRequiredIf(required);
+			}
 		}
 		
 		viewItem.setHidden(false);
@@ -835,14 +741,18 @@ public class DataViewService extends DataCommon {
 		if (hidden != null && hidden.equalsIgnoreCase("x")) {
 			viewItem.setHidden(true);
 		}
-		viewItem.setHideIf(getValue(row, HIDE_IF));
+		else {
+			viewItem.setHideIf(hidden);
+		}
 		
 		viewItem.setReadonly(false);
 		String readonly = getValue(row, READONLY);
 		if (readonly != null && readonly.equalsIgnoreCase("x")) {
 			viewItem.setReadonly(true);
 		}
-		viewItem.setReadonlyIf(getValue(row, READONLY_IF));
+		else {
+			viewItem.setReadonlyIf(readonly);
+		}
 		
 		viewItem.setShowIf(getValue(row, SHOW_IF));
 		viewItem.setIfModule(getValue(row, IF_MODULE));
@@ -918,11 +828,12 @@ public class DataViewService extends DataCommon {
 				}
 				else if(expr.startsWith("sum(")) {
 					String[] sum = expr.split(":");
-					if (sum.length > 0) {
+					if (sum.length > 1) {
 						line.setValue(sum[0] + ")");
-						if (sum.length > 1) {
-							line.setFilter(sum[1].substring(0,sum[1].length()-1));
-						}
+						line.setFilter(sum[1].substring(0,sum[1].length()-1));
+					}
+					else {
+						line.setValue(expr);
 					}
 				}
 				else {
@@ -1095,7 +1006,7 @@ public class DataViewService extends DataCommon {
 		ViewItem viewItem = new ViewItem();
 		viewItem.setTitle(title);
 		viewItem.setMenubarMenu(menubar.get(menubar.size() - 1));
-		viewItem.setOnClick(getValue(row, ON_CLICK));
+		viewItem.setOnClick(getValue(row, ON_CHANGE));
 		
 		viewItemRepo.save(viewItem);
 			

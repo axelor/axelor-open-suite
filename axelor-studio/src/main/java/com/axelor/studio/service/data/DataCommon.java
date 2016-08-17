@@ -45,18 +45,14 @@ public class DataCommon {
 		"Selection FR",
 		"Menu",
 		"Required",
-		"Required if",
 		"Readonly",
-		"Readonly if",
 		"Hidden",
-		"Hide if",
 		"Show if",
 		"If config",
 		"Formula",
 		"Event",
 		"Domain",
 		"On change",
-		"On click",
 		"Colspan",
 		"Grid",
 		"Help",
@@ -101,7 +97,6 @@ public class DataCommon {
 		map.put("panelbook", "panelbook");
 		map.put("panelside", "panelside");
 		map.put("paneltab", "paneltab");
-		map.put("menu", "menu");
 		map.put("button", "button");
 		map.put("wizard", "wizard");
 		map.put("error", "error");
@@ -164,24 +159,20 @@ public class DataCommon {
 	public final static int SELECT_FR = 10;
 	public final static int MENU = 11;
 	public final static int REQUIRED = 12;
-	public final static int REQUIRED_IF = 13;
-	public final static int READONLY = 14;
-	public final static int READONLY_IF = 15;
-	public final static int HIDDEN = 16;
-	public final static int HIDE_IF = 17;
-	public final static int SHOW_IF = 18;
-	public final static int IF_CONFIG = 19;
-	public final static int FORMULA = 20;
-	public final static int EVENT = 21;
-	public final static int DOMAIN = 22;
-	public final static int ON_CHANGE = 23;
-	public final static int ON_CLICK = 24;
-	public final static int COLSPAN = 25;
-	public final static int GRID = 26;
-	public final static int HELP = 27;
-	public final static int HELP_FR = 28;
-	public final static int PANEL_LEVEL = 29;
-	public final static int WIDGET = 30;
+	public final static int READONLY = 13;
+	public final static int HIDDEN = 14;
+	public final static int SHOW_IF = 15;
+	public final static int IF_CONFIG = 16;
+	public final static int FORMULA = 17;
+	public final static int EVENT = 18;
+	public final static int DOMAIN = 19;
+	public final static int ON_CHANGE = 20;
+	public final static int COLSPAN = 21;
+	public final static int GRID = 22;
+	public final static int HELP = 23;
+	public final static int HELP_FR = 24;
+	public final static int PANEL_LEVEL = 25;
+	public final static int WIDGET = 26;
 
 	public final static Map<String, String> RELATIONAL_TYPES;
 

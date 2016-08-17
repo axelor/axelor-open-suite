@@ -246,12 +246,16 @@ public class DataExportForm {
 		if (panel.getReadonly() != null && panel.getReadonly()) {
 			values[DataCommon.READONLY] = "x";
 		}
-		values[DataCommon.READONLY_IF] = panel.getReadonlyIf();
+		else {
+			values[DataCommon.READONLY] = panel.getReadonlyIf();
+		}
 		
 		if (panel.getHidden() != null && panel.getHidden()) {
 			values[DataCommon.HIDDEN] = "x";
 		}
-		values[DataCommon.HIDE_IF] = panel.getHideIf();
+		else {
+			values[DataCommon.HIDDEN] = panel.getHideIf();
+		}
 		
 		values[DataCommon.SHOW_IF] = panel.getShowIf();
 		
@@ -317,12 +321,16 @@ public class DataExportForm {
 		if (panelTabs.getReadonly() != null && panelTabs.getReadonly()) {
 			values[DataCommon.READONLY] = "x";
 		}
-		values[DataCommon.READONLY_IF] = panelTabs.getReadonlyIf();
+		else {
+			values[DataCommon.READONLY] = panelTabs.getReadonlyIf();
+		}
 		
 		if (panelTabs.getHidden() != null && panelTabs.getHidden()) {
 			values[DataCommon.HIDDEN] = "x";
 		}
-		values[DataCommon.HIDE_IF] = panelTabs.getHideIf();
+		else {
+			values[DataCommon.HIDDEN] = panelTabs.getHideIf();
+		}
 		
 		values[DataCommon.SHOW_IF] = panelTabs.getShowIf();
 		
@@ -467,22 +475,22 @@ public class DataExportForm {
 		if (field.getRequired() != null && field.getRequired()) {
 			values[DataCommon.REQUIRED] = "x";
 		}
-		if (field.getRequiredIf() != null) {
-			values[DataCommon.REQUIRED_IF] = field.getRequiredIf();
+		else if (values[DataCommon.REQUIRED] == null) {
+			values[DataCommon.REQUIRED] = field.getRequiredIf();
 		}
 		
 		if (field.getReadonly() != null && field.getReadonly()) {
 			values[DataCommon.READONLY] = "x";
 		}
-		if (field.getReadonlyIf() != null) {
-			values[DataCommon.READONLY_IF] = field.getReadonlyIf();
+		else if(values[DataCommon.READONLY] == null) {
+			values[DataCommon.READONLY] = field.getReadonlyIf();
 		}
 		
 		if (field.getHidden() != null && field.getHidden()) {
 			values[DataCommon.HIDDEN] = "x";
 		}
-		if (field.getHideIf() != null) {
-			values[DataCommon.HIDE_IF] = field.getHideIf();
+		else if (values[DataCommon.HIDDEN] == null){
+			values[DataCommon.HIDDEN] = field.getHideIf();
 		}
 		
 		values[DataCommon.SHOW_IF] = field.getShowIf();
@@ -621,9 +629,9 @@ public class DataExportForm {
 		values[DataCommon.TITLE] =	button.getTitle(); 
 		values[DataCommon.TITLE_FR] =	translationService.getTranslation(button.getTitle(), "fr");
 		values[DataCommon.TYPE] = "button"; 
-		values[DataCommon.ON_CLICK] = button.getOnClick();
-		values[DataCommon.READONLY_IF] = button.getReadonlyIf();
-		values[DataCommon.HIDE_IF] = button.getHideIf();
+		values[DataCommon.ON_CHANGE] = button.getOnClick();
+		values[DataCommon.READONLY] = button.getReadonlyIf();
+		values[DataCommon.HIDDEN] = button.getHideIf();
 		values[DataCommon.SHOW_IF] = button.getShowIf();
 		values[DataCommon.IF_CONFIG] = button.getConditionToCheck();
 		values[DataCommon.IF_MODULE] = DataExportService.getModuleToCheck(button, (String)extra[3]);
@@ -654,8 +662,8 @@ public class DataExportForm {
 		values[DataCommon.VIEW] = view;
 		values[DataCommon.TITLE] = panelRelated.getTitle();
 		values[DataCommon.TYPE] = panelRelated.getServerType();
-		values[DataCommon.READONLY_IF] = panelRelated.getReadonlyIf();
-		values[DataCommon.HIDE_IF] = panelRelated.getHideIf();
+		values[DataCommon.READONLY] = panelRelated.getReadonlyIf();
+		values[DataCommon.HIDDEN] = panelRelated.getHideIf();
 		values[DataCommon.SHOW_IF] = panelRelated.getShowIf();
 		values[DataCommon.IF_CONFIG] = panelRelated.getConditionToCheck();
 		values[DataCommon.IF_MODULE] = DataExportService.getModuleToCheck(panelRelated, (String)extra[3]);
@@ -731,7 +739,7 @@ public class DataExportForm {
 		values[DataCommon.TITLE_FR] =	translationService.getTranslation(label.getTitle(), "fr");
 		values[DataCommon.TYPE] =	"label"; 
 		values[DataCommon.IF_CONFIG] = label.getConditionToCheck();
-		values[DataCommon.HIDE_IF] = label.getHideIf();
+		values[DataCommon.HIDDEN] = label.getHideIf();
 		values[DataCommon.IF_MODULE] = DataExportService.getModuleToCheck(label, (String)extra[3]);
 		
 		if (label.getColSpan() != null) {
@@ -769,9 +777,9 @@ public class DataExportForm {
 		values[DataCommon.TITLE] = item.getTitle();
 		values[DataCommon.TITLE_FR] =	translationService.getTranslation(item.getTitle(), "fr");
 		values[DataCommon.TYPE] = "menubar.item";
-		values[DataCommon.ON_CLICK] = item.getAction();
-		values[DataCommon.READONLY_IF] = item.getReadonlyIf();
-		values[DataCommon.HIDE_IF] = item.getHideIf();
+		values[DataCommon.ON_CHANGE] = item.getAction();
+		values[DataCommon.READONLY] = item.getReadonlyIf();
+		values[DataCommon.HIDDEN] = item.getHideIf();
 		values[DataCommon.SHOW_IF] = item.getShowIf();
 		values[DataCommon.IF_CONFIG] = item.getConditionToCheck();
 		values[DataCommon.IF_MODULE] = DataExportService.getModuleToCheck(item, (String)extra[3]);

@@ -722,6 +722,8 @@ public class FormBuilderService {
 		field.setRequiredIf(viewItem.getRequiredIf());
 		field.setModuleToCheck(viewItem.getIfModule());
 		field.setConditionToCheck(viewItem.getIfConfig());
+		field.setFormView(viewItem.getFormView());
+		field.setGridView(viewItem.getGridView());
 		field.setColSpan(null);
 		String selectWidget = viewItem.getWidget();
 		String widget = null;
@@ -882,6 +884,8 @@ public class FormBuilderService {
 		panelRelated.setShowIf(viewItem.getShowIf());
 		panelRelated.setModuleToCheck(viewItem.getIfModule());
 		panelRelated.setConditionToCheck(viewItem.getIfConfig());
+		panelRelated.setFormView(viewItem.getFormView());
+		panelRelated.setGridView(viewItem.getGridView());
 
 		if (viewItem.getReadonly()) {
 			panelRelated.setReadonly(true);

@@ -13,7 +13,9 @@
        width="large">
       <panel>
       	<field name="name" />
+      	<spacer/>
         <field name="metaModel" onChange="action-studio-report-builder-meta-model-on-change"/>
+        <field name="metaModule" domain="self.customised = true"/> 
         <field name="viewBuilder" onSelect="action-studio-report-builder-view-builder-select"/>
         <field name="buttonView" onSelect="action-studio-report-builder-view-builder-select" onChange="action-studio-report-builder-button-view-change"/>
         <button name="generateTemplate" title="Generate template" colSpan="4" onClick="action-studio-report-builder-method-generate-template,save"/>

@@ -23,6 +23,7 @@
        <field name="iconBackground" />
        <field name="order" />
        <field name="groups" widget="TagSelect" colSpan="12" />
+       <field name="metaModule" domain="self.customised = true"/> 
        <field name="metaMenu" readonlyIf="menuBuilder != null" onChange="action-menu-builder-meta-menu-change" domain="self.parent is null"/>
        <field name="menuBuilder" readonlyIf="metaMenu != null" onChange="action-menu-builder-menu-builder-change" domain="self.isParent = true" />
        <panel colSpan="12" hideIf="isParent">

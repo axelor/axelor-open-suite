@@ -16,6 +16,7 @@
         <field name="metaView" onChange="action-view-builder-meta-view-change" onSelect="action-view-builder-set-meta-view-domain"/>
         <field name="parent" onChange="action-view-builder-parent-change" onSelect="action-view-builder-set-parent-domain" hideIf="metaView != null"/>
         <field name="metaModel" onChange="action-view-builder-model-change"/>
+        <field name="metaModule" domain="self.customised = true"/> 
         <field name="name" showIf="metaView == null" requiredIf="metaView == null"/>
         <field name="title" showIf="metaView == null" requiredIf="metaView == null"/>
         <field name="model" hidden="true" />

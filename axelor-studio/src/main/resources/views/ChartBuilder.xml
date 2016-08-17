@@ -10,6 +10,7 @@
         <field name="name"/>
         <field name="title"/>
         <field name="metaModel" widget="SuggestBox" onChange="action-view-builder-model-change"/>
+        <field name="metaModule" domain="self.customised = true"/>
         <field name="chartType" required="true"/>
         <panel colSpan="6">
         	<field name="aggregateOn" domain="self.metaModel = :metaModel AND (self.typeName IN ('LocalDate','DateTime', 'LocalDateTime')  OR self.relationship = 'ManyToOne')" widget="SuggestBox" colSpan="12"/>

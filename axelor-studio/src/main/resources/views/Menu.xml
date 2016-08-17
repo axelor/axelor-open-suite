@@ -124,12 +124,11 @@
   <!-- Configuration menus -->
   <menuitem name="menu-studio-configuration" title="Configuration" parent="menu-studio-root" order="50"/>
   
-  <menuitem name="menu-studio-studio-module" title="Studio modules" action="action.studio.studio.module" parent="menu-studio-configuration" order="5"/>
+  <menuitem name="menu-studio-module" title="Modules" action="action.studio.module" parent="menu-studio-configuration" order="5"/>
 
-  <action-view name="action.studio.studio.module" title="Studio modules" model="com.axelor.studio.db.StudioModule">
-      <view type="grid" name="studio-configuration-grid"/>
-      <view type="form" name="studio-configuration-form"/>
-      <context name="_showSingle" expr="eval:true"/>
+  <action-view name="action.studio.module" title="Modules" model="com.axelor.meta.db.Module">
+      <view type="grid"/>
+      <view type="form"/>
   </action-view>
   
   <menuitem name="menu-filter-operator" title="Operators" action="action.filter.operator" parent="menu-studio-configuration" order="10"/>

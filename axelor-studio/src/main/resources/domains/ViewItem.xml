@@ -55,6 +55,10 @@
      <!-- Panel related level -->
      <string name="panelLevel" />
      
+     <!-- Fields for relational field -->
+     <string name="formView" title="Form view" />
+     <string name="gridView" title="Grid view" />
+     
   </entity>
 
 </domain-models>

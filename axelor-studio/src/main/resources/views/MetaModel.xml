@@ -13,6 +13,7 @@
     <panel>
       <field name="name" onChange="action-meta-model-update-full-name"/>
       <field name="packageName" onChange="action-meta-model-update-full-name"/>
+      <field name="metaModule" domain="self.customised = true"/> 
     </panel>
     <panel>
         <button name="openFieldEditor" title="Open editor" onClick="save,action-meta-model-method-open-field-editor" />

@@ -16,7 +16,7 @@
 	      <field name="name" />
 	      <field name="typeSelect" onChange="action-action-builder-type-select-change,action-action-builder-line-column-attrs"/>
 	      <field name="metaModel" requiredIf="typeSelect != 2" />
-	      <field name="studioModule" />
+	      <field name="metaModule" domain="self.customised = true"/> 
 	      <panel colSpan="12" showIf="typeSelect == 0 ||  typeSelect == 1">
 		      <field name="targetModel" />
 		      <field name="targetField" domain="self.metaModel = :metaModel"/>
@@ -25,7 +25,7 @@
 		      <field name="firstGroupBy" showIf="loopOnField != null"/>
 		      <field name="secondGroupBy" showIf="loopOnField != null"/>
 	      </panel>
-	      <panel-related field="lines" colSpan="12" hideIf="typeSelect == 4 ||  typeSelect == 2"  />
+	      <panel-related field="lines" colSpan="12" hideIf="typeSelect == 4 ||  typeSelect == 2 || typeSelect == 3"  />
 	      <panel colSpan="12" showIf="typeSelect == 2">
 	      	<field name="viewBuilder" requiredIf="typeSelect == 2" onChange="action-action-builder-view-builder-change" onSelect="action-action-builder-view-builder-domain"/>
 	      	<field name="popup" />

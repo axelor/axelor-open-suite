@@ -26,7 +26,7 @@
      <many-to-many name="reportBuilderSet" title="Report builders" ref="ReportBuilder" />
      <many-to-one name="emailTemplate" ref="com.axelor.apps.message.db.Template" title="Template" />
      <many-to-one name="metaModule" ref="com.axelor.meta.db.MetaModule" title="Studio module" required="true"/>
-     <unique-constraint columns="metaModel,name" name="actionModelConstraint"/>
+     <unique-constraint columns="metaModule,metaModel,name" name="actionModelConstraint"/>
   </entity>
   
 </domain-models>
