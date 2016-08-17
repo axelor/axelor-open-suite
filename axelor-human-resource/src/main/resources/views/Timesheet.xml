@@ -37,6 +37,7 @@
 	    </toolbar>
 	    <panel sidebar="true" name="actions" title="Actions" stacked="true">
 	    	<button name="confirmButton" onClick="action-timesheet-group-confirm" title="Confirm" hideIf="statusSelect &gt; 1" icon="fa-check-square-o"/>
+	    	<button name="confirmContinueButton" onClick="action-timesheet-group-confirm-continue" title="Confirm &amp; Continue" hideIf="statusSelect &gt; 1" icon="fa-check-square-o"/>
 	    	<button name="validButton" onClick="action-timesheet-group-validate" title="Valid"/>
 	    	<button name="refuseButton" onClick="action-timesheet-group-refuse" title="Refuse"/>
 	    	<button name="cancelButton" onClick="action-timesheet-method-cancel,action-timesheet-attrs-buttons" hideIf="statusSelect == 5" title="Cancel" icon="fa-close"/>
@@ -94,6 +95,13 @@
 	<action-group name="action-timesheet-group-confirm">
 		<action name="save"/>
 		<action name="action-timesheet-method-confirm"/>
+		<action name="action-timesheet-attrs-buttons"/>
+		<action name="save"/>
+	</action-group>
+	
+	<action-group name="action-timesheet-group-confirm-continue">
+		<action name="save"/>
+		<action name="action-timesheet-method-confirm-continue"/>
 		<action name="action-timesheet-attrs-buttons"/>
 		<action name="save"/>
 	</action-group>
@@ -241,6 +249,10 @@
 	
 	<action-method name="action-timesheet-method-confirm">
 		<call class="com.axelor.apps.hr.web.timesheet.TimesheetController" method="confirm"/>
+	</action-method>
+	
+	<action-method name="action-timesheet-method-confirm-continue">
+		<call class="com.axelor.apps.hr.web.timesheet.TimesheetController" method="confirmContinue"/>
 	</action-method>
 	
 	<action-method name="action-timesheet-method-valid">
