@@ -71,8 +71,6 @@ public class MoveValidateService {
 			}
 
 			moveLine.setPartner(partner);
-			moveLine.setPartnerFullName(partner.getFullName());
-			moveLine.setPartnerSeq(partner.getPartnerSeq());
 			moveLine.setCounter(counter);
 			counter++;
 		}

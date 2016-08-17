@@ -47,8 +47,7 @@
 	<many-to-one name="managementObject" ref="com.axelor.apps.account.db.ManagementObject" title="Irrecoverable shift reason"/>
     
     <one-to-many name="analyticDistributionLineList" ref="com.axelor.apps.account.db.AnalyticDistributionLine" title="Analytic distribution lines" mappedBy="moveLine"/>
-	<string name="partnerFullName" title="Partner Name"/>
-    <string name="partnerSeq" title="Partner Reference"/>
+	
     
     <string name="name" title="Name" namecolumn="true">
     	<![CDATA[
