@@ -166,7 +166,7 @@ public class ExpenseService  {
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.USER_PARTNER),expense.getUser().getName()), IException.CONFIGURATION_ERROR);
 		}
 
-		Move move = moveService.getMoveCreateService().createMove(accountConfigService.getExpenseJournal(accountConfig), accountConfig.getCompany(), null, expense.getUser().getPartner(), moveDate, expense.getUser().getPartner().getPaymentMode());
+		Move move = moveService.getMoveCreateService().createMove(accountConfigService.getExpenseJournal(accountConfig), accountConfig.getCompany(), null, expense.getUser().getPartner(), moveDate, expense.getUser().getPartner().getPaymentMode(), MoveRepository.AUTOMATIC);
 
 		List<MoveLine> moveLines = new ArrayList<MoveLine>();
 

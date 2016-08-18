@@ -71,9 +71,8 @@ public class MoveCreateService {
 	 * @return
 	 * @throws AxelorException
 	 */
-	public Move createMove(Journal journal, Company company, Invoice invoice, Partner partner, PaymentMode paymentMode) throws AxelorException{
-
-		return this.createMove(journal, company, invoice, partner, today, paymentMode);
+	public Move createMove(Journal journal, Company company, Invoice invoice, Partner partner, PaymentMode paymentMode, int technicalOriginSelect) throws AxelorException{
+		return this.createMove(journal, company, invoice, partner, today, paymentMode, technicalOriginSelect);
 	}
 
 
@@ -91,9 +90,8 @@ public class MoveCreateService {
 	 * @return
 	 * @throws AxelorException
 	 */
-	public Move createMove(Journal journal, Company company, Invoice invoice, Partner partner, LocalDate date, PaymentMode paymentMode) throws AxelorException{
-
-		return this.createMove(journal, company, invoice, partner, date, paymentMode, false, false);
+	public Move createMove(Journal journal, Company company, Invoice invoice, Partner partner, LocalDate date, PaymentMode paymentMode, int technicalOriginSelect) throws AxelorException{
+		return this.createMove(journal, company, invoice, partner, date, paymentMode, technicalOriginSelect, false, false);
 
 	}
 
@@ -112,9 +110,8 @@ public class MoveCreateService {
 	 * @return
 	 * @throws AxelorException
 	 */
-	public Move createMove(Journal journal, Company company, Invoice invoice, Partner partner, LocalDate date, PaymentMode paymentMode, boolean ignoreInReminderOk,
+	public Move createMove(Journal journal, Company company, Invoice invoice, Partner partner, LocalDate date, PaymentMode paymentMode, int technicalOriginSelect, boolean ignoreInReminderOk,
 			boolean ignoreInAccountingOk) throws AxelorException{
-
 		log.debug("Création d'une écriture comptable (journal : {}, société : {}", new Object[]{journal.getName(), company.getName()});
 
 		Move move = new Move();
@@ -139,7 +136,7 @@ public class MoveCreateService {
 			move.setCurrency(partner.getCurrency());
 		}
 		move.setPaymentMode(paymentMode);
-
+		move.setTechnicalOriginSelect(technicalOriginSelect);
 		moveRepository.save(move);
 		move.setReference("*"+move.getId());
 
@@ -163,9 +160,8 @@ public class MoveCreateService {
 	 * @return
 	 * @throws AxelorException
 	 */
-	public Move createMove(Journal journal, Company company, Invoice invoice, Partner partner, LocalDate date, PaymentMode paymentMode, CashRegister cashRegister) throws AxelorException{
-
-		Move move = this.createMove(journal, company, invoice, partner, date, paymentMode);
+	public Move createMove(Journal journal, Company company, Invoice invoice, Partner partner, LocalDate date, PaymentMode paymentMode, int technicalOriginSelect ,CashRegister cashRegister) throws AxelorException{
+		Move move = this.createMove(journal, company, invoice, partner, date, paymentMode, technicalOriginSelect);
 		move.setCashRegister(cashRegister);
 		return move;
 	}

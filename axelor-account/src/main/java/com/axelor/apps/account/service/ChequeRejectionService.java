@@ -28,6 +28,7 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentVoucher;
 import com.axelor.apps.account.db.repo.ChequeRejectionRepository;
+import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.move.MoveLineService;
@@ -115,7 +116,7 @@ public class ChequeRejectionService {
 		LocalDate rejectionDate = chequeRejection.getRejectionDate();
 
 		// Move
-		Move move = moveService.getMoveCreateService().createMove(journal, company, null, partner, rejectionDate, null);
+		Move move = moveService.getMoveCreateService().createMove(journal, company, null, partner, rejectionDate, null, MoveRepository.AUTOMATIC);
 
 		int ref = 1;
 

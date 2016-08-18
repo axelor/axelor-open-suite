@@ -92,6 +92,13 @@
 		<option value='4'>Canceled</option>
 	</selection>
 	
+	<selection name='iaccount.move.technical.origin.select'>
+		<option value='1'>Entry</option>
+		<option value='2'>Automatic</option>
+		<option value='3'>Template</option>
+		<option value='4'>Import</option>
+	</selection>
+	
 	<selection name='iaccount.cash.register.line.status.select'>
 		<option value='0'>Draft</option>
 		<option value='1'>Closed</option>
