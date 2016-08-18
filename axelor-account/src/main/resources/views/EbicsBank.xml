@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
+	
+	
+	<grid name="ebics-bank-grid" title="Ebics bank" model="com.axelor.apps.account.db.EbicsBank" >
+		<field name="url" />
+		<field name="name" />
+		<field name="hostId" />
+	</grid>
+	
+	<form name="ebics-bank-form" title="Ebics bank" model="com.axelor.apps.account.db.EbicsBank">
+	
+		<panel>
+			<field name="url" />
+			<field name="name" />
+			<field name="hostId" />
+		</panel>
+		<panel>
+			<field name="e002Key" />
+			<field name="e002Digest" />
+			<field name="x002Key" />
+			<field name="x002Digest" />
+		</panel>
+	
+	</form>
+  
+  
+	
+  
+</object-views>

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_4.0.xsd">
+	
+  <module name="account" package="com.axelor.apps.account.db"/>
+  
+  <entity name="EbicsUser" lang="java">
+
+
+	 <string name="securityMedium" title="Security medium" />
+	 <string name="name" title="Name" namecolumn="true"/>
+	 <string name="userId" title="User id" />
+	 <string name="dn" title="dn" unique="true" />
+	 
+	 <string name="password" title="Password" password="true" />
+	 
+	 <boolean name="isInitializedHIA" title="is initialized HIA ?"  />
+	 <boolean name="isInitialized" title="is initialized ?"  />
+	 
+	 <string name="a005PublicKey" title="a005PublicKey" large="true" multiline="true" />
+	 <string name="a005Certificate" title="a005Certificate" large="true" multiline="true" />
+	 
+	 <string name="e002PublicKey" title="e002PublicKey" large="true" multiline="true" />
+	 <string name="e002Certificate" title="e002Certificate" large="true" multiline="true" />
+	 
+	 <string name="x002PublicKey" title="x002PublicKey" large="true" multiline="true" />
+	 <string name="x002Certificate" title="x002Certificate" large="true" multiline="true" />
+	    
+	<many-to-one name="ebicsPartner" ref="com.axelor.apps.account.db.EbicsPartner" title="Ebics partner"/>
+    
+  </entity>
+  
+</domain-models>
