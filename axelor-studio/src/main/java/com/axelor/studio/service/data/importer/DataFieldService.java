@@ -1,5 +1,7 @@
 package com.axelor.studio.service.data.importer;
 
+import java.math.BigDecimal;
+
 import org.apache.poi.ss.usermodel.Row;
 
 import com.axelor.exception.AxelorException;
@@ -104,21 +106,54 @@ public class DataFieldService extends DataCommon {
 		field.setMetaModule(metaModule);
 		field.setSequence(sequence);
 		
-		field.setMappedBy(getMappedBy(getValue(row, FORMULA)));
-				
 		field = updateFieldTypeName(basic[0], basic[1], field, metaModule.getName());
+		
+		field = processFormula(field, getValue(row, FORMULA));
+		
 
 		return metaFieldRepo.save(field);
 
 	}
 	
-	private String getMappedBy(String formula) {
+	private MetaField processFormula(MetaField field, String formula) {
 		
-		if (formula == null || !formula.contains("mappedBy:")) {
-			return null;
+		if (formula == null) {
+			return field;
 		}
 		
-		return formula.split(":")[1];
+		for (String expr: formula.split(",")) {
+			String[] exprs = expr.split(":");
+			if (exprs.length < 2) {
+				continue;
+			}
+			
+			String type = field.getTypeName();
+			
+			switch(exprs[0]) {
+				case "mappedBy":
+					field.setMappedBy(exprs[1]);
+					break;
+				case "max":
+					if (type.equals("Integer") || type.equals("String")) {
+						field.setIntegerMax(Integer.parseInt(exprs[1]));
+					}
+					else if (type.equals("BigDecimal")) { 
+						field.setDecimalMax(new BigDecimal(exprs[1]));
+					}
+					break;
+				case "min":
+					if (type.equals("Integer") || type.equals("String")) {
+						field.setIntegerMin(Integer.parseInt(exprs[1]));
+					}
+					else if (type.equals("BigDecimal")) { 
+						field.setDecimalMin(new BigDecimal(exprs[1]));
+					}
+					break;
+			}
+			
+		}
+		
+		return field;
 		
 	}
 	

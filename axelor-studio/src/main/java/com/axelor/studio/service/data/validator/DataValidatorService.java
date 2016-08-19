@@ -149,6 +149,10 @@ public class DataValidatorService {
 			}
 			
 			String name = DataCommon.getValue(row, 0);
+			if (name == null) {
+				continue;
+			}
+			
 			try {
 				configService.validateModuleName(name);
 			} catch (AxelorException e) {

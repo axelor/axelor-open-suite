@@ -278,7 +278,8 @@ public class DataImportService extends DataCommon {
 			
 		}
 
-		if (!Strings.isNullOrEmpty(basic[0]) && !DataCommon.IGNORE_TYPES.contains(basic[0])) {
+		if (!Strings.isNullOrEmpty(basic[0]) 
+				&& (!DataCommon.IGNORE_TYPES.contains(basic[0]) || basic[0].equals("empty"))) {
 			dataViewService.addViewElement(model, basic, row, metaField, replace);
 		}
 	}

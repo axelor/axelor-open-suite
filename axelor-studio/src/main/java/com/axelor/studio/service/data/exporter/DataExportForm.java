@@ -386,10 +386,10 @@ public class DataExportForm {
 		if (property != null) {
 			addProperties(values, property, target);
 		}
-		else {
-			newForm = false;
-			return paneLevel;
-		}
+//		else {
+//			newForm = false;
+//			return paneLevel;
+//		}
 		
 		if (target != null && values[DataCommon.TYPE] != null) {
 			String[] targets = target.split("\\.");

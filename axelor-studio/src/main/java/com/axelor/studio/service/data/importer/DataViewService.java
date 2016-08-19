@@ -382,7 +382,18 @@ public class DataViewService extends DataCommon {
 			viewItem.setViewPanel(lastPanel);
 		}
 		
-		viewItem.setOnClick(getValue(row, ON_CHANGE));
+		
+		String onClick = getValue(row, ON_CHANGE);
+		if (viewItem.getOnClick() != null) {
+			if (onClick != null) {
+				viewItem.setOnClick(FormBuilderService.getUpdatedAction(
+						viewItem.getOnClick(), onClick));
+			}
+		}
+		else {
+			viewItem.setOnClick(onClick);
+		}
+		
 		setAttributes(viewBuilder, viewItem);
 
 		viewItemRepo.save(viewItem);
@@ -490,7 +501,17 @@ public class DataViewService extends DataCommon {
 			viewItem.setWidget("html");
 		}
 		
-		viewItem.setOnChange(getValue(row, ON_CHANGE));
+		String onchange = getValue(row, ON_CHANGE);
+		if (viewItem.getOnChange() != null) {
+			if (onchange != null) {
+				viewItem.setOnChange(FormBuilderService.getUpdatedAction(
+						viewItem.getOnChange(), onchange));
+			}
+		}
+		else {
+			viewItem.setOnChange(onchange);
+		}
+		
 		viewItem.setPanelLevel(getValue(row, PANEL_LEVEL));
 		viewItem.setFormView(basic[5]);
 		viewItem.setGridView(basic[6]);
@@ -783,39 +804,21 @@ public class DataViewService extends DataCommon {
 		String formula = getValue(row, FORMULA);
 		String event = getValue(row, EVENT);
 		
-		if (formula == null) {
-			return;
-		}
-		
-
-		MetaModel metaModel = viewBuilder.getMetaModel();
-		
-		if (event == null) {
+		if (formula == null || event == null) {
 			return;
 		}
 		
 		String name = "action-" + viewBuilder.getName() + "-set-"
 				+ viewItem.getName();
-
-		ActionBuilder actionBuilder = actionBuilderRepo
-				.all()
-				.filter("self.name = ?1 and self.metaModule.name = ?2", name, viewBuilder.getMetaModule().getName())
-				.fetchOne();
-		if (actionBuilder == null) {
-			actionBuilder = new ActionBuilder(name);
-			actionBuilder.setMetaModule(viewBuilder.getMetaModule());
-		}
-		else{
-			actionBuilder.clearLines();
-		}
-
-		actionBuilder.setTypeSelect(1);
-		actionBuilder.setMetaModel(metaModel);
-
-		String[] exprs = formula.split(",");
+		MetaModel metaModel = viewBuilder.getMetaModel();
+		
+		ActionBuilder actionBuilder = getActionBuilder(viewBuilder, name);
+		
+		List<String> formulas = getFormulas(formula);
+		
 		ActionBuilderLine line = null;
-		for (int i = 0; i < exprs.length; i++) {
-			String expr = exprs[i].trim();
+		for (int i = 0; i < formulas.size(); i++) {
+			String expr = formulas.get(i).trim();
 			if (i % 2 == 0) {
 				line = new ActionBuilderLine();
 				line.setMetaField(viewItem.getMetaField());
@@ -861,6 +864,41 @@ public class DataViewService extends DataCommon {
 				addEvents(viewBuilder, event, name);
 			}
 		}
+	}
+	
+	private List<String> getFormulas(String formula) {
+		
+		List<String> formulas = new ArrayList<String>();
+		
+		for (String expr : formula.split(",")) {
+			if (expr.startsWith("max:")) continue;
+			if (expr.startsWith("min:")) continue;
+			if (expr.startsWith("mappedBy:")) continue;
+			formulas.add(expr);
+		}
+		
+		return formulas;
+	}
+	
+	private ActionBuilder getActionBuilder(ViewBuilder viewBuilder, String name) {
+		
+		ActionBuilder actionBuilder = actionBuilderRepo
+				.all()
+				.filter("self.name = ?1 and self.metaModule.name = ?2", name, viewBuilder.getMetaModule().getName())
+				.fetchOne();
+		if (actionBuilder == null) {
+			actionBuilder = new ActionBuilder(name);
+			actionBuilder.setMetaModule(viewBuilder.getMetaModule());
+		}
+		else{
+			actionBuilder.clearLines();
+		}
+
+		actionBuilder.setTypeSelect(1);
+		actionBuilder.setMetaModel(viewBuilder.getMetaModel());
+		
+		
+		return actionBuilder;
 	}
 
 	@Transactional

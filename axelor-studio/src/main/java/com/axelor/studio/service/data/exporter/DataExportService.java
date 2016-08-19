@@ -80,6 +80,9 @@ public class DataExportService {
 	@Inject
 	private DataExportMenu exportMenu;
 	
+	@Inject
+	private DataExportAction exportAction;
+	
 	public MetaFile export(MetaFile oldFile, DataWriter writer, DataReader reader) {
 		
 		setExportModules();
@@ -96,6 +99,8 @@ public class DataExportService {
 		addModules(reader);
 
 		exportMenu.export(writer, exportModules);
+		
+		exportAction.export(writer);
 		
 		processMenu();
 		

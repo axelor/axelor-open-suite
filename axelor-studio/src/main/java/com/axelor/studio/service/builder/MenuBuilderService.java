@@ -31,7 +31,6 @@ import java.util.Set;
 
 import javax.xml.bind.JAXBException;
 
-import org.hsqldb.View;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -47,7 +46,6 @@ import com.axelor.meta.schema.ObjectViews;
 import com.axelor.meta.schema.actions.Action;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
-import com.axelor.meta.schema.actions.ActionView.Context;
 import com.axelor.meta.schema.views.MenuItem;
 import com.axelor.studio.db.MenuBuilder;
 import com.axelor.studio.db.repo.MenuBuilderRepository;
@@ -345,7 +343,7 @@ public class MenuBuilderService {
 	private ActionView getRelatedAction(String name, String xmlId) {
 		
 		MetaAction parentAction = metaActionRepo.all()
-				.filter("self.name = ?1").fetchOne();
+				.filter("self.name = ?1", name).fetchOne();
 		
 		if (parentAction != null 
 				&& parentAction.getType().equals("action-view") 
