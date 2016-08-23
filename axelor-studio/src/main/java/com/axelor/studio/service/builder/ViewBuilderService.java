@@ -207,7 +207,7 @@ public class ViewBuilderService {
 			String name = action.getName();
 
 			MetaAction metaAction = metaActionRepo.all()
-					.filter("self.name = ?1", name).fetchOne();
+					.filter("self.name = ?1 and self.module = ?2", name, module).fetchOne();
 
 			if (metaAction == null) {
 				metaAction = new MetaAction();
@@ -219,6 +219,7 @@ public class ViewBuilderService {
 						.replaceAll("([a-z\\d])([A-Z]+)", "$1-$2")
 						.toLowerCase();
 				metaAction.setType(type);
+				metaAction.setXmlId(action.getXmlId());
 			}
 
 			metaAction.setXml(XMLViews.toXml(action, true));

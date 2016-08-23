@@ -28,12 +28,12 @@ import com.axelor.studio.db.repo.ActionBuilderRepository;
 import com.axelor.studio.db.repo.ReportBuilderRepository;
 import com.axelor.studio.db.repo.ViewBuilderRepository;
 import com.axelor.studio.service.ConfigurationService;
-import com.axelor.studio.service.data.DataCommon;
-import com.axelor.studio.service.data.exporter.DataExportAction;
+import com.axelor.studio.service.data.CommonService;
+import com.axelor.studio.service.data.exporter.ExportAction;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
-public class DataActionService extends DataCommon {
+public class ImportAction extends CommonService {
 	
 	private Map<String, Integer> typeMap = new HashMap<String, Integer>(); 
 	
@@ -71,7 +71,7 @@ public class DataActionService extends DataCommon {
 		while(rowIter.hasNext()) {
 			Row row = rowIter.next();
 			
-			String module = getValue(row, DataExportAction.MODULE);
+			String module = getValue(row, ExportAction.MODULE);
 			if (module == null) {
 				continue;
 			}
@@ -96,8 +96,8 @@ public class DataActionService extends DataCommon {
 	@Transactional
 	public void importActionBuilder(Row row, MetaModule module) {
 		
-		String name = getValue(row, DataExportAction.NAME);
-		String type = getValue(row, DataExportAction.TYPE);
+		String name = getValue(row, ExportAction.NAME);
+		String type = getValue(row, ExportAction.TYPE);
 
 		if (name == null || type == null) {
 			return;
@@ -107,10 +107,10 @@ public class DataActionService extends DataCommon {
 		
 		builder = setModel(row, builder);
 		builder = setView(row, builder);
-		builder.setFirstGroupBy(getValue(row, DataExportAction.FIRST_GROUPBY));
-		builder.setSecondGroupBy(getValue(row, DataExportAction.SECOND_GROUPBY));
-		builder.setReportBuilderSet(getReportBuilders(getValue(row, DataExportAction.REPORT_BUILDERS)));
-		builder.setEmailTemplate(getEmailTemplate(getValue(row, DataExportAction.EMAIL_TEMPLATE)));
+		builder.setFirstGroupBy(getValue(row, ExportAction.FIRST_GROUPBY));
+		builder.setSecondGroupBy(getValue(row, ExportAction.SECOND_GROUPBY));
+		builder.setReportBuilderSet(getReportBuilders(getValue(row, ExportAction.REPORT_BUILDERS)));
+		builder.setEmailTemplate(getEmailTemplate(getValue(row, ExportAction.EMAIL_TEMPLATE)));
 		builder.setEdited(true);
 		builder.setRecorded(false);
 		
@@ -143,18 +143,18 @@ public class DataActionService extends DataCommon {
 	
 	private ActionBuilder setModel(Row row, ActionBuilder builder) {
 		
-		String model = getValue(row, DataExportAction.OBJECT);
+		String model = getValue(row, ExportAction.OBJECT);
 		MetaModel metaModel = metaModelRepo.findByName(model);
 		builder.setMetaModel(metaModel);
 		
 		if (metaModel != null) {
-			MetaField field = getMetaField(metaModel, getValue(row, DataExportAction.TARGET_FIELD));
+			MetaField field = getMetaField(metaModel, getValue(row, ExportAction.TARGET_FIELD));
 			builder.setTargetField(field);
-			field = getMetaField(metaModel, getValue(row, DataExportAction.LOOOP_FIELD));
+			field = getMetaField(metaModel, getValue(row, ExportAction.LOOOP_FIELD));
 			builder.setLoopOnField(field);
 		}
 		
-		metaModel = metaModelRepo.findByName(getValue(row, DataExportAction.TARGET_OBJECT));
+		metaModel = metaModelRepo.findByName(getValue(row, ExportAction.TARGET_OBJECT));
 		builder.setTargetModel(metaModel);
 		
 		return builder;
@@ -162,7 +162,7 @@ public class DataActionService extends DataCommon {
 	
 	private ActionBuilder setView(Row row, ActionBuilder builder) {
 		
-		String view = getValue(row, DataExportAction.VIEW);
+		String view = getValue(row, ExportAction.VIEW);
 		if (view != null) {
 			ViewBuilder viewBuilder = viewBuilderRepo
 					.all()
@@ -220,7 +220,7 @@ public class DataActionService extends DataCommon {
 		
 		ActionBuilderLine line = new ActionBuilderLine();
 		
-		String target =  getValue(row, DataExportAction.LINE_TARGET);
+		String target =  getValue(row, ExportAction.LINE_TARGET);
 		if (target != null) {
 			line.setTargetField(target);
 			if (target.contains(".")) {
@@ -234,11 +234,11 @@ public class DataActionService extends DataCommon {
 			}
 		}
 		
-		line.setValue(getValue(row, DataExportAction.LINE_VALUE));
-		line.setConditionText(getValue(row, DataExportAction.LINE_CONDITIONS));
-		line.setFilter(getValue(row, DataExportAction.LINE_FILTERS));
-		line.setValidationMsg(getValue(row, DataExportAction.LINE_VALIDATION_MSG));
-		line.setValidationTypeSelect(getValue(row, DataExportAction.LINE_VALIDATION_TYPE));
+		line.setValue(getValue(row, ExportAction.LINE_VALUE));
+		line.setConditionText(getValue(row, ExportAction.LINE_CONDITIONS));
+		line.setFilter(getValue(row, ExportAction.LINE_FILTERS));
+		line.setValidationMsg(getValue(row, ExportAction.LINE_VALIDATION_MSG));
+		line.setValidationTypeSelect(getValue(row, ExportAction.LINE_VALIDATION_TYPE));
 		
 		builder.addLine(line);
 		

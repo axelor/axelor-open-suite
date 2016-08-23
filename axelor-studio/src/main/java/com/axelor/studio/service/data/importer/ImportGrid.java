@@ -14,7 +14,7 @@ import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
-public class DataGridService {
+public class ImportGrid {
 	
 	@Inject
 	private ViewBuilderRepository viewBuilderRepo;
@@ -23,11 +23,10 @@ public class DataGridService {
 	private ViewLoaderService viewLoaderService;
 	
 	@Transactional
-	public void createGridView(MetaModule module, MetaModel model, List<MetaField> fields) throws AxelorException {
+	public ViewBuilder createGridView(MetaModule module, MetaModel model, List<MetaField> fields) throws AxelorException {
 		
 		if (fields == null || fields.isEmpty()) {
-			viewLoaderService.getDefaultGrid(module.getName(), model, true);
-			return;
+			return viewLoaderService.getDefaultGrid(module.getName(), model, true);
 		}
 		
 		String viewName = ViewLoaderService.getDefaultViewName(model.getName(),
@@ -61,7 +60,7 @@ public class DataGridService {
 			seq++;
 		}
 
-		viewBuilderRepo.save(viewBuilder);
+		return viewBuilderRepo.save(viewBuilder);
 
 	}
 	

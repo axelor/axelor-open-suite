@@ -43,6 +43,7 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaField;
 import com.axelor.meta.db.MetaModel;
+import com.axelor.meta.db.MetaView;
 import com.axelor.meta.db.repo.MetaFieldRepository;
 import com.axelor.meta.schema.actions.Action;
 import com.axelor.meta.schema.actions.ActionMethod;
@@ -164,7 +165,7 @@ public class ActionBuilderService {
 		MetaModel model = getModel(actionBuilder);
 		log.debug("Action model: {}", model);
 		Integer actionType = actionBuilder.getTypeSelect();
-
+		
 		Action action = null;
 
 		switch (actionType) {
@@ -186,16 +187,20 @@ public class ActionBuilderService {
 			case 5:
 				action = createActionValidation(actionBuilder);
 				break;
-			default:
-				processActionBuilder(actionIter);
 		}
-
-		String modelName = "Dashboard";
-		if (model != null) {
-			modelName = model.getFullName();
+		
+		if (action != null) {
+			
+			String modelName = "Dashboard";
+			if (model != null) {
+				modelName = model.getFullName();
+			}
+			
+			action.setXmlId(actionBuilder.getMetaModule().getName() + "-" + action.getName());
+			updateModelActionMap(modelName, action);
 		}
-
-		updateModelActionMap(modelName, action);
+		
+		
 		processActionBuilder(actionIter);
 	}
 
@@ -453,10 +458,26 @@ public class ActionBuilderService {
 	private Action createActionView(MetaModel model, ActionBuilder actionBuilder) {
 
 		ViewBuilder viewBuilder = actionBuilder.getViewBuilder();
-		String viewName = viewBuilder.getName();
-		String viewType = viewBuilder.getViewType();
-		String title = viewBuilder.getTitle();
-
+		String viewName = null;
+		String viewType = null;
+		String title = null;
+		if (viewBuilder != null) {
+			viewName = viewBuilder.getName();
+			viewType = viewBuilder.getViewType();
+			title = viewBuilder.getTitle();
+		}
+		
+		MetaView view =  actionBuilder.getMetaView();
+		if (view != null) {
+			viewName = view.getName();
+			viewType = view.getType();
+			title = view.getTitle();
+		}
+		
+		if (actionBuilder.getTitle() != null) {
+			title = actionBuilder.getTitle();
+		}
+		
 		ActionViewBuilder builder = ActionView.define(title);
 		builder.add(viewType, viewName);
 		builder.name(actionBuilder.getName());
@@ -468,10 +489,32 @@ public class ActionBuilderService {
 			if (model != null) {
 				builder.model(model.getFullName());
 			}
-			updateDomainContext(builder, actionBuilder);
+			if (actionBuilder.getDomainCondition() != null) {
+				builder = addDomainContext(builder, actionBuilder);
+			}
+			else {
+				processFilters(builder, actionBuilder);
+			}
 		}
 
 		return builder.get();
+	}
+	
+	private ActionViewBuilder addDomainContext(ActionViewBuilder builder, ActionBuilder actionBuilder) {
+		
+		builder.domain(actionBuilder.getDomainCondition());
+		String context =  actionBuilder.getContext();
+
+		if (context != null) {
+			for (String ctx : context.split(",")) {
+				String[] ctxs = ctx.split(";");
+				if (ctxs.length == 2) {
+					builder.context(ctxs[0], ctxs[1]);
+				}
+			}
+		}
+		
+		return builder;
 	}
 
 	private String createLoopOnExpression(ActionBuilder actionBuilder,
@@ -572,7 +615,7 @@ public class ActionBuilderService {
 		return method;
 	}
 
-	private void updateDomainContext(ActionViewBuilder builder,
+	private void processFilters(ActionViewBuilder builder,
 			ActionBuilder actionBuilder) {
 
 		String domain = null;

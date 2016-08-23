@@ -6,7 +6,7 @@ import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
-public class DataTranslationService {
+public class TranslationService {
 	
 	@Inject
 	private MetaTranslationRepository metaTranslationRepo;

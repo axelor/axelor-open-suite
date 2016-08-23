@@ -40,11 +40,11 @@ import com.axelor.i18n.I18n;
 import com.axelor.meta.db.MetaModel;
 import com.axelor.meta.db.repo.MetaModelRepository;
 import com.axelor.studio.service.ConfigurationService;
-import com.axelor.studio.service.data.DataCommon;
+import com.axelor.studio.service.data.CommonService;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 
-public class DataValidatorService {
+public class ValidatorService {
 	
 	private final static List<String> IGNORE_NAMES = new ArrayList<String>();
 	{	
@@ -92,10 +92,10 @@ public class DataValidatorService {
 	private MetaModelRepository metaModelRepo;
 	
 	@Inject
-	private DataCommon common;
+	private CommonService common;
 	
 	@Inject
-	private DataMenuValidator menuValidator;
+	private MenuValidator menuValidator;
 	
 	public File validate(XSSFWorkbook workBook) throws IOException {
 	
@@ -148,7 +148,7 @@ public class DataValidatorService {
 				continue;
 			}
 			
-			String name = DataCommon.getValue(row, 0);
+			String name = CommonService.getValue(row, 0);
 			if (name == null) {
 				continue;
 			}
@@ -159,13 +159,13 @@ public class DataValidatorService {
 				addLog(e.getMessage(), row);
 			}
 			
-			String depends = DataCommon.getValue(row, 1);
+			String depends = CommonService.getValue(row, 1);
 			if (depends != null && Arrays.asList(depends.split(",")).contains(name)) {
 				addLog(I18n.get("Module's depends must not contain its name"), row);
 			}
 			
-			String title = DataCommon.getValue(row, 2);
-			String version = DataCommon.getValue(row, 3);
+			String title = CommonService.getValue(row, 2);
+			String version = CommonService.getValue(row, 3);
 			if (title == null || version == null) {
 				addLog(I18n.get("Title or module version is empty"), row);
 			}
@@ -181,7 +181,7 @@ public class DataValidatorService {
 		
 		this.row = rowIter.next();
 		
-		String module = DataCommon.getValue(row, DataCommon.MODULE);
+		String module = CommonService.getValue(row, CommonService.MODULE);
 		if (module == null) {
 			validateRow(rowIter);
 			return;
@@ -214,7 +214,7 @@ public class DataValidatorService {
 	
 	private String getModel() throws IOException {
 		
-		String model = DataCommon.getValue(row, DataCommon.MODEL);
+		String model = CommonService.getValue(row, CommonService.MODEL);
 		
 		if (model == null) {
 			return null;
@@ -248,10 +248,10 @@ public class DataValidatorService {
 		
 		boolean modelRequired = false;
 		
-		String type = DataCommon.getValue(row, DataCommon.TYPE);
+		String type = CommonService.getValue(row, CommonService.TYPE);
 		
 		if (type != null) {
-			if (DataCommon.IGNORE_TYPES.contains(type)) {
+			if (CommonService.IGNORE_TYPES.contains(type)) {
 				return modelRequired;
 			}
 			type = validateType(model, type);
@@ -275,10 +275,10 @@ public class DataValidatorService {
 	private boolean validateName(String type, String obj,
 			boolean consider) throws IOException {
 		
-		String name = DataCommon.getValue(row, DataCommon.NAME);
-		String title = DataCommon.getValue(row, DataCommon.TITLE);
+		String name = CommonService.getValue(row, CommonService.NAME);
+		String title = CommonService.getValue(row, CommonService.TITLE);
 		if (title == null) {
-			title = DataCommon.getValue(row, DataCommon.TITLE_FR);
+			title = CommonService.getValue(row, CommonService.TITLE_FR);
 		}
 		if (name == null) {
 			name = title;
@@ -305,7 +305,7 @@ public class DataValidatorService {
 		}
 		else if (type != null 
 				&& !IGNORE_NAMES.contains(type) 
-				&& !DataCommon.IGNORE_TYPES.contains(type)) {
+				&& !CommonService.IGNORE_TYPES.contains(type)) {
 			addLog(I18n.get("Name and title empty or name is invalid."));
 		}
 		
@@ -315,10 +315,10 @@ public class DataValidatorService {
 
 	private boolean checkSelect(Row row, String type, boolean consider) throws IOException {
 		
-		String select = DataCommon.getValue(row, DataCommon.SELECT);
+		String select = CommonService.getValue(row, CommonService.SELECT);
 		
 		if (select == null) {
-			select = DataCommon.getValue(row, DataCommon.SELECT_FR);
+			select = CommonService.getValue(row, CommonService.SELECT_FR);
 		}
 		
 		if (select != null
@@ -413,19 +413,19 @@ public class DataValidatorService {
 			type = ref[0];
 		}
 		
-		if (!DataCommon.FIELD_TYPES.containsKey(type) 
-				&& !DataCommon.FR_MAP.containsKey(type) 
-				&& !DataCommon.VIEW_ELEMENTS.containsKey(type)) {
+		if (!CommonService.FIELD_TYPES.containsKey(type) 
+				&& !CommonService.FR_MAP.containsKey(type) 
+				&& !CommonService.VIEW_ELEMENTS.containsKey(type)) {
 			addLog(I18n.get("Invalid type"));
 		}
 		
-		if (DataCommon.RELATIONAL_TYPES.containsKey(type) && !type.equals("file") || type.equals("wizard")) { 
+		if (CommonService.RELATIONAL_TYPES.containsKey(type) && !type.equals("file") || type.equals("wizard")) { 
 			if (reference == null) {
 				addLog(I18n.get("Reference is empty for type"));
 			}
 			else  if (!modelMap.containsKey(reference) && !invalidModelMap.containsKey(reference)) {
 				invalidModelMap.put(reference, row);
-				referenceMap.put(model + "(" + DataCommon.getValue(row, DataCommon.NAME) + ")" , reference);
+				referenceMap.put(model + "(" + CommonService.getValue(row, CommonService.NAME) + ")" , reference);
 			}
 		}
 		
@@ -437,8 +437,8 @@ public class DataValidatorService {
 	
 	private boolean checkEvents(String obj, boolean consider) throws IOException {
 		
-		String formula = DataCommon.getValue(row, DataCommon.FORMULA);
-		String event = DataCommon.getValue(row, DataCommon.EVENT);
+		String formula = CommonService.getValue(row, CommonService.FORMULA);
+		String event = CommonService.getValue(row, CommonService.EVENT);
 		
 		if (event == null) {
 			return consider;
@@ -508,7 +508,7 @@ public class DataValidatorService {
 	
 	private void validateView(String type, String model, String reference) throws IOException{
 		
-		String view = DataCommon.getValue(row, DataCommon.VIEW);
+		String view = CommonService.getValue(row, CommonService.VIEW);
 		if (view == null) {
 			view = model;
 		}
@@ -520,7 +520,7 @@ public class DataValidatorService {
 		}
 		
 		Object[] panel = panelMap.get(view);
-		String panelLevel = DataCommon.getValue(row, DataCommon.PANEL_LEVEL);
+		String panelLevel = CommonService.getValue(row, CommonService.PANEL_LEVEL);
 		
 		if (panel == null) {
 			if (type.equals("paneltab")) {
@@ -583,7 +583,7 @@ public class DataValidatorService {
 	
 	private boolean checkFormula(boolean consider) throws IOException{
 		
-		String formula = DataCommon.getValue(row, DataCommon.FORMULA);
+		String formula = CommonService.getValue(row, CommonService.FORMULA);
 		
 		if (formula == null) {
 			return consider;

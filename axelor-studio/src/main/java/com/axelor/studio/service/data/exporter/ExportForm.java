@@ -52,13 +52,13 @@ import com.axelor.meta.schema.views.PanelRelated;
 import com.axelor.meta.schema.views.PanelTabs;
 import com.axelor.meta.schema.views.Selection.Option;
 import com.axelor.meta.schema.views.Spacer;
-import com.axelor.studio.service.data.DataCommon;
-import com.axelor.studio.service.data.DataTranslationService;
+import com.axelor.studio.service.data.CommonService;
+import com.axelor.studio.service.data.TranslationService;
 import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 
-public class DataExportForm {
+public class ExportForm {
 	
 	private final Logger log = LoggerFactory.getLogger(getClass());
 	
@@ -69,14 +69,14 @@ public class DataExportForm {
 	private List<String[]> o2mViews;
 	
 	@Inject
-	private DataTranslationService translationService;
+	private TranslationService translationService;
 	
 	@Inject
-	private DataExportDashboard exportDashboard;
+	private ExportDashboard exportDashboard;
 	
-	private DataExportService exportService;
+	private ExportService exportService;
 	
-	public List<String[]> export(DataExportService exportService, MetaView formView, List<String> grid) throws JAXBException {
+	public List<String[]> export(ExportService exportService, MetaView formView, List<String> grid) throws JAXBException {
 		
 		this.exportService = exportService;
 		o2mViews = new ArrayList<String[]>();
@@ -141,12 +141,12 @@ public class DataExportForm {
 	
 	private void addEvent(String module, String model, String view, String type, String formula) {
 		
-		String[] values = new String[DataCommon.HEADERS.length];
-		values[DataCommon.MODULE] = module; 
-		values[DataCommon.MODEL] = model; 
-		values[DataCommon.VIEW] = view; 
-	    values[DataCommon.TYPE] = type;
-	    values[DataCommon.FORMULA] = formula;
+		String[] values = new String[CommonService.HEADERS.length];
+		values[CommonService.MODULE] = module; 
+		values[CommonService.MODEL] = model; 
+		values[CommonService.VIEW] = view; 
+	    values[CommonService.TYPE] = type;
+	    values[CommonService.FORMULA] = formula;
 	    
 	    exportService.writeRow(values, newForm);
 	    
@@ -162,14 +162,14 @@ public class DataExportForm {
 		for (Menu menu : menubar) {
 			String title = menu.getTitle();
 			
-			String[] values = new String[DataCommon.HEADERS.length];
-			values[DataCommon.MODULE] = module; 
-			values[DataCommon.MODEL] = model; 
-			values[DataCommon.VIEW] = view; 
-		    values[DataCommon.TITLE] = title;
-		    values[DataCommon.TITLE_FR] = translationService.getTranslation(title, "fr");
-		    values[DataCommon.TYPE] = "menubar";
-		    values[DataCommon.IF_MODULE] = DataExportService.getModuleToCheck(menu, (String) extra[3]);
+			String[] values = new String[CommonService.HEADERS.length];
+			values[CommonService.MODULE] = module; 
+			values[CommonService.MODEL] = model; 
+			values[CommonService.VIEW] = view; 
+		    values[CommonService.TITLE] = title;
+		    values[CommonService.TITLE_FR] = translationService.getTranslation(title, "fr");
+		    values[CommonService.TYPE] = "menubar";
+		    values[CommonService.IF_MODULE] = ExportService.getModuleToCheck(menu, (String) extra[3]);
 		
 		    exportService.writeRow(values, newForm);
 			newForm = false;
@@ -199,7 +199,7 @@ public class DataExportForm {
 			
 			try {
 				
-				Method method = DataExportForm.class.getDeclaredMethod(methodName, 
+				Method method = ExportForm.class.getDeclaredMethod(methodName, 
 							new Class[] {klass, 
 										 String.class, 
 										 String.class,
@@ -232,40 +232,41 @@ public class DataExportForm {
 			panelType = "paneltab";
 		}
 		
-		String[] values = new String[DataCommon.HEADERS.length];
-		values[DataCommon.MODULE] = module;
-		values[DataCommon.MODEL] = model; 
-		values[DataCommon.VIEW] =	view;
-		values[DataCommon.NAME] = panel.getName(); 
-		values[DataCommon.TITLE] =	panel.getTitle();
-		values[DataCommon.TITLE_FR] =	translationService.getTranslation(panel.getTitle(), "fr");
-		values[DataCommon.TYPE] =	panelType; 
-		values[DataCommon.IF_CONFIG] = panel.getConditionToCheck();
-		values[DataCommon.IF_MODULE] = DataExportService.getModuleToCheck(panel, (String) extra[3]);
+		String[] values = new String[CommonService.HEADERS.length];
+		values[CommonService.MODULE] = module;
+		values[CommonService.MODEL] = model; 
+		values[CommonService.VIEW] =	view;
+		values[CommonService.NAME] = panel.getName(); 
+		values[CommonService.TITLE] =	panel.getTitle();
+		values[CommonService.TITLE_FR] =	translationService.getTranslation(panel.getTitle(), "fr");
+		values[CommonService.TYPE] =	panelType; 
+		values[CommonService.IF_CONFIG] = panel.getConditionToCheck();
+		extra[3] = ExportService.getModuleToCheck(panel, (String)extra[3]);
+		values[CommonService.IF_MODULE] = (String) extra[3];
 		
 		if (panel.getReadonly() != null && panel.getReadonly()) {
-			values[DataCommon.READONLY] = "x";
+			values[CommonService.READONLY] = "x";
 		}
 		else {
-			values[DataCommon.READONLY] = panel.getReadonlyIf();
+			values[CommonService.READONLY] = panel.getReadonlyIf();
 		}
 		
 		if (panel.getHidden() != null && panel.getHidden()) {
-			values[DataCommon.HIDDEN] = "x";
+			values[CommonService.HIDDEN] = "x";
 		}
 		else {
-			values[DataCommon.HIDDEN] = panel.getHideIf();
+			values[CommonService.HIDDEN] = panel.getHideIf();
 		}
 		
-		values[DataCommon.SHOW_IF] = panel.getShowIf();
+		values[CommonService.SHOW_IF] = panel.getShowIf();
 		
 		if (panel.getColSpan() != null) {
-			values[DataCommon.COLSPAN] = panel.getColSpan().toString();
+			values[CommonService.COLSPAN] = panel.getColSpan().toString();
 		}
 		
 		String panelLevel = (String) extra[2];
 		panelLevel = getPanelLevel(panelLevel);
-		values[DataCommon.PANEL_LEVEL] = panelLevel;
+		values[CommonService.PANEL_LEVEL] = panelLevel;
 		
 		exportService.writeRow(values, newForm );
 		
@@ -310,37 +311,38 @@ public class DataExportForm {
 	@SuppressWarnings("unused")
 	private String processPanelTabs(PanelTabs panelTabs, String module, String model, String view, Mapper mapper, Object[] extra) {
 		
-		String[] values = new String[DataCommon.HEADERS.length];
-		values[DataCommon.MODULE] = module;
-		values[DataCommon.MODEL] = model;
-		values[DataCommon.VIEW] =	view; 
-		values[DataCommon.TYPE] = "panelbook";
-		values[DataCommon.IF_CONFIG] = panelTabs.getConditionToCheck();
-		values[DataCommon.IF_MODULE] = DataExportService.getModuleToCheck(panelTabs, (String) extra[3]);
+		String[] values = new String[CommonService.HEADERS.length];
+		values[CommonService.MODULE] = module;
+		values[CommonService.MODEL] = model;
+		values[CommonService.VIEW] =	view; 
+		values[CommonService.TYPE] = "panelbook";
+		values[CommonService.IF_CONFIG] = panelTabs.getConditionToCheck();
+		extra[3] = ExportService.getModuleToCheck(panelTabs, (String)extra[3]);
+		values[CommonService.IF_MODULE] = (String) extra[3];
 		
 		if (panelTabs.getReadonly() != null && panelTabs.getReadonly()) {
-			values[DataCommon.READONLY] = "x";
+			values[CommonService.READONLY] = "x";
 		}
 		else {
-			values[DataCommon.READONLY] = panelTabs.getReadonlyIf();
+			values[CommonService.READONLY] = panelTabs.getReadonlyIf();
 		}
 		
 		if (panelTabs.getHidden() != null && panelTabs.getHidden()) {
-			values[DataCommon.HIDDEN] = "x";
+			values[CommonService.HIDDEN] = "x";
 		}
 		else {
-			values[DataCommon.HIDDEN] = panelTabs.getHideIf();
+			values[CommonService.HIDDEN] = panelTabs.getHideIf();
 		}
 		
-		values[DataCommon.SHOW_IF] = panelTabs.getShowIf();
+		values[CommonService.SHOW_IF] = panelTabs.getShowIf();
 		
 		Integer colspan = panelTabs.getColSpan();
 		if (colspan != null) {
-			values[DataCommon.COLSPAN] = colspan.toString();
+			values[CommonService.COLSPAN] = colspan.toString();
 		}
 		
 		String panelLevel = getPanelLevel((String) extra[2]);
-		values[DataCommon.PANEL_LEVEL] = panelLevel;
+		values[CommonService.PANEL_LEVEL] = panelLevel;
 		
 		extra[0] = true;
 		extra[2] = panelLevel + ".-1";
@@ -365,19 +367,19 @@ public class DataExportForm {
 		
 		String name = field.getName();
 		
-		String[] values = new String[DataCommon.HEADERS.length];
-		values[DataCommon.MODULE] = module;
-		values[DataCommon.MODEL] = model;
-		values[DataCommon.VIEW] =	view; 
-		values[DataCommon.NAME] =	name; 
-		values[DataCommon.TITLE] = field.getTitle();
-		values[DataCommon.TITLE_FR] = translationService.getTranslation(field.getTitle(), "fr");
-		values[DataCommon.IF_MODULE] = DataExportService.getModuleToCheck(field, (String) extra[3]);
+		String[] values = new String[CommonService.HEADERS.length];
+		values[CommonService.MODULE] = module;
+		values[CommonService.MODEL] = model;
+		values[CommonService.VIEW] =	view; 
+		values[CommonService.NAME] =	name; 
+		values[CommonService.TITLE] = field.getTitle();
+		values[CommonService.TITLE_FR] = translationService.getTranslation(field.getTitle(), "fr");
+		values[CommonService.IF_MODULE] = ExportService.getModuleToCheck(field, (String) extra[3]);
 		
 		if (!name.contains(".")) {
-			values[DataCommon.TYPE] = field.getServerType();
+			values[CommonService.TYPE] = field.getServerType();
 		}
-		values[DataCommon.IF_CONFIG] = field.getConditionToCheck();
+		values[CommonService.IF_CONFIG] = field.getConditionToCheck();
 		
 		String target = field.getTarget();
 		
@@ -391,29 +393,29 @@ public class DataExportForm {
 //			return paneLevel;
 //		}
 		
-		if (target != null && values[DataCommon.TYPE] != null) {
+		if (target != null && values[CommonService.TYPE] != null) {
 			String[] targets = target.split("\\.");
-			values[DataCommon.TYPE] =  values[DataCommon.TYPE] + "(" + targets[targets.length - 1] + ")";
+			values[CommonService.TYPE] =  values[CommonService.TYPE] + "(" + targets[targets.length - 1] + ")";
 		}
 		
 		if (field.getSelection() != null) {
-			values[DataCommon.SELECT] = field.getSelection();
+			values[CommonService.SELECT] = field.getSelection();
 		}
 		
-		if (!Strings.isNullOrEmpty(values[DataCommon.SELECT])) {
-			String[] selects = getSelect(values[DataCommon.SELECT]);
+		if (!Strings.isNullOrEmpty(values[CommonService.SELECT])) {
+			String[] selects = getSelect(values[CommonService.SELECT]);
 			if (selects != null) {
-				values[DataCommon.SELECT] = selects[0];
-				values[DataCommon.SELECT_FR] = selects[1];
+				values[CommonService.SELECT] = selects[0];
+				values[CommonService.SELECT_FR] = selects[1];
 			}
 		}
 		
-		if (Strings.isNullOrEmpty(values[DataCommon.TYPE])) {
-			values[DataCommon.TYPE] = "empty";
+		if (Strings.isNullOrEmpty(values[CommonService.TYPE])) {
+			values[CommonService.TYPE] = "empty";
 		}
 		else {
-			values[DataCommon.TYPE] = getType(values[DataCommon.TYPE], 
-					field.getWidget(), values[DataCommon.SELECT]);
+			values[CommonService.TYPE] = getType(values[CommonService.TYPE], 
+					field.getWidget(), values[CommonService.SELECT]);
 		}
 		
 		addExtraAttributes(field, values);
@@ -421,7 +423,7 @@ public class DataExportForm {
 		@SuppressWarnings("unchecked")
 		List<String> grid = (List<String>) extra[1];
 		if (grid.contains(name)) {
-			values[DataCommon.GRID] = grid.get(0);
+			values[CommonService.GRID] = grid.get(0);
 		}
 		
 		exportService.writeRow(values, newForm );
@@ -434,14 +436,14 @@ public class DataExportForm {
 	
 	private void addProperties(String[] values, Property property, String target) {
 		
-		values[DataCommon.TYPE] = property.getType().name();
+		values[CommonService.TYPE] = property.getType().name();
 		
-		if (values[DataCommon.TITLE] == null) {
-			values[DataCommon.TITLE] = property.getTitle();
-			values[DataCommon.TITLE_FR] = translationService.getTranslation(property.getTitle(), "fr");
+		if (values[CommonService.TITLE] == null) {
+			values[CommonService.TITLE] = property.getTitle();
+			values[CommonService.TITLE_FR] = translationService.getTranslation(property.getTitle(), "fr");
 		}
 		
-		values[DataCommon.SELECT] = property.getSelection();
+		values[CommonService.SELECT] = property.getSelection();
 		
 		Class<?> targetClass = property.getTarget();
 		if (targetClass != null) {
@@ -449,22 +451,22 @@ public class DataExportForm {
 		}
 		
 		if (property.isRequired()) {
-			values[DataCommon.REQUIRED] = "x";
+			values[CommonService.REQUIRED] = "x";
 		}
 		
 		if (property.isReadonly()) {
-			values[DataCommon.READONLY] = "x";
+			values[CommonService.READONLY] = "x";
 		}
 		
 		if (property.isHidden()) {
-			values[DataCommon.HIDDEN] = "x";
+			values[CommonService.HIDDEN] = "x";
 		}
 		
 		if (property.getHelp() != null) {
 			String help = property.getHelp();
 			if (!Boolean.parseBoolean(help)) {
-				values[DataCommon.HELP] = property.getHelp();
-				values[DataCommon.HELP_FR] = translationService.getTranslation(property.getHelp(), "fr");
+				values[CommonService.HELP] = property.getHelp();
+				values[CommonService.HELP_FR] = translationService.getTranslation(property.getHelp(), "fr");
 			}
 		}
 		
@@ -473,49 +475,49 @@ public class DataExportForm {
 	private void addExtraAttributes(Field field , String[] values) {
 		
 		if (field.getRequired() != null && field.getRequired()) {
-			values[DataCommon.REQUIRED] = "x";
+			values[CommonService.REQUIRED] = "x";
 		}
-		else if (values[DataCommon.REQUIRED] == null) {
-			values[DataCommon.REQUIRED] = field.getRequiredIf();
+		else if (values[CommonService.REQUIRED] == null) {
+			values[CommonService.REQUIRED] = field.getRequiredIf();
 		}
 		
 		if (field.getReadonly() != null && field.getReadonly()) {
-			values[DataCommon.READONLY] = "x";
+			values[CommonService.READONLY] = "x";
 		}
-		else if(values[DataCommon.READONLY] == null) {
-			values[DataCommon.READONLY] = field.getReadonlyIf();
+		else if(values[CommonService.READONLY] == null) {
+			values[CommonService.READONLY] = field.getReadonlyIf();
 		}
 		
 		if (field.getHidden() != null && field.getHidden()) {
-			values[DataCommon.HIDDEN] = "x";
+			values[CommonService.HIDDEN] = "x";
 		}
-		else if (values[DataCommon.HIDDEN] == null){
-			values[DataCommon.HIDDEN] = field.getHideIf();
+		else if (values[CommonService.HIDDEN] == null){
+			values[CommonService.HIDDEN] = field.getHideIf();
 		}
 		
-		values[DataCommon.SHOW_IF] = field.getShowIf();
+		values[CommonService.SHOW_IF] = field.getShowIf();
 		
 		if (field.getDomain() != null) {
-			values[DataCommon.DOMAIN] = field.getDomain();
+			values[CommonService.DOMAIN] = field.getDomain();
 		}
 		
 		if (field.getOnChange() != null) {
-			values[DataCommon.ON_CHANGE] = field.getOnChange();
+			values[CommonService.ON_CHANGE] = field.getOnChange();
 		}
 		
 		if (field.getHelp() != null) {
 			String help = field.getHelp();
 			if (!Boolean.parseBoolean(help)) {
-				values[DataCommon.HELP] = field.getHelp();
-				values[DataCommon.HELP_FR] = translationService.getTranslation(field.getHelp(), "fr");
+				values[CommonService.HELP] = field.getHelp();
+				values[CommonService.HELP_FR] = translationService.getTranslation(field.getHelp(), "fr");
 			}
 		}
 		
 		if (field.getColSpan() != null) {
-			values[DataCommon.COLSPAN] = field.getColSpan().toString();
+			values[CommonService.COLSPAN] = field.getColSpan().toString();
 		}
 		
-		values[DataCommon.WIDGET] = field.getWidget();
+		values[CommonService.WIDGET] = field.getWidget();
 		
 	}
 	
@@ -590,7 +592,7 @@ public class DataExportForm {
 		if  (view != null && panelView != null) {
 			String name = panelView.getName();
 			if (!exportService.isViewProcessed(name)) {
-				extra[3] = DataExportService.getModuleToCheck(panelInclude, (String)extra[3]);
+				extra[3] = ExportService.getModuleToCheck(panelInclude, (String)extra[3]);
 				return processForm((FormView) panelView, 
 						module,
 						model,
@@ -621,27 +623,27 @@ public class DataExportForm {
 	
 	private String processButton(Button button, String module, String model, String view, Mapper mapper, Object[] extra) {
 		
-		String[] values = new String[DataCommon.HEADERS.length];
-		values[DataCommon.MODULE] = module;
-		values[DataCommon.MODEL] =	model; 
-		values[DataCommon.VIEW] =	view; 
-		values[DataCommon.NAME] =	button.getName(); 
-		values[DataCommon.TITLE] =	button.getTitle(); 
-		values[DataCommon.TITLE_FR] =	translationService.getTranslation(button.getTitle(), "fr");
-		values[DataCommon.TYPE] = "button"; 
-		values[DataCommon.ON_CHANGE] = button.getOnClick();
-		values[DataCommon.READONLY] = button.getReadonlyIf();
-		values[DataCommon.HIDDEN] = button.getHideIf();
-		values[DataCommon.SHOW_IF] = button.getShowIf();
-		values[DataCommon.IF_CONFIG] = button.getConditionToCheck();
-		values[DataCommon.IF_MODULE] = DataExportService.getModuleToCheck(button, (String)extra[3]);
+		String[] values = new String[CommonService.HEADERS.length];
+		values[CommonService.MODULE] = module;
+		values[CommonService.MODEL] =	model; 
+		values[CommonService.VIEW] =	view; 
+		values[CommonService.NAME] =	button.getName(); 
+		values[CommonService.TITLE] =	button.getTitle(); 
+		values[CommonService.TITLE_FR] =	translationService.getTranslation(button.getTitle(), "fr");
+		values[CommonService.TYPE] = "button"; 
+		values[CommonService.ON_CHANGE] = button.getOnClick();
+		values[CommonService.READONLY] = button.getReadonlyIf();
+		values[CommonService.HIDDEN] = button.getHideIf();
+		values[CommonService.SHOW_IF] = button.getShowIf();
+		values[CommonService.IF_CONFIG] = button.getConditionToCheck();
+		values[CommonService.IF_MODULE] = ExportService.getModuleToCheck(button, (String)extra[3]);
 		
 		if (toolbar) {
-			values[DataCommon.TYPE] = "button(toolbar)";
+			values[CommonService.TYPE] = "button(toolbar)";
 		}
 		
 		if (button.getColSpan() != null) {
-			values[DataCommon.COLSPAN] = button.getColSpan().toString();
+			values[CommonService.COLSPAN] = button.getColSpan().toString();
 		}
 		
 		exportService.writeRow(values, newForm );
@@ -654,27 +656,27 @@ public class DataExportForm {
 	@SuppressWarnings("unused")
 	private String processPanelRelated(PanelRelated panelRelated, String module, String model, String view, Mapper mapper, Object[] extra) {
 		
-		String[] values = new String[DataCommon.HEADERS.length];
+		String[] values = new String[CommonService.HEADERS.length];
 		
-		values[DataCommon.NAME] = panelRelated.getName();
-		values[DataCommon.MODULE] = module;
-		values[DataCommon.MODEL] = model;
-		values[DataCommon.VIEW] = view;
-		values[DataCommon.TITLE] = panelRelated.getTitle();
-		values[DataCommon.TYPE] = panelRelated.getServerType();
-		values[DataCommon.READONLY] = panelRelated.getReadonlyIf();
-		values[DataCommon.HIDDEN] = panelRelated.getHideIf();
-		values[DataCommon.SHOW_IF] = panelRelated.getShowIf();
-		values[DataCommon.IF_CONFIG] = panelRelated.getConditionToCheck();
-		values[DataCommon.IF_MODULE] = DataExportService.getModuleToCheck(panelRelated, (String)extra[3]);
+		values[CommonService.NAME] = panelRelated.getName();
+		values[CommonService.MODULE] = module;
+		values[CommonService.MODEL] = model;
+		values[CommonService.VIEW] = view;
+		values[CommonService.TITLE] = panelRelated.getTitle();
+		values[CommonService.TYPE] = panelRelated.getServerType();
+		values[CommonService.READONLY] = panelRelated.getReadonlyIf();
+		values[CommonService.HIDDEN] = panelRelated.getHideIf();
+		values[CommonService.SHOW_IF] = panelRelated.getShowIf();
+		values[CommonService.IF_CONFIG] = panelRelated.getConditionToCheck();
+		values[CommonService.IF_MODULE] = ExportService.getModuleToCheck(panelRelated, (String)extra[3]);
 		
 		String target = panelRelated.getTarget();
-		Property property = mapper.getProperty(values[DataCommon.NAME]);
+		Property property = mapper.getProperty(values[CommonService.NAME]);
 		
 		if (property != null) {
-			values[DataCommon.TYPE] = property.getType().name();
-			if (values[DataCommon.TITLE] == null) {
-				values[DataCommon.TITLE]  = property.getTitle();
+			values[CommonService.TYPE] = property.getType().name();
+			if (values[CommonService.TITLE] == null) {
+				values[CommonService.TITLE]  = property.getTitle();
 			}
 			Class<?> targetClass = property.getTarget();
 			if (targetClass != null) {
@@ -682,40 +684,40 @@ public class DataExportForm {
 			}
 		}
 		else {
-			log.debug("No property found: {}, class: {}", values[DataCommon.NAME], values[DataCommon.MODEL]);
+			log.debug("No property found: {}, class: {}", values[CommonService.NAME], values[CommonService.MODEL]);
 		}
 		
-		values[DataCommon.TITLE_FR] = translationService.getTranslation(values[DataCommon.TITLE], "fr");
-		if (values[DataCommon.TYPE] == null) {
-			values[DataCommon.TYPE] = "o2m";
+		values[CommonService.TITLE_FR] = translationService.getTranslation(values[CommonService.TITLE], "fr");
+		if (values[CommonService.TYPE] == null) {
+			values[CommonService.TYPE] = "o2m";
 		}
 			
 		
 		if (target != null) {
 			view = view.split("\\(")[0];
-			String parentView = view + "(" + values[DataCommon.TITLE] + ")"; 
+			String parentView = view + "(" + values[CommonService.TITLE] + ")"; 
 			String form = panelRelated.getFormView();
 			if (form != null && !exportService.isViewProcessed(form) && !form.equals(view)) {
 				o2mViews.add(new String[]{target, form, panelRelated.getGridView(), parentView});
 			}
 			String[] targets = target.split("\\.");
-			values[DataCommon.TYPE] = values[DataCommon.TYPE] + "(" + targets[targets.length - 1] + ")";
+			values[CommonService.TYPE] = values[CommonService.TYPE] + "(" + targets[targets.length - 1] + ")";
 		}
 		
-		if (Strings.isNullOrEmpty(values[DataCommon.TYPE])) {
-			values[DataCommon.TYPE] = "empty";
+		if (Strings.isNullOrEmpty(values[CommonService.TYPE])) {
+			values[CommonService.TYPE] = "empty";
 		}
 		else {
-			values[DataCommon.TYPE] = getType(values[DataCommon.TYPE], null, null);
+			values[CommonService.TYPE] = getType(values[CommonService.TYPE], null, null);
 		}
 		
 		if (panelRelated.getColSpan() != null) {
-			values[DataCommon.COLSPAN] = panelRelated.getColSpan().toString();
+			values[CommonService.COLSPAN] = panelRelated.getColSpan().toString();
 		}
 		
 		String panelLevel = (String) extra[2];
 		panelLevel = getPanelLevel(panelLevel);
-		values[DataCommon.PANEL_LEVEL] = panelLevel;
+		values[CommonService.PANEL_LEVEL] = panelLevel;
 		extra[2] = panelLevel;
 		
 		exportService.writeRow(values, newForm );
@@ -730,20 +732,20 @@ public class DataExportForm {
 	@SuppressWarnings("unused")
 	private String processLabel(Label label, String module, String model, String view, Mapper mapper, Object[] extra) {
 		
-		String[] values = new String[DataCommon.HEADERS.length];
-		values[DataCommon.MODULE] = module;
-		values[DataCommon.MODEL] =	model; 
-		values[DataCommon.VIEW] =	view; 
-		values[DataCommon.NAME] =	label.getName();
-		values[DataCommon.TITLE] =	label.getTitle();
-		values[DataCommon.TITLE_FR] =	translationService.getTranslation(label.getTitle(), "fr");
-		values[DataCommon.TYPE] =	"label"; 
-		values[DataCommon.IF_CONFIG] = label.getConditionToCheck();
-		values[DataCommon.HIDDEN] = label.getHideIf();
-		values[DataCommon.IF_MODULE] = DataExportService.getModuleToCheck(label, (String)extra[3]);
+		String[] values = new String[CommonService.HEADERS.length];
+		values[CommonService.MODULE] = module;
+		values[CommonService.MODEL] =	model; 
+		values[CommonService.VIEW] =	view; 
+		values[CommonService.NAME] =	label.getName();
+		values[CommonService.TITLE] =	label.getTitle();
+		values[CommonService.TITLE_FR] =	translationService.getTranslation(label.getTitle(), "fr");
+		values[CommonService.TYPE] =	"label"; 
+		values[CommonService.IF_CONFIG] = label.getConditionToCheck();
+		values[CommonService.HIDDEN] = label.getHideIf();
+		values[CommonService.IF_MODULE] = ExportService.getModuleToCheck(label, (String)extra[3]);
 		
 		if (label.getColSpan() != null) {
-			values[DataCommon.COLSPAN] = label.getColSpan().toString();
+			values[CommonService.COLSPAN] = label.getColSpan().toString();
 		}
 		
 		exportService.writeRow(values, newForm );
@@ -769,22 +771,22 @@ public class DataExportForm {
 	@SuppressWarnings("unused")
 	private String processItem(Item item, String module, String model, String view, Mapper mapper, Object[] extra) {
 		
-		String[] values = new String[DataCommon.HEADERS.length];
-		values[DataCommon.MODULE] = module;
-		values[DataCommon.MODEL] = model; 
-		values[DataCommon.VIEW] =	view; 
-		values[DataCommon.NAME] = item.getName();
-		values[DataCommon.TITLE] = item.getTitle();
-		values[DataCommon.TITLE_FR] =	translationService.getTranslation(item.getTitle(), "fr");
-		values[DataCommon.TYPE] = "menubar.item";
-		values[DataCommon.ON_CHANGE] = item.getAction();
-		values[DataCommon.READONLY] = item.getReadonlyIf();
-		values[DataCommon.HIDDEN] = item.getHideIf();
-		values[DataCommon.SHOW_IF] = item.getShowIf();
-		values[DataCommon.IF_CONFIG] = item.getConditionToCheck();
-		values[DataCommon.IF_MODULE] = DataExportService.getModuleToCheck(item, (String)extra[3]);
+		String[] values = new String[CommonService.HEADERS.length];
+		values[CommonService.MODULE] = module;
+		values[CommonService.MODEL] = model; 
+		values[CommonService.VIEW] =	view; 
+		values[CommonService.NAME] = item.getName();
+		values[CommonService.TITLE] = item.getTitle();
+		values[CommonService.TITLE_FR] =	translationService.getTranslation(item.getTitle(), "fr");
+		values[CommonService.TYPE] = "menubar.item";
+		values[CommonService.ON_CHANGE] = item.getAction();
+		values[CommonService.READONLY] = item.getReadonlyIf();
+		values[CommonService.HIDDEN] = item.getHideIf();
+		values[CommonService.SHOW_IF] = item.getShowIf();
+		values[CommonService.IF_CONFIG] = item.getConditionToCheck();
+		values[CommonService.IF_MODULE] = ExportService.getModuleToCheck(item, (String)extra[3]);
 		if (item.getHidden() != null && item.getHidden()) {
-			values[DataCommon.HIDDEN] = "x";
+			values[CommonService.HIDDEN] = "x";
 		}
 		
 		exportService.writeRow(values, newForm );
@@ -797,17 +799,17 @@ public class DataExportForm {
 	@SuppressWarnings("unused")
 	private String processSpacer(Spacer spacer, String module, String model, String view, Mapper mapper, Object[] extra) {
 		
-		String[] values = new String[DataCommon.HEADERS.length];
-		values[DataCommon.MODULE] = module;
-		values[DataCommon.MODEL] = model; 
-		values[DataCommon.VIEW] =	view; 
-		values[DataCommon.TYPE] = "spacer";
-		values[DataCommon.IF_CONFIG] = spacer.getConditionToCheck();
-		values[DataCommon.IF_MODULE] = DataExportService.getModuleToCheck(spacer, (String)extra[3]);
+		String[] values = new String[CommonService.HEADERS.length];
+		values[CommonService.MODULE] = module;
+		values[CommonService.MODEL] = model; 
+		values[CommonService.VIEW] =	view; 
+		values[CommonService.TYPE] = "spacer";
+		values[CommonService.IF_CONFIG] = spacer.getConditionToCheck();
+		values[CommonService.IF_MODULE] = ExportService.getModuleToCheck(spacer, (String)extra[3]);
 		
 		Integer colSpan =  spacer.getColSpan();
 		if (colSpan != null) {
-			values[DataCommon.COLSPAN] = colSpan.toString();
+			values[CommonService.COLSPAN] = colSpan.toString();
 		}
 		
 		exportService.writeRow(values, newForm );
@@ -819,13 +821,13 @@ public class DataExportForm {
 	
 	private String getType(String type, String widget, String select) {
 		
-		if (DataCommon.FIELD_TYPES.containsKey(type) || DataCommon.VIEW_ELEMENTS.containsKey(type)) {
+		if (CommonService.FIELD_TYPES.containsKey(type) || CommonService.VIEW_ELEMENTS.containsKey(type)) {
 			return type;
 		}
 		
 		String[] types = type.split("\\(");
 		
-		if (DataCommon.FIELD_TYPES.containsKey(types[0]) || DataCommon.VIEW_ELEMENTS.containsKey(types[0])) {
+		if (CommonService.FIELD_TYPES.containsKey(types[0]) || CommonService.VIEW_ELEMENTS.containsKey(types[0])) {
 			return types[0];
 		}
 		
@@ -834,10 +836,7 @@ public class DataExportForm {
 		switch (types[0].toUpperCase()) {
 			case "INTEGER":
 				if (!Strings.isNullOrEmpty(select)) {
-					if (widget != null && widget.equals("multiselect")) {
-						return "multiselect(int)";
-					}
-					return "select(int)";
+					return "select";
 				}
 				if (widget != null && widget.equals("duration")) {
 					return "duration";
@@ -890,8 +889,8 @@ public class DataExportForm {
 				return "binary";
 			case "STRING":
 				if (!Strings.isNullOrEmpty(select)) {
-					if (widget != null && widget.equals("multiselect")) {
-						return "multiselect(char)";
+					if (widget != null && widget.equals("multi-select")) {
+						return "multiselect";
 					}
 					return "select(char)";
 				}

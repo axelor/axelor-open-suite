@@ -24,9 +24,9 @@ import com.axelor.meta.schema.views.GridView;
 import com.axelor.studio.service.ViewLoaderService;
 import com.google.inject.Inject;
 
-public class DataExportModel {
+public class ExportModel {
 	
-	private static final Logger log = LoggerFactory.getLogger(DataExportModel.class);
+	private static final Logger log = LoggerFactory.getLogger(ExportModel.class);
 	
 	private final List<String> SUPPORTED_TYPES = Arrays.asList(new String[]{"form", "dashboard", "grid"});
 	
@@ -34,14 +34,14 @@ public class DataExportModel {
 	private MetaViewRepository metaViewRepo;
 	
 	@Inject
-	private DataExportDashboard exportDashboard;
+	private ExportDashboard exportDashboard;
 	
 	@Inject
-	private DataExportForm dataExportForm;
+	private ExportForm exportForm;
 	
-	private DataExportService exportService;
+	private ExportService exportService;
 	
-	public void export(DataExportService exportService, MetaAction action) {
+	public void export(ExportService exportService, MetaAction action) {
 		
 		this.exportService = exportService;
 		
@@ -94,7 +94,7 @@ public class DataExportModel {
 				
 				MetaView grid = getMetaView(model, "grid", views.get("grid"));
 				
-				List<String[]> o2mViews = dataExportForm.export(exportService, formView, getGridFields(grid));
+				List<String[]> o2mViews = exportForm.export(exportService, formView, getGridFields(grid));
 				
 				addO2MViews(o2mViews, module, model);
 				

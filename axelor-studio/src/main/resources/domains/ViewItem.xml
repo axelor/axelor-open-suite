@@ -34,6 +34,7 @@
      <integer name="colSpan" title="Colspan" />
      <string name="ifModule" title="If module" />
      <string name="ifConfig" title="If config" />
+     <string name="target" title="Target" />
      
      <!-- Button fields -->
      <string name="icon" title="Icon" />

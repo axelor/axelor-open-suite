@@ -43,6 +43,7 @@ import com.axelor.meta.schema.views.AbstractPanel;
 import com.axelor.meta.schema.views.AbstractView;
 import com.axelor.meta.schema.views.AbstractWidget;
 import com.axelor.meta.schema.views.Button;
+import com.axelor.meta.schema.views.Dashlet;
 import com.axelor.meta.schema.views.FormView;
 import com.axelor.meta.schema.views.Label;
 import com.axelor.meta.schema.views.Menu;
@@ -586,7 +587,20 @@ public class FormBuilderService {
 		}
 
 		abstractPanel.setName(viewPanel.getName());
-
+		abstractPanel.setShowIf(viewPanel.getShowIf());
+		abstractPanel.setModuleToCheck(viewPanel.getIfModule());
+		abstractPanel.setConditionToCheck(viewPanel.getIfConfig());
+		abstractPanel.setReadonlyIf(viewPanel.getReadonlyIf());
+		abstractPanel.setHideIf(viewPanel.getHideIf());
+		
+		if (viewPanel.getReadonly()) {
+			abstractPanel.setReadonly(true);
+		}
+		
+		if (viewPanel.getHidden()) {
+			abstractPanel.setHidden(true);
+		}
+		
 		if (abstractPanel instanceof Panel) {
 			List<AbstractWidget> panelItems = new ArrayList<AbstractWidget>();
 			Panel panel = (Panel) abstractPanel;
@@ -602,22 +616,6 @@ public class FormBuilderService {
 			} else {
 				panelItems.addAll(items);
 			}
-			
-			if (viewPanel.getReadonly()) {
-				panel.setReadonly(true);
-			}
-			panel.setReadonlyIf(viewPanel.getReadonlyIf());
-			
-			if (viewPanel.getHidden()) {
-				panel.setHidden(true);
-			}
-			panel.setHideIf(viewPanel.getHideIf());
-			
-			panel.setShowIf(viewPanel.getShowIf());
-			
-			panel.setModuleToCheck(viewPanel.getIfModule());
-			
-			panel.setConditionToCheck(viewPanel.getIfConfig());
 			
 			panel.setItems(panelItems);
 			
@@ -638,10 +636,8 @@ public class FormBuilderService {
 			switch (type) {
 			case 0:
 				String fieldType = viewItem.getFieldType();
-				if (fieldType != null 
-						&& viewItem.getNestedViewItems().isEmpty()
-						&& "one-to-many,many-to-many".contains(fieldType)) {
-						setPanelRelated(viewItem, items, level);
+				if (isPanelRelated(fieldType, viewItem)) {
+					setPanelRelated(viewItem, items, level);
 				} else {
 					items.add(createField(viewItem));
 				}
@@ -659,11 +655,40 @@ public class FormBuilderService {
 				break;
 			case 3:
 				setSpacer(viewItem, items);
+				break;
+			case 4:
+				setDashlet(viewItem, items);
+				break;
 			}
 
 		}
 		
 		return items;
+	}
+
+	private boolean isPanelRelated(String fieldType, ViewItem viewItem) {
+		
+		if (fieldType == null) {
+			return false;
+		}
+		
+		if (viewItem.getWidget() != null) {
+			return false;
+		}
+		
+		if (viewItem.getName() != null && viewItem.getName().startsWith("$")) {
+			return false;
+		}
+		
+		if (!viewItem.getNestedViewItems().isEmpty()) {
+			return false;
+		}
+		
+		if ("one-to-many,many-to-many".contains(fieldType)) {
+			return true;
+		}
+
+		return false;
 	}
 
 	/**
@@ -765,12 +790,20 @@ public class FormBuilderService {
 			} else if (metaField.getLarge()) {
 				field.setColSpan(12);
 			}
+			if (metaField.getMultiselect()) {
+				widget = "multi-select";
+			}
 			String relationship = metaField.getRelationship();
 			if (autoCreate 
 					&& relationship != null 
-					&& "ManyToOne,ManyToMany".contains(relationship)) {
+					&& "ManyToOne,ManyToMany,OneToOne".contains(relationship)) {
 				field.setCanNew("true");
 			}
+		}
+		else {
+			field.setTitle(viewItem.getTitle());
+			field.setServerType(viewItem.getFieldType());
+//			field.setTarget(viewItem.getTarget());
 		}
 		
 		if (viewItem.getColSpan() > 0) {
@@ -1065,6 +1098,20 @@ public class FormBuilderService {
 			}
 				
 		}
+	}
+	
+	private void setDashlet(ViewItem viewItem, List<AbstractWidget> items) {
+		
+		if (viewItem.getName() != null) {
+			log.debug("Adding dashlet:{}", viewItem.getName());
+			Dashlet dashlet = new Dashlet();
+			dashlet.setAction(viewItem.getName());
+			dashlet.setColSpan(viewItem.getColSpan());
+			dashlet.setHeight("350");
+			items.add(dashlet);
+			
+		}
+		
 	}
 
 }

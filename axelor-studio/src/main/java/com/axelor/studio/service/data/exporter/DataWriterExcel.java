@@ -24,7 +24,7 @@ import org.slf4j.LoggerFactory;
 
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
-import com.axelor.studio.service.data.DataCommon;
+import com.axelor.studio.service.data.CommonService;
 
 public class DataWriterExcel implements DataWriter {
 	
@@ -80,8 +80,8 @@ public class DataWriterExcel implements DataWriter {
 		}
 		
 		String type = null;
-		if (values.length == DataCommon.HEADERS.length) {
-			type = values[DataCommon.TYPE];
+		if (values.length == CommonService.HEADERS.length) {
+			type = values[CommonService.TYPE];
 		}
 		setStyle(type, row, index);
 	}
@@ -198,7 +198,7 @@ public class DataWriterExcel implements DataWriter {
 			XSSFSheet sheet = sheets.next();
 			sheet.createFreezePane(0, 1, 0, 1);
 			int count = 0;
-			while (count < DataCommon.HEADERS.length) {
+			while (count < CommonService.HEADERS.length) {
 				sheet.autoSizeColumn(count);
 				count++;
 			}

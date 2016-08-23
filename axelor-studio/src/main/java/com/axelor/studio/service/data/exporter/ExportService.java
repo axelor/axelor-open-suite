@@ -39,13 +39,13 @@ import com.axelor.meta.db.MetaModule;
 import com.axelor.meta.db.repo.MetaModuleRepository;
 import com.axelor.meta.schema.views.AbstractWidget;
 import com.axelor.studio.service.ViewLoaderService;
-import com.axelor.studio.service.data.DataCommon;
+import com.axelor.studio.service.data.CommonService;
 import com.axelor.studio.service.data.importer.DataReader;
 import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 
-public class DataExportService {
+public class ExportService {
 	
 	private final Logger log = LoggerFactory.getLogger(getClass());
 
@@ -66,22 +66,22 @@ public class DataExportService {
 	private List<String> exportModules = new ArrayList<String>();
 	
 	@Inject
-	private DataCommon common;
+	private CommonService common;
 	
 	@Inject
 	private MetaFiles metaFiles;
 	
 	@Inject
-	private DataExportModel dataExportModel;
+	private ExportModel dataExportModel;
 	
 	@Inject
 	private MetaModuleRepository metaModuleRepo;
 	
 	@Inject
-	private DataExportMenu exportMenu;
+	private ExportMenu exportMenu;
 	
 	@Inject
-	private DataExportAction exportAction;
+	private ExportAction exportAction;
 	
 	public MetaFile export(MetaFile oldFile, DataWriter writer, DataReader reader) {
 		
@@ -157,7 +157,7 @@ public class DataExportService {
 		}
 		
 		else {
-			writer.write("Modules", 0, DataCommon.MODULE_HEADERS);
+			writer.write("Modules", 0, CommonService.MODULE_HEADERS);
 		}
 		
 	}
@@ -168,7 +168,7 @@ public class DataExportService {
 			addGeneralRow(writerKey, values);
 		}
 		
-		values[DataCommon.MENU] = menuPath;
+		values[CommonService.MENU] = menuPath;
 		
 		values = addHelp(null, values);
 		
@@ -196,7 +196,7 @@ public class DataExportService {
 				if (processedMenus.containsValue(title)) {
 					writerKey += "(" + menu.getId() + ")";
 				}
-				writer.write(writerKey, null, DataCommon.HEADERS);
+				writer.write(writerKey, null, CommonService.HEADERS);
 			}
 			
 			MetaAction action = menu.getAction();;
@@ -228,15 +228,15 @@ public class DataExportService {
 		
 		 String name = getFieldName(values);
 		 
-		 String model = values[DataCommon.MODEL];
+		 String model = values[CommonService.MODEL];
 		 if (model != null) {
 			 String[] modelSplit = model.split("\\.");
 			 model = modelSplit[modelSplit.length - 1];
 		 }
 		 
 		 String key =  model
-				+ "," + values[DataCommon.VIEW]
-				+ "," + getFieldType(values[DataCommon.TYPE]) 
+				+ "," + values[CommonService.VIEW]
+				+ "," + getFieldType(values[CommonService.TYPE]) 
 			    + "," + name;
 		 
 		return key;
@@ -245,10 +245,10 @@ public class DataExportService {
 	
 	private String getFieldName(String[] row) {
 		
-		String name = row[DataCommon.NAME];
+		String name = row[CommonService.NAME];
 		
 		if (Strings.isNullOrEmpty(name)) {
-			name =  row[DataCommon.TITLE];
+			name =  row[CommonService.TITLE];
 			if (!Strings.isNullOrEmpty(name)) {
 				name = common.getFieldName(name);
 			}
@@ -263,14 +263,14 @@ public class DataExportService {
 	
 	private void addGeneralRow(String key, String[] values) {
 		
-		String[] vals = new String[DataCommon.HEADERS.length];
-		vals[DataCommon.MODULE] = values[DataCommon.MODULE];
-		vals[DataCommon.MODEL] = values[DataCommon.MODEL];
-		vals[DataCommon.VIEW] = values[DataCommon.VIEW];
-		vals[DataCommon.TYPE] = "general"; 
+		String[] vals = new String[CommonService.HEADERS.length];
+		vals[CommonService.MODULE] = values[CommonService.MODULE];
+		vals[CommonService.MODEL] = values[CommonService.MODEL];
+		vals[CommonService.VIEW] = values[CommonService.VIEW];
+		vals[CommonService.TYPE] = "general"; 
 		
 		if (menuPath != null) {
-			vals[DataCommon.MENU] = menuPath;
+			vals[CommonService.MENU] = menuPath;
 			menuPath = null;
 		}	
 		
@@ -328,25 +328,25 @@ public class DataExportService {
 				}
 				
 				if (count == 0) {
-					if (row.length > DataCommon.HELP) {
-						docMap.put(lastKey, Arrays.copyOfRange(row, DataCommon.HELP, row.length));
+					if (row.length > CommonService.HELP) {
+						docMap.put(lastKey, Arrays.copyOfRange(row, CommonService.HELP, row.length));
 					}
 					continue;
 				}
 				
 				String name = getFieldName(row);
 				
-				String type = row[DataCommon.TYPE];
+				String type = row[CommonService.TYPE];
 				if (type == null) {
 					continue;
 				}
 				
-				String model = row[DataCommon.MODEL];
+				String model = row[CommonService.MODEL];
 				if (model != null) {
 					model = common.inflector.camelize(model);
 				}
 				
-				String view = row[DataCommon.VIEW];
+				String view = row[CommonService.VIEW];
 				if (model != null && view == null) {
 					view = ViewLoaderService.getDefaultViewName(model, "form");
 				}
@@ -356,8 +356,8 @@ public class DataExportService {
 				}
 				
 				lastKey = model + "," + view + "," + getFieldType(type) + "," +  name;
-				if (row.length > DataCommon.HELP) {
-					docMap.put(lastKey, Arrays.copyOfRange(row, DataCommon.HELP, row.length));
+				if (row.length > CommonService.HELP) {
+					docMap.put(lastKey, Arrays.copyOfRange(row, CommonService.HELP, row.length));
 				}
 			}
 		}
@@ -371,8 +371,8 @@ public class DataExportService {
 			type = type.substring(0, type.indexOf("("));
 		}
 		
-		if (!DataCommon.FIELD_TYPES.containsKey(type) 
-				&& !DataCommon.VIEW_ELEMENTS.containsKey(type)) {
+		if (!CommonService.FIELD_TYPES.containsKey(type) 
+				&& !CommonService.VIEW_ELEMENTS.containsKey(type)) {
 
 				List<String[]> rows = new ArrayList<String[]>();
 				if (commentMap.containsKey(lastKey)) {
@@ -427,15 +427,15 @@ public class DataExportService {
 			type = type.substring(0, type.indexOf("("));
 		}
 		
-		if(DataCommon.FR_MAP.containsKey(type)) {
-			type = DataCommon.FR_MAP.get(type);
+		if(CommonService.FR_MAP.containsKey(type)) {
+			type = CommonService.FR_MAP.get(type);
 		}
 		
-		if (DataCommon.FIELD_TYPES.containsKey(type)) {
-			type = DataCommon.FIELD_TYPES.get(type);
+		if (CommonService.FIELD_TYPES.containsKey(type)) {
+			type = CommonService.FIELD_TYPES.get(type);
 		}
-		else if (DataCommon.VIEW_ELEMENTS.containsKey(type)) {
-			type = DataCommon.VIEW_ELEMENTS.get(type);
+		else if (CommonService.VIEW_ELEMENTS.containsKey(type)) {
+			type = CommonService.VIEW_ELEMENTS.get(type);
 		}
 		
 		type = type.toUpperCase();

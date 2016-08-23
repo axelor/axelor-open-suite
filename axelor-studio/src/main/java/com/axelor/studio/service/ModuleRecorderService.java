@@ -19,13 +19,20 @@ package com.axelor.studio.service;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import javax.validation.ValidationException;
 
+import org.apache.commons.io.IOUtils;
+import org.apache.poi.util.TempFile;
 import org.apache.xmlbeans.impl.common.JarHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -183,16 +190,17 @@ public class ModuleRecorderService {
 	 * 
 	 * @param moduleRecorder
 	 *            Configuration record.
+	 * @throws AxelorException 
 	 * @throws InterruptedException 
 	 */
-	public String updateApp(boolean reset){
-
+	public String updateApp(boolean reset) throws AxelorException{
+		
 		try {
 			AppSettings settings = AppSettings.get();
 			String buildDirPath = checkParams("Build directory",
 					settings.get("build.dir"), true);
-			String webappPath = checkParams("Tomcat webapp server path",
-					settings.get("tomcat.webapp"), true);
+			String tomcatHome = checkParams("Tomcat server path",
+					settings.get("tomcat.home"), true);
 
 			File warDir = new File(buildDirPath + File.separator + "build",
 					"libs");
@@ -201,7 +209,7 @@ public class ModuleRecorderService {
 				return I18n
 						.get("Error in application build. No build directory found");
 			}
-			File webappDir = new File(webappPath);
+			File webappDir = new File(tomcatHome, "webapps");
 			File warFile = null;
 			for (File file : warDir.listFiles()) {
 				if (file.getName().endsWith(".war")) {
@@ -238,7 +246,8 @@ public class ModuleRecorderService {
 		
 		if (reset) {
 			String msg = I18n.get("App reset successfully");
-			clearDatabase();
+//			clearDatabase();
+			resetApp();
 			return msg;
 		}
 		
@@ -278,13 +287,56 @@ public class ModuleRecorderService {
 
 	}
 	
-	@Transactional
-	public void clearDatabase() {
+//	@Transactional
+//	public void clearDatabase() {
+//		
+//		log.debug("Droping public schema..");
+//		JPA.em().createNativeQuery("drop schema public cascade").executeUpdate();
+//		log.debug("Schemea dropped..");
+//		try {
+//			Thread.sleep(5000);
+//		} catch (InterruptedException e) {
+//			e.printStackTrace();
+//		}
+//		log.debug("Creating public schema");
+//		JPA.em().createNativeQuery("create schema public").executeUpdate();
+//		
+//	}
+	
+	private void resetApp() throws AxelorException {
 		
-		JPA.em().createNativeQuery("drop schema public cascade").executeUpdate();
-		JPA.em().createNativeQuery("create schema public").executeUpdate();
+		String tomcatPath = AppSettings.get().get("tomcat.home");
+		File tomcatDir = null;
+		if (tomcatPath != null) {
+			tomcatDir = new File(tomcatPath);
+		}
+		
+		if (tomcatDir == null || !tomcatDir.exists()) {
+			throw new AxelorException(I18n.get("Tomcat server directory not exist"),1);
+		}
+		
+		try {
+			InputStream stream = this.getClass().getResourceAsStream("/script/Reset.sh");
+			File file = File.createTempFile("Reset", ".sh");
+			FileOutputStream out = new FileOutputStream(file);
+			
+			IOUtils.copy(stream, out);
+			String dbUrl = AppSettings.get().get("db.default.url");
+			String database = dbUrl.substring(dbUrl.lastIndexOf("/") + 1);
+			ProcessBuilder processBuilder = new ProcessBuilder("/bin/sh", 
+					file.getAbsolutePath(), 
+					tomcatDir.getAbsolutePath(),
+					database,
+					AppSettings.get().get("db.default.user"),
+					AppSettings.get().get("db.default.password"));
+			processBuilder.start();
+		} catch (IOException e) {
+			e.printStackTrace();
+			throw new AxelorException(I18n.get("Error in reset"),1, e.getMessage());
+		}
 		
 	}
+	
 	
 	@Transactional
 	public void updateModuleRecorder(ModuleRecorder moduleRecorder, String logText, boolean update) {

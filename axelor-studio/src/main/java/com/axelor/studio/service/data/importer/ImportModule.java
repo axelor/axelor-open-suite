@@ -8,11 +8,11 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 import com.axelor.meta.db.MetaModule;
 import com.axelor.meta.db.repo.MetaModuleRepository;
 import com.axelor.studio.service.ConfigurationService;
-import com.axelor.studio.service.data.DataCommon;
+import com.axelor.studio.service.data.CommonService;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
-public class DataModuleService extends DataCommon {
+public class ImportModule extends CommonService {
 	
 	@Inject
 	private ConfigurationService configService;

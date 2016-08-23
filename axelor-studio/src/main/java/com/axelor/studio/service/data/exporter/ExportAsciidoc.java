@@ -38,13 +38,13 @@ import org.slf4j.LoggerFactory;
 import com.axelor.app.AppSettings;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
-import com.axelor.studio.service.data.DataCommon;
+import com.axelor.studio.service.data.CommonService;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 
-public class DataExportAsciidoc extends DataCommon {
+public class ExportAsciidoc extends CommonService {
 	
-	private static final Logger log = LoggerFactory.getLogger(DataExportAsciidoc.class);
+	private static final Logger log = LoggerFactory.getLogger(ExportAsciidoc.class);
 	
 	private static final List<String> COMMENT_TYPES = Arrays.asList(
 			new String[]{"tip", "general", "warn"});
@@ -270,7 +270,7 @@ public class DataExportAsciidoc extends DataCommon {
 			type = type.substring(0, type.indexOf("("));
 		}
 		
-		if (DataCommon.FIELD_TYPES.containsKey(type) || DataCommon.VIEW_ELEMENTS.containsKey(type) || header != null) {
+		if (CommonService.FIELD_TYPES.containsKey(type) || CommonService.VIEW_ELEMENTS.containsKey(type) || header != null) {
 			if (header != null) {
 				fw.write(header);
 				header = null;

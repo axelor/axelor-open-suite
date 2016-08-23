@@ -18,11 +18,15 @@
      <boolean name="edited" title="Edited" />
      <boolean name="recorded" title="Recorded" />
      <many-to-one name="viewBuilder" ref="com.axelor.studio.db.ViewBuilder" title="View builder" />
+     <many-to-one name="metaView" ref="com.axelor.meta.db.MetaView" title="View" />
      <boolean name="popup" title="Popup" />
      <many-to-one name="targetField" title="Target field" ref="com.axelor.meta.db.MetaField" />
      <string name="firstGroupBy" title="First group by"/>
      <string name="secondGroupBy" title="Second group by"/>
      <one-to-many name="filters" ref="Filter" title="Filters" mappedBy="actionBuilder" />
+     <string name="domainCondition" title="Domain condition"/>
+     <string name="context" title="Context"/>
+     <string name="title" title="Title" />
      <many-to-many name="reportBuilderSet" title="Report builders" ref="ReportBuilder" />
      <many-to-one name="emailTemplate" ref="com.axelor.apps.message.db.Template" title="Template" />
      <many-to-one name="metaModule" ref="com.axelor.meta.db.MetaModule" title="Studio module" required="true"/>

@@ -29,7 +29,7 @@ import org.apache.poi.ss.usermodel.Row;
 import com.axelor.common.Inflector;
 import com.google.common.base.Strings;
 
-public class DataCommon {
+public class CommonService {
 	
 	public static final String[] HEADERS = new String[]{
 		"Note",
@@ -199,7 +199,7 @@ public class DataCommon {
 			if(Strings.isNullOrEmpty(val)){
 				return null;
 			}
-			return val;
+			return val.trim();
 		}
 
 		return null;

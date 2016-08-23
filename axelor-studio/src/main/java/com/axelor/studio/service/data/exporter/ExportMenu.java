@@ -13,10 +13,10 @@ import com.axelor.meta.loader.XMLViews;
 import com.axelor.meta.schema.ObjectViews;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.meta.schema.actions.ActionView.View;
-import com.axelor.studio.service.data.DataTranslationService;
+import com.axelor.studio.service.data.TranslationService;
 import com.google.inject.Inject;
 
-public class DataExportMenu {
+public class ExportMenu {
 	
 	public static final String[] MENU_HEADERS = new String[] {
 		"Notes",
@@ -51,7 +51,7 @@ public class DataExportMenu {
 	private MetaMenuRepository metaMenuRepo;
 	
 	@Inject
-	private DataTranslationService translationService;
+	private TranslationService translationService;
 	
 	List<MetaMenu> menus = new ArrayList<MetaMenu>();
 	

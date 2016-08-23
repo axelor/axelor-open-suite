@@ -27,8 +27,12 @@
 	      </panel>
 	      <panel-related field="lines" colSpan="12" hideIf="typeSelect == 4 ||  typeSelect == 2 || typeSelect == 3"  />
 	      <panel colSpan="12" showIf="typeSelect == 2">
-	      	<field name="viewBuilder" requiredIf="typeSelect == 2" onChange="action-action-builder-view-builder-change" onSelect="action-action-builder-view-builder-domain"/>
+	      	<field name="viewBuilder" requiredIf="typeSelect == 2 &amp;&amp; metaView == null" onChange="action-action-builder-view-builder-change" onSelect="action-action-builder-view-builder-domain"/>
+	      	<field name="metaView" requiredIf="typeSelect == 2 &amp;&amp; viewBuilder == null" onChange="action-action-builder-meta-view-change" onSelect="action-action-builder-meta-view-domain"/>
+	      	<field name="title" />
 	      	<field name="popup" />
+	      	<field name="domainCondition" colSpan="12"/>
+	      	<field name="context" colSpan="12"/>
 	      </panel>
 	      <field name="filters" colSpan="12" showIf="loopOnField != null || typeSelect == 2" layout="table">
 	          <editor x-show-titles="false">
@@ -60,6 +64,11 @@
   	<field name="metaModel" expr="eval:null" if="viewBuilder == null"/>
   </action-record>
   
+  <action-record name="action-action-builder-meta-view-change" model="com.axelor.studio.db.ActionBuilder">
+  	<field name="metaModel" expr="eval:__repo__.of(MetaModel).all().filter('self.fullName = ${metaView.model}')" if="metaView?.model != null"/>
+  	<field name="metaModel" expr="eval:null" if="metaView == null"/>
+  </action-record>
+  
   <action-record name="action-action-builder-type-select-change" model="com.axelor.studio.db.ActionBuilder">
   	<field name="metaModel" expr="eval:null"/>
   	<field name="targetModel" expr="eval:null"/>
@@ -73,6 +82,10 @@
   
   <action-attrs name="action-action-builder-view-builder-domain">
   	<attribute name="domain" for="viewBuilder" expr="eval:&quot;self.model = '${metaModel.fullName}'&quot;" if="metaModel != null" /> 
+  </action-attrs>
+  
+  <action-attrs name="action-action-builder-meta-view-domain">
+  	<attribute name="domain" for="metaView" expr="eval:&quot;self.model = '${metaModel.fullName}'&quot;" if="metaModel != null" /> 
   </action-attrs>
   
   <action-validate name="action-action-builder-validate-action-report">

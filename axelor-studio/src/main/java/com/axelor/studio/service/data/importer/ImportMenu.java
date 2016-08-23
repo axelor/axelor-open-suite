@@ -34,13 +34,13 @@ import com.axelor.meta.db.repo.MetaMenuRepository;
 import com.axelor.meta.db.repo.MetaModelRepository;
 import com.axelor.studio.db.MenuBuilder;
 import com.axelor.studio.db.repo.MenuBuilderRepository;
-import com.axelor.studio.service.data.DataCommon;
-import com.axelor.studio.service.data.DataTranslationService;
-import com.axelor.studio.service.data.exporter.DataExportMenu;
+import com.axelor.studio.service.data.CommonService;
+import com.axelor.studio.service.data.TranslationService;
+import com.axelor.studio.service.data.exporter.ExportMenu;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
-public class DataMenuService extends DataCommon {
+public class ImportMenu extends CommonService {
 	
 	private Integer parentMenuSeq = 0;
 	
@@ -55,10 +55,10 @@ public class DataMenuService extends DataCommon {
 	private MenuBuilderRepository menuBuilderRepo;
 	
 	@Inject
-	private DataTranslationService translationService;
+	private TranslationService translationService;
 	
 	@Inject
-	private DataImportService importService;
+	private ImportService importService;
 	
 	@Inject
 	private MetaModelRepository metaModelRepo;
@@ -73,12 +73,12 @@ public class DataMenuService extends DataCommon {
 		
 		while(rowIter.hasNext()) {
 			Row row = rowIter.next();
-			MetaModule module = importService.getModule(getValue(row, DataExportMenu.MODULE), null);
+			MetaModule module = importService.getModule(getValue(row, ExportMenu.MODULE), null);
 			if (module == null) {
 				continue;
 			}
 			
-			String modelName = getValue(row, DataExportMenu.OBJECT);
+			String modelName = getValue(row, ExportMenu.OBJECT);
 			MetaModel model = null;
 			if (modelName != null) {
 				model = metaModelRepo.findByName(modelName);
@@ -96,7 +96,7 @@ public class DataMenuService extends DataCommon {
 	@Transactional
 	public void createMenu(MetaModule module, MetaModel  model, Row row) throws AxelorException {
 		
-		String name = getValue(row, DataExportMenu.NAME);
+		String name = getValue(row, ExportMenu.NAME);
 		String title = getTitle(row);
 		
 		if (name == null && title == null) {
@@ -113,18 +113,18 @@ public class DataMenuService extends DataCommon {
 		MenuBuilder menuBuilder = getMenuBuilder(name, module, model);
 		menuBuilder.setTitle(title);
 		
-		String parentName = getValue(row, DataExportMenu.PARENT);
+		String parentName = getValue(row, ExportMenu.PARENT);
 		if (parentName != null) {
 			menuBuilder = setParentMenu(menuBuilder, parentName);
 		}
 		
-		menuBuilder.setIcon(getValue(row, DataExportMenu.ICON));
-		menuBuilder.setIconBackground(getValue(row, DataExportMenu.BACKGROUND));
-		menuBuilder.setDomain(getValue(row, DataExportMenu.FILTER));
-		menuBuilder.setAction(getValue(row, DataExportMenu.ACTION));
-		menuBuilder.setViews(getValue(row, DataExportMenu.VIEWS));
+		menuBuilder.setIcon(getValue(row, ExportMenu.ICON));
+		menuBuilder.setIconBackground(getValue(row, ExportMenu.BACKGROUND));
+		menuBuilder.setDomain(getValue(row, ExportMenu.FILTER));
+		menuBuilder.setAction(getValue(row, ExportMenu.ACTION));
+		menuBuilder.setViews(getValue(row, ExportMenu.VIEWS));
 		
-		String order = getValue(row, DataExportMenu.ORDER);
+		String order = getValue(row, ExportMenu.ORDER);
 		menuBuilder = setMenuOrder(menuBuilder, order);
 		
 		menuBuilderRepo.save(menuBuilder);
@@ -133,8 +133,8 @@ public class DataMenuService extends DataCommon {
 	
 	private String getTitle(Row row) {
 		
-		String title = getValue(row, DataExportMenu.TITLE);
-		String titleFr = getValue(row, DataExportMenu.TITLE_FR);
+		String title = getValue(row, ExportMenu.TITLE);
+		String titleFr = getValue(row, ExportMenu.TITLE_FR);
 		
 		if (title == null) {
 			title = titleFr;

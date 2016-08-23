@@ -14,20 +14,20 @@ import com.axelor.meta.db.MetaSelectItem;
 import com.axelor.meta.db.repo.MetaFieldRepository;
 import com.axelor.meta.db.repo.MetaSelectRepository;
 import com.axelor.studio.service.builder.ModelBuilderService;
-import com.axelor.studio.service.data.DataCommon;
-import com.axelor.studio.service.data.DataTranslationService;
+import com.axelor.studio.service.data.CommonService;
+import com.axelor.studio.service.data.TranslationService;
 import com.axelor.studio.utils.Namming;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
-public class DataFieldService extends DataCommon {
+public class ImportField extends CommonService {
 	
 	@Inject
 	private MetaFieldRepository metaFieldRepo;
 	
 	@Inject
-	private DataTranslationService translationService;
+	private TranslationService translationService;
 	
 	@Inject
 	private ModelBuilderService modelBuilderService;
@@ -35,9 +35,9 @@ public class DataFieldService extends DataCommon {
 	@Inject
 	private MetaSelectRepository metaSelectRepo;
 
-	
 	@Transactional
-	public MetaField createMetaField(Row row, String[] basic, MetaModel metaModel,  MetaModule metaModule, Integer sequence) throws AxelorException {
+	public MetaField importField(Row row, String[] basic, MetaModel metaModel, 
+			MetaModule metaModule, Integer sequence) throws AxelorException {
 
 		String model = metaModel.getName();
 		
@@ -60,11 +60,11 @@ public class DataFieldService extends DataCommon {
 		
 		translationService.addTranslation(basic[3], getValue(row, TITLE_FR), "fr");
 		
-		if (DataCommon.FIELD_TYPES.containsKey(basic[1])) {
-			field.setFieldType(DataCommon.FIELD_TYPES.get(basic[1]));
+		if (CommonService.FIELD_TYPES.containsKey(basic[1])) {
+			field.setFieldType(CommonService.FIELD_TYPES.get(basic[1]));
 		}
 		else {
-			field.setFieldType(DataCommon.FIELD_TYPES.get(basic[0]));
+			field.setFieldType(CommonService.FIELD_TYPES.get(basic[0]));
 		}
 		
 		field.setLabel(basic[3]);
@@ -217,26 +217,27 @@ public class DataFieldService extends DataCommon {
 				String title = option[count];
 				String titleFR = null;
 				if (optionFr != null && optionFr.length > count) {
-					titleFR = optionFr[count];
+					titleFR = optionFr[count].trim();
 				}
 				if (title.contains(":")) {
 					String[] values = title.split(":");
 					if (values.length > 1) {
-						metaSelectItem.setValue(values[0]);
-						metaSelectItem.setTitle(values[1]);
+						metaSelectItem.setValue(values[0].trim());
+						metaSelectItem.setTitle(values[1].trim());
 						if (titleFR != null && titleFR.contains(":")) {
 							String[] valuesFr = titleFR.split(":");
 							if (valuesFr.length > 1){
-								translationService.addTranslation(values[1], valuesFr[1], "fr" );
+								translationService.addTranslation(values[1].trim(), valuesFr[1].trim(), "fr" );
 							}
 						}
 					}
 				}
 				else {
-					metaSelectItem.setValue(count.toString());
+					Integer val = count + 1;
+					metaSelectItem.setValue(val.toString());
 					metaSelectItem.setTitle(title.trim());
 					if (titleFR != null) {
-						translationService.addTranslation(title, titleFR, "fr" );
+						translationService.addTranslation(title.trim(), titleFR, "fr" );
 					}
 				}
 				metaSelectItem.setOrder(count);
@@ -308,7 +309,7 @@ public class DataFieldService extends DataCommon {
 	private MetaField updateFieldTypeName(String fieldType, String refModel,
 			MetaField field, String module) throws AxelorException {
 		
-		if (DataCommon.RELATIONAL_TYPES.containsKey(fieldType)) {
+		if (CommonService.RELATIONAL_TYPES.containsKey(fieldType)) {
 			if (fieldType.equals("file")) {
 				refModel = "MetaFile";
 			} else {
@@ -320,12 +321,11 @@ public class DataFieldService extends DataCommon {
 				}
 				refModel = refModel.trim();
 				refModel = inflector.camelize(refModel);
-//				updateModuleMap(refModel, module);
 			}
 			field.setTypeName(refModel);
-			field.setRelationship(DataCommon.RELATIONAL_TYPES.get(fieldType));
+			field.setRelationship(CommonService.RELATIONAL_TYPES.get(fieldType));
 		} else {
-			String typeName = modelBuilderService.getFieldTypeName(DataCommon.FIELD_TYPES.get(fieldType));
+			String typeName = modelBuilderService.getFieldTypeName(CommonService.FIELD_TYPES.get(fieldType));
 			field.setTypeName(typeName);
 			if (typeName.equals("String") 
 					&& refModel != null

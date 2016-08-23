@@ -18,7 +18,7 @@ import com.axelor.studio.db.ViewBuilder;
 import com.axelor.studio.db.repo.ActionBuilderRepo;
 import com.google.inject.Inject;
 
-public class DataExportAction {
+public class ExportAction {
 	
 	public static final String[] HEADERS = new String[] {
 		"Notes",

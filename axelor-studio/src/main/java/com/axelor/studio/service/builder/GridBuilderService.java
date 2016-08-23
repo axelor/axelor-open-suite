@@ -203,7 +203,12 @@ public class GridBuilderService {
 		}
 
 		for (Integer key : itemMap.keySet()) {
-			fields.add(key, itemMap.get(key));
+			if (key < fields.size()) {
+				fields.add(key, itemMap.get(key));
+			}
+			else {
+				fields.add(itemMap.get(key));
+			}
 		}
 
 		grid.setItems(fields);

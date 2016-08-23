@@ -110,6 +110,7 @@
     	<option value="1">Button</option>
     	<option value="2">Label</option>
     	<option value="3">Spacer</option>
+    	<option value="4">Dashlet</option>
     </selection>
     
     <selection name="studio.action.builder.line.validation.type.select">
