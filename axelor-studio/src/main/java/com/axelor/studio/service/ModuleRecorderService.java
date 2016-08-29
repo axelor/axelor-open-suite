@@ -25,21 +25,16 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
 import javax.validation.ValidationException;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.poi.util.TempFile;
 import org.apache.xmlbeans.impl.common.JarHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.app.AppSettings;
 import com.axelor.common.FileUtils;
-import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.db.MetaModule;
@@ -166,8 +161,6 @@ public class ModuleRecorderService {
 
 			Integer exitStatus = process.exitValue();
 			
-//			log.debug("Exit status: {}, Log text: {}", exitStatus, logText);
-
 			if (exitStatus != 0) {
 				build =  false;
 			}
@@ -246,7 +239,6 @@ public class ModuleRecorderService {
 		
 		if (reset) {
 			String msg = I18n.get("App reset successfully");
-//			clearDatabase();
 			resetApp();
 			return msg;
 		}
@@ -286,22 +278,6 @@ public class ModuleRecorderService {
 		return param;
 
 	}
-	
-//	@Transactional
-//	public void clearDatabase() {
-//		
-//		log.debug("Droping public schema..");
-//		JPA.em().createNativeQuery("drop schema public cascade").executeUpdate();
-//		log.debug("Schemea dropped..");
-//		try {
-//			Thread.sleep(5000);
-//		} catch (InterruptedException e) {
-//			e.printStackTrace();
-//		}
-//		log.debug("Creating public schema");
-//		JPA.em().createNativeQuery("create schema public").executeUpdate();
-//		
-//	}
 	
 	private void resetApp() throws AxelorException {
 		

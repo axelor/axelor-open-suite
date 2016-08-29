@@ -220,39 +220,6 @@ public class ChartBuilderService {
 	}
 
 	/**
-	 * Method to get name column for relational field, as it is required to
-	 * compare in chart filters.
-	 * 
-	 * @param metaField
-	 *            Relational meta field.
-	 * @return String array with first element as nameColumn and second as type
-	 *         of nameColumn.
-	 */
-	// private String[] getNameColumn(MetaField metaField){
-	//
-	// String nameColumn = "name";
-	// String typeName = "string";
-	// String modelName = metaField.getTypeName();
-	// MetaModel metaModel = metaModelRepo.findByName(modelName);
-	//
-	// try {
-	// Mapper mapper = Mapper.of(Class.forName(metaModel.getFullName()));
-	// for(Property property : Arrays.asList(mapper.getProperties())){
-	// if(property.isNameColumn()){
-	// nameColumn = property.getName();
-	// typeName = property.getType().name();
-	// break;
-	// }
-	// }
-	// } catch (ClassNotFoundException e) {
-	// }
-	//
-	// return new
-	// String[]{metaModel.getFullName(),nameColumn,typeName.toUpperCase()};
-	//
-	// }
-
-	/**
 	 * Method generate xml for search-fields.
 	 * 
 	 * @return

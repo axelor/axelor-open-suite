@@ -81,6 +81,8 @@ public class ValidatorService {
 	
 	private Map<String, String> referenceMap;
 	
+	private Set<String> addOnlyViews;
+	
 	private Map<String, Map<String, Row>> invalidFieldMap;
 	
 	private Row row;
@@ -106,6 +108,7 @@ public class ValidatorService {
 		invalidFieldMap = new HashMap<String, Map<String,Row>>();
 		referenceMap = new HashMap<String, String>();
 		menubarSet = new HashSet<String>();
+		addOnlyViews = new HashSet<String>();
 
 		Iterator<XSSFSheet> sheetIter = workBook.iterator();
 		
@@ -187,7 +190,12 @@ public class ValidatorService {
 			return;
 		}
 		
-		module = module.replace("*", "");
+		boolean addOnly = false;
+		if (module.startsWith("*")) {
+			module = module.replace("*", "");
+			addOnly = true;
+		}
+		
 		if (configService.getNonCustomizedModules().contains(module)) {
 			validateRow(rowIter);
 			return;
@@ -200,6 +208,9 @@ public class ValidatorService {
 		}
 		
 		String model = getModel();
+		if (addOnly) {
+			addOnlyViews.add(model);
+		}
 		
 		if (validateField(model)) {
 			try {
@@ -429,8 +440,9 @@ public class ValidatorService {
 			}
 		}
 		
-		validateView(type, model, reference);
-		
+		if (!addOnlyViews.contains(model)) {
+			validateView(type, model, reference);
+		}
 		
 		return type;
 	}

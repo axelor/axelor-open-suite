@@ -10,7 +10,6 @@
     This object store edited menu with menu attributes. 
     MetaMenu and 'menuitem' will be generated through this object. 
     ]]>
-    <string name="moduleName" title="Module" />
     <string name="name" title="Name" required="true"/>
     <string name="title" title="Title" required="true"/>
     <many-to-one name="metaMenu" ref="com.axelor.meta.db.MetaMenu" title="Parent menu" />

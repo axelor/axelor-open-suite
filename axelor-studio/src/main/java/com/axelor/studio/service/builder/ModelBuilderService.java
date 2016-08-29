@@ -671,25 +671,24 @@ public class ModelBuilderService {
 	public String getFieldTypeName(String type) {
 
 		switch (type) {
-		case "string":
-			return "String";
-		case "integer":
-			return "Integer";
-		case "boolean":
-			return "Boolean";
-		case "decimal":
-			return "BigDecimal";
-		case "long":
-			return "Long";
-		case "binary":
-			return "byte[]";
-		case "date":
-			return "LocalDate";
-		case "datetime":
-			return "DateTime";
-		default:
-			return null;
-
+			case "string":
+				return "String";
+			case "integer":
+				return "Integer";
+			case "boolean":
+				return "Boolean";
+			case "decimal":
+				return "BigDecimal";
+			case "long":
+				return "Long";
+			case "binary":
+				return "byte[]";
+			case "date":
+				return "LocalDate";
+			case "datetime":
+				return "DateTime";
+			default:
+				return null;
 		}
 	}
 

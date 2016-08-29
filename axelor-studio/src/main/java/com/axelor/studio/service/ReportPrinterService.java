@@ -33,7 +33,7 @@ import com.axelor.text.StringTemplates;
 import com.axelor.text.Template;
 
 /**
- * Service class create html report for a record using html template. It parese
+ * Service class create html report for a record using html template.
  * 
  * @author axelor
  *

@@ -121,14 +121,6 @@ public class RightManagementService {
 		Group group = rightManagement.getAuthGroup();
 		Role role = rightManagement.getAuthRole();
 		MetaModel model = rightManagement.getMetaModel();
-//		String code = null;
-//		if (group != null) {
-//			code = group.getCode();
-//		} else {
-//			code = role.getName();
-//		}
-//		String permissionName = getPermissionName(rightManagement.getName(),
-//				code, model.getName());
 		
 		String permissionName = rightManagement.getName();
 		Permission permission = permissionRepo.all()
@@ -179,17 +171,6 @@ public class RightManagementService {
 		MetaField field = rightMgmt.getMetaField();
 		MetaModel model = field.getMetaModel();
 		String fieldName = field.getName();
-//		String code = null;
-//		if (group != null) {
-//			code = group.getCode();
-//		} else {
-//			code = role.getName();
-//		}
-
-//		String permissionName = getPermissionName(rightMgmt.getName(), code,
-//				model.getName());
-		
-		
 		String permissionName = rightMgmt.getName();
 		
 		MetaPermission metaPermission = metaPermissionRepo.all()
@@ -231,27 +212,5 @@ public class RightManagementService {
 		updateFieldPermissions(iterator);
 
 	}
-
-//	/***
-//	 * Method to create permission name from group code and model name if
-//	 * permission name is null.
-//	 * 
-//	 * @param name
-//	 *            Permission name.
-//	 * @param code
-//	 *            Group code.
-//	 * @param modelName
-//	 *            Model name
-//	 * @return Permission name.
-//	 */
-//	private String getPermissionName(String name, String code, String modelName) {
-//
-//		String permissionName = name;
-//		if (permissionName == null) {
-//			permissionName = moduleName + "-" + code + modelName;
-//		}
-//
-//		return permissionName;
-//	}
 
 }

@@ -572,6 +572,6 @@ public class MenuBuilderService {
 	
 	private String getXmlId(MenuBuilder menuBuilder) {
 		
-		return menuBuilder.getModuleName() + "-" + menuBuilder.getName();
+		return menuBuilder.getMetaModule().getName() + "-" + menuBuilder.getName();
 	}
 }

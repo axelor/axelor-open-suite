@@ -12,6 +12,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
+import com.google.common.base.Strings;
 
 public class DataReaderExcel implements DataReader {
 	
@@ -63,7 +64,13 @@ public class DataReaderExcel implements DataReader {
 		while (rowIter.hasNext()) {
 			Cell cell = rowIter.next();
 			if (cell.getCellType() == Cell.CELL_TYPE_STRING) {
-				vals[count] =  cell.getStringCellValue();
+				String value =  cell.getStringCellValue();
+				if (!Strings.isNullOrEmpty(value)) {
+					vals[count] = value.trim();
+				}
+				else {
+					vals[count] = null;
+				}
 			}
 			count++;
 		}

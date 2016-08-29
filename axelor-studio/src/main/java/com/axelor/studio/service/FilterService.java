@@ -191,22 +191,22 @@ public class FilterService {
 	private String getConditionExpr(String operator, String field, String value) {
 
 		switch (operator) {
-		case "=":
-			return field + " == " + value;
-		case "isNull":
-			return field + " == null";
-		case "notNull":
-			return field + " != null";
-		case "empty":
-			return field + ".empty";
-		case "notEmpty":
-			return "!" + field + ".empty";
-		case "TRUE":
-			return field;
-		case "FALSE":
-			return "!" + field;
-		default:
-			return field + " " + operator + " " + value;
+			case "=":
+				return field + " == " + value;
+			case "isNull":
+				return field + " == null";
+			case "notNull":
+				return field + " != null";
+			case "empty":
+				return field + ".empty";
+			case "notEmpty":
+				return "!" + field + ".empty";
+			case "TRUE":
+				return field;
+			case "FALSE":
+				return "!" + field;
+			default:
+				return field + " " + operator + " " + value;
 
 		}
 
@@ -249,42 +249,42 @@ public class FilterService {
 		}
 
 		switch (operator) {
-		case "=":
-			if (typeName.equals("STRING")) {
-				return getLikeCondition(conditionField, value, true);
-			}
-			return conditionField + " IN" + " (" + value + ") ";
-		case "!=":
-			if (typeName.equals("STRING")) {
-				return getLikeCondition(conditionField, value, false);
-			}
-			return conditionField + " NOT IN" + " (" + value + ") ";
-		case "isNull":
-			return conditionField + " IS NULL ";
-		case "notNull":
-			return conditionField + " IS NOT NULL ";
-		case "between":
-			if (values.length > 1) {
+			case "=":
+				if (typeName.equals("STRING")) {
+					return getLikeCondition(conditionField, value, true);
+				}
+				return conditionField + " IN" + " (" + value + ") ";
+			case "!=":
+				if (typeName.equals("STRING")) {
+					return getLikeCondition(conditionField, value, false);
+				}
+				return conditionField + " NOT IN" + " (" + value + ") ";
+			case "isNull":
+				return conditionField + " IS NULL ";
+			case "notNull":
+				return conditionField + " IS NOT NULL ";
+			case "between":
+				if (values.length > 1) {
+					return conditionField + " BETWEEN  " + values[0] + " AND "
+							+ values[1];
+				}
 				return conditionField + " BETWEEN  " + values[0] + " AND "
-						+ values[1];
-			}
-			return conditionField + " BETWEEN  " + values[0] + " AND "
-					+ values[0];
-		case "notBetween":
-			if (values.length > 1) {
+						+ values[0];
+			case "notBetween":
+				if (values.length > 1) {
+					return conditionField + " NOT BETWEEN  " + values[0] + " AND "
+							+ values[1];
+				}
 				return conditionField + " NOT BETWEEN  " + values[0] + " AND "
-						+ values[1];
-			}
-			return conditionField + " NOT BETWEEN  " + values[0] + " AND "
-					+ values[0];
-		case "TRUE":
-			return conditionField + " IS TRUE ";
-		case "FALSE":
-			return conditionField + " IS FALSE ";
-		default:
-			operator = operator.replace("<", "&lt;");
-			operator = operator.replace(">", "&gt;");
-			return conditionField + " " + operator + " " + value;
+						+ values[0];
+			case "TRUE":
+				return conditionField + " IS TRUE ";
+			case "FALSE":
+				return conditionField + " IS FALSE ";
+			default:
+				operator = operator.replace("<", "&lt;");
+				operator = operator.replace(">", "&gt;");
+				return conditionField + " " + operator + " " + value;
 		}
 
 	}
@@ -325,32 +325,32 @@ public class FilterService {
 		}
 
 		switch (operator) {
-		case "=":
-			if (targetType.equals("STRING") && !isParam) {
-				return getLikeCondition(conditionField, value, true);
-			}
-			return conditionField + " IN (" + value + ") ";
-		case "!=":
-			if (targetType.equals("STRING") && !isParam) {
-				return getLikeCondition(conditionField, value, false);
-			}
-			return conditionField + " NOT IN (" + value + ") ";
-		case "isNull":
-			return conditionField + " IS NULL ";
-		case "notNull":
-			return conditionField + " IS NOT NULL ";
-		case "empty":
-			return "self." + fieldName + " IS EMPTY ";
-		case "notEmpty":
-			return "self." + fieldName + " IS NOT EMPTY ";
-		case "notInclude":
-			return getM2MCondition(fieldName, targetType, conditionField,
-					value, false);
-		case "include":
-			return getM2MCondition(fieldName, targetType, conditionField,
-					value, true);
-		default:
-			break;
+			case "=":
+				if (targetType.equals("STRING") && !isParam) {
+					return getLikeCondition(conditionField, value, true);
+				}
+				return conditionField + " IN (" + value + ") ";
+			case "!=":
+				if (targetType.equals("STRING") && !isParam) {
+					return getLikeCondition(conditionField, value, false);
+				}
+				return conditionField + " NOT IN (" + value + ") ";
+			case "isNull":
+				return conditionField + " IS NULL ";
+			case "notNull":
+				return conditionField + " IS NOT NULL ";
+			case "empty":
+				return "self." + fieldName + " IS EMPTY ";
+			case "notEmpty":
+				return "self." + fieldName + " IS NOT EMPTY ";
+			case "notInclude":
+				return getM2MCondition(fieldName, targetType, conditionField,
+						value, false);
+			case "include":
+				return getM2MCondition(fieldName, targetType, conditionField,
+						value, true);
+			default:
+				break;
 		}
 
 		return conditionField + " " + operator + " (" + value + ") ";

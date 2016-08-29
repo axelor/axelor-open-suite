@@ -874,7 +874,7 @@ public class ImportForm extends CommonService {
 	private void checkReplace(boolean replace, String module, String view) {
 		
 		if (!replace) {
-			if (extendViews.containsKey(module)) {
+			if (!extendViews.containsKey(module)) {
 				extendViews.put(module, new HashSet<String>());
 			}
 			extendViews.get(module).add(view);

@@ -92,7 +92,7 @@ public class MetaModelController {
 		response.setView(mapView);
 	}
 	
-	public List<Map<String, Object>> getDefaultFields(ActionRequest request, ActionRequest response) {
+	public void setDefault(ActionRequest request, ActionResponse response) {
 		
 		List<Map<String, Object>>  fields = new ArrayList<Map<String,Object>>();
 		
@@ -121,10 +121,10 @@ public class MetaModelController {
 			fields.add(values);
 		}
 		
-		
-		
-		return fields;
-		
+		response.setValue("packageName", "com.axelor.apps.custom.db");
+		response.setValue("metaFields", fields);
+		response.setValue("customised", true);
+		response.setValue("edited", true);
 		
 	}
 

@@ -667,7 +667,6 @@ public class ViewLoaderService {
 			viewField.setTypeSelect(0);
 			viewField.setName(field.getName());
 			viewField.setFieldType(field.getFieldType());
-			// viewField.setTitle(field.getLabel());
 			viewField.setSequence(sequence);
 			viewField.setMetaField(field);
 			if (field.getMultiselect()) {
