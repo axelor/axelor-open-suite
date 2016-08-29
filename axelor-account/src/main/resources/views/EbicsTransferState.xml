@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
+	
+  
+    <grid name="ebics-transfer-state-grid" title="Ebics transfer state" model="com.axelor.apps.account.db.EbicsTransferState" >
+		<field name="transactionId" />
+		<field name="seqmentNumber" />
+		<field name="numSegments" />
+		<field name="lastSegment" />
+	</grid>
+	
+	<form name="ebics-transfer-state-form" title="Ebics transfer state" model="com.axelor.apps.account.db.EbicsTransferState">
+	
+		<panel>
+			<field name="transactionId" />
+			<field name="seqmentNumber" />
+			<field name="numSegments" />
+			<field name="lastSegment" />
+		</panel>
+	
+	</form>
+  
+</object-views>

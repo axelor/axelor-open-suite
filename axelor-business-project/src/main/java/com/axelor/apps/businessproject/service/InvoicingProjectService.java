@@ -20,7 +20,11 @@ package com.axelor.apps.businessproject.service;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+
+import org.joda.time.LocalDate;
 
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.Invoice;
@@ -52,6 +56,7 @@ import com.axelor.apps.project.db.repo.ProjectTaskRepository;
 import com.axelor.apps.project.service.ProjectTaskService;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderLineRepository;
+import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.supplychain.service.PurchaseOrderInvoiceServiceImpl;
@@ -61,6 +66,7 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.beust.jcommander.internal.Lists;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -351,5 +357,36 @@ public class InvoicingProjectService {
 		else{
 			return getRootCompany(projectTask.getProject());
 		}
+	}
+
+	@Transactional
+	public InvoicingProject createInvoicingProject(SaleOrder saleOrder, LocalDate deadlineDate, int invoicingType) {
+		
+		InvoicingProject invoicingProject = new InvoicingProject();
+		invoicingProject.setDeadlineDate(deadlineDate);
+		
+		ProjectTask projectTask = saleOrder.getProject();
+		invoicingProject.setProjectTask(projectTask);
+		
+		Set<SaleOrderLine> saleOrderLineList = new HashSet();
+		
+		saleOrderLineList.addAll( Beans.get(SaleOrderLineRepository.class)
+				.all().filter("self.saleOrder = ?1 AND self.toInvoice = true AND self.invoiced = false AND (self.saleOrder.creationDate < ?2 or ?3 is null)", saleOrder, deadlineDate, deadlineDate ).fetch() );
+		invoicingProject.setSaleOrderLineSet(saleOrderLineList);
+		
+		
+		if (invoicingType == 2){
+			Set<TimesheetLine> timesheetLineList = new HashSet();
+			timesheetLineList.addAll(Beans.get(TimesheetLineRepository.class)
+					.all().filter("self.timesheet.statusSelect = 3 AND self.projectTask = ?1 AND self.toInvoice = true AND self.invoiced = false AND (self.date < ?2 or ?3 is null)", projectTask, deadlineDate, deadlineDate).fetch());
+			invoicingProject.setLogTimesSet(timesheetLineList);
+		}else if (invoicingType == 3) {
+			Set<ExpenseLine> expenseLineList = new HashSet();
+			expenseLineList.addAll(Beans.get(ExpenseLineRepository.class)
+					.all().filter("self.projectTask = ?1 AND self.toInvoice = true AND self.invoiced = false AND (self.expenseDate < ?2 or ?3 is null)", projectTask, deadlineDate, deadlineDate).fetch());
+			invoicingProject.setExpenseLineSet(expenseLineList);
+		}
+		
+		return invoicingProjectRepo.save( invoicingProject );
 	}
 }

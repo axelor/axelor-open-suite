@@ -11,6 +11,9 @@
 	            <item title="Plan a task" action="action-sale-order-view-plan-task"/>
 	        </menu>
 	    </menubar>
+	    <hilite background="warning" if="(endOfValidityDate != null) &amp;&amp; ($moment(endOfValidityDate) &lt; $moment(todayDate)) &amp;&amp; (statusSelect == 3)"/>
+	    <hilite background="danger" if="(endOfValidityDate != null) &amp;&amp; ($moment(endOfValidityDate) &lt; $moment(todayDate)) &amp;&amp; (statusSelect == 2)"/>
+        <field name="endOfValidityDate" hidden="true"/>
         <field name="saleOrderSeq"/>
         <field name="company" form-view="company-form" grid-view="company-grid"/>
         <field name="currency" form-view="currency-form" grid-view="currency-grid"/>
@@ -164,7 +167,7 @@
 	    <button name="newVersion" title="New version" if="__config__.general.getManageSaleOrderVersion()" showIf="statusSelect == 2" colSpan="12" onClick="save,action-sale-record-newVersion,save"/>
 	    <button name="generateCustomerStockMove" if="__config__.general.getCustomerStockMoveManagement() &amp;&amp; !__config__.general.getCustomerStockMoveGenerationAuto()" showIf="statusSelect == 3" title="Generate customer deliveries"  colSpan="12" onClick="save,action-supplychain-sale-order-create-stock-move" if-module="axelor-supplychain"/>
 	    <button name="orderConfirmed" title="Order confirmed" showIf="statusSelect == 2" colSpan="12" onClick="save,action-sale-group-confirmed"/>
-	    <button name="generateInvoice" title="Generate invoice" if="__config__.general.getGenerateInvoiceFromSaleOrder()" showIf="statusSelect == 3" colSpan="12" onClick="save,action-supplychain-sale-order-method-generate-invoice" if-module="axelor-supplychain"/>
+	    <button name="generateInvoice" title="Generate invoice" if="__config__.general.getGenerateInvoiceFromSaleOrder()" showIf="statusSelect == 3" colSpan="12" onClick="save,action-supplychain-sale-order-group-generate-invoice" if-module="axelor-supplychain"/>
 	    <button name="generatePO" title="Generate purchase order"  colSpan="12" if="__config__.general.getPurchaseOrderManagement() &amp;&amp; !__config__.general.getPurchaseOrderGenerationAuto()" showIf="statusSelect == 2 || statusSelect == 3" onClick="save,action-supplychain-sale-order-generate-purchase-orders-from-selected-SOLines"/>
 	    <button name="generateProductionOrder" title="Generate production order"  colSpan="12" if="__config__.general.getProductionOrderManagement() &amp;&amp; !__config__.general.getProductionOrderGenerationAuto()" showIf="statusSelect == 3" onClick="save,action-sale-order-method-create-production-order"/>
 		<spacer/>

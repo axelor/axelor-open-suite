@@ -13,6 +13,10 @@
 		<boolean name="showSaleOrderLineRelatedToProject" title="Show sale order lines related to the project task" />
 		<boolean name="showExpenseLineRelatedToProject" title="Show expense order lines related to the project task" />
 		
+		<boolean name="enableToInvoiceTimesheet" title="Enable to invoice timesheet" />
+		<boolean name="enableToInvoiceExpense" title="Enable to invoice expense" />
+		<integer name="defaultInvoiceTypeSelect" title="Default invoice type" selection="business.project.default.invoice.type.select" />
+		
 	</entity>
 
 </domain-models>

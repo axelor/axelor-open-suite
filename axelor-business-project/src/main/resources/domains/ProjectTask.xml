@@ -41,9 +41,9 @@
 	  	<boolean name="invoiced" readonly="true"/>
 	  	<string name="unitOnPrinting" selection="hr.time.logging.preference.select" title="Invoicing unit"/>
 	  	
-	  	<one-to-many name="purchaseOrderLineList" ref="com.axelor.apps.purchase.db.PurchaseOrderLine" title="Purchase order lines" mappedBy="projectTask"/>
-	  	<one-to-many name="saleOrderLineList" ref="com.axelor.apps.sale.db.SaleOrderLine" title="Sale order lines" mappedBy="project"/>
-	  	<one-to-many name="expensesLineList" ref="com.axelor.apps.hr.db.ExpenseLine" title="Expense lines" mappedBy="projectTask"/>
+	  	<one-to-many name="purchaseOrderLineList" ref="com.axelor.apps.purchase.db.PurchaseOrderLine" title="Purchase order lines" mappedBy="projectTask" orphanRemoval="false"/>
+	  	<one-to-many name="saleOrderLineList" ref="com.axelor.apps.sale.db.SaleOrderLine" title="Sale order lines" mappedBy="project" orphanRemoval="false"/>
+	  	<one-to-many name="expensesLineList" ref="com.axelor.apps.hr.db.ExpenseLine" title="Expense lines" mappedBy="projectTask" orphanRemoval="false"/>
 	
 	 	<extra-code><![CDATA[
 		

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_4.0.xsd">
+	
+  <module name="account" package="com.axelor.apps.account.db"/>
+  
+  <entity name="EbicsBank" lang="java">
+  
+    <string name="url" title="Url" />
+	<string name="name" title="Name" namecolumn="true"/>
+	<string name="hostId" title="Host id" />
+	 
+	<string name="e002Key" title="e002Key" large="true" multiline="true" />
+	<string name="e002Digest" title="e002Digest" large="true" multiline="true" />
+	
+	<string name="x002Key" title="x002Key" large="true" multiline="true" />
+	<string name="x002Digest" title="x002Digest" large="true" multiline="true" />
+	
+  </entity>
+  
+</domain-models>

@@ -30,7 +30,7 @@
 			<field name="statusSelect" widget="NavSelect" colSpan="6"/>
 			<field name="project" onChange="action-project-task-record-inv-type-select,action-project-task-record-bind-customer-project" colSpan="6" title="Parent Project" domain="self.typeSelect = 'project'" form-view="project-form" grid-view="project-grid"/>
 			<field name="company" requiredIf="project == null" hideIf="project != null" form-view="company-form" grid-view="company-grid"/>
-			<field name="clientPartner" requiredIf="project == null &amp;&amp; typeSelect == 'project'" readonlyIf="project != null" domain="self.isCustomer = true" form-view="partner-form" grid-view="partner-grid" />
+			<field name="clientPartner" readonlyIf="project != null" domain="self.isCustomer = true" form-view="partner-form" grid-view="partner-grid" />
 			<field name="assignedTo" title="Person In Charge" onChange="action-attrs-project-add-member" form-view="user-form" grid-view="user-grid"/>
 			<field name="saleOrder" domain="self.clientPartner = :clientPartner" if-module="axelor-business-project" form-view="sale-order-form" grid-view="sale-order-grid"/>
 			<field name="fromDate" />
@@ -52,7 +52,7 @@
   				<field name="unit" requiredIf="projTaskInvTypeSelect == 3"/>
   				<field name="exTaxTotal" readonly="true"/>
 			</panel>
-			<panel title="Related elements">
+			<panel title="Related elements" if="eval: __config__.general.getShowPurchaseOrderLineRelatedToProject() || __config__.general.getShowSaleOrderLineRelatedToProject() || __config__.general.getShowExpenseLineRelatedToProject() || __config__.general.getShowProductionOrderRelatedToProject()" >
 				<panel-related field="purchaseOrderLineList" form-view="purchase-order-line-form" grid-view="purchase-order-line-invoicing-project-grid" if-module="axelor-business-project" canSelect="true" canNew="false"  canEdit="false" colSpan="12" if="eval: __config__.general.getShowPurchaseOrderLineRelatedToProject()"/>
 				<panel-related field="saleOrderLineList" canSelect="true" canNew="false" canEdit="false" colSpan="12" if-module="axelor-business-project" if="eval: __config__.general.getShowSaleOrderLineRelatedToProject()" />
 				<panel-related field="expensesLineList" canSelect="true" canNew="false" canEdit="false" colSpan="12" if-module="axelor-business-project" if="eval: __config__.general.getShowExpenseLineRelatedToProject()" />
@@ -194,7 +194,7 @@
 				   title="Parent Project"  form-view="project-form" grid-view="project-grid" domain="self.typeSelect = 'project'" 
 				   colSpan="6" width="50%" hide="true"/>
 			<field name="company" requiredIf="project == null &amp;&amp; typeSelect == 'project'" hideIf="typeSelect == 'task' || project != null"/>
-			<field name="clientPartner" requiredIf="project == null &amp;&amp; typeSelect == 'project'" domain="self.isCustomer = true" readonly="true"/>
+			<field name="clientPartner" domain="self.isCustomer = true" readonly="true"/>
 			<field name="assignedTo" title="Person In Charge" onSelect="action-task-attrs-assigned-to-domain" onChange="action-attrs-project-add-member" form-view="user-form" grid-view="user-grid"/>
 			<field name="saleOrder" domain="self.clientPartner.id = :clientPartner.id" if-module="axelor-business-project" readonlyIf="typeSelect == 'task'" form-view="sale-order-form" grid-view="sale-order-grid"/>
 			<field name="fromDate" />

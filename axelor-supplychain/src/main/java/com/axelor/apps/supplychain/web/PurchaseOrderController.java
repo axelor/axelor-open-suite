@@ -24,10 +24,12 @@ import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.Wizard;
 import com.axelor.apps.purchase.exception.IExceptionMessage;
 import com.axelor.apps.base.service.administration.GeneralService;
+import com.axelor.apps.purchase.db.IPurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.stock.db.Location;
 import com.axelor.apps.stock.db.StockMove;
+import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.supplychain.service.PurchaseOrderServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.TimetableService;
 import com.google.common.base.Joiner;
@@ -39,7 +41,10 @@ import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.beust.jcommander.internal.Lists;
 import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -51,6 +56,12 @@ public class PurchaseOrderController {
 
 	@Inject
 	protected GeneralService generalService;
+	
+	@Inject
+	protected PurchaseOrderRepository purchaseOrderRepo;
+	
+	@Inject
+	protected StockMoveRepository stockMoveRepo;
 
 	public void createStockMove(ActionRequest request, ActionResponse response) throws AxelorException {
 
@@ -279,5 +290,29 @@ public class PurchaseOrderController {
 		}catch(AxelorException ae){
 			response.setFlash(ae.getLocalizedMessage());
 		}
+	}
+	
+	@Transactional
+	public void updatePurchaseOrderOnCancel(ActionRequest request, ActionResponse response) throws AxelorException{
+		
+		StockMove stockMove = request.getContext().asType(StockMove.class);
+		PurchaseOrder po = purchaseOrderRepo.find(stockMove.getPurchaseOrder().getId());
+		
+		List<StockMove> stockMoveList = Lists.newArrayList();
+		stockMoveList = stockMoveRepo.all().filter("self.purchaseOrder = ?1", po).fetch();
+		po.setReceiptState(IPurchaseOrder.STATE_NOT_RECEIVED);
+		for (StockMove stock : stockMoveList){
+			if (stock.getStatusSelect() != StockMoveRepository.STATUS_CANCELED && !stock.getId().equals(stockMove.getId())){ 
+				po.setReceiptState(IPurchaseOrder.STATE_PARTIALLY_RECEIVED);
+				break;
+			}
+		}
+		
+		if (po.getStatusSelect() == IPurchaseOrder.STATUS_FINISHED  && generalService.getGeneral().getTerminatePurchaseOrderOnReceipt()){
+			po.setStatusSelect(IPurchaseOrder.STATUS_VALIDATED);
+		}
+		
+		purchaseOrderRepo.save(po);
+		
 	}
 }

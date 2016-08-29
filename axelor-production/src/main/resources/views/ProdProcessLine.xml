@@ -21,7 +21,7 @@
 	    	<field name="workCenter" grid-view="work-center-grid" form-view="work-center-form" onChange="action-prod-process-line-record-capacity-settings"/>
 	    	<field name="outsourcing"/>
 	    	<panel name="capacitySettings" title="Capacity settings" colSpan="12">
-	          <field name="capacityPerCycle" colSpan="3"/>
+	          <field name="minCapacityPerCycle" colSpan="3"/>
 	          <field name="maxCapacityPerCycle" colSpan="3"/>
 	          <field name="durationPerCycle" colSpan="3" widget="duration" x-big="true" x-seconds="true"/>
 	        </panel>
@@ -37,7 +37,7 @@
     </form>
     
     <action-record name="action-prod-process-line-record-capacity-settings" model="com.axelor.apps.production.db.ProdProcessLine">
-    	<field name="capacityPerCycle" expr="eval: workCenter?.capacityPerCycle"/>
+    	<field name="minCapacityPerCycle" expr="eval: workCenter?.minCapacityPerCycle"/>
     	<field name="maxCapacityPerCycle" expr="eval: workCenter?.maxCapacityPerCycle"/>
     	<field name="durationPerCycle" expr="eval: workCenter?.durationPerCycle"/>
     </action-record>
