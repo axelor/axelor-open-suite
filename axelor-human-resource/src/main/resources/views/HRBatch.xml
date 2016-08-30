@@ -21,9 +21,9 @@
 		</panel>
 		<panel-tabs>
 			<panel name="leaveManagementPage" title="Leave management page" hidden="true" showIf="actionSelect == 1">
-			    <field name="leaveReason" colSpan="4"/>
+			    <field name="leaveReason" colSpan="4" requiredIf="actionSelect == 1"/>
 			    <field name="comments" colSpan="8"/>
-			    <field name="dayNumber" colSpan="4"/>
+			    <field name="dayNumber" colSpan="4" requiredIf="actionSelect == 1"/>
 			    <field name="startDate" colSpan="4"/>
 			    <field name="endDate" colSpan="4"/>
 		   		<panel-related field="employeeSet" target="com.axelor.apps.hr.db.Employee" grid-view="employee-lite-grid" form-view="employee-form" canNew="false"/>
