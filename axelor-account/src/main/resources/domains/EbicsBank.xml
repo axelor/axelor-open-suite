@@ -7,15 +7,15 @@
   
   <entity name="EbicsBank" lang="java">
   
-    <string name="url" title="Url" />
 	<string name="name" title="Name" namecolumn="true"/>
+    <string name="url" title="Url" />
 	<string name="hostId" title="Host id" />
 	 
-	<string name="e002Key" title="e002Key" large="true" multiline="true" />
-	<string name="e002Digest" title="e002Digest" large="true" multiline="true" />
+	<string name="x002Key" title="Authentication Certificate Type: X002" large="true" multiline="true" />
+	<string name="x002Digest" title="Hash certificate of authentication (SHA-256)" large="true" multiline="true" />
 	
-	<string name="x002Key" title="x002Key" large="true" multiline="true" />
-	<string name="x002Digest" title="x002Digest" large="true" multiline="true" />
+	<string name="e002Key" title="Encryption Certificate Type: E002" large="true" multiline="true" />
+	<string name="e002Digest" title="Hash certificate of encryption (SHA-256)" large="true" multiline="true" />
 	
   </entity>
   

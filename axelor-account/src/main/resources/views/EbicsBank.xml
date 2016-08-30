@@ -5,21 +5,23 @@
 	
 	
 	<grid name="ebics-bank-grid" title="Ebics bank" model="com.axelor.apps.account.db.EbicsBank" >
-		<field name="url" />
 		<field name="name" />
+		<field name="url" />
 		<field name="hostId" />
 	</grid>
 	
 	<form name="ebics-bank-form" title="Ebics bank" model="com.axelor.apps.account.db.EbicsBank">
 	
-		<panel>
-			<field name="url" />
+		<panel title="General informations">
 			<field name="name" />
+			<field name="url" />
 			<field name="hostId" />
 		</panel>
-		<panel>
+		<panel title="Server public key certificate dedicated to authentication" itemSpan="12">
 			<field name="e002Key" />
 			<field name="e002Digest" />
+		</panel>
+		<panel title="Server public key certificate dedicated to encryption" itemSpan="12">
 			<field name="x002Key" />
 			<field name="x002Digest" />
 		</panel>

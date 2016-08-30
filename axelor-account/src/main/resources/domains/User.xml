@@ -8,7 +8,7 @@
   <entity name="User" sequential="true" lang="java">
   
     <many-to-one name="activeCashRegister" ref="com.axelor.apps.account.db.CashRegister" title="Cash register"/>
- 	<many-to-one name="ebicsUser" ref="com.axelor.apps.account.db.EbicsUser" title="Ebics user" required="true"/>
+ 	<many-to-one name="ebicsUser" ref="com.axelor.apps.account.db.EbicsUser" title="Ebics user"/>
    
 
   </entity>

@@ -4,37 +4,39 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
 	
 	<grid name="ebics-user-grid" title="Ebics user" model="com.axelor.apps.account.db.EbicsUser" >
-		<field name="securityMedium" />
 		<field name="name" />
 		<field name="userId" />
+		<field name="securityMedium" />
 		<field name="dn" />
 		<field name="isInitializedHIA" />
 		<field name="isInitialized" />
 	</grid>
 	
-	<form name="ebics-user-form" title="Ebics user" model="com.axelor.apps.account.db.EbicsUser" onSave="action-ebics-user-method-generate-dn">
-		<panel>
-			<field name="securityMedium" />
+	<form name="ebics-user-form" title="Ebics user" model="com.axelor.apps.account.db.EbicsUser" onSave="save,action-ebics-user-method-generate-dn">
+		<panel title="General informations" colSpan="12">
 			<field name="name" />
-			<field name="userId" />
 			<field name="password" />
+			<field name="userId" />
+			<field name="securityMedium" />
 			<field name="dn" />
 			<field name="ebicsPartner" />
 			<field name="isInitializedHIA" />
 			<field name="isInitialized" />
 		</panel>
-		<panel>
-			<field name="a005PublicKey" />
-			<field name="a005Certificate" />
-			<field name="e002PublicKey" />
-			<field name="e002Certificate" />
-			<field name="x002PublicKey" />
-			<field name="x002Certificate" />
+		<panel title="Public key" colSpan="12" itemSpan="12">
+			<field name="a005PublicKey"/>
+			<field name="x002PublicKey"/>
+			<field name="e002PublicKey"/>
+		</panel>
+		<panel title="Certificate" colSpan="12" itemSpan="12">
+			<field name="a005Certificate"/>
+			<field name="x002Certificate"/>
+			<field name="e002Certificate"/>
 		</panel>
 		
 		<panel sidebar="true">
-			<button name="generateCertificates" title="Generate certificates" onClick="action-ebics-user-method-generate-certificates"/>
-			<button name="generateDn" title="Generate DN" onClick="action-ebics-user-method-generate-dn"/>
+			<button name="generateDn" title="Generate DN" onClick="save,action-ebics-user-method-generate-dn"/>
+			<button name="generateCertificates" title="Generate certificates" onClick="save,action-ebics-user-method-generate-certificates"/>
 		</panel>
 	
 	</form>
