@@ -68,8 +68,6 @@ public class WkfService {
 
 	protected String dasherizeModel = null;
 
-	protected String modelName = null;
-
 	protected String moduleName;
 
 	protected Inflector inflector;
@@ -120,10 +118,8 @@ public class WkfService {
 		try {
 			this.workflow = wkf;
 			inflector = Inflector.getInstance();
-			MetaModel metaModel = workflow.getMetaModel();
-			modelName = metaModel.getFullName();
 			moduleName = wkf.getMetaModule().getName();
-			dasherizeModel = inflector.dasherize(metaModel.getName());
+			dasherizeModel = inflector.dasherize(workflow.getMetaModel().getName());
 
 			ActionGroup actionGroup = nodeService.process();
 
@@ -469,7 +465,7 @@ public class WkfService {
 
 		if (action == null) {
 			action = new MetaAction(actionName);
-			action.setModel(modelName);
+			action.setModel(workflow.getMetaModel().getFullName());
 			action.setModule(moduleName);
 			action.setType(actionType);
 		}

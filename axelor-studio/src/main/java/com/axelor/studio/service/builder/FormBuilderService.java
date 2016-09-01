@@ -501,28 +501,42 @@ public class FormBuilderService {
 		
 		if (panelMap.get(parentLevel) instanceof Panel) {
 			Panel panel = (Panel) panelMap.get(parentLevel);
-			panelItems = panel.getItems();
-			if (panelItems == null) {
-				panelItems = new ArrayList<AbstractWidget>();
-			}
-			panelItems.add(abstractPanel);
+			panelItems = updatePanelItems(panel.getItems(), panelLevel, abstractPanel);
 			panel.setItems(panelItems);
 			panelMap.put(parentLevel, panel);
-			panelMap.put(panelLevel, abstractPanel);
 		} else if (panelMap.get(parentLevel) instanceof PanelTabs) {
 			PanelTabs panelTabs = (PanelTabs) panelMap.get(parentLevel);
-			panelItems = panelTabs.getItems();
-			if (panelItems == null) {
-				panelItems = new ArrayList<AbstractWidget>();
-			}
-			panelItems.add(abstractPanel);
+			panelItems = updatePanelItems(panelTabs.getItems(), panelLevel, abstractPanel);
 			panelTabs.setItems(panelItems);
 			panelMap.put(parentLevel, panelTabs);
-			panelMap.put(panelLevel, abstractPanel);
 		}
 
 		return abstractPanel;
 
+	}
+	
+	private List<AbstractWidget> updatePanelItems(List<AbstractWidget> panelItems, 
+			String panelLevel, AbstractPanel panel) {
+		
+		panelMap.put(panelLevel, panel);
+		
+		if (panelItems == null) {
+			panelItems = new ArrayList<AbstractWidget>();
+			panelItems.add(panel);
+			return panelItems;
+		}
+		
+		Integer index = Integer.parseInt(panelLevel.substring(panelLevel.lastIndexOf(".") + 1));
+		
+		if (index < panelItems.size()) {
+			panelItems.add(index, panel);
+		}
+		else {
+			panelItems.add(panel);
+		}
+		
+		return panelItems;
+		
 	}
 
 	/**
@@ -628,6 +642,10 @@ public class FormBuilderService {
 	public List<AbstractWidget> processItems(List<ViewItem> viewItems, Panel panel, String level) {
 		
 		List<AbstractWidget> items = new ArrayList<AbstractWidget>();
+		
+		if (viewItems == null) {
+			return items;
+		}
 
 		for (ViewItem viewItem : viewItems) {
 

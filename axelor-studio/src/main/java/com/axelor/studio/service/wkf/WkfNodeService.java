@@ -332,19 +332,15 @@ class WkfNodeService {
 		MetaMenu parentMenu = node.getParentMenu();
 		MenuBuilder parentMenuBuilder = node.getParentMenuBuilder();
 		Integer order = 1;
-		String parent = null;
 		if (parentMenu != null) {
-			parent = parentMenu.getName();
-			log.debug("Meta menu repo : {}, parent: {}", metaMenuRepo, parent);
 			MetaMenu childMenu = metaMenuRepo
 					.all()
 					.filter("self.parent.name = ?1 and self.action is null",
-							parent).order("-order").fetchOne();
+							parentMenu.getName()).order("-order").fetchOne();
 			if (childMenu != null) {
 				order = childMenu.getOrder() + 1;
 			}
 		} else {
-			parent = parentMenuBuilder.getName();
 			MenuBuilder menuBuilder = menuBuilderRepo
 					.all()
 					.filter("self.menuBuilder = ?1 and self.isParent != true",
@@ -358,7 +354,7 @@ class WkfNodeService {
 
 		if (node.getStatusMenuEntry()) {
 			MenuBuilder menuBuilder = addMenuBuilder(node.getStatusMenuLabel(),
-					menuName, domain, parent, order, parentMenuBuilder);
+					menuName, domain, parentMenu, order, parentMenuBuilder, node.getWkf().getMetaModule());
 			node.setStatusMenu(menuBuilder);
 			order += 1;
 		}
@@ -367,7 +363,7 @@ class WkfNodeService {
 			domain += " AND self." + node.getMetaField().getName()
 					+ " = :__user__";
 			MenuBuilder menuBuilder = addMenuBuilder(node.getMyMenuLabel(),
-					"my-" + menuName, domain, parent, order, parentMenuBuilder);
+					"my-" + menuName, domain, parentMenu, order, parentMenuBuilder, node.getWkf().getMetaModule());
 			node.setMyStatusMenu(menuBuilder);
 		}
 
@@ -461,7 +457,7 @@ class WkfNodeService {
 			permission.setCanRead(true);
 			permission.setCondition("self." + WkfService.WKF_STATUS + " = '"
 					+ node.getName() + "'");
-			permission.setObject(wkfService.modelName);
+			permission.setObject(node.getWkf().getMetaModel().getFullName());
 			permission = permissionRepo.save(permission);
 		}
 
@@ -488,7 +484,7 @@ class WkfNodeService {
 	 */
 	@Transactional
 	public MenuBuilder addMenuBuilder(String title, String name, String domain,
-			String parent, Integer order, MenuBuilder parentBuilder) {
+			MetaMenu parentMenu, Integer order, MenuBuilder parentBuilder, MetaModule metaModule) {
 		MenuBuilder menuBuilder = menuBuilderRepo.findByName(name);
 		if (menuBuilder == null) {
 			menuBuilder = new MenuBuilder(name);
@@ -496,11 +492,12 @@ class WkfNodeService {
 		menuBuilder.setTitle(title);
 		menuBuilder.setEdited(true);
 		menuBuilder.setRecorded(false);
-		menuBuilder.setModel(wkfService.modelName);
+		menuBuilder.setMetaModel(wkfService.workflow.getMetaModel());
 		menuBuilder.setDomain(domain);
-		menuBuilder.setParent(parent);
 		menuBuilder.setOrder(order);
 		menuBuilder.setMenuBuilder(parentBuilder);
+		menuBuilder.setMetaMenu(parentMenu);
+		menuBuilder.setMetaModule(metaModule);
 		return menuBuilderRepo.save(menuBuilder);
 	}
 

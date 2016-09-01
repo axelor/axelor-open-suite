@@ -157,11 +157,9 @@ public class ImportMenu extends CommonService {
 		}
 		if (model != null) {
 			menuBuilder.setMetaModel(model);
-			menuBuilder.setModel(model.getFullName());
 			menuBuilder.setIsParent(false);
 		} else {
 			menuBuilder.setMetaModel(null);
-			menuBuilder.setModel(null);
 			menuBuilder.setIsParent(true);
 		}
 		
@@ -180,12 +178,10 @@ public class ImportMenu extends CommonService {
 				.filter("self.name = ?1 and self.metaModule.name = ?2" ,
 						parentName, menuBuilder.getMetaModule().getName()).fetchOne();
 		if (parent != null) {
-			menuBuilder.setParent(parent.getName());
 			menuBuilder.setMenuBuilder(parent);
 		} else {
 			MetaMenu parentMenu = metaMenuRepo.findByName(parentName);
 			if (parentMenu != null) {
-				menuBuilder.setParent(parentMenu.getName());
 				menuBuilder.setMetaMenu(parentMenu);
 			}
 			else {

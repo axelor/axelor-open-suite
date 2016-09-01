@@ -471,6 +471,7 @@ public class ReportBuilderService {
 			actionBuilder.setTypeSelect(3);
 			actionBuilder.setEdited(true);
 			actionBuilder.addReportBuilderSetItem(builder);
+			actionBuilder.setMetaModule(builder.getMetaModule());
 			actionBuilder = actionBuilderRepo.save(actionBuilder);
 		}
 

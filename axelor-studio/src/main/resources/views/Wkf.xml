@@ -15,6 +15,7 @@
         <field name="name"/>
         <field name="metaModel"/>
         <field name="viewBuilder" onSelect="action-wkf-attrs-for-view-domain" readonlyIf="metaModel == null" required="true"/>
+        <field name="metaModule" domain="self.customised = true" />
         <field name="displayTypeSelect" />
       	<field name="bpmnXml" showTitle="false" colSpan="12" widget="BpmnEditor" />
       </panel>

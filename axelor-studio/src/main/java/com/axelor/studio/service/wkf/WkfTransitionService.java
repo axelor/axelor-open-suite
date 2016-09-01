@@ -279,7 +279,7 @@ class WkfTransitionService {
 	private String getActionRecordXML(String name, List<RecordField> fields) {
 
 		ActionRecord action = new ActionRecord();
-		action.setModel(wkfService.modelName);
+		action.setModel(wkfService.workflow.getMetaModel().getFullName());
 		action.setName(name);
 		action.setFields(fields);
 
@@ -353,7 +353,7 @@ class WkfTransitionService {
 		MetaPermission permission = metaPermissionRepo.findByName(name);
 		if (permission == null) {
 			permission = new MetaPermission(name);
-			permission.setObject(wkfService.modelName);
+			permission.setObject(wkfService.workflow.getMetaModel().getFullName());
 			MetaPermissionRule rule = new MetaPermissionRule();
 			rule.setCanRead(false);
 			rule.setField(buttonName);

@@ -70,8 +70,6 @@ public class MenuBuilderService {
 
 	private Map<String, Action> actionMap;
 
-	private Map<String, MetaMenu> menuMap;
-
 	private List<String> deletedMenus;
 
 	@Inject
@@ -112,7 +110,6 @@ public class MenuBuilderService {
 				.order("-isParent").order("id").fetch();
 		menuItems = new ArrayList<MenuItem>();
 		actionMap = new HashMap<String, Action>();
-		menuMap = new HashMap<String, MetaMenu>();
 		deletedMenus = new ArrayList<String>();
 
 		log.debug("Total menus to process: {}", menuBuilders.size());
@@ -223,16 +220,22 @@ public class MenuBuilderService {
 		menuItem.setTitle(menuBuilder.getTitle());
 		menuItem.setTop(menuBuilder.getTop());
 		menuItem.setXmlId(xmlId);
+		if (menuBuilder.getMetaMenu() != null) {
+			menuItem.setParent(menuBuilder.getMetaMenu().getName());
+		}
+		else if (menuBuilder.getMenuBuilder() != null && menuBuilder.getMenuBuilder().getMenuGenerated() != null) {
+			menuItem.setParent(menuBuilder.getMenuBuilder().getMenuGenerated().getName());
+		}
 
 		String icon = menuBuilder.getIcon();
-		if (menuBuilder.getParent() == null && Strings.isNullOrEmpty(icon)) {
+		if (menuBuilder.getIsParent() && Strings.isNullOrEmpty(icon)) {
 			menuItem.setIcon("fa-list");
 		} else {
 			menuItem.setIcon(icon);
 		}
 
 		String background = menuBuilder.getIconBackground();
-		if (menuBuilder.getParent() == null
+		if (menuBuilder.getIsParent()
 				&& Strings.isNullOrEmpty(background)) {
 			menuItem.setIconBackground("green");
 		} else {
@@ -241,7 +244,6 @@ public class MenuBuilderService {
 
 		log.debug("Menu name: {}, order: {}", name, menuBuilder.getOrder());
 		menuItem.setOrder(menuBuilder.getOrder());
-		menuItem.setParent(menuBuilder.getParent());
 		if (!menuBuilder.getIsParent()) {
 			setAction(menuBuilder, menuItem);
 		}
@@ -313,7 +315,7 @@ public class MenuBuilderService {
 		}
 		
 		ActionViewBuilder builder = ActionView.define(menuBuilder.getTitle());
-		builder.model(menuBuilder.getModel());
+		builder.model(menuBuilder.getMetaModel().getFullName());
 		builder.name(name);
 		builder.domain(menuBuilder.getDomain());
 		
@@ -419,14 +421,14 @@ public class MenuBuilderService {
 		metaMenu.setTitle(menuBuilder.getTitle());
 		metaMenu.setTop(menuBuilder.getTop());
 		String icon = menuBuilder.getIcon();
-		if (menuBuilder.getParent() == null && Strings.isNullOrEmpty(icon)) {
+		if (menuBuilder.getIsParent() && Strings.isNullOrEmpty(icon)) {
 			metaMenu.setIcon("fa-list");
 		} else {
 			metaMenu.setIcon(icon);
 		}
 
 		String background = menuBuilder.getIconBackground();
-		if (menuBuilder.getParent() == null
+		if (menuBuilder.getIsParent()
 				&& Strings.isNullOrEmpty(background)) {
 			metaMenu.setIconBackground("green");
 		} else {
@@ -441,24 +443,21 @@ public class MenuBuilderService {
 			groups.addAll(menuBuilder.getGroups());
 			metaMenu.setGroups(groups);
 		}
-
-		String parent = menuBuilder.getParent();
-		log.debug("Parent menu : {}", parent);
-		if (menuMap.containsKey(parent)) {
-			metaMenu.setParent(menuMap.get(parent));
+		
+		if (menuBuilder.getMenuBuilder() != null) {
+			metaMenu.setParent(menuBuilder.getMenuBuilder().getMenuGenerated());
 		} else {
 			metaMenu.setParent(menuBuilder.getMetaMenu());
 		}
 		
 		MetaAction action = null;
-		if (!menuBuilder.getIsParent()) {
+		if (!menuBuilder.getIsParent() && menuBuilder.getMetaModel() != null) {
 			action = getMetaAction(menuBuilder);
 			menuBuilder.setActionGenerated(action);
 		}
 		
 		metaMenu.setAction(action);
 		metaMenu = metaMenuRepo.save(metaMenu);
-		menuMap.put(name, metaMenu);
 
 		generatatMetaMenu(menuIterator);
 
@@ -492,7 +491,7 @@ public class MenuBuilderService {
 			metaAction.setXmlId(xmlId);
 		}
 		
-		metaAction.setModel(menuBuilder.getModel());
+		metaAction.setModel(menuBuilder.getMetaModel().getFullName());
 
 		Action action = getAction(menuBuilder);
 		String xml = XMLViews.toXml(action, true);

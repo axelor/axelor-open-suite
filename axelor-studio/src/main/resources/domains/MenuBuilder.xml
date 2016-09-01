@@ -18,8 +18,6 @@
     <many-to-one name="metaModel" ref="com.axelor.meta.db.MetaModel" title="Model" />
     <many-to-many name="groups" ref="com.axelor.auth.db.Group" title="Groups"/>
     <boolean name="top" title="Top" />
-    <string name="parent" title="Parent" />
-    <string name="model" title="Model" />
     <string name="icon" title="Icon"/>
     <string name="iconBackground" title="Icon background" />
     <boolean name="edited" default="true"/>
