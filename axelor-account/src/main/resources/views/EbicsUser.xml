@@ -24,9 +24,9 @@
 			<field name="isInitialized" />
 		</panel>
 		<panel title="Public key" colSpan="12" itemSpan="12">
-			<field name="a005PublicKey"/>
-			<field name="x002PublicKey"/>
-			<field name="e002PublicKey"/>
+			<field name="a005PrivateKey"/>
+			<field name="x002PrivateKey"/>
+			<field name="e002PrivateKey"/>
 		</panel>
 		<panel title="Certificate" colSpan="12" itemSpan="12">
 			<field name="a005Certificate"/>

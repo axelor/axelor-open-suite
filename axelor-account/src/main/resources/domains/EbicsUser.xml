@@ -18,13 +18,13 @@
 	 <boolean name="isInitializedHIA" title="is initialized HIA ?"  />
 	 <boolean name="isInitialized" title="is initialized ?"  />
 	 
-	 <string name="a005PublicKey" title="a005PublicKey" large="true" multiline="true" />
+	 <string name="a005PrivateKey" title="a005PrivateKey" large="true" multiline="true" />
 	 <string name="a005Certificate" title="a005Certificate" large="true" multiline="true" />
 	 
-	 <string name="e002PublicKey" title="e002PublicKey" large="true" multiline="true" />
+	 <string name="e002PrivateKey" title="e002PrivateKey" large="true" multiline="true" />
 	 <string name="e002Certificate" title="e002Certificate" large="true" multiline="true" />
 	 
-	 <string name="x002PublicKey" title="x002PublicKey" large="true" multiline="true" />
+	 <string name="x002PrivateKey" title="x002PrivateKey" large="true" multiline="true" />
 	 <string name="x002Certificate" title="x002Certificate" large="true" multiline="true" />
 	    
 	<many-to-one name="ebicsPartner" ref="com.axelor.apps.account.db.EbicsPartner" title="Ebics partner"/>

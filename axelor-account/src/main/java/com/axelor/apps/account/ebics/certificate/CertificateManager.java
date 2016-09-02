@@ -78,10 +78,12 @@ public class CertificateManager {
     user.setA005Certificate(a005Certificate.toString());
     user.setX002Certificate(x002Certificate.toString());
     user.setE002Certificate(e002Certificate.toString());
-/*
+
+    //TODO
     user.setA005PrivateKey(a005PrivateKey.toString());
     user.setX002PrivateKey(x002PrivateKey.toString());
-    user.setE002PrivateKey(e002PrivateKey.toString());*/
+    user.setE002PrivateKey(e002PrivateKey.toString());
+    
   }
 
   /**
