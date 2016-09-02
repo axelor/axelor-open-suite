@@ -33,12 +33,16 @@ import com.google.inject.Inject;
 
 public class PublicHolidayService {
 
-	@Inject
 	protected WeeklyPlanningService weeklyPlanningService;
-	
-	@Inject
 	protected PublicHolidayDayRepository publicHolidayDayRepo;
 
+	@Inject
+	public PublicHolidayService(WeeklyPlanningService weeklyPlanningService, PublicHolidayDayRepository publicHolidayDayRepo){
+		
+		this.weeklyPlanningService = weeklyPlanningService;
+		this.publicHolidayDayRepo = publicHolidayDayRepo;
+	}
+	
 	public BigDecimal computePublicHolidayDays(LocalDate fromDate, LocalDate toDate, WeeklyPlanning weeklyPlanning, PublicHolidayPlanning publicHolidayPlanning) throws AxelorException{
 		BigDecimal publicHolidayDays = BigDecimal.ZERO;
 

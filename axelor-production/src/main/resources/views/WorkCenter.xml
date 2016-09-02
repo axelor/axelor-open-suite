@@ -32,9 +32,36 @@
 	        </panel>
 	    </panel>
 	    <panel-related field="prodHumanResourceList" title="Human resources" showIf="workCenterTypeSelect == 1 || workCenterTypeSelect == 3" form-view="prod-human-resource-form" grid-view="prod-human-resource-grid"/>
-	    <panel-related field="workCenterList" title="Replacement machines" showIf="workCenterTypeSelect == 2 || workCenterTypeSelect == 3" form-view="work-center-machine-form" grid-view="work-center-machine-grid"/>
+	    <panel-related field="workCenterList" title="Replacement machines" showIf="workCenterTypeSelect == 2 || workCenterTypeSelect == 3" form-view="work-center-replacement-machine-form" grid-view="work-center-replacement-machine-grid"/>
 	  </panel-tabs>
 	</form>
+    
+     <grid name="work-center-replacement-machine-grid" title="Machines" model="com.axelor.apps.production.db.WorkCenter">
+        <field name="name"/>
+        <field name="code"/>
+        <field name="machine" title="Replacement machine"/>
+    </grid>
+    
+    <form name="work-center-replacement-machine-form" title="Machine" model="com.axelor.apps.production.db.WorkCenter" width="large" onNew="action-work-center-record-default">
+    	<panel name="main" >
+	        <field name="name"/>
+	        <field name="code"/>
+	        <field name="machine" title="Replacement machine"/>
+        </panel>
+        <panel name="productionAndCostSettings" title="Production and cost settings">
+	        <panel title="Capacity settings" colSpan="12">
+	          <field name="minCapacityPerCycle" colSpan="3"/>
+	          <field name="maxCapacityPerCycle" colSpan="3"/>
+	          <field name="durationPerCycle" colSpan="3" widget="duration" x-big="true" x-seconds="true"/>
+	        </panel>
+	        <panel name="costingSettings" title="Costing settings" colSpan="12">
+	          <field name="product"/>
+	          <field name="costTypeSelect" colSpan="3"/>
+	          <field name="costAmount" colSpan="3"/>
+   		  	  <field name="costSheetGroup" form-view="cost-sheet-group-form" grid-view="cost-sheet-group-grid" domain="self.costTypeSelect = 2"/>
+	        </panel>
+	    </panel>
+    </form>
     
     <grid name="work-center-machine-grid" title="Machines" model="com.axelor.apps.production.db.WorkCenter">
         <field name="name"/>

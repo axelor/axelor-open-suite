@@ -36,6 +36,7 @@ import com.axelor.auth.db.User;
 import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
@@ -198,77 +199,92 @@ public class ExtraHoursController {
 	
 	//confirming request and sending mail to manager
 	public void confirm(ActionRequest request, ActionResponse response) throws AxelorException{
-		ExtraHours extraHours = request.getContext().asType(ExtraHours.class);
-		if(!hrConfigService.getHRConfig(extraHours.getUser().getActiveCompany()).getExtraHoursMailNotification()){
-			response.setValue("statusSelect", TimesheetRepository.STATUS_CONFIRMED);
-			response.setValue("sentDate", generalService.getTodayDate());
-		}
-		else{
-			User manager = extraHours.getUser().getEmployee().getManager();
-			if(manager!=null){
-				Template template =  hrConfigService.getHRConfig(extraHours.getUser().getActiveCompany()).getSentExtraHoursTemplate();
-				if(mailManagementService.sendEmail(template,extraHours.getId())){
-					String message = "Email sent to";
-					response.setFlash(I18n.get(message)+" "+manager.getFullName());
-					response.setValue("statusSelect", TimesheetRepository.STATUS_CONFIRMED);
-					response.setValue("sentDate", generalService.getTodayDate());
-				}
-				else{
-					throw new AxelorException(String.format(I18n.get(IExceptionMessage.HR_CONFIG_TEMPLATES), extraHours.getUser().getActiveCompany().getName()), IException.CONFIGURATION_ERROR);
+		
+		try{
+			ExtraHours extraHours = request.getContext().asType(ExtraHours.class);
+			if(!hrConfigService.getHRConfig(extraHours.getUser().getActiveCompany()).getExtraHoursMailNotification()){
+				response.setValue("statusSelect", TimesheetRepository.STATUS_CONFIRMED);
+				response.setValue("sentDate", generalService.getTodayDate());
+			}
+			else{
+				User manager = extraHours.getUser().getEmployee().getManager();
+				if(manager!=null){
+					Template template =  hrConfigService.getHRConfig(extraHours.getUser().getActiveCompany()).getSentExtraHoursTemplate();
+					if(mailManagementService.sendEmail(template,extraHours.getId())){
+						String message = "Email sent to";
+						response.setFlash(I18n.get(message)+" "+manager.getFullName());
+						response.setValue("statusSelect", TimesheetRepository.STATUS_CONFIRMED);
+						response.setValue("sentDate", generalService.getTodayDate());
+					}
+					else{
+						throw new AxelorException(String.format(I18n.get(IExceptionMessage.HR_CONFIG_TEMPLATES), extraHours.getUser().getActiveCompany().getName()), IException.CONFIGURATION_ERROR);
+					}
 				}
 			}
+		}catch(Exception e)  {
+			TraceBackService.trace(response, e);
 		}
 	}
 	
 	//validating request and sending mail to applicant
 	public void valid(ActionRequest request, ActionResponse response) throws AxelorException{
-		ExtraHours extraHours = request.getContext().asType(ExtraHours.class);
-		if(!hrConfigService.getHRConfig(extraHours.getUser().getActiveCompany()).getExtraHoursMailNotification()){
-			response.setValue("statusSelect", TimesheetRepository.STATUS_VALIDATED);
-			response.setValue("validatedBy", AuthUtils.getUser());
-			response.setValue("validationDate", generalService.getTodayDate());
-		}
-		else{
-			User manager = extraHours.getUser().getEmployee().getManager();
-			if(manager!=null){
-				Template template =  hrConfigService.getHRConfig(extraHours.getUser().getActiveCompany()).getValidatedExtraHoursTemplate();
-				if(mailManagementService.sendEmail(template,extraHours.getId())){
-					String message = "Email sent to";
-					response.setFlash(I18n.get(message)+" "+extraHours.getUser().getFullName());
-					response.setValue("statusSelect", TimesheetRepository.STATUS_VALIDATED);
-					response.setValue("validatedBy", AuthUtils.getUser());
-					response.setValue("validationDate", generalService.getTodayDate());
-				}
-				else{
-					throw new AxelorException(String.format(I18n.get(IExceptionMessage.HR_CONFIG_TEMPLATES), extraHours.getUser().getActiveCompany().getName()), IException.CONFIGURATION_ERROR);
+		
+		try{
+			ExtraHours extraHours = request.getContext().asType(ExtraHours.class);
+			if(!hrConfigService.getHRConfig(extraHours.getUser().getActiveCompany()).getExtraHoursMailNotification()){
+				response.setValue("statusSelect", TimesheetRepository.STATUS_VALIDATED);
+				response.setValue("validatedBy", AuthUtils.getUser());
+				response.setValue("validationDate", generalService.getTodayDate());
+			}
+			else{
+				User manager = extraHours.getUser().getEmployee().getManager();
+				if(manager!=null){
+					Template template =  hrConfigService.getHRConfig(extraHours.getUser().getActiveCompany()).getValidatedExtraHoursTemplate();
+					if(mailManagementService.sendEmail(template,extraHours.getId())){
+						String message = "Email sent to";
+						response.setFlash(I18n.get(message)+" "+extraHours.getUser().getFullName());
+						response.setValue("statusSelect", TimesheetRepository.STATUS_VALIDATED);
+						response.setValue("validatedBy", AuthUtils.getUser());
+						response.setValue("validationDate", generalService.getTodayDate());
+					}
+					else{
+						throw new AxelorException(String.format(I18n.get(IExceptionMessage.HR_CONFIG_TEMPLATES), extraHours.getUser().getActiveCompany().getName()), IException.CONFIGURATION_ERROR);
+					}
 				}
 			}
+		}catch(Exception e)  {
+			TraceBackService.trace(response, e);
 		}
 	}
 	
 	//refusing request and sending mail to applicant
 	public void refuse(ActionRequest request, ActionResponse response) throws AxelorException{
-		ExtraHours extraHours = request.getContext().asType(ExtraHours.class);
-		if(!hrConfigService.getHRConfig(extraHours.getUser().getActiveCompany()).getExtraHoursMailNotification()){
-			response.setValue("statusSelect", TimesheetRepository.STATUS_REFUSED);
-			response.setValue("refusedBy", AuthUtils.getUser());
-			response.setValue("refusalDate", generalService.getTodayDate());
-		}
-		else{
-			User manager = extraHours.getUser().getEmployee().getManager();
-			if(manager!=null){
-				Template template =  hrConfigService.getHRConfig(extraHours.getUser().getActiveCompany()).getRefusedExtraHoursTemplate();
-				if(mailManagementService.sendEmail(template,extraHours.getId())){
-					String message = "Email sent to";
-					response.setFlash(I18n.get(message)+" "+extraHours.getUser().getFullName());
-					response.setValue("statusSelect", TimesheetRepository.STATUS_REFUSED);
-					response.setValue("refusedBy", AuthUtils.getUser());
-					response.setValue("refusalDate", generalService.getTodayDate());
-				}
-				else{
-					throw new AxelorException(String.format(I18n.get(IExceptionMessage.HR_CONFIG_TEMPLATES), extraHours.getUser().getActiveCompany().getName()), IException.CONFIGURATION_ERROR);
+		
+		try{
+			ExtraHours extraHours = request.getContext().asType(ExtraHours.class);
+			if(!hrConfigService.getHRConfig(extraHours.getUser().getActiveCompany()).getExtraHoursMailNotification()){
+				response.setValue("statusSelect", TimesheetRepository.STATUS_REFUSED);
+				response.setValue("refusedBy", AuthUtils.getUser());
+				response.setValue("refusalDate", generalService.getTodayDate());
+			}
+			else{
+				User manager = extraHours.getUser().getEmployee().getManager();
+				if(manager!=null){
+					Template template =  hrConfigService.getHRConfig(extraHours.getUser().getActiveCompany()).getRefusedExtraHoursTemplate();
+					if(mailManagementService.sendEmail(template,extraHours.getId())){
+						String message = "Email sent to";
+						response.setFlash(I18n.get(message)+" "+extraHours.getUser().getFullName());
+						response.setValue("statusSelect", TimesheetRepository.STATUS_REFUSED);
+						response.setValue("refusedBy", AuthUtils.getUser());
+						response.setValue("refusalDate", generalService.getTodayDate());
+					}
+					else{
+						throw new AxelorException(String.format(I18n.get(IExceptionMessage.HR_CONFIG_TEMPLATES), extraHours.getUser().getActiveCompany().getName()), IException.CONFIGURATION_ERROR);
+					}
 				}
 			}
+		}catch(Exception e)  {
+			TraceBackService.trace(response, e);
 		}
 	}
 }
