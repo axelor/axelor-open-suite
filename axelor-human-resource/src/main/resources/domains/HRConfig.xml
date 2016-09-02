@@ -9,6 +9,8 @@
   	<integer name="importId"/>
     
     <one-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company" required="true" unique="true"/>
+    <many-to-one name="kilometricExpenseProduct" ref="com.axelor.apps.base.db.Product" title="Expense Product" />
+    
     <!-- LEAVE REQUEST MAIL NOTIFICATION -->
   	<boolean name="leaveMailNotification" title="Leave Request Notification Mail"/>
   	<many-to-one name="sentLeaveTemplate" ref="com.axelor.apps.message.db.Template" title="Sent Leave Request Template"/>
