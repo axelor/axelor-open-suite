@@ -52,16 +52,18 @@ public class ReconcileServiceImpl  implements ReconcileService {
 	protected AccountConfigService accountConfigService;
 	protected ReconcileRepository reconcileRepository;
 	protected MoveAdjustementService moveAdjustementService;
+	protected ReconcileSequenceService reconcileSequenceService;
 	
 	@Inject
 	public ReconcileServiceImpl(MoveToolService moveToolService, AccountCustomerService accountCustomerService, AccountConfigService accountConfigService,
-			ReconcileRepository reconcileRepository, MoveAdjustementService moveAdjustementService)  {
+			ReconcileRepository reconcileRepository, MoveAdjustementService moveAdjustementService, ReconcileSequenceService reconcileSequenceService)  {
 		
 		this.moveToolService = moveToolService;
 		this.accountCustomerService = accountCustomerService;
 		this.accountConfigService = accountConfigService;
 		this.reconcileRepository = reconcileRepository;
 		this.moveAdjustementService = moveAdjustementService;
+		this.reconcileSequenceService = reconcileSequenceService;
 
 	}
 
@@ -132,6 +134,9 @@ public class ReconcileServiceImpl  implements ReconcileService {
 			// Alors nous utilisons la règle de gestion consitant à imputer l'écart sur un compte transitoire si le seuil est respecté
 			canBeZeroBalance(reconcile);
 		}
+		
+		reconcileSequenceService.setSequence(reconcile);
+		
 		reconcileRepository.save(reconcile);
 
 		return reconcile.getStatusSelect();
@@ -161,7 +166,7 @@ public class ReconcileServiceImpl  implements ReconcileService {
 		// Check if the amount to reconcile is != zero
 		if (reconcile.getAmount() == null || reconcile.getAmount().compareTo(BigDecimal.ZERO) == 0)  {
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.RECONCILE_4),
-					GeneralServiceImpl.EXCEPTION, reconcile.getId(), debitMoveLine.getName(), debitMoveLine.getAccount().getLabel(),
+					GeneralServiceImpl.EXCEPTION, reconcile.getReconcileSeq(), debitMoveLine.getName(), debitMoveLine.getAccount().getLabel(),
 					creditMoveLine.getName(), creditMoveLine.getAccount().getLabel()), IException.INCONSISTENCY);
 
 		}
@@ -171,7 +176,7 @@ public class ReconcileServiceImpl  implements ReconcileService {
 			throw new AxelorException(
 					String.format(I18n.get(IExceptionMessage.RECONCILE_5)+" " +
 							I18n.get(IExceptionMessage.RECONCILE_3),
-							GeneralServiceImpl.EXCEPTION, reconcile.getId(), debitMoveLine.getName(), debitMoveLine.getAccount().getLabel(),
+							GeneralServiceImpl.EXCEPTION, reconcile.getReconcileSeq(), debitMoveLine.getName(), debitMoveLine.getAccount().getLabel(),
 					creditMoveLine.getName(), creditMoveLine.getAccount().getLabel()), IException.INCONSISTENCY);
 
 		}
