@@ -956,6 +956,9 @@ public class ImportForm extends CommonService {
 			if (basic[1] != null) {
 				addDashletAction(basic, viewBuilder.getMetaModule());
 			}
+			
+			viewItem = setCommonAttributes(viewBuilder, viewItem);
+			
 			viewItemRepo.save(viewItem);
 		}
 		

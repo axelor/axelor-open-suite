@@ -20,10 +20,12 @@ package com.axelor.studio.service.builder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Scanner;
 
 import javax.xml.bind.JAXBException;
 
@@ -65,6 +67,7 @@ import com.axelor.studio.service.FilterService;
 import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
+import com.sun.java.swing.plaf.windows.WindowsBorders.DashedBorder;
 
 /**
  * This class generate form view from ViewBuilder of type 'form'. It use
@@ -115,8 +118,8 @@ public class FormBuilderService {
 		FormView formView = getFormView(viewBuilder);
 		processFormView(formView, viewBuilder);
 
-		processPanels(viewBuilder.getViewPanelList().iterator(), false, viewBuilder.getAddOnly());
-		processPanels(viewBuilder.getViewSidePanelList().iterator(), true, viewBuilder.getAddOnly());
+		processPanels(sortPanels(viewBuilder.getViewPanelList()), false, viewBuilder.getAddOnly());
+		processPanels(sortPanels(viewBuilder.getViewSidePanelList()), true, viewBuilder.getAddOnly());
 
 		if (viewBuilder.getAddStream()) {
 			addStream();
@@ -130,6 +133,46 @@ public class FormBuilderService {
 		removeEmptyPanels(formViewItems);
 
 		return formView;
+	}
+
+	private Iterator<ViewPanel> sortPanels(List<ViewPanel> viewPanelList) {
+		
+		Collections.sort(viewPanelList, new Comparator<ViewPanel>() {
+
+			@Override
+			public int compare(ViewPanel panel1, ViewPanel panel2) {
+				Scanner scan1 = new Scanner(panel1.getPanelLevel());
+				Scanner scan2 = new Scanner(panel2.getPanelLevel());
+				scan1.useDelimiter("\\.");
+				scan2.useDelimiter("\\.");
+				try {
+					while(scan1.hasNextInt() && scan2.hasNextInt()) {
+					    int v1 = scan1.nextInt();
+					    int v2 = scan2.nextInt();
+					    if(v1 < v2) {
+					        return -1;
+					    } else if(v1 > v2) {
+					        return 1;
+					    }
+					}
+					
+					if(scan2.hasNextInt()) {
+						return -1;
+					}
+					if(scan1.hasNextInt()) {
+						return 1; 
+					}
+					
+					return 0;
+				} finally{
+					scan1.close();
+					scan2.close();
+				}
+				
+			}
+		});
+		
+		return viewPanelList.iterator();
 	}
 
 	/**
@@ -1124,8 +1167,25 @@ public class FormBuilderService {
 			log.debug("Adding dashlet:{}", viewItem.getName());
 			Dashlet dashlet = new Dashlet();
 			dashlet.setAction(viewItem.getName());
-			dashlet.setColSpan(viewItem.getColSpan());
+			
+			if (viewItem.getColSpan() > 0) {
+				dashlet.setColSpan(viewItem.getColSpan());
+			}
+			else {
+				dashlet.setColSpan(12);
+			}
+			
 			dashlet.setHeight("350");
+			dashlet.setHidden(viewItem.getHidden());
+			if (viewItem.getHideIf() != null) {
+				dashlet.setHideIf(viewItem.getHideIf());
+			}
+			dashlet.setTitle(viewItem.getTitle());
+			dashlet.setModuleToCheck(viewItem.getIfModule());
+			dashlet.setReadonly(viewItem.getReadonly());
+			if (viewItem.getReadonlyIf() != null) {
+				dashlet.setReadonlyIf(viewItem.getReadonlyIf());
+			}
 			items.add(dashlet);
 			
 		}

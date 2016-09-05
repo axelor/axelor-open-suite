@@ -514,7 +514,7 @@ public class MenuBuilderService {
 	 */
 	private void writeMenu(File menuFile) throws IOException, JAXBException {
 
-		StringWriter xmlWriter = new StringWriter();
+		FileWriter fileWriter = new FileWriter(menuFile);
 
 		ObjectViews objectViews = new ObjectViews();
 
@@ -524,10 +524,8 @@ public class MenuBuilderService {
 		actions.addAll(actionMap.values());
 		objectViews.setActions(actions);
 
-		XMLViews.marshal(objectViews, xmlWriter);
-
-		FileWriter fileWriter = new FileWriter(menuFile);
-		fileWriter.write(xmlWriter.toString());
+		XMLViews.marshal(objectViews, fileWriter);
+		
 		fileWriter.close();
 	}
 
