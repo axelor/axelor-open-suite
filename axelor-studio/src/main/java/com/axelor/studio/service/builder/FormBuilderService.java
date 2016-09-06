@@ -67,7 +67,6 @@ import com.axelor.studio.service.FilterService;
 import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
-import com.sun.java.swing.plaf.windows.WindowsBorders.DashedBorder;
 
 /**
  * This class generate form view from ViewBuilder of type 'form'. It use

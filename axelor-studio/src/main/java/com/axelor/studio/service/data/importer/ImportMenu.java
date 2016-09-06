@@ -19,12 +19,9 @@
 package com.axelor.studio.service.data.importer;
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.xssf.usermodel.XSSFSheet;
-
+import com.axelor.common.Inflector;
 import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.db.MetaMenu;
@@ -34,13 +31,12 @@ import com.axelor.meta.db.repo.MetaMenuRepository;
 import com.axelor.meta.db.repo.MetaModelRepository;
 import com.axelor.studio.db.MenuBuilder;
 import com.axelor.studio.db.repo.MenuBuilderRepository;
-import com.axelor.studio.service.data.CommonService;
 import com.axelor.studio.service.data.TranslationService;
 import com.axelor.studio.service.data.exporter.ExportMenu;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
-public class ImportMenu extends CommonService {
+public class ImportMenu {
 	
 	private Integer parentMenuSeq = 0;
 	
@@ -63,78 +59,77 @@ public class ImportMenu extends CommonService {
 	@Inject
 	private MetaModelRepository metaModelRepo;
 	
-	public void importMenus(XSSFSheet sheet) throws AxelorException {
-		if (sheet == null) {
+	public void importMenus(DataReader reader, String key) throws AxelorException {
+		if (reader == null) {
 			return;
 		}
 		
-		Iterator<Row> rowIter = sheet.iterator();
-		rowIter.next();
-		
-		while(rowIter.hasNext()) {
-			Row row = rowIter.next();
-			MetaModule module = importService.getModule(getValue(row, ExportMenu.MODULE), null);
+		int totalLines = reader.getTotalLines(key);
+		for (int rowNum = 0; rowNum < totalLines; rowNum++) {
+			String[] row = reader.read(key, rowNum);
+			if (row == null) {
+				continue;
+			}
+			
+			MetaModule module = importService.getModule(row[ExportMenu.MODULE], null);
 			if (module == null) {
 				continue;
 			}
 			
-			String modelName = getValue(row, ExportMenu.OBJECT);
+			String modelName = row[ExportMenu.OBJECT];
 			MetaModel model = null;
 			if (modelName != null) {
 				model = metaModelRepo.findByName(modelName);
 				if (model == null) {
 					throw new AxelorException(I18n.get("Menu model not found for sheet: %s row: %s")
-							, 1, row.getSheet().getSheetName(), row.getRowNum() + 1);
+							, 1, key, rowNum + 1);
 				}
 			}
 			
-			createMenu(module, model, row);
+			createMenu(module, model, row, key, rowNum);
 		}
 		
 	}
 	
 	@Transactional
-	public void createMenu(MetaModule module, MetaModel  model, Row row) throws AxelorException {
+	public void createMenu(MetaModule module, MetaModel  model, String[] row, String key, int rowNum) throws AxelorException {
 		
-		String name = getValue(row, ExportMenu.NAME);
-		String title = getTitle(row);
+		String name = row[ExportMenu.NAME];
+		String title = getTitle(row[ExportMenu.TITLE], row[ExportMenu.TITLE_FR]);
 		
 		if (name == null && title == null) {
 			throw new AxelorException(I18n.get("Menu name and title empty for sheet: %s row: %s")
-					, 1, row.getSheet().getSheetName(), row.getRowNum() + 1);
+					, 1, key, rowNum + 1);
 		}
 		
 		if (name == null) {
 			name = title;
 		}
 		
-		name = inflector.dasherize(name);
+		name = Inflector.getInstance().dasherize(name);
 		
 		MenuBuilder menuBuilder = getMenuBuilder(name, module, model);
 		menuBuilder.setTitle(title);
 		
-		String parentName = getValue(row, ExportMenu.PARENT);
+		String parentName = row[ExportMenu.PARENT];
 		if (parentName != null) {
 			menuBuilder = setParentMenu(menuBuilder, parentName);
 		}
 		
-		menuBuilder.setIcon(getValue(row, ExportMenu.ICON));
-		menuBuilder.setIconBackground(getValue(row, ExportMenu.BACKGROUND));
-		menuBuilder.setDomain(getValue(row, ExportMenu.FILTER));
-		menuBuilder.setAction(getValue(row, ExportMenu.ACTION));
-		menuBuilder.setViews(getValue(row, ExportMenu.VIEWS));
+		menuBuilder.setIcon(row[ExportMenu.ICON]);
+		menuBuilder.setIconBackground(row[ExportMenu.BACKGROUND]);
+		menuBuilder.setDomain(row[ExportMenu.FILTER]);
+		menuBuilder.setAction(row[ExportMenu.ACTION]);
+		menuBuilder.setViews(row[ExportMenu.VIEWS]);
 		
-		String order = getValue(row, ExportMenu.ORDER);
+		String order = row[ExportMenu.ORDER];
 		menuBuilder = setMenuOrder(menuBuilder, order);
 		
 		menuBuilderRepo.save(menuBuilder);
 		
 	}
 	
-	private String getTitle(Row row) {
-		
-		String title = getValue(row, ExportMenu.TITLE);
-		String titleFr = getValue(row, ExportMenu.TITLE_FR);
+	private String getTitle(String title, String titleFr) {
 		
 		if (title == null) {
 			title = titleFr;
@@ -172,7 +167,7 @@ public class ImportMenu extends CommonService {
 	
 	private MenuBuilder setParentMenu(MenuBuilder menuBuilder, String parentName) throws AxelorException {
 		
-		parentName = inflector.dasherize(parentName);
+		parentName = Inflector.getInstance().dasherize(parentName);
 		MenuBuilder parent = menuBuilderRepo
 				.all()
 				.filter("self.name = ?1 and self.metaModule.name = ?2" ,

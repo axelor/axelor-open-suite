@@ -27,10 +27,10 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.poi.ss.usermodel.Row;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.axelor.common.Inflector;
 import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.db.MetaField;
@@ -57,7 +57,7 @@ import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
-public class ImportForm extends CommonService {
+public class ImportForm {
 
 	private final static Logger log = LoggerFactory
 			.getLogger(ImportForm.class);
@@ -76,7 +76,9 @@ public class ImportForm extends CommonService {
 	
 	private Map<String, Set<String>> extendViews;
 
-	private Row row = null;
+	private String[] row = null;
+	
+	private int rowNum = 0;
 	
 	private boolean replace = true;
 	
@@ -118,10 +120,10 @@ public class ImportForm extends CommonService {
 		extendViews= new HashMap<String,  Set<String>>();
 	}
 
-	public void importForm(MetaModel model, String[] basic, Row row,
+	public void importForm(MetaModel model, String[] basic, String[] row, int rowNum, 
 			MetaField metaField, boolean replace) throws AxelorException {
 		
-		String module = getValue(row, MODULE);
+		String module = row[CommonService.MODULE];
 		if (model == null || module == null){
 			return;
 		}
@@ -133,6 +135,7 @@ public class ImportForm extends CommonService {
 		}
 		
 		this.row = row;
+		this.rowNum = rowNum;
 
 		String[] name = getViewName(model.getName());
 		if (name.length > 1) {
@@ -143,7 +146,7 @@ public class ImportForm extends CommonService {
 		
 		ViewBuilder viewBuilder = getViewBuilder(metaModule, model, name);
 		
-		String panelLevel = getValue(row, PANEL_LEVEL);
+		String panelLevel = row[CommonService.PANEL_LEVEL];
 		
 		switch (basic[0]) {
 			case "panelbook":
@@ -236,7 +239,7 @@ public class ImportForm extends CommonService {
 	
 	private String[] getViewName(String model) {
 		
-		String viewName = getValue(row, VIEW);
+		String viewName = row[CommonService.VIEW];
 		String title = null;
 		if (viewName != null && viewName.contains("(")) {
 			String[] view = viewName.split("\\(");
@@ -314,18 +317,18 @@ public class ImportForm extends CommonService {
 		if (basic != null) {
 			panel.setName(basic[2]);
 			panel.setTitle(basic[3]);
-			translationService.addTranslation(basic[3], getValue(row, TITLE_FR), "fr");
+			translationService.addTranslation(basic[3], row[CommonService.TITLE_FR], "fr");
 		}
 		
 		panel.setNewPanel(!replace);
 		
 		if (addAttrs) {
 			
-			panel.setIfModule(getValue(row, IF_MODULE));
+			panel.setIfModule(row[CommonService.IF_MODULE]);
 			
-			panel.setColspan(getValue(row, COLSPAN));
+			panel.setColspan(row[CommonService.COLSPAN]);
 			
-			String readonly = getValue(row, READONLY);
+			String readonly = row[CommonService.READONLY];
 			if (readonly != null && readonly.equalsIgnoreCase("x")) {
 				panel.setReadonly(true);
 			}
@@ -333,7 +336,7 @@ public class ImportForm extends CommonService {
 				panel.setReadonlyIf(readonly);
 			}
 				
-			String hidden = getValue(row, HIDDEN);
+			String hidden = row[CommonService.HIDDEN];
 			if (hidden != null && hidden.equalsIgnoreCase("x")) {
 				panel.setHidden(true);
 			}
@@ -341,9 +344,9 @@ public class ImportForm extends CommonService {
 				panel.setHideIf(hidden);
 			}
 			
-			panel.setShowIf(getValue(row, SHOW_IF));
+			panel.setShowIf(row[CommonService.SHOW_IF]);
 			
-			panel.setIfConfig(getValue(row, IF_CONFIG));
+			panel.setIfConfig(row[CommonService.IF_CONFIG]);
 			
 		}
 
@@ -399,7 +402,7 @@ public class ImportForm extends CommonService {
 		viewItem.setTypeSelect(1);
 		viewItem.setTitle(basic[3]);
 		
-		translationService.addTranslation(basic[3], getValue(row, TITLE_FR), "fr");
+		translationService.addTranslation(basic[3], row[CommonService.TITLE_FR], "fr");
 
 		if (basic[1] != null && basic[1].startsWith("toolbar")) {
 			viewItem.setViewBuilderToolbar(viewBuilder);
@@ -413,7 +416,7 @@ public class ImportForm extends CommonService {
 		
 		
 		viewItem.setOnClick(FormBuilderService.getUpdatedAction(
-				viewItem.getOnClick(), getValue(row, ON_CHANGE)));
+				viewItem.getOnClick(), row[CommonService.ON_CHANGE]));
 		
 		viewItem = setCommonAttributes(viewBuilder, viewItem);
 
@@ -435,7 +438,7 @@ public class ImportForm extends CommonService {
 		}
 		viewItem.setTypeSelect(2);
 		viewItem.setTitle(basic[3]);
-		translationService.addTranslation(basic[3], getValue(row, TITLE_FR), "fr");
+		translationService.addTranslation(basic[3], row[CommonService.TITLE_FR], "fr");
 		
 		viewItem = setCommonAttributes(viewBuilder, viewItem);
 
@@ -487,7 +490,7 @@ public class ImportForm extends CommonService {
 	public void addWizard(String module, ViewBuilder viewBuilder, String[] basic) throws AxelorException {
 
 		ViewPanel lastPanel = getLastPanel(viewBuilder, true);
-		String modelName = inflector.camelize(basic[1]);
+		String modelName = Inflector.getInstance().camelize(basic[1]);
 		MetaModel metaModel = metaModelRepo.findByName(modelName);
 
 		ViewBuilder targetView = null;
@@ -500,7 +503,7 @@ public class ImportForm extends CommonService {
 			viewName = ViewLoaderService.getDefaultViewName(modelName, "form");
 		}
 		
-		String actionName = "action-" + inflector.dasherize(basic[2]);
+		String actionName = "action-" + Inflector.getInstance().dasherize(basic[2]);
 		
 		ActionBuilder builder = getActionViewBuilder(actionName, basic[3], viewName, targetView, viewBuilder.getMetaModule(), null);
 		builder.setMetaModule(viewBuilder.getMetaModule());
@@ -509,7 +512,7 @@ public class ImportForm extends CommonService {
 		ViewItem button = new ViewItem(basic[2]);
 		button.setTypeSelect(1);
 		button.setTitle(basic[3]);
-		translationService.addTranslation(basic[3], getValue(row, TITLE_FR), "fr");
+		translationService.addTranslation(basic[3], row[CommonService.TITLE_FR], "fr");
 		button.setOnClick(builder.getName());
 		button.setViewPanel(lastPanel);
 		button.setSequence(getPanelSeq(lastPanel.getId()));
@@ -534,7 +537,7 @@ public class ImportForm extends CommonService {
 			viewItem.setMetaField(metaField);
 		}
 		else if(!basic[0].equals("empty")) {
-			translationService.addTranslation(basic[3], getValue(row, TITLE_FR), "fr");
+			translationService.addTranslation(basic[3], row[CommonService.TITLE_FR], "fr");
 			viewItem = setDummyField(viewItem, basic);
 		}
 		
@@ -553,8 +556,8 @@ public class ImportForm extends CommonService {
 		viewItem = setEvent(viewBuilder, viewItem);
 		viewItem = setCommonAttributes(viewBuilder, viewItem);
 		viewItem.setOnChange(FormBuilderService.getUpdatedAction(
-				viewItem.getOnChange(),  getValue(row, ON_CHANGE)));
-		viewItem.setPanelLevel(getValue(row, PANEL_LEVEL));
+				viewItem.getOnChange(),  row[CommonService.ON_CHANGE]));
+		viewItem.setPanelLevel(row[CommonService.PANEL_LEVEL]);
 		viewItem.setFormView(basic[5]);
 		viewItem.setGridView(basic[6]);
 		
@@ -565,7 +568,7 @@ public class ImportForm extends CommonService {
 	private ViewItem setDummyField(ViewItem viewItem, String[] basic) {
 		
 		viewItem.setTitle(basic[3]);
-		viewItem.setFieldType(FIELD_TYPES.get(basic[0]));
+		viewItem.setFieldType(CommonService.FIELD_TYPES.get(basic[0]));
 		if (basic[1] != null) {
 			MetaModel model = metaModelRepo.findByName(basic[1]);
 			if (model != null) {
@@ -709,7 +712,7 @@ public class ImportForm extends CommonService {
 
 		if (viewItem.getTypeSelect() == 0) {
 			viewItem.setRequired(false);
-			String required = getValue(row, REQUIRED);
+			String required = row[CommonService.REQUIRED];
 			if (required != null && required.equalsIgnoreCase("x")) {
 				viewItem.setRequired(true);
 			}
@@ -719,7 +722,7 @@ public class ImportForm extends CommonService {
 		}
 		
 		viewItem.setHidden(false);
-		String hidden = getValue(row, HIDDEN);
+		String hidden = row[CommonService.HIDDEN];
 		if (hidden != null && hidden.equalsIgnoreCase("x")) {
 			viewItem.setHidden(true);
 		}
@@ -728,7 +731,7 @@ public class ImportForm extends CommonService {
 		}
 		
 		viewItem.setReadonly(false);
-		String readonly = getValue(row, READONLY);
+		String readonly = row[CommonService.READONLY];
 		if (readonly != null && readonly.equalsIgnoreCase("x")) {
 			viewItem.setReadonly(true);
 		}
@@ -736,25 +739,25 @@ public class ImportForm extends CommonService {
 			viewItem.setReadonlyIf(readonly);
 		}
 		
-		viewItem.setShowIf(getValue(row, SHOW_IF));
-		viewItem.setIfModule(getValue(row, IF_MODULE));
-		viewItem.setIfConfig(getValue(row, IF_CONFIG));
+		viewItem.setShowIf(row[CommonService.SHOW_IF]);
+		viewItem.setIfModule(row[CommonService.IF_MODULE]);
+		viewItem.setIfConfig(row[CommonService.IF_CONFIG]);
 		
 		Integer typeSelect = viewItem.getTypeSelect();
 		if (typeSelect == 0 && viewItem.getFieldType() != null) {
 			if ("many-to-one,many-to-many".contains(viewItem.getFieldType())) {
-				viewItem.setDomainCondition(getValue(row, DOMAIN));
+				viewItem.setDomainCondition(row[CommonService.DOMAIN]);
 			}
 			addFormula(viewBuilder, viewItem);
 		}
 		
-		String colspan = getValue(row, COLSPAN);
+		String colspan = row[CommonService.COLSPAN];
 		
 		if (StringUtils.isNumeric(colspan)) {
 			viewItem.setColSpan(Integer.parseInt(colspan));
 		}
 		
-		viewItem.setWidget(getValue(row, WIDGET));
+		viewItem.setWidget(row[CommonService.WIDGET]);
 
 		return viewItem;
 	}
@@ -762,7 +765,7 @@ public class ImportForm extends CommonService {
 	@Transactional
 	public void addOnSave(ViewBuilder viewBuilder) {
 		
-		String formula = getValue(row, FORMULA);
+		String formula = row[CommonService.FORMULA];
 		
 		if (formula != null) {
 			viewBuilder.setOnSave(formula);
@@ -773,7 +776,7 @@ public class ImportForm extends CommonService {
 	@Transactional
 	public void addOnNew(ViewBuilder viewBuilder) {
 		
-		String formula = getValue(row, FORMULA);
+		String formula = row[CommonService.FORMULA];
 		
 		if (formula != null) {
 			viewBuilder.setOnNew(formula);
@@ -784,7 +787,7 @@ public class ImportForm extends CommonService {
 	@Transactional
 	public void addOnLoad(ViewBuilder viewBuilder) {
 		
-		String formula = getValue(row, FORMULA);
+		String formula = row[CommonService.FORMULA];
 		
 		if (formula != null) {
 			viewBuilder.setOnLoad(formula);
@@ -795,7 +798,7 @@ public class ImportForm extends CommonService {
 	@Transactional
 	public void addSpacer(String[] basic, ViewBuilder viewBuilder) throws AxelorException {
 		
-		String colSpan = getValue(row, COLSPAN);
+		String colSpan = row[CommonService.COLSPAN];
 		
 		if (colSpan != null) {
 			
@@ -818,8 +821,8 @@ public class ImportForm extends CommonService {
 	@Transactional
 	public void addMenubar(ViewBuilder viewBuilder) throws AxelorException {
 		
-		String title = getValue(row, TITLE);
-		String titleFr = getValue(row, TITLE_FR);
+		String title = row[CommonService.TITLE];
+		String titleFr = row[CommonService.TITLE_FR];
 		
 		if (title == null) {
 			title = titleFr;
@@ -827,7 +830,7 @@ public class ImportForm extends CommonService {
 		translationService.addTranslation(title, titleFr, "fr");
 		
 		if (title == null) {
-			throw new AxelorException(I18n.get("Menubar must have title. Row: %s"), 1, row.getRowNum());
+			throw new AxelorException(I18n.get("Menubar must have title. Row: %s"), 1, rowNum);
 		}
 		
 		
@@ -842,8 +845,8 @@ public class ImportForm extends CommonService {
 	@Transactional
 	public void addMenubarItem(ViewBuilder viewBuilder) throws AxelorException {
 		
-		String title = getValue(row, TITLE);
-		String titleFr = getValue(row, TITLE_FR);
+		String title = row[CommonService.TITLE];
+		String titleFr = row[CommonService.TITLE_FR];
 		
 		if (title == null) {
 			title = titleFr;
@@ -853,19 +856,19 @@ public class ImportForm extends CommonService {
 		}
 		
 		if (title == null) {
-			throw new AxelorException(I18n.get("Menubar item must have title. Row: %s"), 1, row.getRowNum());
+			throw new AxelorException(I18n.get("Menubar item must have title. Row: %s"), 1, rowNum);
 		}
 		
 		List<ViewItem> menubar = viewItemRepo.all().filter("self.menubarBuilder = ?1", viewBuilder).fetch();
 		
 		if (menubar == null || menubar.isEmpty()) {
-			throw new AxelorException(I18n.get("No menubar found for menubar item. Row: %s"), 1, row.getRowNum());
+			throw new AxelorException(I18n.get("No menubar found for menubar item. Row: %s"), 1, rowNum);
 		}
 		
 		ViewItem viewItem = new ViewItem();
 		viewItem.setTitle(title);
 		viewItem.setMenubarMenu(menubar.get(menubar.size() - 1));
-		viewItem.setOnClick(getValue(row, ON_CHANGE));
+		viewItem.setOnClick(row[CommonService.ON_CHANGE]);
 		
 		viewItemRepo.save(viewItem);
 			
@@ -948,7 +951,7 @@ public class ImportForm extends CommonService {
 			viewItem.setViewPanel(lastPanel);
 			viewItem.setSequence(getPanelSeq(lastPanel.getId()));
 			log.debug("Dashlet sequence: {}", viewItem.getSequence());
-			String colspan = getValue(row, COLSPAN);
+			String colspan = row[CommonService.COLSPAN];
 			if (colspan != null) {
 				viewItem.setColSpan(Integer.parseInt(colspan));
 			}
@@ -980,7 +983,7 @@ public class ImportForm extends CommonService {
 		
 		ActionBuilder builder = getActionViewBuilder(basic[2], basic[3], viewName, targetView, metaModule, view);
 		builder.setMetaModule(metaModule);
-		String[] domainCtx = getDomainContext(getValue(row, DOMAIN));
+		String[] domainCtx = getDomainContext(row[CommonService.DOMAIN]);
 		builder.setDomainCondition(domainCtx[0]);
 		if (domainCtx.length > 1) {
 			builder.setContext(domainCtx[1]);

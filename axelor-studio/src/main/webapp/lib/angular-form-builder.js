@@ -657,7 +657,7 @@
   ]).directive('viewComponents', function() {
     return {
       restrict: 'A',
-      template: "<div class='navbar navbar-default  navbar-fixed-top label-item'><button type=\"submit\" ng-click=\"submit()\" class=\"btn btn-default save-btn\" title=\"Save\"><i class=\"fa fa-save\"/></button><span class='fb-component panel ' title=\"Component\" ng-repeat=\"component in components\"\n   fb-component=\"component\"></span>\n </div>",
+      template: "<div class='navbar navbar-default  navbar-fixed-top label-item'><button type=\"submit\" ng-click=\"submit()\" class=\"btn btn-default save-btn\" title=\"Save\"><i class=\"fa fa-save\"/></button><div class='view-element' title=\"Component\" ng-repeat=\"component in components\"\n   fb-component=\"component\"></div>\n </div>",
       controller: 'fbComponentsController',
       link: function(scope, element) {
     	  if(scope.isView){
@@ -1269,6 +1269,7 @@
         template: component.template,
         templateUrl: component.templateUrl,
         popoverTemplate: component.popoverTemplate,
+        isView: component.isView,
         popoverTemplateUrl: component.popoverTemplateUrl        
       };
       if (!result.template && !result.templateUrl) {

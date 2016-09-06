@@ -18,7 +18,6 @@
 package com.axelor.studio.service.data.importer;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -27,21 +26,17 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.xssf.usermodel.XSSFSheet;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
-import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaField;
+import com.axelor.meta.db.MetaFile;
 import com.axelor.meta.db.MetaModel;
 import com.axelor.meta.db.MetaModule;
 import com.axelor.meta.db.repo.MetaModelRepository;
 import com.axelor.studio.db.ActionBuilder;
-import com.axelor.studio.db.DataManager;
 import com.axelor.studio.db.ViewBuilder;
 import com.axelor.studio.db.ViewItem;
 import com.axelor.studio.db.repo.ActionBuilderRepository;
@@ -52,7 +47,7 @@ import com.axelor.studio.service.data.validator.ValidatorService;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
-public class ImportService extends CommonService {
+public class ImportService {
 
 	private final static Logger log = LoggerFactory
 			.getLogger(ImportService.class);
@@ -106,12 +101,9 @@ public class ImportService extends CommonService {
 	 * @return Return true if import done successfully else false.
 	 * @throws AxelorException 
 	 */
-	public File importData(DataManager dataManager) throws AxelorException {
+	public File importData(DataReader reader, MetaFile metaFile) throws AxelorException {
 		
-		File inputFile = MetaFiles.getPath(dataManager.getMetaFile())
-				.toFile();
-
-		if (!inputFile.exists()) {
+		if (metaFile == null) {
 			throw new AxelorException(I18n.get("Input file not exist"), 4);
 		}
 
@@ -122,23 +114,20 @@ public class ImportService extends CommonService {
 
 		try {
 			
-			FileInputStream fis = new FileInputStream(inputFile);
-			XSSFWorkbook workBook = new XSSFWorkbook(fis);
+			reader.initialize(metaFile);
 			
-			File logFile = validatorService.validate(workBook);
+			File logFile = validatorService.validate(reader);
 			if(logFile != null){
 				return logFile;
 			}
 			
 			importForm.clear();
 			
-			XSSFSheet sheet = workBook.getSheet("Modules");
-			importModule.createModules(sheet);
+			importModule.createModules(reader, "Modules");
 
-			processSheets(workBook.iterator());
+			processSheets(reader);
 			
-			sheet = workBook.getSheet("Menu");
-			importMenu.importMenus(sheet);
+			importMenu.importMenus(reader, "Menu");
 			
 			generateGridView();
 
@@ -160,24 +149,31 @@ public class ImportService extends CommonService {
 	 *             Exception in file handling.
 	 * @throws AxelorException 
 	 */
-	private void processSheets(Iterator<XSSFSheet> sheetIter) throws IOException, AxelorException {
+	private void processSheets(DataReader reader) throws IOException, AxelorException {
 
-		if (!sheetIter.hasNext()) {
+		String[] keys = reader.getKeys();
+		if (keys == null) {
 			return;
 		}
 		
-		XSSFSheet sheet = sheetIter.next();
-		String name = sheet.getSheetName(); 
-		if (!name.equals("Modules") && !name.equals("Menu")) {
-			log.debug("Importing sheet: {}", name);
-			Iterator<Row> rowIter = sheet.rowIterator();
-			if (rowIter.hasNext()) {
-				rowIter.next();
+		for (String key : keys) {
+			if (!key.equals("Modules") && !key.equals("Menu")) {
+				log.debug("Importing sheet: {}", key);
+				int totalLines = reader.getTotalLines(key);
+				
+				for (int rowNum = 0; rowNum < totalLines; rowNum++) {
+					
+					String[] row = reader.read(key, rowNum);
+					if (row == null) {
+						continue;
+					}
+					
+					extractRow(row, key, rowNum);
+					
+				}
 			}
-			extractRow(rowIter);
 		}
 		
-		processSheets(sheetIter);
 	}
 	
 	/**
@@ -189,17 +185,12 @@ public class ImportService extends CommonService {
 	 * @throws AxelorException 
 	 */
 
-	private void extractRow(Iterator<Row> rowIter) throws AxelorException {
+	private void extractRow(String[] row, String key, int rowNum) throws AxelorException {
 
-		if (!rowIter.hasNext()) {
-			return;
-		}
-		
 		replace = true;
-		Row row = rowIter.next();
-		String module = getValue(row, MODULE);
+
+		String module = row[CommonService.MODULE];
 		if (module == null) {
-			extractRow(rowIter);
 			return;
 		}
 		
@@ -208,15 +199,13 @@ public class ImportService extends CommonService {
 			module = module.replace("*", "");
 		}
 		
-		MetaModule metaModule = getModule(module, getValue(row, IF_MODULE));
+		MetaModule metaModule = getModule(module, row[CommonService.IF_MODULE]);
 		if (metaModule == null) {
-			extractRow(rowIter);
 			return;
 		}
 		
-		importModel.importModel(this, row, metaModule);
+		importModel.importModel(this, row, rowNum, metaModule);
 
-		extractRow(rowIter);
 	}
 	
     public MetaModule getModule(String module, String checkModule) {
@@ -338,9 +327,9 @@ public class ImportService extends CommonService {
     	}
     }
     
-    public void addView(MetaModel model, String[] basic, Row row, MetaField field) throws AxelorException {
+    public void addView(MetaModel model, String[] basic, String[] row, int rowNum, MetaField field) throws AxelorException {
     	
-    	importForm.importForm(model, basic, row, field, replace);
+    	importForm.importForm(model, basic, row, rowNum, field, replace);
     }
     
     public Integer getFieldSeq(Long modelId) {

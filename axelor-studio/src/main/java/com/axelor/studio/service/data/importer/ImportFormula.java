@@ -3,8 +3,7 @@ package com.axelor.studio.service.data.importer;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.poi.ss.usermodel.Row;
-
+import com.axelor.common.Inflector;
 import com.axelor.meta.db.MetaModel;
 import com.axelor.meta.db.MetaSequence;
 import com.axelor.meta.db.repo.MetaSequenceRepository;
@@ -22,7 +21,7 @@ import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
-public class ImportFormula extends CommonService {
+public class ImportFormula {
 	
 	@Inject
 	private ActionBuilderRepository actionBuilderRepo;
@@ -37,10 +36,10 @@ public class ImportFormula extends CommonService {
 	private ViewItemRepository viewItemRepo;
 	
 	@Transactional
-	public List<String> importFormula(Row row, ViewBuilder viewBuilder, ViewItem viewItem) {
+	public List<String> importFormula(String[] row, ViewBuilder viewBuilder, ViewItem viewItem) {
 
-		String formula = getValue(row, FORMULA);
-		String event = getValue(row, EVENT);
+		String formula = row[CommonService.FORMULA];
+		String event = row[CommonService.EVENT];
 		
 		if (formula == null || event == null) {
 			return new ArrayList<String>();
@@ -112,11 +111,11 @@ public class ImportFormula extends CommonService {
 
 
 	@Transactional
-	public List<String> importValidation(Row row, String type, ViewBuilder viewBuilder,
+	public List<String> importValidation(String[] row, String type, ViewBuilder viewBuilder,
 			MetaModel model) {
 
-		String formula = getValue(row, FORMULA);
-		String event = getValue(row, EVENT);
+		String formula = row[CommonService.FORMULA];
+		String event = row[CommonService.EVENT];
 
 		if (Strings.isNullOrEmpty(formula) || Strings.isNullOrEmpty(event)) {
 			return new ArrayList<String>();
@@ -241,9 +240,9 @@ public class ImportFormula extends CommonService {
 		}
 		String[] sequence = formula.split(":");
 		if (sequence.length > 1) {
-			String model = inflector.dasherize(metaModel.getName()).replace(
+			String model = Inflector.getInstance().dasherize(metaModel.getName()).replace(
 					"-", ".");
-			String field = inflector.dasherize(viewItem.getName()).replace("-",
+			String field = Inflector.getInstance().dasherize(viewItem.getName()).replace("-",
 					".");
 			
 			String name = "sequence." + model + "." + field;
