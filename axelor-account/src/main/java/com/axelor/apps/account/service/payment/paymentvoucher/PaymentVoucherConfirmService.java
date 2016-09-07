@@ -34,6 +34,7 @@ import com.axelor.apps.account.db.PaymentInvoiceToPay;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.PaymentVoucher;
 import com.axelor.apps.account.db.Reconcile;
+import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.PaymentInvoiceToPayRepository;
 import com.axelor.apps.account.db.repo.PaymentVoucherRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
@@ -144,7 +145,7 @@ public class PaymentVoucherConfirmService  {
 		if(paymentVoucher.getMoveLine() == null || (paymentVoucher.getMoveLine() != null && !allRight) || (scheduleToBePaid && !allRight && paymentVoucher.getMoveLine() != null))  {
 
 			//Manage all the cases in the same way. As if a move line (Excess payment) is selected, we cancel it first
-			Move move = moveService.getMoveCreateService().createMove(journal, company, null, payerPartner, paymentDate, paymentMode, paymentVoucher.getCashRegister());
+			Move move = moveService.getMoveCreateService().createMove(journal, company, null, payerPartner, paymentDate, paymentMode, MoveRepository.AUTOMATIC, paymentVoucher.getCashRegister());
 
 			move.setPaymentVoucher(paymentVoucher);
 

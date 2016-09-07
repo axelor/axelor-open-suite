@@ -47,7 +47,6 @@ public class MoveValidateService {
 	protected SequenceService sequenceService;
 	protected MoveCustAccountService moveCustAccountService;
 	protected MoveRepository moveRepository;
-	protected LocalDate today;
 
 	@Inject
 	public MoveValidateService(GeneralService generalService, SequenceService sequenceService, MoveCustAccountService moveCustAccountService, MoveRepository moveRepository) {
@@ -55,8 +54,6 @@ public class MoveValidateService {
 		this.sequenceService = sequenceService;
 		this.moveCustAccountService = moveCustAccountService;
 		this.moveRepository = moveRepository;
-		today = generalService.getTodayDate();
-
 	}
 
 
@@ -109,7 +106,6 @@ public class MoveValidateService {
 	public void validateMove(Move move, boolean updateCustomerAccount) throws AxelorException {
 
 		log.debug("Validation de l'écriture comptable {}", move.getReference());
-
 		Journal journal = move.getJournal();
 		Company company = move.getCompany();
 		if(journal == null)  {
@@ -135,7 +131,7 @@ public class MoveValidateService {
 			
 		moveCustAccountService.updateCustomerAccount(move);
 
-		move.setValidationDate(today);
+		move.setValidationDate(LocalDate.now());
 
 	}
 

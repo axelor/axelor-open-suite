@@ -80,8 +80,9 @@
 	<selection name='move.line.report.type.select.export'>
 		<option value="6">Export sale -> Acc. Soft.</option>
 		<option value="7">Export refunds -> Acc. Soft.</option>
-		<option value="8">Export tresury -> Acc. Soft.</option>
+		<option value="8">Export treasury -> Acc. Soft.</option>
 		<option value="9">Export purchase -> Acc. Soft.</option>
+		<option value="14">Export payroll journal entry -> Acc. Soft.</option>
 	</selection>
 	
 	<selection name='iaccount.move.status.select'>
@@ -89,6 +90,13 @@
 		<option value='2'>Simulated</option>
 		<option value='3'>Validated</option>
 		<option value='4'>Canceled</option>
+	</selection>
+	
+	<selection name='iaccount.move.technical.origin.select'>
+		<option value='1'>Entry</option>
+		<option value='2'>Automatic</option>
+		<option value='3'>Template</option>
+		<option value='4'>Import</option>
 	</selection>
 	
 	<selection name='iaccount.cash.register.line.status.select'>

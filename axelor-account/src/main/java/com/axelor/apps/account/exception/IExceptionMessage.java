@@ -168,7 +168,8 @@ public interface IExceptionMessage {
 	static final String RECONCILE_3 = /*$$(*/ "\n (Débit %s compte %s - Crédit %s compte %s)" /*)*/ ;
 	static final String RECONCILE_4 = /*$$(*/ "%s :\nReconciliation %s: Le montant réconcilié doit être différent de zéro. \n (Débit %s compte %s - Crédit %s compte %s)" /*)*/ ;
 	static final String RECONCILE_5 = /*$$(*/ "%s :\nReconciliation %s: Le montant réconcilié doit être inférieur ou égale au montant restant à réconcilier des lignes d'écritures." /*)*/ ;
-
+	static final String RECONCILE_6 = /*$$(*/ "%s :\n Erreur : Veuillez configurer une séquence Réconciliation pour la société %s" /*)*/ ;
+	
 	/**
 	 * Reimbursement service and controller
 	 */
@@ -333,6 +334,7 @@ public interface IExceptionMessage {
 	static final String ACCOUNT_CONFIG_36 = /*$$(*/ "%s :\n Veuillez configurer un Motif de passage (créance de plus de trois mois) pour la société %s" /*)*/;
 	static final String ACCOUNT_CONFIG_37 = /*$$(*/ "%s :\n Veuillez configurer le tableau de relance pour la société %s" /*)*/;
 	static final String ACCOUNT_CONFIG_38 = /*$$(*/ "%s :\n Veuillez configurer un compte d'acompte pour la société %s" /*)*/;
+	static final String ACCOUNT_CONFIG_39 = /*$$(*/ "%s :\n Veuillez configurer un nom de fichier pour l'export des FEC pour la société %s" /*)*/;
 	
 	static final String ACCOUNT_CONFIG_SEQUENCE_1 = /*$$(*/ "%s :\n Please, configure a sequence for the customer invoices and the company %s" /*)*/;
 	static final String ACCOUNT_CONFIG_SEQUENCE_2 = /*$$(*/ "%s :\n Please, configure a sequence for the customer refunds and the company %s" /*)*/;

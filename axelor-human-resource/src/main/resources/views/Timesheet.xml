@@ -37,6 +37,7 @@
 	    </toolbar>
 	    <panel sidebar="true" name="actions" title="Actions" stacked="true">
 	    	<button name="confirmButton" onClick="action-timesheet-group-confirm" title="Confirm" hideIf="statusSelect &gt; 1" icon="fa-check-square-o"/>
+	    	<button name="confirmContinueButton" onClick="action-timesheet-group-confirm-continue" title="Confirm &amp; Continue" hideIf="statusSelect &gt; 1" icon="fa-check-square-o"/>
 	    	<button name="validButton" onClick="action-timesheet-group-validate" title="Valid"/>
 	    	<button name="refuseButton" onClick="action-timesheet-group-refuse" title="Refuse"/>
 	    	<button name="cancelButton" onClick="action-timesheet-method-cancel,action-timesheet-attrs-buttons" hideIf="statusSelect == 5" title="Cancel" icon="fa-close"/>
@@ -74,8 +75,12 @@
 			<field name="refusedBy" form-view="user-form" grid-view="user-grid"/>
 			<field name="validationDate" colOffset="4"/>
 			<field name="refusalDate"/>
-			<field name="groundForRefusal" showIf="refusalDate != null" colSpan="12"></field>
+			<field name="groundForRefusal" showIf="statusSelect == 4" colSpan="12"/>
 		</panel>
+	</form>
+	
+	<form name="popup-timesheet-refusal-form" title="Ground for refusal" model="com.axelor.apps.hr.db.Timesheet">
+		<field name="groundForRefusal" showTitle="false"/>
 	</form>
 	
 	<form name="popup-timesheet-form" title="Select the timesheet you want to edit" model="com.axelor.apps.base.db.Wizard" onNew="action-timesheet-attrs-domain-timesheet-select">
@@ -94,6 +99,13 @@
 		<action name="save"/>
 	</action-group>
 	
+	<action-group name="action-timesheet-group-confirm-continue">
+		<action name="save"/>
+		<action name="action-timesheet-method-confirm-continue"/>
+		<action name="action-timesheet-attrs-buttons"/>
+		<action name="save"/>
+	</action-group>
+	
 	<action-group name="action-timesheet-group-validate">
 		<action name="action-timesheet-method-valid"/>
 		<action name="action-timesheet-attrs-buttons"/>
@@ -102,6 +114,8 @@
 	
 	<action-group name="action-timesheet-group-refuse">
 		<action name="action-timesheet-method-refuse"/>
+		<action name="save"/>
+		<action name="action-timesheet-refusal-popup-form"/>
 		<action name="action-timesheet-attrs-buttons"/>
 		<action name="save"/>
 	</action-group>
@@ -237,6 +251,10 @@
 		<call class="com.axelor.apps.hr.web.timesheet.TimesheetController" method="confirm"/>
 	</action-method>
 	
+	<action-method name="action-timesheet-method-confirm-continue">
+		<call class="com.axelor.apps.hr.web.timesheet.TimesheetController" method="confirmContinue"/>
+	</action-method>
+	
 	<action-method name="action-timesheet-method-valid">
 		<call class="com.axelor.apps.hr.web.timesheet.TimesheetController" method="valid"/>
 	</action-method>
@@ -276,5 +294,15 @@
   		<context name="user_id" expr="eval: __user__.id"/>
     	<context name="timesheet_id" expr="eval: __self__.id"/>
 	</action-view>
+	
+	<action-view name="action-timesheet-refusal-popup-form" title="Ground for refusal" model="com.axelor.apps.hr.db.Timesheet">
+    	<view type="form" name="popup-timesheet-refusal-form"/>
+        <view-param name="popup" value="reload"/>
+        <view-param name="show-toolbar" value="false"/>
+  		<view-param name="show-confirm" value="true" />
+	  	<view-param name="popup-save" value="true"/>
+	  	<view-param name="forceEdit" value="true" />
+    	<context name="_showRecord" expr="eval: id"/>
+    </action-view>
 	
 </object-views>

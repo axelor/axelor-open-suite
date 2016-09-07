@@ -15,6 +15,7 @@
     <decimal name="debit" title="Debit" initParam="true"/>
     <decimal name="credit" title="Credit" initParam="true"/>
     <string name="description" title="Description" initParam="true"/>
+    <string name="origin" title="Origin" initParam="true"/>
     
     <one-to-many name="debitReconcileList" ref="Reconcile" title="Debit Reconcile list" mappedBy="debitMoveLine" readonly="false"/>
     <one-to-many name="creditReconcileList" ref="Reconcile" title="Credit Reconcile List" mappedBy="creditMoveLine" readonly="false"/>
