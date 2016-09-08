@@ -383,7 +383,7 @@ public class MoveService {
 								  move.getPartner(),
 								  today,
 								  move.getPaymentMode(),
-								  MoveRepository.AUTOMATIC,	
+								  MoveRepository.ENTRY,	
 								  move.getIgnoreInReminderOk(),
 								  move.getIgnoreInAccountingOk());
 
