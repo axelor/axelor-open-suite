@@ -47,6 +47,11 @@
 	<many-to-one name="managementObject" ref="com.axelor.apps.account.db.ManagementObject" title="Irrecoverable shift reason"/>
     
     <one-to-many name="analyticDistributionLineList" ref="com.axelor.apps.account.db.AnalyticDistributionLine" title="Analytic distribution lines" mappedBy="moveLine"/>
+    
+    <string name="accountCode" readonly="true"/>
+    <string name="accountName" readonly="true"/>
+    <string name="partnerFullName" readonly="true"/>
+    <string name="partnerSeq" readonly="true"/>
 	
     
     <string name="name" title="Name" namecolumn="true">

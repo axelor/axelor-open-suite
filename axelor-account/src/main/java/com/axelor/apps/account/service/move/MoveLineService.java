@@ -209,9 +209,14 @@ public class MoveLineService {
 		if (account2 == null)  {
 			throw new AxelorException(I18n.get(IExceptionMessage.MOVE_LINE_2), IException.MISSING_FIELD, invoice.getInvoiceId());
 		}
-
-		moveLines.add( this.createMoveLine(move, partner, account2, invoice.getCompanyInTaxTotal(), isDebitCustomer, invoice.getInvoiceDate(), invoice.getDueDate(), moveLineId++, invoice.getInvoiceId()));
-
+		MoveLine moveLine1 = this.createMoveLine(move, partner, account2, invoice.getCompanyInTaxTotal(), isDebitCustomer, invoice.getInvoiceDate(), invoice.getDueDate(), moveLineId++, invoice.getInvoiceId());
+		moveLine1.setAccountCode(account2.getCode());
+		moveLine1.setAccountName(account2.getName());
+		moveLine1.setPartnerFullName(partner.getFullName());
+		moveLine1.setPartnerSeq(partner.getPartnerSeq());
+		moveLines.add(moveLine1);
+		
+		
 		// Traitement des lignes de facture
 		for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()){
 			
@@ -250,6 +255,10 @@ public class MoveLineService {
 							moveLine.addAnalyticDistributionLineListItem(analyticDistributionLine);
 						}
 					}
+					moveLine.setAccountCode(account2.getCode());
+					moveLine.setAccountName(account2.getName());
+					moveLine.setPartnerFullName(partner.getFullName());
+					moveLine.setPartnerSeq(partner.getPartnerSeq());
 					moveLine.setTaxLine(invoiceLine.getTaxLine());
 					moveLines.add(moveLine);
 				}
@@ -274,6 +283,10 @@ public class MoveLineService {
 				}
 
 				MoveLine moveLine = this.createMoveLine(move, partner, account2, exTaxTotal, !isDebitCustomer, invoice.getInvoiceDate(), null, moveLineId++, invoice.getInvoiceId());
+				moveLine.setAccountCode(account2.getCode());
+				moveLine.setAccountName(account2.getName());
+				moveLine.setPartnerFullName(partner.getFullName());
+				moveLine.setPartnerSeq(partner.getPartnerSeq());
 				moveLine.setTaxLine(invoiceLineTax.getTaxLine());
 
 				moveLines.add(moveLine);

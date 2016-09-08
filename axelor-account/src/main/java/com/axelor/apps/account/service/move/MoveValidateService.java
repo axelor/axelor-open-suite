@@ -69,9 +69,16 @@ public class MoveValidateService {
 			if(moveLine.getAccount() != null && moveLine.getAccount().getReconcileOk())  {
 				moveLine.setDueDate(date);
 			}
-
-			moveLine.setPartner(partner);
+			if (partner != null){
+				moveLine.setPartner(partner);
+			}
 			moveLine.setCounter(counter);
+			moveLine.setAccountCode(moveLine.getAccount().getCode());
+			moveLine.setAccountName(moveLine.getAccount().getName());
+			if (moveLine.getPartner() != null){
+				moveLine.setPartnerFullName(moveLine.getPartner().getFullName());
+				moveLine.setPartnerSeq(moveLine.getPartner().getPartnerSeq());
+			}
 			counter++;
 		}
 
