@@ -23,4 +23,17 @@ public class ReconcileManagementRepository extends ReconcileRepository{
 			throw new PersistenceException(e.getLocalizedMessage());
 		}
 	}
+	
+	@Override
+	public Reconcile copy(Reconcile reconcile, boolean deep) {
+		
+		Reconcile copy = super.copy(reconcile, deep);
+				
+		copy.setCanBeZeroBalanceOk(false);
+		copy.setMustBeZeroBalanceOk(false);
+		copy.setReconcileSeq(null);
+		copy.setStatusSelect(ReconcileRepository.STATUS_DRAFT);
+		
+		return copy;
+	}
 }
