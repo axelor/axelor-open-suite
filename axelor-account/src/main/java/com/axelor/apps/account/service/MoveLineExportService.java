@@ -20,6 +20,8 @@ package com.axelor.apps.account.service;
 import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,12 +32,14 @@ import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.axelor.apps.MetaFilesTemp;
 import com.axelor.apps.account.db.AnalyticDistributionLine;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.JournalType;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.MoveLineReport;
+import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.account.db.repo.JournalRepository;
 import com.axelor.apps.account.db.repo.MoveLineReportRepository;
@@ -54,6 +58,9 @@ import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
+import com.axelor.meta.db.MetaAttachment;
+import com.axelor.meta.db.MetaFile;
+import com.axelor.meta.db.repo.MetaAttachmentRepository;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -71,12 +78,15 @@ public class MoveLineExportService {
 	protected MoveLineReportRepository moveLineReportRepo;
 	protected JournalRepository journalRepo;
 	protected AccountRepository accountRepo;
+	protected MetaAttachmentRepository metaAttachmentRepo;
 	protected MoveLineService moveLineService;
+	protected MetaFilesTemp metaFilesTemp;
 	
 	@Inject
 	public MoveLineExportService(GeneralService generalService, MoveLineReportService moveLineReportService, SequenceService sequenceService, 
 			AccountConfigService accountConfigService, MoveRepository moveRepo, MoveLineRepository moveLineRepo, MoveLineReportRepository moveLineReportRepo,
-			JournalRepository journalRepo, AccountRepository accountRepo, MoveLineService moveLineService) {
+			JournalRepository journalRepo, AccountRepository accountRepo, MoveLineService moveLineService, MetaFilesTemp metaFilesTemp, 
+			MetaAttachmentRepository metaAttachmentRepo) {
 		this.moveLineReportService = moveLineReportService;
 		this.sequenceService = sequenceService;
 		this.accountConfigService = accountConfigService;
@@ -86,6 +96,8 @@ public class MoveLineExportService {
 		this.journalRepo = journalRepo;
 		this.accountRepo = accountRepo;
 		this.moveLineService = moveLineService;
+		this.metaFilesTemp =  metaFilesTemp;
+		this.metaAttachmentRepo = metaAttachmentRepo;
 		todayTime = generalService.getTodayDateTime();
 	}
 
@@ -839,7 +851,139 @@ public class MoveLineExportService {
 		// Utilisé pour le debuggage
 //			CsvTool.csvWriter(filePath, fileName, '|', this.createHeaderForHeaderFile(mlr.getTypeSelect()), allMoveData);
 	}
-
+	
+	/**
+	* Méthode réalisant l'export des FEC (Fichiers des écritures Comptables)
+	* @throws AxelorException
+	* @throws IOException
+	*/
+	@SuppressWarnings("unchecked")
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
+	public void exportMoveLineTypeSelect14(MoveLineReport moveLineReport) throws AxelorException, IOException {
+		
+//		Map<String, Object> moveLineReportContext = (Map<String, Object>) context.get("moveLineReport");
+		log.info("In Export type 14 service : ");
+		List<String[]> allMoveLineData = new ArrayList<String[]>();
+		Company company = moveLineReport.getCompany();
+		
+		String moveLineQueryStr = "";
+		moveLineQueryStr += String.format(" AND self.move.company = %s", company.getId());
+		moveLineQueryStr += String.format(" AND self.move.period.year = %s", moveLineReport.getYear().getId());
+		
+		if(moveLineReport.getPeriod() != null)	{
+			moveLineQueryStr += String.format(" AND self.move.period = %s", moveLineReport.getPeriod().getId());
+		}
+		else {
+			if (moveLineReport.getDateFrom() != null){
+				moveLineQueryStr += String.format(" AND self.date >= '%s'", moveLineReport.getDateFrom().toString());
+			}
+			if (moveLineReport.getDateTo() != null){
+				moveLineQueryStr += String.format(" AND self.date <= '%s'", moveLineReport.getDateTo().toString());
+			}
+		}
+		if(moveLineReport.getDate() != null)  {
+			moveLineQueryStr += String.format(" AND self.date <= '%s'", moveLineReport.getDate().toString());
+		}
+			
+		moveLineQueryStr += String.format("AND self.move.accountingOk = false AND self.move.ignoreInAccountingOk = false");
+		
+		List<MoveLine> moveLineList = moveLineRepo.all().filter("self.move.statusSelect = ?1" + moveLineQueryStr, MoveRepository.STATUS_VALIDATED).order("date").order("name").fetch();
+		if(moveLineList.size() > 0) {
+			
+			for (MoveLine moveLine : moveLineList) {
+				String items[] = new String[18];
+				items[0] = moveLine.getMove().getJournal().getCode();
+				items[1] = moveLine.getMove().getJournal().getName();
+				items[2] = moveLine.getName();
+				items[3] = moveLine.getDate().toString("YYYYMMdd");
+				items[4] = moveLine.getAccount().getCode(); 
+				items[5] = moveLine.getAccount().getName();
+				items[6] = null; //Le numéro de compte auxiliaire (à blanc pour le moment) 
+				items[7] = null; //Le libellé de compte auxiliaire (à blanc pour le moment) 
+				items[8] = moveLine.getOrigin();
+				items[9] = moveLine.getDate().toString("YYYYMMdd"); // Pour le moment on va utiliser la date des lignes d'écriture. 
+				items[10]= moveLine.getDescription();
+				items[11]= moveLine.getDebit().toString();
+				items[12]= moveLine.getCredit().toString();
+				if(moveLine.getDebit().compareTo(BigDecimal.ZERO) > 0){
+					int i = moveLine.getDebitReconcileList().size();
+					int j = 1; 
+					for (Reconcile reconcile : moveLine.getDebitReconcileList()) {
+						if (j == 1){
+							if(j == i){
+								items[13] = reconcile.getRef();
+								items[14] = reconcile.getReconciliationDate().toString("YYYYMMdd");
+							}
+							else{
+								items[13] = reconcile.getRef()+";";
+								items[14] = reconcile.getReconciliationDate().toString("YYYYMMdd")+";";
+							}
+						}
+						else{
+							if(j == i){
+								items[13] += reconcile.getRef();
+								items[14] += reconcile.getReconciliationDate().toString("YYYYMMdd");
+							}
+							else{
+								items[13] += reconcile.getRef()+";";
+								items[14] += reconcile.getReconciliationDate().toString("YYYYMMdd")+";";
+							}
+						}
+						j++;
+					}
+				}
+				else{
+					int i = moveLine.getCreditReconcileList().size();
+					int j = 1; 
+					for (Reconcile reconcile : moveLine.getCreditReconcileList()) {
+						if (j == 1){
+							if(j == i){
+								items[13] = reconcile.getRef();
+								items[14] = reconcile.getReconciliationDate().toString("YYYYMMdd");
+							}
+							else{
+								items[13] = reconcile.getRef()+";";
+								items[14] = reconcile.getReconciliationDate().toString("YYYYMMdd")+";";
+							}
+						}
+						else{
+							if(j == i){
+								items[13] += reconcile.getRef();
+								items[14] += reconcile.getReconciliationDate().toString("YYYYMMdd");
+							}
+							else{
+								items[13] += reconcile.getRef()+";";
+								items[14] += reconcile.getReconciliationDate().toString("YYYYMMdd")+";";
+							}
+						}
+						j++;
+					}
+				}
+				items[15]= moveLine.getMove().getValidationDate().toString("YYYYMMdd");
+				items[16]= moveLine.getCurrencyAmount().toString();
+				items[17]= moveLine.getMove().getCurrency().getCode();
+				allMoveLineData.add(items);
+			}
+		}
+		
+		String fileName = this.setFileName(moveLineReport);
+		String filePath = accountConfigService.getExportPath(accountConfigService.getAccountConfig(company));
+		//TODO create a template Helper
+		
+		new File(filePath).mkdirs();
+		log.debug("Full path to export : {}{}" , filePath, fileName);
+//		CsvTool.csvWriter(filePath, fileName, '|', null, allMoveLineData);
+		CsvTool.csvWriter(filePath, fileName, '|', this.createHeaderForHeaderFile(moveLineReport.getTypeSelect()), allMoveLineData);
+		moveLineReportRepo.save(moveLineReport);
+		
+		Path path = Paths.get(filePath+fileName);
+		File file = path.toFile();
+		MetaFile metaFile = metaFilesTemp.upload(file);
+		MetaAttachment metaAttachment = metaFilesTemp.attach(metaFile, moveLineReport);
+		metaAttachmentRepo.save(metaAttachment);
+		//TODO Meta Attachment added but not displayed in view!
+	}
+	
 
 	/**
 	 * Méthode réalisant l'export SI - Agresso des fichiers détails
@@ -998,8 +1142,7 @@ public class MoveLineExportService {
 //			CsvTool.csvWriter(filePath, fileName, '|',  this.createHeaderForDetailFile(typeSelect), allMoveLineData);
 	}
 
-
-
+	
 	/**
 	 * Méthode permettant de trier une liste en ajoutant d'abord les lignes d'écriture au débit puis celles au crédit
 	 * @param moveLineList
@@ -1070,6 +1213,26 @@ public class MoveLineExportService {
 						"Réf. de l'écriture;"+
 						"Date de l'écriture;"+
 						"Période de l'écriture;";
+				return header.split(";");
+			case 14:
+				header = "JournalCode;"+
+						 "JournalLib;"+
+						 "EcritureNum;"+
+						 "EcritureDate;"+
+						 "CompteNum;"+
+						 "CompteLib;"+
+						 "CompAuxNum;"+
+						 "CompAuxLib;"+
+						 "PieceRef;"+
+						 "PieceDate;"+
+						 "EcritureLib;"+
+						 "Debit;"+
+						 "Credit;"+
+						 "EcritureLet;"+
+						 "DateLet;"+
+						 "ValidDate;"+
+						 "Montantdevise;"+
+						 "Idevise;";
 				return header.split(";");
 			default:
 				return null;
@@ -1174,6 +1337,11 @@ public class MoveLineExportService {
 
 	}
 
-
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
+	public String setFileName(MoveLineReport moveLineReport) throws AxelorException, IOException{
+		Company company =moveLineReport.getCompany();
+		String fileName = accountConfigService.getExportFileName(accountConfigService.getAccountConfig(company));
+		return fileName;
+	}
 
 }

@@ -534,6 +534,12 @@ public class AccountConfigService {
 		return false;
 	}
 	
-
-
+	/******************************** FEC *********************************************/
+	public String getExportFileName(AccountConfig accountConfig) throws AxelorException  {
+		if(accountConfig.getExportFileName() == null){
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.ACCOUNT_CONFIG_39),
+					GeneralServiceImpl.EXCEPTION,accountConfig.getCompany().getName()), IException.CONFIGURATION_ERROR);
+		}
+		return accountConfig.getExportFileName();
+	}
 }

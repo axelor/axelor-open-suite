@@ -249,6 +249,7 @@ public class TimesheetController {
 				   .map());
 		}
 	}
+	
 	//action called when confirming a timesheet. Changing status + Sending mail to Manager
 	public void confirm(ActionRequest request, ActionResponse response) throws AxelorException{
 		Timesheet timesheet = request.getContext().asType(Timesheet.class);
@@ -283,6 +284,51 @@ public class TimesheetController {
 			}
 		}
 	}
+	
+	//Confirm and continue Button
+		public void confirmContinue(ActionRequest request, ActionResponse response) throws AxelorException{
+			Timesheet timesheet = request.getContext().asType(Timesheet.class);
+			
+			if(timesheet.getToDate() == null)
+				response.setValue("toDate", generalService.getTodayDate());
+			
+			validToDate(request, response);
+			
+			if(!hrConfigService.getHRConfig(timesheet.getUser().getActiveCompany()).getTimesheetMailNotification()){
+				response.setValue("statusSelect", TimesheetRepository.STATUS_CONFIRMED);
+				response.setValue("sentDate", generalService.getTodayDate());
+				if (timesheet.getFromDate() != null){
+					response.setAttr("fromDate", "readonly", "true");
+				}
+				response.setView(ActionView
+						.define(I18n.get("Timesheet"))
+						.model(Timesheet.class.getName())
+						.add("form", "timesheet-form")
+						.map());
+			}else{
+				User manager = timesheet.getUser().getEmployee().getManager();
+				if(manager!=null){
+					Template template =  hrConfigService.getHRConfig(timesheet.getUser().getActiveCompany()).getSentTimesheetTemplate();
+					if(mailManagementService.sendEmail(template,timesheet.getId())){
+						String message = "Email sent to";
+						response.setFlash(I18n.get(message)+" "+manager.getFullName());
+						response.setValue("statusSelect", TimesheetRepository.STATUS_CONFIRMED);
+						response.setValue("sentDate", generalService.getTodayDate());
+						if (timesheet.getFromDate() != null){
+							response.setAttr("fromDate", "readonly", "true");
+						}
+						response.setView(ActionView
+								.define(I18n.get("Timesheet"))
+								.model(Timesheet.class.getName())
+								.add("form", "timesheet-form")
+								.map());
+					}
+					else{
+						throw new AxelorException(String.format(I18n.get(IExceptionMessage.HR_CONFIG_TEMPLATES), timesheet.getUser().getActiveCompany().getName()), IException.CONFIGURATION_ERROR);
+					}
+				}
+			}
+		}
 	
 	
 	public void validToDate(ActionRequest request, ActionResponse response){

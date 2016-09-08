@@ -98,7 +98,6 @@ public class MoveService {
 	 */
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public Move createMove(Invoice invoice) throws AxelorException{
-
 		Move move = null;
 
 		if (invoice != null && invoice.getInvoiceLineList() != null) {
@@ -110,7 +109,7 @@ public class MoveService {
 
 			log.debug("Création d'une écriture comptable spécifique à la facture {} (Société : {}, Journal : {})", new Object[]{invoice.getInvoiceId(), company.getName(), journal.getCode()});
 
-			move = moveCreateService.createMove(journal, company, invoice, partner, invoice.getInvoiceDate(), invoice.getPaymentMode());
+			move = moveCreateService.createMove(journal, company, invoice, partner, invoice.getInvoiceDate(), invoice.getPaymentMode(), MoveRepository.AUTOMATIC);
 
 			if (move != null)  {
 
@@ -265,7 +264,7 @@ public class MoveService {
 
 				log.debug("Création d'une écriture comptable O.D. spécifique à l'emploie des trop-perçus {} (Société : {}, Journal : {})", new Object[]{invoice.getInvoiceId(), company.getName(), journal.getCode()});
 
-				Move move = moveCreateService.createMove(journal, company, null, partner, invoice.getInvoiceDate(), null);
+				Move move = moveCreateService.createMove(journal, company, null, partner, invoice.getInvoiceDate(), null, MoveRepository.AUTOMATIC);
 
 				if (move != null)  {
 					BigDecimal totalCreditAmount = moveToolService.getTotalCreditAmount(creditMoveLineList);
@@ -305,7 +304,7 @@ public class MoveService {
 
 		log.debug("Montant à payer avec l'avoir récupéré : {}", remainingAmount);
 
-		Move oDmove = moveCreateService.createMove(journal, company, null, partner, invoice.getInvoiceDate(), null);
+		Move oDmove = moveCreateService.createMove(journal, company, null, partner, invoice.getInvoiceDate(), null, MoveRepository.AUTOMATIC);
 
 		if (oDmove != null){
 			BigDecimal totalDebitAmount = moveToolService.getTotalDebitAmount(debitMoveLines);
@@ -346,7 +345,7 @@ public class MoveService {
 
 		Journal journal = accountConfigService.getMiscOperationJournal(accountConfigService.getAccountConfig(company));
 
-		Move excessMove = moveCreateService.createMove(journal, company, refund, partner, null);
+		Move excessMove = moveCreateService.createMove(journal, company, refund, partner, null, MoveRepository.AUTOMATIC);
 
 		MoveLine debitMoveLine = moveLineService.createMoveLine(excessMove,
 				partner,
@@ -384,6 +383,7 @@ public class MoveService {
 								  move.getPartner(),
 								  today,
 								  move.getPaymentMode(),
+								  MoveRepository.ENTRY,	
 								  move.getIgnoreInReminderOk(),
 								  move.getIgnoreInAccountingOk());
 

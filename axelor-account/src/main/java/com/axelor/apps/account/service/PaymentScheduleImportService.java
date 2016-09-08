@@ -407,7 +407,7 @@ public class PaymentScheduleImportService {
 	public Move createRejectMove(Company company, LocalDate date) throws AxelorException  {
 		Journal rejectJournal = company.getAccountConfig().getRejectJournal();
 
-		Move move = moveService.getMoveCreateService().createMove(rejectJournal, company, null, null, date, null);
+		Move move = moveService.getMoveCreateService().createMove(rejectJournal, company, null, null, date, null, MoveRepository.IMPORT);
 		move.setRejectOk(true);
 		moveRepo.save(move);
 		return move;

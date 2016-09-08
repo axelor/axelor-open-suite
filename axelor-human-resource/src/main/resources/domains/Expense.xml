@@ -25,6 +25,7 @@
       <many-to-one name="refusedBy" ref="com.axelor.auth.db.User" title="Refused By" readonly="true"/>
       <date name="validationDate" title="Validation Date" readonly="true"  />
       <date name="refusalDate" title="Refusal Date" readonly="true"  />
+      <string name="groundForRefusal" title="Ground For Refusal" large="true"/>
       <boolean name="ventilated"/>
       <boolean name="expenseCompanyCb" title="Expense paied with company's credit card"/>
       <many-to-one name="payrollPreparation" ref="com.axelor.apps.hr.db.PayrollPreparation"/>

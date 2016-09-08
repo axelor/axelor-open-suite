@@ -65,6 +65,7 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
 	protected Invoice invoice;
 	protected Product product;
 	protected String productName;
+	protected String productCode;
 	protected BigDecimal price;
 	protected BigDecimal priceDiscounted;
 	protected String description;
@@ -97,13 +98,14 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
 
     }
 
-	protected InvoiceLineGenerator( Invoice invoice, Product product, String productName, String description, BigDecimal qty,
+	protected InvoiceLineGenerator( Invoice invoice, Product product, String productName, String productCode, String description, BigDecimal qty,
 			Unit unit, int sequence, boolean isTaxInvoice) {
 		
 		this(invoice);
 		
         this.product = product;
         this.productName = productName;
+        this.productCode = productCode;
         this.description = description;
         this.qty = qty;
         this.unit = unit;
@@ -114,11 +116,11 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
         this.accountManagementServiceImpl = new AccountManagementServiceImpl();
 	}
 	
-	protected InvoiceLineGenerator( Invoice invoice, Product product, String productName, BigDecimal price, BigDecimal priceDiscounted, String description, BigDecimal qty,
+	protected InvoiceLineGenerator( Invoice invoice, Product product, String productName, String productCode, BigDecimal price, BigDecimal priceDiscounted, String description, BigDecimal qty,
 			Unit unit, TaxLine taxLine, int sequence, BigDecimal discountAmount, int discountTypeSelect, BigDecimal exTaxTotal,
 			BigDecimal inTaxTotal, boolean isTaxInvoice) {
 
-        this(invoice, product, productName, description, qty, unit, sequence, isTaxInvoice);
+        this(invoice, product, productName, productCode, description, qty, unit, sequence, isTaxInvoice);
 		
         this.price = price;
         this.priceDiscounted = priceDiscounted;
@@ -156,6 +158,7 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
 
 		invoiceLine.setProduct(product);
 		invoiceLine.setProductName(productName);
+		invoiceLine.setProductCode(productCode);
 		invoiceLine.setDescription(description);
 		invoiceLine.setPrice(price);
 
@@ -167,7 +170,10 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
 			this.determineTaxLine();
 		}
 		invoiceLine.setTaxLine(taxLine);
-
+		
+		invoiceLine.setTaxRate(taxLine.getValue());
+		invoiceLine.setTaxCode(taxLine.getTax().getCode());
+		
 		if((exTaxTotal == null || inTaxTotal == null))  {
 			this.computeTotal();
 		}

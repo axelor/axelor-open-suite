@@ -52,6 +52,7 @@ import com.axelor.apps.account.db.repo.IrrecoverableCustomerLineRepository;
 import com.axelor.apps.account.db.repo.IrrecoverableRepository;
 import com.axelor.apps.account.db.repo.ManagementObjectRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
+import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.PaymentScheduleLineRepository;
 import com.axelor.apps.account.db.repo.PaymentScheduleRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
@@ -753,7 +754,7 @@ public class IrrecoverableService{
 		AccountConfig accountConfig = company.getAccountConfig();
 
 		// Move
-		Move move = moveService.getMoveCreateService().createMove(accountConfig.getIrrecoverableJournal(), company, null, payerPartner, null);
+		Move move = moveService.getMoveCreateService().createMove(accountConfig.getIrrecoverableJournal(), company, null, payerPartner, null, MoveRepository.AUTOMATIC);
 
 		int seq = 1;
 
@@ -821,7 +822,7 @@ public class IrrecoverableService{
 		AccountConfig accountConfig = company.getAccountConfig();
 
 		// Move
-		Move move = moveService.getMoveCreateService().createMove(accountConfig.getIrrecoverableJournal(), company, null, payerPartner, null);
+		Move move = moveService.getMoveCreateService().createMove(accountConfig.getIrrecoverableJournal(), company, null, payerPartner, null, MoveRepository.AUTOMATIC);
 
 		int seq = 1;
 

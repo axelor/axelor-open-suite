@@ -141,7 +141,7 @@ public class TimetableService {
 		Product product = timetable.getProduct();
 
 		InvoiceLineGenerator invoiceLineGenerator = new InvoiceLineGeneratorSupplyChain(invoice, product, timetable.getProductName(),
-				timetable.getComments(), timetable.getQty(), timetable.getUnit(),
+				product.getCode(), timetable.getComments(), timetable.getQty(), timetable.getUnit(),
 				1, false, null, null, null, null)  {
 
 			@Override

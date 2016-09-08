@@ -61,6 +61,7 @@
 				</panel>
 				<panel name="exports" title="Exports" colSpan="12">
 					<field name="exportPath"/>
+					<field name="exportFileName"/>
 				</panel>
 				<panel name="cashiers" title="Cashiers" colSpan="12">
 					<field name="cashRegisterTemplate" form-view="template-form" grid-view="template-grid"/>

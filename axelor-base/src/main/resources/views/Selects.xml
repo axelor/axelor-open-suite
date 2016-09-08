@@ -320,7 +320,7 @@
 		<option value="pdf">PDF</option>
 		<option value="xls">XLS</option>
 	</selection>
-
+	
 	<selection name="sequence.generic.code.select">
 		<option value="partner">Partner (Cust/Suppl)</option>
 		<option value="move">Move</option>
@@ -352,6 +352,7 @@
 		<option value="proTraining">Professional training</option>
 		<option value="productionOrder">Production order</option>
 		<option value="manufOrder">Manufacturing order</option>
+		<option value="reconcile">Reconciliation</option>		
 	</selection>
 
 	<selection name="company.paybox.hash.select">

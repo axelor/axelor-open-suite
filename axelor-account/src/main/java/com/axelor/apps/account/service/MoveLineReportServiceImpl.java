@@ -165,13 +165,13 @@ public class MoveLineReportServiceImpl implements MoveLineReportService  {
 			this.addParams("self.move.journal.type = ?%d", this.getJournalType(moveLineReport));
 		}
 
-		if(moveLineReport.getTypeSelect() > 5 && moveLineReport.getTypeSelect() < 10)  {
+//		if(moveLineReport.getTypeSelect() > 5 && moveLineReport.getTypeSelect() < 10)  {
 			this.addParams("(self.move.accountingOk = false OR (self.move.accountingOk = true and self.move.moveLineReport = ?%d))", moveLineReport);
-		}
+//		}
 
-		if(moveLineReport.getTypeSelect() > 5 && moveLineReport.getTypeSelect() < 10)  {
+//		if(moveLineReport.getTypeSelect() > 5 && moveLineReport.getTypeSelect() < 10)  {
 			this.addParams("self.move.journal.notExportOk = false ");
-		}
+//		}
 
 		if(moveLineReport.getTypeSelect() == 5)	{
 			this.addParams("self.amountPaid > 0 AND self.credit > 0");
