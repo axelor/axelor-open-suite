@@ -90,7 +90,11 @@ public class InvoiceLineController {
 		response.setAttr("priceDiscounted", "hidden", priceDiscounted.compareTo(invoiceLine.getPrice()) == 0);
 
 		BigDecimal taxRate = BigDecimal.ZERO;
-		if(invoiceLine.getTaxLine() != null)  {  taxRate = invoiceLine.getTaxLine().getValue();  }
+		if(invoiceLine.getTaxLine() != null)  {
+			taxRate = invoiceLine.getTaxLine().getValue();
+			response.setValue("taxRate", taxRate);
+			response.setValue("taxCode", invoiceLine.getTaxLine().getTax().getCode());
+		}
 		
 		if(!invoice.getInAti()){
 			exTaxTotal = InvoiceLineManagement.computeAmount(invoiceLine.getQty(), invoiceLineService.computeDiscount(invoiceLine,invoice));
@@ -134,6 +138,8 @@ public class InvoiceLineController {
 
 			TaxLine taxLine = invoiceLineService.getTaxLine(invoice, invoiceLine, isPurchase);
 			response.setValue("taxLine", taxLine);
+			response.setValue("taxRate", taxLine.getValue());
+			response.setValue("taxCode", taxLine.getTax().getCode());
 			
 			BigDecimal price = invoiceLineService.getUnitPrice(invoice, invoiceLine, taxLine, isPurchase);
 
@@ -227,7 +233,6 @@ public class InvoiceLineController {
 					price = (BigDecimal) discounts.get("price");
 				}
 			}
-			
 			response.setValue("price", price);
 
 		}

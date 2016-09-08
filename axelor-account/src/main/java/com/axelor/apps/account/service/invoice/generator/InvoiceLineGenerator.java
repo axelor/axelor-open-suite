@@ -170,7 +170,10 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
 			this.determineTaxLine();
 		}
 		invoiceLine.setTaxLine(taxLine);
-
+		
+		invoiceLine.setTaxRate(taxLine.getValue());
+		invoiceLine.setTaxCode(taxLine.getTax().getCode());
+		
 		if((exTaxTotal == null || inTaxTotal == null))  {
 			this.computeTotal();
 		}
