@@ -42,7 +42,7 @@
     <boolean name="isTitleLine" title="Title Line"/>
     
     <decimal name="taxRate" scale="3" precision="20" readonly="true"/>
-    <string name="taxCode"/>
+    <string name="taxCode" readonly="true"/>
     
     <string name="name" title="Name" search="invoice,productName">
    	    <![CDATA[

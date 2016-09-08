@@ -260,6 +260,8 @@ public class MoveLineService {
 					moveLine.setPartnerFullName(partner.getFullName());
 					moveLine.setPartnerSeq(partner.getPartnerSeq());
 					moveLine.setTaxLine(invoiceLine.getTaxLine());
+					moveLine.setTaxRate(invoiceLine.getTaxLine().getValue());
+					moveLine.setTaxCode(invoiceLine.getTaxLine().getTax().getCode());
 					moveLines.add(moveLine);
 				}
 			}
@@ -288,6 +290,8 @@ public class MoveLineService {
 				moveLine.setPartnerFullName(partner.getFullName());
 				moveLine.setPartnerSeq(partner.getPartnerSeq());
 				moveLine.setTaxLine(invoiceLineTax.getTaxLine());
+				moveLine.setTaxRate(invoiceLineTax.getTaxLine().getValue());
+				moveLine.setTaxCode(tax.getCode());
 
 				moveLines.add(moveLine);
 			}

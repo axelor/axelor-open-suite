@@ -167,6 +167,8 @@ public class InvoiceLineController {
 	public void resetProductInformation(ActionResponse response)  {
 
 		response.setValue("taxLine", null);
+		response.setValue("taxCode", null);
+		response.setValue("taxRate", null);
 		response.setValue("productName", null);
 		response.setValue("unit", null);
 		response.setValue("discountAmount", null);
