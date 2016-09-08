@@ -51,7 +51,7 @@ public interface ProductService {
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void generateProductVariants(Product productModel);
 
-	public Product createProduct(Product productModel, ProductVariant productVariant);
+	public Product createProduct(Product productModel, ProductVariant productVariant, int seq);
 
 
 	/**
