@@ -34,14 +34,17 @@ import com.google.inject.Inject;
 
 public class AnalyticMoveLineService {
 	
-	@Inject
 	protected GeneralService generalService;
-	
-	@Inject
 	protected AnalyticMoveLineRepository analyticMoveLineRepository;
+	protected AnalyticDistributionLineService analyticDistributionLineService;
 	
 	@Inject
-	protected AnalyticDistributionLineService analyticDistributionLineService;
+	public AnalyticMoveLineService(GeneralService generalService, AnalyticMoveLineRepository analyticMoveLineRepository, AnalyticDistributionLineService analyticDistributionLineService){
+		
+		this.generalService = generalService;
+		this.analyticMoveLineRepository = analyticMoveLineRepository;
+		this.analyticDistributionLineService = analyticDistributionLineService;
+	}
 	
 	public List<InvoiceLine> createInvoiceLines(Invoice invoice, List<AnalyticMoveLine> analyticMoveLineList) throws AxelorException  {
 

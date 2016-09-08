@@ -3,7 +3,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
     
-    <grid name="product-grid" title="Products" model="com.axelor.apps.base.db.Product" orderBy="name">
+    <grid name="product-grid" title="Products" model="com.axelor.apps.base.db.Product" orderBy="code,name">
    		<toolbar>
         	<button name="catalog" title="Catalog" onClick="action-print-product-catalog" icon="fa-book"/>
 	    </toolbar>
@@ -17,7 +17,7 @@
 	    <button name="sendByEmail" title="Send Email" icon="fa-envelope" onClick="action-send-by-email-with-template"/>
     </grid>
     
-    <grid name="product-product-variant-grid" title="Products" model="com.axelor.apps.base.db.Product" orderBy="name">
+    <grid name="product-product-variant-grid" title="Products" model="com.axelor.apps.base.db.Product" orderBy="code,name">
 	    <field name="code" width="120"/>
 	    <field name="name"/>
 	    <field name="productVariant" width="200"/>
@@ -190,7 +190,7 @@
   		</panel-tabs>
 	</form>    
 	
-	<cards name="product-cards" title="Product" model="com.axelor.apps.base.db.Product" cardWidth="25%" css="rect-image">
+	<cards name="product-cards" title="Product" model="com.axelor.apps.base.db.Product" cardWidth="25%" css="rect-image" orderBy="code,name">
 	    <toolbar>
         	<button name="catalog" title="Catalog" onClick="action-print-product-catalog" icon="fa-book"/>
 	    </toolbar>

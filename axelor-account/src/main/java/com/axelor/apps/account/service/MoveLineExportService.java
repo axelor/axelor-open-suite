@@ -911,21 +911,21 @@ public class MoveLineExportService {
 					for (Reconcile reconcile : moveLine.getDebitReconcileList()) {
 						if (j == 1){
 							if(j == i){
-								items[13] = reconcile.getRef();
+								items[13] = reconcile.getReconcileSeq();
 								items[14] = reconcile.getReconciliationDate().toString("YYYYMMdd");
 							}
 							else{
-								items[13] = reconcile.getRef()+";";
+								items[13] = reconcile.getReconcileSeq()+";";
 								items[14] = reconcile.getReconciliationDate().toString("YYYYMMdd")+";";
 							}
 						}
 						else{
 							if(j == i){
-								items[13] += reconcile.getRef();
+								items[13] += reconcile.getReconcileSeq();
 								items[14] += reconcile.getReconciliationDate().toString("YYYYMMdd");
 							}
 							else{
-								items[13] += reconcile.getRef()+";";
+								items[13] += reconcile.getReconcileSeq()+";";
 								items[14] += reconcile.getReconciliationDate().toString("YYYYMMdd")+";";
 							}
 						}
@@ -938,21 +938,21 @@ public class MoveLineExportService {
 					for (Reconcile reconcile : moveLine.getCreditReconcileList()) {
 						if (j == 1){
 							if(j == i){
-								items[13] = reconcile.getRef();
+								items[13] = reconcile.getReconcileSeq();
 								items[14] = reconcile.getReconciliationDate().toString("YYYYMMdd");
 							}
 							else{
-								items[13] = reconcile.getRef()+";";
+								items[13] = reconcile.getReconcileSeq()+";";
 								items[14] = reconcile.getReconciliationDate().toString("YYYYMMdd")+";";
 							}
 						}
 						else{
 							if(j == i){
-								items[13] += reconcile.getRef();
+								items[13] += reconcile.getReconcileSeq();
 								items[14] += reconcile.getReconciliationDate().toString("YYYYMMdd");
 							}
 							else{
-								items[13] += reconcile.getRef()+";";
+								items[13] += reconcile.getReconcileSeq()+";";
 								items[14] += reconcile.getReconciliationDate().toString("YYYYMMdd")+";";
 							}
 						}

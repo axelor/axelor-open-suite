@@ -45,10 +45,19 @@ public class PartnerAccountRepository extends PartnerBaseRepository {
 				}
 			}
 			
-
 			return super.save(partner);
 		} catch (Exception e) {
 			throw new PersistenceException(e.getLocalizedMessage());
 		}
+	}
+	
+	@Override
+	public Partner copy(Partner partner, boolean deep) {
+		
+		Partner copy = super.copy(partner, deep);
+		
+		copy.setAccountingSituationList(null);
+		
+		return copy;
 	}
 }

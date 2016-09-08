@@ -71,8 +71,6 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import com.axelor.auth.AuthUtils;
-import com.axelor.inject.Beans;
 
 public class TimesheetServiceImpl implements TimesheetService{
 

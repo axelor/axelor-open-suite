@@ -352,7 +352,7 @@
 		<option value="proTraining">Professional training</option>
 		<option value="productionOrder">Production order</option>
 		<option value="manufOrder">Manufacturing order</option>
-		<option value="reconcile">Reconciliation</option>		
+		<option value="reconcile">Reconcile</option>
 	</selection>
 
 	<selection name="company.paybox.hash.select">

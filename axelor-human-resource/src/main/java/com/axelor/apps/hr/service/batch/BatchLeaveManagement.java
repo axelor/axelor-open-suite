@@ -38,18 +38,17 @@ public class BatchLeaveManagement extends BatchStrategy {
 	int noValueAnomaly;
 	int confAnomaly;
 	
-	@Inject
-	LeaveLineRepository leaveLineRepository;
-	
-	@Inject
-	LeaveManagementRepository leaveManagementRepository;
+	protected LeaveLineRepository leaveLineRepository;
+	protected LeaveManagementRepository leaveManagementRepository;
 	
 	
 	@Inject
-	public BatchLeaveManagement(LeaveManagementService leaveManagementService) {
+	public BatchLeaveManagement(LeaveManagementService leaveManagementService, LeaveLineRepository leaveLineRepository, LeaveManagementRepository leaveManagementRepository) {
+		
 		super(leaveManagementService);
+		this.leaveLineRepository = leaveLineRepository;
+		this.leaveManagementRepository = leaveManagementRepository;
 	}
-
 
 	@Override
 	protected void start() throws IllegalArgumentException, IllegalAccessException, AxelorException {

@@ -17,12 +17,14 @@
  */
 package com.axelor.apps.base.db.repo;
 
+import java.util.List;
 import java.util.Map;
 
 import javax.persistence.PersistenceException;
 
 import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.PartnerAddress;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.administration.SequenceService;
@@ -30,6 +32,7 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.beust.jcommander.internal.Lists;
 import com.google.inject.Inject;
 
 public class PartnerBaseRepository extends PartnerRepository {
@@ -72,4 +75,35 @@ public class PartnerBaseRepository extends PartnerRepository {
 		return json;
 		
 	}
+	
+	@Override
+	public Partner copy(Partner partner, boolean deep) {
+		
+		Partner copy = super.copy(partner, deep);
+		
+		copy.setPartnerSeq(null);
+		copy.setEmailAddress(null);
+		
+		PartnerAddressRepository partnerAddressRepository = Beans.get(PartnerAddressRepository.class);
+		
+		List<PartnerAddress> partnerAddressList = Lists.newArrayList();
+		
+		if(deep)  {
+		
+			for(PartnerAddress partnerAddress : copy.getPartnerAddressList())  {
+				
+				partnerAddressList.add(partnerAddressRepository.copy(partnerAddress, deep));
+			}
+			
+		}
+		copy.setPartnerAddressList(partnerAddressList);
+		copy.setBlockingList(null);
+		copy.setBankDetailsList(null);
+		
+		return copy;
+	}
+	
+	
+	
+	
 }

@@ -169,7 +169,7 @@ public interface IExceptionMessage {
 	static final String RECONCILE_4 = /*$$(*/ "%s :\nReconciliation %s: Le montant réconcilié doit être différent de zéro. \n (Débit %s compte %s - Crédit %s compte %s)" /*)*/ ;
 	static final String RECONCILE_5 = /*$$(*/ "%s :\nReconciliation %s: Le montant réconcilié doit être inférieur ou égale au montant restant à réconcilier des lignes d'écritures." /*)*/ ;
 	static final String RECONCILE_6 = /*$$(*/ "%s :\n Erreur : Veuillez configurer une séquence Réconciliation pour la société %s" /*)*/ ;
-	
+
 	/**
 	 * Reimbursement service and controller
 	 */
