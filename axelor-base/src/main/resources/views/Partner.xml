@@ -117,9 +117,10 @@
   		<panel-tabs>
   			<panel name="information" title="Informations">
 				<panel hideIf="isContact" colSpan="12">
-					<field name="isCustomer"/>
+					<field name="isCustomer" hideIf="isEmployee"/>
 					<field name="hasOrdered" showIf="isCustomer"/>
-					<field name="isSupplier"/>
+					<field name="isSupplier" hideIf="isEmployee"/>
+					<field name="isEmployee" hideIf= "isCustomer OR isSupplier"/>
 				</panel>
 				<panel name="postalAddresses" title="Postal addresses" colSpan="12">
 					<field name="partnerAddressList" colSpan="12" onChange="action-partner-address-list-change" >
@@ -406,6 +407,72 @@
 		]]>
 		</template>
 	</cards>
+	
+	<form name="partner-employee-form" title="Employee" model="com.axelor.apps.base.db.Partner" 
+	onNew="action-partner-employee-record-default" 
+	onLoad="action-partner-attrs-change-name,action-partner-method-set-social-network-url" onSave="save,action-partner-method-set-user-partner">
+	    <toolbar>
+	        <button name="sendByEmail" title="Send email" icon="fa-envelope" onClick="save,action-send-by-email-with-template" readonlyIf="id == null"/>
+	        <button name="showPartnerInfo" title="Print Informations" icon="fa-print" onClick="save,action-partner-method-show-partner-info"  readonlyIf="id == null"/>
+	    </toolbar>
+	    <panel-include view="incl-event-actions-partner-form" from="axelor-crm" />
+	    <panel name="main" >
+	    	<panel colSpan="3">
+	    		<field name="picture" widget="Image" showTitle="false" colSpan="12"/>
+	    		<panel colSpan="12">
+	           		<label name="google" title="&lt;a class='fa fa-google-plus' href='http://www.google.com' target='_blank' /&gt;" colSpan="2"/>
+				    <label name="facebook" title="&lt;a class='fa fa-facebook' href='http://www.facebook.com' target='_blank' /&gt;" colSpan="2"/>
+				    <label name="twitter" title="&lt;a class='fa fa-twitter' href='http://www.twitter.com' target='_blank' /&gt;" colSpan="2"/>
+				    <label name="linkedin" title="&lt;a class='fa fa-linkedin' href='http://www.linkedin.com' target='_blank' /&gt;" colSpan="2"/>
+				    <label name="youtube" title="&lt;a class='fa fa-youtube' href='http://www.youtube.com' target='_blank' /&gt;" colSpan="2"/>
+	        	</panel>
+	      	</panel>
+	        <panel colSpan="9">
+	            <field name="titleSelect" showTitle="false" placeholder="Civility" colSpan="2" />
+	            <field name="name" showTitle="false" css="highlight" placeholder="Name" x-bind="{{code|uppercase}}"  onChange="action-partner-record-full-name,action-partner-method-set-social-network-url" colSpan="5" />
+	            <field name="firstName" showTitle="false" css="highlight" placeholder="First name" x-bind="{{code|uppercase}}" onChange="action-partner-record-full-name,action-partner-method-set-social-network-url" colSpan="5" />
+	            <panel name="company" title="Company" colSpan="12" >
+	            	<field name="mainPartner" domain="self.isContact = false" form-view="partner-form" grid-view="partner-grid"/>
+	           	</panel>
+	           	<field name="isContact" hidden="true" colSpan="12"/>
+	           	<field name="isEmployee" readonly="true" colSpan="12"/>
+	        </panel>
+         </panel>
+        <panel-tabs>
+	        <panel name="contactDetails" title="Contact details">
+	            <field name="jobTitle"/>
+	            <field name="reportsTo" domain="self.isContact = true"/>
+	            <field name="fixedPhone" placeholder="+33100000000" pattern="^\+?(?:[0-9]{2,3}(?:\s|\.)?){3,6}[0-9]{2,3}$" onChange="action-partner-record-normalize-fixed-phone-number"/>
+	            <field name="mobilePhone" placeholder="+33100000000" pattern="^\+?(?:[0-9]{2,3}(?:\s|\.)?){3,6}[0-9]{2,3}$" onChange="action-partner-record-normalize-mobile-phone-number"/>
+	            <field name="emailAddress" canSelect="false" form-view="email-address-simple-form" x-show-icons="false">
+					<editor x-show-titles="false">
+						<field name="address" placeholder="whatever@example.com" pattern="^[a-z0-9A-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ!#$%&amp;'*+/=?^_`{|}~-]+(?:\.[a-z0-9A-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ!#$%&amp;'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+(?:[a-z]{2,})$"/>
+					</editor>
+				</field>
+	            <field name="fax" pattern="^\+?(?:[0-9]{2,3}(?:\s|\.)?){3,6}[0-9]{2,3}$" placeholder="+33000000000" onChange="action-partner-record-normalize-fax-phone-number"/>
+	            <field name="contactAddress" title="Address" canNew="true" form-view="address-form" grid-view="address-grid"/>     
+	        </panel>
+	        <panel name="activities" title="Activities" showIf="id != null" if-module="axelor-crm" onTabSelect="action-partner-method-view-emails-contact">
+				<panel-include if-module="axelor-organisation" view="incl-show-project-partner-form" from="axelor-organisation"/>
+		        <panel-include view="incl-activities-contact-form" from="axelor-crm" />
+		        <panel-include if-module="axelor-supplychain" view="incl-sales-contact-form" from="axelor-supplychain"/>
+		        <field name="$emailsList" colSpan="12" type="many-to-many" target="com.axelor.apps.message.db.Message" title="Emails" canNew="false" canSelect="false" canRemove="false"/>
+			</panel>
+			<panel-dashlet action="action-contact-partner-dashlet" title="Partners"/>
+		</panel-tabs>
+        <panel name="settings" sidebar="true" title="Settings">
+            <field name="partnerSeq"/>
+            <field name="languageSelect"/>
+            <panel title="Assigned to" canCollapse="true" colSpan="12">
+				<field name="user" colSpan="6" form-view="user-form" grid-view="user-grid"/>
+                <field name="team" colSpan="6" form-view="team-form" grid-view="team-grid" if="__config__.general.getTeamManagement()"/>
+                <field name="companySet" colSpan="12" widget="TagSelect" canNew="false" form-view="company-form" grid-view="company-grid"/>
+            </panel>
+        </panel>
+		<panel name="notes" title="Notes" colSpan="12" sidebar="true">
+            <field name="description" showTitle="false" colSpan="12" height="6"/>
+        </panel>
+	</form>
 		
 	<action-group name="action-group-partner-onload">
     	<action name="action-partner-method-update-customer-credit-line-from-partner" if="!isContact &amp;&amp; isCustomer &amp;&amp; __config__.general.getManageCustomerCredit()"/>
@@ -479,6 +546,19 @@
     <action-record name="action-partner-contact-record-default" model="com.axelor.apps.base.db.Partner">
     	<field name="partnerTypeSelect" expr="#{2}" />
     	<field name="isContact" expr="#{true}"/>
+    	<field name="companySet" expr="#{_parent.companySet}"/>
+    	<field name="languageSelect" expr="#{_parent != null ? _parent.languageSelect : __config__.general.getDefaultPartnerLanguage()}"/>
+    	<field name="user"  expr="#{_parent.user}" if="#{_parent._model == 'com.axelor.apps.base.db.Partner'}"/>
+    	<field name="team"  expr="#{_parent.team}" if="#{_parent._model == 'com.axelor.apps.base.db.Partner'}"/>
+    	<field name="user"  expr="#{__user__}" if="#{_parent == null || _parent._model != 'com.axelor.apps.base.db.Partner'}"/>
+    	<field name="team"  expr="#{__user__.activeTeam}" if="#{_parent == null || _parent._model != 'com.axelor.apps.base.db.Partner'}"/>
+    	<field name="mainPartner" expr="#{__repo__(Partner).find(_parent.id)}" if="#{_parent.id != null &amp;&amp; _parent._model == 'com.axelor.apps.base.db.Partner'}"/>
+    </action-record>
+    
+      <action-record name="action-partner-employee-record-default" model="com.axelor.apps.base.db.Partner">
+    	<field name="partnerTypeSelect" expr="#{2}" />
+    	<field name="isContact" expr="#{false}"/>
+    	<field name="isEmployee" expr="#{true}"/>
     	<field name="companySet" expr="#{_parent.companySet}"/>
     	<field name="languageSelect" expr="#{_parent != null ? _parent.languageSelect : __config__.general.getDefaultPartnerLanguage()}"/>
     	<field name="user"  expr="#{_parent.user}" if="#{_parent._model == 'com.axelor.apps.base.db.Partner'}"/>
@@ -571,6 +651,9 @@
 		</filter>
 		<filter title="All Suppliers">
 			<domain>self.isSupplier = true AND self.isContact = false</domain>
+		</filter>
+		<filter title="All Employees">
+			<domain>self.isEmployee = true AND self.isContact = false</domain>
 		</filter>
 	</search-filters>
 	
