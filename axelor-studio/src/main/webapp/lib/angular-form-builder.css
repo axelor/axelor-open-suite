@@ -137,8 +137,14 @@ body{padding:10px}.footer{height:50px}
 
 .fixed-panel{
 	position: fixed;
-	width: 30%;
+	left: 0px;
+	width: 300px;
 	z-index: 1;
+}
+
+.panel-right {
+	margin-left:300px;
+	max-width: 400px;
 }
 
 .pre-scrollable {
