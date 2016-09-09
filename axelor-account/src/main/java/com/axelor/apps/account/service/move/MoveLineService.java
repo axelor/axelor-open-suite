@@ -210,10 +210,6 @@ public class MoveLineService {
 			throw new AxelorException(I18n.get(IExceptionMessage.MOVE_LINE_2), IException.MISSING_FIELD, invoice.getInvoiceId());
 		}
 		MoveLine moveLine1 = this.createMoveLine(move, partner, account2, invoice.getCompanyInTaxTotal(), isDebitCustomer, invoice.getInvoiceDate(), invoice.getDueDate(), moveLineId++, invoice.getInvoiceId());
-		moveLine1.setAccountCode(account2.getCode());
-		moveLine1.setAccountName(account2.getName());
-		moveLine1.setPartnerFullName(partner.getFullName());
-		moveLine1.setPartnerSeq(partner.getPartnerSeq());
 		moveLines.add(moveLine1);
 		
 		
@@ -255,10 +251,6 @@ public class MoveLineService {
 							moveLine.addAnalyticDistributionLineListItem(analyticDistributionLine);
 						}
 					}
-					moveLine.setAccountCode(account2.getCode());
-					moveLine.setAccountName(account2.getName());
-					moveLine.setPartnerFullName(partner.getFullName());
-					moveLine.setPartnerSeq(partner.getPartnerSeq());
 					moveLine.setTaxLine(invoiceLine.getTaxLine());
 					moveLine.setTaxRate(invoiceLine.getTaxLine().getValue());
 					moveLine.setTaxCode(invoiceLine.getTaxLine().getTax().getCode());
@@ -285,10 +277,6 @@ public class MoveLineService {
 				}
 
 				MoveLine moveLine = this.createMoveLine(move, partner, account2, exTaxTotal, !isDebitCustomer, invoice.getInvoiceDate(), null, moveLineId++, invoice.getInvoiceId());
-				moveLine.setAccountCode(account2.getCode());
-				moveLine.setAccountName(account2.getName());
-				moveLine.setPartnerFullName(partner.getFullName());
-				moveLine.setPartnerSeq(partner.getPartnerSeq());
 				moveLine.setTaxLine(invoiceLineTax.getTaxLine());
 				moveLine.setTaxRate(invoiceLineTax.getTaxLine().getValue());
 				moveLine.setTaxCode(tax.getCode());
