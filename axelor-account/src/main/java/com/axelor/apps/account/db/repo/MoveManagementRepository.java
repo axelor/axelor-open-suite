@@ -20,11 +20,13 @@ package com.axelor.apps.account.db.repo;
 import javax.persistence.PersistenceException;
 
 import com.axelor.apps.account.db.Move;
+import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.move.MoveSequenceService;
 import com.axelor.apps.base.db.Period;
 import com.axelor.apps.base.service.PeriodService;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.exception.AxelorException;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 
@@ -76,13 +78,11 @@ public class MoveManagementRepository extends MoveRepository {
 
 	@Override
 	public void remove(Move entity){
-
-		//try{
-			//Beans.get(PeriodService.class).testOpenPeriod(entity.getPeriod());
-			super.remove(entity);
-		//} catch (AxelorException e) {
-		//	e.printStackTrace();
-		//}
-
+		
+		if(!entity.getStatusSelect().equals(MoveRepository.STATUS_DRAFT)){
+			throw new PersistenceException(I18n.get(IExceptionMessage.MOVE_ARCHIVE_NOT_OK));
+		}else{
+			entity.setArchived(true);
+		}
 	}
 }

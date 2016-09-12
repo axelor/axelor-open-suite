@@ -120,7 +120,7 @@
 					<field name="isCustomer" hideIf="isEmployee"/>
 					<field name="hasOrdered" showIf="isCustomer"/>
 					<field name="isSupplier" hideIf="isEmployee"/>
-					<field name="isEmployee" hideIf= "isCustomer OR isSupplier"/>
+					<field name="isEmployee" hideIf="isCustomer || isSupplier"/>
 				</panel>
 				<panel name="postalAddresses" title="Postal addresses" colSpan="12">
 					<field name="partnerAddressList" colSpan="12" onChange="action-partner-address-list-change" >

@@ -25,6 +25,7 @@ import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.move.MoveService;
 import com.axelor.apps.base.service.PeriodService;
+import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -107,16 +108,14 @@ public class MoveController {
 	}
 	
 	//change move status to Archived=true
-	public void deleteMove(ActionRequest request, ActionResponse response){
+	public void deleteMove(ActionRequest request, ActionResponse response) throws AxelorException{
 
 		Move move = request.getContext().asType(Move.class);
 		move = moveRepo.find(move.getId());
 
-		if(!move.getStatusSelect().equals(MoveRepository.STATUS_DRAFT)){
-			response.setFlash(I18n.get(IExceptionMessage.MOVE_ARCHIVE_NOT_OK));
-		}
-		else{
-			moveService.getMoveRemoveService().archiveMove(move);;
+		if(move.getStatusSelect().equals(MoveRepository.STATUS_DRAFT)){
+			moveRepo.remove(move);
+			response.setFlash(I18n.get(IExceptionMessage.MOVE_ARCHIVE_OK));
 			response.setFlash(I18n.get(IExceptionMessage.MOVE_ARCHIVE_OK));
 			response.setView(ActionView
 					.define("Moves")
@@ -124,6 +123,14 @@ public class MoveController {
 					.add("grid", "move-grid")
 					.add("form", "move-grid").map());
 			response.setCanClose(true);
+		}
+		else{
+			try {
+				moveRepo.remove(move);
+				response.setFlash(I18n.get(IExceptionMessage.MOVE_ARCHIVE_NOT_OK));
+			} 
+			catch (Exception e){ TraceBackService.trace(response, e); }{
+			}
 		}
 
 	}
