@@ -275,7 +275,6 @@ public class YearService {
 			period.setYear(year);
 			period.setName(String.format("%02d", periodNumber)+"/"+year.getCode());
 			period.setCode(String.format("%02d", periodNumber)+"/"+year.getCode()+"_"+year.getCompany().getCode());
-			period.setCompany(year.getCompany());
 			period.setStatusSelect(year.getStatusSelect());
 			periods.add(period);
 			periodNumber ++;
