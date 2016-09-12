@@ -9,15 +9,15 @@
         <field name="year" title="Fiscal year" form-view="year-form" grid-view="year-grid"/>
         <field name="fromDate"/>
         <field name="toDate"/>
-        <field name="company" form-view="company-form" grid-view="company-grid"/>
+        <field name="year.company" form-view="company-form" readonly="true"/>
         <field name="statusSelect"/>
     </grid>
     
-    <form name="period-form" title="Period" model="com.axelor.apps.base.db.Period" onNew="action-period-record-default" width="large">
+    <form name="period-form" title="Period" model="com.axelor.apps.base.db.Period" width="large">
 	    <panel name="main" readonlyIf="statusSelect == 2">
 	        <field name="name"/>
 	    	<field name="code" x-bind="{{code|uppercase}}" colSpan="3"/>
-			<field name="company" widget="SuggestBox" colSpan="3" form-view="company-form" grid-view="company-grid"/>
+			<field name="year.company" form-view="company-form" readonly="true" colSpan="3"/>
 	    	<field name="fromDate" colSpan="3"/>
 	    	<field name="toDate" colSpan="3"/>
 	    	<field name="year" title="Fiscal year" form-view="year-form" grid-view="year-grid"/>   
@@ -57,12 +57,5 @@
     <action-record name="action-period-record-closure-date-time" model="com.axelor.apps.base.db.Period">
     	<field name="closureDateTime" expr="eval:__datetime__" if="statusSelect == 2"/>
     </action-record>
-    
-    <action-record name="action-period-record-default" model="com.axelor.apps.base.db.Period">
-    	<field name="company"  expr="eval:__user__.activeCompany" if="__user__.activeCompany != null"/>
-    	<field name="company"  expr="eval:__repo__.of(Company).all().fetchOne()" if="__user__.activeCompany == null &amp;&amp; __repo__.of(Company).all().fetch().size == 1"/>
-     </action-record>
-    
-    
     
 </object-views>
