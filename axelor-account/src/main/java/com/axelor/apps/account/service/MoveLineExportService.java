@@ -27,6 +27,7 @@ import java.util.List;
 
 import javax.persistence.Query;
 
+import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.slf4j.Logger;
@@ -50,6 +51,8 @@ import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.move.MoveLineService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.IAdministration;
+import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.base.service.administration.GeneralServiceImpl;
 import com.axelor.apps.base.service.administration.SequenceService;
@@ -80,13 +83,14 @@ public class MoveLineExportService {
 	protected AccountRepository accountRepo;
 	protected MetaAttachmentRepository metaAttachmentRepo;
 	protected MoveLineService moveLineService;
+	protected PartnerService partnerService;
 	protected MetaFilesTemp metaFilesTemp;
 	
 	@Inject
 	public MoveLineExportService(GeneralService generalService, MoveLineReportService moveLineReportService, SequenceService sequenceService, 
 			AccountConfigService accountConfigService, MoveRepository moveRepo, MoveLineRepository moveLineRepo, MoveLineReportRepository moveLineReportRepo,
-			JournalRepository journalRepo, AccountRepository accountRepo, MoveLineService moveLineService, MetaFilesTemp metaFilesTemp, 
-			MetaAttachmentRepository metaAttachmentRepo) {
+			JournalRepository journalRepo, AccountRepository accountRepo, MoveLineService moveLineService, PartnerService partnerService,
+			MetaFilesTemp metaFilesTemp, MetaAttachmentRepository metaAttachmentRepo) {
 		this.moveLineReportService = moveLineReportService;
 		this.sequenceService = sequenceService;
 		this.accountConfigService = accountConfigService;
@@ -96,6 +100,7 @@ public class MoveLineExportService {
 		this.journalRepo = journalRepo;
 		this.accountRepo = accountRepo;
 		this.moveLineService = moveLineService;
+		this.partnerService = partnerService;
 		this.metaFilesTemp =  metaFilesTemp;
 		this.metaAttachmentRepo = metaAttachmentRepo;
 		todayTime = generalService.getTodayDateTime();
@@ -906,62 +911,31 @@ public class MoveLineExportService {
 				items[11]= moveLine.getDebit().toString();
 				items[12]= moveLine.getCredit().toString();
 				if(moveLine.getDebit().compareTo(BigDecimal.ZERO) > 0){
-					int i = moveLine.getDebitReconcileList().size();
-					int j = 1; 
+					List<String> ReconcileSeqList = new ArrayList<String>();
+					List<String> ReconcileDateList = new ArrayList<String>();
+					
 					for (Reconcile reconcile : moveLine.getDebitReconcileList()) {
-						if (j == 1){
-							if(j == i){
-								items[13] = reconcile.getReconcileSeq();
-								items[14] = reconcile.getReconciliationDate().toString("YYYYMMdd");
-							}
-							else{
-								items[13] = reconcile.getReconcileSeq()+";";
-								items[14] = reconcile.getReconciliationDate().toString("YYYYMMdd")+";";
-							}
-						}
-						else{
-							if(j == i){
-								items[13] += reconcile.getReconcileSeq();
-								items[14] += reconcile.getReconciliationDate().toString("YYYYMMdd");
-							}
-							else{
-								items[13] += reconcile.getReconcileSeq()+";";
-								items[14] += reconcile.getReconciliationDate().toString("YYYYMMdd")+";";
-							}
-						}
-						j++;
+						ReconcileSeqList.add(reconcile.getReconcileSeq());
+						ReconcileDateList.add(reconcile.getReconciliationDate().toString("YYYYMMdd"));
 					}
+					items[13] = StringUtils.join(ReconcileSeqList, "; ");
+					items[14]= StringUtils.join(ReconcileDateList, "; ");
 				}
 				else{
-					int i = moveLine.getCreditReconcileList().size();
-					int j = 1; 
+					List<String> ReconcileSeqList = new ArrayList<String>();
+					List<String> ReconcileDateList = new ArrayList<String>();
 					for (Reconcile reconcile : moveLine.getCreditReconcileList()) {
-						if (j == 1){
-							if(j == i){
-								items[13] = reconcile.getReconcileSeq();
-								items[14] = reconcile.getReconciliationDate().toString("YYYYMMdd");
-							}
-							else{
-								items[13] = reconcile.getReconcileSeq()+";";
-								items[14] = reconcile.getReconciliationDate().toString("YYYYMMdd")+";";
-							}
-						}
-						else{
-							if(j == i){
-								items[13] += reconcile.getReconcileSeq();
-								items[14] += reconcile.getReconciliationDate().toString("YYYYMMdd");
-							}
-							else{
-								items[13] += reconcile.getReconcileSeq()+";";
-								items[14] += reconcile.getReconciliationDate().toString("YYYYMMdd")+";";
-							}
-						}
-						j++;
+						ReconcileSeqList.add(reconcile.getReconcileSeq());
+						ReconcileDateList.add(reconcile.getReconciliationDate().toString("YYYYMMdd"));
 					}
+					items[13] = StringUtils.join(ReconcileSeqList, "; ");
+					items[14]= StringUtils.join(ReconcileDateList, "; ");
 				}
 				items[15]= moveLine.getMove().getValidationDate().toString("YYYYMMdd");
 				items[16]= moveLine.getCurrencyAmount().toString();
-				items[17]= moveLine.getMove().getCurrency().getCode();
+				if(moveLine.getMove().getCurrency() != null){
+					items[17]= moveLine.getMove().getCurrency().getCode();
+				}
 				allMoveLineData.add(items);
 			}
 		}
@@ -1340,7 +1314,20 @@ public class MoveLineExportService {
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public String setFileName(MoveLineReport moveLineReport) throws AxelorException, IOException{
 		Company company =moveLineReport.getCompany();
-		String fileName = accountConfigService.getExportFileName(accountConfigService.getAccountConfig(company));
+		Partner partner = company.getPartner();
+		
+		//Pour le moment: on utilise le format par défaut: SIREN+FEC+DATE DE CLÔTURE DE L'EXERCICE.Extension
+		String fileName = partnerService.getSIRENNumber(partner)+"FEC";
+		// On récupère la date de clôture de l'exercice/période
+		if (moveLineReport.getDateTo() != null){
+			fileName += moveLineReport.getDateTo().toString("YYYYMMdd");
+		}else if(moveLineReport.getPeriod() != null){
+			fileName += moveLineReport.getPeriod().getToDate().toString("YYYYMMdd");
+		}else {
+			fileName += moveLineReport.getYear().getToDate().toString("YYYYMMdd");
+		}
+		fileName +=".csv";
+
 		return fileName;
 	}
 
