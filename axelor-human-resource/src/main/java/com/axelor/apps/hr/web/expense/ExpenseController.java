@@ -17,10 +17,12 @@
  */
 package com.axelor.apps.hr.web.expense;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,8 +32,11 @@ import com.axelor.apps.base.db.Wizard;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.hr.db.Expense;
 import com.axelor.apps.hr.db.ExpenseLine;
-import com.axelor.apps.hr.db.ExtraHours;
+import com.axelor.apps.base.db.Product;
+import com.axelor.apps.hr.db.HRConfig;
+import com.axelor.apps.hr.db.KilometricAllowanceRate;
 import com.axelor.apps.hr.db.repo.ExpenseRepository;
+import com.axelor.apps.hr.db.repo.KilometricAllowanceRateRepository;
 import com.axelor.apps.hr.db.repo.TimesheetRepository;
 import com.axelor.apps.hr.exception.IExceptionMessage;
 import com.axelor.apps.hr.report.IReport;
@@ -46,6 +51,7 @@ import com.axelor.db.JPA;
 import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
@@ -54,6 +60,7 @@ import com.axelor.rpc.ActionResponse;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 
 public class ExpenseController {
 
@@ -68,7 +75,8 @@ public class ExpenseController {
 	@Inject
 	private ExpenseService expenseService;
 	@Inject
-	protected GeneralService generalService;
+	private GeneralService generalService;
+	
 	
 	public void createAnalyticDistributionWithTemplate(ActionRequest request, ActionResponse response) throws AxelorException{
 		ExpenseLine expenseLine = request.getContext().asType(ExpenseLine.class);
@@ -316,87 +324,152 @@ public class ExpenseController {
 	
 	//sending expense and sending mail to manager
 	public void send(ActionRequest request, ActionResponse response) throws AxelorException{
-		Expense expense = request.getContext().asType(Expense.class);
-		if(!hrConfigService.getHRConfig(expense.getUser().getActiveCompany()).getExpenseMailNotification()){
-			response.setValue("statusSelect", TimesheetRepository.STATUS_CONFIRMED);
-			response.setValue("sentDate", generalService.getTodayDate());
-			response.setView(ActionView
-					.define(I18n.get("Expense"))
-					.model(Expense.class.getName())
-					.add("form", "expense-form")
-					.map());
-		}
-		else{
-			User manager = expense.getUser().getEmployee().getManager();
-			if(manager!=null){
-				Template template =  hrConfigService.getHRConfig(expense.getUser().getActiveCompany()).getSentExpenseTemplate();
-				if(mailManagementService.sendEmail(template,expense.getId())){
-					String message = "Email sent to";
-					response.setFlash(I18n.get(message)+" "+manager.getFullName());
-					response.setValue("statusSelect", TimesheetRepository.STATUS_CONFIRMED);
-					response.setValue("sentDate", generalService.getTodayDate());
-					response.setView(ActionView
-							.define(I18n.get("Expense"))
-							.model(Expense.class.getName())
-							.add("form", "expense-form")
-							.map());
-				}
-				else{
-					throw new AxelorException(String.format(I18n.get(IExceptionMessage.HR_CONFIG_TEMPLATES), expense.getUser().getActiveCompany().getName()), IException.CONFIGURATION_ERROR);
+		
+		try{
+			Expense expense = request.getContext().asType(Expense.class);
+			if(!hrConfigService.getHRConfig(expense.getUser().getActiveCompany()).getExpenseMailNotification()){
+				response.setValue("statusSelect", TimesheetRepository.STATUS_CONFIRMED);
+				response.setValue("sentDate", generalService.getTodayDate());
+				response.setView(ActionView
+						.define(I18n.get("Expense"))
+						.model(Expense.class.getName())
+						.add("form", "expense-form")
+						.map());
+			}
+			else{
+				User manager = expense.getUser().getEmployee().getManager();
+				if(manager!=null){
+					Template template =  hrConfigService.getHRConfig(expense.getUser().getActiveCompany()).getSentExpenseTemplate();
+					if(mailManagementService.sendEmail(template,expense.getId())){
+						String message = "Email sent to";
+						response.setFlash(I18n.get(message)+" "+manager.getFullName());
+						response.setValue("statusSelect", TimesheetRepository.STATUS_CONFIRMED);
+						response.setValue("sentDate", generalService.getTodayDate());
+						response.setView(ActionView
+								.define(I18n.get("Expense"))
+								.model(Expense.class.getName())
+								.add("form", "expense-form")
+								.map());
+					}
+					else{
+						throw new AxelorException(String.format(I18n.get(IExceptionMessage.HR_CONFIG_TEMPLATES), expense.getUser().getActiveCompany().getName()), IException.CONFIGURATION_ERROR);
+					}
 				}
 			}
+		}catch(Exception e)  {
+			TraceBackService.trace(response, e);
 		}
 	}
 	
 	//validating expense and sending mail to applicant
 	public void valid(ActionRequest request, ActionResponse response) throws AxelorException{
-		Expense expense = request.getContext().asType(Expense.class);
-		if(!hrConfigService.getHRConfig(expense.getUser().getActiveCompany()).getExpenseMailNotification()){
-			response.setValue("statusSelect", TimesheetRepository.STATUS_VALIDATED);
-			response.setValue("validatedBy", AuthUtils.getUser());
-			response.setValue("validationDate", generalService.getTodayDate());
-		}
-		else{
-			User manager = expense.getUser().getEmployee().getManager();
-			if(manager!=null){
-				Template template =  hrConfigService.getHRConfig(expense.getUser().getActiveCompany()).getValidatedExpenseTemplate();
-				if(mailManagementService.sendEmail(template,expense.getId())){
-					String message = "Email sent to";
-					response.setFlash(I18n.get(message)+" "+expense.getUser().getFullName());
-					response.setValue("statusSelect", TimesheetRepository.STATUS_VALIDATED);
-					response.setValue("validatedBy", AuthUtils.getUser());
-					response.setValue("validationDate", generalService.getTodayDate());
-				}
-				else{
-					throw new AxelorException(String.format(I18n.get(IExceptionMessage.HR_CONFIG_TEMPLATES), expense.getUser().getActiveCompany().getName()), IException.CONFIGURATION_ERROR);
+		
+		try{
+			Expense expense = request.getContext().asType(Expense.class);
+			if(!hrConfigService.getHRConfig(expense.getUser().getActiveCompany()).getExpenseMailNotification()){
+				response.setValue("statusSelect", TimesheetRepository.STATUS_VALIDATED);
+				response.setValue("validatedBy", AuthUtils.getUser());
+				response.setValue("validationDate", generalService.getTodayDate());
+			}
+			else{
+				User manager = expense.getUser().getEmployee().getManager();
+				if(manager!=null){
+					Template template =  hrConfigService.getHRConfig(expense.getUser().getActiveCompany()).getValidatedExpenseTemplate();
+					if(mailManagementService.sendEmail(template,expense.getId())){
+						String message = "Email sent to";
+						response.setFlash(I18n.get(message)+" "+expense.getUser().getFullName());
+						response.setValue("statusSelect", TimesheetRepository.STATUS_VALIDATED);
+						response.setValue("validatedBy", AuthUtils.getUser());
+						response.setValue("validationDate", generalService.getTodayDate());
+					}
+					else{
+						throw new AxelorException(String.format(I18n.get(IExceptionMessage.HR_CONFIG_TEMPLATES), expense.getUser().getActiveCompany().getName()), IException.CONFIGURATION_ERROR);
+					}
 				}
 			}
+		}catch(Exception e)  {
+			TraceBackService.trace(response, e);
 		}
 	}
 	
 	//refusing expense and sending mail to applicant
 	public void refuse(ActionRequest request, ActionResponse response) throws AxelorException{
-		Expense expense = request.getContext().asType(Expense.class);
-		if(!hrConfigService.getHRConfig(expense.getUser().getActiveCompany()).getExpenseMailNotification()){
-			response.setValue("statusSelect", TimesheetRepository.STATUS_REFUSED);
-			response.setValue("refusedBy", AuthUtils.getUser());
-			response.setValue("refusalDate", generalService.getTodayDate());
-		}
-		else{
-			User manager = expense.getUser().getEmployee().getManager();
-			if(manager!=null){
-				Template template =  hrConfigService.getHRConfig(expense.getUser().getActiveCompany()).getRefusedExpenseTemplate();
-				if(mailManagementService.sendEmail(template,expense.getId())){
-					String message = "Email sent to";
-					response.setFlash(I18n.get(message)+" "+expense.getUser().getFullName());
-					response.setValue("statusSelect", TimesheetRepository.STATUS_REFUSED);
-					response.setValue("refusedBy", AuthUtils.getUser());
-					response.setValue("refusalDate", generalService.getTodayDate());
-				}
-				else{
-					throw new AxelorException(String.format(I18n.get(IExceptionMessage.HR_CONFIG_TEMPLATES), expense.getUser().getActiveCompany().getName()), IException.CONFIGURATION_ERROR);
+		
+		try{
+			Expense expense = request.getContext().asType(Expense.class);
+			if(!hrConfigService.getHRConfig(expense.getUser().getActiveCompany()).getExpenseMailNotification()){
+				response.setValue("statusSelect", TimesheetRepository.STATUS_REFUSED);
+				response.setValue("refusedBy", AuthUtils.getUser());
+				response.setValue("refusalDate", generalService.getTodayDate());
+			}
+			else{
+				User manager = expense.getUser().getEmployee().getManager();
+				if(manager!=null){
+					Template template =  hrConfigService.getHRConfig(expense.getUser().getActiveCompany()).getRefusedExpenseTemplate();
+					if(mailManagementService.sendEmail(template,expense.getId())){
+						String message = "Email sent to";
+						response.setFlash(I18n.get(message)+" "+expense.getUser().getFullName());
+						response.setValue("statusSelect", TimesheetRepository.STATUS_REFUSED);
+						response.setValue("refusedBy", AuthUtils.getUser());
+						response.setValue("refusalDate", generalService.getTodayDate());
+					}
+					else{
+						throw new AxelorException(String.format(I18n.get(IExceptionMessage.HR_CONFIG_TEMPLATES), expense.getUser().getActiveCompany().getName()), IException.CONFIGURATION_ERROR);
+					}
 				}
 			}
+		}catch(Exception e)  {
+			TraceBackService.trace(response, e);
 		}
 	}
+	
+	public void fillKilometricExpenseProduct(ActionRequest request, ActionResponse response) throws AxelorException{
+		
+		try  {
+			Expense expense = request.getContext().getParentContext().asType(Expense.class);
+			HRConfig hrConfig = hrConfigService.getHRConfig(expense.getCompany());
+			Product expenseProduct = hrConfigService.getKilometricExpenseProduct(hrConfig);
+			logger.debug("Get Kilometric expense product : {}", expenseProduct);
+			response.setValue("expenseProduct",expenseProduct);
+		}
+		catch(Exception e)  {
+			TraceBackService.trace(response, e);
+		}
+	}
+	
+	@Transactional
+	 public void insertKMExpenses(ActionRequest request, ActionResponse response){
+	 	User user = AuthUtils.getUser();
+	 	if(user != null){
+	 		Expense expense = Beans.get(ExpenseRepository.class).all().filter("self.statusSelect = 1 AND self.user.id = ?1", user.getId()).order("-id").fetchOne();
+	 		if(expense == null){
+	 			expense = new Expense();
+	 			expense.setUser(user);
+	 			expense.setCompany(user.getActiveCompany());
+	 			expense.setStatusSelect(TimesheetRepository.STATUS_DRAFT);
+	 		}
+	 		ExpenseLine expenseLine = new ExpenseLine();
+	 		expenseLine.setDistance(new BigDecimal(request.getData().get("kmNumber").toString()));
+	 		expenseLine.setFromCity(request.getData().get("locationFrom").toString());
+	 		expenseLine.setToCity(request.getData().get("locationTo").toString());
+	 		expenseLine.setKilometricTypeSelect(new Integer(request.getData().get("allowanceTypeSelect").toString()));
+	 		expenseLine.setComments(request.getData().get("comments").toString());
+	 		expenseLine.setExpenseDate(new LocalDate(request.getData().get("date").toString()));
+	 		if(user.getEmployee() != null && user.getEmployee().getKilometricAllowParam() != null){
+	 			expenseLine.setKilometricAllowParam(user.getEmployee().getKilometricAllowParam());
+	 			KilometricAllowanceRate kilometricAllowanceRate = Beans.get(KilometricAllowanceRateRepository.class).findByVehicleKillometricAllowanceParam(user.getEmployee().getKilometricAllowParam());
+	 			if(kilometricAllowanceRate != null){
+	 				BigDecimal rate = kilometricAllowanceRate.getRate();
+	 				if(rate != null){
+	 					expenseLine.setTotalAmount(rate.multiply(expenseLine.getDistance()));
+	 				}
+	 			}
+	 		}
+	 			
+	 		expense.addExpenseLineListItem(expenseLine);
+	 			
+	 		Beans.get(ExpenseRepository.class).save(expense);
+	 	}
+	 }
+
 }

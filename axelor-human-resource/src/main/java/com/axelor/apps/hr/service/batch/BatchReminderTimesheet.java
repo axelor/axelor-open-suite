@@ -44,11 +44,15 @@ import com.google.inject.Inject;
 
 public class BatchReminderTimesheet extends AbstractBatch{
 
-	@Inject
 	protected TemplateMessageService templateMessageService;
-	
-	@Inject 
 	protected MessageService messageService;
+	
+	@Inject
+	public BatchReminderTimesheet( TemplateMessageService templateMessageService, MessageService messageService){
+		
+		this.templateMessageService = templateMessageService;
+		this.messageService = messageService;
+	}
 	
 	@Override 
 	protected void process() {

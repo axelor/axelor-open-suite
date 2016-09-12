@@ -33,6 +33,7 @@ import com.axelor.auth.db.User;
 import com.axelor.db.EntityHelper;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -203,15 +204,19 @@ public class ProjectPlanningController {
 		ProjectPlanning planning = request.getContext().asType(ProjectPlanning.class);
 		String type = request.getContext().get("_type").toString();
 		List<ProjectPlanningLine> projectPlanningLineList = null;
-		if(type.contentEquals("user")){
-			projectPlanningLineList = projectPlanningService.populateMyPlanning(planning, user);
-		}
-		else{
-			if (user.getActiveTeam() == null){
-				throw new AxelorException(IExceptionMessage.PROJECT_NO_ACTIVE_TEAM, IException.CONFIGURATION_ERROR);
-			}else{
-				projectPlanningLineList = projectPlanningService.populateMyTeamPlanning(planning, user.getActiveTeam());
+		try {
+			if(type.contentEquals("user")){
+				projectPlanningLineList = projectPlanningService.populateMyPlanning(planning, user);
 			}
+			else{
+				if (user.getActiveTeam() == null){
+					throw new AxelorException(IExceptionMessage.PROJECT_NO_ACTIVE_TEAM, IException.CONFIGURATION_ERROR);
+				}else{
+					projectPlanningLineList = projectPlanningService.populateMyTeamPlanning(planning, user.getActiveTeam());
+				}
+			}
+		}catch(Exception e)  {
+			TraceBackService.trace(response, e);
 		}
 		response.setValue("$projectPlanningLineList", projectPlanningLineList);
 	}

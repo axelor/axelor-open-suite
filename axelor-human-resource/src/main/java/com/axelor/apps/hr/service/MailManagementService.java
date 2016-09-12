@@ -10,12 +10,15 @@ import com.google.inject.Inject;
 
 public class MailManagementService {
 	
-	@Inject
 	protected MessageService messageService;
-
-	@Inject
 	protected TemplateMessageService templateMessageService;
 	
+	@Inject
+	public MailManagementService(MessageService messageService, TemplateMessageService templateMessageService){
+		
+		this.messageService = messageService;
+		this.templateMessageService = templateMessageService;
+	}
 	
 	public boolean sendEmail(Template template,long objectId) throws AxelorException{
 		if(template!=null){

@@ -61,6 +61,7 @@
 159;"reimbursement";"Proposition remboursement";1;10;"REMB_%Y_";;1;1;1
 160;"saleInterface";"Interface vente";1;10;"INTVEN_%Y_";;1;1;1
 161;"treasuryInterface";"Interface trésorerie";1;10;"INTTRESO_%Y_";;1;1;1
+162;"reconcile";"Réconciliation comptable";1;10;"RECON_%Y_%M_";;1;1;1
 1;"partner";"Numéro identifiant tiers";4;10;"T";;1;0;1
 2;"saleOrder";"Devis/Cmde client";1;5;"VTE";;1;0;1
 3;"purchaseOrder";"Cotations/Cmde fournisseur";1;5;"ACH";;1;0;1

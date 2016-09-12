@@ -518,6 +518,16 @@
 		<view type="grid" name="analytic-account-grid"/>
 		<view type="form" name="analytic-account-form"/>
 	</action-view>
+	
+	<menuitem name="account-conf-analytic-accounting-plan"
+		parent="account-conf-analytic" title="Chart of Analytic Accounts"
+		action="account.conf.analytic.accounting.plan" />
+	
+	<action-view name="account.conf.analytic.accounting.plan"
+		title="Chart of Analytic Accounts" model="com.axelor.apps.account.db.AnalyticAccount" >
+		<view type="tree" name="analytic-account-tree"/>
+		<view type="form" name="analitic-account-form" />
+	</action-view>
 
 	<menuitem name="account-conf-analytic-axis" parent="account-conf-analytic"
 		title="Analytic axis" action="account.conf.analytic.axis" />

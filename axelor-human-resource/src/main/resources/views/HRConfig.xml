@@ -12,6 +12,7 @@
 	    	<field name="company" form-view="company-form" colSpan="4" grid-view="company-grid"/>
 	  	</panel>
 	  	<panel name="general" title="General">
+	  		<field name="kilometricExpenseProduct" canView="false" domain="self.expense = true" widget="SuggestBox" form-view="product-expense-form" grid-view="product-expense-grid" />
 	  		<field name="publicHolidayPlanning" canNew="true"/>
 	  		<field name="weeklyPlanning" canNew="true"/>
 	  	</panel>
@@ -28,7 +29,7 @@
     	<field name="validatedExtraHoursTemplate" canNew="true" form-view="template-form" grid-view="template-grid" hideIf="!extraHoursMailNotification"/>
     	<field name="refusedExtraHoursTemplate" canNew="true" form-view="template-form" grid-view="template-grid" hideIf="!extraHoursMailNotification"/>
   	</panel>
-     <panel name="expenseTemplates" title="Expense Templates">
+    <panel name="expenseTemplates" title="Expense Templates">
     	<field name="expenseMailNotification"/>
     	<field name="sentExpenseTemplate" canNew="true" form-view="template-form" grid-view="template-grid" hideIf="!expenseMailNotification"/>
     	<field name="validatedExpenseTemplate" canNew="true" form-view="template-form" grid-view="template-grid" hideIf="!expenseMailNotification"/>

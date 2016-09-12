@@ -141,7 +141,7 @@
 	</action-attrs>
 	
 	<action-validate name="action-leave-request-validate-dates">
-  		<error if="( toDate &lt; fromDate || toDate == fromDate &amp;&amp; startOnSelect > endOnSelect)) &amp;&amp; fromDate != null &amp;&amp; toDate != null)" message="Invalide dates"/>
+  		<error if="( toDate &lt; fromDate || (toDate == fromDate &amp;&amp; startOnSelect > endOnSelect)) &amp;&amp; fromDate != null &amp;&amp; toDate != null" message="Invalide dates"/>
 	</action-validate>
 	
 	<action-validate name="action-leave-request-validate-dates-on-save">

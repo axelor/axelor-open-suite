@@ -61,3 +61,4 @@
 159;"reimbursement";"Reimbursement proposals";1;10;"REIMB_%Y_";;1;1;1
 160;"saleInterface";"Sale interface";1;10;"SALINT_%Y_";;1;1;1
 161;"treasuryInterface";"Cash flow interface";1;10;"CSHFLWINT_%Y_";;1;1;1
+162;"reconcile";"Account reconcile";1;10;"RECON_%Y_%M_";;1;1;1 

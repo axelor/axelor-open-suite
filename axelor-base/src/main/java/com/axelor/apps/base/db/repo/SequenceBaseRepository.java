@@ -24,8 +24,10 @@ public class SequenceBaseRepository extends SequenceRepository{
 	@Override
 	public Sequence copy(Sequence sequence, boolean deep) {
 		
-		sequence.clearSequenceVersionList();
+		Sequence copy = super.copy(sequence, deep);
+				
+		copy.clearSequenceVersionList();
 		
-		return super.copy(sequence, deep);
+		return copy;
 	}
 }

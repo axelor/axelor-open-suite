@@ -137,11 +137,13 @@ public class ProductServiceImpl implements ProductService  {
 
 		List<ProductVariant> productVariantList = this.getProductVariantList(productModel.getProductVariantConfig());
 
+		int seq = 1;
+		
 		for(ProductVariant productVariant : productVariantList)  {
 
 			productVariantRepo.save(productVariant);
 
-			productRepo.save(this.createProduct(productModel, productVariant));
+			productRepo.save(this.createProduct(productModel, productVariant, seq++));
 
 		}
 
@@ -149,7 +151,7 @@ public class ProductServiceImpl implements ProductService  {
 
 
 	@Override
-	public Product createProduct(Product productModel, ProductVariant productVariant)  {
+	public Product createProduct(Product productModel, ProductVariant productVariant, int seq)  {
 
 		String description = "";
 		String internalDescription = "";
@@ -165,7 +167,7 @@ public class ProductServiceImpl implements ProductService  {
 
 		Product product = new Product(
 				productModel.getName()+" ("+productVariant.getName()+")",
-				productModel.getCode()+"-"+productVariant.getId(),
+				productModel.getCode()+"-"+seq,
 				description,
 				internalDescription,
 				productModel.getPicture(),
