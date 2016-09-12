@@ -70,6 +70,11 @@
 		<field name="groundForRefusal" showTitle="false"/>
 	</form>
 	
+	<form name="popup-leave-request-form" title="Select the leave request you want to edit" model="com.axelor.apps.base.db.Wizard" onNew="action-leave-request-attrs-domain-leave-request-select">
+		<field name="$leaveSelect" title="Select Leave Request" type="many-to-one" target="com.axelor.apps.hr.db.LeaveRequest" widget="SuggestBox" />
+		<button name="editLeaveRequestSelected" title="Edit Leave Request Selected" onClick="com.axelor.apps.hr.web.leave.LeaveController:editLeaveSelected"/>
+	</form>
+	
 	<action-group name="action-leave-request-group-send">
 		<action name="action-leave-request-validate-dates-on-save"/>
 		<action name="save"/>
@@ -144,6 +149,10 @@
 	
 	<action-attrs name="action-leave-request-attrs-draft-cancel">
   		<attribute name="readonly" expr="eval: false" for="information" if="statusSelect == 1 || statusSelect == 5"/>
+	</action-attrs>
+	
+	<action-attrs name="action-leave-request-attrs-domain-leave-request-select">
+		<attribute name="domain" for="$leaveRequestSelect" expr="eval: &quot; self.statusSelect = 1 AND self.user = ${__user__.id} &quot;"/>
 	</action-attrs>
 	
 	<action-validate name="action-leave-request-validate-dates">
