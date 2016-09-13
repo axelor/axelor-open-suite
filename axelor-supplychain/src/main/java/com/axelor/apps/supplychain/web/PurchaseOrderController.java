@@ -40,6 +40,7 @@ import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -51,7 +52,10 @@ public class PurchaseOrderController {
 
 	@Inject
 	protected GeneralService generalService;
-
+	
+	@Inject
+	protected PurchaseOrderRepository purchaseOrderRepo;
+	
 	public void createStockMove(ActionRequest request, ActionResponse response) throws AxelorException {
 
 		PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
@@ -279,5 +283,15 @@ public class PurchaseOrderController {
 		}catch(AxelorException ae){
 			response.setFlash(ae.getLocalizedMessage());
 		}
+	}
+	
+	public void updatePurchaseOrderOnCancel(ActionRequest request, ActionResponse response) throws AxelorException{
+		
+		StockMove stockMove = request.getContext().asType(StockMove.class);
+		PurchaseOrder purchaseOrder = purchaseOrderRepo.find(stockMove.getPurchaseOrder().getId());
+		
+		purchaseOrderServiceSupplychain.updatePurchaseOrderOnCancel(stockMove, purchaseOrder);
+		
+		
 	}
 }
