@@ -151,7 +151,8 @@
 			    onClick: item.onClick,
 			    refModel: item.refModel,
 			    panelTop: item.panelTop,
-			    metaFieldId: item.metaFieldId
+			    metaFieldId: item.metaFieldId,
+			    hideTitle: item.hideTitle
 			};
 			
 			if(item.typeSelect === 1){
@@ -506,6 +507,7 @@
 							data['onClick'] = formObject.onClick ? formObject.onClick.replace(/(^\s*,)|(,\s*$)/g, '') : null;
 							data['defaultValue'] = formObject[defaultMap[formObject.component]] ? formObject[defaultMap[formObject.component]].toString() : null;
 							data['panelTop'] = formObject.panelTop;
+							data['hideTitle'] = formObject.hideTitle;
 							
 							if(formObject.component == 'button'){
 								data['fieldType'] = null;

@@ -25,6 +25,9 @@
        <panel colSpan="12" hideIf="isParent">
            	<field name="metaModel"/>
        		<field name="dashboard" domain="self.viewType = 'dashboard'"/>
+       		<field name="views" />
+       		<field name="action" />
+       		<field name="domain" />
        </panel>
        <field name="edited" hidden="true" />
        <field name="recorded" hidden="true" />

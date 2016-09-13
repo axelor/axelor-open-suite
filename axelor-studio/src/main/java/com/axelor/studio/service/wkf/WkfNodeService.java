@@ -22,12 +22,15 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import org.eclipse.osgi.internal.loader.ModuleClassLoader.GenerationProtectionDomain;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.auth.db.Permission;
 import com.axelor.auth.db.Role;
 import com.axelor.auth.db.repo.PermissionRepository;
+import com.axelor.db.mapper.Mapper;
+import com.axelor.db.mapper.Property;
 import com.axelor.meta.db.MetaField;
 import com.axelor.meta.db.MetaMenu;
 import com.axelor.meta.db.MetaModel;
@@ -93,13 +96,12 @@ class WkfNodeService {
 	protected ActionGroup process() {
 
 		MetaModel metaModel = wkfService.workflow.getMetaModel();
-		MetaField statusField = getStatusField(metaModel);
+		MetaField statusField = wkfService.workflow.getWfkField();
 		MetaSelect metaSelect = addMetaSelect(statusField);
 
 		nodeActions = new ArrayList<String>();
-		String defaultValue = processNodes(metaSelect);
+		String defaultValue = processNodes(metaSelect, statusField);
 		statusField.setDefaultString(defaultValue);
-		wkfService.statusField = statusField;
 
 		metaModel = saveModel(metaModel);
 
@@ -116,34 +118,6 @@ class WkfNodeService {
 	}
 
 	/**
-	 * Method search status field in MetaModel. If status field not found it
-	 * will create new wkfStatus field.
-	 * 
-	 * @param metaModel
-	 *            Model to search for field.
-	 * @return MetaField searched or created.
-	 */
-	private MetaField getStatusField(MetaModel metaModel) {
-
-		for (MetaField field : metaModel.getMetaFields()) {
-			if (field.getName().equals(WkfService.WKF_STATUS)) {
-				return field;
-			}
-		}
-
-		MetaField statusField = new MetaField(WkfService.WKF_STATUS, false);
-		statusField.setCustomised(true);
-		statusField.setTypeName("String");
-		statusField.setFieldType("string");
-		statusField.setLabel("Status");
-		metaModel.addMetaField(statusField);
-		metaModel.setCustomised(true);
-		metaModel.setEdited(true);
-
-		return statusField;
-	}
-
-	/**
 	 * Add MetaSelect in statusField, if MetaSelect of field is null.
 	 * 
 	 * @param statusField
@@ -155,8 +129,14 @@ class WkfNodeService {
 		MetaSelect metaSelect = statusField.getMetaSelect();
 
 		if (metaSelect == null) {
-			String selectName = wkfService.dasherizeModel.replace("_", ".")
-					+ ".wkf.status.select";
+			String selectName = wkfService.getSelectName();
+//			try {
+//				Mapper mapper = Mapper.of(Class.forName(statusField.getMetaModel().getFullName()));
+//				Property p = mapper.getProperty(statusField.getName());
+//				selectName = p.getSelection();
+//			} catch (ClassNotFoundException e) {
+//			}
+			
 			metaSelect = metaSelectRepo.findByName(selectName);
 			if (metaSelect == null) {
 				metaSelect = new MetaSelect(selectName);
@@ -164,11 +144,14 @@ class WkfNodeService {
 				metaSelect.setModule(metaModule.getName());
 				metaSelect.setMetaModule(metaModule);
 			}
+			
 			statusField.setMetaSelect(metaSelect);
 		}
 		if (metaSelect.getItems() == null) {
 			metaSelect.setItems(new ArrayList<MetaSelectItem>());
 		}
+		
+		metaSelect.clearItems();
 
 		return metaSelect;
 	}
@@ -196,7 +179,7 @@ class WkfNodeService {
 			MetaSelectItem item = itemIter.next();
 			boolean found = false;
 			for (WkfNode node : nodeList) {
-				if (item.getValue().equals(node.getName())) {
+				if (item.getValue().equals(node.getSequence().toString())) {
 					found = true;
 					break;
 				}
@@ -262,16 +245,16 @@ class WkfNodeService {
 	 *            MetaSelect to update.
 	 * @return Return first item as default value for wkfStatus field.
 	 */
-	private String processNodes(MetaSelect metaSelect) {
+	private String processNodes(MetaSelect metaSelect, MetaField statusField) {
 
 		List<WkfNode> nodeList = wkfService.workflow.getNodes();
 
 		String defaultValue = null;
 		removeOldOptions(metaSelect, nodeList);
-
+		
 		for (WkfNode node : nodeList) {
-
-			String option = node.getName();
+			
+			String option = node.getSequence().toString();
 			MetaSelectItem metaSelectItem = getMetaSelectItem(metaSelect,
 					option);
 			if (metaSelectItem == null) {
@@ -290,7 +273,7 @@ class WkfNodeService {
 
 			if (node.getParentMenu() != null
 					|| node.getParentMenuBuilder() != null) {
-				addNodeMenu(node);
+				addNodeMenu(node, statusField);
 			}
 
 			// String name = "custom.permission." + dasherizeModel.replace("-",
@@ -307,7 +290,7 @@ class WkfNodeService {
 				String name = getName(node.getName(), "action-group");
 				nodeActions.add(name);
 				this.wkfService.createActionGroup(name, actions,
-						WkfService.WKF_STATUS + " == '" + node.getName() + "'");
+						statusField.getName() + " == '" + node.getName() + "'");
 			}
 
 		}
@@ -323,12 +306,11 @@ class WkfNodeService {
 	 * @param node
 	 *            WkfNode to process.
 	 */
-	private void addNodeMenu(WkfNode node) {
+	private void addNodeMenu(WkfNode node, MetaField statusField) {
 
 		String nodeName = node.getName();
 		String menuName = getName(nodeName, "menu");
-		String domain = "self." + WkfService.WKF_STATUS + " = '" + nodeName
-				+ "'";
+		String domain = getDomain(node.getSequence(), statusField);
 		MetaMenu parentMenu = node.getParentMenu();
 		MenuBuilder parentMenuBuilder = node.getParentMenuBuilder();
 		Integer order = 1;
@@ -367,6 +349,17 @@ class WkfNodeService {
 			node.setMyStatusMenu(menuBuilder);
 		}
 
+	}
+
+	private String getDomain(Integer nodeSeq, MetaField statusField) {
+		
+		String typeName = statusField.getTypeName();
+		
+		if (typeName.equals("Integer")) {
+			return "self." + statusField.getName() + " = " + nodeSeq;
+		}
+		
+		return "self." + statusField.getName() + " = '" + nodeSeq + "'";
 	}
 
 	private String getName(String node, String prefix) {
@@ -442,30 +435,30 @@ class WkfNodeService {
 	 * @param node
 	 *            WkfNode containing roles.
 	 */
-	@Transactional
-	public void addNodePermissions(String name, WkfNode node) {
-
-		Set<Role> roles = node.getRoleSet();
-
-		if (roles == null || roles.isEmpty()) {
-			return;
-		}
-
-		Permission permission = permissionRepo.findByName(name);
-		if (permission == null) {
-			permission = new Permission(name);
-			permission.setCanRead(true);
-			permission.setCondition("self." + WkfService.WKF_STATUS + " = '"
-					+ node.getName() + "'");
-			permission.setObject(node.getWkf().getMetaModel().getFullName());
-			permission = permissionRepo.save(permission);
-		}
-
-		for (Role role : roles) {
-			role.addPermission(permission);
-			wkfService.roleRepo.save(role);
-		}
-	}
+//	@Transactional
+//	public void addNodePermissions(String name, WkfNode node) {
+//
+//		Set<Role> roles = node.getRoleSet();
+//
+//		if (roles == null || roles.isEmpty()) {
+//			return;
+//		}
+//
+//		Permission permission = permissionRepo.findByName(name);
+//		if (permission == null) {
+//			permission = new Permission(name);
+//			permission.setCanRead(true);
+//			permission.setCondition("self." + WkfService.WKF_STATUS + " = '"
+//					+ node.getName() + "'");
+//			permission.setObject(node.getWkf().getMetaModel().getFullName());
+//			permission = permissionRepo.save(permission);
+//		}
+//
+//		for (Role role : roles) {
+//			role.addPermission(permission);
+//			wkfService.roleRepo.save(role);
+//		}
+//	}
 
 	/**
 	 * Create/Update MenuBuilder from given parameters.

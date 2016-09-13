@@ -35,7 +35,8 @@
         				hideIf, hidden, min, max, defaultString, defaultInteger, \
         				defaultBoolean, defaultDecimal, options, refModel, mappedBy, \
         				validation, domainCondition, onChange, progressBar, htmlWidget,\
-        				metaSelect, widget, icon, promptMsg, onClick, onSave, panelTop, metaFieldId]', 
+        				metaSelect, widget, icon, promptMsg, onClick, onSave, panelTop,\
+        				metaFieldId, hideTitle]', 
         function() {
           formObject.label = $scope.label;
           formObject.fieldName = $scope.fieldName;
@@ -69,6 +70,7 @@
           formObject.onSave = $scope.onSave;
           formObject.place = $scope.place;
           formObject.panelTop = $scope.panelTop;
+          formObject.hideTitle = $scope.hideTitle;
           formObject.metaFieldId = $scope.metaFieldId;
           return formObject.validation = $scope.validation;
         }, true);
@@ -130,6 +132,7 @@
             onSave:$scope.onSave,
             place:$scope.place,
             panelTop:$scope.panelTop,
+            hideTitle:$scope.hideTitle,
             metaFieldId: $scope.metaFieldId
           };
         },
@@ -172,6 +175,7 @@
           $scope.place = this.model.place;
           $scope.promptMsg = this.model.promptMsg;
           $scope.panelTop = this.model.panelTop;
+          $scope.hideTitle = this.model.hideTitle;
           $scope.metaFieldId = this.model.metaFieldId;
           return $scope.validation = this.model.validation;
         }
@@ -1324,6 +1328,7 @@
         place: formObject.place,
         selection: formObject.selection,
         panelTop: formObject.panelTop,
+        hideTitle: formObject.hideTitle,
         metaFieldId: formObject.metaFieldId,
         panelLevel: formObject.panelLevel != null ? formObject.panelLevel : component.panelLevel,
         isPanelTab: formObject.isPanelTab != null ? formObject.isPanelTab : component.isPanelTab,

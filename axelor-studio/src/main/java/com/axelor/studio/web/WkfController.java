@@ -17,12 +17,16 @@
  */
 package com.axelor.studio.web;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.meta.db.MetaField;
 import com.axelor.meta.db.MetaModel;
+import com.axelor.meta.db.MetaSelect;
 import com.axelor.meta.db.repo.MetaModelRepository;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
@@ -130,5 +134,47 @@ public class WkfController {
 
 		response.setValue("viewBuilder", viewBuilder);
 	}
+	
+//	public void setDefaultNodes(ActionRequest request, ActionResponse response) {
+//		
+//		Wkf wkf = request.getContext().asType(Wkf.class);
+//		
+//		MetaField wkfField = wkf.getWfkField();
+//		
+//		if (wkfField != null) {
+//			
+//			String bpmnXml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
+//					"<definitions xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" +
+//					"xmlns=\"http://www.omg.org/spec/BPMN/20100524/MODEL\" " +
+//					"xmlns:x=\"http://axelor.com\"" +
+//					"xmlns:bpmndi=\"http://www.omg.org/spec/BPMN/20100524/DI\" " +
+//					"xmlns:dc=\"http://www.omg.org/spec/DD/20100524/DC\" " +
+//					"targetNamespace=\"http://bpmn.io/schema/bpmn\" " +
+//					"id=\"Definitions_1\">" +
+//					"<process id=\"Process_1\" name=\"" + wkf.getName() + "\" x:id=\"" + wkf.getId() + "\" isExecutable=\"false\">" +
+//						"<startEvent id=\"StartEvent_1\"/>" +
+//						"<task id=\"Task_1\"/>" +
+//						"<endEvent id=\"EndEvent_1\"/>" +
+//					"</process>" +
+//					"<bpmndi:BPMNDiagram id=\"BPMNDiagram_1\">" +
+//					"<bpmndi:BPMNPlane id=\"BPMNPlane_1\" bpmnElement=\"Process_1\">" +
+//						"<bpmndi:BPMNShape id=\"_BPMNShape_StartEvent_2\" bpmnElement=\"StartEvent_1\">" +
+//						"<dc:Bounds x=\"269\" y=\"195\" width=\"36\" height=\"36\"/>"+
+//						"</bpmndi:BPMNShape>" +
+//						"<bpmndi:BPMNShape id=\"_BPMNShape_Task_1\" bpmnElement=\"Task_1\">" +
+//						"<dc:Bounds x=\"350\" y=\"195\" width=\"100\" height=\"100\"/>"+
+//						"</bpmndi:BPMNShape>" +
+//						"<bpmndi:BPMNShape id=\"_BPMNShape_EndEvent_2\" bpmnElement=\"EndEvent_1\">" +
+//						"<dc:Bounds x=\"534\" y=\"195\" width=\"36\" height=\"36\"/>" +
+//						"</bpmndi:BPMNShape>" +
+//					"</bpmndi:BPMNPlane>" +
+//					"</bpmndi:BPMNDiagram>" +
+//				"</definitions>";
+//			
+//			response.setValue("bpmnXml", bpmnXml);
+//			
+//			
+//		}
+//	}
 
 }

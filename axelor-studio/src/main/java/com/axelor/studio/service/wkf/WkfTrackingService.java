@@ -25,6 +25,10 @@ import org.joda.time.Minutes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.axelor.meta.MetaStore;
+import com.axelor.meta.db.MetaSelect;
+import com.axelor.meta.db.MetaSelectItem;
+import com.axelor.meta.schema.views.Selection.Option;
 import com.axelor.studio.db.ViewBuilder;
 import com.axelor.studio.db.ViewItem;
 import com.axelor.studio.db.Wkf;
@@ -88,7 +92,7 @@ public class WkfTrackingService {
 	 * @param status
 	 *            Current wkfStatus of record.
 	 */
-	public void track(String model, Long modelId, String status) {
+	public void track(String model, Long modelId, Object status) {
 
 		if (model != null && modelId != null && status != null) {
 
@@ -98,13 +102,25 @@ public class WkfTrackingService {
 			if (wkfTracking == null) {
 				return;
 			}
-
+			
+			MetaSelect metaSelect = wkfTracking.getWkf().getWfkField().getMetaSelect();
+			
+			if (metaSelect == null) {
+				return;
+			}
+			
+			Option item = MetaStore.getSelectionItem(metaSelect.getName(), status.toString());
+			
+			if (item == null) {
+				return;
+			}
+			
 			durationHrs = BigDecimal.ZERO;
 			WkfTrackingLine trackingLine = updateTrackingLine(wkfTracking,
-					status);
+					item.getTitle());
 			if (trackingLine != null) {
-				updateTrackingTotal(wkfTracking, status);
-				updateTrackingTime(wkfTracking, status);
+				updateTrackingTotal(wkfTracking, item.getTitle());
+				updateTrackingTime(wkfTracking, item.getTitle());
 			}
 		}
 

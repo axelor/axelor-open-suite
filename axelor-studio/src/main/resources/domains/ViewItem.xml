@@ -29,6 +29,7 @@
      <boolean name="hidden" title="Hidden ?"/>
      <string name="hideIf" title="Hide If" />
      <string name="showIf" title="ShowIf" />
+     <boolean name="hideTitle" title="Hide title" />
 	 <many-to-one name="metaSelect" ref="com.axelor.meta.db.MetaSelect" title="Selection" />
      <string name="fieldType" title="Type"/>
      <integer name="colSpan" title="Colspan" />

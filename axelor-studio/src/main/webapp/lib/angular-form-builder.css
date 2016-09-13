@@ -140,11 +140,14 @@ body{padding:10px}.footer{height:50px}
 	left: 0px;
 	width: 300px;
 	z-index: 1;
+	float:left;
 }
 
 .panel-right {
-	margin-left:300px;
-	max-width: 400px;
+	position: fixed;
+	left: 350px;
+	width: 400px;
+	float:left;
 }
 
 .pre-scrollable {

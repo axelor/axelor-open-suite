@@ -879,6 +879,10 @@ public class FormBuilderService {
 			field.setSelection(null);
 		}
 		
+		if (viewItem.getHideTitle()) {
+			field.setShowTitle(false);
+		}
+		
 		return field;
 
 	}

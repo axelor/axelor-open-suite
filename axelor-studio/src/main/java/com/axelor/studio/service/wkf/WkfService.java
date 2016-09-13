@@ -60,11 +60,7 @@ public class WkfService {
 
 	private final Logger log = LoggerFactory.getLogger(getClass());
 
-	protected static final String WKF_STATUS = "wkfStatus";
-
 	protected Wkf workflow = null;
-
-	protected MetaField statusField = null;
 
 	protected String dasherizeModel = null;
 
@@ -143,6 +139,19 @@ public class WkfService {
 
 		return null;
 	}
+	
+	public String getSelectName() {
+		
+		if (workflow != null) {
+			MetaField wkfField = workflow.getWfkField();
+			String selectName = "wkf." + inflector.dasherize(viewBuilder.getName()).replace("_", ".");
+			selectName += "." + inflector.dasherize(wkfField.getName()).replace("_", ".") + ".select";
+			
+			return selectName;
+		}
+		
+		return null;
+	}
 
 	/**
 	 * Method add 'wkfStatus' field in ViewBuilder linked with Workflow.
@@ -156,13 +165,13 @@ public class WkfService {
 
 		ViewPanel viewPanel = viewBuilder.getViewPanelList().get(0);
 
-		String selectName = dasherizeModel.replace("_", ".")
-				+ ".wkf.status.select";
-
+		String selectName = getSelectName();
+		
+		MetaField statusField = workflow.getWfkField();
 		List<ViewItem> viewItemList = viewPanel.getViewItemList();
 		if (viewItemList != null) {
 			for (ViewItem item : viewItemList) {
-				if (item.getName().equals(WKF_STATUS)) {
+				if (item.getMetaField() != null && item.getMetaField().equals(statusField)) {
 					if (navSelect > 0) {
 						item.setWidget("NavSelect");
 					} else {
@@ -176,7 +185,7 @@ public class WkfService {
 			}
 		}
 
-		ViewItem viewField = new ViewItem(WKF_STATUS);
+		ViewItem viewField = new ViewItem(statusField.getName());
 		viewField.setTypeSelect(0);
 		viewField.setFieldType("string");
 		viewField.setMetaField(statusField);
@@ -316,14 +325,15 @@ public class WkfService {
 	}
 
 	/**
-	 * Remove wkfStatus field from ViewBuilder and delete MetaField tool.
+	 * Remove wkfStatus field from ViewBuilder
 	 * 
 	 * @param viewBuilder
 	 *            ViewBuilder having 'wkfStatus' field.
 	 */
 	@Transactional
 	public void removeWkfStatus(ViewBuilder viewBuilder) {
-
+		
+		final String WKF_STATUS = "wkfStatus";
 		MetaField metaField = metaFieldRepo
 				.all()
 				.filter("self.name = '" + WKF_STATUS
