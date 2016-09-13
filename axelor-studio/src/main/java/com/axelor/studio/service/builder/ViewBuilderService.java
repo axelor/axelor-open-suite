@@ -143,7 +143,7 @@ public class ViewBuilderService {
 
 			rightMgmtService.updateRights();
 
-			menuBuilderService.build(viewDir, updateMeta);
+			menuBuilderService.build(module, viewDir, updateMeta);
 
 			updateEdited(viewBuilders, updateMeta);
 

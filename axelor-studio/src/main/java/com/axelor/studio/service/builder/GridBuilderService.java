@@ -94,12 +94,16 @@ public class GridBuilderService {
 		GridView grid = null;
 
 		MetaView metaView = viewBuilder.getMetaView();
-
+		
+		String module = viewBuilder.getMetaModule().getName() + "-";
+		String xmlId = module + viewBuilder.getName();
+		
 		if (metaView == null) {
 			grid = new GridView();
 			grid.setName(viewBuilder.getName());
 			grid.setModel(viewBuilder.getModel());
 			grid.setTitle(viewBuilder.getTitle());
+			grid.setXmlId(xmlId);
 			return grid;
 		}
 
@@ -107,11 +111,6 @@ public class GridBuilderService {
 		List<AbstractView> views = objectViews.getViews();
 		if (!views.isEmpty()) {
 			grid = (GridView) views.get(0);
-			String xmlId = grid.getXmlId();
-			String module = viewBuilder.getMetaModule().getName() + "-";
-			if (xmlId == null || !xmlId.startsWith(module)) {
-				xmlId = module + grid.getName();
-			}
 			grid.setXmlId(xmlId);
 		}
 

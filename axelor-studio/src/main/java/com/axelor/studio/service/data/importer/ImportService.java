@@ -22,9 +22,11 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -129,7 +131,9 @@ public class ImportService {
 			
 			importMenu.importMenus(reader, "Menu");
 			
-			generateGridView();
+			Map<String, MetaModel> modelMap = clearModels();
+			
+			generateGrid(modelMap);
 
 		} catch (IOException e) {
 			throw new AxelorException(e, 5);
@@ -235,22 +239,23 @@ public class ImportService {
     
     
     @Transactional
-    public void generateGridView() throws AxelorException {
+    public void generateGrid(Map<String, MetaModel> modelMap) throws AxelorException {
 		
     	Map<String, List<ActionBuilder>> actionViewMap = importForm.getViewActionMap();
-		
+    	
 		for (String module : moduleMap.keySet()) {
+			
 			for (String modelName : moduleMap.get(module).keySet()) {
-	 			MetaModel model = metaModelRepo.findByName(modelName);
-	 			if (model != null && !model.getCustomised()) {
+	 			if (!modelMap.containsKey(modelName)) {
 	 				continue;
 	 			}
-				model = clearModel(module, model);
-				if (model == null || moduleMap.get(module).get(modelName).size() < 1) {
-					continue;
-				}
+	 			MetaModel model = modelMap.get(modelName);
+				List<MetaField> fields = null;
 				if (gridViewMap.containsKey(module)) {
-					List<MetaField> fields = gridViewMap.get(module).get(model);
+					fields = gridViewMap.get(module).get(model);
+				}
+				
+				if (model.getMetaModule() != null || fields != null) {
 					ViewBuilder viewBuilder = importGrid.createGridView(getModule(module, null), model, fields);
 					if (actionViewMap.containsKey(viewBuilder.getName())) {
 						
@@ -263,6 +268,9 @@ public class ImportService {
 						actionViewMap.remove(viewBuilder.getName());
 					}
 				}
+				else {
+					importGrid.clearGrid(module, modelName);
+				}
 			}
 		}
 		
@@ -273,31 +281,57 @@ public class ImportService {
 
 	}
     
+	private Map<String,	Set<String>> getModels() {
+    	
+    	Map<String, Set<String>> models = new HashMap<String, Set<String>>();
+    	
+    	for (String module : moduleMap.keySet()) {
+    		for (String modelName : moduleMap.get(module).keySet()) {
+    			if (!models.containsKey(modelName)) {
+    				models.put(modelName, new HashSet<String>());
+    			}
+    			if (moduleMap.get(module).get(modelName) != null) {
+    				models.get(modelName).addAll(moduleMap.get(module).get(modelName));
+    			}
+    		}
+    	}
+    	
+    	return models;
+    }
 
 	@Transactional
-	public MetaModel clearModel(String module, MetaModel model) {
-
-		List<String> fieldNames = moduleMap.get(module).get(model);
+	Map<String, MetaModel> clearModels() {
 		
-		if (fieldNames == null) {
-			return model;
-		}
+		Map<String , MetaModel> modelMap = new HashMap<String, MetaModel>();
 		
-		Iterator<MetaField> fieldIter = model.getMetaFields().iterator();
+		Map<String, Set<String>> models = getModels();
 		
-		while (fieldIter.hasNext()) {
-			MetaField field = fieldIter.next();
-			if (field.getCustomised() && !fieldNames.contains(field.getName())) {
-				log.debug("Removing field : {}", field.getName());
-				List<ViewItem> viewItems = viewItemRepo.all().filter("self.metaField = ?1", field).fetch();
-				for (ViewItem viewItem : viewItems) {
-					viewItemRepo.remove(viewItem);
-				}
-				fieldIter.remove();
+		for (String modelName : models.keySet()) {
+			MetaModel model = metaModelRepo.findByName(modelName);
+			if (model == null) {
+				continue;
 			}
+			
+			Set<String> fields = models.get(modelName);
+		
+			Iterator<MetaField> fieldIter = model.getMetaFields().iterator();
+		
+			while (fieldIter.hasNext()) {
+				MetaField field = fieldIter.next();
+				if (field.getCustomised() && !fields.contains(field.getName()) && !field.getName().equals("wkfStatus")) {
+					log.debug("Removing field : {}", field.getName());
+					List<ViewItem> viewItems = viewItemRepo.all().filter("self.metaField = ?1", field).fetch();
+					for (ViewItem viewItem : viewItems) {
+						viewItemRepo.remove(viewItem);
+					}
+					fieldIter.remove();
+				}
+			}
+				
+			modelMap.put(modelName, metaModelRepo.save(model));
 		}
 		
-		return metaModelRepo.save(model);
+		return modelMap;
 	}
     
     public void addNestedModel(String name, MetaModel metaModel) {
@@ -334,7 +368,7 @@ public class ImportService {
     
     public Integer getFieldSeq(Long modelId) {
     	
-    	Integer seq = 0;
+    	Integer seq = 1;
     	if (fieldSeqMap.containsKey(modelId)) {
     		seq = fieldSeqMap.get(modelId) + 1;
     	}
@@ -345,7 +379,7 @@ public class ImportService {
     }
     
     
-    public void addGridField(String module, String model, MetaField metaField, String addGrid) {
+    public void addGridField(String module, String model, MetaField metaField) {
 		
 		Map<String, List<MetaField>> gridMap = null; 
 		if (!gridViewMap.containsKey(module)) {
@@ -356,9 +390,7 @@ public class ImportService {
 			gridMap.put(model, new ArrayList<MetaField>());
 		}
 		
-		if (addGrid != null && addGrid.equalsIgnoreCase("x")) {
-			gridMap.get(model).add(metaField);
-		}
+		gridMap.get(model).add(metaField);
 		
 		gridViewMap.put(module, gridMap);
 		

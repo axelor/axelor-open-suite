@@ -96,7 +96,7 @@ public class MenuBuilderService {
 	 * @throws IOException
 	 *             Exception throws in saving menu.xml.
 	 */
-	public void build(File parentPath, boolean updateMeta)
+	public void build(String module, File parentPath, boolean updateMeta)
 			throws JAXBException, IOException {
 
 		String query = "self.edited = true";
@@ -104,9 +104,14 @@ public class MenuBuilderService {
 		if (!updateMeta) {
 			query += " OR self.recorded = false";
 		}
-
-		List<MenuBuilder> menuBuilders = menuBuilderRepo.all().filter(query)
-				.order("-isParent").order("id").fetch();
+		
+		query = "self.metaModule.name = ?1 and (" + query + ")";
+		
+		List<MenuBuilder> menuBuilders = menuBuilderRepo.all()
+				.filter(query, module)
+				.order("-isParent")
+				.order("id")
+				.fetch();
 		menuItems = new ArrayList<MenuItem>();
 		actionMap = new HashMap<String, Action>();
 		deletedMenus = new ArrayList<String>();

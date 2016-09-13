@@ -82,8 +82,11 @@ public class ImportModel {
 			importService.updateModuleMap(metaModule.getName(), model.getName(), basic[2]);
 		}
 		
-		importService.addGridField(metaModule.getName(), model.getName(), metaField, row[CommonService.GRID]);
-		
+		String addGrid = row[CommonService.GRID];
+		if (addGrid != null && addGrid.equalsIgnoreCase("x")) {
+			importService.addGridField(metaModule.getName(), model.getName(), metaField);
+		}
+
 		return metaField;
 	}
 	
@@ -167,6 +170,7 @@ public class ImportModel {
 			metaField.setTypeName("String");
 			metaField.setFieldType("string");
 			metaField.setLabel("Status");
+			metaField.setSequence(0);
 			metaField.setCustomised(true);
 			model.addMetaField(metaField);
 			importService.updateModuleMap(module.getName(), name, "wkfStatus");
