@@ -10,7 +10,7 @@
         <label for="title" class="lab">Title</label>
     </div>
     <div class="group" ng-show="component === 'onSave'" >
-		<textarea class="typeahead" ng-model="onSave" id="onSave"/>
+		<input type="text" class="typeahead" ng-model="onSave" id="onSave"/>
 		<span class="bar"></span>
         <label for="onSave" class="lab">On Save</label>
     </div>
@@ -50,7 +50,7 @@
     	<label><input type="checkbox" ng-model="defaultBoolean"> Default</label>	
     </div>
     <div class="group" ng-show="isView &amp;&amp; ['panel','panelSide','panelTab','notebook','button','onSave', 'toolbar'].indexOf(component) < 0" >
-		<textarea class="typeahead" ng-model="onChange" id="onChange"/>
+		<input type="text" class="typeahead" ng-model="onChange" id="onChange"/>
 		<span class="bar"></span>
         <label for="onChange" class="lab">On Change</label>
     </div>
@@ -88,7 +88,7 @@
 		<label for="promptMsg" class="lab">Prompt</label>
 	</div>
 	<div class="group" ng-show="component == 'button'">
-		<textarea class="typeahead" ng-model="onClick" id="onClick" />
+		<input type="text" class="typeahead" ng-model="onClick" id="onClick" />
 	    <span class="bar"></span>
 		<label for="onClick" class="lab">On click</label>
     </div>

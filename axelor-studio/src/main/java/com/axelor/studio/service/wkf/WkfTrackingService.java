@@ -19,15 +19,17 @@ package com.axelor.studio.service.wkf;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.Map;
 
 import org.joda.time.LocalDateTime;
 import org.joda.time.Minutes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.axelor.db.mapper.Mapper;
 import com.axelor.meta.MetaStore;
+import com.axelor.meta.db.MetaField;
 import com.axelor.meta.db.MetaSelect;
-import com.axelor.meta.db.MetaSelectItem;
 import com.axelor.meta.schema.views.Selection.Option;
 import com.axelor.studio.db.ViewBuilder;
 import com.axelor.studio.db.ViewItem;
@@ -92,20 +94,33 @@ public class WkfTrackingService {
 	 * @param status
 	 *            Current wkfStatus of record.
 	 */
-	public void track(String model, Long modelId, Object status) {
+	public void track(String model, Object object) {
+			
+		log.debug("Model: {}, Object: {}", model, object);
+		if (model != null && object != null) {
 
-		if (model != null && modelId != null && status != null) {
-
+			Map<String, Object> obj = Mapper.toMap(object);
+			if (obj.get("id") == null) {
+				return;
+			}
+			
 			WkfTracking wkfTracking = getWorkflowTracking(model,
-					Integer.parseInt(modelId.toString()));
+					Integer.parseInt(obj.get("id").toString()));
 
 			if (wkfTracking == null) {
 				return;
 			}
 			
-			MetaSelect metaSelect = wkfTracking.getWkf().getWfkField().getMetaSelect();
+			MetaField wkfField =  wkfTracking.getWkf().getWkfField();
+			MetaSelect metaSelect = wkfField.getMetaSelect();
 			
 			if (metaSelect == null) {
+				return;
+			}
+			
+			Object status = obj.get(wkfField.getName());
+			
+			if (status == null) {
 				return;
 			}
 			

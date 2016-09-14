@@ -139,7 +139,7 @@ class WkfTransitionService {
 
 		for (WkfTransition transition : wkfService.workflow.getTransitions()) {
 			
-			MetaField status = wkfService.workflow.getWfkField();
+			MetaField status = wkfService.workflow.getWkfField();
 			String condition =  status.getName() + " == " + getTyped(transition.getSource().getSequence(), status) ;
 
 			if (transition.getIsButton()) {
@@ -252,7 +252,7 @@ class WkfTransitionService {
 
 		List<RecordField> fields = new ArrayList<RecordField>();
 		RecordField field = new RecordField();
-		MetaField wkfField = wkfService.workflow.getWfkField();
+		MetaField wkfField = wkfService.workflow.getWkfField();
 		field.setName(wkfField.getName());
 		field.setExpression("eval:" + getTyped(transition.getTarget().getSequence(), wkfField));
 		fields.add(field);

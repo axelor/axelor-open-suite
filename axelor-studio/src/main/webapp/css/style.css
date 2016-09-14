@@ -208,33 +208,37 @@ input[type="date"] {
   position:relative; 
   margin-bottom:19px; 
 }
-#formpopover input         {
-  font-size:18px;
+#formpopover input {
+  font-size:12px;
   padding:10px 10px 10px 5px;
   display:block;
   width: 100%;
   border:none;
   border-bottom:1px solid #757575;
 }
+
 #formpopover input:focus     { outline:none; }
 
-#formpopover .lab          {
-  color:#999; 
+#formpopover .lab {
+  color:#1e2c39; 
   font-size:13px;
-  font-weight:normal;
   position:absolute;
   pointer-events:none;
   left:5px;
-  top:10px;
+  top:-8px;
   transition:0.2s ease all; 
 }
 
-/* active state */
-#formpopover input:focus ~ label, #formpopover input:valid ~ label     {
-  top:-8px;
-  font-size:12px;
-  color:#1e2c39;
+#formpopover label {
+	font-weight: 500 !important;
 }
+
+/* /* active state */ */
+/* #formpopover input:focus ~ label, #formpopover input:valid ~ label     { */
+/*   top:-8px; */
+/*   font-size:12px; */
+/*   color:#1e2c39; */
+/* } */
 
 .bar  { position:relative; display:block; width:100%; }
 .bar:before, .bar:after   {

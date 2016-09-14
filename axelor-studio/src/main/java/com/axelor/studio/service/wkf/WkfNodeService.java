@@ -20,17 +20,13 @@ package com.axelor.studio.service.wkf;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 
-import org.eclipse.osgi.internal.loader.ModuleClassLoader.GenerationProtectionDomain;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.auth.db.Permission;
 import com.axelor.auth.db.Role;
 import com.axelor.auth.db.repo.PermissionRepository;
-import com.axelor.db.mapper.Mapper;
-import com.axelor.db.mapper.Property;
 import com.axelor.meta.db.MetaField;
 import com.axelor.meta.db.MetaMenu;
 import com.axelor.meta.db.MetaModel;
@@ -96,7 +92,7 @@ class WkfNodeService {
 	protected ActionGroup process() {
 
 		MetaModel metaModel = wkfService.workflow.getMetaModel();
-		MetaField statusField = wkfService.workflow.getWfkField();
+		MetaField statusField = wkfService.workflow.getWkfField();
 		MetaSelect metaSelect = addMetaSelect(statusField);
 
 		nodeActions = new ArrayList<String>();

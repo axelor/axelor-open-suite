@@ -112,14 +112,13 @@ public class WkfService {
 	public String process(Wkf wkf) {
 
 		try {
-			this.workflow = wkf;
+			workflow = wkf;
 			inflector = Inflector.getInstance();
 			moduleName = wkf.getMetaModule().getName();
 			dasherizeModel = inflector.dasherize(workflow.getMetaModel().getName());
-
+			viewBuilder = wkf.getViewBuilder();
 			ActionGroup actionGroup = nodeService.process();
 
-			viewBuilder = wkf.getViewBuilder();
 			viewBuilder.setEdited(true);
 			addWkfStatusView(viewBuilder, workflow.getDisplayTypeSelect());
 
@@ -142,8 +141,8 @@ public class WkfService {
 	
 	public String getSelectName() {
 		
-		if (workflow != null) {
-			MetaField wkfField = workflow.getWfkField();
+		if (workflow != null && viewBuilder != null) {
+			MetaField wkfField = workflow.getWkfField();
 			String selectName = "wkf." + inflector.dasherize(viewBuilder.getName()).replace("_", ".");
 			selectName += "." + inflector.dasherize(wkfField.getName()).replace("_", ".") + ".select";
 			
@@ -167,7 +166,7 @@ public class WkfService {
 
 		String selectName = getSelectName();
 		
-		MetaField statusField = workflow.getWfkField();
+		MetaField statusField = workflow.getWkfField();
 		List<ViewItem> viewItemList = viewPanel.getViewItemList();
 		if (viewItemList != null) {
 			for (ViewItem item : viewItemList) {

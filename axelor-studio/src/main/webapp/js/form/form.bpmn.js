@@ -266,10 +266,10 @@ function newDiragram(rec) {
 		'<bpmndi:BPMNDiagram id="BPMNDiagram_1">' +
 		'<bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_1">' +
 			'<bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">' +
-			'<dc:Bounds x="269" y="195" width="36" height="36"/>'+
+			'<dc:Bounds x="269" y="100" width="36" height="36"/>'+
 			'</bpmndi:BPMNShape>' +
 			'<bpmndi:BPMNShape id="_BPMNShape_EndEvent_2" bpmnElement="EndEvent_1">' +
-			'<dc:Bounds x="534" y="195" width="36" height="36"/>'+
+			'<dc:Bounds x="534" y="100" width="36" height="36"/>'+
 			'</bpmndi:BPMNShape>' +
 		'</bpmndi:BPMNPlane>' +
 		'</bpmndi:BPMNDiagram>' +
@@ -376,12 +376,19 @@ ui.formInput('BpmnEditor', {
 				return;
 			}
 			last = scope.record;
-			var xml = model.$viewValue || newDiragram(last);
+			var xml = model.$viewValue || newDiragram(scope.record);
 			scope.waitForActions(function () {
 				return doLoad(xml);
 			}, 100);
 		}
-
+		
+		scope.$watch("record.$bpmnDefault", function() {
+			var xml = scope.record.$bpmnDefault;
+			scope.waitForActions(function () {
+				return doLoad(xml);
+			}, 100);
+		})
+		
 		modeler.on(['shape.added', 'connection.added',
 					'shape.removed', 'connection.removed',
 					'shape.changed', 'connection.changed'], function (e) {

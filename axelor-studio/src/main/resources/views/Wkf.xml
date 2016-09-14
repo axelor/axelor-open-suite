@@ -17,8 +17,9 @@
         <field name="viewBuilder" onSelect="action-wkf-attrs-for-view-domain" readonlyIf="metaModel == null" required="true"/>
         <field name="metaModule" domain="self.customised = true" />
         <field name="displayTypeSelect" />
-        <field name="wfkField" domain="self.metaModel = :metaModel and (self.typeName = 'Integer' OR self.typeName = 'String')"/>
+        <field name="wkfField" domain="self.metaModel = :metaModel and (self.typeName = 'Integer' OR self.typeName = 'String')" onChange="action-wkf-method-set-default-nodes"/>
       	<field name="bpmnXml" showTitle="false" colSpan="12" widget="BpmnEditor" />
+      	<field name="$bpmnDefault" hidden="true" type="string" />
       </panel>
   </form>
   

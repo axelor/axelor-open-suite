@@ -20,7 +20,7 @@
       <one-to-many name="wkfTrackings" ref="WkfTracking" mappedBy="wkf"/>
       <boolean name="edited" title="Edited" default="true"/>
       <many-to-one name="metaModule" ref="com.axelor.meta.db.MetaModule" title="Module" required="true"/>
-      <many-to-one name="wfkField" ref="com.axelor.meta.db.MetaField" title="Wkf field" required="true"/>
+      <many-to-one name="wkfField" ref="com.axelor.meta.db.MetaField" title="Wkf field" required="true"/>
   </entity>
     
  </domain-models>
