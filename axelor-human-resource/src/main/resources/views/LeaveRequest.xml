@@ -73,7 +73,7 @@
 	<action-group name="action-leave-request-group-send">
 		<action name="action-leave-request-validate-dates-on-save"/>
 		<action name="save"/>
-		<action name="action-leave-request-method-sent-leave-requests"/>
+		<action name="action-leave-request-method-sent-leave-request"/>
 		<action name="action-leave-request-attrs-buttons"/>
 		<action name="action-leave-request-attrs-send"/>
 		<action name="save"/>
@@ -82,7 +82,7 @@
 	<action-group name="action-leave-request-group-validate">
 		<action name="action-leave-request-validate-dates-on-save"/>
 		<action name="save"/>
-		<action name="action-leave-request-method-validate-leave-requests"/>
+		<action name="action-leave-request-method-validate-leave-request"/>
 		<action name="action-leave-request-attrs-buttons"/>
 		<action name="action-leave-request-attrs-valid-refuse"/>
 		<action name="save"/>
@@ -91,7 +91,7 @@
 	
 	<action-group name="action-leave-request-group-refuse">
 		<action name="save"/>
-		<action name="action-leave-request-method-refuse-leave-requests"/>
+		<action name="action-leave-request-method-refuse-leave-request"/>
 		<action name="action-leave-request-attrs-buttons"/>
 		<action name="action-leave-request-attrs-valid-refuse"/>
 		<action name="save"/>
@@ -100,14 +100,13 @@
 	
 	<action-group name="action-leave-request-group-cancel">
 		<action name="save"/>
-		<action name="action-leave-request-method-manage-cancel-leave-requests"/>
+		<action name="action-leave-request-method-cancel-leave-request"/>
 		<action name="save"/>
 		<action name="action-leave-request-attrs-buttons"/>
 		<action name="action-leave-request-attrs-draft-cancel"/>
 	</action-group>
 	
 	<action-record name="action-leave-request-record-default" model="com.axelor.apps.hr.db.LeaveRequest">
-	    <field name="requestDate" expr="eval:__date__"/>
 	    <field name="user" expr="eval:__user__"/>
 	    <field name="company" expr="eval: __user__.activeCompany"/>
 	</action-record>
@@ -115,10 +114,6 @@
 	<action-attrs name="action-leave-request-attrs-domain-leave-request-select">
 		<attribute name="domain" for="$leaveSelect" expr="eval: &quot; self.statusSelect = 1 AND self.user = ${__user__.id} &quot;"/>
 	</action-attrs>
-	
-	<action-record name="action-leave-request-record-cancel" model="com.axelor.apps.hr.db.LeaveRequest">
-	    <field name="statusSelect" expr="5"/>
-	</action-record>
 	
 	<action-record name="action-leave-request-record-draft" model="com.axelor.apps.hr.db.LeaveRequest">
 	    <field name="statusSelect" expr="1"/>
@@ -168,20 +163,20 @@
 		<call class="com.axelor.apps.hr.web.leave.LeaveController" method="computeDuration"/>
 	</action-method>
 	
-	<action-method name="action-leave-request-method-sent-leave-requests">
+	<action-method name="action-leave-request-method-sent-leave-request">
 		<call class="com.axelor.apps.hr.web.leave.LeaveController" method="send"/>
 	</action-method>
 	
-	<action-method name="action-leave-request-method-validate-leave-requests">
+	<action-method name="action-leave-request-method-validate-leave-request">
 		<call class="com.axelor.apps.hr.web.leave.LeaveController" method="valid"/>
 	</action-method>
 	
-	<action-method name="action-leave-request-method-refuse-leave-requests">
+	<action-method name="action-leave-request-method-refuse-leave-request">
 		<call class="com.axelor.apps.hr.web.leave.LeaveController" method="refuse"/>
 	</action-method>
 	
-	<action-method name="action-leave-request-method-manage-cancel-leave-requests">
-		<call class="com.axelor.apps.hr.web.leave.LeaveController" method="manageCancelLeaves"/>
+	<action-method name="action-leave-request-method-cancel-leave-request">
+		<call class="com.axelor.apps.hr.web.leave.LeaveController" method="cancel"/>
 	</action-method>
 	
 	<action-method name="action-leave-request-method-create-events">

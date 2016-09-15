@@ -68,19 +68,19 @@
 
 	<action-group name="action-extra-hours-group-confirm">
 		<action name="save"/>
-		<action name="action-extra-hours-method-record-confirm"/>
+		<action name="action-extra-hours-method-confirm"/>
 		<action name="action-extra-hours-attrs-buttons"/>
 		<action name="save"/>
 	</action-group>
 	
 	<action-group name="action-extra-hours-group-validate">
-		<action name="action-extra-hours-method-record-valid"/>
+		<action name="action-extra-hours-method-valid"/>
 		<action name="action-extra-hours-attrs-buttons"/>
 		<action name="save"/>
 	</action-group>
 	
 	<action-group name="action-extra-hours-group-refuse">
-		<action name="action-extra-hours-method-record-refuse"/>
+		<action name="action-extra-hours-method-refuse"/>
 		<action name="save"/>
 		<action name="action-extra-hours-refusal-popup-form"/>
 		<action name="action-extra-hours-attrs-buttons"/>
@@ -114,15 +114,15 @@
 		<attribute name="domain" for="$extraHoursSelect" expr="eval: &quot; self.statusSelect = 1 AND self.user = ${__user__.id} &quot;"/>
 	</action-attrs>
 	
-	<action-method name="action-extra-hours-method-record-confirm">
+	<action-method name="action-extra-hours-method-confirm">
 		<call class="com.axelor.apps.hr.web.extra.hours.ExtraHoursController" method="confirm"/>
 	</action-method>
 	
-	<action-method name="action-extra-hours-method-record-valid">
+	<action-method name="action-extra-hours-method-valid">
 		<call class="com.axelor.apps.hr.web.extra.hours.ExtraHoursController" method="valid"/>
 	</action-method>
 	
-	<action-method name="action-extra-hours-method-record-refuse">
+	<action-method name="action-extra-hours-method-refuse">
 		<call class="com.axelor.apps.hr.web.extra.hours.ExtraHoursController" method="refuse"/>
 	</action-method>
 	

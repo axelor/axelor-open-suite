@@ -39,11 +39,11 @@
 			<button name="printExpense" title="Print" colSpan="2" icon="fa-print" onClick="save,action-print-expense"/>
 		</toolbar>
 	    <panel sidebar="true" name="actions" title="Actions" stacked="true">
-	    	<button name="sendExpenses" colSpan="4" title="Send Expenses" onClick="action-expense-group-sent" readonlyIf="statusSelect &gt; 1"/>
+	    	<button name="sendExpenses" colSpan="4" title="Send Expenses" onClick="action-expense-group-send" readonlyIf="statusSelect &gt; 1"/>
 			<button name="ventilate" colSpan="4" title="Ventilate" onClick="action-expense-method-ventilate" readonlyIf="statusSelect != 3 || ventilated"/>
 	    	<button name="validButton" onClick="action-expense-group-validate" title="Valid"/>
 	    	<button name="refuseButton" onClick="action-expense-group-refuse" title="Refuse"/>
-	    	<button name="cancelButton" onClick="action-expense-validate-period,save,com.axelor.apps.hr.web.expense.ExpenseController:cancelExpense,action-expense-attrs-buttons" hideIf="statusSelect == 5" title="Cancel" icon="fa-close"/>
+	    	<button name="cancelButton" onClick="action-expense-validate-period,save,com.axelor.apps.hr.web.expense.ExpenseController:cancel,action-expense-attrs-buttons" hideIf="statusSelect == 5" title="Cancel" icon="fa-close"/>
 	    	<button name="draftButton" onClick="action-expense-record-draft,save,action-expense-attrs-buttons" title="Return to draft status" showIf="statusSelect &gt; 3 "/>
 	    </panel>
 		<panel>
@@ -97,22 +97,19 @@
 		<button name="editExpenseSelected" title="Edit Expense Selected" onClick="com.axelor.apps.hr.web.expense.ExpenseController:editExpenseSelected"/>
 	</form>
 	
-	<action-group name="action-expense-group-sent">
+	<action-group name="action-expense-group-send">
 		<action name="save"/>
-		<action name="action-expense-method-record-sent"/>
+		<action name="action-expense-method-send"/>
 		<action name="action-expense-attrs-buttons"/>
-		<action name="save"/>
 	</action-group>
 	
 	<action-group name="action-expense-group-validate">
-		<action name="action-expense-method-record-valid"/>
+		<action name="action-expense-method-valid"/>
 		<action name="action-expense-attrs-buttons"/>
-		<action name="save"/>
 	</action-group>
 	
 	<action-group name="action-expense-group-refuse">
-		<action name="action-expense-method-record-refuse"/>
-		<action name="save"/>
+		<action name="action-expense-method-refuse"/>
 		<action name="action-expense-refusal-popup-form"/>
 		<action name="action-expense-attrs-buttons"/>
 		<action name="save"/>
@@ -127,10 +124,6 @@
     	<field name="inTaxTotal" expr="eval: 0"/>
 	</action-record>
 
-	<action-record name="action-expense-record-cancel" model="com.axelor.apps.hr.db.Expense">
-	    <field name="statusSelect" expr="5"/>
-	</action-record>
-	
 	<action-record name="action-expense-record-draft" model="com.axelor.apps.hr.db.Expense">
 	    <field name="statusSelect" expr="1"/>
 	</action-record>
@@ -159,15 +152,15 @@
     	<call class="com.axelor.apps.hr.web.expense.ExpenseController" method="printExpense"/>
     </action-method>
     
-    <action-method name="action-expense-method-record-sent">
+    <action-method name="action-expense-method-send">
 		<call class="com.axelor.apps.hr.web.expense.ExpenseController" method="send"/>
 	</action-method>
 	
-	<action-method name="action-expense-method-record-valid">
+	<action-method name="action-expense-method-valid">
 		<call class="com.axelor.apps.hr.web.expense.ExpenseController" method="valid"/>
 	</action-method>
 	
-	<action-method name="action-expense-method-record-refuse">
+	<action-method name="action-expense-method-refuse">
 		<call class="com.axelor.apps.hr.web.expense.ExpenseController" method="refuse"/>
 	</action-method>
 	

@@ -18,22 +18,33 @@
 package com.axelor.apps.hr.exception;
 
 /**
- * Interface of Exceptions. Enum all exception of axelor-account.
- *
- * @author dubaux
+ * Interface of Exceptions. Enum all exception of axelor-human-resource.
  *
  */
 public interface IExceptionMessage {
 
-	static final String HR_CONFIG_1 = /*$$(*/ "Please configure informations for human resources for the company %s" /*)*/;
-	static final String HR_CONFIG_2 = /*$$(*/ "Please configure the expense type for kilometric allowance in HR config for the company %s" /*)*/;
-	static final String HR_CONFIG_TEMPLATES = /*$$(*/ "No email sent, please configure HR config for the company %s"/*)*/ ;
+	static final String HR_CONFIG = /*$$(*/ "Please configure informations for human resources for the company %s" /*)*/;
+	static final String HR_CONFIG_EXPENSE_TYPE = /*$$(*/ "Please configure the expense type for kilometric allowance in HR config for the company %s" /*)*/;
+	static final String HR_CONFIG_SENT_EXPENSE_TEMPLATE = /*$$(*/ "Please configure the sent expense template in HR config for the company %s" /*)*/;
+	static final String HR_CONFIG_VALIDATED_EXPENSE_TEMPLATE = /*$$(*/ "Please configure the validated expense template in HR config for the company %s" /*)*/;
+	static final String HR_CONFIG_REFUSED_EXPENSE_TEMPLATE = /*$$(*/ "Please configure the refused expense template in HR config for the company %s" /*)*/;
+	static final String HR_CONFIG_SENT_TIMESHEET_TEMPLATE = /*$$(*/ "Please configure the sent timehsheet template in HR config for the company %s" /*)*/;
+	static final String HR_CONFIG_VALIDATED_TIMESHEET_TEMPLATE = /*$$(*/ "Please configure the validated timehsheet template in HR config for the company %s" /*)*/;
+	static final String HR_CONFIG_REFUSED_TIMESHEET_TEMPLATE = /*$$(*/ "Please configure the refused timehsheet template in HR config for the company %s" /*)*/;
+	static final String HR_CONFIG_SENT_LEAVE_TEMPLATE = /*$$(*/ "Please configure the sent leave template in HR config for the company %s" /*)*/;
+	static final String HR_CONFIG_VALIDATED_LEAVE_TEMPLATE = /*$$(*/ "Please configure the validated leave template in HR config for the company %s" /*)*/;
+	static final String HR_CONFIG_REFUSED_LEAVE_TEMPLATE = /*$$(*/ "Please configure the refused leave template in HR config for the company %s" /*)*/;
+	static final String HR_CONFIG_SENT_EXTRA_HOURS_TEMPLATE = /*$$(*/ "Please configure the sent extra hours template in HR config for the company %s" /*)*/;
+	static final String HR_CONFIG_VALIDATED_EXTRA_HOURS_TEMPLATE = /*$$(*/ "Please configure the validated extra hours template in HR config for the company %s" /*)*/;
+	static final String HR_CONFIG_REFUSED_EXTRA_HOURS_TEMPLATE = /*$$(*/ "Please configure the refused extra hours template in HR config for the company %s" /*)*/;
 	
 	static final String TIMESHEET_FROM_DATE = /*$$(*/ "Merci de rentrer une date de début pour la génération"/*)*/ ;
 	static final String TIMESHEET_TO_DATE = /*$$(*/ "Merci de rentrer une date de fin pour la génération"/*)*/ ;
 	static final String TIMESHEET_PRODUCT = /*$$(*/ "Merci de rentrer un produit"/*)*/ ;
 	static final String TIMESHEET_EMPLOYEE_DAY_PLANNING = /*$$(*/ "Merci de rentrer un planning pour l'employé rattaché à l'utilisateur %s"/*)*/ ;
 	static final String TIMESHEET_EMPLOYEE_DAILY_WORK_HOURS = /*$$(*/ "Please, enter the number of daily work hours per employee %s"/*)*/ ;
+	static final String TIMESHEET_DATE_CONFLICT = /*$$(*/ "There is a conflict between the dates entered and the dates in the lines : %s"/*)*/ ;
+	static final String TIMESHEET_NULL_FROM_DATE = /*$$(*/ "From date can't be empty"/*)*/ ;
 	static final String GENERAL_EMPLOYEE_ACTIVITY = /*$$(*/ "Please, enter an activity for the employee %s"/*)*/ ;
 
 	static final String LEAVE_USER_EMPLOYEE = /*$$(*/ "Merci de créer un employé pour l'utilisateur %s"/*)*/ ;
