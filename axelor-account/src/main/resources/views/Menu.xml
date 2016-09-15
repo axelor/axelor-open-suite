@@ -490,9 +490,9 @@
 	</action-view>
 	
 	<menuitem name="account-conf-financial-tax" parent="account-conf-financial"
-		title="V.A.T." action="account.conf.financial.tax" />
+		title="Taxes" action="account.conf.financial.tax" />
 
-	<action-view name="account.conf.financial.tax" title="V.A.T."
+	<action-view name="account.conf.financial.tax" title="Taxes"
 		model="com.axelor.apps.account.db.Tax" >
 		<view type="grid" name="tax-grid"/>
 		<view type="form" name="tax-form"/>
