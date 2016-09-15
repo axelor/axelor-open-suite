@@ -14,7 +14,6 @@ public class ReconcileManagementRepository extends ReconcileRepository{
 
 	@Override
 	public Reconcile save(Reconcile reconcile) {
-
 		try {
 
 			Beans.get(ReconcileSequenceService.class).setDraftSequence(reconcile);

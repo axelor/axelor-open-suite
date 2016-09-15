@@ -137,6 +137,7 @@ public class ReconcileServiceImpl  implements ReconcileService {
 		}
 
 		reconcile.setReconciliationDate(LocalDate.now());		
+
 		reconcileSequenceService.setSequence(reconcile);
 		
 		reconcileRepository.save(reconcile);
@@ -366,4 +367,3 @@ public class ReconcileServiceImpl  implements ReconcileService {
 	}
 	
 }
-

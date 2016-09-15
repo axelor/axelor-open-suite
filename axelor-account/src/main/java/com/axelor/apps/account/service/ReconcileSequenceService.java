@@ -12,7 +12,6 @@ import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.common.base.Strings;
-
 import com.google.inject.Inject;
 
 public class ReconcileSequenceService {
@@ -26,7 +25,6 @@ public class ReconcileSequenceService {
 		
 	}
 	
-
 	public void setSequence(Reconcile reconcile)  throws AxelorException  {
 		reconcile.setReconcileSeq(this.getSequence(reconcile));
 	}

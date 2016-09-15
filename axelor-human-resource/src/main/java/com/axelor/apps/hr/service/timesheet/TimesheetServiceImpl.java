@@ -217,21 +217,24 @@ public class TimesheetServiceImpl implements TimesheetService{
 	@Override
 	public Timesheet generateLines(Timesheet timesheet, LocalDate fromGenerationDate, LocalDate toGenerationDate, BigDecimal logTime, ProjectTask projectTask, Product product) throws AxelorException{
 
+		User user = timesheet.getUser();
+		Employee employee = user.getEmployee();
+		
 		if(fromGenerationDate == null) {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.TIMESHEET_FROM_DATE)), IException.CONFIGURATION_ERROR);
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.TIMESHEET_FROM_DATE)), IException.MISSING_FIELD);
 		}
 		if(toGenerationDate == null) {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.TIMESHEET_TO_DATE)), IException.CONFIGURATION_ERROR);
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.TIMESHEET_TO_DATE)), IException.MISSING_FIELD);
 		}
 		if(product == null) {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.TIMESHEET_PRODUCT)), IException.CONFIGURATION_ERROR);
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.TIMESHEET_PRODUCT)), IException.MISSING_FIELD);
 		}
-		if(timesheet.getUser().getEmployee() == null){
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.LEAVE_USER_EMPLOYEE),timesheet.getUser().getName()), IException.CONFIGURATION_ERROR);
+		if(employee == null){
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.LEAVE_USER_EMPLOYEE),user.getName()), IException.CONFIGURATION_ERROR);
 		}
-		WeeklyPlanning planning = timesheet.getUser().getEmployee().getPlanning();
+		WeeklyPlanning planning = user.getEmployee().getPlanning();
 		if(planning == null){
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.TIMESHEET_EMPLOYEE_DAY_PLANNING),timesheet.getUser().getName()), IException.CONFIGURATION_ERROR);
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.TIMESHEET_EMPLOYEE_DAY_PLANNING), user.getName()), IException.CONFIGURATION_ERROR);
 		}
 		List<DayPlanning> dayPlanningList = planning.getWeekDays();
 
@@ -247,21 +250,11 @@ public class TimesheetServiceImpl implements TimesheetService{
 		correspMap.put(7, "sunday");
 		
 		//Leaving list
-		List<LeaveRequest> leaveList = LeaveRequestRepository.of(LeaveRequest.class).all().filter("self.user = ?1 AND (self.statusSelect = 2 OR self.statusSelect = 3)", timesheet.getUser()).fetch();
+		List<LeaveRequest> leaveList = LeaveRequestRepository.of(LeaveRequest.class).all().filter("self.user = ?1 AND (self.statusSelect = 2 OR self.statusSelect = 3)", user).fetch();
+		
 		//Public holidays list
-		Employee employee = AuthUtils.getUser().getEmployee();
-		
-		//Employee employee = employeeRepo.find(idEmployee);
-		logger.debug("employee : {}",employee);
-		logger.debug("");
 		List<PublicHolidayDay> publicHolidayList = employee.getPublicHolidayPlanning().getPublicHolidayDayList();
-		
-		logger.debug("");
-		logger.debug("-----------------------------------------------");
-		logger.debug("publicHolidaysList : {}", publicHolidayList);
-		logger.debug("-----------------------------------------------");
-		logger.debug("");
-		
+		 
 		while(!fromDate.isAfter(toDate)){
 			DayPlanning dayPlanningCurr = new DayPlanning();
 			for (DayPlanning dayPlanning : dayPlanningList) {
@@ -298,7 +291,7 @@ public class TimesheetServiceImpl implements TimesheetService{
 				}
 				
 				if(noLeave && noPublicHoliday){
-					TimesheetLine timesheetLine = createTimesheetLine(projectTask, product, timesheet.getUser(), fromDate, timesheet, employeeService.getUserDuration(logTime,timesheet.getUser().getEmployee().getDailyWorkHours(),true), "");
+					TimesheetLine timesheetLine = createTimesheetLine(projectTask, product, user, fromDate, timesheet, employeeService.getUserDuration(logTime, employee.getDailyWorkHours(), true), "");
 					timesheetLine.setVisibleDuration(logTime);
 				}
 				

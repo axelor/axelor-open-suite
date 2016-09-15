@@ -17,7 +17,7 @@
 		<field name="saleAccount" if-module="axelor-account" form-view="account-form" grid-view="account-grid"/>
 		<field name="saleTax" form-view="tax-form" grid-view="tax-grid"/>
         <field name="purchaseAccount" if-module="axelor-account" form-view="account-form" grid-view="account-grid"/>
-        <field name="purchaseTax" if-module="axelor-account" form-view="tax-form" grid-view="tax-grid"/>
+        <field name="purchaseTax" form-view="tax-form" grid-view="tax-grid"/>
         <field name="analyticDistributionTemplate" if-module="axelor-account"/>
     </grid>
     

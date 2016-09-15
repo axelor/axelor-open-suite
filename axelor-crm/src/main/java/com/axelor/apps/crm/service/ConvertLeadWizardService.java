@@ -89,18 +89,21 @@ public class ConvertLeadWizardService {
 
 
 	public void setAddress(Partner partner, Address primaryAddress, Address otherAddress)  {
-
-		if(partner.getIsContact() && primaryAddress != null)  {
-			partner.setContactAddress(primaryAddress);
-		}
-		else {
-			if(primaryAddress != null){
+		
+		if(primaryAddress != null)  {
+			primaryAddress.setFullName(addressService.computeFullName(primaryAddress));
+			if(partner.getIsContact())  {
+				partner.setContactAddress(primaryAddress);
+			}
+			else  {
 				partnerService.addPartnerAddress(partner, primaryAddress, true, true, otherAddress == null);
 			}
-			if(otherAddress != null){
-				partnerService.addPartnerAddress(partner, otherAddress, true, false, true);
-			}
 		}
+		if(otherAddress != null && !partner.getIsContact())  {
+			otherAddress.setFullName(addressService.computeFullName(otherAddress));
+			partnerService.addPartnerAddress(partner, otherAddress, true, false, true);
+		}
+		
 	}
 		
 	public Address createPrimaryAddress(Map<String, Object> context)  {
