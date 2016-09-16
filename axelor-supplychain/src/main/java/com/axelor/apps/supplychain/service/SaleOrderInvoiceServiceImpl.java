@@ -382,8 +382,10 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 	@Override
 	public void fillInLines(Invoice invoice){
 		List<InvoiceLine> invoiceLineList = invoice.getInvoiceLineList();
-		for (InvoiceLine invoiceLine : invoiceLineList) {
-			invoiceLine.setSaleOrder(invoice.getSaleOrder());
+		if(invoiceLineList != null){
+			for (InvoiceLine invoiceLine : invoiceLineList) {
+				invoiceLine.setSaleOrder(invoice.getSaleOrder());
+			}
 		}
 	}
 
