@@ -116,9 +116,16 @@ public class ExportAction {
 		}
 		
 		values[TYPE] = typeMap.get(builder.getTypeSelect());
-		ViewBuilder view = builder.getViewBuilder();
-		if (view != null) {
-			values[VIEW] = builder.getViewBuilder().getName();
+		Set<ViewBuilder> views = builder.getViewBuilderSet();
+		if (!views.isEmpty()) {
+			for (ViewBuilder view : views) {
+				if (values[VIEW] == null) {
+					values[VIEW] = view.getName();
+				}
+				else {
+					values[VIEW] += "," + view.getName();
+				}
+			}
 		}
 		
 		model = builder.getTargetModel();

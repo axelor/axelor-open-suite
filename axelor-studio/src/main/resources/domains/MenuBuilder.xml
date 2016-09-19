@@ -14,23 +14,23 @@
     <string name="title" title="Title" required="true"/>
     <many-to-one name="metaMenu" ref="com.axelor.meta.db.MetaMenu" title="Parent menu" />
     <many-to-one name="menuBuilder" ref="com.axelor.studio.db.MenuBuilder" title="Parent builder" />
-    <boolean name="isParent" title="Is parent ?" />
-    <many-to-one name="metaModel" ref="com.axelor.meta.db.MetaModel" title="Model" />
     <many-to-many name="groups" ref="com.axelor.auth.db.Group" title="Groups"/>
     <boolean name="top" title="Top" />
     <string name="icon" title="Icon"/>
     <string name="iconBackground" title="Icon background" />
     <boolean name="edited" default="true"/>
     <boolean name="recorded"/>
-    <many-to-one name="dashboard" ref="com.axelor.studio.db.ViewBuilder" title="Dashboard builder"/>
-    <string name="domain" title="Domain" />
     <integer name="order" title="Order" column="order_seq" />
     <many-to-one name="menuGenerated" ref="com.axelor.meta.db.MetaMenu" title="Menu generated" />
-    <many-to-one name="actionGenerated" ref="com.axelor.meta.db.MetaAction" title="Action generated" />
     <boolean name="deleteMenu" />
     <many-to-one name="metaModule" ref="com.axelor.meta.db.MetaModule" title="Studio module" required="true" />
-    <string name="action" title="Action" />
-    <string name="views" title="Views" />
+    <many-to-one name="actionBuilder" ref="com.axelor.studio.db.ActionBuilder" title="Action" />
+<!--     <string name="domain" title="Domain" /> -->
+<!--     <many-to-one name="actionGenerated" ref="com.axelor.meta.db.MetaAction" title="Action generated" /> -->    
+<!--     <many-to-one name="metaModel" ref="com.axelor.meta.db.MetaModel" title="Model" /> -->
+<!--     <string name="action" title="Action" /> -->
+<!--     <string name="views" title="Views" /> -->
+<!--     <many-to-one name="dashboard" ref="com.axelor.studio.db.ViewBuilder" title="Dashboard builder"/> -->
   </entity>
     
     

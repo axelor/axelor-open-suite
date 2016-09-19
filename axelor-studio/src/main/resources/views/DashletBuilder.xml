@@ -12,8 +12,9 @@
       <panel>
           <field name="viewType" selection-in="['chart','grid', 'custom']"/>
 	      <field name="name" />
-	      <field name="viewBuilder" requiredIf="metaView == null" domain="self.viewType = :viewType"/>
-      	  <field name="metaView" requiredIf="viewBuilder == null" domain="self.type = :viewType" />
+	      <field name="viewBuilder" requiredIf="actionBuilder == null &amp;&amp; metaView == null" domain="self.viewType = :viewType"/>
+      	  <field name="metaView" requiredIf="actionBuilder == null &amp;&amp; viewBuilder == null" domain="self.type = :viewType" />
+      	  <field name="actionBuilder" requiredIf="metaView == null &amp;&amp; viewBuilder == null" />
       	  <field name="colspan" />
       	  <field name="paginationLimit" showIf="viewType == 'grid'" />
 	  </panel>

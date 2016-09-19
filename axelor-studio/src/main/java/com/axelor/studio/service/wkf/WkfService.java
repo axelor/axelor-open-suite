@@ -27,6 +27,7 @@ import org.slf4j.LoggerFactory;
 
 import com.axelor.auth.db.repo.RoleRepository;
 import com.axelor.common.Inflector;
+import com.axelor.exception.AxelorException;
 import com.axelor.meta.db.MetaAction;
 import com.axelor.meta.db.MetaField;
 import com.axelor.meta.db.MetaModel;
@@ -108,7 +109,7 @@ public class WkfService {
 	 *            Worklfow to process.
 	 * @return Exception string if any issue in processing else null.
 	 */
-	@Transactional
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public String process(Wkf wkf) {
 
 		try {

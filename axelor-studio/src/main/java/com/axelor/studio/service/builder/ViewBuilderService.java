@@ -133,6 +133,8 @@ public class ViewBuilderService {
 				return error;
 			}
 			
+			menuBuilderService.build(module, viewDir, updateMeta);
+			
 			List<ViewBuilder> viewBuilders = getViewBuilders(module, updateAll);
 
 			splitByModel(viewBuilders.iterator());
@@ -142,8 +144,6 @@ public class ViewBuilderService {
 			}
 
 			rightMgmtService.updateRights();
-
-			menuBuilderService.build(module, viewDir, updateMeta);
 
 			updateEdited(viewBuilders, updateMeta);
 

@@ -18,8 +18,14 @@
 
 package com.axelor.studio.service.data.importer;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.axelor.common.Inflector;
 import com.axelor.exception.AxelorException;
@@ -27,16 +33,27 @@ import com.axelor.i18n.I18n;
 import com.axelor.meta.db.MetaMenu;
 import com.axelor.meta.db.MetaModel;
 import com.axelor.meta.db.MetaModule;
+import com.axelor.meta.db.MetaView;
 import com.axelor.meta.db.repo.MetaMenuRepository;
 import com.axelor.meta.db.repo.MetaModelRepository;
+import com.axelor.meta.db.repo.MetaViewRepository;
+import com.axelor.studio.db.ActionBuilder;
 import com.axelor.studio.db.MenuBuilder;
+import com.axelor.studio.db.ViewBuilder;
+import com.axelor.studio.db.repo.ActionBuilderRepository;
 import com.axelor.studio.db.repo.MenuBuilderRepository;
+import com.axelor.studio.db.repo.ViewBuilderRepository;
+import com.axelor.studio.service.ViewLoaderService;
 import com.axelor.studio.service.data.TranslationService;
 import com.axelor.studio.service.data.exporter.ExportMenu;
+import com.google.common.base.Joiner;
+import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
 public class ImportMenu {
+	
+	private final Logger log = LoggerFactory.getLogger(ImportMenu.class);
 	
 	private Integer parentMenuSeq = 0;
 	
@@ -58,6 +75,15 @@ public class ImportMenu {
 	
 	@Inject
 	private MetaModelRepository metaModelRepo;
+	
+	@Inject
+	private ViewBuilderRepository viewBuilderRepo;
+	
+	@Inject
+	private MetaViewRepository metaViewRepo;
+	
+	@Inject
+	private ActionBuilderRepository actionBuilderRepo;
 	
 	public void importMenus(DataReader reader, String key) throws AxelorException {
 		if (reader == null) {
@@ -118,9 +144,15 @@ public class ImportMenu {
 		
 		menuBuilder.setIcon(row[ExportMenu.ICON]);
 		menuBuilder.setIconBackground(row[ExportMenu.BACKGROUND]);
-		menuBuilder.setDomain(row[ExportMenu.FILTER]);
-		menuBuilder.setAction(row[ExportMenu.ACTION]);
-		menuBuilder.setViews(row[ExportMenu.VIEWS]);
+		
+		if (model != null) {
+			ActionBuilder actionBuilder = getActionBuilder(menuBuilder, module, model, row, name);
+			menuBuilder.setActionBuilder(actionBuilder);
+		}
+		
+//		menuBuilder.setDomain(row[ExportMenu.FILTER]);
+//		menuBuilder.setAction(row[ExportMenu.ACTION]);
+//		menuBuilder.setViews(row[ExportMenu.VIEWS]);
 		
 		String order = row[ExportMenu.ORDER];
 		menuBuilder = setMenuOrder(menuBuilder, order);
@@ -128,7 +160,107 @@ public class ImportMenu {
 		menuBuilderRepo.save(menuBuilder);
 		
 	}
+
+	private ActionBuilder getActionBuilder(MenuBuilder menuBuilder, MetaModule module, MetaModel model, String[] row, String name) {
+		
+		String actionName = name.replace("-", ".");
+		
+		ActionBuilder actionBuilder = menuBuilder.getActionBuilder();
+		
+		if (actionBuilder == null) {
+			actionBuilder = actionBuilderRepo
+				.all()
+				.filter("self.name = ?1 and self.metaModule = ?2", actionName, module).fetchOne();
+		}
+		
+		if (actionBuilder == null) {
+			actionBuilder = new ActionBuilder(actionName);
+			actionBuilder.setMetaModule(module);
+		}
+		
+		actionBuilder.setMenuAction(true);
+		actionBuilder.setTypeSelect(2);
+		actionBuilder.setDomainCondition(row[ExportMenu.FILTER]);
+		actionBuilder.setMetaModel(model);
+		actionBuilder.setTitle(menuBuilder.getTitle());
+		actionBuilder.clearMetaViewSet();
+		actionBuilder.clearViewBuilderSet();
+		
+		String viewNames = row[ExportMenu.VIEWS];
+		if (Strings.isNullOrEmpty(viewNames)) {
+			viewNames = ViewLoaderService.getDefaultViewName(model.getName(), "grid");
+			viewNames += "," + ViewLoaderService.getDefaultViewName(model.getName(), "form");
+		}
+		
+		actionBuilder = setActionViews(actionBuilder, viewNames);
+		
+		return actionBuilder;
+	}
 	
+	public ActionBuilder setActionViews(ActionBuilder actionBuilder, String viewNames) {
+		
+		List<String> names = Arrays.asList(viewNames.split(","));
+		List<MetaView> views = metaViewRepo.all().filter("self.name in (?1)", names).fetch();
+		
+		if (views.isEmpty()) {
+			return setViewBuilderSet(actionBuilder, names);
+		}
+		
+		List<String> viewOrder = new ArrayList<String>();
+		for (MetaView view : views) {
+			if (viewOrder.contains(view.getType())) {
+				continue;
+			}
+			actionBuilder.addMetaViewSetItem(view);
+
+			if (actionBuilder.getTitle() == null) {
+				actionBuilder.setTitle(view.getTitle());
+			}
+			
+			int order = names.indexOf(view.getName());
+			if (order < viewOrder.size()) {
+				viewOrder.add(order, view.getType());
+			}
+			else {
+				viewOrder.add(view.getType());
+			}
+		}
+		
+		actionBuilder.setViewOrder(Joiner.on(",").join(viewOrder));
+		
+		return actionBuilder;
+			
+	}
+
+	private ActionBuilder setViewBuilderSet(ActionBuilder actionBuilder, List<String> names) {
+		
+		log.debug("Menu action view builders name: {}", names);
+		List<ViewBuilder> viewBuilders = viewBuilderRepo.all().filter("self.name in (?1)", names).fetch(); 
+		
+		List<String> viewOrder = new ArrayList<String>();
+		for (ViewBuilder viewBuilder : viewBuilders) {
+			if (viewOrder.contains(viewBuilder.getViewType())) {
+				continue;
+			}
+			actionBuilder.addViewBuilderSetItem(viewBuilder);
+			if (actionBuilder.getTitle() == null) {
+				actionBuilder.setTitle(viewBuilder.getTitle());
+			}
+			int order = names.indexOf(viewBuilder.getName());
+			if (order < viewOrder.size()) {
+				viewOrder.add(order, viewBuilder.getViewType());
+			}
+			else {
+				viewOrder.add(viewBuilder.getViewType());
+			}
+		}
+		
+		actionBuilder.setViewOrder(Joiner.on(",").join(viewOrder));
+		
+		return actionBuilder;
+	}
+	
+
 	private String getTitle(String title, String titleFr) {
 		
 		if (title == null) {
@@ -149,13 +281,6 @@ public class ImportMenu {
 		if (menuBuilder == null) {
 			menuBuilder = new MenuBuilder(name);
 			menuBuilder.setMetaModule(module);
-		}
-		if (model != null) {
-			menuBuilder.setMetaModel(model);
-			menuBuilder.setIsParent(false);
-		} else {
-			menuBuilder.setMetaModel(null);
-			menuBuilder.setIsParent(true);
 		}
 		
 		menuBuilder.setEdited(true);

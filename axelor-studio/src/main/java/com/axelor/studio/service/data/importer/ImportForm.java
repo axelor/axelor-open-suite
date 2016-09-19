@@ -463,15 +463,14 @@ public class ImportForm {
 		builder.setEdited(true);
 		builder.setTitle(title);
 		builder.setTypeSelect(2);
-		builder.setViewBuilder(targetView);
 		
 		if (targetView != null) {
-			builder.setViewBuilder(targetView);
+			builder.addViewBuilderSetItem(targetView);
 			builder.setMetaModel(targetView.getMetaModel());
 			actionBuilderRepo.save(builder);
 		}
 		else if (metaView != null) {
-			builder.setMetaView(metaView);
+			builder.addMetaViewSetItem(metaView);
 			String model = metaView.getModel();
 			if (model != null) {
 				builder.setMetaModel(metaModelRepo.all().filter("self.fullName = ?1", model).fetchOne());
@@ -622,7 +621,7 @@ public class ImportForm {
 		if (builders != null) {
 
 			for (ActionBuilder builder : builders) {
-				builder.setViewBuilder(viewBuilder);
+				builder.addViewBuilderSetItem(viewBuilder);
 				builder.setMetaModel(viewBuilder.getMetaModel());
 				builder.setMetaModule(viewBuilder.getMetaModule());
 				actionBuilderRepo.save(builder);

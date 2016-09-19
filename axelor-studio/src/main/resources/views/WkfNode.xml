@@ -23,8 +23,8 @@
         <spacer/>
         <field name="metaField" showIf="myMenuEntry" requiredIf="myMenuEntry" onSelect="action-wkf-node-meta-field-domain" />
         <field name="myMenuLabel" showIf="myMenuEntry" requiredIf="myMenuEntry"/>
-        <field name="parentMenu" showIf="statusMenuEntry || myMenuEntry" requiredIf="(statusMenuEntry || myMenuEntry) &amp;&amp; parentMenuBuilder == null" domain="self.parent = null"/>
-        <field name="parentMenuBuilder" showIf="statusMenuEntry || myMenuEntry" requiredIf="(statusMenuEntry || myMenuEntry) &amp;&amp; parentMenu == null" domain="self.isParent = true"/>
+        <field name="parentMenu" showIf="statusMenuEntry || myMenuEntry" requiredIf="(statusMenuEntry || myMenuEntry) &amp;&amp; parentMenuBuilder == null" domain="self.action is null"/>
+        <field name="parentMenuBuilder" showIf="statusMenuEntry || myMenuEntry" requiredIf="(statusMenuEntry || myMenuEntry) &amp;&amp; parentMenu == null" domain="self.actionBuilder is null"/>
         <field name="wkf" hidden="true"/>
       </panel>
       <panel-related field="actionSelectorList" colSpan="12" />

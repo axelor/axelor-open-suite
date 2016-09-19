@@ -129,11 +129,11 @@ public class ImportService {
 
 			processSheets(reader);
 			
-			importMenu.importMenus(reader, "Menu");
-			
 			Map<String, MetaModel> modelMap = clearModels();
 			
 			generateGrid(modelMap);
+			
+			importMenu.importMenus(reader, "Menu");
 
 		} catch (IOException e) {
 			throw new AxelorException(e, 5);
@@ -172,7 +172,7 @@ public class ImportService {
 						continue;
 					}
 					
-					extractRow(row, key, rowNum);
+					processRow(row, key, rowNum);
 					
 				}
 			}
@@ -189,7 +189,7 @@ public class ImportService {
 	 * @throws AxelorException 
 	 */
 
-	private void extractRow(String[] row, String key, int rowNum) throws AxelorException {
+	private void processRow(String[] row, String key, int rowNum) throws AxelorException {
 
 		replace = true;
 
@@ -260,7 +260,7 @@ public class ImportService {
 					if (actionViewMap.containsKey(viewBuilder.getName())) {
 						
 						for (ActionBuilder builder : actionViewMap.get(viewBuilder.getName())) {
-							builder.setViewBuilder(viewBuilder);
+							builder.addViewBuilderSetItem(viewBuilder);
 							builder.setMetaModel(viewBuilder.getMetaModel());
 							actionBuilderRepo.save(builder);
 						}

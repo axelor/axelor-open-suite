@@ -37,10 +37,14 @@ import com.axelor.meta.db.repo.MetaMenuRepository;
 import com.axelor.meta.db.repo.MetaModelRepository;
 import com.axelor.meta.db.repo.MetaSelectRepository;
 import com.axelor.meta.schema.actions.ActionGroup;
+import com.axelor.studio.db.ActionBuilder;
 import com.axelor.studio.db.ActionSelector;
 import com.axelor.studio.db.MenuBuilder;
+import com.axelor.studio.db.ViewBuilder;
 import com.axelor.studio.db.WkfNode;
+import com.axelor.studio.db.repo.ActionBuilderRepository;
 import com.axelor.studio.db.repo.MenuBuilderRepository;
+import com.axelor.studio.service.ViewLoaderService;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -79,6 +83,12 @@ class WkfNodeService {
 
 	@Inject
 	private MetaSelectRepository metaSelectRepo;
+	
+	@Inject
+	private ActionBuilderRepository actionBuilderRepo;
+	
+	@Inject
+	private ViewLoaderService viewLoaderService;
 
 	@Inject
 	protected WkfNodeService(WkfService wkfService) {
@@ -321,7 +331,7 @@ class WkfNodeService {
 		} else {
 			MenuBuilder menuBuilder = menuBuilderRepo
 					.all()
-					.filter("self.menuBuilder = ?1 and self.isParent != true",
+					.filter("self.menuBuilder = ?1 and self.actionBuilder is not null",
 							parentMenuBuilder).order("-order").fetchOne();
 			log.debug("Last menu builder found: {}", menuBuilder);
 
@@ -481,13 +491,49 @@ class WkfNodeService {
 		menuBuilder.setTitle(title);
 		menuBuilder.setEdited(true);
 		menuBuilder.setRecorded(false);
-		menuBuilder.setMetaModel(wkfService.workflow.getMetaModel());
-		menuBuilder.setDomain(domain);
 		menuBuilder.setOrder(order);
 		menuBuilder.setMenuBuilder(parentBuilder);
 		menuBuilder.setMetaMenu(parentMenu);
 		menuBuilder.setMetaModule(metaModule);
+		
+		ActionBuilder builder = getActionBuilder(menuBuilder, metaModule, domain);
+		menuBuilder.setActionBuilder(builder);
+//		menuBuilder.setMetaModel(wkfService.workflow.getMetaModel());
+//		menuBuilder.setDomain(domain);
 		return menuBuilderRepo.save(menuBuilder);
+		
+	}
+	
+	private ActionBuilder getActionBuilder(MenuBuilder menuBuilder, MetaModule metaModule, String domain) {
+		
+		ActionBuilder builder = menuBuilder.getActionBuilder();
+		
+		String name = menuBuilder.getName().replace("-", ".");
+		
+		if (builder == null) {
+			builder = actionBuilderRepo.all().filter("self.metaModule = ?1 and self.name = ?2", metaModule, name).fetchOne();
+		}
+		
+		if (builder == null) {
+			builder = new ActionBuilder(name);
+			builder.setTypeSelect(2);
+		}
+		
+		builder.setDomainCondition(domain);
+		builder.clearViewBuilderSet();
+		MetaModel model = wkfService.workflow.getMetaModel();
+		String gridName = ViewLoaderService.getDefaultViewName(model.getName(), "grid");
+		ViewBuilder grid = viewLoaderService.getViewBuilder(metaModule.getName(), gridName, "grid");
+		if (grid != null) {
+			builder.addViewBuilderSetItem(grid);
+		}
+		builder.addViewBuilderSetItem(wkfService.workflow.getViewBuilder());
+		builder.setMetaModel(model);
+		builder.setMetaModule(metaModule);
+		builder.setTitle(menuBuilder.getTitle());
+		
+		return builder;
+		
 	}
 
 }

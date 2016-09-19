@@ -19,10 +19,8 @@ import com.axelor.meta.schema.views.Selection.Option;
 import com.axelor.studio.db.ActionBuilder;
 import com.axelor.studio.db.ActionBuilderLine;
 import com.axelor.studio.db.ReportBuilder;
-import com.axelor.studio.db.ViewBuilder;
 import com.axelor.studio.db.repo.ActionBuilderRepository;
 import com.axelor.studio.db.repo.ReportBuilderRepository;
-import com.axelor.studio.db.repo.ViewBuilderRepository;
 import com.axelor.studio.service.ConfigurationService;
 import com.axelor.studio.service.data.exporter.ExportAction;
 import com.google.inject.Inject;
@@ -44,9 +42,6 @@ public class ImportAction {
 	private MetaModelRepository metaModelRepo;
 	
 	@Inject
-	private ViewBuilderRepository viewBuilderRepo;
-	
-	@Inject
 	private MetaFieldRepository metaFieldRepo;
 	
 	@Inject
@@ -54,6 +49,9 @@ public class ImportAction {
 	
 	@Inject
 	private TemplateRepository templateRepo;
+	
+	@Inject
+	private ImportMenu importMenu;
 	
 	public void importActions(DataReader reader, String key) {
 		
@@ -103,7 +101,9 @@ public class ImportAction {
 		ActionBuilder builder = findCreateAction(name, type, module);
 		
 		builder = setModel(values, builder);
-		builder = setView(values[ExportAction.VIEW], builder);
+		if (values[ExportAction.VIEW] != null) {
+			builder = importMenu.setActionViews(builder, values[ExportAction.VIEW]);
+		}
 		builder.setFirstGroupBy(values[ExportAction.FIRST_GROUPBY]);
 		builder.setSecondGroupBy(values[ExportAction.SECOND_GROUPBY]);
 		builder.setReportBuilderSet(getReportBuilders(values[ExportAction.REPORT_BUILDERS]));
@@ -156,19 +156,6 @@ public class ImportAction {
 		
 		return builder;
 	}
-	
-	private ActionBuilder setView(String view, ActionBuilder builder) {
-		
-		if (view != null) {
-			ViewBuilder viewBuilder = viewBuilderRepo
-					.all()
-					.filter("self.name = ?1 and self.metaModule = ?2", view, builder.getMetaModule()).fetchOne();
-			builder.setViewBuilder(viewBuilder);
-		}
-		
-		return builder;
-	}
-	
 	
 	private MetaField getMetaField(MetaModel model, String name) {
 		
@@ -240,7 +227,6 @@ public class ImportAction {
 		
 		return builder;
 	}
-	
 	
 
 }
