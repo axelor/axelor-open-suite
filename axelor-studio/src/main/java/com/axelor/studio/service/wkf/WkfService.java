@@ -190,7 +190,7 @@ public class WkfService {
 		viewField.setFieldType("string");
 		viewField.setMetaField(statusField);
 		viewField.setColSpan(12);
-		viewField.setSequence(1);
+		viewField.setSequence(0);
 		viewField.setReadonly(true);
 		viewField.setMetaSelect(metaSelectRepo.findByName(selectName));
 		viewField.setDefaultValue("'" + statusField.getDefaultString() + "'");

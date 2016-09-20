@@ -3,146 +3,60 @@
   xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   
   <!-- Meta selects -->
-  <meta-select name="product.type.select">
+  <meta-select name="expense.status.select">
   	<items>
-  		<item title="Product" value="product" order="1" />
-  		<item title="Service" value="service" order="2" />
-  		<item title="Expense" value="expense" order="3" />
+  		<item title="Brouillon" value="1" order="1" />
+  		<item title="Envoyé" value="2" order="2" />
+  		<item title="Refusé" value="3" order="3" />
+  		<item title="Annuler" value="4" order="4" />
+  		<item title="Validé" value="5" order="5" />
   	</items>
   </meta-select>
   
-  <!-- Product category -->
-  <meta-model name="ProductCategory" title="Product category"  package="com.axelor.apps.custom.db">
-    <meta-fields>
-      <meta-field name="id" label="Id" typeName="Long" />
-      <meta-field name="createdBy" label="Created by" typeName="User" relationship="ManyToOne" />
-      <meta-field name="createdOn" label="Created On" typeName="LocalDateTime" />
-      <meta-field name="updatedBy" label="Updated by" typeName="User" relationship="ManyToOne" />
-      <meta-field name="updatedOn" label="Updated by" typeName="LocalDateTime"/>
-	  <meta-field name="name" label="Name" typeName="String" fieldType="string" required="true" />
-	  <meta-field name="code" label="Code" typeName="String" fieldType="string"/>
-	  <meta-field name="active" label="Active" typeName="Boolean" fieldType="boolean" />
-    </meta-fields>
-  </meta-model>
+  <meta-select name="expense.type.select">
+  	<items>
+  		<item title="Transport" value="1" order="1" />
+  		<item title="Hébergement" value="2" order="2" />
+  		<item title="Autre" value="3" order="3" />
+  	</items>
+  </meta-select>
   
-  <!-- Product -->
-  <meta-model name="Product"  package="com.axelor.apps.custom.db">
-    <meta-fields>
-      <meta-field name="id" label="Id" typeName="Long" />
-      <meta-field name="createdBy" label="Created by" typeName="User" relationship="ManyToOne" />
-      <meta-field name="createdOn" label="Created On" typeName="LocalDateTime" />
-      <meta-field name="updatedBy" label="Updated by" typeName="User" relationship="ManyToOne" />
-      <meta-field name="updatedOn" label="Updated by" typeName="LocalDateTime"/>
-	  <meta-field name="name" label="Name" typeName="String" fieldType="string" required="true" />
-	  <meta-field name="code" label="Code" typeName="String" fieldType="string" integerMin="3" integerMax="4"/>
-	  <meta-field name="minumQty" label="Minimum Qty" typeName="Integer" fieldType="integer" />
-	  <meta-field name="price" label="Price" typeName="BigDecimal" fieldType="decimal" />
-	  <meta-field name="productType" label="Type" typeName="String" fieldType="string" metaselect="product.type.select" />
-	  <meta-field name="productCategory" label="Category" typeName="ProductCategory" fieldType="many-to-one" relationship="ManyToOne" />
-    </meta-fields>
-  </meta-model>
-  
-  <!-- Customer -->
-  <meta-model name="Customer" package="com.axelor.apps.custom.db">
-    <meta-fields>
-      <meta-field name="id" label="Id" typeName="Long" />
-      <meta-field name="createdBy" label="Created by" typeName="User" relationship="ManyToOne" />
-      <meta-field name="createdOn" label="Created On" typeName="LocalDateTime" />
-      <meta-field name="updatedBy" label="Updated by" typeName="User" relationship="ManyToOne" />
-      <meta-field name="updatedOn" label="Updated by" typeName="LocalDateTime"/>
-	  <meta-field name="email" label="Email" typeName="String" fieldType="string" required="true"/>
-	  <meta-field name="name" label="Name" typeName="String" fieldType="string" required="true"/>
-	  <meta-field name="code" label="Code" typeName="String" fieldType="string" />
-	  <meta-field name="address" label="Address" typeName="String" large="T" fieldType="string" />
-	  <meta-field name="productCategories" label="Product categories" typeName="ProductCategory" fieldType="many-to-many" relationship="ManyToMany" />
-	  <meta-field name="orderPolicy" label="Order policy" typeName="OrderPolicy" relationship="ManyToOne" fieldType="many-to-one" />
-    </meta-fields>
-  </meta-model>
-  
-  <!-- Order policy -->
-  <meta-model name="OrderPolicy" title="Order policy" package="com.axelor.apps.custom.db">
-  	<meta-fields>
-  	  <meta-field name="id" label="Id" typeName="Long" />
-      <meta-field name="createdBy" label="Created by" typeName="User" relationship="ManyToOne" />
-      <meta-field name="createdOn" label="Created On" typeName="LocalDateTime" />
-      <meta-field name="updatedBy" label="Updated by" typeName="User" relationship="ManyToOne" />
-      <meta-field name="updatedOn" label="Updated by" typeName="LocalDateTime"/>
-	  <meta-field name="name" label="Name" typeName="String" fieldType="string" required="true" />
-	  <meta-field name="code" label="Code" typeName="String" fieldType="string"/>
-	</meta-fields>
-  </meta-model>
-   
-  <!-- Order Line-->
-  <meta-model name="OrderLine" title="Order line"  package="com.axelor.apps.custom.db">
-    <meta-fields>
-      <meta-field name="id" label="Id" typeName="Long" />
-      <meta-field name="createdBy" label="Created by" typeName="User" relationship="ManyToOne" />
-      <meta-field name="createdOn" label="Created On" typeName="LocalDateTime" />
-      <meta-field name="updatedBy" label="Updated by" typeName="User" relationship="ManyToOne" />
-      <meta-field name="updatedOn" label="Updated by" typeName="LocalDateTime"/>
-	  <meta-field name="product" label="Product" typeName="Product" fieldType="many-to-one" relationship="ManyToOne" required="true" />
-	  <meta-field name="saleOrder" label="Order" typeName="Order" fieldType="many-to-one" relationship="ManyToOne" />
-	  <meta-field name="productCategory" label="Product Category" typeName="ProductCategory" fieldType="many-to-one" relationship="ManyToOne" hidden="true"/>
-	  <meta-field name="qty" label="Quantity" typeName="Integer" fieldType="integer" />
-	  <meta-field name="totalAmt" label="Total amt" typeName="BigDecimal" fieldType="decimal" />
-    </meta-fields>
-  </meta-model>
-  
-  <!-- Order -->
-  <meta-model name="Order"  package="com.axelor.apps.custom.db">
-    <meta-fields>
-      <meta-field name="id" label="Id" typeName="Long" />
-      <meta-field name="createdBy" label="Created by" typeName="User" relationship="ManyToOne" />
-      <meta-field name="createdOn" label="Created On" typeName="LocalDateTime" />
-      <meta-field name="updatedBy" label="Updated by" typeName="User" relationship="ManyToOne" />
-      <meta-field name="updatedOn" label="Updated by" typeName="LocalDateTime"/>
-      <meta-field name="lines" label="Lines" typeName="OrderLine" relationship="OneToMany" fieldType="one-to-many"  mappedBy="saleOrder"/>
-      <meta-field name="customer" label="Customer" typeName="Customer" relationship="ManyToOne" fieldType="many-to-one"/>
-      <meta-field name="salesman" label="Salesman" typeName="User" relationship="ManyToOne" fieldType="many-to-one"/>
-	  <meta-field name="orderDate" label="Date" typeName="LocalDate" fieldType="date"/>
-	  <meta-field name="orderNumber" label="Order no." typeName="String" fieldType="string" />
-	  <meta-field name="orderPolicy" label="Policy" typeName="OrderPolicy" relationship="ManyToOne" fieldType="many-to-one" required="T"/>
-	  <meta-field name="notes" label="Notes" typeName="String" large="T" fieldType="string" />
-	  <meta-field name="total" label="Total" typeName="BigDecimal" fieldType="decimal" />
-	  <meta-field name="totalHigher" label="Total(qty &gt; 10)" typeName="BigDecimal" fieldType="decimal" />
-	  <meta-field name="invoice" label="Invoice" typeName="Invoice" relationship="ManyToOne" fieldType="many-to-one" />
-	  <meta-field name="shippingAddress" label="Shipping address" typeName="String" fieldType="string" />
-	  <meta-field name="invoiceAddress" label="Invoice address" typeName="String" fieldType="string" />
-    </meta-fields>
-  </meta-model>
-  
-  <!-- Invoice -->
-  <meta-model name="Invoice"  package="com.axelor.apps.custom.db">
+  <meta-model name="Expense"  package="com.axelor.apps.custom.db">
   	<meta-fields>
   	    <meta-field name="id" label="Id" typeName="Long" />
         <meta-field name="createdBy" label="Created by" typeName="User" relationship="ManyToOne" />
         <meta-field name="createdOn" label="Created On" typeName="LocalDateTime" />
         <meta-field name="updatedBy" label="Updated by" typeName="User" relationship="ManyToOne" />
         <meta-field name="updatedOn" label="Updated by" typeName="LocalDateTime"/>
-  		<meta-field name="customer" label="Customer" typeName="Customer" relationship="ManyToOne" fieldType="many-to-one"/>
-  		<meta-field name="invoiceDate" label="Date" typeName="LocalDate" fieldType="date"/>
-  		<meta-field name="invoiceNo" label="Invoice no" typeName="String" fieldType="string"/>
-  		<meta-field name="address" label="Address" typeName="String" fieldType="string" />
-  		<meta-field name="lines" label="Lines" typeName="InvoiceLine" relationship="OneToMany" fieldType="one-to-many" mappedBy="invoice" />
-  		<meta-field name="notes" label="Notes" typeName="String" large="T" fieldType="string" />
-	  	<meta-field name="total" label="Total" typeName="BigDecimal" fieldType="decimal" />
-	  	<meta-field name="saleOrder" label="Order" typeName="Order" relationship="ManyToOne" fieldType="many-to-one"/>
+        <meta-field name="expenseRef" label="Référence" typeName="String" fieldType="string" required="T" />
+  		<meta-field name="expenseUser" label="Utilisateur" typeName="User" fieldType="many-to-one" relationship="ManyToOne"/>
+  		<meta-field name="dateFrom" label="Date de" typeName="LocalDate" required="T" fieldType="date" />
+  		<meta-field name="dateTo" label="Date à" typeName="LocalDate" fieldType="date" />
+  		<meta-field name="expenses" label="Dépenses" typeName="ExpenseLine" fieldType="one-to-many" relationship="OneToMany" mappedBy="expense"/>
+  		<meta-field name="totalHT" label="Total HT" typeName="BigDecimal" fieldType="decimal" />
+  		<meta-field name="totalTTC" label="Total TTC" typeName="BigDecimal" fieldType="decimal" />
+  		<meta-field name="totalTtcTransport" label="Total TTC transport" typeName="BigDecimal" fieldType="decimal" />
+  		<meta-field name="validatedBy" label="Validé par" typeName="User" fieldType="many-to-one" relationship="ManyToOne"/>
+  		<meta-field name="validatedOn" label="Validé le" typeName="LocalDateTime"  fieldType="datetime" />
+  		<meta-field name="status" label="Statut" typeName="Integer" fieldType="integer" metaSelect="expense.status.select" />
   	</meta-fields>
   </meta-model>
   
-  <!-- InvoiceLine -->
-  <meta-model name="InvoiceLine"  package="com.axelor.apps.custom.db">
+  <meta-model name="ExpenseLine"  package="com.axelor.apps.custom.db">
   	<meta-fields>
   	    <meta-field name="id" label="Id" typeName="Long" />
         <meta-field name="createdBy" label="Created by" typeName="User" relationship="ManyToOne" />
         <meta-field name="createdOn" label="Created On" typeName="LocalDateTime" />
         <meta-field name="updatedBy" label="Updated by" typeName="User" relationship="ManyToOne" />
         <meta-field name="updatedOn" label="Updated by" typeName="LocalDateTime"/>
-  		<meta-field name="invoice" label="Invoice" typeName="Invoice" fieldType="many-to-one" relationship="ManyToOne"/>
-  		<meta-field name="product" label="Product" typeName="Product" fieldType="many-to-one" relationship="ManyToOne"/>
-	  	<meta-field name="productCategory" label="Product Category" typeName="ProductCategory" fieldType="many-to-one" relationship="ManyToOne"/>
-	  	<meta-field name="qty" label="Quantity" typeName="Integer" fieldType="integer" />
-	  	<meta-field name="totalAmt" label="Total amt" typeName="BigDecimal" fieldType="decimal" />
+        <meta-field name="expense" labe="Expense" typeName="Expense" fieldType="many-to-one" />
+        <meta-field name="expenseType" label="Type de dépense" typeName="Integer" fieldType="integer" metaSelect="expense.type.select" required="T"/>
+        <meta-field name="date" label="Date" typeName="LocalDate" required="T" fieldType="date" />
+        <meta-field name="file" label="Fichier" typeName="MetaFile"  fieldType="many-to-one" relationship="ManyToOne" />
+        <meta-field name="amtHt" label="Montant HT" typeName="BigDecimal" fieldType="decimal" />
+  		<meta-field name="tva" label="TVA" typeName="BigDecimal" fieldType="decimal" />
+  		<meta-field name="amtTTC" label="Montant TTC" typeName="BigDecimal" fieldType="decimal" />
+  		<meta-field name="comments" label="Commentaire" typeName="String" fieldType="string" large="T" />
   	</meta-fields>
   </meta-model>
   

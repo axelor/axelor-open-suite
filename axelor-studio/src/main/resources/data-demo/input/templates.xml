@@ -3,19 +3,13 @@
   xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   
   <template>
-  	<name>Order template</name>
-  	<subject>Quote $Order.orderNumber$</subject>
+  	<name>Note De Frais</name>
+  	<subject>Note De Frais $Expense.expenseRef$</subject>
   	<content><![CDATA[
-  			<p>Dear $Order.customer.name$</p> 
-			<p>Following our conversations, please find attached our quote $Order.orderNumber$.</p>
-			<p>Please do not hesitate to contact me for any further explanation regarding the quote.</p>
-			<p>Best regards<br/>
-			$Order.salesman.name$
+			<p>Expense updated</p>
   	]]></content>
   	<mediaTypeSelect>2</mediaTypeSelect>
-  	<metaModel>Order</metaModel>
-  	<fromAddress>$Order.salesman.email$</fromAddress>
-  	<toRecipients>$Order.customer.email$</toRecipients>
+  	<metaModel>Expense</metaModel>
   </template>
 
 </templates>  

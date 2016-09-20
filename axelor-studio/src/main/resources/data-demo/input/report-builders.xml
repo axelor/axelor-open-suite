@@ -3,21 +3,14 @@
   xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   
   <report>
-    <name>Order report</name>
-  	<metaModel>Order</metaModel>
-  	<viewBuilder>order-form</viewBuilder>
-  	<header>Order report</header>
+    <name>Note De Frais</name>
+  	<metaModel>Expense</metaModel>
+  	<viewBuilder>expense-form</viewBuilder>
+  	<header>Note De Frais</header>
   	<footer>Axelor Technologies Pvt Ltd.</footer>
   	<printPageNo>T</printPageNo>
   	<editHtml>T</editHtml>
-  	<fileName>Order$TODAY$</fileName>
+  	<fileName>Expense$TODAY$</fileName>
   </report>
   
-  <report>
-    <name>Customer report</name>
-  	<metaModel>Customer</metaModel>
-  	<buttonView>customer-form</buttonView>
-  	<fileName>CustomerReport</fileName>
-  </report>
-
 </reports>

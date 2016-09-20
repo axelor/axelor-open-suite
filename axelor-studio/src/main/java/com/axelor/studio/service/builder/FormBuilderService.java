@@ -688,7 +688,24 @@ public class FormBuilderService {
 		if (viewItems == null) {
 			return items;
 		}
+		
+		Collections.sort(viewItems, new Comparator<ViewItem>(){
 
+			@Override
+			public int compare(ViewItem item1, ViewItem item2) {
+				
+				if (item1.getSequence() > item2.getSequence()) {
+					return 1;
+				}
+				else if (item1.getSequence() < item2.getSequence()) {
+					return -1;
+				}
+				
+				return 0;
+			}
+			
+		});
+		
 		for (ViewItem viewItem : viewItems) {
 
 			Integer type = viewItem.getTypeSelect();

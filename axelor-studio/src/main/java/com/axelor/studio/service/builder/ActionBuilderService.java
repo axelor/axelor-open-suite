@@ -763,7 +763,7 @@ public class ActionBuilderService {
 				+ ", '" + model.getName() + "'" + ", '" + template.getName()
 				+ "')");
 		call.setCondition("id != null");
-		call.setController("com.axelor.studio.service.ActionBuilderService");
+		call.setController("com.axelor.studio.service.builder.ActionBuilderService");
 		action.setCall(call);
 
 		return action;

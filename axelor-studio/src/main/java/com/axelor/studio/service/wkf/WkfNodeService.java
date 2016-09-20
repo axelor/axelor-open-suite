@@ -114,7 +114,7 @@ class WkfNodeService {
 		if (!nodeActions.isEmpty()) {
 			String actionName = "action-group-" + wkfService.dasherizeModel
 					+ "-wkf";
-			String statusCondition = "__this__?.wkfStatus != __self__?.wkfStatus";
+			String statusCondition = "__this__?." + statusField.getName() + " != __self__?." + statusField.getName();
 			return this.wkfService.createActionGroup(actionName, nodeActions,
 					statusCondition);
 		}
@@ -289,14 +289,23 @@ class WkfNodeService {
 
 			List<String> actions = new ArrayList<String>();
 			for (ActionSelector actionSelector : node.getActionSelectorList()) {
-				actions.add(actionSelector.getName());
+				if (actionSelector.getMetaAction() != null) {
+					actions.add(actionSelector.getMetaAction().getName());
+				}
+				else if (actionSelector.getActionBuilder() != null) {
+					actions.add(actionSelector.getActionBuilder().getName());
+				}
 			}
 
 			if (!actions.isEmpty()) {
 				String name = getName(node.getName(), "action-group");
 				nodeActions.add(name);
-				this.wkfService.createActionGroup(name, actions,
-						statusField.getName() + " == '" + node.getName() + "'");
+				String value = node.getSequence().toString();
+				if (statusField.getTypeName().equals("String")) {
+					value = "'" + value + "'";
+				}
+				String condition = statusField.getName() + " == " + value;
+				this.wkfService.createActionGroup(name, actions, condition);
 			}
 
 		}
