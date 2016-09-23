@@ -148,7 +148,6 @@ label.bool {
 
 .right .fa-search {
 	float:right;
-	margin-right: 25%;
 }
 
 .fa-plus, .fa-s {
@@ -190,7 +189,7 @@ input[type="date"] {
 .fa-calendar-o {
 	float:right;
 	position:relative;
-	right: 90px;
+	right: inherit;
 }
 
 

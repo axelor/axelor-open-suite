@@ -456,7 +456,7 @@
             $(element).addClass(popover.id);
             return $(element).popover({
               html: true,
-              title: scope.$component.label,
+              title: scope.formObject.label ? scope.formObject.label : scope.$component.label,
               content: popover.view,
               container: 'body',
               placement: $builder.config.popoverPlacement
@@ -1261,7 +1261,7 @@
       result = {
         name: name,
         group: (_ref = component.group) != null ? _ref : 'Default',
-        label: (_ref1 = component.label) != null ? _ref1 : '',
+        label: component.label,
         fieldName: (_ref2 = component.fieldName) != null ? _ref2 : '',
         placeholder: (_ref3 = component.placeholder) != null ? _ref3 : '',
         editable: (_ref4 = component.editable) != null ? _ref4 : true,
@@ -1334,7 +1334,7 @@
         isPanelTab: formObject.isPanelTab != null ? formObject.isPanelTab : component.isPanelTab,
         editable: (_ref = formObject.editable) != null ? _ref : component.editable,
         index: (_ref1 = formObject.index) != null ? _ref1 : 0,
-        label: (_ref2 = formObject.label) != null ? _ref2 : component.label,
+        label: (_ref2 = formObject.label) != null ? _ref2 : null,
         fieldName: (_ref3 = formObject.fieldName) != null ? _ref3 : component.fieldName,
         placeholder: (_ref4 = formObject.placeholder) != null ? _ref4 : component.placeholder,
         options: (_ref5 = formObject.options) != null ? _ref5 : component.options,

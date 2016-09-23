@@ -102,7 +102,7 @@ public class MetaModelController {
 		defaultFields.add( new String[] { "updatedOn", "Updated on", "LocalDateTime" , null});
 		defaultFields.add( new String[] { "createdBy", "Created By", "User" , "ManyToOne"});
 		defaultFields.add( new String[] { "updatedBy", "Updated By", "User" , "ManyToOne"});
-		defaultFields.add( new String[] { "wkfStatus", "Status", "String" , null});
+		defaultFields.add( new String[] { "wkfStatus", "Status", "Integer" , null});
 		
 		for (String[] val : defaultFields) {
 			
@@ -116,6 +116,7 @@ public class MetaModelController {
 				values.put("readonly", true);
 				values.put("customised", true);
 				values.put("sequence", 1);
+				values.put("fieldType", "integer");
 			}
 			
 			fields.add(values);

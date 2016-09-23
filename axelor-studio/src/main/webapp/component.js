@@ -135,7 +135,7 @@
 				  "<label for=\"{{formName+index}}\" ng-class=\"{'fb-required':required}\">{{label}}" +
 				  "<i class=\"fa fa-calendar-o\" aria-hidden=\"true\"></i>" + 
 				  "</label>" +
-				  "<input type=\"date\" id=\"date\"/>" +
+				  "<input type=\"text\" id=\"date\"/>" +
 				  "</div>" +
 				  "</div>",
 		popoverTemplateUrl: 'partials/PopoverTemplate.html'
@@ -150,7 +150,7 @@
 				  "<label for=\"{{formName+index}}\" ng-class=\"{'fb-required':required}\">{{label}}" +
 				  "<i class=\"fa fa-calendar-o\" aria-hidden=\"true\"></i>" + 
 				  "</label>" +
-				  "<input type=\"date\" id=\"datetime\"/>" +
+				  "<input type=\"text\" id=\"datetime\"/>" +
 				  "</div>" +
 				  "</div>",
 		popoverTemplateUrl: 'partials/PopoverTemplate.html'
