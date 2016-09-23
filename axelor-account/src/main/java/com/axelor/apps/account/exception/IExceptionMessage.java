@@ -554,4 +554,21 @@ public interface IExceptionMessage {
 
 	static final String USER_PARTNER = /*$$(*/ "Veuillez créer un contact pour l'utilisateur %s" /*)*/;
 	
+	
+	/**
+	 *  BankOrder service
+	 */
+	static final String BANK_ORDER_DATE = /*$$(*/ "Bank Order date can't be in the past" /*)*/;
+	static final String BANK_ORDER_DATE_MISSING = /*$$(*/ "Please fill bank order date"/*)*/;
+	static final String BANK_ORDER_TYPE_MISSING = /*$$(*/ "Please fill bank order type" /*)*/;
+	static final String BANK_ORDER_PARTNER_TYPE_MISSING = /*$$(*/ "Please fill partner type for the bank order" /*)*/;
+	static final String BANK_ORDER_COOMPANY_MISSING = /*$$(*/ "Please fill the sender company" /*)*/;
+	static final String BANK_ORDER_BANK_DETAILS_MISSING = /*$$(*/ "Please fill the bank details" /*)*/;
+	static final String BANK_ORDER_CURRENCY_MISSING = /*$$(*/ "Please fill currency for the bank order" /*)*/;
+	static final String BANK_ORDER_AMOUNT_MISSING = /*$$(*/ "Please fill the amount for the bank order" /*)*/;
+	static final String BANK_ORDER_AMOUNT_NEGATIVE = /*$$(*/ "Amount value is not valid" /*)*/;
+	
+	/**
+	 *  BankOrder lines
+	 */
 }

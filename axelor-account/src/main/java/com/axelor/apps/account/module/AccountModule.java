@@ -51,6 +51,8 @@ import com.axelor.apps.account.service.MoveLineReportService;
 import com.axelor.apps.account.service.MoveLineReportServiceImpl;
 import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.ReconcileServiceImpl;
+import com.axelor.apps.account.service.bankOrder.BankOrderService;
+import com.axelor.apps.account.service.bankOrder.BankOrderServiceImpl;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.InvoiceServiceImpl;
 import com.axelor.apps.base.db.IPartner;
@@ -99,6 +101,8 @@ public class AccountModule extends AxelorModule {
         bind(InvoicePaymentRepository.class).to(InvoicePaymentManagementRepository.class);
 
         bind(InvoicePaymentService.class).to(InvoicePaymentServiceImpl.class);
+        
+        bind(BankOrderService.class).to(BankOrderServiceImpl.class);
         
         bind(AnalyticDistributionLineRepository.class).to(AnalyticDistributionLineMngtRepository.class);
         
