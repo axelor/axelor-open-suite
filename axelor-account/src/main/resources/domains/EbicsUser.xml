@@ -10,7 +10,7 @@
 
 	 <string name="securityMedium" title="Security medium" />
 	 <string name="name" title="Name" namecolumn="true"/>
-	 <string name="userId" title="User id" />
+	 <string name="userId" title="User id" max="35"  />
 	 <string name="dn" title="dn" unique="true" />
 	 
 	 <string name="password" title="Password" password="true" />
@@ -20,12 +20,24 @@
 	 
 	 <string name="a005PrivateKey" title="a005PrivateKey" large="true" multiline="true" />
 	 <string name="a005Certificate" title="a005Certificate" large="true" multiline="true" />
+	 <string name="a005PublicKey" title="a005PublicKey" large="true" multiline="true" />
 	 
 	 <string name="e002PrivateKey" title="e002PrivateKey" large="true" multiline="true" />
 	 <string name="e002Certificate" title="e002Certificate" large="true" multiline="true" />
+	 <string name="e002PublicKey" title="e002PublicKey" large="true" multiline="true" />
 	 
 	 <string name="x002PrivateKey" title="x002PrivateKey" large="true" multiline="true" />
 	 <string name="x002Certificate" title="x002Certificate" large="true" multiline="true" />
+	 <string name="x002PublicKey" title="x002PublicKey" large="true" multiline="true" />
+	 
+	 <string name="a005PublicKeyModulus" title="a005PublicKeyModulus" large="true" multiline="true" />
+	 <string name="a005PublicKeyExponent" title="a005PublicKeyExponent" large="true" multiline="true" />
+	 
+	 <string name="e002PublicKeyModulus" title="e002PublicKeyModulus" large="true" multiline="true" />
+	 <string name="e002PublicKeyExponent" title="e002PublicKeyExponent" large="true" multiline="true" />
+	 
+	 <string name="x002PublicKeyModulus" title="x002PublicKeyModulus" large="true" multiline="true" />
+	 <string name="x002PublicKeyExponent" title="x002PublicKeyExponent" large="true" multiline="true" />
 	    
 	<many-to-one name="ebicsPartner" ref="com.axelor.apps.account.db.EbicsPartner" title="Ebics partner"/>
     

@@ -27,6 +27,7 @@ import java.security.KeyPair;
 import java.security.KeyStore;
 import java.security.PrivateKey;
 import java.security.cert.X509Certificate;
+import java.security.interfaces.RSAPublicKey;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -80,9 +81,18 @@ public class CertificateManager {
     user.setE002Certificate(e002Certificate.toString());
 
     //TODO
-    user.setA005PrivateKey(a005PrivateKey.toString());
-    user.setX002PrivateKey(x002PrivateKey.toString());
-    user.setE002PrivateKey(e002PrivateKey.toString());
+    user.setA005PrivateKey(a005PrivateKey.getEncoded().toString() );
+    user.setX002PrivateKey(x002PrivateKey.getEncoded().toString() );
+    user.setE002PrivateKey(e002PrivateKey.getEncoded().toString() );
+    
+    user.setA005PublicKeyModulus(		(  (RSAPublicKey)  a005Certificate.getPublicKey() ).getModulus().toString()  );
+    user.setA005PublicKeyExponent(		(  (RSAPublicKey)  a005Certificate.getPublicKey() ).getPublicExponent().toString()  );
+    	
+    user.setX002PublicKeyModulus(		(  (RSAPublicKey)  x002Certificate.getPublicKey() ).getModulus().toString()  );
+    user.setX002PublicKeyExponent(		(  (RSAPublicKey)  x002Certificate.getPublicKey() ).getPublicExponent().toString()  );
+    
+    user.setE002PublicKeyModulus(		(  (RSAPublicKey)  e002Certificate.getPublicKey() ).getModulus().toString()  );
+    user.setE002PublicKeyExponent(		(  (RSAPublicKey)  e002Certificate.getPublicKey() ).getPublicExponent().toString()  );
     
   }
 

@@ -16,10 +16,10 @@
 		<panel title="General informations" colSpan="12">
 			<field name="name" />
 			<field name="password" />
-			<field name="userId" />
+			<field name="userId" help="Name of the user or service" />
 			<field name="securityMedium" />
-			<field name="dn" />
-			<field name="ebicsPartner" />
+			<field name="dn" readonly="true" help="Defines a unique identifier for the certificate" />
+			<field name="ebicsPartner" help="Subscription or contract to which the user is associated" />
 			<field name="isInitializedHIA" />
 			<field name="isInitialized" />
 		</panel>
@@ -37,6 +37,7 @@
 		<panel sidebar="true">
 			<button name="generateDn" title="Generate DN" onClick="save,action-ebics-user-method-generate-dn"/>
 			<button name="generateCertificates" title="Generate certificates" onClick="save,action-ebics-user-method-generate-certificates"/>
+			<button name="sentINI" title="Send INI" onClick="action-ebics-user-method-send-ini"/>
 		</panel>
 	
 	</form>
@@ -47,6 +48,10 @@
 	
 	<action-method name="action-ebics-user-method-generate-dn">
 		<call class="com.axelor.apps.account.ebics.web.EbicsController" method="generateDn"/>
+	</action-method>
+	
+	<action-method name="action-ebics-user-method-send-ini">
+		<call class="com.axelor.apps.account.ebics.web.EbicsController" method="sendINIRequest"/>
 	</action-method>
     
   

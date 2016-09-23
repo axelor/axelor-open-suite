@@ -162,10 +162,10 @@ public class X509Generator {
     generator.setSubjectDN(new X509Principal(issuer));
     generator.setPublicKey(keypair.getPublic());
     generator.setSignatureAlgorithm(X509Constants.SIGNATURE_ALGORITHM);
-    generator.addExtension(X509Extensions.BasicConstraints,
-	                   false,
-	                   new BasicConstraints(true));
-    generator.addExtension(X509Extensions.SubjectKeyIdentifier,
+    //generator.addExtension(X509Extensions.BasicConstraints,
+	//                   false,
+	//                   new BasicConstraints(true));
+   /* generator.addExtension(X509Extensions.SubjectKeyIdentifier,
 			  false,
 			  getSubjectKeyIdentifier(keypair.getPublic()));
     generator.addExtension(X509Extensions.AuthorityKeyIdentifier,
@@ -173,12 +173,12 @@ public class X509Generator {
 	                   getAuthorityKeyIdentifier(keypair.
 	                                             getPublic(),
 	                                             issuer,
-	                                             serial));
+	                                             serial));*/
     vector = new ASN1EncodableVector();
     vector.add(KeyPurposeId.id_kp_emailProtection);
 
-    generator.addExtension(X509Extensions.ExtendedKeyUsage, false, new ExtendedKeyUsage(new DERSequence(vector)));
-
+    //generator.addExtension(X509Extensions.ExtendedKeyUsage, false, new ExtendedKeyUsage(new DERSequence(vector)));
+/*
     switch (keyusage) {
     case X509Constants.SIGNATURE_KEY_USAGE:
       generator.addExtension(X509Extensions.KeyUsage, false, new KeyUsage(KeyUsage.nonRepudiation));
@@ -192,7 +192,7 @@ public class X509Generator {
     default:
       generator.addExtension(X509Extensions.KeyUsage, false, new KeyUsage(KeyUsage.keyEncipherment | KeyUsage.digitalSignature));
       break;
-    }
+    }*/
 
     certificate = generator.generate(keypair.getPrivate(), "BC", new SecureRandom());
     certificate.checkValidity(new Date());

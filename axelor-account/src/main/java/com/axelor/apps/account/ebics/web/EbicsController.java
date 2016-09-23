@@ -2,13 +2,18 @@ package com.axelor.apps.account.ebics.web;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
+import java.util.Locale;
+
+import org.jdom.JDOMException;
 
 import com.axelor.apps.account.db.EbicsUser;
 import com.axelor.apps.account.db.repo.EbicsUserRepository;
 import com.axelor.apps.account.ebics.certificate.CertificateManager;
+import com.axelor.apps.account.ebics.client.EbicsProduct;
 import com.axelor.apps.account.ebics.service.EbicsService;
 import com.axelor.auth.db.User;
 import com.axelor.auth.db.repo.UserRepository;
+import com.axelor.exception.AxelorException;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
@@ -52,6 +57,15 @@ public class EbicsController {
 		}
 		
 		
+		
+	}
+	
+	public void sendINIRequest(ActionRequest request, ActionResponse response) throws AxelorException, IOException, JDOMException{
+		
+		EbicsUser ebicsUser = ebicsUserRepo.find( request.getContext().asType(EbicsUser.class).getId());
+		
+		EbicsProduct ebicsProduct = new EbicsProduct("Test", Locale.FRENCH, "01");
+		ebicsService.sendINIRequest(ebicsUser, ebicsProduct);
 		
 	}
 

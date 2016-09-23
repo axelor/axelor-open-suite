@@ -13,7 +13,7 @@
 	<form name="ebics-partner-form" title="Ebics partner" model="com.axelor.apps.account.db.EbicsPartner">
 	
 		<panel>
-			<field name="partnerId" />
+			<field name="partnerId" help="Name of the contract/subscription" max="35"/>
 			<field name="nextOrderId" />
 			<field name="ebicsBank" />
 		</panel>

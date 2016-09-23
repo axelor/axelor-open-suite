@@ -17,6 +17,11 @@
 	<string name="e002Key" title="Encryption Certificate Type E002" large="true" multiline="true" />
 	<string name="e002Digest" title="Hash certificate of encryption (SHA-256)" large="true" multiline="true" />
 	
+	<string name="x002KeyModulus" title="X002 modulus" large="true" multiline="true" />
+	<string name="x002KeyExponent" title="X002 exponent" large="true" multiline="true" />
+	<string name="e002KeyModulus" title="E002 modulus" large="true" multiline="true" />
+	<string name="e002KeyExponent" title="E002 exponent" large="true" multiline="true" />
+	
   </entity>
   
 </domain-models>
