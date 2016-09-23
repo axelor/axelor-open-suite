@@ -15,6 +15,10 @@
 	        <field name="invoiceLabel" />
 	        <field name="typeSelect" colSpan="3"/>
 			<field name="inOutSelect" colSpan="3"/>
+			<field name="generateBankOrder"/>
+  			<field name="automaticTransmission" showIf="generateBankOrder"/>
+  			<field name="orderType"/>
+  			<field name="bankOrderExportFolderPath" showIf="generateBankOrder"/>
         </panel>
         <panel-related field="accountManagementList" grid-view="account-management-payment-mode-grid" form-view="account-management-payment-mode-form"
 	        domain="self.typeSelect = 3" colSpan="12" showTitle="false" if-module="axelor-account"/>

@@ -33,7 +33,7 @@
 				<field name="debitDate"/>
 				<field name="hasToReExportCfbonb" showIf="directDebitExportTypeSelect != 2"/>
 				<field name="batchToReExport" showIf="hasToReExportCfbonb" domain="self.accountingBatch.id = :id" form-view="batch-form" grid-view="batch-grid"/>
-				<field name="isSepaDirectDebit"/>
+				<field name="paymentMode" grid-view="payment-mode-grid" form-view="payment-mode-form"/>
 			</panel>
 		</panel>
 		<panel name="reminderPage" title="Reminder configuration" hideIf="actionSelect != 14"  >

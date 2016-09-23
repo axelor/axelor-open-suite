@@ -154,6 +154,7 @@
 		<option value="16">Doubtful Customers</option>
 		<option value="17">Update customer account</option>
 		<option value="18">Move export</option>
+		<option value="19">Credit Transfer</option>
 	</selection>
 	
 	<selection name="ireimbursement.batch.type.select">
@@ -283,11 +284,41 @@
   		<option value="0">Draft</option>
 		<option value="1">Validated</option>
 		<option value="2">Canceled</option>
+		<option value="3">Pending</option>
 	</selection>
 	
 	<selection name="assistant.report.invoice.graph.type.select">
 		<option value="1">Graph</option>
 		<option value="2">Table</option>
 	</selection>
+
+	<selection name="iaccount.bank.order.type.select">
+		<option value="1">Bank to Bank Transfer</option>
+		<option value="2">SEPA Credit Transfer</option>
+		<option value="3">SEPA Direct Debit</option>
+		<option value="4">International Credit Transfer</option>
+		<option value="5">International Direct Debit</option>
+	</selection>
+	
+	<selection name="iaccount.bank.order.partner.select">
+		<option value="1">Supplier</option>
+		<option value="2">Employee</option>
+		<option value="3">Customer</option>
+	</selection>
+	
+	<selection name="iaccount.bank.order.status.select">
+		<option value="1">Draft</option>
+		<option value="2">Awaiting signature</option>
+		<option value="3">Validated</option>
+		<option value="4">Carried out</option>
+		<option value="5">Rejected</option> 
+		<option value="6">Canceled</option>		
+	</selection>
+	
+	<selection name="iaccount.bank.order.reject.status">
+		<option value="1">Partially Rejected</option>
+		<option value="2">Totally Rejected</option>
+	</selection>
+	
 	
 </object-views>
