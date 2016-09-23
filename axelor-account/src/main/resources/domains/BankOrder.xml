@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_4.0.xsd">
+
+  <module name="account" package="com.axelor.apps.account.db"/>
+
+  <entity name="BankOrder" lang="java" sequential="true">
+  
+  	<integer name="importId" />
+  	<integer name="orderType" title="Order Type" selection="iaccount.bank.order.type.select"/>
+  	<integer name="rejectStatus" title="Rejection Status" selection="iaccount.bank.order.reject.status"/>
+  	<string name="reference" title="Sequence" namecolumn="true" readonly="true" unique="true"/>
+  	<integer name="partnerType" title="Partner Type" selection="iaccount.bank.order.partner.select"/>
+  	<integer name="statusSelect" title="Status" default="1" readonly="true" selection="iaccount.bank.order.status.select"/>
+	<date name="bankOrderDate" title="Bank order Date"/>  	
+	
+	<!-- Sender -->
+	<many-to-one name="senderCompany" ref="com.axelor.apps.base.db.Company" title="Company"/>
+	<many-to-one name="senderBankDetails" ref="com.axelor.apps.base.db.BankDetails" title="Bank Account"/>
+	<decimal name="amount" title="Amount"/>
+	<many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" title="Currency"/>
+	<string name="senderReference" title="Reference" unique="true"/>
+	<string name="senderLabel" title="Label"/>
+	<many-to-one name="senderMove" ref="com.axelor.apps.account.db.Move" title="Move" readonly="true"/>
+	
+	<!-- Receiver -->
+	<one-to-many name="bankOrderLineList" ref="BankOrderLine" mappedBy="bankOrder" title="Bank Order Lines" />
+	
+  </entity>
+
+</domain-models>

@@ -22,6 +22,8 @@
  	 	 	
  	<integer name="statusSelect" title="Status" readonly="true" selection="invoice.payment.status.select"/>
   	
+  	<many-to-one name="bankOrder" ref="com.axelor.apps.account.db.BankOrder" readonly="true" title="Bank Order"/>
+  	
   	 <extra-code>
    		<![CDATA[
    		

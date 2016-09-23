@@ -29,8 +29,10 @@ import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.JournalManagementRepository;
 import com.axelor.apps.account.db.repo.JournalRepository;
+import com.axelor.apps.account.db.repo.MoveLineManagementRepository;
 import com.axelor.apps.account.db.repo.MoveLineReportManagementRepository;
 import com.axelor.apps.account.db.repo.MoveLineReportRepository;
+import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveManagementRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.PartnerAccountRepository;
@@ -49,6 +51,8 @@ import com.axelor.apps.account.service.MoveLineReportService;
 import com.axelor.apps.account.service.MoveLineReportServiceImpl;
 import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.ReconcileServiceImpl;
+import com.axelor.apps.account.service.bankOrder.BankOrderService;
+import com.axelor.apps.account.service.bankOrder.BankOrderServiceImpl;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.InvoiceServiceImpl;
 import com.axelor.apps.base.db.IPartner;
@@ -76,6 +80,8 @@ public class AccountModule extends AxelorModule {
 
         bind(MoveRepository.class).to(MoveManagementRepository.class);
         
+        bind(MoveLineRepository.class).to(MoveLineManagementRepository.class);
+        
         bind(MoveLineReportRepository.class).to(MoveLineReportManagementRepository.class);
         
         bind(MoveLineReportService.class).to(MoveLineReportServiceImpl.class);
@@ -95,6 +101,8 @@ public class AccountModule extends AxelorModule {
         bind(InvoicePaymentRepository.class).to(InvoicePaymentManagementRepository.class);
 
         bind(InvoicePaymentService.class).to(InvoicePaymentServiceImpl.class);
+        
+        bind(BankOrderService.class).to(BankOrderServiceImpl.class);
         
         bind(AnalyticDistributionLineRepository.class).to(AnalyticDistributionLineMngtRepository.class);
         

@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
+    
+    <grid name="bank-order-bank-to-bank-grid" orderBy="-bankOrderDate" title="Bank Orders" model="com.axelor.apps.account.db.BankOrder" canDelete="false">
+        <field name="reference"/>
+        <field name="bankOrderDate"/>
+        <field name="senderCompany"/>
+        <field name="senderBankDetails"/>
+        <field name="amount"/>
+        <field name="currency"/>
+        <field name="senderReference"/>
+        <field name="senderLabel"/>
+        <field name="statusSelect"/>
+    </grid>
+    
+    <grid name="bank-order-grid" orderBy="-bankOrderDate" title="Bank Orders" model="com.axelor.apps.account.db.BankOrder" canDelete="false">
+        <field name="reference"/>
+        <field name="partnerType"/>
+        <field name="bankOrderDate"/>
+        <field name="senderCompany"/>
+        <field name="senderBankDetails"/>
+        <field name="amount"/>
+        <field name="currency"/>
+        <field name="senderReference"/>
+        <field name="senderLabel"/>
+        <field name="statusSelect"/>
+    </grid>
+    
+	<form name="bank-order-form" title="Bank Order" model="com.axelor.apps.account.db.BankOrder" onNew="action-group-bank-order-onnew" canDelete="false" 
+		onSave="action-group-bank-order-onsave">
+  		<panel name="main" colSpan="12" >
+  			<field name="reference" css="label-bold bold" colSpan="12"/>
+    		<field name="statusSelect" showTitle="false" widget="NavSelect" colSpan="12" selection-in="[1,4,5,6]" showIf="orderType == 3 || orderType == 5"/>
+    		<field name="statusSelect" showTitle="false" widget="NavSelect" colSpan="12" showIf="orderType != 3 &amp;&amp; orderType != 5"/>
+    		<field name="bankOrderDate" css="label-bold bold" colSpan="6"/>
+    		<field name="orderType" css="label-bold bold" colSpan="6"/>
+    		<field name="partnerType" showIf="orderType != 1" css="label-bold bold" colSpan="6"/>
+  		</panel>
+		<panel name="senderInfo" title="Sender Info.">
+			<field name="senderCompany" grid-view="company-grid" form-view="company-form"/>
+			<field name="senderBankDetails" grid-view="bank-details-grid" form-view="bank-details-form" onSelect="action-bank-order-attrs-bank-details-domain"/>
+			<field name="amount"/>
+			<field name="currency" grid-view="currency-grid" form-view="currency-form"/>
+			<field name="senderReference"/>
+			<field name="senderLabel"/>
+		</panel>
+		<panel name="BankOrderLines" title="Bank Order Lines">
+			<field name="bankOrderLineList" colSpan="12" showTitle="false" canRemove="false">
+				<editor x-layout="table" onNew="action-group-bank-order-line-onnew" x-viewer="true">
+					<field name="sequence" css="label-bold bold" readonly="true" hideIf="sequence == null" colSpan="12"/>
+					<field name="receiverCompany" hideIf="bankOrder.orderType != 1" css="label-bold bold" colSpan="6" onChange="action-bank-order-line-record-partner" form-view="company-form" grid-view="company-grid" />
+					<spacer colSpan="6"/>
+					<field name="partner" hideIf="bankOrder.orderType == 1" form-view="partner-form" grid-view="partner-grid" css="label-bold bold" colSpan="6" onSelect="action-bank-order-line-attrs-partner-domain" onChange="action-bank-order-line-record-partner-onchange"/>
+					<spacer colSpan="6"/>
+					<field name="receiverBankDetails" onSelect="action-bank-order-line-attrs-bank-details-domain"/>
+					<field name="amount" />
+					<field name="receiverReference"/>
+					<field name="receiverLabel"/>
+					<field name="bankOrder.orderType" hidden="true"/>
+					<field name="isRejected" hideIf="id == null"/>
+					<field name="rejectDate" hideIf="isRejected ==false || id == null"/>
+					<field name="rejectReason" hideIf="isRejected ==false || id == null" form-view="interbank-code-line-form" grid-view="interbank-code-line-grid"/>
+					<field name="rejectMove" hideIf="isRejected ==false || id == null" form-view="move-form" grid-view="move-grid"/>
+				</editor>
+			</field>
+		</panel>
+		<panel name="Rejection" title="Rejection" sidebar="true" showIf="statusSelect == 3 || statusSelect == 5">
+			<field name="rejectStatus" readonly="true"/>		
+		</panel>
+		
+  		<panel name="action" title="Action" itemSpan="12" sidebar="true" hideIf="statusSelect == 4 || statusSelect == 5 || id == null">
+    		<button name="send" title="Send for signature" hideIf="statusSelect != 1 || orderType == 3 || orderType == 5 " onClick="save,action-bank-order-record-send,save"/>
+    		<button name="validate" title="Validate" hideIf="statusSelect != 2 || orderType == 3 || orderType == 5" onClick="save,action-bank-order-record-validate,save"/>
+    		<button name="carry out" title="Carry out" showIf="((statusSelect == 3 &amp;&amp; orderType != 3 &amp;&amp; orderType != 5) || (statusSelect == 1 &amp;&amp; (orderType == 3 || orderType == 5)))" onClick="save,action-bank-order-record-carry-out,save"/>
+			<button name="reject" title="Reject" showIf="((statusSelect == 3 &amp;&amp; orderType != 3 &amp;&amp; orderType != 5) || (statusSelect == 1 &amp;&amp; (orderType == 3 || orderType == 5)))" onClick="save,action-bank-order-record-reject,save"/>    		
+    		<button name="cancel" title="Cancel" showIf="statusSelect == 1 &amp;&amp; id != null" onClick="save,action-bank-order-record-cancel,save"/>
+  		</panel>
+  		<panel name="move" title="Move" itemSpan="12" sidebar="true" showIf="(statusSelect == 3 || statusSelect == 4) &amp;&amp; orderType == 1">
+  			<field name="senderMove" form-view="move-form" grid-view="move-grid"/>
+  		</panel>
+	</form>
+	
+	<!-- BANK ORDER ACTIONS -->
+		<!-- Actions Groups-->
+		
+	<action-group name="action-group-bank-order-onnew">
+		<action name="action-bank-order-record-default"/>
+		<action name="action-bank-order-attrs-order-type"/>
+	</action-group>
+	
+	<action-group name="action-group-bank-order-onsave">
+		<action name="action-bank-order-condition-on-save"/>
+<!-- 		<action name="action-bank-order-method-save"/> -->
+	</action-group>
+	
+		<!-- Actions Attributes -->
+		
+	<action-attrs name="action-bank-order-attrs-bank-details-domain">
+        <attribute name="domain" expr="eval: &quot;self.id IN (${senderCompany?.bankDetailsSet?.collect{it.id}.join(',')},${senderCompany?.defaultBankDetails?.id})&quot;" for="senderBankDetails"
+        	if="!senderCompany?.bankDetailsSet?.isEmpty()"/>
+    <attribute name="domain" expr="eval: &quot;self.id = ${senderCompany?.defaultBankDetails?.id}&quot;" for="senderBankDetails"
+        	if="senderCompany?.bankDetailsSet?.isEmpty()"/>
+    </action-attrs>
+    
+    <action-attrs name="action-bank-order-attrs-order-type">
+		<attribute name="readonly" for="orderType" expr="true" if="orderType != null"/>    
+		<attribute name="hidden" for="orderType" expr="true" if="orderType != null"/>
+    </action-attrs>
+    
+    	<!-- Actions Records -->
+    	
+    <action-record name="action-bank-order-record-default" model="com.axelor.apps.account.db.BankOrder">
+		<field name="orderType" expr="eval: _orderType" if="_orderType != null"/>
+		<field name="bankOrderDate" expr="eval:__config__.generalService.getTodayDate()"/>
+		<field name="senderCompany" expr="eval:__user__.activeCompany"/>
+		<field name="senderBankDetails" expr="eval:__user__.activeCompany.defaultBankDetails"/>
+		<field name="currency" expr="eval:__user__.activeCompany.currency"/>
+	</action-record>
+	
+	<action-record name="action-bank-order-record-send" model="com.axelor.apps.account.db.BankOrder">
+		<field name="statusSelect" expr="2"/>
+	</action-record>
+	
+	<action-record name="action-bank-order-record-validate" model="com.axelor.apps.account.db.BankOrder">
+		<field name="statusSelect" expr="3"/>
+	</action-record>
+	
+	<action-record name="action-bank-order-record-carry-out" model="com.axelor.apps.account.db.BankOrder">
+		<field name="statusSelect" expr="4"/>
+	</action-record>
+	
+	<action-record name="action-bank-order-record-reject" model="com.axelor.apps.account.db.BankOrder">
+		<field name="statusSelect" expr="5"/>
+		<field name="statusReject" expr="2"/>
+	</action-record>
+	
+	<action-record name="action-bank-order-record-cancel" model="com.axelor.apps.account.db.BankOrder">
+		<field name="statusSelect" expr="6"/>
+	</action-record>
+	
+		<!-- Actions Methods -->
+<!-- 	<action-method name="action-bank-order-method-save"> -->
+<!-- 		<call class="com.axelor.apps.account.web.BankOrderController" method="validate"/> -->
+<!-- 	</action-method> -->
+		
+		<!-- Actions Conditions -->
+		
+	<action-condition name="action-bank-order-condition-on-save">
+		<check field="amount" if="amount &lt;= 0" error="Amount value is not valid"/>
+		<check field="bankOrderDate" if="bankOrderDate &lt; __date__" error="Bank Order date can't be in the past"/>
+	</action-condition>
+		
+	<!-- BANK ORDER LINES ACTIONS -->
+		<!-- Actions Groups-->
+		
+	<action-group name="action-group-bank-order-line-onnew">
+		<action name="action-bank-order-line-record-get-parent"/>
+		<action name="action-bank-order-line-record-default" if="bankOrder.orderType == 1"/>
+	</action-group>
+	
+	<action-group name="action-group-bank-order-line-reject">
+		<action name="action-bank-order-line-validate-reject-action"/>
+		<action name="action-bank-order-line-record-default" if="bankOrder.orderType == 1"/>
+	</action-group>
+	
+		<!-- Actions Attributes -->
+		
+    <action-attrs name="action-bank-order-line-attrs-partner-domain">
+		<attribute name="domain" for="partner" expr="self.isCustomer = true" if="_parent.partnerType == 3"/>    
+		<attribute name="domain" for="partner" expr="self.isEmployee = true" if="_parent.partnerType == 2"/>
+		<attribute name="domain" for="partner" expr="self.isSupplier = true" if="_parent.partnerType == 1"/>
+    </action-attrs>
+    
+    <action-attrs name="action-bank-order-line-attrs-bank-details-domain">
+        <attribute if="!receiverCompany?.bankDetailsSet?.isEmpty() &amp;&amp; _parent.orderType == 1" name="domain" expr="eval: &quot;self.id IN (${receiverCompany?.bankDetailsSet?.collect{it.id}.join(',')},${receiverCompany?.defaultBankDetails?.id})&quot;" for="receiverBankDetails"/>
+  		<attribute if="receiverCompany?.bankDetailsSet?.isEmpty() &amp;&amp; _parent.orderType == 1" name="domain" expr="eval: &quot;self.id = ${receiverCompany?.defaultBankDetails?.id}&quot;" for="receiverBankDetails"/>
+  		<attribute if="!partner?.bankDetailsList?.isEmpty() &amp;&amp; _parent.orderType != 1" name="domain" expr="eval: &quot;self.id IN (${partner?.bankDetailsList?.collect{it.id}.join(',')})&quot;" for="receiverBankDetails"/>
+  		<attribute if="partner?.bankDetailsList?.isEmpty() &amp;&amp; _parent.orderType != 1" name="domain" expr="self.id IN (0)" for="receiverBankDetails"/>
+    </action-attrs>	
+    
+		<!-- Actions Records -->
+	
+	<action-record name="action-bank-order-line-record-partner" model="com.axelor.apps.account.db.BankOrderLine">
+    	<field name="partner" expr="eval: receiverCompany.partner"/>
+    	<field name="receiverBankDetails" expr="eval: receiverCompany.defaultBankDetails"/>
+    </action-record>
+    
+    <action-record name="action-bank-order-line-record-get-parent" model="com.axelor.apps.account.db.BankOrderLine">
+    	<field name="bankOrder" expr="eval: _parent"/>
+    </action-record>
+	
+	<action-record name="action-bank-order-line-record-default" model="com.axelor.apps.account.db.BankOrderLine">
+    	<field name="receiverCompany" expr="eval: bankOrder.senderCompany"/>
+    	<field name="partner" expr="eval: bankOrder.senderCompany.partner"/>
+    	<field name="receiverBankDetails" expr="eval: bankOrder.senderCompany.defaultBankDetails"/>
+    </action-record>
+    
+    <action-record name="action-bank-order-line-record-partner-onchange" model="com.axelor.apps.account.db.BankOrderLine">
+    	  <field name="receiverBankDetails" expr="eval: partner?.bankDetailsList.find{ it -> it.isDefault } ? partner?.bankDetailsList.find{ it -> it.isDefault } : receiverBankDetails"/>
+  		  <field if="partner?.bankDetailsList?.isEmpty()" name="receiverBankDetails" expr=""/>
+    </action-record>
+    
+<!--     <action-record name="action-bank-order-line-record-reject-status" model="com.axelor.apps.account.db.BankOrder"> -->
+<!--     		<field name="rejectStatus" expr="1" if="rejectStatus != 2"/> -->
+<!--     </action-record> -->
+    
+    	<!-- Actions validate -->
+	
+<!-- 	<action-validate name="action-bank-order-line-validate-reject-action"> -->
+<!-- 		<alert message="Are you sure you want to change this line status to rejected" action="action-bank-order-line-record-reject-status"/> -->
+<!-- 	</action-validate> -->
+	
+</object-views>

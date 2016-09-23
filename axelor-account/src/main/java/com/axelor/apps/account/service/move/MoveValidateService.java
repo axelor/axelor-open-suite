@@ -73,12 +73,6 @@ public class MoveValidateService {
 				moveLine.setPartner(partner);
 			}
 			moveLine.setCounter(counter);
-			moveLine.setAccountCode(moveLine.getAccount().getCode());
-			moveLine.setAccountName(moveLine.getAccount().getName());
-			if (moveLine.getPartner() != null){
-				moveLine.setPartnerFullName(moveLine.getPartner().getFullName());
-				moveLine.setPartnerSeq(moveLine.getPartner().getPartnerSeq());
-			}
 			counter++;
 		}
 
@@ -133,7 +127,7 @@ public class MoveValidateService {
 		move.setReference(sequenceService.getSequenceNumber(journal.getSequence()));
 
 		this.validateEquiponderanteMove(move);
-
+		this.fillMoveLines(move);
 		moveRepository.save(move);
 			
 		moveCustAccountService.updateCustomerAccount(move);
@@ -178,8 +172,22 @@ public class MoveValidateService {
 		}
 	}
 
-
-
+	//Procédure permettant de remplir les champs dans les lignes d'écriture relatifs au compte comptable et au tiers
+	@Transactional
+	public void fillMoveLines(Move move){
+		for (MoveLine moveLine : move.getMoveLineList()) {
+			moveLine.setAccountCode(moveLine.getAccount().getCode());
+			moveLine.setAccountName(moveLine.getAccount().getName());
+			if(move.getPartner() != null){
+				moveLine.setPartnerFullName(move.getPartner().getFullName());
+				moveLine.setPartnerSeq(move.getPartner().getPartnerSeq());
+			}else if(moveLine.getPartner() != null){
+				moveLine.setPartnerFullName(moveLine.getPartner().getFullName());
+				moveLine.setPartnerSeq(moveLine.getPartner().getPartnerSeq());
+			}
+		}
+	}
+	
 	public boolean validateMultiple(List<? extends Move> moveList){
 		boolean error = false;
 		for(Move move: moveList){

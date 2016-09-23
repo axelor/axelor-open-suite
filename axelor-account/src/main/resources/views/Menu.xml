@@ -281,7 +281,108 @@
 		<context name="_newDate1" expr="eval: __date__.minusDays(5)"/>
 		<context name="_newDate2" expr="eval: __date__.minusDays(30)"/>
 	</action-view>
-
+	
+	<menuitem name="account-root-bank-orders" parent="account-root"
+		title="Bank Orders"/>
+		
+	<menuitem name="account-root-bank-order-direct-debit"
+		parent="account-root-bank-orders" title="Direct Debits"/>
+		
+	<menuitem name="account-root-bank-order-all-direct-debit"
+		parent="account-root-bank-order-direct-debit" title="All Direct Debits"
+		action="account.bank.order.all.direct.debit"/>
+		
+	<action-view name="account.bank.order.all.direct.debit"
+		title="All Direct Debits" model="com.axelor.apps.account.db.BankOrder" >
+		<view type="grid" name="bank-order-grid"/>
+		<view type="form" name="bank-order-form"/>
+		<domain>self.orderType in (3,5)</domain>
+	</action-view>	
+	
+	<menuitem name="account-root-bank-order-sepa-direct-debit"
+		parent="account-root-bank-order-direct-debit" title="SEPA Direct Debits"
+		action="account.bank.order.sepa.direct.debit"/>
+		
+	<action-view name="account.bank.order.sepa.direct.debit"
+		title="SEPA Direct Debits" model="com.axelor.apps.account.db.BankOrder" >
+		<view type="grid" name="bank-order-grid"/>
+		<view type="form" name="bank-order-form"/>
+		<domain>self.orderType = 3</domain>
+		<context name="_orderType" expr="eval:3"/>
+	</action-view>
+	
+	<menuitem name="account-root-bank-order-international-direct-debit"
+		parent="account-root-bank-order-direct-debit" title="International Direct Debits"
+		action="account.bank.order.international.direct.debit"/>
+		
+	<action-view name="account.bank.order.international.direct.debit"
+		title="International Direct Debits" model="com.axelor.apps.account.db.BankOrder" >
+		<view type="grid" name="bank-order-grid"/>
+		<view type="form" name="bank-order-form"/>
+		<domain>self.orderType = 5</domain>
+		<context name="_orderType" expr="eval:5"/>
+	</action-view>
+	
+	<menuitem name="account-root-bank-order-credit-transfer"
+		parent="account-root-bank-orders" title="Credit Transfers"/>
+		
+	<menuitem name="account-root-bank-order-all-credit-transfer"
+		parent="account-root-bank-order-credit-transfer" title="All Credit Transfers"
+		action="account.bank.order.all.credit.transfert"/>
+		
+	<action-view name="account.bank.order.all.credit.transfert"
+		title="All Credit Transfers" model="com.axelor.apps.account.db.BankOrder" >
+		<view type="grid" name="bank-order-grid"/>
+		<view type="form" name="bank-order-form"/>
+		<domain>self.orderType in (2,4)</domain>
+	</action-view>	
+	
+	<menuitem name="account.bank.order.sepa.credit.transfert"
+		parent="account-root-bank-order-credit-transfer" title="SEPA Credit Transfers"
+		action="account.bank.order.sepa.credit.transfer"/>
+		
+	<action-view name="account.bank.order.sepa.credit.transfer"
+		title="SEPA Credit Transfers" model="com.axelor.apps.account.db.BankOrder" >
+		<view type="grid" name="bank-order-grid"/>
+		<view type="form" name="bank-order-form"/>
+		<domain>self.orderType = 2</domain>
+		<context name="_orderType" expr="eval:2"/>
+	</action-view>
+	
+	<menuitem name="account-root-bank-order-international-credit-transfer"
+		parent="account-root-bank-order-credit-transfer" title="International Credit Transfers"
+		action="account.bank.order.international.credit.transfer"/>
+		
+	<action-view name="account.bank.order.international.credit.transfer"
+		title="International Credit Transfers" model="com.axelor.apps.account.db.BankOrder" >
+		<view type="grid" name="bank-order-grid"/>
+		<view type="form" name="bank-order-form"/>
+		<domain>self.orderType = 4</domain>
+		<context name="_orderType" expr="eval:4"/>
+	</action-view>
+	
+	<menuitem name="account-root-bank-order-bank-to-bank-transfer"
+		parent="account-root-bank-orders" title="Bank to Bank Transfers"
+		action="account.bank.order.bank.to.bank.transfer" />
+	
+	<action-view name="account.bank.order.bank.to.bank.transfer"
+		title="Bank to Bank Transfers" model="com.axelor.apps.account.db.BankOrder" >
+		<view type="grid" name="bank-order-bank-to-bank-grid"/>
+		<view type="form" name="bank-order-form"/>
+	    <domain>self.orderType = 1</domain>
+	    <context name="_orderType" expr="eval:1"/>
+	</action-view>	
+	
+	<menuitem name="account-root-bank-order-awaiting-for-signature"
+		parent="account-root-bank-orders" title="Bank Orders awaiting for signature"
+		action="account.bank.order.awaiting.for.signature" />
+	
+	<action-view name="account.bank.order.awaiting.for.signature"
+		title="Bank Orders awaiting for signature" model="com.axelor.apps.account.db.BankOrder" >
+		<view type="grid" name="bank-order-bank-to-bank-grid"/>
+		<view type="form" name="bank-order-form"/>
+	    <domain>self.orderType in (1,2,4) AND  self.statusSelect = 2</domain>
+	</action-view>
 	
 	<menuitem name="account-root-bank-statement" parent="account-root"
 		title="Bank Statement" />
@@ -723,8 +824,6 @@
         <view type="form" name="print-purchase-invoices-details-form" /> 
         <domain>self.type = 2</domain> 
     </action-view>
-    
-    
     
     
     

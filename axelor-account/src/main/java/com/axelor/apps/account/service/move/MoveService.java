@@ -52,6 +52,7 @@ public class MoveService {
 	protected MoveLineService moveLineService;
 	protected MoveCreateService moveCreateService;
 	protected MoveValidateService moveValidateService;
+	protected MoveRemoveService moveRemoveService;
 	protected MoveToolService moveToolService;
 	protected ReconcileService reconcileService;
 	protected MoveDueService moveDueService;
@@ -63,11 +64,12 @@ public class MoveService {
 
 	@Inject
 	public MoveService(GeneralService generalService, MoveLineService moveLineService, MoveCreateService moveCreateService, MoveValidateService moveValidateService, MoveToolService moveToolService,
-			ReconcileService reconcileService, MoveDueService moveDueService, PaymentService paymentService, MoveExcessPaymentService moveExcessPaymentService, MoveRepository moveRepository, AccountConfigService accountConfigService) {
+			MoveRemoveService moveRemoveService, ReconcileService reconcileService, MoveDueService moveDueService, PaymentService paymentService, MoveExcessPaymentService moveExcessPaymentService, MoveRepository moveRepository, AccountConfigService accountConfigService) {
 
 		this.moveLineService = moveLineService;
 		this.moveCreateService = moveCreateService;
 		this.moveValidateService = moveValidateService;
+		this.moveRemoveService = moveRemoveService;
 		this.moveToolService = moveToolService;
 		this.reconcileService = reconcileService;
 		this.moveDueService = moveDueService;
@@ -84,6 +86,7 @@ public class MoveService {
 	public MoveLineService getMoveLineService()  { return moveLineService; }
 	public MoveCreateService getMoveCreateService()  { return moveCreateService; }
 	public MoveValidateService getMoveValidateService()  { return moveValidateService; }
+	public MoveRemoveService getMoveRemoveService()  { return moveRemoveService; }
 	public MoveToolService getMoveToolService()  { return moveToolService; }
 	public ReconcileService getReconcileService()  { return reconcileService; }
 

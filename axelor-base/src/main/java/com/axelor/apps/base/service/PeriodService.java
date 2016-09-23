@@ -57,16 +57,16 @@ public class PeriodService {
 	
 	public Period getPeriod(LocalDate date, Company company)  {
 		
-		return periodRepo.all().filter("company = ?1 and fromDate <= ?2 and toDate >= ?3",company,date,date).fetchOne();
+		return periodRepo.all().filter("year.company = ?1 and fromDate <= ?2 and toDate >= ?3",company,date,date).fetchOne();
 
 	}
 	
 	public Period getNextPeriod(Period period) throws AxelorException  {
 		
-		Period nextPeriod = periodRepo.all().filter("self.fromDate > ?1 AND self.company = ?2 AND self.statusSelect = ?3", period.getToDate(), period.getCompany(), PeriodRepository.STATUS_OPENED).fetchOne();
+		Period nextPeriod = periodRepo.all().filter("self.fromDate > ?1 AND self.year.company = ?2 AND self.statusSelect = ?3", period.getToDate(), period.getYear().getCompany(), PeriodRepository.STATUS_OPENED).fetchOne();
 		
 		if (nextPeriod == null || nextPeriod.getStatusSelect() == PeriodRepository.STATUS_CLOSED)  {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.PERIOD_1), period.getCompany().getName()), IException.CONFIGURATION_ERROR);
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.PERIOD_1), period.getYear().getCompany().getName()), IException.CONFIGURATION_ERROR);
 		}
 		LOG.debug("Next Period : {}",nextPeriod);	
 		return period;
