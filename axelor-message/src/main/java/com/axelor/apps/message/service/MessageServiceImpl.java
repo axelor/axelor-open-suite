@@ -279,5 +279,6 @@ public class MessageServiceImpl implements MessageService {
 
 	@Override
 	public String printMessage(Message message)  throws AxelorException  { return null; }
-
+	
+	
 }
