@@ -2,112 +2,41 @@
 <action-builders xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   
-  <action-builder name="action-so-create-product-invoice" metaModel="Order" typeSelect="0" targetModel="Invoice"  targetField="invoice">
+  <action-builder name="action-expense-line-update-amt-with-tax" metaModel="ExpenseLine" typeSelect="1">
   	<lines>
-  		<line metaField="customer" targetField="customer" value="$customer" />
-  		<line metaField="invoiceDate" targetField="invoiceDate" value="__date__" />
-  		<line metaField="address" targetField="address" value="$customer.address" />
-  		<line metaField="total" targetField="total" value="$total" />
-  		<line metaField="saleOrder" targetField="saleOrder.id" value="$id" />
+  		<line metaField="amtTTC" targetField="amtTTC" value="tva*amtHt" conditionText="tva &gt; 0"/>
   	</lines>
   </action-builder>
   
-  <action-builder name="action-so-create-product-invoice-line" metaModel="Order" typeSelect="0" targetModel="InvoiceLine" loopOnField="lines">
+  <action-builder name="action-expense-update-validated" metaModel="Expense" typeSelect="1">
   	<lines>
-  		<line metaField="product" targetField="product" value="$product" />
-  		<line metaField="productCategory" targetField="productCategory" value="$productCategory" />
-  		<line metaField="qty" targetField="qty" value="$qty" />
-  		<line metaField="totalAmt" targetField="totalAmt" value="$qty*product.price" />
-  		<line metaField="invoice" targetField="invoice" value="$$invoice" />
+  		<line metaField="validatedBy" targetField="validatedBy" value="__user__" conditionText="status == 5"/>
+  		<line metaField="validatedOn" targetField="validatedOn" value="__datetime__" conditionText="status == 5"/>
   	</lines>
   </action-builder>
   
-  <action-builder name="action-so-create-product-category-invoice" metaModel="Order" typeSelect="0" targetModel="Invoice"  targetField="invoice">
-  	<lines>
-  		<line metaField="customer" targetField="customer" value="$customer" />
-  		<line metaField="invoiceDate" targetField="invoiceDate" value="__date__" />
-  		<line metaField="address" targetField="address" value="$customer.address" />
-  		<line metaField="total" targetField="total" value="$total" />
-  		<line metaField="saleOrder" targetField="saleOrder.id" value="$id" />
-  	</lines>
-  </action-builder>
-  
-  <action-builder name="action-so-create-product-category-invoice-line" metaModel="Order" typeSelect="0" targetModel="InvoiceLine" loopOnField="lines" firstGroupBy="productCategory"  filter="$productCategory != null">
-  	<lines>
-  		<line metaField="productCategory" targetField="productCategory" value="$productCategory" />
-  		<line metaField="qty" targetField="qty" value="$qty" />
-  		<line metaField="totalAmt" targetField="totalAmt" value="$totalAmt" />
-  		<line metaField="invoice" targetField="invoice" value="$$invoice" />
-  	</lines>
-  </action-builder>
-  
-  <action-builder name="action-so-create-product-unique-invoice" metaModel="Order" typeSelect="0" targetModel="Invoice"  targetField="invoice">
-  	<lines>
-  		<line metaField="customer" targetField="customer" value="$customer" />
-  		<line metaField="invoiceDate" targetField="invoiceDate" value="__date__" />
-  		<line metaField="address" targetField="address" value="$customer.address" />
-  		<line metaField="total" targetField="total" value="$total" />
-  		<line metaField="saleOrder" targetField="saleOrder.id" value="$id" />
-  	</lines>
-  </action-builder>
-  
-  <action-builder name="action-so-create-product-unique-invoice-line" metaModel="Order" typeSelect="0" targetModel="InvoiceLine" loopOnField="lines" firstGroupBy="productCategory" secondGroupBy="product" filter="$productCategory != null">
-  	<lines>
-  	    <line metaField="product" targetField="product" value="$product" />
-  		<line metaField="productCategory" targetField="productCategory" value="$productCategory" />
-  		<line metaField="qty" targetField="qty" value="$qty" />
-  		<line metaField="totalAmt" targetField="totalAmt" value="$totalAmt" />
-  		<line metaField="invoice" targetField="invoice" value="$$invoice" />
-  	</lines>
-  </action-builder>
-  
-  <action-builder name="action-so-copy-customer-info" metaModel="Order" typeSelect="1">
-  	<lines>
-  		<line metaField="orderPolicy" targetField="orderPolicy" value="$customer.orderPolicy" conditionText="customer != null"/>
-  		<line metaField="shippingAddress" targetField="shippingAddress" value="$customer.address" conditionText="customer != null"/>
-  		<line metaField="invoiceAddress" targetField="invoiceAddress" value="$customer.address" conditionText="customer != null"/>
-  	</lines>
-  </action-builder>
-  
-  <action-builder name="action-so-line-calculate-total" metaModel="OrderLine" typeSelect="1">
-  	<lines>
-  		<line metaField="totalAmt" targetField="totalAmt" value="$product.price*qty" conditionText="product != null"/>
-  		<line metaField="productCategory" targetField="productCategory" value="$product?.productCategory" conditionText="product != null"/>
-  	</lines>
-  </action-builder>
-  
-  <action-builder name="action-invoice-line-calculate-total" metaModel="InvoiceLine" typeSelect="1">
-  	<lines>
-  		<line metaField="totalAmt" targetField="totalAmt" value="$product.price*qty" conditionText="product != null"/>
-  		<line metaField="productCategory" targetField="productCategory" value="$product?.productCategory" conditionText="product != null"/>
-  	</lines>
-  </action-builder>
-  
-  <action-builder name="action-so-update-total" metaModel="Order" typeSelect="1">
-  	<lines>
-  		<line metaField="total" targetField="total" value="sum(lines,$totalAmt)"/>
-  		<line metaField="totalHigher" targetField="totalHigher" value="sum(lines,$totalAmt)" filter="$qty &gt;= 10"/>
-  	</lines>
-  </action-builder>
-  
-  <action-builder name="action-so-open-invoice" typeSelect="2" viewBuilder="invoice-grid" metaModel="Invoice">
-  	<filters>
-  		<filter metaField="id" filterOperator="=" value="$invoice.id"/>
-  	</filters>
-  </action-builder>
-  
-  <action-builder name="action-open-category-customers" typeSelect="2" viewBuilder="customer-grid" metaModel="Customer">
-  	<filters>
-  		<filter metaField="productCategories" filterOperator="=" targetField="productCategories.id" targetType="Long" value="$__this__.id"/>
-  	</filters>
-  </action-builder>
-  
-  <action-builder name="action-open-so-report" typeSelect="3" metaModel="Order">
+  <action-builder name="action-open-expense-report" typeSelect="3" metaModel="Expense">
   	<report-builders>
-  		<report-builder name="Order report" />
+  		<report-builder name="Note De Frais" />
   	</report-builders>
   </action-builder>
   
-  <action-builder name="action-send-order-email" typeSelect="4" metaModel="Order" emailTemplate="Order template" />
+  <action-builder name="action-expense-update-total" metaModel="Expense" typeSelect="1">
+  	<lines>
+  		<line metaField="totalHT" targetField="totalHT" value="sum(expenses;$amtHt)"/>
+  		<line metaField="totalTTC" targetField="totalTTC" value="sum(expenses;$amtTTC)"/>
+  		<line metaField="totalTtcTransport" targetField="totalTtcTransport" value="sum(expenses;$amtTTC)" filter="$expenseType == 1"/>
+  	</lines>
+  </action-builder>
+  
+  <action-builder name="action-send-expense-email" typeSelect="4" metaModel="Expense" emailTemplate="Note De Frais" />
+  
+  <action-builder name="menu.expense" metaModel="Expense" typeSelect="2" viewBuilder="expense-form" title="Note De Frais" />
+  
+  <action-builder name="menu.dashboard" typeSelect="2" title="Reports">
+  	<viewBuilders>
+  		<viewBuilder name="expense-dashboard" />
+  	</viewBuilders>
+  </action-builder>
   
 </action-builders>

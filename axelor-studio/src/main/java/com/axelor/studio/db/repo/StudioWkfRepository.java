@@ -54,14 +54,14 @@ public class StudioWkfRepository extends WkfRepository {
 			if (statusMenu != null) {
 				statusMenu.setDeleteMenu(true);
 				statusMenu.setEdited(true);
-				menuBuilderRepo.save(statusMenu);
+				saveMenu(statusMenu);
 			}
 
 			MenuBuilder myStatusMenu = wkfNode.getMyStatusMenu();
 			if (myStatusMenu != null) {
 				myStatusMenu.setDeleteMenu(true);
 				myStatusMenu.setEdited(true);
-				menuBuilderRepo.save(myStatusMenu);
+				saveMenu(myStatusMenu);
 			}
 		}
 

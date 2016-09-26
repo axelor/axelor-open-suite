@@ -54,6 +54,9 @@ public class DataReaderExcel implements DataReader {
 		}
 		
 		XSSFRow row = sheet.getRow(index);
+		if (row == null) {
+			return null;
+		}
 		
 		String[] vals = new String[row.getPhysicalNumberOfCells()];
 		
@@ -97,7 +100,7 @@ public class DataReaderExcel implements DataReader {
 	@Override
 	public int getTotalLines(String key) {
 		
-		if (book == null || key == null) {
+		if (book == null || key == null || book.getSheet(key) == null) {
 			return 0;
 		}
 		

@@ -23,7 +23,7 @@
     <boolean name="printPageNo" title="Print page number ?" />
     <boolean name="editHtml" title="Edit HTML?" />
     <string name="fileName" title="File name" />
-    <many-to-one name="metaModule" ref="com.axelor.meta.db.MetaModule" title="Module"/>
+    <many-to-one name="metaModule" ref="com.axelor.meta.db.MetaModule" title="Module" required="true"/>
   </entity>
     
  </domain-models>

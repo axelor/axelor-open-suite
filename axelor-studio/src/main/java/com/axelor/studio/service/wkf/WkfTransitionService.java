@@ -25,6 +25,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.auth.db.Role;
+import com.axelor.meta.db.MetaField;
 import com.axelor.meta.db.MetaPermission;
 import com.axelor.meta.db.MetaPermissionRule;
 import com.axelor.meta.db.repo.MetaPermissionRepository;
@@ -137,9 +138,9 @@ class WkfTransitionService {
 		}
 
 		for (WkfTransition transition : wkfService.workflow.getTransitions()) {
-
-			String condition = WkfService.WKF_STATUS + " == '"
-					+ transition.getSource().getName() + "'";
+			
+			MetaField status = wkfService.workflow.getWkfField();
+			String condition =  status.getName() + " == " + getTyped(transition.getSource().getSequence(), status) ;
 
 			if (transition.getIsButton()) {
 				buttonSeq++;
@@ -157,15 +158,24 @@ class WkfTransitionService {
 			}
 
 			RecordField field = new RecordField();
-			field.setName(WkfService.WKF_STATUS);
+			field.setName(status.getName());
 			field.setCondition(condition);
-			field.setExpression("eval:'" + transition.getTarget().getName()
-					+ "'");
+			field.setExpression("eval:" + getTyped(transition.getTarget().getSequence(), status));
 
 			fields.add(field);
 		}
 
 		return fields;
+	}
+
+	private String getTyped(Integer value, MetaField status) {
+			
+		String typeName = status.getTypeName();
+		if (typeName.equals("Integer")) {
+			return value.toString();
+		}
+		
+		return "'" + value + "'";
 	}
 
 	/**
@@ -242,8 +252,9 @@ class WkfTransitionService {
 
 		List<RecordField> fields = new ArrayList<RecordField>();
 		RecordField field = new RecordField();
-		field.setName(WkfService.WKF_STATUS);
-		field.setExpression("eval:'" + transition.getTarget().getName() + "'");
+		MetaField wkfField = wkfService.workflow.getWkfField();
+		field.setName(wkfField.getName());
+		field.setExpression("eval:" + getTyped(transition.getTarget().getSequence(), wkfField));
 		fields.add(field);
 		actions.add(actionName);
 		xml = getActionRecordXML(actionName, fields);
@@ -279,7 +290,7 @@ class WkfTransitionService {
 	private String getActionRecordXML(String name, List<RecordField> fields) {
 
 		ActionRecord action = new ActionRecord();
-		action.setModel(wkfService.modelName);
+		action.setModel(wkfService.workflow.getMetaModel().getFullName());
 		action.setName(name);
 		action.setFields(fields);
 
@@ -353,7 +364,7 @@ class WkfTransitionService {
 		MetaPermission permission = metaPermissionRepo.findByName(name);
 		if (permission == null) {
 			permission = new MetaPermission(name);
-			permission.setObject(wkfService.modelName);
+			permission.setObject(wkfService.workflow.getMetaModel().getFullName());
 			MetaPermissionRule rule = new MetaPermissionRule();
 			rule.setCanRead(false);
 			rule.setField(buttonName);

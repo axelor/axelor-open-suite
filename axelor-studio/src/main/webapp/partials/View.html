@@ -1,23 +1,14 @@
-<div class="row studio-container">
-    <div view-components></div>
-    <div class="studio-panel row">
-		<div class="col-md-4">
-			<div class="panel panel-default fixed-panel">
-		        <div class="panel-heading">
-		            <span class="nav-title">Fields</span>
-		        </div>
-		       	<div fb-builder="fieldForm" class="pre-scrollable"></div>
-		   	</div>
-		</div>
-		<div class="col-md-5">
-	    	<div class="panel panel-default">
-		        <div class="panel-heading">
-		            <span class="nav-title">Form View</span>
-		        </div>
-	        	<div fb-builder="viewForm"></div>
-	    	</div>
-		</div>
-		<div class="col-md-3" />
+<div class="studio-container">
+    <div view-components id="bar"></div>
+    <div class="studio-panel">
+		<div class="panel panel-default fixed-panel">
+	        <h4>Fields</h4>
+	       	<div fb-builder="fieldForm" class="pre-scrollable tab-content"></div>
+	   	</div>
+    	<div class="panel panel-default panel-right">
+	        <h4>Form view</h4>
+        	<div fb-builder="viewForm" class="pre-scrollable tab-content"></div>
+    	</div>
 	</div>
 </div>
 

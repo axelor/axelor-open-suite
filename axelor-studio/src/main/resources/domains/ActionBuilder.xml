@@ -17,8 +17,9 @@
      <one-to-many name="lines" ref="ActionBuilderLine" title="Fields" mappedBy="actionBuilder"/>
      <boolean name="edited" title="Edited" />
      <boolean name="recorded" title="Recorded" />
-     <many-to-one name="viewBuilder" ref="com.axelor.studio.db.ViewBuilder" title="View builder" />
-     <many-to-one name="metaView" ref="com.axelor.meta.db.MetaView" title="View" />
+     <many-to-many name="viewBuilderSet" ref="com.axelor.studio.db.ViewBuilder" title="View builders" />
+     <many-to-many name="metaViewSet" ref="com.axelor.meta.db.MetaView" title="Views" />
+     <string name="viewOrder" title="View order" selection="view.type.selection" default="grid, form" />
      <boolean name="popup" title="Popup" />
      <many-to-one name="targetField" title="Target field" ref="com.axelor.meta.db.MetaField" />
      <string name="firstGroupBy" title="First group by"/>
@@ -27,6 +28,7 @@
      <string name="domainCondition" title="Domain condition"/>
      <string name="context" title="Context"/>
      <string name="title" title="Title" />
+     <boolean name="menuAction" title="Menu action" />
      <many-to-many name="reportBuilderSet" title="Report builders" ref="ReportBuilder" />
      <many-to-one name="emailTemplate" ref="com.axelor.apps.message.db.Template" title="Template" />
      <many-to-one name="metaModule" ref="com.axelor.meta.db.MetaModule" title="Studio module" required="true"/>

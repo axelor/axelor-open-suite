@@ -35,7 +35,8 @@
         				hideIf, hidden, min, max, defaultString, defaultInteger, \
         				defaultBoolean, defaultDecimal, options, refModel, mappedBy, \
         				validation, domainCondition, onChange, progressBar, htmlWidget,\
-        				metaSelect, widget, icon, promptMsg, onClick, onSave, panelTop, metaFieldId]', 
+        				metaSelect, widget, icon, promptMsg, onClick, onSave, panelTop,\
+        				metaFieldId, hideTitle]', 
         function() {
           formObject.label = $scope.label;
           formObject.fieldName = $scope.fieldName;
@@ -69,6 +70,7 @@
           formObject.onSave = $scope.onSave;
           formObject.place = $scope.place;
           formObject.panelTop = $scope.panelTop;
+          formObject.hideTitle = $scope.hideTitle;
           formObject.metaFieldId = $scope.metaFieldId;
           return formObject.validation = $scope.validation;
         }, true);
@@ -130,6 +132,7 @@
             onSave:$scope.onSave,
             place:$scope.place,
             panelTop:$scope.panelTop,
+            hideTitle:$scope.hideTitle,
             metaFieldId: $scope.metaFieldId
           };
         },
@@ -172,6 +175,7 @@
           $scope.place = this.model.place;
           $scope.promptMsg = this.model.promptMsg;
           $scope.panelTop = this.model.panelTop;
+          $scope.hideTitle = this.model.hideTitle;
           $scope.metaFieldId = this.model.metaFieldId;
           return $scope.validation = this.model.validation;
         }
@@ -452,7 +456,7 @@
             $(element).addClass(popover.id);
             return $(element).popover({
               html: true,
-              title: scope.$component.label,
+              title: scope.formObject.label ? scope.formObject.label : scope.$component.label,
               content: popover.view,
               container: 'body',
               placement: $builder.config.popoverPlacement
@@ -657,7 +661,7 @@
   ]).directive('viewComponents', function() {
     return {
       restrict: 'A',
-      template: "<div class='navbar navbar-default  navbar-fixed-top label-item'><button type=\"submit\" ng-click=\"submit()\" class=\"btn btn-default save-btn\" title=\"Save\"><i class=\"fa fa-save\"/></button><span class='fb-component panel ' title=\"Component\" ng-repeat=\"component in components\"\n   fb-component=\"component\"></span>\n </div>",
+      template: "<div class='navbar navbar-default  navbar-fixed-top label-item'><button type=\"submit\" ng-click=\"submit()\" class=\"btn btn-default save-btn\" title=\"Save\"><i class=\"fa fa-save\"/></button><div class='view-element' title=\"Component\" ng-repeat=\"component in components\"\n   fb-component=\"component\"></div>\n </div>",
       controller: 'fbComponentsController',
       link: function(scope, element) {
     	  if(scope.isView){
@@ -1257,7 +1261,7 @@
       result = {
         name: name,
         group: (_ref = component.group) != null ? _ref : 'Default',
-        label: (_ref1 = component.label) != null ? _ref1 : '',
+        label: component.label,
         fieldName: (_ref2 = component.fieldName) != null ? _ref2 : '',
         placeholder: (_ref3 = component.placeholder) != null ? _ref3 : '',
         editable: (_ref4 = component.editable) != null ? _ref4 : true,
@@ -1269,6 +1273,7 @@
         template: component.template,
         templateUrl: component.templateUrl,
         popoverTemplate: component.popoverTemplate,
+        isView: component.isView,
         popoverTemplateUrl: component.popoverTemplateUrl        
       };
       if (!result.template && !result.templateUrl) {
@@ -1323,12 +1328,13 @@
         place: formObject.place,
         selection: formObject.selection,
         panelTop: formObject.panelTop,
+        hideTitle: formObject.hideTitle,
         metaFieldId: formObject.metaFieldId,
         panelLevel: formObject.panelLevel != null ? formObject.panelLevel : component.panelLevel,
         isPanelTab: formObject.isPanelTab != null ? formObject.isPanelTab : component.isPanelTab,
         editable: (_ref = formObject.editable) != null ? _ref : component.editable,
         index: (_ref1 = formObject.index) != null ? _ref1 : 0,
-        label: (_ref2 = formObject.label) != null ? _ref2 : component.label,
+        label: (_ref2 = formObject.label) != null ? _ref2 : null,
         fieldName: (_ref3 = formObject.fieldName) != null ? _ref3 : component.fieldName,
         placeholder: (_ref4 = formObject.placeholder) != null ? _ref4 : component.placeholder,
         options: (_ref5 = formObject.options) != null ? _ref5 : component.options,

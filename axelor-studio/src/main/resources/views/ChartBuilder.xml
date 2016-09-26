@@ -13,14 +13,14 @@
         <field name="metaModule" domain="self.customised = true"/>
         <field name="chartType" required="true"/>
         <panel colSpan="6">
-        	<field name="aggregateOn" domain="self.metaModel = :metaModel AND (self.typeName IN ('LocalDate','DateTime', 'LocalDateTime')  OR self.relationship = 'ManyToOne')" widget="SuggestBox" colSpan="12"/>
-	        <field name="aggregateDateType" showIf="'LocalDateTime'.indexOf(aggregateOn.typeName) > -1" requiredIf="'LocalDateTime'.indexOf(aggregateOn.typeName) > -1" colSpan="12"/>
-       		<field name="aggregateOnTarget" title="Target" showIf="aggregateOn.relationship != null" colSpan="12"/>
+        	<field name="aggregateOn" domain="self.metaModel = :metaModel AND (self.typeName IN ('LocalDate','DateTime', 'LocalDateTime')  OR self.relationship = 'ManyToOne')"  onChange="action-chart-builder-aggregate-on-change" widget="SuggestBox" colSpan="12"/>
+	        <field name="aggregateDateType" showIf="['LocalDateTime','LocalDate','DateTime'].indexOf(aggregateOn.typeName) > -1" requiredIf="['LocalDateTime','LocalDate','DateTime'].indexOf(aggregateOn.typeName) > -1" colSpan="12"/>
+       		<field name="aggregateOnTarget" title="Target" showIf="aggregateOn.relationship != null" colSpan="12" required="true"/>
         </panel>
         <panel colSpan="6">
-        	<field name="groupOn" required="true" domain="self.metaModel = :metaModel AND (self.typeName IN ('LocalDate','DateTime', 'LocalDateTime')  OR self.relationship = 'ManyToOne')" widget="SuggestBox" colSpan="12"/>
+        	<field name="groupOn" required="true" domain="self.metaModel = :metaModel AND (self.typeName IN ('LocalDate','DateTime', 'LocalDateTime')  OR self.relationship = 'ManyToOne')" onChange="action-chart-builder-group-on-change" widget="SuggestBox" colSpan="12"/>
         	<field name="groupDateType" showIf="'LocalDateTime'.indexOf(groupOn.typeName) > -1" requiredIf="'LocalDateTime'.indexOf(groupOn.typeName) > -1"  colSpan="12"/>
-        	<field name="groupOnTarget" title="Target" showIf="groupOn.relationship != null" colSpan="12"/>
+        	<field name="groupOnTarget" title="Target" showIf="groupOn.relationship != null" colSpan="12" required="true"/>
         </panel>
         <field name="displayField" required="true" domain="self.metaModel = :metaModel AND self.typeName IN ('Integer','BigDecimal')" widget="SuggestBox"/>
         <field name="aggregateOn.typeName" hidden="true" />  
@@ -71,6 +71,14 @@
   <action-method name="action-filter-method-update-target-details">
   	<call class="com.axelor.studio.web.FilterController" method="updateTargetDetails" />
   </action-method>
+  
+  <action-record name="action-chart-builder-aggregate-on-change" model="com.axelor.studio.db.ViewBuilder">
+  	<field name="aggregateOnTarget" expr="call:com.axelor.studio.web.ChartBuilderController:getTarget(aggregateOn)"/>
+  </action-record>
+  
+  <action-record name="action-chart-builder-group-on-change" model="com.axelor.studio.db.ViewBuilder">
+  	<field name="groupOnTarget" expr="call:com.axelor.studio.web.ChartBuilderController:getTarget(groupOn)"/>
+  </action-record>
   
 </object-views>
 

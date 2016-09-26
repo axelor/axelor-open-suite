@@ -10,6 +10,7 @@
   	<many-to-one name="viewBuilder" ref="ViewBuilder" title="View builder" />
   	<many-to-one name="metaView" ref="com.axelor.meta.db.MetaView" title="View" />
   	<many-to-one name="dashboard" ref="ViewBuilder"/>
+  	<many-to-one name="actionBuilder" ref="ActionBuilder" title="Action" />
   	<integer name="sequence" title="Sequence" />
   	<string name="viewType" title="Type" selection="view.type.selection" />
   	<integer name="colspan" title="Colspan" />

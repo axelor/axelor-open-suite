@@ -20,10 +20,12 @@ package com.axelor.studio.service.builder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Scanner;
 
 import javax.xml.bind.JAXBException;
 
@@ -115,8 +117,8 @@ public class FormBuilderService {
 		FormView formView = getFormView(viewBuilder);
 		processFormView(formView, viewBuilder);
 
-		processPanels(viewBuilder.getViewPanelList().iterator(), false, viewBuilder.getAddOnly());
-		processPanels(viewBuilder.getViewSidePanelList().iterator(), true, viewBuilder.getAddOnly());
+		processPanels(sortPanels(viewBuilder.getViewPanelList()), false, viewBuilder.getAddOnly());
+		processPanels(sortPanels(viewBuilder.getViewSidePanelList()), true, viewBuilder.getAddOnly());
 
 		if (viewBuilder.getAddStream()) {
 			addStream();
@@ -130,6 +132,46 @@ public class FormBuilderService {
 		removeEmptyPanels(formViewItems);
 
 		return formView;
+	}
+
+	private Iterator<ViewPanel> sortPanels(List<ViewPanel> viewPanelList) {
+		
+		Collections.sort(viewPanelList, new Comparator<ViewPanel>() {
+
+			@Override
+			public int compare(ViewPanel panel1, ViewPanel panel2) {
+				Scanner scan1 = new Scanner(panel1.getPanelLevel());
+				Scanner scan2 = new Scanner(panel2.getPanelLevel());
+				scan1.useDelimiter("\\.");
+				scan2.useDelimiter("\\.");
+				try {
+					while(scan1.hasNextInt() && scan2.hasNextInt()) {
+					    int v1 = scan1.nextInt();
+					    int v2 = scan2.nextInt();
+					    if(v1 < v2) {
+					        return -1;
+					    } else if(v1 > v2) {
+					        return 1;
+					    }
+					}
+					
+					if(scan2.hasNextInt()) {
+						return -1;
+					}
+					if(scan1.hasNextInt()) {
+						return 1; 
+					}
+					
+					return 0;
+				} finally{
+					scan1.close();
+					scan2.close();
+				}
+				
+			}
+		});
+		
+		return viewPanelList.iterator();
 	}
 
 	/**
@@ -501,28 +543,42 @@ public class FormBuilderService {
 		
 		if (panelMap.get(parentLevel) instanceof Panel) {
 			Panel panel = (Panel) panelMap.get(parentLevel);
-			panelItems = panel.getItems();
-			if (panelItems == null) {
-				panelItems = new ArrayList<AbstractWidget>();
-			}
-			panelItems.add(abstractPanel);
+			panelItems = updatePanelItems(panel.getItems(), panelLevel, abstractPanel);
 			panel.setItems(panelItems);
 			panelMap.put(parentLevel, panel);
-			panelMap.put(panelLevel, abstractPanel);
 		} else if (panelMap.get(parentLevel) instanceof PanelTabs) {
 			PanelTabs panelTabs = (PanelTabs) panelMap.get(parentLevel);
-			panelItems = panelTabs.getItems();
-			if (panelItems == null) {
-				panelItems = new ArrayList<AbstractWidget>();
-			}
-			panelItems.add(abstractPanel);
+			panelItems = updatePanelItems(panelTabs.getItems(), panelLevel, abstractPanel);
 			panelTabs.setItems(panelItems);
 			panelMap.put(parentLevel, panelTabs);
-			panelMap.put(panelLevel, abstractPanel);
 		}
 
 		return abstractPanel;
 
+	}
+	
+	private List<AbstractWidget> updatePanelItems(List<AbstractWidget> panelItems, 
+			String panelLevel, AbstractPanel panel) {
+		
+		panelMap.put(panelLevel, panel);
+		
+		if (panelItems == null) {
+			panelItems = new ArrayList<AbstractWidget>();
+			panelItems.add(panel);
+			return panelItems;
+		}
+		
+		Integer index = Integer.parseInt(panelLevel.substring(panelLevel.lastIndexOf(".") + 1));
+		
+		if (index < panelItems.size()) {
+			panelItems.add(index, panel);
+		}
+		else {
+			panelItems.add(panel);
+		}
+		
+		return panelItems;
+		
 	}
 
 	/**
@@ -628,7 +684,28 @@ public class FormBuilderService {
 	public List<AbstractWidget> processItems(List<ViewItem> viewItems, Panel panel, String level) {
 		
 		List<AbstractWidget> items = new ArrayList<AbstractWidget>();
+		
+		if (viewItems == null) {
+			return items;
+		}
+		
+		Collections.sort(viewItems, new Comparator<ViewItem>(){
 
+			@Override
+			public int compare(ViewItem item1, ViewItem item2) {
+				
+				if (item1.getSequence() > item2.getSequence()) {
+					return 1;
+				}
+				else if (item1.getSequence() < item2.getSequence()) {
+					return -1;
+				}
+				
+				return 0;
+			}
+			
+		});
+		
 		for (ViewItem viewItem : viewItems) {
 
 			Integer type = viewItem.getTypeSelect();
@@ -817,6 +894,10 @@ public class FormBuilderService {
 			field.setSelection(metaSelect.getName());
 		} else {
 			field.setSelection(null);
+		}
+		
+		if (viewItem.getHideTitle()) {
+			field.setShowTitle(false);
 		}
 		
 		return field;
@@ -1106,8 +1187,25 @@ public class FormBuilderService {
 			log.debug("Adding dashlet:{}", viewItem.getName());
 			Dashlet dashlet = new Dashlet();
 			dashlet.setAction(viewItem.getName());
-			dashlet.setColSpan(viewItem.getColSpan());
+			
+			if (viewItem.getColSpan() > 0) {
+				dashlet.setColSpan(viewItem.getColSpan());
+			}
+			else {
+				dashlet.setColSpan(12);
+			}
+			
 			dashlet.setHeight("350");
+			dashlet.setHidden(viewItem.getHidden());
+			if (viewItem.getHideIf() != null) {
+				dashlet.setHideIf(viewItem.getHideIf());
+			}
+			dashlet.setTitle(viewItem.getTitle());
+			dashlet.setModuleToCheck(viewItem.getIfModule());
+			dashlet.setReadonly(viewItem.getReadonly());
+			if (viewItem.getReadonlyIf() != null) {
+				dashlet.setReadonlyIf(viewItem.getReadonlyIf());
+			}
 			items.add(dashlet);
 			
 		}

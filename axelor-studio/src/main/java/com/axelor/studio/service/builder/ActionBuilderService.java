@@ -23,14 +23,16 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.xml.bind.JAXBException;
 
-import org.codehaus.groovy.control.MultipleCompilationErrorsException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -176,7 +178,7 @@ public class ActionBuilderService {
 				action = createActionRecord(model, actionBuilder, false);
 				break;
 			case 2:
-				action = createActionView(model, actionBuilder);
+				action = createActionView(actionBuilder);
 				break;
 			case 3:
 				action = createActionReport(model, actionBuilder);
@@ -194,6 +196,10 @@ public class ActionBuilderService {
 			String modelName = "Dashboard";
 			if (model != null) {
 				modelName = model.getFullName();
+			}
+			
+			if (actionBuilder.getMenuAction()) {
+				modelName = "Menu";
 			}
 			
 			action.setXmlId(actionBuilder.getMetaModule().getName() + "-" + action.getName());
@@ -455,51 +461,125 @@ public class ActionBuilderService {
 		updateModelActionMap(model, actionRecord);
 	}
 
-	private Action createActionView(MetaModel model, ActionBuilder actionBuilder) {
-
-		ViewBuilder viewBuilder = actionBuilder.getViewBuilder();
-		String viewName = null;
-		String viewType = null;
-		String title = null;
-		if (viewBuilder != null) {
-			viewName = viewBuilder.getName();
-			viewType = viewBuilder.getViewType();
-			title = viewBuilder.getTitle();
-		}
+	private Action createActionView(ActionBuilder actionBuilder) {
 		
-		MetaView view =  actionBuilder.getMetaView();
-		if (view != null) {
-			viewName = view.getName();
-			viewType = view.getType();
-			title = view.getTitle();
-		}
-		
-		if (actionBuilder.getTitle() != null) {
-			title = actionBuilder.getTitle();
-		}
-		
-		ActionViewBuilder builder = ActionView.define(title);
-		builder.add(viewType, viewName);
+		ActionViewBuilder builder = ActionView.define(actionBuilder.getTitle());
 		builder.name(actionBuilder.getName());
-		builder.param("popup", actionBuilder.getPopup().toString());
-
-		if (!viewType.equals("dashboard")) {
-			viewType = viewType.equals("form") ? "grid" : "form";
-			builder.add(viewType);
-			if (model != null) {
-				builder.model(model.getFullName());
-			}
-			if (actionBuilder.getDomainCondition() != null) {
-				builder = addDomainContext(builder, actionBuilder);
-			}
-			else {
-				processFilters(builder, actionBuilder);
-			}
+		if (actionBuilder.getPopup()) {
+			builder.param("popup", "true");
 		}
+		builder = addViews(builder, actionBuilder);
 
 		return builder.get();
 	}
 	
+	private ActionViewBuilder addViews(ActionViewBuilder builder, ActionBuilder actionBuilder) {
+		
+		if (actionBuilder.getViewOrder() == null) {
+			return builder;
+		}
+		
+		List<String> viewOrder = new ArrayList<String>();
+		for (String order : actionBuilder.getViewOrder().split(",")) {
+			viewOrder.add(order.trim());
+		}
+		
+		List<ViewBuilder> builders = sortViewBuilders(viewOrder, actionBuilder.getViewBuilderSet());
+		Iterator<ViewBuilder> builderIter = builders.iterator();
+		
+		if (builderIter.hasNext()) {
+			ViewBuilder viewBuilder = builderIter.next();
+			builder.add(viewBuilder.getViewType(), viewBuilder.getName());
+			
+			if (viewBuilder.getViewType() == "dashboard") {
+				return builder;
+			}
+
+			while(builderIter.hasNext()) {
+				viewBuilder = builderIter.next();
+				builder.add(viewBuilder.getViewType(), viewBuilder.getName());
+			}
+			
+		}
+		else {
+			List<MetaView> views = sortViews(viewOrder, actionBuilder.getMetaViewSet());
+			Iterator<MetaView> viewIter = views.iterator();
+			if (viewIter.hasNext()) {
+				MetaView view = viewIter.next();
+				builder.add(view.getType(), view.getName());
+				
+				if (view.getType() == "dashboard") {
+					return builder;
+				}
+				
+				while(viewIter.hasNext()) {
+					view = viewIter.next();
+					builder.add(view.getType(), view.getName());
+				}
+			}
+		}
+		
+		if (actionBuilder.getMetaModel() != null) {
+			builder.model(actionBuilder.getMetaModel().getFullName());
+		}
+		
+		if (actionBuilder.getDomainCondition() != null) {
+			builder.domain(actionBuilder.getDomainCondition());
+			builder = addDomainContext(builder, actionBuilder);
+		}
+		else {
+			builder = processFilters(builder, actionBuilder);
+		}
+		
+		return builder;
+	}
+
+	private List<ViewBuilder> sortViewBuilders(final List<String> viewOrder, Set<ViewBuilder> viewBuilders) {
+		
+		ArrayList<ViewBuilder> builders = new ArrayList<ViewBuilder>();
+		builders.addAll(viewBuilders);
+		Collections.sort(builders, new Comparator<ViewBuilder>() {
+
+			@Override
+			public int compare(ViewBuilder builder1, ViewBuilder builder2) {
+				return compareTypes(viewOrder, builder1.getViewType(), builder2.getViewType());
+			}
+		} );
+		
+		return builders;
+	}
+	
+	private List<MetaView> sortViews(final List<String> viewOrder, Set<MetaView> viewSet) {
+		
+		ArrayList<MetaView> views = new ArrayList<MetaView>();
+		views.addAll(viewSet);
+		Collections.sort(views, new Comparator<MetaView>() {
+
+			@Override
+			public int compare(MetaView view1, MetaView view2) {
+				return compareTypes(viewOrder, view1.getType(), view2.getType());
+			}
+		} );
+		
+		return views;
+	}
+	
+	private int compareTypes(List<String> viewOrder, String type1, String type2) {
+		
+		if (viewOrder.indexOf(type1) == -1 
+				|| viewOrder.indexOf(type2) == -1
+				|| viewOrder.indexOf(type1) > viewOrder.indexOf(type2)) {
+			return 1;
+		}
+		else if (viewOrder.indexOf(type1) < viewOrder.indexOf(type2)) {
+			return -1;
+		}
+		
+		return 1;
+		
+	}
+
+
 	private ActionViewBuilder addDomainContext(ActionViewBuilder builder, ActionBuilder actionBuilder) {
 		
 		builder.domain(actionBuilder.getDomainCondition());
@@ -615,35 +695,31 @@ public class ActionBuilderService {
 		return method;
 	}
 
-	private void processFilters(ActionViewBuilder builder,
+	private ActionViewBuilder processFilters(ActionViewBuilder builder,
 			ActionBuilder actionBuilder) {
 
 		String domain = null;
 		int counter = 1;
-
 		for (Filter filter : actionBuilder.getFilters()) {
-
-			String value = filter.getValue();
-			String origVal = value;
 			String param = null;
 			filter.setIsParameter(false);
-			if (value != null) {
+			String value = filter.getValue();
+			
+			if (value != null && filter.getFilterOperator() != null 
+					&& !FilterService.NO_PARAMS.contains(filter.getFilterOperator().getValue())) {
 				filter.setIsParameter(true);
 				param = "_param" + counter;
-				if (value.startsWith("$$")) {
-					value = value.substring(2);
-				}
-				filter.setValue(value);
-				builder.context(param, "eval:" + value);
+				builder.context(param, "eval:" + filterService.getTagValue(value, false));
+				counter++;
 			}
 
 			domain = addCondition(domain, filter, param);
 
-			filter.setValue(origVal);
-
 		}
 
 		builder.domain(domain);
+		
+		return builder;
 
 	}
 
@@ -687,7 +763,7 @@ public class ActionBuilderService {
 				+ ", '" + model.getName() + "'" + ", '" + template.getName()
 				+ "')");
 		call.setCondition("id != null");
-		call.setController("com.axelor.studio.service.ActionBuilderService");
+		call.setController("com.axelor.studio.service.builder.ActionBuilderService");
 		action.setCall(call);
 
 		return action;

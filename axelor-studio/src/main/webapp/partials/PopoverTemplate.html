@@ -1,67 +1,73 @@
-<form>
-	<div class="form-group"  ng-show="['onSave','toolbar','notebook'].indexOf(component) < 0">
-        <span class="fa">Name</span>
-        <input type="text" ng-model="fieldName" class="form-control" ng-readonly="isView &amp;&amp; ['panel','panelSide','panelTab','notebook','button'].indexOf(component) < 0" ng-change="popover.checkName()"/>
+<form id="formpopover">
+	<div class="group"  ng-show="['onSave','toolbar','notebook'].indexOf(component) < 0">
+        <input id="name" type="text" ng-model="fieldName"  ng-readonly="isView &amp;&amp; ['panel','panelSide','panelTab','notebook','button'].indexOf(component) < 0" ng-change="popover.checkName()"/>
+    	<span class="bar"></span>
+    	<label for="name" class="lab">Name</label>
     </div>
-    <div class="form-group"  ng-show="['onSave','toolbar','notebook'].indexOf(component) < 0">
-        <span class="fa">Title</span>
-        <input type='text' ng-model="label" class="form-control" />
+    <div class="group"  ng-show="['onSave','toolbar','notebook'].indexOf(component) < 0">
+        <input type='text' ng-model="label" id="title" />
+        <span class="bar"></span>
+        <label for="title" class="lab">Title</label>
     </div>
-    <div class="form-group" ng-show="component === 'onSave'" >
-		<textarea class="typeahead form-control" ng-model="onSave" />
+    <div class="group" ng-show="component === 'onSave'" >
+		<input type="text" class="typeahead" ng-model="onSave" id="onSave"/>
+		<span class="bar"></span>
+        <label for="onSave" class="lab">On Save</label>
     </div>
-    <div class="form-group" ng-show="['panel','panelSide','panelTab','notebook'].indexOf(component) > -1" >
-		<span class="fa">Place</span>
-        <select ng-model="place" class="form-control">
-        	<option value="0">Begining</option>
-        	<option value="1">End</option>
-        </select>
+    <div class="group group-no" ng-show="['panel','panelSide','panelTab','notebook'].indexOf(component) > -1" >
+		<select name="select">
+	    	<option value="0">Begining</option> 
+			<option value="1" selected>End</option>
+	    </select>
+	    <label  class="lab">Place</label>
     </div>
-    <div class="form-group" ng-show="!isView &amp;&amp; ['integer','decimal','string'].indexOf(component) > -1">
-	    <span class="fa">Min</span>
-	    <input type="number"  ng-model="min" class="form-control"/>
+    <div class="group" ng-show="!isView &amp;&amp; ['integer','decimal','string'].indexOf(component) > -1">
+	    <input type="number"  ng-model="min" id="min"/>
+		<span class="bar"></span>
+		<label for="min" class="lab">Min</label>
     </div>
-    <div class="form-group" ng-show="!isView &amp;&amp;['integer','decimal','string'].indexOf(component) > -1">
-	    <span class="fa">Max</span>
-	    <input type="number" ng-model="max" class="form-control"/>
+    <div class="group" ng-show="!isView &amp;&amp;['integer','decimal','string'].indexOf(component) > -1">
+	    <input type="number"  ng-model="max"  id="max"/>
+		<span class="bar"></span>
+		<label for="max" class="lab">Max</label>
     </div>
-    <div class="form-group" ng-show="component == 'integer'">
-	     <span class="fa">Default</span>
-	     <input type="number" ng-model="defaultInteger" class="form-control"/>
+    <div class="group" ng-show="component == 'integer'">
+         <input type="number"  ng-model="defaultInteger"  id="defaultInteger"/>
+		 <span class="bar"></span>
+		 <label for="defaultInteger" class="lab">Default</label>
     </div>
-    <div class="form-group" ng-show="component == 'decimal'">
-	    <span class="fa">Default</span>
-	    <input type="number" ng-model="defaultDecimal" class="form-control"/>
+    <div class="group" ng-show="component == 'decimal'">
+	    <input type="number"  ng-model="defaultDecimal" id="defaultDecimal"/>
+	    <span class="bar"></span>
+		<label for="defaultDecimal" class="lab">Default</label>
     </div>
-    <div class="form-group"  ng-show="['string','many-to-one','date','datetime'].indexOf(component) > -1">
-	    <span class="fa">Default</span>
-	    <input type="text" ng-model="defaultString" class="form-control"/>
+    <div class="group"  ng-show="['string','many-to-one','date','datetime'].indexOf(component) > -1">
+	    <input type="text"  ng-model="defaultString"  id="defaultString"/>
+	    <span class="bar"></span>
+		<label for="defaultString" class="lab">Default</label>
     </div>
-    <div class="form-group" ng-show="component == 'boolean'">
-        <input type='checkbox' ng-model="defaultBoolean" />
-        <span class="fa">Default</label>
+    <div class="group group-no" ng-show="component == 'boolean'">
+    	<label><input type="checkbox" ng-model="defaultBoolean"> Default</label>	
     </div>
-    <div class="form-group" ng-show="isView &amp;&amp; ['panel','panelSide','panelTab','notebook','button','onSave'].indexOf(component) < 0" >
-		<span class="fa">On Change</span>
-		<textarea class="typeahead form-control" ng-model="onChange" />
+    <div class="group" ng-show="isView &amp;&amp; ['panel','panelSide','panelTab','notebook','button','onSave', 'toolbar'].indexOf(component) < 0" >
+		<input type="text" class="typeahead" ng-model="onChange" id="onChange"/>
+		<span class="bar"></span>
+        <label for="onChange" class="lab">On Change</label>
     </div>
-    <div class="form-group" ng-show="isView &amp;&amp; (component == 'integer' || component == 'decimal')" >
-    	<input type='checkbox' ng-model="progressBar" />
-    	<span>Progress Bar ?</span>
+    <div class="group group-no" ng-show="isView &amp;&amp; (component == 'integer' || component == 'decimal')" >
+    	<label><input type="checkbox" ng-model="progressBar"> Progress Bar ?</label>	
     </div>
-    <div class="form-group" ng-show="isView &amp;&amp; component == 'textArea'">
-    	<input type='checkbox' ng-model="htmlWidget" />
-    	<span>Html widget ?</span>
+    <div class="group group-no" ng-show="isView &amp;&amp; component == 'textArea'">
+    	<label><input type="checkbox" ng-model="htmlWidget"> Html widget ?</label>	
     </div>
-    <div class="form-group" ng-show="['integer','string'].indexOf(component) > -1">
-    	<span>Selection</span>
-        <select ng-model="metaSelect" ng-options="item as item.name for item in selectionList track by item.id" class="form-control">
+    <div class="group group-no" ng-show="['integer','string'].indexOf(component) > -1">
+        <select ng-model="metaSelect" ng-options="item as item.name for item in selectionList track by item.id">
         	<option value=""></option>
         </select>
+        <label class="lab">Selection</label>
     </div>
-    <div class="form-group" ng-show="isView &amp;&amp; (component == 'integer' || component == 'string' || component == 'many-to-one')">
-        <span>Widget</span>
-        <select ng-model="widget"  class="form-control">
+    <div class="group group-no" ng-show="isView &amp;&amp; (component == 'integer' || component == 'string' || component == 'many-to-one')">
+        <select ng-model="widget">
             <option value="binary-link" ng-show="refModel == 'MetaFile'">Link</option>
         	<option value="normal" >Normal</option>
         	<option value="RadioSelect" ng-show="metaSelect || selection">Radio</option>
@@ -69,54 +75,67 @@
         	<option value="multi-select" ng-show="metaSelect || selection">Multi Select</option>
         	<option value="Image" ng-show="refModel == 'MetaFile'">Image</option>
         </select>
+        <label class="lab">Widget</label>
     </div>
-    <div class="form-group" ng-show="component == 'button'">
-    	<span>Icon</span>
-    	<input type='text' ng-model="icon" class="form-control"/>
-    	<span>Prompt</span>
-    	<input type='text' ng-model="promptMsg" class="form-control"/>
-    	<span>On click</span>
-    	<textarea class="typeahead form-control" ng-model="onClick" />
-    	<input type='checkbox' ng-model="panelTop" />
-        <span>Panel top</span>
+    <div class="group" ng-show="component == 'button'">
+    	<input type="text"  ng-model="icon" id="icon"/>
+	    <span class="bar"></span>
+		<label for="icon" class="lab">Icon</label>
+	</div>
+ 	<div class="group" ng-show="component == 'button'">
+		<input type="text"  ng-model="promptMsg" id="promptMsg"/>
+	    <span class="bar"></span>
+		<label for="promptMsg" class="lab">Prompt</label>
+	</div>
+	<div class="group" ng-show="component == 'button'">
+		<input type="text" class="typeahead" ng-model="onClick" id="onClick" />
+	    <span class="bar"></span>
+		<label for="onClick" class="lab">On click</label>
     </div>
-    <div class="form-group" ng-show="!isView &amp;&amp; ['many-to-one','many-to-many','one-to-many'].indexOf(component) > -1">
-        <span>Model</span>
-        <select ng-model="refModel" ng-options="value for value in options" class="form-control" ng-focus="popover.loadMetaModels($event)" ng-change="popover.loadMetaFields($event)" />
+     <div class="group group-no" ng-show="component == 'button'">
+        <label><input type="checkbox" ng-model="panelTop"> Panel top</label>	
     </div>
-    <div class="form-group" ng-show="!isView &amp;&amp; ['one-to-many'].indexOf(component) > -1">
-        <span>MappedBy</span>
-        <select ng-model="mappedBy" ng-options="value for value in mappedByFields" class="form-control"/>
+    <div class="group group-no" ng-show="!isView &amp;&amp; ['many-to-one','many-to-many','one-to-many'].indexOf(component) > -1">
+        <select ng-model="refModel" ng-options="value for value in options" ng-focus="popover.loadMetaModels($event)" ng-change="popover.loadMetaFields($event)" />
+    	<label class="lab">Model</label>
     </div>
-    <div class="form-group" ng-show="!isView &amp;&amp; ['string'].indexOf(component) > -1">
-        <input type="checkbox" ng-model="nameColumn" />
-        <span>Name column</span>
+    <div class="group group-no" ng-show="!isView &amp;&amp; ['one-to-many'].indexOf(component) > -1">
+        <select ng-model="mappedBy" ng-options="value for value in mappedByFields" />
+        <label class="lab">MappedBy</label>
     </div>
-    <div class="form-group" ng-show="isView &amp;&amp; ['many-to-one','many-to-many'].indexOf(component) > -1">
-        <span>Domain condition</span>
-        <input type="text" ng-model="domainCondition"  class="form-control"/>
+    <div class="group">
+        <label ng-show="!isView &amp;&amp; ['string'].indexOf(component) > -1"><input type="checkbox" ng-model="nameColumn"> Name column</label>
+        <label ng-hide="isView"><input type="checkbox" ng-model="track"> Track</label>	
     </div>
-    <div class="form-group" class="checkbox" ng-hide="isView">
-    	<input type="checkbox" ng-model="track" />
-        <span>Track</span>
+    <div class="group" ng-show="isView &amp;&amp; ['many-to-one','many-to-many'].indexOf(component) > -1">
+        <input type="text"  ng-model="domainCondition" id="domainCondition"/>
+	    <span class="bar"></span>
+		<label for="domainCondition" class="lab">Domain condition</label>
     </div>
-    <div class="form-group" class="checkbox" ng-hide="['button','one-to-many','many-to-many','panel','panelSide','panelTab','notebook', 'onSave', 'toolbar'].indexOf(component) > -1">
-        <input type='checkbox'  ng-model="required" />
-        <a data-toggle="tooltip" data-placement="top" title="Permanent constraint. Can't remove field or constraint in future.  Better to set in view if not sure.">
-        	<span class="text-danger">Required</span>
-        </a>
-        <input ng-show="isView" type='text' ng-model="requiredIf" class="form-control" placeholder="Required If"/>
-        <input type='checkbox' ng-model="readonly" />
-        <span>Readonly</span>
-        <input ng-show="isView" type='text' ng-model="readonlyIf" class="form-control" placeholder="Readonly If"/>
-        <input type='checkbox' ng-model="hidden" />
-        <span>Hidden</span>
-        <input ng-show="isView" type='text' ng-model="hideIf" class="form-control" placeholder="Hide If"/>
+    <div class="group" class="checkbox" ng-hide="['button','one-to-many','many-to-many','panel','panelSide','panelTab','notebook', 'onSave', 'toolbar'].indexOf(component) > -1">
+        <label><input type="checkbox" ng-model="required"> Required</label>
+        <label><input type="checkbox" ng-model="readonly"> Readonly</label>
+        <label><input type="checkbox" ng-model="hidden"> Hidden</label>
+        <label><input type="checkbox" ng-model="hideTitle"> Hide title</label>
     </div>
-    <hr/>
-    <div class='form-group'>
-        <input type='submit' ng-click="popover.save($event)" class='btn btn-primary' value='Save' ng-show="['toolbar','notebook'].indexOf(component) < 0"/>
-        <input type='button' ng-click="popover.cancel($event)" class='btn btn-default' value='Cancel' ng-show="['toolbar','notebook'].indexOf(component) < 0"/>
-        <input type='button' ng-click="popover.remove($event)" class='btn btn-danger' value='Delete'/>
+    <div class="group" class="checkbox" ng-hide="!isView || ['button','one-to-many','many-to-many','panel','panelSide','panelTab','notebook', 'onSave', 'toolbar'].indexOf(component) > -1">
+    	<input type="text"  ng-model="requiredIf" id="requiredIf"/>
+	    <span class="bar"></span>
+		<label for="requiredIf" class="lab">Required If</label>
+	</div>
+	<div class="group" class="checkbox" ng-hide="!isView || ['button','one-to-many','many-to-many','panel','panelSide','panelTab','notebook', 'onSave', 'toolbar'].indexOf(component) > -1">
+		<input type="text"  ng-model="readonlyIf" id="readonlyIf"/>
+	    <span class="bar"></span>
+		<label for="readonlyIf" class="lab">Readonly If</label>
+	</div>
+	<div class="group" class="checkbox" ng-hide="!isView || ['button','one-to-many','many-to-many','panel','panelSide','panelTab','notebook', 'onSave', 'toolbar'].indexOf(component) > -1">
+		<input type="text"  ng-model="hideIf" id="hideIf"/>
+	    <span class="bar"></span>
+		<label for="hideIf" class="lab">Hide If</label>
+    </div>
+    <div class='group group-no'>
+        <button type="submit" ng-click="popover.save($event)" class="btn btn-form" ng-show="['toolbar','notebook'].indexOf(component) < 0">Save</button>
+        <button type='button' ng-click="popover.cancel($event)" class='btn btn-form' ng-show="['toolbar','notebook'].indexOf(component) < 0">Cancel</button>
+        <button type='button' ng-click="popover.remove($event)" class='btn btn-form' >Delete</button>
     </div>
 </form>

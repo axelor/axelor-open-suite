@@ -20,7 +20,6 @@ package com.axelor.studio.service.wkf;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,10 +37,14 @@ import com.axelor.meta.db.repo.MetaMenuRepository;
 import com.axelor.meta.db.repo.MetaModelRepository;
 import com.axelor.meta.db.repo.MetaSelectRepository;
 import com.axelor.meta.schema.actions.ActionGroup;
+import com.axelor.studio.db.ActionBuilder;
 import com.axelor.studio.db.ActionSelector;
 import com.axelor.studio.db.MenuBuilder;
+import com.axelor.studio.db.ViewBuilder;
 import com.axelor.studio.db.WkfNode;
+import com.axelor.studio.db.repo.ActionBuilderRepository;
 import com.axelor.studio.db.repo.MenuBuilderRepository;
+import com.axelor.studio.service.ViewLoaderService;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -80,6 +83,12 @@ class WkfNodeService {
 
 	@Inject
 	private MetaSelectRepository metaSelectRepo;
+	
+	@Inject
+	private ActionBuilderRepository actionBuilderRepo;
+	
+	@Inject
+	private ViewLoaderService viewLoaderService;
 
 	@Inject
 	protected WkfNodeService(WkfService wkfService) {
@@ -93,54 +102,25 @@ class WkfNodeService {
 	protected ActionGroup process() {
 
 		MetaModel metaModel = wkfService.workflow.getMetaModel();
-		MetaField statusField = getStatusField(metaModel);
+		MetaField statusField = wkfService.workflow.getWkfField();
 		MetaSelect metaSelect = addMetaSelect(statusField);
 
 		nodeActions = new ArrayList<String>();
-		String defaultValue = processNodes(metaSelect);
+		String defaultValue = processNodes(metaSelect, statusField);
 		statusField.setDefaultString(defaultValue);
-		wkfService.statusField = statusField;
 
 		metaModel = saveModel(metaModel);
 
 		if (!nodeActions.isEmpty()) {
 			String actionName = "action-group-" + wkfService.dasherizeModel
 					+ "-wkf";
-			String statusCondition = "__this__?.wkfStatus != __self__?.wkfStatus";
+			String statusCondition = "__this__?." + statusField.getName() + " != __self__?." + statusField.getName();
 			return this.wkfService.createActionGroup(actionName, nodeActions,
 					statusCondition);
 		}
 
 		return null;
 
-	}
-
-	/**
-	 * Method search status field in MetaModel. If status field not found it
-	 * will create new wkfStatus field.
-	 * 
-	 * @param metaModel
-	 *            Model to search for field.
-	 * @return MetaField searched or created.
-	 */
-	private MetaField getStatusField(MetaModel metaModel) {
-
-		for (MetaField field : metaModel.getMetaFields()) {
-			if (field.getName().equals(WkfService.WKF_STATUS)) {
-				return field;
-			}
-		}
-
-		MetaField statusField = new MetaField(WkfService.WKF_STATUS, false);
-		statusField.setCustomised(true);
-		statusField.setTypeName("String");
-		statusField.setFieldType("string");
-		statusField.setLabel("Status");
-		metaModel.addMetaField(statusField);
-		metaModel.setCustomised(true);
-		metaModel.setEdited(true);
-
-		return statusField;
 	}
 
 	/**
@@ -155,8 +135,14 @@ class WkfNodeService {
 		MetaSelect metaSelect = statusField.getMetaSelect();
 
 		if (metaSelect == null) {
-			String selectName = wkfService.dasherizeModel.replace("_", ".")
-					+ ".wkf.status.select";
+			String selectName = wkfService.getSelectName();
+//			try {
+//				Mapper mapper = Mapper.of(Class.forName(statusField.getMetaModel().getFullName()));
+//				Property p = mapper.getProperty(statusField.getName());
+//				selectName = p.getSelection();
+//			} catch (ClassNotFoundException e) {
+//			}
+			
 			metaSelect = metaSelectRepo.findByName(selectName);
 			if (metaSelect == null) {
 				metaSelect = new MetaSelect(selectName);
@@ -164,11 +150,14 @@ class WkfNodeService {
 				metaSelect.setModule(metaModule.getName());
 				metaSelect.setMetaModule(metaModule);
 			}
+			
 			statusField.setMetaSelect(metaSelect);
 		}
 		if (metaSelect.getItems() == null) {
 			metaSelect.setItems(new ArrayList<MetaSelectItem>());
 		}
+		
+		metaSelect.clearItems();
 
 		return metaSelect;
 	}
@@ -196,7 +185,7 @@ class WkfNodeService {
 			MetaSelectItem item = itemIter.next();
 			boolean found = false;
 			for (WkfNode node : nodeList) {
-				if (item.getValue().equals(node.getName())) {
+				if (item.getValue().equals(node.getSequence().toString())) {
 					found = true;
 					break;
 				}
@@ -262,16 +251,16 @@ class WkfNodeService {
 	 *            MetaSelect to update.
 	 * @return Return first item as default value for wkfStatus field.
 	 */
-	private String processNodes(MetaSelect metaSelect) {
+	private String processNodes(MetaSelect metaSelect, MetaField statusField) {
 
 		List<WkfNode> nodeList = wkfService.workflow.getNodes();
 
 		String defaultValue = null;
 		removeOldOptions(metaSelect, nodeList);
-
+		
 		for (WkfNode node : nodeList) {
-
-			String option = node.getName();
+			
+			String option = node.getSequence().toString();
 			MetaSelectItem metaSelectItem = getMetaSelectItem(metaSelect,
 					option);
 			if (metaSelectItem == null) {
@@ -290,7 +279,7 @@ class WkfNodeService {
 
 			if (node.getParentMenu() != null
 					|| node.getParentMenuBuilder() != null) {
-				addNodeMenu(node);
+				addNodeMenu(node, statusField);
 			}
 
 			// String name = "custom.permission." + dasherizeModel.replace("-",
@@ -300,14 +289,23 @@ class WkfNodeService {
 
 			List<String> actions = new ArrayList<String>();
 			for (ActionSelector actionSelector : node.getActionSelectorList()) {
-				actions.add(actionSelector.getName());
+				if (actionSelector.getMetaAction() != null) {
+					actions.add(actionSelector.getMetaAction().getName());
+				}
+				else if (actionSelector.getActionBuilder() != null) {
+					actions.add(actionSelector.getActionBuilder().getName());
+				}
 			}
 
 			if (!actions.isEmpty()) {
 				String name = getName(node.getName(), "action-group");
 				nodeActions.add(name);
-				this.wkfService.createActionGroup(name, actions,
-						WkfService.WKF_STATUS + " == '" + node.getName() + "'");
+				String value = node.getSequence().toString();
+				if (statusField.getTypeName().equals("String")) {
+					value = "'" + value + "'";
+				}
+				String condition = statusField.getName() + " == " + value;
+				this.wkfService.createActionGroup(name, actions, condition);
 			}
 
 		}
@@ -323,31 +321,26 @@ class WkfNodeService {
 	 * @param node
 	 *            WkfNode to process.
 	 */
-	private void addNodeMenu(WkfNode node) {
+	private void addNodeMenu(WkfNode node, MetaField statusField) {
 
 		String nodeName = node.getName();
 		String menuName = getName(nodeName, "menu");
-		String domain = "self." + WkfService.WKF_STATUS + " = '" + nodeName
-				+ "'";
+		String domain = getDomain(node.getSequence(), statusField);
 		MetaMenu parentMenu = node.getParentMenu();
 		MenuBuilder parentMenuBuilder = node.getParentMenuBuilder();
 		Integer order = 1;
-		String parent = null;
 		if (parentMenu != null) {
-			parent = parentMenu.getName();
-			log.debug("Meta menu repo : {}, parent: {}", metaMenuRepo, parent);
 			MetaMenu childMenu = metaMenuRepo
 					.all()
 					.filter("self.parent.name = ?1 and self.action is null",
-							parent).order("-order").fetchOne();
+							parentMenu.getName()).order("-order").fetchOne();
 			if (childMenu != null) {
 				order = childMenu.getOrder() + 1;
 			}
 		} else {
-			parent = parentMenuBuilder.getName();
 			MenuBuilder menuBuilder = menuBuilderRepo
 					.all()
-					.filter("self.menuBuilder = ?1 and self.isParent != true",
+					.filter("self.menuBuilder = ?1 and self.actionBuilder is not null",
 							parentMenuBuilder).order("-order").fetchOne();
 			log.debug("Last menu builder found: {}", menuBuilder);
 
@@ -358,7 +351,7 @@ class WkfNodeService {
 
 		if (node.getStatusMenuEntry()) {
 			MenuBuilder menuBuilder = addMenuBuilder(node.getStatusMenuLabel(),
-					menuName, domain, parent, order, parentMenuBuilder);
+					menuName, domain, parentMenu, order, parentMenuBuilder, node.getWkf().getMetaModule());
 			node.setStatusMenu(menuBuilder);
 			order += 1;
 		}
@@ -367,10 +360,21 @@ class WkfNodeService {
 			domain += " AND self." + node.getMetaField().getName()
 					+ " = :__user__";
 			MenuBuilder menuBuilder = addMenuBuilder(node.getMyMenuLabel(),
-					"my-" + menuName, domain, parent, order, parentMenuBuilder);
+					"my-" + menuName, domain, parentMenu, order, parentMenuBuilder, node.getWkf().getMetaModule());
 			node.setMyStatusMenu(menuBuilder);
 		}
 
+	}
+
+	private String getDomain(Integer nodeSeq, MetaField statusField) {
+		
+		String typeName = statusField.getTypeName();
+		
+		if (typeName.equals("Integer")) {
+			return "self." + statusField.getName() + " = " + nodeSeq;
+		}
+		
+		return "self." + statusField.getName() + " = '" + nodeSeq + "'";
 	}
 
 	private String getName(String node, String prefix) {
@@ -446,30 +450,30 @@ class WkfNodeService {
 	 * @param node
 	 *            WkfNode containing roles.
 	 */
-	@Transactional
-	public void addNodePermissions(String name, WkfNode node) {
-
-		Set<Role> roles = node.getRoleSet();
-
-		if (roles == null || roles.isEmpty()) {
-			return;
-		}
-
-		Permission permission = permissionRepo.findByName(name);
-		if (permission == null) {
-			permission = new Permission(name);
-			permission.setCanRead(true);
-			permission.setCondition("self." + WkfService.WKF_STATUS + " = '"
-					+ node.getName() + "'");
-			permission.setObject(wkfService.modelName);
-			permission = permissionRepo.save(permission);
-		}
-
-		for (Role role : roles) {
-			role.addPermission(permission);
-			wkfService.roleRepo.save(role);
-		}
-	}
+//	@Transactional
+//	public void addNodePermissions(String name, WkfNode node) {
+//
+//		Set<Role> roles = node.getRoleSet();
+//
+//		if (roles == null || roles.isEmpty()) {
+//			return;
+//		}
+//
+//		Permission permission = permissionRepo.findByName(name);
+//		if (permission == null) {
+//			permission = new Permission(name);
+//			permission.setCanRead(true);
+//			permission.setCondition("self." + WkfService.WKF_STATUS + " = '"
+//					+ node.getName() + "'");
+//			permission.setObject(node.getWkf().getMetaModel().getFullName());
+//			permission = permissionRepo.save(permission);
+//		}
+//
+//		for (Role role : roles) {
+//			role.addPermission(permission);
+//			wkfService.roleRepo.save(role);
+//		}
+//	}
 
 	/**
 	 * Create/Update MenuBuilder from given parameters.
@@ -488,7 +492,7 @@ class WkfNodeService {
 	 */
 	@Transactional
 	public MenuBuilder addMenuBuilder(String title, String name, String domain,
-			String parent, Integer order, MenuBuilder parentBuilder) {
+			MetaMenu parentMenu, Integer order, MenuBuilder parentBuilder, MetaModule metaModule) {
 		MenuBuilder menuBuilder = menuBuilderRepo.findByName(name);
 		if (menuBuilder == null) {
 			menuBuilder = new MenuBuilder(name);
@@ -496,12 +500,49 @@ class WkfNodeService {
 		menuBuilder.setTitle(title);
 		menuBuilder.setEdited(true);
 		menuBuilder.setRecorded(false);
-		menuBuilder.setModel(wkfService.modelName);
-		menuBuilder.setDomain(domain);
-		menuBuilder.setParent(parent);
 		menuBuilder.setOrder(order);
 		menuBuilder.setMenuBuilder(parentBuilder);
+		menuBuilder.setMetaMenu(parentMenu);
+		menuBuilder.setMetaModule(metaModule);
+		
+		ActionBuilder builder = getActionBuilder(menuBuilder, metaModule, domain);
+		menuBuilder.setActionBuilder(builder);
+//		menuBuilder.setMetaModel(wkfService.workflow.getMetaModel());
+//		menuBuilder.setDomain(domain);
 		return menuBuilderRepo.save(menuBuilder);
+		
+	}
+	
+	private ActionBuilder getActionBuilder(MenuBuilder menuBuilder, MetaModule metaModule, String domain) {
+		
+		ActionBuilder builder = menuBuilder.getActionBuilder();
+		
+		String name = menuBuilder.getName().replace("-", ".");
+		
+		if (builder == null) {
+			builder = actionBuilderRepo.all().filter("self.metaModule = ?1 and self.name = ?2", metaModule, name).fetchOne();
+		}
+		
+		if (builder == null) {
+			builder = new ActionBuilder(name);
+			builder.setTypeSelect(2);
+		}
+		
+		builder.setDomainCondition(domain);
+		builder.clearViewBuilderSet();
+		MetaModel model = wkfService.workflow.getMetaModel();
+		String gridName = ViewLoaderService.getDefaultViewName(model.getName(), "grid");
+		ViewBuilder grid = viewLoaderService.getViewBuilder(metaModule.getName(), gridName, "grid");
+		if (grid != null) {
+			builder.addViewBuilderSetItem(grid);
+		}
+		builder.addViewBuilderSetItem(wkfService.workflow.getViewBuilder());
+		builder.setMetaModel(model);
+		builder.setMetaModule(metaModule);
+		builder.setTitle(menuBuilder.getTitle());
+		
+		return builder;
+		
 	}
 
 }

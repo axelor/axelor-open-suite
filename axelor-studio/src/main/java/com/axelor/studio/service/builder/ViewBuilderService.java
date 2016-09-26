@@ -133,6 +133,8 @@ public class ViewBuilderService {
 				return error;
 			}
 			
+			menuBuilderService.build(module, viewDir, updateMeta);
+			
 			List<ViewBuilder> viewBuilders = getViewBuilders(module, updateAll);
 
 			splitByModel(viewBuilders.iterator());
@@ -142,8 +144,6 @@ public class ViewBuilderService {
 			}
 
 			rightMgmtService.updateRights();
-
-			menuBuilderService.build(viewDir, updateMeta);
 
 			updateEdited(viewBuilders, updateMeta);
 
@@ -411,31 +411,21 @@ public class ViewBuilderService {
 		if (objectViews == null) {
 			objectViews = new ObjectViews();
 		}
-
-		StringWriter xmlWriter = new StringWriter();
-
+		
 		if (view != null) {
 			List<AbstractView> views = filterOldViews(view,
 					objectViews.getViews());
-			for (AbstractView viewXml : views) {
-				String xml = XMLViews.toXml(viewXml, true);
-				XMLViews.fromXML(xml);
-				xmlWriter.write(xml);
-				xmlWriter.write("\n");
-			}
+			objectViews.setViews(views);
 		}
 
 		if (actions != null && !actions.isEmpty()) {
 			actions = filterOldActions(actions, objectViews.getActions());
-			for (Action action : actions) {
-				String xml = XMLViews.toXml(action, true);
-				XMLViews.fromXML(xml);
-				xmlWriter.write(xml);
-				xmlWriter.write("\n");
-			}
+			objectViews.setActions(actions);
 		}
-
-		writeFile(viewFile, xmlWriter);
+		
+		if (view != null || (actions != null && !actions.isEmpty())) {
+			XMLViews.marshal(objectViews, new FileWriter(viewFile));
+		}
 
 	}
 

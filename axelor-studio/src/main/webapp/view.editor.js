@@ -33,14 +33,15 @@
 		    widgetValues = ['normal','RadioSelect','NavSelect','multi-select'],
 		    
     	    typeNameMap = {
-				'string':'String',
-				'integer':'Integer',
-				'boolean':'Boolean',
-				'decimal':'BigDecimal',
-				'long':'Long',
-				'binary':'byte[]',
-				'date':'LocalDate',
-				'datetime':'DateTime'
+				'String':'string',
+				'Integer':'integer',
+				'Boolean':'boolean',
+				'BigDecimal':'decimal',
+				'Long':'long',
+				'byte[]':'binary',
+				'LocalDate':'date',
+				'LocalDateTime':'datetime',
+				'DateTime':'datetime'
 		    },
 		    
 	    	defaultMap = {
@@ -61,7 +62,6 @@
 		$scope.isView = true;
 		
 		function addField(field){
-			
 			var fieldData = {
 			    component: field.fieldType,
 			    label: field.label,
@@ -108,7 +108,15 @@
 	    				};
 	    			};
 	    			break;
-			}	
+			}
+			
+			if (fieldData.component == null) {
+				fieldData.component = typeNameMap[field.typeName]; 
+				if (fieldData.component == null) {
+					fieldData.component = "string";
+				}
+			}
+			
 			var textbox = $builder.addFormObject('fieldForm', fieldData);  
 			
 			$scope.defaultValue[textbox.id] = field.defaultString;
@@ -143,7 +151,8 @@
 			    onClick: item.onClick,
 			    refModel: item.refModel,
 			    panelTop: item.panelTop,
-			    metaFieldId: item.metaFieldId
+			    metaFieldId: item.metaFieldId,
+			    hideTitle: item.hideTitle
 			};
 			
 			if(item.typeSelect === 1){
@@ -164,6 +173,10 @@
 					default:
 						viewItemData['defaultString'] = item.defaultValue;
 				};
+			}
+			
+			if (!viewItemData.component) {
+				viewItemData["component"] = "string";
 			}
 			
 			$builder.addFormObject('viewForm', viewItemData);
@@ -350,7 +363,7 @@
 					'offset': 0,
 					'sortBy': ['sequence'],
 					'data': {
-						'_domain': 'self.metaModel.id = ' + modelId + ' AND self.customised = true',
+						'_domain': "self.name != 'id'  and self.metaModel.id = " + modelId,
 						'_archived': true
 					}
 				}
@@ -494,6 +507,7 @@
 							data['onClick'] = formObject.onClick ? formObject.onClick.replace(/(^\s*,)|(,\s*$)/g, '') : null;
 							data['defaultValue'] = formObject[defaultMap[formObject.component]] ? formObject[defaultMap[formObject.component]].toString() : null;
 							data['panelTop'] = formObject.panelTop;
+							data['hideTitle'] = formObject.hideTitle;
 							
 							if(formObject.component == 'button'){
 								data['fieldType'] = null;

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<meta-modules xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  
+  <meta-module name="axelor-custom" moduleVersion="1.0" depends="axelor-studio" title="Axelor custom" />
+  
+</meta-modules>

@@ -152,6 +152,10 @@ public class ExportService {
 		if (keys != null) {
 			for (int count = 0 ; count < reader.getTotalLines(keys[0]); count++) {
 				String[] row = reader.read(keys[0], count);
+				if (row == null) {
+					continue;
+				}
+				
 				writer.write(keys[0], count, row);
 			}
 		}
@@ -322,7 +326,6 @@ public class ExportService {
 			for (int count = 0; count < reader.getTotalLines(key); count ++) {
 				
 				String[] row = reader.read(key, count);
-				
 				if (row == null) {
 					continue;
 				}

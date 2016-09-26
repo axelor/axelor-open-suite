@@ -64,6 +64,19 @@ public class ImportGrid {
 
 	}
 	
+	@Transactional
+	public void clearGrid(String module, String model) {
+    	
+		String gridName = ViewLoaderService.getDefaultViewName(model, "grid");
+		
+		ViewBuilder grid = viewLoaderService.getViewBuilder(module, gridName, "grid");
+		
+		if (grid != null) {
+			viewBuilderRepo.remove(grid);
+		}
+		
+	}
+
 	
 
 }

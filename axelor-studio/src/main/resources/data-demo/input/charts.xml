@@ -2,60 +2,35 @@
 <charts xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   
-  <!-- Sales Charts -->
-  
-  <chart name="sales-per-month" title="Sales per month" model="com.axelor.apps.custom.db.Order" 
-      chartType="hbar" groupOn="orderDate" groupDateType="month" displayField="total">
+  <chart name="expense-per-month" title="Montant des dépenses par mois" model="com.axelor.apps.custom.db.Expense" 
+      chartType="bar" groupOn="dateFrom" groupDateType="month" displayField="totalTTC">
   		<filters>
-  			<filter metaField="orderDate" filterOperator="notNull" />
+  			<filter metaField="dateFrom" filterOperator="notNull" />
+  			<filter metaField="status" filterOperator="=" value="5" />
   		</filters>
   </chart>
   
-  <chart name="sales-per-customer-per-month" title="Sales per customer per month" model="com.axelor.apps.custom.db.Order" 
-      chartType="bar" groupOn="orderDate" groupDateType="month" displayField="total">
+<!--   <chart name="expense-per-expense-type" title="Montant des dépenses par type" model="com.axelor.apps.custom.db.ExpenseLine"  -->
+<!--       chartType="bar" groupOn="expenseType"  groupOnTarget="expenseType"  displayField="amtTTC"> -->
+<!--   		<filters> -->
+<!--   			<filter metaField="expenseType" filterOperator="notNull" /> -->
+<!--   			<filter metaField="expense" targetField="expense.status" targetType="string" filterOperator="=" value="3" /> -->
+<!--   		</filters> -->
+<!--   </chart> -->
+  
+  <chart name="expense-per-expense-user" title="Montant des dépenses par utilisateur" model="com.axelor.apps.custom.db.Expense" 
+      chartType="bar" groupOn="expenseUser"  groupOnTarget="expenseUser.name"  displayField="totalTTC">
   		<filters>
-  			<filter metaField="orderDate" filterOperator="&lt;=" isParameter="T" defaultValue="$Today"/>
-  			<filter metaField="customer" filterOperator="="  isParameter="T" targetField="customer" targetRef="com.axelor.apps.custom.db.Customer" targetType="String"/>
+  			<filter metaField="expenseUser" targetField="expenseUser.name" targetType="string" filterOperator="notNull" />
+  			<filter metaField="status" filterOperator="=" value="5" targetType="integer" />
   		</filters>
   </chart>
   
-  <chart name="sales-per-policy" title="Sales per order policy" model="com.axelor.apps.custom.db.Order" 
-      chartType="pie" displayField="total" groupOn="orderPolicy" groupOnTarget="orderPolicy.name">
-  		<filters>
-  			<filter metaField="orderDate" filterOperator="notNull" />
-  			<filter metaField="orderPolicy" filterOperator="notNull"  targetField="orderPolicy" targetType="String" targetRef="com.axelor.apps.custom.db.OrderPolicy" />
-  		</filters>
-  </chart>
-  
-  <chart name="sales-per-product-category" title="Sales per product category" model="com.axelor.apps.custom.db.OrderLine" 
-      chartType="bar" groupOn="productCategory"  groupOnTarget="productCategory.name" displayField="totalAmt" />
-  
-  <chart name="my-sales-order" title="My sales" model="com.axelor.apps.custom.db.Order" 
-      chartType="donut" groupOn="orderDate" groupDateType="month" displayField="total" >
-  		<filters>
-  			<filter metaField="orderDate" filterOperator="notNull" />
-  			<filter metaField="salesman" filterOperator="=" value="$CUser" targetField="salesman" targetRef="com.axelor.auth.db.User" targetType="String" />
-  		</filters>
-  </chart>
-  
-  <chart name="others-sales-order" title="Other's sales" model="com.axelor.apps.custom.db.Order" 
-      chartType="gauge" groupOn="orderDate" groupDateType="month" displayField="total">
-  		<filters>
-  			<filter metaField="orderDate" filterOperator="notNull" />
-  			<filter metaField="salesman" filterOperator="!=" value="$CUser"  targetField="salesman" targetRef="com.axelor.auth.db.User" targetType="String" />
-  		</filters>
-  </chart>
-  
-  <dashboard name="sales-dashboard" title="Sales dashboard">
+  <dashboard name="expense-dashboard" title="Dashboard">
   	<dashlets>
-  		<dashlet name="Sales per month" viewBuilder="sales-per-month" sequence="0" viewType="chart"/>
-  		<dashlet name="Sales per customer per month" viewBuilder="sales-per-customer-per-month" sequence="1" viewType="chart"/>
-  		<dashlet name="Sales per order policy"  viewBuilder="sales-per-policy"  sequence="2" viewType="chart"/>
-  		<dashlet name="Sales per product category"  viewBuilder="sales-per-product-category"  sequence="3" viewType="chart"/>
-  		<dashlet name="My sales"  viewBuilder="my-sales-order"  sequence="4" viewType="chart"/>
-  		<dashlet name="Other's sales"  viewBuilder="others-sales-order"  sequence="5" viewType="chart"/>
-  		<dashlet name="All sales" viewBuilder="order-grid" viewType="grid"/>
-  		<dashlet name="All customers" viewBuilder="customer-grid" viewType="grid"/>
+  		<dashlet name="Montant des dépenses par mois" viewBuilder="expense-per-month" sequence="0" viewType="chart"/>
+<!--   		<dashlet name="Montant des dépenses par type" viewBuilder="expense-per-expense-type" sequence="1" viewType="chart"/> -->
+  		<dashlet name="Montant des dépenses par utilisateur"  viewBuilder="expense-per-expense-user"  sequence="2" viewType="chart"/>
   	</dashlets>
   </dashboard>
   

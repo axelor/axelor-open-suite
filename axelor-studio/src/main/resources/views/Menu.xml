@@ -126,7 +126,7 @@
   
   <menuitem name="menu-studio-module" title="Modules" action="action.studio.module" parent="menu-studio-configuration" order="5"/>
 
-  <action-view name="action.studio.module" title="Modules" model="com.axelor.meta.db.Module">
+  <action-view name="action.studio.module" title="Modules" model="com.axelor.meta.db.MetaModule">
       <view type="grid"/>
       <view type="form"/>
   </action-view>

@@ -23,6 +23,8 @@ import java.util.*;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -49,10 +51,10 @@ import com.google.inject.persist.Transactional;
  *
  */
 public class WkfDesignerService {
-
+	
+	private final Logger log = LoggerFactory.getLogger(WkfDesignerService.class);
+	
 	protected static final String WKF_STATUS = "wkfStatus";
-
-	protected Wkf workflow = null;
 
 	protected MetaField statusField = null;
 
@@ -64,14 +66,18 @@ public class WkfDesignerService {
 
 	protected String defaultStatus = null;
 
-	@Inject
-	protected RoleRepository roleRepo;
-
 	private Set<WkfNode> nodes = new LinkedHashSet<>();
 
 	private Set<WkfTransition> transitions = new LinkedHashSet<>();
 
 	private Wkf instance;
+	
+	private List<Integer> nodeSequences;
+	
+	@Inject
+	protected RoleRepository roleRepo;
+
+	
 
 	/**
 	 * Method parse xml doc to create workflow nodes from it. It set incoming
@@ -80,13 +86,15 @@ public class WkfDesignerService {
 	 * @param doc
 	 */
 	public void traverseXMLElement(Document doc) {
-
-		WkfNodeRepository wkfNodeRepository = Beans
-				.get(WkfNodeRepository.class);
+		
+		nodeSequences = new ArrayList<Integer>();
 
 		NodeList list = doc.getElementsByTagName("*");
 
 		int nodeCount = 1;
+		
+		Map<String, WkfNode> nodeMap = getNodeMap();
+		
 		for (int i = 0; i < list.getLength(); i++) {
 
 			Element element = (Element) list.item(i);
@@ -98,10 +106,7 @@ public class WkfDesignerService {
 
 			String elementName = element.getTagName();
 
-			WkfNode node = wkfNodeRepository.all()
-					.filter("self.wkf.id = :wkfId and self.xmlId = :xmlId")
-					.bind("wkfId", this.instance.getId())
-					.bind("xmlId", element.getAttribute("id")).fetchOne();
+			WkfNode node = nodeMap.get(element.getAttribute("id"));
 
 			if (node == null) {
 				node = new WkfNode();
@@ -109,6 +114,9 @@ public class WkfDesignerService {
 				node.setName(element.getAttribute("name"));
 				node.setTitle(node.getName());
 				node.setWkf(instance);
+				while(nodeSequences.contains(nodeCount)) {
+					nodeCount++;
+				}
 				node.setSequence(nodeCount);
 				nodeCount++;
 				if (elementName == "startEvent")
@@ -160,6 +168,25 @@ public class WkfDesignerService {
 			}
 			nodes.add(node);
 		}
+	}
+
+	private Map<String, WkfNode> getNodeMap() {
+		
+		WkfNodeRepository wkfNodeRepository = Beans
+				.get(WkfNodeRepository.class);
+		
+		Map<String, WkfNode> nodeMap = new HashMap<String, WkfNode>();
+		if (instance != null) {
+			List<WkfNode> nodes = wkfNodeRepository.all().filter("self.wkf.id = ?1", instance.getId()).fetch();
+			for (WkfNode node : nodes) {
+				nodeMap.put(node.getXmlId(), node);
+			}
+		}
+		else {
+			log.debug("Worklfow not saved");
+		}
+		
+		return nodeMap;
 	}
 
 	/**

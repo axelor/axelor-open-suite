@@ -18,30 +18,27 @@
 package com.axelor.studio.service.data.importer;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.xssf.usermodel.XSSFSheet;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
-import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaField;
+import com.axelor.meta.db.MetaFile;
 import com.axelor.meta.db.MetaModel;
 import com.axelor.meta.db.MetaModule;
 import com.axelor.meta.db.repo.MetaModelRepository;
 import com.axelor.studio.db.ActionBuilder;
-import com.axelor.studio.db.DataManager;
 import com.axelor.studio.db.ViewBuilder;
 import com.axelor.studio.db.ViewItem;
 import com.axelor.studio.db.repo.ActionBuilderRepository;
@@ -52,7 +49,7 @@ import com.axelor.studio.service.data.validator.ValidatorService;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
-public class ImportService extends CommonService {
+public class ImportService {
 
 	private final static Logger log = LoggerFactory
 			.getLogger(ImportService.class);
@@ -106,12 +103,9 @@ public class ImportService extends CommonService {
 	 * @return Return true if import done successfully else false.
 	 * @throws AxelorException 
 	 */
-	public File importData(DataManager dataManager) throws AxelorException {
+	public File importData(DataReader reader, MetaFile metaFile) throws AxelorException {
 		
-		File inputFile = MetaFiles.getPath(dataManager.getMetaFile())
-				.toFile();
-
-		if (!inputFile.exists()) {
+		if (metaFile == null) {
 			throw new AxelorException(I18n.get("Input file not exist"), 4);
 		}
 
@@ -122,25 +116,24 @@ public class ImportService extends CommonService {
 
 		try {
 			
-			FileInputStream fis = new FileInputStream(inputFile);
-			XSSFWorkbook workBook = new XSSFWorkbook(fis);
+			reader.initialize(metaFile);
 			
-			File logFile = validatorService.validate(workBook);
+			File logFile = validatorService.validate(reader);
 			if(logFile != null){
 				return logFile;
 			}
 			
 			importForm.clear();
 			
-			XSSFSheet sheet = workBook.getSheet("Modules");
-			importModule.createModules(sheet);
+			importModule.createModules(reader, "Modules");
 
-			processSheets(workBook.iterator());
+			processSheets(reader);
 			
-			sheet = workBook.getSheet("Menu");
-			importMenu.importMenus(sheet);
+			Map<String, MetaModel> modelMap = clearModels();
 			
-			generateGridView();
+			generateGrid(modelMap);
+			
+			importMenu.importMenus(reader, "Menu");
 
 		} catch (IOException e) {
 			throw new AxelorException(e, 5);
@@ -160,24 +153,31 @@ public class ImportService extends CommonService {
 	 *             Exception in file handling.
 	 * @throws AxelorException 
 	 */
-	private void processSheets(Iterator<XSSFSheet> sheetIter) throws IOException, AxelorException {
+	private void processSheets(DataReader reader) throws IOException, AxelorException {
 
-		if (!sheetIter.hasNext()) {
+		String[] keys = reader.getKeys();
+		if (keys == null) {
 			return;
 		}
 		
-		XSSFSheet sheet = sheetIter.next();
-		String name = sheet.getSheetName(); 
-		if (!name.equals("Modules") && !name.equals("Menu")) {
-			log.debug("Importing sheet: {}", name);
-			Iterator<Row> rowIter = sheet.rowIterator();
-			if (rowIter.hasNext()) {
-				rowIter.next();
+		for (String key : keys) {
+			if (!key.equals("Modules") && !key.equals("Menu")) {
+				log.debug("Importing sheet: {}", key);
+				int totalLines = reader.getTotalLines(key);
+				
+				for (int rowNum = 0; rowNum < totalLines; rowNum++) {
+					
+					String[] row = reader.read(key, rowNum);
+					if (row == null) {
+						continue;
+					}
+					
+					processRow(row, key, rowNum);
+					
+				}
 			}
-			extractRow(rowIter);
 		}
 		
-		processSheets(sheetIter);
 	}
 	
 	/**
@@ -189,17 +189,12 @@ public class ImportService extends CommonService {
 	 * @throws AxelorException 
 	 */
 
-	private void extractRow(Iterator<Row> rowIter) throws AxelorException {
+	private void processRow(String[] row, String key, int rowNum) throws AxelorException {
 
-		if (!rowIter.hasNext()) {
-			return;
-		}
-		
 		replace = true;
-		Row row = rowIter.next();
-		String module = getValue(row, MODULE);
+
+		String module = row[CommonService.MODULE];
 		if (module == null) {
-			extractRow(rowIter);
 			return;
 		}
 		
@@ -208,15 +203,13 @@ public class ImportService extends CommonService {
 			module = module.replace("*", "");
 		}
 		
-		MetaModule metaModule = getModule(module, getValue(row, IF_MODULE));
+		MetaModule metaModule = getModule(module, row[CommonService.IF_MODULE]);
 		if (metaModule == null) {
-			extractRow(rowIter);
 			return;
 		}
 		
-		importModel.importModel(this, row, metaModule);
+		importModel.importModel(this, row, rowNum, metaModule);
 
-		extractRow(rowIter);
 	}
 	
     public MetaModule getModule(String module, String checkModule) {
@@ -246,33 +239,37 @@ public class ImportService extends CommonService {
     
     
     @Transactional
-    public void generateGridView() throws AxelorException {
+    public void generateGrid(Map<String, MetaModel> modelMap) throws AxelorException {
 		
     	Map<String, List<ActionBuilder>> actionViewMap = importForm.getViewActionMap();
-		
+    	
 		for (String module : moduleMap.keySet()) {
+			
 			for (String modelName : moduleMap.get(module).keySet()) {
-	 			MetaModel model = metaModelRepo.findByName(modelName);
-	 			if (model != null && !model.getCustomised()) {
+	 			if (!modelMap.containsKey(modelName)) {
 	 				continue;
 	 			}
-				model = clearModel(module, model);
-				if (model == null || moduleMap.get(module).get(modelName).size() < 1) {
-					continue;
-				}
+	 			MetaModel model = modelMap.get(modelName);
+				List<MetaField> fields = null;
 				if (gridViewMap.containsKey(module)) {
-					List<MetaField> fields = gridViewMap.get(module).get(model);
+					fields = gridViewMap.get(module).get(model);
+				}
+				
+				if (model.getMetaModule() != null || fields != null) {
 					ViewBuilder viewBuilder = importGrid.createGridView(getModule(module, null), model, fields);
 					if (actionViewMap.containsKey(viewBuilder.getName())) {
 						
 						for (ActionBuilder builder : actionViewMap.get(viewBuilder.getName())) {
-							builder.setViewBuilder(viewBuilder);
+							builder.addViewBuilderSetItem(viewBuilder);
 							builder.setMetaModel(viewBuilder.getMetaModel());
 							actionBuilderRepo.save(builder);
 						}
 						
 						actionViewMap.remove(viewBuilder.getName());
 					}
+				}
+				else {
+					importGrid.clearGrid(module, modelName);
 				}
 			}
 		}
@@ -284,31 +281,57 @@ public class ImportService extends CommonService {
 
 	}
     
+	private Map<String,	Set<String>> getModels() {
+    	
+    	Map<String, Set<String>> models = new HashMap<String, Set<String>>();
+    	
+    	for (String module : moduleMap.keySet()) {
+    		for (String modelName : moduleMap.get(module).keySet()) {
+    			if (!models.containsKey(modelName)) {
+    				models.put(modelName, new HashSet<String>());
+    			}
+    			if (moduleMap.get(module).get(modelName) != null) {
+    				models.get(modelName).addAll(moduleMap.get(module).get(modelName));
+    			}
+    		}
+    	}
+    	
+    	return models;
+    }
 
 	@Transactional
-	public MetaModel clearModel(String module, MetaModel model) {
-
-		List<String> fieldNames = moduleMap.get(module).get(model);
+	Map<String, MetaModel> clearModels() {
 		
-		if (fieldNames == null) {
-			return model;
-		}
+		Map<String , MetaModel> modelMap = new HashMap<String, MetaModel>();
 		
-		Iterator<MetaField> fieldIter = model.getMetaFields().iterator();
+		Map<String, Set<String>> models = getModels();
 		
-		while (fieldIter.hasNext()) {
-			MetaField field = fieldIter.next();
-			if (field.getCustomised() && !fieldNames.contains(field.getName())) {
-				log.debug("Removing field : {}", field.getName());
-				List<ViewItem> viewItems = viewItemRepo.all().filter("self.metaField = ?1", field).fetch();
-				for (ViewItem viewItem : viewItems) {
-					viewItemRepo.remove(viewItem);
-				}
-				fieldIter.remove();
+		for (String modelName : models.keySet()) {
+			MetaModel model = metaModelRepo.findByName(modelName);
+			if (model == null) {
+				continue;
 			}
+			
+			Set<String> fields = models.get(modelName);
+		
+			Iterator<MetaField> fieldIter = model.getMetaFields().iterator();
+		
+			while (fieldIter.hasNext()) {
+				MetaField field = fieldIter.next();
+				if (field.getCustomised() && !fields.contains(field.getName()) && !field.getName().equals("wkfStatus")) {
+					log.debug("Removing field : {}", field.getName());
+					List<ViewItem> viewItems = viewItemRepo.all().filter("self.metaField = ?1", field).fetch();
+					for (ViewItem viewItem : viewItems) {
+						viewItemRepo.remove(viewItem);
+					}
+					fieldIter.remove();
+				}
+			}
+				
+			modelMap.put(modelName, metaModelRepo.save(model));
 		}
 		
-		return metaModelRepo.save(model);
+		return modelMap;
 	}
     
     public void addNestedModel(String name, MetaModel metaModel) {
@@ -338,14 +361,14 @@ public class ImportService extends CommonService {
     	}
     }
     
-    public void addView(MetaModel model, String[] basic, Row row, MetaField field) throws AxelorException {
+    public void addView(MetaModel model, String[] basic, String[] row, int rowNum, MetaField field) throws AxelorException {
     	
-    	importForm.importForm(model, basic, row, field, replace);
+    	importForm.importForm(model, basic, row, rowNum, field, replace);
     }
     
     public Integer getFieldSeq(Long modelId) {
     	
-    	Integer seq = 0;
+    	Integer seq = 1;
     	if (fieldSeqMap.containsKey(modelId)) {
     		seq = fieldSeqMap.get(modelId) + 1;
     	}
@@ -356,7 +379,7 @@ public class ImportService extends CommonService {
     }
     
     
-    public void addGridField(String module, String model, MetaField metaField, String addGrid) {
+    public void addGridField(String module, String model, MetaField metaField) {
 		
 		Map<String, List<MetaField>> gridMap = null; 
 		if (!gridViewMap.containsKey(module)) {
@@ -367,9 +390,7 @@ public class ImportService extends CommonService {
 			gridMap.put(model, new ArrayList<MetaField>());
 		}
 		
-		if (addGrid != null && addGrid.equalsIgnoreCase("x")) {
-			gridMap.get(model).add(metaField);
-		}
+		gridMap.get(model).add(metaField);
 		
 		gridViewMap.put(module, gridMap);
 		

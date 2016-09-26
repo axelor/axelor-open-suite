@@ -37,9 +37,11 @@ import com.google.inject.Inject;
  *
  */
 public class FilterService {
-
+	
+	public static final List<String> NO_PARAMS = Arrays.asList(new String[]{"isNull","notNull", "empty", "notEmpty"});
+	
 	private final Logger log = LoggerFactory.getLogger(getClass());
-
+	
 	@Inject
 	private MetaFieldRepository metaFieldRepo;
 
@@ -282,8 +284,8 @@ public class FilterService {
 			case "FALSE":
 				return conditionField + " IS FALSE ";
 			default:
-				operator = operator.replace("<", "&lt;");
-				operator = operator.replace(">", "&gt;");
+//				operator = operator.replace("<", "&lt;");
+//				operator = operator.replace(">", "&gt;");
 				return conditionField + " " + operator + " " + value;
 		}
 

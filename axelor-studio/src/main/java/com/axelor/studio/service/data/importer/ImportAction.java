@@ -3,13 +3,9 @@ package com.axelor.studio.service.data.importer;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.xssf.usermodel.XSSFSheet;
 
 import com.axelor.apps.message.db.Template;
 import com.axelor.apps.message.db.repo.TemplateRepository;
@@ -23,17 +19,14 @@ import com.axelor.meta.schema.views.Selection.Option;
 import com.axelor.studio.db.ActionBuilder;
 import com.axelor.studio.db.ActionBuilderLine;
 import com.axelor.studio.db.ReportBuilder;
-import com.axelor.studio.db.ViewBuilder;
 import com.axelor.studio.db.repo.ActionBuilderRepository;
 import com.axelor.studio.db.repo.ReportBuilderRepository;
-import com.axelor.studio.db.repo.ViewBuilderRepository;
 import com.axelor.studio.service.ConfigurationService;
-import com.axelor.studio.service.data.CommonService;
 import com.axelor.studio.service.data.exporter.ExportAction;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
-public class ImportAction extends CommonService {
+public class ImportAction {
 	
 	private Map<String, Integer> typeMap = new HashMap<String, Integer>(); 
 	
@@ -49,9 +42,6 @@ public class ImportAction extends CommonService {
 	private MetaModelRepository metaModelRepo;
 	
 	@Inject
-	private ViewBuilderRepository viewBuilderRepo;
-	
-	@Inject
 	private MetaFieldRepository metaFieldRepo;
 	
 	@Inject
@@ -60,18 +50,23 @@ public class ImportAction extends CommonService {
 	@Inject
 	private TemplateRepository templateRepo;
 	
-	public void importActions(XSSFSheet sheet) {
+	@Inject
+	private ImportMenu importMenu;
+	
+	public void importActions(DataReader reader, String key) {
 		
 		setTypeMap();
 		actionCleared = new HashSet<Long>();
 				
-		Iterator<Row> rowIter = sheet.rowIterator();
-		rowIter.next();
+		int totalLines = reader.getTotalLines(key);
 		
-		while(rowIter.hasNext()) {
-			Row row = rowIter.next();
-			
-			String module = getValue(row, ExportAction.MODULE);
+		for (int ind = 0; ind < totalLines; ind++) {
+			String[] row = reader.read(key, ind);
+			if (row == null) {
+				continue;
+			}
+
+			String module = row[ExportAction.MODULE];
 			if (module == null) {
 				continue;
 			}
@@ -94,10 +89,10 @@ public class ImportAction extends CommonService {
 	}
 	
 	@Transactional
-	public void importActionBuilder(Row row, MetaModule module) {
+	public void importActionBuilder(String[] values, MetaModule module) {
 		
-		String name = getValue(row, ExportAction.NAME);
-		String type = getValue(row, ExportAction.TYPE);
+		String name = values[ExportAction.NAME];
+		String type = values[ExportAction.TYPE];
 
 		if (name == null || type == null) {
 			return;
@@ -105,18 +100,20 @@ public class ImportAction extends CommonService {
 		
 		ActionBuilder builder = findCreateAction(name, type, module);
 		
-		builder = setModel(row, builder);
-		builder = setView(row, builder);
-		builder.setFirstGroupBy(getValue(row, ExportAction.FIRST_GROUPBY));
-		builder.setSecondGroupBy(getValue(row, ExportAction.SECOND_GROUPBY));
-		builder.setReportBuilderSet(getReportBuilders(getValue(row, ExportAction.REPORT_BUILDERS)));
-		builder.setEmailTemplate(getEmailTemplate(getValue(row, ExportAction.EMAIL_TEMPLATE)));
+		builder = setModel(values, builder);
+		if (values[ExportAction.VIEW] != null) {
+			builder = importMenu.setActionViews(builder, values[ExportAction.VIEW]);
+		}
+		builder.setFirstGroupBy(values[ExportAction.FIRST_GROUPBY]);
+		builder.setSecondGroupBy(values[ExportAction.SECOND_GROUPBY]);
+		builder.setReportBuilderSet(getReportBuilders(values[ExportAction.REPORT_BUILDERS]));
+		builder.setEmailTemplate(getEmailTemplate(values[ExportAction.EMAIL_TEMPLATE]));
 		builder.setEdited(true);
 		builder.setRecorded(false);
 		
 		builder = actionBuilderRepo.save(builder);
 		
-		builder = importLines(row, builder);
+		builder = importLines(values, builder);
 		
 		actionBuilderRepo.save(builder);
 		
@@ -141,38 +138,24 @@ public class ImportAction extends CommonService {
 		return builder;
 	}
 	
-	private ActionBuilder setModel(Row row, ActionBuilder builder) {
+	private ActionBuilder setModel(String[] values, ActionBuilder builder) {
 		
-		String model = getValue(row, ExportAction.OBJECT);
+		String model = values[ExportAction.OBJECT];
 		MetaModel metaModel = metaModelRepo.findByName(model);
 		builder.setMetaModel(metaModel);
 		
 		if (metaModel != null) {
-			MetaField field = getMetaField(metaModel, getValue(row, ExportAction.TARGET_FIELD));
+			MetaField field = getMetaField(metaModel, values[ExportAction.TARGET_FIELD]);
 			builder.setTargetField(field);
-			field = getMetaField(metaModel, getValue(row, ExportAction.LOOOP_FIELD));
+			field = getMetaField(metaModel, values[ExportAction.LOOOP_FIELD]);
 			builder.setLoopOnField(field);
 		}
 		
-		metaModel = metaModelRepo.findByName(getValue(row, ExportAction.TARGET_OBJECT));
+		metaModel = metaModelRepo.findByName(values[ExportAction.TARGET_OBJECT]);
 		builder.setTargetModel(metaModel);
 		
 		return builder;
 	}
-	
-	private ActionBuilder setView(Row row, ActionBuilder builder) {
-		
-		String view = getValue(row, ExportAction.VIEW);
-		if (view != null) {
-			ViewBuilder viewBuilder = viewBuilderRepo
-					.all()
-					.filter("self.name = ?1 and self.metaModule = ?2", view, builder.getMetaModule()).fetchOne();
-			builder.setViewBuilder(viewBuilder);
-		}
-		
-		return builder;
-	}
-	
 	
 	private MetaField getMetaField(MetaModel model, String name) {
 		
@@ -211,7 +194,7 @@ public class ImportAction extends CommonService {
 		return templateRepo.findByName(name);
 	}
 	
-	private ActionBuilder importLines(Row row, ActionBuilder builder) {
+	private ActionBuilder importLines(String[] values, ActionBuilder builder) {
 		
 		if (!actionCleared.contains(builder.getId())) {
 			builder.clearLines();
@@ -220,7 +203,7 @@ public class ImportAction extends CommonService {
 		
 		ActionBuilderLine line = new ActionBuilderLine();
 		
-		String target =  getValue(row, ExportAction.LINE_TARGET);
+		String target =  values[ExportAction.LINE_TARGET];
 		if (target != null) {
 			line.setTargetField(target);
 			if (target.contains(".")) {
@@ -234,17 +217,16 @@ public class ImportAction extends CommonService {
 			}
 		}
 		
-		line.setValue(getValue(row, ExportAction.LINE_VALUE));
-		line.setConditionText(getValue(row, ExportAction.LINE_CONDITIONS));
-		line.setFilter(getValue(row, ExportAction.LINE_FILTERS));
-		line.setValidationMsg(getValue(row, ExportAction.LINE_VALIDATION_MSG));
-		line.setValidationTypeSelect(getValue(row, ExportAction.LINE_VALIDATION_TYPE));
+		line.setValue(values[ExportAction.LINE_VALUE]);
+		line.setConditionText(values[ExportAction.LINE_CONDITIONS]);
+		line.setFilter(values[ExportAction.LINE_FILTERS]);
+		line.setValidationMsg(values[ExportAction.LINE_VALIDATION_MSG]);
+		line.setValidationTypeSelect(values[ExportAction.LINE_VALIDATION_TYPE]);
 		
 		builder.addLine(line);
 		
 		return builder;
 	}
-	
 	
 
 }

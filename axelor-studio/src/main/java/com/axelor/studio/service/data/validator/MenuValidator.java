@@ -2,21 +2,17 @@ package com.axelor.studio.service.data.validator;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
-
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.xssf.usermodel.XSSFSheet;
 
 import com.axelor.i18n.I18n;
 import com.axelor.meta.db.MetaMenu;
 import com.axelor.meta.db.repo.MetaMenuRepository;
 import com.axelor.studio.service.ConfigurationService;
-import com.axelor.studio.service.data.CommonService;
 import com.axelor.studio.service.data.exporter.ExportMenu;
+import com.axelor.studio.service.data.importer.DataReader;
 import com.google.inject.Inject;
 
-public class MenuValidator extends CommonService {
+public class MenuValidator {
 	
 	private ValidatorService validatorService;
 	
@@ -28,56 +24,61 @@ public class MenuValidator extends CommonService {
 	@Inject
 	private ConfigurationService configService;
 	
-	public void validate(ValidatorService validatorService, XSSFSheet sheet) throws IOException {
+	public void validate(ValidatorService validatorService, DataReader reader, String key) throws IOException {
 		if (validatorService == null) {
 			return;
 		}
 		this.validatorService = validatorService;
-		if (sheet == null) {
+		if (key == null || reader == null) {
 			return;
 		}
 		
 		menus = new ArrayList<String>();
 		
-		Iterator<Row> rowIter = sheet.iterator();
-		while(rowIter.hasNext()) {
-			Row row = rowIter.next();
-			if (row.getRowNum() == 0) {
+		int totalLines = reader.getTotalLines(key);
+		
+		for (int rowNum = 1; rowNum < totalLines; rowNum++) {
+			
+			String[] row = reader.read(key, rowNum);
+			if (row == null) {
 				continue;
 			}
-			String module = getValue(row, ExportMenu.MODULE);
+			
+			String module = row[ExportMenu.MODULE];
+			
 			if (module == null || configService.getNonCustomizedModules().contains(module)) {
 				continue;
 			}
-			validateMenu(row);
+			
+			validateMenu(row, key, rowNum);
 		}
 		
 	}
 	
-	private void validateMenu(Row row) throws IOException {
+	private void validateMenu(String[] row, String key, int rowNum) throws IOException {
 		
-		String name = getValue(row, ExportMenu.NAME);
-		String title = getValue(row, ExportMenu.TITLE);
+		String name = row[ExportMenu.NAME];
+		String title = row[ExportMenu.TITLE];
 		
 		if (title == null) {
-			title = getValue(row, ExportMenu.TITLE_FR);
+			title = row[ExportMenu.TITLE_FR];
 		}
 		
 		if (name == null && title == null) {
-			validatorService.addLog(I18n.get("Name and title is empty" ), row);
+			validatorService.addLog(I18n.get("Name and title is empty" ), key, rowNum);
 		}
 		
-		String model = getValue(row, ExportMenu.OBJECT);
+		String model = row[ExportMenu.OBJECT];
 		if (model != null && !validatorService.isValidModel(model)) {
-			validatorService.addLog(I18n.get("Invalid model" ), row);
+			validatorService.addLog(I18n.get("Invalid model" ), key, rowNum);
 		}
 		
-		String order = getValue(row, ExportMenu.ORDER);
+		String order = row[ExportMenu.ORDER];
 		if (order != null) {
 			try {
 				Integer.parseInt(order.trim());
 			} catch(Exception e) {
-				validatorService.addLog(I18n.get("Invalid menu order"), row);
+				validatorService.addLog(I18n.get("Invalid menu order"), key, rowNum);
 			}
 		}
 		
@@ -85,11 +86,11 @@ public class MenuValidator extends CommonService {
 			name = title;
 		}
 		
-		String parent = getValue(row, ExportMenu.PARENT);
+		String parent = row[ExportMenu.PARENT];
 		if (parent != null && !menus.contains(parent)) {
 			MetaMenu menu = metaMenuRepo.all().filter("self.name = ?1" , parent).fetchOne();
 			if(menu == null){
-				validatorService.addLog(I18n.get("No parent menu defined"), row);
+				validatorService.addLog(I18n.get("No parent menu defined"), key, rowNum);
 			}
 		}
 		

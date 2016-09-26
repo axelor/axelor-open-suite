@@ -6,8 +6,6 @@
   <grid name="menu-builder-grid" title="Menu builder" model="com.axelor.studio.db.MenuBuilder">
        <field name="name"/>
        <field name="title"/>
-       <field name="parent" />
-       <field name="model" />
        <field name="order" />
   </grid>
   
@@ -15,21 +13,22 @@
   	<panel>
        <field name="name"/>
        <field name="title"/>
-       <field name="parent" hidden="true"/>
-       <field name="model" hidden="true"/>
-       <field name="isParent" />
        <field name="top" />
        <field name="icon" />
        <field name="iconBackground" />
        <field name="order" />
        <field name="groups" widget="TagSelect" colSpan="12" />
        <field name="metaModule" domain="self.customised = true"/> 
-       <field name="metaMenu" readonlyIf="menuBuilder != null" onChange="action-menu-builder-meta-menu-change" domain="self.parent is null"/>
-       <field name="menuBuilder" readonlyIf="metaMenu != null" onChange="action-menu-builder-menu-builder-change" domain="self.isParent = true" />
-       <panel colSpan="12" hideIf="isParent">
-           	<field name="metaModel"  onChange="action-menu-builder-meta-model-change"/>
-       		<field name="dashboard" domain="self.viewType = 'dashboard'"/>
-       </panel>
+       <field name="metaMenu" readonlyIf="menuBuilder != null" onChange="action-menu-builder-meta-menu-change" domain="self.action is null"/>
+       <field name="menuBuilder" readonlyIf="metaMenu != null" onChange="action-menu-builder-menu-builder-change" domain="self.actionBuilder is null" />
+	   <field name="actionBuilder" domain="self.typeSelect = 2" />
+<!--        <panel colSpan="12" hideIf="isParent"> -->
+<!--            	<field name="metaModel"/> -->
+<!--        		<field name="dashboard" domain="self.viewType = 'dashboard'"/> -->
+<!--        		<field name="views" /> -->
+<!--        		<field name="action" /> -->
+<!--        		<field name="domain" /> -->
+<!--        </panel> -->
        <field name="edited" hidden="true" />
        <field name="recorded" hidden="true" />
     </panel>
@@ -37,16 +36,10 @@
   
   <action-record name="action-menu-builder-meta-menu-change" model="com.axelor.studio.db.MenuBuilder">
       <field name="menuBuilder" expr="eval:null" if="metaMenu != null"/>
-      <field name="parent" expr="eval:metaMenu?.name"/>
   </action-record>
   
   <action-record name="action-menu-builder-menu-builder-change" model="com.axelor.studio.db.MenuBuilder">
       <field name="metaMenu" expr="eval:null" if="menuBuilder != null"/>
-      <field name="parent" expr="eval:menuBuilder?.name"/>
-  </action-record>
-  
-  <action-record name="action-menu-builder-meta-model-change" model="com.axelor.studio.db.MenuBuilder">
-      <field name="model" expr="eval:metaModel?.fullName" />
   </action-record>
   
   <action-record name="action-menu-builder-on-on-save" model="com.axelor.studio.db.MenuBuilder">

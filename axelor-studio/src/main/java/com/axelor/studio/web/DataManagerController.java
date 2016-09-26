@@ -68,7 +68,9 @@ public class DataManagerController {
 		dataManager = dataManagerRepo.find(dataManager.getId());
 
 		try {
-			File logFile = importService.importData(dataManager);
+			MetaFile importFile = dataManager.getMetaFile();
+			DataReader reader = new DataReaderExcel();
+			File logFile = importService.importData(reader, importFile);
 			if (logFile != null) {
 				response.setFlash(I18n.get("Input file is not valid. "
 						+ "Please check the log file generated"));
@@ -109,12 +111,12 @@ public class DataManagerController {
 	public void generateAsciidoc(ActionRequest request, ActionResponse response) {
 		
 		DataManager dataManager = request.getContext().asType(DataManager.class);
-		
+		DataReader reader = new DataReaderExcel();
 		MetaFile exportFile = dataManager.getMetaFile();
 		
 		try {
-			MetaFile asciidocFile = dataExportAsciidoc.export(exportFile, 
-					dataManager.getLanguageSelect());
+			MetaFile asciidocFile = dataExportAsciidoc.export(exportFile, reader, 
+					dataManager.getLanguageSelect(), "AsciiDoc");
 			response.setValue("asciidocFile", asciidocFile);
 		} catch (IOException e) {
 			e.printStackTrace();

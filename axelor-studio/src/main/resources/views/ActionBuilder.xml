@@ -15,8 +15,8 @@
       <panel>
 	      <field name="name" />
 	      <field name="typeSelect" onChange="action-action-builder-type-select-change,action-action-builder-line-column-attrs"/>
-	      <field name="metaModel" requiredIf="typeSelect != 2" />
 	      <field name="metaModule" domain="self.customised = true"/> 
+	      <field name="metaModel" requiredIf="typeSelect != 2" />
 	      <panel colSpan="12" showIf="typeSelect == 0 ||  typeSelect == 1">
 		      <field name="targetModel" />
 		      <field name="targetField" domain="self.metaModel = :metaModel"/>
@@ -27,10 +27,12 @@
 	      </panel>
 	      <panel-related field="lines" colSpan="12" hideIf="typeSelect == 4 ||  typeSelect == 2 || typeSelect == 3"  />
 	      <panel colSpan="12" showIf="typeSelect == 2">
-	      	<field name="viewBuilder" requiredIf="typeSelect == 2 &amp;&amp; metaView == null" onChange="action-action-builder-view-builder-change" onSelect="action-action-builder-view-builder-domain"/>
-	      	<field name="metaView" requiredIf="typeSelect == 2 &amp;&amp; viewBuilder == null" onChange="action-action-builder-meta-view-change" onSelect="action-action-builder-meta-view-domain"/>
-	      	<field name="title" />
+	      	<field name="viewOrder" widget="MultiSelect" requiredIf="typeSelect == 2" />
 	      	<field name="popup" />
+	      	<field name="viewBuilderSet" widget="TagSelect"  showIf="viewOrder != null" requiredIf="typeSelect == 2 &amp;&amp; viewBuilderSet.empty" onChange="action-action-builder-view-builder-change" onSelect="action-action-builder-view-builder-domain"/>
+	      	<field name="metaViewSet" widget="TagSelect"  showIf="viewOrder != null"  requiredIf="typeSelect == 2 &amp;&amp; metaViewSet.empty" onChange="action-action-builder-meta-view-change" onSelect="action-action-builder-meta-view-domain"/>
+	      	<field name="title" requiredIf="typeSelect == 2" />
+	      	<field name="menuAction" />
 	      	<field name="domainCondition" colSpan="12"/>
 	      	<field name="context" colSpan="12"/>
 	      </panel>
@@ -60,13 +62,15 @@
   </action-record>
   
   <action-record name="action-action-builder-view-builder-change" model="com.axelor.studio.db.ActionBuilder">
-  	<field name="metaModel" expr="eval:viewBuilder.metaModel" if="viewBuilder?.metaModel != null"/>
-  	<field name="metaModel" expr="eval:null" if="viewBuilder == null"/>
+  	<field name="metaModel" expr="eval:viewBuilderSet?.find{it->it.viewType == viewOrder}?.metaModel" if="!viewBuilderSet.empty"/>
+  	<field name="metaModel" expr="eval:null" if="viewBuilderSet.empty"/>
+  	<field name="title" expr="eval:viewBuilderSet?.find{it->it.viewType == viewOrder}?.title" if="!viewBuilderSet.empty"/>
   </action-record>
   
   <action-record name="action-action-builder-meta-view-change" model="com.axelor.studio.db.ActionBuilder">
-  	<field name="metaModel" expr="eval:__repo__.of(MetaModel).all().filter('self.fullName = ${metaView.model}')" if="metaView?.model != null"/>
-  	<field name="metaModel" expr="eval:null" if="metaView == null"/>
+  	<field name="metaModel" expr="eval:__repo__.of(MetaModel).all().filter('self.fullName = ${metaViewSet?.find{it->it.type == viewOrder}.model}')" if="metaViewSet?.find{it->it.type == viewOrder} != null"/>
+  	<field name="metaModel" expr="eval:null" if="metaViewSet.empty"/>
+  	<field name="title" expr="eval:metaViewSet?.find{it->it.type == viewOrder}.title" if="!metaViewSet.empty" />
   </action-record>
   
   <action-record name="action-action-builder-type-select-change" model="com.axelor.studio.db.ActionBuilder">
@@ -77,15 +81,15 @@
   <action-attrs name="action-builder-filter-meta-field-domain">
   	<attribute name="domain" for="metaField" expr="eval:&quot;self.metaModel.name = '${_parent.loopOnField.typeName}' AND (self.relationship IS NULL OR self.relationship != 'OneToMany')&quot;" if="_pa
   	rent.typeSelect != 2 &amp;&amp; _parent.loopOnField != null" />
-  	<attribute name="domain" for="metaField" expr="eval:&quot;self.metaModel.fullName = '${_parent.viewBuilder.model}' AND (self.relationship IS NULL OR self.relationship != 'OneToMany')&quot;" if="_parent.typeSelect == 2 &amp;&amp; _parent.viewBuilder != null" />
+  	<attribute name="domain" for="metaField" expr="eval:&quot;self.metaModel.id = '${_parent.metaModel.id}' AND (self.relationship IS NULL OR self.relationship != 'OneToMany')&quot;" if="_parent.typeSelect == 2 &amp;&amp; _parent.metaModel != null" />
   </action-attrs>
   
   <action-attrs name="action-action-builder-view-builder-domain">
-  	<attribute name="domain" for="viewBuilder" expr="eval:&quot;self.model = '${metaModel.fullName}'&quot;" if="metaModel != null" /> 
+  	<attribute name="domain" for="viewBuilderList" expr="eval:&quot;self.metaModel.id = ${metaModel.id} &quot;" if="metaModel != null" /> 
   </action-attrs>
   
   <action-attrs name="action-action-builder-meta-view-domain">
-  	<attribute name="domain" for="metaView" expr="eval:&quot;self.model = '${metaModel.fullName}'&quot;" if="metaModel != null" /> 
+  	<attribute name="domain" for="metaViewList" expr="eval:&quot;self.model = '${metaModel.fullName}'&quot;" if="metaModel != null" /> 
   </action-attrs>
   
   <action-validate name="action-action-builder-validate-action-report">

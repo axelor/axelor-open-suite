@@ -17,14 +17,22 @@
  */
 package com.axelor.studio.web;
 
+import java.util.List;
 import java.util.Map;
 
+import com.axelor.common.Inflector;
+import com.axelor.db.mapper.Mapper;
+import com.axelor.db.mapper.Property;
 import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.meta.MetaStore;
+import com.axelor.meta.db.MetaField;
 import com.axelor.meta.db.MetaModel;
+import com.axelor.meta.db.MetaSelect;
 import com.axelor.meta.db.repo.MetaModelRepository;
 import com.axelor.meta.schema.actions.ActionView;
+import com.axelor.meta.schema.views.Selection.Option;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.studio.db.ViewBuilder;
@@ -129,6 +137,132 @@ public class WkfController {
 		}
 
 		response.setValue("viewBuilder", viewBuilder);
+	}
+	
+	public void setDefaultNodes(ActionRequest request, ActionResponse response) {
+		
+		Wkf wkf = request.getContext().asType(Wkf.class);
+		
+		MetaField wkfField = wkf.getWkfField();
+		
+		if (wkfField != null) {
+			
+			String[] nodes = getDefaultNodes(wkfField);
+			String bpmnXml = 
+					" <?xml version=\"1.0\" encoding=\"UTF-8\"?> "
+					+ "<definitions xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" "
+					+ "xmlns=\"http://www.omg.org/spec/BPMN/20100524/MODEL\" "
+					+ "xmlns:x=\"http://axelor.com\" xmlns:bpmndi=\"http://www.omg.org/spec/BPMN/20100524/DI\" "
+					+ "xmlns:dc=\"http://www.omg.org/spec/DD/20100524/DC\" "
+					+ "targetNamespace=\"http://bpmn.io/schema/bpmn\" id=\"Definitions_1\"> "
+						+ "<process id=\"Process_1\" name=\"" + wkf.getName() + "\" x:id=\"" + wkf.getId() + "\" isExecutable=\"false\"> "
+							+ nodes[0]
+						+ "</process>"
+						+ "<bpmndi:BPMNDiagram id=\"BPMNDiagram_1\">"
+							+ "<bpmndi:BPMNPlane id=\"BPMNPlane_1\" bpmnElement=\"Process_1\">"
+								+ nodes[1]
+							+ "</bpmndi:BPMNPlane>"
+						+ "</bpmndi:BPMNDiagram>"
+					+ "</definitions>";
+			
+			response.setValue("$bpmnDefault", bpmnXml);
+			
+			
+		}
+	}
+
+	private String[] getDefaultNodes(MetaField wkfField) {
+		
+		String[] nodes = new String[] {  
+				"<startEvent id=\"StartEvent_1\" /><task id=\"Task_1\" /><endEvent id=\"EndEvent_1\"/>",
+				"<bpmndi:BPMNShape id=\"_BPMNShape_StartEvent_2\" bpmnElement=\"StartEvent_1\">"
+					+ "<dc:Bounds x=\"100\" y=\"100\" width=\"36\" height=\"36\"/>"
+				+ "</bpmndi:BPMNShape>"
+				+ "<bpmndi:BPMNShape id=\"_BPMNShape_Task_1\" bpmnElement=\"Task_1\">"
+					+ "<dc:Bounds x=\"250\" y=\"100\" width=\"100\" height=\"80\"/>"
+				+ "</bpmndi:BPMNShape>"
+				+ "<bpmndi:BPMNShape id=\"_BPMNShape_EndEvent_2\" bpmnElement=\"EndEvent_1\">"
+					+ "<dc:Bounds x=\"500\" y=\"100\" width=\"36\" height=\"36\"/>"
+				+ "</bpmndi:BPMNShape>"
+		};
+		
+		List<Option> select = getSelect(wkfField);
+		
+		if (select != null) {
+			StringBuilder elements = new StringBuilder();
+			StringBuilder designs = new StringBuilder();
+			int count = 1;
+			int x = 100;
+			int y = 100;
+			for (Option option : select) {
+				String element = null;
+				int width = 100;
+				int height = 80;
+				if (count == 1) {
+					width = 36;
+					height = 36;
+					y = 125;
+					element = "startEvent";
+				}
+				else if (count == select.size()) {
+					width = 36;
+					height = 36;
+					x += 150;
+					y = 125;
+					element = "endEvent";
+				}
+				else {
+					y = 100;
+					x += 150;
+					element = "task";
+				}
+				
+				String elementId = Inflector.getInstance().camelize(element, false) + "_" + count ;
+				element = "<" + element + " id=\"" + elementId + "\" name=\"" + option.getTitle() + "\" />";
+				elements.append(element);
+				
+				String design = "<bpmndi:BPMNShape id=\"_BPMNShape_" 
+						+ elementId + "\" bpmnElement=\"" +  elementId + "\" >"
+						+ "<dc:Bounds x=\"" + x + "\" y=\"" + y + "\" width=\"" 
+						+ width + "\" height=\"" + height + "\" />"
+						+ "</bpmndi:BPMNShape>";
+				
+				designs.append(design);
+				
+				count++;
+			}
+			
+			if (elements.length() > 0) {
+				nodes[0] = elements.toString();
+				nodes[1] = designs.toString();
+			}
+		}
+		
+		
+		return nodes;
+	}
+
+	private List<Option> getSelect(MetaField wkfField) {
+		
+		if (wkfField == null) {
+			return null;
+		}
+		
+		MetaSelect select = wkfField.getMetaSelect();
+		if (select != null) {
+			return MetaStore.getSelectionList(select.getName());
+		}
+		else {
+			String clsName = wkfField.getMetaModel().getFullName();
+			try {
+				Property p = Mapper.of(Class.forName(clsName)).getProperty(wkfField.getName());
+				return MetaStore.getSelectionList(p.getSelection());
+			} catch (ClassNotFoundException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		return null;
 	}
 
 }

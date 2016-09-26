@@ -29,6 +29,7 @@ import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import com.axelor.meta.schema.views.AbstractWidget;
 import com.axelor.meta.schema.views.Dashboard;
 import com.axelor.meta.schema.views.Dashlet;
+import com.axelor.studio.db.ActionBuilder;
 import com.axelor.studio.db.DashletBuilder;
 import com.axelor.studio.db.ViewBuilder;
 
@@ -71,17 +72,25 @@ public class DashboardBuilderService {
 			String model = null;
 			ViewBuilder viewBuilder = dashletBuilder.getViewBuilder();
 			MetaView metaView = dashletBuilder.getMetaView();
+			ActionBuilder action = dashletBuilder.getActionBuilder();
 			
+			String actionName = null;
 			if (viewBuilder != null) {
 				name = viewBuilder.getName();
-				model = viewBuilder.getModel();
+				model = viewBuilder.getMetaModel().getFullName();
+				actionName = getAction(boardName, name, model,
+						dashletBuilder);
 			} else if (metaView != null) {
 				name = metaView.getName();
 				model = metaView.getModel();
+				actionName = getAction(boardName, name, model,
+						dashletBuilder);
 			}
-
-			String actionName = getAction(boardName, name, model,
-					dashletBuilder);
+			else if (action != null) {
+				model = action.getMetaModel().getFullName();
+				actionName = action.getName();
+			}
+			
 			dashlet.setAction(actionName);
 			dashlet.setHeight("350");
 			
@@ -134,7 +143,9 @@ public class DashboardBuilderService {
 		builder.name(actionName);
 		builder.model(model);
 		builder.add(dashletBuilder.getViewType(), name);
-		builder.param("limit", dashletBuilder.getPaginationLimit().toString());
+		if (dashletBuilder.getPaginationLimit() > 0) {
+			builder.param("limit", dashletBuilder.getPaginationLimit().toString());
+		}
 		actions.add(builder.get());
 
 		return actionName;

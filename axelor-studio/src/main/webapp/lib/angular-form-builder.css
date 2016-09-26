@@ -1,5 +1,4 @@
 .fb-component {
-	padding: 10px;
 	cursor: move
 }
 
@@ -19,9 +18,9 @@
 	cursor: move
 }
 
-.fb-form-object-editable {
-	padding: 10px
-}
+/* .fb-form-object-editable { */
+/* 	padding: 10px */
+/* } */
 
 .fb-form-object-editable.fb-draggable {
 	cursor: move
@@ -48,11 +47,11 @@
 	margin: 6px;
 	height: 80px;
 	border: dashed 1px #aaa;
-	background-color: #eee
+	background-color: #1e2c39;
 }
 
 .fb-draggable.dragging {
-	background-color: #ffffff;
+	background-color: #1e2c39;
 	position: absolute;
 	z-index: 800;
 	-webkit-box-shadow: #666 0 0 20px;
@@ -128,30 +127,27 @@ body{padding:10px}.footer{height:50px}
 	border-bottom-color: transparent;
 }
 
+.nav-tabs.nav-justified>li>a {
+	border-bottom-color: transparent;
+}
+
 .studio-container {
 	background-color: #f3f3f4;
 }
 
-.date-blue {
-	border-color : #8aa7ff;
-}
-
-.relational-green {
-	border-color : green;
-}
-
-table {
-	border-style: solid;
-	border-width: 1px;
-	border-color : green;
-}
-
-.studio-spinner-input { border: none; background: none; padding: 0; margin: .2em 0; vertical-align: middle; }
-
 .fixed-panel{
 	position: fixed;
-	width: 30%;
+	left: 0px;
+	width: 300px;
 	z-index: 1;
+	float:left;
+}
+
+.panel-right {
+	position: fixed;
+	left: 350px;
+	width: 400px;
+	float:left;
 }
 
 .pre-scrollable {

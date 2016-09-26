@@ -23,11 +23,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.Row;
-
 import com.axelor.common.Inflector;
-import com.google.common.base.Strings;
 
 public class CommonService {
 	
@@ -191,19 +187,19 @@ public class CommonService {
 	
 	public final Inflector inflector = Inflector.getInstance();
 	
-	public static String getValue(Row row, int index) {
-		
-		Cell cell = row.getCell(index);
-		if (cell != null && cell.getCellType() == Cell.CELL_TYPE_STRING) {
-			String val = cell.getStringCellValue();
-			if(Strings.isNullOrEmpty(val)){
-				return null;
-			}
-			return val.trim();
-		}
-
-		return null;
-	}
+//	public static String getValue(Row row, int index) {
+//		
+//		Cell cell = row.getCell(index);
+//		if (cell != null && cell.getCellType() == Cell.CELL_TYPE_STRING) {
+//			String val = cell.getStringCellValue();
+//			if(Strings.isNullOrEmpty(val)){
+//				return null;
+//			}
+//			return val.trim();
+//		}
+//
+//		return null;
+//	}
 	
 	/**
 	 * Method to create field name from title if name of field is blank. It will
