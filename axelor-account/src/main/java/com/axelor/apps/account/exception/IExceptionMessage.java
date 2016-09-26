@@ -571,4 +571,11 @@ public interface IExceptionMessage {
 	/**
 	 *  BankOrder lines
 	 */
+	
+	
+	/**
+	 *  Ebics
+	 */
+	
+	static final String EBICS_WRONG_PASSWORD = /*$$(*/ "Incorrect password, please try again" /*)*/;
 }
