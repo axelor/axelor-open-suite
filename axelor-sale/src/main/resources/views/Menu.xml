@@ -106,7 +106,7 @@
 	</action-view>	
 	
 	<menuitem name="sc-root-sale-order-lines" parent="sc-root-sale" order="-70"
-		groups="admins,ERP" title="Sale orderLines" action="sc.root.sale.order.lines" />
+		groups="admins,ERP" title="Sale order lines" action="sc.root.sale.order.lines" />
 	
 	<action-view name="sc.root.sale.order.lines" title="SO lines"
 		model="com.axelor.apps.sale.db.SaleOrderLine" >
