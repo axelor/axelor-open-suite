@@ -5,9 +5,9 @@
 
   <module name="meta" package="com.axelor.meta.db" />
   
-  <entity name="MetaSelect" cachable="true">
-    <boolean name="customised" />
-    <many-to-one name="metaModule" ref="com.axelor.meta.db.MetaModule" title="Module"/>
+  <entity name="MetaTranslation" cachable="true">
+    <string name="module" />
   </entity>
+    
     
  </domain-models>

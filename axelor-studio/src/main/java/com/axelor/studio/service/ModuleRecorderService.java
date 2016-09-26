@@ -41,6 +41,8 @@ import com.axelor.meta.db.MetaModule;
 import com.axelor.studio.db.ModuleRecorder;
 import com.axelor.studio.db.repo.ModuleRecorderRepository;
 import com.axelor.studio.service.builder.ModelBuilderService;
+import com.axelor.studio.service.builder.SelectionBuilderService;
+import com.axelor.studio.service.builder.TranslationBuilderService;
 import com.axelor.studio.service.builder.ViewBuilderService;
 import com.axelor.studio.service.wkf.WkfService;
 import com.google.inject.Inject;
@@ -71,6 +73,12 @@ public class ModuleRecorderService {
 	@Inject
 	private ViewBuilderService viewBuilderService;
 	
+	@Inject
+	private SelectionBuilderService selectionBuilderService;
+	
+	@Inject
+	private TranslationBuilderService translationBuilderService;
+	
 	public String update(ModuleRecorder recorder) throws AxelorException {
 		
 		String wkfProcess = wkfService.processWkfs();
@@ -81,6 +89,10 @@ public class ModuleRecorderService {
 		if (recorder.getUpdateServer()) {
 
 			modelBuilderService.build();
+			
+			selectionBuilderService.build();
+			
+			translationBuilderService.build();
 			
 			if (!buildApp(recorder)) {
 				return I18n.get("Error in build. Please check the log");

@@ -49,8 +49,9 @@ public class StudioMetaModelRepository extends MetaModelRepository {
 			}
 			if (addStatus) {
 				MetaField field = new MetaField("wkfStatus", false);
-				field.setTypeName("String");
+				field.setTypeName("Integer");
 				field.setLabel("Status");
+				field.setFieldType("integer");
 				metaModel.addMetaField(field);
 			}
 		}

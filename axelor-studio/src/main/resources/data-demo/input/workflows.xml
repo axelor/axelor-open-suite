@@ -31,7 +31,7 @@
 	
 	<WkfNode>
 		<metaModel>Expense</metaModel>
-		<statusMenuLabel>Dépenses envoyé</statusMenuLabel>
+		<statusMenuLabel>Dépenses envoyées</statusMenuLabel>
 		<startNode>false</startNode>
 		<myMenuEntry>true</myMenuEntry>
 		<selected>false</selected>
@@ -39,7 +39,7 @@
 		<title>Envoyé</title>
 		<wkf>Note De Frais flow</wkf>
 		<name>Envoyé</name>
-		<myMenuLabel>Mes dépenses envoyé</myMenuLabel>
+		<myMenuLabel>Mes dépenses envoyées</myMenuLabel>
 		<myStatusMenu>menu-my-expense-sent</myStatusMenu>
 		<metaField>expenseUser</metaField>
 		<xmlId>Task_2</xmlId>
@@ -56,7 +56,7 @@
 		<selected>false</selected>
 		<statusMenuEntry>true</statusMenuEntry>
 		<parentMenuBuilder>menu-root-expense</parentMenuBuilder>
-		<statusMenuLabel>Dépenses refusé</statusMenuLabel>
+		<statusMenuLabel>Dépenses refusées</statusMenuLabel>
 		<statusMenu>menu-expense-refused</statusMenu>
 		<title>Refusé</title>
 		<wkf>Note De Frais flow</wkf>
@@ -72,7 +72,7 @@
 		<selected>false</selected>
 		<statusMenuEntry>true</statusMenuEntry>
 		<parentMenuBuilder>menu-root-expense</parentMenuBuilder>
-		<statusMenuLabel>Dépenses annuler</statusMenuLabel>
+		<statusMenuLabel>Dépenses annulées</statusMenuLabel>
 		<statusMenu>menu-expense-cancelled</statusMenu>
 		<title>Annuler</title>
 		<wkf>Note De Frais flow</wkf>
@@ -88,7 +88,7 @@
 		<selected>false</selected>
 		<statusMenuEntry>true</statusMenuEntry>
 		<parentMenuBuilder>menu-root-expense</parentMenuBuilder>
-		<statusMenuLabel>Dépenses validé</statusMenuLabel>
+		<statusMenuLabel>Dépenses validées</statusMenuLabel>
 		<statusMenu>menu-expense-validated</statusMenu>
 		<title>Validé</title>
 		<wkf>Note De Frais flow</wkf>

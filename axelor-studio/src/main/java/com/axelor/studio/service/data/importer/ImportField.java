@@ -57,7 +57,7 @@ public class ImportField {
 			return field;
 		}
 		
-		translationService.addTranslation(basic[3], row[CommonService.TITLE_FR], "fr");
+		translationService.addTranslation(basic[3], row[CommonService.TITLE_FR], "fr", metaModule.getName());
 		
 		if (CommonService.FIELD_TYPES.containsKey(basic[1])) {
 			field.setFieldType(CommonService.FIELD_TYPES.get(basic[1]));
@@ -97,7 +97,7 @@ public class ImportField {
 			help = helpFr;
 		}
 		else {
-			translationService.addTranslation(help, helpFr, "fr");
+			translationService.addTranslation(help, helpFr, "fr", metaModule.getName());
 		}
 		
 		field.setHelpText(help);
@@ -197,8 +197,7 @@ public class ImportField {
 
 			if(metaSelect == null) {
 				metaSelect = new MetaSelect(selection[0]);
-				metaSelect.setCustomised(true);
-				metaSelect.setMetaModule(module);
+				metaSelect.setModule(module.getName());
 			}
 			else{
 				metaSelect.clearItems();
@@ -226,7 +225,7 @@ public class ImportField {
 						if (titleFR != null && titleFR.contains(":")) {
 							String[] valuesFr = titleFR.split(":");
 							if (valuesFr.length > 1){
-								translationService.addTranslation(values[1].trim(), valuesFr[1].trim(), "fr" );
+								translationService.addTranslation(values[1].trim(), valuesFr[1].trim(), "fr", module.getName());
 							}
 						}
 					}
@@ -236,7 +235,7 @@ public class ImportField {
 					metaSelectItem.setValue(val.toString());
 					metaSelectItem.setTitle(title.trim());
 					if (titleFR != null) {
-						translationService.addTranslation(title.trim(), titleFR, "fr" );
+						translationService.addTranslation(title.trim(), titleFR, "fr",  module.getName());
 					}
 				}
 				metaSelectItem.setOrder(count);

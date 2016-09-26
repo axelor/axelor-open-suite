@@ -137,7 +137,7 @@ public class ImportForm {
 		this.row = row;
 		this.rowNum = rowNum;
 
-		String[] name = getViewName(model.getName());
+		String[] name = getViewName(model.getName(), module);
 		if (name.length > 1) {
 			model = updateModelTitle(model, name[1]);
 		}
@@ -237,7 +237,7 @@ public class ImportForm {
 		return viewBuilder;
 	}
 	
-	private String[] getViewName(String model) {
+	private String[] getViewName(String model, String module) {
 		
 		String viewName = row[CommonService.VIEW];
 		String title = null;
@@ -248,7 +248,7 @@ public class ImportForm {
 			if (title.contains(",")) {
 				String[] titles = title.split(",");
 				title = titles[0];
-				translationService.addTranslation(title, titles[1], "fr");
+				translationService.addTranslation(title, titles[1], "fr", module);
 			}
 		}
 		
@@ -317,7 +317,7 @@ public class ImportForm {
 		if (basic != null) {
 			panel.setName(basic[2]);
 			panel.setTitle(basic[3]);
-			translationService.addTranslation(basic[3], row[CommonService.TITLE_FR], "fr");
+			translationService.addTranslation(basic[3], row[CommonService.TITLE_FR], "fr", viewBuilder.getMetaModule().getName());
 		}
 		
 		panel.setNewPanel(!replace);
@@ -402,7 +402,7 @@ public class ImportForm {
 		viewItem.setTypeSelect(1);
 		viewItem.setTitle(basic[3]);
 		
-		translationService.addTranslation(basic[3], row[CommonService.TITLE_FR], "fr");
+		translationService.addTranslation(basic[3], row[CommonService.TITLE_FR], "fr", viewBuilder.getMetaModule().getName());
 
 		if (basic[1] != null && basic[1].startsWith("toolbar")) {
 			viewItem.setViewBuilderToolbar(viewBuilder);
@@ -438,7 +438,7 @@ public class ImportForm {
 		}
 		viewItem.setTypeSelect(2);
 		viewItem.setTitle(basic[3]);
-		translationService.addTranslation(basic[3], row[CommonService.TITLE_FR], "fr");
+		translationService.addTranslation(basic[3], row[CommonService.TITLE_FR], "fr", viewBuilder.getMetaModule().getName());
 		
 		viewItem = setCommonAttributes(viewBuilder, viewItem);
 
@@ -511,7 +511,7 @@ public class ImportForm {
 		ViewItem button = new ViewItem(basic[2]);
 		button.setTypeSelect(1);
 		button.setTitle(basic[3]);
-		translationService.addTranslation(basic[3], row[CommonService.TITLE_FR], "fr");
+		translationService.addTranslation(basic[3], row[CommonService.TITLE_FR], "fr", viewBuilder.getMetaModule().getName());
 		button.setOnClick(builder.getName());
 		button.setViewPanel(lastPanel);
 		button.setSequence(getPanelSeq(lastPanel.getId()));
@@ -536,7 +536,7 @@ public class ImportForm {
 			viewItem.setMetaField(metaField);
 		}
 		else if(!basic[0].equals("empty")) {
-			translationService.addTranslation(basic[3], row[CommonService.TITLE_FR], "fr");
+			translationService.addTranslation(basic[3], row[CommonService.TITLE_FR], "fr", viewBuilder.getMetaModule().getName());
 			viewItem = setDummyField(viewItem, basic);
 		}
 		
@@ -826,7 +826,7 @@ public class ImportForm {
 		if (title == null) {
 			title = titleFr;
 		}
-		translationService.addTranslation(title, titleFr, "fr");
+		translationService.addTranslation(title, titleFr, "fr", viewBuilder.getMetaModule().getName());
 		
 		if (title == null) {
 			throw new AxelorException(I18n.get("Menubar must have title. Row: %s"), 1, rowNum);
@@ -851,7 +851,7 @@ public class ImportForm {
 			title = titleFr;
 		}
 		else if (!title.equals(titleFr)) {
-			translationService.addTranslation(title, titleFr, "fr");
+			translationService.addTranslation(title, titleFr, "fr", viewBuilder.getMetaModule().getName());
 		}
 		
 		if (title == null) {

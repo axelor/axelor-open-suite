@@ -26,7 +26,7 @@ public class TranslationService {
 	}
 	
 	@Transactional
-	public void addTranslation(String key, String message, String lang) {
+	public void addTranslation(String key, String message, String lang, String module) {
 		
 		if (Strings.isNullOrEmpty(key) || Strings.isNullOrEmpty(message) || Strings.isNullOrEmpty(lang)) {
 			return;
@@ -42,7 +42,7 @@ public class TranslationService {
 			translation.setLanguage(lang);
 			translation.setKey(key);
 		}
-		
+		translation.setModule(module);
 		translation.setMessage(message);
 		
 		metaTranslationRepo.save(translation);

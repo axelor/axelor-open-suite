@@ -148,7 +148,6 @@ class WkfNodeService {
 				metaSelect = new MetaSelect(selectName);
 				MetaModule metaModule = wkfService.workflow.getMetaModule();
 				metaSelect.setModule(metaModule.getName());
-				metaSelect.setMetaModule(metaModule);
 			}
 			
 			statusField.setMetaSelect(metaSelect);

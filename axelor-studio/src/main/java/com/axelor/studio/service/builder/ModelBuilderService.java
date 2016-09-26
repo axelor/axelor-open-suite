@@ -40,15 +40,11 @@ import com.axelor.i18n.I18n;
 import com.axelor.meta.db.MetaField;
 import com.axelor.meta.db.MetaModel;
 import com.axelor.meta.db.MetaModule;
-import com.axelor.meta.db.MetaSelect;
-import com.axelor.meta.db.MetaSelectItem;
 import com.axelor.meta.db.MetaSequence;
 import com.axelor.meta.db.MetaTranslation;
 import com.axelor.meta.db.repo.MetaFieldRepository;
 import com.axelor.meta.db.repo.MetaModelRepository;
-import com.axelor.meta.db.repo.MetaSelectRepository;
 import com.axelor.meta.db.repo.MetaTranslationRepository;
-import com.axelor.meta.schema.ObjectViews;
 import com.axelor.studio.service.ConfigurationService;
 import com.axelor.studio.utils.Namming;
 import com.google.common.base.Strings;
@@ -101,9 +97,6 @@ public class ModelBuilderService {
 	private MetaFieldRepository metaFieldRepo;
 	
 	@Inject
-	private MetaSelectRepository metaSelectRepo;
-	
-	@Inject
 	private ConfigurationService configService;
 	
 	public static boolean isReserved(String name) {
@@ -131,8 +124,6 @@ public class ModelBuilderService {
 			recordModel(editedModels.iterator());
 			updateEdited(editedModels);
 			
-			recordSelection();
-
 		} catch (IOException e) {
 			e.printStackTrace();
 			throw new AxelorException(I18n.get("Error in model recording: %s"), 4, e.getMessage());
@@ -513,73 +504,6 @@ public class ModelBuilderService {
 		FileWriter fileWriter = new FileWriter(file);
 		fileWriter.write(content);
 		fileWriter.close();
-
-	}
-
-	/**
-	 * Special method for writing separate file 'Selection.xml' for selections
-	 * xml string generated during model recording.
-	 * 
-	 * @param selectionXml
-	 *            Xml string containing selections.
-	 * @throws IOException
-	 *             Exception in file writing.
-	 * @throws AxelorException 
-	 */
-	private void recordSelection() throws IOException, AxelorException {
-		
-		
-		List<MetaSelect> metaSelects = metaSelectRepo.all()
-				.filter("self.customised = true").fetch();
-		
-		if (metaSelects.isEmpty()) {
-			configService.removeViewFile("Selection.xml");
-			return;
-		}
-		
-		Map<String, StringBuilder> moduleMap = new HashMap<String, StringBuilder>();
-		
-		for (MetaSelect metaSelect : metaSelects) {
-			MetaModule module = metaSelect.getMetaModule();
-			if (module == null || !module.getCustomised()) {
-				continue;
-			}
-			StringBuilder builder = moduleMap.get(module);
-			if (builder == null) {
-				builder = new StringBuilder();
-			}
-			builder.append("\n\t<selection name=\"" + metaSelect.getName() + "\" >");
-			for (MetaSelectItem item : metaSelect.getItems()) {
-				builder.append("\n\t\t<option value=\"" + item.getValue() + "\">"
-						     + item.getTitle() + "</option>");
-			}
-			builder.append("\n\t</selection>");
-			
-			moduleMap.put(module.getName(), builder);
-			
-		}
-		
-		for (String module : moduleMap.keySet()) {
-			StringBuilder sb = new StringBuilder(
-					"<?xml version='1.0' encoding='UTF-8'?>\n");
-			sb.append("<object-views")
-					.append(" xmlns='")
-					.append(ObjectViews.NAMESPACE)
-					.append("'")
-					.append(" xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'")
-					.append(" xsi:schemaLocation='")
-					.append(ObjectViews.NAMESPACE)
-					.append(" ")
-					.append(ObjectViews.NAMESPACE + "/" + "object-views_"
-							+ ObjectViews.VERSION + ".xsd").append("'")
-					.append(">\n\n").append(moduleMap.get(module).toString())
-					.append("\n</object-views>");
-			File selectionFile = new File(configService.getViewDir(module, true), "Selection.xml");
-			writeFile(selectionFile, sb.toString());
-		}
-
-		
-		
 
 	}
 

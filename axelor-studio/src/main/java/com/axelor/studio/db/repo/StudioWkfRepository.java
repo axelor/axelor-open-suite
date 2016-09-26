@@ -34,7 +34,7 @@ public class StudioWkfRepository extends WkfRepository {
 	MenuBuilderRepository menuBuilderRepo;
 
 	/**
-	 * Override to remove changes related with workflow. Like to remove buttons
+	 * Overridden to remove changes related with workflow. Like to remove buttons
 	 * and status field from view and model.
 	 */
 	@Override

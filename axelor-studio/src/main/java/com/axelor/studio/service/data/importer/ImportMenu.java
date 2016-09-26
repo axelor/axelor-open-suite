@@ -121,7 +121,7 @@ public class ImportMenu {
 	public void createMenu(MetaModule module, MetaModel  model, String[] row, String key, int rowNum) throws AxelorException {
 		
 		String name = row[ExportMenu.NAME];
-		String title = getTitle(row[ExportMenu.TITLE], row[ExportMenu.TITLE_FR]);
+		String title = getTitle(row[ExportMenu.TITLE], row[ExportMenu.TITLE_FR], module.getName());
 		
 		if (name == null && title == null) {
 			throw new AxelorException(I18n.get("Menu name and title empty for sheet: %s row: %s")
@@ -261,13 +261,13 @@ public class ImportMenu {
 	}
 	
 
-	private String getTitle(String title, String titleFr) {
+	private String getTitle(String title, String titleFr, String module) {
 		
 		if (title == null) {
 			title = titleFr;
 		}
 		else if (titleFr != null) {
-			translationService.addTranslation(title, titleFr, "fr");
+			translationService.addTranslation(title, titleFr, "fr", module);
 		}
 		
 		return title;
