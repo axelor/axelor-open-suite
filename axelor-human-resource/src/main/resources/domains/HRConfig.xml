@@ -9,7 +9,14 @@
   	<integer name="importId"/>
     
     <one-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company" required="true" unique="true"/>
-    <many-to-one name="kilometricExpenseProduct" ref="com.axelor.apps.base.db.Product" title="Expense Type" />
+    <many-to-one name="kilometricExpenseProduct" ref="com.axelor.apps.base.db.Product" title="Kilometric expense product" />
+    <decimal name="wageShare" title="Wage Share" scale="2" precision="20"/>
+    <decimal name="employersShare" title="Employer's Share" scale="2" precision="20"/>
+    
+    <!-- LUNCH VOUCHERS MANAGEMENT -->
+    
+    <integer name="minStockLunchVoucher" title="Minimum Stock of Lunch Vouchers" help="Alert threshold"/>
+    <integer name="availableStockLunchVoucher" title="Available Stock of Lunch Vouchers"/>
     
     <!-- LEAVE REQUEST MAIL NOTIFICATION -->
   	<boolean name="leaveMailNotification" title="Leave Request Notification Mail"/>
