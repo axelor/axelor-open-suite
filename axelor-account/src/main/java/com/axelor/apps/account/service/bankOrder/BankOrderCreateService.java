@@ -42,22 +42,21 @@ public class BankOrderCreateService {
 		
 		BankOrder bankOrder = new BankOrder();
 		
-		bankOrder.setReference(reference);
 		bankOrder.setOrderType(orderType);
-		bankOrder.setPartnerType(partnerType);
+		bankOrder.setPartnerTypeSelect(partnerType);
 		bankOrder.setBankOrderDate(bankOrderDate);
 		// To check : bankOrderRepository static values
-		bankOrder.setStatusSelect(1);
-		bankOrder.setRejectStatus(0);
+		bankOrder.setStatusSelect(BankOrderRepository.STATUS_DRAFT);
+		bankOrder.setRejectStatusSelect(0);
 		bankOrder.setSenderCompany(senderCompany);
 		bankOrder.setSenderBankDetails(senderBankDetails);
 		bankOrder.setAmount(amount);
 		bankOrder.setCurrency(currency);
 		bankOrder.setSenderLabel(senderLabel);
-		bankOrder.setSenderMove(senderMove);
 		bankOrder.setBankOrderLineList(new ArrayList<BankOrderLine>());
+		bankOrder.setSenderReference(reference);
 		bankOrderRepo.save(bankOrder);
-		bankOrder.setSenderReference("*"+bankOrder.getId());
+		bankOrder.setBankOrderSeq("*"+bankOrder.getId());
 		
 		return bankOrder;
 	}

@@ -15,6 +15,7 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 
 public class BankOrderServiceImpl implements BankOrderService{
 	
@@ -32,7 +33,7 @@ public class BankOrderServiceImpl implements BankOrderService{
 	public void validate(BankOrder bankOrder) throws AxelorException{
 		LocalDate brankOrderDate = bankOrder.getBankOrderDate();
 		Integer orderType = bankOrder.getOrderType();
-		Integer partnerType = bankOrder.getPartnerType();
+		Integer partnerType = bankOrder.getPartnerTypeSelect();
 		BigDecimal amount = bankOrder.getAmount();
 		List<BankOrderLine> bankOrderLines = bankOrder.getBankOrderLineList();
 		
@@ -48,8 +49,7 @@ public class BankOrderServiceImpl implements BankOrderService{
 			throw new AxelorException(I18n.get(IExceptionMessage.BANK_ORDER_TYPE_MISSING), IException.INCONSISTENCY);
 		}
 		else{
-			//TODO check why static values not generated : replace 1 by bank_to_bank type
-			if(orderType !=  1  && partnerType == null){
+			if(orderType !=  BankOrderRepository.BANK_TO_BANK_TRANSFER  && partnerType == null){
 				throw new AxelorException(I18n.get(IExceptionMessage.BANK_ORDER_PARTNER_TYPE_MISSING), IException.INCONSISTENCY);
 			}
 		}
@@ -72,6 +72,13 @@ public class BankOrderServiceImpl implements BankOrderService{
 		if((!bankOrderLines.isEmpty() || bankOrderLines != null) && orderType != null){
 //			validateBankOrderLines(bankOrderLines,orderType);
 		}
+	}
+
+	@Override
+	@Transactional
+	public void sign(BankOrder bankOrder) {
+		bankOrder.setStatusSelect(BankOrderRepository.STATUS_VALIDATED);
+		bankOrderRepo.save(bankOrder);
 	}
 	
 //	public void validateBankOrderLines(List<BankOrderLine> bankOrderLines, int orderType)throws AxelorException{
