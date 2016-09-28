@@ -438,6 +438,7 @@
 "The employee %s has no %s leave line",,,
 "There is a conflict between the dates entered and the dates in the lines : %s",,,
 "This date is invalide, it must be included in the timesheet's period",,,
+"This date is invalide, it must be included in the timesheet's period and can't be in the future",,,
 "Thursday",,,
 "Time Sheet",,,
 "Time logging preference",,,

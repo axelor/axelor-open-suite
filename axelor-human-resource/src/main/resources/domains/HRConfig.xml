@@ -46,6 +46,9 @@
   	<many-to-one name="validatedExtraHoursTemplate" ref="com.axelor.apps.message.db.Template" title="Validated Extra Hours Template"/>
   	<many-to-one name="refusedExtraHoursTemplate" ref="com.axelor.apps.message.db.Template" title="Refused Extra Hours Template"/>
   	
+  	<!-- Seniority Leave Management Batch -->
+  	<one-to-many name="leaveManagementBatchRuleList" ref="com.axelor.apps.hr.db.LeaveManagementBatchRule" title="Leave management batch rule list"/>
+  	
   </entity>
   
 </domain-models>

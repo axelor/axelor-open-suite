@@ -30,6 +30,14 @@
 				<panel-related field="planningSet" target="com.axelor.apps.base.db.WeeklyPlanning" grid-view="weekly-planning-grid" form-view="weekly-planning-form" canNew="false"/>
 				<button name="leaveManagementBatch" title="Leave management batch" onClick="save,action-hrbatch-method-leave-management"/>
 			</panel>
+			<panel name="seniorityLeaveManagementPage" title="Seniority leave management page" hidden="true" showIf="actionSelect == 2">
+			    <field name="leaveReason" colSpan="4" requiredIf="actionSelect == 2"/>
+			    <field name="comments" colSpan="8"/>
+			    <field name="startDate" colSpan="4"/>
+			    <field name="endDate" colSpan="4"/>
+			    <field name="referentialDate" colSpan="4" />
+				<button name="seniorityLeaveManagementBatch" title="Seniority leave management batch" onClick="save,action-hrbatch-method-seniority-leave-management"/>
+			</panel>
 			<panel name="informations" title="Informations">
 				<field name="createdOn" title="Created on"/>
 				<field name="createdBy" title="Created by" form-view="user-form" grid-view="user-grid"/>
@@ -42,6 +50,10 @@
 
 	<action-method name="action-hrbatch-method-leave-management">
 		<call class="com.axelor.apps.hr.web.HrBatchController" method="actionLeaveManagement"/>
+	</action-method>
+	
+	<action-method name="save,action-hrbatch-method-seniority-leave-management">
+		<call class="com.axelor.apps.hr.web.HrBatchController" method="actionSeniorityLeaveManagement"/>
 	</action-method>
 
 

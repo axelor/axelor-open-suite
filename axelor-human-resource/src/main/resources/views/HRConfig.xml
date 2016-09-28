@@ -48,6 +48,9 @@
     	<field name="validatedLeaveTemplate" canNew="true" form-view="template-form" grid-view="template-grid" hideIf="!leaveMailNotification"/>
     	<field name="refusedLeaveTemplate" canNew="true" form-view="template-form" grid-view="template-grid" hideIf="!leaveMailNotification"/>
   	</panel>
+  	<panel title="Leave Batch rules">
+  		<panel-related field="leaveManagementBatchRuleList" form-view="leave-management-batch-rule-form" grid-view="leave-management-batch-rule-grid" colSpan="12" />
+  	</panel>
    </panel-tabs>
 	  	<panel-related field="kilometricAllowanceRateList" colSpan="12"/>
 	</form>
