@@ -7,7 +7,6 @@
 
   <entity name="LeaveManagementBatchRule" cachable="true">
 
-	<string name="lengthOfService" title="Parameter for length of service (in years)" />
 	<integer name="executiveStatusSelect" title="Status" selection="hr.employment.contract.executiveStatus.select" />
 	<string name="formula" title="Formula"/>
 	<decimal name="leaveDayNumber" title="Leave day number" />

@@ -45,16 +45,19 @@
 	       	    <field name="department" form-view="department-form" grid-view="department-grid"/>
 	       	    <field name="timesheetReminder" />
 	       	    <field name="external" />
+	       	    <spacer/>
 	       	    <field name="planning" canNew="true" grid-view="weekly-planning-grid" form-view="weekly-planning-form" colSpan="4"/>
 	       	    <field name="publicHolidayPlanning" grid-view="public-holiday-planning-grid" form-view="public-holiday-planning-form" colSpan="4"/>
 	       	    <field name="imposedDayPlanning" grid-view="public-holiday-planning-grid" form-view="public-holiday-planning-form" colSpan="4" />
 	       	    <field name="negativeValueLeave"/>
 	       	    <field name="kilometricAllowParam"/>
 	       	    <field name="hrManager" />
+	       	    <spacer/>
 	       	    <field name="birthDate" colSpan="4" />
 			    <field name="dateOfHire" colSpan="4" />
 			    <field name="seniorityDate" colSpan="4" />
 			    <field name="mainEmploymentContract" domain="self.employee.id = :id" />
+			    <field name="mainEmploymentContract.executiveStatusSelect" showIf="mainEmploymentContract != null" />
 			    <field name="profitSharingBeneficiary"  />
 			    <field name="socialSecurityNumber" />
 	       	    <panel-related field="leaveLineList" grid-view="leave-line-grid" form-view="leave-line-form" colSpan="12"/>

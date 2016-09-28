@@ -48,7 +48,8 @@
   	
   	<!-- Seniority Leave Management Batch -->
   	<one-to-many name="leaveManagementBatchRuleList" ref="com.axelor.apps.hr.db.LeaveManagementBatchRule" title="Leave management batch rule list"/>
-  	
+  	<string name="seniorityVariableName" title="Name for seniority variable" />
+  	 
   </entity>
   
 </domain-models>
