@@ -202,7 +202,7 @@ public class ExpenseController {
 			.context("activeCompany", user.getActiveCompany());
 		
 			if(!employee.getHrManager())  {
-				actionView.domain(actionView.get().getDomain() + " AND self.user.employee.manager = :user")
+				actionView.domain(actionView.get().getDomain() + " AND self.user.employee.manager = :user AND self.multipleUsers IS FALSE")
 				.context("user", user);
 			}
 		}
@@ -221,7 +221,7 @@ public class ExpenseController {
 				   	.add("grid","expense-grid")
 				   	.add("form","expense-form");
 		
-		String domain = "self.user.employee.manager.employee.manager = :user AND self.company = :activeCompany AND self.statusSelect = 2";
+		String domain = "self.user.employee.manager.employee.manager = :user AND self.company = :activeCompany AND self.statusSelect = 2 AND self.multipleUsers IS FALSE";
 
 		long nbExpenses =  Query.of(ExtraHours.class).filter(domain).bind("user", user).bind("activeCompany", activeCompany).count();
 		

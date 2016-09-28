@@ -102,5 +102,11 @@
 	
 	<selection name="ihr.batch.action.select">
 		<option value="1">Leave Management</option>
+		<option value="2">Seniority leave Management</option>
+	</selection>
+	
+	<selection name="hr.expense.company.cb.payment">
+		<option value="1">No</option>
+		<option value="2">Company's credit card</option>
 	</selection>
 </object-views>

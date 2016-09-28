@@ -30,6 +30,8 @@
       <boolean name="expenseCompanyCb" title="Expense paied with company's credit card"/>
       <many-to-one name="payrollPreparation" ref="com.axelor.apps.hr.db.PayrollPreparation"/>
       
+      <boolean name="multipleUsers" title="Multiple users ?" default="false"/>
+      
       <string name="fullName" namecolumn="true" readonly="true">
       <![CDATA[
 	  		return this.getUser().getFullName()+" "+this.getCreatedOn().getDayOfMonth()+"/"+this.getCreatedOn().getMonthOfYear()

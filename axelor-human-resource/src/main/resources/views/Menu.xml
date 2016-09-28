@@ -93,7 +93,7 @@
 		title="My Expenses">
 		<view name="expense-grid" type="grid" />
 		<view name="expense-form" type="form" />
-		<domain>self.user = :user_id AND self.company = :company_id</domain>
+		<domain>self.user = :user_id AND self.company = :company_id AND self.multipleUsers IS FALSE</domain>
 		<context name="user_id" expr="eval:__user__" />
 		<context name="company_id" expr="eval:__user__.activeCompany" />
 	</action-view>
@@ -111,7 +111,15 @@
 	<action-view name="expense.ventilate" title="Expenses to Ventilate" model="com.axelor.apps.hr.db.Expense">
 		<view type="grid" name="expense-grid"/>
 		<view type="form" name="expense-form"/>
-		<domain>self.statusSelect = 3 AND self.ventilated = false</domain>
+		<domain>self.statusSelect = 3 AND self.ventilated = false AND self.multipleUsers IS FALSE</domain>
+	</action-view>
+	
+	<menuitem name="multiple-users-expense" parent="expense-root" title="Multiple users expenses" action="multiple.users.expense"  order="-3000"/>
+	
+	<action-view name="multiple.users.expense" title="Multiple users expenses" model="com.axelor.apps.hr.db.Expense">
+		<view type="grid" name="expense-grid"/>
+		<view type="form" name="expense-form"/>
+		<domain>self.multipleUsers IS TRUE</domain>
 	</action-view>
 	
 	<menuitem name="historic-expense" groups="MNGT,admins" parent="expense-root" title="Historic colleague Expenses" action="expense.historic"/>

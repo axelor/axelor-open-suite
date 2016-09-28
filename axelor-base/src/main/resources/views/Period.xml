@@ -20,7 +20,8 @@
 			<field name="year.company" form-view="company-form" readonly="true" colSpan="3"/>
 	    	<field name="fromDate" colSpan="3"/>
 	    	<field name="toDate" colSpan="3"/>
-	    	<field name="year" title="Fiscal year" form-view="year-form" grid-view="year-grid"/>   
+	    	<field name="year" title="Fiscal year" form-view="year-form" grid-view="year-grid"/>
+	    	<field name="allowExpenseCreation" if-module="axelor-human-resource" />
     	</panel>
     	<panel>
         	<panel colSpan="6">

@@ -7,6 +7,7 @@
   
   	<boolean name="expense" title="Expense" />
   	<boolean name="isActivity" title="Activity"/>
+  	<boolean name="blockExpenseTax" title="Block expense tax modification" default="false"/>
   	
   </entity>
 
