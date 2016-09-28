@@ -9,4 +9,7 @@ public interface BankOrderService {
 	
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void validate(BankOrder bankOrder) throws AxelorException;
+	
+	@Transactional
+	public void sign(BankOrder bankOrder);
 }
