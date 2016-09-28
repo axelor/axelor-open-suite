@@ -60,6 +60,7 @@
 	       	    <panel-related field="leaveLineList" grid-view="leave-line-grid" form-view="leave-line-form" colSpan="12"/>
 	       	</panel>
 	       	<panel-related field="employmentContractList" grid-view="employment-contract-employee-grid" form-view="employment-contract-form"/>
+	       	<panel-dashlet title="Lunch Vouchers" colSpan="12" action="action-hr-view-show-lunch-voucher"/>
         </panel-tabs>
 	</form>
 	
@@ -82,6 +83,13 @@
 	    <view type="grid" name="employee-grid"/>
 	    <view type="form" name="employee-form"/>
 	    <context name="_showRecord" expr="eval:employee?.id"/>
+	</action-view>
+	
+	<action-view name="action-hr-view-show-lunch-voucher" title="Lunch Vouchers" model="com.axelor.apps.hr.db.LunchVoucherMgtLine">
+		<view type="grid" name="lunch-voucher-mgt-line-employee-grid"/>
+		<view type="form" name="lunch-voucher-mgt-line-form"/>
+		<domain>self.employee.id = :employeeId</domain>
+		<context name="employeeId" expr="eval: id"/>
 	</action-view>
 	
 </object-views>

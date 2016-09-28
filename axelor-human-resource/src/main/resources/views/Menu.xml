@@ -172,6 +172,13 @@
 		<domain>self.typeSelect = 4</domain>
 	</action-view>
 	
+	<menuitem name="all-lunch-voucher-mgt" parent="hr-root" title="Lunch Voucher Management" action="lunch.voucher.mgt.all"/>
+	
+	<action-view name="lunch.voucher.mgt.all" title="Lunch Voucher Management" model="com.axelor.apps.hr.db.LunchVoucherMgt">
+    	<view type="grid" name="lunch-voucher-mgt-grid"/>
+	    <view type="form" name="lunch-voucher-mgt-form"/>
+	</action-view>
+	
 	<menuitem name="all-payroll-preparation" parent="hr-root" title="Payroll Preparations" action="payroll.preparation.all"/>
 	
 	<action-view name="payroll.preparation.all" title="Payroll Preparations" model="com.axelor.apps.hr.db.PayrollPreparation">
