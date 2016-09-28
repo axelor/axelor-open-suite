@@ -418,7 +418,7 @@
 "The employee %s has multiple %s leave lines",,,
 "The employee %s has no %s leave line",,,
 "There is a conflict between the dates entered and the dates in the lines : %s","Il y a un conflit entre les dates entrées et les dates des lignes : %s",,
-"This date is invalide, it must be included in the timesheet's period and can't be in the future","Cette date est invalide, elle doit être incluse dans la période et ne peut pas être dans le future",,
+"This date is invalide, it must be included in the timesheet's period","Cette date est invalide, elle doit être incluse dans la période de la feuille de temps",,
 "Thursday","Jeudi",,
 "Time Sheet","Feuille de temps",,
 "Time logging preference","Unité saisie feuille de temps",,
