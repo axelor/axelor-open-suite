@@ -52,7 +52,7 @@
 		<call class="com.axelor.apps.hr.web.HrBatchController" method="actionLeaveManagement"/>
 	</action-method>
 	
-	<action-method name="save,action-hrbatch-method-seniority-leave-management">
+	<action-method name="action-hrbatch-method-seniority-leave-management">
 		<call class="com.axelor.apps.hr.web.HrBatchController" method="actionSeniorityLeaveManagement"/>
 	</action-method>
 
