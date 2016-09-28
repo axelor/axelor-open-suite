@@ -64,7 +64,6 @@ public interface IExceptionMessage {
 	static final String BATCH_LEAVE_MANAGEMENT_ENDING_2 = /*$$(*/ "Employees' leaves failed to be computed due to configuration anomaly : %s"/*)*/ ;
 	static final String BATCH_LEAVE_MANAGEMENT_ENDING_3 = /*$$(*/ "Employees' leaves failed to be computed due to missing data : %s"/*)*/ ;
 	
-	
-
+	static final String LUNCH_VOUCHER_MIN_STOCK = /*$$(*/ "Minimum stock of lunch vouchers will be reached for the company %s.\n  Minimum Stock allowed : %s.\n Available Stock : %s" /*)*/ ;
 
 }
