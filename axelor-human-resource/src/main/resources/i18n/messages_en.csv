@@ -265,6 +265,7 @@
 "Merci de rentrer une date de fin pour la génération",,,
 "Min monthly remuneration",,,
 "Minimum Stock of Lunch Vouchers",,,
+"Minimum stock of lunch vouchers will be reached for the company %s.\n  Minimum Stock allowed : %s.\n Available Stock : %s",,,
 "Minutes",,,
 "Miscellaneous Amendment",,,
 "Monday",,,

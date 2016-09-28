@@ -9,4 +9,6 @@ public interface LunchVoucherMgtService {
 	
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void calculate(LunchVoucherMgt lunchVoucherMgt) throws AxelorException;
+
+	int checkStock(LunchVoucherMgt lunchVoucherMgt) throws AxelorException;
 }

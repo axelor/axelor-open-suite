@@ -34,14 +34,13 @@
 			<field name="employersShare"/>
 		</panel>
   		<panel name="action" sidebar="true">
-    		<button name="calculate" title="Calculate" colSpan="12" onClick="save,action-lunch-voucher-method-calculate" readonlyIf="statusSelect != 1"/>
-    		<button name="generateInvoice" title="Generate invoice from the supplier" colSpan="12" onClick="save,action-lunch-voucher-record-status-generate" readonlyIf="statusSelect != 2"/>
+    		<button name="calculate" title="Calculate" colSpan="12" onClick="save,action-lunch-voucher-method-calculate,action-lunch-voucher-method-check-stock" readonlyIf="statusSelect != 1"/>
+    		<button name="generateInvoice" title="Generate invoice from the supplier" colSpan="12" onClick="save,action-lunch-voucher-record-status-generate,save" readonlyIf="statusSelect != 2"/>
   		</panel>
   		<panel name="info" sidebar="true">
     		<panel title="Requested lunch vouchers on the period">
     			<field name="requestedLunchVouchers" css="label-bold bold" showTitle="false" colSpan="12"/>
     		</panel>
-<!--     		<label title="Minimum Stock Reached!" showIf="company.hrConfig.availableStockLunchVoucher - totalLunchVouchers &lt;= company.hrConfig.minStockLunchVoucher" if="company != null &amp;&amp; totalLunchVouchers != 0" css="label-bold red"/> -->
     		<panel title="Total lunch vouchers">
     			<field name="totalLunchVouchers" showTitle="false" colSpan="12" css="label-bold bold"/>
     		</panel>
@@ -74,4 +73,9 @@
 	<action-method name="action-lunch-voucher-method-calculate">
 		<call class="com.axelor.apps.hr.web.lunch.voucher.LunchVoucherMgtController" method="calculate"/>
 	</action-method>
+	
+	<action-method name="action-lunch-voucher-method-check-stock">
+		<call class="com.axelor.apps.hr.web.lunch.voucher.LunchVoucherMgtController" method="checkStock"/>
+	</action-method>
+	
 </object-views>

@@ -7,9 +7,11 @@ import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.hr.db.Employee;
+import com.axelor.apps.hr.db.HRConfig;
 import com.axelor.apps.hr.db.LunchVoucherMgt;
 import com.axelor.apps.hr.db.LunchVoucherMgtLine;
 import com.axelor.apps.hr.db.repo.LunchVoucherMgtRepository;
+import com.axelor.apps.hr.service.config.HRConfigService;
 import com.axelor.auth.db.User;
 import com.axelor.auth.db.repo.UserRepository;
 import com.axelor.exception.AxelorException;
@@ -24,14 +26,18 @@ public class LunchVoucherMgtServiceImpl implements LunchVoucherMgtService{
 	
 	protected LunchVoucherMgtLineService lunchVoucherMgtLineService;
 	
+	protected HRConfigService hrConfigService;
+	
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 	
 	@Inject
-	public LunchVoucherMgtServiceImpl(UserRepository userRepository, LunchVoucherMgtLineService lunchVoucherMgtLineService, LunchVoucherMgtRepository lunchVoucherMgtRepository){
+	public LunchVoucherMgtServiceImpl(UserRepository userRepository, LunchVoucherMgtLineService lunchVoucherMgtLineService, 
+								      LunchVoucherMgtRepository lunchVoucherMgtRepository, HRConfigService hrConfigService){
 		
 		this.userRepository = userRepository;
 		this.lunchVoucherMgtLineService = lunchVoucherMgtLineService;
 		this.lunchVoucherMgtRepository = lunchVoucherMgtRepository;
+		this.hrConfigService = hrConfigService;
 	}
 	
 	@Override
@@ -59,6 +65,17 @@ public class LunchVoucherMgtServiceImpl implements LunchVoucherMgtService{
 			total += lunchVoucherMgtLine.getLunchVoucherNumber();
 		}
 		lunchVoucherMgt.setTotalLunchVouchers(total);
+	}
+	
+	@Override
+	public int checkStock(LunchVoucherMgt lunchVoucherMgt) throws AxelorException{
+		
+		HRConfig hrConfig = hrConfigService.getHRConfig(lunchVoucherMgt.getCompany());
+		int minStoclLV = hrConfig.getMinStockLunchVoucher();
+		int totalLV = lunchVoucherMgt.getTotalLunchVouchers();
+		int availableStoclLV = hrConfig.getAvailableStockLunchVoucher();
+		
+		return availableStoclLV - totalLV - minStoclLV;
 	}
 
 }
