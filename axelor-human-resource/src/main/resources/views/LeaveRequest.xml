@@ -33,7 +33,7 @@
 	</grid>
 	
 	<form name="leave-request-form" title="Leave Request" model="com.axelor.apps.hr.db.LeaveRequest"
-	    onNew="action-leave-request-record-default,action-leave-request-attrs-buttons" onLoad="action-leave-request-attrs-buttons,action-leave-request-attrs-draft-cancel"
+	    onNew="action-leave-request-record-default,action-leave-request-attrs-buttons" onLoad="action-leave-request-attrs-buttons,action-leave-request-attrs-draft-cancel,action-leave-request-attrs-select,action-leave-request-attrs-inject-change"
 	    onSave="action-leave-request-validate-dates-on-save" canCopy="false">
 
 	    <panel sidebar="true" name="actions" title="Actions" stacked="true">
