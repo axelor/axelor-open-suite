@@ -44,6 +44,9 @@
     		<panel title="Total lunch vouchers">
     			<field name="totalLunchVouchers" showTitle="false" colSpan="12" css="label-bold bold"/>
     		</panel>
+			<panel title="Line Stock quantity">
+    			<field name="stockLineQuantity" showTitle="false" colSpan="12" css="label-bold bold" onChange="action-lunch-voucher-method-check-stock"/>
+    		</panel>    		
     	</panel>
   		<panel-related field="lunchVoucherMgtLineList" form-view="lunch-voucher-mgt-line-form" grid-view="lunch-voucher-mgt-line-grid" canNew="false" canRemove="false"/>
 	</form>
