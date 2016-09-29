@@ -15,6 +15,7 @@
 			<field name="manageAccumulation" hideIf="$popup()"/>
 			<field name="allowNegativeValue" showIf="manageAccumulation &amp;&amp; !$popup()"/>
 			<field name="allowInjection" showIf="manageAccumulation &amp;&amp; !$popup()"/>
+			<field name="instruction" colSpan="12" />
 		</panel>
 	</form>
 	

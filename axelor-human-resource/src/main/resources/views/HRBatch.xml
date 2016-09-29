@@ -13,7 +13,7 @@
 		<field name="dayNumber"/>
     </grid>
  
-	<form name="hr-batch-form" title="HR Batch" model="com.axelor.apps.hr.db.HrBatch" width="large">
+	<form name="hr-batch-form" title="HR Batch" model="com.axelor.apps.hr.db.HrBatch" width="large" onNew="action-hr-batch-record-default">
 	  	<panel name="main">
 		    <field name="actionSelect"/>
 		    <field name="code"/>
@@ -55,6 +55,10 @@
 	<action-method name="action-hrbatch-method-seniority-leave-management">
 		<call class="com.axelor.apps.hr.web.HrBatchController" method="actionSeniorityLeaveManagement"/>
 	</action-method>
+	
+	<action-record name="action-hr-batch-record-default" model="com.axelor.apps.hr.db.HrBatch">
+		<field name="company" expr="eval: __user__.activeCompany"/>
+	</action-record>
 
 
 
