@@ -239,9 +239,10 @@ public class ExpenseServiceImpl implements ExpenseService  {
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public Move ventilate(Expense expense) throws AxelorException{
 
-		LocalDate moveDate = generalService.getTodayDate();
-		if(expense.getMoveDate()!=null){
-			moveDate = expense.getMoveDate();
+		LocalDate moveDate = expense.getMoveDate();
+		
+		if(moveDate == null){
+			moveDate = generalService.getTodayDate();
 		}
 
 		Account account = null;

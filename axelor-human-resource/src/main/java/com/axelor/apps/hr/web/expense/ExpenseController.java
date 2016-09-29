@@ -115,7 +115,7 @@ public class ExpenseController {
 		User user = AuthUtils.getUser();
 		Company activeCompany = user.getActiveCompany();
 		
-		List<Expense> expenseList = Beans.get(ExpenseRepository.class).all().filter("self.user = ?1 AND self.company = ?2 AND self.statusSelect = 1", user, activeCompany).fetch();
+		List<Expense> expenseList = Beans.get(ExpenseRepository.class).all().filter("self.user = ?1 AND self.company = ?2 AND self.statusSelect = 1 AND self.multipleUsers is false", user, activeCompany).fetch();
 		if(expenseList.isEmpty()){
 			response.setView(ActionView
 									.define(I18n.get("Expense"))
@@ -202,7 +202,7 @@ public class ExpenseController {
 			.context("activeCompany", user.getActiveCompany());
 		
 			if(!employee.getHrManager())  {
-				actionView.domain(actionView.get().getDomain() + " AND self.user.employee.manager = :user AND self.multipleUsers IS FALSE")
+				actionView.domain(actionView.get().getDomain() + " AND self.user.employee.manager = :user")
 				.context("user", user);
 			}
 		}
@@ -221,7 +221,7 @@ public class ExpenseController {
 				   	.add("grid","expense-grid")
 				   	.add("form","expense-form");
 		
-		String domain = "self.user.employee.manager.employee.manager = :user AND self.company = :activeCompany AND self.statusSelect = 2 AND self.multipleUsers IS FALSE";
+		String domain = "self.user.employee.manager.employee.manager = :user AND self.company = :activeCompany AND self.statusSelect = 2";
 
 		long nbExpenses =  Query.of(ExtraHours.class).filter(domain).bind("user", user).bind("activeCompany", activeCompany).count();
 		
