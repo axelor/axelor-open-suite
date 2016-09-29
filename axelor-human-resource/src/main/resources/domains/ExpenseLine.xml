@@ -7,7 +7,7 @@
 
 	<entity name="ExpenseLine" cachable="true">
 	    <!-- Original part of expenseLine -->
-	    <many-to-one name="user" ref="com.axelor.auth.db.User" title="User" column="user_id" readonly="true"/>
+	    <many-to-one name="user" ref="com.axelor.auth.db.User" title="User" column="user_id"/>
 	    <many-to-one name="projectTask" ref="com.axelor.apps.project.db.ProjectTask" title="Project/Task" />
 	    <many-to-one name="expenseProduct" ref="com.axelor.apps.base.db.Product" title="Expense Type" required="true" />
 	    <date name="expenseDate" title="Expense date" required="true" default="now"/>
@@ -22,8 +22,7 @@
 		<one-to-many name="analyticDistributionLineList" ref="com.axelor.apps.account.db.AnalyticDistributionLine" title="Analytic distribution lines" mappedBy="expenseLine"/>
 		<many-to-one name="analyticDistributionTemplate" title="Analytic distribution template" ref="com.axelor.apps.account.db.AnalyticDistributionTemplate"/>
 	  	<binary name="justification" image="true" title="Justification"/>
-	  	<integer name="companyCbPayment" title="Company's credit card payment" selection="hr.expense.company.cb.payment" />
-	  	<many-to-many name="userList" ref="com.axelor.auth.db.User" title="User list" />
+	  	<integer name="companyCbPaymentSelect" title="Company's credit card payment" selection="hr.expense.company.cb.payment" />
 	  
 		<!-- integration of KilometricAllowance -->
   		<many-to-one name="kilometricAllowParam" ref="com.axelor.apps.hr.db.KilometricAllowParam" title="Kilometric Allowance Param"/>

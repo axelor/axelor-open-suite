@@ -32,15 +32,13 @@
 		<field name="statusSelect"/>
 	</grid>
 
-	<form name="expense-form" title="Expense" model="com.axelor.apps.hr.db.Expense"
-	    onNew="action-expense-record-default,action-expense-attrs-buttons" onLoad="action-expense-attrs-buttons" width="large" canNew="false"
+	<form name="expense-form" title="Expense" model="com.axelor.apps.hr.db.Expense" width="large" canNew="false"
+	    onNew="action-expense-record-default,action-expense-attrs-buttons,action-expense-attrs-multiple-users" 
+	    onLoad="action-expense-attrs-buttons,action-expense-attrs-expense-company-cb,action-expense-attrs-multiple-users"
 	    onSave="action-expense-method-validate-date" canCopy="false">
 		<toolbar>
 			<button name="printExpense" title="Print" colSpan="2" icon="fa-print" onClick="save,action-print-expense"/>
 		</toolbar>
-		<panel name="header">
-			<field name="multipleUsers" />
-		</panel>
 	    <panel sidebar="true" name="actions" title="Actions" stacked="true">
 	    	<button name="sendExpenses" colSpan="4" title="Send Expenses" onClick="action-expense-group-send" readonlyIf="statusSelect &gt; 1"/>
 			<button name="ventilate" colSpan="4" title="Ventilate" onClick="action-expense-method-ventilate" readonlyIf="statusSelect != 3 || ventilated"/>
@@ -51,33 +49,29 @@
 	    </panel>
 		<panel>
 		    <field name="statusSelect" colSpan="12" widget="NavSelect" showTitle="false"/>
-		    <field name="moveDate" colSpan="4"/>
-		    <field name="ventilated" title="Expense Ventilated" readonly="true" colSpan="4"/>
-			<field name="sentDate" colSpan="4"/>
+		    <field name="multipleUsers" hidden="true" onChange="action-expense-attrs-multiple-users"/>
 			<field name="company" form-view="company-form" grid-view="company-grid"/>
 			<field name="bankDetails" widget="SuggestBox" onSelect="action-accounting-batch-attrs-bank-details-domain" form-view="bank-details-form" grid-view="bank-details-grid" if="__config__.general.getManageMultiBanks()"/>
 			<field name="user" colSpan="4" form-view="user-form" grid-view="user-grid"/>
 			<field name="period" colSpan="4" onSelect="action-expense-attrs-domain-period" form-view="period-form" grid-view="period-grid"/>
-			<field name="expenseCompanyCb"/>
-			<field name="move" showIf="ventilated" form-view="move-form" grid-view="move-grid"/>
+			<field name="expenseCompanyCb" onChange="action-expense-attrs-expense-company-cb"/>
 		</panel>
 		
 		<panel-tabs>
-			<panel title="Expense Lines">
-				<panel-related field="expenseLineList" title="Expense Lines" readonlyIf="statusSelect &gt; 1" onChange="action-expense-method-compute" editable="true" form-view="expense-line-form" grid-view="expense-line-grid" hidden="true" colSpan="12" showIf="!expenseCompanyCb" />
-				<panel-related field="expenseLineList" title="Expense Lines" readonlyIf="statusSelect &gt; 1" onChange="action-expense-method-compute" editable="true" form-view="expense-line-form" grid-view="expense-line-company-card-grid" colSpan="12" hidden="true" showIf="expenseCompanyCb" />
-			</panel>
-			
+			<panel-related field="expenseLineList" title="Expense Lines" readonlyIf="statusSelect &gt; 1" onChange="action-expense-method-compute" editable="true" form-view="expense-line-form" grid-view="expense-line-grid" colSpan="12" />
 			<panel-related field="expenseLineList" title="Kilometric Allowances" readonlyIf="statusSelect &gt; 1" onChange="action-expense-method-compute" editable="true" form-view="expense-line-kilometric-form" grid-view="expense-line-kilometric-grid" />
 		</panel-tabs>
 		
-		
-		<panel>
-			<field name="validatedBy" form-view="user-form" grid-view="user-grid"/>
-			<field name="refusedBy" form-view="user-form" grid-view="user-grid"/>
-			<field name="validationDate"/>
-			<field name="refusalDate"/>
-			<field name="groundForRefusal" showIf="statusSelect == 4" colSpan="12"/>
+		<panel showIf="sentDate">
+			<field name="sentDate" hidden="true" colSpan="4" showIf="sentDate"/>
+			<field name="validatedBy" hidden="true" form-view="user-form" grid-view="user-grid" showIf="validatedBy"/>
+			<field name="refusedBy" hidden="true" form-view="user-form" grid-view="user-grid" showIf="refusedBy"/>
+			<field name="validationDate" hidden="true" showIf="validationDate"/>
+			<field name="refusalDate" hidden="true" showIf="refusalDate"/>
+			<field name="groundForRefusal" hidden="true" showIf="statusSelect == 4" colSpan="12"/>
+			<field name="moveDate" hidden="true" colSpan="4" showIf="statusSelect == 3"/>
+			<field name="move" showIf="ventilated" form-view="move-form" grid-view="move-grid"/>
+		    <field name="ventilated" hidden="true" title="Expense Ventilated" readonly="true" colSpan="4" showIf="ventilated"/>
 		</panel>
 		<panel sidebar="true" readonly="true"  colSpan="4">  
 	  		<field name="inTaxTotal" css="order-subtotal" showTitle="false" colSpan="12">
@@ -129,7 +123,7 @@
 		<field name="exTaxTotal" expr="eval: 0"/>
     	<field name="taxTotal" expr="eval: 0"/>
     	<field name="inTaxTotal" expr="eval: 0"/>
-    	<field name="multipleUsers" expr="eval: setMultipleUsers" />
+    	<field name="multipleUsers" expr="eval: setMultipleUsers" if="setMultipleUsers"/>
 	</action-record>
 
 	<action-record name="action-expense-record-draft" model="com.axelor.apps.hr.db.Expense">
@@ -176,7 +170,14 @@
 		<attribute name="hidden" for="validButton" expr="eval: !(statusSelect == 2 &amp;&amp; (__user__ == user?.employee?.manager || (__user__ == user &amp;&amp; user?.employee?.manager == null) || __user__ == user?.employee?.manager?.employee?.manager || __user__.employee?.hrManager))"/>
 		<attribute name="hidden" for="refuseButton" expr="eval: !(statusSelect == 2 &amp;&amp; (__user__ == user?.employee?.manager || (__user__ == user &amp;&amp; user?.employee?.manager == null) || __user__ == user?.employee?.manager?.employee?.manager || __user__.employee?.hrManager))"/>
 		<attribute name="hidden" for="cancelButton" expr="eval: period?.toDate &lt; __date__ || statusSelect == 5"/>
-		<attribute name="hidden" for="header" expr="eval : true" if="eval: setMultipleUsers"/>
+	</action-attrs>
+	
+	<action-attrs name="action-expense-attrs-multiple-users">
+		<attribute name="hidden" for="expenseLineList.user" expr="eval: !multipleUsers"/>
+	</action-attrs>
+	
+	<action-attrs name="action-expense-attrs-expense-company-cb">
+		<attribute name="hidden" for="expenseLineList.companyCbPaymentSelect" expr="eval: !expenseCompanyCb"/>
 	</action-attrs>
 	
 	<action-validate name="action-expense-validate-period">
