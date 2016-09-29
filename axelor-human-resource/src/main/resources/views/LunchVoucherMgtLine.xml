@@ -4,30 +4,32 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
     
     <grid name="lunch-voucher-mgt-line-grid" title="Lunch Voucher Lines" model="com.axelor.apps.hr.db.LunchVoucherMgtLine" editable="true" orderBy="isStockLine,employee">
-    	<hilite if="isStockLine" background="info" strong="true"/>
+<!--     	<hilite if="isStockLine" background="info" strong="true"/> -->
         <field name="employee"/>
         <field name="canteenEntries" aggregate="sum" readonlyIf="isStockLine" title="Nbr canteen entries"/>
         <field name="daysOverseas" aggregate="sum" readonlyIf="isStockLine" title="Nbr days overseas"/>
         <field name="lunchVoucherNumber" aggregate="sum" title="Nbr lunch vouchers"/>
-        <field name="isGivenToEmployee" readonlyIf="isStockLine" title="Given?"/>
-        <field name="isStockLine"/>
+        <field name="isGivenToEmployee" title="Given?"/>
+<!--         <field name="isGivenToEmployee" readonlyIf="isStockLine" title="Given?"/> -->
+<!--         <field name="isStockLine"/> -->
     </grid>
     
     <grid name="lunch-voucher-mgt-line-employee-grid" title="Lunch Voucher Lines" model="com.axelor.apps.hr.db.LunchVoucherMgtLine" editable="true" orderBy="isStockLine,employee">
         <field name="canteenEntries" aggregate="sum" readonlyIf="isStockLine" title="Nbr canteen entries"/>
         <field name="daysOverseas" aggregate="sum" readonlyIf="isStockLine" title="Nbr days overseas"/>
         <field name="lunchVoucherNumber" aggregate="sum" title="Nbr lunch vouchers"/>
-        <field name="isGivenToEmployee" readonlyIf="isStockLine" title="Given?"/>
+        <field name="isGivenToEmployee" title="Given?"/>
         <field name="lunchVoucherMgt.statusSelect"/>
     </grid>
 
 	<form name="lunch-voucher-mgt-line-form" title="Lunch Voucher Lines" model="com.axelor.apps.hr.db.LunchVoucherMgtLine" width="large">
 		<panel name="overview" title="Overview">
 			<field name="employee" colSpan="6" />
-			<field name="isStockLine" colSpan="6" />
+<!-- 			<field name="isStockLine" colSpan="6" /> -->
 			<field name="lunchVoucherNumber" css="label-bold bold" colSpan="12" />
 		</panel>
-		<panel name="details" title="Details" hideIf="isStockLine">
+<!-- 		<panel name="details" title="Details" hideIf="isStockLine"> -->
+		<panel name="details" title="Details">
 			<field name="canteenEntries" colSpan="6" />
 			<field name="daysOverseas" colSpan="6" />
 			<field name="isGivenToEmployee" colSpan="12" />

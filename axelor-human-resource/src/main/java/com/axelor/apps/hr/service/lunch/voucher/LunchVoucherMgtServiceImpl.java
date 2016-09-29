@@ -74,8 +74,9 @@ public class LunchVoucherMgtServiceImpl implements LunchVoucherMgtService{
 		int minStoclLV = hrConfig.getMinStockLunchVoucher();
 		int totalLV = lunchVoucherMgt.getTotalLunchVouchers();
 		int availableStoclLV = hrConfig.getAvailableStockLunchVoucher();
+		int stockLine = lunchVoucherMgt.getStockLineQuantity();
 		
-		return availableStoclLV - totalLV - minStoclLV;
+		return availableStoclLV - totalLV - stockLine - minStoclLV;
 	}
 
 }

@@ -47,7 +47,6 @@ public class LunchVoucherMgtController {
 		try {
 			LunchVoucherMgtService lunchVoucherMgtService = lunchVoucherMgtProvider.get();
 			LunchVoucherMgt lunchVoucherMgt = request.getContext().asType(LunchVoucherMgt.class);
-			lunchVoucherMgt = lunchVoucherMgtRepositoryProvider.get().find(lunchVoucherMgt.getId());
 			Company company = lunchVoucherMgt.getCompany();
 			HRConfig hrConfig = hrConfigService.get().getHRConfig(company);
 			int stock = lunchVoucherMgtService.checkStock(lunchVoucherMgt);
@@ -58,7 +57,5 @@ public class LunchVoucherMgtController {
 		} catch (Exception e) {
 			TraceBackService.trace(response, e);
 		}
-		
-		
 	}
 }
