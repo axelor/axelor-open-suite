@@ -21,6 +21,7 @@
       <one-to-many name="lunchVoucherMgtLineList" ref="com.axelor.apps.hr.db.LunchVoucherMgtLine" title="Lunch Voucher Lines"  mappedBy="lunchVoucherMgt" orphanRemoval="true"/>
       
        <integer name="stockLineQuantity" title="Stock Line quantity"/>
+       <string name="stockLineComment" title="Comment" large="true"/>
       <extra-code>
       	<![CDATA[
 	  		public static final Integer STATUS_DRAFT = 1;
