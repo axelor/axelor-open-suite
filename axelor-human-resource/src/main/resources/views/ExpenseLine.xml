@@ -62,7 +62,7 @@
 			<field name="toInvoice"/>
 			<field name="invoiced" showIf="toInvoice"/>
 			<field name="companyCbPayment" showIf="expense.expenseCompanyCb"/>
-			<panel-related field="userList" canEdit="false" canNew="false" form-view="user-form" grid-view="user-grid" onSelect="action-expense-line-attrs-company"  />
+			<panel-related field="userList" canEdit="false" canNew="false" form-view="user-form" grid-view="user-grid" onSelect="action-expense-line-attrs-company" showIf="expense.multipleUsers" />
 			<field name="justification"/>
 			<field name="comments" colSpan="12"/>
 			<field name="expense" hidden="true"/>
