@@ -46,7 +46,7 @@
     		</panel>
 			<panel title="Line Stock quantity">
     			<field name="stockLineQuantity" showTitle="false" colSpan="12" css="label-bold bold" onChange="action-lunch-voucher-method-check-stock"/>
-    			<field name="commentStockLine" colSpan="12"/>
+    			<field name="stockLineComment" colSpan="12"/>
     		</panel>    		
     	</panel>
   		<panel-related field="lunchVoucherMgtLineList" form-view="lunch-voucher-mgt-line-form" grid-view="lunch-voucher-mgt-line-grid" canNew="false" canRemove="false"/>
