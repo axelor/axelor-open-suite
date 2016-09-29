@@ -6,17 +6,19 @@
     <grid name="lunch-voucher-mgt-line-grid" title="Lunch Voucher Lines" model="com.axelor.apps.hr.db.LunchVoucherMgtLine" editable="true" orderBy="isStockLine,employee">
 <!--     	<hilite if="isStockLine" background="info" strong="true"/> -->
         <field name="employee"/>
-        <field name="canteenEntries" aggregate="sum" readonlyIf="isStockLine" title="Nbr canteen entries"/>
-        <field name="daysOverseas" aggregate="sum" readonlyIf="isStockLine" title="Nbr days overseas"/>
+        <field name="canteenEntries" aggregate="sum" readonlyIf="isStockLine" title="Canteen"/>
+        <field name="daysOverseas" aggregate="sum" readonlyIf="isStockLine" title="Overseas"/>
         <field name="lunchVoucherNumber" aggregate="sum" title="Nbr lunch vouchers"/>
-        <field name="isGivenToEmployee" title="Given?"/>
+        <field name="isGivenToEmployee" title="Given?" width="200%"/>
 <!--         <field name="isGivenToEmployee" readonlyIf="isStockLine" title="Given?"/> -->
 <!--         <field name="isStockLine"/> -->
     </grid>
     
     <grid name="lunch-voucher-mgt-line-employee-grid" title="Lunch Voucher Lines" model="com.axelor.apps.hr.db.LunchVoucherMgtLine" editable="true" orderBy="isStockLine,employee">
-        <field name="canteenEntries" aggregate="sum" readonlyIf="isStockLine" title="Nbr canteen entries"/>
-        <field name="daysOverseas" aggregate="sum" readonlyIf="isStockLine" title="Nbr days overseas"/>
+        <field name="lunchVoucherMgt.payStartDate"/>
+        <field name="lunchVoucherMgt.payEndDate"/>
+        <field name="canteenEntries" aggregate="sum" readonlyIf="isStockLine" title="Canteen"/>
+        <field name="daysOverseas" aggregate="sum" readonlyIf="isStockLine" title="Overseas"/>
         <field name="lunchVoucherNumber" aggregate="sum" title="Nbr lunch vouchers"/>
         <field name="isGivenToEmployee" title="Given?"/>
         <field name="lunchVoucherMgt.statusSelect"/>
