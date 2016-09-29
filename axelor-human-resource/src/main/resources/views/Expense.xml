@@ -38,7 +38,7 @@
 		<toolbar>
 			<button name="printExpense" title="Print" colSpan="2" icon="fa-print" onClick="save,action-print-expense"/>
 		</toolbar>
-		<panel>
+		<panel name="header">
 			<field name="multipleUsers" />
 		</panel>
 	    <panel sidebar="true" name="actions" title="Actions" stacked="true">
@@ -63,7 +63,11 @@
 		</panel>
 		
 		<panel-tabs>
-			<panel-related field="expenseLineList" title="Expense Lines" readonlyIf="statusSelect &gt; 1" onChange="action-expense-method-compute" editable="true" form-view="expense-line-form" grid-view="expense-line-grid" />
+			<panel title="Expense Lines">
+				<panel-related field="expenseLineList" title="Expense Lines" readonlyIf="statusSelect &gt; 1" onChange="action-expense-method-compute" editable="true" form-view="expense-line-form" grid-view="expense-line-grid" hidden="true" colSpan="12" showIf="!expenseCompanyCb" />
+				<panel-related field="expenseLineList" title="Expense Lines" readonlyIf="statusSelect &gt; 1" onChange="action-expense-method-compute" editable="true" form-view="expense-line-form" grid-view="expense-line-company-card-grid" colSpan="12" hidden="true" showIf="expenseCompanyCb" />
+			</panel>
+			
 			<panel-related field="expenseLineList" title="Kilometric Allowances" readonlyIf="statusSelect &gt; 1" onChange="action-expense-method-compute" editable="true" form-view="expense-line-kilometric-form" grid-view="expense-line-kilometric-grid" />
 		</panel-tabs>
 		
@@ -125,6 +129,7 @@
 		<field name="exTaxTotal" expr="eval: 0"/>
     	<field name="taxTotal" expr="eval: 0"/>
     	<field name="inTaxTotal" expr="eval: 0"/>
+    	<field name="multipleUsers" expr="eval: setMultipleUsers" />
 	</action-record>
 
 	<action-record name="action-expense-record-draft" model="com.axelor.apps.hr.db.Expense">
@@ -171,6 +176,7 @@
 		<attribute name="hidden" for="validButton" expr="eval: !(statusSelect == 2 &amp;&amp; (__user__ == user?.employee?.manager || (__user__ == user &amp;&amp; user?.employee?.manager == null) || __user__ == user?.employee?.manager?.employee?.manager || __user__.employee?.hrManager))"/>
 		<attribute name="hidden" for="refuseButton" expr="eval: !(statusSelect == 2 &amp;&amp; (__user__ == user?.employee?.manager || (__user__ == user &amp;&amp; user?.employee?.manager == null) || __user__ == user?.employee?.manager?.employee?.manager || __user__.employee?.hrManager))"/>
 		<attribute name="hidden" for="cancelButton" expr="eval: period?.toDate &lt; __date__ || statusSelect == 5"/>
+		<attribute name="hidden" for="header" expr="eval : true" if="eval: setMultipleUsers"/>
 	</action-attrs>
 	
 	<action-validate name="action-expense-validate-period">

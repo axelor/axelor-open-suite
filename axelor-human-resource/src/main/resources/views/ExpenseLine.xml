@@ -16,6 +16,19 @@
 		<field name="untaxedAmount" hidden="true"/>
 	</grid>
 	
+	<grid name="expense-line-company-card-grid" title="Expense lines" model="com.axelor.apps.hr.db.ExpenseLine"
+		  onNew="action-expense-line-default, action-kilometric-allowance-record-default,action-kilometric-allowance-record-rate" orderBy="-expenseDate">
+		<field name="projectTask" requiredIf="toInvoice" canView="false" domain="self.imputable = true" widget="SuggestBox" />  
+		<field name="expenseProduct" canView="false" domain="self.expense = true" widget="SuggestBox" form-view="product-expense-form" grid-view="product-expense-grid"/> 
+		<field name="expenseDate" onChange="action-expense-line-validate-expenseDate"/>
+		<field name="totalAmount" aggregate="sum" onChange="action-expense-on-change-tax-untaxt-amount"/>
+		<field name="totalTax" aggregate="sum" onChange="action-expense-on-change-tax-untaxt-amount, action-expense-line-method-compute-analytic-distribution"/>
+		<field name="companyCbPayment" showIf="expense.expenseCompanyCb"/>
+		<field name="comments"/>
+		<field name="user" hidden="true" form-view="user-form" grid-view="user-grid"/>
+		<field name="untaxedAmount" hidden="true"/>
+	</grid>
+	
 	<grid name="expense-line-kilometric-grid" 
 		  title="Kilometric Allowances" 
 		  model="com.axelor.apps.hr.db.ExpenseLine"
@@ -49,11 +62,12 @@
 			<field name="toInvoice"/>
 			<field name="invoiced" showIf="toInvoice"/>
 			<field name="companyCbPayment" showIf="expense.expenseCompanyCb"/>
+			<panel-related field="userList" canEdit="false" canNew="false" form-view="user-form" grid-view="user-grid" onSelect="action-expense-line-attrs-company"  />
 			<field name="justification"/>
 			<field name="comments" colSpan="12"/>
 			<field name="expense" hidden="true"/>
     		<field name="expense.expenseCompanyCb" hidden="true" />
-    		<field name="expense.multipleUsers" hidden="true" />
+    		<field name="expense.multipleUsers" hidden="true"/>
 		</panel>
 				
 		<panel name="analyticDistribution" title="Analytic distribution" if="__config__.general.getManageAnalyticAccounting()" onTabSelect="action-expense-line-attrs-read-only-distribution-lines">
@@ -138,5 +152,9 @@
 	<action-record name="action-expense-line-record-expenseDate-invalide" model="com.axelor.apps.hr.db.ExpenseLine">
 		<field name="expenseDate" expr="eval :__date__"/>
 	</action-record>
+	
+	<action-attrs name="action-expense-line-attrs-company" model="com.axelor.apps.hr.db.ExpenseLine">
+		<attribute name="domain" for="userList" expr="eval: &quot; ${expense.company.id} MEMBER OF self.companySet &quot;" />
+	</action-attrs>
 
 </object-views>

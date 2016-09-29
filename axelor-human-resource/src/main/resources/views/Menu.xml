@@ -120,6 +120,7 @@
 		<view type="grid" name="expense-grid"/>
 		<view type="form" name="expense-form"/>
 		<domain>self.multipleUsers IS TRUE</domain>
+		<context name="setMultipleUsers" expr="eval: true"/>
 	</action-view>
 	
 	<menuitem name="historic-expense" groups="MNGT,admins" parent="expense-root" title="Historic colleague Expenses" action="expense.historic"/>

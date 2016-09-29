@@ -23,6 +23,7 @@
 		<many-to-one name="analyticDistributionTemplate" title="Analytic distribution template" ref="com.axelor.apps.account.db.AnalyticDistributionTemplate"/>
 	  	<binary name="justification" image="true" title="Justification"/>
 	  	<integer name="companyCbPayment" title="Company's credit card payment" selection="hr.expense.company.cb.payment" />
+	  	<many-to-many name="userList" ref="com.axelor.auth.db.User" title="User list" />
 	  
 		<!-- integration of KilometricAllowance -->
   		<many-to-one name="kilometricAllowParam" ref="com.axelor.apps.hr.db.KilometricAllowParam" title="Kilometric Allowance Param"/>
