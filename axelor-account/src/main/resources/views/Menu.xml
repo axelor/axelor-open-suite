@@ -288,17 +288,6 @@
 	<menuitem name="account-root-bank-order-direct-debit"
 		parent="account-root-bank-orders" title="Direct Debits"/>
 		
-	<menuitem name="account-root-bank-order-all-direct-debit"
-		parent="account-root-bank-order-direct-debit" title="All Direct Debits"
-		action="account.bank.order.all.direct.debit"/>
-		
-	<action-view name="account.bank.order.all.direct.debit"
-		title="All Direct Debits" model="com.axelor.apps.account.db.BankOrder" >
-		<view type="grid" name="bank-order-grid"/>
-		<view type="form" name="bank-order-form"/>
-		<domain>self.orderType in (3,5)</domain>
-	</action-view>	
-	
 	<menuitem name="account-root-bank-order-sepa-direct-debit"
 		parent="account-root-bank-order-direct-debit" title="SEPA Direct Debits"
 		action="account.bank.order.sepa.direct.debit"/>
@@ -326,17 +315,6 @@
 	<menuitem name="account-root-bank-order-credit-transfer"
 		parent="account-root-bank-orders" title="Credit Transfers"/>
 		
-	<menuitem name="account-root-bank-order-all-credit-transfer"
-		parent="account-root-bank-order-credit-transfer" title="All Credit Transfers"
-		action="account.bank.order.all.credit.transfert"/>
-		
-	<action-view name="account.bank.order.all.credit.transfert"
-		title="All Credit Transfers" model="com.axelor.apps.account.db.BankOrder" >
-		<view type="grid" name="bank-order-grid"/>
-		<view type="form" name="bank-order-form"/>
-		<domain>self.orderType in (2,4)</domain>
-	</action-view>	
-	
 	<menuitem name="account.bank.order.sepa.credit.transfert"
 		parent="account-root-bank-order-credit-transfer" title="SEPA Credit Transfers"
 		action="account.bank.order.sepa.credit.transfer"/>
