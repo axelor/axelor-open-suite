@@ -49,11 +49,11 @@ public class BankOrderController {
 		if (request.getContext().get("ebicsUser") != null){
 			ebicsUser = JPA.em().find(EbicsUser.class, new Long((Integer)((Map)request.getContext().get("ebicsUser")).get("id")));
 		}
-		else response.setError(I18n.get(IExceptionMessage.EBICS_MISSING_NAME));
+		else response.setError(I18n.get("IExceptionMessage.EBICS_MISSING_NAME"));
 		if (request.getContext().get("password") != null){
 			password = (String)request.getContext().get("password");
 		}
-		else response.setError(I18n.get(IExceptionMessage.EBICS_MISSING_PASSWORD));
+		else response.setError(I18n.get("IExceptionMessage.EBICS_MISSING_PASSWORD"));
 		
 		if(!ebicsUser.getPassword().equals(password)){
 			response.setValue("password", "");
