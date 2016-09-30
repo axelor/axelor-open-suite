@@ -77,7 +77,7 @@ public class ExportAsciidoc {
 		
 		reader.initialize(input);
 		
-		String docImgPath = AppSettings.get().get("doc.images.path");
+		String docImgPath = AppSettings.get().get("studio.doc.dir");
 		
 		setHorizontal = false;
 		

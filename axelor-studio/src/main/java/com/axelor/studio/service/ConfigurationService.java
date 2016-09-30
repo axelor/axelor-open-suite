@@ -80,7 +80,7 @@ public class ConfigurationService {
 	 */
 	private File getBuildDirectory() {
 
-		String buildPath = AppSettings.get().get("build.dir");
+		String buildPath = AppSettings.get().get("studio.source.dir");
 
 		if (buildPath != null) {
 			File buildDir = new File(buildPath);

@@ -3,7 +3,7 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
 
-  <menuitem name="menu-studio-root" title="Studio" order="-70" icon="fa-pencil-square-o" icon-background="purple" groups="admins"/>
+  <menuitem name="menu-studio-root" title="BPM" order="-70" icon="fa-pencil-square-o" icon-background="purple" groups="admins"/>
   
   <!-- Model menus -->
   <menuitem name="menu-studio-model" title="Model" parent="menu-studio-root" order="5"/>
@@ -145,9 +145,9 @@
       <view type="form" name="field-type-form"/>
   </action-view>
   
-  <menuitem name="menu-studio-template" title="Studio templates" parent="menu-studio-configuration" action="action.module.manager" order="20"/>
+  <menuitem name="menu-studio-template" title="Templates" parent="menu-studio-configuration" action="action.module.manager" order="20"/>
   
-  <action-view name="action.module.manager" title="Studio template" model="com.axelor.studio.db.StudioTemplate">
+  <action-view name="action.module.manager" title="Template" model="com.axelor.studio.db.StudioTemplate">
   	  <view type="grid" name="studio-template-grid"/>
       <view type="form" name="studio-template-form"/>
   </action-view>

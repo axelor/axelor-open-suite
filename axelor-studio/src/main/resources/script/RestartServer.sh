@@ -1,6 +1,12 @@
 # Drop and create database and restart tomcat server. 
 
-if [ $# -eq 4 ] 
+if [ $# -eq 1 ] 
+then
+  echo "Tomcat path: "$1
+  $1/bin/shutdown.sh
+  sleep 5
+  $1/bin/startup.sh
+elif [ $# -eq 4 ] 
 then
    echo "Tomcat path: "$1
    echo "Database: "$2
