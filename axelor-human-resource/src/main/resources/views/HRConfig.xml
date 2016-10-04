@@ -22,6 +22,7 @@
 	  	<panel name="lunchVoucher" title="Lunch Vouchers">
 	  		<field name="minStockLunchVoucher"/>
 	  		<field name="availableStockLunchVoucher"/>
+	  		<field name="supplierLunchVoucher" domain="self.isSupplier = true" form-view="partner-form" grid-view="partner-grid"/>
 	  	</panel>
 	  	<panel-tabs>
     <panel name="timesheetTemplates" title="Timesheet Templates">

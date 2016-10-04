@@ -11,10 +11,11 @@
       <many-to-one name="employee" ref="com.axelor.apps.hr.db.Employee" title="Employee" readonly="true"/>
       <integer name="canteenEntries" title="Number of canteen entries"/>
       <integer name="daysOverseas" title="Number of days overseas"/>
+      <integer name="invitation" title="Invitation"/>
       <integer name="lunchVoucherNumber" title="Number of lunch vouchers" readonly="true"/>
       <string name="comments" title="Comments" large="true"/>
       <boolean name="isStockLine" default="false" title="Stock Line"/>
-      <boolean name="isGivenToEmployee" default="false" title="Given to Employee"/>
+      <integer name="givenToEmployee" title="Given to Employee"/>
   </entity>
   
 </domain-models>
