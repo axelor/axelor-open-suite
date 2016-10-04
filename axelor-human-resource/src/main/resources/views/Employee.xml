@@ -67,7 +67,10 @@
 	       	    <panel-related field="leaveLineList" grid-view="leave-line-grid" form-view="leave-line-form" colSpan="12"/>
 	       	</panel>
 	       	<panel-related field="employmentContractList" grid-view="employment-contract-employee-grid" form-view="employment-contract-form"/>
-	       	<panel-dashlet title="Lunch Vouchers" colSpan="12" action="action-hr-view-show-lunch-voucher"/>
+	       	<panel name="lunchVoucher" title="Lunch Vouchers">
+	       		<panel-dashlet title="Lunch Vouchers" colSpan="12" action="action-hr-view-show-lunch-voucher"/>
+	       		<panel-related field="lunchVoucherAdvanceList" colSpan="12" grid-view="lunch-voucher-advance-grid" form-view="lunch-voucher-advance-form" />
+	       	</panel>
         </panel-tabs>
 	</form>
 	

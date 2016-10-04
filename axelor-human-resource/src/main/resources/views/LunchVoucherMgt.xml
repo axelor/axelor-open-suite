@@ -35,7 +35,7 @@
 		</panel>
   		<panel name="action" sidebar="true">
     		<button name="calculate" title="Calculate" colSpan="12" onClick="save,action-lunch-voucher-method-calculate,action-lunch-voucher-method-check-stock" readonlyIf="statusSelect != 1"/>
-    		<button name="generateInvoice" title="Generate invoice from the supplier" colSpan="12" onClick="save,action-lunch-voucher-record-status-generate,save" readonlyIf="statusSelect != 2"/>
+    		<button name="generateInvoice" title="Generate control invoice" colSpan="12" onClick="save,action-lunch-voucher-record-status-generate,save" readonlyIf="statusSelect != 2"/>
   		</panel>
   		<panel name="info" sidebar="true">
     		<panel title="Requested lunch vouchers on the period">

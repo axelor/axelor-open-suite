@@ -326,7 +326,7 @@
 "Bank order Date","Date de l'ordre bancaire",,
 "Bank order export folder path","Dossier d'export des ordres bancaires",,
 "Bank to Bank Transfer","Virement Banque à Banque",,
-"Bank to Bank Transferaxelor-account/src/main/resources/i18n/messages_fr.csvs","Virements Banque à Banque",,
+"Bank to Bank Transfers","Virements Banque à Banque",,
 "Base W.T.","Base H.T.",,
 "Base W.T. in Acc. currency.","Base H.T. en devise compta.",,
 "Batch",,,
