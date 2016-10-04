@@ -49,6 +49,7 @@
 					<field name="supplierAccount" domain="self.company = :company" grid-view="account-grid" form-view="account-form"/>
 					<field name="doubtfulCustomerAccount" domain="self.company = :company" grid-view="account-grid" form-view="account-form"/>
 					<field name="irrecoverableAccount" domain="self.company = :company" grid-view="account-grid" form-view="account-form"/>
+					<field name="employeeAccount" domain="self.company = :company" grid-view="account-grid" form-view="account-form"/>
 					<field name="advancePaymentAccount"/>
 				</panel>
 				<panel name="paymentDifferences" title="Payment differences" colSpan="12">
