@@ -106,6 +106,10 @@
     <boolean name="generateMoveForInvoicePayment" title="Generate move for payment on invoice"/>
     <boolean name="generateMoveForAdvancePayment" title="Generate move for advance payment"/>
     
+      <!--  Onglet Ordres bancaires -->
+  	<many-to-one name="defaultSignatoryUser" ref="com.axelor.auth.db.User" title="Default signatory"/>
+  	<boolean name="generateMoveOnBankOrderValidation" title="Generate move when validating a bank order"/>
+  	
     <!--  Account chart template-->
 	<many-to-one name="accountChart" ref="com.axelor.apps.account.db.AccountChart" title="Account chart" />
 	<boolean name="hasChartImported"  title="Chart imported?" />

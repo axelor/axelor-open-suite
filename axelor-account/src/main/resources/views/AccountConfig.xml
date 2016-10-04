@@ -136,6 +136,11 @@
 			<panel name="paybox" title="Paybox">
 			  <field name="payboxConfig" showTitle="false" grid-view="paybox-config-grid" form-view="paybox-config-form"/>
 			</panel>
+			
+			<panel name="bankOrder" title="Bank Order">
+			  <field name="defaultSignatoryUser" grid-view="user-grid" form-view="user-form"/>
+			  <field name="generateMoveOnBankOrderValidation"/>
+			</panel>
 		
 			<panel name="reimbursement" title="Reimbursement">
 				<panel name="reimbursements" title="Reimbursements" colSpan="12">

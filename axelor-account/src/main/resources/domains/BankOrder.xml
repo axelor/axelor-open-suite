@@ -27,6 +27,7 @@
 	<!-- Receiver -->
 	<one-to-many name="bankOrderLineList" ref="BankOrderLine" mappedBy="bankOrder" title="Bank Order Lines" />
 	
+	<many-to-one name="signatoryUser" ref="com.axelor.auth.db.User" title="Signatory"/>
 	
 	 <extra-code><![CDATA[
 	

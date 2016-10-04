@@ -562,20 +562,28 @@ public interface IExceptionMessage {
 	static final String BANK_ORDER_DATE_MISSING = /*$$(*/ "Please fill bank order date"/*)*/;
 	static final String BANK_ORDER_TYPE_MISSING = /*$$(*/ "Please fill bank order type" /*)*/;
 	static final String BANK_ORDER_PARTNER_TYPE_MISSING = /*$$(*/ "Please fill partner type for the bank order" /*)*/;
-	static final String BANK_ORDER_COOMPANY_MISSING = /*$$(*/ "Please fill the sender company" /*)*/;
+	static final String BANK_ORDER_COMPANY_MISSING = /*$$(*/ "Please fill the sender company" /*)*/;
 	static final String BANK_ORDER_BANK_DETAILS_MISSING = /*$$(*/ "Please fill the bank details" /*)*/;
 	static final String BANK_ORDER_CURRENCY_MISSING = /*$$(*/ "Please fill currency for the bank order" /*)*/;
-	static final String BANK_ORDER_AMOUNT_MISSING = /*$$(*/ "Please fill the amount for the bank order" /*)*/;
-	static final String BANK_ORDER_AMOUNT_NEGATIVE = /*$$(*/ "Amount value is not valid" /*)*/;
+	static final String BANK_ORDER_AMOUNT_NEGATIVE = /*$$(*/ "Amount value of the bank order is not valid" /*)*/;
+	static final String BANK_ORDER_PAYMENT_MODE_MISSING = /*$$(*/ "Please select a payment mode" /*)*/;
+	static final String BANK_ORDER_SIGNATORY_MISSING = /*$$(*/ "Please select a signatory" /*)*/;
+	
 	
 	/**
 	 *  BankOrder lines
 	 */
+	static final String BANK_ORDER_LINES_MISSING = /*$$(*/ "You can't validate this bank order. you need to fill at least one bank order line" /*)*/;
+	static final String BANK_ORDER_LINE_COMPANY_MISSING = /*$$(*/ "Please select a company for the bank order lines inserted" /*)*/;
+	static final String BANK_ORDER_LINE_PARTNER_MISSING = /*$$(*/ "Please select a partner for the bank order lines inserted" /*)*/;
+	static final String BANK_ORDER_LINE_AMOUNT_NEGATIVE = /*$$(*/ "Amount value of a bank order line is not valid" /*)*/;
+	static final String BANK_ORDER_LINE_TOTAL_AMOUNT_INVALID = /*$$(*/ "Total amount of bank order lines must be equal to the bank order amount" /*)*/;
 	
 	
 	/**
 	 *  Ebics
 	 */
-	
 	static final String EBICS_WRONG_PASSWORD = /*$$(*/ "Incorrect password, please try again" /*)*/;
+	static final String EBICS_MISSING_PASSWORD = /*$$(*/ "Please insert a password" /*)*/;
+	static final String EBICS_MISSING_NAME = /*$$(*/ "Please select a user name" /*)*/;
 }

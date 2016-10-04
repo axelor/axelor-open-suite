@@ -4,6 +4,9 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
     
     <grid name="bank-order-bank-to-bank-grid" orderBy="-bankOrderDate" title="Bank Orders" model="com.axelor.apps.account.db.BankOrder" canDelete="false">
+    <toolbar>
+    	<button name="editSignatories" title="Edit Signatory" icon="fa-pencil-square-o"/>
+    </toolbar>
         <field name="bankOrderSeq"/>
         <field name="bankOrderDate"/>
         <field name="senderCompany"/>
@@ -16,6 +19,9 @@
     </grid>
     
     <grid name="bank-order-grid" orderBy="-bankOrderDate" title="Bank Orders" model="com.axelor.apps.account.db.BankOrder" canDelete="false">
+    <toolbar>
+    	<button name="editSignatories" title="Edit Signatory" icon="fa-pencil-square-o"/>
+    </toolbar>
         <field name="bankOrderSeq"/>
         <field name="partnerTypeSelect"/>
         <field name="bankOrderDate"/>
@@ -28,8 +34,10 @@
         <field name="statusSelect"/>
     </grid>
     
-	<form name="bank-order-form" title="Bank Order" model="com.axelor.apps.account.db.BankOrder" onNew="action-group-bank-order-onnew" canDelete="false" 
-		onSave="action-group-bank-order-onsave">
+	<form name="bank-order-form" title="Bank Order" model="com.axelor.apps.account.db.BankOrder" onNew="action-group-bank-order-onnew" onSave="action-method-bank-order-on-save-amount" canDelete="false"> 
+	<toolbar>
+		<button name="print" title="Print" icon="fa-print" onClick=""/>
+	</toolbar>
   		<panel name="main" colSpan="12" readonlyIf="statusSelect &gt;= 3">
   			<field name="bankOrderSeq" css="label-bold bold" colSpan="12"/>
     		<field name="statusSelect" showTitle="false" widget="NavSelect" colSpan="12" selection-in="[1,3,4,5,6]" showIf="orderType == 3 || orderType == 5"/>
@@ -49,14 +57,14 @@
 		</panel>
 		<panel name="BankOrderLines" title="Bank Order Lines" readonlyIf="statusSelect &gt;= 3">
 			<field name="bankOrderLineList" colSpan="12" showTitle="false" canRemove="false">
-				<editor x-layout="table" onNew="action-group-bank-order-line-onnew" x-viewer="true">
+				<editor x-layout="table" onNew="action-group-bank-order-line-onnew" x-viewer="true" x-show-on-new="false">
 					<field name="sequence" css="label-bold bold" readonly="true" hideIf="sequence == null" colSpan="12"/>
 					<field name="receiverCompany" hideIf="bankOrder.orderType != 1" css="label-bold bold" colSpan="6" onChange="action-bank-order-line-record-partner" form-view="company-form" grid-view="company-grid" />
 					<spacer colSpan="6"/>
 					<field name="partner" hideIf="bankOrder.orderType == 1" form-view="partner-form" grid-view="partner-grid" css="label-bold bold" colSpan="6" onSelect="action-bank-order-line-attrs-partner-domain" onChange="action-bank-order-line-record-partner-onchange"/>
 					<spacer colSpan="6"/>
 					<field name="receiverBankDetails" onSelect="action-bank-order-line-attrs-bank-details-domain"/>
-					<field name="amount" />
+					<field name="amount"/>
 					<field name="receiverReference"/>
 					<field name="receiverLabel"/>
 					<field name="bankOrder.orderType" hidden="true"/>
@@ -68,13 +76,16 @@
 				</editor>
 			</field>
 		</panel>
+		<panel name="signatory" title="Signatory" sidebar="true" readonlyIf="statusSelect &gt;= 3">
+			<field name="signatoryUser" showTitle="false" form-view="user-form" grid-view="user-grid"/>		
+		</panel>
 		<panel name="Rejection" title="Rejection" sidebar="true" showIf="statusSelect == 3 || statusSelect == 5">
 			<field name="rejectStatusSelect" readonly="true"/>		
 		</panel>
 		
   		<panel name="action" title="Action" itemSpan="12" sidebar="true" hideIf="statusSelect == 4 || statusSelect == 5">
-    		<button name="send" title="Send for signature" hideIf="statusSelect != 1 || orderType == 3 || orderType == 5 " onClick="save,action-bank-order-record-send,save"/>
-    		<button name="validate" title="Validate" hideIf="statusSelect != 2" onClick="save,action-bank-order-sign-wizard"/>
+    		<button name="send" title="Send for signature" hideIf="statusSelect != 1 || orderType == 3 || orderType == 5" onClick="action-group-bank-order-onsend"/>
+    		<button name="validate" title="Validate" showIf="(statusSelect == 1 &amp;&amp; (orderType == 3 || orderType == 5) ) || (statusSelect == 2 &amp;&amp; orderType != 3 &amp;&amp; orderType != 5)" onClick="action-group-bank-order-onvalidate"/>
     		<button name="carry out" title="Carry out" showIf="((statusSelect == 3 &amp;&amp; orderType != 3 &amp;&amp; orderType != 5) || (statusSelect == 2 &amp;&amp; (orderType == 3 || orderType == 5)))" onClick="save,action-bank-order-record-carry-out,save"/>
 			<button name="reject" title="Reject" showIf="((statusSelect == 3 &amp;&amp; orderType != 3 &amp;&amp; orderType != 5) || (statusSelect == 2 &amp;&amp; (orderType == 3 || orderType == 5)))" onClick="save,action-bank-order-record-reject,save"/>    		
     		<button name="cancel" title="Cancel" showIf="statusSelect == 1" onClick="save,action-bank-order-record-cancel,save"/>
@@ -84,7 +95,6 @@
 	<form name="bank-order-sign-wizard-form" title="Sign bank order" model="com.axelor.apps.base.db.Wizard" onNew="action-bank-order-load-dummy-field-record-sign">
   		<panel colSpan="6">
     		<field name="$amount" title="Total Amount" readonly="true" type="decimal" colOffset="1" colSpan="6"/>
-<!--     		<field name="$bankOrder" title="Bank order" type="many-to-one" colOffset="1" colSpan="6"/> -->
     		<field name="$ebicsUser" title="Ebics User" type="many-to-one" widget="SuggestBox" colOffset="1" canEdit="false" colSpan="6" target="com.axelor.apps.account.db.EbicsUser" required="true" grid-view="ebics-user-grid" form-view="ebics-user-form"/>
     		<field name="$password" title="Password" widget="password" colOffset="1"  colSpan="6" required="true"/>
     		<button name="validate" title="Validate" colOffset="1"  colSpan="6" onClick="action-method-bank-order-sign,close"/>
@@ -102,9 +112,14 @@
 		<action name="action-bank-order-attrs-domain-hidden"/>
 	</action-group>
 	
-	<action-group name="action-group-bank-order-onsave">
-<!-- 		<action name="action-bank-order-condition-on-save"/> -->
-		<action name="action-bank-order-method-save"/>
+	<action-group name="action-group-bank-order-onvalidate">
+		<action name="save"/>
+		<action name="action-bank-order-method-check-lines"/>
+	</action-group>
+	
+	<action-group name="action-group-bank-order-onsend">
+		<action name="save"/>
+		<action name="action-method-bank-order-send"/>
 	</action-group>
 	
 		<!-- Actions Attributes -->
@@ -135,14 +150,7 @@
 		<field name="senderCompany" expr="eval:__user__.activeCompany"/>
 		<field name="senderBankDetails" expr="eval:__user__.activeCompany.defaultBankDetails"/>
 		<field name="currency" expr="eval:__user__.activeCompany.currency"/>
-	</action-record>
-	
-	<action-record name="action-bank-order-record-send" model="com.axelor.apps.account.db.BankOrder">
-		<field name="statusSelect" expr="2"/>
-	</action-record>
-	
-	<action-record name="action-bank-order-record-sign" model="com.axelor.apps.account.db.BankOrder">
-		<field name="statusSelect" expr="3"/>
+		<field name="signatoryUser" expr="eval: __repo__.of(AccountConfig).all().filter('self.company = ?',__user__.activeCompany).fetchOne()?.defaultSignatoryUser"/>
 	</action-record>
 	
 	<action-record name="action-bank-order-record-carry-out" model="com.axelor.apps.account.db.BankOrder">
@@ -168,33 +176,23 @@
 	</action-record>
 	
 		<!-- Actions Methods -->
-	<action-method name="action-bank-order-method-save">
-		<call class="com.axelor.apps.account.web.BankOrderController" method="validate"/>
+	
+	<action-method name="action-method-bank-order-send">
+		<call class="com.axelor.apps.account.web.BankOrderController" method="send"/>
 	</action-method>
 
 	<action-method name="action-method-bank-order-sign">
 		<call class="com.axelor.apps.account.web.BankOrderController" method="sign"/>
 	</action-method>
-		
-		<!-- Actions Conditions -->
-		
-	<action-condition name="action-bank-order-condition-on-save">
-		<check field="amount" if="amount &lt;= 0" error="Amount value is not valid"/>
-		<check field="bankOrderDate" if="bankOrderDate &lt; __date__" error="Bank Order date can't be in the past"/>
-	</action-condition>
 	
-	<!-- Actions Views -->
+	<action-method name="action-bank-order-method-check-lines">
+		<call class="com.axelor.apps.account.web.BankOrderController" method="checkLines"/>
+	</action-method>
 	
-	<action-view name="action-bank-order-sign-wizard" model="com.axelor.apps.base.db.Wizard"
-		title="Sign bank order">
-		<view name="bank-order-sign-wizard-form" type="form" />
-		<view-param name="popup" value="reload" />
-		<view-param name="show-toolbar" value="false" />
-		<view-param name="forceEdit" value="true" />
-		<view-param name="popup-save" value="false" />
-		<context name="_contextBankOrder" expr="eval: __this__" />
-	</action-view>
-		
+	  <action-method name="action-method-bank-order-on-save-amount">
+		<call class="com.axelor.apps.account.web.BankOrderController" method="updateAmount"/>
+	</action-method>
+	
 	<!-- BANK ORDER LINES ACTIONS -->
 		<!-- Actions Groups-->
 		
@@ -202,11 +200,6 @@
 		<action name="action-bank-order-line-record-get-parent"/>
 		<action name="action-bank-order-line-record-default" if="bankOrder.orderType == 1"/>
 		<action name="action-bank-order-line-record-amount-default"/>
-	</action-group>
-	
-	<action-group name="action-group-bank-order-line-reject">
-		<action name="action-bank-order-line-validate-reject-action"/>
-		<action name="action-bank-order-line-record-default" if="bankOrder.orderType == 1"/>
 	</action-group>
 	
 		<!-- Actions Attributes -->
@@ -240,7 +233,7 @@
     <action-record name="action-bank-order-line-record-get-parent" model="com.axelor.apps.account.db.BankOrderLine">
     	<field name="bankOrder" expr="eval: _parent"/>
     </action-record>
-	
+    
 	<action-record name="action-bank-order-line-record-default" model="com.axelor.apps.account.db.BankOrderLine">
     	<field name="receiverCompany" expr="eval: bankOrder.senderCompany"/>
     	<field name="partner" expr="eval: bankOrder.senderCompany.partner"/>
@@ -256,14 +249,4 @@
   		  <field if="partner?.bankDetailsList?.isEmpty()" name="receiverBankDetails" expr=""/>
     </action-record>
     
-<!--     <action-record name="action-bank-order-line-record-reject-status" model="com.axelor.apps.account.db.BankOrder"> -->
-<!--     		<field name="rejectStatusSelect" expr="1" if="rejectStatusSelect != 2"/> -->
-<!--     </action-record> -->
-    
-    	<!-- Actions validate -->
-	
-<!-- 	<action-validate name="action-bank-order-line-validate-reject-action"> -->
-<!-- 		<alert message="Are you sure you want to change this line status to rejected" action="action-bank-order-line-record-reject-status"/> -->
-<!-- 	</action-validate> -->
-	
 </object-views>

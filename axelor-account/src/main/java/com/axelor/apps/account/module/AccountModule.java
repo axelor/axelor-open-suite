@@ -21,6 +21,8 @@ import com.axelor.app.AxelorModule;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.repo.AnalyticDistributionLineMngtRepository;
 import com.axelor.apps.account.db.repo.AnalyticDistributionLineRepository;
+import com.axelor.apps.account.db.repo.BankOrderManagementRepository;
+import com.axelor.apps.account.db.repo.BankOrderRepository;
 import com.axelor.apps.account.db.repo.BankStatementManagementRepository;
 import com.axelor.apps.account.db.repo.BankStatementRepository;
 import com.axelor.apps.account.db.repo.InvoiceManagementRepository;
@@ -109,6 +111,8 @@ public class AccountModule extends AxelorModule {
         bind(ReconcileService.class).to(ReconcileServiceImpl.class);
         
         bind(ReconcileRepository.class).to(ReconcileManagementRepository.class);
+        
+        bind(BankOrderRepository.class).to(BankOrderManagementRepository.class);
         
         IPartner.modelPartnerFieldMap.put(Invoice.class.getName(), "partner");
     }
