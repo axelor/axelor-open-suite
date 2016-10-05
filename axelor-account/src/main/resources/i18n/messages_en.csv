@@ -257,7 +257,7 @@
 "Amount remaining before cashing",,,
 "Amount remaining to allocate",,,
 "Amount to reimburse",,,
-"Amount value of a bank order line is not valid","Le montant inséré pour une ligne d'ordre bancaire n'est pas valide",,
+"Amount value of a bank order line is not valid",,,
 "Amount value of the bank order is not valid",,,
 "Amounts to register",,,
 "An accounting moveline must have higher a credit value or a debit value.",,,
