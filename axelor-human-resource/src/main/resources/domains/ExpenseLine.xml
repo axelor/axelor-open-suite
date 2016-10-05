@@ -22,7 +22,6 @@
 		<one-to-many name="analyticDistributionLineList" ref="com.axelor.apps.account.db.AnalyticDistributionLine" title="Analytic distribution lines" mappedBy="expenseLine"/>
 		<many-to-one name="analyticDistributionTemplate" title="Analytic distribution template" ref="com.axelor.apps.account.db.AnalyticDistributionTemplate"/>
 	  	<binary name="justification" image="true" title="Justification"/>
-	  	<integer name="companyCbPaymentSelect" title="Company's credit card payment" selection="hr.expense.company.cb.payment" />
 	  
 		<!-- integration of KilometricAllowance -->
   		<many-to-one name="kilometricAllowParam" ref="com.axelor.apps.hr.db.KilometricAllowParam" title="Kilometric Allowance Param"/>

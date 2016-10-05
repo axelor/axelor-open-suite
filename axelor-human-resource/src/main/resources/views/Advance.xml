@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
+
+	<grid name="advance-grid" title="Advance" model="com.axelor.apps.hr.db.Advance">
+		<field name="reason" />
+		<field name="date" />
+		<field name="requestedAmount" />
+		<field name="employee" />
+		<field name="typeSelect" />
+		<field name="statusSelect" />
+		
+	</grid>
+	
+	<form name="advance-form" title="Advance" model="com.axelor.apps.hr.db.Advance">
+	
+		<panel name="main">
+			<field name="date" />
+			<field name="reason" />
+			<field name="typeSelect" />
+			<field name="requestedAmount" />
+			<field name="employee" />
+			<field name="paymentMode" />
+			<field name="reason" />
+			<field name="statusSelect" />
+			<field name="expense" hidden="true" showIf="typeSelect == 1" />
+		</panel>
+		<panel sidebar="true" hidden="true" showIf="statusSelect == 1">
+			<button name="validate" title="validate" onClick="action-hr-advance-group-validate" />		
+		</panel>
+		
+	</form>
+	
+	
+	
+	<action-group name="action-hr-advance-group-validate">
+		<action name="action-hr-employee-validate-is-hr-manager"/>
+		<action name="action-hr-advance-record-validate"/>
+	</action-group>
+	
+	<action-validate name="action-hr-employee-validate-is-hr-manager">
+		<error message="You must be a HR manager to have the permission to do this." if="eval: !__user__.employee?.hrManager"/>
+	</action-validate>
+	
+	<action-record name="action-hr-advance-record-validate" model="com.axelor.apps.hr.db.Advance">
+		<field name="statusSelect" expr="eval: 2"/>
+	</action-record>
+	
+</object-views>

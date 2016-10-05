@@ -53,6 +53,7 @@ import com.axelor.apps.base.db.repo.GeneralRepository;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.PeriodService;
 import com.axelor.apps.base.service.administration.GeneralService;
+import com.axelor.apps.hr.db.Advance;
 import com.axelor.apps.hr.db.Expense;
 import com.axelor.apps.hr.db.ExpenseLine;
 import com.axelor.apps.hr.db.HRConfig;
@@ -438,6 +439,36 @@ public class ExpenseServiceImpl implements ExpenseService  {
 			
 			Beans.get(ExpenseRepository.class).save(expense);
 		}
+	}
+	
+	public BigDecimal computePersonalExpenseAmount(Expense expense){
+		
+		BigDecimal personalExpenseAmount = BigDecimal.ZERO;
+		
+		if (expense.getExpenseLineList() != null && !expense.getExpenseLineList().isEmpty()){
+			for (ExpenseLine expenseLine : expense.getExpenseLineList()) {
+				if (expenseLine.getExpenseProduct() != null && expenseLine.getExpenseProduct().getPersonalExpense() ){
+					personalExpenseAmount.add(expenseLine.getTotalAmount());
+				}
+			}
+		}
+		
+		return personalExpenseAmount;
+	}
+	
+	
+	public BigDecimal computeAdvanceAmount(Expense expense){
+		
+		BigDecimal advanceAmount = BigDecimal.ZERO;
+		
+		if (expense.getAdvanceList() != null && !expense.getAdvanceList().isEmpty()){
+			for (Advance advanceLine : expense.getAdvanceList() ) {
+					advanceAmount.add(advanceLine.getRequestedAmount());
+				
+			}
+		}
+		
+		return advanceAmount;
 	}
 	
 }

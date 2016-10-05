@@ -116,4 +116,14 @@
 		<option value="3">Requested</option>
 	</selection>
 	
+	<selection name="hr.advance.type.select">
+		<option value="1">Permanent</option>
+		<option value="2">Occasional</option>
+	</selection>
+	
+	<selection name="hr.advance.status.select">
+		<option value="1">Requested</option>
+		<option value="2">Validated</option>
+	</selection>
+	
 </object-views>

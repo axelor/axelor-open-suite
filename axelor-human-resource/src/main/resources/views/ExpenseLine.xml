@@ -10,7 +10,6 @@
 		<field name="expenseProduct" canView="false" domain="self.expense = true" widget="SuggestBox" form-view="product-expense-form" grid-view="product-expense-grid"/> 
 		<field name="expenseDate" onChange="action-expense-line-validate-expenseDate"/>
 		<field name="user" hidden="true" form-view="user-form" grid-view="user-grid" onSelect="action-expense-line-attrs-company"/>
-		<field name="companyCbPaymentSelect" hidden="true"/>
 		<field name="totalAmount" aggregate="sum" onChange="action-expense-on-change-tax-untaxt-amount"/>
 		<field name="totalTax" aggregate="sum" onChange="action-expense-on-change-tax-untaxt-amount, action-expense-line-method-compute-analytic-distribution"/>
 		<field name="comments"/>
@@ -49,7 +48,6 @@
 			<field name="untaxedAmount" />
 			<field name="toInvoice"/>
 			<field name="invoiced" showIf="toInvoice"/>
-			<field name="companyCbPaymentSelect" showIf="expense.expenseCompanyCb"/>
 			<field name="justification"/>
 			<field name="comments" colSpan="12"/>
 			<field name="expense" hidden="true"/>

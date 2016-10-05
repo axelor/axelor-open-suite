@@ -34,6 +34,7 @@
       <boolean name="profitSharingBeneficiary" title="Profit-sharing beneficiary" default="false" />
       <many-to-one name="imposedDayPlanning" ref="com.axelor.apps.hr.db.PublicHolidayPlanning" title="Imposed day Planning"/>
       <string name="socialSecurityNumber"  title="Social security number" min="12" max="15"/>
+      <one-to-many name="advanceList" ref="com.axelor.apps.hr.db.Advance" title="Advance list for expenses" readonly="true" />
       
       <string name="name" title="Name" search="contactPartner">
           

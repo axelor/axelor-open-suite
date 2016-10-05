@@ -35,7 +35,7 @@
 	<form name="expense-form" title="Expense" model="com.axelor.apps.hr.db.Expense" width="large" canNew="false"
 	    onNew="action-expense-record-default,action-expense-attrs-buttons,action-expense-attrs-multiple-users" 
 	    onLoad="action-expense-attrs-buttons,action-expense-attrs-expense-company-cb,action-expense-attrs-multiple-users"
-	    onSave="action-expense-method-validate-date" canCopy="false">
+	    onSave="action-expense-method-validate-date,action-expense-method-compute-amounts" canCopy="false">
 		<toolbar>
 			<button name="printExpense" title="Print" colSpan="2" icon="fa-print" onClick="save,action-print-expense"/>
 		</toolbar>
@@ -55,11 +55,37 @@
 			<field name="user" colSpan="4" form-view="user-form" grid-view="user-grid"/>
 			<field name="period" colSpan="4" onSelect="action-expense-attrs-domain-period" form-view="period-form" grid-view="period-grid"/>
 			<field name="expenseCompanyCb" onChange="action-expense-attrs-expense-company-cb"/>
+			<field name="withdrawnCash" hidden="true" showIf="expenseCompanyCb > 1" />
 		</panel>
 		
 		<panel-tabs>
 			<panel-related field="expenseLineList" title="General expenses" readonlyIf="statusSelect &gt; 1" onChange="action-expense-method-compute" editable="true" form-view="expense-line-form" grid-view="expense-line-grid" colSpan="12" />
+			<panel title="Kilometric Allowances">
+				<field name="expenseLineList" readonlyIf="statusSelect &gt; 1" colSpan="12" showTitle="false" onChange="action-expense-method-compute"  >
+				<editor x-viewer="true" x-layout="table" colSpan="12" itemSpan="4" >
+					
+					<field name="expenseDate" title="Date" />
+					<field name="kilometricAllowParam" onChange="action-kilometric-allowance-record-rate,action-kilometric-allowance-record-in-tax-total" />
+			        <field name="kilometricTypeSelect" required="true" onChange="action-kilometric-allowance-record-in-tax-total" />
+			        <field name="fromCity" required="true" />
+			        <field name="toCity" required="true"/>
+			        <field name="distance" required="true" onChange="action-kilometric-allowance-record-in-tax-total" />
+				    <field name="totalAmount" title="Total A.T.I" onChange="action-expense-on-change-untaxt-amount, action-expense-line-method-compute-analytic-distribution" colSpan="6" readonly="true"/>
+			   	    <field name="comments" colSpan="6" height="2" />
+			   		<field name="expenseProduct" readonly="true" form-view="product-expense-form" grid-view="product-expense-grid" hidden="true"/> 
+				</editor>
+				</field>
+			</panel>
+			
+			
+			
+			
+			
+			
+			
+			
 			<panel-related field="expenseLineList" title="Kilometric Allowances" readonlyIf="statusSelect &gt; 1" onChange="action-expense-method-compute" editable="true" form-view="expense-line-kilometric-form" grid-view="expense-line-kilometric-grid" />
+			<panel-related field="advanceList" title="Advance list" editable="true" form-view="advance-form" grid-view="advance-grid" />
 		</panel-tabs>
 		
 		<panel showIf="sentDate">
@@ -83,6 +109,20 @@
 	              &lt;dd&gt;{{record.taxTotal}}&lt;/dd&gt;
 	              &lt;dt class="order-subtotal-total" x-translate&gt;Total A.T.I.&lt;/dt&gt;
 	              &lt;dd class="order-subtotal-total"&gt;{{record.inTaxTotal}}&lt;/dd&gt;
+	              &lt;dt x-translate &gt;Personal expense&lt;/dt&gt;
+				  &lt;dd&gt; -{{record.personalExpenseAmount | number:2}}&lt;/dd&gt;
+	              &lt;dt x-translate&gt;Withdrawn cash&lt;/dt&gt;
+	              &lt;dd&gt;-{{record.withdrawnCash | number:2}}&lt;/dd&gt;
+	              &lt;dt x-translate&gt;Advance&lt;/dt&gt;
+	              &lt;dd&gt;-{{record.advanceAmount | number:2}}&lt;/dd&gt;
+	              
+	              &lt;dt ng-show="record.statusSelect == 3"  ng-style="{'color' : 'blue'}" x-translate&gt;Payment&lt;/dt&gt;
+             	  &lt;dd ng-show="record.statusSelect == 3"  ng-style="{'color' : 'blue'}"&gt;-{{record.expensePayment.amount  | number:2}}&lt;/dd&gt;
+	              
+	              &lt;dt class="order-subtotal-total" x-translate&gt;Total to refund&lt;/dt&gt;
+	              &lt;dd class="order-subtotal-total"&gt;{{record.inTaxTotal - record.advanceAmount - record.withdrawnCash - record.personalExpenseAmount}}&lt;/dd&gt;
+
+	              
 	            &lt;/dl&gt;
 	          </viewer>
 	        </field>
@@ -177,7 +217,7 @@
 	</action-attrs>
 	
 	<action-attrs name="action-expense-attrs-expense-company-cb">
-		<attribute name="hidden" for="expenseLineList.companyCbPaymentSelect" expr="eval: !expenseCompanyCb"/>
+		<attribute name="hidden" for="expenseLineList.companyCbPaymentSelect" expr="eval: expenseCompanyCb == 1"/>
 	</action-attrs>
 	
 	<action-validate name="action-expense-validate-period">
@@ -193,5 +233,9 @@
 	  	<view-param name="forceEdit" value="true" />
     	<context name="_showRecord" expr="eval: id"/>
     </action-view>
+    
+    <action-method name="action-expense-method-compute-amounts">
+    	<call class="com.axelor.apps.hr.web.expense.ExpenseController" method="computeAmounts"/>
+    </action-method>
 	
 </object-views>

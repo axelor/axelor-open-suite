@@ -18,6 +18,7 @@
 package com.axelor.apps.hr.service.expense;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.List;
 
 import javax.mail.MessagingException;
@@ -70,5 +71,8 @@ public interface ExpenseService  {
 	
 	@Transactional
 	public void insertExpenseLine(ActionRequest request, ActionResponse response);
+	
+	public BigDecimal computePersonalExpenseAmount(Expense expense);
+	public BigDecimal computeAdvanceAmount(Expense expense);
 	
 }

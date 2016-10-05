@@ -68,6 +68,7 @@
 	       	</panel>
 	       	<panel-related field="employmentContractList" grid-view="employment-contract-employee-grid" form-view="employment-contract-form"/>
 	       	<panel-dashlet title="Lunch Vouchers" colSpan="12" action="action-hr-view-show-lunch-voucher"/>
+	       	<panel-related field="advanceList" title="Advance list for expenses" grid-view="advance-grid" form-view="advance-form" readonly="false" />
         </panel-tabs>
 	</form>
 	

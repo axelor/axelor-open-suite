@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_4.0.xsd">
+  
+  <module name="human-resource" package="com.axelor.apps.hr.db"/>
+
+  <entity name="Advance" lang="java" cachable="true">
+  	
+
+	<date name="date" column="date_val" title="Date" />
+	<integer name="typeSelect" title="Type" selection="hr.advance.type.select" />
+	<decimal name="requestedAmount" title="Requested amount" />
+	<many-to-one name="employee" ref="com.axelor.apps.hr.db.Employee" title="Employee" />
+	
+	<many-to-one name="paymentMode" ref="com.axelor.apps.account.db.PaymentMode" title="Payment mode" />
+	<string name="reason" title="Reason" />
+	<integer name="statusSelect" title="Status" selection="hr.advance.status.select" />
+	<many-to-one name="expense" ref="com.axelor.apps.hr.db.Expense" title="Expense" />
+	
+	<extra-code><![CDATA[
+	
+	   	// STATUS SELECT
+		public static final int STATUS_REQUESTED = 1;
+		public static final int STATUS_VALIDATED = 2;
+		
+		//TYPE SELECT
+		public static final int TYPE_PERMANENT = 1;
+		public static final int TYPE_OCCASIONAL = 2;
+	
+	]]></extra-code>   
+	   
+  </entity>
+  
+</domain-models>

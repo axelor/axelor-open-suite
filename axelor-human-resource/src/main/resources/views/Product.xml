@@ -13,6 +13,7 @@
 	    <field name="productTypeSelect" width="100"/>
 	    <field name="saleSupplySelect"/>
 	    <field name="unit" width="70" form-view="unit-form" grid-view="unit-grid"/>
+	    <field name="personalExpense" />
 	    <button name="sendByEmail" title="Send Email" icon="fa-envelope" onClick="action-send-by-email-with-template"/>
     </grid>
 
@@ -31,6 +32,7 @@
 					<field name="deductLunchVoucher" hideIf="!expense" colSpan="12"/>
 					<field name="expense" hidden="true"/>
 					<field name="blockExpenseTax" colSpan="12" />
+					<field name="personalExpense" />
 				</panel>
 				<panel name="categorization" title="Categorization" colSpan="6" colWidths="30%,70%">
 					<field name="productFamily" colSpan="12" form-view="product-family-form" grid-view="product-family-grid"/>

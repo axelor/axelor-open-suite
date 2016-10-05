@@ -9,6 +9,7 @@
   	<boolean name="isActivity" title="Activity"/>
   	<boolean name="deductLunchVoucher" title="Deduct lunch voucher"/>
   	<boolean name="blockExpenseTax" title="Block expense tax modification" default="false"/>
+  	<boolean name="personalExpense" title="Personal expense" />
   </entity>
 
 </domain-models>

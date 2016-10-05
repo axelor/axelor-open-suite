@@ -457,5 +457,17 @@ public class ExpenseController {
 	 		Beans.get(ExpenseRepository.class).save(expense);
 	 	}
 	 }
+	
+	public void computeAmounts(ActionRequest request, ActionResponse response){
+		
+		Expense expense = request.getContext().asType(Expense.class);
+		
+		ExpenseService expenseService = expenseServiceProvider.get();
+
+		response.setValue("personalExpenseAmount", expenseService.computePersonalExpenseAmount(expense) );
+		response.setValue("advanceAmount", expenseService.computeAdvanceAmount(expense) );
+		
+		
+	}
 
 }
