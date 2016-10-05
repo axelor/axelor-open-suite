@@ -5,10 +5,13 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.axelor.apps.ReportFactory;
 import com.axelor.apps.account.db.BankOrder;
 import com.axelor.apps.account.db.EbicsUser;
+import com.axelor.apps.account.db.PaymentVoucher;
 import com.axelor.apps.account.db.repo.BankOrderRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.report.IReport;
 import com.axelor.apps.account.service.bankOrder.BankOrderService;
 import com.axelor.apps.base.db.Wizard;
 import com.axelor.db.JPA;
@@ -105,5 +108,24 @@ public class BankOrderController {
 		} catch (Exception e) {
 			TraceBackService.trace(response, e);
 		}
+	}
+	
+	public void print(ActionRequest request, ActionResponse response) throws AxelorException{
+		
+		BankOrder bankOrder = request.getContext().asType(BankOrder.class);
+		
+		String name = I18n.get("Bank Order")+" "+ bankOrder.getBankOrderSeq();
+		
+		String fileLink = ReportFactory.createReport(IReport.BANK_ORDER, name + "-${date}")
+				.addParam("BankOrderId", bankOrder.getId())
+				.generate()
+				.getFileLink();
+
+		log.debug("Printing " + name);
+	
+		response.setView(ActionView
+				.define(name)
+				.add("html", fileLink).map());
+		
 	}
 }

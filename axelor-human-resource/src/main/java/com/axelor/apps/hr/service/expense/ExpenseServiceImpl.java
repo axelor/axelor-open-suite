@@ -30,6 +30,8 @@ import java.util.Set;
 import javax.mail.MessagingException;
 
 import org.joda.time.LocalDate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountConfig;
@@ -53,7 +55,7 @@ import com.axelor.apps.base.db.repo.GeneralRepository;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.PeriodService;
 import com.axelor.apps.base.service.administration.GeneralService;
-import com.axelor.apps.hr.db.Advance;
+import com.axelor.apps.hr.db.EmployeeAdvance;
 import com.axelor.apps.hr.db.Expense;
 import com.axelor.apps.hr.db.ExpenseLine;
 import com.axelor.apps.hr.db.HRConfig;
@@ -86,6 +88,8 @@ public class ExpenseServiceImpl implements ExpenseService  {
 	protected AnalyticDistributionLineService analyticDistributionLineService;
 	protected HRConfigService  hrConfigService;
 	protected TemplateMessageService  templateMessageService;
+	
+	private final Logger log = LoggerFactory.getLogger(getClass());
 	
 	@Inject
 	public ExpenseServiceImpl(MoveService moveService, ExpenseRepository expenseRepository, MoveLineService moveLineService,
@@ -443,12 +447,12 @@ public class ExpenseServiceImpl implements ExpenseService  {
 	
 	public BigDecimal computePersonalExpenseAmount(Expense expense){
 		
-		BigDecimal personalExpenseAmount = BigDecimal.ZERO;
+		BigDecimal personalExpenseAmount = new BigDecimal("0.00");
 		
 		if (expense.getExpenseLineList() != null && !expense.getExpenseLineList().isEmpty()){
 			for (ExpenseLine expenseLine : expense.getExpenseLineList()) {
 				if (expenseLine.getExpenseProduct() != null && expenseLine.getExpenseProduct().getPersonalExpense() ){
-					personalExpenseAmount.add(expenseLine.getTotalAmount());
+					personalExpenseAmount = personalExpenseAmount.add(expenseLine.getTotalAmount());
 				}
 			}
 		}
@@ -459,11 +463,11 @@ public class ExpenseServiceImpl implements ExpenseService  {
 	
 	public BigDecimal computeAdvanceAmount(Expense expense){
 		
-		BigDecimal advanceAmount = BigDecimal.ZERO;
+		BigDecimal advanceAmount = new BigDecimal("0.00");
 		
-		if (expense.getAdvanceList() != null && !expense.getAdvanceList().isEmpty()){
-			for (Advance advanceLine : expense.getAdvanceList() ) {
-					advanceAmount.add(advanceLine.getRequestedAmount());
+		if (expense.getEmployeeAdvanceList() != null && !expense.getEmployeeAdvanceList().isEmpty()){
+			for (EmployeeAdvance advanceLine : expense.getEmployeeAdvanceList() ) {
+				advanceAmount = advanceAmount.add(advanceLine.getRequestedAmount());
 				
 			}
 		}

@@ -51,7 +51,7 @@
 			<field name="justification"/>
 			<field name="comments" colSpan="12"/>
 			<field name="expense" hidden="true"/>
-    		<field name="expense.expenseCompanyCb" hidden="true" />
+    		<field name="expense.companyCbSelect" hidden="true" />
     		<field name="expense.multipleUsers" hidden="true"/>
 		</panel>
 				

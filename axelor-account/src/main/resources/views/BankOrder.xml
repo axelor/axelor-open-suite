@@ -36,7 +36,7 @@
     
 	<form name="bank-order-form" title="Bank Order" model="com.axelor.apps.account.db.BankOrder" onNew="action-group-bank-order-onnew" onSave="action-method-bank-order-on-save-amount" canDelete="false"> 
 	<toolbar>
-		<button name="print" title="Print" icon="fa-print" onClick=""/>
+		<button name="print" title="Print" icon="fa-print" onClick="action-bank-order-method-print"/>
 	</toolbar>
   		<panel name="main" colSpan="12" readonlyIf="statusSelect &gt;= 3">
   			<field name="bankOrderSeq" css="label-bold bold" colSpan="12"/>
@@ -248,5 +248,9 @@
     	  <field name="receiverBankDetails" expr="eval: partner?.bankDetailsList.find{ it -> it.isDefault } ? partner?.bankDetailsList.find{ it -> it.isDefault } : receiverBankDetails"/>
   		  <field if="partner?.bankDetailsList?.isEmpty()" name="receiverBankDetails" expr=""/>
     </action-record>
+    
+    <action-method name="action-bank-order-method-print">
+    	<call class="com.axelor.apps.account.web.BankOrderController" method="print"/>
+    </action-method>
     
 </object-views>
