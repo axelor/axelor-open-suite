@@ -29,13 +29,18 @@
       <boolean name="ventilated"/>
       <integer name="expenseCompanyCb" title="Expense paied with company's credit card" selection="hr.expense.company.cb.payment" />
       <many-to-one name="payrollPreparation" ref="com.axelor.apps.hr.db.PayrollPreparation"/>
-      
       <boolean name="multipleUsers" title="Multiple users ?" default="false"/>
       <one-to-many name="advanceList" ref="com.axelor.apps.hr.db.Advance" title="Advance list for expenses" readonly="true" orphanRemoval="false"/>
       <decimal name="advanceAmount" title="Advance" readonly="true" />
       <decimal name="withdrawnCash" title="Withdrawn cash" />
       <decimal name="personalExpenseAmount" title="Personal expense amount" hidden="true" />
       
+      <!-- Payment -->
+      <date name="paymentDate" title="Date"/>
+      <many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" title="Currency"/>
+  	  <many-to-one name="paymentMode" ref="com.axelor.apps.account.db.PaymentMode" title="Payment mode"/>	
+  	  <many-to-one name="bankOrder" ref="com.axelor.apps.account.db.BankOrder" readonly="true" title="Bank Order"/>
+  	  
       <string name="fullName" namecolumn="true" readonly="true">
       <![CDATA[
 	  		return this.getUser().getFullName()+" "+this.getCreatedOn().getDayOfMonth()+"/"+this.getCreatedOn().getMonthOfYear()
@@ -48,8 +53,9 @@
 	  		public static final Integer STATUS_DRAFT = 1;
 	  		public static final Integer STATUS_CONFIRMED = 2;
 	  		public static final Integer STATUS_VALIDATED = 3;
-	  		public static final Integer STATUS_REFUSED = 4;
-	  		public static final Integer STATUS_CANCELED = 5;
+	  		public static final Integer STATUS_REIMBURSED = 4;
+	  		public static final Integer STATUS_REFUSED = 5;
+	  		public static final Integer STATUS_CANCELED = 6;
 	  ]]>
       </extra-code>
   </entity>
