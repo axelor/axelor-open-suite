@@ -245,7 +245,7 @@
     </action-method>
     
     <action-attrs name="action-expense-attrs-employee-advance-domain">
-    	<attribute name="domain" for="employeeAdvanceList" expr="eval: &quot;self.employee.id = ${__this__.user.employee.id} &quot;"/>
+    	<attribute name="domain" for="employeeAdvanceList" expr="eval: &quot; self.date &lt; '${ __this__.period.toDate }' AND self.employee.id = ${__this__.user.employee.id} &quot;"/>
     </action-attrs>
 	
 </object-views>
