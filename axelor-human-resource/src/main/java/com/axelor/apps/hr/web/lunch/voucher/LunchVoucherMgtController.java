@@ -58,4 +58,20 @@ public class LunchVoucherMgtController {
 			TraceBackService.trace(response, e);
 		}
 	}
+	
+	public void updateTotal(ActionRequest request, ActionResponse response)  {
+		
+		try {
+			LunchVoucherMgtService lunchVoucherMgtService = lunchVoucherMgtProvider.get();
+			LunchVoucherMgt lunchVoucherMgt = request.getContext().asType(LunchVoucherMgt.class);
+			lunchVoucherMgt = lunchVoucherMgtRepositoryProvider.get().find(lunchVoucherMgt.getId());
+			lunchVoucherMgtService.calculateTotal(lunchVoucherMgt);
+			
+		}  catch(Exception e)  {
+			TraceBackService.trace(response, e);
+		}
+		finally {
+			response.setReload(true);
+		}
+	}
 }

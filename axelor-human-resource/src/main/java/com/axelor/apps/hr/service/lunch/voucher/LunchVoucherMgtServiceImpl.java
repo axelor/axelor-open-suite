@@ -57,6 +57,7 @@ public class LunchVoucherMgtServiceImpl implements LunchVoucherMgtService{
 		lunchVoucherMgtRepository.save(lunchVoucherMgt);
 	}
 	
+	@Override
 	@Transactional
 	public void calculateTotal(LunchVoucherMgt lunchVoucherMgt) {
 		int total = 0;
@@ -64,7 +65,7 @@ public class LunchVoucherMgtServiceImpl implements LunchVoucherMgtService{
 		for (LunchVoucherMgtLine lunchVoucherMgtLine : lunchVoucherMgtLineList) {
 			total += lunchVoucherMgtLine.getLunchVoucherNumber();
 		}
-		lunchVoucherMgt.setTotalLunchVouchers(total);
+		lunchVoucherMgt.setTotalLunchVouchers(total+lunchVoucherMgt.getStockLineQuantity());
 	}
 	
 	@Override

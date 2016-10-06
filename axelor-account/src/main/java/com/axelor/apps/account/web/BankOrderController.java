@@ -8,7 +8,6 @@ import org.slf4j.LoggerFactory;
 import com.axelor.apps.ReportFactory;
 import com.axelor.apps.account.db.BankOrder;
 import com.axelor.apps.account.db.EbicsUser;
-import com.axelor.apps.account.db.PaymentVoucher;
 import com.axelor.apps.account.db.repo.BankOrderRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.report.IReport;
@@ -72,8 +71,21 @@ public class BankOrderController {
 			BankOrder bankOrder = request.getContext().asType(BankOrder.class);
 			bankOrder = bankOrderRepo.find(bankOrder.getId());
 			if(bankOrder != null){ 
+				bankOrderService.checkLines(bankOrder);
 				bankOrderService.send(bankOrder);
 				response.setReload(true);
+			}
+		} catch (Exception e) {
+			TraceBackService.trace(response, e);
+		}
+	}
+	
+	public void validate(ActionRequest request, ActionResponse response ) {
+
+		try {
+			BankOrder bankOrder = request.getContext().asType(BankOrder.class);
+			if(bankOrder != null){ 
+				bankOrderService.validate(bankOrder);
 			}
 		} catch (Exception e) {
 			TraceBackService.trace(response, e);

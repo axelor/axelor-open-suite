@@ -11,4 +11,7 @@ public interface LunchVoucherMgtService {
 	public void calculate(LunchVoucherMgt lunchVoucherMgt) throws AxelorException;
 
 	int checkStock(LunchVoucherMgt lunchVoucherMgt) throws AxelorException;
+	
+	@Transactional
+	void calculateTotal(LunchVoucherMgt lunchVoucherMgt);
 }

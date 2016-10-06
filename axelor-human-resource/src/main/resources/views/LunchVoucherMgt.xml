@@ -16,6 +16,9 @@
     </grid>
 
 	<form name="lunch-voucher-mgt-form" title="Lunch Voucher Management" model="com.axelor.apps.hr.db.LunchVoucherMgt" width="large" onNew="action-lunch-voucher-record-default-onnew">
+	<toolbar>
+		<button name="print" title="Print" icon="fa-print"/>
+	</toolbar>
   		<panel name="main">
     		<field name="statusSelect" showTitle="false" colSpan="12" widget="NavSelect"/>
     		<field name="company" colSpan="6" onChange="action-lunch-voucher-record-company-onchange"/>
@@ -45,7 +48,7 @@
     			<field name="totalLunchVouchers" showTitle="false" colSpan="12" css="label-bold bold"/>
     		</panel>
 			<panel title="Line Stock quantity">
-    			<field name="stockLineQuantity" showTitle="false" colSpan="12" css="label-bold bold" onChange="action-lunch-voucher-method-check-stock"/>
+    			<field name="stockLineQuantity" showTitle="false" colSpan="12" css="label-bold bold" onChange="save,action-lunch-voucher-method-update-total,action-lunch-voucher-method-check-stock"/>
     			<field name="stockLineComment" colSpan="12"/>
     		</panel>    		
     	</panel>
@@ -81,5 +84,10 @@
 	<action-method name="action-lunch-voucher-method-check-stock">
 		<call class="com.axelor.apps.hr.web.lunch.voucher.LunchVoucherMgtController" method="checkStock"/>
 	</action-method>
+	
+	<action-method name="action-lunch-voucher-method-update-total">
+		<call class="com.axelor.apps.hr.web.lunch.voucher.LunchVoucherMgtController" method="updateTotal"/>
+	</action-method>
+	
 	
 </object-views>
