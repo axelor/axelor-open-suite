@@ -316,6 +316,17 @@ public class AccountConfigService {
 
 	}
 	
+	public Account getEmployeeAccount(AccountConfig accountConfig) throws AxelorException  {
+
+		if(accountConfig.getEmployeeAccount() == null)   {
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.ACCOUNT_CONFIG_40),
+					GeneralServiceImpl.EXCEPTION,accountConfig.getCompany().getName()), IException.CONFIGURATION_ERROR);
+		}
+
+		return accountConfig.getEmployeeAccount();
+
+	}
+	
 	public Account getAdvancePaymentAccount(AccountConfig accountConfig) throws AxelorException  {
 
 		if(accountConfig.getAdvancePaymentAccount() == null)   {

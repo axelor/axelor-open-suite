@@ -40,12 +40,12 @@ public class AccountConfigHRService extends AccountConfigService{
 	
 	public Account getExpenseEmployeeAccount(AccountConfig accountConfig) throws AxelorException  {
 		
-		if(accountConfig.getExpenseEmployeeAccount() == null)   {
+		if(accountConfig.getEmployeeAccount() == null)   {
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.EXPENSE_ACCOUNT),  
 					accountConfig.getCompany().getName()), IException.CONFIGURATION_ERROR);
 		}
 		
-		return accountConfig.getExpenseEmployeeAccount();
+		return accountConfig.getEmployeeAccount();
 	}
 	
 	public Account getExpenseTaxAccount(AccountConfig accountConfig) throws AxelorException  {

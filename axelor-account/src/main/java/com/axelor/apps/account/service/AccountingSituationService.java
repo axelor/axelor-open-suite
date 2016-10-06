@@ -97,6 +97,7 @@ public class AccountingSituationService	{
 		accountingSituation.setCompany(company);
 		accountingSituation.setCustomerAccount(accountConfigService.getCustomerAccount(accountConfig));
 		accountingSituation.setSupplierAccount(accountConfigService.getSupplierAccount(accountConfig));
+		accountingSituation.setEmployeeAccount(accountConfigService.getEmployeeAccount(accountConfig));
 		situationRepository.save(accountingSituation);
 			
 		return accountingSituation;

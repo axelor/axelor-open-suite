@@ -82,7 +82,6 @@
 			<panel name="payment" title="Payment" hidden="true" showIf="statusSelect == 3 || statusSelect == 4" readonlyIf="statusSelect == 4">
 				<field name="paymentDate"/>
 				<field name="paymentMode"/>
-				<field name="currency"/>
 				<field name="bankOrder" showIf="statusSelect == 4"/>
 				<button name="addPaymentButton" title="Register payment" onClick="action-expense-group-payment"/>
 			</panel>
