@@ -12,7 +12,7 @@
         <field name="givenToEmployee" title="Given?" width="200%"/>
     </grid>
     
-    <grid name="lunch-voucher-mgt-line-employee-grid" title="Lunch Voucher Lines" model="com.axelor.apps.hr.db.LunchVoucherMgtLine" editable="true" orderBy="employee">
+    <grid name="lunch-voucher-mgt-line-employee-grid" title="Lunch Voucher Lines" model="com.axelor.apps.hr.db.LunchVoucherMgtLine" editable="true" orderBy="-lunchVoucherMgt.payStartDate">
         <field name="lunchVoucherMgt.payStartDate"/>
         <field name="lunchVoucherMgt.payEndDate"/>
         <field name="canteenEntries" aggregate="sum" title="Canteen"/>
@@ -21,6 +21,7 @@
         <field name="lunchVoucherNumber" aggregate="sum" title="Nbr lunch vouchers"/>
         <field name="givenToEmployee" title="Given?"/>
         <field name="lunchVoucherMgt.statusSelect"/>
+        <button name="print" title="Print" icon="fa-print"/>
     </grid>
 
 	<form name="lunch-voucher-mgt-line-form" title="Lunch Voucher Line" model="com.axelor.apps.hr.db.LunchVoucherMgtLine" width="large">
@@ -29,10 +30,10 @@
 			<field name="lunchVoucherNumber" css="label-bold bold" colSpan="12" />
 		</panel>
 		<panel name="details" title="Details">
-			<field name="canteenEntries" colSpan="6" />
-			<field name="daysOverseas" colSpan="6" />
-			 <field name="invitation" colSpan="6" />
-			<field name="givenToEmployee" colSpan="12" />
+			<field name="canteenEntries" colSpan="6"/>
+			<field name="daysOverseas" colSpan="6"/>
+			 <field name="invitation" colSpan="6"/>
+			<field name="givenToEmployee" colSpan="6"/>
 		</panel>
 		<panel name="comment" title="Comments">
 			<field name="comment" colSpan="12" showTitle="false" widget="Text"/>

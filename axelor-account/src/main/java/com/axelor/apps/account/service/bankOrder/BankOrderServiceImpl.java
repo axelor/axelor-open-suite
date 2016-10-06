@@ -78,9 +78,15 @@ public class BankOrderServiceImpl implements BankOrderService{
 	public BigDecimal updateAmount(BankOrder bankOrder) throws AxelorException {
 		List<BankOrderLine> bankOrderLines = bankOrder.getBankOrderLineList();
 		BigDecimal  totalAmount = BigDecimal.ZERO;
-		if (!bankOrder.getBankOrderLineList().isEmpty()){
-			for (BankOrderLine bankOrderLine : bankOrderLines) {
-				totalAmount = totalAmount.add(bankOrderLine.getAmount());
+		if(bankOrderLines != null){
+			if (!bankOrder.getBankOrderLineList().isEmpty()){
+				for (BankOrderLine bankOrderLine : bankOrderLines) {
+					BigDecimal  amount = bankOrderLine.getAmount();
+					if(amount != null){
+						totalAmount = totalAmount.add(bankOrderLine.getAmount());
+					}
+					
+				}
 			}
 		}
 		return totalAmount;

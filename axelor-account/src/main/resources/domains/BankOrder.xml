@@ -19,7 +19,7 @@
 	<!-- Sender -->
 	<many-to-one name="senderCompany" ref="com.axelor.apps.base.db.Company" title="Company"/>
 	<many-to-one name="senderBankDetails" ref="com.axelor.apps.base.db.BankDetails" title="Bank Account"/>
-	<decimal name="amount" title="Amount"/>
+	<decimal name="amount" title="Amount" readonly="true"/>
 	<many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" title="Currency"/>
 	<string name="senderReference" title="Reference" unique="true"/>
 	<string name="senderLabel" title="Label"/>
@@ -27,7 +27,7 @@
 	<!-- Receiver -->
 	<one-to-many name="bankOrderLineList" ref="BankOrderLine" mappedBy="bankOrder" title="Bank Order Lines" />
 	
-	<many-to-one name="signatoryUser" ref="com.axelor.auth.db.User" title="Signatory"/>
+	<many-to-one name="signatoryUser" ref="com.axelor.auth.db.User" massUpdate="true" title="Signatory"/>
 	
 	 <extra-code><![CDATA[
 	
