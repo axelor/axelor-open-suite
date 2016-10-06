@@ -35,7 +35,7 @@
 	<form name="expense-form" title="Expense" model="com.axelor.apps.hr.db.Expense" width="large" canNew="false"
 	    onNew="action-expense-record-default,action-expense-attrs-buttons,action-expense-attrs-multiple-users" 
 	    onLoad="action-expense-attrs-buttons,action-expense-attrs-expense-company-cb,action-expense-attrs-multiple-users"
-	    onSave="action-expense-method-validate-date,action-expense-method-compute-amounts" canCopy="false">
+	    onSave="action-expense-method-validate-date,action-expense-method-compute-amounts,action-expense-method-compute" canCopy="false">
 		<toolbar>
 			<button name="printExpense" title="Print" colSpan="2" icon="fa-print" onClick="save,action-print-expense"/>
 		</toolbar>
@@ -62,18 +62,19 @@
 		<panel-tabs>
 			<panel-related field="expenseLineList" title="General expenses" readonlyIf="statusSelect &gt; 1" onChange="action-expense-method-compute" editable="true" form-view="expense-line-form" grid-view="expense-line-grid" colSpan="12" />
 			<panel title="Kilometric Allowances">
-				<field name="expenseLineList" readonlyIf="statusSelect &gt; 1" colSpan="12" showTitle="false" onChange="action-expense-method-compute"  >
-				<editor x-viewer="true" x-layout="table" colSpan="12" itemSpan="4" onNew="action-kilometric-allowance-record-default,action-kilometric-allowance-record-rate,action-expense-line-method-fill-kilometric-expense-product" >
+				<field name="kilometricExpenseLineList" readonlyIf="statusSelect &gt; 1" colSpan="12" showTitle="false" onChange="action-expense-method-compute"  >
+				<editor x-show-on-new="false" x-viewer="true" x-layout="table" colSpan="12" itemSpan="4" onNew="action-kilometric-allowance-record-default,action-kilometric-allowance-record-rate,action-expense-line-method-fill-kilometric-expense-product" >
 					<field name="expenseDate" title="Date" />
 					<field name="kilometricAllowParam" onChange="action-kilometric-allowance-record-rate,action-kilometric-allowance-record-in-tax-total" />
 			        <field name="kilometricTypeSelect" required="true" onChange="action-kilometric-allowance-record-in-tax-total" />
 			        <field name="fromCity" required="true" />
 			        <field name="toCity" required="true"/>
 			        <field name="distance" required="true" onChange="action-kilometric-allowance-record-in-tax-total" />
-				    <field name="totalAmount" title="Total A.T.I" onChange="action-expense-on-change-untaxt-amount, action-expense-line-method-compute-analytic-distribution" colSpan="6" readonly="true"/>
+				    <field name="totalAmount" title="Total A.T.I" onChange="action-expense-on-change-untaxt-amount, action-expense-line-method-compute-analytic-distribution" colSpan="2" readonly="true"/>
+			   	    <field name="projectTask" title="Project" requiredIf="toInvoice" canView="false" domain="self.imputable = true" widget="SuggestBox" colSpan="4" grid-view="project-task-grid"/>
 			   	    <field name="comments" colSpan="6" height="2" />
+			   		<field name="untaxedAmount" hidden="true" />
 			   		<field name="expenseProduct" readonly="true" form-view="product-expense-form" grid-view="product-expense-grid" hidden="true"/> 
-					<field name="projectTask" title="Project" requiredIf="toInvoice" canView="false" domain="self.imputable = true" widget="SuggestBox" grid-view="project-task-grid" width="100" hidden="true"/>
 					<field name="kilometricRate" readonly="true" onChange="action-kilometric-allowance-record-in-tax-total" width="50" hidden="true"/>
 				</editor>
 				</field>
@@ -83,6 +84,7 @@
 				<field name="paymentDate"/>
 				<field name="paymentMode"/>
 				<field name="bankOrder" showIf="statusSelect == 4"/>
+				<field name="paymentAmount" showIf="statusSelect == 4" />
 				<button name="addPaymentButton" title="Register payment" onClick="action-expense-group-payment"/>
 			</panel>
 		</panel-tabs>
@@ -114,11 +116,11 @@
 	              &lt;dt x-translate&gt;Advance&lt;/dt&gt;
 	              &lt;dd&gt;-{{record.advanceAmount | number:2}}&lt;/dd&gt;
 	              
-	              &lt;dt ng-show="record.statusSelect == 3"  ng-style="{'color' : 'blue'}" x-translate&gt;Payment&lt;/dt&gt;
-             	  &lt;dd ng-show="record.statusSelect == 3"  ng-style="{'color' : 'blue'}"&gt;-{{record.bankOrder.amount  | number:2}}&lt;/dd&gt;
+	              &lt;dt ng-show="record.statusSelect == 3 || record.statusSelect == 4"  ng-style="{'color' : 'blue'}" x-translate&gt;Payment&lt;/dt&gt;
+             	  &lt;dd ng-show="record.statusSelect == 3 || record.statusSelect == 4"  ng-style="{'color' : 'blue'}"&gt;-{{record.paymentAmount  | number:2}}&lt;/dd&gt;
 	              
 	              &lt;dt class="order-subtotal-total" x-translate&gt;Total to refund&lt;/dt&gt;
-	              &lt;dd class="order-subtotal-total"&gt;{{record.inTaxTotal - record.advanceAmount - record.withdrawnCash - record.personalExpenseAmount}}&lt;/dd&gt;
+	              &lt;dd class="order-subtotal-total"&gt;{{record.inTaxTotal - record.advanceAmount - record.withdrawnCash - record.personalExpenseAmount - record.paymentAmount | number:2}}&lt;/dd&gt;
 
 	              
 	            &lt;/dl&gt;
@@ -174,6 +176,7 @@
 	
 	<action-record name="action-expense-record-reimburse" model="com.axelor.apps.hr.db.Expense">
 		<field name="statusSelect" expr="4"/>
+		<field name="paymentAmount" expr="eval: inTaxTotal - advanceAmount - withdrawnCash - personalExpenseAmount" />
 	</action-record>
 	
 	<action-attrs name="action-expense-attrs-domain-expense-select">

@@ -13,6 +13,7 @@ import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.report.IReport;
 import com.axelor.apps.account.service.bankOrder.BankOrderService;
 import com.axelor.apps.base.db.Wizard;
+import com.axelor.auth.AuthUtils;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
@@ -130,6 +131,7 @@ public class BankOrderController {
 		
 		String fileLink = ReportFactory.createReport(IReport.BANK_ORDER, name + "-${date}")
 				.addParam("BankOrderId", bankOrder.getId())
+				.addParam("Locale", AuthUtils.getUser().getLanguage())
 				.generate()
 				.getFileLink();
 

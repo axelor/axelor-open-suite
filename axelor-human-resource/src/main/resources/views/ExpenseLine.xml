@@ -11,9 +11,10 @@
 		<field name="expenseDate" onChange="action-expense-line-validate-expenseDate"/>
 		<field name="user" hidden="true" form-view="user-form" grid-view="user-grid" onSelect="action-expense-line-attrs-company"/>
 		<field name="totalAmount" aggregate="sum" onChange="action-expense-on-change-tax-untaxt-amount"/>
-		<field name="totalTax" aggregate="sum" onChange="action-expense-on-change-tax-untaxt-amount, action-expense-line-method-compute-analytic-distribution"/>
+		<field name="totalTax"  readonlyIf="$get('expenseProduct.blockExpenseTax')" aggregate="sum" onChange="action-expense-on-change-tax-untaxt-amount, action-expense-line-method-compute-analytic-distribution"/>
 		<field name="comments"/>
 		<field name="untaxedAmount" hidden="true"/>
+		<field name="expenseProduct.blockExpenseTax" hidden="true" />
 	</grid>
 	
 	<grid name="expense-line-kilometric-grid" 
@@ -116,6 +117,8 @@
     <action-record name="action-kilometric-allowance-record-in-tax-total" model="com.axelor.apps.hr.db.ExpenseLine">
         <field name="totalAmount" if="kilometricTypeSelect == 1"  expr="eval: kilometricRate * distance"/>
         <field name="totalAmount" if="kilometricTypeSelect == 2"  expr="eval: kilometricRate * distance * 2"/>
+        <field name="untaxedAmount" if="kilometricTypeSelect == 1"  expr="eval: kilometricRate * distance"/>
+        <field name="untaxedAmount" if="kilometricTypeSelect == 2"  expr="eval: kilometricRate * distance * 2"/>
     </action-record>
 	
 	<action-record name="action-expense-line-default" model="com.axelor.apps.hr.db.ExpenseLine">
@@ -141,5 +144,5 @@
 	<action-attrs name="action-expense-line-attrs-company" model="com.axelor.apps.hr.db.ExpenseLine">
 		<attribute name="domain" for="user" expr="eval: &quot; ${expense.company.id} MEMBER OF self.companySet &quot;" />
 	</action-attrs>
-
+	
 </object-views>

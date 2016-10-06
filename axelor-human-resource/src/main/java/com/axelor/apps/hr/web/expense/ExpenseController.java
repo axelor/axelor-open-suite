@@ -39,6 +39,7 @@ import com.axelor.apps.hr.db.ExpenseLine;
 import com.axelor.apps.hr.db.ExtraHours;
 import com.axelor.apps.hr.db.HRConfig;
 import com.axelor.apps.hr.db.KilometricAllowanceRate;
+import com.axelor.apps.hr.db.repo.ExpenseLineRepository;
 import com.axelor.apps.hr.db.repo.ExpenseRepository;
 import com.axelor.apps.hr.db.repo.KilometricAllowanceRateRepository;
 import com.axelor.apps.hr.db.repo.TimesheetRepository;
@@ -451,9 +452,9 @@ public class ExpenseController {
 	 				}
 	 			}
 	 		}
-	 			
+	 		
 	 		expense.addExpenseLineListItem(expenseLine);
-	 			
+	 		
 	 		Beans.get(ExpenseRepository.class).save(expense);
 	 	}
 	 }
@@ -466,8 +467,16 @@ public class ExpenseController {
 
 		response.setValue("personalExpenseAmount", expenseService.computePersonalExpenseAmount(expense) );
 		response.setValue("advanceAmount", expenseService.computeAdvanceAmount(expense) );
+
+		
+		if( expense.getKilometricExpenseLineList() != null && !expense.getKilometricExpenseLineList().isEmpty()){
+			for (ExpenseLine kilometricLine : expense.getKilometricExpenseLineList()) {
+				kilometricLine.setExpense(expense);
+			}
+			response.setValue("kilometricExpenseLineList", expense.getKilometricExpenseLineList() );
+		}
 		
 		
 	}
-
+	
 }

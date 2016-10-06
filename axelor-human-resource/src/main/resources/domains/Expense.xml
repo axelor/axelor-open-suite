@@ -39,6 +39,7 @@
       <date name="paymentDate" title="Date"/>
   	  <many-to-one name="paymentMode" ref="com.axelor.apps.account.db.PaymentMode" title="Payment mode"/>	
   	  <many-to-one name="bankOrder" ref="com.axelor.apps.account.db.BankOrder" readonly="true" title="Bank Order"/>
+  	  <decimal name="paymentAmount" title="Payment amount" readonly="true" />
   	  
       <string name="fullName" namecolumn="true" readonly="true">
       <![CDATA[
