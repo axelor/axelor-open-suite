@@ -76,7 +76,6 @@
 				    <field name="payingBackTax" grid-view="tax-grid" form-view="tax-form"/>
 				</panel>
 				<panel	name="expense" title="Expense" colSpan="12">
-					<field name="expenseEmployeeAccount" domain="self.company = :company" if-module="axelor-human-resource" grid-view="account-grid" form-view="account-form"/>
 					<field name="expenseTaxAccount" domain="self.company = :company" if-module="axelor-human-resource" grid-view="account-grid" form-view="account-form"/>
 				</panel>
 				<panel name="invoicesSequences" title="Invoices sequences" colSpan="12">

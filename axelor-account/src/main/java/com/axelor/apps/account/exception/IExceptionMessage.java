@@ -338,6 +338,7 @@ public interface IExceptionMessage {
 	static final String ACCOUNT_CONFIG_37 = /*$$(*/ "%s :\n Veuillez configurer le tableau de relance pour la société %s" /*)*/;
 	static final String ACCOUNT_CONFIG_38 = /*$$(*/ "%s :\n Veuillez configurer un compte d'acompte pour la société %s" /*)*/;
 	static final String ACCOUNT_CONFIG_39 = /*$$(*/ "%s :\n Veuillez configurer un nom de fichier pour l'export des FEC pour la société %s" /*)*/;
+	static final String ACCOUNT_CONFIG_40 = /*$$(*/ "%s :\n Veuillez configurer un compte salarié pour la société %s" /*)*/;
 	
 	static final String ACCOUNT_CONFIG_SEQUENCE_1 = /*$$(*/ "%s :\n Please, configure a sequence for the customer invoices and the company %s" /*)*/;
 	static final String ACCOUNT_CONFIG_SEQUENCE_2 = /*$$(*/ "%s :\n Please, configure a sequence for the customer refunds and the company %s" /*)*/;
