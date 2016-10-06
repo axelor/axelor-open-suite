@@ -31,7 +31,7 @@
       <many-to-one name="payrollPreparation" ref="com.axelor.apps.hr.db.PayrollPreparation"/>
       <boolean name="multipleUsers" title="Multiple users ?" default="false"/>
       <one-to-many name="employeeAdvanceList" ref="com.axelor.apps.hr.db.EmployeeAdvance" title="Employee advance" readonly="true" orphanRemoval="false"/>
-      <decimal name="advanceAmount" title="Advance" readonly="true" />
+      <decimal name="advanceAmount" title="Advance" />
       <decimal name="withdrawnCash" title="Withdrawn cash" />
       <decimal name="personalExpenseAmount" title="Personal expense amount" hidden="true" />
       

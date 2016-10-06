@@ -15,7 +15,7 @@
 	
 	<many-to-one name="paymentMode" ref="com.axelor.apps.account.db.PaymentMode" title="Payment mode" />
 	<string name="reason" title="Reason" />
-	<integer name="statusSelect" title="Status" selection="hr.employe.advance.status.select" />
+	<integer name="statusSelect" title="Status" selection="hr.employee.advance.status.select" readonly="true"  />
 	<many-to-one name="expense" ref="com.axelor.apps.hr.db.Expense" title="Expense" />
 	
 	<extra-code><![CDATA[

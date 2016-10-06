@@ -21,7 +21,6 @@
 			<field name="requestedAmount" />
 			<field name="employee" />
 			<field name="paymentMode" />
-			<field name="reason" />
 			<field name="statusSelect" />
 			<field name="expense" hidden="true" showIf="typeSelect == 1" />
 		</panel>

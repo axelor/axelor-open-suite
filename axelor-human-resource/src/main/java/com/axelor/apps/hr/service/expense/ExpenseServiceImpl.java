@@ -456,7 +456,6 @@ public class ExpenseServiceImpl implements ExpenseService  {
 				}
 			}
 		}
-		
 		return personalExpenseAmount;
 	}
 	
@@ -468,7 +467,6 @@ public class ExpenseServiceImpl implements ExpenseService  {
 		if (expense.getEmployeeAdvanceList() != null && !expense.getEmployeeAdvanceList().isEmpty()){
 			for (EmployeeAdvance advanceLine : expense.getEmployeeAdvanceList() ) {
 				advanceAmount = advanceAmount.add(advanceLine.getRequestedAmount());
-				
 			}
 		}
 		

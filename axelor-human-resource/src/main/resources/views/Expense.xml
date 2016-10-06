@@ -78,7 +78,7 @@
 				</editor>
 				</field>
 			</panel>
-			<panel-related field="employeeAdvanceList" title="Employee advance list" editable="true" form-view="employee-advance-form" grid-view="employee-advance-grid" />
+			<panel-related field="employeeAdvanceList" title="Employee advance list" readonly="false" canNew="false" canSelect="true" canEdit="false" onSelect="action-expense-attrs-employee-advance-domain" editable="true" form-view="employee-advance-form" grid-view="employee-advance-grid" />
 			<panel name="payment" title="Payment" hidden="true" showIf="statusSelect == 3 || statusSelect == 4" readonlyIf="statusSelect == 4">
 				<field name="paymentDate"/>
 				<field name="paymentMode"/>
@@ -244,5 +244,9 @@
     <action-method name="action-expense-method-compute-amounts">
     	<call class="com.axelor.apps.hr.web.expense.ExpenseController" method="computeAmounts"/>
     </action-method>
+    
+    <action-attrs name="action-expense-attrs-employee-advance-domain">
+    	<attribute name="domain" for="employeeAdvanceList" expr="eval: &quot;self.employee.id = ${__this__.user.employee.id} &quot;"/>
+    </action-attrs>
 	
 </object-views>
