@@ -9,11 +9,12 @@ import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.account.db.BankOrder;
 import com.axelor.apps.account.db.BankOrderLine;
-import com.axelor.apps.account.db.Move;
+import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.BankOrderRepository;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
+import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 
@@ -36,27 +37,26 @@ public class BankOrderCreateService {
 	 * @return
 	 * @throws AxelorException
 	 */
-	public BankOrder createBankOrder(String reference, Integer orderType, Integer partnerType, LocalDate bankOrderDate, Integer statusSelect,
-			Integer rejectStatus, Company senderCompany, BankDetails senderBankDetails, BigDecimal amount, Currency currency,
-									String senderReference,  String senderLabel, Move senderMove) throws AxelorException{
+	public BankOrder createBankOrder(Integer orderType, PaymentMode paymentMode, Integer partnerType, LocalDate bankOrderDate, Integer statusSelect,
+			Integer rejectStatus, Company senderCompany, BankDetails senderBankDetails, BigDecimal amount, User signatory ,Currency currency,
+									String senderReference,  String senderLabel) throws AxelorException{
 		
 		BankOrder bankOrder = new BankOrder();
 		
 		bankOrder.setOrderType(orderType);
+		bankOrder.setPaymentMode(paymentMode);
 		bankOrder.setPartnerTypeSelect(partnerType);
 		bankOrder.setBankOrderDate(bankOrderDate);
-		// To check : bankOrderRepository static values
-		bankOrder.setStatusSelect(BankOrderRepository.STATUS_DRAFT);
-		bankOrder.setRejectStatusSelect(0);
+		bankOrder.setStatusSelect(statusSelect);
+		bankOrder.setRejectStatusSelect(rejectStatus);
 		bankOrder.setSenderCompany(senderCompany);
 		bankOrder.setSenderBankDetails(senderBankDetails);
 		bankOrder.setAmount(amount);
+		bankOrder.setSignatoryUser(signatory);
 		bankOrder.setCurrency(currency);
 		bankOrder.setSenderLabel(senderLabel);
 		bankOrder.setBankOrderLineList(new ArrayList<BankOrderLine>());
-		bankOrder.setSenderReference(reference);
 		bankOrderRepo.save(bankOrder);
-		bankOrder.setBankOrderSeq("*"+bankOrder.getId());
 		
 		return bankOrder;
 	}

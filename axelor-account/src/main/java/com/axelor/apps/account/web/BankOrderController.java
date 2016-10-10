@@ -142,4 +142,32 @@ public class BankOrderController {
 				.add("html", fileLink).map());
 		
 	}
+	
+	//called to check if there is a linked invoice payment to validate
+	public void validatePayment(ActionRequest request, ActionResponse response ) {
+
+		try {
+			BankOrder bankOrder = request.getContext().asType(BankOrder.class);
+			bankOrder = bankOrderRepo.find(bankOrder.getId());
+			if(bankOrder != null){ 
+				bankOrderService.validatePayment(bankOrder);
+			}
+		} catch (Exception e) {
+			TraceBackService.trace(response, e);
+		}
+	}
+	
+	//called to check if there is a linked invoice payment to cancel
+	public void cancelPayment(ActionRequest request, ActionResponse response ) {
+
+		try {
+			BankOrder bankOrder = request.getContext().asType(BankOrder.class);
+			bankOrder = bankOrderRepo.find(bankOrder.getId());
+			if(bankOrder != null){ 
+				bankOrderService.cancelPayment(bankOrder);
+			}
+		} catch (Exception e) {
+			TraceBackService.trace(response, e);
+		}
+	}
 }

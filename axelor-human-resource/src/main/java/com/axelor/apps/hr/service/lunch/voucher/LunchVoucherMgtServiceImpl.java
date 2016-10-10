@@ -53,6 +53,7 @@ public class LunchVoucherMgtServiceImpl implements LunchVoucherMgtService{
 			}	
 		}
 		lunchVoucherMgt.setStatusSelect(LunchVoucherMgtRepository.STATUS_CALCULATED);
+		this.getStockQuantityStatus(lunchVoucherMgt);
 		calculateTotal(lunchVoucherMgt);
 		lunchVoucherMgtRepository.save(lunchVoucherMgt);
 	}
@@ -78,6 +79,15 @@ public class LunchVoucherMgtServiceImpl implements LunchVoucherMgtService{
 		int stockLine = lunchVoucherMgt.getStockLineQuantity();
 		
 		return availableStoclLV - totalLV - stockLine - minStoclLV;
+	}
+
+	@Override
+	@Transactional
+	public void getStockQuantityStatus(LunchVoucherMgt lunchVoucherMgt) throws AxelorException {
+		
+		HRConfig hrConfig = hrConfigService.getHRConfig(lunchVoucherMgt.getCompany());
+		int stockQuantityStatus = hrConfig.getAvailableStockLunchVoucher();
+		lunchVoucherMgt.setStockQuantityStatus(stockQuantityStatus);
 	}
 
 }

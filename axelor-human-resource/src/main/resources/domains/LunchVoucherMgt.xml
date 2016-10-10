@@ -20,8 +20,9 @@
       <decimal name="employersShare" title="Employer's Share" scale="2" precision="20" readonly="true"/>
       <one-to-many name="lunchVoucherMgtLineList" ref="com.axelor.apps.hr.db.LunchVoucherMgtLine" title="Lunch Voucher Lines"  mappedBy="lunchVoucherMgt" orphanRemoval="true"/>
       
-       <integer name="stockLineQuantity" title="Stock Line quantity"/>
-       <string name="stockLineComment" title="Comment" large="true"/>
+      <integer name="stockQuantityStatus" title="Stock quantity status" readonly="true"/>
+      <integer name="stockLineQuantity" title="Stock Line quantity"/>
+      <string name="stockLineComment" title="Comment" large="true"/>
       <extra-code>
       	<![CDATA[
 	  		public static final Integer STATUS_DRAFT = 1;

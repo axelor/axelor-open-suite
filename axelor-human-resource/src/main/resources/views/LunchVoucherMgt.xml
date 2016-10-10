@@ -47,6 +47,9 @@
     		<panel title="Total lunch vouchers">
     			<field name="totalLunchVouchers" showTitle="false" colSpan="12" css="label-bold bold"/>
     		</panel>
+    		<panel title="Stock quantity status">
+    			<field name="stockQuantityStatus" showTitle="false" colSpan="12" css="label-bold bold"/>
+    		</panel>
 			<panel title="Line Stock quantity">
     			<field name="stockLineQuantity" showTitle="false" colSpan="12" css="label-bold bold" onChange="save,action-lunch-voucher-method-update-total,action-lunch-voucher-method-check-stock"/>
     			<field name="stockLineComment" colSpan="12"/>

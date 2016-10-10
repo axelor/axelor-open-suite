@@ -32,6 +32,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Sequence;
 import com.axelor.apps.base.service.administration.GeneralServiceImpl;
 import com.axelor.apps.message.db.Template;
+import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
@@ -553,4 +554,15 @@ public class AccountConfigService {
 		}
 		return accountConfig.getExportFileName();
 	}
+	
+	
+	/******************************** BANK ORDERS *********************************************/
+	public User getDefaultSignatoryUser(AccountConfig accountConfig) throws AxelorException  {
+		if(accountConfig.getDefaultSignatoryUser() == null){
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.ACCOUNT_CONFIG_41),
+					GeneralServiceImpl.EXCEPTION,accountConfig.getCompany().getName()), IException.CONFIGURATION_ERROR);
+		}
+		return accountConfig.getDefaultSignatoryUser();
+	}
+	
 }

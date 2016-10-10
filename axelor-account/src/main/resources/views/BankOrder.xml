@@ -76,8 +76,8 @@
   		<panel name="action" title="Action" itemSpan="12" sidebar="true" hideIf="statusSelect == 4 || statusSelect == 5">
     		<button name="send" title="Send for signature" hideIf="statusSelect != 1 || orderType == 3 || orderType == 5" onClick="action-group-bank-order-onsend"/>
     		<button name="validate" title="Validate" showIf="(statusSelect == 1 &amp;&amp; (orderType == 3 || orderType == 5) ) || (statusSelect == 2 &amp;&amp; orderType != 3 &amp;&amp; orderType != 5)" onClick="action-group-bank-order-onvalidate"/>
-    		<button name="carry out" title="Carry out" showIf="((statusSelect == 3 &amp;&amp; orderType != 3 &amp;&amp; orderType != 5) || (statusSelect == 2 &amp;&amp; (orderType == 3 || orderType == 5)))" onClick="save,action-bank-order-record-carry-out,save"/>
-			<button name="reject" title="Reject" showIf="((statusSelect == 3 &amp;&amp; orderType != 3 &amp;&amp; orderType != 5) || (statusSelect == 2 &amp;&amp; (orderType == 3 || orderType == 5)))" onClick="save,action-bank-order-record-reject,save"/>    		
+    		<button name="carry out" title="Carry out" showIf="((statusSelect == 3 &amp;&amp; orderType != 3 &amp;&amp; orderType != 5) || (statusSelect == 2 &amp;&amp; (orderType == 3 || orderType == 5)))" onClick="save,action-bank-order-record-carry-out,action-method-bank-order-payment-validate,save"/>
+			<button name="reject" title="Reject" showIf="((statusSelect == 3 &amp;&amp; orderType != 3 &amp;&amp; orderType != 5) || (statusSelect == 2 &amp;&amp; (orderType == 3 || orderType == 5)))" onClick="save,action-bank-order-record-reject,action-method-bank-order-payment-cancel,save"/>    		
     		<button name="cancel" title="Cancel" showIf="statusSelect == 1" onClick="save,action-bank-order-record-cancel,save"/>
   		</panel>
 	</form>
@@ -189,6 +189,14 @@
 	
   	<action-method name="action-method-bank-order-validate">
 		<call class="com.axelor.apps.account.web.BankOrderController" method="validate"/>
+	</action-method>
+	
+	<action-method name="action-method-bank-order-payment-validate">
+		<call class="com.axelor.apps.account.web.BankOrderController" method="validatePayment"/>
+	</action-method>
+	
+	<action-method name="action-method-bank-order-payment-cancel">
+		<call class="com.axelor.apps.account.web.BankOrderController" method="cancelPayment"/>
 	</action-method>
 	
 	
