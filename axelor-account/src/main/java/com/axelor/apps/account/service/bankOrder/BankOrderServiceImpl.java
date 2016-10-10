@@ -9,7 +9,9 @@ import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.account.db.BankOrder;
 import com.axelor.apps.account.db.BankOrderLine;
+import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.repo.BankOrderRepository;
+import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
@@ -22,11 +24,13 @@ public class BankOrderServiceImpl implements BankOrderService{
 	private final Logger log = LoggerFactory.getLogger( getClass() );
 	
 	protected BankOrderRepository bankOrderRepo;
+	protected InvoicePaymentRepository invoicePaymentRepo;
 	
 	@Inject
-	public BankOrderServiceImpl(BankOrderRepository bankOrderRepo){
+	public BankOrderServiceImpl(BankOrderRepository bankOrderRepo, InvoicePaymentRepository invoicePaymentRepo){
 		
 		this.bankOrderRepo = bankOrderRepo;
+		this.invoicePaymentRepo = invoicePaymentRepo;
 	}
 	
 	@Override
@@ -94,22 +98,8 @@ public class BankOrderServiceImpl implements BankOrderService{
 	
 	@Override
 	@Transactional
-	public void send(BankOrder bankOrder) {
-		bankOrder.setStatusSelect(BankOrderRepository.STATUS_AWAITING_SIGNATURE);
-		bankOrderRepo.save(bankOrder);
-	}
-
-	@Override
-	@Transactional
-	public void sign(BankOrder bankOrder) {
-		bankOrder.setStatusSelect(BankOrderRepository.STATUS_VALIDATED);
-		bankOrderRepo.save(bankOrder);
-	}
-
-	@Override
-	@Transactional
 	public BankOrder generateSequence(BankOrder bankOrder) {
-		if(bankOrder.getBankOrderSeq() == null){
+		if(bankOrder.getBankOrderSeq() == null && bankOrder.getId() != null){
 			bankOrder.setBankOrderSeq("* "+bankOrder.getId());
 			bankOrderRepo.save(bankOrder);
 		}
@@ -152,6 +142,48 @@ public class BankOrderServiceImpl implements BankOrderService{
 		if (!totalAmount.equals(bankOrderAmount)){
 			throw new AxelorException(I18n.get(IExceptionMessage.BANK_ORDER_LINE_TOTAL_AMOUNT_INVALID), IException.INCONSISTENCY);
 		}
+	}
+
+	@Override
+	@Transactional
+	public void validatePayment(BankOrder bankOrder) {
+		
+		InvoicePayment invoicePayment = invoicePaymentRepo.all().filter("self.bankOrder.id = ?1", bankOrder.getId()).fetchOne();
+		if(invoicePayment != null){
+			invoicePayment.setStatusSelect(InvoicePaymentRepository.STATUS_VALIDATED);
+		}
+	}
+
+	@Override
+	@Transactional
+	public void cancelPayment(BankOrder bankOrder) {
+		InvoicePayment invoicePayment = invoicePaymentRepo.all().filter("self.bankOrder.id = ?1", bankOrder.getId()).fetchOne();
+		if(invoicePayment != null){
+			invoicePayment.setStatusSelect(InvoicePaymentRepository.STATUS_CANCELED);
+		}
+		
+	}
+	
+	@Override
+	@Transactional
+	public void send(BankOrder bankOrder) {
+		bankOrder.setStatusSelect(BankOrderRepository.STATUS_AWAITING_SIGNATURE);
+		bankOrderRepo.save(bankOrder);
+	}
+
+	@Override
+	@Transactional
+	public void sign(BankOrder bankOrder) {
+		bankOrder.setStatusSelect(BankOrderRepository.STATUS_VALIDATED);
+		bankOrderRepo.save(bankOrder);
+	}
+
+	@Override
+	@Transactional
+	public void cancelBankOrder(BankOrder bankOrder) {
+		bankOrder.setStatusSelect(BankOrderRepository.STATUS_CANCELED);
+		bankOrderRepo.save(bankOrder);
+		
 	}
 
 }

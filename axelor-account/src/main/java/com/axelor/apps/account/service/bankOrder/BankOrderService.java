@@ -25,4 +25,14 @@ public interface BankOrderService {
 	public BankOrder generateSequence(BankOrder bankOrder);
 	
 	public void checkLines(BankOrder bankOrder)throws AxelorException;
+	
+	@Transactional
+	public void validatePayment(BankOrder bankOrder);
+	
+	@Transactional
+	public void cancelPayment(BankOrder bankOrder);
+	
+	@Transactional
+	public void cancelBankOrder(BankOrder bankOrder);
+	
 }

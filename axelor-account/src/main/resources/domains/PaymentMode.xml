@@ -30,7 +30,11 @@
 		// Sales or purchase
 		public static final int SALES = 1;
 		public static final int PURCHASES = 2;
-	
+		
+		// IN OUT SELECT
+		public static final int IN = 1;
+		public static final int OUT = 2;
+		
 	]]></extra-code>
   
   </entity>
