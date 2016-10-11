@@ -63,7 +63,7 @@ public class AnalyticMoveLineService {
 	public List<InvoiceLine> createInvoiceLine(Invoice invoice, AnalyticMoveLine analyticMoveLine) throws AxelorException  {
 
 		Product product = analyticMoveLine.getProduct();
-		InvoiceLineGenerator invoiceLineGenerator = new InvoiceLineGenerator(invoice, product, product.getName(), product.getCode(), product.getSalePrice().multiply(new BigDecimal(-1)),
+		InvoiceLineGenerator invoiceLineGenerator = new InvoiceLineGenerator(invoice, product, product.getName(), product.getSalePrice().multiply(new BigDecimal(-1)),
 					product.getSalePrice().multiply(new BigDecimal(-1)),null,analyticMoveLine.getQte(),product.getUnit(), null,10,BigDecimal.ZERO,IPriceListLine.AMOUNT_TYPE_NONE,
 					null, null,false)  {
 

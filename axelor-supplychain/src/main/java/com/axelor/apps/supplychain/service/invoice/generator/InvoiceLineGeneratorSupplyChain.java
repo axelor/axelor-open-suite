@@ -60,10 +60,10 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
 	protected StockMoveLine stockMoveLine;
 	protected Subscription subscription;
 	
-	protected InvoiceLineGeneratorSupplyChain( Invoice invoice, Product product, String productName, String productCode, String description, BigDecimal qty,
+	protected InvoiceLineGeneratorSupplyChain( Invoice invoice, Product product, String productName, String description, BigDecimal qty,
 			Unit unit, int sequence, boolean isTaxInvoice, SaleOrderLine saleOrderLine, PurchaseOrderLine purchaseOrderLine, StockMoveLine stockMoveLine) throws AxelorException {
 
-		super(invoice, product, productName, productCode, description, qty, unit, sequence, isTaxInvoice);
+		super(invoice, product, productName, description, qty, unit, sequence, isTaxInvoice);
 
 		this.saleOrderLine = saleOrderLine;
 		this.purchaseOrderLine = purchaseOrderLine;
@@ -100,11 +100,11 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
     }
 	
 
-	protected InvoiceLineGeneratorSupplyChain( Invoice invoice, Product product, String productName, String productCode, String description, BigDecimal qty,
+	protected InvoiceLineGeneratorSupplyChain( Invoice invoice, Product product, String productName, String description, BigDecimal qty,
 			Unit unit, int sequence, boolean isTaxInvoice, SaleOrderLine saleOrderLine, PurchaseOrderLine purchaseOrderLine, 
 			StockMoveLine stockMoveLine, Subscription subscription) throws AxelorException {
 
-		this(invoice, product, productName, productCode, description, qty, unit, sequence, isTaxInvoice, saleOrderLine, purchaseOrderLine, stockMoveLine);
+		this(invoice, product, productName, description, qty, unit, sequence, isTaxInvoice, saleOrderLine, purchaseOrderLine, stockMoveLine);
 
 		this.subscription = subscription;
     }

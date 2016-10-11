@@ -235,7 +235,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 
 		Product product = saleOrderLine.getProduct();
 
-		InvoiceLineGenerator invoiceLineGenerator = new InvoiceLineGeneratorSupplyChain(invoice, product, saleOrderLine.getProductName(), product.getCode(),
+		InvoiceLineGenerator invoiceLineGenerator = new InvoiceLineGeneratorSupplyChain(invoice, product, saleOrderLine.getProductName(), 
 				saleOrderLine.getDescription(), saleOrderLine.getQty(), saleOrderLine.getUnit(),
 				saleOrderLine.getSequence(), false, saleOrderLine, null, null, null)  {
 
@@ -260,7 +260,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 		Product product = saleOrderLine.getProduct();
 
 		InvoiceLineGenerator invoiceLineGenerator = new InvoiceLineGeneratorSupplyChain(invoice, product, saleOrderLine.getProductName()+"("+saleOrderLine.getPeriodicity()+" "+I18n.get("month(s)")+")",
-				product.getCode(), saleOrderLine.getDescription(), saleOrderLine.getQty(), saleOrderLine.getUnit(),
+				saleOrderLine.getDescription(), saleOrderLine.getQty(), saleOrderLine.getUnit(),
 				sequence, false, saleOrderLine, null, null, subscription)  {
 
 			@Override

@@ -108,7 +108,7 @@ public class PurchaseOrderInvoiceProjectServiceImpl extends PurchaseOrderInvoice
 			}
 
 
-			InvoiceLineGenerator invoiceLineGenerator = new InvoiceLineGenerator(invoice, product, product.getName(), product.getCode(), price,
+			InvoiceLineGenerator invoiceLineGenerator = new InvoiceLineGenerator(invoice, product, product.getName(), price,
 						price,purchaseOrderLine.getDescription(),purchaseOrderLine.getQty(),purchaseOrderLine.getUnit(), null,InvoiceLineGenerator.DEFAULT_SEQUENCE,discountAmount,discountTypeSelect,
 						null, null,false)  {
 				@Override
@@ -126,7 +126,7 @@ public class PurchaseOrderInvoiceProjectServiceImpl extends PurchaseOrderInvoice
 		}
 		else if(invoice.getPartner().getChargeBackPurchaseSelect() == PartnerRepository.CHARGING_BACK_TYPE_PERCENTAGE){
 			price = price.multiply(invoice.getPartner().getChargeBackPurchase().divide(new BigDecimal(100), generalService.getNbDecimalDigitForUnitPrice(), BigDecimal.ROUND_HALF_UP)).setScale(generalService.getNbDecimalDigitForUnitPrice(), BigDecimal.ROUND_HALF_UP);
-			InvoiceLineGenerator invoiceLineGenerator = new InvoiceLineGenerator(invoice, product, product.getName(), product.getCode(), price,
+			InvoiceLineGenerator invoiceLineGenerator = new InvoiceLineGenerator(invoice, product, product.getName(), price,
 						price,purchaseOrderLine.getDescription(),purchaseOrderLine.getQty(),purchaseOrderLine.getUnit(), null,InvoiceLineGenerator.DEFAULT_SEQUENCE,discountAmount,discountTypeSelect,
 						null, null,false)  {
 				@Override
@@ -145,7 +145,7 @@ public class PurchaseOrderInvoiceProjectServiceImpl extends PurchaseOrderInvoice
 
 		else{
 			InvoiceLineGeneratorSupplyChain invoiceLineGenerator = new InvoiceLineGeneratorSupplyChain(invoice, product, purchaseOrderLine.getProductName(),
-					product.getCode(), purchaseOrderLine.getDescription(), purchaseOrderLine.getQty(), purchaseOrderLine.getUnit(),
+					purchaseOrderLine.getDescription(), purchaseOrderLine.getQty(), purchaseOrderLine.getUnit(),
 					purchaseOrderLine.getSequence(), false, null, purchaseOrderLine, null)  {
 				@Override
 				public List<InvoiceLine> creates() throws AxelorException {

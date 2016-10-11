@@ -465,9 +465,9 @@ public class TimesheetServiceImpl implements TimesheetService{
 		String 	description = user.getFullName(),
 				productName = product.getName() + " " + "(" + date + ")";
 
-		InvoiceLineGenerator invoiceLineGenerator = new InvoiceLineGenerator(invoice, product, productName, product.getCode(), price,
-					price,description,qtyConverted,product.getUnit(), null,priority,discountAmount,discountTypeSelect,
-					price.multiply(qtyConverted), null,false)  {
+		InvoiceLineGenerator invoiceLineGenerator = new InvoiceLineGenerator(invoice, product, productName, price,
+					price, description, qtyConverted, product.getUnit(), null, priority, discountAmount, discountTypeSelect,
+					price.multiply(qtyConverted), null, false)  {
 
 			@Override
 			public List<InvoiceLine> creates() throws AxelorException {

@@ -66,7 +66,6 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.beust.jcommander.internal.Lists;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -182,7 +181,7 @@ public class InvoicingProjectService {
 		Product product = saleOrderLine.getProduct();
 
 		InvoiceLineGenerator invoiceLineGenerator = new InvoiceLineGeneratorSupplyChain(invoice, product, saleOrderLine.getProductName(),
-				product.getCode(), saleOrderLine.getDescription(), saleOrderLine.getQty(), saleOrderLine.getUnit(),
+				saleOrderLine.getDescription(), saleOrderLine.getQty(), saleOrderLine.getUnit(),
 				priority, false, saleOrderLine, null, null, null)  {
 
 			@Override
@@ -217,7 +216,7 @@ public class InvoicingProjectService {
 		Product product = purchaseOrderLine.getProduct();
 
 		InvoiceLineGeneratorSupplyChain invoiceLineGenerator = new InvoiceLineGeneratorSupplyChain(invoice, product, purchaseOrderLine.getProductName(),
-				product.getCode(), purchaseOrderLine.getDescription(), purchaseOrderLine.getQty(), purchaseOrderLine.getUnit(),
+				purchaseOrderLine.getDescription(), purchaseOrderLine.getQty(), purchaseOrderLine.getUnit(),
 				priority, false, null, purchaseOrderLine, null)  {
 			@Override
 			public List<InvoiceLine> creates() throws AxelorException {
@@ -258,8 +257,8 @@ public class InvoicingProjectService {
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.INVOICING_PROJECT_PROJECT_TASK_PRODUCT),projectTask.getFullName()), IException.CONFIGURATION_ERROR);
 		}
 
-		InvoiceLineGenerator invoiceLineGenerator = new InvoiceLineGenerator(invoice, product, projectTask.getName(), product.getCode(), projectTask.getPrice(),
-					projectTask.getPrice(),null,projectTask.getQty(),projectTask.getUnit(), null,priority,BigDecimal.ZERO,IPriceListLine.AMOUNT_TYPE_NONE,
+		InvoiceLineGenerator invoiceLineGenerator = new InvoiceLineGenerator(invoice, product, projectTask.getName(), projectTask.getPrice(),
+					projectTask.getPrice(), null, projectTask.getQty(), projectTask.getUnit(), null, priority, BigDecimal.ZERO, IPriceListLine.AMOUNT_TYPE_NONE,
 					projectTask.getPrice().multiply(projectTask.getQty()), null,false)  {
 
 			@Override
