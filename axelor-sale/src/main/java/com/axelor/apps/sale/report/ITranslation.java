@@ -19,6 +19,8 @@ package com.axelor.apps.sale.report;
 
 public interface ITranslation {
 
+	public static final String SALES_ORDER_QUOTE = /*$$(*/ "SaleOrder.quote"; /*)*/
+	public static final String SALES_ORDER_ORDER = /*$$(*/ "SaleOrder.order"; /*)*/
 	public static final String SALES_ORDER_NO = /*$$(*/ "SaleOrder.no"; /*)*/
 	public static final String SALES_ORDER_DATE = /*$$(*/ "SaleOrder.date"; /*)*/
 	public static final String SALES_ORDER_PAYMENT_CONDITION = /*$$(*/ "SaleOrder.paymentCondition"; /*)*/
@@ -53,8 +55,8 @@ public interface ITranslation {
 	public static final String SALES_ORDER_DISCOUNT_AMOUNT = /*$$(*/ "SaleOrder.discountAmount"; /*)*/
 	public static final String SALES_ORDER_TOTAL_EXCL_TAX_WITHOUT_DISCOUNT = /*$$(*/ "SaleOrder.totalExclTaxWithoutDiscount"; /*)*/
 	public static final String SALES_ORDER_TOTAL_DISCOUNT = /*$$(*/ "SaleOrder.totalDiscount"; /*)*/
-	public static final String SALES_ORDER_OTHERS = /*$$(*/ "Others"; /*)*/
-	public static final String SALES_ORDER_SUBSCRIPTIONS = /*$$(*/ "Subscriptions"; /*)*/
+	public static final String SALES_ORDER_OTHERS = /*$$(*/ "SaleOrder.others"; /*)*/
+	public static final String SALES_ORDER_SUBSCRIPTIONS = /*$$(*/ "SaleOrder.subscriptions"; /*)*/
 
 	
 	
