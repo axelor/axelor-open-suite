@@ -6,9 +6,11 @@ import java.io.IOException;
 import java.util.Iterator;
 
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.util.NumberToTextConverter;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.hsqldb.navigator.RowIterator;
 
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
@@ -58,25 +60,33 @@ public class DataReaderExcel implements DataReader {
 			return null;
 		}
 		
-		String[] vals = new String[row.getPhysicalNumberOfCells()];
+		int headerSize = sheet.getRow(0).getPhysicalNumberOfCells();
+		String[] vals = new String[headerSize];
 		
-		Iterator<Cell> rowIter = row.cellIterator();
-		
-		int count = 0;
-		
-		while (rowIter.hasNext()) {
-			Cell cell = rowIter.next();
-			if (cell.getCellType() == Cell.CELL_TYPE_STRING) {
-				String value =  cell.getStringCellValue();
-				if (!Strings.isNullOrEmpty(value)) {
-					vals[count] = value.trim();
-				}
-				else {
-					vals[count] = null;
-				}
+		for (int i=0; i<headerSize; i++) {
+			Cell cell = row.getCell(i);
+			if (cell == null) {
+				continue;
 			}
-			count++;
+			switch(cell.getCellType()) {
+				case Cell.CELL_TYPE_STRING:
+					String valString =  cell.getStringCellValue();
+					if (!Strings.isNullOrEmpty(valString)) {
+						vals[i] = valString.trim();
+					}
+					break;
+				case Cell.CELL_TYPE_BOOLEAN:
+					Boolean valBoolean = cell.getBooleanCellValue();
+					if (valBoolean != null) {
+						vals[i] = valBoolean.toString().toLowerCase();
+					}
+					break;
+				case Cell.CELL_TYPE_NUMERIC:
+					vals[i] = NumberToTextConverter.toText(cell.getNumericCellValue());
+					break;
+			}
 		}
+		
 		
 		return vals;
 	}

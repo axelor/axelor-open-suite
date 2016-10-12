@@ -61,20 +61,5 @@
 	</view-items>
   </view-builder>
   
-  <view-builder name="expense-type-form" title="Type" model="com.axelor.apps.custom.db.ExpenseType" viewType="form">
-  	<view-panels>
-		<view-panel panelLevel="0" noTitle="T" place="1">
-			<view-items>
-				<view-item name="name" fieldType="integer" sequence="1" typeSelect="0"/>
-			</view-items>
-		</view-panel>
-	</view-panels>
-  </view-builder>
-  
-  <view-builder name="expense-type-grid" title="Type" model="com.axelor.apps.custom.db.ExpenseType" viewType="grid">
-  	<view-items>
-		<view-item name="name" fieldType="integer" sequence="1" typeSelect="0"/>
-	</view-items>
-  </view-builder>
   
 </view-builders>

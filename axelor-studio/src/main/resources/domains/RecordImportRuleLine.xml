@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_4.0.xsd">
+
+  <module name="studio" package="com.axelor.studio.db" />
+  
+  <entity name="RecordImportRuleLine" cachable="true">
+  	<many-to-one name="field" title="Field" ref="com.axelor.meta.db.MetaField" required="true"/>
+	<string name="columnName" title="Column" />
+	<many-to-one name="refRule" title="Reference rule" ref="RecordImportRule"/>
+	<boolean name="searchField" />
+	<many-to-one name="recordImportRule" ref="RecordImportRule"/>
+  </entity>
+  
+ </domain-models>

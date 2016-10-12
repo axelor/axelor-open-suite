@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_4.0.xsd">
+
+  <module name="studio" package="com.axelor.studio.db" />
+  
+  <entity name="RecordImport" cachable="true">
+	<datetime name="importDate" />
+	<many-to-one name="importedBy" ref="com.axelor.auth.db.User" title="User" />
+	<many-to-one name="importFile" ref="com.axelor.meta.db.MetaFile" title="Data file" required="true"/>
+	<string name="result" title="Result" large="true"/>
+  </entity>
+  
+ </domain-models>

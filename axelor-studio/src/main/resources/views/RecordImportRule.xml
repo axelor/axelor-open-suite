@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
+  
+  <grid name="record-import-rule-grid" title="Record import rules" model="com.axelor.studio.db.RecordImportRule">
+     <field name="name" />
+     <field name="metaModel" />
+     <field name="tabName" />
+     <field name="ruleSelect" />
+     <field name="defaultRule" />
+  </grid>
+  
+  <form name="record-import-rule-form" title="Record import rule" model="com.axelor.studio.db.RecordImportRule"  width="large">
+     <panel>
+	     <field name="metaModel" onChange="action-record-import-rule-model-change"/>
+	     <spacer />
+	     <field name="name" />
+	     <field name="tabName" />
+	     <field name="ruleSelect" />
+	     <field name="defaultRule" />
+	     <panel-related field="lines" grid-view="record-import-rule-line-grid" form-view="record-import-rule-line-form" editable="true" colSpan="12"/>
+     </panel>
+  </form>
+  
+  <action-record name="action-record-import-rule-model-change" model="com.axelor.studio.db.RecordImportRule">
+  	<field name="name" expr="eval:metaModel?.name"/>
+  </action-record>
+  
+</object-views>

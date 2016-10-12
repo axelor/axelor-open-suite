@@ -120,4 +120,10 @@
     	<option value="notify">Notification</option>
     </selection>
     
+    <selection name="record.import.rule.select">
+    	<option value="0">Create</option>
+    	<option value="1">Search</option>
+    	<option value="2">Search or Create</option>
+    </selection>
+    
 </object-views>

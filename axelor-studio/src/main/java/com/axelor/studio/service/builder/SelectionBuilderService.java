@@ -30,6 +30,11 @@ public class SelectionBuilderService {
 
 	public void build() throws AxelorException {
 		
+		List<String> modules = configService.getCustomizedModuleNames();
+		if (modules.isEmpty()) {
+			configService.removeViewFile("Selection.xml");
+			return;
+		}
 		
 		List<MetaSelect> metaSelects = metaSelectRepo.all()
 				.filter("self.module in (?1)", configService.getCustomizedModuleNames()).fetch();

@@ -894,9 +894,9 @@ public class ImportForm {
 	private void createValidation(String type, ViewBuilder viewBuilder,
 			MetaModel model) {
 		
-		List<String> actionEvents = importFormula.importValidation(row, type, viewBuilder, model);
-		if (actionEvents.size() > 1) {
-			updateEventMap(actionEvents, viewBuilder.getId());
+		List<String> pendingEvents = importFormula.importValidation(row, type, viewBuilder, model);
+		if (pendingEvents.size() > 1) {
+			updateEventMap(pendingEvents, viewBuilder.getId());
 		}
 		
 	}
@@ -932,9 +932,9 @@ public class ImportForm {
 	
 	private void addFormula(ViewBuilder viewBuilder, ViewItem viewItem) {
 		
-		List<String> actionEvents = importFormula.importFormula(row, viewBuilder, viewItem);
-		if (actionEvents.size() > 1) {
-			updateEventMap(actionEvents, viewBuilder.getId());
+		List<String> pendingEvents = importFormula.importFormula(row, viewBuilder, viewItem);
+		if (pendingEvents.size() > 1) {
+			updateEventMap(pendingEvents, viewBuilder.getId());
 		}
 		
 	}
