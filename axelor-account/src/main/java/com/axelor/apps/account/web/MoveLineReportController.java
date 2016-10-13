@@ -35,6 +35,8 @@ import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.report.IReport;
 import com.axelor.apps.account.service.MoveLineExportService;
 import com.axelor.apps.account.service.MoveLineReportService;
+import com.axelor.auth.AuthUtils;
+import com.axelor.auth.db.User;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -141,17 +143,17 @@ public class MoveLineReportController {
 		try {
 			switch(moveLineReport.getTypeSelect()) {
 			
-				case 6:
-					moveLineExportService.exportMoveLineTypeSelect6(moveLineReport, true);
+				case MoveLineReportRepository.EXPORT_SALES:
+					moveLineExportService.exportMoveLineTypeSelect1006(moveLineReport, true);
 					break;
-				case 7:
-					moveLineExportService.exportMoveLineTypeSelect7(moveLineReport, true);
+				case MoveLineReportRepository.EXPORT_REFUNDS:
+					moveLineExportService.exportMoveLineTypeSelect1007(moveLineReport, true);
 					break;
-				case 8:
-					moveLineExportService.exportMoveLineTypeSelect8(moveLineReport, true);
+				case MoveLineReportRepository.EXPORT_TREASURY:
+					moveLineExportService.exportMoveLineTypeSelect1008(moveLineReport, true);
 					break;
-				case 9:
-					moveLineExportService.exportMoveLineTypeSelect9(moveLineReport, true);
+				case MoveLineReportRepository.EXPORT_PURCHASES:
+					moveLineExportService.exportMoveLineTypeSelect1009(moveLineReport, true);
 					break;
 				default:
 					break;
@@ -178,52 +180,39 @@ public class MoveLineReportController {
 
 			logger.debug("Type selected : {}" , moveLineReport.getTypeSelect());
 
-			if((moveLineReport.getTypeSelect() >= 6 && moveLineReport.getTypeSelect() <= 9) || moveLineReport.getTypeSelect() == 14) {
+			if((moveLineReport.getTypeSelect() >= MoveLineReportRepository.EXPORT_PAYROLL_JOURNAL_ENTRY )) {
 				
 				MoveLineExportService moveLineExportService = Beans.get(MoveLineExportService.class);
 
-				switch(moveLineReport.getTypeSelect()) {
-					case 6:
-						moveLineExportService.exportMoveLineTypeSelect6(moveLineReport, false);
-						break;
-					case 7:
-						moveLineExportService.exportMoveLineTypeSelect7(moveLineReport, false);
-						break;
-					case 8:
-						moveLineExportService.exportMoveLineTypeSelect8(moveLineReport, false);
-						break;
-					case 9:
-						moveLineExportService.exportMoveLineTypeSelect9(moveLineReport, false);
-						break;
-					case 14:
-						moveLineExportService.exportMoveLineTypeSelect14(moveLineReport);
-					default:
-						break;
-				}
+				moveLineExportService.exportMoveLine(moveLineReport);
+				
 			}
 			else {
 
-				if (moveLineReport.getId() != null) {
-
-					moveLineReportService.setPublicationDateTime(moveLineReport);
-
-					String name = I18n.get("Accounting reporting") + " " + moveLineReport.getRef();
-					
-					String fileLink = ReportFactory.createReport(String.format(IReport.MOVE_LINE_REPORT_TYPE, moveLineReport.getTypeSelect()), name+"-${date}")
-							.addParam("MoveLineReportId", moveLineReport.getId())
-							.addFormat(moveLineReport.getExportTypeSelect())
-							.addModel(moveLineReport)
-							.generate()
-							.getFileLink();
-
-					logger.debug("Printing "+name);
+				moveLineReportService.setPublicationDateTime(moveLineReport);
 				
-					response.setView(ActionView
-							.define(name)
-							.add("html", fileLink).map());
-				}
+				User user = AuthUtils.getUser();
+				String language = user != null? (user.getLanguage() == null || user.getLanguage().equals(""))? "en" : user.getLanguage() : "en"; 
+
+				String name = I18n.get("Accounting reporting") + " " + moveLineReport.getRef();
+				
+				String fileLink = ReportFactory.createReport(String.format(IReport.MOVE_LINE_REPORT_TYPE, moveLineReport.getTypeSelect()), name+"-${date}")
+						.addParam("MoveLineReportId", moveLineReport.getId())
+						.addParam("Locale", language)
+						.addFormat(moveLineReport.getExportTypeSelect())
+						.addModel(moveLineReport)
+						.generate()
+						.getFileLink();
+
+				logger.debug("Printing "+name);
+			
+				response.setView(ActionView
+						.define(name)
+						.add("html", fileLink).map());
+				
+				moveLineReportService.setStatus(moveLineReport);
+
 			}
-			moveLineReportService.setStatus(moveLineReport);
 		}
 		catch(Exception e) { TraceBackService.trace(response, e); }	
 	}

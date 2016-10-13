@@ -67,22 +67,23 @@
 	
 	<selection name='move.line.report.type.select'>
 		<option value="1">General ledger</option>
-		<option value="2">General ledger</option>
-		<option value="3">Balance</option>
+		<option value="2">General balance</option>
+		<option value="3">Customer balance</option>
 		<option value="4">Aged Balance</option>
 		<option value="5">Cheque deposit slip</option>
 		<option value="10">Cash payments summary</option>
 		<option value="11">Journal</option>
-		<option value="13">Payment differences</option>
 		<option value="12">VAT Statement</option>
+		<option value="13">Payment differences</option>
+		<option value="14">General ledger 2</option>
 	</selection>
 	
 	<selection name='move.line.report.type.select.export'>
-		<option value="6">Export sale -> Acc. Soft.</option>
-		<option value="7">Export refunds -> Acc. Soft.</option>
-		<option value="8">Export treasury -> Acc. Soft.</option>
-		<option value="9">Export purchase -> Acc. Soft.</option>
-		<option value="14">Export payroll journal entry -> Acc. Soft.</option>
+		<option value="1000">Export payroll journal entry -> Acc. Soft.</option>
+		<option value="1006">Export sale -> Acc. Soft.</option>
+		<option value="1007">Export refunds -> Acc. Soft.</option>
+		<option value="1008">Export treasury -> Acc. Soft.</option>
+		<option value="1009">Export purchase -> Acc. Soft.</option>
 	</selection>
 	
 	<selection name='iaccount.move.status.select'>

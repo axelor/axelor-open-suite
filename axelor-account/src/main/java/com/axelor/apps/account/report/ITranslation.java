@@ -61,4 +61,42 @@ public interface ITranslation {
 	public static final String INVOICE_EXPENSE_TAX_AMOUNT = /*$$(*/ "Invoice.expenseTaxAmount"; /*)*/
 	public static final String INVOICE_EXPENSE_PRODUCT = /*$$(*/ "Invoice.expenseProduct"; /*)*/
 
+	
+	public static final String MOVE_LINE_REPORT_1_TITLE = /*$$(*/ "MoveLineReportType1.title"; /*)*/
+	public static final String MOVE_LINE_REPORT_1_JOURNAL = /*$$(*/ "MoveLineReportType1.journal"; /*)*/
+	public static final String MOVE_LINE_REPORT_1_COMPANY = /*$$(*/ "MoveLineReportType1.company"; /*)*/
+	public static final String MOVE_LINE_REPORT_1_END_DATE = /*$$(*/ "MoveLineReportType1.endDate"; /*)*/
+	public static final String MOVE_LINE_REPORT_1_FROM = /*$$(*/ "MoveLineReportType1.from"; /*)*/
+	public static final String MOVE_LINE_REPORT_1_TO = /*$$(*/ "MoveLineReportType1.to"; /*)*/
+	public static final String MOVE_LINE_REPORT_1_PERIOD = /*$$(*/ "MoveLineReportType1.period"; /*)*/
+	public static final String MOVE_LINE_REPORT_1_CASH_REGISTER = /*$$(*/ "MoveLineReportType1.cashRegister"; /*)*/
+	public static final String MOVE_LINE_REPORT_1_PAYMENT_MODE = /*$$(*/ "MoveLineReportType1.paymentMode"; /*)*/
+	public static final String MOVE_LINE_REPORT_1_DATE = /*$$(*/ "MoveLineReportType1.date"; /*)*/
+	public static final String MOVE_LINE_REPORT_1_DESCRIPTION = /*$$(*/ "MoveLineReportType1.description"; /*)*/
+	public static final String MOVE_LINE_REPORT_1_PARTNER = /*$$(*/ "MoveLineReportType1.partner"; /*)*/
+	public static final String MOVE_LINE_REPORT_1_BALANCE = /*$$(*/ "MoveLineReportType1.balance"; /*)*/
+	public static final String MOVE_LINE_REPORT_1_DEBIT = /*$$(*/ "MoveLineReportType1.debit"; /*)*/
+	public static final String MOVE_LINE_REPORT_1_CREDIT = /*$$(*/ "MoveLineReportType1.credit"; /*)*/
+	public static final String MOVE_LINE_REPORT_1_TOTAL = /*$$(*/ "MoveLineReportType1.total"; /*)*/
+
+	
+	public static final String MOVE_LINE_REPORT_2_TITLE = /*$$(*/ "MoveLineReportType2.title"; /*)*/
+	public static final String MOVE_LINE_REPORT_2_JOURNAL = /*$$(*/ "MoveLineReportType2.journal"; /*)*/
+	public static final String MOVE_LINE_REPORT_2_COMPANY = /*$$(*/ "MoveLineReportType2.company"; /*)*/
+	public static final String MOVE_LINE_REPORT_2_END_DATE = /*$$(*/ "MoveLineReportType2.endDate"; /*)*/
+	public static final String MOVE_LINE_REPORT_2_FROM = /*$$(*/ "MoveLineReportType2.from"; /*)*/
+	public static final String MOVE_LINE_REPORT_2_TO = /*$$(*/ "MoveLineReportType2.to"; /*)*/
+	public static final String MOVE_LINE_REPORT_2_PERIOD = /*$$(*/ "MoveLineReportType2.period"; /*)*/
+	public static final String MOVE_LINE_REPORT_2_CASH_REGISTER = /*$$(*/ "MoveLineReportType2.cashRegister"; /*)*/
+	public static final String MOVE_LINE_REPORT_2_PAYMENT_MODE = /*$$(*/ "MoveLineReportType2.paymentMode"; /*)*/
+	public static final String MOVE_LINE_REPORT_2_ACCOUNT = /*$$(*/ "MoveLineReportType2.account"; /*)*/
+	public static final String MOVE_LINE_REPORT_2_ACCOUNT_LABEL = /*$$(*/ "MoveLineReportType2.accountLabel"; /*)*/
+	public static final String MOVE_LINE_REPORT_2_TOTAL_DEBIT = /*$$(*/ "MoveLineReportType2.totalDebit"; /*)*/
+	public static final String MOVE_LINE_REPORT_2_TOTAL_CREDIT = /*$$(*/ "MoveLineReportType2.totalCredit"; /*)*/
+	public static final String MOVE_LINE_REPORT_2_BALANCE = /*$$(*/ "MoveLineReportType2.balance"; /*)*/
+	public static final String MOVE_LINE_REPORT_2_DEBIT = /*$$(*/ "MoveLineReportType2.debit"; /*)*/
+	public static final String MOVE_LINE_REPORT_2_CREDIT = /*$$(*/ "MoveLineReportType2.credit"; /*)*/
+	public static final String MOVE_LINE_REPORT_2_GENERAL_BALANCE = /*$$(*/ "MoveLineReportType2.generalBalance"; /*)*/
+	
+
 }

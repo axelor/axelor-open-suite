@@ -36,8 +36,8 @@
     <extra-code><![CDATA[
 	
 	   	// TYPE SELECT
-		public static final int REPORT_PAYMENT_COLLECTION_JOURNAL = 1;
-		public static final int REPORT_GENERAL_LEDGER = 2;
+		public static final int REPORT_GENERAL_LEDGER = 1;
+		public static final int REPORT_GENERAL_BALANCE = 2;
 		public static final int REPORT_BALANCE = 3;
 		public static final int REPORT_AGED_BALANCE = 4;
 		public static final int REPORT_CHEQUE_DEPOSIT = 5;
@@ -45,13 +45,14 @@
 		public static final int REPORT_JOURNAL = 11;
 		public static final int REPORT_VAT_STATEMENT = 12;
 		public static final int REPORT_PAYMENT_DIFFERENCES = 13;
+		public static final int REPORT_GENERAL_LEDGER2 = 14;
 		
 		// EXPORT TYPE SELECT
-		public static final int EXPORT_SALES = 6;
-		public static final int EXPORT_REFUNDS = 7;
-		public static final int EXPORT_TREASURY = 8;
-		public static final int EXPORT_PURCHASES = 9;
-		public static final int EXPORT_PAYROLL_JOURNAL_ENTRY = 14; 
+		public static final int EXPORT_PAYROLL_JOURNAL_ENTRY = 1000; 
+		public static final int EXPORT_SALES = 1006;
+		public static final int EXPORT_REFUNDS = 1007;
+		public static final int EXPORT_TREASURY = 1008;
+		public static final int EXPORT_PURCHASES = 1009;
 	
 		// STATUS SELECT
 		public static final int STATUS_DRAFT = 1;
