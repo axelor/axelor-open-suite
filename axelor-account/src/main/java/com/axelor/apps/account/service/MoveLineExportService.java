@@ -240,12 +240,12 @@ public class MoveLineExportService {
 	 * @throws AxelorException
 	 * @throws IOException
 	 */
-	public void exportMoveLineTypeSelect6(MoveLineReport mlr, boolean replay) throws AxelorException, IOException {
+	public void exportMoveLineTypeSelect1006(MoveLineReport mlr, boolean replay) throws AxelorException, IOException {
 
 		log.info("In Export type service : ");
 
 		String fileName = "detail"+todayTime.toString("YYYYMMddHHmmss")+"ventes.dat";
-		this.exportMoveLineTypeSelect6FILE1(mlr, replay);
+		this.exportMoveLineTypeSelect1006FILE1(mlr, replay);
 		this.exportMoveLineAllTypeSelectFILE2(mlr,fileName);
 	}
 
@@ -259,9 +259,9 @@ public class MoveLineExportService {
 	 */
 	@SuppressWarnings("unchecked")
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void exportMoveLineTypeSelect6FILE1(MoveLineReport moveLineReport, boolean replay) throws AxelorException, IOException {
+	public void exportMoveLineTypeSelect1006FILE1(MoveLineReport moveLineReport, boolean replay) throws AxelorException, IOException {
 
-		log.info("In export service Type 6 FILE 1 :");
+		log.info("In export service Type 1006 FILE 1 :");
 
 		Company company = moveLineReport.getCompany();
 
@@ -388,12 +388,12 @@ public class MoveLineExportService {
 	 * @throws AxelorException
 	 * @throws IOException
 	 */
-	public void exportMoveLineTypeSelect7(MoveLineReport moveLineReport, boolean replay) throws AxelorException, IOException {
+	public void exportMoveLineTypeSelect1007(MoveLineReport moveLineReport, boolean replay) throws AxelorException, IOException {
 
-		log.info("In Export type 7 service : ");
+		log.info("In Export type 1007 service : ");
 
 		String fileName = "detail"+todayTime.toString("YYYYMMddHHmmss")+"avoirs.dat";
-		this.exportMoveLineTypeSelect7FILE1(moveLineReport, replay);
+		this.exportMoveLineTypeSelect1007FILE1(moveLineReport, replay);
 		this.exportMoveLineAllTypeSelectFILE2(moveLineReport, fileName);
 	}
 
@@ -407,9 +407,9 @@ public class MoveLineExportService {
 	 */
 	@SuppressWarnings("unchecked")
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void exportMoveLineTypeSelect7FILE1(MoveLineReport moveLineReport, boolean replay) throws AxelorException, IOException {
+	public void exportMoveLineTypeSelect1007FILE1(MoveLineReport moveLineReport, boolean replay) throws AxelorException, IOException {
 
-		log.info("In export service 7 FILE 1:");
+		log.info("In export service 1007 FILE 1:");
 
 		Company company = moveLineReport.getCompany();
 
@@ -535,12 +535,12 @@ public class MoveLineExportService {
 	 * @throws AxelorException
 	 * @throws IOException
 	 */
-	public void exportMoveLineTypeSelect8(MoveLineReport moveLineReport, boolean replay) throws AxelorException, IOException {
+	public void exportMoveLineTypeSelect1008(MoveLineReport moveLineReport, boolean replay) throws AxelorException, IOException {
 
-		log.info("In Export type 8 service : ");
+		log.info("In Export type 1008 service : ");
 
 		String fileName = "detail"+todayTime.toString("YYYYMMddHHmmss")+"tresorerie.dat";
-		this.exportMoveLineTypeSelect8FILE1(moveLineReport, replay);
+		this.exportMoveLineTypeSelect1008FILE1(moveLineReport, replay);
 		this.exportMoveLineAllTypeSelectFILE2(moveLineReport, fileName);
 	}
 
@@ -554,9 +554,9 @@ public class MoveLineExportService {
 	 */
 	@SuppressWarnings("unchecked")
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void exportMoveLineTypeSelect8FILE1(MoveLineReport moveLineReport, boolean replay) throws AxelorException, IOException {
+	public void exportMoveLineTypeSelect1008FILE1(MoveLineReport moveLineReport, boolean replay) throws AxelorException, IOException {
 
-		log.info("In export service 8 FILE 1:");
+		log.info("In export service 1008 FILE 1:");
 
 		Company company = moveLineReport.getCompany();
 
@@ -682,11 +682,11 @@ public class MoveLineExportService {
 	 * @throws AxelorException
 	 * @throws IOException
 	 */
-	public void exportMoveLineTypeSelect9(MoveLineReport moveLineReport, boolean replay) throws AxelorException, IOException {
+	public void exportMoveLineTypeSelect1009(MoveLineReport moveLineReport, boolean replay) throws AxelorException, IOException {
 
-		log.info("In Export type 9 service : ");
+		log.info("In Export type 1009 service : ");
 		String fileName = "detail"+todayTime.toString("YYYYMMddHHmmss")+"achats.dat";
-		this.exportMoveLineTypeSelect9FILE1(moveLineReport, replay);
+		this.exportMoveLineTypeSelect1009FILE1(moveLineReport, replay);
 		this.exportMoveLineAllTypeSelectFILE2(moveLineReport, fileName);
 	}
 
@@ -700,9 +700,9 @@ public class MoveLineExportService {
 	 */
 	@SuppressWarnings("unchecked")
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void exportMoveLineTypeSelect9FILE1(MoveLineReport moveLineReport, boolean replay) throws AxelorException, IOException {
+	public void exportMoveLineTypeSelect1009FILE1(MoveLineReport moveLineReport, boolean replay) throws AxelorException, IOException {
 
-		log.info("In export service 9 FILE 1:");
+		log.info("In export service 1009 FILE 1:");
 
 		Company company = moveLineReport.getCompany();
 		String dateQueryStr = String.format(" WHERE self.company = %s", company.getId());
@@ -840,7 +840,7 @@ public class MoveLineExportService {
 //			CsvTool.csvWriter(filePath, fileName, '|', this.createHeaderForHeaderFile(mlr.getTypeSelect()), allMoveData);
 	}
 
-
+	
 	/**
 	 * Méthode réalisant l'export SI - Agresso des fichiers détails
 	 * @param mlr
@@ -1122,24 +1122,24 @@ public class MoveLineExportService {
 		switch (moveLineReport.getTypeSelect()) {
 		case MoveLineReportRepository.EXPORT_SALES:
 
-			this.exportMoveLineTypeSelect6(moveLineReport, false);
+			this.exportMoveLineTypeSelect1006(moveLineReport, false);
 			break;
 
 		case MoveLineReportRepository.EXPORT_REFUNDS:
 
-			this.exportMoveLineTypeSelect7(moveLineReport, false);
+			this.exportMoveLineTypeSelect1007(moveLineReport, false);
 			break;
 
 		case MoveLineReportRepository.EXPORT_TREASURY:
 
-			this.exportMoveLineTypeSelect8(moveLineReport, false);
+			this.exportMoveLineTypeSelect1008(moveLineReport, false);
 			break;
 
 		case MoveLineReportRepository.EXPORT_PURCHASES:
 
-			this.exportMoveLineTypeSelect9(moveLineReport, false);
+			this.exportMoveLineTypeSelect1009(moveLineReport, false);
 			break;
-
+			
 		default:
 			break;
 		}

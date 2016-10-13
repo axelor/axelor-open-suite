@@ -94,7 +94,7 @@ public class MoveLineReportServiceImpl implements MoveLineReportService  {
 				Set<Object> paramSet = (Set<Object>) param;
 				for(Object object : paramSet)  {
 					if(!paramStr.isEmpty())  {  paramStr += ",";  }
-					paramStr = ((Model)object).getId().toString();
+					paramStr += ((Model)object).getId().toString();
 				}
 			}
 			else if(param instanceof LocalDate)  {
@@ -146,7 +146,10 @@ public class MoveLineReportServiceImpl implements MoveLineReportService  {
 		}
 
 		if(moveLineReport.getAccountSet() != null && !moveLineReport.getAccountSet().isEmpty())	{
-			this.addParams("self.account in (?%d)", moveLineReport.getAccountSet());
+			this.addParams("(self.account in (?%d) or self.account.parent in (?%d) "
+					+ "or self.account.parent.parent in (?%d) or self.account.parent.parent.parent in (?%d) "
+					+ "or self.account.parent.parent.parent.parent in (?%d) or self.account.parent.parent.parent.parent.parent in (?%d) "
+					+ "or self.account.parent.parent.parent.parent.parent.parent in (?%d))", moveLineReport.getAccountSet());
 		}
 
 		if(moveLineReport.getPartnerSet() != null && !moveLineReport.getPartnerSet().isEmpty())	{
@@ -161,32 +164,8 @@ public class MoveLineReportServiceImpl implements MoveLineReportService  {
 			this.addParams("self.move.paymentMode = ?%d", moveLineReport.getPaymentMode());
 		}
 
-		if(moveLineReport.getTypeSelect() > 5 && moveLineReport.getTypeSelect() < 10)  {
-			this.addParams("self.move.journal.type = ?%d", this.getJournalType(moveLineReport));
-		}
-
-		if(moveLineReport.getTypeSelect() > 5 && moveLineReport.getTypeSelect() < 10)  {
-			this.addParams("(self.move.accountingOk = false OR (self.move.accountingOk = true and self.move.moveLineReport = ?%d))", moveLineReport);
-		}
-
-		if(moveLineReport.getTypeSelect() > 5 && moveLineReport.getTypeSelect() < 10)  {
-			this.addParams("self.move.journal.notExportOk = false ");
-		}
-
 		if(moveLineReport.getTypeSelect() == 5)	{
 			this.addParams("self.amountPaid > 0 AND self.credit > 0");
-		}
-
-		if(moveLineReport.getTypeSelect() == 10)	{
-			this.addParams("self.credit > 0");
-		}
-
-		if(moveLineReport.getTypeSelect() <= 5 || moveLineReport.getTypeSelect() == 10)	{
-			this.addParams("self.account.reconcileOk = 'true'");
-		}
-
-		if(moveLineReport.getTypeSelect() == 1)  {
-			this.addParams("self.credit > 0");
 		}
 
 		if(moveLineReport.getTypeSelect() == 4)  {
@@ -194,6 +173,20 @@ public class MoveLineReportServiceImpl implements MoveLineReportService  {
 		}
 
 		this.addParams("self.move.ignoreInAccountingOk = 'false'");
+		
+		// FOR EXPORT ONLY :
+		
+		if(moveLineReport.getTypeSelect() > MoveLineReportRepository.EXPORT_SALES)  {
+			this.addParams("(self.move.accountingOk = false OR (self.move.accountingOk = true and self.move.moveLineReport = ?%d))", moveLineReport);
+		}
+
+		if(moveLineReport.getTypeSelect() >= MoveLineReportRepository.EXPORT_SALES)  {
+			this.addParams("self.move.journal.notExportOk = false ");
+		}
+		
+		if(moveLineReport.getTypeSelect() > MoveLineReportRepository.EXPORT_SALES)  {
+			this.addParams("self.move.journal.type = ?%d", this.getJournalType(moveLineReport));
+		}
 
 		log.debug("Query : {}", this.query);
 		
@@ -207,7 +200,7 @@ public class MoveLineReportServiceImpl implements MoveLineReportService  {
 
 		log.debug("requete et param : {} : {}", paramQuery, paramNumber);
 		
-		this.addParams(String.format(paramQuery, paramNumber++));
+		this.addParams(paramQuery.replaceAll("%d", String.valueOf(paramNumber++)));
 		this.params.add(param);
 		
 		return this.query;
