@@ -856,6 +856,7 @@ public class MoveLineExportService {
 		// Utilisé pour le debuggage
 //			CsvTool.csvWriter(filePath, fileName, '|', this.createHeaderForHeaderFile(mlr.getTypeSelect()), allMoveData);
 	}
+
 	
 	/**
 	* Méthode réalisant l'export des FEC (Fichiers des écritures Comptables)
@@ -956,6 +957,7 @@ public class MoveLineExportService {
 		//TODO Meta Attachment added but not displayed in view!
 	}
 	
+
 
 	/**
 	 * Méthode réalisant l'export SI - Agresso des fichiers détails
@@ -1278,7 +1280,6 @@ public class MoveLineExportService {
 		case MoveLineReportRepository.EXPORT_PAYROLL_JOURNAL_ENTRY:
 			this.exportMoveLineTypeSelect1000(moveLineReport);
 			break;
-			
 			
 		default:
 			break;

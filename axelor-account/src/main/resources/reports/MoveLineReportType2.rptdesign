@@ -128,7 +128,6 @@
             <property name="odaDriverClass">org.postgresql.Driver</property>
             <property name="odaURL">jdbc:postgresql://localhost:5432/axelor-business-suite</property>
             <property name="odaUser">axelor</property>
-            <encrypted-property name="odaPassword" encryptionID="base64">bG1kcGRsYWE=</encrypted-property>
         </oda-data-source>
     </data-sources>
     <data-sets>
@@ -1058,7 +1057,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     <property name="colSpan">7</property>
                     <property name="rowSpan">1</property>
                     <text id="4001">
-                        <property name="fontSize">12pt</property>
+                        <property name="fontSize">14pt</property>
                         <property name="fontWeight">bold</property>
                         <property name="borderBottomStyle">none</property>
                         <property name="borderLeftStyle">none</property>
@@ -1070,7 +1069,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                             <structure>
                                 <property name="paramName">param_1</property>
                                 <simple-property-list name="expression">
-                                    <value type="javascript">'MoveLineReportType1.title'</value>
+                                    <value type="javascript">'MoveLineReportType2.title'</value>
                                 </simple-property-list>
                             </structure>
                         </list-property>

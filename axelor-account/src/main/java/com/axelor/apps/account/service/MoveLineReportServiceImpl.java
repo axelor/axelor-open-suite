@@ -163,7 +163,7 @@ public class MoveLineReportServiceImpl implements MoveLineReportService  {
 		if(moveLineReport.getPaymentMode() != null)	{
 			this.addParams("self.move.paymentMode = ?%d", moveLineReport.getPaymentMode());
 		}
-		
+
 		if(moveLineReport.getTypeSelect() == 5)	{
 			this.addParams("self.amountPaid > 0 AND self.credit > 0");
 		}

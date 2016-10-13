@@ -68,7 +68,7 @@
 	<selection name='move.line.report.type.select'>
 		<option value="1">General ledger</option>
 		<option value="2">General balance</option>
-		<option value="3">Customer balance</option>
+		<option value="3">Detailed customers balance</option>
 		<option value="4">Aged Balance</option>
 		<option value="5">Cheque deposit slip</option>
 		<option value="10">Cash payments summary</option>
