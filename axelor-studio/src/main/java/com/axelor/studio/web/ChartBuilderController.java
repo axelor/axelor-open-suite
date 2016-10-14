@@ -43,7 +43,7 @@ public class ChartBuilderController {
 		try {
 			Mapper mapper = Mapper.of(Class.forName(targetModel.getFullName()));
 			if (mapper.getNameField() != null) {
-				return fieldName + mapper.getNameField().getName();
+				return fieldName + "." + mapper.getNameField().getName();
 			}
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
