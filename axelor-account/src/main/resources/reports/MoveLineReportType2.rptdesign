@@ -28,7 +28,7 @@
             <property name="hidden">false</property>
             <property name="valueType">static</property>
             <property name="isRequired">true</property>
-            <property name="dataType">string</property>
+            <property name="dataType">decimal</property>
             <property name="distinct">true</property>
             <simple-property-list name="defaultValue">
                 <value type="constant">1</value>
