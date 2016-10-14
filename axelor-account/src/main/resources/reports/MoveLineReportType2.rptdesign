@@ -28,7 +28,7 @@
             <property name="hidden">false</property>
             <property name="valueType">static</property>
             <property name="isRequired">true</property>
-            <property name="dataType">decimal</property>
+            <property name="dataType">string</property>
             <property name="distinct">true</property>
             <simple-property-list name="defaultValue">
                 <value type="constant">1</value>
@@ -159,6 +159,7 @@
                     <property name="columnName">parent_account_id</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">parent_account_id</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">parent_account_id</text-property>
                 </structure>
                 <structure>
@@ -179,10 +180,20 @@
                     <property name="columnName">balance</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">balance</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">balance</text-property>
                 </structure>
             </list-property>
-            <list-property name="parameters"/>
+            <list-property name="parameters">
+                <structure>
+                    <property name="name">param_1</property>
+                    <property name="paramName">MoveLineReportId</property>
+                    <property name="dataType">decimal</property>
+                    <property name="position">1</property>
+                    <property name="isInput">true</property>
+                    <property name="isOutput">false</property>
+                </structure>
+            </list-property>
             <structure name="cachedMetaData">
                 <list-property name="resultSet">
                     <structure>
@@ -280,7 +291,7 @@ SUM(MoveLine.debit) as debit, SUM(MoveLine.credit) as credit, SUM(MoveLine.debit
 
 from public.account_move_line_report as MoveLineReport 
 
-left outer join public.account_move_line as MoveLine on (MoveLineReport.id = 1) 
+left outer join public.account_move_line as MoveLine on (MoveLineReport.id = ?) 
 left outer join public.account_move as Move on (MoveLine.move = Move.id  AND Move.ignore_in_accounting_ok = false) 
 
 left outer join public.account_account as Account on (MoveLine.account  = Account.id )
