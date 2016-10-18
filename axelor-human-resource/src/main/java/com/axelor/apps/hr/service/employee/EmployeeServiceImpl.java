@@ -19,14 +19,22 @@ package com.axelor.apps.hr.service.employee;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.Date;
 
+import org.joda.time.LocalDate;
+import org.joda.time.Years;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.base.service.user.UserServiceImpl;
 import com.axelor.apps.hr.db.Employee;
+import com.axelor.apps.hr.exception.IExceptionMessage;
 import com.axelor.auth.AuthUtils;
+import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.IException;
+import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 
 public class EmployeeServiceImpl extends UserServiceImpl implements EmployeeService {
@@ -73,6 +81,27 @@ public class EmployeeServiceImpl extends UserServiceImpl implements EmployeeServ
 
 		LOG.debug("Calculated duration: {}",duration);
 		return duration;
+	}
+	
+	public int getLengthOfService(Employee employee, LocalDate refDate) throws AxelorException{
+		
+		try{
+			Years years = Years.yearsBetween(employee.getSeniorityDate(), refDate == null ? Beans.get(GeneralService.class).getTodayDate() : refDate );
+			return years.getYears();
+		}catch (IllegalArgumentException e){
+			throw new AxelorException(String.format( I18n.get( IExceptionMessage.EMPLOYEE_NO_SENIORITY_DATE ), employee.getName() ), IException.NO_VALUE);
+		}
+		
+	}
+	
+	public int getAge(Employee employee, LocalDate refDate) throws AxelorException{
+		
+		try{
+			Years years = Years.yearsBetween(employee.getBirthDate(), refDate == null ? Beans.get(GeneralService.class).getTodayDate() : refDate );
+			return years.getYears();
+		}catch (IllegalArgumentException e){
+			throw new AxelorException(String.format( I18n.get( IExceptionMessage.EMPLOYEE_NO_BIRTH_DATE ), employee.getName() ), IException.NO_VALUE);
+		}
 	}
 
 }
