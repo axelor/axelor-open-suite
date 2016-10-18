@@ -81,7 +81,7 @@
 				</editor>
 				</field>
 			</panel>
-			<panel-related field="employeeAdvanceList" title="Employee advance list" readonly="false" canNew="false" canSelect="true" canEdit="false" onSelect="action-expense-attrs-employee-advance-domain" editable="true" form-view="employee-advance-form" grid-view="employee-advance-grid" />
+			<panel-related field="employeeAdvanceUsageList" title="Employee advance list" readonly="false" canNew="false" canSelect="false" canEdit="true" editable="true" form-view="employee-advance-usage-expense-form" grid-view="employee-advance-usage-expense-grid" />
 		</panel-tabs>
 		<panel showIf="sentDate">
 			<field name="sentDate" hidden="true" colSpan="4" showIf="sentDate"/>
@@ -246,8 +246,4 @@
     	<call class="com.axelor.apps.hr.web.expense.ExpenseController" method="computeAmounts"/>
     </action-method>
     
-    <action-attrs name="action-expense-attrs-employee-advance-domain">
-    	<attribute name="domain" for="employeeAdvanceList" expr="eval: &quot; self.date &lt; '${ __this__.period.toDate }' AND self.employee.id = ${__this__.user.employee.id} &quot;"/>
-    </action-attrs>
-	
 </object-views>

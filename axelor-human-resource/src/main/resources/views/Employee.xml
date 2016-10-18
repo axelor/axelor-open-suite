@@ -71,7 +71,7 @@
 	       		<panel-dashlet title="Lunch Vouchers" colSpan="12" action="action-hr-view-show-lunch-voucher"/>
 	       		<panel-related field="lunchVoucherAdvanceList" colSpan="12" grid-view="lunch-voucher-advance-grid" form-view="lunch-voucher-advance-form" />
 	       	</panel>
-	       	<panel-related field="employeeAdvanceList" title="Employee advances" grid-view="employee-advance-grid" form-view="employee-advance-form" readonly="false" />
+	       	<panel-related field="employeeAdvanceList" title="Employee advances" grid-view="employee-advance-employee-grid" form-view="employee-advance-employee-form" readonly="false" />
         </panel-tabs>
 	</form>
 	

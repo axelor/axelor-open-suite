@@ -56,6 +56,7 @@ import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.PeriodService;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.hr.db.EmployeeAdvance;
+import com.axelor.apps.hr.db.EmployeeAdvanceUsage;
 import com.axelor.apps.hr.db.Expense;
 import com.axelor.apps.hr.db.ExpenseLine;
 import com.axelor.apps.hr.db.HRConfig;
@@ -464,9 +465,9 @@ public class ExpenseServiceImpl implements ExpenseService  {
 		
 		BigDecimal advanceAmount = new BigDecimal("0.00");
 		
-		if (expense.getEmployeeAdvanceList() != null && !expense.getEmployeeAdvanceList().isEmpty()){
-			for (EmployeeAdvance advanceLine : expense.getEmployeeAdvanceList() ) {
-				advanceAmount = advanceAmount.add(advanceLine.getRequestedAmount());
+		if (expense.getEmployeeAdvanceUsageList() != null && !expense.getEmployeeAdvanceUsageList().isEmpty()){
+			for (EmployeeAdvanceUsage advanceLine : expense.getEmployeeAdvanceUsageList() ) {
+				advanceAmount = advanceAmount.add(advanceLine.getUsedAmount());
 			}
 		}
 		
