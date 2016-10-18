@@ -238,34 +238,29 @@ public class ImportService {
     }
     
     
-    @Transactional
-    public void generateGrid(Map<String, MetaModel> modelMap) throws AxelorException {
+    private void generateGrid(Map<String, MetaModel> clearedModels) throws AxelorException {
 		
     	Map<String, List<ActionBuilder>> actionViewMap = importForm.getViewActionMap();
     	
 		for (String module : moduleMap.keySet()) {
 			
 			for (String modelName : moduleMap.get(module).keySet()) {
-	 			if (!modelMap.containsKey(modelName)) {
+	 			if (!clearedModels.containsKey(modelName)) {
 	 				continue;
 	 			}
-	 			MetaModel model = modelMap.get(modelName);
+	 			MetaModel model = clearedModels.get(modelName);
 				List<MetaField> fields = null;
 				if (gridViewMap.containsKey(module)) {
 					fields = gridViewMap.get(module).get(model);
 				}
 				
 				if (model.getMetaModule() != null || fields != null) {
+					if ((fields == null || fields.isEmpty()) && model.getMetaModule() != null) {
+						module = model.getMetaModule().getName();
+					}
 					ViewBuilder viewBuilder = importGrid.createGridView(getModule(module, null), model, fields);
 					if (actionViewMap.containsKey(viewBuilder.getName())) {
-						
-						for (ActionBuilder builder : actionViewMap.get(viewBuilder.getName())) {
-							builder.addViewBuilderSetItem(viewBuilder);
-							builder.setMetaModel(viewBuilder.getMetaModel());
-							actionBuilderRepo.save(builder);
-						}
-						
-						actionViewMap.remove(viewBuilder.getName());
+						updateActionView(actionViewMap, viewBuilder);
 					}
 				}
 				else {
@@ -279,6 +274,18 @@ public class ImportService {
 					importForm.getViewActionMap().keySet());
 		}
 
+	}
+    
+    @Transactional
+	public void updateActionView(Map<String, List<ActionBuilder>> actionViewMap, ViewBuilder viewBuilder) {
+		
+		for (ActionBuilder builder : actionViewMap.get(viewBuilder.getName())) {
+			builder.addViewBuilderSetItem(viewBuilder);
+			builder.setMetaModel(viewBuilder.getMetaModel());
+			actionBuilderRepo.save(builder);
+		}
+		
+		actionViewMap.remove(viewBuilder.getName());
 	}
     
 	private Map<String,	Set<String>> getModels() {

@@ -3,6 +3,9 @@ package com.axelor.studio.service.data.importer;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.axelor.common.Inflector;
 import com.axelor.meta.db.MetaModel;
 import com.axelor.meta.db.MetaSequence;
@@ -22,6 +25,8 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
 public class ImportFormula {
+	
+	private final Logger log = LoggerFactory.getLogger(ImportFormula.class); 
 	
 	@Inject
 	private ActionBuilderRepository actionBuilderRepo;
@@ -52,6 +57,8 @@ public class ImportFormula {
 		ActionBuilder actionBuilder = getActionBuilder(viewBuilder, name, 1);
 		
 		List<String> formulas = getFormulas(formula);
+		
+		log.debug("Formulas: {}", formulas);
 		
 		ActionBuilderLine line = createActionLine(actionBuilder, formulas, metaModel, viewItem);
 		
@@ -190,7 +197,8 @@ public class ImportFormula {
 		return actionBuilder;
 	}
 	
-	private List<String> addEvents(ViewBuilder viewBuilder, String events, String action) {
+	@Transactional
+	public List<String> addEvents(ViewBuilder viewBuilder, String events, String action) {
 		
 		List<String> eventList = new ArrayList<String>();
 		eventList.add(action);
@@ -208,10 +216,11 @@ public class ImportFormula {
 				ViewItem viewItem = viewItemRepo
 						.all()
 						.filter("self.name = ?1 "
-								+ "and (self.viewPanel.viewBuilder = ?2 "
-								+ "OR self.viewPanel.viewBuilderSideBar = ?2 "
-								+ "OR self.viewBuilderToolbar = ?2)", event,
-								viewBuilder).fetchOne();
+								+ "and (self.viewPanel.viewBuilder.id = ?2 "
+								+ "OR self.viewPanel.viewBuilderSideBar.id = ?2 "
+								+ "OR self.viewBuilderToolbar.id = ?2)", event,
+								viewBuilder.getId()).fetchOne();
+				log.debug("View item found: {}", viewItem);
 				if (viewItem != null) {
 					if (viewItem.getTypeSelect() == 0) {
 						viewItem.setOnChange(FormBuilderService
@@ -221,12 +230,14 @@ public class ImportFormula {
 						viewItem.setOnClick(FormBuilderService
 								.getUpdatedAction(viewItem.getOnClick(), action));
 					}
+					viewItemRepo.save(viewItem);
 				} else {
 					eventList.add(event);
 				}
 			}
 		}
 		
+		log.debug("Event List: {}", eventList);
 		return eventList;
 	}
 	

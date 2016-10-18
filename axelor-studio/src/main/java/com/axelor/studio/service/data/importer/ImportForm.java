@@ -693,6 +693,7 @@ public class ImportForm {
 		Map<String, String> actionMap = eventMap.get(viewId);
 		String event = actionMap.get(viewItem.getName());
 		if (event != null) {
+			log.debug("Set Event for View item : {}, ViewItem type: {}, Event : {}", viewItem.getName(), viewItem.getTypeSelect(), event);
 			if (viewItem.getTypeSelect() == 0) {
 				String onChange = FormBuilderService.getUpdatedAction(
 						viewItem.getOnChange(), event);
@@ -904,8 +905,10 @@ public class ImportForm {
 	private void updateEventMap(List<String> actionEvents, Long viewId) {
 		
 		String action = actionEvents.get(0);
+		actionEvents.remove(0);
+		
 		for (String event : actionEvents) {
-			if (eventMap.containsKey(viewId)) {
+			if (!eventMap.containsKey(viewId)) {
 				eventMap.put(viewId, new HashMap<String, String>());
 			}
 			eventMap.put(viewId, addEvents(eventMap.get(viewId), action, event));
