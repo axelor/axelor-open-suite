@@ -139,7 +139,7 @@ public class BatchSeniorityLeaveManagement extends BatchStrategy {
 					createLeaveManagement(employeeRepository.find(employee.getId()));
 				}
 				catch(AxelorException e){
-					TraceBackService.trace(e, IException.SENIORITY_LEAVE_MANAGEMENT, batch.getId());
+					TraceBackService.trace(e, IException.LEAVE_MANAGEMENT, batch.getId());
 					incrementAnomaly();
 					if (e.getcategory() == IException.NO_VALUE ){ noValueAnomaly ++; }
 					if (e.getcategory() == IException.CONFIGURATION_ERROR ){ confAnomaly ++; }
