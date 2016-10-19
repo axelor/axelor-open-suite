@@ -108,7 +108,7 @@ public class DataManagerController {
 		
 	}
 	
-	public void generateAsciidoc(ActionRequest request, ActionResponse response) {
+	public void generateAsciidoc(ActionRequest request, ActionResponse response) throws AxelorException {
 		
 		DataManager dataManager = request.getContext().asType(DataManager.class);
 		DataReader reader = new DataReaderExcel();

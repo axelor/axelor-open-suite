@@ -49,9 +49,11 @@ import com.axelor.meta.schema.views.PanelEditor;
 import com.axelor.meta.schema.views.PanelField;
 import com.axelor.meta.schema.views.PanelInclude;
 import com.axelor.meta.schema.views.PanelRelated;
+import com.axelor.meta.schema.views.PanelStack;
 import com.axelor.meta.schema.views.PanelTabs;
 import com.axelor.meta.schema.views.Selection.Option;
 import com.axelor.meta.schema.views.Spacer;
+import com.axelor.studio.service.ViewLoaderService;
 import com.axelor.studio.service.data.CommonService;
 import com.axelor.studio.service.data.TranslationService;
 import com.google.common.base.Joiner;
@@ -108,8 +110,6 @@ public class ExportForm {
 		
 		log.debug("Processing form: {}", view);
 		
-		exportService.addViewProcessed(form.getName());
-		
 		if (form.getOnNew() != null) {
 			addEvent(module, model, view, "onnew", form.getOnNew());
 		}
@@ -134,6 +134,8 @@ public class ExportForm {
 		processMenuBarMenu(form.getMenubar(), module, model, view, mapper, extra);
 			
 		panelLevel = processItems(form.getItems(), module, model, view, mapper, extra);
+		
+		exportService.addViewProcessed(form.getName());
 		
 		return panelLevel;
 	}
@@ -278,6 +280,11 @@ public class ExportForm {
 		processItems(panel.getItems(), module, model, view, mapper, extra);
 		
 		return panelLevel;
+	}
+	
+	@SuppressWarnings("unused")
+	private String processPanelStack(PanelStack panel, String module, String model, String view, Mapper mapper, Object[] extra) {
+		return processItems(panel.getItems(), module, model, view, mapper, extra);
 	}
 	
 	private String getPanelLevel(String panelLevel) {
@@ -696,9 +703,17 @@ public class ExportForm {
 		if (target != null) {
 			view = view.split("\\(")[0];
 			String parentView = view + "(" + values[CommonService.TITLE] + ")"; 
+			String titleFR = translationService.getTranslation(values[CommonService.TITLE],"fr");
+			if (Strings.isNullOrEmpty(titleFR)) {
+				values[CommonService.TITLE] = values[CommonService.TITLE];
+			}
+			String parentViewFR = view + "(" + values[CommonService.TITLE]  + ")"; 
 			String form = panelRelated.getFormView();
-			if (form != null && !exportService.isViewProcessed(form) && !form.equals(view)) {
-				o2mViews.add(new String[]{target, form, panelRelated.getGridView(), parentView});
+			if (form == null) {
+				form = ViewLoaderService.getDefaultViewName(target, "form");
+			}
+			if (!exportService.isViewProcessed(form) && !form.equals(view)) {
+				o2mViews.add(new String[]{target, form, panelRelated.getGridView(), parentView, parentViewFR});
 			}
 			String[] targets = target.split("\\.");
 			values[CommonService.TYPE] = values[CommonService.TYPE] + "(" + targets[targets.length - 1] + ")";

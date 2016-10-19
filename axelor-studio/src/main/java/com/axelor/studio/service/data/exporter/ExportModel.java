@@ -145,7 +145,7 @@ public class ExportModel {
 	}
 	
 	
-	private MetaView getMetaView(String model, String type, String name) {
+	public MetaView getMetaView(String model, String type, String name) {
 		
 		if (name == null) {
 			name = ViewLoaderService.getDefaultViewName(model, type);
@@ -164,14 +164,14 @@ public class ExportModel {
 		for (String[] view : views) {
 			
 			if (view[3] != null) {
-				exportService.setMenuPath(view[3]);
+				exportService.setMenuPath(view[3], view[4]);
 			}
 			
 			Map<String,String> viewMap = new HashMap<String, String>();
 			viewMap.put("form", view[1]);
 			viewMap.put("grid", view[2]);
 			processModel(module, view[0], viewMap);
-			exportService.setMenuPath(null);
+			exportService.setMenuPath(null, null);
 		}
 				
 		

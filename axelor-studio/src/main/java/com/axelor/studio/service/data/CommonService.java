@@ -40,6 +40,7 @@ public class CommonService {
 		"Selection",
 		"Selection FR",
 		"Menu",
+		"Menu FR",
 		"Required",
 		"Readonly",
 		"Hidden",
@@ -154,21 +155,22 @@ public class CommonService {
 	public final static int SELECT = 9;
 	public final static int SELECT_FR = 10;
 	public final static int MENU = 11;
-	public final static int REQUIRED = 12;
-	public final static int READONLY = 13;
-	public final static int HIDDEN = 14;
-	public final static int SHOW_IF = 15;
-	public final static int IF_CONFIG = 16;
-	public final static int FORMULA = 17;
-	public final static int EVENT = 18;
-	public final static int DOMAIN = 19;
-	public final static int ON_CHANGE = 20;
-	public final static int COLSPAN = 21;
-	public final static int GRID = 22;
-	public final static int HELP = 23;
-	public final static int HELP_FR = 24;
-	public final static int PANEL_LEVEL = 25;
-	public final static int WIDGET = 26;
+	public final static int MENU_FR = 12;
+	public final static int REQUIRED = 13;
+	public final static int READONLY = 14;
+	public final static int HIDDEN = 15;
+	public final static int SHOW_IF = 16;
+	public final static int IF_CONFIG = 17;
+	public final static int FORMULA = 18;
+	public final static int EVENT = 19;
+	public final static int DOMAIN = 20;
+	public final static int ON_CHANGE = 21;
+	public final static int COLSPAN = 22;
+	public final static int GRID = 23;
+	public final static int HELP = 24;
+	public final static int HELP_FR = 25;
+	public final static int PANEL_LEVEL = 26;
+	public final static int WIDGET = 27;
 
 	public final static Map<String, String> RELATIONAL_TYPES;
 
@@ -186,20 +188,6 @@ public class CommonService {
 	public final static String[] MODULE_HEADERS = new String[] {"Module", "Depends", "Title", "Version", "Description", "Parent view priority"};
 	
 	public final Inflector inflector = Inflector.getInstance();
-	
-//	public static String getValue(Row row, int index) {
-//		
-//		Cell cell = row.getCell(index);
-//		if (cell != null && cell.getCellType() == Cell.CELL_TYPE_STRING) {
-//			String val = cell.getStringCellValue();
-//			if(Strings.isNullOrEmpty(val)){
-//				return null;
-//			}
-//			return val.trim();
-//		}
-//
-//		return null;
-//	}
 	
 	/**
 	 * Method to create field name from title if name of field is blank. It will

@@ -24,7 +24,6 @@ import com.axelor.studio.db.repo.RecordImportRuleLineRepository;
 import com.axelor.studio.service.data.importer.DataReader;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
-import com.google.inject.persist.Transactional;
 
 public class ImportModelService {
 	

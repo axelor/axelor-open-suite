@@ -40,8 +40,8 @@ import com.axelor.meta.db.repo.MetaModuleRepository;
 import com.axelor.meta.schema.views.AbstractWidget;
 import com.axelor.studio.service.ViewLoaderService;
 import com.axelor.studio.service.data.CommonService;
+import com.axelor.studio.service.data.TranslationService;
 import com.axelor.studio.service.data.importer.DataReader;
-import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 
@@ -50,6 +50,8 @@ public class ExportService {
 	private final Logger log = LoggerFactory.getLogger(getClass());
 
 	private String menuPath = null;
+	
+	private String menuPathFR = null;
 	
 	private Map<String, String> processedMenus = new HashMap<String, String>();
 	
@@ -82,6 +84,9 @@ public class ExportService {
 	
 	@Inject
 	private ExportAction exportAction;
+	
+	@Inject
+	private TranslationService translationService;
 	
 	public MetaFile export(MetaFile oldFile, DataWriter writer, DataReader reader) {
 		
@@ -173,6 +178,7 @@ public class ExportService {
 		}
 		
 		values[CommonService.MENU] = menuPath;
+		values[CommonService.MENU_FR] = menuPathFR;
 		
 		values = addHelp(null, values);
 		
@@ -261,8 +267,9 @@ public class ExportService {
 		return name;
 	}
 
-	protected void setMenuPath(String menuPath) {
+	protected void setMenuPath(String menuPath, String menuPathFR) {
 		this.menuPath = menuPath;
+		this.menuPathFR = menuPathFR;
 	}
 	
 	private void addGeneralRow(String key, String[] values) {
@@ -275,7 +282,9 @@ public class ExportService {
 		
 		if (menuPath != null) {
 			vals[CommonService.MENU] = menuPath;
+			vals[CommonService.MENU_FR] = menuPathFR;
 			menuPath = null;
+			menuPathFR = null;
 		}	
 		
 		vals = addHelp(null, vals);
@@ -294,7 +303,23 @@ public class ExportService {
 		
 		Collections.reverse(menus);
 		
-		menuPath = Joiner.on("/").join(menus);
+		boolean first = true;
+		for (String mn : menus) {
+			String mnFR = translationService.getTranslation(mn, "fr");
+			if (Strings.isNullOrEmpty(mnFR)) {
+				mnFR = mn;
+			}
+			if (first) {
+				menuPath = mn;
+				menuPathFR = mnFR;
+			}
+			else {
+				menuPath += "/" + mn;
+				menuPathFR += "/" + mnFR;
+			}
+			first = false;
+		}
+		
 	}
 	
 	private void addParentMenus(List<String> menus, MetaMenu metaMenu) {

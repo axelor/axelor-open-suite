@@ -31,10 +31,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.app.AppSettings;
+import com.axelor.exception.AxelorException;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.studio.service.data.CommonService;
 import com.axelor.studio.service.data.importer.DataReader;
+import com.axelor.studio.service.data.validator.ValidatorService;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 
@@ -65,7 +67,10 @@ public class ExportAsciidoc {
 	@Inject
 	private MetaFiles metaFiles;
 	
-	public MetaFile export(MetaFile input, DataReader reader, String lang, String name) throws IOException {
+	@Inject
+	private ValidatorService validatorService;
+	
+	public MetaFile export(MetaFile input, DataReader reader, String lang, String name) throws IOException, AxelorException {
 		
 		if (input == null) {
 			return null;
@@ -77,23 +82,40 @@ public class ExportAsciidoc {
 		
 		reader.initialize(input);
 		
+		validateInput(reader);
+		
 		String docImgPath = AppSettings.get().get("studio.doc.dir");
-		
-		setHorizontal = false;
-		
 		if (docImgPath != null) {
 			imgDir = new File(docImgPath);
 		}
 		
-		log.debug("Doc image path: {}", docImgPath);
-		
+		this.setHorizontal = false;
 		this.lang = lang;
+		
+		log.debug("Doc image path: {}", docImgPath);
 		
 		File exportFile = exportAscci(reader, lang, name);
 		
 		return metaFiles.upload(exportFile);
 	}
 	
+	private void validateInput(DataReader reader) throws IOException, AxelorException {
+		
+		String[] keys = reader.getKeys();
+		
+		for (String key : keys) {
+			if (key.equals("Modules") || key.equals("Menu") || key.equals("Actions")) {
+				continue;
+			}
+			
+			if(!validatorService.validateModelHeaders(reader, key)) {
+				throw new AxelorException("Invalid headers for sheets '%s'", 1, key);
+			}
+			
+		}
+		
+	}
+
 	private File exportAscci(DataReader reader,  String lang, String name) {
 		
 		try {
@@ -136,15 +158,21 @@ public class ExportAsciidoc {
 				
 				int totalLines = reader.getTotalLines(key);
 				
-				for (int ind = 0; ind < totalLines; ind++) {
-					String[] row = reader.read(key, totalLines);
+				log.debug("Processing sheet: {}, Total lines: {}", key, totalLines);
+				for (int ind = 1; ind < totalLines; ind++) {
+					if (key.equals("Modules") || key.equals("Menu") || key.equals("Actions")) {
+						continue;
+					}
+					String[] row = reader.read(key, ind);
 					if (row == null) {
 						continue;
 					}
-					
 					String type = row[CommonService.TYPE];
 					if (type != null) {
 						String menu = row[CommonService.MENU];
+						if (lang != null && lang.equals("fr")) {
+							menu = row[CommonService.MENU_FR];
+						}
 						String view = row[CommonService.VIEW];
 						if (!Strings.isNullOrEmpty(menu) 
 								&& type.equals("general")){
@@ -189,8 +217,7 @@ public class ExportAsciidoc {
 			for (String mn : menus){
 				count++;
 				checkMenu += mn + "/";
-				if (!Strings.isNullOrEmpty(checkMenu)
-						&& !processedMenus.contains(checkMenu)){
+				if (!processedMenus.contains(checkMenu)){
 					processedMenus.add(checkMenu);
 					header += "\n\n==" 
 							+ StringUtils.repeat("=", count)
@@ -229,7 +256,11 @@ public class ExportAsciidoc {
 		}
 		
 		String title =  values[CommonService.TITLE];
-		if (lang != null && lang.equals("fr")) {
+		if (lang != null && lang.equals("fr") && values[CommonService.TITLE_FR] != null) {
+			title = values[CommonService.TITLE_FR];
+		}
+		
+		if (title == null) {
 			title = values[CommonService.TITLE_FR];
 		}
 		

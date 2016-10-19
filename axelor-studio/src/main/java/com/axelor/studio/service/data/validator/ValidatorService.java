@@ -130,7 +130,13 @@ public class ValidatorService {
 				continue;
 			}
 			
-			validateKey(reader, key);
+			if (key.equals("Actions")) {
+				continue;
+			}
+			
+			if (validateModelHeaders(reader, key)) {
+				validateKey(reader, key);
+			}
 		}
 		
 		checkInvalid();
@@ -232,6 +238,17 @@ public class ValidatorService {
 		}
 		
 		
+	}
+	
+	public boolean validateModelHeaders(DataReader reader, String key) throws IOException {
+		
+		String[] headers = reader.read(key, 0);
+		if (headers == null || headers.length != CommonService.HEADERS.length) {
+			addLog("Invalid headers", key, 0);
+			return false;
+		}
+		
+		return true;
 	}
 	
 	private String getModel(String model, String key, int rowNum) throws IOException {
@@ -357,7 +374,7 @@ public class ValidatorService {
 	public void addLog(String log, String sheetName, int rowNum) throws IOException {
 		
 		if (logFile == null) {
-			logFile = File.createTempFile("ModelImportLog", ".xlsx");
+			logFile = File.createTempFile("ImportLog", ".xlsx");
 			logBook = new XSSFWorkbook();
 		}
 		

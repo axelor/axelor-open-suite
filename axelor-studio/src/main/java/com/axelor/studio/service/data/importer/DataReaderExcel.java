@@ -3,14 +3,12 @@ package com.axelor.studio.service.data.importer;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.Iterator;
 
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.util.NumberToTextConverter;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.hsqldb.navigator.RowIterator;
 
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
@@ -60,7 +58,11 @@ public class DataReaderExcel implements DataReader {
 			return null;
 		}
 		
-		int headerSize = sheet.getRow(0).getPhysicalNumberOfCells();
+		XSSFRow header = sheet.getRow(0);
+		if (header == null) {
+			return null;
+		}
+		int headerSize = header.getPhysicalNumberOfCells();
 		String[] vals = new String[headerSize];
 		
 		for (int i=0; i<headerSize; i++) {
