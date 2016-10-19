@@ -40,6 +40,7 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.MetaFiles;
+import com.axelor.meta.db.MetaFile;
 import com.google.common.base.Preconditions;
 import com.google.common.io.Files;
 
@@ -79,11 +80,14 @@ public abstract class Importer {
 			bind = MetaFiles.getPath( configuration.getBindMetaFile() ).toFile(), 
 			data = MetaFiles.getPath( configuration.getDataMetaFile() ).toFile();
 
-		if (!bind.exists() || !data.exists()) {
+		if (!bind.exists()) {
 			throw new AxelorException(I18n.get(IExceptionMessage.IMPORTER_1), IException.CONFIGURATION_ERROR);
 		}
+		if (!data.exists()) {
+			throw new AxelorException(I18n.get(IExceptionMessage.IMPORTER_2), IException.CONFIGURATION_ERROR);
+		}
 
-		File workspace = createFinalWorkspace(data);
+		File workspace = createFinalWorkspace(configuration.getDataMetaFile());
 		ImportHistory importHistory = process( bind.getAbsolutePath(), workspace.getAbsolutePath() );
 		deleteFinalWorkspace(workspace);
 
@@ -102,13 +106,14 @@ public abstract class Importer {
 		
 	}
 	
-	protected File createFinalWorkspace( File data ) throws IOException {
+	protected File createFinalWorkspace( MetaFile metaFile ) throws IOException {
 
+		File data = MetaFiles.getPath( metaFile ).toFile();
 		File finalWorkspace =  new File( workspace, computeFinalWorkspaceName(data) );
 		finalWorkspace.mkdir();
 		
 		if ( isZip( data ) ) { unZip( data, finalWorkspace ); }
-		else { FileUtils.copyFileToDirectory( data, finalWorkspace ); }
+		else { FileUtils.copyFile(data, new File( finalWorkspace, metaFile.getFileName() ) ); }
 		
 		return finalWorkspace;
 		
