@@ -36,8 +36,8 @@
       <string name="socialSecurityNumber"  title="Social security number" min="12" max="15"/>
       <one-to-many name="employeeAdvanceList" ref="com.axelor.apps.hr.db.EmployeeAdvance" title="Employee advances" readonly="true" mappedBy="employee" />
       <one-to-many name="lunchVoucherAdvanceList" ref="com.axelor.apps.hr.db.LunchVoucherAdvance" title="Lunch Voucher Advances"/>
+      <one-to-many name="kilometricLogList" ref="com.axelor.apps.hr.db.KilometricLog" mappedBy="employee"/>
       <string name="name" title="Name" search="contactPartner">
-          
            <![CDATA[
 	       		if(contactPartner != null) { return contactPartner.getFullName(); }
 	       		return null;

@@ -66,18 +66,17 @@
 			<panel title="Kilometric Allowances">
 				<field name="kilometricExpenseLineList" readonlyIf="statusSelect &gt; 1" colSpan="12" showTitle="false" onChange="action-expense-method-compute"  >
 				<editor x-show-on-new="false" x-viewer="true" x-layout="table" colSpan="12" itemSpan="4" onNew="action-kilometric-allowance-record-default,action-kilometric-allowance-record-rate,action-expense-line-method-fill-kilometric-expense-product" >
-					<field name="expenseDate" title="Date" />
-					<field name="kilometricAllowParam" onChange="action-kilometric-allowance-record-rate,action-kilometric-allowance-record-in-tax-total" />
-			        <field name="kilometricTypeSelect" required="true" onChange="action-kilometric-allowance-record-in-tax-total" />
+					<field name="expenseDate" title="Date" onChange="action-kilometric-allowance-method-compute" />
+					<field name="kilometricAllowParam" onChange="action-kilometric-allowance-method-compute" />
+			        <field name="kilometricTypeSelect" required="true" onChange="action-kilometric-allowance-method-compute" />
 			        <field name="fromCity" required="true" />
 			        <field name="toCity" required="true"/>
-			        <field name="distance" required="true" onChange="action-kilometric-allowance-record-in-tax-total" />
+			        <field name="distance" required="true" onChange="action-kilometric-allowance-method-compute" />
 				    <field name="totalAmount" title="Total A.T.I" onChange="action-expense-on-change-untaxt-amount, action-expense-line-method-compute-analytic-distribution" colSpan="2" readonly="true"/>
 			   	    <field name="projectTask" title="Project" requiredIf="toInvoice" canView="false" domain="self.imputable = true" widget="SuggestBox" colSpan="4" grid-view="project-task-grid"/>
 			   	    <field name="comments" colSpan="6" height="2" />
 			   		<field name="untaxedAmount" hidden="true" />
 			   		<field name="expenseProduct" readonly="true" form-view="product-expense-form" grid-view="product-expense-grid" hidden="true"/> 
-					<field name="kilometricRate" readonly="true" onChange="action-kilometric-allowance-record-in-tax-total" width="50" hidden="true"/>
 				</editor>
 				</field>
 			</panel>

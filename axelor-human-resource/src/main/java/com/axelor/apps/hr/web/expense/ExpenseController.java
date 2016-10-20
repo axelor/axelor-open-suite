@@ -19,9 +19,13 @@ package com.axelor.apps.hr.web.expense;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
+import org.codehaus.groovy.control.CompilerConfiguration;
+import org.codehaus.groovy.control.customizers.ImportCustomizer;
 import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,12 +43,18 @@ import com.axelor.apps.hr.db.ExpenseLine;
 import com.axelor.apps.hr.db.ExtraHours;
 import com.axelor.apps.hr.db.HRConfig;
 import com.axelor.apps.hr.db.KilometricAllowanceRate;
+import com.axelor.apps.hr.db.KilometricAllowanceRule;
+import com.axelor.apps.hr.db.KilometricLog;
+import com.axelor.apps.hr.db.repo.EmployeeRepository;
+import com.axelor.apps.hr.db.repo.ExpenseLineRepository;
 import com.axelor.apps.hr.db.repo.ExpenseRepository;
 import com.axelor.apps.hr.db.repo.KilometricAllowanceRateRepository;
 import com.axelor.apps.hr.db.repo.TimesheetRepository;
 import com.axelor.apps.hr.report.IReport;
 import com.axelor.apps.hr.service.HRMenuTagService;
+import com.axelor.apps.hr.service.KilometricService;
 import com.axelor.apps.hr.service.config.HRConfigService;
+import com.axelor.apps.hr.service.employee.EmployeeService;
 import com.axelor.apps.hr.service.expense.ExpenseService;
 import com.axelor.apps.message.db.Message;
 import com.axelor.apps.message.db.repo.MessageRepository;
@@ -65,6 +75,9 @@ import com.google.common.base.Joiner;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.persist.Transactional;
+
+import groovy.lang.Binding;
+import groovy.lang.GroovyShell;
 
 public class ExpenseController {
 
@@ -476,6 +489,28 @@ public class ExpenseController {
 		}
 		
 		
+	}
+	
+	public void computeKilometricExpense(ActionRequest request, ActionResponse response) throws AxelorException {
+		
+		ExpenseLine expenseLine = request.getContext().asType(ExpenseLine.class);
+		
+		if (expenseLine.getKilometricAllowParam() == null || expenseLine.getDistance() == null || expenseLine.getExpenseDate() == null || expenseLine.getKilometricTypeSelect() == null || expenseLine.getKilometricTypeSelect() == 0 || expenseLine.getDistance() == null ){ 
+			return;
+		}
+		
+		String userId = null;
+		if (expenseLine.getExpense() != null){
+			userId = expenseLine.getExpense().getUser().getId().toString();
+		}else{
+			userId = request.getContext().getParentContext().asType(Expense.class).getUser().getId().toString() ;
+		}
+		Employee employee = Beans.get(EmployeeRepository.class).all().filter("self.user.id = ?1", userId).fetchOne();
+		
+		BigDecimal amount = Beans.get(KilometricService.class).computeKilometricExpense(expenseLine, employee);
+		
+		response.setValue("totalAmount", amount);
+		response.setValue("untaxedAmount", amount);
 	}
 	
 }

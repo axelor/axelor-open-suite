@@ -61,6 +61,7 @@ import com.axelor.apps.hr.db.Expense;
 import com.axelor.apps.hr.db.ExpenseLine;
 import com.axelor.apps.hr.db.HRConfig;
 import com.axelor.apps.hr.db.repo.ExpenseRepository;
+import com.axelor.apps.hr.service.KilometricService;
 import com.axelor.apps.hr.service.config.AccountConfigHRService;
 import com.axelor.apps.hr.service.config.HRConfigService;
 import com.axelor.apps.message.db.Message;
@@ -192,6 +193,17 @@ public class ExpenseServiceImpl implements ExpenseService  {
 	
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void validate(Expense expense) throws AxelorException  {
+		
+		if (expense.getKilometricExpenseLineList() != null && !expense.getKilometricExpenseLineList().isEmpty()){
+			for (ExpenseLine line : expense.getKilometricExpenseLineList()){
+				BigDecimal amount = Beans.get(KilometricService.class).computeKilometricExpense(line, expense.getUser().getEmployee());
+				line.setTotalAmount(amount);
+				line.setUntaxedAmount(amount);
+				
+				Beans.get(KilometricService.class).updateKilometricLog(line, expense.getUser().getEmployee());
+			}
+			compute(expense);
+		}
 		
 		expense.setStatusSelect(ExpenseRepository.STATUS_VALIDATED);
 		expense.setValidatedBy(AuthUtils.getUser());

@@ -5,15 +5,14 @@
 
      <module name="human-resource" package="com.axelor.apps.hr.db"/>
 
-    <entity sequential="true" name="KilometricAllowanceRate" lang="java" >
+    <entity name="KilometricAllowanceRule" lang="java" >
     
         <many-to-one name="hrConfig" ref="com.axelor.apps.hr.db.HRConfig" title="HrConfig"/>
         
-        <many-to-one name="kilometricAllowParam" ref="com.axelor.apps.hr.db.KilometricAllowParam" title="Kilometric Allowance Param" required="true"/>
         <decimal name="rate" title="Rate" required="true" precision="20" scale="3" />
-        <one-to-many name="kilometricAllowanceRuleList" ref="com.axelor.apps.hr.db.KilometricAllowanceRule" mappedBy="kilometricAllowanceRate"/>
-        
-        <finder-method name="findByVehicleKillometricAllowanceParam" using="kilometricAllowParam"/>
+        <decimal name="minimumCondition" title="Minimum Condition" />
+        <decimal name="maximumCondition" title="Maximum Condition" />
+        <many-to-one name="kilometricAllowanceRate" ref="com.axelor.apps.hr.db.KilometricAllowanceRate"/>
         
     </entity>
 

@@ -113,6 +113,10 @@
     <action-record name="action-kilometric-allowance-record-rate" model="com.axelor.apps.hr.db.ExpenseLine">
         <field name="kilometricRate" if="kilometricAllowParam" expr="eval: __repo__.of(KilometricAllowanceRate).all().filter('self.kilometricAllowParam = ?1',kilometricAllowParam).fetchOne()?.rate"/>  
     </action-record>
+    
+    <action-method name="action-kilometric-allowance-method-compute">
+    	<call class="com.axelor.apps.hr.web.expense.ExpenseController" method="computeKilometricExpense"/>
+    </action-method>
 
     <action-record name="action-kilometric-allowance-record-in-tax-total" model="com.axelor.apps.hr.db.ExpenseLine">
         <field name="totalAmount" if="kilometricTypeSelect == 1"  expr="eval: kilometricRate * distance"/>
