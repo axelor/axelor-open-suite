@@ -1,37 +1,46 @@
 package com.axelor.studio.web;
 
+import org.joda.time.LocalDateTime;
+
+import com.axelor.auth.AuthUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.axelor.studio.db.RecordImport;
-import com.axelor.studio.db.repo.RecordImportRepository;
-import com.axelor.studio.service.data.record.ImportService;
+import com.axelor.studio.db.RecordImportWizard;
+import com.axelor.studio.db.repo.RecordImportWizardRepository;
+import com.axelor.studio.service.data.importer.DataReader;
+import com.axelor.studio.service.data.importer.ExcelReader;
+import com.axelor.studio.service.data.record.RecordImporterService;
 import com.google.inject.Inject;
 
 public class RecordImportController {
 	
 	@Inject
-	private RecordImportRepository recordImportRepo;
+	private RecordImportWizardRepository importWizardRepo;
 	
 	@Inject
-	private ImportService importService;
+	private RecordImporterService importService;
 	
-	public void importRecord(ActionRequest request, ActionResponse response) throws AxelorException {
+	public void importRecord(ActionRequest request, ActionResponse response) {
 		
-		RecordImport recordImport = request.getContext().asType(RecordImport.class);
-		recordImport = recordImportRepo.find(recordImport.getId());
+		RecordImportWizard importWizard = request.getContext().asType(RecordImportWizard.class);
+		importWizard = importWizardRepo.find(importWizard.getId());
 		
-		boolean imported = importService.importRecord(recordImport);
+		DataReader reader = new ExcelReader();
+		reader.initialize(importWizard.getImportFile());
 		
-		if (imported) {
-			response.setFlash(I18n.get("Record imported successfully"));
+		String msg = I18n.get("Records imported successfully");
+		try {
+			importService.importRecords(reader, importWizard.getImportFile());
+		} catch (AxelorException e) {
+			msg = e.getMessage();
 		}
-		else {
-			response.setFlash(I18n.get("Error in import, please check the 'Error log'"));
-		}
 		
-		response.setReload(true);
+		response.setFlash(msg);
+		response.setValue("importLog", importService.getLog());
+		response.setValue("importedBy", AuthUtils.getUser());
+		response.setValue("importDate", new LocalDateTime());
 		
 	}
 }

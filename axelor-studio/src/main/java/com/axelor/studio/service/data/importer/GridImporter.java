@@ -14,7 +14,7 @@ import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
-public class ImportGrid {
+public class GridImporter {
 	
 	@Inject
 	private ViewBuilderRepository viewBuilderRepo;

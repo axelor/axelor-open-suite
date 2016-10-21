@@ -57,10 +57,10 @@ import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
-public class ImportForm {
+public class FormImporter {
 
 	private final static Logger log = LoggerFactory
-			.getLogger(ImportForm.class);
+			.getLogger(FormImporter.class);
 	
 	private final static Pattern DOMAIN_PATTERN = Pattern.compile("(:[\\w\\d\\.]+)");
 	
@@ -107,7 +107,7 @@ public class ImportForm {
 	private TranslationService translationService;
 	
 	@Inject
-	private ImportFormula importFormula;
+	private FormulaImporter formulaImporter;
 	
 	@Inject
 	private MetaViewRepository metaViewRepo;
@@ -895,7 +895,7 @@ public class ImportForm {
 	private void createValidation(String type, ViewBuilder viewBuilder,
 			MetaModel model) {
 		
-		List<String> pendingEvents = importFormula.importValidation(row, type, viewBuilder, model);
+		List<String> pendingEvents = formulaImporter.importValidation(row, type, viewBuilder, model);
 		if (pendingEvents.size() > 1) {
 			updateEventMap(pendingEvents, viewBuilder.getId());
 		}
@@ -935,7 +935,7 @@ public class ImportForm {
 	
 	private void addFormula(ViewBuilder viewBuilder, ViewItem viewItem) {
 		
-		List<String> pendingEvents = importFormula.importFormula(row, viewBuilder, viewItem);
+		List<String> pendingEvents = formulaImporter.importFormula(row, viewBuilder, viewItem);
 		if (pendingEvents.size() > 1) {
 			updateEventMap(pendingEvents, viewBuilder.getId());
 		}

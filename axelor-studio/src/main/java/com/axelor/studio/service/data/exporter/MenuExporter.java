@@ -16,7 +16,7 @@ import com.axelor.meta.schema.actions.ActionView.View;
 import com.axelor.studio.service.data.TranslationService;
 import com.google.inject.Inject;
 
-public class ExportMenu {
+public class MenuExporter {
 	
 	public static final String[] MENU_HEADERS = new String[] {
 		"Notes",

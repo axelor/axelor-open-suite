@@ -5,11 +5,11 @@
 
   <module name="studio" package="com.axelor.studio.db" />
   
-  <entity name="RecordImport" cachable="true">
+  <entity name="RecordImportWizard" cachable="true">
 	<datetime name="importDate" />
 	<many-to-one name="importedBy" ref="com.axelor.auth.db.User" title="User" />
 	<many-to-one name="importFile" ref="com.axelor.meta.db.MetaFile" title="Data file" required="true"/>
-	<string name="result" title="Result" large="true"/>
+	<string name="importLog" title="Log" large="true"/>
   </entity>
   
  </domain-models>

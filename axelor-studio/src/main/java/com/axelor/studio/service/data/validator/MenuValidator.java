@@ -8,7 +8,7 @@ import com.axelor.i18n.I18n;
 import com.axelor.meta.db.MetaMenu;
 import com.axelor.meta.db.repo.MetaMenuRepository;
 import com.axelor.studio.service.ConfigurationService;
-import com.axelor.studio.service.data.exporter.ExportMenu;
+import com.axelor.studio.service.data.exporter.MenuExporter;
 import com.axelor.studio.service.data.importer.DataReader;
 import com.google.inject.Inject;
 
@@ -44,7 +44,7 @@ public class MenuValidator {
 				continue;
 			}
 			
-			String module = row[ExportMenu.MODULE];
+			String module = row[MenuExporter.MODULE];
 			
 			if (module == null || configService.getNonCustomizedModules().contains(module)) {
 				continue;
@@ -57,23 +57,23 @@ public class MenuValidator {
 	
 	private void validateMenu(String[] row, String key, int rowNum) throws IOException {
 		
-		String name = row[ExportMenu.NAME];
-		String title = row[ExportMenu.TITLE];
+		String name = row[MenuExporter.NAME];
+		String title = row[MenuExporter.TITLE];
 		
 		if (title == null) {
-			title = row[ExportMenu.TITLE_FR];
+			title = row[MenuExporter.TITLE_FR];
 		}
 		
 		if (name == null && title == null) {
 			validatorService.addLog(I18n.get("Name and title is empty" ), key, rowNum);
 		}
 		
-		String model = row[ExportMenu.OBJECT];
+		String model = row[MenuExporter.OBJECT];
 		if (model != null && !validatorService.isValidModel(model)) {
 			validatorService.addLog(I18n.get("Invalid model" ), key, rowNum);
 		}
 		
-		String order = row[ExportMenu.ORDER];
+		String order = row[MenuExporter.ORDER];
 		if (order != null) {
 			try {
 				Integer.parseInt(order.trim());
@@ -86,7 +86,7 @@ public class MenuValidator {
 			name = title;
 		}
 		
-		String parent = row[ExportMenu.PARENT];
+		String parent = row[MenuExporter.PARENT];
 		if (parent != null && !menus.contains(parent)) {
 			MetaMenu menu = metaMenuRepo.all().filter("self.name = ?1" , parent).fetchOne();
 			if(menu == null){

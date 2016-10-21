@@ -14,7 +14,7 @@ import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
 import com.google.common.base.Strings;
 
-public class DataReaderExcel implements DataReader {
+public class ExcelReader implements DataReader {
 	
 	private XSSFWorkbook book = null;
 	

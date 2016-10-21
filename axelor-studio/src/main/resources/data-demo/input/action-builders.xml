@@ -31,7 +31,11 @@
   
   <action-builder name="action-send-expense-email" typeSelect="4" metaModel="Expense" emailTemplate="Note De Frais" />
   
-  <action-builder name="menu.expense" metaModel="Expense" typeSelect="2" viewBuilder="expense-form" title="Note De Frais" />
+  <action-builder name="menu.expense" metaModel="Expense" typeSelect="2" title="Note De Frais">
+  	<viewBuilders>
+  		<viewBuilder name="expense-form" />
+  	</viewBuilders>
+  </action-builder>
   
   <action-builder name="menu.dashboard" typeSelect="2" title="Reports">
   	<viewBuilders>

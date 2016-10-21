@@ -6,7 +6,7 @@ import com.axelor.studio.service.ConfigurationService;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
-public class ImportModule {
+public class ModuleImporter {
 	
 	@Inject
 	private ConfigurationService configService;

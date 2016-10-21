@@ -23,9 +23,9 @@ import com.axelor.studio.service.data.CommonService;
 import com.axelor.studio.service.data.TranslationService;
 import com.google.inject.Inject;
 
-public class ExportDashboard {
+public class DashboardExporter {
 	
-	private final static Logger log = LoggerFactory.getLogger(ExportDashboard.class);
+	private final static Logger log = LoggerFactory.getLogger(DashboardExporter.class);
 	
 	@Inject
 	private MetaViewRepository metaViewRepo;
@@ -36,7 +36,7 @@ public class ExportDashboard {
 	@Inject
 	private MetaActionRepository metaActionRepo;
 	
-	public void export(ExportService exportService, String name) throws JAXBException {
+	public void export(ExporterService exporterService, String name) throws JAXBException {
 		
 		MetaView view =  metaViewRepo.all().filter(
 				"self.type = 'dashboard'  and self.name = ?", 
@@ -51,7 +51,7 @@ public class ExportDashboard {
 			for (AbstractWidget widget : dashboard.getItems()) {
 				String[] values = processDashlet((Dashlet)widget, view.getModule(), null, name, null, null);
 				if (values != null) {
-					exportService.writeRow(values, true);
+					exporterService.writeRow(values, true);
 				}
 			}
 			
@@ -80,7 +80,7 @@ public class ExportDashboard {
 			values[CommonService.TITLE] = title;
 			values[CommonService.TITLE_FR] = translationService.getTranslation(title, "fr");
 			values[CommonService.IF_CONFIG] = dashlet.getConditionToCheck();
-			values[CommonService.IF_MODULE] = ExportService.getModuleToCheck(dashlet, parentModule);
+			values[CommonService.IF_MODULE] = ExporterService.getModuleToCheck(dashlet, parentModule);
 			values[CommonService.NAME] = dashlet.getAction();
 			
 			if (dashlet.getColSpan() != null) {

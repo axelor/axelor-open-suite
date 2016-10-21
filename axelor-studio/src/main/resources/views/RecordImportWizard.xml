@@ -3,23 +3,23 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
   
-  <grid name="record-import-grid" title="Record imports" model="com.axelor.studio.db.RecordImport">
+  <grid name="record-import-wizard-grid" title="Record imports" model="com.axelor.studio.db.RecordImportWizard">
      <field name="importDate" />
      <field name="importedBy" />
      <field name="importFile" />
   </grid>
   
-  <form name="record-import-form" title="Record import" model="com.axelor.studio.db.RecordImport"  width="large">
+  <form name="record-import-wizard-form" title="Record import" model="com.axelor.studio.db.RecordImportWizard"  width="large">
       <panel>
 	      <field name="importDate" />
      	  <field name="importedBy" />
      	  <field name="importFile" widget="binary-link" />
      	  <button name="importRecord" title="Import" colSpan="3" onClick="save,action-record-import-method-import-record"/>
-     	  <field name="result" colSpan="12" title="Error log"/>
+     	  <field name="importLog" colSpan="12" title="Import log"/>
 	  </panel>
   </form>
   
-  <action-method name="action-record-import-method-import-record">
+  <action-method name="action-record-import-wizard-method-import-record">
   	<call class="com.axelor.studio.web.RecordImportController" method="importRecord"/>
   </action-method>
   

@@ -121,18 +121,11 @@
     <view type="form" name="data-manager-form"/>
   </action-view>
   
-  <menuitem name="menu-record-import" title="Record import" parent="menu-studio-import-export" action="menu.record.import" order="10"/>
+  <menuitem name="menu-record-import-wizard" title="Record import" parent="menu-studio-import-export" action="menu.record.import.wizard" order="10"/>
   
-  <action-view name="menu.record.import" title="Record import" model="com.axelor.studio.db.RecordImport">
-    <view type="grid" name="record-import-grid"/>
-    <view type="form" name="record-import-form"/>
-  </action-view>
-  
-  <menuitem name="menu-record-import-rule" title="Record import rule" parent="menu-studio-import-export" action="menu.record.import.rule" order="15"/>
-  
-  <action-view name="menu.record.import.rule" title="Record import rule" model="com.axelor.studio.db.RecordImportRule">
-    <view type="grid" name="record-import-rule-grid"/>
-    <view type="form" name="record-import-rule-form"/>
+  <action-view name="menu.record.import.wizard" title="Record import" model="com.axelor.studio.db.RecordImportWizard">
+    <view type="grid" name="record-import-wizard-grid"/>
+    <view type="form" name="record-import-wizard-form"/>
   </action-view>
   
   <!-- Configuration menus -->

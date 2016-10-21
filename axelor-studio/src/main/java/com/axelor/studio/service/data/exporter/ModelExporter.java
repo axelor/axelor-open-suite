@@ -24,9 +24,9 @@ import com.axelor.meta.schema.views.GridView;
 import com.axelor.studio.service.ViewLoaderService;
 import com.google.inject.Inject;
 
-public class ExportModel {
+public class ModelExporter {
 	
-	private static final Logger log = LoggerFactory.getLogger(ExportModel.class);
+	private static final Logger log = LoggerFactory.getLogger(ModelExporter.class);
 	
 	private final List<String> SUPPORTED_TYPES = Arrays.asList(new String[]{"form", "dashboard", "grid"});
 	
@@ -34,16 +34,16 @@ public class ExportModel {
 	private MetaViewRepository metaViewRepo;
 	
 	@Inject
-	private ExportDashboard exportDashboard;
+	private DashboardExporter dashboardExporter;
 	
 	@Inject
-	private ExportForm exportForm;
+	private FormExporter formExporter;
 	
-	private ExportService exportService;
+	private ExporterService exporterService;
 	
-	public void export(ExportService exportService, MetaAction action) {
+	public void export(ExporterService exporterService, MetaAction action) {
 		
-		this.exportService = exportService;
+		this.exporterService = exporterService;
 		
 		Map<String, String> views = new HashMap<String, String>();
 		
@@ -73,28 +73,28 @@ public class ExportModel {
 			
 			String dashboard = views.get("dashboard");
 			if (dashboard != null) {
-				if (!exportService.isViewProcessed(dashboard)) {
-					exportDashboard.export(exportService, dashboard);
+				if (!exporterService.isViewProcessed(dashboard)) {
+					dashboardExporter.export(exporterService, dashboard);
 				}
 			}
 			else if (model != null) {
 				
 				String name = views.get("form");
-				if (exportService.isViewProcessed(name)) {
+				if (exporterService.isViewProcessed(name)) {
 					return;
 				}
 				
 				MetaView formView = getMetaView(model, "form", views.get("form"));
 				if (formView == null 
-						|| exportService.isViewProcessed(formView.getName()) 
-						|| !exportService.isExportModule(formView.getModule())) {
+						|| exporterService.isViewProcessed(formView.getName()) 
+						|| !exporterService.isExportModule(formView.getModule())) {
 					log.debug("Form view not considered: {}", formView);
 					return;
 				}
 				
 				MetaView grid = getMetaView(model, "grid", views.get("grid"));
 				
-				List<String[]> o2mViews = exportForm.export(exportService, formView, getGridFields(grid));
+				List<String[]> o2mViews = formExporter.export(exporterService, formView, getGridFields(grid));
 				
 				addO2MViews(o2mViews, module, model);
 				
@@ -164,14 +164,14 @@ public class ExportModel {
 		for (String[] view : views) {
 			
 			if (view[3] != null) {
-				exportService.setMenuPath(view[3], view[4]);
+				exporterService.setMenuPath(view[3], view[4]);
 			}
 			
 			Map<String,String> viewMap = new HashMap<String, String>();
 			viewMap.put("form", view[1]);
 			viewMap.put("grid", view[2]);
 			processModel(module, view[0], viewMap);
-			exportService.setMenuPath(null, null);
+			exporterService.setMenuPath(null, null);
 		}
 				
 		

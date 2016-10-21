@@ -20,7 +20,7 @@ import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
-public class ImportField {
+public class FieldImporter {
 	
 	@Inject
 	private MetaFieldRepository metaFieldRepo;

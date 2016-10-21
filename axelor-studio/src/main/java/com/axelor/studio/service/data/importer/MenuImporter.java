@@ -45,15 +45,15 @@ import com.axelor.studio.db.repo.MenuBuilderRepository;
 import com.axelor.studio.db.repo.ViewBuilderRepository;
 import com.axelor.studio.service.ViewLoaderService;
 import com.axelor.studio.service.data.TranslationService;
-import com.axelor.studio.service.data.exporter.ExportMenu;
+import com.axelor.studio.service.data.exporter.MenuExporter;
 import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
-public class ImportMenu {
+public class MenuImporter {
 	
-	private final Logger log = LoggerFactory.getLogger(ImportMenu.class);
+	private final Logger log = LoggerFactory.getLogger(MenuImporter.class);
 	
 	private Integer parentMenuSeq = 0;
 	
@@ -71,7 +71,7 @@ public class ImportMenu {
 	private TranslationService translationService;
 	
 	@Inject
-	private ImportService importService;
+	private ImporterService importerService;
 	
 	@Inject
 	private MetaModelRepository metaModelRepo;
@@ -97,12 +97,12 @@ public class ImportMenu {
 				continue;
 			}
 			
-			MetaModule module = importService.getModule(row[ExportMenu.MODULE], null);
+			MetaModule module = importerService.getModule(row[MenuExporter.MODULE], null);
 			if (module == null) {
 				continue;
 			}
 			
-			String modelName = row[ExportMenu.OBJECT];
+			String modelName = row[MenuExporter.OBJECT];
 			MetaModel model = null;
 			if (modelName != null) {
 				model = metaModelRepo.findByName(modelName);
@@ -120,8 +120,8 @@ public class ImportMenu {
 	@Transactional
 	public void createMenu(MetaModule module, MetaModel  model, String[] row, String key, int rowNum) throws AxelorException {
 		
-		String name = row[ExportMenu.NAME];
-		String title = getTitle(row[ExportMenu.TITLE], row[ExportMenu.TITLE_FR], module.getName());
+		String name = row[MenuExporter.NAME];
+		String title = getTitle(row[MenuExporter.TITLE], row[MenuExporter.TITLE_FR], module.getName());
 		
 		if (name == null && title == null) {
 			throw new AxelorException(I18n.get("Menu name and title empty for sheet: %s row: %s")
@@ -137,24 +137,24 @@ public class ImportMenu {
 		MenuBuilder menuBuilder = getMenuBuilder(name, module, model);
 		menuBuilder.setTitle(title);
 		
-		String parentName = row[ExportMenu.PARENT];
+		String parentName = row[MenuExporter.PARENT];
 		if (parentName != null) {
 			menuBuilder = setParentMenu(menuBuilder, parentName);
 		}
 		
-		menuBuilder.setIcon(row[ExportMenu.ICON]);
-		menuBuilder.setIconBackground(row[ExportMenu.BACKGROUND]);
+		menuBuilder.setIcon(row[MenuExporter.ICON]);
+		menuBuilder.setIconBackground(row[MenuExporter.BACKGROUND]);
 		
 		if (model != null) {
 			ActionBuilder actionBuilder = getActionBuilder(menuBuilder, module, model, row, name);
 			menuBuilder.setActionBuilder(actionBuilder);
 		}
 		
-//		menuBuilder.setDomain(row[ExportMenu.FILTER]);
-//		menuBuilder.setAction(row[ExportMenu.ACTION]);
-//		menuBuilder.setViews(row[ExportMenu.VIEWS]);
+//		menuBuilder.setDomain(row[MenuExporter.FILTER]);
+//		menuBuilder.setAction(row[MenuExporter.ACTION]);
+//		menuBuilder.setViews(row[MenuExporter.VIEWS]);
 		
-		String order = row[ExportMenu.ORDER];
+		String order = row[MenuExporter.ORDER];
 		menuBuilder = setMenuOrder(menuBuilder, order);
 		
 		menuBuilderRepo.save(menuBuilder);
@@ -180,13 +180,13 @@ public class ImportMenu {
 		
 		actionBuilder.setMenuAction(true);
 		actionBuilder.setTypeSelect(2);
-		actionBuilder.setDomainCondition(row[ExportMenu.FILTER]);
+		actionBuilder.setDomainCondition(row[MenuExporter.FILTER]);
 		actionBuilder.setMetaModel(model);
 		actionBuilder.setTitle(menuBuilder.getTitle());
 		actionBuilder.clearMetaViewSet();
 		actionBuilder.clearViewBuilderSet();
 		
-		String viewNames = row[ExportMenu.VIEWS];
+		String viewNames = row[MenuExporter.VIEWS];
 		if (Strings.isNullOrEmpty(viewNames)) {
 			viewNames = ViewLoaderService.getDefaultViewName(model.getName(), "grid");
 			viewNames += "," + ViewLoaderService.getDefaultViewName(model.getName(), "form");

@@ -45,7 +45,7 @@ import com.axelor.studio.service.data.importer.DataReader;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 
-public class ExportService {
+public class ExporterService {
 	
 	private final Logger log = LoggerFactory.getLogger(getClass());
 
@@ -74,16 +74,16 @@ public class ExportService {
 	private MetaFiles metaFiles;
 	
 	@Inject
-	private ExportModel dataExportModel;
+	private ModelExporter modelExporter;
 	
 	@Inject
 	private MetaModuleRepository metaModuleRepo;
 	
 	@Inject
-	private ExportMenu exportMenu;
+	private MenuExporter menuExporter;
 	
 	@Inject
-	private ExportAction exportAction;
+	private ActionExporter actionExporter;
 	
 	@Inject
 	private TranslationService translationService;
@@ -103,9 +103,9 @@ public class ExportService {
 		
 		addModules(reader);
 
-		exportMenu.export(writer, exportModules);
+		menuExporter.export(writer, exportModules);
 		
-		exportAction.export(writer);
+		actionExporter.export(writer);
 		
 		processMenu();
 		
@@ -190,7 +190,7 @@ public class ExportService {
 	
 	private void processMenu() {
 		
-		List<MetaMenu> menus = 	exportMenu.getMenus(exportModules);
+		List<MetaMenu> menus = 	menuExporter.getMenus(exportModules);
 		
 		for (MetaMenu menu : menus) {
 			String name = menu.getName();
@@ -211,7 +211,7 @@ public class ExportService {
 			
 			MetaAction action = menu.getAction();;
 			if (action != null && action.getType().equals("action-view")) {
-				dataExportModel.export(this, action);
+				modelExporter.export(this, action);
 			}
 			
 			processedMenus.put(name, menu.getTitle());

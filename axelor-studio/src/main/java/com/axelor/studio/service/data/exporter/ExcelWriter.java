@@ -26,7 +26,7 @@ import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.studio.service.data.CommonService;
 
-public class DataWriterExcel implements DataWriter {
+public class ExcelWriter implements DataWriter {
 	
 	private final Logger log = LoggerFactory.getLogger(getClass());
 	

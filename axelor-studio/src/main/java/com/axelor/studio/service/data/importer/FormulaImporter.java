@@ -24,9 +24,9 @@ import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
-public class ImportFormula {
+public class FormulaImporter {
 	
-	private final Logger log = LoggerFactory.getLogger(ImportFormula.class); 
+	private final Logger log = LoggerFactory.getLogger(FormulaImporter.class); 
 	
 	@Inject
 	private ActionBuilderRepository actionBuilderRepo;

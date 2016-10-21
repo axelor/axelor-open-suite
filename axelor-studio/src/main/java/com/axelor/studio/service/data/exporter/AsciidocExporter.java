@@ -40,9 +40,9 @@ import com.axelor.studio.service.data.validator.ValidatorService;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 
-public class ExportAsciidoc {
+public class AsciidocExporter {
 	
-	private static final Logger log = LoggerFactory.getLogger(ExportAsciidoc.class);
+	private static final Logger log = LoggerFactory.getLogger(AsciidocExporter.class);
 	
 	private static final List<String> COMMENT_TYPES = Arrays.asList(
 			new String[]{"tip", "general", "warn"});

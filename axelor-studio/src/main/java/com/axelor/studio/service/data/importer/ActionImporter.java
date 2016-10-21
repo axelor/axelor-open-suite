@@ -22,11 +22,11 @@ import com.axelor.studio.db.ReportBuilder;
 import com.axelor.studio.db.repo.ActionBuilderRepository;
 import com.axelor.studio.db.repo.ReportBuilderRepository;
 import com.axelor.studio.service.ConfigurationService;
-import com.axelor.studio.service.data.exporter.ExportAction;
+import com.axelor.studio.service.data.exporter.ActionExporter;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
-public class ImportAction {
+public class ActionImporter {
 	
 	private Map<String, Integer> typeMap = new HashMap<String, Integer>(); 
 	
@@ -51,7 +51,7 @@ public class ImportAction {
 	private TemplateRepository templateRepo;
 	
 	@Inject
-	private ImportMenu importMenu;
+	private MenuImporter menuImporter;
 	
 	public void importActions(DataReader reader, String key) {
 		
@@ -66,7 +66,7 @@ public class ImportAction {
 				continue;
 			}
 
-			String module = row[ExportAction.MODULE];
+			String module = row[ActionExporter.MODULE];
 			if (module == null) {
 				continue;
 			}
@@ -91,8 +91,8 @@ public class ImportAction {
 	@Transactional
 	public void importActionBuilder(String[] values, MetaModule module) {
 		
-		String name = values[ExportAction.NAME];
-		String type = values[ExportAction.TYPE];
+		String name = values[ActionExporter.NAME];
+		String type = values[ActionExporter.TYPE];
 
 		if (name == null || type == null) {
 			return;
@@ -101,13 +101,13 @@ public class ImportAction {
 		ActionBuilder builder = findCreateAction(name, type, module);
 		
 		builder = setModel(values, builder);
-		if (values[ExportAction.VIEW] != null) {
-			builder = importMenu.setActionViews(builder, values[ExportAction.VIEW]);
+		if (values[ActionExporter.VIEW] != null) {
+			builder = menuImporter.setActionViews(builder, values[ActionExporter.VIEW]);
 		}
-		builder.setFirstGroupBy(values[ExportAction.FIRST_GROUPBY]);
-		builder.setSecondGroupBy(values[ExportAction.SECOND_GROUPBY]);
-		builder.setReportBuilderSet(getReportBuilders(values[ExportAction.REPORT_BUILDERS]));
-		builder.setEmailTemplate(getEmailTemplate(values[ExportAction.EMAIL_TEMPLATE]));
+		builder.setFirstGroupBy(values[ActionExporter.FIRST_GROUPBY]);
+		builder.setSecondGroupBy(values[ActionExporter.SECOND_GROUPBY]);
+		builder.setReportBuilderSet(getReportBuilders(values[ActionExporter.REPORT_BUILDERS]));
+		builder.setEmailTemplate(getEmailTemplate(values[ActionExporter.EMAIL_TEMPLATE]));
 		builder.setEdited(true);
 		builder.setRecorded(false);
 		
@@ -140,18 +140,18 @@ public class ImportAction {
 	
 	private ActionBuilder setModel(String[] values, ActionBuilder builder) {
 		
-		String model = values[ExportAction.OBJECT];
+		String model = values[ActionExporter.OBJECT];
 		MetaModel metaModel = metaModelRepo.findByName(model);
 		builder.setMetaModel(metaModel);
 		
 		if (metaModel != null) {
-			MetaField field = getMetaField(metaModel, values[ExportAction.TARGET_FIELD]);
+			MetaField field = getMetaField(metaModel, values[ActionExporter.TARGET_FIELD]);
 			builder.setTargetField(field);
-			field = getMetaField(metaModel, values[ExportAction.LOOOP_FIELD]);
+			field = getMetaField(metaModel, values[ActionExporter.LOOOP_FIELD]);
 			builder.setLoopOnField(field);
 		}
 		
-		metaModel = metaModelRepo.findByName(values[ExportAction.TARGET_OBJECT]);
+		metaModel = metaModelRepo.findByName(values[ActionExporter.TARGET_OBJECT]);
 		builder.setTargetModel(metaModel);
 		
 		return builder;
@@ -203,7 +203,7 @@ public class ImportAction {
 		
 		ActionBuilderLine line = new ActionBuilderLine();
 		
-		String target =  values[ExportAction.LINE_TARGET];
+		String target =  values[ActionExporter.LINE_TARGET];
 		if (target != null) {
 			line.setTargetField(target);
 			if (target.contains(".")) {
@@ -217,11 +217,11 @@ public class ImportAction {
 			}
 		}
 		
-		line.setValue(values[ExportAction.LINE_VALUE]);
-		line.setConditionText(values[ExportAction.LINE_CONDITIONS]);
-		line.setFilter(values[ExportAction.LINE_FILTERS]);
-		line.setValidationMsg(values[ExportAction.LINE_VALIDATION_MSG]);
-		line.setValidationTypeSelect(values[ExportAction.LINE_VALIDATION_TYPE]);
+		line.setValue(values[ActionExporter.LINE_VALUE]);
+		line.setConditionText(values[ActionExporter.LINE_CONDITIONS]);
+		line.setFilter(values[ActionExporter.LINE_FILTERS]);
+		line.setValidationMsg(values[ActionExporter.LINE_VALIDATION_MSG]);
+		line.setValidationTypeSelect(values[ActionExporter.LINE_VALIDATION_TYPE]);
 		
 		builder.addLine(line);
 		
