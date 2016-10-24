@@ -34,7 +34,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.common.Inflector;
-import com.axelor.common.StringUtils;
 import com.axelor.common.VersionUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;

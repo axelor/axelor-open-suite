@@ -126,4 +126,10 @@
     	<option value="2">Search or Create</option>
     </selection>
     
+    <selection name="record.import.preference.select">
+    	<option value="0">Create</option>
+    	<option value="1">Full update</option>
+    	<option value="2">Partial update</option>
+    </selection>
+    
 </object-views>

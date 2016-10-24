@@ -2,6 +2,7 @@ package com.axelor.studio.service.data.record;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -28,7 +29,6 @@ import com.axelor.meta.db.repo.MetaModelRepository;
 import com.axelor.studio.service.data.importer.DataReader;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
-import com.google.inject.persist.Transactional;
 
 public class RecordImporterService {
 	
@@ -48,30 +48,28 @@ public class RecordImporterService {
 	
 	private String log = null;
 	private List<String> header = null;
-	private Set<String> uniqueSet = null;
+	private Map<String, String> uniqueMap = null;
 	private Map<String, String> searchMap = null;
+	private int preference = 0;
 
-	@Transactional
-	public void importRecords(DataReader reader, MetaFile inputFile) throws AxelorException {
+	public void importRecords(DataReader reader, MetaFile inputFile, int preference) throws AxelorException {
 		
-		if (inputFile == null) {
-			throw new AxelorException(I18n.get("Invalid input file"), 1);
+		if (inputFile == null || reader == null) {
+			return;
 		}
 		
-		if (reader == null) {
-			throw new AxelorException(I18n.get("Invalid import call"), 2);
-		}
+		this.preference = preference;
 		
 		reader.initialize(inputFile);
-		header = null; 
-		List<MetaModel> models = getModels(reader);
-		log = formatValidator.validate(models, reader);
+		List<Class<?>> classes = getClasses(reader);
+		log = formatValidator.validate(classes, reader);
 		if (!Strings.isNullOrEmpty(log)) {
 			throw new AxelorException(I18n.get("Error in input format. Please check the log"), 1);
 		}
 		
-		for (MetaModel model : models) {
-			importModel(model, reader);
+		for (Class<?> klass : classes) {
+			Mapper mapper = Mapper.of(klass);
+			importSheet(mapper, reader);
 		}
 		
 	}
@@ -80,9 +78,9 @@ public class RecordImporterService {
 		return log;
 	}
 
-	private List<MetaModel> getModels(DataReader reader) throws AxelorException {
+	private List<Class<?>> getClasses(DataReader reader) throws AxelorException {
 		
-		List<MetaModel> models = new ArrayList<MetaModel>();
+		List<Class<?>> classes = new ArrayList<Class<?>>();
 		
 		for (String name : reader.getKeys()) {
 			MetaModel model = metaModelRepo.findByName(name);
@@ -91,8 +89,7 @@ public class RecordImporterService {
 			}
 			else {
 				try {
-					ClassUtils.findClass(model.getFullName());
-					models.add(model);
+					classes.add(ClassUtils.findClass(model.getFullName()));
 				}catch(IllegalArgumentException e) {
 					log += "\n " + name;
 				}
@@ -104,59 +101,84 @@ public class RecordImporterService {
 			throw new AxelorException(I18n.get("Some models are missing, please check the log"), 1);
 		}
 		
-		return models;
+		return classes;
 	}
 	
-	@Transactional
-	public void importModel(MetaModel model, DataReader reader) {
+	private void importSheet(Mapper mapper, DataReader reader) {
 		
-		Class<?> klass = ClassUtils.findClass(model.getFullName());
-		Mapper mapper = Mapper.of(klass);
-		String tab = model.getName();
-		header = Arrays.asList(reader.read(tab, 0));
+		String klass = mapper.getBeanClass().getSimpleName();
+		header = Arrays.asList(reader.read(klass, 0));
 		setRuleMap();
-		
-		String query = null;
-		if(!uniqueSet.isEmpty()) {
-			query = getQuery(false, null);
-		}
-		
-		for (int i = 2; i < reader.getTotalLines(tab); i++) {
-			String[] row = reader.read(tab, i);
-			Model obj = getModel(mapper, query, row);
-			List<String> cleared = new ArrayList<String>();
-			String[] refKey = null;
-			Map<String, String> refData = null;
-			for (int j = 0; j < row.length;  j++) {
-				String field = header.get(j).split("\\(")[0];
-				String[] target = field.split("\\.");
-				String val = row[j];
-				if (target.length == 1) {
-					Property property = mapper.getProperty(target[0]);
-					property.set(obj, adapt(property.getJavaType(), val));
+		String query = getQuery(false, null);
+		for (int i = 2; i < reader.getTotalLines(klass); i++) {
+			String[] row = reader.read(klass, i);
+			try {
+				Model obj = importModel(mapper, query, row);
+				if(!JPA.em().getTransaction().isActive()) {
+					JPA.em().getTransaction().begin();
 				}
-				else {
-					if (refKey != null && (!refKey[0].equals(target[0]) || refKey[1].equals(target[1]))) {
-						String refQuery = getQuery(true, refData.keySet());
-						processRefField(mapper.getProperty(refKey[0]), obj, refData, cleared, refQuery);
-						refKey = null;
-					}
-					if (refKey == null) {
-						refKey = target;
-						refData = new HashMap<String, String>();
-					}
-					refData.put(field, val);
+				JPA.save(obj);
+				JPA.em().getTransaction().commit();
+				if(!JPA.em().getTransaction().isActive()) {
+					JPA.em().getTransaction().begin();
 				}
-			}
-			if (refKey != null) {
-				String refQuery = getQuery(true, refData.keySet());
-				processRefField(mapper.getProperty(refKey[0]), obj, refData, cleared, refQuery);
+			} catch(Exception e) {
+				log += "\n " + String.format(I18n.get("Row: %s Error: %s"), i, e.getMessage());  
+				if (JPA.em().getTransaction().getRollbackOnly()) {
+					JPA.em().getTransaction().rollback();
+				}
 			}
 			
-//			logger.debug("Model: {}, obj: {}", klass.getName(), obj);
-			JPA.save(obj);
+			 
 		}
-
+	}
+	
+	private Model importModel(Mapper mapper, String query, String[] row) {
+		
+		
+		Model obj = getModel(mapper, query, row);
+		if (preference == 0 && obj.getId() != null) {
+			return null;
+		}
+		List<String> cleared = new ArrayList<String>();
+		String[] refKey = null;
+		Map<String, String> refData = null;
+		
+		for (int j = 0; j < row.length;  j++) {
+			
+			String field = header.get(j).split("\\(")[0];
+			String[] target = field.split("\\.");
+			String val = row[j];
+			
+			if (target.length == 1) {
+				Property property = mapper.getProperty(target[0]);
+				if (preference == 2) {
+					if (property.get(obj) != null) {
+						continue;
+					}
+				}
+				property.set(obj, adapt(property.getJavaType(), val));
+			}
+			else {
+				if (refKey != null && (!refKey[0].equals(target[0]) || refKey[1].equals(target[1]))) {
+					String refQuery = getQuery(true, refData.keySet());
+					processRefField(mapper.getProperty(refKey[0]), obj, refData, cleared, refQuery);
+					refKey = null;
+				}
+				if (refKey == null) {
+					refKey = target;
+					refData = new HashMap<String, String>();
+				}
+				refData.put(field, val);
+			}
+		}
+		
+		if (refKey != null) {
+			String refQuery = getQuery(true, refData.keySet());
+			processRefField(mapper.getProperty(refKey[0]), obj, refData, cleared, refQuery);
+		}
+		
+		return obj;
 	}
 
 	private Model getModel(Mapper mapper, String query, String[] row) {
@@ -164,10 +186,9 @@ public class RecordImporterService {
 		Map<String, Object> data = new HashMap<String, Object>();
 		
 		if (query != null) {
-			for (String field : uniqueSet) {
-				String target = field.split("\\(")[0];
-				Property property =  mapper.getProperty(target);
-				data.put(target, adapt(property.getJavaType(), row[header.indexOf(field)]));
+			for (String field : uniqueMap.keySet()) {
+				String[] target = field.split("\\(")[0].split("\\.");
+				data.put(uniqueMap.get(field), getTypedValue(row[header.indexOf(field)], mapper, target));
 			}
 			Model searched = searchObject(mapper, data, query);
 			if (searched != null) {
@@ -181,54 +202,60 @@ public class RecordImporterService {
 	private void setRuleMap() {
 		
 		searchMap = new HashMap<String, String>();
-		uniqueSet = new HashSet<String>();
+		uniqueMap = new HashMap<String, String>();
 		
 		int count = 0;
 		
-		for(String field : header) {
+		for (String field : header) {
 			count++;
 			String[] column = field.split("\\(");
-			if (column.length > 1) {
-				String rule = column[1].replace(")", "");
-				switch(rule){
+			if (column.length < 2) {
+				continue;
+			}
+			String[] rules = column[1].replace(")", "").split(",");
+			for (String rule : rules) {
+				switch(rule) {
 				case SEARCH:
 					if (field.contains(".") && !searchMap.containsKey(column[0])) {
 						searchMap.put(column[0], "param" + count);
 					}
 					break;
 				case UNIQUE:
-					if (!field.contains(".")) {
-						uniqueSet.add(field);
-					}
+					uniqueMap.put(field, "param" + count);
 					break;
 				}
 			}
-			
 		}
+		
+		logger.debug("Search map: {}", searchMap);
+		logger.debug("Unique map: {}", uniqueMap);
 		
 	}
 	
 	private String getQuery(boolean refQuery, Set<String> refFields) {
 		
 		String query = null;
-		
 		Set<String> fields = new HashSet<String>();
+		
 		if (refQuery) {
 			fields.addAll(searchMap.keySet());
 			fields.retainAll(refFields);
 		}
 		else {
-			fields = uniqueSet;
+			fields.addAll(uniqueMap.keySet());
 		}
 		
 		for (String field : fields) {
-			field = field.split("\\(")[0];
-			String param = field;
+			String target = field.split("\\(")[0];
+			String param;
 			if (refQuery) {
-				param = searchMap.get(field);
-				field = field.substring(field.indexOf(".") + 1);
+				param = searchMap.get(target);
+				target = target.substring(target.indexOf(".") + 1);
 			}
-			String condition = "self." + field + " = :" + param;
+			else {
+				param = uniqueMap.get(field);
+			}
+			String condition = "self." + target + " = :" + param;
 			if (query == null) {
 				query = condition;
 			}
@@ -278,6 +305,12 @@ public class RecordImporterService {
 	private void processRefField(Property property, Model obj, Map<String, String> refData, List<String> cleared, String query) {
 		
 		logger.debug("Processing field : {}, data: {}", property.getName(), refData);
+		if (preference == 2) {
+			if (hasValue(property.get(obj), property.isCollection())) {
+				return;
+			}
+		}
+		
 		Model refObj = getRefObj(property.getTarget(), refData, query);
 		if (property.isCollection()) {
 			if (!cleared.contains(property.getName())) {
@@ -292,6 +325,23 @@ public class RecordImporterService {
 	
 	}
 
+	private boolean hasValue(Object value, boolean isCollection) {
+		
+		if (value == null) {
+			return false;
+		}
+		
+		if (isCollection) {
+			@SuppressWarnings("unchecked")
+			Collection<Object> collection = (Collection<Object>) value;
+			if (collection.isEmpty()) {
+				return false;
+			}
+		}
+		
+		return true;
+	}
+
 	private Model getRefObj(Class<?> klass, Map<String, String> data, String query) {
 		
 		Model refObj = null;
@@ -300,7 +350,6 @@ public class RecordImporterService {
 		if (query != null) {
 			refObj = searchRefModel(klass, query, data);
 		}
-		
 		if (refObj == null) {
 			refObj = (Model) Mapper.toBean(klass, new HashMap<String, Object>());
 		}
@@ -308,6 +357,7 @@ public class RecordImporterService {
 		List<String> cleared = new ArrayList<String>();
 		String[] refKey = null;
 		Map<String, String> refData = null;
+		
 		for (String key : data.keySet()) {
 			String field = key.substring(key.indexOf(".") + 1);
 			String[] target = field.split("\\.");
@@ -327,6 +377,7 @@ public class RecordImporterService {
 				refData.put(field, data.get(key));
 			}
 		}
+		
 		if (refKey != null) {
 			processRefField(mapper.getProperty(refKey[0]), refObj, refData, cleared, null);
 		}

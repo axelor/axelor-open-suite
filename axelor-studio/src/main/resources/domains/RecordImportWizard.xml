@@ -6,10 +6,11 @@
   <module name="studio" package="com.axelor.studio.db" />
   
   <entity name="RecordImportWizard" cachable="true">
-	<datetime name="importDate" />
-	<many-to-one name="importedBy" ref="com.axelor.auth.db.User" title="User" />
+	<datetime name="importDate" title="Date" readonly="true"/>
+	<many-to-one name="importedBy" ref="com.axelor.auth.db.User" title="Imported by" readonly="true" />
 	<many-to-one name="importFile" ref="com.axelor.meta.db.MetaFile" title="Data file" required="true"/>
-	<string name="importLog" title="Log" large="true"/>
+	<many-to-one name="importLogFile" ref="com.axelor.meta.db.MetaFile" title="Import Log" readonly="true"/>
+	<integer name="importPreference" title="Import preference" selection="record.import.preference.select"/>
   </entity>
   
  </domain-models>

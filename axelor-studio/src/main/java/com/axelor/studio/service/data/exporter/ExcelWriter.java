@@ -22,6 +22,7 @@ import org.joda.time.LocalDateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.studio.service.data.CommonService;
@@ -45,11 +46,10 @@ public class ExcelWriter implements DataWriter {
 	private MetaFiles metaFiles;
 	
 	@Override
-	public boolean initialize(MetaFiles metaFiles) {
+	public void initialize() {
 		workBook = new XSSFWorkbook();
-		this.metaFiles = metaFiles;
+		this.metaFiles = Beans.get(MetaFiles.class);
 		addStyle();
-		return true;
 	}
 	
 	@Override

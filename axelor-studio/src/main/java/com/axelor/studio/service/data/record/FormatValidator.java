@@ -8,11 +8,9 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.axelor.common.ClassUtils;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.db.mapper.Property;
 import com.axelor.i18n.I18n;
-import com.axelor.meta.db.MetaModel;
 import com.axelor.studio.service.data.importer.DataReader;
 import com.google.common.collect.Sets;
 
@@ -24,20 +22,19 @@ public class FormatValidator {
 	
 	private StringBuilder logger = new StringBuilder();
 	
-	public String validate(List<MetaModel> models, DataReader reader) {
+	public String validate(List<Class<?>> classes, DataReader reader) {
 		
 		logger = new StringBuilder();
 		
-		for (MetaModel model : models) {
-			log.debug("Validating model: {}", model.getName());
-			String name = model.getName();
-			String[] row = reader.read(name, 0);
+		for (Class<?> klass : classes) {
+			log.debug("Validating klass: {}", klass.getName());
+			String[] row = reader.read(klass.getSimpleName(), 0);
 			if (row != null) {
-				validateFields(ClassUtils.findClass(model.getFullName()), row);
+				validateFields(klass, row);
 			}
 
 			if (row == null){
-				logger.append(String.format(I18n.get("\n Object: %s, Invalid format"), name));
+				logger.append(String.format(I18n.get("\n Object: %s, Invalid format"), klass.getName()));
 			}
 		}
 		
@@ -58,8 +55,11 @@ public class FormatValidator {
 			if (!checkProperty(mapper.getProperty(field[0]), field)) {
 				invalidFields.add(name);
 			}
-			if (column.length > 1 && !RULES.contains(column[1].replaceAll("\\)", ""))) {
-				invalidRules.add(name);
+			if (column.length > 1) {
+			    String[] rules = column[1].replaceAll("\\)", "").split(",");
+			    if (!RULES.containsAll(Arrays.asList(rules))) {
+			    	invalidRules.add(name);
+			    }
 			}
 		}
 		

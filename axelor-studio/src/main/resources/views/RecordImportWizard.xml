@@ -14,8 +14,9 @@
 	      <field name="importDate" />
      	  <field name="importedBy" />
      	  <field name="importFile" widget="binary-link" />
-     	  <button name="importRecord" title="Import" colSpan="3" onClick="save,action-record-import-method-import-record"/>
-     	  <field name="importLog" colSpan="12" title="Import log"/>
+     	  <field name="importPreference" />
+     	  <button name="importRecord" title="Import" colSpan="3" onClick="save,action-record-import-method-import-record,save"/>
+     	  <field name="importLogFile" title="Import log" widget="binary-link" />
 	  </panel>
   </form>
   

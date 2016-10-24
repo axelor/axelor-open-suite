@@ -31,7 +31,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.i18n.I18n;
-import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaAction;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.meta.db.MetaMenu;
@@ -71,9 +70,6 @@ public class ExporterService {
 	private CommonService common;
 	
 	@Inject
-	private MetaFiles metaFiles;
-	
-	@Inject
 	private ModelExporter modelExporter;
 	
 	@Inject
@@ -93,7 +89,7 @@ public class ExporterService {
 		setExportModules();
 		
 		this.writer = writer;
-		this.writer.initialize(metaFiles);
+		this.writer.initialize();
 		
 		if  (oldFile != null) {
 			if (reader.initialize(oldFile)) {

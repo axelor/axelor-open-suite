@@ -17,8 +17,6 @@
  */
 package com.axelor.studio.service.builder;
 
-import groovy.lang.GroovyShell;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
