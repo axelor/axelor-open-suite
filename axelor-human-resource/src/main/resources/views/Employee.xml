@@ -45,6 +45,7 @@
         			<field name="profitSharingBeneficiary" colSpan="4"/>
         			<field name="mainEmploymentContract" colSpan="4" domain="self.employee.id = :id"/>
         			<field name="mainEmploymentContract.executiveStatusSelect" showIf="mainEmploymentContract != null" colSpan="4"/>
+        			<field name="bonusCoef" colSpan="4" />
       			</panel>
       			<panel name="rhInfo" title="HR Info." colSpan="12">
         			<field name="hourlyRate" colSpan="4"/>
@@ -73,6 +74,7 @@
 	       	</panel>
 	       	<panel-related field="employeeAdvanceList" title="Employee advances" grid-view="employee-advance-employee-grid" form-view="employee-advance-employee-form" readonly="false" />
 	       	<panel-related field="kilometricLogList" title="Kilometric log" grid-view="kilometric-log-grid" form-view="kilometric-log-form" readonly="true" />
+	       	<panel-dashlet action="hr.dashlet.employee.bonus" title="Bonuses" colSpan="12" readonly="true" />
         </panel-tabs>
 	</form>
 	
@@ -100,6 +102,13 @@
 	<action-view name="action-hr-view-show-lunch-voucher" title="Lunch Vouchers" model="com.axelor.apps.hr.db.LunchVoucherMgtLine">
 		<view type="grid" name="lunch-voucher-mgt-line-employee-grid"/>
 		<view type="form" name="lunch-voucher-mgt-line-form"/>
+		<domain>self.employee.id = :employeeId</domain>
+		<context name="employeeId" expr="eval: id"/>
+	</action-view>
+	
+	<action-view name="hr.dashlet.employee.bonus" title="Bonuses" model="com.axelor.apps.hr.db.EmployeeBonusMgtLine">
+		<view type="grid" name="employee-bonus-mgt-line-employee-grid"/>
+		<view type="form" name="employee-bonus-mgt-line-employee-form"/>
 		<domain>self.employee.id = :employeeId</domain>
 		<context name="employeeId" expr="eval: id"/>
 	</action-view>

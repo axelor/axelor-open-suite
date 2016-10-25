@@ -316,5 +316,18 @@
 	<action-view name="hr.user.dashboard.view" title="Human Resources User">
 		<view type="dashboard" name="hr.user.dashboard.sample" />
 	</action-view>	
+	
+	<menuitem name="hr-employee-bonus-mgt" parent="hr-root" title="Employee bonus mgt" action="employee.bonus.mgt.all"/>
+	<menuitem name="hr-employee-bonus-type" parent="hr-conf" title="Employee bonus type" action="employee.bonus.type.all"/>
+	
+	<action-view name="employee.bonus.mgt.all" title="Employee bonus mgt" model="com.axelor.apps.hr.db.EmployeeBonusMgt">
+    	<view type="grid" name="employee-bonus-mgt-grid"/>
+	    <view type="form" name="employee-bonus-mgt-form"/>
+	</action-view>
+	
+	<action-view name="employee.bonus.type.all" title="Employee bonus type" model="com.axelor.apps.hr.db.EmployeeBonusType">
+    	<view type="grid" name="employee-bonus-type-grid"/>
+	    <view type="form" name="employee-bonus-type-form"/>
+	</action-view>
 
 </object-views>

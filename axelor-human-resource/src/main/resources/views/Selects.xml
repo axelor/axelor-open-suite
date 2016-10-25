@@ -127,4 +127,9 @@
 		<option value="2">Validated</option>
 	</selection>
 	
+	<selection name="hr.employee.bonus.mgt.status.select">
+		<option value="1">Draft</option>
+		<option value="2">Calculated</option>
+	</selection>
+	
 </object-views>

@@ -73,6 +73,6 @@ public interface IExceptionMessage {
 	
 	static final String KILOMETRIC_LOG_NO_YEAR = /*$$(*/ "There is no year for society %s which includes date %s"/*)*/ ;
 	
-	static final String KILOMETRIC_ALLOWANCE_NO_RULE = /*$$(*/ "There is no met condition for the allowance %s"/*)*/ ;
+	static final String KILOMETRIC_ALLOWANCE_NO_RULE = /*$$(*/ "There is no matching condition for the allowance %s"/*)*/ ;
 
 }

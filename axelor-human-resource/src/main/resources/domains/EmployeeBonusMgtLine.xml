@@ -1,0 +1,19 @@
+<?xml version="1.0" ?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_4.0.xsd">
+
+     <module name="human-resource" package="com.axelor.apps.hr.db"/>
+
+    <entity name="EmployeeBonusMgtLine" lang="java" >
+    
+	    <many-to-one name="employee" ref="com.axelor.apps.hr.db.Employee" title="Employee"/>
+	    <decimal name="amount" title="Amount" />
+	    <decimal name="coef" title="Coefficient" />
+	    <many-to-one name="presence" ref="com.axelor.apps.base.db.WeeklyPlanning" title="Presence" />
+	    <date name="seniorityDate" title="Seniority date" />
+	    <many-to-one name="employeeBonusMgt" ref="com.axelor.apps.hr.db.EmployeeBonusMgt" title="Employee bonus mgt" />
+	    
+    </entity>
+
+</domain-models>
