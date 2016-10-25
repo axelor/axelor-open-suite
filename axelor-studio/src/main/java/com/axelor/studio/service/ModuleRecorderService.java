@@ -192,7 +192,7 @@ public class ModuleRecorderService {
 		log.debug("JAVA HOME: {}", System.getProperty("java.home"));
 		env.put("JAVA_HOME", System.getProperty("java.home"));
 		log.debug("JAVA Temp dir {}", System.getProperty("java.io.tmpdir"));
-		env.put("GRADLE_OPTS", "-Djava.io.tmpdir=" + System.getProperty("java.io.tmpdir"));
+		env.put("GRADLE_OPTS", "-Dfile.encoding=utf-8 -Djava.io.tmpdir=" + System.getProperty("java.io.tmpdir"));
 		String axelorHome = getAxelorHome(env);
 		if (axelorHome != null) {
 			env.put("AXELOR_HOME", axelorHome);

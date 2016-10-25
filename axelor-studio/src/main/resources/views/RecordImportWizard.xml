@@ -15,13 +15,13 @@
      	  <field name="importedBy" />
      	  <field name="importFile" widget="binary-link" />
      	  <field name="importPreference" />
-     	  <button name="importRecord" title="Import" colSpan="3" onClick="save,action-record-import-method-import-record,save"/>
+     	  <button name="importRecord" title="Import" colSpan="3" onClick="save,action-record-import-wizard-method-import-records,save"/>
      	  <field name="importLogFile" title="Import log" widget="binary-link" />
 	  </panel>
   </form>
   
-  <action-method name="action-record-import-wizard-method-import-record">
-  	<call class="com.axelor.studio.web.RecordImportController" method="importRecord"/>
+  <action-method name="action-record-import-wizard-method-import-records">
+  	<call class="com.axelor.studio.web.RecordImportController" method="importRecords"/>
   </action-method>
   
 </object-views>

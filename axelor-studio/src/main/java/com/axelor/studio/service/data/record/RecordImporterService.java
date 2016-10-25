@@ -110,6 +110,7 @@ public class RecordImporterService {
 		header = Arrays.asList(reader.read(klass, 0));
 		setRuleMap();
 		String query = getQuery(false, null);
+		
 		for (int i = 2; i < reader.getTotalLines(klass); i++) {
 			String[] row = reader.read(klass, i);
 			try {
@@ -117,12 +118,15 @@ public class RecordImporterService {
 				if(!JPA.em().getTransaction().isActive()) {
 					JPA.em().getTransaction().begin();
 				}
-				JPA.save(obj);
-				JPA.em().getTransaction().commit();
-				if(!JPA.em().getTransaction().isActive()) {
-					JPA.em().getTransaction().begin();
+				if (obj != null) {
+					JPA.save(obj);
+					JPA.em().getTransaction().commit();
+					if(!JPA.em().getTransaction().isActive()) {
+						JPA.em().getTransaction().begin();
+					}
 				}
 			} catch(Exception e) {
+				e.printStackTrace();
 				log += "\n " + String.format(I18n.get("Row: %s Error: %s"), i, e.getMessage());  
 				if (JPA.em().getTransaction().getRollbackOnly()) {
 					JPA.em().getTransaction().rollback();
@@ -344,6 +348,7 @@ public class RecordImporterService {
 
 	private Model getRefObj(Class<?> klass, Map<String, String> data, String query) {
 		
+		logger.debug("Ref object data: {}", data);
 		Model refObj = null;
 		Mapper mapper = Mapper.of(klass);
 		
@@ -363,6 +368,7 @@ public class RecordImporterService {
 			String[] target = field.split("\\.");
 			Property property = mapper.getProperty(target[0]);
 			if (target.length == 1) {
+				logger.debug("Setting property: {}, value: {}", property.getName(), data.get(key));
 				property.set(refObj, adapt(property.getJavaType(), data.get(key)));
 			}
 			else {
@@ -382,7 +388,7 @@ public class RecordImporterService {
 			processRefField(mapper.getProperty(refKey[0]), refObj, refData, cleared, null);
 		}
 		
-		logger.debug("Ref object: {}", refObj);
+		logger.debug("Ref object created: {}", refObj);
 		
 		return refObj;
 	}
@@ -392,12 +398,12 @@ public class RecordImporterService {
 		Mapper mapper = Mapper.of(klass);
 		
 		Map<String, Object> typedData = new HashMap<String, Object>();
-		Set<String> fields = data.keySet();
-		fields.retainAll(searchMap.keySet());
-		for (String field : fields) {
-			String[] target = field.substring(field.indexOf(".") + 1).split("\\.");
-			Object val = getTypedValue(data.get(field), mapper, target);
-			typedData.put(searchMap.get(field), val);
+		for (String field : data.keySet()) {
+			if (searchMap.containsKey(field)) {
+				String[] target = field.substring(field.indexOf(".") + 1).split("\\.");
+				Object val = getTypedValue(data.get(field), mapper, target);
+				typedData.put(searchMap.get(field), val);
+			}
 		}
 		
 		return searchObject(mapper, typedData, query);

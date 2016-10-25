@@ -62,15 +62,13 @@
   </action-record>
   
   <action-record name="action-action-builder-view-builder-change" model="com.axelor.studio.db.ActionBuilder">
-  	<field name="metaModel" expr="eval:viewBuilderSet?.find{it->it.viewType == viewOrder}?.metaModel" if="!viewBuilderSet.empty"/>
-  	<field name="metaModel" expr="eval:null" if="viewBuilderSet.empty"/>
-  	<field name="title" expr="eval:viewBuilderSet?.find{it->it.viewType == viewOrder}?.title" if="!viewBuilderSet.empty"/>
+  	<field name="metaModel" expr="eval:viewBuilderSet?.getAt(0).metaModel" if="!viewBuilderSet?.empty"/>
+  	<field name="title" expr="eval:viewBuilderSet?.getAt(0).title" if="!viewBuilderSet?.empty"/>
   </action-record>
   
   <action-record name="action-action-builder-meta-view-change" model="com.axelor.studio.db.ActionBuilder">
-  	<field name="metaModel" expr="eval:__repo__.of(MetaModel).all().filter('self.fullName = ${metaViewSet?.find{it->it.type == viewOrder}.model}')" if="metaViewSet?.find{it->it.type == viewOrder} != null"/>
-  	<field name="metaModel" expr="eval:null" if="metaViewSet.empty"/>
-  	<field name="title" expr="eval:metaViewSet?.find{it->it.type == viewOrder}.title" if="!metaViewSet.empty" />
+  	<field name="metaModel" expr="eval:__repo__.of(MetaModel).all().filter('self.fullName = ${metaViewSet?.getAt(0).model}')" if="!metaViewSet?.empty"/>
+  	<field name="title" expr="eval:metaViewSet?.getAt(0).title" if="!metaViewSet?.empty" />
   </action-record>
   
   <action-record name="action-action-builder-type-select-change" model="com.axelor.studio.db.ActionBuilder">

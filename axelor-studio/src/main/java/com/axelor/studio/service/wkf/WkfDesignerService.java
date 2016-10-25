@@ -180,6 +180,7 @@ public class WkfDesignerService {
 			List<WkfNode> nodes = wkfNodeRepository.all().filter("self.wkf.id = ?1", instance.getId()).fetch();
 			for (WkfNode node : nodes) {
 				nodeMap.put(node.getXmlId(), node);
+				nodeSequences.add(node.getSequence());
 			}
 		}
 		else {

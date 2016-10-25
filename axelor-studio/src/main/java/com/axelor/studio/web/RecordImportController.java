@@ -32,7 +32,7 @@ public class RecordImportController {
 	@Inject
 	private MetaFiles metaFiles;
 	
-	public void importRecord(ActionRequest request, ActionResponse response) throws IOException {
+	public void importRecords(ActionRequest request, ActionResponse response) throws IOException {
 		
 		RecordImportWizard importWizard = request.getContext().asType(RecordImportWizard.class);
 		importWizard = importWizardRepo.find(importWizard.getId());
