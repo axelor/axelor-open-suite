@@ -80,7 +80,6 @@ public class ModelBuilderService {
 
 	private final Logger log = LoggerFactory.getLogger(getClass());
 
-	
 	private Map<String, StringBuilder> moduleSequenceMap;
 	
 	private Map<String, StringBuilder> moduleFieldMap;
@@ -104,7 +103,7 @@ public class ModelBuilderService {
 	}
 	
 	/**
-	 * Root method to accesss the service. It will find all edited and
+	 * Root method to access the service. It will find all edited and
 	 * customised MetaModels. Call other methods to process MetaModel founds.
 	 * @throws AxelorException 
 	 */
@@ -113,16 +112,14 @@ public class ModelBuilderService {
 		try {
 			List<MetaModel> customizedModels = metaModelRepo.all()
 					.filter("self.customised = true").fetch();
-			removeDeleted(customizedModels);
+			checkFiles(customizedModels);
 			
-			List<MetaModel> editedModels = new ArrayList<MetaModel>();
 			for (MetaModel model : customizedModels) {
 				if (model.getEdited()) {
-					editedModels.add(model);
+					recordModel(model);
+					updateEdited(model);
 				}
 			}
-			recordModel(editedModels.iterator());
-			updateEdited(editedModels);
 			
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -139,13 +136,9 @@ public class ModelBuilderService {
 	 *            List of MetaModel to process.
 	 */
 	@Transactional
-	public void updateEdited(List<MetaModel> models) {
-
-		for (MetaModel model : models) {
-			model.setEdited(false);
-			metaModelRepo.save(model);
-		}
-
+	public void updateEdited(MetaModel model) {
+		model.setEdited(false);
+		metaModelRepo.save(model);
 	}
 
 	/**
@@ -159,17 +152,12 @@ public class ModelBuilderService {
 	 *             Exception thrown by file handling of domain xml file.
 	 * @throws AxelorException 
 	 */
-	private void recordModel(Iterator<MetaModel> modelIterator)
+	private void recordModel(MetaModel metaModel) 
 			throws IOException, AxelorException {
-
-		if (!modelIterator.hasNext()) {
-			return;
-		}
 
 		moduleSequenceMap = new HashMap<String, StringBuilder>();
 		moduleFieldMap = new HashMap<String, StringBuilder>();
-
-		MetaModel metaModel = modelIterator.next();
+		
 		String packageName = metaModel.getPackageName();
 		String modelName = metaModel.getName();
 		trackFields = new ArrayList<String>();
@@ -179,9 +167,8 @@ public class ModelBuilderService {
 		List<MetaField> customFields = getCustomisedFields(metaModel, true);
 
 		if (customFields.isEmpty()) {
-			log.debug("Deleting model without custom field : {}", metaModel.getName());
+			log.debug("Removing a model with no custom field : {}", metaModel.getName());
 			configService.removeDomainFile(metaModel.getName() + ".xml");
-			recordModel(modelIterator);
 			return;
 		}
 		
@@ -219,8 +206,6 @@ public class ModelBuilderService {
 			File domainFile = new File(configService.getDomainDir(module, true), modelName + ".xml");
 			writeFile(domainFile, sb.toString());
 		}
-
-		recordModel(modelIterator);
 
 	}
 
@@ -615,8 +600,14 @@ public class ModelBuilderService {
 				return null;
 		}
 	}
-
-	private void removeDeleted(List<MetaModel> customizedModels) throws AxelorException {
+	
+	/**
+	 * It will check the domain files of all the customised modules. 
+	 * It removes a file if the related model is not present in customizedModels. 
+	 * @param customizedModels  List of the models used in file name comparison. 
+	 * @throws AxelorException
+	 */
+	private void checkFiles(List<MetaModel> customizedModels) throws AxelorException {
 
 		List<String> fileNames = new ArrayList<String>();
 		for (MetaModel model : customizedModels) {

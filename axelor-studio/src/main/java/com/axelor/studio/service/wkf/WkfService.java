@@ -130,6 +130,10 @@ public class WkfService {
 			viewBuilderRepo.save(viewBuilder);
 
 			workflow.setEdited(false);
+			workflow.getMetaModel().setEdited(true);
+			if (workflow.getWkfField().getMetaModule() == null) {
+				workflow.getWkfField().setMetaModule(wkf.getMetaModule());
+			}
 			wkfRepo.save(workflow);
 
 		} catch (Exception e) {

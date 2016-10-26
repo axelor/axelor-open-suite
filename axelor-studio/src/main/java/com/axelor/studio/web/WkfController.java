@@ -256,7 +256,9 @@ public class WkfController {
 			String clsName = wkfField.getMetaModel().getFullName();
 			try {
 				Property p = Mapper.of(Class.forName(clsName)).getProperty(wkfField.getName());
-				return MetaStore.getSelectionList(p.getSelection());
+				if (p != null && p.getSelection() != null) {
+					return MetaStore.getSelectionList(p.getSelection());
+				}
 			} catch (ClassNotFoundException e) {
 				e.printStackTrace();
 			}

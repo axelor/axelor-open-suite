@@ -94,7 +94,7 @@ public class FormBuilderService {
 	private FilterService filterService;
 	
 	@Inject
-	private FormBuilderService builder;
+	private FormBuilderService builderService;
 	
 	/**
 	 * Root method to access the service. It will generate FormView from
@@ -374,7 +374,7 @@ public class FormBuilderService {
 			}
 		}
 		else if (parent != null) {
-			formView = builder.getFormView(parent);
+			formView = builderService.getFormView(parent);
 		}
 		else {
 			formView = new FormView();
@@ -829,7 +829,6 @@ public class FormBuilderService {
 		field.setColSpan(null);
 		String selectWidget = viewItem.getWidget();
 		String widget = null;
-		MetaField metaField = viewItem.getMetaField();
 		setEditor(field, viewItem);
 		
 		if (viewItem.getHidden()) {
@@ -858,7 +857,8 @@ public class FormBuilderService {
 		} else if (selectWidget != null && !selectWidget.equals("normal")) {
 			widget = selectWidget;
 		}
-
+		
+		MetaField metaField = viewItem.getMetaField();
 		if (metaField != null) {
 			if (metaField.getIsDuration()) {
 				widget = "duration";

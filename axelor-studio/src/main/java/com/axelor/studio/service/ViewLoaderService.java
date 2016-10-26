@@ -44,6 +44,7 @@ import com.axelor.meta.schema.views.FormView;
 import com.axelor.meta.schema.views.GridView;
 import com.axelor.meta.schema.views.Panel;
 import com.axelor.meta.schema.views.PanelInclude;
+import com.axelor.meta.schema.views.PanelRelated;
 import com.axelor.meta.schema.views.PanelTabs;
 import com.axelor.studio.db.ViewBuilder;
 import com.axelor.studio.db.ViewItem;
@@ -218,7 +219,8 @@ public class ViewLoaderService {
 							false);
 				}
 			}
-			// levelCounter += 1;
+		} else if (widget instanceof PanelRelated) {
+			levelCounter += 1;
 		}
 
 		setPanel(iterator, parentLevel, levelCounter, isPanelTab);

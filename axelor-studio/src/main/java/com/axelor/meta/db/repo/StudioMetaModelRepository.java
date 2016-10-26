@@ -52,10 +52,11 @@ public class StudioMetaModelRepository extends MetaModelRepository {
 				field.setTypeName("Integer");
 				field.setLabel("Status");
 				field.setFieldType("integer");
+				field.setCustomised(true);
 				metaModel.addMetaField(field);
 			}
 		}
-
+		
 		if (metaModel.getId() != null) {
 			metaModel.setCustomised(true);
 			metaModel.setEdited(true);

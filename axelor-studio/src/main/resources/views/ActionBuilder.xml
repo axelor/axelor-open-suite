@@ -83,11 +83,11 @@
   </action-attrs>
   
   <action-attrs name="action-action-builder-view-builder-domain">
-  	<attribute name="domain" for="viewBuilderList" expr="eval:&quot;self.metaModel.id = ${metaModel.id} &quot;" if="metaModel != null" /> 
+  	<attribute name="domain" for="viewBuilderSet" expr="eval:&quot;self.metaModel.id = ${metaModel.id} &quot;" if="metaModel != null" /> 
   </action-attrs>
   
   <action-attrs name="action-action-builder-meta-view-domain">
-  	<attribute name="domain" for="metaViewList" expr="eval:&quot;self.model = '${metaModel.fullName}'&quot;" if="metaModel != null" /> 
+  	<attribute name="domain" for="metaViewSet" expr="eval:&quot;self.model = '${metaModel.fullName}'&quot;" if="metaModel != null" /> 
   </action-attrs>
   
   <action-validate name="action-action-builder-validate-action-report">

@@ -187,7 +187,7 @@ public class FilterService {
 
 		value = value.replace("$$", "_parent.");
 
-		return value;
+		return getTagValue(value,false);
 	}
 
 	private String getConditionExpr(String operator, String field, String value) {
