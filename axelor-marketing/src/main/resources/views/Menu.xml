@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
+
+	<menuitem name="marketing-root" order="-107" title="Marketing" icon="fa-bullhorn" 
+	    groups="admins,ERP" icon-background="violet"/> 
+	
+	<menuitem name="campaign-all" parent="marketing-root" title="Campaigns" action="campaign.all"/>
+	
+	<action-view name="campaign.all" model="com.axelor.apps.marketing.db.Campaign"
+		title="Campaigns">
+		<view name="campaign-grid" type="grid" />
+		<view name="campaign-form" type="form" />
+	</action-view>	
+	
+	<menuitem name="target-list-all" parent="marketing-root" title="Target lists" action="target.list.all"/>
+	
+	<action-view name="target.list.all" model="com.axelor.apps.marketing.db.TargetList"
+		title="Target lists">
+		<view name="target-list-grid" type="grid" />
+		<view name="target-list-form" type="form" />
+	</action-view>	
+
+</object-views>
