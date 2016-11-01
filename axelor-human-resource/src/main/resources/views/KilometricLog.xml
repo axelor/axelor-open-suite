@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
+    
+    <grid name="kilometric-log-grid" title="Kilometrice log" model="com.axelor.apps.hr.db.KilometricLog">
+        <field name="year"/>
+	    <field name="distanceTravelled"/>
+    </grid>
+
+	<form name="kilometric-log-form" title="Kilometrice Allowance Param" model="com.axelor.apps.hr.db.KilometricLog" width="large">
+	  	<panel name="main">
+	    	<field name="year"/>
+	    	<field name="distanceTravelled"/>
+	  	</panel>
+	  	<panel-related field="expenseLineList" readonly="true" form-view="expense-line-kilometric-form" grid-view="expense-line-kilometric-grid" />
+	</form>
+	
+</object-views>

@@ -70,5 +70,9 @@ public interface IExceptionMessage {
 	static final String BATCH_SENIORITY_LEAVE_MANAGEMENT_FORMULA = /*$$(*/ "There is an error in a formula"/*)*/ ;
 	
 	static final String LUNCH_VOUCHER_MIN_STOCK = /*$$(*/ "Minimum stock of lunch vouchers will be reached for the company %s.\n  Minimum Stock allowed : %s.\n Available Stock : %s" /*)*/ ;
+	
+	static final String KILOMETRIC_LOG_NO_YEAR = /*$$(*/ "There is no year for society %s which includes date %s"/*)*/ ;
+	
+	static final String KILOMETRIC_ALLOWANCE_NO_RULE = /*$$(*/ "There is no matching condition for the allowance %s"/*)*/ ;
 
 }

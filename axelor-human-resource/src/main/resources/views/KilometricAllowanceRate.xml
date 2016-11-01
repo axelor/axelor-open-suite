@@ -3,15 +3,16 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
 
 	<grid editable="true" name="kilometric-allowance-rate-grid" title="Kilometric allowance rates" model="com.axelor.apps.hr.db.KilometricAllowanceRate" >
-	    <field name="kilometricAllowParam" />
-        <field name="rate"/>
+	    <field name="kilometricAllowParam.name" />
+		<field name="kilometricAllowParam.code" />
+        <field name="kilometricAllowParam" hidden="true" />
     </grid>
 
     <form name="kilometric-allowance-rate-form" title="Kilometric allowance rate" model="com.axelor.apps.hr.db.KilometricAllowanceRate">
     	<panel name="main">
 		    <field name="kilometricAllowParam" />
-	        <field name="rate"/>
         </panel>
+        <panel-related field="kilometricAllowanceRuleList" form-view="kilometric-allowance-rule-form" grid-view="kilometric-allowance-rule-grid"/>
     </form>
 
 </object-views>
