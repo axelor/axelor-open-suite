@@ -320,9 +320,9 @@ public class PaymentVoucherConfirmService  {
 		paymentMove.addMoveLineListItem(moveLine);
 		paymentInvoiceToPay.setMoveLineGenerated(moveLine);
 
-		// Should be replaced per InvoicePayment
+		BigDecimal amountInCompanyCurrency = moveLine.getDebit().add(moveLine.getCredit());
 		
-		Reconcile reconcile = reconcileService.createReconcile(moveLineToPay, moveLine, amountToPay, true);
+		Reconcile reconcile = reconcileService.createReconcile(moveLineToPay, moveLine, amountInCompanyCurrency, true);
 		log.debug("Reconcile : : : {}", reconcile);
 		reconcileService.confirmReconcile(reconcile, true);
 		return moveLine;

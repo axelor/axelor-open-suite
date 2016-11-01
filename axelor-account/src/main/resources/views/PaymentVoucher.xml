@@ -64,8 +64,8 @@
 			<field name="currency" colSpan="4" form-view="currency-form" grid-view="currency-grid"/>
 		</panel>
 		
-		<panel colSpan="12">
-			<button name="loadMoveLines" title="Search elements to pay" onClick="save,com.axelor.apps.account.web.PaymentVoucherController:loadMoveLines,save" showIf="statusSelect == 1" colSpan="6"/>
+		<panel colSpan="12" showIf="statusSelect == 1">
+			<button name="loadMoveLines" title="Search elements to pay" onClick="save,com.axelor.apps.account.web.PaymentVoucherController:loadMoveLines,save" colSpan="6"/>
 		</panel>
 		
 		<panel readonlyIf="statusSelect == 2 || payboxPaidOk" colSpan="12">
@@ -77,9 +77,9 @@
 		
 		<panel-stack readonlyIf="statusSelect == 2">
 			<panel-related colSpan="12" field="paymentInvoiceList"  form-view="payment-invoice-form" grid-view="payment-invoice-grid" showIf="statusSelect == 1"/>
-			<panel colSpan="12">
-				<button name="loadSelectedLines" title="Load selected lines" onClick="com.axelor.apps.account.web.PaymentVoucherController:loadSelectedLines,save" showIf="statusSelect == 1" colSpan="6"/>
-				<button name="resetImputation" title="Reset imputation" onClick="com.axelor.apps.account.web.PaymentVoucherController:resetImputation,save" showIf="statusSelect == 1" colSpan="6"/>
+			<panel colSpan="12" showIf="statusSelect == 1">
+				<button name="loadSelectedLines" title="Load selected lines" onClick="com.axelor.apps.account.web.PaymentVoucherController:loadSelectedLines,save" colSpan="6"/>
+				<button name="resetImputation" title="Reset imputation" onClick="com.axelor.apps.account.web.PaymentVoucherController:resetImputation,save" colSpan="6"/>
 			</panel>
 			<panel-related colSpan="12" field="paymentInvoiceToPayList" form-view="payment-invoice-to-pay-form" grid-view="payment-invoice-to-pay-grid"/>
 		</panel-stack>

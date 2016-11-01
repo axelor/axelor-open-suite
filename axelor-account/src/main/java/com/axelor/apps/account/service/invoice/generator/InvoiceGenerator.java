@@ -315,7 +315,7 @@ public abstract class InvoiceGenerator  {
 
 
 	/**
-	 * Initialiser l'ensemble des listes de ligne de tva d'une facture
+	 * Initiate the list of invoice tax lines
 	 *
 	 * @param invoice
 	 */
@@ -327,9 +327,9 @@ public abstract class InvoiceGenerator  {
 	}
 
 	/**
-	 * Calculer le montant d'une facture.
+	 * Compute the invoice amounts
 	 * <p>
-	 * Le calcul est basé sur les lignes de TVA préalablement créées.
+	 * The compute is based on invoice tax lines.
 	 * </p>
 	 *
 	 * @param invoice
@@ -337,31 +337,33 @@ public abstract class InvoiceGenerator  {
 	 */
 	public void computeInvoice(Invoice invoice) throws AxelorException {
 
-		// Dans la devise de la comptabilité du tiers
+		// In the invoice currency
 		invoice.setExTaxTotal( BigDecimal.ZERO );
 		invoice.setTaxTotal( BigDecimal.ZERO );
 		invoice.setInTaxTotal( BigDecimal.ZERO );
 
-		// Dans la devise de la facture
+		// In the company currency
 		invoice.setCompanyExTaxTotal(BigDecimal.ZERO);
 		invoice.setCompanyTaxTotal(BigDecimal.ZERO);
 		invoice.setCompanyInTaxTotal(BigDecimal.ZERO);
 
 		for (InvoiceLineTax invoiceLineTax : invoice.getInvoiceLineTaxList()) {
 
-			// Dans la devise de la comptabilité du tiers
+			// In the invoice currency
 			invoice.setExTaxTotal(invoice.getExTaxTotal().add( invoiceLineTax.getExTaxBase() ));
 			invoice.setTaxTotal(invoice.getTaxTotal().add( invoiceLineTax.getTaxTotal() ));
 			invoice.setInTaxTotal(invoice.getInTaxTotal().add( invoiceLineTax.getInTaxTotal() ));
 
-			// Dans la devise de la facture
+			// In the company currency
 			invoice.setCompanyExTaxTotal(invoice.getCompanyExTaxTotal().add( invoiceLineTax.getCompanyExTaxBase() ));
 			invoice.setCompanyTaxTotal(invoice.getCompanyTaxTotal().add( invoiceLineTax.getCompanyTaxTotal() ));
 			invoice.setCompanyInTaxTotal(invoice.getCompanyInTaxTotal().add( invoiceLineTax.getCompanyInTaxTotal() ));
 
 		}
+		
+		invoice.setAmountRemaining(invoice.getInTaxTotal());
 
-		logger.debug("Montant de la facture: HT = {}, TVA = {}, TTC = {}",
+		logger.debug("Invoice amounts : W.T. = {}, Tax = {}, A.T.I. = {}",
 			new Object[] { invoice.getExTaxTotal(), invoice.getTaxTotal(), invoice.getInTaxTotal() });
 
 	}

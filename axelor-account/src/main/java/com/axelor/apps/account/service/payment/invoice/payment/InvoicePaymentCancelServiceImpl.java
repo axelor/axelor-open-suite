@@ -111,6 +111,9 @@ public class InvoicePaymentCancelServiceImpl  implements  InvoicePaymentCancelSe
 				invoicePayment.setMove(null);
 				moveCancelService.cancel(paymentMove);
 			}
+			else  {
+				this.updateCancelStatus(invoicePayment);
+			}
 
 		}	
 

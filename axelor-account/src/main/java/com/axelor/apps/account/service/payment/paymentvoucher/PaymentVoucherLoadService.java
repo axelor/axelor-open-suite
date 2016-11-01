@@ -28,6 +28,7 @@ import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentInvoice;
 import com.axelor.apps.account.db.PaymentInvoiceToPay;
@@ -126,23 +127,24 @@ public class PaymentVoucherLoadService {
 	}
 	
 
-	public PaymentInvoice createPaymentInvoice(MoveLine moveLine)  {
+	public PaymentInvoice createPaymentInvoice(MoveLine moveLine) throws AxelorException  {
+		
+		Move move = moveLine.getMove();
 		
 		PaymentInvoice paymentInvoice = new PaymentInvoice();
 		
 		paymentInvoice.setMoveLine(moveLine);
 
-		if(moveLine.getDebit().compareTo(BigDecimal.ZERO) > 0)  {
-			paymentInvoice.setDueAmount(moveLine.getDebit());
-		}
-		else  {
-			paymentInvoice.setDueAmount(moveLine.getCredit());
-		}
-		paymentInvoice.setPaidAmount(moveLine.getAmountPaid());
+		paymentInvoice.setDueAmount(moveLine.getCurrencyAmount());
+		
+		BigDecimal paidAmountInElementCurrency = currencyService.getAmountCurrencyConvertedAtDate(
+				move.getCompanyCurrency(), move.getCurrency(), moveLine.getAmountPaid(), moveLine.getDate()).setScale(2, RoundingMode.HALF_EVEN);
+		
+		paymentInvoice.setPaidAmount(paidAmountInElementCurrency);
 		
 		paymentInvoice.setAmountRemaining(paymentInvoice.getDueAmount().subtract(paymentInvoice.getPaidAmount()));
 		
-		paymentInvoice.setCurrency(moveLine.getMove().getCurrency());
+		paymentInvoice.setCurrency(move.getCurrency());
 		
 		return paymentInvoice;
 	}
@@ -230,11 +232,11 @@ public class PaymentVoucherLoadService {
 	
 	
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void resetImputation(PaymentVoucher paymentVoucher)  {
+	public void resetImputation(PaymentVoucher paymentVoucher) throws AxelorException  {
 		
 		paymentVoucher.getPaymentInvoiceToPayList().clear();
 
-		paymentVoucherRepository.save(paymentVoucher);
+		this.searchDueElements(paymentVoucher);
 		
 	}
 	
