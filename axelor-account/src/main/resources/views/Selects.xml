@@ -285,6 +285,9 @@
 	<selection name="invoice.payment.type.select">
 		<option value="1">Advance Payment</option>
 		<option value="2">Payment</option>
+		<option value="3">Refund invoice</option>
+		<option value="4">Invoice</option>
+		<option value="5">Other</option>
 	</selection>
 	
 	<selection name="invoice.payment.status.select">

@@ -18,7 +18,6 @@
 package com.axelor.apps.account.service.payment.paymentvoucher;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,8 +44,6 @@ import com.axelor.apps.account.service.move.MoveService;
 import com.axelor.apps.account.service.payment.PaymentModeService;
 import com.axelor.apps.account.service.payment.PaymentService;
 import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.db.Currency;
-import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.administration.GeneralServiceImpl;
@@ -145,7 +142,7 @@ public class PaymentVoucherConfirmService  {
 		if(paymentVoucher.getMoveLine() == null || (paymentVoucher.getMoveLine() != null && !allRight) || (scheduleToBePaid && !allRight && paymentVoucher.getMoveLine() != null))  {
 
 			//Manage all the cases in the same way. As if a move line (Excess payment) is selected, we cancel it first
-			Move move = moveService.getMoveCreateService().createMove(journal, company, null, payerPartner, paymentDate, paymentMode, MoveRepository.AUTOMATIC, paymentVoucher.getCashRegister());
+			Move move = moveService.getMoveCreateService().createMove(journal, company, paymentVoucher, payerPartner, paymentDate, paymentMode, MoveRepository.AUTOMATIC, paymentVoucher.getCashRegister());
 
 			move.setPaymentVoucher(paymentVoucher);
 
@@ -160,9 +157,8 @@ public class PaymentVoucherConfirmService  {
 				MoveLine moveLineToPay = paymentInvoiceToPay.getMoveLine();
 				log.debug("PV moveLineToPay debit : {}", moveLineToPay.getDebit());
 				log.debug("PV moveLineToPay amountPaid : {}", moveLineToPay.getAmountPaid());
-//				BigDecimal amountToPay = paymentInvoiceToPay.getAmountToPay();
 
-				BigDecimal amountToPay = this.getAmountCurrencyConverted(moveLineToPay, paymentVoucher, paymentInvoiceToPay.getAmountToPay());
+				BigDecimal amountToPay = paymentInvoiceToPay.getAmountToPayCurrency();
 
 				if (amountToPay.compareTo(BigDecimal.ZERO) > 0)  {
 
@@ -185,7 +181,7 @@ public class PaymentVoucherConfirmService  {
 						paymentVoucher.getPaidAmount(), isDebitToPay, paymentDate, moveLineNo, null);
 
 				Reconcile reconcile = reconcileService.createReconcile(moveLine,paymentVoucher.getMoveLine(),moveLine.getDebit(), !isDebitToPay);
-				reconcileService.confirmReconcile(reconcile);
+				reconcileService.confirmReconcile(reconcile, true);
 			}
 			else{
 
@@ -328,21 +324,9 @@ public class PaymentVoucherConfirmService  {
 		
 		Reconcile reconcile = reconcileService.createReconcile(moveLineToPay, moveLine, amountToPay, true);
 		log.debug("Reconcile : : : {}", reconcile);
-		reconcileService.confirmReconcile(reconcile);
+		reconcileService.confirmReconcile(reconcile, true);
 		return moveLine;
 	}
 
-
-	public BigDecimal getAmountCurrencyConverted(MoveLine moveLineToPay, PaymentVoucher paymentVoucher, BigDecimal amountToPay) throws AxelorException  {
-
-		Currency moveCurrency = moveLineToPay.getMove().getCurrency();
-
-		Currency paymentVoucherCurrency = paymentVoucher.getCurrency();
-
-		LocalDate paymentVoucherDate = paymentVoucher.getPaymentDateTime().toLocalDate();
-
-		return currencyService.getAmountCurrencyConverted(paymentVoucherCurrency, moveCurrency, amountToPay, paymentVoucherDate).setScale(IAdministration.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
-
-	}
 
 }

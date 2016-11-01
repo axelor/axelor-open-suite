@@ -332,15 +332,10 @@ public class MoveToolService {
 
 			boolean isMinus = this.isMinus(invoice);
 
-			log.debug("Methode 1 : debut"); //TODO
 			Beans.get(InvoiceRepository.class).save(invoice);
-			log.debug("Methode 1 : milieu");
-			MoveLine moveLine = this.getCustomerMoveLineByLoop(invoice);
-			log.debug("Methode 1 : fin");
 
-			log.debug("Methode 2 : debut");
+			MoveLine moveLine = this.getCustomerMoveLineByLoop(invoice);
 //			MoveLine moveLine2 = this.getCustomerMoveLineByQuery(invoice);
-			log.debug("Methode 2 : fin");
 
 			if(moveLine != null)  {
 				inTaxTotalRemaining = inTaxTotalRemaining.add(moveLine.getAmountRemaining());

@@ -28,12 +28,8 @@ import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.google.inject.Inject;
 
 public class MoveManagementRepository extends MoveRepository {
-
-	@Inject
-	protected GeneralService generalService;
 
 	@Override
 	public Move copy(Move entity, boolean deep) {
@@ -48,7 +44,7 @@ public class MoveManagementRepository extends MoveRepository {
 		}
 		copy.setStatusSelect(STATUS_DRAFT);
 		copy.setReference(null);
-		copy.setDate(generalService.getTodayDate());
+		copy.setDate(Beans.get(GeneralService.class).getTodayDate());
 		copy.setExportNumber(null);
 		copy.setExportDate(null);
 		copy.setMoveLineReport(null);

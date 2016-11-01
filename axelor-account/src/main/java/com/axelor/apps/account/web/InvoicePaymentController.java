@@ -19,7 +19,7 @@ package com.axelor.apps.account.web;
 
 import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
-import com.axelor.apps.account.service.InvoicePaymentService;
+import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCancelService;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
@@ -30,7 +30,7 @@ public class InvoicePaymentController  {
 	
 
 	@Inject
-	private InvoicePaymentService invoicePaymentService;
+	private InvoicePaymentCancelService invoicePaymentCancelService;
 
 
 	
@@ -40,7 +40,7 @@ public class InvoicePaymentController  {
 		
 		invoicePayment = Beans.get(InvoicePaymentRepository.class).find(invoicePayment.getId());
 		try{
-			invoicePaymentService.cancel(invoicePayment);
+			invoicePaymentCancelService.cancel(invoicePayment);
 		}
 		catch (Exception e) {
 			TraceBackService.trace(response, e);

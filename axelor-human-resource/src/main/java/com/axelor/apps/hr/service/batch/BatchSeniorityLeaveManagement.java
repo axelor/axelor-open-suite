@@ -18,28 +18,15 @@
 
 package com.axelor.apps.hr.service.batch;
 
-import com.axelor.apps.hr.service.batch.BatchStrategy;
-import com.axelor.apps.hr.service.config.HRConfigService;
-import com.axelor.apps.hr.service.employee.EmployeeService;
-import com.axelor.apps.hr.service.leave.management.LeaveManagementService;
-import com.axelor.auth.AuthUtils;
-import com.axelor.db.JPA;
-
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.List;
 import java.util.Locale;
 
 import org.codehaus.groovy.control.CompilerConfiguration;
 import org.codehaus.groovy.control.customizers.ImportCustomizer;
-import org.hibernate.ejb.criteria.path.AbstractFromImpl.JoinScope;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.db.WeeklyPlanning;
-import com.axelor.apps.base.db.repo.CompanyRepository;
-import com.axelor.apps.hr.exception.IExceptionMessage;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.HRConfig;
 import com.axelor.apps.hr.db.HrBatch;
@@ -48,8 +35,13 @@ import com.axelor.apps.hr.db.LeaveManagement;
 import com.axelor.apps.hr.db.LeaveManagementBatchRule;
 import com.axelor.apps.hr.db.repo.HRConfigRepository;
 import com.axelor.apps.hr.db.repo.LeaveLineRepository;
-import com.axelor.apps.hr.db.repo.LeaveManagementBatchRuleRepository;
 import com.axelor.apps.hr.db.repo.LeaveManagementRepository;
+import com.axelor.apps.hr.exception.IExceptionMessage;
+import com.axelor.apps.hr.service.config.HRConfigService;
+import com.axelor.apps.hr.service.employee.EmployeeService;
+import com.axelor.apps.hr.service.leave.management.LeaveManagementService;
+import com.axelor.auth.AuthUtils;
+import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.exception.service.TraceBackService;
@@ -57,9 +49,6 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.tool.template.TemplateMaker;
 import com.beust.jcommander.internal.Lists;
-import com.google.common.base.Function;
-import com.google.common.base.Joiner;
-import com.google.common.collect.Iterables;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -100,7 +89,7 @@ public class BatchSeniorityLeaveManagement extends BatchStrategy {
 			super.start();
 			
 			if (batch.getHrBatch().getDayNumber() == null || batch.getHrBatch().getDayNumber() == BigDecimal.ZERO || batch.getHrBatch().getLeaveReason() == null)
-				TraceBackService.trace(new AxelorException(I18n.get(IExceptionMessage.BATCH_MISSING_FIELD), IException.CONFIGURATION_ERROR), IException.SENIORITY_LEAVE_MANAGEMENT, batch.getId());
+				TraceBackService.trace(new AxelorException(I18n.get(IExceptionMessage.BATCH_MISSING_FIELD), IException.CONFIGURATION_ERROR), IException.LEAVE_MANAGEMENT, batch.getId());
 			total = 0;
 			noValueAnomaly = 0;
 			confAnomaly = 0;

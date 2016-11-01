@@ -569,8 +569,9 @@ public class PaymentScheduleImportService {
 	 * @param fromBatch
 	 * @return
 	 * 			Le montant courant de l'ensemble des rejets d'une facture
+	 * @throws AxelorException 
 	 */
-	public MoveLine createRejectMoveLine(Invoice invoice, Company company, Account customerAccount, Move moveGenerated, int ref)  {
+	public MoveLine createRejectMoveLine(Invoice invoice, Company company, Account customerAccount, Move moveGenerated, int ref) throws AxelorException  {
 
 		MoveLine rejectMoveLine = moveLineService.createMoveLine(moveGenerated, invoice.getPartner(), customerAccount, invoice.getAmountRejected(), true,
 				invoice.getRejectDate(), invoice.getRejectDate(), ref, invoice.getInvoiceId());

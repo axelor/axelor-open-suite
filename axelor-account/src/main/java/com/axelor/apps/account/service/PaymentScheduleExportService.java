@@ -279,7 +279,7 @@ public class PaymentScheduleExportService{
 			PaymentScheduleLine rejectedPaymentScheduleLine = this.getPaymentScheduleLineRejectOrigin(paymentScheduleLine);
 			if(rejectedPaymentScheduleLine.getRejectMoveLine() != null
 					&& rejectedPaymentScheduleLine.getRejectMoveLine().getAmountRemaining().compareTo(BigDecimal.ZERO) == 1)  {
-				reconcileService.reconcile(rejectedPaymentScheduleLine.getRejectMoveLine(), moveLine, false);
+				reconcileService.reconcile(rejectedPaymentScheduleLine.getRejectMoveLine(), moveLine, false, true);
 			}
 		}
 		else  {
@@ -761,7 +761,7 @@ public class PaymentScheduleExportService{
 		// Lettrage de la ligne 411 avec la ligne 411 de la facture
 		log.debug("Creation du lettrage de la ligne 411 avec la ligne 411 de la facture");
 
-		reconcileService.reconcile(moveLine, moveLineGenerated, false);
+		reconcileService.reconcile(moveLine, moveLineGenerated, false, true);
 
 		log.debug("generateAllExportInvoice - Sauvegarde de l'écriture");
 

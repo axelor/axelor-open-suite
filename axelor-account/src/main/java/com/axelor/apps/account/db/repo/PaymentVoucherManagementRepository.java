@@ -17,15 +17,15 @@
  */
 package com.axelor.apps.account.db.repo;
 
+import javax.persistence.PersistenceException;
+
 import com.axelor.apps.account.db.PaymentVoucher;
+import com.axelor.apps.account.service.payment.paymentvoucher.PaymentVoucherSequenceService;
 import com.axelor.apps.base.service.administration.GeneralService;
-import com.google.inject.Inject;
+import com.axelor.inject.Beans;
 
-public class PaymentVoucherManagementRepository extends
-		PaymentVoucherRepository {
+public class PaymentVoucherManagementRepository extends PaymentVoucherRepository {
 
-	@Inject
-	protected GeneralService generalService;
 
 	@Override
 	public PaymentVoucher copy(PaymentVoucher entity, boolean deep) {
@@ -34,7 +34,7 @@ public class PaymentVoucherManagementRepository extends
 
 		copy.setStatusSelect(STATUS_DRAFT);
 		copy.setRef(null);
-		copy.setPaymentDateTime(generalService.getTodayDateTime());
+		copy.setPaymentDateTime(Beans.get(GeneralService.class).getTodayDateTime());
 		copy.clearPaymentInvoiceList();
 		copy.clearPaymentInvoiceToPayList();
 		copy.setGeneratedMove(null);
@@ -51,5 +51,17 @@ public class PaymentVoucherManagementRepository extends
 		copy.setEmail(null);
 
 		return copy;
+	}
+	
+	@Override
+	public PaymentVoucher save(PaymentVoucher paymentVoucher) {
+		try {
+
+			Beans.get(PaymentVoucherSequenceService.class).setReference(paymentVoucher);
+
+			return super.save(paymentVoucher);
+		} catch (Exception e) {
+			throw new PersistenceException(e.getLocalizedMessage());
+		}
 	}
 }

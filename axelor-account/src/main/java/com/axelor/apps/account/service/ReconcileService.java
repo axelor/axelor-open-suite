@@ -32,7 +32,7 @@ public interface ReconcileService {
 	public Reconcile createReconcile(MoveLine debitMoveLine, MoveLine creditMoveLine, BigDecimal amount, boolean canBeZeroBalanceOk);
 	
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public int confirmReconcile(Reconcile reconcile) throws AxelorException;
+	public int confirmReconcile(Reconcile reconcile, boolean updateInvoicePayments) throws AxelorException;
 	
 	public void reconcilePreconditions(Reconcile reconcile) throws AxelorException;
 	
@@ -40,9 +40,7 @@ public interface ReconcileService {
 	
 	public List<Partner> getPartners(Reconcile reconcile);
 	
-	public void updateInvoiceRemainingAmount(Reconcile reconcile) throws AxelorException;
-	
-	public Reconcile reconcile(MoveLine debitMoveLine, MoveLine creditMoveLine, boolean canBeZeroBalanceOk) throws AxelorException;
+	public Reconcile reconcile(MoveLine debitMoveLine, MoveLine creditMoveLine, boolean canBeZeroBalanceOk, boolean updateInvoicePayments) throws AxelorException;
 	
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void unreconcile(Reconcile reconcile) throws AxelorException ;

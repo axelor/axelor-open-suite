@@ -15,26 +15,16 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.account.service;
+package com.axelor.apps.account.service.payment.invoice.payment;
 
-import com.axelor.apps.account.db.BankOrder;
-import com.axelor.apps.account.db.InvoicePayment;
-import com.axelor.apps.account.db.Move;
+
+import com.axelor.apps.account.db.Invoice;
 import com.axelor.exception.AxelorException;
 import com.google.inject.persist.Transactional;
 
-public interface InvoicePaymentService   {
-	
-
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public Move createMoveForInvoicePayment(InvoicePayment invoicePayment) throws AxelorException;
+public interface InvoicePaymentToolService  {
 	
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void cancel(InvoicePayment invoicePayment) throws AxelorException; 
-	
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public BankOrder createBankOrderForInvoicePayment(InvoicePayment invoicePayment) throws AxelorException;
-	
-	
+	public void updateAmountPaid(Invoice invoice) throws AxelorException;
 	
 }

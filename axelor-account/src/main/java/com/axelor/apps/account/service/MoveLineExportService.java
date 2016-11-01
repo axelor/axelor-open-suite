@@ -896,8 +896,10 @@ public class MoveLineExportService {
 			
 			for (MoveLine moveLine : moveLineList) {
 				String items[] = new String[18];
-				items[0] = moveLine.getMove().getJournal().getCode();
-				items[1] = moveLine.getMove().getJournal().getName();
+				Move move = moveLine.getMove();
+				Journal journal = move.getJournal();
+				items[0] = journal.getCode();
+				items[1] = journal.getName();
 				items[2] = moveLine.getName();
 				items[3] = moveLine.getDate().toString("YYYYMMdd");
 				items[4] = moveLine.getAccount().getCode(); 
@@ -930,10 +932,10 @@ public class MoveLineExportService {
 					items[13] = StringUtils.join(ReconcileSeqList, "; ");
 					items[14]= StringUtils.join(ReconcileDateList, "; ");
 				}
-				items[15]= moveLine.getMove().getValidationDate().toString("YYYYMMdd");
+				items[15]= move.getValidationDate().toString("YYYYMMdd");
 				items[16]= moveLine.getCurrencyAmount().toString();
-				if(moveLine.getMove().getCurrency() != null){
-					items[17]= moveLine.getMove().getCurrency().getCode();
+				if(move.getCurrency() != null){
+					items[17]= move.getCurrency().getCode();
 				}
 				allMoveLineData.add(items);
 			}
@@ -1206,7 +1208,7 @@ public class MoveLineExportService {
 						 "DateLet;"+
 						 "ValidDate;"+
 						 "Montantdevise;"+
-						 "Idevise;";
+						 "IdDevise;";
 				return header.split(";");
 			default:
 				return null;

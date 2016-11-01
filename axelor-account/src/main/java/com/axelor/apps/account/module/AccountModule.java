@@ -47,8 +47,6 @@ import com.axelor.apps.account.service.AddressServiceAccountImpl;
 import com.axelor.apps.account.service.AnalyticDistributionLineService;
 import com.axelor.apps.account.service.AnalyticDistributionLineServiceImpl;
 import com.axelor.apps.account.service.FiscalPositionServiceAccountImpl;
-import com.axelor.apps.account.service.InvoicePaymentService;
-import com.axelor.apps.account.service.InvoicePaymentServiceImpl;
 import com.axelor.apps.account.service.MoveLineReportService;
 import com.axelor.apps.account.service.MoveLineReportServiceImpl;
 import com.axelor.apps.account.service.ReconcileService;
@@ -57,6 +55,14 @@ import com.axelor.apps.account.service.bankOrder.BankOrderService;
 import com.axelor.apps.account.service.bankOrder.BankOrderServiceImpl;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.InvoiceServiceImpl;
+import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCancelService;
+import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCancelServiceImpl;
+import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCreateService;
+import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCreateServiceImpl;
+import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentToolService;
+import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentToolServiceImpl;
+import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentValidateService;
+import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentValidateServiceImpl;
 import com.axelor.apps.base.db.IPartner;
 import com.axelor.apps.base.db.repo.PartnerBaseRepository;
 import com.axelor.apps.base.service.AddressServiceImpl;
@@ -102,8 +108,14 @@ public class AccountModule extends AxelorModule {
         
         bind(InvoicePaymentRepository.class).to(InvoicePaymentManagementRepository.class);
 
-        bind(InvoicePaymentService.class).to(InvoicePaymentServiceImpl.class);
+        bind(InvoicePaymentValidateService.class).to(InvoicePaymentValidateServiceImpl.class);
         
+        bind(InvoicePaymentCreateService.class).to(InvoicePaymentCreateServiceImpl.class);
+        
+        bind(InvoicePaymentCancelService.class).to(InvoicePaymentCancelServiceImpl.class);
+        
+        bind(InvoicePaymentToolService.class).to(InvoicePaymentToolServiceImpl.class);
+
         bind(BankOrderService.class).to(BankOrderServiceImpl.class);
         
         bind(AnalyticDistributionLineRepository.class).to(AnalyticDistributionLineMngtRepository.class);

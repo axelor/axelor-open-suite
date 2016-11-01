@@ -120,7 +120,7 @@ public class ForecastRecapService {
 		for (Opportunity opportunity : opportunityList) {
 			BigDecimal amountCompanyCurr = BigDecimal.ZERO;
 			if(forecastRecap.getOpportunitiesTypeSelect() == ForecastRecapRepository.OPPORTUNITY_TYPE_BASE){
-				amountCompanyCurr = currencyService.getAmountCurrencyConverted(
+				amountCompanyCurr = currencyService.getAmountCurrencyConvertedAtDate(
 						opportunity.getCurrency(), opportunity.getCompany().getCurrency(), opportunity.getAmount().multiply(opportunity.getProbability()).divide(new BigDecimal(100), 2, RoundingMode.HALF_UP), generalService.getTodayDate())
 						.setScale(2, RoundingMode.HALF_UP);
 				forecastRecap.setCurrentBalance(forecastRecap.getCurrentBalance().add(amountCompanyCurr));
@@ -128,7 +128,7 @@ public class ForecastRecapService {
 						amountCompanyCurr, forecastRecap.getCurrentBalance()));
 			}
 			else if(forecastRecap.getOpportunitiesTypeSelect() == ForecastRecapRepository.OPPORTUNITY_TYPE_BEST){
-				amountCompanyCurr = currencyService.getAmountCurrencyConverted(
+				amountCompanyCurr = currencyService.getAmountCurrencyConvertedAtDate(
 						opportunity.getCurrency(), opportunity.getCompany().getCurrency(), new BigDecimal(opportunity.getBestCase()).multiply(opportunity.getProbability()).divide(new BigDecimal(100), 2, RoundingMode.HALF_UP), generalService.getTodayDate())
 						.setScale(2, RoundingMode.HALF_UP);
 				forecastRecap.setCurrentBalance(forecastRecap.getCurrentBalance().add(amountCompanyCurr));
@@ -136,7 +136,7 @@ public class ForecastRecapService {
 						amountCompanyCurr, forecastRecap.getCurrentBalance()));
 			}
 			else{
-				amountCompanyCurr = currencyService.getAmountCurrencyConverted(
+				amountCompanyCurr = currencyService.getAmountCurrencyConvertedAtDate(
 						opportunity.getCurrency(), opportunity.getCompany().getCurrency(), new BigDecimal(opportunity.getWorstCase()).multiply(opportunity.getProbability()).divide(new BigDecimal(100), 2, RoundingMode.HALF_UP), generalService.getTodayDate())
 						.setScale(2, RoundingMode.HALF_UP);
 				forecastRecap.setCurrentBalance(forecastRecap.getCurrentBalance().add(amountCompanyCurr));
@@ -159,17 +159,17 @@ public class ForecastRecapService {
 		for (Opportunity opportunity : opportunityList) {
 			BigDecimal amountCompanyCurr = BigDecimal.ZERO;
 			if(forecastRecap.getOpportunitiesTypeSelect() == ForecastRecapRepository.OPPORTUNITY_TYPE_BASE){
-				amountCompanyCurr = currencyService.getAmountCurrencyConverted(
+				amountCompanyCurr = currencyService.getAmountCurrencyConvertedAtDate(
 						opportunity.getCurrency(), opportunity.getCompany().getCurrency(), opportunity.getAmount().multiply(opportunity.getProbability()).divide(new BigDecimal(100), 2, RoundingMode.HALF_UP), generalService.getTodayDate())
 						.setScale(2, RoundingMode.HALF_UP);
 			}
 			else if(forecastRecap.getOpportunitiesTypeSelect() == ForecastRecapRepository.OPPORTUNITY_TYPE_BEST){
-				amountCompanyCurr = currencyService.getAmountCurrencyConverted(
+				amountCompanyCurr = currencyService.getAmountCurrencyConvertedAtDate(
 						opportunity.getCurrency(), opportunity.getCompany().getCurrency(), new BigDecimal(opportunity.getBestCase()).multiply(opportunity.getProbability()).divide(new BigDecimal(100), 2, RoundingMode.HALF_UP), generalService.getTodayDate())
 						.setScale(2, RoundingMode.HALF_UP);
 			}
 			else{
-				amountCompanyCurr = currencyService.getAmountCurrencyConverted(
+				amountCompanyCurr = currencyService.getAmountCurrencyConvertedAtDate(
 						opportunity.getCurrency(), opportunity.getCompany().getCurrency(), new BigDecimal(opportunity.getWorstCase()).multiply(opportunity.getProbability()).divide(new BigDecimal(100), 2, RoundingMode.HALF_UP), generalService.getTodayDate())
 						.setScale(2, RoundingMode.HALF_UP);
 			}
@@ -283,7 +283,7 @@ public class ForecastRecapService {
 		}
 		for (Timetable timetable : timetableSaleOrderList) {
 			timetableService.updateTimetable(timetable.getSaleOrder());
-			BigDecimal amountCompanyCurr = currencyService.getAmountCurrencyConverted(
+			BigDecimal amountCompanyCurr = currencyService.getAmountCurrencyConvertedAtDate(
 					timetable.getSaleOrder().getCurrency(), timetable.getSaleOrder().getCompany().getCurrency(), timetable.getAmountToInvoice(), generalService.getTodayDate())
 					.setScale(2, RoundingMode.HALF_UP);
 			forecastRecap.setCurrentBalance(forecastRecap.getCurrentBalance().add(amountCompanyCurr));
@@ -291,7 +291,7 @@ public class ForecastRecapService {
 		}
 		for (Timetable timetable : timetablePurchaseOrderList) {
 			timetableService.updateTimetable(timetable.getPurchaseOrder());
-			BigDecimal amountCompanyCurr = currencyService.getAmountCurrencyConverted(
+			BigDecimal amountCompanyCurr = currencyService.getAmountCurrencyConvertedAtDate(
 					timetable.getPurchaseOrder().getCurrency(), timetable.getPurchaseOrder().getCompany().getCurrency(), timetable.getAmountToInvoice(), generalService.getTodayDate())
 					.setScale(2, RoundingMode.HALF_UP);
 			forecastRecap.setCurrentBalance(forecastRecap.getCurrentBalance().subtract(amountCompanyCurr));
@@ -319,7 +319,7 @@ public class ForecastRecapService {
 		for (Timetable timetable : timetableSaleOrderList) {
 			saleOrderList.add(timetable.getSaleOrder());
 			timetableService.updateTimetable(timetable.getSaleOrder());
-			BigDecimal amountCompanyCurr = currencyService.getAmountCurrencyConverted(
+			BigDecimal amountCompanyCurr = currencyService.getAmountCurrencyConvertedAtDate(
 					timetable.getSaleOrder().getCurrency(), timetable.getSaleOrder().getCompany().getCurrency(), timetable.getAmountToInvoice(), generalService.getTodayDate())
 					.setScale(2, RoundingMode.HALF_UP);
 			forecastRecap.setCurrentBalance(forecastRecap.getCurrentBalance().add(amountCompanyCurr));
@@ -328,7 +328,7 @@ public class ForecastRecapService {
 		for (Timetable timetable : timetablePurchaseOrderList) {
 			purchaseOrderList.add(timetable.getPurchaseOrder());
 			timetableService.updateTimetable(timetable.getPurchaseOrder());
-			BigDecimal amountCompanyCurr = currencyService.getAmountCurrencyConverted(
+			BigDecimal amountCompanyCurr = currencyService.getAmountCurrencyConvertedAtDate(
 					timetable.getPurchaseOrder().getCurrency(), timetable.getPurchaseOrder().getCompany().getCurrency(), timetable.getAmountToInvoice(), generalService.getTodayDate())
 					.setScale(2, RoundingMode.HALF_UP);
 			forecastRecap.setCurrentBalance(forecastRecap.getCurrentBalance().subtract(amountCompanyCurr));
@@ -382,7 +382,7 @@ public class ForecastRecapService {
 		for (Timetable timetable : timetableSaleOrderList) {
 			saleOrderList.add(timetable.getSaleOrder());
 			timetableService.updateTimetable(timetable.getSaleOrder());
-			BigDecimal amountCompanyCurr = currencyService.getAmountCurrencyConverted(
+			BigDecimal amountCompanyCurr = currencyService.getAmountCurrencyConvertedAtDate(
 					timetable.getSaleOrder().getCurrency(), timetable.getSaleOrder().getCompany().getCurrency(), timetable.getAmountToInvoice(), generalService.getTodayDate())
 					.setScale(2, RoundingMode.HALF_UP);
 			if(timetable.getSaleOrder().getStatusSelect() == 2){

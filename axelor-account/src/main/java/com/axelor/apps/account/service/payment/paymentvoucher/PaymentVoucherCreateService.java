@@ -147,9 +147,6 @@ public class PaymentVoucherCreateService {
 			paymentVoucher.setPaymentMode(paymentMode);
 			paymentVoucher.setPartner(partner);
 
-			paymentVoucher.setInvoiceToPay(invoiceToPay);
-			paymentVoucher.setRejectToPay(rejectToPay);
-
 			paymentVoucher.setPaidAmount(amount2);
 			paymentVoucher.setMoveLine(moveLine);
 

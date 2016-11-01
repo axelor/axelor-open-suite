@@ -299,6 +299,11 @@ public interface IExceptionMessage {
 	/**
 	 * Account config service
 	 */
+	static final String COMPANY_CURRENCY = /*$$(*/ "%s :\n Please, configure a currency for the company %s" /*)*/;
+
+	/**
+	 * Account config service
+	 */
 	static final String ACCOUNT_CONFIG_1 = /*$$(*/ "%s :\n Veuillez configurer les informations comptables pour la société %s" /*)*/;
 	static final String ACCOUNT_CONFIG_2 = /*$$(*/ "%s :\n Veuillez configurer un Dossier d'export des remboursements au format CFONB pour la société %s" /*)*/;
 	static final String ACCOUNT_CONFIG_3 = /*$$(*/ "%s :\n Veuillez configurer un Dossier d'export des prélèvements au format CFONB pour la société %s" /*)*/;

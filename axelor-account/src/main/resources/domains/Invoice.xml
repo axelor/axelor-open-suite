@@ -89,6 +89,7 @@
     <decimal name="taxTotal" title="Total Tax" scale="2" precision="20" readonly="true" help="true"/>
     <decimal name="inTaxTotal" title="Total A.T.I." scale="2" precision="20" readonly="true" help="true"/>
     <decimal name="amountPaid" title="Amount paid" readonly="true" />
+    <decimal name="amountRemaining" title="Amount remaining" readonly="true"/>
     
     
 	<!--     Totals based on the company currency -->

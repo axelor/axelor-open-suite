@@ -15,24 +15,23 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.account.db.repo;
+package com.axelor.apps.account.service.payment.invoice.payment;
 
-import javax.persistence.PersistenceException;
+import java.math.BigDecimal;
 
+import org.joda.time.LocalDate;
+
+import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoicePayment;
-import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentValidateServiceImpl;
-import com.axelor.inject.Beans;
+import com.axelor.apps.account.db.Move;
+import com.axelor.apps.account.db.PaymentMode;
+import com.axelor.apps.base.db.Currency;
+import com.axelor.exception.AxelorException;
 
-public class InvoicePaymentManagementRepository extends InvoicePaymentRepository {
-
-	@Override
-	public InvoicePayment save(InvoicePayment invoicePayment) {
-		try {
-
-			Beans.get(InvoicePaymentValidateServiceImpl.class).validate(invoicePayment);
-			return super.save(invoicePayment);
-		} catch (Exception e) {
-			throw new PersistenceException(e);
-		}
-	}
+public interface InvoicePaymentCreateService   {
+	
+	public InvoicePayment createInvoicePayment(Invoice invoice, BigDecimal amount, LocalDate paymentDate, Currency currency, PaymentMode paymentMode,  int typeSelect);
+	
+	public InvoicePayment createInvoicePayment(Invoice invoice, BigDecimal amount, Move paymentMove) throws AxelorException;
+	
 }

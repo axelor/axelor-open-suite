@@ -236,7 +236,7 @@ public class ReimbursementExportService {
 
 					//Création de la réconciliation
 					Reconcile reconcile = reconcileService.createReconcile(newDebitMoveLine, moveLine, amountRemaining, false);
-					reconcileService.confirmReconcile(reconcile);
+					reconcileService.confirmReconcile(reconcile, true);
 				}
 			}
 			// Création de la ligne au crédit

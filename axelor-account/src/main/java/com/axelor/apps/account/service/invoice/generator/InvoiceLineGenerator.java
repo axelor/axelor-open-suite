@@ -238,11 +238,11 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
 		}
 		
 		invoiceLine.setCompanyExTaxTotal(
-				currencyService.getAmountCurrencyConverted(
+				currencyService.getAmountCurrencyConvertedAtDate(
 						invoice.getCurrency(), companyCurrency, exTaxTotal, today).setScale(IAdministration.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP));
 
 		invoiceLine.setCompanyInTaxTotal(
-				currencyService.getAmountCurrencyConverted(
+				currencyService.getAmountCurrencyConvertedAtDate(
 						invoice.getCurrency(), companyCurrency, inTaxTotal, today).setScale(IAdministration.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP));
 	}
 	
