@@ -24,7 +24,7 @@
  		<panel showIf="id">
  		    <field name="move" form-view="move-form" grid-view="move-grid"/>
 			<field name="statusSelect"/>
-			<button name="cancel" icon="fa-times-circle" title="Cancel" onClick="action-advance-payment-method-cancel" readonlyIf="statusSelect == 2"/>
+			<button name="cancel" icon="fa-times-circle" title="Cancel" onClick="action-invoice-payment-method-cancel" readonlyIf="statusSelect == 2"/>
  		</panel>
 	</form>
 	
