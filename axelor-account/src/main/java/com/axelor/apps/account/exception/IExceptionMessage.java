@@ -505,6 +505,7 @@ public interface IExceptionMessage {
 	static final String PAYMENT_VOUCHER_CONTROL_2 = /*$$(*/ "%s :\n Aucune ligne à payer." /*)*/;
 	static final String PAYMENT_VOUCHER_CONTROL_3 = /*$$(*/ "%s :\n Veuillez renseigner un journal et un compte de trésorerie dans le mode de règlement." /*)*/;
 	static final String PAYMENT_VOUCHER_CONTROL_4 = /*$$(*/ "%s :\n Le montant de la saisie paiement (%s) est différent du montant encaissé par Paybox (%s)" /*)*/;
+	static final String PAYMENT_VOUCHER_CONTROL_PAID_AMOUNT = /*$$(*/ "%s :\n Payment voucher n° %s, the paid amount should be positive" /*)*/;
 
 	/**
 	 * Payment voucher load service
