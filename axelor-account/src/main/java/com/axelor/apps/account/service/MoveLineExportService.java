@@ -937,7 +937,7 @@ public class MoveLineExportService {
 		}
 		
 		String fileName = this.setFileName(moveLineReport);
-		String filePath = accountConfigService.getExportFileName(accountConfigService.getAccountConfig(company));
+		String filePath = accountConfigService.getExportPath(accountConfigService.getAccountConfig(company));
 		//TODO create a template Helper
 		
 		new File(filePath).mkdirs();
