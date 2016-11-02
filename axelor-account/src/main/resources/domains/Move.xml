@@ -24,7 +24,7 @@
     <many-to-one name="moveLineReport" ref="com.axelor.apps.account.db.MoveLineReport" title="Accounting Export"/>
     <many-to-one name="paymentVoucher" ref="com.axelor.apps.account.db.PaymentVoucher" title="Payment voucher"/>
    	<many-to-one name="companyCurrency" ref="com.axelor.apps.base.db.Currency" title="Company currency"/>
-   	<string name="companyCurrencyCode" title="Comptany currency code"/>
+   	<string name="companyCurrencyCode" title="Company currency code"/>
    	<many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" title="Currency"/>
    	<string name="currencyCode" title="Currency code"/>
     <boolean name="ignoreInAccountingOk" title="Ignore in accounting" default="false"/>
