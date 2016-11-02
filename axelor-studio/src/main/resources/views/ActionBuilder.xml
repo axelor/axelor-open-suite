@@ -29,8 +29,8 @@
 	      <panel colSpan="12" showIf="typeSelect == 2">
 	      	<field name="viewOrder" widget="MultiSelect" requiredIf="typeSelect == 2" />
 	      	<field name="popup" />
-	      	<field name="viewBuilderSet" widget="TagSelect"  showIf="viewOrder != null" requiredIf="typeSelect == 2 &amp;&amp; viewBuilderSet.empty" onChange="action-action-builder-view-builder-change" onSelect="action-action-builder-view-builder-domain"/>
-	      	<field name="metaViewSet" widget="TagSelect"  showIf="viewOrder != null"  requiredIf="typeSelect == 2 &amp;&amp; metaViewSet.empty" onChange="action-action-builder-meta-view-change" onSelect="action-action-builder-meta-view-domain"/>
+	      	<field name="viewBuilderSet" widget="TagSelect"  showIf="viewOrder != null" requiredIf="typeSelect == 2 &amp;&amp; viewBuilderSet?.empty" onChange="action-action-builder-view-builder-change" onSelect="action-action-builder-view-builder-domain"/>
+	      	<field name="metaViewSet" widget="TagSelect"  showIf="viewOrder != null"  requiredIf="typeSelect == 2 &amp;&amp; metaViewSet?.empty" onChange="action-action-builder-meta-view-change" onSelect="action-action-builder-meta-view-domain"/>
 	      	<field name="title" requiredIf="typeSelect == 2" />
 	      	<field name="menuAction" />
 	      	<field name="domainCondition" colSpan="12"/>

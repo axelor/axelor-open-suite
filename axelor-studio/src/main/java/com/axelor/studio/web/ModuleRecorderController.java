@@ -31,13 +31,19 @@ public class ModuleRecorderController {
 	@Inject
 	private ModuleRecorderService moduleRecorderService;
 
-	public void update(ActionRequest request, ActionResponse response) throws AxelorException {
+	public void update(ActionRequest request, ActionResponse response) {
 		
 		ModuleRecorder moduleRecorder = request.getContext().asType(
 				ModuleRecorder.class);
 		
 		response.setSignal("refresh-app", true);
-		response.setFlash(moduleRecorderService.update(moduleRecorder));
+		try {
+			String msg = moduleRecorderService.update(moduleRecorder);
+			response.setFlash(msg);
+		} catch(Exception e) {
+			e.printStackTrace();
+			response.setFlash(e.getMessage());
+		}
 
 	}
 
@@ -47,8 +53,14 @@ public class ModuleRecorderController {
 		ModuleRecorder moduleRecorder = request.getContext().asType(
 				ModuleRecorder.class);
 		
-		response.setFlash(moduleRecorderService.reset(moduleRecorder));
 		response.setSignal("refresh-app", true);
+		try {
+			String msg = moduleRecorderService.reset(moduleRecorder);
+			response.setFlash(msg);
+		} catch(Exception e) {
+			e.printStackTrace();
+			response.setFlash(e.getMessage());
+		}
 		
 	}
 	
