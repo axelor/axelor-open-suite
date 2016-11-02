@@ -566,42 +566,49 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     <property name="columnName">id</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">id</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">id</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">expense_date</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">expense_date</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">expense_date</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">cust_full_name</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">cust_full_name</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">cust_full_name</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">product_name</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">product_name</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">product_name</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">comments</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">comments</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">comments</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">total_amount</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">total_amount</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">total_amount</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">untaxed_amount</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">untaxed_amount</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">untaxed_amount</text-property>
                 </structure>
             </list-property>
@@ -716,7 +723,7 @@ inner join hr_expense_line as ExpenseLine on (ExpenseLine.expense = Expense.id)
 left join project_project_task as Task on (ExpenseLine.project_task = Task.id)
 left join project_project_task as Project on (Task.project = Project.id)
 left join base_partner as ClientPartner on ((Task.client_partner is null and Project.client_partner = ClientPartner.id) or (Task.client_partner = ClientPartner.id))
-left join base_product as Product on (ExpenseLine.expense_type = Product.id)
+left join base_product as Product on (ExpenseLine.expense_product = Product.id)
 where Expense.id = ?]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
@@ -735,6 +742,9 @@ where Expense.id = ?]]></xml-property>
           <design:scale>0</design:scale>
           <design:nullability>Unknown</design:nullability>
         </design:attributes>
+        <design:inputAttributes>
+          <design:elementAttributes/>
+        </design:inputAttributes>
       </design:ParameterDefinition>
     </parameter>
   </DataSetParameters>
