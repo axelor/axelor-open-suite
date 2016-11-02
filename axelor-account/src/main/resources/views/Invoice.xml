@@ -12,9 +12,9 @@
 			<button name="massInvoiceVentilation" title="Ventilate selected invoices" prompt="Are you sure you want to ventilate all selected invoices ?" onClick="action-invoice-method-mass-ventilation"/>
     	</toolbar>   
     	<hilite color="info" if="statusSelect == 1"/>
-	    <hilite color="danger" if="statusSelect == 3 &amp;&amp; companyInTaxTotalRemaining &gt; 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &lt; 0"/>
-	    <hilite color="warning" if="statusSelect == 3 &amp;&amp; companyInTaxTotalRemaining &gt; 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &lt;= 5"/>
-	    <hilite color="success" if="statusSelect == 3 &amp;&amp; companyInTaxTotalRemaining == 0"/>
+	    <hilite color="danger" if="statusSelect == 3 &amp;&amp; amountRemaining &gt; 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &lt; 0"/>
+	    <hilite color="warning" if="statusSelect == 3 &amp;&amp; amountRemaining &gt; 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &lt;= 5"/>
+	    <hilite color="success" if="statusSelect == 3 &amp;&amp; amountRemaining == 0"/>
         <field name="invoiceId"/>
         <field name="operationTypeSelect" />
         <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
@@ -23,9 +23,9 @@
         <field name="dueDate"/>
         <field name="exTaxTotal" aggregate="sum"/>
         <field name="inTaxTotal" aggregate="sum"/>
-        <field name="amountPaid" aggregate="sum"/>
+        <field name="amountRemaining" aggregate="sum"/>
+        <field name="currency"/>
         <field name="statusSelect"/>
-        <field name="companyInTaxTotalRemaining" hidden="true"/>
         <button name="showInvoice" title="Print" icon="fa-print" onClick="action-invoice-method-show-invoice"/>
         <button name="sendByEmail" title="Send email" icon="fa-envelope" onClick="action-send-by-email-with-template"/>
     </grid>
@@ -37,9 +37,9 @@
 			<button name="massInvoiceVentilation" title="Ventilate selected invoices" prompt="Are you sure you want to ventilate all selected invoices ?" onClick="action-invoice-method-mass-ventilation"/>
     	</toolbar>   
     	<hilite color="info" if="statusSelect == 1"/>
-	    <hilite color="danger" if="statusSelect == 3 &amp;&amp; companyInTaxTotalRemaining &gt; 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &lt; 0"/>
-	    <hilite color="warning" if="statusSelect == 3 &amp;&amp; companyInTaxTotalRemaining &gt; 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &lt;= 5"/>
-	    <hilite color="success" if="statusSelect == 3 &amp;&amp; companyInTaxTotalRemaining == 0"/>
+	    <hilite color="danger" if="statusSelect == 3 &amp;&amp; amountRemaining &gt; 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &lt; 0"/>
+	    <hilite color="warning" if="statusSelect == 3 &amp;&amp; amountRemaining &gt; 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &lt;= 5"/>
+	    <hilite color="success" if="statusSelect == 3 &amp;&amp; amountRemaining == 0"/>
         <field name="invoiceId"/>
         <field name="externalReference"/>
         <field name="operationTypeSelect" />
@@ -49,9 +49,9 @@
         <field name="dueDate"/>
         <field name="exTaxTotal" aggregate="sum"/>
         <field name="inTaxTotal" aggregate="sum"/>
-        <field name="amountPaid" aggregate="sum"/>
+        <field name="amountRemaining" aggregate="sum"/>
+        <field name="currency"/>
         <field name="statusSelect"/>
-        <field name="companyInTaxTotalRemaining" hidden="true"/>
         <button name="showInvoice" title="Print" icon="fa-print" onClick="action-invoice-method-show-invoice"/>
         <button name="sendByEmail" title="Send email" icon="fa-envelope" onClick="action-send-by-email-with-template"/>
     </grid>
@@ -63,16 +63,16 @@
 			<button name="massInvoiceVentilation" title="Ventilate selected invoices" prompt="Are you sure you want to ventilate all selected invoices ?" onClick="action-invoice-method-mass-ventilation"/>
     	</toolbar>   
     	<hilite color="info" if="statusSelect == 1"/>
-	    <hilite color="danger" if="statusSelect == 3 &amp;&amp; companyInTaxTotalRemaining &gt; 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &lt; 0"/>
-	    <hilite color="warning" if="statusSelect == 3 &amp;&amp; companyInTaxTotalRemaining &gt; 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &lt;= 5"/>
-	    <hilite color="success" if="statusSelect == 3 &amp;&amp; companyInTaxTotalRemaining == 0"/>
+	    <hilite color="danger" if="statusSelect == 3 &amp;&amp; amountRemaining &gt; 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &lt; 0"/>
+	    <hilite color="warning" if="statusSelect == 3 &amp;&amp; amountRemaining &gt; 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &lt;= 5"/>
+	    <hilite color="success" if="statusSelect == 3 &amp;&amp; amountRemaining == 0"/>
         <field name="invoiceId"/>
         <field name="operationTypeSelect" />
         <field name="invoiceDate"/>
         <field name="exTaxTotal" aggregate="sum"/>
-        <field name="amountPaid" aggregate="sum"/>
+        <field name="amountRemaining" aggregate="sum"/>
+        <field name="currency"/>
         <field name="statusSelect"/>
-        <field name="companyInTaxTotalRemaining" hidden="true"/>
         <button name="showInvoice" title="Print" icon="fa-print" onClick="action-invoice-method-show-invoice"/>
         <button name="sendByEmail" title="Send email" icon="fa-envelope" onClick="action-send-by-email-with-template"/>
     </grid>
@@ -240,7 +240,7 @@
 		             <field name="paymentMode"/>
 		         </editor>
 		     </field>
-		     <field name="inTaxTotal" css="order-subtotal" showTitle="false" colSpan="12">
+		     <field name="inTaxTotal" css="order-subtotal" showTitle="false" colSpan="12" showIf="statusSelect == 2 || statusSelect == 3">
 		       <viewer><![CDATA[
 		         <dl class="dl-horizontal">
 		           <dt class="order-subtotal-total" x-translate>Amount due</dt>
@@ -264,7 +264,8 @@
 		<field name="invoiceDate"/>
 		<field name="dueDate"/>
 		<field name="inTaxTotal" aggregate="sum"/>
-		<field name="amountPaid" aggregate="sum"/>
+		<field name="amountRemaining" aggregate="sum"/>
+		<field name="currency"/>
 		<field name="statusSelect"/>
     </grid>
     
@@ -278,6 +279,7 @@
 		<field name="dueDate"/>
 		<field name="inTaxTotal" aggregate="sum"/>
 		<field name="directDebitAmount" aggregate="sum"/>
+		<field name="currency"/>
 		<field name="statusSelect"/>
     </grid>
     
