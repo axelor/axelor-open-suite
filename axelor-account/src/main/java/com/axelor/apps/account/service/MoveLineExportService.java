@@ -18,7 +18,9 @@
 package com.axelor.apps.account.service;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.math.BigDecimal;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -33,7 +35,6 @@ import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.axelor.apps.MetaFilesTemp;
 import com.axelor.apps.account.db.AnalyticDistributionLine;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.JournalType;
@@ -61,9 +62,8 @@ import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
-import com.axelor.meta.db.MetaAttachment;
-import com.axelor.meta.db.MetaFile;
-import com.axelor.meta.db.repo.MetaAttachmentRepository;
+import com.axelor.inject.Beans;
+import com.axelor.meta.MetaFiles;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -81,16 +81,13 @@ public class MoveLineExportService {
 	protected MoveLineReportRepository moveLineReportRepo;
 	protected JournalRepository journalRepo;
 	protected AccountRepository accountRepo;
-	protected MetaAttachmentRepository metaAttachmentRepo;
 	protected MoveLineService moveLineService;
 	protected PartnerService partnerService;
-	protected MetaFilesTemp metaFilesTemp;
 	
 	@Inject
 	public MoveLineExportService(GeneralService generalService, MoveLineReportService moveLineReportService, SequenceService sequenceService, 
 			AccountConfigService accountConfigService, MoveRepository moveRepo, MoveLineRepository moveLineRepo, MoveLineReportRepository moveLineReportRepo,
-			JournalRepository journalRepo, AccountRepository accountRepo, MoveLineService moveLineService, PartnerService partnerService,
-			MetaFilesTemp metaFilesTemp, MetaAttachmentRepository metaAttachmentRepo) {
+			JournalRepository journalRepo, AccountRepository accountRepo, MoveLineService moveLineService, PartnerService partnerService) {
 		this.moveLineReportService = moveLineReportService;
 		this.sequenceService = sequenceService;
 		this.accountConfigService = accountConfigService;
@@ -101,8 +98,6 @@ public class MoveLineExportService {
 		this.accountRepo = accountRepo;
 		this.moveLineService = moveLineService;
 		this.partnerService = partnerService;
-		this.metaFilesTemp =  metaFilesTemp;
-		this.metaAttachmentRepo = metaAttachmentRepo;
 		todayTime = generalService.getTodayDateTime();
 	}
 
@@ -942,7 +937,7 @@ public class MoveLineExportService {
 		}
 		
 		String fileName = this.setFileName(moveLineReport);
-		String filePath = accountConfigService.getExportPath(accountConfigService.getAccountConfig(company));
+		String filePath = accountConfigService.getExportFileName(accountConfigService.getAccountConfig(company));
 		//TODO create a template Helper
 		
 		new File(filePath).mkdirs();
@@ -952,15 +947,14 @@ public class MoveLineExportService {
 		moveLineReportRepo.save(moveLineReport);
 		
 		Path path = Paths.get(filePath+fileName);
-		File file = path.toFile();
-		MetaFile metaFile = metaFilesTemp.upload(file);
-		MetaAttachment metaAttachment = metaFilesTemp.attach(metaFile, moveLineReport);
-		metaAttachmentRepo.save(metaAttachment);
-		//TODO Meta Attachment added but not displayed in view!
+		
+		try (InputStream is = new FileInputStream(path.toFile())) {
+			Beans.get(MetaFiles.class).attach(is, fileName, moveLineReport);
+		}
+		
 	}
 	
-
-
+	
 	/**
 	 * Méthode réalisant l'export SI - Agresso des fichiers détails
 	 * @param mlr
