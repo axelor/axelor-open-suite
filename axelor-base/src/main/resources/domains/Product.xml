@@ -72,11 +72,11 @@
   	<string name="fullName" title="Full name" namecolumn="true"/>
   	
   	
-  	<many-to-one name="weightUnit" ref="com.axelor.apps.base.db.UnitConversion" title="Unit of weight"/>
+  	<many-to-one name="weightUnit" ref="com.axelor.apps.base.db.Unit" title="Unit of weight"/>
   	<decimal name="grossWeight" title="Gross weight"/>
   	<decimal name="netWeight" title="Net weight"/>
   	
-  	<many-to-one name="lengthUnit" ref="com.axelor.apps.base.db.UnitConversion" title="Unit of length"/>
+  	<many-to-one name="lengthUnit" ref="com.axelor.apps.base.db.Unit" title="Unit of length"/>
   	<decimal name="length" title="Length"/>
   	<decimal name="width" title="Width"/>
   	<decimal name="height" title="Height"/>
