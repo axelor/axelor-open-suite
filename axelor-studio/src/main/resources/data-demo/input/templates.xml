@@ -4,12 +4,12 @@
   
   <template>
   	<name>Note De Frais</name>
-  	<subject>Note De Frais $Expense.expenseRef$</subject>
+  	<subject>Note De Frais $DemoExpense.expenseRef$</subject>
   	<content><![CDATA[
 			<p>Expense updated</p>
   	]]></content>
   	<mediaTypeSelect>2</mediaTypeSelect>
-  	<metaModel>Expense</metaModel>
+  	<metaModel>DemoExpense</metaModel>
   </template>
 
 </templates>  

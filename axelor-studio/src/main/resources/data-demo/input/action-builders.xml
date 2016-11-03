@@ -2,26 +2,26 @@
 <action-builders xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   
-  <action-builder name="action-expense-line-update-amt-with-tax" metaModel="ExpenseLine" typeSelect="1">
+  <action-builder name="action-demo-expense-line-update-amt-with-tax" metaModel="DemoExpenseLine" typeSelect="1">
   	<lines>
   		<line metaField="amtTTC" targetField="amtTTC" value="tva*amtHt" conditionText="tva &gt; 0"/>
   	</lines>
   </action-builder>
   
-  <action-builder name="action-expense-update-validated" metaModel="Expense" typeSelect="1">
+  <action-builder name="action-demo-expense-update-validated" metaModel="DemoExpense" typeSelect="1">
   	<lines>
   		<line metaField="validatedBy" targetField="validatedBy" value="__user__" conditionText="status == 5"/>
   		<line metaField="validatedOn" targetField="validatedOn" value="__datetime__" conditionText="status == 5"/>
   	</lines>
   </action-builder>
   
-  <action-builder name="action-open-expense-report" typeSelect="3" metaModel="Expense">
+  <action-builder name="action-open-demo-expense-report" typeSelect="3" metaModel="DemoExpense">
   	<report-builders>
   		<report-builder name="Note De Frais" />
   	</report-builders>
   </action-builder>
   
-  <action-builder name="action-expense-update-total" metaModel="Expense" typeSelect="1">
+  <action-builder name="action-demo-expense-update-total" metaModel="DemoExpense" typeSelect="1">
   	<lines>
   		<line metaField="totalHT" targetField="totalHT" value="sum(expenses;$amtHt)"/>
   		<line metaField="totalTTC" targetField="totalTTC" value="sum(expenses;$amtTTC)"/>
@@ -29,17 +29,17 @@
   	</lines>
   </action-builder>
   
-  <action-builder name="action-send-expense-email" typeSelect="4" metaModel="Expense" emailTemplate="Note De Frais" />
+  <action-builder name="action-send-demo-expense-email" typeSelect="4" metaModel="DemoExpense" emailTemplate="Note De Frais" />
   
-  <action-builder name="menu.expense" metaModel="Expense" typeSelect="2" title="Note De Frais">
+  <action-builder name="menu.demo.expense" metaModel="DemoExpense" typeSelect="2" title="Note De Frais">
   	<viewBuilders>
-  		<viewBuilder name="expense-form" />
+  		<viewBuilder name="demo-expense-form" />
   	</viewBuilders>
   </action-builder>
   
-  <action-builder name="menu.dashboard" typeSelect="2" title="Reports">
+  <action-builder name="menu.demo.expense.dashboard" typeSelect="2" title="Reports">
   	<viewBuilders>
-  		<viewBuilder name="expense-dashboard" />
+  		<viewBuilder name="demo-expense-dashboard" />
   	</viewBuilders>
   </action-builder>
   
