@@ -79,7 +79,8 @@
     <decimal name="directDebitAmount" title="Debited amount" readonly="true"/> 
     <many-to-one name="paymentMove" ref="com.axelor.apps.account.db.Move" title="Payment Move"/>
     
-	<!--     Note -->
+	<!--  Impression -->
+	<integer name="invoicesCopy" selection="grade.0.up.to.10.select"/>
     <string name="note" title="Notes" large="true"/>
     
     <!-- Totals & Status -->

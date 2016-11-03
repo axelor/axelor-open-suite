@@ -96,10 +96,8 @@
 			 			<h3>
 			             <span class="label label-important" ng-if="operationTypeSelect = 1" x-translate ng-show="record.operationTypeSelect == 1">Supplier purchase</span>
 			             <span class="label label-important" ng-if="operationTypeSelect = 2" x-translate ng-show="record.operationTypeSelect == 2">Supplier refund</span>
-			
 			             <span class="label label-important" ng-if="operationTypeSelect = 3" x-translate ng-show="record.operationTypeSelect == 3">Customer sale</span>
 			             <span class="label label-important" ng-if="operationTypeSelect = 4" x-translate ng-show="record.operationTypeSelect == 4">Customer refund</span>
-			      
 			           </h3>
 			
 					]]>
@@ -171,15 +169,16 @@
 					<field name="reminderBlockingReason" form-view="stop-reason-form" grid-view="stop-reason-grid" />
 				</panel>
 			</panel>
-			<panel name="notes" title="Notes" colSpan="12">
-				<field name="note" showTitle="false" colSpan="12"/>
-			</panel>
 			<panel-related title="Payments details" field="invoicePaymentList" colSpan="12" grid-view="invoice-payment-grid" form-view="invoice-payment-form" canNew="false" canRemove="false"/>
 			<panel  name="directDebit" title="Direct debit" showIf="statusSelect == 3" showTitle="false">
 				<panel name="paymentSchedule" title="Payment schedule" colSpan="12" >
 					<field name="schedulePaymentOk" readonly="true" showIf="schedulePaymentOk"/>
 					<field name="paymentSchedule" readonly="true" showIf="schedulePaymentOk" domain="self.company = :company AND self.partner = :partner" form-view="payment-schedule-form" grid-view="payment-schedule-grid"/>
 				</panel>
+			</panel>
+			<panel title="Impression" name="impression" colSpan="12">
+				<field name="invoicesCopy"/>
+				<field name="note" colSpan="12"/>
 			</panel>
 			<panel title="Printing" name="printing" hidden="true" if-module="axelor-business-project" colSpan="12">
 				<field name="displayTimesheetOnPrinting" />
@@ -363,6 +362,7 @@
     	<action name="action-invoice-method-get-journal" if="operationTypeSelect != null &amp;&amp; operationTypeSelect != 0"/>
     	<action name="action-invoice-record-company-change"/>
     	<action name="action-invoice-attrs-hide-cancel-button"/>
+    	<action name="action-invoices-copy"/>
     </action-group>
     
     <action-group name="action-group-account-invoice-partner-onchange">
@@ -383,6 +383,10 @@
     </action-attrs>
 	
 	<!-- ACTION RECORD -->
+	
+	<action-record name="action-invoices-copy" model="com.axelor.apps.account.db.Invoice">
+		<field name="invoicesCopy" expr="eval: invoicesCopy = company.invoicesCopy"/>
+	</action-record>
 	
 	<action-record name="action-invoice-record-estimated-payment-date" model="com.axelor.apps.account.db.Invoice" if-module="axelor-cash-management">
 		<field name="estimatedPaymentDate" expr="eval: dueDate?.plusDays(partner?.paymentDelay?.intValue())"/>

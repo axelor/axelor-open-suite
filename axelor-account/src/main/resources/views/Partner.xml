@@ -11,6 +11,7 @@
 	        <field name="currency" requiredIf="!isContact &amp;&amp; partnerTypeSelect != 2" form-view="currency-form" grid-view="currency-grid"/>
 	        <field name="fiscalPosition" form-view="fiscal-position-form" grid-view="fiscal-position-grid"/>
 	        <field name="payerQuality"/>
+	        <field name="invoicesCopy"/>
 	        <field name="chargeBackPurchaseSelect" colSpan="3" if-module="axelor-business-project"/>
 	        <field name="chargeBackPurchase" colSpan="3" if-module="axelor-business-project" showIf="chargeBackPurchaseSelect == 3"/>
 	        <field name="analyticDistributionTemplate" canNew="true"/>

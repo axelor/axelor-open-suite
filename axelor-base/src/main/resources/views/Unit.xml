@@ -5,11 +5,13 @@
     <grid name="unit-grid" title="Units" model="com.axelor.apps.base.db.Unit">
         <field name="name"/>
         <field name="labelToPrinting"/>
+        <field name="unitTypeSelect"/>
     </grid>
     <form name="unit-form" title="Unit" model="com.axelor.apps.base.db.Unit">
     	<panel name="main" >
         	<field name="name"/>
         	<field name="labelToPrinting"/>
+        	<field name="unitTypeSelect"/>
         </panel>
     </form>
 </object-views>
