@@ -4,6 +4,9 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
     
     <grid name="bank-order-bank-to-bank-grid" orderBy="-bankOrderDate" title="Bank Orders" model="com.axelor.apps.account.db.BankOrder" canDelete="false">
+        <toolbar>
+    		<button name="merge" title="Merge bank orders" onClick="action-method-bank-order-merge" prompt="Are you sure you want merge the selected bank orders ?"/>
+    	</toolbar>
         <field name="bankOrderSeq"/>
         <field name="bankOrderDate"/>
         <field name="senderCompany"/>
@@ -14,6 +17,9 @@
     </grid>
     
     <grid name="bank-order-grid" orderBy="-bankOrderDate" title="Bank Orders" model="com.axelor.apps.account.db.BankOrder" canDelete="false">
+    	<toolbar>
+    		<button name="merge" title="Merge bank orders" onClick="action-method-bank-order-merge" prompt="Are you sure you want merge the selected bank orders ?"/>
+    	</toolbar>
         <field name="bankOrderSeq"/>
         <field name="partnerTypeSelect"/>
         <field name="bankOrderDate"/>
@@ -30,12 +36,12 @@
 	</toolbar>
   		<panel name="main" colSpan="12" readonlyIf="statusSelect &gt;= 2">
   			<field name="bankOrderSeq" css="label-bold bold" colSpan="12"/>
-    		<field name="statusSelect" showTitle="false" widget="NavSelect" colSpan="12" selection-in="[1,3,4,5,6]" showIf="orderType == 3 || orderType == 5"/>
-    		<field name="statusSelect" showTitle="false" widget="NavSelect" colSpan="12" showIf="orderType != 3 &amp;&amp; orderType != 5"/>
+    		<field name="statusSelect" showTitle="false" widget="NavSelect" colSpan="12" selection-in="[1,3,4,5,6]" showIf="orderTypeSelect == 3 || orderTypeSelect == 5"/>
+    		<field name="statusSelect" showTitle="false" widget="NavSelect" colSpan="12" showIf="orderTypeSelect != 3 &amp;&amp; orderTypeSelect != 5"/>
     		<field name="bankOrderDate" css="label-bold bold" colSpan="6"/>
-    		<field name="orderType" css="label-bold bold" colSpan="6" readonly="true"/>
+    		<field name="orderTypeSelect" css="label-bold bold" colSpan="6" readonly="true"/>
     		<field name="paymentMode" css="label-bold bold" colSpan="6"/>
-    		<field name="partnerTypeSelect" showIf="orderType != 1" css="label-bold bold" colSpan="6"/>
+    		<field name="partnerTypeSelect" showIf="orderTypeSelect != 1" css="label-bold bold" colSpan="6"/>
   		</panel>
 		<panel name="senderInfo" title="Sender Info." readonlyIf="statusSelect &gt;= 2">
 			<field name="senderCompany" grid-view="company-grid" form-view="company-form"/>
@@ -49,15 +55,15 @@
 			<field name="bankOrderLineList" colSpan="12" showTitle="false" canRemove="false">
 				<editor x-layout="table" onNew="action-group-bank-order-line-onnew" x-viewer="true">
 					<field name="sequence" css="label-bold bold" readonly="true" hideIf="sequence == null" colSpan="12"/>
-					<field name="receiverCompany" hideIf="bankOrder.orderType != 1" css="label-bold bold" colSpan="6" onChange="action-bank-order-line-record-partner" form-view="company-form" grid-view="company-grid" />
+					<field name="receiverCompany" hideIf="bankOrder.orderTypeSelect != 1" css="label-bold bold" colSpan="6" onChange="action-bank-order-line-record-partner" form-view="company-form" grid-view="company-grid" />
 					<spacer colSpan="6"/>
-					<field name="partner" hideIf="bankOrder.orderType == 1" form-view="partner-form" grid-view="partner-grid" css="label-bold bold" colSpan="6" onSelect="action-bank-order-line-attrs-partner-domain" onChange="action-bank-order-line-record-partner-onchange"/>
+					<field name="partner" hideIf="bankOrder.orderTypeSelect == 1" form-view="partner-form" grid-view="partner-grid" css="label-bold bold" colSpan="6" onSelect="action-bank-order-line-attrs-partner-domain" onChange="action-bank-order-line-record-partner-onchange"/>
 					<spacer colSpan="6"/>
 					<field name="receiverBankDetails" onSelect="action-bank-order-line-attrs-bank-details-domain"/>
 					<field name="amount"/>
 					<field name="receiverReference"/>
 					<field name="receiverLabel"/>
-					<field name="bankOrder.orderType" hidden="true"/>
+					<field name="bankOrder.orderTypeSelect" hidden="true"/>
 					<field name="bankOrder.statusSelect" hidden="true"/>
         			<field name="isRejected" hideIf="bankOrder.statusSelect != 5"/>
 					<field name="rejectDate" hidden="true" showIf="isRejected == true"/>
@@ -74,10 +80,10 @@
 		</panel>
 		
   		<panel name="action" title="Action" itemSpan="12" sidebar="true" hideIf="statusSelect == 4 || statusSelect == 5">
-    		<button name="send" title="Send for signature" hideIf="statusSelect != 1 || orderType == 3 || orderType == 5" onClick="action-group-bank-order-onsend"/>
-    		<button name="validate" title="Validate" showIf="(statusSelect == 1 &amp;&amp; (orderType == 3 || orderType == 5) ) || (statusSelect == 2 &amp;&amp; orderType != 3 &amp;&amp; orderType != 5)" onClick="action-group-bank-order-onvalidate"/>
-    		<button name="carry out" title="Carry out" showIf="((statusSelect == 3 &amp;&amp; orderType != 3 &amp;&amp; orderType != 5) || (statusSelect == 2 &amp;&amp; (orderType == 3 || orderType == 5)))" onClick="save,action-bank-order-record-carry-out,action-method-bank-order-payment-validate,save"/>
-			<button name="reject" title="Reject" showIf="((statusSelect == 3 &amp;&amp; orderType != 3 &amp;&amp; orderType != 5) || (statusSelect == 2 &amp;&amp; (orderType == 3 || orderType == 5)))" onClick="save,action-bank-order-record-reject,action-method-bank-order-payment-cancel,save"/>    		
+    		<button name="confirm" title="Confirm" hideIf="statusSelect != 1 || orderTypeSelect == 3 || orderTypeSelect == 5" onClick="action-group-bank-order-confirm"/>
+    		<button name="validate" title="Validate" showIf="(statusSelect == 1 &amp;&amp; (orderTypeSelect == 3 || orderTypeSelect == 5) ) || (statusSelect == 2 &amp;&amp; orderTypeSelect != 3 &amp;&amp; orderTypeSelect != 5)" onClick="action-group-bank-order-onvalidate"/>
+    		<button name="carry out" title="Carry out" showIf="((statusSelect == 3 &amp;&amp; orderTypeSelect != 3 &amp;&amp; orderTypeSelect != 5) || (statusSelect == 2 &amp;&amp; (orderTypeSelect == 3 || orderTypeSelect == 5)))" onClick="save,action-bank-order-record-carry-out,action-method-bank-order-payment-validate,save"/>
+			<button name="reject" title="Reject" showIf="((statusSelect == 3 &amp;&amp; orderTypeSelect != 3 &amp;&amp; orderTypeSelect != 5) || (statusSelect == 2 &amp;&amp; (orderTypeSelect == 3 || orderTypeSelect == 5)))" onClick="save,action-bank-order-record-reject,action-method-bank-order-payment-cancel,save"/>    		
     		<button name="cancel" title="Cancel" showIf="statusSelect == 1" onClick="save,action-bank-order-record-cancel,save"/>
   		</panel>
 	</form>
@@ -104,16 +110,16 @@
 	
 	<action-group name="action-group-bank-order-onvalidate">
 		<action name="action-method-bank-order-validate"/>
-		<action name="action-method-bank-order-on-save-amount" if="orderType == 3 || orderType == 5"/>
+		<action name="action-method-bank-order-on-save-amount" if="orderTypeSelect == 3 || orderTypeSelect == 5"/>
 		<action name="save"/>
 		<action name="action-bank-order-method-check-lines"/>
 	</action-group>
 	
-	<action-group name="action-group-bank-order-onsend">
+	<action-group name="action-group-bank-order-confirm">
 		<action name="save"/>
   		<action name="action-method-bank-order-on-save-amount"/>
   		<action name="save"/>
-  		<action name="action-method-bank-order-send"/>
+  		<action name="action-method-bank-order-confirm"/>
 	</action-group>
 	
 		<!-- Actions Attributes -->
@@ -126,20 +132,20 @@
     </action-attrs>
     
     <action-attrs name="action-bank-order-attrs-order-type">
-		<attribute name="readonly" for="orderType" expr="true" if="orderType != null"/>    
-		<attribute name="hidden" for="orderType" expr="true" if="orderType != null"/>
+		<attribute name="readonly" for="orderTypeSelect" expr="true" if="orderTypeSelect != null"/>    
+		<attribute name="hidden" for="orderTypeSelect" expr="true" if="orderTypeSelect != null"/>
     </action-attrs>
     
      <action-attrs name="action-bank-order-attrs-domain-hidden">
-		<attribute name="domain" for="partnerTypeSelect" expr="3" if="orderType == 3 || orderType == 5"/>
-		<attribute name="readonly" for="partnerTypeSelect" expr="true" if="orderType == 3 || orderType == 5"/>
-		<attribute name="domain" for="paymentMode" expr="self.orderType = orderType"/>     
+		<attribute name="domain" for="partnerTypeSelect" expr="3" if="orderTypeSelect == 3 || orderTypeSelect == 5"/>
+		<attribute name="readonly" for="partnerTypeSelect" expr="true" if="orderTypeSelect == 3 || orderTypeSelect == 5"/>
+		<attribute name="domain" for="paymentMode" expr="self.orderTypeSelect = orderTypeSelect"/>     
     </action-attrs>
     
     	<!-- Actions Records -->
     	
     <action-record name="action-bank-order-record-default" model="com.axelor.apps.account.db.BankOrder">
-		<field name="orderType" expr="eval: _orderType" if="_orderType != null"/>
+		<field name="orderTypeSelect" expr="eval: _orderTypeSelect" if="_orderTypeSelect != null"/>
 		<field name="bankOrderDate" expr="eval:__config__.generalService.getTodayDate()"/>
 		<field name="senderCompany" expr="eval:__user__.activeCompany"/>
 		<field name="senderBankDetails" expr="eval:__user__.activeCompany.defaultBankDetails"/>
@@ -166,13 +172,13 @@
 	</action-record>
 	
 	<action-record name="action-bank-order-record-partner-type-select-default" model="com.axelor.apps.account.db.BankOrder">
-		<field name="partnerTypeSelect" expr="3" if="orderType == 3 || orderType == 5"/>
+		<field name="partnerTypeSelect" expr="3" if="orderTypeSelect == 3 || orderTypeSelect == 5"/>
 	</action-record>
 	
 		<!-- Actions Methods -->
 	
-	<action-method name="action-method-bank-order-send">
-		<call class="com.axelor.apps.account.web.BankOrderController" method="send"/>
+	<action-method name="action-method-bank-order-confirm">
+		<call class="com.axelor.apps.account.web.BankOrderController" method="confirm"/>
 	</action-method>
 
 	<action-method name="action-method-bank-order-sign">
@@ -199,13 +205,16 @@
 		<call class="com.axelor.apps.account.web.BankOrderController" method="cancelPayment"/>
 	</action-method>
 	
+	<action-method name="action-method-bank-order-merge">
+		<call class="com.axelor.apps.account.web.BankOrderController" method="merge"/>
+	</action-method>
 	
 	<!-- BANK ORDER LINES ACTIONS -->
 		<!-- Actions Groups-->
 		
 	<action-group name="action-group-bank-order-line-onnew">
 		<action name="action-bank-order-line-record-get-parent"/>
-		<action name="action-bank-order-line-record-default" if="bankOrder.orderType == 1"/>
+		<action name="action-bank-order-line-record-default" if="bankOrder.orderTypeSelect == 1"/>
 		<action name="action-bank-order-line-record-amount-default"/>
 	</action-group>
 	
@@ -218,16 +227,16 @@
     </action-attrs>
     
     <action-attrs name="action-bank-order-line-attrs-bank-details-domain">
-        <attribute if="!receiverCompany?.bankDetailsSet?.isEmpty() &amp;&amp; _parent.orderType == 1" name="domain" expr="eval: &quot;self.id IN (${receiverCompany?.bankDetailsSet?.collect{it.id}.join(',')},${receiverCompany?.defaultBankDetails?.id})&quot;" for="receiverBankDetails"/>
-  		<attribute if="receiverCompany?.bankDetailsSet?.isEmpty() &amp;&amp; _parent.orderType == 1" name="domain" expr="eval: &quot;self.id = ${receiverCompany?.defaultBankDetails?.id}&quot;" for="receiverBankDetails"/>
-  		<attribute if="!partner?.bankDetailsList?.isEmpty() &amp;&amp; _parent.orderType != 1" name="domain" expr="eval: &quot;self.id IN (${partner?.bankDetailsList?.collect{it.id}.join(',')})&quot;" for="receiverBankDetails"/>
-  		<attribute if="partner?.bankDetailsList?.isEmpty() &amp;&amp; _parent.orderType != 1" name="domain" expr="self.id IN (0)" for="receiverBankDetails"/>
+        <attribute if="!receiverCompany?.bankDetailsSet?.isEmpty() &amp;&amp; _parent.orderTypeSelect == 1" name="domain" expr="eval: &quot;self.id IN (${receiverCompany?.bankDetailsSet?.collect{it.id}.join(',')},${receiverCompany?.defaultBankDetails?.id})&quot;" for="receiverBankDetails"/>
+  		<attribute if="receiverCompany?.bankDetailsSet?.isEmpty() &amp;&amp; _parent.orderTypeSelect == 1" name="domain" expr="eval: &quot;self.id = ${receiverCompany?.defaultBankDetails?.id}&quot;" for="receiverBankDetails"/>
+  		<attribute if="!partner?.bankDetailsList?.isEmpty() &amp;&amp; _parent.orderTypeSelect != 1" name="domain" expr="eval: &quot;self.id IN (${partner?.bankDetailsList?.collect{it.id}.join(',')})&quot;" for="receiverBankDetails"/>
+  		<attribute if="partner?.bankDetailsList?.isEmpty() &amp;&amp; _parent.orderTypeSelect != 1" name="domain" expr="self.id IN (0)" for="receiverBankDetails"/>
     </action-attrs>	
     
      <action-attrs name="action-bank-order-attrs-interbank-code-line-domain">
-		<attribute name="domain" for="interbankCodeLine" expr="self.transferCfonbOk = true" if="_parent.orderType in (1,2,4)"/>
-		<attribute name="domain" for="interbankCodeLine" expr="self.directDebitSepaOk = true" if="_parent.orderType == 3"/>
-		<attribute name="domain" for="interbankCodeLine" expr="self.directDebitAndTipCfonbOk = true" if="_parent.orderType == 5"/>      
+		<attribute name="domain" for="interbankCodeLine" expr="self.transferCfonbOk = true" if="_parent.orderTypeSelect in (1,2,4)"/>
+		<attribute name="domain" for="interbankCodeLine" expr="self.directDebitSepaOk = true" if="_parent.orderTypeSelect == 3"/>
+		<attribute name="domain" for="interbankCodeLine" expr="self.directDebitAndTipCfonbOk = true" if="_parent.orderTypeSelect == 5"/>      
     </action-attrs>
     
 		<!-- Actions Records -->

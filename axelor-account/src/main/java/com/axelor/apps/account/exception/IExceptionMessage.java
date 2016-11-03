@@ -17,6 +17,10 @@
  */
 package com.axelor.apps.account.exception;
 
+import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.IException;
+import com.axelor.i18n.I18n;
+
 /**
  * Interface of Exceptions. Enum all exception of axelor-account.
  *
@@ -589,6 +593,20 @@ public interface IExceptionMessage {
 	static final String BANK_ORDER_LINE_AMOUNT_NEGATIVE = /*$$(*/ "Amount value of a bank order line is not valid" /*)*/;
 	static final String BANK_ORDER_LINE_TOTAL_AMOUNT_INVALID = /*$$(*/ "Total amount of bank order lines must be equal to the bank order amount" /*)*/;
 	
+	
+	/**
+	 * BankOrder merge
+	 */
+	static final String BANK_ORDER_MERGE_AT_LEAST_TWO_BANK_ORDERS = /*$$(*/ "Please select at least two bank orders" /*)*/;
+	static final String BANK_ORDER_MERGE_STATUS = /*$$(*/ "Please select draft or awaiting signature bank orders only" /*)*/;
+	static final String BANK_ORDER_MERGE_SAME_STATUS = /*$$(*/ "Please select some bank orders that have the same status" /*)*/;
+	static final String BANK_ORDER_MERGE_SAME_ORDER_TYPE_SELECT = /*$$(*/ "Please select some bank orders that have the same status" /*)*/;
+	static final String BANK_ORDER_MERGE_SAME_PAYMENT_MODE = /*$$(*/ "Please select some bank orders that have the same payment mode" /*)*/;
+	static final String BANK_ORDER_MERGE_SAME_PARTNER_TYPE_SELECT = /*$$(*/ "Please select some bank orders that have the same partner type" /*)*/;
+	static final String BANK_ORDER_MERGE_SAME_SENDER_COMPANY = /*$$(*/ "Please select some bank orders that have the same sender company" /*)*/;
+	static final String BANK_ORDER_MERGE_SAME_SENDER_BANK_DETAILS = /*$$(*/ "Please select some bank orders that have the same sender bank details" /*)*/;
+	static final String BANK_ORDER_MERGE_SAME_CURRENCY = /*$$(*/ "Please select some bank orders that have the same currency" /*)*/;
+
 	
 	/**
 	 *  Ebics

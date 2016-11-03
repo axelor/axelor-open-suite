@@ -177,7 +177,8 @@
 	    	</panel>
 			<panel name="payment" title="Invoicing/Payment" hideIf="isContact" if-module="axelor-account" colSpan="12" >
 				<panel if-module="axelor-cash-management" if="__config__.general.getManageMultiBanks()">
-					<field name="bankDetails"/>
+					<field name="bankDetails"/> 
+<!-- 					TODO TO DELETE -->
 				</panel>
 		    	<panel-include view="incl-invoice-payment-partner-form" from="axelor-account"/>
 				<panel-include if-module="axelor-account" if="__config__.general.getManageDirectDebitPayment()"  view="incl-sepa-direct-debit-partner-form" from="axelor-account"/>

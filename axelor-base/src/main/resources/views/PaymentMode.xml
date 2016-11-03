@@ -17,8 +17,8 @@
 			<field name="inOutSelect" colSpan="3"/>
 			<field name="generateBankOrder" if-module="axelor-account" showIf="typeSelect == 2 || typeSelect == 9"/>
   			<field name="automaticTransmission" showIf="generateBankOrder" if-module="axelor-account"/>
-  			<field if-module="axelor-account" selection-in="[3,5]" hidden="true" name="orderType" showIf="generateBankOrder &amp;&amp; typeSelect == 2"/>
-    		<field if-module="axelor-account" selection-in="[1,2,4]" hidden="true" name="orderType" showIf="generateBankOrder &amp;&amp; typeSelect == 9"/>
+  			<field if-module="axelor-account" selection-in="[3,5]" hidden="true" name="orderTypeSelect" showIf="generateBankOrder &amp;&amp; typeSelect == 2"/>
+    		<field if-module="axelor-account" selection-in="[1,2,4]" hidden="true" name="orderTypeSelect" showIf="generateBankOrder &amp;&amp; typeSelect == 9"/>
   			<field name="bankOrderExportFolderPath" showIf="generateBankOrder" if-module="axelor-account"/>
         </panel>
         <panel-related field="accountManagementList" grid-view="account-management-payment-mode-grid" form-view="account-management-payment-mode-form"
@@ -36,7 +36,7 @@
 	</action-record> 
 	
 	<action-record name="action-payment-mode-record-empty" model="com.axelor.apps.account.db.PaymentMode">
-	    <field name="orderType" expr=""/>
+	    <field name="orderTypeSelect" expr=""/>
 	    <field name="generateBankOrder" expr="false"/>
 	    <field name="automaticTransmission" expr="false"/>
 	    <field name="bankOrderExportFolderPath" expr=""/>     

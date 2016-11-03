@@ -326,8 +326,9 @@
 	</selection>
 	
 	<selection name="iaccount.bank.order.reject.status">
-		<option value="1">Partially Rejected</option>
-		<option value="2">Totally Rejected</option>
+		<option value="0">Not rejected</option>
+		<option value="1">Partially rejected</option>
+		<option value="2">Totally rejected</option>
 	</selection>
 	
 	

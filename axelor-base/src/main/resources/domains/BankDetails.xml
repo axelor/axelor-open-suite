@@ -43,11 +43,8 @@
         ]]>
     </string>
 
+	<finder-method name="findDefaultByPartner" using="partner,isDefault"/>	
+
   </entity>
 
-  <!--
-  
-  Coordonnées bancaires
-  
-  -->
 </domain-models>

@@ -9,17 +9,17 @@ import com.google.inject.persist.Transactional;
 public interface BankOrderService {
 
 	
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void validate(BankOrder bankOrder) throws AxelorException;
+	@Transactional
+	public BigDecimal computeTotalAmount(BankOrder bankOrder)throws AxelorException;
 	
 	@Transactional
-	public BigDecimal updateAmount(BankOrder bankOrder)throws AxelorException;
-	
-	@Transactional
-	public void send(BankOrder bankOrder);
+	public void confirm(BankOrder bankOrder);
 	
 	@Transactional
 	public void sign(BankOrder bankOrder);
+	
+	@Transactional
+	public void validate(BankOrder bankOrder);
 	
 	@Transactional
 	public BankOrder generateSequence(BankOrder bankOrder);
