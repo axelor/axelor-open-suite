@@ -597,18 +597,18 @@
 		<option value="4">A.T.I. by default</option>
 	</selection>
 	
-	<selection name="product.product.cost.type.select">
+	<selection name="base.product.cost.type.select">
 		<option value="1">Standard</option>
 		<option value="2">Last purchase price</option>
 	</selection>
 	
-	<selection name="product.product.type.select.inventory">
+	<selection name="product.inventory.type.select">
 		<option value="1">Yearly</option>
 		<option value="2">Rotating / Turning</option>
 	</selection>
 	
 	
-	<selection name="product.product.type.select.subtypeproduct">
+	<selection name="product.sub.type.product">
 		<option value="1">Product finished</option>
 		<option value="2">Product semi-finished</option>
 		<option value="3">Component</option>
