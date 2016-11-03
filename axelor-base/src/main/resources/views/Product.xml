@@ -56,9 +56,11 @@
       
       			<panel name="productTypology" title="Product typology" colSpan="6" colWidths="30%,70%">
 			        <field name="productTypeSelect" colSpan="12" onChange="action-group-base-product-producttype-onchange"/>
+			        <field name="subTypeProduct" colSpan="12"/>
 			        <field name="isActivity" showIf="productTypeSelect == 'service'"/>
 			        <field name="periodicitySelect" showIf="productTypeSelect == 'subscriptable'" if-module="axelor-supplychain"/>
 			        <field name="saleSupplySelect" colSpan="12" onChange="action-product-validate-sale-supply-select"/>
+			        <field name="inventory" colSpan="12" />
       			</panel>
 		      	<panel name="categorization" title="Categorization" colSpan="6" colWidths="30%,70%">
 		        	<field name="productFamily" colSpan="12" form-view="product-family-form" grid-view="product-family-grid"/>
@@ -76,6 +78,7 @@
 	      		<panel title="Sales" colSpan="6">
 			        <field name="sellable" colSpan="12"/>
 			        <field name="salePrice" hideIf="!sellable" colSpan="12"/>
+			        <field name="customsCode" colSpan="12"/>
 			        <field name="saleCurrency" hideIf="!sellable" colSpan="12" form-view="currency-form" grid-view="currency-grid"/>
 	        		<panel name="units" title="Units" colSpan="6">
 			          	<field name="unit" colSpan="12" form-view="unit-form" grid-view="unit-grid"/>
@@ -88,6 +91,7 @@
 			        	<field name="startDate" colSpan="12"/>
 			        	<field name="endDate" colSpan="12" onChange="action-group-base-product-enddate-onchange"/>
 			      	</panel>
+			        <field name="isPrototype" showIf="productTypeSelect =='storable'"/>
 		        	<field name="versionSelect" colSpan="12"/>
 				</panel>
 	      		<panel name="description" title="Description" colSpan="6">
@@ -187,7 +191,23 @@
 <!--  				<panel-dashlet action="action-product-view-purchase-order-line-historical" colSpan="12" if-module="axelor-purchase"/> -->
 				<panel-dashlet colSpan="12" action="action-product-view-stock-move-line-consumption-historical"/>
 	    	</panel>
+	    	<panel name="packaging" title="Packaging">
+	  			<panel name="weight" title="Weight" colSpan="6">
+	  				<field name="unitWeight"/>
+	  				<field name="grossWeight"/>
+	  				<field name="netWeight"/>
+	  			</panel>
+			      <panel name="articleDimension" title="Article dimension" colSpan="6">
+			        <field name="unitLength"/>
+			        <field name="length" readonlyIf="diameter > 0" onChange="action-product-calculate-volume"/>
+			        <field name="width" readonlyIf="diameter > 0" onChange="action-product-calculate-volume"/>
+			        <field name="height" onChange="action-product-calculate-volume"/>
+			        <field name="diameter" readonlyIf="length > 0 || width > 0" onChange="action-product-calculate-volume"/>
+			        <field name="articleVolume" readonly="true"/>
+			      </panel>
+  			</panel>
   		</panel-tabs>
+  		
 	</form>    
 	
 	<cards name="product-cards" title="Product" model="com.axelor.apps.base.db.Product" cardWidth="25%" css="rect-image" orderBy="code,name">
@@ -377,6 +397,11 @@
 		<attribute name="title" for="salePrice" expr="eval: com.axelor.i18n.I18n.get('Sale Price (for periodicity selected)')" if="productTypeSelect == 'subscriptable'"/>
 		<attribute name="title" for="salePrice" expr="eval: com.axelor.i18n.I18n.get('Sale price')" if="productTypeSelect != 'subscriptable'"/>
 	</action-attrs>
+	
+	<action-record name="action-product-calculate-volume" model="com.axelor.apps.base.db.Product">
+		<field name="articleVolume" if="length != null" expr="eval:length * width * height"/>
+		<field name="articleVolume" if="diameter != null" expr="eval: height * diameter"/>
+	</action-record>
 	
     <search-filters name="products-filters" model="com.axelor.apps.base.db.Product" title="Products filters">
 		<filter title="Current Products">

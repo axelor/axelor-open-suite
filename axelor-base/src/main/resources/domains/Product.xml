@@ -23,6 +23,9 @@
     <string name="productTypeSelect" title="Type" required="true" selection="product.product.type.select" initParam="true" help="true"/>
     <string name="procurementMethodSelect" title="Procurement method" selection="product.procurement.method.select" initParam="true" help="true"/>
     <boolean name="isRawMaterial" title="Raw material" initParam="true" help="true"/>
+    <boolean name="isPrototype" title="Prototype"/>
+    <integer name="subTypeProduct" title="Sub Type Product" selection="product.product.type.select.subtypeproduct"/>
+    <integer name="inventory" title="Inventory" selection="product.product.type.select.inventory"/>
     
     <decimal name="salePrice" title="Sale price W.T." precision="20" scale="10" massUpdate="true"/>
     <many-to-one name="saleCurrency" ref="com.axelor.apps.base.db.Currency" title="Sale currency" initParam="true"  />
@@ -58,6 +61,7 @@
   	<boolean name="sellable" title="Sellable" default="true" />
   	<boolean name="purchasable" title="Purchasable" default="true"/>
   	<boolean name="inAti" title="In ATI"/>
+  	<string name="customsCode" title="Custom Code"/>
   	
   	<integer name="costTypeSelect" title="Cost type" selection="base.product.cost.type.select" default="1"/>
   	
@@ -66,6 +70,18 @@
   	<many-to-one name="barCode" title="Barcode" ref="com.axelor.meta.db.MetaFile" />
   	
   	<string name="fullName" title="Full name" namecolumn="true"/>
+  	
+  	
+  	<many-to-one name="unitWeight" ref="com.axelor.apps.base.db.UnitConversion" title="Unit of length"/>
+  	<decimal name="grossWeight" title="Gross weight"/>
+  	<decimal name="netWeight" title="Net weight"/>
+  	
+  	<many-to-one name="unitLength" ref="com.axelor.apps.base.db.UnitConversion" title="Unit of length"/>
+  	<decimal name="length" title="Length"/>
+  	<decimal name="width" title="Width"/>
+  	<decimal name="height" title="Height"/>
+  	<decimal name="diameter" title="Diameter"/>
+  	<decimal name="articleVolume" title="Article volume"/>
   	
   	<extra-code>
 	   		<![CDATA[
