@@ -60,6 +60,7 @@ import com.axelor.apps.hr.db.Expense;
 import com.axelor.apps.hr.db.ExpenseLine;
 import com.axelor.apps.hr.db.HRConfig;
 import com.axelor.apps.hr.db.repo.ExpenseRepository;
+import com.axelor.apps.hr.service.EmployeeAdvanceService;
 import com.axelor.apps.hr.service.KilometricService;
 import com.axelor.apps.hr.service.config.AccountConfigHRService;
 import com.axelor.apps.hr.service.config.HRConfigService;
@@ -204,6 +205,7 @@ public class ExpenseServiceImpl implements ExpenseService  {
 			compute(expense);
 		}
 		
+		Beans.get(EmployeeAdvanceService.class).fillExpenseWithAdvances(expense);
 		expense.setStatusSelect(ExpenseRepository.STATUS_VALIDATED);
 		expense.setValidatedBy(AuthUtils.getUser());
 		expense.setValidationDate(generalService.getTodayDate());

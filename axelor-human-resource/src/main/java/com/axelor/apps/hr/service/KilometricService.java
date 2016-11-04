@@ -83,7 +83,7 @@ public class KilometricService {
 	public BigDecimal computeKilometricExpense(ExpenseLine expenseLine, Employee employee) throws AxelorException{
 		
 		BigDecimal multiplier = expenseLine.getKilometricTypeSelect() == 1 ? BigDecimal.ONE : new BigDecimal("2.00");
-		expenseLine.setDistance( expenseLine.getDistance().multiply(multiplier) );
+		BigDecimal distance =  expenseLine.getDistance().multiply(multiplier) ;
 		
 		BigDecimal previousDistance;
 		KilometricLog log = Beans.get(KilometricService.class).getKilometricLog(employee, expenseLine.getExpenseDate());
@@ -99,7 +99,7 @@ public class KilometricService {
 		
 		for (KilometricAllowanceRule rule : allowance.getKilometricAllowanceRuleList() ) {
 			
-			if (rule.getMinimumCondition().compareTo( previousDistance.add(expenseLine.getDistance())) == -1 && rule.getMaximumCondition().compareTo(previousDistance) == 1 ){
+			if (rule.getMinimumCondition().compareTo( previousDistance.add(distance)) == -1 && rule.getMaximumCondition().compareTo(previousDistance) == 1 ){
 				ruleList.add(rule);				
 			}
 		}
@@ -109,7 +109,7 @@ public class KilometricService {
 		BigDecimal price = BigDecimal.ZERO;
 		
 		if (ruleList.size() == 1){
-			price = expenseLine.getDistance().multiply( ruleList.get(0).getRate()   );
+			price = distance.multiply( ruleList.get(0).getRate()   );
 		}else if (ruleList.size() > 0) {
 			  Collections.sort(ruleList, new Comparator<KilometricAllowanceRule>() {
 			      @Override
@@ -119,7 +119,7 @@ public class KilometricService {
 			  });
 			  for (KilometricAllowanceRule rule : ruleList){
 				  BigDecimal min = rule.getMinimumCondition().max( previousDistance  );
-				  BigDecimal max = rule.getMaximumCondition().min(previousDistance.add(expenseLine.getDistance() ) )  ;
+				  BigDecimal max = rule.getMaximumCondition().min(previousDistance.add(distance ) )  ;
 				  price = price.add(  max.subtract(min).multiply(rule.getRate())  );
 			  }
 			}
