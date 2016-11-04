@@ -4,13 +4,13 @@
   
   <report>
     <name>Note De Frais</name>
-  	<metaModel>Expense</metaModel>
-  	<viewBuilder>expense-form</viewBuilder>
+  	<metaModel>DemoExpense</metaModel>
+  	<viewBuilder>demo-expense-form</viewBuilder>
   	<header>Note De Frais</header>
   	<footer>Axelor Technologies Pvt Ltd.</footer>
   	<printPageNo>T</printPageNo>
   	<editHtml>T</editHtml>
-  	<fileName>Expense$TODAY$</fileName>
+  	<fileName>Expense$TODAY$.pdf</fileName>
   </report>
   
 </reports>

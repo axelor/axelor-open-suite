@@ -6,9 +6,9 @@
 		<bpmnXml>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt; &lt;definitions xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xmlns=&quot;http://www.omg.org/spec/BPMN/20100524/MODEL&quot; xmlns:bpmndi=&quot;http://www.omg.org/spec/BPMN/20100524/DI&quot; xmlns:dc=&quot;http://www.omg.org/spec/DD/20100524/DC&quot; xmlns:di=&quot;http://www.omg.org/spec/DD/20100524/DI&quot; xmlns:x=&quot;http://axelor.com&quot; id=&quot;Definitions_1&quot; targetNamespace=&quot;http://bpmn.io/schema/bpmn&quot;&gt; &lt;process id=&quot;Process_1&quot; name=&quot;Note De Frais Flow&quot; isExecutable=&quot;false&quot; x:id=&quot;null&quot;&gt; &lt;startEvent id=&quot;StartEvent_1&quot; name=&quot;Brouillon&quot;&gt; &lt;incoming&gt;SequenceFlow_1ad5q8i&lt;/incoming&gt; &lt;incoming&gt;SequenceFlow_0b69vd9&lt;/incoming&gt; &lt;outgoing&gt;SequenceFlow_1s9mn1i&lt;/outgoing&gt; &lt;/startEvent&gt; &lt;task id=&quot;Task_2&quot; name=&quot;Envoyé&quot;&gt; &lt;incoming&gt;SequenceFlow_1s9mn1i&lt;/incoming&gt; &lt;outgoing&gt;SequenceFlow_1kg81w2&lt;/outgoing&gt; &lt;outgoing&gt;SequenceFlow_1cwujd1&lt;/outgoing&gt; &lt;outgoing&gt;SequenceFlow_0q3jf5q&lt;/outgoing&gt; &lt;/task&gt; &lt;task id=&quot;Task_3&quot; name=&quot;Refusé&quot;&gt; &lt;incoming&gt;SequenceFlow_1cwujd1&lt;/incoming&gt; &lt;outgoing&gt;SequenceFlow_0b69vd9&lt;/outgoing&gt; &lt;/task&gt; &lt;task id=&quot;Task_4&quot; name=&quot;Annuler&quot;&gt; &lt;incoming&gt;SequenceFlow_0q3jf5q&lt;/incoming&gt; &lt;outgoing&gt;SequenceFlow_1ad5q8i&lt;/outgoing&gt; &lt;/task&gt; &lt;endEvent id=&quot;EndEvent_5&quot; name=&quot;Validé&quot;&gt; &lt;incoming&gt;SequenceFlow_1kg81w2&lt;/incoming&gt; &lt;/endEvent&gt; &lt;sequenceFlow id=&quot;SequenceFlow_1s9mn1i&quot; name=&quot;Envoyer&quot; sourceRef=&quot;StartEvent_1&quot; targetRef=&quot;Task_2&quot; /&gt; &lt;sequenceFlow id=&quot;SequenceFlow_1kg81w2&quot; name=&quot;Valider&quot; sourceRef=&quot;Task_2&quot; targetRef=&quot;EndEvent_5&quot; /&gt; &lt;sequenceFlow id=&quot;SequenceFlow_1cwujd1&quot; name=&quot;Refuser&quot; sourceRef=&quot;Task_2&quot; targetRef=&quot;Task_3&quot; /&gt; &lt;sequenceFlow id=&quot;SequenceFlow_0q3jf5q&quot; name=&quot;Annuler&quot; sourceRef=&quot;Task_2&quot; targetRef=&quot;Task_4&quot; /&gt; &lt;sequenceFlow id=&quot;SequenceFlow_1ad5q8i&quot; name=&quot;Reset&quot; sourceRef=&quot;Task_4&quot; targetRef=&quot;StartEvent_1&quot; /&gt; &lt;sequenceFlow id=&quot;SequenceFlow_0b69vd9&quot; name=&quot;Reset&quot; sourceRef=&quot;Task_3&quot; targetRef=&quot;StartEvent_1&quot; /&gt; &lt;/process&gt; &lt;bpmndi:BPMNDiagram id=&quot;BPMNDiagram_1&quot;&gt; &lt;bpmndi:BPMNPlane id=&quot;BPMNPlane_1&quot; bpmnElement=&quot;Process_1&quot;&gt; &lt;bpmndi:BPMNShape id=&quot;_BPMNShape_StartEvent_1&quot; bpmnElement=&quot;StartEvent_1&quot;&gt; &lt;dc:Bounds x=&quot;93&quot; y=&quot;154&quot; width=&quot;36&quot; height=&quot;36&quot; /&gt; &lt;bpmndi:BPMNLabel&gt; &lt;dc:Bounds x=&quot;12&quot; y=&quot;162&quot; width=&quot;90&quot; height=&quot;20&quot; /&gt; &lt;/bpmndi:BPMNLabel&gt; &lt;/bpmndi:BPMNShape&gt; &lt;bpmndi:BPMNShape id=&quot;_BPMNShape_Task_2&quot; bpmnElement=&quot;Task_2&quot;&gt; &lt;dc:Bounds x=&quot;256&quot; y=&quot;132&quot; width=&quot;100&quot; height=&quot;80&quot; /&gt; &lt;/bpmndi:BPMNShape&gt; &lt;bpmndi:BPMNShape id=&quot;_BPMNShape_Task_3&quot; bpmnElement=&quot;Task_3&quot;&gt; &lt;dc:Bounds x=&quot;256&quot; y=&quot;-8&quot; width=&quot;100&quot; height=&quot;80&quot; /&gt; &lt;/bpmndi:BPMNShape&gt; &lt;bpmndi:BPMNShape id=&quot;_BPMNShape_Task_4&quot; bpmnElement=&quot;Task_4&quot;&gt; &lt;dc:Bounds x=&quot;256&quot; y=&quot;280&quot; width=&quot;100&quot; height=&quot;80&quot; /&gt; &lt;/bpmndi:BPMNShape&gt; &lt;bpmndi:BPMNShape id=&quot;_BPMNShape_EndEvent_5&quot; bpmnElement=&quot;EndEvent_5&quot;&gt; &lt;dc:Bounds x=&quot;510&quot; y=&quot;154&quot; width=&quot;36&quot; height=&quot;36&quot; /&gt; &lt;bpmndi:BPMNLabel&gt; &lt;dc:Bounds x=&quot;483&quot; y=&quot;192&quot; width=&quot;90&quot; height=&quot;20&quot; /&gt; &lt;/bpmndi:BPMNLabel&gt; &lt;/bpmndi:BPMNShape&gt; &lt;bpmndi:BPMNEdge id=&quot;SequenceFlow_1s9mn1i_di&quot; bpmnElement=&quot;SequenceFlow_1s9mn1i&quot;&gt; &lt;di:waypoint xsi:type=&quot;dc:Point&quot; x=&quot;129&quot; y=&quot;172&quot; /&gt; &lt;di:waypoint xsi:type=&quot;dc:Point&quot; x=&quot;196&quot; y=&quot;172&quot; /&gt; &lt;di:waypoint xsi:type=&quot;dc:Point&quot; x=&quot;196&quot; y=&quot;172&quot; /&gt; &lt;di:waypoint xsi:type=&quot;dc:Point&quot; x=&quot;256&quot; y=&quot;172&quot; /&gt; &lt;bpmndi:BPMNLabel&gt; &lt;dc:Bounds x=&quot;148&quot; y=&quot;131.5&quot; width=&quot;90&quot; height=&quot;20&quot; /&gt; &lt;/bpmndi:BPMNLabel&gt; &lt;/bpmndi:BPMNEdge&gt; &lt;bpmndi:BPMNEdge id=&quot;SequenceFlow_1kg81w2_di&quot; bpmnElement=&quot;SequenceFlow_1kg81w2&quot;&gt; &lt;di:waypoint xsi:type=&quot;dc:Point&quot; x=&quot;356&quot; y=&quot;172&quot; /&gt; &lt;di:waypoint xsi:type=&quot;dc:Point&quot; x=&quot;510&quot; y=&quot;172&quot; /&gt; &lt;bpmndi:BPMNLabel&gt; &lt;dc:Bounds x=&quot;359&quot; y=&quot;145&quot; width=&quot;90&quot; height=&quot;20&quot; /&gt; &lt;/bpmndi:BPMNLabel&gt; &lt;/bpmndi:BPMNEdge&gt; &lt;bpmndi:BPMNEdge id=&quot;SequenceFlow_1cwujd1_di&quot; bpmnElement=&quot;SequenceFlow_1cwujd1&quot;&gt; &lt;di:waypoint xsi:type=&quot;dc:Point&quot; x=&quot;306&quot; y=&quot;132&quot; /&gt; &lt;di:waypoint xsi:type=&quot;dc:Point&quot; x=&quot;306&quot; y=&quot;102&quot; /&gt; &lt;di:waypoint xsi:type=&quot;dc:Point&quot; x=&quot;306&quot; y=&quot;102&quot; /&gt; &lt;di:waypoint xsi:type=&quot;dc:Point&quot; x=&quot;306&quot; y=&quot;72&quot; /&gt; &lt;bpmndi:BPMNLabel&gt; &lt;dc:Bounds x=&quot;321&quot; y=&quot;83&quot; width=&quot;90&quot; height=&quot;20&quot; /&gt; &lt;/bpmndi:BPMNLabel&gt; &lt;/bpmndi:BPMNEdge&gt; &lt;bpmndi:BPMNEdge id=&quot;SequenceFlow_0q3jf5q_di&quot; bpmnElement=&quot;SequenceFlow_0q3jf5q&quot;&gt; &lt;di:waypoint xsi:type=&quot;dc:Point&quot; x=&quot;306&quot; y=&quot;212&quot; /&gt; &lt;di:waypoint xsi:type=&quot;dc:Point&quot; x=&quot;306&quot; y=&quot;247&quot; /&gt; &lt;di:waypoint xsi:type=&quot;dc:Point&quot; x=&quot;306&quot; y=&quot;247&quot; /&gt; &lt;di:waypoint xsi:type=&quot;dc:Point&quot; x=&quot;306&quot; y=&quot;280&quot; /&gt; &lt;bpmndi:BPMNLabel&gt; &lt;dc:Bounds x=&quot;296&quot; y=&quot;236&quot; width=&quot;90&quot; height=&quot;20&quot; /&gt; &lt;/bpmndi:BPMNLabel&gt; &lt;/bpmndi:BPMNEdge&gt; &lt;bpmndi:BPMNEdge id=&quot;SequenceFlow_1ad5q8i_di&quot; bpmnElement=&quot;SequenceFlow_1ad5q8i&quot;&gt; &lt;di:waypoint xsi:type=&quot;dc:Point&quot; x=&quot;256&quot; y=&quot;320&quot; /&gt; &lt;di:waypoint xsi:type=&quot;dc:Point&quot; x=&quot;111&quot; y=&quot;320&quot; /&gt; &lt;di:waypoint xsi:type=&quot;dc:Point&quot; x=&quot;111&quot; y=&quot;190&quot; /&gt; &lt;bpmndi:BPMNLabel&gt; &lt;dc:Bounds x=&quot;121&quot; y=&quot;292&quot; width=&quot;90&quot; height=&quot;20&quot; /&gt; &lt;/bpmndi:BPMNLabel&gt; &lt;/bpmndi:BPMNEdge&gt; &lt;bpmndi:BPMNEdge id=&quot;SequenceFlow_0b69vd9_di&quot; bpmnElement=&quot;SequenceFlow_0b69vd9&quot;&gt; &lt;di:waypoint xsi:type=&quot;dc:Point&quot; x=&quot;256&quot; y=&quot;32&quot; /&gt; &lt;di:waypoint xsi:type=&quot;dc:Point&quot; x=&quot;111&quot; y=&quot;32&quot; /&gt; &lt;di:waypoint xsi:type=&quot;dc:Point&quot; x=&quot;111&quot; y=&quot;154&quot; /&gt; &lt;bpmndi:BPMNLabel&gt; &lt;dc:Bounds x=&quot;139&quot; y=&quot;4&quot; width=&quot;90&quot; height=&quot;20&quot; /&gt; &lt;/bpmndi:BPMNLabel&gt; &lt;/bpmndi:BPMNEdge&gt; &lt;/bpmndi:BPMNPlane&gt; &lt;/bpmndi:BPMNDiagram&gt; &lt;/definitions&gt;</bpmnXml>
 		<edited>true</edited>
 		<name>Note De Frais flow</name>
-		<viewBuilder>expense-form</viewBuilder>
+		<viewBuilder>demo-expense-form</viewBuilder>
 		<displayTypeSelect>1</displayTypeSelect>
-		<metaModel>Expense</metaModel>
+		<metaModel>DemoExpense</metaModel>
 		<wkfField>status</wkfField>
 		<selected>false</selected>
 	</Wkf>
@@ -18,9 +18,9 @@
 		<myMenuEntry>false</myMenuEntry>
 		<selected>false</selected>
 		<statusMenuEntry>true</statusMenuEntry>
-		<parentMenuBuilder>menu-root-expense</parentMenuBuilder>
+		<parentMenuBuilder>menu-root-demo-expense</parentMenuBuilder>
 		<statusMenuLabel>Dépenses brouillon</statusMenuLabel>
-		<statusMenu>menu-expense-draft</statusMenu>
+		<statusMenu>menu-demo-expense-draft</statusMenu>
 		<title>Brouillon</title>
 		<wkf>Note De Frais flow</wkf>
 		<name>Brouillon</name>
@@ -30,7 +30,7 @@
 	</WkfNode>
 	
 	<WkfNode>
-		<metaModel>Expense</metaModel>
+		<metaModel>DemoExpense</metaModel>
 		<statusMenuLabel>Dépenses envoyées</statusMenuLabel>
 		<startNode>false</startNode>
 		<myMenuEntry>true</myMenuEntry>
@@ -40,14 +40,14 @@
 		<wkf>Note De Frais flow</wkf>
 		<name>Envoyé</name>
 		<myMenuLabel>Mes dépenses envoyées</myMenuLabel>
-		<myStatusMenu>menu-my-expense-sent</myStatusMenu>
+		<myStatusMenu>menu-my-demo-expense-sent</myStatusMenu>
 		<metaField>expenseUser</metaField>
 		<xmlId>Task_2</xmlId>
 		<endNode>false</endNode>
-		<parentMenuBuilder>menu-root-expense</parentMenuBuilder>
+		<parentMenuBuilder>menu-root-demo-expense</parentMenuBuilder>
 		<sequence>2</sequence>
 		<importId>0</importId>
-		<statusMenu>menu-expense-sent</statusMenu>
+		<statusMenu>menu-demo-expense-sent</statusMenu>
 	</WkfNode>
 	
 	<WkfNode>
@@ -55,9 +55,9 @@
 		<myMenuEntry>false</myMenuEntry>
 		<selected>false</selected>
 		<statusMenuEntry>true</statusMenuEntry>
-		<parentMenuBuilder>menu-root-expense</parentMenuBuilder>
+		<parentMenuBuilder>menu-root-demo-expense</parentMenuBuilder>
 		<statusMenuLabel>Dépenses refusées</statusMenuLabel>
-		<statusMenu>menu-expense-refused</statusMenu>
+		<statusMenu>menu-demo-expense-refused</statusMenu>
 		<title>Refusé</title>
 		<wkf>Note De Frais flow</wkf>
 		<name>Refusé</name>
@@ -71,9 +71,9 @@
 		<myMenuEntry>false</myMenuEntry>
 		<selected>false</selected>
 		<statusMenuEntry>true</statusMenuEntry>
-		<parentMenuBuilder>menu-root-expense</parentMenuBuilder>
+		<parentMenuBuilder>menu-root-demo-expense</parentMenuBuilder>
 		<statusMenuLabel>Dépenses annulées</statusMenuLabel>
-		<statusMenu>menu-expense-cancelled</statusMenu>
+		<statusMenu>menu-demo-expense-cancelled</statusMenu>
 		<title>Annuler</title>
 		<wkf>Note De Frais flow</wkf>
 		<name>Annuler</name>
@@ -87,9 +87,9 @@
 		<myMenuEntry>false</myMenuEntry>
 		<selected>false</selected>
 		<statusMenuEntry>true</statusMenuEntry>
-		<parentMenuBuilder>menu-root-expense</parentMenuBuilder>
+		<parentMenuBuilder>menu-root-demo-expense</parentMenuBuilder>
 		<statusMenuLabel>Dépenses validées</statusMenuLabel>
-		<statusMenu>menu-expense-validated</statusMenu>
+		<statusMenu>menu-demo-expense-validated</statusMenu>
 		<title>Validé</title>
 		<wkf>Note De Frais flow</wkf>
 		<name>Validé</name>
@@ -99,8 +99,8 @@
 		<actionSelectorList>
 			<action>
 				<sequence>1</sequence>
-				<actionBuilder>action-send-expense-email</actionBuilder>
-				<name>action-send-expense-email</name>
+				<actionBuilder>action-send-demo-expense-email</actionBuilder>
+				<name>action-send-demo-expense-email</name>
 			</action>
 		</actionSelectorList>	
 	</WkfNode>
@@ -144,8 +144,8 @@
 		<actionSelectorList>
 			<action>
 				<sequence>1</sequence>
-				<actionBuilder>action-send-expense-email</actionBuilder>
-				<name>action-send-expense-email</name>
+				<actionBuilder>action-send-demo-expense-email</actionBuilder>
+				<name>action-send-demo-expense-email</name>
 			</action>
 		</actionSelectorList>	
 	</WkfTransition>
@@ -162,13 +162,13 @@
 		<wkf>Note De Frais flow</wkf>
 		<name>Valider</name>
 		<target>Validé</target>
-		<metaModel>Expense</metaModel>
+		<metaModel>DemoExpense</metaModel>
 		<conditions>
 			<item>
 			<metaField>totalTTC</metaField>
 			<filterOperator>greater than</filterOperator>
 			<value>3000</value>
-			<viewBuilder>expense-form</viewBuilder>
+			<viewBuilder>demo-expense-form</viewBuilder>
 			</item>
 		</conditions>
 		<alertTypeSelect>1</alertTypeSelect>

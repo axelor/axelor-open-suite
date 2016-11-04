@@ -35,8 +35,8 @@
   </form>
   
   <action-attrs name="action-view-field-set-meta-field-domain">
-      <attribute name="domain" for="metaField" expr="eval:&quot;self.metaModel.id = ${_parent?._parent?.metaModel?.id} AND self.customised = true&quot;" if="_parent?._parent != null"/>
-      <attribute name="domain" for="metaField" expr="eval:&quot;self.metaModel.id = ${_parent?.metaModel?.id} AND self.customised = true&quot;" if="_parent?._parent == null"/>
+      <attribute name="domain" for="metaField" expr="eval:&quot;self.metaModel.id = ${_parent?._parent?.metaModel?.id} &quot;" if="_parent?._parent != null"/>
+      <attribute name="domain" for="metaField" expr="eval:&quot;self.metaModel.id = ${_parent?.metaModel?.id} &quot;" if="_parent?._parent == null"/>
   </action-attrs>
   
   <action-record name="action-view-field-meta-field-change" model="com.axelor.studio.db.ViewItem">

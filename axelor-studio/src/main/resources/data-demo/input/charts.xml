@@ -2,7 +2,7 @@
 <charts xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   
-  <chart name="expense-per-month" title="Montant des dépenses par mois" model="com.axelor.apps.custom.db.Expense" 
+  <chart name="demo-expense-per-month" title="Montant des dépenses par mois" model="com.axelor.apps.custom.db.DemoExpense" 
       chartType="bar" groupOn="dateFrom" groupDateType="month" displayField="totalTTC">
   		<filters>
   			<filter metaField="dateFrom" filterOperator="notNull" />
@@ -10,15 +10,7 @@
   		</filters>
   </chart>
   
-<!--   <chart name="expense-per-expense-type" title="Montant des dépenses par type" model="com.axelor.apps.custom.db.ExpenseLine"  -->
-<!--       chartType="bar" groupOn="expenseType"  groupOnTarget="expenseType"  displayField="amtTTC"> -->
-<!--   		<filters> -->
-<!--   			<filter metaField="expenseType" filterOperator="notNull" /> -->
-<!--   			<filter metaField="expense" targetField="expense.status" targetType="string" filterOperator="=" value="3" /> -->
-<!--   		</filters> -->
-<!--   </chart> -->
-  
-  <chart name="expense-per-expense-user" title="Montant des dépenses par utilisateur" model="com.axelor.apps.custom.db.Expense" 
+  <chart name="demo-expense-per-expense-user" title="Montant des dépenses par utilisateur" model="com.axelor.apps.custom.db.DemoExpense" 
       chartType="bar" groupOn="expenseUser"  groupOnTarget="expenseUser.name"  displayField="totalTTC">
   		<filters>
   			<filter metaField="expenseUser" targetField="expenseUser.name" targetType="string" filterOperator="notNull" />
@@ -26,11 +18,10 @@
   		</filters>
   </chart>
   
-  <dashboard name="expense-dashboard" title="Dashboard">
+  <dashboard name="demo-expense-dashboard" title="Dashboard">
   	<dashlets>
-  		<dashlet name="Montant des dépenses par mois" viewBuilder="expense-per-month" sequence="0" viewType="chart"/>
-<!--   		<dashlet name="Montant des dépenses par type" viewBuilder="expense-per-expense-type" sequence="1" viewType="chart"/> -->
-  		<dashlet name="Montant des dépenses par utilisateur"  viewBuilder="expense-per-expense-user"  sequence="2" viewType="chart"/>
+  		<dashlet name="Montant des dépenses par mois" viewBuilder="demo-expense-per-month" sequence="0" viewType="chart"/>
+  		<dashlet name="Montant des dépenses par utilisateur"  viewBuilder="demo-expense-per-expense-user"  sequence="2" viewType="chart"/>
   	</dashlets>
   </dashboard>
   

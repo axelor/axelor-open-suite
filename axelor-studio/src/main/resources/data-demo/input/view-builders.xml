@@ -2,9 +2,9 @@
 <view-builders xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   
-  <view-builder name="expense-form" title="Note De Frais" model="com.axelor.apps.custom.db.Expense" viewType="form" onSave="action-expense-update-total,action-expense-update-validated">
+  <view-builder name="demo-expense-form" title="Note De Frais" model="com.axelor.apps.custom.db.DemoExpense" viewType="form" onSave="action-demo-expense-update-total,action-demo-expense-update-validated">
   	<toolbar>
-		<button name="printExpense" title="Imprimer" onClick="action-open-expense-report" />
+		<button name="printExpense" title="Imprimer" onClick="action-open-demo-expense-report" />
 	</toolbar>
   	<view-panels>
 		<view-panel panelLevel="0" noTitle="T" place="1">
@@ -24,7 +24,7 @@
 	</view-panels>
   </view-builder>
   
-  <view-builder name="expense-grid" title="Note De Frais" model="com.axelor.apps.custom.db.Expense" viewType="grid">
+  <view-builder name="demo-expense-grid" title="Note De Frais" model="com.axelor.apps.custom.db.DemoExpense" viewType="grid">
   	<view-items>
 		<view-item name="expenseRef" fieldType="string" sequence="1" typeSelect="0"/>
 		<view-item name="expenseUser" fieldType="many-to-one" sequence="2" typeSelect="0" />
@@ -34,15 +34,15 @@
 	</view-items>
   </view-builder>
   
-  <view-builder name="expense-line-form" title="Dépenses" model="com.axelor.apps.custom.db.ExpenseLine" viewType="form">
+  <view-builder name="demo-expense-line-form" title="Dépenses" model="com.axelor.apps.custom.db.DemoExpenseLine" viewType="form">
   	<view-panels>
 		<view-panel panelLevel="0" noTitle="T" place="1">
 			<view-items>
 				<view-item name="expenseType" fieldType="many-to-one" sequence="1" typeSelect="0" />
 				<view-item name="date" fieldType="date" sequence="2" typeSelect="0"/>
 				<view-item name="file" fieldType="many-to-one" sequence="3" typeSelect="0" widget="binary-link" />
-				<view-item name="amtHt" fieldType="decimal" sequence="4" typeSelect="0" onChange="action-expense-line-update-amt-with-tax" />
-				<view-item name="tva" fieldType="decimal" sequence="5" typeSelect="0" onChange="action-expense-line-update-amt-with-tax"/>
+				<view-item name="amtHt" fieldType="decimal" sequence="4" typeSelect="0" onChange="action-demo-expense-line-update-amt-with-tax" />
+				<view-item name="tva" fieldType="decimal" sequence="5" typeSelect="0" onChange="action-demo-expense-line-update-amt-with-tax"/>
 				<view-item name="amtTTC" fieldType="decimal" sequence="6" typeSelect="0" />
 				<view-item name="comments" fieldType="text" sequence="7" typeSelect="0" />
 			</view-items>
@@ -50,7 +50,7 @@
 	</view-panels>
   </view-builder>
   
-  <view-builder name="expense-line-grid" title="Dépenses" model="com.axelor.apps.custom.db.ExpenseLine" viewType="grid">
+  <view-builder name="demo-expense-line-grid" title="Dépenses" model="com.axelor.apps.custom.db.DemoExpenseLine" viewType="grid">
   	<view-items>
 		<view-item name="expenseType" fieldType="many-to-one" sequence="1" typeSelect="0"/>
 		<view-item name="date" fieldType="date" sequence="2" typeSelect="0"/>

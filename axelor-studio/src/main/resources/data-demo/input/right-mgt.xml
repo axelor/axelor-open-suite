@@ -2,8 +2,8 @@
 <right-mgts xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   
-  <right-mgt name="Right manager" canRead="T" canWrite="T" canCreate="T"  canRemove="T" canExport="T" authRole="role.manager" model="Expense"/>
+  <right-mgt name="Manager rights" canRead="T" canWrite="T" canCreate="T"  canRemove="T" canExport="T" authRole="role.manager" model="DemoExpense"/>
   
-  <right-mgt name="Right user" canRead="T" canWrite="T" canCreate="T"  canRemove="T" canExport="T" authRole="role.user" model="Expense"/>
+  <right-mgt name="User rights" canRead="T" canWrite="T" canCreate="T"  canRemove="T" canExport="T" authRole="role.user" model="DemoExpense"/>
   
 </right-mgts>

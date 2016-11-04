@@ -2,8 +2,7 @@
 <menus xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   
-  <menu name="menu-root-expense" title="Note De Frais" isParent="T" icon="fa-money" iconBackground="blue" order="-80"/>
-<!--   <menu name="menu-expense" title="Note De Frais" parent="menu-root-expense"  order="0" actionBuilder="menu.expense" /> -->
-  <menu name="menu-dashboard" title="Rapports" parent="menu-root-expense"  order="15" actionBuilder="menu.dashboard" />
+  <menu name="menu-root-demo-expense" title="Note De Frais" isParent="T" icon="fa-money" iconBackground="blue" order="-80"/>
+  <menu name="menu-demo-expense-dashboard" title="Rapports" parent="menu-root-demo-expense"  order="15" actionBuilder="menu.demo.expense.dashboard" />
 
 </menus>
