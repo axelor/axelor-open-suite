@@ -458,7 +458,7 @@ public class FilterService {
 	}
 	
 	
-	public String getSqlFitlers(List<Filter> filterList) {
+	public String getSqlFilters(List<Filter> filterList) {
 
 		String filters = null;
 		
