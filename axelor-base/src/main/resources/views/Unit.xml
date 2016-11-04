@@ -12,6 +12,7 @@
         	<field name="name"/>
         	<field name="labelToPrinting"/>
         	<field name="unitTypeSelect"/>
+        	
         </panel>
     </form>
 </object-views>
