@@ -362,7 +362,7 @@
     	<action name="action-invoice-method-get-journal" if="operationTypeSelect != null &amp;&amp; operationTypeSelect != 0"/>
     	<action name="action-invoice-record-company-change"/>
     	<action name="action-invoice-attrs-hide-cancel-button"/>
-    	<action name="action-invoices-copy"/>
+    	
     </action-group>
     
     <action-group name="action-group-account-invoice-partner-onchange">
@@ -383,10 +383,6 @@
     </action-attrs>
 	
 	<!-- ACTION RECORD -->
-	
-	<action-record name="action-invoices-copy" model="com.axelor.apps.account.db.Invoice">
-		<field name="invoicesCopy" expr="eval: invoicesCopy = company.invoicesCopy"/>
-	</action-record>
 	
 	<action-record name="action-invoice-record-estimated-payment-date" model="com.axelor.apps.account.db.Invoice" if-module="axelor-cash-management">
 		<field name="estimatedPaymentDate" expr="eval: dueDate?.plusDays(partner?.paymentDelay?.intValue())"/>
@@ -434,6 +430,7 @@
     	<field name="companyBankDetails" expr="eval: company?.defaultBankDetails"
     		if="partner == null || __repo__.of(AccountingSituation).all().filter('self.company.id = ?1 AND self.partner.id = ?2', company?.id, partner?.id).fetchOne()?.companyBankDetails == null"/>
     	<field name="contactPartner" expr="eval:null" />
+    	<field name="invoicesCopy" expr="eval: partner?.invoicesCopy"/>
     </action-record>
     
     <action-record name="action-invoice-record-due-date" model="com.axelor.apps.account.db.Invoice">

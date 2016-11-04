@@ -258,6 +258,7 @@ public class InvoiceController {
 
 		if(!invoiceIds.equals("")){
 			String language;
+			Integer invoicesCopy = invoice.getPartner().getInvoicesCopy();
 			try{
 				language = invoice.getPartner().getLanguageSelect() != null? invoice.getPartner().getLanguageSelect() : invoice.getCompany().getPrintingSettings().getLanguageSelect() != null ? invoice.getCompany().getPrintingSettings().getLanguageSelect() : "en" ;
 			}catch (NullPointerException e){
@@ -275,6 +276,7 @@ public class InvoiceController {
 					.addModel(invoice)
 					.generate()
 					.getFileLink();
+			
 
 			logger.debug("Printing "+title);
 		

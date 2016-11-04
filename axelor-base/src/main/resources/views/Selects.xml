@@ -608,7 +608,7 @@
 	</selection>
 	
 	
-	<selection name="product.sub.type.product">
+	<selection name="product.sub.type.product.select">
 		<option value="1">Product finished</option>
 		<option value="2">Product semi-finished</option>
 		<option value="3">Component</option>
