@@ -16,11 +16,11 @@
 	   	// TYPE SELECT
 		public static final String TYPE_ASSET = "asset";
 		public static final String TYPE_CASH = "cash";
+		public static final String TYPE_CHARGE = "charge";
 		public static final String TYPE_COMMITMENT = "commitment";
 		public static final String TYPE_CURRENT_ASSET = "currentAsset";
 		public static final String TYPE_DEBT = "debt";
 		public static final String TYPE_EQUITY = "equity";
-		public static final String TYPE_EXPENSE = "expense";
 		public static final String TYPE_IMMOBILISATION = "immobilisation";
 		public static final String TYPE_INCOME = "income";
 		public static final String TYPE_PAYABLE = "payable";
