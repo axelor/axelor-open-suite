@@ -13,8 +13,18 @@
 		
 	</grid>
 	
+	<grid name="employee-advance-employee-grid" title="Employee advance" model="com.axelor.apps.hr.db.EmployeeAdvance">
+		<field name="reason" />
+		<field name="date" />
+		<field name="remainingAmount" />
+		<field name="requestedAmount" />
+		<field name="typeSelect" />
+		<field name="statusSelect" />
+		
+	</grid>
 	
-	<form name="employee-advance-form" title="Employee advance" model="com.axelor.apps.hr.db.EmployeeAdvance">
+	
+	<form name="employee-advance-form" title="Employee advance" model="com.axelor.apps.hr.db.EmployeeAdvance" onNew="action-hr-employee-advance-record-on-new">
 		<panel name="main">
 			<field name="date" />
 			<field name="reason" />
@@ -24,15 +34,14 @@
 			<field name="requestedAmount" />
 			<field name="paymentMode" />
 			<field name="statusSelect" />
-			<field name="expense" hidden="true" showIf="typeSelect == 1" />
 		</panel>
 		<panel-related field="employeeAdvanceUsageList" form-view="employee-advance-usage-advance-form" grid-view="employee-advance-usage-advance-form" />
 		<panel sidebar="true" hidden="true" showIf="statusSelect == 1" >
-			<button name="validate" title="validate" onClick="action-hr-employee-advance-group-validate" />		
+			<button name="validate" title="Validate" onClick="action-hr-employee-advance-group-validate" />		
 		</panel>
 	</form>
 	
-	<form name="employee-advance-employee-form" title="Employee advance" model="com.axelor.apps.hr.db.EmployeeAdvance">
+	<form name="employee-advance-employee-form" title="Employee advance" model="com.axelor.apps.hr.db.EmployeeAdvance" onNew="action-hr-employee-advance-record-on-new">
 		<panel name="main">
 			<field name="date" />
 			<field name="reason" />
@@ -41,11 +50,10 @@
 			<field name="requestedAmount" />
 			<field name="paymentMode" />
 			<field name="statusSelect" />
-			<field name="expense" hidden="true" showIf="typeSelect == 1" />
 		</panel>
 		<panel-related field="employeeAdvanceUsageList" form-view="employee-advance-usage-advance-form" grid-view="employee-advance-usage-advance-grid" />
 		<panel sidebar="true" hidden="true" showIf="statusSelect == 1">
-			<button name="validate" title="validate" onClick="action-hr-employee-advance-group-validate" />		
+			<button name="validate" title="Validate" onClick="action-hr-employee-advance-group-validate" />		
 		</panel>
 	</form>
 	
@@ -61,6 +69,10 @@
 	
 	<action-record name="action-hr-employee-advance-record-validate" model="com.axelor.apps.hr.db.EmployeeAdvance">
 		<field name="statusSelect" expr="eval: 2"/>
+	</action-record>
+	
+	<action-record name="action-hr-employee-advance-record-on-new" model="com.axelor.apps.hr.db.EmployeeAdvance">
+		<field name="date" expr="eval: __date__"/>
 	</action-record>
 	
 </object-views>

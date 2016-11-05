@@ -353,8 +353,6 @@ public class ExpenseController {
 				response.setFlash(String.format(I18n.get("Email sent to %s"), Beans.get(MessageServiceBaseImpl.class).getToRecipients(message)));
 			} 
 			
-			this.newExpense(response);
-
 		}  catch(Exception e)  {
 			TraceBackService.trace(response, e);
 		}

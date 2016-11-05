@@ -463,5 +463,11 @@
         <bind to="statusSelectBudget" column="statusSelectBudget"/>
 	</input>
 	
+	<input file="base_period.csv" separator=";" type="com.axelor.apps.base.db.Period" />
+	<input file="hr_expense.csv" separator=";" type="com.axelor.apps.hr.db.Expense" />
+	<input file="hr_expenseLine.csv" separator=";" type="com.axelor.apps.hr.db.ExpenseLine" >
+		<bind to="expenseDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(expenseDate)" column="expenseDate"/>
+	</input>
+	
 </csv-inputs>
 
