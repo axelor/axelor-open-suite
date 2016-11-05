@@ -609,6 +609,12 @@ public interface IExceptionMessage {
 
 	
 	/**
+	 * BankOrder file
+	 */
+	static final String BANK_ORDER_FILE_NO_FOLDER_PATH = /*$$(*/ "No folder path has been defined in the payment mode %s" /*)*/;
+
+	
+	/**
 	 *  Ebics
 	 */
 	static final String EBICS_WRONG_PASSWORD = /*$$(*/ "Incorrect password, please try again" /*)*/;

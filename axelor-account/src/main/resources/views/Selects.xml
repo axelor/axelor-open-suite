@@ -325,10 +325,15 @@
 		<option value="6">Canceled</option>		
 	</selection>
 	
-	<selection name="iaccount.bank.order.reject.status">
+	<selection name="iaccount.bank.order.reject.status.select">
 		<option value="0">Not rejected</option>
 		<option value="1">Partially rejected</option>
 		<option value="2">Totally rejected</option>
+	</selection>
+
+	<selection name="bank.order.file.format.select">
+		<option value="pain.001.001.02.xsd">pain.001.001.02</option>
+		<option value="pain.001.001.03.xsd">pain.001.001.03</option>
 	</selection>
 	
 	

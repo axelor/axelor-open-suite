@@ -1,4 +1,4 @@
-package com.axelor.apps.account.service.bankOrder;
+package com.axelor.apps.account.service.bankorder;
 
 import java.util.List;
 

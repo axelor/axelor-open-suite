@@ -47,6 +47,26 @@ import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.move.MoveLineService;
 import com.axelor.apps.account.service.move.MoveService;
+import com.axelor.apps.account.xsd.pain_001_001_02.AccountIdentification3Choice;
+import com.axelor.apps.account.xsd.pain_001_001_02.AmountType2Choice;
+import com.axelor.apps.account.xsd.pain_001_001_02.BranchAndFinancialInstitutionIdentification3;
+import com.axelor.apps.account.xsd.pain_001_001_02.CashAccount7;
+import com.axelor.apps.account.xsd.pain_001_001_02.CreditTransferTransactionInformation1;
+import com.axelor.apps.account.xsd.pain_001_001_02.CurrencyAndAmount;
+import com.axelor.apps.account.xsd.pain_001_001_02.Document;
+import com.axelor.apps.account.xsd.pain_001_001_02.FinancialInstitutionIdentification5Choice;
+import com.axelor.apps.account.xsd.pain_001_001_02.GroupHeader1;
+import com.axelor.apps.account.xsd.pain_001_001_02.Grouping1Code;
+import com.axelor.apps.account.xsd.pain_001_001_02.ObjectFactory;
+import com.axelor.apps.account.xsd.pain_001_001_02.Pain00100102;
+import com.axelor.apps.account.xsd.pain_001_001_02.PartyIdentification8;
+import com.axelor.apps.account.xsd.pain_001_001_02.PaymentIdentification1;
+import com.axelor.apps.account.xsd.pain_001_001_02.PaymentInstructionInformation1;
+import com.axelor.apps.account.xsd.pain_001_001_02.PaymentMethod3Code;
+import com.axelor.apps.account.xsd.pain_001_001_02.PaymentTypeInformation1;
+import com.axelor.apps.account.xsd.pain_001_001_02.RemittanceInformation1;
+import com.axelor.apps.account.xsd.pain_001_001_02.ServiceLevel1Code;
+import com.axelor.apps.account.xsd.pain_001_001_02.ServiceLevel2Choice;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.IAdministration;
@@ -57,26 +77,6 @@ import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.base.service.administration.GeneralServiceImpl;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.tool.xml.Marschaller;
-import com.axelor.apps.xsd.sepa.AccountIdentification3Choice;
-import com.axelor.apps.xsd.sepa.AmountType2Choice;
-import com.axelor.apps.xsd.sepa.BranchAndFinancialInstitutionIdentification3;
-import com.axelor.apps.xsd.sepa.CashAccount7;
-import com.axelor.apps.xsd.sepa.CreditTransferTransactionInformation1;
-import com.axelor.apps.xsd.sepa.CurrencyAndAmount;
-import com.axelor.apps.xsd.sepa.Document;
-import com.axelor.apps.xsd.sepa.FinancialInstitutionIdentification5Choice;
-import com.axelor.apps.xsd.sepa.GroupHeader1;
-import com.axelor.apps.xsd.sepa.Grouping1Code;
-import com.axelor.apps.xsd.sepa.ObjectFactory;
-import com.axelor.apps.xsd.sepa.Pain00100102;
-import com.axelor.apps.xsd.sepa.PartyIdentification8;
-import com.axelor.apps.xsd.sepa.PaymentIdentification1;
-import com.axelor.apps.xsd.sepa.PaymentInstructionInformation1;
-import com.axelor.apps.xsd.sepa.PaymentMethod3Code;
-import com.axelor.apps.xsd.sepa.PaymentTypeInformation1;
-import com.axelor.apps.xsd.sepa.RemittanceInformation1;
-import com.axelor.apps.xsd.sepa.ServiceLevel1Code;
-import com.axelor.apps.xsd.sepa.ServiceLevel2Choice;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
@@ -165,11 +165,11 @@ public class ReimbursementExportService {
 				reimbursement.setStatusSelect(ReimbursementRepository.STATUS_TO_VALIDATE);
 			}
 			else  {
-				reimbursement.setStatusSelect(ReimbursementRepository.STATUS_VALIDATED);
+//				reimbursement.setStatusSelect(ReimbursementRepository.STATUS_VALIDATED);
 			}
 
 			reimbursementRepo.save(reimbursement);
-			return reimbursement;
+//			return reimbursement;
 		}
 
 		log.debug("End runReimbursementProcess");

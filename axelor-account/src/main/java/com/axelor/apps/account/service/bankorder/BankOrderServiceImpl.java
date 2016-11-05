@@ -1,21 +1,36 @@
-package com.axelor.apps.account.service.bankOrder;
+package com.axelor.apps.account.service.bankorder;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.math.BigDecimal;
 import java.util.List;
 
+import javax.xml.bind.JAXBException;
+import javax.xml.datatype.DatatypeConfigurationException;
+
 import org.joda.time.LocalDate;
+import org.joda.time.LocalDateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.account.db.BankOrder;
+import com.axelor.apps.account.db.BankOrderFileFormat;
 import com.axelor.apps.account.db.BankOrderLine;
 import com.axelor.apps.account.db.InvoicePayment;
+import com.axelor.apps.account.db.PaymentMode;
+import com.axelor.apps.account.db.repo.BankOrderFileFormatRepository;
 import com.axelor.apps.account.db.repo.BankOrderRepository;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.service.bankorder.file.transfer.BankOrderFile001001002Service;
+import com.axelor.apps.account.service.bankorder.file.transfer.BankOrderFile001001003Service;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
+import com.axelor.meta.MetaFiles;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -179,10 +194,15 @@ public class BankOrderServiceImpl implements BankOrderService  {
 	}
 	
 	@Transactional
-	public void validate(BankOrder bankOrder) {
+	public void validate(BankOrder bankOrder) throws JAXBException, IOException, AxelorException, DatatypeConfigurationException {
 		
 		bankOrder.setStatusSelect(BankOrderRepository.STATUS_VALIDATED);
+		bankOrder.setValidationDateTime(new LocalDateTime());
+		
 		bankOrderRepo.save(bankOrder);
+
+		this.generateFile(bankOrder);
+		
 		
 	}
 
@@ -195,7 +215,36 @@ public class BankOrderServiceImpl implements BankOrderService  {
 	}
 	
 	
-	
+	public void generateFile(BankOrder bankOrder) throws JAXBException, IOException, AxelorException, DatatypeConfigurationException  {
+		
+		bankOrder.setFileGenerationDateTime(new LocalDateTime());
+		
+		PaymentMode paymentMode = bankOrder.getPaymentMode();
+		BankOrderFileFormat bankOrderFileFormat = paymentMode.getBankOrderFileFormat();
+		
+		File file = null;
+		
+		switch (bankOrderFileFormat.getOrderFileFormatSelect()) {
+		case BankOrderFileFormatRepository.FILE_FORMAT_pain_001_001_02 :
+			
+			file = new BankOrderFile001001002Service(bankOrder).generateFile();
+			break;
+			
+		case BankOrderFileFormatRepository.FILE_FORMAT_pain_001_001_03 :
+			
+			file = new BankOrderFile001001003Service(bankOrder).generateFile();
+			break;
+
+		default:
+			break;
+		}
+		
+		try (InputStream is = new FileInputStream(file)) {
+			Beans.get(MetaFiles.class).attach(is, file.getName(), bankOrder);
+		}
+		
+		
+	}
 	
 	
 	

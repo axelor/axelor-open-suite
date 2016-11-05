@@ -12,8 +12,8 @@ import com.axelor.apps.account.db.EbicsUser;
 import com.axelor.apps.account.db.repo.BankOrderRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.report.IReport;
-import com.axelor.apps.account.service.bankOrder.BankOrderMergeService;
-import com.axelor.apps.account.service.bankOrder.BankOrderService;
+import com.axelor.apps.account.service.bankorder.BankOrderMergeService;
+import com.axelor.apps.account.service.bankorder.BankOrderService;
 import com.axelor.apps.base.db.Wizard;
 import com.axelor.auth.AuthUtils;
 import com.axelor.db.JPA;
@@ -89,6 +89,7 @@ public class BankOrderController {
 
 		try {
 			BankOrder bankOrder = request.getContext().asType(BankOrder.class);
+			bankOrder = bankOrderRepo.find(bankOrder.getId());
 			if(bankOrder != null){ 
 				bankOrderService.validate(bankOrder);
 			}

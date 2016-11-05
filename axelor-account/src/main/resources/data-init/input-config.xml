@@ -31,6 +31,9 @@
 
 	<input file="account_journal.csv" separator=";" type="com.axelor.apps.account.db.Journal" search="self.importId = :importId" />
 		
+	<input file="account_bankOrderFileFormat.csv" separator=";" type="com.axelor.apps.account.db.BankOrderFileFormat" search="self.importId = :importId" />
+		
+		
 <!-- 	<input file="account_paymentMode.csv" separator=";" type="com.axelor.apps.account.db.PaymentMode" search="self.importId = :importId" /> -->
 	
 <!-- 	<input file="account_paymentCondition.csv" separator=";" type="com.axelor.apps.account.db.PaymentCondition" search="self.importId = :importId" /> -->

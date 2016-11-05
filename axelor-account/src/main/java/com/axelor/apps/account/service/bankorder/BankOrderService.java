@@ -1,6 +1,10 @@
-package com.axelor.apps.account.service.bankOrder;
+package com.axelor.apps.account.service.bankorder;
 
+import java.io.IOException;
 import java.math.BigDecimal;
+
+import javax.xml.bind.JAXBException;
+import javax.xml.datatype.DatatypeConfigurationException;
 
 import com.axelor.apps.account.db.BankOrder;
 import com.axelor.exception.AxelorException;
@@ -18,8 +22,10 @@ public interface BankOrderService {
 	@Transactional
 	public void sign(BankOrder bankOrder);
 	
+	public void validate(BankOrder bankOrder) throws JAXBException, IOException, AxelorException, DatatypeConfigurationException;
+	
 	@Transactional
-	public void validate(BankOrder bankOrder);
+	public void generateFile(BankOrder bankOrder) throws JAXBException, IOException, AxelorException, DatatypeConfigurationException;
 	
 	@Transactional
 	public BankOrder generateSequence(BankOrder bankOrder);
