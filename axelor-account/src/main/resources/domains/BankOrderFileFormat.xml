@@ -11,13 +11,17 @@
   	<integer name="orderTypeSelect" title="Order Type" selection="iaccount.bank.order.type.select"/>
   	<string name="orderFileFormatSelect" title="File format" selection="bank.order.file.format.select" namecolumn="true"/>
 	
+<!-- 	 AFB320 -->
+	<string name="qualifyingOfDate" title="Qualifying of date"/>
+	 
+	
 	 <extra-code><![CDATA[
 	
 	   	// BANK ORDER FILE FORMAT SELECT
-		public static final String FILE_FORMAT_pain_001_001_02 = "pain.001.001.02.xsd";
-		public static final String FILE_FORMAT_pain_001_001_03 = "pain.001.001.03.xsd";
-	
-	
+		public static final String FILE_FORMAT_pain_001_001_02 = "pain.001.001.02";
+		public static final String FILE_FORMAT_pain_001_001_03 = "pain.001.001.03";
+		public static final String FILE_FORMAT_AFB_320 = "AFB320";
+		
 	]]></extra-code>
     
     

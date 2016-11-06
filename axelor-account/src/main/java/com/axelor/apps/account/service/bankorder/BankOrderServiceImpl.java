@@ -24,8 +24,11 @@ import com.axelor.apps.account.db.repo.BankOrderFileFormatRepository;
 import com.axelor.apps.account.db.repo.BankOrderRepository;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
-import com.axelor.apps.account.service.bankorder.file.transfer.BankOrderFile001001002Service;
-import com.axelor.apps.account.service.bankorder.file.transfer.BankOrderFile001001003Service;
+import com.axelor.apps.account.service.bankorder.file.cfonb.CfonbToolService;
+import com.axelor.apps.account.service.bankorder.file.transfer.BankOrderFile00100102Service;
+import com.axelor.apps.account.service.bankorder.file.transfer.BankOrderFile00100103Service;
+import com.axelor.apps.account.service.bankorder.file.transfer.BankOrderFileAFB320Service;
+import com.axelor.apps.base.service.PartnerService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
@@ -227,12 +230,17 @@ public class BankOrderServiceImpl implements BankOrderService  {
 		switch (bankOrderFileFormat.getOrderFileFormatSelect()) {
 		case BankOrderFileFormatRepository.FILE_FORMAT_pain_001_001_02 :
 			
-			file = new BankOrderFile001001002Service(bankOrder).generateFile();
+			file = new BankOrderFile00100102Service(bankOrder).generateFile();
 			break;
 			
 		case BankOrderFileFormatRepository.FILE_FORMAT_pain_001_001_03 :
 			
-			file = new BankOrderFile001001003Service(bankOrder).generateFile();
+			file = new BankOrderFile00100103Service(bankOrder).generateFile();
+			break;
+			
+		case BankOrderFileFormatRepository.FILE_FORMAT_AFB_320 :
+			
+			file = new BankOrderFileAFB320Service(bankOrder).generateFile();
 			break;
 
 		default:

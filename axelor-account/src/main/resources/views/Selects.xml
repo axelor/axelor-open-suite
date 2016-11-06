@@ -332,8 +332,9 @@
 	</selection>
 
 	<selection name="bank.order.file.format.select">
-		<option value="pain.001.001.02.xsd">pain.001.001.02</option>
-		<option value="pain.001.001.03.xsd">pain.001.001.03</option>
+		<option value="pain.001.001.02">pain.001.001.02</option>
+		<option value="pain.001.001.03">pain.001.001.03</option>
+		<option value="AFB320">AFB 320</option>
 	</selection>
 	
 	

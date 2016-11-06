@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.account.service.cfonb;
+package com.axelor.apps.account.service.bankorder.file.cfonb;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -117,14 +117,14 @@ public class CfonbExportService {
 		}
 		String totalCFONB = this.createReimbursementTotalCFONB(this.getTotalAmountReimbursementExport(reimbursementList));
 
-		cfonbToolService.testLength(senderCFONB, totalCFONB, multiRecipientCFONB, company);
+//		cfonbToolService.testLength(senderCFONB, totalCFONB, multiRecipientCFONB, company);
 
-		List<String> cFONB = this.createCFONBExport(senderCFONB, multiRecipientCFONB, totalCFONB);
+//		List<String> cFONB = this.createCFONBExport(senderCFONB, multiRecipientCFONB, totalCFONB);
 
 		// Mise en majuscule des enregistrement
-		cFONB = this.toUpperCase(cFONB);
+//		cFONB = this.toUpperCase(cFONB);
 
-		this.createCFONBFile(cFONB, dateTime, company.getAccountConfig().getReimbursementExportFolderPathCFONB(), "virement");
+//		this.createCFONBFile(cFONB, dateTime, company.getAccountConfig().getReimbursementExportFolderPathCFONB(), "virement");
 	}
 
 	/**
@@ -167,14 +167,14 @@ public class CfonbExportService {
 
 		String totalCFONB = this.createPaymentScheduleTotalCFONB(company,this.getTotalAmountPaymentSchedule(paymentScheduleLineList));
 
-		cfonbToolService.testLength(senderCFONB, totalCFONB, multiRecipientCFONB, company);
+//		cfonbToolService.testLength(senderCFONB, totalCFONB, multiRecipientCFONB, company);
 
-		List<String> cFONB = this.createCFONBExport(senderCFONB, multiRecipientCFONB, totalCFONB);
+//		List<String> cFONB = this.createCFONBExport(senderCFONB, multiRecipientCFONB, totalCFONB);
 
 		// Mise en majuscule des enregistrement
-		cFONB = this.toUpperCase(cFONB);
+//		cFONB = this.toUpperCase(cFONB);
 
-		this.createCFONBFile(cFONB, processingDateTime, company.getAccountConfig().getPaymentScheduleExportFolderPathCFONB(), "prelevement");
+//		this.createCFONBFile(cFONB, processingDateTime, company.getAccountConfig().getPaymentScheduleExportFolderPathCFONB(), "prelevement");
 	}
 
 
@@ -222,14 +222,14 @@ public class CfonbExportService {
 
 		String totalCFONB = this.createPaymentScheduleTotalCFONB(company, amount);
 
-		cfonbToolService.testLength(senderCFONB, totalCFONB, multiRecipientCFONB, company);
+//		cfonbToolService.testLength(senderCFONB, totalCFONB, multiRecipientCFONB, company);
 
-		List<String> cFONB = this.createCFONBExport(senderCFONB, multiRecipientCFONB, totalCFONB);
+//		List<String> cFONB = this.createCFONBExport(senderCFONB, multiRecipientCFONB, totalCFONB);
 
 		// Mise en majuscule des enregistrement
-		cFONB = this.toUpperCase(cFONB);
+//		cFONB = this.toUpperCase(cFONB);
 
-		this.createCFONBFile(cFONB, processingDateTime, company.getAccountConfig().getPaymentScheduleExportFolderPathCFONB(), "prelevement");
+//		this.createCFONBFile(cFONB, processingDateTime, company.getAccountConfig().getPaymentScheduleExportFolderPathCFONB(), "prelevement");
 	}
 
 
@@ -299,31 +299,16 @@ public class CfonbExportService {
 
 		String totalCFONB = this.createPaymentScheduleTotalCFONB(company,amount);
 
-		cfonbToolService.testLength(senderCFONB, totalCFONB, multiRecipientCFONB, company);
+//		cfonbToolService.testLength(senderCFONB, totalCFONB, multiRecipientCFONB, company);
 
-		List<String> cFONB = this.createCFONBExport(senderCFONB, multiRecipientCFONB, totalCFONB);
+//		List<String> cFONB = this.createCFONBExport(senderCFONB, multiRecipientCFONB, totalCFONB);
 
 		// Mise en majuscule des enregistrement
-		cFONB = this.toUpperCase(cFONB);
+//		cFONB = this.toUpperCase(cFONB);
 
-		this.createCFONBFile(cFONB, processingDateTime, company.getAccountConfig().getPaymentScheduleExportFolderPathCFONB(), "prelevement");
+//		this.createCFONBFile(cFONB, processingDateTime, company.getAccountConfig().getPaymentScheduleExportFolderPathCFONB(), "prelevement");
 	}
 
-
-
-	/**
-	 * Méthode permettant de mettre en majuscule et sans accent un CFONB
-	 * @param cFONB
-	 * @return
-	 * 		Le CFONB nettoyé
-	 */
-	private List<String> toUpperCase(List<String> cFONB)  {
-		List<String> upperCase = new ArrayList<String>();
-		for(String s : cFONB)  {
-			upperCase.add(StringTool.deleteAccent(s.toUpperCase()));
-		}
-		return upperCase;
-	}
 
 
 	/**
@@ -405,10 +390,10 @@ public class CfonbExportService {
 		g1 = StringTool.fillStringLeft(g1, '0', 5);
 
 		// Vérification AN / N / A
-		cfonbToolService.testDigital(a, 0);
-		cfonbToolService.testDigital(b1, 0);
-		cfonbToolService.testDigital(d3, 0);
-		cfonbToolService.testDigital(g1, 0);
+		cfonbToolService.testDigital(a);
+		cfonbToolService.testDigital(b1);
+		cfonbToolService.testDigital(d3);
+		cfonbToolService.testDigital(g1);
 
 		// création de l'enregistrement
 		return a+b1+b2+b3+c1One+c1Two+c1Three+c2+d1One+d1Two+d2One+d2Two+d2Three+d3+d4+e+f+g1+g2;
@@ -470,10 +455,10 @@ public class CfonbExportService {
 		g1 = StringTool.fillStringLeft(g1, '0', 5);
 
 		// Vérification AN / N / A
-		cfonbToolService.testDigital(a, 0);
-		cfonbToolService.testDigital(b1, 0);
-		cfonbToolService.testDigital(d3, 0);
-		cfonbToolService.testDigital(g1, 0);
+		cfonbToolService.testDigital(a);
+		cfonbToolService.testDigital(b1);
+		cfonbToolService.testDigital(d3);
+		cfonbToolService.testDigital(g1);
 
 		// création de l'enregistrement
 		return a+b1+b2+b3+c1One+c1Two+c2+d1One+d1Two+d2+d3+d4+e+f+g1+g2;
@@ -788,30 +773,6 @@ public class CfonbExportService {
 		e = StringTool.fillStringLeft(e, '0', 16);
 
 		return a+b1+b2+b3+c1+c2+d1+d2+d3+d4+e+f+g1+g2;
-	}
-
-
-	/**
-	 * Fonction permettant de créer le CFONB
-	 * @param senderCFONB
-	 * 				Un enregistrement 'émetteur'
-	 * @param recipientCFONB
-	 * 				Un liste d'enregistrement 'destinataire'
-	 * @param totalCFONB
-	 * 				Un enregistrement 'total'
-	 * @return
-	 * 				Le CFONB
-	 */
-	private List<String> createCFONBExport(String senderCFONB, List<String> recipientCFONB, String totalCFONB)  {
-		// checker meme compte emetteur
-		// checker meme type de virement
-		// checker meme date de règlement
-
-		List<String> cFONB = new ArrayList<String>();
-		cFONB.add(senderCFONB);
-		cFONB.addAll(recipientCFONB);
-		cFONB.add(totalCFONB);
-		return cFONB;
 	}
 
 

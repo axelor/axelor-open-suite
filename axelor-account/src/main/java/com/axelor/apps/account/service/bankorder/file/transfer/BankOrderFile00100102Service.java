@@ -37,13 +37,13 @@ import com.axelor.apps.base.db.BankDetails;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 
-public class BankOrderFile001001002Service extends BankOrderFileService  {
+public class BankOrderFile00100102Service extends BankOrderFileService  {
 
 	private final Logger log = LoggerFactory.getLogger( getClass() );
 
 	
 	@Inject
-	public BankOrderFile001001002Service(BankOrder bankOrder)  {
+	public BankOrderFile00100102Service(BankOrder bankOrder)  {
 		
 		super(bankOrder);
 		
@@ -189,7 +189,7 @@ public class BankOrderFile001001002Service extends BankOrderFileService  {
 		Document xml = factory.createDocument();
 		xml.setPain00100102(pain00100102);
 
-		jaxbElement = factory.createDocument(xml);
+		fileToCreate = factory.createDocument(xml);
 		
 		return super.generateFile();
 	}

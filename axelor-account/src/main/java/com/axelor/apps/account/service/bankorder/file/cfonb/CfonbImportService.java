@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.account.service.cfonb;
+package com.axelor.apps.account.service.bankorder.file.cfonb;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -330,10 +330,10 @@ public class CfonbImportService {
 
 
 	private void testLength(String headerCFONB, List<String> multiDetailsCFONB, String endingCFONB, Company company) throws AxelorException  {
-		cfonbToolService.testLength(headerCFONB, company, 3, 240);
-		cfonbToolService.testLength(endingCFONB, company, 5, 240);
+		cfonbToolService.testLength(headerCFONB, 240);
+		cfonbToolService.testLength(endingCFONB, 240);
 		for(String detailCFONB : multiDetailsCFONB)  {
-			cfonbToolService.testLength(detailCFONB, company, 4, 240);
+			cfonbToolService.testLength(detailCFONB, 240);
 		}
 	}
 

@@ -295,11 +295,14 @@ public interface IExceptionMessage {
 	/**
 	 * Cfonb tool service
 	 */
-	static final String CFONB_TOOL_1 = /*$$(*/ "%s :\n Annomlie détectée (la valeur n'est pas numérique : %s) pour l'émetteur" /*)*/;
-	static final String CFONB_TOOL_2 = /*$$(*/ "%s :\n Annomlie détectée (la valeur n'est pas numérique : %s) pour le destinataire" /*)*/;
-	static final String CFONB_TOOL_3 = /*$$(*/ "%s :\n Annomlie détectée (la valeur n'est pas numérique : %s) pour le total" /*)*/;
-	static final String CFONB_TOOL_4 = /*$$(*/ "%s :\n Annomlie détectée (l'enregistrement ne fait pas %s caractères : %s) pour l'enregistrement %s, société %s" /*)*/;
+	static final String CFONB_TOOL_1 = /*$$(*/ "%s :\n Anomalie détectée (la valeur n'est pas numérique : %s) pour l'émetteur" /*)*/;
+	static final String CFONB_TOOL_2 = /*$$(*/ "%s :\n Anomalie détectée (la valeur n'est pas numérique : %s) pour le destinataire" /*)*/;
+	static final String CFONB_TOOL_3 = /*$$(*/ "%s :\n Anomalie détectée (la valeur n'est pas numérique : %s) pour le total" /*)*/;
+	static final String CFONB_TOOL_NB_OF_CHAR_PER_LINE = /*$$(*/ "%s :\n Anomalie détectée (l'enregistrement ne fait pas %s caractères)" /*)*/;
+	static final String CFONB_TOOL_EMPTY_ZONE = /*$$(*/ "Anomalie détectée (la zone %s est vide)" /*)*/;
+	static final String CFONB_TOOL_DIGITAL_ZONE_NOT_CORRECT = /*$$(*/ "Anomalie détectée (la zone %s doit être de type numérique)" /*)*/;
 
+	
 	/**
 	 * Account config service
 	 */
@@ -612,6 +615,7 @@ public interface IExceptionMessage {
 	 * BankOrder file
 	 */
 	static final String BANK_ORDER_FILE_NO_FOLDER_PATH = /*$$(*/ "No folder path has been defined in the payment mode %s" /*)*/;
+	static final String BANK_ORDER_FILE_UNKNOW_FORMAT = /*$$(*/ "Unknow format for file generation for payment mode %s" /*)*/;
 
 	
 	/**

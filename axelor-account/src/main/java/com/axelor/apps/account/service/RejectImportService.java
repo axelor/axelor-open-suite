@@ -28,7 +28,7 @@ import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.account.db.InterbankCodeLine;
 import com.axelor.apps.account.db.repo.InterbankCodeLineRepository;
-import com.axelor.apps.account.service.cfonb.CfonbImportService;
+import com.axelor.apps.account.service.bankorder.file.cfonb.CfonbImportService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.tool.file.FileTool;
