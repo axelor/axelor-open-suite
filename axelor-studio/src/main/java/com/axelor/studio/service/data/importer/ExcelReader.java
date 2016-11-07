@@ -12,6 +12,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
+import com.google.common.base.Strings;
 
 public class ExcelReader implements DataReader {
 	
@@ -72,6 +73,9 @@ public class ExcelReader implements DataReader {
 				continue;
 			}
 			vals[i] = formatter.formatCellValue(cell);
+			if (Strings.isNullOrEmpty(vals[i])) {
+				vals[i] = null;
+			}
 			
 //			switch(cell.getCellType()) {
 //				case Cell.CELL_TYPE_STRING:
