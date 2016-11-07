@@ -32,11 +32,11 @@
         <field name="statusSelect"/>
     </grid>
     
-	<form name="bank-order-form" title="Bank Order" model="com.axelor.apps.account.db.BankOrder" onNew="action-group-bank-order-onnew" onSave="action-method-bank-order-on-save-amount" canDelete="false"> 
+	<form name="bank-order-form" title="Bank Order" model="com.axelor.apps.account.db.BankOrder" onNew="action-group-bank-order-onnew" canDelete="false"> 
 	<toolbar>
 		<button name="print" title="Print" icon="fa-print" onClick="action-bank-order-method-print"/>
 	</toolbar>
-  		<panel name="main" colSpan="12" readonlyIf="statusSelect &gt;= 2">
+  		<panel name="main" colSpan="12" readonlyIf="statusSelect &gt;= 3">
     		<field name="statusSelect" showTitle="false" widget="NavSelect" colSpan="12" selection-in="[1,3,4,5,6]" showIf="orderTypeSelect == 3 || orderTypeSelect == 5"/>
     		<field name="statusSelect" showTitle="false" widget="NavSelect" colSpan="12" showIf="orderTypeSelect != 3 &amp;&amp; orderTypeSelect != 5"/>
   			<field name="bankOrderSeq" css="label-bold bold" colSpan="12"/>
@@ -45,7 +45,7 @@
     		<field name="paymentMode" css="label-bold bold" colSpan="6"/>
     		<field name="partnerTypeSelect" showIf="orderTypeSelect != 1" css="label-bold bold" colSpan="6"/>
   		</panel>
-		<panel name="senderInfo" title="Sender Info." readonlyIf="statusSelect &gt;= 2">
+		<panel name="senderInfo" title="Sender Info." readonlyIf="statusSelect &gt;= 3">
 			<field name="senderCompany" grid-view="company-grid" form-view="company-form"/>
 			<field name="senderBankDetails" grid-view="bank-details-grid" form-view="bank-details-form" onSelect="action-bank-order-attrs-bank-details-domain"/>
 			<field name="amount"/>
@@ -53,18 +53,18 @@
 			<field name="senderReference"/>
 			<field name="senderLabel"/>
 		</panel>
-		<panel name="BankOrderLines" title="Bank Order Lines" readonlyIf="statusSelect &gt;= 2">
-			<field name="bankOrderLineList" colSpan="12" showTitle="false" canRemove="false">
-				<editor x-layout="table" onNew="action-group-bank-order-line-onnew" x-viewer="true">
-					<field name="sequence" css="label-bold bold" readonly="true" hideIf="sequence == null" colSpan="12"/>
+		<panel name="BankOrderLines" title="Bank Order Lines" readonlyIf="statusSelect &gt;= 3">
+			<field name="bankOrderLineList" colSpan="12" showTitle="false">
+				<editor x-layout="table" x-viewer="true" >
+					<field name="sequence" css="label-bold bold" readonly="true" hideIf="sequence == null" colSpan="6"/>
+					<spacer colSpan="6"/>
 					<field name="receiverCompany" hideIf="bankOrder.orderTypeSelect != 1" css="label-bold bold" colSpan="6" onChange="action-bank-order-line-record-partner" form-view="company-form" grid-view="company-grid" />
-					<spacer colSpan="6"/>
 					<field name="partner" hideIf="bankOrder.orderTypeSelect == 1" form-view="partner-form" grid-view="partner-grid" css="label-bold bold" colSpan="6" onSelect="action-bank-order-line-attrs-partner-domain" onChange="action-bank-order-line-record-partner-onchange"/>
-					<spacer colSpan="6"/>
 					<field name="receiverBankDetails" onSelect="action-bank-order-line-attrs-bank-details-domain"/>
 					<field name="amount"/>
 					<field name="receiverReference"/>
 					<field name="receiverLabel"/>
+					<field name="specialInstructions" colSpan="12" showIf="receiverReference"/>
 					<field name="bankOrder.orderTypeSelect" hidden="true"/>
 					<field name="bankOrder.statusSelect" hidden="true"/>
         			<field name="isRejected" hideIf="bankOrder.statusSelect != 5"/>
@@ -77,7 +77,7 @@
 		<panel name="signatory" title="Signatory" sidebar="true" readonlyIf="statusSelect &gt;= 2">
 			<field name="signatoryUser" showTitle="false" form-view="user-form" grid-view="user-grid"/>		
 		</panel>
-		<panel name="" title="" sidebar="true" readonlyIf="statusSelect &gt;= 3">
+		<panel sidebar="true" readonlyIf="statusSelect &gt;= 3" showIf="validationDateTime">
   			<field name="validationDateTime" showIf="statusSelect == 3"/>
 			<field name="fileGenerationDateTime" showIf="statusSelect &gt;= 4"/>
 			<field name="sendingDateTime" showIf="statusSelect &gt;= 4"/>
@@ -116,13 +116,12 @@
 	</action-group>
 	
 	<action-group name="action-group-bank-order-onvalidate">
+		<action name="save"/>
 		<action name="action-method-bank-order-validate"/>
 	</action-group>
 	
 	<action-group name="action-group-bank-order-confirm">
 		<action name="save"/>
-  		<action name="action-method-bank-order-on-save-amount"/>
-  		<action name="save"/>
   		<action name="action-method-bank-order-confirm"/>
 	</action-group>
 	
@@ -193,10 +192,6 @@
 		<call class="com.axelor.apps.account.web.BankOrderController" method="checkLines"/>
 	</action-method>
 	
-	 <action-method name="action-method-bank-order-on-save-amount">
-		<call class="com.axelor.apps.account.web.BankOrderController" method="updateAmount"/>
-	</action-method>
-	
   	<action-method name="action-method-bank-order-validate">
 		<call class="com.axelor.apps.account.web.BankOrderController" method="validate"/>
 	</action-method>
@@ -214,14 +209,7 @@
 	</action-method>
 	
 	<!-- BANK ORDER LINES ACTIONS -->
-		<!-- Actions Groups-->
 		
-	<action-group name="action-group-bank-order-line-onnew">
-		<action name="action-bank-order-line-record-get-parent"/>
-		<action name="action-bank-order-line-record-default" if="bankOrder.orderTypeSelect == 1"/>
-		<action name="action-bank-order-line-record-amount-default"/>
-	</action-group>
-	
 		<!-- Actions Attributes -->
 		
     <action-attrs name="action-bank-order-line-attrs-partner-domain">
@@ -248,20 +236,6 @@
 	<action-record name="action-bank-order-line-record-partner" model="com.axelor.apps.account.db.BankOrderLine">
     	<field name="partner" expr="eval: receiverCompany.partner"/>
     	<field name="receiverBankDetails" expr="eval: receiverCompany.defaultBankDetails"/>
-    </action-record>
-    
-    <action-record name="action-bank-order-line-record-get-parent" model="com.axelor.apps.account.db.BankOrderLine">
-    	<field name="bankOrder" expr="eval: _parent"/>
-    </action-record>
-    
-	<action-record name="action-bank-order-line-record-default" model="com.axelor.apps.account.db.BankOrderLine">
-    	<field name="receiverCompany" expr="eval: bankOrder.senderCompany"/>
-    	<field name="partner" expr="eval: bankOrder.senderCompany.partner"/>
-    	<field name="receiverBankDetails" expr="eval: bankOrder.senderCompany.defaultBankDetails"/>
-    </action-record>
-    
-    <action-record name="action-bank-order-line-record-amount-default" model="com.axelor.apps.account.db.BankOrderLine">
-    	<field name="amount" expr="eval: bankOrder.amount"/>
     </action-record>
     
     <action-record name="action-bank-order-line-record-partner-onchange" model="com.axelor.apps.account.db.BankOrderLine">

@@ -48,6 +48,7 @@ public class BankOrderFile00100102Service extends BankOrderFileService  {
 		super(bankOrder);
 		
 		context = "com.axelor.apps.account.xsd.pain_001_001_02";
+		fileExtension = FILE_EXTENSION_XML;
 	}
 	
 	

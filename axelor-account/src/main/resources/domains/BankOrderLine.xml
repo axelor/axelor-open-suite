@@ -7,13 +7,13 @@
 
   <entity name="BankOrderLine" lang="java">
   
-	<string name="sequence" title="Sequence" namecolumn="true" readonly="true" unique="true"/>  
+	<string name="sequence" title="Sequence" namecolumn="true" readonly="true"/>  
   	<many-to-one name="bankOrder" ref="BankOrder" title="Bank Order"/>
   	<many-to-one name="receiverCompany" ref="com.axelor.apps.base.db.Company" title="Company"/>
-	<many-to-one name="partner" ref="com.axelor.apps.base.db.Partner" title="Partner"/>
+	<many-to-one name="partner" ref="com.axelor.apps.base.db.Partner" title="Partner" required="true"/>
 	<many-to-one name="receiverBankDetails" ref="com.axelor.apps.base.db.BankDetails" title="Bank Account"/>
-	<decimal name="amount" title="Amount"/>
-	<string name="receiverReference" title="Reference" unique="true"/>
+	<decimal name="amount" title="Amount" required="true"/>
+	<string name="receiverReference" title="Reference"/>
 	<string name="receiverLabel" title="Label"/>
 	<many-to-one name="receiverMove" ref="com.axelor.apps.account.db.Move" title="Move" readonly="true"/>
 	
@@ -22,6 +22,8 @@
   	<many-to-one name="interbankCodeLine" ref="com.axelor.apps.account.db.InterbankCodeLine" title="Reject Reason"/>
   	<decimal name="rejectAmount" title="Amount Rejected"/>
   	<many-to-one name="rejectMove" ref="com.axelor.apps.account.db.Move" title="Reject Move" readonly="true"/>
+  	
+  	<string name="specialInstructions" title="Special instructions" multiline="true" large="true"/>
   	
   </entity>
 

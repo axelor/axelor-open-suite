@@ -390,10 +390,10 @@ public class CfonbExportService {
 		g1 = StringTool.fillStringLeft(g1, '0', 5);
 
 		// Vérification AN / N / A
-		cfonbToolService.testDigital(a);
-		cfonbToolService.testDigital(b1);
-		cfonbToolService.testDigital(d3);
-		cfonbToolService.testDigital(g1);
+		cfonbToolService.testDigital(a, "");
+		cfonbToolService.testDigital(b1, "");
+		cfonbToolService.testDigital(d3, "");
+		cfonbToolService.testDigital(g1, "");
 
 		// création de l'enregistrement
 		return a+b1+b2+b3+c1One+c1Two+c1Three+c2+d1One+d1Two+d2One+d2Two+d2Three+d3+d4+e+f+g1+g2;
@@ -455,10 +455,10 @@ public class CfonbExportService {
 		g1 = StringTool.fillStringLeft(g1, '0', 5);
 
 		// Vérification AN / N / A
-		cfonbToolService.testDigital(a);
-		cfonbToolService.testDigital(b1);
-		cfonbToolService.testDigital(d3);
-		cfonbToolService.testDigital(g1);
+		cfonbToolService.testDigital(a, "");
+		cfonbToolService.testDigital(b1, "");
+		cfonbToolService.testDigital(d3, "");
+		cfonbToolService.testDigital(g1, "");
 
 		// création de l'enregistrement
 		return a+b1+b2+b3+c1One+c1Two+c2+d1One+d1Two+d2+d3+d4+e+f+g1+g2;

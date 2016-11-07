@@ -24,11 +24,10 @@ import com.axelor.apps.account.db.repo.BankOrderFileFormatRepository;
 import com.axelor.apps.account.db.repo.BankOrderRepository;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
-import com.axelor.apps.account.service.bankorder.file.cfonb.CfonbToolService;
 import com.axelor.apps.account.service.bankorder.file.transfer.BankOrderFile00100102Service;
 import com.axelor.apps.account.service.bankorder.file.transfer.BankOrderFile00100103Service;
 import com.axelor.apps.account.service.bankorder.file.transfer.BankOrderFileAFB320Service;
-import com.axelor.apps.base.service.PartnerService;
+import com.axelor.apps.tool.StringTool;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
@@ -123,7 +122,7 @@ public class BankOrderServiceImpl implements BankOrderService  {
 	@Transactional
 	public BankOrder generateSequence(BankOrder bankOrder) {
 		if(bankOrder.getBankOrderSeq() == null && bankOrder.getId() != null){
-			bankOrder.setBankOrderSeq("* " + bankOrder.getId());
+			bankOrder.setBankOrderSeq("*" + StringTool.fillStringLeft(Long.toString(bankOrder.getId()), '0', 6));
 			bankOrderRepo.save(bankOrder);
 		}
 		return bankOrder;
@@ -202,12 +201,30 @@ public class BankOrderServiceImpl implements BankOrderService  {
 		bankOrder.setStatusSelect(BankOrderRepository.STATUS_VALIDATED);
 		bankOrder.setValidationDateTime(new LocalDateTime());
 		
-		bankOrderRepo.save(bankOrder);
-
+		this.setSequenceOnBankOrderLines(bankOrder);
+		
 		this.generateFile(bankOrder);
 		
+		bankOrderRepo.save(bankOrder);
+
+	}
+	
+	
+	private void setSequenceOnBankOrderLines(BankOrder bankOrder)  {
+		
+		if(bankOrder.getBankOrderLineList() == null)  {  return;  }
+		
+		String bankOrderSeq = bankOrder.getBankOrderSeq();
+		
+		int counter = 1;
+		
+		for(BankOrderLine bankOrderLine : bankOrder.getBankOrderLineList())  {
+			
+			bankOrderLine.setSequence(bankOrderSeq + "-" + Integer.toString(counter++));
+		}
 		
 	}
+	
 
 	@Override
 	@Transactional
@@ -247,8 +264,10 @@ public class BankOrderServiceImpl implements BankOrderService  {
 			break;
 		}
 		
-		try (InputStream is = new FileInputStream(file)) {
-			Beans.get(MetaFiles.class).attach(is, file.getName(), bankOrder);
+		if(file != null)  {
+			try (InputStream is = new FileInputStream(file)) {
+				Beans.get(MetaFiles.class).attach(is, file.getName(), bankOrder);
+			}
 		}
 		
 		
