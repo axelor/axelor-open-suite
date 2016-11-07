@@ -25,8 +25,8 @@
      <string name="firstGroupBy" title="First group by"/>
      <string name="secondGroupBy" title="Second group by"/>
      <one-to-many name="filters" ref="Filter" title="Filters" mappedBy="actionBuilder" />
-     <string name="domainCondition" title="Domain condition"/>
-     <string name="context" title="Context"/>
+     <string name="domainCondition" title="Domain condition" large="true"/>
+     <string name="context" title="Context" large="true"/>
      <string name="title" title="Title" />
      <boolean name="menuAction" title="Menu action" />
      <many-to-many name="reportBuilderSet" title="Report builders" ref="ReportBuilder" />
