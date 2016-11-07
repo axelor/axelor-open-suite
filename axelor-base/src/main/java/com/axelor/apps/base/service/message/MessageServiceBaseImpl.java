@@ -46,6 +46,9 @@ import com.axelor.exception.AxelorException;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.meta.db.repo.MetaAttachmentRepository;
 import com.axelor.tool.template.TemplateMaker;
+import com.google.common.base.Joiner;
+import com.google.common.base.Strings;
+import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -127,6 +130,30 @@ public class MessageServiceBaseImpl extends MessageServiceImpl {
 		
 		return messageRepo.save(message);
 		
+	}
+	
+	public List<String> getEmailAddressNames(Set<EmailAddress> emailAddressSet)  {
+        
+	   List<String> recipients = Lists.newArrayList();
+	   if(emailAddressSet != null){
+		   for(EmailAddress emailAddress : emailAddressSet)  {
+	           
+	           if( Strings.isNullOrEmpty( emailAddress.getName() ) ) { continue; }
+	           recipients.add( emailAddress.getName() );
+	           
+		   }
+	   }
+	   
+	   return recipients;
+	}
+	
+	public String getToRecipients(Message message)  {
+		
+		if(message.getToEmailAddressSet() != null && !message.getToEmailAddressSet().isEmpty())  {
+			return Joiner.on(", \n").join(this.getEmailAddressNames(message.getToEmailAddressSet()));
+		}
+		
+		return "";
 	}
 
 }

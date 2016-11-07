@@ -18,13 +18,18 @@
 package com.axelor.apps.account.service;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.math.BigDecimal;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.Query;
 
+import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.slf4j.Logger;
@@ -36,6 +41,7 @@ import com.axelor.apps.account.db.JournalType;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.MoveLineReport;
+import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.account.db.repo.JournalRepository;
 import com.axelor.apps.account.db.repo.MoveLineReportRepository;
@@ -46,6 +52,8 @@ import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.move.MoveLineService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.IAdministration;
+import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.base.service.administration.GeneralServiceImpl;
 import com.axelor.apps.base.service.administration.SequenceService;
@@ -54,6 +62,8 @@ import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
+import com.axelor.meta.MetaFiles;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -72,11 +82,12 @@ public class MoveLineExportService {
 	protected JournalRepository journalRepo;
 	protected AccountRepository accountRepo;
 	protected MoveLineService moveLineService;
+	protected PartnerService partnerService;
 	
 	@Inject
 	public MoveLineExportService(GeneralService generalService, MoveLineReportService moveLineReportService, SequenceService sequenceService, 
 			AccountConfigService accountConfigService, MoveRepository moveRepo, MoveLineRepository moveLineRepo, MoveLineReportRepository moveLineReportRepo,
-			JournalRepository journalRepo, AccountRepository accountRepo, MoveLineService moveLineService) {
+			JournalRepository journalRepo, AccountRepository accountRepo, MoveLineService moveLineService, PartnerService partnerService) {
 		this.moveLineReportService = moveLineReportService;
 		this.sequenceService = sequenceService;
 		this.accountConfigService = accountConfigService;
@@ -86,6 +97,7 @@ public class MoveLineExportService {
 		this.journalRepo = journalRepo;
 		this.accountRepo = accountRepo;
 		this.moveLineService = moveLineService;
+		this.partnerService = partnerService;
 		todayTime = generalService.getTodayDateTime();
 	}
 
@@ -240,12 +252,12 @@ public class MoveLineExportService {
 	 * @throws AxelorException
 	 * @throws IOException
 	 */
-	public void exportMoveLineTypeSelect6(MoveLineReport mlr, boolean replay) throws AxelorException, IOException {
+	public void exportMoveLineTypeSelect1006(MoveLineReport mlr, boolean replay) throws AxelorException, IOException {
 
 		log.info("In Export type service : ");
 
 		String fileName = "detail"+todayTime.toString("YYYYMMddHHmmss")+"ventes.dat";
-		this.exportMoveLineTypeSelect6FILE1(mlr, replay);
+		this.exportMoveLineTypeSelect1006FILE1(mlr, replay);
 		this.exportMoveLineAllTypeSelectFILE2(mlr,fileName);
 	}
 
@@ -259,9 +271,9 @@ public class MoveLineExportService {
 	 */
 	@SuppressWarnings("unchecked")
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void exportMoveLineTypeSelect6FILE1(MoveLineReport moveLineReport, boolean replay) throws AxelorException, IOException {
+	public void exportMoveLineTypeSelect1006FILE1(MoveLineReport moveLineReport, boolean replay) throws AxelorException, IOException {
 
-		log.info("In export service Type 6 FILE 1 :");
+		log.info("In export service Type 1006 FILE 1 :");
 
 		Company company = moveLineReport.getCompany();
 
@@ -388,12 +400,12 @@ public class MoveLineExportService {
 	 * @throws AxelorException
 	 * @throws IOException
 	 */
-	public void exportMoveLineTypeSelect7(MoveLineReport moveLineReport, boolean replay) throws AxelorException, IOException {
+	public void exportMoveLineTypeSelect1007(MoveLineReport moveLineReport, boolean replay) throws AxelorException, IOException {
 
-		log.info("In Export type 7 service : ");
+		log.info("In Export type 1007 service : ");
 
 		String fileName = "detail"+todayTime.toString("YYYYMMddHHmmss")+"avoirs.dat";
-		this.exportMoveLineTypeSelect7FILE1(moveLineReport, replay);
+		this.exportMoveLineTypeSelect1007FILE1(moveLineReport, replay);
 		this.exportMoveLineAllTypeSelectFILE2(moveLineReport, fileName);
 	}
 
@@ -407,9 +419,9 @@ public class MoveLineExportService {
 	 */
 	@SuppressWarnings("unchecked")
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void exportMoveLineTypeSelect7FILE1(MoveLineReport moveLineReport, boolean replay) throws AxelorException, IOException {
+	public void exportMoveLineTypeSelect1007FILE1(MoveLineReport moveLineReport, boolean replay) throws AxelorException, IOException {
 
-		log.info("In export service 7 FILE 1:");
+		log.info("In export service 1007 FILE 1:");
 
 		Company company = moveLineReport.getCompany();
 
@@ -535,12 +547,12 @@ public class MoveLineExportService {
 	 * @throws AxelorException
 	 * @throws IOException
 	 */
-	public void exportMoveLineTypeSelect8(MoveLineReport moveLineReport, boolean replay) throws AxelorException, IOException {
+	public void exportMoveLineTypeSelect1008(MoveLineReport moveLineReport, boolean replay) throws AxelorException, IOException {
 
-		log.info("In Export type 8 service : ");
+		log.info("In Export type 1008 service : ");
 
 		String fileName = "detail"+todayTime.toString("YYYYMMddHHmmss")+"tresorerie.dat";
-		this.exportMoveLineTypeSelect8FILE1(moveLineReport, replay);
+		this.exportMoveLineTypeSelect1008FILE1(moveLineReport, replay);
 		this.exportMoveLineAllTypeSelectFILE2(moveLineReport, fileName);
 	}
 
@@ -554,9 +566,9 @@ public class MoveLineExportService {
 	 */
 	@SuppressWarnings("unchecked")
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void exportMoveLineTypeSelect8FILE1(MoveLineReport moveLineReport, boolean replay) throws AxelorException, IOException {
+	public void exportMoveLineTypeSelect1008FILE1(MoveLineReport moveLineReport, boolean replay) throws AxelorException, IOException {
 
-		log.info("In export service 8 FILE 1:");
+		log.info("In export service 1008 FILE 1:");
 
 		Company company = moveLineReport.getCompany();
 
@@ -682,11 +694,11 @@ public class MoveLineExportService {
 	 * @throws AxelorException
 	 * @throws IOException
 	 */
-	public void exportMoveLineTypeSelect9(MoveLineReport moveLineReport, boolean replay) throws AxelorException, IOException {
+	public void exportMoveLineTypeSelect1009(MoveLineReport moveLineReport, boolean replay) throws AxelorException, IOException {
 
-		log.info("In Export type 9 service : ");
+		log.info("In Export type 1009 service : ");
 		String fileName = "detail"+todayTime.toString("YYYYMMddHHmmss")+"achats.dat";
-		this.exportMoveLineTypeSelect9FILE1(moveLineReport, replay);
+		this.exportMoveLineTypeSelect1009FILE1(moveLineReport, replay);
 		this.exportMoveLineAllTypeSelectFILE2(moveLineReport, fileName);
 	}
 
@@ -700,9 +712,9 @@ public class MoveLineExportService {
 	 */
 	@SuppressWarnings("unchecked")
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void exportMoveLineTypeSelect9FILE1(MoveLineReport moveLineReport, boolean replay) throws AxelorException, IOException {
+	public void exportMoveLineTypeSelect1009FILE1(MoveLineReport moveLineReport, boolean replay) throws AxelorException, IOException {
 
-		log.info("In export service 9 FILE 1:");
+		log.info("In export service 1009 FILE 1:");
 
 		Company company = moveLineReport.getCompany();
 		String dateQueryStr = String.format(" WHERE self.company = %s", company.getId());
@@ -840,7 +852,109 @@ public class MoveLineExportService {
 //			CsvTool.csvWriter(filePath, fileName, '|', this.createHeaderForHeaderFile(mlr.getTypeSelect()), allMoveData);
 	}
 
-
+	
+	/**
+	* Méthode réalisant l'export des FEC (Fichiers des écritures Comptables)
+	* @throws AxelorException
+	* @throws IOException
+	*/
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
+	public void exportMoveLineTypeSelect1000(MoveLineReport moveLineReport) throws AxelorException, IOException {
+		
+		log.info("In Export type 1000 service : ");
+		List<String[]> allMoveLineData = new ArrayList<String[]>();
+		Company company = moveLineReport.getCompany();
+		
+		String moveLineQueryStr = "";
+		moveLineQueryStr += String.format(" AND self.move.company = %s", company.getId());
+		moveLineQueryStr += String.format(" AND self.move.period.year = %s", moveLineReport.getYear().getId());
+		
+		if(moveLineReport.getPeriod() != null)	{
+			moveLineQueryStr += String.format(" AND self.move.period = %s", moveLineReport.getPeriod().getId());
+		}
+		else {
+			if (moveLineReport.getDateFrom() != null){
+				moveLineQueryStr += String.format(" AND self.date >= '%s'", moveLineReport.getDateFrom().toString());
+			}
+			if (moveLineReport.getDateTo() != null){
+				moveLineQueryStr += String.format(" AND self.date <= '%s'", moveLineReport.getDateTo().toString());
+			}
+		}
+		if(moveLineReport.getDate() != null)  {
+			moveLineQueryStr += String.format(" AND self.date <= '%s'", moveLineReport.getDate().toString());
+		}
+			
+		moveLineQueryStr += String.format("AND self.move.accountingOk = false AND self.move.ignoreInAccountingOk = false");
+		
+		List<MoveLine> moveLineList = moveLineRepo.all().filter("self.move.statusSelect = ?1" + moveLineQueryStr, MoveRepository.STATUS_VALIDATED).order("date").order("name").fetch();
+		if(moveLineList.size() > 0) {
+			
+			for (MoveLine moveLine : moveLineList) {
+				String items[] = new String[18];
+				Move move = moveLine.getMove();
+				Journal journal = move.getJournal();
+				items[0] = journal.getCode();
+				items[1] = journal.getName();
+				items[2] = moveLine.getName();
+				items[3] = moveLine.getDate().toString("YYYYMMdd");
+				items[4] = moveLine.getAccount().getCode(); 
+				items[5] = moveLine.getAccount().getName();
+				items[6] = null; //Le numéro de compte auxiliaire (à blanc pour le moment) 
+				items[7] = null; //Le libellé de compte auxiliaire (à blanc pour le moment) 
+				items[8] = moveLine.getOrigin();
+				items[9] = moveLine.getDate().toString("YYYYMMdd"); // Pour le moment on va utiliser la date des lignes d'écriture. 
+				items[10]= moveLine.getDescription();
+				items[11]= moveLine.getDebit().toString();
+				items[12]= moveLine.getCredit().toString();
+				if(moveLine.getDebit().compareTo(BigDecimal.ZERO) > 0){
+					List<String> ReconcileSeqList = new ArrayList<String>();
+					List<String> ReconcileDateList = new ArrayList<String>();
+					
+					for (Reconcile reconcile : moveLine.getDebitReconcileList()) {
+						ReconcileSeqList.add(reconcile.getReconcileSeq());
+						ReconcileDateList.add(reconcile.getReconciliationDate().toString("YYYYMMdd"));
+					}
+					items[13] = StringUtils.join(ReconcileSeqList, "; ");
+					items[14]= StringUtils.join(ReconcileDateList, "; ");
+				}
+				else{
+					List<String> ReconcileSeqList = new ArrayList<String>();
+					List<String> ReconcileDateList = new ArrayList<String>();
+					for (Reconcile reconcile : moveLine.getCreditReconcileList()) {
+						ReconcileSeqList.add(reconcile.getReconcileSeq());
+						ReconcileDateList.add(reconcile.getReconciliationDate().toString("YYYYMMdd"));
+					}
+					items[13] = StringUtils.join(ReconcileSeqList, "; ");
+					items[14]= StringUtils.join(ReconcileDateList, "; ");
+				}
+				items[15]= move.getValidationDate().toString("YYYYMMdd");
+				items[16]= moveLine.getCurrencyAmount().toString();
+				if(move.getCurrency() != null){
+					items[17]= move.getCurrency().getCode();
+				}
+				allMoveLineData.add(items);
+			}
+		}
+		
+		String fileName = this.setFileName(moveLineReport);
+		String filePath = accountConfigService.getExportPath(accountConfigService.getAccountConfig(company));
+		//TODO create a template Helper
+		
+		new File(filePath).mkdirs();
+		log.debug("Full path to export : {}{}" , filePath, fileName);
+//		CsvTool.csvWriter(filePath, fileName, '|', null, allMoveLineData);
+		CsvTool.csvWriter(filePath, fileName, '|', this.createHeaderForHeaderFile(moveLineReport.getTypeSelect()), allMoveLineData);
+		moveLineReportRepo.save(moveLineReport);
+		
+		Path path = Paths.get(filePath+fileName);
+		
+		try (InputStream is = new FileInputStream(path.toFile())) {
+			Beans.get(MetaFiles.class).attach(is, fileName, moveLineReport);
+		}
+		
+	}
+	
+	
 	/**
 	 * Méthode réalisant l'export SI - Agresso des fichiers détails
 	 * @param mlr
@@ -998,8 +1112,7 @@ public class MoveLineExportService {
 //			CsvTool.csvWriter(filePath, fileName, '|',  this.createHeaderForDetailFile(typeSelect), allMoveLineData);
 	}
 
-
-
+	
 	/**
 	 * Méthode permettant de trier une liste en ajoutant d'abord les lignes d'écriture au débit puis celles au crédit
 	 * @param moveLineList
@@ -1071,6 +1184,26 @@ public class MoveLineExportService {
 						"Date de l'écriture;"+
 						"Période de l'écriture;";
 				return header.split(";");
+			case 14:
+				header = "JournalCode;"+
+						 "JournalLib;"+
+						 "EcritureNum;"+
+						 "EcritureDate;"+
+						 "CompteNum;"+
+						 "CompteLib;"+
+						 "CompAuxNum;"+
+						 "CompAuxLib;"+
+						 "PieceRef;"+
+						 "PieceDate;"+
+						 "EcritureLib;"+
+						 "Debit;"+
+						 "Credit;"+
+						 "EcritureLet;"+
+						 "DateLet;"+
+						 "ValidDate;"+
+						 "Montantdevise;"+
+						 "IdDevise;";
+				return header.split(";");
 			default:
 				return null;
 		}
@@ -1122,24 +1255,28 @@ public class MoveLineExportService {
 		switch (moveLineReport.getTypeSelect()) {
 		case MoveLineReportRepository.EXPORT_SALES:
 
-			this.exportMoveLineTypeSelect6(moveLineReport, false);
+			this.exportMoveLineTypeSelect1006(moveLineReport, false);
 			break;
 
 		case MoveLineReportRepository.EXPORT_REFUNDS:
 
-			this.exportMoveLineTypeSelect7(moveLineReport, false);
+			this.exportMoveLineTypeSelect1007(moveLineReport, false);
 			break;
 
 		case MoveLineReportRepository.EXPORT_TREASURY:
 
-			this.exportMoveLineTypeSelect8(moveLineReport, false);
+			this.exportMoveLineTypeSelect1008(moveLineReport, false);
 			break;
 
 		case MoveLineReportRepository.EXPORT_PURCHASES:
 
-			this.exportMoveLineTypeSelect9(moveLineReport, false);
+			this.exportMoveLineTypeSelect1009(moveLineReport, false);
 			break;
-
+			
+		case MoveLineReportRepository.EXPORT_PAYROLL_JOURNAL_ENTRY:
+			this.exportMoveLineTypeSelect1000(moveLineReport);
+			break;
+			
 		default:
 			break;
 		}
@@ -1174,6 +1311,24 @@ public class MoveLineExportService {
 
 	}
 
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
+	public String setFileName(MoveLineReport moveLineReport) throws AxelorException, IOException{
+		Company company =moveLineReport.getCompany();
+		Partner partner = company.getPartner();
+		
+		//Pour le moment: on utilise le format par défaut: SIREN+FEC+DATE DE CLÔTURE DE L'EXERCICE.Extension
+		String fileName = partnerService.getSIRENNumber(partner)+"FEC";
+		// On récupère la date de clôture de l'exercice/période
+		if (moveLineReport.getDateTo() != null){
+			fileName += moveLineReport.getDateTo().toString("YYYYMMdd");
+		}else if(moveLineReport.getPeriod() != null){
+			fileName += moveLineReport.getPeriod().getToDate().toString("YYYYMMdd");
+		}else {
+			fileName += moveLineReport.getYear().getToDate().toString("YYYYMMdd");
+		}
+		fileName +=".csv";
 
+		return fileName;
+	}
 
 }

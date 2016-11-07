@@ -129,7 +129,7 @@ public class InvoiceLineService {
 			productCurrency = product.getSaleCurrency();
 		}
 		
-		return currencyService.getAmountCurrencyConverted(
+		return currencyService.getAmountCurrencyConvertedAtDate(
 				productCurrency, invoice.getCurrency(), price, invoice.getInvoiceDate()).setScale(generalService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
 	}
 
@@ -143,14 +143,14 @@ public class InvoiceLineService {
 
 	public BigDecimal getAccountingExTaxTotal(BigDecimal exTaxTotal, Invoice invoice) throws AxelorException  {
 
-		return currencyService.getAmountCurrencyConverted(
+		return currencyService.getAmountCurrencyConvertedAtDate(
 				invoice.getCurrency(), invoice.getPartner().getCurrency(), exTaxTotal, invoice.getInvoiceDate()).setScale(IAdministration.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
 	}
 
 
 	public BigDecimal getCompanyExTaxTotal(BigDecimal exTaxTotal, Invoice invoice) throws AxelorException  {
 
-		return currencyService.getAmountCurrencyConverted(
+		return currencyService.getAmountCurrencyConvertedAtDate(
 				invoice.getCurrency(), invoice.getCompany().getCurrency(), exTaxTotal, invoice.getInvoiceDate()).setScale(generalService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
 	}
 

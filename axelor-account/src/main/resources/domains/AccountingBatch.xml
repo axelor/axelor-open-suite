@@ -30,6 +30,7 @@
 	<boolean name="isSepaDirectDebit" title="SEPA ?" default="false"/>
 	<boolean name="hasToReExportCfbonb" title="Re-export the bank file"/>
 	<many-to-one name="batchToReExport" ref="com.axelor.apps.base.db.Batch" title="Batch to re-export"/>
+	<many-to-one name="paymentMode" ref="com.axelor.apps.account.db.PaymentMode" title="Payment Mode"/>
     
     <!--  INTERBANK PAYMENT ORDER -->
     <integer name="interbankPaymentOrderTypeSelect" title="Interbank Payment Orders batch type" selection="iinterbank.account.order.batch.type.select"/>
@@ -47,7 +48,10 @@
     <!-- OTHERS INFORMATIONS -->
     <string name="description" title="Description" large="true" />
     <one-to-many name="batchList" ref="com.axelor.apps.base.db.Batch" mappedBy="accountingBatch" title="Batchs" />
-  
+    
+    <!-- CREDIT TRANSFER -->
+  	<integer name="creditTransfertTypeSelect" title="Credit Transfer batch type" selection="iaccount.account.batch.transfer.type.select"/>
+  	<many-to-one name="period" ref="com.axelor.apps.base.db.Period" title="Period"/>
   	<extra-code><![CDATA[
 	
 	   	// ACTION TYPE
@@ -58,6 +62,7 @@
 		public static final int ACTION_DOUBTFUL_CUSTOMER = 16;
 		public static final int ACTION_ACCOUNT_CUSTOMER = 17;
 		public static final int ACTION_MOVE_LINE_EXPORT = 18;
+		public static final int ACTION_CREDIT_TRANSFER = 19;
 		
 		// REIMBURSEMENT TYPE
 		public static final int REIMBURSEMENT_TYPE_EXPORT = 1;
@@ -81,6 +86,11 @@
 
 		// REMINDER TYPE
 		public static final int REMINDER_TYPE = 1;
+		
+		//CREDIT TRANSFER TYPE
+		public static final int CREDIT_TRANSFER_EXPENSE_PAYMENT = 1;
+		public static final int CREDIT_TRANSFER_SUPPLIER_PAYMENT = 2;
+		public static final int CREDIT_TRANSFER_CUSTOMER_REIMBURSEMENT = 3;
 	
 	]]></extra-code>
 	

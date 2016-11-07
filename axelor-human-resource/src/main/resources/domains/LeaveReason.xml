@@ -11,6 +11,7 @@
       <boolean name="manageAccumulation" title="Manage Accumulation"/>
       <boolean name="allowNegativeValue" title="Allow Negative Value for leaves"/>
       <boolean name="allowInjection" title="Allow Injection"/>
+      <string name="instruction"  title="Instruction" multiline="true" large="true"/>
   </entity>
   
 </domain-models>

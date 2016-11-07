@@ -56,6 +56,12 @@ public class PaymentVoucherControlService  {
 	 * @throws AxelorException
 	 */
 	public void checkPaymentVoucherField(PaymentVoucher paymentVoucher, Company company, Account paymentModeAccount, Journal journal) throws AxelorException  {
+		
+		if(paymentVoucher.getPaidAmount().compareTo(BigDecimal.ZERO) != 1)  {
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.PAYMENT_VOUCHER_CONTROL_PAID_AMOUNT),
+					GeneralServiceImpl.EXCEPTION, paymentVoucher.getRef()), IException.INCONSISTENCY);
+		}
+		
 		if(paymentVoucher.getRemainingAmount().compareTo(BigDecimal.ZERO) < 0)  {
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.PAYMENT_VOUCHER_CONTROL_1),
 					GeneralServiceImpl.EXCEPTION, paymentVoucher.getRef()), IException.INCONSISTENCY);

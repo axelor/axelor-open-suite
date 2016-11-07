@@ -15,19 +15,10 @@
 	<many-to-one name="moveLineGenerated" ref="com.axelor.apps.account.db.MoveLine" title="Move Line generated" readonly="true"/>
 	<many-to-one name="paymentVoucher" ref="com.axelor.apps.account.db.PaymentVoucher" title="Payment" readonly="true"/>
 	<many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" title="Currency"/>
-	<decimal name="amountToPayCurrency" title="Montant imputé en devise"/>
-	<decimal name="amountToPay" title="Amount charged"/>
+	<decimal name="amountToPayCurrency" title="Imput. amount in currency"/>
+	<decimal name="amountToPay" title="Imput amount"/>
 
-	<decimal name="remainingAmountAfterPayment" title="Remaining to pay after cashing" readonly="true">
-		<![CDATA[
-			if(remainingAmount != null && amountToPay != null) {
-		   		return remainingAmount.subtract(amountToPay);
-		   	}
-		   	else  {
-		   		return BigDecimal.ZERO;
-		   	}
-	    ]]>
-	</decimal>
+	<decimal name="remainingAmountAfterPayment" title="Remaining to pay after cashing" readonly="true"/>
 
   </entity>
 

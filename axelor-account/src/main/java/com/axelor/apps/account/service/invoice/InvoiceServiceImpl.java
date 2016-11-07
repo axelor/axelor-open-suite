@@ -17,7 +17,6 @@
  */
 package com.axelor.apps.account.service.invoice;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -28,12 +27,10 @@ import org.slf4j.LoggerFactory;
 import com.axelor.apps.account.db.BudgetDistribution;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
-import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentCondition;
 import com.axelor.apps.account.db.PaymentMode;
-import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.invoice.factory.CancelFactory;
@@ -46,7 +43,6 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
-import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.base.service.alarm.AlarmEngineService;
@@ -296,36 +292,6 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 		
 	}
 	
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void updateAmountPaid(Invoice invoice) throws AxelorException  {
-		
-		invoice.setAmountPaid(this.computeAmountPaid(invoice));
-		invoiceRepo.save(invoice);
-		
-	}
-	
-	
-	protected BigDecimal computeAmountPaid(Invoice invoice) throws AxelorException  {
-		
-		BigDecimal amountPaid = BigDecimal.ZERO;
-		
-		if(invoice.getInvoicePaymentList() == null)  {  return amountPaid;  }
-		
-		CurrencyService currencyService = Beans.get(CurrencyService.class);
-		
-		Currency invoiceCurrency = invoice.getCurrency();
-		
-		for(InvoicePayment invoicePayment : invoice.getInvoicePaymentList())  {
-			
-			if(invoicePayment.getStatusSelect() == InvoicePaymentRepository.STATUS_VALIDATED)  {
-				amountPaid = amountPaid.add(currencyService.getAmountCurrencyConverted(invoicePayment.getCurrency(), invoiceCurrency, invoicePayment.getAmount(), invoicePayment.getPaymentDate()));
-			}
-			
-		}
-		
-		return amountPaid;
-	}
-
 
 	@Override
 	@Transactional

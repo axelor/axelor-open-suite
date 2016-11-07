@@ -25,16 +25,41 @@
       <many-to-one name="refusedBy" ref="com.axelor.auth.db.User" title="Refused By" readonly="true"/>
       <date name="validationDate" title="Validation Date" readonly="true"  />
       <date name="refusalDate" title="Refusal Date" readonly="true"  />
+      <string name="groundForRefusal" title="Ground For Refusal" large="true"/>
       <boolean name="ventilated"/>
-      <boolean name="expenseCompanyCb" title="Expense paied with company's credit card"/>
+      <integer name="companyCbSelect" title="Expense paied with company's credit card" selection="hr.expense.company.cb.payment" />
       <many-to-one name="payrollPreparation" ref="com.axelor.apps.hr.db.PayrollPreparation"/>
+      <boolean name="multipleUsers" title="Multiple users ?" default="false"/>
+      <one-to-many name="employeeAdvanceUsageList" ref="com.axelor.apps.hr.db.EmployeeAdvanceUsage" mappedBy="expense" title="Employee advances" readonly="true" orphanRemoval="false"/>
+      <decimal name="advanceAmount" title="Advance" />
+      <decimal name="withdrawnCash" title="Withdrawn cash" />
+      <decimal name="personalExpenseAmount" title="Personal expense amount" hidden="true" />
       
+      <!-- Payment -->
+      <date name="paymentDate" title="Payment Date" readonly="true"/>
+  	  <many-to-one name="paymentMode" ref="com.axelor.apps.account.db.PaymentMode" title="Payment mode" readonly="true"/>	
+  	  <many-to-one name="bankOrder" ref="com.axelor.apps.account.db.BankOrder" readonly="true" title="Bank Order"/>
+  	  <decimal name="paymentAmount" title="Payment amount" readonly="true" />
+  	  <integer name="paymentStatusSelect" title="Payment Status" selection="invoice.payment.status.select" readonly="true" default="0"/>
+  	  
       <string name="fullName" namecolumn="true" readonly="true">
       <![CDATA[
 	  		return this.getUser().getFullName()+" "+this.getCreatedOn().getDayOfMonth()+"/"+this.getCreatedOn().getMonthOfYear()
 	  				+"/"+this.getCreatedOn().getYear()+"  "+this.getCreatedOn().getHourOfDay()+":"+this.getCreatedOn().getMinuteOfHour();
 	  ]]>
       </string>
+      
+      <extra-code>
+      	<![CDATA[
+      		//STATUS SELECT
+	  		public static final Integer STATUS_DRAFT = 1;
+	  		public static final Integer STATUS_CONFIRMED = 2;
+	  		public static final Integer STATUS_VALIDATED = 3;
+	  		public static final Integer STATUS_REIMBURSED = 4;
+	  		public static final Integer STATUS_REFUSED = 5;
+	  		public static final Integer STATUS_CANCELED = 6;
+	  ]]>
+      </extra-code>
   </entity>
   
 </domain-models>

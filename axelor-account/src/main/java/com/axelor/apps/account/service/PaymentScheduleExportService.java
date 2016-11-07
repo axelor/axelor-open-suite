@@ -45,7 +45,6 @@ import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.PaymentScheduleLineRepository;
 import com.axelor.apps.account.db.repo.PaymentScheduleRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
-import com.axelor.apps.account.service.cfonb.CfonbExportService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.move.MoveLineService;
@@ -57,6 +56,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.account.service.AccountBlockingService;
+import com.axelor.apps.account.service.bankorder.file.cfonb.CfonbExportService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.base.service.administration.GeneralServiceImpl;
@@ -266,7 +266,7 @@ public class PaymentScheduleExportService{
 		BigDecimal amount =  paymentScheduleLine.getInTaxAmount();
 		Partner partner = paymentSchedule.getPartner();
 
-		Move move = moveService.getMoveCreateService().createMove(paymentModeService.getPaymentModeJournal(paymentMode, company), company, null, partner, paymentMode);
+		Move move = moveService.getMoveCreateService().createMove(paymentModeService.getPaymentModeJournal(paymentMode, company), company, null, partner, paymentMode, MoveRepository.AUTOMATIC);
 
 		this.setDebitNumber(paymentScheduleLineList, paymentScheduleLine, company);
 
@@ -279,7 +279,7 @@ public class PaymentScheduleExportService{
 			PaymentScheduleLine rejectedPaymentScheduleLine = this.getPaymentScheduleLineRejectOrigin(paymentScheduleLine);
 			if(rejectedPaymentScheduleLine.getRejectMoveLine() != null
 					&& rejectedPaymentScheduleLine.getRejectMoveLine().getAmountRemaining().compareTo(BigDecimal.ZERO) == 1)  {
-				reconcileService.reconcile(rejectedPaymentScheduleLine.getRejectMoveLine(), moveLine, false);
+				reconcileService.reconcile(rejectedPaymentScheduleLine.getRejectMoveLine(), moveLine, false, true);
 			}
 		}
 		else  {
@@ -711,7 +711,7 @@ public class PaymentScheduleExportService{
 		log.debug("Create payment move");
 
 		Move paymentMove = moveService.getMoveCreateService().createMove(
-				paymentModeService.getPaymentModeJournal(paymentMode, company), company, null, null, paymentMode);
+				paymentModeService.getPaymentModeJournal(paymentMode, company), company, null, null, paymentMode, MoveRepository.AUTOMATIC);
 
 		BigDecimal amountExported = moveLine.getAmountRemaining();
 
@@ -761,7 +761,7 @@ public class PaymentScheduleExportService{
 		// Lettrage de la ligne 411 avec la ligne 411 de la facture
 		log.debug("Creation du lettrage de la ligne 411 avec la ligne 411 de la facture");
 
-		reconcileService.reconcile(moveLine, moveLineGenerated, false);
+		reconcileService.reconcile(moveLine, moveLineGenerated, false, true);
 
 		log.debug("generateAllExportInvoice - Sauvegarde de l'écriture");
 

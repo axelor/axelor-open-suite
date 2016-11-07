@@ -18,7 +18,6 @@
 package com.axelor.apps.hr.web.timesheet;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -27,68 +26,58 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.ReportFactory;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Wizard;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.administration.GeneralService;
+import com.axelor.apps.base.service.message.MessageServiceBaseImpl;
+import com.axelor.apps.hr.db.Employee;
+import com.axelor.apps.hr.db.ExtraHours;
 import com.axelor.apps.hr.db.Timesheet;
-import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.db.repo.TimesheetRepository;
-import com.axelor.apps.hr.exception.IExceptionMessage;
 import com.axelor.apps.hr.report.IReport;
 import com.axelor.apps.hr.service.HRMenuTagService;
-import com.axelor.apps.hr.service.MailManagementService;
-import com.axelor.apps.hr.service.config.HRConfigService;
 import com.axelor.apps.hr.service.timesheet.TimesheetService;
-import com.axelor.apps.message.db.Template;
+import com.axelor.apps.message.db.Message;
+import com.axelor.apps.message.db.repo.MessageRepository;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
+import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
-import com.google.common.base.Joiner;
-import com.google.common.collect.Lists;
 import com.google.inject.Inject;
+import com.google.inject.Provider;
 
 public class TimesheetController {
-	@Inject
-	private TimesheetService timesheetService;
-	@Inject
-	private TimesheetRepository timesheetRepository;
-	@Inject
-	private GeneralService generalService;
-	@Inject
-	private ProductRepository productRepo;
-	@Inject
-	private ProjectTaskRepository ProjectTaskRepo;
-	@Inject
-	private HRMenuTagService hrMenuTagService;
-	@Inject
-	private HRConfigService  hrConfigService;
-	@Inject
-	private MailManagementService  mailManagementService;
 	
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 	
+	@Inject
+	private Provider<HRMenuTagService> hrMenuTagServiceProvider;
+	@Inject
+	private Provider<TimesheetService> timesheetServiceProvider;
+	@Inject
+	private Provider<TimesheetRepository> timesheetRepositoryProvider;
+	@Inject
+	private Provider<ProductRepository> productRepoProvider;
+	@Inject
+	private Provider<ProjectTaskRepository> projectTaskRepoProvider;
+	
+	
 	public void getTimeFromTask(ActionRequest request, ActionResponse response){
 		Timesheet timesheet = request.getContext().asType(Timesheet.class);
-		timesheet = timesheetRepository.find(timesheet.getId());
-		timesheetService.getTimeFromTask(timesheet);
-		response.setReload(true);
-	}
-
-	public void cancelTimesheet(ActionRequest request, ActionResponse response){
-		Timesheet timesheet = request.getContext().asType(Timesheet.class);
-		timesheet = timesheetRepository.find(timesheet.getId());
-		timesheetService.cancelTimesheet(timesheet);
+		timesheet = timesheetRepositoryProvider.get().find(timesheet.getId());
+		timesheetServiceProvider.get().getTimeFromTask(timesheet);
 		response.setReload(true);
 	}
 
@@ -107,15 +96,15 @@ public class TimesheetController {
 			logTime = new BigDecimal(context.get("logTime").toString());
 		
 		Map<String, Object> projectTaskContext = (Map<String, Object>) context.get("projectTask");
-		ProjectTask projectTask = ProjectTaskRepo.find(((Integer) projectTaskContext.get("id")).longValue());
+		ProjectTask projectTask = projectTaskRepoProvider.get().find(((Integer) projectTaskContext.get("id")).longValue());
 		
 		Map<String, Object> productContext = (Map<String, Object>) context.get("product");
 		Product product = null;
 		if(productContext != null)
-			product = productRepo.find(((Integer) productContext.get("id")).longValue());
+			product = productRepoProvider.get().find(((Integer) productContext.get("id")).longValue());
 			
 		
-		timesheet = timesheetService.generateLines(timesheet, fromGenerationDate, toGenerationDate, logTime, projectTask, product);
+		timesheet = timesheetServiceProvider.get().generateLines(timesheet, fromGenerationDate, toGenerationDate, logTime, projectTask, product);
 		response.setValue("timesheetLineList",timesheet.getTimesheetLineList());
 	}
 
@@ -153,36 +142,34 @@ public class TimesheetController {
 
 	public void validateTimesheet(ActionRequest request, ActionResponse response){
 		
-		List<Timesheet> timesheetList = Lists.newArrayList();
-		if (AuthUtils.getUser().getEmployee() != null && AuthUtils.getUser().getEmployee().getHrManager()){
-			timesheetList = Query.of(Timesheet.class).filter("self.company = ?1 AND self.statusSelect = 2",AuthUtils.getUser().getActiveCompany()).fetch();
-		}else{
-			 timesheetList = Query.of(Timesheet.class).filter("self.user.employee.manager = ?1 AND self.company = ?2 AND self.statusSelect = 2",AuthUtils.getUser(),AuthUtils.getUser().getActiveCompany()).fetch();
-		}
+		User user = AuthUtils.getUser();
+		Employee employee = user.getEmployee();
 		
-		List<Long> timesheetListId = new ArrayList<Long>();
-		for (Timesheet timesheet : timesheetList) {
-			timesheetListId.add(timesheet.getId());
-		}
-		if(AuthUtils.getUser().getEmployee() != null && AuthUtils.getUser().getEmployee().getManager() == null && !AuthUtils.getUser().getEmployee().getHrManager()){
-			timesheetList = Query.of(Timesheet.class).filter("self.user = ?1 AND self.company = ?2 AND self.statusSelect = 2",AuthUtils.getUser(),AuthUtils.getUser().getActiveCompany()).fetch();
-		}
-		for (Timesheet timesheet : timesheetList) {
-			timesheetListId.add(timesheet.getId());
-		}
-		String timesheetListIdStr = "-2";
-		if(!timesheetListId.isEmpty()){
-			timesheetListIdStr = Joiner.on(",").join(timesheetListId);
+		ActionViewBuilder actionView = ActionView.define(I18n.get("Timesheets to Validate"))
+				   .model(Timesheet.class.getName())
+				   .add("grid","timesheet-validate-grid")
+				   .add("form","timesheet-form")
+				   .context("todayDate", Beans.get(GeneralService.class).getTodayDate());
+
+		if(employee != null)  {
+			actionView.domain("self.company = :activeCompany AND  self.statusSelect = 2")
+			.context("activeCompany", user.getActiveCompany());
+		
+			if(!employee.getHrManager())  {
+				if(employee.getManager() != null) {
+					actionView.domain(actionView.get().getDomain() + " AND self.user.employee.manager = :user")
+					.context("user", user.getId());
+				}
+				else  {
+					actionView.domain(actionView.get().getDomain() + " AND self.user = :user")
+					.context("user", user.getId());
+				}
+			}
 		}
 
-		response.setView(ActionView.define(I18n.get("Timesheets to Validate"))
-			   .model(Timesheet.class.getName())
-			   .add("grid","timesheet-validate-grid")
-			   .add("form","timesheet-form")
-			   .domain("self.id in ("+timesheetListIdStr+")")
-			   .map());
+		response.setView(actionView.map());
 	}
-
+	
 	public void editTimesheetSelected(ActionRequest request, ActionResponse response){
 		Map timesheetMap = (Map)request.getContext().get("timesheetSelect");
 		Timesheet timesheet = Beans.get(TimesheetRepository.class).find(new Long((Integer)timesheetMap.get("id")));
@@ -197,193 +184,158 @@ public class TimesheetController {
 
 	public void historicTimesheet(ActionRequest request, ActionResponse response){
 		
-		List<Timesheet> timesheetList = Lists.newArrayList();
+		User user = AuthUtils.getUser();
+		Employee employee = user.getEmployee();
 		
-		if (AuthUtils.getUser().getEmployee() != null && AuthUtils.getUser().getEmployee().getHrManager()){
-			timesheetList = Query.of(Timesheet.class).filter("self.company = ?1 AND (self.statusSelect = 3 OR self.statusSelect = 4)",AuthUtils.getUser().getActiveCompany()).fetch();
-		}else{
-			 timesheetList = Query.of(Timesheet.class).filter("self.user.employee.manager = ?1 AND self.company = ?2 AND (self.statusSelect = 3 OR self.statusSelect = 4)",AuthUtils.getUser(),AuthUtils.getUser().getActiveCompany()).fetch();
-		}
-		
-		List<Long> timesheetListId = new ArrayList<Long>();
-		for (Timesheet timesheet : timesheetList) {
-			timesheetListId.add(timesheet.getId());
-		}
-
-		String timesheetListIdStr = "-2";
-		if(!timesheetListId.isEmpty()){
-			timesheetListIdStr = Joiner.on(",").join(timesheetListId);
-		}
-
-		response.setView(ActionView.define(I18n.get("Historic colleague Timesheets"))
+		ActionViewBuilder actionView = ActionView.define(I18n.get("Historic colleague Timesheets"))
 				   .model(Timesheet.class.getName())
 				   .add("grid","timesheet-grid")
-				   .add("form","timesheet-form")
-				   .domain("self.id in ("+timesheetListIdStr+")")
-				   .map());
-	}
+				   .add("form","timesheet-form");
 
-	public void showSubordinateTimesheets(ActionRequest request, ActionResponse response){
-		List<User> userList = Query.of(User.class).filter("self.employee.manager = ?1 AND self.activeCompany = ?2",AuthUtils.getUser(),AuthUtils.getUser().getActiveCompany()).fetch();
-		List<Long> timesheetListId = new ArrayList<Long>();
-		for (User user : userList) {
-			List<Timesheet> timesheetList = Query.of(Timesheet.class).filter("self.user.employee.manager = ?1 AND self.company = ?2 AND self.statusSelect = 2",user,AuthUtils.getUser().getActiveCompany()).fetch();
-			for (Timesheet timesheet : timesheetList) {
-				timesheetListId.add(timesheet.getId());
+		if(employee != null && employee.getHrManager())  {
+			actionView.domain("self.company = :activeCompany AND (self.statusSelect = 3 OR self.statusSelect = 4)")
+			.context("activeCompany", user.getActiveCompany());
+		
+			if(!employee.getHrManager())  {
+				actionView.domain(actionView.get().getDomain() + " AND self.user.employee.manager = :user")
+				.context("user", user);
 			}
 		}
-		if(timesheetListId.isEmpty()){
+		
+		response.setView(actionView.map());
+		
+	}
+	
+	public void showSubordinateTimesheets(ActionRequest request, ActionResponse response){
+		
+		User user = AuthUtils.getUser();
+		Company activeCompany = user.getActiveCompany();
+		
+		ActionViewBuilder actionView = ActionView.define(I18n.get("Timesheets to be Validated by your subordinates"))
+				   .model(Timesheet.class.getName())
+				   .add("grid","timesheet-grid")
+				   .add("form","timesheet-form");
+		
+		String domain = "self.user.employee.manager.employee.manager = :user AND self.company = :activeCompany AND self.statusSelect = 2";
+		
+		long nbTimesheets =  Query.of(ExtraHours.class).filter(domain).bind("user", user).bind("activeCompany", activeCompany).count();
+		
+		if(nbTimesheets == 0)  {
 			response.setNotify(I18n.get("No timesheet to be validated by your subordinates"));
 		}
-		else{
-			String timesheetListIdStr = "-2";
-			if(!timesheetListId.isEmpty()){
-				timesheetListIdStr = Joiner.on(",").join(timesheetListId);
-			}
-
-			response.setView(ActionView.define(I18n.get("Timesheets to be Validated by your subordinates"))
-				   .model(Timesheet.class.getName())
-				   .add("grid","timesheet-grid")
-				   .add("form","timesheet-form")
-				   .domain("self.id in ("+timesheetListIdStr+")")
-				   .map());
+		else  {
+			response.setView(actionView.domain(domain).context("user", user).context("activeCompany", activeCompany).map());
+		}
+		
+	}
+	
+	public void cancel(ActionRequest request, ActionResponse response)  {
+		
+		try{
+			
+			Timesheet timesheet = request.getContext().asType(Timesheet.class);
+			timesheet = timesheetRepositoryProvider.get().find(timesheet.getId());
+			timesheetServiceProvider.get().cancel(timesheet);
+		
+		}  catch(Exception e)  {
+			TraceBackService.trace(response, e);
+		}
+		finally {
+			response.setReload(true);
 		}
 	}
+	
 	//action called when confirming a timesheet. Changing status + Sending mail to Manager
 	public void confirm(ActionRequest request, ActionResponse response) throws AxelorException{
-		Timesheet timesheet = request.getContext().asType(Timesheet.class);
-		
-		if(timesheet.getToDate() == null)
-			response.setValue("toDate", generalService.getTodayDate());
-		
-		validToDate(request, response);
-		
-		if(!hrConfigService.getHRConfig(timesheet.getUser().getActiveCompany()).getTimesheetMailNotification()){
-			response.setValue("statusSelect", TimesheetRepository.STATUS_CONFIRMED);
-			response.setValue("sentDate", generalService.getTodayDate());
-			if (timesheet.getFromDate() != null){
-				response.setAttr("fromDate", "readonly", "true");
-			}
-		}else{
-			User manager = timesheet.getUser().getEmployee().getManager();
-			if(manager!=null){
-				Template template =  hrConfigService.getHRConfig(timesheet.getUser().getActiveCompany()).getSentTimesheetTemplate();
-				if(mailManagementService.sendEmail(template,timesheet.getId())){
-					String message = "Email sent to";
-					response.setFlash(I18n.get(message)+" "+manager.getFullName());
-					response.setValue("statusSelect", TimesheetRepository.STATUS_CONFIRMED);
-					response.setValue("sentDate", generalService.getTodayDate());
-					if (timesheet.getFromDate() != null){
-						response.setAttr("fromDate", "readonly", "true");
-					}
-				}
-				else{
-					throw new AxelorException(String.format(I18n.get(IExceptionMessage.HR_CONFIG_TEMPLATES), timesheet.getUser().getActiveCompany().getName()), IException.CONFIGURATION_ERROR);
-				}
-			}
+
+		try{
+			Timesheet timesheet = request.getContext().asType(Timesheet.class);
+			timesheet = timesheetRepositoryProvider.get().find(timesheet.getId());
+			TimesheetService timesheetService = timesheetServiceProvider.get();
+			
+			timesheetService.confirm(timesheet);
+
+			Message message = timesheetService.sendConfirmationEmail(timesheet);
+			if(message != null && message.getStatusSelect() == MessageRepository.STATUS_SENT)  {
+				response.setFlash(String.format(I18n.get("Email sent to %s"), Beans.get(MessageServiceBaseImpl.class).getToRecipients(message)));
+			} 
+			
+		}  catch(Exception e)  {
+			TraceBackService.trace(response, e);
+		}
+		finally {
+			response.setReload(true);
 		}
 	}
 	
+	//Confirm and continue Button
+		public void confirmContinue(ActionRequest request, ActionResponse response) throws AxelorException{
+
+			this.confirm(request, response);
+			
+			response.setView(ActionView
+					.define(I18n.get("Timesheet"))
+					.model(Timesheet.class.getName())
+					.add("form", "timesheet-form")
+					.map());
+			
+		}
 	
-	public void validToDate(ActionRequest request, ActionResponse response){
-		Timesheet timesheet = request.getContext().asType(Timesheet.class);
-		List<TimesheetLine> timesheetLineList = timesheet.getTimesheetLineList();
-		List<Integer> listId = new ArrayList<Integer>();
-		int count = 0;
-		
-		if(timesheet.getFromDate() == null){
-			response.setError(I18n.get("From date can't be empty"));
-		}
-		else if(timesheet.getToDate() != null){
-			if(timesheetLineList != null && !timesheetLineList.isEmpty()){
-				for (TimesheetLine timesheetLine : timesheetLineList) {
-					count++;
-					if(timesheetLine.getDate().isAfter(timesheet.getToDate())){
-						listId.add(count);
-					}
-					else if(timesheetLine.getDate().isBefore(timesheet.getFromDate())){
-						listId.add(count);
-					}
-				}
-				if(!listId.isEmpty()){
-					response.setError(I18n.get("There is a conflict between the dates entered and the dates in the lines :")+Joiner.on(",").join(listId));
-				}
-			}
-		}
-		else{
-			if(timesheetLineList != null && !timesheetLineList.isEmpty()){
-				for (TimesheetLine timesheetLine : timesheetLineList) {
-					count++;
-					if(timesheetLine.getDate().isBefore(timesheet.getFromDate())){
-						listId.add(count);
-					}
-				}
-				if(!listId.isEmpty()){
-					response.setError(I18n.get("There is a conflict between the dates entered and the dates in the lines :")+Joiner.on(",").join(listId));
-				}
-			}
-		}
-	}
 	
 	//action called when validating a timesheet. Changing status + Sending mail to Applicant
 	public void valid(ActionRequest request, ActionResponse response) throws AxelorException{
-		Timesheet timesheet = request.getContext().asType(Timesheet.class);
-		if(!hrConfigService.getHRConfig(timesheet.getUser().getActiveCompany()).getTimesheetMailNotification()){
-			response.setValue("statusSelect", TimesheetRepository.STATUS_VALIDATED);
-			response.setValue("validatedBy", AuthUtils.getUser());
-			response.setValue("validationDate", generalService.getTodayDate());
+		
+		try{
+			Timesheet timesheet = request.getContext().asType(Timesheet.class);
+			timesheet = timesheetRepositoryProvider.get().find(timesheet.getId());
+			TimesheetService timesheetService = timesheetServiceProvider.get();
+
+			timesheetService.validate(timesheet);
 			computeTimeSpent(request, response);
+
+			Message message = timesheetService.sendValidationEmail(timesheet);
+			if(message != null && message.getStatusSelect() == MessageRepository.STATUS_SENT)  {
+				response.setFlash(String.format(I18n.get("Email sent to %s"), Beans.get(MessageServiceBaseImpl.class).getToRecipients(message)));
+			} 
+			
+		}  catch(Exception e)  {
+			TraceBackService.trace(response, e);
 		}
-		else{
-			User manager = timesheet.getUser().getEmployee().getManager();
-			if(manager!=null){
-				Template template =  hrConfigService.getHRConfig(timesheet.getUser().getActiveCompany()).getValidatedTimesheetTemplate();
-				if(mailManagementService.sendEmail(template,timesheet.getId())){
-					String message = "Email sent to";
-					response.setFlash(I18n.get(message)+" "+timesheet.getUser().getFullName());
-					response.setValue("statusSelect", TimesheetRepository.STATUS_VALIDATED);
-					response.setValue("validatedBy", AuthUtils.getUser());
-					response.setValue("validationDate", generalService.getTodayDate());
-					computeTimeSpent(request, response);
-				}
-				else{
-					throw new AxelorException(String.format(I18n.get(IExceptionMessage.HR_CONFIG_TEMPLATES), timesheet.getUser().getActiveCompany().getName()), IException.CONFIGURATION_ERROR);
-				}
-			}
+		finally {
+			response.setReload(true);
 		}
+		
 	}
 	
 	//action called when refusing a timesheet. Changing status + Sending mail to Applicant
 	public void refuse(ActionRequest request, ActionResponse response) throws AxelorException{
-		Timesheet timesheet = request.getContext().asType(Timesheet.class);
-		if(!hrConfigService.getHRConfig(timesheet.getUser().getActiveCompany()).getTimesheetMailNotification()){
-			response.setValue("statusSelect", TimesheetRepository.STATUS_REFUSED);
-			response.setValue("refusedBy", AuthUtils.getUser());
-			response.setValue("refusalDate", generalService.getTodayDate());
+		
+		try{
+			Timesheet timesheet = request.getContext().asType(Timesheet.class);
+			timesheet = timesheetRepositoryProvider.get().find(timesheet.getId());
+			TimesheetService timesheetService = timesheetServiceProvider.get();
+
+			timesheetService.refuse(timesheet);
+
+			Message message = timesheetService.sendRefusalEmail(timesheet);
+			if(message != null && message.getStatusSelect() == MessageRepository.STATUS_SENT)  {
+				response.setFlash(String.format(I18n.get("Email sent to %s"), Beans.get(MessageServiceBaseImpl.class).getToRecipients(message)));
+			} 
+			
+		}  catch(Exception e)  {
+			TraceBackService.trace(response, e);
 		}
-		else{
-			User manager = timesheet.getUser().getEmployee().getManager();
-			if(manager!=null){
-				Template template =  hrConfigService.getHRConfig(timesheet.getUser().getActiveCompany()).getRefusedTimesheetTemplate();
-				if(mailManagementService.sendEmail(template,timesheet.getId())){
-					String message = "Email sent to";
-					response.setFlash(I18n.get(message)+" "+timesheet.getUser().getFullName());
-					response.setValue("statusSelect", TimesheetRepository.STATUS_REFUSED);
-					response.setValue("refusedBy", AuthUtils.getUser());
-					response.setValue("refusalDate", generalService.getTodayDate());
-				}
-				else{
-					throw new AxelorException(String.format(I18n.get(IExceptionMessage.HR_CONFIG_TEMPLATES), timesheet.getUser().getActiveCompany().getName()), IException.CONFIGURATION_ERROR);
-				}
-			}
+		finally {
+			response.setReload(true);
 		}
 	}
+	
 	
 	public void computeTimeSpent(ActionRequest request, ActionResponse response){
 		Timesheet timesheet = request.getContext().asType(Timesheet.class);
 		timesheet = Beans.get(TimesheetRepository.class).find(timesheet.getId());
 		if(timesheet.getTimesheetLineList() != null && !timesheet.getTimesheetLineList().isEmpty()){
-			timesheetService.computeTimeSpent(timesheet);
+			timesheetServiceProvider.get().computeTimeSpent(timesheet);
 		}
 	}
 	
@@ -391,14 +343,14 @@ public class TimesheetController {
 		Timesheet timesheet = request.getContext().asType(Timesheet.class);
 		timesheet = Beans.get(TimesheetRepository.class).find(timesheet.getId());
 		
-		response.setValue("timesheetLineList", timesheetService.computeVisibleDuration(timesheet));
+		response.setValue("timesheetLineList", timesheetServiceProvider.get().computeVisibleDuration(timesheet));
 	}
 	
 	/* Count Tags displayed on the menu items */
-	public String timesheetValidateTag() { 
-		Timesheet timesheet= new Timesheet();
-		logger.debug("Timesheet methode {}",timesheet.getClass());
-		return hrMenuTagService.CountRecordsTag(timesheet);
+	public String timesheetValidateTag()  {
+		
+		return hrMenuTagServiceProvider.get().countRecordsTag(Timesheet.class, TimesheetRepository.STATUS_CONFIRMED);
+	
 	}
 	
 	public void printTimesheet(ActionRequest request, ActionResponse response) throws AxelorException {

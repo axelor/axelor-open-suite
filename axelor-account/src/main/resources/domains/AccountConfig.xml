@@ -30,7 +30,8 @@
 <!--     ACCOUNT -->
     <many-to-one name="customerAccount" ref="com.axelor.apps.account.db.Account" title="Customer account"/>
     <many-to-one name="supplierAccount" ref="com.axelor.apps.account.db.Account" title="Supplier account"/>
-    <many-to-one name="doubtfulCustomerAccount" ref="com.axelor.apps.account.db.Account" title="Doubtful customers account" help="true"/>    
+    <many-to-one name="doubtfulCustomerAccount" ref="com.axelor.apps.account.db.Account" title="Doubtful customers account" help="true"/>
+    <many-to-one name="employeeAccount" ref="com.axelor.apps.account.db.Account" title="Employee account"/>    
     <many-to-one name="irrecoverableAccount" ref="com.axelor.apps.account.db.Account" title="Irrecoverable account"/>
     <many-to-one name="cashPositionVariationAccount" ref="com.axelor.apps.account.db.Account" title="Cashier Regulation account"/>
     <many-to-one name="advancePaymentAccount" ref="com.axelor.apps.account.db.Account" title="Advance Payment Account"/>
@@ -69,6 +70,7 @@
     <string name="tempReimbImportFolderPathCFONB" title="Filepath for temporary rejected reimbursements import" help="true"/>
    
    	<string name="exportPath" title="Filepath for exported files (Accounting)"/>
+   	<string name="exportFileName" title="File name for payroll journal entries"/>
    	
    	<!-- Onglet Prélèvements -->
    	<string name="paymentScheduleExportFolderPathCFONB" title="Filepath for direct debit exports (CFONB)" help="true"/>
@@ -105,6 +107,10 @@
     <boolean name="generateMoveForInvoicePayment" title="Generate move for payment on invoice"/>
     <boolean name="generateMoveForAdvancePayment" title="Generate move for advance payment"/>
     
+      <!--  Onglet Ordres bancaires -->
+  	<many-to-one name="defaultSignatoryUser" ref="com.axelor.auth.db.User" title="Default signatory"/>
+  	<boolean name="generateMoveOnBankOrderValidation" title="Generate move when validating a bank order"/>
+  	
     <!--  Account chart template-->
 	<many-to-one name="accountChart" ref="com.axelor.apps.account.db.AccountChart" title="Account chart" />
 	<boolean name="hasChartImported"  title="Chart imported?" />

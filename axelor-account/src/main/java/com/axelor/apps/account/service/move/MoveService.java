@@ -52,6 +52,7 @@ public class MoveService {
 	protected MoveLineService moveLineService;
 	protected MoveCreateService moveCreateService;
 	protected MoveValidateService moveValidateService;
+	protected MoveRemoveService moveRemoveService;
 	protected MoveToolService moveToolService;
 	protected ReconcileService reconcileService;
 	protected MoveDueService moveDueService;
@@ -63,11 +64,12 @@ public class MoveService {
 
 	@Inject
 	public MoveService(GeneralService generalService, MoveLineService moveLineService, MoveCreateService moveCreateService, MoveValidateService moveValidateService, MoveToolService moveToolService,
-			ReconcileService reconcileService, MoveDueService moveDueService, PaymentService paymentService, MoveExcessPaymentService moveExcessPaymentService, MoveRepository moveRepository, AccountConfigService accountConfigService) {
+			MoveRemoveService moveRemoveService, ReconcileService reconcileService, MoveDueService moveDueService, PaymentService paymentService, MoveExcessPaymentService moveExcessPaymentService, MoveRepository moveRepository, AccountConfigService accountConfigService) {
 
 		this.moveLineService = moveLineService;
 		this.moveCreateService = moveCreateService;
 		this.moveValidateService = moveValidateService;
+		this.moveRemoveService = moveRemoveService;
 		this.moveToolService = moveToolService;
 		this.reconcileService = reconcileService;
 		this.moveDueService = moveDueService;
@@ -84,6 +86,7 @@ public class MoveService {
 	public MoveLineService getMoveLineService()  { return moveLineService; }
 	public MoveCreateService getMoveCreateService()  { return moveCreateService; }
 	public MoveValidateService getMoveValidateService()  { return moveValidateService; }
+	public MoveRemoveService getMoveRemoveService()  { return moveRemoveService; }
 	public MoveToolService getMoveToolService()  { return moveToolService; }
 	public ReconcileService getReconcileService()  { return reconcileService; }
 
@@ -98,7 +101,6 @@ public class MoveService {
 	 */
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public Move createMove(Invoice invoice) throws AxelorException{
-
 		Move move = null;
 
 		if (invoice != null && invoice.getInvoiceLineList() != null) {
@@ -110,10 +112,12 @@ public class MoveService {
 
 			log.debug("Création d'une écriture comptable spécifique à la facture {} (Société : {}, Journal : {})", new Object[]{invoice.getInvoiceId(), company.getName(), journal.getCode()});
 
-			move = moveCreateService.createMove(journal, company, invoice, partner, invoice.getInvoiceDate(), invoice.getPaymentMode());
+			move = moveCreateService.createMove(journal, company, invoice.getCurrency(), partner, invoice.getInvoiceDate(), invoice.getPaymentMode(), MoveRepository.AUTOMATIC);
 
 			if (move != null)  {
 
+				move.setInvoice(invoice);
+				
 				boolean isPurchase = InvoiceToolService.isPurchase(invoice);
 
 				boolean isDebitCustomer = moveToolService.isDebitCustomer(invoice, false);
@@ -265,7 +269,7 @@ public class MoveService {
 
 				log.debug("Création d'une écriture comptable O.D. spécifique à l'emploie des trop-perçus {} (Société : {}, Journal : {})", new Object[]{invoice.getInvoiceId(), company.getName(), journal.getCode()});
 
-				Move move = moveCreateService.createMove(journal, company, null, partner, invoice.getInvoiceDate(), null);
+				Move move = moveCreateService.createMove(journal, company, null, partner, invoice.getInvoiceDate(), null, MoveRepository.AUTOMATIC);
 
 				if (move != null)  {
 					BigDecimal totalCreditAmount = moveToolService.getTotalCreditAmount(creditMoveLineList);
@@ -283,7 +287,7 @@ public class MoveService {
 
 					//Création de la réconciliation
 					Reconcile reconcile = reconcileService.createReconcile(invoiceCustomerMoveLine, creditMoveLine, amount, false);
-					reconcileService.confirmReconcile(reconcile);
+					reconcileService.confirmReconcile(reconcile, true);
 				}
 			}
 
@@ -305,7 +309,7 @@ public class MoveService {
 
 		log.debug("Montant à payer avec l'avoir récupéré : {}", remainingAmount);
 
-		Move oDmove = moveCreateService.createMove(journal, company, null, partner, invoice.getInvoiceDate(), null);
+		Move oDmove = moveCreateService.createMove(journal, company, null, partner, invoice.getInvoiceDate(), null, MoveRepository.AUTOMATIC);
 
 		if (oDmove != null){
 			BigDecimal totalDebitAmount = moveToolService.getTotalDebitAmount(debitMoveLines);
@@ -322,7 +326,7 @@ public class MoveService {
 
 			//Création de la réconciliation
 			Reconcile reconcile = reconcileService.createReconcile(debitMoveLine, invoiceCustomerMoveLine, amount, false);
-			reconcileService.confirmReconcile(reconcile);
+			reconcileService.confirmReconcile(reconcile, true);
 		}
 		return oDmove;
 	}
@@ -346,8 +350,9 @@ public class MoveService {
 
 		Journal journal = accountConfigService.getMiscOperationJournal(accountConfigService.getAccountConfig(company));
 
-		Move excessMove = moveCreateService.createMove(journal, company, refund, partner, null);
-
+		Move excessMove = moveCreateService.createMove(journal, company, refund.getCurrency(), partner, null, MoveRepository.AUTOMATIC);
+		excessMove.setInvoice(refund);
+		
 		MoveLine debitMoveLine = moveLineService.createMoveLine(excessMove,
 				partner,
 				account,
@@ -372,7 +377,7 @@ public class MoveService {
 
 		//Création de la réconciliation
 		Reconcile reconcile = reconcileService.createReconcile(debitMoveLine, invoiceCustomerMoveLine, amount, false);
-		reconcileService.confirmReconcile(reconcile);
+		reconcileService.confirmReconcile(reconcile, true);
 	}
 
 
@@ -380,28 +385,31 @@ public class MoveService {
 	public Move generateReverse(Move move) throws AxelorException{
 		Move newMove = moveCreateService.createMove(move.getJournal(),
 								  move.getCompany(),
-								  move.getInvoice(),
+								  move.getCurrency(),
 								  move.getPartner(),
 								  today,
 								  move.getPaymentMode(),
+								  MoveRepository.ENTRY,	
 								  move.getIgnoreInReminderOk(),
 								  move.getIgnoreInAccountingOk());
+		
+		move.setInvoice(move.getInvoice());
+		move.setPaymentVoucher(move.getPaymentVoucher());
 
-		for(MoveLine line: move.getMoveLineList()){
-			log.debug("Moveline {}",line);
+		for(MoveLine moveLine: move.getMoveLineList()){
+			log.debug("Moveline {}",  moveLine);
 			Boolean isDebit = true;
-			BigDecimal amount = line.getCredit();
+			BigDecimal amount = moveLine.getCredit();
 			if(amount.compareTo(BigDecimal.ZERO) == 0){
 				isDebit = false;
-				amount = line.getDebit();
 			}
 			MoveLine newMoveLine = moveLineService.createMoveLine(newMove,
 																newMove.getPartner(),
-																line.getAccount(),
-																amount,
+																moveLine.getAccount(),
+																moveLine.getCurrencyAmount(),
 																isDebit,
 																null,
-																line.getCounter(),
+																moveLine.getCounter(),
 																null);
 			newMove.addMoveLineListItem(newMoveLine);
 		}

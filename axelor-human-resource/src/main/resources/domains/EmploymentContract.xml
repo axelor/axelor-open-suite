@@ -39,9 +39,25 @@
         <string name="fullName" namecolumn="true">
             <![CDATA[
             String fullName = "";
-	  		if (contractTypeSelect != null && contractTypeSelect == 1) {
-	  			fullName += "CDI";
+	  		if (contractTypeSelect != null) {
+	  			switch (contractTypeSelect){
+		  			case 1 : 
+		  				fullName += "CDD TC";
+		  				break;
+		  			case 2 : 
+		  				fullName += "CDD TP";
+		  				break;
+		  			case 3 : 
+		  				fullName += "CDI TC";
+		  				break;
+		  			case 4 : 
+		  				fullName += "CDI TP";
+		  				break;
+		  			default:
+		  				break;
+	  			}
 	  		}
+
 	  		if (employee != null) {
 	  		    fullName += (fullName.isEmpty()?"":"-")+employee.getName();
 	  		}

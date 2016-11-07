@@ -7,11 +7,28 @@
 		<option value="1">Draft</option>
 		<option value="2">Waiting validation</option>
 		<option value="3">Validated</option>
+		<option value="4">Reimbursed</option>
+		<option value="5">Refused</option>
+		<option value="6">Canceled</option>
+	</selection>
+	
+	<selection name="hrs.leave.request.status.select">
+		<option value="1">Draft</option>
+		<option value="2">Waiting validation</option>
+		<option value="3">Validated</option>
 		<option value="4">Refused</option>
 		<option value="5">Canceled</option>
 	</selection>
 	
 	<selection name="hrs.timesheet.status.select">
+		<option value="1">Draft</option>
+		<option value="2">Waiting validation</option>
+		<option value="3">Validated</option>
+		<option value="4">Refused</option>
+		<option value="5">Canceled</option>
+	</selection>
+	
+	<selection name="hrs.extra.hours.status.select">
 		<option value="1">Draft</option>
 		<option value="2">Waiting validation</option>
 		<option value="3">Validated</option>
@@ -86,5 +103,33 @@
 	
 	<selection name="ihr.batch.action.select">
 		<option value="1">Leave Management</option>
+		<option value="2">Seniority leave Management</option>
 	</selection>
+	
+	<selection name="hr.expense.company.cb.payment">
+		<option value="1">No</option>
+		<option value="2">Company's credit card</option>
+	</selection>
+	
+	<selection name="hrs.lunch.voucher.mgt.status.select">
+		<option value="1">Draft</option>
+		<option value="2">Calculated</option>
+		<option value="3">Requested</option>
+	</selection>
+	
+	<selection name="hr.employee.advance.type.select">
+		<option value="1">Permanent</option>
+		<option value="2">Occasional</option>
+	</selection>
+	
+	<selection name="hr.employee.advance.status.select">
+		<option value="1">Requested</option>
+		<option value="2">Validated</option>
+	</selection>
+	
+	<selection name="hr.employee.bonus.mgt.status.select">
+		<option value="1">Draft</option>
+		<option value="2">Calculated</option>
+	</selection>
+	
 </object-views>

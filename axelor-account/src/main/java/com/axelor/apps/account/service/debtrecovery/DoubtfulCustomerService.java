@@ -132,8 +132,10 @@ public class DoubtfulCustomerService {
 		BigDecimal totalAmountRemaining = BigDecimal.ZERO;
 		Company company = move.getCompany();
 		Partner partner = move.getPartner();
-		Move newMove = moveService.getMoveCreateService().createMove(company.getAccountConfig().getMiscOperationJournal(), company, move.getInvoice(), partner, move.getPaymentMode());
-
+		Invoice invoice = move.getInvoice();
+		Move newMove = moveService.getMoveCreateService().createMove(company.getAccountConfig().getMiscOperationJournal(), company, invoice.getCurrency(), partner, move.getPaymentMode(), MoveRepository.AUTOMATIC);
+		newMove.setInvoice(invoice);
+		
 		int ref = 1;
 		List<Reconcile> reconcileList = new ArrayList<Reconcile>();
 		List<MoveLine> moveLineList = move.getMoveLineList();
@@ -167,7 +169,7 @@ public class DoubtfulCustomerService {
 		moveRepo.save(newMove);
 
 		for(Reconcile reconcile : reconcileList)  {
-			reconcileService.confirmReconcile(reconcile);
+			reconcileService.confirmReconcile(reconcile, true);
 		}
 
 		this.invoiceProcess(newMove, doubtfulCustomerAccount, debtPassReason);
@@ -203,7 +205,7 @@ public class DoubtfulCustomerService {
 		Company company = moveLine.getMove().getCompany();
 		Partner partner = moveLine.getPartner();
 
-		Move newMove = moveService.getMoveCreateService().createMove(company.getAccountConfig().getMiscOperationJournal(), company, null, partner, moveLine.getMove().getPaymentMode());
+		Move newMove = moveService.getMoveCreateService().createMove(company.getAccountConfig().getMiscOperationJournal(), company, null, partner, moveLine.getMove().getPaymentMode(), MoveRepository.AUTOMATIC);
 
 		List<Reconcile> reconcileList = new ArrayList<Reconcile>();
 
@@ -215,7 +217,7 @@ public class DoubtfulCustomerService {
 
 		Reconcile reconcile = reconcileService.createReconcile(moveLine, creditMoveLine, amountRemaining, false);
 		reconcileList.add(reconcile);
-		reconcileService.confirmReconcile(reconcile);
+		reconcileService.confirmReconcile(reconcile, true);
 
 		// Ecriture au débit sur le 416 (client douteux)
 		MoveLine debitMoveLine = moveLineService.createMoveLine(newMove , newMove.getPartner(), doubtfulCustomerAccount, amountRemaining, true, today, 2, null);

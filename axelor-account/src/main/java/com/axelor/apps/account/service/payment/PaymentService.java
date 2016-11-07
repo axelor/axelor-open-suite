@@ -129,7 +129,7 @@ public class PaymentService {
 							}
 							// End gestion du passage en 580
 
-							reconcileService.confirmReconcile(reconcile);
+							reconcileService.confirmReconcile(reconcile, true);
 
 							debitTotalRemaining= debitTotalRemaining.subtract(amount);
 							creditTotalRemaining = creditTotalRemaining.subtract(amount);
@@ -222,7 +222,7 @@ public class PaymentService {
 		}
 
 		for(Reconcile reconcile : reconcileList)  {
-			reconcileService.confirmReconcile(reconcile);
+			reconcileService.confirmReconcile(reconcile, true);
 		}
 
 		// Si il y a un restant à payer, alors on crée un trop-perçu.
@@ -314,7 +314,7 @@ public class PaymentService {
 			}
 
 			for(Reconcile reconcile : reconcileList)  {
-				reconcileService.confirmReconcile(reconcile);
+				reconcileService.confirmReconcile(reconcile, true);
 			}
 		}
 		// Si il y a un restant à payer, alors on crée un dû.

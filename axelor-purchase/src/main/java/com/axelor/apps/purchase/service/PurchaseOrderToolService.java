@@ -60,7 +60,7 @@ public class PurchaseOrderToolService {
 	
 	public BigDecimal getAccountingExTaxTotal(BigDecimal exTaxTotal, PurchaseOrder purchaseOrder) throws AxelorException  {
 		
-		return currencyService.getAmountCurrencyConverted(
+		return currencyService.getAmountCurrencyConvertedAtDate(
 				purchaseOrder.getCurrency(), purchaseOrder.getSupplierPartner().getCurrency(), exTaxTotal, purchaseOrder.getOrderDate()).setScale(IAdministration.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);  
 	}
 	

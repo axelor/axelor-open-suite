@@ -6,6 +6,7 @@
     <grid name="move-grid" orderBy="-date" title="Account moves" model="com.axelor.apps.account.db.Move" canDelete="false">
         <toolbar>
             <button name="validateMove" title="Validate" prompt="Validation of moves is irrevocable" onClick="action-move-method-validate-multiple-moves"/>
+             <button name="deleteMoves" title="delete" prompt="Only 'Draft' moves can be deleted" icon="fa-trash" onClick="action-move-method-delete-multiple-moves"/>
         </toolbar>
         
         <hilite color="danger" if="statusSelect == 1"/>
@@ -24,6 +25,7 @@
 	
 		<toolbar>
 			<button name="reverse" title="Reverse" icon="fa-exchange" onClick="action-move-method-generate-reverse-move"/>
+			<button name="deleteMove" title="delete" icon="fa-trash" onClick="action-move-method-delete-move"/>
 		</toolbar>
 		
 		<panel name="main" readonlyIf="statusSelect == 3" colSpan="12">
@@ -89,6 +91,7 @@
     	<field name="company"  expr="eval:__repo__.of(Company).all().fetchOne()" if="__user__.activeCompany == null &amp;&amp; __repo__.of(Company).all().fetch().size == 1"/>
 		<field name="getInfoFromFirstMoveLineOk" expr="eval: true"/>
 		<field name="date" expr="eval:__config__.generalService.getTodayDate()" if="date == null"/>
+		<field name="technicalOriginSelect" expr="1"/>
     </action-record>
     
 	<!-- ACTION ATTRS -->
@@ -115,6 +118,14 @@
 	
 	<action-method name="action-move-method-validate-multiple-moves">
 	    <call class="com.axelor.apps.account.web.MoveController" method="validateMultipleMoves"/>
+	</action-method>
+	
+	<action-method name="action-move-method-delete-multiple-moves">
+	    <call class="com.axelor.apps.account.web.MoveController" method="deleteMultipleMoves"/>
+	</action-method>
+	
+	<action-method name="action-move-method-delete-move">
+	    <call class="com.axelor.apps.account.web.MoveController" method="deleteMove"/>
 	</action-method>
 	
 	<search-filters name="move-filters" model="com.axelor.apps.account.db.Move" title="Move filters">

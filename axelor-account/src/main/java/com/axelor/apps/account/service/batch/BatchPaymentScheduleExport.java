@@ -35,7 +35,7 @@ import com.axelor.apps.account.db.repo.PaymentScheduleLineRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.AccountingService;
 import com.axelor.apps.account.service.PaymentScheduleExportService;
-import com.axelor.apps.account.service.cfonb.CfonbExportService;
+import com.axelor.apps.account.service.bankorder.file.cfonb.CfonbExportService;
 import com.axelor.apps.account.service.payment.PaymentModeService;
 import com.axelor.apps.base.db.Batch;
 import com.axelor.apps.base.db.Company;

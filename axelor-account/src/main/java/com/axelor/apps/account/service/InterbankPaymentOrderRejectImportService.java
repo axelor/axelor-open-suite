@@ -32,7 +32,7 @@ import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.PaymentModeRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
-import com.axelor.apps.account.service.cfonb.CfonbImportService;
+import com.axelor.apps.account.service.bankorder.file.cfonb.CfonbImportService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.move.MoveLineService;
 import com.axelor.apps.account.service.move.MoveService;
@@ -119,7 +119,7 @@ public class InterbankPaymentOrderRejectImportService {
 
 			AccountConfig accountConfig = company.getAccountConfig();
 
-			Move move = moveService.getMoveCreateService().createMove(accountConfig.getRejectJournal(), company, null, partner, null);
+			Move move = moveService.getMoveCreateService().createMove(accountConfig.getRejectJournal(), company, null, partner, null, MoveRepository.AUTOMATIC);
 
 			// Création d'une ligne au crédit
 			MoveLine debitMoveLine = moveLineService.createMoveLine(move , partner, accountConfig.getCustomerAccount(), amountReject, true, rejectImportService.createRejectDate(dateReject), 1, refReject);

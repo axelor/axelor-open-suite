@@ -110,6 +110,7 @@ public interface IExceptionMessage {
 	 * Importer
 	 */
 	static final public String IMPORTER_1 = /*$$(*/ "Error : Mapping file is unreachable." /*)*/;
+	static final public String IMPORTER_2 = /*$$(*/ "Error : Data file is unreachable." /*)*/;
 	
 	/**
 	 * Importer Listener 
@@ -187,6 +188,7 @@ public interface IExceptionMessage {
 	 * Partner controller
 	 */
 	static final public String PARTNER_1 = /*$$(*/ "There is no sequence set for the partners" /*)*/;
+	static final public String PARTNER_2 = /*$$(*/ "%s SIRET Number required. Please configure SIRET Number for partner %s" /*)*/;
 	
 	/**
 	 * Product controller

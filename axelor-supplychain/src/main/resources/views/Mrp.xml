@@ -15,16 +15,16 @@
 	<form name="mrp-form" model="com.axelor.apps.supplychain.db.Mrp" title="Mrp" width="large">
 	    <toolbar>
 	        <button name="runCalculation" title="Run calculation" onClick="save,action-method-mrp-run-calculation" showIf="statusSelect != 1"/>
-   	        <button name="generateAllProposals" title="Generate all proposals" onClick="save,action-method-mrp-generate-all-proposal" showIf="statusSelect != 1"/>
+   	        <button name="generateAllProposals" title="Generate all proposals" onClick="save,action-method-mrp-generate-all-proposal" showIf="statusSelect == 2"/>
 	    </toolbar>
 	    <panel name="filters" title="Filters" collapseIf="statusSelect != 0" colSpan="12">
 	        <field name="createdOn"/>
 	        <field name="location" form-view="location-form" grid-view="location-grid" colSpan="6"/>
 	        <field name="endDate" colSpan="6"/>
-	        <panel-related field="productSet" form-view="product-form" grid-view="product-grid" canNew="false" colSpan="12" domain="self.productTypeSelect = 'storable' AND self.excludeFromMrp = false"/>
-	        <panel-related field="productCategorySet" form-view="product-category-form" grid-view="product-category-grid" canNew="false" colSpan="12"/>
-	        <panel-related field="productFamilySet" form-view="product-family-form" grid-view="product-family-grid" canNew="false" colSpan="12"/>
-	        <panel-related field="saleOrderLineSet" form-view="sale-order-line-form" grid-view="sale-order-line-grid" canNew="false" colSpan="12" domain="self.product.productTypeSelect = 'storable' AND self.product.excludeFromMrp = false AND self.creationDate &gt; :__date__"/>
+	        <panel-related field="productSet" canEdit="false" form-view="product-form" grid-view="product-grid" canNew="false" colSpan="12" domain="self.productTypeSelect = 'storable' AND self.excludeFromMrp = false"/>
+	        <panel-related field="productCategorySet" canEdit="false" form-view="product-category-form" grid-view="product-category-grid" canNew="false" colSpan="12"/>
+	        <panel-related field="productFamilySet" canEdit="false" form-view="product-family-form" grid-view="product-family-grid" canNew="false" colSpan="12"/>
+	        <panel-related field="saleOrderLineSet" canEdit="false" form-view="sale-order-line-form" grid-view="sale-order-line-grid" canNew="false" colSpan="12" domain="self.product.productTypeSelect = 'storable' AND self.product.excludeFromMrp = false AND self.saleOrder.creationDate &gt; :__date__"/>
 	        <panel-related field="mrpForecastSet" form-view="mrp-forecast-form" grid-view="mrp-forecast-grid" colSpan="12" domain="self.product.productTypeSelect = 'storable' AND self.product.excludeFromMrp = false AND self.forecastDate &gt;= :__date__"/>
 	    </panel>
 	    <panel showIf="statusSelect == 1" colSpan="12">

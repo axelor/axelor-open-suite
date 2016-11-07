@@ -66,7 +66,6 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.beust.jcommander.internal.Lists;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -259,7 +258,7 @@ public class InvoicingProjectService {
 		}
 
 		InvoiceLineGenerator invoiceLineGenerator = new InvoiceLineGenerator(invoice, product, projectTask.getName(), projectTask.getPrice(),
-					projectTask.getPrice(),null,projectTask.getQty(),projectTask.getUnit(), null,priority,BigDecimal.ZERO,IPriceListLine.AMOUNT_TYPE_NONE,
+					projectTask.getPrice(), null, projectTask.getQty(), projectTask.getUnit(), null, priority, BigDecimal.ZERO, IPriceListLine.AMOUNT_TYPE_NONE,
 					projectTask.getPrice().multiply(projectTask.getQty()), null,false)  {
 
 			@Override

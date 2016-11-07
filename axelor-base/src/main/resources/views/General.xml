@@ -45,7 +45,6 @@
 		    	<field name="managePurchasesUnits" if-module="axelor-purchase" widget="Boolean-switch"/>
 		    	<field name="teamManagement" widget="Boolean-switch"/>
 		    	<field name="manageMultiBanks" widget="Boolean-switch"/>
-		    	<field name="manageDirectDebitPayment" if-module="axelor-account" widget="Boolean-switch"/>
 		    </panel>
 		    <panel name="accounting" title="Accounting">
 				<field name="defaultExemptionTax" form-view="tax-form" grid-view="tax-grid"/>

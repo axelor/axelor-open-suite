@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
+    
+    <grid name="lunch-voucher-advance-grid" title="Lunch Voucher Advances" model="com.axelor.apps.hr.db.LunchVoucherAdvance" onNew="action-lunch-voucher-advance-record-default" editable="true" orderBy="-distributionDate">
+        <field name="distributionDate"/>
+        <field name="nbrLunchVouchers" aggregate="sum"/>
+        <field name="wageShare"/>
+        <field name="employersShare"/>
+        <field name="comments"/>
+    </grid>
+    
+
+	<form name="lunch-voucher-advance-form" title="Lunch Voucher Advance" model="com.axelor.apps.hr.db.LunchVoucherAdvance" onNew="action-lunch-voucher-advance-record-default" width="large">
+		<panel>
+		<field name="distributionDate"/>
+        <field name="nbrLunchVouchers"/>
+        <field name="wageShare"/>
+        <field name="employersShare"/>
+	</panel>
+		<panel name="comment" title="Comment">
+			<field name="comments" colSpan="12" showTitle="false" widget="Text"/>
+		</panel>
+	</form>
+	
+	<action-record name="action-lunch-voucher-advance-record-default" model="com.axelor.apps.hr.db.LunchVoucherAdvance">
+		<field name="distributionDate" expr="eval: __date__"/>
+		<field name="wageShare" expr="eval: __user__.activeCompany?.hrConfig?.wageShare"/>
+		<field name="employersShare" expr="eval: __user__.activeCompany?.hrConfig?.employersShare"/>
+	</action-record>
+	
+</object-views>

@@ -17,6 +17,10 @@
  */
 package com.axelor.apps.account.exception;
 
+import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.IException;
+import com.axelor.i18n.I18n;
+
 /**
  * Interface of Exceptions. Enum all exception of axelor-account.
  *
@@ -42,6 +46,9 @@ public interface IExceptionMessage {
 	static final String NO_MOVES_SELECTED = /*$$(*/ "Please select 'Draft' or 'Simulated' moves" /*)*/ ;
 	static final String MOVE_VALIDATION_NOT_OK = /*$$(*/ "Error in move validation, please check the log" /*)*/ ;
 	static final String MOVE_VALIDATION_OK = /*$$(*/ "Moves validated successfully" /*)*/;
+	static final String MOVE_ARCHIVE_NOT_OK = /*$$(*/ "You can't remove this record, because the move has already been validated" /*)*/;
+	static final String MOVE_ARCHIVE_OK = /*$$(*/ "Move(s) has been archived successfully" /*)*/;
+	static final String NO_MOVE_TO_ARCHIVE = /*$$(*/ "Please select 'Draft' moves" /*)*/;
 
 
 	/**
@@ -168,6 +175,7 @@ public interface IExceptionMessage {
 	static final String RECONCILE_3 = /*$$(*/ "\n (Débit %s compte %s - Crédit %s compte %s)" /*)*/ ;
 	static final String RECONCILE_4 = /*$$(*/ "%s :\nReconciliation %s: Le montant réconcilié doit être différent de zéro. \n (Débit %s compte %s - Crédit %s compte %s)" /*)*/ ;
 	static final String RECONCILE_5 = /*$$(*/ "%s :\nReconciliation %s: Le montant réconcilié doit être inférieur ou égale au montant restant à réconcilier des lignes d'écritures." /*)*/ ;
+	static final String RECONCILE_6 = /*$$(*/ "%s :\n Erreur : Veuillez configurer une séquence Réconciliation pour la société %s" /*)*/ ;
 
 	/**
 	 * Reimbursement service and controller
@@ -287,10 +295,18 @@ public interface IExceptionMessage {
 	/**
 	 * Cfonb tool service
 	 */
-	static final String CFONB_TOOL_1 = /*$$(*/ "%s :\n Annomlie détectée (la valeur n'est pas numérique : %s) pour l'émetteur" /*)*/;
-	static final String CFONB_TOOL_2 = /*$$(*/ "%s :\n Annomlie détectée (la valeur n'est pas numérique : %s) pour le destinataire" /*)*/;
-	static final String CFONB_TOOL_3 = /*$$(*/ "%s :\n Annomlie détectée (la valeur n'est pas numérique : %s) pour le total" /*)*/;
-	static final String CFONB_TOOL_4 = /*$$(*/ "%s :\n Annomlie détectée (l'enregistrement ne fait pas %s caractères : %s) pour l'enregistrement %s, société %s" /*)*/;
+	static final String CFONB_TOOL_1 = /*$$(*/ "%s :\n Anomalie détectée (la valeur n'est pas numérique : %s) pour l'émetteur" /*)*/;
+	static final String CFONB_TOOL_2 = /*$$(*/ "%s :\n Anomalie détectée (la valeur n'est pas numérique : %s) pour le destinataire" /*)*/;
+	static final String CFONB_TOOL_3 = /*$$(*/ "%s :\n Anomalie détectée (la valeur n'est pas numérique : %s) pour le total" /*)*/;
+	static final String CFONB_TOOL_NB_OF_CHAR_PER_LINE = /*$$(*/ "%s :\n Anomalie détectée (l'enregistrement ne fait pas %s caractères)" /*)*/;
+	static final String CFONB_TOOL_EMPTY_ZONE = /*$$(*/ "Anomalie détectée (la zone %s est vide)" /*)*/;
+	static final String CFONB_TOOL_DIGITAL_ZONE_NOT_CORRECT = /*$$(*/ "Anomalie détectée (la zone %s doit être de type numérique)" /*)*/;
+
+	
+	/**
+	 * Account config service
+	 */
+	static final String COMPANY_CURRENCY = /*$$(*/ "%s :\n Please, configure a currency for the company %s" /*)*/;
 
 	/**
 	 * Account config service
@@ -333,6 +349,9 @@ public interface IExceptionMessage {
 	static final String ACCOUNT_CONFIG_36 = /*$$(*/ "%s :\n Veuillez configurer un Motif de passage (créance de plus de trois mois) pour la société %s" /*)*/;
 	static final String ACCOUNT_CONFIG_37 = /*$$(*/ "%s :\n Veuillez configurer le tableau de relance pour la société %s" /*)*/;
 	static final String ACCOUNT_CONFIG_38 = /*$$(*/ "%s :\n Veuillez configurer un compte d'acompte pour la société %s" /*)*/;
+	static final String ACCOUNT_CONFIG_39 = /*$$(*/ "%s :\n Veuillez configurer un nom de fichier pour l'export des FEC pour la société %s" /*)*/;
+	static final String ACCOUNT_CONFIG_40 = /*$$(*/ "%s :\n Veuillez configurer un compte salarié pour la société %s" /*)*/;
+	static final String ACCOUNT_CONFIG_41 = /*$$(*/ "%s :\n Veuillez configurer un signataire par défaut pour la société %s" /*)*/;
 	
 	static final String ACCOUNT_CONFIG_SEQUENCE_1 = /*$$(*/ "%s :\n Please, configure a sequence for the customer invoices and the company %s" /*)*/;
 	static final String ACCOUNT_CONFIG_SEQUENCE_2 = /*$$(*/ "%s :\n Please, configure a sequence for the customer refunds and the company %s" /*)*/;
@@ -454,6 +473,8 @@ public interface IExceptionMessage {
 	static final String MOVE_CANCEL_3 = /*$$(*/ "So many accounting operations are used on this move, so move can't be canceled" /*)*/;
 	
 	static final String INVOICE_CANCEL_1 = /*$$(*/ "Invoice is passed in doubfult debit, and can't be canceled" /*)*/;
+	
+	static final String INVOICE_PAYMENT_CANCEL = /*$$(*/ "The bank order linked to this invoice payment has already been carried out/rejected, and thus can't be canceled" /*)*/;
 
 
 	/**
@@ -491,6 +512,7 @@ public interface IExceptionMessage {
 	static final String PAYMENT_VOUCHER_CONTROL_2 = /*$$(*/ "%s :\n Aucune ligne à payer." /*)*/;
 	static final String PAYMENT_VOUCHER_CONTROL_3 = /*$$(*/ "%s :\n Veuillez renseigner un journal et un compte de trésorerie dans le mode de règlement." /*)*/;
 	static final String PAYMENT_VOUCHER_CONTROL_4 = /*$$(*/ "%s :\n Le montant de la saisie paiement (%s) est différent du montant encaissé par Paybox (%s)" /*)*/;
+	static final String PAYMENT_VOUCHER_CONTROL_PAID_AMOUNT = /*$$(*/ "%s :\n Payment voucher n° %s, the paid amount should be positive" /*)*/;
 
 	/**
 	 * Payment voucher load service
@@ -549,4 +571,57 @@ public interface IExceptionMessage {
 
 	static final String USER_PARTNER = /*$$(*/ "Veuillez créer un contact pour l'utilisateur %s" /*)*/;
 	
+	
+	/**
+	 *  BankOrder service
+	 */
+	static final String BANK_ORDER_DATE = /*$$(*/ "Bank Order date can't be in the past" /*)*/;
+	static final String BANK_ORDER_DATE_MISSING = /*$$(*/ "Please fill bank order date"/*)*/;
+	static final String BANK_ORDER_TYPE_MISSING = /*$$(*/ "Please fill bank order type" /*)*/;
+	static final String BANK_ORDER_PARTNER_TYPE_MISSING = /*$$(*/ "Please fill partner type for the bank order" /*)*/;
+	static final String BANK_ORDER_COMPANY_MISSING = /*$$(*/ "Please fill the sender company" /*)*/;
+	static final String BANK_ORDER_BANK_DETAILS_MISSING = /*$$(*/ "Please fill the bank details" /*)*/;
+	static final String BANK_ORDER_CURRENCY_MISSING = /*$$(*/ "Please fill currency for the bank order" /*)*/;
+	static final String BANK_ORDER_AMOUNT_NEGATIVE = /*$$(*/ "Amount value of the bank order is not valid" /*)*/;
+	static final String BANK_ORDER_PAYMENT_MODE_MISSING = /*$$(*/ "Please select a payment mode" /*)*/;
+	static final String BANK_ORDER_SIGNATORY_MISSING = /*$$(*/ "Please select a signatory" /*)*/;
+	
+	
+	/**
+	 *  BankOrder lines
+	 */
+	static final String BANK_ORDER_LINES_MISSING = /*$$(*/ "You can't validate this bank order. you need to fill at least one bank order line" /*)*/;
+	static final String BANK_ORDER_LINE_COMPANY_MISSING = /*$$(*/ "Please select a company for the bank order lines inserted" /*)*/;
+	static final String BANK_ORDER_LINE_PARTNER_MISSING = /*$$(*/ "Please select a partner for the bank order lines inserted" /*)*/;
+	static final String BANK_ORDER_LINE_AMOUNT_NEGATIVE = /*$$(*/ "Amount value of a bank order line is not valid" /*)*/;
+	static final String BANK_ORDER_LINE_TOTAL_AMOUNT_INVALID = /*$$(*/ "Total amount of bank order lines must be equal to the bank order amount" /*)*/;
+	
+	
+	/**
+	 * BankOrder merge
+	 */
+	static final String BANK_ORDER_MERGE_AT_LEAST_TWO_BANK_ORDERS = /*$$(*/ "Please select at least two bank orders" /*)*/;
+	static final String BANK_ORDER_MERGE_STATUS = /*$$(*/ "Please select draft or awaiting signature bank orders only" /*)*/;
+	static final String BANK_ORDER_MERGE_SAME_STATUS = /*$$(*/ "Please select some bank orders that have the same status" /*)*/;
+	static final String BANK_ORDER_MERGE_SAME_ORDER_TYPE_SELECT = /*$$(*/ "Please select some bank orders that have the same status" /*)*/;
+	static final String BANK_ORDER_MERGE_SAME_PAYMENT_MODE = /*$$(*/ "Please select some bank orders that have the same payment mode" /*)*/;
+	static final String BANK_ORDER_MERGE_SAME_PARTNER_TYPE_SELECT = /*$$(*/ "Please select some bank orders that have the same partner type" /*)*/;
+	static final String BANK_ORDER_MERGE_SAME_SENDER_COMPANY = /*$$(*/ "Please select some bank orders that have the same sender company" /*)*/;
+	static final String BANK_ORDER_MERGE_SAME_SENDER_BANK_DETAILS = /*$$(*/ "Please select some bank orders that have the same sender bank details" /*)*/;
+	static final String BANK_ORDER_MERGE_SAME_CURRENCY = /*$$(*/ "Please select some bank orders that have the same currency" /*)*/;
+
+	
+	/**
+	 * BankOrder file
+	 */
+	static final String BANK_ORDER_FILE_NO_FOLDER_PATH = /*$$(*/ "No folder path has been defined in the payment mode %s" /*)*/;
+	static final String BANK_ORDER_FILE_UNKNOW_FORMAT = /*$$(*/ "Unknow format for file generation for payment mode %s" /*)*/;
+
+	
+	/**
+	 *  Ebics
+	 */
+	static final String EBICS_WRONG_PASSWORD = /*$$(*/ "Incorrect password, please try again" /*)*/;
+	static final String EBICS_MISSING_PASSWORD = /*$$(*/ "Please insert a password" /*)*/;
+	static final String EBICS_MISSING_NAME = /*$$(*/ "Please select a user name" /*)*/;
 }

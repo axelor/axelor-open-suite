@@ -11,6 +11,7 @@
 		  onSave="com.axelor.apps.base.web.weeklyplanning.WeeklyPlanningController:checkPlanning">
 		<panel name="main">
 			<field name="name"/>
+			<field name="bonusCoef" if-module="axelor-human-resource" />
 		</panel>
 	    <panel-related field="weekDays" editable="true" grid-view="day-planning-grid" form-view="day-planning-form"/>
 	</form>

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
+    
+    <grid name="lunch-voucher-mgt-line-grid" title="Lunch Voucher Lines" model="com.axelor.apps.hr.db.LunchVoucherMgtLine" editable="true" orderBy="employee">
+        <field name="employee"/>
+        <field name="canteenEntries" aggregate="sum" title="Canteen"/>
+        <field name="daysOverseas" aggregate="sum" title="Overseas"/>
+        <field name="invitation" aggregate="sum"/>
+        <field name="lunchVoucherNumber" aggregate="sum" title="Nbr lunch vouchers"/>
+        <field name="givenToEmployee" title="Given?" width="200%"/>
+    </grid>
+    
+    <grid name="lunch-voucher-mgt-line-employee-grid" title="Lunch Voucher Lines" model="com.axelor.apps.hr.db.LunchVoucherMgtLine" editable="true" orderBy="-lunchVoucherMgt.payStartDate">
+        <field name="lunchVoucherMgt.payStartDate"/>
+        <field name="lunchVoucherMgt.payEndDate"/>
+        <field name="canteenEntries" aggregate="sum" title="Canteen"/>
+        <field name="daysOverseas" aggregate="sum" title="Overseas"/>
+        <field name="invitation" aggregate="sum" title="Invitation"/>
+        <field name="lunchVoucherNumber" aggregate="sum" title="Nbr lunch vouchers"/>
+        <field name="givenToEmployee" title="Given?"/>
+        <field name="lunchVoucherMgt.statusSelect"/>
+        <button name="print" title="Print" icon="fa-print"/>
+    </grid>
+
+	<form name="lunch-voucher-mgt-line-form" title="Lunch Voucher Line" model="com.axelor.apps.hr.db.LunchVoucherMgtLine" width="large">
+		<panel name="overview" title="Overview">
+			<field name="employee" colSpan="6" />
+			<field name="lunchVoucherNumber" css="label-bold bold" colSpan="12" />
+		</panel>
+		<panel name="details" title="Details">
+			<field name="canteenEntries" colSpan="6"/>
+			<field name="daysOverseas" colSpan="6"/>
+			 <field name="invitation" colSpan="6"/>
+			<field name="givenToEmployee" colSpan="6"/>
+		</panel>
+		<panel name="comment" title="Comments">
+			<field name="comment" colSpan="12" showTitle="false" widget="Text"/>
+		</panel>
+	</form>
+</object-views>

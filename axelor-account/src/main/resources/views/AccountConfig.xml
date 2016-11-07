@@ -49,6 +49,7 @@
 					<field name="supplierAccount" domain="self.company = :company" grid-view="account-grid" form-view="account-form"/>
 					<field name="doubtfulCustomerAccount" domain="self.company = :company" grid-view="account-grid" form-view="account-form"/>
 					<field name="irrecoverableAccount" domain="self.company = :company" grid-view="account-grid" form-view="account-form"/>
+					<field name="employeeAccount" domain="self.company = :company" grid-view="account-grid" form-view="account-form"/>
 					<field name="advancePaymentAccount"/>
 				</panel>
 				<panel name="paymentDifferences" title="Payment differences" colSpan="12">
@@ -61,6 +62,7 @@
 				</panel>
 				<panel name="exports" title="Exports" colSpan="12">
 					<field name="exportPath"/>
+<!-- 					<field name="exportFileName"/> -->
 				</panel>
 				<panel name="cashiers" title="Cashiers" colSpan="12">
 					<field name="cashRegisterTemplate" form-view="template-form" grid-view="template-grid"/>
@@ -74,7 +76,6 @@
 				    <field name="payingBackTax" grid-view="tax-grid" form-view="tax-form"/>
 				</panel>
 				<panel	name="expense" title="Expense" colSpan="12">
-					<field name="expenseEmployeeAccount" domain="self.company = :company" if-module="axelor-human-resource" grid-view="account-grid" form-view="account-form"/>
 					<field name="expenseTaxAccount" domain="self.company = :company" if-module="axelor-human-resource" grid-view="account-grid" form-view="account-form"/>
 				</panel>
 				<panel name="invoicesSequences" title="Invoices sequences" colSpan="12">
@@ -134,6 +135,11 @@
 			</panel>
 			<panel name="paybox" title="Paybox">
 			  <field name="payboxConfig" showTitle="false" grid-view="paybox-config-grid" form-view="paybox-config-form"/>
+			</panel>
+			
+			<panel name="bankOrder" title="Bank Order">
+			  <field name="defaultSignatoryUser" grid-view="user-grid" form-view="user-form"/>
+			  <field name="generateMoveOnBankOrderValidation"/>
 			</panel>
 		
 			<panel name="reimbursement" title="Reimbursement">

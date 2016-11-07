@@ -56,8 +56,6 @@
 		<panel sidebar="true" name="actions" title="Actions" stacked="true">
 			<button name="confirmPaymentVoucher" title="Confirm payment" onClick="action-group-account-payment-voucher-confirm-click" showIf="statusSelect == 1"/>
 			<button name="printPaymentVoucher" title="Print receipt" icon="fa-print" onClick="save,com.axelor.apps.account.web.PaymentVoucherController:printPaymentVoucher" showIf="statusSelect == 2"/>
-			<button name="loadMoveLines" title="Load invoice and display other invoices to pay"   onClick="save,com.axelor.apps.account.web.PaymentVoucherController:loadMoveLines,save" showIf="statusSelect == 1"/>
-			<button name="loadSelectedLines" title="Load selected lines"   onClick="com.axelor.apps.account.web.PaymentVoucherController:loadSelectedLines,save" showIf="statusSelect == 1"/>
 		</panel>
 		
 		<panel name="payer" title="Payer" itemSpan="12" readonlyIf="statusSelect == 2">
@@ -66,21 +64,23 @@
 			<field name="currency" colSpan="4" form-view="currency-form" grid-view="currency-grid"/>
 		</panel>
 		
-		<panel name="toPay" title="To pay" itemSpan="12" readonlyIf="statusSelect == 2">
-		    <field name="invoiceToPay" onChange="action-group-account-payment-voucher-invoicetopay-onchange" onSelect="action-payment-voucher-domain-on-invoice-to-pay" form-view="invoice-form" grid-view="invoice-grid" colSpan="5"/>
-		    <label title="&lt;font color=#953B39&gt; OR &lt;/font&gt;" colSpan="2"/>
-		    <field name="rejectToPay" title="Reject to pay" onChange="action-group-account-payment-voucher-rejecttopay-onchange" onSelect="action-payment-voucher-domain-on-reject-to-pay" colSpan="5" form-view="move-line-form" grid-view="move-line-grid"/>
+		<panel colSpan="12" showIf="statusSelect == 1">
+			<button name="loadMoveLines" title="Search elements to pay" onClick="save,com.axelor.apps.account.web.PaymentVoucherController:loadMoveLines,save" colSpan="6"/>
 		</panel>
 		
 		<panel readonlyIf="statusSelect == 2 || payboxPaidOk" colSpan="12">
 		 	<field name="paidAmount" colSpan="3"/>
 			<label title="&lt;font color=#953B39&gt; OR &lt;/font&gt;" colSpan="3" showIf="operationTypeSelect == 3 || operationTypeSelect == 4"/>
-			<field name="moveLine" onChange="action-record-fill-paidAmount-fromMoveLine,action-pv-moveLine-attrs" colSpan="3" showIf="operationTypeSelect == 3 || operationTypeSelect == 4" form-view="move-line-form" grid-view="move-line-grid"/>
+			<field name="moveLine" onChange="action-record-fill-paidAmount-fromMoveLine,action-pv-moveLine-attrs" onSelect="action-pv-moveLine-domain" colSpan="3" showIf="operationTypeSelect == 3 || operationTypeSelect == 4" form-view="move-line-form" grid-view="move-line-grid"/>
 			<field name="remainingAmount" readonly="true" colSpan="3"/>
 		</panel>
 		
 		<panel-stack readonlyIf="statusSelect == 2">
 			<panel-related colSpan="12" field="paymentInvoiceList"  form-view="payment-invoice-form" grid-view="payment-invoice-grid" showIf="statusSelect == 1"/>
+			<panel colSpan="12" showIf="statusSelect == 1">
+				<button name="loadSelectedLines" title="Load selected lines" onClick="com.axelor.apps.account.web.PaymentVoucherController:loadSelectedLines,save" colSpan="6"/>
+				<button name="resetImputation" title="Reset imputation" onClick="com.axelor.apps.account.web.PaymentVoucherController:resetImputation,save" colSpan="6"/>
+			</panel>
 			<panel-related colSpan="12" field="paymentInvoiceToPayList" form-view="payment-invoice-to-pay-form" grid-view="payment-invoice-to-pay-grid"/>
 		</panel-stack>
 		
@@ -102,8 +102,6 @@
 	    <action name="action-record-payment-voucher-default-record"/>
 	    <action name="action-record-payment-voucher-cash-register-record"/>
 	    <action name="action-pv-hide-confirm-button"/>
-	    <action name="action-pv-hide-rejectToPay"/>
-	    <action name="action-pv-hide-invoiceToPay"/>
 	    <action name="action-payment-voucher-getDateTime"/>
 	    <action name="action-pv-attrs-hidden-bankCardTransactionNumber"/>
 	    <action name="action-attrs-payment-voucher-hidden-receipt"/>
@@ -114,8 +112,6 @@
     <action-group name="action-account-payment-voucher-onload-group">
 	    <action name="action-payment-voucher-attrs-hidden-paybox-email"/>
 	    <action name="action-pv-hide-confirm-button"/>
-	    <action name="action-pv-hide-rejectToPay"/>
-	    <action name="action-pv-hide-invoiceToPay"/>
 	    <action name="action-pv-attrs-hidden-bankCardTransactionNumber"/>
 	    <action name="action-attrs-payment-voucher-hidden-receipt"/>
 	    <action name="action-attrs-payment-voucher-readonly-status"/>
@@ -126,20 +122,6 @@
     	<action name="save"/>
     	<action name="action-method-account-payment-voucher-confirm"/>
     	<action name="action-attrs-payment-voucher-readonly-status"/>
-    </action-group>
-    
-    <action-group name="action-group-account-payment-voucher-invoicetopay-onchange">
-    	<action name="action-paymentVoucherInvoice-onChange"/>
-    	<action name="action-pv-hide-rejectToPay"/>
-    	<action name="action-pv-moveLine-domain-1"/>
-    	<action name="action-payment-voucher-company-onChange"/>
-    </action-group>
-    
-    <action-group name="action-group-account-payment-voucher-rejecttopay-onchange">
-    	<action name="action-pv-hide-invoiceToPay"/>
-    	<action name="action-paymentVoucherRejectToPay-onChange"/>
-    	<action name="action-pv-moveLine-domain-3"/>
-    	<action name="action-payment-voucher-company-onChange"/>
     </action-group>
     
     <action-group name="action-group-account-payment-voucher-paymentmode-onchange">
@@ -177,62 +159,10 @@
 		<attribute name="readonly" for="paidAmount" expr="eval: moveLine != null || payboxPaidOk"/>
 	</action-attrs>
 	
-	<action-attrs name="action-pv-hide-invoiceToPay">
-		<attribute name="readonly" for="invoiceToPay" expr="eval: scheduleToPay != null || rejectToPay != null"/>
-	</action-attrs>
-	
-	<action-attrs name="action-pv-hide-rejectToPay">
-		<attribute name="readonly" for="rejectToPay" expr="eval: invoiceToPay != null || scheduleToPay != null"/>
-	</action-attrs>
-   	
    	<action-attrs name="action-pv-hide-confirm-button">
    		<attribute name="hidden" for="confirmPaymentVoucher" expr="eval: statusSelect == 2 || (!payboxPaidOk &amp;&amp; paymentMode?.typeSelect == 6)"/>
    	</action-attrs>
    	
-   	<action-record name="action-payment-voucher-company-onChange" model="com.axelor.apps.account.db.PaymentVoucher" >
-		<field name="company" expr="eval:invoiceToPay?.company" if="invoiceToPay != null &amp;&amp; company == null"/>
-		<field name="company" expr="eval:rejectToPay?.move?.company" if="rejectToPay != null &amp;&amp; company == null"/>
-	</action-record>
-   	
-	<action-record name="action-paymentVoucherInvoice-onChange" model="com.axelor.apps.account.db.PaymentVoucher" >
-		<field name="partner" expr="eval:invoiceToPay?.partner"/>
-		<field name="paymentMode" expr="eval:invoiceToPay?.paymentMode"/>
-		<field name="currency" expr="eval:invoiceToPay?.partner?.currency"/>
-	</action-record>
-
-	<action-record name="action-paymentVoucherRejectToPay-onChange" model="com.axelor.apps.account.db.PaymentVoucher" >
-		<field name="partner"  expr="eval:rejectToPay?.partner"/>
-		<field name="paymentMode" expr="eval:rejectToPay?.move.paymentMode"/>
-		<field name="currency" expr="eval:rejectToPay?.partner?.currency"/>
-	</action-record>   
-	
-	<action-attrs name="action-pv-moveLine-domain-1">
-		<attribute name="domain" for="moveLine" expr="eval: &quot;self.account.reconcileOk = 't' and self.fromSchedulePaymentOk = 'f' and self.partner.id = ${partner?.id} and self.move.statusSelect = 3 and self.amountRemaining &gt; 0.0  and self.credit &gt; 0.0 and self.move.company.id = ${invoiceToPay?.company?.id}&quot;"/>
-	</action-attrs>
-	
-	<action-attrs name="action-pv-moveLine-domain-3">
-		<attribute name="domain" for="moveLine" expr="eval: &quot;self.account.reconcileOk = 't' and self.fromSchedulePaymentOk = 'f' and self.partner.id = ${partner?.id} and self.move.statusSelect = 3 and self.amountRemaining &gt; 0.0  and self.credit &gt; 0.0 and self.move.company.id = ${rejectToPay?.move?.company?.id}&quot;"/>
-	</action-attrs>
-	
-	<action-attrs name="action-pv-moveLine-domain-4">
-		<attribute name="domain" for="moveLine" expr="eval: &quot;self.account.reconcileOk = 't' and self.fromSchedulePaymentOk = 'f' and self.partner.id = ${partner?.id} and self.move.statusSelect = 3 and self.amountRemaining &gt; 0.0  and self.credit &gt; 0.0&quot;"/>
-	</action-attrs>
-	
-	<action-attrs name="action-payment-voucher-domain-on-invoice-to-pay">
-		<attribute name="domain" for="invoiceToPay" expr="eval: &quot;self.company = :company&quot;" if="operationTypeSelect == null"/>
-		<attribute name="domain" for="invoiceToPay" expr="eval: &quot;self.statusSelect = 3 and self.company = :company and ((self.inTaxTotal &gt; 0.0 and self.companyInTaxTotalRemaining &gt; 0.0 and self.operationTypeSelect = 1) or (self.inTaxTotal &lt; 0.0 and self.companyInTaxTotalRemaining &lt; 0.0 and self.operationTypeSelect = 2))&quot;" if="operationTypeSelect == 1"/>
-		<attribute name="domain" for="invoiceToPay" expr="eval: &quot;self.statusSelect = 3 and self.company = :company and ((self.inTaxTotal &lt; 0.0 and self.companyInTaxTotalRemaining &lt; 0.0 and self.operationTypeSelect = 1) or (self.inTaxTotal &gt; 0.0 and self.companyInTaxTotalRemaining &gt; 0.0 and self.operationTypeSelect = 2))&quot;" if="operationTypeSelect == 2"/>
-		<attribute name="domain" for="invoiceToPay" expr="eval: &quot;self.statusSelect = 3 and self.company = :company and ((self.inTaxTotal &gt; 0.0 and self.companyInTaxTotalRemaining &gt; 0.0 and self.operationTypeSelect = 3) or (self.inTaxTotal &lt; 0.0 and self.companyInTaxTotalRemaining &lt; 0.0 and self.operationTypeSelect = 4))&quot;" if="operationTypeSelect == 3"/>
-		<attribute name="domain" for="invoiceToPay" expr="eval: &quot;self.statusSelect = 3 and self.company = :company and ((self.inTaxTotal &lt; 0.0 and self.companyInTaxTotalRemaining &lt; 0.0 and self.operationTypeSelect = 3) or (self.inTaxTotal &gt; 0.0 and self.companyInTaxTotalRemaining &gt; 0.0 and self.operationTypeSelect = 4))&quot;" if="operationTypeSelect == 4"/>
-	</action-attrs>
-	
-	<action-attrs name="action-payment-voucher-domain-on-reject-to-pay">
-		<attribute name="domain" for="rejectToPay" expr="eval: &quot;self.move.statusSelect = 3 and self.account.reconcileOk = 't' and self.move.company = :company and self.credit &gt; 0.0 and self.amountRemaining &gt; 0.0 &quot;" if="operationTypeSelect == 1"/>
-		<attribute name="domain" for="rejectToPay" expr="eval: &quot;self.move.statusSelect = 3 and self.account.reconcileOk = 't' and self.move.company = :company and self.debit &gt; 0.0 and self.amountRemaining &gt; 0.0 &quot;" if="operationTypeSelect == 2"/>
-		<attribute name="domain" for="rejectToPay" expr="eval: &quot;self.move.statusSelect = 3 and self.account.reconcileOk = 't' and self.move.company = :company and self.debit &gt; 0.0 and self.amountRemaining &gt; 0.0 &quot;" if="operationTypeSelect == 3"/>
-		<attribute name="domain" for="rejectToPay" expr="eval: &quot;self.move.statusSelect = 3 and self.account.reconcileOk = 't' and self.move.company = :company and self.credit &gt; 0.0 and self.amountRemaining &gt; 0.0 &quot;" if="operationTypeSelect == 4"/>
-	</action-attrs>
-	
 	<action-attrs name="action-attrs-payment-voucher-hidden-receipt">
 		<attribute name="hidden" for="receiptNo" expr="eval: __repo__.of(AccountManagement).all().filter('self.company.id = ?1 AND self.paymentMode.id = ?2',company.id,paymentMode.id).fetchOne()?.journal?.editReceiptOk == false || statusSelect != 2"/>
 		<attribute name="hidden" for="printPaymentVoucher" expr="eval: __repo__.of(AccountManagement).all().filter('self.company.id = ?1 AND self.paymentMode.id = ?2',company.id,paymentMode.id).fetchOne()?.journal?.editReceiptOk == false || statusSelect != 2"/>
@@ -247,6 +177,10 @@
 	<action-attrs name="action-pv-attrs-hidden-bankCardTransactionNumber">
 		<attribute name="hidden" for="bankCardTransactionNumber" expr="eval: paymentMode?.typeSelect != 6 || operationTypeSelect != 3"/>
 		<attribute name="hidden" for="paybox" expr="eval: paymentMode?.typeSelect != 6 || operationTypeSelect != 3"/>
+	</action-attrs>
+	
+	<action-attrs name="action-pv-moveLine-domain">
+		<attribute name="domain" for="moveLine" expr="eval: &quot;self.account.reconcileOk = 't' and self.fromSchedulePaymentOk = 'f' and self.partner.id = ${partner?.id} and self.move.statusSelect = 3 and self.amountRemaining &gt; 0.0  and self.credit &gt; 0.0&quot;"/>
 	</action-attrs>
 	
 	<action-record name="action-record-payment-voucher-default-record" model="com.axelor.apps.account.db.PaymentVoucher">

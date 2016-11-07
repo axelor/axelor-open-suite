@@ -32,7 +32,7 @@ import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.AccountingService;
 import com.axelor.apps.account.service.InterbankPaymentOrderImportService;
 import com.axelor.apps.account.service.RejectImportService;
-import com.axelor.apps.account.service.cfonb.CfonbImportService;
+import com.axelor.apps.account.service.bankorder.file.cfonb.CfonbImportService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;

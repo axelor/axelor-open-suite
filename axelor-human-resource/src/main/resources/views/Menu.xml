@@ -114,6 +114,15 @@
 		<domain>self.statusSelect = 3 AND self.ventilated = false</domain>
 	</action-view>
 	
+	<menuitem name="multiple-users-expense" parent="expense-root" title="Multiple users expenses" action="multiple.users.expense"  order="-3000"/>
+	
+	<action-view name="multiple.users.expense" title="Multiple users expenses" model="com.axelor.apps.hr.db.Expense">
+		<view type="grid" name="expense-grid"/>
+		<view type="form" name="expense-form"/>
+		<domain>self.multipleUsers IS TRUE</domain>
+		<context name="setMultipleUsers" expr="eval: true"/>
+	</action-view>
+	
 	<menuitem name="historic-expense" groups="MNGT,admins" parent="expense-root" title="Historic colleague Expenses" action="expense.historic"/>
 	
 	<action-method name="expense.historic">
@@ -162,6 +171,13 @@
 		<view type="grid" name="leave-grid"/>
 		<view type="form" name="leave-form"/>
 		<domain>self.typeSelect = 4</domain>
+	</action-view>
+	
+	<menuitem name="all-lunch-voucher-mgt" parent="hr-root" title="Lunch Voucher Management" action="lunch.voucher.mgt.all"/>
+	
+	<action-view name="lunch.voucher.mgt.all" title="Lunch Voucher Management" model="com.axelor.apps.hr.db.LunchVoucherMgt">
+    	<view type="grid" name="lunch-voucher-mgt-grid"/>
+	    <view type="form" name="lunch-voucher-mgt-form"/>
 	</action-view>
 	
 	<menuitem name="all-payroll-preparation" parent="hr-root" title="Payroll Preparations" action="payroll.preparation.all"/>
@@ -300,5 +316,18 @@
 	<action-view name="hr.user.dashboard.view" title="Human Resources User">
 		<view type="dashboard" name="hr.user.dashboard.sample" />
 	</action-view>	
+	
+	<menuitem name="hr-employee-bonus-mgt" parent="hr-root" title="Employee bonus mgt" action="employee.bonus.mgt.all"/>
+	<menuitem name="hr-employee-bonus-type" parent="hr-conf" title="Employee bonus type" action="employee.bonus.type.all"/>
+	
+	<action-view name="employee.bonus.mgt.all" title="Employee bonus mgt" model="com.axelor.apps.hr.db.EmployeeBonusMgt">
+    	<view type="grid" name="employee-bonus-mgt-grid"/>
+	    <view type="form" name="employee-bonus-mgt-form"/>
+	</action-view>
+	
+	<action-view name="employee.bonus.type.all" title="Employee bonus type" model="com.axelor.apps.hr.db.EmployeeBonusType">
+    	<view type="grid" name="employee-bonus-type-grid"/>
+	    <view type="form" name="employee-bonus-type-form"/>
+	</action-view>
 
 </object-views>

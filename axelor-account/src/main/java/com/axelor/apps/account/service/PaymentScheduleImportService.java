@@ -43,7 +43,7 @@ import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.PaymentScheduleLineRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
-import com.axelor.apps.account.service.cfonb.CfonbImportService;
+import com.axelor.apps.account.service.bankorder.file.cfonb.CfonbImportService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.debtrecovery.ReminderService;
 import com.axelor.apps.account.service.move.MoveLineService;
@@ -407,7 +407,7 @@ public class PaymentScheduleImportService {
 	public Move createRejectMove(Company company, LocalDate date) throws AxelorException  {
 		Journal rejectJournal = company.getAccountConfig().getRejectJournal();
 
-		Move move = moveService.getMoveCreateService().createMove(rejectJournal, company, null, null, date, null);
+		Move move = moveService.getMoveCreateService().createMove(rejectJournal, company, null, null, date, null, MoveRepository.IMPORT);
 		move.setRejectOk(true);
 		moveRepo.save(move);
 		return move;
@@ -569,8 +569,9 @@ public class PaymentScheduleImportService {
 	 * @param fromBatch
 	 * @return
 	 * 			Le montant courant de l'ensemble des rejets d'une facture
+	 * @throws AxelorException 
 	 */
-	public MoveLine createRejectMoveLine(Invoice invoice, Company company, Account customerAccount, Move moveGenerated, int ref)  {
+	public MoveLine createRejectMoveLine(Invoice invoice, Company company, Account customerAccount, Move moveGenerated, int ref) throws AxelorException  {
 
 		MoveLine rejectMoveLine = moveLineService.createMoveLine(moveGenerated, invoice.getPartner(), customerAccount, invoice.getAmountRejected(), true,
 				invoice.getRejectDate(), invoice.getRejectDate(), ref, invoice.getInvoiceId());

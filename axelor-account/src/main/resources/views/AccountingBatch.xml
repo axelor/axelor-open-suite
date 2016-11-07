@@ -28,14 +28,20 @@
 		<panel name="directDebitPage" title="Direct debit configuration" hideIf="actionSelect != 12">
 			<field name="directDebitTypeSelect"/>
 			<field name="currency" readonly="true" grid-view="currency-grid" form-view="currency-form"/>
-			<panel name="directDebitExportGroup" hideIf="directDebitTypeSelect != 1"  >
+			<panel name="directDebitExportGroup" hideIf="directDebitTypeSelect != 1"  colSpan="12">
 				<field name="directDebitExportTypeSelect"/>
 				<field name="debitDate"/>
 				<field name="hasToReExportCfbonb" showIf="directDebitExportTypeSelect != 2"/>
 				<field name="batchToReExport" showIf="hasToReExportCfbonb" domain="self.accountingBatch.id = :id" form-view="batch-form" grid-view="batch-grid"/>
-				<field name="isSepaDirectDebit"/>
+				<field name="paymentMode" domain="self.typeSelect in (2,9)" grid-view="payment-mode-grid" form-view="payment-mode-form"/>
 			</panel>
 		</panel>
+		<panel name="creditTransferPage" title="Credit Transfer configuration" hideIf="actionSelect != 19">
+			<field name="creditTransfertTypeSelect"/>
+			<field name="paymentMode" domain="self.typeSelect in (2,9)" grid-view="payment-mode-grid" form-view="payment-mode-form"/>
+			<field name="period" showIf="creditTransfertTypeSelect == 1" form-view="period-form" grid-view="period-gird"/>
+		</panel>
+		
 		<panel name="reminderPage" title="Reminder configuration" hideIf="actionSelect != 14"  >
 			<field name="reminderTypeSelect"/>
 		</panel>
@@ -71,6 +77,7 @@
 	    <button name="doubtfulCustomerBatch" title="Doubtful Customer Batch" showIf="actionSelect == 16" onClick="save,action-accounting-batch-method-action-doubtful-customer" colSpan="12"/>
 	    <button name="accountCustomerBatch" title="Start" showIf="actionSelect == 17"  onClick="save,action-accounting-batch-method-action-account-customer" colSpan="12"/>
 	    <button name="moveLineExportBatch" title="Start" showIf="actionSelect == 18"  onClick="save,action-accounting-batch-method-action-move-line-export" colSpan="12"/>
+	    <button name="creditTransferBatch" title="Credit Transfer Batch" showIf="actionSelect == 19" onClick="save" colSpan="12"/>
 	</panel>
 </form>
 

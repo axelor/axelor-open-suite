@@ -36,6 +36,7 @@ import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.UnitConversionService;
+import com.axelor.apps.purchase.db.IPurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.service.PurchaseOrderServiceImpl;
@@ -55,6 +56,7 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.beust.jcommander.internal.Lists;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -62,6 +64,9 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
 
 	@Inject
 	protected UnitConversionService unitConversionService;
+	
+	@Inject
+	protected StockMoveRepository stockMoveRepo;
 	
 	private static final Logger LOG = LoggerFactory.getLogger(PurchaseOrderServiceSupplychainImpl.class);
 
@@ -250,5 +255,26 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
 		super.removeOldPurchaseOrders(purchaseOrderList);
 
 		return purchaseOrderMerged;
+	}
+	
+	@Transactional
+	public void updatePurchaseOrderOnCancel(StockMove stockMove, PurchaseOrder purchaseOrder){
+		
+		List<StockMove> stockMoveList = Lists.newArrayList();
+		stockMoveList = stockMoveRepo.all().filter("self.purchaseOrder = ?1", purchaseOrder).fetch();
+		purchaseOrder.setReceiptState(IPurchaseOrder.STATE_NOT_RECEIVED);
+		for (StockMove stock : stockMoveList){
+			if (stock.getStatusSelect() != StockMoveRepository.STATUS_CANCELED && !stock.getId().equals(stockMove.getId())){ 
+				purchaseOrder.setReceiptState(IPurchaseOrder.STATE_PARTIALLY_RECEIVED);
+				break;
+			}
+		}
+		
+		if (purchaseOrder.getStatusSelect() == IPurchaseOrder.STATUS_FINISHED  && generalService.getGeneral().getTerminatePurchaseOrderOnReceipt()){
+			purchaseOrder.setStatusSelect(IPurchaseOrder.STATUS_VALIDATED);
+		}
+		
+		purchaseOrderRepo.save(purchaseOrder);
+		
 	}
 }

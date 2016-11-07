@@ -27,6 +27,9 @@
 	<many-to-many name="planningSet" ref="com.axelor.apps.base.db.WeeklyPlanning" title="Plannings" help="Leave empty to select every planning"/>
 	
 	
+	<!--  Seniority Leave Management  -->
+	<date name="referentialDate" title="Referential date for seniority" />
+	
 	
   	
   	
@@ -34,6 +37,7 @@
 	
 	   	// ACTION TYPE
 		public static final int ACTION_LEAVE_MANAGEMENT = 1;
+		public static final int ACTION_SENIORITY_LEAVE_MANAGEMENT = 2;
 	]]></extra-code>
   	
   </entity>

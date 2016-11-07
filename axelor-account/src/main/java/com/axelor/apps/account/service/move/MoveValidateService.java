@@ -47,7 +47,6 @@ public class MoveValidateService {
 	protected SequenceService sequenceService;
 	protected MoveCustAccountService moveCustAccountService;
 	protected MoveRepository moveRepository;
-	protected LocalDate today;
 
 	@Inject
 	public MoveValidateService(GeneralService generalService, SequenceService sequenceService, MoveCustAccountService moveCustAccountService, MoveRepository moveRepository) {
@@ -55,8 +54,6 @@ public class MoveValidateService {
 		this.sequenceService = sequenceService;
 		this.moveCustAccountService = moveCustAccountService;
 		this.moveRepository = moveRepository;
-		today = generalService.getTodayDate();
-
 	}
 
 
@@ -72,8 +69,9 @@ public class MoveValidateService {
 			if(moveLine.getAccount() != null && moveLine.getAccount().getReconcileOk())  {
 				moveLine.setDueDate(date);
 			}
-
-			moveLine.setPartner(partner);
+			if (partner != null){
+				moveLine.setPartner(partner);
+			}
 			moveLine.setCounter(counter);
 			counter++;
 		}
@@ -109,7 +107,6 @@ public class MoveValidateService {
 	public void validateMove(Move move, boolean updateCustomerAccount) throws AxelorException {
 
 		log.debug("Validation de l'écriture comptable {}", move.getReference());
-
 		Journal journal = move.getJournal();
 		Company company = move.getCompany();
 		if(journal == null)  {
@@ -130,12 +127,12 @@ public class MoveValidateService {
 		move.setReference(sequenceService.getSequenceNumber(journal.getSequence()));
 
 		this.validateEquiponderanteMove(move);
-
+		this.fillMoveLines(move);
 		moveRepository.save(move);
 			
 		moveCustAccountService.updateCustomerAccount(move);
 
-		move.setValidationDate(today);
+		move.setValidationDate(LocalDate.now());
 
 	}
 
@@ -175,8 +172,22 @@ public class MoveValidateService {
 		}
 	}
 
-
-
+	//Procédure permettant de remplir les champs dans les lignes d'écriture relatifs au compte comptable et au tiers
+	@Transactional
+	public void fillMoveLines(Move move){
+		for (MoveLine moveLine : move.getMoveLineList()) {
+			moveLine.setAccountCode(moveLine.getAccount().getCode());
+			moveLine.setAccountName(moveLine.getAccount().getName());
+			if(move.getPartner() != null){
+				moveLine.setPartnerFullName(move.getPartner().getFullName());
+				moveLine.setPartnerSeq(move.getPartner().getPartnerSeq());
+			}else if(moveLine.getPartner() != null){
+				moveLine.setPartnerFullName(moveLine.getPartner().getFullName());
+				moveLine.setPartnerSeq(moveLine.getPartner().getPartnerSeq());
+			}
+		}
+	}
+	
 	public boolean validateMultiple(List<? extends Move> moveList){
 		boolean error = false;
 		for(Move move: moveList){

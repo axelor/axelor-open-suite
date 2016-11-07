@@ -23,6 +23,7 @@ import java.util.List;
 
 import javax.persistence.Query;
 
+import org.joda.time.LocalDateTime;
 import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -87,6 +88,7 @@ public class YearService {
 
 		for (Period period : year.getPeriodList())  {
 			period.setStatusSelect(PeriodRepository.STATUS_CLOSED);
+			period.setClosureDateTime(LocalDateTime.now());
 		}
 		Company company = year.getCompany();
 		if(company == null)  {
@@ -94,7 +96,7 @@ public class YearService {
 					GeneralServiceImpl.EXCEPTION,year.getName()), IException.CONFIGURATION_ERROR);
 		}
 
-		Query q = JPA.em().createQuery("select DISTINCT(ml.partner) FROM MoveLine as ml WHERE ml.date >= ?1 AND ml.date <= ?2 AND ml.company = ?3");
+		Query q = JPA.em().createQuery("select DISTINCT(ml.partner) FROM MoveLine as ml WHERE ml.date >= ?1 AND ml.date <= ?2 AND ml.move.company = ?3");
 		q.setParameter(1, year.getFromDate());
 		q.setParameter(2, year.getToDate());
 		q.setParameter(3, year.getCompany());
@@ -150,6 +152,7 @@ public class YearService {
 			partnerRepository.save(partner);
 		}
 		year.setStatusSelect(YearRepository.STATUS_CLOSED);
+		year.setClosureDateTime(LocalDateTime.now());
 		yearRepo.save(year);
 	}
 
@@ -272,7 +275,6 @@ public class YearService {
 			period.setYear(year);
 			period.setName(String.format("%02d", periodNumber)+"/"+year.getCode());
 			period.setCode(String.format("%02d", periodNumber)+"/"+year.getCode()+"_"+year.getCompany().getCode());
-			period.setCompany(year.getCompany());
 			period.setStatusSelect(year.getStatusSelect());
 			periods.add(period);
 			periodNumber ++;

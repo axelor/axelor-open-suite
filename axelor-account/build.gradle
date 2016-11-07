@@ -36,11 +36,19 @@ task "xjc" << {
 	file(target).mkdirs()
 
 	ant.taskdef(name: 'xjc', classname: 'com.sun.tools.xjc.XJCTask', classpath: configurations.xjc.asPath)
+	
  	ant.xjc	(
 		destdir: target,
 		schema: "${source}/pain.001.001.02.xsd",
-		"package": "com.axelor.apps.xsd.sepa"
+		"package": "com.axelor.apps.account.xsd.pain_001_001_02"
 	)
+	 
+	ant.xjc	(
+		destdir: target,
+		schema: "${source}/pain.001.001.03.xsd",
+		"package": "com.axelor.apps.account.xsd.pain_001_001_03"
+	)
+	 
 }
 
 compileJava.dependsOn "xjc"

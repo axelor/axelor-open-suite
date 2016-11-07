@@ -51,7 +51,7 @@ public class ReconcileController {
 		Reconcile reconcile = request.getContext().asType(Reconcile.class);
 			
 		try {
-			reconcileService.confirmReconcile(reconcileRepo.find(reconcile.getId()));
+			reconcileService.confirmReconcile(reconcileRepo.find(reconcile.getId()), true);
 			response.setReload(true);
 		}
 		catch(Exception e)  { TraceBackService.trace(response, e); }		
