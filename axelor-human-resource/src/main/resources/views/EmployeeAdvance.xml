@@ -30,14 +30,14 @@
 			<field name="reason" />
 			<field name="typeSelect" />
 			<field name="employee" />
-			<field name="remainingAmount" />
-			<field name="requestedAmount" />
 			<field name="paymentMode" />
-			<field name="statusSelect" />
+			<field name="requestedAmount" />
+			<field name="remainingAmount" hidden="true" showIf="statusSelect == 2" />
 		</panel>
-		<panel-related field="employeeAdvanceUsageList" form-view="employee-advance-usage-advance-form" grid-view="employee-advance-usage-advance-form" />
-		<panel sidebar="true" hidden="true" showIf="statusSelect == 1" >
-			<button name="validate" title="Validate" onClick="action-hr-employee-advance-group-validate" />		
+		<panel-related field="employeeAdvanceUsageList" form-view="employee-advance-usage-advance-form" grid-view="employee-advance-usage-advance-grid" hidden="true" showIf="statusSelect == 2" />
+		<panel sidebar="true" >
+			<field name="statusSelect" />
+			<button name="validate" title="Validate" onClick="action-hr-employee-advance-group-validate" hidden="true" showIf="statusSelect == 1" />		
 		</panel>
 	</form>
 	
@@ -45,18 +45,17 @@
 		<panel name="main">
 			<field name="date" />
 			<field name="reason" />
-			<field name="typeSelect" />
-			<field name="remainingAmount" />
-			<field name="requestedAmount" />
+			<field name="typeSelect" readonlyIf="statusSelect == 2"  />
 			<field name="paymentMode" />
-			<field name="statusSelect" />
+			<field name="requestedAmount" readonlyIf="statusSelect == 2"  />
+			<field name="remainingAmount" hidden="true" showIf="statusSelect == 2" readonly="true" />
 		</panel>
-		<panel-related field="employeeAdvanceUsageList" form-view="employee-advance-usage-advance-form" grid-view="employee-advance-usage-advance-grid" />
-		<panel sidebar="true" hidden="true" showIf="statusSelect == 1">
-			<button name="validate" title="Validate" onClick="action-hr-employee-advance-group-validate" />		
+		<panel-related field="employeeAdvanceUsageList" form-view="employee-advance-usage-advance-form" grid-view="employee-advance-usage-advance-grid" hidden="true" showIf="statusSelect == 2" />
+		<panel sidebar="true" >
+			<field name="statusSelect" />
+			<button name="validate" title="Validate" onClick="action-hr-employee-advance-group-validate" hidden="true" showIf="statusSelect == 1" />		
 		</panel>
 	</form>
-	
 	
 	<action-group name="action-hr-employee-advance-group-validate">
 		<action name="action-hr-employee-validate-is-hr-manager"/>
@@ -68,7 +67,8 @@
 	</action-validate>
 	
 	<action-record name="action-hr-employee-advance-record-validate" model="com.axelor.apps.hr.db.EmployeeAdvance">
-		<field name="statusSelect" expr="eval: 2"/>
+		<field name="statusSelect" expr="eval: EmployeeAdvanceRepository.STATUS_VALIDATED"/>
+		<field name="remainingAmount" expr="eval: requestedAmount"/>
 	</action-record>
 	
 	<action-record name="action-hr-employee-advance-record-on-new" model="com.axelor.apps.hr.db.EmployeeAdvance">
