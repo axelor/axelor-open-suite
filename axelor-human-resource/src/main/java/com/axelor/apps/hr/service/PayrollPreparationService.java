@@ -110,7 +110,7 @@ public class PayrollPreparationService {
 			}
 			
 			payrollLeave.setDuration(leaveService.computeLeaveDaysByLeaveRequest(fromDate, toDate, leaveRequest, employee));
-			payrollLeave.setLeaveReason(leaveRequest.getLeaveReason());
+			payrollLeave.setLeaveReason(leaveRequest.getLeaveLine().getLeaveReason());
 			payrollLeave.setLeaveRequest(leaveRequest);
 			payrollLeaveList.add(payrollLeave);
 		}
