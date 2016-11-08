@@ -205,7 +205,7 @@
 		
 		$scope.updateMappedByFields = function(scope){
 			
-			scope.mappedByFields = [];
+			scope.mappedByFields = [""];
 			
 			postObj = {
 					"offset": 0,

@@ -10,6 +10,7 @@ import com.axelor.apps.message.db.Template;
 import com.axelor.meta.MetaStore;
 import com.axelor.meta.db.MetaField;
 import com.axelor.meta.db.MetaModel;
+import com.axelor.meta.db.MetaView;
 import com.axelor.meta.schema.views.Selection.Option;
 import com.axelor.studio.db.ActionBuilder;
 import com.axelor.studio.db.ActionBuilderLine;
@@ -116,17 +117,7 @@ public class ActionExporter {
 		}
 		
 		values[TYPE] = typeMap.get(builder.getTypeSelect());
-		Set<ViewBuilder> views = builder.getViewBuilderSet();
-		if (!views.isEmpty()) {
-			for (ViewBuilder view : views) {
-				if (values[VIEW] == null) {
-					values[VIEW] = view.getName();
-				}
-				else {
-					values[VIEW] += "," + view.getName();
-				}
-			}
-		}
+		setViews(builder, values);
 		
 		model = builder.getTargetModel();
 		if (model != null) {
@@ -153,6 +144,34 @@ public class ActionExporter {
 		}
 		
 		return values;
+	}
+
+	private void setViews(ActionBuilder builder, String[] values) {
+		
+		Set<ViewBuilder> views = builder.getViewBuilderSet();
+		
+		if (!views.isEmpty()) {
+			for (ViewBuilder view : views) {
+				if (values[VIEW] == null) {
+					values[VIEW] = view.getName();
+				}
+				else {
+					values[VIEW] += "," + view.getName();
+				}
+			}
+		}
+		else {
+			Set<MetaView> metaViews = builder.getMetaViewSet();
+			for (MetaView view: metaViews) {
+				if (values[VIEW] == null) {
+					values[VIEW] = view.getName();
+				}
+				else {
+					values[VIEW] += "," + view.getName();
+				}
+			}
+		}
+		
 	}
 	
 	private String getReportBuilders(Set<ReportBuilder> reportBuilders) {

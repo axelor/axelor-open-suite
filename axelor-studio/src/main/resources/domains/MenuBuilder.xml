@@ -25,12 +25,7 @@
     <boolean name="deleteMenu" />
     <many-to-one name="metaModule" ref="com.axelor.meta.db.MetaModule" title="Studio module" required="true" />
     <many-to-one name="actionBuilder" ref="com.axelor.studio.db.ActionBuilder" title="Action" />
-<!--     <string name="domain" title="Domain" /> -->
-<!--     <many-to-one name="actionGenerated" ref="com.axelor.meta.db.MetaAction" title="Action generated" /> -->    
-<!--     <many-to-one name="metaModel" ref="com.axelor.meta.db.MetaModel" title="Model" /> -->
-<!--     <string name="action" title="Action" /> -->
-<!--     <string name="views" title="Views" /> -->
-<!--     <many-to-one name="dashboard" ref="com.axelor.studio.db.ViewBuilder" title="Dashboard builder"/> -->
+    <many-to-one name="metaAction" ref="com.axelor.meta.db.MetaAction" title="Meta Action" />
   </entity>
     
     

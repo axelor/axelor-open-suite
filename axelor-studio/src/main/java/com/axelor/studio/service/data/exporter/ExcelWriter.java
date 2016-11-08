@@ -175,6 +175,9 @@ public class ExcelWriter implements DataWriter {
 				case "paneltab":
 					applyStyle = violet;
 					break;
+				case "panelside":
+					applyStyle = violet;
+					break;
 				case "panelbook":
 					applyStyle = lavender;
 					break;

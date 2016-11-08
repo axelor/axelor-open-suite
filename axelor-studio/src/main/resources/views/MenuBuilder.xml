@@ -17,18 +17,12 @@
        <field name="icon" />
        <field name="iconBackground" />
        <field name="order" />
-       <field name="groups" widget="TagSelect" colSpan="12" />
+       <field name="groups" widget="TagSelect" />
        <field name="metaModule" domain="self.customised = true"/> 
        <field name="metaMenu" readonlyIf="menuBuilder != null" onChange="action-menu-builder-meta-menu-change" domain="self.action is null"/>
        <field name="menuBuilder" readonlyIf="metaMenu != null" onChange="action-menu-builder-menu-builder-change" domain="self.actionBuilder is null" />
+	   <field name="metaAction" domain="self.type = 'action-view'" />
 	   <field name="actionBuilder" domain="self.typeSelect = 2" />
-<!--        <panel colSpan="12" hideIf="isParent"> -->
-<!--            	<field name="metaModel"/> -->
-<!--        		<field name="dashboard" domain="self.viewType = 'dashboard'"/> -->
-<!--        		<field name="views" /> -->
-<!--        		<field name="action" /> -->
-<!--        		<field name="domain" /> -->
-<!--        </panel> -->
        <field name="edited" hidden="true" />
        <field name="recorded" hidden="true" />
     </panel>

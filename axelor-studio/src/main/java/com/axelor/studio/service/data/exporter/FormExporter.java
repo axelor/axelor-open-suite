@@ -234,6 +234,10 @@ public class FormExporter {
 			panelType = "paneltab";
 		}
 		
+		if (panel.getSidebar() != null && panel.getSidebar()) {
+			panelType = "panelside";
+		}
+		
 		String[] values = new String[CommonService.HEADERS.length];
 		values[CommonService.MODULE] = module;
 		values[CommonService.MODEL] = model; 

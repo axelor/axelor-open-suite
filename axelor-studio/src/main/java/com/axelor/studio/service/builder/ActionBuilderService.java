@@ -465,6 +465,7 @@ public class ActionBuilderService {
 		builder.name(actionBuilder.getName());
 		if (actionBuilder.getPopup()) {
 			builder.param("popup", "true");
+			builder.param("show-toolbar", "false");
 		}
 		builder = addViews(builder, actionBuilder);
 

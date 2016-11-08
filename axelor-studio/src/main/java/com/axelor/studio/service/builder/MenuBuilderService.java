@@ -256,8 +256,11 @@ public class MenuBuilderService {
 
 		log.debug("Menu name: {}, order: {}", name, menuBuilder.getOrder());
 		menuItem.setOrder(menuBuilder.getOrder());
-		if (menuBuilder.getActionBuilder() != null) {
+		if (menuBuilder.getActionBuilder() != null ) {
 			menuItem.setAction(menuBuilder.getActionBuilder().getName());
+		}
+		else if (menuBuilder.getMetaAction() != null) {
+			menuItem.setAction(menuBuilder.getMetaAction().getName());
 		}
 
 		if (menuBuilder.getGroups() != null
@@ -340,6 +343,7 @@ public class MenuBuilderService {
 			metaMenu = new MetaMenu();
 			metaMenu.setName(name);
 			metaMenu.setXmlId(xmlId);
+			metaMenu.setPriority(getPriority(menuBuilder.getName()));
 		}
 		menuBuilder.setMenuGenerated(metaMenu);
 		metaMenu.setTitle(menuBuilder.getTitle());
@@ -380,6 +384,9 @@ public class MenuBuilderService {
 		if (menuBuilder.getActionBuilder() != null) {
 			action = metaActionRepo.findByName(menuBuilder.getActionBuilder().getName());
 		}
+		else if (menuBuilder.getMetaAction() != null) {
+			action = menuBuilder.getMetaAction();
+		}
 		
 		metaMenu.setAction(action);
 		metaMenu = metaMenuRepo.save(metaMenu);
@@ -388,6 +395,17 @@ public class MenuBuilderService {
 
 	}
 	
+	private Integer getPriority(String name) {
+		
+		MetaMenu metaMenu = metaMenuRepo.all().filter("self.name = ?1", name).order("-priority").fetchOne();
+		
+		if (metaMenu != null) {
+			return metaMenu.getPriority() + 1;
+		}
+		
+		return 0;
+	}
+
 	/**
 	 * Method write menu file. Using menuItems and action Map. It will write xml
 	 * with menuitem and action-views in menuFile.
