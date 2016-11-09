@@ -27,8 +27,10 @@ import java.util.MissingResourceException;
 import java.util.Properties;
 import java.util.ResourceBundle;
 
+import com.axelor.apps.account.ebics.exception.EbicsException;
 import com.axelor.apps.account.ebics.interfaces.Configuration;
 import com.axelor.apps.account.db.EbicsUser;
+import com.axelor.apps.account.ebics.interfaces.EbicsLogger;
 import com.axelor.apps.account.ebics.interfaces.LetterManager;
 import com.axelor.apps.account.ebics.interfaces.SerializationManager;
 import com.axelor.apps.account.ebics.interfaces.TraceManager;
@@ -52,9 +54,10 @@ public class DefaultConfiguration implements Configuration {
    */
   public DefaultConfiguration(String rootDir) {
     this.rootDir = rootDir;
+    bundle = ResourceBundle.getBundle(RESOURCE_DIR);
     properties = new Properties();
-    /*serializationManager = new DefaultSerializationManager();
-    traceManager = new DefaultTraceManager();*/
+    logger = new DefaultEbicsLogger();
+    traceManager = new DefaultTraceManager();
   }
 
   /**
@@ -82,7 +85,7 @@ public class DefaultConfiguration implements Configuration {
    * Loads the configuration
    * @throws EbicsException
    */
-  public void load(String configFile) throws AxelorException {
+  public void load(String configFile) throws EbicsException {
     if (isConfigFileLoad) {
       return;
     }
@@ -90,7 +93,7 @@ public class DefaultConfiguration implements Configuration {
     try {
       properties.load(new FileInputStream(new File(configFile)));
     } catch (IOException e) {
-      throw new AxelorException(e.getMessage(), IException.CONFIGURATION_ERROR);
+      throw new EbicsException(e.getMessage());
     }
 
     isConfigFileLoad = true;
@@ -103,26 +106,10 @@ public class DefaultConfiguration implements Configuration {
 
   @Override
   public void init() {
-	  /*
-    //Create the root directory
-    IOUtils.createDirectories(getRootDirectory());
-    //Create the logs directory
-    IOUtils.createDirectories(getLogDirectory());
-    //Create the serialization directory
-    IOUtils.createDirectories(getSerializationDirectory());
-    //create the SSL trusted stores directories
-    IOUtils.createDirectories(getSSLTrustedStoreDirectory());
-    //create the SSL key stores directories
-    IOUtils.createDirectories(getSSLKeyStoreDirectory());
-    //Create the SSL bank certificates directories
-    IOUtils.createDirectories(getSSLBankCertificates());
-    //Create users directory
-    IOUtils.createDirectories(getUsersDirectory());
-*/
-    serializationManager.setSerializationDirectory(getSerializationDirectory());
-    traceManager.setTraceEnabled(isTraceEnabled());
-    //letterManager = new DefaultLetterManager(getLocale());
-    
+
+    logger.setLogFile(getLogDirectory() + File.separator + getLogFileName());
+    ((DefaultEbicsLogger)logger).setFileLoggingEnabled(true);
+    ((DefaultEbicsLogger)logger).setLevel(DefaultEbicsLogger.ALL_LEVEL);
   }
 
   @Override
@@ -193,33 +180,18 @@ public class DefaultConfiguration implements Configuration {
     return rootDir + File.separator + getString("users.dir.name");
   }
 
+  public LetterManager getLetterManager() {
+    return letterManager;
+  }
+
   @Override
-  public SerializationManager getSerializationManager() {
-    return serializationManager;
+  public String getUserDirectory(EbicsUser user) {
+    return getUsersDirectory() + File.separator + user.getUserId();
   }
 
   @Override
   public TraceManager getTraceManager() {
     return traceManager;
-  }
-
-  /*@Override
-  public LetterManager getLetterManager() {
-    return letterManager;
-  }*/
-
-  @Override
-  public String getLettersDirectory(EbicsUser user) {
-    return getUserDirectory(user) + File.separator + getString("letters.dir.name");
-  }
-
-  @Override
-  public String getUserDirectory(EbicsUser user) {
-	  if (user == null){
-		  System.out.println("User null !!!!!");
-		  return getUsersDirectory() + File.separator + "user";
-	  }
-    return getUsersDirectory() + File.separator + user.getUserId();
   }
 
   @Override
@@ -264,9 +236,11 @@ public class DefaultConfiguration implements Configuration {
   private final String				rootDir;
   private ResourceBundle			bundle;
   private Properties				properties;
-  private SerializationManager			serializationManager;
-  private TraceManager				traceManager;
+  private EbicsLogger				logger;
   private LetterManager				letterManager;
+  private TraceManager				traceManager;
   private boolean				isConfigFileLoad;
+ 
 
+  private static final String RESOURCE_DIR = "ebics.client.config";
 }

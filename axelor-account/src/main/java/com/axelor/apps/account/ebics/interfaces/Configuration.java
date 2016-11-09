@@ -112,12 +112,6 @@ public interface Configuration {
   public String getUsersDirectory();
 
   /**
-   * Returns the Ebics client serialization manager.
-   * @return the Ebics client serialization manager.
-   */
-  public SerializationManager getSerializationManager();
-
-  /**
    * Returns the Ebics client trace manager.
    * @return the Ebics client trace manager.
    */
@@ -130,17 +124,11 @@ public interface Configuration {
   //public LetterManager getLetterManager();
 
   /**
-   * Returns the initializations letters directory.
-   * @return the initializations letters directory.
-   */
-  public String getLettersDirectory(EbicsUser user);
-
-  /**
    * Returns the users directory.
    * @return the users directory.
    */
   public String getUserDirectory(EbicsUser user);
-
+  
   /**
    * Configuration initialization.
    * Creates the necessary directories for the ebics configuration.

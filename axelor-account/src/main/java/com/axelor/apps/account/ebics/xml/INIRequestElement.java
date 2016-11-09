@@ -71,6 +71,7 @@ public class INIRequestElement extends DefaultEbicsRootElement {
 		                                           OrderType.INI,
 		                                           orderId == null ? session.getUser().getEbicsPartner().getNextOrderId() : orderId,
 		                                           EbicsUtils.zip(signaturePubKey.prettyPrint()));
+		
 		log.debug("UnsecuredRequestElement OK");
 	} catch (JDOMException e) {
 		throw new AxelorException("JDOM !!! :: " + e.getCause(), IException.CONFIGURATION_ERROR);

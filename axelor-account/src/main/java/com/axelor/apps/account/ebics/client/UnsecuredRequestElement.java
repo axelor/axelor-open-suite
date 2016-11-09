@@ -30,6 +30,7 @@ import com.axelor.apps.account.ebics.schema.h003.OrderDetailsType;
 import com.axelor.apps.account.ebics.schema.h003.ProductElementType;
 import com.axelor.apps.account.ebics.schema.h003.UnsecuredRequestStaticHeaderType;
 import com.axelor.apps.account.ebics.xml.EbicsXmlFactory;
+import com.axelor.auth.AuthUtils;
 import com.axelor.exception.AxelorException;
 
 /**
@@ -74,7 +75,7 @@ public class UnsecuredRequestElement extends DefaultEbicsRootElement {
 						          orderId == null ? session.getUser().getEbicsPartner().getNextOrderId() : orderId,
 	                                                  orderType.getOrderType());
 
-    productType = EbicsXmlFactory.creatProductElementType(AppSettings.get().get(""),
+    productType = EbicsXmlFactory.creatProductElementType(AuthUtils.getUser().getLanguage(),
 	                                                  session.getProduct().getName());
 
     try {

@@ -26,6 +26,10 @@ dependencies {
 	compile group: 'org.apache.xmlbeans', name: 'xmlbeans', version: '2.5.0'
 
 	compile libs.ST4
+	
+	compile files("src/main/lib/ebics-1.0.2.jar")
+
+
 }
 
 task "xjc" << {

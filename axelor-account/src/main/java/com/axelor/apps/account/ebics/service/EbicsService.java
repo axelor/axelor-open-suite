@@ -4,8 +4,6 @@ import java.io.IOException;
 import java.math.BigInteger;
 import java.security.KeyFactory;
 import java.security.NoSuchAlgorithmException;
-import java.security.PublicKey;
-import java.security.Signature;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
 import java.security.spec.InvalidKeySpecException;
@@ -19,12 +17,8 @@ import com.axelor.apps.account.ebics.client.DefaultConfiguration;
 import com.axelor.apps.account.ebics.client.EbicsProduct;
 import com.axelor.apps.account.ebics.client.EbicsSession;
 import com.axelor.apps.account.ebics.client.KeyManagement;
-import com.axelor.apps.account.ebics.interfaces.Configuration;
-import com.axelor.apps.base.db.Product;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
 
-import sun.security.rsa.RSAKeyFactory;
 
 public class EbicsService {
 	
@@ -62,8 +56,8 @@ public class EbicsService {
 		return pub;
 	}
 	
-	public RSAPrivateKey getPrivateKey(String encoded) throws NoSuchAlgorithmException, InvalidKeySpecException{
-		PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(encoded.getBytes());
+	public RSAPrivateKey getPrivateKey(byte[] encoded) throws NoSuchAlgorithmException, InvalidKeySpecException{
+		PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(encoded);
         KeyFactory kf = KeyFactory.getInstance("RSA");
         return (RSAPrivateKey) kf.generatePrivate(keySpec);
 	}

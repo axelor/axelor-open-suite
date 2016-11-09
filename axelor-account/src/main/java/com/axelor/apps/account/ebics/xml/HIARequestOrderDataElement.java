@@ -64,7 +64,7 @@ public class HIARequestOrderDataElement extends DefaultEbicsRootElement {
     RSAKeyValueType 			AuthRsaKeyValue;
 
     encryptionX509Data = EbicsXmlFactory.createX509DataType(session.getUser().getDn(),
-	                                                    session.getUser().getE002Certificate().getBytes());
+	                                                    session.getUser().getE002Certificate());
     encryptionRsaKeyValue = EbicsXmlFactory.createRSAKeyValueType( new BigInteger(session.getUser().getE002PublicKeyExponent()).toByteArray(),
 	                                                         new BigInteger( session.getUser().getE002PublicKeyModulus()).toByteArray());
     encryptionPubKeyValue = EbicsXmlFactory.createH003PubKeyValueType(encryptionRsaKeyValue, Calendar.getInstance());
@@ -72,7 +72,7 @@ public class HIARequestOrderDataElement extends DefaultEbicsRootElement {
 	                                                                  encryptionPubKeyValue,
 	                                                                  encryptionX509Data);
     authX509Data = EbicsXmlFactory.createX509DataType(session.getUser().getDn(),
-	                                              session.getUser().getX002Certificate().getBytes());
+	                                              session.getUser().getX002Certificate());
     AuthRsaKeyValue = EbicsXmlFactory.createRSAKeyValueType( new BigInteger(session.getUser().getX002PublicKeyExponent()).toByteArray(),
 							    new BigInteger (session.getUser().getX002PublicKeyModulus()).toByteArray());
     authPubKeyValue = EbicsXmlFactory.createH003PubKeyValueType(AuthRsaKeyValue, Calendar.getInstance());
