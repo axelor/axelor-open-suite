@@ -70,6 +70,7 @@ public abstract class DefaultResponseElement extends DefaultEbicsRootElement {
    */
   public void report() throws AxelorException {
     if (!returnCode.isOk()) {
+    	System.out.println(returnCode.getCode());
       //returnCode.throwException();
     }
   }

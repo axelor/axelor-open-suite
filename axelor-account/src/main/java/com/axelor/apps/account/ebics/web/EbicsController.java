@@ -67,6 +67,39 @@ public class EbicsController {
 		EbicsProduct ebicsProduct = new EbicsProduct("Test", Locale.FRENCH, "01");
 		ebicsService.sendINIRequest(ebicsUser, ebicsProduct);
 		
+		response.setReload(true);
+		
 	}
+	
+	public void sendHIARequest(ActionRequest request, ActionResponse response) throws AxelorException, IOException, JDOMException{
+		
+		EbicsUser ebicsUser = ebicsUserRepo.find( request.getContext().asType(EbicsUser.class).getId());
+		
+		EbicsProduct ebicsProduct = new EbicsProduct("Test", Locale.FRENCH, "01");
+		ebicsService.sendHIARequest(ebicsUser, ebicsProduct);
+		
+		response.setReload(true);
+	}
+	
+	public void sendHPBRequest(ActionRequest request, ActionResponse response) throws AxelorException, IOException, JDOMException{
+		
+		EbicsUser ebicsUser = ebicsUserRepo.find( request.getContext().asType(EbicsUser.class).getId());
+		
+		EbicsProduct ebicsProduct = new EbicsProduct("Test", Locale.FRENCH, "01");
+		ebicsService.sendHPBRequest(ebicsUser, ebicsProduct);
+
+		response.setReload(true);
+	}
+	
+	public void sendSPRRequest(ActionRequest request, ActionResponse response) throws AxelorException, IOException, JDOMException{
+		
+		EbicsUser ebicsUser = ebicsUserRepo.find( request.getContext().asType(EbicsUser.class).getId());
+		
+		EbicsProduct ebicsProduct = new EbicsProduct("Test", Locale.FRENCH, "01");
+		ebicsService.revokeSubscriber(ebicsUser, ebicsProduct);
+
+		response.setReload(true);
+	}
+
 
 }

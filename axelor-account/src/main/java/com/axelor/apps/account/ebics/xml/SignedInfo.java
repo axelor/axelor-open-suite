@@ -28,6 +28,7 @@ import org.apache.xml.security.c14n.Canonicalizer;
 import org.apache.xml.security.transforms.TransformationException;
 import org.apache.xml.security.utils.IgnoreAllErrorHandler;
 import org.apache.xpath.XPathAPI;
+
 import com.axelor.apps.account.db.EbicsUser;
 import com.axelor.apps.account.ebics.schema.xmldsig.CanonicalizationMethodType;
 import com.axelor.apps.account.ebics.schema.xmldsig.DigestMethodType;
@@ -41,9 +42,10 @@ import com.axelor.apps.account.ebics.service.EbicsUserService;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
+
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
-import com.google.inject.Inject;
+import com.axelor.inject.Beans;
 import com.axelor.apps.account.ebics.client.DefaultEbicsRootElement;
 
 
@@ -56,9 +58,6 @@ import com.axelor.apps.account.ebics.client.DefaultEbicsRootElement;
  */
 public class SignedInfo extends DefaultEbicsRootElement {
 	
-	@Inject
-	private EbicsUserService ebicsUserService;
-
   /**
    * Constructs a new <code>SignedInfo</code> element
    * @param digest the digest value
@@ -152,9 +151,10 @@ public class SignedInfo extends DefaultEbicsRootElement {
       document = builder.parse(new ByteArrayInputStream(toSign));
       node = XPathAPI.selectSingleNode(document, "//ds:SignedInfo");
       canonicalizer = Canonicalizer.getInstance(Canonicalizer.ALGO_ID_C14N_OMIT_COMMENTS);
-      return ebicsUserService.authenticate(user, canonicalizer.canonicalizeSubtree(node));
+      return Beans.get(EbicsUserService.class).authenticate(user, canonicalizer.canonicalizeSubtree(node));
     } catch(Exception e) {
-      throw new AxelorException(e.getMessage(), IException.CONFIGURATION_ERROR );
+      e.printStackTrace();
+      throw new AxelorException(e, IException.CONFIGURATION_ERROR);
     }
   }
 

@@ -1,16 +1,30 @@
 package com.axelor.apps.account.ebics.client;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.security.GeneralSecurityException;
+import java.security.interfaces.RSAPublicKey;
 
 import org.jdom.JDOMException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.axelor.apps.account.db.EbicsBank;
+import com.axelor.apps.account.ebics.certificate.KeyStoreManager;
+import com.axelor.apps.account.ebics.certificate.KeyUtil;
+import com.axelor.apps.account.ebics.interfaces.ContentFactory;
 import com.axelor.apps.account.ebics.io.ByteArrayContentFactory;
+import com.axelor.apps.account.ebics.service.EbicsUserService;
+import com.axelor.apps.account.ebics.utils.Utils;
 import com.axelor.apps.account.ebics.xml.HIARequestElement;
+import com.axelor.apps.account.ebics.xml.HPBRequestElement;
+import com.axelor.apps.account.ebics.xml.HPBResponseOrderDataElement;
 import com.axelor.apps.account.ebics.xml.INIRequestElement;
 import com.axelor.apps.account.ebics.xml.KeyManagementResponseElement;
+import com.axelor.apps.account.ebics.xml.SPRRequestElement;
+import com.axelor.apps.account.ebics.xml.SPRResponseElement;
 import com.axelor.exception.AxelorException;
+import com.axelor.inject.Beans;
 
 
 /**
@@ -23,7 +37,7 @@ import com.axelor.exception.AxelorException;
  *
  */
 public class KeyManagement {
-
+ 
   /**
    * Constructs a new <code>KeyManagement</code> instance
    * with a given ebics session
@@ -86,12 +100,12 @@ public class KeyManagement {
     request = new HIARequestElement(session, orderId);
     request.build();
     request.validate();
-    session.getConfiguration().getTraceManager().trace(request);
+//    session.getConfiguration().getTraceManager().trace(request);
     httpCode = sender.send(new ByteArrayContentFactory(request.prettyPrint()));
     EbicsUtils.checkHttpCode(httpCode);
     response = new KeyManagementResponseElement(sender.getResponseBody(), "HIAResponse");
     response.build();
-    session.getConfiguration().getTraceManager().trace(response);
+//    session.getConfiguration().getTraceManager().trace(response);
     response.report();
   }
 
@@ -102,55 +116,64 @@ public class KeyManagement {
    * @param orderId the order ID. Let it null to generate a random one.
    * @throws IOException communication error
    * @throws GeneralSecurityException data decryption error
+ * @throws AxelorException 
+ * @throws JDOMException 
    * @throws EbicsException server generated error message
    */
-  /*public void sendHPB() throws IOException, GeneralSecurityException {
+  public void sendHPB() throws IOException, GeneralSecurityException, AxelorException, JDOMException {
     HPBRequestElement			request;
     KeyManagementResponseElement	response;
     HttpRequestSender			sender;
     HPBResponseOrderDataElement		orderData;
     ContentFactory			factory;
     KeyStoreManager			keystoreManager;
-    String				path;
     RSAPublicKey			e002PubKey;
     RSAPublicKey			x002PubKey;
     int					httpCode;
-
+    
     sender = new HttpRequestSender(session);
     request = new HPBRequestElement(session);
     request.build();
     request.validate();
-    session.getConfiguration().getTraceManager().trace(request);
+//    session.getConfiguration().getTraceManager().trace(request);
     httpCode = sender.send(new ByteArrayContentFactory(request.prettyPrint()));
     Utils.checkHttpCode(httpCode);
     response = new KeyManagementResponseElement(sender.getResponseBody(), "HBPResponse");
     response.build();
-    session.getConfiguration().getTraceManager().trace(response);
+//    session.getConfiguration().getTraceManager().trace(response);
     response.report();
-    factory = new ByteArrayContentFactory(Utils.unzip(session.getUser().decrypt(response.getOrderData(), response.getTransactionKey())));
+    EbicsUserService userService = Beans.get(EbicsUserService.class);
+    factory = new ByteArrayContentFactory(Utils.unzip(userService.decrypt(session.getUser(), response.getOrderData(), response.getTransactionKey())));
     orderData = new HPBResponseOrderDataElement(factory);
     orderData.build();
-    session.getConfiguration().getTraceManager().trace(orderData);
+//    session.getConfiguration().getTraceManager().trace(orderData);
     keystoreManager = new KeyStoreManager();
-    path = session.getConfiguration().getKeystoreDirectory(session.getUser());
     keystoreManager.load("" , session.getUser().getPassword().toCharArray() );
     e002PubKey = keystoreManager.getPublicKey(new ByteArrayInputStream(orderData.getBankE002Certificate()));
     x002PubKey = keystoreManager.getPublicKey(new ByteArrayInputStream(orderData.getBankX002Certificate()));
-    session.getUser().getEbicsPartner().getEbicsBank().setBankKeys(e002PubKey, x002PubKey);
-    session.getUser().getEbicsPartner().getEbicsBank().setDigests(KeyUtil.getKeyDigest(e002PubKey), KeyUtil.getKeyDigest(x002PubKey));
+    EbicsBank bank = session.getUser().getEbicsPartner().getEbicsBank();
+    bank.setE002Key(e002PubKey.getEncoded());
+    bank.setX002Key(x002PubKey.getEncoded());
+    bank.setE002Digest(KeyUtil.getKeyDigest(e002PubKey));
+    bank.setX002Digest(KeyUtil.getKeyDigest(x002PubKey));
+    bank.setE002KeyExponent(e002PubKey.getPublicExponent().toString());
+    bank.setE002KeyModulus(e002PubKey.getModulus().toString());
+    bank.setX002KeyExponent(x002PubKey.getPublicExponent().toString());
+    bank.setX002KeyModulus(x002PubKey.getModulus().toString());
     keystoreManager.setCertificateEntry(session.getBankID() + "-E002", new ByteArrayInputStream(orderData.getBankE002Certificate()));
     keystoreManager.setCertificateEntry(session.getBankID() + "-X002", new ByteArrayInputStream(orderData.getBankX002Certificate()));
-    keystoreManager.save(new FileOutputStream(path + File.separator + session.getBankID() + ".p12"));
-  }*/
+  }
 
   /**
    * Sends the SPR order to the bank.
    * After that you have to start over with sending INI and HIA.
    * @throws IOException Communication exception
+ * @throws AxelorException 
+ * @throws JDOMException 
    * @throws EbicsException Error message generated by the bank.
    */
-  /*
-  public void lockAccess() throws IOException {
+  
+  public void lockAccess() throws IOException, AxelorException, JDOMException {
     HttpRequestSender			sender;
     SPRRequestElement			request;
     SPRResponseElement			response;
@@ -160,15 +183,13 @@ public class KeyManagement {
     request = new SPRRequestElement(session);
     request.build();
     request.validate();
-    session.getConfiguration().getTraceManager().trace(request);
     httpCode = sender.send(new ByteArrayContentFactory(request.prettyPrint()));
     Utils.checkHttpCode(httpCode);
     response = new SPRResponseElement(sender.getResponseBody());
     response.build();
-    session.getConfiguration().getTraceManager().trace(response);
     response.report();
   }
-*/
+
   // --------------------------------------------------------------------
   // DATA MEMBERS
   // --------------------------------------------------------------------

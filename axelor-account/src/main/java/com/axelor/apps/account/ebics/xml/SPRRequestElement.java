@@ -87,19 +87,19 @@ public class SPRRequestElement extends InitializationRequestElement {
 
     userSignature = new UserSignature(session.getUser(),
 				      generateName("SIG"),
-	                              session.getConfiguration().getSignatureVersion(),
+	                              "A005",
 	                              " ".getBytes());
     userSignature.build();
     userSignature.validate();
 
     mutable = EbicsXmlFactory.createMutableHeaderType("Initialisation", null);
     product = EbicsXmlFactory.createProduct(session.getProduct().getLanguage(), session.getProduct().getName());
-    authentication = EbicsXmlFactory.createAuthentication(session.getConfiguration().getAuthenticationVersion(),
+    authentication = EbicsXmlFactory.createAuthentication("X002",
 	                                                  "http://www.w3.org/2001/04/xmlenc#sha256",
-	                                                  decodeHex( session.getUser().getEbicsPartner().getEbicsBank().getX002Digest().getBytes() ) );
-    encryption = EbicsXmlFactory.createEncryption(session.getConfiguration().getEncryptionVersion(),
+	                                                  decodeHex( session.getUser().getEbicsPartner().getEbicsBank().getX002Digest() ) );
+    encryption = EbicsXmlFactory.createEncryption("E002",
 	                                          "http://www.w3.org/2001/04/xmlenc#sha256",
-	                                          decodeHex(session.getUser().getEbicsPartner().getEbicsBank().getE002Digest().getBytes()));
+	                                          decodeHex(session.getUser().getEbicsPartner().getEbicsBank().getE002Digest()));
     bankPubKeyDigests = EbicsXmlFactory.createBankPubKeyDigests(authentication, encryption);
     orderType = EbicsXmlFactory.createOrderType(type.getOrderType());
     standardOrderParamsType = EbicsXmlFactory.createStandardOrderParamsType();
@@ -118,9 +118,9 @@ public class SPRRequestElement extends InitializationRequestElement {
 	                                             orderDetails,
 	                                             bankPubKeyDigests);
     header = EbicsXmlFactory.createEbicsRequestHeader(true, mutable, xstatic);
-    encryptionPubKeyDigest = EbicsXmlFactory.createEncryptionPubKeyDigest(session.getConfiguration().getEncryptionVersion(),
+    encryptionPubKeyDigest = EbicsXmlFactory.createEncryptionPubKeyDigest("E002",
 								          "http://www.w3.org/2001/04/xmlenc#sha256",
-								          decodeHex(session.getUser().getEbicsPartner().getEbicsBank().getE002Digest().getBytes()));
+								          decodeHex(session.getUser().getEbicsPartner().getEbicsBank().getE002Digest()));
     try {
 		signatureData = EbicsXmlFactory.createSignatureData(true, EbicsUtils.encrypt(EbicsUtils.zip(userSignature.prettyPrint()), keySpec));
 	} catch (JDOMException e) {
@@ -131,8 +131,8 @@ public class SPRRequestElement extends InitializationRequestElement {
 	                                                          generateTransactionKey());
     dataTransfer = EbicsXmlFactory.createDataTransferRequestType(dataEncryptionInfo, signatureData);
     body = EbicsXmlFactory.createEbicsRequestBody(dataTransfer);
-    request = EbicsXmlFactory.createEbicsRequest(session.getConfiguration().getRevision(),
-	                                         session.getConfiguration().getVersion(),
+    request = EbicsXmlFactory.createEbicsRequest(1,
+	                                         "H003",
 	                                         header,
 	                                         body);
     document = EbicsXmlFactory.createEbicsRequestDocument(request);

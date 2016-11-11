@@ -27,7 +27,6 @@ import com.axelor.apps.account.ebics.schema.h003.HIARequestOrderDataType;
 import com.axelor.apps.account.ebics.schema.h003.PubKeyValueType;
 import com.axelor.apps.account.ebics.schema.xmldsig.RSAKeyValueType;
 import com.axelor.apps.account.ebics.schema.xmldsig.X509DataType;
-import com.axelor.exception.AxelorException;
 
 import com.axelor.apps.account.ebics.client.DefaultEbicsRootElement;
 import com.axelor.apps.account.ebics.client.EbicsSession;
@@ -68,7 +67,7 @@ public class HIARequestOrderDataElement extends DefaultEbicsRootElement {
     encryptionRsaKeyValue = EbicsXmlFactory.createRSAKeyValueType( new BigInteger(session.getUser().getE002PublicKeyExponent()).toByteArray(),
 	                                                         new BigInteger( session.getUser().getE002PublicKeyModulus()).toByteArray());
     encryptionPubKeyValue = EbicsXmlFactory.createH003PubKeyValueType(encryptionRsaKeyValue, Calendar.getInstance());
-    encryptionPubKeyInfo = EbicsXmlFactory.createEncryptionPubKeyInfoType(session.getConfiguration().getEncryptionVersion(),
+    encryptionPubKeyInfo = EbicsXmlFactory.createEncryptionPubKeyInfoType("E002",
 	                                                                  encryptionPubKeyValue,
 	                                                                  encryptionX509Data);
     authX509Data = EbicsXmlFactory.createX509DataType(session.getUser().getDn(),
@@ -76,7 +75,7 @@ public class HIARequestOrderDataElement extends DefaultEbicsRootElement {
     AuthRsaKeyValue = EbicsXmlFactory.createRSAKeyValueType( new BigInteger(session.getUser().getX002PublicKeyExponent()).toByteArray(),
 							    new BigInteger (session.getUser().getX002PublicKeyModulus()).toByteArray());
     authPubKeyValue = EbicsXmlFactory.createH003PubKeyValueType(AuthRsaKeyValue, Calendar.getInstance());
-    authenticationPubKeyInfo = EbicsXmlFactory.createAuthenticationPubKeyInfoType(session.getConfiguration().getAuthenticationVersion(),
+    authenticationPubKeyInfo = EbicsXmlFactory.createAuthenticationPubKeyInfoType("X002",
 	                                                                          authPubKeyValue,
 	                                                                          authX509Data);
     request = EbicsXmlFactory.createHIARequestOrderDataType(authenticationPubKeyInfo,

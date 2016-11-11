@@ -10,17 +10,32 @@ import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.RSAPublicKeySpec;
 
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.jdom.JDOMException;
 
 import com.axelor.apps.account.db.EbicsUser;
-import com.axelor.apps.account.ebics.client.DefaultConfiguration;
+import com.axelor.apps.account.db.repo.EbicsBankRepository;
+import com.axelor.apps.account.db.repo.EbicsUserRepository;
 import com.axelor.apps.account.ebics.client.EbicsProduct;
 import com.axelor.apps.account.ebics.client.EbicsSession;
 import com.axelor.apps.account.ebics.client.KeyManagement;
 import com.axelor.exception.AxelorException;
+import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 
 
 public class EbicsService {
+	
+	@Inject
+	private EbicsUserRepository userRepo;
+	
+	@Inject
+	private EbicsBankRepository bankRepo;
+	
+	static {
+	    org.apache.xml.security.Init.init();
+	    java.security.Security.addProvider(new BouncyCastleProvider());
+	}
 	
 	public String makeDN(String name, String email, String country, String organization)
 	{
@@ -71,6 +86,7 @@ public class EbicsService {
 	 * @throws JDOMException 
 	 * @throws IOException 
 	   */
+	  @Transactional
 	  public void sendINIRequest(EbicsUser ebicsUser, EbicsProduct product) throws AxelorException, IOException, JDOMException {
 	    EbicsSession		session;
 	    KeyManagement		keyManager;
@@ -85,7 +101,7 @@ public class EbicsService {
 	      return;
 	    }
 
-	    session = new EbicsSession(ebicsUser, new DefaultConfiguration() );
+	    session = new EbicsSession(ebicsUser);
 	    session.setProduct(product);
 	    keyManager = new KeyManagement(session);
 	    //configuration.getTraceManager().setTraceDirectory(configuration.getTransferTraceDirectory(user));
@@ -100,6 +116,7 @@ public class EbicsService {
 
 	    ebicsUser.setIsInitialized(true);
 	    //configuration.getLogger().info(Messages.getString("ini.send.success", Constants.APPLICATION_BUNDLE_NAME, userId));
+	    userRepo.save(ebicsUser);
 	  }
 
 	  /**
@@ -107,7 +124,8 @@ public class EbicsService {
 	   * @param userId the user ID.
 	   * @param product the application product.
 	   */
-	  public void sendHIARequest(EbicsUser user) {
+	  @Transactional
+	  public void sendHIARequest(EbicsUser user, EbicsProduct product) {
 	    EbicsSession		session;
 	    KeyManagement		keyManager;
 
@@ -117,8 +135,8 @@ public class EbicsService {
 	      //configuration.getLogger().info(Messages.getString("user.already.hia.initialized", Constants.APPLICATION_BUNDLE_NAME, userId));
 	      return;
 	    }
-	    session = new EbicsSession(user, new DefaultConfiguration());
-	    //session.setProduct(product);
+	    session = new EbicsSession(user);
+	    session.setProduct(product);
 	    keyManager = new KeyManagement(session);
 	    //configuration.getTraceManager().setTraceDirectory(configuration.getTransferTraceDirectory(user));
 
@@ -130,6 +148,7 @@ public class EbicsService {
 	    }
 
 	    user.setIsInitializedHIA(true);
+	    userRepo.save(user);
 	    //configuration.getLogger().info(Messages.getString("hia.send.success", Constants.APPLICATION_BUNDLE_NAME, userId));
 	  }
 
@@ -138,54 +157,52 @@ public class EbicsService {
 	   * @param userId the user ID.
 	   * @param product the application product.
 	   */
-	 /* public void sendHPBRequest(EbicsUser user) {
+	  @Transactional
+	  public void sendHPBRequest(EbicsUser user, EbicsProduct product) {
 	    EbicsSession		session;
 	    KeyManagement		keyManager;
 
 	    //configuration.getLogger().info(Messages.getString("hpb.request.send", Constants.APPLICATION_BUNDLE_NAME, userId));
 
 	    session = new EbicsSession(user);
-	    //session.setProduct(product);
+	    session.setProduct(product);
 	    keyManager = new KeyManagement(session);
 
 	    //configuration.getTraceManager().setTraceDirectory(configuration.getTransferTraceDirectory(user));
 
 	    try {
 	      keyManager.sendHPB();
+	      bankRepo.save(user.getEbicsPartner().getEbicsBank());
 	    } catch (Exception e) {
+	    	e.printStackTrace();
 	     // configuration.getLogger().error(Messages.getString("hpb.send.error", Constants.APPLICATION_BUNDLE_NAME, userId), e);
 	      return;
 	    }
 
 	    //configuration.getLogger().info(Messages.getString("hpb.send.success", Constants.APPLICATION_BUNDLE_NAME, userId));
-	  }*/
+	  }
 
 	  /**
 	   * Sends the SPR order to the bank.
 	   * @param userId the user ID
 	   * @param product the session product
 	   */
-	/*  public void revokeSubscriber(EbicsUser user) {
+	  public void revokeSubscriber(EbicsUser user, EbicsProduct product) {
 	    EbicsSession		session;
 	    KeyManagement		keyManager;
 
-	    //configuration.getLogger().info(Messages.getString("spr.request.send", Constants.APPLICATION_BUNDLE_NAME, userId));
-
-	    session = new EbicsSession(user, null);
-	    //session.setProduct(product);
+	    session = new EbicsSession(user);
+	    session.setProduct(product);
 	    keyManager = new KeyManagement(session);
-
-	    //configuration.getTraceManager().setTraceDirectory(configuration.getTransferTraceDirectory(user));
 
 	    try {
 	      keyManager.lockAccess();
 	    } catch (Exception e) {
-	      //configuration.getLogger().error(Messages.getString("spr.send.error", Constants.APPLICATION_BUNDLE_NAME, userId), e);
+	      e.printStackTrace();
 	      return;
 	    }
 
-	    //configuration.getLogger().info(Messages.getString("spr.send.success", Constants.APPLICATION_BUNDLE_NAME, userId));
-	  }*/
+	  }
 
 	  /**
 	   * Sends a file to the ebics bank sever

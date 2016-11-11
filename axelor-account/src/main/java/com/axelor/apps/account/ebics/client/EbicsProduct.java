@@ -41,7 +41,7 @@ public class EbicsProduct implements Serializable {
                  String instituteID)
   {
     this.name = name;
-    this.language = language.getCountry().toLowerCase();
+    this.language = language.getLanguage().toLowerCase();
     this.instituteID = instituteID;
   }
 

@@ -11,11 +11,11 @@
     <string name="url" title="Url" />
 	<string name="hostId" title="Host id" />
 	 
-	<string name="x002Key" title="Authentication Certificate Type X002" large="true" multiline="true" />
-	<string name="x002Digest" title="Hash certificate of authentication (SHA-256)" large="true" multiline="true" />
+	<binary name="x002Key" title="Authentication Certificate Type X002"/>
+	<binary name="x002Digest" title="Hash certificate of authentication (SHA-256)" />
 	
-	<string name="e002Key" title="Encryption Certificate Type E002" large="true" multiline="true" />
-	<string name="e002Digest" title="Hash certificate of encryption (SHA-256)" large="true" multiline="true" />
+	<binary name="e002Key" title="Encryption Certificate Type E002" />
+	<binary name="e002Digest" title="Hash certificate of encryption (SHA-256)" />
 	
 	<string name="x002KeyModulus" title="X002 modulus" large="true" multiline="true" />
 	<string name="x002KeyExponent" title="X002 exponent" large="true" multiline="true" />

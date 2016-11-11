@@ -28,7 +28,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.axelor.apps.account.db.EbicsUser;
-import com.axelor.apps.account.ebics.interfaces.Configuration;
 import com.axelor.apps.account.ebics.service.EbicsService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
@@ -50,9 +49,9 @@ public class EbicsSession {
 	   * @param user the ebics user
 	   * @param the ebics client configuration
 	   */
-	  public EbicsSession(EbicsUser user, Configuration configuration) {
+	  public EbicsSession(EbicsUser user) {
 	    this.user = user;
-	    this.configuration = configuration;
+//	    this.configuration = configuration;
 	    parameters = new HashMap<String, String>();
 	  }
 
@@ -107,9 +106,9 @@ public class EbicsSession {
 	   * Returns the client application configuration.
 	   * @return the client application configuration.
 	   */
-	  public Configuration getConfiguration() {
-	    return configuration;
-	  }
+//	  public Configuration getConfiguration() {
+//	    return configuration;
+//	  }
 
 	  /**
 	   * Sets the optional product identification that will be sent to the bank during each request.
@@ -153,7 +152,7 @@ public class EbicsSession {
 	  // --------------------------------------------------------------------
 
 	  private EbicsUser				user;
-	  private Configuration 			configuration;
+//	  private Configuration 			configuration;
 	  private EbicsProduct				product;
 	  private Map<String, String>			parameters;
 	}

@@ -2,22 +2,17 @@ package com.axelor.apps.account.ebics.service;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.security.GeneralSecurityException;
-import java.security.PrivateKey;
 import java.security.Signature;
-import java.security.cert.CertificateEncodingException;
-import java.security.cert.X509Certificate;
-import java.security.interfaces.RSAPublicKey;
 
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
-import javax.xml.crypto.dsig.SignedInfo;
 
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 import com.axelor.apps.account.db.EbicsUser;
+import com.axelor.apps.account.ebics.utils.Utils;
+import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 
 public class EbicsUserService {
@@ -36,8 +31,7 @@ public class EbicsUserService {
 	}
 	
 	public byte[] authenticate(EbicsUser ebicsUser, byte[] digest) throws GeneralSecurityException {
-	    Signature			signature;
-
+	    Signature signature;
 	    signature = Signature.getInstance("SHA256WithRSA", BouncyCastleProvider.PROVIDER_NAME);
 	    signature.initSign( ebicsService.getPrivateKey( ebicsUser.getX002PrivateKey() )) ;
 	    signature.update(digest);
@@ -62,6 +56,30 @@ public class EbicsUserService {
 	    }
 	    
 	    return output.toByteArray();
-	  }
+	}
+	
+	public byte[] decrypt(EbicsUser user, byte[] encryptedData, byte[] transactionKey)
+		    throws AxelorException, GeneralSecurityException, IOException
+	  {
+	    Cipher			cipher;
+	    int				blockSize;
+	    ByteArrayOutputStream	outputStream;
+
+	    cipher = Cipher.getInstance("RSA/NONE/PKCS1Padding", BouncyCastleProvider.PROVIDER_NAME);
+	    cipher.init(Cipher.DECRYPT_MODE, ebicsService.getPrivateKey(user.getE002PrivateKey()));
+	    blockSize = cipher.getBlockSize();
+	    outputStream = new ByteArrayOutputStream();
+	    for (int j = 0; j * blockSize < transactionKey.length; j++) {
+	      outputStream.write(cipher.doFinal(transactionKey, j * blockSize, blockSize));
+	    }
+	    
+	    return decryptData(encryptedData, outputStream.toByteArray());
+	}
+	
+	private byte[] decryptData(byte[] input, byte[] key) throws AxelorException { 
+		 return Utils.decrypt(input, new SecretKeySpec(key, "EAS"));
+	}
+	
+	
 
 }

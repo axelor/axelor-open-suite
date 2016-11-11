@@ -37,7 +37,10 @@
 		<panel sidebar="true">
 			<button name="generateDn" title="Generate DN" onClick="save,action-ebics-user-method-generate-dn"/>
 			<button name="generateCertificates" title="Generate certificates" onClick="save,action-ebics-user-method-generate-certificates"/>
-			<button name="sentINI" title="Send INI" onClick="action-ebics-user-method-send-ini"/>
+			<button name="sendINI" title="Send INI" onClick="save,action-ebics-user-method-send-ini"/>
+			<button name="sendHIA" title="Send HIA" onClick="save,action-ebics-user-method-send-hia"/>
+			<button name="sendHPB" title="Send HPB" onClick="save,action-ebics-user-method-send-hpb"/>
+			<button name="sendSPR" title="Send SPR" onClick="save,action-ebics-user-method-send-spr"/>
 		</panel>
 	
 	</form>
@@ -52,6 +55,14 @@
 	
 	<action-method name="action-ebics-user-method-send-ini">
 		<call class="com.axelor.apps.account.ebics.web.EbicsController" method="sendINIRequest"/>
+	</action-method>
+	
+	<action-method name="action-ebics-user-method-send-hia">
+		<call class="com.axelor.apps.account.ebics.web.EbicsController" method="sendHIARequest"/>
+	</action-method>
+	
+	<action-method name="action-ebics-user-method-send-spr">
+		<call class="com.axelor.apps.account.ebics.web.EbicsController" method="sendSPRRequest"/>
 	</action-method>
     
   

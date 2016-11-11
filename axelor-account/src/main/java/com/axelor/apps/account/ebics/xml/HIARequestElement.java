@@ -25,7 +25,6 @@ import com.axelor.apps.account.ebics.client.EbicsUtils;
 import com.axelor.apps.account.ebics.client.OrderType;
 import com.axelor.apps.account.ebics.client.UnsecuredRequestElement;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
 
 /**
  * The <code>HIARequestElement</code> is the root element used

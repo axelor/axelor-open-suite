@@ -20,9 +20,6 @@
 package com.axelor.apps.account.ebics.xml;
 
 import java.math.BigInteger;
-import java.security.PrivateKey;
-import java.security.PublicKey;
-import java.security.interfaces.RSAPublicKey;
 import java.util.Calendar;
 
 import com.axelor.apps.account.ebics.schema.s001.PubKeyValueType;
@@ -67,7 +64,7 @@ public class SignaturePubKeyOrderDataElement extends DefaultEbicsRootElement {
     pubKeyValue = EbicsXmlFactory.createPubKeyValueType(rsaKeyValue, Calendar.getInstance());
     signaturePubKeyInfo = EbicsXmlFactory.createSignaturePubKeyInfoType(x509Data,
 	                                                                pubKeyValue,
-	                                                                session.getConfiguration().getSignatureVersion());
+	                                                                "A005");
     signaturePubKeyOrderData = EbicsXmlFactory.createSignaturePubKeyOrderData(signaturePubKeyInfo,
 									      session.getUser().getEbicsPartner().getPartnerId(),
 									      session.getUser().getUserId());

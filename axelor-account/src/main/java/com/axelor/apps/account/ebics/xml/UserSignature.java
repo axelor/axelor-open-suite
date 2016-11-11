@@ -19,14 +19,12 @@
 
 package com.axelor.apps.account.ebics.xml;
 
-
-
 import com.axelor.apps.account.db.EbicsUser;
 import com.axelor.apps.account.ebics.client.DefaultEbicsRootElement;
 import com.axelor.apps.account.ebics.schema.s001.OrderSignatureDataType;
 import com.axelor.apps.account.ebics.schema.s001.UserSignatureDataSigBookType;
 import com.axelor.apps.account.ebics.service.EbicsUserService;
-import com.google.inject.Inject;
+import com.axelor.inject.Beans;
 
 
 /**
@@ -39,9 +37,6 @@ import com.google.inject.Inject;
  */
 public class UserSignature extends DefaultEbicsRootElement {
 	
-	@Inject
-	EbicsUserService ebicsUserService;
-
   /**
    * Constructs a new <code>UserSignature</code> element for
    * an Ebics user and a data to sign
@@ -67,8 +62,9 @@ public class UserSignature extends DefaultEbicsRootElement {
     byte[]				signature = null;
 
     try {
-      signature = ebicsUserService.sign(user, toSign);
+      signature = Beans.get(EbicsUserService.class).sign(user, toSign);
     } catch (Exception e) {
+    	e.printStackTrace();
     	//throw new AxelorException(e.getMessage(), IException.CONFIGURATION_ERROR );
     } 
 

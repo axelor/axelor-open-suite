@@ -19,7 +19,6 @@
 
 package com.axelor.apps.account.ebics.client;
 
-import com.axelor.app.AppSettings;
 import com.axelor.apps.account.ebics.schema.h003.EbicsUnsecuredRequestDocument.EbicsUnsecuredRequest;
 import com.axelor.apps.account.ebics.schema.h003.EbicsUnsecuredRequestDocument.EbicsUnsecuredRequest.Body;
 import com.axelor.apps.account.ebics.schema.h003.EbicsUnsecuredRequestDocument.EbicsUnsecuredRequest.Body.DataTransfer;
@@ -96,8 +95,8 @@ public class UnsecuredRequestElement extends DefaultEbicsRootElement {
 	    body = EbicsXmlFactory.createBody(dataTransfer);
 	    request = EbicsXmlFactory.createEbicsUnsecuredRequest(header,
 		                                                  body,
-		                                                  session.getConfiguration().getRevision(),
-		                                                  session.getConfiguration().getVersion());
+		                                                  1,
+		                                                  "H003");
 
 	    document = EbicsXmlFactory.createEbicsUnsecuredRequestDocument(request);
 	    
