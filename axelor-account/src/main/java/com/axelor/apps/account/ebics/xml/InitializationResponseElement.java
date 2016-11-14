@@ -19,14 +19,13 @@
 
 package com.axelor.apps.account.ebics.xml;
 
-import com.axelor.apps.account.ebics.client.ReturnCode;
 import com.axelor.apps.account.ebics.interfaces.ContentFactory;
 import com.axelor.apps.account.ebics.schema.h003.EbicsResponseDocument;
 import com.axelor.apps.account.ebics.schema.h003.EbicsResponseDocument.EbicsResponse;
 import com.axelor.exception.AxelorException;
 import com.axelor.apps.account.ebics.client.OrderType;
-
 import com.axelor.apps.account.ebics.client.DefaultResponseElement;
+import com.axelor.apps.account.ebics.exception.ReturnCode;
 
 /**
  * The <code>InitializationResponseElement</code> is the common

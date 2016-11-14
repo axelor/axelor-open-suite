@@ -25,8 +25,9 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-import com.axelor.apps.account.ebics.exception.EbicsException;
 import com.axelor.apps.account.ebics.interfaces.ContentFactory;
+import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.IException;
 
 
 /**
@@ -146,7 +147,7 @@ public class IOUtils {
    * @return the byte array content of the file
    * @throws EbicsException
    */
-  public static byte[] getFileContent(String path) throws EbicsException {
+  public static byte[] getFileContent(String path) throws AxelorException {
     try {
       InputStream			input;
       byte[]				content;
@@ -157,7 +158,7 @@ public class IOUtils {
       input.close();
       return content;
     } catch (IOException e) {
-      throw new EbicsException(e.getMessage());
+      throw new AxelorException(e.getMessage(), IException.CONFIGURATION_ERROR);
     }
   }
 
@@ -167,7 +168,7 @@ public class IOUtils {
    * @return
    * @throws EbicsException
    */
-  public static byte[] getFactoryContent(ContentFactory content) throws EbicsException {
+  public static byte[] getFactoryContent(ContentFactory content) throws AxelorException {
     try {
       byte[]			buffer;
       ByteArrayOutputStream	out;
@@ -184,7 +185,7 @@ public class IOUtils {
       out.close();
       return out.toByteArray();
     } catch (IOException e) {
-      throw new EbicsException(e.getMessage());
+      throw new AxelorException(e.getMessage(), IException.CONFIGURATION_ERROR);
     }
   }
 }

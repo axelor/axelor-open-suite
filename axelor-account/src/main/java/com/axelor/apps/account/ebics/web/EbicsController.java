@@ -10,6 +10,7 @@ import com.axelor.apps.account.db.EbicsUser;
 import com.axelor.apps.account.db.repo.EbicsUserRepository;
 import com.axelor.apps.account.ebics.certificate.CertificateManager;
 import com.axelor.apps.account.ebics.client.EbicsProduct;
+import com.axelor.apps.account.ebics.client.OrderType;
 import com.axelor.apps.account.ebics.service.EbicsService;
 import com.axelor.auth.db.User;
 import com.axelor.auth.db.repo.UserRepository;
@@ -71,7 +72,7 @@ public class EbicsController {
 		
 	}
 	
-	public void sendHIARequest(ActionRequest request, ActionResponse response) throws AxelorException, IOException, JDOMException{
+	public void sendHIARequest(ActionRequest request, ActionResponse response) throws AxelorException, IOException {
 		
 		EbicsUser ebicsUser = ebicsUserRepo.find( request.getContext().asType(EbicsUser.class).getId());
 		
@@ -81,7 +82,7 @@ public class EbicsController {
 		response.setReload(true);
 	}
 	
-	public void sendHPBRequest(ActionRequest request, ActionResponse response) throws AxelorException, IOException, JDOMException{
+	public void sendHPBRequest(ActionRequest request, ActionResponse response) throws AxelorException, IOException {
 		
 		EbicsUser ebicsUser = ebicsUserRepo.find( request.getContext().asType(EbicsUser.class).getId());
 		
@@ -91,12 +92,32 @@ public class EbicsController {
 		response.setReload(true);
 	}
 	
-	public void sendSPRRequest(ActionRequest request, ActionResponse response) throws AxelorException, IOException, JDOMException{
+	public void sendSPRRequest(ActionRequest request, ActionResponse response) throws AxelorException, IOException {
 		
 		EbicsUser ebicsUser = ebicsUserRepo.find( request.getContext().asType(EbicsUser.class).getId());
 		
 		EbicsProduct ebicsProduct = new EbicsProduct("Test", Locale.FRENCH, "01");
 		ebicsService.revokeSubscriber(ebicsUser, ebicsProduct);
+
+		response.setReload(true);
+	}
+	
+	public void sendFile(ActionRequest request, ActionResponse response) throws AxelorException, IOException {
+		
+		EbicsUser ebicsUser = ebicsUserRepo.find( request.getContext().asType(EbicsUser.class).getId());
+		
+		EbicsProduct ebicsProduct = new EbicsProduct("Test", Locale.FRENCH, "01");
+		ebicsService.sendFile(ebicsUser, ebicsProduct);
+
+		response.setReload(true);
+	}
+	
+	public void fetchFile(ActionRequest request, ActionResponse response) throws AxelorException, IOException {
+		
+		EbicsUser ebicsUser = ebicsUserRepo.find( request.getContext().asType(EbicsUser.class).getId());
+		
+		EbicsProduct ebicsProduct = new EbicsProduct("Test", Locale.FRENCH, "01");
+		ebicsService.fetchFile(ebicsUser, ebicsProduct, OrderType.FDL, true, null, null);
 
 		response.setReload(true);
 	}

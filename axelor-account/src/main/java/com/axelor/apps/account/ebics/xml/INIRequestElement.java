@@ -66,16 +66,12 @@ public class INIRequestElement extends DefaultEbicsRootElement {
     log.debug("SignaturePubKeyOrderDataElement OK");
     signaturePubKey.build();
     log.debug("signaturePubKey.build OK");
-    try {
-		unsecuredRequest = new UnsecuredRequestElement(session,
-		                                           OrderType.INI,
-		                                           orderId == null ? session.getUser().getEbicsPartner().getNextOrderId() : orderId,
-		                                           EbicsUtils.zip(signaturePubKey.prettyPrint()));
-		
-		log.debug("UnsecuredRequestElement OK");
-	} catch (JDOMException e) {
-		throw new AxelorException("JDOM !!! :: " + e.getCause(), IException.CONFIGURATION_ERROR);
-	}
+	unsecuredRequest = new UnsecuredRequestElement(session,
+	                                           OrderType.INI,
+	                                           orderId == null ? session.getUser().getEbicsPartner().getNextOrderId() : orderId,
+	                                           EbicsUtils.zip(signaturePubKey.prettyPrint()));
+	
+	log.debug("UnsecuredRequestElement OK");
     unsecuredRequest.build();
     log.debug("unsecuredRequest.build OK");
   }

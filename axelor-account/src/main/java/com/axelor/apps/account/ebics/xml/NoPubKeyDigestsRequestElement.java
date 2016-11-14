@@ -27,7 +27,6 @@ import java.util.Calendar;
 import com.axelor.apps.account.ebics.client.DefaultEbicsRootElement;
 import com.axelor.apps.account.ebics.client.EbicsSession;
 import com.axelor.apps.account.ebics.client.OrderType;
-import com.axelor.apps.account.ebics.exception.EbicsException;
 import com.axelor.apps.account.ebics.schema.h003.EbicsNoPubKeyDigestsRequestDocument;
 import com.axelor.apps.account.ebics.schema.h003.EbicsNoPubKeyDigestsRequestDocument.EbicsNoPubKeyDigestsRequest;
 import com.axelor.apps.account.ebics.schema.h003.EbicsNoPubKeyDigestsRequestDocument.EbicsNoPubKeyDigestsRequest.Body;

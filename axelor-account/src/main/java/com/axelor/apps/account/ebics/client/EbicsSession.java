@@ -31,7 +31,7 @@ import com.axelor.apps.account.db.EbicsUser;
 import com.axelor.apps.account.ebics.service.EbicsService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
-import com.google.inject.Inject;
+import com.axelor.inject.Beans;
 
 /**
  * Communication hub for EBICS.
@@ -41,9 +41,6 @@ import com.google.inject.Inject;
  */
 public class EbicsSession {
 	
-	@Inject 
-	private EbicsService ebicsService;
-
 	  /**
 	   * Constructs a new ebics session
 	   * @param user the ebics user
@@ -51,7 +48,6 @@ public class EbicsSession {
 	   */
 	  public EbicsSession(EbicsUser user) {
 	    this.user = user;
-//	    this.configuration = configuration;
 	    parameters = new HashMap<String, String>();
 	  }
 
@@ -64,7 +60,7 @@ public class EbicsSession {
 	   */
 	  public RSAPublicKey getBankE002Key() throws IOException, AxelorException {
 	    try {
-			return  ebicsService.getPublicKey(user.getEbicsPartner().getEbicsBank().getE002KeyModulus(), user.getEbicsPartner().getEbicsBank().getE002KeyExponent()) ;
+			return  Beans.get(EbicsService.class).getPublicKey(user.getEbicsPartner().getEbicsBank().getE002KeyModulus(), user.getEbicsPartner().getEbicsBank().getE002KeyExponent()) ;
 		} catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
 			throw new AxelorException(e.getMessage(), IException.CONFIGURATION_ERROR );
 		}
@@ -79,7 +75,7 @@ public class EbicsSession {
 	   */
 	  public RSAPublicKey getBankX002Key() throws IOException, AxelorException {
 	    try {
-			return  ebicsService.getPublicKey(user.getEbicsPartner().getEbicsBank().getX002KeyModulus(), user.getEbicsPartner().getEbicsBank().getX002KeyExponent()) ;
+			return  Beans.get(EbicsService.class).getPublicKey(user.getEbicsPartner().getEbicsBank().getX002KeyModulus(), user.getEbicsPartner().getEbicsBank().getX002KeyExponent()) ;
 		} catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
 			throw new AxelorException(e.getMessage(), IException.CONFIGURATION_ERROR );
 		}
@@ -101,14 +97,6 @@ public class EbicsSession {
 	  public EbicsUser getUser() {
 	    return user;
 	  }
-
-	  /**
-	   * Returns the client application configuration.
-	   * @return the client application configuration.
-	   */
-//	  public Configuration getConfiguration() {
-//	    return configuration;
-//	  }
 
 	  /**
 	   * Sets the optional product identification that will be sent to the bank during each request.
@@ -152,7 +140,6 @@ public class EbicsSession {
 	  // --------------------------------------------------------------------
 
 	  private EbicsUser				user;
-//	  private Configuration 			configuration;
 	  private EbicsProduct				product;
 	  private Map<String, String>			parameters;
 	}

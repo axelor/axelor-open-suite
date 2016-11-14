@@ -84,7 +84,7 @@ public abstract class DefaultEbicsRootElement implements EbicsRootElement {
  * @throws JDOMException 
    * @throws EbicsException pretty print fails
    */
-  public byte[] prettyPrint() throws AxelorException, JDOMException {
+  public byte[] prettyPrint() throws AxelorException {
     Document                  	document;
     XMLOutputter              	xmlOutputter;
     SAXBuilder                	sxb;
@@ -97,7 +97,7 @@ public abstract class DefaultEbicsRootElement implements EbicsRootElement {
     try {
       document = sxb.build(new InputStreamReader(new ByteArrayInputStream(toByteArray()), "UTF-8"));
       xmlOutputter.output(document, output);
-    } catch (IOException e) {
+    } catch (IOException | JDOMException e) {
     	throw new AxelorException(e.getMessage(), IException.CONFIGURATION_ERROR );
     }
 

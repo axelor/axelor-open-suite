@@ -17,11 +17,12 @@
  * $Id$
  */
 
-package com.axelor.apps.account.ebics.client;
+package com.axelor.apps.account.ebics.exception;
 
 import java.io.Serializable;
 
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 
 
@@ -52,10 +53,10 @@ public class ReturnCode implements Serializable {
    * Throws an equivalent <code>EbicsException</code>
    * @throws EbicsException
    */
-  /*
+  
   public void throwException() throws AxelorException {
-    throw new AxelorException(this, text);
-  }*/
+    throw new AxelorException(text, IException.FUNCTIONNAL);
+  }
 
   /**
    * Tells if the return code is an OK one.

@@ -19,14 +19,22 @@
 
 package com.axelor.apps.account.ebics.xml;
 
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
+import java.util.Locale;
 
 import javax.crypto.spec.SecretKeySpec;
 
+import com.axelor.apps.account.ebics.client.EbicsSession;
+import com.axelor.apps.account.ebics.interfaces.ContentFactory;
+import com.axelor.apps.account.ebics.io.Splitter;
 import com.axelor.apps.account.ebics.schema.h003.DataTransferRequestType;
+import com.axelor.apps.account.ebics.schema.h003.FULOrderParamsType;
+import com.axelor.apps.account.ebics.schema.h003.FileFormatType;
 import com.axelor.apps.account.ebics.schema.h003.MutableHeaderType;
-import com.axelor.apps.account.ebics.schema.h003.StandardOrderParamsType;
 import com.axelor.apps.account.ebics.schema.h003.StaticHeaderOrderDetailsType;
+import com.axelor.apps.account.ebics.schema.h003.StaticHeaderOrderDetailsType.OrderType;
 import com.axelor.apps.account.ebics.schema.h003.StaticHeaderType;
 import com.axelor.apps.account.ebics.schema.h003.DataEncryptionInfoType.EncryptionPubKeyDigest;
 import com.axelor.apps.account.ebics.schema.h003.DataTransferRequestType.DataEncryptionInfo;
@@ -34,32 +42,40 @@ import com.axelor.apps.account.ebics.schema.h003.DataTransferRequestType.Signatu
 import com.axelor.apps.account.ebics.schema.h003.EbicsRequestDocument.EbicsRequest;
 import com.axelor.apps.account.ebics.schema.h003.EbicsRequestDocument.EbicsRequest.Body;
 import com.axelor.apps.account.ebics.schema.h003.EbicsRequestDocument.EbicsRequest.Header;
-import com.axelor.apps.account.ebics.schema.h003.StaticHeaderOrderDetailsType.OrderType;
+import com.axelor.apps.account.ebics.schema.h003.ParameterDocument.Parameter;
+import com.axelor.apps.account.ebics.schema.h003.ParameterDocument.Parameter.Value;
 import com.axelor.apps.account.ebics.schema.h003.StaticHeaderType.BankPubKeyDigests;
 import com.axelor.apps.account.ebics.schema.h003.StaticHeaderType.Product;
 import com.axelor.apps.account.ebics.schema.h003.StaticHeaderType.BankPubKeyDigests.Authentication;
 import com.axelor.apps.account.ebics.schema.h003.StaticHeaderType.BankPubKeyDigests.Encryption;
-import com.axelor.apps.account.ebics.client.EbicsSession;
-import com.axelor.apps.account.ebics.client.EbicsUtils;
+import com.axelor.apps.account.ebics.utils.Utils;
 import com.axelor.exception.AxelorException;
 
-
 /**
- * The <code>SPRRequestElement</code> is the request element
- * for revoking a subscriber
+ * The <code>UInitializationRequestElement</code> is the common initialization
+ * element for all ebics file uploads.
  *
  * @author Hachani
  *
  */
-public class SPRRequestElement extends InitializationRequestElement {
+public class UInitializationRequestElement extends InitializationRequestElement {
 
   /**
-   * Constructs a new SPR request element.
-   * @param session the current ebic session.
+   * Constructs a new <code>UInitializationRequestElement</code> for uploads initializations.
+   * @param session the current ebics session.
+   * @param orderType the upload order type
+   * @param userData the user data to be uploaded
+   * @throws EbicsException
    */
-  public SPRRequestElement(EbicsSession session) throws AxelorException {
-    super(session, com.axelor.apps.account.ebics.client.OrderType.SPR, "SPRRequest.xml");
+  public UInitializationRequestElement(EbicsSession session,
+                                       com.axelor.apps.account.ebics.client.OrderType orderType,
+                                       byte[] userData)
+    throws AxelorException
+  {
+    super(session, orderType, generateName(orderType));
+    this.userData = userData;
     keySpec = new SecretKeySpec(nonce, "EAS");
+    splitter = new Splitter(userData);
   }
 
   @Override
@@ -78,35 +94,63 @@ public class SPRRequestElement extends InitializationRequestElement {
     SignatureData 			signatureData;
     EncryptionPubKeyDigest 		encryptionPubKeyDigest;
     StaticHeaderOrderDetailsType 	orderDetails;
+    FULOrderParamsType			fULOrderParams;
     OrderType 				orderType;
-    StandardOrderParamsType		standardOrderParamsType;
-    UserSignature			userSignature;
+    FileFormatType 			fileFormat;
+    List<Parameter>			parameters;
 
     userSignature = new UserSignature(session.getUser(),
-				      generateName("SIG"),
+				      generateName("UserSignature"),
 	                              "A005",
-	                              " ".getBytes());
+	                              userData);
     userSignature.build();
     userSignature.validate();
+
+    splitter.readInput(true, keySpec);
 
     mutable = EbicsXmlFactory.createMutableHeaderType("Initialisation", null);
     product = EbicsXmlFactory.createProduct(session.getProduct().getLanguage(), session.getProduct().getName());
     authentication = EbicsXmlFactory.createAuthentication("X002",
 	                                                  "http://www.w3.org/2001/04/xmlenc#sha256",
-	                                                  decodeHex( session.getUser().getEbicsPartner().getEbicsBank().getX002Digest() ) );
+	                                                  decodeHex(session.getUser().getEbicsPartner().getEbicsBank().getX002Digest()));
     encryption = EbicsXmlFactory.createEncryption("E002",
 	                                          "http://www.w3.org/2001/04/xmlenc#sha256",
 	                                          decodeHex(session.getUser().getEbicsPartner().getEbicsBank().getE002Digest()));
     bankPubKeyDigests = EbicsXmlFactory.createBankPubKeyDigests(authentication, encryption);
     orderType = EbicsXmlFactory.createOrderType(type.getOrderType());
-    standardOrderParamsType = EbicsXmlFactory.createStandardOrderParamsType();
+    fileFormat = EbicsXmlFactory.createFileFormatType(Locale.FRANCE.getCountry(),
+	                                              session.getSessionParam("FORMAT"));
+    fULOrderParams = EbicsXmlFactory.createFULOrderParamsType(fileFormat);
+    parameters = new ArrayList<Parameter>();
+    if (Boolean.valueOf(session.getSessionParam("TEST")).booleanValue()) {
+      Parameter 		parameter;
+      Value			value;
+
+      value = EbicsXmlFactory.createValue("String", "TRUE");
+      parameter = EbicsXmlFactory.createParameter("TEST", value);
+      parameters.add(parameter);
+    }
+
+    if (Boolean.valueOf(session.getSessionParam("EBCDIC")).booleanValue()) {
+      Parameter 		parameter;
+      Value			value;
+
+      value = EbicsXmlFactory.createValue("String", "TRUE");
+      parameter = EbicsXmlFactory.createParameter("EBCDIC", value);
+      parameters.add(parameter);
+    }
+
+    if (parameters.size() > 0) {
+      fULOrderParams.setParameterArray(parameters.toArray(new Parameter[parameters.size()]));
+    }
+
     orderDetails = EbicsXmlFactory.createStaticHeaderOrderDetailsType(session.getUser().getEbicsPartner().getNextOrderId(),
-	                                                              "UZHNN",
+	                                                              "DZHNN",
 	                                                              orderType,
-	                                                              standardOrderParamsType);
+	                                                              fULOrderParams);
     xstatic = EbicsXmlFactory.createStaticHeaderType(session.getBankID(),
 	                                             nonce,
-	                                             0,
+	                                             splitter.getSegmentNumber(),
 	                                             session.getUser().getEbicsPartner().getPartnerId(),
 	                                             product,
 	                                             session.getUser().getSecurityMedium(),
@@ -118,9 +162,8 @@ public class SPRRequestElement extends InitializationRequestElement {
     encryptionPubKeyDigest = EbicsXmlFactory.createEncryptionPubKeyDigest("E002",
 								          "http://www.w3.org/2001/04/xmlenc#sha256",
 								          decodeHex(session.getUser().getEbicsPartner().getEbicsBank().getE002Digest()));
-	signatureData = EbicsXmlFactory.createSignatureData(true, EbicsUtils.encrypt(EbicsUtils.zip(userSignature.prettyPrint()), keySpec));
-
-	dataEncryptionInfo = EbicsXmlFactory.createDataEncryptionInfo(true,
+    signatureData = EbicsXmlFactory.createSignatureData(true, Utils.encrypt(Utils.zip(userSignature.prettyPrint()), keySpec));
+    dataEncryptionInfo = EbicsXmlFactory.createDataEncryptionInfo(true,
 	                                                          encryptionPubKeyDigest,
 	                                                          generateTransactionKey());
     dataTransfer = EbicsXmlFactory.createDataTransferRequestType(dataEncryptionInfo, signatureData);
@@ -132,10 +175,45 @@ public class SPRRequestElement extends InitializationRequestElement {
     document = EbicsXmlFactory.createEbicsRequestDocument(request);
   }
 
+  @Override
+  public byte[] toByteArray() {
+    setSaveSuggestedPrefixes("http://www.ebics.org/H003", "");
+
+    return super.toByteArray();
+  }
+
+  /**
+   * Returns the user signature data.
+   * @return the user signature data.
+   */
+  public UserSignature getUserSignature() {
+    return userSignature;
+  }
+
+  /**
+   * Returns the content of a given segment.
+   * @param segment the segment number
+   * @return the content of the given segment
+   */
+  public ContentFactory getContent(int segment) {
+    return splitter.getContent(segment);
+  }
+
+  /**
+   * Returns the total segment number.
+   * @return the total segment number.
+   */
+  public int getSegmentNumber() {
+    return splitter.getSegmentNumber();
+  }
+
   // --------------------------------------------------------------------
   // DATA MEMBERS
   // --------------------------------------------------------------------
 
+  private byte[]			userData;
+  private UserSignature			userSignature;
   private SecretKeySpec			keySpec;
-  private static final long 		serialVersionUID = -6742241777786111337L;
+  private Splitter			splitter;
+  private static final long 		serialVersionUID = -8083183483311283608L;
 }

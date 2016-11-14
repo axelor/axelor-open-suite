@@ -19,47 +19,51 @@
 
 package com.axelor.apps.account.ebics.xml;
 
-import com.axelor.apps.account.ebics.client.DefaultResponseElement;
-import com.axelor.apps.account.ebics.exception.ReturnCode;
+import com.axelor.apps.account.ebics.client.OrderType;
 import com.axelor.apps.account.ebics.interfaces.ContentFactory;
-import com.axelor.apps.account.ebics.schema.h003.EbicsResponseDocument;
-import com.axelor.apps.account.ebics.schema.h003.EbicsResponseDocument.EbicsResponse;
 import com.axelor.exception.AxelorException;
 
 /**
- * The <code>SPRResponseElement</code> is the response element
- * for an ebics subscriber revoking.
+ * The <code>DTransferResponseElement</code> is the response element
+ * for all ebics downloads transfers.
  *
  * @author Hachani
  *
  */
-public class SPRResponseElement extends DefaultResponseElement {
+public class DTransferResponseElement extends TransferResponseElement {
 
   /**
-   * Constructs a new SPR response element.
+   * Constructs a new <code>DTransferResponseElement</code> object.
    * @param factory the content factory
+   * @param orderType the order type
+   * @param name the element name.
    */
-  public SPRResponseElement(ContentFactory factory) {
-    super(factory, "SPRResponse.xml");
+  public DTransferResponseElement(ContentFactory factory,
+                                  OrderType orderType,
+                                  String name)
+  {
+    super(factory, name);
   }
 
   @Override
   public void build() throws AxelorException {
-    String			code;
-    String			text;
+    super.build();
 
-    parse(factory);
-    response = ((EbicsResponseDocument)document).getEbicsResponse();
-    code = response.getHeader().getMutable().getReturnCode();
-    text = response.getHeader().getMutable().getReportText();
-    returnCode = ReturnCode.toReturnCode(code, text);
-    report();
+    orderData = response.getBody().getDataTransfer().getOrderData().getByteArrayValue();
+  }
+
+  /**
+   * Returns the order data.
+   * @return the order data.
+   */
+  public byte[] getOrderData() {
+    return orderData;
   }
 
   // --------------------------------------------------------------------
   // DATA MEMBERS
   // --------------------------------------------------------------------
 
-  private EbicsResponse				response;
-  private static final long 			serialVersionUID = 8632578696636481642L;
+  private byte[]			orderData;
+  private static final long 		serialVersionUID = -3317833033395561745L;
 }

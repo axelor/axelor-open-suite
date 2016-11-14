@@ -39,7 +39,7 @@
 	 <string name="x002PublicKeyExponent" title="x002PublicKeyExponent" large="true" multiline="true" />
 	 
 	 <many-to-one name="ebicsPartner" ref="com.axelor.apps.account.db.EbicsPartner" title="Ebics partner"/>
-    
+	 
   </entity>
   
 </domain-models>

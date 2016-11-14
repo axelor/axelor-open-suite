@@ -27,20 +27,22 @@ import com.axelor.apps.account.ebics.schema.h003.EbicsResponseDocument.EbicsResp
 import com.axelor.exception.AxelorException;
 
 /**
- * The <code>SPRResponseElement</code> is the response element
- * for an ebics subscriber revoking.
+ * The <code>TransferResponseElement</code> is the common element
+ * response for all ebics transfers.
  *
  * @author Hachani
  *
  */
-public class SPRResponseElement extends DefaultResponseElement {
+public class TransferResponseElement extends DefaultResponseElement {
 
   /**
-   * Constructs a new SPR response element.
+   * Constructs a new <code>TransferResponseElement</code> element.
    * @param factory the content factory
+   * @param orderType the order type
+   * @param name the element name;
    */
-  public SPRResponseElement(ContentFactory factory) {
-    super(factory, "SPRResponse.xml");
+  public TransferResponseElement(ContentFactory factory, String name) {
+    super(factory, name);
   }
 
   @Override
@@ -60,6 +62,6 @@ public class SPRResponseElement extends DefaultResponseElement {
   // DATA MEMBERS
   // --------------------------------------------------------------------
 
-  private EbicsResponse				response;
-  private static final long 			serialVersionUID = 8632578696636481642L;
+  protected EbicsResponse		response;
+  private static final long 		serialVersionUID = 7454118286687793155L;
 }

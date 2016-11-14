@@ -18,11 +18,9 @@
 			<field name="hostId" help="Identifies the bank" />
 		</panel>
 		<panel title="Server public key certificate dedicated to authentication" itemSpan="12">
-			<field name="e002Key" />
 			<field name="e002Digest" />
 		</panel>
 		<panel title="Server public key certificate dedicated to encryption" itemSpan="12">
-			<field name="x002Key" />
 			<field name="x002Digest" />
 		</panel>
 	

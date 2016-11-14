@@ -24,10 +24,10 @@ import java.io.IOException;
 import org.apache.xmlbeans.XmlException;
 import org.apache.xmlbeans.XmlObject;
 
+import com.axelor.apps.account.ebics.exception.ReturnCode;
 import com.axelor.apps.account.ebics.interfaces.ContentFactory;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
-import com.axelor.apps.account.ebics.client.ReturnCode;
 
 
 /**

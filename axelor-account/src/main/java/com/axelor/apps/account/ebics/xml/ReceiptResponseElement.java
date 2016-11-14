@@ -27,26 +27,28 @@ import com.axelor.apps.account.ebics.schema.h003.EbicsResponseDocument.EbicsResp
 import com.axelor.exception.AxelorException;
 
 /**
- * The <code>SPRResponseElement</code> is the response element
- * for an ebics subscriber revoking.
+ * The <code>ReceiptResponseElement</code> is the response element
+ * for ebics receipt request.
  *
  * @author Hachani
  *
  */
-public class SPRResponseElement extends DefaultResponseElement {
+public class ReceiptResponseElement extends DefaultResponseElement {
 
   /**
-   * Constructs a new SPR response element.
+   * Constructs a new <code>ReceiptResponseElement</code> object
    * @param factory the content factory
+   * @param name the element name
    */
-  public SPRResponseElement(ContentFactory factory) {
-    super(factory, "SPRResponse.xml");
+  public ReceiptResponseElement(ContentFactory factory, String name) {
+    super(factory, name);
   }
 
   @Override
   public void build() throws AxelorException {
     String			code;
     String			text;
+    EbicsResponse		response;
 
     parse(factory);
     response = ((EbicsResponseDocument)document).getEbicsResponse();
@@ -56,10 +58,16 @@ public class SPRResponseElement extends DefaultResponseElement {
     report();
   }
 
+  @Override
+  public void report() throws AxelorException {
+   if (!returnCode.equals(ReturnCode.EBICS_DOWNLOAD_POSTPROCESS_DONE)) {
+     returnCode.throwException();
+   }
+  }
+
   // --------------------------------------------------------------------
   // DATA MEMBERS
   // --------------------------------------------------------------------
 
-  private EbicsResponse				response;
-  private static final long 			serialVersionUID = 8632578696636481642L;
+  private static final long 		serialVersionUID = 2994403708414164919L;
 }

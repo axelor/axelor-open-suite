@@ -45,9 +45,9 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.traversal.NodeIterator;
 
-import com.axelor.apps.account.ebics.exception.EbicsException;
 import com.axelor.apps.account.ebics.messages.Messages;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.IException;
 
 
 /**
@@ -69,10 +69,10 @@ public class Utils {
    * @return the compressed input data
    * @throws IOException compression failed
    */
-  public static byte[] zip(byte[] toZip) throws EbicsException {
+  public static byte[] zip(byte[] toZip) throws AxelorException {
 
     if (toZip == null) {
-      throw new EbicsException("The input to be zipped cannot be null");
+      throw new AxelorException("The input to be zipped cannot be null", IException.CONFIGURATION_ERROR);
     }
 
     Deflater				compressor;
@@ -93,7 +93,7 @@ public class Utils {
     try {
       output.close();
     } catch (IOException e) {
-      throw new EbicsException(e.getMessage());
+      throw new AxelorException(e.getMessage(), IException.CONFIGURATION_ERROR);
     }
     compressor.end();
 
@@ -297,11 +297,11 @@ public class Utils {
    * @param date the given string date
    * @return the date value
    */
-  public static Date parse(String date) throws EbicsException {
+  public static Date parse(String date) throws AxelorException {
     try {
       return Constants.DEFAULT_DATE_FORMAT.parse(date);
     } catch (ParseException e) {
-      throw new EbicsException(e.getMessage());
+      throw new AxelorException(e.getMessage(), IException.CONFIGURATION_ERROR);
     }
   }
 

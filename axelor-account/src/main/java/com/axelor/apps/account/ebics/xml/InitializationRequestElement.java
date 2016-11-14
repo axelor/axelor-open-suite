@@ -141,6 +141,7 @@ public abstract class InitializationRequestElement extends DefaultEbicsRootEleme
 
       return cipher.doFinal(nonce);
     } catch (Exception e) {
+      e.printStackTrace();
       throw new AxelorException(e.getMessage(), IException.CONFIGURATION_ERROR );
     }
   }
