@@ -29,7 +29,7 @@
         </panel>
     </form>
     
-    <action-record name="" model="com.axelor.apps.hr.db.EmployeeBonusMgt">
+    <action-record name="action-employee-bonus-mgt-record-default" model="com.axelor.apps.hr.db.EmployeeBonusMgt">
     	<field name="company" expr="eval: __user__.activeCompany"/>
     </action-record>
     
@@ -40,5 +40,5 @@
     <action-method name="action-employee-bonus-mgt-method-print">
     	<call class="com.axelor.apps.hr.web.EmployeeBonusController" method="print"/>
     </action-method>
-
+    
 </object-views>

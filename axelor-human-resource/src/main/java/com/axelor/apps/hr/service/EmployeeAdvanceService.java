@@ -32,7 +32,7 @@ public class EmployeeAdvanceService {
 		
 		List<EmployeeAdvance> advanceList = Lists.newArrayList();
 		
-		advanceList = employeeAdvanceRepository.all().filter("self.employee.id = ?1 AND self.remainingAmount > 0 AND self.date < ?2 AND self.statusSelect = ?3 ", employee.getId(), expense.getPeriod().getToDate(), EmployeeAdvanceRepository.STATUS_VALIDATED ).fetch() ;
+		advanceList = employeeAdvanceRepository.all().filter("self.employee.id = ?1 AND self.remainingAmount > 0 AND self.date < ?2 AND self.statusSelect = ?3 AND self.typeSelect = ?4", employee.getId(), expense.getPeriod().getToDate(), EmployeeAdvanceRepository.STATUS_VALIDATED, EmployeeAdvanceRepository.TYPE_OCCASIONAL ).fetch() ;
 		
 		if ( advanceList != null && !advanceList.isEmpty() ){
 			

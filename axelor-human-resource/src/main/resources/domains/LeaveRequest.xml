@@ -15,7 +15,6 @@
       <date name="toDate" title="Date to (Included)" />
       <integer name="endOnSelect" title="End On" selection="hr.start.on.select" required="true" default="2"/>
       <decimal name="duration" title="Duration" scale="1" precision="5"/>
-      <many-to-one name="leaveReason" ref="com.axelor.apps.hr.db.LeaveReason" title="Reason" />
       <string name="comments" title="Comments" large="true"/>
       <many-to-one name="company" ref="com.axelor.apps.base.db.Company"/>
 	  <integer name="injectConsumeSelect" title="Inject/Consume" selection="hrs.leave.reason.inject.consume.select" default="1"/>
@@ -25,6 +24,7 @@
       <date name="refusalDate" title="Refusal Date" readonly="true"  />
       <string name="groundForRefusal" title="Ground For Refusal" large="true"/>
       <many-to-one name="event" ref="com.axelor.apps.crm.db.Event" title="Event" />
+      <many-to-one name="leaveLine" ref="com.axelor.apps.hr.db.LeaveLine" title="Leave line" />
       
       <string name="fullName" namecolumn="true" readonly="true">
       <![CDATA[
