@@ -132,6 +132,8 @@
   		    <field name="location" domain="self.company = :company and self.typeSelect = 1" form-view="location-form" grid-view="location-grid" readonlyIf="statusSelect == 3" if-module="axelor-supplychain"/>
   		    <field name="deliveryDate"/>
   		    <field name="deliveryCondition" colSpan="12"/>
+  		    <field name="shipmentMode"/>
+			<field name="freightCarrierMode" domain="self.shipmentMode = :shipmentMode"/>
   		    <panel-dashlet action="action-view-show-stock-move-line" title="Stock movement" colSpan="12" if-module="axelor-supplychain"/>
       	</panel>
 	      
@@ -558,7 +560,9 @@
     		if="clientPartner != null &amp;&amp; __repo__.of(AccountingSituation).all().filter('self.company.id = ?1 AND self.partner.id = ?2', company?.id, clientPartner?.id).fetchOne()?.companyBankDetails != null"/>
     	<field name="companyBankDetails" expr="eval: company?.defaultBankDetails"
     		if="clientPartner == null || __repo__.of(AccountingSituation).all().filter('self.company.id = ?1 AND self.partner.id = ?2', company?.id, clientPartner?.id).fetchOne()?.companyBankDetails == null"/>
-    	<field name="contactPartner" expr="eval:null" />	
+    	<field name="contactPartner" expr="eval:null" />
+    	<field name="shipmentMode" expr="eval: clientPartner?.shipmentMode"/>	
+    	<field name="freightCarrierMode" expr="eval: clientPartner?.freightCarrierMode"/>
     </action-record>
     
     <action-record name="action-sale-order-record-hide-discount" model="com.axelor.apps.sale.db.SaleOrder">

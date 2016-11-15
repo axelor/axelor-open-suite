@@ -77,6 +77,8 @@
 			<field name="deliveryDate" colSpan="3"/>
 	        <field name="location" domain="self.company = :company and self.typeSelect = 1" if-module="axelor-supplychain" colSpan="3" form-view="location-form" grid-view="location-grid"/>
 	        <field name="location.address" if-module="axelor-supplychain" form-view="address-form" grid-view="address-grid"/>
+  		    <field name="shipmentMode"/>
+			<field name="freightCarrierMode" domain="self.shipmentMode = :shipmentMode"/>
 	    </panel>	  
 		<panel-tabs>
 			<panel name="content" title="Content" colSpan="12">
@@ -242,6 +244,8 @@
     	<field name="companyBankDetails" expr="eval: company?.defaultBankDetails"
     		if="supplierPartner == null || __repo__.of(AccountingSituation).all().filter('self.company.id = ?1 AND self.partner.id = ?2', company?.id, supplierPartner?.id).fetchOne()?.companyBankDetails == null"/>
  		<field name="contactPartner" expr="eval:null" />
+    	<field name="shipmentMode" expr="eval: supplierPartner?.shipmentMode"/>	
+    	<field name="freightCarrierMode" expr="eval: supplierPartner?.freightCarrierMode"/>
  	</action-record>
     
     <action-record name="action-purchase-order-record-validate" model="com.axelor.apps.purchase.db.PurchaseOrder">

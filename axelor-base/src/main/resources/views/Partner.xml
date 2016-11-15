@@ -133,7 +133,6 @@
 							<field name="isDefaultAddr" widget="toggle" x-icon="fa-star-o" colSpan="1" hideIf="$readonly()"  />
 				        </editor>
 					</field>
-					<field name="deliveryDelay" showIf="isSupplier"/>
 				</panel>
 				<panel name="generalContactDetails" title="General contact details" colSpan="12">
 					<field name="fixedPhone" colSpan="3" placeholder="+33100000000" pattern="^\+?(?:[0-9]{2,3}(?:\s|\.)?){3,6}[0-9]{2,3}$" onChange="action-partner-record-normalize-fixed-phone-number"/>
@@ -205,6 +204,13 @@
 			</panel>
 			<panel name="clientPortalAccess" title="Client portal access" if-module="axelor-client-portal" if="__config__.general.getClientPortalManagement()">
 				<field name="password" widget="password"/>
+			</panel>
+			<panel name="Delivery" title="Delivery">
+				<field name="deliveryDelay" showIf="isSupplier"/>
+				<spacer/>
+				<field name="shipmentMode"/>
+				<field name="freightCarrierMode" domain="self.shipmentMode = :shipmentMode"/>
+			
 			</panel>
 		</panel-tabs>
 	</form>
