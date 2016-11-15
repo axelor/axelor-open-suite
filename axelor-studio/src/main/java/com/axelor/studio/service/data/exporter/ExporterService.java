@@ -26,7 +26,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.commons.lang.ArrayUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -223,7 +222,13 @@ public class ExporterService {
 				docKey = getDocKey(vals);
 			}
 			if (docMap.containsKey(docKey)) {
-				return (String[]) ArrayUtils.addAll(vals, docMap.get(docKey));
+				String[] help = docMap.get(docKey);
+				if (help[0] != null) {
+					vals[CommonService.HELP] = help[0];
+				}
+				if (help[1] != null) {
+					vals[CommonService.HELP_FR] = help[1];
+				}
 			}
 		}
 		
@@ -344,17 +349,10 @@ public class ExporterService {
 			log.debug("Loading key: {}", key);
 			String lastKey = key;
 			
-			for (int count = 0; count < reader.getTotalLines(key); count ++) {
+			for (int count = 1; count < reader.getTotalLines(key); count ++) {
 				
 				String[] row = reader.read(key, count);
-				if (row == null) {
-					continue;
-				}
-				
-				if (count == 0) {
-					if (row.length > CommonService.HELP) {
-						docMap.put(lastKey, Arrays.copyOfRange(row, CommonService.HELP, row.length));
-					}
+				if (row == null || row.length < CommonService.HEADERS.length) {
 					continue;
 				}
 				
@@ -380,8 +378,8 @@ public class ExporterService {
 				}
 				
 				lastKey = model + "," + view + "," + getFieldType(type) + "," +  name;
-				if (row.length > CommonService.HELP) {
-					docMap.put(lastKey, Arrays.copyOfRange(row, CommonService.HELP, row.length));
+				if (row[CommonService.HELP] != null || row[CommonService.HELP_FR] != null) {
+					docMap.put(lastKey, new String[] {row[CommonService.HELP], row[CommonService.HELP_FR]});
 				}
 			}
 		}

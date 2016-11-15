@@ -248,7 +248,7 @@ public class AsciidocExporter {
 		}
 		
 		String doc = values[CommonService.HELP];
-		if (Strings.isNullOrEmpty(doc)) {
+		if (lang != null && lang.equals("fr")) {
 			doc =  values[CommonService.HELP_FR];
 		}
 		if (Strings.isNullOrEmpty(doc)) {
