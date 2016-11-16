@@ -5,9 +5,12 @@
 
   <module name="base" package="com.axelor.apps.base.db"/>
 
-  <entity name="ShipmentMode" sequential="true" lang="java">
-  	<string name="name" title="Shipment Mode"/>
-  	<one-to-many name="freightCarrierMode" title="Freight Carrier Mode" ref="com.axelor.apps.base.db.FreightCarrierMode"/>
-  </entity>
+  <entity name="Partner" lang="java" cachable="true">
+    <many-to-one name="shipmentMode" ref="com.axelor.apps.stock.db.ShipmentMode"/>
+    <many-to-one name="freightCarrierMode" ref="com.axelor.apps.stock.db.FreightCarrierMode"/>
+    
 
+  </entity>
+  
 </domain-models>
+    

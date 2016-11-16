@@ -3,11 +3,11 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
     
-    <grid name="shipment-mode-grid" title="Shipment Mode grid" model="com.axelor.apps.base.db.ShipmentMode">
+    <grid name="shipment-mode-grid" title="Shipment Mode grid" model="com.axelor.apps.stock.db.ShipmentMode">
     	<field name="name"/>
     </grid>
     
-    <form name="shipment-mode-form" model="com.axelor.apps.base.db.ShipmentMode" title="Shipment Mode form">
+    <form name="shipment-mode-form" model="com.axelor.apps.stock.db.ShipmentMode" title="Shipment Mode form">
     	<field name="name"/>
     </form>
  </object-views>

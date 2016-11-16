@@ -463,5 +463,13 @@
         <bind to="statusSelectBudget" column="statusSelectBudget"/>
 	</input>
 	
+	
+    
+    <input file="base_freightCarrier.csv" separator=";" type="com.axelor.apps.stock.db.FreightCarrier" search="self.importId = :importId"/>
+    
+    <input file="base_shipmentMode.csv" separator=";" type="com.axelor.apps.stock.db.ShipmentMode" search="self.importId = :importId"/>
+    
+    <input file="base_freightCarrierMode.csv" separator=";" type="com.axelor.apps.stock.db.FreightCarrierMode" search="self.importId = :importId"/>
+	
 </csv-inputs>
 

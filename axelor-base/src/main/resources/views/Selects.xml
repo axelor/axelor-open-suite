@@ -168,13 +168,6 @@
 		<option value="1">Company</option>
 		<option value="2">Individual</option>
 	</selection>
-	
-	<selection name="shipment.mode.select">
-		<option value="1">Home delivery</option>
-		<option value="2">Express home delivery</option>
-		<option value="3">International home delivery</option>
-		<option value="4">Delivery point</option>
-	</selection>
 
 	<selection name='iadministration.yes.no.select'>
 		<option value='1'>Yes</option>

@@ -3,11 +3,12 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_4.0.xsd">
 
-  <module name="base" package="com.axelor.apps.base.db"/>
+  <module name="stock" package="com.axelor.apps.stock.db"/>
 
   <entity name="FreightCarrier" sequential="true" lang="java">
+  	<string name="importId"/>
   	<string name="name" title="Freight Carrier" />
-  	<one-to-many name="freightCarrierMode" ref="com.axelor.apps.base.db.FreightCarrierMode"/>
+  	<one-to-many name="freightCarrierMode" ref="com.axelor.apps.stock.db.FreightCarrierMode"/>
   </entity>
 
 </domain-models>

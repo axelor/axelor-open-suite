@@ -3,11 +3,12 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
     
-    <grid name="freight-carrier-grid" title="Freight Carrier grid" model="com.axelor.apps.base.db.FreightCarrier">
+    <grid name="freight-carrier-grid" title="Freight Carrier grid" model="com.axelor.apps.stock.db.FreightCarrier">
     	<field name="name"/>
     </grid>
     
-    <form name="freight-carrier-form" model="com.axelor.apps.base.db.FreightCarrier" title="Freight Carrier form">
+    <form name="freight-carrier-form" model="com.axelor.apps.stock.db.FreightCarrier" title="Freight Carrier form">
     	<field name="name"/>
+    	<field name="freightCarrierMode"/>
     </form>
  </object-views>

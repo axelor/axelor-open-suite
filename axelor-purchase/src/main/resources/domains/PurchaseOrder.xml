@@ -32,9 +32,6 @@
   	<string name="externalReference" title="Supplier ref."/>
     <string name="internalReference" title="Internal Ref." help="true"/>
     <integer name="receiptState" title="Receipt State" selection="purchase.order.receipt.state" readonly="true" default="1"/>
-    
-	<many-to-one name="shipmentMode" ref="com.axelor.apps.base.db.ShipmentMode"/>
-    <many-to-one name="freightCarrierMode" ref="com.axelor.apps.base.db.FreightCarrierMode"/>
   	
   	
   	

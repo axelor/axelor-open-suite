@@ -88,11 +88,5 @@
     
     <input file="base_industrySector.csv" separator=";" type="com.axelor.apps.base.db.IndustrySector"  search="self.importId = :importId"/>
     
-    <input file="base_freightCarrier.csv" separator=";" type="com.axelor.apps.base.db.FreightCarrier" />
-    
-    <input file="base_shipmentMode.csv" separator=";" type="com.axelor.apps.base.db.ShipmentMode"/>
-    
-    <input file="base_freightCarrierMode.csv" separator=";" type="com.axelor.apps.base.db.FreightCarrierMode"/>
-    
 </csv-inputs>
 	

@@ -77,8 +77,8 @@
 			<field name="deliveryDate" colSpan="3"/>
 	        <field name="location" domain="self.company = :company and self.typeSelect = 1" if-module="axelor-supplychain" colSpan="3" form-view="location-form" grid-view="location-grid"/>
 	        <field name="location.address" if-module="axelor-supplychain" form-view="address-form" grid-view="address-grid"/>
-  		    <field name="shipmentMode"/>
-			<field name="freightCarrierMode" domain="self.shipmentMode = :shipmentMode"/>
+  		    <field name="shipmentMode" if-module="axelor-stock"/>
+			<field name="freightCarrierMode" domain="self.shipmentMode = :shipmentMode" if-module="axelor-stock"/>
 	    </panel>	  
 		<panel-tabs>
 			<panel name="content" title="Content" colSpan="12">
