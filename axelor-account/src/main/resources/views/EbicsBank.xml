@@ -15,6 +15,7 @@
 		<panel title="General informations">
 			<field name="name" />
 			<field name="url" />
+			<field name="certificate" widget="binary-link"/>
 			<field name="hostId" help="Identifies the bank" />
 		</panel>
 		<panel title="Server public key certificate dedicated to authentication" itemSpan="12">

@@ -1,6 +1,6 @@
 package com.axelor.apps.account.ebics.service;
 
-import java.io.FileNotFoundException;
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.math.BigInteger;
@@ -16,6 +16,7 @@ import java.util.Date;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.jdom.JDOMException;
 
+import com.axelor.apps.account.db.EbicsBank;
 import com.axelor.apps.account.db.EbicsUser;
 import com.axelor.apps.account.db.repo.EbicsBankRepository;
 import com.axelor.apps.account.db.repo.EbicsUserRepository;
@@ -26,6 +27,8 @@ import com.axelor.apps.account.ebics.client.KeyManagement;
 import com.axelor.apps.account.ebics.client.OrderType;
 import com.axelor.apps.account.ebics.io.IOUtils;
 import com.axelor.exception.AxelorException;
+import com.axelor.meta.MetaFiles;
+import com.axelor.meta.db.MetaFile;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -108,7 +111,7 @@ public class EbicsService {
 	    session.setProduct(product);
 	    
 	    keyManager = new KeyManagement(session);
-        keyManager.sendINI(null);
+        keyManager.sendINI(null, getCertificate(ebicsUser));
 	    
         ebicsUser.setIsInitialized(true);
 	    userRepo.save(ebicsUser);
@@ -133,7 +136,7 @@ public class EbicsService {
 	    keyManager = new KeyManagement(session);
 
 	    try {
-			keyManager.sendHIA(null);
+			keyManager.sendHIA(null , getCertificate(user));
 		} catch (IOException | AxelorException | JDOMException e) {
 			e.printStackTrace();
 		}
@@ -157,11 +160,10 @@ public class EbicsService {
 	    keyManager = new KeyManagement(session);
 
 	    try {
-	      keyManager.sendHPB();
+	      keyManager.sendHPB(getCertificate(user));
 	      bankRepo.save(user.getEbicsPartner().getEbicsBank());
 	    } catch (Exception e) {
 	    	e.printStackTrace();
-	      return;
 	    }
 
 	  }
@@ -180,7 +182,7 @@ public class EbicsService {
 	    keyManager = new KeyManagement(session);
 
 	    try {
-	      keyManager.lockAccess();
+	      keyManager.lockAccess(getCertificate(user));
 	    } catch (Exception e) {
 	      e.printStackTrace();
 	      return;
@@ -207,7 +209,7 @@ public class EbicsService {
 	    
 	    String path = "/home/axelor/test.txt";
 	    try {
-	      transferManager.sendFile(IOUtils.getFileContent(path), OrderType.FUL);
+	      transferManager.sendFile(IOUtils.getFileContent(path), OrderType.FUL, getCertificate(user));
 	    } catch (IOException | AxelorException e) {
 	    	e.printStackTrace();
 	    }
@@ -232,8 +234,15 @@ public class EbicsService {
 	    transferManager = new FileTransfer(session);
 
 	    String path = "/home/axelor/test.txt";
-	    
-	    transferManager.fetchFile(orderType, start, end, new FileOutputStream(path));
+	    transferManager.fetchFile(orderType, start, end, new FileOutputStream(path), getCertificate(user));
 	  }
+	 
+	 private File getCertificate(EbicsUser user) {
+		 
+		 EbicsBank bank = user.getEbicsPartner().getEbicsBank();
+		 MetaFile cert = bank.getCertificate();
+
+		 return MetaFiles.getPath(cert).toFile();
+	 }
 
 }
