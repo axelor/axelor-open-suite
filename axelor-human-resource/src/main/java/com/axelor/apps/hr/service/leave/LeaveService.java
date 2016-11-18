@@ -84,4 +84,5 @@ public interface LeaveService {
 
 	public Message sendRefusalEmail(LeaveRequest leaveRequest) throws AxelorException, ClassNotFoundException, InstantiationException, IllegalAccessException, MessagingException, IOException;
 		
+	public boolean willHaveEnoughDays(LeaveRequest leaveRequest);
 }

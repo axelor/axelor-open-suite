@@ -31,25 +31,19 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.Reconcile;
-import com.axelor.apps.account.db.repo.BankOrderRepository;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
-import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.PaymentModeRepository;
 import com.axelor.apps.account.service.ReconcileService;
-import com.axelor.apps.account.service.bankOrder.BankOrderCreateService;
-import com.axelor.apps.account.service.bankOrder.BankOrderLineService;
-import com.axelor.apps.account.service.bankOrder.BankOrderService;
+import com.axelor.apps.account.service.bankorder.BankOrderCreateService;
+import com.axelor.apps.account.service.bankorder.BankOrderService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.move.MoveCancelService;
 import com.axelor.apps.account.service.move.MoveLineService;
 import com.axelor.apps.account.service.move.MoveService;
 import com.axelor.apps.account.service.payment.PaymentModeService;
-import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.db.repo.BankDetailsRepository;
-import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -64,10 +58,7 @@ public class InvoicePaymentValidateServiceImpl  implements  InvoicePaymentValida
 	protected MoveCancelService moveCancelService;
 	protected ReconcileService reconcileService;
 	protected BankOrderCreateService bankOrderCreateService;
-	protected BankOrderLineService bankOrderLineService;
 	protected BankOrderService bankOrderService;
-	protected BankDetailsRepository bankDetailsRepo;
-	protected BankOrderRepository bankOrderRepo;
 	protected InvoicePaymentToolService invoicePaymentToolService;
 
 	
@@ -76,8 +67,8 @@ public class InvoicePaymentValidateServiceImpl  implements  InvoicePaymentValida
 	@Inject
 	public InvoicePaymentValidateServiceImpl(PaymentModeService paymentModeService, MoveService moveService, MoveLineService moveLineService, 
 			AccountConfigService accountConfigService, InvoicePaymentRepository invoicePaymentRepository, MoveCancelService moveCancelService, 
-			ReconcileService reconcileService, BankOrderCreateService bankOrderCreateService, BankOrderLineService bankOrderLineService, 
-			BankOrderService bankOrderService, BankDetailsRepository bankDetailsRepo, InvoicePaymentToolService invoicePaymentToolService)  {
+			ReconcileService reconcileService, BankOrderCreateService bankOrderCreateService,  
+			BankOrderService bankOrderService, InvoicePaymentToolService invoicePaymentToolService)  {
 		
 		this.paymentModeService = paymentModeService;
 		this.moveService = moveService;
@@ -87,9 +78,7 @@ public class InvoicePaymentValidateServiceImpl  implements  InvoicePaymentValida
 		this.moveCancelService = moveCancelService;
 		this.reconcileService = reconcileService;
 		this.bankOrderCreateService = bankOrderCreateService;
-		this.bankOrderLineService = bankOrderLineService;
 		this.bankOrderService = bankOrderService;
-		this.bankDetailsRepo = bankDetailsRepo;
 		this.invoicePaymentToolService = invoicePaymentToolService;
 		
 	}
@@ -128,11 +117,11 @@ public class InvoicePaymentValidateServiceImpl  implements  InvoicePaymentValida
 		
 		Company company = invoicePayment.getInvoice().getCompany();
 				
-		if(accountConfigService.getAccountConfig(company).getGenerateMoveForInvoicePayment())  {
+		if(accountConfigService.getAccountConfig(company).getGenerateMoveForInvoicePayment() && !paymentMode.getGenerateBankOrder())  {
 			this.createMoveForInvoicePayment(invoicePayment);
 		}
-		if(invoicePayment.getPaymentMode().getGenerateBankOrder() == true)  {
-			this.createBankOrderForInvoicePayment(invoicePayment);
+		if(paymentMode.getGenerateBankOrder())  {
+			this.createBankOrder(invoicePayment);
 		}
 		
 		invoicePaymentToolService.updateAmountPaid(invoicePayment.getInvoice());
@@ -202,61 +191,19 @@ public class InvoicePaymentValidateServiceImpl  implements  InvoicePaymentValida
 	 * 		
 	 */
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public BankOrder createBankOrderForInvoicePayment(InvoicePayment invoicePayment) throws AxelorException {
-		Invoice invoice = invoicePayment.getInvoice();
-		Company company = invoice.getCompany();
-		PaymentMode paymentMode = invoicePayment.getPaymentMode();
-		Partner partner = invoice.getPartner();
-		LocalDate paymentDate = invoicePayment.getPaymentDate();
-		int orderType = paymentMode.getOrderType();
-		BigDecimal amount = invoicePayment.getAmount();
-		User signatory= accountConfigService.getAccountConfig(company).getDefaultSignatoryUser();
+	public void createBankOrder(InvoicePayment invoicePayment) throws AxelorException  {
 		
-		int partnerType = 0;
-		int statusSelect = 0;
-		BankDetails senderBankDetails = new BankDetails();
-		if(invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND || invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_CLIENT_SALE){
-			partnerType = BankOrderRepository.CUSTOMER;
-		}else{
-			partnerType = BankOrderRepository.SUPPLIER;
-		}
-		if (orderType == BankOrderRepository.SEPA_CREDIT_TRANSFER || orderType == BankOrderRepository.INTERNATIONAL_CREDIT_TRANSFER){
-			statusSelect = BankOrderRepository.STATUS_AWAITING_SIGNATURE;
-		}
-		else{
-			statusSelect = BankOrderRepository.STATUS_DRAFT;
-		}
-		if(invoice.getBankDetails() != null){
-			senderBankDetails = invoice.getBankDetails() ;
-		}else{
-			senderBankDetails = company.getDefaultBankDetails();
-		}
-		BankOrder bankOrder = bankOrderCreateService.
-				createBankOrder( 
-						orderType , 
-						paymentMode,
-						partnerType,
-						paymentDate,
-						statusSelect,
-						0,
-						company,
-						senderBankDetails,
-						amount,
-						signatory,
-						invoice.getCurrency(),
-						invoice.getInvoiceId(),
-						invoice.getInvoiceId());
+		BankOrder bankOrder = bankOrderCreateService.createBankOrder(invoicePayment);
 		
-		BankDetails receiverBankDetails = bankDetailsRepo.all().filter("self.partner = ?1 AND self.isDefault = true", partner).fetchOne();
-		
-		bankOrder.addBankOrderLineListItem(bankOrderLineService.createBankOrderLine(partner, receiverBankDetails, amount, null, null));
+		bankOrderService.confirm(bankOrder);
 		
 		invoicePayment.setBankOrder(bankOrder);
-		log.debug("BANK ORDER INVOICE PAYMENT {}", bankOrder );
 		
 		invoicePaymentRepository.save(invoicePayment);
-		return bankOrder;
+		
 	}
+	
+	
 	
 	
 }

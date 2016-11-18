@@ -26,7 +26,7 @@
  		    <field name="bankOrder" form-view="bank-order-form" grid-view="bank-order-grid" showIf="bankOrder"/>
 			<field name="statusSelect" showIf="(paymentMode.typeSelect == 2 || paymentMode.typeSelect  == 9) &amp;&amp; paymentMode.inOutSelect == 2"/>
 			<field name="statusSelect" selection-in="[0,1,2]" hideIf="(paymentMode.typeSelect == 2 || paymentMode.typeSelect  == 9) &amp;&amp; paymentMode.inOutSelect == 2"/>
-			<button name="cancel" icon="fa-times-circle" title="Cancel" onClick="action-advance-payment-method-cancel" readonlyIf="statusSelect == 2"/>
+			<button name="cancel" icon="fa-times-circle" title="Cancel" onClick="action-invoice-payment-method-cancel" readonlyIf="statusSelect == 2"/>
  		</panel>
 	</form>
 	

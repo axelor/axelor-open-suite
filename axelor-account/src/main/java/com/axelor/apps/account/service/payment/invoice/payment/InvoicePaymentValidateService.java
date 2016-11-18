@@ -32,6 +32,6 @@ public interface InvoicePaymentValidateService   {
 	public Move createMoveForInvoicePayment(InvoicePayment invoicePayment) throws AxelorException;
 	
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public BankOrder createBankOrderForInvoicePayment(InvoicePayment invoicePayment) throws AxelorException;
+	public void createBankOrder(InvoicePayment invoicePayment) throws AxelorException;
 	
 }

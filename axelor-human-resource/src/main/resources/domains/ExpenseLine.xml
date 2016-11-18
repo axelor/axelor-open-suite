@@ -25,7 +25,6 @@
 	  
 		<!-- integration of KilometricAllowance -->
   		<many-to-one name="kilometricAllowParam" ref="com.axelor.apps.hr.db.KilometricAllowParam" title="Kilometric Allowance Param"/>
-        <decimal name="kilometricRate" title="Rate" precision="20" scale="3" />
         <integer name="kilometricTypeSelect" title="Type"  selection="hr.kilometric.allowance.type.select"/>
         <decimal name="distance" title="KM number" min="0"/>
         <string name="fromCity" title="Starting city with Zip" />

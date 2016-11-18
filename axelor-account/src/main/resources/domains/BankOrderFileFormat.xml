@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_4.0.xsd">
+
+  <module name="account" package="com.axelor.apps.account.db"/>
+
+  <entity name="BankOrderFileFormat" lang="java" sequential="true">
+  
+  	<integer name="importId" />
+  	<integer name="orderTypeSelect" title="Order Type" selection="iaccount.bank.order.type.select"/>
+  	<string name="orderFileFormatSelect" title="File format" selection="bank.order.file.format.select"/>
+	<string name="name" title="Name"/>
+	
+	<many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" title="Default Currency"/>
+	
+	
+<!-- 	 AFB320 -->
+	<string name="qualifyingOfDate" title="Qualifying of date"/>
+	<boolean name="isMultiDate" title="Multi dates"/>
+	<boolean name="isMultiCurrency" title="Multi currencies"/>
+	
+  	
+  	<boolean name="displayAdditionnalInformations" title="Display additionnal informations ?"/>
+	
+  	<boolean name="displayBankOrderEconomicReason" title="Display economic reason ?"/>
+	<many-to-one name="bankOrderEconomicReason" ref="com.axelor.apps.account.db.BankOrderEconomicReason" title="Default economic reason"/>
+	
+	<boolean name="displayReceiverCountry" title="Display receiver country ?"/>
+  	<many-to-one name="receiverCountry" ref="com.axelor.apps.base.db.Country" title="Default receiver country"/>
+	
+  	<boolean name="displayPaymentModeSelect" title="Display payment Mode ?"/>
+  	<integer name="paymentModeSelect" title="Default payment Mode" selection="account.bank.order.line.payment.mode.select"/>
+  	
+  	<boolean name="displayFeesImputationModeSelect" title="Display fees imputation ?"/>
+  	<integer name="feesImputationModeSelect" title="Default fees imputation" selection="account.bank.order.line.fees.imputation.mode.select"/>
+  	
+	<boolean name="displayFurtherInformations" title="Display further informations ?"/>
+  	
+	 
+ 	<extra-code><![CDATA[
+	
+	   	// BANK ORDER FILE FORMAT SELECT
+		public static final String FILE_FORMAT_pain_001_001_02 = "pain.001.001.02";
+		public static final String FILE_FORMAT_pain_001_001_03 = "pain.001.001.03";
+		public static final String FILE_FORMAT_AFB_320 = "AFB320";
+		
+	]]></extra-code>
+    
+    
+  </entity>
+
+</domain-models>

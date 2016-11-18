@@ -26,6 +26,8 @@
   	
   	<many-to-one name="bankOrder" ref="com.axelor.apps.account.db.BankOrder" readonly="true" title="Bank Order"/>
   	
+  	<finder-method name="findByBankOrder" using="bankOrder" all="true"/>
+  	
   	 <extra-code>
    		<![CDATA[
    		

@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.hr.web.leave;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
@@ -27,6 +28,7 @@ import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.ExtraHours;
 import com.axelor.apps.hr.db.LeaveRequest;
 import com.axelor.apps.hr.db.repo.LeaveRequestRepository;
+import com.axelor.apps.hr.exception.IExceptionMessage;
 import com.axelor.apps.hr.service.HRMenuTagService;
 import com.axelor.apps.hr.service.leave.LeaveService;
 import com.axelor.apps.message.db.Message;
@@ -35,6 +37,7 @@ import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.IException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -198,6 +201,15 @@ public class LeaveController {
 			LeaveRequest leaveRequest = request.getContext().asType(LeaveRequest.class);
 			leaveRequest = leaveRequestRepositoryProvider.get().find(leaveRequest.getId());
 			
+			if(leaveRequest.getLeaveLine().getQuantity().subtract(leaveRequest.getDuration()).compareTo(BigDecimal.ZERO ) == -1 ){
+				if(!leaveRequest.getLeaveLine().getLeaveReason().getAllowNegativeValue() && !leaveService.willHaveEnoughDays(leaveRequest)){
+					response.setAlert( String.format( I18n.get(IExceptionMessage.LEAVE_ALLOW_NEGATIVE_VALUE_REASON), leaveRequest.getLeaveLine().getLeaveReason().getLeaveReason(), leaveRequest.getLeaveLine().getLeaveReason().getInstruction()  ) );
+					return;
+				}else{
+					response.setNotify( String.format(I18n.get(IExceptionMessage.LEAVE_ALLOW_NEGATIVE_ALERT), leaveRequest.getLeaveLine().getLeaveReason().getLeaveReason()) );
+				}
+			}
+			
 			leaveService.confirm(leaveRequest);
 
 			Message message = leaveService.sendConfirmationEmail(leaveRequest);
@@ -264,7 +276,7 @@ public class LeaveController {
 		LeaveService leaveService = leaveServiceProvider.get();
 		LeaveRequest leave = request.getContext().asType(LeaveRequest.class);
 		leave = Beans.get(LeaveRequestRepository.class).find(leave.getId());
-		if (leave.getLeaveReason().getManageAccumulation()){
+		if (leave.getLeaveLine().getLeaveReason().getManageAccumulation()){
 			leaveService.manageCancelLeaves(leave);
 		}
 		leaveService.cancelLeave(leave);

@@ -104,8 +104,8 @@
     <!-- Onglet Facturation -->
     <boolean name="allowCancelVentilatedInvoice" title="Allow cancelation of ventilated invoice"/>
     <boolean name="allowRemovalValidatedMove" title="Allow removal of validated move"/>
-    <boolean name="generateMoveForInvoicePayment" title="Generate move for payment on invoice"/>
-    <boolean name="generateMoveForAdvancePayment" title="Generate move for advance payment"/>
+    <boolean name="generateMoveForInvoicePayment" title="Generate move for payment on invoice" default="true"/>
+    <boolean name="generateMoveForAdvancePayment" title="Generate move for advance payment" default="true"/>
     
       <!--  Onglet Ordres bancaires -->
   	<many-to-one name="defaultSignatoryUser" ref="com.axelor.auth.db.User" title="Default signatory"/>
