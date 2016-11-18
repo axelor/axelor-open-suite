@@ -200,39 +200,12 @@
 		<error message="Please input first character as capital and other as lower case" if="firstName != null &amp;&amp; !firstName.matches('^[A-Z][a-z. \\-,_;0-9]*')" action="action-check-string-camel-case-first-name-clear" />
 	</action-validate>
 	
-	<action-group name="action-check-string-capital-case">
-		<action if="name != null &amp;&amp; !name.matches('^[A-Z \\-,.;_0-9]*')" name="action-check-string-capital-case-name-clear"/>
-		<action if="addressL2 != null &amp;&amp; !addressL2.matches('^[A-Z \\-,.;_0-9]*')"  name="action-check-string-capital-case-name-addressL2"/>
-		<action if="addressL3 != null &amp;&amp; !addressL3.matches('^[A-Z \\-,.;_0-9]*')"  name="action-check-string-capital-case-name-addressL3"/>
-		<action if="addressL4 != null &amp;&amp; !addressL4.matches('^[A-Z \\-,.;_0-9]*')"  name="action-check-string-capital-case-name-addressL4"/>
-		<action if="addressL5 != null &amp;&amp; !addressL5.matches('^[A-Z \\-,.;_0-9]*')"  name="action-check-string-capital-case-name-addressL5"/>
-		<action if="addressL6 != null &amp;&amp; !addressL6.matches('^[A-Z \\-,.;_0-9]*')"  name="action-check-string-capital-case-name-addressL6"/>
-	</action-group>
-	
 	<action-attrs name="action-check-duplicate-on-new-attrs" model="com.axelor.apps.base.db.Wizard">
     	<attribute name="value" for="$fieldsSet" expr="call:com.axelor.apps.base.web.GeneralController:setFields(object)" />
     </action-attrs>
     
 	<action-record name="action-check-string-camel-case-first-name-clear" model="com.axelor.apps.base.db.General">
 		<field name="firstName"  expr="eval:com.axelor.apps.tool.StringTool.deleteAccent(com.axelor.apps.tool.StringTool.toFirstUpper(firstName))"/>
-	</action-record>
-	<action-record name="action-check-string-capital-case-name-clear" model="com.axelor.apps.base.db.General">
-		<field name="name"  expr="eval:com.axelor.apps.tool.StringTool.deleteAccent(name.toUpperCase())"/>
-	</action-record>
-	<action-record name="action-check-string-capital-case-name-addressL2" model="com.axelor.apps.base.db.General">
-		<field name="addressL2"  expr="eval:com.axelor.apps.tool.StringTool.deleteAccent(addressL2.toUpperCase())"/>
-	</action-record>
-	<action-record name="action-check-string-capital-case-name-addressL3" model="com.axelor.apps.base.db.General">
-		<field name="addressL3"  expr="eval:com.axelor.apps.tool.StringTool.deleteAccent(addressL3.toUpperCase())"/>
-	</action-record>
-	<action-record name="action-check-string-capital-case-name-addressL4" model="com.axelor.apps.base.db.General">
-		<field name="addressL4"  expr="eval:com.axelor.apps.tool.StringTool.deleteAccent(addressL4.toUpperCase())"/>
-	</action-record>
-	<action-record name="action-check-string-capital-case-name-addressL5" model="com.axelor.apps.base.db.General">
-		<field name="addressL5"  expr="eval:com.axelor.apps.tool.StringTool.deleteAccent(addressL5.toUpperCase())"/>
-	</action-record>
-	<action-record name="action-check-string-capital-case-name-addressL6" model="com.axelor.apps.base.db.General">
-		<field name="addressL6" expr="eval:com.axelor.apps.tool.StringTool.deleteAccent(addressL6.toUpperCase())"/>
 	</action-record>
 	
 	<action-view name="action-general-check-duplicate-records" title="Check duplicate" model="com.axelor.apps.base.db.Wizard">

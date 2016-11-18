@@ -10,15 +10,15 @@ public class BankOrderManagementRepository extends BankOrderRepository {
 	
 	
 	@Override
-	public BankOrder save(BankOrder entity){
+	public BankOrder save(BankOrder entity)  {
 		
 		try {
 			
 			BankOrderService bankOrderService = Beans.get(BankOrderService.class);
 			bankOrderService.generateSequence(entity);
 			if(entity.getStatusSelect() == BankOrderRepository.STATUS_DRAFT || entity.getStatusSelect() == BankOrderRepository.STATUS_AWAITING_SIGNATURE)  {
-				entity.setAmount(bankOrderService.computeTotalAmount(entity));
-			}
+				bankOrderService.updateTotalAmounts(entity);
+			}		
 			
 			return super.save(entity);
 		} catch (Exception e) {

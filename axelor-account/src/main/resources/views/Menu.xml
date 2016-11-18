@@ -684,6 +684,69 @@
 		<view type="form" name="interbank-code-form"/>
 	</action-view>
 	
+	<menuitem name="account-conf-bank-order" parent="account-conf" title="Bank order" />
+	
+	<menuitem name="account-conf-bank-order-bank-order-file-format" parent="account-conf-bank-order"
+		title="Bank order file formats" action="account.conf.bank.order.bank.order.file.format" />
+	
+	<action-view name="account.conf.bank.order.bank.order.file.format" title="Bank order file formats"
+		model="com.axelor.apps.account.db.BankOrderFileFormat" >
+		<view type="grid" name="bank-order-file-format-grid"/>
+		<view type="form" name="bank-order-file-format-form"/>
+	</action-view>
+	
+	<menuitem name="account-conf-bank-order-bank-order-economic-reason" parent="account-conf-bank-order"
+		title="Bank Orders economic reasons" action="account.conf.bank.order.bank.order.economic.reason" />
+	
+	<action-view name="account.conf.bank.order.bank.order.economic.reason" title="Bank Orders economic reasons"
+		model="com.axelor.apps.account.db.BankOrderEconomicReason" >
+		<view type="grid" name="bank-order-economic-reason-grid"/>
+		<view type="form" name="bank-order-economic-reason-form"/>
+	</action-view>
+	
+	
+	
+	<menuitem name="account-conf-ebics" parent="account-conf" title="Ebics" />
+
+	<menuitem name="account-conf-ebics-ebics-user" parent="account-conf-ebics"
+		title="Ebics users" action="account.conf.ebics.ebics.user" />
+		
+	<menuitem name="account-conf-ebics-ebics-partner" parent="account-conf-ebics"
+		title="Ebics partners" action="account.conf.ebics.ebics.partner" />
+		
+	<menuitem name="account-conf-ebics-ebics-bank" parent="account-conf-ebics"
+		title="Ebics banks" action="account.conf.ebics.ebics.bank" />
+		
+	<menuitem name="account-conf-ebics-ebics-transfer-state" parent="account-conf-ebics"
+		title="Ebics transfer states" action="account.conf.ebics.ebics.transfer.state" />
+
+	<action-view name="account.conf.ebics.ebics.user" title="Ebics users"
+		model="com.axelor.apps.account.db.EbicsUser" >
+		<view type="grid" name="ebics-user-grid" />
+		<view type="form" name="ebics-user-form"/>
+	</action-view>
+	
+	<action-view name="account.conf.ebics.ebics.partner" title="Ebics partner"
+		model="com.axelor.apps.account.db.EbicsPartner" >
+		<view type="grid" name="ebics-partner-grid" />
+		<view type="form" name="ebics-partner-form"/>
+	</action-view>
+	
+	<action-view name="account.conf.ebics.ebics.bank" title="Ebics bank"
+		model="com.axelor.apps.account.db.EbicsBank" >
+		<view type="grid" name="ebics-bank-grid" />
+		<view type="form" name="ebics-bank-form"/>
+	</action-view>
+	
+	<action-view name="account.conf.ebics.ebics.transfer.state" title="Ebics transfer state"
+		model="com.axelor.apps.account.db.EbicsTransferState" >
+		<view type="grid" name="ebics-transfer-state-grid" />
+		<view type="form" name="ebics-transfer-state-form"/>
+	</action-view>
+	
+	
+	
+	
 	<menuitem name="admin-root-batch-accounting" parent="admin-root-batch"
 		title="Accounting batches" action="admin.root.batch.accounting" />
 
@@ -883,44 +946,7 @@
 		<view type="form" name="move-template-type-form"  />
 	</action-view>
 	
-	<menuitem name="account-root-ebics" parent="account-root"
-		title="Ebics" />
 
-	<menuitem name="account-root-ebics-ebics-user" parent="account-root-ebics"
-		title="Ebics users" action="account.root.ebics.ebics.user" />
-		
-	<menuitem name="account-root-ebics-ebics-partner" parent="account-root-ebics"
-		title="Ebics partners" action="account.root.ebics.ebics.partner" />
-		
-	<menuitem name="account-root-ebics-ebics-bank" parent="account-root-ebics"
-		title="Ebics banks" action="account.root.ebics.ebics.bank" />
-		
-	<menuitem name="account-root-ebics-ebics-transfer-state" parent="account-root-ebics"
-		title="Ebics transfer states" action="account.root.ebics.ebics.transfer.state" />
-
-	<action-view name="account.root.ebics.ebics.user" title="Ebics users"
-		model="com.axelor.apps.account.db.EbicsUser" >
-		<view type="grid" name="ebics-user-grid" />
-		<view type="form" name="ebics-user-form"/>
-	</action-view>
-	
-	<action-view name="account.root.ebics.ebics.partner" title="Ebics partner"
-		model="com.axelor.apps.account.db.EbicsPartner" >
-		<view type="grid" name="ebics-partner-grid" />
-		<view type="form" name="ebics-partner-form"/>
-	</action-view>
-	
-	<action-view name="account.root.ebics.ebics.bank" title="Ebics bank"
-		model="com.axelor.apps.account.db.EbicsBank" >
-		<view type="grid" name="ebics-bank-grid" />
-		<view type="form" name="ebics-bank-form"/>
-	</action-view>
-	
-	<action-view name="account.root.ebics.ebics.transfer.state" title="Ebics transfer state"
-		model="com.axelor.apps.account.db.EbicsTransferState" >
-		<view type="grid" name="ebics-transfer-state-grid" />
-		<view type="form" name="ebics-transfer-state-form"/>
-	</action-view>
 	
 	
 </object-views>

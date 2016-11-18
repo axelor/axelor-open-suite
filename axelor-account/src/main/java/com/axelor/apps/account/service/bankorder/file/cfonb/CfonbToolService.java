@@ -22,8 +22,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.axelor.apps.account.exception.IExceptionMessage;
-import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.service.administration.GeneralServiceImpl;
 import com.axelor.apps.tool.StringTool;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
@@ -184,6 +182,7 @@ public class CfonbToolService {
 		switch (format) {
 		
 		case FORMAT_ALPHA_NUMERIC:
+			zone = StringTool.deleteAccent(zone);
 			zone = StringTool.fillStringRight(zone, ' ', length);
 			break;
 
@@ -197,6 +196,18 @@ public class CfonbToolService {
 		}
 		
 		return zone;
+		
+	}
+	
+	public String createZone(String numOfZone, int value, String status, String format, int length) throws AxelorException  {
+		
+		return this.createZone(numOfZone, Integer.toString(value), status, format, length);
+		
+	}
+	
+	public String createZone(String numOfZone, BigDecimal value, String status, String format, int length) throws AxelorException  {
+		
+		return this.createZone(numOfZone, this.normalizeNumber(value), status, format, length);
 		
 	}
 

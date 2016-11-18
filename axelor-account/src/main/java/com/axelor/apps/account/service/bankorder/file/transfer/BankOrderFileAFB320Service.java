@@ -11,11 +11,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.account.db.BankOrder;
+import com.axelor.apps.account.db.BankOrderEconomicReason;
 import com.axelor.apps.account.db.BankOrderLine;
+import com.axelor.apps.account.db.repo.BankOrderLineRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.bankorder.file.BankOrderFileService;
 import com.axelor.apps.account.service.bankorder.file.cfonb.CfonbToolService;
 import com.axelor.apps.base.db.BankDetails;
+import com.axelor.apps.base.db.Country;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
@@ -34,8 +37,6 @@ public class BankOrderFileAFB320Service extends BankOrderFileService  {
 	protected PartnerService partnerService;
 	protected int sequence = 1;
 	protected final int NB_CHAR_PER_LINE = 320;
-	protected boolean isMultiCurrency = false;
-	protected boolean isMultiDate = false;
 
 	
 	@Inject
@@ -70,10 +71,10 @@ public class BankOrderFileAFB320Service extends BankOrderFileService  {
 
 			records.add(this.createDetailRecord(bankOrderLine));
 			
-//			if(!isChequePayment)  {  // TODO option sur les lignes d'ordres bancaires (case à cocher)
+			if(bankOrderLine.getPaymentModeSelect() == BankOrderLineRepository.PAYMENT_MODE_TRANSFER_OR_OTHER)  {
 				records.add(this.createDependentReceiverBankRecord(bankOrderLine));
-//			}
-			if(!Strings.isNullOrEmpty(bankOrderLine.getReceiverReference()))  {
+			}
+			if(this.useOptionnalFurtherInformationRecord(bankOrderLine))  {
 				records.add(this.createOptionnalFurtherInformationRecord(bankOrderLine));
 			}
 		}
@@ -86,6 +87,20 @@ public class BankOrderFileAFB320Service extends BankOrderFileService  {
 	}
 
 	
+	protected boolean useOptionnalFurtherInformationRecord(BankOrderLine bankOrderLine)  {
+		
+		if(Strings.isNullOrEmpty(bankOrderLine.getPaymentReasonLine1()) 
+			&& Strings.isNullOrEmpty(bankOrderLine.getPaymentReasonLine2()) 
+			&& Strings.isNullOrEmpty(bankOrderLine.getPaymentReasonLine3()) 
+			&& Strings.isNullOrEmpty(bankOrderLine.getPaymentReasonLine4()))  {
+				return false;
+		}
+		
+		return true;
+		
+	}
+	
+	
 	/**
 	 * Method to create a sender record for international transfer AFB320
 	 * @param company
@@ -93,7 +108,7 @@ public class BankOrderFileAFB320Service extends BankOrderFileService  {
 	 * @return
 	 * @throws AxelorException
 	 */
-	private String createSenderRecord() throws AxelorException  {
+	protected String createSenderRecord() throws AxelorException  {
 
 		try  {
 			// Zone 1 : Code enregistrement
@@ -103,7 +118,7 @@ public class BankOrderFileAFB320Service extends BankOrderFileService  {
 			senderRecord += cfonbToolService.createZone("2", "RF", cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_ALPHA_NUMERIC, 2);
 			
 			// Zone 3 : Numéro séquentiel
-			senderRecord += cfonbToolService.createZone("3", Integer.toString(sequence), cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_NUMERIC, 6);
+			senderRecord += cfonbToolService.createZone("3", sequence++, cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_NUMERIC, 6);
 			
 			// Zone 4 : Date de création
 			senderRecord += cfonbToolService.createZone("4", this.validationDateTime.toString("yyyyMMdd"), cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_NUMERIC, 8);
@@ -136,7 +151,7 @@ public class BankOrderFileAFB320Service extends BankOrderFileService  {
 			senderRecord += cfonbToolService.createZone("13", "", cfonbToolService.STATUS_OPTIONAL, cfonbToolService.FORMAT_ALPHA_NUMERIC, 16); // TODO
 			
 			// Zone 14 : Type identifiant du compte émetteur ("1" : IBAN, "2" : Identifiant national, "0" : Autre )
-			senderRecord += cfonbToolService.createZone("14", "1", cfonbToolService.STATUS_DEPENDENT, cfonbToolService.FORMAT_ALPHA_NUMERIC, 1);
+			senderRecord += cfonbToolService.createZone("14", "1", cfonbToolService.STATUS_DEPENDENT, cfonbToolService.FORMAT_ALPHA_NUMERIC, 1); //TODO
 			
 			// Zone 15 : Identifiant du compte émetteur 
 			senderRecord += cfonbToolService.createZone("15", senderBankDetails.getIban(), cfonbToolService.STATUS_DEPENDENT, cfonbToolService.FORMAT_ALPHA_NUMERIC, 34);
@@ -165,27 +180,26 @@ public class BankOrderFileAFB320Service extends BankOrderFileService  {
 			// "3" : multi dates et mono devise : la date est prise dans les enregistrements "Détail de l’opération"et la devise dans l'enregistrement "En-tête".
 			// "4" : multi dates et multi devises : la date et la devise sont prises dans les enregistrements "Détail de l’opération".
 			// NB : La valeur par défaut est "1". La possibilité d'utiliser les autres valeurs doit être vérifiée auprès de la banque d'acheminement. 
-			String zone19 = cfonbToolService.createZone("19", "1", cfonbToolService.STATUS_OPTIONAL, cfonbToolService.FORMAT_ALPHA_NUMERIC, 1);
-			senderRecord += zone19;
+			senderRecord += cfonbToolService.createZone("19", this.getOrderIndexType(isMultiDates, isMultiCurrencies), cfonbToolService.STATUS_OPTIONAL, cfonbToolService.FORMAT_ALPHA_NUMERIC, 1);
 			
 			// Zone 20 : Date :
 			// Cette donnée est obligatoire pour les remises mono-date (zone 19 de l'"Entête" = "1" ou "2"), pour les autres remises, elle ne doit pas être renseignée. 
-			String zone20 = "";	
-			if(zone19.equals("1") || zone19.equals("2"))  {
-				zone20 = bankOrderDate.toString("yyyyMMdd");
+			if(!isMultiDates)  {
+				senderRecord += cfonbToolService.createZone("20", bankOrderDate.toString("yyyyMMdd"), cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_NUMERIC, 8);
 			}
-			else  {  isMultiDate = true;  }
-			senderRecord += cfonbToolService.createZone("20", zone20, cfonbToolService.STATUS_DEPENDENT, cfonbToolService.FORMAT_NUMERIC, 8);
-	
+			else  {
+				senderRecord += cfonbToolService.createZone("20", "", cfonbToolService.STATUS_NOT_USED, cfonbToolService.FORMAT_NUMERIC, 8);
+			}
+			
 			// Zone 21 : Code devise des ordres de paiements 
 			// Norme ISO :
 			// Cette donnée est obligatoire pour les remises mono-devise (zone 19 de l'"Entête" = "1" ou "3"), pour les autres remises, elle ne doit pas être renseignée. 
-			String zone21 = "";
-			if(zone19.equals("1") || zone19.equals("3"))  {
-				zone21 = currency.getCode();												
+			if(!isMultiCurrencies)  {
+				senderRecord += cfonbToolService.createZone("21", bankOrderCurrency.getCode(), cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_ALPHA_NUMERIC, 3);
 			}
-			else  {  isMultiCurrency = true;  }
-			senderRecord += cfonbToolService.createZone("21", zone21, cfonbToolService.STATUS_DEPENDENT, cfonbToolService.FORMAT_ALPHA_NUMERIC, 3);
+			else  {
+				senderRecord += cfonbToolService.createZone("21", "", cfonbToolService.STATUS_NOT_USED, cfonbToolService.FORMAT_ALPHA_NUMERIC, 3);
+			}
 	
 			cfonbToolService.toUpperCase(senderRecord);
 			
@@ -200,13 +214,35 @@ public class BankOrderFileAFB320Service extends BankOrderFileService  {
 	
 	
 	/**
+	 * Indice type de remises :
+ 	 * "1" : mono date et mono devise : La date et la devise sont prises dans l'enregistrement "En-tête".
+ 	 * "2" : mono date et multi devises : La date est prise dans l'enregistrement "En-tête" et la "devise" dans les enregistrements "Détail de l’opération".
+ 	 * "3" : multi dates et mono devise : la date est prise dans les enregistrements "Détail de l’opération"et la devise dans l'enregistrement "En-tête".
+ 	 * "4" : multi dates et multi devises : la date et la devise sont prises dans les enregistrements "Détail de l’opération".
+ 	 * NB : La valeur par défaut est "1". La possibilité d'utiliser les autres valeurs doit être vérifiée auprès de la banque d'acheminement. 
+	 * @param isMultiDates
+	 * @param isMultiCurrencies
+	 * @return
+	 */
+	protected int getOrderIndexType(boolean isMultiDates,  boolean isMultiCurrencies)  {
+		
+		int orderIndexType = 1;
+		
+		if(isMultiDates)  {  orderIndexType += 2;  }
+		if(isMultiCurrencies)  {  orderIndexType += 1;  }
+		
+		return orderIndexType;
+	}
+	
+	
+	/**
 	 * Method to create a recipient record for international transfer AFB320
 	 * @param company
 	 * @param dateTime
 	 * @return
 	 * @throws AxelorException
 	 */
-	private String createDetailRecord(BankOrderLine bankOrderLine) throws AxelorException   {
+	protected String createDetailRecord(BankOrderLine bankOrderLine) throws AxelorException   {
  
 		try {
 			// Zone 1 : Code enregistrement
@@ -216,7 +252,7 @@ public class BankOrderFileAFB320Service extends BankOrderFileService  {
 			detailRecord += cfonbToolService.createZone("2", "RF", cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_ALPHA_NUMERIC, 2);
 			
 			// Zone 3 : Numéro séquentiel
-			detailRecord += cfonbToolService.createZone("3", Integer.toString(sequence), cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_NUMERIC, 6);
+			detailRecord += cfonbToolService.createZone("3", sequence++, cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_NUMERIC, 6);
 			
 			// Zone 4 : Type identifiant du compte du bénéficiaire ("1" : IBAN, "2" : Identifiant national, "0" : Autre )
 			detailRecord += cfonbToolService.createZone("4", "1", cfonbToolService.STATUS_DEPENDENT, cfonbToolService.FORMAT_ALPHA_NUMERIC, 1);
@@ -235,7 +271,9 @@ public class BankOrderFileAFB320Service extends BankOrderFileService  {
 			detailRecord += cfonbToolService.createZone("8", "", cfonbToolService.STATUS_OPTIONAL, cfonbToolService.FORMAT_ALPHA_NUMERIC, 17);
 			
 			// Zone 9 : Code pays du bénéficiaire (Norme ISO)
-			String countryCode = partnerService.getDefaultAddress(bankOrderLine.getPartner()).getAddressL7Country().getCode();
+			Country receiverCountry = bankOrderLine.getReceiverCountry();
+			String countryCode = "";
+			if(receiverCountry != null)  {   countryCode = receiverCountry.getAlpha2Code();  }
 			detailRecord += cfonbToolService.createZone("9", countryCode, cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_ALPHA_NUMERIC, 2);
 			
 			// Zone 10 : Référence de l'opération 
@@ -248,7 +286,7 @@ public class BankOrderFileAFB320Service extends BankOrderFileService  {
 			detailRecord += cfonbToolService.createZone("12", "", cfonbToolService.STATUS_NOT_USED, cfonbToolService.FORMAT_ALPHA_NUMERIC, 4);
 			
 			// Zone 13 : Montant de l'ordre (Le montant comporte le nombre de décimales indiqué dans la zone "Nombre de décimales" du même enregistrement)
-			detailRecord += cfonbToolService.createZone("13", cfonbToolService.normalizeNumber(bankOrderLine.getAmount()), cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_NUMERIC, 14);
+			detailRecord += cfonbToolService.createZone("13", bankOrderLine.getBankOrderAmount(), cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_NUMERIC, 14);
 			
 			// Zone 14 : Nombre de décimales 
 			detailRecord += cfonbToolService.createZone("14", "2", cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_NUMERIC, 1);
@@ -257,16 +295,21 @@ public class BankOrderFileAFB320Service extends BankOrderFileService  {
 			detailRecord += cfonbToolService.createZone("15", "", cfonbToolService.STATUS_NOT_USED, cfonbToolService.FORMAT_ALPHA_NUMERIC, 1);
 			
 			// Zone 16 : Code motif économique (3 caract. numériques ou valeur "NNN" )
-			detailRecord += cfonbToolService.createZone("16", "NNN", cfonbToolService.STATUS_OPTIONAL, cfonbToolService.FORMAT_ALPHA_NUMERIC, 3);
+			BankOrderEconomicReason bankOrderEconomicReason = bankOrderLine.getBankOrderEconomicReason();
+			String bankOrderEconomicReasonCode = "NNN";
+			if(bankOrderEconomicReason != null)  {  
+				bankOrderEconomicReasonCode = bankOrderEconomicReason.getCode();
+			}
+			detailRecord += cfonbToolService.createZone("16", bankOrderEconomicReasonCode, cfonbToolService.STATUS_OPTIONAL, cfonbToolService.FORMAT_ALPHA_NUMERIC, 3); 
 			
 			// Zone 17 : Zone réservée  
 			detailRecord += cfonbToolService.createZone("17", "", cfonbToolService.STATUS_NOT_USED, cfonbToolService.FORMAT_ALPHA_NUMERIC, 2);
 			
 			// Zone 18 : Mode de règlement ("0" = Virement ou autre sauf chèque, "1" ou "2" = par chèque)
-			detailRecord += cfonbToolService.createZone("18", "0", cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_ALPHA_NUMERIC, 1); // TODO option sur les lignes d'ordres bancaires (case à cocher)
+			detailRecord += cfonbToolService.createZone("18", bankOrderLine.getPaymentModeSelect(), cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_ALPHA_NUMERIC, 1);
 			
 			// Zone 19 : Code imputation des frais ("13" = Bénéficiaire (BEN), "14" = Emetteur et Bénéficiaire (SHA), "15" = Emetteur (OUR))
-			detailRecord += cfonbToolService.createZone("19", "15", cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_NUMERIC, 2); //TODO option
+			detailRecord += cfonbToolService.createZone("19", bankOrderLine.getFeesImputationModeSelect(), cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_NUMERIC, 2);
 			
 			// Zone 23 : Zone réservée 
 			detailRecord += cfonbToolService.createZone("23", "", cfonbToolService.STATUS_NOT_USED, cfonbToolService.FORMAT_ALPHA_NUMERIC, 57);
@@ -275,19 +318,26 @@ public class BankOrderFileAFB320Service extends BankOrderFileService  {
 			detailRecord += cfonbToolService.createZone("24-1", paymentMode.getBankOrderFileFormat().getQualifyingOfDate(), cfonbToolService.STATUS_OPTIONAL, cfonbToolService.FORMAT_ALPHA_NUMERIC, 3);
 			
 			// Zone 24-2 : Date ( Cette donnée est obligatoire pour les remises multi dates (zone 19 de l'"Entête" = "3" ou "4"), pour les autres remises, elle ne doit pas être renseignée.)
-			String zone24_2 = "";
-			if(isMultiDate)  {
-	//			zone24_2 = bankOrderLine.getDate();  //TODO
+			if(isMultiDates)  {
+				String bankOrderDate = "";
+				if(bankOrderLine.getBankOrderDate() != null)  {  bankOrderDate = bankOrderLine.getBankOrderDate().toString("yyyyMMdd");  } 
+				detailRecord += cfonbToolService.createZone("24-2", bankOrderDate, cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_NUMERIC, 8);
+			}  
+			else  {
+				detailRecord += cfonbToolService.createZone("24-2", "", cfonbToolService.STATUS_NOT_USED, cfonbToolService.FORMAT_NUMERIC, 8);
 			}
-			detailRecord += cfonbToolService.createZone("24-2", zone24_2, cfonbToolService.STATUS_DEPENDENT, cfonbToolService.FORMAT_NUMERIC, 8);
 			
 			// Zone 25 : Code devise du transfert (Cette donnée est obligatoire pour les remises multi devise (zone 19 de l'"Entête" = "2" ou "4"), pour les autres remises, elle ne doit pas être renseignée.
-			String zone25 = "";
-			if(isMultiCurrency)  {  
-	//			zone25 = bankOrderLine.getCurrency(); //TODO
+			if(isMultiCurrencies)  {  
+				String bankOrderCurrencyCode = "";
+				if(bankOrderLine.getBankOrderCurrency() != null)  {  bankOrderCurrencyCode = bankOrderLine.getBankOrderCurrency().getCode();  }
+				detailRecord += cfonbToolService.createZone("25", bankOrderCurrencyCode, cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_ALPHA_NUMERIC, 3);
+
 			}
-			detailRecord += cfonbToolService.createZone("25", zone25, cfonbToolService.STATUS_DEPENDENT, cfonbToolService.FORMAT_ALPHA_NUMERIC, 3);
-	
+			else  {
+				detailRecord += cfonbToolService.createZone("25", "", cfonbToolService.STATUS_NOT_USED, cfonbToolService.FORMAT_ALPHA_NUMERIC, 3);
+			}
+			
 			cfonbToolService.toUpperCase(detailRecord);
 			
 			cfonbToolService.testLength(detailRecord, NB_CHAR_PER_LINE);
@@ -306,7 +356,7 @@ public class BankOrderFileAFB320Service extends BankOrderFileService  {
 	 * @return
 	 * @throws AxelorException
 	 */
-	private String createDependentReceiverBankRecord(BankOrderLine bankOrderLine) throws AxelorException  {
+	protected String createDependentReceiverBankRecord(BankOrderLine bankOrderLine) throws AxelorException  {
 
 		try {
 		
@@ -319,7 +369,7 @@ public class BankOrderFileAFB320Service extends BankOrderFileService  {
 			totalRecord += cfonbToolService.createZone("2", "RF", cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_ALPHA_NUMERIC, 2);
 			
 			// Zone 3 : Numéro séquentiel 
-			totalRecord += cfonbToolService.createZone("3", Integer.toString(sequence), cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_NUMERIC, 6);
+			totalRecord += cfonbToolService.createZone("3", sequence++, cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_NUMERIC, 6);
 			
 			// Zone 4 : Nom de la banque du bénéficiaire (A ne renseigner que si le code BIC de la banque du bénéficiaire est absent. 
 			// Si cette zone est renseignée ainsi que le code BIC, elle est ignorée par la banque sauf en cas d'anomalie sur le code BIC.)
@@ -360,12 +410,10 @@ public class BankOrderFileAFB320Service extends BankOrderFileService  {
 	 * @return
 	 * @throws AxelorException
 	 */
-	private String createOptionnalFurtherInformationRecord(BankOrderLine bankOrderLine) throws AxelorException  {
+	protected String createOptionnalFurtherInformationRecord(BankOrderLine bankOrderLine) throws AxelorException  {
 
 		try {
 		
-			BankDetails receiverBankDetails = bankOrderLine.getReceiverBankDetails();
-			
 			// Zone 1 : Code enregistrement
 			String totalRecord = cfonbToolService.createZone("1", "07", cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_NUMERIC, 2);
 			
@@ -373,18 +421,21 @@ public class BankOrderFileAFB320Service extends BankOrderFileService  {
 			totalRecord += cfonbToolService.createZone("2", "RF", cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_ALPHA_NUMERIC, 2);
 			
 			// Zone 3 : Numéro séquentiel 
-			totalRecord += cfonbToolService.createZone("3", Integer.toString(sequence), cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_NUMERIC, 6);
+			totalRecord += cfonbToolService.createZone("3", sequence++, cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_NUMERIC, 6);
 			
 			// Zone 4 : Motif du règlement :
 			// Ces 4 zones de 35 caractères sont à la disposition du donneur d'ordre et à destination du bénéficiaire. Pour faciliter l'identification des références transmises
 			// dans ces zones, le donneur d'ordre peut utiliser les mots clé suivant : /INV/, /IPI/, /RFB/, /ROC/ 
-			totalRecord += cfonbToolService.createZone("4", this.computePaymentReason(bankOrderLine), cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_ALPHA_NUMERIC, 4*35);
+			totalRecord += cfonbToolService.createZone("4-1", bankOrderLine.getPaymentReasonLine1(), cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_ALPHA_NUMERIC, 35);
+			totalRecord += cfonbToolService.createZone("4-2", bankOrderLine.getPaymentReasonLine2(), cfonbToolService.STATUS_OPTIONAL, cfonbToolService.FORMAT_ALPHA_NUMERIC, 35);
+			totalRecord += cfonbToolService.createZone("4-3", bankOrderLine.getPaymentReasonLine3(), cfonbToolService.STATUS_OPTIONAL, cfonbToolService.FORMAT_ALPHA_NUMERIC, 35);
+			totalRecord += cfonbToolService.createZone("4-4", bankOrderLine.getPaymentReasonLine4(), cfonbToolService.STATUS_OPTIONAL, cfonbToolService.FORMAT_ALPHA_NUMERIC, 35);
 			
 			// Zone 5 : Zone non utilisée 
 			totalRecord += cfonbToolService.createZone("5", "", cfonbToolService.STATUS_NOT_USED, cfonbToolService.FORMAT_ALPHA_NUMERIC, 1);  //TODO update bank details model
 			
 			// Zone 6 : Zone non utilisée 
-			totalRecord += cfonbToolService.createZone("6", receiverBankDetails.getBic(), cfonbToolService.STATUS_NOT_USED, cfonbToolService.FORMAT_ALPHA_NUMERIC, 16);
+			totalRecord += cfonbToolService.createZone("6", "", cfonbToolService.STATUS_NOT_USED, cfonbToolService.FORMAT_ALPHA_NUMERIC, 16);
 			
 			// Zone 7 : Zone non utilisée 
 			totalRecord += cfonbToolService.createZone("7", "", cfonbToolService.STATUS_NOT_USED, cfonbToolService.FORMAT_ALPHA_NUMERIC, 8);  
@@ -395,8 +446,10 @@ public class BankOrderFileAFB320Service extends BankOrderFileService  {
 			// Zone 9 : Instructions particulières 
 			// Ces instructions particulières sont destinées à la banque d'exécution et éventuellement à la banque du bénéficiaire.
 			// Elles sont soumises à accord contractuel. Lorsqu'elles sont utilisées elles doivent respecter les règles d'utilisations ci-dessous (2)
-			totalRecord += cfonbToolService.createZone("9", this.computeSpecialInstructions(bankOrderLine), cfonbToolService.STATUS_OPTIONAL, cfonbToolService.FORMAT_ALPHA_NUMERIC, 3*35);
-			
+			totalRecord += cfonbToolService.createZone("9-1", bankOrderLine.getSpecialInstructionsLine1(), cfonbToolService.STATUS_OPTIONAL, cfonbToolService.FORMAT_ALPHA_NUMERIC, 35);
+			totalRecord += cfonbToolService.createZone("9-2", bankOrderLine.getSpecialInstructionsLine2(), cfonbToolService.STATUS_OPTIONAL, cfonbToolService.FORMAT_ALPHA_NUMERIC, 35);
+			totalRecord += cfonbToolService.createZone("9-3", bankOrderLine.getSpecialInstructionsLine3(), cfonbToolService.STATUS_OPTIONAL, cfonbToolService.FORMAT_ALPHA_NUMERIC, 35);
+
 			// Zone 10 : Zone réservée 
 			totalRecord += cfonbToolService.createZone("8", "", cfonbToolService.STATUS_NOT_USED, cfonbToolService.FORMAT_ALPHA_NUMERIC, 28);
 
@@ -432,15 +485,17 @@ public class BankOrderFileAFB320Service extends BankOrderFileService  {
 	 *		
 	 *	Les mots clé sont placés entre deux "/". Si un mot clé n'est pas placé en début d'une des zones de 35 caractères il	doit être précédé par un double "/" ("//").
 	 *	Exemple 1 :
-	 *		/INV/20040423 1234567 36 BOITES DE GATEAUX
+	 *		/INV/20040423 1234567 36 BOITES
+	 *		 DE GATEAUX
 	 *	 	/RFB/AKC2847312
 	 *	
 	 *	Exemple 2 :
-	 *		/INV/20040423 1234567 36 BOITES DE GATEAUX//RFB/AKC2847312 
+	 *		/INV/20040423 1234567 36 BOITES 
+	 *		DE GATEAUX//RFB/AKC2847312 
 	 * @param bankOrderLine
 	 * @return
 	 */
-	public String computePaymentReason(BankOrderLine bankOrderLine)  {
+	protected String computePaymentReason(BankOrderLine bankOrderLine)  {
 		
 		String paymentReason = "";
 		
@@ -456,18 +511,6 @@ public class BankOrderFileAFB320Service extends BankOrderFileService  {
 	}
 	
 	
-	public String computeSpecialInstructions(BankOrderLine bankOrderLine)  {
-		
-		String specialInstructions = "";
-		
-		if(!Strings.isNullOrEmpty(bankOrderLine.getReceiverReference()))  {
-			specialInstructions += bankOrderLine.getSpecialInstructions();
-		}
-		return specialInstructions;
-		
-	}
-	
-	
 	/**
 	 * Method to create a total record for internationnal transfer AFB320
 	 * @param company
@@ -475,7 +518,7 @@ public class BankOrderFileAFB320Service extends BankOrderFileService  {
 	 * @return
 	 * @throws AxelorException
 	 */
-	private String createTotalRecord() throws AxelorException  {
+	protected String createTotalRecord() throws AxelorException  {
 
 		try  {
 			// Zone 1 : Code enregistrement
@@ -485,7 +528,7 @@ public class BankOrderFileAFB320Service extends BankOrderFileService  {
 			totalRecord += cfonbToolService.createZone("2", "RF", cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_ALPHA_NUMERIC, 2);
 			
 			// Zone 3 : Numéro séquentiel 
-			totalRecord += cfonbToolService.createZone("3", Integer.toString(sequence), cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_NUMERIC, 6);
+			totalRecord += cfonbToolService.createZone("3", sequence, cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_NUMERIC, 6);
 			
 			// Zone 4 : Date de création
 			totalRecord += cfonbToolService.createZone("4", this.validationDateTime.toString("yyyyMMdd"), cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_NUMERIC, 8);
@@ -515,7 +558,7 @@ public class BankOrderFileAFB320Service extends BankOrderFileService  {
 			totalRecord += cfonbToolService.createZone("12", "", cfonbToolService.STATUS_OPTIONAL, cfonbToolService.FORMAT_ALPHA_NUMERIC, 16);  // TODO
 			
 			// Zone 13 : TOTAL DE CONTROLE 
-			totalRecord += cfonbToolService.createZone("13", cfonbToolService.normalizeNumber(totalAmount), cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_NUMERIC, 18);
+			totalRecord += cfonbToolService.createZone("13", arithmeticTotal, cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_NUMERIC, 18);
 			
 			// Zone 14 : Zone réservée 
 			totalRecord += cfonbToolService.createZone("14", "", cfonbToolService.STATUS_NOT_USED, cfonbToolService.FORMAT_ALPHA_NUMERIC, 49);

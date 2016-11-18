@@ -60,7 +60,6 @@ public class BankOrderServiceImpl implements BankOrderService  {
 		LocalDate brankOrderDate = bankOrder.getBankOrderDate();
 		Integer orderType = bankOrder.getOrderTypeSelect();
 		Integer partnerType = bankOrder.getPartnerTypeSelect();
-		BigDecimal amount = bankOrder.getAmount();
 		
 		if (brankOrderDate != null)  {
 			if(brankOrderDate.isBefore(LocalDate.now()))  {
@@ -87,11 +86,8 @@ public class BankOrderServiceImpl implements BankOrderService  {
 		if(bankOrder.getSenderBankDetails() == null)  {
 			throw new AxelorException(I18n.get(IExceptionMessage.BANK_ORDER_BANK_DETAILS_MISSING), IException.INCONSISTENCY);
 		}
-		if(bankOrder.getCurrency() == null)  {
+		if(!bankOrder.getIsMultiCurrency() && bankOrder.getBankOrderCurrency() == null)  {
 			throw new AxelorException(I18n.get(IExceptionMessage.BANK_ORDER_CURRENCY_MISSING), IException.INCONSISTENCY);
-		}
-		if(amount.compareTo(BigDecimal.ZERO) <= 0)  {
-				throw new AxelorException(I18n.get(IExceptionMessage.BANK_ORDER_AMOUNT_NEGATIVE), IException.INCONSISTENCY);
 		}
 		if(bankOrder.getSignatoryUser() == null)  {
 			throw new AxelorException(I18n.get(IExceptionMessage.BANK_ORDER_SIGNATORY_MISSING), IException.INCONSISTENCY);
@@ -101,22 +97,52 @@ public class BankOrderServiceImpl implements BankOrderService  {
 	
 	
 	@Override
-	public BigDecimal computeTotalAmount(BankOrder bankOrder) throws AxelorException  {
+	public BigDecimal computeBankOrderTotalAmount(BankOrder bankOrder) throws AxelorException  {
 
-		BigDecimal  totalAmount = BigDecimal.ZERO;
+		BigDecimal bankOrderTotalAmount = BigDecimal.ZERO;
 		
 		List<BankOrderLine> bankOrderLines = bankOrder.getBankOrderLineList();
 		if(bankOrderLines != null){
 			for (BankOrderLine bankOrderLine : bankOrderLines) {
-				BigDecimal  amount = bankOrderLine.getAmount();
+				BigDecimal  amount = bankOrderLine.getBankOrderAmount();
 				if(amount != null)  {
-					totalAmount = totalAmount.add(amount);
+					bankOrderTotalAmount = bankOrderTotalAmount.add(amount);
 				}
 					
 			}
 		}
-		return totalAmount;
+		return bankOrderTotalAmount;
 	}
+	
+	@Override
+	public BigDecimal computeCompanyCurrencyTotalAmount(BankOrder bankOrder) throws AxelorException  {
+
+		BigDecimal  companyCurrencyTotalAmount = BigDecimal.ZERO;
+		
+		List<BankOrderLine> bankOrderLines = bankOrder.getBankOrderLineList();
+		if(bankOrderLines != null){
+			for (BankOrderLine bankOrderLine : bankOrderLines) {
+				BigDecimal  amount = bankOrderLine.getCompanyCurrencyAmount();
+				if(amount != null)  {
+					companyCurrencyTotalAmount = companyCurrencyTotalAmount.add(amount);
+				}
+					
+			}
+		}
+		return companyCurrencyTotalAmount;
+	}
+	
+	
+	public void updateTotalAmounts(BankOrder bankOrder) throws AxelorException  {
+		bankOrder.setArithmeticTotal(this.computeBankOrderTotalAmount(bankOrder));
+		
+		if(!bankOrder.getIsMultiCurrency())  {
+			bankOrder.setBankOrderTotalAmount(bankOrder.getArithmeticTotal());
+		}
+		
+		bankOrder.setCompanyCurrencyTotalAmount(this.computeCompanyCurrencyTotalAmount(bankOrder));
+	}
+	
 	
 	@Override
 	@Transactional
@@ -135,20 +161,20 @@ public class BankOrderServiceImpl implements BankOrderService  {
 			throw new AxelorException(I18n.get(IExceptionMessage.BANK_ORDER_LINES_MISSING), IException.INCONSISTENCY);
 		}
 		else{
-			validateBankOrderLines(bankOrderLines, bankOrder.getOrderTypeSelect(), bankOrder.getAmount());
+			validateBankOrderLines(bankOrderLines, bankOrder.getOrderTypeSelect(), bankOrder.getArithmeticTotal());
 		}
 	}
 
 	
-	public void validateBankOrderLines(List<BankOrderLine> bankOrderLines, int orderType, BigDecimal bankOrderAmount)  throws AxelorException{
+	public void validateBankOrderLines(List<BankOrderLine> bankOrderLines, int orderType, BigDecimal arithmeticTotal)  throws AxelorException{
 		BigDecimal  totalAmount = BigDecimal.ZERO;
 		for (BankOrderLine bankOrderLine : bankOrderLines) {
 			
 			bankOrderLineService.checkPreconditions(bankOrderLine, orderType);
-			totalAmount = totalAmount.add(bankOrderLine.getAmount());
+			totalAmount = totalAmount.add(bankOrderLine.getBankOrderAmount());
 			
 		}
-		if (!totalAmount.equals(bankOrderAmount)){
+		if (!totalAmount.equals(arithmeticTotal))  {
 			throw new AxelorException(I18n.get(IExceptionMessage.BANK_ORDER_LINE_TOTAL_AMOUNT_INVALID), IException.INCONSISTENCY);
 		}
 	}

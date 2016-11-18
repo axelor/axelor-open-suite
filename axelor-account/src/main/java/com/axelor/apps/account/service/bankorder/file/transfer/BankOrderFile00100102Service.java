@@ -125,8 +125,8 @@ public class BankOrderFile00100102Service extends BankOrderFileService  {
 
 			// Amount
 			instdAmt = factory.createCurrencyAndAmount();
-			instdAmt.setCcy(currency.getCode());
-			instdAmt.setValue(bankOrderLine.getAmount());
+			instdAmt.setCcy(bankOrderCurrency.getCode());
+			instdAmt.setValue(bankOrderLine.getBankOrderAmount());
 
 			amt = factory.createAmountType2Choice();
 			amt.setInstdAmt(instdAmt);
@@ -177,7 +177,7 @@ public class BankOrderFile00100102Service extends BankOrderFileService  {
 		 */
 		grpHdr.setCreDtTm(datatypeFactory.newXMLGregorianCalendar(validationDateTime.toString("yyyy-MM-dd'T'HH:mm:ss")));
 		grpHdr.setNbOfTxs(Integer.toString(nbOfLines));
-		grpHdr.setCtrlSum(totalAmount);
+		grpHdr.setCtrlSum(arithmeticTotal);
 		grpHdr.setGrpg(Grouping1Code.MIXD);
 		grpHdr.setInitgPty(dbtr);
 
