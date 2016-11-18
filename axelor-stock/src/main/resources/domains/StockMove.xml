@@ -40,6 +40,9 @@
     
     <string name="description" title="Description" large="true"/>
     
+    <many-to-one name="shipmentMode" ref="com.axelor.apps.stock.db.ShipmentMode"/>
+    <many-to-one name="freightCarrierMode" ref="com.axelor.apps.stock.db.FreightCarrierMode"/>
+    
     <extra-code><![CDATA[
 	
 	   	// STATUS SELECT
