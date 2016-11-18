@@ -58,7 +58,7 @@
 	<input file="base_canton.csv" separator=";" type="com.axelor.apps.base.db.Canton" search="self.code = :code"/>
 
 	<input file="base_city.csv" separator=";" type="com.axelor.apps.base.db.City" search="self.importId = :importId">
-	   <bind to="country" search="self.code = 'FRA'" update="true" />
+	   <bind to="country" search="self.alpha3Code = 'FRA'" update="true" />
 	</input>
 	
 	<input file="base_address.csv" separator=";" type="com.axelor.apps.base.db.Address" search="self.importId = :importId" call="com.axelor.csv.script.ImportAddress:importAddress">
