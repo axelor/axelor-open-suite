@@ -65,8 +65,7 @@
 
     <action-group name="action-group-stock-inventory-realize-click">
     	<action name="save"/>
-    	<action name="action-inventory-method-generate-stock-move"/>
-    	<action name="action-inventory-record-realize"/>    	
+    	<action name="action-inventory-method-realize-stock-move"/>
     	<action name="save"/>
     </action-group>
 
@@ -95,10 +94,6 @@
 	<action-record name="action-inventory-record-plan" model="com.axelor.apps.stock.db.Inventory">
 	    <field name="statusSelect" expr="2"/>
 	</action-record>
-    
-    <action-record name="action-inventory-record-realize" model="com.axelor.apps.stock.db.Inventory">
-	    <field name="statusSelect" expr="3"/>
-	</action-record>
 	
 	<action-record name="action-inventory-record-cancel" model="com.axelor.apps.stock.db.Inventory">
 	    <field name="statusSelect" expr="4"/>
@@ -112,8 +107,8 @@
 		<call class="com.axelor.apps.stock.web.InventoryController" method="importFile"/>
 	</action-method>
 	
-	<action-method name="action-inventory-method-generate-stock-move">
-		<call class="com.axelor.apps.stock.web.InventoryController" method="generateStockMove"/>
+	<action-method name="action-inventory-method-realize-stock-move">
+		<call class="com.axelor.apps.stock.web.InventoryController" method="realizeInventory"/>
 	</action-method>
         
     <action-method name="action-inventory-method-fill-inventory">

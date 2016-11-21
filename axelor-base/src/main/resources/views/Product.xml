@@ -123,6 +123,7 @@
 				        <field name="isRawMaterial" showIf="productTypeSelect != 'service'" colSpan="6"/>
 				        <field name="excludeFromMrp" showIf="productTypeSelect == 'storable'" colSpan="6"/>
 				        <field name="mrpFamily" showIf="productTypeSelect == 'storable' &amp;&amp; !excludeFromMrp" colSpan="6" canNew="true"/>
+				        <field name="stockQuantityLastInventory"/>
 	      			</panel>
 	      			<panel colSpan="12" if-module="axelor-supplychain">
 				        <button name="showAllStockMoveLine" title="Show all stock move" colSpan="6" onClick="action-product-view-stock-move-line"/>

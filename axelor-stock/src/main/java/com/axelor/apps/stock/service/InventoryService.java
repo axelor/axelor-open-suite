@@ -239,6 +239,16 @@ public class InventoryService {
 		return null;
 
 	}
+	
+	@Transactional
+	public void realizeInventory(Inventory inventory) throws AxelorException {
+		this.generateStockMove(inventory);
+		this.updateProduct(inventory);
+		inventory.setStatusSelect(InventoryRepository.STATUS_REALIZED);
+		
+		inventoryRepo.save(inventory);
+	}
+	
 
 	public StockMove generateStockMove(Inventory inventory) throws AxelorException {
 
@@ -283,6 +293,17 @@ public class InventoryService {
 		return stockMove;
 	}
 
+	
+	public void updateProduct(Inventory inventory) throws AxelorException {
+		
+		for(InventoryLine inventoryLine : inventory.getInventoryLineList()){
+			Long inventoryProduct = inventoryLine.getProduct().getId();
+			Product product = Beans.get(ProductRepository.class).find(inventoryProduct);
+			
+			product.setStockQuantityLastInventory(inventoryLine.getRealQty());
+		}
+	}
+	
 
 	public StockMove createStockMoveHeader(Inventory inventory, Company company, Location toLocation, LocalDate inventoryDate, String name) throws AxelorException  {
 
