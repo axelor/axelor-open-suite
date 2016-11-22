@@ -19,11 +19,14 @@ package com.axelor.apps.stock.service;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
+import org.joda.time.LocalDateTime;
 
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.IAdministration;
@@ -245,6 +248,7 @@ public class InventoryService {
 		this.generateStockMove(inventory);
 		this.updateProduct(inventory);
 		inventory.setStatusSelect(InventoryRepository.STATUS_REALIZED);
+		this.updateProductDate(inventory);
 		
 		inventoryRepo.save(inventory);
 	}
@@ -301,6 +305,17 @@ public class InventoryService {
 			Product product = Beans.get(ProductRepository.class).find(inventoryProduct);
 			
 			product.setStockQuantityLastInventory(inventoryLine.getRealQty());
+		}
+	}
+	
+	public void updateProductDate(Inventory inventory) throws AxelorException {
+		for(InventoryLine inventoryLine : inventory.getInventoryLineList()){
+			Long inventoryProduct = inventoryLine.getProduct().getId();
+			Product product = Beans.get(ProductRepository.class).find(inventoryProduct);
+			
+			LocalDateTime date = new LocalDateTime(inventory.getDateT());
+			product.setDateLastInventory(date);
+			
 		}
 	}
 	
