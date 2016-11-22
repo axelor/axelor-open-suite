@@ -7,7 +7,7 @@
   
   <entity name="FilterOperator" cachable="true">
     <![CDATA[
-    	Object to store operators like =, !=, >, < ..etc with fields types in which they can be use.
+    	It represent an operator used by the {@link Filter}.  
     ]]>
   	<string name="name" title="Name" />
   	<string name="value" title="Value" />

@@ -7,8 +7,9 @@
   
   <entity name="WkfTransition" cachable="true">
       <![CDATA[
-    	This object store transition information of nodes of workflow. 
-    	Transition can be on button or on condition. So it will be used to generate button and actions. 
+    	WkfTransition stores the transition information for the nodes(state) of a workflow. 
+    	It contains source and destination nodes. The transition can be done on button click or on satisfaction of some conditions. 
+    	It is used to generate the buttons and actions required to call a transition.
       ]]>
       <string name="name" title="Name" required="true" />
       <string name="xmlId" title="xmlId" />

@@ -6,9 +6,6 @@
   <module name="meta" package="com.axelor.meta.db" />
   
   <entity name="MetaField" cachable="true">
-    <![CDATA[
-    Extended MetaField to add customized properties of field like defaultValue,min/max.. and field rights. 
-    ]]>
     <one-to-many name="rightManagementList" title="Right management" ref="com.axelor.studio.db.RightManagement" mappedBy="metaField"/>
     <string name="fieldType" title="Type" selection="field.type.selection"/>
     <boolean name="defaultBoolean" title="Default" nullable="true"/>

@@ -7,7 +7,7 @@
   
   <entity name="WkfTrackingTotal" cachable="true">
        <![CDATA[
-	 	It store number of time(count) particular status used for an object. 
+	 	It stores the number times a particular status used by an object. 
 	  ]]>
       <many-to-one name="wkfTracking" ref="WkfTracking" required="true"/>
       <string name="status" title="Status" required="true"/>

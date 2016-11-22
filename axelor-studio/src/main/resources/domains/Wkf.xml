@@ -7,8 +7,8 @@
   
   <entity name="Wkf" cachable="true">
       <![CDATA[
-	    This class is main workflow class. Workflow is linked with model and its formview. 
-		Workflow digram will be created using bpmnEditor widget and stored in bpmn xml format. 
+	    This class is a root class used to store the workflow. A workflow is linked with a model and a form view of that model. 
+	    Wkf stores the bpmn xml of the worklfow diagram. The nodes and transitions of a wkf will be created by using the bpmn xml. 
 	  ]]>
       <string name="name" title="Name" required="true" />
       <many-to-one name="metaModel" ref="com.axelor.meta.db.MetaModel" title="Object" required="true"/>

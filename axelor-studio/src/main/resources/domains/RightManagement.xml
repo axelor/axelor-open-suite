@@ -7,7 +7,8 @@
   
   <entity name="RightManagement" cachable="true">
     <![CDATA[
-    This object store group and permission for model and fields. Used by field and model builder.
+    RightManagement is used to generate a permission and apply it to the selected group or role.
+    Permission applied on model related to this class.   
     ]]>
     <many-to-one name="authGroup" ref="com.axelor.auth.db.Group" title="Group"/>
     <many-to-one name="authRole" ref="com.axelor.auth.db.Role" title="Role"/>

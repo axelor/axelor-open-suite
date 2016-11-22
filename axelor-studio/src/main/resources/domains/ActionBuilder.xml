@@ -7,7 +7,9 @@
   
   <entity name="ActionBuilder" cachable="true">
      <![CDATA[
-    	This object store custom action.  
+    	ActionBuilder represents the custom action. An object of this class is used to create actions supported by adk.
+    	It is used by other classes to link an event to the action. Actions are differentiated by types. 
+    	Supported output action types are 'action-record','action-view' and 'action-validate'. 
      ]]>
      <string name="name" title="Name" required="true"/>
      <many-to-one name="metaModel" ref="com.axelor.meta.db.MetaModel" title="Object" />

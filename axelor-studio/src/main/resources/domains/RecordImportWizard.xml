@@ -6,6 +6,9 @@
   <module name="studio" package="com.axelor.studio.db" />
   
   <entity name="RecordImportWizard" cachable="true">
+ 	<![CDATA[
+    	This class is used to import a data file. It also stores the import log.  
+    ]]>
 	<datetime name="importDate" title="Date" readonly="true"/>
 	<many-to-one name="importedBy" ref="com.axelor.auth.db.User" title="Imported by" readonly="true" />
 	<many-to-one name="importFile" ref="com.axelor.meta.db.MetaFile" title="Data file" required="true"/>

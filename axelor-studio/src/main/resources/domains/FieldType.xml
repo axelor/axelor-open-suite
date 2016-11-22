@@ -7,8 +7,8 @@
   
   <entity name="FieldType" cachable="true">
     <![CDATA[
-    	Object to store field types like OneToMany,ManyToOne,BigDecimal,..etc.
-    	Planning to replace this objec with select.  
+    	This class stores the field types like OneToMany,ManyToOne,BigDecimal,..etc.
+    	Planning to replace this with selection.  
     ]]>
     <string name="name" required="true" unique="true"/>
   </entity>

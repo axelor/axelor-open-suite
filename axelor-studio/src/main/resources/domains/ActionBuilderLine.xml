@@ -7,7 +7,7 @@
 
   <entity name="ActionBuilderLine" cachable="true">
      <![CDATA[
-    	This object store custom action lines.  
+   		It represents a sub detail of the {@link ActionBuilder}. Child tags of an action xml will be created by using this class.   
      ]]>
      <many-to-one name="actionBuilder" ref="ActionBuilder" title="Action Builder" />
      <many-to-one name="metaField" ref="com.axelor.meta.db.MetaField" title="Field" />

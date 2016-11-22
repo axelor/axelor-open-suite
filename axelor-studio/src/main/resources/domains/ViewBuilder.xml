@@ -7,7 +7,7 @@
   
   <entity name="ViewBuilder" cachable="true">
   	<![CDATA[
-    	This is main class to store all edited views. 
+    	This is main class that represent all edited views. 
     	At present four view types form,grid,chart and dasbhoard supported.  
      ]]>
     <many-to-one name="metaModel" title="Model" ref="com.axelor.meta.db.MetaModel"/>

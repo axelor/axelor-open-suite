@@ -7,7 +7,8 @@
 
   <entity name="ViewItem" cachable="true">
      <![CDATA[
-    	This object store custom view items like field, button, label with attributes readonlyIf, widget, colSpan, onChange ..etc. 
+    	This class represents a child tag of the view xml. A tag like field, button, label..etc.  
+    	It is used to generate a complete child tag along with the tag attributes. 
      ]]>
      <integer name="typeSelect" title="Type" selection="studio.view.item.type.select" />
      <many-to-one name="metaField" ref="com.axelor.meta.db.MetaField" title="Field"/>

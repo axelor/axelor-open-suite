@@ -7,9 +7,8 @@
   
   <entity name="WkfTracking" cachable="true">
       <![CDATA[
-	    This object store workflow realted tracking information for an object. 
-	    It will store information like number of time some status changed, or changed by which user with date and time.
-	    Entry will be created on onSave of related object. 
+	    WkfTracking stores the information related to the workflow instance for an object. 
+	    The information like number of time some status changed, the user who changed the state, date and time when state is changed. 
 	  ]]>
       <many-to-one name="wkf" ref="Wkf" required="true"/>
       <string name="recordModel" title="Record model" required="true"/>

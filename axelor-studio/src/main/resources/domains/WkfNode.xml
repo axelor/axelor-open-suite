@@ -7,8 +7,8 @@
   
   <entity name="WkfNode" cachable="true">
       <![CDATA[
-	    This is workflow node and it represents status of object linked with workflow. 
-	    It is also used to generate menu entry based on status. 
+	    WkfNode represents a state of the workflow. A workflow must contains at least two state. 
+	    It is also used to generate a menu entry based on state. 
 	  ]]>
       <string name="name" title="Name" required="true"/>
       <string name="title" title="Title" required="true" />

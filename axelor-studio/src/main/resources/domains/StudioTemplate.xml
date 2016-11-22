@@ -7,8 +7,8 @@
   
   <entity name="StudioTemplate" cachable="true">
     <![CDATA[
-    Object to export and import studio template in zip format. 
-    Studio template contains all work done by user using axelor-studio.  
+    Thi class isss used to export and import studio template in zip format. 
+    Studio template contains all custom work done.  
     ]]>
     <string name="name" title="Name" required="true" unique="true"/>
     <many-to-one name="metaFile" ref="com.axelor.meta.db.MetaFile" title="Template file" required="true"/>

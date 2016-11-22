@@ -7,9 +7,9 @@
   
   <entity name="ReportBuilder" cachable="true">
     <![CDATA[
-   	This class use to generate template from selected view and also add button in view. 
-   	It will store template and header/footer in html format. 
-   	It will be used to generate html report for a record.  
+   	ReportBuilder is used to generate a report in pdf format from the html template. 
+   	It contains all the important fields related with report. 
+   	It is also used for generating a html template from form view.   
     ]]>
     <string name="name" title="Name" required="true" unique="true" />
     <many-to-one name="metaModel" ref="com.axelor.meta.db.MetaModel" title="Model" required="true"/>

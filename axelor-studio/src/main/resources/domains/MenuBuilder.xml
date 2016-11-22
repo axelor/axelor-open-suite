@@ -7,8 +7,8 @@
   
   <entity name="MenuBuilder" cachable="true">
   	<![CDATA[
-    This object store edited menu with menu attributes. 
-    MetaMenu and 'menuitem' will be generated through this object. 
+    MenuBuilder represents the custom menu. It contains all the fields that are required to generate adk supported menu xml.
+    This class is used to refer a menu by other classes. 
     ]]>
     <string name="name" title="Name" required="true"/>
     <string name="title" title="Title" required="true"/>

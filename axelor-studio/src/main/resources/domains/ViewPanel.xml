@@ -7,7 +7,7 @@
   
   <entity name="ViewPanel" cachable="true">
     <![CDATA[
-    This object store panels of form view.
+     This class represents a panel of the form view. 
     ]]>
     <string name="name" title="Name"/>
     <string name="title" title="Title"/>
