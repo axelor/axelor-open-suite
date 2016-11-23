@@ -248,7 +248,6 @@ public class InventoryService {
 		this.generateStockMove(inventory);
 		this.updateProduct(inventory);
 		inventory.setStatusSelect(InventoryRepository.STATUS_REALIZED);
-		this.updateProductDate(inventory);
 		
 		inventoryRepo.save(inventory);
 	}
@@ -305,6 +304,9 @@ public class InventoryService {
 			Product product = Beans.get(ProductRepository.class).find(inventoryProduct);
 			
 			product.setStockQuantityLastInventory(inventoryLine.getRealQty());
+			
+			DateTime date = new DateTime(inventory.getDateT());
+			product.setDateLastInventory(date.toLocalDateTime());
 		}
 	}
 	
@@ -313,8 +315,7 @@ public class InventoryService {
 			Long inventoryProduct = inventoryLine.getProduct().getId();
 			Product product = Beans.get(ProductRepository.class).find(inventoryProduct);
 			
-			LocalDateTime date = new LocalDateTime(inventory.getDateT());
-			product.setDateLastInventory(date);
+			
 			
 		}
 	}
