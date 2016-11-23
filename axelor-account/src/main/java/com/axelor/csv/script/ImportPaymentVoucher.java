@@ -19,7 +19,6 @@ package com.axelor.csv.script;
 
 import java.util.Map;
 
-import com.axelor.apps.account.db.PaymentInvoice;
 import com.axelor.apps.account.db.PaymentVoucher;
 import com.axelor.apps.account.db.repo.PaymentVoucherRepository;
 import com.axelor.apps.account.service.payment.paymentvoucher.PaymentVoucherConfirmService;
@@ -42,15 +41,15 @@ public class ImportPaymentVoucher {
 			paymentVoucherLoadService.searchDueElements(paymentVoucher);
 			if(paymentVoucher.getStatusSelect() == PaymentVoucherRepository.STATUS_CONFIRMED)  {
 				
-				int sequence = 1;
+			/*	int sequence = 1;
 				
-				for(PaymentInvoice paymentInvoice : paymentVoucher.getPaymentInvoiceList())  {
+				for(PayVoucherDueElement paymentInvoice : paymentVoucher.getPaymentInvoiceToPayList())  {
 					paymentVoucher.addPaymentInvoiceToPayListItem(paymentVoucherLoadService.createPaymentInvoiceToPay(paymentInvoice, sequence++));
 					
 					// Remove the line from the due elements lists
 					paymentVoucher.removePaymentInvoiceListItem(paymentInvoice);
 				}
-				
+				*/
 				paymentVoucherConfirmService.confirmPaymentVoucher(paymentVoucher);
 				
 			}

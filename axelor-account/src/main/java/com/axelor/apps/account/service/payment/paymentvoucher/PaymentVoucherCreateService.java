@@ -28,7 +28,7 @@ import org.slf4j.LoggerFactory;
 import com.axelor.apps.account.db.CashRegister;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.MoveLine;
-import com.axelor.apps.account.db.PaymentInvoiceToPay;
+import com.axelor.apps.account.db.PayVoucherElementToPay;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.PaymentSchedule;
 import com.axelor.apps.account.db.PaymentScheduleLine;
@@ -48,14 +48,14 @@ public class PaymentVoucherCreateService {
 	private final Logger log = LoggerFactory.getLogger( getClass() );
 
 	protected MoveToolService moveToolService;
-	protected PaymentInvoiceToPayService paymentInvoiceToPayService;
+	protected PayVoucherElementToPayService paymentInvoiceToPayService;
 	protected PaymentVoucherConfirmService paymentVoucherConfirmService;
 	protected PaymentVoucherSequenceService paymentVoucherSequenceService;
 	protected PaymentVoucherRepository paymentVoucherRepository;
 	protected DateTime todayTime;
 
 	@Inject
-	public PaymentVoucherCreateService(GeneralService generalService, MoveToolService moveToolService, PaymentInvoiceToPayService paymentInvoiceToPayService, 
+	public PaymentVoucherCreateService(GeneralService generalService, MoveToolService moveToolService, PayVoucherElementToPayService paymentInvoiceToPayService, 
 			PaymentVoucherConfirmService paymentVoucherConfirmService, PaymentVoucherSequenceService paymentVoucherSequenceService,
 			PaymentVoucherRepository paymentVoucherRepository) {
 
@@ -94,9 +94,9 @@ public class PaymentVoucherCreateService {
 
 		paymentVoucher.setHasAutoInput(true);
 
-		List<PaymentInvoiceToPay> lines = new ArrayList<PaymentInvoiceToPay>();
+		List<PayVoucherElementToPay> lines = new ArrayList<PayVoucherElementToPay>();
 
-		lines.add(paymentInvoiceToPayService.createPaymentInvoiceToPay(paymentVoucher,
+		lines.add(paymentInvoiceToPayService.createPayVoucherElementToPay(paymentVoucher,
 				1,
 				invoice,
 				customerMoveLine,
@@ -104,7 +104,7 @@ public class PaymentVoucherCreateService {
 				customerMoveLine.getAmountRemaining(),
 				amount));
 
-		paymentVoucher.setPaymentInvoiceToPayList(lines);
+		paymentVoucher.setPayVoucherElementToPayList(lines);
 
 		paymentVoucherRepository.save(paymentVoucher);
 

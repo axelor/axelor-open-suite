@@ -31,7 +31,7 @@ import org.slf4j.LoggerFactory;
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
-import com.axelor.apps.account.db.PaymentInvoiceToPay;
+import com.axelor.apps.account.db.PayVoucherElementToPay;
 import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.move.MoveLineService;
@@ -160,7 +160,7 @@ public class PaymentService {
 	 * @throws AxelorException
 	 */
 	public int createExcessPaymentWithAmount(List<MoveLine> debitMoveLines, BigDecimal remainingPaidAmount, Move move, int moveLineNo, Partner partner,
-			Company company, PaymentInvoiceToPay paymentInvoiceToPay, Account account, LocalDate paymentDate) throws AxelorException  {
+			Company company, PayVoucherElementToPay paymentInvoiceToPay, Account account, LocalDate paymentDate) throws AxelorException  {
 		log.debug("In createExcessPaymentWithAmount");
 		int moveLineNo2 = moveLineNo;
 		BigDecimal remainingPaidAmount2 = remainingPaidAmount;

@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.account.service.payment;
+package com.axelor.apps.account.service.payment.paymentvoucher;
 
 import java.math.BigDecimal;
 
@@ -24,10 +24,10 @@ import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.MoveLine;
-import com.axelor.apps.account.db.PaymentInvoiceToPay;
+import com.axelor.apps.account.db.PayVoucherElementToPay;
 import com.axelor.apps.account.db.PaymentVoucher;
 
-public class PaymentInvoiceToPayService {
+public class PayVoucherElementToPayService {
 	
 	private final Logger log = LoggerFactory.getLogger( getClass() );
 	
@@ -37,18 +37,19 @@ public class PaymentInvoiceToPayService {
 	 * @param seq
 	 * @return
 	 */
-	public PaymentInvoiceToPay createPaymentInvoiceToPay(PaymentVoucher pv,int seq,Invoice invoice,MoveLine ml,BigDecimal totalAmount,BigDecimal remainingAmount,BigDecimal amountToPay){
+	public PayVoucherElementToPay createPayVoucherElementToPay(PaymentVoucher paymentVoucher, int seq, Invoice invoice, MoveLine moveLine, 
+			BigDecimal totalAmount, BigDecimal remainingAmount, BigDecimal amountToPay){
 		
 		log.debug("In  createPaymentInvoiceToPay....");
 		
-		if (pv != null && ml != null){
-			PaymentInvoiceToPay piToPay= new PaymentInvoiceToPay();
+		if (paymentVoucher != null && moveLine != null){
+			PayVoucherElementToPay piToPay= new PayVoucherElementToPay();
 			piToPay.setSequence(seq);
-			piToPay.setMoveLine(ml);
+			piToPay.setMoveLine(moveLine);
 			piToPay.setTotalAmount(totalAmount);
 			piToPay.setRemainingAmount(remainingAmount);
 			piToPay.setAmountToPay(amountToPay);
-			piToPay.setPaymentVoucher(pv);
+			piToPay.setPaymentVoucher(paymentVoucher);
 			
 			log.debug("End createPaymentInvoiceToPay IF.");
 			
