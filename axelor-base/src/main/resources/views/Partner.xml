@@ -209,8 +209,8 @@
 			<panel name="Delivery" title="Delivery">
 				<field name="deliveryDelay" showIf="isSupplier"/>
 				<spacer/>
-				<field name="shipmentMode" if-module="axelor-stock"/>
-				<field name="freightCarrierMode" domain="self.shipmentMode = :shipmentMode" if-module="axelor-stock"/>
+				<field name="shipmentMode" if-module="axelor-stock" form-view="shipment-mode-form" grid-view="shipment-mode-grid"/>
+				<field name="freightCarrierMode" domain="self.shipmentMode = :shipmentMode" if-module="axelor-stock" form-view="freight-carrier-mode-form" grid-view="freight-carrier-mode-form"/>
 			
 			</panel>
 		</panel-tabs>

@@ -132,8 +132,8 @@
   		    <field name="location" domain="self.company = :company and self.typeSelect = 1" form-view="location-form" grid-view="location-grid" readonlyIf="statusSelect == 3" if-module="axelor-supplychain"/>
   		    <field name="deliveryDate"/>
   		    <field name="deliveryCondition" colSpan="12"/>
-  		    <field name="shipmentMode" if-module="axelor-stock"/>
-			<field name="freightCarrierMode" domain="self.shipmentMode = :shipmentMode" if-module="axelor-stock"/>
+  		    <field name="shipmentMode" if-module="axelor-stock" form-view="shipment-mode-grid" grid-view="shipment-mode-grid"/>
+			<field name="freightCarrierMode" domain="self.shipmentMode = :shipmentMode" if-module="axelor-stock" form-view="freight-carrier-mode-form" grid-view="freight-carrier-mode-grid"/>
   		    <panel-dashlet action="action-view-show-stock-move-line" title="Stock movement" colSpan="12" if-module="axelor-supplychain"/>
       	</panel>
 	      
