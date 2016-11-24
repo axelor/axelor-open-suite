@@ -77,9 +77,9 @@
   	<decimal name="netWeight" title="Net weight"/>
   	
   	<many-to-one name="lengthUnit" ref="com.axelor.apps.base.db.Unit" title="Unit of length"/>
-  	<decimal name="length" title="Length"/>
-  	<decimal name="width" title="Width"/>
-  	<decimal name="height" title="Height"/>
+  	<decimal name="length" title="Length" default="0"/>
+  	<decimal name="width" title="Width" default="0"/>
+  	<decimal name="height" title="Height" default="0"/>
   	<decimal name="diameter" title="Diameter"/>
   	<decimal name="articleVolume" title="Article volume"/>
   	

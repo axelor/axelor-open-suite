@@ -201,10 +201,10 @@
 	  			</panel>
 			      <panel name="articleDimension" title="Article dimension" colSpan="6">
 			        <field name="lengthUnit" domain="self.lengthUnit.unitTypeSelect = 2" />
-			        <field name="length" readonlyIf="diameter > 0" onChange="action-product-calculate-volume"/>
-			        <field name="width" readonlyIf="diameter > 0" onChange="action-product-calculate-volume"/>
-			        <field name="height" onChange="action-product-calculate-volume"/>
-			        <field name="diameter" readonlyIf="length > 0 || width > 0" onChange="action-product-calculate-volume"/>
+			        <field name="length" readonlyIf="diameter > 0" onChange="action-product-record-calculate-volume-length"/>
+			        <field name="width" readonlyIf="diameter > 0" onChange="action-product-record-calculate-volume-length"/>
+			        <field name="height" onChange="action-product-record-calculate-volume-length"/>
+			        <field name="diameter" readonlyIf="length > 0 || width > 0" onChange="action-product-record-calculate-volume-diameter"/>
 			        <field name="articleVolume" readonly="true"/>
 			      </panel>
   			</panel>
@@ -400,9 +400,12 @@
 		<attribute name="title" for="salePrice" expr="eval: com.axelor.i18n.I18n.get('Sale price')" if="productTypeSelect != 'subscriptable'"/>
 	</action-attrs>
 	
-	<action-record name="action-product-calculate-volume" model="com.axelor.apps.base.db.Product">
-		<field name="articleVolume" if="length != null" expr="eval:length * width * height"/>
+	<action-record name="action-product-record-calculate-volume-diameter" model="com.axelor.apps.base.db.Product">
 		<field name="articleVolume" if="diameter != null" expr="eval: height * diameter"/>
+	</action-record>
+	
+	<action-record name="action-product-record-calculate-volume-length" model="com.axelor.apps.base.db.Product">
+		<field name="articleVolume" if="length > 0" expr="eval: length * width * height"/>
 	</action-record>
 	
     <search-filters name="products-filters" model="com.axelor.apps.base.db.Product" title="Products filters">
