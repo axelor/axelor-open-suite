@@ -40,7 +40,7 @@ public class PayVoucherElementToPayService {
 	public PayVoucherElementToPay createPayVoucherElementToPay(PaymentVoucher paymentVoucher, int seq, Invoice invoice, MoveLine moveLine, 
 			BigDecimal totalAmount, BigDecimal remainingAmount, BigDecimal amountToPay){
 		
-		log.debug("In  createPaymentInvoiceToPay....");
+		log.debug("In  createPayVoucherElementToPay....");
 		
 		if (paymentVoucher != null && moveLine != null){
 			PayVoucherElementToPay piToPay= new PayVoucherElementToPay();
@@ -51,12 +51,12 @@ public class PayVoucherElementToPayService {
 			piToPay.setAmountToPay(amountToPay);
 			piToPay.setPaymentVoucher(paymentVoucher);
 			
-			log.debug("End createPaymentInvoiceToPay IF.");
+			log.debug("End createPayVoucherElementToPay IF.");
 			
 			return piToPay;
 		}
 		else{
-			log.debug("End createPaymentInvoiceToPay ELSE.");
+			log.debug("End createPayVoucherElementToPay ELSE.");
 			return null;
 		}
 	}

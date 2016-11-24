@@ -93,7 +93,7 @@ public class PaymentVoucherControlService  {
 
 	/**
 	 * Fonction vérifiant si l'ensemble des lignes à payer ont le même compte et que ce compte est le même que celui du trop-perçu
-	 * @param paymentInvoiceToPayList
+	 * @param payVoucherElementToPayList
 	 * 			La liste des lignes à payer
 	 * @param moveLine
 	 * 			Le trop-perçu à utiliser

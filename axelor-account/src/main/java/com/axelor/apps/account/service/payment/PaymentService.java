@@ -160,7 +160,7 @@ public class PaymentService {
 	 * @throws AxelorException
 	 */
 	public int createExcessPaymentWithAmount(List<MoveLine> debitMoveLines, BigDecimal remainingPaidAmount, Move move, int moveLineNo, Partner partner,
-			Company company, PayVoucherElementToPay paymentInvoiceToPay, Account account, LocalDate paymentDate) throws AxelorException  {
+			Company company, PayVoucherElementToPay payVoucherElementToPay, Account account, LocalDate paymentDate) throws AxelorException  {
 		log.debug("In createExcessPaymentWithAmount");
 		int moveLineNo2 = moveLineNo;
 		BigDecimal remainingPaidAmount2 = remainingPaidAmount;
@@ -182,7 +182,7 @@ public class PaymentService {
 				invoiceName = debitMoveLine.getMove().getInvoice().getInvoiceId();
 			}
 			else  {
-				invoiceName = paymentInvoiceToPay.getPaymentVoucher().getRef();
+				invoiceName = payVoucherElementToPay.getPaymentVoucher().getRef();
 			}
 
 			MoveLine creditMoveLine = moveLineService.createMoveLine(move,
@@ -196,10 +196,10 @@ public class PaymentService {
 			move.getMoveLineList().add(creditMoveLine);
 
 			// Utiliser uniquement dans le cas du paiemnt des échéances lors d'une saisie paiement
-			if(paymentInvoiceToPay != null)  {
-				creditMoveLine.setPaymentScheduleLine(paymentInvoiceToPay.getMoveLine().getPaymentScheduleLine());
+			if(payVoucherElementToPay != null)  {
+				creditMoveLine.setPaymentScheduleLine(payVoucherElementToPay.getMoveLine().getPaymentScheduleLine());
 
-				paymentInvoiceToPay.setMoveLineGenerated(creditMoveLine);
+				payVoucherElementToPay.setMoveLineGenerated(creditMoveLine);
 			}
 
 			moveLineNo2++;
