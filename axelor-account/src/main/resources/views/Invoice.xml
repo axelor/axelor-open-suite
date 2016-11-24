@@ -159,7 +159,7 @@
 			<panel name="notes" title="Notes" colSpan="12">
 				<field name="note" showTitle="false" colSpan="12"/>
 			</panel>
-			<panel-related title="Payments details" field="invoicePaymentList" colSpan="12"  grid-view="invoice-payment-grid" form-view="invoice-payment-form" canNew="false" canRemove="false"  hideIf="statusSelect != 1 || statusSelect != 2" showIf="statusSelect == 3 || statusSelect == 4"/>
+			<panel-related title="Payments details" field="invoicePaymentList" colSpan="12"  grid-view="invoice-payment-grid" form-view="invoice-payment-form" canNew="false" canRemove="false" showIf="statusSelect == 3 || statusSelect == 4"/>
 			<panel  name="directDebit" title="Direct debit" showIf="statusSelect == 3" showTitle="false">
 				<panel name="paymentSchedule" title="Payment schedule" colSpan="12" >
 					<field name="schedulePaymentOk" readonly="true" showIf="schedulePaymentOk"/>
