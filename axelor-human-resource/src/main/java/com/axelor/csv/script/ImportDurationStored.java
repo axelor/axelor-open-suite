@@ -35,7 +35,7 @@ public class ImportDurationStored {
 		BigDecimal visibleDuration = new BigDecimal(duration);
 		long userId = Long.parseLong(userImp);
 		User user = Beans.get(UserRepository.class).find(userId);
-		BigDecimal durationStored = employeeService.getUserDuration(visibleDuration, user.getEmployee().getDailyWorkHours(), true);
+		BigDecimal durationStored = employeeService.getUserDuration(visibleDuration, user, true);
 		return durationStored.toString();
 	}
 }

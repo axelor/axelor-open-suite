@@ -291,7 +291,7 @@ public class TimesheetServiceImpl implements TimesheetService{
 				}
 				
 				if(noLeave && noPublicHoliday){
-					TimesheetLine timesheetLine = createTimesheetLine(projectTask, product, user, fromDate, timesheet, employeeService.getUserDuration(logTime, employee.getDailyWorkHours(), true), "");
+					TimesheetLine timesheetLine = createTimesheetLine(projectTask, product, user, fromDate, timesheet, employeeService.getUserDuration(logTime, user, true), "");
 					timesheetLine.setVisibleDuration(logTime);
 				}
 				
@@ -582,20 +582,14 @@ public class TimesheetServiceImpl implements TimesheetService{
   		}
 	}
 	
-	public List<TimesheetLine> computeVisibleDuration(Timesheet timesheet){
+	public List<TimesheetLine> computeVisibleDuration(Timesheet timesheet)  {
+		
 		List<TimesheetLine> timesheetLineList = timesheet.getTimesheetLineList();
 		
-		Employee timesheetEmployee = timesheet.getUser().getEmployee();
-		BigDecimal employeeDailyWorkHours;
-		
-		if (timesheetEmployee == null || timesheetEmployee.getDailyWorkHours() == null){
-			employeeDailyWorkHours = generalService.getGeneral().getDailyWorkHours();
-		}else{
-			employeeDailyWorkHours = timesheetEmployee.getDailyWorkHours();
-		}
-		
 		for(TimesheetLine timesheetLine : timesheetLineList)  {
-			timesheetLine.setVisibleDuration(employeeService.getUserDuration(timesheetLine.getDurationStored(), employeeDailyWorkHours, false));
+			
+			timesheetLine.setVisibleDuration(employeeService.getUserDuration(timesheetLine.getDurationStored(), timesheet.getUser(), false));
+			
 		}
 		
 		timesheetLineList = projectTaskService._sortTimesheetLineByDate(timesheetLineList);
