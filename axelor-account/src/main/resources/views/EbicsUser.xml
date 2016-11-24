@@ -16,7 +16,7 @@
 		<panel title="General informations" colSpan="12">
 			<field name="name" />
 			<field name="password" />
-			<field name="userId"  x-bind="{{userId|uppercase}}" pattern='[A-Z0-9]'/>
+			<field name="userId"  x-bind="{{userId|uppercase}}" pattern='^[A-Z0-9]+$'/>
 			<field name="securityMedium" />
 			<field name="dn" />
 			<field name="ebicsPartner" />
