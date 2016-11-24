@@ -170,8 +170,8 @@
 		</panel>
 		
 		<panel sidebar="true" name="attributes" title="Attributes">
-			<field name="callTypeSelect"  placeholder="Incoming / Outcoming"/>
-			 <field name="statusSelect" showTitle="false" selection-in="[1, 2, 3]"  placeholder="Planned / Realized / Canceled"/>
+			<field name="callTypeSelect"  placeholder="Type"/>
+			 <field name="statusSelect" showTitle="false" selection-in="[1, 2, 3]"  placeholder="Status"/>
 		</panel>
 		
 		<panel sidebar="true" name="linkedTo" title="Linked to">
