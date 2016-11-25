@@ -44,7 +44,7 @@ public class ModuleRecorderController {
 			e.printStackTrace();
 			response.setFlash(e.getMessage());
 		}
-
+		
 	}
 
 	public void reset(ActionRequest request, ActionResponse response) 

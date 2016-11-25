@@ -57,6 +57,8 @@ import com.google.inject.persist.Transactional;
 public class ModuleRecorderService {
 
 	private final Logger log = LoggerFactory.getLogger(getClass());
+	
+	private static final String[] ENV_VARS = new String[] { "CATALINA_HOME", "JAVA_HOME", "PGHOME" };
 
 	@Inject
 	private ModuleRecorderRepository moduleRecorderRepo;
@@ -82,8 +84,29 @@ public class ModuleRecorderService {
 	@Inject
 	private CommandService commandService;
 	
+	private Map<String, String> ENV = new HashMap<String, String>();
+	
+	@Inject
+	public ModuleRecorderService() {
+		
+		AppSettings settings = AppSettings.get();
+		String url = settings.get("db.default.url", "").replaceAll(".*?//", "");
+		ENV.putAll(System.getenv());
+        ENV.put("PGPORT", url.substring(url.indexOf(":") + 1, url.lastIndexOf("/")));
+        ENV.put("PGDATABASE", url.substring(url.lastIndexOf("/") + 1));
+        ENV.put("PGUSER", settings.get("db.default.user"));
+        ENV.put("PGPASSWORD", settings.get("db.default.password"));
+		
+		String resource = this.getClass().getClassLoader().getResource("").getFile();
+		File file = new File(resource);
+		ENV.put("CATALINA_APP", file.getParentFile().getParentFile().getAbsolutePath());
+		ENV.put("GRADLE_OPTS", "-Dfile.encoding=utf-8 -Djava.io.tmpdir=" + System.getProperty("java.io.tmpdir"));
+		
+	}
+	
 	public String update(ModuleRecorder recorder) throws AxelorException {
 		
+		setServerEnv();
 		String wkfProcess = wkfService.processWkfs();
 		if (wkfProcess != null) {
 			return I18n.get(String.format("Error in workflow processing: \n%s", wkfProcess));
@@ -121,6 +144,8 @@ public class ModuleRecorderService {
 	
 	public String reset(ModuleRecorder moduleRecorder) throws IOException, AxelorException {
 		
+		setServerEnv();
+		
 		for (MetaModule module : configService.getCustomizedModules()) {
 			File moduleDir = configService.getModuleDir(module.getName(), false);
 			log.debug("Deleting directory: {}",moduleDir.getPath());
@@ -136,6 +161,52 @@ public class ModuleRecorderService {
 		return restartServer(true);
 	}
 	
+	private void setServerEnv() throws AxelorException {
+		
+		String path = ENV.get("PATH");
+		if (path == null) {
+			path = "";
+		}
+		
+		if (SystemUtils.IS_OS_WINDOWS) {
+			String winPath = ENV.get("Path");
+			if (!path.contains(winPath)) {
+				path += File.pathSeparator + winPath;
+			}
+		}
+		
+		for (String var : ENV_VARS) {
+			path = setPath(path, var);
+		}
+		
+		ENV.put("PATH", path);
+		
+		
+	}
+	
+	private String setPath(String path, String var) throws AxelorException {
+		
+		String home = ENV.get(var);
+		if (home == null) {
+			throw new AxelorException(I18n.get("Please set %s environment variable"), 1, var);
+		}
+		
+		String binPath;
+		if (home.endsWith(File.separator)) {
+			binPath = home +  "bin";
+		}
+		else {
+			binPath = home + File.separator + "bin";
+		}
+		
+		if (!path.contains(binPath)) {
+			path += File.pathSeparator + binPath;
+		}
+		
+		return path;
+		
+	}
+	
 	/**
 	 * Method call process to build application.
 	 * 
@@ -146,7 +217,7 @@ public class ModuleRecorderService {
 	 *         error. Second element is log from build process.
 	 * @throws AxelorException 
 	 */
-	public boolean buildApp(ModuleRecorder moduleRecorder) throws AxelorException {
+	private boolean buildApp(ModuleRecorder moduleRecorder) throws AxelorException {
 
 		String logText = null;
 		boolean build = true;
@@ -156,15 +227,19 @@ public class ModuleRecorderService {
 		if (SystemUtils.IS_OS_WINDOWS) {
 			script = "gradlew.bat";
 		}
+		
 		String scriptPath = new File(sourceDir, script).getAbsolutePath();
 		log.debug("Script path: {}", scriptPath);
 		
-		Map<String, String> env = createEnvironment();
+		String axelorHome = getAxelorHome();
+		if (axelorHome != null) {
+			ENV.put("AXELOR_HOME", axelorHome);
+		}
 		
 		String command = scriptPath + " -x test clean build";
 		StringBuffer result = new StringBuffer();
 		
-		int exitStatus = commandService.execute(sourceDir, env, command, result);
+		int exitStatus = commandService.execute(sourceDir, ENV, command, result);
 		log.debug("Exit status: {}", exitStatus);
 		if (exitStatus != 0) {
 			build =  false;
@@ -186,22 +261,7 @@ public class ModuleRecorderService {
 		return buildDir;
 	}
 
-	private Map<String, String> createEnvironment() {
-		
-		Map<String, String> env = new HashMap<String, String>();
-		log.debug("JAVA HOME: {}", System.getProperty("java.home"));
-		env.put("JAVA_HOME", System.getProperty("java.home"));
-		log.debug("JAVA Temp dir {}", System.getProperty("java.io.tmpdir"));
-		env.put("GRADLE_OPTS", "-Dfile.encoding=utf-8 -Djava.io.tmpdir=" + System.getProperty("java.io.tmpdir"));
-		String axelorHome = getAxelorHome(env);
-		if (axelorHome != null) {
-			env.put("AXELOR_HOME", axelorHome);
-		}
-		
-		return env;
-	}
-
-
+	
 	/**
 	 * Validate parameters to check if its null or not.
 	 * 
@@ -235,48 +295,22 @@ public class ModuleRecorderService {
 	
 	private String restartServer(boolean reset) throws AxelorException {
 		
-		String tomcatPath = getTomcatPath();
-		File sourceDir = getSourceDir();
-		String warPath = getWarPath(sourceDir);
-		
-		AppSettings settings = AppSettings.get();
-		String webapp = checkParams("studio.webapp.dir",
-				settings.get("studio.webapp.dir"), true);
 		String logFile = checkParams("studio.restart.log",
-				settings.get("studio.restart.log"), true);
-
+				AppSettings.get().get("studio.restart.log"), true);
+		String warPath = getWarPath();
+		
 		try {
 			String scriptPath = getRestartScriptPath();
-			
-//			String command = scriptPath + " " + tomcatPath + " " +  webapp + " " + warPath;
-//			
-//			if (reset) {
-//				String dbUrl = settings.get("db.default.url");
-//				String database = dbUrl.substring(dbUrl.lastIndexOf("/") + 1);
-//				command += database + " " + settings.get("db.default.user") + " " + settings.get("db.default.password");
-// 			}
-			
-			//commandService.execute(sourceDir, System.getenv(), command, new StringBuffer());
-			ProcessBuilder processBuilder = null;
+			ProcessBuilder processBuilder;
 			if (reset) {
-				String dbUrl = settings.get("db.default.url");
-				String database = dbUrl.substring(dbUrl.lastIndexOf("/") + 1);
-				processBuilder = new ProcessBuilder(scriptPath, 
-						tomcatPath, 
-						webapp, 
-						warPath,
-						database,
-						settings.get("db.default.user"),
-						settings.get("db.default.password"));
+				processBuilder = new ProcessBuilder(scriptPath, warPath, "reset");
 			}
 			else {
-				processBuilder = new ProcessBuilder(scriptPath, 
-						tomcatPath, 
-						webapp, 
-						warPath );
+				processBuilder = new ProcessBuilder(scriptPath, warPath);
 			}
-			processBuilder.environment().putAll(System.getenv());
+			processBuilder.environment().putAll(ENV);
 			processBuilder.redirectOutput(new File(logFile));
+			processBuilder.redirectError(new File(logFile));
 			processBuilder.start();
 		} catch (IOException e) {
 			throw new AxelorException(e, 5);
@@ -289,24 +323,9 @@ public class ModuleRecorderService {
 		return I18n.get("App updated successfully");
 	}
 
-	private String getTomcatPath() throws AxelorException {
+	private String getWarPath() throws AxelorException{
 		
-		String tomcatPath = AppSettings.get().get("studio.catalina.home");
-		File tomcatDir = null;
-		if (tomcatPath != null) {
-			tomcatDir = new File(tomcatPath);
-		}
-		
-		if (tomcatDir == null || !tomcatDir.exists()) {
-			throw new AxelorException(I18n.get("Tomcat server directory not exist"),1);
-		}
-		
-		return tomcatDir.getAbsolutePath();
-	}
-	
-	private String getWarPath(File sourceDir) throws AxelorException{
-		
-		File warDir = FileUtils.getFile(sourceDir, "build",
+		File warDir = FileUtils.getFile(getSourceDir(), "build",
 				"libs");
 		log.debug("War directory path: {}", warDir.getAbsolutePath());
 		if (!warDir.exists()) {
@@ -378,7 +397,7 @@ public class ModuleRecorderService {
 		
 	}
 	
-	private String getAxelorHome(Map<String, String> env) {
+	private String getAxelorHome() {
 		
 		String adkPath = AppSettings.get().get("studio.adk.dir");
 		if (Strings.isNullOrEmpty(adkPath)) {
@@ -402,7 +421,7 @@ public class ModuleRecorderService {
 			
 			String command = scriptPath + " clean installDist";
 			StringBuffer result = new StringBuffer();
-			int exitStatus = commandService.execute(adkDir, env, command, result);
+			int exitStatus = commandService.execute(adkDir, ENV, command, result);
 			if (exitStatus != 0) {
 				return null;
 			}

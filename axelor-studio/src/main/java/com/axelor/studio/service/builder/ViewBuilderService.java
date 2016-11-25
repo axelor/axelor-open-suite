@@ -204,6 +204,9 @@ public class ViewBuilderService {
 	public void generateMetaAction(String module, List<Action> actions) {
 
 		for (Action action : actions) {
+			if (action == null) {
+				continue;
+			}
 			String name = action.getName();
 
 			MetaAction metaAction = metaActionRepo.all()
@@ -349,6 +352,7 @@ public class ViewBuilderService {
 				case "form":
 					view = formBuilderService.getView(viewBuilder, autoCreate);
 					actions.addAll(formBuilderService.getActionRecords());
+					actions.add(formBuilderService.getParentCheckAction());
 					break;
 				case "grid":
 					view = gridBuilderService.getView(viewBuilder);
@@ -495,6 +499,11 @@ public class ViewBuilderService {
 		}
 
 		for (Action action : actions) {
+			
+			if (action == null) {
+				continue;
+			}
+			
 			Iterator<Action> oldActionIter = oldActions.iterator();
 			while (oldActionIter.hasNext()) {
 				Action oldAction = oldActionIter.next();

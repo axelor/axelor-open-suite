@@ -42,6 +42,9 @@ public class StudioMetaModelRepository extends MetaModelRepository {
 		if (!metaModel.getCustomised()) {
 			boolean addStatus = true;
 			for (MetaField field : metaModel.getMetaFields()) {
+				if (field == null) {
+					continue;
+				}
 				if (field.getName().equals("wkfStatus")) {
 					addStatus = false;
 					break;

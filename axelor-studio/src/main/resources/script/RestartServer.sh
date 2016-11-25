@@ -1,35 +1,28 @@
-# Drop and create database and restart tomcat server. 
+#!/bin/bash
 
-if [ $# -eq 3 ] 
-then
-  echo "Tomcat path: "$1
-  echo "Tomcat webapp: "$2
-  echo "War file: "$3
-  $1/bin/shutdown.sh
-  rm $2.war
-  rm -fr $2/*
-  (cd $2 && jar -xf $3)
-  $1/bin/startup.sh
-elif [ $# -eq 6 ] 
-then
-   echo "Tomcat path: "$1
-   echo "Tomcat webapp: "$2
-   echo "War file: "$3
-   echo "Database: "$4
-   echo "DB user: "$5
-   echo "DB password: "$6
-   $1/bin/shutdown.sh
-   rm $2.war
-   rm -fr $2/*
-   (cd $2 && jar -xf $3)
-   PGPASSWORD=$6
-   export PGPASSWORD
-   psql -U $5 -d template1 -c "SELECT pg_terminate_backend(pg_stat_activity.pid)  FROM pg_stat_activity  WHERE datname = '"$4"';"
-   dropdb -h localhost -U $5 -w $4 
-   createdb -h localhost -U $5 -w $4  
-   $1/bin/startup.sh
-else
-    echo "Invalid arguments"
+echo "App Path: " $1
+echo "Reset app: " $2 
+echo "Catalina home: "$CATALINA_HOME
+echo "PGHOME: "$PGHOME
+
+if shutdown.sh; then
+        rm -fr $CATALINA_APP*
+	mkdir $CATALINA_APP
+        cd $CATALINA_APP
+	jar -xf $1
+	if [ -f ../../../etc/application.properties]; then
+		cp ../../../etc/application.properties META_INF/classes/
+	fi
+	if [ $# -eq 2 ]; then   
+		echo "Reseting app...."
+		if psql -d template1 -c "SELECT pg_terminate_backend(pg_stat_activity.pid)  FROM pg_stat_activity  WHERE datname = '"$PGDATABASE"';"; then
+		  dropdb $PGDATABASE
+		  createdb
+		else 
+		  echo error
+		  exit
+		fi 
+	fi
+ 	startup.sh
 fi
-
 
