@@ -168,22 +168,20 @@ public class ExpenseController {
 				.add("grid","expense-validate-grid")
 				.add("form","expense-form");
 		
-		if(employee != null)  {
-			actionView.domain("self.company = :activeCompany AND  self.statusSelect = 2")
-			.context("activeCompany", user.getActiveCompany());
-		
-			if(!employee.getHrManager())  {
-				if(employee.getManager() != null) {
-					actionView.domain(actionView.get().getDomain() + " AND self.user.employee.manager = :user")
-					.context("user", user);
-				}
-				else  {
-					actionView.domain(actionView.get().getDomain() + " AND self.user = :user")
-					.context("user", user);
-				}
+		actionView.domain("self.company = :activeCompany AND  self.statusSelect = 2")
+		.context("activeCompany", user.getActiveCompany());
+	
+		if(employee == null || !employee.getHrManager())  {
+			if(employee != null && employee.getManager() != null) {
+				actionView.domain(actionView.get().getDomain() + " AND self.user.employee.manager = :user")
+				.context("user", user);
+			}
+			else  {
+				actionView.domain(actionView.get().getDomain() + " AND self.user = :user")
+				.context("user", user);
 			}
 		}
-
+		
 		response.setView(actionView.map());
 	}
 
@@ -197,14 +195,12 @@ public class ExpenseController {
 					.add("grid","expense-grid")
 					.add("form","expense-form");
 
-		if(employee != null)  {
-			actionView.domain("self.company = :activeCompany AND (self.statusSelect = 3 OR self.statusSelect = 4)")
-			.context("activeCompany", user.getActiveCompany());
-		
-			if(!employee.getHrManager())  {
-				actionView.domain(actionView.get().getDomain() + " AND self.user.employee.manager = :user")
-				.context("user", user.getId());
-			}
+		actionView.domain("self.company = :activeCompany AND (self.statusSelect = 3 OR self.statusSelect = 4)")
+		.context("activeCompany", user.getActiveCompany());
+	
+		if(employee == null || !employee.getHrManager())  {
+			actionView.domain(actionView.get().getDomain() + " AND self.user.employee.manager = :user")
+			.context("user", user.getId());
 		}
 		
 		response.setView(actionView.map());

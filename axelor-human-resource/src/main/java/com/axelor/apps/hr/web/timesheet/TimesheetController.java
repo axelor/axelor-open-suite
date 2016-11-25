@@ -151,19 +151,17 @@ public class TimesheetController {
 				   .add("form","timesheet-form")
 				   .context("todayDate", Beans.get(GeneralService.class).getTodayDate());
 
-		if(employee != null)  {
-			actionView.domain("self.company = :activeCompany AND  self.statusSelect = 2")
-			.context("activeCompany", user.getActiveCompany());
-		
-			if(!employee.getHrManager())  {
-				if(employee.getManager() != null) {
-					actionView.domain(actionView.get().getDomain() + " AND self.user.employee.manager = :user")
-					.context("user", user.getId());
-				}
-				else  {
-					actionView.domain(actionView.get().getDomain() + " AND self.user = :user")
-					.context("user", user.getId());
-				}
+		actionView.domain("self.company = :activeCompany AND  self.statusSelect = 2")
+		.context("activeCompany", user.getActiveCompany());
+	
+		if(employee == null || !employee.getHrManager())  {
+			if(employee != null && employee.getManager() != null) {
+				actionView.domain(actionView.get().getDomain() + " AND self.user.employee.manager = :user")
+				.context("user", user.getId());
+			}
+			else  {
+				actionView.domain(actionView.get().getDomain() + " AND self.user = :user")
+				.context("user", user.getId());
 			}
 		}
 
@@ -192,14 +190,12 @@ public class TimesheetController {
 				   .add("grid","timesheet-grid")
 				   .add("form","timesheet-form");
 
-		if(employee != null)  {
-			actionView.domain("self.company = :activeCompany AND (self.statusSelect = 3 OR self.statusSelect = 4)")
-			.context("activeCompany", user.getActiveCompany());
-		
-			if(!employee.getHrManager())  {
-				actionView.domain(actionView.get().getDomain() + " AND self.user.employee.manager = :user")
-				.context("user", user.getId());
-			}
+		actionView.domain("self.company = :activeCompany AND (self.statusSelect = 3 OR self.statusSelect = 4)")
+		.context("activeCompany", user.getActiveCompany());
+	
+		if(employee == null || !employee.getHrManager())  {
+			actionView.domain(actionView.get().getDomain() + " AND self.user.employee.manager = :user")
+			.context("user", user.getId());
 		}
 		
 		response.setView(actionView.map());
