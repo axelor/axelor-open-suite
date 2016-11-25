@@ -37,7 +37,6 @@ import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -144,7 +143,7 @@ public class LeaveController {
 				.add("grid","leave-request-grid")
 				.add("form","leave-request-form");
 
-		if(employee != null && employee.getHrManager())  {
+		if(employee != null)  {
 			actionView.domain("self.company = :activeCompany AND (self.statusSelect = 3 OR self.statusSelect = 4)")
 			.context("activeCompany", user.getActiveCompany());
 		
