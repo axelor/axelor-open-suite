@@ -203,7 +203,7 @@ public class ExpenseController {
 		
 			if(!employee.getHrManager())  {
 				actionView.domain(actionView.get().getDomain() + " AND self.user.employee.manager = :user")
-				.context("user", user);
+				.context("user", user.getId());
 			}
 		}
 		
