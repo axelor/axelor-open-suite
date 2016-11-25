@@ -151,17 +151,17 @@ public class TimesheetController {
 				   .add("form","timesheet-form")
 				   .context("todayDate", Beans.get(GeneralService.class).getTodayDate());
 
-		actionView.domain("self.company = :activeCompany AND  self.statusSelect = 2")
-		.context("activeCompany", user.getActiveCompany());
+		actionView.domain("self.company = :_activeCompany AND  self.statusSelect = 2")
+		.context("_activeCompany", user.getActiveCompany());
 	
 		if(employee == null || !employee.getHrManager())  {
 			if(employee != null && employee.getManager() != null) {
-				actionView.domain(actionView.get().getDomain() + " AND self.user.employee.manager = :user")
-				.context("user", user.getId());
+				actionView.domain(actionView.get().getDomain() + " AND self.user.employee.manager = :_user")
+				.context("_user", user);
 			}
 			else  {
-				actionView.domain(actionView.get().getDomain() + " AND self.user = :user")
-				.context("user", user.getId());
+				actionView.domain(actionView.get().getDomain() + " AND self.user = :_user")
+				.context("_user", user);
 			}
 		}
 
@@ -190,12 +190,12 @@ public class TimesheetController {
 				   .add("grid","timesheet-grid")
 				   .add("form","timesheet-form");
 
-		actionView.domain("self.company = :activeCompany AND (self.statusSelect = 3 OR self.statusSelect = 4)")
-		.context("activeCompany", user.getActiveCompany());
+		actionView.domain("self.company = :_activeCompany AND (self.statusSelect = 3 OR self.statusSelect = 4)")
+		.context("_activeCompany", user.getActiveCompany());
 	
 		if(employee == null || !employee.getHrManager())  {
-			actionView.domain(actionView.get().getDomain() + " AND self.user.employee.manager = :user")
-			.context("user", user.getId());
+			actionView.domain(actionView.get().getDomain() + " AND self.user.employee.manager = :_user")
+			.context("_user", user);
 		}
 		
 		response.setView(actionView.map());
@@ -212,15 +212,15 @@ public class TimesheetController {
 				   .add("grid","timesheet-grid")
 				   .add("form","timesheet-form");
 		
-		String domain = "self.user.employee.manager.employee.manager = :user AND self.company = :activeCompany AND self.statusSelect = 2";
+		String domain = "self.user.employee.manager.employee.manager = :_user AND self.company = :_activeCompany AND self.statusSelect = 2";
 		
-		long nbTimesheets =  Query.of(ExtraHours.class).filter(domain).bind("user", user).bind("activeCompany", activeCompany).count();
+		long nbTimesheets =  Query.of(ExtraHours.class).filter(domain).bind("_user", user).bind("_activeCompany", activeCompany).count();
 		
 		if(nbTimesheets == 0)  {
 			response.setNotify(I18n.get("No timesheet to be validated by your subordinates"));
 		}
 		else  {
-			response.setView(actionView.domain(domain).context("user", user).context("activeCompany", activeCompany).map());
+			response.setView(actionView.domain(domain).context("_user", user).context("_activeCompany", activeCompany).map());
 		}
 		
 	}
