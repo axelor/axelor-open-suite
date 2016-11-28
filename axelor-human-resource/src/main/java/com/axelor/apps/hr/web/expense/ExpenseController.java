@@ -295,7 +295,7 @@ public class ExpenseController {
 	
 	public String expenseValidateTag() { 
 		
-		return hrMenuTagServiceProvider.get().countRecordsTag(Expense.class, ExpenseRepository.STATUS_VALIDATED);
+		return hrMenuTagServiceProvider.get().countRecordsTag(Expense.class, ExpenseRepository.STATUS_CONFIRMED);
 		
 	}
 	
