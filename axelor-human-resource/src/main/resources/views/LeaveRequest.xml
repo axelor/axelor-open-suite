@@ -218,7 +218,7 @@
     </action-attrs>
 	
 	<action-attrs name="action-leave-request-attrs-line-domain">
-		<attribute name="domain" for="leaveLine"  expr="eval: &quot; self.employee.id = ${__this__.user.employee.id}&quot; "/>
+		<attribute name="domain" for="leaveLine"  expr="eval: &quot; self.employee.id = ${__this__.user.employee?.id}&quot; "/>
 	</action-attrs>
 	
 	
