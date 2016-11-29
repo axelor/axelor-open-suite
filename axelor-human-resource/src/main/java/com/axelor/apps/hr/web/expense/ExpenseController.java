@@ -41,6 +41,7 @@ import com.axelor.apps.hr.db.HRConfig;
 import com.axelor.apps.hr.db.repo.EmployeeRepository;
 import com.axelor.apps.hr.db.repo.ExpenseRepository;
 import com.axelor.apps.hr.db.repo.TimesheetRepository;
+import com.axelor.apps.hr.exception.IExceptionMessage;
 import com.axelor.apps.hr.report.IReport;
 import com.axelor.apps.hr.service.HRMenuTagService;
 import com.axelor.apps.hr.service.KilometricService;
@@ -478,12 +479,19 @@ public class ExpenseController {
 		}
 		
 		String userId = null;
+		String userName = null;
 		if (expenseLine.getExpense() != null){
 			userId = expenseLine.getExpense().getUser().getId().toString();
+			userName = expenseLine.getExpense().getUser().getFullName();
 		}else{
 			userId = request.getContext().getParentContext().asType(Expense.class).getUser().getId().toString() ;
+			userName = request.getContext().getParentContext().asType(Expense.class).getUser().getFullName() ;
 		}
 		Employee employee = Beans.get(EmployeeRepository.class).all().filter("self.user.id = ?1", userId).fetchOne();
+		
+		if (employee == null){
+			throw new AxelorException( String.format(I18n.get(IExceptionMessage.LEAVE_USER_EMPLOYEE), userName)  , IException.CONFIGURATION_ERROR);
+		}
 		
 		BigDecimal amount = Beans.get(KilometricService.class).computeKilometricExpense(expenseLine, employee);
 		
