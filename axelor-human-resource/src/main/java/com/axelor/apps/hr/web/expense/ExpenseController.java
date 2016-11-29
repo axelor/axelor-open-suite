@@ -40,7 +40,6 @@ import com.axelor.apps.hr.db.ExtraHours;
 import com.axelor.apps.hr.db.HRConfig;
 import com.axelor.apps.hr.db.repo.EmployeeRepository;
 import com.axelor.apps.hr.db.repo.ExpenseRepository;
-import com.axelor.apps.hr.db.repo.TimesheetRepository;
 import com.axelor.apps.hr.exception.IExceptionMessage;
 import com.axelor.apps.hr.report.IReport;
 import com.axelor.apps.hr.service.HRMenuTagService;
@@ -427,7 +426,7 @@ public class ExpenseController {
 	 			expense = new Expense();
 	 			expense.setUser(user);
 	 			expense.setCompany(user.getActiveCompany());
-	 			expense.setStatusSelect(TimesheetRepository.STATUS_DRAFT);
+	 			expense.setStatusSelect(ExpenseRepository.STATUS_DRAFT);
 	 		}
 	 		ExpenseLine expenseLine = new ExpenseLine();
 	 		expenseLine.setDistance(new BigDecimal(request.getData().get("kmNumber").toString()));
