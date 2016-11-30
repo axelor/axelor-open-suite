@@ -18,6 +18,9 @@
 
 	<form name="employee-form" title="Employee" model="com.axelor.apps.hr.db.Employee"
 		onNew="action-employee-record-default" width="large">
+		<toolbar>
+			<button name="annualReport" title="Show annual report" readonlyIf="!id" onClick="action-employee-view-annual-report-wizard"/>
+		</toolbar>
 	    <panel name="contact" title="Contact">
             <field name="contactPartner" domain="self.partnerTypeSelect = 2 OR self.isContact = true" grid-view="partner-contact-grid" form-view="partner-contact-form" colSpan="12" showTitle="false">
 	            <editor x-viewer="true">
@@ -78,6 +81,13 @@
         </panel-tabs>
 	</form>
 	
+	<form title="Annual report" name="employee-annual-report-form" model="com.axelor.apps.hr.db.Employee">
+		<panel>
+			<field name="year" title="Year" type="many-to-one" target="com.axelor.apps.base.db.Year" domain="self.typeSelect = 1" />
+			<button name="showAnnualReport" title="Show annual report" readonlyIf="year == null" onClick="action-employee-method-show-annual-report" />
+		</panel>
+	</form>
+	
 	<action-record name="action-employee-record-default" model="com.axelor.apps.hr.db.Employee">
 		<field name="timeLoggingPreferenceSelect" expr="eval:__config__.general.getTimeLoggingPreferenceSelect()"/>
 		<field name="dailyWorkHours" expr="eval:__config__.general.getDailyWorkHours()"/>
@@ -112,5 +122,18 @@
 		<domain>self.employee.id = :employeeId</domain>
 		<context name="employeeId" expr="eval: id"/>
 	</action-view>
+	
+	<action-view name="action-employee-view-annual-report-wizard" title="Annual report" model="com.axelor.apps.hr.db.Employee">
+		<view type="form" name="employee-annual-report-form"/>
+		<view-param name="popup" value="reload"/>
+        <view-param name="show-toolbar" value="false"/>
+  		<view-param name="show-confirm" value="false" />
+ 	  	<view-param name="popup-save" value="false"/>
+ 	  	<view-param name="width" value="800"/>
+	</action-view>
+	
+	<action-method name="action-employee-method-show-annual-report">
+		<call class="com.axelor.apps.hr.web.EmployeeController" method="showAnnualReport"/>
+	</action-method>
 	
 </object-views>
