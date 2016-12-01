@@ -41,6 +41,14 @@ public class FormatValidator {
 		return logger.toString();
 	}
 	
+	public boolean isValidColumn(String column) {
+		
+		if (column == null || column.startsWith("*")) {
+			return false;
+		}
+		
+		return true;
+	}
 	
 	private void validateFields(Class<?> klass, String[] row) {
 		
@@ -48,17 +56,31 @@ public class FormatValidator {
 		
 		List<String> invalidFields = new ArrayList<String>();
 		List<String> invalidRules = new ArrayList<String>();
-		for (String name : row) {
-			String[] column = name.split("\\(");
-			log.debug("Validating field: {}", name);
-			String field[] = column[0].split("\\.");
-			if (!checkProperty(mapper.getProperty(field[0]), field)) {
+		for (String col : row) {
+			if (!isValidColumn(col)) {
+				continue;
+			}
+			String[] cols = col.split("\\(");
+			log.debug("Validating field: {}", col);
+			String[] field= cols[0].split("\\.");
+			String name = isValidName(field[0]);
+			if (name == null) {
 				invalidFields.add(name);
 			}
-			if (column.length > 1) {
-			    String[] rules = column[1].replaceAll("\\)", "").split(",");
+			
+			Property property = checkProperty(mapper.getProperty(name), field);
+			if (property == null) {
+				invalidFields.add(col);
+			}
+			if (cols.length > 1) {
+			    String[] rules = cols[1].replaceAll("\\)", "").split(",");
 			    if (!RULES.containsAll(Arrays.asList(rules))) {
-			    	invalidRules.add(name);
+			    	invalidRules.add(col);
+			    }
+			    else if (field.length > 1 
+			    		&& (property.getTarget() != null || !cols[0].contains(".$"))) {
+			    	log.debug("Property name: {}", property.getName());
+			    	invalidRules.add(col);
 			    }
 			}
 		}
@@ -73,23 +95,47 @@ public class FormatValidator {
 		
 	}
 
-	private boolean checkProperty(Property property, String[] field) {
+	private String isValidName(String field) {
 		
-		if (property == null) {
-			log.debug("No property found");
-			return false;
+		String name = field;
+		if (name.contains("[") && name.contains("]")) {
+			if (name.matches("\\w+\\[[0-9]+\\]")) {
+				name = field.split("\\[")[0];
+			}
+			else {
+				return null;
+			}
 		}
+		
+		return name;
+	}
+
+	private Property checkProperty(Property property, String[] field) {
 		
 		if (field.length > 1) {
 			if (property.getTarget() == null) {
 				log.debug("Property '{}' is not a reference", property.getName());
-				return false;
+				return null;
 			}
 			String[] subFields = Arrays.copyOfRange(field, 1, field.length);
-			Property subProperty =  Mapper.of(property.getTarget()).getProperty(subFields[0]);
-			return checkProperty(subProperty, subFields);
+			String name = subFields[0];
+			if (name.startsWith("$")) {
+				name = name.substring(1);
+			}
+			name = isValidName(name);
+			if (name == null) {
+				return null;
+			}
+			property =  Mapper.of(property.getTarget()).getProperty(name);
+			
+			if (subFields[0].startsWith("$") && property != null && property.isCollection()) {
+				return null;
+			}
+			
+			return checkProperty(property, subFields);
 		}
 		
-		return true;
+		return property;
 	}
+	
 }
