@@ -13,7 +13,7 @@ It will save changes in xml and deploy app.
 	
 	module "modules:axelor-message"
 	
-	removable false
+	removable true
 	
 }
 
