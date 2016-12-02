@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
+    
+    <grid name="template-grid" title="Templates" model="com.axelor.apps.message.db.Template">
+        <field name="name"/>
+        <field name="subject"/>
+        <field name="metaModel" form-view="meta-model-form" grid-view="meta-model-grid"/>
+		<field name="mediaTypeSelect"/>
+    </grid>
+    
+	<form name="template-form" title="Template" model="com.axelor.apps.message.db.Template" 
+		onNew="action-template-record-new" width="large">
+		<panel name="main" colSpan="12">
+			<field name="name" colSpan="4"/>
+			<field name="mediaTypeSelect" colSpan="4"/>
+			<field name="isDefault" colSpan="2"/>
+			<field name="isSystem" colSpan="2"/>
+			<field name="metaModel" form-view="meta-model-form" grid-view="meta-model-grid"/>
+			<field name="target"/>
+		</panel>
+		<panel name="recipientAddress" title="Recipient address" showIf="mediaTypeSelect == 1">
+			<field name="addressBlock" colSpan="12" widget="html" x-lite="false" height="5" showTitle="false"/>
+		</panel>
+        <panel name="from" title="From" showIf="mediaTypeSelect == 2">
+        	<field name="fromAdress" height="2" colSpan="12"/>
+        </panel>
+        <panel name="replyTo" title="Reply to" showIf="mediaTypeSelect == 2">
+        	<field name="replyToRecipients" height="1" colSpan="12"/>
+        </panel>
+        <panel name="recipients" title="Recipients" showIf="mediaTypeSelect == 2">
+        	<field name="toRecipients" height="2" colSpan="12"/>
+        	<field name="ccRecipients" height="2" colSpan="12"/>
+        	<field name="bccRecipients" height="2" colSpan="12"/>
+        </panel>
+		<panel name="subjectContent" title="Content" colSpan="12">
+			<field name="subject" colSpan="12" height="2"/>
+			<field name="content" showTitle="false" widget="html" colSpan="12"/>
+		</panel>
+	</form>
+	
+    
+    <action-record name="action-template-record-new" model="com.axelor.apps.message.db.Template">
+    	<field name="metaModel" expr="eval: _parent?.targetSelect == 1 ? __repo__.of(MetaModel).all().filter('self.name = \'Partner\'').fetchOne() : (_parent?.targetSelect == 2 ? __repo__.of(MetaModel).all().filter('self.name = \'Lead\'').fetchOne() : null)" if="_parent?.targetSelect"/>
+    	<field name="metaModel" expr="eval: _parent?.metaModel" if="_parent?.metaModel"/>
+    	<field name="metaModel" expr="eval: _parent?._parent?.metaModel" if="_parent?._parent?.metaModel"/>
+    </action-record>
+	
+</object-views>

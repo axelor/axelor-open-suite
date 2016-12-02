@@ -1,0 +1,381 @@
+<?xml version="1.0"?>
+<xml-inputs xmlns="http://axelor.com/xml/ns/data-import"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/data-import http://axelor.com/xml/ns/data-import/data-import_4.0.xsd">
+  
+  <input file="meta-module.xml" root="meta-modules">
+  	<bind node="meta-module" type="com.axelor.meta.db.MetaModule">
+      <bind node="@name" to="name" />
+      <bind node="@title" to="title" />
+      <bind node="@moduleVersion" to="moduleVersion" />
+      <bind node="@depends" to="depends" />
+      <bind to="customised" eval="true" />
+    </bind>
+  </input> 
+	
+  <input file="meta-models.xml" root="meta-models">
+    
+    <bind node="meta-select" type="com.axelor.meta.db.MetaSelect">
+      <bind node="@name" to="name" />
+      <bind to="module" eval="'axelor-custom'" />
+      <bind node="items/item" to="items">
+        <bind node="@title" to="title" />
+        <bind node="@value" to="value" />
+        <bind node="@order" to="order"/>
+      </bind>
+    </bind>
+    
+    <bind node="meta-model" type="com.axelor.meta.db.MetaModel">
+      <bind node="@name" to="name" />
+      <bind node="@title" to="title" />
+      <bind to="edited" eval="true"/>
+      <bind to="customised" eval="true"/>
+      <bind node="@package" to="packageName" />
+      <bind to="fullName" eval="packageName + '.' + name" />
+      <bind to="metaModule" search="self.name = 'axelor-custom'" />
+      <bind node="meta-fields/meta-field" to="metaFields">
+      	<bind node="@name" to="name"/>
+      	<bind to="customised" eval="name != 'id' &amp;&amp; name != 'createdBy' &amp;&amp; name != 'createdOn' &amp;&amp; name != 'updatedBy' &amp;&amp; name != 'updatedOn'" />
+      	<bind node="@label" to="label"/>
+      	<bind node="@mappedBy" to="mappedBy"/>
+      	<bind node="@typeName" to="typeName"/>
+      	<bind node="@fieldType" to="fieldType"/>
+      	<bind node="@large" to="large" adapter="Boolean"/>
+      	<bind node="@hidden" to="hidden" adapter="Boolean"/>
+      	<bind node="@required" to="required" adapter="Boolean"/>
+      	<bind node="@relationship" to="relationship" />
+      	<bind node="@defaultString" to="defaultString"/>
+      	<bind node="@integerMin" to="integerMin"/>
+      	<bind node="@integerMax" to="integerMax"/>
+      	<bind node="@metaSelect" to="metaSelect" search="self.name = :metaSelect"/>
+      	<bind to="metaModelRef" search="self.name = :typeName"  if="relationship != null"/>
+      	<bind to="metaModule" search="self.name = 'axelor-custom'" />
+      </bind>
+    </bind>
+    
+  </input>
+  
+  <input file="right-mgt.xml" root="right-mgts">
+  	<bind node="right-mgt" type="com.axelor.studio.db.RightManagement">
+  		<bind node="@name" to="name"/>
+  		<bind node="@canRead" to="canRead" adapter="Boolean"/>
+  		<bind node="@canWrite" to="canWrite" adapter="Boolean"/>
+  		<bind node="@canCreate" to="canCreate" adapter="Boolean"/>
+  		<bind node="@canRemove" to="canRemove" adapter="Boolean"/>
+  		<bind node="@canExport" to="canExport" adapter="Boolean"/>
+  		<bind node="@model" to="_model"/>
+  		<bind node="@authRole" to="_authRole"/>
+  		<bind to="metaModel" search="self.name = :_model" />
+  		<bind to="authRole" search="self.name = :_authRole" />
+  	</bind>
+  </input>
+  
+  <input file="view-builders.xml" root="view-builders">
+  	
+  	<bind node="view-builder" type="com.axelor.studio.db.ViewBuilder">
+  		<bind node="@name" to="name"/>
+  		<bind node="@title" to="title"/>
+  		<bind node="@model" to="model"/>
+  		<bind node="@model" to="_model"/>
+  		<bind to="metaModel" search="self.fullName = :model" />
+  		<bind to="newView"  eval="true"/>
+  		<bind to="edited"  eval="true"/>
+  		<bind node="@viewType" to="viewType"/>
+  		<bind node="@onSave" to="onSave" />
+  		<bind to="metaModule" search="self.name = 'axelor-custom'" />
+  		<bind node="toolbar/button" to="toolbar">
+  			<bind node="@title" to="title" />
+  			<bind node="@name" to="name" />
+  			<bind node="@onClick" to="onClick" />
+  			<bind to="typeSelect" eval="1" />
+  		</bind>
+  		<bind node="view-panels/view-panel" to="viewPanelList">
+  			<bind node="@panelLevel" to="panelLevel"/>
+  			<bind node="@noTitle" to="noTitle" adapter="Boolean"/>
+  			<bind node="@isNotebook" to="isNotebook" adapter="Boolean"/>
+  			<bind node="@isPanelTab" to="isPanelTab" adapter="Boolean"/>
+  			<bind node="@place" to="place" />
+  			<bind node="@title" to="title" />
+  			<bind node="view-items/view-item" to="viewItemList">
+  				<bind node="@typeSelect" to="typeSelect" />
+  				<bind node="@name" to="name"/>
+  				<bind node="@title" to="title" />
+  				<bind to="metaField" search="self.name = :name and self.metaModel.fullName = :_model" />
+  				<bind node="@sequence" to="sequence"/>
+  				<bind node="@fieldType" to="fieldType"/>
+  				<bind node="@htmlWidget" to="htmlWidget" adapter="Boolean"/>
+  				<bind node="@required" to="required" adapter="Boolean"/>
+  				<bind node="@readonly" to="readonly" adapter="Boolean"/>
+  				<bind node="@model" to="model" />
+  				<bind node="@selectionWidget" to="selectionWidget" />
+  				<bind node="@defaultValue" to="defaultValue" />
+  				<bind node="@domainCondition" to="domainCondition" />
+  				<bind node="@colSpan" to="colSpan" />
+  				<bind node="@onClick" to="onClick" />
+  				<bind node="@widget" to="widget" />
+  				<bind node="@onChange" to="onChange" />
+  			</bind>
+  		</bind>
+  		<bind node="side-panels/side-panel" to="viewSidePanelList">
+  			<bind node="@panelLevel" to="panelLevel"/>
+  			<bind node="@noTitle" to="noTitle" adapter="Boolean"/>
+  			<bind node="@isNotebook" to="isNotebook" adapter="Boolean"/>
+  			<bind node="@isPanelTab" to="isPanelTab" adapter="Boolean"/>
+  			<bind node="@place" to="place" />
+  			<bind node="@title" to="title" />
+  			<bind node="view-items/view-item" to="viewItemList">
+  				<bind node="@typeSelect" to="typeSelect" />
+  				<bind node="@name" to="name"/>
+  				<bind node="@title" to="title" />
+  				<bind to="metaField" search="self.name = :name and self.metaModel.fullName = :_model" />
+  				<bind node="@sequence" to="sequence"/>
+  				<bind node="@fieldType" to="fieldType"/>
+  				<bind node="@htmlWidget" to="htmlWidget" adapter="Boolean"/>
+  				<bind node="@required" to="required" adapter="Boolean"/>
+  				<bind node="@readonly" to="readonly" adapter="Boolean"/>
+  				<bind node="@model" to="model" />
+  				<bind node="@selectionWidget" to="selectionWidget" />
+  				<bind node="@defaultValue" to="defaultValue" />
+  				<bind node="@domainCondition" to="domainCondition" />
+  				<bind node="@colSpan" to="colSpan" />
+  				<bind node="@onClick" to="onClick" />
+  				<bind node="@widget" to="widget" />
+  				<bind node="@onChange" to="onChange" />
+  			</bind>
+  		</bind>
+  		<bind node="view-items/view-item" to="viewItemList">
+			<bind node="@name" to="name"/>
+			<bind to="metaField" search="self.name = :name and self.metaModel.fullName = :_model" />
+			<bind node="@sequence" to="sequence"/>
+			<bind node="@fieldType" to="fieldType"/>
+		</bind>
+  	</bind>
+  	
+  </input>
+  
+  <input file="charts.xml" root="charts">
+  	
+  	<bind node="chart" type="com.axelor.studio.db.ViewBuilder">
+  		<bind node="@name" to="name"/>
+  		<bind node="@title" to="title"/>
+  		<bind node="@model" to="model"/>
+  		<bind node="@model" to="_model"/>
+  		<bind to="metaModel" search="self.fullName = :model" />
+  		<bind to="metaModule" search="self.name = 'axelor-custom'" />
+  		<bind to="newView"  eval="true"/>
+  		<bind to="edited"  eval="true"/>
+  		<bind to="viewType" eval="'chart'"/>
+  		<bind node="@chartType" to="chartType" />
+  		<bind node="@groupOn" to="groupOn" search="self.name = :groupOn AND self.metaModel.fullName = :_model"/>
+  		<bind node="@groupOnTarget" to="groupOnTarget" />
+  		<bind node="@groupDateType" to="groupDateType" />
+  		<bind node="@displayField" to="displayField" search="self.name = :displayField AND self.metaModel.fullName = :_model"/>
+  		<bind node="@aggregateOn" to="aggregateOn" search="self.name = :aggregateOn AND self.metaModel.fullName = :_model"/>
+  		<bind node="@aggregateOnTarget" to="aggregateOnTarget" />
+  		<bind node="filters/filter" to="filterList">
+  			<bind node="@metaField" to="metaField" search="self.name = :metaField AND self.metaModel.fullName = :_model" />
+  			<bind node="@filterOperator" to="filterOperator" search="self.value = :filterOperator"/>
+  			<bind node="@isParameter" to="isParameter" adapter="Boolean" />
+  			<bind node="@defaultValue" to="defaultValue" />
+  			<bind node="@value" to="value" />
+  			<bind node="@targetField" to="targetField" />
+  			<bind node="@targetType" to="targetType" />
+  			<bind node="@targetRef" to="targetRef" />
+  		</bind>
+  	</bind>
+  	
+  	<bind node="dashboard" type="com.axelor.studio.db.ViewBuilder">
+  		<bind node="@name" to="name"/>
+  		<bind node="@title" to="title"/>
+  		<bind to="newView"  eval="true"/>
+  		<bind to="edited"  eval="true"/>
+  		<bind to="viewType" eval="'dashboard'"/>
+  		<bind to="metaModule" search="self.name = 'axelor-custom'" />
+  		<bind node="dashlets/dashlet" to="dashletBuilderList" search="self.name = :name" update="true">
+  			<bind node="@name" to="name" />
+  			<bind node="@viewBuilder" to="viewBuilder" search="self.name = :viewBuilder" />
+  			<bind node="@viewType" to="viewType" />
+  			<bind node="@sequence" to="sequence" />
+  		</bind>
+     </bind>
+     
+  </input>
+  
+  <input root="reports" file="report-builders.xml">
+  		
+  	<bind node="report" type="com.axelor.studio.db.ReportBuilder">
+  		<bind node="name" to="name" />
+    	<bind node="metaModel" to="metaModel" search="self.name = :metaModel" />
+    	<bind node="viewBuilder" to="viewBuilder" search="self.name = :viewBuilder" />
+    	<bind node="buttonView" to="buttonView" search="self.name = :buttonView" />
+    	<bind to="metaModule" search="self.name = 'axelor-custom'" />
+    	<bind node="header" to="header" />
+    	<bind node="footer" to="footer" />
+    	<bind node="language" to="language" />
+    	<bind node="fileName" to="fileName" />
+    	<bind node="htmlTemplate" to="htmlTemplate" />
+    	<bind to="edited" eval="true" />
+    	<bind node="printPageNo" to="printPageNo" adapter="Boolean"/>
+    	<bind node="editHtml" to="editHtml" adapter="Boolean"/>
+    </bind>
+  		
+  </input>
+  
+  <input root="templates" file="templates.xml">
+  	
+  	<bind node="template" type="com.axelor.apps.message.db.Template">
+  		<bind node="name" to="name"/>
+  		<bind node="subject" to="subject"/>
+  		<bind node="mediaTypeSelect" to="mediaTypeSelect" />
+  		<bind node="content" to="content" />
+  		<bind node="metaModel" to="metaModel" search="self.name = :metaModel" />
+  		<bind node="fromAddress" to="fromAdress" />
+  		<bind node="toRecipients" to="toRecipients" />
+  	</bind>
+  
+  </input>
+  
+  <input root="action-builders" file="action-builders.xml">
+  	
+  	<bind node="action-builder" type="com.axelor.studio.db.ActionBuilder">
+  		<bind node="@name" to="name" />
+  		<bind node="@typeSelect" to="typeSelect" />
+  		<bind node="@metaModel" to="_metaModel" />
+    	<bind to="metaModel" search="self.name = :_metaModel" update="true" />
+    	<bind to="metaModule" search="self.name = 'axelor-custom'" />
+    	<bind node="viewBuilders/viewBuilder" to="viewBuilderSet" search="self.name = :_viewBuilder">
+    		<bind node="@name" to="_viewBuilder" />
+    	</bind>
+    	<bind node="@title" to="title" />
+    	<bind node="@targetModel" to="_targetModel" />
+    	<bind to="targetModel" search="self.name = :_targetModel" />
+    	<bind node="@targetField" to="targetField" search="self.name = :targetField and self.metaModel.name = :_metaModel" />
+    	<bind node="@loopOnField" to="loopOnField" search="self.name = :loopOnField and self.metaModel.name = :_metaModel" />
+    	<bind node="@firstGroupBy" to="firstGroupBy" search="self.name = :firstGroupBy and self.metaModel.name = :_metaModel" />
+    	<bind node="@secondGroupBy" to="secondGroupBy" search="self.name = :secondGroupBy and self.metaModel.name = :_metaModel" />
+    	<bind node="@domain" to="domain" />
+    	<bind node="@filter" to="filter" />
+    	<bind to="edited" eval="true" />
+    	<bind to="recorded" eval="false" />
+    	<bind node="@emailTemplate" to="emailTemplate" search="self.name = :emailTemplate" update="true" />
+    	<bind node="lines/line" to="lines">
+    		<bind node="@metaField" to="metaField" search="self.name = :metaField and self.metaModel.name = :_targetModel" if="_targetModel != null" />
+    		<bind node="@metaField" to="metaField" search="self.name = :metaField and self.metaModel.name = :_metaModel" if="_targetModel == null" />
+    		<bind node="@targetField" to="targetField"/>
+    		<bind node="@value" to="value"/>
+    		<bind node="@filter" to="filter" />
+    		<bind node="@conditionText" to="conditionText"/>
+    	</bind>
+    	<bind node="report-builders/report-builder" to="reportBuilderSet" search="self.name = :_reportBuilder">
+    		<bind node="@name" to="_reportBuilder" />
+    	</bind>
+    	<bind node="filters/filter" to="filters">
+    		<bind node="@metaField" to="metaField" search="self.name = :metaField" />
+    		<bind node="@filterOperator" to="filterOperator" search="self.value = :filterOperator" />
+    		<bind node="@value" to="value" />
+    		<bind node="@targetType" to="targetType" />
+    		<bind node="@targetRef" to="targetRef" />
+    		<bind node="@targetField" to="targetField" />
+    	</bind>
+    </bind>
+    
+  </input>
+  
+  <input file="menus.xml" root="menus">
+  	
+  	<bind node="menu" type="com.axelor.studio.db.MenuBuilder">
+  		<bind node="@name" to="name"/>
+  		<bind node="@title" to="title"/>
+  		<bind to="edited"  eval="true"/>
+  		<bind node="@isParent" to="isParent" adapter="Boolean" />
+  		<bind node="@icon" to="icon" />
+  		<bind node="@iconBackground" to="iconBackground" />
+  		<bind node="@order" to="order" />
+  		<bind node="@parent" to="parent" />
+  		<bind to="menuBuilder" search="self.name = :parent" />
+  		<bind to="metaModule" search="self.name = 'axelor-custom'" />
+  		<bind node="@actionBuilder" to="_actionBuilder"  />
+  		<bind to="actionBuilder" search="self.name = :_actionBuilder" />
+  	</bind>
+  	
+  </input>
+  
+  
+  <input root="workflows" file="workflows.xml">
+  
+  	<bind node="Wkf" type="com.axelor.studio.db.Wkf" search="self.name = :name and self.metaModel.name = :metaModel">
+    	<bind node="name" to="name" />
+    	<bind node="name" to="_wkf" />
+    	<bind node="metaModel" to="metaModel" search="self.name = :metaModel"/>
+    	<bind node="metaModel" to="_metaModel" />
+    	<bind node="viewBuilder" to="_viewBuilder" />
+    	<bind to="viewBuilder" search="self.name = :_viewBuilder and self.metaModel.name = :_metaModel" />
+    	<bind node="displayTypeSelect" to="displayTypeSelect" />
+    	<bind node="bpmnXml" to="bpmnXml" />
+    	<bind node="edited" eval="true" />
+    	<bind to="metaModule" search="self.name = 'axelor-custom'" />
+    	<bind node="wkfField" to="_wkfField" />
+    	<bind to="wkfField" search="self.metaModel.name = :_metaModel and self.name = :_wkfField" />
+    </bind>
+    
+    <bind node="WkfNode" type="com.axelor.studio.db.WkfNode">
+        <bind node="wkf" to="wkf" search="self.name = :wkf"/>
+        <bind node="wkf" to="_wkf" />
+   		<bind node="name" to="name" />
+   		<bind node="title" to="title" />
+   		<bind node="xmlId" to="xmlId" />
+   		<bind node="statusMenuEntry" to="statusMenuEntry" />
+   		<bind node="statusMenuLabel" to="statusMenuLabel" />
+   		<bind node="myMenuEntry" to="myMenuEntry" />
+   		<bind node="metaModel" to="_metaModel" />
+   		<bind node="metaField" to="metaField" search="self.name = :metaField and self.metaModel.name = :_metaModel"/>
+   		<bind node="myMenuLabel" to="myMenuLabel" />
+   		<bind node="parentMenu" to="parentMenu" search="self.name = :parentMenu" />
+   		<bind node="parentMenuBuilder" to="parentMenuBuilder" search="self.name = :parentMenuBuilder" />
+   		<bind node="roleSet/name" search="self.name = :name" to="roleSet">
+   			<bind node="text()" to="name" />
+   		</bind>
+   		<bind node="actionSelectorList/action" to="actionSelectorList">
+   			<bind node="sequence" to="sequence" />
+   			<bind node="actionBuilder" to="actionBuilder" search="self.name = :actionBuilder" />
+   			<bind node="name" to="name" />
+   		</bind> 
+   		<bind node="sequence" to="sequence" />
+   		<bind node="startNode" to="startNode" />
+   		<bind node="endNode" to="endNode" />
+   		<bind node="viewBuilder" to="viewBuilder" search="self.name = :viewBuilder" />
+   		<bind node="statusMenu" to="statusMenu" search="self.name = :statusMenu" />
+   		<bind node="myStatusMenu" to="myStatusMenu" search="self.name = :myStatusMenu" />
+    </bind>
+    
+    <bind node="WkfTransition" type="com.axelor.studio.db.WkfTransition" call="com.axelor.studio.service.data.ImportScript:updateTransitionNode">
+    	<bind node="wkf" to="wkf" search="self.name = :wkf"/>
+   		<bind node="name" to="name" />
+   		<bind node="metaModel" to="_metaModel"/>
+   		<bind node="metaField" to="_metaField" />
+   		<bind node="xmlId" to="xmlId" />
+   		<bind node="isButton" to="isButton" />
+   		<bind node="buttonTitle" to="buttonTitle" />
+   		<bind node="roleSet/name" search="self.name = :name" to="roleSet">
+   			<bind node="text()" to="name" />
+   		</bind>
+   		<bind node="conditions/item" to="conditions" search="self.metaField.name = :_metaField and self.metaField.metaModel.name = :_metaModel">
+   			<bind node="moduleName" to="moduleName" />
+   			<bind node="viewBuilder" to="viewBuilder" search="self.name = :viewBuilder" />
+   			<bind node="metaField" to="metaField" search="self.name = :metaField and self.metaModel.name = :_metaModel" />
+   			<bind node="filterOperator" to="filterOperator" search="self.name = :filterOperator" />
+   			<bind node="value" to="value" />
+   			<bind node="defaultValue" to="defaultValue" />
+   			<bind node="isParameter" to="isParameter" />
+   			<bind node="logicOp" to="logicOp" />
+   		</bind>
+   		<bind node="source" to="source" search="self.name = :source"/>
+   		<bind node="target" to="target" search="self.name = :target"/>
+   		<bind node="alertTypeSelect" to="alertTypeSelect" />
+   		<bind node="alertMsg" to="alertMsg" />
+   		<bind node="successMsg" to="successMsg" />
+    </bind>
+    
+  </input>
+  
+</xml-inputs>

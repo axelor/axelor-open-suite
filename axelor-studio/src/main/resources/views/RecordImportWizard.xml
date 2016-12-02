@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
+  
+  <grid name="record-import-wizard-grid" title="Record imports" model="com.axelor.studio.db.RecordImportWizard">
+     <field name="importDate" />
+     <field name="importedBy" />
+     <field name="importFile" />
+  </grid>
+  
+  <form name="record-import-wizard-form" title="Record import" model="com.axelor.studio.db.RecordImportWizard"  width="large">
+      <panel>
+	      <field name="importDate" />
+     	  <field name="importedBy" />
+     	  <field name="importFile" widget="binary-link" />
+     	  <field name="importPreference" />
+     	  <button name="importRecord" title="Import" colSpan="3" onClick="save,action-record-import-wizard-method-import-records,save"/>
+     	  <field name="importLogFile" title="Import log" widget="binary-link" />
+	  </panel>
+  </form>
+  
+  <action-method name="action-record-import-wizard-method-import-records">
+  	<call class="com.axelor.studio.web.RecordImportController" method="importRecords"/>
+  </action-method>
+  
+</object-views>
