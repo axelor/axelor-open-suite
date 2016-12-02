@@ -24,6 +24,7 @@
 		<field name="durationStored" hidden="true" />
 		<field name="toInvoice" width="88%" if-module="axelor-business-project"/>
 		<field name="comments" />
+		<field name="user" form-view="user-form" grid-view="user-grid" hidden="true"/>
 	</grid>
 
 	<grid name="timesheet-line-timesheet-project-grid" title="Timesheet Lines" model="com.axelor.apps.hr.db.TimesheetLine" editable="true" 
@@ -48,6 +49,7 @@
 		<field name="durationStored" hidden="true" />
 		<field name="toInvoice" width="88%" if-module="axelor-business-project"/>
 		<field name="comments" />
+		<field name="user" form-view="user-form" grid-view="user-grid" hidden="true"/>
 	</grid>
 
 	<form name="timesheet-line-project-form" title="Log Time" model="com.axelor.apps.hr.db.TimesheetLine" 
@@ -78,6 +80,7 @@
 			<field name="durationStored" hidden="true" />
 			<field name="toInvoice" if-module="axelor-business-project"/>
 			<field name="comments" />
+			<field name="user" form-view="user-form" grid-view="user-grid" hidden="true"/>
 		</panel>
 	</form>
 	
@@ -94,6 +97,7 @@
 			<field name="durationStored" hidden="true" />
 			<field name="toInvoice" if-module="axelor-business-project"/>
 			<field name="comments" />
+			<field name="user" form-view="user-form" grid-view="user-grid" hidden="true"/>
 		</panel>
 	</form>
 	
@@ -132,11 +136,11 @@
 	</action-record>
 	
 	<action-record name="action-timesheet-line-record-set-visible-duration" model="com.axelor.apps.hr.db.TimesheetLine">
-	    <field name="visibleDuration" expr="call:com.axelor.apps.hr.service.employee.EmployeeService:getUserDuration(durationStored,user.employee.dailyWorkHours,false)"/>
+	    <field name="visibleDuration" expr="call:com.axelor.apps.hr.service.employee.EmployeeService:getUserDuration(durationStored,user,false)"/>
 	</action-record>
 	
 	<action-record name="action-timesheet-line-record-set-stored-duration" model="com.axelor.apps.hr.db.TimesheetLine">
-	    <field name="durationStored" expr="call:com.axelor.apps.hr.service.employee.EmployeeService:getUserDuration(visibleDuration,user.employee.dailyWorkHours,true)"/>
+	    <field name="durationStored" expr="call:com.axelor.apps.hr.service.employee.EmployeeService:getUserDuration(visibleDuration,user,true)"/>
 	</action-record>
 	
 	<action-record name="action-timesheet-line-record-to-invoice" model="com.axelor.apps.hr.db.TimesheetLine">

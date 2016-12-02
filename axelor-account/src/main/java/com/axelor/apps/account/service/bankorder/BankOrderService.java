@@ -13,8 +13,11 @@ import com.google.inject.persist.Transactional;
 public interface BankOrderService {
 
 	
-	@Transactional
-	public BigDecimal computeTotalAmount(BankOrder bankOrder)throws AxelorException;
+	public BigDecimal computeBankOrderTotalAmount(BankOrder bankOrder) throws AxelorException;
+	
+	public BigDecimal computeCompanyCurrencyTotalAmount(BankOrder bankOrder) throws AxelorException;
+	
+	public void updateTotalAmounts(BankOrder bankOrder) throws AxelorException;
 	
 	@Transactional
 	public void confirm(BankOrder bankOrder);

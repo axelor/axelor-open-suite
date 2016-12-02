@@ -39,12 +39,16 @@ public class BankOrderFileService {
 	protected LocalDate bankOrderDate;
 	protected BankDetails senderBankDetails;
 	protected Company senderCompany;
-	protected Currency currency;
-	protected BigDecimal totalAmount;
+	protected Currency bankOrderCurrency;
+	protected BigDecimal bankOrderTotalAmount;
+	protected BigDecimal arithmeticTotal;
 	protected int nbOfLines;
 	protected LocalDateTime validationDateTime;
 	protected LocalDateTime generationDateTime;
 	protected String bankOrderSeq;
+	protected boolean isMultiDates;
+	protected boolean isMultiCurrencies;
+	
 	protected List<BankOrderLine> bankOrderLineList;
 	protected Object fileToCreate;
 	protected String context;
@@ -56,13 +60,16 @@ public class BankOrderFileService {
 		this.bankOrderDate = bankOrder.getBankOrderDate();
 		this.senderBankDetails = bankOrder.getSenderBankDetails();
 		this.senderCompany = bankOrder.getSenderCompany();
-		this.currency = bankOrder.getCurrency();
-		this.totalAmount = bankOrder.getAmount();
+		this.bankOrderCurrency = bankOrder.getBankOrderCurrency();
+		this.bankOrderTotalAmount = bankOrder.getBankOrderTotalAmount();
+		this.arithmeticTotal = bankOrder.getArithmeticTotal();
 		this.nbOfLines = bankOrder.getNbOfLines();
 		this.generationDateTime = bankOrder.getFileGenerationDateTime();
 		this.validationDateTime = bankOrder.getValidationDateTime();
 		this.bankOrderSeq = bankOrder.getBankOrderSeq();
 		this.bankOrderLineList = bankOrder.getBankOrderLineList();
+		this.isMultiDates = bankOrder.getIsMultiDate();
+		this.isMultiCurrencies = bankOrder.getIsMultiCurrency();
 	}
 	
 	

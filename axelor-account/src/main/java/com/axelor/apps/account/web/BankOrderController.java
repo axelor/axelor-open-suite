@@ -60,16 +60,6 @@ public class BankOrderController {
 		}
 	}
 	
-	public void updateAmount(ActionRequest request, ActionResponse response) throws AxelorException{
-		
-		BankOrder bankOrder = request.getContext().asType(BankOrder.class);
-		try{
-			response.setValue("amount", bankOrderService.computeTotalAmount(bankOrder));
-		} catch (Exception e) {
-			TraceBackService.trace(response, e);
-		}
-	}
-	
 	public void confirm(ActionRequest request, ActionResponse response ) {
 
 		try {
@@ -90,8 +80,9 @@ public class BankOrderController {
 		try {
 			BankOrder bankOrder = request.getContext().asType(BankOrder.class);
 			bankOrder = bankOrderRepo.find(bankOrder.getId());
-			if(bankOrder != null){ 
+			if(bankOrder != null)  { 
 				bankOrderService.validate(bankOrder);
+				response.setReload(true);
 			}
 		} catch (Exception e) {
 			TraceBackService.trace(response, e);

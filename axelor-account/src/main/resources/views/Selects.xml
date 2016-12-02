@@ -330,7 +330,18 @@
 		<option value="1">Partially rejected</option>
 		<option value="2">Totally rejected</option>
 	</selection>
-
+	
+	<selection name="account.bank.order.line.fees.imputation.mode.select">
+		<option value="13">Receiver</option>
+		<option value="14">Reveiver and sender</option>
+		<option value="15">Sender</option>
+	</selection>
+	
+	<selection name="account.bank.order.line.payment.mode.select">
+		<option value="0">Transfer or other</option>
+		<option value="1">Cheque</option>
+	</selection>
+	
 	<selection name="bank.order.file.format.select">
 		<option value="pain.001.001.02">pain.001.001.02</option>
 		<option value="pain.001.001.03">pain.001.001.03</option>

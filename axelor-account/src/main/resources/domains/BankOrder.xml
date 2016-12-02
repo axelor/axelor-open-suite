@@ -15,15 +15,21 @@
   	<integer name="statusSelect" title="Status" default="1" readonly="true" selection="iaccount.bank.order.status.select"/>
 	<date name="bankOrderDate" title="Bank order Date"/>  	
 	<many-to-one name="paymentMode" ref="com.axelor.apps.account.db.PaymentMode" title="Payment Mode"/>
+	<many-to-one name="bankOrderFileFormat" ref="com.axelor.apps.account.db.BankOrderFileFormat" title="File format"/>
 	<datetime name="validationDateTime" title="Validation date"/>
 	<datetime name="fileGenerationDateTime" title="File generation date"/>
 	<datetime name="sendingDateTime" title="Sending date"/>
+	<many-to-one name="bankOrderCurrency" ref="com.axelor.apps.base.db.Currency" title="Currency"/>
+	<many-to-one name="companyCurrency" ref="com.axelor.apps.base.db.Currency" title="Company currency"/>
+	<boolean name="isMultiDate" title="Multi dates"/>
+	<boolean name="isMultiCurrency" title="Multi currencies"/>
+	<decimal name="arithmeticTotal" title="Arithmetic total" readonly="true"/>
 	
 	<!-- Sender -->
 	<many-to-one name="senderCompany" ref="com.axelor.apps.base.db.Company" title="Company"/>
 	<many-to-one name="senderBankDetails" ref="com.axelor.apps.base.db.BankDetails" title="Bank Account"/>
-	<decimal name="amount" title="Amount" readonly="true"/>
-	<many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" title="Currency"/>
+	<decimal name="bankOrderTotalAmount" title="Total amount" readonly="true"/>
+	<decimal name="companyCurrencyTotalAmount" title="Total amount in company currency" readonly="true"/>
 	<string name="senderReference" title="Reference" unique="true"/>
 	<string name="senderLabel" title="Label"/>
 	<integer name="nbOfLines" title="Number of lines"/>

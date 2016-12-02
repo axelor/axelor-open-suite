@@ -294,9 +294,9 @@ public interface IExceptionMessage {
 	static final String CFONB_TOOL_1 = /*$$(*/ "%s :\n Anomalie détectée (la valeur n'est pas numérique : %s) pour l'émetteur" /*)*/;
 	static final String CFONB_TOOL_2 = /*$$(*/ "%s :\n Anomalie détectée (la valeur n'est pas numérique : %s) pour le destinataire" /*)*/;
 	static final String CFONB_TOOL_3 = /*$$(*/ "%s :\n Anomalie détectée (la valeur n'est pas numérique : %s) pour le total" /*)*/;
-	static final String CFONB_TOOL_NB_OF_CHAR_PER_LINE = /*$$(*/ "%s :\n Anomalie détectée (l'enregistrement ne fait pas %s caractères)" /*)*/;
-	static final String CFONB_TOOL_EMPTY_ZONE = /*$$(*/ "Anomalie détectée (la zone %s est vide)" /*)*/;
-	static final String CFONB_TOOL_DIGITAL_ZONE_NOT_CORRECT = /*$$(*/ "Anomalie détectée (la zone %s doit être de type numérique)" /*)*/;
+	static final String CFONB_TOOL_NB_OF_CHAR_PER_LINE = /*$$(*/ "L'enregistrement ne fait pas %s caractères" /*)*/;
+	static final String CFONB_TOOL_EMPTY_ZONE = /*$$(*/ "Lla zone %s est vide" /*)*/;
+	static final String CFONB_TOOL_DIGITAL_ZONE_NOT_CORRECT = /*$$(*/ "La zone %s (%s) doit être de type numérique" /*)*/;
 
 	
 	/**
@@ -581,7 +581,12 @@ public interface IExceptionMessage {
 	static final String BANK_ORDER_AMOUNT_NEGATIVE = /*$$(*/ "Amount value of the bank order is not valid" /*)*/;
 	static final String BANK_ORDER_PAYMENT_MODE_MISSING = /*$$(*/ "Please select a payment mode" /*)*/;
 	static final String BANK_ORDER_SIGNATORY_MISSING = /*$$(*/ "Please select a signatory" /*)*/;
-	
+	static final String BANK_ORDER_WRONG_SENDER_RECORD = /*$$(*/ "Anomaly has been detected during file generation for the sender record of the bank order %s" /*)*/;
+	static final String BANK_ORDER_WRONG_MAIN_DETAIL_RECORD = /*$$(*/ "Anomaly has been detected during file generation for the detail record of the bank order line %s" /*)*/;
+	static final String BANK_ORDER_WRONG_BENEFICIARY_BANK_DETAIL_RECORD = /*$$(*/ "Anomaly has been detected during file generation for the beneficiary bank detail record of the bank order line %s" /*)*/;
+	static final String BANK_ORDER_WRONG_FURTHER_INFORMATION_DETAIL_RECORD = /*$$(*/ "Anomaly has been detected during file generation for the further information detail record of the bank order line %s" /*)*/;
+	static final String BANK_ORDER_WRONG_TOTAL_RECORD = /*$$(*/ "Anomaly has been detected during file generation for the total record of the bank order %s" /*)*/;
+
 	
 	/**
 	 *  BankOrder lines
@@ -605,7 +610,6 @@ public interface IExceptionMessage {
 	static final String BANK_ORDER_MERGE_SAME_SENDER_COMPANY = /*$$(*/ "Please select some bank orders that have the same sender company" /*)*/;
 	static final String BANK_ORDER_MERGE_SAME_SENDER_BANK_DETAILS = /*$$(*/ "Please select some bank orders that have the same sender bank details" /*)*/;
 	static final String BANK_ORDER_MERGE_SAME_CURRENCY = /*$$(*/ "Please select some bank orders that have the same currency" /*)*/;
-
 	
 	/**
 	 * BankOrder file

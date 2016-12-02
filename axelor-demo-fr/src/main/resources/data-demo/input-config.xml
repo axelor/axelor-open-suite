@@ -280,6 +280,10 @@
 	<input file="hr_publicHolidayPlanning.csv" type="com.axelor.apps.hr.db.PublicHolidayPlanning" separator=";" search="self.importId = :importId"/>
 	
 	<input file="hr_publicHolidayDay.csv" type="com.axelor.apps.hr.db.PublicHolidayDay" separator=";" search="self.importId = :importId"/>
+		
+	<input file="hr_weeklyPlanning.csv" separator=";" type="com.axelor.apps.base.db.WeeklyPlanning" search="self.importId  = :importId"/>
+  
+  	<input file="hr_dayPlanning.csv" separator=";" type="com.axelor.apps.base.db.DayPlanning" search="self.importId  = :importId"/>
 	
 	<input file="hr_hrConfig.csv" type="com.axelor.apps.hr.db.HRConfig" separator=";" search="self.importId = :importId"/>
 	
@@ -308,12 +312,6 @@
 		<bind to="createdBy" eval="call:com.axelor.csv.script.ImportLead:importCreatedBy(user)"/>
 		<bind to="user" search="self.importId = :user" update="true" column="user"/>
 	</input>
-	
-	
-	
-	<input file="hr_weeklyPlanning.csv" separator=";" type="com.axelor.apps.base.db.WeeklyPlanning" search="self.importId  = :importId"/>
-  
-  	<input file="hr_dayPlanning.csv" separator=";" type="com.axelor.apps.base.db.DayPlanning" search="self.importId  = :importId"/>
 	
 	<input file="hr_employee.csv" separator=";" type="com.axelor.apps.hr.db.Employee" search="self.importId  = :importId"/>
 	
@@ -466,10 +464,24 @@
 	<input file="supplychain_mrpLineType.csv" separator=";" type="com.axelor.apps.supplychain.db.MrpLineType" search="self.importId = :importId"/>
 	
 	<input file="base_period.csv" separator=";" type="com.axelor.apps.base.db.Period" />
+	
 	<input file="hr_expense.csv" separator=";" type="com.axelor.apps.hr.db.Expense" />
+	
 	<input file="hr_expenseLine.csv" separator=";" type="com.axelor.apps.hr.db.ExpenseLine" >
 		<bind to="expenseDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(expenseDate)" column="expenseDate"/>
 	</input>
+	
+	<input file="hr_employeeBonusType.csv" separator=";" type="com.axelor.apps.hr.db.EmployeeBonusType" />
+	
+	
+	<input file="hr_leaveLine.csv" separator=";" type="com.axelor.apps.hr.db.LeaveLine" />
+	
+	<input file="hr_leaveManagement.csv" separator=";" type="com.axelor.apps.hr.db.LeaveManagement" >
+		<bind to="date" eval="call:com.axelor.csv.script.ImportDateTime:importDate(date)" column="date"/>
+		<bind to="fromDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(fromDate)" column="fromDate"/>
+		<bind to="toDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(toDate)" column="toDate"/>
+	</input>
+	
 	
 </csv-inputs>
 

@@ -22,8 +22,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.axelor.apps.account.exception.IExceptionMessage;
-import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.service.administration.GeneralServiceImpl;
 import com.axelor.apps.tool.StringTool;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
@@ -41,10 +39,10 @@ public class CfonbToolService {
 	 * 			Une société
 	 * @throws AxelorException
 	 */
-	public void testDigital(String value) throws AxelorException  {
+	public void testDigital(String value, String zone) throws AxelorException  {
 		if(!StringTool.isDigital(value))  {
 					throw new AxelorException(String.format(I18n.get(IExceptionMessage.CFONB_TOOL_DIGITAL_ZONE_NOT_CORRECT),
-							value), IException.CONFIGURATION_ERROR);
+							zone, value), IException.CONFIGURATION_ERROR);
 		}
 	}
 
@@ -73,7 +71,7 @@ public class CfonbToolService {
 	public void testLength(String s, int size) throws AxelorException  {
 		if(s.length() != size)  {
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.CFONB_TOOL_NB_OF_CHAR_PER_LINE),
-					GeneralServiceImpl.EXCEPTION, size), IException.CONFIGURATION_ERROR);
+					size), IException.CONFIGURATION_ERROR);
 		}
 	}
 	
@@ -163,9 +161,13 @@ public class CfonbToolService {
 			break;
 			
 		case STATUS_OPTIONAL :
+			
+			if(zone == null)  {  zone = "";  }
 			break;
 			
 		case STATUS_DEPENDENT:
+			
+			if(zone == null)  {  zone = "";  }
 			break;
 			
 		case STATUS_NOT_USED:
@@ -180,11 +182,12 @@ public class CfonbToolService {
 		switch (format) {
 		
 		case FORMAT_ALPHA_NUMERIC:
+			zone = StringTool.deleteAccent(zone);
 			zone = StringTool.fillStringRight(zone, ' ', length);
 			break;
 
 		case FORMAT_NUMERIC:
-			this.testDigital(zone);
+			this.testDigital(zone, numOfZone);
 			zone = StringTool.fillStringLeft(zone, '0', length);
 			break;
 
@@ -193,6 +196,18 @@ public class CfonbToolService {
 		}
 		
 		return zone;
+		
+	}
+	
+	public String createZone(String numOfZone, int value, String status, String format, int length) throws AxelorException  {
+		
+		return this.createZone(numOfZone, Integer.toString(value), status, format, length);
+		
+	}
+	
+	public String createZone(String numOfZone, BigDecimal value, String status, String format, int length) throws AxelorException  {
+		
+		return this.createZone(numOfZone, this.normalizeNumber(value), status, format, length);
 		
 	}
 

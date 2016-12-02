@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.hr.web.leave;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
@@ -27,6 +28,7 @@ import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.ExtraHours;
 import com.axelor.apps.hr.db.LeaveRequest;
 import com.axelor.apps.hr.db.repo.LeaveRequestRepository;
+import com.axelor.apps.hr.exception.IExceptionMessage;
 import com.axelor.apps.hr.service.HRMenuTagService;
 import com.axelor.apps.hr.service.leave.LeaveService;
 import com.axelor.apps.message.db.Message;
@@ -112,19 +114,17 @@ public class LeaveController {
 		   .add("grid","leave-request-validate-grid")
 		   .add("form","leave-request-form");
 		
-		if(employee != null)  {
-			actionView.domain("self.company = :activeCompany AND  self.statusSelect = 2")
-			.context("activeCompany", user.getActiveCompany());
+		actionView.domain("self.company = :_activeCompany AND  self.statusSelect = 2")
+		.context("_activeCompany", user.getActiveCompany());
 		
-			if(!employee.getHrManager())  {
-				if(employee.getManager() != null) {
-					actionView.domain(actionView.get().getDomain() + " AND self.user.employee.manager = :user")
-					.context("user", user);
-				}
-				else  {
-					actionView.domain(actionView.get().getDomain() + " AND self.user = :user")
-					.context("user", user);
-				}
+		if(employee == null || !employee.getHrManager())  {
+			if(employee != null && employee.getManager() != null) {
+				actionView.domain(actionView.get().getDomain() + " AND self.user.employee.manager = :_user")
+				.context("_user", user);
+			}
+			else  {
+				actionView.domain(actionView.get().getDomain() + " AND self.user = :_user")
+				.context("_user", user);
 			}
 		}
 
@@ -141,14 +141,12 @@ public class LeaveController {
 				.add("grid","leave-request-grid")
 				.add("form","leave-request-form");
 
-		if(employee != null && employee.getHrManager())  {
-			actionView.domain("self.company = :activeCompany AND (self.statusSelect = 3 OR self.statusSelect = 4)")
-			.context("activeCompany", user.getActiveCompany());
-		
-			if(!employee.getHrManager())  {
-				actionView.domain(actionView.get().getDomain() + " AND self.user.employee.manager = :user")
-				.context("user", user);
-			}
+		actionView.domain("self.company = :_activeCompany AND (self.statusSelect = 3 OR self.statusSelect = 4)")
+		.context("_activeCompany", user.getActiveCompany());
+	
+		if(employee == null || !employee.getHrManager())  {
+			actionView.domain(actionView.get().getDomain() + " AND self.user.employee.manager = :_user")
+			.context("_user", user);
 		}
 		
 		response.setView(actionView.map());
@@ -164,15 +162,15 @@ public class LeaveController {
 				   .add("grid","leave-request-grid")
 				   .add("form","leave-request-form");
 		
-		String domain = "self.user.employee.manager.employee.manager = :user AND self.company = :activeCompany AND self.statusSelect = 2";
+		String domain = "self.user.employee.manager.employee.manager = :_user AND self.company = :_activeCompany AND self.statusSelect = 2";
 		
-		long nbLeaveRequests =  Query.of(ExtraHours.class).filter(domain).bind("user", user).bind("activeCompany", activeCompany).count();
+		long nbLeaveRequests =  Query.of(ExtraHours.class).filter(domain).bind("_user", user).bind("_activeCompany", activeCompany).count();
 		
 		if(nbLeaveRequests == 0)  {
 			response.setNotify(I18n.get("No Leave Request to be validated by your subordinates"));
 		}
 		else  {
-			response.setView(actionView.domain(domain).context("user", user).context("activeCompany", activeCompany).map());
+			response.setView(actionView.domain(domain).context("_user", user).context("_activeCompany", activeCompany).map());
 		}
 		
 	}
@@ -197,6 +195,15 @@ public class LeaveController {
 			LeaveService leaveService = leaveServiceProvider.get();
 			LeaveRequest leaveRequest = request.getContext().asType(LeaveRequest.class);
 			leaveRequest = leaveRequestRepositoryProvider.get().find(leaveRequest.getId());
+			
+			if(leaveRequest.getLeaveLine().getQuantity().subtract(leaveRequest.getDuration()).compareTo(BigDecimal.ZERO ) == -1 ){
+				if(!leaveRequest.getLeaveLine().getLeaveReason().getAllowNegativeValue() && !leaveService.willHaveEnoughDays(leaveRequest)){
+					response.setAlert( String.format( I18n.get(IExceptionMessage.LEAVE_ALLOW_NEGATIVE_VALUE_REASON), leaveRequest.getLeaveLine().getLeaveReason().getLeaveReason(), leaveRequest.getLeaveLine().getLeaveReason().getInstruction()  ) );
+					return;
+				}else{
+					response.setNotify( String.format(I18n.get(IExceptionMessage.LEAVE_ALLOW_NEGATIVE_ALERT), leaveRequest.getLeaveLine().getLeaveReason().getLeaveReason()) );
+				}
+			}
 			
 			leaveService.confirm(leaveRequest);
 
@@ -264,7 +271,7 @@ public class LeaveController {
 		LeaveService leaveService = leaveServiceProvider.get();
 		LeaveRequest leave = request.getContext().asType(LeaveRequest.class);
 		leave = Beans.get(LeaveRequestRepository.class).find(leave.getId());
-		if (leave.getLeaveReason().getManageAccumulation()){
+		if (leave.getLeaveLine().getLeaveReason().getManageAccumulation()){
 			leaveService.manageCancelLeaves(leave);
 		}
 		leaveService.cancelLeave(leave);

@@ -79,7 +79,7 @@ public class BankOrderMergeServiceImpl implements BankOrderMergeService  {
 			
 		}
 		
-		bankOrder.setAmount(bankOrderService.computeTotalAmount(bankOrder));
+		bankOrderService.updateTotalAmounts(bankOrder);
 		
 		return bankOrderRepo.save(bankOrder);
 		
@@ -96,7 +96,8 @@ public class BankOrderMergeServiceImpl implements BankOrderMergeService  {
 		int refPartnerTypeSelect = refBankOrder.getPartnerTypeSelect();
 		Company refSenderCompany = refBankOrder.getSenderCompany();
 		BankDetails refSenderBankDetails = refBankOrder.getSenderBankDetails();
-		Currency refCurrency = refBankOrder.getCurrency();
+		Currency refCurrency = refBankOrder.getBankOrderCurrency();
+		boolean isMultiCurrency = refBankOrder.getIsMultiCurrency();
 		
 		for(BankOrder bankOrder : bankOrderList)  {
 			
@@ -129,7 +130,7 @@ public class BankOrderMergeServiceImpl implements BankOrderMergeService  {
 				throw new AxelorException(I18n.get(IExceptionMessage.BANK_ORDER_MERGE_SAME_SENDER_BANK_DETAILS), IException.INCONSISTENCY);
 			}
 			
-			if(!bankOrder.getCurrency().equals(refCurrency))  {
+			if(bankOrder.getIsMultiCurrency() != isMultiCurrency || !(bankOrder.getIsMultiCurrency() && !bankOrder.getBankOrderCurrency().equals(refCurrency)))  {
 				throw new AxelorException(I18n.get(IExceptionMessage.BANK_ORDER_MERGE_SAME_CURRENCY), IException.INCONSISTENCY);
 			}
 			

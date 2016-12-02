@@ -26,66 +26,103 @@
         <field name="bankOrderDate"/>
         <field name="senderCompany"/>
         <field name="amount"/>
-        <field name="currency"/>
+        <field name="bankOrderCurrency"/>
         <field name="senderReference"/>
         <field name="nbOfLines"/>
         <field name="statusSelect"/>
     </grid>
     
-	<form name="bank-order-form" title="Bank Order" model="com.axelor.apps.account.db.BankOrder" onNew="action-group-bank-order-onnew" onSave="action-method-bank-order-on-save-amount" canDelete="false"> 
-	<toolbar>
-		<button name="print" title="Print" icon="fa-print" onClick="action-bank-order-method-print"/>
-	</toolbar>
-  		<panel name="main" colSpan="12" readonlyIf="statusSelect &gt;= 2">
+	<form name="bank-order-form" title="Bank Order" model="com.axelor.apps.account.db.BankOrder" canDelete="false"
+	onNew="action-group-bank-order-onnew" 
+	onLoad="action-bank-order-line-attrs-on-load"> 
+		<toolbar>
+			<button name="print" title="Print" icon="fa-print" onClick="action-bank-order-method-print"/>
+		</toolbar>
+  		<panel name="main" colSpan="12" readonlyIf="statusSelect &gt;= 3">
     		<field name="statusSelect" showTitle="false" widget="NavSelect" colSpan="12" selection-in="[1,3,4,5,6]" showIf="orderTypeSelect == 3 || orderTypeSelect == 5"/>
     		<field name="statusSelect" showTitle="false" widget="NavSelect" colSpan="12" showIf="orderTypeSelect != 3 &amp;&amp; orderTypeSelect != 5"/>
   			<field name="bankOrderSeq" css="label-bold bold" colSpan="12"/>
-    		<field name="bankOrderDate" css="label-bold bold" colSpan="6"/>
+    		<field name="bankOrderDate" css="label-bold bold" colSpan="6" hidden="true" hideIf="isMultiDate"/>
     		<field name="orderTypeSelect" css="label-bold bold" colSpan="6" readonly="true"/>
-    		<field name="paymentMode" css="label-bold bold" colSpan="6"/>
+    		<field name="paymentMode" css="label-bold bold" colSpan="6" domain="self.orderTypeSelect = :orderTypeSelect" onChange="action-bank-order-record-payment-mode-change,action-bank-order-record-bank-order-file-format-change"/>
+    		<field name="bankOrderFileFormat" domain="self.orderTypeSelect = :orderTypeSelect" colSpan="6" onChange="action-bank-order-record-bank-order-file-format-change"/>
     		<field name="partnerTypeSelect" showIf="orderTypeSelect != 1" css="label-bold bold" colSpan="6"/>
+    		<field name="isMultiDate" hidden="true"/>
+    		<field name="isMultiCurrency" hidden="true"/>
   		</panel>
-		<panel name="senderInfo" title="Sender Info." readonlyIf="statusSelect &gt;= 2">
-			<field name="senderCompany" grid-view="company-grid" form-view="company-form"/>
+		<panel name="senderInfo" title="Sender Info." readonlyIf="statusSelect &gt;= 3">
+			<field name="senderCompany" grid-view="company-grid" form-view="company-form" onChange="action-bank-order-record-sender-company-change"/>
 			<field name="senderBankDetails" grid-view="bank-details-grid" form-view="bank-details-form" onSelect="action-bank-order-attrs-bank-details-domain"/>
-			<field name="amount"/>
-			<field name="currency" grid-view="currency-grid" form-view="currency-form"/>
+			
+			<panel hidden="true" hideIf="isMultiCurrency" >
+				<field name="bankOrderTotalAmount" colSpan="8" readonly="true"/>
+				<field name="bankOrderCurrency" grid-view="currency-grid" form-view="currency-form" colSpan="4" readonlyIf="orderTypeSelect == 2 || orderTypeSelect == 3"/>
+			</panel>
+			<panel readonly="true">
+				<field name="companyCurrencyTotalAmount" colSpan="8"/>
+				<field name="companyCurrency" grid-view="currency-grid" form-view="currency-form" colSpan="4"/>
+			</panel>
+			
 			<field name="senderReference"/>
 			<field name="senderLabel"/>
 		</panel>
-		<panel name="BankOrderLines" title="Bank Order Lines" readonlyIf="statusSelect &gt;= 2">
-			<field name="bankOrderLineList" colSpan="12" showTitle="false" canRemove="false">
-				<editor x-layout="table" onNew="action-group-bank-order-line-onnew" x-viewer="true">
-					<field name="sequence" css="label-bold bold" readonly="true" hideIf="sequence == null" colSpan="12"/>
-					<field name="receiverCompany" hideIf="bankOrder.orderTypeSelect != 1" css="label-bold bold" colSpan="6" onChange="action-bank-order-line-record-partner" form-view="company-form" grid-view="company-grid" />
+		<panel name="bankOrderLinesPanel" title="Bank Order Lines" readonlyIf="statusSelect &gt;= 3">
+			<field name="bankOrderLineList" colSpan="12" showTitle="false">
+				<editor x-layout="table" x-viewer="true" >
+					<field name="sequence" css="label-bold bold" readonly="true" hideIf="sequence == null" colSpan="6"/>
 					<spacer colSpan="6"/>
-					<field name="partner" hideIf="bankOrder.orderTypeSelect == 1" form-view="partner-form" grid-view="partner-grid" css="label-bold bold" colSpan="6" onSelect="action-bank-order-line-attrs-partner-domain" onChange="action-bank-order-line-record-partner-onchange"/>
-					<spacer colSpan="6"/>
+					<panel colSpan="6" itemSpan="12">
+						<field name="receiverCompany" hideIf="bankOrder.orderTypeSelect != 1" css="label-bold bold" onChange="action-bank-order-line-record-receiver-company-change" form-view="company-form" grid-view="company-grid" />
+						<field name="partner" hideIf="bankOrder.orderTypeSelect == 1" form-view="partner-form" grid-view="partner-grid" css="label-bold bold" onSelect="action-bank-order-line-attrs-partner-domain" onChange="action-bank-order-line-record-partner-onchange"/>
+					</panel>
 					<field name="receiverBankDetails" onSelect="action-bank-order-line-attrs-bank-details-domain"/>
-					<field name="amount"/>
+					<field name="bankOrderAmount" colSpan="4"/>
+					<panel stacked="true" colSpan="2" itemSpan="12">
+						<field name="bankOrder.bankOrderCurrency" hidden="true" hideIf="bankOrder.isMultiCurrency"/>
+						<field name="bankOrderCurrency" hidden="true" showIf="bankOrder.isMultiCurrency"/>
+					</panel>
+					<panel colSpan="6" hidden="true" showIf="bankOrder.isMultiCurrency">
+						<field name="companyCurrencyAmount" colSpan="4"/>
+						<field name="bankOrder.companyCurrency" colSpan="2"/>
+					</panel>
 					<field name="receiverReference"/>
 					<field name="receiverLabel"/>
+					
+					<panel name="additionnalInformationPanel" title="Additionnal informations" colSpan="12" canCollapse="true" collapseIf="true" hidden="true">
+						<field name="bankOrderEconomicReason"/>
+						<field name="receiverCountry" colSpan="4"/>
+						<field name="receiverCountry.alpha2Code" colSpan="2" showTitle="false"/>
+						<field name="paymentModeSelect"/>
+						<field name="feesImputationModeSelect"/>
+					</panel>
+					
+					<panel name="furtherInformationPanel" title="Further informations" colSpan="12" canCollapse="true" collapseIf="true" hidden="true">
+						<panel name="paymentReasonPanel" title="Payment Reason" css="label-small" itemSpan="12">
+							<field name="paymentReasonLine1" showTitle="false" requiredIf="specialInstructionsLine1 || specialInstructionsLine2 || specialInstructionsLine3"/>
+							<field name="paymentReasonLine2" showTitle="false"/>
+							<field name="paymentReasonLine3" showTitle="false"/>
+							<field name="paymentReasonLine4" showTitle="false"/>
+						</panel>
+						<panel name="specialInstructionPanel" title="Special instructions" css="small" itemSpan="12">
+							<field name="specialInstructionsLine1" showTitle="false"/>
+							<field name="specialInstructionsLine2" showTitle="false"/>
+							<field name="specialInstructionsLine3" showTitle="false"/>
+						</panel>
+					</panel>
+					
+					<panel title="Reject informations" colSpan="12" hidden="true" showIf="isRejected">
+						<field name="rejectDate"/>
+						<field name="rejectMove" hidden="true" showIf="isRejected == true" form-view="move-form" grid-view="move-grid"/>
+						<field name="interbankCodeLine" onSelect="action-bank-order-attrs-interbank-code-line-domain" form-view="interbank-code-line-form" grid-view="interbank-code-line-grid"/>
+						<field name="interbankCodeLine.description" colSpan="12"/>
+						<field name="isRejected" hidden="true"/>
+					</panel>
 					<field name="bankOrder.orderTypeSelect" hidden="true"/>
-					<field name="bankOrder.statusSelect" hidden="true"/>
-        			<field name="isRejected" hideIf="bankOrder.statusSelect != 5"/>
-					<field name="rejectDate" hidden="true" showIf="isRejected == true"/>
-					<field name="interbankCodeLine" hidden="true" showIf="isRejected == true" onSelect="action-bank-order-attrs-interbank-code-line-domain" form-view="interbank-code-line-form" grid-view="interbank-code-line-grid"/>
-					<field name="rejectMove" hidden="true" showIf="isRejected == true" form-view="move-form" grid-view="move-grid"/>
+					<field name="bankOrder.isMultiDate" hidden="true"/>
+					<field name="bankOrder.isMultiCurrency" hidden="true"/>
 				</editor>
 			</field>
 		</panel>
-		<panel name="signatory" title="Signatory" sidebar="true" readonlyIf="statusSelect &gt;= 2">
-			<field name="signatoryUser" showTitle="false" form-view="user-form" grid-view="user-grid"/>		
-		</panel>
-		<panel name="" title="" sidebar="true" readonlyIf="statusSelect &gt;= 3">
-  			<field name="validationDateTime" showIf="statusSelect == 3"/>
-			<field name="fileGenerationDateTime" showIf="statusSelect &gt;= 4"/>
-			<field name="sendingDateTime" showIf="statusSelect &gt;= 4"/>
-		</panel>
-		<panel name="Rejection" title="Rejection" sidebar="true" showIf="statusSelect == 3 || statusSelect == 5">
-			<field name="rejectStatusSelect" readonly="true"/>		
-		</panel>
-		
   		<panel name="action" title="Action" itemSpan="12" sidebar="true" hideIf="statusSelect == 4 || statusSelect == 5">
     		<button name="confirm" title="Confirm" hideIf="statusSelect != 1 || orderTypeSelect == 3 || orderTypeSelect == 5" onClick="action-group-bank-order-confirm"/>
     		<button name="validate" title="Validate" showIf="(statusSelect == 1 &amp;&amp; (orderTypeSelect == 3 || orderTypeSelect == 5) ) || (statusSelect == 2 &amp;&amp; orderTypeSelect != 3 &amp;&amp; orderTypeSelect != 5)" onClick="action-group-bank-order-onvalidate"/>
@@ -103,7 +140,11 @@
     		<button name="validate" title="Validate" colOffset="1"  colSpan="6" onClick="action-method-bank-order-sign,close"/>
   		</panel>
 	</form>
-
+	
+	<action-attrs name="action-bank-order-line-attrs-on-load">
+		<attribute name="hidden" for="bankOrderLineList.additionnalInformationPanel" expr="eval: !bankOrderFileFormat?.displayAdditionnalInformations"/>
+		<attribute name="hidden" for="bankOrderLineList.furtherInformationPanel" expr="eval: !bankOrderFileFormat?.displayFurtherInformations"/>
+	</action-attrs>
 	
 	<!-- BANK ORDER ACTIONS -->
 		<!-- Actions Groups-->
@@ -113,16 +154,16 @@
 		<action name="action-bank-order-attrs-order-type"/>
 		<action name="action-bank-order-record-partner-type-select-default"/>
 		<action name="action-bank-order-attrs-domain-hidden"/>
+		<action name="action-bank-order-record-sender-company-change"/>
 	</action-group>
 	
 	<action-group name="action-group-bank-order-onvalidate">
+		<action name="save"/>
 		<action name="action-method-bank-order-validate"/>
 	</action-group>
 	
 	<action-group name="action-group-bank-order-confirm">
 		<action name="save"/>
-  		<action name="action-method-bank-order-on-save-amount"/>
-  		<action name="save"/>
   		<action name="action-method-bank-order-confirm"/>
 	</action-group>
 	
@@ -143,7 +184,6 @@
      <action-attrs name="action-bank-order-attrs-domain-hidden">
 		<attribute name="domain" for="partnerTypeSelect" expr="3" if="orderTypeSelect == 3 || orderTypeSelect == 5"/>
 		<attribute name="readonly" for="partnerTypeSelect" expr="true" if="orderTypeSelect == 3 || orderTypeSelect == 5"/>
-		<attribute name="domain" for="paymentMode" expr="self.orderTypeSelect = orderTypeSelect"/>     
     </action-attrs>
     
     	<!-- Actions Records -->
@@ -155,6 +195,18 @@
 		<field name="senderBankDetails" expr="eval:__user__.activeCompany.defaultBankDetails"/>
 		<field name="currency" expr="eval:__user__.activeCompany.currency"/>
 		<field name="signatoryUser" expr="eval: __repo__.of(AccountConfig).all().filter('self.company = ?',__user__.activeCompany).fetchOne()?.defaultSignatoryUser"/>
+	</action-record>
+	
+	<action-record name="action-bank-order-record-sender-company-change" model="com.axelor.apps.account.db.BankOrder">
+		<field name="companyCurrency" expr="eval: senderCompany?.currency"/>
+	</action-record>
+	
+	<action-record name="action-bank-order-record-payment-mode-change" model="com.axelor.apps.account.db.BankOrder">
+		<field name="bankOrderFileFormat" expr="eval: paymentMode?.bankOrderFileFormat"/>
+	</action-record>
+	
+	<action-record name="action-bank-order-record-bank-order-file-format-change" model="com.axelor.apps.account.db.BankOrder">
+		<field name="bankOrderCurrency" expr="eval: bankOrderFileFormat?.currency"/>
 	</action-record>
 	
 	<action-record name="action-bank-order-record-carry-out" model="com.axelor.apps.account.db.BankOrder">
@@ -193,10 +245,6 @@
 		<call class="com.axelor.apps.account.web.BankOrderController" method="checkLines"/>
 	</action-method>
 	
-	 <action-method name="action-method-bank-order-on-save-amount">
-		<call class="com.axelor.apps.account.web.BankOrderController" method="updateAmount"/>
-	</action-method>
-	
   	<action-method name="action-method-bank-order-validate">
 		<call class="com.axelor.apps.account.web.BankOrderController" method="validate"/>
 	</action-method>
@@ -213,15 +261,12 @@
 		<call class="com.axelor.apps.account.web.BankOrderController" method="merge"/>
 	</action-method>
 	
-	<!-- BANK ORDER LINES ACTIONS -->
-		<!-- Actions Groups-->
-		
-	<action-group name="action-group-bank-order-line-onnew">
-		<action name="action-bank-order-line-record-get-parent"/>
-		<action name="action-bank-order-line-record-default" if="bankOrder.orderTypeSelect == 1"/>
-		<action name="action-bank-order-line-record-amount-default"/>
-	</action-group>
+	<action-method name="action-bank-order-method-print">
+    	<call class="com.axelor.apps.account.web.BankOrderController" method="print"/>
+    </action-method>
 	
+	<!-- BANK ORDER LINES ACTIONS -->
+		
 		<!-- Actions Attributes -->
 		
     <action-attrs name="action-bank-order-line-attrs-partner-domain">
@@ -245,23 +290,9 @@
     
 		<!-- Actions Records -->
 	
-	<action-record name="action-bank-order-line-record-partner" model="com.axelor.apps.account.db.BankOrderLine">
+	<action-record name="action-bank-order-line-record-receiver-company-change" model="com.axelor.apps.account.db.BankOrderLine">
     	<field name="partner" expr="eval: receiverCompany.partner"/>
     	<field name="receiverBankDetails" expr="eval: receiverCompany.defaultBankDetails"/>
-    </action-record>
-    
-    <action-record name="action-bank-order-line-record-get-parent" model="com.axelor.apps.account.db.BankOrderLine">
-    	<field name="bankOrder" expr="eval: _parent"/>
-    </action-record>
-    
-	<action-record name="action-bank-order-line-record-default" model="com.axelor.apps.account.db.BankOrderLine">
-    	<field name="receiverCompany" expr="eval: bankOrder.senderCompany"/>
-    	<field name="partner" expr="eval: bankOrder.senderCompany.partner"/>
-    	<field name="receiverBankDetails" expr="eval: bankOrder.senderCompany.defaultBankDetails"/>
-    </action-record>
-    
-    <action-record name="action-bank-order-line-record-amount-default" model="com.axelor.apps.account.db.BankOrderLine">
-    	<field name="amount" expr="eval: bankOrder.amount"/>
     </action-record>
     
     <action-record name="action-bank-order-line-record-partner-onchange" model="com.axelor.apps.account.db.BankOrderLine">
@@ -269,8 +300,6 @@
   		  <field if="partner?.bankDetailsList?.isEmpty()" name="receiverBankDetails" expr=""/>
     </action-record>
     
-    <action-method name="action-bank-order-method-print">
-    	<call class="com.axelor.apps.account.web.BankOrderController" method="print"/>
-    </action-method>
+    
     
 </object-views>

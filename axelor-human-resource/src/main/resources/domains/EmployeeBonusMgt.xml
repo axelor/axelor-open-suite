@@ -11,7 +11,7 @@
 	    <many-to-one name="payPeriod" ref="com.axelor.apps.base.db.Period" title="Pay period" />
 	    <many-to-one name="leavePeriod" ref="com.axelor.apps.base.db.Period" title="Leave period" />
 	    <many-to-one name="employeeBonusType" ref="com.axelor.apps.hr.db.EmployeeBonusType" title="Bonus type" />
-	    <integer name="statusSelect" title="Status" selection="hr.employee.bonus.mgt.status.select" />
+	    <integer name="statusSelect" title="Status" selection="hr.employee.bonus.mgt.status.select" readonly="true" default="1" />
 	    <decimal name="baseAmount" title="Base amount per employee" />
 	    <one-to-many name="employeeBonusMgtLineList" ref="com.axelor.apps.hr.db.EmployeeBonusMgtLine" title="Employee bonus" mappedBy="employeeBonusMgt" />
 	    

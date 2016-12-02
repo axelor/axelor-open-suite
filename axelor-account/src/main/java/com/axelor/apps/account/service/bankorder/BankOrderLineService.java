@@ -1,16 +1,18 @@
 package com.axelor.apps.account.service.bankorder;
 
 import java.math.BigDecimal;
-import java.util.List;
 
+import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.axelor.apps.account.db.BankOrderFileFormat;
 import com.axelor.apps.account.db.BankOrderLine;
 import com.axelor.apps.account.db.repo.BankOrderRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.BankDetailsRepository;
 import com.axelor.exception.AxelorException;
@@ -43,11 +45,12 @@ public class BankOrderLineService {
 	 * @return
 	 * @throws AxelorException
 	 */
-	public BankOrderLine createBankOrderLine(Partner partner, BigDecimal amount, String receiverReference,  String receiverLabel) throws AxelorException{
+	public BankOrderLine createBankOrderLine(BankOrderFileFormat bankOrderFileFormat, Partner partner, BigDecimal amount, Currency currency, 
+			LocalDate bankOrderDate, String receiverReference,  String receiverLabel) throws AxelorException{
 		
 		BankDetails receiverBankDetails = bankDetailsRepo.findDefaultByPartner(partner, true);
 		
-		return this.createBankOrderLine(null, partner, receiverBankDetails, amount, receiverReference, receiverLabel);
+		return this.createBankOrderLine(bankOrderFileFormat, null, partner, receiverBankDetails, amount, currency, bankOrderDate, receiverReference, receiverLabel);
 	
 	}
 	
@@ -61,9 +64,11 @@ public class BankOrderLineService {
 	 * @return
 	 * @throws AxelorException
 	 */
-	public BankOrderLine createBankOrderLine(Company receiverCompany, BigDecimal amount, String receiverReference,  String receiverLabel) throws AxelorException{
+	public BankOrderLine createBankOrderLine(BankOrderFileFormat bankOrderFileFormat, Company receiverCompany, BigDecimal amount, Currency currency, 
+			LocalDate bankOrderDate, String receiverReference,  String receiverLabel) throws AxelorException{
 		
-		return this.createBankOrderLine(receiverCompany, receiverCompany.getPartner(), receiverCompany.getDefaultBankDetails(), amount, receiverReference, receiverLabel);
+		return this.createBankOrderLine(bankOrderFileFormat, receiverCompany, receiverCompany.getPartner(), receiverCompany.getDefaultBankDetails(), 
+				amount, currency, bankOrderDate, receiverReference, receiverLabel);
 	}
 	
 	
@@ -78,16 +83,31 @@ public class BankOrderLineService {
 	 * @return
 	 * @throws AxelorException
 	 */
-	public BankOrderLine createBankOrderLine(Company receiverCompany, Partner partner, BankDetails bankDetails, BigDecimal amount, String receiverReference,  String receiverLabel) throws AxelorException{
+	public BankOrderLine createBankOrderLine(BankOrderFileFormat bankOrderFileFormat, Company receiverCompany, Partner partner, BankDetails bankDetails, 
+			BigDecimal amount, Currency currency, LocalDate bankOrderDate, String receiverReference,  String receiverLabel) throws AxelorException{
 		
 		BankOrderLine bankOrderLine = new BankOrderLine();
 		
 		bankOrderLine.setReceiverCompany(receiverCompany);
 		bankOrderLine.setPartner(partner);
 		bankOrderLine.setReceiverBankDetails(bankDetails);
-		bankOrderLine.setAmount(amount);
+		bankOrderLine.setBankOrderAmount(amount);
+		
+		if(bankOrderFileFormat.getIsMultiCurrency())  {
+			bankOrderLine.setBankOrderCurrency(currency);
+		}
+		
+		if(bankOrderFileFormat.getIsMultiDate())  {
+			bankOrderLine.setBankOrderDate(bankOrderDate);
+		}
+		
 		bankOrderLine.setReceiverReference(receiverReference);
 		bankOrderLine.setReceiverLabel(receiverLabel);
+		
+		bankOrderLine.setBankOrderEconomicReason(bankOrderFileFormat.getBankOrderEconomicReason());
+		bankOrderLine.setReceiverCountry(bankOrderFileFormat.getReceiverCountry());
+		bankOrderLine.setPaymentModeSelect(bankOrderFileFormat.getPaymentModeSelect());
+		bankOrderLine.setFeesImputationModeSelect(bankOrderFileFormat.getFeesImputationModeSelect());
 		
 		return bankOrderLine;
 	}
@@ -105,7 +125,7 @@ public class BankOrderLineService {
 		if (bankOrderLine.getReceiverBankDetails() == null )  {
 			throw new AxelorException(I18n.get(IExceptionMessage.BANK_ORDER_LINE_COMPANY_MISSING), IException.INCONSISTENCY);
 		}
-		if(bankOrderLine.getAmount().compareTo(BigDecimal.ZERO) <= 0)  {
+		if(bankOrderLine.getBankOrderAmount().compareTo(BigDecimal.ZERO) <= 0)  {
 			throw new AxelorException(I18n.get(IExceptionMessage.BANK_ORDER_LINE_AMOUNT_NEGATIVE), IException.INCONSISTENCY);
 		}
 		

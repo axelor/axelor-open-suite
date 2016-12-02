@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.account.db.BankOrder;
+import com.axelor.apps.account.db.BankOrderFileFormat;
 import com.axelor.apps.account.db.BankOrderLine;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoicePayment;
@@ -47,22 +48,32 @@ public class BankOrderCreateService {
 	 * @throws AxelorException
 	 */
 	public BankOrder createBankOrder(PaymentMode paymentMode, Integer partnerType, LocalDate bankOrderDate, 
-			Company senderCompany, BankDetails senderBankDetails, BigDecimal amount, Currency currency,
+			Company senderCompany, BankDetails senderBankDetails, Currency currency,
 			String senderReference, String senderLabel) throws AxelorException  {
+		
+		BankOrderFileFormat bankOrderFileFormat = paymentMode.getBankOrderFileFormat();
 		
 		BankOrder bankOrder = new BankOrder();
 		
 		bankOrder.setOrderTypeSelect(paymentMode.getOrderTypeSelect());
 		bankOrder.setPaymentMode(paymentMode);
 		bankOrder.setPartnerTypeSelect(partnerType);
-		bankOrder.setBankOrderDate(bankOrderDate);
+		
+		if(!bankOrderFileFormat.getIsMultiDate())  {
+			bankOrder.setBankOrderDate(bankOrderDate);
+		}
+		
 		bankOrder.setStatusSelect(BankOrderRepository.STATUS_DRAFT);
 		bankOrder.setRejectStatusSelect(BankOrderRepository.REJECT_STATUS_NOT_REJECTED);
 		bankOrder.setSenderCompany(senderCompany);
 		bankOrder.setSenderBankDetails(senderBankDetails);
-		bankOrder.setAmount(amount);
 		bankOrder.setSignatoryUser(accountConfigService.getAccountConfig(senderCompany).getDefaultSignatoryUser());
-		bankOrder.setCurrency(currency);
+		
+		if(!bankOrderFileFormat.getIsMultiCurrency())  {
+			bankOrder.setBankOrderCurrency(currency);
+		}
+		bankOrder.setCompanyCurrency(senderCompany.getCurrency());
+		
 		bankOrder.setSenderLabel(senderLabel);
 		bankOrder.setBankOrderLineList(new ArrayList<BankOrderLine>());
 		bankOrderRepo.save(bankOrder);
@@ -87,19 +98,20 @@ public class BankOrderCreateService {
 		PaymentMode paymentMode = invoicePayment.getPaymentMode();
 		Partner partner = invoice.getPartner();
 		BigDecimal amount = invoicePayment.getAmount();
+		Currency currency = invoicePayment.getCurrency();
+		LocalDate paymentDate = invoicePayment.getPaymentDate();
 		
 		BankOrder bankOrder = this.createBankOrder( 
 								paymentMode,
 								this.getBankOrderPartnerType(invoice),
-								invoicePayment.getPaymentDate(),
+								paymentDate,
 								company,
 								this.getSenderBankDetails(invoice),
-								amount,
-								invoice.getCurrency(),
+								currency,
 								invoice.getInvoiceId(),
 								invoice.getInvoiceId());
 		
-		bankOrder.addBankOrderLineListItem(bankOrderLineService.createBankOrderLine(partner, amount, null, null));
+		bankOrder.addBankOrderLineListItem(bankOrderLineService.createBankOrderLine(paymentMode.getBankOrderFileFormat(), partner, amount, currency, paymentDate, invoice.getInvoiceId(), null));
 		
 		return bankOrder;
 		

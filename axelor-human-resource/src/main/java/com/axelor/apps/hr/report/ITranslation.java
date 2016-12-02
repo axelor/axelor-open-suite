@@ -40,5 +40,7 @@ public class ITranslation {
 	public static final String TIMESHEET_PRODUCT = /*$$(*/ "TimesheetLine.product"; /*)*/
 	public static final String TIMESHEET_DURATION = /*$$(*/ "TimesheetLine.duration"; /*)*/
 	public static final String TIMESHEET_TOTAL_DURATION = /*$$(*/ "Timesheet.totalDuration"; /*)*/
+	
+	public static final String ANNUAL_REPORT_OF = /*$$(*/ "Employee.annualReportOf"; /*)*/
 
 }

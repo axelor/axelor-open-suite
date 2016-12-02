@@ -60,6 +60,7 @@ import com.axelor.apps.hr.db.Expense;
 import com.axelor.apps.hr.db.ExpenseLine;
 import com.axelor.apps.hr.db.HRConfig;
 import com.axelor.apps.hr.db.repo.ExpenseRepository;
+import com.axelor.apps.hr.exception.IExceptionMessage;
 import com.axelor.apps.hr.service.EmployeeAdvanceService;
 import com.axelor.apps.hr.service.KilometricService;
 import com.axelor.apps.hr.service.config.AccountConfigHRService;
@@ -154,10 +155,13 @@ public class ExpenseServiceImpl implements ExpenseService  {
 		BigDecimal taxTotal = BigDecimal.ZERO;
 		BigDecimal inTaxTotal = BigDecimal.ZERO;
 		List<ExpenseLine> expenseLineList = expense.getExpenseLineList();
-		for (ExpenseLine expenseLine : expenseLineList) {
-			exTaxTotal = exTaxTotal.add(expenseLine.getUntaxedAmount());
-			taxTotal = taxTotal.add(expenseLine.getTotalTax());
-			inTaxTotal = inTaxTotal.add(expenseLine.getTotalAmount());
+		
+		if(expenseLineList != null)  {
+			for (ExpenseLine expenseLine : expenseLineList) {
+				exTaxTotal = exTaxTotal.add(expenseLine.getUntaxedAmount());
+				taxTotal = taxTotal.add(expenseLine.getTotalTax());
+				inTaxTotal = inTaxTotal.add(expenseLine.getTotalAmount());
+			}
 		}
 		expense.setExTaxTotal(exTaxTotal);
 		expense.setTaxTotal(taxTotal);
@@ -193,6 +197,10 @@ public class ExpenseServiceImpl implements ExpenseService  {
 	
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void validate(Expense expense) throws AxelorException  {
+		
+		if (expense.getUser().getEmployee() == null){
+			throw new AxelorException( String.format(I18n.get(IExceptionMessage.LEAVE_USER_EMPLOYEE), expense.getUser().getFullName())  , IException.CONFIGURATION_ERROR);
+		}
 		
 		if (expense.getKilometricExpenseLineList() != null && !expense.getKilometricExpenseLineList().isEmpty()){
 			for (ExpenseLine line : expense.getKilometricExpenseLineList()){

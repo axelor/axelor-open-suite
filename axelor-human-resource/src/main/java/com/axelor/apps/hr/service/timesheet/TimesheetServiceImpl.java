@@ -56,7 +56,6 @@ import com.axelor.apps.hr.db.PublicHolidayDay;
 import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.db.repo.EmployeeRepository;
-import com.axelor.apps.hr.db.repo.ExpenseRepository;
 import com.axelor.apps.hr.db.repo.LeaveRequestRepository;
 import com.axelor.apps.hr.db.repo.PublicHolidayDayRepository;
 import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
@@ -131,7 +130,7 @@ public class TimesheetServiceImpl implements TimesheetService{
 				
 		this.validToDate(timesheet);
 		
-		timesheet.setStatusSelect(ExpenseRepository.STATUS_CONFIRMED);
+		timesheet.setStatusSelect(TimesheetRepository.STATUS_CONFIRMED);
 		timesheet.setSentDate(generalService.getTodayDate());
 		
 		if(timesheet.getToDate() == null)  {
@@ -160,7 +159,7 @@ public class TimesheetServiceImpl implements TimesheetService{
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void validate(Timesheet timesheet) throws AxelorException  {
 		
-		timesheet.setStatusSelect(ExpenseRepository.STATUS_VALIDATED);
+		timesheet.setStatusSelect(TimesheetRepository.STATUS_VALIDATED);
 		timesheet.setValidatedBy(AuthUtils.getUser());
 		timesheet.setValidationDate(generalService.getTodayDate());
 		
@@ -186,7 +185,7 @@ public class TimesheetServiceImpl implements TimesheetService{
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void refuse(Timesheet timesheet) throws AxelorException  {
 		
-		timesheet.setStatusSelect(ExpenseRepository.STATUS_REFUSED);
+		timesheet.setStatusSelect(TimesheetRepository.STATUS_REFUSED);
 		timesheet.setRefusedBy(AuthUtils.getUser());
 		timesheet.setRefusalDate(generalService.getTodayDate());
 		
@@ -291,7 +290,7 @@ public class TimesheetServiceImpl implements TimesheetService{
 				}
 				
 				if(noLeave && noPublicHoliday){
-					TimesheetLine timesheetLine = createTimesheetLine(projectTask, product, user, fromDate, timesheet, employeeService.getUserDuration(logTime, employee.getDailyWorkHours(), true), "");
+					TimesheetLine timesheetLine = createTimesheetLine(projectTask, product, user, fromDate, timesheet, employeeService.getUserDuration(logTime, user, true), "");
 					timesheetLine.setVisibleDuration(logTime);
 				}
 				
@@ -582,20 +581,14 @@ public class TimesheetServiceImpl implements TimesheetService{
   		}
 	}
 	
-	public List<TimesheetLine> computeVisibleDuration(Timesheet timesheet){
+	public List<TimesheetLine> computeVisibleDuration(Timesheet timesheet)  {
+		
 		List<TimesheetLine> timesheetLineList = timesheet.getTimesheetLineList();
 		
-		Employee timesheetEmployee = timesheet.getUser().getEmployee();
-		BigDecimal employeeDailyWorkHours;
-		
-		if (timesheetEmployee == null || timesheetEmployee.getDailyWorkHours() == null){
-			employeeDailyWorkHours = generalService.getGeneral().getDailyWorkHours();
-		}else{
-			employeeDailyWorkHours = timesheetEmployee.getDailyWorkHours();
-		}
-		
 		for(TimesheetLine timesheetLine : timesheetLineList)  {
-			timesheetLine.setVisibleDuration(employeeService.getUserDuration(timesheetLine.getDurationStored(), employeeDailyWorkHours, false));
+			
+			timesheetLine.setVisibleDuration(employeeService.getUserDuration(timesheetLine.getDurationStored(), timesheet.getUser(), false));
+			
 		}
 		
 		timesheetLineList = projectTaskService._sortTimesheetLineByDate(timesheetLineList);

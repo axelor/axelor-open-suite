@@ -1,0 +1,2 @@
+"code";"label";"applicationCondition";"formula"
+"interessement";"Prime d'intéressement";"$age$ > 25";"$employeeBonusMgtLine.employeeBonusMgt.baseAmount$ * $employeeBonusMgtLine.coef$"
