@@ -77,7 +77,7 @@
 			<field name="deliveryDate" colSpan="3"/>
 	        <field name="location" domain="self.company = :company and self.typeSelect = 1" if-module="axelor-supplychain" colSpan="3" form-view="location-form" grid-view="location-grid"/>
 	        <field name="location.address" if-module="axelor-supplychain" form-view="address-form" grid-view="address-grid"/>
-  		    <field name="shipmentMode" if-module="axelor-stock" form-view="shipment-mode-form" grid-view="shipment-mode-grid"/>
+  		    <field name="shipmentMode" if-module="axelor-stock" form-view="shipment-mode-form" grid-view="shipment-mode-grid" onChange="action-purchase-order-record-empty-freight-carrier-mode"/>
 			<field name="freightCarrierMode" domain="self.shipmentMode = :shipmentMode" if-module="axelor-stock" form-view="freight-carrier-mode-form" grid-view="freight-carrier-mode-grid"/>
 	    </panel>	  
 		<panel-tabs>
@@ -256,6 +256,10 @@
     
     <action-record name="action-purchase-order-record-draft" model="com.axelor.apps.purchase.db.PurchaseOrder">
     	<field name="statusSelect" expr="1"/>
+    </action-record>
+    
+    <action-record name="action-purchase-order-record-empty-freight-carrier-mode" model="com.axelor.apps.purchase.db.PurchaseOrder">
+    	<field name="freightCarrierMode" expr="eval:null"/>
     </action-record>
     
     <action-method name="action-purchase-order-method-requested" model="com.axelor.apps.purchase.db.PurchaseOrder">

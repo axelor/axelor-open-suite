@@ -206,11 +206,11 @@
 			<panel name="clientPortalAccess" title="Client portal access" if-module="axelor-client-portal" if="__config__.general.getClientPortalManagement()">
 				<field name="password" widget="password"/>
 			</panel>
-			<panel name="Delivery" title="Delivery">
+			<panel name="Delivery" title="Delivery" showIf="isSupplier || isCustomer">
 				<field name="deliveryDelay" showIf="isSupplier"/>
 				<spacer/>
-				<field name="shipmentMode" if-module="axelor-stock" form-view="shipment-mode-form" grid-view="shipment-mode-grid"/>
-				<field name="freightCarrierMode" domain="self.shipmentMode = :shipmentMode" if-module="axelor-stock" form-view="freight-carrier-mode-form" grid-view="freight-carrier-mode-form"/>
+				<field name="shipmentMode" if-module="axelor-stock" form-view="shipment-mode-form" grid-view="shipment-mode-grid" onChange="action-partner-record-empty-freight-carrier-mode"/>
+				<field name="freightCarrierMode" domain="self.shipmentMode = :shipmentMode" if-module="axelor-stock" form-view="freight-carrier-mode-form" grid-view="freight-carrier-mode-grid"/>
 			
 			</panel>
 		</panel-tabs>
@@ -590,6 +590,10 @@
 
 	<action-record name="action-partner-record-normalize-mobile-phone-number" model="com.axelor.apps.base.db.Partner">
 		<field name="mobilePhone" expr="call:com.axelor.apps.base.web.PartnerController:normalizePhoneNumber(mobilePhone)"/>
+	</action-record>
+	
+	<action-record name="action-partner-record-empty-freight-carrier-mode" model="com.axelor.apps.base.db.Partner">
+		<field name="freightCarrierMode" expr="eval:null"/>
 	</action-record>
 
     <action-method name="action-set-partner-seq" >

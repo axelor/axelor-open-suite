@@ -8,6 +8,8 @@
     </grid>
     
     <form name="shipment-mode-form" model="com.axelor.apps.stock.db.ShipmentMode" title="Shipment Mode form">
-    	<field name="name"/>
+    	<panel>
+  		  	<field name="name"/>
+    	</panel>
     </form>
  </object-views>
