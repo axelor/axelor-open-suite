@@ -36,9 +36,15 @@ public class EbicsController {
 		
 		EbicsUser ebicsUser = ebicsUserRepo.find(request.getContext().asType(EbicsUser.class).getId());
 		
+		if (ebicsUser.getStatusSelect() != EbicsUserRepository.STATUS_WAITING_CERTIFICATE_CONFIG 
+				&& ebicsUser.getStatusSelect() != EbicsUserRepository.STATUS_CERTIFICATES_SHOULD_BE_RENEW) {
+		      return;
+	    }
+		
 		CertificateManager cm = new CertificateManager(ebicsUser);
 		try {
 			cm.create();
+			ebicsUser.setStatusSelect(EbicsUserRepository.STATUS_WAITING_SENDING_SIGNATURE_CERTIFICATE);
 			ebicsUserRepo.save(ebicsUser);
 		} catch (GeneralSecurityException | IOException e) {
 			e.printStackTrace();
@@ -102,22 +108,22 @@ public class EbicsController {
 		response.setReload(true);
 	}
 	
-	public void sendFile(ActionRequest request, ActionResponse response) throws AxelorException, IOException {
+	public void sendFULRequest(ActionRequest request, ActionResponse response) throws AxelorException, IOException {
 		
 		EbicsUser ebicsUser = ebicsUserRepo.find( request.getContext().asType(EbicsUser.class).getId());
 		
 		EbicsProduct ebicsProduct = new EbicsProduct("Test", Locale.FRENCH, "01");
-		ebicsService.sendFile(ebicsUser, ebicsProduct);
+		ebicsService.sendFULRequest(ebicsUser, ebicsProduct);
 
 		response.setReload(true);
 	}
 	
-	public void fetchFile(ActionRequest request, ActionResponse response) throws AxelorException, IOException {
+	public void sendFDLRequest(ActionRequest request, ActionResponse response) throws AxelorException, IOException {
 		
 		EbicsUser ebicsUser = ebicsUserRepo.find( request.getContext().asType(EbicsUser.class).getId());
 		
 		EbicsProduct ebicsProduct = new EbicsProduct("Test", Locale.FRENCH, "01");
-		ebicsService.fetchFile(ebicsUser, ebicsProduct, OrderType.FDL, true, null, null);
+		ebicsService.sendFDLRequest(ebicsUser, ebicsProduct, OrderType.FDL, true, null, null);
 
 		response.setReload(true);
 	}

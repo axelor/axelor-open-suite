@@ -6,43 +6,50 @@
 	<grid name="ebics-user-grid" title="Ebics user" model="com.axelor.apps.account.db.EbicsUser" >
 		<field name="name" />
 		<field name="userId" />
-		<field name="securityMedium" />
-		<field name="dn" />
-		<field name="isInitializedHIA" />
-		<field name="isInitialized" />
+		<field name="ebicsTypeSelect"/>
+		<field name="statusSelect"/>
+		<field name="ebicsPartner"/>
+		<field name="ebicsPartner.ebicsBank"/>
 	</grid>
 	
 	<form name="ebics-user-form" title="Ebics user" model="com.axelor.apps.account.db.EbicsUser" onSave="save,action-ebics-user-method-generate-dn">
 		<panel title="General informations" colSpan="12">
 			<field name="name" />
 			<field name="password" />
-			<field name="userId" help="Name of the user or service" />
+			<field name="userId" help="Name of the user or service"/>
+			<field name="ebicsTypeSelect" widget="RadioSelect"/>
 			<field name="securityMedium" />
-			<field name="dn" readonly="true" help="Defines a unique identifier for the certificate" />
 			<field name="ebicsPartner" help="Subscription or contract to which the user is associated" />
-			<field name="isInitializedHIA" />
-			<field name="isInitialized" />
+			<field name="ebicsPartner.ebicsBank"/>
+			<field name="statusSelect" colSpan="12"/>
 		</panel>
-		<panel title="Public key" colSpan="12" itemSpan="12">
-			<field name="a005PrivateKey"/>
-			<field name="x002PrivateKey"/>
+		<panel title="DN" colSpan="6" itemSpan="12" showIf="ebicsTypeSelect == 0" hidden="true">
+			<button name="generateDn" title="Generate DN" onClick="save,action-ebics-user-method-generate-dn" showIf="!dn"/>
+			<field name="dn" readonly="true" help="Defines a unique identifier for the certificate" />
+		</panel>
+		<panel title="Electronic signature certificate" colSpan="6" itemSpan="12" readonlyIf="ebicsTypeSelect == 0" showIf="ebicsTypeSelect == 1 || (ebicsTypeSelect == 0  &amp;&amp; statusSelect >= 1)">
+			<field name="a005Certificate" readonlyIf="ebicsTypeSelect == 0"/>
+			<field name="a005PrivateKey" readonlyIf="ebicsTypeSelect == 0"/>
+		</panel>
+		<panel title="Encryption certificate" colSpan="6" itemSpan="12" readonlyIf="ebicsTypeSelect == 0" showIf="ebicsTypeSelect == 1 || (ebicsTypeSelect == 0  &amp;&amp; statusSelect >= 1)">
+			<field name="e002Certificate"/>
 			<field name="e002PrivateKey"/>
 		</panel>
-		<panel title="Certificate" colSpan="12" itemSpan="12">
-			<field name="a005Certificate"/>
-			<field name="x002Certificate"/>
-			<field name="e002Certificate"/>
+		<panel title="Authentication certificate" colSpan="6" itemSpan="12" readonlyIf="ebicsTypeSelect == 0" showIf="ebicsTypeSelect == 1 || (ebicsTypeSelect == 0  &amp;&amp; statusSelect >= 1)">
+			<field name="x002Certificate"/> 
+			<field name="x002PrivateKey"/>
 		</panel>
 		
 		<panel sidebar="true">
-			<button name="generateDn" title="Generate DN" onClick="save,action-ebics-user-method-generate-dn"/>
-			<button name="generateCertificates" title="Generate certificates" onClick="save,action-ebics-user-method-generate-certificates"/>
-			<button name="sendINI" title="Send INI" onClick="save,action-ebics-user-method-send-ini"/>
-			<button name="sendHIA" title="Send HIA" onClick="save,action-ebics-user-method-send-hia"/>
-			<button name="sendHPB" title="Send HPB" onClick="save,action-ebics-user-method-send-hpb"/>
-			<button name="sendSPR" title="Send SPR" onClick="save,action-ebics-user-method-send-spr"/>
-			<button name="sendFile" title="Send File" onClick="save,action-ebics-user-method-send-file"/>
-			<button name="fetchFile" title="Fetch file" onClick="save,action-ebics-user-method-fetch-file"/>
+			<button name="generateCertificates" title="Generate certificates" onClick="save,action-ebics-user-method-generate-certificates" hidden="true" showIf="ebicsTypeSelect == 0 &amp;&amp; dn &amp;&amp; (statusSelect == 0 || statusSelect == 4)"/>
+			<button name="sendINI" title="Send certificate of signature A005 (INI)" onClick="save,action-ebics-user-method-send-ini" help="true" hidden="true" showIf="statusSelect == 1"/>
+			<button name="sendHIA" title="Send authentication X002 and Encryption E002 certificates (HIA)" onClick="save,action-ebics-user-method-send-hia" help="true" hidden="true" showIf="statusSelect == 2"/>
+			<button name="sendHPB" title="Get the server certificates (HPB)" onClick="save,action-ebics-user-method-send-hpb"/>
+			<button name="sendSPR" title="Send SPR" onClick="save,action-ebics-user-method-send-spr" showIf="statusSelect == 4"/>
+			<button name="sendFUL" title="Send File" onClick="save,action-ebics-user-method-send-ful" showIf="statusSelect == 4"/>
+			<button name="sendFDL" title="Fetch file" onClick="save,action-ebics-user-method-send-fdl" showIf="statusSelect == 4"/>
+			<button name="sendHTD" title="Get the UserID state (HTD)" onClick="save" showIf="statusSelect == 4"/>
+			<button name="sendPTK" title="Get the user log (PTK)" onClick="save" showIf="statusSelect == 4"/>
 		</panel>
 	
 	</form>
@@ -67,12 +74,12 @@
 		<call class="com.axelor.apps.account.ebics.web.EbicsController" method="sendSPRRequest"/>
 	</action-method>
 	
-	<action-method name="action-ebics-user-method-send-file">
-		<call class="com.axelor.apps.account.ebics.web.EbicsController" method="sendFile"/>
+	<action-method name="action-ebics-user-method-send-ful">
+		<call class="com.axelor.apps.account.ebics.web.EbicsController" method="sendFULRequest"/>
 	</action-method>
 	
-	<action-method name="action-ebics-user-method-fetch-file">
-		<call class="com.axelor.apps.account.ebics.web.EbicsController" method="fetchFile"/>
+	<action-method name="action-ebics-user-method-send-fdl">
+		<call class="com.axelor.apps.account.ebics.web.EbicsController" method="sendFDLRequest"/>
 	</action-method>
     
   

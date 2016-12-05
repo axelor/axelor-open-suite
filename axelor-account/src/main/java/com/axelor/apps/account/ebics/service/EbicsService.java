@@ -101,19 +101,17 @@ public class EbicsService {
 	    EbicsSession		session;
 	    KeyManagement		keyManager;
 
-	    ebicsUser.setIsInitialized(false);
-
-	    if (ebicsUser.getIsInitialized()) {
-	      return;
+	    if (ebicsUser.getStatusSelect() != EbicsUserRepository.STATUS_WAITING_SENDING_SIGNATURE_CERTIFICATE) {
+		      return;
 	    }
-
+	    
 	    session = new EbicsSession(ebicsUser);
 	    session.setProduct(product);
 	    
 	    keyManager = new KeyManagement(session);
         keyManager.sendINI(null, getCertificate(ebicsUser));
 	    
-        ebicsUser.setIsInitialized(true);
+        ebicsUser.setStatusSelect(EbicsUserRepository.STATUS_WAITING_AUTH_AND_ENCRYPT_CERTIFICATES);
 	    userRepo.save(ebicsUser);
 	  }
 
@@ -123,26 +121,25 @@ public class EbicsService {
 	   * @param product the application product.
 	   */
 	  @Transactional
-	  public void sendHIARequest(EbicsUser user, EbicsProduct product) {
+	  public void sendHIARequest(EbicsUser ebicsUser, EbicsProduct product) {
 	    EbicsSession		session;
 	    KeyManagement		keyManager;
 
-	    user.setIsInitializedHIA(false);
-	    if (user.getIsInitializedHIA()) {
+	    if (ebicsUser.getStatusSelect() != EbicsUserRepository.STATUS_WAITING_AUTH_AND_ENCRYPT_CERTIFICATES) {
 	      return;
 	    }
-	    session = new EbicsSession(user);
+	    session = new EbicsSession(ebicsUser);
 	    session.setProduct(product);
 	    keyManager = new KeyManagement(session);
 
 	    try {
-			keyManager.sendHIA(null , getCertificate(user));
+			keyManager.sendHIA(null , getCertificate(ebicsUser));
 		} catch (IOException | AxelorException | JDOMException e) {
 			e.printStackTrace();
 		}
 
-	    user.setIsInitializedHIA(true);
-	    userRepo.save(user);
+	    ebicsUser.setStatusSelect(EbicsUserRepository.STATUS_ACTIVE_CONNECTION);
+	    userRepo.save(ebicsUser);
 	  }
 
 	  /**
@@ -196,7 +193,7 @@ public class EbicsService {
 	   * @param userId the user ID that sends the file.
 	   * @param product the application product.
 	   */
-	  public void sendFile(EbicsUser user, EbicsProduct product) {
+	  public void sendFULRequest(EbicsUser user, EbicsProduct product) {
 	    FileTransfer transferManager;
 	    EbicsSession session;
 
@@ -215,7 +212,7 @@ public class EbicsService {
 	    }
 	  }
 
-	 public void fetchFile( EbicsUser user,
+	 public void sendFDLRequest( EbicsUser user,
 	                        EbicsProduct product,
 	                        OrderType orderType,
 	                        boolean isTest,
@@ -233,7 +230,7 @@ public class EbicsService {
 	    session.setProduct(product);
 	    transferManager = new FileTransfer(session);
 
-	    String path = "/home/axelor/test.txt";
+	    String path = "/home/geoffrey/test.txt";
 	    transferManager.fetchFile(orderType, start, end, new FileOutputStream(path), getCertificate(user));
 	  }
 	 
