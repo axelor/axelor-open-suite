@@ -273,6 +273,7 @@ public class InvoiceController {
 			String fileLink = ReportFactory.createReport(IReport.INVOICE, title+"-${date}")
 					.addParam("InvoiceId", invoiceIds)
 					.addParam("Locale", language)
+					.addParam("InvoicesCopy", invoicesCopy)
 					.addModel(invoice)
 					.generate()
 					.getFileLink();
