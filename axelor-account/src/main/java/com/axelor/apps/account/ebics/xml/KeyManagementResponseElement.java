@@ -61,7 +61,7 @@ public class KeyManagementResponseElement extends DefaultResponseElement {
    */
   @SuppressWarnings("deprecation")
   public byte[] getOrderData() {
-    return response.getBody().getDataTransfer().getOrderData().byteArrayValue();
+	 return response.getBody().getDataTransfer().getOrderData().byteArrayValue();
   }
 
   @Override

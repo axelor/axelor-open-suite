@@ -82,5 +82,8 @@
 		<call class="com.axelor.apps.account.ebics.web.EbicsController" method="sendFDLRequest"/>
 	</action-method>
     
+    <action-method name="action-ebics-user-method-send-hpb">
+  		<call class="com.axelor.apps.account.ebics.web.EbicsController" method="sendHPBRequest" />
+    </action-method>
   
 </object-views>

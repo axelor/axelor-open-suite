@@ -81,8 +81,6 @@ public class HttpRequestSender {
   public final int send(ContentFactory request, File certFile) throws IOException, AxelorException {
     HttpClient			httpClient;
     String                      proxyConfiguration;
-    PostMethod			method;
-    RequestEntity		requestEntity;
     InputStream			input;
     int				retCode;
 
@@ -115,13 +113,8 @@ public class HttpRequestSender {
     }
     
     input = request.getContent();
-    method = new PostMethod(session.getUser().getEbicsPartner().getEbicsBank().getUrl());
-    method.getParams().setSoTimeout(30000);
-    requestEntity = new InputStreamRequestEntity(input);
-    method.setRequestEntity(requestEntity);
-    method.setRequestHeader("Content-type", "text/xml; charset=ISO-8859-1");
     retCode = -1;
-    HttpPost post = new HttpPost("https://server-ebics.webank.fr:28103/WbkPortalFileTransfert/EbicsProtocol");
+    HttpPost post = new HttpPost(session.getUser().getEbicsPartner().getEbicsBank().getUrl());
     ContentType type = ContentType.TEXT_XML;
     HttpEntity entity = new InputStreamEntity(input, retCode, type);
     post.setEntity(entity);

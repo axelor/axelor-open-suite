@@ -2,14 +2,12 @@ package com.axelor.apps.account.ebics.web;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.Locale;
 
 import org.jdom.JDOMException;
 
 import com.axelor.apps.account.db.EbicsUser;
 import com.axelor.apps.account.db.repo.EbicsUserRepository;
 import com.axelor.apps.account.ebics.certificate.CertificateManager;
-import com.axelor.apps.account.ebics.client.EbicsProduct;
 import com.axelor.apps.account.ebics.client.OrderType;
 import com.axelor.apps.account.ebics.service.EbicsService;
 import com.axelor.auth.db.User;
@@ -71,8 +69,7 @@ public class EbicsController {
 		
 		EbicsUser ebicsUser = ebicsUserRepo.find( request.getContext().asType(EbicsUser.class).getId());
 		
-		EbicsProduct ebicsProduct = new EbicsProduct("Test", Locale.FRENCH, "01");
-		ebicsService.sendINIRequest(ebicsUser, ebicsProduct);
+		ebicsService.sendINIRequest(ebicsUser, null);
 		
 		response.setReload(true);
 		
@@ -82,8 +79,7 @@ public class EbicsController {
 		
 		EbicsUser ebicsUser = ebicsUserRepo.find( request.getContext().asType(EbicsUser.class).getId());
 		
-		EbicsProduct ebicsProduct = new EbicsProduct("Test", Locale.FRENCH, "01");
-		ebicsService.sendHIARequest(ebicsUser, ebicsProduct);
+		ebicsService.sendHIARequest(ebicsUser, null);
 		
 		response.setReload(true);
 	}
@@ -92,8 +88,7 @@ public class EbicsController {
 		
 		EbicsUser ebicsUser = ebicsUserRepo.find( request.getContext().asType(EbicsUser.class).getId());
 		
-		EbicsProduct ebicsProduct = new EbicsProduct("Test", Locale.FRENCH, "01");
-		ebicsService.sendHPBRequest(ebicsUser, ebicsProduct);
+		ebicsService.sendHPBRequest(ebicsUser, null);
 
 		response.setReload(true);
 	}
@@ -102,8 +97,7 @@ public class EbicsController {
 		
 		EbicsUser ebicsUser = ebicsUserRepo.find( request.getContext().asType(EbicsUser.class).getId());
 		
-		EbicsProduct ebicsProduct = new EbicsProduct("Test", Locale.FRENCH, "01");
-		ebicsService.revokeSubscriber(ebicsUser, ebicsProduct);
+		ebicsService.revokeSubscriber(ebicsUser, null);
 
 		response.setReload(true);
 	}
@@ -112,8 +106,7 @@ public class EbicsController {
 		
 		EbicsUser ebicsUser = ebicsUserRepo.find( request.getContext().asType(EbicsUser.class).getId());
 		
-		EbicsProduct ebicsProduct = new EbicsProduct("Test", Locale.FRENCH, "01");
-		ebicsService.sendFULRequest(ebicsUser, ebicsProduct);
+		ebicsService.sendFULRequest(ebicsUser, null);
 
 		response.setReload(true);
 	}
@@ -122,8 +115,7 @@ public class EbicsController {
 		
 		EbicsUser ebicsUser = ebicsUserRepo.find( request.getContext().asType(EbicsUser.class).getId());
 		
-		EbicsProduct ebicsProduct = new EbicsProduct("Test", Locale.FRENCH, "01");
-		ebicsService.sendFDLRequest(ebicsUser, ebicsProduct, OrderType.FDL, true, null, null);
+		ebicsService.sendFDLRequest(ebicsUser, null, OrderType.FDL, true, null, null);
 
 		response.setReload(true);
 	}

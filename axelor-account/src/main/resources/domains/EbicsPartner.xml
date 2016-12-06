@@ -9,7 +9,7 @@
   
     <many-to-one name="ebicsBank" ref="com.axelor.apps.account.db.EbicsBank" title="Ebics bank"/>
     <string name="partnerId" title="Partner id" namecolumn="true" max="35"/>
-	<string name="nextOrderId" title="Next order id" />
+	<string name="nextOrderId" title="Next order id" required="true"/>
     
   </entity>
   

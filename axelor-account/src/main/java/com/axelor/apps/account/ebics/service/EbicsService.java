@@ -16,6 +16,7 @@ import java.util.Date;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.jdom.JDOMException;
 
+import com.axelor.app.AppSettings;
 import com.axelor.apps.account.db.EbicsBank;
 import com.axelor.apps.account.db.EbicsUser;
 import com.axelor.apps.account.db.repo.EbicsBankRepository;
@@ -41,9 +42,22 @@ public class EbicsService {
 	@Inject
 	private EbicsBankRepository bankRepo;
 	
+	private EbicsProduct defaultProduct;
+	
 	static {
 	    org.apache.xml.security.Init.init();
 	    java.security.Security.addProvider(new BouncyCastleProvider());
+	}
+	
+	@Inject
+	public EbicsService() {
+		
+		AppSettings settings = AppSettings.get();
+		String name = settings.get("application.name") + "-" + settings.get("application.version");
+		String language = settings.get("application.locale");
+		String instituteID = settings.get("application.author");
+		
+		defaultProduct = new EbicsProduct(name, language, instituteID);
 	}
 	
 	public String makeDN(String name, String email, String country, String organization)
@@ -106,6 +120,9 @@ public class EbicsService {
 	    }
 	    
 	    session = new EbicsSession(ebicsUser);
+	    if (product == null) {
+	    	product = defaultProduct;
+	    }
 	    session.setProduct(product);
 	    
 	    keyManager = new KeyManagement(session);
@@ -129,6 +146,9 @@ public class EbicsService {
 	      return;
 	    }
 	    session = new EbicsSession(ebicsUser);
+	    if (product == null) {
+	    	product = defaultProduct;
+	    }
 	    session.setProduct(product);
 	    keyManager = new KeyManagement(session);
 
@@ -153,6 +173,9 @@ public class EbicsService {
 	    KeyManagement		keyManager;
 
 	    session = new EbicsSession(user);
+	    if (product == null) {
+	    	product = defaultProduct;
+	    }
 	    session.setProduct(product);
 	    keyManager = new KeyManagement(session);
 
@@ -175,6 +198,9 @@ public class EbicsService {
 	    KeyManagement		keyManager;
 
 	    session = new EbicsSession(user);
+	    if (product == null) {
+	    	product = defaultProduct;
+	    }
 	    session.setProduct(product);
 	    keyManager = new KeyManagement(session);
 
@@ -201,6 +227,9 @@ public class EbicsService {
 	    session.addSessionParam("FORMAT", "pain.xxx.cfonb160.dct");
 	    session.addSessionParam("TEST", "true");
 	    session.addSessionParam("EBCDIC", "false");
+	    if (product == null) {
+	    	product = defaultProduct;
+	    }
 	    session.setProduct(product);
 	    transferManager = new FileTransfer(session);
 	    
@@ -226,6 +255,9 @@ public class EbicsService {
 	    session.addSessionParam("FORMAT", "pain.xxx.cfonb160.dct");
 	    if (isTest) {
 	      session.addSessionParam("TEST", "true");
+	    }
+	    if (product == null) {
+	    	product = defaultProduct;
 	    }
 	    session.setProduct(product);
 	    transferManager = new FileTransfer(session);

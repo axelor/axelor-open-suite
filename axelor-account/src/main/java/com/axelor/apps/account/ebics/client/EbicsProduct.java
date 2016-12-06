@@ -37,11 +37,16 @@ public class EbicsProduct implements Serializable {
    * @param instituteID the institute, this is an optional value, you can leave this parameter empty.
    */
   public EbicsProduct(String name,
-                 Locale language,
+                 String language,
                  String instituteID)
   {
     this.name = name;
-    this.language = language.getLanguage().toLowerCase();
+    if (language == null) {
+    	language = Locale.getDefault().getLanguage();
+    }
+    else {
+    	this.language = language;
+    }
     this.instituteID = instituteID;
   }
 
