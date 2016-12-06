@@ -203,7 +203,7 @@
 			        <field name="lengthUnit" domain="self.lengthUnit.unitTypeSelect = 2" />
 			        <field name="length" readonlyIf="diameter > 0" onChange="action-product-record-calculate-volume-length"/>
 			        <field name="width" readonlyIf="diameter > 0" onChange="action-product-record-calculate-volume-length"/>
-			        <field name="height" onChange="action-product-record-calculate-volume-length"/>
+			        <field name="height" onChange="action-product-record-calculate-volume-length, action-product-record-calculate-volume-diameter"/>
 			        <field name="diameter" readonlyIf="length > 0 || width > 0" onChange="action-product-record-calculate-volume-diameter"/>
 			        <field name="articleVolume" readonly="true"/>
 			      </panel>
@@ -323,6 +323,14 @@
     <action-record name="action-product-set-total-variants" model="com.axelor.apps.base.db.Product">
     	<field name="$totalVariants" expr="eval:__repo__.of(Product).all().filter('self.parentProduct.id = ?',id).fetch().size"/>    
     </action-record>
+	
+	<action-record name="action-product-record-calculate-volume-diameter" model="com.axelor.apps.base.db.Product">
+		<field name="articleVolume" if="diameter > 0.00" expr="eval: Math.PI/4*Math.sqrt(diameter)*height"/>
+	</action-record>
+	
+	<action-record name="action-product-record-calculate-volume-length" model="com.axelor.apps.base.db.Product">
+		<field name="articleVolume" if="length > 0" expr="eval: length * width * height"/>
+	</action-record>
     
     <action-attrs name="action-hide-product-field">
     	<attribute name="hidden" for="isRawMaterial" expr="eval:productTypeSelect == 'service'"  />
@@ -399,14 +407,6 @@
 		<attribute name="title" for="salePrice" expr="eval: com.axelor.i18n.I18n.get('Sale Price (for periodicity selected)')" if="productTypeSelect == 'subscriptable'"/>
 		<attribute name="title" for="salePrice" expr="eval: com.axelor.i18n.I18n.get('Sale price')" if="productTypeSelect != 'subscriptable'"/>
 	</action-attrs>
-	
-	<action-record name="action-product-record-calculate-volume-diameter" model="com.axelor.apps.base.db.Product">
-		<field name="articleVolume" if="diameter != null" expr="eval: height * diameter"/>
-	</action-record>
-	
-	<action-record name="action-product-record-calculate-volume-length" model="com.axelor.apps.base.db.Product">
-		<field name="articleVolume" if="length > 0" expr="eval: length * width * height"/>
-	</action-record>
 	
     <search-filters name="products-filters" model="com.axelor.apps.base.db.Product" title="Products filters">
 		<filter title="Current Products">
