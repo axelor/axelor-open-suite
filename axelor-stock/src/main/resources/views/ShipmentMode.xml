@@ -5,11 +5,18 @@
     
     <grid name="shipment-mode-grid" title="Shipment Mode grid" model="com.axelor.apps.stock.db.ShipmentMode">
     	<field name="name"/>
+  		<field name="freightCarrierMode.name"/>
+  		<field name="freightCarrierMode.freightCarrier"/>
     </grid>
     
     <form name="shipment-mode-form" model="com.axelor.apps.stock.db.ShipmentMode" title="Shipment Mode form">
     	<panel>
-  		  	<field name="name"/>
+  		  	<field name="name" required="true" colSpan="12"/>
+  		  	<field name="freightCarrierMode" form-view="freight-carrier-mode-shipment-mode-form" grid-view="freight-carrier-mode-shipment-mode-grid" colSpan="12"/>
     	</panel>
     </form>
+    
+    <grid name="shipment-mode-freight-carrier-mode-grid" title="Shipment Mode grid" model="com.axelor.apps.stock.db.ShipmentMode">
+    	<field name="name"/>
+    </grid>
  </object-views>
