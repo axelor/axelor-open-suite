@@ -8,7 +8,6 @@ import org.jdom.JDOMException;
 import com.axelor.apps.account.db.EbicsUser;
 import com.axelor.apps.account.db.repo.EbicsUserRepository;
 import com.axelor.apps.account.ebics.certificate.CertificateManager;
-import com.axelor.apps.account.ebics.client.OrderType;
 import com.axelor.apps.account.ebics.service.EbicsService;
 import com.axelor.auth.db.User;
 import com.axelor.auth.db.repo.UserRepository;
@@ -106,7 +105,7 @@ public class EbicsController {
 		
 		EbicsUser ebicsUser = ebicsUserRepo.find( request.getContext().asType(EbicsUser.class).getId());
 		
-		ebicsService.sendFULRequest(ebicsUser, null);
+		ebicsService.sendFULRequest(ebicsUser, null, null);
 
 		response.setReload(true);
 	}
@@ -115,7 +114,16 @@ public class EbicsController {
 		
 		EbicsUser ebicsUser = ebicsUserRepo.find( request.getContext().asType(EbicsUser.class).getId());
 		
-		ebicsService.sendFDLRequest(ebicsUser, null, OrderType.FDL, true, null, null);
+		ebicsService.sendFDLRequest(ebicsUser, null, null, null);
+
+		response.setReload(true);
+	}
+	
+	public void sendHTDRequest(ActionRequest request, ActionResponse response) throws AxelorException, IOException {
+		
+		EbicsUser ebicsUser = ebicsUserRepo.find( request.getContext().asType(EbicsUser.class).getId());
+		
+		ebicsService.sendHTDRequest(ebicsUser, null, null, null);
 
 		response.setReload(true);
 	}

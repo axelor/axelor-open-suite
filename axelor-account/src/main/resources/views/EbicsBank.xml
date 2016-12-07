@@ -17,6 +17,8 @@
 			<field name="url" />
 			<field name="certificate" widget="binary-link"/>
 			<field name="hostId" help="Identifies the bank" />
+			<field name="testMode" />
+			<field name="testFile" widget="binary-link" showIf="testMode"/>
 		</panel>
 		<panel title="Server public key certificate dedicated to authentication" itemSpan="12">
 			<field name="e002Digest" />
