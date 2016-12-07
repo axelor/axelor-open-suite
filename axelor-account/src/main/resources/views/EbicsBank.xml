@@ -13,10 +13,10 @@
 	<form name="ebics-bank-form" title="Ebics bank" model="com.axelor.apps.account.db.EbicsBank">
 	
 		<panel title="General informations">
-			<field name="name" />
-			<field name="url" />
-			<field name="certificate" widget="binary-link"/>
+			<field name="name"/>
+			<field name="url"/>
 			<field name="hostId" help="Identifies the bank" />
+			<field name="sslCertificate" widget="binary-link"/>
 		</panel>
 		<panel title="Server public key certificate dedicated to authentication" itemSpan="12">
 			<field name="e002Digest" />

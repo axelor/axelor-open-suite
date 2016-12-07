@@ -269,7 +269,7 @@ public class EbicsService {
 	 private File getCertificate(EbicsUser user) {
 		 
 		 EbicsBank bank = user.getEbicsPartner().getEbicsBank();
-		 MetaFile cert = bank.getCertificate();
+		 MetaFile cert = bank.getSslCertificate();
 
 		 return MetaFiles.getPath(cert).toFile();
 	 }

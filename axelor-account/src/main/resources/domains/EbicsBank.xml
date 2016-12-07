@@ -20,7 +20,7 @@
 	<string name="e002KeyModulus" title="E002 modulus" large="true" multiline="true" />
 	<string name="e002KeyExponent" title="E002 exponent" large="true" multiline="true" />
 	
-	<many-to-one name="certificate" ref="com.axelor.meta.db.MetaFile" title="Certificate" />
+	<many-to-one name="sslCertificate" ref="com.axelor.meta.db.MetaFile" title="SSL Certificate" />
 	
   </entity>
   

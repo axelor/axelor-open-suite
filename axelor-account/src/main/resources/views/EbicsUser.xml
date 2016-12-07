@@ -44,7 +44,7 @@
 			<button name="generateCertificates" title="Generate certificates" onClick="save,action-ebics-user-method-generate-certificates" hidden="true" showIf="ebicsTypeSelect == 0 &amp;&amp; dn &amp;&amp; (statusSelect == 0 || statusSelect == 4)"/>
 			<button name="sendINI" title="Send certificate of signature A005 (INI)" onClick="save,action-ebics-user-method-send-ini" help="true" hidden="true" showIf="statusSelect == 1"/>
 			<button name="sendHIA" title="Send authentication X002 and Encryption E002 certificates (HIA)" onClick="save,action-ebics-user-method-send-hia" help="true" hidden="true" showIf="statusSelect == 2"/>
-			<button name="sendHPB" title="Get the server certificates (HPB)" onClick="save,action-ebics-user-method-send-hpb"/>
+			<button name="sendHPB" title="Get the server certificates (HPB)" onClick="save,action-ebics-user-method-send-hpb" showIf="statusSelect >= 3"/>
 			<button name="sendSPR" title="Send SPR" onClick="save,action-ebics-user-method-send-spr" showIf="statusSelect == 3"/>
 			<button name="sendFUL" title="Send File" onClick="save,action-ebics-user-method-send-ful" showIf="statusSelect == 3"/>
 			<button name="sendFDL" title="Fetch file" onClick="save,action-ebics-user-method-send-fdl" showIf="statusSelect == 3"/>
