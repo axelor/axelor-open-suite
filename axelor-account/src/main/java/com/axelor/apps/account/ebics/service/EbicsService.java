@@ -18,6 +18,7 @@ import org.jdom.JDOMException;
 
 import com.axelor.app.AppSettings;
 import com.axelor.apps.account.db.EbicsBank;
+import com.axelor.apps.account.db.EbicsPartner;
 import com.axelor.apps.account.db.EbicsUser;
 import com.axelor.apps.account.db.repo.EbicsBankRepository;
 import com.axelor.apps.account.db.repo.EbicsUserRepository;
@@ -28,6 +29,7 @@ import com.axelor.apps.account.ebics.client.KeyManagement;
 import com.axelor.apps.account.ebics.client.OrderType;
 import com.axelor.apps.account.ebics.io.IOUtils;
 import com.axelor.exception.AxelorException;
+import com.axelor.i18n.I18n;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
 import com.google.inject.Inject;
@@ -41,6 +43,9 @@ public class EbicsService {
 	
 	@Inject
 	private EbicsBankRepository bankRepo;
+	
+	@Inject
+	private MetaFiles metaFiles;
 	
 	private EbicsProduct defaultProduct;
 	
@@ -81,7 +86,7 @@ public class EbicsService {
 	}
 	
 	
-	public RSAPublicKey getPublicKey(String modulus, String exponent) throws NoSuchAlgorithmException, InvalidKeySpecException{
+	public RSAPublicKey getPublicKey(String modulus, String exponent) throws NoSuchAlgorithmException, InvalidKeySpecException {
 		
 		RSAPublicKeySpec spec = new RSAPublicKeySpec( new BigInteger(modulus), new BigInteger(exponent));
 		KeyFactory factory = KeyFactory.getInstance("RSA");
@@ -95,7 +100,7 @@ public class EbicsService {
 	
 	
 	
-	public RSAPrivateKey getPrivateKey(byte[] encoded) throws NoSuchAlgorithmException, InvalidKeySpecException{
+	public RSAPrivateKey getPrivateKey(byte[] encoded) throws NoSuchAlgorithmException, InvalidKeySpecException {
 		PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(encoded);
         KeyFactory kf = KeyFactory.getInstance("RSA");
         return (RSAPrivateKey) kf.generatePrivate(keySpec);
@@ -218,14 +223,23 @@ public class EbicsService {
 	   * @param path the file path to send
 	   * @param userId the user ID that sends the file.
 	   * @param product the application product.
+	 * @throws AxelorException 
 	   */
-	  public void sendFULRequest(EbicsUser user, EbicsProduct product) {
+	  public void sendFULRequest(EbicsUser user, EbicsProduct product, File file) throws AxelorException {
+		  
 	    FileTransfer transferManager;
 	    EbicsSession session;
 
 	    session = new EbicsSession(user);
 	    session.addSessionParam("FORMAT", "pain.xxx.cfonb160.dct");
-	    session.addSessionParam("TEST", "true");
+	    boolean test = isTest(user, false);
+	    if (test) {
+	    	session.addSessionParam("TEST", "true");
+	    	file = MetaFiles.getPath(user.getEbicsPartner().getEbicsBank().getTestFile()).toFile(); 
+	    }
+	    else if (file == null) {
+	    	throw new AxelorException("File is required to send FUL request", 1);
+	    }
 	    session.addSessionParam("EBCDIC", "false");
 	    if (product == null) {
 	    	product = defaultProduct;
@@ -233,18 +247,15 @@ public class EbicsService {
 	    session.setProduct(product);
 	    transferManager = new FileTransfer(session);
 	    
-	    String path = "/home/axelor/test.txt";
 	    try {
-	      transferManager.sendFile(IOUtils.getFileContent(path), OrderType.FUL, getCertificate(user));
+	      transferManager.sendFile(IOUtils.getFileContent(file.getAbsolutePath()), OrderType.FUL, getCertificate(user));
 	    } catch (IOException | AxelorException e) {
 	    	e.printStackTrace();
 	    }
 	  }
 
-	 public void sendFDLRequest( EbicsUser user,
+	 public File sendFDLRequest( EbicsUser user,
 	                        EbicsProduct product,
-	                        OrderType orderType,
-	                        boolean isTest,
 	                        Date start,
 	                        Date end) throws IOException, AxelorException
 	  {
@@ -252,19 +263,97 @@ public class EbicsService {
 	    EbicsSession		session;
 
 	    session = new EbicsSession(user);
-	    session.addSessionParam("FORMAT", "pain.xxx.cfonb160.dct");
-	    if (isTest) {
-	      session.addSessionParam("TEST", "true");
+	    boolean test = isTest(user, true);
+	    if (test) {
+	    	session.addSessionParam("TEST", "true");
 	    }
+	    session.addSessionParam("FORMAT", "pain.xxx.cfonb160.dct");
 	    if (product == null) {
 	    	product = defaultProduct;
 	    }
 	    session.setProduct(product);
 	    transferManager = new FileTransfer(session);
+	    
+	    File file = File.createTempFile(user.getName(), "fdl");
 
-	    String path = "/home/geoffrey/test.txt";
-	    transferManager.fetchFile(orderType, start, end, new FileOutputStream(path), getCertificate(user));
+	    transferManager.fetchFile(OrderType.FDL, start, end, new FileOutputStream(file), getCertificate(user));
+	    
+	    if (test) {
+	    	 updateTestFile(user, file);
+	    }
+	    
+	    return file;
 	  }
+	
+	private boolean isTest(EbicsUser user, boolean download) throws AxelorException {
+		
+		EbicsPartner partner = user.getEbicsPartner();
+		
+		if (partner != null) {
+			EbicsBank bank = partner.getEbicsBank();
+			if (bank != null) {
+				if (bank.getTestMode()) {
+					if (download) {
+						return true;
+					}
+					if (bank.getTestFile() != null) {
+						return true;
+					}
+				}
+				else {
+					return false;
+				}
+			}
+		}
+		 
+		throw new  AxelorException(I18n.get("Ebics bank configuration error"), 1);
+	}
+	
+	@Transactional
+	public void updateTestFile(EbicsUser user, File file) throws IOException {
+		
+		EbicsBank bank = user.getEbicsPartner().getEbicsBank();
+		
+		if (bank.getTestFile() != null) {
+			metaFiles.upload(file, bank.getTestFile());
+		}
+		else {
+			bank.setTestFile(metaFiles.upload(file));
+			bankRepo.save(bank);
+		}
+		
+	}
+
+	public void sendHTDRequest( EbicsUser user,
+             EbicsProduct product,
+             Date start,
+             Date end) throws IOException, AxelorException
+	 {
+		FileTransfer		transferManager;
+		EbicsSession		session;
+		
+		session = new EbicsSession(user);
+		session.addSessionParam("FORMAT", "pain.xxx.cfonb160.dct");
+		session.addSessionParam("ClientDataDownload", "true");
+		boolean test = isTest(user, true);
+		if (test) {
+			session.addSessionParam("TEST", "true");
+		}
+		if (product == null) {
+			product = defaultProduct;
+		}
+		session.setProduct(product);
+		transferManager = new FileTransfer(session);
+		
+		File file = File.createTempFile(user.getName(), "htd");
+		
+		transferManager.fetchFile(OrderType.HTD, start, end, new FileOutputStream(file), getCertificate(user));
+		
+		if (test) {
+			updateTestFile(user, file);
+		}
+	 }
+	 
 	 
 	 private File getCertificate(EbicsUser user) {
 		 

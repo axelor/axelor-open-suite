@@ -22,6 +22,10 @@
 	
 	<many-to-one name="sslCertificate" ref="com.axelor.meta.db.MetaFile" title="SSL Certificate" />
 	
+	<boolean name="testMode" title="Test model" />
+	
+	<many-to-one name="testFile" ref="com.axelor.meta.db.MetaFile" title="Test file" />
+	
   </entity>
   
 </domain-models>

@@ -48,7 +48,7 @@
 			<button name="sendSPR" title="Send SPR" onClick="save,action-ebics-user-method-send-spr" showIf="statusSelect == 3"/>
 			<button name="sendFUL" title="Send File" onClick="save,action-ebics-user-method-send-ful" showIf="statusSelect == 3"/>
 			<button name="sendFDL" title="Fetch file" onClick="save,action-ebics-user-method-send-fdl" showIf="statusSelect == 3"/>
-			<button name="sendHTD" title="Get the UserID state (HTD)" onClick="save" showIf="statusSelect == 3"/>
+			<button name="sendHTD" title="Get the UserID state (HTD)" onClick="save,action-ebics-user-method-send-htd" showIf="statusSelect == 3"/>
 			<button name="sendPTK" title="Get the user log (PTK)" onClick="save" showIf="statusSelect == 3"/>
 		</panel>
 	
@@ -84,6 +84,10 @@
     
     <action-method name="action-ebics-user-method-send-hpb">
   		<call class="com.axelor.apps.account.ebics.web.EbicsController" method="sendHPBRequest" />
+    </action-method>
+    
+    <action-method name="action-ebics-user-method-send-htd">
+  		<call class="com.axelor.apps.account.ebics.web.EbicsController" method="sendHTDRequest" />
     </action-method>
   
 </object-views>
