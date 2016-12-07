@@ -223,15 +223,23 @@ public class EbicsService {
 	   * @param path the file path to send
 	   * @param userId the user ID that sends the file.
 	   * @param product the application product.
+	 * @throws AxelorException 
 	   */
-	  public void sendFULRequest(EbicsUser user, EbicsProduct product, File file) {
+	  public void sendFULRequest(EbicsUser user, EbicsProduct product, File file) throws AxelorException {
 		  
 	    FileTransfer transferManager;
 	    EbicsSession session;
 
 	    session = new EbicsSession(user);
 	    session.addSessionParam("FORMAT", "pain.xxx.cfonb160.dct");
-	    session.addSessionParam("TEST", "true");
+	    boolean test = isTest(user, false);
+	    if (test) {
+	    	session.addSessionParam("TEST", "true");
+	    	file = MetaFiles.getPath(user.getEbicsPartner().getEbicsBank().getTestFile()).toFile(); 
+	    }
+	    else if (file == null) {
+	    	throw new AxelorException("File is required to send FUL request", 1);
+	    }
 	    session.addSessionParam("EBCDIC", "false");
 	    if (product == null) {
 	    	product = defaultProduct;
@@ -239,9 +247,8 @@ public class EbicsService {
 	    session.setProduct(product);
 	    transferManager = new FileTransfer(session);
 	    
-	    String path = "/home/axelor/test.txt";
 	    try {
-	      transferManager.sendFile(IOUtils.getFileContent(path), OrderType.FUL, getCertificate(user));
+	      transferManager.sendFile(IOUtils.getFileContent(file.getAbsolutePath()), OrderType.FUL, getCertificate(user));
 	    } catch (IOException | AxelorException e) {
 	    	e.printStackTrace();
 	    }
