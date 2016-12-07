@@ -69,5 +69,4 @@ public class ReceiptResponseElement extends DefaultResponseElement {
   // DATA MEMBERS
   // --------------------------------------------------------------------
 
-  private static final long 		serialVersionUID = 2994403708414164919L;
 }

@@ -96,7 +96,7 @@ public class EbicsController {
 		
 		EbicsUser ebicsUser = ebicsUserRepo.find( request.getContext().asType(EbicsUser.class).getId());
 		
-		ebicsService.revokeSubscriber(ebicsUser, null);
+		ebicsService.sendSPRRequest(ebicsUser, null);
 
 		response.setReload(true);
 	}
@@ -124,6 +124,15 @@ public class EbicsController {
 		EbicsUser ebicsUser = ebicsUserRepo.find( request.getContext().asType(EbicsUser.class).getId());
 		
 		ebicsService.sendHTDRequest(ebicsUser, null, null, null);
+
+		response.setReload(true);
+	}
+	
+	public void sendPTKRequest(ActionRequest request, ActionResponse response) throws AxelorException, IOException {
+		
+		EbicsUser ebicsUser = ebicsUserRepo.find( request.getContext().asType(EbicsUser.class).getId());
+		
+		ebicsService.sendPTKRequest(ebicsUser, null, null, null);
 
 		response.setReload(true);
 	}

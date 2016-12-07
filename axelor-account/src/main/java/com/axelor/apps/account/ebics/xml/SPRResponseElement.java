@@ -61,5 +61,4 @@ public class SPRResponseElement extends DefaultResponseElement {
   // --------------------------------------------------------------------
 
   private EbicsResponse				response;
-  private static final long 			serialVersionUID = 8632578696636481642L;
 }

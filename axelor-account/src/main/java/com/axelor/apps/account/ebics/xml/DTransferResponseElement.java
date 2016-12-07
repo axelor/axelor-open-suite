@@ -65,5 +65,4 @@ public class DTransferResponseElement extends TransferResponseElement {
   // --------------------------------------------------------------------
 
   private byte[]			orderData;
-  private static final long 		serialVersionUID = -3317833033395561745L;
 }

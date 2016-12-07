@@ -136,5 +136,4 @@ public class NoPubKeyDigestsRequestElement extends DefaultEbicsRootElement {
   // DATA MEMBERS
   // --------------------------------------------------------------------
 
-  private static final long		serialVersionUID = 3177047145408329472L;
 }

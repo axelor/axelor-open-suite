@@ -87,5 +87,4 @@ public abstract class DefaultResponseElement extends DefaultEbicsRootElement {
   private String 			name;
   protected ContentFactory		factory;
   protected ReturnCode			returnCode;
-  private static final long 		serialVersionUID = 4014595046719645090L;
 }

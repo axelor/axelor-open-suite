@@ -21,9 +21,8 @@ package com.axelor.apps.account.ebics.interfaces;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.Serializable;
 
-public interface ContentFactory extends Serializable {
+public interface ContentFactory {
 
   /**
    * Returns a new data source of the data to be sent.

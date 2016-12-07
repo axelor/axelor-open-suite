@@ -89,5 +89,4 @@ public class HIARequestElement extends DefaultEbicsRootElement {
 
   private String			orderId;
   private UnsecuredRequestElement	unsecuredRequest;
-  private static final long 		serialVersionUID = 1130436605993828777L;
 }

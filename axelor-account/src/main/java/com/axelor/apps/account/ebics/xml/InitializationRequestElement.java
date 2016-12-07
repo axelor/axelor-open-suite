@@ -160,5 +160,4 @@ public abstract class InitializationRequestElement extends DefaultEbicsRootEleme
   private String			name;
   protected OrderType			type;
   protected byte[]			nonce;
-  private static final long 		serialVersionUID = 8983807819242699280L;
 }

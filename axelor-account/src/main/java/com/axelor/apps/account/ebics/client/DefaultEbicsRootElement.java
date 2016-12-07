@@ -230,5 +230,4 @@ public abstract class DefaultEbicsRootElement implements EbicsRootElement {
   protected XmlObject			document;
   protected EbicsSession 		session;
   private static Map<String, String> 	suggestedPrefixes;
-  private static final long 		serialVersionUID = -3928957097145095177L;
 }

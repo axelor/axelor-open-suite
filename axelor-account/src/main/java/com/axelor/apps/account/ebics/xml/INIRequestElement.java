@@ -23,9 +23,7 @@ import com.axelor.apps.account.ebics.client.EbicsSession;
 import com.axelor.apps.account.ebics.client.OrderType;
 import com.axelor.apps.account.ebics.client.EbicsUtils;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
 
-import org.jdom.JDOMException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -94,5 +92,4 @@ public class INIRequestElement extends DefaultEbicsRootElement {
 
   private String			orderId;
   private UnsecuredRequestElement	unsecuredRequest;
-  private static final long 		serialVersionUID = -1966559247739923555L;
 }

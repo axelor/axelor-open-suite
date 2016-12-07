@@ -128,5 +128,4 @@ public abstract class TransferRequestElement extends DefaultEbicsRootElement {
   protected byte[]			transactionId;
   private OrderType			type;
   private String 			name;
-  private static final long 		serialVersionUID = -4212072825371398259L;
 }

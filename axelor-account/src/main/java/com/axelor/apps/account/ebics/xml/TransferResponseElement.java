@@ -63,5 +63,4 @@ public class TransferResponseElement extends DefaultResponseElement {
   // --------------------------------------------------------------------
 
   protected EbicsResponse		response;
-  private static final long 		serialVersionUID = 7454118286687793155L;
 }

@@ -88,5 +88,4 @@ public class SignaturePubKeyOrderDataElement extends DefaultEbicsRootElement {
   // DATA MEMBERS
   // --------------------------------------------------------------------
 
-  private static final long 		serialVersionUID = -5523105558015982970L;
 }

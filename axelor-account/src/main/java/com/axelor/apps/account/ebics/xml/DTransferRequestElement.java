@@ -80,5 +80,4 @@ public class DTransferRequestElement extends TransferRequestElement {
   // DATA MEMBERS
   // --------------------------------------------------------------------
 
-  private static final long serialVersionUID = -7765739964317408967L;
 }

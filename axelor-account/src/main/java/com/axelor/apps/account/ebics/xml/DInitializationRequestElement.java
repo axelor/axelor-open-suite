@@ -157,5 +157,4 @@ public class DInitializationRequestElement extends InitializationRequestElement 
 
   private Date					startRange;
   private Date					endRange;
-  private static final long 			serialVersionUID = 3776072549761880272L;
 }

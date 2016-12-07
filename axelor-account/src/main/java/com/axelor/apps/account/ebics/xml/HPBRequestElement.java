@@ -75,5 +75,4 @@ public class HPBRequestElement extends DefaultEbicsRootElement {
   // --------------------------------------------------------------------
 
   private NoPubKeyDigestsRequestElement		noPubKeyDigestsRequest;
-  private static final long 			serialVersionUID = -5565390370996751973L;
 }

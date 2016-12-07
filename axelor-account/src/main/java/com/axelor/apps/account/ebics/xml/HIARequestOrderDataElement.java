@@ -102,5 +102,4 @@ public class HIARequestOrderDataElement extends DefaultEbicsRootElement {
   // DATA MEMBERS
   // --------------------------------------------------------------------
 
-  private static final long 		serialVersionUID = -7333250823464659004L;
 }

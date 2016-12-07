@@ -113,5 +113,4 @@ public class DInitializationResponseElement extends InitializationResponseElemen
   private boolean			lastSegment;
   private byte[]			transactionKey;
   private byte[]			orderData;
-  private static final long 		serialVersionUID = -6013011772863903840L;
 }

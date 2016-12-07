@@ -137,5 +137,4 @@ public class SPRRequestElement extends InitializationRequestElement {
   // --------------------------------------------------------------------
 
   private SecretKeySpec			keySpec;
-  private static final long 		serialVersionUID = -6742241777786111337L;
 }

@@ -76,5 +76,4 @@ public class HPBResponseOrderDataElement extends DefaultResponseElement {
   // --------------------------------------------------------------------
 
   private HPBResponseOrderDataType	response;
-  private static final long 		serialVersionUID = -1305363936881364049L;
 }

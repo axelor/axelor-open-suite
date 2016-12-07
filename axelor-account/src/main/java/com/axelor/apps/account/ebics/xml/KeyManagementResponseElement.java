@@ -82,5 +82,4 @@ public class KeyManagementResponseElement extends DefaultResponseElement {
   // --------------------------------------------------------------------
 
   private EbicsKeyManagementResponse	response;
-  private static final long 		serialVersionUID = -3556995397305708927L;
 }

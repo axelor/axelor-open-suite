@@ -19,15 +19,13 @@
 
 package com.axelor.apps.account.ebics.client;
 
-import java.io.Serializable;
-
 /**
  * A BCS order type.
  *
  * @author Hachani
  *
  */
-public class OrderType implements Serializable {
+public class OrderType {
 
   /**
    * Constructs new Order type instance
@@ -71,6 +69,8 @@ public class OrderType implements Serializable {
       return HTD;
     } else if (orderType.equals("HPD")) {
       return HPD;
+    } else if (orderType.equals("PTK")) {
+        return PTK;
     } else {
       throw new IllegalArgumentException("NOT SUPPORTED ORDER TYPE");
     }
@@ -130,8 +130,8 @@ public class OrderType implements Serializable {
    * Lock the channel.
    */
   public static final OrderType		SPR ;
-
-  private static final long 		serialVersionUID = 17180027494776243L;
+  
+  public static final OrderType		PTK ;
 
   static {
     HIA = new OrderType("HIA");
@@ -142,5 +142,6 @@ public class OrderType implements Serializable {
     FUL = new OrderType("FUL");
     FDL = new OrderType("FDL");
     SPR = new OrderType("SPR");
+    PTK = new OrderType("PTK");
   }
 }

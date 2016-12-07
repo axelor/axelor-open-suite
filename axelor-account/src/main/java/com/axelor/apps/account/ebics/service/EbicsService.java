@@ -1,6 +1,7 @@
 package com.axelor.apps.account.ebics.service;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.math.BigInteger;
@@ -65,11 +66,9 @@ public class EbicsService {
 		defaultProduct = new EbicsProduct(name, language, instituteID);
 	}
 	
-	public String makeDN(String name, String email, String country, String organization)
-	{
-		StringBuffer		buffer;
-		
-		buffer = new StringBuffer();
+	public String makeDN(String name, String email, String country, String organization) {
+	
+		StringBuffer buffer = new StringBuffer();
 		buffer.append("CN=" + name);
 		
 		if (country != null) {
@@ -108,54 +107,51 @@ public class EbicsService {
 	
 	
 	/**
-	   * Sends an INI request to the ebics bank server
-	   * @param userId the user ID
-	   * @param product the application product
+	 * Sends an INI request to the ebics bank server
+	 * @param userId the user ID
+	 * @param product the application product
 	 * @throws AxelorException 
 	 * @throws JDOMException 
 	 * @throws IOException 
-	   */
-	  @Transactional
-	  public void sendINIRequest(EbicsUser ebicsUser, EbicsProduct product) throws AxelorException, IOException, JDOMException {
-	    EbicsSession		session;
-	    KeyManagement		keyManager;
+	 */
+	@Transactional
+	public void sendINIRequest(EbicsUser ebicsUser, EbicsProduct product) throws AxelorException, IOException, JDOMException {
 
 	    if (ebicsUser.getStatusSelect() != EbicsUserRepository.STATUS_WAITING_SENDING_SIGNATURE_CERTIFICATE) {
-		      return;
+	      return;
 	    }
 	    
-	    session = new EbicsSession(ebicsUser);
+	    EbicsSession session = new EbicsSession(ebicsUser);
 	    if (product == null) {
 	    	product = defaultProduct;
 	    }
 	    session.setProduct(product);
 	    
-	    keyManager = new KeyManagement(session);
-        keyManager.sendINI(null, getCertificate(ebicsUser));
-	    
-        ebicsUser.setStatusSelect(EbicsUserRepository.STATUS_WAITING_AUTH_AND_ENCRYPT_CERTIFICATES);
+	    KeyManagement keyManager = new KeyManagement(session);
+	    keyManager.sendINI(null, getCertificate(ebicsUser));
+    
+	    ebicsUser.setStatusSelect(EbicsUserRepository.STATUS_WAITING_AUTH_AND_ENCRYPT_CERTIFICATES);
 	    userRepo.save(ebicsUser);
-	  }
+	 }
 
-	  /**
-	   * Sends a HIA request to the ebics server.
-	   * @param userId the user ID.
-	   * @param product the application product.
-	   */
-	  @Transactional
-	  public void sendHIARequest(EbicsUser ebicsUser, EbicsProduct product) {
-	    EbicsSession		session;
-	    KeyManagement		keyManager;
+	/**
+	 * Sends a HIA request to the ebics server.
+	 * @param userId the user ID.
+	 * @param product the application product.
+	 */
+	@Transactional
+	public void sendHIARequest(EbicsUser ebicsUser, EbicsProduct product) {
 
 	    if (ebicsUser.getStatusSelect() != EbicsUserRepository.STATUS_WAITING_AUTH_AND_ENCRYPT_CERTIFICATES) {
 	      return;
 	    }
-	    session = new EbicsSession(ebicsUser);
+	    
+	    EbicsSession session = new EbicsSession(ebicsUser);
 	    if (product == null) {
 	    	product = defaultProduct;
 	    }
 	    session.setProduct(product);
-	    keyManager = new KeyManagement(session);
+	    KeyManagement keyManager = new KeyManagement(session);
 
 	    try {
 			keyManager.sendHIA(null , getCertificate(ebicsUser));
@@ -165,73 +161,63 @@ public class EbicsService {
 
 	    ebicsUser.setStatusSelect(EbicsUserRepository.STATUS_ACTIVE_CONNECTION);
 	    userRepo.save(ebicsUser);
-	  }
+	}
 
-	  /**
-	   * Sends a HPB request to the ebics server.
-	   * @param userId the user ID.
-	   * @param product the application product.
-	   */
-	  @Transactional
-	  public void sendHPBRequest(EbicsUser user, EbicsProduct product) {
-	    EbicsSession		session;
-	    KeyManagement		keyManager;
+	/**
+	 * Sends a HPB request to the ebics server.
+	 * @param userId the user ID.
+	 * @param product the application product.
+	 */
+	@Transactional
+	public void sendHPBRequest(EbicsUser user, EbicsProduct product) {
 
-	    session = new EbicsSession(user);
+		EbicsSession session = new EbicsSession(user);
 	    if (product == null) {
 	    	product = defaultProduct;
 	    }
 	    session.setProduct(product);
-	    keyManager = new KeyManagement(session);
-
+	    
+	    KeyManagement keyManager = new KeyManagement(session);
 	    try {
 	      keyManager.sendHPB(getCertificate(user));
 	      bankRepo.save(user.getEbicsPartner().getEbicsBank());
 	    } catch (Exception e) {
 	    	e.printStackTrace();
 	    }
+	}
 
-	  }
+	/**
+	 * Sends the SPR order to the bank.
+	 * @param userId the user ID
+	 * @param product the session product
+	 */
+	public void sendSPRRequest(EbicsUser user, EbicsProduct product) {
 
-	  /**
-	   * Sends the SPR order to the bank.
-	   * @param userId the user ID
-	   * @param product the session product
-	   */
-	  public void revokeSubscriber(EbicsUser user, EbicsProduct product) {
-	    EbicsSession		session;
-	    KeyManagement		keyManager;
-
-	    session = new EbicsSession(user);
+	    EbicsSession session = new EbicsSession(user);
 	    if (product == null) {
 	    	product = defaultProduct;
 	    }
 	    session.setProduct(product);
-	    keyManager = new KeyManagement(session);
-
+	    
+	    KeyManagement keyManager = new KeyManagement(session);
 	    try {
 	      keyManager.lockAccess(getCertificate(user));
 	    } catch (Exception e) {
 	      e.printStackTrace();
 	      return;
 	    }
+	}
 
-	  }
-
-	  /**
-	   * Sends a file to the ebics bank sever
-	   * @param path the file path to send
-	   * @param userId the user ID that sends the file.
-	   * @param product the application product.
+	/**
+	 * Sends a file to the ebics bank sever
+	 * @param path the file path to send
+	 * @param userId the user ID that sends the file.
+	 * @param product the application product.
 	 * @throws AxelorException 
-	   */
-	  public void sendFULRequest(EbicsUser user, EbicsProduct product, File file) throws AxelorException {
+	 */
+	public void sendFULRequest(EbicsUser user, EbicsProduct product, File file) throws AxelorException {
 		  
-	    FileTransfer transferManager;
-	    EbicsSession session;
-
-	    session = new EbicsSession(user);
-	    session.addSessionParam("FORMAT", "pain.xxx.cfonb160.dct");
+		EbicsSession session = new EbicsSession(user);
 	    boolean test = isTest(user, false);
 	    if (test) {
 	    	session.addSessionParam("TEST", "true");
@@ -241,28 +227,50 @@ public class EbicsService {
 	    	throw new AxelorException("File is required to send FUL request", 1);
 	    }
 	    session.addSessionParam("EBCDIC", "false");
+	    session.addSessionParam("FORMAT", "pain.xxx.cfonb160.dct");
+	    
 	    if (product == null) {
 	    	product = defaultProduct;
 	    }
 	    session.setProduct(product);
-	    transferManager = new FileTransfer(session);
+	    FileTransfer transferManager = new FileTransfer(session);
 	    
 	    try {
 	      transferManager.sendFile(IOUtils.getFileContent(file.getAbsolutePath()), OrderType.FUL, getCertificate(user));
 	    } catch (IOException | AxelorException e) {
 	    	e.printStackTrace();
 	    }
-	  }
+	}
 
-	 public File sendFDLRequest( EbicsUser user,
+	public File sendFDLRequest( EbicsUser user,
 	                        EbicsProduct product,
 	                        Date start,
-	                        Date end) throws IOException, AxelorException
-	  {
-	    FileTransfer		transferManager;
-	    EbicsSession		session;
+	                        Date end) throws IOException, AxelorException {
+		
+	    return fetchFile(OrderType.FDL, user, product, start, end);
+	}
+	
+	public File sendHTDRequest( EbicsUser user,
+            EbicsProduct product,
+            Date start,
+            Date end) throws IOException, AxelorException {
+		
+		return fetchFile(OrderType.HTD, user, product, start, end);
+	}
+	 
+	public File sendPTKRequest( EbicsUser user,
+            EbicsProduct product,
+            Date start,
+            Date end) throws IOException, AxelorException {
+		
+		return fetchFile(OrderType.PTK, user, product, start, end);
+	}
 
-	    session = new EbicsSession(user);
+	private File fetchFile(OrderType orderType, EbicsUser user, EbicsProduct product, Date start,
+			Date end) throws AxelorException, IOException,
+			FileNotFoundException {
+		
+		EbicsSession session = new EbicsSession(user);
 	    boolean test = isTest(user, true);
 	    if (test) {
 	    	session.addSessionParam("TEST", "true");
@@ -272,18 +280,17 @@ public class EbicsService {
 	    	product = defaultProduct;
 	    }
 	    session.setProduct(product);
-	    transferManager = new FileTransfer(session);
 	    
+	    FileTransfer transferManager = new FileTransfer(session);
 	    File file = File.createTempFile(user.getName(), "fdl");
-
-	    transferManager.fetchFile(OrderType.FDL, start, end, new FileOutputStream(file), getCertificate(user));
+	    transferManager.fetchFile(orderType, start, end, new FileOutputStream(file), getCertificate(user));
 	    
 	    if (test) {
 	    	 updateTestFile(user, file);
 	    }
 	    
-	    return file;
-	  }
+		return file;
+	}
 	
 	private boolean isTest(EbicsUser user, boolean download) throws AxelorException {
 		
@@ -324,43 +331,11 @@ public class EbicsService {
 		
 	}
 
-	public void sendHTDRequest( EbicsUser user,
-             EbicsProduct product,
-             Date start,
-             Date end) throws IOException, AxelorException
-	 {
-		FileTransfer		transferManager;
-		EbicsSession		session;
-		
-		session = new EbicsSession(user);
-		session.addSessionParam("FORMAT", "pain.xxx.cfonb160.dct");
-		session.addSessionParam("ClientDataDownload", "true");
-		boolean test = isTest(user, true);
-		if (test) {
-			session.addSessionParam("TEST", "true");
-		}
-		if (product == null) {
-			product = defaultProduct;
-		}
-		session.setProduct(product);
-		transferManager = new FileTransfer(session);
-		
-		File file = File.createTempFile(user.getName(), "htd");
-		
-		transferManager.fetchFile(OrderType.HTD, start, end, new FileOutputStream(file), getCertificate(user));
-		
-		if (test) {
-			updateTestFile(user, file);
-		}
-	 }
-	 
-	 
-	 private File getCertificate(EbicsUser user) {
+	private File getCertificate(EbicsUser user) {
 		 
 		 EbicsBank bank = user.getEbicsPartner().getEbicsBank();
 		 MetaFile cert = bank.getSslCertificate();
 
 		 return MetaFiles.getPath(cert).toFile();
-	 }
-
+	}
 }
