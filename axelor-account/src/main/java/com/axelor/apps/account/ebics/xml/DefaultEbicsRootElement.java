@@ -17,7 +17,7 @@
  * $Id$
  */
 
-package com.axelor.apps.account.ebics.client;
+package com.axelor.apps.account.ebics.xml;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;

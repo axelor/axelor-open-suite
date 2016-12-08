@@ -19,7 +19,6 @@
 
 package com.axelor.apps.account.ebics.xml;
 
-import com.axelor.apps.account.ebics.client.DefaultEbicsRootElement;
 import com.axelor.apps.account.ebics.client.EbicsSession;
 import com.axelor.exception.AxelorException;
 

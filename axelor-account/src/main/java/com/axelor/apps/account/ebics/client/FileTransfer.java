@@ -19,7 +19,6 @@
 
 package com.axelor.apps.account.ebics.client;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Date;
@@ -33,6 +32,7 @@ import com.axelor.apps.account.ebics.xml.DInitializationRequestElement;
 import com.axelor.apps.account.ebics.xml.DInitializationResponseElement;
 import com.axelor.apps.account.ebics.xml.DTransferRequestElement;
 import com.axelor.apps.account.ebics.xml.DTransferResponseElement;
+import com.axelor.apps.account.ebics.xml.DefaultEbicsRootElement;
 import com.axelor.apps.account.ebics.xml.InitializationResponseElement;
 import com.axelor.apps.account.ebics.xml.ReceiptRequestElement;
 import com.axelor.apps.account.ebics.xml.ReceiptResponseElement;
@@ -89,7 +89,7 @@ public class FileTransfer {
    * @throws IOException
    * @throws EbicsException
    */
-  public void sendFile(byte[] content, OrderType orderType, File certFile)
+  public void sendFile(byte[] content, OrderType orderType)
     throws IOException, AxelorException
   {
     HttpRequestSender			sender;
@@ -104,7 +104,7 @@ public class FileTransfer {
 	                                            content);
     initializer.build();
     initializer.validate();
-    httpCode = sender.send(new ByteArrayContentFactory(initializer.prettyPrint()), certFile);
+    httpCode = sender.send(new ByteArrayContentFactory(initializer.prettyPrint()));
     Utils.checkHttpCode(httpCode);
     response = new InitializationResponseElement(sender.getResponseBody(),
 	                                         orderType,
@@ -124,8 +124,7 @@ public class FileTransfer {
     		  					  segNumber,
 	                              state.getLastSegment(),
 	                              state.getTransactionId(),
-	                              orderType,
-	                              certFile);
+	                              orderType);
       segNumber++;
     }
   }
@@ -144,8 +143,7 @@ public class FileTransfer {
                        int segmentNumber,
                        boolean lastSegment,
                        byte[] transactionId,
-                       OrderType orderType,
-                       File certFile)
+                       OrderType orderType)
     throws IOException, AxelorException
   {
     UTransferRequestElement		uploader;
@@ -162,7 +160,7 @@ public class FileTransfer {
     sender = new HttpRequestSender(session);
     uploader.build();
     uploader.validate();
-    httpCode = sender.send(new ByteArrayContentFactory(uploader.prettyPrint()), certFile);
+    httpCode = sender.send(new ByteArrayContentFactory(uploader.prettyPrint()));
     Utils.checkHttpCode(httpCode);
     response = new TransferResponseElement(sender.getResponseBody(),
 	                                   DefaultEbicsRootElement.generateName(orderType));
@@ -185,8 +183,7 @@ public class FileTransfer {
   public void fetchFile(OrderType orderType,
                         Date start,
                         Date end,
-                        OutputStream dest,
-                        File certFile)
+                        OutputStream dest)
     throws IOException, AxelorException
   {
     HttpRequestSender			sender;
@@ -205,7 +202,7 @@ public class FileTransfer {
 	                                            end);
     initializer.build();
     initializer.validate();
-    httpCode = sender.send(new ByteArrayContentFactory(initializer.prettyPrint()), certFile);
+    httpCode = sender.send(new ByteArrayContentFactory(initializer.prettyPrint()));
     Utils.checkHttpCode(httpCode);
     response = new DInitializationResponseElement(sender.getResponseBody(),
 	                                          orderType,
@@ -226,8 +223,7 @@ public class FileTransfer {
     		state.getSegmentNumber(),
 	        state.getLastSegment(),
 	        state.getTransactionId(),
-	        joiner,
-	        certFile);
+	        joiner);
       state.setSegmentNumber(state.getSegmentNumber() + 1);
     }
 
@@ -237,7 +233,7 @@ public class FileTransfer {
 	                                DefaultEbicsRootElement.generateName(orderType));
     receipt.build();
     receipt.validate();
-    httpCode = sender.send(new ByteArrayContentFactory(receipt.prettyPrint()), certFile);
+    httpCode = sender.send(new ByteArrayContentFactory(receipt.prettyPrint()));
     Utils.checkHttpCode(httpCode);
     receiptResponse = new ReceiptResponseElement(sender.getResponseBody(),
 	                                         DefaultEbicsRootElement.generateName(orderType));
@@ -259,8 +255,7 @@ public class FileTransfer {
                         int segmentNumber,
                         boolean lastSegment,
                         byte[] transactionId,
-                        Joiner joiner,
-                        File certFile)
+                        Joiner joiner)
     throws IOException, AxelorException
   {
     DTransferRequestElement		downloader;
@@ -276,7 +271,7 @@ public class FileTransfer {
 	                                     transactionId);
     downloader.build();
     downloader.validate();
-    httpCode = sender.send(new ByteArrayContentFactory(downloader.prettyPrint()), certFile);
+    httpCode = sender.send(new ByteArrayContentFactory(downloader.prettyPrint()));
     Utils.checkHttpCode(httpCode);
     response = new DTransferResponseElement(sender.getResponseBody(),
 	                                    orderType,

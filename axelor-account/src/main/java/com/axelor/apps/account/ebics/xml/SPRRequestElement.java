@@ -39,6 +39,7 @@ import com.axelor.apps.account.ebics.schema.h003.StaticHeaderType.BankPubKeyDige
 import com.axelor.apps.account.ebics.schema.h003.StaticHeaderType.Product;
 import com.axelor.apps.account.ebics.schema.h003.StaticHeaderType.BankPubKeyDigests.Authentication;
 import com.axelor.apps.account.ebics.schema.h003.StaticHeaderType.BankPubKeyDigests.Encryption;
+import com.axelor.apps.account.ebics.certificate.KeyUtil;
 import com.axelor.apps.account.ebics.client.EbicsSession;
 import com.axelor.apps.account.ebics.client.EbicsUtils;
 import com.axelor.exception.AxelorException;
@@ -93,10 +94,10 @@ public class SPRRequestElement extends InitializationRequestElement {
     product = EbicsXmlFactory.createProduct(session.getProduct().getLanguage(), session.getProduct().getName());
     authentication = EbicsXmlFactory.createAuthentication("X002",
 	                                                  "http://www.w3.org/2001/04/xmlenc#sha256",
-	                                                  decodeHex( session.getUser().getEbicsPartner().getEbicsBank().getX002Digest() ) );
+	                                                  decodeHex( KeyUtil.getKeyDigest(session.getBankX002Key()) ) );
     encryption = EbicsXmlFactory.createEncryption("E002",
 	                                          "http://www.w3.org/2001/04/xmlenc#sha256",
-	                                          decodeHex(session.getUser().getEbicsPartner().getEbicsBank().getE002Digest()));
+	                                          decodeHex(KeyUtil.getKeyDigest(session.getBankE002Key())));
     bankPubKeyDigests = EbicsXmlFactory.createBankPubKeyDigests(authentication, encryption);
     orderType = EbicsXmlFactory.createOrderType(type.getOrderType());
     standardOrderParamsType = EbicsXmlFactory.createStandardOrderParamsType();
@@ -117,7 +118,7 @@ public class SPRRequestElement extends InitializationRequestElement {
     header = EbicsXmlFactory.createEbicsRequestHeader(true, mutable, xstatic);
     encryptionPubKeyDigest = EbicsXmlFactory.createEncryptionPubKeyDigest("E002",
 								          "http://www.w3.org/2001/04/xmlenc#sha256",
-								          decodeHex(session.getUser().getEbicsPartner().getEbicsBank().getE002Digest()));
+								          decodeHex(KeyUtil.getKeyDigest(session.getBankX002Key())));
 	signatureData = EbicsXmlFactory.createSignatureData(true, EbicsUtils.encrypt(EbicsUtils.zip(userSignature.prettyPrint()), keySpec));
 
 	dataEncryptionInfo = EbicsXmlFactory.createDataEncryptionInfo(true,

@@ -46,7 +46,6 @@ import org.w3c.dom.Node;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.inject.Beans;
-import com.axelor.apps.account.ebics.client.DefaultEbicsRootElement;
 
 
 /**

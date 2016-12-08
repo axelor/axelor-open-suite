@@ -21,17 +21,13 @@ package com.axelor.apps.account.ebics.client;
 
 
 import java.io.IOException;
-import java.security.NoSuchAlgorithmException;
 import java.security.interfaces.RSAPublicKey;
-import java.security.spec.InvalidKeySpecException;
 import java.util.HashMap;
 import java.util.Map;
 
 import com.axelor.apps.account.db.EbicsUser;
-import com.axelor.apps.account.ebics.service.EbicsService;
+import com.axelor.apps.account.ebics.service.EbicsCertificateService;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
-import com.axelor.inject.Beans;
 
 /**
  * Communication hub for EBICS.
@@ -58,12 +54,9 @@ public class EbicsSession {
 	   * @throws IOException Communication error during key retrieval.
 	   * @throws EbicsException Server error message generated during key retrieval.
 	   */
-	  public RSAPublicKey getBankE002Key() throws IOException, AxelorException {
-	    try {
-			return  Beans.get(EbicsService.class).getPublicKey(user.getEbicsPartner().getEbicsBank().getE002KeyModulus(), user.getEbicsPartner().getEbicsBank().getE002KeyExponent()) ;
-		} catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
-			throw new AxelorException(e.getMessage(), IException.CONFIGURATION_ERROR );
-		}
+	  public RSAPublicKey getBankE002Key() throws AxelorException {
+		
+		  return  (RSAPublicKey) EbicsCertificateService.getCertificate(user.getEbicsPartner().getEbicsBank(), "encryption").getPublicKey();
 	  }
 
 	  /**
@@ -73,12 +66,8 @@ public class EbicsSession {
 	   * @throws IOException Communication error during key retrieval.
 	   * @throws EbicsException Server error message generated during key retrieval.
 	   */
-	  public RSAPublicKey getBankX002Key() throws IOException, AxelorException {
-	    try {
-			return  Beans.get(EbicsService.class).getPublicKey(user.getEbicsPartner().getEbicsBank().getX002KeyModulus(), user.getEbicsPartner().getEbicsBank().getX002KeyExponent()) ;
-		} catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
-			throw new AxelorException(e.getMessage(), IException.CONFIGURATION_ERROR );
-		}
+	  public RSAPublicKey getBankX002Key() throws AxelorException {
+		  return  (RSAPublicKey) EbicsCertificateService.getCertificate(user.getEbicsPartner().getEbicsBank(), "authentication").getPublicKey();
 	  }
 
 	  /**

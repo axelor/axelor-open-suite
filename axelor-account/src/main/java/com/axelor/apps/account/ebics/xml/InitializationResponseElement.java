@@ -24,7 +24,6 @@ import com.axelor.apps.account.ebics.schema.h003.EbicsResponseDocument;
 import com.axelor.apps.account.ebics.schema.h003.EbicsResponseDocument.EbicsResponse;
 import com.axelor.exception.AxelorException;
 import com.axelor.apps.account.ebics.client.OrderType;
-import com.axelor.apps.account.ebics.client.DefaultResponseElement;
 import com.axelor.apps.account.ebics.exception.ReturnCode;
 
 /**

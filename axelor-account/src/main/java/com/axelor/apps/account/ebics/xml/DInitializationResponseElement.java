@@ -23,7 +23,6 @@ import com.axelor.apps.account.ebics.client.OrderType;
 import com.axelor.apps.account.ebics.exception.ReturnCode;
 import com.axelor.apps.account.ebics.interfaces.ContentFactory;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
 
 /**
  * The <code>DInitializationResponseElement</code> is the response element
@@ -54,9 +53,6 @@ public class DInitializationResponseElement extends InitializationResponseElemen
     super.build();
     bodyRetCode = response.getBody().getReturnCode().getStringValue();
     returnCode = ReturnCode.toReturnCode(bodyRetCode, "");
-    if (returnCode.equals(ReturnCode.EBICS_NO_DOWNLOAD_DATA_AVAILABLE)) {
-      throw new AxelorException(ReturnCode.EBICS_NO_DOWNLOAD_DATA_AVAILABLE.getText(), IException.FUNCTIONNAL);
-    }
     numSegments = (int)response.getHeader().getStatic().getNumSegments();
     segmentNumber = (int)response.getHeader().getMutable().getSegmentNumber().getLongValue();
     lastSegment = response.getHeader().getMutable().getSegmentNumber().getLastSegment();

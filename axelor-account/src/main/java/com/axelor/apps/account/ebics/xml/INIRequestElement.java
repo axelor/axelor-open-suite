@@ -27,7 +27,6 @@ import com.axelor.exception.AxelorException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.axelor.apps.account.ebics.client.DefaultEbicsRootElement;
 import com.axelor.apps.account.ebics.client.UnsecuredRequestElement;
 
 /**

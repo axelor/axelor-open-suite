@@ -17,7 +17,7 @@
  * $Id$
  */
 
-package com.axelor.apps.account.ebics.client;
+package com.axelor.apps.account.ebics.xml;
 
 import java.io.IOException;
 
@@ -70,8 +70,7 @@ public abstract class DefaultResponseElement extends DefaultEbicsRootElement {
    */
   public void report() throws AxelorException {
     if (!returnCode.isOk()) {
-    	System.out.println(returnCode.getCode());
-      //returnCode.throwException();
+      returnCode.throwException();
     }
   }
 

@@ -3,8 +3,6 @@ package com.axelor.apps.account.ebics.web;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 
-import org.jdom.JDOMException;
-
 import com.axelor.apps.account.db.EbicsUser;
 import com.axelor.apps.account.db.repo.EbicsUserRepository;
 import com.axelor.apps.account.ebics.certificate.CertificateManager;
@@ -64,7 +62,7 @@ public class EbicsController {
 		
 	}
 	
-	public void sendINIRequest(ActionRequest request, ActionResponse response) throws AxelorException, IOException, JDOMException{
+	public void sendINIRequest(ActionRequest request, ActionResponse response) throws AxelorException {
 		
 		EbicsUser ebicsUser = ebicsUserRepo.find( request.getContext().asType(EbicsUser.class).getId());
 		
@@ -74,7 +72,7 @@ public class EbicsController {
 		
 	}
 	
-	public void sendHIARequest(ActionRequest request, ActionResponse response) throws AxelorException, IOException {
+	public void sendHIARequest(ActionRequest request, ActionResponse response) throws AxelorException {
 		
 		EbicsUser ebicsUser = ebicsUserRepo.find( request.getContext().asType(EbicsUser.class).getId());
 		
@@ -83,7 +81,7 @@ public class EbicsController {
 		response.setReload(true);
 	}
 	
-	public void sendHPBRequest(ActionRequest request, ActionResponse response) throws AxelorException, IOException {
+	public void sendHPBRequest(ActionRequest request, ActionResponse response) throws AxelorException {
 		
 		EbicsUser ebicsUser = ebicsUserRepo.find( request.getContext().asType(EbicsUser.class).getId());
 		
@@ -92,7 +90,7 @@ public class EbicsController {
 		response.setReload(true);
 	}
 	
-	public void sendSPRRequest(ActionRequest request, ActionResponse response) throws AxelorException, IOException {
+	public void sendSPRRequest(ActionRequest request, ActionResponse response) throws AxelorException {
 		
 		EbicsUser ebicsUser = ebicsUserRepo.find( request.getContext().asType(EbicsUser.class).getId());
 		
@@ -101,7 +99,7 @@ public class EbicsController {
 		response.setReload(true);
 	}
 	
-	public void sendFULRequest(ActionRequest request, ActionResponse response) throws AxelorException, IOException {
+	public void sendFULRequest(ActionRequest request, ActionResponse response) throws AxelorException {
 		
 		EbicsUser ebicsUser = ebicsUserRepo.find( request.getContext().asType(EbicsUser.class).getId());
 		
@@ -110,7 +108,7 @@ public class EbicsController {
 		response.setReload(true);
 	}
 	
-	public void sendFDLRequest(ActionRequest request, ActionResponse response) throws AxelorException, IOException {
+	public void sendFDLRequest(ActionRequest request, ActionResponse response) throws AxelorException {
 		
 		EbicsUser ebicsUser = ebicsUserRepo.find( request.getContext().asType(EbicsUser.class).getId());
 		
@@ -119,7 +117,7 @@ public class EbicsController {
 		response.setReload(true);
 	}
 	
-	public void sendHTDRequest(ActionRequest request, ActionResponse response) throws AxelorException, IOException {
+	public void sendHTDRequest(ActionRequest request, ActionResponse response) throws AxelorException {
 		
 		EbicsUser ebicsUser = ebicsUserRepo.find( request.getContext().asType(EbicsUser.class).getId());
 		
@@ -128,7 +126,7 @@ public class EbicsController {
 		response.setReload(true);
 	}
 	
-	public void sendPTKRequest(ActionRequest request, ActionResponse response) throws AxelorException, IOException {
+	public void sendPTKRequest(ActionRequest request, ActionResponse response) throws AxelorException {
 		
 		EbicsUser ebicsUser = ebicsUserRepo.find( request.getContext().asType(EbicsUser.class).getId());
 		

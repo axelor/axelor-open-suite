@@ -31,7 +31,6 @@ import com.axelor.apps.account.ebics.schema.h003.EbicsRequestDocument.EbicsReque
 import com.axelor.apps.account.ebics.schema.h003.EbicsRequestDocument.EbicsRequest.Header;
 import com.axelor.apps.account.ebics.schema.h003.EbicsRequestDocument.EbicsRequest.Body.TransferReceipt;
 import com.axelor.apps.account.ebics.utils.Utils;
-import com.axelor.apps.account.ebics.client.DefaultEbicsRootElement;
 import com.axelor.apps.account.ebics.client.EbicsSession;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
