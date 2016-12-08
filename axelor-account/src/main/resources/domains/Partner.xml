@@ -15,7 +15,7 @@
     <many-to-one name="paymentCondition" ref="com.axelor.apps.account.db.PaymentCondition" title="Payment condition"/>
    
     <integer name="rejectCounter" title="Reject counter"/>
-    <integer name="invoicesCopy" title="Invoices copy" selection="grade.0.up.to.10.select"/>
+    <integer name="invoicesCopySelect" title="Invoices copy" selection="grade.0.up.to.10.select"/>
    
 	 <!-- PAGE SEPA -->
 	<one-to-many name="umrList" ref="com.axelor.apps.account.db.Umr" mappedBy="partner" title="UMR List"/>

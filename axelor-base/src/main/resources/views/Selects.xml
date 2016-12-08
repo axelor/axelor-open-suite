@@ -17,16 +17,16 @@
 	
 	<selection name="grade.0.up.to.10.select">
 		<option value="0">0</option>
-		<option value="10">1</option>
-		<option value="20">2</option>
-		<option value="30">3</option>
-		<option value="40">4</option>
-		<option value="50">5</option>
-		<option value="60">6</option>
-		<option value="70">7</option>
-		<option value="80">8</option>
-		<option value="90">9</option>
-		<option value="100">10</option>
+		<option value="1">1</option>
+		<option value="2">2</option>
+		<option value="3">3</option>
+		<option value="4">4</option>
+		<option value="5">5</option>
+		<option value="6">6</option>
+		<option value="7">7</option>
+		<option value="8">8</option>
+		<option value="9">9</option>
+		<option value="10">10</option>
 	</selection>
 	
 	<selection name="grade.0.up.to.20.select">

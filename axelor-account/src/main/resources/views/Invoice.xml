@@ -177,7 +177,7 @@
 				</panel>
 			</panel>
 			<panel title="Impression" name="impression" colSpan="12">
-				<field name="invoicesCopy" colSpan="6"/>
+				<field name="invoicesCopySelect" colSpan="6" title="Invoices copy"/>
 				<field name="hideDiscount" colSpan="6"/>
 				<field name="note" colSpan="12"/>
 				
@@ -432,7 +432,7 @@
     	<field name="companyBankDetails" expr="eval: company?.defaultBankDetails"
     		if="partner == null || __repo__.of(AccountingSituation).all().filter('self.company.id = ?1 AND self.partner.id = ?2', company?.id, partner?.id).fetchOne()?.companyBankDetails == null"/>
     	<field name="contactPartner" expr="eval:null" />
-    	<field name="invoicesCopy" expr="eval: partner?.invoicesCopy"/>
+    	<field name="invoicesCopySelect" expr="eval: partner?.invoicesCopySelect"/>
     </action-record>
     
     <action-record name="action-invoice-record-due-date" model="com.axelor.apps.account.db.Invoice">

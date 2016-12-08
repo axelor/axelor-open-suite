@@ -117,7 +117,7 @@
   		<panel-tabs>
   			<panel name="information" title="Informations">
 				<panel hideIf="isContact" colSpan="12">
-					<field name="isCustomer" hideIf="isEmployee"/>
+					<field name="isCustomer" hideIf="isEmployee" onChange="action-partner-record-invoices-copy-default-value"/>
 					<field name="hasOrdered" showIf="isCustomer"/>
 					<field name="isSupplier" hideIf="isEmployee"/>
 					<field name="isEmployee" hideIf="isCustomer || isSupplier"/>
@@ -523,6 +523,10 @@
 	<action-attrs name="action-partner-attrs-hide-contact-partner">
         <attribute name="hidden" for="contactPartner" expr="#{clientPartner != null &amp;&amp; clientPartner.partnerTypeSelect == 2}" />
     </action-attrs>
+    
+    <action-record name="action-partner-record-invoices-copy-default-value" model="com.axelor.apps.base.db.Partner" if-module="axelor-account">
+    	<field name="invoicesCopySelect" expr="eval:1" if="isCustomer"/>
+    </action-record>
     
 	<action-record name="action-partner-record-partner-type-select" model="com.axelor.apps.base.db.Partner" >
     	<field name="partnerTypeSelect" expr="#{__user__.activeCompany.defaultPartnerTypeSelect}"/>

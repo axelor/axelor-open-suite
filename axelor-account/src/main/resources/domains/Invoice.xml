@@ -80,7 +80,7 @@
     <many-to-one name="paymentMove" ref="com.axelor.apps.account.db.Move" title="Payment Move"/>
     
 	<!--  Impression -->
-	<integer name="invoicesCopy" selection="grade.0.up.to.10.select"/>
+	<integer name="invoicesCopySelect" selection="grade.0.up.to.10.select"/>
     <string name="note" title="Notes" large="true"/>
     
     <!-- Totals & Status -->
