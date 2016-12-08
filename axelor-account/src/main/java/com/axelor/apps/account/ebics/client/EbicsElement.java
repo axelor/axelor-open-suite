@@ -20,13 +20,12 @@
 package com.axelor.apps.account.ebics.client;
 
 import java.io.PrintStream;
-import java.io.Serializable;
 
 import com.axelor.exception.AxelorException;
 
 
 
-public interface EbicsElement extends Serializable {
+public interface EbicsElement {
 
   /**
    * Returns the name of this <code>EbicsElement</code>

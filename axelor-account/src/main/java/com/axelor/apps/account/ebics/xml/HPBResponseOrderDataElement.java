@@ -19,7 +19,6 @@
 
 package com.axelor.apps.account.ebics.xml;
 
-import com.axelor.apps.account.ebics.client.DefaultResponseElement;
 import com.axelor.apps.account.ebics.interfaces.ContentFactory;
 import com.axelor.apps.account.ebics.schema.h003.HPBResponseOrderDataDocument;
 import com.axelor.apps.account.ebics.schema.h003.HPBResponseOrderDataType;
@@ -51,6 +50,8 @@ public class HPBResponseOrderDataElement extends DefaultResponseElement {
   public byte[] getBankX002Certificate() {
     return response.getAuthenticationPubKeyInfo().getX509Data().getX509CertificateArray(0);
   }
+  
+  
 
   /**
    * Returns the encryption bank certificate.
@@ -76,5 +77,4 @@ public class HPBResponseOrderDataElement extends DefaultResponseElement {
   // --------------------------------------------------------------------
 
   private HPBResponseOrderDataType	response;
-  private static final long 		serialVersionUID = -1305363936881364049L;
 }

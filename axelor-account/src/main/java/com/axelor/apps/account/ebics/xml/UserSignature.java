@@ -20,7 +20,6 @@
 package com.axelor.apps.account.ebics.xml;
 
 import com.axelor.apps.account.db.EbicsUser;
-import com.axelor.apps.account.ebics.client.DefaultEbicsRootElement;
 import com.axelor.apps.account.ebics.schema.s001.OrderSignatureDataType;
 import com.axelor.apps.account.ebics.schema.s001.UserSignatureDataSigBookType;
 import com.axelor.apps.account.ebics.service.EbicsUserService;
@@ -96,5 +95,4 @@ public class UserSignature extends DefaultEbicsRootElement {
   private String 			signatureVersion;
   private byte[]			toSign;
   private String			name;
-  private static final long 		serialVersionUID = 2992372604876703738L;
 }

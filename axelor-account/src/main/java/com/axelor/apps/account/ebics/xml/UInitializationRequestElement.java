@@ -26,6 +26,7 @@ import java.util.Locale;
 
 import javax.crypto.spec.SecretKeySpec;
 
+import com.axelor.apps.account.ebics.certificate.KeyUtil;
 import com.axelor.apps.account.ebics.client.EbicsSession;
 import com.axelor.apps.account.ebics.interfaces.ContentFactory;
 import com.axelor.apps.account.ebics.io.Splitter;
@@ -112,10 +113,10 @@ public class UInitializationRequestElement extends InitializationRequestElement 
     product = EbicsXmlFactory.createProduct(session.getProduct().getLanguage(), session.getProduct().getName());
     authentication = EbicsXmlFactory.createAuthentication("X002",
 	                                                  "http://www.w3.org/2001/04/xmlenc#sha256",
-	                                                  decodeHex(session.getUser().getEbicsPartner().getEbicsBank().getX002Digest()));
+	                                                  decodeHex(KeyUtil.getKeyDigest(session.getBankX002Key())));
     encryption = EbicsXmlFactory.createEncryption("E002",
 	                                          "http://www.w3.org/2001/04/xmlenc#sha256",
-	                                          decodeHex(session.getUser().getEbicsPartner().getEbicsBank().getE002Digest()));
+	                                          decodeHex(KeyUtil.getKeyDigest(session.getBankE002Key())));
     bankPubKeyDigests = EbicsXmlFactory.createBankPubKeyDigests(authentication, encryption);
     orderType = EbicsXmlFactory.createOrderType(type.getOrderType());
     fileFormat = EbicsXmlFactory.createFileFormatType(Locale.FRANCE.getCountry(),
@@ -161,7 +162,7 @@ public class UInitializationRequestElement extends InitializationRequestElement 
     header = EbicsXmlFactory.createEbicsRequestHeader(true, mutable, xstatic);
     encryptionPubKeyDigest = EbicsXmlFactory.createEncryptionPubKeyDigest("E002",
 								          "http://www.w3.org/2001/04/xmlenc#sha256",
-								          decodeHex(session.getUser().getEbicsPartner().getEbicsBank().getE002Digest()));
+								          decodeHex(KeyUtil.getKeyDigest(session.getBankE002Key())));
     signatureData = EbicsXmlFactory.createSignatureData(true, Utils.encrypt(Utils.zip(userSignature.prettyPrint()), keySpec));
     dataEncryptionInfo = EbicsXmlFactory.createDataEncryptionInfo(true,
 	                                                          encryptionPubKeyDigest,
@@ -215,5 +216,4 @@ public class UInitializationRequestElement extends InitializationRequestElement 
   private UserSignature			userSignature;
   private SecretKeySpec			keySpec;
   private Splitter			splitter;
-  private static final long 		serialVersionUID = -8083183483311283608L;
 }

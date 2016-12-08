@@ -27,7 +27,6 @@ import com.axelor.apps.account.ebics.schema.s001.SignaturePubKeyInfoType;
 import com.axelor.apps.account.ebics.schema.s001.SignaturePubKeyOrderDataType;
 import com.axelor.apps.account.ebics.schema.xmldsig.RSAKeyValueType;
 import com.axelor.apps.account.ebics.schema.xmldsig.X509DataType;
-import com.axelor.apps.account.ebics.client.DefaultEbicsRootElement;
 import com.axelor.apps.account.ebics.client.EbicsSession;
 import com.axelor.exception.AxelorException;
 
@@ -88,5 +87,4 @@ public class SignaturePubKeyOrderDataElement extends DefaultEbicsRootElement {
   // DATA MEMBERS
   // --------------------------------------------------------------------
 
-  private static final long 		serialVersionUID = -5523105558015982970L;
 }

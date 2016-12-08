@@ -92,5 +92,4 @@ public class UTransferRequestElement extends TransferRequestElement {
   // --------------------------------------------------------------------
 
   private ContentFactory		content;
-  private static final long 		serialVersionUID = 8465397978597444978L;
 }

@@ -23,6 +23,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
+import com.axelor.apps.account.ebics.certificate.KeyUtil;
 import com.axelor.apps.account.ebics.client.EbicsSession;
 import com.axelor.apps.account.ebics.schema.h003.FDLOrderParamsType;
 import com.axelor.apps.account.ebics.schema.h003.FileFormatType;
@@ -90,10 +91,10 @@ public class DInitializationRequestElement extends InitializationRequestElement 
     product = EbicsXmlFactory.createProduct(session.getProduct().getLanguage(), session.getProduct().getName());
     authentication = EbicsXmlFactory.createAuthentication("X002",
 	                                                  "http://www.w3.org/2001/04/xmlenc#sha256",
-	                                                  decodeHex(session.getUser().getEbicsPartner().getEbicsBank().getX002Digest()));
+	                                                  decodeHex(KeyUtil.getKeyDigest(session.getBankX002Key())));
     encryption = EbicsXmlFactory.createEncryption("E002",
 	                                          "http://www.w3.org/2001/04/xmlenc#sha256",
-	                                          decodeHex(session.getUser().getEbicsPartner().getEbicsBank().getE002Digest()));
+	                                          decodeHex(KeyUtil.getKeyDigest(session.getBankX002Key())));
     bankPubKeyDigests = EbicsXmlFactory.createBankPubKeyDigests(authentication, encryption);
     orderType = EbicsXmlFactory.createOrderType(type.getOrderType());
     if (type.equals(com.axelor.apps.account.ebics.client.OrderType.FDL)) {
@@ -157,5 +158,4 @@ public class DInitializationRequestElement extends InitializationRequestElement 
 
   private Date					startRange;
   private Date					endRange;
-  private static final long 			serialVersionUID = 3776072549761880272L;
 }

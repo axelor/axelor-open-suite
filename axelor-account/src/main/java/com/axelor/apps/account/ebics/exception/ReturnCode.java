@@ -19,8 +19,6 @@
 
 package com.axelor.apps.account.ebics.exception;
 
-import java.io.Serializable;
-
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
@@ -34,7 +32,7 @@ import com.axelor.i18n.I18n;
  * @author hachani
  *
  */
-public class ReturnCode implements Serializable {
+public class ReturnCode  {
 
   /**
    * Constructs a new <code>ReturnCode</code> with a given
@@ -55,7 +53,7 @@ public class ReturnCode implements Serializable {
    */
   
   public void throwException() throws AxelorException {
-    throw new AxelorException(text, IException.FUNCTIONNAL);
+    throw new AxelorException(I18n.get(text), IException.FUNCTIONNAL);
   }
 
   /**
@@ -63,7 +61,7 @@ public class ReturnCode implements Serializable {
    * @return True if the return code is OK one.
    */
   public boolean isOk() {
-    return equals(EBICS_OK);
+    return equals(EBICS_OK) || equals(EBICS_DOWNLOAD_POSTPROCESS_DONE);
   }
 
   /**
@@ -195,32 +193,31 @@ public class ReturnCode implements Serializable {
   public static final ReturnCode	EBICS_MAX_TRANSACTIONS_EXCEEDED;
   public static final ReturnCode	EBICS_SIGNATURE_VERIFICATION_FAILED;
   public static final ReturnCode	EBICS_NO_DOWNLOAD_DATA_AVAILABLE;
-  private static final long 		serialVersionUID = -497883146384363199L;
 
   static {
-    EBICS_OK = new ReturnCode("000000", "EBICS_OK", I18n.get("000000"));
-    EBICS_DOWNLOAD_POSTPROCESS_DONE = new ReturnCode("011000", "EBICS_DOWNLOAD_POSTPROCESS_DONE", I18n.get("011000"));
-    EBICS_DOWNLOAD_POSTPROCESS_SKIPPED = new ReturnCode("011001", "EBICS_DOWNLOAD_POSTPROCESS_SKIPPED", I18n.get("011001"));
-    EBICS_TX_SEGMENT_NUMBER_UNDERRUN = new ReturnCode("011101", "EBICS_TX_SEGMENT_NUMBER_UNDERRUN", I18n.get("011101"));
-    EBICS_AUTHENTICATION_FAILED = new ReturnCode("061001", "EBICS_AUTHENTICATION_FAILED", I18n.get("061001"));
-    EBICS_INVALID_REQUEST = new ReturnCode("061002", "EBICS_INVALID_REQUEST", I18n.get("061002"));
-    EBICS_INTERNAL_ERROR = new ReturnCode("061099", "EBICS_INTERNAL_ERROR", I18n.get("061099"));
-    EBICS_TX_RECOVERY_SYNC = new ReturnCode("061101", "EBICS_TX_RECOVERY_SYNC", I18n.get("061101"));
-    EBICS_INVALID_USER_OR_USER_STATE = new ReturnCode("091002", "EBICS_INVALID_USER_OR_USER_STATE", I18n.get("091002"));
-    EBICS_USER_UNKNOWN = new ReturnCode("091003", "EBICS_USER_UNKNOWN", I18n.get("091003"));
-    EBICS_INVALID_USER_STATE = new ReturnCode("091004", "EBICS_INVALID_USER_STATE", I18n.get("091004"));
-    EBICS_INVALID_ORDER_TYPE = new ReturnCode("091005", "EBICS_INVALID_ORDER_TYPE", I18n.get("091005"));
-    EBICS_UNSUPPORTED_ORDER_TYPE = new ReturnCode("091006", "EBICS_UNSUPPORTED_ORDER_TYPE", I18n.get("091006"));
-    EBICS_USER_AUTHENTICATION_REQUIRED = new ReturnCode("091007", "EBICS_USER_AUTHENTICATION_REQUIRED", I18n.get("091007"));
-    EBICS_BANK_PUBKEY_UPDATE_REQUIRED = new ReturnCode("091008", "EBICS_BANK_PUBKEY_UPDATE_REQUIRED", I18n.get("091008"));
-    EBICS_SEGMENT_SIZE_EXCEEDED = new ReturnCode("091009", "EBICS_SEGMENT_SIZE_EXCEEDED", I18n.get("091009"));
-    EBICS_TX_UNKNOWN_TXID = new ReturnCode("091101", "EBICS_TX_UNKNOWN_TXID", I18n.get("091101"));
-    EBICS_TX_ABORT = new ReturnCode("091102", "EBICS_TX_ABORT", I18n.get("091102"));
-    EBICS_TX_MESSAGE_REPLAY = new ReturnCode("091103", "EBICS_TX_MESSAGE_REPLAY", I18n.get("091103"));
-    EBICS_TX_SEGMENT_NUMBER_EXCEEDED = new ReturnCode("091104", "EBICS_TX_SEGMENT_NUMBER_EXCEEDED", I18n.get("091104"));
-    EBICS_X509_CERTIFICATE_NOT_VALID_YET = new ReturnCode("091209", "EBICS_X509_CERTIFICATE_NOT_VALID_YET", I18n.get("091209"));
-    EBICS_MAX_TRANSACTIONS_EXCEEDED = new ReturnCode("091119", "EBICS_MAX_TRANSACTIONS_EXCEEDED", I18n.get("091119"));
-    EBICS_SIGNATURE_VERIFICATION_FAILED = new ReturnCode("091301", "EBICS_SIGNATURE_VERIFICATION_FAILED", I18n.get("091301"));
-    EBICS_NO_DOWNLOAD_DATA_AVAILABLE = new ReturnCode("090005", "EBICS_NO_DOWNLOAD_DATA_AVAILABLE", I18n.get("090005"));
+    EBICS_OK = new ReturnCode("000000", "EBICS_OK", /*$$(*/ "000000" /*)*/);
+    EBICS_DOWNLOAD_POSTPROCESS_DONE = new ReturnCode("011000", "EBICS_DOWNLOAD_POSTPROCESS_DONE", /*$$(*/ "011000" /*)*/);
+    EBICS_DOWNLOAD_POSTPROCESS_SKIPPED = new ReturnCode("011001", "EBICS_DOWNLOAD_POSTPROCESS_SKIPPED", /*$$(*/  "011001" /*)*/);
+    EBICS_TX_SEGMENT_NUMBER_UNDERRUN = new ReturnCode("011101", "EBICS_TX_SEGMENT_NUMBER_UNDERRUN", /*$$(*/ "011101" /*)*/);
+    EBICS_AUTHENTICATION_FAILED = new ReturnCode("061001", "EBICS_AUTHENTICATION_FAILED", /*$$(*/ "061001" /*)*/);
+    EBICS_INVALID_REQUEST = new ReturnCode("061002", "EBICS_INVALID_REQUEST", /*$$(*/ "061002" /*)*/);
+    EBICS_INTERNAL_ERROR = new ReturnCode("061099", "EBICS_INTERNAL_ERROR", /*$$(*/ "061099" /*)*/);
+    EBICS_TX_RECOVERY_SYNC = new ReturnCode("061101", "EBICS_TX_RECOVERY_SYNC", /*$$(*/ "061101" /*)*/);
+    EBICS_INVALID_USER_OR_USER_STATE = new ReturnCode("091002", "EBICS_INVALID_USER_OR_USER_STATE", /*$$(*/ "091002" /*)*/);
+    EBICS_USER_UNKNOWN = new ReturnCode("091003", "EBICS_USER_UNKNOWN", /*$$(*/ "091003" /*)*/);
+    EBICS_INVALID_USER_STATE = new ReturnCode("091004", "EBICS_INVALID_USER_STATE", /*$$(*/ "091004" /*)*/);
+    EBICS_INVALID_ORDER_TYPE = new ReturnCode("091005", "EBICS_INVALID_ORDER_TYPE", /*$$(*/ "091005" /*)*/);
+    EBICS_UNSUPPORTED_ORDER_TYPE = new ReturnCode("091006", "EBICS_UNSUPPORTED_ORDER_TYPE", /*$$(*/ "091006" /*)*/);
+    EBICS_USER_AUTHENTICATION_REQUIRED = new ReturnCode("091007", "EBICS_USER_AUTHENTICATION_REQUIRED", /*$$(*/ "091007" /*)*/);
+    EBICS_BANK_PUBKEY_UPDATE_REQUIRED = new ReturnCode("091008", "EBICS_BANK_PUBKEY_UPDATE_REQUIRED", /*$$(*/ "091008" /*)*/);
+    EBICS_SEGMENT_SIZE_EXCEEDED = new ReturnCode("091009", "EBICS_SEGMENT_SIZE_EXCEEDED", /*$$(*/ "091009" /*)*/);
+    EBICS_TX_UNKNOWN_TXID = new ReturnCode("091101", "EBICS_TX_UNKNOWN_TXID", /*$$(*/ "091101" /*)*/);
+    EBICS_TX_ABORT = new ReturnCode("091102", "EBICS_TX_ABORT", /*$$(*/ "091102" /*)*/);
+    EBICS_TX_MESSAGE_REPLAY = new ReturnCode("091103", "EBICS_TX_MESSAGE_REPLAY", /*$$(*/ "091103" /*)*/);
+    EBICS_TX_SEGMENT_NUMBER_EXCEEDED = new ReturnCode("091104", "EBICS_TX_SEGMENT_NUMBER_EXCEEDED", /*$$(*/ "091104" /*)*/);
+    EBICS_X509_CERTIFICATE_NOT_VALID_YET = new ReturnCode("091209", "EBICS_X509_CERTIFICATE_NOT_VALID_YET", /*$$(*/ "091209" /*)*/);
+    EBICS_MAX_TRANSACTIONS_EXCEEDED = new ReturnCode("091119", "EBICS_MAX_TRANSACTIONS_EXCEEDED", /*$$(*/ "091119" /*)*/);
+    EBICS_SIGNATURE_VERIFICATION_FAILED = new ReturnCode("091301", "EBICS_SIGNATURE_VERIFICATION_FAILED", /*$$(*/ "091301" /*)*/);
+    EBICS_NO_DOWNLOAD_DATA_AVAILABLE = new ReturnCode("090005", "EBICS_NO_DOWNLOAD_DATA_AVAILABLE", /*$$(*/ "090005" /*)*/);
   }
 }

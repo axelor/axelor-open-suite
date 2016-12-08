@@ -23,7 +23,6 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 
-import com.axelor.apps.account.ebics.client.DefaultEbicsRootElement;
 import com.axelor.apps.account.ebics.client.EbicsSession;
 import com.axelor.apps.account.ebics.client.OrderType;
 import com.axelor.apps.account.ebics.schema.h003.EbicsRequestDocument;
@@ -128,5 +127,4 @@ public abstract class TransferRequestElement extends DefaultEbicsRootElement {
   protected byte[]			transactionId;
   private OrderType			type;
   private String 			name;
-  private static final long 		serialVersionUID = -4212072825371398259L;
 }

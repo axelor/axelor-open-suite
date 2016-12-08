@@ -19,7 +19,6 @@
 
 package com.axelor.apps.account.ebics.xml;
 
-import com.axelor.apps.account.ebics.client.DefaultEbicsRootElement;
 import com.axelor.apps.account.ebics.client.EbicsSession;
 import com.axelor.exception.AxelorException;
 
@@ -75,5 +74,4 @@ public class HPBRequestElement extends DefaultEbicsRootElement {
   // --------------------------------------------------------------------
 
   private NoPubKeyDigestsRequestElement		noPubKeyDigestsRequest;
-  private static final long 			serialVersionUID = -5565390370996751973L;
 }

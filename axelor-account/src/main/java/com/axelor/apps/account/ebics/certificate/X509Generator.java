@@ -19,13 +19,10 @@ package com.axelor.apps.account.ebics.certificate;
  * $Id$
  */
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.math.BigInteger;
 import java.security.GeneralSecurityException;
 import java.security.KeyPair;
-import java.security.PublicKey;
 import java.security.SecureRandom;
 import java.security.cert.X509Certificate;
 import java.text.SimpleDateFormat;
@@ -33,16 +30,7 @@ import java.util.Date;
 import java.util.TimeZone;
 
 import org.bouncycastle.asn1.ASN1EncodableVector;
-import org.bouncycastle.asn1.ASN1InputStream;
-import org.bouncycastle.asn1.ASN1Sequence;
-import org.bouncycastle.asn1.DERSequence;
-import org.bouncycastle.asn1.x509.AuthorityKeyIdentifier;
-import org.bouncycastle.asn1.x509.GeneralName;
-import org.bouncycastle.asn1.x509.GeneralNames;
 import org.bouncycastle.asn1.x509.KeyPurposeId;
-import org.bouncycastle.asn1.x509.SubjectKeyIdentifier;
-import org.bouncycastle.asn1.x509.SubjectPublicKeyInfo;
-import org.bouncycastle.asn1.x509.X509Name;
 import org.bouncycastle.jce.X509Principal;
 import org.bouncycastle.x509.X509V3CertificateGenerator;
 
@@ -206,19 +194,19 @@ public class X509Generator {
    * @return the authority key identifier of the public key
    * @throws IOException
    */
-  private AuthorityKeyIdentifier getAuthorityKeyIdentifier(PublicKey publicKey, String issuer, BigInteger serial) throws IOException {
-	  
-    InputStream			input;
-    SubjectPublicKeyInfo	keyInfo;
-    ASN1EncodableVector 	vector;
-
-    input = new ByteArrayInputStream(publicKey.getEncoded());
-    keyInfo = new SubjectPublicKeyInfo((ASN1Sequence)new ASN1InputStream(input).readObject());
-    vector = new ASN1EncodableVector();
-    vector.add(new GeneralName(new X509Name(issuer)));
-
-    return new AuthorityKeyIdentifier(keyInfo, GeneralNames.getInstance(new DERSequence(vector)), serial);
-  }
+//  private AuthorityKeyIdentifier getAuthorityKeyIdentifier(PublicKey publicKey, String issuer, BigInteger serial) throws IOException {
+//	  
+//    InputStream			input;
+//    SubjectPublicKeyInfo	keyInfo;
+//    ASN1EncodableVector 	vector;
+//
+//    input = new ByteArrayInputStream(publicKey.getEncoded());
+//    keyInfo = new SubjectPublicKeyInfo((ASN1Sequence)new ASN1InputStream(input).readObject());
+//    vector = new ASN1EncodableVector();
+//    vector.add(new GeneralName(new X509Name(issuer)));
+//
+//    return new AuthorityKeyIdentifier(keyInfo, GeneralNames.getInstance(new DERSequence(vector)), serial);
+//  }
 
   /**
    * Returns the <code>SubjectKeyIdentifier</code> corresponding
@@ -227,16 +215,16 @@ public class X509Generator {
    * @return the subject key identifier
    * @throws IOException
    */
-  private SubjectKeyIdentifier getSubjectKeyIdentifier(PublicKey publicKey) throws IOException {
-	  
-    InputStream			input;
-    SubjectPublicKeyInfo	keyInfo;
-
-    input = new ByteArrayInputStream(publicKey.getEncoded());
-    keyInfo = new SubjectPublicKeyInfo((ASN1Sequence)new ASN1InputStream(input).readObject());
-
-    return new SubjectKeyIdentifier(keyInfo);
-  }
+//  private SubjectKeyIdentifier getSubjectKeyIdentifier(PublicKey publicKey) throws IOException {
+//	  
+//    InputStream			input;
+//    SubjectPublicKeyInfo	keyInfo;
+//
+//    input = new ByteArrayInputStream(publicKey.getEncoded());
+//    keyInfo = new SubjectPublicKeyInfo((ASN1Sequence)new ASN1InputStream(input).readObject());
+//
+//    return new SubjectKeyIdentifier(keyInfo);
+//  }
 
   /**
    * Generates a random serial number

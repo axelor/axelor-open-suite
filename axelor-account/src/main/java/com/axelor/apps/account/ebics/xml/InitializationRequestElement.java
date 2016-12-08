@@ -28,12 +28,12 @@ import javax.crypto.Cipher;
 import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Hex;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
+
 import com.axelor.apps.account.ebics.schema.h003.EbicsRequestDocument;
 import com.axelor.apps.account.ebics.schema.xmldsig.SignatureType;
 import com.axelor.apps.account.ebics.client.EbicsSession;
 import com.axelor.apps.account.ebics.client.OrderType;
 import com.axelor.apps.account.ebics.client.EbicsUtils;
-import com.axelor.apps.account.ebics.client.DefaultEbicsRootElement;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 
@@ -160,5 +160,4 @@ public abstract class InitializationRequestElement extends DefaultEbicsRootEleme
   private String			name;
   protected OrderType			type;
   protected byte[]			nonce;
-  private static final long 		serialVersionUID = 8983807819242699280L;
 }

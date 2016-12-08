@@ -124,7 +124,7 @@ public class Utils {
       secureRandom = SecureRandom.getInstance("SHA1PRNG");
       return secureRandom.generateSeed(16);
     } catch (NoSuchAlgorithmException e) {
-      throw new AxelorException(e.getMessage(), 1);
+      throw new AxelorException(e.getMessage(), IException.TECHNICAL);
     }
   }
 
@@ -154,7 +154,7 @@ public class Utils {
       try {
 	count = decompressor.inflate(buf);
       } catch (DataFormatException e) {
-	throw new AxelorException(e.getMessage(), 1);
+	throw new AxelorException(e.getMessage(), IException.TECHNICAL);
       }
       output.write(buf, 0, count);
     }
@@ -162,7 +162,7 @@ public class Utils {
     try {
       output.close();
     } catch (IOException e) {
-      throw new AxelorException(e.getMessage(), 1);
+      throw new AxelorException(e.getMessage(), IException.TECHNICAL);
     }
 
     decompressor.end();
@@ -215,7 +215,7 @@ public class Utils {
 
       return output.toByteArray();
     } catch (Exception e) {
-      throw new AxelorException(e.getMessage(), 1);
+      throw new AxelorException(e.getMessage(), IException.TECHNICAL);
     }
   }
 
@@ -288,7 +288,7 @@ public class Utils {
       cipher.init(mode, keySpec, iv);
       return cipher.doFinal(input);
     } catch (GeneralSecurityException e) {
-      throw new AxelorException(e.getMessage(), 1);
+      throw new AxelorException(e.getMessage(), IException.TECHNICAL);
     }
   }
 

@@ -19,7 +19,6 @@
 
 package com.axelor.apps.account.ebics.xml;
 
-import com.axelor.apps.account.ebics.client.DefaultResponseElement;
 import com.axelor.apps.account.ebics.exception.ReturnCode;
 import com.axelor.apps.account.ebics.interfaces.ContentFactory;
 import com.axelor.apps.account.ebics.schema.h003.EbicsResponseDocument;
@@ -61,5 +60,4 @@ public class SPRResponseElement extends DefaultResponseElement {
   // --------------------------------------------------------------------
 
   private EbicsResponse				response;
-  private static final long 			serialVersionUID = 8632578696636481642L;
 }

@@ -19,21 +19,15 @@
 
 package com.axelor.apps.account.ebics.client;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.security.KeyStore;
 import java.security.cert.Certificate;
-import java.security.cert.CertificateFactory;
 
 import org.apache.commons.httpclient.HostConfiguration;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.UsernamePasswordCredentials;
 import org.apache.commons.httpclient.auth.AuthScope;
-import org.apache.commons.httpclient.methods.InputStreamRequestEntity;
-import org.apache.commons.httpclient.methods.PostMethod;
-import org.apache.commons.httpclient.methods.RequestEntity;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpPost;
@@ -44,7 +38,9 @@ import org.apache.http.entity.InputStreamEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 
 import com.axelor.app.AppSettings;
+import com.axelor.apps.account.db.EbicsBank;
 import com.axelor.apps.account.ebics.interfaces.ContentFactory;
+import com.axelor.apps.account.ebics.service.EbicsCertificateService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
@@ -78,14 +74,15 @@ public class HttpRequestSender {
    * @return the HTTP return code
  * @throws AxelorException 
    */
-  public final int send(ContentFactory request, File certFile) throws IOException, AxelorException {
+  public final int send(ContentFactory request) throws IOException, AxelorException {
     HttpClient			httpClient;
     String                      proxyConfiguration;
     InputStream			input;
     int				retCode;
-
+    
     httpClient = new HttpClient();
-    DefaultHttpClient client = getSecuredHttpClient(certFile);
+    EbicsBank bank = session.getUser().getEbicsPartner().getEbicsBank();
+    DefaultHttpClient client = getSecuredHttpClient(EbicsCertificateService.getCertificate(bank, "ssl"));
     
     proxyConfiguration =  AppSettings.get().get("http.proxy.host");
 
@@ -114,7 +111,7 @@ public class HttpRequestSender {
     
     input = request.getContent();
     retCode = -1;
-    HttpPost post = new HttpPost(session.getUser().getEbicsPartner().getEbicsBank().getUrl());
+    HttpPost post = new HttpPost(bank.getUrl());
     ContentType type = ContentType.TEXT_XML;
     HttpEntity entity = new InputStreamEntity(input, retCode, type);
     post.setEntity(entity);
@@ -124,7 +121,7 @@ public class HttpRequestSender {
     return retCode;
   }
 
-  private DefaultHttpClient getSecuredHttpClient(File certFile) throws AxelorException {
+  private DefaultHttpClient getSecuredHttpClient(Certificate cert) throws AxelorException {
 
 	DefaultHttpClient client = new DefaultHttpClient();
 	
@@ -132,8 +129,6 @@ public class HttpRequestSender {
 	    KeyStore keystore  = KeyStore.getInstance("jks");
 	    char[] password = "NoPassword".toCharArray();
 	    keystore.load(null, password);
-	    InputStream instream = new FileInputStream(certFile);
-	    Certificate cert = CertificateFactory.getInstance("X.509").generateCertificate(instream);
 	    keystore.setCertificateEntry("certficate.host", cert);
 	    Scheme https = new Scheme("https", 443,  new SSLSocketFactory(keystore));
 	    client.getConnectionManager().getSchemeRegistry().register(https);

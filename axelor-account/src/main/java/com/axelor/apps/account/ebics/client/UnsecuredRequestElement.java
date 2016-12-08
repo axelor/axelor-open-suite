@@ -28,6 +28,7 @@ import com.axelor.apps.account.ebics.schema.h003.EmptyMutableHeaderType;
 import com.axelor.apps.account.ebics.schema.h003.OrderDetailsType;
 import com.axelor.apps.account.ebics.schema.h003.ProductElementType;
 import com.axelor.apps.account.ebics.schema.h003.UnsecuredRequestStaticHeaderType;
+import com.axelor.apps.account.ebics.xml.DefaultEbicsRootElement;
 import com.axelor.apps.account.ebics.xml.EbicsXmlFactory;
 import com.axelor.auth.AuthUtils;
 import com.axelor.exception.AxelorException;
@@ -120,5 +121,4 @@ public class UnsecuredRequestElement extends DefaultEbicsRootElement {
   private OrderType			orderType;
   private String			orderId;
   private byte[]			orderData;
-  private static final long 		serialVersionUID = -3548730114599886711L;
 }

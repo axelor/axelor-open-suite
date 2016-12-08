@@ -27,8 +27,6 @@ import com.axelor.apps.account.ebics.schema.h003.HIARequestOrderDataType;
 import com.axelor.apps.account.ebics.schema.h003.PubKeyValueType;
 import com.axelor.apps.account.ebics.schema.xmldsig.RSAKeyValueType;
 import com.axelor.apps.account.ebics.schema.xmldsig.X509DataType;
-
-import com.axelor.apps.account.ebics.client.DefaultEbicsRootElement;
 import com.axelor.apps.account.ebics.client.EbicsSession;
 
 
@@ -102,5 +100,4 @@ public class HIARequestOrderDataElement extends DefaultEbicsRootElement {
   // DATA MEMBERS
   // --------------------------------------------------------------------
 
-  private static final long 		serialVersionUID = -7333250823464659004L;
 }

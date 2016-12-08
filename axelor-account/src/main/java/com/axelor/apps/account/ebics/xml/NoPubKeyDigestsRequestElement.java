@@ -24,7 +24,6 @@ import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.util.Calendar;
 
-import com.axelor.apps.account.ebics.client.DefaultEbicsRootElement;
 import com.axelor.apps.account.ebics.client.EbicsSession;
 import com.axelor.apps.account.ebics.client.OrderType;
 import com.axelor.apps.account.ebics.schema.h003.EbicsNoPubKeyDigestsRequestDocument;
@@ -38,6 +37,7 @@ import com.axelor.apps.account.ebics.schema.h003.ProductElementType;
 import com.axelor.apps.account.ebics.schema.xmldsig.SignatureType;
 import com.axelor.apps.account.ebics.utils.Utils;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.IException;
 
 /**
  * The <code>NoPubKeyDigestsRequestElement</code> is the root element
@@ -67,9 +67,9 @@ public class NoPubKeyDigestsRequestElement extends DefaultEbicsRootElement {
     try {
       return MessageDigest.getInstance("SHA-256", "BC").digest(Utils.canonize(toByteArray()));
     } catch (NoSuchAlgorithmException e) {
-      throw new AxelorException(e.getMessage(), 1);
+      throw new AxelorException(e.getMessage(), IException.TECHNICAL);
     } catch (NoSuchProviderException e) {
-      throw new AxelorException(e.getMessage(), 1);
+      throw new AxelorException(e.getMessage(), IException.TECHNICAL);
     }
   }
 
@@ -136,5 +136,4 @@ public class NoPubKeyDigestsRequestElement extends DefaultEbicsRootElement {
   // DATA MEMBERS
   // --------------------------------------------------------------------
 
-  private static final long		serialVersionUID = 3177047145408329472L;
 }

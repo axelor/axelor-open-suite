@@ -361,5 +361,10 @@
 		<option value="4">Certificates should be renew</option>
 	</selection>
 	
-	
+	<selection name="account.ebics.certificate.type.select">
+		<option value="ssl">SSL</option>
+		<option value="encryption">Encryption</option>
+		<option value="authentication">Authentication</option>
+	</selection>
+
 </object-views>

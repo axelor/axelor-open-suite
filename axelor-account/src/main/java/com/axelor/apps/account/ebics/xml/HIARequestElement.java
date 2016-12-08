@@ -19,7 +19,6 @@
 
 package com.axelor.apps.account.ebics.xml;
 
-import com.axelor.apps.account.ebics.client.DefaultEbicsRootElement;
 import com.axelor.apps.account.ebics.client.EbicsSession;
 import com.axelor.apps.account.ebics.client.EbicsUtils;
 import com.axelor.apps.account.ebics.client.OrderType;
@@ -89,5 +88,4 @@ public class HIARequestElement extends DefaultEbicsRootElement {
 
   private String			orderId;
   private UnsecuredRequestElement	unsecuredRequest;
-  private static final long 		serialVersionUID = 1130436605993828777L;
 }

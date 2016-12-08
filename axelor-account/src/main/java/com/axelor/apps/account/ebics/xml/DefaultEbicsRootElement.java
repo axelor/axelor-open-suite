@@ -17,7 +17,7 @@
  * $Id$
  */
 
-package com.axelor.apps.account.ebics.client;
+package com.axelor.apps.account.ebics.xml;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -230,5 +230,4 @@ public abstract class DefaultEbicsRootElement implements EbicsRootElement {
   protected XmlObject			document;
   protected EbicsSession 		session;
   private static Map<String, String> 	suggestedPrefixes;
-  private static final long 		serialVersionUID = -3928957097145095177L;
 }
