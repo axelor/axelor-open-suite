@@ -210,8 +210,8 @@
 				<field name="deliveryDelay" showIf="isSupplier"/>
 				<spacer/>
 				<field name="shipmentMode" if-module="axelor-stock" form-view="shipment-mode-form" grid-view="shipment-mode-grid" onChange="action-partner-record-empty-freight-carrier-mode" title="Shipment Mode"/>
-				<field name="freightCarrierMode" domain="self.shipmentMode = :shipmentMode" if-module="axelor-stock" form-view="freight-carrier-mode-form" grid-view="freight-carrier-mode-grid" readonlyIf="shipmentMode == null" title="Freight Carrier Mode"/>
-			
+				<field name="freightCarrierMode" domain="self.shipmentMode = :shipmentMode" if-module="axelor-stock" onChange="action-partner-record-freight-carrier" form-view="freight-carrier-mode-form" grid-view="freight-carrier-mode-grid" readonlyIf="shipmentMode == null" title="Freight Carrier Mode"/>
+				<field name="freightCarrier" if-module="axelor-stock" form-view="freight-carrier-form" grid-view="freight-carrier-grid" title="Freight Carrier" readonly="true"/>
 			</panel>
 		</panel-tabs>
 	</form>
@@ -598,6 +598,10 @@
 	
 	<action-record name="action-partner-record-empty-freight-carrier-mode" model="com.axelor.apps.base.db.Partner">
 		<field name="freightCarrierMode" expr="eval:null"/>
+	</action-record>
+	
+	<action-record name="action-partner-record-freight-carrier" model="com.axelor.apps.base.db.Partner">
+		<field name="freightCarrier" expr="eval:freightCarrierMode.freightCarrier"/>
 	</action-record>
 
     <action-method name="action-set-partner-seq" >

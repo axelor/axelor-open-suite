@@ -8,7 +8,7 @@
   <entity name="Partner" lang="java" cachable="true">
     <many-to-one name="shipmentMode" ref="com.axelor.apps.stock.db.ShipmentMode"/>
     <many-to-one name="freightCarrierMode" ref="com.axelor.apps.stock.db.FreightCarrierMode"/>
-    
+    <many-to-one name="freightCarrier" ref="com.axelor.apps.stock.db.FreightCarrier"/>
 
   </entity>
   

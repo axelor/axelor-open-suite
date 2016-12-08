@@ -5,8 +5,6 @@
     
     <grid name="shipment-mode-grid" title="Shipment Mode grid" model="com.axelor.apps.stock.db.ShipmentMode">
     	<field name="name"/>
-  		<field name="freightCarrierMode.name"/>
-  		<field name="freightCarrierMode.freightCarrier"/>
     </grid>
     
     <form name="shipment-mode-form" model="com.axelor.apps.stock.db.ShipmentMode" title="Shipment Mode form">
