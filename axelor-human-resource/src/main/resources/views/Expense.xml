@@ -65,9 +65,9 @@
 			<panel-related field="expenseLineList" title="General expenses" readonlyIf="statusSelect &gt; 1" onChange="action-expense-method-compute" editable="true" form-view="expense-line-form" grid-view="expense-line-grid" colSpan="12" />
 			<panel title="Kilometric Allowances">
 				<field name="kilometricExpenseLineList" readonlyIf="statusSelect &gt; 1" colSpan="12" showTitle="false" onChange="action-expense-method-compute"  >
-				<editor x-show-on-new="false" x-viewer="true" x-layout="table" colSpan="12" itemSpan="4" onNew="action-kilometric-allowance-record-default,action-kilometric-allowance-record-rate,action-expense-line-method-fill-kilometric-expense-product" >
+				<editor x-show-on-new="false" x-viewer="true" x-layout="table" colSpan="12" itemSpan="4" onNew="action-kilometric-allowance-record-default,action-expense-line-method-fill-kilometric-expense-product" >
 					<field name="expenseDate" title="Date" onChange="action-kilometric-allowance-method-compute" />
-					<field name="kilometricAllowParam" onChange="action-kilometric-allowance-method-compute" />
+					<field name="kilometricAllowParam" onChange="action-kilometric-allowance-method-compute" canEdit="false" required="true" />
 			        <field name="kilometricTypeSelect" required="true" onChange="action-kilometric-allowance-method-compute" />
 			        <field name="fromCity" required="true" />
 			        <field name="toCity" required="true"/>
@@ -107,20 +107,16 @@
 	              &lt;dd&gt;{{record.taxTotal}}&lt;/dd&gt;
 	              &lt;dt class="order-subtotal-total" x-translate&gt;Total A.T.I.&lt;/dt&gt;
 	              &lt;dd class="order-subtotal-total"&gt;{{record.inTaxTotal}}&lt;/dd&gt;
-	              &lt;dt x-translate &gt;Personal expense&lt;/dt&gt;
-				  &lt;dd&gt; -{{record.personalExpenseAmount | number:2}}&lt;/dd&gt;
-	              &lt;dt x-translate&gt;Withdrawn cash&lt;/dt&gt;
-	              &lt;dd&gt;-{{record.withdrawnCash | number:2}}&lt;/dd&gt;
-	              &lt;dt x-translate&gt;Advance&lt;/dt&gt;
-	              &lt;dd&gt;-{{record.advanceAmount | number:2}}&lt;/dd&gt;
-	              
-	              &lt;dt ng-show="record.statusSelect == 3 || record.statusSelect == 4"  ng-style="{'color' : 'blue'}" x-translate&gt;Payment&lt;/dt&gt;
-             	  &lt;dd ng-show="record.statusSelect == 3 || record.statusSelect == 4"  ng-style="{'color' : 'blue'}"&gt;-{{record.paymentAmount  | number:2}}&lt;/dd&gt;
-	              
-	              &lt;dt class="order-subtotal-total" x-translate&gt;Total to refund&lt;/dt&gt;
+	               &lt;dt ng-show="record.personalExpenseAmount != 0" x-translate &gt;Personal expense&lt;/dt&gt;
+				  &lt;dd ng-show="record.personalExpenseAmount != 0" &gt; -{{record.personalExpenseAmount | number:2}}&lt;/dd&gt;
+	              &lt;dt ng-show="record.withdrawnCash != 0" x-translate&gt;Withdrawn cash&lt;/dt&gt;
+	              &lt;dd ng-show="record.withdrawnCash != 0" &gt;-{{record.withdrawnCash | number:2}}&lt;/dd&gt;
+	              &lt;dt ng-show="record.advanceAmount != 0" x-translate&gt;Advance&lt;/dt&gt;
+	              &lt;dd ng-show="record.advanceAmount != 0" &gt;-{{record.advanceAmount | number:2}}&lt;/dd&gt;
+	              &lt;dt ng-show="record.statusSelect == 3 || record.statusSelect == 4 &amp;&amp; record.paymentAmount != 0"  ng-style="{'color' : 'blue'}" x-translate&gt;Payment&lt;/dt&gt;
+             	  &lt;dd ng-show="record.statusSelect == 3 || record.statusSelect == 4 &amp;&amp; record.paymentAmount != 0"  ng-style="{'color' : 'blue'}"&gt;-{{record.paymentAmount  | number:2}}&lt;/dd&gt;
+	              &lt;dt class="order-subtotal-total" x-translate&gt;TotalToRefund&lt;/dt&gt;
 	              &lt;dd class="order-subtotal-total"&gt;{{record.inTaxTotal - record.advanceAmount - record.withdrawnCash - record.personalExpenseAmount - record.paymentAmount | number:2}}&lt;/dd&gt;
-
-	              
 	            &lt;/dl&gt;
 	          </viewer>
 	        </field>

@@ -31,7 +31,7 @@
 	<form name="timesheet-form" title="Timesheet" model="com.axelor.apps.hr.db.Timesheet" cols="12" width="large"
 	    onNew="action-group-timesheet-onnew"
 	    onLoad="action-timesheet-attrs-buttons,action-timesheet-attrs-set-visible-duration-title,action-timesheet-method-set-visible-duration,action-timesheet-attrs-title-project-task,action-timesheet-attrs-from-date,save" canNew="false"
-	    onSave="action-timesheet-validate-toDate,action-timesheet-method-valid-to-date" canCopy="false">
+	    onSave="action-timesheet-validate-toDate" canCopy="false">
 	    <toolbar>
 	    	<button name="printTimesheet" title="Print" colSpan="2" icon="fa-print" onClick="save,action-print-timesheet"/>
 	    </toolbar>
@@ -57,7 +57,7 @@
 			<field name="company" colSpan="6" form-view="company-form" grid-view="company-grid"/>
 			<field name="user" colSpan="6" form-view="user-form" grid-view="user-grid"/>
 			<field name="fromDate" onChange="action-timesheet-validate-fromDate"/>
-			<field name="toDate" onChange="action-timesheet-validate-toDate,action-timesheet-method-valid-to-date"/>
+			<field name="toDate" onChange="action-timesheet-validate-toDate"/>
 		</panel>
 		<panel name="generateLinesPanel" title="Generate Lines automatically" hidden="true">
 		    <field name="$fromGenerationDate" title="From generation date" widget="Date"/>
@@ -242,10 +242,6 @@
 	<action-record name="action-timesheet-null-toDate" model="com.axelor.apps.hr.db.Timesheet">
 		<field name="toDate" expr="eval: null"/>
 	</action-record>
-	
-	<action-method name="action-timesheet-method-valid-to-date">
-		<call class="com.axelor.apps.hr.web.timesheet.TimesheetController" method="validToDate"/>
-	</action-method>
 	
 	<action-method name="action-timesheet-method-confirm">
 		<call class="com.axelor.apps.hr.web.timesheet.TimesheetController" method="confirm"/>

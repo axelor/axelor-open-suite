@@ -170,6 +170,8 @@ public class MoveLineService {
 	public MoveLine createMoveLine(Move move, Partner partner, Account account, BigDecimal amountInSpecificMoveCurrency, BigDecimal amountInCompanyCurrency, 
 			BigDecimal currencyRate, boolean isDebit, LocalDate date, LocalDate dueDate, int counter, String origin) throws AxelorException  {
 		
+		amountInSpecificMoveCurrency = amountInSpecificMoveCurrency.abs();
+		
 		log.debug("Creating accounting move line (Account : {}, Amount in specific move currency : {}, debit ? : {}, date : {}, counter : {}, reference : {}",  
 				new Object[]{account.getName(), amountInSpecificMoveCurrency, isDebit, date, counter, origin});
 
@@ -347,10 +349,13 @@ public class MoveLineService {
 	
 	public MoveLine findConsolidateMoveLine(Map<List<Object>, MoveLine> map, MoveLine moveLine, List<Object> keys){
 		if(map != null && !map.isEmpty()){
+			
 			Map<List<Object>, MoveLine> copyMap = new HashMap<List<Object>, MoveLine>(map);
 			while(!copyMap.isEmpty()){
+				
 				if(map.containsKey(keys)){
-					MoveLine moveLineIt =  map.get(keys);
+					
+					MoveLine moveLineIt = map.get(keys);
 					int count = 0;
 					if(moveLineIt.getAnalyticDistributionLineList() == null && moveLine.getAnalyticDistributionLineList() == null){
 						return moveLineIt;
@@ -399,18 +404,32 @@ public class MoveLineService {
 
 		Map<List<Object>, MoveLine> map = new HashMap<List<Object>, MoveLine>();
 		MoveLine consolidateMoveLine = null;
-		List<Object> keys = new ArrayList<Object>();
 
 		for (MoveLine moveLine : moveLines){
 
-			keys.clear();
+			List<Object> keys = new ArrayList<Object>();
+
 			keys.add(moveLine.getAccount());
 			keys.add(moveLine.getTaxLine());
+			
 			consolidateMoveLine = this.findConsolidateMoveLine(map, moveLine, keys);
 			if (consolidateMoveLine != null){
 				
+				BigDecimal consolidateCurrencyAmount = BigDecimal.ZERO;
+				
+				log.debug("MoveLine :: Debit : {}, Credit : {}, Currency amount : {}", moveLine.getDebit(), moveLine.getCredit(), moveLine.getCurrencyAmount());
+				log.debug("Consolidate moveLine :: Debit : {}, Credit : {}, Currency amount : {}", consolidateMoveLine.getDebit(), consolidateMoveLine.getCredit(), consolidateMoveLine.getCurrencyAmount());
+				
+				if(moveLine.getDebit().subtract(moveLine.getCredit()).compareTo(BigDecimal.ZERO) != consolidateMoveLine.getDebit().subtract(consolidateMoveLine.getCredit()).compareTo(BigDecimal.ZERO))  {
+					consolidateCurrencyAmount = consolidateMoveLine.getCurrencyAmount().subtract(moveLine.getCurrencyAmount());
+				}
+				else  {
+					consolidateCurrencyAmount = consolidateMoveLine.getCurrencyAmount().add(moveLine.getCurrencyAmount());
+				}
+				consolidateMoveLine.setCurrencyAmount(consolidateCurrencyAmount.abs());
 				consolidateMoveLine.setCredit(consolidateMoveLine.getCredit().add(moveLine.getCredit()));
 				consolidateMoveLine.setDebit(consolidateMoveLine.getDebit().add(moveLine.getDebit()));
+				
 				if(consolidateMoveLine.getAnalyticDistributionLineList() != null && !consolidateMoveLine.getAnalyticDistributionLineList().isEmpty()){
 					for (AnalyticDistributionLine analyticDistributionLine : consolidateMoveLine.getAnalyticDistributionLineList()) {
 						for (AnalyticDistributionLine analyticDistributionLineIt : moveLine.getAnalyticDistributionLineList()) {
@@ -429,7 +448,6 @@ public class MoveLineService {
 			else {
 				map.put(keys, moveLine);
 			}
-
 		}
 
 		BigDecimal credit = null;
@@ -442,6 +460,8 @@ public class MoveLineService {
 
 			credit = moveLine.getCredit();
 			debit = moveLine.getDebit();
+			
+			moveLine.setCurrencyAmount(moveLine.getCurrencyAmount().abs());
 
 			if (debit.compareTo(BigDecimal.ZERO) == 1 && credit.compareTo(BigDecimal.ZERO) == 1){
 
@@ -463,138 +483,12 @@ public class MoveLineService {
 				moveLine.setCounter(moveLineId++);
 				moveLines.add(moveLine);
 			}
+			
 		}
 		
 		return moveLines;
 	}
 	
-	public List<MoveLine> consolidateMoveLinesWithoutAnalytic(List<MoveLine> moveLines){
-
-		Map<List<Object>, MoveLine> map = new HashMap<List<Object>, MoveLine>();
-		MoveLine consolidateMoveLine = null;
-		List<Object> keys = new ArrayList<Object>();
-
-		for (MoveLine moveLine : moveLines){
-
-			keys.clear();
-			keys.add(moveLine.getAccount());
-			keys.add(moveLine.getTaxLine());
-			if (map.containsKey(keys)){
-				consolidateMoveLine = map.get(keys);
-				
-				consolidateMoveLine.setCredit(consolidateMoveLine.getCredit().add(moveLine.getCredit()));
-				consolidateMoveLine.setDebit(consolidateMoveLine.getDebit().add(moveLine.getDebit()));
-			}
-			else {
-				map.put(keys, moveLine);
-			}
-
-		}
-
-		BigDecimal credit = null;
-		BigDecimal debit = null;
-
-		int moveLineId = 1;
-		moveLines.clear();
-
-		for (MoveLine moveLine : map.values()){
-
-			credit = moveLine.getCredit();
-			debit = moveLine.getDebit();
-
-			if (debit.compareTo(BigDecimal.ZERO) == 1 && credit.compareTo(BigDecimal.ZERO) == 1){
-
-				if (debit.compareTo(credit) == 1){
-					moveLine.setDebit(debit.subtract(credit));
-					moveLine.setCredit(BigDecimal.ZERO);
-					moveLine.setCounter(moveLineId++);
-					moveLines.add(moveLine);
-				}
-				else if (credit.compareTo(debit) == 1){
-					moveLine.setCredit(credit.subtract(debit));
-					moveLine.setDebit(BigDecimal.ZERO);
-					moveLine.setCounter(moveLineId++);
-					moveLines.add(moveLine);
-				}
-
-			}
-			else if (debit.compareTo(BigDecimal.ZERO) == 1 || credit.compareTo(BigDecimal.ZERO) == 1){
-				moveLine.setCounter(moveLineId++);
-				moveLines.add(moveLine);
-			}
-		}
-		
-		return moveLines;
-	}
-	
-	public List<MoveLine> consolidateMoveLinesOnlyAnalytic(List<MoveLine> moveLines){
-
-		Map<List<Object>, MoveLine> map = new HashMap<List<Object>, MoveLine>();
-		MoveLine consolidateMoveLine = null;
-		List<Object> keys = new ArrayList<Object>();
-
-		for (MoveLine moveLine : moveLines){
-
-			keys.clear();
-			keys.add(moveLine.getAccount());
-			consolidateMoveLine = this.findConsolidateMoveLine(map, moveLine, keys);
-			if (consolidateMoveLine != null){
-				
-				consolidateMoveLine.setCredit(consolidateMoveLine.getCredit().add(moveLine.getCredit()));
-				consolidateMoveLine.setDebit(consolidateMoveLine.getDebit().add(moveLine.getDebit()));
-				for (AnalyticDistributionLine analyticDistributionLine : consolidateMoveLine.getAnalyticDistributionLineList()) {
-					for (AnalyticDistributionLine analyticDistributionLineIt : moveLine.getAnalyticDistributionLineList()) {
-						if(analyticDistributionLine.getAnalyticAxis().equals(analyticDistributionLineIt.getAnalyticAxis()) &&
-								analyticDistributionLine.getAnalyticAccount().equals(analyticDistributionLineIt.getAnalyticAccount()) &&
-								analyticDistributionLine.getPercentage().equals(analyticDistributionLineIt.getPercentage()) &&
-								analyticDistributionLine.getAnalyticJournal().equals(analyticDistributionLineIt.getAnalyticJournal())){
-							analyticDistributionLine.setAmount(analyticDistributionLine.getAmount().add(analyticDistributionLineIt.getAmount()));
-							break;
-						}
-					}
-				}
-			}
-			else {
-				map.put(keys, moveLine);
-			}
-
-		}
-
-		BigDecimal credit = null;
-		BigDecimal debit = null;
-
-		int moveLineId = 1;
-		moveLines.clear();
-
-		for (MoveLine moveLine : map.values()){
-
-			credit = moveLine.getCredit();
-			debit = moveLine.getDebit();
-
-			if (debit.compareTo(BigDecimal.ZERO) == 1 && credit.compareTo(BigDecimal.ZERO) == 1){
-
-				if (debit.compareTo(credit) == 1){
-					moveLine.setDebit(debit.subtract(credit));
-					moveLine.setCredit(BigDecimal.ZERO);
-					moveLine.setCounter(moveLineId++);
-					moveLines.add(moveLine);
-				}
-				else if (credit.compareTo(debit) == 1){
-					moveLine.setCredit(credit.subtract(debit));
-					moveLine.setDebit(BigDecimal.ZERO);
-					moveLine.setCounter(moveLineId++);
-					moveLines.add(moveLine);
-				}
-
-			}
-			else if (debit.compareTo(BigDecimal.ZERO) == 1 || credit.compareTo(BigDecimal.ZERO) == 1){
-				moveLine.setCounter(moveLineId++);
-				moveLines.add(moveLine);
-			}
-		}
-		
-		return moveLines;
-	}
 
 	/**
 	 * Fonction permettant de récuperer la ligne d'écriture (au credit et non complétement lettrée sur le compte client) de la facture

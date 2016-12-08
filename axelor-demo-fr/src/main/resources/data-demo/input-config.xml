@@ -481,5 +481,14 @@
 	
 	<input file="account_bankOrderEconomicReason.csv" separator=";" type="com.axelor.apps.account.db.BankOrderEconomicReason" />
 	
+	<input file="hr_leaveLine.csv" separator=";" type="com.axelor.apps.hr.db.LeaveLine" />
+	
+	<input file="hr_leaveManagement.csv" separator=";" type="com.axelor.apps.hr.db.LeaveManagement" >
+		<bind to="date" eval="call:com.axelor.csv.script.ImportDateTime:importDate(date)" column="date"/>
+		<bind to="fromDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(fromDate)" column="fromDate"/>
+		<bind to="toDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(toDate)" column="toDate"/>
+	</input>
+	
+	
 </csv-inputs>
 

@@ -23,4 +23,5 @@ public interface IReport {
 	public static final String EXPENSE="Expense.rptdesign";
 	public static final String TIMESHEET = "Timesheet.rptdesign";
 	public static final String EMPLOYEE_BONUS_MANAGEMENT = "EmployeeBonusMgt.rptdesign";
+	public static final String EMPLOYEE_ANNUAL_REPORT = "EmployeeAnnualReport.rptdesign";
 }

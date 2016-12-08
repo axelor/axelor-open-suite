@@ -37,7 +37,6 @@ import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -115,19 +114,17 @@ public class LeaveController {
 		   .add("grid","leave-request-validate-grid")
 		   .add("form","leave-request-form");
 		
-		if(employee != null)  {
-			actionView.domain("self.company = :activeCompany AND  self.statusSelect = 2")
-			.context("activeCompany", user.getActiveCompany());
+		actionView.domain("self.company = :_activeCompany AND  self.statusSelect = 2")
+		.context("_activeCompany", user.getActiveCompany());
 		
-			if(!employee.getHrManager())  {
-				if(employee.getManager() != null) {
-					actionView.domain(actionView.get().getDomain() + " AND self.user.employee.manager = :user")
-					.context("user", user);
-				}
-				else  {
-					actionView.domain(actionView.get().getDomain() + " AND self.user = :user")
-					.context("user", user);
-				}
+		if(employee == null || !employee.getHrManager())  {
+			if(employee != null && employee.getManager() != null) {
+				actionView.domain(actionView.get().getDomain() + " AND self.user.employee.manager = :_user")
+				.context("_user", user);
+			}
+			else  {
+				actionView.domain(actionView.get().getDomain() + " AND self.user = :_user")
+				.context("_user", user);
 			}
 		}
 
@@ -144,14 +141,12 @@ public class LeaveController {
 				.add("grid","leave-request-grid")
 				.add("form","leave-request-form");
 
-		if(employee != null && employee.getHrManager())  {
-			actionView.domain("self.company = :activeCompany AND (self.statusSelect = 3 OR self.statusSelect = 4)")
-			.context("activeCompany", user.getActiveCompany());
-		
-			if(!employee.getHrManager())  {
-				actionView.domain(actionView.get().getDomain() + " AND self.user.employee.manager = :user")
-				.context("user", user);
-			}
+		actionView.domain("self.company = :_activeCompany AND (self.statusSelect = 3 OR self.statusSelect = 4)")
+		.context("_activeCompany", user.getActiveCompany());
+	
+		if(employee == null || !employee.getHrManager())  {
+			actionView.domain(actionView.get().getDomain() + " AND self.user.employee.manager = :_user")
+			.context("_user", user);
 		}
 		
 		response.setView(actionView.map());
@@ -167,15 +162,15 @@ public class LeaveController {
 				   .add("grid","leave-request-grid")
 				   .add("form","leave-request-form");
 		
-		String domain = "self.user.employee.manager.employee.manager = :user AND self.company = :activeCompany AND self.statusSelect = 2";
+		String domain = "self.user.employee.manager.employee.manager = :_user AND self.company = :_activeCompany AND self.statusSelect = 2";
 		
-		long nbLeaveRequests =  Query.of(ExtraHours.class).filter(domain).bind("user", user).bind("activeCompany", activeCompany).count();
+		long nbLeaveRequests =  Query.of(ExtraHours.class).filter(domain).bind("_user", user).bind("_activeCompany", activeCompany).count();
 		
 		if(nbLeaveRequests == 0)  {
 			response.setNotify(I18n.get("No Leave Request to be validated by your subordinates"));
 		}
 		else  {
-			response.setView(actionView.domain(domain).context("user", user).context("activeCompany", activeCompany).map());
+			response.setView(actionView.domain(domain).context("_user", user).context("_activeCompany", activeCompany).map());
 		}
 		
 	}

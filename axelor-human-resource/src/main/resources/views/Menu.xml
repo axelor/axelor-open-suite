@@ -26,7 +26,7 @@
 	</action-view>	
 	
 	<menuitem name="validate-timesheet" groups="MNGT,admins" parent="timesheet-root" title="Timesheets to Validate" action="timesheet.validate" icon="fa-flag"
-		tag-get="com.axelor.apps.hr.web.timesheet.TimesheetController:timesheetValidateTag()" tag-style="default" tag-count="true" order="-3000"/>
+		tag-get="com.axelor.apps.hr.web.timesheet.TimesheetController:timesheetValidateTag()" tag-style="default" order="-3000"/>
 	
 	<action-method name="timesheet.validate">
 		<call class="com.axelor.apps.hr.web.timesheet.TimesheetController" method="validateTimesheet"/>
@@ -65,7 +65,7 @@
 	</action-view>
 	
 	<menuitem name="validate-extra-hours" groups="MNGT,admins" parent="extra-hours-root" title="Extra hours to Validate" action="extra.hours.validate" icon="fa-flag"
-		tag-get="com.axelor.apps.hr.web.extra.hours.ExtraHoursController:extraHoursValidateTag()" tag-style="default" tag-count="true" order="-3000"/>
+		tag-get="com.axelor.apps.hr.web.extra.hours.ExtraHoursController:extraHoursValidateTag()" tag-style="default" order="-3000"/>
 	
 	<action-method name="extra.hours.validate">
 		<call class="com.axelor.apps.hr.web.extra.hours.ExtraHoursController" method="validateExtraHours"/>
@@ -99,14 +99,14 @@
 	</action-view>
 	
 	<menuitem name="validate-expense" groups="MNGT,admins" parent="expense-root" title="Expenses to Validate" action="expense.validate" icon="fa-flag"
-		tag-get="com.axelor.apps.hr.web.expense.ExpenseController:expenseValidateTag()" tag-style="default" tag-count="true" order="-3000"/>
+		tag-get="com.axelor.apps.hr.web.expense.ExpenseController:expenseValidateTag()" tag-style="default" order="-3000"/>
 	
 	<action-method name="expense.validate">
 		<call class="com.axelor.apps.hr.web.expense.ExpenseController" method="validateExpense"/>
 	</action-method>
 	
 	<menuitem name="ventilate-expense" groups="MNGT,admins" parent="expense-root" title="Expenses to Ventilate" action="expense.ventilate" icon="fa-flag"
-		tag-get="com.axelor.apps.hr.web.expense.ExpenseController:expenseVentilateTag()" tag-style="default" tag-count="true" order="-3000"/>
+		tag-get="com.axelor.apps.hr.web.expense.ExpenseController:expenseVentilateTag()" tag-style="default" order="-3000"/>
 	
 	<action-view name="expense.ventilate" title="Expenses to Ventilate" model="com.axelor.apps.hr.db.Expense">
 		<view type="grid" name="expense-grid"/>
@@ -150,7 +150,7 @@
 	</action-view>
 	
 	<menuitem name="validate-leave-request" groups="MNGT,admins" parent="leave-request-root" title="Leave Requests to Validate" action="leave.validate" icon="fa-flag"
-		tag-get="com.axelor.apps.hr.web.leave.LeaveController:leaveValidateTag()" tag-style="default" tag-count="true" order="-3000"/>
+		tag-get="com.axelor.apps.hr.web.leave.LeaveController:leaveValidateTag()" tag-style="default" order="-3000"/>
 	
 	<action-method name="leave.validate">
 		<call class="com.axelor.apps.hr.web.leave.LeaveController" method="validateLeave"/>
@@ -328,6 +328,20 @@
 	<action-view name="employee.bonus.type.all" title="Employee bonus type" model="com.axelor.apps.hr.db.EmployeeBonusType">
     	<view type="grid" name="employee-bonus-type-grid"/>
 	    <view type="form" name="employee-bonus-type-form"/>
+	</action-view>
+	
+	<menuitem name="plannings-all" parent="hr-conf" title="Plannings" />
+	<menuitem name="event-planning-all" parent="plannings-all" title="Event planning" action="hr.public.holiday.planning.all"/>
+	<menuitem name="weekly-planning-all" parent="plannings-all" title="Weekly planning" action="hr.weekly.planning.all"/>
+	
+	<action-view name="hr.public.holiday.planning.all" title="Public Holiday Plannings" model="com.axelor.apps.hr.db.PublicHolidayPlanning">
+    	<view type="grid" name="public-holiday-planning-grid"/>
+	    <view type="form" name="public-holiday-planning-form"/>
+	</action-view>
+	
+	<action-view name="hr.weekly.planning.all" title="Weekly Planning" model="com.axelor.apps.base.db.WeeklyPlanning">
+    	<view type="grid" name="weekly-planning-grid"/>
+	    <view type="form" name="weekly-planning-form"/>
 	</action-view>
 
 </object-views>
