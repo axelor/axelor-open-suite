@@ -343,9 +343,9 @@
 	</selection>
 	
 	<selection name="bank.order.file.format.select">
-		<option value="pain.001.001.02">pain.001.001.02</option>
-		<option value="pain.001.001.03">pain.001.001.03</option>
-		<option value="AFB320">AFB 320</option>
+		<option value="pain.001.001.02.sct">pain.001.001.02.sct</option>
+		<option value="pain.001.001.03.sct">pain.001.001.03.sct</option>
+		<option value="pain.xxx.cfonb320.xct">pain.xxx.cfonb320.xct</option>
 	</selection>
 	
 	<selection name="account.ebics.user.ebics.type.select">
