@@ -10,6 +10,7 @@
         <field name="invitation" aggregate="sum"/>
         <field name="lunchVoucherNumber" aggregate="sum" title="Nbr lunch vouchers"/>
         <field name="givenToEmployee" title="Given?" width="200%"/>
+        <field name="employee.lunchVoucherFormatSelect"/>
     </grid>
     
     <grid name="lunch-voucher-mgt-line-employee-grid" title="Lunch Voucher Lines" model="com.axelor.apps.hr.db.LunchVoucherMgtLine" editable="true" orderBy="-lunchVoucherMgt.payStartDate">
