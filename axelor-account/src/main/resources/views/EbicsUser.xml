@@ -19,6 +19,7 @@
 			<field name="userId" help="Name of the user or service"/>
 			<field name="ebicsTypeSelect" widget="RadioSelect"/>
 			<field name="securityMedium" />
+			<field name="associatedUser"/>
 			<field name="ebicsPartner" help="Subscription or contract to which the user is associated" />
 			<field name="ebicsPartner.ebicsBank"/>
 			<field name="statusSelect" colSpan="12"/>

@@ -3,7 +3,9 @@ package com.axelor.apps.account.ebics.web;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 
+import com.axelor.apps.account.db.BankOrderFileFormat;
 import com.axelor.apps.account.db.EbicsUser;
+import com.axelor.apps.account.db.repo.BankOrderFileFormatRepository;
 import com.axelor.apps.account.db.repo.EbicsUserRepository;
 import com.axelor.apps.account.ebics.certificate.CertificateManager;
 import com.axelor.apps.account.ebics.service.EbicsService;
@@ -51,7 +53,7 @@ public class EbicsController {
 	public void generateDn(ActionRequest request, ActionResponse response){
 		
 		EbicsUser ebicsUser = ebicsUserRepo.find(request.getContext().asType(EbicsUser.class).getId());
-		User user = userRepo.all().filter("self.ebicsUser = ?1", ebicsUser).fetchOne();
+		User user = ebicsUser.getAssociatedUser();
 		if (user != null){
 			response.setValue("dn", ebicsService.makeDN(ebicsUser.getName(), user.getEmail(), "France", user.getActiveCompany().getCode()) );
 		}else{
@@ -103,7 +105,7 @@ public class EbicsController {
 		
 		EbicsUser ebicsUser = ebicsUserRepo.find( request.getContext().asType(EbicsUser.class).getId());
 		
-		ebicsService.sendFULRequest(ebicsUser, null, null);
+		ebicsService.sendFULRequest(ebicsUser, null, null, BankOrderFileFormatRepository.FILE_FORMAT_pain_001_001_02_SCT);
 
 		response.setReload(true);
 	}

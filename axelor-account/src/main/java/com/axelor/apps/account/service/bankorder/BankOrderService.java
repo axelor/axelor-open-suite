@@ -1,5 +1,6 @@
 package com.axelor.apps.account.service.bankorder;
 
+import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
 
@@ -19,29 +20,29 @@ public interface BankOrderService {
 	
 	public void updateTotalAmounts(BankOrder bankOrder) throws AxelorException;
 	
-	@Transactional
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void confirm(BankOrder bankOrder);
 	
-	@Transactional
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void sign(BankOrder bankOrder);
 	
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void validate(BankOrder bankOrder) throws JAXBException, IOException, AxelorException, DatatypeConfigurationException;
 	
-	@Transactional
-	public void generateFile(BankOrder bankOrder) throws JAXBException, IOException, AxelorException, DatatypeConfigurationException;
+	public File generateFile(BankOrder bankOrder) throws JAXBException, IOException, AxelorException, DatatypeConfigurationException;
 	
-	@Transactional
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public BankOrder generateSequence(BankOrder bankOrder);
 	
 	public void checkLines(BankOrder bankOrder)throws AxelorException;
 	
-	@Transactional
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void validatePayment(BankOrder bankOrder);
 	
-	@Transactional
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void cancelPayment(BankOrder bankOrder);
 	
-	@Transactional
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void cancelBankOrder(BankOrder bankOrder);
 	
 }

@@ -23,6 +23,7 @@ import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.BankOrderFileFormatRepository;
 import com.axelor.apps.account.db.repo.BankOrderRepository;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
+import com.axelor.apps.account.ebics.service.EbicsService;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.bankorder.file.transfer.BankOrderFile00100102Service;
 import com.axelor.apps.account.service.bankorder.file.transfer.BankOrderFile00100103Service;
@@ -43,14 +44,17 @@ public class BankOrderServiceImpl implements BankOrderService  {
 	protected BankOrderRepository bankOrderRepo;
 	protected InvoicePaymentRepository invoicePaymentRepo;
 	protected BankOrderLineService bankOrderLineService;
+	protected EbicsService ebicsService;
+
 	
 	@Inject
 	public BankOrderServiceImpl(BankOrderRepository bankOrderRepo, InvoicePaymentRepository invoicePaymentRepo, 
-			BankOrderLineService bankOrderLineService)  {
+			BankOrderLineService bankOrderLineService, EbicsService ebicsService)  {
 		
 		this.bankOrderRepo = bankOrderRepo;
 		this.invoicePaymentRepo = invoicePaymentRepo;
 		this.bankOrderLineService = bankOrderLineService;
+		this.ebicsService = ebicsService;
 		
 	}
 	
@@ -145,7 +149,7 @@ public class BankOrderServiceImpl implements BankOrderService  {
 	
 	
 	@Override
-	@Transactional
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public BankOrder generateSequence(BankOrder bankOrder) {
 		if(bankOrder.getBankOrderSeq() == null && bankOrder.getId() != null){
 			bankOrder.setBankOrderSeq("*" + StringTool.fillStringLeft(Long.toString(bankOrder.getId()), '0', 6));
@@ -181,7 +185,7 @@ public class BankOrderServiceImpl implements BankOrderService  {
 
 	
 	@Override
-	@Transactional
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void validatePayment(BankOrder bankOrder) {
 		
 		InvoicePayment invoicePayment = invoicePaymentRepo.findByBankOrder(bankOrder).fetchOne();
@@ -191,7 +195,7 @@ public class BankOrderServiceImpl implements BankOrderService  {
 	}
 
 	@Override
-	@Transactional
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void cancelPayment(BankOrder bankOrder) {
 		InvoicePayment invoicePayment = invoicePaymentRepo.findByBankOrder(bankOrder).fetchOne();
 		if(invoicePayment != null)  {
@@ -201,7 +205,7 @@ public class BankOrderServiceImpl implements BankOrderService  {
 	}
 	
 	@Override
-	@Transactional
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void confirm(BankOrder bankOrder) {
 		
 		if (bankOrder.getOrderTypeSelect() == BankOrderRepository.SEPA_CREDIT_TRANSFER || bankOrder.getOrderTypeSelect() == BankOrderRepository.INTERNATIONAL_CREDIT_TRANSFER){
@@ -215,13 +219,14 @@ public class BankOrderServiceImpl implements BankOrderService  {
 	}
 
 	@Override
-	@Transactional
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void sign(BankOrder bankOrder) {
 
 	//TODO
+		
 	}
 	
-	@Transactional
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void validate(BankOrder bankOrder) throws JAXBException, IOException, AxelorException, DatatypeConfigurationException {
 		
 		bankOrder.setStatusSelect(BankOrderRepository.STATUS_VALIDATED);
@@ -229,7 +234,9 @@ public class BankOrderServiceImpl implements BankOrderService  {
 		
 		this.setSequenceOnBankOrderLines(bankOrder);
 		
-		this.generateFile(bankOrder);
+		File fileToSend = this.generateFile(bankOrder);
+		
+		ebicsService.sendFULRequest(bankOrder.getEbicsUser(), null, fileToSend, bankOrder.getBankOrderFileFormat().getOrderFileFormatSelect());
 		
 		bankOrderRepo.save(bankOrder);
 
@@ -253,7 +260,7 @@ public class BankOrderServiceImpl implements BankOrderService  {
 	
 
 	@Override
-	@Transactional
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void cancelBankOrder(BankOrder bankOrder) {
 		bankOrder.setStatusSelect(BankOrderRepository.STATUS_CANCELED);
 		bankOrderRepo.save(bankOrder);
@@ -261,7 +268,7 @@ public class BankOrderServiceImpl implements BankOrderService  {
 	}
 	
 	
-	public void generateFile(BankOrder bankOrder) throws JAXBException, IOException, AxelorException, DatatypeConfigurationException  {
+	public File generateFile(BankOrder bankOrder) throws JAXBException, IOException, AxelorException, DatatypeConfigurationException  {
 		
 		bankOrder.setFileGenerationDateTime(new LocalDateTime());
 		
@@ -287,16 +294,22 @@ public class BankOrderServiceImpl implements BankOrderService  {
 			break;
 
 		default:
-			break;
+			
+			throw new AxelorException(I18n.get(IExceptionMessage.BANK_ORDER_FILE_UNKNOW_FORMAT), IException.INCONSISTENCY);
 		}
 		
-		if(file != null)  {
-			try (InputStream is = new FileInputStream(file)) {
-				Beans.get(MetaFiles.class).attach(is, file.getName(), bankOrder);
-			}
-		}
+		if(file == null)  {
+			throw new AxelorException(I18n.get(String.format(IExceptionMessage.BANK_ORDER_ISSUE_DURING_FILE_GENERATION, bankOrder.getBankOrderSeq())), IException.INCONSISTENCY);
+		}	
 		
+		MetaFiles metaFiles = Beans.get(MetaFiles.class);
 		
+		try (InputStream is = new FileInputStream(file)) {
+			metaFiles.attach(is, file.getName(), bankOrder);
+			bankOrder.setFileToSend(metaFiles.upload(file));
+		}			
+
+		return file;
 	}
 	
 	

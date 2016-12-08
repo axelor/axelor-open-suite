@@ -114,7 +114,7 @@ public class EbicsService {
 	 * @throws JDOMException 
 	 * @throws IOException 
 	 */
-	@Transactional
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void sendINIRequest(EbicsUser ebicsUser, EbicsProduct product) throws AxelorException {
 
 	    if (ebicsUser.getStatusSelect() != EbicsUserRepository.STATUS_WAITING_SENDING_SIGNATURE_CERTIFICATE) {
@@ -146,7 +146,7 @@ public class EbicsService {
 	 * @param product the application product.
 	 * @throws AxelorException 
 	 */
-	@Transactional
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void sendHIARequest(EbicsUser ebicsUser, EbicsProduct product) throws AxelorException {
 
 	    if (ebicsUser.getStatusSelect() != EbicsUserRepository.STATUS_WAITING_AUTH_AND_ENCRYPT_CERTIFICATES) {
@@ -177,7 +177,7 @@ public class EbicsService {
 	 * @param product the application product.
 	 * @throws AxelorException 
 	 */
-	@Transactional
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void sendHPBRequest(EbicsUser user, EbicsProduct product) throws AxelorException {
 
 		EbicsSession session = new EbicsSession(user);
@@ -202,7 +202,7 @@ public class EbicsService {
 	 * @param product the session product
 	 * @throws AxelorException 
 	 */
-	@Transactional
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void sendSPRRequest(EbicsUser ebicsUser, EbicsProduct product) throws AxelorException {
 
 	    EbicsSession session = new EbicsSession(ebicsUser);
@@ -230,7 +230,7 @@ public class EbicsService {
 	 * @param product the application product.
 	 * @throws AxelorException 
 	 */
-	public void sendFULRequest(EbicsUser user, EbicsProduct product, File file) throws AxelorException {
+	public void sendFULRequest(EbicsUser user, EbicsProduct product, File file, String format) throws AxelorException {
 		  
 		EbicsSession session = new EbicsSession(user);
 	    boolean test = isTest(user, false);
@@ -242,7 +242,7 @@ public class EbicsService {
 	    	throw new AxelorException("File is required to send FUL request", IException.CONFIGURATION_ERROR);
 	    }
 	    session.addSessionParam("EBCDIC", "false");
-	    session.addSessionParam("FORMAT", "pain.xxx.cfonb160.dct");
+	    session.addSessionParam("FORMAT", format);
 	    
 	    if (product == null) {
 	    	product = defaultProduct;
@@ -338,7 +338,7 @@ public class EbicsService {
 		throw new  AxelorException(I18n.get("Ebics bank configuration error"), 1);
 	}
 	
-	@Transactional
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void updateTestFile(EbicsUser user, File file) throws IOException {
 		
 		EbicsBank bank = user.getEbicsPartner().getEbicsBank();

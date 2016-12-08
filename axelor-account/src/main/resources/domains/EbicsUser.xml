@@ -17,6 +17,8 @@
 	 <integer name="statusSelect" title="Status" selection="account.ebics.user.status.select" readonly="true"/>
 	 
  	 <many-to-one name="ebicsPartner" ref="com.axelor.apps.account.db.EbicsPartner" title="Ebics partner" required="true"/>
+ 	 
+ 	 <many-to-one name="associatedUser" ref="com.axelor.auth.db.User" title="Associate user"/>
 	 
 	 <!-- 	 Electronic signature certificate -->
  	 <string name="dn" title="dn" unique="true" />

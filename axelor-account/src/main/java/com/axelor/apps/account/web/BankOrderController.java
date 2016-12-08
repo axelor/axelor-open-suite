@@ -10,13 +10,12 @@ import com.axelor.apps.ReportFactory;
 import com.axelor.apps.account.db.BankOrder;
 import com.axelor.apps.account.db.EbicsUser;
 import com.axelor.apps.account.db.repo.BankOrderRepository;
+import com.axelor.apps.account.db.repo.EbicsUserRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.report.IReport;
 import com.axelor.apps.account.service.bankorder.BankOrderMergeService;
 import com.axelor.apps.account.service.bankorder.BankOrderService;
-import com.axelor.apps.base.db.Wizard;
 import com.axelor.auth.AuthUtils;
-import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
@@ -25,6 +24,7 @@ import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.axelor.rpc.Context;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 
@@ -38,21 +38,23 @@ public class BankOrderController {
 	@Inject
 	protected BankOrderRepository bankOrderRepo;
 	
-	public void checkLines(ActionRequest request, ActionResponse response ) throws AxelorException{
+	public void sign(ActionRequest request, ActionResponse response ) throws AxelorException{
 		
 		BankOrder bankOrder = request.getContext().asType(BankOrder.class);
 		bankOrder = bankOrderRepo.find(bankOrder.getId());
 		try {
 			bankOrderService.checkLines(bankOrder);
+			
 			ActionViewBuilder confirmView = ActionView
 					.define("Sign bank order")
-					.model(Wizard.class.getName())
+					.model(BankOrder.class.getName())
 					.add("form", "bank-order-sign-wizard-form")
 					.param("popup", "reload")
 					.param("show-toolbar", "false")
+					.param("show-confirm", "false")
 					.param("popup-save", "false")
 					.param("forceEdit", "true")
-					.context("_contextBankOrder", bankOrder);
+					.context("_showRecord", bankOrder.getId());
 			
 			response.setView(confirmView.map());
 		} catch (Exception e) {
@@ -75,7 +77,7 @@ public class BankOrderController {
 		}
 	}
 	
-	public void validate(ActionRequest request, ActionResponse response ) {
+	public void validateWithoutSign(ActionRequest request, ActionResponse response ) {
 
 		try {
 			BankOrder bankOrder = request.getContext().asType(BankOrder.class);
@@ -89,28 +91,32 @@ public class BankOrderController {
 		}
 	}
 	
-	public void sign(ActionRequest request, ActionResponse  response) throws AxelorException{
+	public void validate(ActionRequest request, ActionResponse  response) throws AxelorException{
 		
-		BankOrder bankOrder  = JPA.em().find(BankOrder.class, new Long((Integer)((Map)request.getContext().get("_contextBankOrder")).get("id")));
-		EbicsUser ebicsUser = new EbicsUser();
-		String password = null;
+		Context context = request.getContext();
+		
+		BankOrder bankOrder  = context.asType(BankOrder.class);
+		bankOrder = bankOrderRepo.find(bankOrder.getId());
+
 		try {
-			if (request.getContext().get("ebicsUser") == null) {
+			
+			EbicsUser ebicsUser = bankOrder.getEbicsUser();
+			
+			if (ebicsUser == null) {
 				response.setError(I18n.get(IExceptionMessage.EBICS_MISSING_NAME));
-			}else	
-			{
-				ebicsUser = JPA.em().find(EbicsUser.class, new Long((Integer)((Map)request.getContext().get("ebicsUser")).get("id")));
-				if (request.getContext().get("password") == null){
+			}  
+			else  {
+				if (context.get("password") == null)  {
 					response.setError(I18n.get(IExceptionMessage.EBICS_WRONG_PASSWORD));
 				}
-				else{
-					password = (String)request.getContext().get("password");
+				else  {
+					String password = (String)context.get("password");
 					if(!ebicsUser.getPassword().equals(password)){
 						response.setValue("password", "");
 						response.setError(I18n.get(IExceptionMessage.EBICS_WRONG_PASSWORD));
 					}
 					else{
-						bankOrderService.sign(bankOrder);
+						bankOrderService.validate(bankOrder);
 					}
 				}
 			}
