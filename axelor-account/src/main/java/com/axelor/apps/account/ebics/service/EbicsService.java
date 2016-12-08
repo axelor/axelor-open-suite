@@ -202,9 +202,10 @@ public class EbicsService {
 	 * @param product the session product
 	 * @throws AxelorException 
 	 */
-	public void sendSPRRequest(EbicsUser user, EbicsProduct product) throws AxelorException {
+	@Transactional
+	public void sendSPRRequest(EbicsUser ebicsUser, EbicsProduct product) throws AxelorException {
 
-	    EbicsSession session = new EbicsSession(user);
+	    EbicsSession session = new EbicsSession(ebicsUser);
 	    if (product == null) {
 	    	product = defaultProduct;
 	    }
@@ -217,6 +218,9 @@ public class EbicsService {
 	    	TraceBackService.trace(e);
 	    	throw new AxelorException(e, IException.TECHNICAL);
 	    }
+	    
+	    ebicsUser.setStatusSelect(EbicsUserRepository.STATUS_WAITING_SENDING_SIGNATURE_CERTIFICATE);
+	    userRepo.save(ebicsUser);
 	}
 
 	/**
