@@ -115,7 +115,7 @@ public class ExpenseController {
 		User user = AuthUtils.getUser();
 		Company activeCompany = user.getActiveCompany();
 		
-		List<Expense> expenseList = Beans.get(ExpenseRepository.class).all().filter("self.user = ?1 AND self.company = ?2 AND self.statusSelect = 1 AND self.multipleUsers is false", user, activeCompany).fetch();
+		List<Expense> expenseList = Beans.get(ExpenseRepository.class).all().filter("self.user = ?1 AND self.company = ?2 AND self.statusSelect = 1 AND (self.multipleUsers is false OR self.multipleUsers is null)", user, activeCompany).fetch();
 		if(expenseList.isEmpty()){
 			response.setView(ActionView
 									.define(I18n.get("Expense"))

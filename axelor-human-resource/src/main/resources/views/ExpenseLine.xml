@@ -106,7 +106,7 @@
 	</action-attrs>
 	
 	<action-record name="action-kilometric-allowance-record-default" model="com.axelor.apps.hr.db.ExpenseLine">
-    	<field name="kilometricAllowParam" expr="eval:  _parent?.employee?.kilometricAllowParam"/>
+    	<field name="kilometricAllowParam" expr="eval:  _parent?.user?.employee?.kilometricAllowParam"/>
     </action-record>
 
     <action-method name="action-kilometric-allowance-method-compute">

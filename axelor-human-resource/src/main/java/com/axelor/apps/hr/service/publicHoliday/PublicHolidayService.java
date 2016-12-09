@@ -63,4 +63,15 @@ public class PublicHolidayService {
 			return true;
 		}
 	}
+	
+	public int getImposedDayNumber(Employee employee, LocalDate startDate, LocalDate endDate){
+		
+		PublicHolidayPlanning imposedDays =  employee.getImposedDayPlanning();
+		
+		if (imposedDays == null || imposedDays.getPublicHolidayDayList() == null || imposedDays.getPublicHolidayDayList().isEmpty()) { return 0; }
+		
+		List<PublicHolidayDay> imposedDayList= publicHolidayDayRepo.all().filter("self.publicHolidayPlann = ?1 AND self.date BETWEEN ?2 AND ?3", imposedDays, startDate, endDate).fetch();
+		
+		return imposedDayList.size();
+	}
 }

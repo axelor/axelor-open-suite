@@ -8,10 +8,9 @@
   <entity name="LunchVoucherMgt" cachable="true">
       
       <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"/>
-      <date name="payStartDate" title="Start date"/>
-      <date name="payEndDate" title="End date"/>
-      <date name="leaveStartDate" title="Start date"/>
-      <date name="leaveEndDate" title="End date"/>
+      
+      <many-to-one name="payPeriod" ref="com.axelor.apps.base.db.Period" title="Pay period"/>
+      <many-to-one name="leavePeriod" ref="com.axelor.apps.base.db.Period" title="Leave period"/>
       
       <integer name="statusSelect" title="Status" selection="hrs.lunch.voucher.mgt.status.select" default="1" readonly="true"/>
       <integer name="requestedLunchVouchers" title="Requested lunch vouchers on the period"/>
@@ -23,6 +22,7 @@
       <integer name="stockQuantityStatus" title="Stock quantity status" readonly="true"/>
       <integer name="stockLineQuantity" title="Stock Line quantity"/>
       <string name="stockLineComment" title="Comment" large="true"/>
+      
       <extra-code>
       	<![CDATA[
 	  		public static final Integer STATUS_DRAFT = 1;
