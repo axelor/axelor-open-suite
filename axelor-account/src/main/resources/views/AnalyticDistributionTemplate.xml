@@ -12,7 +12,7 @@
         <panel name="main" >
 	        <field name="name"/>
         </panel>      
-        <panel-related field="analyticDistributionLineList" grid-view="analytic-distribution-line-model-grid" form-view="analytic-distribution-line-model-form" onChange="action-analytic-dist-template-method-validate-tot-percentage"/>
+        <panel-related field="analyticMoveLineList" grid-view="analytic-distribution-line-model-grid" form-view="analytic-move-line-model-form" onChange="action-analytic-dist-template-method-validate-tot-percentage"/>
     </form>
     
     <action-method name="action-analytic-dist-template-method-validate-tot-percentage">

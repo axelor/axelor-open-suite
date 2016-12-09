@@ -17,13 +17,13 @@
  */
 package com.axelor.apps.supplychain.db.repo;
 
-import com.axelor.apps.account.db.AnalyticDistributionLine;
-import com.axelor.apps.account.db.repo.AnalyticDistributionLineMngtRepository;
+import com.axelor.apps.account.db.AnalyticMoveLine;
+import com.axelor.apps.account.db.repo.AnalyticMoveLineMngtRepository;
 
-public class AnalyticDistributionLineSupplychainRepository extends AnalyticDistributionLineMngtRepository{
+public class AnalyticMoveLineSupplychainRepository extends AnalyticMoveLineMngtRepository{
 	@Override
-	public AnalyticDistributionLine copy(AnalyticDistributionLine entity, boolean deep) {
-		AnalyticDistributionLine copy = super.copy(entity, deep);
+	public AnalyticMoveLine copy(AnalyticMoveLine entity, boolean deep) {
+		AnalyticMoveLine copy = super.copy(entity, deep);
 		copy.setPurchaseOrderLine(null);
 		copy.setSaleOrderLine(null);
 		return copy;

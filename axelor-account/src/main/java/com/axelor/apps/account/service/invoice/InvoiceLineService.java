@@ -22,12 +22,12 @@ import java.math.RoundingMode;
 import java.util.List;
 import java.util.Map;
 
-import com.axelor.apps.account.db.AnalyticDistributionLine;
+import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
-import com.axelor.apps.account.service.AnalyticDistributionLineService;
+import com.axelor.apps.account.service.AnalyticMoveLineService;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.IPriceListLine;
@@ -53,51 +53,51 @@ public class InvoiceLineService {
 	protected CurrencyService currencyService;
 	protected PriceListService priceListService;
 	protected GeneralService generalService;
-	protected AnalyticDistributionLineService analyticDistributionLineService;
+	protected AnalyticMoveLineService analyticMoveLineService;
 	protected ProductService productService;
 
 	@Inject
 	public InvoiceLineService(AccountManagementService accountManagementService, CurrencyService currencyService, PriceListService priceListService, 
-			GeneralService generalService, AnalyticDistributionLineService analyticDistributionLineService, ProductService productService)  {
+			GeneralService generalService, AnalyticMoveLineService analyticMoveLineService, ProductService productService)  {
 		
 		this.accountManagementService = accountManagementService;
 		this.currencyService = currencyService;
 		this.priceListService = priceListService;
 		this.generalService = generalService;
-		this.analyticDistributionLineService = analyticDistributionLineService;
+		this.analyticMoveLineService = analyticMoveLineService;
 		this.productService = productService;
 		
 	}
 	
 	public InvoiceLine createAnalyticDistributionWithTemplate(InvoiceLine invoiceLine) throws AxelorException{
-		List<AnalyticDistributionLine> analyticDistributionLineList = null;
-		analyticDistributionLineList = analyticDistributionLineService.generateLinesWithTemplate(invoiceLine.getAnalyticDistributionTemplate(), invoiceLine.getExTaxTotal());
-		if(analyticDistributionLineList != null){
-			for (AnalyticDistributionLine analyticDistributionLine : analyticDistributionLineList) {
+		List<AnalyticMoveLine> analyticMoveLineList = null;
+		analyticMoveLineList = analyticMoveLineService.generateLinesWithTemplate(invoiceLine.getAnalyticDistributionTemplate(), invoiceLine.getExTaxTotal());
+		if(analyticMoveLineList != null){
+			for (AnalyticMoveLine analyticDistributionLine : analyticMoveLineList) {
 				analyticDistributionLine.setInvoiceLine(invoiceLine);
 			}
 		}
-		invoiceLine.setAnalyticDistributionLineList(analyticDistributionLineList);
+		invoiceLine.setAnalyticMoveLineList(analyticMoveLineList);
 		return invoiceLine;
 	}
 	
 	public InvoiceLine computeAnalyticDistribution(InvoiceLine invoiceLine) throws AxelorException{
-		List<AnalyticDistributionLine> analyticDistributionLineList = invoiceLine.getAnalyticDistributionLineList();
-		if((analyticDistributionLineList == null || analyticDistributionLineList.isEmpty()) && generalService.getGeneral().getAnalyticDistributionTypeSelect() != GeneralRepository.DISTRIBUTION_TYPE_FREE){
-			analyticDistributionLineList = analyticDistributionLineService.generateLines(invoiceLine.getInvoice().getPartner(), invoiceLine.getProduct(), invoiceLine.getInvoice().getCompany(), invoiceLine.getExTaxTotal());
-			if(analyticDistributionLineList != null){
-				for (AnalyticDistributionLine analyticDistributionLine : analyticDistributionLineList) {
+		List<AnalyticMoveLine> analyticMoveLineList = invoiceLine.getAnalyticMoveLineList();
+		if((analyticMoveLineList == null || analyticMoveLineList.isEmpty()) && generalService.getGeneral().getAnalyticDistributionTypeSelect() != GeneralRepository.DISTRIBUTION_TYPE_FREE){
+			analyticMoveLineList = analyticMoveLineService.generateLines(invoiceLine.getInvoice().getPartner(), invoiceLine.getProduct(), invoiceLine.getInvoice().getCompany(), invoiceLine.getExTaxTotal());
+			if(analyticMoveLineList != null){
+				for (AnalyticMoveLine analyticDistributionLine : analyticMoveLineList) {
 					analyticDistributionLine.setInvoiceLine(invoiceLine);
-					analyticDistributionLine.setAmount(analyticDistributionLineService.computeAmount(analyticDistributionLine));
+					analyticDistributionLine.setAmount(analyticMoveLineService.computeAmount(analyticDistributionLine));
 					analyticDistributionLine.setDate(generalService.getTodayDate());
 				}
-				invoiceLine.setAnalyticDistributionLineList(analyticDistributionLineList);
+				invoiceLine.setAnalyticMoveLineList(analyticMoveLineList);
 			}
 		}
-		else if(analyticDistributionLineList != null && generalService.getGeneral().getAnalyticDistributionTypeSelect() != GeneralRepository.DISTRIBUTION_TYPE_FREE){
-			for (AnalyticDistributionLine analyticDistributionLine : analyticDistributionLineList) {
+		else if(analyticMoveLineList != null && generalService.getGeneral().getAnalyticDistributionTypeSelect() != GeneralRepository.DISTRIBUTION_TYPE_FREE){
+			for (AnalyticMoveLine analyticDistributionLine : analyticMoveLineList) {
 				analyticDistributionLine.setInvoiceLine(invoiceLine);
-				analyticDistributionLine.setAmount(analyticDistributionLineService.computeAmount(analyticDistributionLine));
+				analyticDistributionLine.setAmount(analyticMoveLineService.computeAmount(analyticDistributionLine));
 				analyticDistributionLine.setDate(generalService.getTodayDate());
 			}
 		}

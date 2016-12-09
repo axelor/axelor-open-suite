@@ -8,7 +8,7 @@
   <entity name="AnalyticDistributionTemplate" lang="java">
 	
 	<string name="name" title="Name" required="true"/>
-	<one-to-many name="analyticDistributionLineList" ref="com.axelor.apps.account.db.AnalyticDistributionLine" title="Analytic distribution lines" mappedBy="analyticDistributionTemplate"/>
+	<one-to-many name="analyticMoveLineList" ref="com.axelor.apps.account.db.AnalyticMoveLine" title="Analytic move lines" mappedBy="analyticDistributionTemplate"/>
   </entity>
 
 </domain-models>

@@ -17,12 +17,12 @@
  */
 package com.axelor.apps.account.db.repo;
 
-import com.axelor.apps.account.db.AnalyticDistributionLine;
+import com.axelor.apps.account.db.AnalyticMoveLine;
 
-public class AnalyticDistributionLineMngtRepository extends AnalyticDistributionLineRepository{
+public class AnalyticMoveLineMngtRepository extends AnalyticMoveLineRepository{
 	@Override
-	public AnalyticDistributionLine copy(AnalyticDistributionLine entity, boolean deep) {
-		AnalyticDistributionLine copy = super.copy(entity, deep);
+	public AnalyticMoveLine copy(AnalyticMoveLine entity, boolean deep) {
+		AnalyticMoveLine copy = super.copy(entity, deep);
 		copy.setMoveLine(null);
 		copy.setInvoiceLine(null);
 		return copy;
