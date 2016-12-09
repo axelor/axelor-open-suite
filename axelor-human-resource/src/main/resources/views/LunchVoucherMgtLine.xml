@@ -12,9 +12,9 @@
         <field name="givenToEmployee" title="Given?" width="200%"/>
     </grid>
     
-    <grid name="lunch-voucher-mgt-line-employee-grid" title="Lunch Voucher Lines" model="com.axelor.apps.hr.db.LunchVoucherMgtLine" editable="true" orderBy="-lunchVoucherMgt.payStartDate">
-        <field name="lunchVoucherMgt.payStartDate"/>
-        <field name="lunchVoucherMgt.payEndDate"/>
+    <grid name="lunch-voucher-mgt-line-employee-grid" title="Lunch Voucher Lines" model="com.axelor.apps.hr.db.LunchVoucherMgtLine" editable="true" orderBy="-lunchVoucherMgt.payPeriod.fromDate">
+        <field name="lunchVoucherMgt.payPeriod.fromDate"/>
+        <field name="lunchVoucherMgt.payPeriod.toDate"/>
         <field name="canteenEntries" aggregate="sum" title="Canteen"/>
         <field name="daysOverseas" aggregate="sum" title="Overseas"/>
         <field name="invitation" aggregate="sum" title="Invitation"/>
@@ -22,6 +22,17 @@
         <field name="givenToEmployee" title="Given?"/>
         <field name="lunchVoucherMgt.statusSelect"/>
         <button name="print" title="Print" icon="fa-print"/>
+    </grid>
+    
+    <grid name="lunch-voucher-mgt-line-payroll-grid" title="Lunch Voucher Lines" model="com.axelor.apps.hr.db.LunchVoucherMgtLine" editable="true" orderBy="-lunchVoucherMgt.payPeriod.fromDate">
+        <field name="lunchVoucherMgt.payPeriod.fromDate"/>
+        <field name="lunchVoucherMgt.payPeriod.toDate"/>
+        <field name="canteenEntries" aggregate="sum" title="Canteen"/>
+        <field name="daysOverseas" aggregate="sum" title="Overseas"/>
+        <field name="invitation" aggregate="sum" title="Invitation"/>
+        <field name="lunchVoucherNumber" aggregate="sum" title="Nbr lunch vouchers"/>
+        <field name="givenToEmployee" title="Given?"/>
+        <field name="lunchVoucherMgt" hidden="true" />
     </grid>
 
 	<form name="lunch-voucher-mgt-line-form" title="Lunch Voucher Line" model="com.axelor.apps.hr.db.LunchVoucherMgtLine" width="large">
