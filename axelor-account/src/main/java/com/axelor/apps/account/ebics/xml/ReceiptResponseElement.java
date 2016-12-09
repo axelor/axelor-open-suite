@@ -19,6 +19,7 @@
 
 package com.axelor.apps.account.ebics.xml;
 
+import com.axelor.apps.account.db.EbicsUser;
 import com.axelor.apps.account.ebics.exception.ReturnCode;
 import com.axelor.apps.account.ebics.interfaces.ContentFactory;
 import com.axelor.apps.account.ebics.schema.h003.EbicsResponseDocument;
@@ -39,8 +40,8 @@ public class ReceiptResponseElement extends DefaultResponseElement {
    * @param factory the content factory
    * @param name the element name
    */
-  public ReceiptResponseElement(ContentFactory factory, String name) {
-    super(factory, name);
+  public ReceiptResponseElement(ContentFactory factory, String name, EbicsUser ebicsUser) {
+    super(factory, name, ebicsUser);
   }
 
   @Override
@@ -54,11 +55,14 @@ public class ReceiptResponseElement extends DefaultResponseElement {
     code = response.getHeader().getMutable().getReturnCode();
     text = response.getHeader().getMutable().getReportText();
     returnCode = ReturnCode.toReturnCode(code, text);
-    report();
+    report(true);
   }
 
   @Override
-  public void report() throws AxelorException {
+  public void report(boolean fromBuild) throws AxelorException {
+   if (!fromBuild || !returnCode.isOk()) {
+	   log();   
+   }
    if (!returnCode.equals(ReturnCode.EBICS_DOWNLOAD_POSTPROCESS_DONE)) {
      returnCode.throwException();
    }

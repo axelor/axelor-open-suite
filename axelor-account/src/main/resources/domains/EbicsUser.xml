@@ -39,6 +39,8 @@
 	 <string name="x002PublicKeyModulus" title="x002PublicKeyModulus" large="true" multiline="true" />
 	 <string name="x002PublicKeyExponent" title="x002PublicKeyExponent" large="true" multiline="true" />
 	 
+	 <one-to-many name="ebicsRequestLogList" ref="com.axelor.apps.account.db.EbicsRequestLog" title="Request log" mappedBy="ebicsUser"/>
+	 
 	  <extra-code><![CDATA[
 	  
 	  	// EBICS TYPE SELECT

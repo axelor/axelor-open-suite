@@ -19,6 +19,7 @@
 
 package com.axelor.apps.account.ebics.xml;
 
+import com.axelor.apps.account.db.EbicsUser;
 import com.axelor.apps.account.ebics.client.OrderType;
 import com.axelor.apps.account.ebics.exception.ReturnCode;
 import com.axelor.apps.account.ebics.interfaces.ContentFactory;
@@ -41,9 +42,10 @@ public class DInitializationResponseElement extends InitializationResponseElemen
    */
   public DInitializationResponseElement(ContentFactory factory,
                                         OrderType orderType,
-                                        String name)
+                                        String name,
+                                        EbicsUser ebicsUser)
   {
-    super(factory, orderType, name);
+    super(factory, orderType, name, ebicsUser);
   }
 
   @Override

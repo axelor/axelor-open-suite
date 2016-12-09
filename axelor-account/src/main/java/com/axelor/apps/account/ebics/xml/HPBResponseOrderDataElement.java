@@ -19,6 +19,7 @@
 
 package com.axelor.apps.account.ebics.xml;
 
+import com.axelor.apps.account.db.EbicsUser;
 import com.axelor.apps.account.ebics.interfaces.ContentFactory;
 import com.axelor.apps.account.ebics.schema.h003.HPBResponseOrderDataDocument;
 import com.axelor.apps.account.ebics.schema.h003.HPBResponseOrderDataType;
@@ -39,8 +40,8 @@ public class HPBResponseOrderDataElement extends DefaultResponseElement {
    * content factory.
    * @param factory the content factory.
    */
-  public HPBResponseOrderDataElement(ContentFactory factory) {
-    super(factory, "HPBData");
+  public HPBResponseOrderDataElement(ContentFactory factory, EbicsUser ebicsUser) {
+    super(factory, "HPBData", ebicsUser);
   }
 
   /**

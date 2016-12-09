@@ -61,7 +61,7 @@ public class ReturnCode  {
    * @return True if the return code is OK one.
    */
   public boolean isOk() {
-    return equals(EBICS_OK) || equals(EBICS_DOWNLOAD_POSTPROCESS_DONE);
+    return equals(EBICS_OK);
   }
 
   /**

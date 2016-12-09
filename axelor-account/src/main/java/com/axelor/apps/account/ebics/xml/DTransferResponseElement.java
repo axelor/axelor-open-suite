@@ -19,6 +19,7 @@
 
 package com.axelor.apps.account.ebics.xml;
 
+import com.axelor.apps.account.db.EbicsUser;
 import com.axelor.apps.account.ebics.client.OrderType;
 import com.axelor.apps.account.ebics.interfaces.ContentFactory;
 import com.axelor.exception.AxelorException;
@@ -40,9 +41,10 @@ public class DTransferResponseElement extends TransferResponseElement {
    */
   public DTransferResponseElement(ContentFactory factory,
                                   OrderType orderType,
-                                  String name)
+                                  String name,
+                                  EbicsUser ebicsUser)
   {
-    super(factory, name);
+    super(factory, name, ebicsUser);
   }
 
   @Override

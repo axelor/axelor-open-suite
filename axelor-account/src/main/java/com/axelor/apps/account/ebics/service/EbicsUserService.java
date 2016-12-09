@@ -9,16 +9,23 @@ import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
 
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import org.joda.time.LocalDateTime;
 
+import com.axelor.apps.account.db.EbicsRequestLog;
 import com.axelor.apps.account.db.EbicsUser;
+import com.axelor.apps.account.db.repo.EbicsRequestLogRepository;
 import com.axelor.apps.account.ebics.utils.Utils;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 
 public class EbicsUserService {
 	
 	@Inject
 	EbicsService ebicsService;
+	
+	@Inject
+	EbicsRequestLogRepository requestLogRepo;
 	
 	
 	public byte[] sign(EbicsUser ebicsUser, byte[] digest) throws IOException, GeneralSecurityException {
@@ -78,6 +85,18 @@ public class EbicsUserService {
 	
 	private byte[] decryptData(byte[] input, byte[] key) throws AxelorException { 
 		 return Utils.decrypt(input, new SecretKeySpec(key, "EAS"));
+	}
+	
+	@Transactional
+	public void logRequest(EbicsUser ebicsUser, String requestType, String responseCode) {
+		
+		EbicsRequestLog requestLog = new EbicsRequestLog();
+		requestLog.setEbicsUser(ebicsUser);
+		requestLog.setRequestTime(new LocalDateTime());
+		requestLog.setRequestType(requestType);
+		requestLog.setResponseCode(responseCode);
+		
+		requestLogRepo.save(requestLog);
 	}
 	
 	

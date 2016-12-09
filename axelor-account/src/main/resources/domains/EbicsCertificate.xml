@@ -13,7 +13,9 @@
 	<date name="validTo" title="Valid to" required="true" />
 	<string name="issuer" title="Issuer" required="true" />
 	<string name="subject" title="Subject" required="true" />
-	<binary name="certificate" title="Certificate" required="true" />
+	<binary name="certificate" title="Certificate" />
+	
+	<unique-constraint columns="ebicsBank,typeSelect" />
 	
   </entity>
   

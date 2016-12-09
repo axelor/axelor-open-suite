@@ -19,6 +19,7 @@
 
 package com.axelor.apps.account.ebics.xml;
 
+import com.axelor.apps.account.db.EbicsUser;
 import com.axelor.apps.account.ebics.interfaces.ContentFactory;
 import com.axelor.apps.account.ebics.schema.h003.EbicsResponseDocument;
 import com.axelor.apps.account.ebics.schema.h003.EbicsResponseDocument.EbicsResponse;
@@ -43,9 +44,10 @@ public class InitializationResponseElement extends DefaultResponseElement {
    */
   public InitializationResponseElement(ContentFactory factory,
                                        OrderType orderType,
-                                       String name)
+                                       String name,
+                                       EbicsUser ebicsUser)
   {
-    super(factory, name);
+    super(factory, name, ebicsUser);
     this.orderType = orderType;
   }
 
@@ -59,7 +61,7 @@ public class InitializationResponseElement extends DefaultResponseElement {
     code = response.getHeader().getMutable().getReturnCode();
     text = response.getHeader().getMutable().getReportText();
     returnCode = ReturnCode.toReturnCode(code, text);
-    report();
+    report(true);
     transactionId = response.getHeader().getStatic().getTransactionID();
   }
 

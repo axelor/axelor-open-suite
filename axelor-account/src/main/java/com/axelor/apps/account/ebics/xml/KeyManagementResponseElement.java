@@ -19,6 +19,7 @@
 
 package com.axelor.apps.account.ebics.xml;
 
+import com.axelor.apps.account.db.EbicsUser;
 import com.axelor.apps.account.ebics.exception.ReturnCode;
 import com.axelor.apps.account.ebics.interfaces.ContentFactory;
 import com.axelor.apps.account.ebics.schema.h003.EbicsKeyManagementResponseDocument;
@@ -42,8 +43,8 @@ public class KeyManagementResponseElement extends DefaultResponseElement {
    * @param factory the content factory enclosing the ebics response
    * @param name the element name
    */
-  public KeyManagementResponseElement(ContentFactory factory, String name) {
-    super(factory, name);
+  public KeyManagementResponseElement(ContentFactory factory, String name, EbicsUser ebicsUser) {
+    super(factory, name, ebicsUser);
   }
 
   /**
@@ -73,7 +74,7 @@ public class KeyManagementResponseElement extends DefaultResponseElement {
     code = response.getHeader().getMutable().getReturnCode();
     text = response.getHeader().getMutable().getReportText();
     returnCode = ReturnCode.toReturnCode(code, text);
-    report();
+    report(true);
   }
 
   // --------------------------------------------------------------------

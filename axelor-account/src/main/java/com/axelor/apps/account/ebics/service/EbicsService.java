@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.math.BigInteger;
 import java.security.KeyFactory;
 import java.security.NoSuchAlgorithmException;
+import java.security.cert.X509Certificate;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
 import java.security.spec.InvalidKeySpecException;
@@ -114,7 +115,8 @@ public class EbicsService {
 	 * @throws JDOMException 
 	 * @throws IOException 
 	 */
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
+//	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
+	@Transactional
 	public void sendINIRequest(EbicsUser ebicsUser, EbicsProduct product) throws AxelorException {
 
 	    if (ebicsUser.getStatusSelect() != EbicsUserRepository.STATUS_WAITING_SENDING_SIGNATURE_CERTIFICATE) {
@@ -146,7 +148,8 @@ public class EbicsService {
 	 * @param product the application product.
 	 * @throws AxelorException 
 	 */
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
+//	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
+	@Transactional
 	public void sendHIARequest(EbicsUser ebicsUser, EbicsProduct product) throws AxelorException {
 
 	    if (ebicsUser.getStatusSelect() != EbicsUserRepository.STATUS_WAITING_AUTH_AND_ENCRYPT_CERTIFICATES) {
@@ -162,13 +165,14 @@ public class EbicsService {
 
 	    try {
 			keyManager.sendHIA(null);
+			ebicsUser.setStatusSelect(EbicsUserRepository.STATUS_ACTIVE_CONNECTION);
+		    userRepo.save(ebicsUser);
 		} catch (IOException | AxelorException | JDOMException e) {
 			TraceBackService.trace(e);
 			throw new AxelorException(e, IException.TECHNICAL);
 		}
 
-	    ebicsUser.setStatusSelect(EbicsUserRepository.STATUS_ACTIVE_CONNECTION);
-	    userRepo.save(ebicsUser);
+	    
 	}
 
 	/**
@@ -177,8 +181,8 @@ public class EbicsService {
 	 * @param product the application product.
 	 * @throws AxelorException 
 	 */
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void sendHPBRequest(EbicsUser user, EbicsProduct product) throws AxelorException {
+//	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
+	public X509Certificate[] sendHPBRequest(EbicsUser user, EbicsProduct product) throws AxelorException {
 
 		EbicsSession session = new EbicsSession(user);
 	    if (product == null) {
@@ -188,8 +192,7 @@ public class EbicsService {
 	    
 	    KeyManagement keyManager = new KeyManagement(session);
 	    try {
-	      keyManager.sendHPB();
-	      bankRepo.save(user.getEbicsPartner().getEbicsBank());
+	      return keyManager.sendHPB();
 	    } catch (Exception e) {
 	    	TraceBackService.trace(e);
 	    	throw new AxelorException(e, IException.TECHNICAL);
@@ -202,7 +205,8 @@ public class EbicsService {
 	 * @param product the session product
 	 * @throws AxelorException 
 	 */
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
+//	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
+	@Transactional
 	public void sendSPRRequest(EbicsUser ebicsUser, EbicsProduct product) throws AxelorException {
 
 	    EbicsSession session = new EbicsSession(ebicsUser);
@@ -214,13 +218,13 @@ public class EbicsService {
 	    KeyManagement keyManager = new KeyManagement(session);
 	    try {
 	      keyManager.lockAccess();
+	      ebicsUser.setStatusSelect(EbicsUserRepository.STATUS_WAITING_SENDING_SIGNATURE_CERTIFICATE);
+		  userRepo.save(ebicsUser);
 	    } catch (Exception e) {
 	    	TraceBackService.trace(e);
 	    	throw new AxelorException(e, IException.TECHNICAL);
 	    }
 	    
-	    ebicsUser.setStatusSelect(EbicsUserRepository.STATUS_WAITING_SENDING_SIGNATURE_CERTIFICATE);
-	    userRepo.save(ebicsUser);
 	}
 
 	/**
@@ -338,7 +342,8 @@ public class EbicsService {
 		throw new  AxelorException(I18n.get("Ebics bank configuration error"), 1);
 	}
 	
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
+//	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
+	@Transactional
 	public void updateTestFile(EbicsUser user, File file) throws IOException {
 		
 		EbicsBank bank = user.getEbicsPartner().getEbicsBank();

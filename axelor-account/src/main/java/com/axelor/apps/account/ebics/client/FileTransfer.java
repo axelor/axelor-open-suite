@@ -108,9 +108,10 @@ public class FileTransfer {
     Utils.checkHttpCode(httpCode);
     response = new InitializationResponseElement(sender.getResponseBody(),
 	                                         orderType,
-	                                         DefaultEbicsRootElement.generateName(orderType));
+	                                         DefaultEbicsRootElement.generateName(orderType),
+	                                         session.getUser());
     response.build();
-    response.report();
+    response.report(true);
     state = new EbicsTransferState();
     state.setNumSegments(initializer.getSegmentNumber());
     state.setTransactionId(response.getTransactionId());
@@ -163,9 +164,10 @@ public class FileTransfer {
     httpCode = sender.send(new ByteArrayContentFactory(uploader.prettyPrint()));
     Utils.checkHttpCode(httpCode);
     response = new TransferResponseElement(sender.getResponseBody(),
-	                                   DefaultEbicsRootElement.generateName(orderType));
+	                                   DefaultEbicsRootElement.generateName(orderType),
+	                                   session.getUser());
     response.build();
-    response.report();
+    response.report(false);
   }
 
   /**
@@ -206,9 +208,10 @@ public class FileTransfer {
     Utils.checkHttpCode(httpCode);
     response = new DInitializationResponseElement(sender.getResponseBody(),
 	                                          orderType,
-	                                          DefaultEbicsRootElement.generateName(orderType));
+	                                          DefaultEbicsRootElement.generateName(orderType),
+	                                          session.getUser());
     response.build();
-    response.report();
+    response.report(true);
     state = new EbicsTransferState();
     state.setSegmentNumber(response.getSegmentsNumber());
     state.setTransactionId(response.getTransactionId());
@@ -236,9 +239,10 @@ public class FileTransfer {
     httpCode = sender.send(new ByteArrayContentFactory(receipt.prettyPrint()));
     Utils.checkHttpCode(httpCode);
     receiptResponse = new ReceiptResponseElement(sender.getResponseBody(),
-	                                         DefaultEbicsRootElement.generateName(orderType));
+	                                         DefaultEbicsRootElement.generateName(orderType),
+	                                         session.getUser());
     receiptResponse.build();
-    receiptResponse.report();
+    receiptResponse.report(false);
   }
 
   /**
@@ -275,9 +279,10 @@ public class FileTransfer {
     Utils.checkHttpCode(httpCode);
     response = new DTransferResponseElement(sender.getResponseBody(),
 	                                    orderType,
-	                                    DefaultEbicsRootElement.generateName(orderType));
+	                                    DefaultEbicsRootElement.generateName(orderType),
+	                                    session.getUser());
     response.build();
-    response.report();
+    response.report(true);
     joiner.append(response.getOrderData());
   }
 

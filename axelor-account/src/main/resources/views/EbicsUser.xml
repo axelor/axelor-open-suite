@@ -24,22 +24,27 @@
 			<field name="ebicsPartner.ebicsBank"/>
 			<field name="statusSelect" colSpan="12"/>
 		</panel>
-		<panel title="DN" colSpan="6" itemSpan="12" showIf="ebicsTypeSelect == 0" hidden="true">
-			<button name="generateDn" title="Generate DN" onClick="save,action-ebics-user-method-generate-dn" showIf="!dn"/>
-			<field name="dn" readonly="true" help="Defines a unique identifier for the certificate" />
-		</panel>
-		<panel title="Electronic signature certificate" colSpan="6" itemSpan="12" readonlyIf="ebicsTypeSelect == 0" showIf="ebicsTypeSelect == 1 || (ebicsTypeSelect == 0  &amp;&amp; statusSelect >= 1)">
-			<field name="a005Certificate" readonlyIf="ebicsTypeSelect == 0"/>
-			<field name="a005PrivateKey" readonlyIf="ebicsTypeSelect == 0"/>
-		</panel>
-		<panel title="Encryption certificate" colSpan="6" itemSpan="12" readonlyIf="ebicsTypeSelect == 0" showIf="ebicsTypeSelect == 1 || (ebicsTypeSelect == 0  &amp;&amp; statusSelect >= 1)">
-			<field name="e002Certificate"/>
-			<field name="e002PrivateKey"/>
-		</panel>
-		<panel title="Authentication certificate" colSpan="6" itemSpan="12" readonlyIf="ebicsTypeSelect == 0" showIf="ebicsTypeSelect == 1 || (ebicsTypeSelect == 0  &amp;&amp; statusSelect >= 1)">
-			<field name="x002Certificate"/> 
-			<field name="x002PrivateKey"/>
-		</panel>
+		<panel-tabs>
+			<panel title="Certificates">
+				<panel title="DN" colSpan="6" itemSpan="12" showIf="ebicsTypeSelect == 0" hidden="true">
+					<button name="generateDn" title="Generate DN" onClick="save,action-ebics-user-method-generate-dn" showIf="!dn"/>
+					<field name="dn" readonly="true" help="Defines a unique identifier for the certificate" />
+				</panel>
+				<panel title="Electronic signature certificate" colSpan="6" itemSpan="12" readonlyIf="ebicsTypeSelect == 0" showIf="ebicsTypeSelect == 1 || (ebicsTypeSelect == 0  &amp;&amp; statusSelect >= 1)">
+					<field name="a005Certificate" readonlyIf="ebicsTypeSelect == 0"/>
+					<field name="a005PrivateKey" readonlyIf="ebicsTypeSelect == 0"/>
+				</panel>
+				<panel title="Encryption certificate" colSpan="6" itemSpan="12" readonlyIf="ebicsTypeSelect == 0" showIf="ebicsTypeSelect == 1 || (ebicsTypeSelect == 0  &amp;&amp; statusSelect >= 1)">
+					<field name="e002Certificate"/>
+					<field name="e002PrivateKey"/>
+				</panel>
+				<panel title="Authentication certificate" colSpan="6" itemSpan="12" readonlyIf="ebicsTypeSelect == 0" showIf="ebicsTypeSelect == 1 || (ebicsTypeSelect == 0  &amp;&amp; statusSelect >= 1)">
+					<field name="x002Certificate"/> 
+					<field name="x002PrivateKey"/>
+				</panel>
+			</panel>
+			<panel-related field="ebicsRequestLogList" />
+		</panel-tabs>
 		
 		<panel sidebar="true">
 			<button name="generateCertificates" title="Generate certificates" onClick="save,action-ebics-user-method-generate-certificates" hidden="true" showIf="ebicsTypeSelect == 0 &amp;&amp; dn &amp;&amp; (statusSelect == 0 || statusSelect == 4)"/>

@@ -24,10 +24,13 @@ import java.io.IOException;
 import org.apache.xmlbeans.XmlException;
 import org.apache.xmlbeans.XmlObject;
 
+import com.axelor.apps.account.db.EbicsUser;
 import com.axelor.apps.account.ebics.exception.ReturnCode;
 import com.axelor.apps.account.ebics.interfaces.ContentFactory;
+import com.axelor.apps.account.ebics.service.EbicsUserService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
+import com.axelor.inject.Beans;
 
 
 /**
@@ -44,9 +47,10 @@ public abstract class DefaultResponseElement extends DefaultEbicsRootElement {
    * @param factory the content factory containing the response.
    * @param name the element name
    */
-  public DefaultResponseElement(ContentFactory factory, String name) {
+  public DefaultResponseElement(ContentFactory factory, String name, EbicsUser ebicsUser) {
     this.factory = factory;
     this.name = name;
+    this.ebicsUser = ebicsUser;
   }
 
   /**
@@ -68,11 +72,25 @@ public abstract class DefaultResponseElement extends DefaultEbicsRootElement {
    * Reports the return code to the user.
    * @throws EbicsException request fails.
    */
-  public void report() throws AxelorException {
+  public void report(boolean fromBuild) throws AxelorException {
+	  
+	if (!fromBuild ||  !returnCode.isOk()) {
+		log();
+	}
+	
     if (!returnCode.isOk()) {
       returnCode.throwException();
     }
+    
   }
+  
+  protected void log() {
+	  if (ebicsUser != null && name != null && returnCode != null) {
+		  Beans.get(EbicsUserService.class).logRequest(ebicsUser, name.substring(0,3), returnCode.getSymbolicName());
+		  ebicsUser = null; // Prevent further log on same request
+	  }
+  }
+  
 
   @Override
   public String getName() {
@@ -83,7 +101,8 @@ public abstract class DefaultResponseElement extends DefaultEbicsRootElement {
   // DATA MEMBERS
   // --------------------------------------------------------------------
 
-  private String 			name;
-  protected ContentFactory		factory;
-  protected ReturnCode			returnCode;
+  private String name;
+  private EbicsUser ebicsUser;
+  protected ContentFactory	factory;
+  protected ReturnCode	returnCode;
 }

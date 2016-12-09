@@ -19,6 +19,7 @@
 
 package com.axelor.apps.account.ebics.xml;
 
+import com.axelor.apps.account.db.EbicsUser;
 import com.axelor.apps.account.ebics.exception.ReturnCode;
 import com.axelor.apps.account.ebics.interfaces.ContentFactory;
 import com.axelor.apps.account.ebics.schema.h003.EbicsResponseDocument;
@@ -38,8 +39,8 @@ public class SPRResponseElement extends DefaultResponseElement {
    * Constructs a new SPR response element.
    * @param factory the content factory
    */
-  public SPRResponseElement(ContentFactory factory) {
-    super(factory, "SPRResponse.xml");
+  public SPRResponseElement(ContentFactory factory, EbicsUser ebicsUser) {
+    super(factory, "SPRResponse.xml", ebicsUser);
   }
 
   @Override
@@ -52,7 +53,7 @@ public class SPRResponseElement extends DefaultResponseElement {
     code = response.getHeader().getMutable().getReturnCode();
     text = response.getHeader().getMutable().getReportText();
     returnCode = ReturnCode.toReturnCode(code, text);
-    report();
+    report(true);
   }
 
   // --------------------------------------------------------------------
