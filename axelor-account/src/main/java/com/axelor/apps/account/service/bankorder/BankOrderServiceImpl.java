@@ -234,6 +234,8 @@ public class BankOrderServiceImpl implements BankOrderService  {
 		
 		this.setSequenceOnBankOrderLines(bankOrder);
 		
+		this.setNbOfLines(bankOrder);
+		
 		File fileToSend = this.generateFile(bankOrder);
 		
 		ebicsService.sendFULRequest(bankOrder.getEbicsUser(), null, fileToSend, bankOrder.getBankOrderFileFormat().getOrderFileFormatSelect());
@@ -259,6 +261,14 @@ public class BankOrderServiceImpl implements BankOrderService  {
 		
 	}
 	
+	private void setNbOfLines(BankOrder bankOrder)  {
+		
+		if(bankOrder.getBankOrderLineList() == null)  {  return;  }
+		
+		bankOrder.setNbOfLines(bankOrder.getBankOrderLineList().size());
+		
+	}
+	
 
 	@Override
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
@@ -273,8 +283,7 @@ public class BankOrderServiceImpl implements BankOrderService  {
 		
 		bankOrder.setFileGenerationDateTime(new LocalDateTime());
 		
-		PaymentMode paymentMode = bankOrder.getPaymentMode();
-		BankOrderFileFormat bankOrderFileFormat = paymentMode.getBankOrderFileFormat();
+		BankOrderFileFormat bankOrderFileFormat = bankOrder.getBankOrderFileFormat();
 		
 		File file = null;
 		

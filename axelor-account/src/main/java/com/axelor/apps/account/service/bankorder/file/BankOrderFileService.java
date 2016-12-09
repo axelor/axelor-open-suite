@@ -14,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.account.db.BankOrder;
+import com.axelor.apps.account.db.BankOrderFileFormat;
 import com.axelor.apps.account.db.BankOrderLine;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.exception.IExceptionMessage;
@@ -36,6 +37,7 @@ public class BankOrderFileService {
 	protected final String FILE_EXTENSION_TXT = "txt";
 	
 	protected PaymentMode paymentMode;
+	protected BankOrderFileFormat bankOrderFileFormat;
 	protected LocalDate bankOrderDate;
 	protected BankDetails senderBankDetails;
 	protected Company senderCompany;
@@ -57,6 +59,7 @@ public class BankOrderFileService {
 	public BankOrderFileService(BankOrder bankOrder)  {
 		
 		this.paymentMode = bankOrder.getPaymentMode();
+		this.bankOrderFileFormat = bankOrder.getBankOrderFileFormat();
 		this.bankOrderDate = bankOrder.getBankOrderDate();
 		this.senderBankDetails = bankOrder.getSenderBankDetails();
 		this.senderCompany = bankOrder.getSenderCompany();
@@ -121,7 +124,7 @@ public class BankOrderFileService {
 	public String computeFileName()  {
 		
 		return String.format("%s%s.%s", 
-				paymentMode.getBankOrderFileFormat().getOrderFileFormatSelect(), 
+				bankOrderFileFormat.getOrderFileFormatSelect(), 
 				generationDateTime.toString("yyyy-MM-dd'T'HH:mm:ss"), 
 				fileExtension);
 	}
