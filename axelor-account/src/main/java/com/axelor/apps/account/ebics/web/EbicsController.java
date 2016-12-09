@@ -7,7 +7,6 @@ import java.security.GeneralSecurityException;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 
-
 import org.apache.commons.codec.digest.DigestUtils;
 import org.bouncycastle.openssl.PEMReader;
 import org.bouncycastle.openssl.PEMWriter;
@@ -20,11 +19,14 @@ import com.axelor.apps.account.db.repo.EbicsUserRepository;
 import com.axelor.apps.account.ebics.certificate.CertificateManager;
 import com.axelor.apps.account.ebics.service.EbicsCertificateService;
 import com.axelor.apps.account.ebics.service.EbicsService;
+import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.auth.db.User;
 import com.axelor.auth.db.repo.UserRepository;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
+import com.axelor.meta.MetaFiles;
+import com.axelor.meta.db.MetaFile;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -167,7 +169,18 @@ public class EbicsController {
 		EbicsUser ebicsUser = ebicsUserRepo.find( request.getContext().asType(EbicsUser.class).getId());
 		
 		try {
-			ebicsService.sendFULRequest(ebicsUser, null, null, BankOrderFileFormatRepository.FILE_FORMAT_pain_001_001_02_SCT);
+			
+			EbicsBank ebicsBank = ebicsUser.getEbicsPartner().getEbicsBank();
+			
+			MetaFile testMetaFile = ebicsBank.getTestFile();
+			
+			if(ebicsBank.getTestMode() && testMetaFile != null)  { 
+				ebicsService.sendFULRequest(ebicsUser, null, MetaFiles.getPath(testMetaFile).toFile(), BankOrderFileFormatRepository.FILE_FORMAT_pain_001_001_02_SCT);
+			}
+			else  {
+				response.setFlash(I18n.get(IExceptionMessage.EBICS_TEST_MODE_NOT_ENABLED));
+			}
+			
 		}catch (AxelorException e) {
 			response.setFlash(stripClass(e.getLocalizedMessage()));
 		}

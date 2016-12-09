@@ -625,4 +625,8 @@ public interface IExceptionMessage {
 	static final String EBICS_WRONG_PASSWORD = /*$$(*/ "Incorrect password, please try again" /*)*/;
 	static final String EBICS_MISSING_PASSWORD = /*$$(*/ "Please insert a password" /*)*/;
 	static final String EBICS_MISSING_NAME = /*$$(*/ "Please select a user name" /*)*/;
+	static final String EBICS_TEST_MODE_NOT_ENABLED = /*$$(*/ "Test mode is not enabled or test file is missing" /*)*/;
+
+	
+	
 }
