@@ -253,6 +253,7 @@ public class BankOrderServiceImpl implements BankOrderService  {
 		
 		for(BankOrderLine bankOrderLine : bankOrder.getBankOrderLineList())  {
 			
+			bankOrderLine.setCounter(counter);
 			bankOrderLine.setSequence(bankOrderSeq + "-" + Integer.toString(counter++));
 		}
 		

@@ -8,6 +8,7 @@
   <entity name="BankOrderLine" lang="java">
   
 	<string name="sequence" title="Sequence" namecolumn="true" readonly="true"/>  
+	<integer name="counter" title="Counter"/>
   	<many-to-one name="bankOrder" ref="BankOrder" title="Bank Order"/>
   	<many-to-one name="receiverCompany" ref="com.axelor.apps.base.db.Company" title="Company"/>
 	<many-to-one name="partner" ref="com.axelor.apps.base.db.Partner" title="Partner" required="true"/>
@@ -41,6 +42,8 @@
   	<string name="specialInstructionsLine1" max="35"/>
   	<string name="specialInstructionsLine2" max="35"/>
   	<string name="specialInstructionsLine3" max="35"/>
+  	
+  	
   	
   	<extra-code>
   		<![CDATA[

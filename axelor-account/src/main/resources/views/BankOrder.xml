@@ -50,7 +50,7 @@
     		<field name="bankOrderFileFormat" domain="self.orderTypeSelect = :orderTypeSelect" colSpan="6" onChange="action-bank-order-record-bank-order-file-format-change"/>
     		<field name="partnerTypeSelect" showIf="orderTypeSelect != 1" css="label-bold bold" colSpan="6"/>
 	        <field name="fileToSend" showIf="statusSelect == 3"/>
-	        <field name="signatoryUser"/>
+	        <field name="signatoryUser" requiredIf="statusSelect == 2"/>
 	        <field name="ebicsUser" domain="self.associatedUser = :signatoryUser" readonly="true" showIf="statusSelect == 3"/>
     		<field name="isMultiDate" hidden="true"/>
     		<field name="isMultiCurrency" hidden="true"/>
@@ -73,9 +73,9 @@
 		</panel>
 		<panel name="bankOrderLinesPanel" title="Bank Order Lines" readonlyIf="statusSelect &gt;= 3">
 			<field name="bankOrderLineList" colSpan="12" showTitle="false">
-				<editor x-layout="table" x-viewer="true" >
+				<editor x-layout="table" x-viewer="true" onNew="action-bank-order-line-record-compute-counter">
 					<field name="sequence" css="label-bold bold" readonly="true" hideIf="sequence == null" colSpan="6"/>
-					<spacer colSpan="6"/>
+					<field name="counter" hidden="true"/>
 					<panel colSpan="6" itemSpan="12">
 						<field name="receiverCompany" hideIf="bankOrder.orderTypeSelect != 1" css="label-bold bold" onChange="action-bank-order-line-record-receiver-company-change" form-view="company-form" grid-view="company-grid" />
 						<field name="partner" hideIf="bankOrder.orderTypeSelect == 1" form-view="partner-form" grid-view="partner-grid" css="label-bold bold" onSelect="action-bank-order-line-attrs-partner-domain" onChange="action-bank-order-line-record-partner-onchange"/>
@@ -308,6 +308,10 @@
   		  <field if="partner?.bankDetailsList?.isEmpty()" name="receiverBankDetails" expr=""/>
     </action-record>
     
+    <action-record name="action-bank-order-line-record-compute-counter" model="com.axelor.apps.account.db.BankOrderLine">
+  		<field name="counter" expr="eval: __parent__?.bankOrderLineList?.max { it.counter }?.counter + 1"/>
+	</action-record>
+	
     
     
 </object-views>
