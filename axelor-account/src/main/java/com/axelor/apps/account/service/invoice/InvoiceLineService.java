@@ -26,6 +26,7 @@ import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.TaxLine;
+import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.AnalyticMoveLineService;
 import com.axelor.apps.base.db.Currency;
@@ -69,38 +70,43 @@ public class InvoiceLineService {
 		
 	}
 	
-	public InvoiceLine createAnalyticDistributionWithTemplate(InvoiceLine invoiceLine) throws AxelorException{
-		List<AnalyticMoveLine> analyticMoveLineList = null;
-		analyticMoveLineList = analyticMoveLineService.generateLinesWithTemplate(invoiceLine.getAnalyticDistributionTemplate(), invoiceLine.getExTaxTotal());
-		if(analyticMoveLineList != null){
-			for (AnalyticMoveLine analyticDistributionLine : analyticMoveLineList) {
-				analyticDistributionLine.setInvoiceLine(invoiceLine);
+	
+	public InvoiceLine computeAnalyticDistribution(InvoiceLine invoiceLine) throws AxelorException{
+		
+		if(generalService.getGeneral().getAnalyticDistributionTypeSelect() == GeneralRepository.DISTRIBUTION_TYPE_FREE)  {  return invoiceLine;  }
+		
+		Invoice invoice = invoiceLine.getInvoice();
+		List<AnalyticMoveLine> analyticMoveLineList = invoiceLine.getAnalyticMoveLineList();
+		if((analyticMoveLineList == null || analyticMoveLineList.isEmpty()))  {
+			analyticMoveLineList = analyticMoveLineService.generateLines(invoice.getPartner(), invoiceLine.getProduct(), invoice.getCompany(), invoiceLine.getExTaxTotal());
+			invoiceLine.setAnalyticMoveLineList(analyticMoveLineList);
+		}
+		if(analyticMoveLineList != null)  {
+			for (AnalyticMoveLine analyticMoveLine : analyticMoveLineList) {
+				this.updateAnalyticMoveLine(analyticMoveLine, invoiceLine);
 			}
 		}
-		invoiceLine.setAnalyticMoveLineList(analyticMoveLineList);
 		return invoiceLine;
 	}
 	
-	public InvoiceLine computeAnalyticDistribution(InvoiceLine invoiceLine) throws AxelorException{
-		List<AnalyticMoveLine> analyticMoveLineList = invoiceLine.getAnalyticMoveLineList();
-		if((analyticMoveLineList == null || analyticMoveLineList.isEmpty()) && generalService.getGeneral().getAnalyticDistributionTypeSelect() != GeneralRepository.DISTRIBUTION_TYPE_FREE){
-			analyticMoveLineList = analyticMoveLineService.generateLines(invoiceLine.getInvoice().getPartner(), invoiceLine.getProduct(), invoiceLine.getInvoice().getCompany(), invoiceLine.getExTaxTotal());
-			if(analyticMoveLineList != null){
-				for (AnalyticMoveLine analyticDistributionLine : analyticMoveLineList) {
-					analyticDistributionLine.setInvoiceLine(invoiceLine);
-					analyticDistributionLine.setAmount(analyticMoveLineService.computeAmount(analyticDistributionLine));
-					analyticDistributionLine.setDate(generalService.getTodayDate());
-				}
-				invoiceLine.setAnalyticMoveLineList(analyticMoveLineList);
+	public void updateAnalyticMoveLine(AnalyticMoveLine analyticMoveLine, InvoiceLine invoiceLine)  {
+		
+		analyticMoveLine.setInvoiceLine(invoiceLine);
+		analyticMoveLine.setAmount(analyticMoveLineService.computeAmount(analyticMoveLine));
+		analyticMoveLine.setDate(generalService.getTodayDate());
+		analyticMoveLine.setStatusSelect(AnalyticMoveLineRepository.STATUS_FORECAST_INVOICE);
+		
+	}
+	
+	public InvoiceLine createAnalyticDistributionWithTemplate(InvoiceLine invoiceLine) throws AxelorException{
+		List<AnalyticMoveLine> analyticMoveLineList = null;
+		analyticMoveLineList = analyticMoveLineService.generateLinesWithTemplate(invoiceLine.getAnalyticDistributionTemplate(), invoiceLine.getExTaxTotal());
+		if(analyticMoveLineList != null)  {
+			for (AnalyticMoveLine analyticMoveLine : analyticMoveLineList)  {
+				analyticMoveLine.setInvoiceLine(invoiceLine);
 			}
 		}
-		else if(analyticMoveLineList != null && generalService.getGeneral().getAnalyticDistributionTypeSelect() != GeneralRepository.DISTRIBUTION_TYPE_FREE){
-			for (AnalyticMoveLine analyticDistributionLine : analyticMoveLineList) {
-				analyticDistributionLine.setInvoiceLine(invoiceLine);
-				analyticDistributionLine.setAmount(analyticMoveLineService.computeAmount(analyticDistributionLine));
-				analyticDistributionLine.setDate(generalService.getTodayDate());
-			}
-		}
+		invoiceLine.setAnalyticMoveLineList(analyticMoveLineList);
 		return invoiceLine;
 	}
 	

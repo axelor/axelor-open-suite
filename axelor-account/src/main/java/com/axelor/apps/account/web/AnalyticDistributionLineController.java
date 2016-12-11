@@ -36,7 +36,7 @@ public class AnalyticDistributionLineController {
 	
 	public void validateLines(ActionRequest request, ActionResponse response){
 		AnalyticDistributionTemplate analyticDistributionTemplate = request.getContext().asType(AnalyticDistributionTemplate.class);
-		if(!analyticMoveLineService.validateLines(analyticDistributionTemplate.getAnalyticMoveLineList())){
+		if(!analyticMoveLineService.validateLines(analyticDistributionTemplate.getAnalyticDistributionLineList())){
 			response.setError("The distribution is wrong, some axes percentage values are higher than 100%");
 		}
 	}

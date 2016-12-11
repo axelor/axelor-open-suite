@@ -76,6 +76,7 @@
 		<option value="12">VAT Statement</option>
 		<option value="13">Payment differences</option>
 		<option value="14">General ledger 2</option>
+		<option value="2000">Analytic balance</option>
 	</selection>
 	
 	<selection name='move.line.report.type.select.export'>
@@ -346,6 +347,12 @@
 		<option value="pain.001.001.02">pain.001.001.02</option>
 		<option value="pain.001.001.03">pain.001.001.03</option>
 		<option value="AFB320">AFB 320</option>
+	</selection>
+	
+	<selection name="account.analytic.move.line.status.select">
+		<option value="1">Forecast (order)</option>
+		<option value="2">Forecast (invoice)</option>
+		<option value="3">Real (accounting)</option>
 	</selection>
 	
 	

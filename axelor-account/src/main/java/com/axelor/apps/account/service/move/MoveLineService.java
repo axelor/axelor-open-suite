@@ -299,9 +299,11 @@ public class MoveLineService {
 							!isDebitCustomer, invoice.getInvoiceDate(), null, moveLineId++, invoice.getInvoiceId());
 					
 					if(invoiceLine.getAnalyticMoveLineList() != null)  {
-						for (AnalyticMoveLine analyticDistributionLineIt : invoiceLine.getAnalyticMoveLineList()) {
-							AnalyticMoveLine analyticDistributionLine = Beans.get(AnalyticMoveLineRepository.class).copy(analyticDistributionLineIt, false);
-							moveLine.addAnalyticMoveLineListItem(analyticDistributionLine);
+						for (AnalyticMoveLine invoiceAnalyticMoveLine : invoiceLine.getAnalyticMoveLineList()) {
+							AnalyticMoveLine analyticMoveLine = Beans.get(AnalyticMoveLineRepository.class).copy(invoiceAnalyticMoveLine, false);
+							analyticMoveLine.setStatusSelect(AnalyticMoveLineRepository.STATUS_REAL_ACCOUNTING);
+							analyticMoveLine.setInvoiceLine(null);
+							moveLine.addAnalyticMoveLineListItem(analyticMoveLine);
 						}
 					}
 					moveLine.setTaxLine(invoiceLine.getTaxLine());

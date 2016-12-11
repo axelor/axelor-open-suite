@@ -46,6 +46,7 @@
 		public static final int REPORT_VAT_STATEMENT = 12;
 		public static final int REPORT_PAYMENT_DIFFERENCES = 13;
 		public static final int REPORT_GENERAL_LEDGER2 = 14;
+		public static final int REPORT_ANALYTIC_BALANCE = 2000;
 		
 		// EXPORT TYPE SELECT
 		public static final int EXPORT_PAYROLL_JOURNAL_ENTRY = 1000; 
