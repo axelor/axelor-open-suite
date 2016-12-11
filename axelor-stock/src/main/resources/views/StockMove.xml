@@ -67,7 +67,7 @@
 	      <field name="stockMoveSeq" colSpan="12"/>
 	      <field name="name" colSpan="12"/>
 	      <field name="company" widget="SuggestBox" form-view="company-form" colSpan="12" readonlyIf="statusSelect != 1" grid-view="company-grid"/>
-	      <field name="partner" domain="self.isContact = false" form-view="partner-form" grid-view="partner-grid" colSpan="12" readonlyIf="statusSelect != 1"/>
+	      <field name="partner" domain="self.isContact = false" form-view="partner-form" grid-view="partner-grid" colSpan="12" readonlyIf="statusSelect != 1" onChange="action-stock-move-record-partner-delivery-informations"/>
 	    </panel>
 	    <panel title="Stock move informations" name="stockMoveInformation">
 	      <field name="fromLocation" domain="self.company = :company" onChange="action-stock-move-set-from-address" colSpan="12" readonlyIf="statusSelect != 1" form-view="location-form" grid-view="location-grid"/>
@@ -78,6 +78,8 @@
 	      <field name="toAddress" showIf="typeSelect == 2" colSpan="12" onSelect="action-stock-move-attrs-domain-address" readonlyIf="statusSelect == 3 || statusSelect == 4" form-view="address-partner-address-form"/>
 	      <field name="isWithReturnSurplus" showIf="typeSelect &gt;= 2" colSpan="6"/>
 	      <field name="isWithBackorder" colSpan="6"/>
+	      <field name="shipmentMode" colSpan="12"/>
+	      <field name="freightCarrierMode" colSpan="12"/>
 	    </panel>
 		<panel colSpan="12">
 	    	<field name="trackingNumber" />
@@ -255,6 +257,11 @@
   		<field if="typeSelect == 2" name="toLocation" expr="eval:__repo__.of(StockConfig).all().filter('company.id = ?',company != null ? company.id : __user__.activeCompany?.id).fetchOne()?.customerVirtualLocation"/>
   		<field if="typeSelect == 3" name="toLocation" expr="eval:__repo__.of(Location).all().filter('company.id = ? AND isDefaultLocation = true AND typeSelect = 1',company != null ? company.id : __user__.activeCompany?.id).fetchOne()"/>
   		<field if="typeSelect == 3" name="fromLocation" expr="eval:__repo__.of(StockConfig).all().filter('company.id = ?',company != null ? company.id : __user__.activeCompany?.id).fetchOne()?.supplierVirtualLocation"/>
+	</action-record>
+	
+	<action-record name="action-stock-move-record-partner-delivery-informations" model="com.axelor.apps.stock.db.StockMove">
+    	<field name="shipmentMode" expr="eval: partner?.shipmentMode"/>	
+    	<field name="freightCarrierMode" expr="eval: partner?.freightCarrierMode"/>
 	</action-record>
 	
 	<action-method name="action-stock-move-method-plan">

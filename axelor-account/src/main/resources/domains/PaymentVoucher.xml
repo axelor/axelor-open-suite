@@ -17,8 +17,8 @@
 		<many-to-one name="moveLine" ref="com.axelor.apps.account.db.MoveLine" title="Overdue moveline" />
 		<decimal name="remainingAllocatedAmount" title="Amount Remaining to allocate" />
 		<decimal name="allocatedAmount" title="Allocated amount" />
-		<one-to-many name="paymentInvoiceList" ref="com.axelor.apps.account.db.PaymentInvoice" title="List of invoices/schedule lines with remaining amount to pay" mappedBy="paymentVoucher" />
-		<one-to-many name="paymentInvoiceToPayList" ref="com.axelor.apps.account.db.PaymentInvoiceToPay" title="List of invoices to pay" mappedBy="paymentVoucher" />
+		<one-to-many name="payVoucherDueElementList" ref="com.axelor.apps.account.db.PayVoucherDueElement" title="List of invoices/schedule lines with remaining amount to pay" mappedBy="paymentVoucher" />
+		<one-to-many name="payVoucherElementToPayList" ref="com.axelor.apps.account.db.PayVoucherElementToPay" title="List of invoices to pay" mappedBy="paymentVoucher" />
 		<integer name="statusSelect" title="Status" default="1" readonly="true" selection="iaccount.payment.voucher.status.select"/>
 		<many-to-one name="generatedMove" ref="com.axelor.apps.account.db.Move" title="Generated move" readonly="true"/>
 		<boolean name="hasAutoInput" title="Auto. input." default="false" help="true"/>
@@ -41,9 +41,9 @@
 			<![CDATA[
 			BigDecimal totalElementToPay = BigDecimal.ZERO;
 			if (paidAmount != null)  {
-		    	if(paymentInvoiceToPayList != null)  {
-					for (PaymentInvoiceToPay paymentInvoiceToPay : paymentInvoiceToPayList){
-						totalElementToPay = totalElementToPay.add(paymentInvoiceToPay.getAmountToPayCurrency());
+		    	if(payVoucherElementToPayList != null)  {
+					for (PayVoucherElementToPay payVoucherElementToPay : payVoucherElementToPayList){
+						totalElementToPay = totalElementToPay.add(payVoucherElementToPay.getAmountToPayCurrency());
 					}
 				}
 				return paidAmount.subtract(totalElementToPay);

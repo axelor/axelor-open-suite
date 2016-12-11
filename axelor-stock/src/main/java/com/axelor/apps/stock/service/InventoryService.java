@@ -19,11 +19,14 @@ package com.axelor.apps.stock.service;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
+import org.joda.time.LocalDateTime;
 
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.IAdministration;
@@ -239,6 +242,16 @@ public class InventoryService {
 		return null;
 
 	}
+	
+	@Transactional
+	public void realizeInventory(Inventory inventory) throws AxelorException {
+		this.generateStockMove(inventory);
+		this.updateProduct(inventory);
+		inventory.setStatusSelect(InventoryRepository.STATUS_REALIZED);
+		
+		inventoryRepo.save(inventory);
+	}
+	
 
 	public StockMove generateStockMove(Inventory inventory) throws AxelorException {
 
@@ -283,11 +296,35 @@ public class InventoryService {
 		return stockMove;
 	}
 
+	
+	public void updateProduct(Inventory inventory) throws AxelorException {
+		
+		for(InventoryLine inventoryLine : inventory.getInventoryLineList()){
+			Long inventoryProduct = inventoryLine.getProduct().getId();
+			Product product = Beans.get(ProductRepository.class).find(inventoryProduct);
+			
+			product.setStockQuantityLastInventory(inventoryLine.getRealQty());
+			
+			DateTime date = new DateTime(inventory.getDateT());
+			product.setDateLastInventory(date.toLocalDateTime());
+		}
+	}
+	
+	public void updateProductDate(Inventory inventory) throws AxelorException {
+		for(InventoryLine inventoryLine : inventory.getInventoryLineList()){
+			Long inventoryProduct = inventoryLine.getProduct().getId();
+			Product product = Beans.get(ProductRepository.class).find(inventoryProduct);
+			
+			
+			
+		}
+	}
+	
 
 	public StockMove createStockMoveHeader(Inventory inventory, Company company, Location toLocation, LocalDate inventoryDate, String name) throws AxelorException  {
 
 		StockMove stockMove = Beans.get(StockMoveService.class).createStockMove(null, null, company, null,
-				stockConfigService.getInventoryVirtualLocation(stockConfigService.getStockConfig(company)), toLocation, inventoryDate, inventoryDate, null);
+				stockConfigService.getInventoryVirtualLocation(stockConfigService.getStockConfig(company)), toLocation, inventoryDate, inventoryDate, null, null, null);
 
 		stockMove.setTypeSelect(StockMoveRepository.TYPE_INTERNAL);
 		stockMove.setName(name);

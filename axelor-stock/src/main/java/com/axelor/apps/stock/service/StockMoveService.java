@@ -26,7 +26,9 @@ import org.joda.time.LocalDate;
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.stock.db.FreightCarrierMode;
 import com.axelor.apps.stock.db.Location;
+import com.axelor.apps.stock.db.ShipmentMode;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.exception.AxelorException;
@@ -53,7 +55,7 @@ public interface StockMoveService {
 	 * @throws AxelorException Aucune séquence de StockMove (Livraison) n'a été configurée
 	 */
 	public StockMove createStockMove(Address fromAddress, Address toAddress, Company company, Partner clientPartner, Location fromLocation,
-			Location toLocation, LocalDate estimatedDate, String description) throws AxelorException;
+			Location toLocation, LocalDate estimatedDate, String description, ShipmentMode shipmentMode, FreightCarrierMode freightCarrierMode) throws AxelorException;
 
 	/**
 	 * Méthode générique permettant de créer un StockMove.
@@ -65,7 +67,7 @@ public interface StockMoveService {
 	 * @throws AxelorException Aucune séquence de StockMove (Livraison) n'a été configurée
 	 */
 	public StockMove createStockMove(Address fromAddress, Address toAddress, Company company, Partner clientPartner, Location fromLocation,
-			Location toLocation, LocalDate realDate, LocalDate estimatedDate, String description) throws AxelorException;
+			Location toLocation, LocalDate realDate, LocalDate estimatedDate, String description, ShipmentMode shipmentMode, FreightCarrierMode freightCarrierMode) throws AxelorException;
 
 	public int getStockMoveType(Location fromLocation, Location toLocation);
 

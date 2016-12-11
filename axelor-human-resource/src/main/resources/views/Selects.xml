@@ -117,6 +117,11 @@
 		<option value="3">Requested</option>
 	</selection>
 	
+	<selection name="hr.lunch.voucher.mgt.line.lunch.voucher.format.select">
+		<option value="1">Paper format</option>
+		<option value="2">Electronic card</option>
+	</selection>
+	
 	<selection name="hr.employee.advance.type.select">
 		<option value="1">Permanent</option>
 		<option value="2">Occasional</option>

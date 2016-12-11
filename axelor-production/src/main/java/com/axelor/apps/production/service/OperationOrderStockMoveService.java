@@ -98,6 +98,8 @@ public class OperationOrderStockMoveService {
 				fromLocation,
 				virtualLocation,
 				operationOrder.getPlannedStartDateT().toLocalDate(),
+				null,
+				null,
 				null);
 
 		return stockMove;
