@@ -350,7 +350,7 @@ from public.account_move_line_report as MoveLineReport
 left outer join public.account_analytic_move_line as AnalyticMoveLine on (MoveLineReport.id = ?) 
 
 left outer join public.account_analytic_account as AnalyticAccount on (AnalyticMoveLine.analytic_account  = AnalyticAccount.id )
-left outer join public.account_analytic_axis as AnalyticAxis on (AnalyticAccount.analytic_axis = AnalyticAxis.id ) 
+left outer join public.account_analytic_axis as AnalyticAxis on (AnalyticMoveLine.analytic_axis = AnalyticAxis.id ) 
 left outer join public.account_analytic_journal as AnalyticJournal on (AnalyticMoveLine.analytic_journal = AnalyticJournal.id ) 
 
 left outer join public.base_company as Company on (MoveLineReport.company = Company.id) 
