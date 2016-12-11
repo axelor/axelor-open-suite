@@ -76,6 +76,7 @@
 		<option value="12">VAT Statement</option>
 		<option value="13">Payment differences</option>
 		<option value="14">General ledger 2</option>
+		<option value="2000">Analytic balance</option>
 	</selection>
 	
 	<selection name='move.line.report.type.select.export'>
@@ -359,6 +360,12 @@
 		<option value="2">Waiting for the sending of the authentication and encryption certificates</option>
 		<option value="3">Active connection</option>
 		<option value="4">Certificates should be renew</option>
+	</selection>
+
+	<selection name="account.analytic.move.line.status.select">
+		<option value="1">Forecast (order)</option>
+		<option value="2">Forecast (invoice)</option>
+		<option value="3">Real (accounting)</option>
 	</selection>
 	
 	<selection name="account.ebics.certificate.type.select">

@@ -33,7 +33,7 @@
   	<date name="subscriptionFromDate" title="From"/>
     <date name="subscriptionToDate" title="To"/>
   	
-  	<one-to-many name="analyticDistributionLineList" ref="com.axelor.apps.account.db.AnalyticDistributionLine" title="Analytic distribution lines" mappedBy="invoiceLine"/>
+  	<one-to-many name="analyticMoveLineList" ref="com.axelor.apps.account.db.AnalyticMoveLine" title="Analytic distribution lines" mappedBy="invoiceLine"/>
 	<many-to-one name="analyticDistributionTemplate" title="Analytic distribution template" ref="com.axelor.apps.account.db.AnalyticDistributionTemplate"/>
     
     <many-to-one name="budget" ref="com.axelor.apps.account.db.Budget" title="Budget"/>

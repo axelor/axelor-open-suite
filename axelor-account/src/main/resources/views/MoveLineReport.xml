@@ -34,7 +34,7 @@
 		</panel>
 		
 		<panel sidebar="true" name="info" title="Info">
-			<button name="search" title="Search" hideIf="typeSelect == 12" onClick="save,action-move-line-report-method-search-move-line,save" />
+			<button name="search" title="Search" hideIf="typeSelect == 12 || typeSelect == 2000" onClick="save,action-move-line-report-method-search-move-line,save" />
 			<button name="export" title="Print" icon="fa-print"	onClick="action-group-account-moveline-report-export-click" />
 			<field name="statusSelect" />
 			<field name="publicationDateTime" />
@@ -49,8 +49,9 @@
 				<field name="journal" hideIf="!typeSelect || [0,1,2,3,4,5,10,12,13,14].indexOf(typeSelect) != -1" domain="self.statusSelect = 1 AND self.company = :company" form-view="journal-form" grid-view="journal-grid"/>
 				<field name="paymentMode" grid-view="payment-mode-grid" form-view="payment-mode-form" hideIf="!typeSelect || [1,2,3,4,5,10,12,13,14].indexOf(typeSelect) != -1"/>
 				<field name="cashRegister" hideIf="!typeSelect || [0,1,2,3,4,12,14].indexOf(typeSelect) != -1" grid-view="cash-register-grid" form-view="cash-register-form"/>
-				<field name="accountSet" colSpan="12" form-view="account-form" grid-view="account-grid" widget="TagSelect" canNew="false"/>
-				<field name="partnerSet" colSpan="12" form-view="partner-form" grid-view="partner-grid" domain="self.isContact = false" widget="TagSelect" canNew="false"/>
+				<field name="accountSet" hideIf="typeSelect == 2000" colSpan="12" form-view="account-form" grid-view="account-grid" widget="TagSelect" canNew="false"/>
+				<field name="partnerSet" hideIf="typeSelect == 2000" colSpan="12" form-view="partner-form" grid-view="partner-grid" domain="self.isContact = false" widget="TagSelect" canNew="false"/>
+				<field name="analyticJournal" showIf="typeSelect == 2000" domain="self.company = :company" form-view="analytic-journal-form" grid-view="analytic-journal-grid"/>
 			</panel>
 			<panel name="printingInformations" title="Printing informations">
 				<field name="global" hideIf="!typeSelect || [0,3,4,10,12,13].indexOf(typeSelect) != -1"	onChange="action-move-line-report-record-global" />
@@ -61,7 +62,7 @@
 			</panel>
 		</panel-tabs>
 		
-		<panel sidebar="true" name="balance" title="Balance">
+		<panel sidebar="true" name="balance" title="Balance" hideIf="typeSelect == 2000">
 			<field name="totalDebit" />
 			<field name="totalCredit" />
 			<field name="balance" />

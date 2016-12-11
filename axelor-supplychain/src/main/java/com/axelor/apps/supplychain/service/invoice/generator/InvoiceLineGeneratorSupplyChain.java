@@ -21,11 +21,11 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
 
-import com.axelor.apps.account.db.AnalyticDistributionLine;
+import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.BudgetDistribution;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
-import com.axelor.apps.account.db.repo.AnalyticDistributionLineRepository;
+import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.service.invoice.InvoiceLineService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.invoice.generator.InvoiceLineGenerator;
@@ -131,12 +131,12 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
 		
 		if (saleOrderLine != null)  {
 			
-			this.copyAnalyticDistributionLines(saleOrderLine.getAnalyticDistributionLineList(), invoiceLine);
+			this.copyAnalyticMoveLines(saleOrderLine.getAnalyticMoveLineList(), invoiceLine);
 
 			
 		} else if (purchaseOrderLine != null)  {
 			
-			this.copyAnalyticDistributionLines(purchaseOrderLine.getAnalyticDistributionLineList(), invoiceLine);
+			this.copyAnalyticMoveLines(purchaseOrderLine.getAnalyticMoveLineList(), invoiceLine);
 					
 			this.copyBudgetDistributionList(purchaseOrderLine.getBudgetDistributionList(), invoiceLine);
 			
@@ -181,12 +181,12 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
 	}
 	
 	
-	public void copyAnalyticDistributionLines(List<AnalyticDistributionLine> originalAnalyticDistributionLineList, InvoiceLine invoiceLine)  {
+	public void copyAnalyticMoveLines(List<AnalyticMoveLine> originalAnalyticMoveLineList, InvoiceLine invoiceLine)  {
 		
-		if(originalAnalyticDistributionLineList == null)  {  return;  }
+		if(originalAnalyticMoveLineList == null)  {  return;  }
  
-		for (AnalyticDistributionLine analyticDistributionLineIt : originalAnalyticDistributionLineList) {
-			invoiceLine.addAnalyticDistributionLineListItem(Beans.get(AnalyticDistributionLineRepository.class).copy(analyticDistributionLineIt, false));
+		for (AnalyticMoveLine analyticDistributionLineIt : originalAnalyticMoveLineList) {
+			invoiceLine.addAnalyticMoveLineListItem(Beans.get(AnalyticMoveLineRepository.class).copy(analyticDistributionLineIt, false));
 		}
 				
 	}
