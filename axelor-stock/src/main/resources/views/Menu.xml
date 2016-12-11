@@ -168,6 +168,33 @@
 		<context name="_datePlusTwoMonths" expr="eval: __date__.plusMonths(2)"/>
 	</action-view>
 	
+	<menuitem name="stock-root-conf-freight-carrier" parent="stock-root-conf"
+		title="Freight Carrier" action="stock.root.conf.freight.carrier"/>
+		
+	<action-view name="stock.root.conf.freight.carrier" title="Freight Carrier"
+		model="com.axelor.apps.stock.db.FreightCarrier">
+		<view type="grid" name="freight-carrier-grid"/>
+		<view type="form" name="freight-carrier-form"/>	
+	</action-view>
+	
+	<menuitem name="stock-root-conf-freight-carrier-mode" parent="stock-root-conf"
+		title="Freight Carrier Mode" action="stock.root.conf.freight.carrier.mode"/>
+	
+	<action-view name="stock.root.conf.freight.carrier.mode" title="Freight Carrier Mode"
+		model="com.axelor.apps.stock.db.FreightCarrierMode">
+		<view type="grid" name="freight-carrier-mode-grid"/>
+		<view type="form" name="freight-carrier-mode-form"/>
+	</action-view>
+	
+	<menuitem name="stock-root-conf-shipment-mode" parent="stock-root-conf"
+		title="Shipment Mode" action="stock.root.conf.shipment.mode"/>
+		
+	<action-view name="stock.root.conf.shipment.mode" title="Shipment Mode"
+		model="com.axelor.apps.stock.db.ShipmentMode">
+		<view type="grid" name="shipment-mode-grid"/>
+		<view type="form" name="shipment-mode-form"/>	
+	</action-view>
+	
 <!-- ADMINISTRATION -->
 
 

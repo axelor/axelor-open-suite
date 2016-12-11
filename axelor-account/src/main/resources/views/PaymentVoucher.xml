@@ -76,12 +76,12 @@
 		</panel>
 		
 		<panel-stack readonlyIf="statusSelect == 2">
-			<panel-related colSpan="12" field="paymentInvoiceList"  form-view="payment-invoice-form" grid-view="payment-invoice-grid" showIf="statusSelect == 1"/>
+			<panel-related colSpan="12" field="payVoucherDueElementList"  form-view="pay-voucher-due-element-form" grid-view="pay-voucher-due-element-grid" showIf="statusSelect == 1"/>
 			<panel colSpan="12" showIf="statusSelect == 1">
 				<button name="loadSelectedLines" title="Load selected lines" onClick="com.axelor.apps.account.web.PaymentVoucherController:loadSelectedLines,save" colSpan="6"/>
 				<button name="resetImputation" title="Reset imputation" onClick="com.axelor.apps.account.web.PaymentVoucherController:resetImputation,save" colSpan="6"/>
 			</panel>
-			<panel-related colSpan="12" field="paymentInvoiceToPayList" form-view="payment-invoice-to-pay-form" grid-view="payment-invoice-to-pay-grid"/>
+			<panel-related colSpan="12" field="payVoucherElementToPayList" form-view="pay-voucher-element-to-pay-from" grid-view="pay-voucher-element-to-pay-grid"/>
 		</panel-stack>
 		
 	</form>

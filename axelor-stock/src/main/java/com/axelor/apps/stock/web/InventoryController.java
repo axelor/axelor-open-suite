@@ -27,7 +27,9 @@ import org.slf4j.LoggerFactory;
 import com.axelor.app.AppSettings;
 import com.axelor.apps.ReportFactory;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.stock.db.Inventory;
+import com.axelor.apps.stock.db.InventoryLine;
 import com.axelor.apps.stock.db.Location;
 import com.axelor.apps.stock.db.LocationLine;
 import com.axelor.apps.stock.db.repo.InventoryRepository;
@@ -55,6 +57,10 @@ public class InventoryController {
 	
 	@Inject
 	InventoryRepository inventoryRepo;
+	
+	@Inject
+	ProductRepository productRepo;
+	
 	
 	private static final Logger LOG = LoggerFactory.getLogger(InventoryController.class);
 	
@@ -102,10 +108,12 @@ public class InventoryController {
 		response.setFlash(String.format(I18n.get(IExceptionMessage.INVENTORY_8),importFile.getFilePath()));
 	}
 	
-	public void generateStockMove(ActionRequest request, ActionResponse response) throws AxelorException {
+	public void realizeInventory(ActionRequest request, ActionResponse response) throws AxelorException {
 		
-		Inventory inventory = request.getContext().asType(Inventory.class);
-		inventoryService.generateStockMove(inventory);
+		Long id = request.getContext().asType(Inventory.class).getId();
+		Inventory inventory = Beans.get(InventoryRepository.class).find(id);
+		inventoryService.realizeInventory(inventory);
+		response.setReload(true);
 	}
 	
 	public void fillInventoryLineList(ActionRequest request, ActionResponse response) throws AxelorException {

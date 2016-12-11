@@ -24,10 +24,10 @@ import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.MoveLine;
-import com.axelor.apps.account.db.PaymentInvoiceToPay;
+import com.axelor.apps.account.db.PayVoucherElementToPay;
 import com.axelor.apps.account.db.PaymentVoucher;
 
-public class PaymentInvoiceToPayService {
+public class PayVoucherElementToPayService {
 	
 	private final Logger log = LoggerFactory.getLogger( getClass() );
 	
@@ -37,12 +37,12 @@ public class PaymentInvoiceToPayService {
 	 * @param seq
 	 * @return
 	 */
-	public PaymentInvoiceToPay createPaymentInvoiceToPay(PaymentVoucher pv,int seq,Invoice invoice,MoveLine ml,BigDecimal totalAmount,BigDecimal remainingAmount,BigDecimal amountToPay){
+	public PayVoucherElementToPay createPayVoucherElementToPay(PaymentVoucher pv,int seq,Invoice invoice,MoveLine ml,BigDecimal totalAmount,BigDecimal remainingAmount,BigDecimal amountToPay){
 		
-		log.debug("In  createPaymentInvoiceToPay....");
+		log.debug("In  createPayVoucherElementToPay....");
 		
 		if (pv != null && ml != null){
-			PaymentInvoiceToPay piToPay= new PaymentInvoiceToPay();
+			PayVoucherElementToPay piToPay= new PayVoucherElementToPay();
 			piToPay.setSequence(seq);
 			piToPay.setMoveLine(ml);
 			piToPay.setTotalAmount(totalAmount);
@@ -50,12 +50,12 @@ public class PaymentInvoiceToPayService {
 			piToPay.setAmountToPay(amountToPay);
 			piToPay.setPaymentVoucher(pv);
 			
-			log.debug("End createPaymentInvoiceToPay IF.");
+			log.debug("End createPayVoucherElementToPay IF.");
 			
 			return piToPay;
 		}
 		else{
-			log.debug("End createPaymentInvoiceToPay ELSE.");
+			log.debug("End createPayVoucherElementToPay ELSE.");
 			return null;
 		}
 	}

@@ -103,6 +103,8 @@ public class ManufOrderStockMoveService {
 				fromLocation,
 				virtualLocation,
 				manufOrder.getPlannedStartDateT().toLocalDate(),
+				null,
+				null,
 				null);
 
 		return stockMove;
@@ -150,6 +152,8 @@ public class ManufOrderStockMoveService {
 				virtualLocation,
 				manufOrder.getProdProcess().getLocation(),
 				plannedEndDate,
+				null,
+				null,
 				null);
 
 		return stockMove;

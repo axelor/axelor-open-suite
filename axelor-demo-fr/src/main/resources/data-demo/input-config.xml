@@ -60,7 +60,7 @@
 	<input file="base_canton.csv" separator=";" type="com.axelor.apps.base.db.Canton" search="self.code = :code"/>
 
 	<input file="base_city.csv" separator=";" type="com.axelor.apps.base.db.City" search="self.importId = :importId">
-	   <bind to="country" search="self.code = 'FRA'" update="true" />
+	   <bind to="country" search="self.alpha3Code = 'FRA'" update="true" />
 	</input>
 	
 	<input file="base_address.csv" separator=";" type="com.axelor.apps.base.db.Address" search="self.importId = :importId" call="com.axelor.csv.script.ImportAddress:importAddress">
@@ -462,7 +462,13 @@
 	</input>
 	
 	<input file="supplychain_mrpLineType.csv" separator=";" type="com.axelor.apps.supplychain.db.MrpLineType" search="self.importId = :importId"/>
-	
+    
+    <input file="base_freightCarrier.csv" separator=";" type="com.axelor.apps.stock.db.FreightCarrier" search="self.importId = :importId"/>
+    
+    <input file="base_shipmentMode.csv" separator=";" type="com.axelor.apps.stock.db.ShipmentMode" search="self.importId = :importId"/>
+    
+    <input file="base_freightCarrierMode.csv" separator=";" type="com.axelor.apps.stock.db.FreightCarrierMode" search="self.importId = :importId"/>
+
 	<input file="base_period.csv" separator=";" type="com.axelor.apps.base.db.Period" />
 	
 	<input file="hr_expense.csv" separator=";" type="com.axelor.apps.hr.db.Expense" />
@@ -473,6 +479,7 @@
 	
 	<input file="hr_employeeBonusType.csv" separator=";" type="com.axelor.apps.hr.db.EmployeeBonusType" />
 	
+	<input file="account_bankOrderEconomicReason.csv" separator=";" type="com.axelor.apps.account.db.BankOrderEconomicReason" />
 	
 	<input file="hr_leaveLine.csv" separator=";" type="com.axelor.apps.hr.db.LeaveLine" />
 	
