@@ -29,12 +29,12 @@ import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
-import com.axelor.apps.account.db.PaymentInvoiceToPay;
+import com.axelor.apps.account.db.PayVoucherElementToPay;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.PaymentVoucher;
 import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.db.repo.MoveRepository;
-import com.axelor.apps.account.db.repo.PaymentInvoiceToPayRepository;
+import com.axelor.apps.account.db.repo.PayVoucherElementToPayRepository;
 import com.axelor.apps.account.db.repo.PaymentVoucherRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.AccountCustomerService;
@@ -68,13 +68,13 @@ public class PaymentVoucherConfirmService  {
 	protected PaymentVoucherControlService paymentVoucherControlService;
 	protected PaymentVoucherToolService paymentVoucherToolService;
 	protected CurrencyService currencyService;
-	protected PaymentInvoiceToPayRepository paymentInvoiceToPayRepo;
+	protected PayVoucherElementToPayRepository payVoucherElementToPayRepo;
 	protected PaymentVoucherRepository paymentVoucherRepository;
 	
 	@Inject
 	public PaymentVoucherConfirmService(ReconcileService reconcileService, MoveLineService moveLineService, MoveService moveService, PaymentService paymentService,
 			PaymentModeService paymentModeService, PaymentVoucherSequenceService paymentVoucherSequenceService, PaymentVoucherControlService paymentVoucherControlService,
-			PaymentVoucherToolService paymentVoucherToolService, CurrencyService currencyService, PaymentInvoiceToPayRepository paymentInvoiceToPayRepo, PaymentVoucherRepository paymentVoucherRepository)  {
+			PaymentVoucherToolService paymentVoucherToolService, CurrencyService currencyService, PayVoucherElementToPayRepository payVoucherElementToPayRepo, PaymentVoucherRepository paymentVoucherRepository)  {
 		
 		this.reconcileService = reconcileService;
 		this.moveLineService = moveLineService;
@@ -85,7 +85,7 @@ public class PaymentVoucherConfirmService  {
 		this.paymentVoucherControlService = paymentVoucherControlService;
 		this.paymentVoucherToolService = paymentVoucherToolService;
 		this.currencyService = currencyService;
-		this.paymentInvoiceToPayRepo = paymentInvoiceToPayRepo;
+		this.payVoucherElementToPayRepo = payVoucherElementToPayRepo;
 		this.paymentVoucherRepository = paymentVoucherRepository;
 		
 	}
@@ -133,11 +133,11 @@ public class PaymentVoucherConfirmService  {
 
 		// If paid by a moveline check if all the lines selected have the same account + company
 		// Excess payment
-		boolean allRight = paymentVoucherControlService.checkIfSameAccount(paymentVoucher.getPaymentInvoiceToPayList(), paymentVoucher.getMoveLine());
+		boolean allRight = paymentVoucherControlService.checkIfSameAccount(paymentVoucher.getPayVoucherElementToPayList(), paymentVoucher.getMoveLine());
 		//Check if allright=true (means companies and accounts in lines are all the same and same as in move line selected for paying
 		log.debug("allRight : {}", allRight);
 
-		if (allRight){	scheduleToBePaid = this.toPayWithExcessPayment(paymentVoucher.getPaymentInvoiceToPayList(), paymentVoucher.getMoveLine(), scheduleToBePaid, paymentDate); }
+		if (allRight){	scheduleToBePaid = this.toPayWithExcessPayment(paymentVoucher.getPayVoucherElementToPayList(), paymentVoucher.getMoveLine(), scheduleToBePaid, paymentDate); }
 
 		if(paymentVoucher.getMoveLine() == null || (paymentVoucher.getMoveLine() != null && !allRight) || (scheduleToBePaid && !allRight && paymentVoucher.getMoveLine() != null))  {
 
@@ -153,18 +153,18 @@ public class PaymentVoucherConfirmService  {
 
 			boolean isDebitToPay = paymentVoucherToolService.isDebitToPay(paymentVoucher);
 
-			for (PaymentInvoiceToPay paymentInvoiceToPay : this.getPaymentInvoiceToPayList(paymentVoucher))  {
-				MoveLine moveLineToPay = paymentInvoiceToPay.getMoveLine();
+			for (PayVoucherElementToPay payVoucherElementToPay : this.getPayVoucherElementToPayList(paymentVoucher))  {
+				MoveLine moveLineToPay = payVoucherElementToPay.getMoveLine();
 				log.debug("PV moveLineToPay debit : {}", moveLineToPay.getDebit());
 				log.debug("PV moveLineToPay amountPaid : {}", moveLineToPay.getAmountPaid());
 
-				BigDecimal amountToPay = paymentInvoiceToPay.getAmountToPayCurrency();
+				BigDecimal amountToPay = payVoucherElementToPay.getAmountToPayCurrency();
 
 				if (amountToPay.compareTo(BigDecimal.ZERO) > 0)  {
 
 					paidLineTotal = paidLineTotal.add(amountToPay);
 
-					this.payMoveLine(move, moveLineNo, payerPartner, moveLineToPay, amountToPay, paymentInvoiceToPay, isDebitToPay, paymentDate);
+					this.payMoveLine(move, moveLineNo, payerPartner, moveLineToPay, amountToPay, payVoucherElementToPay, isDebitToPay, paymentDate);
 
 					moveLineNo +=1;
 
@@ -226,23 +226,23 @@ public class PaymentVoucherConfirmService  {
 
 	public void deleteUnPaidLines(PaymentVoucher paymentVoucher)  {
 		
-		if(paymentVoucher.getPaymentInvoiceList() == null)  {   return;  }
+		if(paymentVoucher.getPayVoucherElementToPayList() == null)  {   return;  }
 		
-		paymentVoucher.getPaymentInvoiceList().clear();
+		paymentVoucher.getPayVoucherElementToPayList().clear();
 		
-		List<PaymentInvoiceToPay> paymentInvoiceToPayToRemove = Lists.newArrayList();
+		List<PayVoucherElementToPay> payVoucherElementToPayToRemove = Lists.newArrayList();
 		
-		for(PaymentInvoiceToPay paymentInvoiceToPay : paymentVoucher.getPaymentInvoiceToPayList())  {
+		for(PayVoucherElementToPay payVoucherElementToPay : paymentVoucher.getPayVoucherElementToPayList())  {
 			
-			if(paymentInvoiceToPay.getAmountToPay().compareTo(BigDecimal.ZERO) == 0  && paymentInvoiceToPay.getMoveLineGenerated() == null)  {
+			if(payVoucherElementToPay.getAmountToPay().compareTo(BigDecimal.ZERO) == 0  && payVoucherElementToPay.getMoveLineGenerated() == null)  {
 				
-				paymentInvoiceToPayToRemove.add(paymentInvoiceToPay);
+				payVoucherElementToPayToRemove.add(payVoucherElementToPay);
 				
 			}
 			
 		}
 		
-		paymentVoucher.getPaymentInvoiceToPayList().removeAll(paymentInvoiceToPayToRemove);
+		paymentVoucher.getPayVoucherElementToPayList().removeAll(payVoucherElementToPayToRemove);
 		
 	}
 	
@@ -252,9 +252,9 @@ public class PaymentVoucherConfirmService  {
 	 * Récupérer les éléments à payer dans le bon ordre
 	 * @return
 	 */
-	public List<? extends PaymentInvoiceToPay>  getPaymentInvoiceToPayList(PaymentVoucher paymentVoucher)  {
+	public List<? extends PayVoucherElementToPay>  getPayVoucherElementToPayList(PaymentVoucher paymentVoucher)  {
 
-		return paymentInvoiceToPayRepo.all().filter("self.paymentVoucher = ?1 ORDER by self.sequence ASC", paymentVoucher).fetch();
+		return payVoucherElementToPayRepo.all().filter("self.paymentVoucher = ?1 ORDER by self.sequence ASC", paymentVoucher).fetch();
 
 	}
 
@@ -263,7 +263,7 @@ public class PaymentVoucherConfirmService  {
 	 * 	 If paid by a moveline check if all the lines selected have the same account + company
 	 *	 Excess payment
 	 *	Check if allright=true (means companies and accounts in lines are all the same and same as in move line selected for paying
-	 * @param paymentInvoiceToPayList
+	 * @param payVoucherElementToPayList
 	 * 		  		Liste des paiement a réaliser
 	 * @param creditMoveLine
 	 * 				Le trop-perçu
@@ -272,13 +272,13 @@ public class PaymentVoucherConfirmService  {
 	 * 				Une échéance doit-elle être payée?
 	 * @throws AxelorException
 	 */
-	public boolean toPayWithExcessPayment(List<PaymentInvoiceToPay> paymentInvoiceToPayList, MoveLine creditMoveLine, boolean scheduleToBePaid, LocalDate paymentDate) throws AxelorException  {
+	public boolean toPayWithExcessPayment(List<PayVoucherElementToPay> payVoucherElementToPayList, MoveLine creditMoveLine, boolean scheduleToBePaid, LocalDate paymentDate) throws AxelorException  {
 		boolean scheduleToBePaid2 = scheduleToBePaid;
 
 		List<MoveLine> debitMoveLines = new ArrayList<MoveLine>();
-		for (PaymentInvoiceToPay paymentInvoiceToPay : paymentInvoiceToPayList)  {
+		for (PayVoucherElementToPay payVoucherElementToPay : payVoucherElementToPayList)  {
 
-			debitMoveLines.add(paymentInvoiceToPay.getMoveLine());
+			debitMoveLines.add(payVoucherElementToPay.getMoveLine());
 		}
 		List<MoveLine> creditMoveLines = new ArrayList<MoveLine>();
 		creditMoveLines.add(creditMoveLine);
@@ -294,18 +294,18 @@ public class PaymentVoucherConfirmService  {
 	 * @param payerPartner
 	 * @param moveLineToPay
 	 * @param amountToPay
-	 * @param paymentInvoiceToPay
+	 * @param payVoucherElementToPay
 	 * @return
 	 * @throws AxelorException
 	 */
-	public MoveLine payMoveLine(Move paymentMove, int moveLineSeq, Partner payerPartner, MoveLine moveLineToPay, BigDecimal amountToPay, PaymentInvoiceToPay paymentInvoiceToPay,
+	public MoveLine payMoveLine(Move paymentMove, int moveLineSeq, Partner payerPartner, MoveLine moveLineToPay, BigDecimal amountToPay, PayVoucherElementToPay payVoucherElementToPay,
 			boolean isDebitToPay, LocalDate paymentDate) throws AxelorException  {
 		String invoiceName = "";
 		if(moveLineToPay.getMove().getInvoice()!=null)  {
 			invoiceName = moveLineToPay.getMove().getInvoice().getInvoiceId();
 		}
 		else  {
-			invoiceName = paymentInvoiceToPay.getPaymentVoucher().getRef();
+			invoiceName = payVoucherElementToPay.getPaymentVoucher().getRef();
 		}
 		MoveLine moveLine = moveLineService.createMoveLine(
 				paymentMove,
@@ -318,7 +318,7 @@ public class PaymentVoucherConfirmService  {
 				invoiceName);
 
 		paymentMove.addMoveLineListItem(moveLine);
-		paymentInvoiceToPay.setMoveLineGenerated(moveLine);
+		payVoucherElementToPay.setMoveLineGenerated(moveLine);
 
 		BigDecimal amountInCompanyCurrency = moveLine.getDebit().add(moveLine.getCredit());
 		

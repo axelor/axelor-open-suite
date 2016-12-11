@@ -77,6 +77,7 @@ public abstract class InvoiceGenerator  {
 	protected String externalReference;
 	protected Boolean inAti;
 	protected BankDetails companyBankDetails;
+	protected static int DEFAULT_INVOICE_COPY = 1;
 
 	protected InvoiceGenerator(int operationType, Company company, PaymentCondition paymentCondition, PaymentMode paymentMode, Address mainInvoicingAddress,
 			Partner partner, Partner contactPartner, Currency currency, PriceList priceList, String internalReference, String externalReference, Boolean inAti, 
@@ -254,6 +255,8 @@ public abstract class InvoiceGenerator  {
 		}
 		invoice.setCompanyBankDetails(companyBankDetails);
 		
+		invoice.setInvoicesCopySelect(getInvoiceCopy());
+		
 		initCollections(invoice);
 
 		return invoice;
@@ -261,6 +264,12 @@ public abstract class InvoiceGenerator  {
 
 
 
+	public int getInvoiceCopy() {
+		if(partner.getIsCustomer()) {
+			return partner.getInvoicesCopySelect();
+		} 
+		return DEFAULT_INVOICE_COPY;
+	}
 
 	/**
 	 * Peupler une facture.

@@ -16,7 +16,7 @@
 		<panel title="General informations" colSpan="12">
 			<field name="name" />
 			<field name="password" />
-			<field name="userId" help="Name of the user or service"/>
+			<field name="userId" help="Name of the user or service" x-bind="{{userId|uppercase}}" pattern='^[A-Z0-9]+$'/>
 			<field name="ebicsTypeSelect" widget="RadioSelect"/>
 			<field name="securityMedium" />
 			<field name="associatedUser"/>
