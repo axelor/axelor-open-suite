@@ -46,7 +46,7 @@
     		<field name="orderTypeSelect" css="label-bold bold" colSpan="6" readonly="true"/>
     		<field name="paymentMode" css="label-bold bold" colSpan="6" domain="self.orderTypeSelect = :orderTypeSelect" onChange="action-bank-order-record-payment-mode-change,action-bank-order-record-bank-order-file-format-change"/>
     		<field name="bankOrderFileFormat" domain="self.orderTypeSelect = :orderTypeSelect" colSpan="6" onChange="action-bank-order-record-bank-order-file-format-change"/>
-    		<field name="partnerTypeSelect" showIf="orderTypeSelect != 1" css="label-bold bold" colSpan="6"/>
+    		<field name="partnerTypeSelect" showIf="orderTypeSelect == 1" css="label-bold bold" colSpan="6"/>
     		<field name="isMultiDate" hidden="true"/>
     		<field name="isMultiCurrency" hidden="true"/>
   		</panel>
