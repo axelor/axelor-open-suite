@@ -103,7 +103,6 @@ public class SupplychainModule extends AxelorModule {
         bind(OpportunitySaleOrderServiceImpl.class).to(OpportunitySaleOrderServiceSupplychainImpl.class);
         bind(CustomerCreditLineService.class).to(CustomerCreditLineServiceImpl.class);
         bind(SaleOrderLineServiceImpl.class).to(SaleOrderLineServiceSupplyChainImpl.class);
-        //bind(AnalyticMoveLineServiceImpl.class).to(AnalyticMoveLineServiceSupplychainImpl.class);
         bind(AdvancePaymentRepository.class).to(AdvancePaymentSupplychainRepository.class);
         bind(AdvancePaymentServiceImpl.class).to(AdvancePaymentServiceSupplychainImpl.class);
         bind(MrpService.class).to(MrpServiceImpl.class);
