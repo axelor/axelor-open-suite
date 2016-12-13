@@ -20,7 +20,7 @@
 			<field name="testFile" widget="binary-link" showIf="testMode"/>
 		</panel>
 
-		<panel-related field="ebicsCertificateList" />
+		<panel-related field="ebicsCertificateList" form-view="ebics-certificate-form" grid-view="ebics-certificate-grid" />
 	</form>
 	
   

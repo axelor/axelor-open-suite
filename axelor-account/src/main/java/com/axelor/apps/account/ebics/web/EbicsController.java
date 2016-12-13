@@ -193,7 +193,7 @@ public class EbicsController {
 		EbicsUser ebicsUser = ebicsUserRepo.find( request.getContext().asType(EbicsUser.class).getId());
 		
 		try {
-			ebicsService.sendFDLRequest(ebicsUser, null, null, null);
+			ebicsService.sendFDLRequest(ebicsUser, null, null, null, BankOrderFileFormatRepository.FILE_FORMAT_pain_001_001_02_SCT);
 		}catch (AxelorException e) {
 			response.setFlash(stripClass(e.getLocalizedMessage()));
 		}

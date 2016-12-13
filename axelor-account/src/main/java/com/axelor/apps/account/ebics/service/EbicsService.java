@@ -261,9 +261,10 @@ public class EbicsService {
 	public File sendFDLRequest( EbicsUser user,
 	                        EbicsProduct product,
 	                        Date start,
-	                        Date end) throws AxelorException {
+	                        Date end,
+	                        String fileFormat) throws AxelorException {
 		
-	    return fetchFile(OrderType.FDL, user, product, start, end);
+	    return fetchFile(OrderType.FDL, user, product, start, end, fileFormat);
 	}
 	
 	public File sendHTDRequest( EbicsUser user,
@@ -271,7 +272,7 @@ public class EbicsService {
             Date start,
             Date end) throws AxelorException {
 		
-		return fetchFile(OrderType.HTD, user, product, start, end);
+		return fetchFile(OrderType.HTD, user, product, start, end, null);
 	}
 	 
 	public File sendPTKRequest( EbicsUser user,
@@ -279,11 +280,11 @@ public class EbicsService {
             Date start,
             Date end) throws AxelorException {
 		
-		return fetchFile(OrderType.PTK, user, product, start, end);
+		return fetchFile(OrderType.PTK, user, product, start, end, null);
 	}
 
 	private File fetchFile(OrderType orderType, EbicsUser user, EbicsProduct product, Date start,
-			Date end) throws AxelorException {
+			Date end, String fileFormat) throws AxelorException {
 		
 		EbicsSession session = new EbicsSession(user);
 		File file = null;
@@ -292,7 +293,9 @@ public class EbicsService {
 		    if (test) {
 		    	session.addSessionParam("TEST", "true");
 		    }
-		    session.addSessionParam("FORMAT", "pain.xxx.cfonb160.dct");
+		    if (fileFormat != null) {
+		    	session.addSessionParam("FORMAT", fileFormat);
+		    }
 		    if (product == null) {
 		    	product = defaultProduct;
 		    }
@@ -300,7 +303,7 @@ public class EbicsService {
 		    
 		    FileTransfer transferManager = new FileTransfer(session);
 		    
-	    	file = File.createTempFile(user.getName(), "fdl");
+	    	file = File.createTempFile(user.getName(), "." + orderType.getOrderType());
 			transferManager.fetchFile(orderType, start, end, new FileOutputStream(file));
 			if (test) {
 		    	 updateTestFile(user, file);
@@ -337,6 +340,7 @@ public class EbicsService {
 		EbicsBank bank = user.getEbicsPartner().getEbicsBank();
 		
 		if (bank.getTestFile() != null) {
+			bank.getTestFile().setFileName(file.getName());
 			metaFiles.upload(file, bank.getTestFile());
 		}
 		else {
