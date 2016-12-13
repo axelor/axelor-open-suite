@@ -122,7 +122,7 @@
       </panel>
 	  <panel-tabs>
 	    <panel name="content" title="Content">
-	    	<panel-related field="saleOrderLineList" form-view="sale-order-line-form" colSpan="12" onChange="action-sale-order-method-compute" readonlyIf="clientPartner == null" grid-view="sale-order-line-grid" canMove="true" orderBy="sequence"/>
+	    	<panel-related field="saleOrderLineList" form-view="sale-order-line-form" colSpan="12" onChange="action-sale-order-method-compute" readonlyIf="clientPartner == null || statusSelect == 3 || statusSelect == 4" grid-view="sale-order-line-grid" canMove="true" orderBy="sequence"/>
 	    	<panel-related field="saleOrderLineTaxList" colSpan="12" form-view="sale-order-line-tax-form" grid-view="sale-order-line-tax-grid"/>
 	    	<panel title="Description" colSpan="12">
 	        	<field name="description" showTitle="false" widget="Html" x-lite="true" colSpan="12"/>
