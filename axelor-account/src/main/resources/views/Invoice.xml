@@ -115,7 +115,7 @@
 		</panel>
 	  
 		<panel name="invoicingInformations" title="Invoicing informations">
-			<field name="partner" form-view="partner-form" grid-view="partner-grid" readonlyIf="statusSelect != 1" onChange="action-group-account-invoice-partner-onchange, action-invoice-attrs-hide-totals-company-currency" onSelect="action-set-partner-domain"/>
+			<field name="partner" form-view="partner-form" grid-view="partner-grid" readonlyIf="statusSelect != 1 || invoiceLineList != null" onChange="action-group-account-invoice-partner-onchange, action-invoice-attrs-hide-totals-company-currency" onSelect="action-set-partner-domain"/>
 			<field name="contactPartner"  onSelect="action-set-partner-domain" domain="self.isContact = true" form-view="partner-contact-form" grid-view="partner-contact-grid"
 					readonlyIf="partner != null &amp;&amp; partner.partnerTypeSelect == 2"/>
 			<field name="address" onSelect="action-invoice-attrs-domain-address" form-view="address-partner-address-form" canNew="true" />
