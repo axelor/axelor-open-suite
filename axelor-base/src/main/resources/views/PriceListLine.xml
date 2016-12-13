@@ -22,7 +22,7 @@
 			<field name="productCategory" colSpan="5" form-view="product-category-form" grid-view="product-category-grid" requiredIf="product == null" hideIf="product != null"/>
 		</panel>
 		<panel name="calculationMethod" title="Calculation method" colSpan="12" >
-			<field name="typeSelect" colSpan="12" onChange="action-price-list-line-record-type-select, action-price-list-line-attrs-amount-title-change" />
+			<field name="typeSelect" colSpan="12" onChange="action-price-list-line-record-type-select, action-price-list-line-attrs-amount-title-change, action-price-list-line-attrs-amount-percent-title-change" />
 			<field name="amountTypeSelect" colSpan="12" hideIf="typeSelect == 3" onChange="action-price-list-line-attrs-amount-percent-title-change"/>
 			<field name="amount" colSpan="12" hideIf="amountTypeSelect == 3"/>
 			<field name="minQty" colSpan="12"/>
@@ -54,11 +54,11 @@
 	
 	<action-attrs name="action-price-list-line-attrs-amount-percent-title-change">
 		<attribute name="title" for="amount" expr="%" if="amountTypeSelect == 1"/>	
-		<attribute name="title" for="amount" expr="Amount" if="amountTypeSelect == 2"/>
+		<attribute name="title" for="amount" expr="eval: com.axelor.i18n.I18n.get(&quot;Amount&quot;)" if="amountTypeSelect == 2"/>
 	</action-attrs>
 	
 	<action-attrs name="action-price-list-line-attrs-amount-title-change">
-		<attribute name="title" for="amount" expr="Amount" if="typeSelect == 3"/>
+		<attribute name="title" for="amount" expr="eval: com.axelor.i18n.I18n.get(&quot;Amount&quot;)" if="typeSelect == 3"/>
 	</action-attrs>
 	
 </object-views>
