@@ -518,7 +518,7 @@
     </action-attrs>
     
     <action-attrs name="action-invoice-attrs-hide-totals-company-currency">
-    	<attribute name="hidden" for="totalsCompanyCurrency" expr="eval: company.currency == currency"/>
+    	<attribute name="hidden" for="totalsCompanyCurrency" expr="eval: company?.currency == currency"/>
     </action-attrs>
     
     <!-- ACTION VALIDATE -->
