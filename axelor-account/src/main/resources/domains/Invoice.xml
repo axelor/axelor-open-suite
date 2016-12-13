@@ -46,7 +46,6 @@
     
     <!-- Invoice content -->
     <one-to-many name="invoiceLineList" ref="InvoiceLine" mappedBy="invoice" title="Invoice Lines" />
-    <one-to-many name="invoicePartnerCurrencyLinesList" ref="InvoiceLine" mappedBy="invoice" title="Invoice partner currency lines"/>
     <one-to-many name="invoiceLineTaxList" ref="InvoiceLineTax" mappedBy="invoice" title="Tax Lines" readonly="true" />
     
     <!-- Configuration -->
