@@ -13,7 +13,7 @@
         <field name="team" form-view="team-form" grid-view="team-grid" if="__config__.general.getTeamManagement()"/>
     </grid>
     
-    <calendar name="event-calendar-color-by-user" title="Meetings" mode="month" colorBy="user" 
+    <calendar name="event-calendar-color-by-user" title="Meetings" mode="month" colorBy="user" editable="false"
     	eventStart="startDateTime" eventStop="endDateTime" eventLength="1" model="com.axelor.apps.crm.db.Event"
     	onChange="action-event-method-compute-from-calendar">
     	<field name="subjectTeam" />
