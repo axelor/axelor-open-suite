@@ -63,4 +63,14 @@ public class ProductBaseRepository extends ProductRepository{
 		
 		return super.save(product);
 	}
+	
+	@Override
+	public Product copy(Product product, boolean deep) {
+		
+		Product copy = super.copy(product, deep);
+		copy.setBarCode(null);
+		
+		return copy;
+		
+	}
 }

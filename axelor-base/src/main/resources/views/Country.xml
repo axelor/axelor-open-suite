@@ -12,7 +12,7 @@
     
     <form name="country-form" title="Country" model="com.axelor.apps.base.db.Country" >
     	<panel name="main">
-	        <field name="name" x-bind="{{alpha3Code|uppercase}}"/>
+	        <field name="name" x-bind="{{name|uppercase}}"/>
 	        <field name="alpha3Code" x-bind="{{alpha3Code|uppercase}}"/>
 	        <field name="alpha2Code" x-bind="{{alpha2Code|uppercase}}"/>
 	        <field name="numericCode"/>

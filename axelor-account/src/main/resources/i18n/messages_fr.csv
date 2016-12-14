@@ -445,6 +445,7 @@
 "Certificates should be renew","Les certificats doivent être renouvelés",,
 "Cfonb configuration","Config. CFONB",,
 "Cfonb configurations","Config. CFONB",,
+"Charge","Charge",,
 "Chart imported?","Plan de compte importé ?",,
 "Chart of Accounts","Plan comptable",,
 "Chart of Analytic Accounts","Plan de comptes analytiques",,
@@ -1734,3 +1735,5 @@
 "x002PublicKeyExponent",,,
 "x002PublicKeyModulus",,,
 "Invoices copy","Nombre de factures",,
+"Totals company currency","Totaux devise société",,
+"Total Amount Remaining","Montant total restant",,

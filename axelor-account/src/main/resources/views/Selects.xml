@@ -19,11 +19,11 @@
 	<selection name='account.account.type.select'>
 		<option value='asset'>Asset</option>
 		<option value='cash'>Cash</option>
+		<option value='charge'>Charge</option>
 		<option value='commitment'>Commitment</option>
 		<option value='currentAsset'>Current Asset</option>
 		<option value='debt'>Debt</option>
 		<option value='equity'>Equity</option>
-		<option value='expense'>Expense</option>
 		<option value='immobilisation'>Immobilisation</option>
 		<option value='income'>Income</option>
 		<option value='payable'>Payable</option>
