@@ -105,9 +105,9 @@
 			     </field>
 			
 	    	</panel>
-			<field name="company" widget="SuggestBox" onChange="action-group-account-invoice-company-onchange" form-view="company-form" grid-view="company-grid" readonlyIf="statusSelect != 1"/>
+			<field name="company" widget="SuggestBox" onChange="action-group-account-invoice-company-onchange, action-invoice-attrs-hide-totals-company-currency" form-view="company-form" grid-view="company-grid" readonlyIf="statusSelect != 1"/>
 			<field name="companyBankDetails" widget="SuggestBox" onSelect="action-accounting-batch-attrs-company-bank-details-domain" form-view="bank-details-form" grid-view="bank-details-grid"/>
-			<field name="currency" onChange="action-invoice-attrs-change-total-title" readonlyIf="statusSelect != 1" form-view="currency-form" grid-view="currency-grid"/>
+			<field name="currency" onChange="action-invoice-attrs-change-total-title, action-invoice-attrs-hide-totals-company-currency" readonlyIf="statusSelect != 1" form-view="currency-form" grid-view="currency-grid"/>
 			<field name="project" if-module="axelor-business-project" onSelect="action-invoice-attrs-domain-project" form-view="project-form" grid-view="project-grid"/>
 			<field name="inAti" onChange="action-invoice-attrs-in-ati"/>
 			<field name="hideDiscount"/>
@@ -115,7 +115,7 @@
 		</panel>
 	  
 		<panel name="invoicingInformations" title="Invoicing informations">
-			<field name="partner" form-view="partner-form" grid-view="partner-grid" readonlyIf="statusSelect != 1" onChange="action-group-account-invoice-partner-onchange" onSelect="action-set-partner-domain"/>
+			<field name="partner" form-view="partner-form" grid-view="partner-grid" readonlyIf="statusSelect != 1 || invoiceLineList.length > 0" onChange="action-group-account-invoice-partner-onchange, action-invoice-attrs-hide-totals-company-currency" onSelect="action-set-partner-domain"/>
 			<field name="contactPartner"  onSelect="action-set-partner-domain" domain="self.isContact = true" form-view="partner-contact-form" grid-view="partner-contact-grid"
 					readonlyIf="partner != null &amp;&amp; partner.partnerTypeSelect == 2"/>
 			<field name="address" onSelect="action-invoice-attrs-domain-address" form-view="address-partner-address-form" canNew="true" />
@@ -130,7 +130,7 @@
 	  
 		<panel-tabs>
 			<panel name="invoiceContent" title="Invoice content" showTitle="false">
-				<panel-related field="invoiceLineList" colSpan="12" form-view="invoice-line-form" grid-view="invoice-line-grid" onChange="action-invoice-method-compute" canMove="true" orderBy="sequence"/>
+				<panel-related field="invoiceLineList" readonlyIf="statusSelect == 2 || statusSelect == 3" colSpan="12" form-view="invoice-line-form" grid-view="invoice-line-grid" onChange="action-invoice-method-compute" canMove="true" orderBy="sequence"/>
 				<panel-related field="invoiceLineTaxList" colSpan="12" form-view="invoice-line-tax-form" grid-view="invoice-line-tax-grid"/>
 			</panel>
 			<panel name="accounting" title="Accounting" showTitle="false">
@@ -265,6 +265,24 @@
 		       </viewer>
 		     </field>
 		</panel>
+		<panel name="totalsCompanyCurrency" title="Totals company currency" itemSpan="6" sidebar="true" >
+		    <field name="company.currency.symbol" hidden="true"/>
+		    <field name="companyInTaxTotal" showTitle="false" colSpan="12" css="order-subtotal" >
+		      <viewer><![CDATA[ 
+		         <dl class="dl-horizontal">
+		           <dt x-translate>Total W.T.</dt>
+		           <dd>{{record.companyExTaxTotal}} {{record.company.currency.symbol}}</dd>
+		           <dt x-translate>Total tax</dt>
+		           <dd>{{record.companyTaxTotal}} {{record.company.currency.symbol}}</dd>
+		           <dt class="order-subtotal-total" x-translate>Total A.T.I.</dt>
+		           <dd class="order-subtotal-total">{{record.companyInTaxTotal}} {{record.company.currency.symbol}}</dd>
+					<dt x-translate>Total Amount Remaining</dt>
+		           <dd class="order-subtotal-total">{{record.companyAmountRemaining}} {{record.company.currency.symbol}}</dd>
+		         </dl>
+		       ]]></viewer>
+		    </field>
+		  </panel>
+		
 		<panel-mail>
 		  <mail-messages limit="4" />
 		  <mail-followers />
@@ -404,6 +422,10 @@
     	<field name="taxTotal" expr="eval: 0"/>
     	<field name="inTaxTotal" expr="eval: 0"/>
     	<field name="amountPaid" expr="eval: 0"/>
+    	<field name="companyExTaxTotal" expr="eval: 0"/>
+    	<field name="companyTaxTotal" expr="eval: 0"/>
+    	<field name="companyInTaxTotal" expr="eval: 0"/>
+    	<field name="companyAmountRemaining" expr="eval: 0"/>
         <field name="currency" expr="eval:__repo__.of(User).find(__user__.id)?.activeCompany?.currency" />
         <field name="operationTypeSelect" expr="eval: _operationTypeSelect" if="_operationTypeSelect"/>
         <field name="company"  expr="eval:__user__.activeCompany" if="__user__.activeCompany != null"/>
@@ -495,6 +517,10 @@
 		<attribute name="domain" for="address" expr="eval: &quot;self.id IN (${(partner?.partnerAddressList?.findAll{it.isInvoicingAddr}.collect{it.address.id}+[null]).join(',')})&quot;" />
     </action-attrs>
     
+    <action-attrs name="action-invoice-attrs-hide-totals-company-currency">
+    	<attribute name="hidden" for="totalsCompanyCurrency" expr="eval: company?.currency == currency"/>
+    </action-attrs>
+    
     <!-- ACTION VALIDATE -->
     
     <action-validate name="action-validate-invoice-check-selection">
@@ -563,6 +589,7 @@
  	  	<view-param name="show-confirm" value="true"/>
 	  	<context name="_invoice" expr="eval: __this__"/>
     </action-view>
+    
     
 
 	<search-filters name="customer-invoices-filters" model="com.axelor.apps.account.db.Invoice" title="Customer invoices filters">

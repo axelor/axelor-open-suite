@@ -82,8 +82,8 @@
 	    </panel>	  
 		<panel-tabs>
 			<panel name="content" title="Content" colSpan="12">
-				<panel-related field="purchaseOrderLineList" grid-view="purchase-order-line-purchase-order-grid" title="PO Lines" colSpan="12" onChange="action-purchase-order-method-compute" form-view="purchase-order-line-form" canMove="true" orderBy="sequence"/>    
-				<panel-related field="purchaseOrderLineTaxList" title="Tax Lines" colSpan="12" grid-view="purchase-order-line-tax-grid" form-view="purchase-order-line-tax-form"/>
+				<panel-related field="purchaseOrderLineList" readonlyIf="statusSelect == 3 || statusSelect == 4" grid-view="purchase-order-line-purchase-order-grid" title="PO Lines" colSpan="12" onChange="action-purchase-order-method-compute" form-view="purchase-order-line-form" canMove="true" orderBy="sequence"/>    
+				<panel-related field="purchaseOrderLineTaxList" readonly="true" title="Tax Lines" colSpan="12" grid-view="purchase-order-line-tax-grid" form-view="purchase-order-line-tax-form"/>
 			</panel>
 			<panel name="otherInformation" title="Other information">
 				<panel name="financialTerms" title="Financial terms">
