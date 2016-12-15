@@ -193,7 +193,7 @@
     	<attribute name="hidden" for="consumedProductPage" expr="eval: !manufOrder?.isConsProOnOperation"/>
     	<attribute name="hidden" for="stockMoves" expr="eval: !manufOrder?.isConsProOnOperation"/>
     	<attribute name="hidden" for="consumedProductPage" expr="eval: !_parent?.isConsProOnOperation"/>
-    	<attribute name="hidden" for="stockMoves" expr="eval: !_parent.isConsProOnOperation"/>
+    	<attribute name="hidden" for="stockMoves" expr="eval: !_parent?.isConsProOnOperation"/>
     	<attribute name="hidden" for="machineWorkCenter" expr="eval: workCenter?.workCenterTypeSelect == 1"/>
     </action-attrs>
     

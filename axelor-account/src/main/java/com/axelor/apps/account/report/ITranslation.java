@@ -110,10 +110,14 @@ public interface ITranslation {
 	public static final String MOVE_LINE_REPORT_2000_ANALYTIC_ACCOUNT = /*$$(*/ "MoveLineReportType2000.analyticAccount"; /*)*/
 	public static final String MOVE_LINE_REPORT_2000_ANALYTIC_ACCOUNT_CODE = /*$$(*/ "MoveLineReportType2000.analyticAccountCode"; /*)*/
 	public static final String MOVE_LINE_REPORT_2000_ANALYTIC_ACCOUNT_NAME = /*$$(*/ "MoveLineReportType2000.analyticAccountName"; /*)*/
+	public static final String MOVE_LINE_REPORT_2000_ACCOUNT_TYPE = /*$$(*/ "MoveLineReportType2000.accountType"; /*)*/
 	public static final String MOVE_LINE_REPORT_2000_AMOUNT = /*$$(*/ "MoveLineReportType2000.amount"; /*)*/
 	public static final String MOVE_LINE_REPORT_2000_PERCENTAGE = /*$$(*/ "MoveLineReportType2000.percentage"; /*)*/
 	public static final String MOVE_LINE_REPORT_2000_TOTAL_PER_ANALYTIC_JOURNAL = /*$$(*/ "MoveLineReportType2000.totalPerAnalyticJournal"; /*)*/
 	public static final String MOVE_LINE_REPORT_2000_TOTAL_PER_ANALYTIC_AXIS = /*$$(*/ "MoveLineReportType2000.totalPerAnalyticAxis"; /*)*/
+	public static final String MOVE_LINE_REPORT_2000_TOTAL_PER_ANALYTIC_ACCOUNT = /*$$(*/ "MoveLineReportType2000.totalPerAnalyticAccount"; /*)*/
+
+	
 
 
 }

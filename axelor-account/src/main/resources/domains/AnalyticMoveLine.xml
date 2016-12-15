@@ -17,6 +17,7 @@
     <decimal name="amount" title="Amount"/>
     <date name="date" title="Date" column="date_val"/>
     <many-to-one name="analyticJournal" ref="com.axelor.apps.account.db.AnalyticJournal" title="Analytic Journal"/>
+    <many-to-one name="account" ref="com.axelor.apps.account.db.Account" title="Account"/>
     
     <integer name="statusSelect" title="Status" selection="account.analytic.move.line.status.select" default="1"/>
     

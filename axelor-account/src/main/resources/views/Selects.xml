@@ -16,7 +16,7 @@
 		<option value='2'>Confirmed</option>
 	</selection>
 	
-	<selection name='account.account.type.select'>
+	<selection name='account.account.technical.type.select'>
 		<option value='asset'>Asset</option>
 		<option value='cash'>Cash</option>
 		<option value='charge'>Charge</option>

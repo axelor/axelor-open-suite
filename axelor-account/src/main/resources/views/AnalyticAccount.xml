@@ -35,12 +35,10 @@
     
     <form name="analytic-account-info-form" title="Analytic Account" model="com.axelor.apps.account.db.AnalyticAccount" width="large">
 		<panel title="Analytic Account details" readonly="true">
-			<field name="code" colSpan="3" css="bold"/>
-			<field name="name" colSpan="9" css="bold"/>
-			<field name="accountType" title="Account Type"/> 
-			<field name="company" widget="SuggestBox" onChange="action-group-analytic-account-onchange-common" form-view="company-form" grid-view="company-grid"/>
-			<field name="parent" onChange="action-group-analytic-account-onchange-common" domain="self.company = :company" form-view="account-form" grid-view="account-grid"/>
-			<field name="reconcileOk"/>
+			<field name="code" colSpan="6" css="bold"/>
+			<field name="name" colSpan="6" css="bold"/>
+			<field name="analyticAxis" title="Account Type" colSpan="6"/> 
+			<field name="parent" onChange="action-group-analytic-account-onchange-common" domain="self.company = :company" form-view="account-form" grid-view="account-grid" colSpan="6"/>
 		</panel>
 	</form>
 	
