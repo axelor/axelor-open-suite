@@ -198,6 +198,21 @@ public class ProjectPlanningController {
 					.context("_type", "team").map());
 		}
 	}
+	
+	
+	public void planningMonth(ActionRequest request, ActionResponse response) throws AxelorException{
+		request.getContext().asType(ProjectPlanning.class);
+		LocalDate currentDate = generalService.getTodayDate();
+		int year = currentDate.getYear();
+		int month = currentDate.getMonthOfYear();
+		ProjectPlanning planningMonth = null;
+		
+		planningMonth = projectPlanningRepo.all().filter("self.year = ?1 AND self.month = ?2", year, month).fetchOne();
+		if(planningMonth == null){
+			planningMonth = projectPlanningService.createPlanning(year, month);
+		}
+	}
+	
 
 	public void populate(ActionRequest request, ActionResponse response) throws AxelorException{
 		User user = AuthUtils.getUser();
