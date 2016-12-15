@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.base.service;
 
+import java.io.InputStream;
 import java.math.BigDecimal;
 import java.util.Map;
 
@@ -70,5 +71,6 @@ public interface ProductService {
 			ProductVariantValue productVariantValue3, ProductVariantValue productVariantValue4);
 
 	public Map<String, Object> getDiscountsFromCatalog(SupplierCatalog supplierCatalog,BigDecimal price);
+	
 
 }
