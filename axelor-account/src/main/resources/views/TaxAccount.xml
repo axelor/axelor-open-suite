@@ -12,9 +12,9 @@
     onNew="action-tax-account-record-new">
        <panel name="main" >
        	 <field name="company" widget="SuggestBox" onChange="action-group-account-tax-account-common-onchange" form-view="company-form" grid-view="company-grid"/>
-       	 <field name="account" domain="self.company = :company" onChange="action-group-account-tax-account-common-onchange" form-view="account-form" grid-view="account-grid"/>
+       	 <field name="account" domain="self.company = :company AND self.accountType.technicalTypeSelect = 'tax'" onChange="action-group-account-tax-account-common-onchange" form-view="account-form" grid-view="account-grid"/>
        </panel>
-    </form>
+    </form> 
     
     <action-group name="action-group-account-tax-account-common-onchange">
     	<action name="action-tax-account-clean-company"/>

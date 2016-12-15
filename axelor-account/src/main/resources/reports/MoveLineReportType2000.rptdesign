@@ -138,8 +138,9 @@
                 </ex-property>
             </list-property>
             <property name="odaDriverClass">org.postgresql.Driver</property>
-            <property name="odaURL">jdbc:postgresql://localhost:5432/axelor-business-suite</property>
+            <property name="odaURL">jdbc:postgresql://localhost:5432/axelor-business-suite2</property>
             <property name="odaUser">axelor</property>
+            <encrypted-property name="odaPassword" encryptionID="base64">bG1kcGRsYWE=</encrypted-property>
         </oda-data-source>
     </data-sources>
     <data-sets>
@@ -360,7 +361,7 @@ where
 (MoveLineReport.date_to IS NULL OR AnalyticMoveLine.date_val <= MoveLineReport.date_to) AND
 AnalyticMoveLine.date_val <= MoveLineReport.date_val AND 
 Company.id = MoveLineReport.company 
---AND (MoveLineReport.analytic_journal IS NULL OR MoveLineReport.analytic_journal  = AnalyticJournal.id)  
+AND (MoveLineReport.analytic_journal IS NULL OR MoveLineReport.analytic_journal  = AnalyticJournal.id)  
 AND AnalyticMoveLine.status_select = 3
 
 group by AnalyticJournal.id, AnalyticAxis.id, AnalyticAccount.id 
@@ -525,11 +526,11 @@ order by AnalyticJournal.id, AnalyticAxis.id, AnalyticAccount.id
                 </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[select Company.name as company_name, MoveLineReport.date_from, MoveLineReport.date_to, MoveLineReport.date_val as report_date, 
-MoveLineReport.publication_date_time as report_date_edition, MetaFile.file_path as logo_path, Journal.name as journal_name 
+MoveLineReport.publication_date_time as report_date_edition, MetaFile.file_path as logo_path, AnalyticJournal.name as journal_name 
 from public.account_move_line_report as MoveLineReport 
 inner join public.base_company as Company on (MoveLineReport.company = Company.id)
 left outer join meta_file as MetaFile on (MetaFile.id = Company.logo)
-left outer join public.account_journal as Journal on (MoveLineReport.journal = Journal.id)
+left outer join public.account_analytic_journal as AnalyticJournal on (MoveLineReport.analytic_journal = AnalyticJournal.id)
 where MoveLineReport.id = ? ]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">

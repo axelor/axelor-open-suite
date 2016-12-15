@@ -3,11 +3,13 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
     <grid name="account-type-grid" title="Account types" model="com.axelor.apps.account.db.AccountType">
-        <field name="nameSelect"/>
+        <field name="name"/>
+        <field name="technicalTypeSelect"/>
     </grid>
-    <form name="account-type-form" title="Account type" model="com.axelor.apps.account.db.AccountType"  >
+    <form name="account-type-form" title="Account type" model="com.axelor.apps.account.db.AccountType">
         <panel name="overView" title="Overview">
-        	<field name="nameSelect"/>
+        	<field name="name"/>
+        	<field name="technicalTypeSelect"/>
         </panel>
         
     </form>

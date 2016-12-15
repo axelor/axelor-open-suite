@@ -460,8 +460,8 @@
 	    SELECT
 	      SUM(
 	        (CASE     
-	          WHEN self.account.accountType.nameSelect = 'income' then self.credit
-	          WHEN self.account.accountType.nameSelect = 'expense' then self.debit
+	          WHEN self.account.accountType.technicalTypeSelect = 'income' then self.credit
+	          WHEN self.account.accountType.technicalTypeSelect = 'expense' then self.debit
 	        END)
 	      ) AS _amount,
 	      item.title AS _label
@@ -474,7 +474,7 @@
 	    WHERE  
 	      meta.name = 'account.account.type.select'
 	      AND item.select = meta
-	      AND self.account.accountType.nameSelect = item.value  
+	      AND self.account.accountType.technicalTypeSelect = item.value  
 	      AND self.move.statusSelect = 3
 	      AND self.move.period.year = :year
 	      AND (self.move.period = :period OR :period IS NULL)
