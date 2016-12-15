@@ -303,6 +303,7 @@ public class MoveLineService {
 							AnalyticMoveLine analyticMoveLine = Beans.get(AnalyticMoveLineRepository.class).copy(invoiceAnalyticMoveLine, false);
 							analyticMoveLine.setStatusSelect(AnalyticMoveLineRepository.STATUS_REAL_ACCOUNTING);
 							analyticMoveLine.setInvoiceLine(null);
+							analyticMoveLine.setAccount(moveLine.getAccount());
 							moveLine.addAnalyticMoveLineListItem(analyticMoveLine);
 						}
 					}
@@ -370,6 +371,7 @@ public class MoveLineService {
 							for (AnalyticMoveLine analyticDistributionLineIt : copyList) {
 								if(analyticDistributionLine.getAnalyticAxis().equals(analyticDistributionLineIt.getAnalyticAxis()) &&
 										analyticDistributionLine.getAnalyticAccount().equals(analyticDistributionLineIt.getAnalyticAccount()) &&
+										analyticDistributionLine.getAccount().equals(analyticDistributionLineIt.getAccount()) &&
 										analyticDistributionLine.getPercentage().equals(analyticDistributionLineIt.getPercentage()) &&
 										((analyticDistributionLine.getAnalyticJournal() == null && analyticDistributionLineIt.getAnalyticJournal() == null)
 												|| analyticDistributionLine.getAnalyticJournal().equals(analyticDistributionLineIt.getAnalyticJournal()))){
@@ -434,6 +436,7 @@ public class MoveLineService {
 						for (AnalyticMoveLine analyticDistributionLineIt : moveLine.getAnalyticMoveLineList()) {
 							if(analyticDistributionLine.getAnalyticAxis().equals(analyticDistributionLineIt.getAnalyticAxis()) &&
 									analyticDistributionLine.getAnalyticAccount().equals(analyticDistributionLineIt.getAnalyticAccount()) &&
+									analyticDistributionLine.getAccount().equals(analyticDistributionLineIt.getAccount()) &&
 									analyticDistributionLine.getPercentage().equals(analyticDistributionLineIt.getPercentage()) &&
 									((analyticDistributionLine.getAnalyticJournal() == null && analyticDistributionLineIt.getAnalyticJournal() == null)
 											|| analyticDistributionLine.getAnalyticJournal().equals(analyticDistributionLineIt.getAnalyticJournal()))){
