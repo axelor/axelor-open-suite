@@ -16,6 +16,7 @@
       <string name="comments" title="Comments" large="true"/>
       <boolean name="isStockLine" default="false" title="Stock Line"/>
       <integer name="givenToEmployee" title="Given to Employee"/>
+      <many-to-one name="payrollPreparation" ref="com.axelor.apps.hr.db.PayrollPreparation" title="Payroll preparation" />
   </entity>
   
 </domain-models>

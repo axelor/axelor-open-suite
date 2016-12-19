@@ -118,7 +118,7 @@
 	    <panel name="analyticDistribution" title="Analytic distribution" if-module="axelor-supplychain" if="__config__.general.getManageAnalyticAccounting()" onTabSelect="action-purchase-order-line-attrs-read-only-distribution-lines">
 			<field name="analyticDistributionTemplate" if="__config__.general.getAnalyticDistributionTypeSelect() == 1"/>
 			<button name="generateDistributionLinesButton" onClick="action-purchase-order-line-method-create-distribution" title="Generate distribution lines" showIf="analyticDistributionTemplate != null" if="__config__.general.getAnalyticDistributionTypeSelect() == 1"/>
-			<panel-related field="analyticDistributionLineList" grid-view="analytic-distribution-line-grid" form-view="analytic-distribution-line-form" colSpan="12"/>
+			<panel-related field="analyticMoveLineList" grid-view="analytic-move-line-distribution-grid" form-view="analytic-move-line-distribution-form" colSpan="12"/>
 		</panel>
 		<panel name="budgetDistribution" title="Budget distribution" if="__config__.general.getManageBudget()" if-module="axelor-supplychain">
 			<field name="budget" if="__config__.general.getManageBudget() &amp;&amp; !__config__.general.getManageMultiBudget()"/>
@@ -151,7 +151,7 @@
 	</action-method>
 	
 	<action-attrs name="action-purchase-order-line-attrs-read-only-distribution-lines">
-		<attribute name="readonly" for="analyticDistributionLineList" expr="eval: __config__.general.getAnalyticDistributionTypeSelect() != 1"/>
+		<attribute name="readonly" for="analyticMoveLineList" expr="eval: __config__.general.getAnalyticDistributionTypeSelect() != 1"/>
 	</action-attrs>
 	
 	<action-view name="action-purchase-order-line-view-show-invoice-lines" title="Invoice Lines" model="com.axelor.apps.account.db.InvoiceLine">	
@@ -202,8 +202,8 @@
 	</action-attrs>
 	
 	<action-attrs name="action-purchase-order-attrs-hide-ati">
-		<attribute name="hidden" for="exTaxTotal" expr="eval:_parent.inAti" if="_parent._model == 'com.axelor.apps.purchase.db.PurchaseOrder'"/>
-		<attribute name="hidden" for="inTaxTotal" expr="eval:!_parent.inAti" if="_parent._model == 'com.axelor.apps.purchase.db.PurchaseOrder'"/>
+		<attribute name="hidden" for="exTaxTotal" expr="eval:_parent.inAti" if="_parent?._model == 'com.axelor.apps.purchase.db.PurchaseOrder'"/>
+		<attribute name="hidden" for="inTaxTotal" expr="eval:!_parent.inAti" if="_parent?._model == 'com.axelor.apps.purchase.db.PurchaseOrder'"/>
 	</action-attrs>
 	
 	<action-attrs name="action-purchase-order-line-attrs-title-project-task">

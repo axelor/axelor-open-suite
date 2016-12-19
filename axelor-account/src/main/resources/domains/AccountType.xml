@@ -8,19 +8,19 @@
   <entity name="AccountType" lang="java" cachable="true">
   
 <!--   	TODO - REPLACE PER INTEGER ... -->
-    <string name="nameSelect" title="Type" required="true" unique="true" namecolumn="true" selection="account.account.type.select"/> 
-	<string name="name" title="Label"/>
+    <string name="technicalTypeSelect" title="Technical type" required="true" selection="account.account.technical.type.select"/> 
+	<string name="name" title="Name" required="true"/>
 	
 	 <extra-code><![CDATA[
 	
 	   	// TYPE SELECT
 		public static final String TYPE_ASSET = "asset";
 		public static final String TYPE_CASH = "cash";
+		public static final String TYPE_CHARGE = "charge";
 		public static final String TYPE_COMMITMENT = "commitment";
 		public static final String TYPE_CURRENT_ASSET = "currentAsset";
 		public static final String TYPE_DEBT = "debt";
 		public static final String TYPE_EQUITY = "equity";
-		public static final String TYPE_EXPENSE = "expense";
 		public static final String TYPE_IMMOBILISATION = "immobilisation";
 		public static final String TYPE_INCOME = "income";
 		public static final String TYPE_PAYABLE = "payable";

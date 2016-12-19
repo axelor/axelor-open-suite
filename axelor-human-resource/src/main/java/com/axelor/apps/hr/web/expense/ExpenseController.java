@@ -90,7 +90,7 @@ public class ExpenseController {
 		}
 		if(expenseLine.getAnalyticDistributionTemplate() != null){
 			expenseLine = expenseServiceProvider.get().createAnalyticDistributionWithTemplate(expenseLine);
-			response.setValue("analyticDistributionLineList", expenseLine.getAnalyticDistributionLineList());
+			response.setValue("analyticMoveLineList", expenseLine.getAnalyticMoveLineList());
 		}
 		else{
 			throw new AxelorException(I18n.get("No template selected"), IException.CONFIGURATION_ERROR);
@@ -106,7 +106,7 @@ public class ExpenseController {
 		}
 		if(Beans.get(GeneralService.class).getGeneral().getManageAnalyticAccounting()){
 			expenseLine = expenseServiceProvider.get().computeAnalyticDistribution(expenseLine);
-			response.setValue("analyticDistributionLineList", expenseLine.getAnalyticDistributionLineList());
+			response.setValue("analyticMoveLineList", expenseLine.getAnalyticMoveLineList());
 		}
 	}
 	

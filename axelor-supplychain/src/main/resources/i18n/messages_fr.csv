@@ -19,6 +19,7 @@
 "An invoice not canceled already exists for the outgoing stock move %s","Une facture non annulée existe déjà pour le BL %s",,
 "Analytic distribution lines",,,
 "Analytic distribution template",,,
+"Analytic move lines",,,
 "Archived ?","Archivé ?",,
 "Are you sure you want to generate invoice for all subscriptions ?","Etes-vous sûr de vouloir générer une facture pour tous les abonnements ?",,
 "Are you sure you want to generate invoice for selected subscriptions ?","Etes-vous sûr de vouloir générer une facture pour les abonnements sélectionnés ?",,

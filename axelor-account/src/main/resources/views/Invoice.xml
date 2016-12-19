@@ -169,7 +169,9 @@
 					<field name="reminderBlockingReason" form-view="stop-reason-form" grid-view="stop-reason-grid" />
 				</panel>
 			</panel>
-			<panel-related title="Payments details" field="invoicePaymentList" colSpan="12" grid-view="invoice-payment-grid" form-view="invoice-payment-form" canNew="false" canRemove="false"/>
+
+			<panel-related title="Payments details" field="invoicePaymentList" colSpan="12"  grid-view="invoice-payment-grid" form-view="invoice-payment-form" canNew="false" canRemove="false" showIf="statusSelect == 3 || statusSelect == 4"/>
+
 			<panel  name="directDebit" title="Direct debit" showIf="statusSelect == 3" showTitle="false">
 				<panel name="paymentSchedule" title="Payment schedule" colSpan="12" >
 					<field name="schedulePaymentOk" readonly="true" showIf="schedulePaymentOk"/>
@@ -505,7 +507,7 @@
 	<!-- DOMAIN -->
 	
 	<action-attrs name="action-invoice-partner-account-domain">
-		<attribute name="domain" for="partnerAccount" expr="eval: &quot;self.company.id = ${company.id} AND (self.accountType.nameSelect = 'receivable' OR self.accountType.nameSelect = 'payable') AND self.reconcileOk = true &quot;" if="company"/>
+		<attribute name="domain" for="partnerAccount" expr="eval: &quot;self.company.id = ${company.id} AND (self.accountType.technicalTypeSelect = 'receivable' OR self.accountType.technicalTypeSelect = 'payable') AND self.reconcileOk = true &quot;" if="company"/>
 	</action-attrs>
 	
 	<action-attrs name="action-invoice-attrs-domain-priceList">

@@ -180,7 +180,8 @@ public class MoveLineReportController {
 
 			logger.debug("Type selected : {}" , moveLineReport.getTypeSelect());
 
-			if((moveLineReport.getTypeSelect() >= MoveLineReportRepository.EXPORT_PAYROLL_JOURNAL_ENTRY )) {
+			if((moveLineReport.getTypeSelect() >= MoveLineReportRepository.EXPORT_PAYROLL_JOURNAL_ENTRY 
+					&& moveLineReport.getTypeSelect() < MoveLineReportRepository.REPORT_ANALYTIC_BALANCE )) {
 				
 				MoveLineExportService moveLineExportService = Beans.get(MoveLineExportService.class);
 

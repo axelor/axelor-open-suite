@@ -24,6 +24,7 @@
     <boolean name="globalByPartner" title="Subtotal by partner" default="false"/>
     <boolean name="globalByPost" title="Subtotal by cash register" default="false"/>
     <boolean name="globalByDate" title="Subtotal by date" default="false"/>
+    <many-to-one name="analyticJournal" ref="com.axelor.apps.account.db.AnalyticJournal" title="Analytic Journal"/>
     
     <boolean name="detailed" title="Detailed" default="false"/>
     <integer name="statusSelect" title="Status" selection="iaccount.move.line.report.status.select" readonly="true" default="1"/>
@@ -46,6 +47,7 @@
 		public static final int REPORT_VAT_STATEMENT = 12;
 		public static final int REPORT_PAYMENT_DIFFERENCES = 13;
 		public static final int REPORT_GENERAL_LEDGER2 = 14;
+		public static final int REPORT_ANALYTIC_BALANCE = 2000;
 		
 		// EXPORT TYPE SELECT
 		public static final int EXPORT_PAYROLL_JOURNAL_ENTRY = 1000; 

@@ -45,9 +45,7 @@
 <!-- 	<input file="account_accountManagement.csv" separator=";" type="com.axelor.apps.account.db.AccountManagement" search="self.importId = :importId" > -->
 <!-- 		<bind search="self.importId = :company_id" to="company" update="true" /> -->
 <!-- 	</input> -->
-	
-<!-- 	<input file="account_analyticAccountManagement.csv" separator=";" type="com.axelor.apps.account.db.AnalyticAccountManagement" search="self.importId = :importId"/> -->
-	
+		
 <!-- 	<input file="account_payboxConfig.csv" separator=";" type="com.axelor.apps.account.db.PayboxConfig" search="self.importId = :importId" /> -->
 	
 <!-- 	<input file="account_cfonbConfig.csv" separator=";" type="com.axelor.apps.account.db.CfonbConfig" search="self.importId = :importId" /> -->

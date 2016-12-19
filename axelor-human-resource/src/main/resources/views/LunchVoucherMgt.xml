@@ -5,10 +5,8 @@
     
     <grid name="lunch-voucher-mgt-grid" title="Lunch Voucher Management" model="com.axelor.apps.hr.db.LunchVoucherMgt">
         <field name="company"/>
-        <field name="payStartDate"/>
-        <field name="payEndDate"/>
-        <field name="leaveStartDate"/>
-        <field name="leaveEndDate"/>
+        <field name="payPeriod"/>
+        <field name="leavePeriod"/>
         <field name="statusSelect"/>
         <field name="requestedLunchVouchers"/>
         <field name="wageShare"/>
@@ -23,14 +21,8 @@
     		<field name="statusSelect" showTitle="false" colSpan="12" widget="NavSelect"/>
     		<field name="company" colSpan="6" onChange="action-lunch-voucher-record-company-onchange"/>
     		<spacer colSpan="6"/>
-    		<panel name="payPeriod" title="Pay Period">
-      			<field name="payStartDate" widget="Date"/>
-    			<field name="payEndDate" widget="Date"/>
-    		</panel>
-    		<panel name="leavePeriod" title="Leave Period">
-      			<field name="leaveStartDate" widget="Date"/>
-      			<field name="leaveEndDate" widget="Date"/>
-    		</panel>
+    		<field name="payPeriod"/>
+        	<field name="leavePeriod"/>
   		</panel>
   		<panel name="charges" title="Charges and Contributions" sidebar="true">
 			<field name="wageShare"/>
@@ -63,10 +55,10 @@
 	
 	<action-record name="action-lunch-voucher-record-default-onnew" model="com.axelor.apps.hr.db.LunchVoucherMgt">
 		<field name="company" expr="eval:__user__.activeCompany"/>
-		<field name="payStartDate" expr="eval:__config__.generalService.getTodayDate()"/>
-		<field name="leaveStartDate" expr="eval:__config__.generalService.getTodayDate()"/>
 		<field name="wageShare" expr="eval: __user__.activeCompany?.hrConfig?.wageShare"/>
 		<field name="employersShare" expr="eval: __user__.activeCompany?.hrConfig?.employersShare"/>
+		<field name="payPeriod" expr="eval: __repo__.of(Period).all().filter('self.fromDate &lt;= ?1 AND self.toDate &gt;= ?1',__date__).fetchOne()"/>
+		<field name="leavePeriod" expr="eval: __repo__.of(Period).all().filter('self.fromDate &lt;= ?1 AND self.toDate &gt;= ?1',__date__).fetchOne()"/>
 	</action-record>
 		
 	<action-record name="action-lunch-voucher-record-company-onchange" model="com.axelor.apps.hr.db.LunchVoucherMgt">

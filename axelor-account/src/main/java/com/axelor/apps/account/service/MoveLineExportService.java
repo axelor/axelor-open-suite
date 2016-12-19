@@ -35,7 +35,7 @@ import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.axelor.apps.account.db.AnalyticDistributionLine;
+import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.JournalType;
 import com.axelor.apps.account.db.Move;
@@ -1079,7 +1079,7 @@ public class MoveLineExportService {
 
 
 									String analyticAccounts = "";
-									for (AnalyticDistributionLine analyticDistributionLine : moveLine3.getAnalyticDistributionLineList()) {
+									for (AnalyticMoveLine analyticDistributionLine : moveLine3.getAnalyticMoveLineList()) {
 										analyticAccounts = analyticAccounts + analyticDistributionLine.getAnalyticAccount().getCode() + "/";
 									}
 

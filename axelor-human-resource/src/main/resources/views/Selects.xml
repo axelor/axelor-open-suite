@@ -137,4 +137,11 @@
 		<option value="2">Calculated</option>
 	</selection>
 	
+	<selection name="account.analytic.move.line.status.select" id="hr.analytic.move.line.status.select">
+		<option value="1">Forecast (order)</option>
+		<option value="2">Forecast (invoice)</option>
+		<option value="3">Real (accounting)</option>
+		<option value="4">Forecast (expense)</option>
+	</selection>
+	
 </object-views>

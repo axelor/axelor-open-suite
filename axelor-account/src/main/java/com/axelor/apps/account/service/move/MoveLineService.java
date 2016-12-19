@@ -33,7 +33,7 @@ import org.slf4j.LoggerFactory;
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountManagement;
 import com.axelor.apps.account.db.AnalyticAccount;
-import com.axelor.apps.account.db.AnalyticDistributionLine;
+import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.InvoiceLineTax;
@@ -41,11 +41,10 @@ import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.Tax;
-import com.axelor.apps.account.db.repo.AnalyticDistributionLineRepository;
+import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.AccountManagementServiceAccountImpl;
-import com.axelor.apps.account.service.AnalyticDistributionLineService;
 import com.axelor.apps.account.service.AnalyticMoveLineService;
 import com.axelor.apps.account.service.FiscalPositionServiceAccountImpl;
 import com.axelor.apps.account.service.TaxAccountService;
@@ -72,9 +71,8 @@ public class MoveLineService {
 	protected TaxAccountService taxAccountService;
 	protected FiscalPositionServiceAccountImpl fiscalPositionService;
 	protected LocalDate today;
-	protected AnalyticDistributionLineService analyticDistributionLineService;
-	protected GeneralService generalService;
 	protected AnalyticMoveLineService analyticMoveLineService;
+	protected GeneralService generalService;
 	protected CurrencyService currencyService;
 	protected CompanyConfigService companyConfigService;
 
@@ -83,14 +81,13 @@ public class MoveLineService {
 	@Inject
 	public MoveLineService(AccountManagementServiceAccountImpl accountManagementService, TaxAccountService taxAccountService,
 			FiscalPositionServiceAccountImpl fiscalPositionService, GeneralService generalService,
-			AnalyticDistributionLineService analyticDistributionLineService, AnalyticMoveLineService analyticMoveLineService, 
+			AnalyticMoveLineService analyticMoveLineService, 
 			CurrencyService currencyService, CompanyConfigService companyConfigService) {
 		this.accountManagementService = accountManagementService;
 		this.taxAccountService = taxAccountService;
 		this.fiscalPositionService = fiscalPositionService;
-		this.analyticDistributionLineService = analyticDistributionLineService;
-		this.generalService = generalService;
 		this.analyticMoveLineService = analyticMoveLineService;
+		this.generalService = generalService;
 		this.currencyService = currencyService;
 		this.companyConfigService = companyConfigService;
 		
@@ -99,11 +96,11 @@ public class MoveLineService {
 	
 	
 	public MoveLine computeAnalyticDistribution(MoveLine moveLine){
-		List<AnalyticDistributionLine> analyticDistributionLineList = moveLine.getAnalyticDistributionLineList();
+		List<AnalyticMoveLine> analyticDistributionLineList = moveLine.getAnalyticMoveLineList();
 		if(analyticDistributionLineList != null && generalService.getGeneral().getAnalyticDistributionTypeSelect() != GeneralRepository.DISTRIBUTION_TYPE_FREE){
-			for (AnalyticDistributionLine analyticDistributionLine : analyticDistributionLineList) {
+			for (AnalyticMoveLine analyticDistributionLine : analyticDistributionLineList) {
 				analyticDistributionLine.setMoveLine(moveLine);
-				analyticDistributionLine.setAmount(analyticDistributionLineService.computeAmount(analyticDistributionLine));
+				analyticDistributionLine.setAmount(analyticMoveLineService.computeAmount(analyticDistributionLine));
 				analyticDistributionLine.setDate(generalService.getTodayDate());
 			}
 		}
@@ -301,10 +298,13 @@ public class MoveLineService {
 					MoveLine moveLine = this.createMoveLine(move, partner, account2, invoiceLine.getExTaxTotal(), companyExTaxTotal, null, 
 							!isDebitCustomer, invoice.getInvoiceDate(), null, moveLineId++, invoice.getInvoiceId());
 					
-					if(invoiceLine.getAnalyticDistributionLineList() != null)  {
-						for (AnalyticDistributionLine analyticDistributionLineIt : invoiceLine.getAnalyticDistributionLineList()) {
-							AnalyticDistributionLine analyticDistributionLine = Beans.get(AnalyticDistributionLineRepository.class).copy(analyticDistributionLineIt, false);
-							moveLine.addAnalyticDistributionLineListItem(analyticDistributionLine);
+					if(invoiceLine.getAnalyticMoveLineList() != null)  {
+						for (AnalyticMoveLine invoiceAnalyticMoveLine : invoiceLine.getAnalyticMoveLineList()) {
+							AnalyticMoveLine analyticMoveLine = Beans.get(AnalyticMoveLineRepository.class).copy(invoiceAnalyticMoveLine, false);
+							analyticMoveLine.setStatusSelect(AnalyticMoveLineRepository.STATUS_REAL_ACCOUNTING);
+							analyticMoveLine.setInvoiceLine(null);
+							analyticMoveLine.setAccount(moveLine.getAccount());
+							moveLine.addAnalyticMoveLineListItem(analyticMoveLine);
 						}
 					}
 					moveLine.setTaxLine(invoiceLine.getTaxLine());
@@ -357,20 +357,21 @@ public class MoveLineService {
 					
 					MoveLine moveLineIt = map.get(keys);
 					int count = 0;
-					if(moveLineIt.getAnalyticDistributionLineList() == null && moveLine.getAnalyticDistributionLineList() == null){
+					if(moveLineIt.getAnalyticMoveLineList() == null && moveLine.getAnalyticMoveLineList() == null){
 						return moveLineIt;
 					}
-					else if(moveLineIt.getAnalyticDistributionLineList() == null || moveLine.getAnalyticDistributionLineList() == null){
+					else if(moveLineIt.getAnalyticMoveLineList() == null || moveLine.getAnalyticMoveLineList() == null){
 						break;
 					}
-					List<AnalyticDistributionLine> list1 = moveLineIt.getAnalyticDistributionLineList();
-					List<AnalyticDistributionLine> list2 = moveLine.getAnalyticDistributionLineList();
-					List<AnalyticDistributionLine> copyList = new ArrayList<AnalyticDistributionLine>(list1);
+					List<AnalyticMoveLine> list1 = moveLineIt.getAnalyticMoveLineList();
+					List<AnalyticMoveLine> list2 = moveLine.getAnalyticMoveLineList();
+					List<AnalyticMoveLine> copyList = new ArrayList<AnalyticMoveLine>(list1);
 					if(list1.size() == list2.size()){
-						for (AnalyticDistributionLine analyticDistributionLine : list2) {
-							for (AnalyticDistributionLine analyticDistributionLineIt : copyList) {
+						for (AnalyticMoveLine analyticDistributionLine : list2) {
+							for (AnalyticMoveLine analyticDistributionLineIt : copyList) {
 								if(analyticDistributionLine.getAnalyticAxis().equals(analyticDistributionLineIt.getAnalyticAxis()) &&
 										analyticDistributionLine.getAnalyticAccount().equals(analyticDistributionLineIt.getAnalyticAccount()) &&
+										analyticDistributionLine.getAccount().equals(analyticDistributionLineIt.getAccount()) &&
 										analyticDistributionLine.getPercentage().equals(analyticDistributionLineIt.getPercentage()) &&
 										((analyticDistributionLine.getAnalyticJournal() == null && analyticDistributionLineIt.getAnalyticJournal() == null)
 												|| analyticDistributionLine.getAnalyticJournal().equals(analyticDistributionLineIt.getAnalyticJournal()))){
@@ -430,11 +431,12 @@ public class MoveLineService {
 				consolidateMoveLine.setCredit(consolidateMoveLine.getCredit().add(moveLine.getCredit()));
 				consolidateMoveLine.setDebit(consolidateMoveLine.getDebit().add(moveLine.getDebit()));
 				
-				if(consolidateMoveLine.getAnalyticDistributionLineList() != null && !consolidateMoveLine.getAnalyticDistributionLineList().isEmpty()){
-					for (AnalyticDistributionLine analyticDistributionLine : consolidateMoveLine.getAnalyticDistributionLineList()) {
-						for (AnalyticDistributionLine analyticDistributionLineIt : moveLine.getAnalyticDistributionLineList()) {
+				if(consolidateMoveLine.getAnalyticMoveLineList() != null && !consolidateMoveLine.getAnalyticMoveLineList().isEmpty()){
+					for (AnalyticMoveLine analyticDistributionLine : consolidateMoveLine.getAnalyticMoveLineList()) {
+						for (AnalyticMoveLine analyticDistributionLineIt : moveLine.getAnalyticMoveLineList()) {
 							if(analyticDistributionLine.getAnalyticAxis().equals(analyticDistributionLineIt.getAnalyticAxis()) &&
 									analyticDistributionLine.getAnalyticAccount().equals(analyticDistributionLineIt.getAnalyticAccount()) &&
+									analyticDistributionLine.getAccount().equals(analyticDistributionLineIt.getAccount()) &&
 									analyticDistributionLine.getPercentage().equals(analyticDistributionLineIt.getPercentage()) &&
 									((analyticDistributionLine.getAnalyticJournal() == null && analyticDistributionLineIt.getAnalyticJournal() == null)
 											|| analyticDistributionLine.getAnalyticJournal().equals(analyticDistributionLineIt.getAnalyticJournal()))){
