@@ -57,6 +57,7 @@ import com.axelor.apps.message.service.MailAccountService;
 import com.axelor.apps.message.service.MessageService;
 import com.axelor.apps.message.service.TemplateMessageService;
 import com.axelor.auth.db.User;
+import com.axelor.auth.db.repo.UserRepository;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
@@ -396,16 +397,18 @@ public class EventService {
 	@Transactional
 	public void sendMail(Event event, String email) throws AxelorException, MessagingException, IOException, ClassNotFoundException, InstantiationException, IllegalAccessException, ValidationException, ParseException, ICalendarException{
  
+		
 		EmailAddress emailAddress = Beans.get(EmailAddressRepository.class).all().filter("self.address = ?1", email).fetchOne();
+		User user = Beans.get(UserRepository.class).all().filter("self.partner.emailAddress.address = ?1", email).fetchOne();
 		if(emailAddress == null){
 			emailAddress = new EmailAddress(email);
 		}
-		Template guestAddedTemplate = Beans.get(CrmConfigService.class).getCrmConfig(event.getUser().getActiveCompany()).getMeetingGuestAddedTemplate();
+		Template guestAddedTemplate = Beans.get(CrmConfigService.class).getCrmConfig(user.getActiveCompany()).getMeetingGuestAddedTemplate();
 		Message message = new Message();
 		if(guestAddedTemplate == null){
 			
 			if(message.getFromEmailAddress() == null){
-				message.setFromEmailAddress(event.getUser().getPartner().getEmailAddress());
+				message.setFromEmailAddress(user.getPartner().getEmailAddress());
 			}
 			message.addToEmailAddressSetItem(emailAddress);
 			message.setSubject(event.getSubject());
@@ -414,7 +417,7 @@ public class EventService {
 		else{
 			message = Beans.get(TemplateMessageService.class).generateMessage(event, guestAddedTemplate);
 			if(message.getFromEmailAddress() == null){
-				message.setFromEmailAddress(event.getUser().getPartner().getEmailAddress());
+				message.setFromEmailAddress(user.getPartner().getEmailAddress());
 			}
 			message.addToEmailAddressSetItem(emailAddress);	
 		}

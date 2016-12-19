@@ -15,6 +15,7 @@
 	  		<field name="kilometricExpenseProduct" canView="false" domain="self.expense = true" widget="SuggestBox" form-view="product-expense-form" grid-view="product-expense-grid" />
 	  		<field name="publicHolidayPlanning" canNew="true"/>
 	  		<field name="weeklyPlanning" canNew="true"/>
+	  		<field name="sendMail"/>
 	  	</panel>
 	  	<panel-tabs>
     <panel name="timesheetTemplates" title="Timesheet Templates">
