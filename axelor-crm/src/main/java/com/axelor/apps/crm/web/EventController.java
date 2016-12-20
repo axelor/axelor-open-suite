@@ -291,34 +291,6 @@ public class EventController {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public void addUserGuest(ActionRequest request, ActionResponse response) throws ClassNotFoundException, InstantiationException, IllegalAccessException, AxelorException, MessagingException, IOException, ICalendarException, ValidationException, ParseException{
-		Event event = request.getContext().asType(Event.class);
-		if(request.getContext().containsKey("guestUser")){
-			User user = Beans.get(UserRepository.class).find(new Long(((Map<String, Object>) request.getContext().get("guestUser")).get("id").toString()));
-			if(user != null){
-				event = eventRepo.find(event.getId());
-				eventService.addUserGuest(user, event);
-			}
-		}
-		
-		response.setReload(true);
-	}
-	
-	@SuppressWarnings("unchecked")
-	public void addPartnerGuest(ActionRequest request, ActionResponse response) throws ClassNotFoundException, InstantiationException, IllegalAccessException, AxelorException, MessagingException, IOException, ICalendarException, ValidationException, ParseException{
-		Event event = request.getContext().asType(Event.class);
-		if(request.getContext().containsKey("guestPartner")){
-			Partner partner = Beans.get(PartnerRepository.class).find(new Long(((Map<String, Object>) request.getContext().get("guestPartner")).get("id").toString()));
-			if(partner != null){
-				event = eventRepo.find(event.getId());
-				eventService.addPartnerGuest(partner, event);
-			}
-		}
-		
-		response.setReload(true);
-	}
-	
-	@SuppressWarnings("unchecked")
 	public void addEmailGuest(ActionRequest request, ActionResponse response) throws ClassNotFoundException, InstantiationException, IllegalAccessException, AxelorException, MessagingException, IOException, ICalendarException, ValidationException, ParseException{
 		Event event = request.getContext().asType(Event.class);
 		if(request.getContext().containsKey("guestEmail")){

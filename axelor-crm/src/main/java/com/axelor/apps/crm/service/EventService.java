@@ -305,70 +305,7 @@ public class EventService {
 		message = Beans.get(MessageService.class).sendByEmail(message);
 	}
 	
-	@Transactional
-	public void addUserGuest(User user, Event event) throws ClassNotFoundException, InstantiationException, IllegalAccessException, AxelorException, MessagingException, IOException, ICalendarException, ValidationException, ParseException{
-		if(user.getPartner() != null && user.getPartner().getEmailAddress() != null){
-			String email = user.getPartner().getEmailAddress().getAddress();
-			if(event.getAttendees() != null && !Strings.isNullOrEmpty(email)){
-				boolean exist = false;
-				for (ICalendarUser attendee : event.getAttendees()) {
-					if(email.equals(attendee.getEmail())){
-						exist = true;
-						break;
-					}
-				}
-				if(!exist){
-					ICalendarUser calUser = new ICalendarUser();
-					calUser.setEmail(email);
-					calUser.setName(user.getFullName());
-					calUser.setUser(user);
-					event.addAttendee(calUser);
-					eventRepo.save(event);
-					if(event.getCalendarCrm() != null){
-						Beans.get(CalendarService.class).sync(event.getCalendarCrm());
-					}
-					this.sendMail(event, email);
-				}
-			}
-		}
-		else{
-			throw new AxelorException(I18n.get("This user doesn't have any partner or email address"),IException.CONFIGURATION_ERROR);
-		}
-	}
-	
-	@Transactional
-	public void addPartnerGuest(Partner partner, Event event) throws ClassNotFoundException, InstantiationException, IllegalAccessException, AxelorException, MessagingException, IOException, ICalendarException, ValidationException, ParseException{
-		if(partner.getEmailAddress() != null){
-			String email = partner.getEmailAddress().getAddress();
-			if(event.getAttendees() != null && !Strings.isNullOrEmpty(email)){
-				boolean exist = false;
-				for (ICalendarUser attendee : event.getAttendees()) {
-					if(email.equals(attendee.getEmail())){
-						exist = true;
-						break;
-					}
-				}
-				if(!exist){
-					ICalendarUser calUser = new ICalendarUser();
-					calUser.setEmail(email);
-					calUser.setName(partner.getFullName());
-					if(partner.getUser() != null){
-						calUser.setUser(partner.getUser());
-					}
-					event.addAttendee(calUser);
-					eventRepo.save(event);
-					if(event.getCalendarCrm() != null){
-						Beans.get(CalendarService.class).sync(event.getCalendarCrm());
-					}
-					this.sendMail(event, email);
-					
-				}
-			}
-		}
-		else{
-			throw new AxelorException(I18n.get("This partner doesn't have any email address"),IException.CONFIGURATION_ERROR);
-		}
-	}
+
 	
 	@Transactional
 	public void addEmailGuest(EmailAddress email, Event event) throws ClassNotFoundException, InstantiationException, IllegalAccessException, AxelorException, MessagingException, IOException, ICalendarException, ValidationException, ParseException{
