@@ -31,6 +31,7 @@
   		<panel name="action" sidebar="true">
     		<button name="calculate" title="Calculate" colSpan="12" onClick="save,action-lunch-voucher-method-calculate,action-lunch-voucher-method-check-stock" readonlyIf="statusSelect != 1"/>
     		<button name="generateInvoice" title="Generate control invoice" colSpan="12" onClick="save,action-lunch-voucher-record-status-generate,save" readonlyIf="statusSelect != 2"/>
+  			<button name="export" title="Export" colSpan="12" onClick="save, action-lunch-voucher-method-export"/>
   		</panel>
   		<panel name="info" sidebar="true">
     		<panel title="Requested lunch vouchers on the period">
@@ -82,6 +83,10 @@
 	
 	<action-method name="action-lunch-voucher-method-update-total">
 		<call class="com.axelor.apps.hr.web.lunch.voucher.LunchVoucherMgtController" method="updateTotal"/>
+	</action-method>
+	
+	<action-method name="action-lunch-voucher-method-export">
+		<call class="com.axelor.apps.hr.web.lunch.voucher.LunchVoucherMgtController" method="exportLunchVoucherMgt"/>
 	</action-method>
 	
 	
