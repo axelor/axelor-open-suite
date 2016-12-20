@@ -9,8 +9,8 @@
         <field name="leavePeriod"/>
         <field name="statusSelect"/>
         <field name="requestedLunchVouchers"/>
-        <field name="wageShare"/>
-        <field name="employersShare"/>
+        <field name="lunchVoucherWageShare"/>
+        <field name="lunchVoucherEmployersShare"/>
     </grid>
 
 	<form name="lunch-voucher-mgt-form" title="Lunch Voucher Management" model="com.axelor.apps.hr.db.LunchVoucherMgt" width="large" onNew="action-lunch-voucher-record-default-onnew">
@@ -25,8 +25,8 @@
         	<field name="leavePeriod"/>
   		</panel>
   		<panel name="charges" title="Charges and Contributions" sidebar="true">
-			<field name="wageShare"/>
-			<field name="employersShare"/>
+			<field name="lunchVoucherWageShare"/>
+			<field name="lunchVoucherEmployersShare"/>
 		</panel>
   		<panel name="action" sidebar="true">
     		<button name="calculate" title="Calculate" colSpan="12" onClick="save,action-lunch-voucher-method-calculate,action-lunch-voucher-method-check-stock" readonlyIf="statusSelect != 1"/>
@@ -56,15 +56,15 @@
 	
 	<action-record name="action-lunch-voucher-record-default-onnew" model="com.axelor.apps.hr.db.LunchVoucherMgt">
 		<field name="company" expr="eval:__user__.activeCompany"/>
-		<field name="wageShare" expr="eval: __user__.activeCompany?.hrConfig?.wageShare"/>
-		<field name="employersShare" expr="eval: __user__.activeCompany?.hrConfig?.employersShare"/>
+		<field name="lunchVoucherWageShare" expr="eval: __user__.activeCompany?.hrConfig?.lunchVoucherWageShare"/>
+		<field name="lunchVoucherEmployersShare" expr="eval: __user__.activeCompany?.hrConfig?.lunchVoucherEmployersShare"/>
 		<field name="payPeriod" expr="eval: __repo__.of(Period).all().filter('self.fromDate &lt;= ?1 AND self.toDate &gt;= ?1',__date__).fetchOne()"/>
 		<field name="leavePeriod" expr="eval: __repo__.of(Period).all().filter('self.fromDate &lt;= ?1 AND self.toDate &gt;= ?1',__date__).fetchOne()"/>
 	</action-record>
 		
 	<action-record name="action-lunch-voucher-record-company-onchange" model="com.axelor.apps.hr.db.LunchVoucherMgt">
-		<field name="wageShare" expr="eval: company?.hrConfig?.wageShare"/>
-		<field name="employersShare" expr="eval: company?.hrConfig?.employersShare"/>
+		<field name="lunchVoucherWageShare" expr="eval: company?.hrConfig?.lunchVoucherWageShare"/>
+		<field name="lunchVoucherEmployersShare" expr="eval: company?.hrConfig?.lunchVoucherEmployersShare"/>
 	</action-record>
 	
 	<action-record name="action-lunch-voucher-record-status-generate" model="com.axelor.apps.hr.db.LunchVoucherMgt">

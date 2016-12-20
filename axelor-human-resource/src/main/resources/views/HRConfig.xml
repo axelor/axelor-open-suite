@@ -16,10 +16,10 @@
 	  		<field name="publicHolidayPlanning" canNew="true"/>
 	  		<field name="weeklyPlanning" canNew="true"/>
 	  		<spacer colSpan="6"/>
-	  		<field name="wageShare"/>
-	  		<field name="employersShare"/>
 	  	</panel>
 	  	<panel name="lunchVoucher" title="Lunch Vouchers">
+	  		<field name="lunchVoucherWageShare"/>
+	  		<field name="lunchVoucherEmployersShare"/>
 	  		<field name="minStockLunchVoucher"/>
 	  		<field name="availableStockLunchVoucher"/>
 	  		<field name="supplierLunchVoucher" domain="self.isSupplier = true" form-view="partner-form" grid-view="partner-grid"/>

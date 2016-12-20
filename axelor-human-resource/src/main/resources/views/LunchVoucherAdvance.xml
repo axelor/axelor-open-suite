@@ -6,8 +6,8 @@
     <grid name="lunch-voucher-advance-grid" title="Lunch Voucher Advances" model="com.axelor.apps.hr.db.LunchVoucherAdvance" onNew="action-lunch-voucher-advance-record-default" editable="true" orderBy="-distributionDate">
         <field name="distributionDate"/>
         <field name="nbrLunchVouchers" aggregate="sum"/>
-        <field name="wageShare"/>
-        <field name="employersShare"/>
+        <field name="lunchVoucherWageShare"/>
+        <field name="lunchVoucherEmployersShare"/>
         <field name="comments"/>
     </grid>
     
@@ -16,8 +16,8 @@
 		<panel>
 		<field name="distributionDate"/>
         <field name="nbrLunchVouchers"/>
-        <field name="wageShare"/>
-        <field name="employersShare"/>
+        <field name="lunchVoucherWageShare"/>
+        <field name="lunchVoucherEmployersShare"/>
 	</panel>
 		<panel name="comment" title="Comment">
 			<field name="comments" colSpan="12" showTitle="false" widget="Text"/>
@@ -26,8 +26,8 @@
 	
 	<action-record name="action-lunch-voucher-advance-record-default" model="com.axelor.apps.hr.db.LunchVoucherAdvance">
 		<field name="distributionDate" expr="eval: __date__"/>
-		<field name="wageShare" expr="eval: __user__.activeCompany?.hrConfig?.wageShare"/>
-		<field name="employersShare" expr="eval: __user__.activeCompany?.hrConfig?.employersShare"/>
+		<field name="lunchVoucherWageShare" expr="eval: __user__.activeCompany?.hrConfig?.lunchVoucherWageShare"/>
+		<field name="lunchVoucherEmployersShare" expr="eval: __user__.activeCompany?.hrConfig?.lunchVoucherEmployersShare"/>
 	</action-record>
 	
 </object-views>
