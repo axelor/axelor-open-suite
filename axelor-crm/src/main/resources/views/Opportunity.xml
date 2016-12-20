@@ -132,7 +132,7 @@
  
 	</form>
  
-	<kanban columnBy="salesStageSelect" sequenceBy="id" onNew="opportunity.kanban.on.new , action-opportunity-group-new" limit="10"
+	<kanban columnBy="salesStageSelect" sequenceBy="orderByState" onNew="opportunity.kanban.on.new , action-opportunity-group-new" limit="10"
 	 name="opportunity-kanban" title="Opportunities" model="com.axelor.apps.crm.db.Opportunity">
 		<field name="name"/>
 		<field name="description"/>
