@@ -17,7 +17,7 @@
 		<panel name="main" >
 			<field name="name"/>
 			<field name="company" widget="SuggestBox" onChange="action-bank-statement-set-currency" form-view="company-form" grid-view="company-grid"/>
-			<field name="currency" form-view="currency-form" grid-view="currency-grid"/>
+			<field name="currency" canEdit="false" form-view="currency-form" grid-view="currency-grid"/>
 			<field name="fromDate"/>
 			<field name="toDate"/>
 			<field name="journal" domain="self.statusSelect = 1 AND self.company = :company" form-view="journal-form" grid-view="journal-grid"/>

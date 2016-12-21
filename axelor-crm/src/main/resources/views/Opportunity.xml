@@ -102,7 +102,7 @@
 		
 		<panel name="financialTerms" title="Financial terms" readonlyIf="salesStageSelect == 5 || salesStageSelect == 6">
 			<field name="amount" colSpan="3"/>
-			<field name="currency" colSpan="3" form-view="currency-form" grid-view="currency-grid"/>
+			<field name="currency" canEdit="false" colSpan="3" form-view="currency-form" grid-view="currency-grid"/>
 			<field name="bestCase" colSpan="3"/>
 			<field name="worstCase" colSpan="3"/>
 		</panel>

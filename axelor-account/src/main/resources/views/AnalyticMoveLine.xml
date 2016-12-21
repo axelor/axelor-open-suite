@@ -37,7 +37,7 @@
 	        <field name="date"/>
 	        <field name="percentage"/>
 	        <field name="amount"/>
-	        <field name="currency" form-view="currency-form" grid-view="currency-grid" />
+	        <field name="currency" canEdit="false" form-view="currency-form" grid-view="currency-grid" />
 	        <field name="projectTask" domain="self.imputable = true" if-module="axelor-business-project" form-view="project-task-form" grid-view="project-task-grid" />
   			<field name="account"/>
 			<field name="moveLine" form-view="move-line-form" grid-view="move-line-grid" showIf="moveLine"/>
