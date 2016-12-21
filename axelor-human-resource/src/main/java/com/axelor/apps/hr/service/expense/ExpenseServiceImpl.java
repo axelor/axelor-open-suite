@@ -137,7 +137,7 @@ public class ExpenseServiceImpl implements ExpenseService  {
 				analyticMoveLine.getPercentage().multiply(analyticMoveLine.getExpenseLine().getUntaxedAmount()
 				.divide(new BigDecimal(100),2,RoundingMode.HALF_UP)));
 		analyticMoveLine.setDate(generalService.getTodayDate());
-		analyticMoveLine.setStatusSelect(AnalyticMoveLineRepository.STATUS_FORECAST_INVOICE);
+		analyticMoveLine.setTypeSelect(AnalyticMoveLineRepository.STATUS_FORECAST_INVOICE);
 		
 	}
 	

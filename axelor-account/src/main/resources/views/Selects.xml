@@ -349,7 +349,7 @@
 		<option value="AFB320">AFB 320</option>
 	</selection>
 	
-	<selection name="account.analytic.move.line.status.select">
+	<selection name="account.analytic.move.line.type.select">
 		<option value="1">Forecast (order)</option>
 		<option value="2">Forecast (invoice)</option>
 		<option value="3">Real (accounting)</option>

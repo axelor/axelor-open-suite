@@ -189,7 +189,7 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
 		for (AnalyticMoveLine originalAnalyticMoveLine : originalAnalyticMoveLineList) {
 			
 			AnalyticMoveLine analyticMoveLine = Beans.get(AnalyticMoveLineRepository.class).copy(originalAnalyticMoveLine, false);
-			analyticMoveLine.setStatusSelect(AnalyticMoveLineMngtRepository.STATUS_FORECAST_INVOICE);
+			analyticMoveLine.setTypeSelect(AnalyticMoveLineMngtRepository.STATUS_FORECAST_INVOICE);
 			invoiceLine.addAnalyticMoveLineListItem(analyticMoveLine);
 		}
 				

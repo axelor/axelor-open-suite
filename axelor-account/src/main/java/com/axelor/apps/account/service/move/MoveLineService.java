@@ -301,7 +301,7 @@ public class MoveLineService {
 					if(invoiceLine.getAnalyticMoveLineList() != null)  {
 						for (AnalyticMoveLine invoiceAnalyticMoveLine : invoiceLine.getAnalyticMoveLineList()) {
 							AnalyticMoveLine analyticMoveLine = Beans.get(AnalyticMoveLineRepository.class).copy(invoiceAnalyticMoveLine, false);
-							analyticMoveLine.setStatusSelect(AnalyticMoveLineRepository.STATUS_REAL_ACCOUNTING);
+							analyticMoveLine.setTypeSelect(AnalyticMoveLineRepository.STATUS_REAL_ACCOUNTING);
 							analyticMoveLine.setInvoiceLine(null);
 							analyticMoveLine.setAccount(moveLine.getAccount());
 							moveLine.addAnalyticMoveLineListItem(analyticMoveLine);

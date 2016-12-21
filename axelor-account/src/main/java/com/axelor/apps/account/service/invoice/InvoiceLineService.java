@@ -94,7 +94,7 @@ public class InvoiceLineService {
 		analyticMoveLine.setInvoiceLine(invoiceLine);
 		analyticMoveLine.setAmount(analyticMoveLineService.computeAmount(analyticMoveLine));
 		analyticMoveLine.setDate(generalService.getTodayDate());
-		analyticMoveLine.setStatusSelect(AnalyticMoveLineRepository.STATUS_FORECAST_INVOICE);
+		analyticMoveLine.setTypeSelect(AnalyticMoveLineRepository.STATUS_FORECAST_INVOICE);
 		
 	}
 	

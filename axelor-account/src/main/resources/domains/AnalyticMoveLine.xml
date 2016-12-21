@@ -19,7 +19,7 @@
     <many-to-one name="analyticJournal" ref="com.axelor.apps.account.db.AnalyticJournal" title="Analytic Journal"/>
     <many-to-one name="account" ref="com.axelor.apps.account.db.Account" title="Account"/>
     
-    <integer name="statusSelect" title="Status" selection="account.analytic.move.line.status.select" default="1"/>
+    <integer name="typeSelect" title="Type" selection="account.analytic.move.line.type.select" default="1"/>
     
     <extra-code><![CDATA[
 	

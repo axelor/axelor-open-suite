@@ -95,7 +95,7 @@ public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImp
 		analyticMoveLine.setSaleOrderLine(saleOrderLine);
 		analyticMoveLine.setAmount(analyticMoveLineService.computeAmount(analyticMoveLine));
 		analyticMoveLine.setDate(generalService.getTodayDate());
-		analyticMoveLine.setStatusSelect(AnalyticMoveLineRepository.STATUS_FORECAST_ORDER);
+		analyticMoveLine.setTypeSelect(AnalyticMoveLineRepository.STATUS_FORECAST_ORDER);
 		
 	}
 	
