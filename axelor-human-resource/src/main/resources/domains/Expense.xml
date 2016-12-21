@@ -31,15 +31,14 @@
       
       <string name="fullName" namecolumn="true" readonly="true">
       <![CDATA[
-      String name="";
-      if(this.getUser().getFullName() != null ){
-      	name = this.getUser().getFullName();
-      	if(this.getCreatedOn() != null){
-      		String date = this.getCreatedOn().toString("yyyyMMdd");
-      		String hours = this.getCreatedOn().toString("HH:mm");
-      		name = name.concat(" ").concat(date).concat(" ").concat(hours);
-      	}
-      };
+      String fullName = "";
+      if(this.getUser() != null)  {
+      	 fullName = this.getUser().getFullName();
+      }
+      if(this.getCreatedOn() != null){
+      	fullName = fullName.concat(" ").concat(this.getCreatedOn().toString("yyyyMMdd HH:mm"));
+      }
+      return fullName;
 	  ]]>
       </string>
   </entity>
