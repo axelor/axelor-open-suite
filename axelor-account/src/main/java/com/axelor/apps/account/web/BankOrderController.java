@@ -106,6 +106,7 @@ public class BankOrderController {
 		}
 	}
 	
+	@SuppressWarnings("rawtypes")
 	public void sign(ActionRequest request, ActionResponse  response) throws AxelorException{
 		
 		BankOrder bankOrder  = JPA.em().find(BankOrder.class, new Long((Integer)((Map)request.getContext().get("_contextBankOrder")).get("id")));
@@ -185,6 +186,7 @@ public class BankOrderController {
 	}
 	
 	
+	@SuppressWarnings("unchecked")
 	public void merge(ActionRequest request, ActionResponse response ) {
 
 		try {

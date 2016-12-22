@@ -448,6 +448,7 @@ public class StockMoveServiceImpl implements StockMoveService {
 		return selected;
 	}
 
+	@SuppressWarnings("rawtypes")
 	@Override
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public Boolean splitStockMoveLinesSpecial(List<HashMap> stockMoveLines, BigDecimal splitQty){

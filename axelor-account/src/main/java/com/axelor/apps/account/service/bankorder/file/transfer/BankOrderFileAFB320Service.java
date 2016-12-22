@@ -24,9 +24,6 @@ import java.util.List;
 import javax.xml.bind.JAXBException;
 import javax.xml.datatype.DatatypeConfigurationException;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.axelor.apps.account.db.BankOrder;
 import com.axelor.apps.account.db.BankOrderEconomicReason;
 import com.axelor.apps.account.db.BankOrderLine;
@@ -46,8 +43,6 @@ import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 
 public class BankOrderFileAFB320Service extends BankOrderFileService  {
-
-	private final Logger log = LoggerFactory.getLogger( getClass() );
 
 	protected String registrationCode;
 	protected CfonbToolService cfonbToolService;

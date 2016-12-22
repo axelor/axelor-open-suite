@@ -76,6 +76,7 @@ public class LocationController {
 		}
 	}
 	
+	@SuppressWarnings("unchecked")
 	public void createInventory(ActionRequest request, ActionResponse response) throws Exception {
 		Context context = request.getContext();
 		LocalDate date = new LocalDate(context.get("inventoryDate"));

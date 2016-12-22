@@ -24,9 +24,6 @@ import javax.xml.bind.JAXBException;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.axelor.apps.account.db.BankOrder;
 import com.axelor.apps.account.db.BankOrderLine;
 import com.axelor.apps.account.service.bankorder.file.BankOrderFileService;
@@ -56,9 +53,6 @@ import com.google.inject.Inject;
 
 public class BankOrderFile00100102Service extends BankOrderFileService  {
 
-	private final Logger log = LoggerFactory.getLogger( getClass() );
-
-	
 	@Inject
 	public BankOrderFile00100102Service(BankOrder bankOrder)  {
 		

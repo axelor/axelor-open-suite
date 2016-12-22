@@ -76,6 +76,7 @@ public class MoveLineReportServiceImpl implements MoveLineReportService  {
 	}
 
 
+	@SuppressWarnings("unchecked")
 	public String getMoveLineList(MoveLineReport moveLineReport) throws AxelorException  {
 
 		this.buildQuery(moveLineReport);

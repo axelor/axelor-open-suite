@@ -205,6 +205,7 @@ public class StockMoveController {
 
 	}
 
+	@SuppressWarnings("unchecked")
 	public void  splitStockMoveLinesUnit(ActionRequest request, ActionResponse response) {
 		List<StockMoveLine> stockMoveLines = (List<StockMoveLine>) request.getContext().get("stockMoveLineList");
 		if(stockMoveLines == null){
@@ -219,6 +220,7 @@ public class StockMoveController {
 		response.setCanClose(true);
 	}
 
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public void  splitStockMoveLinesSpecial(ActionRequest request, ActionResponse response) {
 		List<HashMap> stockMoveLines = (List<HashMap>) request.getContext().get("stockMoveLineList");
 		if(stockMoveLines == null){
