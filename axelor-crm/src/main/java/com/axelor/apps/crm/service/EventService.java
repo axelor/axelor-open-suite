@@ -400,44 +400,52 @@ public class EventService {
 		
 		EmailAddress emailAddress = Beans.get(EmailAddressRepository.class).all().filter("self.address = ?1", email).fetchOne();
 		User user = Beans.get(UserRepository.class).all().filter("self.partner.emailAddress.address = ?1", email).fetchOne();
-		if(emailAddress == null){
-			emailAddress = new EmailAddress(email);
-		}
-		Template guestAddedTemplate = Beans.get(CrmConfigService.class).getCrmConfig(user.getActiveCompany()).getMeetingGuestAddedTemplate();
-		Message message = new Message();
-		if(guestAddedTemplate == null){
+		
+		
+		if(user.getActiveCompany().getCrmConfig().getSendMail() == true) {
+			if(emailAddress == null){
+				emailAddress = new EmailAddress(email);
+			}
 			
-			if(message.getFromEmailAddress() == null){
-				message.setFromEmailAddress(user.getPartner().getEmailAddress());
+			Template guestAddedTemplate = Beans.get(CrmConfigService.class).getCrmConfig(user.getActiveCompany()).getMeetingGuestAddedTemplate();
+			Message message = new Message();
+			if(guestAddedTemplate == null){
+				
+				if(message.getFromEmailAddress() == null){
+					message.setFromEmailAddress(user.getPartner().getEmailAddress());
+				}
+				message.addToEmailAddressSetItem(emailAddress);
+				message.setSubject(event.getSubject());
+				message.setMailAccount(Beans.get(MailAccountService.class).getDefaultMailAccount());
 			}
-			message.addToEmailAddressSetItem(emailAddress);
-			message.setSubject(event.getSubject());
-			message.setMailAccount(Beans.get(MailAccountService.class).getDefaultMailAccount());
-		}
+			else{
+				message = Beans.get(TemplateMessageService.class).generateMessage(event, guestAddedTemplate);
+				if(message.getFromEmailAddress() == null){
+					message.setFromEmailAddress(user.getPartner().getEmailAddress());
+				}
+				message.addToEmailAddressSetItem(emailAddress);	
+			}
+			if(event.getUid() != null){
+				CalendarService calendarService = Beans.get(CalendarService.class);
+				Calendar cal = calendarService.getCalendar(event.getUid(), event.getCalendarCrm());
+				cal.getProperties().add(Method.REQUEST);
+				File file = calendarService.export(cal);
+				Path filePath = file.toPath();
+				MetaFile metaFile = new MetaFile();
+				metaFile.setFileName( file.getName() );
+				metaFile.setFileType( Files.probeContentType( filePath ) );
+				metaFile.setFileSize( Files.size( filePath ) );
+				metaFile.setFilePath( file.getName() );
+				Set<MetaFile> fileSet = new HashSet<MetaFile>();
+				fileSet.add(metaFile);
+				Beans.get(MessageRepository.class).save(message);
+				Beans.get(MessageService.class).attachMetaFiles(message, fileSet);
+			}
+			message = Beans.get(MessageService.class).sendByEmail(message);
+		} 
 		else{
-			message = Beans.get(TemplateMessageService.class).generateMessage(event, guestAddedTemplate);
-			if(message.getFromEmailAddress() == null){
-				message.setFromEmailAddress(user.getPartner().getEmailAddress());
-			}
-			message.addToEmailAddressSetItem(emailAddress);	
+			throw new AxelorException(I18n.get("You must enable sending mail in CRM Config"),IException.CONFIGURATION_ERROR);
 		}
-		if(event.getUid() != null){
-			CalendarService calendarService = Beans.get(CalendarService.class);
-			Calendar cal = calendarService.getCalendar(event.getUid(), event.getCalendarCrm());
-			cal.getProperties().add(Method.REQUEST);
-			File file = calendarService.export(cal);
-			Path filePath = file.toPath();
-			MetaFile metaFile = new MetaFile();
-			metaFile.setFileName( file.getName() );
-			metaFile.setFileType( Files.probeContentType( filePath ) );
-			metaFile.setFileSize( Files.size( filePath ) );
-			metaFile.setFilePath( file.getName() );
-			Set<MetaFile> fileSet = new HashSet<MetaFile>();
-			fileSet.add(metaFile);
-			Beans.get(MessageRepository.class).save(message);
-			Beans.get(MessageService.class).attachMetaFiles(message, fileSet);
-		}
-		message = Beans.get(MessageService.class).sendByEmail(message);
 	}
 	
 	@Transactional
