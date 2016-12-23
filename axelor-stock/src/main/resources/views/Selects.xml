@@ -43,7 +43,7 @@
 		<option value="3">Production order</option>
 	</selection>
 	
-	<selection name="stock.move.line.accordance.select">
+	<selection name="stock.move.line.conformity.select">
 		<option value="1">Compliant</option>
 		<option value="2">Non compliant</option>
 	</selection>

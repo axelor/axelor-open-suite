@@ -13,7 +13,7 @@
         <field name="unitPriceTaxed" hidden="true"/>
         <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
         <field name="trackingNumber"/>
-        <field name="accordanceSelect"/>
+        <field name="conformitySelect"/>
     </grid>
     
     <grid name="stock-move-line-split-grid" title="Stock move lines" model="com.axelor.apps.stock.db.StockMoveLine" editable="true">
@@ -25,7 +25,7 @@
         <field name="unitPriceTaxed" hidden="true"/>
         <field name="unit" readonly="true" form-view="unit-form" grid-view="unit-grid"/>
         <field name="trackingNumber" readonly="true"/>
-        <field name="accordanceSelect" readonly="true"/>
+        <field name="conformitySelect" readonly="true"/>
     </grid>
     
     <form name="stock-move-line-form" title="Stock move line" model="com.axelor.apps.stock.db.StockMoveLine"
@@ -40,7 +40,7 @@
         	<field name="unitPriceTaxed" hidden="true"/>
 	        <field name="unit" canEdit="false" colSpan="3" form-view="unit-form" grid-view="unit-grid"/>
 	        <field name="trackingNumber" onChange="action-stock-move-line-record-product"/>
-	        <field name="accordanceSelect"/>
+	        <field name="conformitySelect"/>
 	        <field name="businessProject" if-module="axelor-business-project" domain="self.businessProject = true AND self.typeSelect = 'project'" form-view="project-form" grid-view="project-grid"/>
 	        <field name="description" colSpan="12" widget="html" />
         </panel>
