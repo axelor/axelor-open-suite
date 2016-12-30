@@ -53,21 +53,21 @@
     		<panel name="description" title="Description">
     			<field name="description" colSpan="12" widget="html"/>
     		</panel>
-    		<panel name="projectTaskPanel" if="__config__.general.getProjectTaskInvoiceLines()" title="Project/Task" if-module="axelor-business-project">
+    		<panel name="projectTaskPanel" if="__config__.general.getAppProject() &amp;&amp; __config__.general.getProjectTaskInvoiceLines()" title="Project/Task" if-module="axelor-business-project">
 				<field name="project" onSelect="action-invoice-line-attrs-domain-project" form-view="project-task-form" grid-view="project-task-grid"/>
 			</panel>
 			<panel name="subscriptionPanel" title="Subscription">
 				<field name="subscriptionFromDate"/>
 				<field name="subscriptionToDate"/>
 			</panel>
-			<panel name="analyticDistribution" title="Analytic distribution" if-module="axelor-supplychain" if="__config__.general.getManageAnalyticAccounting()" onTabSelect="action-invoice-line-attrs-read-only-distribution-lines">
+			<panel name="analyticDistribution" title="Analytic distribution" if-module="axelor-supplychain" if="__config__.general.getAppAccount() &amp;&amp; __config__.general.getManageAnalyticAccounting()" onTabSelect="action-invoice-line-attrs-read-only-distribution-lines">
 				<field name="analyticDistributionTemplate" if="__config__.general.getAnalyticDistributionTypeSelect() == 1"/>
 				<button name="generateDistributionLinesButton" onClick="action-invoice-line-method-create-distribution" title="Generate distribution lines" showIf="analyticDistributionTemplate != null" if="__config__.general.getAnalyticDistributionTypeSelect() == 1"/>
 				<panel-related field="analyticMoveLineList" grid-view="analytic-move-line-distribution-grid" form-view="analytic-move-line-distribution-form" colSpan="12"/>
 			</panel>
-			<panel name="budgetPanel" title="Budget distribution" if="__config__.general.getManageBudget()">
-				<field name="budget" if="__config__.general.getManageBudget() &amp;&amp; !__config__.general.getManageMultiBudget()"/>
-				<field name="budgetDistributionList" colSpan="12" if="__config__.general.getManageBudget() &amp;&amp; __config__.general.getManageMultiBudget()"/>
+			<panel name="budgetPanel" title="Budget distribution" if="__config__.general.getAppBudget()">
+				<field name="budget" if="!__config__.general.getManageMultiBudget()"/>
+				<field name="budgetDistributionList" colSpan="12" if="__config__.general.getManageMultiBudget()"/>
 			</panel>
     	</panel-tabs>
         

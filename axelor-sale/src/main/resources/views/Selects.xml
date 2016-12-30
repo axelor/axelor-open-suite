@@ -51,4 +51,8 @@
 		<option value="2">Canceled</option>
 	</selection>
 	
+	<selection name="app.type.select" id="sale.app.type.select">
+		<option value="sale">Sale</option>
+	</selection>
+	
 </object-views>

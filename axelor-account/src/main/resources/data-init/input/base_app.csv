@@ -1,0 +1,4 @@
+"name";"code";"description";"typeSelect";"accountGeneral.importId";"invoiceGeneral.importId";"budgetGeneral.importId";"image"
+"Accounting";"ACC";"Accounting configuration ";"account";1;;;"app-account.png"
+"Invoicing";"INV";"Invoicing configuration";"invoice";;1;;"app-invoice.png"
+"Budget";"BUDGET";"Budget configuration";"budget";;;1;"app-budget.png"

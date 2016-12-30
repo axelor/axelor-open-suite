@@ -22,4 +22,8 @@
 		<option value="com.axelor.apps.project.db.ProjectTask">Project/Business/Task (Project)</option>
 	</selection>
 	
+	<selection name="app.type.select" id="project.app.type.select">
+		<option value="project">Project</option>
+	</selection>
+	
 </object-views>

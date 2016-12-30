@@ -25,7 +25,7 @@
 	
 	
 	<action-attrs name="action-extra-hours-line-attrs-title-project-task">
-		<attribute name="title" for="projectTask" expr="eval: __config__.general.getProjectTaskLabel()" if="!com.google.common.base.Strings.isNullOrEmpty(__config__.general.getProjectTaskLabel())"/>
+		<attribute name="title" for="projectTask" expr="eval: __config__.general.getProjectTaskLabel()" if="__config__.general.getAppProject() &amp;&amp; !com.google.common.base.Strings.isNullOrEmpty(__config__.general.getProjectTaskLabel())"/>
 	</action-attrs>
 	
 

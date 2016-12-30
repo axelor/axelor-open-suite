@@ -1,0 +1,356 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
+	
+	<grid name="app-grid" title="Apps" model="com.axelor.apps.base.db.App" canDelete="false" canNew="false">
+		<field name="name" />
+		<field name="code" />
+	</grid>
+	
+	<form name="app-form" title="App" model="com.axelor.apps.base.db.App" canDelete="false" canNew="false">
+		<panel>
+			<field name="image" widget="Image" colSpan="6"/>
+			<panel colSpan="6">
+				<field name="name" />
+				<field name="code" />
+			</panel>
+			<field name="description" colSpan="12"/>
+			<field name="typeSelect" hidden="true" />
+			<field name="baseGeneral" x-show-icons="false" showTitle="false" colSpan="12" showIf="typeSelect == 'general'">
+				<editor>
+					<panel colSpan="12">
+						<field name="today"/>
+						<panel name="configuration" title="Configuration" colSpan="12">
+					    	<field name="defaultPartnerLanguage" />
+					    	<field name="activateSendingEmail" widget="boolean-switch"/>
+					    	<field name="mailAccountByUser" widget="boolean-switch"/>
+					    	<field name="productInAtiSelect"/>
+					    	<field name="nbDecimalDigitForUnitPrice"/>
+					    	<field name="computeMethodDiscountSelect"/>
+					    	<field name="timeLoggingPreferenceSelect"/>
+					    	<field name="dailyWorkHours"/>
+					    	<field name="unitDays" form-view="unit-form" grid-view="unit-grid"/>
+					    	<field name="unitHours" form-view="unit-form" grid-view="unit-grid"/>
+					    	<field name="unitMinutes" form-view="unit-form" grid-view="unit-grid"/>
+					    	<field name="manageSalesUnits" if-module="axelor-sale" widget="boolean-switch"/>
+					    	<field name="managePurchasesUnits" if-module="axelor-purchase" widget="boolean-switch"/>
+					    	<field name="teamManagement" widget="boolean-switch"/>
+					    </panel> 
+					    <panel name="interfaces" title="Interfaces"  colSpan="12">
+							<panel name="map" title="Mapping"  colSpan="12">
+								<field name="mapApiSelect"/>
+								<button name="checkMapApi" title="Test mapping service connection"   onClick="com.axelor.apps.base.web.GeneralController:checkMapApi"/>
+							</panel>
+							<panel name="qas" title="Addresses validation"  colSpan="12">
+								<field name="qasWsdlUrl"/>
+								<button name="checkQasWsdl" title="Test connection to QAS webservice"   onClick="com.axelor.apps.base.web.AddressController:check"/>
+								<field name="hasQasValidation" widget="boolean-switch"/>
+							</panel>
+							<panel name="ws" title="Webservices"  colSpan="12">
+								<field name="currencyWsURL" colSpan="12"/>
+							</panel>
+					    </panel>
+					</panel>
+				 </editor>
+			</field>
+			<field name="accountGeneral" x-show-icons="false" showTitle="false" colSpan="12" showIf="typeSelect == 'account'">
+				<editor>
+					<panel name="accountConfiguration" if-module="axelor-account"  colSpan="12">
+						<field name="appAccount" widget="boolean-switch"/>
+						<panel colSpan="12" showIf="appAccount">
+							<field name="defaultExemptionTax" form-view="tax-form" grid-view="tax-grid"/>
+							<field name="manageAnalyticAccounting" if-module="axelor-account" widget="boolean-switch"/>
+							<field name="analyticDistributionTypeSelect" if-module="axelor-account" showIf="manageAnalyticAccounting"/>
+							<field name="manageCustomerCredit" if-module="axelor-account" widget="boolean-switch"/>
+							<panel name="rejectsReasonsAndCodesList" title="Rejects reasons and codes list" colSpan="12">
+								<field name="transferAndDirectDebitInterbankCode" grid-view="interbank-code-grid" form-view="interbank-code-form"/>
+								<field name="chequeInterbankCode" grid-view="interbank-code-grid" form-view="interbank-code-form"/>
+							</panel>
+							<panel name="payerQuality" title="Payer quality" colSpan="12">
+								<button name="payerQualityProcess" title="Compute payers quality" colSpan="2" onClick="action-general-method-payer-quality-process"/>
+								<field name="payerQualityConfigLineList" colSpan="12" grid-view="payer-quality-config-line-grid" form-view="payer-quality-config-line-form"/>
+							</panel>
+							<panel name="currencyConversion" title="Currency conversion" colSpan="12">
+								<button name="updateCurrencyConversion" title="Update &amp; Historize conversion rate"  onClick="save,action-general-method-update-currency-conversion"/>
+								<field name="currencyConversionLineList" colSpan="12" grid-view="currency-conversion-line-grid" form-view="currency-conversion-line-form"/>
+							</panel>
+						</panel>
+					</panel>
+				</editor>
+			 </field>
+			<field name="invoiceGeneral" x-show-icons="false" showTitle="false" colSpan="12" showIf="typeSelect == 'invoice'">
+			 	<editor>
+					<panel name="invoiceConfiguration" if-module="axelor-account" colSpan="12">
+						<field name="appInvoice"  widget="boolean-switch"/>
+						<panel colSpan="12" showIf="appInvoice">
+							<field name="isInvoiceMoveConsolidated" widget="boolean-switch"/>
+						</panel>
+					</panel>
+				</editor>
+			</field>
+			<field name="saleGeneral" x-show-icons="false" showTitle="false" colSpan="12" showIf="typeSelect == 'sale'">
+				<editor>
+					<panel name="saleOrderConfiguration" if-module="axelor-sale" colSpan="12" >
+						<field name="appSale" colSpan="12" widget="boolean-switch"/>
+						<panel colSpan="12" showIf="appSale">
+							<field name="manageSaleOrderVersion" if-module="axelor-sale" widget="boolean-switch"/>
+						</panel>
+					</panel>
+				</editor>
+			</field>
+			<field name="purchaseGeneral" x-show-icons="false" showTitle="false" colSpan="12" showIf="typeSelect == 'purchase'">
+				<editor>
+					<panel name="purchaseOrderConfiguration" if-module="axelor-purchase"  colSpan="12" >
+						<field name="appPurchase"  widget="boolean-switch"/>
+						<panel colSpan="12" showIf="appPurchase">
+							<field name="managePurchaseOrderVersion"  widget="boolean-switch"/>
+							<field name="purchaseOrderGenerationAuto" widget="boolean-switch"/>
+							<field name="manageSupplier" if-module="axelor-supplier-management" widget="boolean-switch"/>
+						</panel>
+					</panel>
+				</editor>
+			</field>
+			<field name="stockGeneral" x-show-icons="false" showTitle="false" colSpan="12" showIf="typeSelect == 'stock'">
+				<editor>
+					<panel name="stockMoveConfiguration" if-module="axelor-stock" colSpan="12" >
+						<field name="appStock" widget="boolean-switch"/>
+					</panel>
+				</editor>
+			</field>
+			<field name="supplychainGeneral" x-show-icons="false" showTitle="false" colSpan="12" showIf="typeSelect == 'supplychain'">
+				<editor>
+					<panel name="supplychainGeneralConfiguration" if-module="axelor-stock" colSpan="12" >
+						<field name="appSupplychain" widget="boolean-switch"/>
+						<panel colSpan="12" showIf="appSupplychain" if-module="axelor-supplychain">
+							<field name="customerStockMoveManagement" readonlyIf="customerStockMoveGenerationAuto || terminateSaleOrderOnDelivery" widget="boolean-switch"/>
+							<field name="customerStockMoveGenerationAuto" showIf="customerStockMoveManagement"  widget="boolean-switch"/>
+							<field name="terminateSaleOrderOnDelivery"  showIf="customerStockMoveManagement" widget="boolean-switch"/>
+							<field name="supplierStockMoveManagement" readonlyIf="supplierStockMoveGenerationAuto || terminatePurchaseOrderOnReceipt" widget="boolean-switch"/>
+							<field name="supplierStockMoveGenerationAuto" showIf="supplierStockMoveManagement" widget="boolean-switch"/>
+							<field name="terminatePurchaseOrderOnReceipt" showIf="supplierStockMoveManagement" widget="boolean-switch"/>
+							<field name="generateInvoiceFromStockMove" widget="boolean-switch" />
+							<field name="allowSusbcriptionSaleOrder" if-module="axelor-supplychain" widget="boolean-switch"/>
+							<field name="allowTimetableInvoicing" if-module="axelor-supplychain" widget="boolean-switch"/>
+							<field name="generateInvoiceFromSaleOrder" if-module="axelor-sale" widget="boolean-switch"/>
+							<field name="manageInvoicedAmountByLine" widget="boolean-switch" if-module="axelor-supplychain"/>
+						</panel>
+					</panel>
+				</editor>
+			</field>
+			<field name="productionGeneral" x-show-icons="false" showTitle="false" colSpan="12" showIf="typeSelect == 'production'">
+				<editor>
+					<panel name="productionConfiguration" if-module="axelor-production"  colSpan="12" >
+						<field name="appProduction" widget="boolean-switch"/>
+						<panel showIf="appProduction" colSpan="12">
+							<field name="productionOrderManagement" readonlyIf="productionOrderGenerationAuto" colSpan="4" widget="boolean-switch"/>
+							<field name="productionOrderGenerationAuto" showIf="productionOrderManagement" colSpan="4" widget="boolean-switch"/>
+							<panel name="billOfMaterial" title="Bill of material">
+								<field name="manageBillOfMaterialVersion" if-module="axelor-production" colSpan="4" widget="boolean-switch"/>
+							    <field name="manageResidualProductOnBom" widget="boolean-switch"/>
+							</panel>
+							<panel name="manufacturingProcess" title="Manufacturing process">
+			    				<field name="workCenterProduct" form-view="product-form" grid-view="product-grid"/>
+							</panel>
+							<panel name="costSheet" title="Cost sheet">
+							    <field name="productCostSheetGroup" form-view="cost-sheet-group-form" grid-view="cost-sheet-group-grid" domain="self.costTypeSelect = 1"/>
+				  				<field name="workCenterCostSheetGroup" form-view="cost-sheet-group-form" grid-view="cost-sheet-group-grid" domain="self.costTypeSelect = 2"/>
+				  				<field name="cycleUnit" form-view="unit-form" grid-view="unit-grid"/>
+								<field name="subtractProdResidualOnCostSheet" showIf="manageResidualProductOnBom" widget="boolean-switch"/>
+							</panel>
+							<panel name="businessProduction" title="Business production" if-module="axelor-business-production">
+								<field name="manageBusinessProduction" widget="boolean-switch" />
+								<field name="showProductionOrderRelatedToProject" showIf="manageBusinessProduction" />
+							</panel>
+						</panel>
+					</panel>
+				</editor>
+			</field>
+			<field name="employeeGeneral" x-show-icons="false" showTitle="false" colSpan="12" showIf="typeSelect == 'employee'">
+				<editor>
+					<panel name="employeeManagementConfiguration" if-module="axelor-human-resource" colSpan="12" >
+						<field name="appEmployee" widget="boolean-switch"/>
+					</panel>
+				</editor>
+			</field>
+			<field name="leaveGeneral" x-show-icons="false" showTitle="false" colSpan="12" showIf="typeSelect == 'leave'">
+				<editor>
+					<panel name="leaveManagementConfiguration" if-module="axelor-human-resource" colSpan="12" >
+						<field name="appLeave" widget="boolean-switch"/>
+						<panel colSpan="12" showIf="appLeave">
+							<field name="allowNegativeLeaveEmployees" widget="boolean-switch"/>
+							<field name="overtimeManagement" widget="boolean-switch"/>
+						</panel>
+					</panel>
+				</editor>
+			</field>
+			<field name="timesheetGeneral" x-show-icons="false" showTitle="false" colSpan="12" showIf="typeSelect == 'timesheet'">
+				<editor>
+					<panel name="timesheetManagementConfiguration" if-module="axelor-human-resource" colSpan="12" >
+						<field name="appTimesheet" widget="boolean-switch"/>
+						<panel colSpan="12" showIf="appTimesheet">
+							<field name="invoicingTypeLogTimesSelect"/>  <!-- TODO jamais utilisé  -->
+							<field name="consolidateTSLine" widget="boolean-switch"/>
+							<field name="editModeTSTimer" widget="boolean-switch"/>
+							<field name="keepProjectTask" widget="boolean-switch"/>
+						</panel>
+					</panel>
+				</editor>
+			</field>
+			<field name="expenseGeneral" x-show-icons="false" showTitle="false" colSpan="12" showIf="typeSelect == 'expense'">
+				<editor>
+					<panel name="expenseGeneralConfiguration" if-module="axelor-human-resource" colSpan="12" >
+						<field name="appExpense" widget="boolean-switch"/>
+					</panel>
+				</editor>
+			</field>
+			<field name="projectGeneral" x-show-icons="false" showTitle="false" colSpan="12" showIf="typeSelect == 'project'">
+				<editor>
+					<panel name="projectTaskConfiguration"  if-module="axelor-project"  colSpan="12" >
+						<field name="appProject" widget="boolean-switch"/>
+						<panel showIf="appProject" colSpan="12">
+							<field name="generateProjectOrder" widget="boolean-switch"/>
+							<field name="automaticProject" widget="boolean-switch"/>
+							<field name="projectTaskSaleOrderLines" widget="boolean-switch"/>
+							<field name="projectTaskPurchaseOrderLines" widget="boolean-switch"/>
+							<field name="projectTaskInvoiceLines" widget="boolean-switch"/>
+							<field name="projectTaskLabel"/>
+							<field name="productInvoicingProjectTask" canNew="true"/>
+							<field name="manageBusinessProject"  if-module="axelor-business-project" widget="boolean-switch"/>
+							<panel if-module="axelor-business-project" showIf="manageBusinessProject">
+								<field name="showPurchaseOrderLineRelatedToProject" widget="boolean-switch"/>
+								<field name="showSaleOrderLineRelatedToProject" widget="boolean-switch"/>
+								<field name="showExpenseLineRelatedToProject" widget="boolean-switch"/>
+								<field name="enableToInvoiceTimesheet" showIf="generateInvoiceFromSaleOrder" widget="boolean-switch" />
+								<field name="enableToInvoiceExpense"  showIf="generateInvoiceFromSaleOrder" widget="boolean-switch" />
+								<field name="defaultInvoiceTypeSelect" showIf="generateInvoiceFromSaleOrder" />
+							</panel>
+						</panel>
+					</panel>
+				</editor>
+			</field>
+			<field name="budgetGeneral" x-show-icons="false" showTitle="false" colSpan="12" showIf="typeSelect == 'budget'">
+				<editor>
+					<panel name="budgetConfiguration"  if-module="axelor-account"  colSpan="12" >
+		    			<field name="appBudget" widget="boolean-switch"/>
+		    			<panel colSpan="12" showIf="appBudget">
+		    				<field name="manageMultiBudget" widget="boolean-switch"/>
+		   					<field name="budgetStatusSelect" widget="MultiSelect" />
+		   				</panel>
+					</panel>
+				</editor>
+			</field>
+			<field name="portalGeneral" x-show-icons="false" showTitle="false" colSpan="12" showIf="typeSelect == 'portal'">
+				<editor>
+					<panel name="portalConfiguration" if-module="axelor-client-portal"  colSpan="12" >
+				    	<field name="appPortal" colSpan="12" widget="boolean-switch"/>
+				    	<panel showIf="appPortal" colSpan="12">
+					    	<field name="manageSaleOrders" widget="boolean-switch"/>
+					    	<field name="canConfirmOnline" widget="boolean-switch"/>
+					    	<field name="manageInvoices"  widget="boolean-switch"/>
+					    	<field name="canPayOnline"  widget="boolean-switch"/>
+					    	<field name="manageTickets" widget="boolean-switch"/>
+					    	<field name="onlinePaymentMethodSet" colSpan="12" showIf="manageInvoices &amp;&amp; canPayOnline"/>
+				    	</panel>
+				    </panel>
+				 </editor>
+			</field>
+			<field name="cashManagementGeneral" x-show-icons="false" showTitle="false" colSpan="12" showIf="typeSelect == 'cashManagement'">
+				<editor>
+					<panel name="cashManagementConfiguration" if-module="axelor-cash-management" colSpan="12" >
+						<field name="appCashManagement" colSpan="12" widget="boolean-switch"/>
+						<panel showIf="appCashManagement" colSpan="12">
+							<field name="manageMultiBanks" widget="boolean-switch"/>
+						</panel>
+					</panel>
+				</editor>
+			</field>
+			<field name="crmGeneral" x-show-icons="false" showTitle="false" colSpan="12" showIf="typeSelect == 'crm'">
+				<editor>
+					<panel name="crmConfiguration" if-module="axelor-crm" colSpan="12" >
+						<field name="appCrm" widget="boolean-switch"/>
+					</panel>
+				</editor>
+			</field>
+			<field name="accountGeneral.appAccount" hidden="true"/>
+			<field name="invoiceGeneral.appInvoice" hidden="true"/>
+			<field name="saleGeneral.appSale"  hidden="true"/>
+			<field name="purchaseGeneral.appPurchase" hidden="true"/>
+			<field name="stockGeneral.appStock" hidden="true"/>
+			<field name="suppplychainGeneral.appSupplychain" hidden="true"/>
+			<field name="productionGeneral.appProduction" hidden="true"/>
+			<field name="employeeGeneral.appEmployee" hidden="true"/>
+			<field name="leaveGeneral.appLeave" hidden="true"/>
+			<field name="expenseGeneral.appExpense" hidden="true"/>
+			<field name="timesheetGeneral.appTimesheet" hidden="true"/>
+			<field name="projectGeneral.appProject" hidden="true"/>
+			<field name="budgetGeneral.appBudget"  hidden="true"/>
+			<field name="portalGeneral.appPortal"  hidden="true"/>
+			<field name="cashManagementGeneral.appCashManagement" hidden="true"/>
+			<field name="crmGeneral.appCrm" hidden="true"/>
+		</panel>
+		<panel-dashlet action="admin.root.conf.account.config" showIf="typeSelect == 'account' &amp;&amp; accountGeneral.appAccount"  />
+		<panel-dashlet action="admin.root.conf.sale.config" showIf="typeSelect == 'sale' &amp;&amp; saleGeneral.appSale"  />
+		<panel-dashlet action="admin.root.conf.purchase.config" showIf="typeSelect == 'purchase' &amp;&amp; purchaseGeneral.appPurchase"  />
+		<panel-dashlet action="admin.root.conf.stock.config" showIf="typeSelect == 'stock' &amp;&amp; stockGeneral.appStock"  />
+		<panel-dashlet action="admin.root.conf.production.config" showIf="typeSelect == 'production' &amp;&amp; productionGeneral.appProduction"  />
+		<panel-dashlet action="admin.root.conf.hr.config" showIf="typeSelect == 'employee' &amp;&amp; employeeGeneral.appEmployee"  />
+		<panel-dashlet action="admin.root.conf.crm.config" showIf="typeSelect == 'crm' &amp;&amp; crmGeneral.appCrm"  />
+	</form>
+	
+	<cards name="app-cards" model="com.axelor.apps.base.db.App" title="Apps" css="rect-image">
+		<field name="name" />
+		<field name="code" />
+		<field name="image" />
+		<field name="description"/>
+		<field name="typeSelect"/>
+		<field name="accountGeneral.appAccount" />
+		<field name="invoiceGeneral.appInvoice" />
+		<field name="saleGeneral.appSale" />
+		<field name="purchaseGeneral.appPurchase" />
+		<field name="stockGeneral.appStock" />
+		<field name="productionGeneral.appProduction" />
+		<field name="employeeGeneral.appEmployee" />
+		<field name="leaveGeneral.appLeave" />
+		<field name="timesheetGeneral.appTimesheet" />
+		<field name="expenseGeneral.appExpense" />
+		<field name="projectGeneral.appProject" />
+		<field name="budgetGeneral.appBudget" />
+		<field name="portalGeneral.appPortal" />
+		<field name="cashManagementGeneral.appCashManagement" />
+		<field name="crmGeneral.appCrm" />
+		<field name="supplychainGeneral.appSupplychain" />
+		<template><![CDATA[
+			<div>
+			  <div class="span4 card-image">
+			    <img ng-src="{{$image('image', 'content')}}" />
+			  </div>
+			  <div class="span8">
+				<span><strong>{{code}}</strong></span>
+				<br/>
+	    		<span><strong>{{name}}</strong></span>
+    			<br/>
+   				<label ng-show="typeSelect == 'account'" class="iswitch form-item"><input type="checkbox" ng-model="accountGeneral.appAccount"/><span class="box"/></label>
+   				<label ng-show="typeSelect == 'invoice'" class="iswitch form-item"><input type="checkbox" ng-model="invoiceGeneral.appInvoice"/><span class="box"/></label>
+   				<label ng-show="typeSelect == 'sale'" class="iswitch form-item"><input type="checkbox" ng-model="saleGeneral.appSale"/><span class="box"/></label>
+   				<label ng-show="typeSelect == 'purchase'" class="iswitch form-item"><input type="checkbox" ng-model="purchaseGeneral.appPurchase"/><span class="box"/></label>
+   				<label ng-show="typeSelect == 'stock'" class="iswitch form-item"><input type="checkbox" ng-model="stockGeneral.appStock"/><span class="box"/></label>
+   				<label ng-show="typeSelect == 'production'" class="iswitch form-item"><input type="checkbox" ng-model="productionGeneral.appProduction"/><span class="box"/></label>
+   				<label ng-show="typeSelect == 'employee'" class="iswitch form-item"><input type="checkbox" ng-model="employeeGeneral.appEmployee"/><span class="box"/></label>
+   				<label ng-show="typeSelect == 'leave'" class="iswitch form-item"><input type="checkbox" ng-model="leaveGeneral.appLevae"/><span class="box"/></label>
+   				<label ng-show="typeSelect == 'expense'" class="iswitch form-item"><input type="checkbox" ng-model="expenseGeneral.appExpense"/><span class="box"/></label>
+   				<label ng-show="typeSelect == 'timesheet'" class="iswitch form-item"><input type="checkbox" ng-model="timesheetGeneral.appTimesheet"/><span class="box"/></label>
+   				<label ng-show="typeSelect == 'project'" class="iswitch form-item"><input type="checkbox" ng-model="projectGeneral.appProject"/><span class="box"/></label>
+   				<label ng-show="typeSelect == 'budget'" class="iswitch form-item"><input type="checkbox" ng-model="budgetGeneral.appBudget"/><span class="box"/></label>
+   				<label ng-show="typeSelect == 'portal'" class="iswitch form-item"><input type="checkbox" ng-model="portalGeneral.appPortal"/><span class="box"/></label>
+   				<label ng-show="typeSelect == 'cashManagement'" class="iswitch form-item"><input type="checkbox" ng-model="cashManagementGeneral.appCashManagement"/><span class="box"/></label>
+   				<label ng-show="typeSelect == 'crm'" class="iswitch form-item"><input type="checkbox" ng-model="crmGeneral.appCrm"/><span class="box"/></label>
+	  		  	<label ng-show="typeSelect == 'supplychain'" class="iswitch form-item"><input type="checkbox" ng-model="supplychainGeneral.appSupplychain"/><span class="box"/></label>
+	  		  </div>
+			</div>
+			<div class="span12">{{description}}</strong></div>
+		]]>
+		</template>
+	</cards>
+
+</object-views>

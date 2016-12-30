@@ -96,6 +96,7 @@
 	
 	<action-view name="sc.root.sale.orders" title="Sale orders"
 		model="com.axelor.apps.sale.db.SaleOrder" >
+		<view type="cards" name="sale-order-cards" />
 		<view type="grid" name="sale-order-grid" />
 		<view type="form" name="sale-order-form" />
 		<view-param name="search-filters" value="sale-order-filters"/>

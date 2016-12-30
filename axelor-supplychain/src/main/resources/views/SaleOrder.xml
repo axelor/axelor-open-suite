@@ -71,8 +71,8 @@
     
     
     <action-group name="action-supplychain-sale-order-group-generate-invoice">
-    	<action name="action-supplychain-sale-order-method-generate-invoice" if="eval: !__config__.general.getEnableToInvoiceExpense() &amp;&amp; !__config__.general.getEnableToInvoiceTimesheet()" />
-    	<action name="action-business-project-sale-order-view-invoicing-wizard" if="eval: __config__.general.getEnableToInvoiceExpense() || __config__.general.getEnableToInvoiceTimesheet()" />
+    	<action name="action-supplychain-sale-order-method-generate-invoice" if="eval: !__config__.general.getAppProject() ||  !__config__.general.getEnableToInvoiceExpense() &amp;&amp; !__config__.general.getEnableToInvoiceTimesheet()" />
+    	<action name="action-business-project-sale-order-view-invoicing-wizard" if="eval: __config__.general.getAppProject() &amp;&amp; (__config__.general.getEnableToInvoiceExpense() || __config__.general.getEnableToInvoiceTimesheet())" />
     </action-group>
     
     <!--   azeaeaeaeae -->
@@ -94,7 +94,7 @@
 	</action-method>
 	
 	<action-method name="action-sale-method-update-customer-credit-line" if-module="axelor-supplychain">
-		<call class="com.axelor.apps.supplychain.web.CustomerCreditLineController" method="updateLinesFromSaleOrder" if="__config__.general.getManageCustomerCredit()"/>
+		<call class="com.axelor.apps.supplychain.web.CustomerCreditLineController" method="updateLinesFromSaleOrder" if="__config__.general.getAppAccount() &amp;&amp; __config__.general.getManageCustomerCredit()"/>
 	</action-method>
 	
 	<action-validate name="action-supplychain-sale-order-validate-check-location">

@@ -111,7 +111,7 @@ public class PurchaseOrderController {
 	
 	public void generateBudgetDistribution(ActionRequest request, ActionResponse response){
 		PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
-		if(generalService.getGeneral().getManageBudget() && !generalService.getGeneral().getManageMultiBudget()){
+		if(generalService.getGeneral().getAppBudget() && !generalService.getGeneral().getManageMultiBudget()){
 			purchaseOrder = Beans.get(PurchaseOrderRepository.class).find(purchaseOrder.getId());
 			purchaseOrderServiceSupplychain.generateBudgetDistribution(purchaseOrder);
 			response.setValues(purchaseOrder);

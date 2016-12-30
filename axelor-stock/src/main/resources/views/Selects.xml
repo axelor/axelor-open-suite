@@ -48,4 +48,8 @@
 		<option value="2">Non compliant</option>
 	</selection>
 	
+	<selection name="app.type.select" id="stock.app.type.select">
+		<option value="stock">Stock</option>
+	</selection>
+	
 </object-views>

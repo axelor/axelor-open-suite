@@ -53,7 +53,7 @@
     </grid>
     
     <form name="incl-analytic-distribution-move-line-form" model="com.axelor.apps.account.db.MoveLine" title="Move line">
-    	<panel name="analyticDistribution" title="Analytic distribution" if="__config__.general.getManageAnalyticAccounting()" onTabSelect="action-move-line-attrs-read-only-distribution-lines">
+    	<panel name="analyticDistribution" title="Analytic distribution" if="__config__.general.getAppAccount() &amp;&amp; __config__.general.getManageAnalyticAccounting()" onTabSelect="action-move-line-attrs-read-only-distribution-lines">
 			<panel-related field="AnalyticMoveLineList" grid-view="analytic-move-line-distribution-grid" form-view="analytic-move-line-distribution-form" colSpan="12"/>
 		</panel>
     </form>

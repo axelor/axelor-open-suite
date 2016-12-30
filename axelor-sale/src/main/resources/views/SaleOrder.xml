@@ -105,10 +105,10 @@
 	    <field name="deliveryState" css="label-bold bold" showIf="statusSelect >= 3" />
 	    <field name="company" widget="SuggestBox" onChange="action-sale-group-onchange-company" form-view="company-form" grid-view="company-grid" readonlyIf="statusSelect == 3"/>
 	    <field name="currency" form-view="currency-form" grid-view="currency-grid" readonlyIf="statusSelect == 3"/>
-	    <field name="versionNumber" if="__config__.general.getManageSaleOrderVersion()"/>
+	    <field name="versionNumber" if="__config__.general.getAppSale() &amp;&amp; __config__.general.getManageSaleOrderVersion()"/>
 	    <field name="companyBankDetails" widget="SuggestBox" onSelect="action-accounting-batch-attrs-company-bank-details-domain" form-view="bank-details-form" grid-view="bank-details-grid"/>
 	    <field name="inAti" onChange="action-sale-order-attrs-in-ati"/>
-	    <field name="subscription" if-module="axelor-supplychain" if="__config__.general.getAllowSusbcriptionSaleOrder()"/>
+	    <field name="subscription" if-module="axelor-supplychain" if="__config__.general.getAppSale() &amp;&amp; __config__.general.getAllowSusbcriptionSaleOrder()"/>
 	  </panel>
 	  
 	  <panel name="customerInformation" title="Customer information">
@@ -140,10 +140,10 @@
 	    
 <!-- 	    <panel-related field="saleOrderScheduleLineList" title="Schedules" showIf="invoicingTypeSelect == 2" showTitle="false" if-module="axelor-supplychain" grid-view="sale-order-schedule-line-grid" form-view="sale-order-schedule-line-form"/>  -->
 	    <panel-dashlet action="action-view-show-invoices-from-sale-order" title="Invoicing" if-module="axelor-supplychain"/>
-	    <panel name="projectPanel" if="__config__.general.getGenerateProjectOrder()" title="Business project" colSpan="12" if-module="axelor-business-project">
+	    <panel name="projectPanel" if="__config__.general.getAppProject() &amp;&amp; __config__.general.getGenerateProjectOrder()" title="Business project" colSpan="12" if-module="axelor-business-project">
       		  <field name="project" domain="self.typeSelect = 'project' AND self.clientPartner = :clientPartner" form-view="project-form" grid-view="project-grid" colSpan="12"/>
-	          <button name="generateProject" title="Generate Project" if=" !__config__.general.getAutomaticProject()" showIf="project == null" hidden="true" onClick="save,action-sale-order-method-generate-project"/>
-	          <button name="generateTasks" title="Generate Tasks" if="__config__.general.getProjectTaskSaleOrderLines()" showIf="project != null" hidden="true" onClick="save,action-sale-order-method-generate-tasks,action-sale-order-attrs-hide-generate-tasks"/>
+	          <button name="generateProject" title="Generate Project" if="__config__.general.getAppProject() &amp;&amp; !__config__.general.getAutomaticProject()" showIf="project == null" hidden="true" onClick="save,action-sale-order-method-generate-project"/>
+	          <button name="generateTasks" title="Generate Tasks" if="__config__.general.getAppProject() &amp;&amp; __config__.general.getProjectTaskSaleOrderLines()" showIf="project != null" hidden="true" onClick="save,action-sale-order-method-generate-tasks,action-sale-order-attrs-hide-generate-tasks"/>
        	</panel>
        	<panel name="generateSubscriptions" title="Generate Subscriptions" if-module="axelor-supplychain" showIf="subscription">
 			<field name="periodicity" colSpan="3" onChange="action-supplychain-record-set-dateSubTo"/>
@@ -166,12 +166,12 @@
 	  
 	  <panel sidebar="true" name="actions" title="Actions" stacked="true">
 	    <button name="Finalize" title="Finalize" showIf="statusSelect == 1 || statusSelect == 4" colSpan="12" onClick="save,action-sale-order-group-finalize"/>
-	    <button name="newVersion" title="New version" if="__config__.general.getManageSaleOrderVersion()" showIf="statusSelect == 2" colSpan="12" onClick="save,action-sale-record-newVersion,save"/>
-	    <button name="generateCustomerStockMove" if="__config__.general.getCustomerStockMoveManagement() &amp;&amp; !__config__.general.getCustomerStockMoveGenerationAuto()" showIf="statusSelect == 3" title="Generate customer deliveries"  colSpan="12" onClick="save,action-supplychain-sale-order-create-stock-move" if-module="axelor-supplychain"/>
+	    <button name="newVersion" title="New version" if="__config__.general.getAppSale() &amp;&amp; __config__.general.getManageSaleOrderVersion()" showIf="statusSelect == 2" colSpan="12" onClick="save,action-sale-record-newVersion,save"/>
+	    <button name="generateCustomerStockMove" if="__config__.general.getAppStock() &amp;&amp; __config__.general.getCustomerStockMoveManagement() &amp;&amp; !__config__.general.getCustomerStockMoveGenerationAuto()" showIf="statusSelect == 3" title="Generate customer deliveries"  colSpan="12" onClick="save,action-supplychain-sale-order-create-stock-move" if-module="axelor-supplychain"/>
 	    <button name="orderConfirmed" title="Order confirmed" showIf="statusSelect == 2" colSpan="12" onClick="save,action-sale-group-confirmed"/>
-	    <button name="generateInvoice" title="Generate invoice" if="__config__.general.getGenerateInvoiceFromSaleOrder()" showIf="statusSelect == 3" colSpan="12" onClick="save,action-supplychain-sale-order-group-generate-invoice" if-module="axelor-supplychain"/>
-	    <button name="generatePO" title="Generate purchase order"  colSpan="12" if="__config__.general.getPurchaseOrderManagement() &amp;&amp; !__config__.general.getPurchaseOrderGenerationAuto()" showIf="statusSelect == 2 || statusSelect == 3" onClick="save,action-supplychain-sale-order-generate-purchase-orders-from-selected-SOLines"/>
-	    <button name="generateProductionOrder" title="Generate production order"  colSpan="12" if="__config__.general.getProductionOrderManagement() &amp;&amp; !__config__.general.getProductionOrderGenerationAuto()" showIf="statusSelect == 3" onClick="save,action-sale-order-method-create-production-order"/>
+	    <button name="generateInvoice" title="Generate invoice" if="__config__.general.getAppSale() &amp;&amp; __config__.general.getAppInvoice() &amp;&amp; __config__.general.getGenerateInvoiceFromSaleOrder()" showIf="statusSelect == 3" colSpan="12" onClick="save,action-supplychain-sale-order-group-generate-invoice" if-module="axelor-supplychain"/>
+	    <button name="generatePO" title="Generate purchase order"  colSpan="12" if="__config__.general.getAppPurchase() &amp;&amp; !__config__.general.getPurchaseOrderGenerationAuto()" showIf="statusSelect == 2 || statusSelect == 3" onClick="save,action-supplychain-sale-order-generate-purchase-orders-from-selected-SOLines"/>
+	    <button name="generateProductionOrder" title="Generate production order"  colSpan="12" if="__config__.general.getAppProduction() &amp;&amp; __config__.general.getProductionOrderManagement() &amp;&amp; !__config__.general.getProductionOrderGenerationAuto()" showIf="statusSelect == 3" onClick="save,action-sale-order-method-create-production-order"/>
 		<spacer/>
 	    <button name="cancel" title="Cancel" showIf="id &amp;&amp; (statusSelect == 1 || statusSelect == 2)" colSpan="12" onClick="save,action-sale-order-view-cancel"/>
 	  	<button name="addAdvancePayment" title="Register a deposit" showIf="statusSelect == 3 &amp;&amp; amountInvoiced == 0" colSpan="12" onClick="save,action-sale-order-view-register-advance-payment" if-module="axelor-supplychain"/>
@@ -292,7 +292,7 @@
 	    
 <!-- 	    <panel-related field="saleOrderScheduleLineList" title="Schedules" showIf="invoicingTypeSelect == 2" showTitle="false" if-module="axelor-supplychain" form-view="sale-order-schedule-line-form" grid-view="sale-order-schedule-line-grid"/>           -->
 	    
-	    <panel name="projectPanel" if="__config__.general.getGenerateProjectOrder()" title="Business project" colSpan="12" if-module="axelor-business-project">
+	    <panel name="projectPanel" if="__config__.general.getAppProject() &amp;&amp; __config__.general.getGenerateProjectOrder()" title="Business project" colSpan="12" if-module="axelor-business-project">
       		  <field name="project" domain="self.typeSelect = 'project'" form-view="project-form" grid-view="project-grid" colSpan="12"/>
        	</panel>
 	  </panel-tabs>
@@ -400,6 +400,60 @@
 	  </panel-tabs>
 	</form>
 	
+	<cards name="sale-order-cards" title="Sale order" model="com.axelor.apps.sale.db.SaleOrder" cardWidth="300px"  css="rect-image" orderBy="-orderDate">
+		<field name="saleOrderSeq"/>
+		<field name="externalReference"/>
+		<field name="clientPartner.fullName"/>
+		<field name="orderDate"/>
+		<field name="exTaxTotal"/>
+		<field name="inTaxTotal"/>
+		<field name="currency.symbol"/>
+		<field name="statusSelect"/>
+		<field name="deliveryState"/>
+		<field name="amountInvoiced" />
+		<template><![CDATA[
+		    <div class="span12">
+		    	<strong><span x-translate>Sale order</span> {{ saleOrderSeq }}</strong> <span ng-show="record.externalReference">( {{ externalReference }} )</span>
+		    	<a class="pull-right muted">{{ $fmt('orderDate') }}</a>
+	    	</div>
+			<div>
+			  <div>
+				  <div class="span8">
+				    <i class="fa fa-users" aria-hidden="true"></i>
+				  	{{ clientPartner.fullName }}
+				  </div>
+					<div class="span4 pull-right">
+						<i class="fa fa-long-arrow-right" aria-hidden="true"></i>
+						<span ng-show="record.statusSelect == 1" x-translate>Draft</span>
+						<span ng-show="record.statusSelect == 2" x-translate>Finalize</span>
+						<span ng-show="record.statusSelect == 3" x-translate>Order confirmed</span>
+						<span ng-show="record.statusSelect == 4" x-translate>Finished</span>
+						<span ng-show="record.statusSelect == 5" x-translate>Canceled</span>
+					</div>
+			  </div>
+			  <div>
+				  <div class="span7">
+				  	<h5>
+						<span class="label label-important"  ng-show="record.amountInvoiced == 0"  x-translate>Not invoiced</span>
+						<span class="label label-warning" ng-show="record.amountInvoiced > 0 && record.amountInvoiced < record.inTaxTotal" x-translate>Partially invoiced</span>
+						<span class="label label-success" ng-show="record.amountInvoiced > 0 && record.amountInvoiced == record.inTaxTotal" x-translate>Invoiced</span>
+					</h5>
+					<h5>
+						<span class="label label-important" ng-show="record.deliveryState > 0 && record.deliveryState == 1" x-translate>Not delivered</span>
+						<span class="label label-warning" ng-show="record.deliveryState > 0 && record.deliveryState == 2" x-translate>Partially delivered</span>
+						<span class="label label-success" ng-show="record.deliveryState > 0 && record.deliveryState == 3" x-translate>Delivered</span>
+					</h5>
+				  </div>
+				  <div class="span5">
+				    <span><strong><span x-translate>WT</span> : {{ $fmt('exTaxTotal') }} {{ currency.symbol }}</strong><br/>
+				    <strong><span x-translate>ATI</span> : {{ $fmt('inTaxTotal') }} {{ currency.symbol }}</strong></span>
+				  </div>
+			  </div>
+			</div>
+		]]>
+		</template>
+	</cards>
+	
 	<action-method name="action-sale-order-method-generate-project">
 		<call class="com.axelor.apps.businessproject.web.SaleOrderProjectController" method="generateProject"/>
 	</action-method>
@@ -454,7 +508,7 @@
     <action-group name="action-sale-group-confirmed">
     	<action name="action-supplychain-sale-order-validate-check-location" />
     	<action name="action-sale-order-method-confirm"/>
-    	<action name="action-sale-order-method-generate-project" if="eval: __config__.general.getAutomaticProject()"/>
+    	<action name="action-sale-order-method-generate-project" if="__config__.general.getAppProject() &amp;&amp; __config__.general.getAutomaticProject()"/>
     </action-group>
     
     <action-attrs name="action-sale-order-attrs-in-ati">

@@ -355,6 +355,10 @@
 		<option value="3">Real (accounting)</option>
 	</selection>
 	
-	
+	<selection name="app.type.select" id="account.app.type.select">
+		<option value="account">Account</option>
+		<option value="invoice">Invoice</option>
+		<option value="budget">Budget</option>
+	</selection>
 	
 </object-views>

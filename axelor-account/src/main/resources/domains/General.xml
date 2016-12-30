@@ -7,6 +7,8 @@
 	<entity name="General" lang="java" cachable="true">
 
 		<!-- Comptabilité -->
+		<boolean name="appAccount" title="Activate" default="true" />
+		<boolean name="appInvoice" title="Activate" default="true" />
 		<boolean name="isInvoiceMoveConsolidated" title="Consolidate invoice movelines ?" default="true"/>
 		<many-to-one name="transferAndDirectDebitInterbankCode" ref="com.axelor.apps.account.db.InterbankCode"
 			title="Code list for rejects/return of Direct debit, Wire Transfers and IPO" />
@@ -22,7 +24,7 @@
 		<boolean name="manageAnalyticAccounting" title="Manage analytic accounting"/>
 		<integer name="analyticDistributionTypeSelect" title="Analytic distribution type" selection="account.general.analytic.distribution.type.select" default="1"/>
 		
-		<boolean name="manageBudget" title="Manage budgets"/>
+		<boolean name="appBudget" title="Activate" default="true" />
 		<boolean name="manageMultiBudget" title="Manage multi budgets on lines"/>
 
 		<string name="budgetStatusSelect" title="Status considered to calculate the engaged amount" selection="purchase.purchase.order.status.select" default="4"/>

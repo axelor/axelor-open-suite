@@ -27,4 +27,8 @@
 		<option value="3">Per order</option>
 	</selection>
 	
+	<selection name="app.type.select" id="purchase.app.type.select">
+		<option value="purchase">Purchase</option>
+	</selection>
+	
 </object-views>

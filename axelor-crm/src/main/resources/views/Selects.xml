@@ -177,4 +177,8 @@
 		<option value="2">Day of week</option>
 	</selection>
 	
+	<selection name="app.type.select" id="crm.app.type.select">
+		<option value="crm">CRM</option>
+	</selection>
+	
 </object-views>

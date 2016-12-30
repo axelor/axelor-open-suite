@@ -53,7 +53,7 @@
 		    <field name="statusSelect" colSpan="12" widget="NavSelect" showTitle="false"/>
 		    <field name="multipleUsers" hidden="true" onChange="action-expense-attrs-multiple-users"/>
 			<field name="company" form-view="company-form" grid-view="company-grid"/>
-			<field name="bankDetails" widget="SuggestBox" onSelect="action-accounting-batch-attrs-bank-details-domain" form-view="bank-details-form" grid-view="bank-details-grid" if="__config__.general.getManageMultiBanks()"/>
+			<field name="bankDetails" widget="SuggestBox" onSelect="action-accounting-batch-attrs-bank-details-domain" form-view="bank-details-form" grid-view="bank-details-grid" if="__config__.general.getAppCashManagement() &amp;&amp; __config__.general.getManageMultiBanks()"/>
 			<field name="user" colSpan="4" form-view="user-form" grid-view="user-grid"/>
 			<field name="period" colSpan="4" onSelect="action-expense-attrs-domain-period" form-view="period-form" grid-view="period-grid"/>
 			<field name="companyCbSelect" onChange="action-expense-attrs-expense-company-cb"/>

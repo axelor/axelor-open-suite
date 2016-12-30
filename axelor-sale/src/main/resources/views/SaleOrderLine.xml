@@ -75,18 +75,18 @@
 		   		<field name="estimatedDelivDate"/>
 		   		<panel-dashlet name="sale.order.line.dashboard" title="Stock Moves" action="action-sale-order-line-view-stock-move-line" colSpan="12" if-module="axelor-supplychain"/>
 		   	</panel>
-		   	<panel name="invoicingFollowUp" title="Invoicing follow-up" if-module="axelor-supplychain">
+		   	<panel name="invoicingFollowUp" title="Invoicing follow-up" if-module="axelor-supplychain" if="__config__.general.getAppInvoice() &amp;&amp; __config__.general.getManageInvoicedAmountByLine()">
 		   		<field name="invoicingDate"/>
-		  		<field name="amountInvoiced" if="__config__.general.getManageInvoicedAmountByLine()"/>
-		  		<panel-dashlet action="action-sale-order-line-view-show-invoice-lines" if="__config__.general.getManageInvoicedAmountByLine()" colSpan="12"/>
+		  		<field name="amountInvoiced" />
+		  		<panel-dashlet action="action-sale-order-line-view-show-invoice-lines"  colSpan="12"/>
 		   	</panel>
-			<panel name="projectTaskPanel" if="__config__.general.getProjectTaskSaleOrderLines()" title="Project/Task" if-module="axelor-business-project">
+			<panel name="projectTaskPanel" if="__config__.general.getAppProject() &amp;&amp; __config__.general.getProjectTaskSaleOrderLines()" title="Project/Task" if-module="axelor-business-project">
 				<field name="project" onSelect="action-sale-order-line-attrs-domain-project" onChange="action-sale-order-line-record-progress" form-view="project-task-form" grid-view="project-task-grid"/>
 				<field name="progress" readonly="true" widget="SelectProgress"/>
 			</panel>
 			<panel name="analyticDistribution" title="Analytic distribution" if-module="axelor-supplychain" if="__config__.general.getManageAnalyticAccounting()" onTabSelect="action-sale-order-line-attrs-read-only-distribution-lines">
-				<field name="analyticDistributionTemplate" if="__config__.general.getAnalyticDistributionTypeSelect() == 1"/>
-				<button name="generateDistributionLinesButton" onClick="action-sale-order-line-method-create-distribution" title="Generate distribution lines" showIf="analyticDistributionTemplate != null" if="__config__.general.getAnalyticDistributionTypeSelect() == 1"/>
+				<field name="analyticDistributionTemplate" if="__config__.general.getAppAccount() &amp;&amp; __config__.general.getAnalyticDistributionTypeSelect() == 1"/>
+				<button name="generateDistributionLinesButton" onClick="action-sale-order-line-method-create-distribution" title="Generate distribution lines" showIf="analyticDistributionTemplate != null" if="__config__.general.getAppAccount()  &amp;&amp; __config__.general.getAnalyticDistributionTypeSelect() == 1"/>
 				<panel-related field="analyticMoveLineList" grid-view="analytic-move-line-distribution-grid" form-view="analytic-move-line-distribution-form" colSpan="12"/>
 			</panel>
 		</panel-tabs>
@@ -122,7 +122,7 @@
 	</action-method>
 	
 	<action-attrs name="action-sale-order-line-attrs-read-only-distribution-lines">
-		<attribute name="readonly" for="analyticMoveLineList" expr="eval: __config__.general.getAnalyticDistributionTypeSelect() != 1"/>
+		<attribute name="readonly" for="analyticMoveLineList" expr="eval: !__config__.general.getAppAccount()  || __config__.general.getAnalyticDistributionTypeSelect() != 1"/>
 	</action-attrs>
 	
 	<action-view name="action-sale-order-line-view-show-invoice-lines" title="Invoice Lines" model="com.axelor.apps.account.db.InvoiceLine">	
@@ -189,8 +189,8 @@
 	</action-attrs>
 	
 	<action-attrs name="action-sale-order-line-attrs-title-project-task">
-		<attribute name="title" for="project" expr="eval: __config__.general.getProjectTaskLabel()" if="!com.google.common.base.Strings.isNullOrEmpty(__config__.general.getProjectTaskLabel())"/>
-		<attribute name="title" for="projectTaskPanel" expr="eval: __config__.general.getProjectTaskLabel()" if="!com.google.common.base.Strings.isNullOrEmpty(__config__.general.getProjectTaskLabel())"/>
+		<attribute name="title" for="project" expr="eval: __config__.general.getProjectTaskLabel()" if="__config__.general.getAppProject() &amp;&amp; !com.google.common.base.Strings.isNullOrEmpty(__config__.general.getProjectTaskLabel())"/>
+		<attribute name="title" for="projectTaskPanel" expr="eval: __config__.general.getProjectTaskLabel()" if="__config__.general.getAppProject() &amp;&amp; !com.google.common.base.Strings.isNullOrEmpty(__config__.general.getProjectTaskLabel())"/>
 	
 	</action-attrs>
 	

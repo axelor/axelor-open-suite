@@ -144,4 +144,11 @@
 		<option value="4">Forecast (expense)</option>
 	</selection>
 	
+	<selection name="app.type.select" id="human.resource.app.type.select">
+		<option value="employee">Employee management</option>
+		<option value="leave">Leave management</option>
+		<option value="timesheet">Timesheet management</option>
+		<option value="expense">Expense management</option>
+	</selection>
+	
 </object-views>

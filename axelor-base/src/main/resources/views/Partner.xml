@@ -175,7 +175,7 @@
 				</panel>
 	    	</panel>
 			<panel name="payment" title="Invoicing/Payment" hideIf="isContact" if-module="axelor-account" colSpan="12" >
-				<panel if-module="axelor-cash-management" if="__config__.general.getManageMultiBanks()">
+				<panel if-module="axelor-cash-management" if="__config__.general.getAppCashManagement() &amp;&amp; __config__.general.getManageMultiBanks()">
 					<field name="bankDetails"/> 
 <!-- 					TODO TO DELETE -->
 				</panel>
@@ -194,7 +194,7 @@
 		        <panel-include if-module="axelor-supplychain" view="incl-sales-partner-form" from="axelor-supplychain"/>
 		        <field name="$emailsList" colSpan="12" type="many-to-many" target="com.axelor.apps.message.db.Message" title="Emails" canNew="false" canSelect="false" canRemove="false"/>
 			</panel>
-			<panel name="customerCredit" title="Customer Credit" if-module="axelor-supplychain" colSpan="12" hideIf="isContact || !isCustomer" if="__config__.general.getManageCustomerCredit()">
+			<panel name="customerCredit" title="Customer Credit" if-module="axelor-supplychain" colSpan="12" hideIf="isContact || !isCustomer" if="__config__.general.getAppAccount() &amp;&amp; __config__.general.getManageCustomerCredit()">
 				<panel-include if-module="axelor-supplychain" view="incl-customer-credit-partner-form" from="axelor-supplychain" />
 			</panel>
 			<panel name="saleOrder" title="Sale Order" if-module="axelor-sale" showIf="isCustomer">
@@ -203,7 +203,7 @@
 			<panel name="purchaseOrder" title="Purchase Order" if-module="axelor-purchase" showIf="isSupplier">
 				<field name="purchaseOrderInformation" colSpan="12"/>
 			</panel>
-			<panel name="clientPortalAccess" title="Client portal access" if-module="axelor-client-portal" if="__config__.general.getClientPortalManagement()">
+			<panel name="clientPortalAccess" title="Client portal access" if-module="axelor-client-portal" if="__config__.general.getAppPortal()">
 				<field name="password" widget="password"/>
 			</panel>
 			<panel name="Delivery" title="Delivery" showIf="isSupplier || isCustomer">
@@ -482,7 +482,7 @@
 	</form>
 		
 	<action-group name="action-group-partner-onload">
-    	<action name="action-partner-method-update-customer-credit-line-from-partner" if="!isContact &amp;&amp; isCustomer &amp;&amp; __config__.general.getManageCustomerCredit()"/>
+    	<action name="action-partner-method-update-customer-credit-line-from-partner" if="!isContact &amp;&amp; isCustomer &amp;&amp; __config__.general.getAppAccount() &amp;&amp; __config__.general.getManageCustomerCredit()"/>
     	<action name="save"/>
     	<action name="action-partner-attrs-change-name"/>
     	<action name="action-partner-method-set-social-network-url"/>

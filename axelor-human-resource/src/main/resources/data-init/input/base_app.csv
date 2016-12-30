@@ -1,0 +1,7 @@
+"name";"code";"description";"typeSelect";"employeeGeneral.importId";"leaveGeneral.importId";"expenseGeneral.importId";"timesheetGeneral.importId";"image"
+"Employee Managment";"EMP";"Employee Management";"employee";1;;;;"app-human-resource.png"
+"Leave Management";"LEAVE";"Leave Management";"leave";;1;;;"app-human-resource.png"
+"Timesheet Management";"TM";"Timesheet Management";"timesheet";;;;1;"app-human-resource.png"
+"Expense Management";"EXP";"Expense Management";"expense";;;1;;"app-human-resource.png"
+;;;;;;;;
+;;" ";;;;;;

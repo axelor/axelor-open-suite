@@ -35,7 +35,7 @@
 			<field name="saleOrder" domain="self.clientPartner = :clientPartner" if-module="axelor-business-project" form-view="sale-order-form" grid-view="sale-order-grid"/>
 			<field name="fromDate" />
 			<field name="toDate" />
-			<field name="$visibleDuration" colSpan="6" title="Duration" type="decimal" onChange="action-project-task-record-set-stored-duration, action-attrs-project-task-compute-leadDelay"/>
+			<field name="$visibleDuration" colSpan="6" title="Duration" type="decimal" onChange="action-project-task-method-set-stored-duration,action-attrs-project-task-compute-leadDelay"/>
 			<field name="$visibleTimeSpent" readonly="true" colSpan="6" title="Time Spent" type="decimal" onChange="action-project-task-record-set-stored-time-spent"/>
 			<field name="dueDate" />
 			<field name="progress" widget="Progress" onChange="action-attrs-project-task-compute-leadDelay"/>
@@ -52,11 +52,11 @@
   				<field name="unit" requiredIf="projTaskInvTypeSelect == 3"/>
   				<field name="exTaxTotal" readonly="true"/>
 			</panel>
-			<panel title="Related elements" if="eval: __config__.general.getShowPurchaseOrderLineRelatedToProject() || __config__.general.getShowSaleOrderLineRelatedToProject() || __config__.general.getShowExpenseLineRelatedToProject() || __config__.general.getShowProductionOrderRelatedToProject()" >
-				<panel-related field="purchaseOrderLineList" form-view="purchase-order-line-form" grid-view="purchase-order-line-invoicing-project-grid" if-module="axelor-business-project" canSelect="true" canNew="false"  canEdit="false" colSpan="12" if="eval: __config__.general.getShowPurchaseOrderLineRelatedToProject()"/>
-				<panel-related field="saleOrderLineList" canSelect="true" canNew="false" canEdit="false" colSpan="12" if-module="axelor-business-project" if="eval: __config__.general.getShowSaleOrderLineRelatedToProject()" />
-				<panel-related field="expensesLineList" canSelect="true" canNew="false" canEdit="false" colSpan="12" if-module="axelor-business-project" if="eval: __config__.general.getShowExpenseLineRelatedToProject()" />
-				<panel-related field="productionOrderList" canSelect="true" canNew="false" canEdit="false" colSpan="12" if-module="axelor-business-production" if="eval: __config__.general.getShowProductionOrderRelatedToProject()" />
+			<panel title="Related elements" if="eval:  __config__.general.getAppProject() &amp;&amp; __config__.general.getManageBusinessProject() &amp;&amp; (__config__.general.getShowPurchaseOrderLineRelatedToProject() || __config__.general.getShowSaleOrderLineRelatedToProject() || __config__.general.getShowExpenseLineRelatedToProject()) || __config__.general.getShowProductionOrderRelatedToProject() &amp;&amp; __config__.general.getAppProduction()" >
+				<panel-related field="purchaseOrderLineList" form-view="purchase-order-line-form" grid-view="purchase-order-line-invoicing-project-grid" if-module="axelor-business-project" canSelect="true" canNew="false"  canEdit="false" colSpan="12" if="eval: __config__.general.getAppProject() &amp;&amp; __config__.general.getManageBusinessProject() &amp;&amp; __config__.general.getShowPurchaseOrderLineRelatedToProject()"/>
+				<panel-related field="saleOrderLineList" canSelect="true" canNew="false" canEdit="false" colSpan="12" if-module="axelor-business-project" if="eval: __config__.general.getAppProject() &amp;&amp; __config__.general.getManageBusinessProject() &amp;&amp; __config__.general.getShowSaleOrderLineRelatedToProject()" />
+				<panel-related field="expensesLineList" canSelect="true" canNew="false" canEdit="false" colSpan="12" if-module="axelor-business-project" if="eval: __config__.general.getAppProject() &amp;&amp; __config__.general.getManageBusinessProject() &amp;&amp;  __config__.general.getShowExpenseLineRelatedToProject()" />
+				<panel-related field="productionOrderList" canSelect="true" canNew="false" canEdit="false" colSpan="12" if-module="axelor-business-production" if="eval: __config__.general.getShowProductionOrderRelatedToProject() &amp;&amp; __config__.general.getAppProduction()" />
 			</panel>
 			<panel name="relatedProjectsTasks" title="Related Projects/Tasks">
 				<panel-related field="childProjectTaskList" colSpan="12" form-view="project-task-form" grid-view="project-task-grid"/>
@@ -121,7 +121,7 @@
 			<field name="clientPartner" readonly="true"/>
 			<field name="fromDate" />
 			<field name="toDate" />
-			<field name="$visibleDuration" title="Duration" type="decimal" onChange="action-project-task-record-set-stored-duration, action-attrs-project-task-compute-leadDelay"/>
+			<field name="$visibleDuration" title="Duration" type="decimal" onChange="action-project-task-method-set-stored-duration,action-attrs-project-task-compute-leadDelay"/>
 			<field name="$visibleTimeSpent" readonly="true" title="Time Spent" type="decimal" onChange="action-project-task-record-set-stored-time-spent"/>
 			<field name="dueDate" />
 			<field name="progress" onChange="action-attrs-project-task-compute-leadDelay"/>
@@ -140,11 +140,11 @@
   				<field name="unit" requiredIf="product != null"/>
   				<field name="exTaxTotal" readonly="true"/>
 			</panel>
-			<panel title="Related elements">
-				<panel-related field="purchaseOrderLineList" form-view="purchase-order-line-form" if-module="axelor-business-project" grid-view="purchase-order-line-invoicing-project-grid" canSelect="true" canNew="false"  canEdit="false" colSpan="12" if="eval: __config__.general.getShowPurchaseOrderLineRelatedToProject()"/>
-				<panel-related field="saleOrderLineList" canSelect="true" canNew="false" canEdit="false" if-module="axelor-business-project" colSpan="12" if="eval: __config__.general.getShowSaleOrderLineRelatedToProject()" />
-				<panel-related field="expensesLineList" canSelect="true" canNew="false" canEdit="false" if-module="axelor-business-project" colSpan="12" if="eval: __config__.general.getShowExpenseLineRelatedToProject()" />
-				<panel-related field="productionOrderList" canSelect="true" canNew="false" canEdit="false" colSpan="12" if-module="axelor-business-production" if="eval: __config__.general.getShowProductionOrderRelatedToProject()" />
+			<panel title="Related elements" if="eval:  __config__.general.getAppProject() &amp;&amp; __config__.general.getManageBusinessProject() &amp;&amp; (__config__.general.getShowPurchaseOrderLineRelatedToProject() || __config__.general.getShowSaleOrderLineRelatedToProject() || __config__.general.getShowExpenseLineRelatedToProject()) || __config__.general.getShowProductionOrderRelatedToProject() &amp;&amp; __config__.general.getAppProduction()" >
+				<panel-related field="purchaseOrderLineList" form-view="purchase-order-line-form" grid-view="purchase-order-line-invoicing-project-grid" if-module="axelor-business-project" canSelect="true" canNew="false"  canEdit="false" colSpan="12" if="eval: __config__.general.getAppProject() &amp;&amp; __config__.general.getManageBusinessProject() &amp;&amp; __config__.general.getShowPurchaseOrderLineRelatedToProject()"/>
+				<panel-related field="saleOrderLineList" canSelect="true" canNew="false" canEdit="false" colSpan="12" if-module="axelor-business-project" if="eval: __config__.general.getAppProject() &amp;&amp; __config__.general.getManageBusinessProject() &amp;&amp; __config__.general.getShowSaleOrderLineRelatedToProject()" />
+				<panel-related field="expensesLineList" canSelect="true" canNew="false" canEdit="false" colSpan="12" if-module="axelor-business-project" if="eval: __config__.general.getAppProject() &amp;&amp; __config__.general.getManageBusinessProject() &amp;&amp;  __config__.general.getShowExpenseLineRelatedToProject()" />
+				<panel-related field="productionOrderList" canSelect="true" canNew="false" canEdit="false" colSpan="12" if-module="axelor-business-production" if="eval: __config__.general.getShowProductionOrderRelatedToProject() &amp;&amp; __config__.general.getAppProduction()" />
 			</panel>
 			<panel name="logTimes" title="Log Times">
 				<field name="unitOnPrinting" if-module="axelor-business-project"/>
@@ -199,7 +199,7 @@
 			<field name="saleOrder" domain="self.clientPartner.id = :clientPartner.id" if-module="axelor-business-project" readonlyIf="typeSelect == 'task'" form-view="sale-order-form" grid-view="sale-order-grid"/>
 			<field name="fromDate" />
 			<field name="toDate" />
-			<field name="$visibleDuration" title="Duration" type="decimal" onChange="action-project-task-record-set-stored-duration, action-attrs-project-task-compute-leadDelay"/>
+			<field name="$visibleDuration" title="Duration" type="decimal" onChange="action-project-task-method-set-stored-duration,action-attrs-project-task-compute-leadDelay"/>
 			<field name="$visibleTimeSpent" readonly="true" title="Time Spent" type="decimal" onChange="action-project-task-record-set-stored-time-spent"/>
 			<field name="dueDate" />
 			<field name="progress" widget="Progress" onChange="action-attrs-project-task-compute-leadDelay"/>
@@ -216,11 +216,11 @@
   				<field name="unit" requiredIf="product != null"/>
   				<field name="exTaxTotal" readonly="true"/>
 			</panel>
-			<panel title="Related elements">
-				<panel-related field="purchaseOrderLineList" form-view="purchase-order-line-form" grid-view="purchase-order-line-invoicing-project-grid" if-module="axelor-business-project" canSelect="true" canNew="false"  canEdit="false" colSpan="12" if="eval: __config__.general.getShowPurchaseOrderLineRelatedToProject()"/>
-				<panel-related field="saleOrderLineList" canSelect="true" canNew="false" canEdit="false" colSpan="12" if-module="axelor-business-project" if="eval: __config__.general.getShowSaleOrderLineRelatedToProject()" />
-				<panel-related field="expensesLineList" canSelect="true" canNew="false" canEdit="false" colSpan="12" if-module="axelor-business-project" if="eval: __config__.general.getShowExpenseLineRelatedToProject()" />
-				<panel-related field="productionOrderList" canSelect="true" canNew="false" canEdit="false" colSpan="12" if-module="axelor-business-production" if="eval: __config__.general.getShowProductionOrderRelatedToProject()" />
+			<panel title="Related elements" if="eval:__config__.general.getAppProject() &amp;&amp; __config__.general.getManageBusinessProject() &amp;&amp; (__config__.general.getShowPurchaseOrderLineRelatedToProject() || __config__.general.getShowSaleOrderLineRelatedToProject() || __config__.general.getShowExpenseLineRelatedToProject()) || __config__.general.getShowProductionOrderRelatedToProject() &amp;&amp; __config__.general.getAppProduction()" >
+				<panel-related field="purchaseOrderLineList" form-view="purchase-order-line-form" grid-view="purchase-order-line-invoicing-project-grid" if-module="axelor-business-project" canSelect="true" canNew="false"  canEdit="false" colSpan="12" if="eval: __config__.general.getAppProject() &amp;&amp; __config__.general.getManageBusinessProject() &amp;&amp; __config__.general.getShowPurchaseOrderLineRelatedToProject()"/>
+				<panel-related field="saleOrderLineList" canSelect="true" canNew="false" canEdit="false" colSpan="12" if-module="axelor-business-project" if="eval: __config__.general.getAppProject() &amp;&amp; __config__.general.getManageBusinessProject() &amp;&amp; __config__.general.getShowSaleOrderLineRelatedToProject()" />
+				<panel-related field="expensesLineList" canSelect="true" canNew="false" canEdit="false" colSpan="12" if-module="axelor-business-project" if="eval: __config__.general.getAppProject() &amp;&amp; __config__.general.getManageBusinessProject() &amp;&amp;  __config__.general.getShowExpenseLineRelatedToProject()" />
+				<panel-related field="productionOrderList" canSelect="true" canNew="false" canEdit="false" colSpan="12" if-module="axelor-business-production" if="eval: __config__.general.getShowProductionOrderRelatedToProject() &amp;&amp; __config__.general.getAppProduction()" />
 			</panel>
 			<panel name="related ProjectsTasks" title="Related Projects/Tasks" hideIf="typeSelect == 'task'">
 				<panel-related field="childProjectTaskList" colSpan="12" form-view="project-task-form" grid-view="project-task-grid"/>
@@ -332,23 +332,23 @@
 		<attribute name="value" for="typeSelect" expr="eval:'project'" />
 		<attribute name="value" for="fromDate" expr="eval: __datetime__"/>
 		<attribute name="value" for="company" expr="eval:__user__.activeCompany"/>
-		<attribute name="value" for="product" expr="eval: __config__.general.getProductInvoicingProjectTask()"/>
+		<attribute name="value" for="product" expr="eval: __config__.general.getProductInvoicingProjectTask()" if="__config__.general.getAppProject()"/>
 		<attribute name="value" for="assignedTo" expr="eval: __user__"/>
 		<attribute name="value:add" for="membersUserSet" expr="eval: __user__"/>
-		<attribute name="value" for="price" expr="eval: __config__.general.getProductInvoicingProjectTask()?.salePrice"/>
-		<attribute name="value" for="unit" expr="eval: __config__.general.getProductInvoicingProjectTask()?.unit"/>
-		<attribute name="value" for="exTaxTotal" expr="eval: __config__.general.getProductInvoicingProjectTask()?.salePrice"/>
+		<attribute name="value" for="price" expr="eval: __config__.general.getProductInvoicingProjectTask()?.salePrice" if="__config__.general.getAppProject()"/>
+		<attribute name="value" for="unit" expr="eval: __config__.general.getProductInvoicingProjectTask()?.unit" if="__config__.general.getAppProject()"/>
+		<attribute name="value" for="exTaxTotal" expr="eval: __config__.general.getProductInvoicingProjectTask()?.salePrice" if="__config__.general.getAppProject()"/>
 	</action-attrs>
 	
 	<action-record name="action-project-task-default" model="com.axelor.apps.project.db.ProjectTask">
 		<field name="typeSelect" expr="eval:'task'" />
 		<field name="company" expr="eval:__user__.activeCompany"/>
-		<field name="product" expr="eval: __config__.general.getProductInvoicingProjectTask()" if="projTaskInvTypeSelect != 3 &amp;&amp; project?.projTaskInvTypeSelect != 3"/>
+		<field name="product" expr="eval: __config__.general.getProductInvoicingProjectTask()" if="__config__.general.getAppProject()  &amp;&amp; projTaskInvTypeSelect != 3 &amp;&amp; project?.projTaskInvTypeSelect != 3"/>
 		<field name="fromDate" expr="eval: __date__"/>
 		<field name="assignedTo" expr="eval: __user__"/>
-		<field name="price" expr="eval: __config__.general.getProductInvoicingProjectTask()?.salePrice"/>
-		<field name="unit" expr="eval: __config__.general.getProductInvoicingProjectTask()?.unit"/>
-		<field name="exTaxTotal" expr="eval: __config__.general.getProductInvoicingProjectTask()?.salePrice"/>
+		<field name="price" expr="eval: __config__.general.getProductInvoicingProjectTask()?.salePrice" if="__config__.general.getAppProject()"/>
+		<field name="unit" expr="eval: __config__.general.getProductInvoicingProjectTask()?.unit" if="__config__.general.getAppProject()"/>
+		<field name="exTaxTotal" expr="eval: __config__.general.getProductInvoicingProjectTask()?.salePrice" if="__config__.general.getAppProject()"/>
 	</action-record>
 	
 	<action-attrs name="action-attrs-project-add-member" model="com.axelor.apps.project.db.ProjectTask">

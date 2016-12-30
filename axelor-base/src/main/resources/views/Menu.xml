@@ -411,6 +411,16 @@
 		<view type="form" name="general-form"/>
 		<context name="_showRecord" expr="eval:__config__.general?.id" />
 	</action-view>
+	
+	<menuitem name="admin-root-general-app" parent="admin-root-general"
+		title="Apps" action="admin.root.general.app" />
+
+	<action-view name="admin.root.general.app" title="Apps"
+		model="com.axelor.apps.base.db.App" >
+		<view type="cards" name="app-cards"/>
+		<view type="grid" name="app-grid"/>
+		<view type="form" name="app-form"/>
+	</action-view>
 
 	<menuitem name="admin-conf-general" parent="admin-root-general"
 		title="General data"  />
