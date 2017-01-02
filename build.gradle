@@ -23,22 +23,6 @@ studioModules.addAll(otherModules);
 
 modules.addAll(studioModules)
 
-
-
-def enModules = new File('modules/abs').listFiles().findAll { dir ->
-  new File(dir, 'build.gradle').exists() && !dir.name.endsWith('-demo-fr') && !dir.name.endsWith('-l10n-fr')
-}
-
-enModules.addAll(studioModules)
-
-def frModules = new File('modules/abs').listFiles().findAll { dir ->
-	new File(dir, 'build.gradle').exists() && !dir.name.endsWith('-demo-en') && !dir.name.endsWith('-l10n-en')
-}
-
-frModules.addAll(studioModules)
-
-def installedModules = project.hasProperty('lang') && project.getProperty('lang') == 'fr' ? frModules : enModules
-
 application {
 
 	name "axelor-erp"
@@ -47,7 +31,7 @@ application {
 	version "4.0.0"
 	
 	// ADK version required
-	adkVersion "~4.1.0"
+	adkVersion "4.2.0"
 
 
 	// depends on all modules
@@ -56,7 +40,7 @@ application {
 	}
 	
 	// install all modules
-	installedModules.each { dir ->
+	modules.each { dir ->
 			install "$dir.name"
 	}
 	
