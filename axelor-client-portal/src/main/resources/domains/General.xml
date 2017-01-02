@@ -6,7 +6,7 @@
 
 	<entity name="General" lang="java" cachable="true">
 
-		<boolean name="appPortal" title="Activate" default="true" />
+		<boolean name="appPortal" title="Activate" />
 		<boolean name="manageSaleOrders" title="Manage sale orders" default="false"/>
 		<boolean name="manageInvoices" title="Manage invoices" default="false"/>
 		<boolean name="manageTickets" title="Manage tickets" default="false"/>

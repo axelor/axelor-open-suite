@@ -13,6 +13,10 @@
 	    <string name="description" title="Description" large="true" translatable="true"/>
 		<many-to-one name="baseGeneral" ref="com.axelor.apps.base.db.General" title="General configuration" />
 		<many-to-one name="image" ref="com.axelor.meta.db.MetaFile" title="Image"/>
+		<string name="dependsOn" title="Depends on" selection="app.type.select"/>
+		<boolean name="initDataLoaded" title="Init data loaded ?" />
+		<boolean name="demoDataLoaded" title="Demo data loaded ?" />
+		<string name="modules" title="Modules contains in the app" required="true" />
 	    
   	</entity>
 

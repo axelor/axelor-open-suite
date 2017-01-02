@@ -5,7 +5,7 @@
 	<module name="base" package="com.axelor.apps.base.db"/>
 
 	<entity name="General" lang="java" cachable="true">
-		<boolean name="appPurchase" title="Activate" default="true" />
+		<boolean name="appPurchase" title="Activate" />
 		<boolean name="managePurchaseOrderVersion" title="Manage purchase order versions" default="false"/>
 		<boolean name="purchaseOrderGenerationAuto" title="Generate purchase orders automatically" default="false"/>
 		<boolean name="managePurchasesUnits" title="Manage purchases unit on products"/>

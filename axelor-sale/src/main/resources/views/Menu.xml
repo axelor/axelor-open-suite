@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.2.xsd">
 	
 	
-	<menuitem name="sc-root-sale" title="Sales" order="-106"
+	<menuitem name="sc-root-sale" title="Sales" order="-106"  if="__config__.general.getAppSale()"
 		icon="fa-line-chart" groups="admins,ERP,CRM" icon-background="#e0a83c"/>
 		
 	<menuitem name="sale-templates-new-template" title="Create a template"  groups="admins,ERP"
@@ -196,7 +196,7 @@
 
 <!-- TOP MENU -->
 
-	<menuitem name="top-menu-create-so" order="-60" parent="top-menu-utility" top="true" title="Create SO" action="supply.chain.root.sale.order" />
+	<menuitem name="top-menu-create-so" order="-60" parent="top-menu-utility" top="true" title="Create SO" action="supply.chain.root.sale.order" if="__config__.general.getAppSale()"/>
 	
 	<action-view name="supply.chain.root.sale.order" title="Sales order"
 		model="com.axelor.apps.sale.db.SaleOrder" >
@@ -205,7 +205,7 @@
 	</action-view>	
 	
 
-	<menuitem name="top-sale" title="Sales" groups="admins,ERP,CRM" top="true" left="false" order="-160"/>
+	<menuitem name="top-sale" title="Sales" groups="admins,ERP,CRM" top="true" left="false" order="-160" if="__config__.general.getAppSale()" />
 	
 	<menuitem name="top-sale-create-quote" order="-100" title="Create Quote" parent="top-sale" top="true" action="sc.root.sale.new.so"/>
 	<menuitem name="top-sale-orders-all" title="Quotes &amp; Orders" order="-70" action="sc.root.sale.orders" parent="top-sale" groups="admins,ERP" top="true" left="false"/>

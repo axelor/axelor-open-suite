@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.2.xsd">
 
-	<menuitem name="hr-root" order="-104" title="Human resources" icon="fa-sitemap" 
+	<menuitem name="hr-root" order="-104" title="Human resources" icon="fa-sitemap"  if="__config__.general.getAppEmployee()"
 	    groups="admins,ERP" icon-background="#84429f"/> 
 	
-	<menuitem name="timesheet-root" parent="hr-root"
+	<menuitem name="timesheet-root" parent="hr-root" if="__config__.general.getAppTimesheet()"
     	title="Timesheets"/>
 	
 	<menuitem name="edit-timesheet" parent="timesheet-root" title="Complete my Timesheet" action="edit.timesheet"/>
@@ -78,7 +78,7 @@
 	</action-method>
 	
 	
-	<menuitem name="expense-root" parent="hr-root"
+	<menuitem name="expense-root" parent="hr-root" if="__config__.general.getAppExpense()"
     	title="Expenses"/>
 	
 	<menuitem name="edit-expense" parent="expense-root" title="Complete my expense" action="edit.expense"/>
@@ -129,7 +129,7 @@
 		<call class="com.axelor.apps.hr.web.expense.ExpenseController" method="historicExpense"/>
 	</action-method>
 	
-	<menuitem name="leave-request-root" parent="hr-root"
+	<menuitem name="leave-request-root" parent="hr-root" if="__config__.general.getAppLeave()"
     	title="Leave Requests"/>
 	
 	<menuitem name="edit-leave-request" parent="leave-request-root" title="Complete my leave request" action="edit.leave.request"/>

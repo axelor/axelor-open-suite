@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<csv-inputs xmlns="http://axelor.com/xml/ns/data-import"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/data-import http://axelor.com/xml/ns/data-import/data-import_4.0.xsd">
+  
+	<input file="account_cashRegister.csv" separator=";" type="com.axelor.apps.account.db.CashRegister" search="self.importId = :importId" />
+	
+	<input file="account_accountingBatch.csv" separator=";" type="com.axelor.apps.account.db.AccountingBatch" search="self.code = :code" >
+		<bind to="debitDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(debitDate)" column="debitDate"/>
+		<bind to="startDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(startDate)" column="startDate"/>
+		<bind to="endDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(endDate)" column="endDate"/>
+	</input>
+
+	<input file="account_journalType.csv" separator=";" type="com.axelor.apps.account.db.JournalType" search="self.importId = :importId" />
+	
+	<input file="account_journal.csv" separator=";" type="com.axelor.apps.account.db.Journal" search="self.importId = :importId" />
+     
+	<input file="account_paymentMode.csv" separator=";" type="com.axelor.apps.account.db.PaymentMode"  search="self.importId = :importId" />
+	
+	<input file="account_paymentCondition.csv" separator=";" type="com.axelor.apps.account.db.PaymentCondition" search="self.importId = :importId" />
+	
+	<input file="account_analyticAxis.csv" separator=";" type="com.axelor.apps.account.db.AnalyticAxis" search="self.importId = :importId" />
+	
+	<input file="account_analyticAccount.csv" separator=";" type="com.axelor.apps.account.db.AnalyticAccount" search="self.importId = :importId" />
+	
+	<input file="base_company.csv" separator=";" type="com.axelor.apps.base.db.Company" search="self.importId = :importId" update="true" call="com.axelor.csv.script.UpdateAll:updatePeriod">
+		<bind column="importId" to="importId"/>
+	</input>
+	
+	<input file="account_interBankCode.csv" separator=";" type="com.axelor.apps.account.db.InterbankCodeLine">
+        <bind column="code_rejet" to="code" />
+        <bind column="libelle_rejet" to="name" />
+        <bind column="description_rejet" to="description" />
+        <bind column="transferCfonbOk" to="transferCfonbOk" eval="transferCfonbOk == 't' ? true : false"/>
+        <bind column="prelevement" to="directDebitAndTipCfonbOk" eval="prelevement == 't' ? true : false"/>
+        <bind column="prelevement_sepa" to="directDebitSepaOk" eval="prelevement_sepa == 't' ? true : false"/>
+        <bind column="lcr_bor" to="lcrBorOk" eval="lcr_bor == 't' ? true : false"/>
+        <bind column="cheque" to="chequeOk" eval="cheque == 't' ? true : false"/>
+        <bind column="rejet_technique" to="technicalRejectOk" eval="rejet_technique == 't' ? true : false"/>
+        <bind to="interbankCode" search="self.code = :code_fichier">
+            <bind column="code_fichier" to="code"/>
+            <bind column="nom_fichier" to="name"/>
+            <bind column="date_fin" to="endDate" eval="date_fin ? date_fin : null"/>
+            <bind column="description_fichier" to="description"/>
+        </bind>
+    </input>
+	
+	<input file="account_reminderLevel.csv" separator=";" type="com.axelor.apps.account.db.ReminderLevel" search="self.name = :name"/>
+	
+	<input file="account_reminderMethod.csv" separator=";" type="com.axelor.apps.account.db.ReminderMethod" search="self.code = :code"/>
+	
+	<input file="account_reminderMethodLine.csv" separator=";" type="com.axelor.apps.account.db.ReminderMethodLine" />
+	
+	<input file="account_accountManagement.csv" separator=";" type="com.axelor.apps.account.db.AccountManagement" search="self.importId = :importId">
+		<bind search="self.importId = :company_id" to="company" update="true" />
+		<bind search="self.code = :cashAccount_code and self.company.importId = :company_id" to="cashAccount" update="true" />
+		<bind search="self.code = :saleAccount_code and self.company.importId = :company_id" to="saleAccount" update="true" />
+		<bind search="self.code = :purchaseAccount_code and self.company.importId = :company_id" to="purchaseAccount" update="true" />
+		<bind search="self.importId = :sequence_importId and self.company.importId = :company_id" to="sequence" update="true" />
+		<bind search="self.importId = :journal_importId and self.company.importId = :company_id" to="journal" update="true" />
+	</input>
+		
+	<input file="account_payboxConfig.csv" separator=";" type="com.axelor.apps.account.db.PayboxConfig" search="self.importId = :importId" />
+	
+	<input file="account_cfonbConfig.csv" separator=";" type="com.axelor.apps.account.db.CfonbConfig" search="self.importId = :importId" />
+	
+	<input file="account_accountConfig.csv" separator=";" type="com.axelor.apps.account.db.AccountConfig" search="self.importId = :importId" />
+	
+	<input file="account_reminderConfigLine.csv" separator=";" type="com.axelor.apps.account.db.ReminderConfigLine" />
+	
+	<input file="base_general.csv" separator=";" type="com.axelor.apps.base.db.General"  search="self.importId = :importId" update="true">
+      	<bind to="defaultExemptionTax" search="self.code = :defaultExemptionTax_code" update="true">
+          	<bind column="defaultExemptionTax_code" to="code"/>
+      	</bind>
+		<bind to="qasWsdlUrl" column="qas_url"/>
+		<bind to="manageBudget" column="manageBudget"/>
+		<bind to="manageMultiBudget" column="manageMultiBudget"/>
+        <bind to="statusSelectBudget" column="statusSelectBudget"/>
+	</input>
+
+	<input file="base_partner.csv" separator=";" type="com.axelor.apps.base.db.Partner" search="self.importId = :importId" 
+	update="true" call="com.axelor.csv.script.ImportPartnerAccount:importAccountingSituation">
+		<bind to="isContact" eval="isContact == 'true' ? true : false" />
+		<bind to="isCustomer" eval="isCustomer == 'true' ? true : false" />
+		<bind to="isSupplier" eval="isSupplier == 'true' ? true : false" />
+	</input>
+	
+	<input file="base_company.csv" separator=";" type="com.axelor.apps.base.db.Company" search="self.importId = :importId" update="true">
+		<bind column="bankDetailsSet_id" to="bankDetailsSet" search="self.importId in :bankDetailsSet_id" update="true" />
+	</input> 
+ 	
+</csv-inputs>

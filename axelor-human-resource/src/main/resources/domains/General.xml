@@ -6,10 +6,10 @@
 
 	<entity name="General" lang="java" cachable="true">
 		
-		<boolean name="appEmployee" title="Activate" default="true" />
-		<boolean name="appLeave" title="Activate" default="true" />
-		<boolean name="appExpense" title="Activate" default="true" />
-		<boolean name="appTimesheet" title="Activate" default="true" />
+		<boolean name="appEmployee" title="Activate"/>
+		<boolean name="appLeave" title="Activate"  />
+		<boolean name="appExpense" title="Activate" />
+		<boolean name="appTimesheet" title="Activate" />
 		<decimal name="dailyWorkHours" title="Daily work hours"/>
 		<boolean name="allowNegativeLeaveEmployees" title="Allow negative values for employee leaves"/>
 		<integer name="invoicingTypeLogTimesSelect" title="Invoicing Type for Log Times" selection="hrs.timesheet.line.invoicing.type.select" default="1"/>

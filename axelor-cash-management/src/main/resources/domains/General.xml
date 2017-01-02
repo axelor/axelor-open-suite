@@ -6,7 +6,7 @@
 
 	<entity name="General" lang="java" cachable="true">
 		
-		<boolean name="appCashManagement" title="Activate" default="true" />
+		<boolean name="appCashManagement" title="Activate" />
 		<boolean name="manageMultiBanks" title="Manage multi banks"/>
 		
 	</entity>

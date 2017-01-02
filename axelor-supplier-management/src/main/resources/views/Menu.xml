@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.2.xsd">
 	
 	
-	<menuitem name="sc-root-purchase-order-supplier-lines-requests" title="Supplier requests" order="-1" 
+	<menuitem name="sc-root-purchase-order-supplier-lines-requests" title="Supplier requests" order="-1"  if="__config__.general.getAppPurchase() &amp;&amp; __config__.general.getManageSupplier()"
 		groups="admins,ERP" action="sc.root.purchase.orders.supplier.lines.requests" parent="sc-root-purchase"/>
 
 	<action-view name="sc.root.purchase.orders.supplier.lines.requests" title="Supplier requests"
@@ -14,7 +14,7 @@
 		<domain>self.stateSelect = 1</domain>
 	</action-view>
 	
-	<menuitem name="sc-root-purchase-order-supplier-lines-requests-completed" title="Supplier requests completed" order="-1" 
+	<menuitem name="sc-root-purchase-order-supplier-lines-requests-completed" title="Supplier requests completed" order="-1"  if="__config__.general.getAppPurchase() &amp;&amp; __config__.general.getManageSupplier()"
 		groups="admins,ERP" action="sc.root.purchase.orders.supplier.lines.requests.completed" parent="sc-root-purchase"/>
 
 	<action-view name="sc.root.purchase.orders.supplier.lines.requests.completed" title="Supplier requests completed"
@@ -24,7 +24,7 @@
 		<domain>self.stateSelect = 2</domain>
 	</action-view>
 	
-	<menuitem name="sc-root-purchase-order-supplier-lines-requests-historical" title="Supplier requests historical" order="-1" 
+	<menuitem name="sc-root-purchase-order-supplier-lines-requests-historical" title="Supplier requests historical" order="-1"  if="__config__.general.getAppPurchase() &amp;&amp; __config__.general.getManageSupplier()"
 		groups="admins,ERP" action="sc.root.purchase.orders.supplier.lines.requests.historical" parent="sc-root-purchase"/>
 
 	<action-view name="sc.root.purchase.orders.supplier.lines.requests.historical" title="Supplier requests historical"

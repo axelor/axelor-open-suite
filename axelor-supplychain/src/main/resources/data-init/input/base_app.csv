@@ -1,2 +1,2 @@
-"name";"code";"description";"typeSelect";"supplychainGeneral.importId";"image"
-"Supplychain";"SCH";"Supplychain management";"supplychain";1;"app-supplychain.png"
+"name";"code";"description";"typeSelect";"supplychainGeneral.importId";"image";"modules";"dependsOn"
+"Supplychain";"SCH";"Supplychain management";"supplychain";1;"app-supplychain.png";"axelor-supplychain";"account,sale,purchase,stock"

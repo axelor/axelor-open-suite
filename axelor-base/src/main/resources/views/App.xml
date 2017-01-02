@@ -8,7 +8,7 @@
 		<field name="code" />
 	</grid>
 	
-	<form name="app-form" title="App" model="com.axelor.apps.base.db.App" canDelete="false" canNew="false">
+	<form name="app-form" title="App" model="com.axelor.apps.base.db.App" canDelete="false" canNew="false" width="large" onSave="save,action-method-app-import-data-init">
 		<panel>
 			<field name="image" widget="Image" colSpan="6"/>
 			<panel colSpan="6">
@@ -16,7 +16,9 @@
 				<field name="code" />
 			</panel>
 			<field name="description" colSpan="12"/>
-			<field name="typeSelect" hidden="true" />
+			<field name="dependsOn" colSpan="12" widget="multiselect"/>
+			<field name="demoDataLoaded" readonly="true" colSpan="2"/>
+			<button name="importDataDemo" onClick="save,action-method-app-import-data-demo,save" title="Import demo data" colSpan="3" readonlyIf="demoDataLoaded"/>
 			<field name="baseGeneral" x-show-icons="false" showTitle="false" colSpan="12" showIf="typeSelect == 'general'">
 				<editor>
 					<panel colSpan="12">
@@ -277,7 +279,7 @@
 			<field name="saleGeneral.appSale"  hidden="true"/>
 			<field name="purchaseGeneral.appPurchase" hidden="true"/>
 			<field name="stockGeneral.appStock" hidden="true"/>
-			<field name="suppplychainGeneral.appSupplychain" hidden="true"/>
+			<field name="supplychainGeneral.appSupplychain" hidden="true"/>
 			<field name="productionGeneral.appProduction" hidden="true"/>
 			<field name="employeeGeneral.appEmployee" hidden="true"/>
 			<field name="leaveGeneral.appLeave" hidden="true"/>
@@ -288,6 +290,8 @@
 			<field name="portalGeneral.appPortal"  hidden="true"/>
 			<field name="cashManagementGeneral.appCashManagement" hidden="true"/>
 			<field name="crmGeneral.appCrm" hidden="true"/>
+			<field name="typeSelect" hidden="true" />
+			<field name="initDataLoaded" hidden="true" />
 		</panel>
 		<panel-dashlet action="admin.root.conf.account.config" showIf="typeSelect == 'account' &amp;&amp; accountGeneral.appAccount"  />
 		<panel-dashlet action="admin.root.conf.sale.config" showIf="typeSelect == 'sale' &amp;&amp; saleGeneral.appSale"  />
@@ -352,5 +356,13 @@
 		]]>
 		</template>
 	</cards>
-
+	
+	<action-method name="action-method-app-import-data-demo">
+		<call class="com.axelor.apps.base.web.AppController" method="importDataDemo"/>
+	</action-method>
+	
+	<action-method name="action-method-app-import-data-init">
+		<call class="com.axelor.apps.base.web.AppController" method="importDataInit" if="!initDataLoaded"/>
+	</action-method>
+	
 </object-views>

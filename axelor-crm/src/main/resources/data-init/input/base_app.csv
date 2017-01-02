@@ -1,2 +1,2 @@
-"name";"code";"description";"typeSelect";"crmGeneral.importId";"image"
-"CRM";"CRM";"CRM configuration";"crm";1;"app-crm.png"
+"name";"code";"description";"typeSelect";"crmGeneral.importId";"image";"modules";"dependsOn"
+"CRM";"CRM";"CRM configuration";"crm";1;"app-crm.png";"axeor-crm";"general"

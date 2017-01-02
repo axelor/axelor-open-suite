@@ -1,2 +1,2 @@
-"name";"code";"description";"typeSelect";"productionGeneral.importId";"image"
-"Production";"PROD";"Production configuration";"production";1;"app-production.png"
+"name";"code";"description";"typeSelect";"productionGeneral.importId";"image";"modules";"dependsOn"
+"Production";"PROD";"Production configuration";"production";1;"app-production.png";"axelor-production";"supplychain"

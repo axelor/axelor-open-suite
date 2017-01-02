@@ -5,7 +5,7 @@
 	<module name="base" package="com.axelor.apps.base.db"/>
 
 	<entity name="General" lang="java" cachable="true">
-		<boolean name="appStock" title="Activate" default="true" />
+		<boolean name="appStock" title="Activate" />
 	</entity>
 
 </domain-models>
