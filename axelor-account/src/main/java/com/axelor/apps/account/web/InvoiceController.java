@@ -258,6 +258,7 @@ public class InvoiceController {
 
 		if(!invoiceIds.equals("")){
 			String language;
+			Integer invoicesCopy = invoice.getPartner().getInvoicesCopySelect();
 			try{
 				language = invoice.getPartner().getLanguageSelect() != null? invoice.getPartner().getLanguageSelect() : invoice.getCompany().getPrintingSettings().getLanguageSelect() != null ? invoice.getCompany().getPrintingSettings().getLanguageSelect() : "en" ;
 			}catch (NullPointerException e){
@@ -272,9 +273,11 @@ public class InvoiceController {
 			String fileLink = ReportFactory.createReport(IReport.INVOICE, title+"-${date}")
 					.addParam("InvoiceId", invoiceIds)
 					.addParam("Locale", language)
+					.addParam("InvoicesCopy", invoicesCopy)
 					.addModel(invoice)
 					.generate()
 					.getFileLink();
+			
 
 			logger.debug("Printing "+title);
 		
@@ -287,6 +290,7 @@ public class InvoiceController {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	public void massValidation(ActionRequest request, ActionResponse response) {
 
 		List<Integer> listSelectedInvoice = (List<Integer>) request.getContext().get("_ids");
@@ -315,6 +319,7 @@ public class InvoiceController {
 
 	}
 
+	@SuppressWarnings("unchecked")
 	public void massVentilation(ActionRequest request, ActionResponse response) {
 
 		List<Integer> listSelectedInvoice = (List<Integer>) request.getContext().get("_ids");
@@ -344,7 +349,7 @@ public class InvoiceController {
 	}
 	
 	//Generate single invoice from several
-	@SuppressWarnings("rawtypes")
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public void mergeInvoice(ActionRequest request, ActionResponse response)  {
 		List<Invoice> invoiceList = new ArrayList<Invoice>();
 		List<Long> invoiceIdList = new ArrayList<Long>();
@@ -354,7 +359,7 @@ public class InvoiceController {
 
 			if (request.getContext().get("invoiceToMerge") instanceof List){
 				//No confirmation popup, invoices are content in a parameter list
-				List<Map> invoiceMap = (List<Map>)request.getContext().get("invoiceToMerge");
+				List<Map> invoiceMap = (List<Map>) request.getContext().get("invoiceToMerge");
 				for (Map map : invoiceMap) {
 					invoiceIdList.add(new Long((Integer)map.get("id")));
 				}

@@ -6,6 +6,10 @@
 
 	<entity name="General" lang="java" cachable="true">
 		
+		<boolean name="appEmployee" title="Activate"/>
+		<boolean name="appLeave" title="Activate"  />
+		<boolean name="appExpense" title="Activate" />
+		<boolean name="appTimesheet" title="Activate" />
 		<decimal name="dailyWorkHours" title="Daily work hours"/>
 		<boolean name="allowNegativeLeaveEmployees" title="Allow negative values for employee leaves"/>
 		<integer name="invoicingTypeLogTimesSelect" title="Invoicing Type for Log Times" selection="hrs.timesheet.line.invoicing.type.select" default="1"/>
@@ -14,6 +18,8 @@
 		<!-- Timesheet Timer configuration -->
 		<boolean name="editModeTSTimer" title="Edit Start&amp;Stop Timer On Stop" default="true"/>
 		<boolean name="keepProjectTask" title="Keep Project/Task for Start&amp;Stop Timer" default="true"/>
+		
+		<boolean name="overtimeManagement" title="Overtime management" />
 		
 		<extra-code>
    		<![CDATA[

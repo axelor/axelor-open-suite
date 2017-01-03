@@ -39,7 +39,7 @@ public class ImportCompany {
 		Company company = (Company) bean;
 		
 		final Path path = (Path) values.get("__path__");
-	    final File image = path.resolve((String) values.get("logo_fileName")).toFile(); 
+	    final File image = path.getParent().resolve((String) values.get("logo_fileName")).toFile(); 
 
 		try {
 			final MetaFile metaFile = metaFiles.upload(image);

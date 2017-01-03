@@ -20,8 +20,6 @@ package com.axelor.apps.account.service.payment.invoice.payment;
 import java.math.BigDecimal;
 
 import org.joda.time.LocalDate;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoicePayment;
@@ -39,9 +37,6 @@ public class InvoicePaymentCreateServiceImpl  implements  InvoicePaymentCreateSe
 	protected InvoicePaymentRepository invoicePaymentRepository;
 	protected InvoicePaymentToolService invoicePaymentToolService;
 	protected CurrencyService currencyService;
-
-	
-	private final Logger log = LoggerFactory.getLogger( getClass() );
 	
 	@Inject
 	public InvoicePaymentCreateServiceImpl(InvoicePaymentRepository invoicePaymentRepository, InvoicePaymentToolService invoicePaymentToolService, 

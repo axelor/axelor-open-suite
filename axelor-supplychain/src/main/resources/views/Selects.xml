@@ -41,5 +41,8 @@
 		<option value="com.axelor.apps.supplychain.db.MrpForecast">Sale forecast</option>
 	</selection>
 	
+	<selection name="app.type.select" id="supplychain.app.type.select">
+		<option value="supplychain">Supplychain management</option>
+	</selection>
 	
 </object-views>

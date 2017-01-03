@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.2.xsd">
 	
 	
-	<menuitem name="sc-root-purchase" title="Purchases" order="-105" 
+	<menuitem name="sc-root-purchase" title="Purchases" order="-105"  if="__config__.general.getAppPurchase()"
 		icon="fa-shopping-cart" groups="admins,ERP" icon-background="#b6473f"/>
 		
 	<menuitem name="sc-root-purchase-suppliers" parent="sc-root-purchase" order="-200"
@@ -50,6 +50,7 @@
 
 	<action-view name="sc.root.purchase.orders" title="Purchase orders"
 		model="com.axelor.apps.purchase.db.PurchaseOrder" >
+		<view type="cards" name="purchase-order-cards" />
 		<view type="grid" name="purchase-order-grid" />
 		<view type="form" name="purchase-order-form" />
 		<view-param name="search-filters" value="purchase-order-filters"/>
@@ -118,7 +119,7 @@
 
 <!-- TOP MENU -->
 
-	<menuitem name="top-purchase" title="Purchases" groups="admins,ERP" top="true" left="false" order="-150"/>
+	<menuitem name="top-purchase" title="Purchases" groups="admins,ERP" top="true" left="false" order="-150" if="__config__.general.getAppPurchase()"/>
 	
 	<menuitem name="top-purchase-create-rfq" title="Create RFQ" order="-100" parent="top-purchase" top="true" action="sc.root.purchase.order.new"/>
 	<menuitem name="top-purchase-orders-all" title="RFQs &amp; Orders" order="-70" action="sc.root.purchase.orders" parent="top-purchase" groups="admins,ERP" top="true" left="false"/>		

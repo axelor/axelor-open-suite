@@ -337,7 +337,7 @@ where PaymentVoucher.id = ?]]></xml-property>
   </DataSetParameters>
 </model:DesignValues>]]></xml-property>
         </oda-data-set>
-        <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="PaymentInvoiceLineDS" id="2629">
+        <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="PayVoucherDueElementLineDS" id="2629">
             <list-property name="columnHints">
                 <structure>
                     <property name="columnName">LineDate</property>
@@ -544,7 +544,7 @@ where PaymentVoucher.id = ?]]></xml-property>
 MoveLineGenerated.amount_paid, Account.code as "AccountCode", ContractLine.contract_line_id, Invoice.invoice_id, MoveLineGenerated.name as "Reference", 
 PaymentScheduleLine.name as "PaymentScheduleName", PaymentScheduleLine.id as "PaymentScheID"
 from public.payment_payment_voucher as PaymentVoucher
-left outer join public.payment_payment_invoice_to_pay as InvoiceToPay on (InvoiceToPay.payment_voucher = PaymentVoucher.id)
+left outer join public.payment_pay_voucher_element_to_pay as InvoiceToPay on (InvoiceToPay.payment_voucher = PaymentVoucher.id)
 left outer join public.account_move_line as MoveLineGenerated on (InvoiceToPay.move_line_generated = MoveLineGenerated.id)
 left outer join public.account_payment_schedule_line as PaymentScheduleLine on (InvoiceToPay.payment_schedule_line = PaymentScheduleLine.id)
 left outer join public.contact_partner as Partner on (MoveLineGenerated.partner = Partner.id)
@@ -827,7 +827,7 @@ where PaymentVoucher.id = ? And MoveLineGenerated.amount_paid > 0.00
         </grid>
         <table id="2630">
             <property name="width">8.135416666666666in</property>
-            <property name="dataSet">PaymentInvoiceLineDS</property>
+            <property name="dataSet">PayVoucherDueElementLineDS</property>
             <list-property name="boundDataColumns">
                 <structure>
                     <property name="name">LineDate</property>

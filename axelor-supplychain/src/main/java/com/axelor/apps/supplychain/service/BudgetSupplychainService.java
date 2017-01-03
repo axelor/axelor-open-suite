@@ -46,7 +46,7 @@ public class BudgetSupplychainService extends BudgetService{
 				budgetLine.setAmountRealized(BigDecimal.ZERO);
 			}
 			List<Integer> statusList= new ArrayList<Integer>();
-			if (generalservice.getGeneral().getManageBudget()){
+			if (generalservice.getGeneral().getAppBudget()){
 				if(!generalservice.getGeneral().getBudgetStatusSelect().isEmpty()){
 					String str= generalservice.getGeneral().getBudgetStatusSelect();
 					String[] numbers = str.split(", ");

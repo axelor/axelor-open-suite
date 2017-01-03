@@ -46,7 +46,7 @@
 	<integer name="irrecoverableStatusSelect" title="Irrecoverable status" default="0" readonly="true" selection="iaccount.account.schedule.irrecoverable.status.select"/>
 	<many-to-one name="managementObject" ref="com.axelor.apps.account.db.ManagementObject" title="Irrecoverable shift reason"/>
     
-    <one-to-many name="analyticDistributionLineList" ref="com.axelor.apps.account.db.AnalyticDistributionLine" title="Analytic distribution lines" mappedBy="moveLine"/>
+    <one-to-many name="analyticMoveLineList" ref="com.axelor.apps.account.db.AnalyticMoveLine" title="Analytic distribution lines" mappedBy="moveLine"/>
     
     <string name="accountCode" readonly="true"/>
     <string name="accountName" readonly="true"/>

@@ -15,11 +15,11 @@
 	</form>    
 	
     <action-record name="action-product-record-default-production" model="com.axelor.apps.base.db.Product" if-module="axelor-production">
-    	<field name="costSheetGroup" expr="eval: __config__?.general?.productCostSheetGroup"/>
+    	<field name="costSheetGroup" expr="eval:  __config__?.general?.getAppProduction() ? __config__?.general?.productCostSheetGroup : null" if="__config__.general.getAppProduction()" />
     </action-record>
     
     <action-attrs name="action-product-attrs-scale-and-precision-production" if-module="axelor-production">
-		<attribute name="scale" for="lastProductionPrice" expr="eval: __config__.generalService.getNbDecimalDigitForUnitPrice()"/>
+		<attribute name="scale" for="lastProductionPrice" expr="eval: __config__.generalService.getNbDecimalDigitForUnitPrice()" if="__config__.general.getAppProduction()" />
 	</action-attrs>
 	
 </object-views>

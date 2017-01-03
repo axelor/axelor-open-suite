@@ -32,9 +32,9 @@
 		</panel>
     	<panel-tabs hideIf="isTitleLine">
     		<panel name="informations" title="Informations">
-    			<field name="saleOrder" if="!__config__.general.getManageInvoicedAmountByLine()" if-module="axelor-supplychain" form-view="sale-order-form" grid-view="sale-order-grid"/>
-    			<field name="saleOrderLine" if="__config__.general.getManageInvoicedAmountByLine()" if-module="axelor-supplychain" form-view="sale-order-line-invoice-form" grid-view="sale-order-line-invoice-grid" domain="(self.saleOrder.statusSelect = 3 OR self.saleOrder.statusSelect = 4 ) AND EXISTS(SELECT i FROM Invoice i WHERE i = :invoice AND self.saleOrder.clientPartner = i.partner )"/>
-    			<field name="purchaseOrderLine" if-module="axelor-supplychain" form-view="purchase-order-line-form" grid-view="purchase-order-line-grid"/>
+    			<field name="saleOrder" if="__config__.general.getAppSupplychain() &amp;&amp; !__config__.general.getManageInvoicedAmountByLine()" if-module="axelor-supplychain" form-view="sale-order-form" grid-view="sale-order-grid" />
+    			<field name="saleOrderLine" if="__config__.general.getAppSupplychain() &amp;&amp; __config__.general.getManageInvoicedAmountByLine()" if-module="axelor-supplychain" form-view="sale-order-line-invoice-form" grid-view="sale-order-line-invoice-grid" domain="(self.saleOrder.statusSelect = 3 OR self.saleOrder.statusSelect = 4 ) AND EXISTS(SELECT i FROM Invoice i WHERE i = :invoice AND self.saleOrder.clientPartner = i.partner )"/>
+    			<field name="purchaseOrderLine" if-module="axelor-supplychain" if="__config__.general.getAppSupplychain()" form-view="purchase-order-line-form" grid-view="purchase-order-line-grid"/>
 		        <field name="product" onChange="action-group-account-invoice-line-product-onchange" form-view="product-form" grid-view="product-grid"/>
 		        <field name="productName" requiredIf="!isTitleLine"/>
 		        <field name="qty" required="true" onChange="action-group-account-invoice-line-qty-onchange"/>
@@ -53,21 +53,21 @@
     		<panel name="description" title="Description">
     			<field name="description" colSpan="12" widget="html"/>
     		</panel>
-    		<panel name="projectTaskPanel" if="__config__.general.getProjectTaskInvoiceLines()" title="Project/Task" if-module="axelor-business-project">
+    		<panel name="projectTaskPanel" if="__config__.general.getAppBusinessProject() &amp;&amp; __config__.general.getProjectTaskInvoiceLines()" title="Project/Task" if-module="axelor-business-project" >
 				<field name="project" onSelect="action-invoice-line-attrs-domain-project" form-view="project-task-form" grid-view="project-task-grid"/>
 			</panel>
 			<panel name="subscriptionPanel" title="Subscription">
 				<field name="subscriptionFromDate"/>
 				<field name="subscriptionToDate"/>
 			</panel>
-			<panel name="analyticDistribution" title="Analytic distribution" if-module="axelor-supplychain" if="__config__.general.getManageAnalyticAccounting()" onTabSelect="action-invoice-line-attrs-read-only-distribution-lines">
+			<panel name="analyticDistribution" title="Analytic distribution" if-module="axelor-supplychain" if="__config__.general.getAppSupplychain() &amp;&amp; __config__.general.getManageAnalyticAccounting()" onTabSelect="action-invoice-line-attrs-read-only-distribution-lines">
 				<field name="analyticDistributionTemplate" if="__config__.general.getAnalyticDistributionTypeSelect() == 1"/>
 				<button name="generateDistributionLinesButton" onClick="action-invoice-line-method-create-distribution" title="Generate distribution lines" showIf="analyticDistributionTemplate != null" if="__config__.general.getAnalyticDistributionTypeSelect() == 1"/>
-				<panel-related field="analyticDistributionLineList" grid-view="analytic-distribution-line-grid" form-view="analytic-distribution-line-form" colSpan="12"/>
+				<panel-related field="analyticMoveLineList" grid-view="analytic-move-line-distribution-grid" form-view="analytic-move-line-distribution-form" colSpan="12"/>
 			</panel>
-			<panel name="budgetPanel" title="Budget distribution" if="__config__.general.getManageBudget()">
-				<field name="budget" if="__config__.general.getManageBudget() &amp;&amp; !__config__.general.getManageMultiBudget()"/>
-				<field name="budgetDistributionList" colSpan="12" if="__config__.general.getManageBudget() &amp;&amp; __config__.general.getManageMultiBudget()"/>
+			<panel name="budgetPanel" title="Budget distribution" if="__config__.general.getAppBudget()">
+				<field name="budget" if="!__config__.general.getManageMultiBudget()"/>
+				<field name="budgetDistributionList" colSpan="12" if="__config__.general.getManageMultiBudget()"/>
 			</panel>
     	</panel-tabs>
         
@@ -92,7 +92,7 @@
 	</action-method>
     
     <action-attrs name="action-invoice-line-attrs-read-only-distribution-lines">
-		<attribute name="readonly" for="analyticDistributionLineList" expr="eval: __config__.general.getAnalyticDistributionTypeSelect() != 1"/>
+		<attribute name="readonly" for="analyticMoveLineList" expr="eval: __config__.general.getAnalyticDistributionTypeSelect() != 1"/>
 	</action-attrs>
     
     <action-attrs name="action-invoice-line-attrs-domain-project">
@@ -166,10 +166,10 @@
 	<action-attrs name="action-invoice-line-attrs-show-elements">
 		<attribute name="title" for="projectTaskPanel" expr="eval: __config__.general.getProjectTaskLabel()" if="!com.google.common.base.Strings.isNullOrEmpty(__config__.general.getProjectTaskLabel())"/>
 		<attribute name="title" for="project" expr="eval: __config__.general.getProjectTaskLabel()" if="!com.google.common.base.Strings.isNullOrEmpty(__config__.general.getProjectTaskLabel())"/>
-		<attribute name="hidden" for="subscriptionPanel" expr="eval: !_parent.isSubscription"/>
-		<attribute name="hidden" for="saleOrderLine" expr="eval: _parent.operationTypeSelect != 3 &amp;&amp; _parent.operationTypeSelect != 4"/>
-		<attribute name="hidden" for="purchaseOrderLine" expr="eval: _parent.operationTypeSelect != 1 &amp;&amp; _parent.operationTypeSelect != 2"/>
-		<attribute name="hidden" for="budgetPanel" expr="eval: _parent.operationTypeSelect != 1 &amp;&amp; _parent.operationTypeSelect != 2"/>
+		<attribute name="hidden" for="subscriptionPanel" expr="eval: _parent?.isSubscription"/>
+		<attribute name="hidden" for="saleOrderLine" expr="eval: _parent?.operationTypeSelect != 3 &amp;&amp; _parent?.operationTypeSelect != 4"/>
+		<attribute name="hidden" for="purchaseOrderLine" expr="eval: _parent?.operationTypeSelect != 1 &amp;&amp; _parent?.operationTypeSelect != 2"/>
+		<attribute name="hidden" for="budgetPanel" expr="eval: _parent?.operationTypeSelect != 1 &amp;&amp; _parent?.operationTypeSelect != 2"/>
 	</action-attrs>
 	
     <action-attrs name="action-invoice-line-attrs-discountamount-title">
@@ -178,8 +178,8 @@
 	</action-attrs>
 	
 	<action-attrs name="action-invoice-attrs-hide-ati">
-		<attribute name="hidden" for="exTaxTotal" expr="eval:_parent.inAti"/>
-		<attribute name="hidden" for="inTaxTotal" expr="eval:!_parent.inAti"/>
+		<attribute name="hidden" for="exTaxTotal" expr="eval:_parent?.inAti"/>
+		<attribute name="hidden" for="inTaxTotal" expr="eval:_parent?.inAti"/>
 	</action-attrs>
 	
 	<action-attrs name="action-invoice-line-attrs-scale-and-precision">
@@ -189,7 +189,7 @@
 	</action-attrs>
 	
 	<action-record name="action-invoice-line-record-project" model="com.axelor.apps.account.db.InvoiceLine" if-module="axelor-business-project">
-		<field name="project" expr="eval: _parent?.project"/>
+		<field name="project" expr="eval: _parent?.project" if="__config__.general.getAppBusinessProject()" />
 	</action-record>
 
 </object-views>

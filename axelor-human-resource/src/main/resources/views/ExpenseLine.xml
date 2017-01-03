@@ -56,10 +56,10 @@
     		<field name="expense.multipleUsers" hidden="true"/>
 		</panel>
 				
-		<panel name="analyticDistribution" title="Analytic distribution" if="__config__.general.getManageAnalyticAccounting()" onTabSelect="action-expense-line-attrs-read-only-distribution-lines">
+		<panel name="analyticDistribution" title="Analytic distribution" if="__config__.general.getAppAccount() &amp;&amp; __config__.general.getManageAnalyticAccounting()" onTabSelect="action-expense-line-attrs-read-only-distribution-lines">
 			<field name="analyticDistributionTemplate" if="__config__.general.getAnalyticDistributionTypeSelect() == 1"/>
 			<button name="generateDistributionLinesButton" onClick="action-expense-line-method-create-distribution" title="Generate distribution lines" showIf="analyticDistributionTemplate != null" if="__config__.general.getAnalyticDistributionTypeSelect() == 1"/>
-			<panel-related field="analyticDistributionLineList" grid-view="analytic-distribution-line-grid" form-view="analytic-distribution-line-form" colSpan="12"/>
+			<panel-related field="analyticMoveLineList" grid-view="analytic-move-line-distribution-grid" form-view="analytic-move-line-distribution-form" colSpan="12"/>
 		</panel>
 	</form>
 	
@@ -81,10 +81,10 @@
 				<field name="expenseProduct" readOnly="true" canEdit="false" domain="self.expense = true AND self.isModel = false" form-view="product-expense-form" grid-view="product-expense-grid" hidden="true"/>
 			</panel>
 		
-		<panel name="analyticDistribution" title="Analytic distribution" if="__config__.general.getManageAnalyticAccounting()" onTabSelect="action-expense-line-attrs-read-only-distribution-lines">
+		<panel name="analyticDistribution" title="Analytic distribution" if="__config__.general.getAppAccount() &amp;&amp; __config__.general.getManageAnalyticAccounting()" onTabSelect="action-expense-line-attrs-read-only-distribution-lines">
 			<field name="analyticDistributionTemplate" if="__config__.general.getAnalyticDistributionTypeSelect() == 1"/>
 			<button name="generateDistributionLinesButton" onClick="action-expense-line-method-create-distribution" title="Generate distribution lines" showIf="analyticDistributionTemplate != null" if="__config__.general.getAnalyticDistributionTypeSelect() == 1"/>
-			<panel-related field="analyticDistributionLineList" grid-view="analytic-distribution-line-grid" form-view="analytic-distribution-line-form" colSpan="12"/>
+			<panel-related field="analyticMoveLineList" grid-view="analytic-move-line-distribution-grid" form-view="analytic-move-line-distribution-form" colSpan="12"/>
 		</panel>
 	</form>
 	
@@ -102,11 +102,11 @@
 	</action-method>
 	
 	<action-attrs name="action-expense-line-attrs-read-only-distribution-lines">
-		<attribute name="readonly" for="analyticDistributionLineList" expr="eval: __config__.general.getAnalyticDistributionTypeSelect() != 1"/>
+		<attribute name="readonly" for="analyticMoveLineList" expr="eval: __config__.general.getAnalyticDistributionTypeSelect() != 1"/>
 	</action-attrs>
 	
 	<action-record name="action-kilometric-allowance-record-default" model="com.axelor.apps.hr.db.ExpenseLine">
-    	<field name="kilometricAllowParam" expr="eval:  _parent?.employee?.kilometricAllowParam"/>
+    	<field name="kilometricAllowParam" expr="eval:  _parent?.user?.employee?.kilometricAllowParam"/>
     </action-record>
 
     <action-method name="action-kilometric-allowance-method-compute">

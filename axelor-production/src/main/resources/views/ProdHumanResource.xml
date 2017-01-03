@@ -31,7 +31,7 @@
     </form>
     
     <action-record name="action-prod-human-resource-record-default" model="com.axelor.apps.production.db.ProdHumanResource">
-        <field name="costSheetGroup" expr="eval: __config__?.general?.workCenterCostSheetGroup"/>
+        <field name="costSheetGroup" expr="eval: __config__?.general?.getAppProduction() ? __config__?.general?.workCenterCostSheetGroup : null"/>
     </action-record>
     
 </object-views>

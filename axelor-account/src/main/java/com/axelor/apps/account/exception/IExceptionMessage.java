@@ -17,10 +17,6 @@
  */
 package com.axelor.apps.account.exception;
 
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
-import com.axelor.i18n.I18n;
-
 /**
  * Interface of Exceptions. Enum all exception of axelor-account.
  *

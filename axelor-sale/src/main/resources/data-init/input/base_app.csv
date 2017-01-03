@@ -1,0 +1,2 @@
+"name";"code";"description";"typeSelect";"saleGeneral.importId";"image";"modules";"dependsOn"
+"Sale";"SALE";"Sales configuration";"sale";1;"app-sale.png";"axelor-sale";"crm"

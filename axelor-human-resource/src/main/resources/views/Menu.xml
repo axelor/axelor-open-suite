@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.2.xsd">
 
-	<menuitem name="hr-root" order="-104" title="Human resources" icon="fa-sitemap" 
+	<menuitem name="hr-root" order="-104" title="Human resources" icon="fa-sitemap"  if="__config__.general.getAppEmployee()"
 	    groups="admins,ERP" icon-background="#84429f"/> 
 	
-	<menuitem name="timesheet-root" parent="hr-root"
+	<menuitem name="timesheet-root" parent="hr-root" if="__config__.general.getAppTimesheet()"
     	title="Timesheets"/>
 	
 	<menuitem name="edit-timesheet" parent="timesheet-root" title="Complete my Timesheet" action="edit.timesheet"/>
@@ -78,7 +78,7 @@
 	</action-method>
 	
 	
-	<menuitem name="expense-root" parent="hr-root"
+	<menuitem name="expense-root" parent="hr-root" if="__config__.general.getAppExpense()"
     	title="Expenses"/>
 	
 	<menuitem name="edit-expense" parent="expense-root" title="Complete my expense" action="edit.expense"/>
@@ -129,7 +129,7 @@
 		<call class="com.axelor.apps.hr.web.expense.ExpenseController" method="historicExpense"/>
 	</action-method>
 	
-	<menuitem name="leave-request-root" parent="hr-root"
+	<menuitem name="leave-request-root" parent="hr-root" if="__config__.general.getAppLeave()"
     	title="Leave Requests"/>
 	
 	<menuitem name="edit-leave-request" parent="leave-request-root" title="Complete my leave request" action="edit.leave.request"/>
@@ -328,6 +328,20 @@
 	<action-view name="employee.bonus.type.all" title="Employee bonus type" model="com.axelor.apps.hr.db.EmployeeBonusType">
     	<view type="grid" name="employee-bonus-type-grid"/>
 	    <view type="form" name="employee-bonus-type-form"/>
+	</action-view>
+	
+	<menuitem name="plannings-all" parent="hr-conf" title="Plannings" />
+	<menuitem name="event-planning-all" parent="plannings-all" title="Event planning" action="hr.public.holiday.planning.all"/>
+	<menuitem name="weekly-planning-all" parent="plannings-all" title="Weekly planning" action="hr.weekly.planning.all"/>
+	
+	<action-view name="hr.public.holiday.planning.all" title="Public Holiday Plannings" model="com.axelor.apps.hr.db.PublicHolidayPlanning">
+    	<view type="grid" name="public-holiday-planning-grid"/>
+	    <view type="form" name="public-holiday-planning-form"/>
+	</action-view>
+	
+	<action-view name="hr.weekly.planning.all" title="Weekly Planning" model="com.axelor.apps.base.db.WeeklyPlanning">
+    	<view type="grid" name="weekly-planning-grid"/>
+	    <view type="form" name="weekly-planning-form"/>
 	</action-view>
 
 </object-views>

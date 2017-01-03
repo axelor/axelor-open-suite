@@ -37,6 +37,7 @@ import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.google.common.base.Joiner;
 import com.google.inject.Inject;
 
 public class ProductController {
@@ -77,6 +78,7 @@ public class ProductController {
 
 
 
+	@SuppressWarnings("unchecked")
 	public void printProductCatelog(ActionRequest request, ActionResponse response) throws AxelorException {
 
 		User user =  Beans.get(UserService.class).getUser();
@@ -86,10 +88,8 @@ public class ProductController {
 
 		List<Integer> lstSelectedProduct = (List<Integer>) request.getContext().get("_ids");
 		
-		if(lstSelectedProduct != null)  {
-			for(Integer it : lstSelectedProduct) {
-				productIds+= it.toString()+",";
-			}
+		if(lstSelectedProduct != null) {
+			productIds = Joiner.on(",").join(lstSelectedProduct);
 		}
 
 		if(!productIds.equals("")){

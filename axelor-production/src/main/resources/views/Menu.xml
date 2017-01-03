@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.2.xsd">
 
 	
-	<menuitem name="manufacturing-root" title="Manufacturing" order="-84"
+	<menuitem name="manufacturing-root" title="Manufacturing" order="-84"  if="__config__.general.getAppProduction()"
 		icon="fa-cogs" groups="admins,ERP" icon-background="#84429f"/>
 	
 	<menuitem name="manufacturing-root-bill-of-material" parent="manufacturing-root"
@@ -140,7 +140,7 @@
 	
 	<!-- TOP MENU -->
 	
-	<menuitem name="top-manufacturing" title="Manufacturing" left="false" top="true" groups="admins,ERP"/>
+	<menuitem name="top-manufacturing" title="Manufacturing" left="false" top="true" groups="admins,ERP" if="__config__.general.getAppProduction()"/>
 	<menuitem name="top-manufacturing-create-manufacturing-order" title="Create Manuf. Order" top="true" parent="top-manufacturing" order="-100" action="top.manufacturing.create.manufacturing.order"/>
 	<action-view name="top.manufacturing.create.manufacturing.order" title="New Manufacturing Order" model="com.axelor.apps.production.db.ManufOrder">
 		<view type="form" name="manuf-order-form"/>

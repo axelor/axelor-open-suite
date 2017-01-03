@@ -90,7 +90,7 @@ public class ExpenseController {
 		}
 		if(expenseLine.getAnalyticDistributionTemplate() != null){
 			expenseLine = expenseServiceProvider.get().createAnalyticDistributionWithTemplate(expenseLine);
-			response.setValue("analyticDistributionLineList", expenseLine.getAnalyticDistributionLineList());
+			response.setValue("analyticMoveLineList", expenseLine.getAnalyticMoveLineList());
 		}
 		else{
 			throw new AxelorException(I18n.get("No template selected"), IException.CONFIGURATION_ERROR);
@@ -106,7 +106,7 @@ public class ExpenseController {
 		}
 		if(Beans.get(GeneralService.class).getGeneral().getManageAnalyticAccounting()){
 			expenseLine = expenseServiceProvider.get().computeAnalyticDistribution(expenseLine);
-			response.setValue("analyticDistributionLineList", expenseLine.getAnalyticDistributionLineList());
+			response.setValue("analyticMoveLineList", expenseLine.getAnalyticMoveLineList());
 		}
 	}
 	
@@ -115,7 +115,7 @@ public class ExpenseController {
 		User user = AuthUtils.getUser();
 		Company activeCompany = user.getActiveCompany();
 		
-		List<Expense> expenseList = Beans.get(ExpenseRepository.class).all().filter("self.user = ?1 AND self.company = ?2 AND self.statusSelect = 1 AND self.multipleUsers is false", user, activeCompany).fetch();
+		List<Expense> expenseList = Beans.get(ExpenseRepository.class).all().filter("self.user = ?1 AND self.company = ?2 AND self.statusSelect = 1 AND (self.multipleUsers is false OR self.multipleUsers is null)", user, activeCompany).fetch();
 		if(expenseList.isEmpty()){
 			response.setView(ActionView
 									.define(I18n.get("Expense"))

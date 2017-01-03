@@ -70,5 +70,6 @@ public interface ProductService {
 			ProductVariantValue productVariantValue3, ProductVariantValue productVariantValue4);
 
 	public Map<String, Object> getDiscountsFromCatalog(SupplierCatalog supplierCatalog,BigDecimal price);
+	
 
 }

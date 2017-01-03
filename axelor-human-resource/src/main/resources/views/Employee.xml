@@ -52,7 +52,7 @@
       			</panel>
       			<panel name="rhInfo" title="HR Info." colSpan="12">
         			<field name="hourlyRate" colSpan="4"/>
-        			<field if="__config__.general.getManageMultiBanks()" name="bankDetails" colSpan="4" widget="SuggestBox" onSelect="action-accounting-batch-attrs-bank-details-domain" form-view="bank-details-form" grid-view="bank-details-grid"/>
+        			<field if="__config__.general.getAppCashManagement() &amp;&amp; __config__.general.getManageMultiBanks()" name="bankDetails" colSpan="4" widget="SuggestBox" onSelect="action-accounting-batch-attrs-bank-details-domain" form-view="bank-details-form" grid-view="bank-details-grid"/>
         			<field name="timeLoggingPreferenceSelect" colSpan="4"/>
         			<field name="weeklyWorkHours" colSpan="4"/>
         			<field name="dailyWorkHours" colSpan="4"/>
@@ -72,6 +72,7 @@
 	       	</panel>
 	       	<panel-related field="employmentContractList" grid-view="employment-contract-employee-grid" form-view="employment-contract-form"/>
 	       	<panel name="lunchVoucher" title="Lunch Vouchers">
+	       		<field name="lunchVoucherFormatSelect" colSpan="6"/>
 	       		<panel-dashlet title="Lunch Vouchers" colSpan="12" action="action-hr-view-show-lunch-voucher"/>
 	       		<panel-related field="lunchVoucherAdvanceList" colSpan="12" grid-view="lunch-voucher-advance-grid" form-view="lunch-voucher-advance-form" />
 	       	</panel>
@@ -91,7 +92,7 @@
 	<action-record name="action-employee-record-default" model="com.axelor.apps.hr.db.Employee">
 		<field name="timeLoggingPreferenceSelect" expr="eval:__config__.general.getTimeLoggingPreferenceSelect()"/>
 		<field name="dailyWorkHours" expr="eval:__config__.general.getDailyWorkHours()"/>
-		<field name="negativeValueLeave" expr="eval:__config__.general.getAllowNegativeLeaveEmployees()"/>
+		<field name="negativeValueLeave" expr="eval:__config__.general.getAllowNegativeLeaveEmployees()" if="__config__.general.getAppLeave()"/>
 		<field name="publicHolidayPlanning" expr="eval: __repo__.of(PublicHolidayPlanning).copy(__user__.activeCompany?.hrConfig?.publicHolidayPlanning,true)"/>
 	</action-record>
 	
@@ -99,7 +100,7 @@
 	    <field name="contactPartner" expr="eval:partner" />
 	    <field name="timeLoggingPreferenceSelect" expr="eval:__config__.general.getTimeLoggingPreferenceSelect()"/>
 	    <field name="dailyWorkHours" expr="eval:__config__.general.getDailyWorkHours()"/>
-	    <field name="negativeValueLeave" expr="eval:__config__.general.getAllowNegativeLeaveEmployees()"/>
+	    <field name="negativeValueLeave" expr="eval:__config__.general.getAllowNegativeLeaveEmployees()" if="__config__.general.getAppLeave()"/>
 	    <field name="publicHolidayPlanning" expr="eval: __repo__.of(PublicHolidayPlanning).copy(__user__.activeCompany?.hrConfig?.publicHolidayPlanning,true)"/>
 	</action-record>
 	

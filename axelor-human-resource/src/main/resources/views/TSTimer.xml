@@ -43,8 +43,8 @@
 	</action-record>
 	
 	<action-record name="action-hr-ts-timer-record-new" model="com.axelor.apps.hr.db.TSTimer">
-	    <field name="projectTask" expr="eval:null" if="!__config__.general.getKeepProjectTask()"/>
-	    <field name="product" expr="eval:null" if="!__config__.general.getKeepProjectTask()"/>
+	    <field name="projectTask" expr="eval:null" if="!__config__.general.getKeepProjectTask() || !__config.general.getAppTimesheet()"/>
+	    <field name="product" expr="eval:null" if="!__config__.general.getKeepProjectTask() || !__config.general.getAppTimesheet()"/>
 	    <field name="startDateTime" expr="eval:null"/>
 	    <field name="duration" expr="eval:null"/>
 	    <field name="timesheetLine" expr="eval:null"/>
@@ -70,7 +70,7 @@
     </action-method>
     
 	<action-attrs name="action-ts-timer-attrs-readonly-panel">
-		<attribute name="readonly" for="startAndStop" expr="eval:statusSelect == TSTimerRepository.STATUS_STOP &amp;&amp; !__config__.general.getEditModeTSTimer()"/>
+		<attribute name="readonly" for="startAndStop" expr="eval:statusSelect == TSTimerRepository.STATUS_STOP &amp;&amp; !__config__.general.getEditModeTSTimer() &amp;&amp; __config__.general.getAppHumanResource()"/>
 	</action-attrs>
 	
 </object-views>

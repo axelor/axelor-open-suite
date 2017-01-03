@@ -107,7 +107,7 @@
 	</action-attrs>
 	
 	<action-attrs name="action-extra-hours-attrs-title-project-task">
-		<attribute name="title" for="extraHoursLineList.projectTask" expr="eval: __config__.general.getProjectTaskLabel()" if="!com.google.common.base.Strings.isNullOrEmpty(__config__.general.getProjectTaskLabel())"/>
+		<attribute name="title" for="extraHoursLineList.projectTask" expr="eval: __config__.general.getProjectTaskLabel()" if="__config__.general.getAppProject() &amp;&amp; !com.google.common.base.Strings.isNullOrEmpty(__config__.general.getProjectTaskLabel())"/>
 	</action-attrs>
 	
 	<action-attrs name="action-extra-hours-attrs-domain-extra-hours-select">

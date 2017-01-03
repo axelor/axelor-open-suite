@@ -23,4 +23,8 @@
 		<option value="3">Both</option>
 	</selection>
 	
+	<selection name="app.type.select" id="cash.management.app.type.select">
+		<option value="cash-management">Cash management</option>
+	</selection>
+	
 </object-views>

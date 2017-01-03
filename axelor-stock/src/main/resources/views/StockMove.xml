@@ -67,7 +67,7 @@
 	      <field name="stockMoveSeq" colSpan="12"/>
 	      <field name="name" colSpan="12"/>
 	      <field name="company" widget="SuggestBox" form-view="company-form" colSpan="12" readonlyIf="statusSelect != 1" grid-view="company-grid"/>
-	      <field name="partner" domain="self.isContact = false" form-view="partner-form" grid-view="partner-grid" colSpan="12" readonlyIf="statusSelect != 1"/>
+	      <field name="partner" domain="self.isContact = false" form-view="partner-form" grid-view="partner-grid" colSpan="12" readonlyIf="statusSelect != 1" onChange="action-stock-move-record-partner-delivery-informations"/>
 	    </panel>
 	    <panel title="Stock move informations" name="stockMoveInformation">
 	      <field name="fromLocation" domain="self.company = :company" onChange="action-stock-move-set-from-address" colSpan="12" readonlyIf="statusSelect != 1" form-view="location-form" grid-view="location-grid"/>
@@ -78,6 +78,8 @@
 	      <field name="toAddress" showIf="typeSelect == 2" colSpan="12" onSelect="action-stock-move-attrs-domain-address" readonlyIf="statusSelect == 3 || statusSelect == 4" form-view="address-partner-address-form"/>
 	      <field name="isWithReturnSurplus" showIf="typeSelect &gt;= 2" colSpan="6"/>
 	      <field name="isWithBackorder" colSpan="6"/>
+	      <field name="shipmentMode" colSpan="12"/>
+	      <field name="freightCarrierMode" colSpan="12"/>
 	    </panel>
 		<panel colSpan="12">
 	    	<field name="trackingNumber" />
@@ -89,10 +91,10 @@
 	  <panel-tabs>
 	   
 	    <panel-related name="stockMoveLineListPanel" title="Stock move line" field="stockMoveLineList" onChange="action-stock-move-method-compute" readonlyIf="statusSelect == 3" form-view="stock-move-line-form" grid-view="stock-move-line-grid"/>
-	    <panel name="configuration" title="Configuration">
-	      <field name="saleOrder" onChange="action-stock-move-attrs-typeselect-change" if-module="axelor-supplychain" readonlyIf="statusSelect == 3 || statusSelect == 4" form-view="sale-order-form" grid-view="sale-order-grid"/>
-	      <field name="purchaseOrder" if-module="axelor-supplychain" readonlyIf="statusSelect == 3 || statusSelect == 4" form-view="purchase-order-form" grid-view="purchase-order-grid"/>
-	      <field name="invoice" if-module="axelor-supplychain" readonlyIf="statusSelect == 3 || statusSelect == 4" form-view="invoice-form" grid-view="invoice-grid"/>
+	    <panel name="configuration" title="Configuration"  if-module="axelor-supplychain" if="__config__.general.getAppSupplychain()" >
+	      <field name="saleOrder" onChange="action-stock-move-attrs-typeselect-change" readonlyIf="statusSelect == 3 || statusSelect == 4" form-view="sale-order-form" grid-view="sale-order-grid"/>
+	      <field name="purchaseOrder" readonlyIf="statusSelect == 3 || statusSelect == 4" form-view="purchase-order-form" grid-view="purchase-order-grid"/>
+	      <field name="invoice" readonlyIf="statusSelect == 3 || statusSelect == 4" form-view="invoice-form" grid-view="invoice-grid"/>
 	    </panel>
 	  </panel-tabs>
 	  
@@ -101,7 +103,7 @@
 			<button name="realize" title="Realize" icon="fa-check" showIf="statusSelect == 2" prompt="Are you sure you want to realize this stock move?" onClick="action-group-stock-stockmove-realize-click"/>
 			<button name="cancel" title="Cancel" icon="fa-times-circle" showIf="statusSelect != 4" onClick="action-group-stock-stockmove-cancel-click"/>
 			<button name="draft" title="Draft" showIf="statusSelect == 4" onClick="action-group-stock-stockmove-draft-click"/>
-			<button name="generateInvoice" title="Generate invoice" if="__config__.general.getGenerateInvoiceFromStockMove()" onClick="save,action-supplychain-stock-move-method-generate-invoice" if-module="axelor-supplychain" showIf="statusSelect == 3"/>
+			<button name="generateInvoice" title="Generate invoice" if="__config__.general.getAppInvoice() &amp;&amp; __config__.general.getAppStock() &amp;&amp; __config__.general.getGenerateInvoiceFromStockMove()" onClick="save,action-supplychain-stock-move-method-generate-invoice" if-module="axelor-supplychain" showIf="statusSelect == 3"/>
 			<button name="generateReversion" title="Generate reversion" onClick="save,action-stock-move-method-generate-reversion" showIf="statusSelect == 3"/>
 			<button name="printStockMove" title=" Print" icon="fa-print" onClick="save,action-print-stock-move" showIf="statusSelect != 1"/>
 			<button name="viewDirection" title="View Direction" help="View Direction" showIf="typeSelect == 2 &amp;&amp; statusSelect!=4"   icon="fa-location-arrow" onClick="action-stock-move-validate-address,action-stock-move-method-view-direction"/>
@@ -257,6 +259,11 @@
   		<field if="typeSelect == 3" name="fromLocation" expr="eval:__repo__.of(StockConfig).all().filter('company.id = ?',company != null ? company.id : __user__.activeCompany?.id).fetchOne()?.supplierVirtualLocation"/>
 	</action-record>
 	
+	<action-record name="action-stock-move-record-partner-delivery-informations" model="com.axelor.apps.stock.db.StockMove">
+    	<field name="shipmentMode" expr="eval: partner?.shipmentMode"/>	
+    	<field name="freightCarrierMode" expr="eval: partner?.freightCarrierMode"/>
+	</action-record>
+	
 	<action-method name="action-stock-move-method-plan">
 		<call class="com.axelor.apps.stock.web.StockMoveController" method="plan"/>
 	</action-method>
@@ -270,11 +277,11 @@
 	</action-method>
 	
 	<action-method name="action-supply-chain-method-update-so-on-cancel" if-module="axelor-supplychain">
-		<call class="com.axelor.apps.supplychain.web.SaleOrderController" method="updateSaleOrderOnCancel"/>
+		<call class="com.axelor.apps.supplychain.web.SaleOrderController" method="updateSaleOrderOnCancel" if="__config__.general.getAppSupplychain()" />
 	</action-method>
 	
 	<action-method name="action-supply-chain-method-update-po-on-cancel" if-module="axelor-supplychain">
-		<call class="com.axelor.apps.supplychain.web.PurchaseOrderController" method="updatePurchaseOrderOnCancel"/>
+		<call class="com.axelor.apps.supplychain.web.PurchaseOrderController" method="updatePurchaseOrderOnCancel" if="__config__.general.getAppSupplychain()"  />
 	</action-method>
 	
 	<action-method name="action-print-stock-move">

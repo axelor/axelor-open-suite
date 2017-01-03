@@ -18,7 +18,6 @@
 package com.axelor.csv.script;
 
 import java.io.File;
-import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Map;
 
@@ -30,7 +29,6 @@ import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.ProductService;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
-import com.google.common.base.Strings;
 import com.google.inject.Inject;
 
 public class ImportProduct {
@@ -54,14 +52,12 @@ public class ImportProduct {
 		
 		final Path path = (Path) values.get("__path__");
 		String fileName = (String) values.get("picture_fileName");
-		if(Strings.isNullOrEmpty((fileName)))  {  return bean;  }
 		
-	    final File image = path.resolve(fileName).toFile(); 
-
 		try {
+			final File image = path.getParent().resolve(fileName).toFile(); 
 			final MetaFile metaFile = metaFiles.upload(image);
 			product.setPicture(metaFile);
-		} catch (IOException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		

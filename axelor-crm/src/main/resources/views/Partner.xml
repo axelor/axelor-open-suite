@@ -27,7 +27,7 @@
 	            <item title="Schedule meeting" action="save,action-partner-view-create-meeting" readonlyIf="id == null"/>
 	            <item title="Create task" action="save,action-partner-view-create-task" readonlyIf="id == null"/>
 	            <item title="Create opportunity" action="save,action-partner-view-create-opportunity" readonlyIf="id == null"/>
-	            <item title="Generate Project" action="action-partner-view-generate-project" readonlyIf="id == null || id &lt; 1" if-module="axelor-project"/>
+	            <item title="Generate Project" action="action-partner-view-generate-project" readonlyIf="id == null || id &lt; 1" if-module="axelor-project" />
 	        </menu>
 	    </menubar>
     </form>

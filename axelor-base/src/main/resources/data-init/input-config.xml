@@ -5,6 +5,8 @@
   	
   	<input file="base_general.csv" separator=";" type="com.axelor.apps.base.db.General"  search="self.importId = :importId"  />
   	
+  	<input file="base_app.csv" separator=";" type="com.axelor.apps.base.db.App" call="com.axelor.csv.script.ImportApp:importApp"  />
+  	
   	<input file="base_company.csv" separator=";" type="com.axelor.apps.base.db.Company" search="self.importId = :importId"/>
   	
   	<input file="base_sequence.csv" separator=";" type="com.axelor.apps.base.db.Sequence" >

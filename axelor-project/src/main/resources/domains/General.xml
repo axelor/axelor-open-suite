@@ -5,7 +5,7 @@
 	<module name="base" package="com.axelor.apps.base.db"/>
 
 	<entity name="General" lang="java" cachable="true">
-		
+		<boolean name="appProject" title="Activate" />
 		<boolean name="generateProjectOrder" title="Generate/Select Project for Order"/>
 		<boolean name="automaticProject" title="Automatic Project"/>
 		<boolean name="projectTaskSaleOrderLines" title="Project/Task in Sale Order Lines"/>

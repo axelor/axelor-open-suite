@@ -95,7 +95,7 @@ public class PrepareCsv {
 									
 								count++;
 							}
-							cTool.csvWriter(csvDir, csvFileName, ';',StringUtils.join(fieldList,",").split(","), blankData);
+							cTool.csvWriter(csvDir, csvFileName, ';', StringUtils.join(fieldList,",").split(","), blankData);
 							LOG.info("CSV file prepared: "+csvFileName);
 						}
 					}

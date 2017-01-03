@@ -10,9 +10,10 @@
 	        <field name="paymentCondition" grid-view="payment-condition-grid" form-view="payment-condition-form"/>
 	        <field name="currency" requiredIf="!isContact &amp;&amp; partnerTypeSelect != 2" form-view="currency-form" grid-view="currency-grid"/>
 	        <field name="fiscalPosition" form-view="fiscal-position-form" grid-view="fiscal-position-grid"/>
-	        <field name="payerQuality"/>
-	        <field name="chargeBackPurchaseSelect" colSpan="3" if-module="axelor-business-project"/>
-	        <field name="chargeBackPurchase" colSpan="3" if-module="axelor-business-project" showIf="chargeBackPurchaseSelect == 3"/>
+	        <field name="payerQuality" hideIf="!isCustomer"/>
+	        <field name="invoicesCopySelect" hideIf="!isCustomer"/>
+	        <field name="chargeBackPurchaseSelect" colSpan="3" if-module="axelor-business-project" hideIf="!isCustomer" if="__config__.general.getAppBusinessProject()" />
+	        <field name="chargeBackPurchase" colSpan="3" if-module="axelor-business-project" showIf="chargeBackPurchaseSelect == 3" if="__config__.general.getAppBusinessProject()" />
 	        <field name="analyticDistributionTemplate" canNew="true"/>
 	        <panel colSpan="6">
 	    		<button name="showAllInvoices" title="Show invoices"  onClick="save,action-partner-view-partner-invoice"/>
@@ -85,7 +86,7 @@
 	</form>
 	
 	<action-method name="action-create-accounting-situation" if-module="axelor-account">
-		<call class="com.axelor.apps.account.web.PartnerController" method="createAccountingSituations" />
+		<call class="com.axelor.apps.account.web.PartnerController" method="createAccountingSituations" if="__config__.general.getAppAccount()" />
 	</action-method>
 	
 	<action-view name="action-partner-view-partner-invoice" title="Invoices" model="com.axelor.apps.account.db.Invoice">

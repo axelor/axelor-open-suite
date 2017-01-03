@@ -27,27 +27,27 @@
 	  	<panel-tabs>
     <panel name="timesheetTemplates" title="Timesheet Templates">
     	<field name="timesheetMailNotification"/>
-    	<field name="sentTimesheetTemplate" canNew="true" form-view="template-form" grid-view="template-grid" hideIf="!timesheetMailNotification"/>
-    	<field name="validatedTimesheetTemplate" canNew="true" form-view="template-form" grid-view="template-grid" hideIf="!timesheetMailNotification"/>
-    	<field name="refusedTimesheetTemplate" canNew="true" form-view="template-form" grid-view="template-grid" hideIf="!timesheetMailNotification"/>
+    	<field name="sentTimesheetTemplate" canNew="true" form-view="template-form" grid-view="template-grid" hideIf="!timesheetMailNotification" domain="self.metaModel.name = 'Timesheet'"/>
+    	<field name="validatedTimesheetTemplate" canNew="true" form-view="template-form" grid-view="template-grid" hideIf="!timesheetMailNotification" domain="self.metaModel.name = 'Timesheet'"/>
+    	<field name="refusedTimesheetTemplate" canNew="true" form-view="template-form" grid-view="template-grid" hideIf="!timesheetMailNotification" domain="self.metaModel.name = 'Timesheet'"/>
   	</panel>
     <panel name="extraHoursTemplates" title="Extra Hours Templates">
     	<field name="extraHoursMailNotification"/>
-    	<field name="sentExtraHoursTemplate" canNew="true" form-view="template-form" grid-view="template-grid" hideIf="!extraHoursMailNotification"/>
-    	<field name="validatedExtraHoursTemplate" canNew="true" form-view="template-form" grid-view="template-grid" hideIf="!extraHoursMailNotification"/>
-    	<field name="refusedExtraHoursTemplate" canNew="true" form-view="template-form" grid-view="template-grid" hideIf="!extraHoursMailNotification"/>
+    	<field name="sentExtraHoursTemplate" canNew="true" form-view="template-form" grid-view="template-grid" hideIf="!extraHoursMailNotification" domain="self.metaModel.name = 'ExtraHours'"/>
+    	<field name="validatedExtraHoursTemplate" canNew="true" form-view="template-form" grid-view="template-grid" hideIf="!extraHoursMailNotification" domain="self.metaModel.name = 'ExtraHours'"/>
+    	<field name="refusedExtraHoursTemplate" canNew="true" form-view="template-form" grid-view="template-grid" hideIf="!extraHoursMailNotification" domain="self.metaModel.name = 'ExtraHours'"/>
   	</panel>
     <panel name="expenseTemplates" title="Expense Templates">
     	<field name="expenseMailNotification"/>
-    	<field name="sentExpenseTemplate" canNew="true" form-view="template-form" grid-view="template-grid" hideIf="!expenseMailNotification"/>
-    	<field name="validatedExpenseTemplate" canNew="true" form-view="template-form" grid-view="template-grid" hideIf="!expenseMailNotification"/>
-    	<field name="refusedExpenseTemplate" canNew="true" form-view="template-form" grid-view="template-grid" hideIf="!expenseMailNotification"/>
+    	<field name="sentExpenseTemplate" canNew="true" form-view="template-form" grid-view="template-grid" hideIf="!expenseMailNotification" domain="self.metaModel.name = 'Expense'"/>
+    	<field name="validatedExpenseTemplate" canNew="true" form-view="template-form" grid-view="template-grid" hideIf="!expenseMailNotification" domain="self.metaModel.name = 'Expense'"/>
+    	<field name="refusedExpenseTemplate" canNew="true" form-view="template-form" grid-view="template-grid" hideIf="!expenseMailNotification" domain="self.metaModel.name = 'Expense'"/>
   	</panel>
   	<panel name="leavesTemplates" title="Leaves Templates">
     	<field name="leaveMailNotification"/>
-    	<field name="sentLeaveTemplate" canNew="true" form-view="template-form" grid-view="template-grid" hideIf="!leaveMailNotification"/>
-    	<field name="validatedLeaveTemplate" canNew="true" form-view="template-form" grid-view="template-grid" hideIf="!leaveMailNotification"/>
-    	<field name="refusedLeaveTemplate" canNew="true" form-view="template-form" grid-view="template-grid" hideIf="!leaveMailNotification"/>
+    	<field name="sentLeaveTemplate" canNew="true" form-view="template-form" grid-view="template-grid" hideIf="!leaveMailNotification" domain="self.metaModel.name = 'LeaveRequest'"/>
+    	<field name="validatedLeaveTemplate" canNew="true" form-view="template-form" grid-view="template-grid" hideIf="!leaveMailNotification" domain="self.metaModel.name = 'LeaveRequest'"/>
+    	<field name="refusedLeaveTemplate" canNew="true" form-view="template-form" grid-view="template-grid" hideIf="!leaveMailNotification" domain="self.metaModel.name = 'LeaveRequest'"/>
   	</panel>
   	<panel title="Leave Batch rules">
   		<field name="seniorityVariableName" />

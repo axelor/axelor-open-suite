@@ -16,14 +16,14 @@
 		<option value='2'>Confirmed</option>
 	</selection>
 	
-	<selection name='account.account.type.select'>
+	<selection name='account.account.technical.type.select'>
 		<option value='asset'>Asset</option>
 		<option value='cash'>Cash</option>
+		<option value='charge'>Charge</option>
 		<option value='commitment'>Commitment</option>
 		<option value='currentAsset'>Current Asset</option>
 		<option value='debt'>Debt</option>
 		<option value='equity'>Equity</option>
-		<option value='expense'>Expense</option>
 		<option value='immobilisation'>Immobilisation</option>
 		<option value='income'>Income</option>
 		<option value='payable'>Payable</option>
@@ -76,6 +76,7 @@
 		<option value="12">VAT Statement</option>
 		<option value="13">Payment differences</option>
 		<option value="14">General ledger 2</option>
+		<option value="2000">Analytic balance</option>
 	</selection>
 	
 	<selection name='move.line.report.type.select.export'>
@@ -348,5 +349,16 @@
 		<option value="AFB320">AFB 320</option>
 	</selection>
 	
+	<selection name="account.analytic.move.line.status.select">
+		<option value="1">Forecast (order)</option>
+		<option value="2">Forecast (invoice)</option>
+		<option value="3">Real (accounting)</option>
+	</selection>
+	
+	<selection name="app.type.select" id="account.app.type.select">
+		<option value="account">Account</option>
+		<option value="invoice">Invoice</option>
+		<option value="budget">Budget</option>
+	</selection>
 	
 </object-views>

@@ -6,19 +6,19 @@
     <grid name="account-management-grid" title="Account management list" model="com.axelor.apps.account.db.AccountManagement">
     	<field name="typeSelect" />
         <field name="company" form-view="company-form" grid-view="company-grid"/>
-		<field name="saleAccount" if-module="axelor-account" form-view="account-form" grid-view="account-grid"/>
-        <field name="purchaseAccount" if-module="axelor-account" form-view="account-form" grid-view="account-grid"/>
-		<field name="cashAccount" if-module="axelor-account" form-view="account-form" grid-view="account-grid"/>
-		<field name="analyticDistributionTemplate" if-module="axelor-account"/>
+		<field name="saleAccount" if-module="axelor-account" form-view="account-form" grid-view="account-grid" if="__config__.general.getAppAccount()" />
+        <field name="purchaseAccount" if-module="axelor-account" form-view="account-form" grid-view="account-grid" if="__config__.general.getAppAccount()" />
+		<field name="cashAccount" if-module="axelor-account" form-view="account-form" grid-view="account-grid" if="__config__.general.getAppAccount()" />
+		<field name="analyticDistributionTemplate" if-module="axelor-account" if="__config__.general.getAppAccount()" />
     </grid>
     
     <grid name="account-management-product-grid" title="Account managements" model="com.axelor.apps.account.db.AccountManagement">
         <field name="company" form-view="company-form" grid-view="company-grid"/>
-		<field name="saleAccount" if-module="axelor-account" form-view="account-form" grid-view="account-grid"/>
+		<field name="saleAccount" if-module="axelor-account" form-view="account-form" grid-view="account-grid" if="__config__.general.getAppAccount()" />
 		<field name="saleTax" form-view="tax-form" grid-view="tax-grid"/>
-        <field name="purchaseAccount" if-module="axelor-account" form-view="account-form" grid-view="account-grid"/>
+        <field name="purchaseAccount" if-module="axelor-account" form-view="account-form" grid-view="account-grid" if="__config__.general.getAppAccount()" />
         <field name="purchaseTax" form-view="tax-form" grid-view="tax-grid"/>
-        <field name="analyticDistributionTemplate" if-module="axelor-account"/>
+        <field name="analyticDistributionTemplate" if-module="axelor-account" if="__config__.general.getAppAccount()" />
     </grid>
     
 	<form name="account-management-product-form" title="Account management" model="com.axelor.apps.account.db.AccountManagement"  
@@ -26,9 +26,9 @@
 		<panel name="main">
 			<field name="typeSelect" onChange="action-account-management-attrs-type" hidden="true"/>
 		   	<field name="company" widget="SuggestBox" form-view="company-form" onChange="action-group-account-account-management-onchange-common" grid-view="company-grid"/>
-		   	<field name="purchaseAccount" domain="self.company = :company AND self.accountType.nameSelect = 'expense'" onChange="action-group-account-account-management-onchange-common" if-module="axelor-account" form-view="account-form" grid-view="account-grid"/>
-		   	<field name="saleAccount" domain="self.company = :company AND self.accountType.nameSelect = 'income'" onChange="action-group-account-account-management-onchange-common" if-module="axelor-account" form-view="account-form" grid-view="account-grid"/>
-			<field name="analyticDistributionTemplate" canNew="true" if-module="axelor-account"/>
+		   	<field name="purchaseAccount" domain="self.company = :company AND self.accountType.technicalTypeSelect = 'charge'" onChange="action-group-account-account-management-onchange-common" if-module="axelor-account" form-view="account-form" grid-view="account-grid" if="__config__.general.getAppAccount()" />
+		   	<field name="saleAccount" domain="self.company = :company AND self.accountType.technicalTypeSelect = 'income'" onChange="action-group-account-account-management-onchange-common" if-module="axelor-account" form-view="account-form" grid-view="account-grid" if="__config__.general.getAppAccount()" />
+			<field name="analyticDistributionTemplate" canNew="true" if-module="axelor-account" if="__config__.general.getAppAccount()" />
 		</panel>
 		<panel name="taxPage" title="Tax">
 			<field name="purchaseTax" form-view="tax-form" grid-view="tax-grid"/>
@@ -42,13 +42,13 @@
 			<field name="typeSelect" onChange="action-account-management-attrs-type"/>
 			<field name="company" widget="SuggestBox" onChange="action-group-account-account-management-onchange-common" form-view="company-form" grid-view="company-grid"/>
 			<panel colSpan="12" showIf="typeSelect == 1">
-				<field name="purchaseAccount" onChange="action-group-account-account-management-onchange-common" domain="self.company = :company AND self.accountType.nameSelect = 'expense'" if-module="axelor-account" form-view="account-form" grid-view="account-grid"/>
-				<field name="saleAccount" onChange="action-group-account-account-management-onchange-common" domain="self.company = :company AND self.accountType.nameSelect = 'income'" if-module="axelor-account" form-view="account-form" grid-view="account-grid"/>
+				<field name="purchaseAccount" onChange="action-group-account-account-management-onchange-common" domain="self.company = :company AND self.accountType.technicalTypeSelect = 'charge'" if-module="axelor-account" form-view="account-form" grid-view="account-grid" if="__config__.general.getAppAccount()" />
+				<field name="saleAccount" onChange="action-group-account-account-management-onchange-common" domain="self.company = :company AND self.accountType.technicalTypeSelect = 'income'" if-module="axelor-account" form-view="account-form" grid-view="account-grid" if="__config__.general.getAppAccount()" />
 			</panel>
 			<panel colSpan="12" showIf="typeSelect == 3">
-				<field name="cashAccount" onChange="action-group-account-account-management-onchange-common" domain="self.company = :company AND self.accountType.nameSelect = 'cash'" if-module="axelor-account" form-view="account-form" grid-view="account-grid"/>
+				<field name="cashAccount" onChange="action-group-account-account-management-onchange-common" domain="self.company = :company AND self.accountType.technicalTypeSelect = 'cash'" if-module="axelor-account" form-view="account-form" grid-view="account-grid" if="__config__.general.getAppAccount()" />
 			</panel>
-			<field name="analyticDistributionTemplate" canNew="true" if-module="axelor-account"/>
+			<field name="analyticDistributionTemplate" canNew="true" if-module="axelor-account" if="__config__.general.getAppAccount()" />
 		</panel>
 		
 		<panel name="productPage" title="Product" showIf="typeSelect == 1">

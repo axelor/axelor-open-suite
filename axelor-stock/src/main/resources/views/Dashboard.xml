@@ -46,7 +46,7 @@
 	    <dashlet action="dashlet.production.stock.move.out.planned" height="350" canSearch="true" colSpan="12"/>       			
 	    <dashlet action="dashlet.production.stock.move.in.realized" height="350" canSearch="true" colSpan="12"/>
 	    <dashlet action="dashlet.production.stock.move.out.realized" height="350" canSearch="true" colSpan="12"/>  
-	    <dashlet action="dashlet.nbr.product.per.family" height="350" canSearch="true" if-module="axelor-supplychain"/>       			
+	    <dashlet action="dashlet.nbr.product.per.family" height="350" canSearch="true" if-module="axelor-supplychain" if="__config__.general.getAppSupplychain()" />       			
 	</dashboard>
 
 	<dashboard title="Dashboard" name="stock.dashboard.one"  >	

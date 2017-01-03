@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.2.xsd">
 
-	<menuitem name="marketing-root" order="-107" title="Marketing" icon="fa-bullhorn" 
+	<menuitem name="marketing-root" order="-107" title="Marketing" icon="fa-bullhorn" if="__config__.general.getAppMarketing()"
 	    groups="admins,ERP" icon-background="violet"/> 
 	
 	<menuitem name="campaign-all" parent="marketing-root" title="Campaigns" action="campaign.all"/>

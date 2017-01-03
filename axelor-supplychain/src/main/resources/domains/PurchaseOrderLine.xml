@@ -9,7 +9,7 @@
   
   	<decimal name="amountInvoiced" title="Amount invoiced W.T." readonly="true"/>
 
-  	<one-to-many name="analyticDistributionLineList" ref="com.axelor.apps.account.db.AnalyticDistributionLine" title="Analytic distribution lines" mappedBy="purchaseOrderLine"/>
+  	<one-to-many name="analyticMoveLineList" ref="com.axelor.apps.account.db.AnalyticMoveLine" title="Analytic distribution lines" mappedBy="purchaseOrderLine"/>
 	<many-to-one name="analyticDistributionTemplate" title="Analytic distribution template" ref="com.axelor.apps.account.db.AnalyticDistributionTemplate"/>
 	<boolean name="toInvoice"/>
 	<boolean name="invoiced" readonly="true"/>

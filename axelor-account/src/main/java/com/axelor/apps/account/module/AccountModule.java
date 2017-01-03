@@ -19,8 +19,8 @@ package com.axelor.apps.account.module;
 
 import com.axelor.app.AxelorModule;
 import com.axelor.apps.account.db.Invoice;
-import com.axelor.apps.account.db.repo.AnalyticDistributionLineMngtRepository;
-import com.axelor.apps.account.db.repo.AnalyticDistributionLineRepository;
+import com.axelor.apps.account.db.repo.AnalyticMoveLineMngtRepository;
+import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.db.repo.BankOrderManagementRepository;
 import com.axelor.apps.account.db.repo.BankOrderRepository;
 import com.axelor.apps.account.db.repo.BankStatementManagementRepository;
@@ -44,8 +44,8 @@ import com.axelor.apps.account.db.repo.ReconcileManagementRepository;
 import com.axelor.apps.account.db.repo.ReconcileRepository;
 import com.axelor.apps.account.service.AccountManagementServiceAccountImpl;
 import com.axelor.apps.account.service.AddressServiceAccountImpl;
-import com.axelor.apps.account.service.AnalyticDistributionLineService;
-import com.axelor.apps.account.service.AnalyticDistributionLineServiceImpl;
+import com.axelor.apps.account.service.AnalyticMoveLineService;
+import com.axelor.apps.account.service.AnalyticMoveLineServiceImpl;
 import com.axelor.apps.account.service.FiscalPositionServiceAccountImpl;
 import com.axelor.apps.account.service.MoveLineReportService;
 import com.axelor.apps.account.service.MoveLineReportServiceImpl;
@@ -106,7 +106,7 @@ public class AccountModule extends AxelorModule {
 
         bind(PartnerBaseRepository.class).to(PartnerAccountRepository.class);
         
-        bind(AnalyticDistributionLineService.class).to(AnalyticDistributionLineServiceImpl.class);
+        bind(AnalyticMoveLineService.class).to(AnalyticMoveLineServiceImpl.class);
         
         bind(InvoicePaymentRepository.class).to(InvoicePaymentManagementRepository.class);
 
@@ -120,7 +120,7 @@ public class AccountModule extends AxelorModule {
 
         bind(BankOrderService.class).to(BankOrderServiceImpl.class);
         
-        bind(AnalyticDistributionLineRepository.class).to(AnalyticDistributionLineMngtRepository.class);
+        bind(AnalyticMoveLineRepository.class).to(AnalyticMoveLineMngtRepository.class);
         
         bind(ReconcileService.class).to(ReconcileServiceImpl.class);
         

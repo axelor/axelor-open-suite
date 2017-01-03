@@ -43,7 +43,7 @@
     		</panel>
     		<panel colSpan="5">
        			<button name="$totalVariants" title="Total variants" showIf="isModel" colSpan="4" icon="fa-tags" onClick="action-product-view-total-variants" widget="info-button"/>
-      			<panel showTitle="false" showIf="productTypeSelect == 'storable'" colSpan="8" if-module="axelor-stock">
+      			<panel showTitle="false" showIf="productTypeSelect == 'storable'" colSpan="8" if-module="axelor-stock" if="__config__.general.getAppStock()">
        	 			<button name="$realQty" title="Real qty" colSpan="6" icon="fa-building-o" onClick="action-stock-move-line-product-default-realized" widget="info-button"/>
        	 			<button name="$futureQty" title="Future qty" colSpan="6" icon="fa-line-chart" onClick="action-stock-move-line-product-default-planned" widget="info-button"/>
     	  		</panel>
@@ -56,9 +56,11 @@
       
       			<panel name="productTypology" title="Product typology" colSpan="6" colWidths="30%,70%">
 			        <field name="productTypeSelect" colSpan="12" onChange="action-group-base-product-producttype-onchange"/>
+			        <field name="subTypeProductSelect" colSpan="12"/>
 			        <field name="isActivity" showIf="productTypeSelect == 'service'"/>
-			        <field name="periodicitySelect" showIf="productTypeSelect == 'subscriptable'" if-module="axelor-supplychain"/>
+			        <field name="periodicitySelect" showIf="productTypeSelect == 'subscriptable'" if-module="axelor-supplychain" if="__config__.general.getAppSupplychain()" />
 			        <field name="saleSupplySelect" colSpan="12" onChange="action-product-validate-sale-supply-select"/>
+			        <field name="inventoryTypeSelect" colSpan="12" />
       			</panel>
 		      	<panel name="categorization" title="Categorization" colSpan="6" colWidths="30%,70%">
 		        	<field name="productFamily" colSpan="12" form-view="product-family-form" grid-view="product-family-grid"/>
@@ -66,7 +68,7 @@
 		      	</panel>
       			<panel colSpan="12">
 			        <field name="inAti" colSpan="6"/>
-			        <field name="isAnalyticCapture" colSpan="6" if-module="axelor-account"/>
+			        <field name="isAnalyticCapture" colSpan="6" if-module="axelor-account" if="__config__.general.getAppAccount()" />
 			        <field name="expense" hidden="true"/>
       			</panel>
     		</panel>
@@ -76,6 +78,7 @@
 	      		<panel title="Sales" colSpan="6">
 			        <field name="sellable" colSpan="12"/>
 			        <field name="salePrice" hideIf="!sellable" colSpan="12"/>
+			        <field name="customsCode" colSpan="12"/>
 			        <field name="saleCurrency" hideIf="!sellable" colSpan="12" form-view="currency-form" grid-view="currency-grid"/>
 	        		<panel name="units" title="Units" colSpan="6">
 			          	<field name="unit" colSpan="12" form-view="unit-form" grid-view="unit-grid"/>
@@ -88,6 +91,7 @@
 			        	<field name="startDate" colSpan="12"/>
 			        	<field name="endDate" colSpan="12" onChange="action-group-base-product-enddate-onchange"/>
 			      	</panel>
+			        <field name="isPrototype" showIf="productTypeSelect =='storable'"/>
 		        	<field name="versionSelect" colSpan="12"/>
 				</panel>
 	      		<panel name="description" title="Description" colSpan="6">
@@ -113,14 +117,14 @@
 	      		<panel-related field="supplierCatalogList" form-view="supplier-catalog-form" grid-view="supplier-catalog-grid" title="Suppliers catalog" showIf="purchasable" colSpan="12"/>
 	    	</panel>
 	    	<panel-related field="accountManagementList" form-view="account-management-product-form" grid-view="account-management-product-grid" domain="self.typeSelect = 1" title="Accounting" showTitle="false" colSpan="12"/>
-	    		<panel name="stock" title="Stock" showTitle="false" showIf="productTypeSelect == 'storable'" if-module="axelor-stock">
-	     			<panel name="procurementSettings" title="Procurement settings" colSpan="12" if-module="axelor-supplychain">
+	    		<panel name="stock" title="Stock" showTitle="false" showIf="productTypeSelect == 'storable'" if-module="axelor-stock" if="__config__.general.getAppStock()" >
+	     			<panel name="procurementSettings" title="Procurement settings" colSpan="12" if-module="axelor-supplychain" if="__config__.general.getAppSupplychain()" >
 				        <field name="procurementMethodSelect" colSpan="6" requiredIf="productTypeSelect == 'storable'"/>
 				        <field name="isRawMaterial" showIf="productTypeSelect != 'service'" colSpan="6"/>
 				        <field name="excludeFromMrp" showIf="productTypeSelect == 'storable'" colSpan="6"/>
 				        <field name="mrpFamily" showIf="productTypeSelect == 'storable' &amp;&amp; !excludeFromMrp" colSpan="6" canNew="true"/>
 	      			</panel>
-	      			<panel colSpan="12" if-module="axelor-supplychain">
+	      			<panel colSpan="12" if-module="axelor-supplychain" if="__config__.general.getAppSupplychain()">
 				        <button name="showAllStockMoveLine" title="Show all stock move" colSpan="6" onClick="action-product-view-stock-move-line"/>
 				        <spacer/>
 				        <panel-dashlet colSpan="12" action="action-product-view-stock"/>
@@ -128,7 +132,7 @@
 				        <panel-dashlet colSpan="12" action="action-stock-history-report-for-product"/>
 	      			</panel>
 	    		</panel>
-	    		<panel name="productionInformations" title="Production informations" showTitle="false" showIf="productTypeSelect != 'service'" onTabSelect="action-product-attrs-readonly-create-production-order" if-module="axelor-production">
+	    		<panel name="productionInformations" title="Production informations" showTitle="false" showIf="productTypeSelect != 'service'" onTabSelect="action-product-attrs-readonly-create-production-order" if-module="axelor-production" if="__config__.general.getAppProduction()" >
 	      			<panel-include view="product-production-form"/>
 	      			<panel-dashlet colSpan="12" action="action-product-view-production-process"/>
 	    		</panel>
@@ -139,7 +143,7 @@
 				        <field name="isPerishable"/>
 				        <field name="perishableNbrOfMonths" showIf="isPerishable"/>
 	      			</panel>
-	      			<panel colSpan="12" if-module="axelor-stock">
+	      			<panel colSpan="12" if-module="axelor-stock" if="__config__.general.getAppStock()">
 	        			<field name="trackingNumberConfiguration" canNew="true" form-view="tracking-number-configuration-form" grid-view="tracking-number-configuration-grid"/>
 	      			</panel>
 	    		</panel>
@@ -178,7 +182,7 @@
 	      			</panel>
 	      			<button name="updateProductsPrices" title="Update products prices" help="Update current product prices and variants" onClick="save,action-product-method-update-products-prices"/>
 	    		</panel>
-	    	<panel name="links" title="Links" if-module="axelor-stock">
+	    	<panel name="links" title="Links" if-module="axelor-stock" if="__config__.general.getAppStock()">
 				<panel-dashlet colSpan="12" action="action-product-view-stock-move-line-incoming-planned"/>
 				<panel-dashlet colSpan="12" action="action-product-view-stock-move-line-consumption-planned"/>
 				<panel-dashlet colSpan="12" action="action-product-view-stock-move-line"/>
@@ -187,7 +191,23 @@
 <!--  				<panel-dashlet action="action-product-view-purchase-order-line-historical" colSpan="12" if-module="axelor-purchase"/> -->
 				<panel-dashlet colSpan="12" action="action-product-view-stock-move-line-consumption-historical"/>
 	    	</panel>
+	    	<panel name="packaging" title="Packaging">
+	  			<panel name="weight" title="Weight" colSpan="6">
+	  				<field name="weightUnit" domain="self.lengthUnit.unitTypeSelect = 1"/>
+	  				<field name="grossWeight"/>
+	  				<field name="netWeight"/>
+	  			</panel>
+			      <panel name="articleDimension" title="Article dimension" colSpan="6">
+			        <field name="lengthUnit" domain="self.lengthUnit.unitTypeSelect = 2" />
+			        <field name="length" readonlyIf="diameter > 0" onChange="action-product-record-calculate-volume-length"/>
+			        <field name="width" readonlyIf="diameter > 0" onChange="action-product-record-calculate-volume-length"/>
+			        <field name="height" onChange="action-product-record-calculate-volume-length, action-product-record-calculate-volume-diameter"/>
+			        <field name="diameter" readonlyIf="length > 0 || width > 0" onChange="action-product-record-calculate-volume-diameter"/>
+			        <field name="articleVolume" readonly="true"/>
+			      </panel>
+  			</panel>
   		</panel-tabs>
+  		
 	</form>    
 	
 	<cards name="product-cards" title="Product" model="com.axelor.apps.base.db.Product" cardWidth="25%" css="rect-image" orderBy="code,name">
@@ -259,7 +279,7 @@
     </action-group>
     
     <action-attrs name="action-product-attrs-readonly-unit" if-module="axelor-stock">
-    	<attribute name="readonly" for="unit" expr="eval: __repo__.of(LocationLine).all().filter('self.product.id = ?1 AND (self.currentQty != 0 OR self.futureQty != 0)', id).fetch().size &gt; 0" if="id != null"/>
+    	<attribute name="readonly" for="unit" expr="eval: __repo__.of(LocationLine).all().filter('self.product.id = ?1 AND (self.currentQty != 0 OR self.futureQty != 0)', id).fetch().size &gt; 0" if="id != null &amp;&amp; __config__.general.getAppStock()"/>
     </action-attrs>
     
     <action-record name="action-product-record-in-ati" model="com.axelor.apps.base.db.Product">
@@ -301,6 +321,14 @@
     <action-record name="action-product-set-total-variants" model="com.axelor.apps.base.db.Product">
     	<field name="$totalVariants" expr="eval:__repo__.of(Product).all().filter('self.parentProduct.id = ?',id).fetch().size"/>    
     </action-record>
+	
+	<action-record name="action-product-record-calculate-volume-diameter" model="com.axelor.apps.base.db.Product">
+		<field name="articleVolume" if="diameter > 0.00" expr="eval: Math.PI/4*Math.sqrt(diameter)*height"/>
+	</action-record>
+	
+	<action-record name="action-product-record-calculate-volume-length" model="com.axelor.apps.base.db.Product">
+		<field name="articleVolume" if="length > 0" expr="eval: length * width * height"/>
+	</action-record>
     
     <action-attrs name="action-hide-product-field">
     	<attribute name="hidden" for="isRawMaterial" expr="eval:productTypeSelect == 'service'"  />

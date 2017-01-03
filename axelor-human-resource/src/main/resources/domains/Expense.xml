@@ -27,7 +27,7 @@
       <date name="refusalDate" title="Refusal Date" readonly="true"  />
       <string name="groundForRefusal" title="Ground For Refusal" large="true"/>
       <boolean name="ventilated"/>
-      <integer name="companyCbSelect" title="Expense paied with company's credit card" selection="hr.expense.company.cb.payment" />
+      <integer name="companyCbSelect" title="Expense paied with company's credit card" selection="hr.expense.company.cb.payment" default="1"/>
       <many-to-one name="payrollPreparation" ref="com.axelor.apps.hr.db.PayrollPreparation"/>
       <boolean name="multipleUsers" title="Multiple users ?" default="false"/>
       <one-to-many name="employeeAdvanceUsageList" ref="com.axelor.apps.hr.db.EmployeeAdvanceUsage" mappedBy="expense" title="Employee advances" readonly="true" orphanRemoval="false"/>
@@ -44,8 +44,14 @@
   	  
       <string name="fullName" namecolumn="true" readonly="true">
       <![CDATA[
-	  		return this.getUser().getFullName()+" "+this.getCreatedOn().getDayOfMonth()+"/"+this.getCreatedOn().getMonthOfYear()
-	  				+"/"+this.getCreatedOn().getYear()+"  "+this.getCreatedOn().getHourOfDay()+":"+this.getCreatedOn().getMinuteOfHour();
+      String fullName = "";
+      if(this.getUser() != null)  {
+      	 fullName = this.getUser().getFullName();
+      }
+      if(this.getCreatedOn() != null){
+      	fullName = fullName.concat(" ").concat(this.getCreatedOn().toString("yyyyMMdd HH:mm"));
+      }
+      return fullName;
 	  ]]>
       </string>
       

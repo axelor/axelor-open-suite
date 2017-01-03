@@ -18,8 +18,8 @@
 	        <field name="activeCompany" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
 	        <field name="activeCashRegister" form-view="cash-register-form" grid-view="cash-register-grid"/>
 <!-- 	        <field name="timesheetPeriodConfig"/> -->
-	        <field name="employee" if-module="axelor-human-resource" form-view="employee-form" grid-view="employee-grid" domain="self.user = null"/>
-	        <button name="createEmployee"  onClick="check-action-user-group-partner,action-user-group-employee" title="Create employee" if-module="axelor-human-resource" showIf="employee == null &amp;&amp; id != null &amp;&amp; id>0"/>
+	        <field name="employee" if-module="axelor-human-resource" form-view="employee-form" grid-view="employee-grid" domain="self.user = null" if="__config__.general.getAppEmployee()" />
+	        <button name="createEmployee"  onClick="check-action-user-group-partner,action-user-group-employee" title="Create employee" if-module="axelor-human-resource" showIf="employee == null &amp;&amp; id != null &amp;&amp; id>0" if="__config__.general.getAppEmployee()" />
         </panel>
 		<panel name="testing" title="Testing" sidebar="true">
 			<field name="today"/>
@@ -42,7 +42,7 @@
         		<field name="activeTeam" form-view="team-form" grid-view="team-grid"/>
         		<panel-related field="teamSet" canNew="false" colSpan="12" form-view="team-form" grid-view="team-grid"/>
         	 </panel>
-        	<panel name="calendarsConfiguration" title="Calendars Configuration" if-module="axelor-crm">
+        	<panel name="calendarsConfiguration" title="Calendars Configuration" if-module="axelor-crm"  if="__config__.general.getAppCrm()" >
         		<panel-related field="followersCalUserSet" colSpan="12" form-view="user-form" grid-view="user-grid" onSelect="action-user-attrs-domain-followers"/>
         		<panel-related field="calendarManagementList" colSpan="12"/>
         	</panel>

@@ -5,6 +5,7 @@
 	<module name="base" package="com.axelor.apps.base.db"/>
 
 	<entity name="General" lang="java" cachable="true">
+		<boolean name="appProduction" title="Activate" />
 		<boolean name="productionOrderManagement" title="production order management" default="false"/>		
 		<boolean name="productionOrderGenerationAuto" title="Generate production orders automatically" default="false"/>
     	

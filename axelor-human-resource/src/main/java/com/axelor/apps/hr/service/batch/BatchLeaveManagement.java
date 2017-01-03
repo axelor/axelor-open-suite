@@ -23,6 +23,7 @@ import com.axelor.auth.AuthUtils;
 import com.axelor.db.JPA;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -114,9 +115,9 @@ public class BatchLeaveManagement extends BatchStrategy {
 		}
 		
 		List<Employee> employeeList = Lists.newArrayList();
-		
+		String liaison = query.isEmpty() ? "" : " AND";
 		if (hrBatch.getCompany() != null){
-			employeeList = JPA.all(Employee.class).filter(Joiner.on(" AND ").join(query) + " AND (EXISTS(SELECT u FROM User u WHERE :company MEMBER OF u.companySet AND self = u.employee) OR NOT EXISTS(SELECT u FROM User u WHERE self = u.employee))").bind("company", hrBatch.getCompany()).fetch();
+			employeeList = JPA.all(Employee.class).filter(Joiner.on(" AND ").join(query) + liaison + " (EXISTS(SELECT u FROM User u WHERE :company MEMBER OF u.companySet AND self = u.employee) OR NOT EXISTS(SELECT u FROM User u WHERE self = u.employee))").bind("company", hrBatch.getCompany()).fetch();
 		}
 		else{
 			employeeList = JPA.all(Employee.class).filter(Joiner.on(" AND ").join(query)).fetch();
@@ -176,8 +177,11 @@ public class BatchLeaveManagement extends BatchStrategy {
 		}
 		
 		if (count == 1){
-			LeaveManagement leaveManagement = leaveManagementService.createLeaveManagement(leaveLine, AuthUtils.getUser(), batch.getHrBatch().getComments(), null, batch.getHrBatch().getStartDate(), batch.getHrBatch().getEndDate(), batch.getHrBatch().getDayNumber());
-			leaveLine.setQuantity(leaveLine.getQuantity().add(batch.getHrBatch().getDayNumber()));
+			
+			BigDecimal dayNumber = batch.getHrBatch().getDayNumber().subtract(new BigDecimal( publicHolidayService.getImposedDayNumber(employee, batch.getHrBatch().getStartDate(), batch.getHrBatch().getEndDate()) ));
+			LeaveManagement leaveManagement = leaveManagementService.createLeaveManagement(leaveLine, AuthUtils.getUser(), batch.getHrBatch().getComments(), null, batch.getHrBatch().getStartDate(), batch.getHrBatch().getEndDate(), dayNumber );
+			leaveLine.setQuantity(leaveLine.getQuantity().add(dayNumber).setScale(1));
+			
 			leaveManagementRepository.save(leaveManagement);
 			leaveLineRepository.save(leaveLine);
 			updateEmployee(employee);

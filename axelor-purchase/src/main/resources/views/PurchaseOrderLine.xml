@@ -103,26 +103,26 @@
 	      <field name="estimatedDelivDate"/>	      
 	      <panel-dashlet action="action-purchase-order-line-view-stock-move-line" colSpan="12"/>
 	    </panel>
-	    <panel name="projectTaskPanel" if="__config__.general.getProjectTaskPurchaseOrderLines()" title="Project/Task" if-module="axelor-business-project">
+	    <panel name="projectTaskPanel" if="__config__.general.getAppBusinessProject() &amp;&amp; __config__.general.getProjectTaskPurchaseOrderLines()" title="Project/Task" if-module="axelor-business-project">
 	      <field name="projectTask" form-view="project-task-form" grid-view="project-task-grid"/>
 	    </panel>
-	    <panel name="supplierRequests" title="Suppliers requests" if-module="axelor-supplier-management">
+	    <panel name="supplierRequests" title="Suppliers requests" if-module="axelor-supplier-management" if="__config__.general.getAppPurchase() &amp;&amp; __config__.general.getManageSupplier()" >
 	      <button name="generateSuppliersRequests" title="Generate suppliers requests"   onClick="action-group-purchase-purchase-orderline-generate-supplierreq-click"/>
 	      <field name="supplierPartner" domain="self.isSupplier = true" form-view="partner-form" grid-view="partner-grid" />
 	      <panel-related field="purchaseOrderSupplierLineList" colSpan="12" form-view="purchase-order-supplier-line-form" grid-view="purchase-order-supplier-line-grid"/>
 	    </panel>
-	    <panel name="invoicing" title="Invoicing" if-module="axelor-account" if="__config__.general.getManageInvoicedAmountByLine()">
+	    <panel name="invoicing" title="Invoicing" if-module="axelor-account" if="__config__.general.getAppInvoice() &amp;&amp; __config__.general.getManageInvoicedAmountByLine()">
 	      <field name="amountInvoiced"/>
 	      <panel-dashlet action="action-purchase-order-line-view-show-invoice-lines" colSpan="12"/>
 	    </panel>
-	    <panel name="analyticDistribution" title="Analytic distribution" if-module="axelor-supplychain" if="__config__.general.getManageAnalyticAccounting()" onTabSelect="action-purchase-order-line-attrs-read-only-distribution-lines">
-			<field name="analyticDistributionTemplate" if="__config__.general.getAnalyticDistributionTypeSelect() == 1"/>
-			<button name="generateDistributionLinesButton" onClick="action-purchase-order-line-method-create-distribution" title="Generate distribution lines" showIf="analyticDistributionTemplate != null" if="__config__.general.getAnalyticDistributionTypeSelect() == 1"/>
-			<panel-related field="analyticDistributionLineList" grid-view="analytic-distribution-line-grid" form-view="analytic-distribution-line-form" colSpan="12"/>
+	    <panel name="analyticDistribution" title="Analytic distribution" if-module="axelor-supplychain" if="__config__.general.getAppSupplychain() &amp;&amp; __config__.general.getManageAnalyticAccounting()" onTabSelect="action-purchase-order-line-attrs-read-only-distribution-lines">
+			<field name="analyticDistributionTemplate" if="__config__.general.getAppAccount() &amp;&amp; __config__.general.getAnalyticDistributionTypeSelect() == 1"/>
+			<button name="generateDistributionLinesButton" onClick="action-purchase-order-line-method-create-distribution" title="Generate distribution lines" showIf="analyticDistributionTemplate != null" if="__config__.general.getAppAccount() &amp;&amp; __config__.general.getAnalyticDistributionTypeSelect() == 1"/>
+			<panel-related field="analyticMoveLineList" grid-view="analytic-move-line-distribution-grid" form-view="analytic-move-line-distribution-form" colSpan="12"/>
 		</panel>
-		<panel name="budgetDistribution" title="Budget distribution" if="__config__.general.getManageBudget()" if-module="axelor-supplychain">
-			<field name="budget" if="__config__.general.getManageBudget() &amp;&amp; !__config__.general.getManageMultiBudget()"/>
-			<field name="budgetDistributionList" colSpan="12" if="__config__.general.getManageBudget() &amp;&amp; __config__.general.getManageMultiBudget()"/>
+		<panel name="budgetDistribution" title="Budget distribution" if="__config__.general.getAppBudget()" if-module="axelor-supplychain">
+			<field name="budget" if="!__config__.general.getManageMultiBudget()"/>
+			<field name="budgetDistributionList" colSpan="12" if="__config__.general.getManageMultiBudget()"/>
 		</panel>
 	  </panel-tabs>
 	</form>
@@ -147,11 +147,11 @@
 	</action-method>
 	
 	<action-method name="action-purchase-order-line-method-compute-analytic-distribution" if-module="axelor-supplychain">
-		<call class="com.axelor.apps.supplychain.web.PurchaseOrderLineController" method="computeAnalyticDistribution"/>
+		<call class="com.axelor.apps.supplychain.web.PurchaseOrderLineController" method="computeAnalyticDistribution" if="__config__.general.getAppSupplychain()" />
 	</action-method>
 	
 	<action-attrs name="action-purchase-order-line-attrs-read-only-distribution-lines">
-		<attribute name="readonly" for="analyticDistributionLineList" expr="eval: __config__.general.getAnalyticDistributionTypeSelect() != 1"/>
+		<attribute name="readonly" for="analyticMoveLineList" expr="eval: !__config__.general.getAppAccount() || __config__.general.getAnalyticDistributionTypeSelect() != 1"/>
 	</action-attrs>
 	
 	<action-view name="action-purchase-order-line-view-show-invoice-lines" title="Invoice Lines" model="com.axelor.apps.account.db.InvoiceLine">	
@@ -202,13 +202,13 @@
 	</action-attrs>
 	
 	<action-attrs name="action-purchase-order-attrs-hide-ati">
-		<attribute name="hidden" for="exTaxTotal" expr="eval:_parent.inAti" if="_parent._model == 'com.axelor.apps.purchase.db.PurchaseOrder'"/>
-		<attribute name="hidden" for="inTaxTotal" expr="eval:!_parent.inAti" if="_parent._model == 'com.axelor.apps.purchase.db.PurchaseOrder'"/>
+		<attribute name="hidden" for="exTaxTotal" expr="eval:_parent.inAti" if="_parent?._model == 'com.axelor.apps.purchase.db.PurchaseOrder'"/>
+		<attribute name="hidden" for="inTaxTotal" expr="eval:!_parent.inAti" if="_parent?._model == 'com.axelor.apps.purchase.db.PurchaseOrder'"/>
 	</action-attrs>
 	
 	<action-attrs name="action-purchase-order-line-attrs-title-project-task">
-		<attribute name="title" for="projectTask" expr="eval: __config__.general.getProjectTaskLabel()" if="!com.google.common.base.Strings.isNullOrEmpty(__config__.general.getProjectTaskLabel())"/>
-		<attribute name="title" for="projectTaskPanel" expr="eval: __config__.general.getProjectTaskLabel()" if="!com.google.common.base.Strings.isNullOrEmpty(__config__.general.getProjectTaskLabel())"/>
+		<attribute name="title" for="projectTask" expr="eval: __config__.general.getProjectTaskLabel()" if="__config__.general.getAppProject() &amp;&amp; !com.google.common.base.Strings.isNullOrEmpty(__config__.general.getProjectTaskLabel())"/>
+		<attribute name="title" for="projectTaskPanel" expr="eval: __config__.general.getProjectTaskLabel()" if="__config__.general.getAppProject() &amp;&amp;  !com.google.common.base.Strings.isNullOrEmpty(__config__.general.getProjectTaskLabel())"/>
 	
 	</action-attrs>
 	

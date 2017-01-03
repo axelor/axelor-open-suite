@@ -47,13 +47,13 @@
 	    	<button name="cancelButton" onClick="action-expense-validate-period,save,com.axelor.apps.hr.web.expense.ExpenseController:cancel,action-expense-attrs-buttons" hideIf="statusSelect == 6" title="Cancel" icon="fa-close"/>
 	    	<button name="draftButton" onClick="action-expense-record-draft,save,action-expense-attrs-buttons" title="Return to draft status" showIf="statusSelect &gt; 3 "/>
 	    	<button name="addPaymentButton" title="Register payment" onClick="action-expense-group-payment" showIf="statusSelect == 3  &amp;&amp; (paymentStatusSelect == 0 || paymentStatusSelect == 2)"/>
-	    	<button name="cancelPaymentButton" title="Cancel payment" showIf="paymentStatusSelect == 1 || paymentStatusSelect == 3)"/>
+	    	<button name="cancelPaymentButton" title="Cancel payment" showIf="paymentStatusSelect == 1 || paymentStatusSelect == 3"/>
 	    </panel>
 		<panel>
 		    <field name="statusSelect" colSpan="12" widget="NavSelect" showTitle="false"/>
 		    <field name="multipleUsers" hidden="true" onChange="action-expense-attrs-multiple-users"/>
 			<field name="company" form-view="company-form" grid-view="company-grid"/>
-			<field name="bankDetails" widget="SuggestBox" onSelect="action-accounting-batch-attrs-bank-details-domain" form-view="bank-details-form" grid-view="bank-details-grid" if="__config__.general.getManageMultiBanks()"/>
+			<field name="bankDetails" widget="SuggestBox" onSelect="action-accounting-batch-attrs-bank-details-domain" form-view="bank-details-form" grid-view="bank-details-grid" if="__config__.general.getAppCashManagement() &amp;&amp; __config__.general.getManageMultiBanks()"/>
 			<field name="user" colSpan="4" form-view="user-form" grid-view="user-grid"/>
 			<field name="period" colSpan="4" onSelect="action-expense-attrs-domain-period" form-view="period-form" grid-view="period-grid"/>
 			<field name="companyCbSelect" onChange="action-expense-attrs-expense-company-cb"/>
@@ -115,7 +115,7 @@
 	              &lt;dd ng-show="record.advanceAmount != 0" &gt;-{{record.advanceAmount | number:2}}&lt;/dd&gt;
 	              &lt;dt ng-show="record.statusSelect == 3 || record.statusSelect == 4 &amp;&amp; record.paymentAmount != 0"  ng-style="{'color' : 'blue'}" x-translate&gt;Payment&lt;/dt&gt;
              	  &lt;dd ng-show="record.statusSelect == 3 || record.statusSelect == 4 &amp;&amp; record.paymentAmount != 0"  ng-style="{'color' : 'blue'}"&gt;-{{record.paymentAmount  | number:2}}&lt;/dd&gt;
-	              &lt;dt class="order-subtotal-total" x-translate&gt;Total to refund&lt;/dt&gt;
+	              &lt;dt class="order-subtotal-total" x-translate&gt;TotalToRefund&lt;/dt&gt;
 	              &lt;dd class="order-subtotal-total"&gt;{{record.inTaxTotal - record.advanceAmount - record.withdrawnCash - record.personalExpenseAmount - record.paymentAmount | number:2}}&lt;/dd&gt;
 	            &lt;/dl&gt;
 	          </viewer>

@@ -167,7 +167,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 		log.debug("Validation de la facture");
 		
 		validateFactory.getValidator(invoice).process( );
-		if(generalService.getGeneral().getManageBudget() && !generalService.getGeneral().getManageMultiBudget()){
+		if(generalService.getGeneral().getAppBudget() && !generalService.getGeneral().getManageMultiBudget()){
 			this.generateBudgetDistribution(invoice);
 		}
 		invoiceRepo.save(invoice);

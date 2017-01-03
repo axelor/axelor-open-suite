@@ -117,6 +117,11 @@
 		<option value="3">Requested</option>
 	</selection>
 	
+	<selection name="hr.lunch.voucher.mgt.line.lunch.voucher.format.select">
+		<option value="1">Paper format</option>
+		<option value="2">Electronic card</option>
+	</selection>
+	
 	<selection name="hr.employee.advance.type.select">
 		<option value="1">Permanent</option>
 		<option value="2">Occasional</option>
@@ -130,6 +135,20 @@
 	<selection name="hr.employee.bonus.mgt.status.select">
 		<option value="1">Draft</option>
 		<option value="2">Calculated</option>
+	</selection>
+	
+	<selection name="account.analytic.move.line.status.select" id="hr.analytic.move.line.status.select">
+		<option value="1">Forecast (order)</option>
+		<option value="2">Forecast (invoice)</option>
+		<option value="3">Real (accounting)</option>
+		<option value="4">Forecast (expense)</option>
+	</selection>
+	
+	<selection name="app.type.select" id="human.resource.app.type.select">
+		<option value="employee">Employee management</option>
+		<option value="leave">Leave management</option>
+		<option value="timesheet">Timesheet management</option>
+		<option value="expense">Expense management</option>
 	</selection>
 	
 </object-views>

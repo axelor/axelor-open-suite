@@ -63,6 +63,8 @@
 	    <option value="2">Rate</option>
 	</selection>
 	
-	
+	<selection name="app.type.select" id="production.app.type.select">
+		<option value="production">Production</option>
+	</selection>
 	
 </object-views>

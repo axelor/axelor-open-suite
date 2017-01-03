@@ -37,15 +37,15 @@ import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.AccountManagement;
 import com.axelor.apps.account.db.AnalyticAccount;
-import com.axelor.apps.account.db.AnalyticDistributionLine;
+import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
-import com.axelor.apps.account.db.repo.AnalyticDistributionLineRepository;
+import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.AccountManagementServiceAccountImpl;
-import com.axelor.apps.account.service.AnalyticDistributionLineService;
+import com.axelor.apps.account.service.AnalyticMoveLineService;
 import com.axelor.apps.account.service.invoice.generator.InvoiceLineGenerator;
 import com.axelor.apps.account.service.move.MoveLineService;
 import com.axelor.apps.account.service.move.MoveService;
@@ -88,7 +88,7 @@ public class ExpenseServiceImpl implements ExpenseService  {
 	protected AccountManagementServiceAccountImpl accountManagementService;
 	protected GeneralService generalService;
 	protected AccountConfigHRService accountConfigService;
-	protected AnalyticDistributionLineService analyticDistributionLineService;
+	protected AnalyticMoveLineService analyticMoveLineService;
 	protected HRConfigService  hrConfigService;
 	protected TemplateMessageService  templateMessageService;
 	
@@ -97,7 +97,7 @@ public class ExpenseServiceImpl implements ExpenseService  {
 	@Inject
 	public ExpenseServiceImpl(MoveService moveService, ExpenseRepository expenseRepository, MoveLineService moveLineService,
 			AccountManagementServiceAccountImpl accountManagementService, GeneralService generalService,
-			AccountConfigHRService accountConfigService, AnalyticDistributionLineService analyticDistributionLineService,
+			AccountConfigHRService accountConfigService, AnalyticMoveLineService analyticMoveLineService,
 			HRConfigService  hrConfigService, TemplateMessageService  templateMessageService)  {
 		
 		this.moveService = moveService;
@@ -106,48 +106,55 @@ public class ExpenseServiceImpl implements ExpenseService  {
 		this.accountManagementService = accountManagementService;
 		this.generalService = generalService;
 		this.accountConfigService = accountConfigService;
-		this.analyticDistributionLineService = analyticDistributionLineService;
+		this.analyticMoveLineService = analyticMoveLineService;
 		this.hrConfigService = hrConfigService;
 		this.templateMessageService = templateMessageService;
 		
 	}
 	
-	public ExpenseLine createAnalyticDistributionWithTemplate(ExpenseLine expenseLine) throws AxelorException{
-		List<AnalyticDistributionLine> analyticDistributionLineList = null;
-		analyticDistributionLineList = analyticDistributionLineService.generateLinesWithTemplate(expenseLine.getAnalyticDistributionTemplate(), expenseLine.getUntaxedAmount());
-		if(analyticDistributionLineList != null){
-			for (AnalyticDistributionLine analyticDistributionLine : analyticDistributionLineList) {
-				analyticDistributionLine.setExpenseLine(expenseLine);
+	public ExpenseLine computeAnalyticDistribution(ExpenseLine expenseLine) throws AxelorException{
+		
+		if(generalService.getGeneral().getAnalyticDistributionTypeSelect() == GeneralRepository.DISTRIBUTION_TYPE_FREE)  {  return expenseLine;  }
+		
+		Expense expense = expenseLine.getExpense();
+		List<AnalyticMoveLine> analyticMoveLineList = expenseLine.getAnalyticMoveLineList();
+		if((analyticMoveLineList == null || analyticMoveLineList.isEmpty()))  {
+			analyticMoveLineList = analyticMoveLineService.generateLines(expenseLine.getUser().getPartner(), expenseLine.getExpenseProduct(), expense.getCompany(), expenseLine.getUntaxedAmount());
+			expenseLine.setAnalyticMoveLineList(analyticMoveLineList);
+		}
+		if(analyticMoveLineList != null)  {
+			for (AnalyticMoveLine analyticMoveLine : analyticMoveLineList) {
+				this.updateAnalyticMoveLine(analyticMoveLine, expenseLine);
 			}
 		}
-		expenseLine.setAnalyticDistributionLineList(analyticDistributionLineList);
 		return expenseLine;
 	}
 	
-	public ExpenseLine computeAnalyticDistribution(ExpenseLine expenseLine) throws AxelorException{
-		List<AnalyticDistributionLine> analyticDistributionLineList = expenseLine.getAnalyticDistributionLineList();
-		if((analyticDistributionLineList == null || analyticDistributionLineList.isEmpty()) && generalService.getGeneral().getAnalyticDistributionTypeSelect() != GeneralRepository.DISTRIBUTION_TYPE_FREE){
-			analyticDistributionLineList = analyticDistributionLineService.generateLines(expenseLine.getUser().getPartner(), expenseLine.getExpenseProduct(), expenseLine.getExpense().getCompany(), expenseLine.getUntaxedAmount());
-			if(analyticDistributionLineList != null){
-				for (AnalyticDistributionLine analyticDistributionLine : analyticDistributionLineList) {
-					analyticDistributionLine.setExpenseLine(expenseLine);
-					analyticDistributionLine.setAmount(
-							analyticDistributionLine.getPercentage().multiply(analyticDistributionLine.getExpenseLine().getUntaxedAmount()
-							.divide(new BigDecimal(100),2,RoundingMode.HALF_UP)));
-					analyticDistributionLine.setDate(generalService.getTodayDate());
-				}
-				expenseLine.setAnalyticDistributionLineList(analyticDistributionLineList);
+	public void updateAnalyticMoveLine(AnalyticMoveLine analyticMoveLine, ExpenseLine expenseLine)  {
+		
+		analyticMoveLine.setExpenseLine(expenseLine);
+		analyticMoveLine.setAmount(
+				analyticMoveLine.getPercentage().multiply(analyticMoveLine.getExpenseLine().getUntaxedAmount()
+				.divide(new BigDecimal(100),2,RoundingMode.HALF_UP)));
+		analyticMoveLine.setDate(generalService.getTodayDate());
+		analyticMoveLine.setStatusSelect(AnalyticMoveLineRepository.STATUS_FORECAST_INVOICE);
+		
+	}
+	
+	public ExpenseLine createAnalyticDistributionWithTemplate(ExpenseLine expenseLine) throws AxelorException{
+		List<AnalyticMoveLine> analyticMoveLineList = null;
+		analyticMoveLineList = analyticMoveLineService.generateLinesWithTemplate(expenseLine.getAnalyticDistributionTemplate(), expenseLine.getUntaxedAmount());
+		if(analyticMoveLineList != null)  {
+			for (AnalyticMoveLine analyticMoveLine : analyticMoveLineList)  {
+				analyticMoveLine.setExpenseLine(expenseLine);
 			}
 		}
-		if(analyticDistributionLineList != null && generalService.getGeneral().getAnalyticDistributionTypeSelect() != GeneralRepository.DISTRIBUTION_TYPE_FREE){
-			for (AnalyticDistributionLine analyticDistributionLine : analyticDistributionLineList) {
-				analyticDistributionLine.setExpenseLine(expenseLine);
-				analyticDistributionLine.setAmount(analyticDistributionLineService.computeAmount(analyticDistributionLine));
-				analyticDistributionLine.setDate(generalService.getTodayDate());
-			}
-		}
+		expenseLine.setAnalyticMoveLineList(analyticMoveLineList);
 		return expenseLine;
 	}
+	
+	
+	
 	
 	public Expense compute (Expense expense){
 
@@ -305,10 +312,10 @@ public class ExpenseServiceImpl implements ExpenseService  {
 
 			exTaxTotal = expenseLine.getUntaxedAmount();
 			MoveLine moveLine = moveLineService.createMoveLine(move, expense.getUser().getPartner(), account, exTaxTotal, true, moveDate, moveDate, moveLineId++, "");
-			for (AnalyticDistributionLine analyticDistributionLineIt : expenseLine.getAnalyticDistributionLineList()) {
-				AnalyticDistributionLine analyticDistributionLine = Beans.get(AnalyticDistributionLineRepository.class).copy(analyticDistributionLineIt, false);
+			for (AnalyticMoveLine analyticDistributionLineIt : expenseLine.getAnalyticMoveLineList()) {
+				AnalyticMoveLine analyticDistributionLine = Beans.get(AnalyticMoveLineRepository.class).copy(analyticDistributionLineIt, false);
 				analyticDistributionLine.setExpenseLine(null);
-				moveLine.addAnalyticDistributionLineListItem(analyticDistributionLine);
+				moveLine.addAnalyticMoveLineListItem(analyticDistributionLine);
 			}
 			moveLines.add(moveLine);
 			expenseLineId++;

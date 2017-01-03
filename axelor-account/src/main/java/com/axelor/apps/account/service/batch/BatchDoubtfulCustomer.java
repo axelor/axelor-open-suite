@@ -84,6 +84,7 @@ public class BatchDoubtfulCustomer extends BatchStrategy {
 	}
 
 	
+	@SuppressWarnings("unchecked")
 	@Override
 	protected void process() {
 	

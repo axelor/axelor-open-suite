@@ -58,11 +58,11 @@
 		<dashlet action="dashlet.sales.manager.dashboard.sales.per.country" height="350" />
 		<dashlet action="dashlet.turnover.sales.by.month.by.category" height="350" />    
    	    <dashlet action="dashlet.units.sold.on.cust.sales.by.category" height="350" />
-   	    <dashlet action="dashlet.stockMove.nbr.delivery.by.country" height="350" if-module="axelor-stock"/>  
-   	    <dashlet action="dashlet.stockMoveLine.product.delivery.by.country" height="350" if-module="axelor-stock"/>  
-   	    <dashlet action="dashlet.stockMoveLine.product.delivery.by.country.by.family" height="350" if-module="axelor-stock"/> 
-   	    <dashlet action="dashlet.stockMove.deliveries.time.delay.in.nbr" height="350" if-module="axelor-stock"/>
-   	    <dashlet action="dashlet.stockMove.average.delivery.time.delay" height="350" if-module="axelor-stock"/> 
+   	    <dashlet action="dashlet.stockMove.nbr.delivery.by.country" height="350" if-module="axelor-stock"  if="__config__.general.getAppStock()" />   
+   	    <dashlet action="dashlet.stockMoveLine.product.delivery.by.country" height="350" if-module="axelor-stock" if="__config__.general.getAppStock()" />   
+   	    <dashlet action="dashlet.stockMoveLine.product.delivery.by.country.by.family" height="350" if-module="axelor-stock" if="__config__.general.getAppStock()" />   
+   	    <dashlet action="dashlet.stockMove.deliveries.time.delay.in.nbr" height="350" if-module="axelor-stock" if="__config__.general.getAppStock()" />   
+   	    <dashlet action="dashlet.stockMove.average.delivery.time.delay" height="350" if-module="axelor-stock" if="__config__.general.getAppStock()" />   
 	</dashboard>
 	
 	<action-view title="Sales turnover comparison per month this year vs past years" model="com.axelor.apps.sale.db.SaleOrder" name="dashlet.sales.turnover.ytd.vs.previous.years.by.month">

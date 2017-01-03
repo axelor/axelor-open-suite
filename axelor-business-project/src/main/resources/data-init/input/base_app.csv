@@ -1,0 +1,2 @@
+"name";"code";"description";"typeSelect";"businessProjectGeneral.importId";"image";"modules";"dependsOn"
+"Business Project Management";"BUSPRJ";"Business Project Management ";"business-project";1;"app-business-project.png";"axelor-business-project";"project,employee,supplychain"

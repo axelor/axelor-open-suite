@@ -515,6 +515,7 @@ public class ReimbursementExportService {
 	 * 			Un trop-perçu
 	 * @throws AxelorException
 	 */
+	@SuppressWarnings("unchecked")
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void createReimbursementInvoice(Partner partner, Company company, List<? extends MoveLine> moveLineList) throws AxelorException  {
 

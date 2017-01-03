@@ -1,0 +1,4 @@
+"name";"code";"description";"typeSelect";"accountGeneral.importId";"invoiceGeneral.importId";"budgetGeneral.importId";"image";"modules";"dependsOn"
+"Accounting";"ACC";"Accounting configuration ";"account";1;;;"app-account.png";"axelor-account";"general"
+"Invoicing";"INV";"Invoicing configuration";"invoice";;1;;"app-invoice.png";"axelor-account";"account"
+"Budget";"BUDGET";"Budget configuration";"budget";;;1;"app-budget.png";"axelor-account";"account"

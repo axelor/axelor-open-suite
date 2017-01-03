@@ -218,6 +218,7 @@ public class ReminderService {
 	 * @return
 	 * 			La liste de ligne d'écriture
 	 */
+	@SuppressWarnings("unchecked")
 	public List<MoveLine> getMoveLineReminder(Partner partner, Company company)  {
 		List<MoveLine> moveLineList = new ArrayList<MoveLine>();
 

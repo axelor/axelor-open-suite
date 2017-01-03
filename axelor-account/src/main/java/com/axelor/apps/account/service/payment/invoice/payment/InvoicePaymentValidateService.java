@@ -17,7 +17,6 @@
  */
 package com.axelor.apps.account.service.payment.invoice.payment;
 
-import com.axelor.apps.account.db.BankOrder;
 import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.Move;
 import com.axelor.exception.AxelorException;

@@ -10,7 +10,7 @@
 		<field name="visibleDuration" width="62%" onChange="action-timesheet-line-record-set-stored-duration" min="0.01"/>
 		<field name="durationStored" hidden="true"/>
 		<field name="timesheet" grid-view="timesheet-grid" form-view="timesheet-form"/>
-		<field name="toInvoice" if-module="axelor-business-project"/>
+		<field name="toInvoice" if-module="axelor-business-project"  if="__config__.general.getAppBusinessProject()" />
 		<field name="comments" />
 		<field name="projectTask" hidden="true" />
 	</grid>
@@ -22,7 +22,7 @@
 		<field name="product" onSelect="action-hr-timesheet-line-attrs-domain-product" widget="SuggestBox" form-view="product-activity-form" grid-view="product-activity-grid"/>
 		<field name="visibleDuration" width="62%" onChange="action-timesheet-line-record-set-stored-duration" aggregate="sum" min="0.01"/>
 		<field name="durationStored" hidden="true" />
-		<field name="toInvoice" width="88%" if-module="axelor-business-project"/>
+		<field name="toInvoice" width="88%" if-module="axelor-business-project"  if="__config__.general.getAppBusinessProject()" />
 		<field name="comments" />
 		<field name="user" form-view="user-form" grid-view="user-grid" hidden="true"/>
 	</grid>
@@ -36,7 +36,7 @@
 		<field name="visibleDuration" width="62%" onChange="action-timesheet-line-record-set-stored-duration" aggregate="sum" min="0.01"/>
 		<field name="durationStored" hidden="true" />
 		<field name="timesheet" grid-view="timesheet-grid" form-view="timesheet-form"/>
-		<field name="toInvoice" if-module="axelor-business-project"/>
+		<field name="toInvoice" if-module="axelor-business-project"  if="__config__.general.getAppBusinessProject()" />
 		<field name="comments" />
 	</grid>
 
@@ -47,7 +47,7 @@
 		<field name="product" onSelect="action-hr-timesheet-line-attrs-domain-product" widget="SuggestBox" form-view="product-activity-form" grid-view="product-activity-grid"/>
 		<field name="visibleDuration" width="62%" onChange="action-timesheet-line-record-set-stored-duration" aggregate="sum" min="0.01"/>
 		<field name="durationStored" hidden="true" />
-		<field name="toInvoice" width="88%" if-module="axelor-business-project"/>
+		<field name="toInvoice" width="88%" if-module="axelor-business-project" if="__config__.general.getAppBusinessProject()" />
 		<field name="comments" />
 		<field name="user" form-view="user-form" grid-view="user-grid" hidden="true"/>
 	</grid>
@@ -63,7 +63,7 @@
 			<label name="durationLabel" colSpan="1"/>
 			<field name="durationStored" hidden="true" />
 			<field name="timesheet" grid-view="timesheet-grid" form-view="timesheet-form"/>
-			<field name="toInvoice" if-module="axelor-business-project"/>
+			<field name="toInvoice" if-module="axelor-business-project" if="__config__.general.getAppBusinessProject()" />
 			<field name="comments" />
 		</panel>
 	</form>
@@ -78,7 +78,7 @@
 			<field name="visibleDuration" width="62%" colSpan="3" onChange="action-timesheet-line-record-set-stored-duration" min="0.01"/>
 			<label name="durationLabel" colSpan="1"/>
 			<field name="durationStored" hidden="true" />
-			<field name="toInvoice" if-module="axelor-business-project"/>
+			<field name="toInvoice" if-module="axelor-business-project" if="__config__.general.getAppBusinessProject()" />
 			<field name="comments" />
 			<field name="user" form-view="user-form" grid-view="user-grid" hidden="true"/>
 		</panel>
@@ -95,7 +95,7 @@
 			<label name="durationLabel" colSpan="1"/>
 			<field name="timesheet" grid-view="timesheet-grid" form-view="timesheet-form"/>
 			<field name="durationStored" hidden="true" />
-			<field name="toInvoice" if-module="axelor-business-project"/>
+			<field name="toInvoice" if-module="axelor-business-project" if="__config__.general.getAppBusinessProject()" />
 			<field name="comments" />
 			<field name="user" form-view="user-form" grid-view="user-grid" hidden="true"/>
 		</panel>
@@ -114,7 +114,7 @@
 	</action-validate>
 	
 	<action-attrs name="action-timesheet-line-attrs-title-project-task">
-		<attribute name="title" for="projectTask" expr="eval: __config__.general.getProjectTaskLabel()" if="!com.google.common.base.Strings.isNullOrEmpty(__config__.general.getProjectTaskLabel())"/>
+		<attribute name="title" for="projectTask" expr="eval: __config__.general.getProjectTaskLabel()" if="__config__.general.getAppProject() &amp;&amp; !com.google.common.base.Strings.isNullOrEmpty(__config__.general.getProjectTaskLabel())"/>
 	</action-attrs>
 	
 	<action-attrs name="action-timesheet-line-attrs-set-duration-label">

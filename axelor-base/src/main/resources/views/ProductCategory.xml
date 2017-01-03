@@ -20,7 +20,7 @@
 	        <field name="productFamily"  form-view="product-family-form" grid-view="product-family-grid"/>
 	        <field name="parentProductCategory" form-view="product-category-form" grid-view="product-family-grid"/>
 		</panel>
-   		<panel-dashlet  title="Sales Turnover" action="dashlet.category.sales.turnover.per.month" colSpan="12" height="350" if-module="axelor-supplychain"/>
+   		<panel-dashlet  title="Sales Turnover" action="dashlet.category.sales.turnover.per.month" colSpan="12" height="350" if-module="axelor-supplychain" if="__config__.general.getAppSupplychain()" />
     </form>  
     
     <action-view name="action-view-product-by-category" title="Products (${ name })"

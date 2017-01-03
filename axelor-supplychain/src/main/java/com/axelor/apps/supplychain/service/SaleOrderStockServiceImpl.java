@@ -126,7 +126,9 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService  {
 				saleOrder.getLocation(),
 				toLocation,
 				saleOrder.getShipmentDate(),
-				saleOrder.getDescription());
+				saleOrder.getDescription(),
+				saleOrder.getShipmentMode(),
+				saleOrder.getFreightCarrierMode());
 
 		stockMove.setSaleOrder(saleOrder);
 		stockMove.setStockMoveLineList(new ArrayList<StockMoveLine>());

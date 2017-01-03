@@ -51,7 +51,7 @@ public class MoveLineController {
 		}
 		if(Beans.get(GeneralService.class).getGeneral().getManageAnalyticAccounting()){
 			moveLine = moveLineService.computeAnalyticDistribution(moveLine);
-			response.setValue("analyticDistributionLineList", moveLine.getAnalyticDistributionLineList());
+			response.setValue("analyticMoveLineList", moveLine.getAnalyticMoveLineList());
 		}
 	}
 	
