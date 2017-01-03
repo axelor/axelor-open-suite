@@ -11,14 +11,14 @@
 	<form name="app-form" title="App" model="com.axelor.apps.base.db.App" canDelete="false" canNew="false" width="large" onSave="save,action-method-app-import-data-init">
 		<panel>
 			<field name="image" widget="Image" colSpan="6"/>
-			<panel colSpan="6">
+			<panel colSpan="6" readonly="true">
 				<field name="name" />
 				<field name="code" />
 			</panel>
-			<field name="description" colSpan="12"/>
-			<field name="dependsOn" colSpan="12" widget="multiselect"/>
+			<field name="description" colSpan="12" readonly="true"/>
+			<field name="dependsOn" colSpan="12" widget="multi-select" readonly="true"/>
 			<field name="demoDataLoaded" readonly="true" colSpan="2"/>
-			<button name="importDataDemo" onClick="save,action-method-app-import-data-demo,save" title="Import demo data" colSpan="3" readonlyIf="demoDataLoaded"/>
+			<button name="importDataDemo" onClick="save,action-method-app-import-data-demo" title="Import demo data" colSpan="3" readonlyIf="demoDataLoaded"/>
 			<field name="baseGeneral" x-show-icons="false" showTitle="false" colSpan="12" showIf="typeSelect == 'general'">
 				<editor>
 					<panel colSpan="12">
@@ -35,8 +35,6 @@
 					    	<field name="unitDays" form-view="unit-form" grid-view="unit-grid"/>
 					    	<field name="unitHours" form-view="unit-form" grid-view="unit-grid"/>
 					    	<field name="unitMinutes" form-view="unit-form" grid-view="unit-grid"/>
-					    	<field name="manageSalesUnits" if-module="axelor-sale" widget="boolean-switch"/>
-					    	<field name="managePurchasesUnits" if-module="axelor-purchase" widget="boolean-switch"/>
 					    	<field name="teamManagement" widget="boolean-switch"/>
 					    </panel> 
 					    <panel name="interfaces" title="Interfaces"  colSpan="12">
@@ -62,9 +60,10 @@
 						<field name="appAccount" widget="boolean-switch"/>
 						<panel colSpan="12" showIf="appAccount">
 							<field name="defaultExemptionTax" form-view="tax-form" grid-view="tax-grid"/>
-							<field name="manageAnalyticAccounting" if-module="axelor-account" widget="boolean-switch"/>
-							<field name="analyticDistributionTypeSelect" if-module="axelor-account" showIf="manageAnalyticAccounting"/>
-							<field name="manageCustomerCredit" if-module="axelor-account" widget="boolean-switch"/>
+							<field name="manageAnalyticAccounting"  widget="boolean-switch"/>
+							<field name="analyticDistributionTypeSelect"  showIf="manageAnalyticAccounting"/>
+							<field name="manageCustomerCredit" widget="boolean-switch"/>
+							<field name="manageDirectDebitPayment" widget="Boolean-switch"/>
 							<panel name="rejectsReasonsAndCodesList" title="Rejects reasons and codes list" colSpan="12">
 								<field name="transferAndDirectDebitInterbankCode" grid-view="interbank-code-grid" form-view="interbank-code-form"/>
 								<field name="chequeInterbankCode" grid-view="interbank-code-grid" form-view="interbank-code-form"/>
@@ -96,7 +95,8 @@
 					<panel name="saleOrderConfiguration" if-module="axelor-sale" colSpan="12" >
 						<field name="appSale" colSpan="12" widget="boolean-switch"/>
 						<panel colSpan="12" showIf="appSale">
-							<field name="manageSaleOrderVersion" if-module="axelor-sale" widget="boolean-switch"/>
+							<field name="manageSalesUnits" widget="boolean-switch"/>
+							<field name="manageSaleOrderVersion"  widget="boolean-switch"/>
 						</panel>
 					</panel>
 				</editor>
@@ -106,9 +106,10 @@
 					<panel name="purchaseOrderConfiguration" if-module="axelor-purchase"  colSpan="12" >
 						<field name="appPurchase"  widget="boolean-switch"/>
 						<panel colSpan="12" showIf="appPurchase">
+							<field name="managePurchasesUnits" widget="boolean-switch"/>
 							<field name="managePurchaseOrderVersion"  widget="boolean-switch"/>
 							<field name="purchaseOrderGenerationAuto" widget="boolean-switch"/>
-							<field name="manageSupplier" if-module="axelor-supplier-management" widget="boolean-switch"/>
+							<field name="manageSupplier"  widget="boolean-switch"/>
 						</panel>
 					</panel>
 				</editor>
@@ -122,9 +123,9 @@
 			</field>
 			<field name="supplychainGeneral" x-show-icons="false" showTitle="false" colSpan="12" showIf="typeSelect == 'supplychain'">
 				<editor>
-					<panel name="supplychainGeneralConfiguration" if-module="axelor-stock" colSpan="12" >
+					<panel name="supplychainGeneralConfiguration" if-module="axelor-supplychain" colSpan="12" >
 						<field name="appSupplychain" widget="boolean-switch"/>
-						<panel colSpan="12" showIf="appSupplychain" if-module="axelor-supplychain">
+						<panel colSpan="12" showIf="appSupplychain">
 							<field name="customerStockMoveManagement" readonlyIf="customerStockMoveGenerationAuto || terminateSaleOrderOnDelivery" widget="boolean-switch"/>
 							<field name="customerStockMoveGenerationAuto" showIf="customerStockMoveManagement"  widget="boolean-switch"/>
 							<field name="terminateSaleOrderOnDelivery"  showIf="customerStockMoveManagement" widget="boolean-switch"/>
@@ -132,10 +133,10 @@
 							<field name="supplierStockMoveGenerationAuto" showIf="supplierStockMoveManagement" widget="boolean-switch"/>
 							<field name="terminatePurchaseOrderOnReceipt" showIf="supplierStockMoveManagement" widget="boolean-switch"/>
 							<field name="generateInvoiceFromStockMove" widget="boolean-switch" />
-							<field name="allowSusbcriptionSaleOrder" if-module="axelor-supplychain" widget="boolean-switch"/>
-							<field name="allowTimetableInvoicing" if-module="axelor-supplychain" widget="boolean-switch"/>
-							<field name="generateInvoiceFromSaleOrder" if-module="axelor-sale" widget="boolean-switch"/>
-							<field name="manageInvoicedAmountByLine" widget="boolean-switch" if-module="axelor-supplychain"/>
+							<field name="allowSusbcriptionSaleOrder" widget="boolean-switch"/>
+							<field name="allowTimetableInvoicing" widget="boolean-switch"/>
+							<field name="generateInvoiceFromSaleOrder" widget="boolean-switch"/>
+							<field name="manageInvoicedAmountByLine" widget="boolean-switch" />
 						</panel>
 					</panel>
 				</editor>
@@ -148,7 +149,7 @@
 							<field name="productionOrderManagement" readonlyIf="productionOrderGenerationAuto" colSpan="4" widget="boolean-switch"/>
 							<field name="productionOrderGenerationAuto" showIf="productionOrderManagement" colSpan="4" widget="boolean-switch"/>
 							<panel name="billOfMaterial" title="Bill of material">
-								<field name="manageBillOfMaterialVersion" if-module="axelor-production" colSpan="4" widget="boolean-switch"/>
+								<field name="manageBillOfMaterialVersion" colSpan="4" widget="boolean-switch"/>
 							    <field name="manageResidualProductOnBom" widget="boolean-switch"/>
 							</panel>
 							<panel name="manufacturingProcess" title="Manufacturing process">
@@ -160,9 +161,11 @@
 				  				<field name="cycleUnit" form-view="unit-form" grid-view="unit-grid"/>
 								<field name="subtractProdResidualOnCostSheet" showIf="manageResidualProductOnBom" widget="boolean-switch"/>
 							</panel>
-							<panel name="businessProduction" title="Business production" if-module="axelor-business-production">
-								<field name="manageBusinessProduction" widget="boolean-switch" />
-								<field name="showProductionOrderRelatedToProject" showIf="manageBusinessProduction" />
+							<panel name="businessProductionConfiguration" if-module="axelor-business-production"  colSpan="12" >
+								<field name="manageBusinessProduction" widget="boolean-switch"/>
+								<panel showIf="manageBusinessProduction" colSpan="12">
+									<field name="showProductionOrderRelatedToProject" showIf="manageBusinessProduction" />
+								</panel>
 							</panel>
 						</panel>
 					</panel>
@@ -218,15 +221,21 @@
 							<field name="projectTaskInvoiceLines" widget="boolean-switch"/>
 							<field name="projectTaskLabel"/>
 							<field name="productInvoicingProjectTask" canNew="true"/>
-							<field name="manageBusinessProject"  if-module="axelor-business-project" widget="boolean-switch"/>
-							<panel if-module="axelor-business-project" showIf="manageBusinessProject">
-								<field name="showPurchaseOrderLineRelatedToProject" widget="boolean-switch"/>
-								<field name="showSaleOrderLineRelatedToProject" widget="boolean-switch"/>
-								<field name="showExpenseLineRelatedToProject" widget="boolean-switch"/>
-								<field name="enableToInvoiceTimesheet" showIf="generateInvoiceFromSaleOrder" widget="boolean-switch" />
-								<field name="enableToInvoiceExpense"  showIf="generateInvoiceFromSaleOrder" widget="boolean-switch" />
-								<field name="defaultInvoiceTypeSelect" showIf="generateInvoiceFromSaleOrder" />
-							</panel>
+						</panel>
+					</panel>
+				</editor>
+			</field>
+			<field name="businessProjectGeneral" x-show-icons="false" showTitle="false" colSpan="12" showIf="typeSelect == 'business-project'">
+				<editor>
+					<panel name="businessProjectConfiguration"  if-module="axelor-business-project"  colSpan="12" >
+						<field name="appBusinessProject" widget="boolean-switch"/>
+						<panel showIf="appBusinessProject" colSpan="12">
+							<field name="showPurchaseOrderLineRelatedToProject" widget="boolean-switch"/>
+							<field name="showSaleOrderLineRelatedToProject" widget="boolean-switch"/>
+							<field name="showExpenseLineRelatedToProject" widget="boolean-switch"/>
+							<field name="enableToInvoiceTimesheet" showIf="generateInvoiceFromSaleOrder" widget="boolean-switch" />
+							<field name="enableToInvoiceExpense"  showIf="generateInvoiceFromSaleOrder" widget="boolean-switch" />
+							<field name="defaultInvoiceTypeSelect" showIf="generateInvoiceFromSaleOrder" />
 						</panel>
 					</panel>
 				</editor>
@@ -257,7 +266,7 @@
 				    </panel>
 				 </editor>
 			</field>
-			<field name="cashManagementGeneral" x-show-icons="false" showTitle="false" colSpan="12" showIf="typeSelect == 'cashManagement'">
+			<field name="cashManagementGeneral" x-show-icons="false" showTitle="false" colSpan="12" showIf="typeSelect == 'cash-management'">
 				<editor>
 					<panel name="cashManagementConfiguration" if-module="axelor-cash-management" colSpan="12" >
 						<field name="appCashManagement" colSpan="12" widget="boolean-switch"/>
@@ -274,24 +283,22 @@
 					</panel>
 				</editor>
 			</field>
+			<field name="marketingGeneral" x-show-icons="false" showTitle="false" colSpan="12" showIf="typeSelect == 'marketing'">
+				<editor>
+					<panel name="marketingConfiguration" if-module="axelor-marketing" colSpan="12" >
+						<field name="appMarketing" widget="boolean-switch"/>
+					</panel>
+				</editor>
+			</field>
+			<field name="typeSelect" hidden="true" />
+			<field name="initDataLoaded" hidden="true" />
 			<field name="accountGeneral.appAccount" hidden="true"/>
-			<field name="invoiceGeneral.appInvoice" hidden="true"/>
 			<field name="saleGeneral.appSale"  hidden="true"/>
 			<field name="purchaseGeneral.appPurchase" hidden="true"/>
 			<field name="stockGeneral.appStock" hidden="true"/>
-			<field name="supplychainGeneral.appSupplychain" hidden="true"/>
 			<field name="productionGeneral.appProduction" hidden="true"/>
 			<field name="employeeGeneral.appEmployee" hidden="true"/>
-			<field name="leaveGeneral.appLeave" hidden="true"/>
-			<field name="expenseGeneral.appExpense" hidden="true"/>
-			<field name="timesheetGeneral.appTimesheet" hidden="true"/>
-			<field name="projectGeneral.appProject" hidden="true"/>
-			<field name="budgetGeneral.appBudget"  hidden="true"/>
-			<field name="portalGeneral.appPortal"  hidden="true"/>
-			<field name="cashManagementGeneral.appCashManagement" hidden="true"/>
 			<field name="crmGeneral.appCrm" hidden="true"/>
-			<field name="typeSelect" hidden="true" />
-			<field name="initDataLoaded" hidden="true" />
 		</panel>
 		<panel-dashlet action="admin.root.conf.account.config" showIf="typeSelect == 'account' &amp;&amp; accountGeneral.appAccount"  />
 		<panel-dashlet action="admin.root.conf.sale.config" showIf="typeSelect == 'sale' &amp;&amp; saleGeneral.appSale"  />
@@ -324,6 +331,8 @@
 		<field name="cashManagementGeneral.appCashManagement" />
 		<field name="crmGeneral.appCrm" />
 		<field name="supplychainGeneral.appSupplychain" />
+		<field name="businessProjectGeneral.appBusinessProject" />
+		<field name="marketingGeneral.appMarketing" />
 		<template><![CDATA[
 			<div>
 			  <div class="span4 card-image">
@@ -347,9 +356,11 @@
    				<label ng-show="typeSelect == 'project'" class="iswitch form-item"><input type="checkbox" ng-model="projectGeneral.appProject"/><span class="box"/></label>
    				<label ng-show="typeSelect == 'budget'" class="iswitch form-item"><input type="checkbox" ng-model="budgetGeneral.appBudget"/><span class="box"/></label>
    				<label ng-show="typeSelect == 'portal'" class="iswitch form-item"><input type="checkbox" ng-model="portalGeneral.appPortal"/><span class="box"/></label>
-   				<label ng-show="typeSelect == 'cashManagement'" class="iswitch form-item"><input type="checkbox" ng-model="cashManagementGeneral.appCashManagement"/><span class="box"/></label>
+   				<label ng-show="typeSelect == 'cash-management'" class="iswitch form-item"><input type="checkbox" ng-model="cashManagementGeneral.appCashManagement"/><span class="box"/></label>
    				<label ng-show="typeSelect == 'crm'" class="iswitch form-item"><input type="checkbox" ng-model="crmGeneral.appCrm"/><span class="box"/></label>
 	  		  	<label ng-show="typeSelect == 'supplychain'" class="iswitch form-item"><input type="checkbox" ng-model="supplychainGeneral.appSupplychain"/><span class="box"/></label>
+	  		  	<label ng-show="typeSelect == 'business-project'" class="iswitch form-item"><input type="checkbox" ng-model="businessProjectGeneral.appBusinessProject"/><span class="box"/></label>
+	  		  	<label ng-show="typeSelect == 'marketing'" class="iswitch form-item"><input type="checkbox" ng-model="marketingGeneral.appMarketing"/><span class="box"/></label>
 	  		  </div>
 			</div>
 			<div class="span12">{{description}}</strong></div>

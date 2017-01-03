@@ -1,2 +1,2 @@
 "name";"code";"description";"typeSelect";"cashManagementGeneral.importId";"image";"modules";"dependsOn"
-"Cash management";"CASHMGT";"Cash management configuration";"cashManagement";1;"app-cash-management.png";"axelor-cash-management";"account"
+"Cash management";"CASHMGT";"Cash management configuration";"cash-management";1;"app-cash-management.png";"axelor-cash-management";"account"

@@ -42,7 +42,7 @@
 					<field name="accountClearanceJournal" domain="self.statusSelect = 1 AND self.company = :company" grid-view="journal-grid" form-view="journal-form"/>
 					<field name="irrecoverableJournal" domain="self.statusSelect = 1 AND self.company = :company" grid-view="journal-grid" form-view="journal-form"/>
 					<field name="miscOperationJournal" domain="self.statusSelect = 1 AND self.company = :company" grid-view="journal-grid" form-view="journal-form"/>
-					<field name="expenseJournal" domain="self.statusSelect = 1 AND self.company = :company" if-module="axelor-human-resource" grid-view="journal-grid" form-view="journal-form"/>
+					<field name="expenseJournal" domain="self.statusSelect = 1 AND self.company = :company" if-module="axelor-human-resource" grid-view="journal-grid" form-view="journal-form" if="__config__.general.getAppExpense()"/>
 				</panel>
 				<panel name="accounts" title="Accounts" colSpan="12">
 					<field name="customerAccount" domain="self.company = :company" grid-view="account-grid" form-view="account-form"/>
@@ -76,7 +76,7 @@
 				    <field name="payingBackTax" grid-view="tax-grid" form-view="tax-form"/>
 				</panel>
 				<panel	name="expense" title="Expense" colSpan="12">
-					<field name="expenseTaxAccount" domain="self.company = :company" if-module="axelor-human-resource" grid-view="account-grid" form-view="account-form"/>
+					<field name="expenseTaxAccount" domain="self.company = :company" if-module="axelor-human-resource" grid-view="account-grid" form-view="account-form" if="__config__.general.getAppExpense()"/>
 				</panel>
 				<panel name="invoicesSequences" title="Invoices sequences" colSpan="12">
 				    <field name="custInvSequence" domain="self.code = 'invoice' and self.company = :company" form-view="sequence-form" grid-view="sequence-grid"/>

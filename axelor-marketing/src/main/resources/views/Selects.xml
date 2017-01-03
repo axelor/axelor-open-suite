@@ -18,4 +18,8 @@
 		<option value="2">Both</option>
 	</selection>
 	
+	<selection name="app.type.select" id="marketing.app.type.select">
+		<option value="marketing">Marketing</option>
+	</selection>
+	
 </object-views>

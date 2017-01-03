@@ -59,7 +59,7 @@
 	</action-group>
 	
 	<action-method name="action-sale-order-method-update-timetable" if-module="axelor-supplychain">
-		<call class="com.axelor.apps.supplychain.web.SaleOrderController" method="updateTimetable"/>
+		<call class="com.axelor.apps.supplychain.web.SaleOrderController" method="updateTimetable" if="__config__.general.getAppSupplychain()" />
 	</action-method>
 	
 	<action-method name="action-supplychain-sale-order-method-get-location">
@@ -94,7 +94,7 @@
 	</action-method>
 	
 	<action-method name="action-sale-method-update-customer-credit-line" if-module="axelor-supplychain">
-		<call class="com.axelor.apps.supplychain.web.CustomerCreditLineController" method="updateLinesFromSaleOrder" if="__config__.general.getAppAccount() &amp;&amp; __config__.general.getManageCustomerCredit()"/>
+		<call class="com.axelor.apps.supplychain.web.CustomerCreditLineController" method="updateLinesFromSaleOrder" if="__config__.general.getAppSupplychain() &amp;&amp; __config__.general.getManageCustomerCredit()"/>
 	</action-method>
 	
 	<action-validate name="action-supplychain-sale-order-validate-check-location">

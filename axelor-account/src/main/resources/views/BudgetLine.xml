@@ -7,7 +7,7 @@
         <field name="fromDate"/>
         <field name="toDate"/>
         <field name="amountExpected"/>
-        <field name="amountCommitted" if-module="axelor-supplychain"/>
+        <field name="amountCommitted" if-module="axelor-supplychain" if="__config__.general.getAppSupplychain()"/>
         <field name="amountRealized"/>
     </grid>
     
@@ -16,7 +16,7 @@
 	       <field name="fromDate"/>
 	       <field name="toDate"/>
 	       <field name="amountExpected"/>
-	       <field name="amountCommitted" readonly="true" if-module="axelor-supplychain"/>
+	       <field name="amountCommitted" readonly="true" if-module="axelor-supplychain" if="__config__.general.getAppSupplychain()"/>
 	       <field name="amountRealized" readonly="true"/>
        </panel>
     </form>

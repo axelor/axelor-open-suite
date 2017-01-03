@@ -14,7 +14,7 @@ public class AppController {
 	public void importDataDemo(ActionRequest request, ActionResponse response) {
 		App app = request.getContext().asType(App.class);
 		response.setFlash(appService.importDataDemo(app));
-		response.setValue("demoDataLoaded", app.getDemoDataLoaded());
+		response.setReload(true);
 	}
 	
 	public void importDataInit(ActionRequest request, ActionResponse response) {

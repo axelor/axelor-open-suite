@@ -12,12 +12,15 @@ import org.slf4j.LoggerFactory;
 
 import com.axelor.app.AppSettings;
 import com.axelor.apps.base.db.App;
+import com.axelor.apps.base.db.repo.AppRepository;
 import com.axelor.common.FileUtils;
 import com.axelor.data.csv.CSVImporter;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.MetaScanner;
 import com.google.common.io.ByteStreams;
 import com.google.common.io.Files;
+import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 
 public class AppServiceImpl implements AppService {
 	
@@ -29,8 +32,12 @@ public class AppServiceImpl implements AppService {
 	
 	private static final String DIR_INIT_INPUT = "app";
 	
+	@Inject
+	private AppRepository appRepo;
+	
 	@Override
 	public String importDataDemo(App app) {
+		app = appRepo.find(app.getId());
 		String modules = app.getModules();
 		String type = app.getTypeSelect();
 		String lang = AppSettings.get().get("application.locale");
@@ -57,6 +64,8 @@ public class AppServiceImpl implements AppService {
 		}
 		
 		app.setDemoDataLoaded(true);
+		
+		appRepo.save(app);
 		
 		return I18n.get("Demo data loaded sucessefully");
 	}

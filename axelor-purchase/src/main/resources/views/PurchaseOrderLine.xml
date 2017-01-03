@@ -103,10 +103,10 @@
 	      <field name="estimatedDelivDate"/>	      
 	      <panel-dashlet action="action-purchase-order-line-view-stock-move-line" colSpan="12"/>
 	    </panel>
-	    <panel name="projectTaskPanel" if="__config__.general.getAppProject() &amp;&amp; __config__.general.getProjectTaskPurchaseOrderLines()" title="Project/Task" if-module="axelor-business-project">
+	    <panel name="projectTaskPanel" if="__config__.general.getAppBusinessProject() &amp;&amp; __config__.general.getProjectTaskPurchaseOrderLines()" title="Project/Task" if-module="axelor-business-project">
 	      <field name="projectTask" form-view="project-task-form" grid-view="project-task-grid"/>
 	    </panel>
-	    <panel name="supplierRequests" title="Suppliers requests" if-module="axelor-supplier-management">
+	    <panel name="supplierRequests" title="Suppliers requests" if-module="axelor-supplier-management" if="__config__.general.getAppPurchase() &amp;&amp; __config__.general.getManageSupplier()" >
 	      <button name="generateSuppliersRequests" title="Generate suppliers requests"   onClick="action-group-purchase-purchase-orderline-generate-supplierreq-click"/>
 	      <field name="supplierPartner" domain="self.isSupplier = true" form-view="partner-form" grid-view="partner-grid" />
 	      <panel-related field="purchaseOrderSupplierLineList" colSpan="12" form-view="purchase-order-supplier-line-form" grid-view="purchase-order-supplier-line-grid"/>
@@ -115,7 +115,7 @@
 	      <field name="amountInvoiced"/>
 	      <panel-dashlet action="action-purchase-order-line-view-show-invoice-lines" colSpan="12"/>
 	    </panel>
-	    <panel name="analyticDistribution" title="Analytic distribution" if-module="axelor-supplychain" if="__config__.general.getManageAnalyticAccounting()" onTabSelect="action-purchase-order-line-attrs-read-only-distribution-lines">
+	    <panel name="analyticDistribution" title="Analytic distribution" if-module="axelor-supplychain" if="__config__.general.getAppSupplychain() &amp;&amp; __config__.general.getManageAnalyticAccounting()" onTabSelect="action-purchase-order-line-attrs-read-only-distribution-lines">
 			<field name="analyticDistributionTemplate" if="__config__.general.getAppAccount() &amp;&amp; __config__.general.getAnalyticDistributionTypeSelect() == 1"/>
 			<button name="generateDistributionLinesButton" onClick="action-purchase-order-line-method-create-distribution" title="Generate distribution lines" showIf="analyticDistributionTemplate != null" if="__config__.general.getAppAccount() &amp;&amp; __config__.general.getAnalyticDistributionTypeSelect() == 1"/>
 			<panel-related field="analyticMoveLineList" grid-view="analytic-move-line-distribution-grid" form-view="analytic-move-line-distribution-form" colSpan="12"/>
@@ -147,7 +147,7 @@
 	</action-method>
 	
 	<action-method name="action-purchase-order-line-method-compute-analytic-distribution" if-module="axelor-supplychain">
-		<call class="com.axelor.apps.supplychain.web.PurchaseOrderLineController" method="computeAnalyticDistribution"/>
+		<call class="com.axelor.apps.supplychain.web.PurchaseOrderLineController" method="computeAnalyticDistribution" if="__config__.general.getAppSupplychain()" />
 	</action-method>
 	
 	<action-attrs name="action-purchase-order-line-attrs-read-only-distribution-lines">

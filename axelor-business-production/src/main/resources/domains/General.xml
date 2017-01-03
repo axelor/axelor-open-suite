@@ -6,7 +6,7 @@
 
 	<entity name="General" lang="java" cachable="true">
 		
-		<boolean name="manageBusinessProduction" title="Manage Business Production" />
+		<boolean name="manageBusinessProduction" title="Activate" />
 		<boolean name="showProductionOrderRelatedToProject" title="Show production orders related to the project task" />
 		
 	</entity>

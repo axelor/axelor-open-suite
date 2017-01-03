@@ -18,7 +18,7 @@
 		onLoad="action-production-order-attrs-title-project-task" width="large">
 	  <panel name="main">
 	    <field name="productionOrderSeq"/>
-	    <field name="projectTask" if-module="axelor-business-production" form-view="project-task-form" grid-view="project-task-grid"/>
+	    <field name="projectTask" if-module="axelor-business-production" form-view="project-task-form" grid-view="project-task-grid" if="__config__.general.getAppProduction() &amp;&amp; __config__.general.getManageBusinessProduction()" />
 	    <field name="prioritySelect"/>
 	    <button name="showManufOrderWizard" title="Add Manuf. Order" width="50%"   onClick="save,action-production-order-attrs-add-manuf-order-wizard,action-production-order-record-default-wizard"/>
 	  </panel>  

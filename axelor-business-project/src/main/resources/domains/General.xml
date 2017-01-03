@@ -6,7 +6,7 @@
 
 	<entity name="General" lang="java" cachable="true">
 		
-		<boolean name="manageBusinessProject" title="Manage business project" />
+		<boolean name="appBusinessProject" title="Activate" />
 		<boolean name="folderServiceCompany" title="Folder for Service Company"/>
 		<many-to-one name="productInvoicingProjectTask" ref="com.axelor.apps.base.db.Product" title="Default Invoicing Product for Projects/Tasks"/>
 		

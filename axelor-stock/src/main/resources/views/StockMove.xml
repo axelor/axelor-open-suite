@@ -91,10 +91,10 @@
 	  <panel-tabs>
 	   
 	    <panel-related name="stockMoveLineListPanel" title="Stock move line" field="stockMoveLineList" onChange="action-stock-move-method-compute" readonlyIf="statusSelect == 3" form-view="stock-move-line-form" grid-view="stock-move-line-grid"/>
-	    <panel name="configuration" title="Configuration">
-	      <field name="saleOrder" onChange="action-stock-move-attrs-typeselect-change" if-module="axelor-supplychain" readonlyIf="statusSelect == 3 || statusSelect == 4" form-view="sale-order-form" grid-view="sale-order-grid"/>
-	      <field name="purchaseOrder" if-module="axelor-supplychain" readonlyIf="statusSelect == 3 || statusSelect == 4" form-view="purchase-order-form" grid-view="purchase-order-grid"/>
-	      <field name="invoice" if-module="axelor-supplychain" readonlyIf="statusSelect == 3 || statusSelect == 4" form-view="invoice-form" grid-view="invoice-grid"/>
+	    <panel name="configuration" title="Configuration"  if-module="axelor-supplychain" if="__config__.general.getAppSupplychain()" >
+	      <field name="saleOrder" onChange="action-stock-move-attrs-typeselect-change" readonlyIf="statusSelect == 3 || statusSelect == 4" form-view="sale-order-form" grid-view="sale-order-grid"/>
+	      <field name="purchaseOrder" readonlyIf="statusSelect == 3 || statusSelect == 4" form-view="purchase-order-form" grid-view="purchase-order-grid"/>
+	      <field name="invoice" readonlyIf="statusSelect == 3 || statusSelect == 4" form-view="invoice-form" grid-view="invoice-grid"/>
 	    </panel>
 	  </panel-tabs>
 	  
@@ -277,11 +277,11 @@
 	</action-method>
 	
 	<action-method name="action-supply-chain-method-update-so-on-cancel" if-module="axelor-supplychain">
-		<call class="com.axelor.apps.supplychain.web.SaleOrderController" method="updateSaleOrderOnCancel"/>
+		<call class="com.axelor.apps.supplychain.web.SaleOrderController" method="updateSaleOrderOnCancel" if="__config__.general.getAppSupplychain()" />
 	</action-method>
 	
 	<action-method name="action-supply-chain-method-update-po-on-cancel" if-module="axelor-supplychain">
-		<call class="com.axelor.apps.supplychain.web.PurchaseOrderController" method="updatePurchaseOrderOnCancel"/>
+		<call class="com.axelor.apps.supplychain.web.PurchaseOrderController" method="updatePurchaseOrderOnCancel" if="__config__.general.getAppSupplychain()"  />
 	</action-method>
 	
 	<action-method name="action-print-stock-move">

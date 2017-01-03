@@ -24,7 +24,7 @@
 	</selection>
 	
 	<selection name="app.type.select" id="cash.management.app.type.select">
-		<option value="cashManagement">Cash management</option>
+		<option value="cash-management">Cash management</option>
 	</selection>
 	
 </object-views>
