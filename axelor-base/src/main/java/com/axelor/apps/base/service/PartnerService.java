@@ -23,9 +23,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Currency;
@@ -45,12 +42,9 @@ import com.axelor.inject.Beans;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-
-
+	
 public class PartnerService {
 
-	private static final Logger LOG = LoggerFactory.getLogger(PartnerService.class);
-	
 	@Inject
 	private PartnerRepository partnerRepo;
 
@@ -148,15 +142,14 @@ public class PartnerService {
 		return idList;
 	}
 
+	@SuppressWarnings("unchecked")
 	public List<Long> findMailsFromPartner(Partner partner){
-		String query = "SELECT DISTINCT(email.id) FROM Message as email WHERE email.mediaTypeSelect = 2 AND "+
-				"(email.relatedTo1Select = 'com.axelor.apps.base.db.Partner' AND email.relatedTo1SelectId = "+partner.getId()+") "+
-				"OR (email.relatedTo2Select = 'com.axelor.apps.base.db.Partner' AND email.relatedTo2SelectId = "+partner.getId()+")";
-		if(partner.getEmailAddress() != null){
-			query += "OR (email.fromEmailAddress.id = "+partner.getEmailAddress().getId()+"))";
-		}
-		else{
-			query += ")";
+		String query = "SELECT DISTINCT(email.id) FROM Message as email WHERE email.mediaTypeSelect = 2 AND " +
+				"(email.relatedTo1Select = 'com.axelor.apps.base.db.Partner' AND email.relatedTo1SelectId = " + partner.getId() + ") " +
+				"OR (email.relatedTo2Select = 'com.axelor.apps.base.db.Partner' AND email.relatedTo2SelectId = " + partner.getId() + ")";
+		
+		if(partner.getEmailAddress() != null) {
+			query += "OR (email.fromEmailAddress.id = " + partner.getEmailAddress().getId() + ")";
 		}
 		
 		return JPA.em().createQuery(query).getResultList();

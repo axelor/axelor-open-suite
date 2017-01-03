@@ -23,8 +23,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.joda.time.LocalDate;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.Invoice;
@@ -50,8 +48,6 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
 public class PaymentVoucherLoadService {
-
-	private final Logger log = LoggerFactory.getLogger( getClass() );
 
 	protected CurrencyService currencyService;
 	protected PaymentVoucherSequenceService paymentVoucherSequenceService;
@@ -87,7 +83,7 @@ public class PaymentVoucherLoadService {
 		
 		MoveLineRepository moveLineRepo = Beans.get(MoveLineRepository.class);
 		
-		List<? extends MoveLine> moveLines = null;
+		List<MoveLine> moveLines = null;
 
 		String query = "self.partner = ?1 " +
 				"and self.account.reconcileOk = 't' " +
@@ -105,7 +101,7 @@ public class PaymentVoucherLoadService {
 
 		moveLines = moveLineRepo.all().filter(query, paymentVoucher.getPartner(), paymentVoucher.getCompany(), MoveRepository.STATUS_VALIDATED).fetch();
 
-		return (List<MoveLine>) moveLines;
+		return moveLines;
 	}
 
 

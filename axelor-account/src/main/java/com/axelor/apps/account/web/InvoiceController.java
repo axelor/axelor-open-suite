@@ -290,6 +290,7 @@ public class InvoiceController {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	public void massValidation(ActionRequest request, ActionResponse response) {
 
 		List<Integer> listSelectedInvoice = (List<Integer>) request.getContext().get("_ids");
@@ -318,6 +319,7 @@ public class InvoiceController {
 
 	}
 
+	@SuppressWarnings("unchecked")
 	public void massVentilation(ActionRequest request, ActionResponse response) {
 
 		List<Integer> listSelectedInvoice = (List<Integer>) request.getContext().get("_ids");
@@ -347,7 +349,7 @@ public class InvoiceController {
 	}
 	
 	//Generate single invoice from several
-	@SuppressWarnings("rawtypes")
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public void mergeInvoice(ActionRequest request, ActionResponse response)  {
 		List<Invoice> invoiceList = new ArrayList<Invoice>();
 		List<Long> invoiceIdList = new ArrayList<Long>();
@@ -357,7 +359,7 @@ public class InvoiceController {
 
 			if (request.getContext().get("invoiceToMerge") instanceof List){
 				//No confirmation popup, invoices are content in a parameter list
-				List<Map> invoiceMap = (List<Map>)request.getContext().get("invoiceToMerge");
+				List<Map> invoiceMap = (List<Map>) request.getContext().get("invoiceToMerge");
 				for (Map map : invoiceMap) {
 					invoiceIdList.add(new Long((Integer)map.get("id")));
 				}

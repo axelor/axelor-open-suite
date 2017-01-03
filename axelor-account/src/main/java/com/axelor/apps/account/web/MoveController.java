@@ -19,7 +19,6 @@ package com.axelor.apps.account.web;
 
 import java.util.List;
 
-import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;

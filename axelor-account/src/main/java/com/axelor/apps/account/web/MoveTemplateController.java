@@ -84,6 +84,7 @@ public class MoveTemplateController {
 			
 	}
 	
+	@SuppressWarnings("unchecked")
 	public void generateMove(ActionRequest request, ActionResponse response){
 		HashMap<String,Object> moveTemplateMap = (HashMap<String, Object>) request.getContext().get("moveTemplate");
 		MoveTemplate moveTemplate = moveTemplateRepo.find(Long.parseLong(moveTemplateMap.get("id").toString()));

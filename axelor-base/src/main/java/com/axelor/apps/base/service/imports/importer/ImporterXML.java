@@ -17,12 +17,9 @@
  */
 package com.axelor.apps.base.service.imports.importer;
 
-import javax.inject.Inject;
-
 import com.axelor.apps.base.db.ImportHistory;
 import com.axelor.apps.base.service.imports.listener.ImporterListener;
 import com.axelor.data.xml.XMLImporter;
-import com.google.inject.Injector;
 
 class ImporterXML extends Importer {
 

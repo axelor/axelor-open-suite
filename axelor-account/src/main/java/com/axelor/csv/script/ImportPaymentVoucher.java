@@ -35,6 +35,7 @@ public class ImportPaymentVoucher {
 	PaymentVoucherConfirmService paymentVoucherConfirmService;
 	
 	
+	@SuppressWarnings("rawtypes")
 	public Object importPaymentVoucher(Object bean, Map values) {
 		assert bean instanceof PaymentVoucher;
 		try{

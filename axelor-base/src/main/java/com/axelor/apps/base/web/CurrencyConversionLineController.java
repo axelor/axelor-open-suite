@@ -18,7 +18,6 @@
 package com.axelor.apps.base.web;
 
 import java.math.BigDecimal;
-import java.util.HashMap;
 import java.util.Map;
 
 import org.joda.time.LocalDate;
@@ -82,13 +81,14 @@ public class CurrencyConversionLineController {
 	
 	}
 	
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public void applyExchangeRate(ActionRequest request, ActionResponse response) {
 		Context context = request.getContext();
 		
-		LOG.debug("Apply Conversion Rate Context: {}",new Object[]{context});
+		LOG.debug("Apply Conversion Rate Context: {}", new Object[]{context});
 		
-		HashMap currencyFrom = (HashMap)context.get("startCurrency");
-		HashMap currencyTo = (HashMap)context.get("endCurrency");
+		Map<String, Object> currencyFrom = (Map<String, Object>) context.get("startCurrency");
+		Map<String, Object> currencyTo = (Map<String, Object>) context.get("endCurrency");
 		
 		if(currencyFrom.get("id") != null && currencyTo.get("id") != null){
 			Currency fromCurrency = currencyRepo.find(Long.parseLong(currencyFrom.get("id").toString()));
@@ -111,8 +111,8 @@ public class CurrencyConversionLineController {
 			    	variation = ccs.getVariations(rate, ccl.getExchangeRate());
 			    General general = null;
 			    
-			    if(context.get("general") != null && ((HashMap)context.get("general")).get("id") != null)
-			    	general = generalRepo.find(Long.parseLong(((HashMap)context.get("general")).get("id").toString()));
+			    if(context.get("general") != null && ((Map)context.get("general")).get("id") != null)
+			    	general = generalRepo.find(Long.parseLong(((Map)context.get("general")).get("id").toString()));
 			    
 				ccs.createCurrencyConversionLine(fromCurrency,toCurrency,today,rate,general,variation);
 				
@@ -126,17 +126,20 @@ public class CurrencyConversionLineController {
 		response.setCanClose(true);
 	}
 	
+	@SuppressWarnings("unchecked")
 	public void convert(ActionRequest request, ActionResponse response) {
 		Context context = request.getContext();
 		Currency fromCurrency = null;
 		Currency toCurrency = null;
+		
 		if(context.get("startCurrency") instanceof Currency ){
-			fromCurrency = (Currency)context.get("startCurrency");
-			toCurrency =  (Currency)context.get("endCurrency");
+			fromCurrency = (Currency) context.get("startCurrency");
+			toCurrency =  (Currency) context.get("endCurrency");
 		}
 		else {
-			Map startCurrency = (Map) context.get("startCurrency");
-			Map endCurrency = (Map) context.get("endCurrency");
+			Map<String, Object> startCurrency = (Map<String, Object>) context.get("startCurrency");
+			Map<String, Object> endCurrency = (Map<String, Object>) context.get("endCurrency");
+			
 			fromCurrency = currencyRepo.find(Long.parseLong(startCurrency.get("id").toString()));
 			toCurrency = currencyRepo.find(Long.parseLong(endCurrency.get("id").toString()));
 		}

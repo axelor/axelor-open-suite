@@ -176,6 +176,7 @@ public class LeadService {
 	}
 
 
+	@SuppressWarnings("rawtypes")
 	public Object importLead(Object bean, Map values) {
 
 		assert bean instanceof Lead;

@@ -167,18 +167,18 @@ public class GeneralController {
 		return Joiner.on(",").join(ids);
 	}
 	
+	@SuppressWarnings("unchecked")
 	private List<List<String>> getAllRecords(List<String> fieldList,String object){
 		
 		String query = "SELECT new List( CAST ( m.id AS string )";
 		
-		for(String field : fieldList){
-			query += ", m."+field;
+		for(String field : fieldList) {
+			query += ", m." + field;
 		}
 		
-		List<List<Object>> resultList = JPA.em().createQuery(query + ") FROM "+ object + " m").getResultList();
+		List<List<Object>> resultList = JPA.em().createQuery(query + ") FROM " + object + " m").getResultList();
 		
 		List<List<String>> records = new ArrayList<List<String>>();
-		
 		
 		for(List<Object> result : resultList){
 			
