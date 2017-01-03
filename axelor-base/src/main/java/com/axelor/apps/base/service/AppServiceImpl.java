@@ -47,8 +47,10 @@ public class AppServiceImpl implements AppService {
 		}
 		
 		for (String module : modules.split(",")) {
+			log.debug("Importing module: {}", module);
 			File tmp = extract(module, DIR_DEMO);
 			if (tmp == null) {
+				log.debug("Demo data not found");
 				continue;
 			}
 			try {
@@ -58,6 +60,9 @@ public class AppServiceImpl implements AppService {
 					CSVImporter importer = new CSVImporter(config.getAbsolutePath(), data.getAbsolutePath(), null);
 					importer.run();
 				}
+				else {
+					log.debug("Config file not found");
+				}
 			} finally {
 				clean(tmp);
 			}
@@ -65,11 +70,16 @@ public class AppServiceImpl implements AppService {
 		
 		app.setDemoDataLoaded(true);
 		
-		appRepo.save(app);
+		saveApp(app);
 		
 		return I18n.get("Demo data loaded sucessefully");
 	}
 	
+	@Transactional
+	public void saveApp(App app) {
+		appRepo.save(app);
+	}
+
 	@Override
 	public void importDataInit(App app) {
 		
