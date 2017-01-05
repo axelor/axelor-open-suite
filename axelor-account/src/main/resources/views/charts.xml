@@ -461,7 +461,7 @@
 	      SUM(
 	        (CASE     
 	          WHEN self.account.accountType.nameSelect = 'income' then self.credit
-	          WHEN self.account.accountType.nameSelect = 'expense' then self.debit
+	          WHEN self.account.accountType.nameSelect = 'charge' then self.debit
 	        END)
 	      ) AS _amount,
 	      item.title AS _label
@@ -479,7 +479,7 @@
 	      AND self.move.period.year = :year
 	      AND (self.move.period = :period OR :period IS NULL)
 	      AND self.move.company = :activeCompany
-	      AND item.value IN ('income','expense')
+	      AND item.value IN ('income','charge')
 	    GROUP BY
 	      item.title  
 	    

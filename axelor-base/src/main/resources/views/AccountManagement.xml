@@ -26,7 +26,7 @@
 		<panel name="main">
 			<field name="typeSelect" onChange="action-account-management-attrs-type" hidden="true"/>
 		   	<field name="company" widget="SuggestBox" form-view="company-form" onChange="action-group-account-account-management-onchange-common" grid-view="company-grid"/>
-		   	<field name="purchaseAccount" domain="self.company = :company AND self.accountType.nameSelect = 'expense'" onChange="action-group-account-account-management-onchange-common" if-module="axelor-account" form-view="account-form" grid-view="account-grid"/>
+		   	<field name="purchaseAccount" domain="self.company = :company AND self.accountType.nameSelect = 'charge'" onChange="action-group-account-account-management-onchange-common" if-module="axelor-account" form-view="account-form" grid-view="account-grid"/>
 		   	<field name="saleAccount" domain="self.company = :company AND self.accountType.nameSelect = 'income'" onChange="action-group-account-account-management-onchange-common" if-module="axelor-account" form-view="account-form" grid-view="account-grid"/>
 			<field name="analyticDistributionTemplate" canNew="true" if-module="axelor-account"/>
 		</panel>
@@ -42,7 +42,7 @@
 			<field name="typeSelect" onChange="action-account-management-attrs-type"/>
 			<field name="company" widget="SuggestBox" onChange="action-group-account-account-management-onchange-common" form-view="company-form" grid-view="company-grid"/>
 			<panel colSpan="12" showIf="typeSelect == 1">
-				<field name="purchaseAccount" onChange="action-group-account-account-management-onchange-common" domain="self.company = :company AND self.accountType.nameSelect = 'expense'" if-module="axelor-account" form-view="account-form" grid-view="account-grid"/>
+				<field name="purchaseAccount" onChange="action-group-account-account-management-onchange-common" domain="self.company = :company AND self.accountType.nameSelect = 'charge'" if-module="axelor-account" form-view="account-form" grid-view="account-grid"/>
 				<field name="saleAccount" onChange="action-group-account-account-management-onchange-common" domain="self.company = :company AND self.accountType.nameSelect = 'income'" if-module="axelor-account" form-view="account-form" grid-view="account-grid"/>
 			</panel>
 			<panel colSpan="12" showIf="typeSelect == 3">

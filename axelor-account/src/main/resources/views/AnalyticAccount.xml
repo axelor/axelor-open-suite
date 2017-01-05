@@ -13,7 +13,7 @@
         <column name="name" type="string"/>
          <column name="code" type="string"/>
          
-        <node model="com.axelor.apps.account.db.AnalyticAccount" domain="self.parent is null" > 
+        <node model="com.axelor.apps.account.db.AnalyticAccount" domain="self.parent is null" onClick="action-analytic-account-view-account-onchange-view" > 
             <field as="name" name="name"/>
              <field as="code" name="code"/>
         </node>
@@ -35,12 +35,10 @@
     
     <form name="analytic-account-info-form" title="Analytic Account" model="com.axelor.apps.account.db.AnalyticAccount" width="large">
 		<panel title="Analytic Account details" readonly="true">
-			<field name="code" colSpan="3" css="bold"/>
-			<field name="name" colSpan="9" css="bold"/>
-			<field name="accountType" title="Account Type"/> 
-			<field name="company" widget="SuggestBox" onChange="action-group-analytic-account-onchange-common" form-view="company-form" grid-view="company-grid"/>
-			<field name="parent" onChange="action-group-analytic-account-onchange-common" domain="self.company = :company" form-view="account-form" grid-view="account-grid"/>
-			<field name="reconcileOk"/>
+			<field name="code" colSpan="6" css="bold"/>
+			<field name="name" colSpan="6" css="bold"/>
+			<field name="analyticAxis" title="Account Type" colSpan="6"/> 
+			<field name="parent" onChange="action-group-analytic-account-onchange-common" domain="self.company = :company" form-view="account-form" grid-view="account-grid" colSpan="6"/>
 		</panel>
 	</form>
 	
