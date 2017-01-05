@@ -51,7 +51,7 @@ public class InvoiceLineController {
 		}
 		if(invoiceLine.getAnalyticDistributionTemplate() != null){
 			invoiceLine = invoiceLineService.createAnalyticDistributionWithTemplate(invoiceLine);
-			response.setValue("analyticDistributionLineList", invoiceLine.getAnalyticMoveLineList());
+			response.setValue("analyticMoveLineList", invoiceLine.getAnalyticMoveLineList());
 		}
 		else{
 			throw new AxelorException(I18n.get("No template selected"), IException.CONFIGURATION_ERROR);
@@ -67,7 +67,7 @@ public class InvoiceLineController {
 		}
 		if(Beans.get(GeneralService.class).getGeneral().getManageAnalyticAccounting()){
 			invoiceLine = invoiceLineService.computeAnalyticDistribution(invoiceLine);
-			response.setValue("analyticDistributionLineList", invoiceLine.getAnalyticMoveLineList());
+			response.setValue("analyticMoveLineList", invoiceLine.getAnalyticMoveLineList());
 		}
 	}
 	

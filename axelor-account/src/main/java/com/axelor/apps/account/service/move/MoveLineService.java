@@ -96,9 +96,9 @@ public class MoveLineService {
 	
 	
 	public MoveLine computeAnalyticDistribution(MoveLine moveLine){
-		List<AnalyticMoveLine> analyticDistributionLineList = moveLine.getAnalyticMoveLineList();
-		if(analyticDistributionLineList != null && generalService.getGeneral().getAnalyticDistributionTypeSelect() != GeneralRepository.DISTRIBUTION_TYPE_FREE){
-			for (AnalyticMoveLine analyticDistributionLine : analyticDistributionLineList) {
+		List<AnalyticMoveLine> analyticMoveLineList = moveLine.getAnalyticMoveLineList();
+		if(analyticMoveLineList != null && generalService.getGeneral().getAnalyticDistributionTypeSelect() != GeneralRepository.DISTRIBUTION_TYPE_FREE){
+			for (AnalyticMoveLine analyticDistributionLine : analyticMoveLineList) {
 				analyticDistributionLine.setMoveLine(moveLine);
 				analyticDistributionLine.setAmount(analyticMoveLineService.computeAmount(analyticDistributionLine));
 				analyticDistributionLine.setDate(generalService.getTodayDate());
