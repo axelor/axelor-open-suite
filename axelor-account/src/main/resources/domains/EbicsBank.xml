@@ -10,12 +10,12 @@
 	<string name="name" title="Name" namecolumn="true"/>
     <string name="url" title="Url" />
 	<string name="hostId" title="Host id" />
-	 
-	<string name="x002Key" title="Authentication Certificate Type X002" large="true" multiline="true" />
-	<string name="x002Digest" title="Hash certificate of authentication (SHA-256)" large="true" multiline="true" />
 	
-	<string name="e002Key" title="Encryption Certificate Type E002" large="true" multiline="true" />
-	<string name="e002Digest" title="Hash certificate of encryption (SHA-256)" large="true" multiline="true" />
+	<boolean name="testMode" title="Test model" />
+	
+	<many-to-one name="testFile" ref="com.axelor.meta.db.MetaFile" title="Test file" />
+	
+	<one-to-many name="ebicsCertificateList" ref="com.axelor.apps.account.db.EbicsCertificate" title="Certificates" mappedBy="ebicsBank" orphanRemoval="true"/>
 	
   </entity>
   

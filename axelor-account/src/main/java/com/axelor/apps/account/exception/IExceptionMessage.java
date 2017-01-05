@@ -586,6 +586,7 @@ public interface IExceptionMessage {
 	static final String BANK_ORDER_WRONG_BENEFICIARY_BANK_DETAIL_RECORD = /*$$(*/ "Anomaly has been detected during file generation for the beneficiary bank detail record of the bank order line %s" /*)*/;
 	static final String BANK_ORDER_WRONG_FURTHER_INFORMATION_DETAIL_RECORD = /*$$(*/ "Anomaly has been detected during file generation for the further information detail record of the bank order line %s" /*)*/;
 	static final String BANK_ORDER_WRONG_TOTAL_RECORD = /*$$(*/ "Anomaly has been detected during file generation for the total record of the bank order %s" /*)*/;
+	static final String BANK_ORDER_ISSUE_DURING_FILE_GENERATION = /*$$(*/ "Anomaly has been detected during file generation for bank order %s" /*)*/;
 
 	
 	/**
@@ -624,4 +625,8 @@ public interface IExceptionMessage {
 	static final String EBICS_WRONG_PASSWORD = /*$$(*/ "Incorrect password, please try again" /*)*/;
 	static final String EBICS_MISSING_PASSWORD = /*$$(*/ "Please insert a password" /*)*/;
 	static final String EBICS_MISSING_NAME = /*$$(*/ "Please select a user name" /*)*/;
+	static final String EBICS_TEST_MODE_NOT_ENABLED = /*$$(*/ "Test mode is not enabled or test file is missing" /*)*/;
+
+	
+	
 }

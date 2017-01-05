@@ -24,7 +24,9 @@ import java.security.GeneralSecurityException;
 import java.security.KeyPair;
 import java.security.KeyStore;
 import java.security.PrivateKey;
+import java.security.cert.CertificateEncodingException;
 import java.security.cert.X509Certificate;
+import java.security.interfaces.RSAPublicKey;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -32,6 +34,14 @@ import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 //import org.kopi.ebics.interfaces.EbicsUser;
 //import org.kopi.ebics.interfaces.PasswordCallback;
+
+
+
+
+
+
+
+
 
 import com.axelor.apps.account.db.EbicsUser;
 
@@ -71,16 +81,27 @@ public class CertificateManager {
 
   /**
    * Sets the user certificates
+ * @throws IOException 
+ * @throws CertificateEncodingException 
    */
-  private void setUserCertificates() {
-    user.setA005Certificate(a005Certificate.toString());
-    user.setX002Certificate(x002Certificate.toString());
-    user.setE002Certificate(e002Certificate.toString());
+  private void setUserCertificates() throws IOException, CertificateEncodingException {
+    user.setA005Certificate(a005Certificate.getEncoded());
+    user.setX002Certificate(x002Certificate.getEncoded());
+    user.setE002Certificate(e002Certificate.getEncoded());
 
     //TODO
-    user.setA005PrivateKey(a005PrivateKey.toString());
-    user.setX002PrivateKey(x002PrivateKey.toString());
-    user.setE002PrivateKey(e002PrivateKey.toString());
+    user.setA005PrivateKey(a005PrivateKey.getEncoded());
+    user.setX002PrivateKey(x002PrivateKey.getEncoded());
+    user.setE002PrivateKey(e002PrivateKey.getEncoded());
+    
+    user.setA005PublicKeyModulus(		(  (RSAPublicKey)  a005Certificate.getPublicKey() ).getModulus().toString()  );
+    user.setA005PublicKeyExponent(		(  (RSAPublicKey)  a005Certificate.getPublicKey() ).getPublicExponent().toString()  );
+    	
+    user.setX002PublicKeyModulus(		(  (RSAPublicKey)  x002Certificate.getPublicKey() ).getModulus().toString()  );
+    user.setX002PublicKeyExponent(		(  (RSAPublicKey)  x002Certificate.getPublicKey() ).getPublicExponent().toString()  );
+    
+    user.setE002PublicKeyModulus(		(  (RSAPublicKey)  e002Certificate.getPublicKey() ).getModulus().toString()  );
+    user.setE002PublicKeyExponent(		(  (RSAPublicKey)  e002Certificate.getPublicKey() ).getPublicExponent().toString()  );
     
   }
 

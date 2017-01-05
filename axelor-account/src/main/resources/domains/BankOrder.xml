@@ -11,11 +11,11 @@
   	<integer name="orderTypeSelect" title="Order Type" selection="iaccount.bank.order.type.select"/>
   	<integer name="rejectStatusSelect" title="Rejection Status" selection="iaccount.bank.order.reject.status.select"/>
   	<string name="bankOrderSeq" title="Sequence" namecolumn="true" readonly="true" unique="true"/>
-  	<integer name="partnerTypeSelect" title="Partner Type" selection="iaccount.bank.order.partner.select"/>
+  	<integer name="partnerTypeSelect" title="Partner Type" selection="iaccount.bank.order.partner.select" required="true"/>
   	<integer name="statusSelect" title="Status" default="1" readonly="true" selection="iaccount.bank.order.status.select"/>
 	<date name="bankOrderDate" title="Bank order Date"/>  	
-	<many-to-one name="paymentMode" ref="com.axelor.apps.account.db.PaymentMode" title="Payment Mode"/>
-	<many-to-one name="bankOrderFileFormat" ref="com.axelor.apps.account.db.BankOrderFileFormat" title="File format"/>
+	<many-to-one name="paymentMode" ref="com.axelor.apps.account.db.PaymentMode" title="Payment Mode" required="true"/>
+	<many-to-one name="bankOrderFileFormat" ref="com.axelor.apps.account.db.BankOrderFileFormat" title="File format" required="true"/>
 	<datetime name="validationDateTime" title="Validation date"/>
 	<datetime name="fileGenerationDateTime" title="File generation date"/>
 	<datetime name="sendingDateTime" title="Sending date"/>
@@ -35,9 +35,11 @@
 	<integer name="nbOfLines" title="Number of lines"/>
 	
 	<!-- Receiver -->
-	<one-to-many name="bankOrderLineList" ref="BankOrderLine" mappedBy="bankOrder" title="Bank Order Lines" />
+	<one-to-many name="bankOrderLineList" ref="BankOrderLine" mappedBy="bankOrder" title="Bank Order Lines" orderBy="counter"/>
 	
-	<many-to-one name="signatoryUser" ref="com.axelor.auth.db.User" massUpdate="true" title="Signatory"/>
+	<many-to-one name="signatoryUser" ref="com.axelor.auth.db.User" title="Signatory"/>
+	<many-to-one name="ebicsUser" ref="com.axelor.apps.account.db.EbicsUser" title="Ebics User ID"/>
+	<many-to-one name="fileToSend" ref="com.axelor.meta.db.MetaFile" title="File to send" />
 	
 	 <extra-code><![CDATA[
 	

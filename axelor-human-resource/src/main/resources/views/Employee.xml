@@ -93,7 +93,7 @@
 		<field name="timeLoggingPreferenceSelect" expr="eval:__config__.general.getTimeLoggingPreferenceSelect()"/>
 		<field name="dailyWorkHours" expr="eval:__config__.general.getDailyWorkHours()"/>
 		<field name="negativeValueLeave" expr="eval:__config__.general.getAllowNegativeLeaveEmployees()" if="__config__.general.getAppLeave()"/>
-		<field name="publicHolidayPlanning" expr="eval: __repo__.of(PublicHolidayPlanning).copy(__user__.activeCompany?.hrConfig?.publicHolidayPlanning,true)"/>
+		<field name="publicHolidayPlanning" expr="eval: __user__.activeCompany?.hrConfig?.publicHolidayPlanning"/>
 	</action-record>
 	
 	<action-record name="action-hr-create-user-employee" model="com.axelor.apps.hr.db.Employee">
@@ -101,7 +101,7 @@
 	    <field name="timeLoggingPreferenceSelect" expr="eval:__config__.general.getTimeLoggingPreferenceSelect()"/>
 	    <field name="dailyWorkHours" expr="eval:__config__.general.getDailyWorkHours()"/>
 	    <field name="negativeValueLeave" expr="eval:__config__.general.getAllowNegativeLeaveEmployees()" if="__config__.general.getAppLeave()"/>
-	    <field name="publicHolidayPlanning" expr="eval: __repo__.of(PublicHolidayPlanning).copy(__user__.activeCompany?.hrConfig?.publicHolidayPlanning,true)"/>
+	    <field name="publicHolidayPlanning" expr="eval: __user__.activeCompany?.hrConfig?.publicHolidayPlanning"/>
 	</action-record>
 	
 	<action-view name="action-hr-user-show-employee" title="Employee" model="com.axelor.apps.hr.db.Employee">

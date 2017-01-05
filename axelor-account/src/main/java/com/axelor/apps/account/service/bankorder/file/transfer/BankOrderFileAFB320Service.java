@@ -178,7 +178,7 @@ public class BankOrderFileAFB320Service extends BankOrderFileService  {
 			senderRecord += cfonbToolService.createZone("17-2", "", cfonbToolService.STATUS_NOT_USED, cfonbToolService.FORMAT_ALPHA_NUMERIC, 1);
 			
 			// Zone 17-3 : Qualifiant de la date ("203" (date d'exécution demandée) valeur par défaut, "227" soumis à accord contractuel avec la banque)
-			senderRecord += cfonbToolService.createZone("17-3", paymentMode.getBankOrderFileFormat().getQualifyingOfDate(), cfonbToolService.STATUS_OPTIONAL, cfonbToolService.FORMAT_ALPHA_NUMERIC, 3);
+			senderRecord += cfonbToolService.createZone("17-3", bankOrderFileFormat.getQualifyingOfDate(), cfonbToolService.STATUS_OPTIONAL, cfonbToolService.FORMAT_ALPHA_NUMERIC, 3);
 			
 			// Zone 17-4 : Zone réservée 
 			senderRecord += cfonbToolService.createZone("17-4", "", cfonbToolService.STATUS_NOT_USED, cfonbToolService.FORMAT_ALPHA_NUMERIC, 8);
@@ -327,7 +327,7 @@ public class BankOrderFileAFB320Service extends BankOrderFileService  {
 			detailRecord += cfonbToolService.createZone("23", "", cfonbToolService.STATUS_NOT_USED, cfonbToolService.FORMAT_ALPHA_NUMERIC, 57);
 			
 			// Zone 24-1 : Qualifiant de la date ("203" (date d'exécution demandée))
-			detailRecord += cfonbToolService.createZone("24-1", paymentMode.getBankOrderFileFormat().getQualifyingOfDate(), cfonbToolService.STATUS_OPTIONAL, cfonbToolService.FORMAT_ALPHA_NUMERIC, 3);
+			detailRecord += cfonbToolService.createZone("24-1", bankOrderFileFormat.getQualifyingOfDate(), cfonbToolService.STATUS_OPTIONAL, cfonbToolService.FORMAT_ALPHA_NUMERIC, 3);
 			
 			// Zone 24-2 : Date ( Cette donnée est obligatoire pour les remises multi dates (zone 19 de l'"Entête" = "3" ou "4"), pour les autres remises, elle ne doit pas être renseignée.)
 			if(isMultiDates)  {

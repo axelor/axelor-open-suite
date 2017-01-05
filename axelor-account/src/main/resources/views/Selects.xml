@@ -344,21 +344,41 @@
 	</selection>
 	
 	<selection name="bank.order.file.format.select">
-		<option value="pain.001.001.02">pain.001.001.02</option>
-		<option value="pain.001.001.03">pain.001.001.03</option>
-		<option value="AFB320">AFB 320</option>
+		<option value="pain.001.001.02.sct">pain.001.001.02.sct</option>
+		<option value="pain.001.001.03.sct">pain.001.001.03.sct</option>
+		<option value="pain.xxx.cfonb320.xct">pain.xxx.cfonb320.xct</option>
 	</selection>
 	
+	<selection name="account.ebics.user.ebics.type.select">
+		<option value="0">Ebics T</option>
+		<option value="1">Ebics TS</option>
+	</selection>
+	
+	<selection name="account.ebics.user.status.select">
+		<option value="0">Waiting for the certificate configuration</option>
+		<option value="1">Waiting for the sending of the signature certificate to the bank</option>
+		<option value="2">Waiting for the sending of the authentication and encryption certificates</option>
+		<option value="3">Active connection</option>
+		<option value="4">Certificates should be renew</option>
+	</selection>
+
 	<selection name="account.analytic.move.line.status.select">
 		<option value="1">Forecast (order)</option>
 		<option value="2">Forecast (invoice)</option>
 		<option value="3">Real (accounting)</option>
 	</selection>
-	
+
+	<selection name="account.ebics.certificate.type.select">
+		<option value="ssl">SSL</option>
+		<option value="encryption">Encryption</option>
+		<option value="authentication">Authentication</option>
+	</selection>
+
 	<selection name="app.type.select" id="account.app.type.select">
 		<option value="account">Account</option>
 		<option value="invoice">Invoice</option>
 		<option value="budget">Budget</option>
 	</selection>
-	
+
+
 </object-views>

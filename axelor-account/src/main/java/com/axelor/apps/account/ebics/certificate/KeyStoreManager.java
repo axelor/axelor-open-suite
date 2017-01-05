@@ -126,9 +126,11 @@ public class KeyStoreManager {
     X509Certificate		certificate;
 
     certificate = (X509Certificate) CertificateFactory.getInstance("X.509", provider).generateCertificate(input);
-
+    
     if (certificate == null) {
-      certificate = (X509Certificate)(new PEMReader(new InputStreamReader(input))).readObject();
+      PEMReader reader = new PEMReader(new InputStreamReader(input));
+      certificate = (X509Certificate)(reader).readObject();
+      reader.close();
     }
 
     return certificate;
@@ -145,11 +147,10 @@ public class KeyStoreManager {
     throws GeneralSecurityException, IOException
   {
     X509Certificate		cert;
-
     cert = read(input, keyStore.getProvider());
     return (RSAPublicKey) cert.getPublicKey();
   }
-
+  
   /**
    * Writes the given certificate into the key store.
    * @param alias the certificate alias

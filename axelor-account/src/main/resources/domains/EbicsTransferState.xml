@@ -7,8 +7,8 @@
   
   <entity name="EbicsTransferState" lang="java">
   
-    <string name="transactionId" title="Transaction id"  large="true" namecolumn="true"/>
-	<integer name="seqmentNumber" title="Seqment number" />
+    <binary name="transactionId" title="Transaction id"/>
+	<integer name="segmentNumber" title="Segment number" />
     <integer name="numSegments" title="Num segments" />
     <boolean name="lastSegment" title="Last segment" />
     

@@ -13,22 +13,15 @@
 	<form name="ebics-bank-form" title="Ebics bank" model="com.axelor.apps.account.db.EbicsBank">
 	
 		<panel title="General informations">
-			<field name="name" />
-			<field name="url" />
-			<field name="hostId" />
+			<field name="name"/>
+			<field name="url"/>
+			<field name="hostId" help="Identifies the bank" />
+			<field name="testMode" />
+			<field name="testFile" widget="binary-link" showIf="testMode"/>
 		</panel>
-		<panel title="Server public key certificate dedicated to authentication" itemSpan="12">
-			<field name="e002Key" />
-			<field name="e002Digest" />
-		</panel>
-		<panel title="Server public key certificate dedicated to encryption" itemSpan="12">
-			<field name="x002Key" />
-			<field name="x002Digest" />
-		</panel>
-	
+
+		<panel-related field="ebicsCertificateList" form-view="ebics-certificate-form" grid-view="ebics-certificate-grid" />
 	</form>
-  
-  
 	
   
 </object-views>

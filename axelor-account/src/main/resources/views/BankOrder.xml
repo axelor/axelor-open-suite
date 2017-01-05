@@ -14,6 +14,7 @@
         <field name="currency"/>
         <field name="senderReference"/>
         <field name="nbOfLines"/>
+        <field name="signatoryUser"/>
         <field name="statusSelect"/>
     </grid>
     
@@ -29,6 +30,7 @@
         <field name="bankOrderCurrency"/>
         <field name="senderReference"/>
         <field name="nbOfLines"/>
+        <field name="signatoryUser"/>
         <field name="statusSelect"/>
     </grid>
     
@@ -47,6 +49,9 @@
     		<field name="paymentMode" css="label-bold bold" colSpan="6" domain="self.orderTypeSelect = :orderTypeSelect" onChange="action-bank-order-record-payment-mode-change,action-bank-order-record-bank-order-file-format-change"/>
     		<field name="bankOrderFileFormat" domain="self.orderTypeSelect = :orderTypeSelect" colSpan="6" onChange="action-bank-order-record-bank-order-file-format-change"/>
     		<field name="partnerTypeSelect" showIf="orderTypeSelect != 1" css="label-bold bold" colSpan="6"/>
+	        <field name="fileToSend" showIf="statusSelect == 3"/>
+	        <field name="signatoryUser" requiredIf="statusSelect == 2"/>
+	        <field name="ebicsUser" domain="self.associatedUser = :signatoryUser" readonly="true" showIf="statusSelect == 3"/>
     		<field name="isMultiDate" hidden="true"/>
     		<field name="isMultiCurrency" hidden="true"/>
   		</panel>
@@ -68,9 +73,9 @@
 		</panel>
 		<panel name="bankOrderLinesPanel" title="Bank Order Lines" readonlyIf="statusSelect &gt;= 3">
 			<field name="bankOrderLineList" colSpan="12" showTitle="false">
-				<editor x-layout="table" x-viewer="true" >
+				<editor x-layout="table" x-viewer="true" onNew="action-bank-order-line-record-compute-counter">
 					<field name="sequence" css="label-bold bold" readonly="true" hideIf="sequence == null" colSpan="6"/>
-					<spacer colSpan="6"/>
+					<field name="counter" hidden="true"/>
 					<panel colSpan="6" itemSpan="12">
 						<field name="receiverCompany" hideIf="bankOrder.orderTypeSelect != 1" css="label-bold bold" onChange="action-bank-order-line-record-receiver-company-change" form-view="company-form" grid-view="company-grid" />
 						<field name="partner" hideIf="bankOrder.orderTypeSelect == 1" form-view="partner-form" grid-view="partner-grid" css="label-bold bold" onSelect="action-bank-order-line-attrs-partner-domain" onChange="action-bank-order-line-record-partner-onchange"/>
@@ -125,19 +130,27 @@
 		</panel>
   		<panel name="action" title="Action" itemSpan="12" sidebar="true" hideIf="statusSelect == 4 || statusSelect == 5">
     		<button name="confirm" title="Confirm" hideIf="statusSelect != 1 || orderTypeSelect == 3 || orderTypeSelect == 5" onClick="action-group-bank-order-confirm"/>
-    		<button name="validate" title="Validate" showIf="(statusSelect == 1 &amp;&amp; (orderTypeSelect == 3 || orderTypeSelect == 5) ) || (statusSelect == 2 &amp;&amp; orderTypeSelect != 3 &amp;&amp; orderTypeSelect != 5)" onClick="action-group-bank-order-onvalidate"/>
+    		<button name="sign" title="Sign" showIf="(statusSelect == 1 &amp;&amp; (orderTypeSelect == 3 || orderTypeSelect == 5) ) || (statusSelect == 2 &amp;&amp; orderTypeSelect != 3 &amp;&amp; orderTypeSelect != 5)" onClick="save,action-bank-order-method-sign"/>
+<!--     		<button name="validateWithoutSign" title="Validate" showIf="(statusSelect == 1 &amp;&amp; (orderTypeSelect == 3 || orderTypeSelect == 5) ) || (statusSelect == 2 &amp;&amp; orderTypeSelect != 3 &amp;&amp; orderTypeSelect != 5)" onClick="save,action-bank-order-method-validate-without-sign"/> -->
     		<button name="carry out" title="Carry out" showIf="((statusSelect == 3 &amp;&amp; orderTypeSelect != 3 &amp;&amp; orderTypeSelect != 5) || (statusSelect == 2 &amp;&amp; (orderTypeSelect == 3 || orderTypeSelect == 5)))" onClick="save,action-bank-order-record-carry-out,action-method-bank-order-payment-validate,save"/>
-			<button name="reject" title="Reject" showIf="((statusSelect == 3 &amp;&amp; orderTypeSelect != 3 &amp;&amp; orderTypeSelect != 5) || (statusSelect == 2 &amp;&amp; (orderTypeSelect == 3 || orderTypeSelect == 5)))" onClick="save,action-bank-order-record-reject,action-method-bank-order-payment-cancel,save"/>    		
+<!-- 			<button name="reject" title="Reject" showIf="((statusSelect == 3 &amp;&amp; orderTypeSelect != 3 &amp;&amp; orderTypeSelect != 5) || (statusSelect == 2 &amp;&amp; (orderTypeSelect == 3 || orderTypeSelect == 5)))" onClick="save,action-bank-order-record-reject,action-method-bank-order-payment-cancel,save"/>    		 -->
     		<button name="cancel" title="Cancel" showIf="statusSelect == 1" onClick="save,action-bank-order-record-cancel,save"/>
   		</panel>
 	</form>
 	
-	<form name="bank-order-sign-wizard-form" title="Sign bank order" model="com.axelor.apps.base.db.Wizard" onNew="action-bank-order-load-dummy-field-record-sign">
+	<form name="bank-order-sign-wizard-form" title="Sign bank order" model="com.axelor.apps.account.db.BankOrder">
   		<panel colSpan="6">
-    		<field name="$amount" title="Total Amount" readonly="true" type="decimal" colOffset="1" colSpan="6"/>
-    		<field name="$ebicsUser" title="Ebics User" type="many-to-one" widget="SuggestBox" colOffset="1" canEdit="false" colSpan="6" target="com.axelor.apps.account.db.EbicsUser" required="true" grid-view="ebics-user-grid" form-view="ebics-user-form"/>
+    		<panel hidden="true" hideIf="isMultiCurrency" readonly="true">
+				<field name="bankOrderTotalAmount" colSpan="8" readonly="true"/>
+				<field name="bankOrderCurrency" grid-view="currency-grid" form-view="currency-form" colSpan="4" readonlyIf="orderTypeSelect == 2 || orderTypeSelect == 3"/>
+			</panel>
+			<panel readonly="true">
+				<field name="companyCurrencyTotalAmount" colSpan="8"/>
+				<field name="companyCurrency" grid-view="currency-grid" form-view="currency-form" colSpan="4"/>
+			</panel>
+    		<field name="ebicsUser" title="Ebics User" widget="SuggestBox" colOffset="1" canEdit="false" colSpan="6" required="true" grid-view="ebics-user-grid" form-view="ebics-user-form" domain="self.associatedUser = :signatoryUser"/>
     		<field name="$password" title="Password" widget="password" colOffset="1"  colSpan="6" required="true"/>
-    		<button name="validate" title="Validate" colOffset="1"  colSpan="6" onClick="action-method-bank-order-sign,close"/>
+    		<button name="validate" title="Validate" colOffset="1"  colSpan="6" onClick="save,action-method-bank-order-validate,close"/>
   		</panel>
 	</form>
 	
@@ -157,10 +170,6 @@
 		<action name="action-bank-order-record-sender-company-change"/>
 	</action-group>
 	
-	<action-group name="action-group-bank-order-onvalidate">
-		<action name="save"/>
-		<action name="action-method-bank-order-validate"/>
-	</action-group>
 	
 	<action-group name="action-group-bank-order-confirm">
 		<action name="save"/>
@@ -222,11 +231,6 @@
 		<field name="statusSelect" expr="6"/>
 	</action-record>
 	
-	<action-record name="action-bank-order-load-dummy-field-record-sign" model="com.axelor.apps.account.db.BankOrder">
-		<field name="$amount" expr="eval: _contextBankOrder?.amount"/>
-		<field name="$bankOrder" expr="eval: _contextBankOrder"/>
-	</action-record>
-	
 	<action-record name="action-bank-order-record-partner-type-select-default" model="com.axelor.apps.account.db.BankOrder">
 		<field name="partnerTypeSelect" expr="3" if="orderTypeSelect == 3 || orderTypeSelect == 5"/>
 	</action-record>
@@ -237,7 +241,7 @@
 		<call class="com.axelor.apps.account.web.BankOrderController" method="confirm"/>
 	</action-method>
 
-	<action-method name="action-method-bank-order-sign">
+	<action-method name="action-bank-order-method-sign">
 		<call class="com.axelor.apps.account.web.BankOrderController" method="sign"/>
 	</action-method>
 	
@@ -247,6 +251,10 @@
 	
   	<action-method name="action-method-bank-order-validate">
 		<call class="com.axelor.apps.account.web.BankOrderController" method="validate"/>
+	</action-method>
+	
+	<action-method name="action-bank-order-method-validate-without-sign">
+		<call class="com.axelor.apps.account.web.BankOrderController" method="validateWithoutSign"/>
 	</action-method>
 	
 	<action-method name="action-method-bank-order-payment-validate">
@@ -300,6 +308,10 @@
   		  <field if="partner?.bankDetailsList?.isEmpty()" name="receiverBankDetails" expr=""/>
     </action-record>
     
+    <action-record name="action-bank-order-line-record-compute-counter" model="com.axelor.apps.account.db.BankOrderLine">
+  		<field name="counter" expr="eval: __parent__?.bankOrderLineList?.max { it.counter }?.counter + 1"/>
+	</action-record>
+	
     
     
 </object-views>

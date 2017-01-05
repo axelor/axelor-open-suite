@@ -18,12 +18,12 @@
 			<field name="orderTypeSelect" required="true"/>
 			<field name="currency"/>
 		</panel>
-		<panel name="specificAttributes" title="Specific attributes" hidden="true" showIf="orderFileFormatSelect == 'AFB320'">
+		<panel name="specificAttributes" title="Specific attributes" hidden="true" showIf="orderFileFormatSelect == 'pain.xxx.cfonb320.xct'">
 			<field name="qualifyingOfDate"/>
 			<field name="isMultiDate"/>
 			<field name="isMultiCurrency"/>
 			<field name="displayAdditionnalInformations"/>
-			<panel title="Default Additionnal informations" colSpan="12" canCollapse="true" hidden="true" showIf="useAdditionnalInformations">
+			<panel title="Default Additionnal informations" colSpan="12" canCollapse="true" hidden="true" showIf="displayAdditionnalInformations">
 				<field name="displayBankOrderEconomicReason"/>
 				<field name="bankOrderEconomicReason"/>
 				<field name="displayReceiverCountry"/>
