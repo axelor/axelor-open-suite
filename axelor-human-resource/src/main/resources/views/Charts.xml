@@ -11,8 +11,6 @@
 		FROM
 			TimesheetLine self
 		WHERE
-			self.timesheet.user.id= :user_id
-		AND
 			self.timesheet.id= :timesheet_id
 		GROUP BY
 			self.date
@@ -31,8 +29,6 @@
 		FROM
 			TimesheetLine self
 		WHERE
-			self.timesheet.user.id= :user_id
-		AND
 			self.timesheet.id= :timesheet_id
 		GROUP BY
 			self.projectTask.fullName
