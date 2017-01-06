@@ -2,7 +2,7 @@
 <object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
 
-	<grid name="extra-hours-grid" title="Extra Hours" model="com.axelor.apps.hr.db.ExtraHours" canNew="false">
+	<grid name="extra-hours-grid" title="Extra Hours" model="com.axelor.apps.hr.db.ExtraHours" canNew="false" orderBy="-sentDate">
 		<hilite color="danger" if="statusSelect == 4"/>
 		<hilite color="success" if="statusSelect == 3"/>
 		<hilite color="warning" if="statusSelect == 2"/>
@@ -12,7 +12,7 @@
 		<field name="user" form-view="user-form" grid-view="user-grid"/>
 	</grid>
 	
-	<grid name="extra-hours-validate-grid" title="Extra Hours" model="com.axelor.apps.hr.db.ExtraHours" canNew="false">
+	<grid name="extra-hours-validate-grid" title="Extra Hours" model="com.axelor.apps.hr.db.ExtraHours" canNew="false" orderBy="-sentDate">
 		<toolbar>
 			<button name="showSubordinateExtraHoursToValidate" title="Show extra hours to be validated by my subordinates" onClick="com.axelor.apps.hr.web.extra.hours.ExtraHoursController:showSubordinateExtraHours"/>
 		</toolbar>
