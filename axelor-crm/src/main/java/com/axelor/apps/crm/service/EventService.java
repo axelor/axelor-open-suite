@@ -444,9 +444,6 @@ public class EventService {
 				Beans.get(MessageService.class).attachMetaFiles(message, fileSet);
 			}
 			message = Beans.get(MessageService.class).sendByEmail(message);
-		} 
-		else{
-			throw new AxelorException(I18n.get("You must enable sending mail in CRM Config"),IException.CONFIGURATION_ERROR);
 		}
 	}
 	
