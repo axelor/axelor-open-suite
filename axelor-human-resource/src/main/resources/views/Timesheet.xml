@@ -2,7 +2,7 @@
 <object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
 
-	<grid name="timesheet-grid" title="Timesheet" model="com.axelor.apps.hr.db.Timesheet" canNew="false" groupBy="user" orderBy="user,fromDate">
+	<grid name="timesheet-grid" title="Timesheet" model="com.axelor.apps.hr.db.Timesheet" canNew="false" groupBy="user" orderBy="user,-fromDate">
 		<hilite color="danger" if="statusSelect == 4"/>
 		<hilite color="success" if="statusSelect == 3"/>
 		<hilite color="warning" if="statusSelect == 2"/>
@@ -14,7 +14,7 @@
 		<field name="user" form-view="user-form" grid-view="user-grid"/>
 	</grid>
 	
-	<grid name="timesheet-validate-grid" title="Timesheet" model="com.axelor.apps.hr.db.Timesheet" canNew="false">
+	<grid name="timesheet-validate-grid" title="Timesheet" model="com.axelor.apps.hr.db.Timesheet" canNew="false" orderBy="user,-fromDate">
 		<toolbar>
 			<button name="showSubordinateTimesheetToValidate" title="Show timesheets to be validated by my subordinates" onClick="com.axelor.apps.hr.web.timesheet.TimesheetController:showSubordinateTimesheets"/>
 		</toolbar>
