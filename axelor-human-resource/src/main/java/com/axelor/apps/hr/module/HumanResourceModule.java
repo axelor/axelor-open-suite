@@ -20,6 +20,7 @@ package com.axelor.apps.hr.module;
 import com.axelor.app.AxelorModule;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.service.batch.MailBatchService;
+import com.axelor.apps.crm.service.EventService;
 import com.axelor.apps.hr.db.repo.TSTimerRepository;
 import com.axelor.apps.hr.db.repo.TimesheetHRRepository;
 import com.axelor.apps.hr.db.repo.TimesheetLineHRRepository;
