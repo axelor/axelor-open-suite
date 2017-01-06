@@ -149,7 +149,7 @@ public class AccountClearanceService{
 		Partner partner = moveLine.getPartner();
 
 		// Move
-		Move move = moveService.getMoveCreateService().createMove(journal, company, null, partner, null, MoveRepository.AUTOMATIC);
+		Move move = moveService.getMoveCreateService().createMove(journal, company, null, partner, null, MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC);
 
 		// Debit MoveLine 411
 		BigDecimal amount = moveLine.getAmountRemaining();

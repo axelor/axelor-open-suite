@@ -41,10 +41,10 @@
 		public static final int STATUS_CANCELED = 4;
 		
 		// TECHNICAL ORIGIN SELECT
-		public static final int ENTRY = 1;
-		public static final int AUTOMATIC = 2;
-		public static final int TEMPLATE = 3;
-		public static final int IMPORT = 4;
+		public static final int TECHNICAL_ORIGIN_ENTRY = 1;
+		public static final int TECHNICAL_ORIGIN_AUTOMATIC = 2;
+		public static final int TECHNICAL_ORIGIN_TEMPLATE = 3;
+		public static final int TECHNICAL_ORIGIN_IMPORT = 4;
 	
 	]]></extra-code>
     

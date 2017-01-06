@@ -14,6 +14,8 @@
   	<integer name="orderTypeSelect" title="Order Type" selection="iaccount.bank.order.type.select"/>
   	<string name="bankOrderExportFolderPath" help="true"/>
   	<many-to-one name="bankOrderFileFormat" ref="com.axelor.apps.account.db.BankOrderFileFormat" title="File format"/>
+    <boolean name="generateMoveAutoFromBankOrder" title="Generate account move from the bank order"/>
+  	
   
   	<extra-code><![CDATA[
 	

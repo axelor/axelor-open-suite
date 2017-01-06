@@ -222,7 +222,7 @@ public class ReimbursementExportService {
 					moveLine.setReimbursementStatusSelect(MoveLineRepository.REIMBURSEMENT_STATUS_REIMBURSED);
 
 					if(first)  {
-						newMove = moveService.getMoveCreateService().createMove(accountConfig.getReimbursementJournal(), company, null, partner, null, MoveRepository.AUTOMATIC);
+						newMove = moveService.getMoveCreateService().createMove(accountConfig.getReimbursementJournal(), company, null, partner, null, MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC);
 						first = false;
 					}
 					// Création d'une ligne au débit

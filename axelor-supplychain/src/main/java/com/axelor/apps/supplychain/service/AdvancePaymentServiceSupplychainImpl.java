@@ -146,7 +146,7 @@ public class AdvancePaymentServiceSupplychainImpl extends AdvancePaymentServiceI
 		
 		Journal journal = paymentModeService.getPaymentModeJournal(paymentMode, company);
 		
-		Move move = moveService.getMoveCreateService().createMove(journal, company, advancePayment.getCurrency(), clientPartner, advancePaymentDate, paymentMode, MoveRepository.AUTOMATIC);
+		Move move = moveService.getMoveCreateService().createMove(journal, company, advancePayment.getCurrency(), clientPartner, advancePaymentDate, paymentMode, MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC);
 		
 		BigDecimal amountConverted = currencyService.getAmountCurrencyConvertedAtDate(advancePayment.getCurrency(), saleOrder.getCurrency(), advancePayment.getAmount(), advancePaymentDate);
 		

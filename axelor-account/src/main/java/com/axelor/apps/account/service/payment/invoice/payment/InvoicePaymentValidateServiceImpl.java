@@ -153,7 +153,7 @@ public class InvoicePaymentValidateServiceImpl  implements  InvoicePaymentValida
 		
 		MoveLine invoiceMoveLine = moveService.getMoveToolService().getInvoiceCustomerMoveLineByLoop(invoice);
 		
-		Move move = moveService.getMoveCreateService().createMove(journal, company, invoicePayment.getCurrency(), partner, paymentDate, paymentMode, MoveRepository.AUTOMATIC);
+		Move move = moveService.getMoveCreateService().createMove(journal, company, invoicePayment.getCurrency(), partner, paymentDate, paymentMode, MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC);
 		
 		move.addMoveLineListItem(moveLineService.createMoveLine(move, partner, paymentModeService.getPaymentModeAccount(paymentMode, company), 
 				paymentAmount, isDebitInvoice, paymentDate, null, 1, ""));

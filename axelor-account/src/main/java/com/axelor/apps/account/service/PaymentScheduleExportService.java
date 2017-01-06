@@ -266,7 +266,7 @@ public class PaymentScheduleExportService{
 		BigDecimal amount =  paymentScheduleLine.getInTaxAmount();
 		Partner partner = paymentSchedule.getPartner();
 
-		Move move = moveService.getMoveCreateService().createMove(paymentModeService.getPaymentModeJournal(paymentMode, company), company, null, partner, paymentMode, MoveRepository.AUTOMATIC);
+		Move move = moveService.getMoveCreateService().createMove(paymentModeService.getPaymentModeJournal(paymentMode, company), company, null, partner, paymentMode, MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC);
 
 		this.setDebitNumber(paymentScheduleLineList, paymentScheduleLine, company);
 
@@ -711,7 +711,7 @@ public class PaymentScheduleExportService{
 		log.debug("Create payment move");
 
 		Move paymentMove = moveService.getMoveCreateService().createMove(
-				paymentModeService.getPaymentModeJournal(paymentMode, company), company, null, null, paymentMode, MoveRepository.AUTOMATIC);
+				paymentModeService.getPaymentModeJournal(paymentMode, company), company, null, null, paymentMode, MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC);
 
 		BigDecimal amountExported = moveLine.getAmountRemaining();
 

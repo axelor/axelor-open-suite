@@ -44,11 +44,11 @@
 	 <extra-code><![CDATA[
 	
 	   	// BANK ORDER TYPE SELECT
-		public static final int BANK_TO_BANK_TRANSFER = 1;
-		public static final int SEPA_CREDIT_TRANSFER = 2;
-		public static final int SEPA_DIRECT_DEBIT = 3;
-		public static final int INTERNATIONAL_CREDIT_TRANSFER = 4;
-		public static final int INTERNATIONAL_DIRECT_DEBIT = 5;
+		public static final int ORDER_TYPE_BANK_TO_BANK_TRANSFER = 1;
+		public static final int ORDER_TYPE_SEPA_CREDIT_TRANSFER = 2;
+		public static final int ORDER_TYPE_SEPA_DIRECT_DEBIT = 3;
+		public static final int ORDER_TYPE_INTERNATIONAL_CREDIT_TRANSFER = 4;
+		public static final int ORDER_TYPE_INTERNATIONAL_DIRECT_DEBIT = 5;
 	
 	   	// STATUS SELECT
 		public static final int STATUS_DRAFT = 1;
@@ -60,9 +60,9 @@
 
 		
 		// PARTNER TYPE SELECT
-		public static final int SUPPLIER = 1;
-		public static final int EMPLOYEE = 2;
-		public static final int CUSTOMER = 3;
+		public static final int PARTNER_TYPE_SUPPLIER = 1;
+		public static final int PARTNER_TYPE_EMPLOYEE = 2;
+		public static final int PARTNER_TYPE_CUSTOMER = 3;
 		
 		// REJECT STATUS SELECT
 		public static final int REJECT_STATUS_NOT_REJECTED = 0;

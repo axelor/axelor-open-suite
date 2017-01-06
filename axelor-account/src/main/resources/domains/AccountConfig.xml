@@ -101,15 +101,17 @@
   	<string name="interbankPaymentOrderRejectImportPathCFONB" title="Filepath to import IPO, and IPO &amp; Cheque payments rejects"  help="true"/>
     <string name="tempInterbankPaymentOrderRejectImportPathCFONB" title="Temporary filepath to import IPO, and IPO &amp; Cheque payments rejects" help="true"/>
   
-    <!-- Onglet Facturation -->
+    <!-- Invoice page -->
     <boolean name="allowCancelVentilatedInvoice" title="Allow cancelation of ventilated invoice"/>
     <boolean name="allowRemovalValidatedMove" title="Allow removal of validated move"/>
     <boolean name="generateMoveForInvoicePayment" title="Generate move for payment on invoice" default="true"/>
     <boolean name="generateMoveForAdvancePayment" title="Generate move for advance payment" default="true"/>
     
-      <!--  Onglet Ordres bancaires -->
+      <!--  Bank orders page -->
   	<many-to-one name="defaultSignatoryUser" ref="com.axelor.auth.db.User" title="Default signatory"/>
   	<boolean name="generateMoveOnBankOrderValidation" title="Generate move when validating a bank order"/>
+   	<many-to-one name="internalBankToBankAccount" ref="com.axelor.apps.account.db.Account" title="Bank to bank account for internal order (unique company)"/>
+    <many-to-one name="externalBankToBankAccount" ref="com.axelor.apps.account.db.Account" title="Bank to bank account for external order (mulitple company)"/>
   	
     <!--  Account chart template-->
 	<many-to-one name="accountChart" ref="com.axelor.apps.account.db.AccountChart" title="Account chart" />

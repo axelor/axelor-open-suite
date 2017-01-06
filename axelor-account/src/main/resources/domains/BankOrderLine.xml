@@ -20,7 +20,8 @@
 	
 	<string name="receiverReference" title="Reference"/>
 	<string name="receiverLabel" title="Label"/>
-	<many-to-one name="receiverMove" ref="com.axelor.apps.account.db.Move" title="Move" readonly="true"/>
+	<many-to-one name="senderMove" ref="com.axelor.apps.account.db.Move" title="Move" readonly="true"/>
+	<many-to-one name="receiverMove" ref="com.axelor.apps.account.db.Move" title="Receiver move" readonly="true"/>
 	
 <!-- 	REJECT -->
   	<boolean name="isRejected" title="Rejected"/>

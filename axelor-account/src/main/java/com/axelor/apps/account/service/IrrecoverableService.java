@@ -754,7 +754,7 @@ public class IrrecoverableService{
 		AccountConfig accountConfig = company.getAccountConfig();
 
 		// Move
-		Move move = moveService.getMoveCreateService().createMove(accountConfig.getIrrecoverableJournal(), company, null, payerPartner, null, MoveRepository.AUTOMATIC);
+		Move move = moveService.getMoveCreateService().createMove(accountConfig.getIrrecoverableJournal(), company, null, payerPartner, null, MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC);
 
 		int seq = 1;
 
@@ -822,7 +822,7 @@ public class IrrecoverableService{
 		AccountConfig accountConfig = company.getAccountConfig();
 
 		// Move
-		Move move = moveService.getMoveCreateService().createMove(accountConfig.getIrrecoverableJournal(), company, null, payerPartner, null, MoveRepository.AUTOMATIC);
+		Move move = moveService.getMoveCreateService().createMove(accountConfig.getIrrecoverableJournal(), company, null, payerPartner, null, MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC);
 
 		int seq = 1;
 

@@ -112,7 +112,7 @@ public class MoveService {
 
 			log.debug("Création d'une écriture comptable spécifique à la facture {} (Société : {}, Journal : {})", new Object[]{invoice.getInvoiceId(), company.getName(), journal.getCode()});
 
-			move = moveCreateService.createMove(journal, company, invoice.getCurrency(), partner, invoice.getInvoiceDate(), invoice.getPaymentMode(), MoveRepository.AUTOMATIC);
+			move = moveCreateService.createMove(journal, company, invoice.getCurrency(), partner, invoice.getInvoiceDate(), invoice.getPaymentMode(), MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC);
 
 			if (move != null)  {
 
@@ -269,7 +269,7 @@ public class MoveService {
 
 				log.debug("Création d'une écriture comptable O.D. spécifique à l'emploie des trop-perçus {} (Société : {}, Journal : {})", new Object[]{invoice.getInvoiceId(), company.getName(), journal.getCode()});
 
-				Move move = moveCreateService.createMove(journal, company, null, partner, invoice.getInvoiceDate(), null, MoveRepository.AUTOMATIC);
+				Move move = moveCreateService.createMove(journal, company, null, partner, invoice.getInvoiceDate(), null, MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC);
 
 				if (move != null)  {
 					BigDecimal totalCreditAmount = moveToolService.getTotalCreditAmount(creditMoveLineList);
@@ -309,7 +309,7 @@ public class MoveService {
 
 		log.debug("Montant à payer avec l'avoir récupéré : {}", remainingAmount);
 
-		Move oDmove = moveCreateService.createMove(journal, company, null, partner, invoice.getInvoiceDate(), null, MoveRepository.AUTOMATIC);
+		Move oDmove = moveCreateService.createMove(journal, company, null, partner, invoice.getInvoiceDate(), null, MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC);
 
 		if (oDmove != null){
 			BigDecimal totalDebitAmount = moveToolService.getTotalDebitAmount(debitMoveLines);
@@ -350,7 +350,7 @@ public class MoveService {
 
 		Journal journal = accountConfigService.getMiscOperationJournal(accountConfigService.getAccountConfig(company));
 
-		Move excessMove = moveCreateService.createMove(journal, company, refund.getCurrency(), partner, null, MoveRepository.AUTOMATIC);
+		Move excessMove = moveCreateService.createMove(journal, company, refund.getCurrency(), partner, null, MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC);
 		excessMove.setInvoice(refund);
 		
 		MoveLine debitMoveLine = moveLineService.createMoveLine(excessMove,
@@ -389,7 +389,7 @@ public class MoveService {
 								  move.getPartner(),
 								  today,
 								  move.getPaymentMode(),
-								  MoveRepository.ENTRY,	
+								  MoveRepository.TECHNICAL_ORIGIN_ENTRY,	
 								  move.getIgnoreInReminderOk(),
 								  move.getIgnoreInAccountingOk());
 		

@@ -50,7 +50,7 @@
 					<field name="doubtfulCustomerAccount" domain="self.company = :company" grid-view="account-grid" form-view="account-form"/>
 					<field name="irrecoverableAccount" domain="self.company = :company" grid-view="account-grid" form-view="account-form"/>
 					<field name="employeeAccount" domain="self.company = :company" grid-view="account-grid" form-view="account-form"/>
-					<field name="advancePaymentAccount"/>
+					<field name="advancePaymentAccount" domain="self.company = :company" grid-view="account-grid" form-view="account-form"/>
 				</panel>
 				<panel name="paymentDifferences" title="Payment differences" colSpan="12">
 					<field name="thresholdDistanceFromRegulation"/>
@@ -138,8 +138,10 @@
 			</panel>
 			
 			<panel name="bankOrder" title="Bank Order">
-			  <field name="defaultSignatoryUser" grid-view="user-grid" form-view="user-form"/>
-			  <field name="generateMoveOnBankOrderValidation"/>
+			  	<field name="defaultSignatoryUser" grid-view="user-grid" form-view="user-form"/>
+			  	<field name="generateMoveOnBankOrderValidation"/>
+			  	<field name="internalBankToBankAccount" domain="self.company = :company" grid-view="account-grid" form-view="account-form"/>
+				<field name="externalBankToBankAccount" domain="self.company = :company" grid-view="account-grid" form-view="account-form"/>
 			</panel>
 		
 			<panel name="reimbursement" title="Reimbursement">

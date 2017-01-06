@@ -36,7 +36,6 @@ import com.axelor.apps.account.db.BankOrder;
 import com.axelor.apps.account.db.BankOrderFileFormat;
 import com.axelor.apps.account.db.BankOrderLine;
 import com.axelor.apps.account.db.InvoicePayment;
-import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.BankOrderFileFormatRepository;
 import com.axelor.apps.account.db.repo.BankOrderRepository;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
@@ -61,16 +60,19 @@ public class BankOrderServiceImpl implements BankOrderService  {
 	protected BankOrderRepository bankOrderRepo;
 	protected InvoicePaymentRepository invoicePaymentRepo;
 	protected BankOrderLineService bankOrderLineService;
+	protected BankOrderMoveService bankOrderMoveService;
 	protected EbicsService ebicsService;
+	
 
 	
 	@Inject
 	public BankOrderServiceImpl(BankOrderRepository bankOrderRepo, InvoicePaymentRepository invoicePaymentRepo, 
-			BankOrderLineService bankOrderLineService, EbicsService ebicsService)  {
+			BankOrderLineService bankOrderLineService, BankOrderMoveService bankOrderMoveService, EbicsService ebicsService)  {
 		
 		this.bankOrderRepo = bankOrderRepo;
 		this.invoicePaymentRepo = invoicePaymentRepo;
 		this.bankOrderLineService = bankOrderLineService;
+		this.bankOrderMoveService = bankOrderMoveService;
 		this.ebicsService = ebicsService;
 		
 	}
@@ -94,7 +96,7 @@ public class BankOrderServiceImpl implements BankOrderService  {
 			throw new AxelorException(I18n.get(IExceptionMessage.BANK_ORDER_TYPE_MISSING), IException.INCONSISTENCY);
 		}
 		else{
-			if(orderType !=  BankOrderRepository.BANK_TO_BANK_TRANSFER  && partnerType == 0)  {
+			if(orderType !=  BankOrderRepository.ORDER_TYPE_BANK_TO_BANK_TRANSFER  && partnerType == 0)  {
 				throw new AxelorException(I18n.get(IExceptionMessage.BANK_ORDER_PARTNER_TYPE_MISSING), IException.INCONSISTENCY);
 			}
 		}
@@ -225,12 +227,7 @@ public class BankOrderServiceImpl implements BankOrderService  {
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void confirm(BankOrder bankOrder) {
 		
-		if (bankOrder.getOrderTypeSelect() == BankOrderRepository.SEPA_CREDIT_TRANSFER || bankOrder.getOrderTypeSelect() == BankOrderRepository.INTERNATIONAL_CREDIT_TRANSFER){
-			bankOrder.setStatusSelect(BankOrderRepository.STATUS_AWAITING_SIGNATURE);
-		}
-		else{
-			bankOrder.setStatusSelect(BankOrderRepository.STATUS_VALIDATED);
-		}
+		bankOrder.setStatusSelect(BankOrderRepository.STATUS_AWAITING_SIGNATURE);
 		
 		bankOrderRepo.save(bankOrder);
 	}
@@ -254,6 +251,8 @@ public class BankOrderServiceImpl implements BankOrderService  {
 		this.setNbOfLines(bankOrder);
 		
 		File fileToSend = this.generateFile(bankOrder);
+		
+		bankOrderMoveService.generateMoves(bankOrder);
 		
 		ebicsService.sendFULRequest(bankOrder.getEbicsUser(), null, fileToSend, bankOrder.getBankOrderFileFormat().getOrderFileFormatSelect());
 		

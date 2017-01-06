@@ -124,7 +124,7 @@ public class BankStatementService {
 
 		String name = bankStatementLine.getName();
 
-		Move move = moveService.getMoveCreateService().createMove(bankStatement.getJournal(), bankStatement.getCompany(), null, partner, effectDate, null, MoveRepository.AUTOMATIC);
+		Move move = moveService.getMoveCreateService().createMove(bankStatement.getJournal(), bankStatement.getCompany(), null, partner, effectDate, null, MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC);
 
 		boolean isNegate = amount.compareTo(BigDecimal.ZERO) < 0;
 

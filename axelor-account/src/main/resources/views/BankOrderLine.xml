@@ -46,7 +46,8 @@
 		<panel name="action" showIf="bankOrder != null"
 			itemSpan="12" sidebar="true">
 			<field name="bankOrder.statusSelect" title="Bank Order Status" readonly="true" />
-			<field name="receiverMove" showIf="bankOrder.statusSelect == 3 || bankOrder.statusSelect == 4" form-view="move-form" grid-view="move-grid" />
+			<field name="senderMove" showIf="senderMove &amp;&amp; (bankOrder.statusSelect == 3 || bankOrder.statusSelect == 4)" form-view="move-form" grid-view="move-grid" />
+			<field name="receiverMove" showIf="senderMove &amp;&amp; (bankOrder.statusSelect == 3 || bankOrder.statusSelect == 4)" form-view="move-form" grid-view="move-grid" />
 		</panel>
 	</form>
 	
