@@ -41,6 +41,7 @@ import com.axelor.apps.base.db.ICalendarUser;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.ical.ICalendarException;
 import com.axelor.apps.base.service.PartnerService;
+import com.axelor.apps.crm.db.CrmConfig;
 import com.axelor.apps.crm.db.Event;
 import com.axelor.apps.crm.db.Lead;
 import com.axelor.apps.crm.db.RecurrenceConfiguration;
@@ -400,14 +401,15 @@ public class EventService {
 		
 		EmailAddress emailAddress = Beans.get(EmailAddressRepository.class).all().filter("self.address = ?1", email).fetchOne();
 		User user = Beans.get(UserRepository.class).all().filter("self.partner.emailAddress.address = ?1", email).fetchOne();
+		CrmConfig crmConfig = Beans.get(CrmConfigService.class).getCrmConfig(user.getActiveCompany());
 		
 		
-		if(user.getActiveCompany().getCrmConfig().getSendMail() == true) {
+		if(crmConfig.getSendMail() == true) {
 			if(emailAddress == null){
 				emailAddress = new EmailAddress(email);
 			}
 			
-			Template guestAddedTemplate = Beans.get(CrmConfigService.class).getCrmConfig(user.getActiveCompany()).getMeetingGuestAddedTemplate();
+			Template guestAddedTemplate = crmConfig.getMeetingGuestAddedTemplate();
 			Message message = new Message();
 			if(guestAddedTemplate == null){
 				
