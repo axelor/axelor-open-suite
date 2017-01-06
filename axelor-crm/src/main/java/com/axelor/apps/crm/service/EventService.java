@@ -41,6 +41,7 @@ import com.axelor.apps.base.db.ICalendarUser;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.ical.ICalendarException;
 import com.axelor.apps.base.service.PartnerService;
+import com.axelor.apps.crm.db.CrmConfig;
 import com.axelor.apps.crm.db.Event;
 import com.axelor.apps.crm.db.Lead;
 import com.axelor.apps.crm.db.RecurrenceConfiguration;
@@ -57,6 +58,7 @@ import com.axelor.apps.message.service.MailAccountService;
 import com.axelor.apps.message.service.MessageService;
 import com.axelor.apps.message.service.TemplateMessageService;
 import com.axelor.auth.db.User;
+import com.axelor.auth.db.repo.UserRepository;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
@@ -396,45 +398,53 @@ public class EventService {
 	@Transactional
 	public void sendMail(Event event, String email) throws AxelorException, MessagingException, IOException, ClassNotFoundException, InstantiationException, IllegalAccessException, ValidationException, ParseException, ICalendarException{
  
+		
 		EmailAddress emailAddress = Beans.get(EmailAddressRepository.class).all().filter("self.address = ?1", email).fetchOne();
-		if(emailAddress == null){
-			emailAddress = new EmailAddress(email);
-		}
-		Template guestAddedTemplate = Beans.get(CrmConfigService.class).getCrmConfig(event.getUser().getActiveCompany()).getMeetingGuestAddedTemplate();
-		Message message = new Message();
-		if(guestAddedTemplate == null){
+		User user = Beans.get(UserRepository.class).all().filter("self.partner.emailAddress.address = ?1", email).fetchOne();
+		CrmConfig crmConfig = Beans.get(CrmConfigService.class).getCrmConfig(user.getActiveCompany());
+		
+		
+		if(crmConfig.getSendMail() == true) {
+			if(emailAddress == null){
+				emailAddress = new EmailAddress(email);
+			}
 			
-			if(message.getFromEmailAddress() == null){
-				message.setFromEmailAddress(event.getUser().getPartner().getEmailAddress());
+			Template guestAddedTemplate = crmConfig.getMeetingGuestAddedTemplate();
+			Message message = new Message();
+			if(guestAddedTemplate == null){
+				
+				if(message.getFromEmailAddress() == null){
+					message.setFromEmailAddress(user.getPartner().getEmailAddress());
+				}
+				message.addToEmailAddressSetItem(emailAddress);
+				message.setSubject(event.getSubject());
+				message.setMailAccount(Beans.get(MailAccountService.class).getDefaultMailAccount());
 			}
-			message.addToEmailAddressSetItem(emailAddress);
-			message.setSubject(event.getSubject());
-			message.setMailAccount(Beans.get(MailAccountService.class).getDefaultMailAccount());
-		}
-		else{
-			message = Beans.get(TemplateMessageService.class).generateMessage(event, guestAddedTemplate);
-			if(message.getFromEmailAddress() == null){
-				message.setFromEmailAddress(event.getUser().getPartner().getEmailAddress());
+			else{
+				message = Beans.get(TemplateMessageService.class).generateMessage(event, guestAddedTemplate);
+				if(message.getFromEmailAddress() == null){
+					message.setFromEmailAddress(user.getPartner().getEmailAddress());
+				}
+				message.addToEmailAddressSetItem(emailAddress);	
 			}
-			message.addToEmailAddressSetItem(emailAddress);	
+			if(event.getUid() != null){
+				CalendarService calendarService = Beans.get(CalendarService.class);
+				Calendar cal = calendarService.getCalendar(event.getUid(), event.getCalendarCrm());
+				cal.getProperties().add(Method.REQUEST);
+				File file = calendarService.export(cal);
+				Path filePath = file.toPath();
+				MetaFile metaFile = new MetaFile();
+				metaFile.setFileName( file.getName() );
+				metaFile.setFileType( Files.probeContentType( filePath ) );
+				metaFile.setFileSize( Files.size( filePath ) );
+				metaFile.setFilePath( file.getName() );
+				Set<MetaFile> fileSet = new HashSet<MetaFile>();
+				fileSet.add(metaFile);
+				Beans.get(MessageRepository.class).save(message);
+				Beans.get(MessageService.class).attachMetaFiles(message, fileSet);
+			}
+			message = Beans.get(MessageService.class).sendByEmail(message);
 		}
-		if(event.getUid() != null){
-			CalendarService calendarService = Beans.get(CalendarService.class);
-			Calendar cal = calendarService.getCalendar(event.getUid(), event.getCalendarCrm());
-			cal.getProperties().add(Method.REQUEST);
-			File file = calendarService.export(cal);
-			Path filePath = file.toPath();
-			MetaFile metaFile = new MetaFile();
-			metaFile.setFileName( file.getName() );
-			metaFile.setFileType( Files.probeContentType( filePath ) );
-			metaFile.setFileSize( Files.size( filePath ) );
-			metaFile.setFilePath( file.getName() );
-			Set<MetaFile> fileSet = new HashSet<MetaFile>();
-			fileSet.add(metaFile);
-			Beans.get(MessageRepository.class).save(message);
-			Beans.get(MessageService.class).attachMetaFiles(message, fileSet);
-		}
-		message = Beans.get(MessageService.class).sendByEmail(message);
 	}
 	
 	@Transactional

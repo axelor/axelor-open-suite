@@ -12,6 +12,8 @@
 	    	<field name="company" form-view="company-form" colSpan="4" grid-view="company-grid"/>
 	  	</panel>
 	  	<panel name="reminderTemplates" title="Reminder Templates">
+	  		<field name="sendMail"/>
+	  		<spacer/>
 	    	<field name="taskTemplate" canNew="true" form-view="template-form" grid-view="template-grid"/>
 	    	<field name="meetingTemplate" canNew="true" form-view="template-form" grid-view="template-grid"/>
 	    	<field name="meetingDateChangeTemplate" canNew="true" form-view="template-form" grid-view="template-grid"/>

@@ -37,6 +37,7 @@ import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.ical.ICalendarException;
 import com.axelor.apps.base.service.MapService;
 import com.axelor.apps.base.service.administration.SequenceService;
+import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.crm.db.Event;
 import com.axelor.apps.crm.db.IEvent;
 import com.axelor.apps.crm.db.ILead;
@@ -294,7 +295,7 @@ public class EventController {
 	public void addUserGuest(ActionRequest request, ActionResponse response) throws ClassNotFoundException, InstantiationException, IllegalAccessException, AxelorException, MessagingException, IOException, ICalendarException, ValidationException, ParseException{
 		Event event = request.getContext().asType(Event.class);
 		if(request.getContext().containsKey("guestUser")){
-			User user = Beans.get(UserRepository.class).find(new Long(((Map<String, Object>) request.getContext().get("guestUser")).get("id").toString()));
+			User user = Beans.get(UserService.class).getUser();
 			if(user != null){
 				event = eventRepo.find(event.getId());
 				eventService.addUserGuest(user, event);
