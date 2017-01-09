@@ -12,6 +12,7 @@
     <many-to-one name="kilometricExpenseProduct" ref="com.axelor.apps.base.db.Product" title="Kilometric expense product" />
     <decimal name="lunchVoucherWageShare" title="Lunch Voucher Wage Share" scale="2" precision="20"/>
     <decimal name="lunchVoucherEmployersShare" title="Lunch Voucher Employer's Share" scale="2" precision="20"/>
+    <many-to-one name="leaveReason" title="Leave Reason" ref="com.axelor.apps.hr.db.LeaveReason"/>
     
     <!-- LUNCH VOUCHERS MANAGEMENT -->
     

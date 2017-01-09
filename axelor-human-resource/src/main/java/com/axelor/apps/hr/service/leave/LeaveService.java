@@ -26,6 +26,8 @@ import org.joda.time.LocalDate;
 
 import com.axelor.apps.base.db.WeeklyPlanning;
 import com.axelor.apps.hr.db.Employee;
+import com.axelor.apps.hr.db.LeaveLine;
+import com.axelor.apps.hr.db.LeaveReason;
 import com.axelor.apps.hr.db.LeaveRequest;
 import com.axelor.apps.message.db.Message;
 import com.axelor.auth.db.User;
@@ -85,4 +87,13 @@ public interface LeaveService {
 	public Message sendRefusalEmail(LeaveRequest leaveRequest) throws AxelorException, ClassNotFoundException, InstantiationException, IllegalAccessException, MessagingException, IOException;
 		
 	public boolean willHaveEnoughDays(LeaveRequest leaveRequest);
+	
+	@Transactional
+	public LeaveLine leaveReasonToJustify(Employee employee, LeaveReason leaveReason) throws AxelorException;
+	
+	@Transactional
+	public LeaveLine createLeaveReasonToJustify(Employee employee, LeaveReason leaveReasonHrConfig) throws AxelorException;
+	
+	@Transactional
+	public LeaveLine addLeaveReasonOrCreateIt(Employee employee, LeaveReason leaveReason) throws AxelorException;
 }

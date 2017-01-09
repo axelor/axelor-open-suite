@@ -26,11 +26,19 @@ import com.axelor.apps.base.db.Wizard;
 import com.axelor.apps.base.service.message.MessageServiceBaseImpl;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.ExtraHours;
+import com.axelor.apps.hr.db.LeaveLine;
+import com.axelor.apps.hr.db.LeaveReason;
 import com.axelor.apps.hr.db.LeaveRequest;
+import com.axelor.apps.hr.db.repo.EmployeeRepository;
+import com.axelor.apps.hr.db.repo.HRConfigRepository;
+import com.axelor.apps.hr.db.repo.LeaveLineRepository;
+import com.axelor.apps.hr.db.repo.LeaveReasonRepository;
 import com.axelor.apps.hr.db.repo.LeaveRequestRepository;
 import com.axelor.apps.hr.exception.IExceptionMessage;
 import com.axelor.apps.hr.service.HRMenuTagService;
+import com.axelor.apps.hr.service.config.HRConfigService;
 import com.axelor.apps.hr.service.leave.LeaveService;
+import com.axelor.apps.hr.service.leave.LeaveServiceImpl;
 import com.axelor.apps.message.db.Message;
 import com.axelor.apps.message.db.repo.MessageRepository;
 import com.axelor.auth.AuthUtils;
@@ -46,6 +54,7 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
+import com.google.inject.persist.Transactional;
 
 public class LeaveController {
 	
@@ -55,6 +64,13 @@ public class LeaveController {
 	private Provider<LeaveService> leaveServiceProvider;
 	@Inject
 	private Provider<LeaveRequestRepository> leaveRequestRepositoryProvider;
+	@Inject
+	private LeaveLineRepository leaveLineRepository;
+	@Inject
+	private HRConfigRepository hrConfigRepository;
+	@Inject
+	private HRConfigService hrConfigService;
+	
 
 	public void editLeave(ActionRequest request, ActionResponse response)  {
 		
@@ -285,6 +301,28 @@ public class LeaveController {
 	}
 	
 	/* Count Tags displayed on the menu items */
+	
+	@Transactional
+	public void leaveReasonToJustify(ActionRequest request, ActionResponse response) throws AxelorException {
+		LeaveRequest leave = request.getContext().asType(LeaveRequest.class);
+		Boolean leaveToJustify = leave.getLeaveToJustify();
+		LeaveLine leaveLine = null;
+		
+		if(leaveToJustify == true){
+			if(leave.getUser() != null) {
+				hrConfigService.getLeaveReason(leave.getUser().getActiveCompany().getHrConfig());
+				
+				Employee employee = Beans.get(EmployeeRepository.class).find(leave.getUser().getEmployee().getId());
+				LeaveReason leaveReason = Beans.get(LeaveReasonRepository.class).find(leave.getUser().getActiveCompany().getHrConfig().getLeaveReason().getId());
+				
+				if(employee != null){
+					leaveLine = leaveServiceProvider.get().addLeaveReasonOrCreateIt(employee, leaveReason);
+					response.setValue("leaveLine", leaveLine);
+				}
+			}
+		}
+	}
+	
 	
 	public String leaveValidateTag() { 
 		

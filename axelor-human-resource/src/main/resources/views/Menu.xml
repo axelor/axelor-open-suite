@@ -144,9 +144,10 @@
 		title="My Leave Requests">
 		<view name="leave-request-grid" type="grid" />
 		<view name="leave-request-form" type="form" />
-		<domain>self.user = :user_id AND self.company = :company_id</domain>
+		<domain>self.user = :user_id AND self.company = :company_id AND self.leaveToJustify = :leave_to_justify</domain>
 		<context name="user_id" expr="eval:__user__" />
 		<context name="company_id" expr="eval:__user__.activeCompany" />
+		<context name="leave_to_justify" expr="eval: false"/>
 	</action-view>
 	
 	<menuitem name="validate-leave-request" groups="MNGT,admins" parent="leave-request-root" title="Leave Requests to Validate" action="leave.validate" icon="fa-flag"
@@ -172,6 +173,18 @@
 		<view type="form" name="leave-form"/>
 		<domain>self.typeSelect = 4</domain>
 	</action-view>
+	
+	<menuitem name="leave-request-to-justify" parent="leave-request-root" title="Leave Request to justify" action="leave.request.to.justify"/>
+	
+	<action-view name="leave.request.to.justify" title="Leave Request" model="com.axelor.apps.hr.db.LeaveRequest">
+		<view name="leave-request-form" type="form" />
+		<view name="leave-request-validate-grid" type="grid" />
+		<domain>self.user = :user_id AND self.company = :company_id AND self.leaveToJustify = :leave_to_justify</domain>
+		<context name="user_id" expr="eval:__user__" />
+		<context name="company_id" expr="eval:__user__.activeCompany" />
+		<context name="leave_to_justify" expr="eval: true"/>
+	</action-view>
+		
 	
 	<menuitem name="all-lunch-voucher-mgt" parent="hr-root" title="Lunch Voucher Management" action="lunch.voucher.mgt.all"/>
 	
