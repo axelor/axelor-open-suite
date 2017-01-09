@@ -104,7 +104,7 @@ public class LunchVoucherMgtServiceImpl implements LunchVoucherMgtService{
 	}
 	
 	@Transactional
-	public String exportLunchVoucherMgt(LunchVoucherMgt lunchVoucherMgt) throws IOException{
+	public String exportLunchVoucherMgt(LunchVoucherMgt lunchVoucherMgt) throws IOException, AxelorException{
 		
 		String headers[] = new String[4];
 		headers[0] = I18n.get("Company code");
@@ -127,7 +127,7 @@ public class LunchVoucherMgtServiceImpl implements LunchVoucherMgtService{
 		}
 		
 		String fileName = I18n.get("Lunch Voucher Mgt") + " - " + Beans.get(GeneralService.class).getTodayDateTime().toString() + ".csv";
-		String filePath = AppSettings.get().get("file.upload.dir");
+		String filePath = hrConfigService.getHRConfig(lunchVoucherMgt.getCompany()).getExportPath();
 		
 		new File(filePath).mkdirs();
 		CsvTool.csvWriter(filePath, fileName, ';', headers, list);

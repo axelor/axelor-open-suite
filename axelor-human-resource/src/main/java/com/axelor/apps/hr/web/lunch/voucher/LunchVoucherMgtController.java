@@ -83,7 +83,7 @@ public class LunchVoucherMgtController {
 		LunchVoucherMgt lunchVoucherMgt = Beans.get(LunchVoucherMgtRepository.class).find(request.getContext().asType(LunchVoucherMgt.class).getId());
 		try {
 			LunchVoucherMgtService lunchVoucherMgtService = lunchVoucherMgtProvider.get();
-			response.setExportFile(lunchVoucherMgtService.exportLunchVoucherMgt(lunchVoucherMgt));
+			lunchVoucherMgtService.exportLunchVoucherMgt(lunchVoucherMgt);
 			response.setReload(true);
 		} catch (Exception e) {
 			TraceBackService.trace(response, e);

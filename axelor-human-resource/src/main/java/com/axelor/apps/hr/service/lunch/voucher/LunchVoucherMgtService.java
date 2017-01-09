@@ -22,5 +22,5 @@ public interface LunchVoucherMgtService {
 
 	
 	@Transactional
-	String exportLunchVoucherMgt(LunchVoucherMgt lunchVoucherMgt) throws IOException;
+	String exportLunchVoucherMgt(LunchVoucherMgt lunchVoucherMgt) throws IOException, AxelorException;
 }
