@@ -37,6 +37,7 @@ public interface IExceptionMessage {
 	static final String HR_CONFIG_SENT_EXTRA_HOURS_TEMPLATE = /*$$(*/ "Please configure the sent extra hours template in HR config for the company %s" /*)*/;
 	static final String HR_CONFIG_VALIDATED_EXTRA_HOURS_TEMPLATE = /*$$(*/ "Please configure the validated extra hours template in HR config for the company %s" /*)*/;
 	static final String HR_CONFIG_REFUSED_EXTRA_HOURS_TEMPLATE = /*$$(*/ "Please configure the refused extra hours template in HR config for the company %s" /*)*/;
+	static final String HR_CONFIG_LEAVE_REASON = /*$$(*/ "Please configure the leave reason in HR config for the company %s" /*)*/;
 	
 	static final String TIMESHEET_FROM_DATE = /*$$(*/ "Merci de rentrer une date de début pour la génération"/*)*/ ;
 	static final String TIMESHEET_TO_DATE = /*$$(*/ "Merci de rentrer une date de fin pour la génération"/*)*/ ;

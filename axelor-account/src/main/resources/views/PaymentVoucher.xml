@@ -61,7 +61,7 @@
 		<panel name="payer" title="Payer" itemSpan="12" readonlyIf="statusSelect == 2">
 			<field name="partner" form-view="partner-form" grid-view="partner-grid" colSpan="4" onChange="action-pv-moveLine-domain-4, action-pv-record-default-partner-inf" onSelect="action-payment-voucher-set-partner-domain" />
 			<field name="paymentMode" grid-view="payment-mode-grid" form-view="payment-mode-form" colSpan="4" widget="SuggestBox" onChange="action-group-account-payment-voucher-paymentmode-onchange" onSelect="action-set-payment-mode-domain"/>
-			<field name="currency" colSpan="4" form-view="currency-form" grid-view="currency-grid"/>
+			<field name="currency" canEdit="false" colSpan="4" form-view="currency-form" grid-view="currency-grid"/>
 		</panel>
 		
 		<panel colSpan="12" showIf="statusSelect == 1">

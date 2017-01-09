@@ -79,7 +79,7 @@
 			        <field name="sellable" colSpan="12"/>
 			        <field name="salePrice" hideIf="!sellable" colSpan="12"/>
 			        <field name="customsCode" colSpan="12"/>
-			        <field name="saleCurrency" hideIf="!sellable" colSpan="12" form-view="currency-form" grid-view="currency-grid"/>
+			        <field name="saleCurrency" canEdit="false" hideIf="!sellable" colSpan="12" form-view="currency-form" grid-view="currency-grid"/>
 	        		<panel name="units" title="Units" colSpan="6">
 			          	<field name="unit" colSpan="12" form-view="unit-form" grid-view="unit-grid"/>
 			          	<field name="salesUnit" hideIf="!sellable" colSpan="12" form-view="unit-form" grid-view="unit-grid" if="__config__.general.getManageSalesUnits()"/>
@@ -105,7 +105,7 @@
 		      	<panel name="purchase" title="Purchases" colSpan="6">
 			        <field name="purchasable" colSpan="12"/>
 			        <field name="purchasePrice" showIf="purchasable" colSpan="6"/>
-			        <field name="purchaseCurrency" showIf="purchasable" colSpan="6" form-view="currency-form" grid-view="currency-grid"/>
+			        <field name="purchaseCurrency" canEdit="false" showIf="purchasable" colSpan="6" form-view="currency-form" grid-view="currency-grid"/>
 			        <field name="defaultSupplierPartner" showIf="purchasable" colSpan="6" domain="self.isContact = false AND self.isSupplier = true" form-view="partner-form" grid-view="partner-grid"/>
 			        <field name="supplierDeliveryTime" showIf="purchasable" colSpan="6"/>
 		      	</panel>
