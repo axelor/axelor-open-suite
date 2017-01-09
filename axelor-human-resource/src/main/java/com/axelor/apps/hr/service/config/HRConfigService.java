@@ -20,6 +20,7 @@ package com.axelor.apps.hr.service.config;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.hr.db.HRConfig;
+import com.axelor.apps.hr.db.LeaveReason;
 import com.axelor.apps.hr.exception.IExceptionMessage;
 import com.axelor.apps.message.db.Template;
 import com.axelor.exception.AxelorException;
@@ -35,6 +36,15 @@ public class HRConfigService {
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.HR_CONFIG), company.getName()),IException.CONFIGURATION_ERROR);
 		}
 		return hrConfig;
+	}
+	
+	public LeaveReason getLeaveReason(HRConfig hrConfig) throws AxelorException{
+		LeaveReason leaveReason = hrConfig.getLeaveReason();
+		
+		if(leaveReason == null){
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.HR_CONFIG_LEAVE_REASON), hrConfig.getCompany().getName()), IException.CONFIGURATION_ERROR);
+		}
+		return leaveReason;
 	}
 	
 	public Product getKilometricExpenseProduct(HRConfig hrConfig) throws AxelorException{

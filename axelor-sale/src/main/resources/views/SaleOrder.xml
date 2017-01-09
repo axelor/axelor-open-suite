@@ -104,7 +104,7 @@
 	    <field name="statusSelect" widget="NavSelect" showTitle="false" colSpan="12"/>
 	    <field name="deliveryState" css="label-bold bold" showIf="statusSelect >= 3" />
 	    <field name="company" widget="SuggestBox" onChange="action-sale-group-onchange-company" form-view="company-form" grid-view="company-grid" readonlyIf="statusSelect == 3"/>
-	    <field name="currency" form-view="currency-form" grid-view="currency-grid" readonlyIf="statusSelect == 3"/>
+	    <field name="currency" canEdit="false" form-view="currency-form" grid-view="currency-grid" readonlyIf="statusSelect == 3"/>
 	    <field name="versionNumber" if="__config__.general.getManageSaleOrderVersion()"/>
 	    <field name="companyBankDetails" widget="SuggestBox" onSelect="action-accounting-batch-attrs-company-bank-details-domain" form-view="bank-details-form" grid-view="bank-details-grid"/>
 	    <field name="inAti" onChange="action-sale-order-attrs-in-ati"/>
@@ -252,7 +252,7 @@
 	    <field name="saleOrderSeq" css="label-bold bold"/>
 	    <field name="deliveryState" css="label-bold bold" showIf="statusSelect >= 3" />
 	    <field name="company" widget="SuggestBox" onChange="action-sale-group-onchange-company" form-view="company-form" grid-view="company-grid" readonlyIf="statusSelect == 3"/>
-	    <field name="currency" form-view="currency-form" grid-view="currency-grid" readonlyIf="statusSelect == 3"/>
+	    <field name="currency" canEdit="false" form-view="currency-form" grid-view="currency-grid" readonlyIf="statusSelect == 3"/>
 	    <field name="templateUser" form-view="user-form" grid-view="user-grid"/>
 	  </panel>
 	  
@@ -357,7 +357,7 @@
 	    <field name="saleOrderSeq" css="highlight"/>
 	    <field name="company" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
 	    <field name="externalReference"/>
-	    <field name="currency" form-view="currency-form" grid-view="currency-grid"/>
+	    <field name="currency" canEdit="false" form-view="currency-form" grid-view="currency-grid"/>
 	  </panel>
 	  <panel-tabs readonly="true">
 	    <panel name="customerInformation" title="Customer information" showTitle="false">

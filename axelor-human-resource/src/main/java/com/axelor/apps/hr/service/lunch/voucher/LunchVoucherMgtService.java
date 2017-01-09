@@ -1,5 +1,7 @@
 package com.axelor.apps.hr.service.lunch.voucher;
 
+import java.io.IOException;
+
 import com.axelor.apps.hr.db.LunchVoucherMgt;
 import com.axelor.exception.AxelorException;
 import com.google.inject.persist.Transactional;
@@ -17,4 +19,8 @@ public interface LunchVoucherMgtService {
 	
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	void getStockQuantityStatus(LunchVoucherMgt lunchVoucherMgt) throws AxelorException;
+
+	
+	@Transactional
+	String exportLunchVoucherMgt(LunchVoucherMgt lunchVoucherMgt) throws IOException;
 }

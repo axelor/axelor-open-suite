@@ -15,8 +15,8 @@
       <integer name="statusSelect" title="Status" selection="hrs.lunch.voucher.mgt.status.select" default="1" readonly="true"/>
       <integer name="requestedLunchVouchers" title="Requested lunch vouchers on the period"/>
       <integer name="totalLunchVouchers" title="Total lunch vouchers" readonly="true"/>
-      <decimal name="wageShare" title="Wage Share" scale="2" precision="20" readonly="true"/>
-      <decimal name="employersShare" title="Employer's Share" scale="2" precision="20" readonly="true"/>
+      <decimal name="lunchVoucherWageShare" title="Lunch Voucher Wage Share" scale="2" precision="20" readonly="true"/>
+      <decimal name="lunchVoucherEmployersShare" title="Lunch Voucher Employer's Share" scale="2" precision="20" readonly="true"/>
       <one-to-many name="lunchVoucherMgtLineList" ref="com.axelor.apps.hr.db.LunchVoucherMgtLine" title="Lunch Voucher Lines"  mappedBy="lunchVoucherMgt" orphanRemoval="true"/>
       
       <integer name="stockQuantityStatus" title="Stock quantity status" readonly="true"/>
