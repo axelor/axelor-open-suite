@@ -29,7 +29,7 @@
 		<panel-related field="expenseLineSet" canNew="false" canEdit="false" canSelect="false" form-view="expense-line-form" grid-view="expense-line-grid" readonlyIf="invoice != null"/>
 		<panel-related field="projectTaskSet" canNew="false" canEdit="false" canSelect="false" form-view="project-task-form" grid-view="project-task-grid" readonlyIf="invoice != null"/>
 		<panel-related field="elementsToInvoiceSet" canNew="false" canEdit="false" canSelect="false" grid-view="elements-to-invoice-grid" form-view="elements-to-invoice-form" readonlyIf="invoice != null"/>
-		<panel-related field="manufOrderSet" canNew="false" canEdit="false" canSelect="false" if-module="axelor-business-production" grid-view="manuf-order-invoicing-project-grid" form-view="manuf-order-form" readonlyIf="invoice != null"  if="__config__.general.getAppBusinessProduction()" />
+		<panel-related field="manufOrderSet" canNew="false" canEdit="false" canSelect="false" if-module="axelor-business-production" grid-view="manuf-order-invoicing-project-grid" form-view="manuf-order-form" readonlyIf="invoice != null"  if="__config__.app.isApp('production') &amp;&amp; __config__.app.getApp('production').getManageBusinessProduction()" />
 		<panel sidebar="true" name="priority" title="Priority" readonlyIf="invoice != null">
 			
 			<field name="saleOrderLineSetPrioritySelect" width="30%"/>
@@ -51,8 +51,8 @@
 	</action-method>
 	
 	<action-attrs name="action-invoicing-project-attrs-title-project-task">
-		<attribute name="title" for="projectTask" expr="eval: __config__.general.getProjectTaskLabel()" if="__config__.general.getAppProject() &amp;&amp; !com.google.common.base.Strings.isNullOrEmpty(__config__.general.getProjectTaskLabel())"/>
-		<attribute name="title" for="projectTaskSet" expr="eval: __config__.general.getProjectTaskLabel()" if="__config__.general.getAppProject() &amp;&amp; !com.google.common.base.Strings.isNullOrEmpty(__config__.general.getProjectTaskLabel())"/>
+		<attribute name="title" for="projectTask" expr="eval: __config__.app.getApp('project').getProjectTaskLabel()" if="!com.google.common.base.Strings.isNullOrEmpty(__config__.app.getApp('project').getProjectTaskLabel())"/>
+		<attribute name="title" for="projectTaskSet" expr="eval: __config__.app.getApp('project').getProjectTaskLabel()" if="!com.google.common.base.Strings.isNullOrEmpty(__config__.app.getApp('project').getProjectTaskLabel())"/>
 	</action-attrs>
 	
 	<action-view name="action-invoicing-project-task-show-timesheet-lines" title="Timesheet lines" model="com.axelor.apps.hr.db.TimesheetLine">

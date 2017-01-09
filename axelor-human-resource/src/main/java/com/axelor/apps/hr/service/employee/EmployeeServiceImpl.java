@@ -25,7 +25,7 @@ import org.joda.time.Years;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.axelor.apps.base.service.administration.GeneralService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.user.UserServiceImpl;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.exception.IExceptionMessage;
@@ -39,7 +39,7 @@ import com.google.inject.Inject;
 public class EmployeeServiceImpl extends UserServiceImpl implements EmployeeService {
 
 	@Inject
-	private GeneralService generalService;  
+	private AppBaseService appBaseService;  
 	
 	private static final Logger LOG = LoggerFactory.getLogger(EmployeeService.class);
 
@@ -68,10 +68,10 @@ public class EmployeeServiceImpl extends UserServiceImpl implements EmployeeServ
 			dailyWorkHrs = employee.getDailyWorkHours();
 		}
 		else {
-			timePref = generalService.getGeneral().getTimeLoggingPreferenceSelect();
+			timePref = appBaseService.getAppBase().getTimeLoggingPreferenceSelect();
 		}
 		if(dailyWorkHrs == null || dailyWorkHrs.compareTo(BigDecimal.ZERO) == 0)  {
-			dailyWorkHrs = generalService.getGeneral().getDailyWorkHours();
+			dailyWorkHrs = appBaseService.getAppBase().getDailyWorkHours();
 		}
 
 		LOG.debug("Employee's time pref: {}, Daily Working hours: {}", timePref, dailyWorkHrs);
@@ -100,7 +100,7 @@ public class EmployeeServiceImpl extends UserServiceImpl implements EmployeeServ
 	public int getLengthOfService(Employee employee, LocalDate refDate) throws AxelorException{
 		
 		try{
-			Years years = Years.yearsBetween(employee.getSeniorityDate(), refDate == null ? Beans.get(GeneralService.class).getTodayDate() : refDate );
+			Years years = Years.yearsBetween(employee.getSeniorityDate(), refDate == null ? Beans.get(AppBaseService.class).getTodayDate() : refDate );
 			return years.getYears();
 		}catch (IllegalArgumentException e){
 			throw new AxelorException(String.format( I18n.get( IExceptionMessage.EMPLOYEE_NO_SENIORITY_DATE ), employee.getName() ), IException.NO_VALUE);
@@ -111,7 +111,7 @@ public class EmployeeServiceImpl extends UserServiceImpl implements EmployeeServ
 	public int getAge(Employee employee, LocalDate refDate) throws AxelorException{
 		
 		try{
-			Years years = Years.yearsBetween(employee.getBirthDate(), refDate == null ? Beans.get(GeneralService.class).getTodayDate() : refDate );
+			Years years = Years.yearsBetween(employee.getBirthDate(), refDate == null ? Beans.get(AppBaseService.class).getTodayDate() : refDate );
 			return years.getYears();
 		}catch (IllegalArgumentException e){
 			throw new AxelorException(String.format( I18n.get( IExceptionMessage.EMPLOYEE_NO_BIRTH_DATE ), employee.getName() ), IException.NO_VALUE);

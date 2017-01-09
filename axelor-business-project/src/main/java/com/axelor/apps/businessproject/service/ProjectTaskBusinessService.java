@@ -26,7 +26,7 @@ import java.util.Map;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
-import com.axelor.apps.base.service.administration.GeneralService;
+import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
 import com.axelor.apps.project.service.ProjectTaskService;
@@ -43,7 +43,7 @@ import com.google.inject.Inject;
 public class ProjectTaskBusinessService extends ProjectTaskService{
 
 	@Inject
-	protected GeneralService generalService;
+	protected AppBusinessProjectService appBusinessProjectService;
 
 	public ProjectTask generateProject(SaleOrder saleOrder){
 		ProjectTask project = this.generateProject(null, saleOrder.getFullName()+"_project", saleOrder.getSalemanUser(), saleOrder.getCompany(), saleOrder.getClientPartner());
@@ -73,7 +73,7 @@ public class ProjectTaskBusinessService extends ProjectTaskService{
 		if(parentProject != null){
 			project.setProjTaskInvTypeSelect(parentProject.getProjTaskInvTypeSelect());
 		}
-		Product product = generalService.getGeneral().getProductInvoicingProjectTask();
+		Product product = appBusinessProjectService.getAppBusinessProject().getProductInvoicingProjectTask();
 		if(product != null){
 			project.setProduct(product);
 			project.setQty(BigDecimal.ONE);
@@ -109,7 +109,7 @@ public class ProjectTaskBusinessService extends ProjectTaskService{
 		task.setAssignedTo(assignedTo);
 		task.setProgress(BigDecimal.ZERO);
 		task.setImputable(true);
-		Product product = generalService.getGeneral().getProductInvoicingProjectTask();
+		Product product = appBusinessProjectService.getAppBusinessProject().getProductInvoicingProjectTask();
 		task.setProduct(product);
 		task.setQty(BigDecimal.ONE);
 		task.setPrice(product.getPurchasePrice());

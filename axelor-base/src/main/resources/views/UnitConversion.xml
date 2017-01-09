@@ -4,7 +4,7 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
     <grid name="unit-conversion-grid" title="Unit conversions" model="com.axelor.apps.base.db.UnitConversion">
       <toolbar>
-      <button name="checkDuplicate" title="Check Duplicate" onClick="action-general-method-show-duplicate"/>
+      <button name="checkDuplicate" title="Check Duplicate" onClick="action-base-method-show-duplicate"/>
       </toolbar>  
         <field name="startUnit" form-view="unit-form" grid-view="unit-grid"/>
         <field name="coef"/>

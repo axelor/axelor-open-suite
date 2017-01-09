@@ -30,13 +30,13 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.PaymentVoucher;
 import com.axelor.apps.account.db.repo.MoveRepository;
+import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.CompanyConfigService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Period;
 import com.axelor.apps.base.service.PeriodService;
-import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 
@@ -51,13 +51,13 @@ public class MoveCreateService {
 	protected LocalDate today;
 
 	@Inject
-	public MoveCreateService(GeneralService generalService, PeriodService periodService, MoveRepository moveRepository, CompanyConfigService companyConfigService)  {
+	public MoveCreateService(AppAccountService appAccountService, PeriodService periodService, MoveRepository moveRepository, CompanyConfigService companyConfigService)  {
 
 		this.periodService = periodService;
 		this.moveRepository = moveRepository;
 		this.companyConfigService = companyConfigService;
 		
-		today = generalService.getTodayDate();
+		today = appAccountService.getTodayDate();
 
 	}
 

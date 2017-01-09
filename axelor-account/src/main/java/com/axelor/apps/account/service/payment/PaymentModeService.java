@@ -25,9 +25,9 @@ import com.axelor.apps.account.db.AccountManagement;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.service.app.AppAccountServiceImpl;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Sequence;
-import com.axelor.apps.base.service.administration.GeneralServiceImpl;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
@@ -107,7 +107,7 @@ public class PaymentModeService {
 		if(accountManagement == null || accountManagement.getSequence() == null)  {
 			throw new AxelorException(String.format(
 							I18n.get(IExceptionMessage.PAYMENT_MODE_2),
-							GeneralServiceImpl.EXCEPTION, company.getName(), paymentMode.getName()), IException.CONFIGURATION_ERROR);
+							AppAccountServiceImpl.EXCEPTION, company.getName(), paymentMode.getName()), IException.CONFIGURATION_ERROR);
 		}
 
 		return accountManagement.getSequence();
@@ -120,7 +120,7 @@ public class PaymentModeService {
 		if(accountManagement == null || accountManagement.getJournal() == null)  {
 			throw new AxelorException(String.format(
 							I18n.get(IExceptionMessage.PAYMENT_MODE_3),
-							GeneralServiceImpl.EXCEPTION, company.getName(), paymentMode.getName()), IException.CONFIGURATION_ERROR);
+							AppAccountServiceImpl.EXCEPTION, company.getName(), paymentMode.getName()), IException.CONFIGURATION_ERROR);
 		}
 
 		return accountManagement.getJournal();

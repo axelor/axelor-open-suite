@@ -23,11 +23,10 @@ import java.util.Map;
 import javax.inject.Inject;
 
 import org.joda.time.DateTime;
-import org.joda.time.LocalDateTime;
 
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductRepository;
-import com.axelor.apps.base.service.administration.GeneralService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.ProductionOrder;
 import com.axelor.apps.production.db.repo.BillOfMaterialRepository;
@@ -59,7 +58,7 @@ public class ProductionOrderController {
 	private ProductRepository productRepo;
 	
 	@Inject
-	private GeneralService generalService;
+	private AppBaseService appBaseService;
 	
 	
 	public void addManufOrder (ActionRequest request, ActionResponse response) throws AxelorException {
@@ -92,7 +91,7 @@ public class ProductionOrderController {
 			if (context.containsKey("_startDate") && context.get("_startDate") != null ){
 				startDate = new DateTime(context.get("_startDate") );
 			}else{
-				startDate = generalService.getTodayDateTime().toDateTime();
+				startDate = appBaseService.getTodayDateTime().toDateTime();
 			}
 			
 			ProductionOrder productionOrder = request.getContext().asType( ProductionOrder.class );

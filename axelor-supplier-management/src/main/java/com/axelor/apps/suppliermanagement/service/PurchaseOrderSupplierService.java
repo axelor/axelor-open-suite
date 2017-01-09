@@ -29,7 +29,7 @@ import org.slf4j.LoggerFactory;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.SupplierCatalog;
-import com.axelor.apps.base.service.administration.GeneralService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.purchase.db.IPurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
@@ -60,8 +60,6 @@ public class PurchaseOrderSupplierService {
 	@Inject
 	private PurchaseOrderLineService purchaseOrderLineService;
 
-	@Inject
-	protected GeneralService generalService;
 	
 	@Inject
 	protected PurchaseOrderRepository poRepo;
@@ -73,7 +71,7 @@ public class PurchaseOrderSupplierService {
 	@Inject
 	public PurchaseOrderSupplierService() {
 
-		this.today = Beans.get(GeneralService.class).getTodayDate();
+		this.today = Beans.get(AppBaseService.class).getTodayDate();
 		this.user =  AuthUtils.getUser();
 	}
 

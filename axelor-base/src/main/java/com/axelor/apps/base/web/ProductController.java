@@ -28,7 +28,7 @@ import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.report.IReport;
 import com.axelor.apps.base.service.ProductService;
-import com.axelor.apps.base.service.administration.GeneralService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
@@ -45,7 +45,7 @@ public class ProductController {
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 	
 	@Inject
-	private GeneralService generalService;
+	private AppBaseService appBaseService;
 	
 	@Inject
 	private ProductService productService;
@@ -83,7 +83,7 @@ public class ProductController {
 
 		User user =  Beans.get(UserService.class).getUser();
 
-		int currentYear = generalService.getTodayDateTime().getYear();
+		int currentYear = appBaseService.getTodayDateTime().getYear();
 		String productIds = "";
 
 		List<Integer> lstSelectedProduct = (List<Integer>) request.getContext().get("_ids");

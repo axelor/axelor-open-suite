@@ -5,7 +5,7 @@
   
 	<module name="base" package="com.axelor.apps.base.db"/>
 	
-	<entity name="ICalendarEvent" table="ICAL_EVENT" sequential="true">
+	<entity name="ICalendarEvent" table="ICAL_EVENT" sequential="true" strategy="JOINED">
 	  <string name="uid" column="calendar_uid" unique="true" hashKey="true" title="UID"/>
 	  <string name="url" title="URL"/>
 	  <string name="subject" required="true" namecolumn="true" title="Subject"/>

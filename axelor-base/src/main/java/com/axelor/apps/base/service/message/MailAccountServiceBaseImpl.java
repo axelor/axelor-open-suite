@@ -19,7 +19,7 @@ package com.axelor.apps.base.service.message;
 
 import java.util.List;
 
-import com.axelor.apps.base.service.administration.GeneralService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.message.db.MailAccount;
 import com.axelor.apps.message.service.MailAccountServiceImpl;
@@ -31,7 +31,7 @@ public class MailAccountServiceBaseImpl extends MailAccountServiceImpl {
 	protected UserService userService;
 
 	@Inject
-	protected GeneralService generalService;
+	protected AppBaseService appBaseService;
 
 	@Inject
 	public MailAccountServiceBaseImpl(UserService userService){
@@ -40,7 +40,7 @@ public class MailAccountServiceBaseImpl extends MailAccountServiceImpl {
 
 	@Override
 	public boolean checkDefaultMailAccount(MailAccount mailAccount) {
-		if ( generalService.getGeneral().getMailAccountByUser() && mailAccount.getIsDefault()) {
+		if ( appBaseService.getAppBase().getMailAccountByUser() && mailAccount.getIsDefault()) {
 			String request = "self.user = ?1 AND self.isDefault = true";
 			List<Object> params = Lists.newArrayList();
 			params.add(userService.getUser());
@@ -58,7 +58,7 @@ public class MailAccountServiceBaseImpl extends MailAccountServiceImpl {
 	@Override
 	public MailAccount getDefaultMailAccount()  {
 
-		if ( generalService.getGeneral().getMailAccountByUser() ) {
+		if ( appBaseService.getAppBase().getMailAccountByUser() ) {
 			return mailAccountRepo.all().filter("self.user = ?1 AND self.isDefault = true", userService.getUser()).fetchOne();
 		}
 

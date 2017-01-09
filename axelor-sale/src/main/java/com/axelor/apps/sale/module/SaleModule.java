@@ -32,6 +32,8 @@ import com.axelor.apps.sale.service.PartnerSaleService;
 import com.axelor.apps.sale.service.SaleOrderLineService;
 import com.axelor.apps.sale.service.SaleOrderService;
 import com.axelor.apps.sale.service.SaleOrderServiceImpl;
+import com.axelor.apps.sale.service.app.AppSaleService;
+import com.axelor.apps.sale.service.app.AppSaleServiceImpl;
 
 
 public class SaleModule extends AxelorModule {
@@ -44,6 +46,7 @@ public class SaleModule extends AxelorModule {
         bind(SaleOrderRepository.class).to(SaleOrderManagementRepository.class);
         bind(OpportunitySaleOrderService.class).to(OpportunitySaleOrderServiceImpl.class);
         bind(AdvancePaymentService.class).to(AdvancePaymentServiceImpl.class);
+        bind(AppSaleService.class).to(AppSaleServiceImpl.class);
         IPartner.modelPartnerFieldMap.put(SaleOrder.class.getName(), "clientPartner");
     }
 }

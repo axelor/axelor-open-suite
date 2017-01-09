@@ -30,6 +30,7 @@ import org.slf4j.LoggerFactory;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.Partner;
@@ -37,7 +38,6 @@ import com.axelor.apps.base.db.PartnerList;
 import com.axelor.apps.base.db.repo.AddressRepository;
 import com.axelor.apps.base.service.MapService;
 import com.axelor.apps.base.service.PartnerService;
-import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
@@ -48,7 +48,7 @@ import com.google.inject.persist.Transactional;
 public class AddressController {
 
 	@Inject
-	protected GeneralService generalService;
+	protected AppAccountService appAccountService;
 
 	private static final Logger LOG = LoggerFactory.getLogger(AddressController.class);
 
@@ -63,7 +63,7 @@ public class AddressController {
 	@Transactional
 	public void viewSalesMap(ActionRequest request, ActionResponse response)  {
 		// Only allowed for google maps to prevent overloading OSM
-		if (generalService.getGeneral().getMapApiSelect() == IAdministration.MAP_API_GOOGLE) {
+		if (appAccountService.getAppBase().getMapApiSelect() == IAdministration.MAP_API_GOOGLE) {
 			PartnerList partnerList = request.getContext().asType(PartnerList.class);
 
 //			File file = new File("/home/axelor/www/HTML/latlng_"+partnerList.getId()+".csv");

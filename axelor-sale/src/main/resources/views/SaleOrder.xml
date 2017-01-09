@@ -105,10 +105,10 @@
 	    <field name="deliveryState" css="label-bold bold" showIf="statusSelect >= 3" />
 	    <field name="company" widget="SuggestBox" onChange="action-sale-group-onchange-company" form-view="company-form" grid-view="company-grid" readonlyIf="statusSelect == 3"/>
 	    <field name="currency" form-view="currency-form" grid-view="currency-grid" readonlyIf="statusSelect == 3"/>
-	    <field name="versionNumber" if="__config__.general.getAppSale() &amp;&amp; __config__.general.getManageSaleOrderVersion()"/>
+	    <field name="versionNumber" if="__config__.app.getApp('sale').getManageSaleOrderVersion()"/>
 	    <field name="companyBankDetails" widget="SuggestBox" onSelect="action-accounting-batch-attrs-company-bank-details-domain" form-view="bank-details-form" grid-view="bank-details-grid"/>
 	    <field name="inAti" onChange="action-sale-order-attrs-in-ati"/>
-	    <field name="subscription" if-module="axelor-supplychain" if="__config__.general.getAppSupplychain() &amp;&amp; __config__.general.getAllowSusbcriptionSaleOrder()"/>
+	    <field name="subscription" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getAllowSusbcriptionSaleOrder()"/>
 	  </panel>
 	  
 	  <panel name="customerInformation" title="Customer information">
@@ -129,23 +129,23 @@
 	      	</panel>
 	    </panel>  
       	<panel name="deliveryInformation" title="Delivery information" colSpan="12">
-  		    <field name="location" domain="self.company = :company and self.typeSelect = 1" form-view="location-form" grid-view="location-grid" readonlyIf="statusSelect == 3" if-module="axelor-supplychain" if="__config__.general.getAppSupplychain()" />   
+  		    <field name="location" domain="self.company = :company and self.typeSelect = 1" form-view="location-form" grid-view="location-grid" readonlyIf="statusSelect == 3" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')" />   
   		    <field name="deliveryDate"/>
   		    <field name="deliveryCondition" colSpan="12"/>
-  		    <field name="shipmentMode" if-module="axelor-stock" form-view="shipment-mode-grid" grid-view="shipment-mode-grid" if="__config__.general.getAppStock()" />   
-			<field name="freightCarrierMode" domain="self.shipmentMode = :shipmentMode" if-module="axelor-stock" form-view="freight-carrier-mode-form" grid-view="freight-carrier-mode-grid"  if="__config__.general.getAppStock()" />   
-  		    <panel-dashlet action="action-view-show-stock-move-line" title="Stock movement" colSpan="12" if-module="axelor-supplychain"  if="__config__.general.getAppSupplychain()" />   
+  		    <field name="shipmentMode" if-module="axelor-stock" form-view="shipment-mode-grid" grid-view="shipment-mode-grid" if="__config__.app.isApp('stock')" />   
+			<field name="freightCarrierMode" domain="self.shipmentMode = :shipmentMode" if-module="axelor-stock" form-view="freight-carrier-mode-form" grid-view="freight-carrier-mode-grid"  if="__config__.app.isApp('stock')" />   
+  		    <panel-dashlet action="action-view-show-stock-move-line" title="Stock movement" colSpan="12" if-module="axelor-supplychain"  if="__config__.app.isApp('supplychain')" />   
       	</panel>
 	      
 	    
 <!-- 	    <panel-related field="saleOrderScheduleLineList" title="Schedules" showIf="invoicingTypeSelect == 2" showTitle="false" if-module="axelor-supplychain" grid-view="sale-order-schedule-line-grid" form-view="sale-order-schedule-line-form"/>  -->
-	    <panel-dashlet action="action-view-show-invoices-from-sale-order" title="Invoicing" if-module="axelor-supplychain"  if="__config__.general.getAppSupplychain()" />   
-	    <panel name="projectPanel" if="__config__.general.getAppBusinessProject() &amp;&amp; __config__.general.getGenerateProjectOrder()" title="Business project" colSpan="12" if-module="axelor-business-project">
+	    <panel-dashlet action="action-view-show-invoices-from-sale-order" title="Invoicing" if-module="axelor-supplychain"  if="__config__.app.isApp('supplychain')" />   
+	    <panel name="projectPanel" if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getGenerateProjectOrder()" title="Business project" colSpan="12" if-module="axelor-business-project">
       		  <field name="project" domain="self.typeSelect = 'project' AND self.clientPartner = :clientPartner" form-view="project-form" grid-view="project-grid" colSpan="12"/>
-	          <button name="generateProject" title="Generate Project" if="__config__.general.getAppProject() &amp;&amp; !__config__.general.getAutomaticProject()" showIf="project == null" hidden="true" onClick="save,action-sale-order-method-generate-project"/>
-	          <button name="generateTasks" title="Generate Tasks" if="__config__.general.getAppProject() &amp;&amp; __config__.general.getProjectTaskSaleOrderLines()" showIf="project != null" hidden="true" onClick="save,action-sale-order-method-generate-tasks,action-sale-order-attrs-hide-generate-tasks"/>
+	          <button name="generateProject" title="Generate Project" if="!__config__.app.getApp('business-project').getAutomaticProject()" showIf="project == null" hidden="true" onClick="save,action-sale-order-method-generate-project"/>
+	          <button name="generateTasks" title="Generate Tasks" if="__config__.app.getApp('business-project').getProjectTaskSaleOrderLines()" showIf="project != null" hidden="true" onClick="save,action-sale-order-method-generate-tasks,action-sale-order-attrs-hide-generate-tasks"/>
        	</panel>
-       	<panel name="generateSubscriptions" title="Generate Subscriptions" if-module="axelor-supplychain" showIf="subscription"  if="__config__.general.getAppSupplychain()">   
+       	<panel name="generateSubscriptions" title="Generate Subscriptions" if-module="axelor-supplychain" showIf="subscription"  if="__config__.app.isApp('supplychain')">   
 			<field name="periodicity" colSpan="3" onChange="action-supplychain-record-set-dateSubTo"/>
 			<field name="fromSubDate" colSpan="3" onChange="action-supplychain-record-set-dateSubTo"/>
 			<field name="periodNumber" colSpan="3" onChange="action-supplychain-record-set-dateSubTo"/>
@@ -154,27 +154,27 @@
 			<button colSpan="3" name="generateAllSubscriptions" title="Generate Subscriptions" onClick="action-supplychain-validate-generate-all-subscriptions,save,com.axelor.apps.supplychain.web.SubscriptionController:generateAllSubscriptions"/>
 			<button name="generateInvoiceSubscriptions" title="Generate invoice for subscriptions" colSpan="3" onClick="save,action-sale-order-method-invoice-subscriptions-sale-order" showIf="id != null &amp;&amp; id > 0"/>
 		</panel>
-		<panel name="timetable" title="Timetable" if-module="axelor-supplychain"  if="__config__.general.getAppSupplychain()" >   
+		<panel name="timetable" title="Timetable" if-module="axelor-supplychain"  if="__config__.app.isApp('supplychain')" >   
 			<field name="expectedRealisationDate" colSpan="12" width="50%"/>
 			<label title="OR"/>
 			<panel-related field="timetableList" colSpan="12" grid-view="timetable-grid" form-view="timetable-form" />   
 		</panel>
 		
-		<panel-related field="advancePaymentList" colSpan="12" grid-view="advance-payment-grid" form-view="advance-payment-form" readonly="true" if-module="axelor-supplychain"  if="__config__.general.getAppSupplychain()" />   
+		<panel-related field="advancePaymentList" colSpan="12" grid-view="advance-payment-grid" form-view="advance-payment-form" readonly="true" if-module="axelor-supplychain"  if="__config__.app.isApp('supplychain')" />   
 		
 	  </panel-tabs>
 	  
 	  <panel sidebar="true" name="actions" title="Actions" stacked="true">
 	    <button name="Finalize" title="Finalize" showIf="statusSelect == 1 || statusSelect == 4" colSpan="12" onClick="save,action-sale-order-group-finalize"/>
-	    <button name="newVersion" title="New version" if="__config__.general.getAppSale() &amp;&amp; __config__.general.getManageSaleOrderVersion()" showIf="statusSelect == 2" colSpan="12" onClick="save,action-sale-record-newVersion,save"/>
-	    <button name="generateCustomerStockMove" if="__config__.general.getAppStock() &amp;&amp; __config__.general.getCustomerStockMoveManagement() &amp;&amp; !__config__.general.getCustomerStockMoveGenerationAuto()" showIf="statusSelect == 3" title="Generate customer deliveries"  colSpan="12" onClick="save,action-supplychain-sale-order-create-stock-move" if-module="axelor-supplychain"/>
+	    <button name="newVersion" title="New version" if="__config__.app.getApp('sale').getManageSaleOrderVersion()" showIf="statusSelect == 2" colSpan="12" onClick="save,action-sale-record-newVersion,save"/>
+	    <button name="generateCustomerStockMove" if="__config__.app.isApp('stock') &amp;&amp; __config__.app.getApp('stock').getCustomerStockMoveManagement() &amp;&amp; !__config__.app.getApp('stock')..getCustomerStockMoveGenerationAuto()" showIf="statusSelect == 3" title="Generate customer deliveries"  colSpan="12" onClick="save,action-supplychain-sale-order-create-stock-move" if-module="axelor-supplychain"/>
 	    <button name="orderConfirmed" title="Order confirmed" showIf="statusSelect == 2" colSpan="12" onClick="save,action-sale-group-confirmed"/>
-	    <button name="generateInvoice" title="Generate invoice" if="__config__.general.getAppSupplychain() &amp;&amp; __config__.general.getGenerateInvoiceFromSaleOrder()" showIf="statusSelect == 3" colSpan="12" onClick="save,action-supplychain-sale-order-group-generate-invoice" if-module="axelor-supplychain"/>
-	    <button name="generatePO" title="Generate purchase order"  colSpan="12" if="__config__.general.getAppPurchase() &amp;&amp; !__config__.general.getPurchaseOrderGenerationAuto()" showIf="statusSelect == 2 || statusSelect == 3" onClick="save,action-supplychain-sale-order-generate-purchase-orders-from-selected-SOLines"/>
-	    <button name="generateProductionOrder" title="Generate production order"  colSpan="12" if="__config__.general.getAppProduction() &amp;&amp; __config__.general.getProductionOrderManagement() &amp;&amp; !__config__.general.getProductionOrderGenerationAuto()" showIf="statusSelect == 3" onClick="save,action-sale-order-method-create-production-order"/>
+	    <button name="generateInvoice" title="Generate invoice" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getGenerateInvoiceFromSaleOrder()" showIf="statusSelect == 3" colSpan="12" onClick="save,action-supplychain-sale-order-group-generate-invoice" if-module="axelor-supplychain"/>
+	    <button name="generatePO" title="Generate purchase order"  colSpan="12" if="__config__.app.isApp('purchase'). &amp;&amp; !__config__.app.getApp('purchase').getPurchaseOrderGenerationAuto()" showIf="statusSelect == 2 || statusSelect == 3" onClick="save,action-supplychain-sale-order-generate-purchase-orders-from-selected-SOLines"/>
+	    <button name="generateProductionOrder" title="Generate production order"  colSpan="12" if="__config__.app.isApp('production') &amp;&amp; __config__.app.getApp('production').getProductionOrderManagement() &amp;&amp; !__config__.app.getApp('production').getProductionOrderGenerationAuto()" showIf="statusSelect == 3" onClick="save,action-sale-order-method-create-production-order"/>
 		<spacer/>
 	    <button name="cancel" title="Cancel" showIf="id &amp;&amp; (statusSelect == 1 || statusSelect == 2)" colSpan="12" onClick="save,action-sale-order-view-cancel"/>
-	  	<button name="addAdvancePayment" title="Register a deposit" showIf="statusSelect == 3 &amp;&amp; amountInvoiced == 0" colSpan="12" onClick="save,action-sale-order-view-register-advance-payment" if-module="axelor-supplychain"  if="__config__.general.getAppSupplychain()" />   
+	  	<button name="addAdvancePayment" title="Register a deposit" showIf="statusSelect == 3 &amp;&amp; amountInvoiced == 0" colSpan="12" onClick="save,action-sale-order-view-register-advance-payment" if-module="axelor-supplychain"  if="__config__.app.isApp('supplychain')" />   
 	  	<field name="message" hidden="true" type="string"/>
 	  </panel>
 	  
@@ -184,7 +184,7 @@
 	    <field name="confirmationDate" readonly="true" colSpan="6" showIf="statusSelect == 3"/>
 	    <field name="orderDate" colSpan="6" showIf="statusSelect == 3"/>
 	    <field name="orderNumber" colSpan="6" showIf="statusSelect == 3"/>
-	    <field name="shipmentDate" colSpan="6" showIf="statusSelect == 3" if-module="axelor-supplychain"  if="__config__.general.getAppSupplychain()" />   
+	    <field name="shipmentDate" colSpan="6" showIf="statusSelect == 3" if-module="axelor-supplychain"  if="__config__.app.isApp('supplychain')" />   
 	    <field name="duration" widget="SuggestBox" canNew="true" colSpan="6" onChange="action-sale-order-record-compute-end-of-validity-date" readonlyIf="statusSelect == 3"/>
 	    <field name="endOfValidityDate" colSpan="6" readonly="true">
 	    	<hilite if="$moment().diff(endOfValidityDate, 'days') &gt; 0 &amp;&amp; statusSelect != 3" color="danger"/>
@@ -211,9 +211,9 @@
       <panel sidebar="true">
       	<panel name="salesFollowUp" title="Sales follow-up" colSpan="12">
 	        <field name="salemanUser" grid-view="user-grid" form-view="user-form"/>
-	        <field name="team" onSelect="action-sale-order-domain-on-team" form-view="team-form" grid-view="team-grid" if="__config__.general.getTeamManagement()"/>
+	        <field name="team" onSelect="action-sale-order-domain-on-team" form-view="team-form" grid-view="team-grid" if="__config__.app.getApp('base').getTeamManagement()"/>
 	    </panel>
-	    <panel name="financialTerms" title="Financial terms" colSpan="12" if-module="axelor-supplychain"  if="__config__.general.getAppSupplychain()" >   
+	    <panel name="financialTerms" title="Financial terms" colSpan="12" if-module="axelor-supplychain"  if="__config__.app.isApp('supplychain')" >   
 	        <field name="paymentMode" domain="self.inOutSelect = 1"  form-view="payment-mode-form" grid-view="payment-mode-grid"/>
 	        <field name="paymentCondition" form-view="payment-condition-form" grid-view="payment-condition-grid"/>
 	    </panel>
@@ -273,16 +273,16 @@
 	    <panel name="otherInformations" title="Other informations" showTitle="false">
 	      <panel name="salesFollowUp" title="Sales follow-up" colSpan="12">
 	        <field name="salemanUser" form-view="user-form" grid-view="user-grid"/>
-	        <field name="team" onSelect="action-sale-order-domain-on-team" form-view="team-form" grid-view="team-grid" if="__config__.general.getTeamManagement()"/>
+	        <field name="team" onSelect="action-sale-order-domain-on-team" form-view="team-form" grid-view="team-grid" if="__config__.app.getApp('base').getTeamManagement()"/>
 	      </panel>
-	      <panel name="financialTerms" title="Financial terms" colSpan="12"  if-module="axelor-supplychain" if="__config__.general.getAppSupplychain()">   
+	      <panel name="financialTerms" title="Financial terms" colSpan="12"  if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')">   
 	        <field name="paymentMode" domain="self.inOutSelect = 1" form-view="payment-mode-form" grid-view="payment-mode-grid"/>
 	        <field name="paymentCondition" form-view="payment-condition-form" grid-view="payment-condition-grid"/>
 	      </panel>
 <!-- 	      <panel title="Invoicing" if-module="axelor-supplychain" colSpan="12" showIf="invoicingTypeSelect == 2"> -->
 <!-- 	        <field name="invoicingMomentSelect"/> -->
 <!-- 	      </panel> -->
-	      <panel name="stockLocation" title="Stock location" if-module="axelor-supplychain" if="__config__.general.getAppSupplychain()">
+	      <panel name="stockLocation" title="Stock location" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')">
    		      <field name="location" domain="self.company = :company and self.typeSelect = 1" form-view="location-form" grid-view="location-grid" readonlyIf="statusSelect == 3"/>
 	      </panel>
 	      <panel name="description" title="Description" colSpan="12">
@@ -292,7 +292,7 @@
 	    
 <!-- 	    <panel-related field="saleOrderScheduleLineList" title="Schedules" showIf="invoicingTypeSelect == 2" showTitle="false" if-module="axelor-supplychain" form-view="sale-order-schedule-line-form" grid-view="sale-order-schedule-line-grid"/>           -->
 	    
-	    <panel name="projectPanel" if="__config__.general.getAppBusinessProject() &amp;&amp; __config__.general.getGenerateProjectOrder()" title="Business project" colSpan="12" if-module="axelor-business-project">
+	    <panel name="projectPanel" if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getGenerateProjectOrder()" title="Business project" colSpan="12" if-module="axelor-business-project">
       		  <field name="project" domain="self.typeSelect = 'project'" form-view="project-form" grid-view="project-grid" colSpan="12"/>
        	</panel>
 	  </panel-tabs>
@@ -307,7 +307,7 @@
 	    <field name="confirmationDate" readonly="true" colSpan="6" showIf="statusSelect == 3"/>
 	    <field name="orderDate" colSpan="6" showIf="statusSelect == 3"/>
 	    <field name="orderNumber" colSpan="6" showIf="statusSelect == 3"/>
-	    <field name="shipmentDate" colSpan="6" showIf="statusSelect == 3" if-module="axelor-supplychain" if="__config__.general.getAppSupplychain()" />
+	    <field name="shipmentDate" colSpan="6" showIf="statusSelect == 3" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')" />
 	    <field name="duration" widget="SuggestBox" canNew="true" colSpan="6" onChange="action-sale-order-record-compute-end-of-validity-date" readonlyIf="statusSelect == 3"/>
 	    <field name="endOfValidityDate" colSpan="6" readonly="true">
 	    	<hilite if="$moment().diff(endOfValidityDate, 'days') &gt; 0 &amp;&amp; statusSelect != 3" color="danger"/>
@@ -369,7 +369,7 @@
 	        <field name="confirmationDate"/>
 	        <field name="creationDate"/>
 	        <field name="orderDate"/>
-	        <field name="shipmentDate" if-module="axelor-supplychain" if="__config__.general.getAppSupplychain()" /> 
+	        <field name="shipmentDate" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')" /> 
 	        <field name="duration"/>
 	        <field name="endOfValidityDate">
 	    		<hilite if="$moment().diff(endOfValidityDate, 'days') &gt; 0 &amp;&amp; statusSelect != 3" color="danger"/>
@@ -508,7 +508,7 @@
     <action-group name="action-sale-group-confirmed">
     	<action name="action-supplychain-sale-order-validate-check-location" />
     	<action name="action-sale-order-method-confirm"/>
-    	<action name="action-sale-order-method-generate-project" if="__config__.general.getAppProject() &amp;&amp; __config__.general.getAutomaticProject()"/>
+    	<action name="action-sale-order-method-generate-project" if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getAutomaticProject()"/>
     </action-group>
     
     <action-attrs name="action-sale-order-attrs-in-ati">
@@ -590,7 +590,7 @@
     	<field name="company"  expr="eval:__repo__.of(Company).all().fetchOne()" if="__user__.activeCompany == null &amp;&amp; __repo__.of(Company).all().fetch().size == 1"/>
     	<field name="hasGlobalTask" expr="eval: true"/>
     	<field name="salemanUser" expr="eval:__user__"/>
-    	<field name="team" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()" if="__config__.general.getTeamManagement()"/>
+    	<field name="team" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()" if="__config__.app.getApp('base').getTeamManagement()"/>
     	<field name="template" expr="eval:_template" />
     </action-record>
     

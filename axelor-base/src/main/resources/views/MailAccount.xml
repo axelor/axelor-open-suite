@@ -20,7 +20,7 @@
        	 	<field name="login"/>
         	<field name="password" widget="password"/>
         </panel>
-		<panel name="user" title="User" sidebar="true" if="__config__.general.getMailAccountByUser()">
+		<panel name="user" title="User" sidebar="true" if="__config__.app.getApp('base').getMailAccountByUser()">
         	<field name="user" required="true" showTitle="false" colSpan="12" form-view="user-form" grid-view="user-grid"/>
 		</panel>
 		<panel sidebar="true" >
@@ -30,7 +30,7 @@
     </form>
     
 	<action-record name="action-mail-account-default-record" model="com.axelor.apps.message.db.MailAccount">
-    	<field name="user" expr="eval:__user__" if="__config__.general.getMailAccountByUser()"/>
+    	<field name="user" expr="eval:__user__" if="__config__.app.getApp('base').getMailAccountByUser()"/>
     </action-record>
     
 </object-views>

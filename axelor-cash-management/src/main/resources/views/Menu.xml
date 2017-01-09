@@ -3,7 +3,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.2.xsd">
 
-	<menuitem name="forecast-root" title="Forecasts" order="-86"  if="__config__.general.getAppCashManagement()"
+	<menuitem name="forecast-root" title="Forecasts" order="-86"  if="__config__.app.isApp('cash-management')"
 		icon="fa-money" groups="admins,ERP" icon-background="#e0a83c"/>
 		
 	<menuitem name="forecast-root-forecast" order="10" parent="forecast-root"

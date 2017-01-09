@@ -33,6 +33,7 @@ import com.axelor.apps.account.db.PaymentCondition;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
+import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.invoice.factory.CancelFactory;
 import com.axelor.apps.account.service.invoice.factory.ValidateFactory;
 import com.axelor.apps.account.service.invoice.factory.VentilateFactory;
@@ -44,7 +45,6 @@ import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.service.PartnerService;
-import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.base.service.alarm.AlarmEngineService;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
@@ -69,18 +69,18 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 	protected CancelFactory cancelFactory;
 	protected AlarmEngineService<Invoice> alarmEngineService;
 	protected InvoiceRepository invoiceRepo;
-	protected GeneralService generalService;
+	protected AppAccountService appAccountService;
 	
 	@Inject
 	public InvoiceServiceImpl(ValidateFactory validateFactory, VentilateFactory ventilateFactory, CancelFactory cancelFactory,
-			AlarmEngineService<Invoice> alarmEngineService, InvoiceRepository invoiceRepo, GeneralService generalService) {
+			AlarmEngineService<Invoice> alarmEngineService, InvoiceRepository invoiceRepo, AppAccountService appAccountService) {
 
 		this.validateFactory = validateFactory;
 		this.ventilateFactory = ventilateFactory;
 		this.cancelFactory = cancelFactory;
 		this.alarmEngineService = alarmEngineService;
 		this.invoiceRepo = invoiceRepo;
-		this.generalService = generalService;
+		this.appAccountService = appAccountService;
 	}
 	
 	
@@ -167,7 +167,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 		log.debug("Validation de la facture");
 		
 		validateFactory.getValidator(invoice).process( );
-		if(generalService.getGeneral().getAppBudget() && !generalService.getGeneral().getManageMultiBudget()){
+		if(appAccountService.isApp("budget") && !appAccountService.getAppBudget().getManageMultiBudget()){
 			this.generateBudgetDistribution(invoice);
 		}
 		invoiceRepo.save(invoice);

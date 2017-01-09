@@ -10,6 +10,9 @@ module {
 	module "modules:axelor-crm"
 	module "modules:axelor-studio"
 
+}
 
+dependencies {
+	compile "com.mandrillapp.wrapper.lutung:lutung:0.0.7"
 }
 

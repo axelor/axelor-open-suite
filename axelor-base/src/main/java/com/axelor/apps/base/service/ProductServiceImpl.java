@@ -31,7 +31,7 @@ import com.axelor.apps.base.db.ProductVariantValue;
 import com.axelor.apps.base.db.SupplierCatalog;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.db.repo.ProductVariantRepository;
-import com.axelor.apps.base.service.administration.GeneralService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.exception.AxelorException;
 import com.beust.jcommander.internal.Lists;
 import com.google.inject.Inject;
@@ -46,7 +46,7 @@ public class ProductServiceImpl implements ProductService  {
 	private ProductVariantRepository productVariantRepo;
 
 	@Inject
-	protected GeneralService generalService;
+	protected AppBaseService appBaseService;
 	
 	@Inject
 	private ProductRepository productRepo;
@@ -95,7 +95,7 @@ public class ProductServiceImpl implements ProductService  {
 
 		if(product.getCostPrice() != null && managePriceCoef != null)  {
 
-			product.setSalePrice((product.getCostPrice().multiply(managePriceCoef)).setScale(generalService.getNbDecimalDigitForUnitPrice(), BigDecimal.ROUND_HALF_UP));
+			product.setSalePrice((product.getCostPrice().multiply(managePriceCoef)).setScale(appBaseService.getNbDecimalDigitForUnitPrice(), BigDecimal.ROUND_HALF_UP));
 
 			if(product.getProductVariant() != null)  {
 

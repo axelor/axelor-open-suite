@@ -28,7 +28,7 @@ import org.joda.time.DateTimeConstants;
 import org.joda.time.LocalDate;
 
 import com.axelor.apps.base.db.Team;
-import com.axelor.apps.base.service.administration.GeneralService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.project.db.ProjectPlanning;
 import com.axelor.apps.project.db.ProjectPlanningLine;
 import com.axelor.apps.project.db.ProjectTask;
@@ -53,7 +53,7 @@ public class ProjectPlanningService {
 	protected ProjectPlanningLineRepository projectPlanningLineRepository;
 
 	@Inject
-	protected GeneralService generalService;
+	protected AppBaseService appBaseService;
 	
 	@Inject
 	protected ProjectPlanningRepository projectPlanningRepo;
@@ -131,19 +131,19 @@ public class ProjectPlanningService {
 	}
 
 	public LocalDate getFromDate(){
-		LocalDate todayDate = generalService.getTodayDate();
+		LocalDate todayDate = appBaseService.getTodayDate();
 		return new LocalDate(todayDate.getYear(), todayDate.getMonthOfYear(), todayDate.dayOfMonth().getMinimumValue());
 	}
 
 	public LocalDate getToDate(){
-		LocalDate todayDate = generalService.getTodayDate();
+		LocalDate todayDate = appBaseService.getTodayDate();
 		return new LocalDate(todayDate.getYear(), todayDate.getMonthOfYear(), todayDate.dayOfMonth().getMaximumValue());
 	}
 	
 	public void getTasksForUser(ActionRequest request, ActionResponse response){
 		List<Map<String,String>> dataList = new ArrayList<Map<String,String>>();
 		try{
-			LocalDate todayDate = Beans.get(GeneralService.class).getTodayDate();
+			LocalDate todayDate = appBaseService.getTodayDate();
 			List<ProjectPlanningLine> linesList = Beans.get(ProjectPlanningLineRepository.class).all().
 					filter("self.user.id = ?1 AND self.year >= ?2 AND self.week >= ?3", 
 					AuthUtils.getUser().getId(), todayDate.getYear(), todayDate.getWeekOfWeekyear()).fetch();

@@ -30,7 +30,7 @@ import com.axelor.apps.base.db.SchedulerInstance;
 import com.axelor.apps.base.db.SchedulerInstanceHistory;
 import com.axelor.apps.base.db.repo.SchedulerInstanceRepository;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
-import com.axelor.apps.base.service.administration.GeneralService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
@@ -49,7 +49,7 @@ import com.google.inject.persist.Transactional;
 public class SchedulerService {
 
 
-	protected GeneralService generalService;
+	protected AppBaseService appBaseService;
 
 	private static final Logger LOG = LoggerFactory.getLogger(SchedulerService.class);
 
@@ -59,9 +59,9 @@ public class SchedulerService {
 	private SchedulerInstanceRepository schedulerInstanceRepo;
 
 	@Inject
-	public SchedulerService(GeneralService generalService){
-		this.generalService = generalService;
-		today = this.generalService.getTodayDate();
+	public SchedulerService(AppBaseService appBaseService){
+		this.appBaseService = appBaseService;
+		today = this.appBaseService.getTodayDate();
 
 	}
 

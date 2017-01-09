@@ -18,12 +18,11 @@
 package com.axelor.apps.hr.service.leave.management;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.List;
 
 import org.joda.time.LocalDate;
 
-import com.axelor.apps.base.service.administration.GeneralService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.hr.db.LeaveLine;
 import com.axelor.apps.hr.db.LeaveManagement;
 import com.axelor.auth.db.User;
@@ -33,8 +32,7 @@ import com.google.inject.persist.Transactional;
 public class LeaveManagementService {
 	
 	@Inject
-	GeneralService generalService;
-	
+	private AppBaseService appBaseService;
 	
 	public LeaveLine computeQuantityAvailable (LeaveLine leaveLine){
 		List<LeaveManagement> leaveManagementList = leaveLine.getLeaveManagementList();
@@ -58,7 +56,7 @@ public class LeaveManagementService {
 		leaveManagement.setUser(user);
 		leaveManagement.setComments(comments);
 		if (date == null){
-			leaveManagement.setDate(generalService.getTodayDate());
+			leaveManagement.setDate(appBaseService.getTodayDate());
 		}else{
 			leaveManagement.setDate(date);
 		}

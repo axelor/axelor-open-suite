@@ -4,7 +4,7 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.2.xsd">
 	
 	
-	<menuitem name="sc-root-purchase" title="Purchases" order="-105"  if="__config__.general.getAppPurchase()"
+	<menuitem name="sc-root-purchase" title="Purchases" order="-105"  if="__config__.app.isApp('purchase')"
 		icon="fa-shopping-cart" groups="admins,ERP" icon-background="#b6473f"/>
 		
 	<menuitem name="sc-root-purchase-suppliers" parent="sc-root-purchase" order="-200"
@@ -119,7 +119,7 @@
 
 <!-- TOP MENU -->
 
-	<menuitem name="top-purchase" title="Purchases" groups="admins,ERP" top="true" left="false" order="-150" if="__config__.general.getAppPurchase()"/>
+	<menuitem name="top-purchase" title="Purchases" groups="admins,ERP" top="true" left="false" order="-150" if="__config__.app.isApp('purchase')"/>
 	
 	<menuitem name="top-purchase-create-rfq" title="Create RFQ" order="-100" parent="top-purchase" top="true" action="sc.root.purchase.order.new"/>
 	<menuitem name="top-purchase-orders-all" title="RFQs &amp; Orders" order="-70" action="sc.root.purchase.orders" parent="top-purchase" groups="admins,ERP" top="true" left="false"/>		

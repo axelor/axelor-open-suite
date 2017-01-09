@@ -48,14 +48,14 @@ import com.axelor.apps.account.service.AccountManagementServiceAccountImpl;
 import com.axelor.apps.account.service.AnalyticMoveLineService;
 import com.axelor.apps.account.service.FiscalPositionServiceAccountImpl;
 import com.axelor.apps.account.service.TaxAccountService;
+import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.CompanyConfigService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
-import com.axelor.apps.base.db.repo.GeneralRepository;
+import com.axelor.apps.base.db.repo.AppAccountRepository;
 import com.axelor.apps.base.service.CurrencyService;
-import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
@@ -72,7 +72,7 @@ public class MoveLineService {
 	protected FiscalPositionServiceAccountImpl fiscalPositionService;
 	protected LocalDate today;
 	protected AnalyticMoveLineService analyticMoveLineService;
-	protected GeneralService generalService;
+	protected AppAccountService appAccountService;
 	protected CurrencyService currencyService;
 	protected CompanyConfigService companyConfigService;
 
@@ -80,28 +80,29 @@ public class MoveLineService {
 	
 	@Inject
 	public MoveLineService(AccountManagementServiceAccountImpl accountManagementService, TaxAccountService taxAccountService,
-			FiscalPositionServiceAccountImpl fiscalPositionService, GeneralService generalService,
+			FiscalPositionServiceAccountImpl fiscalPositionService, AppAccountService appAccountService,
 			AnalyticMoveLineService analyticMoveLineService, 
 			CurrencyService currencyService, CompanyConfigService companyConfigService) {
 		this.accountManagementService = accountManagementService;
 		this.taxAccountService = taxAccountService;
 		this.fiscalPositionService = fiscalPositionService;
 		this.analyticMoveLineService = analyticMoveLineService;
-		this.generalService = generalService;
+		this.appAccountService = appAccountService;
 		this.currencyService = currencyService;
 		this.companyConfigService = companyConfigService;
 		
-		today = generalService.getTodayDate();
+		today = appAccountService.getTodayDate();
 	}
 	
 	
 	public MoveLine computeAnalyticDistribution(MoveLine moveLine){
+
 		List<AnalyticMoveLine> analyticMoveLineList = moveLine.getAnalyticMoveLineList();
-		if(analyticMoveLineList != null && generalService.getGeneral().getAnalyticDistributionTypeSelect() != GeneralRepository.DISTRIBUTION_TYPE_FREE){
+		if(analyticMoveLineList != null && generalService.getGeneral().getAnalyticDistributionTypeSelect() != AppAccountRepository.DISTRIBUTION_TYPE_FREE){
 			for (AnalyticMoveLine analyticDistributionLine : analyticMoveLineList) {
 				analyticDistributionLine.setMoveLine(moveLine);
 				analyticDistributionLine.setAmount(analyticMoveLineService.computeAmount(analyticDistributionLine));
-				analyticDistributionLine.setDate(generalService.getTodayDate());
+				analyticDistributionLine.setDate(appAccountService.getTodayDate());
 			}
 		}
 		return moveLine;

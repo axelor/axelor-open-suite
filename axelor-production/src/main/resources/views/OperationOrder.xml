@@ -152,7 +152,7 @@
     
     <action-record name="action-operation-order-record-start" model="com.axelor.apps.production.db.OperationOrder">
     	<field name="statusSelect" expr="eval: 4"/>
-    	<field name="realStartDateT" expr="eval:__config__.generalService.getTodayDateTime()" if="realStartDateT == null"/>
+    	<field name="realStartDateT" expr="eval:__config__.app.getTodayDateTime()" if="realStartDateT == null"/>
     </action-record>
     
     <action-record name="action-operation-order-record-cancel" model="com.axelor.apps.production.db.OperationOrder">

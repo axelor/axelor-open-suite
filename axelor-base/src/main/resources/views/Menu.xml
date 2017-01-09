@@ -403,15 +403,6 @@
 	<menuitem name="admin-root-general" parent="admin-root"
 		title="General"/>
 
-	<menuitem name="admin-root-general-general" parent="admin-root-general"
-		title="General configuration" action="admin.root.general.general" />
-
-	<action-view name="admin.root.general.general" title="General admin"
-		model="com.axelor.apps.base.db.General" >
-		<view type="form" name="general-form"/>
-		<context name="_showRecord" expr="eval:__config__.general?.id" />
-	</action-view>
-	
 	<menuitem name="admin-root-general-app" parent="admin-root-general"
 		title="Apps" action="admin.root.general.app" />
 

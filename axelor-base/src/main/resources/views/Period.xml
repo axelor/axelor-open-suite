@@ -21,7 +21,7 @@
 	    	<field name="fromDate" colSpan="3"/>
 	    	<field name="toDate" colSpan="3"/>
 	    	<field name="year" title="Fiscal year" form-view="year-form" grid-view="year-grid"/>
-	    	<field name="allowExpenseCreation" if-module="axelor-human-resource" if="__config__.general.getAppExpense()" />
+	    	<field name="allowExpenseCreation" if-module="axelor-human-resource" if="__config__.app.isApp('expense')" />
     	</panel>
     	<panel>
         	<panel colSpan="6">

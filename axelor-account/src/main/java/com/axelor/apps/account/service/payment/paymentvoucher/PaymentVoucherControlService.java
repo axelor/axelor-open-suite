@@ -26,8 +26,8 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PayVoucherElementToPay;
 import com.axelor.apps.account.db.PaymentVoucher;
 import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.service.app.AppAccountServiceImpl;
 import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.service.administration.GeneralServiceImpl;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
@@ -59,22 +59,22 @@ public class PaymentVoucherControlService  {
 		
 		if(paymentVoucher.getPaidAmount().compareTo(BigDecimal.ZERO) != 1)  {
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.PAYMENT_VOUCHER_CONTROL_PAID_AMOUNT),
-					GeneralServiceImpl.EXCEPTION, paymentVoucher.getRef()), IException.INCONSISTENCY);
+					AppAccountServiceImpl.EXCEPTION, paymentVoucher.getRef()), IException.INCONSISTENCY);
 		}
 		
 		if(paymentVoucher.getRemainingAmount().compareTo(BigDecimal.ZERO) < 0)  {
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.PAYMENT_VOUCHER_CONTROL_1),
-					GeneralServiceImpl.EXCEPTION, paymentVoucher.getRef()), IException.INCONSISTENCY);
+					AppAccountServiceImpl.EXCEPTION, paymentVoucher.getRef()), IException.INCONSISTENCY);
 		}
 
 		// Si on a des lignes à payer (dans le deuxième tableau)
 		if(!paymentVoucher.getHasAutoInput() && (paymentVoucher.getPayVoucherElementToPayList() == null || paymentVoucher.getPayVoucherElementToPayList().size() == 0))  {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.PAYMENT_VOUCHER_CONTROL_2),  GeneralServiceImpl.EXCEPTION), IException.INCONSISTENCY);
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.PAYMENT_VOUCHER_CONTROL_2),  AppAccountServiceImpl.EXCEPTION), IException.INCONSISTENCY);
 		}
 
 		if(journal == null || paymentModeAccount == null)  {
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.PAYMENT_VOUCHER_CONTROL_3),
-					GeneralServiceImpl.EXCEPTION), IException.CONFIGURATION_ERROR);
+					AppAccountServiceImpl.EXCEPTION), IException.CONFIGURATION_ERROR);
 		}
 
 		if(journal.getEditReceiptOk())  {
@@ -86,7 +86,7 @@ public class PaymentVoucherControlService  {
 	public void checkPayboxAmount(PaymentVoucher paymentVoucher) throws AxelorException  {
 		if(paymentVoucher.getPayboxAmountPaid() != null && paymentVoucher.getPayboxAmountPaid().compareTo(paymentVoucher.getPaidAmount()) != 0)  {
 				throw new AxelorException(String.format(I18n.get(IExceptionMessage.PAYMENT_VOUCHER_CONTROL_4),
-						GeneralServiceImpl.EXCEPTION,paymentVoucher.getPaidAmount(),paymentVoucher.getPayboxAmountPaid()), IException.INCONSISTENCY);
+						AppAccountServiceImpl.EXCEPTION,paymentVoucher.getPaidAmount(),paymentVoucher.getPayboxAmountPaid()), IException.INCONSISTENCY);
 		}
 	}
 

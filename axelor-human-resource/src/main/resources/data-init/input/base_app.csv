@@ -1,5 +1,0 @@
-"name";"code";"description";"typeSelect";"employeeGeneral.importId";"leaveGeneral.importId";"expenseGeneral.importId";"timesheetGeneral.importId";"image";"modules";"dependsOn"
-"Employee Managment";"EMP";"Employee Management";"employee";1;;;;"app-human-resource.png";"axelor-human-resource";"account,project,crm"
-"Leave Management";"LEAVE";"Leave Management";"leave";;1;;;"app-human-resource.png";"axelor-human-resource";"acccount,project,crm"
-"Timesheet Management";"TM";"Timesheet Management";"timesheet";;;;1;"app-human-resource.png";"axelor-human-resource";"account,project,crm"
-"Expense Management";"EXP";"Expense Management";"expense";;;1;;"app-human-resource.png";"axelor-human-resource";"account,project,crm"

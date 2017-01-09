@@ -28,10 +28,10 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.BankStatementRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.service.app.AppAccountServiceImpl;
 import com.axelor.apps.account.service.move.MoveLineService;
 import com.axelor.apps.account.service.move.MoveService;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.service.administration.GeneralServiceImpl;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
@@ -98,7 +98,7 @@ public class BankStatementService {
 
 		if(bankStatement.getComputedBalance().compareTo(bankStatement.getEndingBalance()) != 0)  {
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.BANK_STATEMENT_1),
-					GeneralServiceImpl.EXCEPTION), IException.CONFIGURATION_ERROR);
+					AppAccountServiceImpl.EXCEPTION), IException.CONFIGURATION_ERROR);
 		}
 
 	}
@@ -153,14 +153,14 @@ public class BankStatementService {
 		if(bankStatementLine.getAmount().compareTo(BigDecimal.ZERO) == 0 )  {
 
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.BANK_STATEMENT_3),
-					GeneralServiceImpl.EXCEPTION, bankStatementLine.getReference()), IException.CONFIGURATION_ERROR);
+					AppAccountServiceImpl.EXCEPTION, bankStatementLine.getReference()), IException.CONFIGURATION_ERROR);
 		}
 
 		if((bankStatementLine.getAmount().compareTo(BigDecimal.ZERO) > 0  && bankStatementLine.getAmount().compareTo(moveLine.getCredit()) != 0 )
 				|| (bankStatementLine.getAmount().compareTo(BigDecimal.ZERO) < 0  && bankStatementLine.getAmount().compareTo(moveLine.getDebit()) != 0 ) )  {
 
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.BANK_STATEMENT_2),
-					GeneralServiceImpl.EXCEPTION, bankStatementLine.getReference()), IException.CONFIGURATION_ERROR);
+					AppAccountServiceImpl.EXCEPTION, bankStatementLine.getReference()), IException.CONFIGURATION_ERROR);
 		}
 
 	}

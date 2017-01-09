@@ -23,7 +23,6 @@ import java.util.Map;
 
 
 import com.axelor.apps.base.db.App;
-import com.axelor.apps.base.db.repo.AppRepository;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
 import com.google.inject.Inject;
@@ -33,8 +32,6 @@ public class ImportApp {
 	@Inject
 	private MetaFiles metaFiles;
 	
-	@Inject
-	private AppRepository appRepo;
 	
 	public Object importApp(Object bean, Map<String,Object> values) {
 		
@@ -43,7 +40,7 @@ public class ImportApp {
 		App app = (App) bean;
 		
 		final Path path = (Path) values.get("__path__");
-		String fileName = (String) values.get("image");
+		String fileName = (String) values.get("imagePath");
 		
 		try {
 			final File image = path.resolve("img" + File.separator +  fileName).toFile(); 
@@ -54,7 +51,7 @@ public class ImportApp {
 			e.printStackTrace();
 		}
 		
-		return appRepo.save(app);
+		return app;
 	}
 	
 }

@@ -35,10 +35,10 @@ import com.axelor.apps.account.db.BankOrderFileFormat;
 import com.axelor.apps.account.db.BankOrderLine;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.service.app.AppAccountServiceImpl;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
-import com.axelor.apps.base.service.administration.GeneralServiceImpl;
 import com.axelor.apps.tool.file.FileTool;
 import com.axelor.apps.tool.xml.Marschaller;
 import com.axelor.exception.AxelorException;
@@ -127,7 +127,7 @@ public class BankOrderFileService {
 				return FileTool.writer(this.getFolderPath(), this.computeFileName(), (List<String>) fileToCreate);
 			} catch (IOException e) {
 				throw new AxelorException(String.format(I18n.get(IExceptionMessage.CFONB_EXPORT_2),
-						GeneralServiceImpl.EXCEPTION,e), IException.CONFIGURATION_ERROR);
+						AppAccountServiceImpl.EXCEPTION,e), IException.CONFIGURATION_ERROR);
 			}
 
 		default:

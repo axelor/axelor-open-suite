@@ -23,7 +23,6 @@ import java.util.Map;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.sale.db.ISaleOrder;
 import com.axelor.apps.sale.db.SaleOrder;
@@ -39,6 +38,7 @@ import com.axelor.apps.supplychain.service.SaleOrderInvoiceServiceImpl;
 import com.axelor.apps.supplychain.service.SaleOrderPurchaseService;
 import com.axelor.apps.supplychain.service.SaleOrderStockService;
 import com.axelor.apps.supplychain.service.TimetableService;
+import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
@@ -59,7 +59,7 @@ public class SaleOrderController{
 	private SaleOrderRepository saleOrderRepo;
 
 	@Inject
-	protected GeneralService generalService;
+	protected AppSupplychainService appSupplychainService;
 
 	@Inject
 	private SaleOrderInvoiceServiceImpl saleOrderInvoiceServiceImpl;
@@ -255,7 +255,7 @@ public class SaleOrderController{
 
 	public void getSubscriptionSaleOrdersToInvoice(ActionRequest request, ActionResponse response) throws AxelorException  {
 
-		List<Subscription> subscriptionList = Beans.get(SubscriptionRepository.class).all().filter("self.invoiced = false AND self.invoicingDate <= ?1",generalService.getTodayDate()).fetch();
+		List<Subscription> subscriptionList = Beans.get(SubscriptionRepository.class).all().filter("self.invoiced = false AND self.invoicingDate <= ?1", appSupplychainService.getTodayDate()).fetch();
 		List<Long> listId = new ArrayList<Long>();
 		for (Subscription subscription : subscriptionList) {
 			listId.add(subscription.getSaleOrderLine().getSaleOrder().getId());
@@ -358,7 +358,7 @@ public class SaleOrderController{
 			}
 		}
 		
-		if (so.getStatusSelect() == ISaleOrder.STATUS_FINISHED  && generalService.getGeneral().getTerminateSaleOrderOnDelivery()){
+		if (so.getStatusSelect() == ISaleOrder.STATUS_FINISHED  && appSupplychainService.getAppSupplychain().getTerminateSaleOrderOnDelivery()){
 			so.setStatusSelect(ISaleOrder.STATUS_ORDER_CONFIRMED);
 		}
 		

@@ -2,7 +2,7 @@
 <object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.2.xsd">
 
-	<menuitem name="invoicing-project-all" parent="menu-project-root"  if="__config__.general.getAppBusinessProject()"    	title="Invoicing Projects"
+	<menuitem name="invoicing-project-all" parent="menu-project-root"  if="__config__.app.isApp('business-project')"    	title="Invoicing Projects"
     	action="invoicing.project.all" />
 
 	<action-view name="invoicing.project.all" title="Invoicing Projects" model="com.axelor.apps.businessproject.db.InvoicingProject">

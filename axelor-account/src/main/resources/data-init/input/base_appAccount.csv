@@ -1,0 +1,2 @@
+"name";"code";"description";"typeSelect";"imagePath";"modules";"dependsOn"
+"Accounting";"ACC";"Accounting configuration ";"account";"app-account.png";"axelor-account";"base"

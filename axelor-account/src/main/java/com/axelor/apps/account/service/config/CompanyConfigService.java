@@ -18,9 +18,9 @@
 package com.axelor.apps.account.service.config;
 
 import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.service.app.AppAccountServiceImpl;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
-import com.axelor.apps.base.service.administration.GeneralServiceImpl;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
@@ -33,7 +33,7 @@ public class CompanyConfigService {
 
 		if(company.getCurrency() == null)  {
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.COMPANY_CURRENCY),
-					GeneralServiceImpl.EXCEPTION, company.getName()), IException.CONFIGURATION_ERROR);
+					AppAccountServiceImpl.EXCEPTION, company.getName()), IException.CONFIGURATION_ERROR);
 		}
 		
 		return company.getCurrency();

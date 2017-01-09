@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
+	
+	<form name="app-purchase-config-form" title="App purchase" model="com.axelor.apps.base.db.AppPurchase" canDelete="false" canNew="false" width="large">
+		<panel>
+			<field name="managePurchasesUnits" widget="boolean-switch"/>
+			<field name="managePurchaseOrderVersion"  widget="boolean-switch"/>
+			<field name="manageSupplier"  widget="boolean-switch" if-module="axelor-supplier-management"/>
+		</panel>
+		<panel-dashlet action="admin.root.conf.purchase.config" colSpan="12"/> 
+	</form>
+	
+	
+</object-views>

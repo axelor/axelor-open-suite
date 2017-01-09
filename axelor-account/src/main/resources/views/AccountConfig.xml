@@ -42,7 +42,7 @@
 					<field name="accountClearanceJournal" domain="self.statusSelect = 1 AND self.company = :company" grid-view="journal-grid" form-view="journal-form"/>
 					<field name="irrecoverableJournal" domain="self.statusSelect = 1 AND self.company = :company" grid-view="journal-grid" form-view="journal-form"/>
 					<field name="miscOperationJournal" domain="self.statusSelect = 1 AND self.company = :company" grid-view="journal-grid" form-view="journal-form"/>
-					<field name="expenseJournal" domain="self.statusSelect = 1 AND self.company = :company" if-module="axelor-human-resource" grid-view="journal-grid" form-view="journal-form" if="__config__.general.getAppExpense()"/>
+					<field name="expenseJournal" domain="self.statusSelect = 1 AND self.company = :company" if-module="axelor-human-resource" grid-view="journal-grid" form-view="journal-form" if="__config__.app.isApp('expense')"/>
 				</panel>
 				<panel name="accounts" title="Accounts" colSpan="12">
 					<field name="customerAccount" domain="self.company = :company" grid-view="account-grid" form-view="account-form"/>
@@ -76,7 +76,7 @@
 				    <field name="payingBackTax" grid-view="tax-grid" form-view="tax-form"/>
 				</panel>
 				<panel	name="expense" title="Expense" colSpan="12">
-					<field name="expenseTaxAccount" domain="self.company = :company" if-module="axelor-human-resource" grid-view="account-grid" form-view="account-form" if="__config__.general.getAppExpense()"/>
+					<field name="expenseTaxAccount" domain="self.company = :company" if-module="axelor-human-resource" grid-view="account-grid" form-view="account-form" if="__config__.app.isApp('expense')"/>
 				</panel>
 				<panel name="invoicesSequences" title="Invoices sequences" colSpan="12">
 				    <field name="custInvSequence" domain="self.code = 'invoice' and self.company = :company" form-view="sequence-form" grid-view="sequence-grid"/>
@@ -86,7 +86,7 @@
 				</panel>
 			</panel>
 
-			<panel name="cfonb" title="CFONB" if="__config__.general.getManageDirectDebitPayment()">
+			<panel name="cfonb" title="CFONB" if="__config__.app.getApp('account').getManageDirectDebitPayment()">
 				<field name="cfonbConfig" showTitle="false" colSpan="12" >
 					<editor itemSpan="6">
 						<field name="name" colSpan="8"/>
@@ -162,7 +162,7 @@
 				<field name="sixMonthDebtPassReason"/>
 				<field name="threeMonthDebtPassReason"/>
 			</panel>
-			<panel name="directDebit" title="Direct debit" if="__config__.general.getManageDirectDebitPayment()" >
+			<panel name="directDebit" title="Direct debit" if="__config__.app.getApp('account').getManageDirectDebitPayment()" >
 				<panel name="directDebits" title="Direct debits" colSpan="12">
 					<field name="paymentScheduleExportFolderPathCFONB"/>
 					<field name="directDebitPaymentMode" grid-view="payment-mode-grid" form-view="payment-mode-form"/>

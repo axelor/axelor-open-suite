@@ -29,7 +29,7 @@ import com.axelor.apps.base.db.TrackingNumberConfiguration;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.UnitConversionService;
-import com.axelor.apps.base.service.administration.GeneralService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.stock.db.Location;
 import com.axelor.apps.stock.db.LocationLine;
 import com.axelor.apps.stock.db.StockMove;
@@ -46,7 +46,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService  {
 	private TrackingNumberService trackingNumberService;
 	
 	@Inject
-	protected GeneralService generalService;
+	protected AppBaseService appBaseService;
 
 	/**
 	 * Méthode générique permettant de créer une ligne de mouvement de stock en gérant les numéros de suivi en fonction du type d'opération.
@@ -68,12 +68,12 @@ public class StockMoveLineServiceImpl implements StockMoveLineService  {
 			BigDecimal unitPriceUntaxed = BigDecimal.ZERO;
 			BigDecimal unitPriceTaxed = BigDecimal.ZERO;
 			if(taxed){
-				unitPriceTaxed = unitPrice.setScale(generalService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
-				unitPriceUntaxed = unitPrice.divide(taxRate.add(BigDecimal.ONE), generalService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
+				unitPriceTaxed = unitPrice.setScale(appBaseService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
+				unitPriceUntaxed = unitPrice.divide(taxRate.add(BigDecimal.ONE), appBaseService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
 			}
 			else{
-				unitPriceUntaxed = unitPrice.setScale(generalService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
-				unitPriceTaxed = unitPrice.multiply(taxRate.add(BigDecimal.ONE)).setScale(generalService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
+				unitPriceUntaxed = unitPrice.setScale(appBaseService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
+				unitPriceTaxed = unitPrice.multiply(taxRate.add(BigDecimal.ONE)).setScale(appBaseService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
 			}
 			StockMoveLine stockMoveLine = this.createStockMoveLine(product, productName, description, quantity, unitPriceUntaxed, unitPriceTaxed, unit, stockMove, null);
 

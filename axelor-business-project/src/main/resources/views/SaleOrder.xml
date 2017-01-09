@@ -27,7 +27,7 @@
     </form>
     
     <action-record name="action-business-project-record-sale-order-invoincing-wizard-default" model="com.axelor.apps.sale.db.SaleOrder">
-    	<field name="invoicingTypeSelect" expr="eval: __config__.general.getDefaultInvoiceTypeSelect()"/>
+    	<field name="invoicingTypeSelect" expr="eval: __config__.app.getApp('business-project').defaultInvoiceTypeSelect"/>
     </action-record>
     
     <action-group name="action-supplychain-sale-order-group-generate-invoice-popup">

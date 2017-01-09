@@ -28,7 +28,7 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.service.UnitConversionService;
-import com.axelor.apps.base.service.administration.GeneralService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
@@ -66,7 +66,7 @@ public class MrpLineServiceImpl implements MrpLineService  {
 	protected User user;
 
 	@Inject
-	public MrpLineServiceImpl(GeneralService generalService, UserService userService, PurchaseOrderServiceSupplychainImpl purchaseOrderServiceSupplychainImpl, 
+	public MrpLineServiceImpl(AppBaseService appBaseService, UserService userService, PurchaseOrderServiceSupplychainImpl purchaseOrderServiceSupplychainImpl, 
 			PurchaseOrderLineService purchaseOrderLineService, PurchaseOrderRepository purchaseOrderRepo, MinStockRulesService minStockRulesService)  {
 		
 		this.purchaseOrderServiceSupplychainImpl = purchaseOrderServiceSupplychainImpl;
@@ -74,7 +74,7 @@ public class MrpLineServiceImpl implements MrpLineService  {
 		this.purchaseOrderRepo = purchaseOrderRepo;
 		this.minStockRulesService = minStockRulesService;
 		
-		this.today = generalService.getTodayDate();
+		this.today = appBaseService.getTodayDate();
 		this.user = userService.getUser();
 	}
 	

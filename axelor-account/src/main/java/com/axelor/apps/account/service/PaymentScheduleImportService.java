@@ -43,6 +43,8 @@ import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.PaymentScheduleLineRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.service.app.AppAccountService;
+import com.axelor.apps.account.service.app.AppAccountServiceImpl;
 import com.axelor.apps.account.service.bankorder.file.cfonb.CfonbImportService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.debtrecovery.ReminderService;
@@ -51,8 +53,6 @@ import com.axelor.apps.account.service.move.MoveService;
 import com.axelor.apps.account.service.payment.PaymentModeService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.service.administration.GeneralService;
-import com.axelor.apps.base.service.administration.GeneralServiceImpl;
 import com.axelor.apps.message.db.Message;
 import com.axelor.apps.message.db.Template;
 import com.axelor.apps.message.db.repo.MessageRepository;
@@ -87,7 +87,7 @@ public class PaymentScheduleImportService {
 	private List<Invoice> invoiceList = new ArrayList<Invoice>();										// liste des factures rejetées
 
 	@Inject
-	public PaymentScheduleImportService(GeneralService generalService, MoveLineService moveLineService, MoveService moveService, MoveRepository moveRepo,
+	public PaymentScheduleImportService(AppAccountService appAccountService, MoveLineService moveLineService, MoveService moveService, MoveRepository moveRepo,
 			PaymentScheduleService paymentScheduleService, PaymentScheduleLineRepository paymentScheduleLineRepo, PaymentModeService paymentModeService,
 			CfonbImportService cfonbImportService, ReminderService reminderService, AccountConfigService accountConfigService, DirectDebitManagementRepository directDebitManagementRepo,
 			InvoiceRepository invoiceRepo) {
@@ -103,7 +103,7 @@ public class PaymentScheduleImportService {
 		this.accountConfigService = accountConfigService;
 		this.directDebitManagementRepo = directDebitManagementRepo;
 		this.invoiceRepo = invoiceRepo;
-		this.today = generalService.getTodayDate();
+		this.today = appAccountService.getTodayDate();
 
 	}
 
@@ -138,7 +138,7 @@ public class PaymentScheduleImportService {
 
 		if(rejectJournal.getSequence() == null)  {
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.PAYMENT_SCHEDULE_4),
-					GeneralServiceImpl.EXCEPTION, company.getName(), rejectJournal.getName()), IException.CONFIGURATION_ERROR);
+					AppAccountServiceImpl.EXCEPTION, company.getName(), rejectJournal.getName()), IException.CONFIGURATION_ERROR);
 		}
 	}
 

@@ -36,12 +36,12 @@ import com.axelor.apps.account.db.MoveLineReport;
 import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.account.db.repo.MoveLineReportRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.IAdministration;
-import com.axelor.apps.base.service.administration.GeneralService;
-import com.axelor.apps.base.service.administration.GeneralServiceImpl;
 import com.axelor.apps.base.service.administration.SequenceService;
+import com.axelor.apps.base.service.app.AppBaseServiceImpl;
 import com.axelor.db.JPA;
 import com.axelor.db.Model;
 import com.axelor.exception.AxelorException;
@@ -68,10 +68,10 @@ public class MoveLineReportServiceImpl implements MoveLineReportService  {
 
 
 	@Inject
-	public MoveLineReportServiceImpl(GeneralService generalService, MoveLineReportRepository moveLineReportRepo, AccountRepository accountRepo) {
+	public MoveLineReportServiceImpl(AppAccountService appBaseService, MoveLineReportRepository moveLineReportRepo, AccountRepository accountRepo) {
 		this.moveLineReportRepo = moveLineReportRepo;
 		this.accountRepo = accountRepo;
-		dateTime = generalService.getTodayDateTime();
+		dateTime = appBaseService.getTodayDateTime();
 
 	}
 
@@ -231,7 +231,7 @@ public class MoveLineReportServiceImpl implements MoveLineReportService  {
 			String seq = sequenceService.getSequenceNumber(IAdministration.MOVE_LINE_REPORT, moveLineReport.getCompany());
 			if(seq == null)  {
 				throw new AxelorException(String.format(I18n.get(IExceptionMessage.MOVE_LINE_REPORT_1),
-						GeneralServiceImpl.EXCEPTION, moveLineReport.getCompany().getName()), IException.CONFIGURATION_ERROR);
+						AppBaseServiceImpl.EXCEPTION, moveLineReport.getCompany().getName()), IException.CONFIGURATION_ERROR);
 			}
 
 			return seq;
@@ -240,7 +240,7 @@ public class MoveLineReportServiceImpl implements MoveLineReportService  {
 			String seq = sequenceService.getSequenceNumber(IAdministration.MOVE_LINE_EXPORT, moveLineReport.getCompany());
 			if(seq == null)  {
 				throw new AxelorException(String.format(I18n.get(IExceptionMessage.MOVE_LINE_REPORT_2),
-						GeneralServiceImpl.EXCEPTION, moveLineReport.getCompany().getName()), IException.CONFIGURATION_ERROR);
+						AppBaseServiceImpl.EXCEPTION, moveLineReport.getCompany().getName()), IException.CONFIGURATION_ERROR);
 			}
 
 			return seq;

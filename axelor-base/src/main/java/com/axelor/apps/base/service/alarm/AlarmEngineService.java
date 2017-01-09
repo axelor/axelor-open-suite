@@ -31,7 +31,7 @@ import com.axelor.apps.base.db.Alarm;
 import com.axelor.apps.base.db.AlarmEngine;
 import com.axelor.apps.base.db.AlarmMessage;
 import com.axelor.apps.base.db.repo.AlarmEngineRepository;
-import com.axelor.apps.base.service.administration.GeneralService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.db.JPA;
 import com.axelor.db.Model;
 import com.axelor.db.mapper.Mapper;
@@ -45,7 +45,7 @@ import com.google.inject.Inject;
 public class AlarmEngineService <T extends Model> {
 
 
-	protected GeneralService generalService;
+	protected AppBaseService appBaseService;
 
 	private static final Logger LOG = LoggerFactory.getLogger(AlarmEngineService.class);
 
@@ -57,9 +57,9 @@ public class AlarmEngineService <T extends Model> {
 	private AlarmEngineRepository alarmEngineRepo;
 
 	@Inject
-	public AlarmEngineService(GeneralService generalService) {
-		this.generalService = generalService;
-		dateTime = this.generalService.getTodayDateTime();
+	public AlarmEngineService(AppBaseService appBaseService) {
+		this.appBaseService = appBaseService;
+		dateTime = this.appBaseService.getTodayDateTime();
 
 	}
 

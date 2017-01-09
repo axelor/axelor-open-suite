@@ -50,6 +50,7 @@ import com.axelor.apps.stock.service.StockMoveLineService;
 import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.apps.stock.service.config.StockConfigService;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;
+import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
@@ -67,6 +68,9 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
 	
 	@Inject
 	protected StockMoveRepository stockMoveRepo;
+	
+	@Inject
+	protected AppSupplychainService appSupplychainService; 
 	
 	private static final Logger LOG = LoggerFactory.getLogger(PurchaseOrderServiceSupplychainImpl.class);
 
@@ -270,7 +274,7 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
 			}
 		}
 		
-		if (purchaseOrder.getStatusSelect() == IPurchaseOrder.STATUS_FINISHED  && generalService.getGeneral().getTerminatePurchaseOrderOnReceipt()){
+		if (purchaseOrder.getStatusSelect() == IPurchaseOrder.STATUS_FINISHED  && appSupplychainService.getAppSupplychain().getTerminatePurchaseOrderOnReceipt()){
 			purchaseOrder.setStatusSelect(IPurchaseOrder.STATUS_VALIDATED);
 		}
 		

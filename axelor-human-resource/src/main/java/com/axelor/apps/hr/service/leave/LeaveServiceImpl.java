@@ -32,7 +32,7 @@ import org.joda.time.LocalDateTime;
 import com.axelor.apps.base.db.DayPlanning;
 import com.axelor.apps.base.db.WeeklyPlanning;
 import com.axelor.apps.base.service.DurationService;
-import com.axelor.apps.base.service.administration.GeneralService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.weeklyplanning.WeeklyPlanningService;
 import com.axelor.apps.crm.db.Event;
 import com.axelor.apps.crm.db.repo.EventRepository;
@@ -71,13 +71,13 @@ public class LeaveServiceImpl  implements  LeaveService  {
 	protected EventRepository eventRepo;
 	protected PublicHolidayService publicHolidayService;
 	protected LeaveRequestRepository leaveRequestRepo;
-	protected GeneralService generalService;
+	protected AppBaseService appBaseService;
 	protected HRConfigService hrConfigService;
 	protected TemplateMessageService templateMessageService;
 	
 	@Inject
 	public LeaveServiceImpl(DurationService durationService, LeaveLineRepository leaveLineRepo, WeeklyPlanningService weeklyPlanningService, EventService eventService,
-			EventRepository eventRepo,PublicHolidayService publicHolidayService, LeaveRequestRepository leaveRequestRepo, GeneralService generalService,
+			EventRepository eventRepo,PublicHolidayService publicHolidayService, LeaveRequestRepository leaveRequestRepo, AppBaseService appBaseService,
 			HRConfigService hrConfigService, TemplateMessageService templateMessageService){
 		
 		this.durationService = durationService;
@@ -87,7 +87,7 @@ public class LeaveServiceImpl  implements  LeaveService  {
 		this.eventRepo = eventRepo;
 		this.publicHolidayService = publicHolidayService;
 		this.leaveRequestRepo = leaveRequestRepo;
-		this.generalService = generalService;
+		this.appBaseService = appBaseService;
 		this.hrConfigService = hrConfigService;
 		this.templateMessageService = templateMessageService;
 	}
@@ -429,7 +429,7 @@ public class LeaveServiceImpl  implements  LeaveService  {
 				throw new AxelorException(String.format(I18n.get(IExceptionMessage.LEAVE_LINE),user.getEmployee().getName(), leaveReason.getLeaveReason()), IException.CONFIGURATION_ERROR);
 			}
 			leave.setLeaveLine(leaveLine);
-			leave.setRequestDate(Beans.get(GeneralService.class).getTodayDate());
+			leave.setRequestDate(appBaseService.getTodayDate());
 			leave.setFromDate(new LocalDate(request.getData().get("fromDate").toString()));
 			leave.setStartOnSelect(new Integer(request.getData().get("startOn").toString()));
 			leave.setToDate(new LocalDate(request.getData().get("toDate").toString()));
@@ -464,7 +464,7 @@ public class LeaveServiceImpl  implements  LeaveService  {
 		}
 		
 		leaveRequest.setStatusSelect(LeaveRequestRepository.STATUS_AWAITING_VALIDATION);
-		leaveRequest.setRequestDate(generalService.getTodayDate());
+		leaveRequest.setRequestDate(appBaseService.getTodayDate());
 		
 		leaveRequestRepo.save(leaveRequest);
 		
@@ -495,7 +495,7 @@ public class LeaveServiceImpl  implements  LeaveService  {
 		
 		leaveRequest.setStatusSelect(LeaveRequestRepository.STATUS_VALIDATED);
 		leaveRequest.setValidatedBy(AuthUtils.getUser());
-		leaveRequest.setValidationDate(generalService.getTodayDate());
+		leaveRequest.setValidationDate(appBaseService.getTodayDate());
 		
 		leaveRequestRepo.save(leaveRequest);
 		
@@ -525,7 +525,7 @@ public class LeaveServiceImpl  implements  LeaveService  {
 		
 		leaveRequest.setStatusSelect(LeaveRequestRepository.STATUS_REFUSED);
 		leaveRequest.setRefusedBy(AuthUtils.getUser());
-		leaveRequest.setRefusalDate(generalService.getTodayDate());
+		leaveRequest.setRefusalDate(appBaseService.getTodayDate());
 		
 		leaveRequestRepo.save(leaveRequest);
 		
@@ -548,7 +548,7 @@ public class LeaveServiceImpl  implements  LeaveService  {
 	public boolean willHaveEnoughDays(LeaveRequest leaveRequest){
 		
 		
-		LocalDate todayDate = Beans.get(GeneralService.class).getTodayDate();
+		LocalDate todayDate = appBaseService.getTodayDate();
 		LocalDate beginDate = leaveRequest.getFromDate() ;
 		
 		int interval = ( beginDate.getYear() - todayDate.getYear() ) *12 + beginDate.getMonthOfYear() - todayDate.getMonthOfYear();

@@ -30,7 +30,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Wizard;
 import com.axelor.apps.base.db.repo.ProductRepository;
-import com.axelor.apps.base.service.administration.GeneralService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.message.MessageServiceBaseImpl;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.ExtraHours;
@@ -149,7 +149,7 @@ public class TimesheetController {
 				   .model(Timesheet.class.getName())
 				   .add("grid","timesheet-validate-grid")
 				   .add("form","timesheet-form")
-				   .context("todayDate", Beans.get(GeneralService.class).getTodayDate());
+				   .context("todayDate", Beans.get(AppBaseService.class).getTodayDate());
 
 		actionView.domain("self.company = :_activeCompany AND  self.statusSelect = 2")
 		.context("_activeCompany", user.getActiveCompany());

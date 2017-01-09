@@ -22,7 +22,7 @@ import java.math.BigDecimal;
 import org.joda.time.LocalDate;
 
 import com.axelor.apps.base.db.Product;
-import com.axelor.apps.base.service.administration.GeneralService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.stock.db.Location;
 import com.axelor.apps.stock.db.LocationLine;
 import com.axelor.apps.stock.db.MinStockRules;
@@ -46,7 +46,7 @@ public class MinStockRulesServiceImpl implements MinStockRulesService  {
 	@Inject
 	public MinStockRulesServiceImpl() {
 
-		this.today = Beans.get(GeneralService.class).getTodayDate();
+		this.today = Beans.get(AppBaseService.class).getTodayDate();
 		this.user = AuthUtils.getUser();
 	}
 

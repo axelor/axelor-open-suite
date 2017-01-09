@@ -3,7 +3,13 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/data-import http://axelor.com/xml/ns/data-import/data-import_4.0.xsd">
   	
-  	<input file="base_app.csv" separator=";" type="com.axelor.apps.base.db.App" call="com.axelor.csv.script.ImportApp:importApp"  />
+  	<input file="base_appEmployee.csv" separator=";" type="com.axelor.apps.base.db.AppEmployee" call="com.axelor.csv.script.ImportApp:importApp"  />
+  	
+  	<input file="base_appLeave.csv" separator=";" type="com.axelor.apps.base.db.AppLeave" call="com.axelor.csv.script.ImportApp:importApp"  />
+  	
+  	<input file="base_appExpense.csv" separator=";" type="com.axelor.apps.base.db.AppExpense" call="com.axelor.csv.script.ImportApp:importApp"  />
+  	
+  	<input file="base_appTimesheet.csv" separator=";" type="com.axelor.apps.base.db.AppTimesheet" call="com.axelor.csv.script.ImportApp:importApp"  />
   	
   	<input file="auth_permission.csv" separator=";" type="com.axelor.auth.db.Permission" search="self.name = :name"/>
   	

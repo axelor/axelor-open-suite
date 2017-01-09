@@ -32,7 +32,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.administration.SequenceService;
-import com.axelor.apps.base.service.administration.GeneralService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.stock.db.FreightCarrierMode;
 import com.axelor.apps.stock.db.Location;
 import com.axelor.apps.stock.db.ShipmentMode;
@@ -67,7 +67,7 @@ public class StockMoveServiceImpl implements StockMoveService {
 	private  StockMoveLineRepository stockMoveLineRepo;
 
 	@Inject
-	protected GeneralService generalService;
+	protected AppBaseService appBaseService;
 	
 	@Inject
 	protected StockMoveRepository stockMoveRepo;
@@ -75,7 +75,7 @@ public class StockMoveServiceImpl implements StockMoveService {
 	@Inject
 	public StockMoveServiceImpl() {
 
-		this.today = Beans.get(GeneralService.class).getTodayDate();
+		this.today = Beans.get(AppBaseService.class).getTodayDate();
 
 	}
 	

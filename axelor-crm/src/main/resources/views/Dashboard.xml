@@ -148,8 +148,8 @@
 		<dashlet action="dashlet.my.closed.opportunities" height="350" canSearch="true"/>
 		<dashlet action="dashlet.my.open.opportunities" height="350" canSearch="true"/>
 		<dashlet action="dashlet.unassigned.opportunities" height="350" canSearch="true"/>
-		<dashlet action="dashlet.team.closed.opportunities" height="350" canSearch="true" if="__config__.general.getTeamManagement()"/>
-		<dashlet action="dashlet.team.open.opportunities" height="350" canSearch="true" if="__config__.general.getTeamManagement()"/>
+		<dashlet action="dashlet.team.closed.opportunities" height="350" canSearch="true" if="__config__.app.getApp('base').getTeamManagement()"/>
+		<dashlet action="dashlet.team.open.opportunities" height="350" canSearch="true" if="__config__.app.getApp('base').getTeamManagement()"/>
 		<dashlet action="dashlet.opportunities.by.source" height="350" canSearch="true"/>
 		<dashlet action="dashlet.opportunities.by.saletage" height="350" canSearch="true"/>
 		<dashlet action="dashlet.opportunities.by.saletage.funnel" height="350" canSearch="true"/>
@@ -172,9 +172,9 @@
 	<dashboard title="Dashboard" name="crm.opportunities.dashboard.3"  >
 		<dashlet action="dashlet.opportunities.pipeline.next.90d" height="350" />
 		<dashlet action="dashlet.opportunities.my.top.deals" height="350" canSearch="true"/>
-		<dashlet action="dashlet.opportunities.my.team.top.deals" height="350" canSearch="true" if="__config__.general.getTeamManagement()"/>
+		<dashlet action="dashlet.opportunities.my.team.top.deals" height="350" canSearch="true" if="__config__.app.getApp('base').getTeamManagement()"/>
 		<dashlet action="dashlet.opportunities.my.key.account" height="350" canSearch="true"/>
-		<dashlet action="dashlet.opportunities.my.team.key.account" height="350" canSearch="true" if="__config__.general.getTeamManagement()"/>
+		<dashlet action="dashlet.opportunities.my.team.key.account" height="350" canSearch="true" if="__config__.app.getApp('base').getTeamManagement()"/>
 	</dashboard>
 
 	<action-view name="dashlet.opportunities.by.source" title="Chart">
@@ -232,11 +232,11 @@
 		<dashlet action="dashlet.salesman.dashboard.leads" height="350" canSearch="true"/>
 		<dashlet action="dashlet.leads.by.source" height="350" />
 		<dashlet action="dashlet.leads.by.country" height="350" />
-		<dashlet action="dashlet.leads.by.team.by.status" height="350" if="__config__.general.getTeamManagement()"/>
+		<dashlet action="dashlet.leads.by.team.by.status" height="350" if="__config__.app.getApp('base').getTeamManagement()"/>
 		<dashlet action="dashlet.leads.by.saleman.by.status" height="350" />
 		<dashlet action="dashlet.my.leads" height="350" />
 		<dashlet action="dashlet.unassigned.leads" height="350" />		
-		<dashlet action="dashlet.team.leads" height="350" if="__config__.general.getTeamManagement()"/>		
+		<dashlet action="dashlet.team.leads" height="350" if="__config__.app.getApp('base').getTeamManagement()"/>		
 		<dashlet action="dashlet.created.leads.per.month" height="350" />
 	</dashboard>
 
@@ -248,23 +248,23 @@
 
 	<action-view name="dashlet.leads.by.source" title="Leads by Source">
 		<view type="chart" name="chart.leads.by.source.bar" />
-		<context name="todayDate" expr="eval:__config__.generalService.getTodayDate()" />
+		<context name="todayDate" expr="eval:__config__.app.getTodayDate()" />
 	</action-view>
 
 	<action-view name="dashlet.leads.by.country" title="Leads by Country">
 		<view type="chart" name="chart.leads.by.country.bar" />
-		<context name="todayDate" expr="eval:__config__.generalService.getTodayDate()" />
+		<context name="todayDate" expr="eval:__config__.app.getTodayDate()" />
 	</action-view>
 
 	<action-view name="dashlet.leads.by.team.by.status" title="Leads by Team by Status">
 		<view type="chart" name="chart.leads.by.team.by.status.bar" />
-		<context name="todayDate" expr="eval:__config__.generalService.getTodayDate()" />
+		<context name="todayDate" expr="eval:__config__.app.getTodayDate()" />
 	</action-view>
 
 	<action-view name="dashlet.leads.by.saleman.by.status"
 		title="Leads by Salesman by Status">
 		<view type="chart" name="chart.leads.by.saleman.by.status.bar" />
-		<context name="todayDate" expr="eval:__config__.generalService.getTodayDate()" />
+		<context name="todayDate" expr="eval:__config__.app.getTodayDate()" />
 	</action-view>
 	
 	<action-view name="dashlet.my.leads" title="My Leads"
@@ -295,18 +295,18 @@
 
 	<action-view name="dashlet.created.leads.per.month" title="Created leads per month" model="com.axelor.apps.crm.db.Lead">
 	  <view type="chart" name="chart.created.leads.per.month"/>
-	  <context name="todayDate" expr="eval:__config__.generalService.getTodayDate()"/>
+	  <context name="todayDate" expr="eval:__config__.app.getTodayDate()"/>
 	</action-view>
 
 	<!-- Event Call Dashboard -->
 	
 	<dashboard title="Calls Dashboard" name="crm.calls.dashboard"  >
 		<dashlet action="dashlet.calls.types.by.user" height="350" />
-		<dashlet action="dashlet.calls.types.by.team" height="350" if="__config__.general.getTeamManagement()"/>
-		<dashlet action="dashlet.calls.by.team.by.user" height="350" if="__config__.general.getTeamManagement()"/>
+		<dashlet action="dashlet.calls.types.by.team" height="350" if="__config__.app.getApp('base').getTeamManagement()"/>
+		<dashlet action="dashlet.calls.by.team.by.user" height="350" if="__config__.app.getApp('base').getTeamManagement()"/>
 		<dashlet action="dashlet.held.calls.types.by.user" height="350"/>
-		<dashlet action="dashlet.held.calls.types.by.team" height="350" if="__config__.general.getTeamManagement()"/>
-		<dashlet action="dashlet.daily.team.calls.summary.by.user" height="350" if="__config__.general.getTeamManagement()"/>
+		<dashlet action="dashlet.held.calls.types.by.team" height="350" if="__config__.app.getApp('base').getTeamManagement()"/>
+		<dashlet action="dashlet.daily.team.calls.summary.by.user" height="350" if="__config__.app.getApp('base').getTeamManagement()"/>
 	</dashboard>
 	
 	<!-- Event Tickets Dashboard -->
@@ -345,29 +345,29 @@
 
 	<action-view name="dashlet.calls.types.by.user" title="Calls type by user">
 		<view type="chart" name="chart.calls.types.by.user.bar" />
-		<context name="todayDate" expr="eval:__config__.generalService.getTodayDate()"/>
+		<context name="todayDate" expr="eval:__config__.app.getTodayDate()"/>
 	</action-view>
 
 	<action-view name="dashlet.calls.types.by.team" title="Calls type by team">
 		<view type="chart" name="chart.calls.types.by.team.bar" />
-		<context name="todayDate" expr="eval:__config__.generalService.getTodayDate()"/>
+		<context name="todayDate" expr="eval:__config__.app.getTodayDate()"/>
 	</action-view>
 
 	<action-view name="dashlet.calls.by.team.by.user" title="Calls by team by user">
 		<view type="chart" name="chart.calls.types.by.team.by.user.bar" />
-		<context name="todayDate" expr="eval:__config__.generalService.getTodayDate()"/>
+		<context name="todayDate" expr="eval:__config__.app.getTodayDate()"/>
 	</action-view>
 	<action-view name="dashlet.held.calls.types.by.user" title="Calls held by type by user">
 		<view type="chart" name="chart.held.calls.types.by.user.bar" />
-		<context name="todayDate" expr="eval:__config__.generalService.getTodayDate()"/>
+		<context name="todayDate" expr="eval:__config__.app.getTodayDate()"/>
 	</action-view>
 	<action-view name="dashlet.held.calls.types.by.team" title="Calls held by team by type">
 		<view type="chart" name="chart.held.calls.types.by.team.bar" />
-		<context name="todayDate" expr="eval:__config__.generalService.getTodayDate()"/>
+		<context name="todayDate" expr="eval:__config__.app.getTodayDate()"/>
 	</action-view>
 	<action-view name="dashlet.daily.team.calls.summary.by.user" title="portal.daily.team.calls.summary.by.user">
 		<view type="chart" name="chart.daily.team.calls.summary.by.user.bar" />
-		<context name="todayDate" expr="eval:__config__.generalService.getTodayDate()"/>
+		<context name="todayDate" expr="eval:__config__.app.getTodayDate()"/>
 	</action-view>
 	
 	<action-view name="dashlet.open.tickets.by.priority" title="Open tickets by priority">
@@ -385,7 +385,7 @@
 
 	<action-view title="New Cases by Customer" name="dashlet.customers.by.open.cases">
 	  <view type="chart" name="chart.customer.by.open.cases.bar"/>
-	  <context name="todayDate" expr="eval:__config__.generalService.getTodayDate()" />
+	  <context name="todayDate" expr="eval:__config__.app.getTodayDate()" />
 	</action-view>
 
 	<action-view name="dashlet.open.ticket.priority.distribution"
@@ -463,7 +463,7 @@
 		<view type="grid" name="my-event-grid" />
 		<view type="form" name="event-form" />
   		<domain>self.typeSelect = 5 AND self.user = :__user__ AND DATE(self.updatedOn) = DATE(:todayDate)</domain>
-		<context name="todayDate" expr="eval:__config__.generalService.getTodayDate()"/>
+		<context name="todayDate" expr="eval:__config__.app.getTodayDate()"/>
 	</action-view>
 
 

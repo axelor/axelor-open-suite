@@ -5,18 +5,19 @@
 
 	<module name="base" package="com.axelor.apps.base.db"/>
 
-  	<entity name="App" lang="java">
+  	<entity name="App" lang="java" strategy="JOINED">
 		
 		<string name="typeSelect" title="Type" selection="app.type.select"  required="true" unique="true"/>
+	    <integer name="importId"/>
 	    <string name="name" title="Name" required="true" translatable="true"/>
 	    <string name="code" title="Code"/>
 	    <string name="description" title="Description" large="true" translatable="true"/>
-		<many-to-one name="baseGeneral" ref="com.axelor.apps.base.db.General" title="General configuration" />
+	    <string name="modules" title="Modules contains in the app" required="true" />
+	    <string name="dependsOn" title="Depends on" selection="app.type.select"/>
 		<many-to-one name="image" ref="com.axelor.meta.db.MetaFile" title="Image"/>
-		<string name="dependsOn" title="Depends on" selection="app.type.select"/>
 		<boolean name="initDataLoaded" title="Init data loaded ?" />
 		<boolean name="demoDataLoaded" title="Demo data loaded ?" />
-		<string name="modules" title="Modules contains in the app" required="true" />
+		<boolean name="active" title="Active" />
 	    
   	</entity>
 

@@ -26,9 +26,10 @@ import org.slf4j.LoggerFactory;
 import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.service.AnalyticMoveLineService;
+import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
-import com.axelor.apps.base.db.repo.GeneralRepository;
+import com.axelor.apps.base.db.repo.AppAccountRepository;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
@@ -44,6 +45,9 @@ public class PurchaseOrderLineServiceSupplychainImpl extends PurchaseOrderLineSe
 	
 	@Inject
 	protected UnitConversionService unitConversionService;
+	
+	@Inject
+	protected AppAccountService appAccountService;
 	
 	private static final Logger LOG = LoggerFactory.getLogger(PurchaseOrderLineServiceSupplychainImpl.class); 
 	
@@ -95,7 +99,7 @@ public class PurchaseOrderLineServiceSupplychainImpl extends PurchaseOrderLineSe
 	
 	public PurchaseOrderLine computeAnalyticDistribution(PurchaseOrderLine purchaseOrderLine) throws AxelorException{
 		
-		if(generalService.getGeneral().getAnalyticDistributionTypeSelect() == GeneralRepository.DISTRIBUTION_TYPE_FREE)  {  return purchaseOrderLine;  }
+		if(appAccountService.getAppAccount().getAnalyticDistributionTypeSelect() == AppAccountRepository.DISTRIBUTION_TYPE_FREE)  {  return purchaseOrderLine;  }
 		
 		PurchaseOrder purchaseOrder = purchaseOrderLine.getPurchaseOrder();
 		List<AnalyticMoveLine> analyticMoveLineList = purchaseOrderLine.getAnalyticMoveLineList();
@@ -115,7 +119,7 @@ public class PurchaseOrderLineServiceSupplychainImpl extends PurchaseOrderLineSe
 		
 		analyticMoveLine.setPurchaseOrderLine(purchaseOrderLine);
 		analyticMoveLine.setAmount(analyticMoveLineService.computeAmount(analyticMoveLine));
-		analyticMoveLine.setDate(generalService.getTodayDate());
+		analyticMoveLine.setDate(appBaseService.getTodayDate());
 		analyticMoveLine.setStatusSelect(AnalyticMoveLineRepository.STATUS_FORECAST_ORDER);
 		
 	}

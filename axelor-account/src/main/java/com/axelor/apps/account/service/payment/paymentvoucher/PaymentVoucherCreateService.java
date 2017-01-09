@@ -34,10 +34,10 @@ import com.axelor.apps.account.db.PaymentSchedule;
 import com.axelor.apps.account.db.PaymentScheduleLine;
 import com.axelor.apps.account.db.PaymentVoucher;
 import com.axelor.apps.account.db.repo.PaymentVoucherRepository;
+import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
@@ -55,7 +55,7 @@ public class PaymentVoucherCreateService {
 	protected DateTime todayTime;
 
 	@Inject
-	public PaymentVoucherCreateService(GeneralService generalService, MoveToolService moveToolService, PayVoucherElementToPayService payVoucherElementToPayService, 
+	public PaymentVoucherCreateService(AppAccountService appAccountService, MoveToolService moveToolService, PayVoucherElementToPayService payVoucherElementToPayService, 
 			PaymentVoucherConfirmService paymentVoucherConfirmService, PaymentVoucherSequenceService paymentVoucherSequenceService,
 			PaymentVoucherRepository paymentVoucherRepository) {
 
@@ -64,7 +64,7 @@ public class PaymentVoucherCreateService {
 		this.paymentVoucherConfirmService = paymentVoucherConfirmService;
 		this.paymentVoucherSequenceService = paymentVoucherSequenceService;
 		this.paymentVoucherRepository = paymentVoucherRepository;
-		this.todayTime = generalService.getTodayDateTime();
+		this.todayTime = appAccountService.getTodayDateTime();
 
 	}
 

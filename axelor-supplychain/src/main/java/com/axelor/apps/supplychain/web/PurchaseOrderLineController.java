@@ -17,7 +17,7 @@
  */
 package com.axelor.apps.supplychain.web;
 
-import com.axelor.apps.base.service.administration.GeneralService;
+import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.supplychain.service.PurchaseOrderLineServiceSupplychainImpl;
@@ -41,7 +41,7 @@ public class PurchaseOrderLineController {
 			purchaseOrder = request.getContext().getParentContext().asType(PurchaseOrder.class);
 			purchaseOrderLine.setPurchaseOrder(purchaseOrder);
 		}
-		if(Beans.get(GeneralService.class).getGeneral().getManageAnalyticAccounting()){
+		if(Beans.get(AppAccountService.class).getAppAccount().getManageAnalyticAccounting()){
 			purchaseOrderLine = purchaseOrderLineServiceSupplychainImpl.computeAnalyticDistribution(purchaseOrderLine);
 			response.setValue("analyticMoveLineList", purchaseOrderLine.getAnalyticMoveLineList());
 		}

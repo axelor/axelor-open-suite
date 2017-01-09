@@ -46,7 +46,7 @@ public class TimesheetProjectServiceImpl extends TimesheetServiceImpl{
 		DateFormat ddmmFormat = new SimpleDateFormat("dd/MM");
 		HashMap<String, Object[]> timeSheetInformationsMap = new HashMap<String, Object[]>();
 		//Check if a consolidation by product and user must be done
-		boolean consolidate = generalService.getGeneral().getConsolidateTSLine();
+		boolean consolidate = appHumanResourceService.getAppTimesheet().getConsolidateTSLine();
 
 		for (TimesheetLine timesheetLine : timesheetLineList) {
 			Object[] tabInformations = new Object[6];

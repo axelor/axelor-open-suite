@@ -6,4 +6,27 @@
 		<call class="com.axelor.apps.businessproject.web.ProjectTaskController" method="printProjectTask"/>
 	</action-method>
 	
+	<action-attrs id="business-project-action-project-project-default" name="action-project-project-default" model="com.axelor.apps.project.db.ProjectTask">
+		<attribute name="value" for="typeSelect" expr="eval:'project'" />
+		<attribute name="value" for="fromDate" expr="eval: __datetime__"/>
+		<attribute name="value" for="company" expr="eval:__user__.activeCompany"/>
+		<attribute name="value" for="product" expr="eval: __config__.app.getApp('business-project').getProductInvoicingProjectTask()"/>
+		<attribute name="value" for="assignedTo" expr="eval: __user__"/>
+		<attribute name="value:add" for="membersUserSet" expr="eval: __user__"/>
+		<attribute name="value" for="price" expr="eval: __config__.app.getApp('business-project').getProductInvoicingProjectTask()?.salePrice" />
+		<attribute name="value" for="unit" expr="eval: __config__.app.getApp('business-project').getProductInvoicingProjectTask()?.unit" />
+		<attribute name="value" for="exTaxTotal" expr="eval: __config__.app.getApp('business-project').getProductInvoicingProjectTask()?.salePrice" />
+	</action-attrs>
+	
+	<action-record id="business-project-action-project-task-default" name="action-project-task-default" model="com.axelor.apps.project.db.ProjectTask">
+		<field name="typeSelect" expr="eval:'task'" />
+		<field name="company" expr="eval:__user__.activeCompany"/>
+		<field name="product" expr="eval: __config__.app.getApp('business-project').getProductInvoicingProjectTask()" if="projTaskInvTypeSelect != 3 &amp;&amp; project?.projTaskInvTypeSelect != 3"/>
+		<field name="fromDate" expr="eval: __date__"/>
+		<field name="assignedTo" expr="eval: __user__"/>
+		<field name="price" expr="eval: __config__.app.getApp('business-project').getProductInvoicingProjectTask()?.salePrice" />
+		<field name="unit" expr="eval: __config__.app.getApp('business-project').getProductInvoicingProjectTask()?.unit" />
+		<field name="exTaxTotal" expr="eval: __config__.app.getApp('business-project').getProductInvoicingProjectTask()?.salePrice" />
+	</action-record>
+	
 </object-views>
