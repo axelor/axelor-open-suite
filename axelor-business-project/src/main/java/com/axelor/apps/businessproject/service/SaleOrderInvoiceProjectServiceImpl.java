@@ -29,12 +29,13 @@ import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.repo.ProductRepository;
-import com.axelor.apps.base.service.administration.GeneralService;
+import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.supplychain.db.Subscription;
 import com.axelor.apps.supplychain.service.SaleOrderInvoiceServiceImpl;
+import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -42,11 +43,11 @@ import com.google.inject.persist.Transactional;
 public class SaleOrderInvoiceProjectServiceImpl extends SaleOrderInvoiceServiceImpl{
 	
 	@Inject
-	public GeneralService generalService;
+	private AppBusinessProjectService appBusinessProjectService;
 	
 	@Inject
-	public SaleOrderInvoiceProjectServiceImpl(GeneralService generalService) {
-		super(generalService);
+	public SaleOrderInvoiceProjectServiceImpl(AppSupplychainService appSupplychainService) {
+		super(appSupplychainService);
 	}
 
 	@Override
@@ -96,7 +97,7 @@ public class SaleOrderInvoiceProjectServiceImpl extends SaleOrderInvoiceServiceI
 					throws AxelorException {
 		Invoice invoiceMerged = super.mergeInvoice(invoiceList,company,currency,partner,contactPartner,priceList,paymentMode,paymentCondition,saleOrder);
 		if (project != null){
-			if(!generalService.getGeneral().getProjectTaskInvoiceLines()){
+			if(!appBusinessProjectService.getAppBusinessProject().getProjectTaskInvoiceLines()){
 				invoiceMerged.setProject(project);
 				for (InvoiceLine invoiceLine : invoiceMerged.getInvoiceLineList()){
 					invoiceLine.setProject(project);

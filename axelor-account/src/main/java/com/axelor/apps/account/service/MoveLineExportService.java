@@ -48,14 +48,14 @@ import com.axelor.apps.account.db.repo.MoveLineReportRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.service.app.AppAccountService;
+import com.axelor.apps.account.service.app.AppAccountServiceImpl;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.move.MoveLineService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.PartnerService;
-import com.axelor.apps.base.service.administration.GeneralService;
-import com.axelor.apps.base.service.administration.GeneralServiceImpl;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.tool.file.CsvTool;
 import com.axelor.db.JPA;
@@ -85,7 +85,7 @@ public class MoveLineExportService {
 	protected PartnerService partnerService;
 	
 	@Inject
-	public MoveLineExportService(GeneralService generalService, MoveLineReportService moveLineReportService, SequenceService sequenceService, 
+	public MoveLineExportService(AppAccountService appAccountService, MoveLineReportService moveLineReportService, SequenceService sequenceService, 
 			AccountConfigService accountConfigService, MoveRepository moveRepo, MoveLineRepository moveLineRepo, MoveLineReportRepository moveLineReportRepo,
 			JournalRepository journalRepo, AccountRepository accountRepo, MoveLineService moveLineService, PartnerService partnerService) {
 		this.moveLineReportService = moveLineReportService;
@@ -98,7 +98,7 @@ public class MoveLineExportService {
 		this.accountRepo = accountRepo;
 		this.moveLineService = moveLineService;
 		this.partnerService = partnerService;
-		todayTime = generalService.getTodayDateTime();
+		todayTime = appAccountService.getTodayDateTime();
 	}
 
 
@@ -198,7 +198,7 @@ public class MoveLineExportService {
 		String exportNumber = sequenceService.getSequenceNumber(IAdministration.SALES_INTERFACE, company);
 		if(exportNumber == null)  {
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.MOVE_LINE_EXPORT_1),
-					GeneralServiceImpl.EXCEPTION, company.getName()), IException.CONFIGURATION_ERROR);
+					AppAccountServiceImpl.EXCEPTION, company.getName()), IException.CONFIGURATION_ERROR);
 		}
 
 		return exportNumber;
@@ -211,7 +211,7 @@ public class MoveLineExportService {
 		String exportNumber = sequenceService.getSequenceNumber(IAdministration.REFUND_INTERFACE, company);
 		if(exportNumber == null)  {
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.MOVE_LINE_EXPORT_2),
-					GeneralServiceImpl.EXCEPTION, company.getName()), IException.CONFIGURATION_ERROR);
+					AppAccountServiceImpl.EXCEPTION, company.getName()), IException.CONFIGURATION_ERROR);
 		}
 
 		return exportNumber;
@@ -224,7 +224,7 @@ public class MoveLineExportService {
 		String exportNumber = sequenceService.getSequenceNumber(IAdministration.TREASURY_INTERFACE, company);
 		if(exportNumber == null)  {
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.MOVE_LINE_EXPORT_3),
-					GeneralServiceImpl.EXCEPTION, company.getName()), IException.CONFIGURATION_ERROR);
+					AppAccountServiceImpl.EXCEPTION, company.getName()), IException.CONFIGURATION_ERROR);
 		}
 
 		return exportNumber;
@@ -237,7 +237,7 @@ public class MoveLineExportService {
 		String exportNumber = sequenceService.getSequenceNumber(IAdministration.PURCHASE_INTERFACE, company);
 		if(exportNumber == null)  {
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.MOVE_LINE_EXPORT_4),
-					GeneralServiceImpl.EXCEPTION, company.getName()), IException.CONFIGURATION_ERROR);
+					AppAccountServiceImpl.EXCEPTION, company.getName()), IException.CONFIGURATION_ERROR);
 		}
 
 		return exportNumber;

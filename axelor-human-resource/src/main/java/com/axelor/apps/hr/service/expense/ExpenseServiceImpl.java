@@ -46,15 +46,15 @@ import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.AccountManagementServiceAccountImpl;
 import com.axelor.apps.account.service.AnalyticMoveLineService;
+import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.invoice.generator.InvoiceLineGenerator;
 import com.axelor.apps.account.service.move.MoveLineService;
 import com.axelor.apps.account.service.move.MoveService;
 import com.axelor.apps.base.db.IPriceListLine;
 import com.axelor.apps.base.db.Product;
-import com.axelor.apps.base.db.repo.GeneralRepository;
+import com.axelor.apps.base.db.repo.AppAccountRepository;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.PeriodService;
-import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.hr.db.EmployeeAdvanceUsage;
 import com.axelor.apps.hr.db.Expense;
 import com.axelor.apps.hr.db.ExpenseLine;
@@ -86,17 +86,15 @@ public class ExpenseServiceImpl implements ExpenseService  {
 	protected ExpenseRepository expenseRepository;
 	protected MoveLineService moveLineService;
 	protected AccountManagementServiceAccountImpl accountManagementService;
-	protected GeneralService generalService;
+	protected AppAccountService appAccountService;
 	protected AccountConfigHRService accountConfigService;
 	protected AnalyticMoveLineService analyticMoveLineService;
 	protected HRConfigService  hrConfigService;
 	protected TemplateMessageService  templateMessageService;
 	
-	private final Logger log = LoggerFactory.getLogger(getClass());
-	
 	@Inject
 	public ExpenseServiceImpl(MoveService moveService, ExpenseRepository expenseRepository, MoveLineService moveLineService,
-			AccountManagementServiceAccountImpl accountManagementService, GeneralService generalService,
+			AccountManagementServiceAccountImpl accountManagementService, AppAccountService appAccountService,
 			AccountConfigHRService accountConfigService, AnalyticMoveLineService analyticMoveLineService,
 			HRConfigService  hrConfigService, TemplateMessageService  templateMessageService)  {
 		
@@ -104,7 +102,7 @@ public class ExpenseServiceImpl implements ExpenseService  {
 		this.expenseRepository = expenseRepository;
 		this.moveLineService = moveLineService;
 		this.accountManagementService = accountManagementService;
-		this.generalService = generalService;
+		this.appAccountService = appAccountService;
 		this.accountConfigService = accountConfigService;
 		this.analyticMoveLineService = analyticMoveLineService;
 		this.hrConfigService = hrConfigService;
@@ -114,7 +112,7 @@ public class ExpenseServiceImpl implements ExpenseService  {
 	
 	public ExpenseLine computeAnalyticDistribution(ExpenseLine expenseLine) throws AxelorException{
 		
-		if(generalService.getGeneral().getAnalyticDistributionTypeSelect() == GeneralRepository.DISTRIBUTION_TYPE_FREE)  {  return expenseLine;  }
+		if(appAccountService.getAppAccount().getAnalyticDistributionTypeSelect() == AppAccountRepository.DISTRIBUTION_TYPE_FREE)  {  return expenseLine;  }
 		
 		Expense expense = expenseLine.getExpense();
 		List<AnalyticMoveLine> analyticMoveLineList = expenseLine.getAnalyticMoveLineList();
@@ -136,7 +134,7 @@ public class ExpenseServiceImpl implements ExpenseService  {
 		analyticMoveLine.setAmount(
 				analyticMoveLine.getPercentage().multiply(analyticMoveLine.getExpenseLine().getUntaxedAmount()
 				.divide(new BigDecimal(100),2,RoundingMode.HALF_UP)));
-		analyticMoveLine.setDate(generalService.getTodayDate());
+		analyticMoveLine.setDate(appAccountService.getTodayDate());
 		analyticMoveLine.setStatusSelect(AnalyticMoveLineRepository.STATUS_FORECAST_INVOICE);
 		
 	}
@@ -180,7 +178,7 @@ public class ExpenseServiceImpl implements ExpenseService  {
 	public void confirm(Expense expense) throws AxelorException  {
 				
 		expense.setStatusSelect(ExpenseRepository.STATUS_CONFIRMED);
-		expense.setSentDate(generalService.getTodayDate());
+		expense.setSentDate(appAccountService.getTodayDate());
 		
 		expenseRepository.save(expense);
 		
@@ -223,7 +221,7 @@ public class ExpenseServiceImpl implements ExpenseService  {
 		Beans.get(EmployeeAdvanceService.class).fillExpenseWithAdvances(expense);
 		expense.setStatusSelect(ExpenseRepository.STATUS_VALIDATED);
 		expense.setValidatedBy(AuthUtils.getUser());
-		expense.setValidationDate(generalService.getTodayDate());
+		expense.setValidationDate(appAccountService.getTodayDate());
 		
 		expenseRepository.save(expense);
 		
@@ -249,7 +247,7 @@ public class ExpenseServiceImpl implements ExpenseService  {
 		
 		expense.setStatusSelect(ExpenseRepository.STATUS_REFUSED);
 		expense.setRefusedBy(AuthUtils.getUser());
-		expense.setRefusalDate(generalService.getTodayDate());
+		expense.setRefusalDate(appAccountService.getTodayDate());
 		
 		expenseRepository.save(expense);
 		
@@ -276,7 +274,7 @@ public class ExpenseServiceImpl implements ExpenseService  {
 		LocalDate moveDate = expense.getMoveDate();
 		
 		if(moveDate == null){
-			moveDate = generalService.getTodayDate();
+			moveDate = appAccountService.getTodayDate();
 		}
 
 		Account account = null;

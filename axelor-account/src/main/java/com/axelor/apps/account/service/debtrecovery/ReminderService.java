@@ -40,11 +40,12 @@ import com.axelor.apps.account.db.repo.PaymentScheduleLineRepository;
 import com.axelor.apps.account.db.repo.ReminderRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.AccountCustomerService;
+import com.axelor.apps.account.service.app.AppAccountService;
+import com.axelor.apps.account.service.app.AppAccountServiceImpl;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.service.administration.GeneralService;
-import com.axelor.apps.base.service.administration.GeneralServiceImpl;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.tool.date.DateTool;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
@@ -71,7 +72,7 @@ public class ReminderService {
 	@Inject
 	public ReminderService(ReminderSessionService reminderSessionService, ReminderActionService reminderActionService, AccountCustomerService accountCustomerService,
 			MoveLineRepository moveLineRepo, PaymentScheduleLineRepository paymentScheduleLineRepo, AccountConfigService accountConfigService, ReminderRepository reminderRepo,
-			GeneralService generalService) {
+			AppAccountService appAccountService) {
 
 		this.reminderSessionService = reminderSessionService;
 		this.reminderActionService = reminderActionService;
@@ -80,7 +81,7 @@ public class ReminderService {
 		this.paymentScheduleLineRepo = paymentScheduleLineRepo;
 		this.accountConfigService = accountConfigService;
 		this.reminderRepo = reminderRepo;
-		this.today = generalService.getTodayDate();
+		this.today = appAccountService.getTodayDate();
 
 	}
 
@@ -353,7 +354,7 @@ public class ReminderService {
 
 		else  {
 			throw new AxelorException(String.format("%s :\n"+I18n.get("Tiers")+" %s, "+I18n.get("Société")+" %s : "+I18n.get(IExceptionMessage.REMINDER_1),
-					GeneralServiceImpl.EXCEPTION, partner.getName(), company.getName()), IException.CONFIGURATION_ERROR);
+					AppAccountServiceImpl.EXCEPTION, partner.getName(), company.getName()), IException.CONFIGURATION_ERROR);
 		}
 	}
 
@@ -419,7 +420,7 @@ public class ReminderService {
 				}
 				else {
 					throw new AxelorException(String.format("%s :\n"+I18n.get("Tiers")+" %s, "+I18n.get("Société")+" %s : "+I18n.get(IExceptionMessage.REMINDER_2),
-							GeneralServiceImpl.EXCEPTION, partner.getName(), company.getName()), IException.CONFIGURATION_ERROR);
+							AppAccountServiceImpl.EXCEPTION, partner.getName(), company.getName()), IException.CONFIGURATION_ERROR);
 				}
 				if(reminder.getReminderMethod() == null)  {
 					if(reminderSessionService.getReminderMethod(reminder)!=null)  {
@@ -428,7 +429,7 @@ public class ReminderService {
 					}
 					else  {
 						throw new AxelorException(String.format("%s :\n"+I18n.get("Tiers")+" %s, "+I18n.get("Société")+" %s : "+I18n.get(IExceptionMessage.REMINDER_3),
-								GeneralServiceImpl.EXCEPTION, partner.getName(), company.getName()), IException.CONFIGURATION_ERROR);
+								AppAccountServiceImpl.EXCEPTION, partner.getName(), company.getName()), IException.CONFIGURATION_ERROR);
 					}
 				}
 				else {
@@ -446,7 +447,7 @@ public class ReminderService {
 					// TODO Alarm ?
 					TraceBackService.trace(new AxelorException(
 						String.format("%s :\n"+I18n.get("Tiers")+" %s, "+I18n.get("Société")+" %s : "+I18n.get(IExceptionMessage.REMINDER_4),
-								GeneralServiceImpl.EXCEPTION, partner.getName(), company.getName()), IException.INCONSISTENCY));
+								AppAccountServiceImpl.EXCEPTION, partner.getName(), company.getName()), IException.INCONSISTENCY));
 				}
 			}
 		}

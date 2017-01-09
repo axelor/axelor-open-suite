@@ -41,7 +41,7 @@ import wslite.rest.Response;
 
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.IAdministration;
-import com.axelor.apps.base.service.administration.GeneralService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -51,7 +51,7 @@ import com.google.inject.Inject;
 public class MapService {
 
 	@Inject
-	protected GeneralService generalService;
+	protected AppBaseService appBaseService;
 
 	private static final Logger LOG = LoggerFactory.getLogger(MapService.class);
 
@@ -206,14 +206,14 @@ public class MapService {
 
 	public HashMap<String,Object> getMap(String qString){
 		LOG.debug("qString = {}", qString);
-		if (generalService.getGeneral().getMapApiSelect() == IAdministration.MAP_API_GOOGLE)
+		if (appBaseService.getAppBase().getMapApiSelect() == IAdministration.MAP_API_GOOGLE)
 			return getMapGoogle(qString);
 		else
 			return getMapOsm(qString);
 	}
 
 	public String getMapUrl(BigDecimal latitude, BigDecimal longitude){
-		if (generalService.getGeneral().getMapApiSelect() == IAdministration.MAP_API_GOOGLE)
+		if (appBaseService.getAppBase().getMapApiSelect() == IAdministration.MAP_API_GOOGLE)
 			return "map/gmaps.html?x="+latitude+"&y="+longitude+"&z=18";
 		else
 			return "map/oneMarker.html?x="+latitude+"&y="+longitude+"&z=18";

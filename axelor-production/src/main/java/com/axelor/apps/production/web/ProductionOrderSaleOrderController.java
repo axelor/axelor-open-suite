@@ -21,7 +21,6 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.production.db.ProductionOrder;
 import com.axelor.apps.production.exceptions.IExceptionMessage;
 import com.axelor.apps.production.service.ProductionOrderSaleOrderService;
@@ -37,9 +36,6 @@ public class ProductionOrderSaleOrderController {
 
 	@Inject
 	ProductionOrderSaleOrderService productionOrderSaleOrderService;
-
-	@Inject
-	protected GeneralService generalService;
 
 	public void createProductionOrders(ActionRequest request, ActionResponse response) throws AxelorException {
 

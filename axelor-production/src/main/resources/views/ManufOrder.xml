@@ -83,8 +83,8 @@
 			<field name="product" required="true" readonlyIf="statusSelect &gt; 1" form-view="product-form" grid-view="product-grid"/>
 			<field name="qty" readonlyIf="statusSelect &gt; 1"/>
 			<field name="isConsProOnOperation" readonly="true"/>
-			<field name="isToInvoice" onChange="save,action-manuf-order-method-is-to-invoice" if-module="axelor-business-production" if="__config__.general.getAppProduction() &amp;&amp; __config__.general.getManageBusinessProduction()" />
-			<field name="invoiced" showIf="isToInvoice" if-module="axelor-business-production" if="__config__.general.getAppProduction() &amp;&amp; __config__.general.getManageBusinessProduction()" />
+			<field name="isToInvoice" onChange="save,action-manuf-order-method-is-to-invoice" if-module="axelor-business-production" if="__config__.app.getApp('production').getManageBusinessProduction()" />
+			<field name="invoiced" showIf="isToInvoice" if-module="axelor-business-production" if="__config__.app.getApp('production').getManageBusinessProduction()" />
 			<button name="preFillOperations" colSpan="4" title="Pre-fill operations" hideIf="statusSelect &gt; 1" onClick="save,action-manuf-order-method-pre-fill-operations,action-manuf-order-attrs-desactivate" />
 		</panel>  
 		<panel-tabs colSpan="4">
@@ -162,7 +162,7 @@
     
     <action-record name="action-manuf-order-default-record" model="com.axelor.apps.production.db.ManufOrder">
     	<field name="statusSelect" expr="eval: 1"/>
-    	<field name="plannedStartDateT" expr="eval:__config__.generalService.getTodayDateTime()" if="startDate == null"/>
+    	<field name="plannedStartDateT" expr="eval:__config__.app.getTodayDateTime()" if="startDate == null"/>
     	<field name="company"  expr="eval:__user__.activeCompany" if="__user__.activeCompany != null"/>
     	<field name="company"  expr="eval:__repo__.of(Company).all().fetchOne()" if="__user__.activeCompany == null &amp;&amp; __repo__.of(Company).all().fetch().size == 1"/>
     </action-record>

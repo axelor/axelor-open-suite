@@ -38,8 +38,8 @@ import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.service.administration.GeneralService;
-import com.axelor.apps.base.service.administration.GeneralServiceImpl;
+import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.app.AppBaseServiceImpl;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
@@ -57,11 +57,11 @@ public class AccountCustomerService {
 	protected LocalDate today;
 	
 	@Inject
-	public AccountCustomerService(AccountingSituationService  accountingSituationService, AccountingSituationRepository accSituationRepo, GeneralService generalService) {
+	public AccountCustomerService(AccountingSituationService  accountingSituationService, AccountingSituationRepository accSituationRepo, AppBaseService appBaseService) {
 
 		this.accountingSituationService =accountingSituationService;
 		this.accSituationRepo = accSituationRepo;
-		this.today = generalService.getTodayDate();
+		this.today = appBaseService.getTodayDate();
 	}
 
 	public AccountingSituationService getAccountingSituationService()  {
@@ -338,7 +338,7 @@ public class AccountCustomerService {
 		if(customerAccount == null)  {
 
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.ACCOUNT_CUSTOMER_1),
-					GeneralServiceImpl.EXCEPTION, company.getName()), IException.MISSING_FIELD);
+					AppBaseServiceImpl.EXCEPTION, company.getName()), IException.MISSING_FIELD);
 
 		}
 
@@ -369,7 +369,7 @@ public class AccountCustomerService {
 		if(supplierAccount == null)  {
 
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.ACCOUNT_CUSTOMER_2),
-					GeneralServiceImpl.EXCEPTION, company.getName()), IException.MISSING_FIELD);
+					AppBaseServiceImpl.EXCEPTION, company.getName()), IException.MISSING_FIELD);
 
 		}
 

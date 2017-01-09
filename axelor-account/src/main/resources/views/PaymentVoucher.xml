@@ -198,7 +198,7 @@
 	</action-record>
 	
 	<action-record name="action-payment-voucher-getDateTime" model="com.axelor.apps.account.db.PaymentVoucher">
-    	<field name="paymentDateTime" expr="eval: __config__.generalService.getTodayDateTime()"/>
+    	<field name="paymentDateTime" expr="eval: __config__.app.getTodayDateTime()"/>
    	</action-record>
    	
 	<action-attrs name="action-payment-voucher-attrs-hidden-paybox-email">

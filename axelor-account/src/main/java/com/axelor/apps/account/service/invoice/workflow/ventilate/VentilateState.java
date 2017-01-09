@@ -29,12 +29,12 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.invoice.workflow.WorkflowInvoice;
 import com.axelor.apps.account.service.move.MoveService;
 import com.axelor.apps.base.db.Sequence;
-import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
@@ -58,7 +58,7 @@ public class VentilateState extends WorkflowInvoice {
 	private AccountConfigService accountConfigService;
 
 	@Inject
-	protected GeneralService generalService;
+	protected AppAccountService appAccountService;
 	
 	@Inject
 	private InvoiceRepository invoiceRepo;
@@ -99,7 +99,7 @@ public class VentilateState extends WorkflowInvoice {
 	protected void setDate( ) throws AxelorException{
 
 		if(invoice.getInvoiceDate() == null)  {
-			invoice.setInvoiceDate(generalService.getTodayDate());
+			invoice.setInvoiceDate(appAccountService.getTodayDate());
 		}
 
 		if(!invoice.getPaymentCondition().getIsFree() || invoice.getDueDate() == null)  {

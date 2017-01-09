@@ -19,7 +19,6 @@ package com.axelor.apps.supplychain.module;
 
 import com.axelor.app.AxelorModule;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineMngtRepository;
-import com.axelor.apps.account.service.AnalyticMoveLineServiceImpl;
 import com.axelor.apps.account.service.BudgetService;
 import com.axelor.apps.account.service.invoice.InvoiceLineService;
 import com.axelor.apps.account.service.invoice.workflow.cancel.CancelState;
@@ -47,7 +46,6 @@ import com.axelor.apps.supplychain.db.repo.AnalyticMoveLineSupplychainRepository
 import com.axelor.apps.supplychain.db.repo.PurchaseOrderSupplychainRepository;
 import com.axelor.apps.supplychain.db.repo.SaleOrderSupplychainRepository;
 import com.axelor.apps.supplychain.service.AdvancePaymentServiceSupplychainImpl;
-import com.axelor.apps.supplychain.service.AnalyticMoveLineServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.BudgetSupplychainService;
 import com.axelor.apps.supplychain.service.CustomerCreditLineService;
 import com.axelor.apps.supplychain.service.CustomerCreditLineServiceImpl;
@@ -75,6 +73,8 @@ import com.axelor.apps.supplychain.service.StockMoveLineSupplychainServiceImpl;
 import com.axelor.apps.supplychain.service.StockMoveServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.SubscriptionService;
 import com.axelor.apps.supplychain.service.SubscriptionServiceImpl;
+import com.axelor.apps.supplychain.service.app.AppSupplychainService;
+import com.axelor.apps.supplychain.service.app.AppSupplychainServiceImpl;
 import com.axelor.apps.supplychain.service.workflow.CancelStateSupplyChain;
 import com.axelor.apps.supplychain.service.workflow.VentilateStateSupplyChain;
 
@@ -113,6 +113,6 @@ public class SupplychainModule extends AxelorModule {
         bind(InvoiceLineService.class).to(InvoiceLineSupplychainService.class);
         bind(SaleOrderStockService.class).to(SaleOrderStockServiceImpl.class);
         bind(PurchaseOrderManagementRepository.class).to(PurchaseOrderSupplychainRepository.class);
-
+        bind(AppSupplychainService.class).to(AppSupplychainServiceImpl.class);
     }
 }

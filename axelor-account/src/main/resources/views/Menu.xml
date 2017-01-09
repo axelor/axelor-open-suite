@@ -3,7 +3,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.2.xsd">
 
-	<menuitem name="invoice-root" title="Invoicing" order="-100"  if="__config__.general.getAppInvoice()"
+	<menuitem name="invoice-root" title="Invoicing" order="-100"  if="__config__.app.isApp('invoice')"
 		icon="fa-file-text-o" groups="admins,ERP" icon-background="#31b4a9" />
 		
 	<menuitem name="invoice-root-cust-invoice" parent="invoice-root-sale" order="-50"
@@ -15,7 +15,7 @@
 		<view type="grid" name="invoice-grid"/>
 		<domain>self.operationTypeSelect = 3 OR self.operationTypeSelect = 4</domain>
 		<context name="_operationTypeSelect" expr="eval:3"/>
-		<context name="todayDate" expr="eval:__config__.generalService.getTodayDate()" />
+		<context name="todayDate" expr="eval:__config__.app.getTodayDate()" />
 	</action-view>	
 	
 	<menuitem name="invoice-root-sup-invoice" parent="invoice-root-purchase"
@@ -27,7 +27,7 @@
 		<view type="grid" name="invoice-supplier-grid"/>
 		<domain>self.operationTypeSelect = 1 OR self.operationTypeSelect = 2</domain>
 		<context name="_operationTypeSelect" expr="eval:1"/>
-		<context name="todayDate" expr="eval:__config__.generalService.getTodayDate()" />
+		<context name="todayDate" expr="eval:__config__.app.getTodayDate()" />
 	</action-view>	
 
 	<menuitem name="invoice-root-sale" parent="invoice-root"
@@ -43,7 +43,7 @@
 		<view-param name="search-filters" value="customer-invoices-filters"/>
 		<domain>self.operationTypeSelect = 3</domain>
 		<context name="_operationTypeSelect" expr="eval:3"/>
-		<context name="todayDate" expr="eval:__config__.generalService.getTodayDate()" />
+		<context name="todayDate" expr="eval:__config__.app.getTodayDate()" />
 	</action-view>
 
 	<menuitem name="invoice-root-sale-custinvoices-lines" parent="invoice-root-sale" order="-30"
@@ -65,7 +65,7 @@
 		<view-param name="search-filters" value="customer-refunds-filters"/>
 		<domain>self.operationTypeSelect = 4</domain>
 		<context name="_operationTypeSelect" expr="eval:4"/>
-		<context name="todayDate" expr="eval:__config__.generalService.getTodayDate()" />
+		<context name="todayDate" expr="eval:__config__.app.getTodayDate()" />
 	</action-view>
 			
 	<menuitem name="invoice-root-sale-mergecustinvoices" parent="invoice-root-sale" order="-10"
@@ -88,7 +88,7 @@
 		<view-param name="search-filters" value="supplier-invoices-filters"/>
 		<domain>self.operationTypeSelect = 1</domain>
 		<context name="_operationTypeSelect" expr="eval:1"/>
-		<context name="todayDate" expr="eval:__config__.generalService.getTodayDate()" />
+		<context name="todayDate" expr="eval:__config__.app.getTodayDate()" />
 	</action-view>
 
 	<menuitem name="invoice-root-purchase-suprefunds" parent="invoice-root-purchase"
@@ -101,7 +101,7 @@
 		<view-param name="search-filters" value="supplier-refunds-filters"/>
 		<domain>self.operationTypeSelect = 2</domain>
 		<context name="_operationTypeSelect" expr="eval:2"/>
-		<context name="todayDate" expr="eval:__config__.generalService.getTodayDate()" />
+		<context name="todayDate" expr="eval:__config__.app.getTodayDate()" />
 	</action-view>	
 		
 		
@@ -135,7 +135,7 @@
 	<menuitem name="invoice-root-report" parent="invoice-root"
 		title="Reportings"/>
 
-	<menuitem name="account-root" title="Accounting" order="-90"  if="__config__.general.getAppAccount()"
+	<menuitem name="account-root" title="Accounting" order="-90"  if="__config__.app.isApp('account')"
 		icon="fa-calculator" groups="admins,ERP" icon-background="#2fa042"/>
 
 
@@ -373,7 +373,7 @@
 		title="Bank Statement" model="com.axelor.apps.account.db.BankStatement" >
 		<view type="grid" name="bank-statement-grid"/>
 		<view type="form" name="bank-statement-form"/>
-	    <context name="todayDate" expr="eval:__config__.generalService.getTodayDate()"/>
+	    <context name="todayDate" expr="eval:__config__.app.getTodayDate()"/>
 	</action-view>
 	
 	<menuitem name="account-root-bank-statement-bank-statement-line"
@@ -457,7 +457,7 @@
 		<domain>self.typeSelect in (6,7,8,9,14)</domain>
 	</action-view>
 	
-	<menuitem name="account-root-budget-management" parent="account-root"  if="__config__.general.getAppBudget()"
+	<menuitem name="account-root-budget-management" parent="account-root"  if="__config__.app.isApp('budget')"
 		title="Budget Preparation"/>
 	
 		<menuitem name="account-root-budget-management-my-budgets" parent="account-root-budget-management"
@@ -766,7 +766,7 @@
 	</action-view>
 		
 	
-	<menuitem name="top-invoice" title="Invoices/Refunds" groups="admins,ERP" top="true" left="false" order="-130" if="__config__.general.getAppInvoice()"/>
+	<menuitem name="top-invoice" title="Invoices/Refunds" groups="admins,ERP" top="true" left="false" order="-130" if="__config__.app.isApp('invoice')"/>
 	<menuitem name="top-invoice-create-invoice" title="Create Invoice" top="true" parent="top-invoice" order="-100" action="top.invoice.new"/>
 	<action-view name="top.invoice.new" title="New Invoice" model="com.axelor.apps.account.db.Invoice">
 		<view type="form" name="invoice-form"/>
@@ -876,7 +876,7 @@
         <view type="dashboard" name="accounting.dashboard.sample" />        
     </action-view>
 	
-	<menuitem name="top-payments" title="Payments" groups="admins,ERP" top="true" left="false" if="__config__.general.getAppInvoice()"/>
+	<menuitem name="top-payments" title="Payments" groups="admins,ERP" top="true" left="false" if="__config__.app.isApp('invoice')"/>
 	
 	<menuitem name="top-payments-create-payment" title="Create Payment" top="true" parent="top-payments" order="-100" action="top.payments.new"/>
 	<action-view name="top.payments.new" title="Create Payment" model="com.axelor.apps.account.db.PaymentVoucher">

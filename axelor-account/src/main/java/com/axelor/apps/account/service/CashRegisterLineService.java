@@ -17,7 +17,6 @@
  */
 package com.axelor.apps.account.service;
 
-
 import java.io.IOException;
 
 import org.joda.time.DateTime;
@@ -28,9 +27,9 @@ import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.CashRegisterLine;
 import com.axelor.apps.account.db.repo.CashRegisterLineRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.service.app.AppAccountService;
+import com.axelor.apps.account.service.app.AppAccountServiceImpl;
 import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.service.administration.GeneralService;
-import com.axelor.apps.base.service.administration.GeneralServiceImpl;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.message.db.Message;
 import com.axelor.apps.message.db.repo.MessageRepository;
@@ -54,12 +53,12 @@ public class CashRegisterLineService{
 	protected User user;
 
 	@Inject
-	public CashRegisterLineService(TemplateMessageService templateMessageService, CashRegisterLineRepository cashRegisterLineRepo, UserService userService, GeneralService generalService) {
+	public CashRegisterLineService(TemplateMessageService templateMessageService, CashRegisterLineRepository cashRegisterLineRepo, UserService userService, AppAccountService appAccountService) {
 
 		this.templateMessageService = templateMessageService;
 		this.cashRegisterLineRepo = cashRegisterLineRepo;
 		
-		this.todayTime = generalService.getTodayDateTime();
+		this.todayTime = appAccountService.getTodayDateTime();
 		this.user = userService.getUser();
 
 	}
@@ -70,7 +69,7 @@ public class CashRegisterLineService{
 		Company company = this.user.getActiveCompany();
 		if(company == null)  {
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.CASH_REGISTER_1),
-					GeneralServiceImpl.EXCEPTION, this.user.getFullName()), IException.CONFIGURATION_ERROR);
+					AppAccountServiceImpl.EXCEPTION, this.user.getFullName()), IException.CONFIGURATION_ERROR);
 		}
 
 		log.debug("In closeCashRegister");
@@ -81,14 +80,14 @@ public class CashRegisterLineService{
 
 		if(cashRegisterLineFound != null)  {
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.CASH_REGISTER_2),
-					GeneralServiceImpl.EXCEPTION), IException.CONFIGURATION_ERROR);
+					AppAccountServiceImpl.EXCEPTION), IException.CONFIGURATION_ERROR);
 		}
 		else  {
 			AccountConfig accountConfig = company.getAccountConfig();
 
 			if(accountConfig.getCashRegisterAddressEmail() == null)  {
 				throw new AxelorException(String.format(I18n.get(IExceptionMessage.CASH_REGISTER_3),
-						GeneralServiceImpl.EXCEPTION, company.getName()), IException.CONFIGURATION_ERROR);
+						AppAccountServiceImpl.EXCEPTION, company.getName()), IException.CONFIGURATION_ERROR);
 			}
 
 			cashRegisterLine.setCreateDateTime(this.todayTime);
@@ -131,7 +130,7 @@ public class CashRegisterLineService{
 
 		if(accountConfig == null || accountConfig.getCashRegisterTemplate() == null)  {
 			throw new AxelorException(String.format(IExceptionMessage.MAIL_1,
-					GeneralServiceImpl.EXCEPTION, company.getName()), IException.CONFIGURATION_ERROR);
+					AppAccountServiceImpl.EXCEPTION, company.getName()), IException.CONFIGURATION_ERROR);
 		}
 
 		return templateMessageService.generateMessage(cashRegisterLine, accountConfig.getCashRegisterTemplate());

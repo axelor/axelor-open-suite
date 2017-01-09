@@ -21,7 +21,6 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
 import org.slf4j.Logger;
@@ -31,7 +30,7 @@ import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.UnitConversionService;
-import com.axelor.apps.base.service.administration.GeneralService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.production.db.ProductionOrder;
 import com.axelor.apps.production.db.repo.ProductionOrderRepository;
@@ -63,7 +62,7 @@ public class ProductionOrderSaleOrderServiceImpl implements ProductionOrderSaleO
 	@Inject
 	public ProductionOrderSaleOrderServiceImpl(UserService userInfoService) {
 
-		this.today = Beans.get(GeneralService.class).getTodayDate();
+		this.today = Beans.get(AppBaseService.class).getTodayDate();
 		this.user = userInfoService.getUser();
 	}
 

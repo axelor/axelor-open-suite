@@ -17,7 +17,7 @@
  */
 package com.axelor.apps.supplychain.web;
 
-import com.axelor.apps.base.service.administration.GeneralService;
+import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.supplychain.service.SaleOrderLineServiceSupplyChainImpl;
@@ -41,7 +41,7 @@ public class SaleOrderLineController {
 			saleOrder = request.getContext().getParentContext().asType(SaleOrder.class);
 			saleOrderLine.setSaleOrder(saleOrder);
 		}
-		if(Beans.get(GeneralService.class).getGeneral().getManageAnalyticAccounting()){
+		if(Beans.get(AppAccountService.class).getAppAccount().getManageAnalyticAccounting()){
 			saleOrderLine = saleOrderLineServiceSupplyChainImpl.computeAnalyticDistribution(saleOrderLine);
 			response.setValue("analyticMoveLineList", saleOrderLine.getAnalyticMoveLineList());
 		}

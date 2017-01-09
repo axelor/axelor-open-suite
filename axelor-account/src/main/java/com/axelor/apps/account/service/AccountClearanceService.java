@@ -45,9 +45,9 @@ import com.axelor.apps.account.service.move.MoveService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.service.administration.GeneralService;
-import com.axelor.apps.base.service.administration.GeneralServiceImpl;
 import com.axelor.apps.base.service.administration.SequenceService;
+import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.app.AppBaseServiceImpl;
 import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.auth.db.User;
@@ -73,11 +73,11 @@ public class AccountClearanceService{
 	protected User user;
 
 	@Inject
-	public AccountClearanceService(UserService userService, GeneralService generalService, MoveService moveService, MoveLineService moveLineService,
+	public AccountClearanceService(UserService userService, AppBaseService appBaseService, MoveService moveService, MoveLineService moveLineService,
 			MoveLineRepository moveLineRepo, SequenceService sequenceService, ReconcileService reconcileService, TaxService taxService,
 			TaxAccountService taxAccountService, AccountClearanceRepository accountClearanceRepo) {
 		
-		this.todayTime = generalService.getTodayDateTime();
+		this.todayTime = appBaseService.getTodayDateTime();
 		this.user = userService.getUser();
 		this.moveService = moveService;
 		this.moveLineService = moveLineService;
@@ -204,32 +204,32 @@ public class AccountClearanceService{
 
 		if(accountConfig == null)  {
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.ACCOUNT_CLEARANCE_1),
-					GeneralServiceImpl.EXCEPTION,company.getName()), IException.CONFIGURATION_ERROR);
+					AppBaseServiceImpl.EXCEPTION,company.getName()), IException.CONFIGURATION_ERROR);
 		}
 
 		if(accountConfig.getProfitAccount() == null)  {
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.ACCOUNT_CLEARANCE_2),
-					GeneralServiceImpl.EXCEPTION,company.getName()), IException.CONFIGURATION_ERROR);
+					AppBaseServiceImpl.EXCEPTION,company.getName()), IException.CONFIGURATION_ERROR);
 		}
 
 		if(accountConfig.getStandardRateTax() == null) {
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.ACCOUNT_CLEARANCE_3),
-					GeneralServiceImpl.EXCEPTION,company.getName()), IException.CONFIGURATION_ERROR);
+					AppBaseServiceImpl.EXCEPTION,company.getName()), IException.CONFIGURATION_ERROR);
 		}
 
 		if(accountConfig.getClearanceAccountSet() == null || accountConfig.getClearanceAccountSet().size() == 0)  {
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.ACCOUNT_CLEARANCE_4),
-					GeneralServiceImpl.EXCEPTION,company.getName()), IException.CONFIGURATION_ERROR);
+					AppBaseServiceImpl.EXCEPTION,company.getName()), IException.CONFIGURATION_ERROR);
 		}
 
 		if(!sequenceService.hasSequence(IAdministration.ACCOUNT_CLEARANCE, company)) {
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.ACCOUNT_CLEARANCE_5),
-					GeneralServiceImpl.EXCEPTION,company.getName()), IException.CONFIGURATION_ERROR);
+					AppBaseServiceImpl.EXCEPTION,company.getName()), IException.CONFIGURATION_ERROR);
 		}
 
 		if(accountConfig.getAccountClearanceJournal() == null)  {
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.ACCOUNT_CLEARANCE_6),
-					GeneralServiceImpl.EXCEPTION,company.getName()), IException.CONFIGURATION_ERROR);
+					AppBaseServiceImpl.EXCEPTION,company.getName()), IException.CONFIGURATION_ERROR);
 		}
 
 	}

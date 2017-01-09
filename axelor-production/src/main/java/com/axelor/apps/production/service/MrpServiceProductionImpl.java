@@ -27,13 +27,13 @@ import org.slf4j.LoggerFactory;
 import com.axelor.app.production.db.IManufOrder;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductRepository;
-import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.db.ProdProduct;
 import com.axelor.apps.production.db.repo.BillOfMaterialRepository;
 import com.axelor.apps.production.db.repo.ManufOrderRepository;
+import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.stock.db.Location;
@@ -65,14 +65,14 @@ public class MrpServiceProductionImpl extends MrpServiceImpl  {
 
 	
 	@Inject
-	public MrpServiceProductionImpl(GeneralService generalService, MrpRepository mrpRepository, LocationRepository locationRepository, 
+	public MrpServiceProductionImpl(AppProductionService appProductionService, MrpRepository mrpRepository, LocationRepository locationRepository, 
 			ProductRepository productRepository, LocationLineRepository locationLineRepository, MrpLineTypeRepository mrpLineTypeRepository,
 			PurchaseOrderLineRepository purchaseOrderLineRepository, SaleOrderLineRepository saleOrderLineRepository, MrpLineRepository mrpLineRepository,
 			MinStockRulesService minStockRulesService, MrpLineService mrpLineService, MrpForecastRepository mrpForecastRepository,
 			BillOfMaterialRepository billOfMaterialRepository, ManufOrderRepository manufOrderRepository)  {
 		
 		
-		super(generalService, mrpRepository, locationRepository, productRepository, locationLineRepository, mrpLineTypeRepository, 
+		super(appProductionService, mrpRepository, locationRepository, productRepository, locationLineRepository, mrpLineTypeRepository, 
 				purchaseOrderLineRepository, saleOrderLineRepository, mrpLineRepository, minStockRulesService, mrpLineService, mrpForecastRepository);
 		
 		this.billOfMaterialRepository = billOfMaterialRepository;

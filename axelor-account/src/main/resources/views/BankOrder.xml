@@ -190,7 +190,7 @@
     	
     <action-record name="action-bank-order-record-default" model="com.axelor.apps.account.db.BankOrder">
 		<field name="orderTypeSelect" expr="eval: _orderTypeSelect" if="_orderTypeSelect != null"/>
-		<field name="bankOrderDate" expr="eval:__config__.generalService.getTodayDate()"/>
+		<field name="bankOrderDate" expr="eval:__config__.app.getTodayDate()"/>
 		<field name="senderCompany" expr="eval:__user__.activeCompany"/>
 		<field name="senderBankDetails" expr="eval:__user__.activeCompany.defaultBankDetails"/>
 		<field name="currency" expr="eval:__user__.activeCompany.currency"/>

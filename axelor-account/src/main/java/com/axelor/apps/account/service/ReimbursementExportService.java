@@ -44,6 +44,8 @@ import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.ReimbursementRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.service.app.AppAccountService;
+import com.axelor.apps.account.service.app.AppAccountServiceImpl;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.move.MoveLineService;
 import com.axelor.apps.account.service.move.MoveService;
@@ -73,8 +75,6 @@ import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.PartnerService;
-import com.axelor.apps.base.service.administration.GeneralService;
-import com.axelor.apps.base.service.administration.GeneralServiceImpl;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.tool.xml.Marschaller;
 import com.axelor.exception.AxelorException;
@@ -103,7 +103,7 @@ public class ReimbursementExportService {
 	@Inject
 	public ReimbursementExportService(MoveService moveService, MoveRepository moveRepo, MoveLineService moveLineService, ReconcileService reconcileService,
 			SequenceService sequenceService, AccountBlockingService accountBlockingService, ReimbursementRepository reimbursementRepo, AccountConfigService accountConfigService,
-			PartnerService partnerService, GeneralService generalService, PartnerRepository partnerRepository) {
+			PartnerService partnerService, AppAccountService appAccountService, PartnerRepository partnerRepository) {
 
 		this.moveService = moveService;
 		this.moveRepo = moveRepo;
@@ -115,7 +115,7 @@ public class ReimbursementExportService {
 		this.accountConfigService = accountConfigService;
 		this.partnerService = partnerService;
 		this.partnerRepository = partnerRepository;
-		this.today = generalService.getTodayDate();
+		this.today = appAccountService.getTodayDate();
 	}
 
 	/**
@@ -269,7 +269,7 @@ public class ReimbursementExportService {
 
 		if(!sequenceService.hasSequence(IAdministration.REIMBOURSEMENT, company)) {
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.REIMBURSEMENT_1),
-					GeneralServiceImpl.EXCEPTION,company.getName()), IException.CONFIGURATION_ERROR);
+					AppAccountServiceImpl.EXCEPTION,company.getName()), IException.CONFIGURATION_ERROR);
 		}
 
 	}

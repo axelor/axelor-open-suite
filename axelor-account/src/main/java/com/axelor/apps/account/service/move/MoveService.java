@@ -34,12 +34,12 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.ReconcileService;
+import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.payment.PaymentService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.exception.AxelorException;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
@@ -63,7 +63,7 @@ public class MoveService {
 	protected LocalDate today;
 
 	@Inject
-	public MoveService(GeneralService generalService, MoveLineService moveLineService, MoveCreateService moveCreateService, MoveValidateService moveValidateService, MoveToolService moveToolService,
+	public MoveService(AppAccountService appAccountService, MoveLineService moveLineService, MoveCreateService moveCreateService, MoveValidateService moveValidateService, MoveToolService moveToolService,
 			MoveRemoveService moveRemoveService, ReconcileService reconcileService, MoveDueService moveDueService, PaymentService paymentService, MoveExcessPaymentService moveExcessPaymentService, MoveRepository moveRepository, AccountConfigService accountConfigService) {
 
 		this.moveLineService = moveLineService;
@@ -78,7 +78,7 @@ public class MoveService {
 		this.moveRepository = moveRepository;
 		this.accountConfigService = accountConfigService;
 		
-		today = generalService.getTodayDate();
+		today = appAccountService.getTodayDate();
 
 	}
 

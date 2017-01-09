@@ -24,10 +24,10 @@ import java.util.List;
 import java.util.Map;
 
 import com.axelor.apps.account.db.AccountingSituation;
+import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
-import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.sale.db.ISaleOrder;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
@@ -55,7 +55,7 @@ public class CustomerCreditLineServiceImpl implements CustomerCreditLineService{
 	@Override
 	public Partner generateLines(Partner partner) throws AxelorException  {
 		
-		if(partner.getIsContact() || !partner.getIsCustomer() || !Beans.get(GeneralService.class).getGeneral().getManageCustomerCredit() || partner.getCompanySet() == null)  {  return partner;  }
+		if(partner.getIsContact() || !partner.getIsCustomer() || !Beans.get(AppAccountService.class).getAppAccount().getManageCustomerCredit() || partner.getCompanySet() == null)  {  return partner;  }
 		
 		List<Company> companyList = new ArrayList<Company>(partner.getCompanySet());
 		List<CustomerCreditLine> customerCreditLineList = new ArrayList<CustomerCreditLine>();

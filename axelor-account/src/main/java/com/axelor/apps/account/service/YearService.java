@@ -37,6 +37,7 @@ import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.ReportedBalanceLineRepository;
 import com.axelor.apps.account.db.repo.ReportedBalanceRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.service.app.AppAccountServiceImpl;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
@@ -45,7 +46,6 @@ import com.axelor.apps.base.db.Year;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.PeriodRepository;
 import com.axelor.apps.base.db.repo.YearRepository;
-import com.axelor.apps.base.service.administration.GeneralServiceImpl;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
@@ -93,7 +93,7 @@ public class YearService {
 		Company company = year.getCompany();
 		if(company == null)  {
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.YEAR_1),
-					GeneralServiceImpl.EXCEPTION,year.getName()), IException.CONFIGURATION_ERROR);
+					AppAccountServiceImpl.EXCEPTION,year.getName()), IException.CONFIGURATION_ERROR);
 		}
 
 		Query q = JPA.em().createQuery("select DISTINCT(ml.partner) FROM MoveLine as ml WHERE ml.date >= ?1 AND ml.date <= ?2 AND ml.move.company = ?3");

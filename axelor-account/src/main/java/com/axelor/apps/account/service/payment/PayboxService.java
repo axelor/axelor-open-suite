@@ -49,12 +49,12 @@ import com.axelor.apps.account.db.PayboxConfig;
 import com.axelor.apps.account.db.PaymentVoucher;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.AccountingSituationService;
+import com.axelor.apps.account.service.app.AppAccountServiceImpl;
 import com.axelor.apps.account.service.config.PayboxConfigService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.PartnerService;
-import com.axelor.apps.base.service.administration.GeneralServiceImpl;
 import com.axelor.apps.tool.StringTool;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
@@ -253,7 +253,7 @@ public class PayboxService {
 	public void checkPayboxPaymentVoucherFields(PaymentVoucher paymentVoucher) throws AxelorException  {
 		if (paymentVoucher.getPaidAmount() == null || paymentVoucher.getPaidAmount().compareTo(BigDecimal.ZERO) > 1)  {
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.PAYBOX_1),
-					GeneralServiceImpl.EXCEPTION, paymentVoucher.getRef()), IException.CONFIGURATION_ERROR);
+					AppAccountServiceImpl.EXCEPTION, paymentVoucher.getRef()), IException.CONFIGURATION_ERROR);
 		}
 	}
 
@@ -273,7 +273,7 @@ public class PayboxService {
 
 		if(paidAmount.compareTo(partnerBalance) > 0)  {
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.PAYBOX_2),
-					GeneralServiceImpl.EXCEPTION), IException.CONFIGURATION_ERROR);
+					AppAccountServiceImpl.EXCEPTION), IException.CONFIGURATION_ERROR);
 		}
 
 	}
@@ -283,7 +283,7 @@ public class PayboxService {
 
 		if(paymentVoucher.getRemainingAmount().compareTo(BigDecimal.ZERO) > 0 )  {
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.PAYBOX_3),
-					GeneralServiceImpl.EXCEPTION), IException.INCONSISTENCY);
+					AppAccountServiceImpl.EXCEPTION), IException.INCONSISTENCY);
 		}
 
 
@@ -298,7 +298,7 @@ public class PayboxService {
 	public void checkPayboxPartnerFields(Partner partner) throws AxelorException  {
 		if (partner.getEmailAddress().getAddress() == null || partner.getEmailAddress().getAddress().isEmpty())  {
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.PAYBOX_4),
-					GeneralServiceImpl.EXCEPTION, partner.getName()), IException.CONFIGURATION_ERROR);
+					AppAccountServiceImpl.EXCEPTION, partner.getName()), IException.CONFIGURATION_ERROR);
 		}
 	}
 
@@ -333,11 +333,11 @@ public class PayboxService {
 			return s.toUpperCase();
 
 		} catch (InvalidKeyException e) {
-			throw new AxelorException(String.format("%s :\n %s", GeneralServiceImpl.EXCEPTION,e), IException.INCONSISTENCY);
+			throw new AxelorException(String.format("%s :\n %s", AppAccountServiceImpl.EXCEPTION,e), IException.INCONSISTENCY);
 		} catch (NoSuchAlgorithmException e) {
-			throw new AxelorException(String.format("%s :\n %s", GeneralServiceImpl.EXCEPTION,e), IException.INCONSISTENCY);
+			throw new AxelorException(String.format("%s :\n %s", AppAccountServiceImpl.EXCEPTION,e), IException.INCONSISTENCY);
 		} catch (UnsupportedEncodingException e) {
-			throw new AxelorException(String.format("%s :\n %s", GeneralServiceImpl.EXCEPTION,e), IException.INCONSISTENCY);
+			throw new AxelorException(String.format("%s :\n %s", AppAccountServiceImpl.EXCEPTION,e), IException.INCONSISTENCY);
 		}
 	}
 

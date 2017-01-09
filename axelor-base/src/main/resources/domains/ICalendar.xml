@@ -5,7 +5,7 @@
   
 	<module name="base" package="com.axelor.apps.base.db"/>
 	
-	<entity name="ICalendar" table="ICAL_CALENDAR" sequential="true">
+	<entity name="ICalendar" table="ICAL_CALENDAR" sequential="true" strategy="JOINED">
 	  <string name="name" required="true" title="Name" />
 	  <string name="cid" title="CID"/>
 	  <boolean name="keepRemote" default="false" help="Keep remote values when syncing." title="Keep remote"/>

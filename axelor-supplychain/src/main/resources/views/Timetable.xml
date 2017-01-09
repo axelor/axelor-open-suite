@@ -8,11 +8,11 @@
        <field name="amount" onChange="action-timetable-record-amount-to-invoice"/>
        <field name="comments"/>
        <field name="amountToInvoice" readonly="true"/>
-       <field name="product" if="__config__.general.getAppInvoice() &amp;&amp; __config__.general.getAllowTimetableInvoicing()"/>
-       <field name="productName" if="__config__.general.getAppInvoice() &amp;&amp; __config__.general.getAllowTimetableInvoicing()"/>
-       <field name="unit" if="__config__.general.getAppInvoice() &amp;&amp; __config__.general.getAllowTimetableInvoicing()"/>
-       <field name="qty" if="__config__.general.getAppInvoice() &amp;&amp; __config__.general.getAllowTimetableInvoicing()"/>
-       <button name="generateInvoice" help="Generate Invoice" icon="fa-credit-card" onClick="save, action-timetable-method-generate-invoice, action-timetable-attrs-readonly" if="__config__.general.getAppInvoice() &amp;&amp; __config__.general.getAllowTimetableInvoicing()"/>
+       <field name="product" if="__config__.app.isApp('invoice') &amp;&amp; __config__.app.getApp('supplychain').getAllowTimetableInvoicing()"/>
+       <field name="productName" if="__config__.app.isApp('invoice') &amp;&amp; __config__.app.getApp('supplychain').getAllowTimetableInvoicing()"/>
+       <field name="unit" if="__config__.app.isApp('invoice') &amp;&amp; __config__.app.getApp('supplychain').getAllowTimetableInvoicing()"/>
+       <field name="qty" if="__config__.app.isApp('invoice') &amp;&amp; __config__.app.getApp('supplychain').getAllowTimetableInvoicing()"/>
+       <button name="generateInvoice" help="Generate Invoice" icon="fa-credit-card" onClick="save, action-timetable-method-generate-invoice, action-timetable-attrs-readonly" if="__config__.app.isApp('invoice') &amp;&amp; __config__.app.getApp('supplychain').getAllowTimetableInvoicing()"/>
     </grid>
  
 	 <form name="timetable-form" title="Timetable" model="com.axelor.apps.supplychain.db.Timetable">
@@ -20,11 +20,11 @@
 			<field name="estimatedDate" colSpan="4"/>
       		<field name="amount" colSpan="4"/>
       		<field name="amountToInvoice" colSpan="4" readonly="true"/>
-      		<field name="product" if="__config__.general.getAppInvoice() &amp;&amp; __config__.general.getAllowTimetableInvoicing()"/>
-       		<field name="productName" if="__config__.general.getAppInvoice() &amp;&amp; __config__.general.getAllowTimetableInvoicing()"/>
-       		<field name="unit" if="__config__.general.getAppInvoice() &amp;&amp; __config__.general.getAllowTimetableInvoicing()"/>
-       		<field name="qty" if="__config__.general.getAppInvoice() &amp;&amp; __config__.general.getAllowTimetableInvoicing()"/>
-       		<button name="generateInvoice" colOffset="9" colSpan="3" title="Generate Invoice" onClick="save, action-timetable-method-generate-invoice, action-timetable-attrs-readonly" if="__config__.general.getAppInvoice() &amp;&amp; __config__.general.getAllowTimetableInvoicing()"/>
+      		<field name="product" if="__config__.app.isApp('invoice') &amp;&amp; __config__.app.getApp('supplychain').getAllowTimetableInvoicing()"/>
+       		<field name="productName" if="__config__.app.isApp('invoice') &amp;&amp; __config__.app.getApp('supplychain').getAllowTimetableInvoicing()"/>
+       		<field name="unit" if="__config__.app.isApp('invoice') &amp;&amp; __config__.app.getApp('supplychain').getAllowTimetableInvoicing()"/>
+       		<field name="qty" if="__config__.app.isApp('invoice') &amp;&amp; __config__.app.getApp('supplychain').getAllowTimetableInvoicing()"/>
+       		<button name="generateInvoice" colOffset="9" colSpan="3" title="Generate Invoice" onClick="save, action-timetable-method-generate-invoice, action-timetable-attrs-readonly" if="__config__.app.isApp('invoice') &amp;&amp; __config__.app.getApp('supplychain').getAllowTimetableInvoicing()"/>
        		<field name="comments" colSpan="12"/>
 	 	</panel>
 	 </form>

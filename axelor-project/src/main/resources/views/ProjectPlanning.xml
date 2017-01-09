@@ -79,7 +79,7 @@
 		<attribute name="title" for="$projectPlanningLineList.friday" expr="eval: com.axelor.i18n.I18n.get('Fr') + com.axelor.apps.project.service.ProjectPlanningService.getNameForColumns(year,week,5)"/>
 		<attribute name="title" for="$projectPlanningLineList.saturday" expr="eval: com.axelor.i18n.I18n.get('Sa') + com.axelor.apps.project.service.ProjectPlanningService.getNameForColumns(year,week,6)"/>
 		<attribute name="title" for="$projectPlanningLineList.sunday" expr="eval: com.axelor.i18n.I18n.get('Su') + com.axelor.apps.project.service.ProjectPlanningService.getNameForColumns(year,week,7)"/>
-		<attribute name="title" for="$projectPlanningLineList.projectTask" expr="eval: __config__.general.getProjectTaskLabel()" if="__config__.general.getAppProject() &amp;&amp; !com.google.common.base.Strings.isNullOrEmpty(__config__.general.getProjectTaskLabel())"/>
+		<attribute name="title" for="$projectPlanningLineList.projectTask" expr="eval: __config__.app.getApp('project').getProjectTaskLabel()" if="!com.google.common.base.Strings.isNullOrEmpty(__config__.app.getApp('project').getProjectTaskLabel())"/>
 	
 	</action-attrs>
 	

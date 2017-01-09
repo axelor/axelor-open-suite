@@ -28,10 +28,11 @@ import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.ReportFactory;
 import com.axelor.apps.account.db.Move;
+import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Wizard;
-import com.axelor.apps.base.service.administration.GeneralService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.message.MessageServiceBaseImpl;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.Expense;
@@ -77,7 +78,7 @@ public class ExpenseController {
 	@Inject
 	private Provider<ExpenseService> expenseServiceProvider;
 	@Inject
-	private Provider<GeneralService> generalServiceProvider;
+	private Provider<AppBaseService> appBaseServiceProvider;
 	@Inject
 	private Provider<ExpenseRepository> expenseRepositoryProvider;
 	
@@ -104,7 +105,7 @@ public class ExpenseController {
 			expense = request.getContext().getParentContext().asType(Expense.class);
 			expenseLine.setExpense(expense);
 		}
-		if(Beans.get(GeneralService.class).getGeneral().getManageAnalyticAccounting()){
+		if(Beans.get(AppAccountService.class).getAppAccount().getManageAnalyticAccounting()){
 			expenseLine = expenseServiceProvider.get().computeAnalyticDistribution(expenseLine);
 			response.setValue("analyticMoveLineList", expenseLine.getAnalyticMoveLineList());
 		}
@@ -256,7 +257,7 @@ public class ExpenseController {
 			int compt = 0;
 			for (ExpenseLine expenseLine : expenseLineList) {
 				compt++;
-				if(expenseLine.getExpenseDate().isAfter(generalServiceProvider.get().getTodayDate())){
+				if(expenseLine.getExpenseDate().isAfter(appBaseServiceProvider.get().getTodayDate())){
 					expenseLineId.add(compt);
 				}
 			}

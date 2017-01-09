@@ -1,2 +1,0 @@
-"name";"code";"description";"typeSelect";"baseGeneral.importId";"image";"modules"
-"General";"GEN";"General configuration required to run all apps. ";"general";1;"app-general.png";"axelor-exception,axelor-tools,axelor-message,axelor-admin,axelor-studio,axelor-base"

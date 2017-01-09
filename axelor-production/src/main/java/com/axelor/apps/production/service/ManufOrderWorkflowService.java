@@ -23,11 +23,11 @@ import org.joda.time.LocalDateTime;
 
 import com.axelor.app.production.db.IManufOrder;
 import com.axelor.app.production.db.IOperationOrder;
-import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.db.repo.ManufOrderRepository;
 import com.axelor.apps.production.db.repo.OperationOrderRepository;
+import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
@@ -46,7 +46,7 @@ public class ManufOrderWorkflowService {
 	private ManufOrderStockMoveService manufOrderStockMoveService;
 	
 	@Inject
-	protected GeneralService generalService;
+	protected AppProductionService appProductionService;
 	
 	@Inject
 	protected ManufOrderRepository manufOrderRepo;
@@ -88,7 +88,7 @@ public class ManufOrderWorkflowService {
 					
 					operationOrder.setStoppedBy(AuthUtils.getUser());
 					
-					operationOrder.setStoppingDateTime(new LocalDateTime(generalService.getTodayDateTime()));
+					operationOrder.setStoppingDateTime(new LocalDateTime(appProductionService.getTodayDateTime()));
 					
 				}
 				
@@ -116,7 +116,7 @@ public class ManufOrderWorkflowService {
 					
 					operationOrder.setStartedBy(AuthUtils.getUser());
 					
-					operationOrder.setStartingDateTime(new LocalDateTime(generalService.getTodayDateTime()));
+					operationOrder.setStartingDateTime(new LocalDateTime(appProductionService.getTodayDateTime()));
 					
 				}
 				

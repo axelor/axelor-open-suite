@@ -1,0 +1,2 @@
+"name";"code";"description";"typeSelect";"imagePath";"modules";"dependsOn"
+"Employee Managment";"EMP";"Employee Management";"employee";"app-human-resource.png";"axelor-human-resource";"account,project,crm"

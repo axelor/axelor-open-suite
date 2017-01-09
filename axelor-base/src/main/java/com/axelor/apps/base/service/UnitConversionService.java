@@ -35,7 +35,7 @@ import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.UnitConversion;
 import com.axelor.apps.base.db.repo.UnitConversionRepository;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
-import com.axelor.apps.base.service.administration.GeneralService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
@@ -48,7 +48,7 @@ public class UnitConversionService {
 	protected TemplateMaker maker;
 	
 	@Inject
-	protected GeneralService generalService;
+	protected AppBaseService appBaseService;
 	
 	@Inject
 	private UnitConversionRepository unitConversionRepo;
@@ -80,7 +80,7 @@ public class UnitConversionService {
 		/* The endUnit become the start unit and the startUnit become the end unit */
 		for (UnitConversion unitConversion : unitConversionList){
 
-			if (unitConversion.getStartUnit().equals(endUnit) && unitConversion.getEndUnit().equals(startUnit) && unitConversion.getCoef().compareTo(BigDecimal.ZERO) != 0) { return BigDecimal.ONE.divide(unitConversion.getCoef(), generalService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_EVEN); }
+			if (unitConversion.getStartUnit().equals(endUnit) && unitConversion.getEndUnit().equals(startUnit) && unitConversion.getCoef().compareTo(BigDecimal.ZERO) != 0) { return BigDecimal.ONE.divide(unitConversion.getCoef(), appBaseService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_EVEN); }
 
 		}
 		/* If there is no startUnit and endUnit in the UnitConversion list so we throw an exception */
@@ -117,7 +117,7 @@ public class UnitConversionService {
 		else {
 			BigDecimal coefficient = this.getCoefficient(unitConversionList, startUnit, endUnit);
 
-			return value.multiply(coefficient).setScale(generalService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_EVEN);
+			return value.multiply(coefficient).setScale(appBaseService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_EVEN);
 		}
 	}
 
@@ -147,7 +147,7 @@ public class UnitConversionService {
 		else {
 			BigDecimal coefficient = this.getCoefficient(unitConversionRepo.all().fetch(), startUnit, endUnit);
 
-			return value.multiply(coefficient).setScale(generalService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_EVEN);
+			return value.multiply(coefficient).setScale(appBaseService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_EVEN);
 		}
 	}
 	
@@ -163,7 +163,7 @@ public class UnitConversionService {
 			try{
 				BigDecimal coefficient = this.getCoefficient(unitConversionRepo.all().fetch(), startUnit, endUnit, product);
 
-				return value.multiply(coefficient).setScale(generalService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_EVEN);
+				return value.multiply(coefficient).setScale(appBaseService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_EVEN);
 			}
 			catch(IOException e){
 				e.printStackTrace();
@@ -205,7 +205,7 @@ public class UnitConversionService {
 
 			if (unitConversion.getStartUnit().equals(endUnit) && unitConversion.getEndUnit().equals(startUnit)) { 
 				if(unitConversion.getTypeSelect() == UnitConversionRepository.TYPE_COEFF && unitConversion.getCoef().compareTo(BigDecimal.ZERO) != 0){
-					return BigDecimal.ONE.divide(unitConversion.getCoef(), generalService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_EVEN);  
+					return BigDecimal.ONE.divide(unitConversion.getCoef(), appBaseService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_EVEN);  
 				}
 				else{
 					maker.setTemplate(unitConversion.getFormula());
@@ -218,7 +218,7 @@ public class UnitConversionService {
 					GroovyShell shell = new GroovyShell(binding,conf);
 					BigDecimal result = new BigDecimal(shell.evaluate(eval).toString()); 
 					if(result.compareTo(BigDecimal.ZERO) != 0){
-						return BigDecimal.ONE.divide(result, generalService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_EVEN);
+						return BigDecimal.ONE.divide(result, appBaseService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_EVEN);
 					}
 				}
 			}

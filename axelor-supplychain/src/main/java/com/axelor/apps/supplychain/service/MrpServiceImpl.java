@@ -33,7 +33,7 @@ import com.axelor.apps.base.db.SupplierCatalog;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.UnitConversionService;
-import com.axelor.apps.base.service.administration.GeneralService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.purchase.db.IPurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
@@ -97,7 +97,7 @@ public class MrpServiceImpl implements MrpService  {
 	
 	
 	@Inject
-	public MrpServiceImpl(GeneralService generalService, MrpRepository mrpRepository, LocationRepository locationRepository, 
+	public MrpServiceImpl(AppBaseService appBaseService, MrpRepository mrpRepository, LocationRepository locationRepository, 
 			ProductRepository productRepository, LocationLineRepository locationLineRepository, MrpLineTypeRepository mrpLineTypeRepository,
 			PurchaseOrderLineRepository purchaseOrderLineRepository, SaleOrderLineRepository saleOrderLineRepository, MrpLineRepository mrpLineRepository,
 			MinStockRulesService minStockRulesService, MrpLineService mrpLineService, MrpForecastRepository mrpForecastRepository)  {
@@ -114,7 +114,7 @@ public class MrpServiceImpl implements MrpService  {
 		this.mrpLineService = mrpLineService;
 		this.mrpForecastRepository = mrpForecastRepository;
 		
-		this.today = generalService.getTodayDate();
+		this.today = appBaseService.getTodayDate();
 	}
 	
 	public void runCalculation(Mrp mrp) throws AxelorException  {

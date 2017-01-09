@@ -42,13 +42,13 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductRepository;
-import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.supplychain.db.Subscription;
 import com.axelor.apps.supplychain.db.repo.SubscriptionRepository;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;
+import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.apps.supplychain.service.invoice.generator.InvoiceGeneratorSupplyChain;
 import com.axelor.apps.supplychain.service.invoice.generator.InvoiceLineGeneratorSupplyChain;
 import com.axelor.db.JPA;
@@ -65,7 +65,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 
 	private LocalDate today;
 
-	protected GeneralService generalService;
+	protected AppSupplychainService appSupplychainService;
 
 	@Inject
 	private SaleOrderRepository saleOrderRepo;
@@ -74,10 +74,10 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 	private InvoiceService invoiceService;
 
 	@Inject
-	public SaleOrderInvoiceServiceImpl(GeneralService generalService) {
+	public SaleOrderInvoiceServiceImpl(AppSupplychainService appSupplychainService) {
 
-		this.generalService = generalService;
-		this.today = this.generalService.getTodayDate();
+		this.appSupplychainService = appSupplychainService;
+		this.today = this.appSupplychainService.getTodayDate();
 
 	}
 
@@ -392,7 +392,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 	@Override
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public Invoice generateSubcriptionInvoiceForSaleOrder(SaleOrder saleOrder) throws AxelorException{
-		List<Subscription> subscriptionList = Beans.get(SubscriptionRepository.class).all().filter("self.invoicingDate <= ?1 AND self.saleOrderLine.saleOrder.id = ?2 AND self.invoiced = false",generalService.getTodayDate(),saleOrder.getId()).fetch();
+		List<Subscription> subscriptionList = Beans.get(SubscriptionRepository.class).all().filter("self.invoicingDate <= ?1 AND self.saleOrderLine.saleOrder.id = ?2 AND self.invoiced = false",appSupplychainService.getTodayDate(),saleOrder.getId()).fetch();
 		if(subscriptionList != null && !subscriptionList.isEmpty()){
 			return this.generateSubscriptionInvoice(subscriptionList,saleOrder);
 		}
@@ -412,7 +412,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 	@Override
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public Invoice generateSubcriptionInvoiceForSaleOrderLine(SaleOrderLine saleOrderLine) throws AxelorException{
-		List<Subscription> subscriptionList = Beans.get(SubscriptionRepository.class).all().filter("self.invoicingDate <= ?1 AND self.saleOrderLine.id = ?2 AND self.invoiced = false",generalService.getTodayDate(),saleOrderLine.getId()).fetch();
+		List<Subscription> subscriptionList = Beans.get(SubscriptionRepository.class).all().filter("self.invoicingDate <= ?1 AND self.saleOrderLine.id = ?2 AND self.invoiced = false",appSupplychainService.getTodayDate(),saleOrderLine.getId()).fetch();
 		if(subscriptionList != null && !subscriptionList.isEmpty()){
 			return this.generateSubscriptionInvoice(subscriptionList, saleOrderLine.getSaleOrder());
 		}
@@ -459,7 +459,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 			List<InvoiceLine> invoiceLines = invoiceService.getInvoiceLinesFromInvoiceList(invoiceList);
 			invoiceGenerator.populate(invoiceMerged, invoiceLines);
 			invoiceService.setInvoiceForInvoiceLines(invoiceLines, invoiceMerged);
-			if(!generalService.getGeneral().getManageInvoicedAmountByLine()){
+			if(!appSupplychainService.getAppSupplychain().getManageInvoicedAmountByLine()){
 				this.fillInLines(invoiceMerged);
 			}
 			else{
@@ -470,7 +470,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 			return invoiceMerged;
 		}
 		else{
-			if(!generalService.getGeneral().getManageInvoicedAmountByLine()){
+			if(!appSupplychainService.getAppSupplychain().getManageInvoicedAmountByLine()){
 				Invoice invoiceMerged = invoiceService.mergeInvoice(invoiceList,company,currency,partner,contactPartner,priceList,paymentMode,paymentCondition);
 				this.fillInLines(invoiceMerged);
 				return invoiceMerged;

@@ -51,8 +51,8 @@
     <action-record name="action-cash-register-line-record-new" model="com.axelor.apps.account.db.CashRegisterLine">
     	<field name="user" expr="eval:__user__"/>
     	<field name="cashRegister"   expr="eval:__user__.activeCashRegister"/>
-    	<field name="createDateTime" expr="eval:__config__.generalService.getTodayDateTime()"/>
-    	<field name="cashRegisterDate" expr="eval:__config__.generalService.getTodayDate()"/>
+    	<field name="createDateTime" expr="eval:__config__.app.getTodayDateTime()"/>
+    	<field name="cashRegisterDate" expr="eval:__config__.app.getTodayDate()"/>
     </action-record>
 
 </object-views>

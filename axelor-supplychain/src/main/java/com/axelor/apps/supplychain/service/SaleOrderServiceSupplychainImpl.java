@@ -21,16 +21,14 @@ import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.axelor.apps.ReportFactory;
+import com.axelor.apps.base.db.AppSupplychain;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
-import com.axelor.apps.base.db.General;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.Team;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.PartnerService;
-import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.sale.db.SaleOrder;
@@ -38,7 +36,9 @@ import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.SaleOrderLineService;
 import com.axelor.apps.sale.service.SaleOrderLineTaxService;
 import com.axelor.apps.sale.service.SaleOrderServiceImpl;
+import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.stock.db.Location;
+import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
@@ -51,21 +51,20 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl {
 	
 	protected SaleOrderStockService saleOrderStockService;
 	protected SaleOrderPurchaseService saleOrderPurchaseService;
-	protected General general;
-
+	protected AppSupplychain appSupplychain;
 
 	@Inject
 	public SaleOrderServiceSupplychainImpl(SaleOrderLineService saleOrderLineService, SaleOrderLineTaxService saleOrderLineTaxService, 	
 			SequenceService sequenceService, PartnerService partnerService, PartnerRepository partnerRepo, SaleOrderRepository saleOrderRepo,
-			GeneralService generalService, UserService userService, SaleOrderStockService saleOrderStockService, 
-			SaleOrderPurchaseService saleOrderPurchaseService) {
+			AppSaleService appSaleService, UserService userService, SaleOrderStockService saleOrderStockService, 
+			SaleOrderPurchaseService saleOrderPurchaseService, AppSupplychainService appSupplychainService) {
 		
 		super(saleOrderLineService, saleOrderLineTaxService, sequenceService,
-				partnerService, partnerRepo, saleOrderRepo, generalService, userService);
+				partnerService, partnerRepo, saleOrderRepo, appSaleService, userService);
 		
 		this.saleOrderStockService = saleOrderStockService;
 		this.saleOrderPurchaseService = saleOrderPurchaseService;
-		this.general = generalService.getGeneral();
+		this.appSupplychain = appSupplychainService.getAppSupplychain();
 		
 	}
 	
@@ -76,10 +75,10 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl {
 
 		super.confirmSaleOrder(saleOrder);
 		
-		if(general.getPurchaseOrderGenerationAuto())  {
+		if(appSupplychain.getPurchaseOrderGenerationAuto())  {
 			saleOrderPurchaseService.createPurchaseOrders(saleOrder);
 		}
-		if(general.getCustomerStockMoveGenerationAuto())  {
+		if(appSupplychain.getCustomerStockMoveGenerationAuto())  {
 			saleOrderStockService.createStocksMovesFromSaleOrder(saleOrder);
 		}
 		

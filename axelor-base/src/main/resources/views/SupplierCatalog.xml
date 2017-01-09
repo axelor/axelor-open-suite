@@ -28,7 +28,7 @@
     </form>
     
     <action-attrs name="action-supplier-catalog-attrs-scale-and-precision">
-		<attribute name="scale" for="price" expr="eval: __config__.generalService.getNbDecimalDigitForUnitPrice()"/>
+		<attribute name="scale" for="price" expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
 	</action-attrs>
         
 </object-views>

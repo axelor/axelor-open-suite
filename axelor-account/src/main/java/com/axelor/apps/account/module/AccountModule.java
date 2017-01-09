@@ -51,6 +51,8 @@ import com.axelor.apps.account.service.MoveLineReportService;
 import com.axelor.apps.account.service.MoveLineReportServiceImpl;
 import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.ReconcileServiceImpl;
+import com.axelor.apps.account.service.app.AppAccountService;
+import com.axelor.apps.account.service.app.AppAccountServiceImpl;
 import com.axelor.apps.account.service.bankorder.BankOrderMergeService;
 import com.axelor.apps.account.service.bankorder.BankOrderMergeServiceImpl;
 import com.axelor.apps.account.service.bankorder.BankOrderService;
@@ -129,6 +131,10 @@ public class AccountModule extends AxelorModule {
         bind(BankOrderRepository.class).to(BankOrderManagementRepository.class);
         
         bind(BankOrderMergeService.class).to(BankOrderMergeServiceImpl.class);
+        
+        bind(BankOrderMergeService.class).to(BankOrderMergeServiceImpl.class);
+        
+        bind(AppAccountService.class).to(AppAccountServiceImpl.class);
         
         IPartner.modelPartnerFieldMap.put(Invoice.class.getName(), "partner");
     }

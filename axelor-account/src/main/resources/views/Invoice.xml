@@ -108,7 +108,7 @@
 			<field name="company" widget="SuggestBox" onChange="action-group-account-invoice-company-onchange, action-invoice-attrs-hide-totals-company-currency" form-view="company-form" grid-view="company-grid" readonlyIf="statusSelect != 1"/>
 			<field name="companyBankDetails" widget="SuggestBox" onSelect="action-accounting-batch-attrs-company-bank-details-domain" form-view="bank-details-form" grid-view="bank-details-grid"/>
 			<field name="currency" onChange="action-invoice-attrs-change-total-title, action-invoice-attrs-hide-totals-company-currency" readonlyIf="statusSelect != 1" form-view="currency-form" grid-view="currency-grid"/>
-			<field name="project" if-module="axelor-business-project" onSelect="action-invoice-attrs-domain-project" form-view="project-form" grid-view="project-grid" if="__config__.general.getAppBusinessProject()"/>
+			<field name="project" if-module="axelor-business-project" onSelect="action-invoice-attrs-domain-project" form-view="project-form" grid-view="project-grid" if="__config__.app.isApp('project')"/>
 			<field name="inAti" onChange="action-invoice-attrs-in-ati"/>
 			<field name="hideDiscount"/>
 			<field name="isSubscription" hidden="true"/>
@@ -123,7 +123,7 @@
 			<field name="paymentCondition" readonlyIf="statusSelect == 3" widget="SuggestBox" onChange="action-invoice-record-due-date" form-view="payment-condition-form" grid-view="payment-condition-grid"/>
 			<field name="bankDetails" hideIf="operationTypeSelect &gt; 3" widget="SuggestBox" onSelect="action-invoice-attrs-bank-details-from-partner-domain" form-view="bank-details-form" grid-view="bank-details-grid"/>
 			<field name="priceList" onChange="action-invoice-record-hide-discount" readonlyIf="statusSelect != 1" onSelect="action-invoice-attrs-domain-priceList" form-view="price-list-form" grid-view="price-list-grid"/>
-			<field name="saleOrder" if="__config__.general.getAppSupplychain() &amp;&amp; !__config__.general.getManageInvoicedAmountByLine()" if-module="axelor-supplychain" onChange="action-invoice-method-fill-in-lines" form-view="sale-order-form" grid-view="sale-order-grid"/>
+			<field name="saleOrder" if="__config__.app.isApp('supplychain') &amp;&amp; !__config__.app.getApp('supplychain').getManageInvoicedAmountByLine()" if-module="axelor-supplychain" onChange="action-invoice-method-fill-in-lines" form-view="sale-order-form" grid-view="sale-order-grid"/>
 			<field name="message" />
 			<field name="supplierInvoiceNb" showIf="operationTypeSelect == 1 || operationTypeSelect == 2"/>
 		</panel>
@@ -184,7 +184,7 @@
 				<field name="note" colSpan="12"/>
 				
 			</panel>
-			<panel title="Printing" name="printing" hidden="true" if-module="axelor-business-project" colSpan="12" if="__config__.general.getAppBusinessProject()" >
+			<panel title="Printing" name="printing" hidden="true" if-module="axelor-business-project" colSpan="12" if="__config__.app.isApp('business-project')" >
 				<field name="displayTimesheetOnPrinting" />
 				<field name="displayExpenseOnPrinting" />
 			</panel>
@@ -198,7 +198,7 @@
 			<panel name="dates" title="Dates" readonlyIf="statusSelect == 3">
 				<field name="invoiceDate" onChange="action-invoice-record-due-date,action-invoice-record-estimated-payment-date"/>
 				<field name="dueDate" onChange="action-invoice-record-estimated-payment-date"/>
-				<field name="estimatedPaymentDate" readonly="true" if-module="axelor-cash-management"  if="__config__.general.getAppCashManagement()" />
+				<field name="estimatedPaymentDate" readonly="true" if-module="axelor-cash-management"  if="__config__.app.isApp('cash-management')" />
 			</panel>
 		</panel-stack>
 	 
@@ -407,7 +407,7 @@
 	<!-- ACTION RECORD -->
 	
 	<action-record name="action-invoice-record-estimated-payment-date" model="com.axelor.apps.account.db.Invoice" if-module="axelor-cash-management">
-		<field name="estimatedPaymentDate" expr="eval: dueDate?.plusDays(partner?.paymentDelay?.intValue())" if="__config__.general.getAppCashManagement()" />
+		<field name="estimatedPaymentDate" expr="eval: dueDate?.plusDays(partner?.paymentDelay?.intValue())" if="__config__.app.isApp('cash-management')" />
 	</action-record>
 	
 	<action-record name="action-invoice-record-hide-discount" model="com.axelor.apps.account.db.Invoice">
@@ -501,7 +501,7 @@
 	</action-attrs>
 	
 	<action-attrs name="action-invoice-attrs-printing-fields" if-module="axelor-business-project">
-		<attribute name="hidden" for="printing" expr="eval: __repo__.of(InvoicingProject).all().filter('self.invoice.id = ?1', id).fetch().isEmpty()" if="__config__.general.getAppBusinessProject()" />
+		<attribute name="hidden" for="printing" expr="eval: __repo__.of(InvoicingProject).all().filter('self.invoice.id = ?1', id).fetch().isEmpty()" if="__config__.app.isApp('business-project')" />
 	</action-attrs>
 	
 	<!-- DOMAIN -->

@@ -13,7 +13,7 @@
 	    	<field name="saleOrderInAtiSelect"/>
 	    	<field name="defaultValidityDuration" form-view="duration-form" grid-view="duration-grid"/>
 	  	</panel>
-	  	<panel name="customerCredit" title="Customer Credit" if-module="axelor-supplychain" if="__config__.general.getAppSupplychain()" >   
+	  	<panel name="customerCredit" title="Customer Credit" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')" >   
 	  		<field name="acceptedCredit"/>
 	  	</panel>
   		<panel name="printingSettings" title="Printing settings">

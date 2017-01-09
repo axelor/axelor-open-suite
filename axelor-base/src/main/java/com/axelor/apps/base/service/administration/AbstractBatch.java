@@ -27,6 +27,7 @@ import org.slf4j.LoggerFactory;
 import com.axelor.apps.base.db.Batch;
 import com.axelor.apps.base.db.repo.BatchRepository;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.auth.db.AuditableModel;
 import com.axelor.db.JPA;
 import com.axelor.db.Model;
@@ -39,7 +40,7 @@ import com.google.inject.persist.Transactional;
 public abstract class AbstractBatch {
 
 	@Inject
-	protected GeneralService generalService;
+	protected AppBaseService appBaseService;
 
 	static final Logger LOG = LoggerFactory.getLogger(AbstractBatch.class);
 
@@ -177,7 +178,7 @@ public abstract class AbstractBatch {
 	@Transactional
 	protected void unarchived() {
 
-		model = JPA.find(generalService.getPersistentClass(model), model.getId());
+		model = JPA.find(appBaseService.getPersistentClass(model), model.getId());
 		model.setArchived( false );
 
 	}
@@ -213,7 +214,7 @@ public abstract class AbstractBatch {
 
 	private boolean isAssociable(Field field){
 
-		return field.getType().equals( generalService.getPersistentClass(model) );
+		return field.getType().equals( appBaseService.getPersistentClass(model) );
 
 	}
 

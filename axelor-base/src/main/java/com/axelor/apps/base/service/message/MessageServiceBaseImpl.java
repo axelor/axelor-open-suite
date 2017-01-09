@@ -33,7 +33,7 @@ import com.axelor.apps.base.db.BirtTemplate;
 import com.axelor.apps.base.db.BirtTemplateParameter;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.PrintingSettings;
-import com.axelor.apps.base.service.administration.GeneralService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.message.db.EmailAddress;
 import com.axelor.apps.message.db.Message;
@@ -60,7 +60,7 @@ public class MessageServiceBaseImpl extends MessageServiceImpl {
 	protected UserService userService;
 
 	@Inject
-	protected GeneralService generalService;
+	protected AppBaseService appBaseService;
 	
 
 	@Inject
@@ -121,7 +121,7 @@ public class MessageServiceBaseImpl extends MessageServiceImpl {
 	@Transactional(rollbackOn = { MessagingException.class, IOException.class, Exception.class })
 	public Message sendByEmail(Message message) throws MessagingException, IOException, AxelorException  {
 				
-		if(generalService.getGeneral().getActivateSendingEmail())  {  return super.sendByEmail(message);  }
+		if(appBaseService.getAppBase().getActivateSendingEmail())  {  return super.sendByEmail(message);  }
 		
 		message.setSentByEmail(true);
 		message.setStatusSelect(MessageRepository.STATUS_SENT);

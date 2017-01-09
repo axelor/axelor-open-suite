@@ -21,7 +21,7 @@ import java.util.List;
 
 import org.joda.time.LocalDate;
 
-import com.axelor.apps.base.service.administration.GeneralService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.project.db.ProjectPlanning;
 import com.axelor.apps.project.db.ProjectPlanningLine;
 import com.axelor.apps.project.db.repo.ProjectPlanningLineRepository;
@@ -52,10 +52,10 @@ public class ProjectPlanningController {
 	protected ProjectPlanningRepository projectPlanningRepo;
 
 	@Inject
-	protected GeneralService generalService;
+	protected AppBaseService appBaseService;
 
 	public void myPlanning(ActionRequest request, ActionResponse response) throws AxelorException{
-		LocalDate todayDate = generalService.getTodayDate();
+		LocalDate todayDate = appBaseService.getTodayDate();
 		ProjectPlanning planning = projectPlanningRepo.all().filter("self.year = ?1 AND self.week = ?2",todayDate.getYear(),todayDate.getWeekOfWeekyear()).fetchOne();
 		if(planning == null){
 			planning = projectPlanningService.createPlanning(todayDate.getYear(),todayDate.getWeekOfWeekyear());
@@ -70,7 +70,7 @@ public class ProjectPlanningController {
 	}
 
 	public void myTeamPlanning(ActionRequest request, ActionResponse response) throws AxelorException{
-		LocalDate todayDate = generalService.getTodayDate();
+		LocalDate todayDate = appBaseService.getTodayDate();
 		ProjectPlanning planning = projectPlanningRepo.all().filter("self.year = ?1 AND self.week = ?2",todayDate.getYear(),todayDate.getWeekOfWeekyear()).fetchOne();
 		if(planning == null){
 			planning = projectPlanningService.createPlanning(todayDate.getYear(),todayDate.getWeekOfWeekyear());
@@ -165,7 +165,7 @@ public class ProjectPlanningController {
 
 	public void planningCurrentWeek(ActionRequest request, ActionResponse response) throws AxelorException{
 		request.getContext().asType(ProjectPlanning.class);
-		LocalDate currentDate = generalService.getTodayDate();
+		LocalDate currentDate = appBaseService.getTodayDate();
 		int year = currentDate.getYear();
 		int week = currentDate.getWeekOfWeekyear();
 		ProjectPlanning planningCurrentWeek = null;

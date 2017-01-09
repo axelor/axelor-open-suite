@@ -30,13 +30,13 @@ import com.axelor.apps.account.db.PaymentVoucher;
 import com.axelor.apps.account.db.repo.ChequeRejectionRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.service.app.AppAccountServiceImpl;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.move.MoveLineService;
 import com.axelor.apps.account.service.move.MoveService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.service.administration.GeneralServiceImpl;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
@@ -174,7 +174,7 @@ public class ChequeRejectionService {
 
 		if(seq == null)   {
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.CHECK_REJECTION_1),
-					GeneralServiceImpl.EXCEPTION,chequeRejection.getCompany().getName()), IException.CONFIGURATION_ERROR);
+					AppAccountServiceImpl.EXCEPTION,chequeRejection.getCompany().getName()), IException.CONFIGURATION_ERROR);
 		}
 
 		chequeRejection.setName(seq);

@@ -21,7 +21,7 @@ import java.io.IOException;
 
 import javax.mail.MessagingException;
 
-import com.axelor.apps.base.service.administration.GeneralService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.hr.db.ExtraHours;
 import com.axelor.apps.hr.db.HRConfig;
 import com.axelor.apps.hr.db.repo.ExtraHoursRepository;
@@ -36,16 +36,16 @@ import com.google.inject.persist.Transactional;
 public class ExtraHoursServiceImpl implements ExtraHoursService  {
 	
 	protected ExtraHoursRepository extraHoursRepo;
-	protected GeneralService generalService;
+	protected AppBaseService appBaseService;
 	protected HRConfigService hrConfigService;
 	protected TemplateMessageService templateMessageService;
 	
 	@Inject
-	public ExtraHoursServiceImpl(ExtraHoursRepository extraHoursRepo, GeneralService generalService,
+	public ExtraHoursServiceImpl(ExtraHoursRepository extraHoursRepo, AppBaseService appBaseService,
 			HRConfigService hrConfigService, TemplateMessageService templateMessageService)  {
 		
 		this.extraHoursRepo = extraHoursRepo;
-		this.generalService = generalService;
+		this.appBaseService = appBaseService;
 		this.hrConfigService = hrConfigService;
 		this.templateMessageService = templateMessageService;
 	}
@@ -62,7 +62,7 @@ public class ExtraHoursServiceImpl implements ExtraHoursService  {
 	public void confirm(ExtraHours extraHours) throws AxelorException  {
 				
 		extraHours.setStatusSelect(ExtraHoursRepository.STATUS_CONFIRMED);
-		extraHours.setSentDate(generalService.getTodayDate()); 
+		extraHours.setSentDate(appBaseService.getTodayDate()); 
 		
 		extraHoursRepo.save(extraHours);
 		
@@ -89,7 +89,7 @@ public class ExtraHoursServiceImpl implements ExtraHoursService  {
 		
 		extraHours.setStatusSelect(ExtraHoursRepository.STATUS_VALIDATED);
 		extraHours.setValidatedBy(AuthUtils.getUser());
-		extraHours.setValidationDate(generalService.getTodayDate());
+		extraHours.setValidationDate(appBaseService.getTodayDate());
 		
 		extraHoursRepo.save(extraHours);
 		
@@ -115,7 +115,7 @@ public class ExtraHoursServiceImpl implements ExtraHoursService  {
 		
 		extraHours.setStatusSelect(ExtraHoursRepository.STATUS_REFUSED);
 		extraHours.setRefusedBy(AuthUtils.getUser());
-		extraHours.setRefusalDate(generalService.getTodayDate());
+		extraHours.setRefusalDate(appBaseService.getTodayDate());
 		
 		extraHoursRepo.save(extraHours);
 		

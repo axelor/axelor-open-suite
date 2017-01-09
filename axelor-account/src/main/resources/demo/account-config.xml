@@ -2,7 +2,7 @@
 <csv-inputs xmlns="http://axelor.com/xml/ns/data-import"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/data-import http://axelor.com/xml/ns/data-import/data-import_4.0.xsd">
-  
+  	
 	<input file="account_cashRegister.csv" separator=";" type="com.axelor.apps.account.db.CashRegister" search="self.importId = :importId" />
 	
 	<input file="account_accountingBatch.csv" separator=";" type="com.axelor.apps.account.db.AccountingBatch" search="self.code = :code" >
@@ -67,16 +67,6 @@
 	<input file="account_accountConfig.csv" separator=";" type="com.axelor.apps.account.db.AccountConfig" search="self.importId = :importId" />
 	
 	<input file="account_reminderConfigLine.csv" separator=";" type="com.axelor.apps.account.db.ReminderConfigLine" />
-	
-	<input file="base_general.csv" separator=";" type="com.axelor.apps.base.db.General"  search="self.importId = :importId" update="true">
-      	<bind to="defaultExemptionTax" search="self.code = :defaultExemptionTax_code" update="true">
-          	<bind column="defaultExemptionTax_code" to="code"/>
-      	</bind>
-		<bind to="qasWsdlUrl" column="qas_url"/>
-		<bind to="manageBudget" column="manageBudget"/>
-		<bind to="manageMultiBudget" column="manageMultiBudget"/>
-        <bind to="statusSelectBudget" column="statusSelectBudget"/>
-	</input>
 
 	<input file="base_partner.csv" separator=";" type="com.axelor.apps.base.db.Partner" search="self.importId = :importId" 
 	update="true" call="com.axelor.csv.script.ImportPartnerAccount:importAccountingSituation">
@@ -89,4 +79,6 @@
 		<bind column="bankDetailsSet_id" to="bankDetailsSet" search="self.importId in :bankDetailsSet_id" update="true" />
 	</input> 
  	
+ 	<input file="base_appAccount.csv" separator=";" search="self.typeSelect = :typeSelect" update="true" type="com.axelor.apps.base.db.AppAccount" />
+  	
 </csv-inputs>

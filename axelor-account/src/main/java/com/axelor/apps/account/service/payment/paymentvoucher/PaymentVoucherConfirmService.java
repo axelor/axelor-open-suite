@@ -39,6 +39,7 @@ import com.axelor.apps.account.db.repo.PaymentVoucherRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.AccountCustomerService;
 import com.axelor.apps.account.service.ReconcileService;
+import com.axelor.apps.account.service.app.AppAccountServiceImpl;
 import com.axelor.apps.account.service.move.MoveLineService;
 import com.axelor.apps.account.service.move.MoveService;
 import com.axelor.apps.account.service.payment.PaymentModeService;
@@ -46,7 +47,6 @@ import com.axelor.apps.account.service.payment.PaymentService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.CurrencyService;
-import com.axelor.apps.base.service.administration.GeneralServiceImpl;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
@@ -119,7 +119,7 @@ public class PaymentVoucherConfirmService  {
 
 		if(paymentVoucher.getRemainingAmount().compareTo(BigDecimal.ZERO) > 0 && !journal.getExcessPaymentOk())  {
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.PAYBOX_3),
-					GeneralServiceImpl.EXCEPTION), IException.INCONSISTENCY);
+					AppAccountServiceImpl.EXCEPTION), IException.INCONSISTENCY);
 		}
 
 		if(paymentVoucher.getPayboxPaidOk())  {

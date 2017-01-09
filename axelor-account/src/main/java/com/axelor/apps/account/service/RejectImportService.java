@@ -28,9 +28,9 @@ import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.account.db.InterbankCodeLine;
 import com.axelor.apps.account.db.repo.InterbankCodeLineRepository;
+import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.bankorder.file.cfonb.CfonbImportService;
 import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.tool.file.FileTool;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
@@ -39,19 +39,19 @@ public class RejectImportService{
 
 	private final Logger log = LoggerFactory.getLogger( getClass() );
 
-	protected GeneralService generalService;
+	protected AppAccountService appAccountService;
 	protected CfonbImportService cfonbImportService;
 	protected InterbankCodeLineRepository interbankCodeLineRepo;
 	
 	protected DateTime todayTime;
 
 	@Inject
-	public RejectImportService(GeneralService generalService, CfonbImportService cfonbImportService, InterbankCodeLineRepository interbankCodeLineRepo) {
+	public RejectImportService(AppAccountService appAccountService, CfonbImportService cfonbImportService, InterbankCodeLineRepository interbankCodeLineRepo) {
 		
-		this.generalService = generalService;
+		this.appAccountService = appAccountService;
 		this.cfonbImportService = cfonbImportService;
 		this.interbankCodeLineRepo = interbankCodeLineRepo;
-		this.todayTime = this.generalService.getTodayDateTime();
+		this.todayTime = this.appAccountService.getTodayDateTime();
 
 	}
 
@@ -164,15 +164,15 @@ public class RejectImportService{
 	public InterbankCodeLine getInterbankCodeLine(String reasonCode, int interbankCodeOperation)  {
 		switch(interbankCodeOperation)  {
 		case 0:
-			return interbankCodeLineRepo.all().filter("self.code = ?1 AND self.interbankCode = ?2 AND self.transferCfonbOk = 'true'", reasonCode, generalService.getGeneral().getTransferAndDirectDebitInterbankCode()).fetchOne();
+			return interbankCodeLineRepo.all().filter("self.code = ?1 AND self.interbankCode = ?2 AND self.transferCfonbOk = 'true'", reasonCode, appAccountService.getAppAccount().getTransferAndDirectDebitInterbankCode()).fetchOne();
 		case 1:
-			return interbankCodeLineRepo.all().filter("self.code = ?1 AND self.interbankCode = ?2 AND self.directDebitAndTipCfonbOk = 'true'", reasonCode, generalService.getGeneral().getTransferAndDirectDebitInterbankCode()).fetchOne();
+			return interbankCodeLineRepo.all().filter("self.code = ?1 AND self.interbankCode = ?2 AND self.directDebitAndTipCfonbOk = 'true'", reasonCode, appAccountService.getAppAccount().getTransferAndDirectDebitInterbankCode()).fetchOne();
 		case 2:
-			return interbankCodeLineRepo.all().filter("self.code = ?1 AND self.interbankCode = ?2 AND self.directDebitSepaOk = 'true'", reasonCode, generalService.getGeneral().getTransferAndDirectDebitInterbankCode()).fetchOne();
+			return interbankCodeLineRepo.all().filter("self.code = ?1 AND self.interbankCode = ?2 AND self.directDebitSepaOk = 'true'", reasonCode, appAccountService.getAppAccount().getTransferAndDirectDebitInterbankCode()).fetchOne();
 		case 3:
-			return interbankCodeLineRepo.all().filter("self.code = ?1 AND self.interbankCode = ?2 AND self.lcrBorOk = 'true'", reasonCode, generalService.getGeneral().getTransferAndDirectDebitInterbankCode()).fetchOne();
+			return interbankCodeLineRepo.all().filter("self.code = ?1 AND self.interbankCode = ?2 AND self.lcrBorOk = 'true'", reasonCode, appAccountService.getAppAccount().getTransferAndDirectDebitInterbankCode()).fetchOne();
 		case 4:
-			return interbankCodeLineRepo.all().filter("self.code = ?1 AND self.interbankCode = ?2 AND self.chequeOk = 'true'", reasonCode, generalService.getGeneral().getChequeInterbankCode()).fetchOne();
+			return interbankCodeLineRepo.all().filter("self.code = ?1 AND self.interbankCode = ?2 AND self.chequeOk = 'true'", reasonCode, appAccountService.getAppAccount().getChequeInterbankCode()).fetchOne();
 		default:
 			return null;
 		}

@@ -34,10 +34,10 @@ import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.AccountCustomerService;
+import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
@@ -53,13 +53,13 @@ public class MoveToolService {
 	protected MoveLineRepository moveLineRepository;
 	protected AccountCustomerService accountCustomerService;
 	protected AccountConfigService accountConfigService;
-	protected GeneralService generalService;
+	protected AppAccountService appAccountService;
 
 	@Inject
-	public MoveToolService(GeneralService generalService, MoveLineService moveLineService, MoveLineRepository moveLineRepository, 
+	public MoveToolService(AppAccountService appAccountService, MoveLineService moveLineService, MoveLineRepository moveLineRepository, 
 			AccountCustomerService accountCustomerService, AccountConfigService accountConfigService) {
 
-		this.generalService = generalService;
+		this.appAccountService = appAccountService;
 		this.moveLineService = moveLineService;
 		this.moveLineRepository = moveLineRepository;
 		this.accountCustomerService = accountCustomerService;
@@ -80,7 +80,7 @@ public class MoveToolService {
 
 
 	public boolean toDoConsolidate()  {
-		return generalService.getGeneral().getIsInvoiceMoveConsolidated();
+		return appAccountService.getAppInvoice().getIsInvoiceMoveConsolidated();
 	}
 
 

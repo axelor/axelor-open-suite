@@ -23,10 +23,10 @@ import java.util.Map;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.TaxLine;
+import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.invoice.InvoiceLineService;
 import com.axelor.apps.account.service.invoice.generator.line.InvoiceLineManagement;
 import com.axelor.apps.base.db.Product;
-import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
@@ -65,7 +65,7 @@ public class InvoiceLineController {
 			invoice = request.getContext().getParentContext().asType(Invoice.class);
 			invoiceLine.setInvoice(invoice);
 		}
-		if(Beans.get(GeneralService.class).getGeneral().getManageAnalyticAccounting()){
+		if(Beans.get(AppAccountService.class).getAppAccount().getManageAnalyticAccounting()){
 			invoiceLine = invoiceLineService.computeAnalyticDistribution(invoiceLine);
 			response.setValue("analyticDistributionLineList", invoiceLine.getAnalyticMoveLineList());
 		}

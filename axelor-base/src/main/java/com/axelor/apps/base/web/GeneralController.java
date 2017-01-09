@@ -30,7 +30,7 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.axelor.apps.base.db.General;
+import com.axelor.apps.base.db.AppBase;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.MapService;
@@ -231,11 +231,11 @@ public class GeneralController {
 	
 	public void checkMapApi(ActionRequest request, ActionResponse response)  {
 		
-		General general = request.getContext().asType(General.class);;
+		AppBase appBase = request.getContext().asType(AppBase.class);;
 		
 		boolean connected = false;
 		
-		Integer apiType = general.getMapApiSelect();
+		Integer apiType = appBase.getMapApiSelect();
 		
 		if(apiType == 1){
 			connected = mapService.testGMapService();

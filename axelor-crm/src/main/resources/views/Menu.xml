@@ -3,7 +3,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.2.xsd">
 
-	<menuitem name="crm-root" title="CRM" order="-108" if="__config__.general.getAppCrm()"
+	<menuitem name="crm-root" title="CRM" order="-108" if="__config__.app.isApp('crm')"
 		icon="fa-user" groups="admins,ERP,CRM" icon-background="#2fa042"/>
 
 	<menuitem name="crm-root-create" parent="crm-root"
@@ -66,7 +66,7 @@
 		<context name="_typeSelect" expr="3"/>
 		<context name="_internalUserId" expr="eval: __user__.id"/>
 		<context name="_myActiveTeam" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"/>
-		<context name="_todayDateTime" expr="eval:__config__.generalService.getTodayDateTime()"/>
+		<context name="_todayDateTime" expr="eval:__config__.app.getTodayDateTime()"/>
 		<context name="_newDate" expr="eval: __datetime__.plusDays(5)"/>
 	</action-view>
 	
@@ -98,7 +98,7 @@
 		<context name="_typeSelect" expr="1"/>
 		<context name="_internalUserId" expr="eval: __user__.id"/>
 		<context name="_myActiveTeam" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"/>
-		<context name="_todayDateTime" expr="eval:__config__.generalService.getTodayDateTime()"/>
+		<context name="_todayDateTime" expr="eval:__config__.app.getTodayDateTime()"/>
 	</action-view>
 	
 	<menuitem name="crm-root-ticket" parent="crm-root"
@@ -125,7 +125,7 @@
 		<view type="form" name="lead-form"/>
 		<view-param name="search-filters" value="lead-filters"/>
 		<context name="_myActiveTeam" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"/>
-		<context name="todayDate" expr="eval:__config__.generalService.getTodayDate()" />
+		<context name="todayDate" expr="eval:__config__.app.getTodayDate()" />
 		<context name="_internalUserId" expr="eval:__user__.id"/>
 	</action-view>
 	
@@ -140,7 +140,7 @@
 		<view-param name="search-filters" value="opportunity-filters"/>
 		<context name="_internalUserId" expr="eval:__user__.id"/>
 		<context name="_myActiveTeam" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"/>
-		<context name="todayDate" expr="eval:__config__.generalService.getTodayDate()" />
+		<context name="todayDate" expr="eval:__config__.app.getTodayDate()" />
 	</action-view>
 	
 		
@@ -296,7 +296,7 @@
 	
 	<!-- Top Menu for Activity and Create Entry for opportunity.... -->
 	
-	<menuitem name="top-menu-crm-activities" order="-180" title="Activity" groups="admins,ERP,CRM" top="true" left="false" if="__config__.general.getAppCrm()"/> 	
+	<menuitem name="top-menu-crm-activities" order="-180" title="Activity" groups="admins,ERP,CRM" top="true" left="false" if="__config__.app.isApp('crm')"/> 	
 
 	<menuitem name="top-menu-activity-my-calendar" order="-90"  parent="top-menu-crm-activities" title="My Calendar" action="crm.root.meeting.my.calendar" top="true" />
 	
@@ -314,7 +314,7 @@
 	
 	<menuitem name="top-menu-activity-view-meetings" order="-20" title="View Meetings" top="true" action="crm.root.meeting" parent="top-menu-crm-activities"/>	
 	
-	<menuitem name="top-menu-create-opportunity" order="-80" parent="top-menu-utility" top="true" title="Create Opportunity" action="top.new.opportunity.view" if="__config__.general.getAppCrm()"  />
+	<menuitem name="top-menu-create-opportunity" order="-80" parent="top-menu-utility" top="true" title="Create Opportunity" action="top.new.opportunity.view" if="__config__.app.isApp('crm')"  />
 
 	<action-view name="top.new.opportunity.view" title="Create Opportunity" model="com.axelor.apps.crm.db.Opportunity" >
 		<view type="form" name="opportunity-form"/>
@@ -322,22 +322,22 @@
 		<context name="_internalUserId" expr="eval:__user__.id"/>
 	</action-view>
 	
-	<menuitem name="top-menu-create-lead" order="-70" parent="top-menu-utility"	top="true" title="Create Lead" action="top.new.lead.view" if="__config__.general.getAppCrm()"/>
+	<menuitem name="top-menu-create-lead" order="-70" parent="top-menu-utility"	top="true" title="Create Lead" action="top.new.lead.view" if="__config__.app.isApp('crm')"/>
 		
 	<action-view name="top.new.lead.view" title="Create Lead"  model="com.axelor.apps.crm.db.Lead" >
 		<view type="form" name="lead-form" />
 		<view type="grid" name="lead-grid" />
-		<context name="todayDate" expr="eval:__config__.generalService.getTodayDate()" />
+		<context name="todayDate" expr="eval:__config__.app.getTodayDate()" />
 		<context name="_internalUserId" expr="eval:__user__.id"/>
 	</action-view>
 	
-	<menuitem name="top-prospection" title="Prospection" groups="admins,ERP" top="true" left="false" order="-170" if="__config__.general.getAppCrm()"/>
+	<menuitem name="top-prospection" title="Prospection" groups="admins,ERP" top="true" left="false" order="-170" if="__config__.app.isApp('crm')"/>
 	<menuitem name="top-prospection-create-lead" order="-100" parent="top-prospection" top="true"	title="Create Lead" action="top.new.lead.view"  />
 	<menuitem name="top-prospection-leads" title="View Leads" order="-90" action="top.propsection.leads" parent="top-prospection" groups="admins,ERP,CRM" top="true" left="false"/> 	
 	<action-view name="top.propsection.leads" title="Leads" model="com.axelor.apps.crm.db.Lead" >
 		<view type="grid" name="lead-grid" />
 		<view type="form" name="lead-form" />
-		<context name="todayDate" expr="eval:__config__.generalService.getTodayDate()" />
+		<context name="todayDate" expr="eval:__config__.app.getTodayDate()" />
 		<context name="_internalUserId" expr="eval:__user__.id"/>
 	</action-view>
 	<menuitem name="top-prospection-create-opportunity" order="-80" parent="top-prospection" top="true" title="Create Opportunity"  action="top.new.opportunity.view"  />
@@ -345,7 +345,7 @@
 	<action-view name="top.prospection.opportunity" title="Opportunities" model="com.axelor.apps.crm.db.Opportunity" >
 		<view type="grid" name="opportunity-grid" />
 		<view type="form" name="opportunity-form" />
-		<context name="todayDate" expr="eval:__config__.generalService.getTodayDate()" />
+		<context name="todayDate" expr="eval:__config__.app.getTodayDate()" />
 		<context name="_internalUserId" expr="eval:__user__.id"/>
 	</action-view>
 	
@@ -387,7 +387,7 @@
 	<action-view name="crm.target.team.dashboard.view" title="Target team Dashboard">
 		<view type="dashboard" name="crm.target.team.dashboard" />
 		<context name="team" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeamId()"/>
-		<context name="date" expr="eval:__config__.generalService.getTodayDate()"/>
+		<context name="date" expr="eval:__config__.app.getTodayDate()"/>
 	</action-view>
 	
 	

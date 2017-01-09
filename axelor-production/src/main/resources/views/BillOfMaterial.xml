@@ -15,8 +15,8 @@
 		model="com.axelor.apps.production.db.BillOfMaterial" onSave="action-bill-of-material-record-name,action-bill-of-material-method-validate-prod-process"
 		onNew="action-bill-of-material-default-record" onLoad="action-bill-of-material-attrs-price-digits" width="large">
 		<toolbar>
-			<button name="newVersion" title="Generate new version"  if="__config__.general.getAppProduction() &amp;&amp; __config__.general.manageBillOfMaterialVersion" onClick="action-bill-of-material-check-other-version,action-bill-of-material-generate-new-version"/>
-			<button name="archive" prompt="Do you really wish to archive this bill of material ?" title="Archive" if="__config__.general.getAppProduction() &amp;&amp; __config__.general.manageBillOfMaterialVersion" onClick="action-bill-of-material-archive,save" />
+			<button name="newVersion" title="Generate new version"  if="__config__.app.getApp('production').manageBillOfMaterialVersion" onClick="action-bill-of-material-check-other-version,action-bill-of-material-generate-new-version"/>
+			<button name="archive" prompt="Do you really wish to archive this bill of material ?" title="Archive" if="__config__.app.getApp('production').manageBillOfMaterialVersion" onClick="action-bill-of-material-archive,save" />
 		</toolbar>
 		<panel name="main">
 			<field name="fullName" hidden="true" showIf="$readonly()" colSpan="12"/>
@@ -30,7 +30,7 @@
 	  
 		<panel-tabs>
 			<panel-related field="billOfMaterialList" title="Components" colSpan="12" domain="self.isRawMaterial = false AND self.personalized = false" form-view="bill-of-material-line-form" grid-view="bill-of-material-line-grid"/>
-			<panel-related field="prodResidualProductList" title="Residual products" colSpan="12" grid-view="prod-residual-product-grid" form-view="prod-residual-product-form" if="__config__.general.getAppProduction() &amp;&amp; __config__.general.manageResidualProductOnBom"/>	    
+			<panel-related field="prodResidualProductList" title="Residual products" colSpan="12" grid-view="prod-residual-product-grid" form-view="prod-residual-product-form" if="__config__.app.getApp('production').getManageResidualProductOnBom()"/>	    
 			<panel-dashlet title="BOM tree" action="action-bill-of-material-view-tree"/>
 			<panel name="cost" title="Cost">
 				<button name="computeCostPrice" title="Compute cost price"   onClick="save,action-bill-of-material-method-compute-cost-price"/>
@@ -164,7 +164,7 @@
     </action-method>
     
     <action-attrs name="action-bill-of-material-attrs-price-digits">
-    	<attribute name="scale" for="costPrice" expr="eval: __config__.generalService.getNbDecimalDigitForUnitPrice()"/>
+    	<attribute name="scale" for="costPrice" expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
     </action-attrs>
     
 </object-views>

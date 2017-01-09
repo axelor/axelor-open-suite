@@ -21,7 +21,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import com.axelor.apps.base.service.administration.GeneralService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.service.employee.EmployeeService;
 import com.axelor.apps.project.db.ProjectTask;
@@ -30,13 +30,13 @@ import com.google.inject.persist.Transactional;
 
 public class ProjectTaskServiceImpl implements ProjectTaskService {
 	
-	protected GeneralService generalService;
+	protected AppBaseService appBaseService;
 	protected EmployeeService employeeService;	
 	
 	@Inject
-	public ProjectTaskServiceImpl(GeneralService generalService, EmployeeService employeeService){
+	public ProjectTaskServiceImpl(AppBaseService appBaseService, EmployeeService employeeService){
 		
-		this.generalService = generalService;
+		this.appBaseService = appBaseService;
 		this.employeeService = employeeService;
 	}
 	

@@ -44,11 +44,10 @@ import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.PriceListLine;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.WeeklyPlanning;
-import com.axelor.apps.base.db.repo.GeneralRepository;
+import com.axelor.apps.base.db.repo.AppBaseRepository;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.base.service.UnitConversionService;
-import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.HRConfig;
 import com.axelor.apps.hr.db.LeaveRequest;
@@ -61,6 +60,7 @@ import com.axelor.apps.hr.db.repo.PublicHolidayDayRepository;
 import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
 import com.axelor.apps.hr.db.repo.TimesheetRepository;
 import com.axelor.apps.hr.exception.IExceptionMessage;
+import com.axelor.apps.hr.service.app.AppHumanResourceService;
 import com.axelor.apps.hr.service.config.HRConfigService;
 import com.axelor.apps.hr.service.employee.EmployeeService;
 import com.axelor.apps.hr.service.project.ProjectTaskService;
@@ -89,7 +89,7 @@ public class TimesheetServiceImpl implements TimesheetService{
 	protected PriceListService priceListService;
 
 	@Inject
-	protected GeneralService generalService;
+	protected AppHumanResourceService appHumanResourceService;
 	
 	@Inject
 	protected ProjectTaskService projectTaskService; 
@@ -131,7 +131,7 @@ public class TimesheetServiceImpl implements TimesheetService{
 		this.validToDate(timesheet);
 		
 		timesheet.setStatusSelect(TimesheetRepository.STATUS_CONFIRMED);
-		timesheet.setSentDate(generalService.getTodayDate());
+		timesheet.setSentDate(appHumanResourceService.getTodayDate());
 		
 		if(timesheet.getToDate() == null)  {
 			timesheet.setToDate(timesheet.getSentDate());
@@ -161,7 +161,7 @@ public class TimesheetServiceImpl implements TimesheetService{
 		
 		timesheet.setStatusSelect(TimesheetRepository.STATUS_VALIDATED);
 		timesheet.setValidatedBy(AuthUtils.getUser());
-		timesheet.setValidationDate(generalService.getTodayDate());
+		timesheet.setValidationDate(appHumanResourceService.getTodayDate());
 		
 		timesheetRepository.save(timesheet);
 		
@@ -187,7 +187,7 @@ public class TimesheetServiceImpl implements TimesheetService{
 		
 		timesheet.setStatusSelect(TimesheetRepository.STATUS_REFUSED);
 		timesheet.setRefusedBy(AuthUtils.getUser());
-		timesheet.setRefusalDate(generalService.getTodayDate());
+		timesheet.setRefusalDate(appHumanResourceService.getTodayDate());
 		
 		timesheetRepository.save(timesheet);
 		
@@ -324,7 +324,7 @@ public class TimesheetServiceImpl implements TimesheetService{
 	public Timesheet getCurrentOrCreateTimesheet(){
 		Timesheet timesheet = getCurrentTimesheet();
 		if(timesheet == null)
-			timesheet = createTimesheet(AuthUtils.getUser(), generalService.getTodayDateTime().toLocalDate(), null);
+			timesheet = createTimesheet(AuthUtils.getUser(), appHumanResourceService.getTodayDateTime().toLocalDate(), null);
 		return timesheet;
 	}
 	
@@ -361,7 +361,7 @@ public class TimesheetServiceImpl implements TimesheetService{
 		DateFormat ddmmFormat = new SimpleDateFormat("dd/MM");
 		HashMap<String, Object[]> timeSheetInformationsMap = new HashMap<String, Object[]>();
 		//Check if a consolidation by product and user must be done
-		boolean consolidate = generalService.getGeneral().getConsolidateTSLine();
+		boolean consolidate = appHumanResourceService.getAppTimesheet().getConsolidateTSLine();
 
 		for (TimesheetLine timesheetLine : timesheetLineList) {
 			Object[] tabInformations = new Object[5];
@@ -433,7 +433,7 @@ public class TimesheetServiceImpl implements TimesheetService{
 
 
 		BigDecimal qtyConverted = durationStored;
-		qtyConverted = Beans.get(UnitConversionService.class).convert(generalService.getGeneral().getUnitHours(), product.getUnit(), durationStored);
+		qtyConverted = Beans.get(UnitConversionService.class).convert(appHumanResourceService.getAppBase().getUnitHours(), product.getUnit(), durationStored);
 
 		PriceList priceList = invoice.getPartner().getSalePriceList();
 		if(priceList != null)  {
@@ -441,7 +441,7 @@ public class TimesheetServiceImpl implements TimesheetService{
 			if(priceListLine!=null){
 				discountTypeSelect = priceListLine.getTypeSelect();
 			}
-			if((generalService.getGeneral().getComputeMethodDiscountSelect() == GeneralRepository.INCLUDE_DISCOUNT_REPLACE_ONLY && discountTypeSelect == IPriceListLine.TYPE_REPLACE) || generalService.getGeneral().getComputeMethodDiscountSelect() == GeneralRepository.INCLUDE_DISCOUNT)
+			if((appHumanResourceService.getAppBase().getComputeMethodDiscountSelect() == AppBaseRepository.INCLUDE_DISCOUNT_REPLACE_ONLY && discountTypeSelect == IPriceListLine.TYPE_REPLACE) || appHumanResourceService.getAppBase().getComputeMethodDiscountSelect() == AppBaseRepository.INCLUDE_DISCOUNT)
 			{
 				Map<String, Object> discounts = priceListService.getDiscounts(priceList, priceListLine, price);
 				if(discounts != null){

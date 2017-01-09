@@ -12,7 +12,7 @@ import org.joda.time.LocalDate;
 
 import com.axelor.apps.base.db.Year;
 import com.axelor.apps.base.db.repo.YearRepository;
-import com.axelor.apps.base.service.administration.GeneralService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.ExpenseLine;
 import com.axelor.apps.hr.db.KilometricAllowanceRate;
@@ -31,7 +31,7 @@ import com.google.inject.persist.Transactional;
 public class KilometricService {
 	
 	@Inject
-	GeneralService generalService;
+	private AppBaseService appBaseService;
 	
 	@Inject
 	KilometricLogRepository kilometricLogRepo;
@@ -50,7 +50,7 @@ public class KilometricService {
 	}
 	
 	public KilometricLog getCurrentKilometricLog(Employee employee){
-		return getKilometricLog(employee, generalService.getTodayDate() );
+		return getKilometricLog(employee, appBaseService.getTodayDate() );
 	}
 	
 	public KilometricLog createKilometricLog(Employee employee, BigDecimal distance, Year year){
@@ -95,7 +95,7 @@ public class KilometricService {
 		
 		KilometricAllowanceRate allowance = Beans.get(KilometricAllowanceRateRepository.class).all().filter("self.kilometricAllowParam = ?1", expenseLine.getKilometricAllowParam() ).fetchOne();
 		
-		List<KilometricAllowanceRule> ruleList = new ArrayList();
+		List<KilometricAllowanceRule> ruleList = new ArrayList<KilometricAllowanceRule>();
 		
 		for (KilometricAllowanceRule rule : allowance.getKilometricAllowanceRuleList() ) {
 			
@@ -124,7 +124,7 @@ public class KilometricService {
 			  }
 			}
 		
-		return price.setScale( generalService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
+		return price.setScale( appBaseService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
 	}
 	
 	@Transactional

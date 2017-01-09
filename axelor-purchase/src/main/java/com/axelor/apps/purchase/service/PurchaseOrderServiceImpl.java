@@ -34,7 +34,6 @@ import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.ProductRepository;
-import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.purchase.db.IPurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrder;
@@ -43,6 +42,7 @@ import com.axelor.apps.purchase.db.PurchaseOrderLineTax;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.purchase.exception.IExceptionMessage;
 import com.axelor.apps.purchase.report.IReport;
+import com.axelor.apps.purchase.service.app.AppPurchaseService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
@@ -67,7 +67,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 	private PartnerRepository partnerRepo;
 
 	@Inject
-	protected GeneralService generalService;
+	protected AppPurchaseService appPurchaseService;
 	
 	@Inject
 	protected PurchaseOrderRepository purchaseOrderRepo;
@@ -269,7 +269,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 			purchaseOrder.setPurchaseOrderSeq(this.getSequence(purchaseOrder.getCompany()));
 		}
 		purchaseOrderRepo.save(purchaseOrder);
-		if (generalService.getGeneral().getManagePurchaseOrderVersion()){
+		if (appPurchaseService.getAppPurchase().getManagePurchaseOrderVersion()){
 			this.savePurchaseOrderPDFAsAttachment(purchaseOrder);
 		}
 	}

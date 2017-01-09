@@ -13,10 +13,10 @@ import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.Wizard;
-import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.businessproject.service.SaleOrderInvoiceProjectServiceImpl;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.sale.db.SaleOrder;
+import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
@@ -30,7 +30,7 @@ import com.google.inject.Inject;
 public class InvoiceController {
 	
 	@Inject
-	protected GeneralService generalService;
+	private AppSupplychainService appSupplychainService; 
 	
 	@Inject
 	protected SaleOrderInvoiceProjectServiceImpl saleOrderInvoiceProjectServiceImpl;
@@ -173,7 +173,7 @@ public class InvoiceController {
 					fieldErrors.append(I18n.get(IExceptionMessage.INVOICE_MERGE_ERROR_PARTNER));
 				}
 				
-				if (commonSaleOrder == null && !generalService.getGeneral().getManageInvoicedAmountByLine() && saleOrderIsNull == false){
+				if (commonSaleOrder == null && !appSupplychainService.getAppSupplychain().getManageInvoicedAmountByLine() && saleOrderIsNull == false){
 					if (fieldErrors.length() > 0){
 						fieldErrors.append("<br/>");
 					}

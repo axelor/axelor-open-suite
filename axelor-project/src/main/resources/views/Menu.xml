@@ -2,7 +2,7 @@
 <object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.2.xsd">
 
-	<menuitem name="menu-project-root" order="-103" title="Project" icon="fa-tasks"  if="__config__.general.getAppProject()"
+	<menuitem name="menu-project-root" order="-103" title="Project" icon="fa-tasks"  if="__config__.app.isApp('project')"
 	    groups="admins,ERP" icon-background="#3f6bb9"/> 	
 
 	<menuitem name="project-all" parent="menu-project-root"

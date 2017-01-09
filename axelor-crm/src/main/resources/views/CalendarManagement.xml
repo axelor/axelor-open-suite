@@ -5,7 +5,7 @@
 	
     <grid name="calendar-management-grid" title="Calendar permissions" model="com.axelor.apps.crm.db.CalendarManagement" >
         <field name="user"/>
-        <field name="team" if="__config__.general.getTeamManagement()"/>
+        <field name="team" if="__config__.app.getApp('base').getTeamManagement()"/>
         <field name="allCalendars"/>
         <field name="erpCalendars"/>
         <field name="icalCalendars"/>
@@ -15,7 +15,7 @@
     <form name="calendar-management-form" title="Calendar permission" model="com.axelor.apps.crm.db.CalendarManagement">
     	<panel name="main" >
     		<field name="user" showIf="team == null"/>
-	        <field name="team" showIf="user == null" if="__config__.general.getTeamManagement()"/>
+	        <field name="team" showIf="user == null" if="__config__.app.getApp('base').getTeamManagement()"/>
 	        <field name="allCalendars" onChange="action-calendar-management-record-all-calendars-checked" colSpan="4"/>
 	        <field name="erpCalendars" onChange="action-calendar-management-record-erp-calendars-checked" colSpan="4"/>
 	        <field name="icalCalendars" onChange="action-calendar-management-record-ical-calendars-checked" colSpan="4"/>

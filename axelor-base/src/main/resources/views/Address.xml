@@ -5,7 +5,7 @@
 	
 	<grid name="address-grid" title="Address list" model="com.axelor.apps.base.db.Address">
 		<toolbar>
-		<button name="checkDuplicate" title="Check Duplicate" onClick="action-general-method-show-duplicate"/>
+		<button name="checkDuplicate" title="Check Duplicate" onClick="action-base-method-show-duplicate"/>
 		</toolbar>
 		<field name="fullName" />
 		<button name="map" icon="fa-map-marker" help="Locate" onClick="action-base-address-method-view-map" />
@@ -28,7 +28,7 @@
 			</button-group>
 			<field name="isUsed" hidden="true" type="boolean"/>
 		</panel>
-		<panel name="qasCertification" title="QAS certification" colSpan="12" if="__config__.general.getHasQasValidation()">
+		<panel name="qasCertification" title="QAS certification" colSpan="12" if="__config__.app.getApp('base').getHasQasValidation()">
 			<field name="certifiedOk" colSpan="4"/>
 			<panel colSpan="4">
 				<button name="validate" title="Validate"  onClick="com.axelor.apps.base.web.AddressController:validate,save"/>
@@ -57,7 +57,7 @@
 			</button-group>
 			<field name="isUsed" hidden="true" type="boolean"/>
 		</panel>
-		<panel name="qasCertification" title="QAS certification" colSpan="12" if="__config__.general.getHasQasValidation()">
+		<panel name="qasCertification" title="QAS certification" colSpan="12" if="__config__.app.getApp('base').getHasQasValidation()">
 			<field name="certifiedOk" colSpan="4"/>
 			<panel colSpan="4">
 				<button name="validate" title="Validate"  onClick="com.axelor.apps.base.web.AddressController:validate,save"/>
@@ -83,8 +83,8 @@
 	</action-record>
 	
 	<action-record name="default-address-country-record"
-		model="com.axelor.apps.base.db.Country" search="('self.code LIKE ?1', 'FRA')">
-		<field name="code" expr="FRA" />
+		model="com.axelor.apps.base.db.Country" search="('self.alpha3Code LIKE ?1', 'FRA')">
+		<field name="alpha3Code" expr="FRA" />
 		<field name="name" expr="FRANCE" />
 	</action-record>
 	

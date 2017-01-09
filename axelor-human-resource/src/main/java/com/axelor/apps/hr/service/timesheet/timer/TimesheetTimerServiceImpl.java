@@ -24,7 +24,7 @@ import org.joda.time.Duration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.axelor.apps.base.service.administration.GeneralService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.crm.service.EventService;
 import com.axelor.apps.hr.db.TSTimer;
 import com.axelor.apps.hr.db.Timesheet;
@@ -43,14 +43,14 @@ public class TimesheetTimerServiceImpl implements TimesheetTimerService {
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 	
 	protected EventService eventService;
-	protected GeneralService generalService;
+	protected AppBaseService appBaseService;
 	protected TimesheetService timesheetService;
 	
 	@Inject 
-	public TimesheetTimerServiceImpl(EventService eventService, GeneralService generalService, TimesheetService timesheetService){
+	public TimesheetTimerServiceImpl(EventService eventService, AppBaseService appBaseService, TimesheetService timesheetService){
 		
 		this.eventService = eventService;
-		this.generalService = generalService;
+		this.appBaseService = appBaseService;
 		this.timesheetService = timesheetService;
 	}
 	
@@ -71,7 +71,7 @@ public class TimesheetTimerServiceImpl implements TimesheetTimerService {
 	@Transactional(rollbackOn = {Exception.class})
 	public void calculateDuration(TSTimer timer){
 		long currentDuration = timer.getDuration();
-		Duration duration = eventService.computeDuration(timer.getStartDateTime(), generalService.getTodayDateTime().toLocalDateTime());
+		Duration duration = eventService.computeDuration(timer.getStartDateTime(), appBaseService.getTodayDateTime().toLocalDateTime());
 		BigDecimal secondes = BigDecimal.valueOf((eventService.getDuration(duration) + currentDuration));
 		timer.setDuration(secondes.longValue());
 	}

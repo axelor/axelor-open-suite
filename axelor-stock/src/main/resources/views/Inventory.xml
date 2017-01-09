@@ -83,7 +83,7 @@
 
     <action-record name="action-inventory-record-new" model="com.axelor.apps.stock.db.Inventory">
 	    <field name="statusSelect" expr="1"/>
-	    <field name="dateT" expr="eval:__config__.generalService.getTodayDateTime()"/>
+	    <field name="dateT" expr="eval:__config__.app.getTodayDateTime()"/>
 	    <field name="formatSelect" expr="pdf"/>
 	</action-record>
 	

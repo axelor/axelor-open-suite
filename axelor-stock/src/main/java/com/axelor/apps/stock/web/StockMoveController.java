@@ -31,7 +31,7 @@ import com.axelor.apps.ReportFactory;
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.service.MapService;
-import com.axelor.apps.base.service.administration.GeneralService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
@@ -58,7 +58,7 @@ public class StockMoveController {
 	private StockMoveRepository stockMoveRepo;
 
 	@Inject
-	protected GeneralService generalService;
+	protected AppBaseService appBaseService;
 
 	public void plan(ActionRequest request, ActionResponse response) {
 
@@ -183,7 +183,7 @@ public class StockMoveController {
 			toAddress =  stockMove.getCompany().getAddress();
 		if(fromAddress == null || toAddress == null)
 			msg = I18n.get(IExceptionMessage.STOCK_MOVE_11);
-		if (generalService.getGeneral().getMapApiSelect() == IAdministration.MAP_API_OSM)
+		if (appBaseService.getAppBase().getMapApiSelect() == IAdministration.MAP_API_OSM)
 			msg = I18n.get(IExceptionMessage.STOCK_MOVE_12);
 		if(msg.isEmpty()){
 			String dString = fromAddress.getAddressL4()+" ,"+fromAddress.getAddressL6();

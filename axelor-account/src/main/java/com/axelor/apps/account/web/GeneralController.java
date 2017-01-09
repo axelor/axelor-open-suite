@@ -25,14 +25,14 @@ import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.debtrecovery.PayerQualityService;
+import com.axelor.apps.base.db.AppBase;
 import com.axelor.apps.base.db.CurrencyConversionLine;
-import com.axelor.apps.base.db.General;
 import com.axelor.apps.base.db.repo.CurrencyConversionLineRepository;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.service.CurrencyConversionService;
 import com.axelor.apps.base.service.CurrencyService;
-import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.rpc.ActionRequest;
@@ -48,16 +48,13 @@ public class GeneralController {
 	private Injector injector;
 
 	@Inject
-	private GeneralService gs;
-
-	@Inject
 	private CurrencyConversionService ccs;
 
 	@Inject
 	private CurrencyConversionLineRepository cclRepo;
 
 	@Inject
-	private GeneralService generalService;
+	private AppAccountService appAccountService;
 	
 	public void payerQualityProcess(ActionRequest request, ActionResponse response)  {
 
@@ -69,12 +66,12 @@ public class GeneralController {
 	}
 	
 	public void updateCurrencyConversion(ActionRequest request, ActionResponse response){
-		 General general = request.getContext().asType(General.class);
-		 LocalDate today = generalService.getTodayDate();
+		 AppBase appBase = request.getContext().asType(AppBase.class);
+		 LocalDate today = appAccountService.getTodayDate();
 		 
 		 Map<Long, Long> currencyMap = new HashMap<Long, Long>();
 		 
-		 for(CurrencyConversionLine ccl : general.getCurrencyConversionLineList()){
+		 for(CurrencyConversionLine ccl : appBase.getCurrencyConversionLineList()){
 			 currencyMap.put(ccl.getEndCurrency().getId(), ccl.getStartCurrency().getId());
 		 }
 		 
@@ -106,7 +103,7 @@ public class GeneralController {
 				ccs.saveCurrencyConversionLine(ccl);
 				BigDecimal previousRate = ccl.getExchangeRate();
 				String variations = ccs.getVariations(currentRate, previousRate);
-				ccs.createCurrencyConversionLine(ccl.getStartCurrency(), ccl.getEndCurrency(), today, currentRate, gs.getGeneral(), variations);
+				ccs.createCurrencyConversionLine(ccl.getStartCurrency(), ccl.getEndCurrency(), today, currentRate, appAccountService.getAppBase(), variations);
 			}
 			
 		 }

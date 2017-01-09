@@ -68,7 +68,7 @@ public class ProductionOrderWizardServiceBusinessImpl extends ProductionOrderWiz
 		if (context.containsKey("_startDate") && context.get("_startDate") != null ){
 			startDate = new DateTime(context.get("_startDate") );
 		}else{
-			startDate = generalService.getTodayDateTime().toDateTime();
+			startDate = appProductionService.getTodayDateTime().toDateTime();
 		}
 
 		ProjectTask projectTask = null;

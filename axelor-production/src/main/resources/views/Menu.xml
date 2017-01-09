@@ -4,7 +4,7 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.2.xsd">
 
 	
-	<menuitem name="manufacturing-root" title="Manufacturing" order="-84"  if="__config__.general.getAppProduction()"
+	<menuitem name="manufacturing-root" title="Manufacturing" order="-84"  if="__config__.app.isApp('production')"
 		icon="fa-cogs" groups="admins,ERP" icon-background="#84429f"/>
 	
 	<menuitem name="manufacturing-root-bill-of-material" parent="manufacturing-root"
@@ -44,7 +44,7 @@
 		<view type="grid" name="manuf-order-grid" />
 		<view type="form" name="manuf-order-form" />
 		<view-param name="search-filters" value="manuf-order-filters"/>
-		<context name="_todayDateTime" expr="eval:__config__.generalService.getTodayDateTime()"/>
+		<context name="_todayDateTime" expr="eval:__config__.app.getTodayDateTime()"/>
 	</action-view>	
 	
 	<menuitem name="manufacturing-root-operation-order" parent="manufacturing-root"
@@ -55,7 +55,7 @@
 		<view type="grid" name="operation-order-group-grid" />
 		<view type="form" name="operation-order-form" />
 		<view-param name="search-filters" value="operation-order-filters"/>
-		<context name="_todayDateTime" expr="eval:__config__.generalService.getTodayDateTime()"/>
+		<context name="_todayDateTime" expr="eval:__config__.app.getTodayDateTime()"/>
 	</action-view>	
 	
 	<menuitem name="manufacturing-root-operation-order-planned-calendar" parent="manufacturing-root"
@@ -84,7 +84,7 @@
 	<action-view name="manufacturing.root.charge.by.machine.dashboardr" title="Charge by machine"
 		>
 		<view type="dashboard" name="charge.by.machine.dashboard" />
-		<context name="today" expr="eval:__config__.generalService.getTodayDate()"/>
+		<context name="today" expr="eval:__config__.app.getTodayDate()"/>
 	</action-view>
 	
 	<menuitem name="manufacturing-root-report" parent="manufacturing-root"
@@ -140,7 +140,7 @@
 	
 	<!-- TOP MENU -->
 	
-	<menuitem name="top-manufacturing" title="Manufacturing" left="false" top="true" groups="admins,ERP" if="__config__.general.getAppProduction()"/>
+	<menuitem name="top-manufacturing" title="Manufacturing" left="false" top="true" groups="admins,ERP" if="__config__.app.isApp('production')"/>
 	<menuitem name="top-manufacturing-create-manufacturing-order" title="Create Manuf. Order" top="true" parent="top-manufacturing" order="-100" action="top.manufacturing.create.manufacturing.order"/>
 	<action-view name="top.manufacturing.create.manufacturing.order" title="New Manufacturing Order" model="com.axelor.apps.production.db.ManufOrder">
 		<view type="form" name="manuf-order-form"/>

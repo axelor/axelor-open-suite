@@ -21,26 +21,23 @@ import java.math.BigDecimal;
 import java.util.Map;
 
 import org.joda.time.DateTime;
-import org.joda.time.LocalDate;
-import org.joda.time.LocalDateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductRepository;
-import com.axelor.apps.base.service.administration.GeneralService;
 //import com.axelor.apps.organisation.db.Project;
 import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.ProductionOrder;
 import com.axelor.apps.production.db.repo.BillOfMaterialRepository;
 import com.axelor.apps.production.exceptions.IExceptionMessage;
+import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 import com.axelor.rpc.Context;
 import com.google.inject.Inject;
 
-import net.fortuna.ical4j.model.Date;
 
 public class ProductionOrderWizardServiceImpl implements ProductionOrderWizardService {
 
@@ -56,7 +53,7 @@ public class ProductionOrderWizardServiceImpl implements ProductionOrderWizardSe
 	protected ProductRepository productRepo;
 	
 	@Inject
-	protected GeneralService generalService;
+	protected AppProductionService appProductionService;
 	
 	
 	public Long validate(Context context) throws AxelorException  {
@@ -80,7 +77,7 @@ public class ProductionOrderWizardServiceImpl implements ProductionOrderWizardSe
 		if (context.containsKey("_startDate") && context.get("_startDate") != null ){
 			startDate = new DateTime(context.get("_startDate") );
 		}else{
-			startDate = generalService.getTodayDateTime().toDateTime();
+			startDate = appProductionService.getTodayDateTime().toDateTime();
 		}
 		
 		ProductionOrder productionOrder = productionOrderService.generateProductionOrder(product, billOfMaterial, qty, startDate.toLocalDateTime());

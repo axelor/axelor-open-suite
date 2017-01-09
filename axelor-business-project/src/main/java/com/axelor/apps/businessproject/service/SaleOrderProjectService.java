@@ -22,7 +22,6 @@ import java.util.List;
 
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductRepository;
-import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
@@ -33,9 +32,6 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
 public class SaleOrderProjectService {
-
-	@Inject
-	protected GeneralService generalService;
 
 	@Inject
 	protected ProjectTaskBusinessService projectTaskBusinessService;

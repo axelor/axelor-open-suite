@@ -38,8 +38,8 @@ import com.axelor.apps.base.db.Team;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.DurationService;
 import com.axelor.apps.base.service.PartnerService;
-import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.base.service.administration.SequenceService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.sale.db.ISaleOrder;
 import com.axelor.apps.sale.db.SaleOrder;
@@ -48,6 +48,7 @@ import com.axelor.apps.sale.db.SaleOrderLineTax;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.exception.IExceptionMessage;
 import com.axelor.apps.sale.report.IReport;
+import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.db.JPA;
@@ -68,14 +69,14 @@ public class SaleOrderServiceImpl implements SaleOrderService {
 	protected PartnerService partnerService;
 	protected PartnerRepository partnerRepo;
 	protected SaleOrderRepository saleOrderRepo;
-	protected GeneralService generalService;
+	protected AppSaleService appSaleService;
 	protected User currentUser;
 	
 	protected LocalDate today;
 	
 	@Inject
 	public SaleOrderServiceImpl(SaleOrderLineService saleOrderLineService, SaleOrderLineTaxService saleOrderLineTaxService, SequenceService sequenceService,
-			PartnerService partnerService, PartnerRepository partnerRepo, SaleOrderRepository saleOrderRepo, GeneralService generalService, UserService userService)  {
+			PartnerService partnerService, PartnerRepository partnerRepo, SaleOrderRepository saleOrderRepo, AppSaleService appSaleService, UserService userService)  {
 		
 		this.saleOrderLineService = saleOrderLineService;
 		this.saleOrderLineTaxService = saleOrderLineTaxService;
@@ -83,9 +84,9 @@ public class SaleOrderServiceImpl implements SaleOrderService {
 		this.partnerService = partnerService;
 		this.partnerRepo = partnerRepo;
 		this.saleOrderRepo = saleOrderRepo;
-		this.generalService = generalService;
+		this.appSaleService = appSaleService;
 
-		this.today = generalService.getTodayDate();
+		this.today = appSaleService.getTodayDate();
 		this.currentUser = userService.getUser();
 	}
 	
@@ -216,7 +217,7 @@ public class SaleOrderServiceImpl implements SaleOrderService {
 	@Override
 	public SaleOrder createSaleOrder(Company company) throws AxelorException{
 		SaleOrder saleOrder = new SaleOrder();
-		saleOrder.setCreationDate(generalService.getTodayDate());
+		saleOrder.setCreationDate(appSaleService.getTodayDate());
 		if(company != null){
 			saleOrder.setCompany(company);
 			saleOrder.setSaleOrderSeq(this.getSequence(company));
@@ -239,7 +240,7 @@ public class SaleOrderServiceImpl implements SaleOrderService {
 
 		SaleOrder saleOrder = new SaleOrder();
 		saleOrder.setClientPartner(clientPartner);
-		saleOrder.setCreationDate(generalService.getTodayDate());
+		saleOrder.setCreationDate(appSaleService.getTodayDate());
 		saleOrder.setContactPartner(contactPartner);
 		saleOrder.setCurrency(currency);
 		saleOrder.setExternalReference(externalReference);
@@ -296,7 +297,7 @@ public class SaleOrderServiceImpl implements SaleOrderService {
 	public void finalizeSaleOrder(SaleOrder saleOrder) throws AxelorException, IOException, BirtException {
 		saleOrder.setStatusSelect(ISaleOrder.STATUS_FINALIZE);
 		saleOrderRepo.save(saleOrder);
-		if (generalService.getGeneral().getManageSaleOrderVersion()){
+		if (appSaleService.getAppSale().getManageSaleOrderVersion()){
 			this.saveSaleOrderPDFAsAttachment(saleOrder);
 		}
 	}

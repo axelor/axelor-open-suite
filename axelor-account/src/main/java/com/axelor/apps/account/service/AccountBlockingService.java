@@ -23,7 +23,7 @@ import com.axelor.apps.base.db.Blocking;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.BlockingService;
-import com.axelor.apps.base.service.administration.GeneralService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 
@@ -34,7 +34,7 @@ public class AccountBlockingService extends BlockingService {
 	@Inject
 	public AccountBlockingService() {
 
-		this.today = Beans.get(GeneralService.class).getTodayDate();
+		this.today = Beans.get(AppBaseService.class).getTodayDate();
 	}
 
 	

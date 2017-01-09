@@ -41,7 +41,8 @@ import com.axelor.apps.account.service.move.MoveLineService;
 import com.axelor.apps.account.service.move.MoveService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.service.administration.GeneralService;
+import com.axelor.apps.base.db.repo.AppAccountRepository;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
@@ -70,7 +71,7 @@ public class DoubtfulCustomerService {
 		this.moveLineRepo = moveLineRepo;
 		this.reconcileService = reconcileService;
 		this.accountConfigService = accountConfigService;
-		this.today = Beans.get(GeneralService.class).getTodayDate();
+		this.today = Beans.get(AppBaseService.class).getTodayDate();
 	}
 
 

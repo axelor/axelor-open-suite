@@ -25,13 +25,12 @@ import org.joda.time.LocalDateTime;
 
 import com.axelor.app.production.db.IOperationOrder;
 import com.axelor.app.production.db.IWorkCenter;
-import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.production.db.Machine;
 import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.db.ProdHumanResource;
 import com.axelor.apps.production.db.WorkCenter;
 import com.axelor.apps.production.db.repo.OperationOrderRepository;
-import com.axelor.apps.production.web.ManufOrderController;
+import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
@@ -44,7 +43,7 @@ public class OperationOrderWorkflowService {
 	private OperationOrderStockMoveService operationOrderStockMoveService;
 
 	@Inject
-	protected GeneralService generalService;
+	protected AppProductionService appProductionService;
 	
 	@Inject
 	protected OperationOrderRepository operationOrderRepo;
@@ -52,9 +51,9 @@ public class OperationOrderWorkflowService {
 	private LocalDateTime today;
 	
 	@Inject
-	public OperationOrderWorkflowService(GeneralService generalService) {
-		this.generalService = generalService;
-		today = this.generalService.getTodayDateTime().toLocalDateTime();
+	public OperationOrderWorkflowService(AppProductionService appProductionService) {
+		this.appProductionService = appProductionService;
+		today = this.appProductionService.getTodayDateTime().toLocalDateTime();
 
 	}
 
@@ -135,7 +134,7 @@ public class OperationOrderWorkflowService {
 		
 		operationOrder.setStartedBy(AuthUtils.getUser());
 		
-		operationOrder.setStartingDateTime(new LocalDateTime(generalService.getTodayDateTime()));
+		operationOrder.setStartingDateTime(new LocalDateTime(appProductionService.getTodayDateTime()));
 
 		Beans.get(OperationOrderRepository.class).save(operationOrder);
 

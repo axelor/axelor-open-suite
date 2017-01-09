@@ -3,7 +3,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.2.xsd">
 	
-	<menuitem name="stock-root" title="Stock management"  order="-85"  if="__config__.general.getAppStock()"
+	<menuitem name="stock-root" title="Stock management"  order="-85"  if="__config__.app.isApp('stock')"
 	icon="fa-cubes" groups="admins,ERP" icon-background="#b6473f"/>
 		
 	<menuitem name="stock-root-custdeliveries" parent="stock-root"
@@ -221,7 +221,7 @@
 
 <!-- TOP MENU -->
 
-	<menuitem name="top-stock" title="Stock" groups="admins,ERP" top="true" left="false" order="-140" if="__config__.general.getAppStock()"/>
+	<menuitem name="top-stock" title="Stock" groups="admins,ERP" top="true" left="false" order="-140" if="__config__.app.isApp('stock')"/>
 	
 	<menuitem name="top-stock-create-stock-move" title="Create Stock Move" order="-100" top="true" parent="top-stock" action="top.stock.move.new"/>
 	<action-view name="top.stock.move.new" title="Stock Move" model="com.axelor.apps.stock.db.StockMove">

@@ -30,7 +30,7 @@ import java.util.List;
 import org.joda.time.LocalDate;
 
 import com.axelor.app.AppSettings;
-import com.axelor.apps.base.service.administration.GeneralService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.weeklyplanning.WeeklyPlanningService;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.EmployeeBonusMgtLine;
@@ -227,7 +227,7 @@ public class PayrollPreparationService {
 		CsvTool.csvWriter(filePath, fileName, ';', getPayrollPreparationExportHeader(), list);
 		
 		payrollPreparation.setExported(true);
-		payrollPreparation.setExportDate(Beans.get(GeneralService.class).getTodayDate());
+		payrollPreparation.setExportDate(Beans.get(AppBaseService.class).getTodayDate());
 		
 		payrollPreparationRepo.save(payrollPreparation);
 		
@@ -277,7 +277,7 @@ public class PayrollPreparationService {
 	
 	
 	public String getPayrollPreparationExportName(){
-		return I18n.get("Payroll preparation") + " - " + Beans.get(GeneralService.class).getTodayDateTime().toString() + ".csv";
+		return I18n.get("Payroll preparation") + " - " + Beans.get(AppBaseService.class).getTodayDateTime().toString() + ".csv";
 	}
 	
 	public String[] getPayrollPreparationExportHeader(){

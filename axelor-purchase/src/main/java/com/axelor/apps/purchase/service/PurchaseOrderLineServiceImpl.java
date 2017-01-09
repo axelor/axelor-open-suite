@@ -34,12 +34,12 @@ import com.axelor.apps.base.db.PriceListLine;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.SupplierCatalog;
 import com.axelor.apps.base.db.Unit;
-import com.axelor.apps.base.db.repo.GeneralRepository;
+import com.axelor.apps.base.db.repo.AppBaseRepository;
 import com.axelor.apps.base.db.repo.SupplierCatalogRepository;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.base.service.ProductService;
-import com.axelor.apps.base.service.administration.GeneralService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.AccountManagementService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
@@ -60,7 +60,7 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
 	protected PriceListService priceListService;
 
 	@Inject
-	protected GeneralService generalService;
+	protected AppBaseService appBaseService;
 	
 	@Inject
 	protected ProductService productService;
@@ -97,7 +97,7 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
 
 		return currencyService.getAmountCurrencyConvertedAtDate(
 			product.getPurchaseCurrency(), purchaseOrder.getCurrency(), price, purchaseOrder.getOrderDate())
-			.setScale(generalService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
+			.setScale(appBaseService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
 	}
 	
 
@@ -113,7 +113,7 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
 
 		return currencyService.getAmountCurrencyConvertedAtDate(
 			product.getSaleCurrency(), purchaseOrder.getCurrency(), price, purchaseOrder.getOrderDate())
-			.setScale(generalService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
+			.setScale(appBaseService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
 	}
 
 	@Override
@@ -127,7 +127,7 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
 		
 		return currencyService.getAmountCurrencyConvertedAtDate(
 				product.getSaleCurrency(), purchaseOrder.getCurrency(), price, purchaseOrder.getOrderDate())
-				.setScale(generalService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
+				.setScale(appBaseService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
 
 	}
 
@@ -314,7 +314,7 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
 		PriceList priceList = purchaseOrder.getPriceList();
 		BigDecimal discountAmount = BigDecimal.ZERO;
 
-		int computeMethodDiscountSelect = generalService.getGeneral().getComputeMethodDiscountSelect();
+		int computeMethodDiscountSelect = appBaseService.getAppBase().getComputeMethodDiscountSelect();
 		
 		Map<String, Object> discounts = null;
 		
@@ -329,8 +329,8 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
 			discounts = priceListService.getDiscounts(priceList, priceListLine, price);
 			discountAmount = (BigDecimal) discounts.get("discountAmount");
 			
-			if((computeMethodDiscountSelect == GeneralRepository.INCLUDE_DISCOUNT_REPLACE_ONLY && discountTypeSelect == IPriceListLine.TYPE_REPLACE) 
-					|| computeMethodDiscountSelect == GeneralRepository.INCLUDE_DISCOUNT)  {
+			if((computeMethodDiscountSelect == AppBaseRepository.INCLUDE_DISCOUNT_REPLACE_ONLY && discountTypeSelect == IPriceListLine.TYPE_REPLACE) 
+					|| computeMethodDiscountSelect == AppBaseRepository.INCLUDE_DISCOUNT)  {
 				discounts.put("price", priceListService.computeDiscount(price, (int) discounts.get("discountTypeSelect"), discountAmount));
 			}
 		}
@@ -343,7 +343,7 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
 					
 					discounts = productService.getDiscountsFromCatalog(supplierCatalog,price);
 
-					if(computeMethodDiscountSelect != GeneralRepository.DISCOUNT_SEPARATE){
+					if(computeMethodDiscountSelect != AppBaseRepository.DISCOUNT_SEPARATE){
 						discounts.put("price", priceListService.computeDiscount(price, (int) discounts.get("discountTypeSelect"), (BigDecimal) discounts.get("discountAmount")));
 						
 					}
