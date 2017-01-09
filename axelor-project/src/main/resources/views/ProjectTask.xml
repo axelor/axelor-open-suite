@@ -253,7 +253,7 @@
 		</panel>
 	</form>
 	
-	<kanban columnBy="statusSelect" sequenceBy="id" limit="10"
+	<kanban columnBy="statusSelect" sequenceBy="orderByState" limit="10"
 	 name="project-kanban" title="Projects" model="com.axelor.apps.project.db.ProjectTask">
 		<field name="fullName"/>
 		<field name="description"/>
