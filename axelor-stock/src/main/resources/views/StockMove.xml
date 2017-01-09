@@ -61,6 +61,7 @@
 	  <panel name="main">
 		  <field name="typeSelect" title="Type" colSpan="4" onChange="action-stock-move-set-default-locations, action-stock-move-attrs-typeselect-change" readonlyIf="statusSelect != 1"/>
 		  <field name="statusSelect" widget="NavSelect" colSpan="8"/>
+		  <field name="conformitySelect" onChange="action-stock-move-method-change-conformity"/>
 	  </panel>
 	  <panel>
 	    <panel title="Stock move reference" name="stockMoveRef">
@@ -90,7 +91,7 @@
 	  </panel>  
 	  <panel-tabs>
 	   
-	    <panel-related name="stockMoveLineListPanel" title="Stock move line" field="stockMoveLineList" onChange="action-stock-move-method-compute" readonlyIf="statusSelect == 3" form-view="stock-move-line-form" grid-view="stock-move-line-grid"/>
+	    <panel-related name="stockMoveLineListPanel" title="Stock move line" field="stockMoveLineList" onChange="action-stock-move-method-compute, action-stock-move-line-method-change-conformity" readonlyIf="statusSelect == 3" form-view="stock-move-line-form" grid-view="stock-move-line-grid"/>
 	    <panel name="configuration" title="Configuration">
 	      <field name="saleOrder" onChange="action-stock-move-attrs-typeselect-change" if-module="axelor-supplychain" readonlyIf="statusSelect == 3 || statusSelect == 4" form-view="sale-order-form" grid-view="sale-order-grid"/>
 	      <field name="purchaseOrder" if-module="axelor-supplychain" readonlyIf="statusSelect == 3 || statusSelect == 4" form-view="purchase-order-form" grid-view="purchase-order-grid"/>
@@ -221,7 +222,7 @@
     	<attribute name="hidden" for="stockMoveLineList.unitPriceUntaxed" expr="eval: saleOrder?.inAti"/>
     	<attribute name="hidden" for="stockMoveLineList.unitPriceTaxed" expr="eval: !saleOrder?.inAti"/>
     </action-attrs>
-
+    
     <action-attrs name="action-stock-move-attrs-domain-address">
 		<attribute name="domain" for="fromAddress" expr="eval: &quot;self.id IN (${(partner?.partnerAddressList?.findAll{it.isDeliveryAddr}.collect{it.address.id}+[null]).join(',')})&quot;" />
 		<attribute name="domain" for="toAddress" expr="eval: &quot;self.id IN (${(partner?.partnerAddressList?.findAll{it.isDeliveryAddr}.collect{it.address.id}+[null]).join(',')})&quot;" />
@@ -310,6 +311,14 @@
 	
 	<action-method name="action-stock-move-method-view-direction">
 		<call class="com.axelor.apps.stock.web.StockMoveController" method="viewDirection"/>
+	</action-method>
+	
+	<action-method name="action-stock-move-method-change-conformity">
+		<call class="com.axelor.apps.stock.web.StockMoveController" method="changeConformityStockMove"/>
+	</action-method>
+	
+	<action-method name="action-stock-move-line-method-change-conformity">
+		<call class="com.axelor.apps.stock.web.StockMoveController" method="changeConformityStockMoveLine"/>
 	</action-method>
 	
 	<action-validate name="action-stock-move-check-stock-move-line-real-qty">

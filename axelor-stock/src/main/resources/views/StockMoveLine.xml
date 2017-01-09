@@ -40,7 +40,7 @@
         	<field name="unitPriceTaxed" hidden="true"/>
 	        <field name="unit" canEdit="false" colSpan="3" form-view="unit-form" grid-view="unit-grid"/>
 	        <field name="trackingNumber" onChange="action-stock-move-line-record-product"/>
-	        <field name="conformitySelect"/>
+	        <field name="conformitySelect" onChange="action-stock-move-attrs-change-conformity"/>
 	        <field name="businessProject" if-module="axelor-business-project" domain="self.businessProject = true AND self.typeSelect = 'project'" form-view="project-form" grid-view="project-grid"/>
 	        <field name="description" colSpan="12" widget="html" />
         </panel>
@@ -124,6 +124,9 @@
     	<attribute name="hidden" for="unitPriceUntaxed" expr="eval: _parent?.saleOrder?.inAti" if="stockMove == null"/>
     	<attribute name="hidden" for="unitPriceTaxed" expr="eval: !stockMove?.saleOrder?.inAti" if="stockMove == null"/>
     	<attribute name="hidden" for="unitPriceTaxed" expr="eval: !_parent?.saleOrder?.inAti" if="stockMove == null"/>
+    </action-attrs>
+    <action-attrs name="action-stock-move-attrs-change-conformity">
+    	<attribute name="value" for="stockMove.conformitySelect" expr="eval: conformitySelect"  if="conformitySelect == 3"/>
     </action-attrs>
     
     <action-group name="action-group-stock-stockmoveline-product-onchange">

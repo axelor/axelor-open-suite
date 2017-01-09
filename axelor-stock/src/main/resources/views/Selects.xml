@@ -44,8 +44,9 @@
 	</selection>
 	
 	<selection name="stock.move.line.conformity.select">
-		<option value="1">Compliant</option>
-		<option value="2">Non compliant</option>
+		<option value="1"></option>
+		<option value="2">Compliant</option>
+		<option value="3">Non compliant</option>
 	</selection>
 	
 </object-views>
