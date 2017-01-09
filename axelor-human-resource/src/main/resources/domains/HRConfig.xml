@@ -19,7 +19,7 @@
     <integer name="minStockLunchVoucher" title="Minimum Stock of Lunch Vouchers" help="Alert threshold"/>
     <integer name="availableStockLunchVoucher" title="Available Stock of Lunch Vouchers"/>
     <many-to-one name="supplierLunchVoucher" ref="com.axelor.apps.base.db.Partner" title="Lunch voucher supplier"/>
-    <string name="exportPath" title="Export Path"/>
+    <string name="lunchVoucherExportPath" title="Lunch Voucher Export Path"/>
     
     <!-- LEAVE REQUEST MAIL NOTIFICATION -->
   	<boolean name="leaveMailNotification" title="Leave Request Notification Mail"/>

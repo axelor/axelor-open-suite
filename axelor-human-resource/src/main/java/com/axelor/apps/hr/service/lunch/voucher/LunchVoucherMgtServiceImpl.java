@@ -127,7 +127,7 @@ public class LunchVoucherMgtServiceImpl implements LunchVoucherMgtService{
 		}
 		
 		String fileName = I18n.get("Lunch Voucher Mgt") + " - " + Beans.get(GeneralService.class).getTodayDateTime().toString() + ".csv";
-		String filePath = hrConfigService.getHRConfig(lunchVoucherMgt.getCompany()).getExportPath();
+		String filePath = hrConfigService.getLunchVoucherExportPath(hrConfigService.getHRConfig(lunchVoucherMgt.getCompany()));
 		
 		new File(filePath).mkdirs();
 		CsvTool.csvWriter(filePath, fileName, ';', headers, list);

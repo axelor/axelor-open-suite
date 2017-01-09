@@ -612,3 +612,5 @@
 "Leave to justify","Absence à justifier",,
 "Please configure the leave reason in HR config for the company %s","Merci de configuer le motif de congés dans Configuration RH pour la société %s",,
 "Leave Request to justify","Demandes de congés à justifier",,
+"Lunch Voucher Export Path","Chemin d'exportation des tickets restaurants",,
+"Please configure the lunch voucher export path in HR config for the company %s","Merci de configuer le chemin d'exportation des tickets restaurants dans Configuration RH pour la société %s",,

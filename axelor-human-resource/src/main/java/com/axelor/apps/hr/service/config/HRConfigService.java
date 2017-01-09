@@ -26,6 +26,7 @@ import com.axelor.apps.message.db.Template;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
+import com.google.common.base.Strings;
 
 public class HRConfigService {
 	
@@ -45,6 +46,14 @@ public class HRConfigService {
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.HR_CONFIG_LEAVE_REASON), hrConfig.getCompany().getName()), IException.CONFIGURATION_ERROR);
 		}
 		return leaveReason;
+	}
+	
+	public String getLunchVoucherExportPath(HRConfig hrConfig) throws AxelorException{
+		String lunchVoucherExportPath = hrConfig.getLunchVoucherExportPath();
+		if(Strings.isNullOrEmpty(lunchVoucherExportPath)){
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.HR_CONFIG_LUNCH_VOUCHER_EXPORT_PATH), hrConfig.getCompany().getName()), IException.CONFIGURATION_ERROR);
+		}
+		return lunchVoucherExportPath;
 	}
 	
 	public Product getKilometricExpenseProduct(HRConfig hrConfig) throws AxelorException{
