@@ -40,37 +40,29 @@ public class LunchVoucherMgtController {
 	
 	@Inject
 	private Provider<LunchVoucherMgtService> lunchVoucherMgtProvider;
-	@Inject
-	private Provider<LunchVoucherMgtRepository> lunchVoucherMgtRepositoryProvider;
 	
 	@Inject
 	private Provider<HRConfigService> hrConfigService;
 	
-	
-	public void calculate(ActionRequest request, ActionResponse response)  {
+	public void calculate(ActionRequest request, ActionResponse response) {
 		
 		try {
-			LunchVoucherMgtService lunchVoucherMgtService = lunchVoucherMgtProvider.get();
-			LunchVoucherMgt lunchVoucherMgt = request.getContext().asType(LunchVoucherMgt.class);
-			lunchVoucherMgt = lunchVoucherMgtRepositoryProvider.get().find(lunchVoucherMgt.getId());
-			lunchVoucherMgtService.calculate(lunchVoucherMgt);
+			LunchVoucherMgt lunchVoucherMgt = Beans.get(LunchVoucherMgtRepository.class).find(request.getContext().asType(LunchVoucherMgt.class).getId());
+			lunchVoucherMgtProvider.get().calculate(lunchVoucherMgt);
 			
-			
+			response.setReload(true);
 		}  catch(Exception e)  {
 			TraceBackService.trace(response, e);
-		}
-		finally {
-			response.setReload(true);
 		}
 	}
 	
 	public void checkStock(ActionRequest request, ActionResponse response)  {
 		try {
-			LunchVoucherMgtService lunchVoucherMgtService = lunchVoucherMgtProvider.get();
 			LunchVoucherMgt lunchVoucherMgt = request.getContext().asType(LunchVoucherMgt.class);
 			Company company = lunchVoucherMgt.getCompany();
 			HRConfig hrConfig = hrConfigService.get().getHRConfig(company);
-			int stock = lunchVoucherMgtService.checkStock(lunchVoucherMgt);
+			int stock = lunchVoucherMgtProvider.get().checkStock(lunchVoucherMgt.getCompany(), lunchVoucherMgt.getStockLineQuantity() + lunchVoucherMgt.getTotalLunchVouchers());
+			
 			if (stock <= 0){ 
 				response.setAlert(String.format(I18n.get(IExceptionMessage.LUNCH_VOUCHER_MIN_STOCK),company.getName(),
 						hrConfig.getMinStockLunchVoucher(), hrConfig.getAvailableStockLunchVoucher(), IException.INCONSISTENCY));
@@ -80,27 +72,30 @@ public class LunchVoucherMgtController {
 		}
 	}
 	
-	public void updateTotal(ActionRequest request, ActionResponse response)  {
-		
+	public void validate(ActionRequest request, ActionResponse response) {
 		try {
-			LunchVoucherMgtService lunchVoucherMgtService = lunchVoucherMgtProvider.get();
-			LunchVoucherMgt lunchVoucherMgt = request.getContext().asType(LunchVoucherMgt.class);
-			lunchVoucherMgt = lunchVoucherMgtRepositoryProvider.get().find(lunchVoucherMgt.getId());
-			lunchVoucherMgtService.calculateTotal(lunchVoucherMgt);
+			LunchVoucherMgt lunchVoucherMgt = Beans.get(LunchVoucherMgtRepository.class).find(request.getContext().asType(LunchVoucherMgt.class).getId());
+			lunchVoucherMgtProvider.get().validate(lunchVoucherMgt);
 			
+			response.setReload(true);
 		}  catch(Exception e)  {
 			TraceBackService.trace(response, e);
 		}
-		finally {
-			response.setReload(true);
-		}
 	}
 	
-	public void exportLunchVoucherMgt(ActionRequest request, ActionResponse response) throws IOException {
+	public void updateTotal(ActionRequest request, ActionResponse response) {
+		LunchVoucherMgtService lunchVoucherMgtService = lunchVoucherMgtProvider.get();
+		LunchVoucherMgt lunchVoucherMgt = request.getContext().asType(LunchVoucherMgt.class);
+		lunchVoucherMgtService.calculateTotal(lunchVoucherMgt);
+		
+		response.setValue("totalLunchVouchers", lunchVoucherMgt.getTotalLunchVouchers());
+		response.setValue("requestedLunchVouchers", lunchVoucherMgt.getRequestedLunchVouchers());
+	}
+	
+	public void export(ActionRequest request, ActionResponse response) throws IOException {
 		LunchVoucherMgt lunchVoucherMgt = Beans.get(LunchVoucherMgtRepository.class).find(request.getContext().asType(LunchVoucherMgt.class).getId());
 		try {
-			LunchVoucherMgtService lunchVoucherMgtService = lunchVoucherMgtProvider.get();
-			response.setExportFile(lunchVoucherMgtService.exportLunchVoucherMgt(lunchVoucherMgt));
+			lunchVoucherMgtProvider.get().export(lunchVoucherMgt);
 			response.setReload(true);
 		} catch (Exception e) {
 			TraceBackService.trace(response, e);

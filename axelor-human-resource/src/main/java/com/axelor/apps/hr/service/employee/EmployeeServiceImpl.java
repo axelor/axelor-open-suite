@@ -19,16 +19,25 @@ package com.axelor.apps.hr.service.employee;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.List;
 
 import org.joda.time.LocalDate;
 import org.joda.time.Years;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.WeeklyPlanning;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.base.service.user.UserServiceImpl;
+import com.axelor.apps.base.service.weeklyplanning.WeeklyPlanningService;
 import com.axelor.apps.hr.db.Employee;
+import com.axelor.apps.hr.db.HRConfig;
+import com.axelor.apps.hr.db.LeaveRequest;
+import com.axelor.apps.hr.db.PublicHolidayPlanning;
+import com.axelor.apps.hr.db.repo.LeaveRequestRepository;
 import com.axelor.apps.hr.exception.IExceptionMessage;
+import com.axelor.apps.hr.service.publicHoliday.PublicHolidayService;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
@@ -39,7 +48,10 @@ import com.google.inject.Inject;
 public class EmployeeServiceImpl extends UserServiceImpl implements EmployeeService {
 
 	@Inject
-	private GeneralService generalService;  
+	private GeneralService generalService;
+	
+	@Inject
+	protected WeeklyPlanningService weeklyPlanningService;
 	
 	private static final Logger LOG = LoggerFactory.getLogger(EmployeeService.class);
 
@@ -116,6 +128,66 @@ public class EmployeeServiceImpl extends UserServiceImpl implements EmployeeServ
 		}catch (IllegalArgumentException e){
 			throw new AxelorException(String.format( I18n.get( IExceptionMessage.EMPLOYEE_NO_BIRTH_DATE ), employee.getName() ), IException.NO_VALUE);
 		}
+	}
+
+	@Override
+	public BigDecimal getDaysWorksInPeriod(Employee employee, LocalDate fromDate, LocalDate toDate) throws AxelorException {
+		Company company = employee.getUser().getActiveCompany();
+		BigDecimal duration = BigDecimal.ZERO;
+		
+		WeeklyPlanning weeklyPlanning = employee.getPlanning();
+		if(weeklyPlanning == null){
+			HRConfig conf = company.getHrConfig();
+			if(conf != null){
+				weeklyPlanning = conf.getWeeklyPlanning();
+			}
+		}
+		
+		if(weeklyPlanning == null){
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.EMPLOYEE_PLANNING),employee.getName()), IException.CONFIGURATION_ERROR);
+		}
+		
+		PublicHolidayPlanning publicHolidayPlanning = employee.getPublicHolidayPlanning();
+		if(publicHolidayPlanning == null){
+			HRConfig conf = company.getHrConfig();
+			if(conf != null){
+				publicHolidayPlanning = conf.getPublicHolidayPlanning();
+			}
+		}
+		
+		if(publicHolidayPlanning == null){
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.EMPLOYEE_PUBLIC_HOLIDAY),employee.getName()), IException.CONFIGURATION_ERROR);
+		}
+		
+		LocalDate itDate = new LocalDate(fromDate);
+
+		while(!itDate.isEqual(toDate) && !itDate.isAfter(toDate)){
+			duration = duration.add(new BigDecimal(weeklyPlanningService.workingDayValue(weeklyPlanning, itDate)));
+			itDate = itDate.plusDays(1);
+		}
+
+		duration = duration.subtract(Beans.get(PublicHolidayService.class).computePublicHolidayDays(fromDate, toDate, weeklyPlanning, publicHolidayPlanning));
+		
+		return duration;
+	}
+
+	@Override
+	public BigDecimal getDaysWorkedInPeriod(Employee employee, LocalDate fromDate, LocalDate toDate) throws AxelorException {
+		BigDecimal daysWorks = getDaysWorksInPeriod(employee, fromDate, toDate);
+		
+		BigDecimal daysLeave = BigDecimal.ZERO;
+		List<LeaveRequest> leaveRequestList = Beans.get(LeaveRequestRepository.class).all()
+				.filter("self.user = ?1 AND self.duration >= 1 AND self.statusSelect = ?2 AND (self.fromDate BETWEEN ?3 AND ?4 OR self.toDate BETWEEN ?3 AND ?4)", 
+						employee.getUser(), LeaveRequestRepository.STATUS_VALIDATED, fromDate, toDate).fetch();
+		
+		for (LeaveRequest leaveRequest : leaveRequestList) {
+			LocalDate from = leaveRequest.getFromDate().isBefore(fromDate) ? fromDate : leaveRequest.getFromDate();
+			LocalDate to = leaveRequest.getToDate().isAfter(toDate) ? toDate : leaveRequest.getToDate();
+			
+			daysLeave = daysLeave.add(getDaysWorksInPeriod(employee, from, to));
+		}
+		
+		return daysWorks.subtract(daysLeave);
 	}
 
 }

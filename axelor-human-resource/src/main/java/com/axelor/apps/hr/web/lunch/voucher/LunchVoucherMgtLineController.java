@@ -15,17 +15,30 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.hr.service.lunch.voucher;
+package com.axelor.apps.hr.web.lunch.voucher;
 
-import com.axelor.apps.hr.db.Employee;
-import com.axelor.apps.hr.db.LunchVoucherMgt;
+import javax.inject.Inject;
+
 import com.axelor.apps.hr.db.LunchVoucherMgtLine;
-import com.axelor.exception.AxelorException;
+import com.axelor.apps.hr.service.lunch.voucher.LunchVoucherMgtLineService;
+import com.axelor.exception.service.TraceBackService;
+import com.axelor.rpc.ActionRequest;
+import com.axelor.rpc.ActionResponse;
 
-public interface LunchVoucherMgtLineService {
+public class LunchVoucherMgtLineController {
 	
-	public LunchVoucherMgtLine create(Employee employee, LunchVoucherMgt lunchVoucherMgt) throws AxelorException;
+	@Inject
+	private LunchVoucherMgtLineService service;
 	
-	public void compute(LunchVoucherMgtLine lunchVoucherMgtLine) throws AxelorException;
-	
+	public void compute(ActionRequest request, ActionResponse response)  {
+		
+		try {
+			LunchVoucherMgtLine line = request.getContext().asType(LunchVoucherMgtLine.class);
+			service.compute(line);
+			
+			response.setValue("lunchVoucherNumber", line.getLunchVoucherNumber());
+		}  catch(Exception e)  {
+			TraceBackService.trace(response, e);
+		}
+	}
 }

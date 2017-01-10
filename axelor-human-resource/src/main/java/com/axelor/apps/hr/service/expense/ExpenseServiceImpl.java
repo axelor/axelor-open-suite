@@ -30,8 +30,6 @@ import java.util.Set;
 import javax.mail.MessagingException;
 
 import org.joda.time.LocalDate;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountConfig;
@@ -91,8 +89,6 @@ public class ExpenseServiceImpl implements ExpenseService  {
 	protected AnalyticMoveLineService analyticMoveLineService;
 	protected HRConfigService  hrConfigService;
 	protected TemplateMessageService  templateMessageService;
-	
-	private final Logger log = LoggerFactory.getLogger(getClass());
 	
 	@Inject
 	public ExpenseServiceImpl(MoveService moveService, ExpenseRepository expenseRepository, MoveLineService moveLineService,

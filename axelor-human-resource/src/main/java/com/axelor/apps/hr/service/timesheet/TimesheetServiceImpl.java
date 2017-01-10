@@ -32,8 +32,6 @@ import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
 import org.joda.time.LocalTime;
 import org.joda.time.Minutes;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
@@ -109,10 +107,6 @@ public class TimesheetServiceImpl implements TimesheetService{
 	@Inject
 	protected TemplateMessageService  templateMessageService;
 
-
-	
-	private final Logger logger = LoggerFactory.getLogger(getClass());
-	
 	@Override
 	@Transactional(rollbackOn={Exception.class})
 	public void getTimeFromTask(Timesheet timesheet){

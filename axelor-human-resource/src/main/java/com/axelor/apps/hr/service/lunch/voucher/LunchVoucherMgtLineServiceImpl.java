@@ -17,23 +17,52 @@
  */
 package com.axelor.apps.hr.service.lunch.voucher;
 
+import java.math.RoundingMode;
+import java.util.List;
+
+import javax.inject.Inject;
+
 import com.axelor.apps.hr.db.Employee;
+import com.axelor.apps.hr.db.LunchVoucherAdvance;
+import com.axelor.apps.hr.db.LunchVoucherMgt;
 import com.axelor.apps.hr.db.LunchVoucherMgtLine;
+import com.axelor.apps.hr.db.repo.LunchVoucherAdvanceRepository;
+import com.axelor.apps.hr.service.employee.EmployeeService;
 import com.axelor.exception.AxelorException;
-import com.google.inject.persist.Transactional;
+import com.axelor.inject.Beans;
 
-public class LunchVoucherMgtLineServiceImpl implements LunchVoucherMgtLineService{
-
+public class LunchVoucherMgtLineServiceImpl implements LunchVoucherMgtLineService {
 	
+	@Inject
+	protected EmployeeService employeeService;
 	
 	@Override
-	@Transactional
-	public LunchVoucherMgtLine create(Employee employee) throws AxelorException {
+	public LunchVoucherMgtLine create(Employee employee, LunchVoucherMgt lunchVoucherMgt) throws AxelorException {
 		LunchVoucherMgtLine lunchVoucherMgtLine = new LunchVoucherMgtLine();
+		
 		lunchVoucherMgtLine.setEmployee(employee);
-		lunchVoucherMgtLine.setLunchVoucherNumber(20);
+		lunchVoucherMgtLine.setInAdvanceNbr(computeEmployeeLunchVoucherAdvance(employee));
+		lunchVoucherMgtLine.setDaysWorkedNbr(employeeService.getDaysWorkedInPeriod(employee, lunchVoucherMgt.getLeavePeriod().getFromDate(), lunchVoucherMgt.getLeavePeriod().getToDate()).setScale(0, RoundingMode.HALF_UP).intValue());
+		lunchVoucherMgtLine.setLunchVoucherNumber(lunchVoucherMgtLine.getDaysWorkedNbr() - lunchVoucherMgtLine.getInAdvanceNbr());
 		
 		return lunchVoucherMgtLine;
+	}
+
+	private Integer computeEmployeeLunchVoucherAdvance(Employee employee) {
+		int number = 0;
+		List<LunchVoucherAdvance> list = Beans.get(LunchVoucherAdvanceRepository.class).all().filter("self.employee.id = ?1 AND self.nbrLunchVouchersUsed < self.nbrLunchVouchers", employee.getId()).fetch();
+		
+		for (LunchVoucherAdvance item : list) {
+			number += item.getNbrLunchVouchers() - item.getNbrLunchVouchersUsed();
+		}
+		
+		return number;
+	}
+
+	@Override
+	public void compute(LunchVoucherMgtLine lunchVoucherMgtLine) throws AxelorException {
+		lunchVoucherMgtLine.setLunchVoucherNumber(lunchVoucherMgtLine.getDaysWorkedNbr() - 
+				(lunchVoucherMgtLine.getCanteenEntries() + lunchVoucherMgtLine.getDaysOverseas() + lunchVoucherMgtLine.getInAdvanceNbr() + lunchVoucherMgtLine.getInvitation()));
 	}
 
 }

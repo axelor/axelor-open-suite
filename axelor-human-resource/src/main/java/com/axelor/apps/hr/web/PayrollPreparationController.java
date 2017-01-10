@@ -17,7 +17,6 @@
  */
 package com.axelor.apps.hr.web;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
@@ -28,7 +27,6 @@ import com.axelor.apps.hr.db.repo.EmploymentContractRepository;
 import com.axelor.apps.hr.db.repo.PayrollLeaveRepository;
 import com.axelor.apps.hr.db.repo.PayrollPreparationRepository;
 import com.axelor.apps.hr.service.PayrollPreparationService;
-import com.axelor.apps.tool.file.CsvTool;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;

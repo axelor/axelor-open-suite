@@ -44,7 +44,6 @@ import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 
-
 public class ExtraHoursController {
 
 	@Inject
@@ -53,7 +52,6 @@ public class ExtraHoursController {
 	private Provider<ExtraHoursRepository> extraHoursRepositoryProvider;
 	@Inject
 	private Provider<ExtraHoursService> extraHoursServiceProvider;
-	
 	
 	public void editExtraHours(ActionRequest request, ActionResponse response){
 		List<ExtraHours> extraHoursList = Beans.get(ExtraHoursRepository.class).all().filter("self.user = ?1 AND self.company = ?2 AND self.statusSelect = 1",AuthUtils.getUser(),AuthUtils.getUser().getActiveCompany()).fetch();
@@ -115,7 +113,7 @@ public class ExtraHoursController {
 	}
 	
 	public void editExtraHoursSelected(ActionRequest request, ActionResponse response){
-		Map extraHoursMap = (Map)request.getContext().get("extraHoursSelect");
+		Map extraHoursMap = (Map) request.getContext().get("extraHoursSelect");
 		ExtraHours extraHours = Beans.get(ExtraHoursRepository.class).find(new Long((Integer)extraHoursMap.get("id")));
 		response.setView(ActionView
 				.define("Extra hours")

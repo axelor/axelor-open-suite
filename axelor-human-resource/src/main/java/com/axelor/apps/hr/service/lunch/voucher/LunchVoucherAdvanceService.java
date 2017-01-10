@@ -17,15 +17,15 @@
  */
 package com.axelor.apps.hr.service.lunch.voucher;
 
-import com.axelor.apps.hr.db.Employee;
-import com.axelor.apps.hr.db.LunchVoucherMgt;
-import com.axelor.apps.hr.db.LunchVoucherMgtLine;
+import com.axelor.apps.hr.db.LunchVoucherAdvance;
 import com.axelor.exception.AxelorException;
+import com.google.inject.persist.Transactional;
 
-public interface LunchVoucherMgtLineService {
+public interface LunchVoucherAdvanceService {
 	
-	public LunchVoucherMgtLine create(Employee employee, LunchVoucherMgt lunchVoucherMgt) throws AxelorException;
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
+	public void onNewAdvance(LunchVoucherAdvance lunchVoucherAdvance) throws AxelorException;
 	
-	public void compute(LunchVoucherMgtLine lunchVoucherMgtLine) throws AxelorException;
-	
+	public int useAdvance(LunchVoucherAdvance lunchVoucherAdvance, int qty) throws AxelorException;
+
 }

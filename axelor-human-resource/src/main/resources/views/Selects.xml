@@ -114,7 +114,7 @@
 	<selection name="hrs.lunch.voucher.mgt.status.select">
 		<option value="1">Draft</option>
 		<option value="2">Calculated</option>
-		<option value="3">Requested</option>
+		<option value="3">Validated</option>
 	</selection>
 	
 	<selection name="hr.lunch.voucher.mgt.line.lunch.voucher.format.select">
