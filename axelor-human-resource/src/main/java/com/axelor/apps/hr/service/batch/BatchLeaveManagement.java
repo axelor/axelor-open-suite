@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -18,6 +18,7 @@
 package com.axelor.apps.hr.service.batch;
 
 import com.axelor.apps.hr.service.batch.BatchStrategy;
+import com.axelor.apps.hr.service.leave.LeaveService;
 import com.axelor.apps.hr.service.leave.management.LeaveManagementService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.db.JPA;
@@ -35,6 +36,7 @@ import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.HrBatch;
 import com.axelor.apps.hr.db.LeaveLine;
 import com.axelor.apps.hr.db.LeaveManagement;
+import com.axelor.apps.hr.db.LeaveReason;
 import com.axelor.apps.hr.db.repo.LeaveLineRepository;
 import com.axelor.apps.hr.db.repo.LeaveManagementRepository;
 import com.axelor.exception.AxelorException;
@@ -46,6 +48,7 @@ import com.google.common.base.Function;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Iterables;
 import com.google.inject.Inject;
+import com.google.inject.Provider;
 import com.google.inject.persist.Transactional;
 
 public class BatchLeaveManagement extends BatchStrategy {
@@ -58,6 +61,9 @@ public class BatchLeaveManagement extends BatchStrategy {
 	
 	protected LeaveLineRepository leaveLineRepository;
 	protected LeaveManagementRepository leaveManagementRepository;
+	
+	@Inject
+	private Provider<LeaveService> leaveServiceProvider;
 	
 	
 	@Inject
@@ -155,28 +161,11 @@ public class BatchLeaveManagement extends BatchStrategy {
 	public void createLeaveManagement(Employee employee) throws AxelorException{  
 		
 		batch = batchRepo.find(batch.getId());
-		int count = 0;
 		LeaveLine leaveLine = null;
+		LeaveReason leaveReason = batch.getHrBatch().getLeaveReason();
 		
-		if (!employee.getLeaveLineList().isEmpty()){
-			for (LeaveLine line : employee.getLeaveLineList()) {
-				
-				if(line.getLeaveReason().equals(batch.getHrBatch().getLeaveReason())){
-					count ++;
-					leaveLine = line;
-				}
-			}
-		}
-		
-		if (count == 0){
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.EMPLOYEE_NO_LEAVE_MANAGEMENT), employee.getName(), batch.getHrBatch().getLeaveReason().getLeaveReason() ), IException.NO_VALUE );
-		}
-		
-		if(count > 1 ){
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.EMPLOYEE_DOUBLE_LEAVE_MANAGEMENT), employee.getName(), batch.getHrBatch().getLeaveReason().getLeaveReason() ), IException.CONFIGURATION_ERROR );
-		}
-		
-		if (count == 1){
+		if(employee != null){
+			leaveLine = leaveServiceProvider.get().addLeaveReasonOrCreateIt(employee, leaveReason);
 			
 			BigDecimal dayNumber = batch.getHrBatch().getDayNumber().subtract(new BigDecimal( publicHolidayService.getImposedDayNumber(employee, batch.getHrBatch().getStartDate(), batch.getHrBatch().getEndDate()) ));
 			LeaveManagement leaveManagement = leaveManagementService.createLeaveManagement(leaveLine, AuthUtils.getUser(), batch.getHrBatch().getComments(), null, batch.getHrBatch().getStartDate(), batch.getHrBatch().getEndDate(), dayNumber );
@@ -185,8 +174,7 @@ public class BatchLeaveManagement extends BatchStrategy {
 			leaveManagementRepository.save(leaveManagement);
 			leaveLineRepository.save(leaveLine);
 			updateEmployee(employee);
-		}
-		
+		}		
 	}
 	
 	@Override

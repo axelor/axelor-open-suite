@@ -83,8 +83,8 @@
 	</action-record>
 	
 	<action-record name="default-address-country-record"
-		model="com.axelor.apps.base.db.Country" search="('self.code LIKE ?1', 'FRA')">
-		<field name="code" expr="FRA" />
+		model="com.axelor.apps.base.db.Country" search="('self.alpha3Code LIKE ?1', 'FRA')">
+		<field name="alpha3Code" expr="FRA" />
 		<field name="name" expr="FRANCE" />
 	</action-record>
 	

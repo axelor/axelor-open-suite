@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -43,6 +43,7 @@ import com.axelor.apps.hr.db.LeaveLine;
 import com.axelor.apps.hr.db.LeaveReason;
 import com.axelor.apps.hr.db.LeaveRequest;
 import com.axelor.apps.hr.db.PublicHolidayPlanning;
+import com.axelor.apps.hr.db.repo.EmployeeRepository;
 import com.axelor.apps.hr.db.repo.LeaveLineRepository;
 import com.axelor.apps.hr.db.repo.LeaveReasonRepository;
 import com.axelor.apps.hr.db.repo.LeaveRequestRepository;
@@ -559,5 +560,44 @@ public class LeaveServiceImpl  implements  LeaveService  {
 			return true;
 		}
 		
+	}
+	
+	@Transactional
+	public LeaveLine getLeaveReasonToJustify(Employee employee, LeaveReason leaveReason) throws AxelorException {
+		LeaveLine leaveLineBase = null;
+		if((employee.getLeaveLineList() != null) || (!employee.getLeaveLineList().isEmpty())) {
+			for(LeaveLine leaveLine : employee.getLeaveLineList()){
+				if(leaveReason.equals(leaveLine.getLeaveReason())){
+					leaveLineBase = leaveLine;
+				}
+			}
+		}
+		return leaveLineBase;
+	}
+	
+	@Transactional
+	public LeaveLine createLeaveReasonToJustify(Employee employee, LeaveReason leaveReason) throws AxelorException {
+		LeaveLine leaveLineEmployee = new LeaveLine();
+		leaveLineEmployee.setLeaveReason(leaveReason);
+		leaveLineEmployee.setEmployee(employee);
+
+		leaveLineRepo.save(leaveLineEmployee);
+		return leaveLineEmployee;
+	}
+	
+	@Transactional
+	public LeaveLine addLeaveReasonOrCreateIt(Employee employee, LeaveReason leaveReason) throws AxelorException {
+		LeaveLine leaveLine = this.getLeaveReasonToJustify(employee, leaveReason);
+		if((leaveLine == null) || (leaveLine.getLeaveReason() != leaveReason)) {
+			leaveLine = this.createLeaveReasonToJustify(employee, leaveReason);
+		}
+		return leaveLine;
+	}
+
+
+	@Override
+	public LeaveLine leaveReasonToJustify(Employee employee, LeaveReason leaveReason) throws AxelorException {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

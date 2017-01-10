@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -189,7 +189,9 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
 		for (AnalyticMoveLine originalAnalyticMoveLine : originalAnalyticMoveLineList) {
 			
 			AnalyticMoveLine analyticMoveLine = Beans.get(AnalyticMoveLineRepository.class).copy(originalAnalyticMoveLine, false);
-			analyticMoveLine.setStatusSelect(AnalyticMoveLineMngtRepository.STATUS_FORECAST_INVOICE);
+
+			analyticMoveLine.setTypeSelect(AnalyticMoveLineMngtRepository.STATUS_FORECAST_INVOICE);
+
 			invoiceLine.addAnalyticMoveLineListItem(analyticMoveLine);
 		}
 				

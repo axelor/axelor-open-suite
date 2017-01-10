@@ -354,19 +354,19 @@
 		<option value="0">Ebics T</option>
 		<option value="1">Ebics TS</option>
 	</selection>
-	
+
+	<selection name="account.analytic.move.line.type.select">
+		<option value="1">Forecast (order)</option>
+		<option value="2">Forecast (invoice)</option>
+		<option value="3">Real (accounting)</option>
+	</selection>
+
 	<selection name="account.ebics.user.status.select">
 		<option value="0">Waiting for the certificate configuration</option>
 		<option value="1">Waiting for the sending of the signature certificate to the bank</option>
 		<option value="2">Waiting for the sending of the authentication and encryption certificates</option>
 		<option value="3">Active connection</option>
 		<option value="4">Certificates should be renew</option>
-	</selection>
-
-	<selection name="account.analytic.move.line.status.select">
-		<option value="1">Forecast (order)</option>
-		<option value="2">Forecast (invoice)</option>
-		<option value="3">Real (accounting)</option>
 	</selection>
 	
 	<selection name="account.ebics.certificate.type.select">

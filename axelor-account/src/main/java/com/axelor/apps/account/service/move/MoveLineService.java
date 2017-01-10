@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -301,7 +301,7 @@ public class MoveLineService {
 					if(invoiceLine.getAnalyticMoveLineList() != null)  {
 						for (AnalyticMoveLine invoiceAnalyticMoveLine : invoiceLine.getAnalyticMoveLineList()) {
 							AnalyticMoveLine analyticMoveLine = Beans.get(AnalyticMoveLineRepository.class).copy(invoiceAnalyticMoveLine, false);
-							analyticMoveLine.setStatusSelect(AnalyticMoveLineRepository.STATUS_REAL_ACCOUNTING);
+							analyticMoveLine.setTypeSelect(AnalyticMoveLineRepository.STATUS_REAL_ACCOUNTING);
 							analyticMoveLine.setInvoiceLine(null);
 							analyticMoveLine.setAccount(moveLine.getAccount());
 							moveLine.addAnalyticMoveLineListItem(analyticMoveLine);
