@@ -34,7 +34,7 @@ public class AppController {
 		
 		if (!app.getInitDataLoaded()) {
 			appService.importDataInit(app);
-			response.setValue("initDataLoaded", true);
+			response.setReload(true);
 		}
 	}
 	

@@ -49,7 +49,7 @@ import com.axelor.rpc.ActionResponse;
 import com.google.common.base.Joiner;
 import com.google.inject.Inject;
 
-public class GeneralController {
+public class AppBaseController {
 
 	private static final Logger LOG = LoggerFactory.getLogger(CurrencyService.class);
 

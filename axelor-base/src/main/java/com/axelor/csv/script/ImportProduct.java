@@ -53,12 +53,14 @@ public class ImportProduct {
 		final Path path = (Path) values.get("__path__");
 		String fileName = (String) values.get("picture_fileName");
 		
-		try {
-			final File image = path.getParent().resolve(fileName).toFile(); 
-			final MetaFile metaFile = metaFiles.upload(image);
-			product.setPicture(metaFile);
-		} catch (Exception e) {
-			e.printStackTrace();
+		if (path != null) {
+			try {
+				final File image = path.getParent().resolve(fileName).toFile(); 
+				final MetaFile metaFile = metaFiles.upload(image);
+				product.setPicture(metaFile);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 		
 		return productRepo.save(product);

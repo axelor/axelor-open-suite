@@ -201,6 +201,7 @@ public class CalendarController {
 	public void showSharedEvents(ActionRequest request, ActionResponse response){
 		User user = AuthUtils.getUser();
 		List<Long> eventIdlist = calendarService.showSharedEvents(user);
+		eventIdlist.add(new Long(0));
 		response.setView(ActionView
 	            .define(I18n.get("Shared Calendar"))
 	            .model(Event.class.getName())

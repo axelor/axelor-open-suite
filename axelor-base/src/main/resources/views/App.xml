@@ -8,7 +8,9 @@
 		<field name="code" />
 	</grid>
 	
-	<form name="app-form" title="App" model="com.axelor.apps.base.db.App" canDelete="false" canNew="false" width="large" onSave="save,action-app-method-check-parent,action-app-method-install-parent,action-method-app-import-data-init">
+	<form name="app-form" title="App" model="com.axelor.apps.base.db.App" canDelete="false" canNew="false" width="large" 
+		onSave="save,action-app-method-check-parent,action-app-method-install-parent,action-method-app-import-data-init"
+		onLoad="action-app-on-load-attrs">
 		<panel>
 			<field name="image" widget="Image" colSpan="2"/>
 			<panel colSpan="8">
@@ -16,7 +18,7 @@
 				<field name="name" colSpan="8" readonly="true" />
 				<field name="dependsOn" colSpan="12" widget="multi-select" readonly="true"  />
 				<field name="active" widget="boolean-switch" onChange="action-app-method-check-children" colSpan="2"/>
-				<button name="configure" title="Configure" showIf="active" onClick="com.axelor.apps.base.web.AppController:configure"  colSpan="3"  />
+				<button name="configure" title="Configure" onClick="com.axelor.apps.base.web.AppController:configure"  colSpan="3"  />
         		<spacer colSpan="7"/>
 				<field name="demoDataLoaded" readonly="true" colSpan="2"/>
 				<button name="importDataDemo" onClick="save,action-method-app-import-data-demo" title="Import demo data" colSpan="3" hideIf="demoDataLoaded"/>
@@ -74,5 +76,11 @@
 	 <action-method name="action-app-method-check-children">
 	    <call class="com.axelor.apps.base.web.AppController" method="checkChildren" if="!active"/>
 	 </action-method>
+	 
+	 <action-attrs name="action-app-on-load-attrs">
+	 	<attribute name="hidden" for="configure" expr="eval:!__self__.active"/>
+	 	<attribute name="hidden" for="demoDataLoaded" expr="eval:!__self__.active"/>
+	 	<attribute name="hidden" for="importDataDemo" expr="eval:!__self__.active || demoDataLoaded"/>
+	 </action-attrs>
        
 </object-views>

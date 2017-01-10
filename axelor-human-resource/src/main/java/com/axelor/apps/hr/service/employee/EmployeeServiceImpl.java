@@ -61,7 +61,7 @@ public class EmployeeServiceImpl extends UserServiceImpl implements EmployeeServ
 		
 		LOG.debug("Employee: {}",employee);
 
-		BigDecimal dailyWorkHrs = null;
+		BigDecimal dailyWorkHrs = new BigDecimal(1);
 		String timePref = null;
 		if(employee != null)  {
 			timePref = employee.getTimeLoggingPreferenceSelect();
@@ -73,7 +73,10 @@ public class EmployeeServiceImpl extends UserServiceImpl implements EmployeeServ
 		if(dailyWorkHrs == null || dailyWorkHrs.compareTo(BigDecimal.ZERO) == 0)  {
 			dailyWorkHrs = appBaseService.getAppBase().getDailyWorkHours();
 		}
-
+		
+		if (dailyWorkHrs.compareTo(BigDecimal.ZERO) == 0) {
+			dailyWorkHrs = new BigDecimal(1);
+		}
 		LOG.debug("Employee's time pref: {}, Daily Working hours: {}", timePref, dailyWorkHrs);
 
 		if(toHours)  {

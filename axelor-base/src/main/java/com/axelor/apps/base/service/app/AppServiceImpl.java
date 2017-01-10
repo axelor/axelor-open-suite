@@ -89,6 +89,9 @@ public class AppServiceImpl implements AppService {
 			}
 		}
 		
+		app = appRepo.find(app.getId());
+		app.setDemoDataLoaded(true);
+		
 		saveApp(app);
 		
 		return I18n.get("Demo data loaded sucessefully");
@@ -108,8 +111,6 @@ public class AppServiceImpl implements AppService {
 
 	@Transactional
 	public void saveApp(App app) {
-		app = appRepo.find(app.getId());
-		app.setDemoDataLoaded(true);
 		appRepo.save(app);
 	}
 	
@@ -143,6 +144,11 @@ public class AppServiceImpl implements AppService {
 				clean(tmp);
 			}
 		}
+		
+		app = appRepo.find(app.getId());
+		app.setInitDataLoaded(true);
+		
+		saveApp(app);
 		
 	}
 	
@@ -251,9 +257,11 @@ public class AppServiceImpl implements AppService {
 				+ "OR self.dependsOn like ?4 ";
 		
 		if (active != null) {
-			query += " AND self.active = " + active;
+			query = "(" + query + ") AND self.active = " + active;
 		}
-		List<App> apps = appRepo.all().filter(query, type, ",%" + type + ",", type + ",",  ",%" + type).fetch();
+		List<App> apps = appRepo.all().filter(query, type, type + ",%", "%," + type + ",%",  "%," + type).fetch();
+		
+		log.debug("Parent app: {}, Total children: {}", app.getName(), apps.size());
 		
 		return apps;
 	}
