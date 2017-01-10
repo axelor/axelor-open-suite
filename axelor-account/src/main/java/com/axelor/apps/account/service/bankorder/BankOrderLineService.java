@@ -129,9 +129,9 @@ public class BankOrderLineService {
 		return bankOrderLine;
 	}
 	
-	public void checkPreconditions(BankOrderLine bankOrderLine, int orderType)  throws AxelorException{
+	public void checkPreconditions(BankOrderLine bankOrderLine)  throws AxelorException{
 
-		if (orderType == BankOrderRepository.ORDER_TYPE_BANK_TO_BANK_TRANSFER)  {
+		if (bankOrderLine.getBankOrder().getPartnerTypeSelect() == BankOrderRepository.PARTNER_TYPE_COMPANY)  {
 			if (bankOrderLine.getReceiverCompany() == null )  {
 				throw new AxelorException(I18n.get(IExceptionMessage.BANK_ORDER_LINE_COMPANY_MISSING), IException.INCONSISTENCY);
 			}

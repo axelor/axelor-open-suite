@@ -60,19 +60,17 @@ public class BankOrderServiceImpl implements BankOrderService  {
 	protected BankOrderRepository bankOrderRepo;
 	protected InvoicePaymentRepository invoicePaymentRepo;
 	protected BankOrderLineService bankOrderLineService;
-	protected BankOrderMoveService bankOrderMoveService;
 	protected EbicsService ebicsService;
 	
 
 	
 	@Inject
 	public BankOrderServiceImpl(BankOrderRepository bankOrderRepo, InvoicePaymentRepository invoicePaymentRepo, 
-			BankOrderLineService bankOrderLineService, BankOrderMoveService bankOrderMoveService, EbicsService ebicsService)  {
+			BankOrderLineService bankOrderLineService, EbicsService ebicsService)  {
 		
 		this.bankOrderRepo = bankOrderRepo;
 		this.invoicePaymentRepo = invoicePaymentRepo;
 		this.bankOrderLineService = bankOrderLineService;
-		this.bankOrderMoveService = bankOrderMoveService;
 		this.ebicsService = ebicsService;
 		
 	}
@@ -81,8 +79,6 @@ public class BankOrderServiceImpl implements BankOrderService  {
 	public void checkPreconditions(BankOrder bankOrder) throws AxelorException  {
 		
 		LocalDate brankOrderDate = bankOrder.getBankOrderDate();
-		Integer orderType = bankOrder.getOrderTypeSelect();
-		Integer partnerType = bankOrder.getPartnerTypeSelect();
 		
 		if (brankOrderDate != null)  {
 			if(brankOrderDate.isBefore(LocalDate.now()))  {
@@ -92,13 +88,11 @@ public class BankOrderServiceImpl implements BankOrderService  {
 			throw new AxelorException(I18n.get(IExceptionMessage.BANK_ORDER_DATE_MISSING), IException.INCONSISTENCY);
 		}
 		
-		if(orderType == 0)  {
+		if(bankOrder.getOrderTypeSelect() == 0)  {
 			throw new AxelorException(I18n.get(IExceptionMessage.BANK_ORDER_TYPE_MISSING), IException.INCONSISTENCY);
 		}
-		else{
-			if(orderType !=  BankOrderRepository.ORDER_TYPE_BANK_TO_BANK_TRANSFER  && partnerType == 0)  {
-				throw new AxelorException(I18n.get(IExceptionMessage.BANK_ORDER_PARTNER_TYPE_MISSING), IException.INCONSISTENCY);
-			}
+		if(bankOrder.getPartnerTypeSelect() == 0)  {
+			throw new AxelorException(I18n.get(IExceptionMessage.BANK_ORDER_PARTNER_TYPE_MISSING), IException.INCONSISTENCY);
 		}
 		if(bankOrder.getPaymentMode() == null)  {
 			throw new AxelorException(I18n.get(IExceptionMessage.BANK_ORDER_PAYMENT_MODE_MISSING), IException.INCONSISTENCY);
@@ -193,7 +187,7 @@ public class BankOrderServiceImpl implements BankOrderService  {
 		BigDecimal  totalAmount = BigDecimal.ZERO;
 		for (BankOrderLine bankOrderLine : bankOrderLines) {
 			
-			bankOrderLineService.checkPreconditions(bankOrderLine, orderType);
+			bankOrderLineService.checkPreconditions(bankOrderLine);
 			totalAmount = totalAmount.add(bankOrderLine.getBankOrderAmount());
 			
 		}
@@ -252,7 +246,7 @@ public class BankOrderServiceImpl implements BankOrderService  {
 		
 		File fileToSend = this.generateFile(bankOrder);
 		
-		bankOrderMoveService.generateMoves(bankOrder);
+		Beans.get(BankOrderMoveService.class).generateMoves(bankOrder);
 		
 		ebicsService.sendFULRequest(bankOrder.getEbicsUser(), null, fileToSend, bankOrder.getBankOrderFileFormat().getOrderFileFormatSelect());
 		

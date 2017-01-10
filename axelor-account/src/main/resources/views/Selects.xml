@@ -311,10 +311,11 @@
 		<option value="5">International Direct Debit</option>
 	</selection>
 	
-	<selection name="iaccount.bank.order.partner.select">
+	<selection name="iaccount.bank.order.partner.type.select">
 		<option value="1">Supplier</option>
 		<option value="2">Employee</option>
 		<option value="3">Customer</option>
+		<option value="4">Company</option>
 	</selection>
 	
 	<selection name="iaccount.bank.order.status.select">

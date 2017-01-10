@@ -371,6 +371,28 @@ public class AccountConfigService {
 		return accountConfig.getDoubtfulCustomerAccount();
 
 	}
+	
+	public Account getExternalBankToBankAccount(AccountConfig accountConfig) throws AxelorException  {
+
+		if(accountConfig.getExternalBankToBankAccount() == null)   {
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.ACCOUNT_CONFIG_EXTERNAL_BANK_TO_BANK_ACCOUNT),
+					GeneralServiceImpl.EXCEPTION,accountConfig.getCompany().getName()), IException.CONFIGURATION_ERROR);
+		}
+
+		return accountConfig.getExternalBankToBankAccount();
+
+	} 
+	
+	public Account getInternalBankToBankAccount(AccountConfig accountConfig) throws AxelorException  {
+
+		if(accountConfig.getExternalBankToBankAccount() == null)   {
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.ACCOUNT_CONFIG_INTERNAL_BANK_TO_BANK_ACCOUNT),
+					GeneralServiceImpl.EXCEPTION,accountConfig.getCompany().getName()), IException.CONFIGURATION_ERROR);
+		}
+
+		return accountConfig.getInternalBankToBankAccount();
+
+	} 
 
 
 	/******************************** TVA ********************************************/

@@ -11,7 +11,7 @@
   	<integer name="orderTypeSelect" title="Order Type" selection="iaccount.bank.order.type.select"/>
   	<integer name="rejectStatusSelect" title="Rejection Status" selection="iaccount.bank.order.reject.status.select"/>
   	<string name="bankOrderSeq" title="Sequence" namecolumn="true" readonly="true" unique="true"/>
-  	<integer name="partnerTypeSelect" title="Partner Type" selection="iaccount.bank.order.partner.select" required="true"/>
+  	<integer name="partnerTypeSelect" title="Partner Type" selection="iaccount.bank.order.partner.type.select" required="true"/>
   	<integer name="statusSelect" title="Status" default="1" readonly="true" selection="iaccount.bank.order.status.select"/>
 	<date name="bankOrderDate" title="Bank order Date"/>  	
 	<many-to-one name="paymentMode" ref="com.axelor.apps.account.db.PaymentMode" title="Payment Mode" required="true"/>
@@ -44,11 +44,10 @@
 	 <extra-code><![CDATA[
 	
 	   	// BANK ORDER TYPE SELECT
-		public static final int ORDER_TYPE_BANK_TO_BANK_TRANSFER = 1;
-		public static final int ORDER_TYPE_SEPA_CREDIT_TRANSFER = 2;
-		public static final int ORDER_TYPE_SEPA_DIRECT_DEBIT = 3;
-		public static final int ORDER_TYPE_INTERNATIONAL_CREDIT_TRANSFER = 4;
-		public static final int ORDER_TYPE_INTERNATIONAL_DIRECT_DEBIT = 5;
+		public static final int ORDER_TYPE_SEPA_CREDIT_TRANSFER = 1;
+		public static final int ORDER_TYPE_SEPA_DIRECT_DEBIT = 2;
+		public static final int ORDER_TYPE_INTERNATIONAL_CREDIT_TRANSFER = 3;
+		public static final int ORDER_TYPE_INTERNATIONAL_DIRECT_DEBIT = 4;
 	
 	   	// STATUS SELECT
 		public static final int STATUS_DRAFT = 1;
@@ -63,6 +62,8 @@
 		public static final int PARTNER_TYPE_SUPPLIER = 1;
 		public static final int PARTNER_TYPE_EMPLOYEE = 2;
 		public static final int PARTNER_TYPE_CUSTOMER = 3;
+		public static final int PARTNER_TYPE_COMPANY = 4;
+		
 		
 		// REJECT STATUS SELECT
 		public static final int REJECT_STATUS_NOT_REJECTED = 0;
