@@ -22,6 +22,8 @@
       <integer name="stockQuantityStatus" title="Stock quantity status" readonly="true"/>
       <integer name="stockLineQuantity" title="Stock Line quantity"/>
       <string name="stockLineComment" title="Comment" large="true"/>
+      <date name="exportDate" title="Export date"/>
+      <boolean name="exported" title="Exported ?" default="false"/>
       
       <extra-code>
       	<![CDATA[
