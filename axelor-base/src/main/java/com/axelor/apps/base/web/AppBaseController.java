@@ -18,6 +18,7 @@
 package com.axelor.apps.base.web;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -27,14 +28,19 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.base.db.AppBase;
+import com.axelor.apps.base.db.CurrencyConversionLine;
+import com.axelor.apps.base.db.repo.CurrencyConversionLineRepository;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
+import com.axelor.apps.base.service.CurrencyConversionService;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.MapService;
 import com.axelor.apps.base.service.administration.ExportDbObjectService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.tool.StringTool;
 import com.axelor.db.JPA;
 import com.axelor.db.Model;
@@ -49,7 +55,7 @@ import com.axelor.rpc.ActionResponse;
 import com.google.common.base.Joiner;
 import com.google.inject.Inject;
 
-public class GeneralController {
+public class AppBaseController {
 
 	private static final Logger LOG = LoggerFactory.getLogger(CurrencyService.class);
 
@@ -61,6 +67,15 @@ public class GeneralController {
 	
 	@Inject
 	private MetaFieldRepository metaFieldRepo;
+	
+	@Inject
+	private CurrencyConversionService ccs;
+
+	@Inject
+	private CurrencyConversionLineRepository cclRepo;
+	
+	@Inject
+	private AppBaseService appBaseService;
 
 	public Set<MetaField> setFields(String model) throws IOException {
 		LOG.debug("Model: {}",model);
@@ -247,6 +262,52 @@ public class GeneralController {
 		else{
 			response.setFlash(IExceptionMessage.GENERAL_7);
 		}
+	}
+	
+	public void updateCurrencyConversion(ActionRequest request, ActionResponse response){
+		 AppBase appBase = request.getContext().asType(AppBase.class);
+		 LocalDate today = appBaseService.getTodayDate();
+		 
+		 Map<Long, Long> currencyMap = new HashMap<Long, Long>();
+		 
+		 for(CurrencyConversionLine ccl : appBase.getCurrencyConversionLineList()){
+			 currencyMap.put(ccl.getEndCurrency().getId(), ccl.getStartCurrency().getId());
+		 }
+		 
+		 for(Long key  : currencyMap.keySet()){
+			
+			CurrencyConversionLine ccl = cclRepo.all().filter("startCurrency.id = ?1 AND endCurrency.id = ?2 AND fromDate <= ?3 AND toDate is null", currencyMap.get(key), key, today).fetchOne();
+			
+			LOG.info("Currency Conversion Line without toDate : {}", ccl);
+
+			if(ccl == null){
+				ccl = cclRepo.all().filter("startCurrency.id = ?1 AND endCurrency.id = ?2 AND fromDate <= ?3 AND toDate > ?3", currencyMap.get(key), key, today).fetchOne();
+				if(ccl != null){
+					LOG.info("Already convered Currency Conversion Line  found : {}", ccl);
+					continue;
+				}
+				ccl = cclRepo.all().filter("startCurrency.id = ?1 AND endCurrency.id = ?2 AND fromDate <= ?3 AND (toDate not null AND toDate <= ?3)", currencyMap.get(key), key, today).order("-toDate").fetchOne();
+				LOG.info("Currency Conversion Line found with toDate : {}", ccl);
+			}
+			
+			
+			if(ccl != null){
+				BigDecimal currentRate = ccs.convert(ccl.getStartCurrency(), ccl.getEndCurrency());
+				if(currentRate.compareTo(new BigDecimal(-1)) == 0){
+					response.setFlash(I18n.get(IExceptionMessage.CURRENCY_6));
+					break;
+				}
+				ccl = cclRepo.find(ccl.getId());
+				ccl.setToDate(today.minusDays(1));
+				ccs.saveCurrencyConversionLine(ccl);
+				BigDecimal previousRate = ccl.getExchangeRate();
+				String variations = ccs.getVariations(currentRate, previousRate);
+				ccs.createCurrencyConversionLine(ccl.getStartCurrency(), ccl.getEndCurrency(), today, currentRate, appBaseService.getAppBase(), variations);
+			}
+			
+		 }
+		 
+		 response.setReload(true);
 	}
 
 }

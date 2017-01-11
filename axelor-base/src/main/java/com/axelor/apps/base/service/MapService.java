@@ -317,9 +317,14 @@ public class MapService {
 		
 		RESTClient restClient = new RESTClient("https://maps.googleapis.com");
 		
+		Map<String,Object> responseQuery = new HashMap<String,Object>();
+		responseQuery.put("address", "google");
+		responseQuery.put("sensor", "false");
+		
 		Map<String,Object> responseMap = new HashMap<String,Object>();
 		responseMap.put("path", "/maps/api/geocode/json");
 		responseMap.put("accept", ContentType.JSON);
+		responseMap.put("query", responseQuery);
 
 		responseMap.put("connectTimeout", 5000);
 		responseMap.put("readTimeout", 10000);

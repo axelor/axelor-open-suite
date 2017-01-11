@@ -14,18 +14,20 @@
 				<field name="transferAndDirectDebitInterbankCode" grid-view="interbank-code-grid" form-view="interbank-code-form"/>
 				<field name="chequeInterbankCode" grid-view="interbank-code-grid" form-view="interbank-code-form"/>
 			</panel>
+		</panel>
+		<panel-tabs>
 			<panel name="payerQuality" title="Payer quality" colSpan="12">
-				<button name="payerQualityProcess" title="Compute payers quality" colSpan="2" onClick="action-base-method-payer-quality-process"/>
+				<button name="payerQualityProcess" title="Compute payers quality" colSpan="2" onClick="action-app-account-method-payer-quality-process"/>
 				<field name="payerQualityConfigLineList" colSpan="12" grid-view="payer-quality-config-line-grid" form-view="payer-quality-config-line-form"/>
 			</panel>
-			<panel name="currencyConversion" title="Currency conversion" colSpan="12">
-				<button name="updateCurrencyConversion" title="Update &amp; Historize conversion rate"  onClick="save,action-base-method-update-currency-conversion"/>
-				<field name="currencyConversionLineList" colSpan="12" grid-view="currency-conversion-line-grid" form-view="currency-conversion-line-form"/>
-			</panel>
-		</panel>
-		<panel-dashlet action="admin.root.conf.account.config" colSpan="12"/>
+			<panel-dashlet action="admin.root.conf.account.config" colSpan="12" title="Account configurations" />
+		</panel-tabs>
 	</form>
 	
+	
+	<action-method name="action-app-account-method-payer-quality-process">
+		<call class="com.axelor.apps.account.web.AppAccountController" method="payerQualityProcess" />
+	</action-method>
 	
 	
 </object-views>
