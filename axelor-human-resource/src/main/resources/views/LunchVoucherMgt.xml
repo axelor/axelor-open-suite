@@ -15,7 +15,8 @@
 
 	<form name="lunch-voucher-mgt-form" title="Lunch Voucher Management" model="com.axelor.apps.hr.db.LunchVoucherMgt" width="large" onNew="action-lunch-voucher-record-default-onnew">
 		<toolbar>
-			<button name="print" title="Print" icon="fa-print" showIf="statusSelect &gt;= 2"/>
+			<button name="printBtn" title="Print" icon="fa-print" showIf="statusSelect &gt;= 2" onClick="action-lunch-voucher-method-print"/>
+			<button name="exportBtn" title="Export CSV" icon="fa-file-text-o" showIf="statusSelect == 3 &amp;&amp; csvFile == null" onClick="action-lunch-voucher-method-export"/>
 		</toolbar>
   		<panel name="main">
   			<panel colSpan="6">
@@ -29,8 +30,6 @@
 	        	<panel colSpan="12">
 	        		<button name="calculateBtn" title="Calculate" colSpan="6" onClick="save,action-lunch-voucher-method-calculate,action-lunch-voucher-method-check-stock" showIf="statusSelect == 1" hidden="true"/>
 		    		<button name="validateBtn" title="Validate" colSpan="6" onClick="save,action-lunch-voucher-method-validate" showIf="statusSelect == 2" hidden="true"/>
-		    		<button name="generateInvoiceBtn" title="Generate control invoice" colSpan="6" onClick="action-lunch-voucher-record-generate-invoice-control" showIf="statusSelect == 3" hidden="true"/>
-		  			<button name="exportBtn" title="Export CSV" colSpan="6" onClick="action-lunch-voucher-method-export" hidden="true" showIf="statusSelect == 3 &amp;&amp; csvFile == null"/>
 	        	</panel>
 	        	<panel title="Export" colSpan="12" readonly="true" hidden="true" showIf="csvFile != null">
 	        		<field name="exportDate"/>

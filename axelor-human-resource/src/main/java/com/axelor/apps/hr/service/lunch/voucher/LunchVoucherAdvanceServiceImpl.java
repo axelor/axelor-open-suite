@@ -40,7 +40,7 @@ public class LunchVoucherAdvanceServiceImpl implements LunchVoucherAdvanceServic
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void onNewAdvance(LunchVoucherAdvance lunchVoucherAdvance) throws AxelorException {
 		
-		HRConfig config = hrConfigService.getHRConfig(lunchVoucherAdvance.getEmployee().getUser().getActiveCompany());
+		HRConfig config = hrConfigService.getHRConfig(lunchVoucherAdvance.getEmployee().getMainEmploymentContract().getPayCompany());
 		config.setAvailableStockLunchVoucher(config.getAvailableStockLunchVoucher() - lunchVoucherAdvance.getNbrLunchVouchers());
 		
 		Beans.get(LunchVoucherAdvanceRepository.class).save(lunchVoucherAdvance);

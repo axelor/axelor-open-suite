@@ -59,7 +59,7 @@ public class LunchVoucherMgtController {
 			LunchVoucherMgt lunchVoucherMgt = request.getContext().asType(LunchVoucherMgt.class);
 			Company company = lunchVoucherMgt.getCompany();
 			HRConfig hrConfig = hrConfigService.get().getHRConfig(company);
-			int stock = lunchVoucherMgtProvider.get().checkStock(lunchVoucherMgt.getCompany(), lunchVoucherMgt.getStockLineQuantity() + lunchVoucherMgt.getTotalLunchVouchers());
+			int stock = lunchVoucherMgtProvider.get().checkStock(company, lunchVoucherMgt.getStockLineQuantity() + lunchVoucherMgt.getTotalLunchVouchers());
 			
 			if (stock <= 0){ 
 				response.setAlert(String.format(I18n.get(IExceptionMessage.LUNCH_VOUCHER_MIN_STOCK),company.getName(),

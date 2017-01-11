@@ -36,14 +36,14 @@ import com.axelor.apps.hr.db.HRConfig;
 import com.axelor.apps.hr.db.LunchVoucherAdvance;
 import com.axelor.apps.hr.db.LunchVoucherMgt;
 import com.axelor.apps.hr.db.LunchVoucherMgtLine;
+import com.axelor.apps.hr.db.repo.EmployeeRepository;
 import com.axelor.apps.hr.db.repo.HRConfigRepository;
 import com.axelor.apps.hr.db.repo.LunchVoucherAdvanceRepository;
 import com.axelor.apps.hr.db.repo.LunchVoucherMgtRepository;
 import com.axelor.apps.hr.service.config.HRConfigService;
-import com.axelor.auth.db.User;
-import com.axelor.auth.db.repo.UserRepository;
 import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
@@ -55,8 +55,6 @@ import com.google.inject.persist.Transactional;
 
 public class LunchVoucherMgtServiceImpl implements LunchVoucherMgtService {
 	
-	protected UserRepository userRepository;
-	
 	protected LunchVoucherMgtRepository lunchVoucherMgtRepository;
 	
 	protected LunchVoucherMgtLineService lunchVoucherMgtLineService;
@@ -66,10 +64,9 @@ public class LunchVoucherMgtServiceImpl implements LunchVoucherMgtService {
 	protected HRConfigService hrConfigService;
 	
 	@Inject
-	public LunchVoucherMgtServiceImpl(UserRepository userRepository, LunchVoucherMgtLineService lunchVoucherMgtLineService, LunchVoucherAdvanceService lunchVoucherAdvanceService,
+	public LunchVoucherMgtServiceImpl(LunchVoucherMgtLineService lunchVoucherMgtLineService, LunchVoucherAdvanceService lunchVoucherAdvanceService,
 								      LunchVoucherMgtRepository lunchVoucherMgtRepository, HRConfigService hrConfigService) {
 		
-		this.userRepository = userRepository;
 		this.lunchVoucherMgtLineService = lunchVoucherMgtLineService;
 		this.lunchVoucherMgtRepository = lunchVoucherMgtRepository;
 		this.lunchVoucherAdvanceService = lunchVoucherAdvanceService;
@@ -80,12 +77,19 @@ public class LunchVoucherMgtServiceImpl implements LunchVoucherMgtService {
 	@Transactional
 	public void calculate(LunchVoucherMgt lunchVoucherMgt) throws AxelorException {
 		Company company = lunchVoucherMgt.getCompany();
+		
+		if(company == null) {
+			throw new AxelorException(I18n.get("Please fill a company"), IException.MISSING_FIELD);
+		}
+		if(lunchVoucherMgt.getLeavePeriod() == null) {
+			throw new AxelorException(I18n.get("Please fill a leave period."), IException.MISSING_FIELD);
+		}
+		
 		HRConfig hrConfig = hrConfigService.getHRConfig(company);
 		
-		List<User> UsersList = userRepository.all().filter("self.activeCompany = ?1", company).fetch();
+		List<Employee> employeeList = Beans.get(EmployeeRepository.class).all().filter("self.mainEmploymentContract.payCompany = ?1", company).fetch();
 		
-		for (User user : UsersList) {
-			Employee employee = user.getEmployee();
+		for (Employee employee : employeeList) {
 			if (employee != null) {
 				LunchVoucherMgtLine LunchVoucherMgtLine = lunchVoucherMgtLineService.create(employee, lunchVoucherMgt);
 				lunchVoucherMgt.addLunchVoucherMgtLineListItem(LunchVoucherMgtLine);

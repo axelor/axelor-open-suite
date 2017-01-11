@@ -132,7 +132,7 @@ public class EmployeeServiceImpl extends UserServiceImpl implements EmployeeServ
 
 	@Override
 	public BigDecimal getDaysWorksInPeriod(Employee employee, LocalDate fromDate, LocalDate toDate) throws AxelorException {
-		Company company = employee.getUser().getActiveCompany();
+		Company company = employee.getMainEmploymentContract().getPayCompany();
 		BigDecimal duration = BigDecimal.ZERO;
 		
 		WeeklyPlanning weeklyPlanning = employee.getPlanning();
