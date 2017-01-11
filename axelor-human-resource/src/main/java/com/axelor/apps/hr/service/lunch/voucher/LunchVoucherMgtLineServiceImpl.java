@@ -43,7 +43,8 @@ public class LunchVoucherMgtLineServiceImpl implements LunchVoucherMgtLineServic
 		lunchVoucherMgtLine.setEmployee(employee);
 		lunchVoucherMgtLine.setInAdvanceNbr(computeEmployeeLunchVoucherAdvance(employee));
 		lunchVoucherMgtLine.setDaysWorkedNbr(employeeService.getDaysWorkedInPeriod(employee, lunchVoucherMgt.getLeavePeriod().getFromDate(), lunchVoucherMgt.getLeavePeriod().getToDate()).setScale(0, RoundingMode.HALF_UP).intValue());
-		lunchVoucherMgtLine.setLunchVoucherNumber(lunchVoucherMgtLine.getDaysWorkedNbr() - lunchVoucherMgtLine.getInAdvanceNbr());
+		
+		compute(lunchVoucherMgtLine);
 		
 		return lunchVoucherMgtLine;
 	}
