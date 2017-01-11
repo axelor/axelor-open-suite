@@ -31,6 +31,9 @@
 	<date name="referentialDate" title="Referential date for seniority" />
 	
 	
+	<!--  Payroll Preparation -->
+	<many-to-one name="period" ref="com.axelor.apps.base.db.Period" title="Period" />
+	
   	
   	
   	<extra-code><![CDATA[
@@ -38,6 +41,7 @@
 	   	// ACTION TYPE
 		public static final int ACTION_LEAVE_MANAGEMENT = 1;
 		public static final int ACTION_SENIORITY_LEAVE_MANAGEMENT = 2;
+		public static final int ACTION_PAYROLL_PREPARATION = 3;
 	]]></extra-code>
   	
   </entity>

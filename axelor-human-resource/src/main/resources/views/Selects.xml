@@ -104,6 +104,7 @@
 	<selection name="ihr.batch.action.select">
 		<option value="1">Leave Management</option>
 		<option value="2">Seniority leave Management</option>
+		<option value="3">Payroll preparation</option>
 	</selection>
 	
 	<selection name="hr.expense.company.cb.payment">
