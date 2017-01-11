@@ -24,14 +24,15 @@
 			 <field name="$payrollLeavesList" type="many-to-many" target="com.axelor.apps.hr.db.PayrollLeave" title="Leaves" readonly="true" colSpan="12"/>
 			 <panel-related field="extraHoursLineList" readonly="true" colSpan="12"/>
 			 <field name="duration"/>
-			 <field name="expenseAmount"/>
+			 <field name="leaveDuration" />
 			 <panel-related field="expenseList" 		     colSpan="12" canEdit="false" canNew="false" grid-view="expense-payroll-preparation-grid"/>
 			 <panel-related field="employeeBonusMgtLineList" colSpan="12" canEdit="false" canNew="false" grid-view="employee-bonus-mgt-line-employee-grid"/>
 			 <panel-related field="lunchVoucherMgtLineList"  colSpan="12" canEdit="false" canNew="false" grid-view="lunch-voucher-mgt-line-payroll-grid" form-view="lunch-voucher-mgt-line-form"/>
 			 <panel-related field="otherCostsEmployeeSet"    colSpan="12" canEdit="false" canNew="false"/>
-			 <field name="extraHoursNumber"/>
-			 <field name="lunchVoucherNumber"/>
+			 <field name="expenseAmount"/>
 			 <field name="employeeBonusAmount"/>
+			 <field name="lunchVoucherNumber"/>
+			 <field name="extraHoursNumber"/>
 			 <field name="comments" colSpan="12"/>
 		</panel>
 		<panel sidebar="true">

@@ -60,7 +60,7 @@ public class PayrollPreparationController {
 		response.setValue("extraHoursLineList",payrollPreparation.getExtraHoursLineList());
 		response.setValue("$payrollLeavesList", payrollLeaveList);
 		response.setValue("duration",payrollPreparation.getDuration());
-		response.setValue("duration",payrollPreparation.getDuration());
+		response.setValue("leaveDuration",payrollPreparation.getLeaveDuration());
 		response.setValue("expenseAmount",payrollPreparation.getExpenseAmount());
 		response.setValue("expenseList",payrollPreparation.getExpenseList());
 		response.setValue("otherCostsEmployeeSet",payrollPreparation.getEmploymentContract().getOtherCostsEmployeeSet());
@@ -81,23 +81,22 @@ public class PayrollPreparationController {
 	
 	public void exportPayrollPreparation(ActionRequest request, ActionResponse response) throws IOException, AxelorException{
 		
-		
 		PayrollPreparation payrollPreparation = payrollPreparationRepo.find( request.getContext().asType(PayrollPreparation.class).getId() );
 		
 		response.setExportFile( payrollPreparationService.exportSinglePayrollPreparation(payrollPreparation) );
+		response.setReload(true);
 		
 	}
 	
+	/*
 	public void exportAll(ActionRequest request, ActionResponse response) throws IOException{
 		
 		@SuppressWarnings("unchecked")
 		List<Integer> payrollPreparations = (List<Integer>) request.getContext().get("_ids");
 		
 		if (payrollPreparations != null){
-			
 			response.setExportFile(payrollPreparationService.exportAllPayrollPreparation(payrollPreparations));
 		}
-		
-		
 	}
+	*/
 }

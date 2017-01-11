@@ -10,33 +10,32 @@
       <many-to-one name="employmentContract" ref="com.axelor.apps.hr.db.EmploymentContract" title="Employment contract"/>
       <many-to-one name="employee" ref="com.axelor.apps.hr.db.Employee" required="true" title="Employee"/>
       <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company" required="true"/>
-      
       <many-to-one name="period" ref="com.axelor.apps.base.db.Period" title="Period" required="true" />
       
+      <decimal name="duration" title="Working days' number" scale="1" precision="5" readonly="true"/>
+      <decimal name="leaveDuration" title="Leave days' number" scale="1" precision="5" readonly="true" />
       
+      <many-to-many name="otherCostsEmployeeSet" title="Others" ref="com.axelor.apps.hr.db.OtherCostsEmployee"/>
+     
+      <string name="comments" title="Comments" large="true"/>
+     
       <one-to-many name="extraHoursLineList" ref="com.axelor.apps.hr.db.ExtraHoursLine" title="Extra hours" mappedBy="payrollPreparation" orphanRemoval="false"/>
       <one-to-many name="expenseList" ref="com.axelor.apps.hr.db.Expense" title="Expenses" mappedBy="payrollPreparation" orphanRemoval="false"/>
-      
-      <decimal name="duration" title="Working days' number" scale="1" precision="5" readonly="true"/>
-      <decimal name="expenseAmount" title="Expenses amount to pay" scale="2" precision="15" readonly="true"/>
-      <many-to-many name="otherCostsEmployeeSet" title="Others" ref="com.axelor.apps.hr.db.OtherCostsEmployee"/>
-      <string name="comments" title="Comments" large="true"/>
-      <decimal name="annualGrossSalary" title="Annual gross salary" scale="2" precision="15"/>
-      <decimal name="netSalary" title="Net salary" scale="2" precision="15"/>
-      <decimal name="socialCharges" title="Social Charges" scale="2" precision="15"/>
-      <decimal name="total" title="Total to pay" scale="2" precision="15"/>
-      
       <one-to-many name="employeeBonusMgtLineList" ref="com.axelor.apps.hr.db.EmployeeBonusMgtLine" title="Employee bonuses" mappedBy="payrollPreparation" orphanRemoval="false"/>
       <one-to-many name="lunchVoucherMgtLineList" ref="com.axelor.apps.hr.db.LunchVoucherMgtLine" title="Lunch vouchers" mappedBy="payrollPreparation" orphanRemoval="false"/>
       
-      <decimal name="lunchVoucherNumber" title="Lunch vouchers' number" scale="1" precision="5" readonly="true"/>
       <decimal name="extraHoursNumber" title="Extra hours' number" scale="1" precision="5" readonly="true"/>
+      <decimal name="expenseAmount" title="Expenses amount to pay" scale="2" precision="15" readonly="true"/>
       <decimal name="employeeBonusAmount" title="Employee bonus amount" scale="2" precision="15" readonly="true"/>
+      <decimal name="lunchVoucherNumber" title="Lunch vouchers' number" scale="1" precision="5" readonly="true"/>
       
       <boolean name="exported" title="Exported ?" readonly="true"  default="false" />
       <date name="exportDate" title="Export date" readonly="true" />
       
-      
+      <decimal name="annualGrossSalary" title="Annual gross salary" scale="2" precision="15"/>
+      <decimal name="netSalary" title="Net salary" scale="2" precision="15"/>
+      <decimal name="socialCharges" title="Social Charges" scale="2" precision="15"/>
+      <decimal name="total" title="Total to pay" scale="2" precision="15"/>
       
       <string name="fullName" namecolumn="true" readonly="true">
       <![CDATA[

@@ -97,6 +97,7 @@ public class PayrollPreparationService {
 		List<PayrollLeave> payrollLeaveList = fillInLeaves(payrollPreparation);
 		
 		payrollPreparation.setDuration(this.computeWorkingDaysNumber(payrollPreparation,payrollLeaveList));
+		
 		payrollPreparation.setExpenseAmount(this.computeExpenseAmount(payrollPreparation));
 		payrollPreparation.setLunchVoucherNumber(this.computeLunchVoucherNumber(payrollPreparation));
 		payrollPreparation.setEmployeeBonusAmount( computeEmployeeBonusAmount(payrollPreparation) );
@@ -120,7 +121,7 @@ public class PayrollPreparationService {
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.EMPLOYEE_PLANNING),employee.getName()), IException.CONFIGURATION_ERROR);
 		}
 		
-		List<LeaveRequest> leaveRequestList = leaveRequestRepo.all().filter("self.statusSelect = 3 AND self.user.employee = ?3 AND self.fromDate <= ?1 AND self.toDate >= ?2",toDate, fromDate,employee).fetch();
+		List<LeaveRequest> leaveRequestList = leaveRequestRepo.all().filter("self.statusSelect = ?4 AND self.user.employee = ?3 AND self.fromDate <= ?1 AND self.toDate >= ?2",toDate, fromDate,employee, LeaveRequestRepository.STATUS_VALIDATED).fetch();
 		
 		for (LeaveRequest leaveRequest : leaveRequestList) {
 			
@@ -135,7 +136,7 @@ public class PayrollPreparationService {
 			if(leaveRequest.getToDate().isAfter(toDate)){
 				payrollLeave.setToDate(toDate);
 			}else{
-				payrollLeave.setToDate(leaveRequest.getFromDate());
+				payrollLeave.setToDate(leaveRequest.getToDate());
 			}
 			
 			payrollLeave.setDuration(leaveService.computeLeaveDaysByLeaveRequest(fromDate, toDate, leaveRequest, employee));
@@ -152,6 +153,7 @@ public class PayrollPreparationService {
 		LocalDate toDate = payrollPreparation.getPeriod().getToDate();
 		LocalDate itDate = new LocalDate(fromDate);
 		BigDecimal workingDays = BigDecimal.ZERO;
+		BigDecimal leaveDays = BigDecimal.ZERO;
 		while(!itDate.isAfter(toDate)){
 			workingDays = workingDays.add(new BigDecimal(weeklyPlanningService.workingDayValue(payrollPreparation.getEmployee().getPlanning(), itDate)));
 			itDate = itDate.plusDays(1);
@@ -159,11 +161,13 @@ public class PayrollPreparationService {
 		if(payrollLeaveList != null){
 			for (PayrollLeave payrollLeave : payrollLeaveList) {
 				workingDays = workingDays.subtract(payrollLeave.getDuration());
+				leaveDays = leaveDays.add(payrollLeave.getDuration());
 			}
 		}
-		
+		payrollPreparation.setLeaveDuration(leaveDays);
 		return workingDays;
 	}
+	
 	
 	public BigDecimal computeExtraHoursNumber(PayrollPreparation payrollPreparation){
 		LocalDate fromDate = payrollPreparation.getPeriod().getFromDate();
@@ -240,6 +244,7 @@ public class PayrollPreparationService {
 		return filePath + System.getProperty("file.separator") +fileName;
 	}
 	
+	/*
 	@Transactional
 	public String exportAllPayrollPreparation(List<Integer> idList) throws IOException{
 		
@@ -257,23 +262,21 @@ public class PayrollPreparationService {
 			item[4] = payrollPreparation.getExtraHoursNumber().toString();
 			list.add(item);
 			
-			/*
 			payrollPreparation.setExported(true);
 			payrollPreparation.setExportDate(Beans.get(GeneralService.class).getTodayDate());
 			payrollPreparationRepo.save(payrollPreparation);
-			*/
-		}
 		
+		}
 		
 		String fileName = this.getPayrollPreparationExportName();
 		String filePath = AppSettings.get().get("file.upload.dir");
-		
 		
 		new File(filePath).mkdirs();
 		CsvTool.csvWriter(filePath, fileName, ';', getPayrollPreparationExportHeader(), list);
 		
 		return filePath + System.getProperty("file.separator") +fileName;
 	}
+	*/
 	
 	
 	public String getPayrollPreparationExportName(){
