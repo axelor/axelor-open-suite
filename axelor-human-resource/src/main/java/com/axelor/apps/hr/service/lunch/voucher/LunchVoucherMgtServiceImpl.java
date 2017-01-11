@@ -176,7 +176,7 @@ public class LunchVoucherMgtServiceImpl implements LunchVoucherMgtService {
 		
 	}
 	
-	private String escapeCsv(String value) {
+	protected String escapeCsv(String value) {
 		if (value == null) return "";
 		if (value.indexOf('"') > -1) value = value.replaceAll("\"", "\"\"");
 		return '"' + value + '"';
