@@ -19,7 +19,11 @@ package com.axelor.apps.hr.web.lunch.voucher;
 
 
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
+import com.axelor.apps.ReportFactory;
+import com.axelor.apps.account.report.IReport;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.hr.db.HRConfig;
 import com.axelor.apps.hr.db.LunchVoucherMgt;
@@ -27,10 +31,13 @@ import com.axelor.apps.hr.db.repo.LunchVoucherMgtRepository;
 import com.axelor.apps.hr.exception.IExceptionMessage;
 import com.axelor.apps.hr.service.config.HRConfigService;
 import com.axelor.apps.hr.service.lunch.voucher.LunchVoucherMgtService;
+import com.axelor.apps.report.engine.ReportSettings;
+import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
@@ -92,6 +99,7 @@ public class LunchVoucherMgtController {
 	
 	public void export(ActionRequest request, ActionResponse response) throws IOException {
 		LunchVoucherMgt lunchVoucherMgt = Beans.get(LunchVoucherMgtRepository.class).find(request.getContext().asType(LunchVoucherMgt.class).getId());
+		
 		try {
 			lunchVoucherMgtProvider.get().export(lunchVoucherMgt);
 			response.setReload(true);
@@ -99,6 +107,26 @@ public class LunchVoucherMgtController {
 			TraceBackService.trace(response, e);
 		}
 		
+	}
+	
+	public void print(ActionRequest request, ActionResponse response) throws IOException {
+		LunchVoucherMgt lunchVoucherMgt = request.getContext().asType(LunchVoucherMgt.class);
 		
+		String name =  lunchVoucherMgt.getCompany().getName() + " - " + LocalDate.now().format(DateTimeFormatter.ISO_LOCAL_DATE);
+		
+		try {
+			String fileLink = ReportFactory.createReport(IReport.LUNCH_VOUCHER_MGT_MONTHLY, name)
+					.addParam("lunchVoucherMgtId", lunchVoucherMgt.getId())
+					.addFormat(ReportSettings.FORMAT_PDF)
+					.generate()
+					.getFileLink();
+			
+			response.setView(ActionView
+					.define(name)
+					.add("html", fileLink).map());
+			
+		} catch (AxelorException e) {
+			TraceBackService.trace(response, e);
+		}
 	}
 }

@@ -90,4 +90,8 @@
 		<call class="com.axelor.apps.hr.web.lunch.voucher.LunchVoucherMgtController" method="validate"/>
 	</action-method>
 	
+	<action-method name="action-lunch-voucher-method-print">
+		<call class="com.axelor.apps.hr.web.lunch.voucher.LunchVoucherMgtController" method="print"/>
+	</action-method>
+	
 </object-views>
