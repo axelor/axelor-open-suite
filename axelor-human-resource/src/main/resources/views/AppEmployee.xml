@@ -6,7 +6,6 @@
 	<form name="app-employee-config-form" title="App Employee" model="com.axelor.apps.base.db.AppEmployee" canDelete="false" canNew="false" width="large">
 		<panel>
 			<field name="dailyWorkHours" />
-			<field name="overtimeManagement" widget="boolean-switch" />
 		</panel>
 		<panel-dashlet action="admin.root.conf.hr.config" colSpan="12"/>
 	</form>
