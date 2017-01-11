@@ -196,9 +196,7 @@ public class LunchVoucherMgtServiceImpl implements LunchVoucherMgtService {
 					qtyToUse = lunchVoucherAdvanceService.useAdvance(subItem, qtyToUse);
 					advanceRepo.save(subItem);
 					
-					if(qtyToUse <= 0) {
-						break;
-					}
+					if(qtyToUse <= 0) { break; }
 				}
 				
 			}

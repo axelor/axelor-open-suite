@@ -38,11 +38,9 @@ import com.google.inject.Provider;
 
 public class LunchVoucherMgtController {
 	
-	@Inject
-	private Provider<LunchVoucherMgtService> lunchVoucherMgtProvider;
+	@Inject private Provider<LunchVoucherMgtService> lunchVoucherMgtProvider;
 	
-	@Inject
-	private Provider<HRConfigService> hrConfigService;
+	@Inject private Provider<HRConfigService> hrConfigService;
 	
 	public void calculate(ActionRequest request, ActionResponse response) {
 		
