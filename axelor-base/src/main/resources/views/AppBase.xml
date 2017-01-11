@@ -6,6 +6,8 @@
 	<form name="app-base-config-form" title="App base" model="com.axelor.apps.base.db.AppBase" canDelete="false" canNew="false" width="large">
 		<panel>
 			<field name="today"/>
+		</panel>
+		<panel-tabs>
 			<panel name="configuration" title="Configuration" colSpan="12">
 		    	<field name="defaultPartnerLanguage" />
 		    	<field name="activateSendingEmail" widget="boolean-switch"/>
@@ -34,7 +36,11 @@
 					<field name="currencyWsURL" colSpan="12"/>
 				</panel>
 		    </panel>
-		</panel>
+		    <panel name="currencyConversion" title="Currency conversion" colSpan="12">
+				<button name="updateCurrencyConversion" title="Update &amp; Historize conversion rate"  onClick="save,action-base-method-update-currency-conversion"/>
+				<field name="currencyConversionLineList" colSpan="12" grid-view="currency-conversion-line-grid" form-view="currency-conversion-line-form"/>
+			</panel>
+		</panel-tabs>
 	</form>
 	
 	<form model="com.axelor.apps.base.db.Wizard" title="Check duplicate" name="wizard-check-duplicate-form" onNew="action-check-duplicate-on-new-attrs">
@@ -47,8 +53,8 @@
 	
 	<!-- ACTION METHOD -->
 
-	<action-method name="action-general-method-update-currency-conversion">
-		<call class="com.axelor.apps.account.web.GeneralController" method="updateCurrencyConversion" />
+	<action-method name="action-base-method-update-currency-conversion">
+		<call class="com.axelor.apps.base.web.AppBaseController" method="updateCurrencyConversion" />
 	</action-method>
 	
 	<action-method name="action-base-method-show-duplicate">
