@@ -51,7 +51,7 @@
 			<field name="givenToEmployee" colSpan="6"/>
 		</panel>
 		<panel name="comment" title="Comments">
-			<field name="comment" colSpan="12" showTitle="false" widget="Text"/>
+			<field name="comments" colSpan="12" showTitle="false" widget="Text"/>
 		</panel>
 	</form>
 	
