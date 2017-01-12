@@ -1,18 +1,12 @@
-def searchPath = [
-	System.getenv("AXELOR_HOME"),
-	"../axelor-development-kit/build/install/axelor-development-kit"]
-
-def findADK = {
-	for (def path : searchPath) {
-		if (file("${path}/gradle/repo.gradle").exists()) {
-			return file(path)
-		}
-	}
-}
-
-def adkHome = findADK()
+def adkPath = gradle.includedBuilds.collect { it.projectDir } + [ System.getenv("AXELOR_HOME") ]
+def adkHome = adkPath.find { file("${it}/gradle/repo.gradle").exists() }
 if (adkHome == null) {
 	throw new GradleException("AXELOR_HOME is not set properly")
+}
+
+ext.adkPlugins = {
+	def libs = file("${adkHome}/gradle/libs")
+	return libs.exists() ? fileTree(dir: libs.path, include: '*.jar') : "com.axelor:axelor-gradle:*"
 }
 
 allprojects {

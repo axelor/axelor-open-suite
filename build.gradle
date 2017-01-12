@@ -22,10 +22,10 @@ application {
 	name "axelor-erp"
 	title "Axelor :: ERP"
 	
-	version "4.0.0"
+	version "5.0.0"
 	
 	// ADK version required
-	adkVersion "4.2.0"
+	adkVersion "5.0.0"
 
 
 	// depends on all modules
