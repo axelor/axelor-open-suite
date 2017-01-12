@@ -24,7 +24,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import org.joda.time.LocalDate;
+import java.time.LocalDate;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
@@ -96,9 +96,9 @@ public class TimesheetProjectServiceImpl extends TimesheetServiceImpl{
 			ProjectTask projectTask = (ProjectTask) timesheetInformations[5];
 
 			if (consolidate){
-				strDate = ddmmFormat.format(startDate.toDate()) + " - " + ddmmFormat.format(endDate.toDate());
+				strDate = ddmmFormat.format(startDate) + " - " + ddmmFormat.format(endDate);
 			}else{
-				strDate = ddmmFormat.format(startDate.toDate());
+				strDate = ddmmFormat.format(startDate);
 			}
 
 			invoiceLineList.addAll(this.createInvoiceLine(invoice, product, user, strDate, visibleDuration, priority*100+count));

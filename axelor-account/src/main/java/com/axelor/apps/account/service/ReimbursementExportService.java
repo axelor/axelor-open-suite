@@ -29,8 +29,8 @@ import javax.xml.bind.JAXBException;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 
-import org.joda.time.DateTime;
-import org.joda.time.LocalDate;
+import java.time.ZonedDateTime;
+import java.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -347,14 +347,14 @@ public class ReimbursementExportService {
 	/**
 	 * Méthode permettant de créer un fichier xml de virement au format SEPA
 	 * @param export
-	 * @param dateTime
+	 * @param ZonedDateTime
 	 * @param reimbursementList
 	 * @throws AxelorException
 	 * @throws DatatypeConfigurationException
 	 * @throws JAXBException
 	 * @throws IOException
 	 */
-	public void exportSepa(Company company, DateTime dateTime, List<Reimbursement> reimbursementList, BankDetails bankDetails) throws AxelorException, DatatypeConfigurationException, JAXBException, IOException {
+	public void exportSepa(Company company, ZonedDateTime zonedDateTime, List<Reimbursement> reimbursementList, BankDetails bankDetails) throws AxelorException, DatatypeConfigurationException, JAXBException, IOException {
 
 		String exportFolderPath = accountConfigService.getReimbursementExportFolderPath(accountConfigService.getAccountConfig(company));
 
@@ -366,7 +366,7 @@ public class ReimbursementExportService {
 
 		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 		DatatypeFactory datatypeFactory = DatatypeFactory.newInstance();
-		Date date = dateTime.toDate();
+		Date date = Date.from(zonedDateTime.toInstant());
 		BigDecimal ctrlSum = BigDecimal.ZERO;
 		int nbOfTxs = 0;
 

@@ -17,7 +17,6 @@
  */
 package com.axelor.apps.account.service.payment;
 
-
 import java.io.DataInputStream;
 import java.io.FileInputStream;
 import java.io.FileReader;
@@ -39,8 +38,9 @@ import javax.xml.bind.DatatypeConverter;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.codec.Base64;
 import org.bouncycastle.util.io.pem.PemReader;
-import org.joda.time.DateTime;
-import org.joda.time.format.ISODateTimeFormat;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -123,7 +123,7 @@ public class PayboxService {
 		String pbxHmac = payboxConfigService.getPayboxHmac(payboxConfig);
 
 		//Date à laquelle l'empreinte HMAC a été calculée (format ISO8601)
-		String pbxTime = ISODateTimeFormat.dateHourMinuteSecond().print(new DateTime());
+		String pbxTime = ZonedDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME);
 
 		// Permet de restreindre les modes de paiement
 		String pbxTypepaiement = "CARTE";

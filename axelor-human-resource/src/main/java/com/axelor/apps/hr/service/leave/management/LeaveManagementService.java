@@ -20,7 +20,7 @@ package com.axelor.apps.hr.service.leave.management;
 import java.math.BigDecimal;
 import java.util.List;
 
-import org.joda.time.LocalDate;
+import java.time.LocalDate;
 
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.hr.db.LeaveLine;

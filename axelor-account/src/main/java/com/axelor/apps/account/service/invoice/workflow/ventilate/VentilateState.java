@@ -20,7 +20,7 @@ package com.axelor.apps.account.service.invoice.workflow.ventilate;
 import java.math.BigDecimal;
 import java.util.List;
 
-import org.joda.time.LocalDate;
+import java.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -129,7 +129,7 @@ public class VentilateState extends WorkflowInvoice {
 		if(sequence.getMonthlyResetOk())  {
 
 			query += String.format("AND EXTRACT (month from self.invoiceDate) = ?%d ", i++);
-			params.add(invoice.getInvoiceDate().getMonthOfYear());
+			params.add(invoice.getInvoiceDate().getMonthValue());
 
 		}
 		if(sequence.getYearlyResetOk())  {

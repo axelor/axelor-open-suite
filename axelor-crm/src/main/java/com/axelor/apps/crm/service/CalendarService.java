@@ -39,7 +39,10 @@ import java.util.Set;
 
 import org.apache.commons.httpclient.protocol.Protocol;
 import org.apache.jackrabbit.webdav.client.methods.DeleteMethod;
-import org.joda.time.LocalDateTime;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -236,8 +239,22 @@ public class CalendarService extends ICalendarService{
 		if(event.getTypeSelect() == null || event.getTypeSelect() == 0){
 			event.setTypeSelect(EventRepository.TYPE_EVENT);
 		}
-		event.setStartDateTime(new LocalDateTime(dtStart.getDate()));
-		event.setEndDateTime(new LocalDateTime(dtEnd.getDate()));
+		
+		ZoneId zoneId = ZoneOffset.UTC;
+		if (dtStart.getDate() != null) {
+			if (dtStart.getTimeZone() != null) {
+				zoneId = dtStart.getTimeZone().toZoneId();
+			}
+			event.setStartDateTime(LocalDateTime.ofInstant(dtStart.getDate().toInstant(), zoneId));
+		}
+		
+		if (dtEnd.getDate() != null) {
+			if (dtEnd.getTimeZone() != null) {
+				zoneId = dtEnd.getTimeZone().toZoneId();
+			}
+			event.setEndDateTime(LocalDateTime.ofInstant(dtEnd.getDate().toInstant(), zoneId));
+		}
+
 		event.setAllDay(!(dtStart.getDate() instanceof DateTime));
 
 		event.setSubject(getValue(vEvent, Property.SUMMARY));
@@ -517,8 +534,25 @@ public class CalendarService extends ICalendarService{
 				}
 				else{
 					if(source.getLastModified() != null && target.getLastModified() != null){
-						LocalDateTime lastModifiedSource = new LocalDateTime(source.getLastModified().getDateTime());
-						LocalDateTime lastModifiedTarget = new LocalDateTime(target.getLastModified().getDateTime());
+						ZoneId zoneId = ZoneOffset.UTC;
+						
+						LocalDateTime lastModifiedSource = null;
+						if (source.getLastModified().getDateTime() != null) {
+							if (source.getLastModified().getTimeZone() != null) {
+								zoneId = source.getLastModified().getTimeZone().toZoneId();
+							}
+							lastModifiedSource = LocalDateTime.ofInstant(source.getLastModified().getDateTime().toInstant(), zoneId);
+						}
+						
+						LocalDateTime lastModifiedTarget = null;
+						
+						if (target.getLastModified().getDateTime() != null) {
+							if (target.getLastModified().getTimeZone() != null) {
+								zoneId = target.getLastModified().getTimeZone().toZoneId();
+							}
+							lastModifiedTarget = LocalDateTime.ofInstant(target.getLastModified().getDateTime().toInstant(), zoneId);
+						}
+						
 						if(lastModifiedSource.isBefore(lastModifiedTarget)){
 							VEvent tmp = target;
 							target = source;

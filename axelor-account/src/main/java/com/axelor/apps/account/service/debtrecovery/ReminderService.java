@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
-import org.joda.time.LocalDate;
+import java.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -135,7 +135,7 @@ public class ReminderService {
 	 * 			la plus ancienne date d'échéance
 	 */
 	public LocalDate getOldDateMoveLine(List<MoveLine> moveLineList)  {
-		LocalDate minMoveLineDate = new LocalDate();
+		LocalDate minMoveLineDate = LocalDate.now();
 
 
 		if(moveLineList != null && !moveLineList.isEmpty())  {
@@ -158,7 +158,7 @@ public class ReminderService {
 	 * 			La plus ancienne date
 	 */
 	public LocalDate getLastDate(LocalDate date1, LocalDate date2)  {
-		LocalDate minDate = new LocalDate();
+		LocalDate minDate = LocalDate.now();
 		if(date1!=null && date2!=null)  {
 			if(date1.isAfter(date2))  {	minDate=date1;	}
 			else  {  minDate=date2;  }

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 	
 		<!-- SALES MAN DASHBOARD -->
 		
@@ -31,8 +31,8 @@
 		<view type="grid" name="my-event-grid"/>
 		<view type="form" />
 	    <domain>self.startDateTime between :_today and :_tomorrow and self.user =:__user__</domain>
-	    <context name="_tomorrow" expr="eval: __date__.plusDays(1).toDateTimeAtStartOfDay()"/>
-	    <context name="_today" expr="eval: __date__.toDateTimeAtStartOfDay()"/>
+	    <context name="_tomorrow" expr="eval: __date__.plusDays(1).atStartOfDay()"/>
+	    <context name="_today" expr="eval: __date__atStartOfDay()"/>
 	</action-view>
 	
 	<action-view name="dashlet.salesman.dashboard.opportunities" title="My Opportunities" model="com.axelor.apps.crm.db.Opportunity">

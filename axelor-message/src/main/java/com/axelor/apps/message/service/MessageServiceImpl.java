@@ -23,8 +23,8 @@ import java.util.Set;
 
 import javax.mail.MessagingException;
 
-import org.joda.time.DateTime;
-import org.joda.time.LocalDateTime;
+import java.time.ZonedDateTime;
+import java.time.LocalDateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -62,7 +62,7 @@ public class MessageServiceImpl implements MessageService {
 	
 	private final Logger log = LoggerFactory.getLogger( getClass() );
 
-	private DateTime todayTime;
+	private ZonedDateTime todayTime;
 	
 	private MetaAttachmentRepository metaAttachmentRepository;
 
@@ -76,12 +76,12 @@ public class MessageServiceImpl implements MessageService {
 	
 	@Inject
 	public MessageServiceImpl( MetaAttachmentRepository metaAttachmentRepository, MailAccountService mailAccountService ) {
-		this.todayTime = DateTime.now();
+		this.todayTime = ZonedDateTime.now();
 		this.metaAttachmentRepository = metaAttachmentRepository;
 		this.mailAccountService = mailAccountService;
 	}
 	
-	public DateTime getTodayTime(){ return this.todayTime; }
+	public ZonedDateTime getTodayTime(){ return this.todayTime; }
 	public LocalDateTime getTodayLocalTime(){ return this.todayTime.toLocalDateTime(); }
 	
 	@Override

@@ -28,10 +28,11 @@ import java.util.Map;
 
 import javax.mail.MessagingException;
 
-import org.joda.time.LocalDate;
-import org.joda.time.LocalDateTime;
-import org.joda.time.LocalTime;
-import org.joda.time.Minutes;
+import java.time.Duration;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -409,9 +410,9 @@ public class TimesheetServiceImpl implements TimesheetService{
 			BigDecimal durationStored = (BigDecimal) timesheetInformations[4];
 
 			if (consolidate){
-				strDate = ddmmFormat.format(startDate.toDate()) + " - " + ddmmFormat.format(endDate.toDate());
+				strDate = ddmmFormat.format(startDate) + " - " + ddmmFormat.format(endDate);
 			}else{
-				strDate = ddmmFormat.format(startDate.toDate());
+				strDate = ddmmFormat.format(startDate);
 			}
 
 			invoiceLineList.addAll(this.createInvoiceLine(invoice, product, user, strDate, durationStored, priority*100+count));
@@ -551,13 +552,13 @@ public class TimesheetServiceImpl implements TimesheetService{
 		User user = AuthUtils.getUser();
 		ProjectTask projectTask = Beans.get(ProjectTaskRepository.class).find(new Long(request.getData().get("project").toString()));
 		Product product = Beans.get(ProductRepository.class).find(new Long(request.getData().get("activity").toString()));
-		LocalDate date = new LocalDate(request.getData().get("date").toString());
+		LocalDate date = LocalDate.parse(request.getData().get("date").toString());
 		if(user != null){
 			Timesheet timesheet = Beans.get(TimesheetRepository.class).all().filter("self.statusSelect = 1 AND self.user.id = ?1", user.getId()).order("-id").fetchOne();
 			if(timesheet == null){
 				timesheet = createTimesheet(user, date, date);
 			}
-			BigDecimal minutes = new BigDecimal(Minutes.minutesBetween(new LocalTime(0,0), new LocalTime(request.getData().get("duration").toString())).getMinutes());
+			BigDecimal minutes = new BigDecimal(Duration.between(LocalTime.MIDNIGHT, LocalTime.parse(request.getData().get("duration").toString())).toMinutes());
 			createTimesheetLine(projectTask, product, user, date, timesheet, minutes, request.getData().get("comments").toString());
 			
 			Beans.get(TimesheetRepository.class).save(timesheet);
@@ -570,8 +571,8 @@ public class TimesheetServiceImpl implements TimesheetService{
 		LocalDateTime createdOn = timesheet.getCreatedOn();
 		
   		if(timesheetUser != null && createdOn != null){
-  			return timesheetUser.getFullName() + " " + createdOn.getDayOfMonth() + "/" + createdOn.getMonthOfYear()
-  				+ "/" + timesheet.getCreatedOn().getYear() + " " + createdOn.getHourOfDay() + ":" + createdOn.getMinuteOfHour();
+  			return timesheetUser.getFullName() + " " + createdOn.getDayOfMonth() + "/" + createdOn.getMonthValue()
+  				+ "/" + timesheet.getCreatedOn().getYear() + " " + createdOn.getHour() + ":" + createdOn.getMinute();
   		}
   		else if (timesheetUser != null){
   			return timesheetUser.getFullName()+" N°"+timesheet.getId();

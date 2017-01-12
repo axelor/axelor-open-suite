@@ -17,7 +17,7 @@
  */
 package com.axelor.apps.base.service;
 
-import org.joda.time.LocalDate;
+import java.time.LocalDate;
 
 import com.axelor.apps.base.db.Blocking;
 import com.axelor.apps.base.db.Company;

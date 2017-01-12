@@ -23,7 +23,7 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
-import org.joda.time.LocalDate;
+import java.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

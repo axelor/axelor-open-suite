@@ -371,10 +371,10 @@ public class ViewLoaderService {
 				return "binary";
 			case "LocalDate":
 				return "date";
-			case "DateTime":
-				return "datetime";
+			case "ZonedDateTime":
+				return "ZonedDateTime";
 			case "LocalDateTime":
-				return "datetime";
+				return "ZonedDateTime";
 			default:
 				return "string";
 		}

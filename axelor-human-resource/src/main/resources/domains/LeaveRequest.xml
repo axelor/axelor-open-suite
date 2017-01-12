@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_4.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
 
   <module name="human-resource" package="com.axelor.apps.hr.db"/>
 
@@ -29,8 +29,8 @@
       <string name="fullName" namecolumn="true" readonly="true">
       <![CDATA[
       		if(this.getUser() != null && this.getCreatedOn() != null)
-	  			return this.getUser().getFullName()+" "+this.getCreatedOn().getDayOfMonth()+"/"+this.getCreatedOn().getMonthOfYear()
-	  				+"/"+this.getCreatedOn().getYear()+"  "+this.getCreatedOn().getHourOfDay()+":"+this.getCreatedOn().getMinuteOfHour();
+	  			return this.getUser().getFullName()+" "+this.getCreatedOn().getDayOfMonth()+"/"+this.getCreatedOn().getMonthValue()
+	  				+"/"+this.getCreatedOn().getYear()+"  "+this.getCreatedOn().getHour()+":"+this.getCreatedOn().getMinute();
 	  		else
 	  			return " ";
 	  ]]>

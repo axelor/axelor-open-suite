@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.birt.core.exception.BirtException;
-import org.joda.time.LocalDate;
+import java.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -79,7 +79,7 @@ public class LocationController {
 	@SuppressWarnings("unchecked")
 	public void createInventory(ActionRequest request, ActionResponse response) throws Exception {
 		Context context = request.getContext();
-		LocalDate date = new LocalDate(context.get("inventoryDate"));
+		LocalDate date = LocalDate.parse((CharSequence) context.get("inventoryDate"));
 		String description = (String) context.get("description");
 		
 		boolean excludeOutOfStock = (Boolean) context.get("excludeOutOfStock");

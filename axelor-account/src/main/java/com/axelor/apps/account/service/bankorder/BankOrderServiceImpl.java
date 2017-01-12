@@ -27,8 +27,8 @@ import java.util.List;
 import javax.xml.bind.JAXBException;
 import javax.xml.datatype.DatatypeConfigurationException;
 
-import org.joda.time.LocalDate;
-import org.joda.time.LocalDateTime;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -247,7 +247,7 @@ public class BankOrderServiceImpl implements BankOrderService  {
 	public void validate(BankOrder bankOrder) throws JAXBException, IOException, AxelorException, DatatypeConfigurationException {
 		
 		bankOrder.setStatusSelect(BankOrderRepository.STATUS_VALIDATED);
-		bankOrder.setValidationDateTime(new LocalDateTime());
+		bankOrder.setValidationDateTime(LocalDateTime.now());
 		
 		this.setSequenceOnBankOrderLines(bankOrder);
 		
@@ -298,7 +298,7 @@ public class BankOrderServiceImpl implements BankOrderService  {
 	
 	public File generateFile(BankOrder bankOrder) throws JAXBException, IOException, AxelorException, DatatypeConfigurationException  {
 		
-		bankOrder.setFileGenerationDateTime(new LocalDateTime());
+		bankOrder.setFileGenerationDateTime(LocalDateTime.now());
 		
 		BankOrderFileFormat bankOrderFileFormat = bankOrder.getBankOrderFileFormat();
 		

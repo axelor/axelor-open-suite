@@ -19,9 +19,8 @@ package com.axelor.apps.businessproject.web;
 
 import java.util.List;
 
-import org.joda.time.LocalDate;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.businessproject.db.InvoicingProject;
@@ -103,8 +102,10 @@ public class SaleOrderProjectController {
 		
 		SaleOrder saleOrder = saleOrderRepo.find( Long.valueOf( request.getContext().get("_id").toString() ) );
 		
-		final DateTimeFormatter dtf = DateTimeFormat.forPattern("yyyy-MM-dd");
-		LocalDate deadline = dtf.parseLocalDate(request.getContext().get("deadline").toString() );
+		LocalDate deadline= null;
+		if (request.getContext().get("deadline") != null) {
+			deadline = LocalDate.parse(request.getContext().get("deadline").toString());
+		}
 		
 		InvoicingProject invoicingProject = invoicingProjectService.createInvoicingProject(saleOrder, deadline, Integer.valueOf( request.getContext().get("invoicingTypeSelect").toString() ));
 		

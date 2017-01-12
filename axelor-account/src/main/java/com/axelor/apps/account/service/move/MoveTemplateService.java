@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import org.joda.time.LocalDate;
+import java.time.LocalDate;
 
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
@@ -69,7 +69,7 @@ public class MoveTemplateService {
 			List<Long> moveList = new ArrayList<Long>();
 			BigDecimal hundred = new BigDecimal(100);
 			for(HashMap<String,Object> data : dataList){
-				LocalDate moveDate = new LocalDate(data.get("date").toString());
+				LocalDate moveDate = LocalDate.parse(data.get("date").toString());
 				Partner debitPartner = null;
 				Partner creditPartner = null;
 				BigDecimal moveBalance = new BigDecimal(data.get("moveBalance").toString());

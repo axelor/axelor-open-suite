@@ -23,8 +23,8 @@ import java.util.List;
 
 import javax.persistence.Query;
 
-import org.joda.time.LocalDateTime;
-import org.joda.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

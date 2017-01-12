@@ -24,7 +24,7 @@ import java.util.ArrayList;
 import javax.persistence.Query;
 
 import org.eclipse.birt.core.exception.BirtException;
-import org.joda.time.LocalDate;
+import java.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

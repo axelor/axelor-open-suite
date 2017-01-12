@@ -74,7 +74,9 @@ import net.fortuna.ical4j.util.SimpleHostInfo;
 import net.fortuna.ical4j.util.UidGenerator;
 import net.fortuna.ical4j.util.Uris;
 
-import org.joda.time.LocalDateTime;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
 
 import com.axelor.apps.base.db.ICalendar;
 import com.axelor.apps.base.db.ICalendarEvent;
@@ -222,8 +224,20 @@ public class ICalendarService {
 			event.setUid(uid);
 		}
 
-		event.setStartDateTime(new LocalDateTime(dtStart.getDate()));
-		event.setEndDateTime(new LocalDateTime(dtEnd.getDate()));
+		ZoneId zoneId = ZoneOffset.UTC;
+		if (dtStart.getDate() != null) {
+			if (dtStart.getTimeZone() != null) {
+				zoneId = dtStart.getTimeZone().toZoneId();
+			}
+			event.setStartDateTime(LocalDateTime.ofInstant(dtStart.getDate().toInstant(), zoneId));
+		}
+		
+		if (dtEnd.getDate() != null) {
+			if (dtEnd.getTimeZone() != null) {
+				zoneId = dtEnd.getTimeZone().toZoneId();
+			}
+			event.setEndDateTime(LocalDateTime.ofInstant(dtEnd.getDate().toInstant(), zoneId));
+		}
 		event.setAllDay(!(dtStart.getDate() instanceof DateTime));
 
 		event.setSubject(getValue(vEvent, Property.SUMMARY));
@@ -314,8 +328,8 @@ public class ICalendarService {
 
 	protected Date toDate(LocalDateTime dt, boolean allDay) {
 		if (dt == null) return null;
-		if (allDay) return new Date(dt.toDate());
-		return new DateTime(dt.toDate());
+		if (allDay) return new Date(java.util.Date.from(dt.atZone(ZoneOffset.UTC).toInstant()));
+		return new DateTime(java.util.Date.from(dt.atZone(ZoneOffset.UTC).toInstant()));
 	}
 
 	protected URI createUri(String uri) {
@@ -364,13 +378,13 @@ public class ICalendarService {
 			items.add(createUri(event.getUrl()));
 		}
 		if (event.getUpdatedOn() != null) {
-			DateTime date = new DateTime(event.getUpdatedOn().toDate());
+			DateTime date = new DateTime(java.util.Date.from(event.getUpdatedOn().atZone(ZoneOffset.UTC).toInstant()));
 			date.setUtc(true);
 			LastModified lastModified = new LastModified(date);
 			items.add(lastModified);
 		}
 		else{
-			DateTime date = new DateTime(event.getCreatedOn().toDate());
+			DateTime date = new DateTime(java.util.Date.from(event.getCreatedOn().atZone(ZoneOffset.UTC).toInstant()));
 			date.setUtc(true);
 			LastModified lastModified = new LastModified(date);
 			items.add(lastModified);
@@ -504,8 +518,12 @@ public class ICalendarService {
 				}
 				else{
 					if(source.getLastModified() != null && target.getLastModified() != null){
-						LocalDateTime lastModifiedSource = new LocalDateTime(source.getLastModified().getDateTime());
-						LocalDateTime lastModifiedTarget = new LocalDateTime(target.getLastModified().getDateTime());
+						ZoneId zoneId = ZoneOffset.UTC;
+						if (source.getLastModified().getTimeZone() != null) {
+							zoneId = source.getLastModified().getTimeZone().toZoneId();
+						}
+						LocalDateTime lastModifiedSource = LocalDateTime.ofInstant(source.getLastModified().getDate().toInstant(), zoneId);
+						LocalDateTime lastModifiedTarget = LocalDateTime.ofInstant(target.getLastModified().getDate().toInstant(), zoneId);
 						if(lastModifiedSource.isBefore(lastModifiedTarget)){
 							VEvent tmp = target;
 							target = source;

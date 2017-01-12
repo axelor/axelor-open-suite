@@ -594,8 +594,8 @@ public class ModelBuilderService {
 				return "byte[]";
 			case "date":
 				return "LocalDate";
-			case "datetime":
-				return "DateTime";
+			case "ZonedDateTime":
+				return "ZonedDateTime";
 			default:
 				return null;
 		}

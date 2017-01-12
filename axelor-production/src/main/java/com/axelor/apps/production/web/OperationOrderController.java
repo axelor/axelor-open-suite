@@ -28,12 +28,12 @@ import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.birt.core.exception.BirtException;
-import org.joda.time.Days;
-import org.joda.time.LocalDate;
-import org.joda.time.LocalDateTime;
-import org.joda.time.Minutes;
-import org.joda.time.format.DateTimeFormatter;
-import org.joda.time.format.ISODateTimeFormat;
+
+import java.time.Duration;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -71,6 +71,9 @@ public class OperationOrderController {
 	@Inject
 	protected WeeklyPlanningService weeklyPlanningService;
 	
+	private static final DateTimeFormatter DATE_TIME_FORMAT =  DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+	
+	private static final DateTimeFormatter DATE_FORMAT =  DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
 	private static final Logger LOG = LoggerFactory.getLogger(ManufOrderController.class);
 	
@@ -209,13 +212,11 @@ public class OperationOrderController {
 	
 	public void chargeByMachineHours(ActionRequest request, ActionResponse response) throws AxelorException {
 		List<Map<String, Object>> dataList = new ArrayList<Map<String, Object>>();
-		DateTimeFormatter parser = ISODateTimeFormat.dateTime();
-		LocalDateTime fromDateTime = LocalDateTime.parse(request.getContext().get("fromDateTime").toString(),parser);
-		LocalDateTime toDateTime = LocalDateTime.parse(request.getContext().get("toDateTime").toString(),parser);
-		LocalDateTime itDateTime = new LocalDateTime(fromDateTime);
+		LocalDateTime fromDateTime = LocalDateTime.parse(request.getContext().get("fromDateTime").toString(),DateTimeFormatter.ISO_DATE_TIME);
+		LocalDateTime toDateTime = LocalDateTime.parse(request.getContext().get("toDateTime").toString(),DateTimeFormatter.ISO_DATE_TIME);
+		LocalDateTime itDateTime = LocalDateTime.parse(fromDateTime.toString());
 		
-		if(Days.daysBetween(new LocalDate(fromDateTime.getYear(), fromDateTime.getMonthOfYear(), fromDateTime.getDayOfMonth()),
-				new LocalDate(toDateTime.getYear(), toDateTime.getMonthOfYear(), toDateTime.getDayOfMonth())).getDays() > 20){
+		if(Duration.between(fromDateTime,toDateTime).toDays() > 20){
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.CHARGE_MACHINE_DAYS)), IException.CONFIGURATION_ERROR);
 		}
 		
@@ -234,15 +235,15 @@ public class OperationOrderController {
 			for (OperationOrder operationOrder : operationOrderList) {
 				if(operationOrder.getWorkCenter() != null && operationOrder.getWorkCenter().getMachine() != null){
 					String machine = operationOrder.getWorkCenter().getMachine().getName();
-					int numberOfMinutes = 0;
+					long numberOfMinutes = 0;
 					if(operationOrder.getPlannedStartDateT().isBefore(itDateTime)){
-						numberOfMinutes = Minutes.minutesBetween(itDateTime, operationOrder.getPlannedEndDateT()).getMinutes();
+						numberOfMinutes = Duration.between(itDateTime, operationOrder.getPlannedEndDateT()).toMinutes();
 					}
 					else if(operationOrder.getPlannedEndDateT().isAfter(itDateTime.plusHours(1))){
-						numberOfMinutes = Minutes.minutesBetween(operationOrder.getPlannedStartDateT(), itDateTime.plusHours(1)).getMinutes();
+						numberOfMinutes = Duration.between(operationOrder.getPlannedStartDateT(), itDateTime.plusHours(1)).toMinutes();
 					}
 					else{
-						numberOfMinutes = Minutes.minutesBetween(operationOrder.getPlannedStartDateT(), operationOrder.getPlannedEndDateT()).getMinutes();
+						numberOfMinutes = Duration.between(operationOrder.getPlannedStartDateT(), operationOrder.getPlannedEndDateT()).toMinutes();
 					}
 					if(numberOfMinutes > 60){
 						numberOfMinutes = 60;
@@ -260,14 +261,14 @@ public class OperationOrderController {
 			for (String key : machineNameList) {
 				if(keyList.contains(key)){
 					Map<String, Object> dataMap = new HashMap<String, Object>();
-					dataMap.put("dateTime",(Object)itDateTime.toString("dd/MM/yyyy HH:mm"));
+					dataMap.put("dateTime",(Object)itDateTime.format(DATE_TIME_FORMAT));
 					dataMap.put("charge", (Object)map.get(key));
 					dataMap.put("machine", (Object) key);
 					dataList.add(dataMap);
 				}
 				else{
 					Map<String, Object> dataMap = new HashMap<String, Object>();
-					dataMap.put("dateTime",(Object)itDateTime.toString("dd/MM/yyyy HH:mm"));
+					dataMap.put("dateTime",(Object)itDateTime.format(DATE_TIME_FORMAT));
 					dataMap.put("charge", (Object)BigDecimal.ZERO);
 					dataMap.put("machine", (Object) key);
 					dataList.add(dataMap);
@@ -284,14 +285,12 @@ public class OperationOrderController {
 	
 	public void chargeByMachineDays(ActionRequest request, ActionResponse response) throws AxelorException {
 		List<Map<String, Object>> dataList = new ArrayList<Map<String, Object>>();
-		DateTimeFormatter parser = ISODateTimeFormat.dateTime();
-		LocalDateTime fromDateTime = LocalDateTime.parse(request.getContext().get("fromDateTime").toString(),parser);
-		fromDateTime = fromDateTime.withHourOfDay(0).withMinuteOfHour(0);
-		LocalDateTime toDateTime = LocalDateTime.parse(request.getContext().get("toDateTime").toString(),parser);
-		toDateTime = toDateTime.withHourOfDay(23).withMinuteOfHour(59);
-		LocalDateTime itDateTime = new LocalDateTime(fromDateTime);
-		if(Days.daysBetween(new LocalDate(fromDateTime.getYear(), fromDateTime.getMonthOfYear(), fromDateTime.getDayOfMonth()),
-				new LocalDate(toDateTime.getYear(), toDateTime.getMonthOfYear(), toDateTime.getDayOfMonth())).getDays() > 500){
+		LocalDateTime fromDateTime = LocalDateTime.parse(request.getContext().get("fromDateTime").toString(), DateTimeFormatter.ISO_DATE_TIME);
+		fromDateTime = fromDateTime.withHour(0).withMinute(0);
+		LocalDateTime toDateTime = LocalDateTime.parse(request.getContext().get("toDateTime").toString(), DateTimeFormatter.ISO_DATE_TIME);
+		toDateTime = toDateTime.withHour(23).withMinute(59);
+		LocalDateTime itDateTime = LocalDateTime.parse(fromDateTime.toString());
+		if(Duration.between(fromDateTime,toDateTime).toDays() > 500){
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.CHARGE_MACHINE_DAYS)), IException.CONFIGURATION_ERROR);
 		}
 		
@@ -311,25 +310,25 @@ public class OperationOrderController {
 			for (OperationOrder operationOrder : operationOrderList) {
 				if(operationOrder.getWorkCenter() != null && operationOrder.getWorkCenter().getMachine() != null){
 					String machine = operationOrder.getWorkCenter().getMachine().getName();
-					int numberOfMinutes = 0;
+					long numberOfMinutes = 0;
 					if(operationOrder.getPlannedStartDateT().isBefore(itDateTime)){
-						numberOfMinutes = Minutes.minutesBetween(itDateTime, operationOrder.getPlannedEndDateT()).getMinutes();
+						numberOfMinutes = Duration.between(itDateTime, operationOrder.getPlannedEndDateT()).toMinutes();
 					}
 					else if(operationOrder.getPlannedEndDateT().isAfter(itDateTime.plusHours(1))){
-						numberOfMinutes = Minutes.minutesBetween(operationOrder.getPlannedStartDateT(), itDateTime.plusHours(1)).getMinutes();
+						numberOfMinutes = Duration.between(operationOrder.getPlannedStartDateT(), itDateTime.plusHours(1)).toMinutes();
 					}
 					else{
-						numberOfMinutes = Minutes.minutesBetween(operationOrder.getPlannedStartDateT(), operationOrder.getPlannedEndDateT()).getMinutes();
+						numberOfMinutes = Duration.between(operationOrder.getPlannedStartDateT(), operationOrder.getPlannedEndDateT()).toMinutes();
 					}
 					if(numberOfMinutes > 60){
 						numberOfMinutes = 60;
 					}
-					int numberOfMinutesPerDay = 0;
+					long numberOfMinutesPerDay = 0;
 					if(operationOrder.getWorkCenter().getMachine().getWeeklyPlanning() != null){
-						DayPlanning dayPlanning = weeklyPlanningService.findDayPlanning(operationOrder.getWorkCenter().getMachine().getWeeklyPlanning(), new LocalDate(itDateTime));
+						DayPlanning dayPlanning = weeklyPlanningService.findDayPlanning(operationOrder.getWorkCenter().getMachine().getWeeklyPlanning(), LocalDate.parse(itDateTime.toString()));
 						if(dayPlanning != null){
-							numberOfMinutesPerDay = Minutes.minutesBetween(dayPlanning.getMorningFrom(), dayPlanning.getMorningTo()).getMinutes();
-							numberOfMinutesPerDay += Minutes.minutesBetween(dayPlanning.getAfternoonFrom(), dayPlanning.getAfternoonTo()).getMinutes();
+							numberOfMinutesPerDay = Duration.between(dayPlanning.getMorningFrom(), dayPlanning.getMorningTo()).toMinutes();
+							numberOfMinutesPerDay += Duration.between(dayPlanning.getAfternoonFrom(), dayPlanning.getAfternoonTo()).toMinutes();
 						}
 						else{
 							numberOfMinutesPerDay = 0;
@@ -354,7 +353,7 @@ public class OperationOrderController {
 				if(keyList.contains(key)){
 					int found = 0;
 					for (Map<String, Object> mapIt : dataList) {
-						if(mapIt.get("dateTime").equals((Object)itDateTime.toString("dd/MM/yyyy")) &&
+						if(mapIt.get("dateTime").equals((Object)itDateTime.format(DATE_FORMAT)) &&
 							mapIt.get("machine").equals((Object) key)){
 							mapIt.put("charge", new BigDecimal(mapIt.get("charge").toString()).add(map.get(key)));
 							found = 1;
@@ -365,7 +364,7 @@ public class OperationOrderController {
 					if(found == 0){
 						Map<String, Object> dataMap = new HashMap<String, Object>();
 						
-						dataMap.put("dateTime",(Object)itDateTime.toString("dd/MM/yyyy"));
+						dataMap.put("dateTime",(Object)itDateTime.format(DATE_FORMAT));
 						dataMap.put("charge", (Object)map.get(key));
 						dataMap.put("machine", (Object) key);
 						dataList.add(dataMap);

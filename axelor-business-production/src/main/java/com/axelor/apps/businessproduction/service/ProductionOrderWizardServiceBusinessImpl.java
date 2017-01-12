@@ -20,7 +20,7 @@ package com.axelor.apps.businessproduction.service;
 import java.math.BigDecimal;
 import java.util.Map;
 
-import org.joda.time.DateTime;
+import java.time.ZonedDateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -64,11 +64,11 @@ public class ProductionOrderWizardServiceBusinessImpl extends ProductionOrderWiz
 			product = billOfMaterial.getProduct();
 		}
 
-		DateTime startDate;
+		ZonedDateTime startDate;
 		if (context.containsKey("_startDate") && context.get("_startDate") != null ){
-			startDate = new DateTime(context.get("_startDate") );
+			startDate = ZonedDateTime.parse(context.get("_startDate").toString());
 		}else{
-			startDate = appProductionService.getTodayDateTime().toDateTime();
+			startDate = appProductionService.getTodayDateTime();
 		}
 
 		ProjectTask projectTask = null;

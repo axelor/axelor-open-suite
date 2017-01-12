@@ -23,7 +23,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.joda.time.LocalDate;
+import java.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -426,7 +426,7 @@ public class PaymentScheduleService {
 	}
 
   	public LocalDate getMostOldDatePaymentScheduleLine(List<PaymentScheduleLine> paymentScheduleLineList)  {
-		LocalDate minPaymentScheduleLineDate = new LocalDate();
+		LocalDate minPaymentScheduleLineDate = LocalDate.now();
 
 		if(paymentScheduleLineList != null && !paymentScheduleLineList.isEmpty())  {
 			for(PaymentScheduleLine paymentScheduleLine : paymentScheduleLineList)  {
@@ -438,7 +438,7 @@ public class PaymentScheduleService {
 	}
 
   	public LocalDate getMostRecentDatePaymentScheduleLine(List<PaymentScheduleLine> paymentScheduleLineList)  {
-		LocalDate minPaymentScheduleLineDate = new LocalDate();
+		LocalDate minPaymentScheduleLineDate = LocalDate.now();
 
 		if(paymentScheduleLineList != null && !paymentScheduleLineList.isEmpty())  {
 			for(PaymentScheduleLine paymentScheduleLine : paymentScheduleLineList)  {

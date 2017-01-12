@@ -29,9 +29,7 @@ import java.util.Set;
 
 import javax.mail.MessagingException;
 
-import org.joda.time.LocalDate;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.time.LocalDate;
 
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountConfig;
@@ -456,7 +454,7 @@ public class ExpenseServiceImpl implements ExpenseService  {
 				expense.setStatusSelect(ExpenseRepository.STATUS_DRAFT);
 			}
 			ExpenseLine expenseLine = new ExpenseLine();
-			expenseLine.setExpenseDate(new LocalDate(request.getData().get("date").toString()));
+			expenseLine.setExpenseDate(LocalDate.parse(request.getData().get("date").toString()));
 			expenseLine.setComments(request.getData().get("comments").toString());
 			expenseLine.setExpenseProduct(product);
 			expenseLine.setToInvoice(new Boolean(request.getData().get("toInvoice").toString()));

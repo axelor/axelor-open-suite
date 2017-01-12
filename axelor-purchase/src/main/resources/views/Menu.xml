@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.2.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 	
 	
 	<menuitem name="sc-root-purchase" title="Purchases" order="-105"  if="__config__.app.isApp('purchase')"
 		icon="fa-shopping-cart" groups="admins,ERP" icon-background="#b6473f"/>
-		
+	
 	<menuitem name="sc-root-purchase-suppliers" parent="sc-root-purchase" order="-200"
 		title="Suppliers" action="sc.root.purchase.suppliers" />
 

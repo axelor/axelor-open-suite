@@ -25,9 +25,9 @@ import java.util.Map;
 
 import javax.mail.MessagingException;
 
-import org.joda.time.DateTimeConstants;
-import org.joda.time.Duration;
-import org.joda.time.LocalDate;
+import java.time.DayOfWeek;
+import java.time.Duration;
+import java.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -56,7 +56,6 @@ import com.axelor.apps.message.db.Template;
 import com.axelor.apps.message.db.repo.EmailAddressRepository;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
-import com.axelor.auth.db.repo.UserRepository;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
@@ -291,7 +290,6 @@ public class EventController {
 		
 	}
 	
-	@SuppressWarnings("unchecked")
 	public void addUserGuest(ActionRequest request, ActionResponse response) throws ClassNotFoundException, InstantiationException, IllegalAccessException, AxelorException, MessagingException, IOException, ICalendarException, ValidationException, ParseException{
 		Event event = request.getContext().asType(Event.class);
 		if(request.getContext().containsKey("guestUser")){
@@ -370,13 +368,13 @@ public class EventController {
 		Map<Integer,Boolean> daysMap = new HashMap<Integer,Boolean>();
 		Map<Integer,Boolean> daysCheckedMap = new HashMap<Integer,Boolean>();
 		if(recurrenceType == 2){
-			daysMap.put(DateTimeConstants.MONDAY, monday);
-			daysMap.put(DateTimeConstants.TUESDAY, tuesday);
-			daysMap.put(DateTimeConstants.WEDNESDAY, wednesday);
-			daysMap.put(DateTimeConstants.THURSDAY, thursday);
-			daysMap.put(DateTimeConstants.FRIDAY, friday);
-			daysMap.put(DateTimeConstants.SATURDAY, saturday);
-			daysMap.put(DateTimeConstants.SUNDAY, sunday);
+			daysMap.put(DayOfWeek.MONDAY.getValue(), monday);
+			daysMap.put(DayOfWeek.TUESDAY.getValue(), tuesday);
+			daysMap.put(DayOfWeek.WEDNESDAY.getValue(), wednesday);
+			daysMap.put(DayOfWeek.THURSDAY.getValue(), thursday);
+			daysMap.put(DayOfWeek.FRIDAY.getValue(), friday);
+			daysMap.put(DayOfWeek.SATURDAY.getValue(), saturday);
+			daysMap.put(DayOfWeek.SUNDAY.getValue(), sunday);
 			
 			for (Integer day : daysMap.keySet()) {
 				if(daysMap.get(day)){
@@ -408,16 +406,16 @@ public class EventController {
 						IException.CONFIGURATION_ERROR);
 			}
 		}
-		LocalDate endDate = new LocalDate();
+		LocalDate endDate = LocalDate.now();
 		if(endType == 2){
 			if(request.getContext().get("endDate") == null){
 				throw new AxelorException(String.format(I18n.get(IExceptionMessage.RECURRENCE_END_DATE)),
 						IException.CONFIGURATION_ERROR);
 			}
 			
-			endDate = new LocalDate(request.getContext().get("endDate").toString());
+			endDate = LocalDate.parse(request.getContext().get("endDate").toString());
 			
-			if(endDate.isBefore(event.getStartDateTime()) && endDate.isEqual(event.getStartDateTime())){
+			if(endDate.isBefore(event.getStartDateTime().toLocalDate()) && endDate.isEqual(event.getStartDateTime().toLocalDate())){
 				throw new AxelorException(String.format(I18n.get(IExceptionMessage.RECURRENCE_END_DATE)),
 						IException.CONFIGURATION_ERROR);
 			}
@@ -550,13 +548,13 @@ public class EventController {
 		Map<Integer,Boolean> daysMap = new HashMap<Integer,Boolean>();
 		Map<Integer,Boolean> daysCheckedMap = new HashMap<Integer,Boolean>();
 		if(recurrenceType == 2){
-			daysMap.put(DateTimeConstants.MONDAY, monday);
-			daysMap.put(DateTimeConstants.TUESDAY, tuesday);
-			daysMap.put(DateTimeConstants.WEDNESDAY, wednesday);
-			daysMap.put(DateTimeConstants.THURSDAY, thursday);
-			daysMap.put(DateTimeConstants.FRIDAY, friday);
-			daysMap.put(DateTimeConstants.SATURDAY, saturday);
-			daysMap.put(DateTimeConstants.SUNDAY, sunday);
+			daysMap.put(DayOfWeek.MONDAY.getValue(), monday);
+			daysMap.put(DayOfWeek.TUESDAY.getValue(), tuesday);
+			daysMap.put(DayOfWeek.WEDNESDAY.getValue(), wednesday);
+			daysMap.put(DayOfWeek.THURSDAY.getValue(), thursday);
+			daysMap.put(DayOfWeek.FRIDAY.getValue(), friday);
+			daysMap.put(DayOfWeek.SATURDAY.getValue(), saturday);
+			daysMap.put(DayOfWeek.SUNDAY.getValue(), sunday);
 			
 			for (Integer day : daysMap.keySet()) {
 				if(daysMap.get(day)){
@@ -588,16 +586,16 @@ public class EventController {
 						IException.CONFIGURATION_ERROR);
 			}
 		}
-		LocalDate endDate = new LocalDate();
+		LocalDate endDate = LocalDate.now();
 		if(endType == 2){
 			if(conf.getEndDate() == null){
 				throw new AxelorException(String.format(I18n.get(IExceptionMessage.RECURRENCE_END_DATE)),
 						IException.CONFIGURATION_ERROR);
 			}
 			
-			endDate = new LocalDate(conf.getEndDate());
+			endDate = conf.getEndDate();
 			
-			if(endDate.isBefore(event.getStartDateTime()) && endDate.isEqual(event.getStartDateTime())){
+			if(endDate.isBefore(event.getStartDateTime().toLocalDate()) && endDate.isEqual(event.getStartDateTime().toLocalDate())){
 				throw new AxelorException(String.format(I18n.get(IExceptionMessage.RECURRENCE_END_DATE)),
 						IException.CONFIGURATION_ERROR);
 			}

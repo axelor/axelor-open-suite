@@ -17,8 +17,7 @@
  */
 package com.axelor.apps.tool.date;
 
-import org.joda.time.LocalDate;
-import org.joda.time.Months;
+import java.time.LocalDate;
 
 import com.axelor.apps.tool.exception.IExceptionMessage;
 import com.axelor.i18n.I18n;
@@ -94,12 +93,12 @@ public class Period {
 		
 	}
 	
-	public int getDays() { return DateTool.daysBetween(this.from, this.to, this.days360); }
+	public long getDays() { return DateTool.daysBetween(this.from, this.to, this.days360); }
 	
-	public int getMonths() {
+	public long getMonths() {
 		
 		if (this.days360) { return DateTool.days360MonthsBetween(this.from, this.to); }
-		else { return Months.monthsBetween(this.from, this.to).getMonths(); }
+		else { return java.time.Period.between(this.from, this.to).getMonths(); }
 		
 	}
 	

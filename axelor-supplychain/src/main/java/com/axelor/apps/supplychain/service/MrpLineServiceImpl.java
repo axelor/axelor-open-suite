@@ -21,7 +21,7 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 
 import org.hibernate.proxy.HibernateProxy;
-import org.joda.time.LocalDate;
+import java.time.LocalDate;
 
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;

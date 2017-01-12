@@ -19,8 +19,9 @@ package com.axelor.apps.base.service.administration;
 
 import java.lang.reflect.Field;
 
-import org.joda.time.DateTime;
-import org.joda.time.Interval;
+import java.time.ZonedDateTime;
+import java.time.temporal.ChronoUnit;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -56,7 +57,7 @@ public abstract class AbstractBatch {
 
 		this.batch = new Batch();
 
-		this.batch.setStartDate(new DateTime());
+		this.batch.setStartDate(ZonedDateTime.now());
 
 		this.done = 0;
 		this.anomaly = 0;
@@ -122,7 +123,7 @@ public abstract class AbstractBatch {
 
 		batch = batchRepo.find( batch.getId() );
 
-		batch.setEndDate( new DateTime() );
+		batch.setEndDate( ZonedDateTime.now() );
 		batch.setDuration( getDuring() );
 
 		checkPoint();
@@ -184,9 +185,9 @@ public abstract class AbstractBatch {
 	}
 
 
-	private int getDuring(){
+	private Integer getDuring(){
 
-		return new Interval(batch.getStartDate(), batch.getEndDate()).toDuration().toStandardSeconds().toStandardMinutes().getMinutes();
+		return new Integer(new Long(ChronoUnit.MINUTES.between(batch.getStartDate(), batch.getEndDate())).toString());
 
 	}
 

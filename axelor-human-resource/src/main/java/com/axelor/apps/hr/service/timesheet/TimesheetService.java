@@ -23,7 +23,7 @@ import java.util.List;
 
 import javax.mail.MessagingException;
 
-import org.joda.time.LocalDate;
+import java.time.LocalDate;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;

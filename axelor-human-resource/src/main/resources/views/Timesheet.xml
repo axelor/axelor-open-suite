@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 
 	<grid name="timesheet-grid" title="Timesheet" model="com.axelor.apps.hr.db.Timesheet" canNew="false" groupBy="user" orderBy="user,-fromDate">
 		<hilite color="danger" if="statusSelect == 4"/>
@@ -161,7 +161,7 @@
 	</action-validate>
 	
 	<action-validate name="action-timesheet-validate-fromDate">
-		<error message="Invalid date, it can't be in the future" if="fromDate &gt; __date__" action="action-timesheet-null-fromDate"/>
+		<error message="Invalid date, it can't be in the future" if="fromDate.isAfter(__date__)" action="action-timesheet-null-fromDate"/>
 	</action-validate>
 	
 	<action-validate name="action-timesheet-validate-dates">

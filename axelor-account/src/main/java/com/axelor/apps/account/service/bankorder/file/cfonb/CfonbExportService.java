@@ -24,8 +24,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.joda.time.DateTime;
-import org.joda.time.LocalDate;
+import java.time.ZonedDateTime;
+import java.time.LocalDate;
+import java.time.LocalTime;
 
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.CfonbConfig;
@@ -95,11 +96,11 @@ public class CfonbExportService {
 	/**
 	 * Méthode permettant d'exporter les remboursements au format CFONB
 	 * @param reimbursementExport
-	 * @param dateTime
+	 * @param ZonedDateTime
 	 * @param reimbursementList
 	 * @throws AxelorException
 	 */
-	public void exportCFONB(Company company, DateTime dateTime, List<Reimbursement> reimbursementList, BankDetails bankDetails) throws AxelorException  {
+	public void exportCFONB(Company company, ZonedDateTime ZonedDateTime, List<Reimbursement> reimbursementList, BankDetails bankDetails) throws AxelorException  {
 
 		this.testCompanyExportCFONBField(company);
 
@@ -108,7 +109,7 @@ public class CfonbExportService {
 		// 		un enregistrement destinataire (code 06)
 		// 		un enregistrement total (code 08)
 
-		String senderCFONB = this.createSenderReimbursementCFONB(dateTime, bankDetails);
+		String senderCFONB = this.createSenderReimbursementCFONB(ZonedDateTime, bankDetails);
 		List<String> multiRecipientCFONB = new ArrayList<String>();
 		for(Reimbursement reimbursement : reimbursementList)  {
 			reimbursement = reimbursementRepo.find(reimbursement.getId());
@@ -124,7 +125,7 @@ public class CfonbExportService {
 		// Mise en majuscule des enregistrement
 //		cFONB = this.toUpperCase(cFONB);
 
-//		this.createCFONBFile(cFONB, dateTime, company.getAccountConfig().getReimbursementExportFolderPathCFONB(), "virement");
+//		this.createCFONBFile(cFONB, ZonedDateTime, company.getAccountConfig().getReimbursementExportFolderPathCFONB(), "virement");
 	}
 
 	/**
@@ -134,7 +135,7 @@ public class CfonbExportService {
 	 * @param company
 	 * @throws AxelorException
 	 */
-	public void exportPaymentScheduleCFONB(DateTime processingDateTime, LocalDate scheduleDate, List<PaymentScheduleLine> paymentScheduleLineList, Company company, BankDetails bankDetails) throws AxelorException  {
+	public void exportPaymentScheduleCFONB(ZonedDateTime processingDateTime, LocalDate scheduleDate, List<PaymentScheduleLine> paymentScheduleLineList, Company company, BankDetails bankDetails) throws AxelorException  {
 
 		if(paymentScheduleLineList == null || paymentScheduleLineList.isEmpty())  {   return;  }
 
@@ -186,7 +187,7 @@ public class CfonbExportService {
 	 * @param company
 	 * @throws AxelorException
 	 */
-	public void exportInvoiceCFONB(DateTime processingDateTime, LocalDate scheduleDate, List<Invoice> invoiceList, Company company, BankDetails bankDetails) throws AxelorException  {
+	public void exportInvoiceCFONB(ZonedDateTime processingDateTime, LocalDate scheduleDate, List<Invoice> invoiceList, Company company, BankDetails bankDetails) throws AxelorException  {
 
 		if((invoiceList == null || invoiceList.isEmpty()))  {   return;  }
 
@@ -242,7 +243,7 @@ public class CfonbExportService {
 	 * @param company
 	 * @throws AxelorException
 	 */
-	public void exportCFONB(DateTime processingDateTime, LocalDate scheduleDate, List<PaymentScheduleLine> paymentScheduleLineList, List<Invoice> invoiceList, Company company, BankDetails bankDetails) throws AxelorException  {
+	public void exportCFONB(ZonedDateTime processingDateTime, LocalDate scheduleDate, List<PaymentScheduleLine> paymentScheduleLineList, List<Invoice> invoiceList, Company company, BankDetails bankDetails) throws AxelorException  {
 
 		if((paymentScheduleLineList == null || paymentScheduleLineList.isEmpty())
 				&& (invoiceList == null || invoiceList.isEmpty()))  {   return;  }
@@ -334,17 +335,17 @@ public class CfonbExportService {
 	 * Fonction permettant de créer un enregistrement 'émetteur' pour un virement des remboursements
 	 * @param company
 	 * 				Une société
-	 * @param dateTime
+	 * @param ZonedDateTime
 	 * 				Une heure
 	 * @return
 	 * 				Un enregistrement 'emetteur'
 	 * @throws AxelorException
 	 */
-	private String createSenderReimbursementCFONB(DateTime dateTime, BankDetails bankDetails) throws AxelorException  {
+	private String createSenderReimbursementCFONB(ZonedDateTime zonedDateTime, BankDetails bankDetails) throws AxelorException  {
 
 		DateFormat ddmmFormat = new SimpleDateFormat("ddMM");
-		String date = ddmmFormat.format(dateTime.toDate());
-		date += String.format("%s", StringTool.truncLeft(String.format("%s",dateTime.getYear()), 1));
+		String date = ddmmFormat.format(zonedDateTime.toLocalDate());
+		date += String.format("%s", StringTool.truncLeft(String.format("%s",zonedDateTime.getYear()), 1));
 
 		// Récupération des valeurs
 		String a = this.cfonbConfig.getSenderRecordCodeExportCFONB();  		// Code enregistrement
@@ -413,7 +414,7 @@ public class CfonbExportService {
 	private String createSenderMonthlyExportCFONB(LocalDate localDate, BankDetails bankDetails) throws AxelorException  {
 
 		DateFormat ddmmFormat = new SimpleDateFormat("ddMM");
-		String date = ddmmFormat.format(localDate.toDateTimeAtCurrentTime().toDate());
+		String date = ddmmFormat.format(localDate.atTime(LocalTime.now()).toLocalDate());
 		date += String.format("%s", StringTool.truncLeft(String.format("%s",localDate.getYear()), 1));
 
 		// Récupération des valeurs
@@ -780,7 +781,7 @@ public class CfonbExportService {
 	 * Procédure permettant de créer un fichier CFONB au format .dat
 	 * @param cFONB
 	 * 			Le contenu du fichier, des enregistrements CFONB
-	 * @param dateTime
+	 * @param ZonedDateTime
 	 * 			La date permettant de déterminer le nom du fichier créé
 	 * @param destinationFolder
 	 * 			Le répertoire de destination
@@ -788,9 +789,9 @@ public class CfonbExportService {
 	 * 			Le préfix utilisé
 	 * @throws AxelorException
 	 */
-	private void createCFONBFile(List<String> cFONB, DateTime dateTime, String destinationFolder, String prefix) throws AxelorException  {
+	private void createCFONBFile(List<String> cFONB, ZonedDateTime zonedDateTime, String destinationFolder, String prefix) throws AxelorException  {
 		DateFormat yyyyMMddHHmmssFormat = new SimpleDateFormat("yyyyMMddHHmmss");
-		String dateFileName = yyyyMMddHHmmssFormat.format(dateTime.toDate());
+		String dateFileName = yyyyMMddHHmmssFormat.format(zonedDateTime);
 		String fileName = String.format("%s%s.dat", prefix, dateFileName);
 
 		try {

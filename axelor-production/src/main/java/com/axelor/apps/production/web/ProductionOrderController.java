@@ -22,7 +22,7 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
-import org.joda.time.DateTime;
+import java.time.ZonedDateTime;
 
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductRepository;
@@ -87,11 +87,11 @@ public class ProductionOrderController {
 				product = billOfMaterial.getProduct();
 			}
 			
-			DateTime startDate;
+			ZonedDateTime startDate;
 			if (context.containsKey("_startDate") && context.get("_startDate") != null ){
-				startDate = new DateTime(context.get("_startDate") );
+				startDate = ZonedDateTime.parse((CharSequence) context.get("_startDate") );
 			}else{
-				startDate = appBaseService.getTodayDateTime().toDateTime();
+				startDate = appBaseService.getTodayDateTime();
 			}
 			
 			ProductionOrder productionOrder = request.getContext().asType( ProductionOrder.class );

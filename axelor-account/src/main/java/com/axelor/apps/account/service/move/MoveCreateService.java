@@ -19,7 +19,7 @@ package com.axelor.apps.account.service.move;
 
 import java.util.ArrayList;
 
-import org.joda.time.LocalDate;
+import java.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -88,7 +88,7 @@ public class MoveCreateService {
 	 * @param company
 	 * @param invoice
 	 * @param partner
-	 * @param dateTime
+	 * @param ZonedDateTime
 	 * @param isReject
 	 * 		<code>true = écriture de rejet avec séquence spécifique</code>
 	 * @return

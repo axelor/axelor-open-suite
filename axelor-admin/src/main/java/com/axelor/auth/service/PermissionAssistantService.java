@@ -31,7 +31,9 @@ import java.util.Map;
 import java.util.ResourceBundle;
 
 import org.apache.commons.io.output.FileWriterWithEncoding;
-import org.joda.time.LocalDateTime;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -99,7 +101,7 @@ public class PermissionAssistantService {
 	private String getFileName(PermissionAssistant assistant){
 
 		String userCode = assistant.getCreatedBy().getCode();
-		String dateString = LocalDateTime.now().toString("yyyyMMddHHmm");
+		String dateString = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmm"));
 		String fileName = userCode + "-" + dateString + ".csv";
 
 		return fileName;

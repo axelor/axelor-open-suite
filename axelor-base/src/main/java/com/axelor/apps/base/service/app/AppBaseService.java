@@ -20,10 +20,9 @@ package com.axelor.apps.base.service.app;
 import java.math.BigDecimal;
 import java.util.List;
 
-import org.joda.time.DateTime;
-import org.joda.time.LocalDate;
+import java.time.ZonedDateTime;
+import java.time.LocalDate;
 
-import com.axelor.apps.base.db.App;
 import com.axelor.apps.base.db.AppBase;
 import com.axelor.apps.base.db.CurrencyConversionLine;
 import com.axelor.apps.base.db.Unit;
@@ -43,7 +42,7 @@ public interface AppBaseService extends AppService {
 	 * private
 	 * @return
 	 */
-	public DateTime getTodayDateTime();
+	public ZonedDateTime getTodayDateTime();
 
 	/**
 	 * Récupérer la date du jour.

@@ -20,7 +20,7 @@ package com.axelor.apps.production.service;
 import java.math.BigDecimal;
 import java.util.List;
 
-import org.joda.time.LocalDate;
+import java.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -101,7 +101,7 @@ public class MrpServiceProductionImpl extends MrpServiceImpl  {
 		List<ManufOrder> manufOrderList = manufOrderRepository.all()
 				.filter("self.product in (?1) AND self.prodProcess.location in (?2) "
 						+ "AND self.statusSelect != ?3 AND self.plannedStartDateT > ?4", 
-						this.productMap.keySet(), this.locationList, IManufOrder.STATUS_FINISHED, today.toDateTimeAtStartOfDay()).fetch();
+						this.productMap.keySet(), this.locationList, IManufOrder.STATUS_FINISHED, today.atStartOfDay()).fetch();
 		
 		for(ManufOrder manufOrder : manufOrderList)  {
 		

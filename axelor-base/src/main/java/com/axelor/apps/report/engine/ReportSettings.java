@@ -23,8 +23,9 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Map;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
-import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -105,8 +106,8 @@ public class ReportSettings {
 	protected void computeOutputName(String outputName)  {
 		
 		this.outputName = outputName
-							.replace("${date}", new DateTime().toString("yyyyMMdd"))
-							.replace("${time}", new DateTime().toString("HHmmss"));
+							.replace("${date}", LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd")))
+							.replace("${time}", LocalDateTime.now().format(DateTimeFormatter.ofPattern("HHmmss"))); 
 		
 	}
 	

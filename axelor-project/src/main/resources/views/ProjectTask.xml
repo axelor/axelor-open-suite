@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 
 	
 	<grid name="project-grid" title="Projects" model="com.axelor.apps.project.db.ProjectTask">
@@ -261,9 +261,9 @@
 		<field name="dueDate"/>
 		<field name="leadDelay"/>
 		<field name="statusSelect"/>
-		<hilite color="danger" if="dueDate &gt; __datetime__ &amp;&amp; statusSelect &lt; 3"/>
-		<hilite color="success" if="dueDate &lt;= __datetime__ &amp;&amp; leadDelay &gt;= 0 &amp;&amp; statusSelect &lt; 3"/>
-		<hilite color="warning" if="dueDate &lt;= __datetime__ &amp;&amp; leadDelay &lt; 0 &amp;&amp; statusSelect &lt; 3"/>
+		<hilite color="danger" if="dueDate.isAfter(__datetime__) &amp;&amp; statusSelect &lt; 3"/>
+		<hilite color="success" if="(dueDate.isBefore(__datetime__) || dueDate.equals(__datetime__)) &amp;&amp; leadDelay &gt;= 0 &amp;&amp; statusSelect &lt; 3"/>
+		<hilite color="warning" if="(dueDate.isBefore(__datetime__) || dueDate.equals(__datetime__)) &amp;&amp; leadDelay &lt; 0 &amp;&amp; statusSelect &lt; 3"/>
 		<template>
 		&lt;h4&gt;{{fullName}}&lt;/h4&gt;
 		&lt;div class="card-body"&gt;{{description}}&lt;/div&gt;
@@ -281,9 +281,9 @@
 		<field name="dueDate"/>
 		<field name="leadDelay"/>
 		<field name="statusSelect"/>
-		<hilite color="danger" if="dueDate &gt; __datetime__ &amp;&amp; statusSelect &lt; 3"/>
-		<hilite color="success" if="dueDate &lt;= __datetime__ &amp;&amp; leadDelay &gt;= 0 &amp;&amp; statusSelect &lt; 3"/>
-		<hilite color="warning" if="dueDate &lt;= __datetime__ &amp;&amp; leadDelay &lt; 0 &amp;&amp; statusSelect &lt; 3"/>
+		<hilite color="danger" if="dueDate.isAfter(__datetime__) &amp;&amp; statusSelect &lt; 3"/>
+		<hilite color="success" if="(dueDate.isBefore(__datetime__) || dueDate.equals(__datetime__)) &amp;&amp; leadDelay &gt;= 0 &amp;&amp; statusSelect &lt; 3"/>
+		<hilite color="warning" if="(dueDate.isBefore(__datetime__) || dueDate.equals(__datetime__)) &amp;&amp; leadDelay &lt; 0 &amp;&amp; statusSelect &lt; 3"/>
 		<template>
 		&lt;h4&gt;{{fullName}}&lt;/h4&gt;
 		&lt;div class="card-body"&gt;{{description}}&lt;/div&gt;

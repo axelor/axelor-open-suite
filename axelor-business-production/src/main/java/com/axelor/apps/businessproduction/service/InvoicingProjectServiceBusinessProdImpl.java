@@ -19,7 +19,7 @@ package com.axelor.apps.businessproduction.service;
 
 import java.util.List;
 
-import org.joda.time.LocalDateTime;
+import java.time.LocalDateTime;
 
 import com.axelor.apps.businessproject.service.InvoicingProjectService;
 import com.axelor.apps.businessproject.db.InvoicingProject;
@@ -54,7 +54,7 @@ public class InvoicingProjectServiceBusinessProdImpl extends InvoicingProjectSer
 			LocalDateTime deadlineDateToDateTime = null;
 			
 			if (invoicingProject.getDeadlineDate() != null){
-				deadlineDateToDateTime = LocalDateTime.fromDateFields(invoicingProject.getDeadlineDate().toDate());
+				deadlineDateToDateTime = invoicingProject.getDeadlineDate().atStartOfDay();
 			}
 			invoicingProject.getManufOrderSet().addAll(Beans.get(ManufOrderRepository.class)
 					.all().filter("self.productionOrder.projectTask = ?1 AND (self.realStartDateT < ?2 or ?3 is null)", projectTask, deadlineDateToDateTime, invoicingProject.getDeadlineDate()).fetch());

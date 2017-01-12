@@ -23,7 +23,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.joda.time.DateTime;
+import java.time.ZonedDateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -49,7 +49,7 @@ public class AlarmEngineService <T extends Model> {
 
 	private static final Logger LOG = LoggerFactory.getLogger(AlarmEngineService.class);
 
-	private DateTime dateTime;
+	private ZonedDateTime ZonedDateTime;
 
 	private Templates templates;
 	
@@ -59,13 +59,13 @@ public class AlarmEngineService <T extends Model> {
 	@Inject
 	public AlarmEngineService(AppBaseService appBaseService) {
 		this.appBaseService = appBaseService;
-		dateTime = this.appBaseService.getTodayDateTime();
+		ZonedDateTime = this.appBaseService.getTodayDateTime();
 
 	}
 
-	public AlarmEngineService(DateTime dateTime) {
+	public AlarmEngineService(ZonedDateTime ZonedDateTime) {
 
-		this.dateTime = dateTime;
+		this.ZonedDateTime = ZonedDateTime;
 
 	}
 
@@ -217,7 +217,7 @@ public class AlarmEngineService <T extends Model> {
 
 		Alarm alarm = new Alarm();
 
-		alarm.setDate(dateTime);
+		alarm.setDate(ZonedDateTime);
 		alarm.setAlarmEngine(alarmEngine);
 		alarm.setContent( content(alarmEngine.getAlarmMessage(), t) );
 

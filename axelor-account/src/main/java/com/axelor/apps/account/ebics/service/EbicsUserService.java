@@ -9,7 +9,7 @@ import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
 
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
-import org.joda.time.LocalDateTime;
+import java.time.LocalDateTime;
 
 import com.axelor.apps.account.db.EbicsRequestLog;
 import com.axelor.apps.account.db.EbicsUser;
@@ -92,7 +92,7 @@ public class EbicsUserService {
 		
 		EbicsRequestLog requestLog = new EbicsRequestLog();
 		requestLog.setEbicsUser(ebicsUser);
-		requestLog.setRequestTime(new LocalDateTime());
+		requestLog.setRequestTime(LocalDateTime.now());
 		requestLog.setRequestType(requestType);
 		requestLog.setResponseCode(responseCode);
 		

@@ -9,14 +9,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.joda.time.LocalDate;
-import org.joda.time.LocalDateTime;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.axelor.common.ClassUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.Model;
 import com.axelor.db.mapper.Mapper;
@@ -38,8 +37,8 @@ public class RecordImporterService {
 	private static final String SEARCH = "Search";
 	private static final String UNIQUE = "Unique";
 	
-	private final static DateTimeFormatter DATE_FORMATTER = DateTimeFormat.forPattern("dd/MM/YYYY");
-	private final static DateTimeFormatter TIME_FORMATTER = DateTimeFormat.forPattern("dd/MM/YYYY HH:mm:ss");
+	private final static DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("dd/MM/YYYY");
+	private final static DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("dd/MM/YYYY HH:mm:ss");
 	
 	@Inject
 	private FormatValidator formatValidator;
@@ -90,8 +89,8 @@ public class RecordImporterService {
 			}
 			else {
 				try {
-					classes.add(ClassUtils.findClass(model.getFullName()));
-				}catch(IllegalArgumentException e) {
+					classes.add(Class.forName(model.getFullName()));
+				}catch(IllegalArgumentException | ClassNotFoundException e) {
 					log += "\n " + name;
 				}
 			}

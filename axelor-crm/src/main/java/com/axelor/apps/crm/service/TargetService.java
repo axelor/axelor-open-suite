@@ -21,8 +21,8 @@ import java.math.BigDecimal;
 
 import javax.persistence.Query;
 
-import org.joda.time.LocalDate;
-import org.joda.time.LocalDateTime;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import com.axelor.apps.base.db.ITarget;
 import com.axelor.apps.base.db.Team;
@@ -138,8 +138,8 @@ public class TargetService {
 		LocalDate fromDate = target.getFromDate();
 		LocalDate toDate = target.getToDate();
 		
-		LocalDateTime fromDateTime = new LocalDateTime(fromDate.getYear(), fromDate.getMonthOfYear(), fromDate.getDayOfMonth(), 0, 0);
-		LocalDateTime toDateTime = new LocalDateTime(toDate.getYear(), toDate.getMonthOfYear(), toDate.getDayOfMonth(), 23, 59);
+		LocalDateTime fromDateTime = fromDate.atStartOfDay();
+		LocalDateTime toDateTime = toDate.atTime(23, 59);
 		
 		if(user != null)  {
 			Query q = JPA.em().createQuery("select SUM(op.amount) FROM Opportunity as op WHERE op.user = ?1 AND op.salesStageSelect = ?2 AND op.createdOn >= ?3 AND op.createdOn <= ?4 ");

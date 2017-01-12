@@ -12,13 +12,16 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.FillPatternType;
 import org.apache.poi.ss.usermodel.IndexedColors;
+import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 import org.apache.poi.xssf.usermodel.XSSFFont;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.joda.time.LocalDateTime;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -95,7 +98,7 @@ public class ExcelWriter implements DataWriter {
 		
 		setColumnWidth();
 		
-		String date = LocalDateTime.now().toString("ddMMyyyy HH:mm:ss");
+		String date = LocalDateTime.now().format(DateTimeFormatter.ofPattern("ddMMyyyy HH:mm:ss"));
 		String fileName = "Export " + date + ".xlsx";
 		
 		try {
@@ -195,10 +198,10 @@ public class ExcelWriter implements DataWriter {
 	
 	private void setColumnWidth() {
 		
-		Iterator<XSSFSheet> sheets = workBook.iterator();
+		Iterator<Sheet> sheets = workBook.iterator();
 
 		while (sheets.hasNext()) {
-			XSSFSheet sheet = sheets.next();
+			Sheet sheet = sheets.next();
 			sheet.createFreezePane(0, 1, 0, 1);
 			int count = 0;
 			while (count < CommonService.HEADERS.length) {
@@ -210,12 +213,12 @@ public class ExcelWriter implements DataWriter {
 	
 	private void removeBlankSheets() {
 		
-		Iterator<XSSFSheet> sheetIter = workBook.iterator();
+		Iterator<Sheet> sheetIter = workBook.iterator();
 		sheetIter.next();
 		
 		List<String> removeSheets = new ArrayList<String>();
 		while(sheetIter.hasNext()) {
-			XSSFSheet sheet = sheetIter.next();
+			Sheet sheet = sheetIter.next();
 			if (sheet.getPhysicalNumberOfRows() < 2) {
 				removeSheets.add(sheet.getSheetName());
 			}

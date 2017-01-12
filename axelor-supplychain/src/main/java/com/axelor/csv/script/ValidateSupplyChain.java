@@ -21,7 +21,7 @@ import java.util.Map;
 
 import javax.persistence.Query;
 
-import org.joda.time.LocalDate;
+import java.time.LocalDate;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.service.invoice.InvoiceService;
@@ -135,7 +135,7 @@ public class ValidateSupplyChain {
 					invoice.setInvoiceDate(purchaseOrder.getValidationDate());
 				}
 				else{
-					invoice.setInvoiceDate(new LocalDate());
+					invoice.setInvoiceDate(LocalDate.now());
 				}
 				invoiceService.compute(invoice);
 				invoiceService.validate(invoice);
@@ -169,7 +169,7 @@ public class ValidateSupplyChain {
 					invoice.setInvoiceDate(saleOrder.getConfirmationDate());
 				}
 				else{
-					invoice.setInvoiceDate(new LocalDate());
+					invoice.setInvoiceDate(LocalDate.now());
 				}
 				invoiceService.compute(invoice);
 				invoiceService.validate(invoice);

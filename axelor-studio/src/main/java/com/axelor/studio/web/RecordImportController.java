@@ -4,7 +4,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
-import org.joda.time.LocalDateTime;
+import java.time.LocalDateTime;
 
 import com.axelor.auth.AuthUtils;
 import com.axelor.exception.AxelorException;
@@ -55,7 +55,7 @@ public class RecordImportController {
 		response.setFlash(msg);
 		response.setValue("importLogFile", getLogFile(log, importWizard.getImportLogFile()));
 		response.setValue("importedBy", AuthUtils.getUser());
-		response.setValue("importDate", new LocalDateTime());
+		response.setValue("importDate", LocalDateTime.now());
 		
 	}
 

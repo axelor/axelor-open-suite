@@ -21,7 +21,7 @@ import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
 
-import org.joda.time.LocalDate;
+import java.time.LocalDate;
 
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.Company;

@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.2.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 	
 	
 	<menuitem name="sc-root-sale" title="Sales" order="-106"  if="__config__.app.isApp('sale')"
 		icon="fa-line-chart" groups="admins,ERP,CRM" icon-background="#e0a83c"/>
-		
+	
 	<menuitem name="sale-templates-new-template" title="Create a template"  groups="admins,ERP"
 		 action="sale.templates.new.template" parent="sc-root-sale-templates" order="10"/>
 		 

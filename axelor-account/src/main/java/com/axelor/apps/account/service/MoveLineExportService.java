@@ -30,8 +30,9 @@ import java.util.List;
 import javax.persistence.Query;
 
 import org.apache.commons.lang3.StringUtils;
-import org.joda.time.DateTime;
-import org.joda.time.LocalDate;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -70,8 +71,14 @@ import com.google.inject.persist.Transactional;
 public class MoveLineExportService {
 
 	private final Logger log = LoggerFactory.getLogger( getClass() );
+	
+	private static final DateTimeFormatter DATE_TIME_FORMAT = DateTimeFormatter.ofPattern("YYYYMMddHHmmss");
+	
+	private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+	
+	private static final DateTimeFormatter MONTH_FORMAT = DateTimeFormatter.ofPattern("yyyyMM");
 
-	protected DateTime todayTime;
+	protected ZonedDateTime todayTime;
 
 	protected MoveLineReportService moveLineReportService;
 	protected SequenceService sequenceService;
@@ -256,7 +263,7 @@ public class MoveLineExportService {
 
 		log.info("In Export type service : ");
 
-		String fileName = "detail"+todayTime.toString("YYYYMMddHHmmss")+"ventes.dat";
+		String fileName = "detail" + todayTime.format(DATE_TIME_FORMAT) + "ventes.dat";
 		this.exportMoveLineTypeSelect1006FILE1(mlr, replay);
 		this.exportMoveLineAllTypeSelectFILE2(mlr,fileName);
 	}
@@ -362,7 +369,7 @@ public class MoveLineExportService {
 						String exportNumber = this.getSaleExportNumber(company);
 
 						Move firstMove = moveList.get(0);
-						String periodCode = firstMove.getPeriod().getFromDate().toString("yyyyMM");
+						String periodCode = firstMove.getPeriod().getFromDate().format(MONTH_FORMAT);
 
 						this.updateMoveList((List<Move>) moveList, moveLineReport, interfaceDate, exportNumber);
 
@@ -370,10 +377,10 @@ public class MoveLineExportService {
 						items[0] = companyCode;
 						items[1] = journalCode;
 						items[2] = exportNumber;
-						items[3] = interfaceDate.toString("dd/MM/yyyy");
+						items[3] = interfaceDate.format(DATE_FORMAT);
 						items[4] = sumDebit.toString();
 						items[5] = reference;
-						items[6] = dt.toString("dd/MM/yyyy");
+						items[6] = dt.format(DATE_FORMAT);
 						items[7]= periodCode;
 						allMoveData.add(items);
 					}
@@ -381,7 +388,7 @@ public class MoveLineExportService {
 			}
 		}
 
-		String fileName = "entete"+todayTime.toString("YYYYMMddHHmmss")+"ventes.dat";
+		String fileName = "entete"+todayTime.format(DATE_TIME_FORMAT)+"ventes.dat";
 		String filePath = accountConfigService.getExportPath(accountConfigService.getAccountConfig(company));
 		new File(filePath).mkdirs();
 
@@ -404,7 +411,7 @@ public class MoveLineExportService {
 
 		log.info("In Export type 1007 service : ");
 
-		String fileName = "detail"+todayTime.toString("YYYYMMddHHmmss")+"avoirs.dat";
+		String fileName = "detail" + todayTime.format(DATE_TIME_FORMAT) + "avoirs.dat";
 		this.exportMoveLineTypeSelect1007FILE1(moveLineReport, replay);
 		this.exportMoveLineAllTypeSelectFILE2(moveLineReport, fileName);
 	}
@@ -510,7 +517,7 @@ public class MoveLineExportService {
 						String exportNumber = this.getSaleExportNumber(company);
 
 						Move firstMove = moveList.get(0);
-						String periodCode = firstMove.getPeriod().getFromDate().toString("yyyyMM");
+						String periodCode = firstMove.getPeriod().getFromDate().format(MONTH_FORMAT);
 
 						this.updateMoveList(moveList, moveLineReport, interfaceDate, exportNumber);
 
@@ -518,10 +525,10 @@ public class MoveLineExportService {
 						items[0] = companyCode;
 						items[1] = journalCode;
 						items[2] = exportNumber;
-						items[3] = interfaceDate.toString("dd/MM/yyyy");
+						items[3] = interfaceDate.format(DATE_FORMAT);
 						items[4] = sumCredit.toString();
 						items[5] = reference;
-						items[6] = dt.toString("dd/MM/yyyy");
+						items[6] = dt.format(DATE_FORMAT);
 						items[7]= periodCode;
 						allMoveData.add(items);
 					}
@@ -529,7 +536,7 @@ public class MoveLineExportService {
 			}
 		}
 
-		String fileName = "entete"+todayTime.toString("YYYYMMddHHmmss")+"avoirs.dat";
+		String fileName = "entete" + todayTime.format(DATE_TIME_FORMAT) + "avoirs.dat";
 		String filePath = accountConfigService.getExportPath(accountConfigService.getAccountConfig(company));
 		new File(filePath).mkdirs();
 
@@ -551,7 +558,7 @@ public class MoveLineExportService {
 
 		log.info("In Export type 1008 service : ");
 
-		String fileName = "detail"+todayTime.toString("YYYYMMddHHmmss")+"tresorerie.dat";
+		String fileName = "detail" + todayTime.format(DATE_TIME_FORMAT) + "tresorerie.dat";
 		this.exportMoveLineTypeSelect1008FILE1(moveLineReport, replay);
 		this.exportMoveLineAllTypeSelectFILE2(moveLineReport, fileName);
 	}
@@ -657,7 +664,7 @@ public class MoveLineExportService {
 						String exportNumber = this.getTreasuryExportNumber(company);
 
 						Move firstMove = moveList.get(0);
-						String periodCode = firstMove.getPeriod().getFromDate().toString("yyyyMM");
+						String periodCode = firstMove.getPeriod().getFromDate().format(MONTH_FORMAT);
 
 						this.updateMoveList(moveList, moveLineReport, interfaceDate, exportNumber);
 
@@ -665,10 +672,10 @@ public class MoveLineExportService {
 						items[0] = companyCode;
 						items[1] = journalCode;
 						items[2] = exportNumber;
-						items[3] = interfaceDate.toString("dd/MM/yyyy");
+						items[3] = interfaceDate.format(DATE_FORMAT);
 						items[4] = "0";
 						items[5] = reference;
-						items[6] = dt.toString("dd/MM/yyyy");
+						items[6] = dt.format(DATE_FORMAT);
 						items[7]= periodCode;
 						allMoveData.add(items);
 					}
@@ -676,7 +683,7 @@ public class MoveLineExportService {
 			}
 		}
 
-		String fileName = "entete"+todayTime.toString("YYYYMMddHHmmss")+"tresorerie.dat";
+		String fileName = "entete" + todayTime.format(DATE_TIME_FORMAT) + "tresorerie.dat";
 		String filePath = accountConfigService.getExportPath(accountConfigService.getAccountConfig(company));
 		new File(filePath).mkdirs();
 
@@ -697,7 +704,7 @@ public class MoveLineExportService {
 	public void exportMoveLineTypeSelect1009(MoveLineReport moveLineReport, boolean replay) throws AxelorException, IOException {
 
 		log.info("In Export type 1009 service : ");
-		String fileName = "detail"+todayTime.toString("YYYYMMddHHmmss")+"achats.dat";
+		String fileName = "detail" + todayTime.format(DATE_TIME_FORMAT) + "achats.dat";
 		this.exportMoveLineTypeSelect1009FILE1(moveLineReport, replay);
 		this.exportMoveLineAllTypeSelectFILE2(moveLineReport, fileName);
 	}
@@ -807,7 +814,7 @@ public class MoveLineExportService {
 
 							String exportNumber = this.getPurchaseExportNumber(company);
 
-							String periodCode = move.getPeriod().getFromDate().toString("yyyyMM");
+							String periodCode = move.getPeriod().getFromDate().format(MONTH_FORMAT);
 
 							BigDecimal totalCredit = this.getSumCredit(moveLineList);
 							String invoiceId = "";
@@ -822,13 +829,13 @@ public class MoveLineExportService {
 							items[0] = companyCode;
 							items[1] = journalCode;
 							items[2] = exportNumber;
-							items[3] = interfaceDate.toString("dd/MM/yyyy");
+							items[3] = interfaceDate.format(DATE_FORMAT);
 							items[4] = invoiceId;
 							items[5] = dueDate;
 							items[6]= firstMoveLine.getAccount().getCode();
 							items[7]= totalCredit.toString();
 							items[8]= reference;
-							items[9]= dt.toString("dd/MM/yyyy");
+							items[9]= dt.format(DATE_FORMAT);
 							items[10]= periodCode;
 							allMoveData.add(items);
 
@@ -842,7 +849,7 @@ public class MoveLineExportService {
 			}
 		}
 
-		String fileName = "entete"+todayTime.toString("YYYYMMddHHmmss")+"achats.dat";
+		String fileName = "entete" + todayTime.format(DATE_TIME_FORMAT) + "achats.dat";
 		String filePath = accountConfigService.getExportPath(accountConfigService.getAccountConfig(company));
 		new File(filePath).mkdirs();
 
@@ -896,13 +903,13 @@ public class MoveLineExportService {
 				items[0] = journal.getCode();
 				items[1] = journal.getName();
 				items[2] = moveLine.getName();
-				items[3] = moveLine.getDate().toString("YYYYMMdd");
+				items[3] = moveLine.getDate().format(DateTimeFormatter.BASIC_ISO_DATE);
 				items[4] = moveLine.getAccount().getCode(); 
 				items[5] = moveLine.getAccount().getName();
 				items[6] = null; //Le numéro de compte auxiliaire (à blanc pour le moment) 
 				items[7] = null; //Le libellé de compte auxiliaire (à blanc pour le moment) 
 				items[8] = moveLine.getOrigin();
-				items[9] = moveLine.getDate().toString("YYYYMMdd"); // Pour le moment on va utiliser la date des lignes d'écriture. 
+				items[9] = moveLine.getDate().format(DateTimeFormatter.BASIC_ISO_DATE); // Pour le moment on va utiliser la date des lignes d'écriture. 
 				items[10]= moveLine.getDescription();
 				items[11]= moveLine.getDebit().toString();
 				items[12]= moveLine.getCredit().toString();
@@ -912,7 +919,7 @@ public class MoveLineExportService {
 					
 					for (Reconcile reconcile : moveLine.getDebitReconcileList()) {
 						ReconcileSeqList.add(reconcile.getReconcileSeq());
-						ReconcileDateList.add(reconcile.getReconciliationDate().toString("YYYYMMdd"));
+						ReconcileDateList.add(reconcile.getReconciliationDate().format(DateTimeFormatter.ofPattern("YYYYMMdd")));
 					}
 					items[13] = StringUtils.join(ReconcileSeqList, "; ");
 					items[14]= StringUtils.join(ReconcileDateList, "; ");
@@ -922,12 +929,12 @@ public class MoveLineExportService {
 					List<String> ReconcileDateList = new ArrayList<String>();
 					for (Reconcile reconcile : moveLine.getCreditReconcileList()) {
 						ReconcileSeqList.add(reconcile.getReconcileSeq());
-						ReconcileDateList.add(reconcile.getReconciliationDate().toString("YYYYMMdd"));
+						ReconcileDateList.add(reconcile.getReconciliationDate().format(DateTimeFormatter.BASIC_ISO_DATE));
 					}
 					items[13] = StringUtils.join(ReconcileSeqList, "; ");
 					items[14]= StringUtils.join(ReconcileDateList, "; ");
 				}
-				items[15]= move.getValidationDate().toString("YYYYMMdd");
+				items[15]= move.getValidationDate().format(DateTimeFormatter.BASIC_ISO_DATE);
 				items[16]= moveLine.getCurrencyAmount().toString();
 				if(move.getCurrency() != null){
 					items[17]= move.getCurrency().getCode();
@@ -1086,11 +1093,11 @@ public class MoveLineExportService {
 									if(typeSelect == 9)  {
 										items[7]= "";
 										items[8]= analyticAccounts;
-										items[9]= String.format("%s DU %s", journal.getCode(), date.toString("dd/MM/yyyy"));
+										items[9]= String.format("%s DU %s", journal.getCode(), date.format(DATE_FORMAT));
 									}
 									else  {
 										items[7]= analyticAccounts;
-										items[8]= String.format("%s DU %s", journal.getCode(), date.toString("dd/MM/yyyy"));
+										items[8]= String.format("%s DU %s", journal.getCode(), date.format(DATE_FORMAT));
 									}
 
 									allMoveLineData.add(items);
@@ -1313,18 +1320,18 @@ public class MoveLineExportService {
 
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public String setFileName(MoveLineReport moveLineReport) throws AxelorException, IOException{
-		Company company =moveLineReport.getCompany();
+		Company company = moveLineReport.getCompany();
 		Partner partner = company.getPartner();
 		
 		//Pour le moment: on utilise le format par défaut: SIREN+FEC+DATE DE CLÔTURE DE L'EXERCICE.Extension
 		String fileName = partnerService.getSIRENNumber(partner)+"FEC";
 		// On récupère la date de clôture de l'exercice/période
 		if (moveLineReport.getDateTo() != null){
-			fileName += moveLineReport.getDateTo().toString("YYYYMMdd");
+			fileName += moveLineReport.getDateTo().format(DateTimeFormatter.BASIC_ISO_DATE);
 		}else if(moveLineReport.getPeriod() != null){
-			fileName += moveLineReport.getPeriod().getToDate().toString("YYYYMMdd");
+			fileName += moveLineReport.getPeriod().getToDate().format(DateTimeFormatter.BASIC_ISO_DATE);
 		}else {
-			fileName += moveLineReport.getYear().getToDate().toString("YYYYMMdd");
+			fileName += moveLineReport.getYear().getToDate().format(DateTimeFormatter.BASIC_ISO_DATE);
 		}
 		fileName +=".csv";
 

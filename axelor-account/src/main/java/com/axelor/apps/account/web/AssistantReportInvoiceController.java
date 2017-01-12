@@ -17,6 +17,8 @@
  */
 package com.axelor.apps.account.web;
 
+import java.time.format.DateTimeFormatter;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,11 +38,14 @@ public class AssistantReportInvoiceController {
 	
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 	
+	private final static DateTimeFormatter dtFormater = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+	
 	public void printSales(ActionRequest request, ActionResponse response) throws AxelorException  {
 		
 		AssistantReportInvoice assistant = request.getContext().asType(AssistantReportInvoice.class);
-
-		String name = I18n.get("SaleInvoicesDetails-")+assistant.getFromDate().toString("dd/MM/yyyy-")+assistant.getToDate().toString("dd/MM/yyyy");
+		
+		
+		String name = I18n.get("SaleInvoicesDetails-") + getDateString(assistant);
 		
 		String fileLink = ReportFactory.createReport(IReport.SALE_INVOICES_DETAILS, name+"-${date}")
 				.addParam("Locale", this.getLanguageToPrinting())
@@ -61,13 +66,16 @@ public class AssistantReportInvoiceController {
 				.add("html", fileLink).map());
 	}
 	
+	private String getDateString(AssistantReportInvoice assistant) {
+		return assistant.getFromDate().format(dtFormater) + assistant.getToDate().format(dtFormater);
+	}
 	
 	
 	public void printPurchases(ActionRequest request, ActionResponse response) throws AxelorException  {
 		
 		AssistantReportInvoice assistant = request.getContext().asType(AssistantReportInvoice.class);
 		
-		String name = I18n.get("PurchaseInvoicesDetails-")+assistant.getFromDate().toString("dd/MM/yyyy-")+assistant.getToDate().toString("dd/MM/yyyy");
+		String name = I18n.get("PurchaseInvoicesDetails-") + getDateString(assistant);
 		
 		String fileLink = ReportFactory.createReport(IReport.PURCHASE_INVOICES_DETAILS, name+"-${date}")
 				.addParam("Locale", this.getLanguageToPrinting())

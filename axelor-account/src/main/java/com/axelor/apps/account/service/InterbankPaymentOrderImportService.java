@@ -21,7 +21,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.List;
 
-import org.joda.time.DateTime;
+import java.time.ZonedDateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -59,7 +59,7 @@ public class InterbankPaymentOrderImportService {
 	protected PartnerRepository partnerRepo;
 	protected InvoiceRepository invoiceRepo;
 
-	protected DateTime dateTime;
+	protected ZonedDateTime ZonedDateTime;
 
 	@Inject
 	public InterbankPaymentOrderImportService(AppAccountService appAccountService, PaymentVoucherCreateService paymentVoucherCreateService, CfonbImportService cfonbImportService,
@@ -73,7 +73,7 @@ public class InterbankPaymentOrderImportService {
 		this.accountConfigService = accountConfigService;
 		this.partnerRepo = partnerRepo;
 		this.invoiceRepo = invoiceRepo;
-		this.dateTime = appAccountService.getTodayDateTime();
+		this.ZonedDateTime = appAccountService.getTodayDateTime();
 
 	}
 
@@ -106,7 +106,7 @@ public class InterbankPaymentOrderImportService {
 			this.updateBankDetails(payment, invoice, paymentMode);
 		}
 
-		return paymentVoucherCreateService.createPaymentVoucherIPO(invoice, this.dateTime, amount, paymentMode);
+		return paymentVoucherCreateService.createPaymentVoucherIPO(invoice, this.ZonedDateTime, amount, paymentMode);
 	}
 
 

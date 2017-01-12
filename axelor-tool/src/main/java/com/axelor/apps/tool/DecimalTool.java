@@ -20,7 +20,7 @@ package com.axelor.apps.tool;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
-import org.joda.time.LocalDate;
+import java.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
