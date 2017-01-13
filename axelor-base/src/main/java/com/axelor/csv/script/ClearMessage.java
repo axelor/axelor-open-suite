@@ -33,23 +33,20 @@ public class ClearMessage {
 	MailMessageRepository mailRepo;
 
 	private static final Logger LOG = LoggerFactory.getLogger(ClearMessage.class); 
-			
+	
 	//Delete all mail messages generated on import
+	
 	@Transactional
-	private void deleteMailMessages(){
+	public Object clearAllMailMessages(Object bean, Map<String,Object> values) {
 		
-		for(MailMessage mailMessage : mailRepo.all().fetch()){
+		for(MailMessage mailMessage : mailRepo.all().fetch()) {
 			try{
 				mailRepo.remove(mailMessage);
-			}catch(Exception e){
+			} catch(Exception e) {
 				LOG.debug("MailMessage: {}, Exception: {}",mailMessage.getId(),e.getMessage());
 			}
 		}
-	}
-	
-	public Object clearAllMailMessages(Object bean, Map<String,Object> values) {
 		
-		deleteMailMessages();
 		return bean;
 		
 	}

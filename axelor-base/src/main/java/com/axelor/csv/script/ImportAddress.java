@@ -30,10 +30,7 @@ public class ImportAddress {
 	
 	public Object importAddress(Object bean, Map<String,Object> values) {
 		
-		assert bean instanceof Address;
-		
 		Address address = (Address) bean;
-		
 		address.setFullName(addressService.computeFullName(address));
 		
 		return address;
