@@ -254,7 +254,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 		ReportFactory.createReport(IReport.PURCHASE_ORDER, title+"-${date}")
 				.addParam("PurchaseOrderId", purchaseOrder.getId().toString())
 				.addParam("Locale", language)
-				.addModel(purchaseOrder)
+				.toAttach(purchaseOrder)
 				.generate()
 				.getFileLink();
 

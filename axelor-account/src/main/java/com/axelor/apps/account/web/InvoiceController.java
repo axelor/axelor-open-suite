@@ -99,8 +99,9 @@ public class InvoiceController {
 	 * @param request
 	 * @param response
 	 * @return
+	 * @throws AxelorException
 	 */
-	public void ventilate(ActionRequest request, ActionResponse response) {
+	public void ventilate(ActionRequest request, ActionResponse response) throws AxelorException {
 
 		Invoice invoice = request.getContext().asType(Invoice.class);
 		invoice = invoiceRepo.find(invoice.getId());
@@ -112,6 +113,32 @@ public class InvoiceController {
 		catch(Exception e)  {
 			TraceBackService.trace(response, e);
 		}
+
+
+		String language;
+		try {
+			language = invoice.getPartner().getLanguageSelect() != null? invoice.getPartner().getLanguageSelect() : invoice.getCompany().getPrintingSettings().getLanguageSelect() != null ? invoice.getCompany().getPrintingSettings().getLanguageSelect() : "en" ;
+		} catch (NullPointerException e) {
+			language = "en";
+		}
+
+		String title = I18n.get("Invoice");
+		if(invoice.getInvoiceId() != null)  {
+			title += invoice.getInvoiceId();
+		}
+
+		String fileLink = ReportFactory.createReport(IReport.INVOICE, title+"-${date}")
+									   .addParam("InvoiceId", invoice.getId().toString())
+									   .addParam("Locale", language)
+									   .toAttach(invoice)
+									   .generate()
+									   .getFileLink();
+
+		logger.debug("Printing "+title);
+
+		response.setView(ActionView
+				.define(title)
+				.add("html", fileLink).map());
 	}
 
 	/**
@@ -261,7 +288,6 @@ public class InvoiceController {
 			String fileLink = ReportFactory.createReport(IReport.INVOICE, title+"-${date}")
 					.addParam("InvoiceId", invoiceIds)
 					.addParam("Locale", language)
-					.addModel(invoice)
 					.generate()
 					.getFileLink();
 

@@ -333,7 +333,7 @@ public class SaleOrderServiceImpl implements SaleOrderService {
 		ReportFactory.createReport(IReport.SALES_ORDER, this.getFileName(saleOrder)+"-${date}")
 				.addParam("Locale", language)
 				.addParam("SaleOrderId", saleOrder.getId())
-				.addModel(saleOrder)
+				.toAttach(saleOrder)
 				.generate()
 				.getFileLink();
 		
