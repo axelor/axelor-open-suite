@@ -23,6 +23,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Map;
+import java.util.Objects;
 
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
@@ -52,8 +53,10 @@ public class ReportSettings {
 	protected Model model;
 	protected String fileName;
 	protected File output;
-	
-	
+
+	private boolean FLAG_ATTACH = false;
+
+
 	public ReportSettings(String rptdesign, String outputName)  {
 		
 		this.rptdesign = rptdesign;
@@ -93,7 +96,7 @@ public class ReportSettings {
 	
 	protected void attach() throws FileNotFoundException, IOException  {
 		
-		if (model != null && model.getId() != null && output != null) {
+		if (FLAG_ATTACH && model.getId() != null && output != null) {
 			try (InputStream is = new FileInputStream(output)) {
 				Beans.get(MetaFiles.class).attach(is, fileName, model);
 			}
@@ -126,9 +129,10 @@ public class ReportSettings {
 		
 	}
 	
-	public ReportSettings addModel(Model model)  {
+	public ReportSettings toAttach(Model model)  {
 		
-		this.model = model;
+		this.model = Objects.requireNonNull(model);
+		FLAG_ATTACH = true;
 		
 		return this;
 		

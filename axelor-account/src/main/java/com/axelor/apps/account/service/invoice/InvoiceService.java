@@ -133,5 +133,7 @@ public interface InvoiceService {
 	public void updateAmountPaid(Invoice invoice) throws AxelorException;
 	
 	public void generateBudgetDistribution(Invoice invoice);
+	
+	public List<String> generateInvoice(Invoice invoice, String invoiceIds, boolean toAttach) throws AxelorException;
 
 }
