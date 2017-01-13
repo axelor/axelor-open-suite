@@ -19,12 +19,14 @@ package com.axelor.apps.account.service.invoice;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.axelor.apps.ReportFactory;
 import com.axelor.apps.account.db.BudgetDistribution;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
@@ -34,6 +36,7 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
+import com.axelor.apps.account.report.IReport;
 import com.axelor.apps.account.service.invoice.factory.CancelFactory;
 import com.axelor.apps.account.service.invoice.factory.ValidateFactory;
 import com.axelor.apps.account.service.invoice.factory.VentilateFactory;
@@ -44,7 +47,9 @@ import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.base.service.alarm.AlarmEngineService;
+import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.exception.AxelorException;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
@@ -201,6 +206,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 		
 		invoiceRepo.save(invoice);
 		
+		generateInvoice(invoice, invoice.getId().toString(), true);
 	}
 
 	/**
@@ -317,7 +323,33 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 		return amountPaid;
 	}
 	
-	
+	@Override
+	public List<String> generateInvoice(Invoice invoice, String invoiceIds, boolean toAttach) throws AxelorException {
+		String language;
+		try {
+			language = invoice.getPartner().getLanguageSelect() != null? invoice.getPartner().getLanguageSelect() : invoice.getCompany().getPrintingSettings().getLanguageSelect() != null ? invoice.getCompany().getPrintingSettings().getLanguageSelect() : "en" ;
+		} catch (NullPointerException e) {
+			language = "en";
+		}
+
+		String title = I18n.get("Invoice");
+		if(invoice.getInvoiceId() != null) {
+			title += invoice.getInvoiceId();
+		}
+		
+		ReportSettings rS = ReportFactory.createReport(IReport.INVOICE, title + "-${date}");
+		if (toAttach) {
+			rS.toAttach(invoice);
+		}
+		String fileLink = rS.addParam("InvoiceId", invoiceIds)
+							.addParam("Locale", language)
+							.generate()
+							.getFileLink();
+		
+		List<String> res = Arrays.asList(title, fileLink);
+		
+		return res;
+	}
 	
 }
 

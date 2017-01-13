@@ -24,11 +24,9 @@ import org.eclipse.birt.core.exception.BirtException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.axelor.apps.ReportFactory;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
-import com.axelor.apps.account.report.IReport;
 import com.axelor.apps.account.service.IrrecoverableService;
 import com.axelor.apps.account.service.JournalService;
 import com.axelor.apps.account.service.invoice.InvoiceService;
@@ -109,36 +107,9 @@ public class InvoiceController {
 		try {
 			invoiceService.ventilate(invoice);
 			response.setReload(true);
-		}
-		catch(Exception e)  {
+		} catch(Exception e) {
 			TraceBackService.trace(response, e);
 		}
-
-
-		String language;
-		try {
-			language = invoice.getPartner().getLanguageSelect() != null? invoice.getPartner().getLanguageSelect() : invoice.getCompany().getPrintingSettings().getLanguageSelect() != null ? invoice.getCompany().getPrintingSettings().getLanguageSelect() : "en" ;
-		} catch (NullPointerException e) {
-			language = "en";
-		}
-
-		String title = I18n.get("Invoice");
-		if(invoice.getInvoiceId() != null)  {
-			title += invoice.getInvoiceId();
-		}
-
-		String fileLink = ReportFactory.createReport(IReport.INVOICE, title+"-${date}")
-									   .addParam("InvoiceId", invoice.getId().toString())
-									   .addParam("Locale", language)
-									   .toAttach(invoice)
-									   .generate()
-									   .getFileLink();
-
-		logger.debug("Printing "+title);
-
-		response.setView(ActionView
-				.define(title)
-				.add("html", fileLink).map());
 	}
 
 	/**
@@ -273,29 +244,13 @@ public class InvoiceController {
 		}
 
 		if(!invoiceIds.equals("")){
-			String language;
-			try{
-				language = invoice.getPartner().getLanguageSelect() != null? invoice.getPartner().getLanguageSelect() : invoice.getCompany().getPrintingSettings().getLanguageSelect() != null ? invoice.getCompany().getPrintingSettings().getLanguageSelect() : "en" ;
-			}catch (NullPointerException e){
-				language = "en";
-			}
-
-			String title = I18n.get("Invoice");
-			if(invoice.getInvoiceId() != null)  {
-				title += invoice.getInvoiceId();
-			}
+			List<String> strings = invoiceService.generateInvoice(invoice, invoiceIds, false);
 			
-			String fileLink = ReportFactory.createReport(IReport.INVOICE, title+"-${date}")
-					.addParam("InvoiceId", invoiceIds)
-					.addParam("Locale", language)
-					.generate()
-					.getFileLink();
-
-			logger.debug("Printing "+title);
+			logger.debug("Printing " + strings.get(0));
 		
 			response.setView(ActionView
-					.define(title)
-					.add("html", fileLink).map());
+					.define(strings.get(0))
+					.add("html", strings.get(1)).map());
 			
 		}else{
 			response.setFlash(I18n.get(IExceptionMessage.INVOICE_3));
