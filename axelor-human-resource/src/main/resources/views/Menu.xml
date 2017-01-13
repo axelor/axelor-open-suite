@@ -18,7 +18,7 @@
 
 	<action-view name="timesheet.all" model="com.axelor.apps.hr.db.Timesheet"
 		title="My Timesheets">
-		<view name="timesheet-grid" type="grid" />
+		<view name="my-timesheets-grid" type="grid" />
 		<view name="timesheet-form" type="form" />
 		<domain>self.user = :user_id AND self.company = :company_id</domain>
 		<context name="user_id" expr="eval:__user__" />
