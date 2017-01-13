@@ -160,10 +160,6 @@
   		<attribute name="readonly" expr="eval: false" for="information" if="statusSelect == 1 || statusSelect == 5"/>
 	</action-attrs>
 	
-	<action-attrs name="action-leave-request-attrs-domain-leave-request-select">
-		<attribute name="domain" for="$leaveRequestSelect" expr="eval: &quot; self.statusSelect = 1 AND self.user = ${__user__.id} &quot;"/>
-	</action-attrs>
-	
 	<action-validate name="action-leave-request-validate-dates">
   		<error if="( toDate &lt; fromDate || (toDate == fromDate &amp;&amp; startOnSelect > endOnSelect)) &amp;&amp; fromDate != null &amp;&amp; toDate != null" message="Invalide dates"/>
 	</action-validate>

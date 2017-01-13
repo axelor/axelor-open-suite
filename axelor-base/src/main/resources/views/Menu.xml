@@ -369,26 +369,6 @@
 		<view type="form" name="company-form"/>
 	</action-view>
 	
-	<menuitem name="mail-conf-template"
-		parent="mail-conf" title="Template"
-		action="admin.root.templating.template" order="-100" />
-		
-	<action-view name="admin.root.templating.template"
-		title="Template" model="com.axelor.apps.message.db.Template">
-		<view type="grid" name="template-grid"/>
-		<view type="form" name="template-form"/>
-	</action-view>
-		
-	<menuitem name="mail-conf-template-rules"
-		parent="mail-conf" title="Template Rules"
-		action="admin.root.templating.template.rules" order="-90" />
-		
-	<action-view name="admin.root.templating.template.rules"
-		title="Template Rules" model="com.axelor.apps.base.db.TemplateRule">
-		<view type="grid" name="template-rule-grid" />
-		<view type="form" name="template-rule-form" />
-	</action-view>
-	
 	<menuitem name="mail-conf-pdf-templates"
 		parent="mail-conf" order="-60" title="PDF Templates"
 		action="admin.root.templating.pdf.templates" />
