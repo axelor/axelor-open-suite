@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 import com.axelor.apps.ReportFactory;
 import com.axelor.apps.account.db.Invoice;
@@ -250,7 +251,7 @@ public class ForecastRecapService {
 		else{
 			employeeList = Beans.get(EmployeeRepository.class).all().filter("self.user.activeCompany = ?1",forecastRecap.getCompany()).fetch();
 		}
-		LocalDate itDate = LocalDate.parse(forecastRecap.getFromDate().toString());
+		LocalDate itDate = LocalDate.parse(forecastRecap.getFromDate().toString(), DateTimeFormatter.ISO_DATE);
 		while(!itDate.isAfter(forecastRecap.getToDate())){
 			LocalDate monthEnd = itDate.withDayOfMonth(itDate.lengthOfMonth());
 			if (itDate.isEqual(monthEnd)) {

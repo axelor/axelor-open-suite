@@ -57,7 +57,7 @@ public class MoveLineReportServiceImpl implements MoveLineReportService  {
 
 	protected MoveLineReportRepository moveLineReportRepo;
 
-	protected ZonedDateTime ZonedDateTime;
+	protected ZonedDateTime datetime;
 
 	protected String query = "";
 
@@ -71,7 +71,7 @@ public class MoveLineReportServiceImpl implements MoveLineReportService  {
 	public MoveLineReportServiceImpl(AppAccountService appBaseService, MoveLineReportRepository moveLineReportRepo, AccountRepository accountRepo) {
 		this.moveLineReportRepo = moveLineReportRepo;
 		this.accountRepo = accountRepo;
-		ZonedDateTime = appBaseService.getTodayDateTime();
+		datetime = appBaseService.getTodayDateTime();
 
 	}
 
@@ -298,7 +298,7 @@ public class MoveLineReportServiceImpl implements MoveLineReportService  {
 	 */
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void setPublicationDateTime(MoveLineReport moveLineReport)  {
-		moveLineReport.setPublicationDateTime(this.ZonedDateTime);
+		moveLineReport.setPublicationDateTime(this.datetime);
 		moveLineReportRepo.save(moveLineReport);
 	}
 

@@ -59,7 +59,7 @@ public class InterbankPaymentOrderImportService {
 	protected PartnerRepository partnerRepo;
 	protected InvoiceRepository invoiceRepo;
 
-	protected ZonedDateTime ZonedDateTime;
+	protected ZonedDateTime datetime;
 
 	@Inject
 	public InterbankPaymentOrderImportService(AppAccountService appAccountService, PaymentVoucherCreateService paymentVoucherCreateService, CfonbImportService cfonbImportService,
@@ -73,7 +73,7 @@ public class InterbankPaymentOrderImportService {
 		this.accountConfigService = accountConfigService;
 		this.partnerRepo = partnerRepo;
 		this.invoiceRepo = invoiceRepo;
-		this.ZonedDateTime = appAccountService.getTodayDateTime();
+		this.datetime = appAccountService.getTodayDateTime();
 
 	}
 
@@ -106,7 +106,7 @@ public class InterbankPaymentOrderImportService {
 			this.updateBankDetails(payment, invoice, paymentMode);
 		}
 
-		return paymentVoucherCreateService.createPaymentVoucherIPO(invoice, this.ZonedDateTime, amount, paymentMode);
+		return paymentVoucherCreateService.createPaymentVoucherIPO(invoice, this.datetime, amount, paymentMode);
 	}
 
 

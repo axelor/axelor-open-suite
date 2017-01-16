@@ -21,6 +21,8 @@ import java.math.BigDecimal;
 import java.util.Map;
 
 import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -75,7 +77,7 @@ public class ProductionOrderWizardServiceImpl implements ProductionOrderWizardSe
 		
 		ZonedDateTime startDate;
 		if (context.containsKey("_startDate") && context.get("_startDate") != null ){
-			startDate = ZonedDateTime.parse((CharSequence) context.get("_startDate"));
+			startDate = ZonedDateTime.parse((CharSequence) context.get("_startDate"), DateTimeFormatter.ISO_DATE_TIME);
 		}else{
 			startDate = appProductionService.getTodayDateTime();
 		}

@@ -104,7 +104,7 @@ public class SaleOrderProjectController {
 		
 		LocalDate deadline= null;
 		if (request.getContext().get("deadline") != null) {
-			deadline = LocalDate.parse(request.getContext().get("deadline").toString());
+			deadline = LocalDate.parse(request.getContext().get("deadline").toString(), DateTimeFormatter.ISO_DATE);
 		}
 		
 		InvoicingProject invoicingProject = invoicingProjectService.createInvoicingProject(saleOrder, deadline, Integer.valueOf( request.getContext().get("invoicingTypeSelect").toString() ));

@@ -28,6 +28,8 @@ import javax.mail.MessagingException;
 import java.time.DayOfWeek;
 import java.time.Duration;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -413,7 +415,7 @@ public class EventController {
 						IException.CONFIGURATION_ERROR);
 			}
 			
-			endDate = LocalDate.parse(request.getContext().get("endDate").toString());
+			endDate = LocalDate.parse(request.getContext().get("endDate").toString(), DateTimeFormatter.ISO_DATE);
 			
 			if(endDate.isBefore(event.getStartDateTime().toLocalDate()) && endDate.isEqual(event.getStartDateTime().toLocalDate())){
 				throw new AxelorException(String.format(I18n.get(IExceptionMessage.RECURRENCE_END_DATE)),

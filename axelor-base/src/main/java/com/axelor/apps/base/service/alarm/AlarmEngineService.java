@@ -49,7 +49,7 @@ public class AlarmEngineService <T extends Model> {
 
 	private static final Logger LOG = LoggerFactory.getLogger(AlarmEngineService.class);
 
-	private ZonedDateTime ZonedDateTime;
+	private ZonedDateTime datetime;
 
 	private Templates templates;
 	
@@ -59,13 +59,13 @@ public class AlarmEngineService <T extends Model> {
 	@Inject
 	public AlarmEngineService(AppBaseService appBaseService) {
 		this.appBaseService = appBaseService;
-		ZonedDateTime = this.appBaseService.getTodayDateTime();
+		datetime = this.appBaseService.getTodayDateTime();
 
 	}
 
-	public AlarmEngineService(ZonedDateTime ZonedDateTime) {
+	public AlarmEngineService(ZonedDateTime datetime) {
 
-		this.ZonedDateTime = ZonedDateTime;
+		this.datetime = datetime;
 
 	}
 
@@ -217,7 +217,7 @@ public class AlarmEngineService <T extends Model> {
 
 		Alarm alarm = new Alarm();
 
-		alarm.setDate(ZonedDateTime);
+		alarm.setDate(datetime);
 		alarm.setAlarmEngine(alarmEngine);
 		alarm.setContent( content(alarmEngine.getAlarmMessage(), t) );
 

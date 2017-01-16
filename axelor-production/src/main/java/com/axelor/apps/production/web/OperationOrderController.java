@@ -214,7 +214,7 @@ public class OperationOrderController {
 		List<Map<String, Object>> dataList = new ArrayList<Map<String, Object>>();
 		LocalDateTime fromDateTime = LocalDateTime.parse(request.getContext().get("fromDateTime").toString(),DateTimeFormatter.ISO_DATE_TIME);
 		LocalDateTime toDateTime = LocalDateTime.parse(request.getContext().get("toDateTime").toString(),DateTimeFormatter.ISO_DATE_TIME);
-		LocalDateTime itDateTime = LocalDateTime.parse(fromDateTime.toString());
+		LocalDateTime itDateTime = LocalDateTime.parse(fromDateTime.toString(), DateTimeFormatter.ISO_DATE_TIME);
 		
 		if(Duration.between(fromDateTime,toDateTime).toDays() > 20){
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.CHARGE_MACHINE_DAYS)), IException.CONFIGURATION_ERROR);
@@ -289,7 +289,7 @@ public class OperationOrderController {
 		fromDateTime = fromDateTime.withHour(0).withMinute(0);
 		LocalDateTime toDateTime = LocalDateTime.parse(request.getContext().get("toDateTime").toString(), DateTimeFormatter.ISO_DATE_TIME);
 		toDateTime = toDateTime.withHour(23).withMinute(59);
-		LocalDateTime itDateTime = LocalDateTime.parse(fromDateTime.toString());
+		LocalDateTime itDateTime = LocalDateTime.parse(fromDateTime.toString(), DateTimeFormatter.ISO_DATE_TIME);
 		if(Duration.between(fromDateTime,toDateTime).toDays() > 500){
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.CHARGE_MACHINE_DAYS)), IException.CONFIGURATION_ERROR);
 		}
@@ -325,7 +325,7 @@ public class OperationOrderController {
 					}
 					long numberOfMinutesPerDay = 0;
 					if(operationOrder.getWorkCenter().getMachine().getWeeklyPlanning() != null){
-						DayPlanning dayPlanning = weeklyPlanningService.findDayPlanning(operationOrder.getWorkCenter().getMachine().getWeeklyPlanning(), LocalDate.parse(itDateTime.toString()));
+						DayPlanning dayPlanning = weeklyPlanningService.findDayPlanning(operationOrder.getWorkCenter().getMachine().getWeeklyPlanning(), LocalDateTime.parse(itDateTime.toString(), DateTimeFormatter.ISO_DATE_TIME).toLocalDate());
 						if(dayPlanning != null){
 							numberOfMinutesPerDay = Duration.between(dayPlanning.getMorningFrom(), dayPlanning.getMorningTo()).toMinutes();
 							numberOfMinutesPerDay += Duration.between(dayPlanning.getAfternoonFrom(), dayPlanning.getAfternoonTo()).toMinutes();

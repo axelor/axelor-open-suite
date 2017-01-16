@@ -74,6 +74,8 @@ public class AppController {
 		App app = request.getContext().asType(App.class);
 		
 		appService.installParent(app);
+		
+		response.setReload(true);
 	}
 	
 	public void checkChildren(ActionRequest request, ActionResponse response) {

@@ -23,6 +23,8 @@ import java.util.List;
 import java.util.Map;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -435,7 +437,7 @@ public class ExpenseController {
 	 		expenseLine.setToCity(request.getData().get("locationTo").toString());
 	 		expenseLine.setKilometricTypeSelect(new Integer(request.getData().get("allowanceTypeSelect").toString()));
 	 		expenseLine.setComments(request.getData().get("comments").toString());
-	 		expenseLine.setExpenseDate(LocalDate.parse(request.getData().get("date").toString()));
+	 		expenseLine.setExpenseDate(LocalDate.parse(request.getData().get("date").toString(), DateTimeFormatter.ISO_DATE));
 	 		
 	 		Employee employee = user.getEmployee();
 	 		if(employee != null && employee.getKilometricAllowParam() != null)  {

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+
+	<form id="production-meta-custom-field-form" name="meta-custom-field-form" title="Custom field" model="com.axelor.meta.db.MetaFieldCustom" onNew="action-configurator-set-meta-custom-field-default">
+	  <panel title="Overview">
+	    <field name="name"/>
+	    <field name="type"/>
+	    <field name="title"/>
+	    <field name="defaultValue"/>
+	    <field name="includedInCost" />
+	    <field name="help" colSpan="12"/>
+	    <field name="model" hidden="true"/>
+	    <field name="modelField" hidden="true" />
+	  </panel>
+	  <panel title="Options">
+	    <field name="required"/>
+	    <field name="hidden"/>
+	    <field name="selection"/>
+	    <field name="widget"/>
+	    <field name="minSize" title="Min" showIf="type === 'string' || type === 'integer' || type === 'decimal'"/>
+	    <field name="maxSize" title="Max" showIf="type === 'string' || type === 'integer' || type === 'decimal'"/>
+	    <field name="precision" showIf="type === 'decimal'"/>
+	    <field name="scale" showIf="type === 'decimal'"/>
+	    <field name="regex" showIf="type === 'string'" colSpan="12"/>
+	    <field name="targetModel" showIf="type === 'many-to-one'"/>
+	    <field name="targetName" showIf="type === 'many-to-one'"/>
+	    <field name="domain" showIf="type === 'many-to-one'" colSpan="12"/>
+	  </panel>
+	  <panel title="Widget Attributes" sidebar="true">
+	    <field name="widgetAttrs" widget="json-raw"/>
+	  </panel>
+	  <panel title="Advance Options" itemSpan="12">
+	    <field name="showIf"/>
+	    <field name="hideIf"/>
+	    <field name="requiredIf"/>
+	  </panel>
+	</form>
+	
+	<grid id="production-meta-custom-field-grid" name="meta-custom-field-grid" title="Custom fields" model="com.axelor.meta.db.MetaFieldCustom" edit-icon="true">
+	  <field name="name"/>
+	  <field name="type"/>
+	</grid>
+	
+	<action-attrs name="action-configurator-set-meta-custom-field-default" >
+    	<attribute name="value"	for="model" expr="eval:'com.axelor.apps.production.db.Configurator'" if="_parent._model == 'com.axelor.apps.production.db.ConfiguratorCreator'"/>
+    	<attribute name="value" for="modelField" expr="eval:'attributes'" if="_parent._model == 'com.axelor.apps.production.db.ConfiguratorCreator'"/>
+<!--     	<attribute name="value" for="showIf" expr="eval:'configuratorCreator?.id == ' + id" if="_parent.model == 'com.axelor.apps.production.db.ConfiguratorCreator'"/> -->
+    </action-attrs>
+    
+</object-views>

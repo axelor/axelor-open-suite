@@ -89,7 +89,7 @@
 	
 	<menuitem name="manufacturing-root-report" parent="manufacturing-root"
 		title="Reportings"/>
-
+		
 	<menuitem name="manufacturing-conf" parent="manufacturing-root" title="Configurations"/>
 
 	<menuitem name="manufacturing-conf-work-center" parent="manufacturing-conf"
@@ -117,6 +117,27 @@
 		model="com.axelor.apps.production.db.CostSheetGroup" >
 		<view type="grid" name="cost-sheet-group-grid" />
 		<view type="form" name="cost-sheet-group-form" />
+	</action-view>
+	
+	<menuitem name="manufacturing-conf-configurators" parent="manufacturing-conf"
+		title="Configurators"/>
+	
+	<menuitem name="manufacturing-conf-configurators-creator" parent="manufacturing-conf-configurators"
+		title="Configurator creators" action="manufacturing.conf.configurator.creator"/>
+	
+	<action-view name="manufacturing.conf.configurator.creator" title="Configurator creators"
+		model="com.axelor.apps.production.db.ConfiguratorCreator" >
+		<view type="grid" name="configurator-creator-grid" />
+		<view type="form" name="configurator-creator-form" />
+	</action-view>
+	
+	<menuitem name="manufacturing-conf-configurators-configurators" parent="manufacturing-conf-configurators"
+		title="Configurators" action="manufacturing.conf.configurator.configurators"/>
+	
+	<action-view name="manufacturing.conf.configurator.configurators" title="Configurators"
+		model="com.axelor.apps.production.db.Configurator" >
+		<view type="grid" name="configurator-grid" />
+		<view type="form" name="configurator-form" />
 	</action-view>
 	
 	

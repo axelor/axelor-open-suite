@@ -22,6 +22,8 @@ import java.util.List;
 import java.util.Map;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -87,10 +89,10 @@ public class TimesheetController {
 		
 		LocalDate fromGenerationDate = null;
 		if(context.get("fromGenerationDate") != null)
-			fromGenerationDate = LocalDate.parse(context.get("fromGenerationDate").toString());
+			fromGenerationDate = LocalDate.parse(context.get("fromGenerationDate").toString(), DateTimeFormatter.ISO_DATE);
 		LocalDate toGenerationDate = null;
 		if(context.get("toGenerationDate") != null)
-			toGenerationDate = LocalDate.parse(context.get("toGenerationDate").toString());
+			toGenerationDate = LocalDate.parse(context.get("toGenerationDate").toString(), DateTimeFormatter.ISO_DATE);
 		BigDecimal logTime = BigDecimal.ZERO;
 		if(context.get("logTime") != null)
 			logTime = new BigDecimal(context.get("logTime").toString());

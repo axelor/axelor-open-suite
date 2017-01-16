@@ -23,6 +23,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 import com.google.common.base.Strings;
 
@@ -33,100 +34,100 @@ public class ImportDateTime {
 	Pattern  patternYear = Pattern.compile("[0-9]{1,4}");
 	Pattern  patternMonth = Pattern.compile("[0-9]{1,2}");
 	
-	public LocalDateTime updateYear(LocalDateTime ZonedDateTime, String year){
+	public LocalDateTime updateYear(LocalDateTime datetime, String year){
 		if(!Strings.isNullOrEmpty(year)){
 			Matcher matcher = patternYear.matcher(year);
 			if(matcher.find()){
 				Integer years = Integer.parseInt(matcher.group());
 				if(year.startsWith("+"))
-					ZonedDateTime = ZonedDateTime.plusYears(years);
+					datetime = datetime.plusYears(years);
 				else if(year.startsWith("-"))
-					ZonedDateTime = ZonedDateTime.minusYears(years);
+					datetime = datetime.minusYears(years);
 				else
-					ZonedDateTime = ZonedDateTime.withYear(years);
+					datetime = datetime.withYear(years);
 			}
 		}
-		return ZonedDateTime;
+		return datetime;
 	}
 	
-	public LocalDateTime updateMonth(LocalDateTime ZonedDateTime, String month){
+	public LocalDateTime updateMonth(LocalDateTime datetime, String month){
 		if(!Strings.isNullOrEmpty(month)){
 			Matcher matcher = patternMonth.matcher(month);
 			if(matcher.find()){
 				Integer months = Integer.parseInt(matcher.group());
 				if(month.startsWith("+"))
-					ZonedDateTime = ZonedDateTime.plusMonths(months);
+					datetime = datetime.plusMonths(months);
 				else if(month.startsWith("-"))
-					ZonedDateTime = ZonedDateTime.minusMonths(months);
+					datetime = datetime.minusMonths(months);
 				else
-					ZonedDateTime = ZonedDateTime.withMonth(months);
+					datetime = datetime.withMonth(months);
 			}
 		}
-		return ZonedDateTime;
+		return datetime;
 	}
 	
-	public LocalDateTime updateDay(LocalDateTime ZonedDateTime, String day){
+	public LocalDateTime updateDay(LocalDateTime datetime, String day){
 		if(!Strings.isNullOrEmpty(day)){
 			Matcher matcher = patternMonth.matcher(day);
 			if(matcher.find()){
 				Integer days = Integer.parseInt(matcher.group());
 				if(day.startsWith("+"))
-					ZonedDateTime = ZonedDateTime.plusDays(days);
+					datetime = datetime.plusDays(days);
 				else if(day.startsWith("-"))
-					ZonedDateTime = ZonedDateTime.minusDays(days);
+					datetime = datetime.minusDays(days);
 				else
-					ZonedDateTime = ZonedDateTime.withDayOfMonth(days);
+					datetime = datetime.withDayOfMonth(days);
 			}
 		}
-		return ZonedDateTime;
+		return datetime;
 	}
 	
-	public LocalDateTime updateHour(LocalDateTime ZonedDateTime, String hour){
+	public LocalDateTime updateHour(LocalDateTime datetime, String hour){
 		if(!Strings.isNullOrEmpty(hour)){
 			Matcher matcher = patternMonth.matcher(hour);
 			if(matcher.find()){
 				Integer hours = Integer.parseInt(matcher.group());
 				if(hour.startsWith("+"))
-					ZonedDateTime = ZonedDateTime.plusHours(hours);
+					datetime = datetime.plusHours(hours);
 				else if(hour.startsWith("-"))
-					ZonedDateTime = ZonedDateTime.minusHours(hours);
+					datetime = datetime.minusHours(hours);
 				else
-					ZonedDateTime = ZonedDateTime.withHour(hours);
+					datetime = datetime.withHour(hours);
 			}
 		}
-		return ZonedDateTime;
+		return datetime;
 	}
 	
-	public LocalDateTime updateMinute(LocalDateTime ZonedDateTime, String minute){
+	public LocalDateTime updateMinute(LocalDateTime datetime, String minute){
 		if(!Strings.isNullOrEmpty(minute)){
 			Matcher matcher = patternMonth.matcher(minute);
 			if(matcher.find()){
 				Integer minutes = Integer.parseInt(matcher.group());
 				if(minute.startsWith("+"))
-					ZonedDateTime = ZonedDateTime.plusMinutes(minutes);
+					datetime = datetime.plusMinutes(minutes);
 				else if(minute.startsWith("-"))
-					ZonedDateTime = ZonedDateTime.minusMinutes(minutes);
+					datetime = datetime.minusMinutes(minutes);
 				else
-					ZonedDateTime = ZonedDateTime.withMinute(minutes);
+					datetime = datetime.withMinute(minutes);
 			}
 		}
-		return ZonedDateTime;
+		return datetime;
 	}
 	
-	public LocalDateTime updateSecond(LocalDateTime ZonedDateTime, String second){
+	public LocalDateTime updateSecond(LocalDateTime datetime, String second){
 		if(!Strings.isNullOrEmpty(second)){
 			Matcher matcher = patternMonth.matcher(second);
 			if(matcher.find()){
 				Integer seconds = Integer.parseInt(matcher.group());
 				if(second.startsWith("+"))
-					ZonedDateTime = ZonedDateTime.plusSeconds(seconds);
+					datetime = datetime.plusSeconds(seconds);
 				else if(second.startsWith("-"))
-					ZonedDateTime = ZonedDateTime.minusSeconds(seconds);
+					datetime = datetime.minusSeconds(seconds);
 				else
-					ZonedDateTime = ZonedDateTime.withSecond(seconds);
+					datetime = datetime.withSecond(seconds);
 			}
 		}
-		return ZonedDateTime;
+		return datetime;
 	}
 	
 	public String importDate(String inputDate) {
@@ -139,17 +140,17 @@ public class ImportDateTime {
 				List<String> dates = Arrays.asList(inputDate.split("\\["));
 				inputDate = dates.get(0).equals("TODAY") ? LocalDate.now().toString() : dates.get(0);
 				if(dates.size() > 1){
-					LocalDateTime ZonedDateTime = LocalDateTime.parse(inputDate);
+					LocalDateTime localDate = LocalDate.parse(inputDate, DateTimeFormatter.ISO_DATE).atStartOfDay();
 					Matcher matcher = Pattern.compile(String.format(pat,4,"y")).matcher(dates.get(1));
 					if(matcher.find())
-						ZonedDateTime = updateYear(ZonedDateTime, matcher.group());
+						localDate = updateYear(localDate, matcher.group());
 					matcher = Pattern.compile(String.format(pat,2,"M")).matcher(dates.get(1));
 					if(matcher.find())
-						ZonedDateTime = updateMonth(ZonedDateTime,matcher.group());
+						localDate = updateMonth(localDate,matcher.group());
 					matcher = Pattern.compile(String.format(pat,2,"d")).matcher(dates.get(1));
 					if(matcher.find())
-							ZonedDateTime = updateDay(ZonedDateTime, matcher.group());
-					return ZonedDateTime.toLocalDate().toString();
+						localDate = updateDay(localDate, matcher.group());
+					return localDate.toString();
 				}else return inputDate;
 			}else return null;
 		}catch(Exception e){
@@ -172,26 +173,26 @@ public class ImportDateTime {
 				List<String> timeList = Arrays.asList(inputDateTime.split("\\["));
 				inputDateTime = timeList.get(0).equals("NOW") ? LocalDateTime.now().toString() : timeList.get(0);
 				if(timeList.size() > 1){
-					LocalDateTime ZonedDateTime = LocalDateTime.parse(inputDateTime);
+					LocalDateTime datetime = LocalDateTime.parse(inputDateTime, DateTimeFormatter.ISO_DATE_TIME);
 					Matcher matcher = Pattern.compile(String.format(pat,4,"y")).matcher(timeList.get(1));
 					if(matcher.find())
-						ZonedDateTime = updateYear(ZonedDateTime, matcher.group());
+						datetime = updateYear(datetime, matcher.group());
 					matcher = Pattern.compile(String.format(pat,2,"M")).matcher(timeList.get(1));
 					if(matcher.find())
-						ZonedDateTime = updateMonth(ZonedDateTime,matcher.group());
+						datetime = updateMonth(datetime,matcher.group());
 					matcher = Pattern.compile(String.format(pat,2,"d")).matcher(timeList.get(1));
 					if(matcher.find())
-						ZonedDateTime = updateDay(ZonedDateTime,matcher.group());
+						datetime = updateDay(datetime,matcher.group());
 					matcher = Pattern.compile(String.format(pat,2,"H")).matcher(timeList.get(1));
 					if(matcher.find())
-						ZonedDateTime = updateHour(ZonedDateTime,matcher.group());
+						datetime = updateHour(datetime,matcher.group());
 					matcher = Pattern.compile(String.format(pat,2,"m")).matcher(timeList.get(1));
 					if(matcher.find())
-						ZonedDateTime = updateMinute(ZonedDateTime,matcher.group());
+						datetime = updateMinute(datetime,matcher.group());
 					matcher = Pattern.compile(String.format(pat,2,"s")).matcher(timeList.get(1));
 					if(matcher.find())
-						ZonedDateTime = updateSecond(ZonedDateTime,matcher.group());
-					return ZonedDateTime.toString();
+						datetime = updateSecond(datetime,matcher.group());
+					return datetime.toString();
 				}
 				return inputDateTime.replace(" ","T");
 			}

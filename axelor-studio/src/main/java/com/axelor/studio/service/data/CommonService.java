@@ -69,7 +69,7 @@ public class CommonService {
 		map.put("url", "string");
 		map.put("long", "long");
 		map.put("date", "date");
-		map.put("ZonedDateTime", "ZonedDateTime");
+		map.put("datetime", "datetime");
 		map.put("time", "time");
 		map.put("duration", "integer");
 		map.put("select", "integer");

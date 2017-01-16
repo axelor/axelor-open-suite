@@ -372,9 +372,9 @@ public class ViewLoaderService {
 			case "LocalDate":
 				return "date";
 			case "ZonedDateTime":
-				return "ZonedDateTime";
+				return "datetime";
 			case "LocalDateTime":
-				return "ZonedDateTime";
+				return "datetime";
 			default:
 				return "string";
 		}

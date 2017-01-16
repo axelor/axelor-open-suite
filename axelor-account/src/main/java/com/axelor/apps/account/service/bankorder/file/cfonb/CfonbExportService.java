@@ -100,7 +100,7 @@ public class CfonbExportService {
 	 * @param reimbursementList
 	 * @throws AxelorException
 	 */
-	public void exportCFONB(Company company, ZonedDateTime ZonedDateTime, List<Reimbursement> reimbursementList, BankDetails bankDetails) throws AxelorException  {
+	public void exportCFONB(Company company, ZonedDateTime datetime, List<Reimbursement> reimbursementList, BankDetails bankDetails) throws AxelorException  {
 
 		this.testCompanyExportCFONBField(company);
 
@@ -109,7 +109,7 @@ public class CfonbExportService {
 		// 		un enregistrement destinataire (code 06)
 		// 		un enregistrement total (code 08)
 
-		String senderCFONB = this.createSenderReimbursementCFONB(ZonedDateTime, bankDetails);
+		String senderCFONB = this.createSenderReimbursementCFONB(datetime, bankDetails);
 		List<String> multiRecipientCFONB = new ArrayList<String>();
 		for(Reimbursement reimbursement : reimbursementList)  {
 			reimbursement = reimbursementRepo.find(reimbursement.getId());
@@ -125,7 +125,7 @@ public class CfonbExportService {
 		// Mise en majuscule des enregistrement
 //		cFONB = this.toUpperCase(cFONB);
 
-//		this.createCFONBFile(cFONB, ZonedDateTime, company.getAccountConfig().getReimbursementExportFolderPathCFONB(), "virement");
+//		this.createCFONBFile(cFONB, datetime, company.getAccountConfig().getReimbursementExportFolderPathCFONB(), "virement");
 	}
 
 	/**

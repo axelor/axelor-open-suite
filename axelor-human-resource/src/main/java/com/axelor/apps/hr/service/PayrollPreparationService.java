@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 import com.axelor.app.AppSettings;
 import com.axelor.apps.base.service.app.AppBaseService;
@@ -150,7 +151,7 @@ public class PayrollPreparationService {
 	public BigDecimal computeWorkingDaysNumber(PayrollPreparation payrollPreparation, List<PayrollLeave> payrollLeaveList){
 		LocalDate fromDate = payrollPreparation.getPeriod().getFromDate();
 		LocalDate toDate = payrollPreparation.getPeriod().getToDate();
-		LocalDate itDate = LocalDate.parse(fromDate.toString());
+		LocalDate itDate = LocalDate.parse(fromDate.toString(), DateTimeFormatter.ISO_DATE);
 		BigDecimal workingDays = BigDecimal.ZERO;
 		while(!itDate.isAfter(toDate)){
 			workingDays = workingDays.add(new BigDecimal(weeklyPlanningService.workingDayValue(payrollPreparation.getEmployee().getPlanning(), itDate)));

@@ -9,7 +9,7 @@
 	</grid>
 	
 	<form name="app-form" title="App" model="com.axelor.apps.base.db.App" canDelete="false" canNew="false" width="large" 
-		onSave="save,action-app-method-check-parent,action-app-method-install-parent,action-method-app-import-data-init"
+		onSave="action-app-method-check-parent,save,action-app-method-install-parent,action-method-app-import-data-init"
 		onLoad="action-app-on-load-attrs">
 		<panel>
 			<field name="image" widget="Image" colSpan="2"/>
@@ -21,7 +21,7 @@
 				<button name="configure" title="Configure" onClick="com.axelor.apps.base.web.AppController:configure"  colSpan="3"  />
         		<spacer colSpan="7"/>
 				<field name="demoDataLoaded" readonly="true" colSpan="2"/>
-				<button name="importDataDemo" onClick="save,action-method-app-import-data-demo" title="Import demo data" colSpan="3" hideIf="demoDataLoaded"/>
+				<button name="importDataDemo" onClick="save,action-method-app-import-data-demo" title="Import demo data" colSpan="3" />
 			</panel>
 			<field name="description" colSpan="12" readonly="true"/>
 			<field name="typeSelect" hidden="true" />
@@ -70,7 +70,7 @@
 	 </action-method>
 	 
 	 <action-method name="action-app-method-install-parent">
-	    <call class="com.axelor.apps.base.web.AppController" method="installParent" if="__this__.active &amp;&amp; __this__.active != __self__.active"/>
+	    <call class="com.axelor.apps.base.web.AppController" method="installParent" />
 	 </action-method>
 	 
 	 <action-method name="action-app-method-check-children">

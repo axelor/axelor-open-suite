@@ -28,6 +28,7 @@ import javax.mail.MessagingException;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 import com.axelor.apps.base.db.DayPlanning;
 import com.axelor.apps.base.db.WeeklyPlanning;
@@ -381,7 +382,7 @@ public class LeaveServiceImpl  implements  LeaveService  {
 			leaveDays = leaveDays.add(new BigDecimal(this.computeEndDateWithSelect(toDate, leaveRequest.getEndOnSelect(), weeklyPlanning)));
 		}
 		
-		LocalDate itDate = LocalDate.parse(fromDate.toString());
+		LocalDate itDate = LocalDate.parse(fromDate.toString(), DateTimeFormatter.ISO_DATE);
 		if(fromDate.isBefore(leaveRequest.getFromDate()) || fromDate.equals(leaveRequest.getFromDate())){
 			itDate = leaveRequest.getFromDate().plusDays(1);
 		}
@@ -430,9 +431,13 @@ public class LeaveServiceImpl  implements  LeaveService  {
 			}
 			leave.setLeaveLine(leaveLine);
 			leave.setRequestDate(appBaseService.getTodayDate());
-			leave.setFromDate(LocalDate.parse(request.getData().get("fromDate").toString()));
+			if (request.getData().get("fromDate") != null) {
+				leave.setFromDate(LocalDate.parse(request.getData().get("fromDate").toString(), DateTimeFormatter.ISO_DATE));
+			}
 			leave.setStartOnSelect(new Integer(request.getData().get("startOn").toString()));
-			leave.setToDate(LocalDate.parse(request.getData().get("toDate").toString()));
+			if (request.getData().get("todDate") != null) {
+				leave.setToDate(LocalDate.parse(request.getData().get("toDate").toString(), DateTimeFormatter.ISO_DATE));
+			}
 			leave.setEndOnSelect(new Integer(request.getData().get("endOn").toString()));
 			leave.setDuration(this.computeDuration(leave));
 			leave.setStatusSelect(LeaveRequestRepository.STATUS_AWAITING_VALIDATION);

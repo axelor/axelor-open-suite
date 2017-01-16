@@ -88,7 +88,7 @@ public class MoveCreateService {
 	 * @param company
 	 * @param invoice
 	 * @param partner
-	 * @param ZonedDateTime
+	 * @param date
 	 * @param isReject
 	 * 		<code>true = écriture de rejet avec séquence spécifique</code>
 	 * @return
