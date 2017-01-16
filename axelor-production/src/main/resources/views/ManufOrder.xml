@@ -82,7 +82,7 @@
 			<field name="isConsProOnOperation" readonly="true"/>
 			<field name="isToInvoice" onChange="save,action-manuf-order-method-is-to-invoice" if-module="axelor-business-production"/>
 			<field name="invoiced" showIf="isToInvoice" if-module="axelor-business-production"/>
-			<button name="preFillOperations" colSpan="4" title="Pre-fill operations" hideIf="statusSelect &gt; 1" onClick="save,action-manuf-order-method-pre-fill-operations,action-manuf-order-attrs-desactivate" />
+			<button name="preFillOperations" colSpan="4" title="Pre-fill operations" hideIf="statusSelect &gt; 1 &#124;&#124; operationOrderList.length &gt; 0" onClick="save,action-manuf-order-method-pre-fill-operations" />
 		</panel>  
 		<panel-tabs colSpan="4">
 			<panel-related field="operationOrderList" readonlyIf="statusSelect == 6" colSpan="12" form-view="operation-order-form" grid-view="operation-order-grid"/>
@@ -135,10 +135,6 @@
 		</panel>
 	  
 	</form>
-	
-	<action-attrs name="action-manuf-order-attrs-desactivate">
-  		<attribute for="preFillOperations" name="readonly" expr="true" />            
-	</action-attrs>
 	
 	<action-method name="action-manuf-order-method-is-to-invoice">
 		<call class="com.axelor.apps.production.web.ManufOrderBusinessController" method="propagateIsToInvoice"/>
