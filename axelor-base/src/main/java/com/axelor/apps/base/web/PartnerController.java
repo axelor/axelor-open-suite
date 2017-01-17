@@ -34,7 +34,6 @@ import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.db.PartnerAddress;
 import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
@@ -249,6 +248,11 @@ public class PartnerController {
 		}
 
 		response.setValue("$emailsList",emailsList);
+	}
+	
+	public void addContactToPartner(ActionRequest request, ActionResponse response) {
+		Partner contact = partnerRepo.find(request.getContext().asType(Partner.class).getId());
+		partnerService.addContactToPartner(contact);
 	}
 
 	public void findContactMails(ActionRequest request, ActionResponse response) {
