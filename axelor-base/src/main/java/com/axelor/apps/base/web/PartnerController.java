@@ -249,6 +249,11 @@ public class PartnerController {
 
 		response.setValue("$emailsList",emailsList);
 	}
+	
+	public void addContactToPartner(ActionRequest request, ActionResponse response) {
+		Partner contact = partnerRepo.find(request.getContext().asType(Partner.class).getId());
+		partnerService.addContactToPartner(contact);
+	}
 
 	public void findContactMails(ActionRequest request, ActionResponse response) {
 		Partner partner = request.getContext().asType(Partner.class);

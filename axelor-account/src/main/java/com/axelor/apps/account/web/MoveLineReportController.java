@@ -201,7 +201,7 @@ public class MoveLineReportController {
 						.addParam("MoveLineReportId", moveLineReport.getId())
 						.addParam("Locale", language)
 						.addFormat(moveLineReport.getExportTypeSelect())
-						.addModel(moveLineReport)
+						.toAttach(moveLineReport)
 						.generate()
 						.getFileLink();
 

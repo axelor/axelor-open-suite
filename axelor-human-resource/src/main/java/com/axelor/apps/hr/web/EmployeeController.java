@@ -50,7 +50,7 @@ public class EmployeeController {
 				.addParam("EmployeeId", Long.valueOf(employeeId) )
 				.addParam("YearId",  Long.valueOf(yearId) )
 				.addParam("Locale", language)
-				.addModel(Beans.get(EmployeeRepository.class).find(Long.valueOf(employeeId)))
+				.toAttach(Beans.get(EmployeeRepository.class).find(Long.valueOf(employeeId)))
 				.generate()
 				.getFileLink();
 	

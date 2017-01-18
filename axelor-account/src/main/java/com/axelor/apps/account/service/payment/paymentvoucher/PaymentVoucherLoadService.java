@@ -202,7 +202,7 @@ public class PaymentVoucherLoadService {
 		
 		PaymentVoucher paymentVoucher = payVoucherDueElement.getPaymentVoucher();
 		BigDecimal amountRemaining = paymentVoucher.getRemainingAmount();
-		LocalDate paymentDate = paymentVoucher.getPaymentDateTime().toLocalDate();
+		LocalDate paymentDate = paymentVoucher.getPaymentDate();
 		
 		PayVoucherElementToPay payVoucherElementToPay = new PayVoucherElementToPay();
 

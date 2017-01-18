@@ -58,7 +58,7 @@ public class EmployeeBonusController {
 		String fileLink = ReportFactory.createReport(IReport.EMPLOYEE_BONUS_MANAGEMENT, name)
 				.addParam("EmployeeBonusMgtId", bonus.getId())
 				.addParam("Locale", language)
-				.addModel(bonus)
+				.toAttach(bonus)
 				.generate()
 				.getFileLink();
 	

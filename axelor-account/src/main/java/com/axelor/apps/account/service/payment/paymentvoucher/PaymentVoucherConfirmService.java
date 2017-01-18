@@ -110,7 +110,7 @@ public class PaymentVoucherConfirmService  {
 		PaymentMode paymentMode = paymentVoucher.getPaymentMode();
 		Company company = paymentVoucher.getCompany();
 		Journal journal = paymentModeService.getPaymentModeJournal(paymentMode, company);
-		LocalDate paymentDate = paymentVoucher.getPaymentDateTime().toLocalDate();
+		LocalDate paymentDate = paymentVoucher.getPaymentDate();
 
 		boolean scheduleToBePaid = false;
 		Account paymentModeAccount = paymentModeService.getPaymentModeAccount(paymentMode, company);

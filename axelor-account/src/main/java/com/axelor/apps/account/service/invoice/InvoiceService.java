@@ -138,6 +138,8 @@ public interface InvoiceService {
 	
 	
 	public void generateBudgetDistribution(Invoice invoice);
+	
+	public List<String> generateInvoice(Invoice invoice, String invoiceIds, boolean toAttach) throws AxelorException;
 
 	public Invoice mergeInvoice(List<Invoice> invoiceList, Company company, Currency currency,
 			Partner partner, Partner contactPartner, PriceList priceList,

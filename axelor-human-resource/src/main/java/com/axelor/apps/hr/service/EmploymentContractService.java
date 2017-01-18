@@ -43,7 +43,7 @@ public class EmploymentContractService {
     	ReportFactory.createReport(IReport.EMPLYOMENT_CONTRACT, name+"-${date}")
 				.addParam("ContractId", EmploymentContract.getId())
 				.addParam("Locale", language)
-				.addModel(EmploymentContract)
+				.toAttach(EmploymentContract)
 				.generate()
 				.getFileLink();
 

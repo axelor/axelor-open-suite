@@ -14,6 +14,17 @@
 		<field name="user" form-view="user-form" grid-view="user-grid"/>
 	</grid>
 	
+	<grid name="my-timesheets-grid" title="My Timesheets" model="com.axelor.apps.hr.db.Timesheet" canNew="false" orderBy="-fromDate">
+		<hilite color="danger" if="statusSelect == 4"/>
+		<hilite color="success" if="statusSelect == 3"/>
+		<hilite color="warning" if="statusSelect == 2"/>
+		<field name="company" form-view="company-form" grid-view="company-grid"/>
+		<field name="fromDate"/>
+		<field name="toDate"/>
+		<field name="sentDate"/>
+		<field name="statusSelect"/>
+	</grid>
+	
 	<grid name="timesheet-validate-grid" title="Timesheet" model="com.axelor.apps.hr.db.Timesheet" canNew="false" orderBy="user,-fromDate">
 		<toolbar>
 			<button name="showSubordinateTimesheetToValidate" title="Show timesheets to be validated by my subordinates" onClick="com.axelor.apps.hr.web.timesheet.TimesheetController:showSubordinateTimesheets"/>

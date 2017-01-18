@@ -34,7 +34,8 @@ public class PaymentVoucherManagementRepository extends PaymentVoucherRepository
 
 		copy.setStatusSelect(STATUS_DRAFT);
 		copy.setRef(null);
-		copy.setPaymentDateTime(Beans.get(GeneralService.class).getTodayDateTime());
+		copy.setPaymentDate(Beans.get(GeneralService.class).getTodayDate());
+		copy.clearPayVoucherDueElementList();
 		copy.clearPayVoucherElementToPayList();
 		copy.setGeneratedMove(null);
 		copy.setBankCardTransactionNumber(null);
