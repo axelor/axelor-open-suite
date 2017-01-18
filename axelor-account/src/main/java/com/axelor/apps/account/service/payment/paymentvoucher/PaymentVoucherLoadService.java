@@ -182,7 +182,7 @@ public class PaymentVoucherLoadService {
 			paymentInvoiceToPay.setRemainingAmount(move.getInvoice().getInTaxTotal().subtract(move.getInvoice().getAmountPaid()));
 
 			// on convertit le montant imputé de la devise de la saisie paiement vers la devise de la facture
-			paidAmount = currencyService.getAmountCurrencyConverted(paymentVoucher.getCurrency(), move.getInvoice().getCurrency(), paymentInvoiceToPay.getRemainingAmount(), paymentVoucher.getPaymentDateTime().toLocalDate()).setScale(IAdministration.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
+			paidAmount = currencyService.getAmountCurrencyConverted(paymentVoucher.getCurrency(), move.getInvoice().getCurrency(), paymentInvoiceToPay.getRemainingAmount(), paymentVoucher.getPaymentDate()).setScale(IAdministration.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
 
 		}
 		// sinon la facture à une devise identique à l'écriture, ou l'écriture ne possède pas de facture
@@ -197,7 +197,7 @@ public class PaymentVoucherLoadService {
 			}
 			paymentInvoiceToPay.setRemainingAmount(moveLine.getAmountRemaining());
 
-			paidAmount = currencyService.getAmountCurrencyConverted(paymentVoucher.getCurrency(), move.getCurrency(), moveLine.getAmountRemaining(), paymentVoucher.getPaymentDateTime().toLocalDate());
+			paidAmount = currencyService.getAmountCurrencyConverted(paymentVoucher.getCurrency(), move.getCurrency(), moveLine.getAmountRemaining(), paymentVoucher.getPaymentDate());
 		}
 
 		log.debug("Montant de la créance {}",paidAmount);
@@ -354,7 +354,7 @@ public class PaymentVoucherLoadService {
 								paymentVoucher.getCurrency(),
 								paymentInvoiceToPay.getCurrency(),
 								paidAmount,
-								paymentVoucher.getPaymentDateTime().toLocalDate()).setScale(IAdministration.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
+								paymentVoucher.getPaymentDate()).setScale(IAdministration.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
 
 						//On convertit dans la devise de la saisie paiement, pour comparer le restant à payer de la facture avec le restant à utilsier de la saisie paiement
 

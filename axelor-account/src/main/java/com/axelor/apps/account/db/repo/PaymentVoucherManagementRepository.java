@@ -34,7 +34,7 @@ public class PaymentVoucherManagementRepository extends
 
 		copy.setStatusSelect(STATUS_DRAFT);
 		copy.setRef(null);
-		copy.setPaymentDateTime(generalService.getTodayDateTime());
+		copy.setPaymentDate(generalService.getTodayDate());
 		copy.clearPaymentInvoiceList();
 		copy.clearPaymentInvoiceToPayList();
 		copy.setGeneratedMove(null);

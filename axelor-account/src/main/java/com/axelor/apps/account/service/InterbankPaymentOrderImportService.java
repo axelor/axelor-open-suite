@@ -106,7 +106,7 @@ public class InterbankPaymentOrderImportService {
 			this.updateBankDetails(payment, invoice, paymentMode);
 		}
 
-		return paymentVoucherCreateService.createPaymentVoucherIPO(invoice, this.dateTime, amount, paymentMode);
+		return paymentVoucherCreateService.createPaymentVoucherIPO(invoice, this.dateTime.toLocalDate(), amount, paymentMode);
 	}
 
 
