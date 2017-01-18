@@ -21,7 +21,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -52,7 +52,7 @@ public class PaymentVoucherCreateService {
 	protected PaymentVoucherConfirmService paymentVoucherConfirmService;
 	protected PaymentVoucherSequenceService paymentVoucherSequenceService;
 	protected PaymentVoucherRepository paymentVoucherRepository;
-	protected DateTime todayTime;
+	protected LocalDate today;
 
 	@Inject
 	public PaymentVoucherCreateService(GeneralService generalService, MoveToolService moveToolService, PaymentInvoiceToPayService paymentInvoiceToPayService, 
@@ -64,13 +64,13 @@ public class PaymentVoucherCreateService {
 		this.paymentVoucherConfirmService = paymentVoucherConfirmService;
 		this.paymentVoucherSequenceService = paymentVoucherSequenceService;
 		this.paymentVoucherRepository = paymentVoucherRepository;
-		this.todayTime = generalService.getTodayDateTime();
+		this.today = generalService.getTodayDate();
 
 	}
 
 
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public PaymentVoucher createPaymentVoucherIPO(Invoice invoice, DateTime dateTime, BigDecimal amount, PaymentMode paymentMode) throws AxelorException  {
+	public PaymentVoucher createPaymentVoucherIPO(Invoice invoice, LocalDate date, BigDecimal amount, PaymentMode paymentMode) throws AxelorException  {
 		MoveLine customerMoveLine = moveToolService.getCustomerMoveLineByQuery(invoice);
 
 		log.debug("Création d'une saisie paiement par TIP ou TIP chèque - facture : {}",invoice.getInvoiceId());
@@ -83,7 +83,7 @@ public class PaymentVoucherCreateService {
 				null,
 				null,
 				paymentMode,
-				dateTime,
+				date,
 				invoice.getPartner(),
 				amount,
 				null,
@@ -121,14 +121,14 @@ public class PaymentVoucherCreateService {
 	 * @return
 	 * @throws AxelorException
 	 */
-	public PaymentVoucher createPaymentVoucher(Company company, CashRegister cashRegister, User user, PaymentMode paymentMode, DateTime dateTime, Partner partner,
+	public PaymentVoucher createPaymentVoucher(Company company, CashRegister cashRegister, User user, PaymentMode paymentMode, LocalDate date, Partner partner,
 			BigDecimal amount, MoveLine moveLine, Invoice invoiceToPay, MoveLine rejectToPay,
 			PaymentScheduleLine scheduleToPay, PaymentSchedule paymentScheduleToPay) throws AxelorException  {
 
 		log.debug("\n\n createPaymentVoucher ....");
-		DateTime dateTime2 = dateTime;
-		if(dateTime2 == null)  {
-			dateTime2 = this.todayTime;
+		LocalDate date2 = date;
+		if(date2 == null)  {
+			date2 = this.today;
 		}
 
 		BigDecimal amount2 = amount;
@@ -142,7 +142,7 @@ public class PaymentVoucherCreateService {
 			paymentVoucher.setCompany(company);
 			paymentVoucher.setCashRegister(cashRegister);
 			paymentVoucher.setUser(user);
-			paymentVoucher.setPaymentDateTime(dateTime2);
+			paymentVoucher.setPaymentDate(date2);
 
 			paymentVoucher.setPaymentMode(paymentMode);
 			paymentVoucher.setPartner(partner);

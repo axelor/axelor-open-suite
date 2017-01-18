@@ -29,6 +29,7 @@ import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.production.db.Machine;
 import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.db.ProdHumanResource;
+import com.axelor.apps.production.db.ProdProcessLine;
 import com.axelor.apps.production.db.WorkCenter;
 import com.axelor.apps.production.db.repo.OperationOrderRepository;
 import com.axelor.apps.production.web.ManufOrderController;
@@ -184,18 +185,18 @@ public class OperationOrderWorkflowService {
 
 		if(operationOrder.getWorkCenter() != null)  {
 			return operationOrder.getPlannedStartDateT()
-					.plusSeconds((int)this.computeEntireCycleDuration(operationOrder.getWorkCenter(), operationOrder.getManufOrder().getQty()));
+					.plusSeconds((int)this.computeEntireCycleDuration(operationOrder, operationOrder.getManufOrder().getQty()));
 		}
 
 		return operationOrder.getPlannedStartDateT();
 	}
 
 
-	public long computeEntireCycleDuration(WorkCenter workCenter, BigDecimal qty)  {
+	public long computeEntireCycleDuration(OperationOrder operationOrder, BigDecimal qty)  {
 
-		long machineDuration = this.computeMachineDuration(workCenter, qty);
+		long machineDuration = this.computeMachineDuration(operationOrder, qty);
 
-		long humanDuration = this.computeHumanDuration(workCenter, qty);
+		long humanDuration = this.computeHumanDuration(operationOrder, qty);
 
 		if(machineDuration >= humanDuration)  {
 			return machineDuration;
@@ -207,8 +208,10 @@ public class OperationOrderWorkflowService {
 	}
 
 
-	public long computeMachineDuration(WorkCenter workCenter, BigDecimal qty)  {
-
+	public long computeMachineDuration(OperationOrder operationOrder, BigDecimal qty)  {
+		ProdProcessLine prodProcessLine = operationOrder.getProdProcessLine();
+		WorkCenter workCenter = prodProcessLine.getWorkCenter();
+		
 		long duration = 0;
 
 		int workCenterTypeSelect = workCenter.getWorkCenterTypeSelect();
@@ -217,9 +220,14 @@ public class OperationOrderWorkflowService {
 			Machine machine = workCenter.getMachine();
 			duration += machine.getStartingDuration();
 
-			BigDecimal durationPerCycle = new BigDecimal(workCenter.getDurationPerCycle());
+			BigDecimal durationPerCycle = new BigDecimal(prodProcessLine.getDurationPerCycle());
+			BigDecimal maxCapacityPerCycle = prodProcessLine.getMaxCapacityPerCycle();
 
-			duration += (qty.divide(workCenter.getMinCapacityPerCycle())).multiply(durationPerCycle).longValue();
+			if (maxCapacityPerCycle.compareTo(BigDecimal.ZERO) == 0) {
+				duration += qty.multiply(durationPerCycle).longValue();
+			} else {
+				duration += (qty.divide(maxCapacityPerCycle)).multiply(durationPerCycle).longValue();
+			}
 
 			duration += machine.getEndingDuration();
 
@@ -229,7 +237,8 @@ public class OperationOrderWorkflowService {
 	}
 
 
-	public long computeHumanDuration(WorkCenter workCenter, BigDecimal qty)  {
+	public long computeHumanDuration(OperationOrder operationOrder, BigDecimal qty)  {
+		WorkCenter workCenter = operationOrder.getProdProcessLine().getWorkCenter();
 
 		long duration = 0;
 
@@ -237,9 +246,9 @@ public class OperationOrderWorkflowService {
 
 		if(workCenterTypeSelect == IWorkCenter.WORK_CENTER_HUMAN || workCenterTypeSelect == IWorkCenter.WORK_CENTER_BOTH)  {
 
-			if(workCenter.getProdHumanResourceList() != null)  {
+			if(operationOrder.getProdHumanResourceList() != null)  {
 
-				for(ProdHumanResource prodHumanResource : workCenter.getProdHumanResourceList())  {
+				for(ProdHumanResource prodHumanResource : operationOrder.getProdHumanResourceList())  {
 
 					duration += prodHumanResource.getDuration();
 

@@ -206,6 +206,13 @@ public class PartnerService {
 		
 		return partner;
 	}
+	
+	public void addContactToPartner(Partner contact) {
+		Partner partner = contact.getMainPartner();
+
+		partner.addContactPartnerSetItem(contact);
+		savePartner(partner);
+	}
 
 
 	private Address getAddress(Partner partner, String querySpecific, String queryComman){

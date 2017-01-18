@@ -112,7 +112,7 @@ public class PaymentVoucherConfirmService  {
 		PaymentMode paymentMode = paymentVoucher.getPaymentMode();
 		Company company = paymentVoucher.getCompany();
 		Journal journal = paymentModeService.getPaymentModeJournal(paymentMode, company);
-		LocalDate paymentDate = paymentVoucher.getPaymentDateTime().toLocalDate();
+		LocalDate paymentDate = paymentVoucher.getPaymentDate();
 
 		boolean scheduleToBePaid = false;
 		Account paymentModeAccount = paymentModeService.getPaymentModeAccount(paymentMode, company);
@@ -338,7 +338,7 @@ public class PaymentVoucherConfirmService  {
 
 		Currency paymentVoucherCurrency = paymentVoucher.getCurrency();
 
-		LocalDate paymentVoucherDate = paymentVoucher.getPaymentDateTime().toLocalDate();
+		LocalDate paymentVoucherDate = paymentVoucher.getPaymentDate();
 
 		return currencyService.getAmountCurrencyConverted(paymentVoucherCurrency, moveCurrency, amountToPay, paymentVoucherDate).setScale(IAdministration.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
 
