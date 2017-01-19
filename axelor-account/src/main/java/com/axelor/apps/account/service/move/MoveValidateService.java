@@ -63,16 +63,10 @@ public class MoveValidateService {
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void validate(Move move) throws AxelorException  {
 
-		LocalDate date = move.getDate();
 		Partner partner = move.getPartner();
 
 		int counter = 1;
 		for(MoveLine moveLine : move.getMoveLineList())  {
-			moveLine.setDate(date);
-			if(moveLine.getAccount() != null && moveLine.getAccount().getReconcileOk())  {
-				moveLine.setDueDate(date);
-			}
-
 			moveLine.setPartner(partner);
 			moveLine.setCounter(counter);
 			counter++;
