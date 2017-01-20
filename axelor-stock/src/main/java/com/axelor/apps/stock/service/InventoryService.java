@@ -69,6 +69,9 @@ public class InventoryService {
 	
 	@Inject
 	private InventoryRepository inventoryRepo;
+	
+	@Inject
+	private StockMoveRepository stockMoveRepo;
 
 
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
@@ -280,6 +283,15 @@ public class InventoryService {
 			stockMoveService.copyQtyToRealQty(stockMove);
 			stockMoveService.realize(stockMove);
 		}
+		return stockMove;
+	}
+	
+	public StockMove cancelStockMove(Inventory inventory) throws AxelorException {
+		StockMove stockMove = stockMoveRepo.findByName(inventory.getInventorySeq());
+		
+		StockMoveService stockMoveService = Beans.get(StockMoveService.class);
+		stockMoveService.cancel(stockMove);
+		
 		return stockMove;
 	}
 
