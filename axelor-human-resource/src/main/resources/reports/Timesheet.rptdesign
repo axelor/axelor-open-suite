@@ -749,7 +749,7 @@ Task.full_name as project_task,
 TimesheetLine.comments 
 
 from hr_timesheet as Timesheet
-inner join hr_timesheet_line as TimesheetLine on (TimesheetLine.affected_to_time_sheet = Timesheet.id)
+inner join hr_timesheet_line as TimesheetLine on (TimesheetLine.timesheet = Timesheet.id)
 left join project_project_task as Task on (TimesheetLine.project_task = Task.id)
 left join project_project_task as Project on (Task.project = Project.id)
 
