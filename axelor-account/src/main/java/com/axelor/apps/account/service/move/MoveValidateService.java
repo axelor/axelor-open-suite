@@ -68,8 +68,11 @@ public class MoveValidateService {
 
 		int counter = 1;
 		for(MoveLine moveLine : move.getMoveLineList())  {
-			moveLine.setDate(date);
-			if(moveLine.getAccount() != null && moveLine.getAccount().getReconcileOk())  {
+			if (moveLine.getDate() == null) {
+				moveLine.setDate(date);
+			}
+						
+			if(moveLine.getAccount() != null && moveLine.getAccount().getReconcileOk() && moveLine.getDueDate() == null)  {
 				moveLine.setDueDate(date);
 			}
 
