@@ -18,6 +18,7 @@
 package com.axelor.apps.stock.service;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.stock.db.Location;
@@ -42,23 +43,31 @@ public class LocationServiceImpl implements LocationService{
 		return locationRepo.all().filter("self.isDefaultLocation = true AND self.typeSelect = 1").fetchOne();
 	}
 	
+	public List<Location> getInternalLocations() {
+		return locationRepo.all().filter("self.typeSelect = 1").fetch();
+	}
+	
 	@Override
-	public	BigDecimal getQty(Long productId, Long locationId, String qtyType) {
-		
-		if(productId != null){
-			
-			if(locationId == null){
-				Location location = getDefaultLocation();
-				if(location != null){
-					locationId = location.getId();
+	public BigDecimal getQty(Long productId, Long locationId, String qtyType) {
+		if (productId != null) {
+			if (locationId == null) {
+				List<Location> locations = getInternalLocations();
+				if (!locations.isEmpty()) {
+					BigDecimal qty = BigDecimal.ZERO;
+					for (Location location : locations) {
+						LocationLine locationLine = locationLineService.getLocationLine(locationRepo.find(location.getId()), productRepo.find(productId));
+						
+						if (locationLine != null) {
+							qty = qty.add(qtyType == "real" ? locationLine.getCurrentQty() : locationLine.getFutureQty());
+						}
+					}
+					return qty;
 				}
-			}
-
-			if(locationId != null){
+			} else {
 				LocationLine locationLine = locationLineService.getLocationLine(locationRepo.find(locationId), productRepo.find(productId));
 				
-				if(locationLine != null){
-					return qtyType == "current" ? locationLine.getCurrentQty() : locationLine.getFutureQty();
+				if (locationLine != null) {
+					return qtyType == "real" ? locationLine.getCurrentQty() : locationLine.getFutureQty();
 				}
 			}
 		}
@@ -68,12 +77,12 @@ public class LocationServiceImpl implements LocationService{
 
 	@Override
 	public BigDecimal getRealQty(Long productId, Long locationId) {
-		return getQty(productId, locationId, "current");
+		return getQty(productId, locationId, "real");
 	}
 
 	@Override
 	public BigDecimal getFutureQty(Long productId, Long locationId) {
-		return getQty(productId, locationId, "real");
+		return getQty(productId, locationId, "future");
 	}
 
 	
