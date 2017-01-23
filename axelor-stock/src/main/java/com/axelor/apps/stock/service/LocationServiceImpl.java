@@ -39,12 +39,11 @@ public class LocationServiceImpl implements LocationService{
 	
 	@Override
 	public Location getDefaultLocation() {
-
-		return locationRepo.all().filter("self.isDefaultLocation = true AND self.typeSelect = 1").fetchOne();
+		return locationRepo.all().filter("self.isDefaultLocation = true AND self.typeSelect = ?1", LocationRepository.TYPE_INTERNAL).fetchOne();
 	}
 	
 	public List<Location> getInternalLocations() {
-		return locationRepo.all().filter("self.typeSelect = 1").fetch();
+		return locationRepo.all().filter("self.typeSelect = ?1", LocationRepository.TYPE_INTERNAL).fetch();
 	}
 	
 	@Override
