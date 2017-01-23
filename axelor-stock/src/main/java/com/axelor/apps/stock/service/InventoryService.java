@@ -286,7 +286,7 @@ public class InventoryService {
 		return stockMove;
 	}
 	
-	public StockMove cancelStockMove(Inventory inventory) throws AxelorException {
+	public StockMove cancel(Inventory inventory) throws AxelorException {
 		StockMove stockMove = stockMoveRepo.findByName(inventory.getInventorySeq());
 		
 		StockMoveService stockMoveService = Beans.get(StockMoveService.class);

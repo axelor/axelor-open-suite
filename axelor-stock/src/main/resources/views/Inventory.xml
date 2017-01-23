@@ -72,7 +72,7 @@
 
     <action-group name="action-group-stock-inventory-cancel-click">
     	<action name="save"/>
-    	<action name="action-inventory-method-cancel-stock-move"/>
+    	<action name="action-inventory-method-cancel"/>
     	<action name="save"/>
     </action-group>
 
@@ -112,8 +112,8 @@
 		<call class="com.axelor.apps.stock.web.InventoryController" method="generateStockMove"/>
 	</action-method>
 	
-	<action-method name="action-inventory-method-cancel-stock-move">
-		<call class="com.axelor.apps.stock.web.InventoryController" method="cancelStockMove"/>
+	<action-method name="action-inventory-method-cancel">
+		<call class="com.axelor.apps.stock.web.InventoryController" method="cancel"/>
 	</action-method>
         
     <action-method name="action-inventory-method-fill-inventory">

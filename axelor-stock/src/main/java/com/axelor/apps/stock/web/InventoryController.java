@@ -108,10 +108,10 @@ public class InventoryController {
 		inventoryService.generateStockMove(inventory);
 	}
 	
-	public void cancelStockMove(ActionRequest request, ActionResponse response) throws AxelorException {
+	public void cancel(ActionRequest request, ActionResponse response) throws AxelorException {
 		Inventory inventory = request.getContext().asType(Inventory.class);
 		inventory = inventoryRepo.find(inventory.getId());
-		inventoryService.cancelStockMove(inventory);
+		inventoryService.cancel(inventory);
 	}
 	
 	public void fillInventoryLineList(ActionRequest request, ActionResponse response) throws AxelorException {
