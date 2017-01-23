@@ -73,7 +73,6 @@
     <action-group name="action-group-stock-inventory-cancel-click">
     	<action name="save"/>
     	<action name="action-inventory-method-cancel-stock-move"/>
-    	<action name="action-inventory-record-cancel"/>
     	<action name="save"/>
     </action-group>
 

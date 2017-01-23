@@ -292,6 +292,8 @@ public class InventoryService {
 		StockMoveService stockMoveService = Beans.get(StockMoveService.class);
 		stockMoveService.cancel(stockMove);
 		
+		inventory.setStatusSelect(InventoryRepository.STATUS_CANCELED);
+		
 		return stockMove;
 	}
 
