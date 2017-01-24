@@ -142,6 +142,15 @@
 			  	<field name="generateMoveOnBankOrderValidation"/>
 			  	<field name="internalBankToBankAccount" domain="self.company = :company" grid-view="account-grid" form-view="account-form"/>
 				<field name="externalBankToBankAccount" domain="self.company = :company" grid-view="account-grid" form-view="account-form"/>
+				
+				<panel name="sepaBankOrdersSequences" title="SEPA Bank orders sequences" colSpan="6">
+					<field name="sepaCreditTransSequence" colSpan="12" domain="self.code = 'bankOrder' and self.company = :company" form-view="sequence-form" grid-view="sequence-grid"/>
+					<field name="sepaDirectDebitSequence" colSpan="12" domain="self.code = 'bankOrder' and self.company = :company" form-view="sequence-form" grid-view="sequence-grid"/>
+				</panel>
+				<panel name="intBankOrdersSequences" title="International Bank orders sequences" colSpan="6">
+					<field name="intCreditTransSequence" colSpan="12" domain="self.code = 'bankOrder' and self.company = :company" form-view="sequence-form" grid-view="sequence-grid"/>
+					<field name="intDirectDebitSequence" colSpan="12" domain="self.code = 'bankOrder' and self.company = :company" form-view="sequence-form" grid-view="sequence-grid"/>
+				</panel>
 			</panel>
 		
 			<panel name="reimbursement" title="Reimbursement">
