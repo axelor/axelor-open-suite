@@ -595,6 +595,7 @@ public interface IExceptionMessage {
 	static final String BANK_ORDER_WRONG_FURTHER_INFORMATION_DETAIL_RECORD = /*$$(*/ "Anomaly has been detected during file generation for the further information detail record of the bank order line %s" /*)*/;
 	static final String BANK_ORDER_WRONG_TOTAL_RECORD = /*$$(*/ "Anomaly has been detected during file generation for the total record of the bank order %s" /*)*/;
 	static final String BANK_ORDER_ISSUE_DURING_FILE_GENERATION = /*$$(*/ "Anomaly has been detected during file generation for bank order %s" /*)*/;
+	static final String BANK_ORDER_COMPANY_NO_SEQUENCE = /*$$(*/ "The company %s does not have bank order sequence" /*)*/;
 
 	
 	/**
