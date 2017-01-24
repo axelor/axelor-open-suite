@@ -88,7 +88,7 @@
 			<field name="validationDate" hidden="true" showIf="validationDate" colSpan="4"/>
 			<field name="refusedBy" hidden="true" form-view="user-form" grid-view="user-grid" showIf="refusedBy" colSpan="4"/>
 			<field name="refusalDate" hidden="true" showIf="refusalDate"/>
-			<field name="groundForRefusal" hidden="true" showIf="statusSelect == 5" colSpan="12"/>
+			<field name="groundForRefusal" hidden="true" showIf="statusSelect == 5" colSpan="12" readonly="true"/>
 			<field name="moveDate" hidden="true" colSpan="4" showIf="statusSelect == 3 || statusSelect == 4"/>
 			<field name="move" showIf="ventilated" form-view="move-form" grid-view="move-grid"/>
 			<field name="paymentStatusSelect" colSpan="4"/>
