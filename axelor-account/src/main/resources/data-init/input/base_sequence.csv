@@ -62,3 +62,7 @@
 160;"saleInterface";"Sale interface";1;10;"SALINT_%Y_";;1;1;1
 161;"treasuryInterface";"Cash flow interface";1;10;"CSHFLWINT_%Y_";;1;1;1
 162;"reconcile";"Account reconcile";1;10;"RECON_%Y_%M_";;1;1;1
+163;"bankOrder";"SEPA Credit Transfers";1;10;"SCT%Y%FM";;1;1;1
+164;"bankOrder";"SEPA Direct Debits";1;10;"SDD%Y%FM";;1;1;1
+165;"bankOrder";"International Credit Transfers";1;10;"ICT%Y%FM";;1;1;1
+166;"bankOrder";"International Direct Debits";1;10;"IDD%Y%FM";;1;1;1
