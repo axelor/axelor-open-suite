@@ -129,7 +129,13 @@ public class InterbankPaymentOrderImportService {
 
 		partner.getBankDetailsList().add(bankDetails);
 
-		partner.setPaymentMode(paymentMode);
+		int operationType = invoice.getOperationTypeSelect();
+		if (operationType == InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND || operationType == InvoiceRepository.OPERATION_TYPE_CLIENT_SALE) {
+			partner.setClientPaymentMode(paymentMode);
+		} else if (operationType == InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE || operationType == InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND) {
+			partner.setSupplierPaymentMode(paymentMode);
+		}
+		
 		partnerRepo.save(partner);
 
 	}

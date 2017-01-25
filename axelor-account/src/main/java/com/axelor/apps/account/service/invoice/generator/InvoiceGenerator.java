@@ -177,7 +177,11 @@ public abstract class InvoiceGenerator  {
 		invoice.setPaymentCondition(paymentCondition);
 
 		if(paymentMode == null)  {
-			paymentMode = partner.getPaymentMode();
+			if (operationType == InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND || operationType == InvoiceRepository.OPERATION_TYPE_CLIENT_SALE) {
+				paymentMode = partner.getClientPaymentMode();
+			} else if (operationType == InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE || operationType == InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND) {
+				paymentMode = partner.getSupplierPaymentMode();
+			}
 		}
 		if(paymentMode == null)  {
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.INVOICE_GENERATOR_4), GeneralServiceImpl.EXCEPTION), IException.MISSING_FIELD);
