@@ -136,7 +136,7 @@ public interface IExceptionMessage {
 	static final String MOVE_LINE_2 = /*$$(*/ "Partner account missing on the invoice %s" /*)*/ ;
 	static final String MOVE_LINE_3 = /*$$(*/ "Product missing on invoice line, invoice : %s (company : %s)" /*)*/ ;
 	static final String MOVE_LINE_4 = /*$$(*/ "Account missing on configuration for line : %s (company : %s)" /*)*/ ;
-	static final String MOVE_LINE_5 = /*$$(*/ "Analytic account %s associated to sales account for the product %s is not configurated : (company : %s)" /*)*/ ;
+	static final String MOVE_LINE_5 = /*$$(*/ "Analytic account %s associated to sales account for the product %s is not configured : (company : %s)" /*)*/ ;
 	static final String MOVE_LINE_6 = /*$$(*/ "Account missing on the tax line : %s (company : %s)" /*)*/ ;
 
 	/**
@@ -146,7 +146,7 @@ public interface IExceptionMessage {
 	static final String MOVE_2 = /*$$(*/ "You must select a journal for the move" /*)*/ ;
 	static final String MOVE_3 = /*$$(*/ "You must select a company for the move" /*)*/ ;
 	static final String MOVE_4 = /*$$(*/ "You must select a period for the move" /*)*/ ;
-	static final String MOVE_5 = /*$$(*/ "Journal %s does not have any account move sequence configurated" /*)*/ ;
+	static final String MOVE_5 = /*$$(*/ "Journal %s does not have any account move sequence configured" /*)*/ ;
 	static final String MOVE_6 = /*$$(*/ "Move account sens %s can't be determined" /*)*/ ;
 	static final String MOVE_7 = /*$$(*/ "Account move %s has a total debit different than total credit : %s <> %s" /*)*/ ;
 
@@ -174,7 +174,7 @@ public interface IExceptionMessage {
 	 * Reimbursement service and controller
 	 */
 	static final String REIMBURSEMENT_1 = /*$$(*/ "%s :\n You must configure a reimbursement sequence for the company %s" /*)*/ ;
-	static final String REIMBURSEMENT_2 = /*$$(*/ "Export reimbursement folder (SEPA format) has not been configurated for the company %s." /*)*/ ;
+	static final String REIMBURSEMENT_2 = /*$$(*/ "Export reimbursement folder (SEPA format) has not been configured for the company %s." /*)*/ ;
 	static final String REIMBURSEMENT_3 = /*$$(*/ "No reimbursement found for the ref %s and the company %s." /*)*/ ;
 	static final String REIMBURSEMENT_4 = /*$$(*/ "You must configure a RIB." /*)*/ ;
 

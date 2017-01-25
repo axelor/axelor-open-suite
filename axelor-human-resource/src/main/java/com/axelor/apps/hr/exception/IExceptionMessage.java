@@ -29,17 +29,17 @@ public interface IExceptionMessage {
 	static final String HR_CONFIG_2 = /*$$(*/ "Please configure the expense type for kilometric allowance in HR config for the company %s" /*)*/;
 	static final String HR_CONFIG_TEMPLATES = /*$$(*/ "No email sent, please configure HR config for the company %s"/*)*/ ;
 	
-	static final String TIMESHEET_FROM_DATE = /*$$(*/ "Merci de rentrer une date de début pour la génération"/*)*/ ;
-	static final String TIMESHEET_TO_DATE = /*$$(*/ "Merci de rentrer une date de fin pour la génération"/*)*/ ;
-	static final String TIMESHEET_PRODUCT = /*$$(*/ "Merci de rentrer un produit"/*)*/ ;
-	static final String TIMESHEET_EMPLOYEE_DAY_PLANNING = /*$$(*/ "Merci de rentrer un planning pour l'employé rattaché à l'utilisateur %s"/*)*/ ;
+	static final String TIMESHEET_FROM_DATE = /*$$(*/ "Please add a start date for generation"/*)*/ ;
+	static final String TIMESHEET_TO_DATE = /*$$(*/ "Please add an end date for generation"/*)*/ ;
+	static final String TIMESHEET_PRODUCT = /*$$(*/ "Please add a product"/*)*/ ;
+	static final String TIMESHEET_EMPLOYEE_DAY_PLANNING = /*$$(*/ "Please add an employee's planning related to user %s"/*)*/ ;
 	static final String TIMESHEET_EMPLOYEE_DAILY_WORK_HOURS = /*$$(*/ "Please, enter the number of daily work hours per employee %s"/*)*/ ;
 	static final String GENERAL_EMPLOYEE_ACTIVITY = /*$$(*/ "Please, enter an activity for the employee %s"/*)*/ ;
 
-	static final String LEAVE_USER_EMPLOYEE = /*$$(*/ "Merci de créer un employé pour l'utilisateur %s"/*)*/ ;
-	static final String LEAVE_LINE = /*$$(*/ "il n'y a pas de ligne de créée sur l'employé %s pour la raison %s"/*)*/ ;
-	static final String LEAVE_ALLOW_NEGATIVE_VALUE_EMPLOYEE = /*$$(*/ "L'employé %s n'est pas autorisé à prendre des congés en avance"/*)*/ ;
-	static final String LEAVE_ALLOW_NEGATIVE_VALUE_REASON = /*$$(*/ "Il n'est pas possible de prendre des congés en avance pour le motif %s"/*)*/ ;
+	static final String LEAVE_USER_EMPLOYEE = /*$$(*/ "Please create an employee for user %s"/*)*/ ;
+	static final String LEAVE_LINE = /*$$(*/ "There's no line created for employee %s for the reason %s"/*)*/ ;
+	static final String LEAVE_ALLOW_NEGATIVE_VALUE_EMPLOYEE = /*$$(*/ "Employee %s is not authorized to take leaves in advance"/*)*/ ;
+	static final String LEAVE_ALLOW_NEGATIVE_VALUE_REASON = /*$$(*/ "It's not possible to take leaves in advance for the reason %s"/*)*/ ;
 
 	static final String EMPLOYEE_PLANNING = /*$$(*/ "Please, add a planning for employee : %s"/*)*/ ;
 	static final String EMPLOYEE_PUBLIC_HOLIDAY = /*$$(*/ "Please, add a public holiday planning for employee : %s"/*)*/ ;
