@@ -55,7 +55,7 @@
 <!--   	Highlight -->
   	<decimal name="salePrice" precision="20" scale="10"/> 
   	
-  	<boolean name="toInvoice"/>
+  	<boolean name="toInvoice" title="To invoice with project"/>
   	<boolean name="isTitleLine" title="Title Line"/>
   	
   	
