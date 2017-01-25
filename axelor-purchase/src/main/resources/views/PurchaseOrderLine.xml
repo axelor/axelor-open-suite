@@ -84,7 +84,7 @@
 			   <field name="exTaxTotal" readonly="true"/>
 			   <field name="inTaxTotal" readonly="true"/>
 			   <field name="saleMinPrice" readonly="true"/>
-			   <field name="toInvoice" title="To invoice with project" if="__config__.general.getProjectTaskSaleOrderLines()" if-module="axelor-business-project"/>
+			   <field name="toInvoice" if="__config__.general.getProjectTaskSaleOrderLines()" if-module="axelor-business-project"/>
 			   <field name="invoiced" showIf="toInvoice"/>
 			   <field name="salePrice" hidden="true"/>
 		</panel>  
