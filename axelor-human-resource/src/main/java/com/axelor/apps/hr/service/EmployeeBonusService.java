@@ -32,6 +32,7 @@ import com.axelor.apps.hr.db.repo.EmployeeBonusMgtRepository;
 import com.axelor.apps.hr.db.repo.EmployeeRepository;
 import com.axelor.apps.hr.service.employee.EmployeeServiceImpl;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.tool.template.TemplateMaker;
 import com.google.inject.Inject;
@@ -55,8 +56,6 @@ public class EmployeeBonusService {
 	
 	@Transactional
 	public void compute(EmployeeBonusMgt bonus) throws AxelorException{
-		
-		
 		if ( bonus.getEmployeeBonusMgtLineList() == null || bonus.getEmployeeBonusMgtLineList().isEmpty() ){
 			List<Employee> allEmployee = Beans.get(EmployeeRepository.class).all().filter("self.user.activeCompany = ?1", bonus.getCompany()).fetch();
 			TemplateMaker maker = new TemplateMaker( Locale.FRENCH, TEMPLATE_DELIMITER, TEMPLATE_DELIMITER);
@@ -68,37 +67,48 @@ public class EmployeeBonusService {
 			Binding binding = new Binding();                                 
 			GroovyShell shell = new GroovyShell(binding,conf);
 			
-			for (Employee employee : allEmployee){
-				
+			for (Employee employee : allEmployee) {
 				maker.setContext(employee, "Employee");
-				String formula = bonus.getEmployeeBonusType().getApplicationCondition()
-						.replace( bonus.getCompany().getHrConfig().getAgeVariableName() , String.valueOf( employeeService.getAge(employee, bonus.getPayPeriod().getFromDate()) ) )
-						.replace(bonus.getCompany().getHrConfig().getSeniorityVariableName(), String.valueOf( employeeService.getLengthOfService(employee, bonus.getPayPeriod().getFromDate()) ) );
-				maker.setTemplate( formula );
+				String formula = bonus.getEmployeeBonusType().getApplicationCondition();
+				Integer lineStatus;
+				try {
+					formula = formula.replace(bonus.getCompany().getHrConfig().getAgeVariableName(), String.valueOf(employeeService.getAge(employee, bonus.getPayPeriod().getFromDate())))
+									 .replace(bonus.getCompany().getHrConfig().getSeniorityVariableName(), String.valueOf(employeeService.getLengthOfService(employee, bonus.getPayPeriod().getFromDate())));
+					lineStatus = EmployeeBonusMgtLineRepository.STATUS_CALCULATED;
+				} catch (AxelorException e) {
+					TraceBackService.trace(e);
+					formula = "true";
+					lineStatus = EmployeeBonusMgtLineRepository.STATUS_ANOMALY;
+				}
+				maker.setTemplate(formula);
 				eval = maker.make();
 				
-				if (shell.evaluate(eval).toString().equals("true")){ 
-					
+				if (shell.evaluate(eval).toString().equals("true")) { 
 					EmployeeBonusMgtLine line = new EmployeeBonusMgtLine();
-					line.setSeniorityDate( employee.getSeniorityDate() );
-					line.setEmployee(employee);
 					line.setEmployeeBonusMgt(bonus);
+					line.setEmployee(employee);
+					line.setStatusSelect(lineStatus);
+
+					if (lineStatus == EmployeeBonusMgtLineRepository.STATUS_ANOMALY) {
+						employeeBonusMgtLineRepo.save(line);
+						continue;
+					}
+
+					line.setSeniorityDate( employee.getSeniorityDate() );
 					line.setCoef( employee.getBonusCoef() );
 					line.setPresence( employee.getPlanning() );
+
 					maker.setContext(line, "employeeBonusMgtLine");
 					maker.setTemplate( bonus.getEmployeeBonusType().getFormula() );
 					eval = maker.make();
 					line.setAmount( new BigDecimal(  shell.evaluate(eval).toString() ) );
+
 					employeeBonusMgtLineRepo.save(line);
-					
 				}
-				
 			}
-			
 		}
 		bonus.setStatusSelect( EmployeeBonusMgtRepository.STATUS_CALCULATED );
 		employeeBonusMgtRepo.save(bonus);
-		
 	}
 
 }
