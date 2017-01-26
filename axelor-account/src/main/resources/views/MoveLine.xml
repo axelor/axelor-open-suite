@@ -107,8 +107,7 @@
 	onNew="action-account-move-line-onnew-group" onLoad="action-account-move-moveline-onload-group" width="large">
 		<panel name="main" >
 			<field name="name" css="bold"/>
-			<field name="date" colSpan="3"/>
-			<field name="dueDate" colSpan="3"/>
+			<field name="date" colOffset="3" colSpan="3" onChange="action-move-line-record-update-due-date"/>
 			<panel name="informations" title="Informations" colSpan="12">
 				<field name="account" form-view="account-form" grid-view="account-grid" onSelect="action-move-line-attrs-domain-account"/>
 				<field name="debit" onChange="action-group-account-moveline-debitcredit-onchange" readonlyIf="credit &gt; 0" css="label-bold bold" colSpan="3"/>
@@ -128,6 +127,9 @@
 			<panel-related field="debitReconcileList" canRemove="false" canNew="false" showIf="$number(debit) &gt; 0.00" form-view="reconcile-form" grid-view="move-line-reconcile-grid"/>
 	        <panel-related field="creditReconcileList"  canRemove="false" canNew="false" showIf="$number(credit) &gt; 0.00" form-view="reconcile-form" grid-view="move-line-reconcile-grid"/>
 			
+			<panel name="debtRecovery" title="Debt Recovery" >
+				<field name="dueDate" colSpan="3"/>
+			</panel>
 			
 			<panel name="others" title="Others" >
 				<field name="exportedDirectDebitOk" colSpan="12"/>
@@ -240,8 +242,12 @@
 	
 	<action-record name="action-move-line-record-get-move-informations" model="com.axelor.apps.account.db.MoveLine">
 		<field name="partner" expr="eval: _parent?.partner"/>
-		<field name="date" expr="eval:__config__.generalService.getTodayDate()" if="date == null"/>
+		<field name="date" expr="eval: _parent?.date"/>
 		<field name="dueDate" expr="eval: _parent?.date"/>
+	</action-record>
+	
+	<action-record name="action-move-line-record-update-due-date" model="com.axelor.apps.account.db.MoveLine">
+		<field name="dueDate" expr="eval: date"/>
 	</action-record>
 	
 	<action-record name="action-move-line-record-get-first-move-line-informations" model="com.axelor.apps.account.db.MoveLine">

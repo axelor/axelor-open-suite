@@ -227,9 +227,9 @@ public class MoveLineService {
 	 * @return
 	 * @throws AxelorException 
 	 */
-	public MoveLine createMoveLine(Move move, Partner partner, Account account, BigDecimal amount, boolean isDebit, LocalDate dueDate, int ref, String origin) throws AxelorException{
+	public MoveLine createMoveLine(Move move, Partner partner, Account account, BigDecimal amount, boolean isDebit, LocalDate date, int ref, String origin) throws AxelorException{
 
-		return this.createMoveLine(move, partner, account, amount, isDebit, today, dueDate, ref, origin);
+		return this.createMoveLine(move, partner, account, amount, isDebit, date, date, ref, origin);
 	}
 
 
