@@ -33,6 +33,7 @@ import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.bankorder.file.cfonb.CfonbImportService;
 import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.payment.paymentvoucher.PaymentVoucherCreateService;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
@@ -110,7 +111,7 @@ public class InterbankPaymentOrderImportService {
 	}
 
 
-	public void updateBankDetails(String[] payment, Invoice invoice, PaymentMode paymentMode)  {
+	public void updateBankDetails(String[] payment, Invoice invoice, PaymentMode paymentMode) throws AxelorException  {
 		log.debug("Mise à jour des coordonnées bancaire du payeur : Payeur = {} , Facture = {}, Mode de paiement = {}",
 				new Object[]{invoice.getPartner().getName(),invoice.getInvoiceId(),paymentMode.getName()});
 
@@ -129,7 +130,12 @@ public class InterbankPaymentOrderImportService {
 
 		partner.getBankDetailsList().add(bankDetails);
 
-		partner.setPaymentMode(paymentMode);
+		if (InvoiceToolService.isPurchase(invoice)) {
+			partner.setSupplierPaymentMode(paymentMode);
+		} else {
+			partner.setClientPaymentMode(paymentMode);
+		}
+		
 		partnerRepo.save(partner);
 
 	}

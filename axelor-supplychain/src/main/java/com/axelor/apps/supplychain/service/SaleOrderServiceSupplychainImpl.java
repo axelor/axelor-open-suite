@@ -102,7 +102,7 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl {
 		
 		saleOrder.setLocation(location);
 
-		saleOrder.setPaymentMode(clientPartner.getPaymentMode());
+		saleOrder.setPaymentMode(clientPartner.getClientPaymentMode());
 		saleOrder.setPaymentCondition(clientPartner.getPaymentCondition());
 		
 		return saleOrder;
@@ -113,7 +113,7 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl {
 		PartnerService partnerService = Beans.get(PartnerService.class);
 		if(client != null){
 			saleOrder.setPaymentCondition(client.getPaymentCondition());
-			saleOrder.setPaymentMode(client.getPaymentMode());
+			saleOrder.setPaymentMode(client.getClientPaymentMode());
 			saleOrder.setMainInvoicingAddress(partnerService.getInvoicingAddress(client));
 			saleOrder.setDeliveryAddress(partnerService.getDeliveryAddress(client));
 			saleOrder.setPriceList(client.getSalePriceList());

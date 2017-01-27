@@ -177,7 +177,11 @@ public abstract class InvoiceGenerator  {
 		invoice.setPaymentCondition(paymentCondition);
 
 		if(paymentMode == null)  {
-			paymentMode = partner.getPaymentMode();
+			if (InvoiceToolService.isPurchase(invoice)) {
+				paymentMode = partner.getSupplierPaymentMode();
+			} else {
+				paymentMode = partner.getClientPaymentMode();
+			}
 		}
 		if(paymentMode == null)  {
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.INVOICE_GENERATOR_4), GeneralServiceImpl.EXCEPTION), IException.MISSING_FIELD);
