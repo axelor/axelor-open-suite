@@ -45,6 +45,7 @@
   	<integer name="discountTypeSelect" title="Discount Type" selection="base.price.list.line.amount.type.select" default="3"/>
   	
   	<date name="estimatedDelivDate" title="Estimated delivery date"/>
+  	<boolean name="toInvoice" title="To invoice with project"/>
   	
 <!--   	Devis-commande fournisseur -->
 	<date name="deliveryDate" title="Delivery date"/>
