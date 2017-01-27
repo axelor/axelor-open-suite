@@ -177,10 +177,10 @@ public abstract class InvoiceGenerator  {
 		invoice.setPaymentCondition(paymentCondition);
 
 		if(paymentMode == null)  {
-			if (operationType == InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND || operationType == InvoiceRepository.OPERATION_TYPE_CLIENT_SALE) {
-				paymentMode = partner.getClientPaymentMode();
-			} else if (operationType == InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE || operationType == InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND) {
+			if (InvoiceToolService.isPurchase(invoice)) {
 				paymentMode = partner.getSupplierPaymentMode();
+			} else {
+				paymentMode = partner.getClientPaymentMode();
 			}
 		}
 		if(paymentMode == null)  {
