@@ -31,7 +31,7 @@ public interface IExceptionMessage {
 	/**
 	 * Purchase Order Controller
 	 */
-	static final String PURCHASE_ORDER_1 = /*$$(*/ "Demande de consultations fournisseurs créées" /*)*/;
-	static final String PURCHASE_ORDER_2 = /*$$(*/ "Génération des devis fournisseurs terminée" /*)*/;
+	static final String PURCHASE_ORDER_1 = /*$$(*/ "Supplier's consulting's request created" /*)*/;
+	static final String PURCHASE_ORDER_2 = /*$$(*/ "Suppliers orders' generation over" /*)*/;
 	
 }
