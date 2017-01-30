@@ -282,7 +282,7 @@ public class ExpenseServiceImpl implements ExpenseService  {
 			throw new AxelorException(String.format(I18n.get(com.axelor.apps.account.exception.IExceptionMessage.USER_PARTNER),expense.getUser().getName()), IException.CONFIGURATION_ERROR);
 		}
 
-		Move move = moveService.getMoveCreateService().createMove(accountConfigService.getExpenseJournal(accountConfig), accountConfig.getCompany(), null, expense.getUser().getPartner(), moveDate, expense.getUser().getPartner().getPaymentMode(), MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC);
+		Move move = moveService.getMoveCreateService().createMove(accountConfigService.getExpenseJournal(accountConfig), accountConfig.getCompany(), null, expense.getUser().getPartner(), moveDate, expense.getUser().getPartner().getClientPaymentMode(), MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC);
 
 		List<MoveLine> moveLines = new ArrayList<MoveLine>();
 

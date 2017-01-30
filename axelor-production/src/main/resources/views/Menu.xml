@@ -18,9 +18,9 @@
 	</action-view>	
 	
 	<menuitem name="manufacturing-root-prod-process" parent="manufacturing-root"
-		title="Manufacturing processes" action="manufacturing.root.prod.process" />
+		title="Production processes" action="manufacturing.root.prod.process" />
 
-	<action-view name="manufacturing.root.prod.process" title="Manufacturing processes"
+	<action-view name="manufacturing.root.prod.process" title="Production processes"
 		model="com.axelor.apps.production.db.ProdProcess" >
 		<view type="grid" name="prod-process-grid" />
 		<view type="form" name="prod-process-form" />

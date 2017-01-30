@@ -555,6 +555,42 @@ public class AccountConfigService {
 
 	}
 	
+			                    /******** Bank Order Sequences ********/
+	public Sequence getSepaCreditTransSeq(AccountConfig accountConfig) throws AxelorException {
+		if(accountConfig.getSepaCreditTransSequence() == null)   {
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.ACCOUNT_CONFIG_SEQUENCE_5), 
+					GeneralServiceImpl.EXCEPTION, accountConfig.getCompany().getName()), IException.CONFIGURATION_ERROR);
+		}
+
+		return accountConfig.getSepaCreditTransSequence();
+	}
+
+	public Sequence getSepaDirectDebitSeq(AccountConfig accountConfig) throws AxelorException {
+		if(accountConfig.getSepaDirectDebitSequence() == null)   {
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.ACCOUNT_CONFIG_SEQUENCE_6), 
+					GeneralServiceImpl.EXCEPTION, accountConfig.getCompany().getName()), IException.CONFIGURATION_ERROR);
+		}
+
+		return accountConfig.getSepaDirectDebitSequence();
+	}
+
+	public Sequence getIntCreditTransSeq(AccountConfig accountConfig) throws AxelorException {
+		if(accountConfig.getIntCreditTransSequence() == null)   {
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.ACCOUNT_CONFIG_SEQUENCE_7), 
+					GeneralServiceImpl.EXCEPTION, accountConfig.getCompany().getName()), IException.CONFIGURATION_ERROR);
+		}
+
+		return accountConfig.getIntCreditTransSequence();
+	}
+
+	public Sequence getIntDirectDebitSeq(AccountConfig accountConfig) throws AxelorException {
+		if(accountConfig.getIntDirectDebitSequence() == null)   {
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.ACCOUNT_CONFIG_SEQUENCE_8), 
+					GeneralServiceImpl.EXCEPTION, accountConfig.getCompany().getName()), IException.CONFIGURATION_ERROR);
+		}
+
+		return accountConfig.getIntDirectDebitSequence();
+	}
 	
 	
 	

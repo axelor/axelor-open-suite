@@ -124,6 +124,11 @@
 	<many-to-one name="suppInvSequence" ref="com.axelor.apps.base.db.Sequence" title="Supplier invoices sequence"/>
 	<many-to-one name="suppRefSequence" ref="com.axelor.apps.base.db.Sequence" title="Supplier refunds sequence"/>
 	
+	<many-to-one name="sepaCreditTransSequence" ref="com.axelor.apps.base.db.Sequence" title="SEPA Credit Transfers"/>
+	<many-to-one name="sepaDirectDebitSequence" ref="com.axelor.apps.base.db.Sequence" title="SEPA Direct Debits"/>
+	<many-to-one name="intCreditTransSequence" ref="com.axelor.apps.base.db.Sequence" title="International Credit Transfers"/>
+	<many-to-one name="intDirectDebitSequence" ref="com.axelor.apps.base.db.Sequence" title="International Direct Debits"/>
+	
 <!-- 	Invoice printing    -->
 	<boolean name="displayDelAddrOnPrinting" title="Display delivery address on printing ?"/>
   	<boolean name="displayProductCodeOnPrinting" title="Display product code on printing ?"/>

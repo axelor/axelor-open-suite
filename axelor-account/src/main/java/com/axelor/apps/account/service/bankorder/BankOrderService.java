@@ -38,7 +38,7 @@ public interface BankOrderService {
 	public void updateTotalAmounts(BankOrder bankOrder) throws AxelorException;
 	
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void confirm(BankOrder bankOrder);
+	public void confirm(BankOrder bankOrder) throws AxelorException;
 	
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void sign(BankOrder bankOrder);

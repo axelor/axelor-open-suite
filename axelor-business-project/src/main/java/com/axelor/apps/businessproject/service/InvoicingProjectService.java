@@ -108,7 +108,7 @@ public class InvoicingProjectService {
 		}
 		projectTask.getAssignedTo();
 		InvoiceGenerator invoiceGenerator = new InvoiceGenerator(InvoiceRepository.OPERATION_TYPE_CLIENT_SALE, company, customer.getPaymentCondition(),
-				customer.getPaymentMode(), partnerService.getInvoicingAddress(customer), customer, null,
+				customer.getClientPaymentMode(), partnerService.getInvoicingAddress(customer), customer, null,
 				customer.getCurrency(), customer.getSalePriceList(), null, null, null, null){
 
 			@Override
