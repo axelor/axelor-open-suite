@@ -71,6 +71,8 @@
 "Project/Task Selection",,,
 "Project/task",,,
 "ProjectTask.amount","Amount",,
+"ProjectTask.analyticalAxis","Analytical axis",,
+"ProjectTask.analyticalAccount","Analytical account",,
 "ProjectTask.analyticalLines","Analytical lines",,
 "ProjectTask.costs","Costs",,
 "ProjectTask.currency","Currency",,
