@@ -53,6 +53,7 @@
   	<panel title="Leave Batch rules">
   		<field name="seniorityVariableName" />
   		<field name="ageVariableName" />
+  		<field name="workingDaysVariableName" />
   		<panel-related field="leaveManagementBatchRuleList" form-view="leave-management-batch-rule-form" grid-view="leave-management-batch-rule-grid" colSpan="12" />
   	</panel>
   	<panel title="Export" >
