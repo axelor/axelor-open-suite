@@ -51,7 +51,7 @@
   	<many-to-one name="refusedExtraHoursTemplate" ref="com.axelor.apps.message.db.Template" title="Refused Extra Hours Template"/>
   	
   	<!-- Seniority Leave Management Batch -->
-  	<one-to-many name="leaveManagementBatchRuleList" ref="com.axelor.apps.hr.db.LeaveManagementBatchRule" title="Leave management batch rule list"/>
+  	<one-to-many name="leaveManagementBatchRuleList" ref="com.axelor.apps.hr.db.LeaveManagementBatchRule" title="Leave management batch rule list" mappedBy="hrConfig"/>
   	<string name="seniorityVariableName" title="Name for seniority variable" />
   	<string name="ageVariableName" title="Name for age variable" />
   	 
