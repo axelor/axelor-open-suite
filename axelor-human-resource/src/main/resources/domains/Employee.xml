@@ -39,6 +39,7 @@
       <one-to-many name="lunchVoucherAdvanceList" ref="com.axelor.apps.hr.db.LunchVoucherAdvance" title="Lunch Voucher Advances" mappedBy="employee" orphanRemoval="true"/>
       <one-to-many name="kilometricLogList" ref="com.axelor.apps.hr.db.KilometricLog" mappedBy="employee"/>
       <decimal name="bonusCoef" title="Coefficient for bonus" />
+      <string name="exportCode" title="Export code" help="May be used as registration number in export" />
       <string name="name" title="Name" search="contactPartner">
            <![CDATA[
 	       		if(contactPartner != null) { return contactPartner.getFullName(); }

@@ -32,7 +32,7 @@ import com.google.inject.persist.Transactional;
 
 
 
-public class BatchPayrollPreparation extends BatchStrategy {
+public class BatchPayrollPreparationGeneration extends BatchStrategy {
 	
 	private final Logger log = LoggerFactory.getLogger( getClass() );
 	
@@ -54,7 +54,7 @@ public class BatchPayrollPreparation extends BatchStrategy {
 	PeriodRepository periodRepository;
 	
 	@Inject
-	public BatchPayrollPreparation(PayrollPreparationService payrollPreparationService) {
+	public BatchPayrollPreparationGeneration(PayrollPreparationService payrollPreparationService) {
 		super();
 		this.payrollPreparationService = payrollPreparationService;
 	}
@@ -166,7 +166,7 @@ public class BatchPayrollPreparation extends BatchStrategy {
 	@Override
 	protected void stop() {
 		
-		String comment = String.format(I18n.get(IExceptionMessage.BATCH_PAYROLL_PREPARATION_RECAP) + '\n', total); 
+		String comment = String.format(I18n.get(IExceptionMessage.BATCH_PAYROLL_PREPARATION_GENERATION_RECAP) + '\n', total); 
 		
 		comment += String.format(I18n.get(IExceptionMessage.BATCH_PAYROLL_PREPARATION_SUCCESS_RECAP) + '\n', batch.getDone()); 
 		

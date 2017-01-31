@@ -24,6 +24,7 @@ import com.axelor.apps.hr.db.EmploymentContract;
 import com.axelor.apps.hr.db.PayrollLeave;
 import com.axelor.apps.hr.db.PayrollPreparation;
 import com.axelor.apps.hr.db.repo.EmploymentContractRepository;
+import com.axelor.apps.hr.db.repo.HrBatchRepository;
 import com.axelor.apps.hr.db.repo.PayrollLeaveRepository;
 import com.axelor.apps.hr.db.repo.PayrollPreparationRepository;
 import com.axelor.apps.hr.service.PayrollPreparationService;
@@ -83,20 +84,14 @@ public class PayrollPreparationController {
 		
 		PayrollPreparation payrollPreparation = payrollPreparationRepo.find( request.getContext().asType(PayrollPreparation.class).getId() );
 		
-		response.setExportFile( payrollPreparationService.exportSinglePayrollPreparation(payrollPreparation) );
+		if (payrollPreparation.getExportTypeSelect() == HrBatchRepository.EXPORT_TYPE_STANDARD){
+			response.setExportFile( payrollPreparationService.exportSinglePayrollPreparation(payrollPreparation) );
+		}else if (payrollPreparation.getExportTypeSelect() == HrBatchRepository.EXPORT_TYPE_MEILLEURE_GESTION){
+			response.setExportFile( payrollPreparationService.exportMeilleureGestionPayrollPreparation(payrollPreparation) );
+		}
+		
 		response.setReload(true);
 		
 	}
 	
-	/*
-	public void exportAll(ActionRequest request, ActionResponse response) throws IOException{
-		
-		@SuppressWarnings("unchecked")
-		List<Integer> payrollPreparations = (List<Integer>) request.getContext().get("_ids");
-		
-		if (payrollPreparations != null){
-			response.setExportFile(payrollPreparationService.exportAllPayrollPreparation(payrollPreparations));
-		}
-	}
-	*/
 }

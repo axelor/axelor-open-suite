@@ -36,12 +36,19 @@
 			    <field name="referentialDate" colSpan="4" />
 				<button name="seniorityLeaveManagementBatch" readonlyIf="leaveReason == null" title="Seniority leave management batch" onClick="save,action-hrbatch-method-hr-batch"/>
 			</panel>
-			<panel name="payrollPreparationPage" title="Payroll preparation page" hidden="true" showIf="actionSelect == 3">
-			    <field name="period" colSpan="4" />
+			<panel name="payrollPreparationGenerationPage" title="Payroll preparation generation page" hidden="true" showIf="actionSelect == 3">
+			    <field name="period" domain="self.year.company = :company" colSpan="4" />
 			    <field name="comments" colSpan="8"/>
 			    <panel-related field="employeeSet" target="com.axelor.apps.hr.db.Employee" grid-view="employee-lite-grid" form-view="employee-form" canNew="false"/>
 				<panel-related field="planningSet" target="com.axelor.apps.base.db.WeeklyPlanning" grid-view="weekly-planning-grid" form-view="weekly-planning-form" canNew="false"/>
-				<button name="payrollPreparationBatch" readonlyIf="period == null" title="Payroll preparation batch" onClick="save,action-hrbatch-method-hr-batch"/>
+				<button name="payrollPreparationGenerationBatch" readonlyIf="period == null" title="Payroll preparation generation batch" onClick="save,action-hrbatch-method-hr-batch"/>
+			</panel>
+			<panel  name="payrollPreparationExportPage" title="Payroll preparation export page" hidden="true" showIf="actionSelect == 4">
+				<field name="period" domain="self.year.company = :company" />
+				<field name="payrollPreparationExportTypeSelect" />
+				<field name="exportAlreadyExported" />
+				<spacer/>
+				<button name="payrollPreparationExportBatch" readonlyIf="period == null || payrollPreparationExportTypeSelect == null" title="Payroll preparation export batch" onClick="save,action-hrbatch-method-hr-batch"/>
 			</panel>
 			<panel name="informations" title="Informations">
 				<field name="createdOn" title="Created on"/>
@@ -51,7 +58,6 @@
 			</panel>
 			</panel-tabs>
 	</form>
-
 
 	<action-method name="action-hrbatch-method-hr-batch">
 		<call class="com.axelor.apps.hr.web.HrBatchController" method="launchHrBatch"/>
