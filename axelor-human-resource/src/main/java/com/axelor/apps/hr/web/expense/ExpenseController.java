@@ -321,6 +321,17 @@ public class ExpenseController {
 		}
 	}
 	
+	public void addPayment(ActionRequest request, ActionResponse response) {
+		Expense expense = request.getContext().asType(Expense.class);
+		expense = Beans.get(ExpenseRepository.class).find(expense.getId());
+		try {
+			expenseServiceProvider.get().addPayment(expense);
+		} catch (Exception e) {
+			TraceBackService.trace(e);
+			response.setException(e);
+		}
+	}
+	
 	//sending expense and sending mail to manager
 	public void send(ActionRequest request, ActionResponse response) throws AxelorException{
 		

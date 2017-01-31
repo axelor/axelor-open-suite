@@ -40,10 +40,13 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
+import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.AccountManagementServiceAccountImpl;
 import com.axelor.apps.account.service.AnalyticMoveLineService;
+import com.axelor.apps.account.service.bankorder.BankOrderCreateService;
 import com.axelor.apps.account.service.invoice.generator.InvoiceLineGenerator;
 import com.axelor.apps.account.service.move.MoveLineService;
 import com.axelor.apps.account.service.move.MoveService;
@@ -361,6 +364,20 @@ public class ExpenseServiceImpl implements ExpenseService  {
 		}
 
 		expenseRepository.save(expense);
+	}
+	
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
+	public void addPayment(Expense expense) throws AxelorException {
+		expense.setPaymentDate(new LocalDate());
+		
+		PaymentMode paymentMode = expense.getUser().getPartner().getSupplierPaymentMode();
+		expense.setPaymentMode(paymentMode);
+		if (paymentMode != null && paymentMode.getGenerateBankOrder()) {
+			Beans.get(BankOrderCreateService.class).createBankOrder(expense);
+		}
+		
+		expense.setPaymentStatusSelect(InvoicePaymentRepository.STATUS_PENDING);
+		expense.setPaymentAmount(expense.getInTaxTotal().subtract(expense.getAdvanceAmount()).subtract(expense.getWithdrawnCash()).subtract(expense.getPersonalExpenseAmount()));
 	}
 
 	public List<InvoiceLine> createInvoiceLines(Invoice invoice, List<ExpenseLine> expenseLineList, int priority) throws AxelorException  {
