@@ -326,6 +326,7 @@ public class ExpenseController {
 		expense = Beans.get(ExpenseRepository.class).find(expense.getId());
 		try {
 			expenseServiceProvider.get().addPayment(expense);
+			response.setReload(true);
 		} catch (Exception e) {
 			TraceBackService.trace(e);
 			response.setException(e);

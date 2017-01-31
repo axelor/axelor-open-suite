@@ -37,7 +37,6 @@ import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.hr.db.Expense;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 
@@ -130,40 +129,6 @@ public class BankOrderCreateService {
 								invoice.getInvoiceId());
 		
 		bankOrder.addBankOrderLineListItem(bankOrderLineService.createBankOrderLine(paymentMode.getBankOrderFileFormat(), partner, amount, currency, paymentDate, invoice.getInvoiceId(), null));
-		
-		return bankOrder;
-		
-	}
-	
-	/**
-	 * Method to create a bank order for an expense
-	 * 
-	 * 
-	 * @param expense
-	 * 			An expense
-	 * 
-	 * @throws AxelorException
-	 * 		
-	 */
-	public BankOrder createBankOrder(Expense expense) throws AxelorException {
-		Company company = expense.getCompany();
-		Partner partner = expense.getUser().getPartner();
-		PaymentMode paymentMode = partner.getSupplierPaymentMode();
-		BigDecimal amount = expense.getInTaxTotal().subtract(expense.getAdvanceAmount()).subtract(expense.getWithdrawnCash()).subtract(expense.getPersonalExpenseAmount());
-		Currency currency = company.getCurrency();
-		LocalDate paymentDate = new LocalDate();
-
-		BankOrder bankOrder = this.createBankOrder( 
-								paymentMode,
-								BankOrderRepository.PARTNER_TYPE_EMPLOYEE,
-								paymentDate,
-								company,
-								company.getDefaultBankDetails(),
-								currency,
-								expense.getFullName(),
-								expense.getFullName());
-		
-		bankOrder.addBankOrderLineListItem(bankOrderLineService.createBankOrderLine(paymentMode.getBankOrderFileFormat(), partner, amount, currency, paymentDate, expense.getFullName(), expense.getFullName()));
 		
 		return bankOrder;
 		
