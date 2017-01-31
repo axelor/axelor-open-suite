@@ -43,9 +43,11 @@ public abstract class BatchStrategy extends AbstractBatch {
 		super();
 		this.leaveManagementService = leaveManagementService;
 	}
-
-
 	
+	public BatchStrategy() {
+		super();
+	}
+
 	protected void updateEmployee( Employee employee ){
 
 		employee.addBatchSetItem( batchRepo.find( batch.getId() ) );

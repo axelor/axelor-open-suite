@@ -98,7 +98,7 @@ public class IrrecoverableController {
 			String fileLink = ReportFactory.createReport(IReport.IRRECOVERABLE, name+"-${date}")
 					.addParam("IrrecoverableID", irrecoverable.getId())
 					.addFormat(irrecoverable.getExportTypeSelect())
-					.addModel(irrecoverable)
+					.toAttach(irrecoverable)
 					.generate()
 					.getFileLink();
 

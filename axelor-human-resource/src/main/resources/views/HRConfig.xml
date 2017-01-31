@@ -56,6 +56,11 @@
   		<field name="ageVariableName" />
   		<panel-related field="leaveManagementBatchRuleList" form-view="leave-management-batch-rule-form" grid-view="leave-management-batch-rule-grid" colSpan="12" />
   	</panel>
+  	<panel title="Export" >
+  		<field name="exportCodeForLunchVoucherManagement" />
+  		<field name="exportCodeForExtraHours" />
+  		
+  	</panel>
    </panel-tabs>
 	  	<panel-related field="kilometricAllowanceRateList" colSpan="12"/>
 	</form>

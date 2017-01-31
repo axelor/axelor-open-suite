@@ -104,6 +104,8 @@
 	<selection name="ihr.batch.action.select">
 		<option value="1">Leave Management</option>
 		<option value="2">Seniority leave Management</option>
+		<option value="3">Payroll preparation generation</option>
+		<option value="4">Payroll preparation export</option>
 	</selection>
 	
 	<selection name="hr.expense.company.cb.payment">
@@ -114,7 +116,7 @@
 	<selection name="hrs.lunch.voucher.mgt.status.select">
 		<option value="1">Draft</option>
 		<option value="2">Calculated</option>
-		<option value="3">Requested</option>
+		<option value="3">Validated</option>
 	</selection>
 	
 	<selection name="hr.lunch.voucher.mgt.line.lunch.voucher.format.select">
@@ -137,11 +139,21 @@
 		<option value="2">Calculated</option>
 	</selection>
 	
+	<selection name="hr.employee.bonus.mgt.line.status.select">
+		<option value="1">Calculated</option>
+		<option value="2">Anomaly</option>
+	</selection>
+
 	<selection name="account.analytic.move.line.status.select" id="hr.analytic.move.line.status.select">
 		<option value="1">Forecast (order)</option>
 		<option value="2">Forecast (invoice)</option>
 		<option value="3">Real (accounting)</option>
 		<option value="4">Forecast (expense)</option>
+	</selection>
+	
+	<selection name="hr.batch.payroll.preparation.export.type.select">
+		<option value="1">Standard</option>
+		<option value="2">MeilleureGestion</option>
 	</selection>
 	
 </object-views>

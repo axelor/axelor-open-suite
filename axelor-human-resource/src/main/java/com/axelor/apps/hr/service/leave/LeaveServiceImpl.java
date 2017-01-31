@@ -43,7 +43,6 @@ import com.axelor.apps.hr.db.LeaveLine;
 import com.axelor.apps.hr.db.LeaveReason;
 import com.axelor.apps.hr.db.LeaveRequest;
 import com.axelor.apps.hr.db.PublicHolidayPlanning;
-import com.axelor.apps.hr.db.repo.EmployeeRepository;
 import com.axelor.apps.hr.db.repo.LeaveLineRepository;
 import com.axelor.apps.hr.db.repo.LeaveReasonRepository;
 import com.axelor.apps.hr.db.repo.LeaveRequestRepository;
@@ -118,9 +117,6 @@ public class LeaveServiceImpl  implements  LeaveService  {
 					publicHolidayPlanning = conf.getPublicHolidayPlanning();
 				}
 			}
-			if(publicHolidayPlanning == null){
-				throw new AxelorException(String.format(I18n.get(IExceptionMessage.EMPLOYEE_PUBLIC_HOLIDAY),employee.getName()), IException.CONFIGURATION_ERROR);
-			}
 
 			BigDecimal duration = BigDecimal.ZERO;
 			
@@ -151,8 +147,11 @@ public class LeaveServiceImpl  implements  LeaveService  {
 
 				duration = duration.add(new BigDecimal(this.computeEndDateWithSelect(leave.getToDate(), leave.getEndOnSelect(), weeklyPlanning)));
 			}
+			
+			if(publicHolidayPlanning != null){
+				duration = duration.subtract(Beans.get(PublicHolidayService.class).computePublicHolidayDays(leave.getFromDate(),leave.getToDate(), weeklyPlanning, publicHolidayPlanning));
+			}
 
-			duration = duration.subtract(Beans.get(PublicHolidayService.class).computePublicHolidayDays(leave.getFromDate(),leave.getToDate(), weeklyPlanning, publicHolidayPlanning));
 			if(duration.compareTo(BigDecimal.ZERO) < 0){
 				duration.equals(BigDecimal.ZERO);
 			}

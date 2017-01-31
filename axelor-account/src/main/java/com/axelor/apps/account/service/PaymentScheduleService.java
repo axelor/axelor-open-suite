@@ -94,9 +94,9 @@ public class PaymentScheduleService {
 	public PaymentSchedule createPaymentSchedule(Partner partner, Company company, Set<Invoice> invoices, LocalDate startDate, int nbrTerm) throws AxelorException{
 
 		Invoice invoice = null;
-
+		
 		PaymentSchedule paymentSchedule = this.createPaymentSchedule(partner, invoice, company, date, startDate,
-				nbrTerm, partnerService.getDefaultBankDetails(partner), partner.getPaymentMode());
+				nbrTerm, partnerService.getDefaultBankDetails(partner), partner.getClientPaymentMode());
 
 		paymentSchedule.getInvoiceSet().addAll(invoices);
 

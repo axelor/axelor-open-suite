@@ -13,13 +13,16 @@
     <decimal name="lunchVoucherWageShare" title="Lunch Voucher Wage Share" scale="2" precision="20"/>
     <decimal name="lunchVoucherEmployersShare" title="Lunch Voucher Employer's Share" scale="2" precision="20"/>
     <many-to-one name="leaveReason" title="Leave Reason" ref="com.axelor.apps.hr.db.LeaveReason"/>
+    <string name="exportCodeForExtraHours" title="Export code for extra hour management" />
     
     <!-- LUNCH VOUCHERS MANAGEMENT -->
     
     <integer name="minStockLunchVoucher" title="Minimum Stock of Lunch Vouchers" help="Alert threshold"/>
     <integer name="availableStockLunchVoucher" title="Available Stock of Lunch Vouchers"/>
     <many-to-one name="supplierLunchVoucher" ref="com.axelor.apps.base.db.Partner" title="Lunch voucher supplier"/>
-    <string name="lunchVoucherExportPath" title="Lunch Voucher Export Path"/>
+
+    <!--<string name="lunchVoucherExportPath" title="Lunch Voucher Export Path"/>-->
+    <string name="exportCodeForLunchVoucherManagement" title="Export code for lunch voucher management" />
     
     <!-- LEAVE REQUEST MAIL NOTIFICATION -->
   	<boolean name="leaveMailNotification" title="Leave Request Notification Mail"/>

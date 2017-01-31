@@ -41,7 +41,6 @@ public class ExternalReportSettings extends ReportSettings  {
 		this.addAxelorReportPath(rptdesign)
 		.addParam("__locale", AppFilter.getLocale().toString());
 		
-		
 	}
 	
 

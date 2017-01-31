@@ -17,7 +17,6 @@
  */
 package com.axelor.apps.hr.web;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
@@ -25,10 +24,10 @@ import com.axelor.apps.hr.db.EmploymentContract;
 import com.axelor.apps.hr.db.PayrollLeave;
 import com.axelor.apps.hr.db.PayrollPreparation;
 import com.axelor.apps.hr.db.repo.EmploymentContractRepository;
+import com.axelor.apps.hr.db.repo.HrBatchRepository;
 import com.axelor.apps.hr.db.repo.PayrollLeaveRepository;
 import com.axelor.apps.hr.db.repo.PayrollPreparationRepository;
 import com.axelor.apps.hr.service.PayrollPreparationService;
-import com.axelor.apps.tool.file.CsvTool;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
@@ -62,7 +61,7 @@ public class PayrollPreparationController {
 		response.setValue("extraHoursLineList",payrollPreparation.getExtraHoursLineList());
 		response.setValue("$payrollLeavesList", payrollLeaveList);
 		response.setValue("duration",payrollPreparation.getDuration());
-		response.setValue("duration",payrollPreparation.getDuration());
+		response.setValue("leaveDuration",payrollPreparation.getLeaveDuration());
 		response.setValue("expenseAmount",payrollPreparation.getExpenseAmount());
 		response.setValue("expenseList",payrollPreparation.getExpenseList());
 		response.setValue("otherCostsEmployeeSet",payrollPreparation.getEmploymentContract().getOtherCostsEmployeeSet());
@@ -83,23 +82,16 @@ public class PayrollPreparationController {
 	
 	public void exportPayrollPreparation(ActionRequest request, ActionResponse response) throws IOException, AxelorException{
 		
-		
 		PayrollPreparation payrollPreparation = payrollPreparationRepo.find( request.getContext().asType(PayrollPreparation.class).getId() );
 		
-		response.setExportFile( payrollPreparationService.exportSinglePayrollPreparation(payrollPreparation) );
+		if (payrollPreparation.getExportTypeSelect() == HrBatchRepository.EXPORT_TYPE_STANDARD){
+			response.setExportFile( payrollPreparationService.exportSinglePayrollPreparation(payrollPreparation) );
+		}else if (payrollPreparation.getExportTypeSelect() == HrBatchRepository.EXPORT_TYPE_MEILLEURE_GESTION){
+			response.setExportFile( payrollPreparationService.exportMeilleureGestionPayrollPreparation(payrollPreparation) );
+		}
+		
+		response.setReload(true);
 		
 	}
 	
-	public void exportAll(ActionRequest request, ActionResponse response) throws IOException{
-		
-		@SuppressWarnings("unchecked")
-		List<Integer> payrollPreparations = (List<Integer>) request.getContext().get("_ids");
-		
-		if (payrollPreparations != null){
-			
-			response.setExportFile(payrollPreparationService.exportAllPayrollPreparation(payrollPreparations));
-		}
-		
-		
-	}
 }

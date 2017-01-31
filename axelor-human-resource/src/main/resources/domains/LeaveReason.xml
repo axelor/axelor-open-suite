@@ -12,6 +12,9 @@
       <boolean name="allowNegativeValue" title="Allow Negative Value for leaves"/>
       <boolean name="allowInjection" title="Allow Injection"/>
       <string name="instruction"  title="Instruction" multiline="true" large="true"/>
+      
+      <boolean name="payrollPreprationExport" title="Export for payroll preparation ?" />
+      <string name="exportCode" title="Export code" />
   </entity>
   
 </domain-models>

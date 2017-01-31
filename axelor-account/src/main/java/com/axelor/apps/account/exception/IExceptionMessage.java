@@ -354,7 +354,15 @@ public interface IExceptionMessage {
 	static final String ACCOUNT_CONFIG_SEQUENCE_3 = /*$$(*/ "%s :\n Please, configure a sequence for the supplier invoices and the company %s" /*)*/;
 	static final String ACCOUNT_CONFIG_SEQUENCE_4 = /*$$(*/ "%s :\n Please, configure a sequence for the supplier refunds and the company %s" /*)*/;
 
+	static final String ACCOUNT_CONFIG_SEQUENCE_5 = /*$$(*/ "%s :\n Please, configure a sequence for the SEPA Credit Transfers and the company %s" /*)*/;
+	static final String ACCOUNT_CONFIG_SEQUENCE_6 = /*$$(*/ "%s :\n Please, configure a sequence for the SEPA Direct Debits and the company %s" /*)*/;
+	static final String ACCOUNT_CONFIG_SEQUENCE_7 = /*$$(*/ "%s :\n Please, configure a sequence for the International Credit Transfers and the company %s" /*)*/;
+	static final String ACCOUNT_CONFIG_SEQUENCE_8 = /*$$(*/ "%s :\n Please, configure a sequence for the International Direct Debits and the company %s" /*)*/;
 
+	static final String ACCOUNT_CONFIG_EXTERNAL_BANK_TO_BANK_ACCOUNT = /*$$(*/ "%s :\n Please, configure an account for the bank order for the external bank to bank transfer for the company %s" /*)*/;
+	static final String ACCOUNT_CONFIG_INTERNAL_BANK_TO_BANK_ACCOUNT = /*$$(*/ "%s :\n Please, configure an account for the bank order for the internal bank to bank transfer for the company %s" /*)*/;
+	
+	
 	/**
 	 * Cfonb config service
 	 */
@@ -587,6 +595,7 @@ public interface IExceptionMessage {
 	static final String BANK_ORDER_WRONG_FURTHER_INFORMATION_DETAIL_RECORD = /*$$(*/ "Anomaly has been detected during file generation for the further information detail record of the bank order line %s" /*)*/;
 	static final String BANK_ORDER_WRONG_TOTAL_RECORD = /*$$(*/ "Anomaly has been detected during file generation for the total record of the bank order %s" /*)*/;
 	static final String BANK_ORDER_ISSUE_DURING_FILE_GENERATION = /*$$(*/ "Anomaly has been detected during file generation for bank order %s" /*)*/;
+	static final String BANK_ORDER_COMPANY_NO_SEQUENCE = /*$$(*/ "The company %s does not have bank order sequence" /*)*/;
 
 	
 	/**

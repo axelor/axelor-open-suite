@@ -256,7 +256,6 @@
 	</input>
 	
 	<input file="crm_meetingType.csv" separator=";" type="com.axelor.apps.crm.db.MeetingType" search="self.importId = :importId"/>
-	
 
  	<input file="project_project_task.csv" type="com.axelor.apps.project.db.ProjectTask" separator=";" search="self.importId = :importId"/>
  	
@@ -270,7 +269,7 @@
 	</input>
  	
  	<input file="hr_timesheetLine.csv" type="com.axelor.apps.hr.db.TimesheetLine" separator=";" search="self.importId = :importId">
-		<bind to="durationStored" eval="call:com.axelor.csv.script.ImportDurationStored:getDurationHoursImport(visibleDuration,user.importId)"/>
+		<bind to="durationStored" eval="call:com.axelor.csv.script.ImportDurationStored:getDurationHoursImport(visibleDuration, user?.id)"/>
 		<bind to="date" eval="call:com.axelor.csv.script.ImportDateTime:importDate(date)" column="date"/>
 	</input>
 	
@@ -384,7 +383,7 @@
  	<input file="account_invoiceLine.csv" separator=";" type="com.axelor.apps.account.db.InvoiceLine" />
  	
  	<input file="account_paymentVoucher.csv" separator=";" type="com.axelor.apps.account.db.PaymentVoucher" >
- 		<bind to="paymentDateTime" eval="call:com.axelor.csv.script.ImportDateTime:importDateTime(paymentDateTime)" column="paymentDateTime"/>
+ 		<bind to="paymentDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(paymentDate)" column="paymentDate"/>
  	</input>
  	
 <!--  	<input file="account_paymentVoucher.csv" separator=";" type="com.axelor.apps.account.db.PaymentVoucher" search="self.importId = :importId" update="true" call="com.axelor.csv.script.ImportPaymentVoucher:importPaymentVoucher"> -->

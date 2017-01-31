@@ -22,6 +22,7 @@ import java.math.BigDecimal;
 import com.axelor.apps.hr.service.employee.EmployeeService;
 import com.axelor.auth.db.User;
 import com.axelor.auth.db.repo.UserRepository;
+import com.axelor.common.StringUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
@@ -31,10 +32,14 @@ public class ImportDurationStored {
 	@Inject
 	protected EmployeeService employeeService;
 
-	public String getDurationHoursImport(String duration, String userImp) throws AxelorException{
+	public String getDurationHoursImport(String duration, String userId) throws AxelorException{
+		
+		if(StringUtils.isEmpty(duration) || StringUtils.isEmpty(userId)) {
+			return duration;
+		}
+		
 		BigDecimal visibleDuration = new BigDecimal(duration);
-		long userId = Long.parseLong(userImp);
-		User user = Beans.get(UserRepository.class).find(userId);
+		User user = Beans.get(UserRepository.class).find(Long.valueOf(userId));
 		BigDecimal durationStored = employeeService.getUserDuration(visibleDuration, user, true);
 		return durationStored.toString();
 	}

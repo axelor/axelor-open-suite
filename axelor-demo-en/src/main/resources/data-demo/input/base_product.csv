@@ -43,4 +43,3 @@
 503;"Mileage expenses";"EXP-0004";"Reimbursement of travel expenses for employees traveling outside the company while using their own vehicle.";6;14;"true";;"false";1;"service";1;"EUR";"0.76";"EUR";;;;3;1;"false";;"false";;;"1.40";;;;
 504;"Meal";"EXP-0005";"Reimbursement of meal expenses for employees traveling outside the company.";6;14;"true";;"false";1;"service";20;"EUR";15;"EUR";;;;3;18;"false";;"false";;;"1.40";"img/product/EXP-0005_en.jpg";;;
 505;"Hotel (or other accomodations)";"EXP-0006";"Reimbursement of accomodation expenses for employees traveling outside the company.";6;14;"true";;"false";1;"service";90;"EUR";"63.9";"EUR";;;;3;81;"false";;"false";;;"1.40";"img/product/EXP-0006_en.jpg";;;
-;;;;6;15;"true";;"false";2;"service";91;"EUR";"63.10";"EUR";;;;4;82;"false";;"false";;;"1.41";"img/product/EXP-0006_en.jpg";;;

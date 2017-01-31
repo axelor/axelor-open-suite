@@ -161,9 +161,9 @@
 	</action-view>
 	
 	<menuitem name="sale.conf.tax" parent="sc-root-sale-conf"
-		title="Taxes" action="account.conf.financial.tax" />
+		title="Taxes" action="sale.conf.financial.tax" />
 
-	<action-view name="account.conf.financial.tax" title="Taxes"
+	<action-view name="sale.conf.financial.tax" title="Taxes"
 		model="com.axelor.apps.account.db.Tax" >
 		<view type="grid" name="tax-grid"/>
 		<view type="form" name="tax-form"/>

@@ -31,14 +31,19 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.BankOrderRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
+import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.AccountingSituationService;
+import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.move.MoveLineService;
 import com.axelor.apps.account.service.move.MoveService;
 import com.axelor.apps.account.service.payment.PaymentModeService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.service.administration.GeneralServiceImpl;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.IException;
+import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 
 public class BankOrderMoveServiceImpl implements BankOrderMoveService  {
@@ -47,9 +52,9 @@ public class BankOrderMoveServiceImpl implements BankOrderMoveService  {
 	
 	protected BankOrderRepository bankOrderRepo;
 	protected MoveService moveService;
-	protected MoveLineService moveLineService;
 	protected PaymentModeService paymentModeService;
 	protected AccountingSituationService accountingSituationService;
+	protected AccountConfigService accountConfigService;
 	
 	protected PaymentMode paymentMode;
 	protected Company senderCompany;
@@ -65,13 +70,14 @@ public class BankOrderMoveServiceImpl implements BankOrderMoveService  {
 	
 	@Inject
 	public BankOrderMoveServiceImpl(BankOrderRepository bankOrderRepo, MoveService moveService, 
-			MoveLineService moveLineService, PaymentModeService paymentModeService, AccountingSituationService accountingSituationService)  {
+			PaymentModeService paymentModeService, 
+			AccountingSituationService accountingSituationService, AccountConfigService accountConfigService)  {
 		
 		this.bankOrderRepo = bankOrderRepo;
 		this.moveService = moveService;
-		this.moveLineService = moveLineService;
 		this.paymentModeService = paymentModeService;
 		this.accountingSituationService = accountingSituationService;
+		this.accountConfigService = accountConfigService;
 		
 	}
 	
@@ -92,8 +98,7 @@ public class BankOrderMoveServiceImpl implements BankOrderMoveService  {
 		isMultiCurrency = bankOrder.getIsMultiCurrency();
 		
 		if(orderTypeSelect == BankOrderRepository.ORDER_TYPE_INTERNATIONAL_CREDIT_TRANSFER 
-				|| orderTypeSelect == BankOrderRepository.ORDER_TYPE_SEPA_CREDIT_TRANSFER
-				|| orderTypeSelect == BankOrderRepository.ORDER_TYPE_BANK_TO_BANK_TRANSFER)  {
+				|| orderTypeSelect == BankOrderRepository.ORDER_TYPE_SEPA_CREDIT_TRANSFER)  {
 			isDebit = true;
 		}
 		else  {
@@ -114,7 +119,7 @@ public class BankOrderMoveServiceImpl implements BankOrderMoveService  {
 		bankOrderLine.setSenderMove(
 				generateSenderMove(bankOrderLine));
 		
-		if(orderTypeSelect == BankOrderRepository.ORDER_TYPE_BANK_TO_BANK_TRANSFER)  {
+		if(partnerTypeSelect == BankOrderRepository.PARTNER_TYPE_COMPANY)  {
 			bankOrderLine.setReceiverMove(
 					generateReceiverMove(bankOrderLine));
 		}
@@ -131,16 +136,14 @@ public class BankOrderMoveServiceImpl implements BankOrderMoveService  {
 						this.getCurrency(bankOrderLine), partner, 
 						this.getDate(bankOrderLine), paymentMode, MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC);
 		
-		MoveLine bankMoveLine = moveLineService.createMoveLine(
+		MoveLine bankMoveLine = moveService.getMoveLineService().createMoveLine(
 				senderMove, partner, senderBankAccount,
 				bankOrderLine.getBankOrderAmount(), !isDebit,
 				senderMove.getDate(), 1, bankOrderLine.getReceiverReference());
 		senderMove.addMoveLineListItem(bankMoveLine);
 		
-		
-		//TODO manage the case with bank to bank account
-		MoveLine partnerMoveLine = moveLineService.createMoveLine(
-				senderMove, partner, getPartnerAccount(partner),
+		MoveLine partnerMoveLine = moveService.getMoveLineService().createMoveLine(
+				senderMove, partner, getPartnerAccount(partner, bankOrderLine.getReceiverCompany(), senderMove.getCompany()),
 				bankOrderLine.getBankOrderAmount(), isDebit,
 				senderMove.getDate(), 2, bankOrderLine.getReceiverReference());
 		senderMove.addMoveLineListItem(partnerMoveLine);
@@ -152,21 +155,21 @@ public class BankOrderMoveServiceImpl implements BankOrderMoveService  {
 	protected Move generateReceiverMove(BankOrderLine bankOrderLine) throws AxelorException  {
 		
 		Partner partner = bankOrderLine.getPartner();
+		Company receiverCompany = bankOrderLine.getReceiverCompany();
 		
 		Move receiverMove = moveService.getMoveCreateService()
-				.createMove(journal, senderCompany, 
+				.createMove(journal, receiverCompany, 
 						this.getCurrency(bankOrderLine), partner, 
 						this.getDate(bankOrderLine), paymentMode, MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC);
 		
-		MoveLine bankMoveLine = moveLineService.createMoveLine(
+		MoveLine bankMoveLine = moveService.getMoveLineService().createMoveLine(
 				receiverMove, partner, senderBankAccount,
 				bankOrderLine.getBankOrderAmount(), isDebit,
 				receiverMove.getDate(), 1, bankOrderLine.getReceiverReference());
 		receiverMove.addMoveLineListItem(bankMoveLine);
 		
-		//TODO manage the case with bank to bank account
-		MoveLine partnerMoveLine = moveLineService.createMoveLine(
-				receiverMove, partner, getPartnerAccount(partner),
+		MoveLine partnerMoveLine = moveService.getMoveLineService().createMoveLine(
+				receiverMove, partner, getPartnerAccount(partner, receiverCompany, receiverMove.getCompany()),
 				bankOrderLine.getBankOrderAmount(), !isDebit,
 				receiverMove.getDate(), 2, bankOrderLine.getReceiverReference());
 		receiverMove.addMoveLineListItem(partnerMoveLine);
@@ -176,9 +179,9 @@ public class BankOrderMoveServiceImpl implements BankOrderMoveService  {
 	}
 	
 	
-	protected Account getPartnerAccount(Partner partner)  {
+	protected Account getPartnerAccount(Partner partner, Company receiverCompany, Company moveCompany) throws AxelorException  {
 		
-		AccountingSituation accountingSituation = accountingSituationService.getAccountingSituation(partner, senderCompany);
+		AccountingSituation accountingSituation = accountingSituationService.getAccountingSituation(partner, receiverCompany);
 
 		switch (partnerTypeSelect) {
 		case BankOrderRepository.PARTNER_TYPE_CUSTOMER :
@@ -189,10 +192,18 @@ public class BankOrderMoveServiceImpl implements BankOrderMoveService  {
 			
 		case BankOrderRepository.PARTNER_TYPE_SUPPLIER :
 			return accountingSituation.getSupplierAccount();
+			
+		case BankOrderRepository.PARTNER_TYPE_COMPANY :
+			if(receiverCompany.equals(senderCompany))  {
+				return accountConfigService.getInternalBankToBankAccount(accountConfigService.getAccountConfig(moveCompany));
+			}
+			else  {
+				return accountConfigService.getExternalBankToBankAccount(accountConfigService.getAccountConfig(moveCompany));
+			}
 
 		default:
-			//throw new AxelorException(cause, category); TODO anomaly
-			return null;
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.BANK_ORDER_PARTNER_TYPE_MISSING),
+					GeneralServiceImpl.EXCEPTION), IException.CONFIGURATION_ERROR);
 		}
 		
 	}
@@ -218,6 +229,7 @@ public class BankOrderMoveServiceImpl implements BankOrderMoveService  {
 		}
 		
 	}
+	
 	
 }
 

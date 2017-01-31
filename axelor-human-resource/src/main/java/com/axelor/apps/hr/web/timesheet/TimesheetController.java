@@ -362,7 +362,7 @@ public class TimesheetController {
 		String fileLink = ReportFactory.createReport(IReport.TIMESHEET, name)
 				.addParam("TimesheetId", timesheet.getId())
 				.addParam("Locale", language)
-				.addModel(timesheet)
+				.toAttach(timesheet)
 				.generate()
 				.getFileLink();
 

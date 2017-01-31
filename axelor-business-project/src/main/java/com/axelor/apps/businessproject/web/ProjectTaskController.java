@@ -57,7 +57,7 @@ public class ProjectTaskController {
 		String fileLink = ReportFactory.createReport(IReport.PROJECT_TASK, name+"-${date}")
 				.addParam("ProjectTaskId", projectTask.getId())
 				.addParam("Locale", language)
-				.addModel(projectTask)
+				.toAttach(projectTask)
 				.generate()
 				.getFileLink();
 

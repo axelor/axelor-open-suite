@@ -17,6 +17,10 @@
 			<field name="allowInjection" showIf="manageAccumulation &amp;&amp; !$popup()"/>
 			<field name="instruction" colSpan="12" />
 		</panel>
+		<panel>
+			<field name="payrollPreprationExport"  />
+      		<field name="exportCode" />
+		</panel>
 	</form>
 	
 </object-views>

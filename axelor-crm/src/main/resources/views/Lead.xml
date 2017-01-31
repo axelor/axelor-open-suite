@@ -215,18 +215,6 @@
     	<field name="otherCountry" expr="eval: primaryCountry" if="isCopyAddress"/>
     </action-record>
     
-    <action-record name="action-partner-record-normalize-fixed-phone-number" model="com.axelor.apps.base.db.Partner">
-		<field name="fixedPhone" expr="call:com.axelor.apps.base.web.PartnerController:normalizePhoneNumber(fixedPhone)"/>
-	</action-record>
-
-	<action-record name="action-partner-record-normalize-fax-phone-number" model="com.axelor.apps.base.db.Partner">
-		<field name="fax" expr="call:com.axelor.apps.base.web.PartnerController:normalizePhoneNumber(fax)"/>
-	</action-record>
-
-	<action-record name="action-partner-record-normalize-mobile-phone-number" model="com.axelor.apps.base.db.Partner">
-		<field name="mobilePhone" expr="call:com.axelor.apps.base.web.PartnerController:normalizePhoneNumber(mobilePhone)"/>
-	</action-record>
-    
    	<action-attrs name="action-lead-attrs-readonly-other-address">
    		<attribute name="readonly" for="otherAddress" expr="isCopyAddress"/>
    		<attribute name="readonly" for="otherCity" expr="eval: isCopyAddress"/>

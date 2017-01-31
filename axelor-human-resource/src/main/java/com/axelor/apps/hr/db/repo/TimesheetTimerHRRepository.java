@@ -33,8 +33,10 @@ public class TimesheetTimerHRRepository extends TSTimerRepository{
 		if(tsTimer.getStatusSelect() == TSTimerRepository.STATUS_STOP){
 			if(tsTimer.getTimesheetLine() != null)
 				updateTimesheetLine(tsTimer);
-			else
-				tsTimerService.generateTimesheetLine(tsTimer);
+			else{
+				if(tsTimer.getDuration() > 59){ tsTimerService.generateTimesheetLine(tsTimer); }
+			}
+				
 		}
 		
 		return super.save(tsTimer);

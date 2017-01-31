@@ -280,7 +280,7 @@ public class ExpenseController {
 		String fileLink = ReportFactory.createReport(IReport.EXPENSE, name)
 				.addParam("ExpenseId", expense.getId())
 				.addParam("Locale", language)
-				.addModel(expense)
+				.toAttach(expense)
 				.generate()
 				.getFileLink();
 

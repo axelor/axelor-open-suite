@@ -85,7 +85,7 @@ public class TemplateMessageServiceBaseImpl extends TemplateMessageServiceImpl {
 
 		if ( modelPath == null || modelPath.isEmpty() ) { return null; }
 
-		ReportSettings reportSettings = ReportFactory.createReport(modelPath, name+"-${date}${time}").addFormat(format).addModel(message);
+		ReportSettings reportSettings = ReportFactory.createReport(modelPath, name+"-${date}${time}").addFormat(format).toAttach(message);
 		
 		for(BirtTemplateParameter birtTemplateParameter : birtTemplateParameterList)  {
 			maker.setTemplate(birtTemplateParameter.getValue());

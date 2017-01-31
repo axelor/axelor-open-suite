@@ -39,6 +39,12 @@ public class HrBatchService {
 			case HrBatchRepository.ACTION_SENIORITY_LEAVE_MANAGEMENT:
 				batch = seniorityLeaveManagement(hrBatch);
 				break;
+			case HrBatchRepository.ACTION_PAYROLL_PREPARATION_GENERATION:
+				batch = payrollPreparationGeneration(hrBatch);
+				break;
+			case HrBatchRepository.ACTION_PAYROLL_PREPARATION_EXPORT:
+				batch = payrollPreparationExport(hrBatch);
+				break;
 			default:
 				throw new AxelorException(String.format(I18n.get(IExceptionMessage.BASE_BATCH_1), hrBatch.getActionSelect(), hrBatch.getCode()), IException.INCONSISTENCY);
 			}
@@ -56,6 +62,16 @@ public class HrBatchService {
 	public Batch seniorityLeaveManagement(HrBatch hrBatch){
 		
 		return Beans.get(BatchSeniorityLeaveManagement.class).run(hrBatch);
+	}
+	
+	public Batch payrollPreparationGeneration(HrBatch hrBatch){
+		
+		return Beans.get(BatchPayrollPreparationGeneration.class).run(hrBatch);
+	}
+	
+	public Batch payrollPreparationExport(HrBatch hrBatch){
+		
+		return Beans.get(BatchPayrollPreparationExport.class).run(hrBatch);
 	}
 
 

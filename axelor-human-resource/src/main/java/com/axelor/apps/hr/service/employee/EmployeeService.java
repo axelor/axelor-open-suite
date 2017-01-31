@@ -32,5 +32,9 @@ public interface EmployeeService extends UserService{
 	
 	public int getLengthOfService(Employee employee, LocalDate refDate) throws AxelorException;
 	public int getAge(Employee employee, LocalDate refDate) throws AxelorException;
+	
+	public BigDecimal getDaysWorksInPeriod(Employee employee, LocalDate fromDate, LocalDate toDate) throws AxelorException;
+	
+	public BigDecimal getDaysWorkedInPeriod(Employee employee, LocalDate fromDate, LocalDate toDate) throws AxelorException;
 
 }

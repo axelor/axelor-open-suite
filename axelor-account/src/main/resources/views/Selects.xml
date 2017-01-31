@@ -304,17 +304,17 @@
 	</selection>
 
 	<selection name="iaccount.bank.order.type.select">
-		<option value="1">Bank to Bank Transfer</option>
-		<option value="2">SEPA Credit Transfer</option>
-		<option value="3">SEPA Direct Debit</option>
-		<option value="4">International Credit Transfer</option>
-		<option value="5">International Direct Debit</option>
+		<option value="1">SEPA Credit Transfer</option>
+		<option value="2">SEPA Direct Debit</option>
+		<option value="3">International Credit Transfer</option>
+		<option value="4">International Direct Debit</option>
 	</selection>
 	
-	<selection name="iaccount.bank.order.partner.select">
+	<selection name="iaccount.bank.order.partner.type.select">
 		<option value="1">Supplier</option>
 		<option value="2">Employee</option>
 		<option value="3">Customer</option>
+		<option value="4">Company</option>
 	</selection>
 	
 	<selection name="iaccount.bank.order.status.select">

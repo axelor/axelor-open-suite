@@ -30,8 +30,6 @@ import java.util.Set;
 import javax.mail.MessagingException;
 
 import org.joda.time.LocalDate;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountConfig;
@@ -91,8 +89,6 @@ public class ExpenseServiceImpl implements ExpenseService  {
 	protected AnalyticMoveLineService analyticMoveLineService;
 	protected HRConfigService  hrConfigService;
 	protected TemplateMessageService  templateMessageService;
-	
-	private final Logger log = LoggerFactory.getLogger(getClass());
 	
 	@Inject
 	public ExpenseServiceImpl(MoveService moveService, ExpenseRepository expenseRepository, MoveLineService moveLineService,
@@ -286,7 +282,7 @@ public class ExpenseServiceImpl implements ExpenseService  {
 			throw new AxelorException(String.format(I18n.get(com.axelor.apps.account.exception.IExceptionMessage.USER_PARTNER),expense.getUser().getName()), IException.CONFIGURATION_ERROR);
 		}
 
-		Move move = moveService.getMoveCreateService().createMove(accountConfigService.getExpenseJournal(accountConfig), accountConfig.getCompany(), null, expense.getUser().getPartner(), moveDate, expense.getUser().getPartner().getPaymentMode(), MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC);
+		Move move = moveService.getMoveCreateService().createMove(accountConfigService.getExpenseJournal(accountConfig), accountConfig.getCompany(), null, expense.getUser().getPartner(), moveDate, expense.getUser().getPartner().getClientPaymentMode(), MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC);
 
 		List<MoveLine> moveLines = new ArrayList<MoveLine>();
 

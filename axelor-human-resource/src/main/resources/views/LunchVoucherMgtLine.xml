@@ -5,50 +5,58 @@
     
     <grid name="lunch-voucher-mgt-line-grid" title="Lunch Voucher Lines" model="com.axelor.apps.hr.db.LunchVoucherMgtLine" editable="true" orderBy="employee">
         <field name="employee"/>
-        <field name="canteenEntries" aggregate="sum" title="Canteen"/>
-        <field name="daysOverseas" aggregate="sum" title="Overseas"/>
-        <field name="invitation" aggregate="sum"/>
+        <field name="canteenEntries" aggregate="sum" title="Canteen" onChange="action-lunch-voucher-mgt-line-compute"/>
+        <field name="daysOverseas" aggregate="sum" title="Overseas" onChange="action-lunch-voucher-mgt-line-compute"/>
+        <field name="invitation" aggregate="sum" onChange="action-lunch-voucher-mgt-line-compute"/>
+        <field name="inAdvanceNbr" aggregate="sum" title="Advance"/>
         <field name="lunchVoucherNumber" aggregate="sum" title="Nbr lunch vouchers"/>
-        <field name="givenToEmployee" title="Given?" width="200%"/>
+        <field name="givenToEmployee" title="Given"/>
         <field name="employee.lunchVoucherFormatSelect"/>
     </grid>
     
-    <grid name="lunch-voucher-mgt-line-employee-grid" title="Lunch Voucher Lines" model="com.axelor.apps.hr.db.LunchVoucherMgtLine" editable="true" orderBy="-lunchVoucherMgt.payPeriod.fromDate">
+    <grid name="lunch-voucher-mgt-line-employee-grid" title="Lunch Voucher Lines" model="com.axelor.apps.hr.db.LunchVoucherMgtLine" orderBy="-lunchVoucherMgt.payPeriod.fromDate">
         <field name="lunchVoucherMgt.payPeriod.fromDate"/>
         <field name="lunchVoucherMgt.payPeriod.toDate"/>
         <field name="canteenEntries" aggregate="sum" title="Canteen"/>
         <field name="daysOverseas" aggregate="sum" title="Overseas"/>
         <field name="invitation" aggregate="sum" title="Invitation"/>
+        <field name="inAdvanceNbr" aggregate="sum" title="Advance"/>
         <field name="lunchVoucherNumber" aggregate="sum" title="Nbr lunch vouchers"/>
-        <field name="givenToEmployee" title="Given?"/>
+        <field name="givenToEmployee" title="Given"/>
         <field name="lunchVoucherMgt.statusSelect"/>
-        <button name="print" title="Print" icon="fa-print"/>
     </grid>
     
-    <grid name="lunch-voucher-mgt-line-payroll-grid" title="Lunch Voucher Lines" model="com.axelor.apps.hr.db.LunchVoucherMgtLine" editable="true" orderBy="-lunchVoucherMgt.payPeriod.fromDate">
+    <grid name="lunch-voucher-mgt-line-payroll-grid" title="Lunch Voucher Lines" model="com.axelor.apps.hr.db.LunchVoucherMgtLine" orderBy="-lunchVoucherMgt.payPeriod.fromDate">
         <field name="lunchVoucherMgt.payPeriod.fromDate"/>
         <field name="lunchVoucherMgt.payPeriod.toDate"/>
         <field name="canteenEntries" aggregate="sum" title="Canteen"/>
         <field name="daysOverseas" aggregate="sum" title="Overseas"/>
         <field name="invitation" aggregate="sum" title="Invitation"/>
+        <field name="inAdvanceNbr" aggregate="sum" title="Advance"/>
         <field name="lunchVoucherNumber" aggregate="sum" title="Nbr lunch vouchers"/>
-        <field name="givenToEmployee" title="Given?"/>
+        <field name="givenToEmployee" title="Given"/>
         <field name="lunchVoucherMgt" hidden="true" />
     </grid>
 
 	<form name="lunch-voucher-mgt-line-form" title="Lunch Voucher Line" model="com.axelor.apps.hr.db.LunchVoucherMgtLine" width="large">
 		<panel name="overview" title="Overview">
-			<field name="employee" colSpan="6" />
+			<field name="employee" colSpan="6" form-view="employee-form" grid-view="employee-grid"/>
 			<field name="lunchVoucherNumber" css="label-bold bold" colSpan="12" />
 		</panel>
 		<panel name="details" title="Details">
-			<field name="canteenEntries" colSpan="6"/>
-			<field name="daysOverseas" colSpan="6"/>
-			 <field name="invitation" colSpan="6"/>
+			<field name="canteenEntries" colSpan="6" onChange="action-lunch-voucher-mgt-line-compute"/>
+			<field name="daysOverseas" colSpan="6" onChange="action-lunch-voucher-mgt-line-compute"/>
+			 <field name="invitation" colSpan="6" onChange="action-lunch-voucher-mgt-line-compute"/>
+			 <field name="inAdvanceNbr" colSpan="6"/>
 			<field name="givenToEmployee" colSpan="6"/>
 		</panel>
 		<panel name="comment" title="Comments">
-			<field name="comment" colSpan="12" showTitle="false" widget="Text"/>
+			<field name="comments" colSpan="12" showTitle="false" widget="Text"/>
 		</panel>
 	</form>
+	
+	<action-method name="action-lunch-voucher-mgt-line-compute">
+		<call class="com.axelor.apps.hr.web.lunch.voucher.LunchVoucherMgtLineController" method="compute"/>
+	</action-method>
+	
 </object-views>

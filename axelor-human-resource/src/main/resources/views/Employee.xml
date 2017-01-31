@@ -67,14 +67,16 @@
         			<field name="imposedDayPlanning" colSpan="4" form-view="public-holiday-planning-form" grid-view="public-holiday-planning-grid"/>
         			<field name="negativeValueLeave" colSpan="4"/>
         			<field name="hrManager" colSpan="4"/>
+        			<field name="exportCode" />
       			</panel>
 	       	    <panel-related field="leaveLineList" grid-view="leave-line-grid" form-view="leave-line-form" colSpan="12"/>
 	       	</panel>
 	       	<panel-related field="employmentContractList" grid-view="employment-contract-employee-grid" form-view="employment-contract-form"/>
 	       	<panel name="lunchVoucher" title="Lunch Vouchers">
 	       		<field name="lunchVoucherFormatSelect" colSpan="6"/>
+	       		<button name="addLunchVoucherAdvance" colSpan="6" title="Add an advance" onClick="save,action-lunch-voucher-advance-new" icon="fa-ticket"/>
 	       		<panel-dashlet title="Lunch Vouchers" colSpan="12" action="action-hr-view-show-lunch-voucher"/>
-	       		<panel-related field="lunchVoucherAdvanceList" colSpan="12" grid-view="lunch-voucher-advance-grid" form-view="lunch-voucher-advance-form" />
+	       		<panel-related field="lunchVoucherAdvanceList" colSpan="12" grid-view="lunch-voucher-advance-grid" form-view="lunch-voucher-advance-form" canNew="false" canEdit="false" canRemove="true"/>
 	       	</panel>
 	       	<panel-related field="employeeAdvanceList" title="Employee advances" grid-view="employee-advance-employee-grid" form-view="employee-advance-employee-form" readonly="false" />
 	       	<panel-related field="kilometricLogList" title="Kilometric log" grid-view="kilometric-log-grid" form-view="kilometric-log-form" readonly="true" />
