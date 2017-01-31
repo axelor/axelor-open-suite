@@ -116,7 +116,7 @@ public class KilometricService {
 		
 		for (KilometricAllowanceRule rule : allowance.getKilometricAllowanceRuleList() ) {
 			
-			if (rule.getMinimumCondition().compareTo( previousDistance.add(distance)) == -1 && rule.getMaximumCondition().compareTo(previousDistance) == 1 ){
+			if (rule.getMinimumCondition().compareTo( previousDistance.add(distance)) <= 0 && rule.getMaximumCondition().compareTo(previousDistance) >= 0 ){
 				ruleList.add(rule);				
 			}
 		}

@@ -25,7 +25,9 @@ import java.math.BigDecimal;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.joda.time.LocalDate;
 
@@ -37,6 +39,7 @@ import com.axelor.apps.hr.db.EmployeeBonusMgtLine;
 import com.axelor.apps.hr.db.EmploymentContract;
 import com.axelor.apps.hr.db.Expense;
 import com.axelor.apps.hr.db.ExtraHoursLine;
+import com.axelor.apps.hr.db.HRConfig;
 import com.axelor.apps.hr.db.LeaveRequest;
 import com.axelor.apps.hr.db.LunchVoucherMgtLine;
 import com.axelor.apps.hr.db.PayrollLeave;
@@ -44,10 +47,12 @@ import com.axelor.apps.hr.db.PayrollPreparation;
 import com.axelor.apps.hr.db.repo.EmployeeBonusMgtLineRepository;
 import com.axelor.apps.hr.db.repo.ExpenseRepository;
 import com.axelor.apps.hr.db.repo.ExtraHoursLineRepository;
+import com.axelor.apps.hr.db.repo.HrBatchRepository;
 import com.axelor.apps.hr.db.repo.LeaveRequestRepository;
 import com.axelor.apps.hr.db.repo.LunchVoucherMgtLineRepository;
 import com.axelor.apps.hr.db.repo.PayrollPreparationRepository;
 import com.axelor.apps.hr.exception.IExceptionMessage;
+import com.axelor.apps.hr.service.config.HRConfigService;
 import com.axelor.apps.hr.service.leave.LeaveService;
 import com.axelor.apps.tool.file.CsvTool;
 import com.axelor.exception.AxelorException;
@@ -55,6 +60,8 @@ import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
+import com.axelor.meta.db.MetaFile;
+import com.axelor.meta.db.repo.MetaFileRepository;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -66,6 +73,12 @@ public class PayrollPreparationService {
 	
 	@Inject
 	protected PayrollPreparationRepository payrollPreparationRepo;
+	
+	@Inject
+	HRConfigService hrConfigService;
+	
+	@Inject
+	GeneralService  generalService;
 	
 	@Inject
 	public PayrollPreparationService(LeaveService leaveService, LeaveRequestRepository leaveRequestRepo, WeeklyPlanningService weeklyPlanningService){
@@ -231,7 +244,7 @@ public class PayrollPreparationService {
 		CsvTool.csvWriter(filePath, fileName, ';', getPayrollPreparationExportHeader(), list);
 		
 		payrollPreparation.setExported(true);
-		payrollPreparation.setExportDate(Beans.get(GeneralService.class).getTodayDate());
+		payrollPreparation.setExportDate(generalService.getTodayDate());
 		
 		payrollPreparationRepo.save(payrollPreparation);
 		
@@ -244,43 +257,106 @@ public class PayrollPreparationService {
 		return filePath + System.getProperty("file.separator") +fileName;
 	}
 	
-	/*
-	@Transactional
-	public String exportAllPayrollPreparation(List<Integer> idList) throws IOException{
+	
+	public String[] createExportFileLine(PayrollPreparation payrollPreparation){
+		
+		String item[] = new String[7];
+		item[0] = payrollPreparation.getEmployee().getExportCode();
+		item[1] = payrollPreparation.getEmployee().getContactPartner().getName();
+		item[2] = payrollPreparation.getEmployee().getContactPartner().getFirstName();
+		return item;
+	}
+	
+	public String exportMeilleureGestionPayrollPreparation(PayrollPreparation payrollPreparation) throws AxelorException, IOException{
 		
 		List<String[]> list = new ArrayList<String[]>();
 		
-		for (Integer id : idList) {
-			
-			PayrollPreparation payrollPreparation = payrollPreparationRepo.find( Long.valueOf(id)  );
-			
-			String item[] = new String[5];
-			item[0] = payrollPreparation.getEmployee().getName();
-			item[1] = payrollPreparation.getDuration().toString();
-			item[2] = payrollPreparation.getLunchVoucherNumber().toString();
-			item[3] = payrollPreparation.getEmployeeBonusAmount().toString();
-			item[4] = payrollPreparation.getExtraHoursNumber().toString();
-			list.add(item);
-			
-			payrollPreparation.setExported(true);
-			payrollPreparation.setExportDate(Beans.get(GeneralService.class).getTodayDate());
-			payrollPreparationRepo.save(payrollPreparation);
+		exportMeilleureGestion(payrollPreparation, list);
 		
-		}
 		
 		String fileName = this.getPayrollPreparationExportName();
 		String filePath = AppSettings.get().get("file.upload.dir");
-		
 		new File(filePath).mkdirs();
-		CsvTool.csvWriter(filePath, fileName, ';', getPayrollPreparationExportHeader(), list);
+		
+		CsvTool.csvWriter(filePath, fileName, ';', getPayrollPreparationMeilleurGestionExportHeader(), list);
+		
+		Path path = Paths.get(filePath + System.getProperty("file.separator") +fileName);
+		
+		try (InputStream is = new FileInputStream(path.toFile())) {
+			Beans.get(MetaFiles.class).attach(is, fileName, payrollPreparation);
+		}
 		
 		return filePath + System.getProperty("file.separator") +fileName;
 	}
-	*/
+	
+	@Transactional
+	public void exportMeilleureGestion(PayrollPreparation payrollPreparation, List<String[]> list ) throws AxelorException{
+		
+		HRConfig hrConfig = hrConfigService.getHRConfig(payrollPreparation.getCompany());
+		
+		
+		// LEAVES
+		if (payrollPreparation.getLeaveDuration().compareTo( BigDecimal.ZERO ) > 0 ) {
+			List<PayrollLeave> payrollLeaveList = fillInLeaves(payrollPreparation);
+			for (PayrollLeave payrollLeave : payrollLeaveList) {
+				if (payrollLeave.getLeaveReason().getPayrollPreprationExport()){
+					String leaveLine[] = createExportFileLine(payrollPreparation);
+					leaveLine[3] = payrollLeave.getLeaveReason().getExportCode();
+					leaveLine[4] = payrollLeave.getFromDate().toString("dd/MM/YYYY");
+					leaveLine[5] = payrollLeave.getToDate().toString("dd/MM/YYYY");
+					leaveLine[6] = payrollLeave.getDuration().toString();
+					list.add(leaveLine);
+				}
+			}
+		}
+		
+		// LUNCH VOUCHER MANAGEMENT
+		if (payrollPreparation.getLunchVoucherNumber().compareTo(BigDecimal.ZERO) > 0){
+			String lunchVoucherLine[] = createExportFileLine(payrollPreparation);
+			lunchVoucherLine[3] = hrConfig.getExportCodeForLunchVoucherManagement();
+			lunchVoucherLine[6] = payrollPreparation.getLunchVoucherNumber().toString();
+			list.add(lunchVoucherLine);
+		}
+		
+		
+		// EMPLOYEE BONUS MANAGEMENT
+		if (payrollPreparation.getEmployeeBonusAmount().compareTo(BigDecimal.ZERO) > 0){
+			Map<String, BigDecimal> map = new HashMap<String, BigDecimal>();
+			for (EmployeeBonusMgtLine bonus : payrollPreparation.getEmployeeBonusMgtLineList() ) {
+				if (bonus.getEmployeeBonusMgt().getEmployeeBonusType().getPayrollPreparationExport()){
+						if ( map.containsKey(bonus.getEmployeeBonusMgt().getEmployeeBonusType().getExportCode()) ){
+							map.put(bonus.getEmployeeBonusMgt().getEmployeeBonusType().getExportCode(), bonus.getAmount().add(map.get(bonus.getEmployeeBonusMgt().getEmployeeBonusType().getExportCode())) ); 
+					}else{
+						map.put(bonus.getEmployeeBonusMgt().getEmployeeBonusType().getExportCode(), bonus.getAmount()); 
+					}
+				}
+			}
+			for ( Map.Entry<String, BigDecimal> entry : map.entrySet() ) {
+				String employeeBonusLine[] = createExportFileLine(payrollPreparation);
+				employeeBonusLine[3] = entry.getKey();
+				employeeBonusLine[6] = entry.getValue().toString();
+				list.add(employeeBonusLine);
+			}
+			
+		}
+		
+		//EXTRA HOURS 
+		if ( payrollPreparation.getExtraHoursNumber().compareTo( BigDecimal.ZERO ) > 0 ){
+			String extraHourLine[] = createExportFileLine(payrollPreparation);
+			extraHourLine[3] = hrConfig.getExportCodeForLunchVoucherManagement();
+			extraHourLine[6] = payrollPreparation.getExtraHoursNumber().toString();
+			list.add(extraHourLine);
+		}
+		
+		payrollPreparation.setExported(true);
+		payrollPreparation.setExportDate(generalService.getTodayDate());
+		payrollPreparation.setExportTypeSelect(HrBatchRepository.EXPORT_TYPE_MEILLEURE_GESTION);
+		payrollPreparationRepo.save(payrollPreparation);
+	}
 	
 	
 	public String getPayrollPreparationExportName(){
-		return I18n.get("Payroll preparation") + " - " + Beans.get(GeneralService.class).getTodayDateTime().toString() + ".csv";
+		return I18n.get("Payroll preparation") + " - " + generalService.getTodayDateTime().toString() + ".csv";
 	}
 	
 	public String[] getPayrollPreparationExportHeader(){
@@ -291,6 +367,19 @@ public class PayrollPreparationService {
 		headers[2] = I18n.get("Lunch vouchers' number");
 		headers[3] = I18n.get("Employee bonus amount");
 		headers[4] = I18n.get("Extra hours' number");
+		return headers;
+	}
+	
+	
+	public String[] getPayrollPreparationMeilleurGestionExportHeader(){
+		String headers[] = new String[7];
+		headers[0] = I18n.get("Registration number");
+		headers[1] = I18n.get("Employee lastname");
+		headers[2] = I18n.get("Employee firstname");
+		headers[3] = I18n.get("Code");
+		headers[4] = I18n.get("Start date");
+		headers[5] = I18n.get("End date");
+		headers[6] = I18n.get("Value");
 		return headers;
 	}
 	
