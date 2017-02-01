@@ -18,7 +18,6 @@
 package com.axelor.apps.account.web;
 
 import java.util.List;
-import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,7 +26,6 @@ import com.axelor.apps.ReportFactory;
 import com.axelor.apps.account.db.BankOrder;
 import com.axelor.apps.account.db.EbicsUser;
 import com.axelor.apps.account.db.repo.BankOrderRepository;
-import com.axelor.apps.account.db.repo.EbicsUserRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.report.IReport;
 import com.axelor.apps.account.service.bankorder.BankOrderMergeService;
@@ -60,7 +58,9 @@ public class BankOrderController {
 		BankOrder bankOrder = request.getContext().asType(BankOrder.class);
 		bankOrder = bankOrderRepo.find(bankOrder.getId());
 		try {
-			bankOrderService.checkLines(bankOrder);
+			if (bankOrder.getFileToSend() == null) {
+				bankOrderService.checkLines(bankOrder);
+			}
 			
 			ActionViewBuilder confirmView = ActionView
 					.define("Sign bank order")
@@ -85,7 +85,9 @@ public class BankOrderController {
 			BankOrder bankOrder = request.getContext().asType(BankOrder.class);
 			bankOrder = bankOrderRepo.find(bankOrder.getId());
 			if(bankOrder != null)  { 
-				bankOrderService.checkLines(bankOrder);
+				if (bankOrder.getFileToSend() == null) {
+					bankOrderService.checkLines(bankOrder);
+				}
 				bankOrderService.confirm(bankOrder);
 				response.setReload(true);
 			}
