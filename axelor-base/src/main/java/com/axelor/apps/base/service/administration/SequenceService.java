@@ -35,6 +35,7 @@ import com.google.inject.persist.Transactional;
 public class SequenceService {
 
 	private final static String
+		PATTERN_FULL_YEAR = "%YYYY",	
 		PATTERN_YEAR = "%Y",
 		PATTERN_MONTH = "%M",
 		PATTERN_FULL_MONTH ="%FM",
@@ -135,8 +136,8 @@ public class SequenceService {
 			seqSuffixe = StringUtils.defaultString(sequence.getSuffixe(), ""),
 			seq = seqPrefixe + seqSuffixe;
 
-		if ( yearlyResetOk && !seq.contains(PATTERN_YEAR) ){ return false; }
-		if ( monthlyResetOk && !seq.contains(PATTERN_MONTH) && !seq.contains(PATTERN_FULL_MONTH) && !seq.contains(PATTERN_YEAR) ){ return false; }
+		if ( yearlyResetOk && !seq.contains(PATTERN_YEAR) && !seq.contains(PATTERN_FULL_YEAR) ){ return false; }
+		if ( monthlyResetOk && !seq.contains(PATTERN_MONTH) && !seq.contains(PATTERN_FULL_MONTH) && !seq.contains(PATTERN_YEAR) && !seq.contains(PATTERN_FULL_YEAR) ){ return false; }
 
 		return true;
 
@@ -164,6 +165,7 @@ public class SequenceService {
 
 
 		String nextSeq = ( seqPrefixe + padLeft + seqSuffixe )
+				.replaceAll( PATTERN_FULL_YEAR, Integer.toString( refDate.getYear() ) )
 				.replaceAll( PATTERN_YEAR, Integer.toString( refDate.getYearOfCentury() ) )
 				.replaceAll( PATTERN_MONTH, Integer.toString( refDate.getMonthOfYear() ) )
 				.replaceAll( PATTERN_FULL_MONTH, refDate.toString("MM") )
