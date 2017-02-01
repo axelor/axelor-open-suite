@@ -143,7 +143,7 @@
 "PurchaseOrder.totalExclTax","Total HT",,
 "PurchaseOrder.totalInclTax","Total TTC",,
 "PurchaseOrder.totalTax","Total TVA",,
-"PurchaseOrder.unitPrice""Prix unitaire",,
+"PurchaseOrder.unitPrice","Prix unitaire",,
 "Purchased amount by family","Montants achats par famille",,
 "Purchased amount by product family","Montants achats par famille de produit",,
 "Purchased amount distribution by family","Répartition des achats par famille",,
