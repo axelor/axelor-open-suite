@@ -29,6 +29,7 @@ import org.joda.time.LocalDate;
 
 import com.axelor.apps.base.db.Year;
 import com.axelor.apps.base.db.repo.YearRepository;
+import com.axelor.apps.base.service.YearServiceImpl;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.ExpenseLine;
@@ -83,14 +84,12 @@ public class KilometricService {
 		
 		KilometricLog log = getKilometricLog(employee, date);
 		
-		if (log != null){
-			return log;
-		}
+		if (log != null) { return log; }
 		
-		Year year = Beans.get(YearRepository.class).all().filter("self.toDate <= ?1 AND self.fromDate >= ?1 AND company = ?2", date, employee.getUser().getActiveCompany()).fetchOne();
+		Year year = Beans.get(YearServiceImpl.class).getYear(date, employee.getMainEmploymentContract().getPayCompany());
 		
 		if (year == null){
-			throw new AxelorException( I18n.get( String.format(IExceptionMessage.KILOMETRIC_LOG_NO_YEAR, employee.getUser().getActiveCompany(), date) ) , IException.CONFIGURATION_ERROR);
+			throw new AxelorException( String.format( I18n.get(IExceptionMessage.KILOMETRIC_LOG_NO_YEAR), employee.getUser().getActiveCompany(), date)  , IException.CONFIGURATION_ERROR);
 		}
 		
 		return createKilometricLog(employee, new BigDecimal("0.00"), year);
