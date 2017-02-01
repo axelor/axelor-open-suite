@@ -436,7 +436,7 @@
 "Weekly work hours",,,
 "Working days' number",,,
 "Year",,,
-"You don't have the permission to create a leave request for this user",,,
+"You don't have the permission to create a leave request in the past, please contact your manager.",,,
 "You have to choose at least one timesheet",,,
 "human-ressource-general-form",,,
 "il n'y a pas de ligne de créée sur l'employé %s pour la raison %s",,,
