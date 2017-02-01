@@ -62,6 +62,11 @@ public interface ExpenseService  {
 
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void cancel (Expense expense) throws AxelorException;
+	
+	public Message sendCancellationEmail(Expense expense) throws AxelorException, ClassNotFoundException, InstantiationException, IllegalAccessException, MessagingException, IOException;
+
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
+	public void addPayment(Expense expense) throws AxelorException;
 
 	public List<InvoiceLine> createInvoiceLines(Invoice invoice, List<ExpenseLine> expenseLineList, int priority) throws AxelorException;
 

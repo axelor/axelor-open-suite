@@ -33,7 +33,7 @@ public class BankOrderManagementRepository extends BankOrderRepository {
 			
 			BankOrderService bankOrderService = Beans.get(BankOrderService.class);
 			bankOrderService.generateSequence(entity);
-			if(entity.getStatusSelect() == BankOrderRepository.STATUS_DRAFT || entity.getStatusSelect() == BankOrderRepository.STATUS_AWAITING_SIGNATURE)  {
+			if (entity.getFileToSend() == null && (entity.getStatusSelect() == BankOrderRepository.STATUS_DRAFT || entity.getStatusSelect() == BankOrderRepository.STATUS_AWAITING_SIGNATURE)) {
 				bankOrderService.updateTotalAmounts(entity);
 			}		
 			

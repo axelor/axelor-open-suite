@@ -58,8 +58,11 @@ public interface TimesheetService {
 	
 	public Message sendRefusalEmail(Timesheet timesheet) throws AxelorException, ClassNotFoundException, InstantiationException, IllegalAccessException, MessagingException, IOException;
 
+	@Transactional(rollbackOn={Exception.class})
+	public void cancel(Timesheet timesheet) throws AxelorException;
 	
-	public void cancel(Timesheet timesheet);
+	public Message sendCancellationEmail(Timesheet timesheet) throws AxelorException, ClassNotFoundException, InstantiationException, IllegalAccessException, MessagingException, IOException;
+
 	public Timesheet generateLines(Timesheet timesheet, LocalDate fromGenerationDate, LocalDate toGenerationDate, BigDecimal logTime, ProjectTask projectTask, Product product) throws AxelorException;
 	public LocalDate getFromPeriodDate();
 	public Timesheet getCurrentTimesheet();

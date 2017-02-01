@@ -28,15 +28,19 @@ public interface IExceptionMessage {
 	static final String HR_CONFIG_SENT_EXPENSE_TEMPLATE = /*$$(*/ "Please configure the sent expense template in HR config for the company %s" /*)*/;
 	static final String HR_CONFIG_VALIDATED_EXPENSE_TEMPLATE = /*$$(*/ "Please configure the validated expense template in HR config for the company %s" /*)*/;
 	static final String HR_CONFIG_REFUSED_EXPENSE_TEMPLATE = /*$$(*/ "Please configure the refused expense template in HR config for the company %s" /*)*/;
+	static final String HR_CONFIG_CANCELED_EXPENSE_TEMPLATE = /*$$(*/ "Please configure the canceled expense template in HR config for the company %s" /*)*/;
 	static final String HR_CONFIG_SENT_TIMESHEET_TEMPLATE = /*$$(*/ "Please configure the sent timehsheet template in HR config for the company %s" /*)*/;
 	static final String HR_CONFIG_VALIDATED_TIMESHEET_TEMPLATE = /*$$(*/ "Please configure the validated timehsheet template in HR config for the company %s" /*)*/;
 	static final String HR_CONFIG_REFUSED_TIMESHEET_TEMPLATE = /*$$(*/ "Please configure the refused timehsheet template in HR config for the company %s" /*)*/;
+	static final String HR_CONFIG_CANCELED_TIMESHEET_TEMPLATE = /*$$(*/ "Please configure the canceled timehsheet template in HR config for the company %s" /*)*/;
 	static final String HR_CONFIG_SENT_LEAVE_TEMPLATE = /*$$(*/ "Please configure the sent leave template in HR config for the company %s" /*)*/;
 	static final String HR_CONFIG_VALIDATED_LEAVE_TEMPLATE = /*$$(*/ "Please configure the validated leave template in HR config for the company %s" /*)*/;
 	static final String HR_CONFIG_REFUSED_LEAVE_TEMPLATE = /*$$(*/ "Please configure the refused leave template in HR config for the company %s" /*)*/;
+	static final String HR_CONFIG_CANCELED_LEAVE_TEMPLATE = /*$$(*/ "Please configure the canceled leave template in HR config for the company %s" /*)*/;
 	static final String HR_CONFIG_SENT_EXTRA_HOURS_TEMPLATE = /*$$(*/ "Please configure the sent extra hours template in HR config for the company %s" /*)*/;
 	static final String HR_CONFIG_VALIDATED_EXTRA_HOURS_TEMPLATE = /*$$(*/ "Please configure the validated extra hours template in HR config for the company %s" /*)*/;
 	static final String HR_CONFIG_REFUSED_EXTRA_HOURS_TEMPLATE = /*$$(*/ "Please configure the refused extra hours template in HR config for the company %s" /*)*/;
+	static final String HR_CONFIG_CANCELED_EXTRA_HOURS_TEMPLATE = /*$$(*/ "Please configure the canceled extra hours template in HR config for the company %s" /*)*/;
 	static final String HR_CONFIG_LEAVE_REASON = /*$$(*/ "Please configure the leave reason in HR config for the company %s" /*)*/;
 	
 	static final String TIMESHEET_FROM_DATE = /*$$(*/ "Merci de rentrer une date de début pour la génération"/*)*/ ;
