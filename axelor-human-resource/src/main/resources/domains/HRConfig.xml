@@ -27,6 +27,7 @@
   	<many-to-one name="sentLeaveTemplate" ref="com.axelor.apps.message.db.Template" title="Sent Leave Request Template"/>
   	<many-to-one name="validatedLeaveTemplate" ref="com.axelor.apps.message.db.Template" title="Validated Leave Request Template"/>
   	<many-to-one name="refusedLeaveTemplate" ref="com.axelor.apps.message.db.Template" title="Refused Leave Request Template"/>
+  	<many-to-one name="canceledLeaveTemplate" ref="com.axelor.apps.message.db.Template" title="Canceled Leave Request Template"/>
   	
   	<many-to-one name="publicHolidayPlanning" ref="com.axelor.apps.hr.db.PublicHolidayPlanning" title="Public Holiday Planning"/>
   	<many-to-one name="weeklyPlanning" ref="com.axelor.apps.base.db.WeeklyPlanning" title="Weekly Planning"/>
@@ -37,18 +38,21 @@
   	<many-to-one name="sentTimesheetTemplate" ref="com.axelor.apps.message.db.Template" title="Confirmed Timesheet Template"/>
   	<many-to-one name="validatedTimesheetTemplate" ref="com.axelor.apps.message.db.Template" title="Validated Timesheet Template"/>
   	<many-to-one name="refusedTimesheetTemplate" ref="com.axelor.apps.message.db.Template" title="Refused Timesheet Template"/>
+  	<many-to-one name="canceledTimesheetTemplate" ref="com.axelor.apps.message.db.Template" title="Canceled Timesheet Template"/>
   	
   	<!-- EXPENSE MAIL NOTIFICATION -->
   	<boolean name="expenseMailNotification" title="Expense Notification Mail"/>
   	<many-to-one name="sentExpenseTemplate" ref="com.axelor.apps.message.db.Template" title="Sent Expense Template"/>
   	<many-to-one name="validatedExpenseTemplate" ref="com.axelor.apps.message.db.Template" title="Validated Expense Template"/>
   	<many-to-one name="refusedExpenseTemplate" ref="com.axelor.apps.message.db.Template" title="Refused Expense Template"/>
+  	<many-to-one name="canceledExpenseTemplate" ref="com.axelor.apps.message.db.Template" title="Canceled Expense Template"/>
   	
   	<!-- EXTRA HOURS MAIL NOTIFICATION -->
   	<boolean name="extraHoursMailNotification" title="Extra Hours Notification Mail"/>
   	<many-to-one name="sentExtraHoursTemplate" ref="com.axelor.apps.message.db.Template" title="Confirmed Extra Hours Template"/>
   	<many-to-one name="validatedExtraHoursTemplate" ref="com.axelor.apps.message.db.Template" title="Validated Extra Hours Template"/>
   	<many-to-one name="refusedExtraHoursTemplate" ref="com.axelor.apps.message.db.Template" title="Refused Extra Hours Template"/>
+  	<many-to-one name="canceledExtraHoursTemplate" ref="com.axelor.apps.message.db.Template" title="Canceled Extra Hours Template"/>
   	
   	<!-- Seniority Leave Management Batch -->
   	<one-to-many name="leaveManagementBatchRuleList" ref="com.axelor.apps.hr.db.LeaveManagementBatchRule" title="Leave management batch rule list"/>
