@@ -63,6 +63,7 @@
 			<field name="versionNumber" if="__config__.app.getApp('purchase').getManagePurchaseOrderVersion()"/>
 			<field name="companyBankDetails" widget="SuggestBox" onSelect="action-accounting-batch-attrs-company-bank-details-domain" form-view="bank-details-form" grid-view="bank-details-grid" if="__config__.app.isApp('cash-managment') &amp;&amp; __config__.app.getApp('cash-management').getManageMultiBanks()"/>
 			<field name="inAti" onChange="action-purchase-order-attrs-in-ati"/>   
+			<field name="contract" if-module="axelor-contract" if="__config__.app.isApp('contract')" domain="self.typeSelect = 2"  />
 		</panel>
 		
 		<panel name="supplierInformation" title="Supplier information">

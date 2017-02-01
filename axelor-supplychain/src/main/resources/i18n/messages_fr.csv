@@ -238,3 +238,4 @@
 "help:SaleOrderScheduleLine.saleOrderLine","Si facturation à la tâche",,
 "month(s)","mois",,
 "supplychain-invoice-general-form",,,
+"Generate purchase orders automatically","Générer les commandes fournisseurs auto.",,

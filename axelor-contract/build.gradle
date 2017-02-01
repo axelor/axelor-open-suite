@@ -1,0 +1,14 @@
+apply plugin: 'axelor-module' 
+
+module { 
+	name "axelor-contract"
+	version "4.0.0"
+	title "Axelor :: Contract"
+	
+	removable true
+	
+	module "modules:axelor-studio"
+	module "modules:axelor-purchase"
+	module "modules:axelor-sale"
+	module "modules:axelor-account"
+}

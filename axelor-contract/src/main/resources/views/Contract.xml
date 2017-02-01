@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+    
+    <grid name="contract-grid" title="Contract" model="com.axelor.apps.contract.db.Contract">
+       <field name="name" />
+       <field name="typeSelect" />
+       <field name="partner" />
+       <field name="startDate" />
+    </grid>
+    
+    <form name="contract-form" title="Contract" model="com.axelor.apps.contract.db.Contract" width="large">
+       <panel>
+	       <field name="name" />
+	       <field name="typeSelect" />
+	       <field name="partner" onSelect="action-contract-partner-domain"/>
+	       <field name="productCategories" colSpan="12" />
+	       <field name="products" colSpan="12" />
+	       <field name="priceList" />
+	       <field name="startDate" />
+	       <field name="durationSelect" />
+	       <field name="tillDate" readonlyIf="durationSelect == 2" hideIf="durationSelect == 3" />
+	       <field name="durationPeriodType" showIf="durationSelect == 2" />
+	       <field name="durationNbPeriods" showIf="durationSelect == 2" />
+	       <field name="commitment"/>
+	       <panel title="Commitment" showIf="commitment" colSpan="12">
+	       		<field name="commitmentPeriodType" />
+	       		<field name="commitmentNbPeriods" />
+	       		<panel-related field="commitmentProducts" colSpan="12" />
+	       		<field name="specificCommitement" widget="html" colSpan="12"/>
+	       </panel>
+	       <panel title="Alerts" colSpan="12">
+	       		<panel-related field="alerts" colSpan="12" />
+	       </panel>
+	       <field name="paymentMode"/>
+	       <field name="paymentCondition" />
+	       <field name="terminationDate" />
+	       <field name="terminationReason" />
+	       <field name="noticePeriod" />
+	       <spacer/>
+	       <field name="noticePeriodType" showIf="noticePeriod"/>
+	       <field name="noticeNbPeriods" showIf="noticePeriod"/>
+	       <field name="totalAmt">
+	       	  <viewer>
+	            &lt;dl class="dl-horizontal"&gt;
+	              &lt;dt x-translate&gt;Total amount of contract&lt;/dt&gt;
+	              &lt;dd&gt;{{record.totalAmt}}&lt;/dd&gt;
+	            &lt;/dl&gt;
+	          </viewer>
+	       </field>
+	       <spacer/>
+	       <field name="saleOrderTemplate" showIf="typeSelect == 1" if-module="axelor-sale" if="__config__.app.isApp('sale')"/>
+	       <field name="purchaseOrderTemplate" showIf="typeSelect == 2" if="__config__.app.isApp('purchase')"/>
+	       <panel-dashlet action="action-contract-sale-order-dashlet" title="Sales orders" colSpan="12" showIf="typeSelect == 1" if="__config__.app.isApp('sale')"/>
+	       <panel-dashlet action="action-contract-purchase-order-dashlet" title="Purchase orders" colSpan="12" showIf="typeSelect == 2" if="__config__.app.isApp('purchase')"/>
+	       <field name="totalSO"  showIf="typeSelect == 1" if="__config__.app.isApp('sale')"/>
+	       <field name="totalPO"  showIf="typeSelect == 2" if="__config__.app.isApp('purchase')"/>
+	       <field name="totalInvoiced" if="__config__.app.isApp('invoice')"/>
+	       <button name="createSO" title="Create Sale order" showIf="typeSelect == 1" if="__config__.app.isApp('sale')" onClick="action-contract-create-so"/>
+	       <button name="createPO" title="Create PO" showIf="typeSelect == 2" if="__config__.app.isApp('purchase')" onClick="action-contract-create-po"/>
+	       <spacer colSpan="12"/>
+	       <field name="contractTemplate" onChange="action-contract-contract-template-change"/>
+	       <field name="contractContent" colSpan="12" widget="html"/>
+       </panel>
+    </form>
+    
+    <action-attrs name="action-contract-partner-domain">
+    	<attribute name="domain" for="partner" expr="eval:&quot;self.isCustomer = true&quot;" if="typeSelect == 1"/>
+    	<attribute name="domain" for="partner" expr="eval:&quot;self.isSupplier = true&quot;" if="typeSelect == 2"/>
+    </action-attrs>
+    
+    <action-record name="action-contract-contract-template-change" model="com.axelor.apps.contract.db.Contract">
+    	<field name="contractContent" expr="eval:contractTemplate.content" if="contractTemplate != null"/>
+    </action-record>
+
+</object-views>
