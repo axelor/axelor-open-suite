@@ -28,8 +28,10 @@ import com.google.inject.persist.Transactional;
 
 public interface ExtraHoursService {
 	
-	@Transactional
-	public void cancelLeave(ExtraHours extraHours);
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
+	public void cancel(ExtraHours extraHours) throws AxelorException;
+
+	public Message sendCancellationEmail(ExtraHours extraHours) throws AxelorException, ClassNotFoundException, InstantiationException, IllegalAccessException, MessagingException, IOException;
 	
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void confirm(ExtraHours extraHours) throws AxelorException;

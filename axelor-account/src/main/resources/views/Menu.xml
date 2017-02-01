@@ -368,6 +368,17 @@
 	    <context name="_partnerTypeSelect" expr="4"/>
 	</action-view>
 	
+	<menuitem name="account-root-bank-order-send-a-bank-order"
+		parent="account-root-bank-orders" title="Send a Bank Order"
+		action="account.send.bank.order"/>
+		
+	<action-view name="account.send.bank.order"
+		title="Send a Bank Order" model="com.axelor.apps.account.db.BankOrder">
+		<view type="grid" name="bank-order-grid"/>
+		<view type="form" name="bank-order-send-form"/>
+		<domain>self.fileToSend != NULL</domain>
+	</action-view>
+	
 	<menuitem name="account-root-bank-order-awaiting-for-signature"
 		parent="account-root-bank-orders" title="Bank Orders awaiting for signature"
 		action="account.bank.order.awaiting.for.signature" />

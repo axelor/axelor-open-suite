@@ -1,8 +1,8 @@
 "key","message","comment","context"
 "${fullName} variants",,,
 "%D  : Day",,,
-"%FM : Full Month (01, 02, 03, ...)",,,
-"%M  : Month (1, 2, 3, ...)",,,
+"%FM : Full Month (01, 02, 03, ...)","%FM  : Mois long (01, 02, 03, ...)",,
+"%M  : Month (1, 2, 3, ...)","%M  : Mois court (1, 2, 3, ...)",,
 "%WY : Week number","%WY : Pour le N° de la semaine",,
 "%Y  : Year",,,
 "%s : Path to Birt template is incorrect","%s : Le chemin vers le template Birt est incorrect",,

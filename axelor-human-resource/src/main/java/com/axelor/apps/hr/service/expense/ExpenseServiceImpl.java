@@ -40,7 +40,9 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
+import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.AccountManagementServiceAccountImpl;
 import com.axelor.apps.account.service.AnalyticMoveLineService;
@@ -61,6 +63,7 @@ import com.axelor.apps.hr.db.repo.ExpenseRepository;
 import com.axelor.apps.hr.exception.IExceptionMessage;
 import com.axelor.apps.hr.service.EmployeeAdvanceService;
 import com.axelor.apps.hr.service.KilometricService;
+import com.axelor.apps.hr.service.bankorder.BankOrderCreateServiceHr;
 import com.axelor.apps.hr.service.config.AccountConfigHRService;
 import com.axelor.apps.hr.service.config.HRConfigService;
 import com.axelor.apps.message.db.Message;
@@ -360,6 +363,35 @@ public class ExpenseServiceImpl implements ExpenseService  {
 			throw new AxelorException(String.format(I18n.get(com.axelor.apps.account.exception.IExceptionMessage.EXPENSE_CANCEL_MOVE)), IException.CONFIGURATION_ERROR);
 		}
 
+		expenseRepository.save(expense);
+	}
+	
+	public Message sendCancellationEmail(Expense expense) throws AxelorException, ClassNotFoundException, InstantiationException, IllegalAccessException, MessagingException, IOException  {
+
+		HRConfig hrConfig = hrConfigService.getHRConfig(expense.getCompany());
+
+		if(hrConfig.getTimesheetMailNotification())  {
+
+			return templateMessageService.generateAndSendMessage(expense, hrConfigService.getCanceledExpenseTemplate(hrConfig));
+
+		}
+
+		return null;
+
+	}
+
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
+	public void addPayment(Expense expense) throws AxelorException {
+		expense.setPaymentDate(new LocalDate());
+		
+		PaymentMode paymentMode = expense.getUser().getPartner().getSupplierPaymentMode();
+		expense.setPaymentMode(paymentMode);
+		if (paymentMode != null && paymentMode.getGenerateBankOrder()) {
+			Beans.get(BankOrderCreateServiceHr.class).createBankOrder(expense);
+		}
+		
+		expense.setPaymentStatusSelect(InvoicePaymentRepository.STATUS_PENDING);
+		expense.setPaymentAmount(expense.getInTaxTotal().subtract(expense.getAdvanceAmount()).subtract(expense.getWithdrawnCash()).subtract(expense.getPersonalExpenseAmount()));
 		expenseRepository.save(expense);
 	}
 

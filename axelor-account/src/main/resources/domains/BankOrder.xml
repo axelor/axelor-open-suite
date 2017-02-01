@@ -28,7 +28,7 @@
 	<!-- Sender -->
 	<many-to-one name="senderCompany" ref="com.axelor.apps.base.db.Company" title="Company"/>
 	<many-to-one name="senderBankDetails" ref="com.axelor.apps.base.db.BankDetails" title="Bank Account"/>
-	<decimal name="bankOrderTotalAmount" title="Total amount" readonly="true"/>
+	<decimal name="bankOrderTotalAmount" title="Total amount"/>
 	<decimal name="companyCurrencyTotalAmount" title="Total amount in company currency" readonly="true"/>
 	<string name="senderReference" title="Reference" unique="true"/>
 	<string name="senderLabel" title="Label"/>
