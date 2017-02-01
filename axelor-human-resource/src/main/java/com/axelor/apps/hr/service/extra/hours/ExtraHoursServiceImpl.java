@@ -51,13 +51,28 @@ public class ExtraHoursServiceImpl implements ExtraHoursService  {
 	}
 	
 	
-	@Transactional
-	public void cancelLeave(ExtraHours extraHours)  {
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
+	public void cancel(ExtraHours extraHours) throws AxelorException {
 		
 		extraHours.setStatusSelect(ExtraHoursRepository.STATUS_CANCELED);
 		extraHoursRepo.save(extraHours);
 	}
 	
+	public Message sendCancellationEmail(ExtraHours extraHours) throws AxelorException, ClassNotFoundException, InstantiationException, IllegalAccessException, MessagingException, IOException  {
+
+		HRConfig hrConfig = hrConfigService.getHRConfig(extraHours.getCompany());
+
+		if(hrConfig.getTimesheetMailNotification())  {
+
+			return templateMessageService.generateAndSendMessage(extraHours, hrConfigService.getCanceledExtraHoursTemplate(hrConfig));
+
+		}
+
+		return null;
+
+	}
+
+
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void confirm(ExtraHours extraHours) throws AxelorException  {
 				

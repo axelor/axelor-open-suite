@@ -366,6 +366,20 @@ public class ExpenseServiceImpl implements ExpenseService  {
 		expenseRepository.save(expense);
 	}
 	
+	public Message sendCancellationEmail(Expense expense) throws AxelorException, ClassNotFoundException, InstantiationException, IllegalAccessException, MessagingException, IOException  {
+
+		HRConfig hrConfig = hrConfigService.getHRConfig(expense.getCompany());
+
+		if(hrConfig.getTimesheetMailNotification())  {
+
+			return templateMessageService.generateAndSendMessage(expense, hrConfigService.getCanceledExpenseTemplate(hrConfig));
+
+		}
+
+		return null;
+
+	}
+
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void addPayment(Expense expense) throws AxelorException {
 		expense.setPaymentDate(new LocalDate());

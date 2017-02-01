@@ -306,17 +306,20 @@ public class ExpenseController {
 	}
 	
 	public void cancel(ActionRequest request, ActionResponse response) throws AxelorException{
-		
-		try{
-			
+		try {
 			Expense expense = request.getContext().asType(Expense.class);
-			expense = Beans.get(ExpenseRepository.class).find(expense.getId());
-			expenseServiceProvider.get().cancel(expense);
+			expense = expenseRepositoryProvider.get().find(expense.getId());
+			ExpenseService expenseService = expenseServiceProvider.get();
 			
-		}  catch(Exception e)  {
+			expenseService.cancel(expense);
+
+			Message message = expenseService.sendCancellationEmail(expense);
+			if (message != null && message.getStatusSelect() == MessageRepository.STATUS_SENT) {
+				response.setFlash(String.format(I18n.get("Email sent to %s"), Beans.get(MessageServiceBaseImpl.class).getToRecipients(message)));
+			}
+		} catch(Exception e) {
 			TraceBackService.trace(response, e);
-		}
-		finally {
+		} finally {
 			response.setReload(true);
 		}
 	}

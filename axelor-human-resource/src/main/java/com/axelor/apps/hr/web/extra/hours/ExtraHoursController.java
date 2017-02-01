@@ -243,4 +243,24 @@ public class ExtraHoursController {
 			response.setReload(true);
 		}
 	}
+
+	//canceling request and sending mail to applicant
+	public void cancel(ActionRequest request, ActionResponse response) throws AxelorException {
+		try {
+			ExtraHours extraHours = request.getContext().asType(ExtraHours.class);
+			extraHours = extraHoursRepositoryProvider.get().find(extraHours.getId());
+			ExtraHoursService extraHoursService = extraHoursServiceProvider.get();
+
+			extraHoursService.cancel(extraHours);
+
+			Message message = extraHoursService.sendCancellationEmail(extraHours);
+			if (message != null && message.getStatusSelect() == MessageRepository.STATUS_SENT) {
+				response.setFlash(String.format(I18n.get("Email sent to %s"), Beans.get(MessageServiceBaseImpl.class).getToRecipients(message)));
+			}
+		} catch(Exception e) {
+			TraceBackService.trace(response, e);
+		} finally {
+			response.setReload(true);
+		}
+	}
 }

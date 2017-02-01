@@ -444,7 +444,7 @@ public class LeaveServiceImpl  implements  LeaveService  {
 	}
 	
 	@Transactional
-	public void cancelLeave(LeaveRequest leaveRequest){
+	public void cancel(LeaveRequest leaveRequest) {
 		
 		if (leaveRequest.getEvent() != null){
 			Event event = leaveRequest.getEvent();
@@ -455,6 +455,20 @@ public class LeaveServiceImpl  implements  LeaveService  {
 		leaveRequestRepo.save(leaveRequest);
 	}
 	
+	public Message sendCancellationEmail(LeaveRequest leaveRequest) throws AxelorException, ClassNotFoundException, InstantiationException, IllegalAccessException, MessagingException, IOException  {
+
+		HRConfig hrConfig = hrConfigService.getHRConfig(leaveRequest.getCompany());
+
+		if(hrConfig.getLeaveMailNotification())  {
+
+			return templateMessageService.generateAndSendMessage(leaveRequest, hrConfigService.getCanceledLeaveTemplate(hrConfig));
+
+		}
+
+		return null;
+
+	}
+
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void confirm(LeaveRequest leaveRequest) throws AxelorException  {
 		
