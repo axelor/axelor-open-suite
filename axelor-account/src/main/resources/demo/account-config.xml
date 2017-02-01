@@ -67,7 +67,9 @@
 	<input file="account_accountConfig.csv" separator=";" type="com.axelor.apps.account.db.AccountConfig" search="self.importId = :importId" />
 	
 	<input file="account_reminderConfigLine.csv" separator=";" type="com.axelor.apps.account.db.ReminderConfigLine" />
-
+	
+	<input file="auth_user.csv" separator=";" search="self.importId = :importId" type="com.axelor.auth.db.User" update="true"/>
+	
 	<input file="base_partner.csv" separator=";" type="com.axelor.apps.base.db.Partner" search="self.importId = :importId" 
 	update="true" call="com.axelor.csv.script.ImportPartnerAccount:importAccountingSituation">
 		<bind to="isContact" eval="isContact == 'true' ? true : false" />

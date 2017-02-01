@@ -75,8 +75,12 @@ public class ImportDateTime {
 					datetime = datetime.plusDays(days);
 				else if(day.startsWith("-"))
 					datetime = datetime.minusDays(days);
-				else
+				else {
+					if (days > datetime.toLocalDate().lengthOfMonth()) {
+						days = datetime.toLocalDate().lengthOfMonth();
+					}
 					datetime = datetime.withDayOfMonth(days);
+				}
 			}
 		}
 		return datetime;
