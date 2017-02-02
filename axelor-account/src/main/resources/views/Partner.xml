@@ -6,9 +6,9 @@
 	<form name="incl-invoice-payment-partner-form"   title="Partner" model="com.axelor.apps.base.db.Partner">
 	    <panel colSpan="12">
 	    	<field name="invoiceSendingFormatSelect"/>
-	        <field name="clientPaymentMode" grid-view="payment-mode-grid" form-view="payment-mode-form" hideIf="!isCustomer" domain="self.inOutSelect = 1"/>
-	        <field name="supplierPaymentMode" grid-view="payment-mode-grid" form-view="payment-mode-form" hideIf="!isSupplier" domain="self.inOutSelect = 2"/>
 	        <field name="paymentCondition" grid-view="payment-condition-grid" form-view="payment-condition-form"/>
+	        <field name="inPaymentMode" grid-view="payment-mode-grid" form-view="payment-mode-form" domain="self.inOutSelect = 1"/>
+	        <field name="outPaymentMode" grid-view="payment-mode-grid" form-view="payment-mode-form" domain="self.inOutSelect = 2"/>
 	        <field name="currency" canEdit="false" requiredIf="!isContact &amp;&amp; partnerTypeSelect != 2" form-view="currency-form" grid-view="currency-grid"/>
 	        <field name="fiscalPosition" form-view="fiscal-position-form" grid-view="fiscal-position-grid"/>
 	        <field name="payerQuality" hideIf="!isCustomer"/>

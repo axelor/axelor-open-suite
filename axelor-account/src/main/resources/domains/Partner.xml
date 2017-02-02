@@ -11,8 +11,8 @@
     <one-to-many name="accountingSituationList" ref="com.axelor.apps.account.db.AccountingSituation" mappedBy="partner" title="Accounting situation"/>
    
     <string name="invoiceSendingFormatSelect" title="Invoice sending media" selection="invoice.account.condition.invoice.sending.format.select"/>
-    <many-to-one name="clientPaymentMode" ref="com.axelor.apps.account.db.PaymentMode" title="Client Payment Mode"/>
-    <many-to-one name="supplierPaymentMode" ref="com.axelor.apps.account.db.PaymentMode" title="Supplier Payment Mode"/>
+    <many-to-one name="inPaymentMode" ref="com.axelor.apps.account.db.PaymentMode" title="In Payment Mode"/>
+    <many-to-one name="outPaymentMode" ref="com.axelor.apps.account.db.PaymentMode" title="Out Payment Mode"/>
     <many-to-one name="paymentCondition" ref="com.axelor.apps.account.db.PaymentCondition" title="Payment condition"/>
    
     <integer name="rejectCounter" title="Reject counter"/>

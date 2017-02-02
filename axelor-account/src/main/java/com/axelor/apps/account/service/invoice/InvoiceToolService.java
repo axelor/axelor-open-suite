@@ -135,4 +135,14 @@ public class InvoiceToolService {
 		return isRefund;
 	}
 	
+	
+	/**
+	 * @param invoice
+	 * @return
+	 * @throws AxelorException
+	 */
+	public static boolean isOutPayment(Invoice invoice) throws AxelorException {
+		return (isPurchase(invoice) || isRefund(invoice));
+	}
+	
 }

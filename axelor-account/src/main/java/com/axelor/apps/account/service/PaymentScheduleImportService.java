@@ -693,7 +693,7 @@ public class PaymentScheduleImportService {
 		Partner partner = invoice.getPartner();
 		PaymentMode paymentMode = invoice.getCompany().getAccountConfig().getRejectionPaymentMode();
 		invoice.setPaymentMode(paymentMode);
-		partner.setClientPaymentMode(paymentMode);
+		partner.setInPaymentMode(paymentMode);
 	}
 
 
@@ -706,7 +706,7 @@ public class PaymentScheduleImportService {
 		Partner partner = paymentSchedule.getPartner();
 		PaymentMode paymentMode = paymentSchedule.getCompany().getAccountConfig().getRejectionPaymentMode();
 		paymentSchedule.setPaymentMode(paymentMode);
-		partner.setClientPaymentMode(paymentMode);
+		partner.setInPaymentMode(paymentMode);
 	}
 
 
