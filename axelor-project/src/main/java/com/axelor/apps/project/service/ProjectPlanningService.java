@@ -23,9 +23,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import org.joda.time.DateTimeConstants;
-import org.joda.time.LocalDate;
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.time.temporal.IsoFields;
 
 import com.axelor.apps.base.db.Team;
 import com.axelor.apps.base.service.app.AppBaseService;
@@ -69,9 +69,10 @@ public class ProjectPlanningService {
 	}
 
 	public static String getNameForColumns(int year, int week, int day){
-		LocalDate date = new LocalDate().withYear(year).withWeekOfWeekyear(week).withDayOfWeek(1);
+		LocalDate date = LocalDate.now().withYear(year).with(IsoFields
+				.WEEK_OF_WEEK_BASED_YEAR, week).with(DayOfWeek.MONDAY);
 		LocalDate newDate = date.plusDays(day - 1);
-		return " " + Integer.toString(newDate.getDayOfMonth())+"/"+Integer.toString(newDate.getMonthOfYear());
+		return " " + Integer.toString(newDate.getDayOfMonth())+"/"+Integer.toString(newDate.getMonthValue());
 	}
 
 	@Transactional
@@ -132,12 +133,12 @@ public class ProjectPlanningService {
 
 	public LocalDate getFromDate(){
 		LocalDate todayDate = appBaseService.getTodayDate();
-		return new LocalDate(todayDate.getYear(), todayDate.getMonthOfYear(), todayDate.dayOfMonth().getMinimumValue());
+		return LocalDate.of(todayDate.getYear(), todayDate.getMonthValue(), 1);
 	}
 
 	public LocalDate getToDate(){
 		LocalDate todayDate = appBaseService.getTodayDate();
-		return new LocalDate(todayDate.getYear(), todayDate.getMonthOfYear(), todayDate.dayOfMonth().getMaximumValue());
+		return LocalDate.of(todayDate.getYear(), todayDate.getMonthValue(), todayDate.lengthOfMonth());
 	}
 	
 	public void getTasksForUser(ActionRequest request, ActionResponse response){
@@ -146,11 +147,11 @@ public class ProjectPlanningService {
 			LocalDate todayDate = appBaseService.getTodayDate();
 			List<ProjectPlanningLine> linesList = Beans.get(ProjectPlanningLineRepository.class).all().
 					filter("self.user.id = ?1 AND self.year >= ?2 AND self.week >= ?3", 
-					AuthUtils.getUser().getId(), todayDate.getYear(), todayDate.getWeekOfWeekyear()).fetch();
+					AuthUtils.getUser().getId(), todayDate.getYear(), todayDate.get(IsoFields.WEEK_OF_WEEK_BASED_YEAR)).fetch();
 			
 			for (ProjectPlanningLine line : linesList) {
 				if(line.getMonday().compareTo(BigDecimal.ZERO) != 0){
-					LocalDate date = new LocalDate().withYear(line.getYear()).withWeekOfWeekyear(line.getWeek()).withDayOfWeek(DateTimeConstants.MONDAY);
+					LocalDate date = LocalDate.now().withYear(line.getYear()).with(IsoFields.WEEK_OF_WEEK_BASED_YEAR,line.getWeek()).with(DayOfWeek.MONDAY);
 					if(date.isAfter(todayDate) || date.isEqual(todayDate)){
 						Map<String, String> map = new HashMap<String,String>();
 						map.put("taskId", line.getProjectTask().getId().toString());
@@ -167,7 +168,7 @@ public class ProjectPlanningService {
 					}
 				}
 				if(line.getTuesday().compareTo(BigDecimal.ZERO) != 0){
-					LocalDate date = new LocalDate().withYear(line.getYear()).withWeekOfWeekyear(line.getWeek()).withDayOfWeek(DateTimeConstants.TUESDAY);
+					LocalDate date = LocalDate.now().withYear(line.getYear()).with(IsoFields.WEEK_OF_WEEK_BASED_YEAR,line.getWeek()).with(DayOfWeek.TUESDAY);
 					if(date.isAfter(todayDate) || date.isEqual(todayDate)){
 						Map<String, String> map = new HashMap<String,String>();
 						map.put("taskId", line.getProjectTask().getId().toString());
@@ -184,7 +185,7 @@ public class ProjectPlanningService {
 					}
 				}
 				if(line.getWednesday().compareTo(BigDecimal.ZERO) != 0){
-					LocalDate date = new LocalDate().withYear(line.getYear()).withWeekOfWeekyear(line.getWeek()).withDayOfWeek(DateTimeConstants.WEDNESDAY);
+					LocalDate date = LocalDate.now().withYear(line.getYear()).with(IsoFields.WEEK_OF_WEEK_BASED_YEAR,line.getWeek()).with(DayOfWeek.WEDNESDAY);
 					if(date.isAfter(todayDate) || date.isEqual(todayDate)){
 						Map<String, String> map = new HashMap<String,String>();
 						map.put("taskId", line.getProjectTask().getId().toString());
@@ -201,7 +202,7 @@ public class ProjectPlanningService {
 					}
 				}
 				if(line.getThursday().compareTo(BigDecimal.ZERO) != 0){
-					LocalDate date = new LocalDate().withYear(line.getYear()).withWeekOfWeekyear(line.getWeek()).withDayOfWeek(DateTimeConstants.THURSDAY);
+					LocalDate date = LocalDate.now().withYear(line.getYear()).with(IsoFields.WEEK_OF_WEEK_BASED_YEAR,line.getWeek()).with(DayOfWeek.THURSDAY);
 					if(date.isAfter(todayDate) || date.isEqual(todayDate)){
 						Map<String, String> map = new HashMap<String,String>();
 						map.put("taskId", line.getProjectTask().getId().toString());
@@ -218,7 +219,7 @@ public class ProjectPlanningService {
 					}
 				}
 				if(line.getFriday().compareTo(BigDecimal.ZERO) != 0){
-					LocalDate date = new LocalDate().withYear(line.getYear()).withWeekOfWeekyear(line.getWeek()).withDayOfWeek(DateTimeConstants.FRIDAY);
+					LocalDate date = LocalDate.now().withYear(line.getYear()).with(IsoFields.WEEK_OF_WEEK_BASED_YEAR,line.getWeek()).with(DayOfWeek.FRIDAY);
 					if(date.isAfter(todayDate) || date.isEqual(todayDate)){
 						Map<String, String> map = new HashMap<String,String>();
 						map.put("taskId", line.getProjectTask().getId().toString());
@@ -235,7 +236,7 @@ public class ProjectPlanningService {
 					}
 				}
 				if(line.getSaturday().compareTo(BigDecimal.ZERO) != 0){
-					LocalDate date = new LocalDate().withYear(line.getYear()).withWeekOfWeekyear(line.getWeek()).withDayOfWeek(DateTimeConstants.SATURDAY);
+					LocalDate date = LocalDate.now().withYear(line.getYear()).with(IsoFields.WEEK_OF_WEEK_BASED_YEAR,line.getWeek()).with(DayOfWeek.SATURDAY);
 					if(date.isAfter(todayDate) || date.isEqual(todayDate)){
 						Map<String, String> map = new HashMap<String,String>();
 						map.put("taskId", line.getProjectTask().getId().toString());
@@ -252,7 +253,7 @@ public class ProjectPlanningService {
 					}
 				}
 				if(line.getSunday().compareTo(BigDecimal.ZERO) != 0){
-					LocalDate date = new LocalDate().withYear(line.getYear()).withWeekOfWeekyear(line.getWeek()).withDayOfWeek(DateTimeConstants.SUNDAY);
+					LocalDate date = LocalDate.now().withYear(line.getYear()).with(IsoFields.WEEK_OF_WEEK_BASED_YEAR,line.getWeek()).with(DayOfWeek.SUNDAY);
 					if(date.isAfter(todayDate) || date.isEqual(todayDate)){
 						Map<String, String> map = new HashMap<String,String>();
 						map.put("taskId", line.getProjectTask().getId().toString());

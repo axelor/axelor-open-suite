@@ -27,7 +27,6 @@ import javax.xml.bind.JAXBException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.axelor.common.ClassUtils;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.db.mapper.Property;
 import com.axelor.meta.MetaStore;
@@ -78,7 +77,7 @@ public class FormExporter {
 	
 	private ExporterService exporterService;
 	
-	public List<String[]> export(ExporterService exporterService, MetaView formView, List<String> grid) throws JAXBException {
+	public List<String[]> export(ExporterService exporterService, MetaView formView, List<String> grid) throws JAXBException, ClassNotFoundException {
 		
 		this.exporterService = exporterService;
 		o2mViews = new ArrayList<String[]>();
@@ -89,7 +88,7 @@ public class FormExporter {
 		 * 4. Module to check (if-module).
 		 */
 		Object[] extra = new Object[]{false, grid, null, null};
-		Mapper mapper = Mapper.of(ClassUtils.findClass(formView.getModel()));
+		Mapper mapper = Mapper.of(Class.forName(formView.getModel()));
 		ObjectViews objectViews = XMLViews.fromXML(formView.getXml());
 		
 		FormView form = (FormView) objectViews.getViews().get(0);
@@ -306,7 +305,7 @@ public class FormExporter {
 	}
 	
 	@SuppressWarnings("unused")
-	private String processPanelField(PanelField panelField, String module, String model, String view, Mapper mapper, Object[] extra) {
+	private String processPanelField(PanelField panelField, String module, String model, String view, Mapper mapper, Object[] extra) throws ClassNotFoundException {
 		
 		processField(panelField, module, model, view, mapper, extra);
 		
@@ -560,7 +559,7 @@ public class FormExporter {
 	}
 	
 	
-	private String processPanelEditor(PanelField panelField, String module, String model, String view, Mapper mapper, Object[] extra) {
+	private String processPanelEditor(PanelField panelField, String module, String model, String view, Mapper mapper, Object[] extra) throws ClassNotFoundException {
 		
 		PanelEditor panelEditor = panelField.getEditor();
 		
@@ -572,7 +571,7 @@ public class FormExporter {
 		if (target != null) {
 			newForm = true;
 			try {
-				Mapper targetMapper = Mapper.of(ClassUtils.findClass(target));
+				Mapper targetMapper = Mapper.of(Class.forName(target));
 				processItems(panelEditor.getItems(),
 						module,
 						model,
@@ -877,9 +876,9 @@ public class FormExporter {
 			case "TIME":
 				return "time";
 			case "LOCALDATETIME":
-				return "datetime";
-			case "DATETIME":
-				return "datetime";
+				return "ZonedDateTime";
+			case "ZonedDateTime":
+				return "ZonedDateTime";
 			case "LOCALDATE":
 				return "date";
 			case "LOCALTIME":

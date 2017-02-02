@@ -17,9 +17,8 @@
  */
 package com.axelor.apps.crm.service;
 
-import org.joda.time.Duration;
-import org.joda.time.Interval;
-import org.joda.time.LocalDateTime;
+import java.time.Duration;
+import java.time.LocalDateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,19 +28,19 @@ public class EventReminderService {
 	
 	public Duration computeDuration(LocalDateTime startDateTime, LocalDateTime endDateTime)  {
 		
-		return new Interval(startDateTime.toDateTime(), endDateTime.toDateTime()).toDuration();
+		return Duration.between(startDateTime, endDateTime);
 		
 	}
 	
-	public int getHoursDuration(Duration duration)  {
+	public Integer getHoursDuration(Duration duration)  {
 		
-		return duration.toStandardHours().getHours();
+		return new Integer(new Long(duration.toHours()).toString());
 		
 	}
 	
 	public int getMinutesDuration(Duration duration)  {
 		
-		int minutes = duration.toStandardMinutes().getMinutes() % 60;
+		int minutes = new Integer(new Long(duration.toMinutes()).toString()) % 60;
 		
 		LOG.debug("Minutes : {}", minutes);	
 		

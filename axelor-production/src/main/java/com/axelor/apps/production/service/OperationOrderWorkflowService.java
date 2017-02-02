@@ -18,10 +18,8 @@
 package com.axelor.apps.production.service;
 
 import java.math.BigDecimal;
-
-import org.joda.time.Duration;
-import org.joda.time.Interval;
-import org.joda.time.LocalDateTime;
+import java.time.Duration;
+import java.time.LocalDateTime;
 
 import com.axelor.app.production.db.IOperationOrder;
 import com.axelor.app.production.db.IWorkCenter;
@@ -134,7 +132,7 @@ public class OperationOrderWorkflowService {
 		
 		operationOrder.setStartedBy(AuthUtils.getUser());
 		
-		operationOrder.setStartingDateTime(new LocalDateTime(appProductionService.getTodayDateTime()));
+		operationOrder.setStartingDateTime(appProductionService.getTodayDateTime().toLocalDateTime());
 
 		Beans.get(OperationOrderRepository.class).save(operationOrder);
 
@@ -168,13 +166,13 @@ public class OperationOrderWorkflowService {
 
 	public Duration computeDuration(LocalDateTime startDateTime, LocalDateTime endDateTime)  {
 
-		return new Interval(startDateTime.toDateTime(), endDateTime.toDateTime()).toDuration();
+		return Duration.between(startDateTime, endDateTime);
 
 	}
 
 	public long getDuration(Duration duration)  {
 
-		return duration.toStandardSeconds().getSeconds();
+		return duration.getSeconds();
 
 	}
 

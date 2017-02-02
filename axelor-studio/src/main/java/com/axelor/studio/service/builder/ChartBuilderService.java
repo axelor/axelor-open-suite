@@ -197,7 +197,7 @@ public class ChartBuilderService {
 		String typeName = metaField.getTypeName();
 
 		if (dateType != null
-				&& "LocalDate,DateTime,LocalDateTime".contains(typeName)) {
+				&& "LocalDate,ZonedDateTime,LocalDateTime".contains(typeName)) {
 
 			switch (dateType) {
 			case "year":

@@ -69,7 +69,7 @@ public class StudioTemplateService {
 	@Inject
 	private ImportScript importScript;
 
-	public MetaFile export(String templateName) {
+	public MetaFile export(String templateName) throws IOException {
 
 		List<String> models = new ArrayList<String>();
 		models.add("MetaSelect,self.name in (select metaSelect.name from MetaField where customised = true)");

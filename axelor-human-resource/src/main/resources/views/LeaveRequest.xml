@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 
 	<grid name="leave-request-grid" title="Leave Requests" model="com.axelor.apps.hr.db.LeaveRequest" orderBy="fromDate,startOnSelect">
 		 <hilite color="danger" if="statusSelect == 4"/>
@@ -162,7 +162,7 @@
 	</action-validate>
 	
 	<action-validate name="action-leave-request-validate-dates-on-save">
-		<error message="You don't have the permission to create a leave request for this user" if="((!(__user__ == user?.employee?.manager || (__user__ == user &amp;&amp; user?.employee?.manager == null) || __user__ == user?.employee?.manager?.employee?.manager || __user__.employee?.hrManager) &amp;&amp; fromDate &lt; __date__))"/>
+		<error message="You don't have the permission to create a leave request for this user" if="((!(__user__ == user?.employee?.manager || (__user__ == user &amp;&amp; user?.employee?.manager == null) || __user__ == user?.employee?.manager?.employee?.manager || __user__.employee?.hrManager) &amp;&amp; fromDate.isBefore(__date__)))"/>
 		<error message="Invalide dates" if="toDate &lt; fromDate || (toDate == fromDate &amp;&amp; startOnSelect &gt; endOnSelect)"/>
 		<error message="Duration equals 0" if="duration == 0"/>
 	</action-validate>

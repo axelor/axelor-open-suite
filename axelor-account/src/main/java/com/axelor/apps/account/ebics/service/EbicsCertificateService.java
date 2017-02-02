@@ -15,7 +15,9 @@ import javax.net.ssl.SSLSession;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
-import org.joda.time.LocalDate;
+import java.time.LocalDate;
+import java.time.ZoneOffset;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -147,8 +149,8 @@ public class EbicsCertificateService {
 		}
 		cert.setEbicsBank(bank);
 		cert.setTypeSelect(type);
-		cert.setValidFrom(new LocalDate(certificate.getNotBefore()));
-		cert.setValidTo(new LocalDate(certificate.getNotAfter()));
+		cert.setValidFrom(certificate.getNotBefore().toInstant().atZone(ZoneOffset.UTC).toLocalDate());
+		cert.setValidTo(certificate.getNotAfter().toInstant().atZone(ZoneOffset.UTC).toLocalDate());
 		cert.setIssuer(certificate.getIssuerDN().getName());
 		cert.setSubject(certificate.getSubjectDN().getName());
 		cert.setCertificate(certificate.getEncoded());

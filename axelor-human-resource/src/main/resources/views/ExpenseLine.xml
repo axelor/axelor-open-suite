@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 
 	<grid name="expense-line-grid" 
 		  title="Expense lines" 
@@ -133,7 +133,7 @@
 	</action-record>
 	
 	<action-validate name="action-expense-line-validate-expenseDate" model="com.axelor.apps.hr.db.ExpenseLine">
-		<error message="Date can't be in the future" if="expenseDate &gt; __date__" action="action-expense-line-record-expenseDate-invalide"/>
+		<error message="Date can't be in the future" if="expenseDate?.isAfter(__date__)" action="action-expense-line-record-expenseDate-invalide"/>
 	</action-validate>
 	
 	<action-record name="action-expense-line-record-expenseDate-invalide" model="com.axelor.apps.hr.db.ExpenseLine">

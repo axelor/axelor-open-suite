@@ -31,10 +31,10 @@ import java.util.Set;
 
 import javax.mail.MessagingException;
 
-import org.joda.time.Duration;
-import org.joda.time.Interval;
-import org.joda.time.LocalDate;
-import org.joda.time.LocalDateTime;
+import java.time.Duration;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.ICalendarUser;
@@ -76,7 +76,11 @@ import net.fortuna.ical4j.model.ValidationException;
 import net.fortuna.ical4j.model.property.Method;
 
 public class EventService {
-
+	
+	private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+	
+	private static final DateTimeFormatter MONTH_FORMAT = DateTimeFormatter.ofPattern("dd/MM");
+	
 	@Inject
 	private EventAttendeeService eventAttendeeService;
 	
@@ -93,13 +97,13 @@ public class EventService {
 
 	public Duration computeDuration(LocalDateTime startDateTime, LocalDateTime endDateTime)  {
 
-		return new Interval(startDateTime.toDateTime(), endDateTime.toDateTime()).toDuration();
+		return Duration.between(startDateTime, endDateTime);
 
 	}
 
 	public int getDuration(Duration duration)  {
 
-		return duration.toStandardSeconds().getSeconds();
+		return new Integer(new Long(duration.getSeconds()).toString());
 
 	}
 
@@ -463,7 +467,7 @@ public class EventService {
 			}
 		}
 		else{
-			while(!lastEvent.getStartDateTime().plusDays(periodicity).isAfter(endDate)){
+			while(!lastEvent.getStartDateTime().plusDays(periodicity).isAfter(endDate.atStartOfDay())){
 				Event copy = eventRepo.copy(lastEvent, false);
 				copy.setParentEvent(lastEvent);
 				copy.setStartDateTime(copy.getStartDateTime().plusDays(periodicity));
@@ -486,18 +490,18 @@ public class EventService {
 			int repeated = 0;
 			Event copy = eventRepo.copy(lastEvent, false);
 			copy.setParentEvent(lastEvent);
-			int dayOfWeek = copy.getStartDateTime().getDayOfWeek();
-			LocalDateTime nextDateTime = new LocalDateTime();
+			int dayOfWeek = copy.getStartDateTime().getDayOfWeek().getValue();
+			LocalDateTime nextDateTime = LocalDateTime.now();
 			if(dayOfWeek < list.get(0)){
-				nextDateTime = new LocalDateTime(copy.getStartDateTime().plusDays(list.get(0) - dayOfWeek));
+				nextDateTime = copy.getStartDateTime().plusDays(list.get(0) - dayOfWeek);
 			}
 			else if(dayOfWeek > list.get(0)){
-				nextDateTime = new LocalDateTime(copy.getStartDateTime().plusDays((7-dayOfWeek)+list.get(0)));
+				nextDateTime = copy.getStartDateTime().plusDays((7-dayOfWeek)+list.get(0));
 			}
-			Duration dur = new Duration(copy.getStartDateTime().toDateTime(), copy.getEndDateTime().toDateTime());
+			Duration dur = Duration.between(copy.getStartDateTime(), copy.getEndDateTime());
 			
 			for (Integer integer : list) {
-				nextDateTime.plusDays(integer - nextDateTime.getDayOfWeek());
+				nextDateTime.plusDays(integer - nextDateTime.getDayOfWeek().getValue());
 				copy.setStartDateTime(nextDateTime);
 				copy.setEndDateTime(nextDateTime.plus(dur));
 				eventRepo.save(copy);
@@ -511,18 +515,18 @@ public class EventService {
 				copy.setStartDateTime(copy.getStartDateTime().plusWeeks(periodicity));
 				copy.setEndDateTime(copy.getEndDateTime().plusWeeks(periodicity));
 				
-				dayOfWeek = copy.getStartDateTime().getDayOfWeek();
-				nextDateTime = new LocalDateTime();
+				dayOfWeek = copy.getStartDateTime().getDayOfWeek().getValue();
+				nextDateTime = LocalDateTime.now();
 				if(dayOfWeek < list.get(0)){
-					nextDateTime = new LocalDateTime(copy.getStartDateTime().plusDays(list.get(0) - dayOfWeek));
+					nextDateTime =	copy.getStartDateTime().plusDays(list.get(0) - dayOfWeek);
 				}
 				else if(dayOfWeek > list.get(0)){
-					nextDateTime = new LocalDateTime(copy.getStartDateTime().plusDays((7-dayOfWeek)+list.get(0)));
+					nextDateTime = copy.getStartDateTime().plusDays((7-dayOfWeek)+list.get(0));
 				}
-				dur = new Duration(copy.getStartDateTime().toDateTime(), copy.getEndDateTime().toDateTime());
+				dur = Duration.between(copy.getStartDateTime(), copy.getEndDateTime());
 				
 				for (Integer integer : list) {
-					nextDateTime.plusDays(integer - nextDateTime.getDayOfWeek());
+					nextDateTime.plusDays(integer - nextDateTime.getDayOfWeek().getValue());
 					copy.setStartDateTime(nextDateTime);
 					copy.setEndDateTime(nextDateTime.plus(dur));
 					eventRepo.save(copy);
@@ -535,42 +539,42 @@ public class EventService {
 			
 			Event copy = eventRepo.copy(lastEvent, false);
 			copy.setParentEvent(lastEvent);
-			int dayOfWeek = copy.getStartDateTime().getDayOfWeek();
-			LocalDateTime nextDateTime = new LocalDateTime();
+			int dayOfWeek = copy.getStartDateTime().getDayOfWeek().getValue();
+			LocalDateTime nextDateTime = LocalDateTime.now();
 			if(dayOfWeek < list.get(0)){
-				nextDateTime = new LocalDateTime(copy.getStartDateTime().plusDays(list.get(0) - dayOfWeek));
+				nextDateTime = copy.getStartDateTime().plusDays(list.get(0) - dayOfWeek);
 			}
 			else if(dayOfWeek > list.get(0)){
-				nextDateTime = new LocalDateTime(copy.getStartDateTime().plusDays((7-dayOfWeek)+list.get(0)));
+				nextDateTime = copy.getStartDateTime().plusDays((7-dayOfWeek)+list.get(0));
 			}
-			Duration dur = new Duration(copy.getStartDateTime().toDateTime(), copy.getEndDateTime().toDateTime());
+			Duration dur = Duration.between(copy.getStartDateTime(), copy.getEndDateTime());
 			
 			for (Integer integer : list) {
-				nextDateTime.plusDays(integer - nextDateTime.getDayOfWeek());
+				nextDateTime.plusDays(integer - nextDateTime.getDayOfWeek().getValue());
 				copy.setStartDateTime(nextDateTime);
 				copy.setEndDateTime(nextDateTime.plus(dur));
 				eventRepo.save(copy);
 				lastEvent = copy;
 			}
 			
-			while(!copy.getStartDateTime().plusWeeks(periodicity).isAfter(endDate)){
+			while(!copy.getStartDateTime().plusWeeks(periodicity).isAfter(endDate.atStartOfDay())){
 				copy = eventRepo.copy(lastEvent, false);
 				copy.setParentEvent(lastEvent);
 				copy.setStartDateTime(copy.getStartDateTime().plusWeeks(periodicity));
 				copy.setEndDateTime(copy.getEndDateTime().plusWeeks(periodicity));
 				
-				dayOfWeek = copy.getStartDateTime().getDayOfWeek();
-				nextDateTime = new LocalDateTime();
+				dayOfWeek = copy.getStartDateTime().getDayOfWeek().getValue();
+				nextDateTime = LocalDateTime.now();
 				if(dayOfWeek < list.get(0)){
-					nextDateTime = new LocalDateTime(copy.getStartDateTime().plusDays(list.get(0) - dayOfWeek));
+					nextDateTime = copy.getStartDateTime().plusDays(list.get(0) - dayOfWeek);
 				}
 				else if(dayOfWeek > list.get(0)){
-					nextDateTime = new LocalDateTime(copy.getStartDateTime().plusDays((7-dayOfWeek)+list.get(0)));
+					nextDateTime = copy.getStartDateTime().plusDays((7-dayOfWeek)+list.get(0));
 				}
-				dur = new Duration(copy.getStartDateTime().toDateTime(), copy.getEndDateTime().toDateTime());
+				dur = Duration.between(copy.getStartDateTime(), copy.getEndDateTime());
 				
 				for (Integer integer : list) {
-					nextDateTime.plusDays(integer - nextDateTime.getDayOfWeek());
+					nextDateTime.plusDays(integer - nextDateTime.getDayOfWeek().getValue());
 					copy.setStartDateTime(nextDateTime);
 					copy.setEndDateTime(nextDateTime.plus(dur));
 					eventRepo.save(copy);
@@ -590,7 +594,7 @@ public class EventService {
 				while(repeated != repetitionsNumber){
 					Event copy = eventRepo.copy(lastEvent, false);
 					copy.setParentEvent(lastEvent);
-					if(copy.getStartDateTime().plusMonths(periodicity).dayOfMonth().getMaximumValue() >= dayOfMonth){
+					if(copy.getStartDateTime().plusMonths(periodicity).toLocalDate().lengthOfMonth() >= dayOfMonth){
 						copy.setStartDateTime(copy.getStartDateTime().plusMonths(periodicity));
 						copy.setEndDateTime(copy.getEndDateTime().plusMonths(periodicity));
 						eventRepo.save(copy);
@@ -600,10 +604,10 @@ public class EventService {
 				}
 			}
 			else{
-				while(!lastEvent.getStartDateTime().plusMonths(periodicity).isAfter(endDate)){
+				while(!lastEvent.getStartDateTime().plusMonths(periodicity).isAfter(endDate.atStartOfDay())){
 					Event copy = eventRepo.copy(lastEvent, false);
 					copy.setParentEvent(lastEvent);
-					if(copy.getStartDateTime().plusMonths(periodicity).dayOfMonth().getMaximumValue() >= dayOfMonth){
+					if(copy.getStartDateTime().plusMonths(periodicity).toLocalDate().lengthOfMonth() >= dayOfMonth){
 						copy.setStartDateTime(copy.getStartDateTime().plusMonths(periodicity));
 						copy.setEndDateTime(copy.getEndDateTime().plusMonths(periodicity));
 						eventRepo.save(copy);
@@ -614,7 +618,7 @@ public class EventService {
 		}
 		
 		else{
-			int dayOfWeek = event.getStartDateTime().getDayOfWeek();
+			int dayOfWeek = event.getStartDateTime().getDayOfWeek().getValue();
 			int positionInMonth = 0;
 			if(event.getStartDateTime().getDayOfMonth() % 7 == 0){
 				positionInMonth = event.getStartDateTime().getDayOfMonth() / 7;
@@ -628,9 +632,9 @@ public class EventService {
 				while(repeated != repetitionsNumber){
 					Event copy = eventRepo.copy(lastEvent, false);
 					copy.setParentEvent(lastEvent);
-					LocalDateTime nextDateTime = new LocalDateTime(copy.getStartDateTime());
+					LocalDateTime nextDateTime = copy.getStartDateTime();
 					nextDateTime.plusMonths(periodicity);
-					int nextDayOfWeek = nextDateTime.getDayOfWeek();
+					int nextDayOfWeek = nextDateTime.getDayOfWeek().getValue();
 					if(nextDayOfWeek > dayOfWeek){
 						nextDateTime.minusDays(nextDayOfWeek - dayOfWeek);
 					}
@@ -650,7 +654,7 @@ public class EventService {
 					else{
 						nextDateTime.plusWeeks(positionInMonth - nextPositionInMonth);
 					}
-					Duration dur = new Duration(copy.getStartDateTime().toDateTime(), copy.getEndDateTime().toDateTime());
+					Duration dur = Duration.between(copy.getStartDateTime(), copy.getEndDateTime());
 					copy.setStartDateTime(nextDateTime);
 					copy.setEndDateTime(nextDateTime.plus(dur));
 					eventRepo.save(copy);
@@ -659,9 +663,9 @@ public class EventService {
 				}
 			}
 			else{
-				LocalDateTime nextDateTime = new LocalDateTime(lastEvent.getStartDateTime());
+				LocalDateTime nextDateTime = lastEvent.getStartDateTime();
 				nextDateTime.plusMonths(periodicity);
-				int nextDayOfWeek = nextDateTime.getDayOfWeek();
+				int nextDayOfWeek = nextDateTime.getDayOfWeek().getValue();
 				if(nextDayOfWeek > dayOfWeek){
 					nextDateTime.minusDays(nextDayOfWeek - dayOfWeek);
 				}
@@ -681,19 +685,19 @@ public class EventService {
 				else{
 					nextDateTime.plusWeeks(positionInMonth - nextPositionInMonth);
 				}
-				while(!nextDateTime.isAfter(endDate)){
+				while(!nextDateTime.isAfter(endDate.atStartOfDay())){
 					Event copy = eventRepo.copy(lastEvent, false);
 					copy.setParentEvent(lastEvent);
 					
-					Duration dur = new Duration(copy.getStartDateTime().toDateTime(), copy.getEndDateTime().toDateTime());
+					Duration dur = Duration.between(copy.getStartDateTime(), copy.getEndDateTime());
 					copy.setStartDateTime(nextDateTime);
 					copy.setEndDateTime(nextDateTime.plus(dur));
 					eventRepo.save(copy);
 					lastEvent = copy;
 					
-					nextDateTime = new LocalDateTime(lastEvent.getStartDateTime());
+					nextDateTime = lastEvent.getStartDateTime();
 					nextDateTime.plusMonths(periodicity);
-					nextDayOfWeek = nextDateTime.getDayOfWeek();
+					nextDayOfWeek = nextDateTime.getDayOfWeek().getValue();
 					if(nextDayOfWeek > dayOfWeek){
 						nextDateTime.minusDays(nextDayOfWeek - dayOfWeek);
 					}
@@ -735,7 +739,7 @@ public class EventService {
 			}
 		}
 		else{
-			while(!lastEvent.getStartDateTime().plusYears(periodicity).isAfter(endDate)){
+			while(!lastEvent.getStartDateTime().plusYears(periodicity).isAfter(endDate.atStartOfDay())){
 				Event copy = eventRepo.copy(lastEvent, false);
 				copy.setParentEvent(lastEvent);
 				copy.setStartDateTime(copy.getStartDateTime().plusYears(periodicity));
@@ -755,10 +759,10 @@ public class EventService {
 		while(child != null){
 			child.setSubject(event.getSubject());
 			child.setCalendar(event.getCalendar());
-			child.setStartDateTime(child.getStartDateTime().withHourOfDay(event.getStartDateTime().getHourOfDay()));
-			child.setStartDateTime(child.getStartDateTime().withMinuteOfHour(event.getStartDateTime().getMinuteOfHour()));
-			child.setEndDateTime(child.getEndDateTime().withHourOfDay(event.getEndDateTime().getHourOfDay()));
-			child.setEndDateTime(child.getEndDateTime().withMinuteOfHour(event.getEndDateTime().getMinuteOfHour()));
+			child.setStartDateTime(child.getStartDateTime().withHour(event.getStartDateTime().getHour()));
+			child.setStartDateTime(child.getStartDateTime().withMinute(event.getStartDateTime().getMinute()));
+			child.setEndDateTime(child.getEndDateTime().withHour(event.getEndDateTime().getHour()));
+			child.setEndDateTime(child.getEndDateTime().withMinute(event.getEndDateTime().getMinute()));
 			child.setDuration(event.getDuration());
 			child.setUser(event.getUser());
 			child.setTeam(event.getTeam());
@@ -778,10 +782,10 @@ public class EventService {
 			Event nextParent = parent.getParentEvent();
 			parent.setSubject(event.getSubject());
 			parent.setCalendar(event.getCalendar());
-			parent.setStartDateTime(parent.getStartDateTime().withHourOfDay(event.getStartDateTime().getHourOfDay()));
-			parent.setStartDateTime(parent.getStartDateTime().withMinuteOfHour(event.getStartDateTime().getMinuteOfHour()));
-			parent.setEndDateTime(parent.getEndDateTime().withHourOfDay(event.getEndDateTime().getHourOfDay()));
-			parent.setEndDateTime(parent.getEndDateTime().withMinuteOfHour(event.getEndDateTime().getMinuteOfHour()));
+			parent.setStartDateTime(parent.getStartDateTime().withHour(event.getStartDateTime().getHour()));
+			parent.setStartDateTime(parent.getStartDateTime().withMinute(event.getStartDateTime().getMinute()));
+			parent.setEndDateTime(parent.getEndDateTime().withHour(event.getEndDateTime().getHour()));
+			parent.setEndDateTime(parent.getEndDateTime().withMinute(event.getEndDateTime().getMinute()));
 			parent.setDuration(event.getDuration());
 			parent.setUser(event.getUser());
 			parent.setTeam(event.getTeam());
@@ -813,7 +817,7 @@ public class EventService {
 				recurrName += String.format(I18n.get(", %d times"), recurrConf.getRepetitionsNumber());
 			}
 			else if(recurrConf.getEndDate() != null){
-				recurrName += I18n.get(", until the ") + recurrConf.getEndDate().toString("dd/MM/yyyy");
+				recurrName += I18n.get(", until the ") + recurrConf.getEndDate().format(DATE_FORMAT);
 			}
 			break;
 		
@@ -861,7 +865,7 @@ public class EventService {
 				recurrName += String.format(I18n.get(" %d times"), recurrConf.getRepetitionsNumber());
 			}
 			else if(recurrConf.getEndDate() != null){
-				recurrName += I18n.get(" until the ") + recurrConf.getEndDate().toString("dd/MM/yyyy");
+				recurrName += I18n.get(" until the ") + recurrConf.getEndDate().format(DATE_FORMAT);
 			}
 			break;
 		
@@ -877,23 +881,23 @@ public class EventService {
 				recurrName += String.format(I18n.get(", %d times"), recurrConf.getRepetitionsNumber());
 			}
 			else if(recurrConf.getEndDate() != null){
-				recurrName += I18n.get(", until the ") + recurrConf.getEndDate().toString("dd/MM/yyyy");
+				recurrName += I18n.get(", until the ") + recurrConf.getEndDate().format(DATE_FORMAT);
 			}
 			break;
 			
 		case RecurrenceConfigurationRepository.TYPE_YEAR:
 			if(recurrConf.getPeriodicity() == 1){
-				recurrName += I18n.get("Every year the ") + recurrConf.getStartDate().toString("dd/MM");
+				recurrName += I18n.get("Every year the ") + recurrConf.getStartDate().format(MONTH_FORMAT);
 			}
 			else{
-				recurrName += String.format(I18n.get("Every %d years the %s"), recurrConf.getPeriodicity(), recurrConf.getStartDate().toString("dd/MM"));
+				recurrName += String.format(I18n.get("Every %d years the %s"), recurrConf.getPeriodicity(), recurrConf.getStartDate().format(MONTH_FORMAT));
 			}
 			
 			if(recurrConf.getEndType() == RecurrenceConfigurationRepository.END_TYPE_REPET){
 				recurrName += String.format(I18n.get(", %d times"), recurrConf.getRepetitionsNumber());
 			}
 			else if(recurrConf.getEndDate() != null){
-				recurrName += I18n.get(", until the ") + recurrConf.getEndDate().toString("dd/MM/yyyy");
+				recurrName += I18n.get(", until the ") + recurrConf.getEndDate().format(DATE_FORMAT);
 			}
 			break;
 

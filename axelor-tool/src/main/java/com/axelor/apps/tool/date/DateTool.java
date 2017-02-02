@@ -17,8 +17,8 @@
  */
 package com.axelor.apps.tool.date;
 
-import org.joda.time.Days;
-import org.joda.time.LocalDate;
+import java.time.Duration;
+import java.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,9 +26,9 @@ public class DateTool{
 	
 	private static final Logger LOG = LoggerFactory.getLogger(DateTool.class);
 	
-	public static int daysBetween(LocalDate date1, LocalDate date2, boolean days360) {
+	public static long daysBetween(LocalDate date1, LocalDate date2, boolean days360) {
 
-		int days = 0;
+		long days = 0;
 
 		if (days360) {
 		
@@ -44,10 +44,10 @@ public class DateTool{
 		return days;
 	}
 	
-	private static int daysBetween(LocalDate date1, LocalDate date2) {
+	private static long daysBetween(LocalDate date1, LocalDate date2) {
 
-		if (date2.isBefore(date1)) { return Days.daysBetween(date1, date2).getDays() - 1; }
-		else { return Days.daysBetween(date1, date2).getDays() + 1; }
+		if (date2.isBefore(date1)) { return Duration.between(date1, date2).toDays() - 1; }
+		else { return Duration.between(date1, date2).toDays() + 1; }
 	}
 	
 	private static int days360Between(LocalDate startDate, LocalDate endDate) {
@@ -58,10 +58,10 @@ public class DateTool{
 		
 		LocalDate start = startDate;
 
-		if (endDate.getMonthOfYear() != startDate.getMonthOfYear() || endDate.getYear() != startDate.getYear()) {
+		if (endDate.getMonthValue() != startDate.getMonthValue() || endDate.getYear() != startDate.getYear()) {
 
 			// First month :: if the startDate is not the last day of the month
-			if (!startDate.isEqual(startDate.dayOfMonth().withMaximumValue())) {
+			if (!startDate.isEqual(startDate.withDayOfMonth(startDate.lengthOfMonth()))) {
 				nbDayOfFirstMonth = 30 - startDate.getDayOfMonth();
 			}
 
@@ -69,8 +69,8 @@ public class DateTool{
 			nbDayOfFirstMonth = nbDayOfFirstMonth + 1;
 
 			// Months between the first one and the last one
-			LocalDate date1 = startDate.plusMonths(1).dayOfMonth().withMinimumValue();
-			while (endDate.getMonthOfYear() != date1.getMonthOfYear() || endDate.getYear() != date1.getYear()) {
+			LocalDate date1 = startDate.plusMonths(1).withDayOfMonth(1);
+			while (endDate.getMonthValue() != date1.getMonthValue() || endDate.getYear() != date1.getYear()) {
 				
 				nbDayOfOthersMonths = nbDayOfOthersMonths + 30;
 				date1 = date1.plusMonths(1);
@@ -78,10 +78,10 @@ public class DateTool{
 			}
 
 			// Last Month
-			start = endDate.dayOfMonth().withMinimumValue();
+			start = endDate.withDayOfMonth(1);
 		}
 
-		if (endDate.isEqual(endDate.dayOfMonth().withMaximumValue())) { nbDayOfLastMonth = 30 - start.getDayOfMonth(); }
+		if (endDate.isEqual(endDate.withDayOfMonth(endDate.lengthOfMonth()))) { nbDayOfLastMonth = 30 - start.getDayOfMonth(); }
 		else { nbDayOfLastMonth = endDate.getDayOfMonth() - start.getDayOfMonth(); }
 		
 		// The endDate is included
@@ -269,10 +269,10 @@ public class DateTool{
 		
 		if(monthBegin > monthEnd)  {
 			
-			if((date.getMonthOfYear() == monthBegin && date.getDayOfMonth()>= dayBegin)  
-					||  (date.getMonthOfYear() > monthBegin)  
-					||  (date.getMonthOfYear() < monthEnd)  
-					||  (date.getMonthOfYear() == monthEnd && date.getDayOfMonth() <= dayEnd))  
+			if((date.getMonthValue() == monthBegin && date.getDayOfMonth()>= dayBegin)  
+					||  (date.getMonthValue() > monthBegin)  
+					||  (date.getMonthValue() < monthEnd)  
+					||  (date.getMonthValue() == monthEnd && date.getDayOfMonth() <= dayEnd))  
 			{
 				return true;
 			}
@@ -282,7 +282,7 @@ public class DateTool{
 		}
 		else if(monthBegin == monthEnd)  {
 			
-			if((date.getMonthOfYear() == monthBegin && date.getDayOfMonth()>= dayBegin && date.getDayOfMonth()<= dayEnd))
+			if((date.getMonthValue() == monthBegin && date.getDayOfMonth()>= dayBegin && date.getDayOfMonth()<= dayEnd))
 			{
 				return true;
 			}
@@ -292,9 +292,9 @@ public class DateTool{
 		}
 		else  {
 			
-			if((date.getMonthOfYear() == monthBegin && date.getDayOfMonth()>= dayBegin)  
-					||  (date.getMonthOfYear() > monthBegin && date.getMonthOfYear() < monthEnd)    
-					||  (date.getMonthOfYear() == monthEnd && date.getDayOfMonth() <= dayEnd))  
+			if((date.getMonthValue() == monthBegin && date.getDayOfMonth()>= dayBegin)  
+					||  (date.getMonthValue() > monthBegin && date.getMonthValue() < monthEnd)    
+					||  (date.getMonthValue() == monthEnd && date.getDayOfMonth() <= dayEnd))  
 			{
 				return true;
 			}

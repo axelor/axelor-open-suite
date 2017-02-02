@@ -88,7 +88,7 @@ public class DataManagerController {
 		
 	}
 	
-	public void exportData(ActionRequest request, ActionResponse response) throws AxelorException{
+	public void exportData(ActionRequest request, ActionResponse response) throws AxelorException, ClassNotFoundException{
 		
 		DataManager dataManager = request.getContext().asType(DataManager.class);
 		

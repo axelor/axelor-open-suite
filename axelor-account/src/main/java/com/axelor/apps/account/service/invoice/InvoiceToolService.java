@@ -17,7 +17,7 @@
  */
 package com.axelor.apps.account.service.invoice;
 
-import org.joda.time.LocalDate;
+import java.time.LocalDate;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.PaymentCondition;
@@ -37,6 +37,8 @@ public class InvoiceToolService {
 
 	public static LocalDate getDueDate(PaymentCondition paymentCondition, LocalDate invoiceDate)  {
 		
+		LocalDate nDaysDate = invoiceDate.plusDays(paymentCondition.getPaymentTime());
+		
 		switch (paymentCondition.getTypeSelect()) {
 		case PaymentConditionRepository.TYPE_NET:
 			
@@ -44,15 +46,15 @@ public class InvoiceToolService {
 			
 		case PaymentConditionRepository.TYPE_END_OF_MONTH_N_DAYS:
 					
-			return invoiceDate.dayOfMonth().withMaximumValue().plusDays(paymentCondition.getPaymentTime());
+			return invoiceDate.withDayOfMonth(invoiceDate.lengthOfMonth()).plusDays(paymentCondition.getPaymentTime());
 					
 		case PaymentConditionRepository.TYPE_N_DAYS_END_OF_MONTH:
 			
-			return invoiceDate.plusDays(paymentCondition.getPaymentTime()).dayOfMonth().withMaximumValue();
+			return nDaysDate.withDayOfMonth(nDaysDate.lengthOfMonth());
 			
 		case PaymentConditionRepository.TYPE_N_DAYS_END_OF_MONTH_AT:
 			
-			return invoiceDate.plusDays(paymentCondition.getPaymentTime()).dayOfMonth().withMaximumValue().plusDays(paymentCondition.getDaySelect());
+			return nDaysDate.withDayOfMonth(nDaysDate.lengthOfMonth()).plusDays(paymentCondition.getDaySelect());
 
 		default:
 			return invoiceDate;

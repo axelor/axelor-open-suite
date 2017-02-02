@@ -19,6 +19,7 @@ package com.axelor.apps.account.service.bankorder.file.transfer;
 
 import java.io.File;
 import java.io.IOException;
+import java.time.format.DateTimeFormatter;
 
 import javax.xml.bind.JAXBException;
 import javax.xml.datatype.DatatypeConfigurationException;
@@ -115,7 +116,7 @@ public class BankOrderFile00100102Service extends BankOrderFileService  {
 		 * Format : YYYY-MM-DD
 		 * Rules : date is limited to maximum one year in the future. 
 		 */
-		pmtInf.setReqdExctnDt(datatypeFactory.newXMLGregorianCalendar(bankOrderDate.toString("yyyy-MM-dd")));
+		pmtInf.setReqdExctnDt(datatypeFactory.newXMLGregorianCalendar(bankOrderDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))));
 		pmtInf.setDbtr(dbtr);
 		pmtInf.setDbtrAcct(dbtrAcct);
 		pmtInf.setDbtrAgt(dbtrAgt);
@@ -186,7 +187,7 @@ public class BankOrderFile00100102Service extends BankOrderFileService  {
 		 * Occurrences : [1..1]
 		 * Format : YYYY-MM-DDThh:mm:ss 
 		 */
-		grpHdr.setCreDtTm(datatypeFactory.newXMLGregorianCalendar(validationDateTime.toString("yyyy-MM-dd'T'HH:mm:ss")));
+		grpHdr.setCreDtTm(datatypeFactory.newXMLGregorianCalendar(validationDateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss"))));
 		grpHdr.setNbOfTxs(Integer.toString(nbOfLines));
 		grpHdr.setCtrlSum(arithmeticTotal);
 		grpHdr.setGrpg(Grouping1Code.MIXD);

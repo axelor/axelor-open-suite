@@ -21,8 +21,8 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
-import org.joda.time.DateTime;
-import org.joda.time.LocalDate;
+import java.time.ZonedDateTime;
+import java.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,7 +43,7 @@ public class RejectImportService{
 	protected CfonbImportService cfonbImportService;
 	protected InterbankCodeLineRepository interbankCodeLineRepo;
 	
-	protected DateTime todayTime;
+	protected ZonedDateTime todayTime;
 
 	@Inject
 	public RejectImportService(AppAccountService appAccountService, CfonbImportService cfonbImportService, InterbankCodeLineRepository interbankCodeLineRepo) {
@@ -185,7 +185,7 @@ public class RejectImportService{
 	 * @return
 	 */
 	public LocalDate createRejectDate(String dateReject)  {
-		return new LocalDate(
+		return LocalDate.of(
 				Integer.parseInt(dateReject.substring(4, 6))+2000,
 				Integer.parseInt(dateReject.substring(2, 4)),
 				Integer.parseInt(dateReject.substring(0, 2)));

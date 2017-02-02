@@ -41,7 +41,7 @@ public class ModelExporter {
 	
 	private ExporterService exporterService;
 	
-	public void export(ExporterService exporterService, MetaAction action) {
+	public void export(ExporterService exporterService, MetaAction action) throws ClassNotFoundException {
 		
 		this.exporterService = exporterService;
 		
@@ -67,7 +67,7 @@ public class ModelExporter {
 		
 	}
 	
-	private void processModel(String module, String model, Map<String, String> views) {
+	private void processModel(String module, String model, Map<String, String> views) throws ClassNotFoundException {
 		
 		try{
 			
@@ -159,7 +159,7 @@ public class ModelExporter {
 		
 	}
 	
-	private void addO2MViews(List<String[]> views, String module, String model) {
+	private void addO2MViews(List<String[]> views, String module, String model) throws ClassNotFoundException {
 		
 		for (String[] view : views) {
 			

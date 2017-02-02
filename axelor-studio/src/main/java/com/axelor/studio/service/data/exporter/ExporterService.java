@@ -83,7 +83,7 @@ public class ExporterService {
 	@Inject
 	private TranslationService translationService;
 	
-	public MetaFile export(MetaFile oldFile, DataWriter writer, DataReader reader) {
+	public MetaFile export(MetaFile oldFile, DataWriter writer, DataReader reader) throws ClassNotFoundException {
 		
 		setExportModules();
 		
@@ -183,7 +183,7 @@ public class ExporterService {
 		
 	}
 	
-	private void processMenu() {
+	private void processMenu() throws ClassNotFoundException {
 		
 		List<MetaMenu> menus = 	menuExporter.getMenus(exportModules);
 		

@@ -21,7 +21,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.joda.time.DateTime;
+import java.time.ZonedDateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -52,7 +52,7 @@ public class PaymentVoucherCreateService {
 	protected PaymentVoucherConfirmService paymentVoucherConfirmService;
 	protected PaymentVoucherSequenceService paymentVoucherSequenceService;
 	protected PaymentVoucherRepository paymentVoucherRepository;
-	protected DateTime todayTime;
+	protected ZonedDateTime todayTime;
 
 	@Inject
 	public PaymentVoucherCreateService(AppAccountService appAccountService, MoveToolService moveToolService, PayVoucherElementToPayService payVoucherElementToPayService, 
@@ -70,7 +70,7 @@ public class PaymentVoucherCreateService {
 
 
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public PaymentVoucher createPaymentVoucherIPO(Invoice invoice, DateTime dateTime, BigDecimal amount, PaymentMode paymentMode) throws AxelorException  {
+	public PaymentVoucher createPaymentVoucherIPO(Invoice invoice, ZonedDateTime datetime, BigDecimal amount, PaymentMode paymentMode) throws AxelorException  {
 		MoveLine customerMoveLine = moveToolService.getCustomerMoveLineByQuery(invoice);
 
 		log.debug("Création d'une saisie paiement par TIP ou TIP chèque - facture : {}",invoice.getInvoiceId());
@@ -83,7 +83,7 @@ public class PaymentVoucherCreateService {
 				null,
 				null,
 				paymentMode,
-				dateTime,
+				datetime,
 				invoice.getPartner(),
 				amount,
 				null,
@@ -121,12 +121,12 @@ public class PaymentVoucherCreateService {
 	 * @return
 	 * @throws AxelorException
 	 */
-	public PaymentVoucher createPaymentVoucher(Company company, CashRegister cashRegister, User user, PaymentMode paymentMode, DateTime dateTime, Partner partner,
+	public PaymentVoucher createPaymentVoucher(Company company, CashRegister cashRegister, User user, PaymentMode paymentMode, ZonedDateTime datetime, Partner partner,
 			BigDecimal amount, MoveLine moveLine, Invoice invoiceToPay, MoveLine rejectToPay,
 			PaymentScheduleLine scheduleToPay, PaymentSchedule paymentScheduleToPay) throws AxelorException  {
 
 		log.debug("\n\n createPaymentVoucher ....");
-		DateTime dateTime2 = dateTime;
+		ZonedDateTime dateTime2 = datetime;
 		if(dateTime2 == null)  {
 			dateTime2 = this.todayTime;
 		}

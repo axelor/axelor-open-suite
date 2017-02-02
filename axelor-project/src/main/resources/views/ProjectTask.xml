@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 
 	
 	<grid name="project-grid" title="Projects" model="com.axelor.apps.project.db.ProjectTask">
@@ -52,7 +52,7 @@
   				<field name="unit" requiredIf="projTaskInvTypeSelect == 3"/>
   				<field name="exTaxTotal" readonly="true"/>
 			</panel>
-			<panel title="Related elements" if="eval:  __config__.app.isApp('business-project') &amp;&amp; (__config__.app.getApp('business-project').getShowPurchaseOrderLineRelatedToProject() || __config__.app.getApp('business-project').getShowSaleOrderLineRelatedToProject() || __config__.app.getApp('business-project').getShowExpenseLineRelatedToProject()) || __config__.app.getApp('business-project').getShowProductionOrderRelatedToProject() &amp;&amp; __config__.app.isApp('production') &amp;&amp; __config__.app.getApp('production').getManageBusinessProduction())">
+			<panel title="Related elements" if="eval:  __config__.app.isApp('business-project') &amp;&amp; (__config__.app.getApp('business-project').getShowPurchaseOrderLineRelatedToProject() || __config__.app.getApp('business-project').getShowSaleOrderLineRelatedToProject() || __config__.app.getApp('business-project').getShowExpenseLineRelatedToProject() || __config__.app.getApp('business-project').getShowProductionOrderRelatedToProject() &amp;&amp; __config__.app.isApp('production') &amp;&amp; __config__.app.getApp('production').getManageBusinessProduction())">
 				<panel-related field="purchaseOrderLineList" form-view="purchase-order-line-form" grid-view="purchase-order-line-invoicing-project-grid" if-module="axelor-business-project" canSelect="true" canNew="false"  canEdit="false" colSpan="12" if="eval: __config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getShowPurchaseOrderLineRelatedToProject()"/>
 				<panel-related field="saleOrderLineList" canSelect="true" canNew="false" canEdit="false" colSpan="12" if-module="axelor-business-project" if="eval: __config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getShowSaleOrderLineRelatedToProject()" />
 				<panel-related field="expensesLineList" canSelect="true" canNew="false" canEdit="false" colSpan="12" if-module="axelor-business-project" if="eval: __config__.app.isApp('business-project') &amp;&amp;  __config__.app.getApp('business-project').getShowExpenseLineRelatedToProject()" />
@@ -140,7 +140,7 @@
   				<field name="unit" requiredIf="product != null"/>
   				<field name="exTaxTotal" readonly="true"/>
 			</panel>
-			<panel title="Related elements" if="eval:  __config__.app.isApp('business-project') &amp;&amp; (__config__.app.getApp('business-project').getShowPurchaseOrderLineRelatedToProject() || __config__.app.getApp('business-project').getShowSaleOrderLineRelatedToProject() || __config__.app.getApp('business-project').getShowExpenseLineRelatedToProject()) || __config__.app.getApp('business-project').getShowProductionOrderRelatedToProject() &amp;&amp; __config__.app.isApp('production') &amp;&amp; __config__.app.getApp('production').getManageBusinessProduction())">
+			<panel title="Related elements" if="eval:  __config__.app.isApp('business-project') &amp;&amp; (__config__.app.getApp('business-project').getShowPurchaseOrderLineRelatedToProject() || __config__.app.getApp('business-project').getShowSaleOrderLineRelatedToProject() || __config__.app.getApp('business-project').getShowExpenseLineRelatedToProject() || __config__.app.getApp('business-project').getShowProductionOrderRelatedToProject() &amp;&amp; __config__.app.isApp('production') &amp;&amp; __config__.app.getApp('production').getManageBusinessProduction())">
 				<panel-related field="purchaseOrderLineList" form-view="purchase-order-line-form" grid-view="purchase-order-line-invoicing-project-grid" if-module="axelor-business-project" canSelect="true" canNew="false"  canEdit="false" colSpan="12" if="eval: __config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getShowPurchaseOrderLineRelatedToProject()"/>
 				<panel-related field="saleOrderLineList" canSelect="true" canNew="false" canEdit="false" colSpan="12" if-module="axelor-business-project" if="eval: __config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getShowSaleOrderLineRelatedToProject()" />
 				<panel-related field="expensesLineList" canSelect="true" canNew="false" canEdit="false" colSpan="12" if-module="axelor-business-project" if="eval: __config__.app.isApp('business-project') &amp;&amp;  __config__.app.getApp('business-project').getShowExpenseLineRelatedToProject()" />
@@ -216,7 +216,7 @@
   				<field name="unit" requiredIf="product != null"/>
   				<field name="exTaxTotal" readonly="true"/>
 			</panel>
-			<panel title="Related elements" if="eval:  __config__.app.isApp('business-project') &amp;&amp; (__config__.app.getApp('business-project').getShowPurchaseOrderLineRelatedToProject() || __config__.app.getApp('business-project').getShowSaleOrderLineRelatedToProject() || __config__.app.getApp('business-project').getShowExpenseLineRelatedToProject()) || __config__.app.getApp('business-project').getShowProductionOrderRelatedToProject() &amp;&amp; __config__.app.isApp('production') &amp;&amp; __config__.app.getApp('production').getManageBusinessProduction())">
+			<panel title="Related elements" if="eval:  __config__.app.isApp('business-project') &amp;&amp; (__config__.app.getApp('business-project').getShowPurchaseOrderLineRelatedToProject() || __config__.app.getApp('business-project').getShowSaleOrderLineRelatedToProject() || __config__.app.getApp('business-project').getShowExpenseLineRelatedToProject() || __config__.app.getApp('business-project').getShowProductionOrderRelatedToProject() &amp;&amp; __config__.app.isApp('production') &amp;&amp; __config__.app.getApp('production').getManageBusinessProduction())">
 				<panel-related field="purchaseOrderLineList" form-view="purchase-order-line-form" grid-view="purchase-order-line-invoicing-project-grid" if-module="axelor-business-project" canSelect="true" canNew="false"  canEdit="false" colSpan="12" if="eval: __config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getShowPurchaseOrderLineRelatedToProject()"/>
 				<panel-related field="saleOrderLineList" canSelect="true" canNew="false" canEdit="false" colSpan="12" if-module="axelor-business-project" if="eval: __config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getShowSaleOrderLineRelatedToProject()" />
 				<panel-related field="expensesLineList" canSelect="true" canNew="false" canEdit="false" colSpan="12" if-module="axelor-business-project" if="eval: __config__.app.isApp('business-project') &amp;&amp;  __config__.app.getApp('business-project').getShowExpenseLineRelatedToProject()" />
@@ -261,9 +261,9 @@
 		<field name="dueDate"/>
 		<field name="leadDelay"/>
 		<field name="statusSelect"/>
-		<hilite color="danger" if="dueDate &gt; __datetime__ &amp;&amp; statusSelect &lt; 3"/>
-		<hilite color="success" if="dueDate &lt;= __datetime__ &amp;&amp; leadDelay &gt;= 0 &amp;&amp; statusSelect &lt; 3"/>
-		<hilite color="warning" if="dueDate &lt;= __datetime__ &amp;&amp; leadDelay &lt; 0 &amp;&amp; statusSelect &lt; 3"/>
+		<hilite color="danger" if="dueDate.isAfter(__datetime__) &amp;&amp; statusSelect &lt; 3"/>
+		<hilite color="success" if="(dueDate.isBefore(__datetime__) || dueDate.equals(__datetime__)) &amp;&amp; leadDelay &gt;= 0 &amp;&amp; statusSelect &lt; 3"/>
+		<hilite color="warning" if="(dueDate.isBefore(__datetime__) || dueDate.equals(__datetime__)) &amp;&amp; leadDelay &lt; 0 &amp;&amp; statusSelect &lt; 3"/>
 		<template>
 		&lt;h4&gt;{{fullName}}&lt;/h4&gt;
 		&lt;div class="card-body"&gt;{{description}}&lt;/div&gt;
@@ -281,9 +281,9 @@
 		<field name="dueDate"/>
 		<field name="leadDelay"/>
 		<field name="statusSelect"/>
-		<hilite color="danger" if="dueDate &gt; __datetime__ &amp;&amp; statusSelect &lt; 3"/>
-		<hilite color="success" if="dueDate &lt;= __datetime__ &amp;&amp; leadDelay &gt;= 0 &amp;&amp; statusSelect &lt; 3"/>
-		<hilite color="warning" if="dueDate &lt;= __datetime__ &amp;&amp; leadDelay &lt; 0 &amp;&amp; statusSelect &lt; 3"/>
+		<hilite color="danger" if="dueDate.isAfter(__datetime__) &amp;&amp; statusSelect &lt; 3"/>
+		<hilite color="success" if="(dueDate.isBefore(__datetime__) || dueDate.equals(__datetime__)) &amp;&amp; leadDelay &gt;= 0 &amp;&amp; statusSelect &lt; 3"/>
+		<hilite color="warning" if="(dueDate.isBefore(__datetime__) || dueDate.equals(__datetime__)) &amp;&amp; leadDelay &lt; 0 &amp;&amp; statusSelect &lt; 3"/>
 		<template>
 		&lt;h4&gt;{{fullName}}&lt;/h4&gt;
 		&lt;div class="card-body"&gt;{{description}}&lt;/div&gt;

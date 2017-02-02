@@ -20,7 +20,9 @@ package com.axelor.apps.production.service;
 import java.math.BigDecimal;
 import java.util.Map;
 
-import org.joda.time.DateTime;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -73,11 +75,11 @@ public class ProductionOrderWizardServiceImpl implements ProductionOrderWizardSe
 			product = billOfMaterial.getProduct();
 		}
 		
-		DateTime startDate;
+		ZonedDateTime startDate;
 		if (context.containsKey("_startDate") && context.get("_startDate") != null ){
-			startDate = new DateTime(context.get("_startDate") );
+			startDate = ZonedDateTime.parse((CharSequence) context.get("_startDate"), DateTimeFormatter.ISO_DATE_TIME);
 		}else{
-			startDate = appProductionService.getTodayDateTime().toDateTime();
+			startDate = appProductionService.getTodayDateTime();
 		}
 		
 		ProductionOrder productionOrder = productionOrderService.generateProductionOrder(product, billOfMaterial, qty, startDate.toLocalDateTime());

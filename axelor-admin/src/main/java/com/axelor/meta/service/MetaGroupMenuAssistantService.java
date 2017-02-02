@@ -33,7 +33,8 @@ import java.util.ResourceBundle;
 import java.util.Set;
 
 import org.apache.commons.io.output.FileWriterWithEncoding;
-import org.joda.time.LocalDateTime;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 import au.com.bytecode.opencsv.CSVReader;
 import au.com.bytecode.opencsv.CSVWriter;
@@ -73,7 +74,7 @@ public class MetaGroupMenuAssistantService {
 	private String getFileName(MetaGroupMenuAssistant groupMenuAssistant){
 
 		String userCode = groupMenuAssistant.getCreatedBy().getCode();
-		String dateString = LocalDateTime.now().toString("yyyyMMddHHmm");
+		String dateString = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmm"));
 		String fileName = "GroupMenu" + "-" + userCode + "-" + dateString + ".csv";
 
 		return fileName;

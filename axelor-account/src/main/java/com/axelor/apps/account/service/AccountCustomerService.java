@@ -18,12 +18,15 @@
 package com.axelor.apps.account.service;
 
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.Query;
 import javax.persistence.TemporalType;
 
-import org.joda.time.LocalDate;
+import java.time.LocalDate;
+import java.time.ZoneOffset;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -146,7 +149,7 @@ public class AccountCustomerService {
 				"WHERE ml.partner = ?2 AND move.company = ?3 AND move.ignore_in_reminder_ok IN ('false', null) " +
 				"AND move.ignore_in_accounting_ok IN ('false', null) AND account.reconcile_ok = 'true' "+
 				"AND move.status_select = ?4 AND ml.amount_remaining > 0 ")
-				.setParameter(1, today.toDate(), TemporalType.DATE)
+				.setParameter(1, Date.from(today.atStartOfDay().atZone(ZoneOffset.UTC).toInstant()), TemporalType.DATE)
 				.setParameter(2, partner)
 				.setParameter(3, company)
 				.setParameter(4, MoveRepository.STATUS_VALIDATED);
@@ -200,7 +203,7 @@ public class AccountCustomerService {
 				"AND move.ignore_in_accounting_ok IN ('false', null) AND account.reconcile_ok = 'true' "+
 				"AND move.status_select = ?5 AND ml.amount_remaining > 0 ")
 				.setParameter(1, mailTransitTime)
-				.setParameter(2, today.toDate(), TemporalType.DATE)
+				.setParameter(2, Date.from(today.atStartOfDay().atZone(ZoneOffset.UTC).toInstant()), TemporalType.DATE)
 				.setParameter(3, partner)
 				.setParameter(4, company)
 				.setParameter(5, MoveRepository.STATUS_VALIDATED);

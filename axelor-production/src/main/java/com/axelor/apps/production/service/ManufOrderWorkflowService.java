@@ -19,7 +19,7 @@ package com.axelor.apps.production.service;
 
 import java.util.List;
 
-import org.joda.time.LocalDateTime;
+import java.time.LocalDateTime;
 
 import com.axelor.app.production.db.IManufOrder;
 import com.axelor.app.production.db.IOperationOrder;
@@ -88,7 +88,7 @@ public class ManufOrderWorkflowService {
 					
 					operationOrder.setStoppedBy(AuthUtils.getUser());
 					
-					operationOrder.setStoppingDateTime(new LocalDateTime(appProductionService.getTodayDateTime()));
+					operationOrder.setStoppingDateTime(appProductionService.getTodayDateTime().toLocalDateTime());
 					
 				}
 				
@@ -116,7 +116,7 @@ public class ManufOrderWorkflowService {
 					
 					operationOrder.setStartedBy(AuthUtils.getUser());
 					
-					operationOrder.setStartingDateTime(new LocalDateTime(appProductionService.getTodayDateTime()));
+					operationOrder.setStartingDateTime(appProductionService.getTodayDateTime().toLocalDateTime());
 					
 				}
 				

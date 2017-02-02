@@ -19,8 +19,8 @@ package com.axelor.apps.hr.service.timesheet.timer;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.Duration;
 
-import org.joda.time.Duration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

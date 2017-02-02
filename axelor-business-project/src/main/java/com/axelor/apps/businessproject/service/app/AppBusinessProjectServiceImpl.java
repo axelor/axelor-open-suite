@@ -25,8 +25,7 @@ public class AppBusinessProjectServiceImpl extends AppBaseServiceImpl implements
 	
 	@Override
 	public AppBusinessProject getAppBusinessProject() {
-		// TODO Auto-generated method stub
-		return null;
+		return Beans.get(AppBusinessProjectRepository.class).find(appBusinessProjectId);
 	}
 	
 }

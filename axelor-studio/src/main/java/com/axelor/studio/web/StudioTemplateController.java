@@ -17,6 +17,8 @@
  */
 package com.axelor.studio.web;
 
+import java.io.IOException;
+
 import com.axelor.i18n.I18n;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.rpc.ActionRequest;
@@ -45,7 +47,7 @@ public class StudioTemplateController {
 		response.setReload(true);
 	}
 
-	public void exportTemplate(ActionRequest request, ActionResponse response) {
+	public void exportTemplate(ActionRequest request, ActionResponse response) throws IOException {
 
 		StudioTemplate template = request.getContext().asType(
 				StudioTemplate.class);

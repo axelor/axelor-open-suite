@@ -595,7 +595,7 @@ public class ModelBuilderService {
 			case "date":
 				return "LocalDate";
 			case "datetime":
-				return "DateTime";
+				return "ZonedDateTime";
 			default:
 				return null;
 		}

@@ -26,8 +26,9 @@ import java.util.Map;
 
 import javax.mail.MessagingException;
 
-import org.joda.time.LocalDate;
-import org.joda.time.LocalDateTime;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 import com.axelor.apps.base.db.DayPlanning;
 import com.axelor.apps.base.db.WeeklyPlanning;
@@ -141,7 +142,7 @@ public class LeaveServiceImpl  implements  LeaveService  {
 			//Else if it's on several days
 			else{
 				duration = duration.add(new BigDecimal(this.computeStartDateWithSelect(leave.getFromDate(), leave.getStartOnSelect(), weeklyPlanning)));
-				LocalDate itDate = new LocalDate(leave.getFromDate().plusDays(1));
+				LocalDate itDate = leave.getFromDate().plusDays(1);
 
 				while(!itDate.isEqual(leave.getToDate()) && !itDate.isAfter(leave.getToDate())){
 					duration = duration.add(new BigDecimal(weeklyPlanningService.workingDayValue(weeklyPlanning, itDate)));
@@ -309,8 +310,8 @@ public class LeaveServiceImpl  implements  LeaveService  {
 		DayPlanning endDay = weeklyPlanningService.findDayPlanning(weeklyPlanning,leave.getToDate());
 		if(leave.getStartOnSelect() == LeaveRequestRepository.SELECT_MORNING){
 			if(startDay != null && startDay.getMorningFrom() != null){
-				startTimeHour = startDay.getMorningFrom().getHourOfDay();
-				startTimeMin = startDay.getMorningFrom().getMinuteOfHour();
+				startTimeHour = startDay.getMorningFrom().getHour();
+				startTimeMin = startDay.getMorningFrom().getMinute();
 			}
 			else{
 				startTimeHour = 8;
@@ -319,22 +320,22 @@ public class LeaveServiceImpl  implements  LeaveService  {
 		}
 		else{
 			if(startDay != null && startDay.getAfternoonFrom() != null){
-				startTimeHour = startDay.getAfternoonFrom().getHourOfDay();
-				startTimeMin = startDay.getAfternoonFrom().getMinuteOfHour();
+				startTimeHour = startDay.getAfternoonFrom().getHour();
+				startTimeMin = startDay.getAfternoonFrom().getMinute();
 			}
 			else{
 				startTimeHour = 14;
 				startTimeMin = 0;
 			}
 		}
-		LocalDateTime fromDateTime = new LocalDateTime(leave.getFromDate().getYear(),leave.getFromDate().getMonthOfYear(),leave.getFromDate().getDayOfMonth(),startTimeHour,startTimeMin);
+		LocalDateTime fromDateTime = LocalDateTime.of(leave.getFromDate().getYear(),leave.getFromDate().getMonthValue(),leave.getFromDate().getDayOfMonth(),startTimeHour,startTimeMin);
 
 		int endTimeHour = 0;
 		int endTimeMin = 0;
 		if(leave.getEndOnSelect() == LeaveRequestRepository.SELECT_MORNING){
 			if(endDay != null && endDay.getMorningTo() != null){
-				endTimeHour = endDay.getMorningTo().getHourOfDay();
-				endTimeMin = endDay.getMorningTo().getMinuteOfHour();
+				endTimeHour = endDay.getMorningTo().getHour();
+				endTimeMin = endDay.getMorningTo().getMinute();
 			}
 			else{
 				endTimeHour = 12;
@@ -343,15 +344,15 @@ public class LeaveServiceImpl  implements  LeaveService  {
 		}
 		else{
 			if(endDay != null && endDay.getAfternoonTo() != null){
-				endTimeHour = endDay.getAfternoonTo().getHourOfDay();
-				endTimeMin = endDay.getAfternoonTo().getMinuteOfHour();
+				endTimeHour = endDay.getAfternoonTo().getHour();
+				endTimeMin = endDay.getAfternoonTo().getMinute();
 			}
 			else{
 				endTimeHour = 18;
 				endTimeMin = 0;
 			}
 		}
-		LocalDateTime toDateTime = new LocalDateTime(leave.getToDate().getYear(),leave.getToDate().getMonthOfYear(),leave.getToDate().getDayOfMonth(),endTimeHour,endTimeMin);
+		LocalDateTime toDateTime = LocalDateTime.of(leave.getToDate().getYear(),leave.getToDate().getMonthValue(),leave.getToDate().getDayOfMonth(),endTimeHour,endTimeMin);
 
 		Event event = eventService.createEvent(fromDateTime, toDateTime, leave.getUser(), leave.getComments(), EventRepository.TYPE_LEAVE, leave.getLeaveLine().getLeaveReason().getLeaveReason()+" "+leave.getUser().getFullName());
 		eventRepo.save(event);
@@ -381,9 +382,9 @@ public class LeaveServiceImpl  implements  LeaveService  {
 			leaveDays = leaveDays.add(new BigDecimal(this.computeEndDateWithSelect(toDate, leaveRequest.getEndOnSelect(), weeklyPlanning)));
 		}
 		
-		LocalDate itDate = new LocalDate(fromDate);
+		LocalDate itDate = LocalDate.parse(fromDate.toString(), DateTimeFormatter.ISO_DATE);
 		if(fromDate.isBefore(leaveRequest.getFromDate()) || fromDate.equals(leaveRequest.getFromDate())){
-			itDate = new LocalDate(leaveRequest.getFromDate().plusDays(1));
+			itDate = leaveRequest.getFromDate().plusDays(1);
 		}
 
 		while(!itDate.isEqual(leaveRequest.getToDate()) && !itDate.isAfter(toDate)){
@@ -430,9 +431,13 @@ public class LeaveServiceImpl  implements  LeaveService  {
 			}
 			leave.setLeaveLine(leaveLine);
 			leave.setRequestDate(appBaseService.getTodayDate());
-			leave.setFromDate(new LocalDate(request.getData().get("fromDate").toString()));
+			if (request.getData().get("fromDate") != null) {
+				leave.setFromDate(LocalDate.parse(request.getData().get("fromDate").toString(), DateTimeFormatter.ISO_DATE));
+			}
 			leave.setStartOnSelect(new Integer(request.getData().get("startOn").toString()));
-			leave.setToDate(new LocalDate(request.getData().get("toDate").toString()));
+			if (request.getData().get("todDate") != null) {
+				leave.setToDate(LocalDate.parse(request.getData().get("toDate").toString(), DateTimeFormatter.ISO_DATE));
+			}
 			leave.setEndOnSelect(new Integer(request.getData().get("endOn").toString()));
 			leave.setDuration(this.computeDuration(leave));
 			leave.setStatusSelect(LeaveRequestRepository.STATUS_AWAITING_VALIDATION);
@@ -551,7 +556,7 @@ public class LeaveServiceImpl  implements  LeaveService  {
 		LocalDate todayDate = appBaseService.getTodayDate();
 		LocalDate beginDate = leaveRequest.getFromDate() ;
 		
-		int interval = ( beginDate.getYear() - todayDate.getYear() ) *12 + beginDate.getMonthOfYear() - todayDate.getMonthOfYear();
+		int interval = ( beginDate.getYear() - todayDate.getYear() ) *12 + beginDate.getMonthValue() - todayDate.getMonthValue();
 		
 		if (leaveRequest.getDuration().compareTo( leaveRequest.getLeaveLine().getQuantity().add( new BigDecimal(interval * 2.5) ) ) == 1){
 			return false;

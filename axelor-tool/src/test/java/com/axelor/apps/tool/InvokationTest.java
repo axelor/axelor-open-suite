@@ -24,7 +24,7 @@ import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.joda.time.LocalDate;
+import java.time.LocalDate;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -58,7 +58,7 @@ public class InvokationTest {
 		contact = new Contact("Durand","Pierre");
 		contact.setEmail("@test.com");
 		contact.setFullName(contact.getFullName());
-		contact.setDateOfBirth(new LocalDate());
+		contact.setDateOfBirth(LocalDate.now());
 		contact.setPayeurQuality(new BigDecimal("2.2569"));
 		contact.setLanguage("fr");
 	}

@@ -19,7 +19,7 @@ package com.axelor.apps.account.service;
 
 import java.math.BigDecimal;
 
-import org.joda.time.LocalDate;
+import java.time.LocalDate;
 
 import com.axelor.apps.account.db.ChequeRejection;
 import com.axelor.apps.account.db.InterbankCodeLine;

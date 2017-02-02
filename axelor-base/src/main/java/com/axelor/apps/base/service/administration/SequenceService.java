@@ -18,7 +18,10 @@
 package com.axelor.apps.base.service.administration;
 
 import org.apache.commons.lang.StringUtils;
-import org.joda.time.LocalDate;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.IsoFields;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -165,11 +168,11 @@ public class SequenceService {
 
 
 		String nextSeq = ( seqPrefixe + padLeft + seqSuffixe )
-				.replaceAll( PATTERN_YEAR, Integer.toString( refDate.getYearOfCentury() ) )
-				.replaceAll( PATTERN_MONTH, Integer.toString( refDate.getMonthOfYear() ) )
-				.replaceAll( PATTERN_FULL_MONTH, refDate.toString("MM") )
+				.replaceAll( PATTERN_YEAR, Integer.toString( refDate.getYear() ) )
+				.replaceAll( PATTERN_MONTH, Integer.toString( refDate.getMonthValue() ) )
+				.replaceAll( PATTERN_FULL_MONTH, refDate.format(DateTimeFormatter.ofPattern("MM")) )
 				.replaceAll( PATTERN_DAY, Integer.toString( refDate.getDayOfMonth() ) )
-				.replaceAll( PATTERN_WEEK, Integer.toString( refDate.getWeekOfWeekyear() ) ) ;
+				.replaceAll( PATTERN_WEEK, Integer.toString( refDate.get(IsoFields.WEEK_OF_WEEK_BASED_YEAR) ) ) ;
 
 		log.debug( "nextSeq : : : : {}" ,nextSeq );
 
@@ -199,8 +202,8 @@ public class SequenceService {
 
 	protected SequenceVersion getVersionByMonth( Sequence sequence ){
 
-		SequenceVersion sequenceVersion = sequenceVersionRepository.findByMonth(sequence, refDate.getMonthOfYear(), refDate.getYear());
-		if ( sequenceVersion == null ){ sequenceVersion = new SequenceVersion(sequence, refDate.dayOfMonth().withMinimumValue(), refDate.dayOfMonth().withMaximumValue(), 1L); }
+		SequenceVersion sequenceVersion = sequenceVersionRepository.findByMonth(sequence, refDate.getMonthValue(), refDate.getYear());
+		if ( sequenceVersion == null ){ sequenceVersion = new SequenceVersion(sequence, refDate.withDayOfMonth(1), refDate.withDayOfMonth(refDate.lengthOfMonth()), 1L); }
 
 		return sequenceVersion;
 
@@ -210,7 +213,7 @@ public class SequenceService {
 
 		SequenceVersion sequenceVersion = sequenceVersionRepository.findByYear(sequence, refDate.getYear());
 		if ( sequenceVersion == null ){
-			sequenceVersion = new SequenceVersion(sequence, refDate.monthOfYear().withMinimumValue().dayOfMonth().withMinimumValue(), refDate.monthOfYear().withMaximumValue().dayOfMonth().withMaximumValue(), 1L);
+			sequenceVersion = new SequenceVersion(sequence, refDate.withDayOfMonth(1), refDate.withDayOfMonth(refDate.lengthOfMonth()), 1L);
 		}
 
 		return sequenceVersion;

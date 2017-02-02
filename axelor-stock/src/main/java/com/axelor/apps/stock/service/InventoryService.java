@@ -23,7 +23,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import org.joda.time.LocalDate;
+import java.time.LocalDate;
+import java.time.ZoneOffset;
 
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.IAdministration;
@@ -95,7 +96,7 @@ public class InventoryService {
 
 		inventory.setInventorySeq(this.getInventorySequence(location.getCompany()));
 
-		inventory.setDateT(date.toDateTimeAtStartOfDay());
+		inventory.setDateT(date.atStartOfDay(ZoneOffset.UTC));
 
 		inventory.setDescription(description);
 

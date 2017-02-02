@@ -23,8 +23,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.joda.time.DateTime;
-import org.joda.time.LocalDate;
+import java.time.ZonedDateTime;
+import java.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -69,7 +69,7 @@ public class AccountClearanceService{
 	protected TaxService taxService;
 	protected TaxAccountService taxAccountService;
 	protected AccountClearanceRepository accountClearanceRepo;
-	protected DateTime todayTime;
+	protected ZonedDateTime todayTime;
 	protected User user;
 
 	@Inject

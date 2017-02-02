@@ -25,8 +25,8 @@ import javax.inject.Singleton;
 import javax.persistence.Query;
 
 import org.hibernate.proxy.HibernateProxy;
-import org.joda.time.DateTime;
-import org.joda.time.LocalDate;
+import java.time.ZonedDateTime;
+import java.time.LocalDate;
 
 import com.axelor.apps.base.db.AppBase;
 import com.axelor.apps.base.db.CurrencyConversionLine;
@@ -94,9 +94,9 @@ public class AppBaseServiceImpl extends AppServiceImpl implements AppBaseService
 	 * @return
 	 */
 	@Override
-	public DateTime getTodayDateTime(){
+	public ZonedDateTime getTodayDateTime(){
 
-		DateTime todayDateTime = new DateTime();
+		ZonedDateTime todayDateTime = ZonedDateTime.now();
 
 		User user = AuthUtils.getUser();
 

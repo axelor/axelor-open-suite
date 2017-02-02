@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
     
     <grid name="stock-move-line-grid" title="Stock move lines" model="com.axelor.apps.stock.db.StockMoveLine" editable="true">
         <field name="productName" required="true" />
@@ -139,9 +139,9 @@
     </action-group>
     
     <action-record name="stock-move-line-production-record-default" model="com.axelor.apps.stock.db.StockMoveLine">
-    	<field name="stockMove" expr="eval: _parent.inStockMove" if="_parent._model == 'com.axelor.apps.production.db.OperationOrder'"/>
-    	<field name="stockMove" expr="eval: _parent.inStockMove" if="_parent._model == 'com.axelor.apps.production.db.ManufOrder' &amp;&amp; _parent?.selectedPage == 'consumedProductPage'"/>
-    	<field name="stockMove" expr="eval: _parent.outStockMove" if="_parent._model == 'com.axelor.apps.production.db.ManufOrder' &amp;&amp; _parent?.selectedPage == 'producedProductPage'"/>
+    	<field name="stockMove" expr="eval: _parent.inStockMove" if="_parent?._model == 'com.axelor.apps.production.db.OperationOrder'"/>
+    	<field name="stockMove" expr="eval: _parent.inStockMove" if="_parent?._model == 'com.axelor.apps.production.db.ManufOrder' &amp;&amp; _parent?.selectedPage == 'consumedProductPage'"/>
+    	<field name="stockMove" expr="eval: _parent.outStockMove" if="_parent?._model == 'com.axelor.apps.production.db.ManufOrder' &amp;&amp; _parent?.selectedPage == 'producedProductPage'"/>
     </action-record>
     
     <action-record name="action-stock-move-line-record-new" model="com.axelor.apps.stock.db.StockMoveLine">

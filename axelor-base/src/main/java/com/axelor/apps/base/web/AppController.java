@@ -34,7 +34,7 @@ public class AppController {
 		
 		if (!app.getInitDataLoaded()) {
 			appService.importDataInit(app);
-			response.setValue("initDataLoaded", true);
+			response.setReload(true);
 		}
 	}
 	
@@ -74,6 +74,8 @@ public class AppController {
 		App app = request.getContext().asType(App.class);
 		
 		appService.installParent(app);
+		
+		response.setReload(true);
 	}
 	
 	public void checkChildren(ActionRequest request, ActionResponse response) {

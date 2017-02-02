@@ -1,0 +1,2 @@
+"name";"code";"description";"typeSelect";"imagePath";"modules";"dependsOn"
+"Contract";"CONT";"Contract configuration";"contract";"app-contract.png";"axelor-contract";"account,purchase,sale"

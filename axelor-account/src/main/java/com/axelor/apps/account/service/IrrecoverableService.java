@@ -26,7 +26,7 @@ import java.util.Set;
 
 import javax.persistence.EntityTransaction;
 
-import org.joda.time.LocalDate;
+import java.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

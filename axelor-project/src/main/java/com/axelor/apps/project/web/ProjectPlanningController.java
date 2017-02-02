@@ -19,7 +19,8 @@ package com.axelor.apps.project.web;
 
 import java.util.List;
 
-import org.joda.time.LocalDate;
+import java.time.LocalDate;
+import java.time.temporal.IsoFields;
 
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.project.db.ProjectPlanning;
@@ -56,9 +57,9 @@ public class ProjectPlanningController {
 
 	public void myPlanning(ActionRequest request, ActionResponse response) throws AxelorException{
 		LocalDate todayDate = appBaseService.getTodayDate();
-		ProjectPlanning planning = projectPlanningRepo.all().filter("self.year = ?1 AND self.week = ?2",todayDate.getYear(),todayDate.getWeekOfWeekyear()).fetchOne();
+		ProjectPlanning planning = projectPlanningRepo.all().filter("self.year = ?1 AND self.week = ?2",todayDate.getYear(),todayDate.get(IsoFields.WEEK_OF_WEEK_BASED_YEAR)).fetchOne();
 		if(planning == null){
-			planning = projectPlanningService.createPlanning(todayDate.getYear(),todayDate.getWeekOfWeekyear());
+			planning = projectPlanningService.createPlanning(todayDate.getYear(),todayDate.get(IsoFields.WEEK_OF_WEEK_BASED_YEAR));
 		}
 		response.setView(ActionView
 				.define("Week"+planning.getWeek())
@@ -71,9 +72,9 @@ public class ProjectPlanningController {
 
 	public void myTeamPlanning(ActionRequest request, ActionResponse response) throws AxelorException{
 		LocalDate todayDate = appBaseService.getTodayDate();
-		ProjectPlanning planning = projectPlanningRepo.all().filter("self.year = ?1 AND self.week = ?2",todayDate.getYear(),todayDate.getWeekOfWeekyear()).fetchOne();
+		ProjectPlanning planning = projectPlanningRepo.all().filter("self.year = ?1 AND self.week = ?2",todayDate.getYear(),todayDate.get(IsoFields.WEEK_OF_WEEK_BASED_YEAR)).fetchOne();
 		if(planning == null){
-			planning = projectPlanningService.createPlanning(todayDate.getYear(),todayDate.getWeekOfWeekyear());
+			planning = projectPlanningService.createPlanning(todayDate.getYear(),todayDate.get(IsoFields.WEEK_OF_WEEK_BASED_YEAR));
 		}
 		response.setView(ActionView
 				.define("Week"+planning.getWeek())
@@ -167,7 +168,7 @@ public class ProjectPlanningController {
 		request.getContext().asType(ProjectPlanning.class);
 		LocalDate currentDate = appBaseService.getTodayDate();
 		int year = currentDate.getYear();
-		int week = currentDate.getWeekOfWeekyear();
+		int week = currentDate.get(IsoFields.WEEK_OF_WEEK_BASED_YEAR);
 		ProjectPlanning planningCurrentWeek = null;
 
 		planningCurrentWeek = projectPlanningRepo.all().filter("self.year = ?1 AND self.week = ?2",year,week).fetchOne();

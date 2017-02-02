@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,6 +26,8 @@ import com.google.common.io.Files;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.inject.persist.Transactional;
+
+import edu.emory.mathcs.backport.java.util.Arrays;
 
 @Singleton
 public class AppServiceImpl implements AppService {
@@ -89,6 +90,9 @@ public class AppServiceImpl implements AppService {
 			}
 		}
 		
+		app = appRepo.find(app.getId());
+		app.setDemoDataLoaded(true);
+		
 		saveApp(app);
 		
 		return I18n.get("Demo data loaded sucessefully");
@@ -98,6 +102,7 @@ public class AppServiceImpl implements AppService {
 		
 		List<App> depends = getDepends(app, true);
 		for (App parent : depends) {
+			log.debug("Importing demo data for parent app: {}", parent.getName());
 			parent = appRepo.find(parent.getId());
 			if (!parent.getDemoDataLoaded()) {
 				importDataDemo(parent);
@@ -107,10 +112,8 @@ public class AppServiceImpl implements AppService {
 	}
 
 	@Transactional
-	public void saveApp(App app) {
-		app = appRepo.find(app.getId());
-		app.setDemoDataLoaded(true);
-		appRepo.save(app);
+	public App saveApp(App app) {
+		return appRepo.save(app);
 	}
 	
 	@Override
@@ -143,6 +146,11 @@ public class AppServiceImpl implements AppService {
 				clean(tmp);
 			}
 		}
+		
+		app = appRepo.find(app.getId());
+		app.setInitDataLoaded(true);
+		
+		saveApp(app);
 		
 	}
 	
@@ -222,10 +230,12 @@ public class AppServiceImpl implements AppService {
 		String query = "self.typeSelect in (?1)";
 		
 		if (active != null) {
-			query += " AND self.active = " + active;
+			query += " AND self.active = " + active;	
 		}
 		
-		return appRepo.all().filter(query, Arrays.asList(dependsOn.split(","))).fetch();
+		List<App> apps = appRepo.all().filter(query, Arrays.asList(dependsOn.split(","))).fetch();
+		log.debug("App: {}, DependsOn: {}, Parent active: {}, Total parent founds: {}", app.getName(), dependsOn, active, apps.size());
+		return apps;
 	}
 
 	@Override
@@ -251,14 +261,15 @@ public class AppServiceImpl implements AppService {
 				+ "OR self.dependsOn like ?4 ";
 		
 		if (active != null) {
-			query += " AND self.active = " + active;
+			query = "(" + query + ") AND self.active = " + active;
 		}
-		List<App> apps = appRepo.all().filter(query, type, ",%" + type + ",", type + ",",  ",%" + type).fetch();
+		List<App> apps = appRepo.all().filter(query, type, type + ",%", "%," + type + ",%",  "%," + type).fetch();
+		
+		log.debug("Parent app: {}, Total children: {}", app.getName(), apps.size());
 		
 		return apps;
 	}
 	
-	@Transactional
 	@Override
 	public void installParent(App app) {
 		List<App> apps = getDepends(app, false);
@@ -266,13 +277,11 @@ public class AppServiceImpl implements AppService {
 		for (App parentApp : apps) {
 			parentApp = appRepo.find(parentApp.getId());
 			parentApp.setActive(true);
+			parentApp = saveApp(parentApp);
 			if (!parentApp.getInitDataLoaded()) {
 				importDataInit(parentApp);
-				parentApp.setInitDataLoaded(true);
-				parentApp = appRepo.save(parentApp);
 				installParent(parentApp);
 			}
-			
 		}
 		
 	}

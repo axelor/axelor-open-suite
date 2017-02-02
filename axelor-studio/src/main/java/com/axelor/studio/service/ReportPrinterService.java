@@ -20,8 +20,10 @@ package com.axelor.studio.service;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.joda.time.LocalDate;
-import org.joda.time.LocalDateTime;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -75,9 +77,9 @@ public class ReportPrinterService {
 
 			String fileName = reportBuilder.getFileName();
 			fileName = fileName.replace("$TODAY$",
-					LocalDate.now().toString("ddMMYYYY"));
+					LocalDate.now().format(DateTimeFormatter.ofPattern("ddMMYYYY")));
 			fileName = fileName.replace("$NOW$",
-					LocalDateTime.now().toString("ddMMYYYYHHmm"));
+					LocalDateTime.now().format(DateTimeFormatter.ofPattern("ddMMYYYYHHmm")));
 
 			Template template = strTemplate.fromText(fileName);
 			fileName = template.make(entity).render();

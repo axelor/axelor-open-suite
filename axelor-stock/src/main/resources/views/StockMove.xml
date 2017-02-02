@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
     
     <grid name="stock-move-grid" title="Stock moves" model="com.axelor.apps.stock.db.StockMove" orderBy="-estimatedDate">
     	<toolbar>
@@ -103,7 +103,7 @@
 			<button name="realize" title="Realize" icon="fa-check" showIf="statusSelect == 2" prompt="Are you sure you want to realize this stock move?" onClick="action-group-stock-stockmove-realize-click"/>
 			<button name="cancel" title="Cancel" icon="fa-times-circle" showIf="statusSelect != 4" onClick="action-group-stock-stockmove-cancel-click"/>
 			<button name="draft" title="Draft" showIf="statusSelect == 4" onClick="action-group-stock-stockmove-draft-click"/>
-			<button name="generateInvoice" title="Generate invoice" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain).getGenerateInvoiceFromStockMove()" onClick="save,action-supplychain-stock-move-method-generate-invoice" if-module="axelor-supplychain" showIf="statusSelect == 3"/>
+			<button name="generateInvoice" title="Generate invoice" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getGenerateInvoiceFromStockMove()" onClick="save,action-supplychain-stock-move-method-generate-invoice" if-module="axelor-supplychain" showIf="statusSelect == 3"/>
 			<button name="generateReversion" title="Generate reversion" onClick="save,action-stock-move-method-generate-reversion" showIf="statusSelect == 3"/>
 			<button name="printStockMove" title=" Print" icon="fa-print" onClick="save,action-print-stock-move" showIf="statusSelect != 1"/>
 			<button name="viewDirection" title="View Direction" help="View Direction" showIf="typeSelect == 2 &amp;&amp; statusSelect!=4"   icon="fa-location-arrow" onClick="action-stock-move-validate-address,action-stock-move-method-view-direction"/>

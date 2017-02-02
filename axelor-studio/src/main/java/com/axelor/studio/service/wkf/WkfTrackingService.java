@@ -20,9 +20,8 @@ package com.axelor.studio.service.wkf;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Map;
-
-import org.joda.time.LocalDateTime;
-import org.joda.time.Minutes;
+import java.time.Duration;
+import java.time.LocalDateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -210,15 +209,15 @@ public class WkfTrackingService {
 
 		if (trackingLine == null || !trackingLine.getStatus().equals(status)) {
 
-			LocalDateTime now = new LocalDateTime();
+			LocalDateTime now = LocalDateTime.now();
 
 			if (trackingLine != null) {
 				oldStatus = trackingLine.getStatus();
 				LocalDateTime lastUpdated = trackingLine.getCreatedOn();
-				Minutes minutes = Minutes.minutesBetween(lastUpdated, now);
+				long minutes = Duration.between(lastUpdated, now).toMinutes();
 				log.debug("Minutes between {} and {} : {}", lastUpdated, now,
-						minutes.getMinutes());
-				durationHrs = new BigDecimal(minutes.getMinutes()).divide(
+						minutes);
+				durationHrs = new BigDecimal(minutes).divide(
 						new BigDecimal(60), 2, RoundingMode.HALF_UP);
 				log.debug("Hours between {} and {} : {}", lastUpdated, now,
 						durationHrs);

@@ -19,7 +19,7 @@ package com.axelor.apps.production.service;
 
 import java.math.BigDecimal;
 
-import org.joda.time.LocalDateTime;
+import java.time.LocalDateTime;
 
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;

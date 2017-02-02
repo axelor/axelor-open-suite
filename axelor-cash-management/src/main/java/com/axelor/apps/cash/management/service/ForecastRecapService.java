@@ -24,7 +24,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.joda.time.LocalDate;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 import com.axelor.apps.ReportFactory;
 import com.axelor.apps.account.db.Invoice;
@@ -250,9 +251,10 @@ public class ForecastRecapService {
 		else{
 			employeeList = Beans.get(EmployeeRepository.class).all().filter("self.user.activeCompany = ?1",forecastRecap.getCompany()).fetch();
 		}
-		LocalDate itDate = new LocalDate(forecastRecap.getFromDate());
+		LocalDate itDate = LocalDate.parse(forecastRecap.getFromDate().toString(), DateTimeFormatter.ISO_DATE);
 		while(!itDate.isAfter(forecastRecap.getToDate())){
-			if(itDate.isEqual(new LocalDate(itDate.getYear(), itDate.getMonthOfYear(), itDate.dayOfMonth().getMaximumValue()))){
+			LocalDate monthEnd = itDate.withDayOfMonth(itDate.lengthOfMonth());
+			if (itDate.isEqual(monthEnd)) {
 				for (Employee employee : employeeList) {
 					forecastRecap.setCurrentBalance(forecastRecap.getCurrentBalance().subtract(employee.getHourlyRate().multiply(employee.getWeeklyWorkHours().multiply(new BigDecimal(4)))));
 					forecastRecap.addForecastRecapLineListItem(this.createForecastRecapLine(itDate, 2, null,
@@ -261,7 +263,7 @@ public class ForecastRecapService {
 				itDate = itDate.plusMonths(1);
 			}
 			else{
-				itDate = new LocalDate(itDate.getYear(), itDate.getMonthOfYear(), itDate.dayOfMonth().getMaximumValue());
+				itDate = monthEnd;
 			}
 		}
 	}

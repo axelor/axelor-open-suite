@@ -26,7 +26,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.joda.time.LocalDate;
+import java.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -98,7 +98,7 @@ public class MoveLineService {
 	public MoveLine computeAnalyticDistribution(MoveLine moveLine){
 
 		List<AnalyticMoveLine> analyticMoveLineList = moveLine.getAnalyticMoveLineList();
-		if(analyticMoveLineList != null && generalService.getGeneral().getAnalyticDistributionTypeSelect() != AppAccountRepository.DISTRIBUTION_TYPE_FREE){
+		if(analyticMoveLineList != null && appAccountService.getAppAccount().getAnalyticDistributionTypeSelect() != AppAccountRepository.DISTRIBUTION_TYPE_FREE){
 			for (AnalyticMoveLine analyticDistributionLine : analyticMoveLineList) {
 				analyticDistributionLine.setMoveLine(moveLine);
 				analyticDistributionLine.setAmount(analyticMoveLineService.computeAmount(analyticDistributionLine));

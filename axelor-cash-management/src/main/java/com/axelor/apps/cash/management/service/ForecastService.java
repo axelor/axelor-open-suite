@@ -20,7 +20,8 @@ package com.axelor.apps.cash.management.service;
 import java.math.BigDecimal;
 import java.util.List;
 
-import org.joda.time.LocalDate;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
@@ -39,7 +40,7 @@ public class ForecastService {
 	public void generate(ForecastGenerator forecastGenerator){
 		LocalDate fromDate = forecastGenerator.getFromDate();
 		LocalDate toDate = forecastGenerator.getToDate();
-		LocalDate itDate = new LocalDate(fromDate);
+		LocalDate itDate = LocalDate.parse(fromDate.toString(),DateTimeFormatter.ISO_DATE_TIME);
 		LocalDate todayDate = appBaseService.getTodayDate();
 		
 		if(forecastGenerator.getForecastList() != null && !forecastGenerator.getForecastList().isEmpty()){

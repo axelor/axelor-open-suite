@@ -19,7 +19,7 @@ package com.axelor.apps.base.service.weeklyplanning;
 
 import java.util.List;
 
-import org.joda.time.LocalDate;
+import java.time.LocalDate;
 
 import com.axelor.apps.base.db.DayPlanning;
 import com.axelor.apps.base.db.WeeklyPlanning;
@@ -116,7 +116,7 @@ public class WeeklyPlanningServiceImp implements WeeklyPlanningService{
 	}
 	
 	public DayPlanning findDayPlanning(WeeklyPlanning planning, LocalDate date){
-		int dayOfWeek = date.getDayOfWeek();
+		int dayOfWeek = date.getDayOfWeek().getValue();
 		switch (dayOfWeek) {
 		case 1:
 			return findDayWithName(planning,"monday");

@@ -24,8 +24,8 @@ import java.util.Set;
 
 import javax.persistence.Query;
 
-import org.joda.time.DateTime;
-import org.joda.time.LocalDate;
+import java.time.ZonedDateTime;
+import java.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -57,7 +57,7 @@ public class MoveLineReportServiceImpl implements MoveLineReportService  {
 
 	protected MoveLineReportRepository moveLineReportRepo;
 
-	protected DateTime dateTime;
+	protected ZonedDateTime datetime;
 
 	protected String query = "";
 
@@ -71,7 +71,7 @@ public class MoveLineReportServiceImpl implements MoveLineReportService  {
 	public MoveLineReportServiceImpl(AppAccountService appBaseService, MoveLineReportRepository moveLineReportRepo, AccountRepository accountRepo) {
 		this.moveLineReportRepo = moveLineReportRepo;
 		this.accountRepo = accountRepo;
-		dateTime = appBaseService.getTodayDateTime();
+		datetime = appBaseService.getTodayDateTime();
 
 	}
 
@@ -298,7 +298,7 @@ public class MoveLineReportServiceImpl implements MoveLineReportService  {
 	 */
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void setPublicationDateTime(MoveLineReport moveLineReport)  {
-		moveLineReport.setPublicationDateTime(this.dateTime);
+		moveLineReport.setPublicationDateTime(this.datetime);
 		moveLineReportRepo.save(moveLineReport);
 	}
 

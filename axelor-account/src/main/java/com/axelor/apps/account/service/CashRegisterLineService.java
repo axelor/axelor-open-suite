@@ -19,7 +19,7 @@ package com.axelor.apps.account.service;
 
 import java.io.IOException;
 
-import org.joda.time.DateTime;
+import java.time.ZonedDateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -49,7 +49,7 @@ public class CashRegisterLineService{
 	protected TemplateMessageService templateMessageService;
 	protected CashRegisterLineRepository cashRegisterLineRepo;
 
-	protected DateTime todayTime;
+	protected ZonedDateTime todayTime;
 	protected User user;
 
 	@Inject

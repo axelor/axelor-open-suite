@@ -19,9 +19,9 @@ package com.axelor.apps.hr.service.employee;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.LocalDate;
+import java.time.Period;
 
-import org.joda.time.LocalDate;
-import org.joda.time.Years;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -61,7 +61,7 @@ public class EmployeeServiceImpl extends UserServiceImpl implements EmployeeServ
 		
 		LOG.debug("Employee: {}",employee);
 
-		BigDecimal dailyWorkHrs = null;
+		BigDecimal dailyWorkHrs = new BigDecimal(1);
 		String timePref = null;
 		if(employee != null)  {
 			timePref = employee.getTimeLoggingPreferenceSelect();
@@ -73,7 +73,10 @@ public class EmployeeServiceImpl extends UserServiceImpl implements EmployeeServ
 		if(dailyWorkHrs == null || dailyWorkHrs.compareTo(BigDecimal.ZERO) == 0)  {
 			dailyWorkHrs = appBaseService.getAppBase().getDailyWorkHours();
 		}
-
+		
+		if (dailyWorkHrs.compareTo(BigDecimal.ZERO) == 0) {
+			dailyWorkHrs = new BigDecimal(1);
+		}
 		LOG.debug("Employee's time pref: {}, Daily Working hours: {}", timePref, dailyWorkHrs);
 
 		if(toHours)  {
@@ -100,8 +103,8 @@ public class EmployeeServiceImpl extends UserServiceImpl implements EmployeeServ
 	public int getLengthOfService(Employee employee, LocalDate refDate) throws AxelorException{
 		
 		try{
-			Years years = Years.yearsBetween(employee.getSeniorityDate(), refDate == null ? Beans.get(AppBaseService.class).getTodayDate() : refDate );
-			return years.getYears();
+			Period period = Period.between(employee.getSeniorityDate(), refDate == null ? Beans.get(AppBaseService.class).getTodayDate() : refDate );
+			return period.getYears();
 		}catch (IllegalArgumentException e){
 			throw new AxelorException(String.format( I18n.get( IExceptionMessage.EMPLOYEE_NO_SENIORITY_DATE ), employee.getName() ), IException.NO_VALUE);
 		}
@@ -111,8 +114,8 @@ public class EmployeeServiceImpl extends UserServiceImpl implements EmployeeServ
 	public int getAge(Employee employee, LocalDate refDate) throws AxelorException{
 		
 		try{
-			Years years = Years.yearsBetween(employee.getBirthDate(), refDate == null ? Beans.get(AppBaseService.class).getTodayDate() : refDate );
-			return years.getYears();
+			Period period = Period.between(employee.getBirthDate(), refDate == null ? Beans.get(AppBaseService.class).getTodayDate() : refDate );
+			return period.getYears();
 		}catch (IllegalArgumentException e){
 			throw new AxelorException(String.format( I18n.get( IExceptionMessage.EMPLOYEE_NO_BIRTH_DATE ), employee.getName() ), IException.NO_VALUE);
 		}

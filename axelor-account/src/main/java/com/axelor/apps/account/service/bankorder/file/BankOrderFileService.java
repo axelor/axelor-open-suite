@@ -25,8 +25,10 @@ import java.util.List;
 import javax.xml.bind.JAXBException;
 import javax.xml.datatype.DatatypeConfigurationException;
 
-import org.joda.time.LocalDate;
-import org.joda.time.LocalDateTime;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -142,7 +144,7 @@ public class BankOrderFileService {
 		
 		return String.format("%s%s.%s", 
 				bankOrderFileFormat.getOrderFileFormatSelect(), 
-				generationDateTime.toString("yyyy-MM-dd'T'HH:mm:ss"), 
+				generationDateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss")), 
 				fileExtension);
 	}
 	

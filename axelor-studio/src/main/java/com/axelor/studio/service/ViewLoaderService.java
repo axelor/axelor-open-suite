@@ -371,7 +371,7 @@ public class ViewLoaderService {
 				return "binary";
 			case "LocalDate":
 				return "date";
-			case "DateTime":
+			case "ZonedDateTime":
 				return "datetime";
 			case "LocalDateTime":
 				return "datetime";

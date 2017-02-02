@@ -37,7 +37,7 @@ import javax.validation.constraints.NotNull;
 import com.axelor.apps.tool.db.Title;
 import com.axelor.apps.tool.db.Group;
 
-import org.joda.time.LocalDate;
+import java.time.LocalDate;
 
 import com.axelor.db.JPA;
 import com.axelor.db.JpaModel;
