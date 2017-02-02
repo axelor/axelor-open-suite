@@ -96,7 +96,7 @@ public class PaymentScheduleService {
 		Invoice invoice = null;
 		
 		PaymentSchedule paymentSchedule = this.createPaymentSchedule(partner, invoice, company, date, startDate,
-				nbrTerm, partnerService.getDefaultBankDetails(partner), partner.getClientPaymentMode());
+				nbrTerm, partnerService.getDefaultBankDetails(partner), partner.getInPaymentMode());
 
 		paymentSchedule.getInvoiceSet().addAll(invoices);
 

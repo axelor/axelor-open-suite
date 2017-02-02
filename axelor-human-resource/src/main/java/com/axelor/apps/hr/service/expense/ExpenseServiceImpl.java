@@ -285,7 +285,7 @@ public class ExpenseServiceImpl implements ExpenseService  {
 			throw new AxelorException(String.format(I18n.get(com.axelor.apps.account.exception.IExceptionMessage.USER_PARTNER),expense.getUser().getName()), IException.CONFIGURATION_ERROR);
 		}
 
-		Move move = moveService.getMoveCreateService().createMove(accountConfigService.getExpenseJournal(accountConfig), accountConfig.getCompany(), null, expense.getUser().getPartner(), moveDate, expense.getUser().getPartner().getClientPaymentMode(), MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC);
+		Move move = moveService.getMoveCreateService().createMove(accountConfigService.getExpenseJournal(accountConfig), accountConfig.getCompany(), null, expense.getUser().getPartner(), moveDate, expense.getUser().getPartner().getInPaymentMode(), MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC);
 
 		List<MoveLine> moveLines = new ArrayList<MoveLine>();
 
@@ -384,7 +384,7 @@ public class ExpenseServiceImpl implements ExpenseService  {
 	public void addPayment(Expense expense) throws AxelorException {
 		expense.setPaymentDate(new LocalDate());
 		
-		PaymentMode paymentMode = expense.getUser().getPartner().getSupplierPaymentMode();
+		PaymentMode paymentMode = expense.getUser().getPartner().getOutPaymentMode();
 		expense.setPaymentMode(paymentMode);
 		if (paymentMode != null && paymentMode.getGenerateBankOrder()) {
 			Beans.get(BankOrderCreateServiceHr.class).createBankOrder(expense);
