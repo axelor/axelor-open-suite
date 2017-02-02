@@ -1,0 +1,38 @@
+<?xml version="1.0" ?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+
+	<module name="project" package="com.axelor.apps.project.db"/>
+
+	<sequence name="task.seq" initial="1" increment="1" padding="5" prefix="#0"/>
+	
+	<entity name="Task">
+  		<integer name="importId"/>
+		<many-to-one name="project" ref="com.axelor.apps.project.db.ProjectTask" title="Project"/>
+	  	<string name="name" title="Name" required="true"/>
+	  	<many-to-one name="assignedTo" ref="com.axelor.auth.db.User" title="Assigned to"/>
+	  	
+	  	<many-to-one name="parentTask" ref="com.axelor.apps.project.db.Task" title="Parent Task"/>
+	  	
+	 	<many-to-one name="status" ref="com.axelor.apps.project.db.ProjectStatus"/>
+	 	<many-to-one name="priority" ref="com.axelor.apps.project.db.ProjectPriority"/>
+	  
+	  <many-to-many name="membersUserSet" ref="com.axelor.auth.db.User" title="Membres"/>
+	  <string name="description" title="Description" large="true"/>
+	  
+	  <datetime name="fromDate" title="From Date"/>
+	  <datetime name="toDate" title="To Date"/>
+	  <datetime name="dueDate" title="Due Date"/>
+<!-- 	  
+	  <decimal name="duration" title="Duration"/>
+	  <decimal name="timeSpent" title="Time Spent"/>
+	  <decimal name="leadDelay" title="Lead/Delay"/>
+	 
+	  <decimal name="progress" title="Progress (%)"/>
+--> 
+
+	  <decimal name="sequence" title="Sequence" />
+	  
+	</entity>
+  </domain-models>

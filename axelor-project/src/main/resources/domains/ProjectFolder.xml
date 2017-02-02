@@ -1,0 +1,18 @@
+<?xml version="1.0" ?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+
+	<module name="project" package="com.axelor.apps.project.db"/>
+
+	<sequence name="project.folder.seq" initial="1" increment="1" padding="5" prefix="#0"/>
+	
+	<entity name="ProjectFolder">
+  		<string name="name"/>
+  		<string name="description" large="true"/>
+  		<string name="sequence" sequence="project.folder.seq"/>
+  		<many-to-many name="membersUserSet" ref="com.axelor.auth.db.User"/>
+	  <many-to-one name="clientPartner" ref="com.axelor.apps.base.db.Partner" title="Customer"/>
+ 	 	<one-to-many name="projectList" ref="com.axelor.apps.project.db.ProjectTask" mappedBy="projectFolder"/>
+	</entity>
+  </domain-models>

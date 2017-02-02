@@ -8,7 +8,12 @@
   <entity name="ProjectTask" cachable="true">
       
       <integer name="importId"/>
+      
+      
       <many-to-one name="project" ref="com.axelor.apps.project.db.ProjectTask" title="Project"/>
+      
+      
+      <many-to-one name="projectFolder" ref="com.axelor.apps.project.db.ProjectFolder" title="Project Folder"/>
       <one-to-many name="childProjectTaskList" ref="com.axelor.apps.project.db.ProjectTask" title="Child Projects/Tasks" mappedBy="project"/>
 	  <string name="name" title="Name" required="true"/>
 	  <many-to-one name="assignedTo" ref="com.axelor.auth.db.User" title="Assigned to"/>
