@@ -327,39 +327,49 @@ public abstract class InvoiceGenerator  {
 	}
 
 	/**
-	 * Calculer le montant d'une facture.
-	 * <p>
-	 * Le calcul est basé sur les lignes de TVA préalablement créées.
-	 * </p>
+	 * Compute the invoice total amounts
 	 *
 	 * @param invoice
 	 * @throws AxelorException
 	 */
 	public void computeInvoice(Invoice invoice) throws AxelorException {
 
-		// Dans la devise de la comptabilité du tiers
+		// In the invoice currency
 		invoice.setExTaxTotal( BigDecimal.ZERO );
 		invoice.setTaxTotal( BigDecimal.ZERO );
 		invoice.setInTaxTotal( BigDecimal.ZERO );
 
-		// Dans la devise de la facture
+		// In the company accounting currency
 		invoice.setCompanyExTaxTotal(BigDecimal.ZERO);
 		invoice.setCompanyTaxTotal(BigDecimal.ZERO);
 		invoice.setCompanyInTaxTotal(BigDecimal.ZERO);
+		
+		for(InvoiceLine invoiceLine : invoice.getInvoiceLineList())  {
+			// In the invoice currency
+			invoice.setExTaxTotal(invoice.getExTaxTotal().add( invoiceLine.getExTaxTotal() ));
+			
+			// In the company accounting currency
+			invoice.setCompanyExTaxTotal(invoice.getCompanyExTaxTotal().add( invoiceLine.getCompanyExTaxTotal() ));
+		}
 
 		for (InvoiceLineTax invoiceLineTax : invoice.getInvoiceLineTaxList()) {
 
-			// Dans la devise de la comptabilité du tiers
-			invoice.setExTaxTotal(invoice.getExTaxTotal().add( invoiceLineTax.getExTaxBase() ));
+			// In the invoice currency
 			invoice.setTaxTotal(invoice.getTaxTotal().add( invoiceLineTax.getTaxTotal() ));
 			invoice.setInTaxTotal(invoice.getInTaxTotal().add( invoiceLineTax.getInTaxTotal() ));
 
-			// Dans la devise de la facture
-			invoice.setCompanyExTaxTotal(invoice.getCompanyExTaxTotal().add( invoiceLineTax.getCompanyExTaxBase() ));
+			// In the company accounting currency
 			invoice.setCompanyTaxTotal(invoice.getCompanyTaxTotal().add( invoiceLineTax.getCompanyTaxTotal() ));
 			invoice.setCompanyInTaxTotal(invoice.getCompanyInTaxTotal().add( invoiceLineTax.getCompanyInTaxTotal() ));
 
 		}
+		
+		// In the invoice currency
+		invoice.setInTaxTotal(invoice.getExTaxTotal().add( invoice.getTaxTotal() ));
+
+		// In the company accounting currency
+		invoice.setCompanyInTaxTotal(invoice.getCompanyExTaxTotal().add( invoice.getCompanyTaxTotal() ));
+		
 
 		logger.debug("Montant de la facture: HT = {}, TVA = {}, TTC = {}",
 			new Object[] { invoice.getExTaxTotal(), invoice.getTaxTotal(), invoice.getInTaxTotal() });
