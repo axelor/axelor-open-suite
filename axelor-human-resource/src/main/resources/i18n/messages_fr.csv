@@ -436,7 +436,7 @@
 "Weekly work hours","Nombre d'heures de travail hebdomadaire",,
 "Working days' number","Nombre de jours travaillés",,
 "Year","Année",,
-"You don't have the permission to create a leave request for this user","Vous n'avez pas la permission de créer une demande d'absence pour cet utilisateur",,
+"You don't have the permission to create a leave request in the past, please contact your manager.","Vous n'avez pas la permission de créer une demande d'absence antérieure à aujourd'hui, merci de contacter votre supérieur.",,
 "You have to choose at least one timesheet","Vous devez sélectionner au moins une feuille de temps",,
 "human-ressource-general-form",,,
 "There's no line created for employee %s for the reason %s","Il n'y a pas de ligne de créée sur l'employé %s pour la raison %s",,
