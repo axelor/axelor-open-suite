@@ -28,15 +28,15 @@ public interface IExceptionMessage {
 	/**
 	 * Sales Order Stock Move Service
 	 */
-	static final String SALES_ORDER_STOCK_MOVE_1 = /*$$(*/ "La facturation par expédition impose que l'ensemble des lignes de devis comporte des produits de service ou stockable avec un approvisionnement depuis le stock" /*)*/ ;
+	static final String SALES_ORDER_STOCK_MOVE_1 = /*$$(*/ "Invoice by delivery impose that all sale order lines must have service or stockable product with provision from stock" /*)*/ ;
 	
 	/**
 	 * Sales Order Service Impl
 	 */
-	static final String SALES_ORDER_1 = /*$$(*/ "La société %s n'a pas de séquence de configurée pour les devis clients" /*)*/ ;
+	static final String SALES_ORDER_1 = /*$$(*/ "The company %s doesn't have any configured sequence for sale orders" /*)*/ ;
 	
 	/**
 	 * Sale Config Service
 	 */
-	static final String SALE_CONFIG_1 = /*$$(*/ "%s :\n Veuillez configurer le module vente pour la société %s" /*)*/ ;
+	static final String SALE_CONFIG_1 = /*$$(*/ "%s :\n You must configure Sales module for company %s" /*)*/ ;
 }

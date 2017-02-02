@@ -43,10 +43,10 @@ public interface IExceptionMessage {
 	static final String HR_CONFIG_CANCELED_EXTRA_HOURS_TEMPLATE = /*$$(*/ "Please configure the canceled extra hours template in HR config for the company %s" /*)*/;
 	static final String HR_CONFIG_LEAVE_REASON = /*$$(*/ "Please configure the leave reason in HR config for the company %s" /*)*/;
 	
-	static final String TIMESHEET_FROM_DATE = /*$$(*/ "Merci de rentrer une date de début pour la génération"/*)*/ ;
-	static final String TIMESHEET_TO_DATE = /*$$(*/ "Merci de rentrer une date de fin pour la génération"/*)*/ ;
-	static final String TIMESHEET_PRODUCT = /*$$(*/ "Merci de rentrer un produit"/*)*/ ;
-	static final String TIMESHEET_EMPLOYEE_DAY_PLANNING = /*$$(*/ "Merci de rentrer un planning pour l'employé rattaché à l'utilisateur %s"/*)*/ ;
+	static final String TIMESHEET_FROM_DATE = /*$$(*/ "Please add a start date for generation"/*)*/ ;
+	static final String TIMESHEET_TO_DATE = /*$$(*/ "Please add an end date for generation"/*)*/ ;
+	static final String TIMESHEET_PRODUCT = /*$$(*/ "Please add a product"/*)*/ ;
+	static final String TIMESHEET_EMPLOYEE_DAY_PLANNING = /*$$(*/ "Please add an employee's planning related to user %s"/*)*/ ;
 	static final String TIMESHEET_EMPLOYEE_DAILY_WORK_HOURS = /*$$(*/ "Please, enter the number of daily work hours per employee %s"/*)*/ ;
 	static final String TIMESHEET_DATE_CONFLICT = /*$$(*/ "There is a conflict between the dates entered and the dates in the lines : %s"/*)*/ ;
 	static final String TIMESHEET_NULL_FROM_DATE = /*$$(*/ "From date can't be empty"/*)*/ ;

@@ -11,7 +11,7 @@
 
   	<one-to-many name="analyticMoveLineList" ref="com.axelor.apps.account.db.AnalyticMoveLine" title="Analytic distribution lines" mappedBy="purchaseOrderLine"/>
 	<many-to-one name="analyticDistributionTemplate" title="Analytic distribution template" ref="com.axelor.apps.account.db.AnalyticDistributionTemplate"/>
-	<boolean name="toInvoice"/>
+	
 	<boolean name="invoiced" readonly="true"/>
 	<many-to-one name="budget" ref="com.axelor.apps.account.db.Budget" title="Budget"/>
 	<one-to-many name="budgetDistributionList" ref="com.axelor.apps.account.db.BudgetDistribution" title="Budget Distribution" mappedBy="purchaseOrderLine"/>

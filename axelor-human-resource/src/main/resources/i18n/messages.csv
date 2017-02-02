@@ -664,7 +664,7 @@
 "Working days' number",,,
 "Year",,,
 "You are not able to take leave in advance for the reason '%s'.\n Reminder : %s",,,
-"You don't have the permission to create a leave request for this user",,,
+"You don't have the permission to create a leave request in the past, please contact your manager.",,,
 "You have to choose at least one timesheet",,,
 "You must be a HR manager to have the permission to do this.",,,
 "You now have a negative amount of leave available for the reason %s",,,
