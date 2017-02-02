@@ -155,7 +155,6 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService  {
 				taxRate = taxLine.getValue();
 			}
 			
-			
 			StockMoveLine stockMoveLine = stockMoveLineService.createStockMoveLine(
 					product,
 					saleOrderLine.getProductName(),
@@ -164,7 +163,7 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService  {
 					priceDiscounted,
 					unit,
 					stockMove,
-					1, saleOrderLine.getSaleOrder().getInAti(), taxRate);
+					StockMoveLineService.TYPE_SALES, saleOrderLine.getSaleOrder().getInAti(), taxRate);
 
 			stockMoveLine.setSaleOrderLine(saleOrderLine);
 
@@ -182,7 +181,7 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService  {
 					BigDecimal.ZERO,
 					null,
 					stockMove,
-					1, saleOrderLine.getSaleOrder().getInAti(), null);
+					StockMoveLineService.TYPE_SALES, saleOrderLine.getSaleOrder().getInAti(), null);
 
 			stockMoveLine.setSaleOrderLine(saleOrderLine);
 
