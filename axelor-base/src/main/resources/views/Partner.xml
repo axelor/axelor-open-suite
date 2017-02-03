@@ -192,7 +192,7 @@
 		        <panel-include if-module="axelor-supplychain" view="incl-sales-partner-form" from="axelor-supplychain" if="__config__.app.isApp('supplychain')" />
 		        <field name="$emailsList" colSpan="12" type="many-to-many" target="com.axelor.apps.message.db.Message" title="Emails" canNew="false" canSelect="false" canRemove="false"/>
 			</panel>
-			<panel name="customerCredit" title="Customer Credit" if-module="axelor-supplychain" colSpan="12" hideIf="isContact || !isCustomer" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('base').getManageCustomerCredit()">
+			<panel name="customerCredit" title="Customer Credit" if-module="axelor-supplychain" colSpan="12" hideIf="isContact || !isCustomer" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('account').getManageCustomerCredit()">
 				<panel-include view="incl-customer-credit-partner-form" from="axelor-supplychain" />
 			</panel>
 			<panel name="saleOrder" title="Sale Order" if-module="axelor-sale" showIf="isCustomer" if="__config__.app.isApp('sale')">
@@ -473,7 +473,7 @@
 	</form>
 		
 	<action-group name="action-group-partner-onload">
-    	<action name="action-partner-method-update-customer-credit-line-from-partner" if="!isContact &amp;&amp; isCustomer &amp;&amp; __config__.app.isApp('account') &amp;&amp; __config__.app.getApp('base').getManageCustomerCredit()"/>
+    	<action name="action-partner-method-update-customer-credit-line-from-partner" if="!isContact &amp;&amp; isCustomer &amp;&amp; __config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageCustomerCredit()"/>
     	<action name="save"/>
     	<action name="action-partner-attrs-change-name"/>
     	<action name="action-partner-method-set-social-network-url"/>

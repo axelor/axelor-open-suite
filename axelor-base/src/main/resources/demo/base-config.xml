@@ -151,6 +151,11 @@
 		<bind to="mainPartner" search="self.importId = :mainPartner_importId" update="true" />
 	</input>
 	
+	<input file="base_partner.csv" separator=";" search="self.importId = :importId" update="true" type="com.axelor.apps.base.db.Partner"
+ 		call="com.axelor.csv.script.ImportPartner:updateContacts">
+ 		<bind column="importId" to="importId"/>
+	</input>
+ 		
 	<input file="base_company.csv" separator=";" type="com.axelor.apps.base.db.Company" search="self.importId = :importId" update="true" call="com.axelor.csv.script.UpdateAll:updatePeriod">
 		<bind column="importId" to="importId"/>
 	</input>

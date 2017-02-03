@@ -374,7 +374,7 @@
 	  
  	  <action-record name="action.account.chart.set.date" model="com.axelor.apps.account.db.Account">
  	      <field name="toDate" expr="eval:todayDate" />
- 	      <field name="fromDate" expr="eval:LocalDate.parse(todayDate).withDayOfMonth(1).withMonthOfYear(1)"/>
+ 	      <field name="fromDate" expr="eval:LocalDate.parse(todayDate).withDayOfMonth(1).withMonth(1)"/>
  	  </action-record>
  	  
  	  <action-record name="action.account.chart.set.from.to.date.month" model="com.axelor.apps.account.db.Account">

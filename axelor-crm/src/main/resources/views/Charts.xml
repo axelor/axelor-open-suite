@@ -220,7 +220,7 @@
 	
 	<action-record model="com.axelor.apps.crm.db.Lead" name="action.crm.chart.set.date">
 	  <field name="toDateT" expr="eval:LocalDateTime.parse(todayDate).withHourOfDay(23).withMinuteOfHour(59)"/>
-	  <field name="fromDateT" expr="eval:LocalDate.parse(todayDate).withDayOfMonth(1).withMonthOfYear(1)"/>
+	  <field name="fromDateT" expr="eval:LocalDate.parse(todayDate).withDayOfMonth(1).withMonth(1)"/>
 	</action-record>
 	
 	<chart onInit="action.crm.chart.set.date" name="chart.leads.by.source.bar" title="Leads by Source">
