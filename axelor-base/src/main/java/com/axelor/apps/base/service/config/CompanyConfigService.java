@@ -15,9 +15,9 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.account.service.config;
+package com.axelor.apps.base.service.config;
 
-import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.service.administration.GeneralServiceImpl;

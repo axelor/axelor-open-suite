@@ -291,22 +291,16 @@ public interface IExceptionMessage {
 	/**
 	 * Cfonb tool service
 	 */
-	static final String CFONB_TOOL_1 = /*$$(*/ "%s :\n Anomalie détectée (la valeur n'est pas numérique : %s) pour l'émetteur" /*)*/;
-	static final String CFONB_TOOL_2 = /*$$(*/ "%s :\n Anomalie détectée (la valeur n'est pas numérique : %s) pour le destinataire" /*)*/;
-	static final String CFONB_TOOL_3 = /*$$(*/ "%s :\n Anomalie détectée (la valeur n'est pas numérique : %s) pour le total" /*)*/;
 	static final String CFONB_TOOL_NB_OF_CHAR_PER_LINE = /*$$(*/ "L'enregistrement ne fait pas %s caractères" /*)*/;
 	static final String CFONB_TOOL_EMPTY_ZONE = /*$$(*/ "Lla zone %s est vide" /*)*/;
 	static final String CFONB_TOOL_DIGITAL_ZONE_NOT_CORRECT = /*$$(*/ "La zone %s (%s) doit être de type numérique" /*)*/;
-
-	
-	/**
-	 * Account config service
-	 */
-	static final String COMPANY_CURRENCY = /*$$(*/ "%s :\n Please, configure a currency for the company %s" /*)*/;
 	static final String CFONB_TOOL_1 = /*$$(*/ "%s :\n Anomaly detected (value isn't numeric : %s) for sender" /*)*/;
 	static final String CFONB_TOOL_2 = /*$$(*/ "%s :\n Anomaly detected (value isn't numeric : %s) for the receiver" /*)*/;
 	static final String CFONB_TOOL_3 = /*$$(*/ "%s :\n Anomaly detected (value isn't numeric : %s) for the total" /*)*/;
 	static final String CFONB_TOOL_4 = /*$$(*/ "%s :\n Anomaly detected (the record doesn't have %s characters : %s) for the record %s, company %s" /*)*/;
+	
+	static final String COMPANY_CURRENCY = /*$$(*/ "%s :\n Please, configure a currency for the company %s" /*)*/;
+	
 
 	/**
 	 * Account config service
@@ -515,6 +509,7 @@ public interface IExceptionMessage {
 	/**
 	 * Payment voucher control service
 	 */
+	static final String PAYMENT_VOUCHER_CONTROL_PAID_AMOUNT = /*$$(*/ "%s :\n Payment voucher n° %s, the paid amount should be positive" /*)*/;
 	static final String PAYMENT_VOUCHER_CONTROL_1 = /*$$(*/ "%s :\n Caution, payment entry nb %s, total line's amount imputed is higher than customer's amount paid." /*)*/;
 	static final String PAYMENT_VOUCHER_CONTROL_2 = /*$$(*/ "%s :\n There's no line to pay." /*)*/;
 	static final String PAYMENT_VOUCHER_CONTROL_3 = /*$$(*/ "%s :\n You must add a journal and a treasury account into payment mode." /*)*/;
