@@ -18,7 +18,8 @@
 	    <extra-code>
 	      	<![CDATA[
 		  		public static final Integer STATUS_DRAFT = 1;
-		  		public static final Integer STATUS_CALCULATED = 2;
+		  		public static final Integer STATUS_ANOMALY = 2;
+		  		public static final Integer STATUS_CALCULATED = 3;
 		  ]]>
 	      </extra-code>
       
