@@ -120,7 +120,7 @@ public class KilometricService {
 			}
 		}
 		
-		if (ruleList.size() == 0) { throw new AxelorException( I18n.get( String.format(IExceptionMessage.KILOMETRIC_ALLOWANCE_NO_RULE, allowance.getKilometricAllowParam().getName())  ) , IException.CONFIGURATION_ERROR); }
+		if (ruleList.size() == 0) { throw new AxelorException( String.format(I18n.get( IExceptionMessage.KILOMETRIC_ALLOWANCE_NO_RULE ), allowance.getKilometricAllowParam().getName()) , IException.CONFIGURATION_ERROR); }
 		
 		BigDecimal price = BigDecimal.ZERO;
 		
