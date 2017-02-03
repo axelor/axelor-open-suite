@@ -5,16 +5,16 @@
 
   <module name="project" package="com.axelor.apps.project.db"/>
 
-  <entity name="ProjectTask" cachable="true">
+  <entity name="Project" cachable="true">
       
       <integer name="importId"/>
       
       
-      <many-to-one name="project" ref="com.axelor.apps.project.db.ProjectTask" title="Project"/>
+      <many-to-one name="project" ref="com.axelor.apps.project.db.Project" title="Project"/>
       
       
       <many-to-one name="projectFolder" ref="com.axelor.apps.project.db.ProjectFolder" title="Project Folder"/>
-      <one-to-many name="childProjectTaskList" ref="com.axelor.apps.project.db.ProjectTask" title="Child Projects/Tasks" mappedBy="project"/>
+      <one-to-many name="childProjectList" ref="com.axelor.apps.project.db.Project" title="Child Projects" mappedBy="project"/>
 	  <string name="name" title="Name" required="true"/>
 	  <many-to-one name="assignedTo" ref="com.axelor.auth.db.User" title="Assigned to"/>
 	  <string name="typeSelect" selection="project.task.type.select" title="Type" />
@@ -36,10 +36,13 @@
 	  <decimal name="progress" title="Progress (%)"/>
 	  <decimal name="sequence" title="Sequence" />
 	  
-	  <many-to-many name="finishToStartTaskSet" ref="com.axelor.apps.project.db.ProjectTask" title="Finish tasks to start"/>
-	  <many-to-many name="startToStartTaskSet" ref="com.axelor.apps.project.db.ProjectTask" title="Start tasks to start"/>
-	  <many-to-many name="finishToFinishTaskSet" ref="com.axelor.apps.project.db.ProjectTask" title="Finish tasks to finish"/>
-	  <many-to-many name="startToFinishTaskSet" ref="com.axelor.apps.project.db.ProjectTask" title="Start tasks to finish"/>
+	  
+		<boolean name="imputable"/>
+	  
+	  <many-to-many name="finishToStartTaskSet" ref="com.axelor.apps.project.db.Project" title="Finish tasks to start"/>
+	  <many-to-many name="startToStartTaskSet" ref="com.axelor.apps.project.db.Project" title="Start tasks to start"/>
+	  <many-to-many name="finishToFinishTaskSet" ref="com.axelor.apps.project.db.Project" title="Finish tasks to finish"/>
+	  <many-to-many name="startToFinishTaskSet" ref="com.axelor.apps.project.db.Project" title="Start tasks to finish"/>
 	  
 	  <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"/>
 	  

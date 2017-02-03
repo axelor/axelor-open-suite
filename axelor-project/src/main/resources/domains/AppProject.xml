@@ -5,7 +5,7 @@
 	<module name="base" package="com.axelor.apps.base.db"/>
 
 	<entity name="AppProject" lang="java" cachable="true" extends="App">
-		<string name="projectTaskLabel" title="Project/Task Label"/>
+		<string name="projectLabel" title="Project Label"/>
 	</entity>
 
 </domain-models>

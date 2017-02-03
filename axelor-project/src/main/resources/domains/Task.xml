@@ -9,7 +9,7 @@
 	
 	<entity name="Task">
   		<integer name="importId"/>
-		<many-to-one name="project" ref="com.axelor.apps.project.db.ProjectTask" title="Project"/>
+		<many-to-one name="project" ref="com.axelor.apps.project.db.Project" title="Project"/>
 	  	<string name="name" title="Name" required="true"/>
 	  	<many-to-one name="assignedTo" ref="com.axelor.auth.db.User" title="Assigned to"/>
 	  	
@@ -23,15 +23,6 @@
 	  
 	  <datetime name="fromDate" title="From Date"/>
 	  <datetime name="toDate" title="To Date"/>
-	  <datetime name="dueDate" title="Due Date"/>
-<!-- 	  
-	  <decimal name="duration" title="Duration"/>
-	  <decimal name="timeSpent" title="Time Spent"/>
-	  <decimal name="leadDelay" title="Lead/Delay"/>
-	 
-	  <decimal name="progress" title="Progress (%)"/>
---> 
-
 	  <decimal name="sequence" title="Sequence" />
 	  
 	</entity>

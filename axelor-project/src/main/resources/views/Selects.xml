@@ -15,11 +15,11 @@
 	</selection>
 	
 	<selection name="message.related.to.select" id="project.message.related.to.select">
-	    <option value="com.axelor.apps.project.db.ProjectTask">Project/Task</option>
+	    <option value="com.axelor.apps.project.db.Project">Project</option>
 	</selection>
 	
 	<selection name="crm.event.related.to.select" id="project.crm.event.related.to.select">
-		<option value="com.axelor.apps.project.db.ProjectTask">Project/Business/Task (Project)</option>
+		<option value="com.axelor.apps.project.db.Project">Project/Business (Project)</option>
 	</selection>
 	
 	<selection name="app.type.select" id="project.app.type.select">

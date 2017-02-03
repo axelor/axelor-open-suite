@@ -5,7 +5,7 @@
 
   <entity sequential="true" name="Invoice" lang="java">
   
-	<many-to-one name="project" ref="com.axelor.apps.project.db.ProjectTask" title="Project" />	
+	<many-to-one name="project" ref="com.axelor.apps.project.db.Project" title="Project" />	
 	<boolean name="displayTimesheetOnPrinting" title="Display timesheet lines on printing"/>
   	<boolean name="displayExpenseOnPrinting" title="Display expense lines on printing"/>
 

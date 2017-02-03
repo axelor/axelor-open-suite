@@ -97,7 +97,7 @@
                 <property name="category">Unformatted</property>
             </structure>
         </scalar-parameter>
-        <scalar-parameter name="ProjectTaskId" id="4503">
+        <scalar-parameter name="ProjectId" id="4503">
             <property name="hidden">true</property>
             <property name="valueType">static</property>
             <property name="isRequired">true</property>
@@ -153,7 +153,7 @@
         </oda-data-source>
     </data-sources>
     <data-sets>
-        <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="ProjectTask" id="4486">
+        <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="Project" id="4486">
             <list-property name="columnHints">
                 <structure>
                     <property name="columnName">logo_path</property>
@@ -177,7 +177,7 @@
             <list-property name="parameters">
                 <structure>
                     <property name="name">param_1</property>
-                    <property name="paramName">ProjectTaskId</property>
+                    <property name="paramName">ProjectId</property>
                     <property name="nativeName"></property>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">-5</property>
@@ -233,12 +233,12 @@
 	MetaFile.file_path as logo_path, 
 	Partner.name  as customer, 
 	Currency.name as currency
-FROM project_project_task ProjectTask
-LEFT JOIN base_company Company on (Company.id = ProjectTask.company)
+FROM project_project Project
+LEFT JOIN base_company Company on (Company.id = Project.company)
 LEFT JOIN meta_file MetaFile on (MetaFile.id = Company.logo)
 LEFT JOIN base_currency Currency on (Currency.id = Company.currency)
-LEFT JOIN base_partner Partner on (Partner.id = ProjectTask.client_partner)
-WHERE ProjectTask.id = ?]]></xml-property>
+LEFT JOIN base_partner Partner on (Partner.id = Project.client_partner)
+WHERE Project.id = ?]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
   <Version>2.0</Version>
@@ -404,7 +404,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
             <list-property name="parameters">
                 <structure>
                     <property name="name">param_1</property>
-                    <property name="paramName">ProjectTaskId</property>
+                    <property name="paramName">ProjectId</property>
                     <property name="nativeName"></property>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">-1</property>
@@ -414,7 +414,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                 </structure>
                 <structure>
                     <property name="name">param_2</property>
-                    <property name="paramName">ProjectTaskId</property>
+                    <property name="paramName">ProjectId</property>
                     <property name="nativeName"></property>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">-1</property>
@@ -497,7 +497,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
  SO.company_cost_total as so_costs,
  (SO.company_ex_tax_total-SO.company_cost_total) as so_margin
 from sale_sale_order SO
-left join project_project_task project on (project.id = SO.project)
+left join project_project project on (project.id = SO.project)
 where SO.status_select = 3 and (project.id = ? or project.project = ?)]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
@@ -672,7 +672,7 @@ where SO.status_select = 3 and (project.id = ? or project.project = ?)]]></xml-p
             <list-property name="parameters">
                 <structure>
                     <property name="name">param_1</property>
-                    <property name="paramName">ProjectTaskId</property>
+                    <property name="paramName">ProjectId</property>
                     <property name="nativeName"></property>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">-5</property>
@@ -682,7 +682,7 @@ where SO.status_select = 3 and (project.id = ? or project.project = ?)]]></xml-p
                 </structure>
                 <structure>
                     <property name="name">param_2</property>
-                    <property name="paramName">ProjectTaskId</property>
+                    <property name="paramName">ProjectId</property>
                     <property name="nativeName"></property>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">-5</property>
@@ -755,7 +755,7 @@ where SO.status_select = 3 and (project.id = ? or project.project = ?)]]></xml-p
        sum(invl.company_ex_tax_total) as inv_total
 from account_invoice_line invl
 left join account_invoice invoice on (invoice.id = invl.invoice)
-left join project_project_task project on (project.id = invl.project)
+left join project_project project on (project.id = invl.project)
 where (project.id = ? or project.project = ?)
 and invoice.status_select = 3 
 and invoice.operation_type_select in (?,?)
@@ -921,7 +921,7 @@ group by invoice.invoice_id,invoice.invoice_date]]></xml-property>
             <list-property name="parameters">
                 <structure>
                     <property name="name">param_1</property>
-                    <property name="paramName">ProjectTaskId</property>
+                    <property name="paramName">ProjectId</property>
                     <property name="nativeName"></property>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">-5</property>
@@ -931,7 +931,7 @@ group by invoice.invoice_id,invoice.invoice_date]]></xml-property>
                 </structure>
                 <structure>
                     <property name="name">param_2</property>
-                    <property name="paramName">ProjectTaskId</property>
+                    <property name="paramName">ProjectId</property>
                     <property name="nativeName"></property>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">-5</property>
@@ -990,7 +990,7 @@ from hr_expense_line expl
 left join hr_expense expense on (expense.id = expl.expense)
 left join auth_user authuser on (authuser.id = expense.user_id)
 left join hr_employee emp on (emp.id = authuser.employee)
-left join project_project_task task on (task.id = expl.project_task)
+left join project_project task on (task.id = expl.project)
 where (task.project = ? or task.id = ?)
 and expense.status_select = 3
 group by emp.id,emp.name]]></xml-property>
@@ -1067,7 +1067,7 @@ group by emp.id,emp.name]]></xml-property>
             <list-property name="parameters">
                 <structure>
                     <property name="name">param_1</property>
-                    <property name="paramName">ProjectTaskId</property>
+                    <property name="paramName">ProjectId</property>
                     <property name="nativeName"></property>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">-5</property>
@@ -1077,7 +1077,7 @@ group by emp.id,emp.name]]></xml-property>
                 </structure>
                 <structure>
                     <property name="name">param_2</property>
-                    <property name="paramName">ProjectTaskId</property>
+                    <property name="paramName">ProjectId</property>
                     <property name="nativeName"></property>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">-5</property>
@@ -1162,7 +1162,7 @@ from hr_timesheet_line tml
 left join hr_timesheet tm on (tm.id = tml.timesheet)
 left join auth_user usr on (usr.id = tm.user_id)
 left join hr_employee emp on (emp.id = usr.employee)
-left join project_project_task task on (task.id = tml.project_task)
+left join project_project task on (task.id = tml.project)
 where tm.status_select = 3 and (task.id = ? or task.project = ?)
 group by emp.id,emp.name,emp.hourly_rate]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
@@ -1226,7 +1226,7 @@ group by emp.id,emp.name,emp.hourly_rate]]></xml-property>
             <list-property name="parameters">
                 <structure>
                     <property name="name">param_1</property>
-                    <property name="paramName">ProjectTaskId</property>
+                    <property name="paramName">ProjectId</property>
                     <property name="nativeName"></property>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">-5</property>
@@ -1236,7 +1236,7 @@ group by emp.id,emp.name,emp.hourly_rate]]></xml-property>
                 </structure>
                 <structure>
                     <property name="name">param_2</property>
-                    <property name="paramName">ProjectTaskId</property>
+                    <property name="paramName">ProjectId</property>
                     <property name="nativeName"></property>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">-5</property>
@@ -1293,7 +1293,7 @@ group by emp.id,emp.name,emp.hourly_rate]]></xml-property>
        sum(aml.amount) as amount
 from account_analytic_move_line aml
 left join base_product product on (product.id = aml.product)
-left join project_project_task project on (project.id = aml.project_task)
+left join project_project project on (project.id = aml.project)
 where project.id = ? or project.project = ? 
 group by product.id,product.name]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
@@ -1364,7 +1364,7 @@ group by product.id,product.name]]></xml-property>
             <list-property name="parameters">
                 <structure>
                     <property name="name">param_1</property>
-                    <property name="paramName">ProjectTaskId</property>
+                    <property name="paramName">ProjectId</property>
                     <property name="nativeName"></property>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">-5</property>
@@ -1374,7 +1374,7 @@ group by product.id,product.name]]></xml-property>
                 </structure>
                 <structure>
                     <property name="name">param_2</property>
-                    <property name="paramName">ProjectTaskId</property>
+                    <property name="paramName">ProjectId</property>
                     <property name="nativeName"></property>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">-5</property>
@@ -1437,7 +1437,7 @@ group by product.id,product.name]]></xml-property>
  sum(SO.company_ex_tax_total) as so_sales,
  sum(SO.company_cost_total) as so_costs
 from sale_sale_order SO
-left join project_project_task project on (project.id = SO.project)
+left join project_project project on (project.id = SO.project)
 where SO.status_select = 3 and (project.id = ? or project.project = ?)
 group by so_date;]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
@@ -1578,7 +1578,7 @@ group by so_date;]]></xml-property>
             <list-property name="parameters">
                 <structure>
                     <property name="name">param_1</property>
-                    <property name="paramName">ProjectTaskId</property>
+                    <property name="paramName">ProjectId</property>
                     <property name="nativeName"></property>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">-5</property>
@@ -1589,7 +1589,7 @@ group by so_date;]]></xml-property>
                 </structure>
                 <structure>
                     <property name="name">param_2</property>
-                    <property name="paramName">ProjectTaskId</property>
+                    <property name="paramName">ProjectId</property>
                     <property name="nativeName"></property>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">-5</property>
@@ -1600,7 +1600,7 @@ group by so_date;]]></xml-property>
                 </structure>
                 <structure>
                     <property name="name">param_3</property>
-                    <property name="paramName">ProjectTaskId</property>
+                    <property name="paramName">ProjectId</property>
                     <property name="nativeName"></property>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">-5</property>
@@ -1611,7 +1611,7 @@ group by so_date;]]></xml-property>
                 </structure>
                 <structure>
                     <property name="name">param_4</property>
-                    <property name="paramName">ProjectTaskId</property>
+                    <property name="paramName">ProjectId</property>
                     <property name="nativeName"></property>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">-5</property>
@@ -1622,7 +1622,7 @@ group by so_date;]]></xml-property>
                 </structure>
                 <structure>
                     <property name="name">param_5</property>
-                    <property name="paramName">ProjectTaskId</property>
+                    <property name="paramName">ProjectId</property>
                     <property name="nativeName"></property>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">-5</property>
@@ -1633,7 +1633,7 @@ group by so_date;]]></xml-property>
                 </structure>
                 <structure>
                     <property name="name">param_6</property>
-                    <property name="paramName">ProjectTaskId</property>
+                    <property name="paramName">ProjectId</property>
                     <property name="nativeName"></property>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">-5</property>
@@ -1644,7 +1644,7 @@ group by so_date;]]></xml-property>
                 </structure>
                 <structure>
                     <property name="name">param_7</property>
-                    <property name="paramName">ProjectTaskId</property>
+                    <property name="paramName">ProjectId</property>
                     <property name="nativeName"></property>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">-5</property>
@@ -1655,7 +1655,7 @@ group by so_date;]]></xml-property>
                 </structure>
                 <structure>
                     <property name="name">param_8</property>
-                    <property name="paramName">ProjectTaskId</property>
+                    <property name="paramName">ProjectId</property>
                     <property name="nativeName"></property>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">-5</property>
@@ -1665,7 +1665,7 @@ group by so_date;]]></xml-property>
                 </structure>
                 <structure>
                     <property name="name">param_9</property>
-                    <property name="paramName">ProjectTaskId</property>
+                    <property name="paramName">ProjectId</property>
                     <property name="nativeName"></property>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">-5</property>
@@ -1675,7 +1675,7 @@ group by so_date;]]></xml-property>
                 </structure>
                 <structure>
                     <property name="name">param_10</property>
-                    <property name="paramName">ProjectTaskId</property>
+                    <property name="paramName">ProjectId</property>
                     <property name="nativeName"></property>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">-5</property>
@@ -1736,7 +1736,7 @@ group by so_date;]]></xml-property>
             <xml-property name="queryText"><![CDATA[select month,sum(costs) as costs,sum(turnover) as turnover from (select to_char(invoice.invoice_date,'YYYY-MM') as month,0 as costs, sum(invl.company_ex_tax_total) as turnover
 from account_invoice_line invl
 left join account_invoice invoice on (invoice.id = invl.invoice)
-left join project_project_task project on (project.id = invl.project)
+left join project_project project on (project.id = invl.project)
 where (project.id =  ? or project.project = ?)
 and invoice.status_select = 3 
 and invoice.operation_type_select in (3,4)
@@ -1746,7 +1746,7 @@ union
 from (select to_char(invoice.invoice_date,'YYYY-MM') as month,sum(invl.company_ex_tax_total) as cost
 from account_invoice_line invl
 left join account_invoice invoice on (invoice.id = invl.invoice)
-left join project_project_task project on (project.id = invl.project)
+left join project_project project on (project.id = invl.project)
 where (project.id =  ? or project.project = ?)
 and invoice.status_select = 3 
 and invoice.operation_type_select in (1,2)
@@ -1754,7 +1754,7 @@ group by month
 union
 select to_char(expense_date,'YYYY-MM') as month,sum(expl.untaxed_amount) as cost
 from hr_expense_line expl
-left join project_project_task task on (task.id = expl.project_task)
+left join project_project task on (task.id = expl.project)
 left join hr_expense expense on (expense.id = expl.expense)
 where (task.project = ? or task.id = ?)
 and expense.status_select = 3
@@ -1765,13 +1765,13 @@ from hr_timesheet_line tml
 left join hr_timesheet tm on (tm.id = tml.timesheet)
 left join auth_user usr on (usr.id = tm.user_id)
 left join hr_employee emp on (emp.id = usr.employee)
-left join project_project_task task on (task.id = tml.project_task)
+left join project_project task on (task.id = tml.project)
 where tm.status_select = 3 and (task.id = ? or task.project = ?)
 group by month
 union
 select to_char(date_val,'YYYY-MM') as month,-1*sum(aml.amount) as cost
 from account_analytic_move_line aml
-left join project_project_task project on (project.id = aml.project_task)
+left join project_project project on (project.id = aml.project)
 where project.id =  ? or project.project = ?
 group by month) CostData group by month)) ChartData group by month order by month]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
@@ -2045,7 +2045,7 @@ group by month) CostData group by month)) ChartData group by month order by mont
             <property name="canShrink">true</property>
             <property name="height">12.78125in</property>
             <property name="width">100%</property>
-            <property name="dataSet">ProjectTask</property>
+            <property name="dataSet">Project</property>
             <list-property name="boundDataColumns">
                 <structure>
                     <property name="name">logo_path</property>
@@ -2102,7 +2102,7 @@ group by month) CostData group by month)) ChartData group by month order by mont
                             <structure>
                                 <property name="paramName">param_1</property>
                                 <simple-property-list name="expression">
-                                    <value type="javascript">'ProjectTask.customer'</value>
+                                    <value type="javascript">'Project.customer'</value>
                                 </simple-property-list>
                             </structure>
                             <structure>
@@ -2144,7 +2144,7 @@ group by month) CostData group by month)) ChartData group by month order by mont
                             <structure>
                                 <property name="paramName">param_1</property>
                                 <simple-property-list name="expression">
-                                    <value type="javascript">'ProjectTask.currency'</value>
+                                    <value type="javascript">'Project.currency'</value>
                                 </simple-property-list>
                             </structure>
                             <structure>
@@ -2187,7 +2187,7 @@ group by month) CostData group by month)) ChartData group by month order by mont
                             <structure>
                                 <property name="paramName">param_1</property>
                                 <simple-property-list name="expression">
-                                    <value type="javascript">'ProjectTask.initial'</value>
+                                    <value type="javascript">'Project.initial'</value>
                                 </simple-property-list>
                             </structure>
                             <structure>
@@ -2227,7 +2227,7 @@ group by month) CostData group by month)) ChartData group by month order by mont
                             <structure>
                                 <property name="paramName">param_1</property>
                                 <simple-property-list name="expression">
-                                    <value type="javascript">'ProjectTask.salesOrders'</value>
+                                    <value type="javascript">'Project.salesOrders'</value>
                                 </simple-property-list>
                             </structure>
                             <structure>
@@ -2376,7 +2376,7 @@ group by month) CostData group by month)) ChartData group by month order by mont
                                             <structure>
                                                 <property name="paramName">param_1</property>
                                                 <simple-property-list name="expression">
-                                                    <value type="javascript">'ProjectTask.salesOrderNumber'</value>
+                                                    <value type="javascript">'Project.salesOrderNumber'</value>
                                                 </simple-property-list>
                                             </structure>
                                             <structure>
@@ -2464,7 +2464,7 @@ group by month) CostData group by month)) ChartData group by month order by mont
                                             <structure>
                                                 <property name="paramName">param_1</property>
                                                 <simple-property-list name="expression">
-                                                    <value type="javascript">'ProjectTask.date'</value>
+                                                    <value type="javascript">'Project.date'</value>
                                                 </simple-property-list>
                                             </structure>
                                             <structure>
@@ -2552,7 +2552,7 @@ group by month) CostData group by month)) ChartData group by month order by mont
                                             <structure>
                                                 <property name="paramName">param_1</property>
                                                 <simple-property-list name="expression">
-                                                    <value type="javascript">'ProjectTask.sales'</value>
+                                                    <value type="javascript">'Project.sales'</value>
                                                 </simple-property-list>
                                             </structure>
                                             <structure>
@@ -2637,7 +2637,7 @@ group by month) CostData group by month)) ChartData group by month order by mont
                                             <structure>
                                                 <property name="paramName">param_1</property>
                                                 <simple-property-list name="expression">
-                                                    <value type="javascript">'ProjectTask.costs'</value>
+                                                    <value type="javascript">'Project.costs'</value>
                                                 </simple-property-list>
                                             </structure>
                                             <structure>
@@ -2725,7 +2725,7 @@ group by month) CostData group by month)) ChartData group by month order by mont
                                             <structure>
                                                 <property name="paramName">param_1</property>
                                                 <simple-property-list name="expression">
-                                                    <value type="javascript">'ProjectTask.margin'</value>
+                                                    <value type="javascript">'Project.margin'</value>
                                                 </simple-property-list>
                                             </structure>
                                             <structure>
@@ -3031,7 +3031,7 @@ group by month) CostData group by month)) ChartData group by month order by mont
                                             <structure>
                                                 <property name="paramName">param_1</property>
                                                 <simple-property-list name="expression">
-                                                    <value type="javascript">'ProjectTask.totalSales'</value>
+                                                    <value type="javascript">'Project.totalSales'</value>
                                                 </simple-property-list>
                                             </structure>
                                             <structure>
@@ -3069,7 +3069,7 @@ group by month) CostData group by month)) ChartData group by month order by mont
                                             <structure>
                                                 <property name="paramName">param_1</property>
                                                 <simple-property-list name="expression">
-                                                    <value type="javascript">'ProjectTask.totalCosts'</value>
+                                                    <value type="javascript">'Project.totalCosts'</value>
                                                 </simple-property-list>
                                             </structure>
                                             <structure>
@@ -3107,7 +3107,7 @@ group by month) CostData group by month)) ChartData group by month order by mont
                                             <structure>
                                                 <property name="paramName">param_1</property>
                                                 <simple-property-list name="expression">
-                                                    <value type="javascript">'ProjectTask.totalMargin'</value>
+                                                    <value type="javascript">'Project.totalMargin'</value>
                                                 </simple-property-list>
                                             </structure>
                                             <structure>
@@ -5233,7 +5233,7 @@ group by month) CostData group by month)) ChartData group by month order by mont
                             <structure>
                                 <property name="paramName">param_1</property>
                                 <simple-property-list name="expression">
-                                    <value type="javascript">'ProjectTask.invoiced'</value>
+                                    <value type="javascript">'Project.invoiced'</value>
                                 </simple-property-list>
                             </structure>
                             <structure>
@@ -5275,7 +5275,7 @@ group by month) CostData group by month)) ChartData group by month order by mont
                             <structure>
                                 <property name="paramName">param_1</property>
                                 <simple-property-list name="expression">
-                                    <value type="javascript">'ProjectTask.turnover'</value>
+                                    <value type="javascript">'Project.turnover'</value>
                                 </simple-property-list>
                             </structure>
                             <structure>
@@ -5316,7 +5316,7 @@ group by month) CostData group by month)) ChartData group by month order by mont
                             <structure>
                                 <property name="paramName">param_1</property>
                                 <simple-property-list name="expression">
-                                    <value type="javascript">'ProjectTask.salesInvoice'</value>
+                                    <value type="javascript">'Project.salesInvoice'</value>
                                 </simple-property-list>
                             </structure>
                             <structure>
@@ -5463,7 +5463,7 @@ group by month) CostData group by month)) ChartData group by month order by mont
                                             <structure>
                                                 <property name="paramName">param_1</property>
                                                 <simple-property-list name="expression">
-                                                    <value type="javascript">'ProjectTask.invoiceNumber'</value>
+                                                    <value type="javascript">'Project.invoiceNumber'</value>
                                                 </simple-property-list>
                                             </structure>
                                             <structure>
@@ -5551,7 +5551,7 @@ group by month) CostData group by month)) ChartData group by month order by mont
                                             <structure>
                                                 <property name="paramName">param_1</property>
                                                 <simple-property-list name="expression">
-                                                    <value type="javascript">'ProjectTask.date'</value>
+                                                    <value type="javascript">'Project.date'</value>
                                                 </simple-property-list>
                                             </structure>
                                             <structure>
@@ -5639,7 +5639,7 @@ group by month) CostData group by month)) ChartData group by month order by mont
                                             <structure>
                                                 <property name="paramName">param_1</property>
                                                 <simple-property-list name="expression">
-                                                    <value type="javascript">'ProjectTask.amount'</value>
+                                                    <value type="javascript">'Project.amount'</value>
                                                 </simple-property-list>
                                             </structure>
                                             <structure>
@@ -5860,7 +5860,7 @@ group by month) CostData group by month)) ChartData group by month order by mont
                                             <structure>
                                                 <property name="paramName">param_1</property>
                                                 <simple-property-list name="expression">
-                                                    <value type="javascript">'ProjectTask.total'</value>
+                                                    <value type="javascript">'Project.total'</value>
                                                 </simple-property-list>
                                             </structure>
                                             <structure>
@@ -5905,7 +5905,7 @@ group by month) CostData group by month)) ChartData group by month order by mont
                             <structure>
                                 <property name="paramName">param_1</property>
                                 <simple-property-list name="expression">
-                                    <value type="javascript">'ProjectTask.costs'</value>
+                                    <value type="javascript">'Project.costs'</value>
                                 </simple-property-list>
                             </structure>
                             <structure>
@@ -5947,7 +5947,7 @@ group by month) CostData group by month)) ChartData group by month order by mont
                             <structure>
                                 <property name="paramName">param_1</property>
                                 <simple-property-list name="expression">
-                                    <value type="javascript">'ProjectTask.purchase'</value>
+                                    <value type="javascript">'Project.purchase'</value>
                                 </simple-property-list>
                             </structure>
                             <structure>
@@ -6093,7 +6093,7 @@ group by month) CostData group by month)) ChartData group by month order by mont
                                             <structure>
                                                 <property name="paramName">param_1</property>
                                                 <simple-property-list name="expression">
-                                                    <value type="javascript">'ProjectTask.invoiceNumber'</value>
+                                                    <value type="javascript">'Project.invoiceNumber'</value>
                                                 </simple-property-list>
                                             </structure>
                                             <structure>
@@ -6181,7 +6181,7 @@ group by month) CostData group by month)) ChartData group by month order by mont
                                             <structure>
                                                 <property name="paramName">param_1</property>
                                                 <simple-property-list name="expression">
-                                                    <value type="javascript">'ProjectTask.date'</value>
+                                                    <value type="javascript">'Project.date'</value>
                                                 </simple-property-list>
                                             </structure>
                                             <structure>
@@ -6269,7 +6269,7 @@ group by month) CostData group by month)) ChartData group by month order by mont
                                             <structure>
                                                 <property name="paramName">param_1</property>
                                                 <simple-property-list name="expression">
-                                                    <value type="javascript">'ProjectTask.amount'</value>
+                                                    <value type="javascript">'Project.amount'</value>
                                                 </simple-property-list>
                                             </structure>
                                             <structure>
@@ -6491,7 +6491,7 @@ group by month) CostData group by month)) ChartData group by month order by mont
                                             <structure>
                                                 <property name="paramName">param_1</property>
                                                 <simple-property-list name="expression">
-                                                    <value type="javascript">'ProjectTask.total'</value>
+                                                    <value type="javascript">'Project.total'</value>
                                                 </simple-property-list>
                                             </structure>
                                             <structure>
@@ -6533,7 +6533,7 @@ group by month) CostData group by month)) ChartData group by month order by mont
                             <structure>
                                 <property name="paramName">param_1</property>
                                 <simple-property-list name="expression">
-                                    <value type="javascript">'ProjectTask.expense'</value>
+                                    <value type="javascript">'Project.expense'</value>
                                 </simple-property-list>
                             </structure>
                             <structure>
@@ -6653,7 +6653,7 @@ group by month) CostData group by month)) ChartData group by month order by mont
                                             <structure>
                                                 <property name="paramName">param_1</property>
                                                 <simple-property-list name="expression">
-                                                    <value type="javascript">'ProjectTask.employee'</value>
+                                                    <value type="javascript">'Project.employee'</value>
                                                 </simple-property-list>
                                             </structure>
                                             <structure>
@@ -6741,7 +6741,7 @@ group by month) CostData group by month)) ChartData group by month order by mont
                                             <structure>
                                                 <property name="paramName">param_1</property>
                                                 <simple-property-list name="expression">
-                                                    <value type="javascript">'ProjectTask.costs'</value>
+                                                    <value type="javascript">'Project.costs'</value>
                                                 </simple-property-list>
                                             </structure>
                                             <structure>
@@ -6899,7 +6899,7 @@ group by month) CostData group by month)) ChartData group by month order by mont
                                             <structure>
                                                 <property name="paramName">param_1</property>
                                                 <simple-property-list name="expression">
-                                                    <value type="javascript">'ProjectTask.total'</value>
+                                                    <value type="javascript">'Project.total'</value>
                                                 </simple-property-list>
                                             </structure>
                                             <structure>
@@ -6944,7 +6944,7 @@ group by month) CostData group by month)) ChartData group by month order by mont
                             <structure>
                                 <property name="paramName">param_1</property>
                                 <simple-property-list name="expression">
-                                    <value type="javascript">'ProjectTask.timesheet'</value>
+                                    <value type="javascript">'Project.timesheet'</value>
                                 </simple-property-list>
                             </structure>
                             <structure>
@@ -7088,7 +7088,7 @@ group by month) CostData group by month)) ChartData group by month order by mont
                                             <structure>
                                                 <property name="paramName">param_1</property>
                                                 <simple-property-list name="expression">
-                                                    <value type="javascript">'ProjectTask.employee'</value>
+                                                    <value type="javascript">'Project.employee'</value>
                                                 </simple-property-list>
                                             </structure>
                                             <structure>
@@ -7176,7 +7176,7 @@ group by month) CostData group by month)) ChartData group by month order by mont
                                             <structure>
                                                 <property name="paramName">param_1</property>
                                                 <simple-property-list name="expression">
-                                                    <value type="javascript">'ProjectTask.totalHours'</value>
+                                                    <value type="javascript">'Project.totalHours'</value>
                                                 </simple-property-list>
                                             </structure>
                                             <structure>
@@ -7264,7 +7264,7 @@ group by month) CostData group by month)) ChartData group by month order by mont
                                             <structure>
                                                 <property name="paramName">param_1</property>
                                                 <simple-property-list name="expression">
-                                                    <value type="javascript">'ProjectTask.hourlyRate'</value>
+                                                    <value type="javascript">'Project.hourlyRate'</value>
                                                 </simple-property-list>
                                             </structure>
                                             <structure>
@@ -7352,7 +7352,7 @@ group by month) CostData group by month)) ChartData group by month order by mont
                                             <structure>
                                                 <property name="paramName">param_1</property>
                                                 <simple-property-list name="expression">
-                                                    <value type="javascript">'ProjectTask.totalCosts'</value>
+                                                    <value type="javascript">'Project.totalCosts'</value>
                                                 </simple-property-list>
                                             </structure>
                                             <structure>
@@ -7581,7 +7581,7 @@ group by month) CostData group by month)) ChartData group by month order by mont
                                             <structure>
                                                 <property name="paramName">param_1</property>
                                                 <simple-property-list name="expression">
-                                                    <value type="javascript">'ProjectTask.total'</value>
+                                                    <value type="javascript">'Project.total'</value>
                                                 </simple-property-list>
                                             </structure>
                                             <structure>
@@ -7623,7 +7623,7 @@ group by month) CostData group by month)) ChartData group by month order by mont
                             <structure>
                                 <property name="paramName">param_1</property>
                                 <simple-property-list name="expression">
-                                    <value type="javascript">'ProjectTask.analyticalLines'</value>
+                                    <value type="javascript">'Project.analyticalLines'</value>
                                 </simple-property-list>
                             </structure>
                             <structure>
@@ -7749,7 +7749,7 @@ group by month) CostData group by month)) ChartData group by month order by mont
                                             <structure>
                                                 <property name="paramName">param_1</property>
                                                 <simple-property-list name="expression">
-                                                    <value type="javascript">'ProjectTask.type'</value>
+                                                    <value type="javascript">'Project.type'</value>
                                                 </simple-property-list>
                                             </structure>
                                             <structure>
@@ -7837,7 +7837,7 @@ group by month) CostData group by month)) ChartData group by month order by mont
                                             <structure>
                                                 <property name="paramName">param_1</property>
                                                 <simple-property-list name="expression">
-                                                    <value type="javascript">'ProjectTask.amount'</value>
+                                                    <value type="javascript">'Project.amount'</value>
                                                 </simple-property-list>
                                             </structure>
                                             <structure>
@@ -7995,7 +7995,7 @@ group by month) CostData group by month)) ChartData group by month order by mont
                                             <structure>
                                                 <property name="paramName">param_1</property>
                                                 <simple-property-list name="expression">
-                                                    <value type="javascript">'ProjectTask.total'</value>
+                                                    <value type="javascript">'Project.total'</value>
                                                 </simple-property-list>
                                             </structure>
                                             <structure>
@@ -8052,7 +8052,7 @@ group by month) CostData group by month)) ChartData group by month order by mont
                             <structure>
                                 <property name="paramName">param_1</property>
                                 <simple-property-list name="expression">
-                                    <value type="javascript">'ProjectTask.totalCosts'</value>
+                                    <value type="javascript">'Project.totalCosts'</value>
                                 </simple-property-list>
                             </structure>
                             <structure>
@@ -8097,7 +8097,7 @@ group by month) CostData group by month)) ChartData group by month order by mont
                             <structure>
                                 <property name="paramName">param_1</property>
                                 <simple-property-list name="expression">
-                                    <value type="javascript">'ProjectTask.totalMargin'</value>
+                                    <value type="javascript">'Project.totalMargin'</value>
                                 </simple-property-list>
                             </structure>
                             <structure>

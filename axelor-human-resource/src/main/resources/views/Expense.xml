@@ -73,7 +73,7 @@
 			        <field name="toCity" required="true"/>
 			        <field name="distance" required="true" onChange="action-kilometric-allowance-method-compute" />
 				    <field name="totalAmount" title="Total A.T.I" onChange="action-expense-on-change-untaxt-amount, action-expense-line-method-compute-analytic-distribution" colSpan="2" readonly="true"/>
-			   	    <field name="projectTask" title="Project" requiredIf="toInvoice" canView="false" domain="self.imputable = true" widget="SuggestBox" colSpan="4" grid-view="project-task-grid"/>
+			   	    <field name="project" title="Project" requiredIf="toInvoice" canView="false" domain="self.imputable = true" widget="SuggestBox" colSpan="4" grid-view="project-task-grid"/>
 			   	    <field name="comments" colSpan="6" height="2" />
 			   		<field name="untaxedAmount" hidden="true" />
 			   		<field name="expenseProduct" readonly="true" form-view="product-expense-form" grid-view="product-expense-grid" hidden="true"/> 

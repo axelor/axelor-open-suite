@@ -29,12 +29,12 @@ import java.time.temporal.IsoFields;
 
 import com.axelor.apps.base.db.Team;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectPlanning;
 import com.axelor.apps.project.db.ProjectPlanningLine;
-import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.repo.ProjectPlanningLineRepository;
 import com.axelor.apps.project.db.repo.ProjectPlanningRepository;
-import com.axelor.apps.project.db.repo.ProjectTaskRepository;
+import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.exception.IExceptionMessage;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
@@ -79,17 +79,17 @@ public class ProjectPlanningService {
 	public List<ProjectPlanningLine> populateMyPlanning(ProjectPlanning planning, User user) throws AxelorException{
 		List<ProjectPlanningLine> planningLineList = new ArrayList<ProjectPlanningLine>();
 		String query = "self.assignedTo = ?1 OR ?1 MEMBER OF self.membersUserSet";
-		List<ProjectTask> projectTaskList = Beans.get(ProjectTaskRepository.class).all().filter(query, user).fetch();
-		if(projectTaskList == null || projectTaskList.isEmpty()){
+		List<Project> projectList = Beans.get(ProjectRepository.class).all().filter(query, user).fetch();
+		if(projectList == null || projectList.isEmpty()){
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.PROJECT_PLANNING_NO_TASK)), IException.CONFIGURATION_ERROR);
 		}
-		for (ProjectTask projectTask : projectTaskList) {
+		for (Project project : projectList) {
 			ProjectPlanningLine projectPlanningLine = null;
-			projectPlanningLine = projectPlanningLineRepository.all().filter("self.user = ?1 AND self.projectTask = ?2 AND self.year = ?3 AND self.week = ?4", user, projectTask, planning.getYear(), planning.getWeek()).fetchOne();
+			projectPlanningLine = projectPlanningLineRepository.all().filter("self.user = ?1 AND self.project = ?2 AND self.year = ?3 AND self.week = ?4", user, project, planning.getYear(), planning.getWeek()).fetchOne();
 			if(projectPlanningLine == null){
 				projectPlanningLine = new ProjectPlanningLine();
 				projectPlanningLine.setUser(user);
-				projectPlanningLine.setProjectTask(projectTask);
+				projectPlanningLine.setProject(project);
 				projectPlanningLine.setYear(planning.getYear());
 				projectPlanningLine.setWeek(planning.getWeek());
 				projectPlanningLineRepository.save(projectPlanningLine);
@@ -102,20 +102,20 @@ public class ProjectPlanningService {
 	@Transactional
 	public List<ProjectPlanningLine> populateMyTeamPlanning(ProjectPlanning planning, Team team) throws AxelorException{
 		List<ProjectPlanningLine> planningLineList = new ArrayList<ProjectPlanningLine>();
-		List<ProjectTask> projectTaskList = null;
+		List<Project> projectList = null;
 		Set<User> userList = team.getUserSet();
 
 		for (User user : userList) {
 			String query = "self.assignedTo = ?1 OR ?1 MEMBER OF self.membersUserSet";
-			projectTaskList = Beans.get(ProjectTaskRepository.class).all().filter(query, user).fetch();
-			if(projectTaskList != null && !projectTaskList.isEmpty()){
-				for (ProjectTask projectTask : projectTaskList) {
+			projectList = Beans.get(ProjectRepository.class).all().filter(query, user).fetch();
+			if(projectList != null && !projectList.isEmpty()){
+				for (Project project : projectList) {
 					ProjectPlanningLine projectPlanningLine = null;
-					projectPlanningLine = projectPlanningLineRepository.all().filter("self.user = ?1 AND self.projectTask = ?2 AND self.year = ?3 AND self.week = ?4", user, projectTask, planning.getYear(), planning.getWeek()).fetchOne();
+					projectPlanningLine = projectPlanningLineRepository.all().filter("self.user = ?1 AND self.project = ?2 AND self.year = ?3 AND self.week = ?4", user, project, planning.getYear(), planning.getWeek()).fetchOne();
 					if(projectPlanningLine == null){
 						projectPlanningLine = new ProjectPlanningLine();
 						projectPlanningLine.setUser(user);
-						projectPlanningLine.setProjectTask(projectTask);
+						projectPlanningLine.setProject(project);
 						projectPlanningLine.setYear(planning.getYear());
 						projectPlanningLine.setWeek(planning.getWeek());
 						projectPlanningLineRepository.save(projectPlanningLine);
@@ -154,10 +154,10 @@ public class ProjectPlanningService {
 					LocalDate date = LocalDate.now().withYear(line.getYear()).with(IsoFields.WEEK_OF_WEEK_BASED_YEAR,line.getWeek()).with(DayOfWeek.MONDAY);
 					if(date.isAfter(todayDate) || date.isEqual(todayDate)){
 						Map<String, String> map = new HashMap<String,String>();
-						map.put("taskId", line.getProjectTask().getId().toString());
-						map.put("name", line.getProjectTask().getFullName());
-						if(line.getProjectTask().getProject() != null){
-							map.put("projectName", line.getProjectTask().getProject().getFullName());
+						map.put("taskId", line.getProject().getId().toString());
+						map.put("name", line.getProject().getFullName());
+						if(line.getProject().getProject() != null){
+							map.put("projectName", line.getProject().getProject().getFullName());
 						}
 						else{
 							map.put("projectName", "");
@@ -171,10 +171,10 @@ public class ProjectPlanningService {
 					LocalDate date = LocalDate.now().withYear(line.getYear()).with(IsoFields.WEEK_OF_WEEK_BASED_YEAR,line.getWeek()).with(DayOfWeek.TUESDAY);
 					if(date.isAfter(todayDate) || date.isEqual(todayDate)){
 						Map<String, String> map = new HashMap<String,String>();
-						map.put("taskId", line.getProjectTask().getId().toString());
-						map.put("name", line.getProjectTask().getFullName());
-						if(line.getProjectTask().getProject() != null){
-							map.put("projectName", line.getProjectTask().getProject().getFullName());
+						map.put("taskId", line.getProject().getId().toString());
+						map.put("name", line.getProject().getFullName());
+						if(line.getProject().getProject() != null){
+							map.put("projectName", line.getProject().getProject().getFullName());
 						}
 						else{
 							map.put("projectName", "");
@@ -188,10 +188,10 @@ public class ProjectPlanningService {
 					LocalDate date = LocalDate.now().withYear(line.getYear()).with(IsoFields.WEEK_OF_WEEK_BASED_YEAR,line.getWeek()).with(DayOfWeek.WEDNESDAY);
 					if(date.isAfter(todayDate) || date.isEqual(todayDate)){
 						Map<String, String> map = new HashMap<String,String>();
-						map.put("taskId", line.getProjectTask().getId().toString());
-						map.put("name", line.getProjectTask().getFullName());
-						if(line.getProjectTask().getProject() != null){
-							map.put("projectName", line.getProjectTask().getProject().getFullName());
+						map.put("taskId", line.getProject().getId().toString());
+						map.put("name", line.getProject().getFullName());
+						if(line.getProject().getProject() != null){
+							map.put("projectName", line.getProject().getProject().getFullName());
 						}
 						else{
 							map.put("projectName", "");
@@ -205,10 +205,10 @@ public class ProjectPlanningService {
 					LocalDate date = LocalDate.now().withYear(line.getYear()).with(IsoFields.WEEK_OF_WEEK_BASED_YEAR,line.getWeek()).with(DayOfWeek.THURSDAY);
 					if(date.isAfter(todayDate) || date.isEqual(todayDate)){
 						Map<String, String> map = new HashMap<String,String>();
-						map.put("taskId", line.getProjectTask().getId().toString());
-						map.put("name", line.getProjectTask().getFullName());
-						if(line.getProjectTask().getProject() != null){
-							map.put("projectName", line.getProjectTask().getProject().getFullName());
+						map.put("taskId", line.getProject().getId().toString());
+						map.put("name", line.getProject().getFullName());
+						if(line.getProject().getProject() != null){
+							map.put("projectName", line.getProject().getProject().getFullName());
 						}
 						else{
 							map.put("projectName", "");
@@ -222,10 +222,10 @@ public class ProjectPlanningService {
 					LocalDate date = LocalDate.now().withYear(line.getYear()).with(IsoFields.WEEK_OF_WEEK_BASED_YEAR,line.getWeek()).with(DayOfWeek.FRIDAY);
 					if(date.isAfter(todayDate) || date.isEqual(todayDate)){
 						Map<String, String> map = new HashMap<String,String>();
-						map.put("taskId", line.getProjectTask().getId().toString());
-						map.put("name", line.getProjectTask().getFullName());
-						if(line.getProjectTask().getProject() != null){
-							map.put("projectName", line.getProjectTask().getProject().getFullName());
+						map.put("taskId", line.getProject().getId().toString());
+						map.put("name", line.getProject().getFullName());
+						if(line.getProject().getProject() != null){
+							map.put("projectName", line.getProject().getProject().getFullName());
 						}
 						else{
 							map.put("projectName", "");
@@ -239,10 +239,10 @@ public class ProjectPlanningService {
 					LocalDate date = LocalDate.now().withYear(line.getYear()).with(IsoFields.WEEK_OF_WEEK_BASED_YEAR,line.getWeek()).with(DayOfWeek.SATURDAY);
 					if(date.isAfter(todayDate) || date.isEqual(todayDate)){
 						Map<String, String> map = new HashMap<String,String>();
-						map.put("taskId", line.getProjectTask().getId().toString());
-						map.put("name", line.getProjectTask().getFullName());
-						if(line.getProjectTask().getProject() != null){
-							map.put("projectName", line.getProjectTask().getProject().getFullName());
+						map.put("taskId", line.getProject().getId().toString());
+						map.put("name", line.getProject().getFullName());
+						if(line.getProject().getProject() != null){
+							map.put("projectName", line.getProject().getProject().getFullName());
 						}
 						else{
 							map.put("projectName", "");
@@ -256,10 +256,10 @@ public class ProjectPlanningService {
 					LocalDate date = LocalDate.now().withYear(line.getYear()).with(IsoFields.WEEK_OF_WEEK_BASED_YEAR,line.getWeek()).with(DayOfWeek.SUNDAY);
 					if(date.isAfter(todayDate) || date.isEqual(todayDate)){
 						Map<String, String> map = new HashMap<String,String>();
-						map.put("taskId", line.getProjectTask().getId().toString());
-						map.put("name", line.getProjectTask().getFullName());
-						if(line.getProjectTask().getProject() != null){
-							map.put("projectName", line.getProjectTask().getProject().getFullName());
+						map.put("taskId", line.getProject().getId().toString());
+						map.put("name", line.getProject().getFullName());
+						if(line.getProject().getProject() != null){
+							map.put("projectName", line.getProject().getProject().getFullName());
 						}
 						else{
 							map.put("projectName", "");

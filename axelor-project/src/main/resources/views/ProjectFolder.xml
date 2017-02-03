@@ -15,7 +15,7 @@
 			<spacer/>
 			<field name="name"/>
 			<spacer/>
-			<field name="description" colSpan="12"/>
+			<field name="description" colSpan="12" widget="html"/>
 			<field name="membersUserSet" colSpan="12"/>
 			<field name="projectList" colSpan="12"/>
 		</panel>

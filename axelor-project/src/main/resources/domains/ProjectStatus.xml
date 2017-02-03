@@ -8,7 +8,7 @@
 	<entity name="ProjectStatus">
   		<string name="name"/>
   		<boolean name="defaultStatus"/>
-  		<boolean name="openStatus"/>
-  		<boolean name="closeStatus"/>
+  		<boolean name="isOpen"/>
+  		<boolean name="isClose"/>
 	</entity>
   </domain-models>

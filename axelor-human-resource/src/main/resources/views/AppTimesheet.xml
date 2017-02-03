@@ -8,7 +8,7 @@
 			<field name="invoicingTypeLogTimesSelect"/>
 			<field name="consolidateTSLine" widget="boolean-switch"/>
 			<field name="editModeTSTimer" widget="boolean-switch"/>
-			<field name="keepProjectTask" widget="boolean-switch"/>
+			<field name="keepProject" widget="boolean-switch"/>
 		</panel>
 	</form>
 	

@@ -19,7 +19,7 @@ package com.axelor.apps.businessproject.report;
 
 public interface IReport {
 	
-	public static final String PROJECT_TASK = "ProjectTask.rptdesign";
+	public static final String PROJECT = "Project.rptdesign";
 	
 	
 }

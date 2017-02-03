@@ -19,15 +19,14 @@
 			<field name="sequence" readonly="true"/>
 			<spacer/>
 			<field name="name"/>
-			<spacer/>
-			<field name="description" colSpan="12"/>
-			<field name="membersUserSet"/>
 			<field name="parentTask"/>
-			<field name="fromDate"/>
-			<field name="toDate"/>
-			<field name="dueDate"/>
 			<field name="status"/>
 			<field name="priority"/>
+			<field name="description" colSpan="12" widget="html"/>
+			<field name="fromDate"/>
+			<field name="toDate"/>
+			
+			<field name="membersUserSet" colSpan="12"/>
 		</panel>
 		
 	</form>
