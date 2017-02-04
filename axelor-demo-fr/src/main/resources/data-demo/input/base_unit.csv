@@ -1,22 +1,22 @@
-"importId";"name";"labelToPrinting"
-1;"Unité";"Unité"
-2;"Pièce";"Pièce"
-3;"Boîte de 2 Pces";"Boîte de 2 Pces"
-4;"Boîte de 6 Pces";"Boîte de 6 Pces"
-5;"Boîte de 12 Pces";"Boîte de 12 Pces"
-6;"Boîte de 24 Pces";"Boîte de 24 Pces"
-7;"Boîte de 50 Pces";"Boîte de 50 Pces"
-8;"Boîte de 100 Pces";"Boîte de 100 Pces"
-9;"Boîte de 500 Pces";"Boîte de 500 Pces"
-10;"Boîte de 1000 Pces";"Boîte de 1000 Pces"
-100;"Minute";"Minute"
-101;"Heure";"Heure"
-102;"Demi-journée";"Demi-journée"
-103;"Jour";"Jour"
-104;"Semaine";"Semaine"
-105;"Mois";"Mois"
-106;"Année";"Année"
-200;"Pourcentage";"Pourcentage"
+"importId";"name";"labelToPrinting";"unitTypeSelect"
+1;"Unité";"Unité";
+2;"Pièce";"Pièce";
+3;"Boîte de 2 Pces";"Boîte de 2 Pces";
+4;"Boîte de 6 Pces";"Boîte de 6 Pces";
+5;"Boîte de 12 Pces";"Boîte de 12 Pces";
+6;"Boîte de 24 Pces";"Boîte de 24 Pces";
+7;"Boîte de 50 Pces";"Boîte de 50 Pces";
+8;"Boîte de 100 Pces";"Boîte de 100 Pces";
+9;"Boîte de 500 Pces";"Boîte de 500 Pces";
+10;"Boîte de 1000 Pces";"Boîte de 1000 Pces";
+100;"Minute";"Minute";3
+101;"Heure";"Heure";3
+102;"Demi-journée";"Demi-journée";3
+103;"Jour";"Jour";3
+104;"Semaine";"Semaine";3
+105;"Mois";"Mois";3
+106;"Année";"Année";3
+200;"Pourcentage";"Pourcentage";
 300;"Miligrammes";"mg";1
 301;"Centigrammes";"cg";1
 302;"Decigrammes";"dg";1
