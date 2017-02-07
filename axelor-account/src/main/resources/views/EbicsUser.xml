@@ -21,6 +21,7 @@
 			<field name="securityMedium" />
 			<field name="associatedUser"/>
 			<field name="ebicsPartner" help="Subscription or contract to which the user is associated" />
+			<field name="nextOrderId" />
 			<field name="ebicsPartner.ebicsBank"/>
 			<field name="statusSelect" colSpan="12"/>
 		</panel>

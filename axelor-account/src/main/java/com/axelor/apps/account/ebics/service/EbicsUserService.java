@@ -28,22 +28,27 @@ import javax.crypto.spec.SecretKeySpec;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.joda.time.LocalDateTime;
 
+import com.axelor.apps.account.db.EbicsPartner;
 import com.axelor.apps.account.db.EbicsRequestLog;
 import com.axelor.apps.account.db.EbicsUser;
 import com.axelor.apps.account.db.repo.EbicsRequestLogRepository;
+import com.axelor.apps.account.db.repo.EbicsUserRepository;
 import com.axelor.apps.account.ebics.utils.Utils;
 import com.axelor.exception.AxelorException;
+import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
 public class EbicsUserService {
 	
 	@Inject
-	EbicsService ebicsService;
+	private EbicsService ebicsService;
 	
 	@Inject
-	EbicsRequestLogRepository requestLogRepo;
+	private EbicsRequestLogRepository requestLogRepo;
 	
+	@Inject
+	private EbicsUserRepository ebicsUserRepo;
 	
 	public byte[] sign(EbicsUser ebicsUser, byte[] digest) throws IOException, GeneralSecurityException {
 		
@@ -115,6 +120,48 @@ public class EbicsUserService {
 		
 		requestLogRepo.save(requestLog);
 	}
+	
+	@Transactional
+	public String getNextOrderId(EbicsUser user, boolean increment) throws AxelorException {
+		
+		String orderId = user.getNextOrderId();
+		
+		if (orderId == null) {
+			EbicsPartner partner = user.getEbicsPartner();
+			EbicsUser otherUser = ebicsUserRepo.all().filter("self.ebicsPartner = ?1 and self.id != ?2 and self.nextOrderId != null", partner, user.getId()).order("nextOrderId").fetchOne();
+			
+			char firstLetter = 'A';
+			if (otherUser != null) {
+				String otherOrderId = otherUser.getNextOrderId();
+				firstLetter =  otherOrderId.charAt(0);
+				firstLetter++;
+			}
+			
+			orderId = String.valueOf(firstLetter) + "000";
+			user.setNextOrderId(orderId);
+			ebicsUserRepo.save(user);
+		}
+		else if (increment) {
+			orderId = getNextOrderNumber(orderId);
+			user.setNextOrderId(orderId);
+			ebicsUserRepo.save(user);
+		}
+		
+		
+		return orderId;
+	}
+
+	private String getNextOrderNumber(String orderId) throws AxelorException {
+		
+		Integer orderNo = Integer.parseInt(orderId.substring(1)) + 1;
+		
+		if (orderNo > 999) {
+			throw new AxelorException(I18n.get("Maximum order limit reach"),1);
+		}
+		
+		return orderId.substring(0,1) + String.format("%03d", orderNo);
+	}
+
 	
 	
 

@@ -10,6 +10,7 @@
 	 <string name="securityMedium" title="Security medium" default="0000"/>
 	 <string name="name" title="Name" namecolumn="true" required="true"/>
 	 <string name="userId" title="User id" max="35" required="true"/>
+	 <string name="nextOrderId" title="Next order id" readonly="true"/>
 	 
 	 <string name="password" title="Password" password="true" />
 	 
