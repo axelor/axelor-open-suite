@@ -98,7 +98,13 @@ public class EbicsCertificateService {
 			log.debug("Bank url host: {}", url.getHost());
 			log.debug("Bank url port: {}", url.getPort());
 			
-			url = new URL(url.getProtocol() + "://" + url.getHost() + ":" + url.getPort());
+			String urlStr = url.getProtocol() + "://" + url.getHost();
+			
+			if (url.getPort() > -1) {
+				urlStr += ":" + url.getPort();
+			}
+			
+			url = new URL(urlStr);
 			
 			SSLContext sslCtx = SSLContext.getInstance("TLS");
 			sslCtx.init(null, new TrustManager[]{ new X509TrustManager() {
