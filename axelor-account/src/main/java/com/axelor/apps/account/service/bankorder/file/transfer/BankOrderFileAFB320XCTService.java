@@ -42,7 +42,7 @@ import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 
-public class BankOrderFileAFB320Service extends BankOrderFileService  {
+public class BankOrderFileAFB320XCTService extends BankOrderFileService  {
 
 	protected String registrationCode;
 	protected CfonbToolService cfonbToolService;
@@ -52,7 +52,7 @@ public class BankOrderFileAFB320Service extends BankOrderFileService  {
 
 	
 	@Inject
-	public BankOrderFileAFB320Service(BankOrder bankOrder) throws AxelorException  {
+	public BankOrderFileAFB320XCTService(BankOrder bankOrder) throws AxelorException  {
 		
 		super(bankOrder);
 		
