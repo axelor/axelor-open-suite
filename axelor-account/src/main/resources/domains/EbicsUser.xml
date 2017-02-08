@@ -23,22 +23,25 @@
 	 
 	 <!-- 	 Electronic signature certificate -->
  	 <string name="dn" title="dn" unique="true" />
- 	 <binary name="a005Certificate" title="Certificate (a005)"  />
-	 <binary name="a005PrivateKey" title="PrivateKey (a005)"  />
-	 <string name="a005PublicKeyModulus" title="a005PublicKeyModulus" large="true" multiline="true" />
-	 <string name="a005PublicKeyExponent" title="a005PublicKeyExponent" large="true" multiline="true" />
+ 	 <many-to-one name="a005Certificate" ref="com.axelor.apps.account.db.EbicsCertificate" title="Certificate (a005)" />
+ 	 <many-to-one name="e002Certificate" ref="com.axelor.apps.account.db.EbicsCertificate" title="Certificate (e002)" />
+ 	 <many-to-one name="x002Certificate" ref="com.axelor.apps.account.db.EbicsCertificate" title="Certificate (x002)" />
+<!--  	 <binary name="a005Certificate" title="Certificate (a005)"  /> -->
+<!-- 	 <binary name="a005PrivateKey" title="PrivateKey (a005)"  /> -->
+<!-- 	 <string name="a005PublicKeyModulus" title="a005PublicKeyModulus" large="true" multiline="true" /> -->
+<!-- 	 <string name="a005PublicKeyExponent" title="a005PublicKeyExponent" large="true" multiline="true" /> -->
 	 
 	<!-- 	Encryption certificate -->
-	 <binary name="e002Certificate" title="Certificate (e002)"/>
-	 <binary name="e002PrivateKey" title="PrivateKey (e002)" />
-	 <string name="e002PublicKeyModulus" title="e002PublicKeyModulus" large="true" multiline="true" />
-	 <string name="e002PublicKeyExponent" title="e002PublicKeyExponent" large="true" multiline="true" />
+<!-- 	 <binary name="e002Certificate" title="Certificate (e002)"/> -->
+<!-- 	 <binary name="e002PrivateKey" title="PrivateKey (e002)" /> -->
+<!-- 	 <string name="e002PublicKeyModulus" title="e002PublicKeyModulus" large="true" multiline="true" /> -->
+<!-- 	 <string name="e002PublicKeyExponent" title="e002PublicKeyExponent" large="true" multiline="true" /> -->
 	 
 	<!-- 	 Authentication certificate -->
-	 <binary name="x002Certificate" title="x002Certificate (x002)"/>
-	 <binary name="x002PrivateKey" title="x002PrivateKey (x002)"/>
-	 <string name="x002PublicKeyModulus" title="x002PublicKeyModulus" large="true" multiline="true" />
-	 <string name="x002PublicKeyExponent" title="x002PublicKeyExponent" large="true" multiline="true" />
+<!-- 	 <binary name="x002Certificate" title="x002Certificate (x002)"/> -->
+<!-- 	 <binary name="x002PrivateKey" title="x002PrivateKey (x002)"/> -->
+<!-- 	 <string name="x002PublicKeyModulus" title="x002PublicKeyModulus" large="true" multiline="true" /> -->
+<!-- 	 <string name="x002PublicKeyExponent" title="x002PublicKeyExponent" large="true" multiline="true" /> -->
 	 
 	 <one-to-many name="ebicsRequestLogList" ref="com.axelor.apps.account.db.EbicsRequestLog" title="Request log" mappedBy="ebicsUser"/>
 	 

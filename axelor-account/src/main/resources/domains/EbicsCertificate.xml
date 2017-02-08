@@ -15,7 +15,11 @@
 	<string name="subject" title="Subject" required="true" />
 	<binary name="certificate" title="Certificate" />
 	
-	<unique-constraint columns="ebicsBank,typeSelect" />
+	<binary name="privateKey" title="PrivateKey"  />
+	<string name="publicKeyModulus" title="PublicKeyModulus" large="true" multiline="true" />
+	<string name="publicKeyExponent" title="PublicKeyExponent" large="true" multiline="true" />
+	 
+<!-- 	<unique-constraint columns="ebicsBank,typeSelect" /> -->
 	
   </entity>
   

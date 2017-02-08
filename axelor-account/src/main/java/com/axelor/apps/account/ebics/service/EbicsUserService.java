@@ -53,7 +53,7 @@ public class EbicsUserService {
 	public byte[] sign(EbicsUser ebicsUser, byte[] digest) throws IOException, GeneralSecurityException {
 		
 		Signature signature = Signature.getInstance("SHA256WithRSA", BouncyCastleProvider.PROVIDER_NAME);
-	    signature.initSign(ebicsService.getPrivateKey( ebicsUser.getA005PrivateKey() ));
+	    signature.initSign(ebicsService.getPrivateKey( ebicsUser.getA005Certificate().getPrivateKey() ));
 	    signature.update(removeOSSpecificChars(digest));
 	    return signature.sign();
 	
@@ -62,7 +62,7 @@ public class EbicsUserService {
 	public byte[] authenticate(EbicsUser ebicsUser, byte[] digest) throws GeneralSecurityException {
 	    Signature signature;
 	    signature = Signature.getInstance("SHA256WithRSA", BouncyCastleProvider.PROVIDER_NAME);
-	    signature.initSign( ebicsService.getPrivateKey( ebicsUser.getX002PrivateKey() )) ;
+	    signature.initSign( ebicsService.getPrivateKey( ebicsUser.getX002Certificate().getPrivateKey() )) ;
 	    signature.update(digest);
 	    return signature.sign();
 	  }
@@ -95,7 +95,7 @@ public class EbicsUserService {
 	    ByteArrayOutputStream	outputStream;
 
 	    cipher = Cipher.getInstance("RSA/NONE/PKCS1Padding", BouncyCastleProvider.PROVIDER_NAME);
-	    cipher.init(Cipher.DECRYPT_MODE, ebicsService.getPrivateKey(user.getE002PrivateKey()));
+	    cipher.init(Cipher.DECRYPT_MODE, ebicsService.getPrivateKey(user.getE002Certificate().getPrivateKey()));
 	    blockSize = cipher.getBlockSize();
 	    outputStream = new ByteArrayOutputStream();
 	    for (int j = 0; j * blockSize < transactionKey.length; j++) {

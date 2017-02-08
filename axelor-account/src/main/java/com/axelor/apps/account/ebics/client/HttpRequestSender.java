@@ -80,7 +80,7 @@ public class HttpRequestSender {
     
     httpClient = new HttpClient();
     EbicsBank bank = session.getUser().getEbicsPartner().getEbicsBank();
-    DefaultHttpClient client = getSecuredHttpClient(EbicsCertificateService.getCertificate(bank, "ssl"));
+    DefaultHttpClient client = getSecuredHttpClient(EbicsCertificateService.getBankCertificate(bank, "ssl"));
     
     proxyConfiguration =  AppSettings.get().get("http.proxy.host");
 
