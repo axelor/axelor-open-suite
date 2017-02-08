@@ -102,10 +102,6 @@ public class CertificateManager {
 	  
 	  cert.setPrivateKey(privateKey);
 	  
-	  RSAPublicKey publicKey = (RSAPublicKey)  certificate.getPublicKey() ;
-	  cert.setPublicKeyExponent(publicKey.getPublicExponent().toString());
-	  cert.setPublicKeyModulus(publicKey.getModulus().toString());
-	  
 	  return cert;
 	  
   }

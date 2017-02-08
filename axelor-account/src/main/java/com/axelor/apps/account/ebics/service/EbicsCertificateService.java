@@ -24,6 +24,7 @@ import java.security.cert.CertificateEncodingException;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
+import java.security.interfaces.RSAPublicKey;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
@@ -169,6 +170,9 @@ public class EbicsCertificateService {
 		cert.setIssuer(certificate.getIssuerDN().getName());
 		cert.setSubject(certificate.getSubjectDN().getName());
 		cert.setCertificate(certificate.getEncoded());
+		RSAPublicKey publicKey = (RSAPublicKey)  certificate.getPublicKey() ;
+		cert.setPublicKeyExponent(publicKey.getPublicExponent().toString());
+		cert.setPublicKeyModulus(publicKey.getModulus().toString());
 		
 		return cert;
 	}

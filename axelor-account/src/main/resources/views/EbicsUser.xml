@@ -41,6 +41,8 @@
 							<field name="validTo" />
 							<field name="certificate" onChange="action-ebics-certificate-method-update-certificate" />
 							<field name="privateKey" />
+							<field name="publicKeyModulus" hidden="true"/>
+							<field name="publicKeyExponent" hidden="true"/>
 						</editor>
 					</field>
 				</panel>
