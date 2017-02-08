@@ -146,6 +146,10 @@ public class CfonbToolService {
 	 * "N" = numérique
 	 */
 	public final String FORMAT_NUMERIC = "N";
+	/**
+	 * "A" = Alphabétique
+	 */
+	public final String FORMAT_ALPHA = "A";
 
 	
 	public String createZone(String numOfZone, String value, String status, String format, int length) throws AxelorException  {
@@ -189,6 +193,12 @@ public class CfonbToolService {
 		case FORMAT_NUMERIC:
 			this.testDigital(zone, numOfZone);
 			zone = StringTool.fillStringLeft(zone, '0', length);
+			break;
+
+		case FORMAT_ALPHA:
+			this.testDigital(zone, numOfZone);
+			zone = StringTool.deleteAccent(zone);
+			zone = StringTool.fillStringRight(zone, ' ', length);
 			break;
 
 		default:

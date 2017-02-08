@@ -21,11 +21,13 @@ import com.axelor.apps.account.ebics.client.EbicsSession;
 import com.axelor.apps.account.ebics.client.OrderType;
 import com.axelor.apps.account.ebics.client.EbicsUtils;
 import com.axelor.exception.AxelorException;
+import com.axelor.inject.Beans;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.account.ebics.client.UnsecuredRequestElement;
+import com.axelor.apps.account.ebics.service.EbicsUserService;
 
 /**
  * The INI request XML element. This root element is to be sent
@@ -63,7 +65,7 @@ public class INIRequestElement extends DefaultEbicsRootElement {
     log.debug("signaturePubKey.build OK");
 	unsecuredRequest = new UnsecuredRequestElement(session,
 	                                           OrderType.INI,
-	                                           orderId == null ? session.getUser().getEbicsPartner().getNextOrderId() : orderId,
+	                                           orderId == null ? Beans.get(EbicsUserService.class).getNextOrderId(session.getUser(), true) : orderId,
 	                                           EbicsUtils.zip(signaturePubKey.prettyPrint()));
 	
 	log.debug("UnsecuredRequestElement OK");

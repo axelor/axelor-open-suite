@@ -24,6 +24,7 @@ import java.security.cert.CertificateEncodingException;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
+import java.security.interfaces.RSAPublicKey;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
@@ -69,9 +70,8 @@ public class EbicsCertificateService {
 		 throw new AxelorException(I18n.get("No bank certificate of type %s found"), IException.CONFIGURATION_ERROR, type);
 	}
 	
-	public static X509Certificate getCertificate(EbicsBank bank, String type) throws AxelorException {
+	public static X509Certificate getCertificate(byte[] certificate, String type) throws AxelorException {
 		
-		byte[] certificate = getCertificateContent(bank, type);
 		ByteArrayInputStream instream = new ByteArrayInputStream(certificate);
 		X509Certificate cert;
 		try {
@@ -83,6 +83,13 @@ public class EbicsCertificateService {
 		return cert;
 	}
 	
+	public static X509Certificate getBankCertificate(EbicsBank bank, String type) throws AxelorException {
+		
+		byte[] certificate = getCertificateContent(bank, type);
+		
+		return getCertificate(certificate, type);
+	}
+	
 	private byte[] getSSLCertificate(EbicsBank bank) throws AxelorException {
 		
 		try {
@@ -91,7 +98,13 @@ public class EbicsCertificateService {
 			log.debug("Bank url host: {}", url.getHost());
 			log.debug("Bank url port: {}", url.getPort());
 			
-			url = new URL(url.getProtocol() + "://" + url.getHost() + ":" + url.getPort());
+			String urlStr = url.getProtocol() + "://" + url.getHost();
+			
+			if (url.getPort() > -1) {
+				urlStr += ":" + url.getPort();
+			}
+			
+			url = new URL(urlStr);
 			
 			SSLContext sslCtx = SSLContext.getInstance("TLS");
 			sslCtx.init(null, new TrustManager[]{ new X509TrustManager() {
@@ -155,26 +168,43 @@ public class EbicsCertificateService {
 		
 	}
 	
-	@Transactional
-	public void createCertificate(X509Certificate certificate, EbicsBank bank, String type) throws CertificateEncodingException {
+	
+	public EbicsCertificate updateCertificate(X509Certificate certificate, EbicsCertificate cert) throws CertificateEncodingException {
 		
-		EbicsCertificate cert = getEbicsCertificate(bank, type);
-		if (cert == null) {
-			cert = new EbicsCertificate();
-		}
-		cert.setEbicsBank(bank);
-		cert.setTypeSelect(type);
 		cert.setValidFrom(new LocalDate(certificate.getNotBefore()));
 		cert.setValidTo(new LocalDate(certificate.getNotAfter()));
 		cert.setIssuer(certificate.getIssuerDN().getName());
 		cert.setSubject(certificate.getSubjectDN().getName());
 		cert.setCertificate(certificate.getEncoded());
+		RSAPublicKey publicKey = (RSAPublicKey)  certificate.getPublicKey() ;
+		cert.setPublicKeyExponent(publicKey.getPublicExponent().toString());
+		cert.setPublicKeyModulus(publicKey.getModulus().toString());
 		
-		certRepo.save(cert);
+		return cert;
 	}
+	
+	@Transactional
+	public EbicsCertificate createCertificate(X509Certificate certificate, EbicsBank bank, String type) throws CertificateEncodingException {
+		
+		EbicsCertificate cert = getEbicsCertificate(bank, type);
+		if (cert == null) {
+			cert = new EbicsCertificate();
+			cert.setEbicsBank(bank);
+			cert.setTypeSelect(type);
+		}
+		
+		cert =  updateCertificate(certificate, cert);
+		
+		return certRepo.save(cert);
+	}
+		
 	
 	private static EbicsCertificate getEbicsCertificate(EbicsBank bank, String type) {
 		 
+		if (bank == null) {
+			return null;
+		}
+		
 		for (EbicsCertificate cert : bank.getEbicsCertificateList()) {
 			 if (cert.getTypeSelect().equals(type)) {
 				return cert;

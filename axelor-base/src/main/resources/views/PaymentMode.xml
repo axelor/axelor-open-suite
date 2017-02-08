@@ -18,8 +18,8 @@
 			<field name="generateBankOrder" if-module="axelor-account" showIf="typeSelect == 2 || typeSelect == 9"/>
   			<field name="automaticTransmission" showIf="generateBankOrder" if-module="axelor-account"/>
   			<field name="generateMoveAutoFromBankOrder" showIf="generateBankOrder" if-module="axelor-account"/>
-  			<field name="orderTypeSelect" selection-in="[3,5]" hidden="true" showIf="generateBankOrder &amp;&amp; typeSelect == 2"  requiredIf="generateBankOrder &amp;&amp; typeSelect == 2" if-module="axelor-account" />
-    		<field name="orderTypeSelect" selection-in="[1,2,4]" hidden="true" showIf="generateBankOrder &amp;&amp; typeSelect == 9" requiredIf="generateBankOrder &amp;&amp; typeSelect == 9" if-module="axelor-account" />
+  			<field name="orderTypeSelect" selection-in="[2,4]" hidden="true" showIf="generateBankOrder &amp;&amp; typeSelect == 2"  requiredIf="generateBankOrder &amp;&amp; typeSelect == 2" if-module="axelor-account" />
+    		<field name="orderTypeSelect" selection-in="[1,3]" hidden="true" showIf="generateBankOrder &amp;&amp; typeSelect == 9" requiredIf="generateBankOrder &amp;&amp; typeSelect == 9" if-module="axelor-account" />
   			<field name="bankOrderExportFolderPath" showIf="generateBankOrder" requiredIf="generateBankOrder" if-module="axelor-account"/>
   			<field name="bankOrderFileFormat" domain="self.orderTypeSelect = :orderTypeSelect" canEdit="false" showIf="generateBankOrder" requiredIf="generateBankOrder" if-module="axelor-account"/>
         </panel>

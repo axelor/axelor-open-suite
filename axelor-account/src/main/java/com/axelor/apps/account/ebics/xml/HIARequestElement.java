@@ -58,7 +58,7 @@ public class HIARequestElement extends DefaultEbicsRootElement {
 		
 		unsecuredRequest = new UnsecuredRequestElement(session,
                 OrderType.HIA,
-                orderId == null ? session.getUser().getEbicsPartner().getNextOrderId() : orderId,
+                orderId == null ? session.getUser().getNextOrderId() : orderId,
                 EbicsUtils.zip(requestOrderData.prettyPrint()));
 				unsecuredRequest.build();
 

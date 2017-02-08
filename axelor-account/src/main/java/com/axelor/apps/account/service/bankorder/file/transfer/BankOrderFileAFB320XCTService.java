@@ -139,7 +139,7 @@ public class BankOrderFileAFB320XCTService extends BankOrderFileService  {
 			senderRecord += cfonbToolService.createZone("5", senderCompany.getName(), cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_ALPHA_NUMERIC, 35); 
 			
 			// Zone 6 : Adresse de l'émetteur
-			senderRecord += cfonbToolService.createZone("6", senderCompany.getName(), cfonbToolService.STATUS_OPTIONAL, cfonbToolService.FORMAT_ALPHA_NUMERIC, 3*35);  //TODO check if not null
+			senderRecord += cfonbToolService.createZone("6", senderCompany.getAddress().getFullName(), cfonbToolService.STATUS_OPTIONAL, cfonbToolService.FORMAT_ALPHA_NUMERIC, 3*35);  //TODO check if not null
 			
 			// Zone 7 : N° SIRET de l'émetteur
 			senderRecord += cfonbToolService.createZone("7", registrationCode, cfonbToolService.STATUS_DEPENDENT, cfonbToolService.FORMAT_ALPHA_NUMERIC, 14);

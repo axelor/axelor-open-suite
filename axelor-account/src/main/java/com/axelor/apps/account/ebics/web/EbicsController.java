@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.security.GeneralSecurityException;
+import java.security.cert.CertificateEncodingException;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 
@@ -29,6 +30,7 @@ import org.bouncycastle.openssl.PEMReader;
 import org.bouncycastle.openssl.PEMWriter;
 
 import com.axelor.apps.account.db.EbicsBank;
+import com.axelor.apps.account.db.EbicsCertificate;
 import com.axelor.apps.account.db.EbicsUser;
 import com.axelor.apps.account.db.repo.BankOrderFileFormatRepository;
 import com.axelor.apps.account.db.repo.EbicsBankRepository;
@@ -273,6 +275,23 @@ public class EbicsController {
 		response.setCanClose(true);
 	}
 	
+	public void updateCertificate(ActionRequest request, ActionResponse response) throws AxelorException, CertificateEncodingException {
+		
+		EbicsCertificate cert = request.getContext().asType(EbicsCertificate.class);
+		
+		byte[] certs = cert.getCertificate();
+		
+		if (certs.length > 0) {
+			X509Certificate certificate = EbicsCertificateService.getCertificate(certs, cert.getTypeSelect());
+			cert = certificateService.updateCertificate(certificate, cert);
+			response.setValue("validFrom", cert.getValidFrom());
+			response.setValue("validTo", cert.getValidTo());
+			response.setValue("issuer", cert.getIssuer());
+			response.setValue("subject", cert.getSubject());
+		}
+		
+	}
+	
 	private String convertToPEMString(X509Certificate x509Cert) throws IOException {
 		
 	    StringWriter sw = new StringWriter();
@@ -293,6 +312,5 @@ public class EbicsController {
 		
 		return cert;
 	}
-
-
+	
 }

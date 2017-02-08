@@ -347,6 +347,7 @@
 		<option value="pain.001.001.02.sct">pain.001.001.02.sct</option>
 		<option value="pain.001.001.03.sct">pain.001.001.03.sct</option>
 		<option value="pain.xxx.cfonb320.xct">pain.xxx.cfonb320.xct</option>
+		<option value="pain.xxx.cfonb160.xct">pain.xxx.cfonb160.ict</option>
 	</selection>
 	
 	<selection name="account.ebics.user.ebics.type.select">

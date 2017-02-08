@@ -44,7 +44,8 @@ import com.axelor.apps.account.ebics.service.EbicsService;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.bankorder.file.transfer.BankOrderFile00100102Service;
 import com.axelor.apps.account.service.bankorder.file.transfer.BankOrderFile00100103Service;
-import com.axelor.apps.account.service.bankorder.file.transfer.BankOrderFileAFB320Service;
+import com.axelor.apps.account.service.bankorder.file.transfer.BankOrderFileAFB160ICTService;
+import com.axelor.apps.account.service.bankorder.file.transfer.BankOrderFileAFB320XCTService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.db.Sequence;
 import com.axelor.apps.base.service.administration.SequenceService;
@@ -321,7 +322,12 @@ public class BankOrderServiceImpl implements BankOrderService  {
 			
 		case BankOrderFileFormatRepository.FILE_FORMAT_pain_XXX_CFONB320_XCT :
 			
-			file = new BankOrderFileAFB320Service(bankOrder).generateFile();
+			file = new BankOrderFileAFB320XCTService(bankOrder).generateFile();
+			break;
+			
+		case BankOrderFileFormatRepository.FILE_FORMAT_pain_XXX_CFONB160_ICT :
+			
+			file = new BankOrderFileAFB160ICTService(bankOrder).generateFile();
 			break;
 
 		default:

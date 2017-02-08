@@ -118,7 +118,7 @@ public class DInitializationRequestElement extends InitializationRequestElement 
 	parameter = EbicsXmlFactory.createParameter("TEST", value);
 	fDLOrderParamsType.setParameterArray(new Parameter[] {parameter});
       }
-      orderDetails = EbicsXmlFactory.createStaticHeaderOrderDetailsType(session.getUser().getEbicsPartner().getNextOrderId(),
+      orderDetails = EbicsXmlFactory.createStaticHeaderOrderDetailsType(session.getUser().getNextOrderId(),
                                                                         "DZHNN",
                                                                         orderType,
                                                                         fDLOrderParamsType);
@@ -127,7 +127,7 @@ public class DInitializationRequestElement extends InitializationRequestElement 
       
       standardOrderParamsType = EbicsXmlFactory.createStandardOrderParamsType();
       //FIXME Some banks cannot handle OrderID element in download process. Add parameter in configuration!!!
-      orderDetails = EbicsXmlFactory.createStaticHeaderOrderDetailsType(session.getUser().getEbicsPartner().getNextOrderId(),//session.getUser().getPartner().nextOrderId(),
+      orderDetails = EbicsXmlFactory.createStaticHeaderOrderDetailsType(session.getUser().getNextOrderId(),//session.getUser().getPartner().nextOrderId(),
 	                                                                "DZHNN",
 	                                                                orderType,
 	                                                                standardOrderParamsType);
