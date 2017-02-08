@@ -132,7 +132,7 @@ public class CalendarController {
 			}
 		}
 		for (ICalendarUser iCalendarUser : userList) {
-			eventList = Beans.get(EventRepository.class).all().filter("?1 MEMBER OF self.attendees OR self.organizer.id = ?1", iCalendarUser.getId()).fetch();
+			eventList = Beans.get(EventRepository.class).all().filter("?1 MEMBER OF self.attendees OR self.organizer = ?1", iCalendarUser).fetch();
 			for (Event event : eventList) {
 				eventIdlist.add(event.getId());
 			}
@@ -144,7 +144,7 @@ public class CalendarController {
 	            .add("grid", "event-grid")
 	            .add("form", "event-form")
 	            .context("_typeSelect", 2)
-	            .domain("self.id in ("+Joiner.on(",").join(eventIdlist)+")")
+	            .domain("self.id in (" + Joiner.on(',').join(eventIdlist) + ")")
 	            .map());
 	}
 	

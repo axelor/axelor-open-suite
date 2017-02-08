@@ -253,7 +253,7 @@
 		</panel>
 	</form>
 	
-	<kanban columnBy="statusSelect" sequenceBy="id" limit="10"
+	<kanban columnBy="statusSelect" sequenceBy="sequence" limit="10"
 	 name="project-kanban" title="Projects" model="com.axelor.apps.project.db.ProjectTask">
 		<field name="fullName"/>
 		<field name="description"/>
@@ -261,6 +261,7 @@
 		<field name="dueDate"/>
 		<field name="leadDelay"/>
 		<field name="statusSelect"/>
+		<field name="sequence"/>
 		<hilite color="danger" if="dueDate.isAfter(__datetime__) &amp;&amp; statusSelect &lt; 3"/>
 		<hilite color="success" if="(dueDate.isBefore(__datetime__) || dueDate.equals(__datetime__)) &amp;&amp; leadDelay &gt;= 0 &amp;&amp; statusSelect &lt; 3"/>
 		<hilite color="warning" if="(dueDate.isBefore(__datetime__) || dueDate.equals(__datetime__)) &amp;&amp; leadDelay &lt; 0 &amp;&amp; statusSelect &lt; 3"/>
@@ -273,7 +274,7 @@
 		</template>
 	</kanban>
 	
-	<kanban columnBy="statusSelect" sequenceBy="id" limit="10"
+	<kanban columnBy="statusSelect" sequenceBy="sequence" limit="10"
 	 name="task-kanban" title="Tasks" model="com.axelor.apps.project.db.ProjectTask">
 		<field name="fullName"/>
 		<field name="description"/>
@@ -281,6 +282,7 @@
 		<field name="dueDate"/>
 		<field name="leadDelay"/>
 		<field name="statusSelect"/>
+		<field name="sequence"/>
 		<hilite color="danger" if="dueDate.isAfter(__datetime__) &amp;&amp; statusSelect &lt; 3"/>
 		<hilite color="success" if="(dueDate.isBefore(__datetime__) || dueDate.equals(__datetime__)) &amp;&amp; leadDelay &gt;= 0 &amp;&amp; statusSelect &lt; 3"/>
 		<hilite color="warning" if="(dueDate.isBefore(__datetime__) || dueDate.equals(__datetime__)) &amp;&amp; leadDelay &lt; 0 &amp;&amp; statusSelect &lt; 3"/>
