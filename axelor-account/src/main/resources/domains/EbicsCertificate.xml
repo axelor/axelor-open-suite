@@ -9,15 +9,16 @@
   
 	<many-to-one name="ebicsBank" ref="EbicsBank" title="Bank" />
 	<string name="typeSelect" title="Type" selection="account.ebics.certificate.type.select" required="true" />
-	<date name="validFrom" title="Valid from" required="true" />
-	<date name="validTo" title="Valid to" required="true" />
-	<string name="issuer" title="Issuer" required="true" />
-	<string name="subject" title="Subject" required="true" />
+	<date name="validFrom" title="Valid from" />
+	<date name="validTo" title="Valid to"  />
+	<string name="issuer" title="Issuer" />
+	<string name="subject" title="Subject"/>
 	<binary name="certificate" title="Certificate" />
 	
 	<binary name="privateKey" title="PrivateKey"  />
 	<string name="publicKeyModulus" title="PublicKeyModulus" large="true" multiline="true" />
 	<string name="publicKeyExponent" title="PublicKeyExponent" large="true" multiline="true" />
+	<string name="fullName" title="Full name" namecolumn="true" />
 	 
 <!-- 	<unique-constraint columns="ebicsBank,typeSelect" /> -->
 	

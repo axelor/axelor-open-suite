@@ -27,50 +27,18 @@
 		</panel>
 		<panel-tabs>
 			<panel title="Certificates">
-				<panel title="DN" colSpan="6" itemSpan="12" showIf="ebicsTypeSelect == 0" hidden="true">
-					<button name="generateDn" title="Generate DN" onClick="save,action-ebics-user-method-generate-dn" showIf="!dn"/>
-					<field name="dn" readonly="true" help="Defines a unique identifier for the certificate" />
+				<panel title="DN" colSpan="12" itemSpan="12" showIf="ebicsTypeSelect == 0" hidden="true">
+					<button name="generateDn" title="Generate DN" onClick="save,action-ebics-user-method-generate-dn" showIf="!dn" colSpan="3"/>
+					<field name="dn" readonly="true" help="Defines a unique identifier for the certificate" showTitle="false" />
 				</panel>
 				<panel title="Electronic signature certificate" colSpan="12" itemSpan="12" readonlyIf="ebicsTypeSelect == 0" showIf="ebicsTypeSelect == 1 || (ebicsTypeSelect == 0  &amp;&amp; statusSelect >= 1)">
-					<field name="a005Certificate" colSpan="12" canSelect="false" canNew="true" canRemove="false">
-						<editor onNew="action-ebics-user-a005-certificate-default">
-							<field name="typeSelect" hidden="true" />
-							<field name="subject" colSpan="12" />
-							<field name="issuer" colSpan="12" />
-							<field name="validFrom" />
-							<field name="validTo" />
-							<field name="certificate" onChange="action-ebics-certificate-method-update-certificate" />
-							<field name="privateKey" />
-							<field name="publicKeyModulus" hidden="true"/>
-							<field name="publicKeyExponent" hidden="true"/>
-						</editor>
-					</field>
+					<field name="a005Certificate" domain="self.typeSelect = 'signature'" form-view="ebics-certificate-form" showTitle="false"/>
 				</panel>
 				<panel title="Encryption certificate" colSpan="12" itemSpan="12" readonlyIf="ebicsTypeSelect == 0" showIf="ebicsTypeSelect == 1 || (ebicsTypeSelect == 0  &amp;&amp; statusSelect >= 1)">
-					<field name="e002Certificate" colSpan="12" readonly="true">
-						<editor onNew="action-ebics-user-a005-certificate-default">
-							<field name="typeSelect" hidden="true" />
-							<field name="subject" colSpan="12" />
-							<field name="issuer" colSpan="12" />
-							<field name="validFrom" />
-							<field name="validTo" />
-							<field name="certificate" />
-							<field name="privateKey" />
-						</editor>
-					</field>
+					<field name="e002Certificate" readonly="true" form-view="ebics-certificate-form" showTitle="false"/>
 				</panel>
 				<panel title="Authentication certificate" colSpan="12" itemSpan="12" readonlyIf="ebicsTypeSelect == 0" showIf="ebicsTypeSelect == 1 || (ebicsTypeSelect == 0  &amp;&amp; statusSelect >= 1)">
-					<field name="x002Certificate" colSpan="12" readonly="true">
-						<editor>
-							<field name="typeSelect" hidden="true" />
-							<field name="subject" colSpan="12" />
-							<field name="issuer" colSpan="12" />
-							<field name="validFrom" />
-							<field name="validTo" />
-							<field name="certificate" />
-							<field name="privateKey" />
-						</editor>
-					</field>
+					<field name="x002Certificate" readonly="true" form-view="ebics-certificate-form" showTitle="false"/>
 				</panel>
 			</panel>
 			<panel-related field="ebicsRequestLogList" form-view="ebics-request-log-form" grid-view="ebics-request-log-grid" readonly="true"/>
@@ -130,13 +98,4 @@
   		<call class="com.axelor.apps.account.ebics.web.EbicsController" method="sendPTKRequest" />
     </action-method>
     
-    <action-method name="action-ebics-certificate-method-update-certificate">
-    	<call class="com.axelor.apps.account.ebics.web.EbicsController" method="updateCertificate" />
-    </action-method>
-    
-    <action-attrs name="action-ebics-user-a005-certificate-default">
-    	<attribute name="value" for="typeSelect" expr="eval:'signature'"/>
-    </action-attrs>
-    
-  
 </object-views>

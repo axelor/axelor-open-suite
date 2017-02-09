@@ -34,13 +34,13 @@ import com.axelor.apps.account.db.EbicsCertificate;
 import com.axelor.apps.account.db.EbicsUser;
 import com.axelor.apps.account.db.repo.BankOrderFileFormatRepository;
 import com.axelor.apps.account.db.repo.EbicsBankRepository;
+import com.axelor.apps.account.db.repo.EbicsCertificateRepository;
 import com.axelor.apps.account.db.repo.EbicsUserRepository;
 import com.axelor.apps.account.ebics.certificate.CertificateManager;
 import com.axelor.apps.account.ebics.service.EbicsCertificateService;
 import com.axelor.apps.account.ebics.service.EbicsService;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.auth.db.User;
-import com.axelor.auth.db.repo.UserRepository;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
@@ -56,19 +56,19 @@ import com.google.inject.persist.Transactional;
 public class EbicsController {
 	
 	@Inject
-	EbicsUserRepository ebicsUserRepo;
+	private EbicsUserRepository ebicsUserRepo;
 	
 	@Inject
-	EbicsService ebicsService;
+	private EbicsService ebicsService;
 	
 	@Inject
-	UserRepository userRepo;
+	private EbicsBankRepository bankRepo;
 	
 	@Inject
-	EbicsBankRepository bankRepo;
+	private EbicsCertificateService certificateService;
 	
 	@Inject
-	EbicsCertificateService certificateService;
+	private EbicsCertificateRepository certificateRepo;
 	
 	@Transactional
 	public void generateCertificate(ActionRequest request, ActionResponse response){
@@ -275,13 +275,15 @@ public class EbicsController {
 		response.setCanClose(true);
 	}
 	
-	public void updateCertificate(ActionRequest request, ActionResponse response) throws AxelorException, CertificateEncodingException {
+	public void loadCertificate(ActionRequest request, ActionResponse response) throws AxelorException, CertificateEncodingException {
 		
 		EbicsCertificate cert = request.getContext().asType(EbicsCertificate.class);
 		
+		cert = certificateRepo.find(cert.getId());
+		
 		byte[] certs = cert.getCertificate();
 		
-		if (certs.length > 0) {
+		if (certs != null && certs.length > 0) {
 			X509Certificate certificate = EbicsCertificateService.getCertificate(certs, cert.getTypeSelect());
 			cert = certificateService.updateCertificate(certificate, cert);
 			response.setValue("validFrom", cert.getValidFrom());
