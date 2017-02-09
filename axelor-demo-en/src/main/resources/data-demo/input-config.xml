@@ -93,6 +93,8 @@
 	</input>
 	
 	<!-- A BESOIN DE PARTNER -->
+	<input file="base_bank.csv" separator=";" type="com.axelor.apps.base.db.Bank"/>
+
 	<input file="base_bankDetails.csv" separator=";" type="com.axelor.apps.base.db.BankDetails" >
 		<bind to="partner" column="partner_importId" search="self.importId =:partner_importId" update="true" />
 		<bind to="isDefault" eval="true" />

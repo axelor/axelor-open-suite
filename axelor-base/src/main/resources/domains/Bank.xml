@@ -6,6 +6,8 @@
   <module name="base" package="com.axelor.apps.base.db"/>
 
   <entity name="Bank" lang="java">
+  	<integer name="importId"/>
+  
     <string name="fullName" title="Name" search="code,bankName"/>
   
     <string name="code" title="BIC (Bank Identifier)" namecolumn="true" required="true" unique="true"/>
