@@ -111,6 +111,7 @@ public class EbicsController {
 		try {
 			ebicsService.sendINIRequest(ebicsUser, null);
 		}catch (AxelorException e) {
+			e.printStackTrace();
 			response.setFlash(stripClass(e.getLocalizedMessage()));
 		}
 		
@@ -125,6 +126,7 @@ public class EbicsController {
 		try {
 			ebicsService.sendHIARequest(ebicsUser, null);
 		}catch (AxelorException e) {
+			e.printStackTrace();
 			response.setFlash(stripClass(e.getLocalizedMessage()));
 		}
 		
@@ -139,6 +141,7 @@ public class EbicsController {
 			X509Certificate[] certificates = ebicsService.sendHPBRequest(ebicsUser, null);
 			confirmCertificates(ebicsUser, certificates, response);
 		}catch (AxelorException e) {
+			e.printStackTrace();
 			response.setFlash(stripClass(e.getLocalizedMessage()));
 		}
 		
@@ -177,6 +180,7 @@ public class EbicsController {
 		try {
 			ebicsService.sendSPRRequest(ebicsUser, null);
 		}catch (AxelorException e) {
+			e.printStackTrace();
 			response.setFlash(stripClass(e.getLocalizedMessage()));
 		}
 

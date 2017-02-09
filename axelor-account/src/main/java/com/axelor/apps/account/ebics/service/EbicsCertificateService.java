@@ -89,6 +89,10 @@ public class EbicsCertificateService {
 		
 		byte[] certificate = getCertificateContent(bank, type);
 		
+		if (certificate == null) {
+			return null;
+		}
+		
 		return getCertificate(certificate, type);
 	}
 	
@@ -164,9 +168,10 @@ public class EbicsCertificateService {
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
-
 		
-		throw new AxelorException(I18n.get("Error in getting ssl certificate"), IException.CONFIGURATION_ERROR);
+		return null;
+		
+//		throw new AxelorException(I18n.get("Error in getting ssl certificate"), IException.CONFIGURATION_ERROR);
 		
 	}
 	
@@ -191,6 +196,7 @@ public class EbicsCertificateService {
 		
 		EbicsCertificate cert = getEbicsCertificate(bank, type);
 		if (cert == null) {
+			log.debug("Creating bank certicate for bank: {}, type: {}", bank.getName(), type);
 			cert = new EbicsCertificate();
 			cert.setEbicsBank(bank);
 			cert.setTypeSelect(type);
