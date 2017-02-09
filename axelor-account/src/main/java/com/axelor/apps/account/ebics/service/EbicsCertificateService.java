@@ -44,6 +44,8 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.meta.MetaStore;
+import com.axelor.meta.schema.views.Selection.Option;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -86,6 +88,10 @@ public class EbicsCertificateService {
 	public static X509Certificate getBankCertificate(EbicsBank bank, String type) throws AxelorException {
 		
 		byte[] certificate = getCertificateContent(bank, type);
+		
+		if (certificate == null) {
+			return null;
+		}
 		
 		return getCertificate(certificate, type);
 	}
@@ -162,9 +168,10 @@ public class EbicsCertificateService {
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
-
 		
-		throw new AxelorException(I18n.get("Error in getting ssl certificate"), IException.CONFIGURATION_ERROR);
+		return null;
+		
+//		throw new AxelorException(I18n.get("Error in getting ssl certificate"), IException.CONFIGURATION_ERROR);
 		
 	}
 	
@@ -179,6 +186,7 @@ public class EbicsCertificateService {
 		RSAPublicKey publicKey = (RSAPublicKey)  certificate.getPublicKey() ;
 		cert.setPublicKeyExponent(publicKey.getPublicExponent().toString());
 		cert.setPublicKeyModulus(publicKey.getModulus().toString());
+		computeFullName(cert);
 		
 		return cert;
 	}
@@ -188,6 +196,7 @@ public class EbicsCertificateService {
 		
 		EbicsCertificate cert = getEbicsCertificate(bank, type);
 		if (cert == null) {
+			log.debug("Creating bank certicate for bank: {}, type: {}", bank.getName(), type);
 			cert = new EbicsCertificate();
 			cert.setEbicsBank(bank);
 			cert.setTypeSelect(type);
@@ -213,5 +222,30 @@ public class EbicsCertificateService {
 		
 		return null;
 		
+	}
+	
+	public void computeFullName(EbicsCertificate entity) {
+		
+		StringBuilder fullName = new StringBuilder();
+		Option item = MetaStore.getSelectionItem("account.ebics.certificate.type.select", entity.getTypeSelect());
+		if (item != null) {
+			fullName.append(I18n.get(item.getTitle()));
+		}
+		
+		LocalDate date = entity.getValidFrom();
+		if (date != null) {
+			fullName.append(":" + date.toString("dd/MM/yyyy"));
+			date = entity.getValidTo();
+			if (date != null) {
+				fullName.append("-" + date.toString("dd/MM/yyyy"));
+			}
+		}
+		
+		String issuer = entity.getIssuer();
+		if (issuer != null) {
+			fullName.append(":" + issuer);
+		}
+		
+		entity.setFullName(fullName.toString());
 	}
 }

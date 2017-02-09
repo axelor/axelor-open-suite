@@ -15,11 +15,18 @@
 	<form name="ebics-certificate-form" title="Ebics certificate" model="com.axelor.apps.account.db.EbicsCertificate">
 		<panel>
 			<field name="typeSelect" />
-			<field name="subject" colSpan="12" />
-			<field name="issuer" colSpan="12" />
-			<field name="validFrom" />
-			<field name="validTo" />
-			<field name="certificate" />
+			<field name="ebicsBank" />
+			<field name="certificate" colSpan="3"/>
+			<button name="loadCertificate"  onClick="save,action-ebics-certificate-method-load-certificate,save" title="Load certificate" colSpan="3" hideIf="$popup()"/>
+			<panel title="Information" readonly="true" colSpan="12">
+				<field name="subject" colSpan="12" />
+				<field name="issuer" colSpan="12" />
+				<field name="validFrom" />
+				<field name="validTo" />
+				<field name="privateKey" />
+				<field name="publicKeyModulus" hidden="true"/>
+				<field name="publicKeyExponent" hidden="true"/>
+			</panel>
 		</panel>
 	</form>
 	
@@ -41,6 +48,10 @@
 		<call class="com.axelor.apps.account.ebics.web.EbicsController" method="addCertificates"/>
 	</action-method>
 	
+	<action-method name="action-ebics-certificate-method-load-certificate">
+    	<call class="com.axelor.apps.account.ebics.web.EbicsController" method="loadCertificate" />
+    </action-method>
+    
 	<action-attrs name="action-ebics-certificate-confirmation-set-default">
 		<attribute name="value" for="url" expr="eval:url"/>
 		<attribute name="value" for="hostId" expr="eval:hostId"/>

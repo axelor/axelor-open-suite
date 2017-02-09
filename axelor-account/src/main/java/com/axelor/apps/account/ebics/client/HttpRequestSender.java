@@ -19,8 +19,10 @@ package com.axelor.apps.account.ebics.client;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 import java.security.KeyStore;
 import java.security.cert.Certificate;
+import java.security.cert.X509Certificate;
 
 import org.apache.commons.httpclient.HostConfiguration;
 import org.apache.commons.httpclient.HttpClient;
@@ -34,6 +36,8 @@ import org.apache.http.conn.ssl.SSLSocketFactory;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.InputStreamEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.axelor.app.AppSettings;
 import com.axelor.apps.account.db.EbicsBank;
@@ -53,7 +57,9 @@ import com.axelor.i18n.I18n;
  *
  */
 public class HttpRequestSender {
-
+ 
+  private final Logger log = LoggerFactory.getLogger(HttpRequestSender.class);
+	
   /**
    * Constructs a new <code>HttpRequestSender</code> with a
    * given ebics session.
@@ -80,8 +86,8 @@ public class HttpRequestSender {
     
     httpClient = new HttpClient();
     EbicsBank bank = session.getUser().getEbicsPartner().getEbicsBank();
-    DefaultHttpClient client = getSecuredHttpClient(EbicsCertificateService.getBankCertificate(bank, "ssl"));
-    
+    X509Certificate certificate = EbicsCertificateService.getBankCertificate(bank, "ssl");
+    DefaultHttpClient client = getSecuredHttpClient(certificate, bank.getUrl());
     proxyConfiguration =  AppSettings.get().get("http.proxy.host");
 
     if (proxyConfiguration != null && !proxyConfiguration.equals("")) {
@@ -115,20 +121,31 @@ public class HttpRequestSender {
     post.setEntity(entity);
     HttpResponse responseHttp = client.execute(post);
     retCode = responseHttp.getStatusLine().getStatusCode();
+    log.debug("Http reason phrase: {}" , responseHttp.getStatusLine().getReasonPhrase());
     response = new InputStreamContentFactory(responseHttp.getEntity().getContent());
     return retCode;
   }
 
-  private DefaultHttpClient getSecuredHttpClient(Certificate cert) throws AxelorException {
+  private DefaultHttpClient getSecuredHttpClient(Certificate cert, String bankURL) throws AxelorException {
 
 	DefaultHttpClient client = new DefaultHttpClient();
 	
 	try {
-	    KeyStore keystore  = KeyStore.getInstance("jks");
-	    char[] password = "NoPassword".toCharArray();
-	    keystore.load(null, password);
-	    keystore.setCertificateEntry("certficate.host", cert);
-	    Scheme https = new Scheme("https", 443,  new SSLSocketFactory(keystore));
+	    Scheme https  = null;
+	    if (cert != null) {
+	    	log.debug("SSL certificate exist");
+	    	URL url = new URL(bankURL);
+	    	log.debug("Url host: {}", url.getHost());
+	    	KeyStore keystore  = KeyStore.getInstance("jks");
+	 	    char[] password = "NoPassword".toCharArray();
+	 	    keystore.load(null, password);
+	    	keystore.setCertificateEntry(url.getHost(), cert);
+	    	https = new Scheme("https", 443,  new SSLSocketFactory(keystore, "NoPassword"));
+	    }
+	    else {
+	    	log.debug("SSL certificate not exist");
+	    	https = new Scheme("https", 443, SSLSocketFactory.getSocketFactory());
+	    }
 	    client.getConnectionManager().getSchemeRegistry().register(https);
     } catch(Exception e) {
     	e.printStackTrace();
