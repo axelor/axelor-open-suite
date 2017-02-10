@@ -26,6 +26,7 @@
 				<field name="privateKey" />
 				<field name="publicKeyModulus" hidden="true"/>
 				<field name="publicKeyExponent" hidden="true"/>
+				<field name="fullName" hidden="true" />
 			</panel>
 		</panel>
 	</form>

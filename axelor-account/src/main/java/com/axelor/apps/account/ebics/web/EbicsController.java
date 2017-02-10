@@ -294,6 +294,9 @@ public class EbicsController {
 			response.setValue("validTo", cert.getValidTo());
 			response.setValue("issuer", cert.getIssuer());
 			response.setValue("subject", cert.getSubject());
+			response.setValue("publicKeyModulus", cert.getPublicKeyModulus());
+			response.setValue("publicKeyExponent", cert.getPublicKeyExponent());
+			response.setValue("fullName", cert.getFullName());
 		}
 		
 	}
