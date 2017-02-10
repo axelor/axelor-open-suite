@@ -24,6 +24,8 @@ import java.security.KeyStore;
 import java.security.cert.Certificate;
 import java.security.cert.X509Certificate;
 
+import javax.net.ssl.SSLException;
+
 import org.apache.commons.httpclient.HostConfiguration;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.UsernamePasswordCredentials;
@@ -140,7 +142,16 @@ public class HttpRequestSender {
 	 	    char[] password = "NoPassword".toCharArray();
 	 	    keystore.load(null, password);
 	    	keystore.setCertificateEntry(url.getHost(), cert);
-	    	https = new Scheme("https", 443,  new SSLSocketFactory(keystore, "NoPassword"));
+	    	SSLSocketFactory factory = new SSLSocketFactory(keystore);
+	    	try {
+	    		factory.getHostnameVerifier().verify(url.getHost(), (X509Certificate)cert);
+	    		https = new Scheme("https", 443,  new SSLSocketFactory(keystore));
+	    	}
+	    	catch(SSLException e) {
+	    		log.debug("Error in ssl certifcate host name verification");
+	    		https = new Scheme("https", 443, SSLSocketFactory.getSocketFactory());
+	    	}
+	    	
 	    }
 	    else {
 	    	log.debug("SSL certificate not exist");
