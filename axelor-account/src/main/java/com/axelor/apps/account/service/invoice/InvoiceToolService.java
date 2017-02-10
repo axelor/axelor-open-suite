@@ -135,4 +135,15 @@ public class InvoiceToolService {
 		return isRefund;
 	}
 	
+	
+	/**
+	 * @param invoice
+	 * @return
+	 * @throws AxelorException
+	 */
+	public static boolean isOutPayment(Invoice invoice) throws AxelorException {
+		// result of XOR operator, we could also have written "bool1 ^ bool2"
+		return (isPurchase(invoice) != isRefund(invoice));
+	}
+	
 }

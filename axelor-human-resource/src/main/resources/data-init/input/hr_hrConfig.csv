@@ -1,2 +1,2 @@
-"importId";"company.importId";"kilometricExpenseProduct.importId";"publicHolidayPlanning.importId";"weeklyPlanning.importId";"lunchVoucherWageShare";"lunchVoucherEmployersShare"
-1;1;"503";"1";"1";"5";"3"
+"importId";"company.importId";"kilometricExpenseProduct.importId";"publicHolidayPlanning.importId";"weeklyPlanning.importId";"lunchVoucherWageShare";"lunchVoucherEmployersShare";"seniorityVariableName";"ageVariableName";"workingDaysVariableName"
+2;1;"503";"1";"1";"5";"3";"$lengthOfService$";"$age$";"$workingDayNumber$"

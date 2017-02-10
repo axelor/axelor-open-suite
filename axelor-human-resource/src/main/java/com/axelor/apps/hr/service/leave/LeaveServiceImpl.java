@@ -561,18 +561,16 @@ public class LeaveServiceImpl  implements  LeaveService  {
 	
 	public boolean willHaveEnoughDays(LeaveRequest leaveRequest){
 		
-		
 		LocalDate todayDate = Beans.get(GeneralService.class).getTodayDate();
 		LocalDate beginDate = leaveRequest.getFromDate() ;
 		
 		int interval = ( beginDate.getYear() - todayDate.getYear() ) *12 + beginDate.getMonthOfYear() - todayDate.getMonthOfYear();
-		
-		if (leaveRequest.getDuration().compareTo( leaveRequest.getLeaveLine().getQuantity().add( new BigDecimal(interval * 2.5) ) ) == 1){
+		BigDecimal num = leaveRequest.getLeaveLine().getQuantity().add( leaveRequest.getUser().getEmployee().getPlanning().getLeaveCoef().multiply( leaveRequest.getLeaveLine().getLeaveReason().getDefaultDayNumberGain()).multiply(new BigDecimal( interval )) );
+		if (leaveRequest.getDuration().compareTo( num ) == 1){
 			return false;
 		}else{
 			return true;
 		}
-		
 	}
 	
 	@Transactional

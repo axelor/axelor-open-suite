@@ -132,7 +132,7 @@ public class EbicsService {
 	 * @throws JDOMException 
 	 * @throws IOException 
 	 */
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
+	@Transactional
 	public void sendINIRequest(EbicsUser ebicsUser, EbicsProduct product) throws AxelorException {
 
 	    if (ebicsUser.getStatusSelect() != EbicsUserRepository.STATUS_WAITING_SENDING_SIGNATURE_CERTIFICATE) {
@@ -164,7 +164,7 @@ public class EbicsService {
 	 * @param product the application product.
 	 * @throws AxelorException 
 	 */
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
+	@Transactional
 	public void sendHIARequest(EbicsUser ebicsUser, EbicsProduct product) throws AxelorException {
 
 	    if (ebicsUser.getStatusSelect() != EbicsUserRepository.STATUS_WAITING_AUTH_AND_ENCRYPT_CERTIFICATES) {
@@ -196,7 +196,7 @@ public class EbicsService {
 	 * @param product the application product.
 	 * @throws AxelorException 
 	 */
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
+	@Transactional
 	public X509Certificate[] sendHPBRequest(EbicsUser user, EbicsProduct product) throws AxelorException {
 
 		EbicsSession session = new EbicsSession(user);
@@ -220,7 +220,7 @@ public class EbicsService {
 	 * @param product the session product
 	 * @throws AxelorException 
 	 */
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
+	@Transactional
 	public void sendSPRRequest(EbicsUser ebicsUser, EbicsProduct product) throws AxelorException {
 
 	    EbicsSession session = new EbicsSession(ebicsUser);
@@ -351,7 +351,7 @@ public class EbicsService {
 		throw new  AxelorException(I18n.get("Ebics bank configuration error"), 1);
 	}
 	
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
+	@Transactional
 	public void updateTestFile(EbicsUser user, File file) throws IOException {
 		
 		EbicsBank bank = user.getEbicsPartner().getEbicsBank();

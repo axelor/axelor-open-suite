@@ -130,10 +130,10 @@ public class InterbankPaymentOrderImportService {
 
 		partner.getBankDetailsList().add(bankDetails);
 
-		if (InvoiceToolService.isPurchase(invoice)) {
-			partner.setSupplierPaymentMode(paymentMode);
+		if (InvoiceToolService.isOutPayment(invoice)) {
+			partner.setOutPaymentMode(paymentMode);
 		} else {
-			partner.setClientPaymentMode(paymentMode);
+			partner.setInPaymentMode(paymentMode);
 		}
 		
 		partnerRepo.save(partner);

@@ -507,7 +507,13 @@ public class ExpenseController {
 			throw new AxelorException( String.format(I18n.get(IExceptionMessage.LEAVE_USER_EMPLOYEE), userName)  , IException.CONFIGURATION_ERROR);
 		}
 		
-		BigDecimal amount = Beans.get(KilometricService.class).computeKilometricExpense(expenseLine, employee);
+		BigDecimal amount = BigDecimal.ZERO;
+		try{
+			amount = Beans.get(KilometricService.class).computeKilometricExpense(expenseLine, employee);
+		}catch(AxelorException e){
+			TraceBackService.trace(response, e);
+		}
+		
 		
 		response.setValue("totalAmount", amount);
 		response.setValue("untaxedAmount", amount);

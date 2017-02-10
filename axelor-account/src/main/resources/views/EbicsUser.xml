@@ -21,26 +21,24 @@
 			<field name="securityMedium" />
 			<field name="associatedUser"/>
 			<field name="ebicsPartner" help="Subscription or contract to which the user is associated" />
+			<field name="nextOrderId" />
 			<field name="ebicsPartner.ebicsBank"/>
 			<field name="statusSelect" colSpan="12"/>
 		</panel>
 		<panel-tabs>
 			<panel title="Certificates">
-				<panel title="DN" colSpan="6" itemSpan="12" showIf="ebicsTypeSelect == 0" hidden="true">
-					<button name="generateDn" title="Generate DN" onClick="save,action-ebics-user-method-generate-dn" showIf="!dn"/>
-					<field name="dn" readonly="true" help="Defines a unique identifier for the certificate" />
+				<panel title="DN" colSpan="12" itemSpan="12" showIf="ebicsTypeSelect == 0" hidden="true">
+					<button name="generateDn" title="Generate DN" onClick="save,action-ebics-user-method-generate-dn" showIf="!dn" colSpan="3"/>
+					<field name="dn" readonly="true" help="Defines a unique identifier for the certificate" showTitle="false" />
 				</panel>
-				<panel title="Electronic signature certificate" colSpan="6" itemSpan="12" readonlyIf="ebicsTypeSelect == 0" showIf="ebicsTypeSelect == 1 || (ebicsTypeSelect == 0  &amp;&amp; statusSelect >= 1)">
-					<field name="a005Certificate" readonlyIf="ebicsTypeSelect == 0"/>
-					<field name="a005PrivateKey" readonlyIf="ebicsTypeSelect == 0"/>
+				<panel title="Electronic signature certificate" colSpan="12" itemSpan="12" readonlyIf="ebicsTypeSelect == 0" showIf="ebicsTypeSelect == 1 || (ebicsTypeSelect == 0  &amp;&amp; statusSelect >= 1)">
+					<field name="a005Certificate" domain="self.typeSelect = 'signature'" form-view="ebics-certificate-form" showTitle="false"/>
 				</panel>
-				<panel title="Encryption certificate" colSpan="6" itemSpan="12" readonlyIf="ebicsTypeSelect == 0" showIf="ebicsTypeSelect == 1 || (ebicsTypeSelect == 0  &amp;&amp; statusSelect >= 1)">
-					<field name="e002Certificate"/>
-					<field name="e002PrivateKey"/>
+				<panel title="Encryption certificate" colSpan="12" itemSpan="12" readonlyIf="ebicsTypeSelect == 0" showIf="ebicsTypeSelect == 1 || (ebicsTypeSelect == 0  &amp;&amp; statusSelect >= 1)">
+					<field name="e002Certificate" readonly="true" form-view="ebics-certificate-form" showTitle="false"/>
 				</panel>
-				<panel title="Authentication certificate" colSpan="6" itemSpan="12" readonlyIf="ebicsTypeSelect == 0" showIf="ebicsTypeSelect == 1 || (ebicsTypeSelect == 0  &amp;&amp; statusSelect >= 1)">
-					<field name="x002Certificate"/> 
-					<field name="x002PrivateKey"/>
+				<panel title="Authentication certificate" colSpan="12" itemSpan="12" readonlyIf="ebicsTypeSelect == 0" showIf="ebicsTypeSelect == 1 || (ebicsTypeSelect == 0  &amp;&amp; statusSelect >= 1)">
+					<field name="x002Certificate" readonly="true" form-view="ebics-certificate-form" showTitle="false"/>
 				</panel>
 			</panel>
 			<panel-related field="ebicsRequestLogList" form-view="ebics-request-log-form" grid-view="ebics-request-log-grid" readonly="true"/>
@@ -99,5 +97,5 @@
     <action-method name="action-ebics-user-method-send-ptk">
   		<call class="com.axelor.apps.account.ebics.web.EbicsController" method="sendPTKRequest" />
     </action-method>
-  
+    
 </object-views>

@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.security.GeneralSecurityException;
+import java.security.cert.CertificateEncodingException;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 
@@ -29,16 +30,17 @@ import org.bouncycastle.openssl.PEMReader;
 import org.bouncycastle.openssl.PEMWriter;
 
 import com.axelor.apps.account.db.EbicsBank;
+import com.axelor.apps.account.db.EbicsCertificate;
 import com.axelor.apps.account.db.EbicsUser;
 import com.axelor.apps.account.db.repo.BankOrderFileFormatRepository;
 import com.axelor.apps.account.db.repo.EbicsBankRepository;
+import com.axelor.apps.account.db.repo.EbicsCertificateRepository;
 import com.axelor.apps.account.db.repo.EbicsUserRepository;
 import com.axelor.apps.account.ebics.certificate.CertificateManager;
 import com.axelor.apps.account.ebics.service.EbicsCertificateService;
 import com.axelor.apps.account.ebics.service.EbicsService;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.auth.db.User;
-import com.axelor.auth.db.repo.UserRepository;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
@@ -54,19 +56,19 @@ import com.google.inject.persist.Transactional;
 public class EbicsController {
 	
 	@Inject
-	EbicsUserRepository ebicsUserRepo;
+	private EbicsUserRepository ebicsUserRepo;
 	
 	@Inject
-	EbicsService ebicsService;
+	private EbicsService ebicsService;
 	
 	@Inject
-	UserRepository userRepo;
+	private EbicsBankRepository bankRepo;
 	
 	@Inject
-	EbicsBankRepository bankRepo;
+	private EbicsCertificateService certificateService;
 	
 	@Inject
-	EbicsCertificateService certificateService;
+	private EbicsCertificateRepository certificateRepo;
 	
 	@Transactional
 	public void generateCertificate(ActionRequest request, ActionResponse response){
@@ -109,6 +111,7 @@ public class EbicsController {
 		try {
 			ebicsService.sendINIRequest(ebicsUser, null);
 		}catch (AxelorException e) {
+			e.printStackTrace();
 			response.setFlash(stripClass(e.getLocalizedMessage()));
 		}
 		
@@ -123,6 +126,7 @@ public class EbicsController {
 		try {
 			ebicsService.sendHIARequest(ebicsUser, null);
 		}catch (AxelorException e) {
+			e.printStackTrace();
 			response.setFlash(stripClass(e.getLocalizedMessage()));
 		}
 		
@@ -137,6 +141,7 @@ public class EbicsController {
 			X509Certificate[] certificates = ebicsService.sendHPBRequest(ebicsUser, null);
 			confirmCertificates(ebicsUser, certificates, response);
 		}catch (AxelorException e) {
+			e.printStackTrace();
 			response.setFlash(stripClass(e.getLocalizedMessage()));
 		}
 		
@@ -175,6 +180,7 @@ public class EbicsController {
 		try {
 			ebicsService.sendSPRRequest(ebicsUser, null);
 		}catch (AxelorException e) {
+			e.printStackTrace();
 			response.setFlash(stripClass(e.getLocalizedMessage()));
 		}
 
@@ -273,6 +279,28 @@ public class EbicsController {
 		response.setCanClose(true);
 	}
 	
+	public void loadCertificate(ActionRequest request, ActionResponse response) throws AxelorException, CertificateEncodingException {
+		
+		EbicsCertificate cert = request.getContext().asType(EbicsCertificate.class);
+		
+		cert = certificateRepo.find(cert.getId());
+		
+		byte[] certs = cert.getCertificate();
+		
+		if (certs != null && certs.length > 0) {
+			X509Certificate certificate = EbicsCertificateService.getCertificate(certs, cert.getTypeSelect());
+			cert = certificateService.updateCertificate(certificate, cert);
+			response.setValue("validFrom", cert.getValidFrom());
+			response.setValue("validTo", cert.getValidTo());
+			response.setValue("issuer", cert.getIssuer());
+			response.setValue("subject", cert.getSubject());
+			response.setValue("publicKeyModulus", cert.getPublicKeyModulus());
+			response.setValue("publicKeyExponent", cert.getPublicKeyExponent());
+			response.setValue("fullName", cert.getFullName());
+		}
+		
+	}
+	
 	private String convertToPEMString(X509Certificate x509Cert) throws IOException {
 		
 	    StringWriter sw = new StringWriter();
@@ -293,6 +321,5 @@ public class EbicsController {
 		
 		return cert;
 	}
-
-
+	
 }
