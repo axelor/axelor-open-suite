@@ -304,7 +304,7 @@ public class EbicsUtils {
    */
   public static void checkHttpCode(int httpCode) throws AxelorException {
     if (httpCode != 200) {
-      throw new AxelorException("http.code.error", IException.FUNCTIONNAL);
+      throw new AxelorException("http.code.error[Code:%s]", IException.FUNCTIONNAL, httpCode);
     }
   }
 }

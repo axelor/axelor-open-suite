@@ -24,6 +24,7 @@ import java.util.Map;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.PaymentCondition;
 import com.axelor.apps.account.db.PaymentMode;
+import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
@@ -31,12 +32,14 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.Wizard;
 import com.axelor.apps.base.service.administration.GeneralService;
+import com.axelor.apps.businessproject.service.InvoiceServiceProjectImpl;
 import com.axelor.apps.businessproject.service.SaleOrderInvoiceProjectServiceImpl;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import com.axelor.rpc.ActionRequest;
@@ -272,5 +275,19 @@ public class InvoiceController {
 				}catch(AxelorException ae){
 					response.setFlash(ae.getLocalizedMessage());
 				}
+			}
+			
+			public void exportAnnex(ActionRequest request, ActionResponse response) throws AxelorException{
+				
+				Invoice invoice = Beans.get(InvoiceRepository.class).find(request.getContext().asType(Invoice.class).getId());
+				
+				List<String> reportInfo = Beans.get(InvoiceServiceProjectImpl.class).editInvoiceAnnex(invoice, invoice.getId().toString(), false);
+				
+				if (reportInfo == null || reportInfo.isEmpty()){ return; }
+				
+				
+				response.setView(ActionView
+						.define(reportInfo.get(0))
+						.add("html", reportInfo.get(1)).map());	
 			}
 }

@@ -26,7 +26,6 @@ import java.security.KeyStore;
 import java.security.PrivateKey;
 import java.security.cert.CertificateEncodingException;
 import java.security.cert.X509Certificate;
-import java.security.interfaces.RSAPublicKey;
 import java.util.Calendar;
 import java.util.Date;
 

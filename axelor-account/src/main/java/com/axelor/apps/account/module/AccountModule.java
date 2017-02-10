@@ -27,6 +27,8 @@ import com.axelor.apps.account.db.repo.BankStatementManagementRepository;
 import com.axelor.apps.account.db.repo.BankStatementRepository;
 import com.axelor.apps.account.db.repo.EbicsBankAccountRepository;
 import com.axelor.apps.account.db.repo.EbicsBankRepository;
+import com.axelor.apps.account.db.repo.EbicsCertificateAccountRepository;
+import com.axelor.apps.account.db.repo.EbicsCertificateRepository;
 import com.axelor.apps.account.db.repo.InvoiceManagementRepository;
 import com.axelor.apps.account.db.repo.InvoicePaymentManagementRepository;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
@@ -141,6 +143,8 @@ public class AccountModule extends AxelorModule {
         bind(EbicsBankRepository.class).to(EbicsBankAccountRepository.class);
         
         bind(EbicsBankService.class).to(EbicsBankServiceImpl.class);
+        
+        bind(EbicsCertificateRepository.class).to(EbicsCertificateAccountRepository.class);
         
         IPartner.modelPartnerFieldMap.put(Invoice.class.getName(), "partner");
     }

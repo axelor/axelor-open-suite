@@ -373,6 +373,7 @@
 		<option value="ssl">SSL</option>
 		<option value="encryption">Encryption</option>
 		<option value="authentication">Authentication</option>
+		<option value="signature">Signature</option>
 	</selection>
 
 </object-views>

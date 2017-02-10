@@ -44,6 +44,8 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.meta.MetaStore;
+import com.axelor.meta.schema.views.Selection.Option;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -87,24 +89,28 @@ public class EbicsCertificateService {
 		
 		byte[] certificate = getCertificateContent(bank, type);
 		
+		if (certificate == null) {
+			return null;
+		}
+		
 		return getCertificate(certificate, type);
 	}
 	
 	private byte[] getSSLCertificate(EbicsBank bank) throws AxelorException {
 		
 		try {
-			URL url = new URL(bank.getUrl());
-			log.debug("Bank url protocol: {}", url.getProtocol());
-			log.debug("Bank url host: {}", url.getHost());
-			log.debug("Bank url port: {}", url.getPort());
+			final URL bankUrl = new URL(bank.getUrl());
+			log.debug("Bank url protocol: {}", bankUrl.getProtocol());
+			log.debug("Bank url host: {}", bankUrl.getHost());
+			log.debug("Bank url port: {}", bankUrl.getPort());
 			
-			String urlStr = url.getProtocol() + "://" + url.getHost();
+			String urlStr = bankUrl.getProtocol() + "://" + bankUrl.getHost();
 			
-			if (url.getPort() > -1) {
-				urlStr += ":" + url.getPort();
+			if (bankUrl.getPort() > -1) {
+				urlStr += ":" + bankUrl.getPort();
 			}
 			
-			url = new URL(urlStr);
+			final URL url = new URL(urlStr);
 			
 			SSLContext sslCtx = SSLContext.getInstance("TLS");
 			sslCtx.init(null, new TrustManager[]{ new X509TrustManager() {
@@ -141,7 +147,7 @@ public class EbicsCertificateService {
 				}
 	
 			});
-			
+
 			connection.setSSLSocketFactory(sslCtx.getSocketFactory());
 			log.debug("SSL connection response code: {}", connection.getResponseCode());
 			log.debug("SSL connection response message: {}", connection.getResponseMessage());
@@ -151,20 +157,21 @@ public class EbicsCertificateService {
 			    for (int i = 0; i < certificates.length; i++) {
 			        Certificate certificate = certificates[i];
 			        if (certificate instanceof X509Certificate) {
-			        	createCertificate((X509Certificate) certificate, bank, "ssl");
+			        	X509Certificate cert = (X509Certificate) certificate;
+			        	createCertificate(cert, bank, "ssl");
 			        	return certificate.getEncoded();
 			        }
 			    }
 			}
-	
 			connection.disconnect();
 			
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
-
 		
-		throw new AxelorException(I18n.get("Error in getting ssl certificate"), IException.CONFIGURATION_ERROR);
+		return null;
+		
+//		throw new AxelorException(I18n.get("Error in getting ssl certificate"), IException.CONFIGURATION_ERROR);
 		
 	}
 	
@@ -179,6 +186,7 @@ public class EbicsCertificateService {
 		RSAPublicKey publicKey = (RSAPublicKey)  certificate.getPublicKey() ;
 		cert.setPublicKeyExponent(publicKey.getPublicExponent().toString());
 		cert.setPublicKeyModulus(publicKey.getModulus().toString());
+		computeFullName(cert);
 		
 		return cert;
 	}
@@ -188,6 +196,7 @@ public class EbicsCertificateService {
 		
 		EbicsCertificate cert = getEbicsCertificate(bank, type);
 		if (cert == null) {
+			log.debug("Creating bank certicate for bank: {}, type: {}", bank.getName(), type);
 			cert = new EbicsCertificate();
 			cert.setEbicsBank(bank);
 			cert.setTypeSelect(type);
@@ -213,5 +222,30 @@ public class EbicsCertificateService {
 		
 		return null;
 		
+	}
+	
+	public void computeFullName(EbicsCertificate entity) {
+		
+		StringBuilder fullName = new StringBuilder();
+		Option item = MetaStore.getSelectionItem("account.ebics.certificate.type.select", entity.getTypeSelect());
+		if (item != null) {
+			fullName.append(I18n.get(item.getTitle()));
+		}
+		
+		LocalDate date = entity.getValidFrom();
+		if (date != null) {
+			fullName.append(":" + date.toString("dd/MM/yyyy"));
+			date = entity.getValidTo();
+			if (date != null) {
+				fullName.append("-" + date.toString("dd/MM/yyyy"));
+			}
+		}
+		
+		String issuer = entity.getIssuer();
+		if (issuer != null) {
+			fullName.append(":" + issuer);
+		}
+		
+		entity.setFullName(fullName.toString());
 	}
 }
