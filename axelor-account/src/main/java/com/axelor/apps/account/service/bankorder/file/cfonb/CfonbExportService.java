@@ -653,7 +653,7 @@ public class CfonbExportService {
 		String b3 = this.cfonbConfig.getSenderNumExportCFONB();			// Numéro d'émetteur
 		String c1 = ref;										// Référence
 		String c2 = partner;									// Nom/Raison sociale du bénéficiaire
-		String d1 = bankDetails.getBankAddress();				// Domiciliation
+		String d1 = bankDetails.getBank().getBankAddress();		// Domiciliation
 		String d2 = "";											// Déclaration de la balance des paiement
 		String d3 = bankDetails.getSortCode();  				// Code guichet de la banque du donneur d'ordre / du débiteur
 		String d4 = bankDetails.getAccountNbr();				// Numéro de compte du bénéficiaire / du débiteur
@@ -926,7 +926,8 @@ public class CfonbExportService {
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.CFONB_EXPORT_5),
 					GeneralServiceImpl.EXCEPTION,bankDetails.getIban(), bankDetails.getPartner().getName()), IException.CONFIGURATION_ERROR);
 		}
-		if(bankDetails.getBankAddress() == null || bankDetails.getBankAddress().isEmpty()) {
+		String bankAddress = bankDetails.getBank().getBankAddress();
+		if(bankAddress == null || bankAddress.isEmpty()) {
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.CFONB_EXPORT_6),
 					GeneralServiceImpl.EXCEPTION,bankDetails.getIban(), bankDetails.getPartner().getName()), IException.CONFIGURATION_ERROR);
 		}

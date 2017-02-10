@@ -1,27 +1,36 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<object-views xmlns="http://axelor.com/xml/ns/object-views"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
-	
-	
-	<grid name="ebics-bank-grid" title="Ebics bank" model="com.axelor.apps.account.db.EbicsBank" >
-		<field name="name" />
-		<field name="url" />
-		<field name="hostId" />
+
+	<grid name="ebics-bank-grid" title="Ebics bank" model="com.axelor.apps.account.db.EbicsBank">
+		<field name="hostId"/>
+		<field name="name"/>
+		<field name="url"/>
 	</grid>
-	
+
 	<form name="ebics-bank-form" title="Ebics bank" model="com.axelor.apps.account.db.EbicsBank">
-	
 		<panel title="General informations">
-			<field name="name"/>
-			<field name="url"/>
-			<field name="hostId" help="Identifies the bank" />
-			<field name="testMode" />
+			<field name="fullName" colSpan="12" showTitle="false" css="label-bold bold large" hideIf="!fullName" readonly="true"/>
+			<field name="bank"/>
+			<field name="fax" placeholder="+33000000000" pattern="^\+?(?:[0-9]{2,3}(?:\s|\.)?){3,6}[0-9]{2,3}$" onChange="action-ebics-bank-record-normalize-fax-phone-number"/>
+			<field name="url" colSpan="12"/>
+			
+			<field name="testMode"/>
 			<field name="testFile" widget="binary-link" showIf="testMode"/>
 		</panel>
 
-		<panel-related field="ebicsCertificateList" form-view="ebics-certificate-form" grid-view="ebics-certificate-grid" />
+		<panel-related field="ebicsCertificateList" form-view="ebics-certificate-form" grid-view="ebics-certificate-grid"/>
+		
+		<panel-dashlet hideIf="!bank" action="action-ebics-bank-view-bank-details"/>
 	</form>
 	
-  
+	<action-record name="action-ebics-bank-record-normalize-fax-phone-number" model="com.axelor.apps.account.db.EbicsBank">
+		<field name="fax" expr="call:com.axelor.apps.account.ebics.web.EbicsBankController:normalizeFaxNumber(fax)"/>
+	</action-record>
+
+	<action-view name="action-ebics-bank-view-bank-details" model="com.axelor.apps.base.db.BankDetails" title="Bank Details">
+		<view name="bank-details-grid" type="grid"/>
+		<view name="bank-details-form" type="form"/>
+		<domain>self.bank = :bank</domain>
+	</action-view>
 </object-views>

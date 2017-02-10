@@ -385,7 +385,7 @@ public class BankOrderFileAFB320XCTService extends BankOrderFileService  {
 			
 			// Zone 4 : Nom de la banque du bénéficiaire (A ne renseigner que si le code BIC de la banque du bénéficiaire est absent. 
 			// Si cette zone est renseignée ainsi que le code BIC, elle est ignorée par la banque sauf en cas d'anomalie sur le code BIC.)
-			totalRecord += cfonbToolService.createZone("4", receiverBankDetails.getBankAddress(), cfonbToolService.STATUS_DEPENDENT, cfonbToolService.FORMAT_ALPHA_NUMERIC, 35);
+			totalRecord += cfonbToolService.createZone("4", receiverBankDetails.getBank().getBankAddress(), cfonbToolService.STATUS_DEPENDENT, cfonbToolService.FORMAT_ALPHA_NUMERIC, 35);
 			
 			// Zone 5 : Localisation de l'agence (Si le nom de la banque contient plus de 35 caractères, utiliser le début de la première zone 
 			// pour le compléter et le reste de cette zone pour indiquer le début de l'adresse)
@@ -393,7 +393,7 @@ public class BankOrderFileAFB320XCTService extends BankOrderFileService  {
 			
 			// Zone 6 : Code BIC de la banque du bénéficiaire (Si ce code est renseigné, c'est lui qui est utilisé pour identifier la banque du bénéficiaire. 
 			// C'est cette option qui est préconisée pour identifier la banque du bénéficiaire. )
-			totalRecord += cfonbToolService.createZone("6", receiverBankDetails.getBic(), cfonbToolService.STATUS_OPTIONAL, cfonbToolService.FORMAT_ALPHA_NUMERIC, 11);
+			totalRecord += cfonbToolService.createZone("6", receiverBankDetails.getBank().getCode(), cfonbToolService.STATUS_OPTIONAL, cfonbToolService.FORMAT_ALPHA_NUMERIC, 11);
 			
 			// Zone 7 : Code pays de la banque du bénéficiaire (Norme ISO.)
 			totalRecord += cfonbToolService.createZone("7", "", cfonbToolService.STATUS_OPTIONAL, cfonbToolService.FORMAT_ALPHA_NUMERIC, 2);  //TODO update bank details model

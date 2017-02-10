@@ -398,7 +398,7 @@ public class ReimbursementExportService {
 
 		// BIC
 		FinancialInstitutionIdentification5Choice finInstnId = factory.createFinancialInstitutionIdentification5Choice();
-		finInstnId.setBIC(bankDetails.getBic());
+		finInstnId.setBIC(bankDetails.getBank().getCode());
 
 		BranchAndFinancialInstitutionIdentification3 dbtrAgt = factory.createBranchAndFinancialInstitutionIdentification3();
 		dbtrAgt.setFinInstnId(finInstnId);
@@ -452,7 +452,7 @@ public class ReimbursementExportService {
 
 			// BIC
 			finInstnId = factory.createFinancialInstitutionIdentification5Choice();
-			finInstnId.setBIC(bankDetails.getBic());
+			finInstnId.setBIC(bankDetails.getBank().getCode());
 
 			cbtrAgt = factory.createBranchAndFinancialInstitutionIdentification3();
 			cbtrAgt.setFinInstnId(finInstnId);

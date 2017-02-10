@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_4.0.xsd">
+
+  <module name="base" package="com.axelor.apps.base.db"/>
+
+  <entity name="Bank" lang="java">
+  	<integer name="importId"/>
+  
+    <string name="fullName" title="Name" search="code,bankName"/>
+  
+    <string name="code" title="BIC (Bank Identifier)" namecolumn="true" required="true" unique="true"/>
+    <string name="bankName" title="Bank Name" max="255"/>
+    
+    <string name="businessPartyPrefix" title="Business Party Prefix (Bank Code)" min="4" max="4"/>
+    <many-to-one name="country" title="Country" ref="com.axelor.apps.base.db.Country"/>
+    <string name="businessPartySuffix" title="Business Party Suffix (Location Code)" min="2" max="2"/>
+    <string name="branchIdentifier" title="Branch Identifier (Branch Code)" max="3"/>
+    
+    <string name="bankAddress" title="SWIFT address" max="255" help="true"/>
+    
+    <one-to-many name="bankDetails" ref="com.axelor.apps.base.db.BankDetails" mappedBy="bank"/>
+  </entity>
+</domain-models>
+
