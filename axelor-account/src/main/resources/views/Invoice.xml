@@ -82,6 +82,7 @@
 	
 		<toolbar>
 		  <button name="showInvoice" title="Print" icon="fa-print" onClick="save,action-invoice-method-show-invoice"/>
+		  <button name="showAnnex" title="Print annex" icon="fa-print" onClick="action-invoice-business-project-method-print-annex" if-module="axelor-business-project"/>
 		  <button name="sendByEmail" title="Send email" icon="fa-envelope" onClick="save,action-send-by-email-with-template"/>
 		</toolbar>
 	  
@@ -502,6 +503,8 @@
 	
 	<action-attrs name="action-invoice-attrs-printing-fields" if-module="axelor-business-project">
 		<attribute name="hidden" for="printing" expr="eval: __repo__.of(InvoicingProject).all().filter('self.invoice.id = ?1', id).fetch().isEmpty()"/>
+		<attribute name="hidden" for="showAnnex" expr=" eval: __repo__.of(AccountConfig).all().filter('self.company = ?',company).fetchOne()?.displayTimesheetOnPrinting == false
+										&amp;&amp; __repo__.of(AccountConfig).all().filter('self.company = ?',company).fetchOne()?.displayExpenseOnPrinting == false"/>
 	</action-attrs>
 	
 	<!-- DOMAIN -->
