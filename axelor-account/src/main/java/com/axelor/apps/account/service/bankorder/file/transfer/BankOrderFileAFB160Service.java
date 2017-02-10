@@ -200,7 +200,7 @@ public abstract class BankOrderFileAFB160Service extends BankOrderFileService  {
 	 */
 	protected String getDetailD1Area(BankOrderLine bankOrderLine)  {
 		
-		return bankOrderLine.getReceiverBankDetails().getBankAddress();
+		return bankOrderLine.getReceiverBankDetails().getBank().getBankAddress();
 		
 	}
 	
@@ -437,7 +437,7 @@ public abstract class BankOrderFileAFB160Service extends BankOrderFileService  {
 			totalRecord += cfonbToolService.createZone("C2", bankOrderLine.getReceiverCompany().getName(), cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_ALPHA_NUMERIC, 24);
 			
 			// Zone D1 : Domiciliation
-			totalRecord += cfonbToolService.createZone("D1", receiverBankDetails.getBankAddress(), cfonbToolService.STATUS_DEPENDENT, cfonbToolService.FORMAT_ALPHA_NUMERIC, 24);
+			totalRecord += cfonbToolService.createZone("D1", receiverBankDetails.getBank().getBankAddress(), cfonbToolService.STATUS_DEPENDENT, cfonbToolService.FORMAT_ALPHA_NUMERIC, 24);
 			
 			// Zone D2 : Zone réservée 
 			totalRecord += cfonbToolService.createZone("D2", "", cfonbToolService.STATUS_NOT_USED, cfonbToolService.FORMAT_ALPHA_NUMERIC, 8);
