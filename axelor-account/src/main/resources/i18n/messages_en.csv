@@ -191,6 +191,7 @@
 "091209","Certificate is not valid because it is not yet in effect",,
 "091301","Verification of the ES has failed In the case of asynchronously implemented orders, the error can occur during preliminary verification",,
 "80",,,
+"<font color=#953B39> OR </font>",,,
 "A chart or chart structure of accounts already exists, please delete the hierarchy between accounts in order to import a new chart.",,,
 "Acc. Clearance",,,
 "Account",,,

@@ -191,6 +191,7 @@
 "091209","Le certificat n'est pas valide car il n'est pas encore en vigueur",,
 "091301","La V\u00E9rification de l'ES a \u00E9chou\u00E9. Dans le cas de commandes asynchrone, l'erreur peut se produire lors de la v\u00E9rification pr\u00E9liminaire",,
 "80",,,
+"<font color=#953B39> OR </font>","<font color=#953B39> OU </font>",,
 "A chart or chart structure of accounts already exists, please delete the hierarchy between accounts in order to import a new chart.",,,
 "Acc. Clearance","Apurage comptes",,
 "Account","Compte comptable",,
