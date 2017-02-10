@@ -367,6 +367,7 @@
 	    <action name="action-invoice-method-get-journal" if="operationTypeSelect != null &amp;&amp; operationTypeSelect != 0"/>
 	    <action name="action-invoice-record-in-ati"/>
 	    <action name="action-invoice-attrs-in-ati"/>
+	    <action name="action-invoice-attrs-hide-totals-company-currency"/>
     </action-group>
     
     <action-group name="action-account-invoice-onload-group" >
@@ -374,6 +375,7 @@
 	    <action name="action-invoice-attrs-collapse-irrecoverable-group"/>
 	    <action name="action-invoice-attrs-in-ati"/>
 	    <action name="action-invoice-attrs-printing-fields"/>
+	    <action name="action-invoice-attrs-hide-totals-company-currency"/>
     </action-group>   
     
     <action-group name="action-group-account-invoice-operationtype-onchange">
@@ -507,6 +509,10 @@
 										&amp;&amp; __repo__.of(AccountConfig).all().filter('self.company = ?',company).fetchOne()?.displayExpenseOnPrinting == false"/>
 	</action-attrs>
 	
+	<action-attrs name="action-invoice-attrs-hide-totals-company-currency">
+    	<attribute name="hidden" for="totalsCompanyCurrency" expr="eval: !company || !currency || company?.currency == currency"/>
+    </action-attrs>
+	
 	<!-- DOMAIN -->
 	
 	<action-attrs name="action-invoice-partner-account-domain">
@@ -520,10 +526,6 @@
 
 	<action-attrs name="action-invoice-attrs-domain-address">
 		<attribute name="domain" for="address" expr="eval: &quot;self.id IN (${(partner?.partnerAddressList?.findAll{it.isInvoicingAddr}.collect{it.address.id}+[null]).join(',')})&quot;" />
-    </action-attrs>
-    
-    <action-attrs name="action-invoice-attrs-hide-totals-company-currency">
-    	<attribute name="hidden" for="totalsCompanyCurrency" expr="eval: company?.currency == currency"/>
     </action-attrs>
     
     <!-- ACTION VALIDATE -->
