@@ -142,6 +142,26 @@
   		</panel>
 	</form>
 	
+	<form name="bank-order-send-form" title="Send a bank order" model="com.axelor.apps.account.db.BankOrder">
+		<panel name="main" colSpan="12" readonlyIf="statusSelect &gt;= 3">
+			<field name="statusSelect" showTitle="false" widget="NavSelect" colSpan="12"/>
+			<field name="bankOrderSeq" css="label-bold bold" colSpan="6"/>
+			<field name="orderTypeSelect" css="label-bold bold" colSpan="6" readonly="false"/>
+			<field name="fileToSend" required="true" widget="binary-link"/>
+			<field name="bankOrderTotalAmount" colSpan="4"/>
+			<field name="bankOrderCurrency" grid-view="currency-grid" form-view="currency-form" colSpan="2"/>
+	    	<field name="paymentMode" css="label-bold bold" colSpan="6" domain="self.orderTypeSelect = :orderTypeSelect" onChange="action-bank-order-record-payment-mode-change,action-bank-order-record-bank-order-file-format-change"/>
+	    	<field name="bankOrderFileFormat" domain="self.orderTypeSelect = :orderTypeSelect" colSpan="6" onChange="action-bank-order-record-bank-order-file-format-change"/>
+			<field name="signatoryUser" requiredIf="statusSelect == 2"/>
+		</panel>
+		<panel name="action" title="Action" itemSpan="12" sidebar="true" hideIf="statusSelect == 4 || statusSelect == 5">
+    		<button name="confirm" title="Confirm" showIf="statusSelect == 1" onClick="action-group-bank-order-confirm"/>
+    		<button name="sign" title="Sign" showIf="statusSelect == 2" onClick="save,action-bank-order-method-sign"/>
+    		<button name="carry out" title="Carry out" showIf="statusSelect == 3" onClick="save,action-bank-order-record-carry-out,action-method-bank-order-payment-validate,save"/>
+    		<button name="cancel" title="Cancel" showIf="statusSelect == 1" onClick="save,action-bank-order-record-cancel,save"/>
+  		</panel>
+    </form>
+	
 	<form name="bank-order-sign-wizard-form" title="Sign bank order" model="com.axelor.apps.account.db.BankOrder">
   		<panel colSpan="6">
     		<panel hidden="true" hideIf="isMultiCurrency" readonly="true">

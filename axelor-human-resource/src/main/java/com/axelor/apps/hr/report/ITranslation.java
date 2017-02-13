@@ -32,12 +32,19 @@ public class ITranslation {
 	public static final String EXPENSE_COMPANY_CB_SELECT = /*$$(*/ "Expense.companyCbSelect"; /*)*/
 	public static final String EXPENSE_ADVANCE_AMOUNT = /*$$(*/ "Expense.advanceAmount"; /*)*/
 	public static final String EXPENSE_MULTIPLE_USERS = /*$$(*/ "Expense.multipleUsers"; /*)*/	
+	public static final String EXPENSE_TOTAL_LABEL = /*$$(*/ "Expense.total"; /*)*/	
 	
 	public static final String EXPENSE_LINE_EXPENSE_DATE = /*$$(*/ "ExpenseLine.expenseDate"; /*)*/
 	public static final String EXPENSE_LINE_CLIENT = /*$$(*/ "ExpenseLine.client"; /*)*/
 	public static final String EXPENSE_LINE_EXPENSE_TYPE = /*$$(*/ "ExpenseLine.expenseType"; /*)*/
 	public static final String EXPENSE_LINE_AMOUNT = /*$$(*/ "ExpenseLine.amount"; /*)*/
 	public static final String EXPENSE_LINE_UNTAXED_AMOUNT = /*$$(*/ "ExpenseLine.untaxedAmount"; /*)*/
+	public static final String EXPENSE_LINE_TOTAL_TAXED = /*$$(*/ "ExpenseLine.totalTax"; /*)*/
+	public static final String EXPENSE_LINE_DISTANCE = /*$$(*/ "ExpenseLine.distance"; /*)*/
+	public static final String EXPENSE_LINE_CITY_FROM = /*$$(*/ "ExpenseLine.cityFrom"; /*)*/
+	public static final String EXPENSE_LINE_CITY_TO = /*$$(*/ "ExpenseLine.cityTo"; /*)*/
+	public static final String EXPENSE_LINE_KILOMETRIC_ALLOW_PARAM = /*$$(*/ "ExpenseLine.kilometricAllowParam"; /*)*/
+	public static final String EXPENSE_LINE_KILOMETRIC_EXPENSE_TYPE = /*$$(*/ "ExpenseLine.kilometricExpenseType"; /*)*/
 	
 	public static final String TIMESHEET_OF = /*$$(*/ "Timesheet.timesheetOf"; /*)*/
 	public static final String TIMESHEET_PROJECT = /*$$(*/ "TimesheetLine.project"; /*)*/

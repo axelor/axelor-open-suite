@@ -143,7 +143,7 @@ public class UInitializationRequestElement extends InitializationRequestElement 
       fULOrderParams.setParameterArray(parameters.toArray(new Parameter[parameters.size()]));
     }
 
-    orderDetails = EbicsXmlFactory.createStaticHeaderOrderDetailsType(session.getUser().getEbicsPartner().getNextOrderId(),
+    orderDetails = EbicsXmlFactory.createStaticHeaderOrderDetailsType(session.getUser().getNextOrderId(),
 	                                                              "DZHNN",
 	                                                              orderType,
 	                                                              fULOrderParams);

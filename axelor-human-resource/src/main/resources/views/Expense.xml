@@ -46,7 +46,7 @@
 	    	<button name="refuseButton" onClick="action-expense-group-refuse" title="Refuse"/>
 	    	<button name="cancelButton" onClick="action-expense-validate-period,save,com.axelor.apps.hr.web.expense.ExpenseController:cancel,action-expense-attrs-buttons" hideIf="statusSelect == 6" title="Cancel" icon="fa-close"/>
 	    	<button name="draftButton" onClick="action-expense-record-draft,save,action-expense-attrs-buttons" title="Return to draft status" showIf="statusSelect &gt; 3 "/>
-	    	<button name="addPaymentButton" title="Register payment" onClick="action-expense-group-payment" showIf="statusSelect == 3  &amp;&amp; (paymentStatusSelect == 0 || paymentStatusSelect == 2)"/>
+	    	<button name="addPaymentButton" title="Register payment" onClick="action-expense-method-add-payment" showIf="statusSelect == 3  &amp;&amp; (paymentStatusSelect == 0 || paymentStatusSelect == 2)"/>
 	    	<button name="cancelPaymentButton" title="Cancel payment" showIf="paymentStatusSelect == 1 || paymentStatusSelect == 3"/>
 	    </panel>
 		<panel>
@@ -168,11 +168,6 @@
 	    <field name="statusSelect" expr="1"/>
 	</action-record>
 	
-	<action-record name="action-expense-record-reimburse" model="com.axelor.apps.hr.db.Expense">
-		<field name="statusSelect" expr="4"/>
-		<field name="paymentAmount" expr="eval: inTaxTotal - advanceAmount - withdrawnCash - personalExpenseAmount" />
-	</action-record>
-	
 	<action-attrs name="action-expense-attrs-domain-expense-select">
 		<attribute name="domain" for="$expenseSelect" expr="eval: &quot; self.statusSelect = 1 AND self.user = ${__user__.id} &quot;"/>
 	</action-attrs>
@@ -207,6 +202,10 @@
 	
 	<action-method name="action-expense-method-refuse">
 		<call class="com.axelor.apps.hr.web.expense.ExpenseController" method="refuse"/>
+	</action-method>
+	
+	<action-method name="action-expense-method-add-payment">
+		<call class="com.axelor.apps.hr.web.expense.ExpenseController" method="addPayment"/>
 	</action-method>
 	
 	<action-attrs name="action-expense-attrs-buttons">

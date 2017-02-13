@@ -6,15 +6,12 @@
   
   <grid name="ebics-partner-grid" title="Ebics partner" model="com.axelor.apps.account.db.EbicsPartner" >
 		<field name="partnerId" />
-		<field name="nextOrderId" />
-		<field name="partnerId" />
 	</grid>
 	
 	<form name="ebics-partner-form" title="Ebics partner" model="com.axelor.apps.account.db.EbicsPartner">
 	
 		<panel>
 			<field name="partnerId" help="Name of the contract/subscription" max="35" x-bind="{{partnerId|uppercase}}" pattern='^[A-Z0-9]+$'/>
-			<field name="nextOrderId" />
 			<field name="ebicsBank" />
 		</panel>
 	

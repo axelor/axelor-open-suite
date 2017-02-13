@@ -20,6 +20,7 @@ package com.axelor.apps.account.ebics.xml;
 import java.math.BigInteger;
 import java.util.Calendar;
 
+import com.axelor.apps.account.db.EbicsCertificate;
 import com.axelor.apps.account.ebics.schema.h003.AuthenticationPubKeyInfoType;
 import com.axelor.apps.account.ebics.schema.h003.EncryptionPubKeyInfoType;
 import com.axelor.apps.account.ebics.schema.h003.HIARequestOrderDataType;
@@ -58,19 +59,20 @@ public class HIARequestOrderDataElement extends DefaultEbicsRootElement {
     PubKeyValueType		 	authPubKeyValue;
     X509DataType 			authX509Data;
     RSAKeyValueType 			AuthRsaKeyValue;
-
-    encryptionX509Data = EbicsXmlFactory.createX509DataType(session.getUser().getDn(),
-	                                                    session.getUser().getE002Certificate());
-    encryptionRsaKeyValue = EbicsXmlFactory.createRSAKeyValueType( new BigInteger(session.getUser().getE002PublicKeyExponent()).toByteArray(),
-	                                                         new BigInteger( session.getUser().getE002PublicKeyModulus()).toByteArray());
+    
+    EbicsCertificate certificate = session.getUser().getE002Certificate();
+    
+    encryptionX509Data = EbicsXmlFactory.createX509DataType(session.getUser().getDn(),certificate.getCertificate());
+    encryptionRsaKeyValue = EbicsXmlFactory.createRSAKeyValueType( new BigInteger(certificate.getPublicKeyExponent()).toByteArray(),
+	                                                         new BigInteger(certificate.getPublicKeyModulus()).toByteArray());
     encryptionPubKeyValue = EbicsXmlFactory.createH003PubKeyValueType(encryptionRsaKeyValue, Calendar.getInstance());
     encryptionPubKeyInfo = EbicsXmlFactory.createEncryptionPubKeyInfoType("E002",
 	                                                                  encryptionPubKeyValue,
 	                                                                  encryptionX509Data);
-    authX509Data = EbicsXmlFactory.createX509DataType(session.getUser().getDn(),
-	                                              session.getUser().getX002Certificate());
-    AuthRsaKeyValue = EbicsXmlFactory.createRSAKeyValueType( new BigInteger(session.getUser().getX002PublicKeyExponent()).toByteArray(),
-							    new BigInteger (session.getUser().getX002PublicKeyModulus()).toByteArray());
+    certificate = session.getUser().getX002Certificate();
+    authX509Data = EbicsXmlFactory.createX509DataType(session.getUser().getDn(), certificate.getCertificate());
+    AuthRsaKeyValue = EbicsXmlFactory.createRSAKeyValueType( new BigInteger(certificate.getPublicKeyExponent()).toByteArray(),
+							    new BigInteger (certificate.getPublicKeyModulus()).toByteArray());
     authPubKeyValue = EbicsXmlFactory.createH003PubKeyValueType(AuthRsaKeyValue, Calendar.getInstance());
     authenticationPubKeyInfo = EbicsXmlFactory.createAuthenticationPubKeyInfoType("X002",
 	                                                                          authPubKeyValue,

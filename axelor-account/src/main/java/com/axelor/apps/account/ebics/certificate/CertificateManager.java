@@ -26,24 +26,18 @@ import java.security.KeyStore;
 import java.security.PrivateKey;
 import java.security.cert.CertificateEncodingException;
 import java.security.cert.X509Certificate;
-import java.security.interfaces.RSAPublicKey;
 import java.util.Calendar;
 import java.util.Date;
 
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
+
+import com.axelor.apps.account.db.EbicsCertificate;
 //import org.kopi.ebics.interfaces.EbicsUser;
 //import org.kopi.ebics.interfaces.PasswordCallback;
-
-
-
-
-
-
-
-
-
 import com.axelor.apps.account.db.EbicsUser;
+import com.axelor.apps.account.ebics.service.EbicsCertificateService;
+import com.axelor.inject.Beans;
 
 /**
  * Simple manager for EBICS certificates.
@@ -85,24 +79,30 @@ public class CertificateManager {
  * @throws CertificateEncodingException 
    */
   private void setUserCertificates() throws IOException, CertificateEncodingException {
-    user.setA005Certificate(a005Certificate.getEncoded());
-    user.setX002Certificate(x002Certificate.getEncoded());
-    user.setE002Certificate(e002Certificate.getEncoded());
+	
+	user.setA005Certificate(updateCertificate(a005Certificate, user.getA005Certificate(), a005PrivateKey.getEncoded(), "signature"));
+    
+	user.setX002Certificate(updateCertificate(x002Certificate, user.getX002Certificate(), x002PrivateKey.getEncoded(), "authentication"));
+    
+	user.setE002Certificate(updateCertificate(e002Certificate, user.getE002Certificate(), e002PrivateKey.getEncoded(), "encryption"));
 
-    //TODO
-    user.setA005PrivateKey(a005PrivateKey.getEncoded());
-    user.setX002PrivateKey(x002PrivateKey.getEncoded());
-    user.setE002PrivateKey(e002PrivateKey.getEncoded());
-    
-    user.setA005PublicKeyModulus(		(  (RSAPublicKey)  a005Certificate.getPublicKey() ).getModulus().toString()  );
-    user.setA005PublicKeyExponent(		(  (RSAPublicKey)  a005Certificate.getPublicKey() ).getPublicExponent().toString()  );
-    	
-    user.setX002PublicKeyModulus(		(  (RSAPublicKey)  x002Certificate.getPublicKey() ).getModulus().toString()  );
-    user.setX002PublicKeyExponent(		(  (RSAPublicKey)  x002Certificate.getPublicKey() ).getPublicExponent().toString()  );
-    
-    user.setE002PublicKeyModulus(		(  (RSAPublicKey)  e002Certificate.getPublicKey() ).getModulus().toString()  );
-    user.setE002PublicKeyExponent(		(  (RSAPublicKey)  e002Certificate.getPublicKey() ).getPublicExponent().toString()  );
-    
+  }
+  
+  private EbicsCertificate updateCertificate(X509Certificate certificate,  EbicsCertificate cert, byte[] privateKey, String type) throws CertificateEncodingException, IOException {
+	  
+	  if (cert == null) {
+		  cert = new EbicsCertificate();
+		  cert.setTypeSelect(type);
+	  }
+	  
+	  EbicsCertificateService certificateService = Beans.get(EbicsCertificateService.class);
+	  
+	  cert = certificateService.updateCertificate(certificate, cert);
+	  
+	  cert.setPrivateKey(privateKey);
+	  
+	  return cert;
+	  
   }
 
   /**

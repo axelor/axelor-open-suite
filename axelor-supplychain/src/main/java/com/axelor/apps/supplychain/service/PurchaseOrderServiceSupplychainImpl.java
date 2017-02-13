@@ -26,6 +26,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.account.db.BudgetDistribution;
+import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
@@ -137,11 +138,17 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
 						priceDiscounted = unitConversionService.convertWithProduct(purchaseOrderLine.getUnit(), unit, priceDiscounted, purchaseOrderLine.getProduct());
 					}
 					
+					BigDecimal taxRate = BigDecimal.ZERO;
+					TaxLine taxLine = purchaseOrderLine.getTaxLine();
+					if(taxLine != null)  {
+						taxRate = taxLine.getValue();
+					}
+					
 					StockMoveLine stockMoveLine = Beans.get(StockMoveLineService.class).createStockMoveLine(
 							product, purchaseOrderLine.getProductName(), 
 							purchaseOrderLine.getDescription(), qty, 
-							priceDiscounted,unit, 
-							stockMove, 2, purchaseOrder.getInAti(), purchaseOrderLine.getTaxLine().getValue());
+							priceDiscounted, unit, 
+							stockMove, StockMoveLineService.TYPE_PURCHASES, purchaseOrder.getInAti(), taxRate);
 					if(stockMoveLine != null) {
 
 						stockMoveLine.setPurchaseOrderLine(purchaseOrderLine);

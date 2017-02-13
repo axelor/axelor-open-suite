@@ -35,6 +35,7 @@ import com.axelor.apps.account.service.bankorder.file.cfonb.CfonbImportService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.payment.paymentvoucher.PaymentVoucherCreateService;
+import com.axelor.apps.base.db.Bank;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
@@ -119,21 +120,19 @@ public class InterbankPaymentOrderImportService {
 
 		BankDetails bankDetails = bankDetailsService.createBankDetails( //TODO
 				this.getAccountNbr(payment[2]),
-				"",
 				this.getBankCode(payment[2]),
 				payment[3],
-				"",
-				"",
+				null,
 				"",
 				partner,
 				this.getSortCode(payment[2]));
 
 		partner.getBankDetailsList().add(bankDetails);
 
-		if (InvoiceToolService.isPurchase(invoice)) {
-			partner.setSupplierPaymentMode(paymentMode);
+		if (InvoiceToolService.isOutPayment(invoice)) {
+			partner.setOutPaymentMode(paymentMode);
 		} else {
-			partner.setClientPaymentMode(paymentMode);
+			partner.setInPaymentMode(paymentMode);
 		}
 		
 		partnerRepo.save(partner);

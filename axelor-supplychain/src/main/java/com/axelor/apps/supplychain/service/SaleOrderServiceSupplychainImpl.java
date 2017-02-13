@@ -21,7 +21,6 @@ import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.axelor.apps.ReportFactory;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.General;
@@ -102,7 +101,7 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl {
 		
 		saleOrder.setLocation(location);
 
-		saleOrder.setPaymentMode(clientPartner.getClientPaymentMode());
+		saleOrder.setPaymentMode(clientPartner.getInPaymentMode());
 		saleOrder.setPaymentCondition(clientPartner.getPaymentCondition());
 		
 		return saleOrder;
@@ -113,7 +112,7 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl {
 		PartnerService partnerService = Beans.get(PartnerService.class);
 		if(client != null){
 			saleOrder.setPaymentCondition(client.getPaymentCondition());
-			saleOrder.setPaymentMode(client.getClientPaymentMode());
+			saleOrder.setPaymentMode(client.getInPaymentMode());
 			saleOrder.setMainInvoicingAddress(partnerService.getInvoicingAddress(client));
 			saleOrder.setDeliveryAddress(partnerService.getDeliveryAddress(client));
 			saleOrder.setPriceList(client.getSalePriceList());

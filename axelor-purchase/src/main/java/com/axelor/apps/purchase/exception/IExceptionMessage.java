@@ -26,16 +26,16 @@ package com.axelor.apps.purchase.exception;
  */
 public interface IExceptionMessage {
 	
-	static final String PURCHASE_ORDER_LINE_TAX_LINE = /*$$(*/ "Il manque une ligne de taxe"/*)*/ ;
+	static final String PURCHASE_ORDER_LINE_TAX_LINE = /*$$(*/ "A tax line is missing"/*)*/ ;
 	/**
 	 * Purchase order service impl
 	 */
-	static final public String PURCHASE_ORDER_1 = /*$$(*/ "La société %s n'a pas de séquence de configurée pour les commandes fournisseur" /*)*/;
+	static final public String PURCHASE_ORDER_1 = /*$$(*/ "The company %s doesn't have any configured sequence for the purchase orders" /*)*/;
 
 	/**
 	 * Purchase config service
 	 */
-	static final public String PURCHASE_CONFIG_1 = /*$$(*/ "%s :\n Veuillez configurer le module Achat pour la société %s" /*)*/;
+	static final public String PURCHASE_CONFIG_1 = /*$$(*/ "%s :\n You must configure Purchase module for the company %s" /*)*/;
 
 	/**
 	 * Merge purchase order

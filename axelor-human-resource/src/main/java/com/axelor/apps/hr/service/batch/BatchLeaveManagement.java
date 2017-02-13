@@ -167,7 +167,8 @@ public class BatchLeaveManagement extends BatchStrategy {
 		if(employee != null){
 			leaveLine = leaveServiceProvider.get().addLeaveReasonOrCreateIt(employee, leaveReason);
 			
-			BigDecimal dayNumber = batch.getHrBatch().getDayNumber().subtract(new BigDecimal( publicHolidayService.getImposedDayNumber(employee, batch.getHrBatch().getStartDate(), batch.getHrBatch().getEndDate()) ));
+			BigDecimal dayNumber = batch.getHrBatch().getUseWeeklyPlanningCoef() ? batch.getHrBatch().getDayNumber().multiply(employee.getPlanning().getLeaveCoef()) : batch.getHrBatch().getDayNumber();
+			dayNumber = dayNumber.subtract(new BigDecimal( publicHolidayService.getImposedDayNumber(employee, batch.getHrBatch().getStartDate(), batch.getHrBatch().getEndDate()) ));
 			LeaveManagement leaveManagement = leaveManagementService.createLeaveManagement(leaveLine, AuthUtils.getUser(), batch.getHrBatch().getComments(), null, batch.getHrBatch().getStartDate(), batch.getHrBatch().getEndDate(), dayNumber );
 			leaveLine.setQuantity(leaveLine.getQuantity().add(dayNumber).setScale(1));
 			

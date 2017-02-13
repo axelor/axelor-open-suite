@@ -25,6 +25,10 @@ import com.axelor.apps.account.db.repo.BankOrderManagementRepository;
 import com.axelor.apps.account.db.repo.BankOrderRepository;
 import com.axelor.apps.account.db.repo.BankStatementManagementRepository;
 import com.axelor.apps.account.db.repo.BankStatementRepository;
+import com.axelor.apps.account.db.repo.EbicsBankAccountRepository;
+import com.axelor.apps.account.db.repo.EbicsBankRepository;
+import com.axelor.apps.account.db.repo.EbicsCertificateAccountRepository;
+import com.axelor.apps.account.db.repo.EbicsCertificateRepository;
 import com.axelor.apps.account.db.repo.InvoiceManagementRepository;
 import com.axelor.apps.account.db.repo.InvoicePaymentManagementRepository;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
@@ -42,6 +46,8 @@ import com.axelor.apps.account.db.repo.PaymentVoucherManagementRepository;
 import com.axelor.apps.account.db.repo.PaymentVoucherRepository;
 import com.axelor.apps.account.db.repo.ReconcileManagementRepository;
 import com.axelor.apps.account.db.repo.ReconcileRepository;
+import com.axelor.apps.account.ebics.service.EbicsBankService;
+import com.axelor.apps.account.ebics.service.EbicsBankServiceImpl;
 import com.axelor.apps.account.service.AccountManagementServiceAccountImpl;
 import com.axelor.apps.account.service.AddressServiceAccountImpl;
 import com.axelor.apps.account.service.AnalyticMoveLineService;
@@ -133,6 +139,12 @@ public class AccountModule extends AxelorModule {
         bind(BankOrderMergeService.class).to(BankOrderMergeServiceImpl.class);
         
         bind(BankOrderMoveService.class).to(BankOrderMoveServiceImpl.class);
+
+        bind(EbicsBankRepository.class).to(EbicsBankAccountRepository.class);
+        
+        bind(EbicsBankService.class).to(EbicsBankServiceImpl.class);
+        
+        bind(EbicsCertificateRepository.class).to(EbicsCertificateAccountRepository.class);
         
         IPartner.modelPartnerFieldMap.put(Invoice.class.getName(), "partner");
     }

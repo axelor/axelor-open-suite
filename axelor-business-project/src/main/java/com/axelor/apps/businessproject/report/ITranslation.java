@@ -46,4 +46,21 @@ public interface ITranslation {
 	public static final String PROJECT_TASK_TYPE = /*$$(*/ "ProjectTask.type"; /*)*/
 	public static final String PROJECT_TASK_TOTAL = /*$$(*/ "ProjectTask.total"; /*)*/
 	
+	public static final String INVOICE_PURCHASE_INVOICE_NO_ANNEX = /*$$(*/ "Invoice.purchaseInvoiceNoAnnex"; /*)*/
+	public static final String INVOICE_PURCHASE_REFUND_NO_ANNEX = /*$$(*/ "Invoice.purchaseRefundNoAnnex"; /*)*/
+	public static final String INVOICE_INVOICE_NO_ANNEX = /*$$(*/ "Invoice.invoiceNoAnnex"; /*)*/
+	public static final String INVOICE_DRAFT_INVOICE_NO_ANNEX = /*$$(*/ "Invoice.draftInvoiceNoAnnex"; /*)*/
+	public static final String INVOICE_REFUND_NO_ANNEX = /*$$(*/ "Invoice.refundNoAnnex"; /*)*/
+	
+	public static final String INVOICE_TIMESHEET_TITLE = /*$$(*/ "Invoice.timesheetTitle"; /*)*/
+	public static final String INVOICE_EXPENSE_TITLE = /*$$(*/ "Invoice.expenseTitle"; /*)*/
+	
+	public static final String INVOICE_TIMESHEET_USER = /*$$(*/ "Invoice.timesheetUser"; /*)*/
+	public static final String INVOICE_TIMESHEET_ACTIVITY = /*$$(*/ "Invoice.timesheetActivity"; /*)*/
+	public static final String INVOICE_TIMESHEET_DURATION = /*$$(*/ "Invoice.timesheetDuration"; /*)*/
+
+	public static final String INVOICE_EXPENSE_TOTAL_AMOUNT = /*$$(*/ "Invoice.expenseTotalAmount"; /*)*/
+	public static final String INVOICE_EXPENSE_TAX_AMOUNT = /*$$(*/ "Invoice.expenseTaxAmount"; /*)*/
+	public static final String INVOICE_EXPENSE_PRODUCT = /*$$(*/ "Invoice.expenseProduct"; /*)*/
+	
 }

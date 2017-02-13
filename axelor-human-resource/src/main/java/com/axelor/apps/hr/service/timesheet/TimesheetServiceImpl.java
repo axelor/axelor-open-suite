@@ -207,6 +207,20 @@ public class TimesheetServiceImpl implements TimesheetService{
 		Beans.get(TimesheetRepository.class).save(timesheet);
 	}
 	
+	public Message sendCancellationEmail(Timesheet timesheet) throws AxelorException, ClassNotFoundException, InstantiationException, IllegalAccessException, MessagingException, IOException  {
+
+		HRConfig hrConfig = hrConfigService.getHRConfig(timesheet.getCompany());
+
+		if(hrConfig.getTimesheetMailNotification())  {
+
+			return templateMessageService.generateAndSendMessage(timesheet, hrConfigService.getCanceledTimesheetTemplate(hrConfig));
+
+		}
+
+		return null;
+
+	}
+
 	@Override
 	public Timesheet generateLines(Timesheet timesheet, LocalDate fromGenerationDate, LocalDate toGenerationDate, BigDecimal logTime, ProjectTask projectTask, Product product) throws AxelorException{
 

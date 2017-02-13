@@ -35,6 +35,7 @@ import com.axelor.apps.hr.db.repo.LeaveRequestRepository;
 import com.axelor.apps.hr.exception.IExceptionMessage;
 import com.axelor.apps.hr.service.HRMenuTagService;
 import com.axelor.apps.hr.service.config.HRConfigService;
+import com.axelor.apps.hr.service.extra.hours.ExtraHoursService;
 import com.axelor.apps.hr.service.leave.LeaveService;
 import com.axelor.apps.message.db.Message;
 import com.axelor.apps.message.db.repo.MessageRepository;
@@ -275,16 +276,22 @@ public class LeaveController {
 	}
 
 	public void cancel(ActionRequest request, ActionResponse response) throws AxelorException  {
-		
-		LeaveService leaveService = leaveServiceProvider.get();
-		LeaveRequest leave = request.getContext().asType(LeaveRequest.class);
-		leave = Beans.get(LeaveRequestRepository.class).find(leave.getId());
-		if (leave.getLeaveLine().getLeaveReason().getManageAccumulation()){
-			leaveService.manageCancelLeaves(leave);
+		try {
+			LeaveRequest leave = request.getContext().asType(LeaveRequest.class);
+			leave = leaveRequestRepositoryProvider.get().find(leave.getId());
+			LeaveService leaveService = leaveServiceProvider.get();
+
+			leaveService.cancel(leave);
+
+			Message message = leaveService.sendCancellationEmail(leave);
+			if (message != null && message.getStatusSelect() == MessageRepository.STATUS_SENT) {
+				response.setFlash(String.format(I18n.get("Email sent to %s"), Beans.get(MessageServiceBaseImpl.class).getToRecipients(message)));
+			}
+		} catch(Exception e) {
+			TraceBackService.trace(response, e);
+		} finally {
+			response.setReload(true);
 		}
-		leaveService.cancelLeave(leave);
-		response.setReload(true);
-		
 	}
 
 	public void createEvents(ActionRequest request, ActionResponse response) throws AxelorException{
