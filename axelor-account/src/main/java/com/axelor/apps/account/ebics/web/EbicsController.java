@@ -299,5 +299,14 @@ public class EbicsController {
 		
 	}
 	
+	public void updateEditionDate(ActionRequest request, ActionResponse response) {
+		
+		EbicsUser ebicsUser = request.getContext().asType(EbicsUser.class);
+		ebicsUser = ebicsUserRepo.find(ebicsUser.getId());
+		certificateService.updateEditionDate(ebicsUser);
+
+		response.setReload(true);
+		
+	}
 	
 }

@@ -23,6 +23,7 @@
 				<field name="issuer" colSpan="12" />
 				<field name="validFrom" />
 				<field name="validTo" />
+				<field name="initLetterEditionDate" />
 				<field name="privateKey" />
 				<field name="publicKeyModulus" hidden="true"/>
 				<field name="publicKeyExponent" hidden="true"/>

@@ -21,6 +21,7 @@
 	<string name="fullName" title="Full name" namecolumn="true" />
 	<string name="pemString" title="PEM" large="true"/>
 	<string name="sha2has" title="SHA2(256)" large="true" />
+	<datetime name="initLetterEditionDate" title="Initialization Letter edition date" />
 	 
 <!-- 	<unique-constraint columns="ebicsBank,typeSelect" /> -->
 	

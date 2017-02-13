@@ -40,12 +40,15 @@ import org.apache.commons.codec.digest.DigestUtils;
 import org.bouncycastle.openssl.PEMReader;
 import org.bouncycastle.openssl.PEMWriter;
 import org.joda.time.LocalDate;
+import org.joda.time.LocalDateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.account.db.EbicsBank;
 import com.axelor.apps.account.db.EbicsCertificate;
+import com.axelor.apps.account.db.EbicsUser;
 import com.axelor.apps.account.db.repo.EbicsCertificateRepository;
+import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
@@ -62,6 +65,9 @@ public class EbicsCertificateService {
 	
 	@Inject
 	private EbicsCertificateRepository certRepo;
+	
+	@Inject
+	private GeneralService generalService;
 	
 	public static byte[] getCertificateContent(EbicsBank bank, String type) throws AxelorException {
 		 
@@ -279,4 +285,30 @@ public class EbicsCertificateService {
 		
 		return cert;
    }
+   
+   @Transactional
+   public void updateEditionDate(EbicsUser user) {
+	   
+	   LocalDateTime now = generalService.getTodayDateTime().toLocalDateTime();
+	   
+	   EbicsCertificate certificate = user.getA005Certificate();
+	   if (certificate != null) {
+		   certificate.setInitLetterEditionDate(now);
+		   certRepo.save(certificate);
+	   }
+	   
+	   certificate = user.getE002Certificate();
+	   if (certificate != null) {
+		   certificate.setInitLetterEditionDate(now);
+		   certRepo.save(certificate);
+	   }
+	   
+	   certificate = user.getX002Certificate();
+	   if (certificate != null) {
+		   certificate.setInitLetterEditionDate(now);
+		   certRepo.save(certificate);
+	   }
+	   
+   }
+   
 }
