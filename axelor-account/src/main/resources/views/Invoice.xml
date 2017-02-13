@@ -82,6 +82,7 @@
 	
 		<toolbar>
 		  <button name="showInvoice" title="Print" icon="fa-print" onClick="save,action-invoice-method-show-invoice"/>
+		  <button name="showAnnex" title="Print annex" icon="fa-print" onClick="action-invoice-business-project-method-print-annex" if-module="axelor-business-project"/>
 		  <button name="sendByEmail" title="Send email" icon="fa-envelope" onClick="save,action-send-by-email-with-template"/>
 		</toolbar>
 	  
@@ -89,7 +90,7 @@
 			<field name="invoiceId"/>
 			
 			<panel itemSpan="12" colSpan="6">
-	    		 <field name="operationTypeSelect" selection="iinvoice.operation.type.select" showTitle="false" onChange="action-group-account-invoice-operationtype-onchange">
+				<field name="operationTypeSelect" selection="iinvoice.operation.type.select" readonlyIf="statusSelect &gt; 1" showTitle="false" onChange="action-group-account-invoice-operationtype-onchange">
 			        <viewer>
 			        <![CDATA[
 			
@@ -366,6 +367,7 @@
 	    <action name="action-invoice-method-get-journal" if="operationTypeSelect != null &amp;&amp; operationTypeSelect != 0"/>
 	    <action name="action-invoice-record-in-ati"/>
 	    <action name="action-invoice-attrs-in-ati"/>
+	    <action name="action-invoice-attrs-hide-totals-company-currency"/>
     </action-group>
     
     <action-group name="action-account-invoice-onload-group" >
@@ -373,6 +375,7 @@
 	    <action name="action-invoice-attrs-collapse-irrecoverable-group"/>
 	    <action name="action-invoice-attrs-in-ati"/>
 	    <action name="action-invoice-attrs-printing-fields"/>
+	    <action name="action-invoice-attrs-hide-totals-company-currency"/>
     </action-group>   
     
     <action-group name="action-group-account-invoice-operationtype-onchange">
@@ -502,7 +505,13 @@
 	
 	<action-attrs name="action-invoice-attrs-printing-fields" if-module="axelor-business-project">
 		<attribute name="hidden" for="printing" expr="eval: __repo__.of(InvoicingProject).all().filter('self.invoice.id = ?1', id).fetch().isEmpty()"/>
+		<attribute name="hidden" for="showAnnex" expr=" eval: __repo__.of(AccountConfig).all().filter('self.company = ?',company).fetchOne()?.displayTimesheetOnPrinting == false
+										&amp;&amp; __repo__.of(AccountConfig).all().filter('self.company = ?',company).fetchOne()?.displayExpenseOnPrinting == false"/>
 	</action-attrs>
+	
+	<action-attrs name="action-invoice-attrs-hide-totals-company-currency">
+    	<attribute name="hidden" for="totalsCompanyCurrency" expr="eval: !company || !currency || company?.currency == currency"/>
+    </action-attrs>
 	
 	<!-- DOMAIN -->
 	
@@ -517,10 +526,6 @@
 
 	<action-attrs name="action-invoice-attrs-domain-address">
 		<attribute name="domain" for="address" expr="eval: &quot;self.id IN (${(partner?.partnerAddressList?.findAll{it.isInvoicingAddr}.collect{it.address.id}+[null]).join(',')})&quot;" />
-    </action-attrs>
-    
-    <action-attrs name="action-invoice-attrs-hide-totals-company-currency">
-    	<attribute name="hidden" for="totalsCompanyCurrency" expr="eval: company?.currency == currency"/>
     </action-attrs>
     
     <!-- ACTION VALIDATE -->

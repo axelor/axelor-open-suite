@@ -140,10 +140,7 @@ public class SaleOrderServiceImpl implements SaleOrderService {
 	}
 
 	/**
-	 * Calculer le montant d'une facture.
-	 * <p>
-	 * Le calcul est basé sur les lignes de TVA préalablement créées.
-	 * </p>
+	 * Compute the sale order total amounts
 	 *
 	 * @param invoice
 	 * @param vatLines
@@ -155,20 +152,22 @@ public class SaleOrderServiceImpl implements SaleOrderService {
 		saleOrder.setExTaxTotal(BigDecimal.ZERO);
 		saleOrder.setTaxTotal(BigDecimal.ZERO);
 		saleOrder.setInTaxTotal(BigDecimal.ZERO);
+		
+		for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
+			saleOrder.setExTaxTotal(saleOrder.getExTaxTotal().add( saleOrderLine.getExTaxTotal() ));
+			
+			// In the company accounting currency
+			saleOrder.setCompanyExTaxTotal(saleOrder.getCompanyExTaxTotal().add( saleOrderLine.getCompanyExTaxTotal() ));
+		}
 
 		for (SaleOrderLineTax saleOrderLineVat : saleOrder.getSaleOrderLineTaxList()) {
 
-			// Dans la devise de la comptabilité du tiers
-			saleOrder.setExTaxTotal(saleOrder.getExTaxTotal().add( saleOrderLineVat.getExTaxBase() ));
+			// In the sale order currency
 			saleOrder.setTaxTotal(saleOrder.getTaxTotal().add( saleOrderLineVat.getTaxTotal() ));
-			saleOrder.setInTaxTotal(saleOrder.getInTaxTotal().add( saleOrderLineVat.getInTaxTotal() ));
 
 		}
-
-		for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
-			//Into company currency
-			saleOrder.setCompanyExTaxTotal(saleOrder.getCompanyExTaxTotal().add( saleOrderLine.getCompanyExTaxTotal() ));
-		}
+		
+		saleOrder.setInTaxTotal(saleOrder.getExTaxTotal().add(saleOrder.getTaxTotal()));
 
 		logger.debug("Montant de la facture: HTT = {},  HT = {}, Taxe = {}, TTC = {}",
 				new Object[] { saleOrder.getExTaxTotal(), saleOrder.getTaxTotal(), saleOrder.getInTaxTotal() });

@@ -46,6 +46,7 @@
   	
   	<date name="estimatedDelivDate" title="Estimated delivery date"/>
   	
+  	
 <!--   	Devis-commande fournisseur -->
 	<date name="deliveryDate" title="Delivery date"/>
 

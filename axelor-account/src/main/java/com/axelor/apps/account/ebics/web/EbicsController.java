@@ -18,27 +18,25 @@
 package com.axelor.apps.account.ebics.web;
 
 import java.io.IOException;
-import java.io.StringReader;
-import java.io.StringWriter;
 import java.security.GeneralSecurityException;
+import java.security.cert.CertificateEncodingException;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 
 import org.apache.commons.codec.digest.DigestUtils;
-import org.bouncycastle.openssl.PEMReader;
-import org.bouncycastle.openssl.PEMWriter;
 
 import com.axelor.apps.account.db.EbicsBank;
+import com.axelor.apps.account.db.EbicsCertificate;
 import com.axelor.apps.account.db.EbicsUser;
 import com.axelor.apps.account.db.repo.BankOrderFileFormatRepository;
 import com.axelor.apps.account.db.repo.EbicsBankRepository;
+import com.axelor.apps.account.db.repo.EbicsCertificateRepository;
 import com.axelor.apps.account.db.repo.EbicsUserRepository;
 import com.axelor.apps.account.ebics.certificate.CertificateManager;
 import com.axelor.apps.account.ebics.service.EbicsCertificateService;
 import com.axelor.apps.account.ebics.service.EbicsService;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.auth.db.User;
-import com.axelor.auth.db.repo.UserRepository;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
@@ -54,19 +52,19 @@ import com.google.inject.persist.Transactional;
 public class EbicsController {
 	
 	@Inject
-	EbicsUserRepository ebicsUserRepo;
+	private EbicsUserRepository ebicsUserRepo;
 	
 	@Inject
-	EbicsService ebicsService;
+	private EbicsService ebicsService;
 	
 	@Inject
-	UserRepository userRepo;
+	private EbicsBankRepository bankRepo;
 	
 	@Inject
-	EbicsBankRepository bankRepo;
+	private EbicsCertificateService certificateService;
 	
 	@Inject
-	EbicsCertificateService certificateService;
+	private EbicsCertificateRepository certificateRepo;
 	
 	@Transactional
 	public void generateCertificate(ActionRequest request, ActionResponse response){
@@ -109,6 +107,7 @@ public class EbicsController {
 		try {
 			ebicsService.sendINIRequest(ebicsUser, null);
 		}catch (AxelorException e) {
+			e.printStackTrace();
 			response.setFlash(stripClass(e.getLocalizedMessage()));
 		}
 		
@@ -123,6 +122,7 @@ public class EbicsController {
 		try {
 			ebicsService.sendHIARequest(ebicsUser, null);
 		}catch (AxelorException e) {
+			e.printStackTrace();
 			response.setFlash(stripClass(e.getLocalizedMessage()));
 		}
 		
@@ -137,6 +137,7 @@ public class EbicsController {
 			X509Certificate[] certificates = ebicsService.sendHPBRequest(ebicsUser, null);
 			confirmCertificates(ebicsUser, certificates, response);
 		}catch (AxelorException e) {
+			e.printStackTrace();
 			response.setFlash(stripClass(e.getLocalizedMessage()));
 		}
 		
@@ -160,8 +161,8 @@ public class EbicsController {
 				.context("hostId", bank.getHostId())
 				.context("e002Hash", DigestUtils.sha1Hex(certificates[0].getEncoded()).toUpperCase())
 				.context("x002Hash", DigestUtils.sha1Hex(certificates[1].getEncoded()).toUpperCase())
-				.context("certificateE002", convertToPEMString(certificates[0]))
-				.context("certificateX002", convertToPEMString(certificates[1])).map());
+				.context("certificateE002", certificateService.convertToPEMString(certificates[0]))
+				.context("certificateX002", certificateService.convertToPEMString(certificates[1])).map());
 		}catch(Exception e) {
 			response.setFlash("Error in certificate confirmation ");
 		}
@@ -175,6 +176,7 @@ public class EbicsController {
 		try {
 			ebicsService.sendSPRRequest(ebicsUser, null);
 		}catch (AxelorException e) {
+			e.printStackTrace();
 			response.setFlash(stripClass(e.getLocalizedMessage()));
 		}
 
@@ -258,10 +260,10 @@ public class EbicsController {
 		bank = bankRepo.find(bank.getId());
 		
 		try {
-			X509Certificate certificate =  convertToCertificate((String)context.get("certificateE002"));
+			X509Certificate certificate =  certificateService.convertToCertificate((String)context.get("certificateE002"));
 			certificateService.createCertificate(certificate, bank, "encryption");
 			
-			certificate =  convertToCertificate((String)context.get("certificateX002"));
+			certificate =  certificateService.convertToCertificate((String)context.get("certificateX002"));
 			certificateService.createCertificate(certificate, bank, "authentication");
 			
 			
@@ -273,26 +275,38 @@ public class EbicsController {
 		response.setCanClose(true);
 	}
 	
-	private String convertToPEMString(X509Certificate x509Cert) throws IOException {
+	public void loadCertificate(ActionRequest request, ActionResponse response) throws AxelorException, CertificateEncodingException, IOException {
 		
-	    StringWriter sw = new StringWriter();
-	    try (PEMWriter pw = new PEMWriter(sw)) {
-	        pw.writeObject(x509Cert);
-	    }
-	    
-	    return sw.toString();
+		EbicsCertificate cert = request.getContext().asType(EbicsCertificate.class);
+		
+		cert = certificateRepo.find(cert.getId());
+		
+		byte[] certs = cert.getCertificate();
+		
+		if (certs != null && certs.length > 0) {
+			X509Certificate certificate = EbicsCertificateService.getCertificate(certs, cert.getTypeSelect());
+			cert = certificateService.updateCertificate(certificate, cert);
+			response.setValue("validFrom", cert.getValidFrom());
+			response.setValue("validTo", cert.getValidTo());
+			response.setValue("issuer", cert.getIssuer());
+			response.setValue("subject", cert.getSubject());
+			response.setValue("publicKeyModulus", cert.getPublicKeyModulus());
+			response.setValue("publicKeyExponent", cert.getPublicKeyExponent());
+			response.setValue("fullName", cert.getFullName());
+			response.setValue("pemString", cert.getPemString());
+			response.setValue("sha2has", cert.getSha2has());
+		}
+		
 	}
 	
-	private X509Certificate convertToCertificate(String pemString) throws IOException {
+	public void updateEditionDate(ActionRequest request, ActionResponse response) {
 		
-		X509Certificate cert = null;
-		StringReader reader = new StringReader(pemString);
-		PEMReader pr = new PEMReader(reader);
-		cert = (X509Certificate)pr.readObject();
-		pr.close();
+		EbicsUser ebicsUser = request.getContext().asType(EbicsUser.class);
+		ebicsUser = ebicsUserRepo.find(ebicsUser.getId());
+		certificateService.updateEditionDate(ebicsUser);
+
+		response.setReload(true);
 		
-		return cert;
 	}
-
-
+	
 }

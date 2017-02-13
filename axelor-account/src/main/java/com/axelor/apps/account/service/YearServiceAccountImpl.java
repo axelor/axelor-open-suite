@@ -45,6 +45,7 @@ import com.axelor.apps.base.db.Year;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.PeriodRepository;
 import com.axelor.apps.base.db.repo.YearRepository;
+import com.axelor.apps.base.service.YearServiceImpl;
 import com.axelor.apps.base.service.administration.GeneralServiceImpl;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
@@ -54,25 +55,24 @@ import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
-public class YearService {
-
+public class YearServiceAccountImpl extends YearServiceImpl {
+	
 	private final Logger log = LoggerFactory.getLogger( getClass() );
-
+	
 	protected AccountConfigService accountConfigService;
-	protected PartnerRepository partnerRepository;
 	protected ReportedBalanceRepository reportedBalanceRepo;
 	protected ReportedBalanceLineRepository reportedBalanceLineRepo;
-	protected YearRepository yearRepo;
+	
 	
 	@Inject
-	public YearService(AccountConfigService accountConfigService, PartnerRepository partnerRepository, ReportedBalanceRepository reportedBalanceRepo,
+	public YearServiceAccountImpl(AccountConfigService accountConfigService, PartnerRepository partnerRepository, ReportedBalanceRepository reportedBalanceRepo,
 			ReportedBalanceLineRepository reportedBalanceLineRepo, YearRepository yearRepo)  {
 		
+		super(partnerRepository, yearRepo);
 		this.accountConfigService = accountConfigService;
-		this.partnerRepository = partnerRepository;
 		this.reportedBalanceRepo = reportedBalanceRepo;
 		this.reportedBalanceLineRepo = reportedBalanceLineRepo;
-		this.yearRepo = yearRepo;
+		
 		
 	}
 	
@@ -251,36 +251,6 @@ public class YearService {
 
 	}
 
-
-	public List<Period> generatePeriods(Year year){
-
-		List<Period> periods = new ArrayList<Period>();
-		Integer duration = year.getPeriodDurationSelect();
-		LocalDate fromDate = year.getFromDate();
-		LocalDate toDate = year.getToDate();
-		LocalDate periodToDate = fromDate;
-		Integer periodNumber = 1;
-
-		while(periodToDate.isBefore(toDate)){
-			if(periodNumber != 1)
-				fromDate = fromDate.plusMonths(duration);
-			periodToDate = fromDate.plusMonths(duration).minusDays(1);
-			if(periodToDate.isAfter(toDate))
-				periodToDate = toDate;
-			if(fromDate.isAfter(toDate))
-				continue;
-			Period period = new Period();
-			period.setFromDate(fromDate);
-			period.setToDate(periodToDate);
-			period.setYear(year);
-			period.setName(String.format("%02d", periodNumber)+"/"+year.getCode());
-			period.setCode(String.format("%02d", periodNumber)+"/"+year.getCode()+"_"+year.getCompany().getCode());
-			period.setStatusSelect(year.getStatusSelect());
-			periods.add(period);
-			periodNumber ++;
-		}
-		return periods;
-	}
 
 
 

@@ -25,7 +25,6 @@
   	<one-to-many name="subscriptionList" ref="com.axelor.apps.supplychain.db.Subscription" mappedBy="saleOrderLine" title="Subscription List" orphanRemoval="true"/>
   	<one-to-many name="analyticMoveLineList" ref="com.axelor.apps.account.db.AnalyticMoveLine" title="Analytic move lines" mappedBy="saleOrderLine"/>
   	<many-to-one name="analyticDistributionTemplate" title="Analytic distribution template" ref="com.axelor.apps.account.db.AnalyticDistributionTemplate"/>
-  	<boolean name="toInvoice"/>
 	<boolean name="invoiced" readonly="true"/>
   	
   	<extra-code>

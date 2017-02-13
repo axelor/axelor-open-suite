@@ -21,26 +21,24 @@
 			<field name="securityMedium" />
 			<field name="associatedUser"/>
 			<field name="ebicsPartner" help="Subscription or contract to which the user is associated" />
+			<field name="nextOrderId" />
 			<field name="ebicsPartner.ebicsBank"/>
 			<field name="statusSelect" colSpan="12"/>
 		</panel>
 		<panel-tabs>
 			<panel title="Certificates">
-				<panel title="DN" colSpan="6" itemSpan="12" showIf="ebicsTypeSelect == 0" hidden="true">
-					<button name="generateDn" title="Generate DN" onClick="save,action-ebics-user-method-generate-dn" showIf="!dn"/>
-					<field name="dn" readonly="true" help="Defines a unique identifier for the certificate" />
+				<panel title="DN" colSpan="12" itemSpan="12" showIf="ebicsTypeSelect == 0" hidden="true">
+					<button name="generateDn" title="Generate DN" onClick="save,action-ebics-user-method-generate-dn" showIf="!dn" colSpan="3"/>
+					<field name="dn" readonly="true" help="Defines a unique identifier for the certificate" showTitle="false" />
 				</panel>
-				<panel title="Electronic signature certificate" colSpan="6" itemSpan="12" readonlyIf="ebicsTypeSelect == 0" showIf="ebicsTypeSelect == 1 || (ebicsTypeSelect == 0  &amp;&amp; statusSelect >= 1)">
-					<field name="a005Certificate" readonlyIf="ebicsTypeSelect == 0"/>
-					<field name="a005PrivateKey" readonlyIf="ebicsTypeSelect == 0"/>
+				<panel title="Electronic signature certificate" colSpan="12" itemSpan="12" readonlyIf="ebicsTypeSelect == 0" showIf="ebicsTypeSelect == 1 || (ebicsTypeSelect == 0  &amp;&amp; statusSelect >= 1)">
+					<field name="a005Certificate" domain="self.typeSelect = 'signature'" form-view="ebics-certificate-form" showTitle="false"/>
 				</panel>
-				<panel title="Encryption certificate" colSpan="6" itemSpan="12" readonlyIf="ebicsTypeSelect == 0" showIf="ebicsTypeSelect == 1 || (ebicsTypeSelect == 0  &amp;&amp; statusSelect >= 1)">
-					<field name="e002Certificate"/>
-					<field name="e002PrivateKey"/>
+				<panel title="Encryption certificate" colSpan="12" itemSpan="12" readonlyIf="ebicsTypeSelect == 0" showIf="ebicsTypeSelect == 1 || (ebicsTypeSelect == 0  &amp;&amp; statusSelect >= 1)">
+					<field name="e002Certificate" readonly="true" form-view="ebics-certificate-form" showTitle="false"/>
 				</panel>
-				<panel title="Authentication certificate" colSpan="6" itemSpan="12" readonlyIf="ebicsTypeSelect == 0" showIf="ebicsTypeSelect == 1 || (ebicsTypeSelect == 0  &amp;&amp; statusSelect >= 1)">
-					<field name="x002Certificate"/> 
-					<field name="x002PrivateKey"/>
+				<panel title="Authentication certificate" colSpan="12" itemSpan="12" readonlyIf="ebicsTypeSelect == 0" showIf="ebicsTypeSelect == 1 || (ebicsTypeSelect == 0  &amp;&amp; statusSelect >= 1)">
+					<field name="x002Certificate" readonly="true" form-view="ebics-certificate-form" showTitle="false"/>
 				</panel>
 			</panel>
 			<panel-related field="ebicsRequestLogList" form-view="ebics-request-log-form" grid-view="ebics-request-log-grid" readonly="true"/>
@@ -50,6 +48,7 @@
 			<button name="generateCertificates" title="Generate certificates" onClick="save,action-ebics-user-method-generate-certificates" hidden="true" showIf="ebicsTypeSelect == 0 &amp;&amp; dn &amp;&amp; (statusSelect == 0 || statusSelect == 4)"/>
 			<button name="sendINI" title="Send certificate of signature A005 (INI)" onClick="save,action-ebics-user-method-send-ini" help="true" hidden="true" showIf="statusSelect == 1"/>
 			<button name="sendHIA" title="Send authentication X002 and Encryption E002 certificates (HIA)" onClick="save,action-ebics-user-method-send-hia" help="true" hidden="true" showIf="statusSelect == 2"/>
+			<button name="printCertificates" title="Print certificates" onClick="save,action-ebics-user-method-update-edition-date,action-ebics-user-print-certificates" showIf="statusSelect >= 3"/>
 			<button name="sendHPB" title="Get the server certificates (HPB)" onClick="save,action-ebics-user-method-send-hpb" showIf="statusSelect >= 3"/>
 			<button name="sendSPR" title="Send Suspension of access authorisation (SPR)" onClick="save,action-ebics-user-method-send-spr" showIf="statusSelect == 3"/>
 			<button name="sendFUL" title="Send file upload request (FUL)" onClick="save,action-ebics-user-method-send-ful" showIf="statusSelect == 3"/>
@@ -99,5 +98,13 @@
     <action-method name="action-ebics-user-method-send-ptk">
   		<call class="com.axelor.apps.account.ebics.web.EbicsController" method="sendPTKRequest" />
     </action-method>
-  
+    
+    <action-method name="action-ebics-user-method-update-edition-date">
+    	<call class="com.axelor.apps.account.ebics.web.EbicsController" method="updateEditionDate" />
+    </action-method>
+    
+    <action-report name="action-ebics-user-print-certificates" design="EbicsCertificate.rptdesign" output="Certificates">
+    	<param name="CertificateId" expr="eval:a005Certificate.id + ',' + e002Certificate.id + ',' + x002Certificate.id"/>
+    </action-report>
+    
 </object-views>

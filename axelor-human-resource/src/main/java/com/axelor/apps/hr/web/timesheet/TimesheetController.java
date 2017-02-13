@@ -57,6 +57,7 @@ import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
+import com.google.inject.persist.Transactional;
 
 public class TimesheetController {
 	
@@ -226,17 +227,20 @@ public class TimesheetController {
 	}
 	
 	public void cancel(ActionRequest request, ActionResponse response)  {
-		
-		try{
-			
+		try {
 			Timesheet timesheet = request.getContext().asType(Timesheet.class);
 			timesheet = timesheetRepositoryProvider.get().find(timesheet.getId());
-			timesheetServiceProvider.get().cancel(timesheet);
-		
-		}  catch(Exception e)  {
+			TimesheetService timesheetService = timesheetServiceProvider.get();
+
+			timesheetService.cancel(timesheet);
+
+			Message message = timesheetService.sendCancellationEmail(timesheet);
+			if (message != null && message.getStatusSelect() == MessageRepository.STATUS_SENT) {
+				response.setFlash(String.format(I18n.get("Email sent to %s"), Beans.get(MessageServiceBaseImpl.class).getToRecipients(message)));
+			}
+		} catch(Exception e) {
 			TraceBackService.trace(response, e);
-		}
-		finally {
+		} finally {
 			response.setReload(true);
 		}
 	}

@@ -73,7 +73,7 @@ public class EbicsSession {
 	   */
 	  public RSAPublicKey getBankE002Key() throws AxelorException {
 		
-		  return  (RSAPublicKey) EbicsCertificateService.getCertificate(user.getEbicsPartner().getEbicsBank(), "encryption").getPublicKey();
+		  return  (RSAPublicKey) EbicsCertificateService.getBankCertificate(user.getEbicsPartner().getEbicsBank(), "encryption").getPublicKey();
 	  }
 
 	  /**
@@ -84,7 +84,7 @@ public class EbicsSession {
 	   * @throws EbicsException Server error message generated during key retrieval.
 	   */
 	  public RSAPublicKey getBankX002Key() throws AxelorException {
-		  return  (RSAPublicKey) EbicsCertificateService.getCertificate(user.getEbicsPartner().getEbicsBank(), "authentication").getPublicKey();
+		  return  (RSAPublicKey) EbicsCertificateService.getBankCertificate(user.getEbicsPartner().getEbicsBank(), "authentication").getPublicKey();
 	  }
 
 	  /**

@@ -153,13 +153,13 @@
 		<view type="form" name="bank-details-form"/>
 	</action-view>
 
-	<menuitem name="referential-conf-invoice-bic" parent="referential-conf"
-		title="SWIFT codes" action="referential.conf.invoice.bic" />
+	<menuitem name="referential-conf-invoice-bank" parent="referential-conf"
+		title="SWIFT codes" action="referential.conf.invoice.bank"/>
 
-	<action-view name="referential.conf.invoice.bic"
-		title="SWIFT codes" model="com.axelor.apps.base.db.Bic" >
-		<view type="grid" name="bic-grid"/>
-		<view type="form" name="bic-form"/>
+	<action-view name="referential.conf.invoice.bank"
+		title="SWIFT codes" model="com.axelor.apps.base.db.Bank" >
+		<view type="grid" name="bank-grid"/>
+		<view type="form" name="bank-form"/>
 	</action-view>
 	
 	

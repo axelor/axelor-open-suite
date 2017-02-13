@@ -19,11 +19,12 @@
 		</panel>
 		<panel-tabs>
 			<panel name="leaveManagementPage" title="Leave management page" hidden="true" showIf="actionSelect == 1">
-			    <field name="leaveReason" colSpan="4" requiredIf="actionSelect == 1"/>
+			    <field name="leaveReason" colSpan="4" onChange="action-hr-batch-record-day-number-default" requiredIf="actionSelect == 1"/>
 			    <field name="comments" colSpan="8"/>
-			    <field name="dayNumber" colSpan="4" requiredIf="actionSelect == 1"/>
-			    <field name="startDate" colSpan="4"/>
-			    <field name="endDate" colSpan="4"/>
+			    <field name="dayNumber" colSpan="3" requiredIf="actionSelect == 1"/>
+			    <field name="useWeeklyPlanningCoef" />
+			    <field name="startDate" colSpan="3"/>
+			    <field name="endDate" colSpan="3"/>
 		   		<panel-related field="employeeSet" target="com.axelor.apps.hr.db.Employee" grid-view="employee-lite-grid" form-view="employee-form" canNew="false"/>
 				<panel-related field="planningSet" target="com.axelor.apps.base.db.WeeklyPlanning" grid-view="weekly-planning-grid" form-view="weekly-planning-form" canNew="false"/>
 				<button name="leaveManagementBatch" title="Leave management batch" onClick="save,action-hrbatch-method-hr-batch"/>
@@ -65,6 +66,10 @@
 	
 	<action-record name="action-hr-batch-record-default" model="com.axelor.apps.hr.db.HrBatch">
 		<field name="company" expr="eval: __user__.activeCompany"/>
+	</action-record>
+	
+	<action-record name="action-hr-batch-record-day-number-default" model="com.axelor.apps.hr.db.HrBatch">
+		<field name="dayNumber" expr="eval: leaveReason?.defaultDayNumberGain"/>
 	</action-record>
 	
 

@@ -3,27 +3,23 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.0.xsd">
 
-	<grid name="bank-details-grid" id="bank-details-grid" title="Bank details" model="com.axelor.apps.base.db.BankDetails">
-		<field name="ownerName" />
-		<field name="bankAddress" />
-		<field name="iban" />
-		<field name="bic" />
+	<grid name="bank-details-grid" title="Bank details" model="com.axelor.apps.base.db.BankDetails">
+		<field name="ownerName"/>
+		<field name="bank.bankAddress"/>
+		<field name="iban"/>
+		<field name="bank.code"/>
 	</grid>
 
 	<form onSave="action-validate-bank-details-bbanKey" onNew="action-set-default-partner" name="bank-details-form" title="Bank details" 
-	model="com.axelor.apps.base.db.BankDetails" id="bank-details-form" width="large">
+	model="com.axelor.apps.base.db.BankDetails" width="large">
 		<panel name="owner" title="Owner">
 			<field name="partner" onChange="action-set-owner-name" domain="self.isContact = false" form-view="partner-form" grid-view="partner-grid" />
 			<field name="ownerName" />
 		</panel>
 		<panel name="iban" title="IBAN">
 			<field name="iban" onChange="action-group-account-bankdetails-iban-onchange" />
-			<field name="bic" />
-			<field name="ibanBic" readonly="true" x-bind="{{iban+' '+bic}}"/>
-		</panel>
-		<panel name="bank" title="Bank">
-			<field name="countryCode" />
-			<field name="bankAddress" />
+			<field name="bank" canNew="true" form-view="bank-form"/>
+			<field name="ibanBic" readonly="true" x-bind="{{iban + ' ' + bank.code}}"/>
 		</panel>
 		<panel name="bban" title="BBAN">
 			<field name="bankCode" colSpan="3" />

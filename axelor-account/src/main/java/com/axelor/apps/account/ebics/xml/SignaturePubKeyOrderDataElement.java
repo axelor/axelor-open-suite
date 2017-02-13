@@ -20,6 +20,7 @@ package com.axelor.apps.account.ebics.xml;
 import java.math.BigInteger;
 import java.util.Calendar;
 
+import com.axelor.apps.account.db.EbicsCertificate;
 import com.axelor.apps.account.ebics.schema.s001.PubKeyValueType;
 import com.axelor.apps.account.ebics.schema.s001.SignaturePubKeyInfoType;
 import com.axelor.apps.account.ebics.schema.s001.SignaturePubKeyOrderDataType;
@@ -53,11 +54,11 @@ public class SignaturePubKeyOrderDataElement extends DefaultEbicsRootElement {
     RSAKeyValueType 			rsaKeyValue;
     PubKeyValueType 			pubKeyValue;
     SignaturePubKeyOrderDataType	signaturePubKeyOrderData;
-
-    x509Data = EbicsXmlFactory.createX509DataType(session.getUser().getDn(),
-	                                          session.getUser().getA005Certificate());
-    rsaKeyValue = EbicsXmlFactory.createRSAKeyValueType(  new BigInteger( session.getUser().getA005PublicKeyExponent()).toByteArray(),
-	                                               new BigInteger( session.getUser().getA005PublicKeyModulus()).toByteArray());
+    
+    EbicsCertificate certificate = session.getUser().getA005Certificate();
+    x509Data = EbicsXmlFactory.createX509DataType(session.getUser().getDn(),certificate.getCertificate());
+    rsaKeyValue = EbicsXmlFactory.createRSAKeyValueType(  new BigInteger( certificate.getPublicKeyExponent()).toByteArray(),
+	                                               new BigInteger( certificate.getPublicKeyModulus()).toByteArray());
     pubKeyValue = EbicsXmlFactory.createPubKeyValueType(rsaKeyValue, Calendar.getInstance());
     signaturePubKeyInfo = EbicsXmlFactory.createSignaturePubKeyInfoType(x509Data,
 	                                                                pubKeyValue,

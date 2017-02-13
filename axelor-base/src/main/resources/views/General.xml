@@ -44,20 +44,20 @@
 		    	<field name="manageSalesUnits" if-module="axelor-sale" widget="Boolean-switch"/>
 		    	<field name="managePurchasesUnits" if-module="axelor-purchase" widget="Boolean-switch"/>
 		    	<field name="teamManagement" widget="Boolean-switch"/>
-		    	<field name="manageMultiBanks" widget="Boolean-switch"/>
+				<field name="manageMultiBanks" if-module="axelor-cash-management" widget="Boolean-switch"/>
 		    </panel>
 		    <panel name="accounting" title="Accounting">
-				<field name="defaultExemptionTax" form-view="tax-form" grid-view="tax-grid"/>
-				<field name="isInvoiceMoveConsolidated" widget="Boolean-switch"/>
+				<field name="defaultExemptionTax" if-module="axelor-account" form-view="tax-form" grid-view="tax-grid"/>
+				<field name="isInvoiceMoveConsolidated" if-module="axelor-account" widget="Boolean-switch"/>
 				<field name="manageAnalyticAccounting" if-module="axelor-account" widget="Boolean-switch"/>
 				<field name="analyticDistributionTypeSelect" if-module="axelor-account" showIf="manageAnalyticAccounting"/>
 				<field name="manageCustomerCredit" if-module="axelor-account" widget="Boolean-switch"/>
-				<field name="allowTimetableInvoicing" if-module="axelor-supplychain" widget="Boolean-switch"/>
-				<panel name="rejectsReasonsAndCodesList" title="Rejects reasons and codes list" colSpan="12">
+				<field name="allowTimetableInvoicing" if-module="axelor-business-project" widget="Boolean-switch"/>
+				<panel name="rejectsReasonsAndCodesList" title="Rejects reasons and codes list" colSpan="12" if-module="axelor-account">
 					<field name="transferAndDirectDebitInterbankCode" grid-view="interbank-code-grid" form-view="interbank-code-form"/>
 					<field name="chequeInterbankCode" grid-view="interbank-code-grid" form-view="interbank-code-form"/>
 				</panel>
-				<panel name="payerQuality" title="Payer quality" colSpan="12">
+				<panel name="payerQuality" title="Payer quality" colSpan="12" if-module="axelor-account">
 					<button name="payerQualityProcess" title="Compute payers quality" colSpan="2" onClick="action-general-method-payer-quality-process"/>
 					<panel-related field="payerQualityConfigLineList" colSpan="12" grid-view="payer-quality-config-line-grid" form-view="payer-quality-config-line-form"/>
 				</panel>
@@ -129,7 +129,7 @@
 			<panel name="productionConfiguration" title="Production configuration" if-module="axelor-production">
 				<field name="productionOrderManagement" readonlyIf="productionOrderGenerationAuto" colSpan="4" widget="Boolean-switch"/>
 				<field name="productionOrderGenerationAuto" showIf="productionOrderManagement" colSpan="4" widget="Boolean-switch"/>
-				<field name="manageBillOfMaterialVersion" if-module="axelor-production" colSpan="4" widget="Boolean-switch"/>
+				<field name="manageBillOfMaterialVersion" colSpan="4" widget="Boolean-switch"/>
 				<panel name="billOfMaterial" title="Bill of material">
 				    <field name="manageResidualProductOnBom" widget="Boolean-switch"/>
 				</panel>

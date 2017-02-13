@@ -96,7 +96,7 @@ public class BankOrderFile00100103Service extends BankOrderFileService  {
 
 		// BIC
 		FinancialInstitutionIdentification7 finInstnId = factory.createFinancialInstitutionIdentification7();
-		finInstnId.setBIC(senderBankDetails.getBic());
+		finInstnId.setBIC(senderBankDetails.getBank().getCode());
 
 		BranchAndFinancialInstitutionIdentification4 dbtrAgt = factory.createBranchAndFinancialInstitutionIdentification4();
 		dbtrAgt.setFinInstnId(finInstnId);
@@ -154,7 +154,7 @@ public class BankOrderFile00100103Service extends BankOrderFileService  {
 
 			// BIC
 			finInstnId = factory.createFinancialInstitutionIdentification7();
-			finInstnId.setBIC(receiverBankDetails.getBic());
+			finInstnId.setBIC(receiverBankDetails.getBank().getCode());
 
 			cbtrAgt = factory.createBranchAndFinancialInstitutionIdentification4();
 			cbtrAgt.setFinInstnId(finInstnId);
