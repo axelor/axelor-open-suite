@@ -29,8 +29,8 @@
 	            	<field name="firstName" x-bind="{{code|uppercase}}" onChange="action-partner-record-full-name" colSpan="5" />
 		            <field name="emailAddress" form-view="email-address-simple-form" canNew="true" />
 					<field name="fax" pattern="^\+?\d{8,11}$" placeholder="+33000000000"/>
-					<field name="fixedPhone"  placeholder="+33100000000" pattern="^\+?\d{8,11}$"/>
-					<field name="mobilePhone" placeholder="+33100000000" pattern="^\+?\d{8,11}$"/>
+					<field name="fixedPhone"  placeholder="+33100000000" pattern="^\+?(?:[0-9]{2,3}(?:\s|\.)?){3,6}[0-9]{2,3}$"/>
+					<field name="mobilePhone" placeholder="+33100000000" pattern="^\+?(?:[0-9]{2,3}(?:\s|\.)?){3,6}[0-9]{2,3}$"/>
 		           	<field name="webSite"/>
 	            </editor>
             </field>
