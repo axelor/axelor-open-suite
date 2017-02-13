@@ -48,6 +48,7 @@
 			<button name="generateCertificates" title="Generate certificates" onClick="save,action-ebics-user-method-generate-certificates" hidden="true" showIf="ebicsTypeSelect == 0 &amp;&amp; dn &amp;&amp; (statusSelect == 0 || statusSelect == 4)"/>
 			<button name="sendINI" title="Send certificate of signature A005 (INI)" onClick="save,action-ebics-user-method-send-ini" help="true" hidden="true" showIf="statusSelect == 1"/>
 			<button name="sendHIA" title="Send authentication X002 and Encryption E002 certificates (HIA)" onClick="save,action-ebics-user-method-send-hia" help="true" hidden="true" showIf="statusSelect == 2"/>
+			<button name="printCertificates" title="Print certificates" onClick="action-ebics-user-print-certificates" showIf="statusSelect >= 3"/>
 			<button name="sendHPB" title="Get the server certificates (HPB)" onClick="save,action-ebics-user-method-send-hpb" showIf="statusSelect >= 3"/>
 			<button name="sendSPR" title="Send Suspension of access authorisation (SPR)" onClick="save,action-ebics-user-method-send-spr" showIf="statusSelect == 3"/>
 			<button name="sendFUL" title="Send file upload request (FUL)" onClick="save,action-ebics-user-method-send-ful" showIf="statusSelect == 3"/>
@@ -97,5 +98,9 @@
     <action-method name="action-ebics-user-method-send-ptk">
   		<call class="com.axelor.apps.account.ebics.web.EbicsController" method="sendPTKRequest" />
     </action-method>
+    
+    <action-report name="action-ebics-user-print-certificates" design="EbicsCertificate.rptdesign" output="Certificates">
+    	<param name="CertificateId" expr="eval:a005Certificate.id + ',' + e002Certificate.id + ',' + x002Certificate.id"/>
+    </action-report>
     
 </object-views>

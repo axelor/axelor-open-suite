@@ -18,16 +18,12 @@
 package com.axelor.apps.account.ebics.web;
 
 import java.io.IOException;
-import java.io.StringReader;
-import java.io.StringWriter;
 import java.security.GeneralSecurityException;
 import java.security.cert.CertificateEncodingException;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 
 import org.apache.commons.codec.digest.DigestUtils;
-import org.bouncycastle.openssl.PEMReader;
-import org.bouncycastle.openssl.PEMWriter;
 
 import com.axelor.apps.account.db.EbicsBank;
 import com.axelor.apps.account.db.EbicsCertificate;
@@ -165,8 +161,8 @@ public class EbicsController {
 				.context("hostId", bank.getHostId())
 				.context("e002Hash", DigestUtils.sha1Hex(certificates[0].getEncoded()).toUpperCase())
 				.context("x002Hash", DigestUtils.sha1Hex(certificates[1].getEncoded()).toUpperCase())
-				.context("certificateE002", convertToPEMString(certificates[0]))
-				.context("certificateX002", convertToPEMString(certificates[1])).map());
+				.context("certificateE002", certificateService.convertToPEMString(certificates[0]))
+				.context("certificateX002", certificateService.convertToPEMString(certificates[1])).map());
 		}catch(Exception e) {
 			response.setFlash("Error in certificate confirmation ");
 		}
@@ -264,10 +260,10 @@ public class EbicsController {
 		bank = bankRepo.find(bank.getId());
 		
 		try {
-			X509Certificate certificate =  convertToCertificate((String)context.get("certificateE002"));
+			X509Certificate certificate =  certificateService.convertToCertificate((String)context.get("certificateE002"));
 			certificateService.createCertificate(certificate, bank, "encryption");
 			
-			certificate =  convertToCertificate((String)context.get("certificateX002"));
+			certificate =  certificateService.convertToCertificate((String)context.get("certificateX002"));
 			certificateService.createCertificate(certificate, bank, "authentication");
 			
 			
@@ -279,7 +275,7 @@ public class EbicsController {
 		response.setCanClose(true);
 	}
 	
-	public void loadCertificate(ActionRequest request, ActionResponse response) throws AxelorException, CertificateEncodingException {
+	public void loadCertificate(ActionRequest request, ActionResponse response) throws AxelorException, CertificateEncodingException, IOException {
 		
 		EbicsCertificate cert = request.getContext().asType(EbicsCertificate.class);
 		
@@ -297,29 +293,11 @@ public class EbicsController {
 			response.setValue("publicKeyModulus", cert.getPublicKeyModulus());
 			response.setValue("publicKeyExponent", cert.getPublicKeyExponent());
 			response.setValue("fullName", cert.getFullName());
+			response.setValue("pemString", cert.getPemString());
+			response.setValue("sha2has", cert.getSha2has());
 		}
 		
 	}
 	
-	private String convertToPEMString(X509Certificate x509Cert) throws IOException {
-		
-	    StringWriter sw = new StringWriter();
-	    try (PEMWriter pw = new PEMWriter(sw)) {
-	        pw.writeObject(x509Cert);
-	    }
-	    
-	    return sw.toString();
-	}
-	
-	private X509Certificate convertToCertificate(String pemString) throws IOException {
-		
-		X509Certificate cert = null;
-		StringReader reader = new StringReader(pemString);
-		PEMReader pr = new PEMReader(reader);
-		cert = (X509Certificate)pr.readObject();
-		pr.close();
-		
-		return cert;
-	}
 	
 }

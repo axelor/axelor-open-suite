@@ -27,6 +27,8 @@
 				<field name="publicKeyModulus" hidden="true"/>
 				<field name="publicKeyExponent" hidden="true"/>
 				<field name="fullName" hidden="true" />
+				<field name="pemString" hidden="true" />
+				<field name="sha2has" hidden="true" />
 			</panel>
 		</panel>
 	</form>
@@ -62,5 +64,5 @@
 		<attribute name="value" for="certificateX002" expr="eval:certificateX002" />
 		<attribute name="value" for="bankId" expr="eval:bankId" />
 	</action-attrs>
-  
+	
 </object-views>

@@ -88,7 +88,7 @@ public class CertificateManager {
 
   }
   
-  private EbicsCertificate updateCertificate(X509Certificate certificate,  EbicsCertificate cert, byte[] privateKey, String type) throws CertificateEncodingException {
+  private EbicsCertificate updateCertificate(X509Certificate certificate,  EbicsCertificate cert, byte[] privateKey, String type) throws CertificateEncodingException, IOException {
 	  
 	  if (cert == null) {
 		  cert = new EbicsCertificate();

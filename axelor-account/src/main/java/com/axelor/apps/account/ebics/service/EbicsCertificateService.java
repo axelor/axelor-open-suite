@@ -18,6 +18,9 @@
 package com.axelor.apps.account.ebics.service;
 
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.StringReader;
+import java.io.StringWriter;
 import java.net.URL;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateEncodingException;
@@ -33,6 +36,9 @@ import javax.net.ssl.SSLSession;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
+import org.apache.commons.codec.digest.DigestUtils;
+import org.bouncycastle.openssl.PEMReader;
+import org.bouncycastle.openssl.PEMWriter;
 import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -176,7 +182,7 @@ public class EbicsCertificateService {
 	}
 	
 	
-	public EbicsCertificate updateCertificate(X509Certificate certificate, EbicsCertificate cert) throws CertificateEncodingException {
+	public EbicsCertificate updateCertificate(X509Certificate certificate, EbicsCertificate cert) throws CertificateEncodingException, IOException {
 		
 		cert.setValidFrom(new LocalDate(certificate.getNotBefore()));
 		cert.setValidTo(new LocalDate(certificate.getNotAfter()));
@@ -186,13 +192,17 @@ public class EbicsCertificateService {
 		RSAPublicKey publicKey = (RSAPublicKey)  certificate.getPublicKey() ;
 		cert.setPublicKeyExponent(publicKey.getPublicExponent().toString());
 		cert.setPublicKeyModulus(publicKey.getModulus().toString());
+		cert.setPemString(convertToPEMString(certificate));
+		String sha = DigestUtils.sha256Hex(certificate.getEncoded());
+		sha = sha.toUpperCase();
+		cert.setSha2has(sha);
 		computeFullName(cert);
 		
 		return cert;
 	}
 	
 	@Transactional
-	public EbicsCertificate createCertificate(X509Certificate certificate, EbicsBank bank, String type) throws CertificateEncodingException {
+	public EbicsCertificate createCertificate(X509Certificate certificate, EbicsBank bank, String type) throws CertificateEncodingException, IOException {
 		
 		EbicsCertificate cert = getEbicsCertificate(bank, type);
 		if (cert == null) {
@@ -248,4 +258,25 @@ public class EbicsCertificateService {
 		
 		entity.setFullName(fullName.toString());
 	}
+	
+   public String convertToPEMString(X509Certificate x509Cert) throws IOException {
+		
+	    StringWriter sw = new StringWriter();
+	    try (PEMWriter pw = new PEMWriter(sw)) {
+	        pw.writeObject(x509Cert);
+	    }
+	    
+	    return sw.toString();
+   }
+	
+   public X509Certificate convertToCertificate(String pemString) throws IOException {
+		
+		X509Certificate cert = null;
+		StringReader reader = new StringReader(pemString);
+		PEMReader pr = new PEMReader(reader);
+		cert = (X509Certificate)pr.readObject();
+		pr.close();
+		
+		return cert;
+   }
 }
