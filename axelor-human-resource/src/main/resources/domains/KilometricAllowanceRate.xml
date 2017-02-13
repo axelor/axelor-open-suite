@@ -12,6 +12,8 @@
         <many-to-one name="kilometricAllowParam" ref="com.axelor.apps.hr.db.KilometricAllowParam" title="Kilometric Allowance Param" required="true"/>
         <one-to-many name="kilometricAllowanceRuleList" ref="com.axelor.apps.hr.db.KilometricAllowanceRule" mappedBy="kilometricAllowanceRate"/>
         
+        <integer name="importId" />
+        
         <finder-method name="findByVehicleKillometricAllowanceParam" using="kilometricAllowParam"/>
         
     </entity>
