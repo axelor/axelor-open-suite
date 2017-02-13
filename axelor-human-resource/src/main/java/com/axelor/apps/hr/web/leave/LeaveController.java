@@ -297,7 +297,7 @@ public class LeaveController {
 	@Transactional
 	public void leaveReasonToJustify(ActionRequest request, ActionResponse response) throws AxelorException {
 		LeaveRequest leave = request.getContext().asType(LeaveRequest.class);
-		Boolean leaveToJustify = leave.getLeaveToJustify();
+		Boolean leaveToJustify = leave.getToJustifyLeaveReason();
 		LeaveLine leaveLine = null;
 		
 		if(leaveToJustify == true){
@@ -305,7 +305,7 @@ public class LeaveController {
 				hrConfigService.getLeaveReason(leave.getUser().getActiveCompany().getHrConfig());
 				
 				Employee employee = Beans.get(EmployeeRepository.class).find(leave.getUser().getEmployee().getId());
-				LeaveReason leaveReason = Beans.get(LeaveReasonRepository.class).find(leave.getUser().getActiveCompany().getHrConfig().getLeaveReason().getId());
+				LeaveReason leaveReason = Beans.get(LeaveReasonRepository.class).find(leave.getUser().getActiveCompany().getHrConfig().getToJustifyLeaveReason().getId());
 				
 				if(employee != null){
 					leaveLine = leaveServiceProvider.get().addLeaveReasonOrCreateIt(employee, leaveReason);

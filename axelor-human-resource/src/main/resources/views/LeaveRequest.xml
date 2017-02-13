@@ -48,7 +48,7 @@
 	    </panel>
 		<panel name="information">
 			<field name="statusSelect" colSpan="12" widget="NavSelect" showTitle="false"/>
-			<field name="leaveToJustify"/>
+			<field name="toJustifyLeaveReason"/>
 			<spacer/>
 			<field name="company" form-view="company-form" grid-view="company-grid"/>
 			<field name="user" form-view="user-form" grid-view="user-grid" onChange="action-leave-request-validate-dates,action-leave-request-methode-compute-duration, action-leave-request-method-leave-reason-to-justify"/>
@@ -57,7 +57,7 @@
 			<field name="leaveLine.quantity" />
 			<field name="injectConsumeSelect" hidden="true" onChange="action-leave-request-attrs-inject-change"/>
 			<spacer/>
-			<field name="fromDate" onChange="action-leave-request-validate-dates,action-leave-request-methode-compute-duration"/>
+			<field name="fromDate" onChange="action-leave-request-validate-dates,action-leave-request-methode-compute-duration" default="__date__"/>
 			<field name="startOnSelect" onChange="action-leave-request-validate-dates,action-leave-request-methode-compute-duration"/>
 			<field name="toDate" onChange="action-leave-request-validate-dates,action-leave-request-methode-compute-duration"/>
 			<field name="endOnSelect" onChange="action-leave-request-validate-dates,action-leave-request-methode-compute-duration"/>
@@ -126,7 +126,7 @@
 
 	
 	<action-record name="action-leave-request-record-to-justify" model="com.axelor.apps.hr.db.LeaveRequest">
-		<field name="leaveToJustify" expr="eval: leave_to_justify"/>
+		<field name="toJustifyLeaveReason" expr="eval: to_justify_leave_reason"/>
 	</action-record>
 	
 	<action-attrs name="action-leave-request-attrs-domain-leave-request-select">

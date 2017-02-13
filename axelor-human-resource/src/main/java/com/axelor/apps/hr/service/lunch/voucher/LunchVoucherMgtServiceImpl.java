@@ -132,18 +132,10 @@ public class LunchVoucherMgtServiceImpl implements LunchVoucherMgtService {
 	}
 	
 	@Transactional
-	public String exportLunchVoucherMgt(LunchVoucherMgt lunchVoucherMgt) throws IOException, AxelorException{
-		/*
-		String headers[] = new String[4];
-		headers[0] = I18n.get("Company code");
-		headers[1] = I18n.get("Lunch Voucher's number");
-		headers[2] = I18n.get("Employee");
-		headers[3] = I18n.get("Lunch Voucher format");
-		
 	public void export(LunchVoucherMgt lunchVoucherMgt) throws IOException {
 		MetaFile metaFile = new MetaFile();
 		metaFile.setFileName(I18n.get("Lunch Voucher Mgt") + " - " + LocalDate.now().format(DateTimeFormatter.ISO_LOCAL_DATE) + ".csv");
-*/
+
 		
 		Path tempFile = MetaFiles.createTempFile(null, ".csv");
 		final OutputStream os = new FileOutputStream(tempFile.toFile());
@@ -178,22 +170,14 @@ public class LunchVoucherMgtServiceImpl implements LunchVoucherMgtService {
 			Files.deleteIfExists(tempFile);
 		}
 /*
-		
-		String fileName = I18n.get("Lunch Voucher Mgt") + " - " + Beans.get(GeneralService.class).getTodayDateTime().toString() + ".csv";
-		String filePath = hrConfigService.getLunchVoucherExportPath(hrConfigService.getHRConfig(lunchVoucherMgt.getCompany()));
-		
-		new File(filePath).mkdirs();
-		CsvTool.csvWriter(filePath, fileName, ';', headers, list);
-		
-		lunchVoucherMgt.setExported(true);
-
-
+		*/
+		//lunchVoucherMgt.setExported(true);
 		lunchVoucherMgt.setCsvFile(metaFile);
 
 		lunchVoucherMgt.setExportDate(Beans.get(GeneralService.class).getTodayDate());
 		
 		lunchVoucherMgtRepository.save(lunchVoucherMgt);
-	*/	
+		
 	}
 	
 	protected String escapeCsv(String value) {

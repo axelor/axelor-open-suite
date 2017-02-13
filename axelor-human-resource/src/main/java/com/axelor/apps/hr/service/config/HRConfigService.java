@@ -40,7 +40,7 @@ public class HRConfigService {
 	}
 	
 	public LeaveReason getLeaveReason(HRConfig hrConfig) throws AxelorException{
-		LeaveReason leaveReason = hrConfig.getLeaveReason();
+		LeaveReason leaveReason = hrConfig.getToJustifyLeaveReason();
 		
 		if(leaveReason == null){
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.HR_CONFIG_LEAVE_REASON), hrConfig.getCompany().getName()), IException.CONFIGURATION_ERROR);
@@ -49,7 +49,7 @@ public class HRConfigService {
 	}
 	
 	public String getLunchVoucherExportPath(HRConfig hrConfig) throws AxelorException{
-		String lunchVoucherExportPath = hrConfig.getLunchVoucherExportPath();
+		String lunchVoucherExportPath = hrConfig.getExportCodeForLunchVoucherManagement();
 		if(Strings.isNullOrEmpty(lunchVoucherExportPath)){
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.HR_CONFIG_LUNCH_VOUCHER_EXPORT_PATH), hrConfig.getCompany().getName()), IException.CONFIGURATION_ERROR);
 		}

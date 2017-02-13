@@ -33,8 +33,6 @@ public interface LunchVoucherMgtService {
 	public void validate(LunchVoucherMgt lunchVoucherMgt) throws AxelorException;
 
 	@Transactional
-	String exportLunchVoucherMgt(LunchVoucherMgt lunchVoucherMgt) throws IOException, AxelorException;
-
 	public void export(LunchVoucherMgt lunchVoucherMgt) throws IOException;
 	
 	public int checkStock(Company company, int numberToUse) throws AxelorException;
