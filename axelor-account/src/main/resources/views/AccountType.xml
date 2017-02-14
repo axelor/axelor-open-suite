@@ -13,6 +13,7 @@
         <panel name="overView" title="Overview">
         	<field name="name"/>
         	<field name="technicalTypeSelect"/>
+        	<field name="accounts" colSpan="12"/>
         </panel>
         <panel-dashlet title="Accounts" action="action-account-type-view-account" colSpan="12"/>
     </form>

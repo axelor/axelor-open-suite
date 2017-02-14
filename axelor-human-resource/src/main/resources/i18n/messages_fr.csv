@@ -332,12 +332,9 @@
 "Leave management page","Gestion de congés",,
 "Leave period","Période prise en compte pour les absences",,
 "Leave reason","Motif absence",,
-<<<<<<< HEAD
 "Leave reason and day number have to be defined",,,
 "Leave Reason for Leave to justify", "Motif pour les absences à justifier",,
-=======
 "Leave reason and day number have to be defined","Le motif de congé et le nombre de jour(s) pris doivent être définis",,
->>>>>>> a46557d80d7c43ed0f5cee8b38d6b1889d6cfd3c
 "Leave request","Demande de congés",,
 "Leave to justify","Absence à justifier",,
 "LeaveRequest","Demande de congés",,
@@ -687,7 +684,7 @@
 "Lunch Voucher's number","Nombre de tickets restaurant",,
 "Employee","Employé",,
 "Lunch Voucher format","Format des tickets restaurants",,
-"Lunch Voucher Mgt","Gestion des tickets restaurants",,
+"Lunch Voucher Mgt","Gestion des tickets restaurants",, 
 "Leave to justify","Absence à justifier",,
 "Please configure the leave reason in HR config for the company %s","Merci de configuer le motif de congés dans Configuration RH pour la société %s",,
 "Leave Request to justify","Demandes de congés à justifier",,
