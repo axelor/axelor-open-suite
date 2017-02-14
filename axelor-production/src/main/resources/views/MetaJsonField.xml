@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	
+	<form name="production-json-field-form" title="Custom field" model="com.axelor.meta.db.MetaJsonField" onNew="action-configurator-set-json-field-default">
+	    <panel title="Overview">
+	      <field name="name" x-pattern="[a-z][a-zA-Z0-9_\\$]+"/>
+	      <field name="type" />
+	      <field name="title" />
+	      <field name="defaultValue" />
+	      <field name="help" />
+	      <field name="sequence" />
+	      <field name="includedInCost" widget="inline-checkbox" />
+	      <field name="model" hidden="true" />
+	      <field name="modelField" hidden="true" />
+	    </panel>
+	    <panel-include view="json-field-form-base" />
+    </form>
+    
+	<grid name="production-json-field-grid" title="Custom fields" model="com.axelor.meta.db.MetaJsonField" edit-icon="true">
+	  <field name="name"/>
+	  <field name="type"/>
+	</grid>
+	
+	<action-attrs name="action-configurator-set-json-field-default" >
+    	<attribute name="value"	for="model" expr="eval:'com.axelor.apps.production.db.Configurator'" if="_parent._model == 'com.axelor.apps.production.db.ConfiguratorCreator'"/>
+    	<attribute name="value" for="modelField" expr="eval:'attributes'" if="_parent._model == 'com.axelor.apps.production.db.ConfiguratorCreator'"/>
+<!--     	<attribute name="value" for="showIf" expr="eval:'configuratorCreator?.id == ' + id" if="_parent.model == 'com.axelor.apps.production.db.ConfiguratorCreator'"/> -->
+    </action-attrs>
+    
+</object-views>

@@ -5,7 +5,7 @@
 
   <module name="meta" package="com.axelor.meta.db" />
 
-  <entity name="MetaFieldCustom" table="META_FIELD_CUSTOM" cachable="true">
+  <entity name="MetaJsonField" table="META_JSON_FIELD" cachable="true">
   	
   	<boolean name="includedInCost" title="Included in cost price" />
      	
