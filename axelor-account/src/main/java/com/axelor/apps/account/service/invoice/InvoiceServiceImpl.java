@@ -211,7 +211,10 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 		
 		invoiceRepo.save(invoice);
 		
-		generateInvoice(invoice, invoice.getId().toString(), true);
+		if(generalService.getGeneral().getPrintReportOnVentilation()){
+			generateInvoice(invoice, invoice.getId().toString(), true);
+		}
+		
 	}
 
 	/**
