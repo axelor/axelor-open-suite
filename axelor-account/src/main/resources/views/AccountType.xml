@@ -13,12 +13,19 @@
         <panel name="overView" title="Overview">
         	<field name="name"/>
         	<field name="technicalTypeSelect"/>
-        	<field name="accounts" colSpan="12"/>
+        	<panel-dashlet action="action-dashlet-account-list" colSpan="12"/>
         </panel>
         <panel-dashlet title="Accounts" action="action-account-type-view-account" colSpan="12"/>
     </form>
     
     <action-view name="action-account-type-view-account" title="Accounts">
+    	<view type="grid" name="account-grid"/>
+    	<view type="form" name="account-form"/>
+    	<domain>self.accountType.id = :id</domain>
+    </action-view>
+    
+    <action-view name="action-dashlet-account-list" title="Account List"
+    	model="com.axelor.apps.account.db.Account">
     	<view type="grid" name="account-grid"/>
     	<view type="form" name="account-form"/>
     	<domain>self.accountType.id = :id</domain>
