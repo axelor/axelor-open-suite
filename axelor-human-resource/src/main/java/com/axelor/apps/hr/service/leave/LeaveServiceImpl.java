@@ -409,6 +409,7 @@ public class LeaveServiceImpl  implements  LeaveService  {
 				dataList.add(map);
 			}
 			response.setData(dataList);
+			response.setTotal(dataList.size());
 		}
 		catch(Exception e){
 			response.setStatus(-1);
@@ -435,16 +436,17 @@ public class LeaveServiceImpl  implements  LeaveService  {
 				leave.setFromDate(LocalDate.parse(request.getData().get("fromDate").toString(), DateTimeFormatter.ISO_DATE));
 			}
 			leave.setStartOnSelect(new Integer(request.getData().get("startOn").toString()));
-			if (request.getData().get("todDate") != null) {
+			if (request.getData().get("toDate") != null) {
 				leave.setToDate(LocalDate.parse(request.getData().get("toDate").toString(), DateTimeFormatter.ISO_DATE));
 			}
 			leave.setEndOnSelect(new Integer(request.getData().get("endOn").toString()));
 			leave.setDuration(this.computeDuration(leave));
 			leave.setStatusSelect(LeaveRequestRepository.STATUS_AWAITING_VALIDATION);
-			if(request.getData().get("comment") != null){
-				leave.setComments(request.getData().get("comment").toString());
+			if(request.getData().get("comments") != null){
+				leave.setComments(request.getData().get("comments").toString());
 			}
 			Beans.get(LeaveRequestRepository.class).save(leave);
+			response.setTotal(1);
 		}
 	}
 	

@@ -39,13 +39,11 @@ public class AppHumanResourceServiceImpl extends AppBaseServiceImpl implements A
 			
 			Map<String, Object> map = new HashMap<>();
 			
-			map.put("hasInvoicingEnable", isApp("invoice"));
-			
+			map.put("hasInvoicingAppEnable", isApp("invoice"));
 			map.put("hasLeaveAppEnable", isApp("leave"));
-			map.put("hasExpenseKilometricEnable", isApp("expense"));
 			map.put("hasExpenseAppEnable", isApp("expense"));
 			map.put("hasTimesheetAppEnable", isApp("timesheet"));
-			map.put("hasTaskEnable", isApp("project"));
+			map.put("hasProjectAppEnable", isApp("project"));
 
 			response.setData(map);
 			response.setTotal(map.size());

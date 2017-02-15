@@ -210,7 +210,7 @@
 	
 	<menuitem name="leave-reason-all" parent="hr-conf"
     	title="Leave reason"
-    	action="leave.reason.all"/>
+    	action="leave.reason.all" if="__config__.app.isApp('leave')"/>
 
 	<action-view name="leave.reason.all" title="Leave reason" model="com.axelor.apps.hr.db.LeaveReason">
     	<view type="grid" name="leave-reason-grid"/>

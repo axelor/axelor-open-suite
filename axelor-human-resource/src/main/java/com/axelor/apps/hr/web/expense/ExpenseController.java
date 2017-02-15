@@ -22,9 +22,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -40,14 +37,12 @@ import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.Expense;
 import com.axelor.apps.hr.db.ExpenseLine;
 import com.axelor.apps.hr.db.ExtraHours;
-import com.axelor.apps.hr.db.HRConfig;
 import com.axelor.apps.hr.db.repo.EmployeeRepository;
 import com.axelor.apps.hr.db.repo.ExpenseRepository;
 import com.axelor.apps.hr.exception.IExceptionMessage;
 import com.axelor.apps.hr.report.IReport;
 import com.axelor.apps.hr.service.HRMenuTagService;
 import com.axelor.apps.hr.service.KilometricService;
-import com.axelor.apps.hr.service.config.HRConfigService;
 import com.axelor.apps.hr.service.expense.ExpenseService;
 import com.axelor.apps.message.db.Message;
 import com.axelor.apps.message.db.repo.MessageRepository;
@@ -67,7 +62,6 @@ import com.axelor.rpc.ActionResponse;
 import com.google.common.base.Joiner;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
-import com.google.inject.persist.Transactional;
 
 public class ExpenseController {
 
@@ -75,8 +69,6 @@ public class ExpenseController {
 	
 	@Inject
 	private Provider<HRMenuTagService> hrMenuTagServiceProvider;
-	@Inject
-	private Provider<HRConfigService> hrConfigServiceProvider;
 	@Inject
 	private Provider<ExpenseService> expenseServiceProvider;
 	@Inject
@@ -409,9 +401,7 @@ public class ExpenseController {
 		
 		try  {
 			Expense expense = request.getContext().getParentContext().asType(Expense.class);
-			HRConfigService hrConfigService = hrConfigServiceProvider.get();
-			HRConfig hrConfig = hrConfigService.getHRConfig(expense.getCompany());
-			Product expenseProduct = hrConfigService.getKilometricExpenseProduct(hrConfig);
+			Product expenseProduct = expenseServiceProvider.get().getKilometricExpenseProduct(expense);
 			logger.debug("Get Kilometric expense product : {}", expenseProduct);
 			response.setValue("expenseProduct",expenseProduct);
 		}
@@ -419,38 +409,6 @@ public class ExpenseController {
 			TraceBackService.trace(response, e);
 		}
 	}
-	
-	@Transactional
-	 public void insertKMExpenses(ActionRequest request, ActionResponse response) throws AxelorException{
-	 	User user = AuthUtils.getUser();
-	 	if(user != null){
-	 		Expense expense = Beans.get(ExpenseRepository.class).all().filter("self.statusSelect = 1 AND self.user.id = ?1", user.getId()).order("-id").fetchOne();
-	 		if(expense == null){
-	 			expense = new Expense();
-	 			expense.setUser(user);
-	 			expense.setCompany(user.getActiveCompany());
-	 			expense.setStatusSelect(ExpenseRepository.STATUS_DRAFT);
-	 		}
-	 		ExpenseLine expenseLine = new ExpenseLine();
-	 		expenseLine.setDistance(new BigDecimal(request.getData().get("kmNumber").toString()));
-	 		expenseLine.setFromCity(request.getData().get("locationFrom").toString());
-	 		expenseLine.setToCity(request.getData().get("locationTo").toString());
-	 		expenseLine.setKilometricTypeSelect(new Integer(request.getData().get("allowanceTypeSelect").toString()));
-	 		expenseLine.setComments(request.getData().get("comments").toString());
-	 		expenseLine.setExpenseDate(LocalDate.parse(request.getData().get("date").toString(), DateTimeFormatter.ISO_DATE));
-	 		
-	 		Employee employee = user.getEmployee();
-	 		if(employee != null && employee.getKilometricAllowParam() != null)  {
-	 			expenseLine.setKilometricAllowParam(user.getEmployee().getKilometricAllowParam());
-	 			expenseLine.setTotalAmount(Beans.get(KilometricService.class).computeKilometricExpense(expenseLine, employee));
-	 			expenseLine.setUntaxedAmount(expenseLine.getTotalAmount());
-	 		}
-	 		
-	 		expense.addExpenseLineListItem(expenseLine);
-	 		
-	 		Beans.get(ExpenseRepository.class).save(expense);
-	 	}
-	 }
 	
 	public void computeAmounts(ActionRequest request, ActionResponse response){
 		

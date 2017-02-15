@@ -136,6 +136,7 @@ public class ProjectTaskBusinessService extends ProjectTaskService{
 				}
 			}
 			response.setData(dataList);
+			response.setTotal(dataList.size());
 		}
 		catch(Exception e){
 			response.setStatus(-1);

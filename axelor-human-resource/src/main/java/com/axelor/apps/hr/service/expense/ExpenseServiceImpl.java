@@ -29,6 +29,8 @@ import java.util.Set;
 
 import javax.mail.MessagingException;
 
+import org.apache.commons.codec.binary.Base64;
+
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
@@ -54,6 +56,7 @@ import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.AppAccountRepository;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.PeriodService;
+import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.EmployeeAdvanceUsage;
 import com.axelor.apps.hr.db.Expense;
 import com.axelor.apps.hr.db.ExpenseLine;
@@ -434,6 +437,7 @@ public class ExpenseServiceImpl implements ExpenseService  {
 				dataList.add(map);
 			}
 			response.setData(dataList);
+			response.setTotal(dataList.size());
 		}
 		catch(Exception e){
 			response.setStatus(-1);
@@ -445,7 +449,7 @@ public class ExpenseServiceImpl implements ExpenseService  {
 	public void insertExpenseLine(ActionRequest request, ActionResponse response){
 		User user = AuthUtils.getUser();
 		ProjectTask projectTask = Beans.get(ProjectTaskRepository.class).find(new Long(request.getData().get("project").toString()));
-		Product product = Beans.get(ProductRepository.class).find(new Long(request.getData().get("expenseProduct").toString()));
+		Product product = Beans.get(ProductRepository.class).find(new Long(request.getData().get("expenseType").toString()));
 		if(user != null){
 			Expense expense = Beans.get(ExpenseRepository.class).all().filter("self.statusSelect = 1 AND self.user.id = ?1", user.getId()).order("-id").fetchOne();
 			if(expense == null){
@@ -461,13 +465,16 @@ public class ExpenseServiceImpl implements ExpenseService  {
 			expenseLine.setToInvoice(new Boolean(request.getData().get("toInvoice").toString()));
 			expenseLine.setProjectTask(projectTask);
 			expenseLine.setUser(user);
-			expenseLine.setUntaxedAmount(new BigDecimal(request.getData().get("amountWithoutVat").toString()));
-			expenseLine.setTotalTax(new BigDecimal(request.getData().get("vatAmount").toString()));
-			expenseLine.setTotalAmount(expenseLine.getUntaxedAmount().add(expenseLine.getTotalTax()));
-			expenseLine.setJustification((byte[])request.getData().get("justification"));
+			expenseLine.setTotalAmount(new BigDecimal(request.getData().get("unTaxTotal").toString()));
+			expenseLine.setTotalTax(new BigDecimal(request.getData().get("taxTotal").toString()));
+			expenseLine.setUntaxedAmount(expenseLine.getTotalAmount().subtract(expenseLine.getTotalTax()));
+			if (!request.getData().get("justification").toString().isEmpty()) {
+				expenseLine.setJustification(Base64.decodeBase64(request.getData().get("justification").toString()));
+			}
 			expense.addExpenseLineListItem(expenseLine);
 			
 			Beans.get(ExpenseRepository.class).save(expense);
+			response.setTotal(1);
 		}
 	}
 	
@@ -497,6 +504,53 @@ public class ExpenseServiceImpl implements ExpenseService  {
 		}
 		
 		return advanceAmount;
+	}
+	
+	@Transactional
+	public void insertKMExpenses(ActionRequest request, ActionResponse response) throws AxelorException{
+	 	User user = AuthUtils.getUser();
+	 	if(user != null){
+	 		Expense expense = Beans.get(ExpenseRepository.class).all().filter("self.statusSelect = 1 AND self.user.id = ?1", user.getId()).order("-id").fetchOne();
+	 		if(expense == null){
+	 			expense = new Expense();
+	 			expense.setUser(user);
+	 			expense.setCompany(user.getActiveCompany());
+	 			expense.setStatusSelect(ExpenseRepository.STATUS_DRAFT);
+	 		}
+	 		ExpenseLine expenseLine = new ExpenseLine();
+	 		if (request.getData().get("project") != null) {
+	 			ProjectTaskRepository projectTaskRepo = Beans.get(ProjectTaskRepository.class);
+	 			expenseLine.setProjectTask(projectTaskRepo.find(Long.parseLong(request.getData().get("project").toString())));
+	 		}
+	 		expenseLine.setDistance(new BigDecimal(request.getData().get("nbrKm").toString()));
+	 		expenseLine.setFromCity(request.getData().get("cityFrom").toString());
+	 		expenseLine.setToCity(request.getData().get("cityTo").toString());
+	 		expenseLine.setKilometricTypeSelect(new Integer(request.getData().get("type").toString()));
+	 		expenseLine.setComments(request.getData().get("comments").toString());
+	 		expenseLine.setExpenseDate(LocalDate.parse(request.getData().get("date").toString(), DateTimeFormatter.ISO_DATE));
+	 		expenseLine.setToInvoice(new Boolean(request.getData().get("toInvoice").toString()));
+	 		expenseLine.setExpenseProduct(getKilometricExpenseProduct(expense));
+	 		
+	 		Employee employee = user.getEmployee();
+	 		if(employee != null && employee.getKilometricAllowParam() != null)  {
+	 			expenseLine.setKilometricAllowParam(user.getEmployee().getKilometricAllowParam());
+	 			expenseLine.setTotalAmount(Beans.get(KilometricService.class).computeKilometricExpense(expenseLine, employee));
+	 			expenseLine.setUntaxedAmount(expenseLine.getTotalAmount());
+	 		}
+	 		
+	 		expense.addKilometricExpenseLineListItem(expenseLine);
+	 		
+	 		Beans.get(ExpenseRepository.class).save(expense);
+	 		response.setTotal(1);
+	 	}
+	}
+	
+	public Product getKilometricExpenseProduct(Expense expense) throws AxelorException {
+		
+		HRConfig hrConfig = hrConfigService.getHRConfig(expense.getCompany());
+		Product expenseProduct = hrConfigService.getKilometricExpenseProduct(hrConfig);
+		
+		return expenseProduct;
 	}
 	
 }

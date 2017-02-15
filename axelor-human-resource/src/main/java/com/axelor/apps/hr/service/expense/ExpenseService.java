@@ -26,6 +26,7 @@ import javax.mail.MessagingException;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.Move;
+import com.axelor.apps.base.db.Product;
 import com.axelor.apps.hr.db.Expense;
 import com.axelor.apps.hr.db.ExpenseLine;
 import com.axelor.apps.message.db.Message;
@@ -72,7 +73,12 @@ public interface ExpenseService  {
 	@Transactional
 	public void insertExpenseLine(ActionRequest request, ActionResponse response);
 	
+	@Transactional
+	public void insertKMExpenses(ActionRequest request, ActionResponse response) throws AxelorException;
+	
 	public BigDecimal computePersonalExpenseAmount(Expense expense);
 	public BigDecimal computeAdvanceAmount(Expense expense);
+	
+	public Product getKilometricExpenseProduct(Expense expense) throws AxelorException;
 	
 }
