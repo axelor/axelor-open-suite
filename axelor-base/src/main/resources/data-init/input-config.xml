@@ -75,7 +75,6 @@
         <bind to="defaultExemptionTax" search="self.code = :defaultExemptionTax_code" update="true">
           	<bind column="defaultExemptionTax_code" to="code"/>
       	</bind>
-		<bind to="qasWsdlUrl" column="qas_url"/>
 		<bind to="manageBudget" column="manageBudget"/>
 		<bind to="manageMultiBudget" column="manageMultiBudget"/>
         <bind to="statusSelectBudget" column="statusSelectBudget"/>
