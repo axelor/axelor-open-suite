@@ -994,7 +994,7 @@
 	Company.name as "companyName", 
 	BankDetail.iban, 
 	Bank.branch_identifier as "bic",
-	BankDetail.bank_address, 
+	Bank.bank_address, 
 	Invoice.note, 
 	Invoice.internal_reference, 
 	Invoice.external_reference, 
