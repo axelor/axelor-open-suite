@@ -385,13 +385,9 @@
  	
  	<input file="account_invoiceLine.csv" separator=";" type="com.axelor.apps.account.db.InvoiceLine" />
  	
- 	<input file="account_paymentVoucher.csv" separator=";" type="com.axelor.apps.account.db.PaymentVoucher" >
- 		<bind to="paymentDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(paymentDate)" column="paymentDate"/>
- 	</input>
- 	
-<!--  	<input file="account_paymentVoucher.csv" separator=";" type="com.axelor.apps.account.db.PaymentVoucher" search="self.importId = :importId" update="true" call="com.axelor.csv.script.ImportPaymentVoucher:importPaymentVoucher"> -->
-<!--  		<bind to="paymentDateTime" eval="call:com.axelor.csv.script.ImportDateTime:importDateTime(paymentDateTime)" column="paymentDateTime"/> -->
-<!--  	</input> -->
+	<input file="account_paymentVoucher.csv" separator=";" type="com.axelor.apps.account.db.PaymentVoucher" call="com.axelor.csv.script.ImportPaymentVoucher:importPaymentVoucher">
+		<bind to="paymentDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(paymentDate)" column="paymentDate"/>
+	</input>
  	
 	<input file="stock_stockMove.csv" separator=";" type="com.axelor.apps.stock.db.StockMove">
 		<bind to="stockMoveSeq" eval="call:com.axelor.apps.base.service.administration.SequenceService:getSequenceNumber(com.axelor.apps.base.db.IAdministration.OUTGOING)" />

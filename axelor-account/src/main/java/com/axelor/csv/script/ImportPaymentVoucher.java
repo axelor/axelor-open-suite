@@ -19,10 +19,14 @@ package com.axelor.csv.script;
 
 import java.util.Map;
 
+import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.PaymentVoucher;
+import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.PaymentVoucherRepository;
 import com.axelor.apps.account.service.payment.paymentvoucher.PaymentVoucherConfirmService;
 import com.axelor.apps.account.service.payment.paymentvoucher.PaymentVoucherLoadService;
+import com.axelor.inject.Beans;
+import com.google.common.base.Strings;
 import com.google.inject.Inject;
 
 public class ImportPaymentVoucher {
@@ -38,6 +42,7 @@ public class ImportPaymentVoucher {
 		assert bean instanceof PaymentVoucher;
 		try{
 			PaymentVoucher paymentVoucher = (PaymentVoucher)bean;
+			paymentVoucher.setInvoiceToPay(getInvoice(paymentVoucher.getOrderImport()));
 			paymentVoucherLoadService.loadMoveLines(paymentVoucher);
 			if(paymentVoucher.getStatusSelect() == PaymentVoucherRepository.STATUS_CONFIRMED)
 				paymentVoucherConfirmService.confirmPaymentVoucher(paymentVoucher);
@@ -46,5 +51,22 @@ public class ImportPaymentVoucher {
 	            e.printStackTrace();
 	    }
 		return bean;
+	}
+
+	public Invoice getInvoice(String orderType_orderImportId) {
+		if (!Strings.isNullOrEmpty(orderType_orderImportId)) {
+			String orderType = orderType_orderImportId.split("_")[0];
+			String orderImportId = orderType_orderImportId.split("_")[1];
+
+			String filter;
+			if (orderType.equals("S")) {
+				filter = "self.saleOrder.importId = ?";
+			} else {
+				filter = "self.purchaseOrder.importId = ?";
+			}
+
+			return Beans.get(InvoiceRepository.class).all().filter(filter, orderImportId).fetchOne();
+		}
+		return null;
 	}
 }
