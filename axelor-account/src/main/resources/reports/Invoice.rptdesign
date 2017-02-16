@@ -441,20 +441,6 @@
                     <property name="onColumnLayout">false</property>
                     <text-property name="heading">displayProductCodeOnPrinting</text-property>
                 </structure>
-                <structure>
-                    <property name="columnName">displayTimesheetOnPrinting</property>
-                    <property name="analysis">measure</property>
-                    <text-property name="displayName">displayTimesheetOnPrinting</text-property>
-                    <property name="onColumnLayout">false</property>
-                    <text-property name="heading">displayTimesheetOnPrinting</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">displayExpenseOnPrinting</property>
-                    <property name="analysis">measure</property>
-                    <text-property name="displayName">displayExpenseOnPrinting</text-property>
-                    <property name="onColumnLayout">false</property>
-                    <text-property name="heading">displayExpenseOnPrinting</text-property>
-                </structure>
             </list-property>
             <list-property name="filter">
                 <structure>
@@ -662,16 +648,6 @@
                     <structure>
                         <property name="position">39</property>
                         <property name="name">displayProductCodeOnPrinting</property>
-                        <property name="dataType">integer</property>
-                    </structure>
-                    <structure>
-                        <property name="position">40</property>
-                        <property name="name">displayTimesheetOnPrinting</property>
-                        <property name="dataType">integer</property>
-                    </structure>
-                    <structure>
-                        <property name="position">41</property>
-                        <property name="name">displayExpenseOnPrinting</property>
                         <property name="dataType">integer</property>
                     </structure>
                 </list-property>
@@ -951,20 +927,6 @@
                     <property name="dataType">integer</property>
                     <property name="nativeDataType">-7</property>
                 </structure>
-                <structure>
-                    <property name="position">40</property>
-                    <property name="name">displayTimesheetOnPrinting</property>
-                    <property name="nativeName">displayTimesheetOnPrinting</property>
-                    <property name="dataType">integer</property>
-                    <property name="nativeDataType">-7</property>
-                </structure>
-                <structure>
-                    <property name="position">41</property>
-                    <property name="name">displayExpenseOnPrinting</property>
-                    <property name="nativeName">displayExpenseOnPrinting</property>
-                    <property name="dataType">integer</property>
-                    <property name="nativeDataType">-7</property>
-                </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[select Invoice.id as inv_id, 
 	MetaFile.file_path as logo_path, 
@@ -1004,9 +966,7 @@
 	AccountConfig.display_del_addr_on_printing as "DisplayDelAddr",
 	AccountConfig.display_tax_detail_on_printing as "displayTaxDetailOnPrinting", 
 	Invoice.hide_discount as "hideDiscount", 
-	AccountConfig.display_product_code_on_printing as "displayProductCodeOnPrinting", 
-	Invoice.display_timesheet_on_printing  as "displayTimesheetOnPrinting",
-	Invoice.display_expense_on_printing as "displayExpenseOnPrinting"
+	AccountConfig.display_product_code_on_printing as "displayProductCodeOnPrinting"
 from account_invoice as Invoice 
 left outer join base_company as Company on (Invoice.company = Company.id)
 left outer join base_partner as Partner on (Invoice.partner = Partner.id)
@@ -2147,20 +2107,6 @@ OR (conv.start_unit = project_unit.id AND conv.end_unit = raw_unit.id)]]></xml-p
                     <property name="dataType">integer</property>
                     <property name="allowExport">true</property>
                 </structure>
-                <structure>
-                    <property name="name">displayTimesheetOnPrinting</property>
-                    <text-property name="displayName">displayTimesheetOnPrinting</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["displayTimesheetOnPrinting"]</expression>
-                    <property name="dataType">boolean</property>
-                    <property name="allowExport">true</property>
-                </structure>
-                <structure>
-                    <property name="name">displayExpenseOnPrinting</property>
-                    <text-property name="displayName">displayExpenseOnPrinting</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["displayExpenseOnPrinting"]</expression>
-                    <property name="dataType">boolean</property>
-                    <property name="allowExport">true</property>
-                </structure>
             </list-property>
             <structure name="toc"/>
             <list-property name="sort">
@@ -2454,6 +2400,7 @@ OR (conv.start_unit = project_unit.id AND conv.end_unit = raw_unit.id)]]></xml-p
                                     <property name="borderRightWidth">thin</property>
                                     <property name="borderTopStyle">solid</property>
                                     <property name="borderTopWidth">thin</property>
+                                    <property name="paddingLeft">6pt</property>
                                     <text id="3423">
                                         <property name="fontWeight">bold</property>
                                         <property name="dataSet">TranslateDS</property>
@@ -4392,26 +4339,6 @@ row["partnerFirstName"]
                                         <text-property name="content"><![CDATA[<VALUE-OF>row["note"]</VALUE-OF>]]></text-property>
                                     </text>
                                 </cell>
-                            </row>
-                            <row id="4350">
-                                <cell id="4351">
-                                    <label id="4396">
-                                        <property name="pageBreakBefore">always</property>
-                                        <list-property name="visibility">
-                                            <structure>
-                                                <property name="format">all</property>
-                                                <expression name="valueExpr" type="javascript">!row._outer["displayTimesheetOnPrinting"] &amp;&amp; !row._outer["displayExpenseOnPrinting"]</expression>
-                                            </structure>
-                                        </list-property>
-                                    </label>
-                                </cell>
-                                <cell id="4352"/>
-                                <cell id="4353"/>
-                                <cell id="4354"/>
-                                <cell id="4355"/>
-                                <cell id="4356"/>
-                                <cell id="4357"/>
-                                <cell id="4358"/>
                             </row>
                         </grid>
                     </cell>
