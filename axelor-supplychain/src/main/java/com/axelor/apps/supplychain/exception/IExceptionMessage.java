@@ -53,8 +53,8 @@ public interface IExceptionMessage {
 	 */
 	static final String STOCK_MOVE_INVOICE_1 = /*$$(*/ "Incorrect product in the stock move %s" /*)*/;
 	static final String STOCK_MOVE_MULTI_INVOICE_CURRENCY = /*$$(*/ "The currency is required and must be the same for all sale orders" /*)*/;
-	static final String STOCK_MOVE_MULTI_INVOICE_CLIENT_PARTNER = /*$$(*/ "The client Partner is required and must be the same for all sale orders" /*)*/;
-	static final String STOCK_MOVE_MULTI_INVOICE_SUPPLIER_PARTNER = /*$$(*/ "The supplier Partner is required and must be the same for all purchase orders" /*)*/;
+	static final String STOCK_MOVE_MULTI_INVOICE_CLIENT_PARTNER = /*$$(*/ "The client is required and must be the same for all sale orders" /*)*/;
+	static final String STOCK_MOVE_MULTI_INVOICE_SUPPLIER_PARTNER = /*$$(*/ "The supplier is required and must be the same for all purchase orders" /*)*/;
 	static final String STOCK_MOVE_MULTI_INVOICE_COMPANY_SO = /*$$(*/ "The company is required and must be the same for all sale orders" /*)*/;
 	static final String STOCK_MOVE_MULTI_INVOICE_COMPANY_PO = /*$$(*/ "The company is required and must be the same for all purchase orders" /*)*/;
 	static final String STOCK_MOVE_MULTI_INVOICE_IN_ATI = /*$$(*/ "Unit prices in A.T.I and in W.T. can't be mix" /*)*/;
