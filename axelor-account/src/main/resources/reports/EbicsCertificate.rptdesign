@@ -18,6 +18,19 @@
                 <property name="category">Unformatted</property>
             </structure>
         </scalar-parameter>
+        <scalar-parameter name="EbicsUserId" id="153">
+            <property name="valueType">static</property>
+            <property name="isRequired">true</property>
+            <property name="dataType">decimal</property>
+            <property name="distinct">true</property>
+            <list-property name="selectionList"/>
+            <property name="paramType">simple</property>
+            <property name="concealValue">false</property>
+            <property name="controlType">text-box</property>
+            <structure name="format">
+                <property name="category">Unformatted</property>
+            </structure>
+        </scalar-parameter>
     </parameters>
     <data-sources>
         <oda-data-source extensionID="org.eclipse.birt.report.data.oda.jdbc" name="Data Source" id="7">
@@ -38,7 +51,7 @@
                 </ex-property>
             </list-property>
             <property name="odaDriverClass">org.postgresql.Driver</property>
-            <property name="odaURL">jdbc:postgresql://localhost</property>
+            <property name="odaURL">jdbc:postgresql://localhost:5432</property>
         </oda-data-source>
     </data-sources>
     <data-sets>
@@ -150,7 +163,18 @@
                     </simple-property-list>
                 </structure>
             </list-property>
-            <list-property name="parameters"/>
+            <list-property name="parameters">
+                <structure>
+                    <property name="name">param_1</property>
+                    <property name="paramName">EbicsUserId</property>
+                    <property name="nativeName"></property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">-5</property>
+                    <property name="position">1</property>
+                    <property name="isInput">true</property>
+                    <property name="isOutput">false</property>
+                </structure>
+            </list-property>
             <structure name="cachedMetaData">
                 <list-property name="resultSet">
                     <structure>
@@ -383,9 +407,30 @@
  	certificate.subject,
  	certificate.init_letter_edition_date	       
 from account_ebics_certificate certificate
-left join account_ebics_user ebics_user on (ebics_user.id = (select id from account_ebics_user where (a005certificate = certificate.id or e002certificate = certificate.id or x002certificate = certificate.id)))
+left join account_ebics_user ebics_user on (ebics_user.id = ?)
 left join account_ebics_partner partner on (partner.id = ebics_user.ebics_partner)
 left join account_ebics_bank bank on (bank.id = partner.ebics_bank)]]></xml-property>
+            <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
+  <Version>2.0</Version>
+  <DataSetParameters>
+    <parameter>
+      <design:ParameterDefinition>
+        <design:inOutMode>In</design:inOutMode>
+        <design:attributes>
+          <design:identifier>
+            <design:name></design:name>
+            <design:position>1</design:position>
+          </design:identifier>
+          <design:nativeDataTypeCode>-5</design:nativeDataTypeCode>
+          <design:precision>0</design:precision>
+          <design:scale>0</design:scale>
+          <design:nullability>Unknown</design:nullability>
+        </design:attributes>
+      </design:ParameterDefinition>
+    </parameter>
+  </DataSetParameters>
+</model:DesignValues>]]></xml-property>
         </oda-data-set>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="Translation" id="34">
             <list-property name="columnHints">
@@ -648,9 +693,12 @@ where message_key = ? and language = ? ]]></xml-property>
             <column id="152"/>
             <detail>
                 <row id="148">
+                    <property name="height">100%</property>
                     <cell id="149">
                         <grid id="18">
                             <property name="pageBreakBefore">auto</property>
+                            <property name="canShrink">true</property>
+                            <property name="overflow">visible</property>
                             <property name="height">9.958333333333334in</property>
                             <property name="width">7.677083333333333in</property>
                             <structure name="toc"/>
@@ -881,7 +929,8 @@ where message_key = ? and language = ? ]]></xml-property>
                                     <property name="borderTopStyle">solid</property>
                                     <property name="borderTopWidth">thin</property>
                                     <grid id="115">
-                                        <property name="height">6.875in</property>
+                                        <property name="overflow">visible</property>
+                                        <property name="height">6.927083333333333in</property>
                                         <column id="116"/>
                                         <row id="117">
                                             <property name="height">0.3333333333333333in</property>
@@ -957,7 +1006,7 @@ where message_key = ? and language = ? ]]></xml-property>
                                                         </structure>
                                                     </list-property>
                                                     <property name="contentType">html</property>
-                                                    <text-property name="content"><![CDATA[<B><VALUE-OF>row["message_value"] == null ? 'Certificate issued to' :  row["message_value"]</VALUE-OF> : </B> <VALUE-OF>row._outer["subject"] != null ? (row._outer["subject"].split(',')[0]).substring(3) : ""</VALUE-OF>]]></text-property>
+                                                    <text-property name="content"><![CDATA[<B><VALUE-OF>row["message_value"] == null ? 'Certificate issued to' :  row["message_value"]</VALUE-OF> : </B> <VALUE-OF>row._outer["subject"] != null ? (row._outer["subject"].split(',')[0]).split('=')[1] : ""</VALUE-OF>]]></text-property>
                                                 </text>
                                             </cell>
                                         </row>
@@ -990,18 +1039,22 @@ where message_key = ? and language = ? ]]></xml-property>
                                                         </structure>
                                                     </list-property>
                                                     <property name="contentType">html</property>
-                                                    <text-property name="content"><![CDATA[<B><VALUE-OF>row["message_value"] == null ? 'Certificate issued by' :  row["message_value"]</VALUE-OF> : </B> <VALUE-OF>row._outer["issuer"] != null ? (row._outer["issuer"].split(',')[0]).substring(3) : ""</VALUE-OF>]]></text-property>
+                                                    <text-property name="content"><![CDATA[<B><VALUE-OF>row["message_value"] == null ? 'Certificate issued by' :  row["message_value"]</VALUE-OF> : </B> <VALUE-OF>row._outer["issuer"] != null ? (row._outer["issuer"].split(',')[0]).split('=')[1] : ""</VALUE-OF>]]></text-property>
                                                 </text>
                                             </cell>
                                         </row>
                                         <row id="129">
-                                            <property name="height">3.3854166666666665in</property>
+                                            <property name="canShrink">false</property>
+                                            <property name="overflow">visible</property>
                                             <cell id="130">
                                                 <property name="borderBottomStyle">none</property>
                                                 <property name="borderLeftStyle">none</property>
                                                 <property name="borderRightStyle">none</property>
                                                 <property name="borderTopStyle">none</property>
+                                                <property name="canShrink">false</property>
+                                                <property name="overflow">auto</property>
                                                 <data id="144">
+                                                    <property name="overflow">auto</property>
                                                     <property name="resultSetColumn">pem_string</property>
                                                 </data>
                                             </cell>

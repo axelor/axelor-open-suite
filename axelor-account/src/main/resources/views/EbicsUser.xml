@@ -105,6 +105,7 @@
     
     <action-report name="action-ebics-user-print-certificates" design="EbicsCertificate.rptdesign" output="Certificates">
     	<param name="CertificateId" expr="eval:a005Certificate.id + ',' + e002Certificate.id + ',' + x002Certificate.id"/>
+    	<param name="EbicsUserId" expr="eval:id"/>
     </action-report>
     
 </object-views>
