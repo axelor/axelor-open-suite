@@ -75,6 +75,10 @@
 				 <panel name="taxPayment" title="Tax payment" colSpan="12">
 				    <field name="payingBackTax" grid-view="tax-grid" form-view="tax-form"/>
 				</panel>
+				<panel name="defaultPaymentModes" title="Default Payment Modes" colSpan="12">
+					<field name="inPaymentMode" grid-view="payment-mode-grid" form-view="payment-mode-form" domain="self.inOutSelect = 1"/>
+					<field name="outPaymentMode" grid-view="payment-mode-grid" form-view="payment-mode-form" domain="self.inOutSelect = 2"/>
+				</panel>
 				<panel	name="expense" title="Expense" colSpan="12">
 					<field name="expenseTaxAccount" domain="self.company = :company" if-module="axelor-human-resource" grid-view="account-grid" form-view="account-form"/>
 				</panel>

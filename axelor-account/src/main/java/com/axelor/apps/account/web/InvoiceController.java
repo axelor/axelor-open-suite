@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import org.eclipse.birt.core.exception.BirtException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -137,6 +138,12 @@ public class InvoiceController {
 		invoiceService.cancel(invoice);
 		response.setFlash(I18n.get(IExceptionMessage.INVOICE_1));
 		response.setReload(true);
+	}
+
+	public void getPaymentMode(ActionRequest request, ActionResponse response) throws AxelorException {
+		Invoice invoice = request.getContext().asType(Invoice.class);
+		PaymentMode paymentMode = InvoiceToolService.getPaymentMode(invoice);
+		response.setValue("paymentMode", paymentMode);
 	}
 
 	/**

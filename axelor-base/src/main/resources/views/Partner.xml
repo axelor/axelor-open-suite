@@ -79,7 +79,7 @@
     </form>
     
     <form name="partner-form"  title="Partner" model="com.axelor.apps.base.db.Partner"    
-    onNew="action-group-base-partner-onnew" 
+    onNew="action-group-base-partner-onnew,action-partner-record-set-payment-modes"
     onLoad="action-group-partner-onload" 
     onSave="action-partner-iban-check-on-save" width="large">
 	    <toolbar>

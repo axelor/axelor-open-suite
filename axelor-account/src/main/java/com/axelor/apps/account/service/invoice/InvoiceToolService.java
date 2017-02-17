@@ -17,16 +17,19 @@
  */
 package com.axelor.apps.account.service.invoice;
 
-import org.joda.time.LocalDate;
-
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.PaymentCondition;
+import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.PaymentConditionRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.base.db.Partner;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
+import org.joda.time.LocalDate;
+
+import java.math.BigDecimal;
 
 /**
  * InvoiceService est une classe implémentant l'ensemble des services de
@@ -142,8 +145,36 @@ public class InvoiceToolService {
 	 * @throws AxelorException
 	 */
 	public static boolean isOutPayment(Invoice invoice) throws AxelorException {
-		// result of XOR operator, we could also have written "bool1 ^ bool2"
-		return (isPurchase(invoice) != isRefund(invoice));
+		if (invoice.getInTaxTotal().compareTo(BigDecimal.ZERO) >= 0) {
+			// result of XOR operator, we could also have written "bool1 ^ bool2"
+			return (isPurchase(invoice) != isRefund(invoice));
+		} else {
+			// return opposite if total amount is negative
+			return (isPurchase(invoice) == isRefund(invoice));
+		}
+	}
+
+
+	public static PaymentMode getPaymentMode(Invoice invoice) throws AxelorException {
+		Partner partner = invoice.getPartner();
+
+		if (InvoiceToolService.isOutPayment(invoice)) {
+			if (partner != null) {
+				PaymentMode paymentMode = partner.getOutPaymentMode();
+				if (paymentMode != null) {
+					return paymentMode;
+				}
+			}
+			return invoice.getCompany().getAccountConfig().getOutPaymentMode();
+		} else {
+			if (partner != null) {
+				PaymentMode paymentMode = partner.getInPaymentMode();
+				if (paymentMode != null) {
+					return paymentMode;
+				}
+			}
+			return invoice.getCompany().getAccountConfig().getInPaymentMode();
+		}
 	}
 	
 }
