@@ -604,7 +604,7 @@
 	
 	<selection name="product.inventory.type.select">
 		<option value="1">Yearly</option>
-		<option value="2">Rotating / Turning</option>
+		<option value="2">Cycle counting</option>
 	</selection>
 	
 	
