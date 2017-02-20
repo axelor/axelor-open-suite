@@ -60,6 +60,7 @@ public interface IExceptionMessage {
 
 	static final String EMPLOYEE_PLANNING = /*$$(*/ "Please, add a planning for employee : %s"/*)*/ ;
 	static final String EMPLOYEE_PUBLIC_HOLIDAY = /*$$(*/ "Please, add a public holiday planning for employee : %s"/*)*/ ;
+	static final String EMPLOYEE_CONTRACT_OF_EMPLOYMENT = /*$$(*/ "Please, add a contract of employment for employee : %s"/*)*/ ;
 	
 	static final String BATCH_MISSING_FIELD = /*$$(*/ "Leave reason and day number have to be defined"/*)*/ ;
 	static final String EMPLOYEE_DOUBLE_LEAVE_MANAGEMENT = /*$$(*/ "The employee %s has multiple %s leave lines"/*)*/ ;

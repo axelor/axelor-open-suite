@@ -85,6 +85,7 @@ public class KilometricService {
 		KilometricLog log = getKilometricLog(employee, date);
 		
 		if (log != null) { return log; }
+		if (employee.getMainEmploymentContract() == null) { throw new AxelorException( String.format( I18n.get(IExceptionMessage.EMPLOYEE_CONTRACT_OF_EMPLOYMENT), employee.getName() ), IException.CONFIGURATION_ERROR ); }
 		
 		Year year = Beans.get(YearServiceImpl.class).getYear(date, employee.getMainEmploymentContract().getPayCompany());
 		
