@@ -170,7 +170,7 @@
     	<action name="action-purchase-order-record-in-ati"/>
     	<action name="action-purchase-order-attrs-in-ati"/>
     	<action name="action-purchase-order-dispaly-price"/>
-		<action name="action-purchase-order-payment-mode"/>
+		<action name="action-purchase-order-record-payment-mode"/>
     </action-group>
     
     <action-group name="action-group-purchase-order-company-change-actions">
@@ -250,6 +250,11 @@
     	<field name="shipmentMode" expr="eval: supplierPartner?.shipmentMode"/>	
     	<field name="freightCarrierMode" expr="eval: supplierPartner?.freightCarrierMode"/>
  	</action-record>
+
+	<action-record name="action-purchase-order-record-payment-mode" model="com.axelor.apps.purchase.db.PurchaseOrder">
+		<field name="paymentMode" expr="eval: supplierPartner?.outPaymentMode" if="supplierPartner?.outPaymentMode != null"/>
+		<field name="paymentMode" expr="eval: __user__.activeCompany?.accountConfig?.outPaymentMode" if="supplierPartner?.outPaymentMode == null"/>
+	</action-record>
     
     <action-record name="action-purchase-order-record-validate" model="com.axelor.apps.purchase.db.PurchaseOrder">
     	<field name="statusSelect" expr="3"/>
