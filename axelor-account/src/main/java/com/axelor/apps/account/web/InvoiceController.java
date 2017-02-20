@@ -22,7 +22,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import com.axelor.apps.account.db.repo.PaymentModeRepository;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import org.eclipse.birt.core.exception.BirtException;
 import org.slf4j.Logger;
@@ -94,12 +93,6 @@ public class InvoiceController {
 
 		Invoice invoice = request.getContext().asType(Invoice.class);
 		invoice = invoiceRepo.find(invoice.getId());
-
-		if ((InvoiceToolService.isOutPayment(invoice) && (invoice.getPaymentMode().getInOutSelect() == PaymentModeRepository.IN))
-		 || (!InvoiceToolService.isOutPayment(invoice) && (invoice.getPaymentMode().getInOutSelect() == PaymentModeRepository.OUT))) {
-			response.setError(I18n.get("The payment mode is not in adequacy with the invoice type."));
-			return;
-		}
 
 		try{
 			invoiceService.validate(invoice);
