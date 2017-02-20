@@ -107,5 +107,10 @@
 	<action-method name="action-partner-method-show-client-situation" >
 		<call class="com.axelor.apps.base.web.PartnerController" method="printClientSituation"/>
 	</action-method>
+
+	<action-record name="action-partner-record-set-payment-modes" model="com.axelor.apps.base.db.Partner">
+		<field name="inPaymentMode" expr="eval: __user__?.activeCompany?.accountConfig?.inPaymentMode"/>
+		<field name="outPaymentMode" expr="eval: __user__?.activeCompany?.accountConfig?.outPaymentMode"/>
+	</action-record>
 	
 </object-views>

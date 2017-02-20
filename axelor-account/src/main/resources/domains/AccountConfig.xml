@@ -44,8 +44,12 @@
    	<many-to-one name="cashRegisterTemplate" ref="com.axelor.apps.message.db.Template" title="Cashier email template"/>
    	<string name="cashRegisterAddressEmail" title="Cashier email address"/>
    	<many-to-one name="payingBackTax" ref="com.axelor.apps.account.db.Tax" title="Tax for management fee"/>
-   	
-   	<!--  Onglet CFONB -->
+
+	<!-- Default Payment Modes -->
+	<many-to-one name="inPaymentMode" ref="com.axelor.apps.account.db.PaymentMode" title="Incoming Payment Mode"/>
+	<many-to-one name="outPaymentMode" ref="com.axelor.apps.account.db.PaymentMode" title="Outgoing Payment Mode"/>
+
+	<!--  Onglet CFONB -->
 	<many-to-one name="cfonbConfig" ref="com.axelor.apps.account.db.CfonbConfig" title="Cfonb configuration"/>
    	
    	<!--  Doubtful Cust. -->
