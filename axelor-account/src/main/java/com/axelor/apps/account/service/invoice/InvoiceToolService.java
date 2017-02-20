@@ -23,10 +23,12 @@ import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.PaymentConditionRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
+import com.google.inject.Inject;
 import org.joda.time.LocalDate;
 
 import java.math.BigDecimal;
@@ -34,9 +36,12 @@ import java.math.BigDecimal;
 /**
  * InvoiceService est une classe implémentant l'ensemble des services de
  * facturations.
- * 
+ *
  */
 public class InvoiceToolService {
+
+	@Inject
+	private AccountConfigService accountConfigService;
 
 	public static LocalDate getDueDate(PaymentCondition paymentCondition, LocalDate invoiceDate)  {
 		
@@ -165,7 +170,7 @@ public class InvoiceToolService {
 					return paymentMode;
 				}
 			}
-			return invoice.getCompany().getAccountConfig().getOutPaymentMode();
+			return accountConfigService.getAccountConfig(invoice.getCompany()).getOutPaymentMode();
 		} else {
 			if (partner != null) {
 				PaymentMode paymentMode = partner.getInPaymentMode();
@@ -173,7 +178,7 @@ public class InvoiceToolService {
 					return paymentMode;
 				}
 			}
-			return invoice.getCompany().getAccountConfig().getInPaymentMode();
+			return accountConfigService.getAccountConfig(invoice.getCompany()).getInPaymentMode();
 		}
 	}
 	
