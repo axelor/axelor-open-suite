@@ -28,7 +28,7 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
-import com.google.inject.Inject;
+import com.axelor.inject.Beans;
 import org.joda.time.LocalDate;
 
 import java.math.BigDecimal;
@@ -40,8 +40,6 @@ import java.math.BigDecimal;
  */
 public class InvoiceToolService {
 
-	@Inject
-	private AccountConfigService accountConfigService;
 
 	public static LocalDate getDueDate(PaymentCondition paymentCondition, LocalDate invoiceDate)  {
 		
@@ -170,7 +168,7 @@ public class InvoiceToolService {
 					return paymentMode;
 				}
 			}
-			return accountConfigService.getAccountConfig(invoice.getCompany()).getOutPaymentMode();
+			return Beans.get(AccountConfigService.class).getAccountConfig(invoice.getCompany()).getOutPaymentMode();
 		} else {
 			if (partner != null) {
 				PaymentMode paymentMode = partner.getInPaymentMode();
@@ -178,7 +176,7 @@ public class InvoiceToolService {
 					return paymentMode;
 				}
 			}
-			return accountConfigService.getAccountConfig(invoice.getCompany()).getInPaymentMode();
+			return Beans.get(AccountConfigService.class).getAccountConfig(invoice.getCompany()).getInPaymentMode();
 		}
 	}
 	
