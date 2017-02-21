@@ -17,13 +17,20 @@
  */
 package com.axelor.apps.account.ebics.web;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Path;
 import java.security.GeneralSecurityException;
 import java.security.cert.CertificateEncodingException;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
+import java.util.Map;
 
 import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.io.FileUtils;
+import org.apache.xmlbeans.impl.common.IOUtil;
 
 import com.axelor.apps.account.db.EbicsBank;
 import com.axelor.apps.account.db.EbicsCertificate;
@@ -37,6 +44,9 @@ import com.axelor.apps.account.ebics.service.EbicsCertificateService;
 import com.axelor.apps.account.ebics.service.EbicsService;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.auth.db.User;
+import com.axelor.data.Listener;
+import com.axelor.data.xml.XMLImporter;
+import com.axelor.db.Model;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
@@ -46,6 +56,7 @@ import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
+import com.google.common.io.Files;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -308,5 +319,57 @@ public class EbicsController {
 		response.setReload(true);
 		
 	}
+	
+	@Transactional
+	public void importEbicsUsers(ActionRequest request, ActionResponse response) {
+		
+		String config = "/data-import/import-ebics-user-config.xml";
+		
+		try {
+			InputStream inputStream = this.getClass().getResourceAsStream(config);
+			File configFile = File.createTempFile("config", ".xml");
+			FileOutputStream fout = new FileOutputStream(configFile);
+			IOUtil.copyCompletely(inputStream, fout);
+			
+			Path path = MetaFiles.getPath((String) ((Map) request.getContext().get("dataFile")).get("filePath"));
+			File tempDir = Files.createTempDir();
+			File importFile = new File(tempDir, "ebics-user.xml");
+			Files.copy(path.toFile(), importFile);
+			
+			XMLImporter importer = new XMLImporter(configFile.getAbsolutePath(), tempDir.getAbsolutePath());
+			final StringBuilder log = new StringBuilder();
+			Listener listner = new Listener() {
+				
+				@Override
+				public void imported(Integer imported, Integer total) {
+					log.append("Total records: " + total + ", Total imported: " + total);
+					
+				}
+				
+				@Override
+				public void imported(Model arg0) {
+				}
+				
+				@Override
+				public void handle(Model arg0, Exception err) {
+					log.append("Error in import: " + err.getStackTrace().toString());
+				}
+			};
+			
+			importer.addListener(listner);
+			
+			importer.run();
+			
+			FileUtils.forceDelete(configFile);
+			
+			FileUtils.forceDelete(tempDir);
+			
+			response.setValue("importLog", log.toString());
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+		} 
+	}
+	
 	
 }

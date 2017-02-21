@@ -7,8 +7,8 @@
   
   <entity name="EbicsPartner" lang="java">
   
-    <many-to-one name="ebicsBank" ref="com.axelor.apps.account.db.EbicsBank" title="Ebics bank"/>
-    <string name="partnerId" title="Partner id" namecolumn="true" max="35"/>
+    <many-to-one name="ebicsBank" ref="com.axelor.apps.account.db.EbicsBank" title="Ebics bank" required="true"/>
+    <string name="partnerId" title="Partner id" namecolumn="true" max="35" required="true"/>
     
   </entity>
   
