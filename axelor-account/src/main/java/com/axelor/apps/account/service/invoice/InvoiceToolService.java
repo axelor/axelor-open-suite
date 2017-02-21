@@ -158,7 +158,7 @@ public class InvoiceToolService {
 	}
 
 
-	public  PaymentMode getPaymentMode(Invoice invoice) throws AxelorException {
+	public static PaymentMode getPaymentMode(Invoice invoice) throws AxelorException {
 		Partner partner = invoice.getPartner();
 
 		if (InvoiceToolService.isOutPayment(invoice)) {

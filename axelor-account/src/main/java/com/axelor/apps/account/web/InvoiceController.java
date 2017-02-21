@@ -142,7 +142,7 @@ public class InvoiceController {
 
 	public void getPaymentMode(ActionRequest request, ActionResponse response) throws AxelorException {
 		Invoice invoice = request.getContext().asType(Invoice.class);
-		PaymentMode paymentMode = Beans.get(InvoiceToolService.class).getPaymentMode(invoice);
+		PaymentMode paymentMode = InvoiceToolService.getPaymentMode(invoice);
 		response.setValue("paymentMode", paymentMode);
 	}
 
