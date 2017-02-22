@@ -215,7 +215,7 @@
 	</action-attrs>
 	
 	<action-record name="action-timesheet-record-from-period-date" model="com.axelor.apps.hr.db.Timesheet">
-		<field name="fromDate" expr="eval: __repo__.of(Timesheet).all().filter('self.user = ?1 AND self.statusSelect != ?2 ORDER BY self.toDate DESC', __user__, TimesheetRepository.STATUS_CANCELED).fetchOne()?.toDate.plusDays(1)"/>
+		<field name="fromDate" expr="eval: __repo__.of(Timesheet).all().filter('self.user = ?1 AND self.statusSelect != ?2 ORDER BY self.toDate DESC', __user__, TimesheetRepository.STATUS_CANCELED).fetchOne()?.toDate?.plusDays(1)"/>
 	</action-record>
 	
 	<action-record name="action-timesheet-null-fromDate" model="com.axelor.apps.hr.db.Timesheet">

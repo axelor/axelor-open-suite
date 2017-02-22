@@ -61,7 +61,7 @@
 			<field name="currency" form-view="currency-form" grid-view="currency-grid"/>
 			<field name="buyerUser" form-view="user-form" grid-view="user-grid"/>
 			<field name="versionNumber" if="__config__.general.getManagePurchaseOrderVersion()"/>
-			<field name="companyBankDetails" widget="SuggestBox" onSelect="action-accounting-batch-attrs-company-bank-details-domain" form-view="bank-details-form" grid-view="bank-details-grid" if="__config__.general.getManageMultiBanks()"/>
+			<field name="companyBankDetails" widget="SuggestBox" onSelect="action-accounting-batch-attrs-company-bank-details-domain" form-view="bank-details-form" grid-view="bank-details-grid" if="__config__.general.getManageMultiBanks()" if-module="axelor-cash-management"/>
 			<field name="inAti" onChange="action-purchase-order-attrs-in-ati"/>   
 		</panel>
 		

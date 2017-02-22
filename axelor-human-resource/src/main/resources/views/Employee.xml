@@ -35,7 +35,7 @@
         <panel-tabs>
         	<panel name="information" title="Information">
 	       	    <field name="hourlyRate"/>
-	       	    <field name="bankDetails" widget="SuggestBox" onSelect="action-accounting-batch-attrs-bank-details-domain" form-view="bank-details-form" grid-view="bank-details-grid" if="__config__.general.getManageMultiBanks()"/>
+	       	    <field name="bankDetails" widget="SuggestBox" onSelect="action-accounting-batch-attrs-bank-details-domain" form-view="bank-details-form" grid-view="bank-details-grid" if="__config__.general.getManageMultiBanks()" if-module="axelor-cash-management"/>
 	       	    <field name="timeLoggingPreferenceSelect" />
 	       	    <field name="weeklyWorkHours"/>
 	       	    <field name="dailyWorkHours"/>

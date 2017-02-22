@@ -76,7 +76,7 @@
 				<field name="timeSpent" hidden="true"/>
 				<field name="leadDelay" hidden="true"/>
 			</panel>
-			<panel name="activity" title="Activities">
+			<panel name="activity" title="Activities" if-module="axelor-human-resource">
 				<panel-related field="productList" grid-view="product-activity-grid" form-view="product-activity-form" domain="self.isActivity = true" colSpan="12"/>
 			</panel>
 		</panel-tabs>
