@@ -46,6 +46,7 @@ import com.axelor.apps.account.ebics.client.FileTransfer;
 import com.axelor.apps.account.ebics.client.KeyManagement;
 import com.axelor.apps.account.ebics.client.OrderType;
 import com.axelor.apps.account.ebics.io.IOUtils;
+import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.exception.service.TraceBackService;
@@ -84,7 +85,25 @@ public class EbicsService {
 		defaultProduct = new EbicsProduct(name, language, instituteID);
 	}
 	
-	public String makeDN(String name, String email, String country, String organization) {
+	
+	public String makeDN(EbicsUser ebicsUser)  {
+		
+		String email = null;
+		String companyName = defaultProduct.getInstituteID();
+		User user = ebicsUser.getAssociatedUser();
+		
+		if (user != null)  {
+			email = user.getEmail();
+			if(user.getActiveCompany() != null)  {
+				companyName = user.getActiveCompany().getName();
+			}
+		}
+		
+		return makeDN(ebicsUser.getName(), email, "FR", companyName);
+		
+	}
+	
+	private String makeDN(String name, String email, String country, String organization) {
 	
 		StringBuffer buffer = new StringBuffer();
 		buffer.append("CN=" + name);

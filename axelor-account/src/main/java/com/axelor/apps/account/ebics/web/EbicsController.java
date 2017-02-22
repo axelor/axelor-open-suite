@@ -102,13 +102,9 @@ public class EbicsController {
 	public void generateDn(ActionRequest request, ActionResponse response){
 		
 		EbicsUser ebicsUser = ebicsUserRepo.find(request.getContext().asType(EbicsUser.class).getId());
-		User user = ebicsUser.getAssociatedUser();
-		if (user != null){
-			response.setValue("dn", ebicsService.makeDN(ebicsUser.getName(), user.getEmail(), "France", user.getActiveCompany().getCode()) );
-		}else{
-			response.setValue("dn", ebicsService.makeDN(ebicsUser.getName(), null, "France", null) );
-		}
 		
+		response.setValue("dn", ebicsService.makeDN(ebicsUser));
+
 	}
 	
 	public void sendINIRequest(ActionRequest request, ActionResponse response) {
@@ -272,10 +268,10 @@ public class EbicsController {
 		
 		try {
 			X509Certificate certificate =  certificateService.convertToCertificate((String)context.get("certificateE002"));
-			certificateService.createCertificate(certificate, bank, "encryption");
+			certificateService.createCertificate(certificate, bank, EbicsCertificateRepository.TYPE_ENCRYPTION);
 			
 			certificate =  certificateService.convertToCertificate((String)context.get("certificateX002"));
-			certificateService.createCertificate(certificate, bank, "authentication");
+			certificateService.createCertificate(certificate, bank, EbicsCertificateRepository.TYPE_AUTHENTICATION);
 			
 			
 		} catch (CertificateException | IOException e) {

@@ -25,6 +25,17 @@
 	 
 <!-- 	<unique-constraint columns="ebicsBank,typeSelect" /> -->
 	
+	 <extra-code><![CDATA[
+	  
+	  	// TYPE SELECT
+		public static final String TYPE_SSL = "ssl";
+		public static final String TYPE_ENCRYPTION = "Encryption";
+		public static final String TYPE_AUTHENTICATION = "Authentication";
+		public static final String TYPE_SIGNATURE = "Signature";
+	
+	]]></extra-code>
+	
   </entity>
-  
+
+
 </domain-models>

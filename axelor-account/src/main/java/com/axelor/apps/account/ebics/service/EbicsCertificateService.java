@@ -171,7 +171,7 @@ public class EbicsCertificateService {
 			        Certificate certificate = certificates[i];
 			        if (certificate instanceof X509Certificate) {
 			        	X509Certificate cert = (X509Certificate) certificate;
-			        	createCertificate(cert, bank, "ssl");
+			        	createCertificate(cert, bank, EbicsCertificateRepository.TYPE_SSL);
 			        	return certificate.getEncoded();
 			        }
 			    }

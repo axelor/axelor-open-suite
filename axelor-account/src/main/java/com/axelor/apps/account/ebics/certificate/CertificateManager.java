@@ -36,6 +36,7 @@ import com.axelor.apps.account.db.EbicsCertificate;
 //import org.kopi.ebics.interfaces.EbicsUser;
 //import org.kopi.ebics.interfaces.PasswordCallback;
 import com.axelor.apps.account.db.EbicsUser;
+import com.axelor.apps.account.db.repo.EbicsCertificateRepository;
 import com.axelor.apps.account.ebics.service.EbicsCertificateService;
 import com.axelor.inject.Beans;
 
@@ -80,11 +81,11 @@ public class CertificateManager {
    */
   private void setUserCertificates() throws IOException, CertificateEncodingException {
 	
-	user.setA005Certificate(updateCertificate(a005Certificate, user.getA005Certificate(), a005PrivateKey.getEncoded(), "signature"));
+	user.setA005Certificate(updateCertificate(a005Certificate, user.getA005Certificate(), a005PrivateKey.getEncoded(), EbicsCertificateRepository.TYPE_SIGNATURE));
     
-	user.setX002Certificate(updateCertificate(x002Certificate, user.getX002Certificate(), x002PrivateKey.getEncoded(), "authentication"));
+	user.setX002Certificate(updateCertificate(x002Certificate, user.getX002Certificate(), x002PrivateKey.getEncoded(), EbicsCertificateRepository.TYPE_AUTHENTICATION));
     
-	user.setE002Certificate(updateCertificate(e002Certificate, user.getE002Certificate(), e002PrivateKey.getEncoded(), "encryption"));
+	user.setE002Certificate(updateCertificate(e002Certificate, user.getE002Certificate(), e002PrivateKey.getEncoded(), EbicsCertificateRepository.TYPE_ENCRYPTION));
 
   }
   
