@@ -48,6 +48,8 @@
 		public static final int ORDER_TYPE_SEPA_DIRECT_DEBIT = 2;
 		public static final int ORDER_TYPE_INTERNATIONAL_CREDIT_TRANSFER = 3;
 		public static final int ORDER_TYPE_INTERNATIONAL_DIRECT_DEBIT = 4;
+		public static final int ORDER_TYPE_NATIONAL_TREASURY_TRANSFER = 5;
+		public static final int ORDER_TYPE_INTERNATIONAL_TREASURY_DEBIT = 6;
 	
 	   	// STATUS SELECT
 		public static final int STATUS_DRAFT = 1;
