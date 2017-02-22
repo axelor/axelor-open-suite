@@ -163,7 +163,7 @@
 	</action-attrs>
 	
 	
-	<action-attrs name="action-invoice-line-attrs-show-elements">
+	<action-attrs if-module="axelor-business-project" name="action-invoice-line-attrs-show-elements">
 		<attribute name="title" for="projectTaskPanel" expr="eval: __config__.general.getProjectTaskLabel()" if="!com.google.common.base.Strings.isNullOrEmpty(__config__.general.getProjectTaskLabel())"/>
 		<attribute name="title" for="project" expr="eval: __config__.general.getProjectTaskLabel()" if="!com.google.common.base.Strings.isNullOrEmpty(__config__.general.getProjectTaskLabel())"/>
 		<attribute name="hidden" for="subscriptionPanel" expr="eval: _parent?.isSubscription"/>

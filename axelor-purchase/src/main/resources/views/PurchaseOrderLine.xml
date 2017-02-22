@@ -202,14 +202,13 @@
 	</action-attrs>
 	
 	<action-attrs name="action-purchase-order-attrs-hide-ati">
-		<attribute name="hidden" for="exTaxTotal" expr="eval:_parent.inAti" if="_parent?._model == 'com.axelor.apps.purchase.db.PurchaseOrder'"/>
-		<attribute name="hidden" for="inTaxTotal" expr="eval:!_parent.inAti" if="_parent?._model == 'com.axelor.apps.purchase.db.PurchaseOrder'"/>
+		<attribute name="hidden" for="exTaxTotal" expr="eval:_parent?.inAti" if="_parent?._model == 'com.axelor.apps.purchase.db.PurchaseOrder'"/>
+		<attribute name="hidden" for="inTaxTotal" expr="eval:!_parent?.inAti" if="_parent?._model == 'com.axelor.apps.purchase.db.PurchaseOrder'"/>
 	</action-attrs>
 	
-	<action-attrs name="action-purchase-order-line-attrs-title-project-task">
+	<action-attrs if-module="axelor-business-project" name="action-purchase-order-line-attrs-title-project-task">
 		<attribute name="title" for="projectTask" expr="eval: __config__.general.getProjectTaskLabel()" if="!com.google.common.base.Strings.isNullOrEmpty(__config__.general.getProjectTaskLabel())"/>
 		<attribute name="title" for="projectTaskPanel" expr="eval: __config__.general.getProjectTaskLabel()" if="!com.google.common.base.Strings.isNullOrEmpty(__config__.general.getProjectTaskLabel())"/>
-	
 	</action-attrs>
 	
 	<action-attrs name="action-purchase-order-line-attrs-show-priceDiscounted">
@@ -222,7 +221,7 @@
 	
     <action-record name="action-purchase-order-line-record-new" model="com.axelor.apps.purchase.db.PurchaseOrderLine">
     	<field name="qty" expr="eval: 1"/>
-    	<field name="desiredDelivDate" expr="eval: _parent.deliveryDate"/>
+    	<field name="desiredDelivDate" expr="eval: _parent?.deliveryDate"/>
     </action-record>
     
     
