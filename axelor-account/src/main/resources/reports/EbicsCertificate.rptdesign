@@ -149,6 +149,7 @@
                 </structure>
                 <structure>
                     <property name="columnName">private_key</property>
+                    <property name="analysis">measure</property>
                     <text-property name="displayName">private_key</text-property>
                     <text-property name="heading">private_key</text-property>
                 </structure>
@@ -393,30 +394,30 @@
             </list-property>
             <xml-property name="queryText"><![CDATA[select
 	certificate.id as "certId",
-	case when certificate.type_select = 'signature' then 'Initialization Letter for the certificate with signature of transport'
- 	     when certificate.type_select = 'authentication' then 'Initialization Letter for the authentification certificate'
- 	     when certificate.type_select = 'encryption' then 'Initialization Letter for the encryption certificate'
+	case when certificate.type_select = 'signature' then 'EbicsCertificateReport.signatureTitle'
+ 	     when certificate.type_select = 'authentication' then 'EbicsCertificateReport.authenticationTitle'
+ 	     when certificate.type_select = 'encryption' then 'EbicsCertificateReport.encryptionTitle'
  	end as title,
- 	case when certificate.type_select = 'signature' then 'Signature certificate'
- 	     when certificate.type_select = 'authentication' then 'Authentification Certificate'
- 	     when certificate.type_select = 'encryption' then 'Encryption Certificate'
+ 	case when certificate.type_select = 'signature' then 'EbicsCertificateReport.signature'
+ 	     when certificate.type_select = 'authentication' then 'EbicsCertificateReport.authentication'
+ 	     when certificate.type_select = 'encryption' then 'EbicsCertificateReport.encryption'
  	end as certificate_title,
  	case when certificate.type_select = 'signature' then 'A005'
  	     when certificate.type_select = 'authentication' then 'X002'
  	     when certificate.type_select = 'encryption' then 'E002'
  	end as certificate_type,
- 	case when certificate.type_select = 'signature' then 'Hash of the signature certificate'
- 	     when certificate.type_select = 'authentication' then 'Hash of the authentification certificate'
- 	     when certificate.type_select = 'encryption' then 'Hash of the Encryption Certificate'
+ 	case when certificate.type_select = 'signature' then 'EbicsCertificateReport.signatureHash'
+ 	     when certificate.type_select = 'authentication' then 'EbicsCertificateReport.authenticationHash'
+ 	     when certificate.type_select = 'encryption' then 'EbicsCertificateReport.encryptionHash'
  	end as certificate_hash,
  	bank.host_id,
  	bank.name as "bank_name",
  	bank.language_select,
  	ebics_user.user_id,
  	partner.partner_id,
- 	case when certificate.type_select = 'signature' then 'Signature A005'
- 	     when certificate.type_select = 'authentication' then 'Authentication X002'
- 	     when certificate.type_select = 'encryption' then 'Encryption E002'
+ 	case when certificate.type_select = 'signature' then 'EbicsCertificateReport.signatureVersion'
+ 	     when certificate.type_select = 'authentication' then 'EbicsCertificateReport.authenticationVersion'
+ 	     when certificate.type_select = 'encryption' then 'EbicsCertificateReport.encryptionVersion'
  	end as version,
  	certificate.pem_string,
  	certificate.sha2has,
@@ -796,6 +797,7 @@ where message_key = ? and language = ? ]]></xml-property>
                                     <property name="colSpan">2</property>
                                     <property name="rowSpan">1</property>
                                     <text id="140">
+                                        <property name="fontSize">12pt</property>
                                         <property name="contentType">html</property>
                                         <text-property name="content"><![CDATA[<VALUE-OF format="dd.MM.yyyy">row["init_letter_edition_date"]</VALUE-OF>]]></text-property>
                                     </text>
@@ -814,6 +816,7 @@ where message_key = ? and language = ? ]]></xml-property>
                                     <property name="colSpan">2</property>
                                     <property name="rowSpan">1</property>
                                     <text id="141">
+                                        <property name="fontSize">12pt</property>
                                         <property name="contentType">html</property>
                                         <text-property name="content"><![CDATA[<VALUE-OF format="hh:mm:ss">row["init_letter_edition_date"]</VALUE-OF>]]></text-property>
                                     </text>
@@ -848,7 +851,7 @@ where message_key = ? and language = ? ]]></xml-property>
                                             <structure>
                                                 <property name="paramName">param_1</property>
                                                 <simple-property-list name="expression">
-                                                    <value type="javascript">'Bank'</value>
+                                                    <value type="javascript">'EbicsCertificateReport.bank'</value>
                                                 </simple-property-list>
                                             </structure>
                                             <structure>
@@ -867,7 +870,7 @@ where message_key = ? and language = ? ]]></xml-property>
                                             </structure>
                                         </list-property>
                                         <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<VALUE-OF>row["message_value"] == null || row["message_value"].length == 0 ? 'Bank' : row["message_value"]</VALUE-OF> :]]></text-property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF>row["message_value"]</VALUE-OF> :]]></text-property>
                                     </text>
                                 </cell>
                                 <cell id="106">
@@ -927,10 +930,34 @@ where message_key = ? and language = ? ]]></xml-property>
                                 <cell id="109">
                                     <property name="colSpan">2</property>
                                     <property name="rowSpan">1</property>
-                                    <data id="67">
+                                    <text id="154">
                                         <property name="fontSize">12pt</property>
-                                        <property name="resultSetColumn">version</property>
-                                    </data>
+                                        <property name="dataSet">Translation</property>
+                                        <list-property name="paramBindings">
+                                            <structure>
+                                                <property name="paramName">param_2</property>
+                                                <simple-property-list name="expression">
+                                                    <value type="javascript">row["language_select"]</value>
+                                                </simple-property-list>
+                                            </structure>
+                                            <structure>
+                                                <property name="paramName">param_1</property>
+                                                <simple-property-list name="expression">
+                                                    <value type="javascript">row["version"]</value>
+                                                </simple-property-list>
+                                            </structure>
+                                        </list-property>
+                                        <list-property name="boundDataColumns">
+                                            <structure>
+                                                <property name="name">message_value</property>
+                                                <text-property name="displayName">message_value</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["message_value"]</expression>
+                                                <property name="dataType">string</property>
+                                            </structure>
+                                        </list-property>
+                                        <property name="contentType">html</property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF>row["message_value"]</VALUE-OF>]]></text-property>
+                                    </text>
                                 </cell>
                             </row>
                             <row id="68">
