@@ -20,6 +20,7 @@ package com.axelor.apps.base.db.repo;
 import java.io.IOException;
 import java.io.InputStream;
 
+import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.BarcodeGeneratorService;
 import com.axelor.meta.MetaFiles;
@@ -31,6 +32,10 @@ public class ProductBaseRepository extends ProductRepository{
 	
 	@Inject
 	private MetaFiles metaFiles;
+
+	@Inject
+	protected GeneralService generalService;
+
 	
 	@Override
 	public Product save(Product product){
@@ -39,7 +44,8 @@ public class ProductBaseRepository extends ProductRepository{
 		
 		product = super.save(product);
 		
-		if(product.getBarCode() == null) {
+		if((product.getBarCode() == null)&&
+           (generalService.getGeneral().getActivateBarCodeGeneration())) {
 			    	
 			try {
 				InputStream inStream = BarcodeGeneratorService.createBarCode(product.getId());
