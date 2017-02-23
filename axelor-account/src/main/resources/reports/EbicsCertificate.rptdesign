@@ -148,6 +148,11 @@
                     <text-property name="heading">subject</text-property>
                 </structure>
                 <structure>
+                    <property name="columnName">private_key</property>
+                    <text-property name="displayName">private_key</text-property>
+                    <text-property name="heading">private_key</text-property>
+                </structure>
+                <structure>
                     <property name="columnName">init_letter_edition_date</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">init_letter_edition_date</text-property>
@@ -254,6 +259,11 @@
                     </structure>
                     <structure>
                         <property name="position">16</property>
+                        <property name="name">private_key</property>
+                        <property name="dataType">decimal</property>
+                    </structure>
+                    <structure>
+                        <property name="position">17</property>
                         <property name="name">init_letter_edition_date</property>
                         <property name="dataType">date-time</property>
                     </structure>
@@ -368,6 +378,13 @@
                 </structure>
                 <structure>
                     <property name="position">16</property>
+                    <property name="name">private_key</property>
+                    <property name="nativeName">private_key</property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">-5</property>
+                </structure>
+                <structure>
+                    <property name="position">17</property>
                     <property name="name">init_letter_edition_date</property>
                     <property name="nativeName">init_letter_edition_date</property>
                     <property name="dataType">date-time</property>
@@ -405,6 +422,7 @@
  	certificate.sha2has,
  	certificate.issuer,
  	certificate.subject,
+ 	certificate.private_key,
  	certificate.init_letter_edition_date	       
 from account_ebics_certificate certificate
 left join account_ebics_user ebics_user on (ebics_user.id = ?)
@@ -689,6 +707,12 @@ where message_key = ? and language = ? ]]></xml-property>
                     <expression name="expression" type="javascript">dataSetRow["init_letter_edition_date"]</expression>
                     <property name="dataType">date-time</property>
                 </structure>
+                <structure>
+                    <property name="name">private_key</property>
+                    <text-property name="displayName">private_key</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["private_key"]</expression>
+                    <property name="dataType">decimal</property>
+                </structure>
             </list-property>
             <column id="152"/>
             <detail>
@@ -843,7 +867,7 @@ where message_key = ? and language = ? ]]></xml-property>
                                             </structure>
                                         </list-property>
                                         <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<VALUE-OF>row["message_value"] == null ? 'Bank' : row["message_value"]</VALUE-OF> :]]></text-property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF>row["message_value"] == null || row["message_value"].length == 0 ? 'Bank' : row["message_value"]</VALUE-OF> :]]></text-property>
                                     </text>
                                 </cell>
                                 <cell id="106">
@@ -983,6 +1007,12 @@ where message_key = ? and language = ? ]]></xml-property>
                                                 <text id="125">
                                                     <property name="fontSize">12pt</property>
                                                     <property name="dataSet">Translation</property>
+                                                    <list-property name="visibility">
+                                                        <structure>
+                                                            <property name="format">all</property>
+                                                            <expression name="valueExpr" type="javascript">row._outer["private_key"] != null</expression>
+                                                        </structure>
+                                                    </list-property>
                                                     <list-property name="paramBindings">
                                                         <structure>
                                                             <property name="paramName">param_1</property>
@@ -1016,6 +1046,12 @@ where message_key = ? and language = ? ]]></xml-property>
                                                 <text id="128">
                                                     <property name="fontSize">12pt</property>
                                                     <property name="dataSet">Translation</property>
+                                                    <list-property name="visibility">
+                                                        <structure>
+                                                            <property name="format">all</property>
+                                                            <expression name="valueExpr" type="javascript">row._outer["private_key"] != null</expression>
+                                                        </structure>
+                                                    </list-property>
                                                     <list-property name="paramBindings">
                                                         <structure>
                                                             <property name="paramName">param_1</property>

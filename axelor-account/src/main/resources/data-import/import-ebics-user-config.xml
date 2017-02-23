@@ -32,22 +32,22 @@
       </bind>
       <bind node="securityMedium" to="securityMedium" />
       <bind node="nextOrderId" to="nextOrderId"  />
-      <bind node="associatedUserCode" to="associatedUser" search="self.code = :associatedUserCode" update="false" if="associatedUserCode != null &amp;&amp; !associatedUserCode.empty" />
+      <bind node="associatedUserCode" to="associatedUser" search="self.code = :userCode" update="true" alias="userCode"/>
       <bind node="dn" to="dn" />
       <bind to="a005Certificate" node="a005Certificate">
       	<bind node="pem" to="pemString" />
       	<bind to="typeSelect" eval="'signature'"  />
-      	<bind node="privateKey" to="privateKey" eval="org.apache.commons.codec.binary.Base64.decodeBase64(privateKey)" if="privateKey != null" />
+      	<bind node="privateKey" to="privateKey" eval="privateKey != null ? org.apache.commons.codec.binary.Base64.decodeBase64(privateKey) : null" />
       </bind> 
       <bind to="e002Certificate" node="e002Certificate">
       	<bind node="pem" to="pemString" />
       	<bind to="typeSelect" eval="'encryption'" />
-      	<bind node="privateKey" to="privateKey" eval="org.apache.commons.codec.binary.Base64.decodeBase64(privateKey)" if="privateKey != null" />
+      	<bind node="privateKey" to="privateKey" eval="privateKey != null ? org.apache.commons.codec.binary.Base64.decodeBase64(privateKey) : null" />
       </bind> 
       <bind to="x002Certificate" node="x002Certificate">
       	<bind node="pem" to="pemString" />
       	<bind to="typeSelect" eval="'authentication'" />
-      	<bind node="privateKey" to="privateKey" eval="org.apache.commons.codec.binary.Base64.decodeBase64(privateKey)" if="privateKey != null" />
+      	<bind node="privateKey" to="privateKey" eval="privateKey != null ? org.apache.commons.codec.binary.Base64.decodeBase64(privateKey) : null"/>
       </bind>
       <bind node="ebicsRequestLogList/requestLog" to="ebicsRequestLogList">
    		<bind node="requestType" to="requestType" />
