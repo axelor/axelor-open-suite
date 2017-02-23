@@ -238,9 +238,10 @@
 	
     <action-record name="action-purchase-order-record-partner" model="com.axelor.apps.purchase.db.PurchaseOrder">
  		<field name="currency" expr="eval: supplierPartner?.currency"/>
- 		<field name="paymentCondition" expr="eval: supplierPartner?.paymentCondition"/>
+ 		<field name="paymentCondition" expr="eval: supplierPartner?.paymentCondition" if="supplierPartner?.paymentCondition != null"/>
+ 		<field name="paymentCondition" expr="eval: company?.accountConfig?.defPaymentCondition" if="supplierPartner?.paymentCondition == null"/>
  		<field name="paymentMode" expr="eval: supplierPartner?.outPaymentMode" if="supplierPartner?.outPaymentMode != null"/>
-		<field name="paymentMode" expr="eval: __user__.activeCompany?.accountConfig?.outPaymentMode" if="supplierPartner?.outPaymentMode == null"/>
+		<field name="paymentMode" expr="eval: company?.accountConfig?.outPaymentMode" if="supplierPartner?.outPaymentMode == null"/>
  		<field name="priceList" expr="eval: supplierPartner?.purchasePriceList"/>
  		<field name="companyBankDetails" expr="eval: __repo__.of(AccountingSituation).all().filter('self.company.id = ?1 AND self.partner.id = ?2', company?.id, supplierPartner?.id).fetchOne()?.companyBankDetails" 
     		if="supplierPartner != null &amp;&amp; __repo__.of(AccountingSituation).all().filter('self.company.id = ?1 AND self.partner.id = ?2', company?.id, supplierPartner?.id).fetchOne()?.companyBankDetails != null"/>

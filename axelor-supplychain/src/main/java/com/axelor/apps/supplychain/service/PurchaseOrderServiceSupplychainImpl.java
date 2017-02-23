@@ -27,6 +27,7 @@ import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.account.db.BudgetDistribution;
 import com.axelor.apps.account.db.TaxLine;
+import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
@@ -69,6 +70,9 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
 	@Inject
 	protected StockMoveRepository stockMoveRepo;
 	
+	@Inject
+	protected AccountConfigService accountConfigService;
+
 	private static final Logger LOG = LoggerFactory.getLogger(PurchaseOrderServiceSupplychainImpl.class);
 
 	public PurchaseOrder createPurchaseOrder(User buyerUser, Company company, Partner contactPartner, Currency currency,
@@ -83,6 +87,24 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
 
 		purchaseOrder.setLocation(location);
 
+		purchaseOrder.setPaymentMode(supplierPartner.getInPaymentMode());
+		purchaseOrder.setPaymentCondition(supplierPartner.getPaymentCondition());
+		
+		if (purchaseOrder.getPaymentMode() == null) {
+			purchaseOrder.setPaymentMode(
+					this.accountConfigService
+					.getAccountConfig(company)
+					.getInPaymentMode()
+				);
+		}
+
+		if (purchaseOrder.getPaymentCondition() == null) {
+			purchaseOrder.setPaymentCondition(
+					this.accountConfigService
+					.getAccountConfig(company)
+					.getDefPaymentCondition()
+				);
+		}
 		return purchaseOrder;
 	}
 

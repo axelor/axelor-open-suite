@@ -549,10 +549,11 @@
     </action-record>
     
     <action-record name="action-sale-order-record-partner" model="com.axelor.apps.sale.db.SaleOrder">
-    	<field name="paymentCondition" expr="eval: clientPartner?.paymentCondition"/>
+    	<field name="paymentCondition" expr="eval: clientPartner?.paymentCondition" if="clientPartner?.paymentCondition != null"/>
+    	<field name="paymentCondition" expr="eval: company?.accountConfig?.defPaymentCondition" if="clientPartner?.paymentCondition == null"/>
  		<field name="currency" expr="eval: clientPartner?.currency"/>
 		<field name="paymentMode" expr="eval: clientPartner?.inPaymentMode" if="clientPartner?.inPaymentMode != null"/>
-		<field name="paymentMode" expr="eval: __user__.activeCompany?.accountConfig?.inPaymentMode" if="clientPartner?.inPaymentMode == null"/>
+		<field name="paymentMode" expr="eval: company?.accountConfig?.inPaymentMode" if="clientPartner?.inPaymentMode == null"/>
 		<field name="mainInvoicingAddress" expr="call:com.axelor.apps.base.service.PartnerService:getInvoicingAddress(clientPartner)" if="clientPartner != null"/>
 		<field name="deliveryAddress" expr="call:com.axelor.apps.base.service.PartnerService:getDeliveryAddress(clientPartner)" if="clientPartner != null"/>
 		<field name="priceList" expr="eval: clientPartner?.salePriceList"/>
