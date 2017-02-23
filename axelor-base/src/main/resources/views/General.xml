@@ -45,6 +45,7 @@
 		    	<field name="managePurchasesUnits" if-module="axelor-purchase" widget="Boolean-switch"/>
 		    	<field name="teamManagement" widget="Boolean-switch"/>
 				<field name="manageMultiBanks" if-module="axelor-cash-management" widget="Boolean-switch"/>
+				<field name="activateBarCodeGeneration" widget="Boolean-switch"/>
 		    </panel>
 		    <panel name="accounting" title="Accounting">
 				<field name="defaultExemptionTax" if-module="axelor-account" form-view="tax-form" grid-view="tax-grid"/>
