@@ -376,7 +376,7 @@
 	
     <action-group name="action-account-invoice-onnew-group">
 	    <action name="action-invoice-record-default"/>
-		<action name="action-invoice-method-payment-mode"/>
+		<action name="action-invoice-method-payment-mode-condition"/>
 	    <action name="action-invoice-record-company-change"/>
 	    <action name="action-invoice-attrs-collapse-irrecoverable-group"/>
 	    <action name="action-invoice-method-get-journal" if="operationTypeSelect != null &amp;&amp; operationTypeSelect != 0"/>
@@ -395,7 +395,7 @@
     
     <action-group name="action-group-account-invoice-operationtype-onchange">
     	<action name="action-invoice-method-get-journal" if="operationTypeSelect != null &amp;&amp; operationTypeSelect != 0"/>
-		<action name="action-invoice-method-payment-mode"/>
+		<action name="action-invoice-method-payment-mode-condition"/>
     	<action name="action-invoice-record-partner-change"/>
     </action-group>
     
@@ -408,7 +408,7 @@
     
     <action-group name="action-group-account-invoice-partner-onchange">
     	<action name="action-invoice-record-partner-change"/>
-		<action name="action-invoice-method-payment-mode"/>
+		<action name="action-invoice-method-payment-mode-condition"/>
     	<action name="action-invoice-record-due-date"/>
     	<action name="action-invoice-record-estimated-payment-date"/>
     </action-group>
@@ -552,10 +552,10 @@
 
 	<!-- ACTION METHOD -->
 
-	<action-method name="action-invoice-method-payment-mode">
-		<call class="com.axelor.apps.account.web.InvoiceController" method="getPaymentMode"/>
+	<action-method name="action-invoice-method-payment-mode-condition">
+		<call class="com.axelor.apps.account.web.InvoiceController" method="fillPaymentModeAndCondition"/>
 	</action-method>
-	
+
 	<action-method name="action-invoice-method-fill-in-lines">
 		<call class="com.axelor.apps.supplychain.web.InvoiceController" method="fillInLines"/>
 	</action-method>

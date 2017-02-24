@@ -169,7 +169,7 @@ public abstract class InvoiceGenerator  {
 		invoice.setPartner(partner);
 
 		if(paymentCondition == null)  {
-			paymentCondition = partner.getPaymentCondition();
+			paymentCondition = InvoiceToolService.getPaymentCondition(invoice);
 		}
 		if(paymentCondition == null)  {
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.INVOICE_GENERATOR_3), GeneralServiceImpl.EXCEPTION), IException.MISSING_FIELD);
