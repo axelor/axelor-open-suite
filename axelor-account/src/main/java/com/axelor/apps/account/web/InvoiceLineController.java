@@ -86,6 +86,7 @@ public class InvoiceLineController {
 		BigDecimal inTaxTotal = BigDecimal.ZERO;
 		BigDecimal companyInTaxTotal = BigDecimal.ZERO;
 		BigDecimal priceDiscounted = invoiceLineService.computeDiscount(invoiceLine,invoice);
+		
 		response.setValue("priceDiscounted", priceDiscounted);
 		response.setAttr("priceDiscounted", "hidden", priceDiscounted.compareTo(invoiceLine.getPrice()) == 0);
 
@@ -96,18 +97,16 @@ public class InvoiceLineController {
 			response.setValue("taxCode", invoiceLine.getTaxLine().getTax().getCode());
 		}
 		
-		if(!invoice.getInAti()){
+		if(!invoice.getInAti()) {
 			exTaxTotal = InvoiceLineManagement.computeAmount(invoiceLine.getQty(), invoiceLineService.computeDiscount(invoiceLine,invoice));
 			inTaxTotal = exTaxTotal.add(exTaxTotal.multiply(taxRate));
-			companyExTaxTotal = invoiceLineService.getCompanyExTaxTotal(exTaxTotal, invoice);
-			companyInTaxTotal = companyExTaxTotal.add(companyExTaxTotal.multiply(taxRate));
-
-		}
-		else  {
+		} else  {
 			inTaxTotal = InvoiceLineManagement.computeAmount(invoiceLine.getQty(), invoiceLineService.computeDiscount(invoiceLine,invoice));
 			exTaxTotal = inTaxTotal.divide(taxRate.add(BigDecimal.ONE), 2, BigDecimal.ROUND_HALF_UP);
-			companyInTaxTotal = invoiceLineService.getCompanyExTaxTotal(inTaxTotal, invoice);
 		}
+		
+		companyExTaxTotal = invoiceLineService.getCompanyExTaxTotal(exTaxTotal, invoice);
+		companyInTaxTotal = invoiceLineService.getCompanyExTaxTotal(inTaxTotal, invoice);
 		
 		response.setValue("exTaxTotal", exTaxTotal);
 		response.setValue("inTaxTotal", inTaxTotal);
