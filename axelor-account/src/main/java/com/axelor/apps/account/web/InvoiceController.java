@@ -139,12 +139,22 @@ public class InvoiceController {
 		response.setFlash(I18n.get(IExceptionMessage.INVOICE_1));
 		response.setReload(true);
 	}
+	
+	/**
+	 * Function returning both the paymentMode and the paymentCondition
+	 * @param request
+	 * @param response
+	 * @throws AxelorException
+	 */
 
-	public void getPaymentMode(ActionRequest request, ActionResponse response) throws AxelorException {
+	public void fillPaymentModeAndCondition(ActionRequest request, ActionResponse response) throws AxelorException {
 		Invoice invoice = request.getContext().asType(Invoice.class);
 		PaymentMode paymentMode = InvoiceToolService.getPaymentMode(invoice);
+		PaymentCondition paymentCondition = InvoiceToolService.getPaymentCondition(invoice);
 		response.setValue("paymentMode", paymentMode);
+		response.setValue("paymentCondition", paymentCondition);
 	}
+	
 
 	/**
 	 * Fonction appeler par le bouton générer un avoir.

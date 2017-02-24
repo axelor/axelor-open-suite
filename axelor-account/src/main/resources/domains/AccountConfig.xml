@@ -48,6 +48,9 @@
 	<!-- Default Payment Modes -->
 	<many-to-one name="inPaymentMode" ref="com.axelor.apps.account.db.PaymentMode" title="Incoming Payment Mode"/>
 	<many-to-one name="outPaymentMode" ref="com.axelor.apps.account.db.PaymentMode" title="Outgoing Payment Mode"/>
+	
+	<!-- Default Payment Condition -->
+	<many-to-one name="defPaymentCondition" ref="com.axelor.apps.account.db.PaymentCondition" title="Default Payment Condition"/>
 
 	<!--  Onglet CFONB -->
 	<many-to-one name="cfonbConfig" ref="com.axelor.apps.account.db.CfonbConfig" title="Cfonb configuration"/>

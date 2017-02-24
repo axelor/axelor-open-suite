@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.production.service;
 
+import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.administration.GeneralService;
@@ -41,10 +42,10 @@ public class SaleOrderServiceProductionImpl extends SaleOrderServiceSupplychainI
 	public SaleOrderServiceProductionImpl(SaleOrderLineService saleOrderLineService, SaleOrderLineTaxService saleOrderLineTaxService,
 			SequenceService sequenceService, PartnerService partnerService, PartnerRepository partnerRepo, SaleOrderRepository saleOrderRepo,
 			GeneralService generalService, UserService userService, SaleOrderStockService saleOrderStockService, SaleOrderPurchaseService saleOrderPurchaseService,
-			ProductionOrderSaleOrderService productionOrderSaleOrderService) {
+			ProductionOrderSaleOrderService productionOrderSaleOrderService, AccountConfigService accountConfigService) {
 		
 		super(saleOrderLineService, saleOrderLineTaxService, sequenceService,partnerService, partnerRepo, saleOrderRepo, generalService,
-				userService, saleOrderStockService, saleOrderPurchaseService);
+				userService, saleOrderStockService, saleOrderPurchaseService, accountConfigService);
 		
 		this.productionOrderSaleOrderService = productionOrderSaleOrderService;
 		

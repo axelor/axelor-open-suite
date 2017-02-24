@@ -3,7 +3,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.1.xsd">
     
-	<form name="incl-invoice-payment-partner-form"   title="Partner" model="com.axelor.apps.base.db.Partner">
+	<form name="incl-invoice-payment-partner-form" title="Partner" model="com.axelor.apps.base.db.Partner">
 	    <panel colSpan="12">
 	    	<field name="invoiceSendingFormatSelect"/>
 	        <field name="paymentCondition" grid-view="payment-condition-grid" form-view="payment-condition-form"/>
@@ -108,9 +108,5 @@
 		<call class="com.axelor.apps.base.web.PartnerController" method="printClientSituation"/>
 	</action-method>
 
-	<action-record name="action-partner-record-set-payment-modes" model="com.axelor.apps.base.db.Partner">
-		<field name="inPaymentMode" expr="eval: __user__?.activeCompany?.accountConfig?.inPaymentMode"/>
-		<field name="outPaymentMode" expr="eval: __user__?.activeCompany?.accountConfig?.outPaymentMode"/>
-	</action-record>
 	
 </object-views>

@@ -79,6 +79,9 @@
 					<field name="inPaymentMode" grid-view="payment-mode-grid" form-view="payment-mode-form" domain="self.inOutSelect = 1"/>
 					<field name="outPaymentMode" grid-view="payment-mode-grid" form-view="payment-mode-form" domain="self.inOutSelect = 2"/>
 				</panel>
+				<panel name="defaultPaymentCondition" title="Default Payment Condition" colSpan="12">
+					<field name="defPaymentCondition" grid-view="payment-condition-grid" form-view="payment-condition-form"/>
+				</panel>
 				<panel	name="expense" title="Expense" colSpan="12">
 					<field name="expenseTaxAccount" domain="self.company = :company" if-module="axelor-human-resource" grid-view="account-grid" form-view="account-form"/>
 				</panel>

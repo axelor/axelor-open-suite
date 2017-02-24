@@ -21,6 +21,7 @@ import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.General;
@@ -51,13 +52,14 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl {
 	protected SaleOrderStockService saleOrderStockService;
 	protected SaleOrderPurchaseService saleOrderPurchaseService;
 	protected General general;
+	protected AccountConfigService accountConfigService;
 
 
 	@Inject
 	public SaleOrderServiceSupplychainImpl(SaleOrderLineService saleOrderLineService, SaleOrderLineTaxService saleOrderLineTaxService, 	
 			SequenceService sequenceService, PartnerService partnerService, PartnerRepository partnerRepo, SaleOrderRepository saleOrderRepo,
 			GeneralService generalService, UserService userService, SaleOrderStockService saleOrderStockService, 
-			SaleOrderPurchaseService saleOrderPurchaseService) {
+			SaleOrderPurchaseService saleOrderPurchaseService, AccountConfigService accountConfigService) {
 		
 		super(saleOrderLineService, saleOrderLineTaxService, sequenceService,
 				partnerService, partnerRepo, saleOrderRepo, generalService, userService);
@@ -65,6 +67,7 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl {
 		this.saleOrderStockService = saleOrderStockService;
 		this.saleOrderPurchaseService = saleOrderPurchaseService;
 		this.general = generalService.getGeneral();
+		this.accountConfigService = accountConfigService;
 		
 	}
 	
@@ -103,6 +106,23 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl {
 
 		saleOrder.setPaymentMode(clientPartner.getInPaymentMode());
 		saleOrder.setPaymentCondition(clientPartner.getPaymentCondition());
+		
+		if (saleOrder.getPaymentMode() == null) {
+			saleOrder.setPaymentMode(
+					this.accountConfigService
+					.getAccountConfig(company)
+					.getInPaymentMode()
+				);
+		}
+
+		if (saleOrder.getPaymentCondition() == null) {
+			saleOrder.setPaymentCondition(
+					this.accountConfigService
+					.getAccountConfig(company)
+					.getDefPaymentCondition()
+				);
+		}
+		
 		
 		return saleOrder;
 	}

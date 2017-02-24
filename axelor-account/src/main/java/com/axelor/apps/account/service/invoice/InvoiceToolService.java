@@ -179,5 +179,20 @@ public class InvoiceToolService {
 			return Beans.get(AccountConfigService.class).getAccountConfig(invoice.getCompany()).getInPaymentMode();
 		}
 	}
+
+	public static PaymentCondition getPaymentCondition(Invoice invoice) throws AxelorException {
+		Partner partner = invoice.getPartner();
+		
+		if (partner != null) {
+			PaymentCondition paymentCondition = partner.getPaymentCondition();
+			if (paymentCondition != null) {
+				return paymentCondition;
+			}
+		}
+		return Beans.get(AccountConfigService.class).
+				getAccountConfig(invoice.getCompany()).getDefPaymentCondition();
+		
+	}
+	
 	
 }
