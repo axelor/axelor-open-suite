@@ -24,13 +24,11 @@
 	    <panel name="bankDetails" title="Bank details" colSpan="12">
 	        <field name="bankDetailsList" colSpan="12" showTitle="false" >
 			    <editor layout="table" x-show-titles="false" onNew="action-set-default-partner">
-					<field name="bankAddress" />
 					<field name="iban" onChange="action-group-account-bankdetails-iban-onchange" min="14" max="34" />
-					<field name="bic" />
+					<field name="bank" canNew="true"></field>
 					<field name="isDefault" widget="toggle" x-icon="fa-star-o" x-icon-active="fa-star" x-exclusive="true" />
 					<field name="ownerName" hidden="true" />
 					<field name="ibanBic" hidden="true"/>
-					<field name="countryCode" hidden="true"/>
 					<field name="bankCode" hidden="true"/>
 					<field name="sortCode" hidden="true"/>
 					<field name="accountNbr" hidden="true"/>
