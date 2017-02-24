@@ -26,12 +26,14 @@ import java.security.GeneralSecurityException;
 import java.security.cert.CertificateEncodingException;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
+import java.util.ArrayList;
 import java.util.Map;
 
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.xmlbeans.impl.common.IOUtil;
 
+import com.axelor.apps.ReportFactory;
 import com.axelor.apps.account.db.EbicsBank;
 import com.axelor.apps.account.db.EbicsCertificate;
 import com.axelor.apps.account.db.EbicsUser;
@@ -43,7 +45,8 @@ import com.axelor.apps.account.ebics.certificate.CertificateManager;
 import com.axelor.apps.account.ebics.service.EbicsCertificateService;
 import com.axelor.apps.account.ebics.service.EbicsService;
 import com.axelor.apps.account.exception.IExceptionMessage;
-import com.axelor.auth.db.User;
+import com.axelor.apps.account.report.IReport;
+import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.data.Listener;
 import com.axelor.data.xml.XMLImporter;
 import com.axelor.db.Model;
@@ -56,6 +59,7 @@ import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
+import com.google.common.base.Joiner;
 import com.google.common.io.Files;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -367,5 +371,38 @@ public class EbicsController {
 		} 
 	}
 	
+	
+	public void printCertificates(ActionRequest request, ActionResponse response) throws AxelorException {
+		
+		EbicsUser ebicsUser = request.getContext().asType(EbicsUser.class);
+		
+		ArrayList<Long> certIds = new ArrayList<Long>();
+		if (ebicsUser.getA005Certificate() != null) {
+			certIds.add(ebicsUser.getA005Certificate().getId());
+		}
+		if (ebicsUser.getE002Certificate() != null) {
+			certIds.add(ebicsUser.getE002Certificate().getId());
+		}
+		if (ebicsUser.getX002Certificate() != null) {
+			certIds.add(ebicsUser.getX002Certificate().getId());
+		}
+		
+		if (certIds.isEmpty()) {
+			throw new AxelorException(I18n.get(IExceptionMessage.EBICS_MISSING_CERTIFICATES), 1);
+		}
+		
+		String title = I18n.get("EbicsCertificate");
+		
+		ReportSettings report = ReportFactory.createReport(IReport.EBICS_CERTIFICATE, title + "-${date}");
+		report.addParam("CertificateId", Joiner.on(",").join(certIds));
+		report.addParam("EbicsUserId", ebicsUser.getId());
+		
+		report.generate();
+		
+		response.setView(ActionView
+				.define(title)
+				.add("html", report.getFileLink()).map());
+		
+	}
 	
 }
