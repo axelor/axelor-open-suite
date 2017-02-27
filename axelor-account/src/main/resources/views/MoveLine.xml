@@ -90,8 +90,8 @@
 	    	<panel name="irrecoverable" title="Irrecoverable">
 	        	<field name="irrecoverableStatusSelect" /> 
         		<field name="managementObject" form-view="management-object-form" grid-view="management-object-grid"/>
-        		<button name="passInIrrecoverable" title="Shift to irrecoverable"   onClick="com.axelor.apps.account.web.MoveLineController:passInIrrecoverable"/>
-        		<button name="notPassInIrrecoverable" title="Do not shift to irrecoverable"   onClick="com.axelor.apps.account.web.MoveLineController:notPassInIrrecoverable"/>
+        		<button name="passInIrrecoverable" title="Shift into irrecoverable"   onClick="com.axelor.apps.account.web.MoveLineController:passInIrrecoverable"/>
+        		<button name="notPassInIrrecoverable" title="Do not shift into irrecoverable"   onClick="com.axelor.apps.account.web.MoveLineController:notPassInIrrecoverable"/>
 	        </panel>
 	    	
 		    <panel name="others" title="Others" readonly="true">
@@ -173,8 +173,8 @@
 			<panel name="irrecoverable" title="Irrecoverable" >
 	        	<field name="irrecoverablestatusSelect"/>
         		<field name="managementObject" form-view="management-object-form" grid-view="management-object-grid"/>
-        		<button name="passInIrrecoverable" title="Shift to irrecoverable"   onClick="com.axelor.apps.account.web.MoveLineController:passInIrrecoverable"/>
-        		<button name="notPassInIrrecoverable" title="Do not shift to irrecoverable"   onClick="com.axelor.apps.account.web.MoveLineController:notPassInIrrecoverable"/>
+        		<button name="passInIrrecoverable" title="Shift into irrecoverable"   onClick="com.axelor.apps.account.web.MoveLineController:passInIrrecoverable"/>
+        		<button name="notPassInIrrecoverable" title="Do not shift into irrecoverable"   onClick="com.axelor.apps.account.web.MoveLineController:notPassInIrrecoverable"/>
 	        </panel>
 			
 		    <panel name="others" title="Others"  readonly="true">
