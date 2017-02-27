@@ -167,7 +167,7 @@
 					<field name="irrecoverableStatusSelect"/>
 					<field name="managementObject" form-view="management-object-form" grid-view="management-object-grid"/>
 					<button name="passInIrrecoverable" title="Shift to irrecoverable"   onClick="com.axelor.apps.account.web.InvoiceController:passInIrrecoverable"/>
-					<button name="notPassInIrrecoverable" title="Do not shit into irrecoverable"   onClick="com.axelor.apps.account.web.InvoiceController:notPassInIrrecoverable"/>
+					<button name="notPassInIrrecoverable" title="Do not shift into irrecoverable"   onClick="com.axelor.apps.account.web.InvoiceController:notPassInIrrecoverable"/>
 				</panel>
 			</panel>
 			<panel name="blockings" title="Blockings" showIf="statusSelect == 3" showTitle="false">

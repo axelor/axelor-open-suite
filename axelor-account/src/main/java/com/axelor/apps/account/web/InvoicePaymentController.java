@@ -17,8 +17,14 @@
  */
 package com.axelor.apps.account.web;
 
+
+import java.util.Map;
+
+import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoicePayment;
+import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
+import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCancelService;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
@@ -31,6 +37,9 @@ public class InvoicePaymentController  {
 
 	@Inject
 	private InvoicePaymentCancelService invoicePaymentCancelService;
+	
+	@Inject
+	private InvoiceRepository invoiceRepo;
 
 
 	
@@ -48,5 +57,18 @@ public class InvoicePaymentController  {
 		response.setReload(true);
 	}
 	
+	//filter the payment mode depending on the target invoice
 	
+	public void filterPaymentMode(ActionRequest request, ActionResponse response) {
+		Map<String, Object> partialInvoice = 
+				(Map<String, Object>) request.getContext().get("_invoice");
+		Invoice invoice = invoiceRepo.find( ((Integer) partialInvoice.get("id")).longValue());
+		PaymentMode paymentMode = invoice.getPaymentMode();
+		if (invoice != null && paymentMode != null) {
+			if (paymentMode.getInOutSelect() != null) {
+				response.setAttr("paymentMode", "domain", "self.inOutSelect = " + paymentMode.getInOutSelect());
+			}
+		}
+	}
+
 }

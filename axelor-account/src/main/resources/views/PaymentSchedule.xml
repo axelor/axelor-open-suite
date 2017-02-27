@@ -50,8 +50,8 @@
 		<panel name="irrecoverable" title="Irrecoverable" sidebar="true">
 			<field name="irrecoverableStatusSelect" />
 			<field name="managementObject" form-view="management-object-form" grid-view="management-object-grid" />
-			<button name="passInIrrecoverable" title="Shift to irrecoverablePassage en irrécouvrable" onClick="com.axelor.apps.account.web.PaymentScheduleController:passInIrrecoverable" colSpan="6" />
-			<button name="notPassInIrrecoverable" title="Do not shift to irrecoverable" onClick="com.axelor.apps.account.web.PaymentScheduleController:notPassInIrrecoverable" colSpan="6" />
+			<button name="passInIrrecoverable" title="Shift into irrecoverable" onClick="com.axelor.apps.account.web.PaymentScheduleController:passInIrrecoverable" colSpan="6" />
+			<button name="notPassInIrrecoverable" title="Do not shift into irrecoverable" onClick="com.axelor.apps.account.web.PaymentScheduleController:notPassInIrrecoverable" colSpan="6" />
 		</panel>
 
 	</form>
