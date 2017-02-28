@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.3.2.v20140211-1400 Build &lt;4.3.2.v20140218-1056></property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.6.0.v201606072122</property>
     <simple-property-list name="includeResource">
-        <value>src/main/resources/birt.translations/fr_FR</value>
-        <value>src/main/resources/birt.translations/traductions</value>
+        <value>traductions</value>
+        <value>traductions_fr</value>
     </simple-property-list>
     <list-property name="propertyBindings">
         <structure>
@@ -2624,6 +2624,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                         <property name="inheritColumns">false</property>
                         <property name="height">4.5in</property>
                         <property name="width">7.895833333333333in</property>
+                        <structure name="toc"/>
                         <property name="dataSet">Lines</property>
                         <list-property name="boundDataColumns">
                             <structure>
