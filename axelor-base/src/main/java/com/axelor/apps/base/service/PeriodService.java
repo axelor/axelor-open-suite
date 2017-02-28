@@ -69,7 +69,7 @@ public class PeriodService extends PeriodRepository  {
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.PERIOD_1), period.getCompany().getName()), IException.CONFIGURATION_ERROR);
 		}
 		LOG.debug("Next Period : {}",nextPeriod);	
-		return period;
+		return nextPeriod;
 	}
 	
 }
