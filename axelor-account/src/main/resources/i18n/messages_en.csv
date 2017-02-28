@@ -725,7 +725,7 @@
 "Invoice.timesheetTitle","Timesheet details",,
 "Invoice.timesheetUser","User",,
 "Invoice.totalExclTax","Total excl. Tax",,
-"Invoice.totalInclTax","Total incl. V.A.T.",,
+"Invoice.totalInclTax","Total incl. Tax",,
 "Invoice.totalTax","Total Tax",,
 "Invoice.unitPrice","Unit price",,
 "Invoice/Refund",,,

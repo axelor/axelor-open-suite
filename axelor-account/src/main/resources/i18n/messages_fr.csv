@@ -695,7 +695,7 @@
 "Invoice sending media","Mode d'envoi des factures",,
 "Invoice.bankDetails","Banque",,
 "Invoice.bankingInfo","Informations bancaires",,
-"Invoice.base","Assiette",,
+"Invoice.base","Base HT",,
 "Invoice.cheque","Règlement par virement bancaire ou par Chèque à l'ordre d'",,
 "Invoice.clientRef","Réf. Client",,
 "Invoice.date","Date facture",,

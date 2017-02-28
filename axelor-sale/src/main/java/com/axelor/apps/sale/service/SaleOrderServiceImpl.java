@@ -204,6 +204,7 @@ public class SaleOrderServiceImpl implements SaleOrderService {
 
 	@Override
 	public String getSequence(Company company) throws AxelorException  {
+
 		String seq = sequenceService.getSequenceNumber(IAdministration.SALES_ORDER, company);
 		if (seq == null)  {
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.SALES_ORDER_1),company.getName()),
@@ -211,6 +212,7 @@ public class SaleOrderServiceImpl implements SaleOrderService {
 		}
 		return seq;
 	}
+
 
 	@Override
 	public SaleOrder createSaleOrder(Company company) throws AxelorException{
