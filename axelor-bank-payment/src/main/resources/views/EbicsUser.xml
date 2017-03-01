@@ -73,55 +73,55 @@
 	</form>
 	
 	<action-method name="action-ebics-user-method-generate-certificates">
-		<call class="com.axelor.apps.account.ebics.web.EbicsController" method="generateCertificate"/>
+		<call class="com.axelor.apps.bank.payment.ebics.web.EbicsController" method="generateCertificate"/>
 	</action-method>
 	
 	<action-method name="action-ebics-user-method-generate-dn">
-		<call class="com.axelor.apps.account.ebics.web.EbicsController" method="generateDn"/>
+		<call class="com.axelor.apps.bank.payment.ebics.web.EbicsController" method="generateDn"/>
 	</action-method>
 	
 	<action-method name="action-ebics-user-method-send-ini">
-		<call class="com.axelor.apps.account.ebics.web.EbicsController" method="sendINIRequest"/>
+		<call class="com.axelor.apps.bank.payment.ebics.web.EbicsController" method="sendINIRequest"/>
 	</action-method>
 	
 	<action-method name="action-ebics-user-method-send-hia">
-		<call class="com.axelor.apps.account.ebics.web.EbicsController" method="sendHIARequest"/>
+		<call class="com.axelor.apps.bank.payment.ebics.web.EbicsController" method="sendHIARequest"/>
 	</action-method>
 	
 	<action-method name="action-ebics-user-method-send-spr">
-		<call class="com.axelor.apps.account.ebics.web.EbicsController" method="sendSPRRequest"/>
+		<call class="com.axelor.apps.bank.payment.ebics.web.EbicsController" method="sendSPRRequest"/>
 	</action-method>
 	
 	<action-method name="action-ebics-user-method-send-ful">
-		<call class="com.axelor.apps.account.ebics.web.EbicsController" method="sendFULRequest"/>
+		<call class="com.axelor.apps.bank.payment.ebics.web.EbicsController" method="sendFULRequest"/>
 	</action-method>
 	
 	<action-method name="action-ebics-user-method-send-fdl">
-		<call class="com.axelor.apps.account.ebics.web.EbicsController" method="sendFDLRequest"/>
+		<call class="com.axelor.apps.bank.payment.ebics.web.EbicsController" method="sendFDLRequest"/>
 	</action-method>
     
     <action-method name="action-ebics-user-method-send-hpb">
-  		<call class="com.axelor.apps.account.ebics.web.EbicsController" method="sendHPBRequest" />
+  		<call class="com.axelor.apps.bank.payment.ebics.web.EbicsController" method="sendHPBRequest" />
     </action-method>
     
     <action-method name="action-ebics-user-method-send-htd">
-  		<call class="com.axelor.apps.account.ebics.web.EbicsController" method="sendHTDRequest" />
+  		<call class="com.axelor.apps.bank.payment.ebics.web.EbicsController" method="sendHTDRequest" />
     </action-method>
     
     <action-method name="action-ebics-user-method-send-ptk">
-  		<call class="com.axelor.apps.account.ebics.web.EbicsController" method="sendPTKRequest" />
+  		<call class="com.axelor.apps.bank.payment.ebics.web.EbicsController" method="sendPTKRequest" />
     </action-method>
     
     <action-method name="action-ebics-user-method-update-edition-date">
-    	<call class="com.axelor.apps.account.ebics.web.EbicsController" method="updateEditionDate" />
+    	<call class="com.axelor.apps.bank.payment.ebics.web.EbicsController" method="updateEditionDate" />
     </action-method>
     
     <action-method name="action-ebics-method-import-ebics-users">
-    	<call class="com.axelor.apps.account.ebics.web.EbicsController" method="importEbicsUsers"/>
+    	<call class="com.axelor.apps.bank.payment.ebics.web.EbicsController" method="importEbicsUsers"/>
     </action-method>
     
     <action-method name="action-ebics-user-method-print-certificates">
-    	<call class="com.axelor.apps.account.ebics.web.EbicsController" method="printCertificates"/>
+    	<call class="com.axelor.apps.bank.payment.ebics.web.EbicsController" method="printCertificates"/>
     </action-method>
     
     <action-view name="action-ebics-open-import-ebics-users" title="Import ebics users" model="com.axelor.apps.bank.payment.db.EbicsUser">

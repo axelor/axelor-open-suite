@@ -251,39 +251,39 @@
 		<!-- Actions Methods -->
 	
 	<action-method name="action-method-bank-order-confirm">
-		<call class="com.axelor.apps.account.web.BankOrderController" method="confirm"/>
+		<call class="com.axelor.apps.bank.payment.web.BankOrderController" method="confirm"/>
 	</action-method>
 
 	<action-method name="action-bank-order-method-sign">
-		<call class="com.axelor.apps.account.web.BankOrderController" method="sign"/>
+		<call class="com.axelor.apps.bank.payment.web.BankOrderController" method="sign"/>
 	</action-method>
 	
 	<action-method name="action-bank-order-method-check-lines">
-		<call class="com.axelor.apps.account.web.BankOrderController" method="checkLines"/>
+		<call class="com.axelor.apps.bank.payment.web.BankOrderController" method="checkLines"/>
 	</action-method>
 	
   	<action-method name="action-method-bank-order-validate">
-		<call class="com.axelor.apps.account.web.BankOrderController" method="validate"/>
+		<call class="com.axelor.apps.bank.payment.web.BankOrderController" method="validate"/>
 	</action-method>
 	
 	<action-method name="action-bank-order-method-validate-without-sign">
-		<call class="com.axelor.apps.account.web.BankOrderController" method="validateWithoutSign"/>
+		<call class="com.axelor.appsbank.payment.web.BankOrderController" method="validateWithoutSign"/>
 	</action-method>
 	
 	<action-method name="action-method-bank-order-payment-validate">
-		<call class="com.axelor.apps.account.web.BankOrderController" method="validatePayment"/>
+		<call class="com.axelor.apps.bank.payment.web.BankOrderController" method="validatePayment"/>
 	</action-method>
 	
 	<action-method name="action-method-bank-order-payment-cancel">
-		<call class="com.axelor.apps.account.web.BankOrderController" method="cancelPayment"/>
+		<call class="com.axelor.apps.bank.payment.web.BankOrderController" method="cancelPayment"/>
 	</action-method>
 	
 	<action-method name="action-method-bank-order-merge">
-		<call class="com.axelor.apps.account.web.BankOrderController" method="merge"/>
+		<call class="com.axelor.apps.bank.payment.web.BankOrderController" method="merge"/>
 	</action-method>
 	
 	<action-method name="action-bank-order-method-print">
-    	<call class="com.axelor.apps.account.web.BankOrderController" method="print"/>
+    	<call class="com.axelor.apps.bank.payment.web.BankOrderController" method="print"/>
     </action-method>
 	
 	<!-- BANK ORDER LINES ACTIONS -->

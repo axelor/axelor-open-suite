@@ -25,7 +25,7 @@
 	</form>
 	
 	<action-record name="action-ebics-bank-record-normalize-fax-phone-number" model="com.axelor.apps.bank.payment.db.EbicsBank">
-		<field name="fax" expr="call:com.axelor.apps.account.ebics.web.EbicsBankController:normalizeFaxNumber(fax)"/>
+		<field name="fax" expr="call:com.axelor.apps.bank.payment.ebics.web.EbicsBankController:normalizeFaxNumber(fax)"/>
 	</action-record>
 
 	<action-view name="action-ebics-bank-view-bank-details" model="com.axelor.apps.base.db.BankDetails" title="Bank Details">

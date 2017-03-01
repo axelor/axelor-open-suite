@@ -13,7 +13,7 @@
             <field name="statusSelect"/> 
      </grid>
   
-	<form onNew="action-account-bank-statement-onnew-group" readonlyIf="statusSelect == 2" name="bank-statement-form" title="Bank Statement" model="com.axelor.apps.bank.payment.db.BankStatement" width="large">
+	<form onNew="action-bank-statement-onnew-group" readonlyIf="statusSelect == 2" name="bank-statement-form" title="Bank Statement" model="com.axelor.apps.bank.payment.db.BankStatement" width="large">
 		<panel name="main" >
 			<field name="name"/>
 			<field name="company" widget="SuggestBox" onChange="action-bank-statement-set-currency" form-view="company-form" grid-view="company-grid"/>
@@ -26,14 +26,14 @@
 		
 		<panel name="status" title="Status" >
 			<field name="statusSelect" title="Status"/>
-			<button name="validated" title="Validated" hideIf="statusSelect == 2" onClick="action-group-account-bankstatement-validate-click"/>
+			<button name="validated" title="Validated" hideIf="statusSelect == 2" onClick="action-group-bankstatement-validate-click"/>
 		</panel>
 		
 		<panel name="balance" title="Balance" >
 			<field name="startingBalance"/>
 			<field name="endingBalance"/>
 			<field name="computedBalance"/>
-			<button name="compute" title="Compute" hideIf="statusSelect == 2" onClick="action-group-account-bankstatement-compute-click"/>
+			<button name="compute" title="Compute" hideIf="statusSelect == 2" onClick="action-group-bankstatement-compute-click"/>
 		</panel>
 		
 		<panel-related field="bankStatementLineList" colSpan="12" grid-view="bank-statement-line-grid" form-view="bank-statement-line-form"/>
@@ -41,19 +41,19 @@
 	</form>
 
  
-   <action-group name="action-account-bank-statement-onnew-group">
+   <action-group name="action-bank-statement-onnew-group">
 	   <action name="action-bank-statement-active-company"/>
 	   <action name="action-bank-statement-set-months"/>
 	   <action name="action-bank-statement-set-currency"/>
    </action-group>
  
-   <action-group name="action-group-account-bankstatement-validate-click">
+   <action-group name="action-group-bankstatement-validate-click">
    		<action name="save"/>
    		<action name="action-bank-statement-method-compute"/>
    		<action name="action-bank-statement-method-validate"/>
    </action-group>	
    
-   <action-group name="action-group-account-bankstatement-compute-click">
+   <action-group name="action-group-bankstatement-compute-click">
    		<action name="save"/>
    		<action name="action-bank-statement-method-compute"/>
    </action-group>
@@ -73,11 +73,11 @@
    </action-record>
    
 	<action-method name="action-bank-statement-method-compute">
-		<call class="com.axelor.apps.account.web.BankStatementController" method="compute"/>
+		<call class="com.axelor.apps.bank.payment.web.BankStatementController" method="compute"/>
 	</action-method>
 	
 	<action-method name="action-bank-statement-method-validate">
-		<call class="com.axelor.apps.account.web.BankStatementController" method="validate"/>
+		<call class="com.axelor.apps.bank.payment.web.BankStatementController" method="validate"/>
 	</action-method>
 	 
     

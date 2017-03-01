@@ -53,11 +53,11 @@
 	</action-record>
 	
 	<action-method name="action-ebics-certificate-method-add-certificates">
-		<call class="com.axelor.apps.account.ebics.web.EbicsController" method="addCertificates"/>
+		<call class="com.axelor.apps.bank.payment.ebics.web.EbicsController" method="addCertificates"/>
 	</action-method>
 	
 	<action-method name="action-ebics-certificate-method-load-certificate">
-    	<call class="com.axelor.apps.account.ebics.web.EbicsController" method="loadCertificate" />
+    	<call class="com.axelor.apps.bank.payment.ebics.web.EbicsController" method="loadCertificate" />
     </action-method>
     
 	<action-attrs name="action-ebics-certificate-confirmation-set-default">

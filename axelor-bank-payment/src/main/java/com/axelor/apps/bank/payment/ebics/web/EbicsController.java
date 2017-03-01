@@ -161,7 +161,7 @@ public class EbicsController {
 		try {
 			EbicsBank bank = user.getEbicsPartner().getEbicsBank();
 			response.setView(ActionView.define("Confirm certificates")
-				.model("com.axelor.apps.account.db.EbicsCertificate")
+				.model("com.axelor.apps.bank.payment.db.EbicsCertificate")
 				.add("form", "ebics-certificate-confirmation-form")
 				.param("show-toolbar", "false")
 				.param("show-confirm", "false")
