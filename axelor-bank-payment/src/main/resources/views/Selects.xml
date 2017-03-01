@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.1.xsd">
+
+
+	<selection name="bank.payment.bank.statement.type.select">
+		<option value="1">General</option>
+		<option value="2">Customer</option>
+		<option value="3">Supplier</option>
+	</selection>	
+	
+	<selection name="bank.payment.bank.statement.status.select">
+		<option value="1">Draft</option>
+		<option value="2">Validated</option>
+	</selection>
+
+	<selection name="bank.payment.bank.order.type.select">
+		<option value="1">SEPA Credit Transfer</option>
+		<option value="2">SEPA Direct Debit</option>
+		<option value="3">International Credit Transfer</option>
+		<option value="4">International Direct Debit</option>
+		<option value="5">National Treasury transfer</option>
+		<option value="6">International Treasury transfer</option>
+	</selection>
+	
+	<selection name="bank.payment.bank.order.partner.type.select">
+		<option value="1">Supplier</option>
+		<option value="2">Employee</option>
+		<option value="3">Customer</option>
+		<option value="4">Company</option>
+	</selection>
+	
+	<selection name="bank.payment.bank.order.status.select">
+		<option value="1">Draft</option>
+		<option value="2">Awaiting signature</option>
+		<option value="3">Validated</option>
+		<option value="4">Carried out</option>
+		<option value="5">Rejected</option> 
+		<option value="6">Canceled</option>		
+	</selection>
+	
+	<selection name="bank.payment.bank.order.reject.status.select">
+		<option value="0">Not rejected</option>
+		<option value="1">Partially rejected</option>
+		<option value="2">Totally rejected</option>
+	</selection>
+	
+	<selection name="bank.payment.bank.order.line.fees.imputation.mode.select">
+		<option value="13">Receiver</option>
+		<option value="14">Reveiver and sender</option>
+		<option value="15">Sender</option>
+	</selection>
+	
+	<selection name="bank.payment.bank.order.line.payment.mode.select">
+		<option value="0">Transfer or other</option>
+		<option value="1">Cheque</option>
+	</selection>
+	
+	<selection name="bank.payment.order.file.format.select">
+		<option value="pain.001.001.02.sct">pain.001.001.02.sct</option>
+		<option value="pain.001.001.03.sct">pain.001.001.03.sct</option>
+		<option value="pain.xxx.cfonb320.xct">pain.xxx.cfonb320.xct</option>
+		<option value="pain.xxx.cfonb160.xct">pain.xxx.cfonb160.ict</option>
+	</selection>
+	
+	<selection name="bank.payment.ebics.user.ebics.type.select">
+		<option value="0">Ebics T</option>
+		<option value="1">Ebics TS</option>
+	</selection>
+
+	<selection name="bank.payment.account.ebics.user.status.select">
+		<option value="0">Waiting for the certificate configuration</option>
+		<option value="1">Waiting for the sending of the signature certificate to the bank</option>
+		<option value="2">Waiting for the sending of the authentication and encryption certificates</option>
+		<option value="3">Active connection</option>
+		<option value="4">Certificates should be renew</option>
+	</selection>
+	
+	<selection name="bank.payment.ebics.certificate.type.select">
+		<option value="ssl">SSL</option>
+		<option value="encryption">Encryption</option>
+		<option value="authentication">Authentication</option>
+		<option value="signature">Signature</option>
+	</selection>
+
+</object-views>

@@ -22,6 +22,7 @@ import java.util.Map;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
+import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentCondition;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.base.db.Alarm;
@@ -150,6 +151,8 @@ public interface InvoiceService {
 	public void setInvoiceForInvoiceLines(List<InvoiceLine> invoiceLines, Invoice invoiceMerged);
 
 	public void deleteOldInvoices(List<Invoice> invoiceList);
+	
+	public Invoice getInvoice(MoveLine moveLine);
 
 
 }

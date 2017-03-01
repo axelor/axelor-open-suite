@@ -21,14 +21,6 @@ import com.axelor.app.AxelorModule;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineMngtRepository;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
-import com.axelor.apps.account.db.repo.BankOrderManagementRepository;
-import com.axelor.apps.account.db.repo.BankOrderRepository;
-import com.axelor.apps.account.db.repo.BankStatementManagementRepository;
-import com.axelor.apps.account.db.repo.BankStatementRepository;
-import com.axelor.apps.account.db.repo.EbicsBankAccountRepository;
-import com.axelor.apps.account.db.repo.EbicsBankRepository;
-import com.axelor.apps.account.db.repo.EbicsCertificateAccountRepository;
-import com.axelor.apps.account.db.repo.EbicsCertificateRepository;
 import com.axelor.apps.account.db.repo.InvoiceManagementRepository;
 import com.axelor.apps.account.db.repo.InvoicePaymentManagementRepository;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
@@ -46,8 +38,6 @@ import com.axelor.apps.account.db.repo.PaymentVoucherManagementRepository;
 import com.axelor.apps.account.db.repo.PaymentVoucherRepository;
 import com.axelor.apps.account.db.repo.ReconcileManagementRepository;
 import com.axelor.apps.account.db.repo.ReconcileRepository;
-import com.axelor.apps.account.ebics.service.EbicsBankService;
-import com.axelor.apps.account.ebics.service.EbicsBankServiceImpl;
 import com.axelor.apps.account.service.AccountManagementServiceAccountImpl;
 import com.axelor.apps.account.service.AddressServiceAccountImpl;
 import com.axelor.apps.account.service.AnalyticMoveLineService;
@@ -57,12 +47,6 @@ import com.axelor.apps.account.service.MoveLineReportService;
 import com.axelor.apps.account.service.MoveLineReportServiceImpl;
 import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.ReconcileServiceImpl;
-import com.axelor.apps.account.service.bankorder.BankOrderMergeService;
-import com.axelor.apps.account.service.bankorder.BankOrderMergeServiceImpl;
-import com.axelor.apps.account.service.bankorder.BankOrderMoveService;
-import com.axelor.apps.account.service.bankorder.BankOrderMoveServiceImpl;
-import com.axelor.apps.account.service.bankorder.BankOrderService;
-import com.axelor.apps.account.service.bankorder.BankOrderServiceImpl;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.InvoiceServiceImpl;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCancelService;
@@ -106,8 +90,6 @@ public class AccountModule extends AxelorModule {
         
         bind(JournalRepository.class).to(JournalManagementRepository.class);
 
-        bind(BankStatementRepository.class).to(BankStatementManagementRepository.class);
-
         bind(PaymentVoucherRepository.class).to(PaymentVoucherManagementRepository.class);
 
         bind(InvoiceService.class).to(InvoiceServiceImpl.class);
@@ -126,26 +108,12 @@ public class AccountModule extends AxelorModule {
         
         bind(InvoicePaymentToolService.class).to(InvoicePaymentToolServiceImpl.class);
 
-        bind(BankOrderService.class).to(BankOrderServiceImpl.class);
-        
         bind(AnalyticMoveLineRepository.class).to(AnalyticMoveLineMngtRepository.class);
         
         bind(ReconcileService.class).to(ReconcileServiceImpl.class);
         
         bind(ReconcileRepository.class).to(ReconcileManagementRepository.class);
-        
-        bind(BankOrderRepository.class).to(BankOrderManagementRepository.class);
-        
-        bind(BankOrderMergeService.class).to(BankOrderMergeServiceImpl.class);
-        
-        bind(BankOrderMoveService.class).to(BankOrderMoveServiceImpl.class);
 
-        bind(EbicsBankRepository.class).to(EbicsBankAccountRepository.class);
-        
-        bind(EbicsBankService.class).to(EbicsBankServiceImpl.class);
-        
-        bind(EbicsCertificateRepository.class).to(EbicsCertificateAccountRepository.class);
-        
         IPartner.modelPartnerFieldMap.put(Invoice.class.getName(), "partner");
     }
     

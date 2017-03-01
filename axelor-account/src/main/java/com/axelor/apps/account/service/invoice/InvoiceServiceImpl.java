@@ -403,6 +403,26 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 		return res;
 	}
 	
+	
+
+	/**
+	 * Méthode permettant de récupérer la facture depuis une ligne d'écriture de facture ou une ligne d'écriture de rejet de facture
+	 * @param moveLine
+	 * 			Une ligne d'écriture de facture ou une ligne d'écriture de rejet de facture
+	 * @return
+	 * 			La facture trouvée
+	 */
+	public Invoice getInvoice(MoveLine moveLine)  {
+		Invoice invoice = null;
+		if(moveLine.getMove().getRejectOk())  {
+			invoice = moveLine.getInvoiceReject();
+		}
+		else  {
+			invoice = moveLine.getMove().getInvoice();
+		}
+		return invoice;
+	}
+
 }
 
 

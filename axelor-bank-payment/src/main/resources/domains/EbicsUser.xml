@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_4.1.xsd">
+	
+  <module name="bank-payment" package="com.axelor.apps.bank.payment.db"/>
+  
+  <entity name="EbicsUser" lang="java">
+
+	 <string name="securityMedium" title="Security medium" default="0000"/>
+	 <string name="name" title="Name" namecolumn="true" required="true"/>
+	 <string name="userId" title="User id" max="35" required="true"/>
+	 <string name="nextOrderId" title="Next order id" readonly="true"/>
+	 
+	 <string name="password" title="Password" password="true" />
+	 
+	 <integer name="ebicsTypeSelect" title="Type" selection="bank.payment.ebics.user.ebics.type.select"/>
+	 <integer name="statusSelect" title="Status" selection="bank.payment.account.ebics.user.status.select" readonly="true"/>
+	 
+ 	 <many-to-one name="ebicsPartner" ref="com.axelor.apps.bank.payment.db.EbicsPartner" title="Ebics partner" required="true"/>
+ 	 
+ 	 <many-to-one name="associatedUser" ref="com.axelor.auth.db.User" title="Associate user"/>
+	 
+	 <!-- 	 Electronic signature certificate -->
+ 	 <string name="dn" title="dn" />
+ 	 <many-to-one name="a005Certificate" ref="com.axelor.apps.bank.payment.db.EbicsCertificate" title="Certificate (a005)" />
+ 	 <many-to-one name="e002Certificate" ref="com.axelor.apps.bank.payment.db.EbicsCertificate" title="Certificate (e002)" />
+ 	 <many-to-one name="x002Certificate" ref="com.axelor.apps.bank.payment.db.EbicsCertificate" title="Certificate (x002)" />
+<!--  	 <binary name="a005Certificate" title="Certificate (a005)"  /> -->
+<!-- 	 <binary name="a005PrivateKey" title="PrivateKey (a005)"  /> -->
+<!-- 	 <string name="a005PublicKeyModulus" title="a005PublicKeyModulus" large="true" multiline="true" /> -->
+<!-- 	 <string name="a005PublicKeyExponent" title="a005PublicKeyExponent" large="true" multiline="true" /> -->
+	 
+	<!-- 	Encryption certificate -->
+<!-- 	 <binary name="e002Certificate" title="Certificate (e002)"/> -->
+<!-- 	 <binary name="e002PrivateKey" title="PrivateKey (e002)" /> -->
+<!-- 	 <string name="e002PublicKeyModulus" title="e002PublicKeyModulus" large="true" multiline="true" /> -->
+<!-- 	 <string name="e002PublicKeyExponent" title="e002PublicKeyExponent" large="true" multiline="true" /> -->
+	 
+	<!-- 	 Authentication certificate -->
+<!-- 	 <binary name="x002Certificate" title="x002Certificate (x002)"/> -->
+<!-- 	 <binary name="x002PrivateKey" title="x002PrivateKey (x002)"/> -->
+<!-- 	 <string name="x002PublicKeyModulus" title="x002PublicKeyModulus" large="true" multiline="true" /> -->
+<!-- 	 <string name="x002PublicKeyExponent" title="x002PublicKeyExponent" large="true" multiline="true" /> -->
+	 
+	 <one-to-many name="ebicsRequestLogList" ref="com.axelor.apps.bank.payment.db.EbicsRequestLog" title="Request log" mappedBy="ebicsUser"/>
+	 
+	  <extra-code><![CDATA[
+	  
+	  	// EBICS TYPE SELECT
+		public static final int EBICS_TYPE_T = 0;
+		public static final int EBICS_TYPE_TS = 1;
+	
+	   	// STATUS SELECT
+		public static final int STATUS_WAITING_CERTIFICATE_CONFIG = 0;
+		public static final int STATUS_WAITING_SENDING_SIGNATURE_CERTIFICATE = 1;
+		public static final int STATUS_WAITING_AUTH_AND_ENCRYPT_CERTIFICATES = 2;
+		public static final int STATUS_ACTIVE_CONNECTION = 3;
+		public static final int STATUS_CERTIFICATES_SHOULD_BE_RENEW = 4;
+	
+	]]></extra-code>
+	 
+  </entity>
+  
+</domain-models>

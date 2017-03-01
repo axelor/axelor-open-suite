@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_4.1.xsd">
+	
+  <module name="bank-payment" package="com.axelor.apps.bank.payment.db"/>
+  
+  <entity name="EbicsBank" lang="java">
+	<string name="fullName" namecolumn="true"/>
+	<string name="hostId" title="Host ID" help="true"/>
+	<string name="name" title="Name"/>
+  
+	<many-to-one name="bank" ref="com.axelor.apps.base.db.Bank" required="true"/>
+	<string name="fax" title="Fax"/>
+    <string name="url" title="URL"/>
+	
+	<boolean name="testMode" title="Test mode"/>
+	<many-to-one name="testFile" ref="com.axelor.meta.db.MetaFile" title="Test file"/>
+	
+	<string name="languageSelect" title="Language" selection="select.language" />
+	
+	<one-to-many name="ebicsCertificateList" ref="com.axelor.apps.bank.payment.db.EbicsCertificate" title="Certificates" mappedBy="ebicsBank" orphanRemoval="true"/>
+  </entity>
+</domain-models>

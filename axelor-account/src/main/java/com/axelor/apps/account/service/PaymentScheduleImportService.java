@@ -43,12 +43,12 @@ import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.PaymentScheduleLineRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
-import com.axelor.apps.account.service.bankorder.file.cfonb.CfonbImportService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.debtrecovery.ReminderService;
 import com.axelor.apps.account.service.move.MoveLineService;
 import com.axelor.apps.account.service.move.MoveService;
 import com.axelor.apps.account.service.payment.PaymentModeService;
+import com.axelor.apps.account.service.payment.PaymentService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.administration.GeneralService;
@@ -75,11 +75,11 @@ public class PaymentScheduleImportService {
 	protected PaymentScheduleService paymentScheduleService;
 	protected PaymentScheduleLineRepository paymentScheduleLineRepo;
 	protected PaymentModeService paymentModeService;
-	protected CfonbImportService cfonbImportService;
 	protected ReminderService reminderService;
 	protected AccountConfigService accountConfigService;
 	protected DirectDebitManagementRepository directDebitManagementRepo;
 	protected InvoiceRepository invoiceRepo;
+	protected PaymentService paymentService;
 
 	protected LocalDate today;
 
@@ -89,8 +89,8 @@ public class PaymentScheduleImportService {
 	@Inject
 	public PaymentScheduleImportService(GeneralService generalService, MoveLineService moveLineService, MoveService moveService, MoveRepository moveRepo,
 			PaymentScheduleService paymentScheduleService, PaymentScheduleLineRepository paymentScheduleLineRepo, PaymentModeService paymentModeService,
-			CfonbImportService cfonbImportService, ReminderService reminderService, AccountConfigService accountConfigService, DirectDebitManagementRepository directDebitManagementRepo,
-			InvoiceRepository invoiceRepo) {
+			ReminderService reminderService, AccountConfigService accountConfigService, DirectDebitManagementRepository directDebitManagementRepo,
+			InvoiceRepository invoiceRepo, PaymentService paymentService) {
 
 		this.moveLineService = moveLineService;
 		this.moveService = moveService;
@@ -98,11 +98,11 @@ public class PaymentScheduleImportService {
 		this.paymentScheduleService = paymentScheduleService;
 		this.paymentScheduleLineRepo = paymentScheduleLineRepo;
 		this.paymentModeService = paymentModeService;
-		this.cfonbImportService = cfonbImportService;
 		this.reminderService = reminderService;
 		this.accountConfigService = accountConfigService;
 		this.directDebitManagementRepo = directDebitManagementRepo;
 		this.invoiceRepo = invoiceRepo;
+		this.paymentService = paymentService;
 		this.today = generalService.getTodayDate();
 
 	}
@@ -249,7 +249,7 @@ public class PaymentScheduleImportService {
 			log.debug("une facture trouvée");
 
 			// Afin de pouvoir associer le montant rejeté à la facture
-			amountReject = this.setAmountRejected(invoice, amountReject, cfonbImportService.getAmountRemainingFromPaymentMove(invoice));
+			amountReject = this.setAmountRejected(invoice, amountReject, paymentService.getAmountRemainingFromPaymentMove(invoice));
 
 			if(invoice.getAmountRejected().compareTo(BigDecimal.ZERO) == 1)  {
 				invoice.setRejectDate(dateReject);
