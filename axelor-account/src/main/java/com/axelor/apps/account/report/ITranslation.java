@@ -100,8 +100,14 @@ public interface ITranslation {
     
 	public static final String SALE_INVOICE_DETAILS_REPORT_INVOICED = /*$$(*/ "SaleInvoicesDetails.invoiced"; /*)*/
 	public static final String SALE_INVOICE_DETAILS_REPORT_ORDERED = /*$$(*/ "SaleInvoicesDetails.ordered"; /*)*/
-	
+	public static final String SALE_INVOICE_DETAILS_REPORT_SUBTOTAL = /*$$(*/ "SaleInvoicesDetails.subtotal"; /*)*/
+	public static final String SALE_INVOICE_DETAILS_REPORT_SUM_BY_PARTNER = /*$$(*/ "SaleInvoicesDetails.sumByPartner"; /*)*/
+	public static final String SALE_INVOICE_DETAILS_REPORT_SUM_BY_PRODUCT = /*$$(*/ "SaleInvoicesDetails.sumByProduct"; /*)*/
+
 	public static final String PURCHASE_INVOICE_DETAILS_REPORT_INVOICED = /*$$(*/ "PurchaseInvoicesDetails.invoiced"; /*)*/
 	public static final String PURCHASE_INVOICE_DETAILS_REPORT_ORDERED = /*$$(*/ "PurchaseInvoicesDetails.ordered"; /*)*/
+	public static final String PURCHASE_INVOICE_DETAILS_REPORT_SUBTOTAL = /*$$(*/ "PurchaseInvoicesDetails.subtotal"; /*)*/
+	public static final String PURCHASE_INVOICE_DETAILS_REPORT_SUM_BY_PARTNER = /*$$(*/ "PurchaseInvoicesDetails.sumByPartner"; /*)*/
+	public static final String PURCHASE_INVOICE_DETAILS_REPORT_SUM_BY_PRODUCT = /*$$(*/ "PurchaseInvoicesDetails.sumByProduct"; /*)*/
 
 }
