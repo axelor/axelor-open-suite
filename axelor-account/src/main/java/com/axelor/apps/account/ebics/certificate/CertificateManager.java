@@ -167,7 +167,11 @@ public class CertificateManager {
   public void save(String path)
     throws GeneralSecurityException, IOException
   {
-    writePKCS12Certificate(path + "/" + user.getUserId(), user.getPassword().toCharArray());
+	char[] pwd = null;
+	if ( user.getPassword() != null) {
+	  pwd = user.getPassword().toCharArray();
+	}
+    writePKCS12Certificate(path + "/" + user.getUserId(), pwd);
   }
 
   /**
@@ -183,8 +187,14 @@ public class CertificateManager {
     KeyStoreManager		loader;
 
     loader = new KeyStoreManager();
-
-    loader.load(path, user.getPassword().toCharArray());
+    
+    if ( user.getPassword() != null) {
+    	 loader.load(path, user.getPassword().toCharArray());
+    }
+    else {
+    	loader.load(path , null);
+    }
+   
     a005Certificate = loader.getCertificate(user.getUserId() + "-A005");
     x002Certificate = loader.getCertificate(user.getUserId() + "-X002");
     e002Certificate = loader.getCertificate(user.getUserId() + "-E002");

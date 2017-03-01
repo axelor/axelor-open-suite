@@ -165,8 +165,13 @@ public class KeyManagement {
   private X509Certificate[] createCertificates(HPBResponseOrderDataElement orderData) throws AxelorException, GeneralSecurityException, IOException {
 	
 	KeyStoreManager keystoreManager = new KeyStoreManager();
-    keystoreManager.load("" , session.getUser().getPassword().toCharArray() );
-    
+	if ( session.getUser().getPassword() != null) {
+		keystoreManager.load("" , session.getUser().getPassword().toCharArray() );
+	}
+	else {
+		keystoreManager.load("" , null);
+	}
+	
     String certId = session.getBankID() + "-E002";
     keystoreManager.setCertificateEntry(certId, new ByteArrayInputStream(orderData.getBankE002Certificate()));
     X509Certificate certificateE002 = keystoreManager.getCertificate(certId);
